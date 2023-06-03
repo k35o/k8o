@@ -12,7 +12,7 @@ export const GlobalLayout: FC<{ children: ReactNode }> = ({
         </div>
       </header>
       <main className="flex grow justify-center bg-slate-300">
-        <div className="w-full max-w-5xl pt-4">{children}</div>
+        <div className="w-full max-w-5xl p-4">{children}</div>
       </main>
     </div>
   );
