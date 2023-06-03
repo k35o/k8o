@@ -1,3 +1,4 @@
+import { GlobalLayout } from '@/components/global-layout';
 import './globals.css';
 import { Fredoka } from 'next/font/google';
 
@@ -15,7 +16,9 @@ export default function RootLayout({
 }) {
   return (
     <html lang="ja">
-      <body className={font.className}>{children}</body>
+      <body className={font.className}>
+        <GlobalLayout>{children}</GlobalLayout>
+      </body>
     </html>
   );
 }
