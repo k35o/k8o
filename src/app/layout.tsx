@@ -1,3 +1,4 @@
+import './globals.css';
 import { Fredoka } from 'next/font/google';
 
 const font = Fredoka({ subsets: ['latin'] });
