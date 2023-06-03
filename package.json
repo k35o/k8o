@@ -7,13 +7,16 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "format": "prettier -w src/"
+    "format": "prettier -w src/",
+    "storybook": "storybook dev -p 6006",
+    "build-storybook": "storybook build"
   },
   "dependencies": {
     "@types/node": "20.2.5",
     "@types/react": "18.2.8",
     "@types/react-dom": "18.2.4",
     "autoprefixer": "10.4.14",
+    "chromatic": "^6.18.0",
     "eslint": "8.42.0",
     "eslint-config-next": "13.4.4",
     "eslint-config-prettier": "^8.8.0",
@@ -28,5 +31,16 @@
   "volta": {
     "node": "20.2.0",
     "pnpm": "8.6.0"
+  },
+  "devDependencies": {
+    "@storybook/addon-essentials": "^7.0.18",
+    "@storybook/addon-interactions": "^7.0.18",
+    "@storybook/addon-links": "^7.0.18",
+    "@storybook/blocks": "^7.0.18",
+    "@storybook/nextjs": "^7.0.18",
+    "@storybook/react": "^7.0.18",
+    "@storybook/testing-library": "^0.0.14-next.2",
+    "eslint-plugin-storybook": "^0.6.12",
+    "storybook": "^7.0.18"
   }
 }

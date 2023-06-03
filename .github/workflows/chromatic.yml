@@ -1,13 +1,15 @@
-name: formatter
+name: 'Chromatic'
 
 on: push
 
 jobs:
-  formatter:
+  chromatic-deployment:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout branch
         uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
       - name: Setup pnpm
         uses: pnpm/action-setup@v2
         with:
@@ -19,5 +21,8 @@ jobs:
           cache: 'pnpm'
       - name: Install dependencies
         run: pnpm install
-      - name: Run format
-        run: pnpm format
+      - name: Publish to Chromatic
+        uses: chromaui/action@v1
+        with:
+          projectToken: ${{ secrets.CHROMATIC_PROJECT_TOKEN }}
+          onlyChanged: true
