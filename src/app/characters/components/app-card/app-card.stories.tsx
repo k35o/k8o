@@ -10,4 +10,11 @@ const meta: Meta<typeof AppCard> = {
 export default meta;
 type Story = StoryObj<typeof AppCard>;
 
-export const Primary: Story = {};
+export const Primary: Story = {
+  args: {
+    link: '/characters/counter',
+    emotion: '📏',
+    title: '文字数カウンター',
+    description: '入力した文字列の長さをカウントします。',
+  },
+};
