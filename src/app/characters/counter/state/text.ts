@@ -11,6 +11,16 @@ export const textLengthState = selector<number>({
   key: RECOIL_KEYS.CHARACTERS_COUNTER_TEXT_LENGTH,
   get: ({ get }) => {
     const text = get(textState);
+    console.log(window.Intl.Segmenter);
+    // Intl.Segmenterを実装していないブラウザでは、ユニコードのコードポイント単位で数える
+    if (
+      window.Intl === undefined ||
+      window.Intl.Segmenter === undefined
+    ) {
+      return [...text].length;
+    }
+
+    // Intlを実装しているブラウザでは、grapheme単位で数える
     const segmenter = new Intl.Segmenter('ja', {
       granularity: 'grapheme',
     });
