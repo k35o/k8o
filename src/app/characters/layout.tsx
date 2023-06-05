@@ -1,6 +1,7 @@
 export const metadata = {
   title: 'Characters',
-  description: '文章や文字に対する操作を提供するサイトです。',
+  description:
+    '入力した文字列の検索など、文章や文字列に対する操作を提供します。',
 };
 
 export default function Layout({
