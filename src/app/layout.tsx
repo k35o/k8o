@@ -1,6 +1,7 @@
 import { GlobalLayout } from '@/components/global-layout';
 import './globals.css';
 import { Fredoka } from 'next/font/google';
+import { AppProvider } from './provider';
 
 const font = Fredoka({ subsets: ['latin'] });
 
@@ -17,7 +18,9 @@ export default function RootLayout({
   return (
     <html lang="ja">
       <body className={font.className}>
-        <GlobalLayout>{children}</GlobalLayout>
+        <AppProvider>
+          <GlobalLayout>{children}</GlobalLayout>
+        </AppProvider>
       </body>
     </html>
   );
