@@ -13,7 +13,7 @@ export const textLengthState = selector<number>({
     const text = get(textState);
     // Intl.Segmenterを実装していないブラウザでは、ユニコードのコードポイント単位で数える
     if (
-      window === undefined ||
+      typeof window === 'undefined' ||
       window.Intl === undefined ||
       window.Intl.Segmenter === undefined
     ) {
