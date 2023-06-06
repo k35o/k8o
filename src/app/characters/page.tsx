@@ -1,4 +1,4 @@
-import { AppCard } from './components/app-card';
+import { AppCard } from '@/components/app-card';
 
 export default function Page() {
   return (
@@ -7,7 +7,7 @@ export default function Page() {
         link="/characters/counter"
         emotion="📏"
         title="文字数カウンター"
-        description="入力した文字列の長さをカウントします。"
+        description="テキストエリアに入力した文字数をカウントします。"
       />
     </div>
   );

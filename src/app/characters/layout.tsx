@@ -1,7 +1,9 @@
+import Link from 'next/link';
+
 export const metadata = {
   title: 'Characters',
   description:
-    '入力した文字列の検索など、文章や文字列に対する操作を提供します。',
+    '入力した文字の検索など、文字に対する操作を提供します。',
 };
 
 export default function Layout({
@@ -11,7 +13,9 @@ export default function Layout({
 }) {
   return (
     <div className="flex flex-col gap-4">
-      <h2 className="text-2xl font-medium">Characters</h2>
+      <Link href="/characters">
+        <h2 className="text-2xl font-medium">Characters</h2>
+      </Link>
       {children}
     </div>
   );
