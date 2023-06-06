@@ -21,7 +21,7 @@ export const AppCard = <T extends string>({
           </div>
           <div>
             <h3 className="text-2xl font-medium">{title}</h3>
-            <p>{description}</p>
+            <p className="line-clamp-3">{description}</p>
           </div>
         </div>
       </Link>
