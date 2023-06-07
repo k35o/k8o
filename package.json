@@ -21,6 +21,7 @@
     "eslint": "8.42.0",
     "eslint-config-next": "13.4.4",
     "eslint-config-prettier": "^8.8.0",
+    "eslint-plugin-jsx-a11y": "^6.7.1",
     "next": "13.4.4",
     "postcss": "8.4.24",
     "prettier": "^2.8.8",
@@ -36,6 +37,7 @@
     "pnpm": "8.6.0"
   },
   "devDependencies": {
+    "@storybook/addon-a11y": "^7.0.18",
     "@storybook/addon-essentials": "^7.0.18",
     "@storybook/addon-interactions": "^7.0.18",
     "@storybook/addon-links": "^7.0.18",
