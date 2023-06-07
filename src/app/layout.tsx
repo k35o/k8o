@@ -2,6 +2,7 @@ import { GlobalLayout } from '@/components/global-layout';
 import './globals.css';
 import { Fredoka } from 'next/font/google';
 import { AppProvider } from './provider';
+import { Analytics } from '@vercel/analytics/react';
 
 const font = Fredoka({ subsets: ['latin'] });
 
@@ -21,6 +22,7 @@ export default function RootLayout({
         <AppProvider>
           <GlobalLayout>{children}</GlobalLayout>
         </AppProvider>
+        <Analytics />
       </body>
     </html>
   );
