@@ -2,7 +2,8 @@ import { AppCard } from '@/components/app-card';
 
 export default function Home() {
   return (
-    <div>
+    <div className="flex flex-col gap-4">
+      <h2 className="text-2xl font-medium">Collection</h2>
       <AppCard
         link="/characters"
         emotion="🔠"
