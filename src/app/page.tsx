@@ -10,6 +10,12 @@ export default function Home() {
         title="Characters"
         description="テキストエリアに入力した文字数をカウントする機能など、文字に対する操作についての機能を提供するサービスです。"
       />
+      <AppCard
+        link="/blog"
+        emotion="📕"
+        title="Blog"
+        description="ブログです。"
+      />
     </div>
   );
 }
