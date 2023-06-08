@@ -1,10 +1,12 @@
 import { GlobalLayout } from '@/components/global-layout';
 import './globals.css';
-import { Fredoka } from 'next/font/google';
+import { M_PLUS_2 } from 'next/font/google';
 import { AppProvider } from './provider';
 import { Analytics } from '@vercel/analytics/react';
 
-const font = Fredoka({ subsets: ['latin'] });
+const font = M_PLUS_2({
+  subsets: ['latin'],
+});
 
 export const metadata = {
   title: 'k8o',
