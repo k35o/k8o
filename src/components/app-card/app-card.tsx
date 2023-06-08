@@ -13,10 +13,10 @@ export const AppCard = <T extends string>({
   description: string;
 }) => {
   return (
-    <section className="h-40 rounded-md border-2 border-neutral-500">
+    <section className="h-40 rounded-md bg-white shadow-md">
       <Link href={link}>
         <div className="flex gap-6 p-4">
-          <div className="flex h-32 w-32 shrink-0 items-center justify-center rounded-md bg-white text-7xl">
+          <div className="flex h-32 w-32 shrink-0 items-center justify-center rounded-md bg-gray-200 text-7xl">
             {emotion}
           </div>
           <div>
