@@ -14,7 +14,7 @@ export default function Layout({
   return (
     <div className="flex flex-col gap-4">
       <Link href="/characters">
-        <h2 className="text-2xl font-medium">Characters</h2>
+        <h2 className="text-2xl font-bold">Characters</h2>
       </Link>
       {children}
     </div>

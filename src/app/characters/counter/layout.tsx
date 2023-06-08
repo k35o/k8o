@@ -10,7 +10,7 @@ export default function Layout({
 }) {
   return (
     <div className="flex flex-col gap-4">
-      <h3 className="text-xl font-medium">文字数カウンター</h3>
+      <h3 className="text-l font-medium">文字数カウンター</h3>
       {children}
     </div>
   );
