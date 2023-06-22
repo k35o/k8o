@@ -66,8 +66,8 @@ dependencies:
     specifier: ^0.7.7
     version: 0.7.7(react-dom@18.2.0)(react@18.2.0)
   rehype-pretty-code:
-    specifier: ^0.9.8
-    version: 0.9.8(shiki@0.14.2)
+    specifier: ^0.9.11
+    version: 0.9.11(shiki@0.14.2)
   shiki:
     specifier: ^0.14.2
     version: 0.14.2
@@ -10278,9 +10278,9 @@ packages:
       jsesc: 0.5.0
     dev: true
 
-  /rehype-pretty-code@0.9.8(shiki@0.14.2):
-    resolution: {integrity: sha512-pwCqh4Y+D2brWBGLu8i9aRP+rfnABdwFIXJ1dSInC+Xf7PxoEOVGNvngFSsfplpJ88IfcgiGirXa+9cIsLEhlA==}
-    engines: {node: ^12.16.0 || >=13.2.0}
+  /rehype-pretty-code@0.9.11(shiki@0.14.2):
+    resolution: {integrity: sha512-Eq90eCYXQJISktfRZ8PPtwc5SUyH6fJcxS8XOMnHPUQZBtC6RYo67gGlley9X2nR8vlniPj0/7oCDEYHKQa/oA==}
+    engines: {node: '>=16'}
     peerDependencies:
       shiki: '*'
     dependencies:
