@@ -4,7 +4,7 @@ export default function Page() {
   return (
     <div>
       <BlogCard
-        link="/characters/counter"
+        link="/blog/tanstack-router-introduction"
         emotion="😃"
         title="Reactの新しいルーティングライブラリ、TanStackRouterを学ぶ"
         tags={['React', 'TypeScript', 'TanStackRouter']}
