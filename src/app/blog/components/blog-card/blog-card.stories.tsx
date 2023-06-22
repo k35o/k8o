@@ -10,4 +10,12 @@ const meta: Meta<typeof BlogCard> = {
 export default meta;
 type Story = StoryObj<typeof BlogCard>;
 
-export const Primary: Story = {};
+export const Primary: Story = {
+  args: {
+    link: '/blog/tanstack-router-introduction' as any,
+    emotion: '😃',
+    title:
+      'Reactの新しいルーティングライブラリ、TanStackRouterを学ぶ',
+    tags: ['React', 'TypeScript', 'TanStackRouter'],
+  },
+};
