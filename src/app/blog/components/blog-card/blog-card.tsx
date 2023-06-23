@@ -40,11 +40,7 @@ export const BlogCard = <T extends string>({
           </div>
         </a>
       ) : (
-        <Link
-          href={link as Route<T>}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
+        <Link href={link as Route<T>}>
           <div className="flex gap-6 p-4">
             <div className="flex h-32 w-32 shrink-0 items-center justify-center rounded-md bg-gray-200 text-7xl">
               {emotion}
