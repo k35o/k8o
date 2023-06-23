@@ -10,16 +10,25 @@ export const Anchor = ({
   children: ReactNode;
 }) => {
   const isExternal = href.startsWith('http');
-  const Component = isExternal ? 'a' : Link;
   return (
-    <Component
-      className="cursor-pointer text-blue-600 hover:underline"
-      // TODO: 手動キャストせずに判別できる方法が出たら直す
-      href={href as Route}
-      target={isExternal ? '_blank' : undefined}
-      rel={isExternal ? 'noopener noreferrer' : undefined}
-    >
-      {children}
-    </Component>
+    <>
+      {isExternal ? (
+        <a
+          href={href}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="cursor-pointer text-blue-600 hover:underline"
+        >
+          {children}
+        </a>
+      ) : (
+        <Link
+          href={href as Route}
+          className="cursor-pointer text-blue-600 hover:underline"
+        >
+          {children}
+        </Link>
+      )}
+    </>
   );
 };

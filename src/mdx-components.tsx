@@ -45,7 +45,10 @@ export function useMDXComponents(
     },
     pre: ({ children, ...rest }) => {
       return (
-        <pre {...rest} className="my-4 rounded-xl bg-slate-900 p-4">
+        <pre
+          {...rest}
+          className="my-4 overflow-x-auto rounded-xl bg-slate-900 p-4"
+        >
           {children}
         </pre>
       );
