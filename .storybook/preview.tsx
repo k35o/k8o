@@ -2,9 +2,9 @@ import React from 'react';
 import type { Preview } from '@storybook/react';
 import '../src/app/globals.css';
 import { AppProvider } from '../src/app/provider';
-import { Fredoka } from 'next/font/google';
+import { M_PLUS_2 } from 'next/font/google';
 
-const font = Fredoka({ subsets: ['latin'] });
+const font = M_PLUS_2({ subsets: ['latin'] });
 
 const preview: Preview = {
   parameters: {
