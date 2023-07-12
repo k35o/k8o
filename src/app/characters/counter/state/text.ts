@@ -1,5 +1,4 @@
 import { RECOIL_KEYS } from '@/constants';
-import { ChangeEvent } from 'react';
 import { atom, selector, useRecoilState } from 'recoil';
 
 export const textState = atom<string>({
@@ -33,8 +32,8 @@ export const useTextField = () => {
 
   return {
     text,
-    handleTextChange: (event: ChangeEvent<HTMLTextAreaElement>) => {
-      setText(event.target.value);
+    handleTextChange: (text: string) => {
+      setText(text);
     },
   };
 };
