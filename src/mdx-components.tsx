@@ -2,7 +2,7 @@ import type { MDXComponents } from 'mdx/types';
 import { Anchor } from './app/_components/anchor';
 
 export function useMDXComponents(
-  components: MDXComponents
+  components: MDXComponents,
 ): MDXComponents {
   return {
     h1: ({ children }) => (

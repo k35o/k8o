@@ -29,7 +29,7 @@ const isBaseNumber = (number: number): Base => {
 const convertNumber = (
   number: string,
   baseFrom: Base,
-  baseTo: Base
+  baseTo: Base,
 ): string => {
   if (baseFrom === baseTo) return number;
 
@@ -41,7 +41,7 @@ export const BaseConverter = () => {
   const [baseTo, setBaseTo] = useState<Base>(10);
   const handleChangeBase = (
     base: string,
-    setBase: (base: Base) => void
+    setBase: (base: Base) => void,
   ) => {
     const parsedValue = isNaN(Number(base)) ? 2 : Number(base);
     setBase(isBaseNumber(parsedValue));
