@@ -22,6 +22,6 @@
     { "rule": "*", "severity": "warn" }
   ],
   "typescript.tsdk": "node_modules/.pnpm/typescript@5.0.2/node_modules/typescript/lib",
-  "prettier.documentSelectors": ["**/*.{cjs,mjs,ts,tsx,json}"],
+  "prettier.documentSelectors": ["**/*.{cjs,mjs,ts,tsx,json,md,mdx}"],
   "typescript.enablePromptUseWorkspaceTsdk": true
 }
