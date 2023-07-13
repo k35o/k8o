@@ -41,7 +41,7 @@
   },
   "volta": {
     "node": "20.4.0",
-    "pnpm": "8.6.0"
+    "pnpm": "8.6.7"
   },
   "devDependencies": {
     "@storybook/addon-a11y": "^7.0.27",
