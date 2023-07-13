@@ -39,10 +39,6 @@
     "tailwindcss": "3.3.2",
     "typescript": "5.1.6"
   },
-  "volta": {
-    "node": "20.4.0",
-    "pnpm": "8.6.7"
-  },
   "devDependencies": {
     "@storybook/addon-a11y": "^7.0.27",
     "@storybook/addon-essentials": "^7.0.27",
@@ -56,5 +52,9 @@
     "chromatic": "^6.19.9",
     "eslint-plugin-storybook": "^0.6.12",
     "storybook": "^7.0.27"
+  },
+  "volta": {
+    "node": "20.4.0",
+    "pnpm": "8.6.7"
   }
 }
