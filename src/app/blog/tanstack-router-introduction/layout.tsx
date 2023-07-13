@@ -12,10 +12,6 @@ export default function Layout({
 }) {
   return (
     <div className="flex flex-col gap-4">
-      <link
-        rel="stylesheet"
-        href="https://unpkg.com/dracula-prism/dist/css/dracula-prism.css"
-      ></link>
       <h2 className="text-2xl font-bold">
         Reactの新しいルーティングライブラリ、TanStackRouterを学ぶ
       </h2>
