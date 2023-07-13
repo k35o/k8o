@@ -1,3 +1,5 @@
+import { Heading } from '@/app/_components/heading';
+
 export const metadata = {
   title: '文字数カウンター',
   description: '入力した文字数をカウントします。',
@@ -10,7 +12,7 @@ export default function Layout({
 }) {
   return (
     <div className="flex flex-col gap-4">
-      <h3 className="text-l font-medium">文字数カウンター</h3>
+      <Heading type="h3">文字数カウンター</Heading>
       {children}
     </div>
   );

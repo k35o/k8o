@@ -1,7 +1,7 @@
-import { GlobalLayout } from '@/components/global-layout';
-import './globals.css';
+import { GlobalLayout } from './_components/global-layout';
+import './_styles/globals.css';
 import { M_PLUS_2 } from 'next/font/google';
-import { AppProvider } from './provider';
+import { AppProvider } from './_providers/app';
 import { Analytics } from '@vercel/analytics/react';
 
 const font = M_PLUS_2({

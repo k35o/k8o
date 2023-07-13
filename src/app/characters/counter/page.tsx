@@ -1,5 +1,5 @@
-import { TextField } from './components/text-field';
-import { TextLength } from './components/text-length';
+import { TextField } from './_components/text-field';
+import { TextLength } from './_components/text-length';
 
 export default function Counter() {
   return (

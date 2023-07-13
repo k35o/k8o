@@ -1,4 +1,5 @@
-import { TextTag } from '@/components/text-tag';
+import { Heading } from '@/app/_components/heading';
+import { TextTag } from '@/app/_components/text-tag';
 import { Route } from 'next';
 import Link from 'next/link';
 
@@ -23,9 +24,9 @@ export const BlogCard = <T extends string>({
               {emotion}
             </div>
             <div className="flex w-full flex-col justify-around">
-              <h3 className="line-clamp-3 text-2xl font-medium">
+              <Heading type="h3" lineClamp={3}>
                 {title}
-              </h3>
+              </Heading>
               {tags.length > 0 && (
                 <div className="hidden justify-end gap-2 md:flex">
                   {tags.map((tag) => {
@@ -46,9 +47,9 @@ export const BlogCard = <T extends string>({
               {emotion}
             </div>
             <div className="flex w-full flex-col justify-around">
-              <h3 className="line-clamp-3 text-2xl font-medium">
+              <Heading type="h3" lineClamp={3}>
                 {title}
-              </h3>
+              </Heading>
               {tags.length > 0 && (
                 <div className="hidden justify-end gap-2 md:flex">
                   {tags.map((tag) => {

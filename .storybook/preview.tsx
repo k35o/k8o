@@ -1,7 +1,7 @@
 import React from 'react';
 import type { Preview } from '@storybook/react';
-import '../src/app/globals.css';
-import { AppProvider } from '../src/app/provider';
+import '../src/app/_styles/globals.css';
+import { AppProvider } from '../src/app/_providers/app';
 import { M_PLUS_2 } from 'next/font/google';
 
 const font = M_PLUS_2({ subsets: ['latin'] });

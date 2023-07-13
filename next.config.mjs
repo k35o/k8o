@@ -5,6 +5,7 @@ import { getHighlighter } from "shiki";
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
+  pageExtensions: ['tsx', 'mdx'],
   experimental: {
     typedRoutes: true,
   },

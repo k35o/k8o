@@ -1,9 +1,10 @@
-import { AppCard } from '@/components/app-card';
+import { AppCard } from './_components/app-card';
+import { Heading } from './_components/heading';
 
 export default function Home() {
   return (
     <div className="flex flex-col gap-4">
-      <h2 className="text-2xl font-medium">Collection</h2>
+      <Heading type="h2">Collection</Heading>
       <AppCard
         link="/characters"
         emotion="📄"
