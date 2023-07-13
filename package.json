@@ -52,7 +52,7 @@
     "@storybook/nextjs": "^7.0.23",
     "@storybook/react": "^7.0.23",
     "@storybook/testing-library": "^0.2.0",
-    "chromatic": "^6.19.8",
+    "chromatic": "^6.19.9",
     "eslint-plugin-storybook": "^0.6.12",
     "storybook": "^7.0.23"
   }
