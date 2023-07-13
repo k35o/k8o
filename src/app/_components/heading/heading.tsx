@@ -43,7 +43,7 @@ export const Heading: FC<Props> = ({ children, type, lineClamp }) => {
   if (type === 'h4') {
     return (
       <h4
-        className={clsx('text-l font-bold', {
+        className={clsx('text-lg font-bold', {
           [`line-clamp-${lineClamp}`]: lineClamp,
         })}
       >
@@ -65,7 +65,7 @@ export const Heading: FC<Props> = ({ children, type, lineClamp }) => {
   if (type === 'h6') {
     return (
       <h6
-        className={clsx('text-3sm font-bold', {
+        className={clsx('text-sm font-bold', {
           [`line-clamp-${lineClamp}`]: lineClamp,
         })}
       >
