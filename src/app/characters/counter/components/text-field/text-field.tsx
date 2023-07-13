@@ -1,6 +1,6 @@
 'use client';
 
-import { Textarea } from '@/components/form/textarea';
+import { Textarea } from '@/app/_components/form/textarea';
 import { useTextField } from '../../state/text';
 
 export const TextField = () => {

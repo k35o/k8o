@@ -1,4 +1,4 @@
-import { GlobalLayout } from '@/components/global-layout';
+import { GlobalLayout } from './_components/global-layout';
 import './globals.css';
 import { M_PLUS_2 } from 'next/font/google';
 import { AppProvider } from './provider';

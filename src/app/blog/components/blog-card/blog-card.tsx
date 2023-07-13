@@ -1,4 +1,4 @@
-import { TextTag } from '@/components/text-tag';
+import { TextTag } from '@/app/_components/text-tag';
 import { Route } from 'next';
 import Link from 'next/link';
 

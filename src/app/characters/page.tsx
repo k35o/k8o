@@ -1,4 +1,4 @@
-import { AppCard } from '@/components/app-card';
+import { AppCard } from '@/app/_components/app-card';
 
 export default function Page() {
   return (
