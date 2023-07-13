@@ -17,9 +17,9 @@ const COLOR_TYPE_OPTIONS = [
 const rgbToHex = (rgb: RGB): string => {
   const { r, g, b, a } = rgb;
   return `${parseSafeRgb(r).toString(16)}${parseSafeRgb(g).toString(
-    16
+    16,
   )}${parseSafeRgb(b).toString(16)}${Math.round(
-    parseSafeRgb(Number(a ? a : '1') * 255)
+    parseSafeRgb(Number(a ? a : '1') * 255),
   ).toString(16)}`;
 };
 
@@ -37,7 +37,7 @@ const parseSafeRgb = (number: number | string): number => {
 };
 
 const hexToRgb = (
-  hex: string
+  hex: string,
 ): { r: number; g: number; b: number; a: number } => {
   if (hex.length === 3) {
     const r = parseInt(hex.slice(0, 1).repeat(2), 16);
@@ -104,7 +104,7 @@ export const ColorConverter = () => {
 
   const handleChangeColorType = (
     colorType: string,
-    setColorType: (base: ColorType) => void
+    setColorType: (base: ColorType) => void,
   ) => {
     if (colorType === 'hex' || colorType === 'rgb') {
       setHexFrom('ffffff');
@@ -125,9 +125,9 @@ export const ColorConverter = () => {
         return `#${rgbToHex(rgbFrom)}`;
       }
       return `rgb(${parseSafeRgb(rgbFrom.r)}, ${parseSafeRgb(
-        rgbFrom.g
+        rgbFrom.g,
       )}, ${parseSafeRgb(rgbFrom.b)}, ${parseSafeRgb(
-        rgbFrom.a ?? '1'
+        rgbFrom.a ?? '1',
       )})`;
     }
   }, [colorTypeFrom, colorTypeTo, hexFrom, rgbFrom]);

@@ -47,7 +47,7 @@ const TanStackRouterDevtools = import.meta.env.DEV
     React.lazy(() =>
       import('@tanstack/router-devtools').then((res) => ({
         default: res.TanStackRouterDevtools,
-      }))
+      })),
     )
   : () => null;
 ```
@@ -353,7 +353,7 @@ const postRoute = new Route({
     const { slug } = useParams({ from: '/blog/$slug' });
     const search = useSearch({ from: '/blog/$slug' });
     const blog = useQuery(['blog', slug], () =>
-      fetchPostById(slug, search)
+      fetchPostById(slug, search),
     );
     return <Blog blog={blog} />;
   },
