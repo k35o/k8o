@@ -1,5 +1,5 @@
-import { BaseConverter } from './components/base-converter';
-import { ColorConverter } from './components/color-converter';
+import { BaseConverter } from './_components/base-converter';
+import { ColorConverter } from './_components/color-converter';
 
 export default function Page() {
   return (
