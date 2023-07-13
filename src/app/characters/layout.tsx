@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import { Heading } from '../_components/heading';
 
 export const metadata = {
   title: 'Characters',
@@ -14,7 +15,7 @@ export default function Layout({
   return (
     <div className="flex flex-col gap-4">
       <Link href="/characters">
-        <h2 className="text-2xl font-bold">Characters</h2>
+        <Heading type="h2">Characters</Heading>
       </Link>
       {children}
     </div>

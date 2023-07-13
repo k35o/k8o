@@ -1,3 +1,5 @@
+import { Heading } from '../_components/heading';
+
 export const metadata = {
   title: 'Converter',
   description:
@@ -11,7 +13,7 @@ export default function Layout({
 }) {
   return (
     <div className="flex flex-col gap-4">
-      <h2 className="text-2xl font-bold">Converter</h2>
+      <Heading type="h2">Converter</Heading>
       {children}
     </div>
   );

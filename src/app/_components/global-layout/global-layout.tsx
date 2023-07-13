@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import { FC, ReactNode } from 'react';
+import { Heading } from '../heading';
 
 export const GlobalLayout: FC<{ children: ReactNode }> = ({
   children,
@@ -10,7 +11,7 @@ export const GlobalLayout: FC<{ children: ReactNode }> = ({
       <header className="flex items-center justify-center p-4">
         <div className="w-full max-w-4xl">
           <Link href="/">
-            <h1 className="text-3xl font-bold">k8o</h1>
+            <Heading type="h1">k8o</Heading>
           </Link>
         </div>
       </header>

@@ -1,5 +1,6 @@
 import { Route } from 'next';
 import Link from 'next/link';
+import { Heading } from '../heading';
 
 export const AppCard = <T extends string>({
   link,
@@ -20,7 +21,7 @@ export const AppCard = <T extends string>({
             {emotion}
           </div>
           <div>
-            <h3 className="text-2xl font-medium">{title}</h3>
+            <Heading type="h3">{title}</Heading>
             <p className="line-clamp-3">{description}</p>
           </div>
         </div>
