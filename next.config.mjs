@@ -8,6 +8,7 @@ const nextConfig = {
   pageExtensions: ['tsx', 'mdx'],
   experimental: {
     typedRoutes: true,
+    serverActions: true,
   },
 };
 
