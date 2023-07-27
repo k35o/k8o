@@ -1,6 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import { CheckedField } from './checked-field';
-import { EditField } from '../edit-field';
+import { RecoilRoot } from 'recoil';
+import { textState } from '../../_state/text';
 
 const meta: Meta<typeof CheckedField> = {
   title: 'app/characters/check-syntax/checked-field',
@@ -13,9 +14,12 @@ type Story = StoryObj<typeof CheckedField>;
 
 export const Primary: Story = {
   render: () => (
-    <div className="grid grid-cols-2 gap-2">
-      <EditField />
+    <RecoilRoot
+      initializeState={(mutableSnapshot) => {
+        mutableSnapshot.set(textState, 'これはテストです。');
+      }}
+    >
       <CheckedField />
-    </div>
+    </RecoilRoot>
   ),
 };
