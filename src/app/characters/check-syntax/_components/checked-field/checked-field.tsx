@@ -66,7 +66,7 @@ export const CheckedField = () => {
                     <span className="w-16 flex-shrink-0 bg-green-200 text-center">
                       {line}
                     </span>
-                    <p>&nbsp;{text}</p>
+                    <p className="break-all">{text}</p>
                   </h3>
                 );
               }
@@ -78,7 +78,7 @@ export const CheckedField = () => {
                         <span className="-my-2 w-16 flex-shrink-0 bg-red-200 text-center">
                           {line}
                         </span>
-                        <p className="text-left">&nbsp;{text}</p>
+                        <p className="break-all text-left">{text}</p>
                       </div>
                     </AccordionButton>
                   </h3>
@@ -90,7 +90,9 @@ export const CheckedField = () => {
                           key={`${message}_${idx}`}
                         >
                           <span className="-my-2 w-16 flex-shrink-0 bg-red-200 text-center" />
-                          <span className="text-sm">{message}</span>
+                          <span className="break-all text-sm">
+                            {message}
+                          </span>
                         </div>
                       );
                     })}
