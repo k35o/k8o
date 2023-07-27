@@ -15,7 +15,7 @@ export const AccordionItem: FC<
         mutableSnapshot.set(itemIdState, id);
       }}
     >
-      <div className="border-b">{children}</div>
+      <div className="border-t last:border-b">{children}</div>
     </RecoilRoot>
   );
 };
