@@ -29,9 +29,9 @@ export const AccordionButton: FC<PropsWithChildren<{}>> = ({
     >
       {children}
       {open ? (
-        <ChevronUpIcon className="h-4 w-4" />
+        <ChevronUpIcon className="h-4 w-4 flex-shrink-0" />
       ) : (
-        <ChevronDownIcon className="h-4 w-4" />
+        <ChevronDownIcon className="h-4 w-4 flex-shrink-0" />
       )}
     </button>
   );
