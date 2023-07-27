@@ -1,17 +1,9 @@
 import { RECOIL_KEYS } from '@/constants';
-import { atom, selector, useRecoilState } from 'recoil';
+import { atom, useRecoilState } from 'recoil';
 
 export const textState = atom<string>({
   key: RECOIL_KEYS.CHARACTERS_CHECK_SYNTAX_TEXT,
   default: '',
-});
-
-export const separetedTextState = selector<string[]>({
-  key: RECOIL_KEYS.CHARACTERS_CHECK_SYNTAX_SEPARATED_TEXT,
-  get: ({ get }) => {
-    const text = get(textState);
-    return text.split('\n');
-  },
 });
 
 export const useTextField = () => {
