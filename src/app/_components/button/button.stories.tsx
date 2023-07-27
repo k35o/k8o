@@ -61,3 +61,16 @@ export const Small: Story = {
     return <Button {...props}>ボタン</Button>;
   },
 };
+
+export const Disabled: Story = {
+  args: {
+    type: 'button',
+    disabled: true,
+    onClick: () => {
+      console.log('clicked');
+    },
+  },
+  render: (props) => {
+    return <Button {...props}>ボタン</Button>;
+  },
+};

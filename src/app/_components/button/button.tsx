@@ -5,6 +5,7 @@ export const Button: FC<
   PropsWithChildren<{
     type?: 'button' | 'submit';
     size?: 'sm' | 'md' | 'lg';
+    disabled?: boolean;
     fullWidth?: boolean;
     onClick: ReactEventHandler<HTMLButtonElement>;
   }>
@@ -12,6 +13,7 @@ export const Button: FC<
   children,
   type = 'button',
   size = 'md',
+  disabled = false,
   fullWidth = false,
   onClick,
 }) => {
@@ -27,7 +29,10 @@ export const Button: FC<
         size === 'md' && 'text-md px-4 py-2',
         size === 'lg' && 'px-6 py-3 text-lg',
         fullWidth && 'w-full',
+        disabled &&
+          'cursor-not-allowed opacity-50 hover:bg-teal-400 active:bg-teal-400',
       )}
+      disabled={disabled}
       onClick={onClick}
     >
       {children}

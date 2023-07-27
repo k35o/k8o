@@ -18,25 +18,28 @@ type Result = Record<number, string[]>;
 export const CheckedField = () => {
   const [resultMessages, setResultMessages] = useState<Result>([]);
   const [resultText, setResultText] = useState<string[]>([]);
+  const [isMutating, setIsMutating] = useState(false);
   const text = useRecoilValue(textState);
 
   const handleCheck = async () => {
-    const res = await checkJapaneseSyntax({ text });
-    console.log(res);
-    setResultText(res.text.split('\n'));
-    setResultMessages(
-      res.msgs.reduce((acc: Result, cur) => {
-        const line = cur.line;
-        return {
-          ...acc,
-          [line]: [...(acc[line] ?? []), cur.message],
-        };
-      }, []),
-    );
+    setIsMutating(true);
+    checkJapaneseSyntax({ text }).then((res) => {
+      setResultText(res.text.split('\n'));
+      setResultMessages(
+        res.msgs.reduce((acc: Result, cur) => {
+          const line = cur.line;
+          return {
+            ...acc,
+            [line]: [...(acc[line] ?? []), cur.message],
+          };
+        }, []),
+      );
+      setIsMutating(false);
+    });
   };
   return (
     <>
-      <Button onClick={handleCheck} fullWidth>
+      <Button onClick={handleCheck} fullWidth disabled={isMutating}>
         チェック
       </Button>
       {resultText.length > 0 && (
