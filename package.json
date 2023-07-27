@@ -40,18 +40,18 @@
     "typescript": "5.1.6"
   },
   "devDependencies": {
-    "@storybook/addon-a11y": "^7.0.27",
-    "@storybook/addon-essentials": "^7.0.27",
-    "@storybook/addon-interactions": "^7.0.27",
-    "@storybook/addon-links": "^7.0.27",
-    "@storybook/addon-mdx-gfm": "^7.0.27",
-    "@storybook/blocks": "^7.0.27",
-    "@storybook/nextjs": "^7.0.27",
-    "@storybook/react": "^7.0.27",
+    "@storybook/addon-a11y": "^7.1.1",
+    "@storybook/addon-essentials": "^7.1.1",
+    "@storybook/addon-interactions": "^7.1.1",
+    "@storybook/addon-links": "^7.1.1",
+    "@storybook/addon-mdx-gfm": "^7.1.1",
+    "@storybook/blocks": "^7.1.1",
+    "@storybook/nextjs": "^7.1.1",
+    "@storybook/react": "^7.1.1",
     "@storybook/testing-library": "^0.2.0",
     "chromatic": "^6.19.9",
-    "eslint-plugin-storybook": "^0.6.12",
-    "storybook": "^7.0.27"
+    "eslint-plugin-storybook": "^0.6.13",
+    "storybook": "^7.1.1"
   },
   "volta": {
     "node": "20.5.0",
