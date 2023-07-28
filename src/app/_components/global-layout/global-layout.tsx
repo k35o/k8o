@@ -1,6 +1,8 @@
 import Link from 'next/link';
 import { FC, ReactNode } from 'react';
 import { Heading } from '../heading';
+import { GithubMark } from '../icons';
+import { Anchor } from '../anchor';
 
 export const GlobalLayout: FC<{ children: ReactNode }> = ({
   children,
@@ -8,11 +10,14 @@ export const GlobalLayout: FC<{ children: ReactNode }> = ({
   //　k8oというアプリのヘッダーをtailwindcssで作成する
   return (
     <div className="flex min-h-screen flex-col">
-      <header className="flex items-center justify-center p-4">
-        <div className="w-full max-w-4xl">
+      <header className="flex items-center p-4">
+        <div className="flex w-full max-w-4xl items-center justify-between">
           <Link href="/">
             <Heading type="h1">k8o</Heading>
           </Link>
+          <Anchor href="https://github.com/k35o/k8o">
+            <GithubMark className="h-8 w-8" />
+          </Anchor>
         </div>
       </header>
       <main className="flex grow justify-center bg-slate-300">
