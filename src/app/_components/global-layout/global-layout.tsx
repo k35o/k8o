@@ -7,10 +7,9 @@ import { Anchor } from '../anchor';
 export const GlobalLayout: FC<{ children: ReactNode }> = ({
   children,
 }) => {
-  //　k8oというアプリのヘッダーをtailwindcssで作成する
   return (
     <div className="flex min-h-screen flex-col">
-      <header className="flex items-center p-4">
+      <header className="flex items-center justify-center p-4">
         <div className="flex w-full max-w-4xl items-center justify-between">
           <Link href="/">
             <Heading type="h1">k8o</Heading>
