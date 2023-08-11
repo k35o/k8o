@@ -2,7 +2,7 @@
 const config = {
   printWidth: 70,
   singleQuote: true,
-  plugins: [require("prettier-plugin-tailwindcss")],
+  plugins: [import("prettier-plugin-tailwindcss")],
 };
 
-module.exports = config;
+export default config;

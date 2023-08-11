@@ -9,7 +9,7 @@ import { Qiita } from '../_components/icons/qiita';
 
 export default function Page() {
   return (
-    <div className="flex flex-col items-center gap-8 bg-white rounded-lg h-full mt-2 p-8">
+    <div className="mt-2 flex h-full flex-col items-center gap-8 rounded-lg bg-white p-8">
       <Image
         className="rounded-full"
         src={k8o}
