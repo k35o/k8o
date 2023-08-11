@@ -10,7 +10,7 @@ export const GlobalLayout: FC<{ children: ReactNode }> = ({
   return (
     <div className="flex min-h-screen flex-col">
       <header className="flex items-center justify-center p-4">
-        <div className="flex w-full max-w-4xl items-center justify-between">
+        <div className="flex w-full max-w-4xl items-center justify-between px-4">
           <Link href="/">
             <Heading type="h1">k8o</Heading>
           </Link>
