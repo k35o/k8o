@@ -42,7 +42,7 @@
     "@types/mdx": "^2.0.7",
     "@types/node": "20.5.8",
     "@types/react": "18.2.21",
-    "chromatic": "^6.22.0",
+    "chromatic": "^6.24.1",
     "eslint": "8.48.0",
     "eslint-plugin-storybook": "^0.6.13",
     "postcss": "8.4.29",
