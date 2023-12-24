@@ -34,7 +34,7 @@
     "@storybook/react": "^7.6.6",
     "@storybook/testing-library": "^0.2.2",
     "@types/mdx": "^2.0.10",
-    "@types/node": "20.5.8",
+    "@types/node": "20.10.5",
     "@types/react": "18.2.45",
     "@types/react-dom": "18.2.18",
     "autoprefixer": "10.4.16",
@@ -51,7 +51,7 @@
     "shiki": "^0.14.4",
     "storybook": "^7.6.6",
     "tailwindcss": "3.4.0",
-    "typescript": "5.2.2"
+    "typescript": "5.3.3"
   },
   "volta": {
     "node": "21.5.0",
