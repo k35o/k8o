@@ -18,8 +18,8 @@ dependencies:
     specifier: ^14.0.4
     version: 14.0.4(@mdx-js/loader@3.0.0)(@mdx-js/react@3.0.0)
   '@vercel/analytics':
-    specifier: ^1.0.2
-    version: 1.0.2
+    specifier: ^1.1.1
+    version: 1.1.1
   clsx:
     specifier: ^2.0.0
     version: 2.0.0
@@ -4441,8 +4441,10 @@ packages:
   /@ungap/structured-clone@1.2.0:
     resolution: {integrity: sha512-zuVdFrMJiuCDQUMCzQaD6KL28MjnqqN8XnAqiEq9PNm/hCPTSGfrXCOfwj1ow4LFb/tNymJPwsNbVePc1xFqrQ==}
 
-  /@vercel/analytics@1.0.2:
-    resolution: {integrity: sha512-BZFxVrv24VbNNl5xMxqUojQIegEeXMI6rX3rg1uVLYUEXsuKNBSAEQf4BWEcjQDp/8aYJOj6m8V4PUA3x/cxgg==}
+  /@vercel/analytics@1.1.1:
+    resolution: {integrity: sha512-+NqgNmSabg3IFfxYhrWCfB/H+RCUOCR5ExRudNG2+pcRehq628DJB5e1u1xqwpLtn4pAYii4D98w7kofORAGQA==}
+    dependencies:
+      server-only: 0.0.1
     dev: false
 
   /@webassemblyjs/ast@1.11.6:
@@ -11102,6 +11104,10 @@ packages:
     transitivePeerDependencies:
       - supports-color
     dev: true
+
+  /server-only@0.0.1:
+    resolution: {integrity: sha512-qepMx2JxAa5jjfzxG79yPPq+8BuFToHd1hm7kI+Z4zAq1ftQiP7HcxMhDDItrbtwVeLg/cY2JnKnrcFkmiswNA==}
+    dev: false
 
   /set-function-name@2.0.1:
     resolution: {integrity: sha512-tMNCiqYVkXIZgc2Hnoy2IvC/f8ezc5koaRFkCjrpWzGpCd3qbZXPzVy9MAZzK1ch/X0jvSkojys3oqJN0qCmdA==}
