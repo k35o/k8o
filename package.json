@@ -13,9 +13,9 @@
   },
   "dependencies": {
     "@heroicons/react": "^2.0.18",
-    "@mdx-js/loader": "^2.3.0",
-    "@mdx-js/react": "^2.3.0",
-    "@next/mdx": "^13.4.19",
+    "@mdx-js/loader": "^3.0.0",
+    "@mdx-js/react": "^3.0.0",
+    "@next/mdx": "^14.0.4",
     "@vercel/analytics": "^1.0.2",
     "clsx": "^2.0.0",
     "next": "13.4.19",
@@ -47,8 +47,8 @@
     "postcss": "8.4.32",
     "prettier": "^3.1.1",
     "prettier-plugin-tailwindcss": "^0.5.9",
-    "rehype-pretty-code": "^0.10.1",
-    "shiki": "^0.14.4",
+    "rehype-pretty-code": "^0.12.3",
+    "shiki": "^0.14.7",
     "storybook": "^7.6.6",
     "tailwindcss": "3.4.0",
     "typescript": "5.3.3"
