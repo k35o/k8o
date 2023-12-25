@@ -1,16 +1,9 @@
 import { TextField } from './_components/text-field';
-import { TextLength } from './_components/text-length';
 
 export default function Counter() {
   return (
-    <div>
+    <section>
       <TextField />
-      <div className="flex gap-2">
-        <p>文字数：</p>
-        <p>
-          <TextLength />
-        </p>
-      </div>
       <div className="mt-4 text-right">
         <p className="text-sm text-gray-600">
           ※書記素単位に分解して文字数を計測しています
@@ -19,6 +12,6 @@ export default function Counter() {
           ※ブラウザによってユニコードのコードポイント単位での計測になります
         </p>
       </div>
-    </div>
+    </section>
   );
 }
