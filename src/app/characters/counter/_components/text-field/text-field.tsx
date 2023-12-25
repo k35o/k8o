@@ -11,18 +11,18 @@ export const TextField = () => {
 
   return (
     <>
-    <Textarea
-      value={text}
-      onChange={handleTextChange}
-      placeholder="ここに文字列を入力してください"
-      rows={5}
-    />
-    <div className="flex gap-2">
-      <p>文字数：</p>
-      <p>
-        <TextLength text={deferredText} />
-      </p>
-    </div>
+      <Textarea
+        value={text}
+        onChange={handleTextChange}
+        placeholder="ここに文字列を入力してください"
+        rows={5}
+      />
+      <div className="flex gap-2">
+        <p>文字数：</p>
+        <p>
+          <TextLength text={deferredText} />
+        </p>
+      </div>
     </>
   );
 };
