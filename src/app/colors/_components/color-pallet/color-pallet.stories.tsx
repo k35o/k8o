@@ -14,6 +14,6 @@ type Story = StoryObj<typeof ColorPallet>;
 export const Primary: Story = {
   render: () => {
     const [color, setColor] = useState('#000000');
-    return <ColorPallet color={color} setColor={setColor} />;
+    return <ColorPallet label='デモ' color={color} setColor={setColor} />;
   }
 };
