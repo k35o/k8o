@@ -18,6 +18,12 @@ export default function Home() {
         description="入力した数値の進数変換など、いくつかの変換処理を提供します。"
       />
       <AppCard
+        link="/colors"
+        emotion="🎨"
+        title="Colors"
+        description="コントラスト比など、色にまつわる機能を提供します。"
+      />
+      <AppCard
         link="/blog"
         emotion="📕"
         title="Blog"
