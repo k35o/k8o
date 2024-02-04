@@ -82,7 +82,7 @@ const Table: FC<TableProps> = ({
       </thead>
       <tbody>
         <tr className="h-16">
-          <td className="text-2xl">
+          <td className="text-2xl px-2">
             {isInvalidAAContrstLarge ? (
               <p className="text-center font-bold text-red-600">NG</p>
             ) : (
@@ -91,7 +91,7 @@ const Table: FC<TableProps> = ({
               </p>
             )}
           </td>
-          <td className="text-2xl">
+          <td className="text-2xl px-2">
             {isInvalidAAAContrstLarge ? (
               <p className="text-center font-bold text-red-600">NG</p>
             ) : (
@@ -111,7 +111,7 @@ const Table: FC<TableProps> = ({
           </td>
         </tr>
         <tr className="h-16">
-          <td className="text-2xl">
+          <td className="text-2xl px-2">
             {isInvalidAAContrstLarge ? (
               <p className="text-center font-bold text-red-600">NG</p>
             ) : (
@@ -120,7 +120,7 @@ const Table: FC<TableProps> = ({
               </p>
             )}
           </td>
-          <td className="text-2xl">
+          <td className="text-2xl px-2">
             {isInvalidAAAContrstLarge ? (
               <p className="text-center font-bold text-red-600">NG</p>
             ) : (
@@ -140,7 +140,7 @@ const Table: FC<TableProps> = ({
           </td>
         </tr>
         <tr className="h-16">
-          <td className="text-2xl">
+          <td className="text-2xl px-2">
             {isInvalidAAContrstSmall ? (
               <p className="text-center font-bold text-red-600">NG</p>
             ) : (
@@ -149,7 +149,7 @@ const Table: FC<TableProps> = ({
               </p>
             )}
           </td>
-          <td className="text-2xl">
+          <td className="text-2xl px-2">
             {isInvalidAAAContrstSmall ? (
               <p className="text-center font-bold text-red-600">NG</p>
             ) : (
@@ -169,7 +169,7 @@ const Table: FC<TableProps> = ({
           </td>
         </tr>
         <tr className="h-16">
-          <td className="text-2xl">
+          <td className="text-2xl px-2">
             {isInvalidAAContrstSmall ? (
               <p className="text-center font-bold text-red-600">NG</p>
             ) : (
@@ -178,7 +178,7 @@ const Table: FC<TableProps> = ({
               </p>
             )}
           </td>
-          <td className="text-2xl">
+          <td className="text-2xl px-2">
             {isInvalidAAAContrstLarge ? (
               <p className="text-center font-bold text-red-600">NG</p>
             ) : (
