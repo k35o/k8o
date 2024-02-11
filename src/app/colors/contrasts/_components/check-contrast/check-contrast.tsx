@@ -15,7 +15,7 @@ export const CheckContrast: FC = () => {
   const isInvalidAAAContrstSmall = contrast < 4.5;
 
   return (
-    <>
+    <div className="flex flex-col gap-6">
       <div className="grid grid-cols-2 gap-4">
         <ColorPallet
           label="背景色"
@@ -39,6 +39,6 @@ export const CheckContrast: FC = () => {
           baseColor={baseColor}
         />
       </div>
-    </>
+    </div>
   );
 };
