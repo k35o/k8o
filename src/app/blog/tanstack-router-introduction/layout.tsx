@@ -16,7 +16,7 @@ export default function Layout({
       <Heading type="h2">
         Reactの新しいルーティングライブラリ、TanStackRouterを学ぶ
       </Heading>
-      <article className="rounded-lg bg-white px-10 py-14 pt-4">
+      <article className="rounded-lg bg-white px-1 py-14 pt-4 sm:px-10">
         {children}
       </article>
     </div>
