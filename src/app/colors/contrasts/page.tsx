@@ -1,44 +1,9 @@
-'use client';
-
-import { useState } from 'react';
-import { ColorPallet } from '../_components/color-pallet/color-pallet';
-import { calcContrast } from './_utils/calc_contrast';
-import { ResultTable } from './_components/result-table';
+import { CheckContrast } from './_components/check-contrast';
 
 export default function Page() {
-  const [baseColor, setBaseColor] = useState('#000000');
-  const [compareColor, setCompareColor] = useState('#ffffff');
-  const contrast = calcContrast(baseColor, compareColor);
-  const isInvalidAAContrstLarge = contrast < 4.5;
-  const isInvalidAAContrstSmall = contrast < 3;
-  const isInvalidAAAContrstLarge = contrast < 7;
-  const isInvalidAAAContrstSmall = contrast < 4.5;
-
   return (
     <section className="flex flex-col gap-6">
-      <div className="grid grid-cols-2 gap-4">
-        <ColorPallet
-          label="背景色"
-          color={baseColor}
-          setColor={setBaseColor}
-        />
-        <ColorPallet
-          label="文字色"
-          color={compareColor}
-          setColor={setCompareColor}
-        />
-      </div>
-      <p>入力した色のコントラスト比は{contrast.toFixed(2)}:1です。</p>
-      <div className="rounded-md bg-white p-4">
-        <ResultTable
-          isInvalidAAContrstLarge={isInvalidAAContrstLarge}
-          isInvalidAAAContrstLarge={isInvalidAAAContrstLarge}
-          isInvalidAAContrstSmall={isInvalidAAContrstSmall}
-          isInvalidAAAContrstSmall={isInvalidAAAContrstSmall}
-          compareColor={compareColor}
-          baseColor={baseColor}
-        />
-      </div>
+      <CheckContrast />
       <div className="w-full rounded-md border-2 border-gray-700 p-4">
         <p>
           WCAG
