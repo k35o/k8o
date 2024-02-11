@@ -1,8 +1,9 @@
 'use client';
 
-import { FC, useState } from 'react';
+import { useState } from 'react';
 import { ColorPallet } from '../_components/color-pallet/color-pallet';
 import { calcContrast } from './_utils/calc_contrast';
+import { ResultTable } from './_components/result-table';
 
 export default function Page() {
   const [baseColor, setBaseColor] = useState('#000000');
@@ -29,7 +30,7 @@ export default function Page() {
       </div>
       <p>入力した色のコントラスト比は{contrast.toFixed(2)}:1です。</p>
       <div className="rounded-md bg-white p-4">
-        <Table
+        <ResultTable
           isInvalidAAContrstLarge={isInvalidAAContrstLarge}
           isInvalidAAAContrstLarge={isInvalidAAAContrstLarge}
           isInvalidAAContrstSmall={isInvalidAAContrstSmall}
@@ -53,151 +54,3 @@ export default function Page() {
     </section>
   );
 }
-
-type TableProps = {
-  isInvalidAAContrstLarge: boolean;
-  isInvalidAAAContrstLarge: boolean;
-  isInvalidAAContrstSmall: boolean;
-  isInvalidAAAContrstSmall: boolean;
-  compareColor: string;
-  baseColor: string;
-};
-
-const Table: FC<TableProps> = ({
-  isInvalidAAContrstLarge,
-  isInvalidAAAContrstLarge,
-  isInvalidAAContrstSmall,
-  isInvalidAAAContrstSmall,
-  compareColor,
-  baseColor,
-}) => {
-  return (
-    <table className="w-full">
-      <thead>
-        <tr>
-          <th>AA基準</th>
-          <th>AAA基準</th>
-          <th>テキスト</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr className="h-16">
-          <td className="text-2xl px-2">
-            {isInvalidAAContrstLarge ? (
-              <p className="text-center font-bold text-red-600">NG</p>
-            ) : (
-              <p className="text-center font-bold text-green-600">
-                OK
-              </p>
-            )}
-          </td>
-          <td className="text-2xl px-2">
-            {isInvalidAAAContrstLarge ? (
-              <p className="text-center font-bold text-red-600">NG</p>
-            ) : (
-              <p className="text-center font-bold text-green-600">
-                OK
-              </p>
-            )}
-          </td>
-          <td
-            className="rounded-t-md px-4  text-[18.66px] font-bold"
-            style={{
-              color: compareColor,
-              backgroundColor: baseColor,
-            }}
-          >
-            大文字の太字のテキスト（18.66px bold）
-          </td>
-        </tr>
-        <tr className="h-16">
-          <td className="text-2xl px-2">
-            {isInvalidAAContrstLarge ? (
-              <p className="text-center font-bold text-red-600">NG</p>
-            ) : (
-              <p className="text-center font-bold text-green-600">
-                OK
-              </p>
-            )}
-          </td>
-          <td className="text-2xl px-2">
-            {isInvalidAAAContrstLarge ? (
-              <p className="text-center font-bold text-red-600">NG</p>
-            ) : (
-              <p className="text-center font-bold text-green-600">
-                OK
-              </p>
-            )}
-          </td>
-          <td
-            className="px-4 text-[24px]"
-            style={{
-              color: compareColor,
-              backgroundColor: baseColor,
-            }}
-          >
-            大文字のテキスト（24px）
-          </td>
-        </tr>
-        <tr className="h-16">
-          <td className="text-2xl px-2">
-            {isInvalidAAContrstSmall ? (
-              <p className="text-center font-bold text-red-600">NG</p>
-            ) : (
-              <p className="text-center font-bold text-green-600">
-                OK
-              </p>
-            )}
-          </td>
-          <td className="text-2xl px-2">
-            {isInvalidAAAContrstSmall ? (
-              <p className="text-center font-bold text-red-600">NG</p>
-            ) : (
-              <p className="text-center font-bold text-green-600">
-                OK
-              </p>
-            )}
-          </td>
-          <td
-            className="px-4 text-[16px] font-bold"
-            style={{
-              color: compareColor,
-              backgroundColor: baseColor,
-            }}
-          >
-            小文字の太字のテキスト（16px bold）
-          </td>
-        </tr>
-        <tr className="h-16">
-          <td className="text-2xl px-2">
-            {isInvalidAAContrstSmall ? (
-              <p className="text-center font-bold text-red-600">NG</p>
-            ) : (
-              <p className="text-center font-bold text-green-600">
-                OK
-              </p>
-            )}
-          </td>
-          <td className="text-2xl px-2">
-            {isInvalidAAAContrstLarge ? (
-              <p className="text-center font-bold text-red-600">NG</p>
-            ) : (
-              <p className="text-center font-bold text-green-600">
-                OK
-              </p>
-            )}
-          </td>
-          <td
-            className="rounded-b-md px-4 text-[18.66px] font-bold"
-            style={{
-              color: compareColor,
-              backgroundColor: baseColor,
-            }}
-          >
-            小文字のテキスト（18.66px）
-          </td>
-        </tr>
-      </tbody>
-    </table>
-  );
-};
