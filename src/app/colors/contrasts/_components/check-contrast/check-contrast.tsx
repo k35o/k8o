@@ -3,7 +3,7 @@
 import { FC, useState } from 'react';
 import { calcContrast } from '../../_utils/calc_contrast';
 import { ResultTable } from '../result-table';
-import { ColorPallet } from '@/app/colors/_components/color-pallet/color-pallet';
+import { ColorPallet } from '@/app/colors/_components/color-pallet';
 
 export const CheckContrast: FC = () => {
   const [baseColor, setBaseColor] = useState('#000000');
