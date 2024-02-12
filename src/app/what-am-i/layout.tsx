@@ -2,7 +2,17 @@ import { Heading } from '../_components/heading';
 
 export const metadata = {
   title: 'What am I?',
-  description: 'このアプリの制作者の紹介します。',
+  description: 'k8oの制作者の紹介します。',
+  openGraph: {
+    title: 'What am I?',
+    description: 'k8oの制作者の紹介します。',
+    url: 'https://k8o.vercel.app/what-am-i',
+  },
+  twitter: {
+    title: 'What am I?',
+    card: 'summary',
+    description: 'k8oの制作者の紹介します。',
+  },
 };
 
 export default function Layout({

@@ -4,6 +4,20 @@ import { Metadata } from 'next';
 export const metadata: Metadata = {
   title: 'Reactの新しいルーティングライブラリ、TanStackRouterを学ぶ',
   category: 'TanStackRouter',
+  openGraph: {
+    title:
+      'Reactの新しいルーティングライブラリ、TanStackRouterを学ぶ',
+    description:
+      'Reactの新しいルーティングライブラリ、TanStackRouterを学ぶ',
+    url: 'https://k8o.vercel.app/blog/tanstack-router-introduction',
+  },
+  twitter: {
+    title:
+      'Reactの新しいルーティングライブラリ、TanStackRouterを学ぶ',
+    card: 'summary',
+    description:
+      'Reactの新しいルーティングライブラリ、TanStackRouterを学ぶ',
+  },
 };
 
 export default function Layout({

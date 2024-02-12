@@ -11,6 +11,16 @@ const font = M_PLUS_2({
 export const metadata = {
   title: 'k8o',
   description: 'k8o portal',
+  openGraph: {
+    title: 'k8o',
+    description: 'k8oのトップページ',
+    url: 'https://k8o.vercel.app',
+  },
+  twitter: {
+    title: 'k8o',
+    card: 'summary',
+    description: 'k8oのトップページ',
+  },
 };
 
 export default function RootLayout({

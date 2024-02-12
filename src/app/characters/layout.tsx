@@ -5,6 +5,18 @@ export const metadata = {
   title: 'Characters',
   description:
     '入力した文字の検索など、文字に対する操作を提供します。',
+  openGraph: {
+    title: 'Characters',
+    description:
+      '入力した文字の検索など、文字に対する操作を提供します。',
+    url: 'https://k8o.vercel.app/characters',
+  },
+  twitter: {
+    title: 'Characters',
+    card: 'summary',
+    description:
+      '入力した文字の検索など、文字に対する操作を提供します。',
+  },
 };
 
 export default function Layout({

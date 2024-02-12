@@ -4,6 +4,18 @@ export const metadata = {
   title: 'Converter',
   description:
     '数値の基数の変換やカラーコードの変換など、便利な変換処理を提供します。',
+  openGraph: {
+    title: 'Converter',
+    description:
+      '数値の基数の変換やカラーコードの変換など、便利な変換処理を提供します。',
+    url: 'https://k8o.vercel.app/converter',
+  },
+  twitter: {
+    title: 'Converter',
+    card: 'summary',
+    description:
+      '数値の基数の変換やカラーコードの変換など、便利な変換処理を提供します。',
+  },
 };
 
 export default function Layout({

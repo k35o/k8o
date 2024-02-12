@@ -1,3 +1,7 @@
+import { Image } from './../_components/image';
+import devTool from './_images/devtool.png';
+import icon from './_images/icon.png';
+
 ## はじめに
 
 React で開発する時、どのようにルーティングを実装していますか？[Next.js](https://nextjs.org/)や[Remix](https://remix.run/)などのフレームワークを用いて開発するときはフレームワークに実装されたルーティング利用し、フレームワークを利用しないときは[ReactRouter](https://reactrouter.com/en/main)を利用する方法がスタンダードだと思います。
@@ -66,9 +70,16 @@ const rootRoute = new RootRoute({
 ```
 
 このように配置した場合は
-![スクリーンショット 2023-04-20 22.06.12.png](https://qiita-image-store.s3.ap-northeast-1.amazonaws.com/0/591069/680f5d1a-76a9-3369-4f6f-a745e6a2527a.png)
+
+<Image
+  src={icon}
+  alt="大文字の黒色でTANSTACK、改行して大文字で緑色のグラデーションでROUTERと書かれたアイコン"
+/>
 上記のようなアイコンが左下に常に表示され、クリックすることで開発ツールが開かれます。
-![スクリーンショット 2023-04-20 22.06.46.png](https://qiita-image-store.s3.ap-northeast-1.amazonaws.com/0/591069/3b4abc46-9332-59ca-e31d-4f23bc08eb49.png)
+<Image
+  src={devTool}
+  alt="TanStackRouterの開発ツール 3つの部分に分かれていて特定のメソッドの一覧やマッチしたルート、サーチパラメータなどが記述されている"
+/>
 ページごとの状況や動作を細かく確認できるのでとても便利です。
 
 そのほかにもオプションを props として渡すことでアイコンの配置場所やデフォルトの振る舞いを調整できます。
