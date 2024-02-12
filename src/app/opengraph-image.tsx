@@ -1,6 +1,4 @@
-import Image from 'next/image';
 import { ImageResponse } from 'next/og';
-import icon from './icon.png';
 
 export const runtime = 'edge';
 
@@ -27,7 +25,8 @@ export default async function OpenGraphImage() {
           justifyContent: 'center',
         }}
       >
-        <Image src={icon} alt="アイコン" />
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img src="./icon.png" alt="アイコン" />
         <p>k8o</p>
       </div>
     ),
