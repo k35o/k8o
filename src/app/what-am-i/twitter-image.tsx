@@ -26,7 +26,7 @@ export default async function TwitterImage() {
         }}
       >
         {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img src="./../icon.png" alt="アイコン" />
+        <img src="https://k8o.vercel.app/icon.png" alt="アイコン" />
         <p>What am I?</p>
       </div>
     ),
