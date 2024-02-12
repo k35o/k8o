@@ -31,7 +31,7 @@ export function useMDXComponents(
         )}
       </>
     ),
-    p: ({ children }) => <p className="leading-normal">{children}</p>,
+    p: ({ children }) => <p className="leading-normal my-2">{children}</p>,
     code: (props) => {
       if (typeof props.children === 'string') {
         return (
@@ -47,7 +47,7 @@ export function useMDXComponents(
       return (
         <pre
           {...rest}
-          className="my-4 overflow-x-auto rounded-xl bg-slate-900 p-4"
+          className="my-4 overflow-x-auto rounded-xl bg-slate-900 p-1 sm:p-4"
         >
           {children}
         </pre>
