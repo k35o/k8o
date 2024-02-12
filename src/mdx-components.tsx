@@ -31,17 +31,17 @@ export function useMDXComponents(
         )}
       </>
     ),
-    p: ({ children }) => <p className="leading-normal my-2 font-sx sm:font-base">{children}</p>,
+    p: ({ children }) => <p className="leading-normal my-2 text-sx sm:text-base">{children}</p>,
     code: (props) => {
       if (typeof props.children === 'string') {
         return (
           <code
             {...props}
-            className="m-1 rounded-lg bg-slate-200 px-1 font-xs sm:font-base"
+            className="m-1 rounded-lg bg-slate-200 px-1 text-xs sm:text-base"
           />
         );
       }
-      return <code {...props} className="p-1 font-xs sm:font-base" />;
+      return <code {...props} className="p-1 text-xs sm:text-base" />;
     },
     pre: ({ children, ...rest }) => {
       return (
