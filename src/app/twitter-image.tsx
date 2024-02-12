@@ -32,7 +32,6 @@ export default async function TwitterImage() {
           height={256}
           alt="アイコン"
         />
-        <p>k8o</p>
       </div>
     ),
     {
