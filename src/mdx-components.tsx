@@ -31,7 +31,7 @@ export function useMDXComponents(
         )}
       </>
     ),
-    p: ({ children }) => <p className="leading-normal my-2 text-sx sm:text-base">{children}</p>,
+    p: ({ children }) => <p className="leading-normal my-2 text-xs sm:text-base">{children}</p>,
     code: (props) => {
       if (typeof props.children === 'string') {
         return (
