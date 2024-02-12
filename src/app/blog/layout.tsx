@@ -4,6 +4,16 @@ import { Heading } from '../_components/heading';
 export const metadata = {
   title: 'Blog',
   description: 'k8oのブログです。',
+  openGraph: {
+    title: 'Blog',
+    description: 'k8oのブログです。',
+    url: 'https://k8o.vercel.app/blog',
+  },
+  twitter: {
+    title: 'Blog',
+    card: 'summary',
+    description: 'k8oのブログです。',
+  },
 };
 
 export default function Layout({

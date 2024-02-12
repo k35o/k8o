@@ -4,7 +4,7 @@ import icon from './../icon.png';
 
 export const runtime = 'edge';
 
-export const alt = 'what am i';
+export const alt = 'What am I?';
 export const size = {
   width: 500,
   height: 500,
@@ -28,7 +28,7 @@ export default async function OpenGraphImage() {
         }}
       >
         <Image src={icon} alt="アイコン" />
-        <p>what am i</p>
+        <p>What am I?</p>
       </div>
     ),
     {

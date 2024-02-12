@@ -3,6 +3,16 @@ import { Heading } from '@/app/_components/heading';
 export const metadata = {
   title: 'コントラスト比チェッカー',
   description: 'コントラスト比をチェックします',
+  openGraph: {
+    title: 'コントラスト比チェッカー',
+    description: 'コントラスト比をチェックします',
+    url: 'https://k8o.vercel.app/colors/contrasts',
+  },
+  twitter: {
+    title: 'コントラスト比チェッカー',
+    card: 'summary',
+    description: 'コントラスト比をチェックします',
+  },
 };
 
 export default function Layout({
