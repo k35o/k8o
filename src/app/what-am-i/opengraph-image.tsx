@@ -26,7 +26,12 @@ export default async function OpenGraphImage() {
         }}
       >
         {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img src="https://k8o.vercel.app/icon.png" alt="アイコン" />
+        <img
+          src="https://k8o.vercel.app/icon.png"
+          width={256}
+          height={256}
+          alt="アイコン"
+        />
         <p>What am I?</p>
       </div>
     ),
