@@ -1,7 +1,7 @@
 'use server';
 
 const JAPANESE_SYNTAX_CHECK_API =
-  'https://japanese-syntax-checker.vercel.app/api';
+  'https://japanese-syntax-checker.deno.dev/api';
 
 type Request = {
   text: string;
