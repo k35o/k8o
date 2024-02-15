@@ -42,6 +42,7 @@ export const checkJapaneseSyntax = async (
     },
   });
   if (!res.ok) {
+    console.error(res);
     throw new Error('Network response was not ok');
   }
   const json = await res.json();

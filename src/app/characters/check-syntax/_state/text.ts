@@ -1,5 +1,10 @@
 import { RECOIL_KEYS } from '@/constants';
-import { atom, useRecoilState, useRecoilValue } from 'recoil';
+import {
+  atom,
+  useRecoilState,
+  useRecoilValue,
+  useSetRecoilState,
+} from 'recoil';
 
 export const textState = atom<string>({
   key: RECOIL_KEYS.CHARACTERS_CHECK_SYNTAX_TEXT,
@@ -18,7 +23,7 @@ export const useTextField = () => {
 };
 
 export const resultTextState = atom<string[]>({
-  key: RECOIL_KEYS.CHARACTERS_CHECK_SYNTAX_TEXT,
+  key: RECOIL_KEYS.CHARACTERS_CHECK_SYNTAX_RESULT_TEXT,
   default: [],
 });
 
@@ -51,5 +56,15 @@ export const useStatus = ():
   return {
     isExecuted: true,
     hasError: true,
+  };
+};
+
+export const useResetResult = () => {
+  const setResultText = useSetRecoilState(resultTextState);
+  const setResultMessages = useSetRecoilState(resultMessagesState);
+
+  return () => {
+    setResultText([]);
+    setResultMessages({});
   };
 };
