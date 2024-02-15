@@ -1,6 +1,7 @@
 'use client';
 
 import { useStatus } from '../../_state/text';
+import { SyntaxFixer } from '../syntax-fixer';
 import { VerifiedSyntax } from '../verified-syntax';
 
 export const CheckedField = () => {
@@ -11,12 +12,6 @@ export const CheckedField = () => {
   }
 
   return (
-    <>
-      {status.hasError ? (
-        <div className="text-red-500">エラーがあります</div>
-      ) : (
-        <VerifiedSyntax />
-      )}
-    </>
+    <>{status.hasError ? <SyntaxFixer /> : <VerifiedSyntax />}</>
   );
 };
