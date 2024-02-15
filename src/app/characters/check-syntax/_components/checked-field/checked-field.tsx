@@ -23,19 +23,22 @@ export const CheckedField = () => {
 
   const handleCheck = async () => {
     setIsMutating(true);
-    checkJapaneseSyntax({ text }).then((res) => {
-      setResultText(res.text.split('\n'));
-      setResultMessages(
-        res.msgs.reduce((acc: Result, cur) => {
-          const line = cur.line;
-          return {
-            ...acc,
-            [line]: [...(acc[line] ?? []), cur.message],
-          };
-        }, []),
-      );
-      setIsMutating(false);
-    });
+    checkJapaneseSyntax({ text })
+      .then((res) => {
+        setResultText(res.text.split('\n'));
+        setResultMessages(
+          res.msgs.reduce((acc: Result, cur) => {
+            const line = cur.line;
+            return {
+              ...acc,
+              [line]: [...(acc[line] ?? []), cur.message],
+            };
+          }, []),
+        );
+      })
+      .finally(() => {
+        setIsMutating(false);
+      });
   };
   return (
     <>
