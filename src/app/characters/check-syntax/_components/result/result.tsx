@@ -35,9 +35,11 @@ export const Result: FC = () => {
             テキストをコピーする
           </Button>
         </div>
-        <p className="whitespace-pre-wrap text-wrap break-all">
-          {fixedText}
-        </p>
+        <div className="rounded-md border border-gray-700 px-3 py-2">
+          <p className="whitespace-pre-wrap text-wrap break-all">
+            {fixedText}
+          </p>
+        </div>
       </section>
     </div>
   );

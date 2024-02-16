@@ -83,7 +83,7 @@ const FixText: FC<{ count: number }> = ({ count }) => {
           <Heading id={`origin_${id}`} type="h4">
             原文
           </Heading>
-          <div className=" rounded-md border border-gray-700 px-3 py-2">
+          <div className="rounded-md border border-gray-700 px-3 py-2">
             <p className="text-wrap break-all">{resultText}</p>
           </div>
         </section>

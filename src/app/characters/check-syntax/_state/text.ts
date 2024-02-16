@@ -53,13 +53,14 @@ export const fixedTextState = selector<string>({
     const fixTexts = get(fixTextsState);
     return resultText.reduce((acc, text, index) => {
       const fixedText = fixTexts[index];
+      const separator = index === 0 ? '' : '\n';
       if (fixedText === undefined) {
-        return acc + '\n' + text;
+        return acc + separator + text;
       }
       if (fixedText === '') {
         return acc;
       }
-      return acc + '\n' + fixedText;
+      return acc + separator + fixedText;
     }, '');
   },
 });
