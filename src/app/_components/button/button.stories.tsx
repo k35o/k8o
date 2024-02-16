@@ -24,6 +24,19 @@ export const FullWidth: Story = {
   },
 };
 
+export const Outlined: Story = {
+  args: {
+    type: 'button',
+    variant: 'outlined',
+    onClick: () => {
+      console.log('clicked');
+    },
+  },
+  render: (props) => {
+    return <Button {...props}>ボタン</Button>;
+  },
+};
+
 export const Large: Story = {
   args: {
     type: 'button',
@@ -66,6 +79,19 @@ export const Small: Story = {
 export const Disabled: Story = {
   args: {
     type: 'button',
+    disabled: true,
+    onClick: () => {
+      console.log('clicked');
+    },
+  },
+  render: (props) => {
+    return <Button {...props}>ボタン</Button>;
+  },
+};
+export const DisabledOutlined: Story = {
+  args: {
+    type: 'button',
+    variant: 'outlined',
     disabled: true,
     onClick: () => {
       console.log('clicked');
