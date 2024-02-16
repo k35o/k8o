@@ -25,7 +25,7 @@ export const IconButton: FC<Props> = ({
         ${size === 'sm' && 'p-1'}
         ${size === 'md' && 'p-2'}
         ${size === 'lg' && 'p-3'}
-        ${disabled && 'cursor-not-allowed opacity-50'}
+        ${disabled && 'cursor-not-allowed opacity-50 hover:bg-white active:bg-white'}
       `}
       disabled={disabled}
       onClick={onClick}
