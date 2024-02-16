@@ -1,9 +1,10 @@
 'use client';
 
-import { FC } from 'react';
+import { FC, useId } from 'react';
 import {
   useInvalidCount,
   useInvalidResult,
+  useIsCheckResult,
   useResetResult,
   useSetFixTextsField,
 } from '../../_state/text';
@@ -26,11 +27,15 @@ export const SyntaxFixer: FC = () => {
       maxCount: invalidCount,
     });
   const resetResult = useResetResult();
+  const isCheckResult = useIsCheckResult();
 
   return (
     <div className="flex flex-col items-center justify-center gap-8 rounded-md bg-white p-10">
-      <div className="flex w-full">
+      <div className="flex w-full justify-between gap-4">
         <Button onClick={resetResult}>テキスト入力に戻る</Button>
+        <Button onClick={isCheckResult}>
+          修正した内容を確認する
+        </Button>
       </div>
       <div className="flex w-full items-center justify-evenly">
         <IconButton
@@ -59,9 +64,11 @@ export const SyntaxFixer: FC = () => {
 };
 
 const FixText: FC<{ count: number }> = ({ count }) => {
-  const { resultText, resultMessage } = useInvalidResult(count);
+  const id = useId();
+  const { resultText, resultMessage, resultIdx } =
+    useInvalidResult(count);
   const { fixText, handleFixTextChange } = useSetFixTextsField(
-    count,
+    resultIdx,
     resultText,
   );
 
@@ -69,14 +76,24 @@ const FixText: FC<{ count: number }> = ({ count }) => {
     <div>
       <Alert status="error" message={resultMessage} />
       <div className="mt-8 grid gap-4">
-        <section className="grid gap-2">
-          <Heading type="h4">原文</Heading>
+        <section
+          aria-labelledby={`origin_${id}`}
+          className="grid gap-2"
+        >
+          <Heading id={`origin_${id}`} type="h4">
+            原文
+          </Heading>
           <div className=" rounded-md border border-gray-700 px-3 py-2">
             <p className="text-wrap break-all">{resultText}</p>
           </div>
         </section>
-        <section className="grid gap-2 ">
-          <Heading type="h4">修正</Heading>
+        <section
+          aria-labelledby={`fixer_${id}`}
+          className="grid gap-2 "
+        >
+          <Heading id={`fixer_${id}`} type="h4">
+            テキストを修正
+          </Heading>
           <Textarea
             value={fixText}
             onChange={handleFixTextChange}

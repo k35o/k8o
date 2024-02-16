@@ -2,6 +2,7 @@ import { RECOIL_KEYS } from '@/constants';
 import { useState } from 'react';
 import {
   atom,
+  selector,
   useRecoilState,
   useRecoilValue,
   useSetRecoilState,
@@ -40,6 +41,29 @@ const fixTextsState = atom<Record<number, string>>({
   default: {},
 });
 
+const completeState = atom<boolean>({
+  key: RECOIL_KEYS.CHARACTERS_CHECK_SYNTAX_COMPLETE,
+  default: false,
+});
+
+export const fixedTextState = selector<string>({
+  key: RECOIL_KEYS.CHARACTERS_CHECK_SYNTAX_FIXED_TEXT,
+  get: ({ get }) => {
+    const resultText = get(resultTextState);
+    const fixTexts = get(fixTextsState);
+    return resultText.reduce((acc, text, index) => {
+      const fixedText = fixTexts[index];
+      if (fixedText === undefined) {
+        return acc + '\n' + text;
+      }
+      if (fixedText === '') {
+        return acc;
+      }
+      return acc + '\n' + fixedText;
+    }, '');
+  },
+});
+
 export const useSetFixTextsField = (
   count: number,
   originalText: string,
@@ -65,9 +89,11 @@ export const useSetFixTextsField = (
 
 export const useStatus = ():
   | { isExecuted: false }
-  | { isExecuted: true; hasError: boolean } => {
+  | { isExecuted: true; hasError: false }
+  | { isExecuted: true; hasError: true; isComplete: boolean } => {
   const resultText = useRecoilValue(resultTextState);
   const resultMessages = useRecoilValue(resultMessagesState);
+  const complete = useRecoilValue(completeState);
 
   if (resultText.length === 0) {
     return {
@@ -85,6 +111,7 @@ export const useStatus = ():
   return {
     isExecuted: true,
     hasError: true,
+    isComplete: complete,
   };
 };
 
@@ -99,7 +126,8 @@ export const useInvalidResult = (count: number) => {
   const resultMessages = useRecoilValue(resultMessagesState);
   const messagesKey = Number(Object.keys(resultMessages)[count - 1]);
 
-  const text = resultText[messagesKey - 1];
+  const resultIdx = messagesKey - 1;
+  const text = resultText[resultIdx];
   const message = resultMessages[messagesKey];
   if (text === undefined || message === undefined) {
     throw Error('Invalid result');
@@ -108,6 +136,23 @@ export const useInvalidResult = (count: number) => {
   return {
     resultText: text,
     resultMessage: message,
+    resultIdx,
+  };
+};
+
+export const useIsCheckResult = () => {
+  const setComplete = useSetRecoilState(completeState);
+
+  return () => {
+    setComplete(true);
+  };
+};
+
+export const useIsBackSyntaxFixer = () => {
+  const setComplete = useSetRecoilState(completeState);
+
+  return () => {
+    setComplete(false);
   };
 };
 
@@ -115,10 +160,12 @@ export const useResetResult = () => {
   const setResultText = useSetRecoilState(resultTextState);
   const setResultMessages = useSetRecoilState(resultMessagesState);
   const setFixTexts = useSetRecoilState(fixTextsState);
+  const setComplete = useSetRecoilState(completeState);
 
   return () => {
     setResultText([]);
     setResultMessages({});
     setFixTexts({});
+    setComplete(false);
   };
 };

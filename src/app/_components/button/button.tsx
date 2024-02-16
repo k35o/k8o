@@ -1,5 +1,10 @@
 import clsx from 'clsx';
-import { FC, PropsWithChildren, ReactEventHandler } from 'react';
+import {
+  FC,
+  PropsWithChildren,
+  ReactEventHandler,
+  ReactNode,
+} from 'react';
 
 export const Button: FC<
   PropsWithChildren<{
@@ -8,6 +13,7 @@ export const Button: FC<
     disabled?: boolean;
     fullWidth?: boolean;
     onClick: ReactEventHandler<HTMLButtonElement>;
+    endIcon?: ReactNode;
   }>
 > = ({
   children,
@@ -16,6 +22,7 @@ export const Button: FC<
   disabled = false,
   fullWidth = false,
   onClick,
+  endIcon,
 }) => {
   return (
     <button
@@ -31,11 +38,13 @@ export const Button: FC<
         fullWidth && 'w-full',
         disabled &&
           'cursor-not-allowed opacity-50 hover:bg-teal-400 active:bg-teal-400',
+        endIcon && 'flex items-center justify-between gap-2',
       )}
       disabled={disabled}
       onClick={onClick}
     >
       {children}
+      {endIcon}
     </button>
   );
 };

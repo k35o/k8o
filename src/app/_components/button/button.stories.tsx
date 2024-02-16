@@ -1,5 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import { Button } from './button';
+import { ClipboardIcon } from '@heroicons/react/24/solid';
 
 const meta: Meta<typeof Button> = {
   title: 'button',
@@ -69,6 +70,19 @@ export const Disabled: Story = {
     onClick: () => {
       console.log('clicked');
     },
+  },
+  render: (props) => {
+    return <Button {...props}>ボタン</Button>;
+  },
+};
+
+export const EndIcon: Story = {
+  args: {
+    type: 'button',
+    onClick: () => {
+      console.log('clicked');
+    },
+    endIcon: <ClipboardIcon className="h-6 w-6" />,
   },
   render: (props) => {
     return <Button {...props}>ボタン</Button>;

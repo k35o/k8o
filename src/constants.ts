@@ -9,4 +9,7 @@ export const RECOIL_KEYS = {
     'characters.checkSyntax.resultMessages',
   CHARACTERS_CHECK_SYNTAX_FIX_TEXTS:
     'characters.checkSyntax.fixTexts',
+  CHARACTERS_CHECK_SYNTAX_COMPLETE: 'characters.checkSyntax.complete',
+  CHARACTERS_CHECK_SYNTAX_FIXED_TEXT:
+    'characters.checkSyntax.fixedTet',
 };
