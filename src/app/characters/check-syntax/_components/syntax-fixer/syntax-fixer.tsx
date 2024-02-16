@@ -1,7 +1,8 @@
 'use client';
 
-import { FC, useId } from 'react';
+import { FC, Fragment, useId } from 'react';
 import {
+  resultTextState,
   useInvalidCount,
   useInvalidResult,
   useIsCheckResult,
@@ -13,11 +14,19 @@ import { IconButton } from '@/app/_components/icon-button';
 import {
   ChevronLeftIcon,
   ChevronRightIcon,
+  ClipboardIcon,
 } from '@heroicons/react/24/solid';
 import { useStep } from '@/app/_hooks/step';
 import { Alert } from '@/app/_components/alert';
 import { Heading } from '@/app/_components/heading';
 import { Textarea } from '@/app/_components/form/textarea';
+import {
+  Accordion,
+  AccordionButton,
+  AccordionItem,
+  AccordionPanel,
+} from '@/app/_components/accordion';
+import { useRecoilValue } from 'recoil';
 
 export const SyntaxFixer: FC = () => {
   const invalidCount = useInvalidCount();
@@ -65,6 +74,7 @@ export const SyntaxFixer: FC = () => {
 
 const FixText: FC<{ count: number }> = ({ count }) => {
   const id = useId();
+  const texts = useRecoilValue(resultTextState);
   const { resultText, resultMessage, resultIdx } =
     useInvalidResult(count);
   const { fixText, handleFixTextChange } = useSetFixTextsField(
@@ -77,17 +87,6 @@ const FixText: FC<{ count: number }> = ({ count }) => {
       <Alert status="error" message={resultMessage} />
       <div className="mt-8 grid gap-4">
         <section
-          aria-labelledby={`origin_${id}`}
-          className="grid gap-2"
-        >
-          <Heading id={`origin_${id}`} type="h4">
-            原文
-          </Heading>
-          <div className="rounded-md border border-gray-700 px-3 py-2">
-            <p className="text-wrap break-all">{resultText}</p>
-          </div>
-        </section>
-        <section
           aria-labelledby={`fixer_${id}`}
           className="grid gap-2 "
         >
@@ -99,6 +98,57 @@ const FixText: FC<{ count: number }> = ({ count }) => {
             onChange={handleFixTextChange}
             autoResize
           />
+        </section>
+        <section aria-labelledby={`all_${id}`} className="w-full">
+          <Accordion>
+            <AccordionItem>
+              <Heading type="h4">
+                <AccordionButton>
+                  <p id={`all_${id}`} className="text-lg">
+                    原文を確認する
+                  </p>
+                </AccordionButton>
+              </Heading>
+              <AccordionPanel>
+                <div className="relative p-3">
+                  <div className="absolute right-0">
+                    <IconButton
+                      label="テキストをコピーする"
+                      onClick={() =>
+                        navigator.clipboard.writeText(
+                          texts.join('\n'),
+                        )
+                      }
+                    >
+                      <ClipboardIcon className="h-6 w-6" />
+                    </IconButton>
+                  </div>
+                  <div>
+                    <p className="whitespace-pre-wrap text-wrap break-all">
+                      {texts.map((text, idx) => {
+                        const separator = idx === 0 ? '' : '\n';
+                        if (idx !== resultIdx) {
+                          return (
+                            <Fragment key={`${idx}_${text}`}>
+                              {text + separator}
+                            </Fragment>
+                          );
+                        }
+                        return (
+                          <span
+                            key={`${idx}_${text}`}
+                            className={'bg-infoLight'}
+                          >
+                            {text + separator}
+                          </span>
+                        );
+                      })}
+                    </p>
+                  </div>
+                </div>
+              </AccordionPanel>
+            </AccordionItem>
+          </Accordion>
         </section>
       </div>
     </div>

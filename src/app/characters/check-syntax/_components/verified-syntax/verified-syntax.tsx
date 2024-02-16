@@ -35,11 +35,11 @@ export const VerifiedSyntax: FC = () => {
       <div className="w-full">
         <Accordion>
           <AccordionItem>
-            <h3>
+            <h4>
               <AccordionButton>
                 <p className="text-lg">入力したテキストを確認する</p>
               </AccordionButton>
-            </h3>
+            </h4>
             <AccordionPanel>
               <div className="relative p-3">
                 <div className="absolute right-0">
@@ -52,7 +52,9 @@ export const VerifiedSyntax: FC = () => {
                     <ClipboardIcon className="h-6 w-6" />
                   </IconButton>
                 </div>
-                <p className="whitespace-pre-wrap">{text}</p>
+                <p className="whitespace-pre-wrap text-wrap break-all">
+                  {text}
+                </p>
               </div>
             </AccordionPanel>
           </AccordionItem>

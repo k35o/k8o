@@ -18,7 +18,8 @@ export const IconButton: FC<Props> = ({
     <button
       className={`
         flex items-center justify-center
-        rounded-full bg-white
+        rounded-full bg-transparent
+        bg-white
         hover:bg-gray-100
         focus-visible:ring-2
         focus-visible:ring-blue-500 active:bg-gray-200
