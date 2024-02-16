@@ -85,7 +85,7 @@ const FixText: FC<{ count: number }> = ({ count }) => {
   );
 
   return (
-    <div>
+    <div className="w-full">
       <Alert status="error" message={resultMessage} />
       <div className="mt-8 grid gap-4">
         <section
