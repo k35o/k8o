@@ -128,7 +128,8 @@ const FixText: FC<{ count: number }> = ({ count }) => {
                   <div>
                     <p className="whitespace-pre-wrap text-wrap break-all">
                       {texts.map((text, idx) => {
-                        const separator = idx === 0 ? '' : '\n';
+                        const separator =
+                          idx === texts.length - 1 ? '' : '\n';
                         if (idx !== resultIdx) {
                           return (
                             <Fragment key={`${idx}_${text}`}>
