@@ -3,6 +3,7 @@ import './_styles/globals.css';
 import { M_PLUS_2 } from 'next/font/google';
 import { AppProvider } from './_providers/app';
 import { Analytics } from '@vercel/analytics/react';
+import { SpeedInsights } from '@vercel/speed-insights/next';
 
 const font = M_PLUS_2({
   subsets: ['latin'],
@@ -35,6 +36,7 @@ export default function RootLayout({
           <GlobalLayout>{children}</GlobalLayout>
         </AppProvider>
         <Analytics />
+        <SpeedInsights />
       </body>
     </html>
   );
