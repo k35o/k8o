@@ -2,14 +2,21 @@ import { FC, PropsWithChildren } from 'react';
 import clsx from 'clsx';
 
 type Props = PropsWithChildren<{
+  id?: string;
   type: 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6';
   lineClamp?: number;
 }>;
 
-export const Heading: FC<Props> = ({ children, type, lineClamp }) => {
+export const Heading: FC<Props> = ({
+  children,
+  id,
+  type,
+  lineClamp,
+}) => {
   if (type === 'h1') {
     return (
       <h1
+        id={id}
         className={clsx('text-3xl font-bold', {
           [`line-clamp-${lineClamp}`]: lineClamp,
         })}
@@ -21,6 +28,7 @@ export const Heading: FC<Props> = ({ children, type, lineClamp }) => {
   if (type === 'h2') {
     return (
       <h2
+        id={id}
         className={clsx('text-2xl font-bold', {
           [`line-clamp-${lineClamp}`]: lineClamp,
         })}
@@ -32,6 +40,7 @@ export const Heading: FC<Props> = ({ children, type, lineClamp }) => {
   if (type === 'h3') {
     return (
       <h3
+        id={id}
         className={clsx('text-xl font-bold', {
           [`line-clamp-${lineClamp}`]: lineClamp,
         })}
@@ -43,6 +52,7 @@ export const Heading: FC<Props> = ({ children, type, lineClamp }) => {
   if (type === 'h4') {
     return (
       <h4
+        id={id}
         className={clsx('text-lg font-bold', {
           [`line-clamp-${lineClamp}`]: lineClamp,
         })}
@@ -54,6 +64,7 @@ export const Heading: FC<Props> = ({ children, type, lineClamp }) => {
   if (type === 'h5') {
     return (
       <h5
+        id={id}
         className={clsx('font-bold', {
           [`line-clamp-${lineClamp}`]: lineClamp,
         })}
@@ -65,6 +76,7 @@ export const Heading: FC<Props> = ({ children, type, lineClamp }) => {
   if (type === 'h6') {
     return (
       <h6
+        id={id}
         className={clsx('text-sm font-bold', {
           [`line-clamp-${lineClamp}`]: lineClamp,
         })}

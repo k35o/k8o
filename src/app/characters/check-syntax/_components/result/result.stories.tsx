@@ -1,16 +1,16 @@
 import type { Meta, StoryObj } from '@storybook/react';
-import { CheckedField } from './checked-field';
 import { RecoilRoot } from 'recoil';
 import { textState } from '../../_state/text';
+import { Result } from './result';
 
-const meta: Meta<typeof CheckedField> = {
-  title: 'app/characters/check-syntax/checked-field',
-  component: CheckedField,
+const meta: Meta<typeof Result> = {
+  title: 'app/characters/check-syntax/result',
+  component: Result,
   tags: ['autodocs'],
 };
 
 export default meta;
-type Story = StoryObj<typeof CheckedField>;
+type Story = StoryObj<typeof Result>;
 
 export const Primary: Story = {
   render: () => (
@@ -19,7 +19,7 @@ export const Primary: Story = {
         mutableSnapshot.set(textState, 'これはテストです。');
       }}
     >
-      <CheckedField />
+      <Result />
     </RecoilRoot>
   ),
 };
