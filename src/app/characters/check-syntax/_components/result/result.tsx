@@ -20,8 +20,12 @@ export const Result: FC = () => {
   return (
     <div className="flex flex-col items-center justify-center gap-8 rounded-md bg-white p-10">
       <div className="flex w-full justify-between gap-4">
-        <Button onClick={isCheckResult}>修正画面に戻る</Button>
-        <Button onClick={resetResult}>最初に戻る</Button>
+        <Button variant="outlined" onClick={isCheckResult}>
+          修正画面に戻る
+        </Button>
+        <Button variant="outlined" onClick={resetResult}>
+          最初に戻る
+        </Button>
       </div>
       <section aria-labelledby={id} className="grid gap-2">
         <div className="flex items-center justify-between">

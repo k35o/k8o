@@ -41,7 +41,9 @@ export const SyntaxFixer: FC = () => {
   return (
     <div className="flex flex-col items-center justify-center gap-8 rounded-md bg-white p-10">
       <div className="flex w-full justify-between gap-4">
-        <Button onClick={resetResult}>テキスト入力に戻る</Button>
+        <Button variant="outlined" onClick={resetResult}>
+          テキスト入力に戻る
+        </Button>
         <Button onClick={isCheckResult}>
           修正した内容を確認する
         </Button>

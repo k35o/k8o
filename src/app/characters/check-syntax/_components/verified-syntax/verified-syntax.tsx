@@ -23,7 +23,9 @@ export const VerifiedSyntax: FC = () => {
   return (
     <div className="flex flex-col items-center justify-center gap-8 rounded-md bg-white p-10">
       <div className="flex w-full items-start">
-        <Button onClick={resetResult}>戻る</Button>
+        <Button variant="outlined" onClick={resetResult}>
+          戻る
+        </Button>
       </div>
       <CheckCircleIcon
         aria-label="成功を意味するアイコン"
