@@ -24,7 +24,7 @@ export default withMdx({
         rehypePrettyCode,
         /** @type {Partial<import("rehype-pretty-code").Options>} */
         ({
-          theme: { dark: "one-dark-pro" },
+          theme: "one-dark-pro",
           getHighlighter,
         }),
       ],
