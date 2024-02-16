@@ -7,4 +7,6 @@ export const RECOIL_KEYS = {
     'characters.checkSyntax.resultText',
   CHARACTERS_CHECK_SYNTAX_RESULT_MESSAGES:
     'characters.checkSyntax.resultMessages',
+  CHARACTERS_CHECK_SYNTAX_FIX_TEXTS:
+    'characters.checkSyntax.fixTexts',
 };

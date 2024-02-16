@@ -1,4 +1,5 @@
 import { RECOIL_KEYS } from '@/constants';
+import { useState } from 'react';
 import {
   atom,
   useRecoilState,
@@ -34,6 +35,34 @@ export const resultMessagesState = atom<ResultMessage>({
   default: {},
 });
 
+const fixTextsState = atom<Record<number, string>>({
+  key: RECOIL_KEYS.CHARACTERS_CHECK_SYNTAX_FIX_TEXTS,
+  default: {},
+});
+
+export const useSetFixTextsField = (
+  count: number,
+  originalText: string,
+) => {
+  const [fixTexts, setFixTexts] = useRecoilState(fixTextsState);
+  const [fixText, setFixText] = useState(
+    fixTexts[count] ?? originalText,
+  );
+
+  return {
+    fixText,
+    handleFixTextChange: (text: string) => {
+      setFixText(text);
+      setFixTexts((prev) => {
+        return {
+          ...prev,
+          [count]: text,
+        };
+      });
+    },
+  };
+};
+
 export const useStatus = ():
   | { isExecuted: false }
   | { isExecuted: true; hasError: boolean } => {
@@ -59,12 +88,37 @@ export const useStatus = ():
   };
 };
 
+export const useInvalidCount = () => {
+  const resultMessages = useRecoilValue(resultMessagesState);
+
+  return Object.keys(resultMessages).length;
+};
+
+export const useInvalidResult = (count: number) => {
+  const resultText = useRecoilValue(resultTextState);
+  const resultMessages = useRecoilValue(resultMessagesState);
+  const messagesKey = Number(Object.keys(resultMessages)[count - 1]);
+
+  const text = resultText[messagesKey - 1];
+  const message = resultMessages[messagesKey];
+  if (text === undefined || message === undefined) {
+    throw Error('Invalid result');
+  }
+
+  return {
+    resultText: text,
+    resultMessage: message,
+  };
+};
+
 export const useResetResult = () => {
   const setResultText = useSetRecoilState(resultTextState);
   const setResultMessages = useSetRecoilState(resultMessagesState);
+  const setFixTexts = useSetRecoilState(fixTextsState);
 
   return () => {
     setResultText([]);
     setResultMessages({});
+    setFixTexts({});
   };
 };
