@@ -27,7 +27,7 @@ export const Result: FC = () => {
           最初に戻る
         </Button>
       </div>
-      <section aria-labelledby={id} className="grid gap-2">
+      <section aria-labelledby={id} className="grid w-full gap-2">
         <div className="flex items-center justify-between">
           <Heading id={id} type="h4">
             修正後のテキスト
