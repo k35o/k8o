@@ -7,7 +7,7 @@ export const Accordion: FC<PropsWithChildren<{}>> = ({
   return (
     <div
       className={clsx(
-        'rounded-md border-2 p-2',
+        'border-borderLight rounded-md border-2 p-2',
         'focus-within:ring-focusRing focus-within:border-transparent focus-within:outline-none focus-within:ring-2',
       )}
     >

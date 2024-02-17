@@ -16,7 +16,7 @@ export const TextField: FC<Props> = ({
       type="text"
       value={value}
       onChange={(e) => onChange(e.target.value)}
-      className="border-border focus-visible:ring-focusRing w-full rounded-md border px-3 py-2 focus-visible:border-transparent focus-visible:outline-none focus-visible:ring-2"
+      className="border-borderLight focus-visible:ring-focusRing w-full rounded-md border px-3 py-2 focus-visible:border-transparent focus-visible:outline-none focus-visible:ring-2"
       placeholder={placeholder}
     />
   );

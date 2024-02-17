@@ -23,6 +23,7 @@ module.exports = {
         warning: colors.yellow[500],
         warningLight: colors.yellow[100],
         border: colors.gray[600],
+        borderLight: colors.gray[300],
         bgBase: colors.slate[300],
         bgLight: colors.slate[200],
         bgDark: colors.slate[800],
