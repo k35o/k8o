@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from '@storybook/react';
 import { GlobalLayout } from './global-layout';
 
 const meta: Meta<typeof GlobalLayout> = {
-  title: 'global-layout',
+  title: 'components/global-layout',
   component: GlobalLayout,
   tags: ['autodocs'],
 };

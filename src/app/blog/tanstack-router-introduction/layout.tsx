@@ -1,4 +1,3 @@
-import { Heading } from '@/app/_components/heading';
 import { Metadata } from 'next';
 
 export const metadata: Metadata = {
@@ -27,9 +26,6 @@ export default function Layout({
 }) {
   return (
     <div className="flex flex-col gap-4">
-      <Heading type="h2">
-        Reactの新しいルーティングライブラリ、TanStackRouterを学ぶ
-      </Heading>
       <article className="rounded-lg bg-white px-1 py-14 pt-4 sm:px-10">
         {children}
       </article>

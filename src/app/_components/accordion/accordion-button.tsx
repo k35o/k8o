@@ -19,8 +19,8 @@ export const AccordionButton: FC<PropsWithChildren<{}>> = ({
       type="button"
       className={clsx(
         'flex w-full flex-row items-center justify-between rounded-md p-2',
-        'hover:bg-gray-100',
-        'focus:first:border-transparent focus:first:outline-none focus:first:ring-2 focus:first:ring-blue-500',
+        'hover:bg-grayHover active:bg-grayActive',
+        'focus-visible::first:ring-focusRing focus-visible::first:border-transparent focus-visible::first:outline-none focus-visible::first:ring-2',
       )}
       aria-expanded={open}
       aria-controls={`${id}-panel`}

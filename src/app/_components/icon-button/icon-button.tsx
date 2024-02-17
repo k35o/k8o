@@ -17,12 +17,13 @@ export const IconButton: FC<Props> = ({
   return (
     <button
       className={`
-        flex items-center justify-center
-        rounded-full bg-transparent
+        hover:bg-grayHover focus-visible:ring-focusRing active:bg-grayActive
+        flex items-center
+        justify-center
+        rounded-full
+        bg-transparent
         bg-white
-        hover:bg-gray-100
         focus-visible:ring-2
-        focus-visible:ring-blue-500 active:bg-gray-200
         ${size === 'sm' && 'p-1'}
         ${size === 'md' && 'p-2'}
         ${size === 'lg' && 'p-3'}

@@ -5,7 +5,7 @@ import { AccordionButton } from './accordion-button';
 import { AccordionPanel } from './accordion-panel';
 
 const meta: Meta<typeof Accordion> = {
-  title: 'accordion',
+  title: 'components/accordion',
   component: Accordion,
   tags: ['autodocs'],
 };

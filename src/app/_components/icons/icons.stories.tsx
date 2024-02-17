@@ -5,7 +5,7 @@ import { Twitter } from './twitter';
 import { Qiita } from './qiita';
 
 const meta: Meta<typeof SVGAElement> = {
-  title: 'icons',
+  title: 'components/icons',
   tags: ['autodocs'],
 };
 

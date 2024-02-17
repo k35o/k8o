@@ -2,7 +2,7 @@ import { FC } from 'react';
 
 export const Description: FC = () => {
   return (
-    <div className="w-full rounded-md border-2 border-gray-700 p-4">
+    <div className="border-border w-full rounded-md border-2 p-4">
       <p>
         WCAG
         2.1によると、AA基準における大文字のテキストの最小コントラスト比は4.5:1、小文字のテキストの最小コントラスト比は3:1です。
