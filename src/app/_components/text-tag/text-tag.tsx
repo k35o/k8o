@@ -1,6 +1,6 @@
 export const TextTag = ({ text }: { text: string }) => {
   return (
-    <span className="inline-block rounded-full bg-gray-200 px-3 py-1 text-sm font-medium text-gray-700">
+    <span className="bg-gray inline-block rounded-full px-3 py-1 text-sm font-medium">
       {text}
     </span>
   );

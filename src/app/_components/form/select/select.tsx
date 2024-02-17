@@ -16,7 +16,7 @@ export const Select: FC<Props> = ({ options, value, onChange }) => {
   return (
     <div className="relative h-fit w-full">
       <select
-        className="w-full appearance-none rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-transparent focus:outline-none focus:ring-2 focus:ring-blue-500"
+        className="focus-visible:ring-focusRing border-border w-full appearance-none rounded-md border px-3 py-2 shadow-sm focus-visible:border-transparent focus-visible:outline-none focus-visible:ring-2"
         value={value}
         onChange={(e) => onChange(e.target.value)}
       >

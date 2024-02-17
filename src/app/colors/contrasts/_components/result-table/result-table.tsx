@@ -30,20 +30,16 @@ export const ResultTable: FC<Props> = ({
         <tr className="h-16">
           <td className="px-2 text-2xl">
             {isInvalidAAContrstLarge ? (
-              <p className="text-center font-bold text-red-600">NG</p>
+              <p className="text-error text-center font-bold">NG</p>
             ) : (
-              <p className="text-center font-bold text-green-600">
-                OK
-              </p>
+              <p className="text-success text-center font-bold">OK</p>
             )}
           </td>
           <td className="px-2 text-2xl">
             {isInvalidAAAContrstLarge ? (
-              <p className="text-center font-bold text-red-600">NG</p>
+              <p className="text-error text-center font-bold">NG</p>
             ) : (
-              <p className="text-center font-bold text-green-600">
-                OK
-              </p>
+              <p className="text-success text-center font-bold">OK</p>
             )}
           </td>
           <td
@@ -59,20 +55,16 @@ export const ResultTable: FC<Props> = ({
         <tr className="h-16">
           <td className="px-2 text-2xl">
             {isInvalidAAContrstLarge ? (
-              <p className="text-center font-bold text-red-600">NG</p>
+              <p className="text-error text-center font-bold">NG</p>
             ) : (
-              <p className="text-center font-bold text-green-600">
-                OK
-              </p>
+              <p className="text-success text-center font-bold">OK</p>
             )}
           </td>
           <td className="px-2 text-2xl">
             {isInvalidAAAContrstLarge ? (
-              <p className="text-center font-bold text-red-600">NG</p>
+              <p className="text-error text-center font-bold">NG</p>
             ) : (
-              <p className="text-center font-bold text-green-600">
-                OK
-              </p>
+              <p className="text-success text-center font-bold">OK</p>
             )}
           </td>
           <td
@@ -88,20 +80,16 @@ export const ResultTable: FC<Props> = ({
         <tr className="h-16">
           <td className="px-2 text-2xl">
             {isInvalidAAContrstSmall ? (
-              <p className="text-center font-bold text-red-600">NG</p>
+              <p className="text-error text-center font-bold">NG</p>
             ) : (
-              <p className="text-center font-bold text-green-600">
-                OK
-              </p>
+              <p className="text-success text-center font-bold">OK</p>
             )}
           </td>
           <td className="px-2 text-2xl">
             {isInvalidAAAContrstSmall ? (
-              <p className="text-center font-bold text-red-600">NG</p>
+              <p className="text-error text-center font-bold">NG</p>
             ) : (
-              <p className="text-center font-bold text-green-600">
-                OK
-              </p>
+              <p className="text-success text-center font-bold">OK</p>
             )}
           </td>
           <td
@@ -117,20 +105,16 @@ export const ResultTable: FC<Props> = ({
         <tr className="h-16">
           <td className="px-2 text-2xl">
             {isInvalidAAContrstSmall ? (
-              <p className="text-center font-bold text-red-600">NG</p>
+              <p className="text-error text-center font-bold">NG</p>
             ) : (
-              <p className="text-center font-bold text-green-600">
-                OK
-              </p>
+              <p className="text-success text-center font-bold">OK</p>
             )}
           </td>
           <td className="px-2 text-2xl">
             {isInvalidAAAContrstLarge ? (
-              <p className="text-center font-bold text-red-600">NG</p>
+              <p className="text-error text-center font-bold">NG</p>
             ) : (
-              <p className="text-center font-bold text-green-600">
-                OK
-              </p>
+              <p className="text-success text-center font-bold">OK</p>
             )}
           </td>
           <td

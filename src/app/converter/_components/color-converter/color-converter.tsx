@@ -59,7 +59,7 @@ const hexToRgb = (
       r: parseSafeRgb(r),
       g: parseSafeRgb(g),
       b: parseSafeRgb(b),
-      a: Math.round((parseSafeRgb(a) * 100) / 255) / 100,
+      a: Math.round((parseSafeRgb(a) * 100) / 255) / 1,
     };
   }
   if (hex.length === 6) {
