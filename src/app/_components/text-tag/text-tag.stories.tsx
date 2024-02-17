@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from '@storybook/react';
 import { TextTag } from './text-tag';
 
 const meta: Meta<typeof TextTag> = {
-  title: 'text-tag',
+  title: 'components/text-tag',
   component: TextTag,
   tags: ['autodocs'],
 };

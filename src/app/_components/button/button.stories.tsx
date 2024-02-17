@@ -3,7 +3,7 @@ import { Button } from './button';
 import { ClipboardIcon } from '@heroicons/react/24/solid';
 
 const meta: Meta<typeof Button> = {
-  title: 'button',
+  title: 'components/button',
   component: Button,
   tags: ['autodocs'],
 };
