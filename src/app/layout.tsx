@@ -4,6 +4,7 @@ import { M_PLUS_2 } from 'next/font/google';
 import { AppProvider } from './_providers/app';
 import { Analytics } from '@vercel/analytics/react';
 import { SpeedInsights } from '@vercel/speed-insights/next';
+import '@/libs/zod';
 
 const font = M_PLUS_2({
   subsets: ['latin'],
