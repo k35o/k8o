@@ -1,13 +1,18 @@
 import { TextField } from '@/app/_components/form/text-field';
 import { FC, useId } from 'react';
-import { Table } from '../../_types/table';
+import { InvalidTable, Table } from '../../_types/table';
 
 type Props = {
   table: Table;
   setTable: (table: Table) => void;
+  tableError: InvalidTable['errors'] | undefined;
 };
 
-export const CreateTable: FC<Props> = ({ table, setTable }) => {
+export const CreateTable: FC<Props> = ({
+  table,
+  setTable,
+  tableError,
+}) => {
   const id = useId();
 
   const handleChangeTableName = (name: string) => {
@@ -32,6 +37,9 @@ export const CreateTable: FC<Props> = ({ table, setTable }) => {
             onChange={handleChangeTableName}
             placeholder="users"
           />
+          {tableError?.name && (
+            <p className="text-sm text-red-500">{tableError.name}</p>
+          )}
         </div>
         <div className="flex flex-col justify-center gap-2">
           <label htmlFor={`table-alias_${id}`} className="font-bold">
@@ -43,6 +51,9 @@ export const CreateTable: FC<Props> = ({ table, setTable }) => {
             onChange={handleChangeTableAlias}
             placeholder="ユーザーテーブル"
           />
+          {tableError?.alias && (
+            <p className="text-sm text-red-500">{tableError.alias}</p>
+          )}
         </div>
       </div>
     </fieldset>

@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import { useState } from 'react';
-import { CreatingColumn } from '../../_types/column';
+import { Column } from '../../_types/column';
 import { CreateColumn } from './create-column';
 
 const meta: Meta<typeof CreateColumn> = {
@@ -14,13 +14,18 @@ type Story = StoryObj<typeof CreateColumn>;
 
 export const Default: Story = {
   render: () => {
-    const [column, setColumn] = useState<CreatingColumn>({
-      id: crypto.randomUUID(),
+    const [column, setColumn] = useState<Column>({
       name: '',
       alias: '',
       type: 'uuid',
       nullable: false,
     });
-    return <CreateColumn column={column} setColumn={setColumn} />;
+    return (
+      <CreateColumn
+        column={column}
+        setColumn={setColumn}
+        columnError={undefined}
+      />
+    );
   },
 };

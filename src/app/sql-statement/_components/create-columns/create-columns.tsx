@@ -1,5 +1,5 @@
 import { FC } from 'react';
-import { CreatingColumn } from '../../_types/column';
+import { Column, InvalidColumns } from '../../_types/column';
 import { Button } from '@/app/_components/button';
 import {
   Accordion,
@@ -12,53 +12,61 @@ import { XMarkIcon } from '@heroicons/react/24/solid';
 import { CreateColumn } from '../create-column';
 
 type Props = {
-  columns: CreatingColumn[];
-  setColumns: (columns: CreatingColumn[]) => void;
+  columns: Record<string, Column>;
+  setColumns: (columns: Record<string, Column>) => void;
+  columnsError: InvalidColumns['errors'] | undefined;
 };
 
-export const CreateColumns: FC<Props> = ({ columns, setColumns }) => {
+export const CreateColumns: FC<Props> = ({
+  columns,
+  setColumns,
+  columnsError,
+}) => {
+  const columnsEntries = Object.entries(columns);
   return (
     <fieldset className="rounded-md px-4 py-2">
       <div className="flex items-center justify-between py-2">
         <legend className="text-lg font-bold">カラム情報</legend>
         <Button
           onClick={() =>
-            setColumns([
+            setColumns({
               ...columns,
-              {
-                id: crypto.randomUUID(),
+              [crypto.randomUUID()]: {
                 name: '',
                 alias: '',
                 type: 'uuid',
                 nullable: false,
               },
-            ])
+            })
           }
         >
           カラムを追加
         </Button>
       </div>
       <Accordion>
-        {columns.map((column, idx) => {
+        {columnsEntries.map(([id, column], idx) => {
+          const columnError = columnsError && columnsError[id];
           return (
-            <AccordionItem key={column.id} defaultOpen={true}>
+            <AccordionItem key={id} defaultOpen={true}>
               <AccordionButton>
                 <p className="text-lg font-bold">カラム{idx + 1}</p>
               </AccordionButton>
               <AccordionPanel>
                 <div className="relative">
-                  {columns.length > 1 && (
+                  {columnsEntries.length > 1 && (
                     <div className="absolute flex w-full items-center justify-end">
                       <IconButton
                         label="削除"
                         size="sm"
                         onClick={() => {
-                          if (columns.length <= 1) {
+                          if (columnsEntries.length <= 1) {
                             return;
                           }
                           setColumns(
-                            columns.filter(
-                              (value) => column.id === value.id,
+                            Object.fromEntries(
+                              columnsEntries.filter(
+                                ([columnId]) => columnId !== id,
+                              ),
                             ),
                           );
                         }}
@@ -71,14 +79,17 @@ export const CreateColumns: FC<Props> = ({ columns, setColumns }) => {
                     column={column}
                     setColumn={(value) =>
                       setColumns(
-                        columns.map((column) => {
-                          if (column.id === value.id) {
-                            return value;
-                          }
-                          return column;
-                        }),
+                        Object.fromEntries(
+                          columnsEntries.map(([columnId, column]) => {
+                            if (columnId === id) {
+                              return [columnId, value];
+                            }
+                            return [columnId, column];
+                          }),
+                        ),
                       )
                     }
+                    columnError={columnError}
                   />
                 </div>
               </AccordionPanel>

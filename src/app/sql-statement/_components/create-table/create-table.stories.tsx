@@ -18,6 +18,12 @@ export const Primary: Story = {
       name: '',
       alias: '',
     });
-    return <CreateTable table={table} setTable={setTable} />;
+    return (
+      <CreateTable
+        table={table}
+        setTable={setTable}
+        tableError={undefined}
+      />
+    );
   },
 };

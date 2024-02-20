@@ -1,11 +1,16 @@
 import { FC, useId } from 'react';
-import { ColumnType, CreatingColumn } from '../../_types/column';
+import {
+  ColumnType,
+  Column,
+  InvalidColumns,
+} from '../../_types/column';
 import { TextField } from '@/app/_components/form/text-field';
 import { Select } from '@/app/_components/form/select/select';
 import { Radio } from '@/app/_components/form/radio';
 
 const TYPE_OPTIONS = [
   { value: 'uuid', label: 'uuid' },
+  { value: 'serial', label: '自動採番' },
   { value: 'text', label: '文字列' },
   { value: 'integer', label: '整数' },
   { value: 'numeric', label: '数値' },
@@ -18,11 +23,16 @@ const TYPE_OPTIONS = [
 ] as const satisfies { value: ColumnType; label: string }[];
 
 type Props = {
-  column: CreatingColumn;
-  setColumn: (column: CreatingColumn) => void;
+  column: Column;
+  setColumn: (column: Column) => void;
+  columnError: InvalidColumns['errors'][string] | undefined;
 };
 
-export const CreateColumn: FC<Props> = ({ column, setColumn }) => {
+export const CreateColumn: FC<Props> = ({
+  column,
+  setColumn,
+  columnError,
+}) => {
   const id = useId();
 
   return (
@@ -37,6 +47,9 @@ export const CreateColumn: FC<Props> = ({ column, setColumn }) => {
           onChange={(name) => setColumn({ ...column, name })}
           placeholder="id"
         />
+        {columnError?.name && (
+          <p className="text-sm text-red-500">{columnError.name}</p>
+        )}
       </div>
       <div className="flex flex-col gap-2">
         <label htmlFor={`column-alias_${id}`} className="font-bold">
@@ -48,6 +61,9 @@ export const CreateColumn: FC<Props> = ({ column, setColumn }) => {
           onChange={(alias) => setColumn({ ...column, alias })}
           placeholder="ID"
         />
+        {columnError?.alias && (
+          <p className="text-sm text-red-500">{columnError.alias}</p>
+        )}
       </div>
       <div className="flex flex-col gap-2">
         <label htmlFor={`column-type_${id}`} className="font-bold">
@@ -61,6 +77,9 @@ export const CreateColumn: FC<Props> = ({ column, setColumn }) => {
           }
           options={TYPE_OPTIONS}
         />
+        {columnError?.type && (
+          <p className="text-sm text-red-500">{columnError.type}</p>
+        )}
       </div>
       <div className="flex flex-col gap-2">
         <p id={`nullable_${id}`} className="font-bold">
@@ -77,6 +96,11 @@ export const CreateColumn: FC<Props> = ({ column, setColumn }) => {
             { value: '1', label: '不許容' },
           ]}
         />
+        {columnError?.nullable && (
+          <p className="text-sm text-red-500">
+            {columnError.nullable}
+          </p>
+        )}
       </div>
     </div>
   );

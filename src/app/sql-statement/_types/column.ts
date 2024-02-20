@@ -1,5 +1,6 @@
 export type ColumnType =
   | 'uuid'
+  | 'serial'
   | 'integer'
   | 'numeric'
   | 'text'
@@ -17,6 +18,15 @@ export type Column = {
   nullable: boolean;
 };
 
-export type CreatingColumn = Column & {
-  id: string;
+export type InvalidColumns = {
+  type: 'column';
+  errors: Record<
+    string,
+    {
+      name?: string;
+      alias?: string;
+      type?: string;
+      nullable?: string;
+    }
+  >;
 };
