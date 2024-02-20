@@ -1,18 +1,21 @@
 import { FC } from 'react';
 
 type Props = {
+  id?: string;
   value: string;
   onChange: (value: string) => void;
   placeholder?: string;
 };
 
 export const TextField: FC<Props> = ({
+  id,
   value,
   onChange,
   placeholder,
 }) => {
   return (
     <input
+      id={id}
       type="text"
       value={value}
       onChange={(e) => onChange(e.target.value)}

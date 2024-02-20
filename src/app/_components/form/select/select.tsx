@@ -7,16 +7,23 @@ export type Option = Readonly<{
 }>;
 
 type Props = {
+  id?: string;
   options: readonly Option[];
   value: string;
   onChange: (value: string) => void;
 };
 
-export const Select: FC<Props> = ({ options, value, onChange }) => {
+export const Select: FC<Props> = ({
+  id,
+  options,
+  value,
+  onChange,
+}) => {
   return (
     <div className="relative h-fit w-full">
       <select
-        className="focus-visible:ring-focusRing border-borderLight w-full appearance-none rounded-md border px-3 py-2 shadow-sm focus-visible:border-transparent focus-visible:outline-none focus-visible:ring-2"
+        id={id}
+        className="w-full appearance-none rounded-md border border-borderLight px-3 py-2 shadow-sm focus-visible:border-transparent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focusRing"
         value={value}
         onChange={(e) => onChange(e.target.value)}
       >
