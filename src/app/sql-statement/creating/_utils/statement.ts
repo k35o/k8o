@@ -89,14 +89,25 @@ export const makeStatement = (
     isSuccessful: true,
     statement: `CREATE TABLE ${table.name} (\n${Object.values(columns)
       .map((column) => {
+        const defaultQuery = column.default
+          ? ` DEFAULT ${column.default}`
+          : '';
         if (['timestamp', 'timestamptz'].includes(column.type)) {
-          return `  ${column.name} timestamp ${column.nullable ? 'NULL' : 'NOT NULL'} ${column.type === 'timestamptz' ? 'WITH TIME ZONE' : 'WITHOUT TIME ZONE'}`;
+          return `  ${column.name} timestamp ${column.nullable ? 'NULL' : 'NOT NULL'} ${column.type === 'timestamptz' ? 'WITH TIME ZONE' : 'WITHOUT TIME ZONE'}${defaultQuery}`;
         }
         if (['time', 'timetz'].includes(column.type)) {
-          return `  ${column.name} time ${column.nullable ? 'NULL' : 'NOT NULL'} ${column.type === 'timetz' ? 'WITH TIME ZONE' : 'WITHOUT TIME ZONE'}`;
+          return `  ${column.name} time ${column.nullable ? 'NULL' : 'NOT NULL'} ${column.type === 'timetz' ? 'WITH TIME ZONE' : 'WITHOUT TIME ZONE'}${defaultQuery}`;
         }
-        return `  ${column.name} ${column.type} ${column.nullable ? 'NULL' : 'NOT NULL'}`;
+        return `  ${column.name} ${column.type} ${column.nullable ? 'NULL' : 'NOT NULL'}${defaultQuery}`;
       })
-      .join(',\n')},\n);`,
+      .join(
+        ',\n',
+      )},\n);\n\nCOMMENT ON TABLE ${table.name} IS '${table.alias}';\n${Object.values(
+      columns,
+    )
+      .map((column) => {
+        return `COMMENT ON COLUMN ${table.name}.${column.name} IS '${column.alias}';`;
+      })
+      .join('\n')}`,
   };
 };

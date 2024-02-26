@@ -102,6 +102,23 @@ export const CreateColumn: FC<Props> = ({
           </p>
         )}
       </div>
+      <div className="flex flex-col gap-2">
+        <p id={`default_${id}`} className="font-bold">
+          デフォルト値
+        </p>
+        <TextField
+          id={`default_${id}`}
+          value={column.default ?? ''}
+          onChange={(defaultVal) =>
+            setColumn({ ...column, default: defaultVal })
+          }
+        />
+        {columnError?.default && (
+          <p className="text-sm text-red-500">
+            {columnError.default}
+          </p>
+        )}
+      </div>
     </div>
   );
 };

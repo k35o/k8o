@@ -16,6 +16,7 @@ export type Column = {
   alias: string;
   type: ColumnType;
   nullable: boolean;
+  default?: string;
 };
 
 export type InvalidColumns = {
@@ -27,6 +28,7 @@ export type InvalidColumns = {
       alias?: string;
       type?: string;
       nullable?: string;
+      default?: string;
     }
   >;
 };
