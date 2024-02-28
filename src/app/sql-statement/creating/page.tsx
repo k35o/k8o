@@ -7,6 +7,11 @@ import { CreateTable } from '../_components/create-table';
 import { CreateColumns } from '../_components/create-columns';
 import { Button } from '@/app/_components/button';
 import { makeStatement } from './_utils/statement';
+import {
+  InvalidRestrictions,
+  Restriction,
+} from '../_types/restriction';
+import { CreateRestrictions } from '../_components/create-restrictions';
 
 export default function Page() {
   const [table, setTable] = useState<Table>({
@@ -21,11 +26,22 @@ export default function Page() {
       nullable: false,
     },
   });
+  const [restrictions, setRestrictions] = useState<
+    Record<string, Restriction>
+  >({
+    [crypto.randomUUID()]: {
+      type: 'primary',
+      columns: [],
+    },
+  });
+
   const [statement, setStatement] = useState<string>('');
   const [tableError, setTableError] =
     useState<InvalidTable['errors']>();
   const [columnsError, setColumnsError] =
     useState<InvalidColumns['errors']>();
+  const [restroctionsError, setRestroctionsError] =
+    useState<InvalidRestrictions['errors']>();
 
   return (
     <section className="flex flex-col gap-6 rounded-md bg-white p-4">
@@ -39,14 +55,29 @@ export default function Page() {
         setColumns={setColumns}
         columnsError={columnsError}
       />
+      <CreateRestrictions
+        columns={columns}
+        restrictions={restrictions}
+        setRestrictions={setRestrictions}
+        restroctionsError={restroctionsError}
+      />
       <Button
         onClick={() => {
           setTableError(undefined);
           setColumnsError(undefined);
-          const statementResult = makeStatement(table, columns);
+          setRestroctionsError(undefined);
+          setStatement('');
+          const statementResult = makeStatement(
+            table,
+            columns,
+            restrictions,
+          );
           if (!statementResult.isSuccessful) {
             setTableError(statementResult.invalidTable?.errors);
             setColumnsError(statementResult.invalidColumns?.errors);
+            setRestroctionsError(
+              statementResult.invalidRestrictions?.errors,
+            );
             return;
           }
           setStatement(statementResult.statement);
@@ -54,11 +85,11 @@ export default function Page() {
       >
         生成
       </Button>
-      <textarea
-        className="h-32 w-full whitespace-pre-wrap rounded-md p-2"
-        value={statement}
-        readOnly
-      />
+      {statement && (
+        <code className="whitespace-pre-wrap rounded-lg bg-bgLight p-4 text-xs sm:text-base">
+          {statement}
+        </code>
+      )}
     </section>
   );
 }
