@@ -172,8 +172,12 @@ export const makeStatement = (
         }
         return `  ${column.name} ${column.type} ${column.nullable ? 'NULL' : 'NOT NULL'}${defaultQuery}`;
       })
-      .join(',\n')},\n${Object.values(restrictions).map(
-      (restriction) => {
+      .join(
+        ',\n',
+      )},${Object.keys(restrictions).length > 0 ? '\n\n' : ''}${Object.values(
+      restrictions,
+    )
+      .map((restriction) => {
         if (restriction.type === 'primary') {
           const columnNames = restriction.columns.reduce(
             (acc, column) => {
@@ -188,7 +192,7 @@ export const makeStatement = (
             },
             '',
           );
-          return `\n  PRIMARY KEY (${columnNames})`;
+          return `  PRIMARY KEY (${columnNames}),`;
         }
         if (restriction.type === 'unique') {
           const columnNames = restriction.columns.reduce(
@@ -204,18 +208,20 @@ export const makeStatement = (
             },
             '',
           );
-          return `\n  UNIQUE (${columnNames})`;
+          return `  UNIQUE (${columnNames}),`;
         }
         if (restriction.type === 'foreign') {
           const columnName = columns[restriction.column]?.name;
           if (!columnName) {
             return '';
           }
-          return `\n  FOREIGN KEY (${columnName}) REFERENCES ${restriction.reference.table}(${restriction.reference.column})`;
+          return `  FOREIGN KEY (${columnName}) REFERENCES ${restriction.reference.table}(${restriction.reference.column}),`;
         }
         return '';
-      },
-    )}\n);\n\nCOMMENT ON TABLE ${table.name} IS '${table.alias}';\n${Object.values(
+      })
+      .join(
+        '\n',
+      )}\n);\n\nCOMMENT ON TABLE ${table.name} IS '${table.alias}';\n${Object.values(
       columns,
     )
       .map((column) => {

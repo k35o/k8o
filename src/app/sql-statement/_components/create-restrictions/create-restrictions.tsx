@@ -66,9 +66,6 @@ export const CreateRestrictions: FC<Props> = ({
                         label="削除"
                         size="sm"
                         onClick={() => {
-                          if (restrictionsEntries.length <= 1) {
-                            return;
-                          }
                           setRestrictions(
                             Object.fromEntries(
                               restrictionsEntries.filter(
