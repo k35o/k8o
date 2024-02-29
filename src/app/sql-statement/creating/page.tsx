@@ -53,6 +53,7 @@ export default function Page() {
       <CreateColumns
         columns={columns}
         setColumns={setColumns}
+        setRestrictions={setRestrictions}
         columnsError={columnsError}
       />
       <CreateRestrictions

@@ -26,6 +26,7 @@ export const Primary: Story = {
       <CreateColumns
         columns={columns}
         setColumns={setColumns}
+        setRestrictions={() => console.log()}
         columnsError={undefined}
       />
     );

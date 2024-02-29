@@ -10,16 +10,23 @@ import {
 import { IconButton } from '@/app/_components/icon-button';
 import { XMarkIcon } from '@heroicons/react/24/solid';
 import { CreateColumn } from '../create-column';
+import { Restriction } from '../../_types/restriction';
 
 type Props = {
   columns: Record<string, Column>;
   setColumns: (columns: Record<string, Column>) => void;
+  setRestrictions: (
+    arg: (
+      restrictions: Record<string, Restriction>,
+    ) => Record<string, Restriction>,
+  ) => void;
   columnsError: InvalidColumns['errors'] | undefined;
 };
 
 export const CreateColumns: FC<Props> = ({
   columns,
   setColumns,
+  setRestrictions,
   columnsError,
 }) => {
   const columnsEntries = Object.entries(columns);
@@ -62,6 +69,41 @@ export const CreateColumns: FC<Props> = ({
                           if (columnsEntries.length <= 1) {
                             return;
                           }
+                          setRestrictions((restrictions) => {
+                            return Object.fromEntries(
+                              Object.entries(restrictions).map(
+                                ([restrictionId, restriction]) => {
+                                  if (
+                                    restriction.type === 'foreign'
+                                  ) {
+                                    const firstColumn =
+                                      Object.keys(columns)[0] ?? '';
+                                    return [
+                                      restrictionId,
+                                      {
+                                        ...restriction,
+                                        column:
+                                          restriction.column === id
+                                            ? firstColumn
+                                            : restriction.column,
+                                      },
+                                    ];
+                                  }
+                                  return [
+                                    restrictionId,
+                                    {
+                                      ...restriction,
+                                      columns:
+                                        restriction.columns.filter(
+                                          (columnId) =>
+                                            columnId !== id,
+                                        ),
+                                    },
+                                  ];
+                                },
+                              ),
+                            );
+                          });
                           setColumns(
                             Object.fromEntries(
                               columnsEntries.filter(
