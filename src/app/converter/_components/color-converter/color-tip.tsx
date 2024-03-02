@@ -4,7 +4,7 @@ export const ColorTip: FC<{ color: string }> = ({ color }) => {
   console.log(color);
   return (
     <div
-      className="border-border h-6 w-6 rounded-md border"
+      className="h-6 w-6 rounded-md border border-border"
       style={{ backgroundColor: color }}
     />
   );
