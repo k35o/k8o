@@ -49,7 +49,7 @@ export function useMDXComponents(
         return (
           <code
             {...props}
-            className="bg-bgLight m-1 rounded-lg px-1 text-xs sm:text-base"
+            className="m-1 rounded-lg bg-bgLight px-1 text-xs sm:text-base"
           />
         );
       }
@@ -59,7 +59,7 @@ export function useMDXComponents(
       return (
         <pre
           {...rest}
-          className="bg-bgDark my-4 overflow-x-auto rounded-xl p-1 sm:p-4"
+          className="my-4 overflow-x-auto rounded-xl bg-bgDark p-1 sm:p-4"
         >
           {children}
         </pre>

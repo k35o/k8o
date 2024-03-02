@@ -19,7 +19,7 @@ export const GlobalLayout: FC<{ children: ReactNode }> = ({
           </Anchor>
         </div>
       </header>
-      <main className="bg-bgBase flex grow justify-center">
+      <main className="flex grow justify-center bg-bgBase">
         <div className="w-full max-w-4xl px-4 py-10">{children}</div>
       </main>
     </div>

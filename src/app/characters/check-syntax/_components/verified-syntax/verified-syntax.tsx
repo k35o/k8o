@@ -29,7 +29,7 @@ export const VerifiedSyntax: FC = () => {
       </div>
       <CheckCircleIcon
         aria-label="成功を意味するアイコン"
-        className="text-success h-36 w-36"
+        className="h-36 w-36 text-success"
       />
       <p className="text-lg font-bold">
         テキストに問題は見つかりませんでした。

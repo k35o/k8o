@@ -17,14 +17,14 @@ export const Anchor = ({
           href={href}
           target="_blank"
           rel="noopener noreferrer"
-          className="text-link cursor-pointer hover:underline"
+          className="cursor-pointer text-link hover:underline"
         >
           {children}
         </a>
       ) : (
         <Link
           href={href as Route}
-          className="text-link cursor-pointer hover:underline"
+          className="cursor-pointer text-link hover:underline"
         >
           {children}
         </Link>

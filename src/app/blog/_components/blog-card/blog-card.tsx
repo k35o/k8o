@@ -20,7 +20,7 @@ export const BlogCard = <T extends string>({
       {isExternal ? (
         <a href={link} target="_blank" rel="noopener noreferrer">
           <div className="flex gap-6 p-4">
-            <div className="bg-gray flex h-32 w-32 shrink-0 items-center justify-center rounded-md text-7xl">
+            <div className="flex h-32 w-32 shrink-0 items-center justify-center rounded-md bg-gray text-7xl">
               {emotion}
             </div>
             <div className="flex w-full flex-col justify-around">
@@ -43,7 +43,7 @@ export const BlogCard = <T extends string>({
       ) : (
         <Link href={link as Route<T>}>
           <div className="flex gap-6 p-4">
-            <div className="bg-gray flex h-32 w-32 shrink-0 items-center justify-center rounded-md text-7xl">
+            <div className="flex h-32 w-32 shrink-0 items-center justify-center rounded-md bg-gray text-7xl">
               {emotion}
             </div>
             <div className="flex w-full flex-col justify-around">

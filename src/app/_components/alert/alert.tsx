@@ -51,25 +51,25 @@ const AlertIcon: FC<{ status: StatusType }> = ({ status }) => {
       {status === 'success' && (
         <CheckCircleIcon
           aria-label="成功"
-          className="text-success h-8 w-8"
+          className="h-8 w-8 text-success"
         />
       )}
       {status === 'info' && (
         <InformationCircleIcon
           aria-label="情報"
-          className="text-info h-8 w-8"
+          className="h-8 w-8 text-info"
         />
       )}
       {status === 'warning' && (
         <ExclamationTriangleIcon
           aria-label="警告"
-          className="text-warning h-8 w-8"
+          className="h-8 w-8 text-warning"
         />
       )}
       {status === 'error' && (
         <ExclamationCircleIcon
           aria-label="エラー"
-          className="text-error h-8 w-8"
+          className="h-8 w-8 text-error"
         />
       )}
     </div>
