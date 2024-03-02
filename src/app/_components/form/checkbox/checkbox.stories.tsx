@@ -1,0 +1,22 @@
+import type { Meta, StoryObj } from '@storybook/react';
+import { Checkbox } from './checkbox';
+import { useState } from 'react';
+
+const meta: Meta<typeof Checkbox> = {
+  title: 'components/form/checkbox',
+  component: Checkbox,
+  tags: ['autodocs'],
+};
+
+export default meta;
+type Story = StoryObj<typeof Checkbox>;
+
+export const Default: Story = {
+  render: () => {
+    const [value, setValue] = useState(false);
+
+    return (
+      <Checkbox label="radio" value={value} onChange={setValue} />
+    );
+  },
+};

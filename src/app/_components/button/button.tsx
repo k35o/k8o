@@ -14,6 +14,7 @@ export const Button: FC<
     disabled?: boolean;
     fullWidth?: boolean;
     onClick: ReactEventHandler<HTMLButtonElement>;
+    startIcon?: ReactNode;
     endIcon?: ReactNode;
   }>
 > = ({
@@ -24,6 +25,7 @@ export const Button: FC<
   disabled = false,
   fullWidth = false,
   onClick,
+  startIcon,
   endIcon,
 }) => {
   return (
@@ -32,25 +34,27 @@ export const Button: FC<
       className={clsx(
         'rounded-lg font-bold',
         {
-          ['bg-primary hover:bg-primaryHover active:bg-primaryActive text-white']:
+          ['bg-primary text-white hover:bg-primaryHover active:bg-primaryActive']:
             variant === 'contained',
-          ['hover:bg-primary active:bg-primary cursor-not-allowed opacity-50']:
+          ['cursor-not-allowed opacity-50 hover:bg-primary active:bg-primary']:
             disabled && variant === 'contained',
-          ['border-primary text-primary hover:bg-grayHover active:bg-grayActive border-2 bg-white']:
+          ['border-2 border-primary bg-white text-primary hover:bg-grayHover active:bg-grayActive']:
             variant === 'outlined',
           ['cursor-not-allowed opacity-50 hover:bg-white active:bg-white']:
             disabled && variant === 'outlined',
         },
-        'focus-visible:ring-focusRing focus-visible:border-transparent focus-visible:outline-none focus-visible:ring-2',
+        'focus-visible:border-transparent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focusRing',
         size === 'sm' && 'px-3 py-1 text-sm',
         size === 'md' && 'text-md px-4 py-2',
         size === 'lg' && 'px-6 py-3 text-lg',
         fullWidth && 'w-full',
-        endIcon && 'flex items-center justify-between gap-2',
+        (startIcon || endIcon) &&
+          'flex items-center justify-between gap-2',
       )}
       disabled={disabled}
       onClick={onClick}
     >
+      {startIcon}
       {children}
       {endIcon}
     </button>

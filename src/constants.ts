@@ -12,4 +12,5 @@ export const RECOIL_KEYS = {
   CHARACTERS_CHECK_SYNTAX_COMPLETE: 'characters.checkSyntax.complete',
   CHARACTERS_CHECK_SYNTAX_FIXED_TEXT:
     'characters.checkSyntax.fixedTet',
+  SQL_STATEMENT_COLUMNS_FORM_TYPE: 'sqlStatement.columns.form.type',
 };

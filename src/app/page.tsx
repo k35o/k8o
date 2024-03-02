@@ -24,6 +24,12 @@ export default function Home() {
         description="コントラスト比など、色にまつわる機能を提供します。"
       />
       <AppCard
+        link="/sql-statement"
+        emotion="🖥️"
+        title="SQL Statement"
+        description="テーブルの作成、SQLに関するコマンドを作成する機能を提供します。"
+      />
+      <AppCard
         link="/blog"
         emotion="📕"
         title="Blog"

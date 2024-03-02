@@ -102,6 +102,19 @@ export const DisabledOutlined: Story = {
   },
 };
 
+export const StartIcon: Story = {
+  args: {
+    type: 'button',
+    onClick: () => {
+      console.log('clicked');
+    },
+    startIcon: <ClipboardIcon className="h-6 w-6" />,
+  },
+  render: (props) => {
+    return <Button {...props}>ボタン</Button>;
+  },
+};
+
 export const EndIcon: Story = {
   args: {
     type: 'button',

@@ -2,6 +2,7 @@
 
 import { ReactElement } from 'react';
 import { RecoilRoot } from 'recoil';
+import '@/libs/zod';
 
 export const AppProvider = ({
   children,
