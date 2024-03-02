@@ -4,7 +4,6 @@ import { useState } from 'react';
 import { InvalidTable, Table } from '../_types/table';
 import { Column, InvalidColumns } from '../_types/column';
 import { CreateTable } from '../_components/create-table';
-import { CreateColumns } from '../_components/create-columns';
 import { Button } from '@/app/_components/button';
 import { makeStatement } from './_utils/statement';
 import {
@@ -12,6 +11,16 @@ import {
   Restriction,
 } from '../_types/restriction';
 import { CreateRestrictions } from '../_components/create-restrictions';
+import dynamic from 'next/dynamic';
+import { LoadingCreateColumns } from '../_components/create-columns/loading-create-columns';
+
+const CreateColumns = dynamic(
+  () =>
+    import('../_components/create-columns').then(
+      (mod) => mod.CreateColumns,
+    ),
+  { ssr: false, loading: () => <LoadingCreateColumns /> },
+);
 
 export default function Page() {
   const [table, setTable] = useState<Table>({

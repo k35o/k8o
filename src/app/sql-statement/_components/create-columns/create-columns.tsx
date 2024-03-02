@@ -2,15 +2,14 @@ import { FC } from 'react';
 import { Column, InvalidColumns } from '../../_types/column';
 import { Button } from '@/app/_components/button';
 import {
-  Accordion,
-  AccordionButton,
-  AccordionItem,
-  AccordionPanel,
-} from '@/app/_components/accordion';
-import { IconButton } from '@/app/_components/icon-button';
-import { XMarkIcon } from '@heroicons/react/24/solid';
-import { CreateColumn } from '../create-column';
+  QueueListIcon,
+  TableCellsIcon,
+} from '@heroicons/react/24/solid';
 import { Restriction } from '../../_types/restriction';
+import { useCreateColumns } from './hooks';
+import { CreateColumnsByForm } from './create-columns-by-form';
+import { CreateColumnsByTable } from './create-columns-by-table';
+import { useColumnsType } from '../../_state';
 
 type Props = {
   columns: Record<string, Column>;
@@ -29,116 +28,51 @@ export const CreateColumns: FC<Props> = ({
   setRestrictions,
   columnsError,
 }) => {
+  const { handleAddColumn, handleChangeColumn, handleDeleteColumn } =
+    useCreateColumns(columns, setColumns, setRestrictions);
+  const [columnsType, setColumnsType] = useColumnsType();
+  const showTable = columnsType === 'table';
+
   const columnsEntries = Object.entries(columns);
+
   return (
-    <fieldset className="rounded-md px-4 py-2">
-      <div className="flex items-center justify-between py-2">
+    <fieldset className="relative rounded-md p-2">
+      <div className="flex flex-col justify-between gap-2 py-2 md:flex-row md:items-center md:gap-0">
         <legend className="text-lg font-bold">カラム情報</legend>
-        <Button
-          onClick={() =>
-            setColumns({
-              ...columns,
-              [crypto.randomUUID()]: {
-                name: '',
-                alias: '',
-                type: 'uuid',
-                nullable: false,
-              },
-            })
-          }
-        >
-          カラムを追加
-        </Button>
+        <div className="flex items-center gap-2 self-end md:self-auto">
+          <Button
+            variant="outlined"
+            onClick={() =>
+              setColumnsType(showTable ? 'form' : 'table')
+            }
+            startIcon={
+              showTable ? (
+                <QueueListIcon className="h-6 w-6" />
+              ) : (
+                <TableCellsIcon className="h-6 w-6" />
+              )
+            }
+          >
+            {showTable ? 'フォーム' : 'テーブル'}形式に変更
+          </Button>
+          <Button onClick={handleAddColumn}>カラムを追加</Button>
+        </div>
       </div>
-      <Accordion>
-        {columnsEntries.map(([id, column], idx) => {
-          const columnError = columnsError && columnsError[id];
-          return (
-            <AccordionItem key={id} defaultOpen={true}>
-              <AccordionButton>
-                <p className="text-lg font-bold">カラム{idx + 1}</p>
-              </AccordionButton>
-              <AccordionPanel>
-                <div className="relative">
-                  {columnsEntries.length > 1 && (
-                    <div className="absolute flex w-full items-center justify-end">
-                      <IconButton
-                        label="削除"
-                        size="sm"
-                        onClick={() => {
-                          if (columnsEntries.length <= 1) {
-                            return;
-                          }
-                          setRestrictions((restrictions) => {
-                            return Object.fromEntries(
-                              Object.entries(restrictions).map(
-                                ([restrictionId, restriction]) => {
-                                  if (
-                                    restriction.type === 'foreign'
-                                  ) {
-                                    const firstColumn =
-                                      Object.keys(columns)[0] ?? '';
-                                    return [
-                                      restrictionId,
-                                      {
-                                        ...restriction,
-                                        column:
-                                          restriction.column === id
-                                            ? firstColumn
-                                            : restriction.column,
-                                      },
-                                    ];
-                                  }
-                                  return [
-                                    restrictionId,
-                                    {
-                                      ...restriction,
-                                      columns:
-                                        restriction.columns.filter(
-                                          (columnId) =>
-                                            columnId !== id,
-                                        ),
-                                    },
-                                  ];
-                                },
-                              ),
-                            );
-                          });
-                          setColumns(
-                            Object.fromEntries(
-                              columnsEntries.filter(
-                                ([columnId]) => columnId !== id,
-                              ),
-                            ),
-                          );
-                        }}
-                      >
-                        <XMarkIcon className="h-6 w-6" />
-                      </IconButton>
-                    </div>
-                  )}
-                  <CreateColumn
-                    column={column}
-                    setColumn={(value) =>
-                      setColumns(
-                        Object.fromEntries(
-                          columnsEntries.map(([columnId, column]) => {
-                            if (columnId === id) {
-                              return [columnId, value];
-                            }
-                            return [columnId, column];
-                          }),
-                        ),
-                      )
-                    }
-                    columnError={columnError}
-                  />
-                </div>
-              </AccordionPanel>
-            </AccordionItem>
-          );
-        })}
-      </Accordion>
+      {showTable ? (
+        <CreateColumnsByTable
+          handleChangeColumn={handleChangeColumn}
+          handleDeleteColumn={handleDeleteColumn}
+          columnsEntries={columnsEntries}
+          columnsError={columnsError}
+        />
+      ) : (
+        <CreateColumnsByForm
+          handleChangeColumn={handleChangeColumn}
+          handleDeleteColumn={handleDeleteColumn}
+          columnsEntries={columnsEntries}
+          columnsError={columnsError}
+        />
+      )}
     </fieldset>
   );
 };
