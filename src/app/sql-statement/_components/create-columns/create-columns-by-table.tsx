@@ -41,7 +41,7 @@ export const CreateColumnsByTable: FC<Props> = ({
   handleChangeColumn;
 
   return (
-    <div className="max-w-full overflow-hidden rounded-lg border border-borderLight">
+    <div className="w-[calc(100vw-64px)] max-w-[51rem] overflow-x-auto rounded-lg border border-borderLight">
       <table className="w-[51rem]">
         <thead>
           <tr className="border-b border-borderLight">
