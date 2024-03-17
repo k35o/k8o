@@ -4,8 +4,7 @@ import { useState } from 'react';
 import { Table } from '../../_types/table';
 
 const meta: Meta<typeof CreateTable> = {
-  title: 'app/sql-statement/table-info',
-  component: CreateTable,
+  title: 'app/sql-statement/create-table',
   tags: ['autodocs'],
 };
 
