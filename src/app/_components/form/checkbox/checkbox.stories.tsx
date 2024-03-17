@@ -16,7 +16,7 @@ export const Default: Story = {
     const [value, setValue] = useState(false);
 
     return (
-      <Checkbox label="radio" value={value} onChange={setValue} />
+      <Checkbox label="checkbox" value={value} onChange={setValue} />
     );
   },
 };
