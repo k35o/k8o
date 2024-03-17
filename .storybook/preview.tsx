@@ -8,7 +8,6 @@ const font = M_PLUS_2({ subsets: ['latin'] });
 
 const preview: Preview = {
   parameters: {
-    actions: { argTypesRegex: '^on[A-Z].*' },
     controls: {
       matchers: {
         color: /(background|color)$/i,
