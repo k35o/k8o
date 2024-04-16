@@ -1,35 +1,32 @@
 import clsx from 'clsx';
-import { FC, PropsWithChildren, ReactEventHandler } from 'react';
+import { FC, PropsWithChildren } from 'react';
 
-type Props = PropsWithChildren<{
+type IconLinkProps = PropsWithChildren<{
   size?: 'sm' | 'md' | 'lg';
-  disabled?: boolean;
   label: string;
-  onClick: ReactEventHandler<HTMLButtonElement>;
+  href: string;
 }>;
 
-export const IconButton: FC<Props> = ({
+export const IconLink: FC<IconLinkProps> = ({
   size = 'md',
-  disabled = false,
   label,
-  onClick,
+  href,
   children,
 }) => {
   return (
-    <button
+    <a
       className={clsx(
         'rounded-full bg-transparent bg-white hover:bg-grayHover focus-visible:ring-2 focus-visible:ring-focusRing active:bg-grayActive',
         size === 'sm' && 'p-1',
         size === 'md' && 'p-2',
         size === 'lg' && 'p-3',
-        disabled &&
-          'cursor-not-allowed opacity-50 hover:bg-white active:bg-white',
       )}
-      disabled={disabled}
-      onClick={onClick}
+      target="_blank"
+      rel="noopener noreferrer"
+      href={href}
       aria-label={label}
     >
       {children}
-    </button>
+    </a>
   );
 };
