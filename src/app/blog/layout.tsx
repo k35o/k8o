@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import { Heading } from '../_components/heading';
+import { ExternalBlog } from './_components/external-blog';
 
 export const metadata = {
   title: 'Blog',
@@ -29,9 +30,12 @@ export default function Layout({
         rel="stylesheet"
       />
       <div className="flex flex-col gap-4">
-        <Link href="/blog">
-          <Heading type="h2">Blog</Heading>
-        </Link>
+        <div className="flex items-center justify-between">
+          <Link href="/blog">
+            <Heading type="h2">Blog</Heading>
+          </Link>
+          <ExternalBlog />
+        </div>
         {children}
       </div>
     </>
