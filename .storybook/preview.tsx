@@ -14,6 +14,7 @@ const preview: Preview = {
         date: /Date$/,
       },
     },
+    mockingDate: new Date(2023, 0, 2),
   },
   decorators: [
     (Story) => (
