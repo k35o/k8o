@@ -125,8 +125,8 @@ devDependencies:
     specifier: ^8.0.8
     version: 8.0.8(react-dom@18.2.0)(react@18.2.0)
   storybook-addon-mock-date:
-    specifier: ^0.4.0
-    version: 0.4.0
+    specifier: ^0.4.2
+    version: 0.4.2
   tailwindcss:
     specifier: 3.4.3
     version: 3.4.3
@@ -9634,8 +9634,8 @@ packages:
     resolution: {integrity: sha512-siT1RiqlfQnGqgT/YzXVUNsom9S0H1OX+dpdGN1xkyYATo4I6sep5NmsRD/40s3IIOvlCq6akxkqG82urIZW1w==}
     dev: true
 
-  /storybook-addon-mock-date@0.4.0:
-    resolution: {integrity: sha512-byBcp1QKqB0UbPsWWd+4MMj7evBzdC8gX+yK40ZBX4Ai2GKJNsZ7uwrAKTSNYh2YZtOX4aXAqsu8tt7InGwxkg==}
+  /storybook-addon-mock-date@0.4.2:
+    resolution: {integrity: sha512-wN3catIwrdD6/jqmkjyHUGVg/YOSxhfjoD1Cu+VIODfw1M1X3CxQsFjPoBxvEQ9PNL2znLgw+1Nf8HAqHeaCXA==}
     dev: true
 
   /storybook@8.0.8(react-dom@18.2.0)(react@18.2.0):
