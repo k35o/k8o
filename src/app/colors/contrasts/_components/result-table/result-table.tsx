@@ -118,7 +118,7 @@ export const ResultTable: FC<Props> = ({
             )}
           </td>
           <td
-            className="rounded-b-md px-4 text-[18.66px] font-bold"
+            className="rounded-b-md px-4 text-[18.66px]"
             style={{
               color: compareColor,
               backgroundColor: baseColor,
