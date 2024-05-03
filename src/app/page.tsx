@@ -35,6 +35,12 @@ export default function Home() {
         title="Blog"
         description="ブログです。"
       />
+      <AppCard
+        link="https://t2o.k8o.me"
+        emotion="📝"
+        title="t2o"
+        description="（開発中）タスクを管理するアプリケーションです。"
+      />
     </div>
   );
 }
