@@ -8,7 +8,7 @@ export const metadata = {
     title: 'SQL Statement',
     description:
       'テーブルの作成など、SQLに関するコマンドを作成する機能を提供します。',
-    url: 'https://k8o.vercel.app/sql-statement',
+    url: 'https://k8o.me/sql-statement',
   },
   twitter: {
     title: 'SQL Statement',

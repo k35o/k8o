@@ -6,7 +6,7 @@ export const metadata = {
   openGraph: {
     title: '文字数カウンター',
     description: '入力した文字数をカウントします。',
-    url: 'https://k8o.vercel.app/characters/counter',
+    url: 'https://k8o.me/characters/counter',
   },
   twitter: {
     title: '文字数カウンター',

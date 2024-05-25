@@ -6,7 +6,7 @@ export const metadata = {
   openGraph: {
     title: 'コントラスト比チェッカー',
     description: 'コントラスト比をチェックします',
-    url: 'https://k8o.vercel.app/colors/contrasts',
+    url: 'https://k8o.me/colors/contrasts',
   },
   twitter: {
     title: 'コントラスト比チェッカー',

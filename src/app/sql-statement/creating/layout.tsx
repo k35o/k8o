@@ -6,7 +6,7 @@ export const metadata = {
   openGraph: {
     title: 'テーブル作成',
     description: 'テーブルを作成するSQL文を生成します',
-    url: 'https://k8o.vercel.app/sql-statement/creating',
+    url: 'https://k8o.me/sql-statement/creating',
   },
   twitter: {
     title: 'テーブル作成',

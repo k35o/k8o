@@ -9,7 +9,7 @@ export const metadata = {
     title: 'Characters',
     description:
       '入力した文字の検索など、文字に対する操作を提供します。',
-    url: 'https://k8o.vercel.app/characters',
+    url: 'https://k8o.me/characters',
   },
   twitter: {
     title: 'Characters',
