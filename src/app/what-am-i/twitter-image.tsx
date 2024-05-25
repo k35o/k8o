@@ -27,7 +27,7 @@ export default async function TwitterImage() {
       >
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
-          src="https://k8o.vercel.app/icon.png"
+          src="https://k8o.me/icon.png"
           width={256}
           height={256}
           alt="アイコン"

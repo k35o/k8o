@@ -16,7 +16,7 @@ export const metadata = {
   openGraph: {
     title: 'k8o',
     description: 'k8oのトップページ',
-    url: 'https://k8o.vercel.app',
+    url: 'https://k8o.me',
   },
   twitter: {
     title: 'k8o',

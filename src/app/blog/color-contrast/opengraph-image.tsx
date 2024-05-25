@@ -16,17 +16,45 @@ export default async function OpenGraphImage() {
     (
       <div
         style={{
-          background: 'linear-gradient(70deg, blue, pink);',
+          alignItems: 'center',
+          display: 'flex',
+          backgroundImage: 'linear-gradient(70deg, #cbd5e1, #5eead4)',
+          justifyContent: 'center',
           width: '100%',
           height: '100%',
-          padding: '32px',
         }}
       >
-        <div className="flex h-full w-full flex-col justify-evenly rounded-md bg-white p-16">
-          <p className="text-6xl font-bold">
+        <div
+          style={{
+            background: 'white',
+            width: 1136,
+            height: 566,
+            display: 'flex',
+            flexDirection: 'column',
+            justifyContent: 'space-around',
+            borderRadius: 6,
+          }}
+        >
+          <p
+            style={{
+              margin: 64,
+              color: 'black',
+              fontSize: 60,
+              fontWeight: 'bold',
+            }}
+          >
             色のコントラスト比は重要だけどどうやって求めるんだっけ？
           </p>
-          <p className="self-end text-9xl">⚖️</p>
+          <p
+            style={{
+              margin: 64,
+              marginTop: 0,
+              fontSize: 128,
+              alignSelf: 'flex-end',
+            }}
+          >
+            ⚖️
+          </p>
         </div>
       </div>
     ),

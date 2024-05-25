@@ -6,7 +6,7 @@ export const metadata = {
   openGraph: {
     title: '日本語校正くん',
     description: 'テキストエリアに入力した文章の校正を行います。',
-    url: 'https://k8o.vercel.app/characters/check-syntax',
+    url: 'https://k8o.me/characters/check-syntax',
   },
   twitter: {
     title: '日本語校正くん',
