@@ -16,27 +16,30 @@ export default async function OpenGraphImage() {
     (
       <div
         style={{
+          alignItems: 'center',
+          display: 'flex',
           background: 'linear-gradient(70deg, #cbd5e1, #5eead4)',
+          justifyContent: 'center',
           width: '100%',
           height: '100%',
-          padding: '32px',
         }}
       >
         <div
           style={{
             background: 'white',
-            width: '100%',
-            height: '100%',
+            width: 1136,
+            height: 566,
             display: 'flex',
             flexDirection: 'column',
             justifyContent: 'space-evenly',
-            padding: '64px',
-            borderRadius: '6px',
+            borderRadius: 6,
           }}
         >
           <p
             style={{
-              fontSize: '60px',
+              margin: 64,
+              color: 'black',
+              fontSize: 60,
               fontWeight: 'bold',
             }}
           >
@@ -44,7 +47,9 @@ export default async function OpenGraphImage() {
           </p>
           <p
             style={{
-              fontSize: '128px',
+              margin: 64,
+              marginTop: 0,
+              fontSize: 128,
               alignSelf: 'flex-end',
             }}
           >
