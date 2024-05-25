@@ -101,8 +101,8 @@ devDependencies:
     specifier: 18.3.0
     version: 18.3.0
   chromatic:
-    specifier: ^11.3.0
-    version: 11.3.0
+    specifier: ^11.4.0
+    version: 11.4.0
   eslint:
     specifier: 8.57.0
     version: 8.57.0
@@ -5246,8 +5246,8 @@ packages:
     engines: {node: '>=10'}
     dev: true
 
-  /chromatic@11.3.0:
-    resolution: {integrity: sha512-q1ZtJDJrjLGnz60ivpC16gmd7KFzcaA4eTb7gcytCqbaKqlHhCFr1xQmcUDsm14CK7JsqdkFU6S+JQdOd2ZNJg==}
+  /chromatic@11.4.0:
+    resolution: {integrity: sha512-/O6OwEUckqKTBGbm9KvYsR/eKCXy4s2eelO38yyfimBIJiL8+TS/pVnBqdtzUqO2hVK4GjrFiea9CnZUG9Akzw==}
     hasBin: true
     peerDependencies:
       '@chromatic-com/cypress': ^0.*.* || ^1.0.0
