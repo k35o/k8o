@@ -60,8 +60,8 @@ dependencies:
     specifier: 3.4.3
     version: 3.4.3
   zod:
-    specifier: ^3.23.5
-    version: 3.23.5
+    specifier: ^3.23.8
+    version: 3.23.8
 
 devDependencies:
   '@storybook/addon-a11y':
@@ -11619,8 +11619,8 @@ packages:
     engines: {node: '>=12.20'}
     dev: true
 
-  /zod@3.23.5:
-    resolution: {integrity: sha512-fkwiq0VIQTksNNA131rDOsVJcns0pfVUjHzLrNBiF/O/Xxb5lQyEXkhZWcJ7npWsYlvs+h0jFWXXy4X46Em1JA==}
+  /zod@3.23.8:
+    resolution: {integrity: sha512-XBx9AXhXktjUqnepgTiE5flcKIYWi/rme0Eaj+5Y0lftuGBq+jyRu/md4WnuxqgP1ubdpNCsYEYPxrzVHD8d6g==}
     dev: false
 
   /zwitch@2.0.4:
