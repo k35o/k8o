@@ -31,7 +31,7 @@ export default async function OpenGraphImage() {
             height: 566,
             display: 'flex',
             flexDirection: 'column',
-            justifyContent: 'space-evenly',
+            justifyContent: 'space-around',
             borderRadius: 6,
           }}
         >
