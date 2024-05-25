@@ -128,8 +128,8 @@ devDependencies:
     specifier: ^8.1.3
     version: 8.1.3(react-dom@18.3.1)(react@18.3.1)
   storybook-addon-mock-date:
-    specifier: ^0.4.2
-    version: 0.4.2
+    specifier: ^0.6.0
+    version: 0.6.0
   typescript:
     specifier: 5.4.5
     version: 5.4.5
@@ -10523,8 +10523,8 @@ packages:
     resolution: {integrity: sha512-siT1RiqlfQnGqgT/YzXVUNsom9S0H1OX+dpdGN1xkyYATo4I6sep5NmsRD/40s3IIOvlCq6akxkqG82urIZW1w==}
     dev: true
 
-  /storybook-addon-mock-date@0.4.2:
-    resolution: {integrity: sha512-wN3catIwrdD6/jqmkjyHUGVg/YOSxhfjoD1Cu+VIODfw1M1X3CxQsFjPoBxvEQ9PNL2znLgw+1Nf8HAqHeaCXA==}
+  /storybook-addon-mock-date@0.6.0:
+    resolution: {integrity: sha512-cwVB3tc0RK7jOJZ48rcn0UaYtLW1124VOdN9xZOsbeqA/Enb3VsS12VEry8sThyz0UdZmuIKZ7TWjIxGkT9Ifw==}
     dev: true
 
   /storybook@8.1.3(react-dom@18.3.1)(react@18.3.1):
