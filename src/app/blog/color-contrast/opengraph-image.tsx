@@ -16,7 +16,7 @@ export default async function OpenGraphImage() {
     (
       <div
         style={{
-          background: 'linear-gradient(70deg, blue, pink);',
+          background: 'linear-gradient(70deg, #cbd5e1, #5eead4)',
           width: '100%',
           height: '100%',
           padding: '32px',
