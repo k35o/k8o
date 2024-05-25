@@ -22,11 +22,34 @@ export default async function OpenGraphImage() {
           padding: '32px',
         }}
       >
-        <div className="flex h-full w-full flex-col justify-evenly rounded-md bg-white p-16">
-          <p className="text-6xl font-bold">
+        <div
+          style={{
+            background: 'white',
+            width: '100%',
+            height: '100%',
+            display: 'flex',
+            flexDirection: 'column',
+            justifyContent: 'space-evenly',
+            padding: '64px',
+            borderRadius: '6px',
+          }}
+        >
+          <p
+            style={{
+              fontSize: '60px',
+              fontWeight: 'bold',
+            }}
+          >
             色のコントラスト比は重要だけどどうやって求めるんだっけ？
           </p>
-          <p className="self-end text-9xl">⚖️</p>
+          <p
+            style={{
+              fontSize: '128px',
+              alignSelf: 'flex-end',
+            }}
+          >
+            ⚖️
+          </p>
         </div>
       </div>
     ),
