@@ -27,6 +27,7 @@ export default function Layout({
   return (
     <div className="flex flex-col gap-4">
       <article className="rounded-lg bg-white px-1 py-14 pt-4 sm:px-10">
+        <p className="text-end text-slate-400">2024/02/12に公開</p>
         {children}
       </article>
     </div>
