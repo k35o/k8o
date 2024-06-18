@@ -1,6 +1,21 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "extends": [
-    "config:recommended"
+    "config:recommended",
+    "monorepo:storybook",
+    "monorepo:react",
+    "monorepo:nextjs"
+  ],
+  "timezone": "Asia/Tokyo",
+  "prConcurrentLimit": 10,
+  "schedule": [
+    "before 10pm"
+  ],
+  "packageRules": [
+    {
+      "matchUpdateTypes": ["minor", "patch"],
+      "matchCurrentVersion": "!/^0/",
+      "automerge": true
+    }
   ]
 }
