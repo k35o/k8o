@@ -8,9 +8,7 @@
   ],
   "timezone": "Asia/Tokyo",
   "prConcurrentLimit": 10,
-  "schedule": [
-    "before 10pm"
-  ],
+  "schedule": ["every weekend"],
   "packageRules": [
     {
       "matchUpdateTypes": ["minor", "patch"],
