@@ -6,27 +6,27 @@ export function useMDXComponents(
 ): MDXComponents {
   return {
     h1: ({ children }) => (
-      <h2 className="pb-4 pt-6 text-xl font-bold sm:text-2xl">
+      <h2 className="mb-4 mt-6 text-xl font-bold sm:text-2xl">
         {children}
       </h2>
     ),
     h2: ({ children }) => (
-      <h3 className="py-4 text-xl font-bold sm:text-2xl">
+      <h3 className="my-4 text-xl font-bold sm:text-2xl">
         {children}
       </h3>
     ),
     h3: ({ children }) => (
-      <h4 className="py-4 text-lg font-bold sm:text-xl">
+      <h4 className="my-4 text-lg font-bold sm:text-xl">
         {children}
       </h4>
     ),
     h4: ({ children }) => (
-      <h5 className="py-4 text-base font-bold sm:text-lg">
+      <h5 className="my-4 text-base font-bold sm:text-lg">
         {children}
       </h5>
     ),
     h5: ({ children }) => (
-      <h6 className="py-4 text-sm font-bold sm:text-base">
+      <h6 className="my-4 text-sm font-bold sm:text-base">
         {children}
       </h6>
     ),
