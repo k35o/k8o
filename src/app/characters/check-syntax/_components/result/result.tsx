@@ -7,8 +7,8 @@ import {
   useIsBackSyntaxFixer,
   useResetResult,
 } from '../../_state/text';
-import { Button } from '@/app/_components/button';
-import { Heading } from '@/app/_components/heading';
+import { Button } from '@/components/button';
+import { Heading } from '@/components/heading';
 import { ClipboardIcon } from '@heroicons/react/24/solid';
 
 export const Result: FC = () => {

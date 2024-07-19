@@ -5,9 +5,9 @@ import {
   Restriction,
   RestrictionType,
 } from '../../_types/restriction';
-import { Select } from '@/app/_components/form/select/select';
-import { TextField } from '@/app/_components/form/text-field';
-import { Autocomplete } from '@/app/_components/form/autocomplete';
+import { Select } from '@/components/form/select/select';
+import { TextField } from '@/components/form/text-field';
+import { Autocomplete } from '@/components/form/autocomplete';
 
 const TYPE_OPTIONS = [
   { value: 'primary', label: 'PRIMARY KEY' },

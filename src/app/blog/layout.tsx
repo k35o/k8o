@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { Heading } from '../_components/heading';
+import { Heading } from '../../components/heading';
 import { ExternalBlog } from './_components/external-blog';
 
 export const metadata = {

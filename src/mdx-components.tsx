@@ -1,5 +1,5 @@
 import type { MDXComponents } from 'mdx/types';
-import { Anchor } from './app/_components/anchor';
+import { Anchor } from './components/anchor';
 
 export function useMDXComponents(
   components: MDXComponents,

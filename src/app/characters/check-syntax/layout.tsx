@@ -1,4 +1,4 @@
-import { Heading } from '@/app/_components/heading';
+import { Heading } from '@/components/heading';
 
 export const metadata = {
   title: '日本語校正くん',

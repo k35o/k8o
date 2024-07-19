@@ -12,8 +12,8 @@ import {
   AccordionButton,
   AccordionItem,
   AccordionPanel,
-} from '@/app/_components/accordion';
-import { Button } from '@/app/_components/button';
+} from '@/components/accordion';
+import { Button } from '@/components/button';
 
 export const VerifiedSyntax: FC = () => {
   const text = useRecoilValue(textState);

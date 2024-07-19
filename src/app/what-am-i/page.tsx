@@ -1,11 +1,11 @@
 import Image from 'next/image';
 import k8o from './_images/k8o.jpg';
-import { Heading } from '../_components/heading';
-import { GithubMark } from '../_components/icons';
-import { Zenn } from '../_components/icons/zenn';
-import { Twitter } from '../_components/icons/twitter';
-import { Qiita } from '../_components/icons/qiita';
-import { IconLink } from '../_components/icon-link';
+import { Heading } from '../../components/heading';
+import { GithubMark } from '../../components/icons';
+import { Zenn } from '../../components/icons/zenn';
+import { Twitter } from '../../components/icons/twitter';
+import { Qiita } from '../../components/icons/qiita';
+import { IconLink } from '../../components/icon-link';
 
 export default function Page() {
   return (

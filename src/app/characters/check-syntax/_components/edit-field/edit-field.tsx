@@ -1,13 +1,13 @@
 'use client';
 
-import { Textarea } from '@/app/_components/form/textarea';
+import { Textarea } from '@/components/form/textarea';
 import {
   ResultMessage,
   resultMessagesState,
   resultTextState,
   useTextField,
 } from '../../_state/text';
-import { Button } from '@/app/_components/button';
+import { Button } from '@/components/button';
 import { FormEventHandler, useId, useState } from 'react';
 import { checkJapaneseSyntax } from '../../_utils/japaneseSyntax';
 import { useSetRecoilState } from 'recoil';

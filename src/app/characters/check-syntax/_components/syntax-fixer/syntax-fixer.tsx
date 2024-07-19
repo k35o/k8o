@@ -9,22 +9,22 @@ import {
   useResetResult,
   useSetFixTextsField,
 } from '../../_state/text';
-import { Button } from '@/app/_components/button';
-import { IconButton } from '@/app/_components/icon-button';
+import { Button } from '@/components/button';
+import { IconButton } from '@/components/icon-button';
 import {
   ChevronLeftIcon,
   ChevronRightIcon,
 } from '@heroicons/react/24/solid';
 import { useStep } from '@/app/_hooks/step';
-import { Alert } from '@/app/_components/alert';
-import { Heading } from '@/app/_components/heading';
-import { Textarea } from '@/app/_components/form/textarea';
+import { Alert } from '@/components/alert';
+import { Heading } from '@/components/heading';
+import { Textarea } from '@/components/form/textarea';
 import {
   Accordion,
   AccordionButton,
   AccordionItem,
   AccordionPanel,
-} from '@/app/_components/accordion';
+} from '@/components/accordion';
 import { useRecoilValue } from 'recoil';
 
 export const SyntaxFixer: FC = () => {

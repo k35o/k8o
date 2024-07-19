@@ -3,8 +3,8 @@ import {
   AccordionButton,
   AccordionItem,
   AccordionPanel,
-} from '@/app/_components/accordion';
-import { IconButton } from '@/app/_components/icon-button';
+} from '@/components/accordion';
+import { IconButton } from '@/components/icon-button';
 import { XMarkIcon } from '@heroicons/react/24/solid';
 import { FC, useId } from 'react';
 import {
@@ -12,9 +12,9 @@ import {
   ColumnType,
   InvalidColumns,
 } from '../../_types/column';
-import { TextField } from '@/app/_components/form/text-field';
-import { Select } from '@/app/_components/form/select/select';
-import { Radio } from '@/app/_components/form/radio';
+import { TextField } from '@/components/form/text-field';
+import { Select } from '@/components/form/select/select';
+import { Radio } from '@/components/form/radio';
 
 type Props = {
   handleChangeColumn: (id: string) => (column: Column) => void;

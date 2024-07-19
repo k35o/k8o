@@ -1,7 +1,7 @@
 'use client';
 
-import { Option, Select } from '@/app/_components/form/select/select';
-import { TextField } from '@/app/_components/form/text-field';
+import { Option, Select } from '@/components/form/select/select';
+import { TextField } from '@/components/form/text-field';
 import { ArrowRightIcon } from '@heroicons/react/24/solid';
 import { useId, useMemo, useState } from 'react';
 import { ColorTip } from './color-tip';

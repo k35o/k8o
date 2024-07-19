@@ -1,5 +1,5 @@
 import { AppCard } from './_components/app-card';
-import { Heading } from './_components/heading';
+import { Heading } from '../components/heading';
 
 export default function Home() {
   return (

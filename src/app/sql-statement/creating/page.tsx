@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { InvalidTable, Table } from '../_types/table';
 import { Column, InvalidColumns } from '../_types/column';
 import { CreateTable } from '../_components/create-table';
-import { Button } from '@/app/_components/button';
+import { Button } from '@/components/button';
 import { makeStatement } from './_utils/statement';
 import {
   InvalidRestrictions,

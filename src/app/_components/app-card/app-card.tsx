@@ -1,6 +1,6 @@
 import { Route } from 'next';
 import Link from 'next/link';
-import { Heading } from '../heading';
+import { Heading } from '../../../components/heading';
 
 export const AppCard = <T extends string>({
   link,

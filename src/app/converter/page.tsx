@@ -1,4 +1,4 @@
-import { Heading } from '../_components/heading';
+import { Heading } from '../../components/heading';
 import { BaseConverter } from './_components/base-converter';
 import { ColorConverter } from './_components/color-converter';
 

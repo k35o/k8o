@@ -1,6 +1,6 @@
 'use client';
 
-import { Textarea } from '@/app/_components/form/textarea';
+import { Textarea } from '@/components/form/textarea';
 import { useTextField } from '../../_state/text';
 import { TextLength } from '../text-length';
 import { useDeferredValue, useId } from 'react';

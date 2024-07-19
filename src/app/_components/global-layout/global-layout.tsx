@@ -1,8 +1,8 @@
 import Link from 'next/link';
 import { FC, ReactNode } from 'react';
-import { Heading } from '../heading';
-import { GithubMark } from '../icons';
-import { IconLink } from '../icon-link';
+import { Heading } from '../../../components/heading';
+import { GithubMark } from '../../../components/icons';
+import { IconLink } from '../../../components/icon-link';
 
 export const GlobalLayout: FC<{ children: ReactNode }> = ({
   children,

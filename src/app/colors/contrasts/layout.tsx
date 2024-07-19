@@ -1,4 +1,4 @@
-import { Heading } from '@/app/_components/heading';
+import { Heading } from '@/components/heading';
 
 export const metadata = {
   title: 'コントラスト比チェッカー',

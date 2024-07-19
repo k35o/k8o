@@ -1,4 +1,4 @@
-import { TextField } from '@/app/_components/form/text-field';
+import { TextField } from '@/components/form/text-field';
 import { FC, useId } from 'react';
 import { InvalidTable, Table } from '../../_types/table';
 

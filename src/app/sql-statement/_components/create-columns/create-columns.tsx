@@ -1,6 +1,6 @@
 import { FC } from 'react';
 import { Column, InvalidColumns } from '../../_types/column';
-import { Button } from '@/app/_components/button';
+import { Button } from '@/components/button';
 import {
   QueueListIcon,
   TableCellsIcon,
