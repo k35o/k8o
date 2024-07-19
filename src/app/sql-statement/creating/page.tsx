@@ -53,7 +53,7 @@ export default function Page() {
     useState<InvalidRestrictions['errors']>();
 
   return (
-    <section className="flex flex-col gap-6 rounded-md bg-white p-4">
+    <section className="flex flex-col gap-6 rounded-lg bg-white p-4">
       <CreateTable
         table={table}
         setTable={setTable}
