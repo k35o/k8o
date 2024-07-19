@@ -3,7 +3,7 @@ import { Heading } from './_components/heading';
 
 export default function Home() {
   return (
-    <div className="flex flex-col gap-4">
+    <div className="flex flex-col gap-6">
       <Heading type="h2">Collection</Heading>
       <AppCard
         link="/characters"

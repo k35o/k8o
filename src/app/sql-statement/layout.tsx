@@ -24,7 +24,7 @@ export default function Layout({
   children: React.ReactNode;
 }) {
   return (
-    <div className="flex flex-col gap-4">
+    <div className="flex flex-col gap-6">
       <Heading type="h2">SQL Statement</Heading>
       {children}
     </div>

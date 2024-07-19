@@ -29,7 +29,7 @@ export default function Layout({
         href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css"
         rel="stylesheet"
       />
-      <div className="flex flex-col gap-4">
+      <div className="flex flex-col gap-6">
         <div className="flex items-center justify-between">
           <Link href="/blog">
             <Heading type="h2">Blog</Heading>

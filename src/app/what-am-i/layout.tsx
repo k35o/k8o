@@ -21,7 +21,7 @@ export default function Layout({
   children: React.ReactNode;
 }) {
   return (
-    <div className="flex h-full flex-col gap-4">
+    <div className="flex h-full flex-col gap-6">
       <Heading type="h2">What am I ?</Heading>
       {children}
     </div>
