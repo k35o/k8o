@@ -21,7 +21,7 @@ export default function Layout({
   children: React.ReactNode;
 }) {
   return (
-    <div className="flex flex-col gap-4">
+    <div className="flex h-full flex-col gap-4">
       <Heading type="h3">日本語校正くん</Heading>
       {children}
     </div>

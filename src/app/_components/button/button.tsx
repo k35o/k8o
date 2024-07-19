@@ -13,7 +13,7 @@ export const Button: FC<
     variant?: 'contained' | 'outlined';
     disabled?: boolean;
     fullWidth?: boolean;
-    onClick: ReactEventHandler<HTMLButtonElement>;
+    onClick?: ReactEventHandler<HTMLButtonElement>;
     startIcon?: ReactNode;
     endIcon?: ReactNode;
   }>

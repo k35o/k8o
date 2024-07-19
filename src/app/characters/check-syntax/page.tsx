@@ -6,5 +6,9 @@ import { useStatus } from './_state/text';
 
 export default function CheckSyntax() {
   const status = useStatus();
-  return <>{status.isExecuted ? <CheckedField /> : <EditField />}</>;
+  return (
+    <div className="h-full rounded-md bg-white p-10">
+      {status.isExecuted ? <CheckedField /> : <EditField />}
+    </div>
+  );
 }

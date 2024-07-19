@@ -8,17 +8,19 @@ import {
   useTextField,
 } from '../../_state/text';
 import { Button } from '@/app/_components/button';
-import { useState } from 'react';
+import { FormEventHandler, useId, useState } from 'react';
 import { checkJapaneseSyntax } from '../../_utils/japaneseSyntax';
 import { useSetRecoilState } from 'recoil';
 
 export const EditField = () => {
+  const id = useId();
   const { text, handleTextChange } = useTextField();
   const [isMutating, setIsMutating] = useState(false);
   const setResultText = useSetRecoilState(resultTextState);
   const setResultMessages = useSetRecoilState(resultMessagesState);
 
-  const handleCheck = async () => {
+  const handleCheck: FormEventHandler = async (e) => {
+    e.preventDefault();
     setIsMutating(true);
     checkJapaneseSyntax({ text })
       .then((res) => {
@@ -39,16 +41,22 @@ export const EditField = () => {
   };
 
   return (
-    <div className="flex flex-col gap-4">
-      <Textarea
-        value={text}
-        onChange={handleTextChange}
-        placeholder="ここに文字列を入力してください"
-        rows={10}
-      />
-      <Button onClick={handleCheck} fullWidth disabled={isMutating}>
-        チェック
+    <form className="flex flex-col gap-4" onSubmit={handleCheck}>
+      <fieldset className="flex flex-col gap-2">
+        <label className="font-bold" htmlFor={id}>
+          校正したいテキスト
+        </label>
+        <Textarea
+          id={id}
+          value={text}
+          onChange={handleTextChange}
+          placeholder="近来音楽は、著しき進歩発達をなし、歌曲の作世に顕はれたるもの少しとせず、然れども、是等多くは通常音楽の普及伝播を旨とせる学校唱歌にして、之より程度の高きものは極めて少し、其稍高尚なるものに至りては、皆西洋の歌曲を採り、之が歌詞に代ふるに我歌詞を以てし、単に字句の数を割当るに止まるが故に、多くは原曲の妙味を害ふに至る。中には頗る其原曲の声調に合へるものなきにしもあらずと雖も、素より変則の仕方なれば、これを以て完美したりと称し難き事は何人も承知する所なり。余や敢えて其欠を補ふの任に当るに足らずと雖も、常に此事を遺憾とするが故に、これ迄研究せし結果、即我歌詞に基きて作曲したるものゝ内二三を公にし、以て此道に資する所あらんとす。幸に先輩識者の是正を賜はるあらば、余の幸栄之に過ぎざるなり。（「四季」緒言 滝廉太郎）"
+          rows={10}
+        />
+      </fieldset>
+      <Button type="submit" fullWidth disabled={isMutating}>
+        校正する
       </Button>
-    </div>
+    </form>
   );
 };

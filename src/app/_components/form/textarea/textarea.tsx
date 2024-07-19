@@ -1,6 +1,7 @@
 import { FC, useEffect, useRef } from 'react';
 
 type Props = {
+  id?: string;
   value: string;
   onChange: (value: string) => void;
   placeholder?: string;
@@ -9,6 +10,7 @@ type Props = {
 };
 
 export const Textarea: FC<Props> = ({
+  id,
   value,
   onChange,
   placeholder,
@@ -25,6 +27,7 @@ export const Textarea: FC<Props> = ({
   });
   return (
     <textarea
+      id={id}
       ref={ref}
       value={value}
       onChange={(e) => onChange(e.target.value)}
