@@ -3,7 +3,7 @@
 import { Option, Select } from '@/app/_components/form/select/select';
 import { TextField } from '@/app/_components/form/text-field';
 import { ArrowRightIcon } from '@heroicons/react/24/solid';
-import { useMemo, useState } from 'react';
+import { useId, useMemo, useState } from 'react';
 
 type Base = 2 | 8 | 10 | 16;
 
@@ -37,6 +37,7 @@ const convertNumber = (
 };
 
 export const BaseConverter = () => {
+  const id = useId();
   const [baseFrom, setBaseFrom] = useState<Base>(10);
   const [baseTo, setBaseTo] = useState<Base>(10);
   const handleChangeBase = (
@@ -58,24 +59,45 @@ export const BaseConverter = () => {
 
   return (
     <div className="flex flex-col gap-4">
-      <div className="flex items-center justify-center gap-2">
-        <Select
-          value={baseFrom.toString()}
-          onChange={(value) => handleChangeBase(value, setBaseFrom)}
-          options={BASE_OPTIONS}
+      <div className="flex items-center justify-center gap-3">
+        <fieldset className="flex w-full flex-col gap-2">
+          <label className="font-bold" htmlFor={`${id}-form`}>
+            変換前
+          </label>
+          <Select
+            id={`${id}-form`}
+            value={baseFrom.toString()}
+            onChange={(value) => handleChangeBase(value, setBaseFrom)}
+            options={BASE_OPTIONS}
+          />
+        </fieldset>
+        <ArrowRightIcon
+          className="size-10 stroke-2"
+          aria-label="右矢印"
         />
-        <ArrowRightIcon className="h-8 w-8" aria-label="右矢印" />
-        <Select
-          value={baseTo.toString()}
-          onChange={(value) => handleChangeBase(value, setBaseTo)}
-          options={BASE_OPTIONS}
-        />
+        <fieldset className="flex w-full flex-col gap-2">
+          <label className="font-bold" htmlFor={`${id}-to`}>
+            変換後
+          </label>
+          <Select
+            id={`${id}-to`}
+            value={baseTo.toString()}
+            onChange={(value) => handleChangeBase(value, setBaseTo)}
+            options={BASE_OPTIONS}
+          />
+        </fieldset>
       </div>
-      <TextField
-        value={textFrom}
-        onChange={(textFrom: string) => setTextFrom(textFrom)}
-      />
-      <p className="text-center text-lg font-bold">{textTo}</p>
+      <fieldset className="flex w-full flex-col gap-2">
+        <label className="font-bold" htmlFor={id}>
+          変換する値
+        </label>
+        <TextField
+          id={id}
+          value={textFrom}
+          onChange={(textFrom: string) => setTextFrom(textFrom)}
+        />
+      </fieldset>
+      <p className="text-center text-xl font-bold">{textTo}</p>
     </div>
   );
 };
