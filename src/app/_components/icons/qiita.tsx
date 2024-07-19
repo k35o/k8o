@@ -1,6 +1,9 @@
 import { FC } from 'react';
 
-export const Qiita: FC<{ className?: string }> = ({ className }) => {
+export const Qiita: FC<{ title?: string; className?: string }> = ({
+  title,
+  className,
+}) => {
   return (
     <svg
       className={className}
@@ -9,6 +12,7 @@ export const Qiita: FC<{ className?: string }> = ({ className }) => {
       viewBox="0 0 300 300"
       enableBackground="new 0 0 300 300"
     >
+      <title>{title ? title : 'Qiita'}</title>
       <path
         fill="#55C500"
         opacity="1.000000"

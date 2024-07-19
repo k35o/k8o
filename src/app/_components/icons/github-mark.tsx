@@ -1,8 +1,9 @@
 import { FC } from 'react';
 
-export const GithubMark: FC<{ className?: string }> = ({
-  className,
-}) => {
+export const GithubMark: FC<{
+  title?: string;
+  className?: string;
+}> = ({ title, className }) => {
   return (
     <svg
       className={className}
@@ -11,6 +12,7 @@ export const GithubMark: FC<{ className?: string }> = ({
       height="96"
       xmlns="http://www.w3.org/2000/svg"
     >
+      <title>{title ? title : 'GitHub'}</title>
       <path
         fillRule="evenodd"
         clipRule="evenodd"

@@ -8,11 +8,11 @@ import { FC } from 'react';
 export const ExternalBlog: FC = () => {
   return (
     <div className="flex gap-4">
-      <IconLink label="qiita" href="https://qiita.com/KokiSakano">
-        <Qiita className="h-6 w-6" />
+      <IconLink href="https://qiita.com/KokiSakano">
+        <Qiita title="Qiitaのアカウント" className="h-6 w-6" />
       </IconLink>
-      <IconLink label="zenn" href="https://zenn.dev/kokisakano">
-        <Zenn className="h-6 w-6" />
+      <IconLink href="https://zenn.dev/kokisakano">
+        <Zenn title="Zennのアカウント" className="h-6 w-6" />
       </IconLink>
     </div>
   );

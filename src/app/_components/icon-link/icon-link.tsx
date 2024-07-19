@@ -3,7 +3,7 @@ import { FC, PropsWithChildren } from 'react';
 
 type IconLinkProps = PropsWithChildren<{
   size?: 'sm' | 'md' | 'lg';
-  label: string;
+  label?: string;
   href: string;
 }>;
 
