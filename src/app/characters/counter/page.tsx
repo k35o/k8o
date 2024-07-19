@@ -2,7 +2,7 @@ import { TextField } from './_components/text-field';
 
 export default function Counter() {
   return (
-    <section className="flex h-full flex-col justify-between gap-4 rounded-md bg-white p-10">
+    <section className="flex h-full flex-col justify-between gap-4 rounded-lg bg-white p-10">
       <TextField />
       <div className="mt-4 text-right">
         <p className="text-sm">
