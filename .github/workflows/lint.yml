@@ -30,4 +30,8 @@ jobs:
       - name: Install dependencies
         run: pnpm install
       - name: Run lint
-        run: pnpm lint
+        run: pnpm run type-check
+      - name: Run format
+        run: pnpm run format
+      - name: Run lint
+        run: pnpm run lint

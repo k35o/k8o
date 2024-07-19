@@ -1,13 +1,13 @@
 import { FC } from 'react';
 import { Column } from '../../_types/column';
-import { Button } from '@/app/_components/button';
+import { Button } from '@/components/button';
 import {
   Accordion,
   AccordionButton,
   AccordionItem,
   AccordionPanel,
-} from '@/app/_components/accordion';
-import { IconButton } from '@/app/_components/icon-button';
+} from '@/components/accordion';
+import { IconButton } from '@/components/icon-button';
 import { XMarkIcon } from '@heroicons/react/24/solid';
 import {
   InvalidRestrictions,

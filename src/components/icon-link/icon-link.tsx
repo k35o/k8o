@@ -3,7 +3,7 @@ import { FC, PropsWithChildren } from 'react';
 
 type IconLinkProps = PropsWithChildren<{
   size?: 'sm' | 'md' | 'lg';
-  label: string;
+  label?: string;
   href: string;
 }>;
 
@@ -16,7 +16,7 @@ export const IconLink: FC<IconLinkProps> = ({
   return (
     <a
       className={clsx(
-        'rounded-full bg-transparent bg-white hover:bg-grayHover focus-visible:ring-2 focus-visible:ring-focusRing active:bg-grayActive',
+        'block rounded-full bg-transparent bg-white hover:bg-grayHover focus-visible:ring-2 focus-visible:ring-focusRing active:bg-grayActive',
         size === 'sm' && 'p-1',
         size === 'md' && 'p-2',
         size === 'lg' && 'p-3',

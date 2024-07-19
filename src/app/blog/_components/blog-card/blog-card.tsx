@@ -1,5 +1,5 @@
-import { Heading } from '@/app/_components/heading';
-import { TextTag } from '@/app/_components/text-tag';
+import { Heading } from '@/components/heading';
+import { TextTag } from '@/components/text-tag';
 import { Route } from 'next';
 import Link from 'next/link';
 

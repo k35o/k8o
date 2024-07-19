@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { Heading } from '../_components/heading';
+import { Heading } from '../../components/heading';
 
 export const metadata = {
   title: 'Colors',
@@ -22,7 +22,7 @@ export default function Layout({
   children: React.ReactNode;
 }) {
   return (
-    <div className="flex flex-col gap-4">
+    <div className="flex h-full flex-col gap-6">
       <Link href="/colors">
         <Heading type="h2">Colors</Heading>
       </Link>

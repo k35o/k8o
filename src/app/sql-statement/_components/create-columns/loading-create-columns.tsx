@@ -1,5 +1,5 @@
 import { FC } from 'react';
-import { Button } from '@/app/_components/button';
+import { Button } from '@/components/button';
 
 export const LoadingCreateColumns: FC = () => {
   return (

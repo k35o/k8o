@@ -1,4 +1,4 @@
-import { Heading } from '../_components/heading';
+import { Heading } from '../../components/heading';
 
 export const metadata = {
   title: 'Converter',
@@ -24,7 +24,7 @@ export default function Layout({
   children: React.ReactNode;
 }) {
   return (
-    <div className="flex flex-col gap-4">
+    <div className="flex flex-col gap-6">
       <Heading type="h2">Converter</Heading>
       {children}
     </div>

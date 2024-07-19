@@ -7,8 +7,8 @@ import {
   useIsBackSyntaxFixer,
   useResetResult,
 } from '../../_state/text';
-import { Button } from '@/app/_components/button';
-import { Heading } from '@/app/_components/heading';
+import { Button } from '@/components/button';
+import { Heading } from '@/components/heading';
 import { ClipboardIcon } from '@heroicons/react/24/solid';
 
 export const Result: FC = () => {
@@ -18,7 +18,7 @@ export const Result: FC = () => {
   const isCheckResult = useIsBackSyntaxFixer();
 
   return (
-    <div className="flex flex-col items-center justify-center gap-8 rounded-md bg-white p-10">
+    <div className="flex flex-col items-center justify-center gap-8">
       <div className="flex w-full justify-between gap-4">
         <Button variant="outlined" onClick={isCheckResult}>
           修正画面に戻る
@@ -27,14 +27,14 @@ export const Result: FC = () => {
           最初に戻る
         </Button>
       </div>
-      <section aria-labelledby={id} className="grid w-full gap-2">
+      <section aria-labelledby={id} className="grid w-full gap-3">
         <div className="flex items-center justify-between">
           <Heading id={id} type="h4">
             修正後のテキスト
           </Heading>
           <Button
             onClick={() => navigator.clipboard.writeText(fixedText)}
-            endIcon={<ClipboardIcon className="h-6 w-6" />}
+            endIcon={<ClipboardIcon title="" className="h-6 w-6" />}
           >
             テキストをコピーする
           </Button>

@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import { FC } from 'react';
 
-import { Heading } from '@/app/_components/heading';
+import { Heading } from '@/components/heading';
 
 const Component: FC = () => {
   return (
