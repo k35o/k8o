@@ -11,7 +11,7 @@ type Props = {
 export const Checkbox: FC<Props> = ({ label, value, onChange }) => {
   const [isFocus, setIsFocus] = useState(false);
   return (
-    <label className="focus-visible:[ inline-flex cursor-pointer items-center gap-2">
+    <label className="inline-flex cursor-pointer items-center gap-2">
       <input
         type="checkbox"
         className="invisible-input-checkbox"
