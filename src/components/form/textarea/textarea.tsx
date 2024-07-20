@@ -2,7 +2,11 @@ import clsx from 'clsx';
 import { FC, useEffect, useRef } from 'react';
 
 type Props = {
-  id?: string;
+  id: string;
+  describedbyId: string | undefined;
+  isInvalid: boolean;
+  isDisabled: boolean;
+  isRequired: boolean;
   value: string;
   onChange: (value: string) => void;
   placeholder?: string;
@@ -13,6 +17,10 @@ type Props = {
 
 export const Textarea: FC<Props> = ({
   id,
+  describedbyId,
+  isInvalid,
+  isDisabled,
+  isRequired,
   value,
   onChange,
   placeholder,
@@ -34,10 +42,18 @@ export const Textarea: FC<Props> = ({
       ref={ref}
       value={value}
       onChange={(e) => onChange(e.target.value)}
+      aria-describedby={describedbyId}
+      aria-invalid={isInvalid}
+      aria-required={isRequired}
       className={clsx(
-        'w-full resize-none rounded-md border border-borderLight px-3 py-2 focus-visible:border-transparent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focusRing',
+        'w-full resize-none rounded-md border border-border px-3 py-2',
+        'hover:bg-grayHover',
+        'aria-invalid:border-error',
+        'disabled:cursor-not-allowed disabled:border-borderLight disabled:bg-gray disabled:text-gray',
+        'focus-visible:border-transparent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focusRing',
         fullHeight && 'h-full',
       )}
+      disabled={isDisabled}
       placeholder={placeholder}
       rows={rows}
       onKeyDown={(e) => {

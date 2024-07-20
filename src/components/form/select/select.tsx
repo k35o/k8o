@@ -1,5 +1,6 @@
 import { FC } from 'react';
 import { ChevronDownIcon } from '@heroicons/react/24/solid';
+import clsx from 'clsx';
 
 export type Option = Readonly<{
   value: string;
@@ -7,7 +8,11 @@ export type Option = Readonly<{
 }>;
 
 type Props = {
-  id?: string;
+  id: string;
+  describedbyId: string | undefined;
+  isInvalid: boolean;
+  isDisabled: boolean;
+  isRequired: boolean;
   options: readonly Option[];
   value: string;
   onChange: (value: string) => void;
@@ -15,6 +20,10 @@ type Props = {
 
 export const Select: FC<Props> = ({
   id,
+  describedbyId,
+  isInvalid,
+  isDisabled,
+  isRequired,
   options,
   value,
   onChange,
@@ -23,9 +32,19 @@ export const Select: FC<Props> = ({
     <div className="relative h-fit w-full">
       <select
         id={id}
-        className="w-full appearance-none rounded-md border border-borderLight px-3 py-2 shadow-sm focus-visible:border-transparent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focusRing"
+        aria-describedby={describedbyId}
+        aria-invalid={isInvalid}
+        aria-required={isRequired}
+        className={clsx(
+          'w-full appearance-none rounded-md border border-border px-3 py-2 shadow-sm',
+          'hover:bg-grayHover',
+          'aria-invalid:border-error',
+          'disabled:cursor-not-allowed disabled:border-borderLight disabled:bg-gray disabled:text-gray',
+          'focus-visible:border-transparent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focusRing',
+        )}
         value={value}
         onChange={(e) => onChange(e.target.value)}
+        disabled={isDisabled}
       >
         {options.map((option) => (
           <option key={option.value} value={option.value}>

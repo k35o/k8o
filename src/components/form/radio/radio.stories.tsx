@@ -21,10 +21,31 @@ export const Default: Story = {
 
     return (
       <Radio
-        labelledById="radio"
+        labelId="radio"
         value={value}
         onChange={setValue}
         options={options}
+        isDisabled={false}
+      />
+    );
+  },
+};
+
+export const Disabled: Story = {
+  render: () => {
+    const options = [
+      { value: '0', label: 'はい' },
+      { value: '1', label: 'いいえ' },
+    ];
+    const [value, setValue] = useState('0');
+
+    return (
+      <Radio
+        labelId="radio"
+        value={value}
+        onChange={setValue}
+        options={options}
+        isDisabled
       />
     );
   },

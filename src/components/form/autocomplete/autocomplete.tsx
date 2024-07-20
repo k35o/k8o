@@ -9,7 +9,11 @@ export type Option = Readonly<{
 }>;
 
 type Props = {
-  id?: string;
+  id: string;
+  describedbyId: string | undefined;
+  isInvalid: boolean;
+  isDisabled: boolean;
+  isRequired: boolean;
   options: readonly Option[];
   value: string[];
   onChange: (value: string[]) => void;
@@ -17,6 +21,10 @@ type Props = {
 
 export const Autocomplete: FC<Props> = ({
   id,
+  describedbyId,
+  isInvalid,
+  isDisabled,
+  isRequired,
   options,
   value,
   onChange,
@@ -50,7 +58,13 @@ export const Autocomplete: FC<Props> = ({
   return (
     <div
       ref={ref}
-      className="relative w-full rounded-md border border-borderLight shadow-sm focus-within:border-transparent focus-within:outline-none focus-within:ring-2 focus-within:ring-focusRing"
+      className={clsx(
+        'relative w-full rounded-md border border-border shadow-sm',
+        'focus-within:border-transparent focus-within:outline-none focus-within:ring-2 focus-within:ring-focusRing',
+        'has-[:hover]:bg-grayHover',
+        'has-[[aria-invalid=true]]:border-error',
+        'has-[:disabled]:cursor-not-allowed has-[:disabled]:border-borderLight has-[:disabled]:bg-gray has-[:disabled]:text-gray',
+      )}
     >
       <div className="flex min-h-12 items-center justify-between gap-2 px-3 py-2">
         <div className="flex w-full flex-wrap gap-1">
@@ -81,12 +95,19 @@ export const Autocomplete: FC<Props> = ({
           })}
           <input
             id={id}
+            aria-describedby={describedbyId}
             role="combobox"
             aria-expanded={open}
             aria-autocomplete="list"
             aria-controls={open ? `${id}_listbox` : undefined}
-            className="grow focus-visible:outline-none"
+            aria-invalid={isInvalid}
+            aria-required={isRequired}
+            className={clsx(
+              'grow bg-transparent focus-visible:outline-none',
+              'disabled:cursor-not-allowed',
+            )}
             type="text"
+            disabled={isDisabled}
             value={text}
             autoComplete="off"
             placeholder="入力して絞り込めます"

@@ -1,6 +1,7 @@
 import { TextField } from '@/components/form/text-field';
-import { FC, useId } from 'react';
+import { FC } from 'react';
 import { InvalidTable, Table } from '../../_types/table';
+import { FormControl } from '@/components/form/form-control/form-control';
 
 type Props = {
   table: Table;
@@ -13,8 +14,6 @@ export const CreateTable: FC<Props> = ({
   setTable,
   tableError,
 }) => {
-  const id = useId();
-
   const handleChangeTableName = (name: string) => {
     setTable({ ...table, name });
   };
@@ -27,34 +26,38 @@ export const CreateTable: FC<Props> = ({
     <fieldset className="rounded-md p-2">
       <legend className="text-lg font-bold">テーブル情報</legend>
       <div className="flex flex-col justify-center gap-4">
-        <div className="flex flex-col gap-2">
-          <label htmlFor={`table-name_${id}`} className="font-bold">
-            テーブル名
-          </label>
-          <TextField
-            id={`table-name_${id}`}
-            value={table.name}
-            onChange={handleChangeTableName}
-            placeholder="users"
-          />
-          {tableError?.name && (
-            <p className="text-sm text-red-500">{tableError.name}</p>
-          )}
-        </div>
-        <div className="flex flex-col justify-center gap-2">
-          <label htmlFor={`table-alias_${id}`} className="font-bold">
-            コメント
-          </label>
-          <TextField
-            id={`table-alias_${id}`}
-            value={table.alias}
-            onChange={handleChangeTableAlias}
-            placeholder="ユーザーテーブル"
-          />
-          {tableError?.alias && (
-            <p className="text-sm text-red-500">{tableError.alias}</p>
-          )}
-        </div>
+        <FormControl
+          label="テーブル名"
+          isRequired
+          isInvalid={Boolean(tableError?.name)}
+          errorText={tableError?.name}
+          renderInput={(props) => {
+            return (
+              <TextField
+                value={table.name}
+                onChange={handleChangeTableName}
+                placeholder="users"
+                {...props}
+              />
+            );
+          }}
+        />
+        <FormControl
+          label="コメント"
+          isRequired
+          isInvalid={Boolean(tableError?.alias)}
+          errorText={tableError?.alias}
+          renderInput={(props) => {
+            return (
+              <TextField
+                value={table.alias}
+                onChange={handleChangeTableAlias}
+                placeholder="ユーザーテーブル"
+                {...props}
+              />
+            );
+          }}
+        />
       </div>
     </fieldset>
   );

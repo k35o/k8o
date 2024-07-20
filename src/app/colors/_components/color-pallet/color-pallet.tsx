@@ -1,5 +1,6 @@
 'use client';
-import { ChangeEventHandler, FC, useId } from 'react';
+import { FormControl } from '@/components/form/form-control/form-control';
+import { ChangeEventHandler, FC } from 'react';
 
 type Props = {
   label: string;
@@ -12,26 +13,25 @@ export const ColorPallet: FC<Props> = ({
   color,
   setColor,
 }) => {
-  const id = useId();
   const handleChange: ChangeEventHandler<HTMLInputElement> = (e) => {
     setColor(e.target.value);
   };
 
   return (
-    <div className="flex flex-col gap-1">
-      <label htmlFor={id} className="font-bold">
-        {label}
-      </label>
-      <div className="flex gap-2">
-        <input
-          id={id}
-          className="w-16 flex-grow"
-          type="color"
-          value={color}
-          onChange={handleChange}
-        />
-        <p>{color}</p>
-      </div>
-    </div>
+    <FormControl
+      label={label}
+      renderInput={({ id }) => (
+        <div className="flex gap-2">
+          <input
+            id={id}
+            className="w-16 flex-grow"
+            type="color"
+            value={color}
+            onChange={handleChange}
+          />
+          <p>{color}</p>
+        </div>
+      )}
+    />
   );
 };

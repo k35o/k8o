@@ -6,7 +6,7 @@ import {
 } from '@/components/accordion';
 import { IconButton } from '@/components/icon-button';
 import { XMarkIcon } from '@heroicons/react/24/solid';
-import { FC, useId } from 'react';
+import { FC } from 'react';
 import {
   Column,
   ColumnType,
@@ -15,6 +15,7 @@ import {
 import { TextField } from '@/components/form/text-field';
 import { Select } from '@/components/form/select/select';
 import { Radio } from '@/components/form/radio';
+import { FormControl } from '@/components/form/form-control/form-control';
 
 type Props = {
   handleChangeColumn: (id: string) => (column: Column) => void;
@@ -43,8 +44,6 @@ export const CreateColumnsByForm: FC<Props> = ({
   columnsEntries,
   columnsError,
 }) => {
-  const formId = useId();
-
   return (
     <Accordion>
       {columnsEntries.map(([id, column], idx) => {
@@ -68,122 +67,112 @@ export const CreateColumnsByForm: FC<Props> = ({
                   </div>
                 )}
                 <div className="flex flex-col justify-center gap-4">
-                  <div className="flex flex-col gap-2">
-                    <label
-                      htmlFor={`column-name_${idx}-${formId}`}
-                      className="font-bold"
-                    >
-                      カラム名
-                    </label>
-                    <TextField
-                      id={`column-name_${idx}-${formId}`}
-                      value={column.name}
-                      onChange={(name) =>
-                        handleChangeColumn(id)({ ...column, name })
-                      }
-                      placeholder="id"
-                    />
-                    {columnError?.name && (
-                      <p className="text-sm text-red-500">
-                        {columnError.name}
-                      </p>
+                  <FormControl
+                    label="カラム名"
+                    isRequired
+                    isInvalid={Boolean(columnError?.name)}
+                    errorText={columnError?.name}
+                    renderInput={(props) => {
+                      return (
+                        <TextField
+                          value={column.name}
+                          onChange={(name) =>
+                            handleChangeColumn(id)({
+                              ...column,
+                              name,
+                            })
+                          }
+                          placeholder="id"
+                          {...props}
+                        />
+                      );
+                    }}
+                  />
+                  <FormControl
+                    label="コメント"
+                    isRequired
+                    isInvalid={Boolean(columnError?.alias)}
+                    errorText={columnError?.alias}
+                    renderInput={(props) => {
+                      return (
+                        <TextField
+                          value={column.alias}
+                          onChange={(alias) =>
+                            handleChangeColumn(id)({
+                              ...column,
+                              alias,
+                            })
+                          }
+                          placeholder="ID"
+                          {...props}
+                        />
+                      );
+                    }}
+                  />
+                  <FormControl
+                    label="型"
+                    renderInput={({ describedbyId, ...props }) => {
+                      return (
+                        <Select
+                          describedbyId={describedbyId}
+                          value={column.type}
+                          onChange={(type) =>
+                            handleChangeColumn(id)({
+                              ...column,
+                              type: type as ColumnType,
+                            })
+                          }
+                          options={TYPE_OPTIONS}
+                          {...props}
+                        />
+                      );
+                    }}
+                    isRequired
+                    isInvalid={Boolean(columnError?.type)}
+                    errorText={columnError?.type}
+                  />
+                  <FormControl
+                    label="null許容"
+                    labelAs="legend"
+                    isRequired
+                    isInvalid={Boolean(columnError?.nullable)}
+                    errorText={columnError?.nullable}
+                    renderInput={(props) => (
+                      <Radio
+                        {...props}
+                        value={column.nullable ? '0' : '1'}
+                        onChange={(type) =>
+                          handleChangeColumn(id)({
+                            ...column,
+                            nullable: type === '0',
+                          })
+                        }
+                        options={[
+                          { value: '0', label: '許容' },
+                          { value: '1', label: '不許容' },
+                        ]}
+                      />
                     )}
-                  </div>
-                  <div className="flex flex-col gap-2">
-                    <label
-                      htmlFor={`column-alias_${idx}-${formId}`}
-                      className="font-bold"
-                    >
-                      コメント
-                    </label>
-                    <TextField
-                      id={`column-alias_${idx}-${formId}`}
-                      value={column.alias}
-                      onChange={(alias) =>
-                        handleChangeColumn(id)({ ...column, alias })
-                      }
-                      placeholder="ID"
-                    />
-                    {columnError?.alias && (
-                      <p className="text-sm text-red-500">
-                        {columnError.alias}
-                      </p>
-                    )}
-                  </div>
-                  <div className="flex flex-col gap-2">
-                    <label
-                      htmlFor={`column-type_${idx}-${formId}`}
-                      className="font-bold"
-                    >
-                      型
-                    </label>
-                    <Select
-                      id={`column-type_${idx}-${formId}`}
-                      value={column.type}
-                      onChange={(type) =>
-                        handleChangeColumn(id)({
-                          ...column,
-                          type: type as ColumnType,
-                        })
-                      }
-                      options={TYPE_OPTIONS}
-                    />
-                    {columnError?.type && (
-                      <p className="text-sm text-red-500">
-                        {columnError.type}
-                      </p>
-                    )}
-                  </div>
-                  <div className="flex flex-col gap-2">
-                    <p
-                      id={`nullable_${idx}-${formId}`}
-                      className="font-bold"
-                    >
-                      null許容
-                    </p>
-                    <Radio
-                      labelledById={`nullable_${idx}-${formId}`}
-                      value={column.nullable ? '0' : '1'}
-                      onChange={(type) =>
-                        handleChangeColumn(id)({
-                          ...column,
-                          nullable: type === '0',
-                        })
-                      }
-                      options={[
-                        { value: '0', label: '許容' },
-                        { value: '1', label: '不許容' },
-                      ]}
-                    />
-                    {columnError?.nullable && (
-                      <p className="text-sm text-red-500">
-                        {columnError.nullable}
-                      </p>
-                    )}
-                  </div>
-                  <div className="flex flex-col gap-2">
-                    <p
-                      id={`default_${idx}-${formId}`}
-                      className="font-bold"
-                    >
-                      デフォルト値
-                    </p>
-                    <TextField
-                      id={`default_${idx}-${formId}`}
-                      value={column.default ?? ''}
-                      onChange={(defaultVal) =>
-                        handleChangeColumn(id)({
-                          ...column,
-                          default: defaultVal,
-                        })
-                      }
-                    />
-                    {columnError?.default && (
-                      <p className="text-sm text-red-500">
-                        {columnError.default}
-                      </p>
-                    )}
-                  </div>
+                  />
+                  <FormControl
+                    label="デフォルト値"
+                    isInvalid={Boolean(columnError?.default)}
+                    errorText={columnError?.default}
+                    renderInput={(props) => {
+                      return (
+                        <TextField
+                          value={column.default ?? ''}
+                          onChange={(defaultVal) =>
+                            handleChangeColumn(id)({
+                              ...column,
+                              default: defaultVal,
+                            })
+                          }
+                          {...props}
+                        />
+                      );
+                    }}
+                  />
                 </div>
               </div>
             </AccordionPanel>

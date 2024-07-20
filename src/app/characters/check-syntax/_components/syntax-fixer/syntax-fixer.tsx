@@ -26,6 +26,7 @@ import {
   AccordionPanel,
 } from '@/components/accordion';
 import { useRecoilValue } from 'recoil';
+import { FormControl } from '@/components/form/form-control/form-control';
 
 export const SyntaxFixer: FC = () => {
   const invalidCount = useInvalidCount();
@@ -97,17 +98,20 @@ const FixText: FC<{ count: number }> = ({ count }) => {
           <Heading id={`fixer_${id}`} type="h4">
             テキストを修正
           </Heading>
-          <div className="flex flex-col gap-2">
-            <label htmlFor={`fix-text_${id}`} className="font-bold">
-              修正後のテキスト
-            </label>
-            <Textarea
-              id={`fix-text_${id}`}
-              value={fixText}
-              onChange={handleFixTextChange}
-              autoResize
-            />
-          </div>
+          <FormControl
+            label="修正後のテキスト"
+            renderInput={(props) => {
+              return (
+                <Textarea
+                  {...props}
+                  value={fixText}
+                  onChange={handleFixTextChange}
+                  autoResize
+                  isRequired
+                />
+              );
+            }}
+          />
         </section>
         <section aria-labelledby={`all_${id}`} className="w-full">
           <Accordion>

@@ -1,9 +1,10 @@
 'use client';
 
+import { FormControl } from '@/components/form/form-control/form-control';
 import { Option, Select } from '@/components/form/select/select';
 import { TextField } from '@/components/form/text-field';
 import { ArrowRightIcon } from '@heroicons/react/24/solid';
-import { useId, useMemo, useState } from 'react';
+import { useMemo, useState } from 'react';
 
 type Base = 2 | 8 | 10 | 16;
 
@@ -37,7 +38,6 @@ const convertNumber = (
 };
 
 export const BaseConverter = () => {
-  const id = useId();
   const [baseFrom, setBaseFrom] = useState<Base>(10);
   const [baseTo, setBaseTo] = useState<Base>(10);
   const handleChangeBase = (
@@ -60,43 +60,53 @@ export const BaseConverter = () => {
   return (
     <div className="flex flex-col gap-4">
       <div className="flex items-center justify-center gap-3">
-        <fieldset className="flex w-full flex-col gap-2">
-          <label className="font-bold" htmlFor={`${id}-form`}>
-            変換前
-          </label>
-          <Select
-            id={`${id}-form`}
-            value={baseFrom.toString()}
-            onChange={(value) => handleChangeBase(value, setBaseFrom)}
-            options={BASE_OPTIONS}
-          />
-        </fieldset>
+        <FormControl
+          label="変換前"
+          renderInput={(props) => {
+            return (
+              <Select
+                value={baseFrom.toString()}
+                onChange={(value) =>
+                  handleChangeBase(value, setBaseFrom)
+                }
+                options={BASE_OPTIONS}
+                {...props}
+              />
+            );
+          }}
+        />
         <ArrowRightIcon
           className="size-10 stroke-2"
           aria-label="右矢印"
         />
-        <fieldset className="flex w-full flex-col gap-2">
-          <label className="font-bold" htmlFor={`${id}-to`}>
-            変換後
-          </label>
-          <Select
-            id={`${id}-to`}
-            value={baseTo.toString()}
-            onChange={(value) => handleChangeBase(value, setBaseTo)}
-            options={BASE_OPTIONS}
-          />
-        </fieldset>
-      </div>
-      <fieldset className="flex w-full flex-col gap-2">
-        <label className="font-bold" htmlFor={id}>
-          変換する値
-        </label>
-        <TextField
-          id={id}
-          value={textFrom}
-          onChange={(textFrom: string) => setTextFrom(textFrom)}
+        <FormControl
+          label="変換後"
+          renderInput={(props) => {
+            return (
+              <Select
+                value={baseTo.toString()}
+                onChange={(value) =>
+                  handleChangeBase(value, setBaseTo)
+                }
+                options={BASE_OPTIONS}
+                {...props}
+              />
+            );
+          }}
         />
-      </fieldset>
+      </div>
+      <FormControl
+        label="変換する値"
+        renderInput={(props) => {
+          return (
+            <TextField
+              value={textFrom}
+              onChange={(textFrom: string) => setTextFrom(textFrom)}
+              {...props}
+            />
+          );
+        }}
+      />
       <p className="text-center text-xl font-bold">{textTo}</p>
     </div>
   );
