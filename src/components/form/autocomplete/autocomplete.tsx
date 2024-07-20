@@ -102,7 +102,10 @@ export const Autocomplete: FC<Props> = ({
             aria-controls={open ? `${id}_listbox` : undefined}
             aria-invalid={isInvalid}
             aria-required={isRequired}
-            className="grow bg-transparent focus-visible:outline-none"
+            className={clsx(
+              'grow bg-transparent focus-visible:outline-none',
+              'disabled:cursor-not-allowed',
+            )}
             type="text"
             disabled={isDisabled}
             value={text}
