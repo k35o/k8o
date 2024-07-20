@@ -85,6 +85,38 @@ const Component: FC = () => {
               </p>
             </div>
           </div>
+          <div>
+            <Heading type="h2">info</Heading>
+            <div className="flex h-36 w-52 rounded-md border border-border p-2">
+              <p className="text-info">
+                いろはにほへとちりぬるをわかよたれそつねならむうゐのおくやまけふこえてあさきゆめみしゑひもせすん
+              </p>
+            </div>
+          </div>
+          <div>
+            <Heading type="h2">success</Heading>
+            <div className="flex h-36 w-52 rounded-md border border-border p-2">
+              <p className="text-success">
+                いろはにほへとちりぬるをわかよたれそつねならむうゐのおくやまけふこえてあさきゆめみしゑひもせすん
+              </p>
+            </div>
+          </div>
+          <div>
+            <Heading type="h2">warning</Heading>
+            <div className="flex h-36 w-52 rounded-md border border-border p-2">
+              <p className="text-warning">
+                いろはにほへとちりぬるをわかよたれそつねならむうゐのおくやまけふこえてあさきゆめみしゑひもせすん
+              </p>
+            </div>
+          </div>
+          <div>
+            <Heading type="h2">info</Heading>
+            <div className="flex h-36 w-52 rounded-md border border-border p-2">
+              <p className="text-error">
+                いろはにほへとちりぬるをわかよたれそつねならむうゐのおくやまけふこえてあさきゆめみしゑひもせすん
+              </p>
+            </div>
+          </div>
         </div>
       </section>
       <section>
