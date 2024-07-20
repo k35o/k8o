@@ -5,6 +5,8 @@ const meta: Meta<typeof Select> = {
   title: 'components/form/select',
   component: Select,
   args: {
+    id: 'select',
+    describedbyId: 'select-feedback',
     options: [
       { value: '2', label: '2進数' },
       { value: '8', label: '8進数' },
@@ -22,8 +24,6 @@ type Story = StoryObj<typeof Select>;
 
 export const Default: Story = {
   args: {
-    id: 'select',
-    describedbyId: 'select-feedback',
     isDisabled: false,
     isInvalid: false,
     isRequired: false,
@@ -32,8 +32,6 @@ export const Default: Story = {
 
 export const Invalid: Story = {
   args: {
-    id: 'select',
-    describedbyId: 'select-feedback',
     isDisabled: false,
     isInvalid: true,
     isRequired: false,
@@ -42,8 +40,6 @@ export const Invalid: Story = {
 
 export const Disabled: Story = {
   args: {
-    id: 'select',
-    describedbyId: 'select-feedback',
     isDisabled: true,
     isInvalid: false,
     isRequired: false,

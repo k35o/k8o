@@ -3,7 +3,7 @@
 import { Option, Select } from '@/components/form/select/select';
 import { TextField } from '@/components/form/text-field';
 import { ArrowRightIcon } from '@heroicons/react/24/solid';
-import { useId, useMemo, useState } from 'react';
+import { useMemo, useState } from 'react';
 import { ColorTip } from './color-tip';
 import {
   hexToRgb,
@@ -21,7 +21,6 @@ const COLOR_TYPE_OPTIONS = [
 ] as const satisfies readonly Option[];
 
 export const ColorConverter = () => {
-  const id = useId();
   const [colorTypeFrom, setColorTypeFrom] =
     useState<ColorType>('hex');
   const [colorTypeTo, setColorTypeTo] = useState<ColorType>('rgb');
@@ -106,51 +105,60 @@ export const ColorConverter = () => {
         />
       </div>
       <div className="flex items-center gap-2">
-        <fieldset className="flex w-full flex-col gap-2">
-          <label className="font-bold" htmlFor={id}>
-            変換する値
-          </label>
-          {colorTypeFrom === 'hex' ? (
-            <div className="flex w-full items-center gap-2">
-              #
-              <TextField
-                id={id}
-                value={hexFrom}
-                onChange={(from: string) => setHexFrom(from)}
-              />
-            </div>
-          ) : (
-            <div className="flex items-center gap-2">
-              rgb(
-              <TextField
-                id={id}
-                value={rgbFrom.r.toString()}
-                onChange={(from: string) =>
-                  handleChangeRgbFrom(from, 'r')
-                }
-              />
-              <TextField
-                value={rgbFrom.g.toString()}
-                onChange={(from: string) =>
-                  handleChangeRgbFrom(from, 'g')
-                }
-              />
-              <TextField
-                value={rgbFrom.b.toString()}
-                onChange={(from: string) =>
-                  handleChangeRgbFrom(from, 'b')
-                }
-              />
-              <TextField
-                value={rgbFrom.a?.toString() ?? ''}
-                onChange={(from: string) =>
-                  handleChangeRgbFrom(from, 'a')
-                }
-              />
-              )
-            </div>
-          )}
-        </fieldset>
+        <FormControl
+          label="変換する値"
+          renderInput={(props) => {
+            if (colorTypeFrom === 'hex') {
+              return (
+                <div className="flex w-full items-center gap-2">
+                  #
+                  <TextField
+                    value={hexFrom}
+                    onChange={(from: string) => setHexFrom(from)}
+                    {...props}
+                  />
+                </div>
+              );
+            }
+            const { id, describedbyId, ...rest } = props;
+            return (
+              <div className="flex items-center gap-2">
+                rgb(
+                <TextField
+                  id={id}
+                  describedbyId={describedbyId}
+                  value={rgbFrom.r.toString()}
+                  onChange={(from: string) =>
+                    handleChangeRgbFrom(from, 'r')
+                  }
+                  {...rest}
+                />
+                <TextField
+                  value={rgbFrom.g.toString()}
+                  onChange={(from: string) =>
+                    handleChangeRgbFrom(from, 'g')
+                  }
+                  {...rest}
+                />
+                <TextField
+                  value={rgbFrom.b.toString()}
+                  onChange={(from: string) =>
+                    handleChangeRgbFrom(from, 'b')
+                  }
+                  {...rest}
+                />
+                <TextField
+                  value={rgbFrom.a?.toString() ?? ''}
+                  onChange={(from: string) =>
+                    handleChangeRgbFrom(from, 'a')
+                  }
+                  {...rest}
+                />
+                )
+              </div>
+            );
+          }}
+        />
       </div>
       <div className="flex items-center justify-center gap-2">
         <ColorTip color={textTo} />

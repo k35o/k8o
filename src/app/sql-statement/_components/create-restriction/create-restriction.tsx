@@ -1,4 +1,4 @@
-import { FC, useId } from 'react';
+import { FC } from 'react';
 import { Column } from '../../_types/column';
 import {
   InvalidRestrictions,
@@ -31,8 +31,6 @@ export const CreateRestriction: FC<Props> = ({
   setRestriction,
   restrictionError,
 }) => {
-  const id = useId();
-
   const columnOptions = Object.entries(columns).map(
     ([id, column]) => ({
       value: id,
@@ -44,10 +42,9 @@ export const CreateRestriction: FC<Props> = ({
     <div className="flex flex-col justify-center gap-4">
       <FormControl
         label="種類"
-        renderInput={({ describedbyId, ...props }) => {
+        renderInput={(props) => {
           return (
             <Select
-              describedbyId={describedbyId}
               value={restriction.type}
               onChange={(type) => {
                 if (type === 'primary') {
@@ -79,9 +76,8 @@ export const CreateRestriction: FC<Props> = ({
         <FormControl
           label="カラム"
           isRequired
-          renderInput={({ describedbyId, ...props }) => (
+          renderInput={(props) => (
             <Autocomplete
-              describedbyId={describedbyId}
               {...props}
               options={columnOptions}
               value={restriction.columns}
@@ -102,10 +98,9 @@ export const CreateRestriction: FC<Props> = ({
             isRequired
             isInvalid={Boolean(restrictionError?.column)}
             errorText={restrictionError?.column}
-            renderInput={({ describedbyId, ...props }) => {
+            renderInput={(props) => {
               return (
                 <Select
-                  describedbyId={describedbyId}
                   value={restriction.column}
                   onChange={(column) => {
                     if (restriction.type === 'foreign') {
@@ -121,52 +116,46 @@ export const CreateRestriction: FC<Props> = ({
               );
             }}
           />
-          <div className="flex flex-col gap-2">
-            <label
-              htmlFor={`reference-tablee_${id}`}
-              className="font-bold"
-            >
-              参照先のテーブル名
-            </label>
-            <TextField
-              id={`reference-table_${id}`}
-              value={restriction.reference.table}
-              onChange={(table) =>
-                setRestriction({
-                  ...restriction,
-                  reference: { ...restriction.reference, table },
-                })
-              }
-            />
-            {restrictionError?.referrence?.table && (
-              <p className="text-sm text-red-500">
-                {restrictionError.referrence.table}
-              </p>
-            )}
-          </div>
-          <div className="flex flex-col gap-2">
-            <label
-              htmlFor={`reference-column_${id}`}
-              className="font-bold"
-            >
-              参照先のカラム名
-            </label>
-            <TextField
-              id={`reference-column_${id}`}
-              value={restriction.reference.column}
-              onChange={(column) =>
-                setRestriction({
-                  ...restriction,
-                  reference: { ...restriction.reference, column },
-                })
-              }
-            />
-            {restrictionError?.referrence?.column && (
-              <p className="text-sm text-red-500">
-                {restrictionError.referrence.column}
-              </p>
-            )}
-          </div>
+          <FormControl
+            label="参照先のテーブル名"
+            isRequired
+            isInvalid={Boolean(restrictionError?.referrence?.table)}
+            errorText={restrictionError?.referrence?.table}
+            renderInput={(props) => {
+              return (
+                <TextField
+                  {...props}
+                  value={restriction.reference.table}
+                  onChange={(table) =>
+                    setRestriction({
+                      ...restriction,
+                      reference: { ...restriction.reference, table },
+                    })
+                  }
+                />
+              );
+            }}
+          />
+          <FormControl
+            label="参照先のカラム名"
+            isRequired
+            isInvalid={Boolean(restrictionError?.referrence?.column)}
+            errorText={restrictionError?.referrence?.column}
+            renderInput={(props) => {
+              return (
+                <TextField
+                  {...props}
+                  value={restriction.reference.column}
+                  onChange={(column) =>
+                    setRestriction({
+                      ...restriction,
+                      reference: { ...restriction.reference, column },
+                    })
+                  }
+                />
+              );
+            }}
+          />
         </>
       )}
     </div>

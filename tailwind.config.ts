@@ -10,7 +10,7 @@ module.exports = {
         primaryHover: colors.teal[800],
         primaryActive: colors.teal[900],
         gray: colors.gray[100],
-        grayHover: colors.gray[200],
+        grayHover: colors.gray[100],
         grayActive: colors.gray[300],
         textGray: colors.gray[700],
         link: colors.blue[600],

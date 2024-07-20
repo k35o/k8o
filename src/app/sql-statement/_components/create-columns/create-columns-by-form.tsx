@@ -69,48 +69,48 @@ export const CreateColumnsByForm: FC<Props> = ({
                   </div>
                 )}
                 <div className="flex flex-col justify-center gap-4">
-                  <div className="flex flex-col gap-2">
-                    <label
-                      htmlFor={`column-name_${idx}-${formId}`}
-                      className="font-bold"
-                    >
-                      カラム名
-                    </label>
-                    <TextField
-                      id={`column-name_${idx}-${formId}`}
-                      value={column.name}
-                      onChange={(name) =>
-                        handleChangeColumn(id)({ ...column, name })
-                      }
-                      placeholder="id"
-                    />
-                    {columnError?.name && (
-                      <p className="text-sm text-red-500">
-                        {columnError.name}
-                      </p>
-                    )}
-                  </div>
-                  <div className="flex flex-col gap-2">
-                    <label
-                      htmlFor={`column-alias_${idx}-${formId}`}
-                      className="font-bold"
-                    >
-                      コメント
-                    </label>
-                    <TextField
-                      id={`column-alias_${idx}-${formId}`}
-                      value={column.alias}
-                      onChange={(alias) =>
-                        handleChangeColumn(id)({ ...column, alias })
-                      }
-                      placeholder="ID"
-                    />
-                    {columnError?.alias && (
-                      <p className="text-sm text-red-500">
-                        {columnError.alias}
-                      </p>
-                    )}
-                  </div>
+                  <FormControl
+                    label="カラム名"
+                    isRequired
+                    isInvalid={Boolean(columnError?.name)}
+                    errorText={columnError?.name}
+                    renderInput={(props) => {
+                      return (
+                        <TextField
+                          value={column.name}
+                          onChange={(name) =>
+                            handleChangeColumn(id)({
+                              ...column,
+                              name,
+                            })
+                          }
+                          placeholder="id"
+                          {...props}
+                        />
+                      );
+                    }}
+                  />
+                  <FormControl
+                    label="コメント"
+                    isRequired
+                    isInvalid={Boolean(columnError?.alias)}
+                    errorText={columnError?.alias}
+                    renderInput={(props) => {
+                      return (
+                        <TextField
+                          value={column.alias}
+                          onChange={(alias) =>
+                            handleChangeColumn(id)({
+                              ...column,
+                              alias,
+                            })
+                          }
+                          placeholder="ID"
+                          {...props}
+                        />
+                      );
+                    }}
+                  />
                   <FormControl
                     label="型"
                     renderInput={({ describedbyId, ...props }) => {
@@ -160,29 +160,25 @@ export const CreateColumnsByForm: FC<Props> = ({
                       </p>
                     )}
                   </div>
-                  <div className="flex flex-col gap-2">
-                    <p
-                      id={`default_${idx}-${formId}`}
-                      className="font-bold"
-                    >
-                      デフォルト値
-                    </p>
-                    <TextField
-                      id={`default_${idx}-${formId}`}
-                      value={column.default ?? ''}
-                      onChange={(defaultVal) =>
-                        handleChangeColumn(id)({
-                          ...column,
-                          default: defaultVal,
-                        })
-                      }
-                    />
-                    {columnError?.default && (
-                      <p className="text-sm text-red-500">
-                        {columnError.default}
-                      </p>
-                    )}
-                  </div>
+                  <FormControl
+                    label="デフォルト値"
+                    isInvalid={Boolean(columnError?.default)}
+                    errorText={columnError?.default}
+                    renderInput={(props) => {
+                      return (
+                        <TextField
+                          value={column.default ?? ''}
+                          onChange={(defaultVal) =>
+                            handleChangeColumn(id)({
+                              ...column,
+                              default: defaultVal,
+                            })
+                          }
+                          {...props}
+                        />
+                      );
+                    }}
+                  />
                 </div>
               </div>
             </AccordionPanel>
