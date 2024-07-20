@@ -8,6 +8,7 @@ import {
 import { Select } from '@/components/form/select/select';
 import { TextField } from '@/components/form/text-field';
 import { Autocomplete } from '@/components/form/autocomplete';
+import { FormControl } from '@/components/form/form-control/form-control';
 
 const TYPE_OPTIONS = [
   { value: 'primary', label: 'PRIMARY KEY' },
@@ -77,24 +78,23 @@ export const CreateRestriction: FC<Props> = ({
       </div>
       {(restriction.type === 'primary' ||
         restriction.type === 'unique') && (
-        <div className="flex flex-col gap-2">
-          <label htmlFor={`columns_${id}`} className="font-bold">
-            カラム
-          </label>
-          <Autocomplete
-            id={`columns_${id}`}
-            options={columnOptions}
-            value={restriction.columns}
-            onChange={(columns) =>
-              setRestriction({ ...restriction, columns })
-            }
-          />
-          {restrictionError?.columns && (
-            <p className="text-sm text-red-500">
-              {restrictionError.columns}
-            </p>
+        <FormControl
+          label="カラム"
+          isRequired
+          renderInput={({ describedbyId, ...props }) => (
+            <Autocomplete
+              describedbyId={describedbyId}
+              {...props}
+              options={columnOptions}
+              value={restriction.columns}
+              onChange={(columns) =>
+                setRestriction({ ...restriction, columns })
+              }
+            />
           )}
-        </div>
+          isInvalid={Boolean(restrictionError?.columns)}
+          errorText={restrictionError?.columns}
+        />
       )}
       {restriction.type === 'foreign' && (
         <>
