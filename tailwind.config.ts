@@ -29,6 +29,9 @@ module.exports = {
         bgDark: colors.slate[800],
         focusRing: colors.blue[500],
       },
+      aria: {
+        invalid: 'invalid="true"',
+      },
     },
   },
   plugins: [],

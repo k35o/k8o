@@ -15,6 +15,7 @@ import {
 import { TextField } from '@/components/form/text-field';
 import { Select } from '@/components/form/select/select';
 import { Radio } from '@/components/form/radio';
+import { FormControl } from '@/components/form/form-control/form-control';
 
 type Props = {
   handleChangeColumn: (id: string) => (column: Column) => void;
@@ -110,30 +111,28 @@ export const CreateColumnsByForm: FC<Props> = ({
                       </p>
                     )}
                   </div>
-                  <div className="flex flex-col gap-2">
-                    <label
-                      htmlFor={`column-type_${idx}-${formId}`}
-                      className="font-bold"
-                    >
-                      型
-                    </label>
-                    <Select
-                      id={`column-type_${idx}-${formId}`}
-                      value={column.type}
-                      onChange={(type) =>
-                        handleChangeColumn(id)({
-                          ...column,
-                          type: type as ColumnType,
-                        })
-                      }
-                      options={TYPE_OPTIONS}
-                    />
-                    {columnError?.type && (
-                      <p className="text-sm text-red-500">
-                        {columnError.type}
-                      </p>
-                    )}
-                  </div>
+                  <FormControl
+                    label="型"
+                    renderInput={({ describedbyId, ...props }) => {
+                      return (
+                        <Select
+                          describedbyId={describedbyId}
+                          value={column.type}
+                          onChange={(type) =>
+                            handleChangeColumn(id)({
+                              ...column,
+                              type: type as ColumnType,
+                            })
+                          }
+                          options={TYPE_OPTIONS}
+                          {...props}
+                        />
+                      );
+                    }}
+                    isRequired
+                    isInvalid={Boolean(columnError?.type)}
+                    errorText={columnError?.type}
+                  />
                   <div className="flex flex-col gap-2">
                     <p
                       id={`nullable_${idx}-${formId}`}

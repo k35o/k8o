@@ -35,7 +35,7 @@ export const FormControl: FC<FormControlProps> = ({
         ? `${id}-helptext`
         : undefined;
   return (
-    <div role="group" className="flex flex-col gap-2">
+    <fieldset role="group" className="flex w-full flex-col gap-2">
       {labelAs === 'label' ? (
         <label
           htmlFor={id}
@@ -75,6 +75,6 @@ export const FormControl: FC<FormControlProps> = ({
           </p>
         )
       )}
-    </div>
+    </fieldset>
   );
 };

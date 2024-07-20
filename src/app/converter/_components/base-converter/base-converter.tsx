@@ -1,5 +1,6 @@
 'use client';
 
+import { FormControl } from '@/components/form/form-control/form-control';
 import { Option, Select } from '@/components/form/select/select';
 import { TextField } from '@/components/form/text-field';
 import { ArrowRightIcon } from '@heroicons/react/24/solid';
@@ -60,32 +61,42 @@ export const BaseConverter = () => {
   return (
     <div className="flex flex-col gap-4">
       <div className="flex items-center justify-center gap-3">
-        <fieldset className="flex w-full flex-col gap-2">
-          <label className="font-bold" htmlFor={`${id}-form`}>
-            変換前
-          </label>
-          <Select
-            id={`${id}-form`}
-            value={baseFrom.toString()}
-            onChange={(value) => handleChangeBase(value, setBaseFrom)}
-            options={BASE_OPTIONS}
-          />
-        </fieldset>
+        <FormControl
+          label="変換前"
+          renderInput={({ describedbyId, ...props }) => {
+            return (
+              <Select
+                describedbyId={describedbyId}
+                value={baseFrom.toString()}
+                onChange={(value) =>
+                  handleChangeBase(value, setBaseFrom)
+                }
+                options={BASE_OPTIONS}
+                {...props}
+              />
+            );
+          }}
+        />
         <ArrowRightIcon
           className="size-10 stroke-2"
           aria-label="右矢印"
         />
-        <fieldset className="flex w-full flex-col gap-2">
-          <label className="font-bold" htmlFor={`${id}-to`}>
-            変換後
-          </label>
-          <Select
-            id={`${id}-to`}
-            value={baseTo.toString()}
-            onChange={(value) => handleChangeBase(value, setBaseTo)}
-            options={BASE_OPTIONS}
-          />
-        </fieldset>
+        <FormControl
+          label="変換後"
+          renderInput={({ describedbyId, ...props }) => {
+            return (
+              <Select
+                describedbyId={describedbyId}
+                value={baseTo.toString()}
+                onChange={(value) =>
+                  handleChangeBase(value, setBaseTo)
+                }
+                options={BASE_OPTIONS}
+                {...props}
+              />
+            );
+          }}
+        />
       </div>
       <fieldset className="flex w-full flex-col gap-2">
         <label className="font-bold" htmlFor={id}>

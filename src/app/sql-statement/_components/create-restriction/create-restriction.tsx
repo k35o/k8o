@@ -42,40 +42,38 @@ export const CreateRestriction: FC<Props> = ({
 
   return (
     <div className="flex flex-col justify-center gap-4">
-      <div className="flex flex-col gap-2">
-        <label
-          htmlFor={`restriction-type_${id}`}
-          className="font-bold"
-        >
-          種類
-        </label>
-        <Select
-          id={`restriction-type_${id}`}
-          value={restriction.type}
-          onChange={(type) => {
-            if (type === 'primary') {
-              setRestriction({ type, columns: [] });
-            } else if (type === 'unique') {
-              setRestriction({ type, columns: [] });
-            } else if (type === 'foreign') {
-              setRestriction({
-                type,
-                column: columnOptions[0]?.value ?? '',
-                reference: {
-                  table: '',
-                  column: '',
-                },
-              });
-            }
-          }}
-          options={TYPE_OPTIONS}
-        />
-        {restrictionError?.type && (
-          <p className="text-sm text-red-500">
-            {restrictionError.type}
-          </p>
-        )}
-      </div>
+      <FormControl
+        label="種類"
+        renderInput={({ describedbyId, ...props }) => {
+          return (
+            <Select
+              describedbyId={describedbyId}
+              value={restriction.type}
+              onChange={(type) => {
+                if (type === 'primary') {
+                  setRestriction({ type, columns: [] });
+                } else if (type === 'unique') {
+                  setRestriction({ type, columns: [] });
+                } else if (type === 'foreign') {
+                  setRestriction({
+                    type,
+                    column: columnOptions[0]?.value ?? '',
+                    reference: {
+                      table: '',
+                      column: '',
+                    },
+                  });
+                }
+              }}
+              options={TYPE_OPTIONS}
+              {...props}
+            />
+          );
+        }}
+        isRequired
+        isInvalid={Boolean(restrictionError?.type)}
+        errorText={restrictionError?.type}
+      />
       {(restriction.type === 'primary' ||
         restriction.type === 'unique') && (
         <FormControl
@@ -98,32 +96,31 @@ export const CreateRestriction: FC<Props> = ({
       )}
       {restriction.type === 'foreign' && (
         <>
-          <div className="flex flex-col gap-2">
-            <label
-              htmlFor={`referrer-column_${id}`}
-              className="font-bold"
-            >
-              参照するカラム
-            </label>
-            <Select
-              id={`referrer-column_${id}`}
-              value={restriction.column}
-              onChange={(column) => {
-                if (restriction.type === 'foreign') {
-                  setRestriction({
-                    ...restriction,
-                    column,
-                  });
-                }
-              }}
-              options={columnOptions}
-            />
-            {restrictionError?.column && (
-              <p className="text-sm text-red-500">
-                {restrictionError.column}
-              </p>
-            )}
-          </div>
+          <FormControl
+            label="参照するカラム"
+            isDisabled={columnOptions.length === 0}
+            isRequired
+            isInvalid={Boolean(restrictionError?.column)}
+            errorText={restrictionError?.column}
+            renderInput={({ describedbyId, ...props }) => {
+              return (
+                <Select
+                  describedbyId={describedbyId}
+                  value={restriction.column}
+                  onChange={(column) => {
+                    if (restriction.type === 'foreign') {
+                      setRestriction({
+                        ...restriction,
+                        column,
+                      });
+                    }
+                  }}
+                  options={columnOptions}
+                  {...props}
+                />
+              );
+            }}
+          />
           <div className="flex flex-col gap-2">
             <label
               htmlFor={`reference-tablee_${id}`}

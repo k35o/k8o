@@ -11,6 +11,7 @@ import {
   RGB,
   rgbToHex,
 } from '../../_utils/color-converter';
+import { FormControl } from '@/components/form/form-control/form-control';
 
 type ColorType = 'rgb' | 'hex';
 
@@ -67,36 +68,42 @@ export const ColorConverter = () => {
   return (
     <div className="flex flex-col gap-4">
       <div className="flex items-center justify-center gap-3">
-        <fieldset className="flex w-full flex-col gap-2">
-          <label className="font-bold" htmlFor={`${id}-form`}>
-            変換前
-          </label>
-          <Select
-            id={`${id}-form`}
-            value={colorTypeFrom.toString()}
-            onChange={(value) =>
-              handleChangeColorType(value, setColorTypeFrom)
-            }
-            options={COLOR_TYPE_OPTIONS}
-          />
-        </fieldset>
+        <FormControl
+          label="変換前"
+          renderInput={({ describedbyId, ...props }) => {
+            return (
+              <Select
+                describedbyId={describedbyId}
+                value={colorTypeFrom.toString()}
+                onChange={(value) =>
+                  handleChangeColorType(value, setColorTypeFrom)
+                }
+                options={COLOR_TYPE_OPTIONS}
+                {...props}
+              />
+            );
+          }}
+        />
         <ArrowRightIcon
           className="size-10 stroke-2"
           aria-label="右矢印"
         />
-        <fieldset className="flex w-full flex-col gap-2">
-          <label className="font-bold" htmlFor={`${id}-to`}>
-            変換後
-          </label>
-          <Select
-            id={`${id}-to`}
-            value={colorTypeTo.toString()}
-            onChange={(value) =>
-              handleChangeColorType(value, setColorTypeTo)
-            }
-            options={COLOR_TYPE_OPTIONS}
-          />
-        </fieldset>
+        <FormControl
+          label="変換後"
+          renderInput={({ describedbyId, ...props }) => {
+            return (
+              <Select
+                describedbyId={describedbyId}
+                value={colorTypeTo.toString()}
+                onChange={(value) =>
+                  handleChangeColorType(value, setColorTypeTo)
+                }
+                options={COLOR_TYPE_OPTIONS}
+                {...props}
+              />
+            );
+          }}
+        />
       </div>
       <div className="flex items-center gap-2">
         <fieldset className="flex w-full flex-col gap-2">

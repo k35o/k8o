@@ -91,6 +91,7 @@ export const CreateColumnsByTable: FC<Props> = ({
                 <td className="px-2 py-3">
                   <Select
                     id={`column-type_${idx}-${formId}`}
+                    describedbyId={`column-type_${idx}-${formId}-feedback`}
                     value={column.type}
                     onChange={(type) =>
                       handleChangeColumn(id)({
@@ -99,9 +100,15 @@ export const CreateColumnsByTable: FC<Props> = ({
                       })
                     }
                     options={TYPE_OPTIONS}
+                    isDisabled={false}
+                    isInvalid={Boolean(columnError?.type)}
+                    isRequired={true}
                   />
                   {columnError?.type && (
-                    <p className="text-sm text-red-500">
+                    <p
+                      id={`column-type_${idx}-${formId}-feedback`}
+                      className="text-sm text-red-500"
+                    >
                       {columnError.type}
                     </p>
                   )}
