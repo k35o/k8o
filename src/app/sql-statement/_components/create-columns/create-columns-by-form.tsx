@@ -6,7 +6,7 @@ import {
 } from '@/components/accordion';
 import { IconButton } from '@/components/icon-button';
 import { XMarkIcon } from '@heroicons/react/24/solid';
-import { FC, useId } from 'react';
+import { FC } from 'react';
 import {
   Column,
   ColumnType,
@@ -44,8 +44,6 @@ export const CreateColumnsByForm: FC<Props> = ({
   columnsEntries,
   columnsError,
 }) => {
-  const formId = useId();
-
   return (
     <Accordion>
       {columnsEntries.map(([id, column], idx) => {
@@ -133,33 +131,29 @@ export const CreateColumnsByForm: FC<Props> = ({
                     isInvalid={Boolean(columnError?.type)}
                     errorText={columnError?.type}
                   />
-                  <div className="flex flex-col gap-2">
-                    <p
-                      id={`nullable_${idx}-${formId}`}
-                      className="font-bold"
-                    >
-                      null許容
-                    </p>
-                    <Radio
-                      labelledById={`nullable_${idx}-${formId}`}
-                      value={column.nullable ? '0' : '1'}
-                      onChange={(type) =>
-                        handleChangeColumn(id)({
-                          ...column,
-                          nullable: type === '0',
-                        })
-                      }
-                      options={[
-                        { value: '0', label: '許容' },
-                        { value: '1', label: '不許容' },
-                      ]}
-                    />
-                    {columnError?.nullable && (
-                      <p className="text-sm text-red-500">
-                        {columnError.nullable}
-                      </p>
+                  <FormControl
+                    label="null許容"
+                    labelAs="legend"
+                    isRequired
+                    isInvalid={Boolean(columnError?.nullable)}
+                    errorText={columnError?.nullable}
+                    renderInput={(props) => (
+                      <Radio
+                        {...props}
+                        value={column.nullable ? '0' : '1'}
+                        onChange={(type) =>
+                          handleChangeColumn(id)({
+                            ...column,
+                            nullable: type === '0',
+                          })
+                        }
+                        options={[
+                          { value: '0', label: '許容' },
+                          { value: '1', label: '不許容' },
+                        ]}
+                      />
                     )}
-                  </div>
+                  />
                   <FormControl
                     label="デフォルト値"
                     isInvalid={Boolean(columnError?.default)}

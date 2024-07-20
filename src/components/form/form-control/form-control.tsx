@@ -11,6 +11,7 @@ type FormControlProps = {
   renderInput: (props: {
     id: string;
     describedbyId: string | undefined;
+    labelId: string;
     isDisabled: boolean;
     isInvalid: boolean;
     isRequired: boolean;
@@ -34,10 +35,12 @@ export const FormControl: FC<FormControlProps> = ({
       : helpText
         ? `${id}-helptext`
         : undefined;
+  const labelId = `${id}-label`;
   return (
     <fieldset role="group" className="flex w-full flex-col gap-2">
       {labelAs === 'label' ? (
         <label
+          id={labelId}
           htmlFor={id}
           className="text-textPrimary text-md flex gap-2 font-bold"
         >
@@ -57,6 +60,7 @@ export const FormControl: FC<FormControlProps> = ({
       {renderInput({
         id,
         describedbyId,
+        labelId,
         isDisabled,
         isInvalid,
         isRequired,
