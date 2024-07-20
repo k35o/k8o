@@ -1,27 +1,22 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import { FormControl } from './form-control';
+import { TextField } from '../text-field';
+import { useState } from 'react';
 
 const meta: Meta<typeof FormControl> = {
   title: 'components/form/form-control',
   component: FormControl,
   args: {
-    renderInput: ({
-      id,
-      isDisabled,
-      isInvalid,
-      isRequired,
-      describedbyId,
-    }) => (
-      <input
-        id={id}
-        type="email"
-        aria-describedby={describedbyId}
-        className="w-full rounded-md border border-borderLight px-3 py-2 focus-visible:border-transparent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focusRing"
-        disabled={isDisabled}
-        aria-invalid={isInvalid}
-        required={isRequired}
-      />
-    ),
+    renderInput: (props) => {
+      const [state, setState] = useState('');
+      return (
+        <TextField
+          {...props}
+          value={state}
+          onChange={(v) => setState(v)}
+        />
+      );
+    },
   },
   tags: ['autodocs'],
 };
