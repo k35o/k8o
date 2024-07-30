@@ -1,5 +1,4 @@
 export const RECOIL_KEYS = {
-  CHARACTERS_COUNTER_TEXT: 'characters.counter.text',
   CHARACTERS_CHECK_SYNTAX_TEXT: 'characters.checkSyntax.text',
   CHARACTERS_CHECK_SYNTAX_RESULT_TEXT:
     'characters.checkSyntax.resultText',

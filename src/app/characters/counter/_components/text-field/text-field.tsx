@@ -1,13 +1,12 @@
 'use client';
 
 import { Textarea } from '@/components/form/textarea';
-import { useTextField } from '../../_state/text';
 import { TextLength } from '../text-length';
-import { useDeferredValue } from 'react';
+import { useDeferredValue, useState } from 'react';
 import { FormControl } from '@/components/form/form-control/form-control';
 
 export const TextField = () => {
-  const { text, handleTextChange } = useTextField();
+  const [text, setText] = useState('');
   const deferredText = useDeferredValue(text);
 
   return (
@@ -20,7 +19,7 @@ export const TextField = () => {
               <Textarea
                 {...props}
                 value={text}
-                onChange={handleTextChange}
+                onChange={setText}
                 placeholder="ここに文字列を入力してください"
                 fullHeight
                 isRequired
