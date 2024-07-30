@@ -1,10 +1,9 @@
 'use client';
 
 import { FC, useId } from 'react';
-import { useRecoilValue } from 'recoil';
 import {
-  fixedTextState,
-  useIsBackSyntaxFixer,
+  useConvertIncomplete,
+  useFixedText,
   useResetResult,
 } from '../../_state/text';
 import { Button } from '@/components/button';
@@ -13,9 +12,9 @@ import { ClipboardIcon } from '@heroicons/react/24/solid';
 
 export const Result: FC = () => {
   const id = useId();
-  const fixedText = useRecoilValue(fixedTextState);
+  const fixedText = useFixedText();
   const resetResult = useResetResult();
-  const isCheckResult = useIsBackSyntaxFixer();
+  const isCheckResult = useConvertIncomplete();
 
   return (
     <div className="flex flex-col items-center justify-center gap-8">

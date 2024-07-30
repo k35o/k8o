@@ -1,15 +1,14 @@
 'use client';
 
 import { FC, PropsWithChildren } from 'react';
-import { useRecoilValue } from 'recoil';
-import { itemIdState, openState } from './state';
 import clsx from 'clsx';
+import { useItemId, useOpen } from './context';
 
 export const AccordionPanel: FC<PropsWithChildren<{}>> = ({
   children,
 }) => {
-  const id = useRecoilValue(itemIdState);
-  const open = useRecoilValue(openState);
+  const id = useItemId();
+  const open = useOpen();
   return (
     <div
       id={`${id}-panel`}

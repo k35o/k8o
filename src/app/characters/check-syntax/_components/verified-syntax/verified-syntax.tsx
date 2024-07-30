@@ -5,8 +5,7 @@ import {
   ClipboardIcon,
 } from '@heroicons/react/24/solid';
 import { FC } from 'react';
-import { useRecoilValue } from 'recoil';
-import { textState, useResetResult } from '../../_state/text';
+import { useResetResult, useText } from '../../_state/text';
 import {
   Accordion,
   AccordionButton,
@@ -16,7 +15,7 @@ import {
 import { Button } from '@/components/button';
 
 export const VerifiedSyntax: FC = () => {
-  const text = useRecoilValue(textState);
+  const text = useText();
   const resetResult = useResetResult();
 
   return (

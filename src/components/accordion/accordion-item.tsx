@@ -1,23 +1,17 @@
 'use client';
 
 import { FC, PropsWithChildren, useId } from 'react';
-import { RecoilRoot } from 'recoil';
-import { itemIdState, openState } from './state';
+import { AccordionItemProvider } from './context';
 
 export const AccordionItem: FC<
   PropsWithChildren<{ defaultOpen?: boolean }>
 > = ({ children, defaultOpen = false }) => {
   const id = useId();
   return (
-    <RecoilRoot
-      initializeState={(mutableSnapshot) => {
-        mutableSnapshot.set(openState, defaultOpen);
-        mutableSnapshot.set(itemIdState, id);
-      }}
-    >
+    <AccordionItemProvider defaultOpen={defaultOpen} id={id}>
       <div className="border-t border-borderLight last:border-b">
         {children}
       </div>
-    </RecoilRoot>
+    </AccordionItemProvider>
   );
 };

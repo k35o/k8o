@@ -1,26 +1,23 @@
-import { RECOIL_KEYS } from '@/constants';
-import { atom, useRecoilState } from 'recoil';
+import { useCallback, useState } from 'react';
 
-const key = RECOIL_KEYS.SQL_STATEMENT_COLUMNS_FORM_TYPE;
+const key = 'sqlStatement.columns.form.type';
 
-const columnsType = atom<'table' | 'form'>({
-  key: RECOIL_KEYS.SQL_STATEMENT_COLUMNS_FORM_TYPE,
-  default: 'form',
-  effects: [
-    ({ setSelf, onSet }) => {
+export const useColumnsType = () => {
+  const [columnsType, setColumnsType] = useState<'table' | 'form'>(
+    () => {
       const savedValue = localStorage.getItem(key);
       const parsedValue = savedValue ? JSON.parse(savedValue) : null;
       if (parsedValue === 'table' || parsedValue === 'form') {
-        setSelf(parsedValue);
+        return parsedValue;
       }
-
-      onSet((newValue, _, isReset) => {
-        isReset
-          ? localStorage.removeItem(key)
-          : localStorage.setItem(key, JSON.stringify(newValue));
-      });
+      return 'form';
     },
-  ],
-});
+  );
 
-export const useColumnsType = () => useRecoilState(columnsType);
+  const changeColumnsType = useCallback((type: 'table' | 'form') => {
+    setColumnsType(type);
+    localStorage.setItem(key, JSON.stringify(type));
+  }, []);
+
+  return [columnsType, changeColumnsType] as const;
+};

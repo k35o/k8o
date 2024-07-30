@@ -5,15 +5,16 @@ import {
   ChevronUpIcon,
 } from '@heroicons/react/24/solid';
 import { FC, PropsWithChildren } from 'react';
-import { useRecoilState, useRecoilValue } from 'recoil';
-import { itemIdState, openState } from './state';
 import clsx from 'clsx';
+import { useItemId, useOpen, useToggleOpen } from './context';
 
 export const AccordionButton: FC<PropsWithChildren<{}>> = ({
   children,
 }) => {
-  const [open, setOpen] = useRecoilState(openState);
-  const id = useRecoilValue(itemIdState);
+  const id = useItemId();
+  const open = useOpen();
+  const toggleOpen = useToggleOpen();
+
   return (
     <button
       type="button"
@@ -25,7 +26,7 @@ export const AccordionButton: FC<PropsWithChildren<{}>> = ({
       aria-expanded={open}
       aria-controls={`${id}-panel`}
       id={`${id}-button`}
-      onClick={() => setOpen((open) => !open)}
+      onClick={toggleOpen}
     >
       {children}
       {open ? (
