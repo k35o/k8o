@@ -16,7 +16,7 @@
     "test:ui": "vitest --ui",
     "coverage": "vitest run --coverage",
     "test-storybook": "test-storybook",
-    "test-storybook:ci": "pnpm dlx concurrently -k -s first -n \"SB,TEST\" -c \"magenta,blue\" \"pnpm run build-storybook --quiet && pnpm dlx http-server storybook-static --port 6006 --silent\" \"wait-on tcp:6006 && pnpm run test-storybook --maxWorkers=2\"",
+    "test-storybook:ci": "pnpm dlx concurrently -k -s first -n \"SB,TEST\" -c \"magenta,blue\" \"pnpm run build-storybook --quiet && pnpm dlx http-server storybook-static --port 6006 --silent\" \"pnpm dlx wait-on tcp:6006 && pnpm run test-storybook --maxWorkers=2\"",
     "install-playwright": "playwright install --with-deps"
   },
   "dependencies": {
