@@ -1,9 +1,9 @@
-name: linter
+name: ci
 
 on: push
 
 jobs:
-  linter:
+  ci:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout branch
@@ -35,3 +35,5 @@ jobs:
         run: pnpm run format
       - name: Run lint
         run: pnpm run lint
+      - name: Run test
+        run: pnpm run test-storybook
