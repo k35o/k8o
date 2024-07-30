@@ -15,7 +15,7 @@ import {
   ChevronLeftIcon,
   ChevronRightIcon,
 } from '@heroicons/react/24/solid';
-import { useStep } from '@/app/_hooks/step';
+import { useStep } from '@/hooks/step';
 import { Alert } from '@/components/alert';
 import { Heading } from '@/components/heading';
 import { Textarea } from '@/components/form/textarea';

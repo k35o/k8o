@@ -1,10 +1,11 @@
+export const isSegmenter =
+  typeof window === 'undefined' ||
+  window.Intl === undefined ||
+  window.Intl.Segmenter === undefined;
+
 export const countGraphemeLength = (text: string): number => {
   // Intl.Segmenterを実装していないブラウザでは、ユニコードのコードポイント単位で数える
-  if (
-    typeof window === 'undefined' ||
-    window.Intl === undefined ||
-    window.Intl.Segmenter === undefined
-  ) {
+  if (isSegmenter) {
     return [...text].length;
   }
 
