@@ -17,7 +17,7 @@
     "coverage": "vitest run --coverage",
     "test-storybook": "test-storybook",
     "install-playwright": "playwright install --with-deps",
-    "postinstall": "pnpm build && pnpm install-playwright"
+    "postinstall": "pnpm install-playwright"
   },
   "dependencies": {
     "@heroicons/react": "2.1.5",
