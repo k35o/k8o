@@ -1,4 +1,4 @@
-import { Route } from 'next';
+import { isInternalRoute } from '@/utils/is-internal-route';
 import Link from 'next/link';
 import { ReactNode } from 'react';
 
@@ -9,10 +9,16 @@ export const Anchor = ({
   href: string;
   children: ReactNode;
 }) => {
-  const isExternal = href.startsWith('http');
   return (
     <>
-      {isExternal ? (
+      {isInternalRoute(href) ? (
+        <Link
+          href={href}
+          className="cursor-pointer text-link hover:underline"
+        >
+          {children}
+        </Link>
+      ) : (
         <a
           href={href}
           target="_blank"
@@ -21,13 +27,6 @@ export const Anchor = ({
         >
           {children}
         </a>
-      ) : (
-        <Link
-          href={href as Route}
-          className="cursor-pointer text-link hover:underline"
-        >
-          {children}
-        </Link>
       )}
     </>
   );
