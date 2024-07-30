@@ -58,7 +58,7 @@ export const Rows: Story = {
   },
 };
 
-export const placeholder = {
+export const Placeholder = {
   args: {
     isDisabled: false,
     isInvalid: false,

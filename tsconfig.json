@@ -29,7 +29,12 @@
     "baseUrl": ".",
     "paths": {
       "@/*": ["./src/*"]
-    }
+    },
+    "types": [
+      "vitest/globals",
+      "@vitest/browser/matchers",
+      "vitest/importMeta"
+    ]
   },
   "include": [
     "next-env.d.ts",

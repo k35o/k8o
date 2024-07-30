@@ -1,9 +1,9 @@
-name: linter
+name: ci
 
 on: push
 
 jobs:
-  linter:
+  ci:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout branch
@@ -29,9 +29,22 @@ jobs:
             ${{ runner.os }}-pnpm-store-
       - name: Install dependencies
         run: pnpm install
-      - name: Run lint
-        run: pnpm run type-check
+
       - name: Run format
         run: pnpm run format
+
+      # MEMO: ここでnext-env.d.tsが生成される。そのためtype-checkよりも先に実行する必要がある
       - name: Run lint
         run: pnpm run lint
+
+      - name: Run type check
+        run: pnpm run type-check
+
+      - name: Install playwright
+        run: pnpm run install-playwright
+
+      - name: Run test
+        run: pnpm run test
+
+      - name: Run test storybook
+        run: pnpm run test-storybook:ci

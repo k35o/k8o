@@ -5,6 +5,11 @@ import { ClipboardIcon } from '@heroicons/react/24/solid';
 const meta: Meta<typeof IconLink> = {
   title: 'components/icon-link',
   component: IconLink,
+  args: {
+    href: 'https://example.com',
+    children: <ClipboardIcon className="h-6 w-6" />,
+    label: 'Copy to clipboard',
+  },
   tags: ['autodocs'],
 };
 
@@ -14,23 +19,17 @@ type Story = StoryObj<typeof IconLink>;
 export const Large: Story = {
   args: {
     size: 'lg',
-    href: 'https://example.com',
-    children: <ClipboardIcon className="h-6 w-6" />,
   },
 };
 
 export const Medium: Story = {
   args: {
     size: 'md',
-    href: 'https://example.com',
-    children: <ClipboardIcon className="h-6 w-6" />,
   },
 };
 
 export const Small: Story = {
   args: {
     size: 'sm',
-    href: 'https://example.com',
-    children: <ClipboardIcon className="h-6 w-6" />,
   },
 };
