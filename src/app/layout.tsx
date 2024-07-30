@@ -1,7 +1,6 @@
 import { GlobalLayout } from './_components/global-layout';
 import './_styles/globals.css';
 import { M_PLUS_2 } from 'next/font/google';
-import { AppProvider } from './_providers/app';
 import { Analytics } from '@vercel/analytics/react';
 import { SpeedInsights } from '@vercel/speed-insights/next';
 import '@/libs/zod';
@@ -33,9 +32,7 @@ export default function RootLayout({
   return (
     <html lang="ja">
       <body className={font.className}>
-        <AppProvider>
-          <GlobalLayout>{children}</GlobalLayout>
-        </AppProvider>
+        <GlobalLayout>{children}</GlobalLayout>
         <Analytics />
         <SpeedInsights />
       </body>
