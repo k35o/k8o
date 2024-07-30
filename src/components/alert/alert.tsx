@@ -1,5 +1,5 @@
 import { FC } from 'react';
-import type { StatusType } from '@/app/_types';
+import type { StatusType } from '@/types';
 import {
   CheckCircleIcon,
   ExclamationCircleIcon,
