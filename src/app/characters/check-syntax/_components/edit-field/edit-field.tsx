@@ -21,6 +21,7 @@ export const EditField = () => {
 
   const handleCheck: FormEventHandler = async (e) => {
     e.preventDefault();
+    if (text === '') return;
     setIsMutating(true);
     checkJapaneseSyntax({ text })
       .then((res) => {
@@ -62,7 +63,11 @@ export const EditField = () => {
           }}
         />
       </div>
-      <Button type="submit" fullWidth disabled={isMutating}>
+      <Button
+        type="submit"
+        fullWidth
+        disabled={isMutating || text === ''}
+      >
         校正する
       </Button>
     </form>
