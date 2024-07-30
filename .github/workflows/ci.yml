@@ -43,5 +43,8 @@ jobs:
       - name: Run test
         run: pnpm run test
 
+      - name: Install playwright
+        run: pnpm run install-playwright
+
       - name: Run test storybook
-        run: pnpm run test-storybook
+        run: pnpm run test-storybook:ci
