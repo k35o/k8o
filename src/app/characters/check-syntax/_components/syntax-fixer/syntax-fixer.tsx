@@ -2,11 +2,11 @@
 
 import { FC, Fragment, useId } from 'react';
 import {
-  resultTextState,
+  useConvertComplete,
   useInvalidCount,
   useInvalidResult,
-  useIsCheckResult,
   useResetResult,
+  useResultText,
   useSetFixTextsField,
 } from '../../_state/text';
 import { Button } from '@/components/button';
@@ -25,7 +25,6 @@ import {
   AccordionItem,
   AccordionPanel,
 } from '@/components/accordion';
-import { useRecoilValue } from 'recoil';
 import { FormControl } from '@/components/form/form-control/form-control';
 
 export const SyntaxFixer: FC = () => {
@@ -36,7 +35,7 @@ export const SyntaxFixer: FC = () => {
       maxCount: invalidCount,
     });
   const resetResult = useResetResult();
-  const isCheckResult = useIsCheckResult();
+  const isCheckResult = useConvertComplete();
 
   return (
     <div className="flex flex-col items-center justify-center gap-8">
@@ -79,7 +78,7 @@ export const SyntaxFixer: FC = () => {
 
 const FixText: FC<{ count: number }> = ({ count }) => {
   const id = useId();
-  const texts = useRecoilValue(resultTextState);
+  const texts = useResultText();
   const { resultText, resultMessage, resultIdx } =
     useInvalidResult(count);
   const { fixText, handleFixTextChange } = useSetFixTextsField(

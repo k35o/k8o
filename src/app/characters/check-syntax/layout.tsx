@@ -1,4 +1,5 @@
 import { Heading } from '@/components/heading';
+import { CheckSyntaxProvider } from './_state/text';
 
 export const metadata = {
   title: '日本語校正くん',
@@ -23,7 +24,7 @@ export default function Layout({
   return (
     <div className="flex h-full flex-col gap-4">
       <Heading type="h3">日本語校正くん</Heading>
-      {children}
+      <CheckSyntaxProvider>{children}</CheckSyntaxProvider>
     </div>
   );
 }

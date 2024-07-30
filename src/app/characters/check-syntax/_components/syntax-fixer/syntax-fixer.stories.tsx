@@ -1,29 +1,34 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import { SyntaxFixer } from './syntax-fixer';
-import { RecoilRoot } from 'recoil';
-import {
-  resultMessagesState,
-  resultTextState,
-} from '../../_state/text';
+import { CheckSyntaxProvider } from '../../_state/text';
 
 const meta: Meta<typeof SyntaxFixer> = {
   title: 'app/characters/check-syntax/syntax-fixer',
   component: SyntaxFixer,
+  decorators: [
+    (Story) => (
+      <CheckSyntaxProvider
+        __test={{
+          defaultResultText: [
+            '満点の星空が見れる。',
+            'すもももももももものうち',
+          ],
+          defaultResultMessages: {
+            1: ['ら抜き言葉を使用しています。'],
+            2: [
+              '一文に二回以上利用されている助詞 "も" がみつかりました。 次の助詞が連続しているため、文を読みにくくしています。 - すもも"も" - もも"も" 同じ助詞を連続して利用しない、文の中で順番を入れ替える、文を分割するなどを検討してください。',
+            ],
+          },
+        }}
+      >
+        <Story />
+      </CheckSyntaxProvider>
+    ),
+  ],
   tags: ['autodocs'],
 };
 
 export default meta;
 type Story = StoryObj<typeof SyntaxFixer>;
 
-export const Primary: Story = {
-  render: () => (
-    <RecoilRoot
-      initializeState={(mutableSnapshot) => {
-        mutableSnapshot.set(resultTextState, ['これはテストです。']);
-        mutableSnapshot.set(resultMessagesState, { 1: ['エラー'] });
-      }}
-    >
-      <SyntaxFixer />
-    </RecoilRoot>
-  ),
-};
+export const Primary: Story = {};
