@@ -36,4 +36,6 @@ jobs:
       - name: Run lint
         run: pnpm run lint
       - name: Run test
+        run: pnpm run test
+      - name: Run test storybook
         run: pnpm run test-storybook
