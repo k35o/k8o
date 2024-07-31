@@ -1,3 +1,4 @@
+import { AnimatePresence, motion, Variants } from 'framer-motion';
 import { StatusType } from '@/types';
 import {
   createContext,
@@ -61,6 +62,31 @@ export const useToast = () => {
   };
 };
 
+const toastMotionVariants: Variants = {
+  initial: {
+    opacity: 0,
+    y: 24,
+  },
+  animate: {
+    opacity: 1,
+    y: 0,
+    x: 0,
+    scale: 1,
+    transition: {
+      duration: 0.4,
+      ease: [0.4, 0, 0.2, 1],
+    },
+  },
+  exit: {
+    opacity: 0,
+    scale: 0.85,
+    transition: {
+      duration: 0.2,
+      ease: [0.4, 0, 1, 1],
+    },
+  },
+};
+
 export const ToastProvider: FC<PropsWithChildren> = ({
   children,
 }) => {
@@ -75,11 +101,23 @@ export const ToastProvider: FC<PropsWithChildren> = ({
           aria-label="通知"
           className="fixed bottom-3 z-50 flex w-full flex-col items-center justify-center gap-2"
         >
-          {toasts.map((toast) => (
-            <div key={toast.id} role="status" aria-atomic={true}>
-              <Toast {...toast} />
-            </div>
-          ))}
+          <AnimatePresence initial={false}>
+            {toasts.map((toast) => (
+              <motion.div
+                key={toast.id}
+                layout
+                variants={toastMotionVariants}
+                initial="initial"
+                animate="animate"
+                exit="exit"
+                custom={{ position: 'bottom' }}
+              >
+                <div role="status" aria-atomic={true}>
+                  <Toast {...toast} />
+                </div>
+              </motion.div>
+            ))}
+          </AnimatePresence>
         </div>,
         document.body,
       )}
