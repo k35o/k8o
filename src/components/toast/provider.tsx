@@ -110,7 +110,7 @@ export const ToastProvider: FC<PropsWithChildren> = ({
               role="region"
               aria-live="polite"
               aria-label="通知"
-              className="fixed bottom-3 z-50 flex w-full flex-col items-center justify-center gap-2"
+              className="fixed bottom-3 z-50 flex w-full flex-col items-center justify-center gap-4"
             >
               <AnimatePresence initial={false}>
                 {toasts.map((toast) => (
