@@ -108,7 +108,7 @@ export const StartIcon: Story = {
     onClick: () => {
       console.log('clicked');
     },
-    startIcon: <ClipboardIcon className="h-6 w-6" />,
+    startIcon: <ClipboardIcon className="size-6" />,
   },
   render: (props) => {
     return <Button {...props}>ボタン</Button>;
@@ -121,7 +121,7 @@ export const EndIcon: Story = {
     onClick: () => {
       console.log('clicked');
     },
-    endIcon: <ClipboardIcon className="h-6 w-6" />,
+    endIcon: <ClipboardIcon className="size-6" />,
   },
   render: (props) => {
     return <Button {...props}>ボタン</Button>;

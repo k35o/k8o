@@ -46,7 +46,7 @@ export const BlogCardContent: FC<Omit<BlogCardProps, 'link'>> = ({
   tags,
 }) => (
   <div className="flex gap-6 p-4">
-    <div className="flex h-32 w-32 shrink-0 items-center justify-center rounded-lg bg-bgLight text-7xl">
+    <div className="flex size-32 shrink-0 items-center justify-center rounded-lg bg-bgLight text-7xl">
       {emotion}
     </div>
     <div className="flex w-full flex-col justify-around">

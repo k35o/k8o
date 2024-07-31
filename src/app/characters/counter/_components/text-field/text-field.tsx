@@ -10,7 +10,7 @@ export const TextField = () => {
   const deferredText = useDeferredValue(text);
 
   return (
-    <div className="flex-grow">
+    <div className="grow">
       <div className="h-full *:h-full">
         <FormControl
           label="カウントしたい文字列"

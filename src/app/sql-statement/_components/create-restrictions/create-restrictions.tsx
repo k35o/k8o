@@ -76,7 +76,7 @@ export const CreateRestrictions: FC<Props> = ({
                           );
                         }}
                       >
-                        <XMarkIcon className="h-6 w-6" />
+                        <XMarkIcon className="size-6" />
                       </IconButton>
                     </div>
                   )}

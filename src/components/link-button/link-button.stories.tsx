@@ -43,7 +43,7 @@ export const Small: Story = {
 
 export const StartIcon: Story = {
   args: {
-    startIcon: <ClipboardIcon className="h-6 w-6" />,
+    startIcon: <ClipboardIcon className="size-6" />,
   },
   render: (props) => {
     return <LinkButton {...props}>ボタン</LinkButton>;
@@ -52,7 +52,7 @@ export const StartIcon: Story = {
 
 export const EndIcon: Story = {
   args: {
-    endIcon: <ClipboardIcon className="h-6 w-6" />,
+    endIcon: <ClipboardIcon className="size-6" />,
   },
   render: (props) => {
     return <LinkButton {...props}>ボタン</LinkButton>;

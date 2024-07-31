@@ -28,12 +28,12 @@ export const VerifiedSyntax: FC = () => {
         </Button>
         <Button
           onClick={() => writeClipboard(text)}
-          endIcon={<ClipboardIcon title="" className="h-6 w-6" />}
+          endIcon={<ClipboardIcon title="" className="size-6" />}
         >
           テキストをコピーする
         </Button>
       </div>
-      <CheckCircleIcon title="" className="h-36 w-36 text-success" />
+      <CheckCircleIcon title="" className="size-36 text-success" />
       <p className="text-lg font-bold">
         テキストに問題は見つかりませんでした。
       </p>

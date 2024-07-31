@@ -23,17 +23,17 @@ export default function Page() {
           <IconLink href="https://github.com/k35o">
             <GithubMark
               title="GitHubのアカウント"
-              className="h-8 w-8"
+              className="size-8"
             />
           </IconLink>
           <IconLink href="https://twitter.com/k8o1024">
-            <Twitter title="Xのアカウント" className="h-8 w-8" />
+            <Twitter title="Xのアカウント" className="size-8" />
           </IconLink>
           <IconLink href="https://zenn.dev/kokisakano">
-            <Zenn title="Zennのアカウント" className="h-8 w-8" />
+            <Zenn title="Zennのアカウント" className="size-8" />
           </IconLink>
           <IconLink href="https://qiita.com/KokiSakano">
-            <Qiita title="Qiitaのアカウント" className="h-8 w-8" />
+            <Qiita title="Qiitaのアカウント" className="size-8" />
           </IconLink>
         </div>
       </div>

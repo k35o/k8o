@@ -22,7 +22,7 @@ export const Checkbox: FC<Props> = ({ label, value, onChange }) => {
       />
       <span
         className={clsx(
-          'inline-flex h-5 w-5 items-center justify-center rounded-lg border-2',
+          'inline-flex size-5 items-center justify-center rounded-lg border-2',
           isFocus &&
             'border-transparent outline-none ring-2 ring-focusRing',
           value
@@ -31,7 +31,7 @@ export const Checkbox: FC<Props> = ({ label, value, onChange }) => {
         )}
         aria-hidden={true}
       >
-        {value ? <CheckIcon className="h-4 w-4" /> : null}
+        {value ? <CheckIcon className="size-4" /> : null}
       </span>
       <span className="text-lg">{label}</span>
     </label>

@@ -190,7 +190,7 @@ export const CreateColumnsByTable: FC<Props> = ({
                       size="sm"
                       onClick={handleDeleteColumn(id)}
                     >
-                      <XMarkIcon className="h-6 w-6" />
+                      <XMarkIcon className="size-6" />
                     </IconButton>
                   )}
                 </td>

@@ -53,7 +53,7 @@ export const Select: FC<Props> = ({
         ))}
       </select>
       <div className="absolute right-3 top-2/4 -translate-y-1/2">
-        <ChevronDownIcon className="h-4 w-4" />
+        <ChevronDownIcon className="size-4" />
       </div>
     </div>
   );

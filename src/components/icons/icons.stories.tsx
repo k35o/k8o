@@ -16,19 +16,19 @@ export const Icons: Story = {
   render: () => (
     <div className="flex flex-wrap gap-4">
       <div>
-        <GithubMark className="h-24 w-24" />
+        <GithubMark className="size-24" />
         <p className="text-center">GitHub Mark</p>
       </div>
       <div>
-        <Twitter className="h-24 w-24" />
+        <Twitter className="size-24" />
         <p className="text-center">Twitter</p>
       </div>
       <div>
-        <Qiita className="h-24 w-24" />
+        <Qiita className="size-24" />
         <p className="text-center">qiita</p>
       </div>
       <div>
-        <Zenn className="h-24 w-24" />
+        <Zenn className="size-24" />
         <p className="text-center">Zenn</p>
       </div>
     </div>

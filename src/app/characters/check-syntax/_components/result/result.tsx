@@ -35,7 +35,7 @@ export const Result: FC = () => {
           </Heading>
           <Button
             onClick={() => writeClipboard(fixedText)}
-            endIcon={<ClipboardIcon title="" className="h-6 w-6" />}
+            endIcon={<ClipboardIcon title="" className="size-6" />}
           >
             テキストをコピーする
           </Button>
