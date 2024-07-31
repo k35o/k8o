@@ -23,7 +23,7 @@ export const CreateTable: FC<Props> = ({
   };
 
   return (
-    <fieldset className="rounded-md p-2">
+    <fieldset className="p-2">
       <legend className="text-lg font-bold">テーブル情報</legend>
       <div className="flex flex-col justify-center gap-4">
         <FormControl
