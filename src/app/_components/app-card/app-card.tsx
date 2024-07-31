@@ -17,7 +17,7 @@ export const AppCard = <T extends string>({
     <section className="h-40 rounded-xl bg-white shadow-md">
       <Link href={link}>
         <div className="flex gap-6 p-4">
-          <div className="flex h-32 w-32 shrink-0 items-center justify-center rounded-lg bg-bgLight text-7xl">
+          <div className="flex size-32 shrink-0 items-center justify-center rounded-lg bg-bgLight text-7xl">
             {emotion}
           </div>
           <div>

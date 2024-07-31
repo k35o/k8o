@@ -47,29 +47,29 @@ export const Alert: FC<Props> = ({ status, message }) => {
 
 const AlertIcon: FC<{ status: StatusType }> = ({ status }) => {
   return (
-    <div className="h-8 w-8">
+    <div className="size-8">
       {status === 'success' && (
         <CheckCircleIcon
           aria-label="成功"
-          className="h-8 w-8 text-success"
+          className="size-8 text-success"
         />
       )}
       {status === 'info' && (
         <InformationCircleIcon
           aria-label="情報"
-          className="h-8 w-8 text-info"
+          className="size-8 text-info"
         />
       )}
       {status === 'warning' && (
         <ExclamationTriangleIcon
           aria-label="警告"
-          className="h-8 w-8 text-warning"
+          className="size-8 text-warning"
         />
       )}
       {status === 'error' && (
         <ExclamationCircleIcon
           aria-label="エラー"
-          className="h-8 w-8 text-error"
+          className="size-8 text-error"
         />
       )}
     </div>

@@ -47,9 +47,9 @@ export const CreateColumns: FC<Props> = ({
             }
             startIcon={
               showTable ? (
-                <QueueListIcon className="h-6 w-6" />
+                <QueueListIcon className="size-6" />
               ) : (
-                <TableCellsIcon className="h-6 w-6" />
+                <TableCellsIcon className="size-6" />
               )
             }
           >

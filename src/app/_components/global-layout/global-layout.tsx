@@ -18,7 +18,7 @@ export const GlobalLayout: FC<{ children: ReactNode }> = ({
             <IconLink href="https://github.com/k35o/k8o">
               <GithubMark
                 title="サイトのGitHub Repository"
-                className="h-8 w-8"
+                className="size-8"
               />
             </IconLink>
           </div>

@@ -88,7 +88,7 @@ export const Autocomplete: FC<Props> = ({
                     onChange(value.filter((v) => v !== text));
                   }}
                 >
-                  <XMarkIcon className="h-4 w-4" />
+                  <XMarkIcon className="size-4" />
                 </IconButton>
               </div>
             );
@@ -103,7 +103,7 @@ export const Autocomplete: FC<Props> = ({
             aria-invalid={isInvalid}
             aria-required={isRequired}
             className={clsx(
-              'grow bg-transparent focus-visible:outline-none',
+              'bg-transparent grow focus-visible:outline-none',
               'disabled:cursor-not-allowed',
             )}
             type="text"
@@ -180,7 +180,7 @@ export const Autocomplete: FC<Props> = ({
               onChange([]);
             }}
           >
-            <XMarkIcon className="h-4 w-4" />
+            <XMarkIcon className="size-4" />
           </IconButton>
         )}
       </div>

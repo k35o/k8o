@@ -24,7 +24,7 @@ export const ColorPallet: FC<Props> = ({
         <div className="flex gap-2">
           <input
             id={id}
-            className="w-16 flex-grow"
+            className="w-16 grow"
             type="color"
             value={color}
             onChange={handleChange}

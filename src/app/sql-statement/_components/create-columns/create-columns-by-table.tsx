@@ -77,7 +77,7 @@ export const CreateColumnsByTable: FC<Props> = ({
                   {columnError?.name && (
                     <p
                       id={`column-name_${idx}-${formId}-feedback`}
-                      className="text-sm text-red-500"
+                      className="text-sm text-error"
                     >
                       {columnError.name}
                     </p>
@@ -103,7 +103,7 @@ export const CreateColumnsByTable: FC<Props> = ({
                   {columnError?.alias && (
                     <p
                       id={`column-alias-${idx}-${formId}-feedback`}
-                      className="text-sm text-red-500"
+                      className="text-sm text-error"
                     >
                       {columnError.alias}
                     </p>
@@ -132,7 +132,7 @@ export const CreateColumnsByTable: FC<Props> = ({
                   {columnError?.type && (
                     <p
                       id={`column-type_${idx}-${formId}-feedback`}
-                      className="text-sm text-red-500"
+                      className="text-sm text-error"
                     >
                       {columnError.type}
                     </p>
@@ -150,7 +150,7 @@ export const CreateColumnsByTable: FC<Props> = ({
                     }
                   />
                   {columnError?.nullable && (
-                    <p className="text-sm text-red-500">
+                    <p className="text-sm text-error">
                       {columnError.nullable}
                     </p>
                   )}
@@ -177,7 +177,7 @@ export const CreateColumnsByTable: FC<Props> = ({
                   {columnError?.default && (
                     <p
                       id={`default_${idx}-${formId}-feedback`}
-                      className="text-sm text-red-500"
+                      className="text-sm text-error"
                     >
                       {columnError.default}
                     </p>
@@ -190,7 +190,7 @@ export const CreateColumnsByTable: FC<Props> = ({
                       size="sm"
                       onClick={handleDeleteColumn(id)}
                     >
-                      <XMarkIcon className="h-6 w-6" />
+                      <XMarkIcon className="size-6" />
                     </IconButton>
                   )}
                 </td>

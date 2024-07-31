@@ -17,7 +17,7 @@ export const Large: Story = {
     onClick: () => {
       console.log('clicked');
     },
-    children: <ClipboardIcon className="h-6 w-6" />,
+    children: <ClipboardIcon className="size-6" />,
   },
 };
 
@@ -27,7 +27,7 @@ export const Medium: Story = {
     onClick: () => {
       console.log('clicked');
     },
-    children: <ClipboardIcon className="h-6 w-6" />,
+    children: <ClipboardIcon className="size-6" />,
   },
 };
 
@@ -37,7 +37,7 @@ export const Small: Story = {
     onClick: () => {
       console.log('clicked');
     },
-    children: <ClipboardIcon className="h-6 w-6" />,
+    children: <ClipboardIcon className="size-6" />,
   },
 };
 
@@ -47,6 +47,6 @@ export const Disabled: Story = {
     onClick: () => {
       console.log('clicked');
     },
-    children: <ClipboardIcon className="h-6 w-6" />,
+    children: <ClipboardIcon className="size-6" />,
   },
 };

@@ -29,7 +29,7 @@ export default function Layout({
   return (
     <div className="flex flex-col gap-4">
       <article className="-m-2 rounded-lg bg-white px-3 py-14 pt-4 sm:m-0 sm:px-10">
-        <p className="text-end text-slate-400">2023/07/13に公開</p>
+        <p className="text-end text-textGray">2023/07/13に公開</p>
         {children}
       </article>
     </div>

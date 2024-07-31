@@ -7,7 +7,7 @@ const meta: Meta<typeof IconLink> = {
   component: IconLink,
   args: {
     href: 'https://example.com',
-    children: <ClipboardIcon className="h-6 w-6" />,
+    children: <ClipboardIcon className="size-6" />,
     label: 'Copy to clipboard',
   },
   tags: ['autodocs'],

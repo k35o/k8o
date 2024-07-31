@@ -56,9 +56,9 @@ export const SyntaxFixer: FC = () => {
           onClick={back}
           disabled={isDisabledBack}
         >
-          <ChevronLeftIcon className="h-8 w-8" />
+          <ChevronLeftIcon className="size-8" />
         </IconButton>
-        <div className="flex h-14 w-14 items-center justify-center rounded-full bg-bgBase">
+        <div className="flex size-14 items-center justify-center rounded-full bg-bgBase">
           <p className="font-bold leading-none">
             {count}/{invalidCount}
           </p>
@@ -68,7 +68,7 @@ export const SyntaxFixer: FC = () => {
           onClick={next}
           disabled={isDisabledNext}
         >
-          <ChevronRightIcon className="h-8 w-8" />
+          <ChevronRightIcon className="size-8" />
         </IconButton>
       </div>
       <FixText key={count} count={count} />
