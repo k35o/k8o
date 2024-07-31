@@ -9,12 +9,14 @@ import {
 import { Button } from '@/components/button';
 import { Heading } from '@/components/heading';
 import { ClipboardIcon } from '@heroicons/react/24/solid';
+import { useClipboard } from '@/hooks/clipboard';
 
 export const Result: FC = () => {
   const id = useId();
   const fixedText = useFixedText();
   const resetResult = useResetResult();
   const isCheckResult = useConvertIncomplete();
+  const { writeClipboard } = useClipboard();
 
   return (
     <div className="flex flex-col items-center justify-center gap-8">
@@ -32,7 +34,7 @@ export const Result: FC = () => {
             修正後のテキスト
           </Heading>
           <Button
-            onClick={() => navigator.clipboard.writeText(fixedText)}
+            onClick={() => writeClipboard(fixedText)}
             endIcon={<ClipboardIcon title="" className="h-6 w-6" />}
           >
             テキストをコピーする

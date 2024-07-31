@@ -13,10 +13,12 @@ import {
   AccordionPanel,
 } from '@/components/accordion';
 import { Button } from '@/components/button';
+import { useClipboard } from '@/hooks/clipboard';
 
 export const VerifiedSyntax: FC = () => {
   const text = useText();
   const resetResult = useResetResult();
+  const { writeClipboard } = useClipboard();
 
   return (
     <div className="flex flex-col items-center justify-center gap-8">
@@ -25,7 +27,7 @@ export const VerifiedSyntax: FC = () => {
           戻る
         </Button>
         <Button
-          onClick={() => navigator.clipboard.writeText(text)}
+          onClick={() => writeClipboard(text)}
           endIcon={<ClipboardIcon title="" className="h-6 w-6" />}
         >
           テキストをコピーする
