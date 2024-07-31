@@ -36,7 +36,7 @@ export const Select: FC<Props> = ({
         aria-invalid={isInvalid}
         aria-required={isRequired}
         className={clsx(
-          'w-full appearance-none rounded-md border border-border px-3 py-2 shadow-sm',
+          'w-full appearance-none rounded-lg border border-border px-3 py-2 shadow-sm',
           'hover:bg-grayHover',
           'aria-invalid:border-error',
           'disabled:cursor-not-allowed disabled:border-borderLight disabled:bg-gray disabled:text-gray',

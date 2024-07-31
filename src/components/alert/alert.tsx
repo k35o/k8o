@@ -18,7 +18,7 @@ export const Alert: FC<Props> = ({ status, message }) => {
     <div
       role="alert"
       className={clsx(
-        'flex items-center gap-2 rounded-md p-4',
+        'flex items-center gap-2 rounded-lg p-4',
         status === 'success' && 'bg-successLight',
         status === 'info' && 'bg-infoLight',
         status === 'warning' && 'bg-warningLight',

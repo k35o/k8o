@@ -22,7 +22,7 @@ export const Checkbox: FC<Props> = ({ label, value, onChange }) => {
       />
       <span
         className={clsx(
-          'inline-flex h-5 w-5 items-center justify-center rounded-md border-2',
+          'inline-flex h-5 w-5 items-center justify-center rounded-lg border-2',
           isFocus &&
             'border-transparent outline-none ring-2 ring-focusRing',
           value

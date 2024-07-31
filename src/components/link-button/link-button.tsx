@@ -11,38 +11,24 @@ export const LinkButton: FC<
     endIcon?: ReactNode;
   }>
 > = ({ children, size = 'md', href, startIcon, endIcon }) => {
+  const className = clsx(
+    'rounded-xl font-bold',
+    'bg-primary text-white hover:bg-primaryHover active:bg-primaryActive',
+    'focus-visible:border-transparent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focusRing',
+    size === 'sm' && 'px-3 py-1 text-sm',
+    size === 'md' && 'text-md px-4 py-2',
+    size === 'lg' && 'px-6 py-3 text-lg',
+    Boolean(startIcon || endIcon) &&
+      'inline-flex items-center justify-between gap-2',
+  );
   return isInternalRoute(href) ? (
-    <Link
-      className={clsx(
-        'rounded-lg font-bold',
-        'bg-primary text-white hover:bg-primaryHover active:bg-primaryActive',
-        'focus-visible:border-transparent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focusRing',
-        size === 'sm' && 'px-3 py-1 text-sm',
-        size === 'md' && 'text-md px-4 py-2',
-        size === 'lg' && 'px-6 py-3 text-lg',
-        Boolean(startIcon || endIcon) &&
-          'flex items-center justify-between gap-2',
-      )}
-      href={href}
-    >
+    <Link className={className} href={href}>
       {startIcon}
       {children}
       {endIcon}
     </Link>
   ) : (
-    <a
-      className={clsx(
-        'rounded-lg font-bold',
-        'bg-primary text-white hover:bg-primaryHover active:bg-primaryActive',
-        'focus-visible:border-transparent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focusRing',
-        size === 'sm' && 'px-3 py-1 text-sm',
-        size === 'md' && 'text-md px-4 py-2',
-        size === 'lg' && 'px-6 py-3 text-lg',
-        Boolean(startIcon || endIcon) &&
-          'flex items-center justify-between gap-2',
-      )}
-      href={href}
-    >
+    <a className={className} href={href}>
       {startIcon}
       {children}
       {endIcon}

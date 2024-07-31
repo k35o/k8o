@@ -16,11 +16,11 @@ export const BlogCard = <T extends string>({
 }) => {
   const isExternal = link.startsWith('http');
   return (
-    <section className="h-40 rounded-md bg-white shadow-md">
+    <section className="h-40 rounded-xl bg-white shadow-md">
       {isExternal ? (
         <a href={link} target="_blank" rel="noopener noreferrer">
           <div className="flex gap-6 p-4">
-            <div className="flex h-32 w-32 shrink-0 items-center justify-center rounded-md bg-gray text-7xl">
+            <div className="flex h-32 w-32 shrink-0 items-center justify-center rounded-lg bg-gray text-7xl">
               {emotion}
             </div>
             <div className="flex w-full flex-col justify-around">
@@ -43,7 +43,7 @@ export const BlogCard = <T extends string>({
       ) : (
         <Link href={link as Route<T>}>
           <div className="flex gap-6 p-4">
-            <div className="flex h-32 w-32 shrink-0 items-center justify-center rounded-md bg-gray text-7xl">
+            <div className="flex h-32 w-32 shrink-0 items-center justify-center rounded-lg bg-gray text-7xl">
               {emotion}
             </div>
             <div className="flex w-full flex-col justify-around">
