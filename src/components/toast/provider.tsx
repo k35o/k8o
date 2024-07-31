@@ -1,3 +1,5 @@
+'use client';
+
 import { AnimatePresence, motion, Variants } from 'framer-motion';
 import { StatusType } from '@/types';
 import {
@@ -112,7 +114,11 @@ export const ToastProvider: FC<PropsWithChildren> = ({
                 exit="exit"
                 custom={{ position: 'bottom' }}
               >
-                <div role="status" aria-atomic={true}>
+                <div
+                  role="status"
+                  aria-atomic={true}
+                  className="shadow-lg"
+                >
                   <Toast {...toast} />
                 </div>
               </motion.div>
