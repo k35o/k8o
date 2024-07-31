@@ -10,6 +10,8 @@ import {
   SetStateAction,
   useCallback,
   useContext,
+  useEffect,
+  useRef,
   useState,
 } from 'react';
 import { createPortal } from 'react-dom';
@@ -93,40 +95,48 @@ export const ToastProvider: FC<PropsWithChildren> = ({
   children,
 }) => {
   const [toasts, setToasts] = useState<ToastType[]>([]);
+  const ref = useRef<HTMLElement | null>(null);
+
+  useEffect(() => {
+    ref.current = document.body;
+  }, []);
+
   return (
     <SetToastContext.Provider value={setToasts}>
       {children}
-      {createPortal(
-        <div
-          role="region"
-          aria-live="polite"
-          aria-label="通知"
-          className="fixed bottom-3 z-50 flex w-full flex-col items-center justify-center gap-2"
-        >
-          <AnimatePresence initial={false}>
-            {toasts.map((toast) => (
-              <motion.div
-                key={toast.id}
-                layout
-                variants={toastMotionVariants}
-                initial="initial"
-                animate="animate"
-                exit="exit"
-                custom={{ position: 'bottom' }}
-              >
-                <div
-                  role="status"
-                  aria-atomic={true}
-                  className="shadow-lg"
-                >
-                  <Toast {...toast} />
-                </div>
-              </motion.div>
-            ))}
-          </AnimatePresence>
-        </div>,
-        document.body,
-      )}
+      {ref.current
+        ? createPortal(
+            <div
+              role="region"
+              aria-live="polite"
+              aria-label="通知"
+              className="fixed bottom-3 z-50 flex w-full flex-col items-center justify-center gap-2"
+            >
+              <AnimatePresence initial={false}>
+                {toasts.map((toast) => (
+                  <motion.div
+                    key={toast.id}
+                    layout
+                    variants={toastMotionVariants}
+                    initial="initial"
+                    animate="animate"
+                    exit="exit"
+                    custom={{ position: 'bottom' }}
+                  >
+                    <div
+                      role="status"
+                      aria-atomic={true}
+                      className="shadow-lg"
+                    >
+                      <Toast {...toast} />
+                    </div>
+                  </motion.div>
+                ))}
+              </AnimatePresence>
+            </div>,
+            ref.current,
+          )
+        : null}
     </SetToastContext.Provider>
   );
 };
