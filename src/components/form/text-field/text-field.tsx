@@ -32,7 +32,7 @@ export const TextField: FC<Props> = ({
       value={value}
       onChange={(e) => onChange(e.target.value)}
       className={clsx(
-        'w-full rounded-md border border-border px-3 py-2',
+        'w-full rounded-lg border border-border px-3 py-2',
         'hover:bg-grayHover',
         'aria-invalid:border-error',
         'disabled:cursor-not-allowed disabled:border-borderLight disabled:bg-gray disabled:text-gray',

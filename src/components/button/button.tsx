@@ -32,7 +32,7 @@ export const Button: FC<
     <button
       type={type}
       className={clsx(
-        'rounded-lg font-bold',
+        'rounded-xl font-bold',
         {
           ['bg-primary text-white hover:bg-primaryHover active:bg-primaryActive']:
             variant === 'contained',

@@ -41,7 +41,7 @@ export const Radio: FC<Props> = ({
           <input
             type="radio"
             className={clsx(
-              'cursor-pointer rounded-md border border-borderLight',
+              'cursor-pointer',
               'disabled:cursor-not-allowed',
             )}
             value={option.value}

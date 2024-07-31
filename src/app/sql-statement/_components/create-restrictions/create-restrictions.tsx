@@ -32,7 +32,7 @@ export const CreateRestrictions: FC<Props> = ({
 }) => {
   const restrictionsEntries = Object.entries(restrictions);
   return (
-    <fieldset className="rounded-md p-2">
+    <fieldset className="p-2">
       <div className="flex items-center justify-between py-2">
         <legend className="text-lg font-bold">制限</legend>
         <Button

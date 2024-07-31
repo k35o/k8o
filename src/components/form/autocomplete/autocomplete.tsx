@@ -59,7 +59,7 @@ export const Autocomplete: FC<Props> = ({
     <div
       ref={ref}
       className={clsx(
-        'relative w-full rounded-md border border-border shadow-sm',
+        'relative w-full rounded-lg border border-border shadow-sm',
         'focus-within:border-transparent focus-within:outline-none focus-within:ring-2 focus-within:ring-focusRing',
         'has-[:hover]:bg-grayHover',
         'has-[[aria-invalid=true]]:border-error',
@@ -76,7 +76,7 @@ export const Autocomplete: FC<Props> = ({
               <div
                 key={text}
                 tabIndex={-1}
-                className="inline-flex items-center gap-2 rounded-full bg-gray px-3 py-1 text-sm font-medium"
+                className="inline-flex items-center gap-2 rounded-full bg-bgBase px-3 py-1 text-sm font-medium"
               >
                 {label}
                 <IconButton
@@ -188,7 +188,7 @@ export const Autocomplete: FC<Props> = ({
         {open && (
           <div
             role="presentation"
-            className="absolute top-1 z-10 w-full rounded-md border border-borderLight bg-white shadow-md"
+            className="absolute top-1 z-10 w-full rounded-lg border border-borderLight bg-white shadow-md"
           >
             <ul
               id={`${id}_listbox`}
