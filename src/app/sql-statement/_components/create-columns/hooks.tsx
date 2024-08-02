@@ -1,6 +1,7 @@
 import { useCallback } from 'react';
 import { Column } from '../../_types/column';
 import { Restriction } from '../../_types/restriction';
+import { uuidV4 } from '@/utils/uuid-v4';
 
 export const useCreateColumns = (
   columns: Record<string, Column>,
@@ -17,7 +18,7 @@ export const useCreateColumns = (
     () =>
       setColumns({
         ...columns,
-        [crypto.randomUUID()]: {
+        [uuidV4()]: {
           name: '',
           alias: '',
           type: 'uuid',

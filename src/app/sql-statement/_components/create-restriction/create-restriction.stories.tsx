@@ -3,6 +3,7 @@ import { CreateRestriction } from './create-restriction';
 import { useState } from 'react';
 import { Restriction } from '../../_types/restriction';
 import { Column } from '../../_types/column';
+import { uuidV4 } from '@/utils/uuid-v4';
 
 const meta: Meta<typeof CreateRestriction> = {
   title: 'app/sql-statement/create-restriction',
@@ -14,9 +15,9 @@ export default meta;
 type Story = StoryObj<typeof CreateRestriction>;
 
 const uuids: [string, string, string] = [
-  crypto.randomUUID(),
-  crypto.randomUUID(),
-  crypto.randomUUID(),
+  uuidV4(),
+  uuidV4(),
+  uuidV4(),
 ];
 
 export const Primary: Story = {

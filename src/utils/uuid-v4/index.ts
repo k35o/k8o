@@ -1,5 +1,5 @@
 export const uuidV4 = (): string => {
-  if (isSecureContext) {
+  if (typeof window !== 'undefined' && isSecureContext) {
     return crypto.randomUUID();
   }
   return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(

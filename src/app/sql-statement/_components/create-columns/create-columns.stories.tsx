@@ -2,6 +2,7 @@ import type { Meta, StoryObj } from '@storybook/react';
 import { CreateColumns } from './create-columns';
 import { useState } from 'react';
 import { Column } from '../../_types/column';
+import { uuidV4 } from '@/utils/uuid-v4';
 
 const meta: Meta<typeof CreateColumns> = {
   title: 'app/sql-statement/columns-info',
@@ -15,7 +16,7 @@ type Story = StoryObj<typeof CreateColumns>;
 export const Primary: Story = {
   render: () => {
     const [columns, setColumns] = useState<Record<string, Column>>({
-      [crypto.randomUUID()]: {
+      [uuidV4()]: {
         name: '',
         alias: '',
         type: 'uuid',
