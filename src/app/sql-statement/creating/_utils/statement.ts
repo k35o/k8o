@@ -62,98 +62,106 @@ export const makeStatement = (
   restrictions: Record<string, Restriction>,
 ): Result => {
   const tableResult = tableSchema.safeParse(table);
-  if (!tableResult.success) {
-    const errors = tableResult.error.issues.reduce(
-      (errors: InvalidTable['errors'], issue) => {
-        if (issue.path.includes('name')) {
-          errors.name = issue.message;
-        }
-        if (issue.path.includes('alias')) {
-          errors.alias = issue.message;
-        }
-        return errors;
-      },
-      {},
-    );
-    return {
-      isSuccessful: false,
-      invalidTable: {
-        type: 'table',
-        errors,
-      },
-    };
-  }
-
   const columnResults = columnsSchema.safeParse(columns);
-  if (!columnResults.success) {
-    const errors = columnResults.error.issues.reduce(
-      (errors: InvalidColumns['errors'], issue) => {
-        const id = issue.path[0];
-        const name = issue.path[1];
-        if (typeof id !== 'string' || typeof name !== 'string') {
-          return errors;
-        }
-        return {
-          ...errors,
-          [id]: {
-            ...errors[id],
-            [name]: issue.message,
-          },
-        };
-      },
-      {},
-    );
-    return {
-      isSuccessful: false,
-      invalidColumns: {
-        type: 'column',
-        errors,
-      },
-    };
-  }
-
   const restrictionResults =
     restrictionsSchema.safeParse(restrictions);
-  if (!restrictionResults.success) {
-    const errors = restrictionResults.error.issues.reduce(
-      (errors: InvalidRestrictions['errors'], issue) => {
-        const id = issue.path[0];
-        const type = issue.path[1];
-        if (typeof id !== 'string' || typeof type !== 'string') {
-          return errors;
-        }
-        if (type === 'reference') {
-          const reference = issue.path[2];
-          if (typeof reference !== 'string') {
-            return errors;
-          }
-          return {
-            ...errors,
-            [id]: {
-              ...errors[id],
-              referrence: {
-                ...errors[id]?.referrence,
-                [reference]: issue.message,
-              },
-            },
-          };
-        }
-        return {
-          ...errors,
-          [id]: {
-            ...errors[id],
-            [type]: issue.message,
-          },
-        };
-      },
-      {},
-    );
+
+  if (
+    !tableResult.success ||
+    !columnResults.success ||
+    !restrictionResults.success
+  ) {
     return {
       isSuccessful: false,
-      invalidRestrictions: {
-        type: 'restriction',
-        errors,
-      },
+      ...(tableResult.success
+        ? {}
+        : {
+            invalidTable: {
+              type: 'table',
+              errors: tableResult.error.issues.reduce(
+                (errors: InvalidTable['errors'], issue) => {
+                  if (issue.path.includes('name')) {
+                    errors.name = issue.message;
+                  }
+                  if (issue.path.includes('alias')) {
+                    errors.alias = issue.message;
+                  }
+                  return errors;
+                },
+                {},
+              ),
+            },
+          }),
+      ...(columnResults.success
+        ? {}
+        : {
+            invalidColumns: {
+              type: 'column',
+              errors: columnResults.error.issues.reduce(
+                (errors: InvalidColumns['errors'], issue) => {
+                  const id = issue.path[0];
+                  const name = issue.path[1];
+                  if (
+                    typeof id !== 'string' ||
+                    typeof name !== 'string'
+                  ) {
+                    return errors;
+                  }
+                  return {
+                    ...errors,
+                    [id]: {
+                      ...errors[id],
+                      [name]: issue.message,
+                    },
+                  };
+                },
+                {},
+              ),
+            },
+          }),
+      ...(restrictionResults.success
+        ? {}
+        : {
+            invalidRestrictions: {
+              type: 'restriction',
+              errors: restrictionResults.error.issues.reduce(
+                (errors: InvalidRestrictions['errors'], issue) => {
+                  const id = issue.path[0];
+                  const type = issue.path[1];
+                  if (
+                    typeof id !== 'string' ||
+                    typeof type !== 'string'
+                  ) {
+                    return errors;
+                  }
+                  if (type === 'reference') {
+                    const reference = issue.path[2];
+                    if (typeof reference !== 'string') {
+                      return errors;
+                    }
+                    return {
+                      ...errors,
+                      [id]: {
+                        ...errors[id],
+                        referrence: {
+                          ...errors[id]?.referrence,
+                          [reference]: issue.message,
+                        },
+                      },
+                    };
+                  }
+                  return {
+                    ...errors,
+                    [id]: {
+                      ...errors[id],
+                      [type]: issue.message,
+                    },
+                  };
+                },
+                {},
+              ),
+            },
+          }),
     };
   }
 

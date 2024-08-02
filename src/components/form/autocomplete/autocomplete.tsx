@@ -103,7 +103,7 @@ export const Autocomplete: FC<Props> = ({
             aria-invalid={isInvalid}
             aria-required={isRequired}
             className={clsx(
-              'bg-transparent grow focus-visible:outline-none',
+              'grow bg-transparent focus-visible:outline-none',
               'disabled:cursor-not-allowed',
             )}
             type="text"
@@ -115,6 +115,9 @@ export const Autocomplete: FC<Props> = ({
               setOpen(true);
               setText(e.target.value);
               setSelectIndex(undefined);
+            }}
+            onBlur={() => {
+              setOpen(false);
             }}
             onClick={() => {
               if (open && text.length === 0) {
@@ -195,6 +198,9 @@ export const Autocomplete: FC<Props> = ({
               role="listbox"
               className="max-h-96 py-2"
             >
+              {filteredOptions.length === 0 && (
+                <li className="px-3 py-2 text-textGray">該当なし</li>
+              )}
               {filteredOptions.map((option, idx) => {
                 const selected = value.includes(option.value);
                 return (

@@ -31,12 +31,13 @@ export const CreateRestriction: FC<Props> = ({
   setRestriction,
   restrictionError,
 }) => {
-  const columnOptions = Object.entries(columns).map(
-    ([id, column]) => ({
+  const columnOptions = Object.entries(columns)
+    // 名前をつけていないカラムは選択肢に含めない
+    .filter(([_, column]) => Boolean(column.name))
+    .map(([id, column]) => ({
       value: id,
       label: column.name,
-    }),
-  );
+    }));
 
   return (
     <div className="flex flex-col justify-center gap-4">
