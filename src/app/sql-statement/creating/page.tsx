@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { InvalidTable, Table } from '../_types/table';
 import { Column, InvalidColumns } from '../_types/column';
 import { CreateTable } from '../_components/create-table';
@@ -24,6 +24,8 @@ const CreateColumns = dynamic(
 );
 
 export default function Page() {
+  const topRef = useRef<HTMLElement | null>(null);
+
   const [table, setTable] = useState<Table>({
     name: '',
     alias: '',
@@ -54,7 +56,10 @@ export default function Page() {
     useState<InvalidRestrictions['errors']>();
 
   return (
-    <section className="flex flex-col gap-6 rounded-lg bg-white p-4">
+    <section
+      ref={topRef}
+      className="flex flex-col gap-6 rounded-lg bg-white p-4"
+    >
       <CreateTable
         table={table}
         setTable={setTable}
@@ -89,6 +94,7 @@ export default function Page() {
             setRestroctionsError(
               statementResult.invalidRestrictions?.errors,
             );
+            topRef.current?.scrollIntoView();
             return;
           }
           setStatement(statementResult.statement);
