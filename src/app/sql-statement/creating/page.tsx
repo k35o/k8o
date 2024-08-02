@@ -97,7 +97,12 @@ export default function Page() {
         生成
       </Button>
       {statement && (
-        <code className="whitespace-pre-wrap rounded-lg bg-bgLight p-4 text-xs sm:text-base">
+        <code
+          ref={(node) => {
+            node?.scrollIntoView();
+          }}
+          className="whitespace-pre-wrap rounded-lg bg-bgLight p-4 text-xs sm:text-base"
+        >
           {statement}
         </code>
       )}
