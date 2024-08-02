@@ -1,5 +1,6 @@
 'use client';
 import { FormControl } from '@/components/form/form-control/form-control';
+import clsx from 'clsx';
 import { ChangeEventHandler, FC } from 'react';
 
 type Props = {
@@ -24,7 +25,10 @@ export const ColorPallet: FC<Props> = ({
         <div className="flex gap-2">
           <input
             id={id}
-            className="w-16 grow"
+            className={clsx(
+              'w-16 grow rounded-lg border border-border',
+              'focus-visible:border-transparent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focusRing',
+            )}
             type="color"
             value={color}
             onChange={handleChange}
