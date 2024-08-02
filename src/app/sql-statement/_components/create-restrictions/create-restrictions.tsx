@@ -14,6 +14,7 @@ import {
   Restriction,
 } from '../../_types/restriction';
 import { CreateRestriction } from '../create-restriction/create-restriction';
+import { uuidV4 } from '@/utils/uuid-v4';
 
 type Props = {
   columns: Record<string, Column>;
@@ -39,7 +40,7 @@ export const CreateRestrictions: FC<Props> = ({
           onClick={() =>
             setRestrictions({
               ...restrictions,
-              [crypto.randomUUID()]: {
+              [uuidV4()]: {
                 type: 'primary',
                 columns: [],
               },

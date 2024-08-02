@@ -13,6 +13,7 @@ import {
 import { CreateRestrictions } from '../_components/create-restrictions';
 import dynamic from 'next/dynamic';
 import { LoadingCreateColumns } from '../_components/create-columns/loading-create-columns';
+import { uuidV4 } from '@/utils/uuid-v4';
 
 const CreateColumns = dynamic(
   () =>
@@ -28,7 +29,7 @@ export default function Page() {
     alias: '',
   });
   const [columns, setColumns] = useState<Record<string, Column>>({
-    [crypto.randomUUID()]: {
+    [uuidV4()]: {
       name: '',
       alias: '',
       type: 'uuid',
@@ -38,7 +39,7 @@ export default function Page() {
   const [restrictions, setRestrictions] = useState<
     Record<string, Restriction>
   >({
-    [crypto.randomUUID()]: {
+    [uuidV4()]: {
       type: 'primary',
       columns: [],
     },
