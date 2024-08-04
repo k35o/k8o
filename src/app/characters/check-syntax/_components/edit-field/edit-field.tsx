@@ -11,7 +11,7 @@ import {
 import { Button } from '@/components/button';
 import { FormEventHandler, useState } from 'react';
 import { checkJapaneseSyntax } from '../../_utils/japaneseSyntax';
-import { FormControl } from '@/components/form/form-control/form-control';
+import { FormControl } from '@/components/form/form-control';
 
 export const EditField = () => {
   const text = useText();

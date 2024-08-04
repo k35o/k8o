@@ -1,5 +1,5 @@
 'use client';
-import { FormControl } from '@/components/form/form-control/form-control';
+import { FormControl } from '@/components/form/form-control';
 import clsx from 'clsx';
 import { ChangeEventHandler, FC } from 'react';
 

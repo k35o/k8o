@@ -11,7 +11,7 @@ import {
   RGB,
   rgbToHex,
 } from '../../_utils/color-converter';
-import { FormControl } from '@/components/form/form-control/form-control';
+import { FormControl } from '@/components/form/form-control';
 
 type ColorType = 'rgb' | 'hex';
 

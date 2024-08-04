@@ -15,7 +15,7 @@ import {
 import { TextField } from '@/components/form/text-field';
 import { Select } from '@/components/form/select/select';
 import { Radio } from '@/components/form/radio';
-import { FormControl } from '@/components/form/form-control/form-control';
+import { FormControl } from '@/components/form/form-control';
 
 type Props = {
   handleChangeColumn: (id: string) => (column: Column) => void;
