@@ -1,0 +1,18 @@
+import type { Meta, StoryObj } from '@storybook/react';
+import { Progress } from '.';
+
+const meta: Meta<typeof Progress> = {
+  title: 'components/progress',
+  component: Progress,
+  tags: ['autodocs'],
+};
+
+export default meta;
+type Story = StoryObj<typeof Progress>;
+
+export const Primary: Story = {
+  args: {
+    progress: 50,
+    maxProgress: 100,
+  },
+};
