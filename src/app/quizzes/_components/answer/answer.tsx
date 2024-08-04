@@ -18,7 +18,9 @@ export const Answer: FC<{
 }) => {
   return (
     <div className="flex flex-col items-center gap-2">
-      {highlight && <p className="text-9xl">{highlight}</p>}
+      {highlight && (
+        <p className="font-notoSansJp text-9xl">{highlight}</p>
+      )}
       <FormControl
         label={question}
         renderInput={(props) => {
