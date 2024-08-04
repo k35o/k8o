@@ -30,6 +30,9 @@ module.exports = {
         bgDark: colors.slate[800],
         focusRing: colors.blue[500],
       },
+      fontFamily: {
+        notoSansJp: ['var(--font-noto-sans-jp)'],
+      },
       aria: {
         invalid: 'invalid="true"',
       },

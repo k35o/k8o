@@ -39,7 +39,9 @@ export const Feedback: FC<{
         </div>
         <div className="flex flex-col items-center">
           <p>{question}</p>
-          {highlight && <p className="text-9xl">{highlight}</p>}
+          {highlight && (
+            <p className="font-notoSansJp text-9xl">{highlight}</p>
+          )}
         </div>
       </div>
       <div className="flex w-full flex-col gap-1">
