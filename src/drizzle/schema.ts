@@ -12,7 +12,9 @@ export const quizzes = pgTable(
   'quizzes',
   {
     id: serial('id').primaryKey(),
-    type: integer('type').references(() => quizType.id),
+    type: integer('type')
+      .notNull()
+      .references(() => quizType.id),
   },
   (table) => {
     return {
@@ -38,7 +40,10 @@ export const quizQuestions = pgTable(
   'quiz_questions',
   {
     id: serial('id').primaryKey(),
-    quizId: integer('quiz_id').references(() => quizzes.id),
+    quizId: integer('quiz_id')
+      .notNull()
+      .references(() => quizzes.id),
+    highlight: text('highlight'),
     question: text('question').notNull(),
   },
   (table) => {
@@ -52,7 +57,9 @@ export const quizAnswers = pgTable(
   'quiz_answers',
   {
     id: serial('id').primaryKey(),
-    quizId: integer('quiz_id').references(() => quizzes.id),
+    quizId: integer('quiz_id')
+      .notNull()
+      .references(() => quizzes.id),
     answer: text('answer').notNull(),
     explanation: text('explanation'),
   },

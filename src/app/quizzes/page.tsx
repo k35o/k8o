@@ -6,8 +6,8 @@ export default function Page() {
       <AppCard
         link="/quizzes/fish-kanji"
         emotion="🐟"
-        title="魚編クイズ"
-        description="魚編を持つ漢字の問題を出します"
+        title="うおへんクイズ"
+        description="うおへんを持つ漢字の問題を出します"
       />
     </div>
   );
