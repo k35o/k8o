@@ -56,15 +56,17 @@ export const Feedback: FC<{
             text={status === 'correct' ? '他の答え' : '答え'}
           />
         </div>
-        <ul className="flex flex-col items-center">
-          {answers
-            .filter((a) => !checkAnswer(answer, a.answer))
-            .map((a) => (
-              <li key={a.id} className="list-disc">
-                {a.answer}
-              </li>
-            ))}
-        </ul>
+        <div className="flex flex-col items-center">
+          <ul>
+            {answers
+              .filter((a) => !checkAnswer(answer, a.answer))
+              .map((a) => (
+                <li key={a.id} className="list-disc">
+                  {a.answer}
+                </li>
+              ))}
+          </ul>
+        </div>
       </div>
       {answers[0]?.explanation && (
         <div className="flex w-full flex-col gap-1">

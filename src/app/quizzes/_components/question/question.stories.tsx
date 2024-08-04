@@ -12,6 +12,7 @@ type Story = StoryObj<typeof Question>;
 
 export const IsCorrect: Story = {
   args: {
+    collection: <></>,
     quizzes: [
       {
         id: 1,
@@ -29,7 +30,7 @@ export const IsCorrect: Story = {
             explanation: null,
           },
           {
-            id: 1,
+            id: 3,
             answer: 'ししびしお',
             explanation: null,
           },

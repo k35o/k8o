@@ -5,6 +5,10 @@ import { Complete } from '.';
 const meta: Meta<typeof Complete> = {
   title: 'app/quizzes/complete',
   component: Complete,
+  args: {
+    collection: <></>,
+    reset: fn(),
+  },
   tags: ['autodocs'],
 };
 
@@ -15,7 +19,6 @@ export const Normal: Story = {
   args: {
     score: 75,
     maxCount: 100,
-    reset: fn(),
   },
 };
 
@@ -23,7 +26,6 @@ export const Success: Story = {
   args: {
     score: 95,
     maxCount: 100,
-    reset: fn(),
   },
 };
 
@@ -31,7 +33,6 @@ export const Warning: Story = {
   args: {
     score: 50,
     maxCount: 100,
-    reset: fn(),
   },
 };
 
@@ -39,6 +40,5 @@ export const Error: Story = {
   args: {
     score: 25,
     maxCount: 100,
-    reset: fn(),
   },
 };

@@ -30,8 +30,10 @@ export const getQuizType = async ({
 // NOTE:問題数が多いクイズを作った場合はページネーションを実装する
 export const getQuizzes = async ({
   type,
+  byRandom = false,
 }: {
   type: InferSelectModel<typeof schema.quizType>['id'];
+  byRandom?: boolean;
 }): Promise<Quiz[]> => {
   const res = await db.query.quizzes.findMany({
     where: (quiz, { eq }) => eq(quiz.type, type),
@@ -39,7 +41,7 @@ export const getQuizzes = async ({
       question: true,
       answers: true,
     },
-    orderBy: [ormSql`random()`],
+    orderBy: byRandom ? [ormSql`random()`] : [],
   });
 
   return res.map((quiz) => ({

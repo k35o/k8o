@@ -1,13 +1,14 @@
 import { Button } from '@/components/button';
 import { Heading } from '@/components/heading';
 import clsx from 'clsx';
-import { FC } from 'react';
+import { FC, ReactElement } from 'react';
 
 export const Complete: FC<{
   score: number;
   maxCount: number;
+  collection: ReactElement;
   reset: () => void;
-}> = ({ score, maxCount, reset }) => {
+}> = ({ score, maxCount, collection, reset }) => {
   const percentage = score / maxCount;
   return (
     <div className="flex flex-col items-center gap-5">
@@ -25,6 +26,10 @@ export const Complete: FC<{
         </p>
       </div>
       <Button onClick={reset}>もう一度挑戦する</Button>
+      <div className="flex w-full flex-col gap-2">
+        <Heading type="h4">問題一覧</Heading>
+        {collection}
+      </div>
     </div>
   );
 };

@@ -28,7 +28,7 @@ export const IsCorrect: Story = {
         explanation: null,
       },
       {
-        id: 1,
+        id: 3,
         answer: 'ししびしお',
         explanation: null,
       },
