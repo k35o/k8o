@@ -25,7 +25,7 @@ import {
   AccordionItem,
   AccordionPanel,
 } from '@/components/accordion';
-import { FormControl } from '@/components/form/form-control/form-control';
+import { FormControl } from '@/components/form/form-control';
 
 export const SyntaxFixer: FC = () => {
   const invalidCount = useInvalidCount();

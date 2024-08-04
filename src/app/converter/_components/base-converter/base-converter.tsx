@@ -1,6 +1,6 @@
 'use client';
 
-import { FormControl } from '@/components/form/form-control/form-control';
+import { FormControl } from '@/components/form/form-control';
 import { Option, Select } from '@/components/form/select/select';
 import { TextField } from '@/components/form/text-field';
 import { ArrowRightIcon } from '@heroicons/react/24/solid';

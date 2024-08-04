@@ -24,6 +24,12 @@ export default function Home() {
         description="コントラスト比など、色にまつわる機能を提供します。"
       />
       <AppCard
+        link="/quizzes"
+        emotion="💡"
+        title="Quizzes"
+        description="色々なジャンルのクイズを出します。"
+      />
+      <AppCard
         link="/sql-statement"
         emotion="🖥️"
         title="SQL Statement"

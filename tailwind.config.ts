@@ -7,6 +7,7 @@ module.exports = {
     extend: {
       colors: {
         primary: colors.teal[700],
+        primaryLight: colors.teal[400],
         primaryHover: colors.teal[800],
         primaryActive: colors.teal[900],
         gray: colors.gray[100],

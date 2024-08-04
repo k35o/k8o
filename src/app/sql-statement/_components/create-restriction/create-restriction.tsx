@@ -8,7 +8,7 @@ import {
 import { Select } from '@/components/form/select/select';
 import { TextField } from '@/components/form/text-field';
 import { Autocomplete } from '@/components/form/autocomplete';
-import { FormControl } from '@/components/form/form-control/form-control';
+import { FormControl } from '@/components/form/form-control';
 
 const TYPE_OPTIONS = [
   { value: 'primary', label: 'PRIMARY KEY' },
