@@ -12,11 +12,9 @@ export default async function Page() {
   });
 
   return (
-    <section className="h-full rounded-lg bg-white p-10">
-      <Question
-        quizzes={quizzes}
-        collection={<FishKanjiCollection />}
-      />
-    </section>
+    <Question
+      quizzes={quizzes}
+      collection={<FishKanjiCollection />}
+    />
   );
 }

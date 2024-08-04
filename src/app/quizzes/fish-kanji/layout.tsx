@@ -23,7 +23,9 @@ export default function Layout({
   return (
     <div className="flex h-full flex-col gap-4">
       <Heading type="h3">うおへんクイズ</Heading>
-      {children}
+      <section className="h-full rounded-lg bg-white p-10">
+        {children}
+      </section>
     </div>
   );
 }
