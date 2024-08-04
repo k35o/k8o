@@ -1,0 +1,35 @@
+import type { Meta, StoryObj } from '@storybook/react';
+import { AlertIcon } from './alert-icon';
+
+const meta: Meta<typeof AlertIcon> = {
+  title: 'components/alert-icon',
+  component: AlertIcon,
+  tags: ['autodocs'],
+};
+
+export default meta;
+type Story = StoryObj<typeof AlertIcon>;
+
+export const Success: Story = {
+  args: {
+    status: 'success',
+  },
+};
+
+export const Info: Story = {
+  args: {
+    status: 'info',
+  },
+};
+
+export const Warning: Story = {
+  args: {
+    status: 'warning',
+  },
+};
+
+export const Error: Story = {
+  args: {
+    status: 'error',
+  },
+};
