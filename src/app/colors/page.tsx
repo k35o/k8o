@@ -9,6 +9,12 @@ export default function Page() {
         title="コントラスト比チェッカー"
         description="コントラスト比をチェックします"
       />
+      <AppCard
+        link="/colors/converter"
+        emotion="🧬"
+        title="色変換ツール"
+        description="カラーコードの形式を変換します"
+      />
     </div>
   );
 }

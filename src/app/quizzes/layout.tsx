@@ -7,7 +7,7 @@ export const metadata = {
   openGraph: {
     title: 'Quizzes',
     description: '色々なジャンルのクイズを出します。',
-    url: 'https://k8o.me/colors',
+    url: 'https://k8o.me/quizzes',
   },
   twitter: {
     title: 'Quizzes',

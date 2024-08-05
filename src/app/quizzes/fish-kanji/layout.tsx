@@ -6,7 +6,7 @@ export const metadata = {
   openGraph: {
     title: 'うおへんクイズ',
     description: 'うおへんを持つ漢字の問題を出します',
-    url: 'https://k8o.me/colors',
+    url: 'https://k8o.me/quizzes/fish-kanji',
   },
   twitter: {
     title: 'うおへんクイズ',

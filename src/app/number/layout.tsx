@@ -1,3 +1,4 @@
+import Link from 'next/link';
 import { Heading } from '../../components/heading';
 
 export const metadata = {
@@ -24,8 +25,10 @@ export default function Layout({
   children: React.ReactNode;
 }) {
   return (
-    <div className="flex flex-col gap-6">
-      <Heading type="h2">Converter</Heading>
+    <div className="flex h-full flex-col gap-6">
+      <Link href="/number">
+        <Heading type="h2">Number</Heading>
+      </Link>
       {children}
     </div>
   );
