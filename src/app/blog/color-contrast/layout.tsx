@@ -1,4 +1,5 @@
 import { Metadata } from 'next';
+import { BlogLayout } from '../_components/blog-layout/blog-layout';
 
 export const metadata: Metadata = {
   title: '色のコントラスト比は重要だけどどうやって求めるんだっけ？',
@@ -24,12 +25,5 @@ export default function Layout({
 }: {
   children: React.ReactNode;
 }) {
-  return (
-    <div className="flex flex-col gap-4">
-      <article className="rounded-lg bg-white px-1 py-14 pt-4 sm:px-10">
-        <p className="text-end text-textGray">2024/02/12に公開</p>
-        {children}
-      </article>
-    </div>
-  );
+  return <BlogLayout updatedAt="2024/02/12">{children}</BlogLayout>;
 }
