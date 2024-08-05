@@ -2,7 +2,7 @@ import { ImageResponse } from 'next/og';
 
 export const runtime = 'edge';
 
-export const alt = 'converter';
+export const alt = 'number';
 export const size = {
   width: 500,
   height: 500,
@@ -10,7 +10,7 @@ export const size = {
 
 export const contentType = 'image/png';
 
-export default async function TwitterImage() {
+export default async function OpenGraphImage() {
   return new ImageResponse(
     (
       <div
@@ -25,7 +25,7 @@ export default async function TwitterImage() {
           justifyContent: 'center',
         }}
       >
-        🧬
+        🔢
       </div>
     ),
     {

@@ -30,7 +30,7 @@ export const CheckContrast: FC = () => {
       </div>
       <div className="flex flex-col gap-4">
         <p className="text-xl font-bold">
-          入力した色のコントラスト比は{contrast.toFixed(2)}:1です。
+          入力した色のコントラスト比は{contrast.toFixed(2)}:1です
         </p>
         <ResultTable
           isInvalidAAContrstLarge={isInvalidAAContrstLarge}

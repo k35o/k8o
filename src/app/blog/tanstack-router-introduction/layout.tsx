@@ -1,4 +1,5 @@
 import { Metadata } from 'next';
+import { BlogLayout } from '../_components/blog-layout/blog-layout';
 
 export const metadata: Metadata = {
   title: 'Reactの新しいルーティングライブラリ、TanStackRouterを学ぶ',
@@ -26,12 +27,5 @@ export default function Layout({
 }: {
   children: React.ReactNode;
 }) {
-  return (
-    <div className="flex flex-col gap-4">
-      <article className="-m-2 rounded-lg bg-white px-3 py-14 pt-4 sm:m-0 sm:px-10">
-        <p className="text-end text-textGray">2023/07/13に公開</p>
-        {children}
-      </article>
-    </div>
-  );
+  return <BlogLayout updatedAt="2023/07/13">{children}</BlogLayout>;
 }

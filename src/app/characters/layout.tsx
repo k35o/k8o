@@ -3,19 +3,18 @@ import { Heading } from '../../components/heading';
 
 export const metadata = {
   title: 'Characters',
-  description:
-    '入力した文字の検索など、文字に対する操作を提供します。',
+  description: '入力した文字の検索など、文字に対する操作を提供します',
   openGraph: {
     title: 'Characters',
     description:
-      '入力した文字の検索など、文字に対する操作を提供します。',
+      '入力した文字の検索など、文字に対する操作を提供します',
     url: 'https://k8o.me/characters',
   },
   twitter: {
     title: 'Characters',
     card: 'summary',
     description:
-      '入力した文字の検索など、文字に対する操作を提供します。',
+      '入力した文字の検索など、文字に対する操作を提供します',
   },
 };
 
