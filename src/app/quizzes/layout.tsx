@@ -3,16 +3,16 @@ import { Heading } from '../../components/heading';
 
 export const metadata = {
   title: 'Quizzes',
-  description: '色々なジャンルのクイズを出します。',
+  description: '色々なジャンルのクイズを出します',
   openGraph: {
     title: 'Quizzes',
-    description: '色々なジャンルのクイズを出します。',
+    description: '色々なジャンルのクイズを出します',
     url: 'https://k8o.me/quizzes',
   },
   twitter: {
     title: 'Quizzes',
     card: 'summary',
-    description: '色々なジャンルのクイズを出します。',
+    description: '色々なジャンルのクイズを出します',
   },
 };
 

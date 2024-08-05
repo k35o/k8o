@@ -3,18 +3,18 @@ import { Heading } from '../../components/heading';
 export const metadata = {
   title: 'SQL Statement',
   description:
-    'テーブルの作成など、SQLに関するコマンドを作成する機能を提供します。',
+    'テーブルの作成など、SQLに関するコマンドを作成する機能を提供します',
   openGraph: {
     title: 'SQL Statement',
     description:
-      'テーブルの作成など、SQLに関するコマンドを作成する機能を提供します。',
+      'テーブルの作成など、SQLに関するコマンドを作成する機能を提供します',
     url: 'https://k8o.me/sql-statement',
   },
   twitter: {
     title: 'SQL Statement',
     card: 'summary',
     description:
-      'テーブルの作成など、SQLに関するコマンドを作成する機能を提供します。',
+      'テーブルの作成など、SQLに関するコマンドを作成する機能を提供します',
   },
 };
 

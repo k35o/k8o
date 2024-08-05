@@ -35,7 +35,7 @@ export const VerifiedSyntax: FC = () => {
       </div>
       <CheckCircleIcon title="" className="size-36 text-success" />
       <p className="text-lg font-bold">
-        テキストに問題は見つかりませんでした。
+        テキストに問題は見つかりませんでした
       </p>
       <div className="w-full">
         <Accordion>
