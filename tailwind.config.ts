@@ -1,5 +1,6 @@
 import { type Config } from 'tailwindcss';
 import colors from 'tailwindcss/colors';
+import plugin from 'tailwindcss/plugin';
 
 module.exports = {
   content: ['./src/**/*.{js,ts,jsx,tsx,mdx}'],
@@ -33,10 +34,35 @@ module.exports = {
       fontFamily: {
         notoSansJp: ['var(--font-noto-sans-jp)'],
       },
+      gridTemplateColumns: {
+        'col-fill': 'repeat(auto-fill, 1fr)',
+      },
       aria: {
         invalid: 'invalid="true"',
       },
     },
   },
-  plugins: [],
+  plugins: [
+    plugin(({ matchUtilities, theme }) => {
+      matchUtilities(
+        {
+          'grid-cols-auto-fill': (value) => ({
+            gridTemplateColumns: `repeat(auto-fill, minmax(min(${value}, 100%), 1fr))`,
+          }),
+          'grid-cols-auto-fit': (value) => ({
+            gridTemplateColumns: `repeat(auto-fit, minmax(min(${value}, 100%), 1fr))`,
+          }),
+          'grid-rows-auto-fill': (value) => ({
+            gridTemplateRows: `repeat(auto-fill, minmax(min(${value}, 100%), 1fr))`,
+          }),
+          'grid-rows-auto-fit': (value) => ({
+            gridTemplateRows: `repeat(auto-fit, minmax(min(${value}, 100%), 1fr))`,
+          }),
+        },
+        {
+          values: theme('width', {}),
+        },
+      );
+    }),
+  ],
 } satisfies Config;
