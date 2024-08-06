@@ -9,7 +9,9 @@ export default function Loading() {
         </LinkButton>
       </div>
       <div className="flex grow items-center justify-center">
-        <p className="text-2xl font-bold">問題を読み込み中です...</p>
+        <p className="font-notoSansJp text-2xl font-bold">
+          問題を読み込み中です...
+        </p>
       </div>
     </div>
   );
