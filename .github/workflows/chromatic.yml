@@ -6,6 +6,7 @@ jobs:
   setup:
     runs-on: ubuntu-latest
     steps:
+      - run: echo ${{ github.actor }}
       - name: set environment
         if: ${{ github.actor == 'renovate[bot]' }}
         run: echo "environment=Renovate" >> "$GITHUB_ENV"
@@ -14,6 +15,7 @@ jobs:
     needs: setup
     environment: ${{ needs.setup.outputs.environment }}
     steps:
+      - run: echo ${{ needs.setup.outputs.environment }}
       - name: Checkout branch
         uses: actions/checkout@v4
         with:
