@@ -3,45 +3,16 @@ name: 'Chromatic'
 on: push
 
 jobs:
+  setup:
+    runs-on: ubuntu-latest
+    steps:
+      - name: set environment
+        if: ${{ github.actor == 'renovate[bot]' }}
+        run: echo "environment=${{ github.ref }}"" >> "$GITHUB_ENV"
   chromatic-deployment:
     runs-on: ubuntu-latest
-    if: ${{ github.actor != 'renovate[bot]' }}
-    steps:
-      - name: Checkout branch
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-      - name: Setup pnpm
-        uses: pnpm/action-setup@v3
-        with:
-          run_install: false
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version-file: 'package.json'
-      - name: Get pnpm store directory
-        shell: bash
-        run: |
-          echo "STORE_PATH=$(pnpm store path --silent)" >> $GITHUB_ENV
-      - uses: actions/cache@v4
-        name: Setup pnpm cache
-        with:
-          path: ${{ env.STORE_PATH }}
-          key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
-          restore-keys: |
-            ${{ runner.os }}-pnpm-store-
-      - name: Install dependencies
-        run: pnpm install
-      - name: Publish to Chromatic
-        uses: chromaui/action@v11
-        with:
-          projectToken: ${{ secrets.CHROMATIC_PROJECT_TOKEN }}
-          onlyChanged: true
-
-  chromatic-deployment-by-renovate:
-    runs-on: ubuntu-latest
-    if: ${{ github.actor == 'renovate[bot]' }}
-    environment: Renovate
+    needs: setup
+    environment: ${{ needs.setup.outputs.environment }}
     steps:
       - name: Checkout branch
         uses: actions/checkout@v4
