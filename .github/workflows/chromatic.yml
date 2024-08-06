@@ -5,9 +5,11 @@ on: push
 jobs:
   setup:
     runs-on: ubuntu-latest
+    outputs:
+      environment: ${{ steps.step1.outputs.environment }}
     steps:
-      - run: echo ${{ github.actor }}
       - name: set environment
+        id: step1
         if: ${{ github.actor == 'renovate[bot]' }}
         run: echo "environment=Renovate" >> "$GITHUB_OUTPUT"
   chromatic-deployment:
