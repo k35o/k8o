@@ -12,12 +12,12 @@ jobs:
         id: step1
         if: ${{ github.actor == 'renovate[bot]' }}
         run: echo "environment=Renovate" >> "$GITHUB_OUTPUT"
+
   chromatic-deployment:
     runs-on: ubuntu-latest
     needs: setup
     environment: ${{ needs.setup.outputs.environment }}
     steps:
-      - run: echo ${{ needs.setup.outputs.environment }}
       - name: Checkout branch
         uses: actions/checkout@v4
         with:
