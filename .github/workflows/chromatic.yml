@@ -9,7 +9,7 @@ jobs:
       - run: echo ${{ github.actor }}
       - name: set environment
         if: ${{ github.actor == 'renovate[bot]' }}
-        run: echo "environment=Renovate" >> "$GITHUB_ENV"
+        run: echo "environment=Renovate" >> "$GITHUB_OUTPUT"
   chromatic-deployment:
     runs-on: ubuntu-latest
     needs: setup
