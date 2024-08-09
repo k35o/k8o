@@ -2,7 +2,7 @@ import { type Config } from 'tailwindcss';
 import colors from 'tailwindcss/colors';
 import plugin from 'tailwindcss/plugin';
 
-module.exports = {
+const config = {
   content: ['./src/**/*.{js,ts,jsx,tsx,mdx}'],
   theme: {
     extend: {
@@ -66,3 +66,5 @@ module.exports = {
     }),
   ],
 } satisfies Config;
+
+export default config;
