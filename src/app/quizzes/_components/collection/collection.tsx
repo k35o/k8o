@@ -9,7 +9,7 @@ export const CollectionByHighlight: CollectionProps = ({
   quizzes,
 }) => {
   return (
-    <div className="grid-cols-auto-fit-36 grid place-items-center gap-2 font-notoSansJp">
+    <div className="grid place-items-center gap-2 font-notoSansJp grid-cols-auto-fit-36">
       {quizzes.map((quiz) => (
         <div
           key={quiz.id}

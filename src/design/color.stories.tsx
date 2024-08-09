@@ -15,7 +15,7 @@ const Component: FC = () => {
           </div>
           <div>
             <Heading type="h2">light</Heading>
-            <div className="bg-primaryLight flex h-36 w-52 rounded-md p-2" />
+            <div className="flex h-36 w-52 rounded-md bg-primaryLight p-2" />
           </div>
           <div>
             <Heading type="h2">hover</Heading>
