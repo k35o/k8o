@@ -12,7 +12,7 @@ export const Progress: FC<{
         aria-valuemax={maxProgress}
         aria-valuemin={minProgress}
         aria-valuenow={progress}
-        className="bg-primaryLight h-4 rounded-md"
+        className="h-4 rounded-md bg-primaryLight"
         style={{ width: `${(progress / maxProgress) * 100}%` }}
       />
     </div>
