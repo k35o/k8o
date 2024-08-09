@@ -2,7 +2,7 @@ import withMdx from "@next/mdx";
 import rehypePrettyCode from "rehype-pretty-code";
 import rehypeKatex from "rehype-katex";
 import remarkMath from "remark-math";
-import { getHighlighter } from "shiki";
+import { createHighlighter } from "shiki";
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
@@ -25,7 +25,7 @@ export default withMdx({
         /** @type {Partial<import("rehype-pretty-code").Options>} */
         ({
           theme: "one-dark-pro",
-          getHighlighter,
+          createHighlighter,
         }),
       ],
     ],
