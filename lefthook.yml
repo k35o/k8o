@@ -1,0 +1,24 @@
+pre-commit:
+  paralell: true
+  commands:
+    format:
+      glob: '*.{js,ts,cjs,d.cts,d.ts,jsx,tsx}'
+      run: pnpm run prettier {staged_files}
+      stage_fixed: true
+    lint:
+      glob: '*.{js,ts,cjs,d.cts,d.ts,jsx,tsx}'
+      run: pnpm run lint:fix --file {staged_files}
+      stage_fixed: true
+
+pre-push:
+  paralell: true
+  commands:
+    format:
+      glob: '*.{js,ts,cjs,d.cts,d.ts,jsx,tsx}'
+      run: pnpm run format:check {staged_files}
+    lint:
+      glob: '*.{js,ts,cjs,d.cts,d.ts,jsx,tsx}'
+      run: pnpm run lint --file {staged_files}
+    test:
+      glob: '*.test.{js,ts,cjs,d.cts,d.ts,jsx,tsx}'
+      run: pnpm run test run {staged_files}
