@@ -1,4 +1,4 @@
-import clsx from 'clsx';
+import { cn } from '@/utils/cn';
 import { FC } from 'react';
 
 type Props = {
@@ -31,7 +31,7 @@ export const TextField: FC<Props> = ({
       type="text"
       value={value}
       onChange={(e) => onChange(e.target.value)}
-      className={clsx(
+      className={cn(
         'w-full rounded-lg border border-border px-3 py-2',
         'hover:bg-grayHover',
         'aria-invalid:border-error',

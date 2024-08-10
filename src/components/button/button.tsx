@@ -1,4 +1,4 @@
-import clsx from 'clsx';
+import { cn } from '@/utils/cn';
 import {
   FC,
   PropsWithChildren,
@@ -31,7 +31,7 @@ export const Button: FC<
   return (
     <button
       type={type}
-      className={clsx(
+      className={cn(
         'rounded-xl font-bold',
         {
           ['bg-primary text-white hover:bg-primaryHover active:bg-primaryActive']:

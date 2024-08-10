@@ -5,7 +5,7 @@ import { Analytics } from '@vercel/analytics/react';
 import { SpeedInsights } from '@vercel/speed-insights/next';
 import '@/libs/zod';
 import { AppProvider } from '@/providers/app';
-import clsx from 'clsx';
+import { cn } from '@/utils/cn';
 
 const font = M_PLUS_2({
   subsets: ['latin'],
@@ -38,7 +38,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="ja">
-      <body className={clsx(font.className, subFont.variable)}>
+      <body className={cn(font.className, subFont.variable)}>
         <AppProvider>
           <GlobalLayout>{children}</GlobalLayout>
         </AppProvider>

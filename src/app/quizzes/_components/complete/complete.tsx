@@ -1,6 +1,6 @@
 import { Button } from '@/components/button';
 import { Heading } from '@/components/heading';
-import clsx from 'clsx';
+import { cn } from '@/utils/cn';
 import { FC, ReactElement } from 'react';
 
 export const Complete: FC<{
@@ -16,7 +16,7 @@ export const Complete: FC<{
         <Heading type="h4">クイズ終了</Heading>
         {/* 0.8以上でsuccess 0.5以下でwarning 0.3以下でerror */}
         <p
-          className={clsx('text-2xl', {
+          className={cn('text-2xl', {
             'text-success': percentage >= 0.8,
             'text-warning': percentage <= 0.5 && percentage > 0.3,
             'text-error': percentage <= 0.3,

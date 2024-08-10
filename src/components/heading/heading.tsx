@@ -1,5 +1,5 @@
+import { cn } from '@/utils/cn';
 import { FC, PropsWithChildren } from 'react';
-import clsx from 'clsx';
 
 type Props = PropsWithChildren<{
   id?: string;
@@ -17,7 +17,7 @@ export const Heading: FC<Props> = ({
     return (
       <h1
         id={id}
-        className={clsx('text-3xl font-bold', {
+        className={cn('text-3xl font-bold', {
           [`line-clamp-${lineClamp}`]: lineClamp,
         })}
       >
@@ -29,7 +29,7 @@ export const Heading: FC<Props> = ({
     return (
       <h2
         id={id}
-        className={clsx('text-2xl font-bold', {
+        className={cn('text-2xl font-bold', {
           [`line-clamp-${lineClamp}`]: lineClamp,
         })}
       >
@@ -41,7 +41,7 @@ export const Heading: FC<Props> = ({
     return (
       <h3
         id={id}
-        className={clsx('text-xl font-bold', {
+        className={cn('text-xl font-bold', {
           [`line-clamp-${lineClamp}`]: lineClamp,
         })}
       >
@@ -53,7 +53,7 @@ export const Heading: FC<Props> = ({
     return (
       <h4
         id={id}
-        className={clsx('text-lg font-bold', {
+        className={cn('text-lg font-bold', {
           [`line-clamp-${lineClamp}`]: lineClamp,
         })}
       >
@@ -65,7 +65,7 @@ export const Heading: FC<Props> = ({
     return (
       <h5
         id={id}
-        className={clsx('font-bold', {
+        className={cn('font-bold', {
           [`line-clamp-${lineClamp}`]: lineClamp,
         })}
       >
@@ -77,7 +77,7 @@ export const Heading: FC<Props> = ({
     return (
       <h6
         id={id}
-        className={clsx('text-sm font-bold', {
+        className={cn('text-sm font-bold', {
           [`line-clamp-${lineClamp}`]: lineClamp,
         })}
       >

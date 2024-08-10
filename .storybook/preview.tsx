@@ -2,8 +2,8 @@ import React from 'react';
 import type { Preview } from '@storybook/react';
 import '../src/app/_styles/globals.css';
 import { AppProvider } from '../src/providers/app';
+import { cn } from '../src/utils/cn';
 import { M_PLUS_2, Noto_Sans_JP } from 'next/font/google';
-import clsx from 'clsx';
 
 const font = M_PLUS_2({ subsets: ['latin'] });
 
@@ -25,7 +25,7 @@ const preview: Preview = {
   decorators: [
     (Story) => (
       <AppProvider>
-        <div className={clsx(font.className, subFont.variable)}>
+        <div className={cn(font.className, subFont.variable)}>
           <Story />
         </div>
       </AppProvider>

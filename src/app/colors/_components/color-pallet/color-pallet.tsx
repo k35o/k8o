@@ -1,6 +1,5 @@
-'use client';
 import { FormControl } from '@/components/form/form-control';
-import clsx from 'clsx';
+import { cn } from '@/utils/cn';
 import { ChangeEventHandler, FC } from 'react';
 
 type Props = {
@@ -25,7 +24,7 @@ export const ColorPallet: FC<Props> = ({
         <div className="flex gap-2">
           <input
             id={id}
-            className={clsx(
+            className={cn(
               'w-16 grow rounded-lg border border-border',
               'focus-visible:border-transparent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focusRing',
             )}

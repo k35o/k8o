@@ -1,5 +1,5 @@
+import { cn } from '@/utils/cn';
 import { isInternalRoute } from '@/utils/is-internal-route';
-import clsx from 'clsx';
 import Link from 'next/link';
 import { FC, PropsWithChildren, ReactNode } from 'react';
 
@@ -11,7 +11,7 @@ export const LinkButton: FC<
     endIcon?: ReactNode;
   }>
 > = ({ children, size = 'md', href, startIcon, endIcon }) => {
-  const className = clsx(
+  const className = cn(
     'rounded-xl font-bold',
     'bg-primary text-white hover:bg-primaryHover active:bg-primaryActive',
     'focus-visible:border-transparent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focusRing',

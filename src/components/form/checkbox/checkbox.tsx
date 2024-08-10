@@ -1,5 +1,5 @@
+import { cn } from '@/utils/cn';
 import { CheckIcon } from '@heroicons/react/24/solid';
-import clsx from 'clsx';
 import { FC, useState } from 'react';
 
 type Props = {
@@ -21,7 +21,7 @@ export const Checkbox: FC<Props> = ({ label, value, onChange }) => {
         onChange={(e) => onChange(e.target.checked)}
       />
       <span
-        className={clsx(
+        className={cn(
           'inline-flex size-5 items-center justify-center rounded-lg border-2',
           isFocus &&
             'border-transparent outline-none ring-2 ring-focusRing',

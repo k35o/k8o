@@ -1,7 +1,7 @@
 import { FC } from 'react';
 import type { StatusType } from '@/types';
-import clsx from 'clsx';
 import { AlertIcon } from '../alert-icon';
+import { cn } from '@/utils/cn';
 
 type Props = {
   status: StatusType;
@@ -12,7 +12,7 @@ export const Alert: FC<Props> = ({ status, message }) => {
   return (
     <div
       role="alert"
-      className={clsx(
+      className={cn(
         'flex items-center gap-2 rounded-lg p-4',
         status === 'success' && 'bg-successLight',
         status === 'info' && 'bg-infoLight',

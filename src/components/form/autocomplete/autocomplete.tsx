@@ -1,7 +1,7 @@
 import { FC, useEffect, useRef, useState } from 'react';
 import { IconButton } from '../../icon-button';
 import { XMarkIcon } from '@heroicons/react/24/solid';
-import clsx from 'clsx';
+import { cn } from '@/utils/cn';
 
 export type Option = Readonly<{
   value: string;
@@ -58,7 +58,7 @@ export const Autocomplete: FC<Props> = ({
   return (
     <div
       ref={ref}
-      className={clsx(
+      className={cn(
         'relative w-full rounded-lg border border-border shadow-sm',
         'focus-within:border-transparent focus-within:outline-none focus-within:ring-2 focus-within:ring-focusRing',
         'has-[:hover]:bg-grayHover',
@@ -102,7 +102,7 @@ export const Autocomplete: FC<Props> = ({
             aria-controls={open ? `${id}_listbox` : undefined}
             aria-invalid={isInvalid}
             aria-required={isRequired}
-            className={clsx(
+            className={cn(
               'grow bg-transparent focus-visible:outline-none',
               'disabled:cursor-not-allowed',
             )}
@@ -209,7 +209,7 @@ export const Autocomplete: FC<Props> = ({
                     role="option"
                     aria-selected={selected}
                     tabIndex={-1}
-                    className={clsx(
+                    className={cn(
                       'cursor-pointer px-3 py-2',
                       selected && 'bg-primary text-white',
                       selectIndex === idx &&
