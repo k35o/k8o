@@ -1,5 +1,4 @@
 import { Heading } from '@/components/heading';
-import { FC } from 'react';
 
 export const metadata = {
   title: 'うおへんクイズ',
