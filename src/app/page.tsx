@@ -19,7 +19,7 @@ export default function Home() {
             height={128}
             alt="k8oのアイコン"
           />
-          <div className="flex h-32 w-full flex-col justify-evenly">
+          <div className="flex h-32 w-full flex-col justify-around">
             <div className="flex h-full flex-col justify-evenly md:h-auto md:flex-row md:items-center md:justify-between">
               <Heading type="h3">k8o</Heading>
               <div className="flex items-center justify-end gap-1">
