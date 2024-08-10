@@ -1,15 +1,27 @@
 import { Quiz } from '@/drizzle/db';
+import clsx from 'clsx';
+import { Noto_Sans_JP } from 'next/font/google';
 import { FC } from 'react';
 
 type CollectionProps = FC<{
   quizzes: Quiz[];
 }>;
 
+const subFont = Noto_Sans_JP({
+  subsets: ['latin'],
+  variable: '--font-noto-sans-jp',
+});
+
 export const CollectionByHighlight: CollectionProps = ({
   quizzes,
 }) => {
   return (
-    <div className="grid place-items-center gap-2 font-notoSansJp grid-cols-auto-fit-36">
+    <div
+      className={clsx(
+        'grid place-items-center gap-2 grid-cols-auto-fit-36',
+        subFont.className,
+      )}
+    >
       {quizzes.map((quiz) => (
         <div
           key={quiz.id}
