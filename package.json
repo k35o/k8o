@@ -35,7 +35,7 @@
     "autoprefixer": "10.4.20",
     "clsx": "2.1.1",
     "drizzle-orm": "0.32.1",
-    "framer-motion": "11.3.21",
+    "framer-motion": "11.3.24",
     "next": "14.2.5",
     "postcss": "8.4.41",
     "react": "18.3.1",
