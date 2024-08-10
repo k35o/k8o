@@ -14,7 +14,6 @@ const font = M_PLUS_2({
 const subFont = Noto_Sans_JP({
   subsets: ['latin'],
   variable: '--font-noto-sans-jp',
-  display: 'swap',
 });
 
 export const metadata = {

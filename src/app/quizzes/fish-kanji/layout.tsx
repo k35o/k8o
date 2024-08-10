@@ -1,4 +1,5 @@
 import { Heading } from '@/components/heading';
+import { FC } from 'react';
 
 export const metadata = {
   title: 'うおへんクイズ',
@@ -26,6 +27,9 @@ export default function Layout({
       <section className="h-full rounded-lg bg-white p-10">
         {children}
       </section>
+      <PreloadFont />
     </div>
   );
 }
+
+const PreloadFont: FC = () => <div className="font-notoSansJp" />;
