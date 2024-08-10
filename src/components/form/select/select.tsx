@@ -1,6 +1,6 @@
 import { FC } from 'react';
 import { ChevronDownIcon } from '@heroicons/react/24/solid';
-import clsx from 'clsx';
+import { cn } from '@/utils/cn';
 
 export type Option = Readonly<{
   value: string;
@@ -35,7 +35,7 @@ export const Select: FC<Props> = ({
         aria-describedby={describedbyId}
         aria-invalid={isInvalid}
         aria-required={isRequired}
-        className={clsx(
+        className={cn(
           'w-full appearance-none rounded-lg border border-border px-3 py-2 shadow-sm',
           'hover:bg-grayHover',
           'aria-invalid:border-error',

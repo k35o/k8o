@@ -1,4 +1,4 @@
-import clsx from 'clsx';
+import { cn } from '@/utils/cn';
 import { FC } from 'react';
 
 export type Option = Readonly<{
@@ -25,7 +25,7 @@ export const Radio: FC<Props> = ({
     <div
       aria-labelledby={labelId}
       role="radiogroup"
-      className={clsx(
+      className={cn(
         'flex cursor-pointer flex-col gap-2',
         isDisabled && 'cursor-not-allowed',
       )}
@@ -33,14 +33,14 @@ export const Radio: FC<Props> = ({
       {options.map((option) => (
         <label
           key={option.value}
-          className={clsx(
+          className={cn(
             'flex cursor-pointer items-center gap-2',
             'has-[:disabled]:cursor-not-allowed',
           )}
         >
           <input
             type="radio"
-            className={clsx(
+            className={cn(
               'cursor-pointer',
               'disabled:cursor-not-allowed',
             )}

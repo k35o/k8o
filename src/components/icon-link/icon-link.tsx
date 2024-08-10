@@ -1,4 +1,4 @@
-import clsx from 'clsx';
+import { cn } from '@/utils/cn';
 import { FC, PropsWithChildren } from 'react';
 
 type IconLinkProps = PropsWithChildren<{
@@ -15,7 +15,7 @@ export const IconLink: FC<IconLinkProps> = ({
 }) => {
   return (
     <a
-      className={clsx(
+      className={cn(
         'block rounded-full bg-transparent bg-white hover:bg-grayHover focus-visible:ring-2 focus-visible:ring-focusRing active:bg-grayActive',
         size === 'sm' && 'p-1',
         size === 'md' && 'p-2',

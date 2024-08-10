@@ -1,4 +1,4 @@
-import clsx from 'clsx';
+import { cn } from '@/utils/cn';
 import { FC, useEffect, useRef } from 'react';
 
 type Props = {
@@ -45,7 +45,7 @@ export const Textarea: FC<Props> = ({
       aria-describedby={describedbyId}
       aria-invalid={isInvalid}
       aria-required={isRequired}
-      className={clsx(
+      className={cn(
         'w-full resize-none rounded-lg border border-border px-3 py-2',
         'hover:bg-grayHover',
         'aria-invalid:border-error',

@@ -1,4 +1,4 @@
-import clsx from 'clsx';
+import { cn } from '@/utils/cn';
 import { FC, PropsWithChildren, ReactEventHandler } from 'react';
 
 type Props = PropsWithChildren<{
@@ -17,7 +17,7 @@ export const IconButton: FC<Props> = ({
 }) => {
   return (
     <button
-      className={clsx(
+      className={cn(
         'rounded-full bg-transparent hover:bg-grayHover focus-visible:ring-2 focus-visible:ring-focusRing active:bg-grayActive',
         size === 'sm' && 'p-1',
         size === 'md' && 'p-2',

@@ -5,8 +5,8 @@ import {
   ChevronUpIcon,
 } from '@heroicons/react/24/solid';
 import { FC, PropsWithChildren } from 'react';
-import clsx from 'clsx';
 import { useItemId, useOpen, useToggleOpen } from './context';
+import { cn } from '@/utils/cn';
 
 export const AccordionButton: FC<PropsWithChildren<{}>> = ({
   children,
@@ -18,7 +18,7 @@ export const AccordionButton: FC<PropsWithChildren<{}>> = ({
   return (
     <button
       type="button"
-      className={clsx(
+      className={cn(
         'flex w-full flex-row items-center justify-between rounded-lg p-2',
         'hover:bg-grayHover active:bg-grayActive',
         'focus-visible::first:ring-focusRing focus-visible::first:border-transparent focus-visible::first:outline-none focus-visible::first:ring-2',

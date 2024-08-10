@@ -1,8 +1,8 @@
 'use client';
 
 import { FC, PropsWithChildren } from 'react';
-import clsx from 'clsx';
 import { useItemId, useOpen } from './context';
+import { cn } from '@/utils/cn';
 
 export const AccordionPanel: FC<PropsWithChildren<{}>> = ({
   children,
@@ -15,7 +15,7 @@ export const AccordionPanel: FC<PropsWithChildren<{}>> = ({
       role="region"
       aria-labelledby={`${id}-button`}
       hidden={!open}
-      className={clsx({ hidden: !open }, 'p-2')}
+      className={cn({ hidden: !open }, 'p-2')}
     >
       {children}
     </div>
