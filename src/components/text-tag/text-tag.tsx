@@ -1,6 +1,20 @@
-export const TextTag = ({ text }: { text: string }) => {
+import { cn } from '@/utils/cn';
+
+export const TextTag = ({
+  text,
+  color = 'base',
+}: {
+  text: string;
+  color?: 'base' | 'white';
+}) => {
   return (
-    <span className="inline-block rounded-full bg-bgLight px-3 py-1 text-sm font-medium">
+    <span
+      className={cn(
+        'inline-block rounded-full px-3 py-1 text-sm font-medium',
+        color === 'base' && 'bg-bgLight',
+        color === 'white' && 'bg-white',
+      )}
+    >
       {text}
     </span>
   );
