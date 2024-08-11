@@ -18,7 +18,7 @@ const Item: FC<{
 }> = ({ link, emotion, title }) => {
   return (
     <div className="size-40 rounded-xl bg-white shadow-md">
-      <Link href={link}>
+      <Link href={link} scroll={false}>
         <div className="flex flex-col items-center justify-center gap-2 p-4">
           <Heading type="h3">{title}</Heading>
           <div className="flex size-24 shrink-0 items-center justify-center rounded-lg text-7xl">
