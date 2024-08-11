@@ -4,7 +4,7 @@ import { FC, PropsWithChildren, ReactEventHandler } from 'react';
 type Props = PropsWithChildren<{
   size?: 'sm' | 'md' | 'lg';
   disabled?: boolean;
-  label: string;
+  label?: string;
   onClick: ReactEventHandler<HTMLButtonElement>;
 }>;
 

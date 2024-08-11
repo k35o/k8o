@@ -15,3 +15,13 @@ export const Primary: Story = {
     text: 'TypeScript',
   },
 };
+
+export const White: Story = {
+  args: {
+    text: 'TypeScript',
+    color: 'white',
+  },
+  parameters: {
+    backgrounds: { default: 'dark' },
+  },
+};

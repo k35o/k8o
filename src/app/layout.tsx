@@ -6,6 +6,7 @@ import { SpeedInsights } from '@vercel/speed-insights/next';
 import '@/libs/zod';
 import { AppProvider } from '@/providers/app';
 import { cn } from '@/utils/cn';
+import { ReactNode } from 'react';
 
 const font = M_PLUS_2({
   subsets: ['latin'],
@@ -33,14 +34,17 @@ export const metadata = {
 
 export default function RootLayout({
   children,
+  modal,
 }: {
-  children: React.ReactNode;
+  children: ReactNode;
+  modal: ReactNode;
 }) {
   return (
     <html lang="ja">
       <body className={cn(font.className, subFont.variable)}>
         <AppProvider>
           <GlobalLayout>{children}</GlobalLayout>
+          {modal}
         </AppProvider>
         <Analytics />
         <SpeedInsights />
