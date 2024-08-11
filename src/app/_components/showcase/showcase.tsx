@@ -5,7 +5,7 @@ import { FC, PropsWithChildren } from 'react';
 
 const Container: FC<PropsWithChildren> = ({ children }) => {
   return (
-    <div className="grid gap-4 grid-cols-auto-fill-40">
+    <div className="grid place-items-center gap-4 grid-cols-auto-fill-40">
       {children}
     </div>
   );
