@@ -29,6 +29,7 @@ const config = {
         bgBase: colors.slate[300],
         bgLight: colors.slate[200],
         bgDark: colors.slate[800],
+        bgBackDrop: 'rbga(0, 0, 0, 0.5)',
         focusRing: colors.blue[500],
       },
       fontFamily: {
@@ -39,6 +40,9 @@ const config = {
       },
       aria: {
         invalid: 'invalid="true"',
+      },
+      maxHeight: {
+        lg: '32rem',
       },
     },
   },
