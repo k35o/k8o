@@ -33,12 +33,21 @@ export const Modal: FC<PropsWithChildren<{ title: string }>> = ({
 
   return createPortal(
     <div className="absolute bottom-0 left-0 right-0 top-0 z-50 bg-bgBackDrop">
+      {/* eslint-disable-next-line jsx-a11y/no-noninteractive-element-interactions -- https://github.com/jsx-eslint/eslint-plugin-jsx-a11y/pull/940待ち */}
       <dialog
         ref={dialogRef}
         className="max-h-lg w-10/12 max-w-lg rounded-xl bg-white shadow-xl"
         onClose={onDismiss}
+        onClick={() => dialogRef.current?.close()}
+        onKeyDown={(e) =>
+          e.key === 'Escape' && dialogRef.current?.close()
+        }
       >
-        <div className="flex flex-col items-center justify-center gap-3 p-6">
+        {/* eslint-disable-next-line jsx-a11y/click-events-have-key-events, jsx-a11y/no-static-element-interactions -- 参考:https://github.com/jsx-eslint/eslint-plugin-jsx-a11y/blob/main/docs/rules/no-static-element-interactions.md#case-the-event-handler-is-only-being-used-to-capture-bubbled-events */}
+        <div
+          className="flex flex-col items-center justify-center gap-3 p-6"
+          onClick={(e) => e.stopPropagation()}
+        >
           <Heading type="h2">{title}</Heading>
           {children}
         </div>
