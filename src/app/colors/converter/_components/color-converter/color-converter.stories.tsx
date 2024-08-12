@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from '@storybook/react';
 import { ColorConverter } from './color-converter';
 
 const meta: Meta<typeof ColorConverter> = {
-  title: 'app/converter/color-converter',
+  title: 'app/colors/converter/color-converter',
   component: ColorConverter,
   tags: ['autodocs'],
 };
