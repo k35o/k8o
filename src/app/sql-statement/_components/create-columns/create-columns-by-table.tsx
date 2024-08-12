@@ -1,5 +1,4 @@
 import { IconButton } from '@/components/icon-button';
-import { XMarkIcon } from '@heroicons/react/24/solid';
 import { FC, useId } from 'react';
 import {
   Column,
@@ -9,6 +8,7 @@ import {
 import { TextField } from '@/components/form/text-field';
 import { Select } from '@/components/form/select/select';
 import { Checkbox } from '@/components/form/checkbox';
+import { X } from 'lucide-react';
 
 type Props = {
   handleChangeColumn: (id: string) => (column: Column) => void;
@@ -190,7 +190,7 @@ export const CreateColumnsByTable: FC<Props> = ({
                       size="sm"
                       onClick={handleDeleteColumn(id)}
                     >
-                      <XMarkIcon className="size-6" />
+                      <X className="size-6" />
                     </IconButton>
                   )}
                 </td>

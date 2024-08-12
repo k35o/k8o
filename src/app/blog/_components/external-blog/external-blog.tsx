@@ -1,8 +1,7 @@
 'use client';
 
 import { IconLink } from '@/components/icon-link';
-import { Qiita } from '@/components/icons/qiita';
-import { Zenn } from '@/components/icons/zenn';
+import { Qiita, Zenn } from '@/components/icons';
 import { FC } from 'react';
 
 export const ExternalBlog: FC = () => {

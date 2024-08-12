@@ -3,6 +3,22 @@ import { GithubMark } from './github-mark';
 import { Zenn } from './zenn';
 import { Twitter } from './twitter';
 import { Qiita } from './qiita';
+import {
+  ArrowBigRightDash,
+  Check,
+  ChevronDown,
+  ChevronLeft,
+  ChevronRight,
+  ChevronUp,
+  CircleAlert,
+  CircleCheck,
+  ClipboardPenLine,
+  Info,
+  ListMinus,
+  Table2,
+  TriangleAlert,
+  X,
+} from 'lucide-react';
 
 const meta: Meta<typeof SVGAElement> = {
   title: 'components/icons',
@@ -12,7 +28,72 @@ const meta: Meta<typeof SVGAElement> = {
 export default meta;
 type Story = StoryObj<typeof GithubMark>;
 
-export const Icons: Story = {
+export const Primary: Story = {
+  render: () => {
+    return (
+      <div className="grid place-items-center gap-4 grid-cols-auto-fit-36">
+        <div className="flex flex-col items-center justify-center">
+          <X className="size-24" />
+          <p className="text-center">Close</p>
+        </div>
+        <div className="flex flex-col items-center justify-center">
+          <ChevronLeft className="size-24" />
+          <p className="text-center">Chevron Left</p>
+        </div>
+        <div className="flex flex-col items-center justify-center">
+          <ChevronUp className="size-24" />
+          <p className="text-center">Chevron Up</p>
+        </div>
+        <div className="flex flex-col items-center justify-center">
+          <ChevronRight className="size-24" />
+          <p className="text-center">Chevron Right</p>
+        </div>
+        <div className="flex flex-col items-center justify-center">
+          <ChevronDown className="size-24" />
+          <p className="text-center">Chevron Down</p>
+        </div>
+        <div className="flex flex-col items-center justify-center">
+          <ArrowBigRightDash className="size-24" />
+          <p className="text-center">Arrow Big Right Down</p>
+        </div>
+        <div className="flex flex-col items-center justify-center">
+          <Check className="size-24" />
+          <p className="text-center">Check</p>
+        </div>
+        <div className="flex flex-col items-center justify-center">
+          <Info className="size-24" />
+          <p className="text-center">Info</p>
+        </div>
+        <div className="flex flex-col items-center justify-center">
+          <CircleCheck className="size-24" />
+          <p className="text-center">Success</p>
+        </div>
+        <div className="flex flex-col items-center justify-center">
+          <TriangleAlert className="size-24" />
+          <p className="text-center">Warning</p>
+        </div>
+        <div className="flex flex-col items-center justify-center">
+          <CircleAlert className="size-24" />
+          <p className="text-center">Error</p>
+        </div>
+        <div className="flex flex-col items-center justify-center">
+          <ListMinus className="size-24" />
+          <p className="text-center">Form</p>
+        </div>
+        <div className="flex flex-col items-center justify-center">
+          <Table2 className="size-24" />
+          <p className="text-center">Table</p>
+        </div>
+        <div className="flex flex-col items-center justify-center">
+          <ClipboardPenLine className="size-24" />
+          <p className="text-center">Copy</p>
+        </div>
+      </div>
+    );
+  },
+};
+
+export const External: Story = {
   render: () => (
     <div className="flex flex-wrap gap-4">
       <div>

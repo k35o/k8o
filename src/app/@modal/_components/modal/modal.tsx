@@ -10,8 +10,8 @@ import {
 import { useRouter } from 'next/navigation';
 import { createPortal } from 'react-dom';
 import { IconButton } from '@/components/icon-button';
-import { XMarkIcon } from '@heroicons/react/24/solid';
 import { Heading } from '@/components/heading';
+import { X } from 'lucide-react';
 
 export const Modal: FC<PropsWithChildren<{ title: string }>> = ({
   children,
@@ -53,7 +53,7 @@ export const Modal: FC<PropsWithChildren<{ title: string }>> = ({
         </div>
         <div className="absolute right-2 top-2">
           <IconButton onClick={onDismiss}>
-            <XMarkIcon title="閉じる" className="size-4" />
+            <X aria-label="閉じる" className="size-4" />
           </IconButton>
         </div>
       </dialog>

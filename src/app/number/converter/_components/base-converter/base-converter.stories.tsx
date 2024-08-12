@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from '@storybook/react';
 import { BaseConverter } from './base-converter';
 
 const meta: Meta<typeof BaseConverter> = {
-  title: 'app/converter/base-converter',
+  title: 'app/number/converter/base-converter',
   component: BaseConverter,
   tags: ['autodocs'],
 };

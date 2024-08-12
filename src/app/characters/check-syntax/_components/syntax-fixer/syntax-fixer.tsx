@@ -11,10 +11,6 @@ import {
 } from '../../_state/text';
 import { Button } from '@/components/button';
 import { IconButton } from '@/components/icon-button';
-import {
-  ChevronLeftIcon,
-  ChevronRightIcon,
-} from '@heroicons/react/24/solid';
 import { useStep } from '@/hooks/step';
 import { Alert } from '@/components/alert';
 import { Heading } from '@/components/heading';
@@ -26,6 +22,7 @@ import {
   AccordionPanel,
 } from '@/components/accordion';
 import { FormControl } from '@/components/form/form-control';
+import { ChevronLeft, ChevronRight } from 'lucide-react';
 
 export const SyntaxFixer: FC = () => {
   const invalidCount = useInvalidCount();
@@ -56,7 +53,7 @@ export const SyntaxFixer: FC = () => {
           onClick={back}
           disabled={isDisabledBack}
         >
-          <ChevronLeftIcon className="size-8" />
+          <ChevronLeft className="size-8" />
         </IconButton>
         <div className="flex size-14 items-center justify-center rounded-full bg-bgBase">
           <p className="font-bold leading-none">
@@ -68,7 +65,7 @@ export const SyntaxFixer: FC = () => {
           onClick={next}
           disabled={isDisabledNext}
         >
-          <ChevronRightIcon className="size-8" />
+          <ChevronRight className="size-8" />
         </IconButton>
       </div>
       <FixText key={count} count={count} />

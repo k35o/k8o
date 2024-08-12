@@ -2,9 +2,7 @@ import { Heading } from '../components/heading';
 import k8o from './_images/k8o.jpg';
 import Image from 'next/image';
 import { IconLink } from '@/components/icon-link';
-import { GithubMark } from '@/components/icons';
-import { Qiita } from '@/components/icons/qiita';
-import { Zenn } from '@/components/icons/zenn';
+import { GithubMark, Qiita, Zenn } from '@/components/icons';
 import { ShowCase } from './_components/showcase';
 
 export default function Home() {

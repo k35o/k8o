@@ -3,7 +3,7 @@
 import { FormControl } from '@/components/form/form-control';
 import { Option, Select } from '@/components/form/select/select';
 import { TextField } from '@/components/form/text-field';
-import { ArrowRightIcon } from '@heroicons/react/24/solid';
+import { ArrowBigRightDash } from 'lucide-react';
 import { useMemo, useState } from 'react';
 
 type Base = 2 | 8 | 10 | 16;
@@ -75,10 +75,7 @@ export const BaseConverter = () => {
             );
           }}
         />
-        <ArrowRightIcon
-          className="size-10 stroke-2"
-          aria-label="右矢印"
-        />
+        <ArrowBigRightDash aria-label="右矢印" className="size-14" />
         <FormControl
           label="変換後"
           renderInput={(props) => {

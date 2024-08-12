@@ -1,13 +1,13 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import { IconLink } from './icon-link';
-import { ClipboardIcon } from '@heroicons/react/24/solid';
+import { ClipboardPenLine } from 'lucide-react';
 
 const meta: Meta<typeof IconLink> = {
   title: 'components/icon-link',
   component: IconLink,
   args: {
     href: 'https://example.com',
-    children: <ClipboardIcon className="size-6" />,
+    children: <ClipboardPenLine className="size-6" />,
     label: 'Copy to clipboard',
   },
   tags: ['autodocs'],
