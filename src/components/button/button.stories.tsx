@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import { Button } from './button';
-import { ClipboardIcon } from '@heroicons/react/24/solid';
+import { ClipboardPenLine } from 'lucide-react';
 
 const meta: Meta<typeof Button> = {
   title: 'components/button',
@@ -108,7 +108,7 @@ export const StartIcon: Story = {
     onClick: () => {
       console.log('clicked');
     },
-    startIcon: <ClipboardIcon className="size-6" />,
+    startIcon: <ClipboardPenLine className="size-6" />,
   },
   render: (props) => {
     return <Button {...props}>ボタン</Button>;
@@ -121,7 +121,7 @@ export const EndIcon: Story = {
     onClick: () => {
       console.log('clicked');
     },
-    endIcon: <ClipboardIcon className="size-6" />,
+    endIcon: <ClipboardPenLine className="size-6" />,
   },
   render: (props) => {
     return <Button {...props}>ボタン</Button>;

@@ -1,15 +1,12 @@
 import { FC } from 'react';
 import { Column, InvalidColumns } from '../../_types/column';
 import { Button } from '@/components/button';
-import {
-  QueueListIcon,
-  TableCellsIcon,
-} from '@heroicons/react/24/solid';
 import { Restriction } from '../../_types/restriction';
 import { useCreateColumns } from './hooks';
 import { CreateColumnsByForm } from './create-columns-by-form';
 import { CreateColumnsByTable } from './create-columns-by-table';
 import { useColumnsType } from '../../_state';
+import { ListMinus, Table2 } from 'lucide-react';
 
 type Props = {
   columns: Record<string, Column>;
@@ -47,9 +44,9 @@ export const CreateColumns: FC<Props> = ({
             }
             startIcon={
               showTable ? (
-                <QueueListIcon className="size-6" />
+                <ListMinus className="size-6" />
               ) : (
-                <TableCellsIcon className="size-6" />
+                <Table2 className="size-6" />
               )
             }
           >

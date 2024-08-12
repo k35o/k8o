@@ -2,7 +2,6 @@
 
 import { Option, Select } from '@/components/form/select/select';
 import { TextField } from '@/components/form/text-field';
-import { ArrowRightIcon } from '@heroicons/react/24/solid';
 import { useMemo, useState } from 'react';
 import { ColorTip } from './color-tip';
 import {
@@ -12,6 +11,7 @@ import {
   rgbToHex,
 } from '../../_utils/color-converter';
 import { FormControl } from '@/components/form/form-control';
+import { ArrowBigRightDash } from 'lucide-react';
 
 type ColorType = 'rgb' | 'hex';
 
@@ -83,10 +83,7 @@ export const ColorConverter = () => {
             );
           }}
         />
-        <ArrowRightIcon
-          className="size-10 stroke-2"
-          aria-label="右矢印"
-        />
+        <ArrowBigRightDash aria-label="右矢印" className="size-14" />
         <FormControl
           label="変換後"
           renderInput={({ describedbyId, ...props }) => {

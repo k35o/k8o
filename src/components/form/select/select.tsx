@@ -1,6 +1,6 @@
 import { FC } from 'react';
-import { ChevronDownIcon } from '@heroicons/react/24/solid';
 import { cn } from '@/utils/cn';
+import { ChevronDown } from 'lucide-react';
 
 export type Option = Readonly<{
   value: string;
@@ -53,7 +53,7 @@ export const Select: FC<Props> = ({
         ))}
       </select>
       <div className="absolute right-3 top-2/4 -translate-y-1/2">
-        <ChevronDownIcon className="size-4" />
+        <ChevronDown className="size-4" />
       </div>
     </div>
   );

@@ -1,9 +1,5 @@
 'use client';
 
-import {
-  CheckCircleIcon,
-  ClipboardIcon,
-} from '@heroicons/react/24/solid';
 import { FC } from 'react';
 import { useResetResult, useText } from '../../_state/text';
 import {
@@ -14,6 +10,7 @@ import {
 } from '@/components/accordion';
 import { Button } from '@/components/button';
 import { useClipboard } from '@/hooks/clipboard';
+import { CircleCheck, ClipboardPenLine } from 'lucide-react';
 
 export const VerifiedSyntax: FC = () => {
   const text = useText();
@@ -28,12 +25,14 @@ export const VerifiedSyntax: FC = () => {
         </Button>
         <Button
           onClick={() => writeClipboard(text)}
-          endIcon={<ClipboardIcon title="" className="size-6" />}
+          endIcon={
+            <ClipboardPenLine aria-label="" className="size-6" />
+          }
         >
           テキストをコピーする
         </Button>
       </div>
-      <CheckCircleIcon title="" className="size-36 text-success" />
+      <CircleCheck aria-label="" className="size-36 text-success" />
       <p className="text-lg font-bold">
         テキストに問題は見つかりませんでした
       </p>

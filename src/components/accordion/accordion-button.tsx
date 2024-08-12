@@ -1,12 +1,9 @@
 'use client';
 
-import {
-  ChevronDownIcon,
-  ChevronUpIcon,
-} from '@heroicons/react/24/solid';
 import { FC, PropsWithChildren } from 'react';
 import { useItemId, useOpen, useToggleOpen } from './context';
 import { cn } from '@/utils/cn';
+import { ChevronDown, ChevronUp } from 'lucide-react';
 
 export const AccordionButton: FC<PropsWithChildren<{}>> = ({
   children,
@@ -30,9 +27,9 @@ export const AccordionButton: FC<PropsWithChildren<{}>> = ({
     >
       {children}
       {open ? (
-        <ChevronUpIcon className="size-4 shrink-0" />
+        <ChevronUp className="size-4 shrink-0" />
       ) : (
-        <ChevronDownIcon className="size-4 shrink-0" />
+        <ChevronDown className="size-4 shrink-0" />
       )}
     </button>
   );

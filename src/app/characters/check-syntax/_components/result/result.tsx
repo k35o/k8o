@@ -8,8 +8,8 @@ import {
 } from '../../_state/text';
 import { Button } from '@/components/button';
 import { Heading } from '@/components/heading';
-import { ClipboardIcon } from '@heroicons/react/24/solid';
 import { useClipboard } from '@/hooks/clipboard';
+import { ClipboardPenLine } from 'lucide-react';
 
 export const Result: FC = () => {
   const id = useId();
@@ -35,7 +35,9 @@ export const Result: FC = () => {
           </Heading>
           <Button
             onClick={() => writeClipboard(fixedText)}
-            endIcon={<ClipboardIcon title="" className="size-6" />}
+            endIcon={
+              <ClipboardPenLine aria-label="" className="size-6" />
+            }
           >
             テキストをコピーする
           </Button>

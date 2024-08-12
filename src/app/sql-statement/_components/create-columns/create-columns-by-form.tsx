@@ -5,7 +5,6 @@ import {
   AccordionPanel,
 } from '@/components/accordion';
 import { IconButton } from '@/components/icon-button';
-import { XMarkIcon } from '@heroicons/react/24/solid';
 import { FC } from 'react';
 import {
   Column,
@@ -16,6 +15,7 @@ import { TextField } from '@/components/form/text-field';
 import { Select } from '@/components/form/select/select';
 import { Radio } from '@/components/form/radio';
 import { FormControl } from '@/components/form/form-control';
+import { X } from 'lucide-react';
 
 type Props = {
   handleChangeColumn: (id: string) => (column: Column) => void;
@@ -62,7 +62,7 @@ export const CreateColumnsByForm: FC<Props> = ({
                       size="sm"
                       onClick={handleDeleteColumn(id)}
                     >
-                      <XMarkIcon className="size-6" />
+                      <X className="size-6" />
                     </IconButton>
                   </div>
                 )}

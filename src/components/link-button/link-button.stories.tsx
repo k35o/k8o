@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import { LinkButton } from './link-button';
-import { ClipboardIcon } from '@heroicons/react/24/solid';
+import { ClipboardPenLine } from 'lucide-react';
 
 const meta: Meta<typeof LinkButton> = {
   title: 'components/link-button',
@@ -43,7 +43,7 @@ export const Small: Story = {
 
 export const StartIcon: Story = {
   args: {
-    startIcon: <ClipboardIcon className="size-6" />,
+    startIcon: <ClipboardPenLine className="size-6" />,
   },
   render: (props) => {
     return <LinkButton {...props}>ボタン</LinkButton>;
@@ -52,7 +52,7 @@ export const StartIcon: Story = {
 
 export const EndIcon: Story = {
   args: {
-    endIcon: <ClipboardIcon className="size-6" />,
+    endIcon: <ClipboardPenLine className="size-6" />,
   },
   render: (props) => {
     return <LinkButton {...props}>ボタン</LinkButton>;

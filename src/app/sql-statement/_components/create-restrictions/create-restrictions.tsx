@@ -8,13 +8,13 @@ import {
   AccordionPanel,
 } from '@/components/accordion';
 import { IconButton } from '@/components/icon-button';
-import { XMarkIcon } from '@heroicons/react/24/solid';
 import {
   InvalidRestrictions,
   Restriction,
 } from '../../_types/restriction';
 import { CreateRestriction } from '../create-restriction/create-restriction';
 import { uuidV4 } from '@/utils/uuid-v4';
+import { X } from 'lucide-react';
 
 type Props = {
   columns: Record<string, Column>;
@@ -77,7 +77,7 @@ export const CreateRestrictions: FC<Props> = ({
                           );
                         }}
                       >
-                        <XMarkIcon className="size-6" />
+                        <X className="size-6" />
                       </IconButton>
                     </div>
                   )}

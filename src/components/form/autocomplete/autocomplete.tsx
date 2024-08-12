@@ -1,7 +1,7 @@
 import { FC, useEffect, useRef, useState } from 'react';
 import { IconButton } from '../../icon-button';
-import { XMarkIcon } from '@heroicons/react/24/solid';
 import { cn } from '@/utils/cn';
+import { X } from 'lucide-react';
 
 export type Option = Readonly<{
   value: string;
@@ -88,7 +88,7 @@ export const Autocomplete: FC<Props> = ({
                     onChange(value.filter((v) => v !== text));
                   }}
                 >
-                  <XMarkIcon className="size-4" />
+                  <X className="size-4" />
                 </IconButton>
               </div>
             );
@@ -183,7 +183,7 @@ export const Autocomplete: FC<Props> = ({
               onChange([]);
             }}
           >
-            <XMarkIcon className="size-4" />
+            <X className="size-4" />
           </IconButton>
         )}
       </div>
