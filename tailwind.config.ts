@@ -1,5 +1,5 @@
 import { type Config } from 'tailwindcss';
-import colors, { white } from 'tailwindcss/colors';
+import colors, { transparent, white } from 'tailwindcss/colors';
 import plugin from 'tailwindcss/plugin';
 
 const config = {
@@ -7,6 +7,7 @@ const config = {
   theme: {
     colors: {
       white: white,
+      transparent: transparent,
       primary: colors.teal[700],
       primaryLight: colors.teal[400],
       primaryHover: colors.teal[800],
