@@ -18,12 +18,12 @@ export const IconButton: FC<Props> = ({
   return (
     <button
       className={cn(
-        'rounded-full bg-transparent hover:bg-grayHover focus-visible:ring-2 focus-visible:ring-focusRing active:bg-grayActive',
+        'bg-transparent rounded-full hover:bg-grayHover focus-visible:ring-2 focus-visible:ring-focusRing active:bg-grayActive',
         size === 'sm' && 'p-1',
         size === 'md' && 'p-2',
         size === 'lg' && 'p-3',
         disabled &&
-          'cursor-not-allowed opacity-50 hover:bg-transparent active:bg-transparent',
+          'hover:bg-transparent active:bg-transparent cursor-not-allowed opacity-50',
       )}
       disabled={disabled}
       onClick={onClick}
