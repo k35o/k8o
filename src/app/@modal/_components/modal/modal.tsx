@@ -36,7 +36,7 @@ export const Modal: FC<PropsWithChildren<{ title: string }>> = ({
       {/* eslint-disable-next-line jsx-a11y/no-noninteractive-element-interactions -- https://github.com/jsx-eslint/eslint-plugin-jsx-a11y/pull/940待ち */}
       <dialog
         ref={dialogRef}
-        className="max-h-lg w-10/12 max-w-lg rounded-xl bg-white shadow-xl"
+        className="max-h-lg w-5/6 max-w-2xl rounded-xl bg-white shadow-xl"
         onClose={onDismiss}
         onClick={() => dialogRef.current?.close()}
         onKeyDown={(e) =>

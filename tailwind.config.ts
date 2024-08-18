@@ -36,9 +36,6 @@ const config = {
       fontFamily: {
         notoSansJp: ['var(--font-noto-sans-jp)'],
       },
-      gridTemplateColumns: {
-        'col-fill': 'repeat(auto-fill, 1fr)',
-      },
       aria: {
         invalid: 'invalid="true"',
       },
