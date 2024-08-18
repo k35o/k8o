@@ -14,7 +14,7 @@ export const Checkbox: FC<Props> = ({ label, value, onChange }) => {
     <label className="inline-flex cursor-pointer items-center gap-2">
       <input
         type="checkbox"
-        className="invisible-input-checkbox"
+        className="sr-only"
         checked={value}
         onFocus={() => setIsFocus(true)}
         onBlur={() => setIsFocus(false)}
