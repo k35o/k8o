@@ -103,7 +103,7 @@ export const Autocomplete: FC<Props> = ({
             aria-invalid={isInvalid}
             aria-required={isRequired}
             className={cn(
-              'bg-transparent grow focus-visible:outline-none',
+              'grow bg-transparent focus-visible:outline-none',
               'disabled:cursor-not-allowed',
             )}
             type="text"
