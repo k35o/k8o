@@ -25,7 +25,6 @@ const meta: Meta<typeof SyntaxFixer> = {
       </CheckSyntaxProvider>
     ),
   ],
-  tags: ['autodocs'],
 };
 
 export default meta;

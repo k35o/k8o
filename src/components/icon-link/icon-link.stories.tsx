@@ -10,7 +10,6 @@ const meta: Meta<typeof IconLink> = {
     children: <ClipboardPenLine className="size-6" />,
     label: 'Copy to clipboard',
   },
-  tags: ['autodocs'],
 };
 
 export default meta;

@@ -18,7 +18,6 @@ const meta: Meta<typeof FormControl> = {
       );
     },
   },
-  tags: ['autodocs'],
 };
 
 export default meta;

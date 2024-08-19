@@ -17,7 +17,6 @@ const meta: Meta<typeof Textarea> = {
     value: '10',
     onChange: (value: string) => console.log(value),
   },
-  tags: ['autodocs'],
 };
 
 export default meta;

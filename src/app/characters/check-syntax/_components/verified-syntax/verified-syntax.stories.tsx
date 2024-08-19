@@ -16,7 +16,6 @@ const meta: Meta<typeof VerifiedSyntax> = {
       </CheckSyntaxProvider>
     ),
   ],
-  tags: ['autodocs'],
 };
 
 export default meta;

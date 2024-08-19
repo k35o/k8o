@@ -4,7 +4,6 @@ import { TextField } from './text-field';
 const meta: Meta<typeof TextField> = {
   title: 'app/characters/counter/text-field',
   component: TextField,
-  tags: ['autodocs'],
 };
 
 export default meta;

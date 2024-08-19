@@ -12,7 +12,6 @@ const meta: Meta<typeof EditField> = {
       </CheckSyntaxProvider>
     ),
   ],
-  tags: ['autodocs'],
 };
 
 export default meta;

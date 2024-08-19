@@ -17,7 +17,6 @@ const meta: Meta<typeof Result> = {
       </CheckSyntaxProvider>
     ),
   ],
-  tags: ['autodocs'],
 };
 
 export default meta;

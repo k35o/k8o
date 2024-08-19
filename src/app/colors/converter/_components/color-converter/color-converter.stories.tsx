@@ -4,7 +4,6 @@ import { ColorConverter } from './color-converter';
 const meta: Meta<typeof ColorConverter> = {
   title: 'app/colors/converter/color-converter',
   component: ColorConverter,
-  tags: ['autodocs'],
 };
 
 export default meta;

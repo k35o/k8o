@@ -4,7 +4,6 @@ import { GlobalLayout } from './global-layout';
 const meta: Meta<typeof GlobalLayout> = {
   title: 'app/globals/global-layout',
   component: GlobalLayout,
-  tags: ['autodocs'],
 };
 
 export default meta;

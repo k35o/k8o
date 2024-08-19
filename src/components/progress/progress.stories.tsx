@@ -4,7 +4,6 @@ import { Progress } from '.';
 const meta: Meta<typeof Progress> = {
   title: 'components/progress',
   component: Progress,
-  tags: ['autodocs'],
 };
 
 export default meta;

@@ -4,7 +4,6 @@ import { ToggleTheme } from './toggle-theme';
 const meta: Meta<typeof ToggleTheme> = {
   title: 'app/globals/toggle-theme',
   component: ToggleTheme,
-  tags: ['autodocs'],
 };
 
 export default meta;

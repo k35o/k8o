@@ -4,7 +4,6 @@ import { AppCard } from './app-card';
 const meta: Meta<typeof AppCard> = {
   title: 'app/@modal/app-card',
   component: AppCard,
-  tags: ['autodocs'],
 };
 
 export default meta;

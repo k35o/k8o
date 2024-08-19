@@ -4,7 +4,6 @@ import { QuizProgress } from '.';
 const meta: Meta<typeof QuizProgress> = {
   title: 'app/quizzes/quiz-progress',
   component: QuizProgress,
-  tags: ['autodocs'],
 };
 
 export default meta;

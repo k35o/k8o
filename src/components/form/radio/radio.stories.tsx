@@ -5,7 +5,6 @@ import { useState } from 'react';
 const meta: Meta<typeof Radio> = {
   title: 'components/form/radio',
   component: Radio,
-  tags: ['autodocs'],
 };
 
 export default meta;

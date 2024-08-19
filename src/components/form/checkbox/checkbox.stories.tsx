@@ -5,7 +5,6 @@ import { useState } from 'react';
 const meta: Meta<typeof Checkbox> = {
   title: 'components/form/checkbox',
   component: Checkbox,
-  tags: ['autodocs'],
 };
 
 export default meta;

@@ -22,7 +22,6 @@ import {
 
 const meta: Meta<typeof SVGAElement> = {
   title: 'components/icons',
-  tags: ['autodocs'],
 };
 
 export default meta;

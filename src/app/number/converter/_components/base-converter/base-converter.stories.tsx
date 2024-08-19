@@ -4,7 +4,6 @@ import { BaseConverter } from './base-converter';
 const meta: Meta<typeof BaseConverter> = {
   title: 'app/number/converter/base-converter',
   component: BaseConverter,
-  tags: ['autodocs'],
 };
 
 export default meta;

@@ -23,7 +23,6 @@ const meta: Meta<typeof ToastProvider> = {
       </Button>
     );
   },
-  tags: ['autodocs'],
 };
 
 export default meta;

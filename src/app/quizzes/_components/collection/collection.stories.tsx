@@ -4,7 +4,6 @@ import { CollectionByHighlight } from '.';
 const meta: Meta<typeof CollectionByHighlight> = {
   title: 'app/quizzes/collection',
   component: CollectionByHighlight,
-  tags: ['autodocs'],
 };
 
 export default meta;

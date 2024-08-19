@@ -4,7 +4,6 @@ import { TextTag } from './text-tag';
 const meta: Meta<typeof TextTag> = {
   title: 'components/text-tag',
   component: TextTag,
-  tags: ['autodocs'],
 };
 
 export default meta;

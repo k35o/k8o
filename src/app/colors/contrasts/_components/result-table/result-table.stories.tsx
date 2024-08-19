@@ -4,7 +4,6 @@ import { ResultTable } from './result-table';
 const meta: Meta<typeof ResultTable> = {
   title: 'app/colors/contrasts/result-table',
   component: ResultTable,
-  tags: ['autodocs'],
 };
 
 export default meta;

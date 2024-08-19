@@ -4,7 +4,6 @@ import { BlogLayout } from './blog-layout';
 const meta: Meta<typeof BlogLayout> = {
   title: 'app/blog/blog-layout',
   component: BlogLayout,
-  tags: ['autodocs'],
 };
 
 export default meta;

@@ -4,7 +4,6 @@ import { BlogCard } from './blog-card';
 const meta: Meta<typeof BlogCard> = {
   title: 'app/blog/blog-card',
   component: BlogCard,
-  tags: ['autodocs'],
 };
 
 export default meta;

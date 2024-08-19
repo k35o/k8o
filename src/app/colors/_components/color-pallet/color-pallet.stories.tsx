@@ -5,7 +5,6 @@ import { useState } from 'react';
 const meta: Meta<typeof ColorPallet> = {
   title: 'app/colors/color-pallet',
   component: ColorPallet,
-  tags: ['autodocs'],
 };
 
 export default meta;
