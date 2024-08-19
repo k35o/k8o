@@ -3,7 +3,10 @@ import plugin from 'tailwindcss/plugin';
 
 const config = {
   darkMode: ['class'],
-  content: ['./src/**/*.{js,ts,jsx,tsx,mdx}'],
+  content: [
+    './src/**/*.{js,ts,jsx,tsx,mdx}',
+    './.storybook/preview.tsx',
+  ],
   theme: {
     colors: {
       white: 'var(--white)',
