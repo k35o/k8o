@@ -2,14 +2,66 @@
 @tailwind components;
 @tailwind utilities;
 
-@layer components {
-  .invisible-input-checkbox {
-    position: absolute;
-    clip: rect(1px, 1px, 1px, 1px);
-    padding: 0;
-    border: 0;
-    height: 1px;
-    width: 1px;
-    overflow: hidden;
+@layer base {
+  :root {
+    --white: #ffffff;
+    --transparent: transparent;
+    --primary: #0f766e;
+    --primary-light: #2dd4bf;
+    --primary-dark: #0f766e;
+    --primary-hover: #115e59;
+    --primary-active: #134e4a;
+    --gray: #f3f4f6;
+    --gray-hover: #f3f4f6;
+    --gray-active: #d1d5db;
+    --text-base: #030712;
+    --text-gray: #374151;
+    --link: #2563eb;
+    --error: #dc2626;
+    --error-light: #fee2e2;
+    --warning: #a16207;
+    --warning-light: #fef9c3;
+    --success: #15803d;
+    --success-light: #dcfce7;
+    --info: #2563eb;
+    --info-light: #dbeafe;
+    --border: #4b5563;
+    --border-light: #d1d5db;
+    --bg-base: #cbd5e1;
+    --bg-light: #e2e8f0;
+    --bg-dark: #1e293b;
+    --bg-back-drop: rbga(0, 0, 0, 0.5);
+    --focus-ring: #3b82f6;
+  }
+
+  .dark {
+    --white: #111827;
+    --transparent: transparent;
+    --primary: #99f6e4;
+    --primary-light: #5eead4;
+    --primary-dark: #f0fdfa;
+    --primary-hover: #ccfbf1;
+    --primary-active: #f0fdfa;
+    --gray: #4b5563;
+    --gray-hover: #1f2937;
+    --gray-active: #374151;
+    --text-base: #f9fafb;
+    --text-gray: #15191e;
+    --link: #2563eb;
+    --error: #dc2626;
+    --error-light: #fee2e2;
+    --warning: #a16207;
+    --warning-light: #fef9c3;
+    --success: #15803d;
+    --success-light: #dcfce7;
+    --info: #2563eb;
+    --info-light: #dbeafe;
+    --border: #6b7280;
+    --border-light: #4b5563;
+    --bg-base: #1e293b;
+    --bg-light: #334155;
+    --bg-dark: #0f172a;
+    --bg-back-drop: rbga(0, 0, 0, 0.5);
+    --focus-ring: #3b82f6;
   }
 }

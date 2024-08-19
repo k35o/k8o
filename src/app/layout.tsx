@@ -41,7 +41,13 @@ export default function RootLayout({
 }) {
   return (
     <html lang="ja" suppressHydrationWarning>
-      <body className={cn(font.className, subFont.variable)}>
+      <body
+        className={cn(
+          font.className,
+          subFont.variable,
+          'bg-white text-textBase',
+        )}
+      >
         <AppProvider>
           <GlobalLayout>{children}</GlobalLayout>
           {modal}

@@ -40,7 +40,7 @@ export const Button: FC<
             disabled && variant === 'contained',
           ['border-2 border-primary bg-white text-primary hover:bg-grayHover active:bg-grayActive']:
             variant === 'outlined',
-          ['cursor-not-allowed opacity-50 hover:bg-white active:bg-white']:
+          ['cursor-not-allowed bg-white opacity-50 hover:bg-white active:bg-white']:
             disabled && variant === 'outlined',
         },
         'focus-visible:border-transparent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focusRing',
