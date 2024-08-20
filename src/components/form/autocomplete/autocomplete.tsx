@@ -59,7 +59,7 @@ export const Autocomplete: FC<Props> = ({
     <div
       ref={ref}
       className={cn(
-        'relative w-full rounded-lg border border-border shadow-sm',
+        'relative w-full rounded-lg border border-border bg-white shadow-sm',
         'focus-within:border-transparent focus-within:outline-none focus-within:ring-2 focus-within:ring-focusRing',
         'has-[:hover]:bg-grayHover',
         'has-[[aria-invalid=true]]:border-error',
@@ -76,7 +76,7 @@ export const Autocomplete: FC<Props> = ({
               <div
                 key={text}
                 tabIndex={-1}
-                className="inline-flex items-center gap-2 rounded-full bg-bgBase px-3 py-1 text-sm font-medium"
+                className="inline-flex items-center gap-2 rounded-full bg-bgLight px-3 py-1 text-sm font-medium"
               >
                 {label}
                 <IconButton
@@ -116,7 +116,10 @@ export const Autocomplete: FC<Props> = ({
               setText(e.target.value);
               setSelectIndex(undefined);
             }}
-            onBlur={() => {
+            onBlur={(e) => {
+              if (e.relatedTarget?.id.startsWith(`${id}_option_`)) {
+                return;
+              }
               setOpen(false);
             }}
             onClick={() => {
@@ -206,6 +209,7 @@ export const Autocomplete: FC<Props> = ({
                 return (
                   <li
                     key={option.value}
+                    id={`${id}_option_${option.value}`}
                     role="option"
                     aria-selected={selected}
                     tabIndex={-1}

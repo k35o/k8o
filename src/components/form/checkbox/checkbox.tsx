@@ -27,7 +27,7 @@ export const Checkbox: FC<Props> = ({ label, value, onChange }) => {
             'border-transparent outline-none ring-2 ring-focusRing',
           value
             ? 'border-primary bg-primary text-white'
-            : 'border-borderLight',
+            : 'border-borderLight bg-white',
         )}
         aria-hidden={true}
       >

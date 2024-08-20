@@ -1,5 +1,5 @@
-import React, { FC } from 'react';
-import type { Decorator, Preview } from '@storybook/react';
+import React, { FC, memo } from 'react';
+import type { Preview } from '@storybook/react';
 import '../src/app/_styles/globals.css';
 import { AppProvider } from '../src/providers/app';
 import { cn } from '../src/utils/cn';
@@ -13,15 +13,17 @@ const subFont = Noto_Sans_JP({
   variable: '--font-noto-sans-jp',
 });
 
-const ApplayThemeByStorybook: FC<{ theme: string }> = ({ theme }) => {
-  const { theme: currentTheme, setTheme } = useTheme();
+const ApplayThemeByStorybook: FC<{ theme: string }> = memo(
+  ({ theme }) => {
+    const { theme: currentTheme, setTheme } = useTheme();
 
-  if (currentTheme !== theme) {
-    setTheme(theme === 'dark' ? 'dark' : 'light');
-  }
+    if (currentTheme !== theme) {
+      setTheme(theme === 'dark' ? 'dark' : 'light');
+    }
 
-  return null;
-};
+    return null;
+  },
+);
 
 const preview: Preview = {
   globalTypes: {
