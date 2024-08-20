@@ -46,14 +46,14 @@ export const FormControl: FC<FormControlProps> = ({
         >
           {label}
           {isRequired && (
-            <span className="font-medium text-error">必須</span>
+            <span className="font-medium text-textError">必須</span>
           )}
         </label>
       ) : (
         <legend className="text-textPrimary text-md flex gap-2 font-bold">
           {label}
           {isRequired && (
-            <span className="font-medium text-error">必須</span>
+            <span className="font-medium text-textError">必須</span>
           )}
         </legend>
       )}
@@ -66,7 +66,7 @@ export const FormControl: FC<FormControlProps> = ({
         isRequired,
       })}
       {isInvalid && errorText ? (
-        <p id={`${id}-feedback`} className="text-sm text-error">
+        <p id={`${id}-feedback`} className="text-sm text-textError">
           {errorText}
         </p>
       ) : (

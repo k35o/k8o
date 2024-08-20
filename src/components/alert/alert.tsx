@@ -14,10 +14,10 @@ export const Alert: FC<Props> = ({ status, message }) => {
       role="alert"
       className={cn(
         'flex items-center gap-2 rounded-lg p-4',
-        status === 'success' && 'bg-successLight',
-        status === 'info' && 'bg-infoLight',
-        status === 'warning' && 'bg-warningLight',
-        status === 'error' && 'bg-errorLight',
+        status === 'success' && 'bg-bgSuccess',
+        status === 'info' && 'bg-bgInfo',
+        status === 'warning' && 'bg-bgWarning',
+        status === 'error' && 'bg-bgError',
       )}
     >
       <AlertIcon status={status} />
@@ -25,16 +25,18 @@ export const Alert: FC<Props> = ({ status, message }) => {
         message.length > 1 ? (
           <ul className="ml-4 list-disc">
             {message.map((msg) => (
-              <li key={msg} className="text-lg dark:text-white">
+              <li key={msg} className="text-lg dark:text-textOnFill">
                 {msg}
               </li>
             ))}
           </ul>
         ) : (
-          <p className="text-lg dark:text-white">{message[0]}</p>
+          <p className="text-lg dark:text-textOnFill">{message[0]}</p>
         )
       ) : (
-        <p className="text-lg font-bold dark:text-white">{message}</p>
+        <p className="text-lg font-bold dark:text-textOnFill">
+          {message}
+        </p>
       )}
     </div>
   );

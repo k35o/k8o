@@ -55,7 +55,7 @@ export const SyntaxFixer: FC = () => {
         >
           <ChevronLeft className="size-8" />
         </IconButton>
-        <div className="flex size-14 items-center justify-center rounded-full bg-bgBase">
+        <div className="flex size-14 items-center justify-center rounded-full bg-bgPrimary">
           <p className="font-bold leading-none">
             {count}/{invalidCount}
           </p>
@@ -134,7 +134,7 @@ const FixText: FC<{ count: number }> = ({ count }) => {
                     return (
                       <span
                         key={`${idx}_${text}`}
-                        className={'bg-infoLight'}
+                        className="bg-bgInfo"
                       >
                         {text + separator}
                       </span>

@@ -45,7 +45,7 @@ export default function RootLayout({
         className={cn(
           font.className,
           subFont.variable,
-          'bg-white text-textBase',
+          'bg-bgBase text-textBody',
         )}
       >
         <AppProvider>

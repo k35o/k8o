@@ -3,7 +3,7 @@ import { Description } from './_components/description';
 
 export default function Page() {
   return (
-    <section className="flex h-full flex-col justify-between gap-6 rounded-lg bg-white p-10">
+    <section className="flex h-full flex-col justify-between gap-6 rounded-lg bg-bgBase p-10">
       <CheckContrast />
       <Description />
     </section>

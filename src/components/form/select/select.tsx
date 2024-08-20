@@ -36,11 +36,11 @@ export const Select: FC<Props> = ({
         aria-invalid={isInvalid}
         aria-required={isRequired}
         className={cn(
-          'w-full appearance-none rounded-lg border border-border bg-white px-3 py-2 shadow-sm',
-          'hover:bg-grayHover',
-          'aria-invalid:border-error',
-          'disabled:cursor-not-allowed disabled:border-borderLight disabled:bg-gray disabled:text-gray',
-          'focus-visible:border-transparent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focusRing',
+          'w-full appearance-none rounded-lg border border-borderPrimary bg-bgBase px-3 py-2 shadow-sm',
+          'hover:bg-bgHover',
+          'aria-invalid:border-borderError',
+          'disabled:cursor-not-allowed disabled:border-borderDisabled disabled:hover:bg-bgBase',
+          'focus-visible:border-borderTransparent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-borderFocus',
         )}
         value={value}
         onChange={(e) => onChange(e.target.value)}

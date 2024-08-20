@@ -58,7 +58,7 @@ export default function Page() {
   return (
     <section
       ref={topRef}
-      className="flex flex-col gap-6 rounded-lg bg-white p-4"
+      className="flex flex-col gap-6 rounded-lg bg-bgBase p-4"
     >
       <CreateTable
         table={table}
@@ -107,7 +107,7 @@ export default function Page() {
           ref={(node) => {
             node?.scrollIntoView();
           }}
-          className="whitespace-pre-wrap rounded-lg bg-bgLight p-4 text-xs sm:text-base"
+          className="whitespace-pre-wrap rounded-lg bg-bgSecondary p-4 text-xs sm:text-base"
         >
           {statement}
         </code>

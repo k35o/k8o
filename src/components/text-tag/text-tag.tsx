@@ -11,8 +11,8 @@ export const TextTag = ({
     <span
       className={cn(
         'inline-block rounded-full px-3 py-1 text-sm font-medium',
-        color === 'base' && 'bg-bgLight',
-        color === 'white' && 'bg-white',
+        color === 'base' && 'bg-bgSecondary',
+        color === 'white' && 'bg-bgBase',
       )}
     >
       {text}

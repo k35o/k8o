@@ -11,19 +11,19 @@ const Component: FC = () => {
         <div className="grid w-full grid-cols-3 gap-4">
           <div>
             <Heading type="h2">main</Heading>
-            <div className="flex h-36 w-52 rounded-md bg-primary p-2" />
+            <div className="bg-primary flex h-36 w-52 rounded-md p-2" />
           </div>
           <div>
             <Heading type="h2">light</Heading>
-            <div className="flex h-36 w-52 rounded-md bg-primaryLight p-2" />
+            <div className="bg-primaryLight flex h-36 w-52 rounded-md p-2" />
           </div>
           <div>
             <Heading type="h2">hover</Heading>
-            <div className="flex h-36 w-52 rounded-md bg-primaryHover p-2" />
+            <div className="bg-primaryHover flex h-36 w-52 rounded-md p-2" />
           </div>
           <div>
             <Heading type="h2">active</Heading>
-            <div className="flex h-36 w-52 rounded-md bg-primaryActive p-2" />
+            <div className="bg-primaryActive flex h-36 w-52 rounded-md p-2" />
           </div>
         </div>
       </section>
@@ -32,15 +32,15 @@ const Component: FC = () => {
         <div className="grid w-full grid-cols-3 gap-4">
           <div>
             <Heading type="h2">main</Heading>
-            <div className="flex h-36 w-52 rounded-md bg-gray p-2" />
+            <div className="bg-bgDisabled flex h-36 w-52 rounded-md p-2" />
           </div>
           <div>
             <Heading type="h2">hover</Heading>
-            <div className="flex h-36 w-52 rounded-md bg-grayHover p-2" />
+            <div className="flex h-36 w-52 rounded-md bg-bgHover p-2" />
           </div>
           <div>
             <Heading type="h2">active</Heading>
-            <div className="flex h-36 w-52 rounded-md bg-grayActive p-2" />
+            <div className="flex h-36 w-52 rounded-md bg-bgActive p-2" />
           </div>
         </div>
       </section>
@@ -50,7 +50,7 @@ const Component: FC = () => {
           <div>
             <Heading type="h2">primary</Heading>
             <div>
-              <div className="flex h-36 w-52 rounded-md border border-border p-2">
+              <div className="border-borderPrimaryPrimary flex h-36 w-52 rounded-md border p-2">
                 <p className="text-primary">
                   いろはにほへとちりぬるをわかよたれそつねならむうゐのおくやまけふこえてあさきゆめみしゑひもせすん
                 </p>
@@ -59,7 +59,7 @@ const Component: FC = () => {
           </div>
           <div>
             <Heading type="h2">base</Heading>
-            <div className="flex h-36 w-52 rounded-md border border-border p-2">
+            <div className="flex h-36 w-52 rounded-md border border-borderPrimary p-2">
               <p>
                 いろはにほへとちりぬるをわかよたれそつねならむうゐのおくやまけふこえてあさきゆめみしゑひもせすん
               </p>
@@ -67,7 +67,7 @@ const Component: FC = () => {
           </div>
           <div>
             <Heading type="h2">gray</Heading>
-            <div className="flex h-36 w-52 rounded-md border border-border p-2">
+            <div className="flex h-36 w-52 rounded-md border border-borderPrimary p-2">
               <p className="text-textGray">
                 いろはにほへとちりぬるをわかよたれそつねならむうゐのおくやまけふこえてあさきゆめみしゑひもせすん
               </p>
@@ -75,7 +75,7 @@ const Component: FC = () => {
           </div>
           <div>
             <Heading type="h2">white</Heading>
-            <div className="flex h-36 w-52 rounded-md border border-border bg-primary p-2">
+            <div className="bg-primary flex h-36 w-52 rounded-md border border-borderPrimary p-2">
               <p className="text-white">
                 いろはにほへとちりぬるをわかよたれそつねならむうゐのおくやまけふこえてあさきゆめみしゑひもせすん
               </p>
@@ -83,7 +83,7 @@ const Component: FC = () => {
           </div>
           <div>
             <Heading type="h2">link</Heading>
-            <div className="flex h-36 w-52 rounded-md border border-border p-2">
+            <div className="flex h-36 w-52 rounded-md border border-borderPrimary p-2">
               <p className="text-link">
                 いろはにほへとちりぬるをわかよたれそつねならむうゐのおくやまけふこえてあさきゆめみしゑひもせすん
               </p>
@@ -91,15 +91,15 @@ const Component: FC = () => {
           </div>
           <div>
             <Heading type="h2">info</Heading>
-            <div className="flex h-36 w-52 rounded-md border border-border p-2">
-              <p className="text-info">
+            <div className="flex h-36 w-52 rounded-md border border-borderPrimary p-2">
+              <p className="text-textInfo">
                 いろはにほへとちりぬるをわかよたれそつねならむうゐのおくやまけふこえてあさきゆめみしゑひもせすん
               </p>
             </div>
           </div>
           <div>
             <Heading type="h2">success</Heading>
-            <div className="flex h-36 w-52 rounded-md border border-border p-2">
+            <div className="flex h-36 w-52 rounded-md border border-borderPrimary p-2">
               <p className="text-success">
                 いろはにほへとちりぬるをわかよたれそつねならむうゐのおくやまけふこえてあさきゆめみしゑひもせすん
               </p>
@@ -107,7 +107,7 @@ const Component: FC = () => {
           </div>
           <div>
             <Heading type="h2">warning</Heading>
-            <div className="flex h-36 w-52 rounded-md border border-border p-2">
+            <div className="flex h-36 w-52 rounded-md border border-borderPrimary p-2">
               <p className="text-warning">
                 いろはにほへとちりぬるをわかよたれそつねならむうゐのおくやまけふこえてあさきゆめみしゑひもせすん
               </p>
@@ -115,7 +115,7 @@ const Component: FC = () => {
           </div>
           <div>
             <Heading type="h2">info</Heading>
-            <div className="flex h-36 w-52 rounded-md border border-border p-2">
+            <div className="flex h-36 w-52 rounded-md border border-borderPrimary p-2">
               <p className="text-error">
                 いろはにほへとちりぬるをわかよたれそつねならむうゐのおくやまけふこえてあさきゆめみしゑひもせすん
               </p>
@@ -128,11 +128,11 @@ const Component: FC = () => {
         <div className="grid w-full grid-cols-3 gap-4">
           <div>
             <Heading type="h2">main</Heading>
-            <div className="flex h-36 w-52 rounded-md bg-error p-2" />
+            <div className="bg-error flex h-36 w-52 rounded-md p-2" />
           </div>
           <div>
             <Heading type="h2">light</Heading>
-            <div className="flex h-36 w-52 rounded-md bg-errorLight p-2" />
+            <div className="bg-errorLight flex h-36 w-52 rounded-md p-2" />
           </div>
         </div>
       </section>
@@ -141,11 +141,11 @@ const Component: FC = () => {
         <div className="grid w-full grid-cols-3 gap-4">
           <div>
             <Heading type="h2">main</Heading>
-            <div className="flex h-36 w-52 rounded-md bg-info p-2" />
+            <div className="bg-info flex h-36 w-52 rounded-md p-2" />
           </div>
           <div>
             <Heading type="h2">light</Heading>
-            <div className="flex h-36 w-52 rounded-md bg-infoLight p-2" />
+            <div className="bg-infoLight flex h-36 w-52 rounded-md p-2" />
           </div>
         </div>
       </section>
@@ -154,11 +154,11 @@ const Component: FC = () => {
         <div className="grid w-full grid-cols-3 gap-4">
           <div>
             <Heading type="h2">main</Heading>
-            <div className="flex h-36 w-52 rounded-md bg-success p-2" />
+            <div className="bg-success flex h-36 w-52 rounded-md p-2" />
           </div>
           <div>
             <Heading type="h2">light</Heading>
-            <div className="flex h-36 w-52 rounded-md bg-successLight p-2" />
+            <div className="bg-successLight flex h-36 w-52 rounded-md p-2" />
           </div>
         </div>
       </section>
@@ -167,11 +167,11 @@ const Component: FC = () => {
         <div className="grid w-full grid-cols-3 gap-4">
           <div>
             <Heading type="h2">main</Heading>
-            <div className="flex h-36 w-52 rounded-md bg-warning p-2" />
+            <div className="bg-warning flex h-36 w-52 rounded-md p-2" />
           </div>
           <div>
             <Heading type="h2">light</Heading>
-            <div className="flex h-36 w-52 rounded-md bg-warningLight p-2" />
+            <div className="bg-warningLight flex h-36 w-52 rounded-md p-2" />
           </div>
         </div>
       </section>
@@ -184,11 +184,11 @@ const Component: FC = () => {
           </div>
           <div>
             <Heading type="h2">light</Heading>
-            <div className="flex h-36 w-52 rounded-md bg-bgLight p-2" />
+            <div className="flex h-36 w-52 rounded-md bg-bgSecondary p-2" />
           </div>
           <div>
             <Heading type="h2">dark</Heading>
-            <div className="flex h-36 w-52 rounded-md bg-bgDark p-2" />
+            <div className="flex h-36 w-52 rounded-md bg-bgTertiary p-2" />
           </div>
         </div>
       </section>
@@ -196,12 +196,12 @@ const Component: FC = () => {
         <Heading type="h1">border color</Heading>
         <div className="grid w-full grid-cols-3 gap-4">
           <div>
-            <Heading type="h2">base</Heading>
-            <div className="flex h-36 w-52 rounded-md bg-border p-2" />
+            <Heading type="h2">primary</Heading>
+            <div className="flex h-36 w-52 rounded-md bg-borderPrimary p-2" />
           </div>
           <div>
-            <Heading type="h2">light</Heading>
-            <div className="flex h-36 w-52 rounded-md bg-borderLight p-2" />
+            <Heading type="h2">secondary</Heading>
+            <div className="flex h-36 w-52 rounded-md bg-borderSecondary p-2" />
           </div>
         </div>
       </section>
@@ -210,7 +210,7 @@ const Component: FC = () => {
         <div className="grid w-full grid-cols-3 gap-4">
           <div>
             <Heading type="h2">base</Heading>
-            <div className="flex h-36 w-52 rounded-md bg-focusRing p-2" />
+            <div className="flex h-36 w-52 rounded-md bg-borderFocus p-2" />
           </div>
         </div>
       </section>

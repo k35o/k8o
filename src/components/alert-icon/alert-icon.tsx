@@ -13,22 +13,22 @@ export const AlertIcon: FC<{ status: StatusType }> = ({ status }) => {
       {status === 'success' && (
         <CircleCheck
           aria-label="成功"
-          className="size-8 text-success"
+          className="size-8 text-textSuccess"
         />
       )}
       {status === 'info' && (
-        <Info aria-label="情報" className="size-8 text-info" />
+        <Info aria-label="情報" className="size-8 text-textInfo" />
       )}
       {status === 'warning' && (
         <TriangleAlert
           aria-label="警告"
-          className="size-8 text-warning"
+          className="size-8 text-textWarning"
         />
       )}
       {status === 'error' && (
         <CircleAlert
           aria-label="エラー"
-          className="size-8 text-error"
+          className="size-8 text-textError"
         />
       )}
     </div>

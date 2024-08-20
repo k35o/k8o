@@ -59,11 +59,11 @@ export const Autocomplete: FC<Props> = ({
     <div
       ref={ref}
       className={cn(
-        'relative w-full rounded-lg border border-border bg-white shadow-sm',
-        'focus-within:border-transparent focus-within:outline-none focus-within:ring-2 focus-within:ring-focusRing',
-        'has-[:hover]:bg-grayHover',
-        'has-[[aria-invalid=true]]:border-error',
-        'has-[:disabled]:cursor-not-allowed has-[:disabled]:border-borderLight has-[:disabled]:bg-gray has-[:disabled]:text-gray',
+        'relative w-full rounded-lg border border-borderPrimary bg-bgBase shadow-sm',
+        'focus-within:border-borderTransparent focus-within:outline-none focus-within:ring-2 focus-within:ring-borderFocus',
+        'has-[:hover]:bg-bgActive',
+        'has-[[aria-invalid=true]]:border-borderError',
+        'has-[:disabled]:cursor-not-allowed has-[:disabled]:border-borderDisabled has-[:disabled]:has-[:hover]:hover:bg-bgBase',
       )}
     >
       <div className="flex min-h-12 items-center justify-between gap-2 px-3 py-2">
@@ -76,7 +76,7 @@ export const Autocomplete: FC<Props> = ({
               <div
                 key={text}
                 tabIndex={-1}
-                className="inline-flex items-center gap-2 rounded-full bg-bgLight px-3 py-1 text-sm font-medium"
+                className="inline-flex items-center gap-2 rounded-full bg-bgSecondary px-3 py-1 text-sm font-medium"
               >
                 {label}
                 <IconButton
@@ -103,7 +103,7 @@ export const Autocomplete: FC<Props> = ({
             aria-invalid={isInvalid}
             aria-required={isRequired}
             className={cn(
-              'grow bg-transparent focus-visible:outline-none',
+              'grow bg-bgTransparent focus-visible:outline-none',
               'disabled:cursor-not-allowed',
             )}
             type="text"
@@ -194,7 +194,7 @@ export const Autocomplete: FC<Props> = ({
         {open && (
           <div
             role="presentation"
-            className="absolute top-1 z-10 w-full rounded-lg border border-borderLight bg-white shadow-md"
+            className="absolute top-1 z-10 w-full rounded-lg border border-borderSecondary bg-bgBase shadow-md"
           >
             <ul
               id={`${id}_listbox`}
@@ -202,7 +202,9 @@ export const Autocomplete: FC<Props> = ({
               className="max-h-96 py-2"
             >
               {filteredOptions.length === 0 && (
-                <li className="px-3 py-2 text-textGray">該当なし</li>
+                <li className="px-3 py-2 text-textDescription">
+                  該当なし
+                </li>
               )}
               {filteredOptions.map((option, idx) => {
                 const selected = value.includes(option.value);
@@ -215,13 +217,13 @@ export const Autocomplete: FC<Props> = ({
                     tabIndex={-1}
                     className={cn(
                       'cursor-pointer px-3 py-2',
-                      selected && 'bg-primary text-white',
+                      selected && 'bg-buttonPrimary text-textOnFill',
                       selectIndex === idx &&
                         !selected &&
-                        'bg-grayHover',
+                        'bg-bgActive',
                       selectIndex === idx &&
                         selected &&
-                        'bg-primaryHover',
+                        'bg-buttonHover',
                     )}
                     onMouseEnter={() => {
                       setSelectIndex(idx);

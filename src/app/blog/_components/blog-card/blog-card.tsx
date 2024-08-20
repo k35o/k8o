@@ -18,7 +18,7 @@ export const BlogCard: FC<BlogCardProps> = ({
   tags,
 }) => {
   return (
-    <section className="h-40 rounded-xl bg-white shadow-md">
+    <section className="h-40 rounded-xl bg-bgBase shadow-md">
       {isInternalRoute(link) ? (
         <Link href={link}>
           <BlogCardContent
@@ -46,7 +46,7 @@ export const BlogCardContent: FC<Omit<BlogCardProps, 'link'>> = ({
   tags,
 }) => (
   <div className="flex gap-6 p-4">
-    <div className="flex size-32 shrink-0 items-center justify-center rounded-lg bg-bgLight text-7xl">
+    <div className="flex size-32 shrink-0 items-center justify-center rounded-lg bg-bgSecondary text-7xl">
       {emotion}
     </div>
     <div className="flex w-full flex-col justify-around">
