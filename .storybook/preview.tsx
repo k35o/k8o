@@ -46,19 +46,25 @@ const preview: Preview = {
     mockingDate: new Date(2023, 0, 2, 12, 34, 56),
   },
   decorators: [
-    (Story, { globals }) => (
+    (Story, { globals, parameters }) => (
       <AppProvider>
         <div
           className={cn(
             font.className,
             subFont.variable,
-            'bg-bgPrimary h-screen p-6',
+            'bg-bgPrimary text-textBody min-h-screen p-6',
           )}
         >
           <Story />
         </div>
         <ApplayThemeByStorybook
-          theme={globals.theme ? globals.theme : 'light'}
+          theme={
+            parameters.theme
+              ? parameters.theme
+              : globals.theme
+                ? globals.theme
+                : 'light'
+          }
         />
       </AppProvider>
     ),

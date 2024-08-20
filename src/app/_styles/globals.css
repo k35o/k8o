@@ -8,7 +8,7 @@
     --text-body: #030712;
     --text-description: #374151;
     --text-link: #2563eb;
-    --text-on-fill: #ffffff;
+    --text-on-fill: #f9fafb;
     --text-highlight: #0f766e;
     --text-error: #dc2626;
     --text-warning: #a16207;
@@ -16,7 +16,7 @@
     --text-info: #2563eb;
 
     /* background */
-    --bg-base: #ffffff;
+    --bg-base: #f9fafb;
     --bg-primary: #cbd5e1;
     --bg-secondary: #e2e8f0;
     --bg-tertiary: #1e293b;
@@ -55,7 +55,7 @@
     --text-body: #f9fafb;
     --text-description: #9ca3af;
     --text-link: #93c5fd;
-    --text-on-fill: #ffffff;
+    --text-on-fill: #030712;
     --text-highlight: #0d9488;
     --text-error: #dc2626;
     --text-warning: #a16207;

@@ -34,7 +34,7 @@ export const TextField: FC<Props> = ({
       className={cn(
         'w-full rounded-lg border border-borderPrimary bg-bgBase px-3 py-2',
         'hover:bg-bgHover',
-        'aria-invalid:border-bordeError',
+        'aria-invalid:border-borderError',
         'disabled:cursor-not-allowed disabled:border-borderDisabled disabled:hover:bg-bgBase',
         'focus-visible:border-borderTransparent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-borderFocus',
       )}
