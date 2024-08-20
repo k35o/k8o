@@ -37,11 +37,11 @@
   .dark {
     --white: #111827;
     --transparent: transparent;
-    --primary: #99f6e4;
+    --primary: #14b8a6;
     --primary-light: #5eead4;
     --primary-dark: #f0fdfa;
-    --primary-hover: #ccfbf1;
-    --primary-active: #f0fdfa;
+    --primary-hover: #0d9488;
+    --primary-active: #0f766e;
     --gray: #4b5563;
     --gray-hover: #1f2937;
     --gray-active: #374151;
