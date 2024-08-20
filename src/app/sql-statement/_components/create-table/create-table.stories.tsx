@@ -5,7 +5,6 @@ import { Table } from '../../_types/table';
 
 const meta: Meta<typeof CreateTable> = {
   title: 'app/sql-statement/create-table',
-  tags: ['autodocs'],
 };
 
 export default meta;

@@ -9,7 +9,6 @@ const meta: Meta<typeof Complete> = {
     collection: <></>,
     reset: fn(),
   },
-  tags: ['autodocs'],
 };
 
 export default meta;

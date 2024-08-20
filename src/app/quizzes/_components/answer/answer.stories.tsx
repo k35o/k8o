@@ -12,7 +12,6 @@ const meta: Meta<typeof Answer> = {
       <Answer {...args} answer={answer} handleChange={setAnswer} />
     );
   },
-  tags: ['autodocs'],
 };
 
 export default meta;

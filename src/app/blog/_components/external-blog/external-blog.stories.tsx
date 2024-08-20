@@ -4,7 +4,6 @@ import { ExternalBlog } from './external-blog';
 const meta: Meta<typeof ExternalBlog> = {
   title: 'app/blog/external-blog',
   component: ExternalBlog,
-  tags: ['autodocs'],
 };
 
 export default meta;

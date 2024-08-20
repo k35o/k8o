@@ -32,7 +32,10 @@ export const VerifiedSyntax: FC = () => {
           テキストをコピーする
         </Button>
       </div>
-      <CircleCheck aria-label="" className="size-36 text-success" />
+      <CircleCheck
+        aria-label=""
+        className="size-36 text-textSuccess"
+      />
       <p className="text-lg font-bold">
         テキストに問題は見つかりませんでした
       </p>

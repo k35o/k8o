@@ -7,7 +7,6 @@ import { AccordionPanel } from './accordion-panel';
 const meta: Meta<typeof Accordion> = {
   title: 'components/accordion',
   component: Accordion,
-  tags: ['autodocs'],
 };
 
 export default meta;

@@ -23,7 +23,6 @@ const meta: Meta<typeof Autocomplete> = {
       />
     );
   },
-  tags: ['autodocs'],
 };
 
 export default meta;

@@ -8,7 +8,6 @@ import { uuidV4 } from '@/utils/uuid-v4';
 const meta: Meta<typeof CreateRestrictions> = {
   title: 'app/sql-statement/create-restrictions',
   component: CreateRestrictions,
-  tags: ['autodocs'],
 };
 
 export default meta;

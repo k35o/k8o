@@ -4,7 +4,6 @@ import { Question } from '.';
 const meta: Meta<typeof Question> = {
   title: 'app/quizzes/question',
   component: Question,
-  tags: ['autodocs'],
 };
 
 export default meta;

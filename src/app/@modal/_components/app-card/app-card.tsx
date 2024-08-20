@@ -14,7 +14,7 @@ export const AppCard = ({
   description: string;
 }) => {
   return (
-    <section className="w-full rounded-xl bg-bgLight shadow-md">
+    <section className="w-full rounded-xl bg-bgSecondary shadow-md">
       <Link href={link} className="block w-full">
         <div className="flex flex-col gap-6 p-4">
           <Heading type="h3">

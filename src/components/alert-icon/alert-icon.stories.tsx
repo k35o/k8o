@@ -4,7 +4,6 @@ import { AlertIcon } from './alert-icon';
 const meta: Meta<typeof AlertIcon> = {
   title: 'components/alert-icon',
   component: AlertIcon,
-  tags: ['autodocs'],
 };
 
 export default meta;

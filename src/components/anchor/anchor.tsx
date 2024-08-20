@@ -14,7 +14,7 @@ export const Anchor = ({
       {isInternalRoute(href) ? (
         <Link
           href={href}
-          className="cursor-pointer text-link hover:underline"
+          className="cursor-pointer text-textLink hover:underline"
         >
           {children}
         </Link>
@@ -23,7 +23,7 @@ export const Anchor = ({
           href={href}
           target="_blank"
           rel="noopener noreferrer"
-          className="cursor-pointer text-link hover:underline"
+          className="cursor-pointer text-textLink hover:underline"
         >
           {children}
         </a>

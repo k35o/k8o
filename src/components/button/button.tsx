@@ -34,16 +34,16 @@ export const Button: FC<
       className={cn(
         'rounded-xl font-bold',
         {
-          ['bg-primary text-white hover:bg-primaryHover active:bg-primaryActive']:
+          ['bg-buttonPrimary text-textOnFill hover:bg-buttonHover active:bg-buttonActive']:
             variant === 'contained',
-          ['cursor-not-allowed opacity-50 hover:bg-primary active:bg-primary']:
+          ['cursor-not-allowed opacity-35 hover:bg-buttonPrimary active:bg-buttonPrimary']:
             disabled && variant === 'contained',
-          ['border-2 border-primary bg-white text-primary hover:bg-grayHover active:bg-grayActive']:
+          ['border-2 border-buttonPrimary bg-bgBase text-buttonPrimary hover:bg-bgHover active:bg-bgActive']:
             variant === 'outlined',
-          ['cursor-not-allowed opacity-50 hover:bg-white active:bg-white']:
+          ['cursor-not-allowed bg-bgBase opacity-35 hover:bg-bgBase active:bg-bgBase']:
             disabled && variant === 'outlined',
         },
-        'focus-visible:border-transparent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focusRing',
+        'focus-visible:border-borderTransparent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-borderFocus',
         size === 'sm' && 'px-3 py-1 text-sm',
         size === 'md' && 'text-md px-4 py-2',
         size === 'lg' && 'px-6 py-3 text-lg',

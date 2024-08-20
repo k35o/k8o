@@ -7,10 +7,10 @@ import { FC } from 'react';
 export const ExternalBlog: FC = () => {
   return (
     <div className="flex gap-4">
-      <IconLink href="https://qiita.com/KokiSakano">
+      <IconLink href="https://qiita.com/KokiSakano" bg="base">
         <Qiita title="Qiitaのアカウント" className="size-6" />
       </IconLink>
-      <IconLink href="https://zenn.dev/kokisakano">
+      <IconLink href="https://zenn.dev/kokisakano" bg="base">
         <Zenn title="Zennのアカウント" className="size-6" />
       </IconLink>
     </div>

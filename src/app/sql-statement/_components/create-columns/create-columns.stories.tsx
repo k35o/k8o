@@ -7,7 +7,6 @@ import { uuidV4 } from '@/utils/uuid-v4';
 const meta: Meta<typeof CreateColumns> = {
   title: 'app/sql-statement/columns-info',
   component: CreateColumns,
-  tags: ['autodocs'],
 };
 
 export default meta;

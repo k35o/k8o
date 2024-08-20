@@ -40,8 +40,14 @@ export default function RootLayout({
   modal: ReactNode;
 }) {
   return (
-    <html lang="ja">
-      <body className={cn(font.className, subFont.variable)}>
+    <html lang="ja" suppressHydrationWarning>
+      <body
+        className={cn(
+          font.className,
+          subFont.variable,
+          'bg-bgBase text-textBody',
+        )}
+      >
         <AppProvider>
           <GlobalLayout>{children}</GlobalLayout>
           {modal}

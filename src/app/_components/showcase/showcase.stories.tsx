@@ -4,7 +4,6 @@ import { ShowCase } from './showcase';
 const meta: Meta<typeof ShowCase.Container> = {
   title: 'app/globals/showcase',
   component: ShowCase.Container,
-  tags: ['autodocs'],
 };
 
 export default meta;

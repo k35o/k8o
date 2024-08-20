@@ -1,8 +1,7 @@
 import Link from 'next/link';
 import { FC, ReactNode } from 'react';
 import { Heading } from '../../../components/heading';
-import { GithubMark } from '../../../components/icons';
-import { IconLink } from '../../../components/icon-link';
+import { ToggleTheme } from '../toggle-theme';
 
 export const GlobalLayout: FC<{ children: ReactNode }> = ({
   children,
@@ -15,16 +14,11 @@ export const GlobalLayout: FC<{ children: ReactNode }> = ({
             <Heading type="h1">k8o</Heading>
           </Link>
           <div className="-my-2">
-            <IconLink href="https://github.com/k35o/k8o">
-              <GithubMark
-                title="サイトのGitHub Repository"
-                className="size-8"
-              />
-            </IconLink>
+            <ToggleTheme />
           </div>
         </div>
       </header>
-      <main className="flex grow justify-center bg-bgBase">
+      <main className="flex grow justify-center bg-bgPrimary">
         <div className="w-full max-w-4xl px-4 py-10">{children}</div>
       </main>
     </div>

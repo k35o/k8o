@@ -5,7 +5,6 @@ import { ClipboardPenLine } from 'lucide-react';
 const meta: Meta<typeof IconButton> = {
   title: 'components/button/icon-button',
   component: IconButton,
-  tags: ['autodocs'],
 };
 
 export default meta;

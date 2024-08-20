@@ -5,7 +5,6 @@ import { fn } from '@storybook/test';
 const meta: Meta<typeof Feedback> = {
   title: 'app/quizzes/feedback',
   component: Feedback,
-  tags: ['autodocs'],
 };
 
 export default meta;

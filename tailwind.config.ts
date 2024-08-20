@@ -1,42 +1,58 @@
 import { type Config } from 'tailwindcss';
-import colors from 'tailwindcss/colors';
 import plugin from 'tailwindcss/plugin';
 
 const config = {
-  content: ['./src/**/*.{js,ts,jsx,tsx,mdx}'],
+  darkMode: ['class'],
+  content: [
+    './src/**/*.{js,ts,jsx,tsx,mdx}',
+    './.storybook/preview.tsx',
+  ],
   theme: {
+    colors: {
+      // foreground
+      textBody: 'var(--text-body)',
+      textDescription: 'var(--text-description)',
+      textLink: 'var(--text-link)',
+      textOnFill: 'var(--text-on-fill)',
+      textHighlight: 'var(--text-highlight)',
+      textError: 'var(--text-error)',
+      textSuccess: 'var(--text-success)',
+      textWarning: 'var(--text-warning)',
+      textInfo: 'var(--text-info)',
+      // background
+      bgBase: 'var(--bg-base)',
+      bgPrimary: 'var(--bg-primary)',
+      bgSecondary: 'var(--bg-secondary)',
+      bgTertiary: 'var(--bg-tertiary)',
+      bgError: 'var(--bg-error)',
+      bgSuccess: 'var(--bg-success)',
+      bgWarning: 'var(--bg-warning)',
+      bgInfo: 'var(--bg-info)',
+      bgHover: 'var(--bg-hover)',
+      bgActive: 'var(--bg-active)',
+      bgTransparent: 'var(--bg-transparent)',
+      bgBackDrop: 'var(--bg-back-drop)',
+      // border
+      borderPrimary: 'var(--border-primary)',
+      borderSecondary: 'var(--border-secondary)',
+      borderFocus: 'var(--border-focus)',
+      borderDisabled: 'var(--border-disabled)',
+      borderError: 'var(--border-error)',
+      borderSuccess: 'var(--border-success)',
+      borderWarning: 'var(--border-warning)',
+      borderInfo: 'var(--border-info)',
+      borderTransparent: 'var(--border-transparent)',
+      // button
+      buttonPrimary: 'var(--button-primary)',
+      buttonHover: 'var(--button-hover)',
+      buttonActive: 'var(--button-active)',
+      // chart
+      chartPrimary: 'var(--chart-primary)',
+      chartEmpty: 'var(--chart-empty)',
+    },
     extend: {
-      colors: {
-        primary: colors.teal[700],
-        primaryLight: colors.teal[400],
-        primaryHover: colors.teal[800],
-        primaryActive: colors.teal[900],
-        gray: colors.gray[100],
-        grayHover: colors.gray[100],
-        grayActive: colors.gray[300],
-        textGray: colors.gray[700],
-        link: colors.blue[600],
-        error: colors.red[600],
-        errorLight: colors.red[100],
-        info: colors.blue[600],
-        infoLight: colors.blue[100],
-        success: colors.green[700],
-        successLight: colors.green[100],
-        warning: colors.yellow[700],
-        warningLight: colors.yellow[100],
-        border: colors.gray[600],
-        borderLight: colors.gray[300],
-        bgBase: colors.slate[300],
-        bgLight: colors.slate[200],
-        bgDark: colors.slate[800],
-        bgBackDrop: 'rbga(0, 0, 0, 0.5)',
-        focusRing: colors.blue[500],
-      },
       fontFamily: {
         notoSansJp: ['var(--font-noto-sans-jp)'],
-      },
-      gridTemplateColumns: {
-        'col-fill': 'repeat(auto-fill, 1fr)',
       },
       aria: {
         invalid: 'invalid="true"',

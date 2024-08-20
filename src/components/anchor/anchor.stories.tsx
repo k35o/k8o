@@ -4,7 +4,6 @@ import { Anchor } from './anchor';
 const meta: Meta<typeof Anchor> = {
   title: 'components/anchor',
   component: Anchor,
-  tags: ['autodocs'],
 };
 
 export default meta;

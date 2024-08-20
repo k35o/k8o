@@ -8,7 +8,6 @@ const meta: Meta<typeof LinkButton> = {
   args: {
     href: '',
   },
-  tags: ['autodocs'],
 };
 
 export default meta;

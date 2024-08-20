@@ -32,11 +32,11 @@ export const TextField: FC<Props> = ({
       value={value}
       onChange={(e) => onChange(e.target.value)}
       className={cn(
-        'w-full rounded-lg border border-border px-3 py-2',
-        'hover:bg-grayHover',
-        'aria-invalid:border-error',
-        'disabled:cursor-not-allowed disabled:border-borderLight disabled:bg-gray disabled:text-gray',
-        'focus-visible:border-transparent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focusRing',
+        'w-full rounded-lg border border-borderPrimary bg-bgBase px-3 py-2',
+        'hover:bg-bgHover',
+        'aria-invalid:border-borderError',
+        'disabled:cursor-not-allowed disabled:border-borderDisabled disabled:hover:bg-bgBase',
+        'focus-visible:border-borderTransparent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-borderFocus',
       )}
       placeholder={placeholder}
       disabled={isDisabled}

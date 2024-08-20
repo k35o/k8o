@@ -1,9 +1,10 @@
-import React from 'react';
+import React, { FC, memo } from 'react';
 import type { Preview } from '@storybook/react';
 import '../src/app/_styles/globals.css';
 import { AppProvider } from '../src/providers/app';
 import { cn } from '../src/utils/cn';
 import { M_PLUS_2, Noto_Sans_JP } from 'next/font/google';
+import { useTheme } from 'next-themes';
 
 const font = M_PLUS_2({ subsets: ['latin'] });
 
@@ -12,22 +13,59 @@ const subFont = Noto_Sans_JP({
   variable: '--font-noto-sans-jp',
 });
 
+const ApplayThemeByStorybook: FC<{ theme: string }> = memo(
+  ({ theme }) => {
+    const { theme: currentTheme, setTheme } = useTheme();
+
+    if (currentTheme !== theme) {
+      setTheme(theme === 'dark' ? 'dark' : 'light');
+    }
+
+    return null;
+  },
+);
+
 const preview: Preview = {
-  parameters: {
-    controls: {
-      matchers: {
-        color: /(background|color)$/i,
-        date: /Date$/,
+  globalTypes: {
+    theme: {
+      description: 'Toggle Color Theme.',
+      defaultValue: 'light',
+      toolbar: {
+        title: 'Color Scheme',
+        items: [
+          { value: 'light', title: 'Light Mode', icon: 'sun' },
+          { value: 'dark', title: 'Dark Mode', icon: 'moon' },
+        ],
+        dynamicTitle: true,
       },
     },
+  },
+  parameters: {
+    backgrounds: { disable: true },
+    layout: 'fullscreen',
     mockingDate: new Date(2023, 0, 2, 12, 34, 56),
   },
   decorators: [
-    (Story) => (
+    (Story, { globals, parameters }) => (
       <AppProvider>
-        <div className={cn(font.className, subFont.variable)}>
+        <div
+          className={cn(
+            font.className,
+            subFont.variable,
+            'bg-bgPrimary text-textBody min-h-screen p-6',
+          )}
+        >
           <Story />
         </div>
+        <ApplayThemeByStorybook
+          theme={
+            parameters.theme
+              ? parameters.theme
+              : globals.theme
+                ? globals.theme
+                : 'light'
+          }
+        />
       </AppProvider>
     ),
   ],

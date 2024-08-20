@@ -18,7 +18,7 @@ export const BlogCard: FC<BlogCardProps> = ({
   tags,
 }) => {
   return (
-    <section className="w-full rounded-xl bg-bgLight shadow-md">
+    <section className="w-full rounded-xl bg-bgSecondary shadow-md">
       {isInternalRoute(link) ? (
         <Link href={link}>
           <BlogCardContent

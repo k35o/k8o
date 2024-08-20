@@ -2,14 +2,98 @@
 @tailwind components;
 @tailwind utilities;
 
-@layer components {
-  .invisible-input-checkbox {
-    position: absolute;
-    clip: rect(1px, 1px, 1px, 1px);
-    padding: 0;
-    border: 0;
-    height: 1px;
-    width: 1px;
-    overflow: hidden;
+@layer base {
+  :root {
+    /* foreground */
+    --text-body: #030712;
+    --text-description: #374151;
+    --text-link: #2563eb;
+    --text-on-fill: #f9fafb;
+    --text-highlight: #0f766e;
+    --text-error: #dc2626;
+    --text-warning: #a16207;
+    --text-success: #15803d;
+    --text-info: #2563eb;
+
+    /* background */
+    --bg-base: #f9fafb;
+    --bg-primary: #cbd5e1;
+    --bg-secondary: #e2e8f0;
+    --bg-tertiary: #1e293b;
+    --bg-error: #fee2e2;
+    --bg-warning: #fef9c3;
+    --bg-success: #dcfce7;
+    --bg-info: #dbeafe;
+    --bg-hover: #f3f4f6;
+    --bg-active: #d1d5db;
+    --bg-transparent: transparent;
+    --bg-back-drop: rbga(0, 0, 0, 0.5);
+
+    /* border */
+    --border-primary: #4b5563;
+    --border-secondary: #d1d5db;
+    --border-focus: #3b82f6;
+    --border-disabled: #d1d5db;
+    --border-error: #dc2626;
+    --border-warning: #a16207;
+    --border-success: #15803d;
+    --border-info: #2563eb;
+    --border-transparent: transparent;
+
+    /* button */
+    --button-primary: #0f766e;
+    --button-hober: #115e59;
+    --button-active: #134e4a;
+
+    /* chart */
+    --chart-primary: #2dd4bf;
+    --chart-empty: #f3f4f6;
+  }
+
+  .dark {
+    /* foreground */
+    --text-body: #f9fafb;
+    --text-description: #9ca3af;
+    --text-link: #93c5fd;
+    --text-on-fill: #030712;
+    --text-highlight: #0d9488;
+    --text-error: #dc2626;
+    --text-warning: #a16207;
+    --text-success: #15803d;
+    --text-info: #2563eb;
+
+    /* background */
+    --bg-base: #111827;
+    --bg-primary: #1e293b;
+    --bg-secondary: #374151;
+    --bg-tertiary: #0f172a;
+    --bg-error: #fee2e2;
+    --bg-warning: #fef9c3;
+    --bg-success: #dcfce7;
+    --bg-info: #dbeafe;
+    --bg-hover: #1f2937;
+    --bg-active: #374151;
+    --bg-transparent: transparent;
+    --bg-back-drop: rbga(0, 0, 0, 0.5);
+
+    /* border */
+    --border-primary: #6b7280;
+    --border-secondary: #4b5563;
+    --border-focus: #3b82f6;
+    --border-disabled: #4b5563;
+    --border-error: #dc2626;
+    --border-warning: #a16207;
+    --border-success: #15803d;
+    --border-info: #2563eb;
+    --border-transparent: transparent;
+
+    /* button */
+    --button-primary: #14b8a6;
+    --button-hober: #0d9488;
+    --button-active: #0f766e;
+
+    /* chart */
+    --chart-primary: #5eead4;
+    --chart-empty: #4b5563;
   }
 }

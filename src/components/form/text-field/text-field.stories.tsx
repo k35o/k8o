@@ -10,7 +10,6 @@ const meta: Meta<typeof TextField> = {
     value: '',
     onChange: (value: string) => console.log(value),
   },
-  tags: ['autodocs'],
 };
 
 export default meta;

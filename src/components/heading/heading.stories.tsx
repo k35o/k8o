@@ -4,7 +4,6 @@ import { Heading } from './heading';
 const meta: Meta<typeof Heading> = {
   title: 'components/heading',
   component: Heading,
-  tags: ['autodocs'],
 };
 
 export default meta;

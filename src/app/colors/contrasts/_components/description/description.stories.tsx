@@ -4,7 +4,6 @@ import { Description } from './description';
 const meta: Meta<typeof Description> = {
   title: 'app/colors/contrasts/description',
   component: Description,
-  tags: ['autodocs'],
 };
 
 export default meta;
