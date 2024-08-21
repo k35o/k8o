@@ -52,7 +52,12 @@ export const Modal: FC<PropsWithChildren<{ title: string }>> = ({
           {children}
         </div>
         <div className="absolute right-2 top-2">
-          <IconButton onClick={onDismiss}>
+          <IconButton
+            onClick={(e) => {
+              e.stopPropagation();
+              onDismiss();
+            }}
+          >
             <X aria-label="閉じる" className="size-4" />
           </IconButton>
         </div>
