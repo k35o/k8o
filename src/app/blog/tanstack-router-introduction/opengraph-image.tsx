@@ -1,4 +1,7 @@
 import { ImageResponse } from 'next/og';
+import { Parser, jaModel } from 'budoux';
+
+const parser = new Parser(jaModel);
 
 export const runtime = 'edge';
 
@@ -13,6 +16,9 @@ export const size = {
 export const contentType = 'image/png';
 
 export default async function OpenGraphImage() {
+  const words = parser.parse(
+    'Reactの新しいルーティングライブラリ、TanStackRouterを学ぶ',
+  );
   return new ImageResponse(
     (
       <div
@@ -36,16 +42,24 @@ export default async function OpenGraphImage() {
             borderRadius: 6,
           }}
         >
-          <p
+          <div
             style={{
+              display: 'flex',
+              justifyContent: 'center',
+              flexWrap: 'wrap',
+              alignItems: 'center',
               margin: 64,
               color: 'black',
               fontSize: 60,
               fontWeight: 'bold',
             }}
           >
-            Reactの新しいルーティングライブラリ、TanStackRouterを学ぶ
-          </p>
+            {words.map((word) => (
+              <span style={{ display: 'block' }} key={word}>
+                {word}
+              </span>
+            ))}
+          </div>
           <p
             style={{
               margin: 64,
