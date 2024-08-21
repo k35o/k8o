@@ -1,4 +1,7 @@
 import { ImageResponse } from 'next/og';
+import { loadDefaultJapaneseParser } from 'budoux';
+
+const parser = loadDefaultJapaneseParser();
 
 export const runtime = 'edge';
 
@@ -12,6 +15,9 @@ export const size = {
 export const contentType = 'image/png';
 
 export default async function OpenGraphImage() {
+  const words = parser.parse(
+    '色のコントラスト比は重要だけどどうやって求めるんだっけ？',
+  );
   return new ImageResponse(
     (
       <div
@@ -35,16 +41,24 @@ export default async function OpenGraphImage() {
             borderRadius: 6,
           }}
         >
-          <p
+          <div
             style={{
+              display: 'flex',
+              justifyContent: 'center',
+              flexWrap: 'wrap',
+              alignItems: 'center',
               margin: 64,
               color: 'black',
               fontSize: 60,
               fontWeight: 'bold',
             }}
           >
-            色のコントラスト比は重要だけどどうやって求めるんだっけ？
-          </p>
+            {words.map((word) => (
+              <span style={{ display: 'block' }} key={word}>
+                {word}
+              </span>
+            ))}
+          </div>
           <p
             style={{
               margin: 64,
