@@ -1,7 +1,7 @@
 import { ImageResponse } from 'next/og';
-import { loadDefaultJapaneseParser } from 'budoux';
+import { Parser, jaModel } from 'budoux';
 
-const parser = loadDefaultJapaneseParser();
+const parser = new Parser(jaModel);
 
 export const runtime = 'edge';
 
