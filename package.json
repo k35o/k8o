@@ -42,7 +42,7 @@
     "postcss": "8.4.41",
     "react": "18.3.1",
     "react-dom": "18.3.1",
-    "rehype-katex": "7.0.0",
+    "rehype-katex": "7.0.1",
     "rehype-pretty-code": "0.13.2",
     "remark-math": "6.0.0",
     "shiki": "1.14.1",
