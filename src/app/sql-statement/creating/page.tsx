@@ -58,7 +58,7 @@ export default function Page() {
   return (
     <section
       ref={topRef}
-      className="flex flex-col gap-6 rounded-lg bg-bgBase p-4"
+      className="flex flex-col gap-6 rounded-lg bg-bgBase/55 p-4"
     >
       <CreateTable
         table={table}

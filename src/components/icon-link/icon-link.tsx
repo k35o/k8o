@@ -19,7 +19,7 @@ export const IconLink: FC<IconLinkProps> = ({
     <a
       className={cn(
         'block rounded-full hover:bg-bgHover focus-visible:ring-2 focus-visible:ring-borderFocus active:bg-bgActive',
-        bg === 'base' && 'bg-bgBase',
+        bg === 'base' && 'bg-bgBase/55',
         bg === 'transparent' && 'bg-bgTransparent',
         size === 'sm' && 'p-1',
         size === 'md' && 'p-2',

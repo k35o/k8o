@@ -7,6 +7,7 @@ import '@/libs/zod';
 import { AppProvider } from '@/providers/app';
 import { cn } from '@/utils/cn';
 import { ReactNode } from 'react';
+import { Metadata } from 'next';
 
 const font = M_PLUS_2({
   subsets: ['latin'],
@@ -17,7 +18,7 @@ const subFont = Noto_Sans_JP({
   variable: '--font-noto-sans-jp',
 });
 
-export const metadata = {
+export const metadata: Metadata = {
   title: 'k8o',
   description: 'k8o portal',
   openGraph: {
@@ -45,7 +46,7 @@ export default function RootLayout({
         className={cn(
           font.className,
           subFont.variable,
-          'bg-bgBase text-textBody',
+          'app-background text-textBody',
         )}
       >
         <AppProvider>

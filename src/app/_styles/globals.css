@@ -42,7 +42,7 @@
 
     /* button */
     --button-primary: 15 118 110;
-    --button-hober: 17 94 89;
+    --button-hover: 17 94 89;
     --button-active: 19 78 74;
 
     /* chart */
@@ -89,11 +89,28 @@
 
     /* button */
     --button-primary: 20 184 166;
-    --button-hober: 13 148 136;
+    --button-hover: 13 148 136;
     --button-active: 15 118 110;
 
     /* chart */
     --chart-primary: 94 234 212;
     --chart-empty: 75 85 99;
+  }
+
+  .app-background {
+    background-color: #50e2d2;
+    background-image: linear-gradient(
+      62deg,
+      #50e2d2 0%,
+      #8584ae 100%
+    );
+    .dark & {
+      background-color: #08453e;
+      background-image: linear-gradient(
+        62deg,
+        #08453e 0%,
+        #221f2e 100%
+      );
+    }
   }
 }

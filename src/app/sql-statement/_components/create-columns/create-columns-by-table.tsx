@@ -40,7 +40,7 @@ export const CreateColumnsByTable: FC<Props> = ({
   const formId = useId();
 
   return (
-    <div className="w-[calc(100vw-64px)] max-w-[51rem] overflow-x-auto rounded-lg border border-borderPrimary">
+    <div className="w-[calc(100vw-64px)] max-w-[51rem] overflow-x-auto rounded-lg border border-borderPrimary bg-bgBase">
       <table className="w-[51rem]">
         <thead>
           <tr className="border-b border-borderPrimary">
