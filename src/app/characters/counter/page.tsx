@@ -3,7 +3,7 @@ import { isSegmenter } from './_utils/countText';
 
 export default function Counter() {
   return (
-    <section className="flex h-full flex-col justify-between gap-4 rounded-lg bg-bgBase p-10">
+    <section className="flex h-full flex-col justify-between gap-4 rounded-lg bg-bgBase/55 p-10">
       <TextField />
       <div className="text-right">
         {isSegmenter ? (

@@ -17,7 +17,7 @@ const Item: FC<{
   title: string;
 }> = ({ link, emotion, title }) => {
   return (
-    <div className="size-40 rounded-xl bg-bgBase shadow-md">
+    <div className="size-40 rounded-xl bg-bgBase/55 shadow-md">
       <Link href={link} scroll={false}>
         <div className="flex flex-col items-center justify-center gap-2 p-4">
           <Heading type="h3">{title}</Heading>

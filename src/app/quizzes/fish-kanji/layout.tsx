@@ -24,7 +24,7 @@ export default function Layout({
     <div className="flex h-full flex-col gap-4">
       <div className="font-notoSansJp" />
       <Heading type="h3">うおへんクイズ</Heading>
-      <section className="h-full rounded-lg bg-bgBase p-10">
+      <section className="h-full rounded-lg bg-bgBase/55 p-10">
         {children}
       </section>
     </div>

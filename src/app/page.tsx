@@ -8,7 +8,7 @@ import { ShowCase } from './_components/showcase';
 export default function Home() {
   return (
     <div className="flex flex-col gap-10">
-      <section className="h-40 rounded-xl bg-bgBase">
+      <section className="h-40 rounded-xl bg-bgBase/55">
         <div className="flex gap-6 p-4">
           <Image
             className="size-32 rounded-lg"
