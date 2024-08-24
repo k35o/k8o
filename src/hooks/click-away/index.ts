@@ -3,7 +3,7 @@
 import { MutableRefObject, useEffect, useRef } from 'react';
 
 export const useClickAway = <T extends Element = HTMLElement>(
-  callback: () => void,
+  callback: (e: Event) => void,
 ): MutableRefObject<T | null> => {
   const ref = useRef<T>(null);
 
@@ -11,7 +11,7 @@ export const useClickAway = <T extends Element = HTMLElement>(
     const handler: EventListener = (e) => {
       const element = ref.current;
       if (element && !element.contains(e.target as HTMLElement)) {
-        callback();
+        callback(e);
       }
     };
 
