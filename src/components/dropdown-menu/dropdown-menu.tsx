@@ -16,8 +16,10 @@ import {
 } from 'react';
 import { createPortal } from 'react-dom';
 import {
+  autoPlacement,
   autoUpdate,
   offset,
+  Placement,
   ReferenceType,
   useFloating,
 } from '@floating-ui/react-dom';
@@ -76,15 +78,19 @@ const useFloatingContext = (): {
   return context;
 };
 
-const Root: FC<PropsWithChildren> = ({ children }) => {
+const Root: FC<PropsWithChildren<{ placement?: Placement }>> = ({
+  children,
+  placement = 'bottom-start',
+}) => {
   const id = useId();
   const [open, setOpen] = useState(false);
   const { refs, floatingStyles } = useFloating({
-    placement: 'bottom-start',
+    strategy: 'fixed',
+    placement: placement,
     open: open,
     whileElementsMounted: autoUpdate,
     // 要素と8pxだけ離す
-    middleware: [offset(8)],
+    middleware: [offset(8), autoPlacement()],
   });
 
   const toggleOpen = useCallback(() => {
