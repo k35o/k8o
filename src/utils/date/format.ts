@@ -59,7 +59,7 @@ if (import.meta.vitest) {
   });
 
   it('時間をデフォルト設定でフォーマットする', () => {
-    const expected = '09:00:00';
+    const expected = '00:00:00';
     vi.useFakeTimers();
     vi.setSystemTime('2022-01-01T00:00:00Z');
 
@@ -69,7 +69,7 @@ if (import.meta.vitest) {
   });
 
   it('時間をフォーマットする', () => {
-    const expected = '09:00';
+    const expected = '00:00';
     vi.useFakeTimers();
     vi.setSystemTime('2022-01-01T00:00:00Z');
 

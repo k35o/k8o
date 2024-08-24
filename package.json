@@ -27,9 +27,9 @@
     "type-check": "tsc --noEmit",
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build",
-    "test": "vitest",
-    "test:ui": "vitest --ui",
-    "coverage": "vitest run --coverage",
+    "test": "TZ=UTC vitest",
+    "test:ui": "TZ=UTC vitest --ui",
+    "coverage": "TZ=UTC vitest run --coverage",
     "test-storybook": "test-storybook",
     "test-storybook:ci": "pnpm dlx concurrently -k -s first -n \"SB,TEST\" -c \"magenta,blue\" \"pnpm run build-storybook --quiet && pnpm dlx http-server storybook-static --port 6006 --silent\" \"pnpm dlx wait-on tcp:6006 && pnpm run test-storybook --maxWorkers=2\"",
     "install-playwright": "playwright install --with-deps"

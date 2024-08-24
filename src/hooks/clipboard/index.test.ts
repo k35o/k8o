@@ -46,7 +46,7 @@ describe('useClipboard', () => {
     });
 
     const { result } = renderHook(() => useClipboard());
-    act(async () => {
+    await act(async () => {
       await result.current.readClipboard();
     });
 
