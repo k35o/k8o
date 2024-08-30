@@ -42,8 +42,8 @@ importers:
         specifier: 0.33.0
         version: 0.33.0(@neondatabase/serverless@0.9.4)(@types/pg@8.11.6)(@types/react@18.3.4)(@vercel/postgres@0.9.0)(react@18.3.1)
       framer-motion:
-        specifier: 11.3.30
-        version: 11.3.30(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+        specifier: 11.3.31
+        version: 11.3.31(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       lucide-react:
         specifier: 0.435.0
         version: 0.435.0(react@18.3.1)
@@ -4139,8 +4139,8 @@ packages:
   fraction.js@4.3.7:
     resolution: {integrity: sha512-ZsDfxO51wGAXREY55a7la9LScWpwv9RxIrYABrlvOFBlH/ShPnrtsXeuUIfXKKOVicNxQ+o8JTbJvjS4M89yew==}
 
-  framer-motion@11.3.30:
-    resolution: {integrity: sha512-9VmqGe9OIjfMoCcs+ZsKXlv6JaG5QagKX2F1uSbkG3Z33wgjnz60Kw+CngC1M49rDYau+Y9aL+8jGagAwrbVyw==}
+  framer-motion@11.3.31:
+    resolution: {integrity: sha512-Xmxs08WBXnc2tNzNZbFSpquI33lvleJg4Y+hmZ+vFkn+laN9ZnR3gbZnNGKDtuz7c/x3u8dLg05OU3EhLobCsg==}
     peerDependencies:
       '@emotion/is-prop-valid': '*'
       react: ^18.0.0
@@ -12063,7 +12063,7 @@ snapshots:
 
   fraction.js@4.3.7: {}
 
-  framer-motion@11.3.30(react-dom@18.3.1(react@18.3.1))(react@18.3.1):
+  framer-motion@11.3.31(react-dom@18.3.1(react@18.3.1))(react@18.3.1):
     dependencies:
       tslib: 2.6.3
     optionalDependencies:
