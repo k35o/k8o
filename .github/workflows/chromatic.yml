@@ -3,20 +3,8 @@ name: 'Chromatic'
 on: push
 
 jobs:
-  setup:
-    runs-on: ubuntu-latest
-    outputs:
-      environment: ${{ steps.step1.outputs.environment }}
-    steps:
-      - name: set environment
-        id: step1
-        if: ${{ github.actor == 'renovate[bot]' }}
-        run: echo "environment=Renovate" >> "$GITHUB_OUTPUT"
-
   chromatic-deployment:
     runs-on: ubuntu-latest
-    needs: setup
-    environment: ${{ needs.setup.outputs.environment }}
     steps:
       - name: Checkout branch
         uses: actions/checkout@v4
@@ -48,3 +36,4 @@ jobs:
         with:
           projectToken: ${{ secrets.CHROMATIC_PROJECT_TOKEN }}
           onlyChanged: true
+          skip: "renovate/**"
