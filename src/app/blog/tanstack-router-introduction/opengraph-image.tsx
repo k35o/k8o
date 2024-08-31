@@ -26,7 +26,8 @@ export default async function OpenGraphImage() {
           alignItems: 'center',
           display: 'flex',
           backgroundColor: '#50e2d2',
-          backgroundImage: 'linear-gradient(62deg, #50e2d2 0%, #8584ae 100%)',
+          backgroundImage:
+            'linear-gradient(62deg, #50e2d2 0%, #8584ae 100%)',
           justifyContent: 'center',
           width: '100%',
           height: '100%',
