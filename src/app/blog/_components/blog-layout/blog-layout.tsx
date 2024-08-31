@@ -6,7 +6,7 @@ export const BlogLayout: FC<{
 }> = ({ children, updatedAt }) => {
   return (
     <div className="flex flex-col gap-4">
-      <article className="rounded-lg bg-bgBase/90 px-1 py-14 pt-4 sm:px-10">
+      <article className="rounded-lg bg-bgBase/90 px-3 py-14 pt-4 sm:px-10">
         <p className="text-end text-textDescription">
           {updatedAt}に公開
         </p>
