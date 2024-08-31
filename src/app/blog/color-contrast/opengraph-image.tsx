@@ -35,8 +35,9 @@ export default async function OpenGraphImage() {
         <div
           style={{
             background: 'white',
-            width: 1136,
             height: 566,
+            marginLeft: 32,
+            marginRight: 32,
             display: 'flex',
             flexDirection: 'column',
             justifyContent: 'space-around',
