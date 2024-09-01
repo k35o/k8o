@@ -9,11 +9,12 @@
   "timezone": "Asia/Tokyo",
   "prConcurrentLimit": 10,
   "schedule": ["every weekend"],
+  "rangeStrategy": "pin",
   "packageRules": [
     {
       "matchUpdateTypes": ["minor", "patch"],
       "matchCurrentVersion": "!/^0/",
-      "automerge": true
+      "groupName": "minor and patch dependencies"
     }
   ]
 }
