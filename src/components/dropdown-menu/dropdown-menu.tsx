@@ -26,6 +26,7 @@ import {
 import { ChevronDown } from 'lucide-react';
 import { cn } from '@/utils/cn';
 import { useClickAway } from '@/hooks/click-away';
+import { motion } from 'framer-motion';
 
 const OpenContext = createContext<boolean | undefined>(undefined);
 const ToggleOpenContext = createContext<(() => void) | undefined>(
@@ -128,10 +129,36 @@ const Content: FC<PropsWithChildren> = ({ children }) => {
 
   return (
     ref.current &&
-    open &&
     createPortal(
       <div ref={setFloating} style={floatingStyles}>
-        {children}
+        <motion.div
+          variants={{
+            enter: {
+              visibility: 'visible',
+              opacity: 1,
+              scale: 1,
+              transition: {
+                duration: 0.2,
+                ease: 'easeIn',
+              },
+            },
+            exit: {
+              transitionEnd: {
+                visibility: 'hidden',
+              },
+              opacity: 0,
+              scale: 0.4,
+              transition: {
+                duration: 0.1,
+                easings: 'easeOut',
+              },
+            },
+          }}
+          initial={false}
+          animate={open ? 'enter' : 'exit'}
+        >
+          {children}
+        </motion.div>
       </div>,
       ref.current,
     )
@@ -141,7 +168,11 @@ const Content: FC<PropsWithChildren> = ({ children }) => {
 const ItemList: FC<PropsWithChildren> = ({ children }) => {
   const { id, reference } = useFloatingContext();
   const toggleOpen = useToggleOpen();
+  const open = useOpen();
   const ref = useClickAway<HTMLDivElement>((event) => {
+    if (!open) {
+      return;
+    }
     if (reference.current?.contains(event.target as HTMLElement)) {
       return;
     }
@@ -170,8 +201,8 @@ const Item: FC<PropsWithChildren<{ handleClick?: () => void }>> = ({
   return (
     <button
       role="menuitem"
-      tabIndex={0}
       className="w-full px-2 py-1 text-left hover:bg-bgHover active:bg-bgActive"
+      tabIndex={0}
       onClick={() => {
         toggleOpen();
         handleClick?.();
@@ -197,6 +228,20 @@ const Trigger: FC<{
       aria-controls={`${id}_list`}
       ref={setReference}
       onClick={toggleOpen}
+      onKeyDown={(e) => {
+        if (e.key === 'Enter') {
+          e.preventDefault();
+          toggleOpen();
+        }
+        if (e.key === 'ArrowUp') {
+          e.preventDefault();
+          toggleOpen();
+        }
+        if (e.key === 'ArrowDown') {
+          e.preventDefault();
+          toggleOpen();
+        }
+      }}
       className={cn(
         'rounded-xl font-bold',
         'bg-buttonPrimary text-textOnFill hover:bg-buttonHover active:bg-buttonActive',
@@ -227,6 +272,20 @@ const IconTrigger: FC<{
       aria-controls={`${id}_list`}
       ref={setReference}
       onClick={toggleOpen}
+      onKeyDown={(e) => {
+        if (e.key === 'Enter') {
+          e.preventDefault();
+          toggleOpen();
+        }
+        if (e.key === 'ArrowUp') {
+          e.preventDefault();
+          toggleOpen();
+        }
+        if (e.key === 'ArrowDown') {
+          e.preventDefault();
+          toggleOpen();
+        }
+      }}
       className={cn(
         'inline-flex rounded-full bg-bgTransparent hover:bg-bgHover focus-visible:ring-2 focus-visible:ring-borderFocus active:bg-bgActive',
         'p-2',
