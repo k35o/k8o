@@ -2,18 +2,18 @@ import Link from 'next/link';
 import { Heading } from '../../components/heading';
 
 export const metadata = {
-  title: 'Converter',
+  title: 'Number',
   description: '数値の基数の変換など、便利な変換処理を提供します',
   openGraph: {
-    title: 'Converter',
+    title: 'Number',
     description: '数値の基数の変換など、便利な変換処理を提供します',
-    url: 'https://k8o.me/converter',
+    url: 'https://k8o.me/number',
     siteName: 'k8o',
     locale: 'ja',
     type: 'website',
   },
   twitter: {
-    title: 'Converter',
+    title: 'Number',
     card: 'summary',
     description: '数値の基数の変換など、便利な変換処理を提供します',
   },

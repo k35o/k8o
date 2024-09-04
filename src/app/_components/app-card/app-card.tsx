@@ -1,6 +1,7 @@
 import { Route } from 'next';
 import Link from 'next/link';
 import { Heading } from '../../../components/heading';
+import { ReactNode } from 'react';
 
 export const AppCard = <T extends string>({
   link,
@@ -9,7 +10,7 @@ export const AppCard = <T extends string>({
   description,
 }: {
   link: Route<T>;
-  emotion: string;
+  emotion: ReactNode;
   title: string;
   description: string;
 }) => {

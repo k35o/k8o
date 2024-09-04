@@ -63,6 +63,11 @@ export default function Home() {
           <ShowCase.Item link="/number" emotion="🔢" title="Number" />
           <ShowCase.Item link="/colors" emotion="🎨" title="Colors" />
           <ShowCase.Item
+            link="/designs"
+            emotion="🧑‍🎨"
+            title="Designs"
+          />
+          <ShowCase.Item
             link="/quizzes"
             emotion="💡"
             title="Quizzes"
