@@ -4,8 +4,8 @@ export const runtime = 'edge';
 
 export const alt = 'k8o';
 export const size = {
-  width: 500,
-  height: 500,
+  width: 1200,
+  height: 600,
 };
 
 export const contentType = 'image/png';
@@ -15,7 +15,7 @@ export default async function OpenGraphImage() {
     (
       <div
         style={{
-          fontSize: 64,
+          fontSize: 256,
           background: '#cbd5e1',
           width: '100%',
           height: '100%',
@@ -25,13 +25,29 @@ export default async function OpenGraphImage() {
           justifyContent: 'center',
         }}
       >
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img
-          src="https://k8o.me/icon.png"
-          width={256}
-          height={256}
-          alt="アイコン"
-        />
+        <div
+          style={{
+            background: 'white',
+            width: 512,
+            height: 512,
+            display: 'flex',
+            borderRadius: 9999,
+            alignItems: 'center',
+            justifyContent: 'center',
+          }}
+        >
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src="https://k8o.me/icon.png"
+            width={512}
+            height={512}
+            alt="アイコン"
+            style={{
+              borderRadius: 9999,
+              objectFit: 'cover',
+            }}
+          />
+        </div>
       </div>
     ),
     {

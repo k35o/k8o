@@ -9,6 +9,9 @@ export const metadata = {
     description:
       '入力した文字の検索など、文字に対する操作を提供します',
     url: 'https://k8o.me/characters',
+    siteName: 'k8o',
+    locale: 'ja',
+    type: 'website',
   },
   twitter: {
     title: 'Characters',

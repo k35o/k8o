@@ -7,6 +7,9 @@ export const metadata = {
     title: '色変換ツール',
     description: 'カラーコードの形式を変換します',
     url: 'https://k8o.me/colors/converter',
+    siteName: 'k8o',
+    locale: 'ja',
+    type: 'website',
   },
   twitter: {
     title: '色変換ツール',

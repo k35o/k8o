@@ -19,12 +19,28 @@ const subFont = Noto_Sans_JP({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL('https://k8o.me'),
   title: 'k8o',
-  description: 'k8o portal',
+  description: 'k8oのトップページ',
+  generator: 'Next.js',
+  applicationName: 'k8o',
+  referrer: 'origin-when-cross-origin',
+  keywords: ['k8o'],
+  authors: [{ name: 'k8o' }],
+  creator: 'k8o',
+  publisher: 'k8o',
+  formatDetection: {
+    email: false,
+    address: false,
+    telephone: false,
+  },
   openGraph: {
     title: 'k8o',
     description: 'k8oのトップページ',
     url: 'https://k8o.me',
+    siteName: 'k8o',
+    locale: 'ja',
+    type: 'website',
   },
   twitter: {
     title: 'k8o',

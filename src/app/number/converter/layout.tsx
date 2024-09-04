@@ -7,6 +7,9 @@ export const metadata = {
     title: '基数変換ツール',
     description: '10進数から2進数のように基数を変換します',
     url: 'https://k8o.me/number/converter',
+    siteName: 'k8o',
+    locale: 'ja',
+    type: 'website',
   },
   twitter: {
     title: '基数変換ツール',

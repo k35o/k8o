@@ -7,6 +7,9 @@ export const metadata = {
     title: '文字数カウンター',
     description: '入力した文字数をカウントします',
     url: 'https://k8o.me/characters/counter',
+    siteName: 'k8o',
+    locale: 'ja',
+    type: 'website',
   },
   twitter: {
     title: '文字数カウンター',

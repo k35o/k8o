@@ -4,19 +4,24 @@ import { BlogLayout } from '../_components/blog-layout/blog-layout';
 export const metadata: Metadata = {
   title: '色のコントラスト比は重要だけどどうやって求めるんだっけ？',
   description:
-    'React で開発する時、どのようにルーティングを実装していますか？Next.jsやRemixなどのフレームワークを用いて開発するときはフレームワークに実装されたルーティング利用し、フレームワークを利',
+    '背景色とテキスト色のコントラスト比はWCAG 2.1においてAA基準とAAA基準の2つの達成基準によって定められています。 AA基準における大文字のテキストの最小コントラスト比は4.5:1、小文字のテ',
   category: 'color contrast',
   openGraph: {
     title: '色のコントラスト比は重要だけどどうやって求めるんだっけ？',
     description:
-      'React で開発する時、どのようにルーティングを実装していますか？Next.jsやRemixなどのフレームワークを用いて開発するときはフレームワークに実装されたルーティング利用し、フレームワークを利',
+      '背景色とテキスト色のコントラスト比はWCAG 2.1においてAA基準とAAA基準の2つの達成基準によって定められています。 AA基準における大文字のテキストの最小コントラスト比は4.5:1、小文字のテ',
     url: 'https://k8o.me/blog/color-contrast',
+    publishedTime: '2024/02/12T00:00:00.000Z',
+    authors: ['k8o'],
+    siteName: 'k8o',
+    locale: 'ja',
+    type: 'article',
   },
   twitter: {
     title: '色のコントラスト比は重要だけどどうやって求めるんだっけ？',
-    card: 'summary',
+    card: 'summary_large_image',
     description:
-      'React で開発する時、どのようにルーティングを実装していますか？Next.jsやRemixなどのフレームワークを用いて開発するときはフレームワークに実装されたルーティング利用し、フレームワークを利',
+      '背景色とテキスト色のコントラスト比はWCAG 2.1においてAA基準とAAA基準の2つの達成基準によって定められています。 AA基準における大文字のテキストの最小コントラスト比は4.5:1、小文字のテ',
   },
 };
 

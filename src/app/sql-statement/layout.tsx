@@ -9,6 +9,9 @@ export const metadata = {
     description:
       'テーブルの作成など、SQLに関するコマンドを作成する機能を提供します',
     url: 'https://k8o.me/sql-statement',
+    siteName: 'k8o',
+    locale: 'ja',
+    type: 'website',
   },
   twitter: {
     title: 'SQL Statement',
