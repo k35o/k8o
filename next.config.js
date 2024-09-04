@@ -3,7 +3,7 @@ import BundleAnalyzer from '@next/bundle-analyzer';
 import rehypePrettyCode from "rehype-pretty-code";
 import rehypeKatex from "rehype-katex";
 import remarkMath from "remark-math";
-import { createHighlighter } from "shiki";
+import { createHighlighter, createJavaScriptRegexEngine } from "shiki";
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
@@ -31,7 +31,12 @@ export default withBundleAnalyzer(
           /** @type {Partial<import("rehype-pretty-code").Options>} */
           ({
             theme: "one-dark-pro",
-            createHighlighter,
+            createHighlighter: (options) => {
+              createHighlighter({
+                ...options,
+                engine: createJavaScriptRegexEngine(),
+              })
+            },
           }),
         ],
       ],
