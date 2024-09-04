@@ -8,6 +8,9 @@ export const metadata = {
     title: 'Converter',
     description: '数値の基数の変換など、便利な変換処理を提供します',
     url: 'https://k8o.me/converter',
+    siteName: 'k8o',
+    locale: 'ja',
+    type: 'website',
   },
   twitter: {
     title: 'Converter',

@@ -3,10 +3,7 @@ import plugin from 'tailwindcss/plugin';
 
 const config = {
   darkMode: ['class'],
-  content: [
-    './src/**/*.{js,ts,jsx,tsx,mdx}',
-    './.storybook/preview.tsx',
-  ],
+  content: ['./src/**/*.tsx', './.storybook/preview.tsx'],
   theme: {
     colors: {
       // foreground

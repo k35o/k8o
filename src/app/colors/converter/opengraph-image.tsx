@@ -2,7 +2,7 @@ import { ImageResponse } from 'next/og';
 
 export const runtime = 'edge';
 
-export const alt = 'colros';
+export const alt = 'color converter';
 export const size = {
   width: 1200,
   height: 600,
@@ -36,7 +36,7 @@ export default async function OpenGraphImage() {
             justifyContent: 'center',
           }}
         >
-          🎨
+          🧬
         </div>
       </div>
     ),

@@ -8,6 +8,9 @@ export const metadata = {
     title: '日本語校正くん',
     description: 'テキストエリアに入力した文章の校正を行います',
     url: 'https://k8o.me/characters/check-syntax',
+    siteName: 'k8o',
+    locale: 'ja',
+    type: 'website',
   },
   twitter: {
     title: '日本語校正くん',

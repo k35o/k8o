@@ -9,6 +9,9 @@ export const metadata = {
     title: 'Blog',
     description: 'k8oのブログです。',
     url: 'https://k8o.me/blog',
+    siteName: 'k8o',
+    locale: 'ja',
+    type: 'website',
   },
   twitter: {
     title: 'Blog',

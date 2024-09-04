@@ -8,6 +8,9 @@ export const metadata = {
     title: 'Quizzes',
     description: '色々なジャンルのクイズを出します',
     url: 'https://k8o.me/quizzes',
+    siteName: 'k8o',
+    locale: 'ja',
+    type: 'website',
   },
   twitter: {
     title: 'Quizzes',

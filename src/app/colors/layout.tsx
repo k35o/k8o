@@ -8,6 +8,9 @@ export const metadata = {
     title: 'Colors',
     description: 'コントラスト比など、色にまつわる機能を提供します',
     url: 'https://k8o.me/colors',
+    siteName: 'k8o',
+    locale: 'ja',
+    type: 'website',
   },
   twitter: {
     title: 'Colors',

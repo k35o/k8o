@@ -7,6 +7,9 @@ export const metadata = {
     title: 'コントラスト比チェッカー',
     description: 'コントラスト比をチェックします',
     url: 'https://k8o.me/colors/contrasts',
+    siteName: 'k8o',
+    locale: 'ja',
+    type: 'website',
   },
   twitter: {
     title: 'コントラスト比チェッカー',
