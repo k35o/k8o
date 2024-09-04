@@ -14,6 +14,7 @@ import {
   CircleCheck,
   ClipboardPenLine,
   Info,
+  Link,
   ListMinus,
   Table2,
   TriangleAlert,
@@ -74,6 +75,10 @@ export const Primary: Story = {
         <div className="flex flex-col items-center justify-center">
           <CircleAlert className="size-24" />
           <p className="text-center">Error</p>
+        </div>
+        <div className="flex flex-col items-center justify-center">
+          <Link className="size-24" />
+          <p className="text-center">Link</p>
         </div>
         <div className="flex flex-col items-center justify-center">
           <ListMinus className="size-24" />
