@@ -14,6 +14,7 @@
     {
       "matchUpdateTypes": ["minor", "patch"],
       "matchCurrentVersion": "!/^0/",
+      "matchPackageNames": ["!/^(pnpm|node)$/"],
       "groupName": "minor and patch dependencies"
     }
   ]
