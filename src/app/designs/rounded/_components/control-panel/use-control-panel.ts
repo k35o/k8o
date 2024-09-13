@@ -22,14 +22,14 @@ type Position =
 export const useControlPanel = () => {
   const containerRef = useRef<HTMLDivElement>(null);
   const [position, setPosition] = useState<Record<Position, number>>({
-    topLeftX: 10,
-    topLeftY: 10,
-    topRightX: 10,
-    topRightY: 10,
-    bottomLeftX: 10,
-    bottomLeftY: 10,
-    bottomRightX: 10,
-    bottomRightY: 10,
+    topLeftX: 63,
+    topLeftY: 37,
+    topRightX: 24,
+    topRightY: 54,
+    bottomLeftX: 53,
+    bottomLeftY: 26,
+    bottomRightX: 32,
+    bottomRightY: 36,
   });
   const [activePosition, setActivePosition] =
     useState<Position | null>(null);
