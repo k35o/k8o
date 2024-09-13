@@ -49,3 +49,13 @@ export const Disabled: Story = {
     children: <ClipboardPenLine className="size-6" />,
   },
 };
+
+export const BgBase: Story = {
+  args: {
+    bg: 'base',
+    onClick: () => {
+      console.log('clicked');
+    },
+    children: <ClipboardPenLine className="size-6" />,
+  },
+};

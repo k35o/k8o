@@ -32,3 +32,9 @@ export const Small: Story = {
     size: 'sm',
   },
 };
+
+export const BgBase: Story = {
+  args: {
+    bg: 'base',
+  },
+};
