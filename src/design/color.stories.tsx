@@ -243,6 +243,32 @@ const COLORS = {
       darkCode: '#4b5563',
     },
   ],
+  group: [
+    {
+      name: 'Primary',
+      Sample: <Circle className="bg-groupPrimary" />,
+      lightCode: '#2dd4bf',
+      darkCode: '#5eead4',
+    },
+    {
+      name: 'Secondary',
+      Sample: <Circle className="bg-groupSecondary" />,
+      lightCode: '#38bdf8',
+      darkCode: '#7dd3fc',
+    },
+    {
+      name: 'Tertiary',
+      Sample: <Circle className="bg-groupTertiary" />,
+      lightCode: '#818cf8',
+      darkCode: '#a5b4fc',
+    },
+    {
+      name: 'Quaternary',
+      Sample: <Circle className="bg-groupQuaternary" />,
+      lightCode: '#e879f9',
+      darkCode: '#f0abfc',
+    },
+  ],
 } as const satisfies Record<string, Color[]>;
 
 const Component: FC<{ colors: Color[] }> = ({ colors }) => {
@@ -318,4 +344,8 @@ export const Button: StoryObj<typeof Component> = {
 
 export const Chart: StoryObj<typeof Component> = {
   render: () => <Component colors={COLORS.chart} />,
+};
+
+export const Group: StoryObj<typeof Component> = {
+  render: () => <Component colors={COLORS.group} />,
 };

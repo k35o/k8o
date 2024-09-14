@@ -48,6 +48,12 @@
     /* chart */
     --chart-primary: 45 212 191;
     --chart-empty: 243 244 246;
+
+    /* group */
+    --group-primary: 45 212 191;
+    --group-secondary: 56 189 248;
+    --group-tertiary: 129 140 248;
+    --group-quaternary: 232 121 249;
   }
 
   .dark {
@@ -95,6 +101,12 @@
     /* chart */
     --chart-primary: 94 234 212;
     --chart-empty: 75 85 99;
+
+    /* group */
+    --group-primary: 94 234 212;
+    --group-secondary: 125 211 252;
+    --group-tertiary: 165 180 252;
+    --group-quaternary: 240 171 252;
   }
 
   .app-background {

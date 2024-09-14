@@ -46,6 +46,11 @@ const config = {
       // chart
       chartPrimary: 'rgb(var(--chart-primary) / <alpha-value>)',
       chartEmpty: 'rgb(var(--chart-empty) / <alpha-value>)',
+      // group
+      groupPrimary: 'rgb(var(--group-primary) / <alpha-value>)',
+      groupSecondary: 'rgb(var(--group-secondary) / <alpha-value>)',
+      groupTertiary: 'rgb(var(--group-tertiary) / <alpha-value>)',
+      groupQuaternary: 'rgb(var(--group-quaternary) / <alpha-value>)',
     },
     extend: {
       fontFamily: {
