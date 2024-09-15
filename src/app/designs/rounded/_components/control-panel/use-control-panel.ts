@@ -139,13 +139,9 @@ export const useControlPanel = () => {
         setActivePosition(null);
         window.removeEventListener('touchmove', touchMoveHandler);
       });
-      window.addEventListener(
-        'touchmove',
-        touchMoveHandler,
-        {
-          passive: false,
-        },
-      );
+      window.addEventListener("touchmove", touchMoveHandler, {
+        passive: false,
+      });
     },
     [],
   );
