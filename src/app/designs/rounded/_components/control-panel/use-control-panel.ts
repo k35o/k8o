@@ -104,6 +104,7 @@ export const useControlPanel = () => {
       e.preventDefault();
       setActivePosition(position);
       const touchMoveHandler = (e: TouchEvent) => {
+        e.preventDefault();
         setPosition((prev) => {
           const changedTouches = e.changedTouches[0];
           if (!containerRef.current || !changedTouches) {
