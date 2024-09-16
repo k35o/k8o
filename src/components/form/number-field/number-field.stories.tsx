@@ -1,6 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import { NumberField } from './number-field';
 import { useState } from 'react';
+import { userEvent, within, expect } from '@storybook/test';
 
 const meta: Meta<typeof NumberField> = {
   title: 'components/form/number-field',
@@ -25,6 +26,33 @@ export const Default: Story = {
     isDisabled: false,
     isInvalid: false,
     isRequired: false,
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+
+    const input = canvas.getByRole('spinbutton');
+    await userEvent.type(input, '2.0[Tab]');
+
+    expect(input).toHaveValue('2');
+
+    await userEvent.click(input);
+
+    await userEvent.keyboard('{ArrowUp}');
+    await userEvent.keyboard('{ArrowDown}');
+    await userEvent.keyboard('{ArrowDown}');
+    await userEvent.keyboard('{ArrowDown}');
+
+    expect(input).toHaveValue('0');
+  },
+};
+
+export const Precision: Story = {
+  args: {
+    isDisabled: false,
+    isInvalid: false,
+    isRequired: false,
+    precision: 2,
+    step: 0.01,
   },
 };
 
