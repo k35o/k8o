@@ -25,6 +25,9 @@ export const metadata: Metadata = {
   },
 };
 
+// TODO:pprが利用可能になったら切り替える
+export const dynamic = 'force-dynamic';
+
 export default function Layout({
   children,
 }: {
