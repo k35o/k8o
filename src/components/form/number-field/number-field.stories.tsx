@@ -1,0 +1,112 @@
+import type { Meta, StoryObj } from '@storybook/react';
+import { NumberField } from './number-field';
+import { useState } from 'react';
+import { userEvent, within, expect } from '@storybook/test';
+
+const meta: Meta<typeof NumberField> = {
+  title: 'components/form/number-field',
+  component: NumberField,
+  args: {
+    id: 'textfield',
+    describedbyId: 'numberfield-feedback',
+  },
+  render: (args) => {
+    const [value, setValue] = useState(0);
+    return (
+      <NumberField {...args} value={value} onChange={setValue} />
+    );
+  },
+};
+
+export default meta;
+type Story = StoryObj<typeof NumberField>;
+
+export const Default: Story = {
+  args: {
+    isDisabled: false,
+    isInvalid: false,
+    isRequired: false,
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+
+    const input = canvas.getByRole('spinbutton');
+    await userEvent.type(input, '2.0[Tab]');
+
+    expect(input).toHaveValue('2');
+
+    await userEvent.click(input);
+
+    await userEvent.keyboard('{ArrowUp}');
+    await userEvent.keyboard('{ArrowDown}');
+    await userEvent.keyboard('{ArrowDown}');
+    await userEvent.keyboard('{ArrowDown}');
+
+    expect(input).toHaveValue('0');
+  },
+};
+
+export const Min0Max100: Story = {
+  args: {
+    isDisabled: false,
+    isInvalid: false,
+    isRequired: false,
+    min: 0,
+    max: 100,
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+
+    const input = canvas.getByRole('spinbutton');
+    await userEvent.type(input, '-10[Tab]');
+
+    expect(input).toHaveValue('0');
+
+    await userEvent.keyboard('{ArrowDown}');
+
+    expect(input).toHaveValue('0');
+
+    await userEvent.type(input, '111[Tab]');
+
+    expect(input).toHaveValue('100');
+
+    await userEvent.keyboard('{ArrowUp}');
+
+    expect(input).toHaveValue('100');
+  },
+};
+
+export const Precision: Story = {
+  args: {
+    isDisabled: false,
+    isInvalid: false,
+    isRequired: false,
+    precision: 2,
+    step: 0.01,
+  },
+};
+
+export const Placeholder: Story = {
+  args: {
+    isDisabled: false,
+    isInvalid: false,
+    isRequired: false,
+    placeholder: '10.2',
+  },
+};
+
+export const Invalid: Story = {
+  args: {
+    isDisabled: false,
+    isInvalid: true,
+    isRequired: false,
+  },
+};
+
+export const Disabled: Story = {
+  args: {
+    isDisabled: true,
+    isInvalid: false,
+    isRequired: false,
+  },
+};
