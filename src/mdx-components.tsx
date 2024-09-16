@@ -18,7 +18,7 @@ const LinkHeading: FC<
       id={isStringChildren ? children : undefined}
       className={clsx(
         'group my-4 font-bold',
-        type === 'h2' && 'mb-4 mt-6 text-xl sm:text-2xl',
+        type === 'h2' && 'mb-4 text-xl sm:text-2xl',
         type === 'h3' && 'text-xl sm:text-2xl',
         type === 'h4' && 'text-lg sm:text-xl',
         type === 'h5' && 'text-base sm:text-lg',

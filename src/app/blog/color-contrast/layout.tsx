@@ -25,10 +25,17 @@ export const metadata: Metadata = {
   },
 };
 
+// TODO:pprが利用可能になったら切り替える
+export const dynamic = 'force-dynamic';
+
 export default function Layout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  return <BlogLayout updatedAt="2024/02/12">{children}</BlogLayout>;
+  return (
+    <BlogLayout updatedAt="2024/02/12" slug="color-contrast">
+      {children}
+    </BlogLayout>
+  );
 }

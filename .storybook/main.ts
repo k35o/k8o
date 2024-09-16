@@ -15,6 +15,10 @@ const config: StorybookConfig = {
     options: {},
   },
 
+  features: {
+    experimentalRSC: true,
+  },
+
   docs: {
     autodocs: 'tag',
   },

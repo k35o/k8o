@@ -21,7 +21,6 @@
   "eslint.rules.customizations": [
     { "rule": "*", "severity": "warn" }
   ],
-  "typescript.tsdk": "node_modules/.pnpm/typescript@5.5.4/node_modules/typescript/lib",
-  "prettier.documentSelectors": ["**/*.{cjs,mjs,ts,tsx,json,md,mdx}"],
+  "prettier.documentSelectors": ["**/*.{cjs,js,ts,tsx,json,md,mdx}"],
   "typescript.enablePromptUseWorkspaceTsdk": true
 }
