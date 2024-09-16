@@ -3,7 +3,7 @@ import { Calendar, Eye } from 'lucide-react';
 import { FC, ReactNode, Suspense } from 'react';
 import { ViewCoounter } from '../view-counter';
 import { Slug } from '../../_types';
-import { ErrorBoundary } from 'next/dist/client/components/error-boundary';
+import { ErrorBoundary } from 'react-error-boundary';
 
 export const BlogLayout: FC<{
   children: ReactNode;
@@ -14,7 +14,7 @@ export const BlogLayout: FC<{
     <div className="flex flex-col gap-4">
       <article className="rounded-lg bg-bgBase/90 px-3 py-14 pt-4 sm:px-10">
         <div className="flex items-center justify-end gap-4 text-sm text-textDescription">
-          <ErrorBoundary errorComponent={undefined}>
+          <ErrorBoundary fallback={<></>}>
             <Suspense fallback={<></>}>
               <div className="flex items-center gap-1">
                 <Eye className="size-4" />
