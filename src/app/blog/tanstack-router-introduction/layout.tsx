@@ -33,7 +33,10 @@ export default function Layout({
   children: React.ReactNode;
 }) {
   return (
-    <BlogLayout updatedAt="2023/07/13" viewCount={10000}>
+    <BlogLayout
+      updatedAt="2023/07/13"
+      slug="tanstack-router-introduction"
+    >
       {children}
     </BlogLayout>
   );

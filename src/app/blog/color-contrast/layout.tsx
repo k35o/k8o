@@ -31,7 +31,7 @@ export default function Layout({
   children: React.ReactNode;
 }) {
   return (
-    <BlogLayout updatedAt="2024/02/12" viewCount={100}>
+    <BlogLayout updatedAt="2024/02/12" slug="color-contrast">
       {children}
     </BlogLayout>
   );

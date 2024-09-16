@@ -1,22 +1,20 @@
 import type { Meta, StoryObj } from '@storybook/react';
-import { BlogLayout } from './blog-layout';
+import { ViewCoounter } from './view-counter';
 import { kv } from '#src/mocks/vercel-kv.mock';
 
-const meta: Meta<typeof BlogLayout> = {
-  title: 'app/blog/blog-layout',
-  component: BlogLayout,
+const meta: Meta<typeof ViewCoounter> = {
+  title: 'app/blog/view-counter',
+  component: ViewCoounter,
   beforeEach: () => {
     kv.incr.mockResolvedValue(74931);
   },
 };
 
 export default meta;
-type Story = StoryObj<typeof BlogLayout>;
+type Story = StoryObj<typeof ViewCoounter>;
 
 export const Primary: Story = {
   args: {
-    updatedAt: '2024/02/12',
     slug: 'color-contrast',
-    children: 'This is a blog layout',
   },
 };
