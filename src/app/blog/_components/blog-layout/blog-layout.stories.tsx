@@ -12,6 +12,7 @@ type Story = StoryObj<typeof BlogLayout>;
 export const Primary: Story = {
   args: {
     updatedAt: '2024/02/12',
+    viewCount: 100,
     children: 'This is a blog layout',
   },
 };

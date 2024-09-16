@@ -1,15 +1,32 @@
+import { formatDate } from '@/utils/date/format';
+import { commalize } from '@/utils/number/commalize';
+import { Calendar, Eye } from 'lucide-react';
 import { FC, ReactNode } from 'react';
 
 export const BlogLayout: FC<{
   children: ReactNode;
   updatedAt: string;
-}> = ({ children, updatedAt }) => {
+  viewCount: number;
+}> = ({ children, updatedAt, viewCount }) => {
   return (
     <div className="flex flex-col gap-4">
       <article className="rounded-lg bg-bgBase/90 px-3 py-14 pt-4 sm:px-10">
-        <p className="text-end text-textDescription">
-          {updatedAt}に公開
-        </p>
+        <div className="flex items-center justify-end gap-4 text-sm text-textDescription">
+          <div className="flex items-center gap-1">
+            <Calendar className="size-4" />
+            <span>
+              {formatDate(updatedAt, {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric',
+              })}
+            </span>
+          </div>
+          <div className="flex items-center gap-1">
+            <Eye className="size-4" />
+            <span>{commalize(viewCount)}</span>
+          </div>
+        </div>
         {children}
       </article>
     </div>

@@ -30,5 +30,9 @@ export default function Layout({
 }: {
   children: React.ReactNode;
 }) {
-  return <BlogLayout updatedAt="2024/02/12">{children}</BlogLayout>;
+  return (
+    <BlogLayout updatedAt="2024/02/12" viewCount={100}>
+      {children}
+    </BlogLayout>
+  );
 }
