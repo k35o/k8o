@@ -2,6 +2,8 @@ import { cast } from '@/utils/number/cast';
 import { cn } from '@/utils/cn';
 import { FC, useState } from 'react';
 import { Minus, Plus } from 'lucide-react';
+import { between } from '@/utils/number/between';
+import { toPrecision } from '@/utils/number/to-precision';
 
 type Props = {
   id?: string;
@@ -13,6 +15,8 @@ type Props = {
   onChange: (value: number) => void;
   step?: number;
   precision?: number;
+  max?: number;
+  min?: number;
   placeholder?: string;
 };
 
@@ -26,6 +30,8 @@ export const NumberField: FC<Props> = ({
   onChange,
   step = 1,
   precision = 0,
+  max = 9007199254740991,
+  min = -9007199254740991,
   placeholder,
 }) => {
   const [displayValue, setDisplayValue] = useState(
@@ -49,8 +55,8 @@ export const NumberField: FC<Props> = ({
         aria-describedby={describedbyId}
         aria-invalid={isInvalid}
         aria-required={isRequired}
-        aria-valuemin={-9007199254740991}
-        aria-valuemax={9007199254740991}
+        aria-valuemin={min}
+        aria-valuemax={max}
         aria-valuenow={value}
         autoComplete="off"
         autoCorrect="off"
@@ -63,18 +69,36 @@ export const NumberField: FC<Props> = ({
           setDisplayValue(e.target.value);
         }}
         onBlur={() => {
-          const newValue = cast(displayValue, precision);
+          const newValue = between(
+            cast(displayValue, precision),
+            min,
+            max,
+          );
           onChange(newValue);
           setDisplayValue(newValue.toFixed(precision));
         }}
         onKeyDown={(e) => {
           if (e.key === 'ArrowUp') {
-            const newValue = cast(displayValue, precision) + step;
+            const newValue = between(
+              toPrecision(
+                cast(displayValue, precision) + step,
+                precision,
+              ),
+              min,
+              max,
+            );
             onChange(newValue);
             setDisplayValue(newValue.toFixed(precision));
           }
           if (e.key === 'ArrowDown') {
-            const newValue = cast(displayValue, precision) - step;
+            const newValue = between(
+              toPrecision(
+                cast(displayValue, precision) - step,
+                precision,
+              ),
+              min,
+              max,
+            );
             onChange(newValue);
             setDisplayValue(newValue.toFixed(precision));
           }
@@ -95,7 +119,14 @@ export const NumberField: FC<Props> = ({
           aria-label="増やす"
           tabIndex={-1}
           onClick={() => {
-            const newValue = cast(displayValue, precision) + step;
+            const newValue = between(
+              toPrecision(
+                cast(displayValue, precision) + step,
+                precision,
+              ),
+              min,
+              max,
+            );
             onChange(newValue);
             setDisplayValue(newValue.toFixed(precision));
           }}
@@ -112,7 +143,14 @@ export const NumberField: FC<Props> = ({
           tabIndex={-1}
           aria-label="減らす"
           onClick={() => {
-            const newValue = cast(displayValue, precision) - step;
+            const newValue = between(
+              toPrecision(
+                cast(displayValue, precision) - step,
+                precision,
+              ),
+              min,
+              max,
+            );
             onChange(newValue);
             setDisplayValue(newValue.toFixed(precision));
           }}

@@ -46,6 +46,36 @@ export const Default: Story = {
   },
 };
 
+export const Min0Max100: Story = {
+  args: {
+    isDisabled: false,
+    isInvalid: false,
+    isRequired: false,
+    min: 0,
+    max: 100,
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+
+    const input = canvas.getByRole('spinbutton');
+    await userEvent.type(input, '-10[Tab]');
+
+    expect(input).toHaveValue('0');
+
+    await userEvent.keyboard('{ArrowDown}');
+
+    expect(input).toHaveValue('0');
+
+    await userEvent.type(input, '111[Tab]');
+
+    expect(input).toHaveValue('100');
+
+    await userEvent.keyboard('{ArrowUp}');
+
+    expect(input).toHaveValue('100');
+  },
+};
+
 export const Precision: Story = {
   args: {
     isDisabled: false,

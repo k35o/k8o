@@ -1,3 +1,5 @@
+import { toPrecision } from './to-precision';
+
 const FLOATING_POINT_REGEX = /^[Ee0-9+\-.]$/;
 
 // 文字が数値になり得ないことを確認する
@@ -25,12 +27,6 @@ const countDecimalPlaces = (value: number): number => {
     p += 1;
   }
   return p;
-};
-
-// 数値を指定の桁数に丸める
-const toPrecision = (value: number, precision?: number): number => {
-  const scaleFactor = 10 ** (precision ?? 10);
-  return Math.round(value * scaleFactor) / scaleFactor;
 };
 
 export const cast = (
