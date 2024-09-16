@@ -22,9 +22,9 @@ export const Primary: Story = {
         <ShowCase.Item link="/colors" emotion="🎨" title="Colors" />
         <ShowCase.Item link="/quizzes" emotion="💡" title="Quizzes" />
         <ShowCase.Item
-          link="/sql-statement"
-          emotion="🖥️"
-          title="SQL"
+          link="/engineerings"
+          emotion="🧑‍💻"
+          title="Engineerings"
         />
         <ShowCase.Item link="/blog" emotion="📕" title="Blog" />
       </ShowCase.Container>

@@ -6,7 +6,7 @@ import { Column } from '../../_types/column';
 import { uuidV4 } from '@/utils/uuid-v4';
 
 const meta: Meta<typeof CreateRestriction> = {
-  title: 'app/sql-statement/create-restriction',
+  title: 'app/engineerings/create-restriction',
   component: CreateRestriction,
 };
 

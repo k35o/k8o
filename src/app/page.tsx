@@ -68,14 +68,14 @@ export default function Home() {
             title="Designs"
           />
           <ShowCase.Item
+            link="/engineerings"
+            emotion="🧑‍💻"
+            title="Engineerings"
+          />
+          <ShowCase.Item
             link="/quizzes"
             emotion="💡"
             title="Quizzes"
-          />
-          <ShowCase.Item
-            link="/sql-statement"
-            emotion="🖥️"
-            title="SQL"
           />
           <ShowCase.Item link="/blog" emotion="📕" title="Blog" />
         </ShowCase.Container>

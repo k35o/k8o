@@ -5,7 +5,7 @@ import { Column } from '../../_types/column';
 import { uuidV4 } from '@/utils/uuid-v4';
 
 const meta: Meta<typeof CreateColumns> = {
-  title: 'app/sql-statement/columns-info',
+  title: 'app/engineerings/columns-info',
   component: CreateColumns,
 };
 

@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { Table } from '../../_types/table';
 
 const meta: Meta<typeof CreateTable> = {
-  title: 'app/sql-statement/create-table',
+  title: 'app/engineerings/create-table',
 };
 
 export default meta;

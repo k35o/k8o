@@ -2,7 +2,7 @@ import { ImageResponse } from 'next/og';
 
 export const runtime = 'edge';
 
-export const alt = 'converter';
+export const alt = 'engineerings';
 export const size = {
   width: 512,
   height: 512,
@@ -36,7 +36,7 @@ export default async function TwitterImage() {
             width: 384,
           }}
         >
-          🖥️
+          🧑‍💻
         </div>
       </div>
     ),

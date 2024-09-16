@@ -3,10 +3,10 @@ import { Modal } from '../_components/modal';
 
 export default function Page() {
   return (
-    <Modal title="🖥️ SQL">
+    <Modal title="🧑‍💻 Engineerings">
       <div className="flex w-full flex-col gap-4">
         <AppCard
-          link="/sql-statement/creating"
+          link="/engineerings/creating"
           emotion="📄"
           title="テーブル作成"
           description="テーブルを作成するSQL文を生成します"
