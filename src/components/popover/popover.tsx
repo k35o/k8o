@@ -170,11 +170,15 @@ const Trigger: FC<{
   renderItem: (props: {
     actionProps: Omit<HTMLProps<HTMLElement>, 'selected' | 'active'>;
     restProps: Record<string, unknown>;
+    allProps: Record<string, unknown>;
   }) => ReactElement;
 }> = ({ renderItem }) => {
   const props = usePopoverTrigger();
 
-  return renderItem(props);
+  return renderItem({
+    ...props,
+    allProps: { ...props.actionProps, ...props.restProps },
+  });
 };
 
 export const Popover = {
