@@ -33,6 +33,7 @@ import {
   useMenuTrigger,
 } from './hooks';
 import clsx from 'clsx';
+import { AnimatePresence, motion, Variants } from 'framer-motion';
 
 const Root: FC<PropsWithChildren<{ placement?: Placement }>> = ({
   children,
@@ -57,6 +58,7 @@ const Root: FC<PropsWithChildren<{ placement?: Placement }>> = ({
         padding: 8,
       }),
     ],
+    transform: false,
   });
 
   const listNavigation = useListNavigation(context, {
@@ -119,6 +121,22 @@ const Root: FC<PropsWithChildren<{ placement?: Placement }>> = ({
   );
 };
 
+const contentMotionVariants = {
+  closed: {
+    scale: 0,
+    transition: {
+      delay: 0.15,
+    },
+  },
+  open: {
+    scale: 1,
+    transition: {
+      type: 'spring',
+      duration: 0.2,
+    },
+  },
+} satisfies Variants;
+
 const Content: FC<PropsWithChildren> = ({ children }) => {
   const {
     id,
@@ -133,28 +151,37 @@ const Content: FC<PropsWithChildren> = ({ children }) => {
 
   return (
     <FloatingList elementsRef={itemElementsRef}>
-      {isOpen && (
-        <FloatingPortal>
-          <FloatingFocusManager context={context} modal={false}>
-            <div
-              ref={setContentRef}
-              style={contentStyles}
-              {...contentProps}
-            >
-              <section
-                ref={ref}
-                id={id}
-                role="menu"
-                aria-orientation="vertical"
-                className="flex min-w-40 flex-col rounded-xl border border-borderSecondary bg-bgBase py-2 shadow-xl"
-                tabIndex={-1}
+      <AnimatePresence>
+        {isOpen && (
+          <FloatingPortal>
+            <FloatingFocusManager context={context} modal={false}>
+              <div
+                ref={setContentRef}
+                style={contentStyles}
+                {...contentProps}
               >
-                {children}
-              </section>
-            </div>
-          </FloatingFocusManager>
-        </FloatingPortal>
-      )}
+                <motion.div
+                  animate={isOpen ? 'open' : 'closed'}
+                  initial="closed"
+                  exit="closed"
+                  variants={contentMotionVariants}
+                >
+                  <section
+                    ref={ref}
+                    id={id}
+                    role="menu"
+                    aria-orientation="vertical"
+                    className="flex min-w-40 flex-col rounded-xl border border-borderSecondary bg-bgBase py-2 shadow-xl"
+                    tabIndex={-1}
+                  >
+                    {children}
+                  </section>
+                </motion.div>
+              </div>
+            </FloatingFocusManager>
+          </FloatingPortal>
+        )}
+      </AnimatePresence>
     </FloatingList>
   );
 };
