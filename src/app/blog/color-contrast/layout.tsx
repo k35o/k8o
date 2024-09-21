@@ -1,5 +1,6 @@
 import { Metadata } from 'next';
 import { BlogLayout } from '../_components/blog-layout/blog-layout';
+import { PropsWithChildren } from 'react';
 
 export const metadata: Metadata = {
   title: '色のコントラスト比は重要だけどどうやって求めるんだっけ？',
@@ -28,11 +29,7 @@ export const metadata: Metadata = {
 // TODO:pprが利用可能になったら切り替える
 export const dynamic = 'force-dynamic';
 
-export default function Layout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export default function Layout({ children }: PropsWithChildren) {
   return (
     <BlogLayout updatedAt="2024/02/12" slug="color-contrast">
       {children}

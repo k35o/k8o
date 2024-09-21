@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import { Heading } from '../../components/heading';
+import { PropsWithChildren } from 'react';
 
 export const metadata = {
   title: 'Colors',
@@ -19,11 +20,7 @@ export const metadata = {
   },
 };
 
-export default function Layout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export default function Layout({ children }: PropsWithChildren) {
   return (
     <div className="flex h-full flex-col gap-6">
       <Link href="/colors">

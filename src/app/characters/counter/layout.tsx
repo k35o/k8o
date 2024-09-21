@@ -1,4 +1,5 @@
 import { Heading } from '@/components/heading';
+import { PropsWithChildren } from 'react';
 
 export const metadata = {
   title: '文字数カウンター',
@@ -18,11 +19,7 @@ export const metadata = {
   },
 };
 
-export default function Layout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export default function Layout({ children }: PropsWithChildren) {
   return (
     <div className="flex h-full flex-col gap-4">
       <Heading type="h3">文字数カウンター</Heading>

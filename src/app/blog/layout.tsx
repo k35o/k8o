@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import { Heading } from '../../components/heading';
 import { ExternalBlog } from './_components/external-blog';
+import { PropsWithChildren } from 'react';
 
 export const metadata = {
   title: 'Blog',
@@ -20,11 +21,7 @@ export const metadata = {
   },
 };
 
-export default function Layout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export default function Layout({ children }: PropsWithChildren) {
   return (
     <>
       {/* Get the latest one from: https://katex.org/docs/browser */}

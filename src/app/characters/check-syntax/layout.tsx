@@ -1,5 +1,6 @@
 import { Heading } from '@/components/heading';
 import { CheckSyntaxProvider } from './_state/text';
+import { PropsWithChildren } from 'react';
 
 export const metadata = {
   title: '日本語校正くん',
@@ -19,11 +20,7 @@ export const metadata = {
   },
 };
 
-export default function Layout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export default function Layout({ children }: PropsWithChildren) {
   return (
     <div className="flex h-full flex-col gap-4">
       <Heading type="h3">日本語校正くん</Heading>
