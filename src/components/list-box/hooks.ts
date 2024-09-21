@@ -10,11 +10,16 @@ import {
 import { useOpenContext } from '../popover/hooks';
 import { useListItem } from '@floating-ui/react';
 
+export type Option = {
+  key: string;
+  label: string;
+};
+
 type MenuContext = {
-  options: string[];
+  options: Option[];
   activeIndex: number | null;
   selectedIndex: number | null;
-  setSelectedIndex: (index: number) => void;
+  handleSelect: (index: number) => void;
   itemElementsRef: MutableRefObject<(HTMLElement | null)[]>;
   getTriggerProps: (
     userProps?: HTMLProps<HTMLElement>,
@@ -68,7 +73,7 @@ export const useMenuItem = (index: number) => {
       tabIndex: menu.activeIndex === item.index ? 0 : -1,
       ...menu.getItemProps({
         onClick: () => {
-          menu.setSelectedIndex(index);
+          menu.handleSelect(index);
           onClose();
         },
       }),
@@ -80,9 +85,10 @@ export const useMenuItem = (index: number) => {
 export const useMenuTrigger = () => {
   const menu = useMenuContext();
   const defaultLabel = '選択してください';
-  const label = menu.selectedIndex
-    ? (menu.options[menu.selectedIndex] ?? defaultLabel)
-    : defaultLabel;
+  const label =
+    menu.selectedIndex !== null
+      ? (menu.options[menu.selectedIndex]?.label ?? defaultLabel)
+      : defaultLabel;
   return useMemo(
     () => ({
       label,

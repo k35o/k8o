@@ -30,8 +30,14 @@ const Root: FC<
   PropsWithChildren<{
     placement?: Placement;
     type?: 'menu' | 'tooltip' | 'listbox';
+    flipDisabled?: boolean;
   }>
-> = ({ children, type = 'menu', placement = 'bottom-start' }) => {
+> = ({
+  children,
+  type = 'menu',
+  placement = 'bottom-start',
+  flipDisabled = false,
+}) => {
   const id = useId();
   const [isOpen, setIsOpen] = useState(false);
 
@@ -48,10 +54,11 @@ const Root: FC<
     // 要素と8pxだけ離す
     middleware: [
       offset(8),
-      flip({
-        fallbackAxisSideDirection: 'end',
-        padding: 8,
-      }),
+      !flipDisabled &&
+        flip({
+          fallbackAxisSideDirection: 'end',
+          padding: 8,
+        }),
     ],
     transform: false,
   });

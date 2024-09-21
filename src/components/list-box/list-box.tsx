@@ -16,6 +16,7 @@ import {
 import { ChevronDown } from 'lucide-react';
 import {
   MenuContextProvider,
+  Option,
   useMenuContent,
   useMenuItem,
   useMenuTrigger,
@@ -26,19 +27,27 @@ import { useFloatingUIContext } from '../popover/hooks';
 import { Button } from '../button';
 
 const Root: FC<
-  PropsWithChildren<{ placement?: Placement; options: string[] }>
-> = ({ children, placement = 'bottom-start', options }) => {
+  PropsWithChildren<{
+    placement?: Placement;
+    options: Option[];
+    onSelect: (key: Option['key']) => void;
+  }>
+> = ({ children, placement = 'bottom', options, onSelect }) => {
   return (
-    <Popover.Root placement={placement} type="listbox">
-      <MenuProvider options={options}>{children}</MenuProvider>
+    <Popover.Root placement={placement} type="listbox" flipDisabled>
+      <MenuProvider options={options} onSelect={onSelect}>
+        {children}
+      </MenuProvider>
     </Popover.Root>
   );
 };
 
-const MenuProvider: FC<PropsWithChildren<{ options: string[] }>> = ({
-  children,
-  options,
-}) => {
+const MenuProvider: FC<
+  PropsWithChildren<{
+    options: Option[];
+    onSelect: (key: Option['key']) => void;
+  }>
+> = ({ children, options, onSelect }) => {
   const [selectedIndex, setSelectedIndex] = useState<number | null>(
     null,
   );
@@ -57,13 +66,22 @@ const MenuProvider: FC<PropsWithChildren<{ options: string[] }>> = ({
   const { getReferenceProps, getFloatingProps, getItemProps } =
     useInteractions([listNavigation]);
 
+  const handleSelect = (index: number) => {
+    const key = options[index]?.key;
+    if (key) {
+      onSelect(key);
+      setSelectedIndex(index);
+    }
+    return;
+  };
+
   return (
     <MenuContextProvider
       value={{
         options,
         activeIndex,
         selectedIndex,
-        setSelectedIndex,
+        handleSelect,
         itemElementsRef,
         getTriggerProps: getReferenceProps,
         getContentProps: getFloatingProps,
@@ -87,8 +105,8 @@ const Content: FC = () => {
             {...contentProps}
             className="flex min-w-40 flex-col rounded-xl border border-borderSecondary bg-bgBase py-2 shadow-xl"
           >
-            {options.map((label, idx) => (
-              <Item key={label} label={label} index={idx} />
+            {options.map(({ key, label }, idx) => (
+              <Item key={key} label={label} index={idx} />
             ))}
           </section>
         )}
@@ -97,10 +115,10 @@ const Content: FC = () => {
   );
 };
 
-const Item: FC<{ label: string; index: number }> = ({
-  label,
-  index,
-}) => {
+const Item: FC<{
+  label: Option['label'];
+  index: number;
+}> = ({ label, index }) => {
   const props = useMenuItem(index);
 
   return (
@@ -130,6 +148,7 @@ const Trigger: FC<{
           type="button"
           size={size}
           variant="contained"
+          fullWidth
           endIcon={<ChevronDown className="size-8" />}
           {...props.restProps}
           {...getTriggerProps(props.actionProps)}
