@@ -35,7 +35,12 @@ const Root: FC<
   const id = useId();
   const [isOpen, setIsOpen] = useState(false);
 
-  const { refs, floatingStyles, context } = useFloating({
+  const {
+    refs,
+    floatingStyles,
+    context,
+    placement: computedPlacement,
+  } = useFloating({
     strategy: 'fixed',
     placement: placement,
     open: isOpen,
@@ -87,6 +92,7 @@ const Root: FC<
         onOpen,
         onClose,
         context,
+        placement: computedPlacement,
         triggerRef: refs.domReference,
         setTriggerRef: refs.setReference,
         setContentRef: refs.setFloating,
@@ -102,7 +108,7 @@ const contentMotionVariants = {
   closed: {
     scale: 0,
     transition: {
-      delay: 0.15,
+      delay: 0.1,
     },
   },
   open: {
@@ -116,7 +122,8 @@ const contentMotionVariants = {
 
 const Content: FC<{
   renderItem: (props: Record<string, unknown>) => ReactElement;
-}> = ({ renderItem }) => {
+  motionVariants?: Variants;
+}> = ({ renderItem, motionVariants = contentMotionVariants }) => {
   const {
     isOpen,
     isHover,
@@ -140,7 +147,7 @@ const Content: FC<{
                 animate={isOpen ? 'open' : 'closed'}
                 initial="closed"
                 exit="closed"
-                variants={contentMotionVariants}
+                variants={motionVariants}
               >
                 {renderItem(itemProps)}
               </motion.div>

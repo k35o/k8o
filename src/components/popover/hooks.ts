@@ -1,7 +1,11 @@
 'use client';
 
 import { useClickAway } from '@/hooks/click-away';
-import { FloatingContext, ReferenceType } from '@floating-ui/react';
+import {
+  FloatingContext,
+  Placement,
+  ReferenceType,
+} from '@floating-ui/react';
 import {
   createContext,
   CSSProperties,
@@ -20,6 +24,7 @@ type PopoverContext = {
   onClose: () => void;
 
   context: FloatingContext;
+  placement: Placement;
   triggerRef: MutableRefObject<Element | null>;
   setTriggerRef: (node: ReferenceType | null) => void;
   setContentRef: (node: HTMLElement | null) => void;
@@ -44,6 +49,11 @@ const usePopoverContext = (): PopoverContext => {
 export const useFloatingUIContext = () => {
   const popover = usePopoverContext();
   return useMemo(() => popover.context, [popover]);
+};
+
+export const usePlacement = (): Placement => {
+  const popover = usePopoverContext();
+  return popover.placement;
 };
 
 export const useOpenContext = () => {
