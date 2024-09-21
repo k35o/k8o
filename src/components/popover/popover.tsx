@@ -26,10 +26,12 @@ import {
 } from './hooks';
 import { AnimatePresence, motion, Variants } from 'framer-motion';
 
-const Root: FC<PropsWithChildren<{ placement?: Placement }>> = ({
-  children,
-  placement = 'bottom-start',
-}) => {
+const Root: FC<
+  PropsWithChildren<{
+    placement?: Placement;
+    type?: 'menu' | 'tooltip';
+  }>
+> = ({ children, type = 'menu', placement = 'bottom-start' }) => {
   const id = useId();
   const [isOpen, setIsOpen] = useState(false);
 
@@ -79,6 +81,7 @@ const Root: FC<PropsWithChildren<{ placement?: Placement }>> = ({
     <PopoverProvider
       value={{
         rootId: id,
+        type,
         isOpen,
         toggleOpen,
         onOpen,
@@ -114,14 +117,24 @@ const contentMotionVariants = {
 const Content: FC<{
   renderItem: (props: Record<string, unknown>) => ReactElement;
 }> = ({ renderItem }) => {
-  const { id, ref, isOpen, context, setContentRef, contentStyles } =
-    usePopoverContent();
+  const {
+    isOpen,
+    isHover,
+    context,
+    setContentRef,
+    contentStyles,
+    itemProps,
+  } = usePopoverContent();
 
   return (
     <AnimatePresence>
       {isOpen && (
         <FloatingPortal>
-          <FloatingFocusManager context={context} modal={false}>
+          <FloatingFocusManager
+            context={context}
+            modal={false}
+            disabled={isHover}
+          >
             <div ref={setContentRef} style={contentStyles}>
               <motion.div
                 animate={isOpen ? 'open' : 'closed'}
@@ -129,13 +142,7 @@ const Content: FC<{
                 exit="closed"
                 variants={contentMotionVariants}
               >
-                {renderItem({
-                  id,
-                  ref,
-                  role: 'menu',
-                  'aria-orientation': 'vertical',
-                  tabIndex: -1,
-                })}
+                {renderItem(itemProps)}
               </motion.div>
             </div>
           </FloatingFocusManager>

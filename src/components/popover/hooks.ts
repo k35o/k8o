@@ -13,6 +13,7 @@ import {
 
 type PopoverContext = {
   rootId: string;
+  type: 'menu' | 'tooltip';
   isOpen: boolean;
   toggleOpen: () => void;
   onOpen: () => void;
@@ -54,12 +55,18 @@ export const useOpenContext = () => {
       onClose: popover.onClose,
       toggleOpen: popover.toggleOpen,
     }),
-    [popover],
+    [
+      popover.isOpen,
+      popover.onClose,
+      popover.onOpen,
+      popover.toggleOpen,
+    ],
   );
 };
 
 export const usePopoverContent = () => {
   const popover = usePopoverContext();
+  const isHover = popover.type === 'tooltip';
   const ref = useClickAway<HTMLDivElement>((event) => {
     if (!open) {
       return;
@@ -72,48 +79,95 @@ export const usePopoverContent = () => {
       return;
     }
     popover.onClose();
-  });
+  }, !isHover);
+
+  const itemProps = useMemo(() => {
+    switch (popover.type) {
+      case 'menu':
+        return {
+          id: `${popover.rootId}_list`,
+          ref,
+          role: 'menu',
+          'aria-orientation': 'vertical',
+          tabIndex: -1,
+        };
+      case 'tooltip':
+        return {
+          id: `${popover.rootId}_list`,
+          ref,
+          role: 'tooltip',
+          tabIndex: -1,
+        };
+    }
+  }, [popover.rootId, popover.type, ref]);
+
   return useMemo(
     () => ({
       id: `${popover.rootId}_list`,
       ref: ref,
       isOpen: popover.isOpen,
+      isHover,
       context: popover.context,
       setContentRef: popover.setContentRef,
       contentStyles: popover.contentStyles,
+      itemProps,
     }),
-    [ref, popover],
+    [
+      popover.rootId,
+      popover.isOpen,
+      popover.context,
+      popover.setContentRef,
+      popover.contentStyles,
+      ref,
+      isHover,
+      itemProps,
+    ],
   );
 };
 
 export const usePopoverTrigger = () => {
   const popover = usePopoverContext();
-  return useMemo(
-    () => ({
-      actionProps: {
-        onClick: popover.toggleOpen,
-        onKeyDown: (e: KeyboardEvent) => {
-          if (e.key === 'Enter') {
-            e.preventDefault();
-            popover.toggleOpen();
-          }
-          if (e.key === 'ArrowUp') {
-            e.preventDefault();
-            popover.onOpen();
-          }
-          if (e.key === 'ArrowDown') {
-            e.preventDefault();
-            popover.onOpen();
-          }
-        },
-      },
-      restProps: {
-        'aria-haspopup': 'menu',
-        'aria-expanded': popover.isOpen,
-        'aria-controls': `${popover.rootId}_list`,
-        ref: popover.setTriggerRef,
-      },
-    }),
-    [popover],
-  );
+  return useMemo(() => {
+    switch (popover.type) {
+      case 'tooltip':
+        return {
+          actionProps: {
+            onMouseEnter: popover.onOpen,
+            onMouseLeave: popover.onClose,
+            onFocus: popover.onOpen,
+            onBlur: popover.onClose,
+          },
+          restProps: {
+            'aria-describedby': `${popover.rootId}_content`,
+            ref: popover.setTriggerRef,
+          },
+        };
+      case 'menu':
+        return {
+          actionProps: {
+            onClick: popover.toggleOpen,
+            onKeyDown: (e: KeyboardEvent) => {
+              if (e.key === 'Enter') {
+                e.preventDefault();
+                popover.toggleOpen();
+              }
+              if (e.key === 'ArrowUp') {
+                e.preventDefault();
+                popover.onOpen();
+              }
+              if (e.key === 'ArrowDown') {
+                e.preventDefault();
+                popover.onOpen();
+              }
+            },
+          },
+          restProps: {
+            'aria-haspopup': 'menu',
+            'aria-expanded': popover.isOpen,
+            'aria-controls': `${popover.rootId}_list`,
+            ref: popover.setTriggerRef,
+          },
+        };
+    }
+  }, [popover]);
 };

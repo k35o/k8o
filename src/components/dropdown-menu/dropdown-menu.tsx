@@ -31,7 +31,7 @@ const Root: FC<PropsWithChildren<{ placement?: Placement }>> = ({
   placement = 'bottom-start',
 }) => {
   return (
-    <Popover.Root placement={placement}>
+    <Popover.Root placement={placement} type="menu">
       <MenuProvider>{children}</MenuProvider>
     </Popover.Root>
   );
