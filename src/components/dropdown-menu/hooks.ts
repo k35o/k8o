@@ -1,30 +1,18 @@
 'use client';
 
-import { useClickAway } from '@/hooks/click-away';
-import { FloatingContext, ReferenceType } from '@floating-ui/react';
 import {
   createContext,
-  CSSProperties,
   HTMLProps,
   MouseEventHandler,
   MutableRefObject,
   useContext,
   useMemo,
 } from 'react';
+import { useOpenContext } from '../popover/hooks';
+import { useListItem } from '@floating-ui/react';
 
 type MenuContext = {
-  rootId: string;
   activeIndex: number | null;
-  isOpen: boolean;
-  toggleOpen: () => void;
-  onOpen: () => void;
-  onClose: () => void;
-
-  context: FloatingContext;
-  triggerRef: MutableRefObject<Element | null>;
-  setTriggerRef: (node: ReferenceType | null) => void;
-  setContentRef: (node: HTMLElement | null) => void;
-  contentStyles: CSSProperties;
   itemElementsRef: MutableRefObject<(HTMLElement | null)[]>;
   getTriggerProps: (
     userProps?: HTMLProps<HTMLElement>,
@@ -33,10 +21,7 @@ type MenuContext = {
     userProps?: HTMLProps<HTMLElement>,
   ) => Record<string, unknown>;
   getItemProps: (
-    userProps?: Omit<
-      React.HTMLProps<HTMLElement>,
-      'selected' | 'active'
-    >,
+    userProps?: Omit<HTMLProps<HTMLElement>, 'selected' | 'active'>,
   ) => Record<string, unknown>;
 };
 
@@ -57,29 +42,13 @@ const useMenuContext = (): MenuContext => {
 
 export const useMenuContent = () => {
   const menu = useMenuContext();
-  const ref = useClickAway<HTMLDivElement>((event) => {
-    if (!open) {
-      return;
-    }
-    if (
-      menu.triggerRef.current?.contains(event.target as HTMLElement)
-    ) {
-      return;
-    }
-    menu.onClose();
-  });
+
   return useMemo(
     () => ({
-      id: `${menu.rootId}_list`,
-      ref: ref,
-      isOpen: menu.isOpen,
-      context: menu.context,
-      setContentRef: menu.setContentRef,
-      contentStyles: menu.contentStyles,
       contentProps: menu.getContentProps(),
       itemElementsRef: menu.itemElementsRef,
     }),
-    [ref, menu],
+    [menu],
   );
 };
 
@@ -89,45 +58,25 @@ export const useMenuItem = ({
   onClick: MouseEventHandler;
 }) => {
   const menu = useMenuContext();
+  const { onClose } = useOpenContext();
+  const item = useListItem();
   return useMemo(
     () => ({
-      activeIndex: menu.activeIndex,
-      props: menu.getItemProps({
+      ref: item.ref,
+      role: 'menuitem',
+      tabIndex: menu.activeIndex === item.index ? 0 : -1,
+      ...menu.getItemProps({
         onClick: (e) => {
           onClick(e);
-          menu.onClose();
+          onClose();
         },
       }),
     }),
-    [menu, onClick],
+    [item.index, item.ref, menu, onClick, onClose],
   );
 };
 
 export const useMenuTrigger = () => {
   const menu = useMenuContext();
-  return useMemo(
-    () => ({
-      contentId: `${menu.rootId}_list`,
-      isOpen: menu.isOpen,
-      setRef: menu.setTriggerRef,
-      props: menu.getTriggerProps({
-        onClick: menu.toggleOpen,
-        onKeyDown: (e) => {
-          if (e.key === 'Enter') {
-            e.preventDefault();
-            menu.toggleOpen();
-          }
-          if (e.key === 'ArrowUp') {
-            e.preventDefault();
-            menu.onOpen();
-          }
-          if (e.key === 'ArrowDown') {
-            e.preventDefault();
-            menu.onOpen();
-          }
-        },
-      }),
-    }),
-    [menu],
-  );
+  return useMemo(() => menu.getTriggerProps, [menu]);
 };
