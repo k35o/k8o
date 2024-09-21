@@ -1,6 +1,7 @@
 'use client';
 
 import {
+  ComponentProps,
   FC,
   MouseEventHandler,
   PropsWithChildren,
@@ -25,6 +26,7 @@ import {
 import clsx from 'clsx';
 import { Popover } from '../popover';
 import { useFloatingUIContext } from '../popover/hooks';
+import { Button } from '../button';
 
 const Root: FC<PropsWithChildren<{ placement?: Placement }>> = ({
   children,
@@ -110,27 +112,23 @@ const Item: FC<{ onClick: MouseEventHandler; label: string }> = ({
 
 const Trigger: FC<{
   text: string;
-}> = ({ text }) => {
+  size?: ComponentProps<typeof Button>['size'];
+}> = ({ text, size = 'md' }) => {
   const getTriggerProps = useMenuTrigger();
 
   return (
     <Popover.Trigger
       renderItem={(props) => (
-        <button
+        <Button
           type="button"
-          className={cn(
-            'rounded-xl font-bold',
-            'bg-buttonPrimary text-textOnFill hover:bg-buttonHover active:bg-buttonActive',
-            'focus-visible:border-borderTransparent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-borderFocus',
-            'text-md px-4 py-2',
-            'flex items-center justify-between gap-2',
-          )}
+          size={size}
+          variant="contained"
+          endIcon={<ChevronDown className="size-8" />}
           {...props.restProps}
           {...getTriggerProps(props.actionProps)}
         >
           {text}
-          <ChevronDown className="size-8" />
-        </button>
+        </Button>
       )}
     />
   );

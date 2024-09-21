@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import { Tooltip } from './tooltip';
-import { cn } from '@/utils/cn';
+import { Button } from '../button';
 
 const meta: Meta<typeof Tooltip.Root> = {
   title: 'components/tooltip',
@@ -15,19 +15,9 @@ export const Default: Story = {
     <Tooltip.Root placement="bottom-start">
       <Tooltip.Trigger
         renderItem={(props) => (
-          <button
-            type="button"
-            className={cn(
-              'rounded-xl font-bold',
-              'bg-buttonPrimary text-textOnFill hover:bg-buttonHover active:bg-buttonActive',
-              'focus-visible:border-borderTransparent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-borderFocus',
-              'text-md px-4 py-2',
-              'flex items-center justify-between gap-2',
-            )}
-            {...props}
-          >
+          <Button type="button" {...props}>
             Tooltip
-          </button>
+          </Button>
         )}
       />
       <Tooltip.Content>
