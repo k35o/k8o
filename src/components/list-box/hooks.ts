@@ -3,7 +3,6 @@
 import {
   createContext,
   HTMLProps,
-  MouseEventHandler,
   MutableRefObject,
   useContext,
   useMemo,
@@ -11,8 +10,16 @@ import {
 import { useOpenContext } from '../popover/hooks';
 import { useListItem } from '@floating-ui/react';
 
+export type Option = {
+  key: string;
+  label: string;
+};
+
 type MenuContext = {
+  options: Option[];
   activeIndex: number | null;
+  selectedIndex: number | null;
+  handleSelect: (index: number) => void;
   itemElementsRef: MutableRefObject<(HTMLElement | null)[]>;
   getTriggerProps: (
     userProps?: HTMLProps<HTMLElement>,
@@ -21,10 +28,7 @@ type MenuContext = {
     userProps?: HTMLProps<HTMLElement>,
   ) => Record<string, unknown>;
   getItemProps: (
-    userProps?: Omit<
-      HTMLProps<HTMLButtonElement>,
-      'selected' | 'active'
-    >,
+    userProps?: Omit<HTMLProps<HTMLElement>, 'selected' | 'active'>,
   ) => Record<string, unknown>;
 };
 
@@ -48,6 +52,8 @@ export const useMenuContent = () => {
 
   return useMemo(
     () => ({
+      options: menu.options,
+      selectedIndex: menu.selectedIndex,
       contentProps: menu.getContentProps(),
       itemElementsRef: menu.itemElementsRef,
     }),
@@ -55,31 +61,42 @@ export const useMenuContent = () => {
   );
 };
 
-export const useMenuItem = ({
-  onClick,
-}: {
-  onClick: MouseEventHandler;
-}) => {
+export const useMenuItem = (index: number) => {
   const menu = useMenuContext();
   const { onClose } = useOpenContext();
   const item = useListItem();
   return useMemo(
     () => ({
-      ref: item.ref,
-      role: 'menuitem',
-      tabIndex: menu.activeIndex === item.index ? 0 : -1,
-      ...menu.getItemProps({
-        onClick: (e) => {
-          onClick(e);
-          onClose();
-        },
-      }),
+      selected: menu.selectedIndex === index,
+      props: {
+        ref: item.ref,
+        'aria-selected': menu.selectedIndex === index,
+        role: 'option',
+        tabIndex: menu.activeIndex === item.index ? 0 : -1,
+        ...menu.getItemProps({
+          onClick: () => {
+            menu.handleSelect(index);
+            onClose();
+          },
+        }),
+      },
     }),
-    [item.index, item.ref, menu, onClick, onClose],
+    [index, item.index, item.ref, menu, onClose],
   );
 };
 
 export const useMenuTrigger = () => {
   const menu = useMenuContext();
-  return useMemo(() => menu.getTriggerProps, [menu]);
+  const defaultLabel = '選択してください';
+  const label =
+    menu.selectedIndex !== null
+      ? (menu.options[menu.selectedIndex]?.label ?? defaultLabel)
+      : defaultLabel;
+  return useMemo(
+    () => ({
+      label,
+      getTriggerProps: menu.getTriggerProps,
+    }),
+    [label, menu.getTriggerProps],
+  );
 };
