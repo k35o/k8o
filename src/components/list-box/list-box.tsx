@@ -103,7 +103,7 @@ const Content: FC = () => {
           <section
             {...props}
             {...contentProps}
-            className="flex min-w-40 flex-col rounded-xl border border-borderSecondary bg-bgBase py-2 shadow-xl"
+            className="flex max-h-48 min-w-56 flex-col overflow-y-auto rounded-xl border border-borderSecondary bg-bgBase py-2 shadow-xl"
           >
             {options.map(({ key, label }, idx) => (
               <Item key={key} label={label} index={idx} />

@@ -34,12 +34,14 @@ const OPTIONS: Option[] = [
 
 export const Default: Story = {
   render: () => (
-    <ListBox.Root
-      options={OPTIONS}
-      onSelect={(key: string) => console.log(key)}
-    >
-      <ListBox.Trigger />
-      <ListBox.Content />
-    </ListBox.Root>
+    <div className="w-56">
+      <ListBox.Root
+        options={OPTIONS}
+        onSelect={(key: string) => console.log(key)}
+      >
+        <ListBox.Trigger />
+        <ListBox.Content />
+      </ListBox.Root>
+    </div>
   ),
 };
