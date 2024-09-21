@@ -1,7 +1,7 @@
 import { formatDate } from '@/utils/date/format';
 import { Calendar, Eye } from 'lucide-react';
 import { FC, ReactNode, Suspense } from 'react';
-import { ViewCoounter } from '../view-counter';
+import { ViewCounter } from '../view-counter';
 import { Slug } from '../../_types';
 import { ErrorBoundary } from 'react-error-boundary';
 
@@ -18,7 +18,7 @@ export const BlogLayout: FC<{
             <Suspense fallback={<></>}>
               <div className="flex items-center gap-1">
                 <Eye className="size-4" />
-                <ViewCoounter slug={slug} />
+                <ViewCounter slug={slug} />
               </div>
             </Suspense>
           </ErrorBoundary>
