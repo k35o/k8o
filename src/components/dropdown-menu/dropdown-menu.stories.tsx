@@ -15,11 +15,18 @@ export const Default: Story = {
     <DropdownMenu.Root>
       <DropdownMenu.Trigger text="Options" />
       <DropdownMenu.Content>
-        <DropdownMenu.ItemList>
-          <DropdownMenu.Item>Item 1</DropdownMenu.Item>
-          <DropdownMenu.Item>Item 2</DropdownMenu.Item>
-          <DropdownMenu.Item>Item 3</DropdownMenu.Item>
-        </DropdownMenu.ItemList>
+        <DropdownMenu.Item
+          label="Item 1"
+          onClick={() => console.log(1)}
+        />
+        <DropdownMenu.Item
+          label="Item 2"
+          onClick={() => console.log(2)}
+        />
+        <DropdownMenu.Item
+          label="Item 3"
+          onClick={() => console.log(3)}
+        />
       </DropdownMenu.Content>
     </DropdownMenu.Root>
   ),
@@ -33,11 +40,18 @@ export const TriggerByIcon: Story = {
         label="Options"
       />
       <DropdownMenu.Content>
-        <DropdownMenu.ItemList>
-          <DropdownMenu.Item>Item 1</DropdownMenu.Item>
-          <DropdownMenu.Item>Item 2</DropdownMenu.Item>
-          <DropdownMenu.Item>Item 3</DropdownMenu.Item>
-        </DropdownMenu.ItemList>
+        <DropdownMenu.Item
+          label="Item 1"
+          onClick={() => console.log(1)}
+        />
+        <DropdownMenu.Item
+          label="Item 2"
+          onClick={() => console.log(2)}
+        />
+        <DropdownMenu.Item
+          label="Item 3"
+          onClick={() => console.log(3)}
+        />
       </DropdownMenu.Content>
     </DropdownMenu.Root>
   ),
