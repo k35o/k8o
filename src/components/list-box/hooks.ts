@@ -3,7 +3,6 @@
 import {
   createContext,
   HTMLProps,
-  MouseEventHandler,
   MutableRefObject,
   useContext,
   useMemo,
@@ -12,7 +11,10 @@ import { useOpenContext } from '../popover/hooks';
 import { useListItem } from '@floating-ui/react';
 
 type MenuContext = {
+  options: string[];
   activeIndex: number | null;
+  selectedIndex: number | null;
+  setSelectedIndex: (index: number) => void;
   itemElementsRef: MutableRefObject<(HTMLElement | null)[]>;
   getTriggerProps: (
     userProps?: HTMLProps<HTMLElement>,
@@ -45,6 +47,8 @@ export const useMenuContent = () => {
 
   return useMemo(
     () => ({
+      options: menu.options,
+      selectedIndex: menu.selectedIndex,
       contentProps: menu.getContentProps(),
       itemElementsRef: menu.itemElementsRef,
     }),
@@ -52,32 +56,38 @@ export const useMenuContent = () => {
   );
 };
 
-export const useMenuItem = ({
-  onClick,
-}: {
-  onClick: MouseEventHandler;
-}) => {
+export const useMenuItem = (index: number) => {
   const menu = useMenuContext();
   const { onClose } = useOpenContext();
   const item = useListItem();
   return useMemo(
     () => ({
       ref: item.ref,
-      'aria-selected': false,
+      'aria-selected': menu.selectedIndex === index,
       role: 'option',
       tabIndex: menu.activeIndex === item.index ? 0 : -1,
       ...menu.getItemProps({
-        onClick: (e) => {
-          onClick(e);
+        onClick: () => {
+          menu.setSelectedIndex(index);
           onClose();
         },
       }),
     }),
-    [item.index, item.ref, menu, onClick, onClose],
+    [index, item.index, item.ref, menu, onClose],
   );
 };
 
 export const useMenuTrigger = () => {
   const menu = useMenuContext();
-  return useMemo(() => menu.getTriggerProps, [menu]);
+  const defaultLabel = '選択してください';
+  const label = menu.selectedIndex
+    ? (menu.options[menu.selectedIndex] ?? defaultLabel)
+    : defaultLabel;
+  return useMemo(
+    () => ({
+      label,
+      getTriggerProps: menu.getTriggerProps,
+    }),
+    [label, menu.getTriggerProps],
+  );
 };

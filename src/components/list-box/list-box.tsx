@@ -3,7 +3,6 @@
 import {
   ComponentProps,
   FC,
-  MouseEventHandler,
   PropsWithChildren,
   useRef,
   useState,
@@ -26,18 +25,23 @@ import { Popover } from '../popover';
 import { useFloatingUIContext } from '../popover/hooks';
 import { Button } from '../button';
 
-const Root: FC<PropsWithChildren<{ placement?: Placement }>> = ({
-  children,
-  placement = 'bottom-start',
-}) => {
+const Root: FC<
+  PropsWithChildren<{ placement?: Placement; options: string[] }>
+> = ({ children, placement = 'bottom-start', options }) => {
   return (
     <Popover.Root placement={placement} type="listbox">
-      <MenuProvider>{children}</MenuProvider>
+      <MenuProvider options={options}>{children}</MenuProvider>
     </Popover.Root>
   );
 };
 
-const MenuProvider: FC<PropsWithChildren> = ({ children }) => {
+const MenuProvider: FC<PropsWithChildren<{ options: string[] }>> = ({
+  children,
+  options,
+}) => {
+  const [selectedIndex, setSelectedIndex] = useState<number | null>(
+    null,
+  );
   const [activeIndex, setActiveIndex] = useState<number | null>(null);
   const itemElementsRef = useRef<(HTMLElement | null)[]>([]);
 
@@ -46,6 +50,7 @@ const MenuProvider: FC<PropsWithChildren> = ({ children }) => {
   const listNavigation = useListNavigation(context, {
     listRef: itemElementsRef,
     activeIndex,
+    selectedIndex,
     onNavigate: setActiveIndex,
     loop: true,
   });
@@ -55,7 +60,10 @@ const MenuProvider: FC<PropsWithChildren> = ({ children }) => {
   return (
     <MenuContextProvider
       value={{
+        options,
         activeIndex,
+        selectedIndex,
+        setSelectedIndex,
         itemElementsRef,
         getTriggerProps: getReferenceProps,
         getContentProps: getFloatingProps,
@@ -67,8 +75,8 @@ const MenuProvider: FC<PropsWithChildren> = ({ children }) => {
   );
 };
 
-const Content: FC<PropsWithChildren> = ({ children }) => {
-  const { contentProps, itemElementsRef } = useMenuContent();
+const Content: FC = () => {
+  const { options, contentProps, itemElementsRef } = useMenuContent();
 
   return (
     <FloatingList elementsRef={itemElementsRef}>
@@ -79,7 +87,9 @@ const Content: FC<PropsWithChildren> = ({ children }) => {
             {...contentProps}
             className="flex min-w-40 flex-col rounded-xl border border-borderSecondary bg-bgBase py-2 shadow-xl"
           >
-            {children}
+            {options.map((label, idx) => (
+              <Item key={label} label={label} index={idx} />
+            ))}
           </section>
         )}
       />
@@ -87,11 +97,11 @@ const Content: FC<PropsWithChildren> = ({ children }) => {
   );
 };
 
-const Item: FC<{ onClick: MouseEventHandler; label: string }> = ({
+const Item: FC<{ label: string; index: number }> = ({
   label,
-  onClick,
+  index,
 }) => {
-  const props = useMenuItem({ onClick });
+  const props = useMenuItem(index);
 
   return (
     <button
@@ -109,10 +119,9 @@ const Item: FC<{ onClick: MouseEventHandler; label: string }> = ({
 };
 
 const Trigger: FC<{
-  text: string;
   size?: ComponentProps<typeof Button>['size'];
-}> = ({ text, size = 'md' }) => {
-  const getTriggerProps = useMenuTrigger();
+}> = ({ size = 'md' }) => {
+  const { label, getTriggerProps } = useMenuTrigger();
 
   return (
     <Popover.Trigger
@@ -125,7 +134,7 @@ const Trigger: FC<{
           {...props.restProps}
           {...getTriggerProps(props.actionProps)}
         >
-          {text}
+          {label}
         </Button>
       )}
     />
@@ -135,6 +144,5 @@ const Trigger: FC<{
 export const ListBox = {
   Root,
   Content,
-  Item,
   Trigger,
 };
