@@ -16,7 +16,6 @@ import {
   useListNavigation,
 } from '@floating-ui/react';
 import { ChevronDown } from 'lucide-react';
-import { cn } from '@/utils/cn';
 import {
   MenuContextProvider,
   useMenuContent,
@@ -27,6 +26,7 @@ import clsx from 'clsx';
 import { Popover } from '../popover';
 import { useFloatingUIContext } from '../popover/hooks';
 import { Button } from '../button';
+import { IconButton } from '../icon-button';
 
 const Root: FC<PropsWithChildren<{ placement?: Placement }>> = ({
   children,
@@ -142,17 +142,10 @@ const IconTrigger: FC<{
   return (
     <Popover.Trigger
       renderItem={(props) => (
-        <button
-          type="button"
-          className={cn(
-            'inline-flex rounded-full bg-bgTransparent hover:bg-bgHover focus-visible:ring-2 focus-visible:ring-borderFocus active:bg-bgActive',
-            'p-2',
-          )}
-          {...getTriggerProps(props)}
-        >
+        <IconButton {...getTriggerProps(props)}>
           <span className="sr-only">{label}</span>
           {icon}
-        </button>
+        </IconButton>
       )}
     />
   );

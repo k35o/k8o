@@ -50,7 +50,7 @@ npm i -D @tanstack/router-devtools@beta
 ```tsx
 const TanStackRouterDevtools = import.meta.env.DEV
   ? // 遅延読み込みする
-    React.lazy(() =>
+    lazy(() =>
       import('@tanstack/router-devtools').then((res) => ({
         default: res.TanStackRouterDevtools,
       })),

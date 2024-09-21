@@ -2,14 +2,16 @@
 
 import {
   createContext,
+  Dispatch,
   FC,
   PropsWithChildren,
+  SetStateAction,
   useCallback,
   useContext,
   useState,
 } from 'react';
 
-type Setter<T> = React.Dispatch<React.SetStateAction<T>>;
+type Setter<T> = Dispatch<SetStateAction<T>>;
 export type ResultMessage = Record<number, string[]>;
 
 const TextContext = createContext<string | undefined>(undefined);

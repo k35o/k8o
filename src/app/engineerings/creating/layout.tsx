@@ -1,4 +1,5 @@
 import { Heading } from '@/components/heading';
+import { PropsWithChildren } from 'react';
 
 export const metadata = {
   title: 'テーブル作成',
@@ -15,11 +16,7 @@ export const metadata = {
   },
 };
 
-export default function Layout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export default function Layout({ children }: PropsWithChildren) {
   return (
     <div className="flex flex-col gap-4">
       <Heading type="h3">テーブル作成</Heading>
