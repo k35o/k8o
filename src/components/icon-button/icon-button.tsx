@@ -1,6 +1,5 @@
 import { cn } from '@/utils/cn';
 import {
-  FC,
   forwardRef,
   PropsWithChildren,
   ReactEventHandler,
