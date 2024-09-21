@@ -129,7 +129,7 @@ const COLORS = {
     {
       name: 'Hover',
       Sample: <Circle className="bg-bgHover" />,
-      lightCode: '#f3f4f6',
+      lightCode: '#e5e7eb',
       darkCode: '#d1d5db',
     },
     {
