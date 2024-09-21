@@ -119,7 +119,7 @@ const Item: FC<{
   label: Option['label'];
   index: number;
 }> = ({ label, index }) => {
-  const props = useMenuItem(index);
+  const { props, selected } = useMenuItem(index);
 
   return (
     <button
@@ -128,6 +128,8 @@ const Item: FC<{
         'hover:bg-bgHover',
         'active:bg-bgActive',
         'focus-visible:border-borderTransparent focus-visible:bg-bgHover focus-visible:outline-none',
+        selected &&
+          'bg-buttonHover text-textOnFill focus-visible:bg-buttonActive focus-visible:text-textOnFill',
       )}
       {...props}
     >

@@ -67,16 +67,19 @@ export const useMenuItem = (index: number) => {
   const item = useListItem();
   return useMemo(
     () => ({
-      ref: item.ref,
-      'aria-selected': menu.selectedIndex === index,
-      role: 'option',
-      tabIndex: menu.activeIndex === item.index ? 0 : -1,
-      ...menu.getItemProps({
-        onClick: () => {
-          menu.handleSelect(index);
-          onClose();
-        },
-      }),
+      selected: menu.selectedIndex === index,
+      props: {
+        ref: item.ref,
+        'aria-selected': menu.selectedIndex === index,
+        role: 'option',
+        tabIndex: menu.activeIndex === item.index ? 0 : -1,
+        ...menu.getItemProps({
+          onClick: () => {
+            menu.handleSelect(index);
+            onClose();
+          },
+        }),
+      },
     }),
     [index, item.index, item.ref, menu, onClose],
   );
