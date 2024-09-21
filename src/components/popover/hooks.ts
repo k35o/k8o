@@ -9,6 +9,7 @@ import {
 import {
   createContext,
   CSSProperties,
+  HTMLProps,
   KeyboardEvent,
   MutableRefObject,
   useContext,
@@ -142,75 +143,66 @@ export const usePopoverContent = () => {
   );
 };
 
-export const usePopoverTrigger = () => {
+export const usePopoverTrigger = (): Omit<
+  HTMLProps<HTMLButtonElement>,
+  'selected' | 'active'
+> => {
   const popover = usePopoverContext();
   return useMemo(() => {
     switch (popover.type) {
       case 'tooltip':
         return {
-          actionProps: {
-            onMouseEnter: popover.onOpen,
-            onMouseLeave: popover.onClose,
-            onFocus: popover.onOpen,
-            onBlur: popover.onClose,
-          },
-          restProps: {
-            'aria-describedby': `${popover.rootId}_content`,
-            ref: popover.setTriggerRef,
-          },
+          onMouseEnter: popover.onOpen,
+          onMouseLeave: popover.onClose,
+          onFocus: popover.onOpen,
+          onBlur: popover.onClose,
+          'aria-describedby': `${popover.rootId}_content`,
+          ref: popover.setTriggerRef,
         };
       case 'menu':
         return {
-          actionProps: {
-            onClick: popover.toggleOpen,
-            onKeyDown: (e: KeyboardEvent) => {
-              if (e.key === 'Enter') {
-                e.preventDefault();
-                popover.toggleOpen();
-              }
-              if (e.key === 'ArrowUp') {
-                e.preventDefault();
-                popover.onOpen();
-              }
-              if (e.key === 'ArrowDown') {
-                e.preventDefault();
-                popover.onOpen();
-              }
-            },
+          onClick: popover.toggleOpen,
+          onKeyDown: (e: KeyboardEvent) => {
+            if (e.key === 'Enter') {
+              e.preventDefault();
+              popover.toggleOpen();
+            }
+            if (e.key === 'ArrowUp') {
+              e.preventDefault();
+              popover.onOpen();
+            }
+            if (e.key === 'ArrowDown') {
+              e.preventDefault();
+              popover.onOpen();
+            }
           },
-          restProps: {
-            'aria-haspopup': 'menu',
-            'aria-expanded': popover.isOpen,
-            'aria-controls': `${popover.rootId}_list`,
-            ref: popover.setTriggerRef,
-          },
+          'aria-haspopup': 'menu',
+          'aria-expanded': popover.isOpen,
+          'aria-controls': `${popover.rootId}_list`,
+          ref: popover.setTriggerRef,
         };
       case 'listbox':
         return {
-          actionProps: {
-            onClick: popover.toggleOpen,
-            onKeyDown: (e: KeyboardEvent) => {
-              if (e.key === 'Enter') {
-                e.preventDefault();
-                popover.toggleOpen();
-              }
-              if (e.key === 'ArrowUp') {
-                e.preventDefault();
-                popover.onOpen();
-              }
-              if (e.key === 'ArrowDown') {
-                e.preventDefault();
-                popover.onOpen();
-              }
-            },
+          onClick: popover.toggleOpen,
+          onKeyDown: (e: KeyboardEvent) => {
+            if (e.key === 'Enter') {
+              e.preventDefault();
+              popover.toggleOpen();
+            }
+            if (e.key === 'ArrowUp') {
+              e.preventDefault();
+              popover.onOpen();
+            }
+            if (e.key === 'ArrowDown') {
+              e.preventDefault();
+              popover.onOpen();
+            }
           },
-          restProps: {
-            role: 'combobox',
-            'aria-haspopup': 'listbox',
-            'aria-expanded': popover.isOpen,
-            'aria-controls': `${popover.rootId}_list`,
-            ref: popover.setTriggerRef,
-          },
+          role: 'combobox',
+          'aria-haspopup': 'listbox',
+          'aria-expanded': popover.isOpen,
+          'aria-controls': `${popover.rootId}_list`,
+          ref: popover.setTriggerRef,
         };
     }
   }, [popover]);

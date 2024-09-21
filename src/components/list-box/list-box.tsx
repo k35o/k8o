@@ -152,8 +152,7 @@ const Trigger: FC<{
           variant="contained"
           fullWidth
           endIcon={<ChevronDown className="size-8" />}
-          {...props.restProps}
-          {...getTriggerProps(props.actionProps)}
+          {...getTriggerProps(props)}
         >
           {label}
         </Button>

@@ -21,7 +21,10 @@ type MenuContext = {
     userProps?: HTMLProps<HTMLElement>,
   ) => Record<string, unknown>;
   getItemProps: (
-    userProps?: Omit<HTMLProps<HTMLElement>, 'selected' | 'active'>,
+    userProps?: Omit<
+      HTMLProps<HTMLButtonElement>,
+      'selected' | 'active'
+    >,
   ) => Record<string, unknown>;
 };
 

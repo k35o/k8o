@@ -21,7 +21,7 @@ const Trigger: FC<{
 }> = ({ renderItem }) => {
   return (
     <Popover.Trigger
-      renderItem={(props) => renderItem({ ...props.allProps })}
+      renderItem={(props) => renderItem({ ...props })}
     />
   );
 };

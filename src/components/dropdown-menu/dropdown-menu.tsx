@@ -124,8 +124,7 @@ const Trigger: FC<{
           size={size}
           variant="contained"
           endIcon={<ChevronDown className="size-8" />}
-          {...props.restProps}
-          {...getTriggerProps(props.actionProps)}
+          {...getTriggerProps(props)}
         >
           {text}
         </Button>
@@ -149,8 +148,7 @@ const IconTrigger: FC<{
             'inline-flex rounded-full bg-bgTransparent hover:bg-bgHover focus-visible:ring-2 focus-visible:ring-borderFocus active:bg-bgActive',
             'p-2',
           )}
-          {...props.restProps}
-          {...getTriggerProps(props.actionProps)}
+          {...getTriggerProps(props)}
         >
           <span className="sr-only">{label}</span>
           {icon}

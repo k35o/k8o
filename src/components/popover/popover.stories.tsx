@@ -15,7 +15,9 @@ export const Default: Story = {
     <Popover.Root>
       <Popover.Trigger
         renderItem={(props) => (
-          <Button {...props.allProps}>Popover</Button>
+          <Button {...props} type="button" size="md">
+            Popover
+          </Button>
         )}
       />
       <Popover.Content
