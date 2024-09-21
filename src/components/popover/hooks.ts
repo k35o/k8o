@@ -17,7 +17,7 @@ import {
 
 type PopoverContext = {
   rootId: string;
-  type: 'menu' | 'tooltip';
+  type: 'menu' | 'tooltip' | 'listbox';
   isOpen: boolean;
   toggleOpen: () => void;
   onOpen: () => void;
@@ -108,6 +108,13 @@ export const usePopoverContent = () => {
           role: 'tooltip',
           tabIndex: -1,
         };
+      case 'listbox':
+        return {
+          id: `${popover.rootId}_list`,
+          ref,
+          role: 'listbox',
+          tabIndex: -1,
+        };
     }
   }, [popover.rootId, popover.type, ref]);
 
@@ -173,6 +180,33 @@ export const usePopoverTrigger = () => {
           },
           restProps: {
             'aria-haspopup': 'menu',
+            'aria-expanded': popover.isOpen,
+            'aria-controls': `${popover.rootId}_list`,
+            ref: popover.setTriggerRef,
+          },
+        };
+      case 'listbox':
+        return {
+          actionProps: {
+            onClick: popover.toggleOpen,
+            onKeyDown: (e: KeyboardEvent) => {
+              if (e.key === 'Enter') {
+                e.preventDefault();
+                popover.toggleOpen();
+              }
+              if (e.key === 'ArrowUp') {
+                e.preventDefault();
+                popover.onOpen();
+              }
+              if (e.key === 'ArrowDown') {
+                e.preventDefault();
+                popover.onOpen();
+              }
+            },
+          },
+          restProps: {
+            role: 'combobox',
+            'aria-haspopup': 'listbox',
             'aria-expanded': popover.isOpen,
             'aria-controls': `${popover.rootId}_list`,
             ref: popover.setTriggerRef,

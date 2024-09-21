@@ -29,7 +29,7 @@ import { AnimatePresence, motion, Variants } from 'framer-motion';
 const Root: FC<
   PropsWithChildren<{
     placement?: Placement;
-    type?: 'menu' | 'tooltip';
+    type?: 'menu' | 'tooltip' | 'listbox';
   }>
 > = ({ children, type = 'menu', placement = 'bottom-start' }) => {
   const id = useId();

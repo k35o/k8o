@@ -1,0 +1,140 @@
+'use client';
+
+import {
+  ComponentProps,
+  FC,
+  MouseEventHandler,
+  PropsWithChildren,
+  useRef,
+  useState,
+} from 'react';
+import {
+  FloatingList,
+  Placement,
+  useInteractions,
+  useListNavigation,
+} from '@floating-ui/react';
+import { ChevronDown } from 'lucide-react';
+import {
+  MenuContextProvider,
+  useMenuContent,
+  useMenuItem,
+  useMenuTrigger,
+} from './hooks';
+import clsx from 'clsx';
+import { Popover } from '../popover';
+import { useFloatingUIContext } from '../popover/hooks';
+import { Button } from '../button';
+
+const Root: FC<PropsWithChildren<{ placement?: Placement }>> = ({
+  children,
+  placement = 'bottom-start',
+}) => {
+  return (
+    <Popover.Root placement={placement} type="listbox">
+      <MenuProvider>{children}</MenuProvider>
+    </Popover.Root>
+  );
+};
+
+const MenuProvider: FC<PropsWithChildren> = ({ children }) => {
+  const [activeIndex, setActiveIndex] = useState<number | null>(null);
+  const itemElementsRef = useRef<(HTMLElement | null)[]>([]);
+
+  const context = useFloatingUIContext();
+
+  const listNavigation = useListNavigation(context, {
+    listRef: itemElementsRef,
+    activeIndex,
+    onNavigate: setActiveIndex,
+    loop: true,
+  });
+  const { getReferenceProps, getFloatingProps, getItemProps } =
+    useInteractions([listNavigation]);
+
+  return (
+    <MenuContextProvider
+      value={{
+        activeIndex,
+        itemElementsRef,
+        getTriggerProps: getReferenceProps,
+        getContentProps: getFloatingProps,
+        getItemProps,
+      }}
+    >
+      {children}
+    </MenuContextProvider>
+  );
+};
+
+const Content: FC<PropsWithChildren> = ({ children }) => {
+  const { contentProps, itemElementsRef } = useMenuContent();
+
+  return (
+    <FloatingList elementsRef={itemElementsRef}>
+      <Popover.Content
+        renderItem={(props) => (
+          <section
+            {...props}
+            {...contentProps}
+            className="flex min-w-40 flex-col rounded-xl border border-borderSecondary bg-bgBase py-2 shadow-xl"
+          >
+            {children}
+          </section>
+        )}
+      />
+    </FloatingList>
+  );
+};
+
+const Item: FC<{ onClick: MouseEventHandler; label: string }> = ({
+  label,
+  onClick,
+}) => {
+  const props = useMenuItem({ onClick });
+
+  return (
+    <button
+      className={clsx(
+        'w-full px-2 py-1 text-left',
+        'hover:bg-bgHover',
+        'active:bg-bgActive',
+        'focus-visible:border-borderTransparent focus-visible:bg-bgHover focus-visible:outline-none',
+      )}
+      {...props}
+    >
+      {label}
+    </button>
+  );
+};
+
+const Trigger: FC<{
+  text: string;
+  size?: ComponentProps<typeof Button>['size'];
+}> = ({ text, size = 'md' }) => {
+  const getTriggerProps = useMenuTrigger();
+
+  return (
+    <Popover.Trigger
+      renderItem={(props) => (
+        <Button
+          type="button"
+          size={size}
+          variant="contained"
+          endIcon={<ChevronDown className="size-8" />}
+          {...props.restProps}
+          {...getTriggerProps(props.actionProps)}
+        >
+          {text}
+        </Button>
+      )}
+    />
+  );
+};
+
+export const ListBox = {
+  Root,
+  Content,
+  Item,
+  Trigger,
+};
