@@ -11,6 +11,7 @@ import { Metadata } from 'next';
 
 const font = M_PLUS_2({
   subsets: ['latin'],
+  display: 'optional',
 });
 
 const subFont = Noto_Sans_JP({
