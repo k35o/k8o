@@ -21,6 +21,7 @@ export default defineWorkspace([
         name: 'chromium',
         provider: 'playwright',
         headless: true,
+        screenshotFailures: false,
       },
     },
   },
