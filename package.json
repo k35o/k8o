@@ -92,7 +92,7 @@
     "eslint-config-next": "14.2.13",
     "eslint-config-prettier": "9.1.0",
     "eslint-plugin-jsx-a11y": "6.10.0",
-    "eslint-plugin-storybook": "0.8.0",
+    "eslint-plugin-storybook": "0.9.0",
     "lefthook": "1.7.15",
     "playwright": "1.47.2",
     "prettier": "3.3.3",
