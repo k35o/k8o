@@ -96,7 +96,7 @@
     "lefthook": "1.7.17",
     "playwright": "1.47.2",
     "prettier": "3.3.3",
-    "prettier-plugin-tailwindcss": "0.6.6",
+    "prettier-plugin-tailwindcss": "0.6.8",
     "storybook": "8.3.3",
     "storybook-addon-mock-date": "0.6.0",
     "typescript": "5.6.2",
