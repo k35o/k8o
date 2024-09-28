@@ -1,11 +1,16 @@
 'use client';
 
-import { incrementBlogView } from '#actions/blog';
 import { FC, useEffect } from 'react';
 
 export const ReportView: FC<{ blogId: number }> = ({ blogId }) => {
   useEffect(() => {
-    incrementBlogView({ blogId });
+    fetch('/api/blog/views', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ blogId }),
+    });
   }, [blogId]);
 
   return null;
