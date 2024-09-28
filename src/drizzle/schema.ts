@@ -5,6 +5,7 @@ import {
   pgTable,
   serial,
   text,
+  timestamp,
   uniqueIndex,
 } from 'drizzle-orm/pg-core';
 
@@ -109,6 +110,12 @@ export const blogs = pgTable(
     title: text('title').notNull(),
     description: text('description').notNull(),
     slug: text('slug').notNull(),
+    createdAt: timestamp('created_at', { withTimezone: true })
+      .notNull()
+      .defaultNow(),
+    updatedAt: timestamp('updated_at', { withTimezone: true })
+      .notNull()
+      .$onUpdate(() => new Date()),
   },
   (table) => {
     return {
