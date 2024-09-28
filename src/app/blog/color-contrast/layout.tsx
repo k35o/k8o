@@ -1,38 +1,38 @@
 import { Metadata } from 'next';
 import { BlogLayout } from '../_components/blog-layout/blog-layout';
 import { PropsWithChildren } from 'react';
+import { getBlogByMetadata } from '#actions/blog';
 
-export const metadata: Metadata = {
-  title: '色のコントラスト比は重要だけどどうやって求めるんだっけ？',
-  description:
-    '背景色とテキスト色のコントラスト比はWCAG 2.1においてAA基準とAAA基準の2つの達成基準によって定められています。 AA基準における大文字のテキストの最小コントラスト比は4.5:1、小文字のテ',
-  category: 'color contrast',
-  openGraph: {
-    title: '色のコントラスト比は重要だけどどうやって求めるんだっけ？',
-    description:
-      '背景色とテキスト色のコントラスト比はWCAG 2.1においてAA基準とAAA基準の2つの達成基準によって定められています。 AA基準における大文字のテキストの最小コントラスト比は4.5:1、小文字のテ',
-    url: 'https://k8o.me/blog/color-contrast',
-    publishedTime: '2024/02/12T00:00:00.000Z',
-    authors: ['k8o'],
-    siteName: 'k8o',
-    locale: 'ja',
-    type: 'article',
-  },
-  twitter: {
-    title: '色のコントラスト比は重要だけどどうやって求めるんだっけ？',
-    card: 'summary_large_image',
-    description:
-      '背景色とテキスト色のコントラスト比はWCAG 2.1においてAA基準とAAA基準の2つの達成基準によって定められています。 AA基準における大文字のテキストの最小コントラスト比は4.5:1、小文字のテ',
-  },
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const blog = await getBlogByMetadata({
+    slug: 'color-contrast',
+  });
+  if (!blog) {
+    throw new Error('Blog not found');
+  }
 
-// TODO:pprが利用可能になったら切り替える
-export const dynamic = 'force-dynamic';
+  return {
+    title: blog.title,
+    description: blog.description,
+    category: 'color contrast',
+    openGraph: {
+      title: blog.title,
+      description: blog.description,
+      url: 'https://k8o.me/blog/color-contrast',
+      publishedTime: blog.createdAt.toISOString(),
+      authors: ['k8o'],
+      siteName: 'k8o',
+      locale: 'ja',
+      type: 'article',
+    },
+    twitter: {
+      title: blog.title,
+      card: 'summary_large_image',
+      description: blog.description,
+    },
+  };
+}
 
 export default function Layout({ children }: PropsWithChildren) {
-  return (
-    <BlogLayout updatedAt="2024/02/12" slug="color-contrast">
-      {children}
-    </BlogLayout>
-  );
+  return <BlogLayout slug="color-contrast">{children}</BlogLayout>;
 }

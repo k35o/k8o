@@ -5,6 +5,7 @@ import {
   pgTable,
   serial,
   text,
+  timestamp,
   uniqueIndex,
 } from 'drizzle-orm/pg-core';
 
@@ -101,3 +102,45 @@ export const quizAnswersRelations = relations(
     }),
   }),
 );
+
+export const blogs = pgTable(
+  'blogs',
+  {
+    id: serial('id').primaryKey(),
+    title: text('title').notNull(),
+    description: text('description').notNull(),
+    slug: text('slug').notNull(),
+    createdAt: timestamp('created_at', { withTimezone: true })
+      .notNull()
+      .defaultNow(),
+    updatedAt: timestamp('updated_at', { withTimezone: true })
+      .notNull()
+      .$onUpdate(() => new Date()),
+  },
+  (table) => {
+    return {
+      uniqueTitleIdx: uniqueIndex().on(table.title),
+      uniqueSlugIdx: uniqueIndex().on(table.slug),
+    };
+  },
+);
+
+export const blogViews = pgTable(
+  'blog_views',
+  {
+    blogId: integer('blog_id')
+      .notNull()
+      .references(() => blogs.id)
+      .primaryKey(),
+    views: integer('views').notNull().default(0),
+  },
+  (table) => {
+    return {
+      blogIdx: index().on(table.blogId),
+    };
+  },
+);
+
+export const blogsRelations = relations(blogs, ({ one }) => ({
+  views: one(blogViews),
+}));

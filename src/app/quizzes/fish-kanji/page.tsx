@@ -1,4 +1,4 @@
-import { getQuizzes } from '@/drizzle/db';
+import { getQuizzes } from './../_actions';
 import { QUIZ_TYPE } from './_utils/constants';
 import { Question } from '../_components/question';
 import { FishKanjiCollection } from './_components/fish-kanji-collection';

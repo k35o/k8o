@@ -1,9 +1,8 @@
 import { ImageResponse } from 'next/og';
 import { Parser, jaModel } from 'budoux';
+import { getBlogByMetadata } from '#actions/blog';
 
 const parser = new Parser(jaModel);
-
-export const runtime = 'edge';
 
 export const alt =
   '色のコントラスト比は重要だけどどうやって求めるんだっけ？';
@@ -15,9 +14,11 @@ export const size = {
 export const contentType = 'image/png';
 
 export default async function OpenGraphImage() {
-  const words = parser.parse(
-    '色のコントラスト比は重要だけどどうやって求めるんだっけ？',
-  );
+  const blog = await getBlogByMetadata({
+    slug: 'color-contrast',
+  });
+
+  const words = parser.parse(blog ? blog.title : alt);
   return new ImageResponse(
     (
       <div

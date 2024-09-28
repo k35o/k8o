@@ -11,7 +11,7 @@ import {
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
-  pageExtensions: ['tsx', 'mdx'],
+  pageExtensions: ['tsx', 'mdx', 'ts'],
   compiler: {
     removeConsole: process.env.NODE_ENV === 'production' && {
       exclude: ['error', 'warn'],

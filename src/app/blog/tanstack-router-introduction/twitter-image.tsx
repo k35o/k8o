@@ -1,9 +1,8 @@
 import { ImageResponse } from 'next/og';
 import { Parser, jaModel } from 'budoux';
+import { getBlogByMetadata } from '#actions/blog';
 
 const parser = new Parser(jaModel);
-
-export const runtime = 'edge';
 
 export const alt =
   'Reactの新しいルーティングライブラリ、TanStackRouterを学ぶ';
@@ -15,9 +14,11 @@ export const size = {
 export const contentType = 'image/png';
 
 export default async function TwitterImage() {
-  const words = parser.parse(
-    'Reactの新しいルーティングライブラリ、TanStackRouterを学ぶ',
-  );
+  const blog = await getBlogByMetadata({
+    slug: 'tanstack-router-introduction',
+  });
+
+  const words = parser.parse(blog ? blog.title : alt);
   return new ImageResponse(
     (
       <div

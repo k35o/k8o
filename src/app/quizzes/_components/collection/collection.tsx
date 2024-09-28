@@ -1,4 +1,4 @@
-import { Quiz } from '@/drizzle/db';
+import { Quiz } from './../../_types';
 import clsx from 'clsx';
 import { Noto_Sans_JP } from 'next/font/google';
 import { FC } from 'react';
@@ -25,7 +25,7 @@ export const CollectionByHighlight: CollectionProps = ({
       {quizzes.map((quiz) => (
         <div
           key={quiz.id}
-          className="flex size-36 flex-col items-center justify-center rounded-lg border border-borderSecondary p-2"
+          className="flex size-36 flex-col items-center justify-center rounded-lg border border-borderPrimary p-2"
         >
           <p className="text-xs">
             {quiz.answers.map((a) => a.answer).join('・')}

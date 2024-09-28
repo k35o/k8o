@@ -8,6 +8,14 @@
       "storybook": "./src/mocks/vercel-kv.mock.ts",
       "default": "@vercel/kv"
     },
+    "#next/env": {
+      "storybook": "./src/mocks/next-env.mock.ts",
+      "default": "@next/env"
+    },
+    "#actions/blog": {
+      "storybook": "./src/mocks/actions/blog.mock.ts",
+      "default": "./src/app/blog/_actions/index.ts"
+    },
     "#*": [
       "./*",
       "./*.ts",
@@ -47,6 +55,7 @@
     "autoprefixer": "10.4.20",
     "budoux": "0.6.2",
     "clsx": "2.1.1",
+    "date-fns": "4.1.0",
     "drizzle-orm": "0.33.0",
     "framer-motion": "11.9.0",
     "lucide-react": "0.446.0",
@@ -94,6 +103,8 @@
     "eslint-plugin-jsx-a11y": "6.10.0",
     "eslint-plugin-storybook": "0.9.0",
     "lefthook": "1.7.17",
+    "msw": "2.4.9",
+    "msw-storybook-addon": "2.0.3",
     "playwright": "1.47.2",
     "prettier": "3.3.3",
     "prettier-plugin-tailwindcss": "0.6.8",
@@ -106,5 +117,10 @@
     "node": "20.17.0",
     "pnpm": "9.4.0"
   },
-  "packageManager": "pnpm@9.4.0"
+  "packageManager": "pnpm@9.4.0",
+  "msw": {
+    "workerDirectory": [
+      ".storybook/public"
+    ]
+  }
 }

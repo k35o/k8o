@@ -1,9 +1,10 @@
 import { FC } from 'react';
-import { kv } from '#vercel/kv';
 import { commalize } from '@/utils/number/commalize';
-import { Slug } from '../../_types';
+import { getBlogView } from '#actions/blog';
 
-export const ViewCounter: FC<{ slug: Slug }> = async ({ slug }) => {
-  const views = await kv.incr(`views-${slug}`);
+export const ViewCounter: FC<{ blogId: number }> = async ({
+  blogId,
+}) => {
+  const views = await getBlogView({ blogId });
   return <span>{commalize(views)}</span>;
 };

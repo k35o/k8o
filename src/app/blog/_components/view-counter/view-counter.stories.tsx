@@ -1,12 +1,12 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import { ViewCounter } from './view-counter';
-import { kv } from '#src/mocks/vercel-kv.mock';
+import { getBlogView } from '#src/mocks/actions/blog.mock';
 
 const meta: Meta<typeof ViewCounter> = {
   title: 'app/blog/view-counter',
   component: ViewCounter,
   beforeEach: () => {
-    kv.incr.mockResolvedValue(74931);
+    getBlogView.mockResolvedValue(74931);
   },
 };
 
@@ -15,6 +15,6 @@ type Story = StoryObj<typeof ViewCounter>;
 
 export const Primary: Story = {
   args: {
-    slug: 'color-contrast',
+    blogId: 1,
   },
 };

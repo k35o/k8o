@@ -1,6 +1,6 @@
 import { AlertIcon } from '@/components/alert-icon';
 import { Button } from '@/components/button';
-import { Quiz } from '@/drizzle/db';
+import { Quiz } from '../../_types';
 import { FC } from 'react';
 import { checkAnswer } from '../../_utils/check-answer';
 import { TextTag } from '@/components/text-tag';
