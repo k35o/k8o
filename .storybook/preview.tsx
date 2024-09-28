@@ -5,6 +5,15 @@ import { AppProvider } from '../src/providers/app';
 import { cn } from '../src/utils/cn';
 import { M_PLUS_2, Noto_Sans_JP } from 'next/font/google';
 import { useTheme } from 'next-themes';
+import { initialize, mswLoader } from 'msw-storybook-addon';
+import { handlers } from '../src/mocks/handlers';
+
+initialize(
+  {
+    onUnhandledRequest: 'bypass',
+  },
+  handlers,
+);
 
 const font = M_PLUS_2({ subsets: ['latin'] });
 
@@ -40,6 +49,7 @@ const preview: Preview = {
       },
     },
   },
+  loaders: [mswLoader],
   parameters: {
     backgrounds: { disable: true },
     layout: 'fullscreen',
