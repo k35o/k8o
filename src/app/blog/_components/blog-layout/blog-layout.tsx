@@ -45,9 +45,7 @@ export const BlogLayout: FC<{
               className="rounded-lg bg-bgSecondary p-4"
               aria-label="記事の要約"
             >
-              <p className="text-textDescription">
-                {blog.description}
-              </p>
+              <p className="text-textBody">{blog.description}</p>
             </div>
           </div>
           <div className="mb-4 mt-8 w-full">
