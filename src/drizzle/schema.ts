@@ -101,3 +101,38 @@ export const quizAnswersRelations = relations(
     }),
   }),
 );
+
+export const blogs = pgTable(
+  'blogs',
+  {
+    id: serial('id').primaryKey(),
+    title: text('title').notNull(),
+    description: text('description').notNull(),
+    slug: text('slug').notNull(),
+  },
+  (table) => {
+    return {
+      uniqueTitleIdx: uniqueIndex().on(table.title),
+    };
+  },
+);
+
+export const blogViews = pgTable(
+  'blog_views',
+  {
+    blogId: integer('blog_id')
+      .notNull()
+      .references(() => blogs.id)
+      .primaryKey(),
+    views: integer('views').notNull().default(0),
+  },
+  (table) => {
+    return {
+      blogIdx: index().on(table.blogId),
+    };
+  },
+);
+
+export const blogsRelations = relations(blogs, ({ one }) => ({
+  views: one(blogViews),
+}));
