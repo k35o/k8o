@@ -1,8 +1,7 @@
 export const formatDate = (
-  input: string | number,
+  date: Date,
   options?: Intl.DateTimeFormatOptions,
 ): string => {
-  const date = new Date(input);
   return date.toLocaleDateString(
     'ja',
     options
@@ -17,10 +16,9 @@ export const formatDate = (
 };
 
 export const formatTime = (
-  input: string | number,
+  date: Date,
   options?: Intl.DateTimeFormatOptions,
 ): string => {
-  const date = new Date(input);
   return date.toLocaleTimeString(
     'ja',
     options
@@ -39,7 +37,7 @@ if (import.meta.vitest) {
     vi.useFakeTimers();
     vi.setSystemTime('2022-01-01T00:00:00Z');
 
-    const result = formatDate(new Date().toISOString());
+    const result = formatDate(new Date());
 
     expect(result).toBe(expected);
   });
@@ -49,7 +47,7 @@ if (import.meta.vitest) {
     vi.useFakeTimers();
     vi.setSystemTime('2022-01-01T00:00:00Z');
 
-    const result = formatDate(new Date().toISOString(), {
+    const result = formatDate(new Date(), {
       month: 'long',
       day: 'numeric',
       year: 'numeric',
@@ -63,7 +61,7 @@ if (import.meta.vitest) {
     vi.useFakeTimers();
     vi.setSystemTime('2022-01-01T00:00:00Z');
 
-    const result = formatTime(new Date().toISOString());
+    const result = formatTime(new Date());
 
     expect(result).toBe(expected);
   });
@@ -73,7 +71,7 @@ if (import.meta.vitest) {
     vi.useFakeTimers();
     vi.setSystemTime('2022-01-01T00:00:00Z');
 
-    const result = formatTime(new Date().toISOString(), {
+    const result = formatTime(new Date(), {
       hour: '2-digit',
       minute: '2-digit',
     });
