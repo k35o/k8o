@@ -6,6 +6,7 @@ import { ErrorBoundary } from 'react-error-boundary';
 import { getBlog } from '#actions/blog';
 import { Heading } from '@/components/heading';
 import { Separator } from '@/components/separator';
+import { ReportView } from '../report-view';
 
 export const BlogLayout: FC<{
   children: ReactNode;
@@ -17,6 +18,7 @@ export const BlogLayout: FC<{
     <div className="flex flex-col gap-4">
       {blog ? (
         <article className="rounded-lg bg-bgBase/90 px-3 py-14 pt-4 sm:px-10">
+          <ReportView blogId={blog.id} />
           <div className="flex flex-col gap-3">
             <Heading type="h2">{blog.title}</Heading>
             <div className="flex items-center gap-4 text-sm text-textDescription">
