@@ -44,7 +44,7 @@ export const getBlogView = async ({
     ['blogView'],
     {
       tags: ['blog', 'blogView'],
-      revalidate: 600,
+      revalidate: 60,
     },
   )(blogId);
 };
