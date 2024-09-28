@@ -1,5 +1,6 @@
 import { ImageResponse } from 'next/og';
 import { Parser, jaModel } from 'budoux';
+import { getBlog } from '#actions/blog';
 
 const parser = new Parser(jaModel);
 
@@ -15,9 +16,11 @@ export const size = {
 export const contentType = 'image/png';
 
 export default async function TwitterImage() {
-  const words = parser.parse(
-    '色のコントラスト比は重要だけどどうやって求めるんだっけ？',
-  );
+  const blog = await getBlog({
+    slug: 'color-contrast',
+  });
+
+  const words = parser.parse(blog ? blog.title : alt);
   return new ImageResponse(
     (
       <div

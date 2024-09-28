@@ -1,5 +1,6 @@
 import { ImageResponse } from 'next/og';
 import { Parser, jaModel } from 'budoux';
+import { getBlog } from '#actions/blog';
 
 const parser = new Parser(jaModel);
 
@@ -16,9 +17,11 @@ export const size = {
 export const contentType = 'image/png';
 
 export default async function OpenGraphImage() {
-  const words = parser.parse(
-    'Reactの新しいルーティングライブラリ、TanStackRouterを学ぶ',
-  );
+  const blog = await getBlog({
+    slug: 'tanstack-router-introduction',
+  });
+
+  const words = parser.parse(blog ? blog.title : alt);
   return new ImageResponse(
     (
       <div

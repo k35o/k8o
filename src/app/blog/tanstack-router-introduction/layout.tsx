@@ -1,32 +1,37 @@
 import { Metadata } from 'next';
 import { BlogLayout } from '../_components/blog-layout/blog-layout';
 import { PropsWithChildren } from 'react';
+import { getBlog } from '#actions/blog';
 
-export const metadata: Metadata = {
-  title: 'Reactの新しいルーティングライブラリ、TanStackRouterを学ぶ',
-  description:
-    'React で開発する時、どのようにルーティングを実装していますか？Next.jsやRemixなどのフレームワークを用いて開発するときはフレームワークに実装されたルーティング利用し、フレームワークを利',
-  category: 'TanStackRouter',
-  openGraph: {
-    title:
-      'Reactの新しいルーティングライブラリ、TanStackRouterを学ぶ',
-    description:
-      'React で開発する時、どのようにルーティングを実装していますか？Next.jsやRemixなどのフレームワークを用いて開発するときはフレームワークに実装されたルーティング利用し、フレームワークを利',
-    url: 'https://k8o.me/blog/tanstack-router-introduction',
-    publishedTime: '2023/07/13T00:00:00.000Z',
-    authors: ['k8o'],
-    siteName: 'k8o',
-    locale: 'ja',
-    type: 'article',
-  },
-  twitter: {
-    title:
-      'Reactの新しいルーティングライブラリ、TanStackRouterを学ぶ',
-    card: 'summary_large_image',
-    description:
-      'React で開発する時、どのようにルーティングを実装していますか？Next.jsやRemixなどのフレームワークを用いて開発するときはフレームワークに実装されたルーティング利用し、フレームワークを利',
-  },
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const blog = await getBlog({
+    slug: 'tanstack-router-introduction',
+  });
+  if (!blog) {
+    throw new Error('Blog not found');
+  }
+
+  return {
+    title: blog.title,
+    description: blog.description,
+    category: 'TanStackRouter',
+    openGraph: {
+      title: blog.title,
+      description: blog.description,
+      url: 'https://k8o.me/blog/tanstack-router-introduction',
+      publishedTime: blog.createdAt.toISOString(),
+      authors: ['k8o'],
+      siteName: 'k8o',
+      locale: 'ja',
+      type: 'article',
+    },
+    twitter: {
+      title: blog.title,
+      card: 'summary_large_image',
+      description: blog.description,
+    },
+  };
+}
 
 // TODO:pprが利用可能になったら切り替える
 export const dynamic = 'force-dynamic';
