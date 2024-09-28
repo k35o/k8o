@@ -8,6 +8,10 @@
       "storybook": "./src/mocks/vercel-kv.mock.ts",
       "default": "@vercel/kv"
     },
+    "#actions/blog": {
+      "storybook": "./src/mocks/actions/blog.mock.ts",
+      "default": "./src/app/blog/_actions/index.ts"
+    },
     "#*": [
       "./*",
       "./*.ts",
