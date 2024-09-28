@@ -1,2 +1,2 @@
-![schema](https://github.com/user-attachments/assets/d09697f1-9489-44e9-a87a-84b39ef8b4db)
+![schema (1)](https://github.com/user-attachments/assets/541fc669-cb44-4751-a36c-e935d8be4431)
 created by https://drizzle.run/visualizer
