@@ -24,25 +24,11 @@ export const BlogLayout: FC<{
             <div className="flex items-center gap-4 text-sm text-textDescription">
               <div className="flex items-center gap-1">
                 <Calendar className="size-4" />
-                <span>
-                  公開:{' '}
-                  {formatDate(blog.createdAt, {
-                    year: 'numeric',
-                    month: 'long',
-                    day: 'numeric',
-                  })}
-                </span>
+                <span>公開: {formatDate(blog.createdAt)}</span>
               </div>
               <div className="flex items-center gap-1">
                 <Clock className="size-4" />
-                <span>
-                  更新:{' '}
-                  {formatDate(blog.updatedAt, {
-                    year: 'numeric',
-                    month: 'long',
-                    day: 'numeric',
-                  })}
-                </span>
+                <span>更新: {formatDate(blog.updatedAt)}</span>
               </div>
               <ErrorBoundary fallback={<></>}>
                 <Suspense fallback={<></>}>
