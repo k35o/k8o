@@ -12,6 +12,11 @@ import {
 const nextConfig = {
   reactStrictMode: true,
   pageExtensions: ['tsx', 'mdx'],
+  compiler: {
+    removeConsole: process.env.NODE_ENV === 'production' && {
+      exclude: ['error', 'warn'],
+    },
+  },
   experimental: {
     typedRoutes: true,
   },
