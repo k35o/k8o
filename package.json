@@ -97,7 +97,7 @@
     "axe-playwright": "2.0.3",
     "chromatic": "11.10.4",
     "drizzle-kit": "0.24.2",
-    "eslint": "8.57.1",
+    "eslint": "9.11.1",
     "eslint-config-next": "14.2.13",
     "eslint-config-prettier": "9.1.0",
     "eslint-plugin-jsx-a11y": "6.10.0",
