@@ -33,10 +33,7 @@ export const dynamic = 'force-dynamic';
 
 export default function Layout({ children }: PropsWithChildren) {
   return (
-    <BlogLayout
-      updatedAt="2023/07/13"
-      slug="tanstack-router-introduction"
-    >
+    <BlogLayout slug="tanstack-router-introduction">
       {children}
     </BlogLayout>
   );

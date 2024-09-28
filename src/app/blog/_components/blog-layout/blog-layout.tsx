@@ -1,40 +1,77 @@
 import { formatDate } from '@/utils/date/format';
-import { Calendar, Eye } from 'lucide-react';
+import { Calendar, Clock, Eye } from 'lucide-react';
 import { FC, ReactNode, Suspense } from 'react';
 import { ViewCounter } from '../view-counter';
-import { Slug } from '../../_types';
 import { ErrorBoundary } from 'react-error-boundary';
+import { getBlog } from '#actions/blog';
+import { Heading } from '@/components/heading';
+import { Separator } from '@/components/separator';
 
 export const BlogLayout: FC<{
   children: ReactNode;
-  updatedAt: string;
-  slug: Slug;
-}> = ({ children, updatedAt, slug }) => {
+  slug: string;
+}> = async ({ children, slug }) => {
+  const blog = await getBlog({ slug });
+
   return (
     <div className="flex flex-col gap-4">
-      <article className="rounded-lg bg-bgBase/90 px-3 py-14 pt-4 sm:px-10">
-        <div className="flex items-center justify-end gap-4 text-sm text-textDescription">
-          <ErrorBoundary fallback={<></>}>
-            <Suspense fallback={<></>}>
+      {blog ? (
+        <article className="rounded-lg bg-bgBase/90 px-3 py-14 pt-4 sm:px-10">
+          <div className="flex flex-col gap-3">
+            <Heading type="h2">{blog.title}</Heading>
+            <div className="flex items-center gap-4 text-sm text-textDescription">
               <div className="flex items-center gap-1">
-                <Eye className="size-4" />
-                <ViewCounter slug={slug} />
+                <Calendar className="size-4" />
+                <span>
+                  公開:{' '}
+                  {formatDate(blog.createdAt, {
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric',
+                  })}
+                </span>
               </div>
-            </Suspense>
-          </ErrorBoundary>
-          <div className="flex items-center gap-1">
-            <Calendar className="size-4" />
-            <span>
-              {formatDate(updatedAt, {
-                year: 'numeric',
-                month: 'long',
-                day: 'numeric',
-              })}
-            </span>
+              <div className="flex items-center gap-1">
+                <Clock className="size-4" />
+                <span>
+                  更新:{' '}
+                  {formatDate(blog.updatedAt, {
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric',
+                  })}
+                </span>
+              </div>
+              <ErrorBoundary fallback={<></>}>
+                <Suspense fallback={<></>}>
+                  <div className="flex items-center gap-1">
+                    <Eye className="size-4" />
+                    <span>
+                      <ViewCounter blogId={blog.id} /> views
+                    </span>
+                  </div>
+                </Suspense>
+              </ErrorBoundary>
+            </div>
+            <div
+              className="rounded-lg bg-bgSecondary p-4"
+              aria-label="記事の要約"
+            >
+              <p className="text-textDescription">
+                {blog.description}
+              </p>
+            </div>
           </div>
-        </div>
-        {children}
-      </article>
+          <div className="mb-4 mt-8 w-full">
+            <Separator />
+          </div>
+          {children}
+        </article>
+      ) : (
+        <article className="rounded-lg bg-bgBase/90 px-3 py-14 pt-4 sm:px-10">
+          {children}
+        </article>
+      )}
     </div>
   );
 };

@@ -5,6 +5,7 @@ import { Twitter } from './twitter';
 import { Qiita } from './qiita';
 import {
   ArrowBigRightDash,
+  Calendar,
   Check,
   ChevronDown,
   ChevronLeft,
@@ -13,6 +14,7 @@ import {
   CircleAlert,
   CircleCheck,
   ClipboardPenLine,
+  Clock,
   Info,
   Link,
   ListMinus,
@@ -91,6 +93,14 @@ export const Primary: Story = {
         <div className="flex flex-col items-center justify-center">
           <ClipboardPenLine className="size-24" />
           <p className="text-center">Copy</p>
+        </div>
+        <div className="flex flex-col items-center justify-center">
+          <Calendar className="size-24" />
+          <p className="text-center">Calendar</p>
+        </div>
+        <div className="flex flex-col items-center justify-center">
+          <Clock className="size-24" />
+          <p className="text-center">Clock</p>
         </div>
       </div>
     );

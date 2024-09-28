@@ -53,9 +53,7 @@ export function useMDXComponents(
   components: MDXComponents,
 ): MDXComponents {
   return {
-    h1: ({ children }) => (
-      <LinkHeading type="h2">{children}</LinkHeading>
-    ),
+    h1: () => null,
     h2: ({ children }) => (
       <LinkHeading type="h3">{children}</LinkHeading>
     ),
