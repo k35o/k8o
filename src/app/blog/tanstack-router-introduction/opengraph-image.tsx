@@ -4,8 +4,6 @@ import { getBlogByMetadata } from '#actions/blog';
 
 const parser = new Parser(jaModel);
 
-export const runtime = 'edge';
-
 export const alt =
   'Reactの新しいルーティングライブラリ、TanStackRouterを学ぶ';
 

@@ -4,8 +4,6 @@ import { getBlogByMetadata } from '#actions/blog';
 
 const parser = new Parser(jaModel);
 
-export const runtime = 'edge';
-
 export const alt =
   '色のコントラスト比は重要だけどどうやって求めるんだっけ？';
 export const size = {
