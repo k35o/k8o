@@ -1,5 +1,5 @@
 import { CollectionByHighlight } from '@/app/quizzes/_components/collection';
-import { getQuizzes } from '@/drizzle/db';
+import { getQuizzes } from './../../../_actions';
 import { FC } from 'react';
 import { QUIZ_TYPE } from '../../_utils/constants';
 

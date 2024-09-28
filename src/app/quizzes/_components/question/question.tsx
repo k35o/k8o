@@ -1,6 +1,6 @@
 'use client';
 
-import { Quiz } from '@/drizzle/db';
+import { Quiz } from './../../_types';
 import { FC, ReactElement, useCallback, useState } from 'react';
 import { Complete } from '../complete';
 import { QuizProgress } from '../quiz-progress';

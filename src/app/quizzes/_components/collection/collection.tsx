@@ -1,4 +1,4 @@
-import { Quiz } from '@/drizzle/db';
+import { Quiz } from './../../_types';
 import clsx from 'clsx';
 import { Noto_Sans_JP } from 'next/font/google';
 import { FC } from 'react';
