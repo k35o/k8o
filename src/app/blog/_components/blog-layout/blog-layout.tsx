@@ -4,7 +4,6 @@ import { FC, ReactNode, Suspense } from 'react';
 import { ViewCounter } from '../view-counter';
 import { ErrorBoundary } from 'react-error-boundary';
 import { getBlog } from '#actions/blog';
-import { Heading } from '@/components/heading';
 import { Separator } from '@/components/separator';
 import { ReportView } from '../report-view';
 
@@ -20,20 +19,22 @@ export const BlogLayout: FC<{
         <article className="rounded-lg bg-bgBase/90 px-3 py-14 pt-4 sm:px-10">
           <ReportView blogId={blog.id} />
           <div className="flex flex-col gap-3">
-            <Heading type="h2">{blog.title}</Heading>
-            <div className="flex items-center gap-4 text-sm text-textDescription">
+            <h2 className="text-xl font-bold sm:text-2xl">
+              {blog.title}
+            </h2>
+            <div className="flex flex-col items-end gap-1 text-xs text-textDescription sm:flex-row sm:items-center sm:justify-start sm:gap-4 sm:text-sm">
               <div className="flex items-center gap-1">
-                <Calendar className="size-4" />
+                <Calendar className="size-4" aria-label="" />
                 <span>公開: {formatDate(blog.createdAt)}</span>
               </div>
               <div className="flex items-center gap-1">
-                <Clock className="size-4" />
+                <Clock className="size-4" aria-label="" />
                 <span>更新: {formatDate(blog.updatedAt)}</span>
               </div>
               <ErrorBoundary fallback={<></>}>
                 <Suspense fallback={<></>}>
                   <div className="flex items-center gap-1">
-                    <Eye className="size-4" />
+                    <Eye className="size-4" aria-label="閲覧数" />
                     <span>
                       <ViewCounter blogId={blog.id} /> views
                     </span>
@@ -45,10 +46,12 @@ export const BlogLayout: FC<{
               className="rounded-lg bg-bgSecondary p-4"
               aria-label="記事の要約"
             >
-              <p className="text-textBody">{blog.description}</p>
+              <p className="text-sm text-textBody sm:text-base">
+                {blog.description}
+              </p>
             </div>
           </div>
-          <div className="mb-4 mt-8 w-full">
+          <div className="mb-2 mt-4 w-full sm:mb-4 sm:mt-8">
             <Separator />
           </div>
           {children}
