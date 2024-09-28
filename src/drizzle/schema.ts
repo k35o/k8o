@@ -113,6 +113,7 @@ export const blogs = pgTable(
   (table) => {
     return {
       uniqueTitleIdx: uniqueIndex().on(table.title),
+      uniqueSlugIdx: uniqueIndex().on(table.slug),
     };
   },
 );

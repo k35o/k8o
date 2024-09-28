@@ -1,0 +1,1 @@
+CREATE UNIQUE INDEX IF NOT EXISTS "blogs_slug_index" ON "blogs" USING btree ("slug");
