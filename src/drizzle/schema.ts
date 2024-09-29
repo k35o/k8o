@@ -141,6 +141,54 @@ export const blogViews = pgTable(
   },
 );
 
-export const blogsRelations = relations(blogs, ({ one }) => ({
+export const tags = pgTable(
+  'tags',
+  {
+    id: serial('id').primaryKey(),
+    name: text('name').notNull(),
+  },
+  (table) => {
+    return {
+      uniqueNameIdx: uniqueIndex().on(table.name),
+    };
+  },
+);
+
+export const blogTag = pgTable(
+  'blog_tag',
+  {
+    blogId: integer('blog_id')
+      .notNull()
+      .references(() => blogs.id),
+    tagId: integer('tag_id')
+      .notNull()
+      .references(() => tags.id),
+  },
+  (table) => {
+    return {
+      blogIdx: index().on(table.blogId),
+      tagIdx: index().on(table.tagId),
+      uniqueBlogTagIdx: uniqueIndex().on(table.blogId, table.tagId),
+    };
+  },
+);
+
+export const blogsRelations = relations(blogs, ({ one, many }) => ({
   views: one(blogViews),
+  tags: many(blogTag),
+}));
+
+export const tagsRelations = relations(tags, ({ many }) => ({
+  blogs: many(blogTag),
+}));
+
+export const blogTagRelations = relations(blogTag, ({ one }) => ({
+  blog: one(blogs, {
+    fields: [blogTag.blogId],
+    references: [blogs.id],
+  }),
+  tag: one(tags, {
+    fields: [blogTag.tagId],
+    references: [tags.id],
+  }),
 }));
