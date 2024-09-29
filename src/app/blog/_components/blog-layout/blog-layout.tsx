@@ -6,6 +6,7 @@ import { ErrorBoundary } from 'react-error-boundary';
 import { getBlog } from '#actions/blog';
 import { Separator } from '@/components/separator';
 import { ReportView } from '../report-view';
+import { TextTag } from '@/components/text-tag';
 
 export const BlogLayout: FC<{
   children: ReactNode;
@@ -22,14 +23,16 @@ export const BlogLayout: FC<{
             <h2 className="text-xl font-bold sm:text-2xl">
               {blog.title}
             </h2>
-            <div className="flex flex-col items-end gap-1 text-xs text-textDescription sm:flex-row sm:items-center sm:justify-start sm:gap-4 sm:text-sm">
-              <div className="flex items-center gap-1">
-                <Calendar className="size-4" aria-label="" />
-                <span>公開: {formatDate(blog.createdAt)}</span>
-              </div>
-              <div className="flex items-center gap-1">
-                <Clock className="size-4" aria-label="" />
-                <span>更新: {formatDate(blog.updatedAt)}</span>
+            <div className="flex flex-col items-end gap-1 text-xs text-textDescription sm:flex-row sm:items-center sm:justify-end sm:gap-2 sm:text-sm">
+              <div className="flex flex-wrap items-center justify-end gap-1">
+                <div className="flex items-center gap-1">
+                  <Calendar className="size-4" aria-label="" />
+                  <span>公開: {formatDate(blog.createdAt)}</span>
+                </div>
+                <div className="flex items-center gap-1">
+                  <Clock className="size-4" aria-label="" />
+                  <span>更新: {formatDate(blog.updatedAt)}</span>
+                </div>
               </div>
               <ErrorBoundary fallback={<></>}>
                 <Suspense fallback={<></>}>
@@ -54,6 +57,13 @@ export const BlogLayout: FC<{
           <div className="mb-2 mt-4 w-full sm:mb-4 sm:mt-8">
             <Separator />
           </div>
+          {blog.tags.length > 0 && (
+            <div className="mb-4 flex gap-2">
+              {blog.tags.slice(0, 5).map((tag) => {
+                return <TextTag key={tag} text={tag} />;
+              })}
+            </div>
+          )}
           {children}
         </article>
       ) : (

@@ -43,6 +43,13 @@
       "when": 1727490579262,
       "tag": "0005_green_catseye",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1727593133437,
+      "tag": "0006_steep_thunderbolt",
+      "breakpoints": true
     }
   ]
 }

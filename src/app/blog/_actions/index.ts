@@ -4,29 +4,67 @@ import { db } from '@/drizzle/db';
 import * as schema from '@/drizzle/schema';
 import { AnyColumn, eq, InferSelectModel, sql } from 'drizzle-orm';
 import { unstable_cache as cache } from 'next/cache';
+import { Blog } from '../_types';
+
+export const getBlogs = async (): Promise<Blog[]> => {
+  const blog = await cache(
+    async () =>
+      db.query.blogs.findMany({
+        with: {
+          blogTag: {
+            with: {
+              tag: true,
+            },
+          },
+        },
+      }),
+    ['blog'],
+  )();
+
+  return blog.map((blog) => ({
+    id: blog.id,
+    title: blog.title,
+    slug: blog.slug,
+    description: blog.description,
+    tags: blog.blogTag.map((blogTag) => blogTag.tag.name),
+    createdAt: blog.createdAt,
+    updatedAt: blog.updatedAt,
+  }));
+};
 
 export const getBlog = async ({
   slug,
 }: {
   slug: InferSelectModel<typeof schema.blogs>['slug'];
-}) => {
-  return cache(
+}): Promise<Blog | undefined> => {
+  const blog = await cache(
     async (slug: string) =>
       db.query.blogs.findFirst({
         where: (blog, { eq }) => eq(blog.slug, slug),
+        with: {
+          blogTag: {
+            with: {
+              tag: true,
+            },
+          },
+        },
       }),
     ['blog'],
   )(slug);
-};
 
-export const getBlogByMetadata = async ({
-  slug,
-}: {
-  slug: InferSelectModel<typeof schema.blogs>['slug'];
-}) => {
-  return db.query.blogs.findFirst({
-    where: (blog, { eq }) => eq(blog.slug, slug),
-  });
+  if (!blog) {
+    return undefined;
+  }
+
+  return {
+    id: blog.id,
+    title: blog.title,
+    slug: blog.slug,
+    description: blog.description,
+    tags: blog.blogTag.map((blogTag) => blogTag.tag.name),
+    createdAt: blog.createdAt,
+    updatedAt: blog.updatedAt,
+  };
 };
 
 export const getBlogView = async ({

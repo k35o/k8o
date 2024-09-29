@@ -1,10 +1,10 @@
 import { Metadata } from 'next';
 import { BlogLayout } from '../_components/blog-layout/blog-layout';
 import { PropsWithChildren } from 'react';
-import { getBlogByMetadata } from '#actions/blog';
+import { getBlog } from '#actions/blog';
 
 export async function generateMetadata(): Promise<Metadata> {
-  const blog = await getBlogByMetadata({
+  const blog = await getBlog({
     slug: 'tanstack-router-introduction',
   });
   if (!blog) {
@@ -19,7 +19,7 @@ export async function generateMetadata(): Promise<Metadata> {
       title: blog.title,
       description: blog.description,
       url: 'https://k8o.me/blog/tanstack-router-introduction',
-      publishedTime: blog.createdAt.toISOString(),
+      publishedTime: blog.createdAt.toString(),
       authors: ['k8o'],
       siteName: 'k8o',
       locale: 'ja',
