@@ -4,11 +4,12 @@ import Image from 'next/image';
 import { IconLink } from '@/components/icon-link';
 import { GithubMark, Qiita, Zenn } from '@/components/icons';
 import { ShowCase } from './_components/showcase';
+import { Card } from '@/components/card';
 
 export default function Home() {
   return (
     <div className="flex flex-col gap-10">
-      <section className="h-40 rounded-xl bg-bgBase/55">
+      <Card>
         <div className="flex gap-6 p-4">
           <Image
             className="size-32 rounded-lg"
@@ -51,7 +52,7 @@ export default function Home() {
             </div>
           </div>
         </div>
-      </section>
+      </Card>
       <div className="flex flex-col gap-6">
         <Heading type="h2">アプリケーション</Heading>
         <ShowCase.Container>

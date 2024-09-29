@@ -23,7 +23,7 @@ export const metadata = {
 export default function Layout({ children }: PropsWithChildren) {
   return (
     <div className="flex h-full flex-col gap-6">
-      <Link href="/colors">
+      <Link href="/colors" className="hover:underline">
         <Heading type="h2">Colors</Heading>
       </Link>
       {children}

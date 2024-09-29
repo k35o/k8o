@@ -5,6 +5,7 @@ import { isInternalRoute } from '@/utils/is-internal-route';
 import { Calendar, Clock } from 'lucide-react';
 import Link from 'next/link';
 import { FC } from 'react';
+import { InteractiveCard } from '@/components/card';
 
 type BlogCardProps = {
   link: string;
@@ -17,7 +18,7 @@ type BlogCardProps = {
 
 export const BlogCard: FC<BlogCardProps> = ({ link, ...rest }) => {
   return (
-    <section className="rounded-xl bg-bgBase/55 shadow-md">
+    <InteractiveCard>
       {isInternalRoute(link) ? (
         <Link href={link} className="block h-full">
           <BlogCardContent {...rest} />
@@ -32,7 +33,7 @@ export const BlogCard: FC<BlogCardProps> = ({ link, ...rest }) => {
           <BlogCardContent {...rest} />
         </a>
       )}
-    </section>
+    </InteractiveCard>
   );
 };
 
