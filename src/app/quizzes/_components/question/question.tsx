@@ -7,6 +7,7 @@ import { QuizProgress } from '../quiz-progress';
 import { Answer } from '../answer';
 import { Feedback } from '../feedback';
 import { checkAnswer } from '../../_utils/check-answer';
+import { useRouter } from 'next/navigation';
 
 type QuestionProps = FC<{
   quizzes: Quiz[];
@@ -20,6 +21,8 @@ export const Question: QuestionProps = ({ quizzes }) => {
   const [answer, setAnswer] = useState('');
   const [score, setScore] = useState(0);
   const currentQuiz = quizzes[count];
+
+  const router = useRouter();
 
   if (currentQuiz === undefined) {
     throw new Error('クイズがありません');
@@ -48,10 +51,11 @@ export const Question: QuestionProps = ({ quizzes }) => {
   }, [count, quizzes.length]);
 
   const handleReset = useCallback(() => {
+    router.refresh();
     setCount(0);
     setStatus('none');
     setAnswer('');
-  }, []);
+  }, [router]);
 
   if (status === 'complete') {
     return (
