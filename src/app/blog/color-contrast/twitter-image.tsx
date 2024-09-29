@@ -62,16 +62,20 @@ export default async function TwitterImage() {
               </span>
             ))}
           </div>
-          <p
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src="https://k8o.me/icon.png"
+            width={128}
+            height={128}
+            alt="アイコン"
             style={{
+              borderRadius: 9999,
+              objectFit: 'cover',
               margin: 64,
               marginTop: 0,
-              fontSize: 128,
               alignSelf: 'flex-end',
             }}
-          >
-            ⚖️
-          </p>
+          />
         </div>
       </div>
     ),
