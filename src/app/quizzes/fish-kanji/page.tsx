@@ -4,12 +4,25 @@ import { Question } from '../_components/question';
 import { FishKanjiCollection } from './_components/fish-kanji-collection';
 import { LinkButton } from '@/components/link-button';
 
-export const revalidate = 0;
+const getLimit = (questionCount: string): number => {
+  const limit = parseInt(questionCount, 10);
+  if (isNaN(limit) || limit < 1) {
+    return 10;
+  }
+  return limit;
+};
 
-export default async function Page() {
+export default async function Page({
+  searchParams,
+}: {
+  searchParams: { questionCount: string };
+}) {
+  const limit = getLimit(searchParams.questionCount);
+
   const quizzes = await getQuizzes({
     type: QUIZ_TYPE.FISH_KANJI,
     byRandom: true,
+    limit,
   });
 
   return (

@@ -19,9 +19,11 @@ export const getQuizType = async ({
 export const getQuizzes = async ({
   type,
   byRandom = false,
+  limit,
 }: {
   type: InferSelectModel<typeof schema.quizType>['id'];
   byRandom?: boolean;
+  limit?: number;
 }): Promise<Quiz[]> => {
   const res = await db.query.quizzes.findMany({
     where: (quiz, { eq }) => eq(quiz.type, type),
@@ -30,6 +32,7 @@ export const getQuizzes = async ({
       answers: true,
     },
     orderBy: byRandom ? [ormSql`random()`] : [],
+    ...(limit ? { limit } : {}),
   });
 
   return res.map((quiz) => ({
