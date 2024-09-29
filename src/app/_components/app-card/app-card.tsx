@@ -2,6 +2,7 @@ import { Route } from 'next';
 import Link from 'next/link';
 import { Heading } from '../../../components/heading';
 import { ReactNode } from 'react';
+import { InteractiveCard } from '@/components/card';
 
 export const AppCard = <T extends string>({
   link,
@@ -15,7 +16,7 @@ export const AppCard = <T extends string>({
   description: string;
 }) => {
   return (
-    <section className="h-40 rounded-xl bg-bgBase/55 shadow-md">
+    <InteractiveCard>
       <Link href={link}>
         <div className="flex gap-6 p-4">
           <div className="flex size-32 shrink-0 items-center justify-center rounded-lg bg-bgSecondary text-7xl">
@@ -27,6 +28,6 @@ export const AppCard = <T extends string>({
           </div>
         </div>
       </Link>
-    </section>
+    </InteractiveCard>
   );
 };

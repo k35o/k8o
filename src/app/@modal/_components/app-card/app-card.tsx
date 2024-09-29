@@ -1,6 +1,7 @@
 import { Route } from 'next';
 import Link from 'next/link';
 import { Heading } from '@/components/heading';
+import { InteractiveCard } from '@/components/card';
 
 export const AppCard = ({
   link,
@@ -14,7 +15,7 @@ export const AppCard = ({
   description: string;
 }) => {
   return (
-    <section className="w-full rounded-xl bg-bgSecondary shadow-md">
+    <InteractiveCard variant="secondary">
       <Link href={link} className="block w-full">
         <div className="flex flex-col gap-6 p-4">
           <Heading type="h3">
@@ -24,6 +25,6 @@ export const AppCard = ({
           <p className="line-clamp-3">{description}</p>
         </div>
       </Link>
-    </section>
+    </InteractiveCard>
   );
 };

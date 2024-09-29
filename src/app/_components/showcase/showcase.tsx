@@ -2,6 +2,7 @@ import { Route } from 'next';
 import Link from 'next/link';
 import { Heading } from '../../../components/heading';
 import { FC, PropsWithChildren } from 'react';
+import { InteractiveCard } from '@/components/card';
 
 const Container: FC<PropsWithChildren> = ({ children }) => {
   return (
@@ -17,8 +18,8 @@ const Item: FC<{
   title: string;
 }> = ({ link, emotion, title }) => {
   return (
-    <div className="size-40 rounded-xl bg-bgBase/55 shadow-md">
-      <Link href={link} scroll={false}>
+    <InteractiveCard>
+      <Link href={link} scroll={false} className="block size-40">
         <div className="flex flex-col items-center justify-center gap-2 p-4">
           <Heading type="h3">{title}</Heading>
           <div className="flex size-24 shrink-0 items-center justify-center rounded-lg text-7xl">
@@ -26,7 +27,7 @@ const Item: FC<{
           </div>
         </div>
       </Link>
-    </div>
+    </InteractiveCard>
   );
 };
 
