@@ -19,7 +19,7 @@ export async function generateMetadata(): Promise<Metadata> {
       title: blog.title,
       description: blog.description,
       url: 'https://k8o.me/blog/color-contrast',
-      publishedTime: blog.createdAt.toISOString(),
+      publishedTime: blog.createdAt.toString(),
       authors: ['k8o'],
       siteName: 'k8o',
       locale: 'ja',
