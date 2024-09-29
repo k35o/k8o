@@ -175,11 +175,11 @@ export const blogTag = pgTable(
 
 export const blogsRelations = relations(blogs, ({ one, many }) => ({
   views: one(blogViews),
-  tags: many(blogTag),
+  blogTag: many(blogTag),
 }));
 
 export const tagsRelations = relations(tags, ({ many }) => ({
-  blogs: many(blogTag),
+  blogTag: many(blogTag),
 }));
 
 export const blogTagRelations = relations(blogTag, ({ one }) => ({
