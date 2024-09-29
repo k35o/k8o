@@ -15,6 +15,7 @@ const meta: Meta<typeof BlogLayout> = {
       slug: 'tanstack-router-introduction',
       createdAt: new Date('2023/05/01'),
       updatedAt: new Date('2023/07/13'),
+      tags: ['React', 'TypeScript', 'TanStackRouter'],
     });
     getBlogView.mockResolvedValue(74931);
   },

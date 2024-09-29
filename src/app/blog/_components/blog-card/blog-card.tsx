@@ -1,39 +1,35 @@
+import { formatDate } from '@/utils/date/format';
 import { Heading } from '@/components/heading';
 import { TextTag } from '@/components/text-tag';
 import { isInternalRoute } from '@/utils/is-internal-route';
+import { Calendar, Clock } from 'lucide-react';
 import Link from 'next/link';
 import { FC } from 'react';
 
 type BlogCardProps = {
   link: string;
-  emotion: string;
   title: string;
-  tags: [string?, string?, string?, string?, string?];
+  description: string;
+  createdAt: Date;
+  updatedAt: Date;
+  tags: string[];
 };
 
-export const BlogCard: FC<BlogCardProps> = ({
-  link,
-  emotion,
-  title,
-  tags,
-}) => {
+export const BlogCard: FC<BlogCardProps> = ({ link, ...rest }) => {
   return (
-    <section className="h-40 rounded-xl bg-bgBase/55 shadow-md">
+    <section className="rounded-xl bg-bgBase/55 shadow-md">
       {isInternalRoute(link) ? (
-        <Link href={link}>
-          <BlogCardContent
-            emotion={emotion}
-            title={title}
-            tags={tags}
-          />
+        <Link href={link} className="block h-full">
+          <BlogCardContent {...rest} />
         </Link>
       ) : (
-        <a href={link} target="_blank" rel="noopener noreferrer">
-          <BlogCardContent
-            emotion={emotion}
-            title={title}
-            tags={tags}
-          />
+        <a
+          href={link}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="block h-full"
+        >
+          <BlogCardContent {...rest} />
         </a>
       )}
     </section>
@@ -41,21 +37,25 @@ export const BlogCard: FC<BlogCardProps> = ({
 };
 
 export const BlogCardContent: FC<Omit<BlogCardProps, 'link'>> = ({
-  emotion,
   title,
+  description,
+  createdAt,
+  updatedAt,
   tags,
 }) => (
-  <div className="flex gap-6 p-4">
-    <div className="flex size-32 shrink-0 items-center justify-center rounded-lg bg-bgSecondary text-7xl">
-      {emotion}
-    </div>
-    <div className="flex w-full flex-col justify-around">
+  <div className="flex h-full flex-col justify-between gap-4 p-4">
+    <div className="flex flex-col gap-1">
       <Heading type="h3" lineClamp={3}>
         {title}
       </Heading>
+      <p className="line-clamp-3 text-sm text-textDescription">
+        {description}
+      </p>
+    </div>
+    <div className="flex flex-wrap items-center justify-between gap-2">
       {tags.length > 0 && (
-        <div className="hidden justify-end gap-2 md:flex">
-          {tags.map((tag) => {
+        <div className="hidden gap-2 md:flex">
+          {tags.slice(0, 5).map((tag) => {
             if (!tag) {
               return null;
             }
@@ -63,6 +63,16 @@ export const BlogCardContent: FC<Omit<BlogCardProps, 'link'>> = ({
           })}
         </div>
       )}
+      <div className="ml-auto flex items-center gap-4 gap-x-8 text-xs text-textDescription">
+        <div className="flex items-center gap-1">
+          <Calendar className="size-4" aria-label="" />
+          <span>公開: {formatDate(createdAt, 'yyyy年M月d日')}</span>
+        </div>
+        <div className="flex items-center gap-1">
+          <Clock className="size-4" aria-label="" />
+          <span>更新: {formatDate(updatedAt, 'yyyy年M月d日')}</span>
+        </div>
+      </div>
     </div>
   </div>
 );
