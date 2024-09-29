@@ -1,10 +1,10 @@
 import { Metadata } from 'next';
 import { BlogLayout } from '../_components/blog-layout/blog-layout';
 import { PropsWithChildren } from 'react';
-import { getBlogByMetadata } from '#actions/blog';
+import { getBlog } from '#actions/blog';
 
 export async function generateMetadata(): Promise<Metadata> {
-  const blog = await getBlogByMetadata({
+  const blog = await getBlog({
     slug: 'tanstack-router-introduction',
   });
   if (!blog) {

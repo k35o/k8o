@@ -19,16 +19,6 @@ export const getBlog = async ({
   )(slug);
 };
 
-export const getBlogByMetadata = async ({
-  slug,
-}: {
-  slug: InferSelectModel<typeof schema.blogs>['slug'];
-}) => {
-  return db.query.blogs.findFirst({
-    where: (blog, { eq }) => eq(blog.slug, slug),
-  });
-};
-
 export const getBlogView = async ({
   blogId,
 }: {

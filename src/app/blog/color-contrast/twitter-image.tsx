@@ -1,6 +1,6 @@
 import { ImageResponse } from 'next/og';
 import { Parser, jaModel } from 'budoux';
-import { getBlogByMetadata } from '#actions/blog';
+import { getBlog } from '#actions/blog';
 
 const parser = new Parser(jaModel);
 
@@ -14,7 +14,7 @@ export const size = {
 export const contentType = 'image/png';
 
 export default async function TwitterImage() {
-  const blog = await getBlogByMetadata({
+  const blog = await getBlog({
     slug: 'color-contrast',
   });
 
