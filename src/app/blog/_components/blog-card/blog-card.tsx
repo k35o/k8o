@@ -56,9 +56,6 @@ export const BlogCardContent: FC<Omit<BlogCardProps, 'link'>> = ({
       {tags.length > 0 && (
         <div className="hidden gap-2 md:flex">
           {tags.slice(0, 5).map((tag) => {
-            if (!tag) {
-              return null;
-            }
             return <TextTag key={tag} text={tag} />;
           })}
         </div>

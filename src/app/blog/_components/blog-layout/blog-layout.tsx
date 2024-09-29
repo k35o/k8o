@@ -6,6 +6,7 @@ import { ErrorBoundary } from 'react-error-boundary';
 import { getBlog } from '#actions/blog';
 import { Separator } from '@/components/separator';
 import { ReportView } from '../report-view';
+import { TextTag } from '@/components/text-tag';
 
 export const BlogLayout: FC<{
   children: ReactNode;
@@ -56,6 +57,13 @@ export const BlogLayout: FC<{
           <div className="mb-2 mt-4 w-full sm:mb-4 sm:mt-8">
             <Separator />
           </div>
+          {blog.tags.length > 0 && (
+            <div className="mb-4 flex gap-2">
+              {blog.tags.slice(0, 5).map((tag) => {
+                return <TextTag key={tag} text={tag} />;
+              })}
+            </div>
+          )}
           {children}
         </article>
       ) : (
