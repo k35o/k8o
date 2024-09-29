@@ -30,12 +30,23 @@ const Root: FC<
   PropsWithChildren<{
     placement?: Placement;
     options: Option[];
+    value: Option['key'] | undefined;
     onSelect: (key: Option['key']) => void;
   }>
-> = ({ children, placement = 'bottom', options, onSelect }) => {
+> = ({
+  children,
+  placement = 'bottom',
+  options,
+  value,
+  onSelect,
+}) => {
   return (
     <Popover.Root placement={placement} type="listbox" flipDisabled>
-      <MenuProvider options={options} onSelect={onSelect}>
+      <MenuProvider
+        options={options}
+        value={value}
+        onSelect={onSelect}
+      >
         {children}
       </MenuProvider>
     </Popover.Root>
@@ -45,11 +56,12 @@ const Root: FC<
 const MenuProvider: FC<
   PropsWithChildren<{
     options: Option[];
+    value: Option['key'] | undefined;
     onSelect: (key: Option['key']) => void;
   }>
-> = ({ children, options, onSelect }) => {
-  const [selectedIndex, setSelectedIndex] = useState<number | null>(
-    null,
+> = ({ children, options, onSelect, value }) => {
+  const selectedIndex = options.findIndex(
+    (option) => option.key === value,
   );
   const [activeIndex, setActiveIndex] = useState<number | null>(null);
   const itemElementsRef = useRef<(HTMLElement | null)[]>([]);
@@ -70,7 +82,6 @@ const MenuProvider: FC<
     const key = options[index]?.key;
     if (key) {
       onSelect(key);
-      setSelectedIndex(index);
     }
     return;
   };
@@ -125,7 +136,7 @@ const Item: FC<{
     <button
       className={clsx(
         'w-full px-2 py-1 text-left',
-        'hover:bg-bgHover',
+        'hover:bg-bgHover hover:text-textBody',
         'active:bg-bgActive',
         'focus-visible:border-borderTransparent focus-visible:bg-bgHover focus-visible:outline-none',
         selected &&
