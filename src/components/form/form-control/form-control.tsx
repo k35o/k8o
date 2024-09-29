@@ -42,7 +42,7 @@ export const FormControl: FC<FormControlProps> = ({
         <label
           id={labelId}
           htmlFor={id}
-          className="text-textPrimary text-md flex gap-2 font-bold"
+          className="text-md flex gap-2 font-bold text-textBody"
         >
           {label}
           {isRequired && (
@@ -50,7 +50,7 @@ export const FormControl: FC<FormControlProps> = ({
           )}
         </label>
       ) : (
-        <legend className="text-textPrimary text-md flex gap-2 font-bold">
+        <legend className="text-md flex gap-2 font-bold text-textBody">
           {label}
           {isRequired && (
             <span className="font-medium text-textError">必須</span>
@@ -73,7 +73,7 @@ export const FormControl: FC<FormControlProps> = ({
         helpText && (
           <p
             id={`${id}-helptext`}
-            className="text-textSecondary text-sm"
+            className="text-sm text-textDescription"
           >
             {helpText}
           </p>

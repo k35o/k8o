@@ -158,11 +158,12 @@ const Trigger: FC<{
     <Popover.Trigger
       renderItem={(props) => (
         <Button
+          aria-label={label}
           type="button"
           size={size}
           variant="contained"
           fullWidth
-          endIcon={<ChevronDown className="size-8" />}
+          endIcon={<ChevronDown aria-label="" className="size-8" />}
           {...getTriggerProps(props)}
         >
           {label}

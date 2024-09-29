@@ -32,7 +32,7 @@ export const Button = forwardRef<
         ref={ref}
         type={type}
         className={cn(
-          'rounded-xl font-bold',
+          'rounded-xl text-center font-bold',
           {
             ['bg-buttonPrimary text-textOnFill hover:bg-buttonHover active:bg-buttonActive']:
               variant === 'contained',
