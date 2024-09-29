@@ -22,14 +22,16 @@ export const BlogLayout: FC<{
             <h2 className="text-xl font-bold sm:text-2xl">
               {blog.title}
             </h2>
-            <div className="flex flex-col items-end gap-1 text-xs text-textDescription sm:flex-row sm:items-center sm:justify-start sm:gap-4 sm:text-sm">
-              <div className="flex items-center gap-1">
-                <Calendar className="size-4" aria-label="" />
-                <span>公開: {formatDate(blog.createdAt)}</span>
-              </div>
-              <div className="flex items-center gap-1">
-                <Clock className="size-4" aria-label="" />
-                <span>更新: {formatDate(blog.updatedAt)}</span>
+            <div className="flex flex-col items-end gap-1 text-xs text-textDescription sm:flex-row sm:items-center sm:justify-end sm:gap-2 sm:text-sm">
+              <div className="flex flex-wrap items-center justify-end gap-1">
+                <div className="flex items-center gap-1">
+                  <Calendar className="size-4" aria-label="" />
+                  <span>公開: {formatDate(blog.createdAt)}</span>
+                </div>
+                <div className="flex items-center gap-1">
+                  <Clock className="size-4" aria-label="" />
+                  <span>更新: {formatDate(blog.updatedAt)}</span>
+                </div>
               </div>
               <ErrorBoundary fallback={<></>}>
                 <Suspense fallback={<></>}>
