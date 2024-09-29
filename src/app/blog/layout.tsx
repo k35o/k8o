@@ -31,7 +31,7 @@ export default function Layout({ children }: PropsWithChildren) {
       />
       <div className="flex flex-col gap-6">
         <div className="flex items-center justify-between">
-          <Link href="/blog">
+          <Link href="/blog" className="hover:underline">
             <Heading type="h2">Blog</Heading>
           </Link>
           <ExternalBlog />
