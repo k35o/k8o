@@ -1,7 +1,6 @@
 import { getQuizzes } from './../_actions';
 import { QUIZ_TYPE } from './_utils/constants';
 import { Question } from '../_components/question';
-import { FishKanjiCollection } from './_components/fish-kanji-collection';
 import { LinkButton } from '@/components/link-button';
 
 const getLimit = (questionCount: string): number => {
@@ -32,10 +31,7 @@ export default async function Page({
           うおへんの漢字一覧
         </LinkButton>
       </div>
-      <Question
-        quizzes={quizzes}
-        collection={<FishKanjiCollection />}
-      />
+      <Question quizzes={quizzes} />
     </div>
   );
 }

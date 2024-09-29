@@ -1,7 +1,7 @@
 'use client';
 
 import { Quiz } from './../../_types';
-import { FC, ReactElement, useCallback, useState } from 'react';
+import { FC, useCallback, useState } from 'react';
 import { Complete } from '../complete';
 import { QuizProgress } from '../quiz-progress';
 import { Answer } from '../answer';
@@ -10,12 +10,11 @@ import { checkAnswer } from '../../_utils/check-answer';
 
 type QuestionProps = FC<{
   quizzes: Quiz[];
-  collection: ReactElement;
 }>;
 
 type Status = 'correct' | 'incorrect' | 'none' | 'complete';
 
-export const Question: QuestionProps = ({ quizzes, collection }) => {
+export const Question: QuestionProps = ({ quizzes }) => {
   const [status, setStatus] = useState<Status>('none');
   const [count, setCount] = useState(0);
   const [answer, setAnswer] = useState('');
@@ -60,7 +59,7 @@ export const Question: QuestionProps = ({ quizzes, collection }) => {
         score={score}
         maxCount={quizzes.length}
         reset={handleReset}
-        collection={collection}
+        quizzes={quizzes}
       />
     );
   }
