@@ -52,9 +52,6 @@ export const Question: QuestionProps = ({ quizzes }) => {
 
   const handleReset = useCallback(() => {
     router.refresh();
-    setCount(0);
-    setStatus('none');
-    setAnswer('');
   }, [router]);
 
   if (status === 'complete') {
