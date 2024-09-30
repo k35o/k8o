@@ -7,6 +7,7 @@ const meta: Meta<typeof Complete> = {
   component: Complete,
   args: {
     reset: fn(),
+    quizzes: [],
   },
 };
 
