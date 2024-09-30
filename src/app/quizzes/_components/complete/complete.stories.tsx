@@ -6,8 +6,8 @@ const meta: Meta<typeof Complete> = {
   title: 'app/quizzes/complete',
   component: Complete,
   args: {
-    collection: <></>,
     reset: fn(),
+    quizzes: [],
   },
 };
 

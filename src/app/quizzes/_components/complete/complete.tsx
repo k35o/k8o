@@ -1,14 +1,16 @@
 import { Button } from '@/components/button';
 import { Heading } from '@/components/heading';
 import { cn } from '@/utils/cn';
-import { FC, ReactElement } from 'react';
+import { FC } from 'react';
+import { CollectionByHighlight } from '../collection';
+import { Quiz } from '../../_types';
 
 export const Complete: FC<{
   score: number;
   maxCount: number;
-  collection: ReactElement;
+  quizzes: Quiz[];
   reset: () => void;
-}> = ({ score, maxCount, collection, reset }) => {
+}> = ({ score, maxCount, quizzes, reset }) => {
   const percentage = score / maxCount;
   return (
     <div className="flex flex-col items-center gap-5">
@@ -28,7 +30,7 @@ export const Complete: FC<{
       <Button onClick={reset}>もう一度挑戦する</Button>
       <div className="flex w-full flex-col gap-2">
         <Heading type="h4">問題一覧</Heading>
-        {collection}
+        <CollectionByHighlight quizzes={quizzes} />
       </div>
     </div>
   );

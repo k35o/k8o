@@ -4,6 +4,11 @@ import { Question } from '.';
 const meta: Meta<typeof Question> = {
   title: 'app/quizzes/question',
   component: Question,
+  parameters: {
+    nextjs: {
+      appDirectory: true,
+    },
+  },
 };
 
 export default meta;
@@ -11,7 +16,6 @@ type Story = StoryObj<typeof Question>;
 
 export const IsCorrect: Story = {
   args: {
-    collection: <></>,
     quizzes: [
       {
         id: 1,

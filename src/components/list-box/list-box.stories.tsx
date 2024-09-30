@@ -1,6 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import { ListBox } from './list-box';
 import { Option } from './hooks';
+import { useState } from 'react';
 
 const meta: Meta<typeof ListBox.Root> = {
   title: 'components/list-box',
@@ -33,15 +34,19 @@ const OPTIONS: Option[] = [
 ];
 
 export const Default: Story = {
-  render: () => (
-    <div className="w-56">
-      <ListBox.Root
-        options={OPTIONS}
-        onSelect={(key: string) => console.log(key)}
-      >
-        <ListBox.Trigger />
-        <ListBox.Content />
-      </ListBox.Root>
-    </div>
-  ),
+  render: () => {
+    const [selected, setSelected] = useState<string>();
+    return (
+      <div className="w-56">
+        <ListBox.Root
+          options={OPTIONS}
+          value={selected}
+          onSelect={(key: string) => setSelected(key)}
+        >
+          <ListBox.Trigger />
+          <ListBox.Content />
+        </ListBox.Root>
+      </div>
+    );
+  },
 };

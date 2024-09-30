@@ -1,26 +1,28 @@
 'use client';
 
 import { Quiz } from './../../_types';
-import { FC, ReactElement, useCallback, useState } from 'react';
+import { FC, useCallback, useState } from 'react';
 import { Complete } from '../complete';
 import { QuizProgress } from '../quiz-progress';
 import { Answer } from '../answer';
 import { Feedback } from '../feedback';
 import { checkAnswer } from '../../_utils/check-answer';
+import { useRouter } from 'next/navigation';
 
 type QuestionProps = FC<{
   quizzes: Quiz[];
-  collection: ReactElement;
 }>;
 
 type Status = 'correct' | 'incorrect' | 'none' | 'complete';
 
-export const Question: QuestionProps = ({ quizzes, collection }) => {
+export const Question: QuestionProps = ({ quizzes }) => {
   const [status, setStatus] = useState<Status>('none');
   const [count, setCount] = useState(0);
   const [answer, setAnswer] = useState('');
   const [score, setScore] = useState(0);
   const currentQuiz = quizzes[count];
+
+  const router = useRouter();
 
   if (currentQuiz === undefined) {
     throw new Error('クイズがありません');
@@ -49,10 +51,8 @@ export const Question: QuestionProps = ({ quizzes, collection }) => {
   }, [count, quizzes.length]);
 
   const handleReset = useCallback(() => {
-    setCount(0);
-    setStatus('none');
-    setAnswer('');
-  }, []);
+    router.refresh();
+  }, [router]);
 
   if (status === 'complete') {
     return (
@@ -60,7 +60,7 @@ export const Question: QuestionProps = ({ quizzes, collection }) => {
         score={score}
         maxCount={quizzes.length}
         reset={handleReset}
-        collection={collection}
+        quizzes={quizzes}
       />
     );
   }
