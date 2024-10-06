@@ -68,7 +68,7 @@
     "rehype-katex": "7.0.1",
     "rehype-pretty-code": "0.14.0",
     "remark-math": "6.0.0",
-    "shiki": "1.21.0",
+    "shiki": "1.21.1",
     "tailwind-merge": "2.5.3",
     "tailwindcss": "3.4.13",
     "zod": "3.23.8"
