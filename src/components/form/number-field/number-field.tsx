@@ -104,7 +104,7 @@ export const NumberField: FC<Props> = ({
           }
         }}
         className={cn(
-          'grow bg-bgTransparent pl-3 pr-8 focus-visible:outline-none',
+          'box-border grow bg-bgTransparent pl-3 pr-8 focus-visible:outline-none',
           'disabled:cursor-not-allowed',
         )}
         placeholder={placeholder}
