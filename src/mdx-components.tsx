@@ -95,7 +95,7 @@ export function useMDXComponents(
       return (
         <pre
           {...rest}
-          className="bg-bgCodeBlock my-4 overflow-x-auto rounded-xl p-1 sm:p-4"
+          className="my-4 overflow-x-auto rounded-xl bg-bgCodeBlock p-1 sm:p-4"
         >
           {children}
         </pre>
