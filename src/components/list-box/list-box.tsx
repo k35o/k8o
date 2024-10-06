@@ -161,6 +161,7 @@ const Trigger: FC<{
           aria-label={label}
           type="button"
           size={size}
+          color="gray"
           variant="contained"
           fullWidth
           endIcon={<ChevronDown aria-label="" className="size-8" />}
