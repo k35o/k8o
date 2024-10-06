@@ -38,7 +38,7 @@ export const Button = forwardRef<
           {
             ['bg-buttonPrimary text-textOnFill hover:bg-buttonHover active:bg-buttonActive']:
               variant === 'contained' && color === 'primary',
-            ['bg-bgSecondary text-textBody hover:bg-bgHover active:bg-bgActive']:
+            ['bg-bgBase text-textBody hover:bg-bgHover active:bg-bgActive']:
               variant === 'contained' && color === 'gray',
             ['cursor-not-allowed opacity-35 hover:bg-buttonPrimary active:bg-buttonPrimary']:
               disabled && variant === 'contained',
