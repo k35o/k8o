@@ -122,6 +122,7 @@ const Trigger: FC<{
         <Button
           type="button"
           size={size}
+          color="gray"
           variant="contained"
           endIcon={<ChevronDown className="size-8" />}
           {...getTriggerProps(props)}
@@ -142,7 +143,7 @@ const IconTrigger: FC<{
   return (
     <Popover.Trigger
       renderItem={(props) => (
-        <IconButton {...getTriggerProps(props)}>
+        <IconButton bg="base" {...getTriggerProps(props)}>
           <span className="sr-only">{label}</span>
           {icon}
         </IconButton>

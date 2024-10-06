@@ -94,11 +94,17 @@ const COLORS = {
       name: 'Secondary',
       Sample: <Circle className="bg-bgSecondary" />,
       lightCode: '#e2e8f0',
-      darkCode: '#374151',
+      darkCode: '#334155',
     },
     {
       name: 'Tertiary',
       Sample: <Circle className="bg-bgTertiary" />,
+      lightCode: '#f8fafc',
+      darkCode: '#475569',
+    },
+    {
+      name: 'Code Block',
+      Sample: <Circle className="bg-bgCodeBlock" />,
       lightCode: '#1e293b',
       darkCode: '#0f172a',
     },

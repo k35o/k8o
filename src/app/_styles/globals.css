@@ -19,7 +19,8 @@
     --bg-base: 249 250 251;
     --bg-primary: 203 213 225;
     --bg-secondary: 226 232 240;
-    --bg-tertiary: 30 41 59;
+    --bg-tertiary: 248 250 252;
+    --bg-code-block: 30 41 59;
     --bg-error: 254 226 226;
     --bg-warning: 254 249 195;
     --bg-success: 220 252 231;
@@ -71,8 +72,9 @@
     /* background */
     --bg-base: 17 24 39;
     --bg-primary: 30 41 59;
-    --bg-secondary: 55 65 81;
-    --bg-tertiary: 15 23 42;
+    --bg-secondary: 51 65 85;
+    --bg-tertiary: 71 85 105;
+    --bg-code-block: 15 23 42;
     --bg-error: 254 226 226;
     --bg-warning: 254 249 195;
     --bg-success: 220 252 231;

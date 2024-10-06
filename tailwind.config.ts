@@ -21,6 +21,7 @@ const config = {
       bgPrimary: 'rgb(var(--bg-primary) / <alpha-value>)',
       bgSecondary: 'rgb(var(--bg-secondary) / <alpha-value>)',
       bgTertiary: 'rgb(var(--bg-tertiary) / <alpha-value>)',
+      bgCodeBlock: 'rgb(var(--bg-code-block) / <alpha-value>)',
       bgError: 'rgb(var(--bg-error) / <alpha-value>)',
       bgSuccess: 'rgb(var(--bg-success) / <alpha-value>)',
       bgWarning: 'rgb(var(--bg-warning) / <alpha-value>)',

@@ -168,7 +168,10 @@ const Content: FC<{
 
 const Trigger: FC<{
   renderItem: (
-    props: Omit<HTMLProps<HTMLButtonElement>, 'selected' | 'active'>,
+    props: Omit<
+      HTMLProps<HTMLButtonElement>,
+      'selected' | 'active' | 'color'
+    >,
   ) => ReactElement;
 }> = ({ renderItem }) => {
   const props = usePopoverTrigger();
