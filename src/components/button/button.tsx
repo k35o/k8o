@@ -6,6 +6,7 @@ export const Button = forwardRef<
   {
     type?: 'button' | 'submit';
     size?: 'sm' | 'md' | 'lg';
+    color?: 'primary' | 'gray';
     variant?: 'contained' | 'outlined';
     fullWidth?: boolean;
     startIcon?: ReactNode;
@@ -17,6 +18,7 @@ export const Button = forwardRef<
       children,
       type = 'button',
       size = 'md',
+      color = 'primary',
       variant = 'contained',
       disabled = false,
       fullWidth = false,
@@ -35,11 +37,15 @@ export const Button = forwardRef<
           'rounded-xl text-center font-bold',
           {
             ['bg-buttonPrimary text-textOnFill hover:bg-buttonHover active:bg-buttonActive']:
-              variant === 'contained',
+              variant === 'contained' && color === 'primary',
+            ['bg-bgSecondary text-textBody hover:bg-bgHover active:bg-bgActive']:
+              variant === 'contained' && color === 'gray',
             ['cursor-not-allowed opacity-35 hover:bg-buttonPrimary active:bg-buttonPrimary']:
               disabled && variant === 'contained',
             ['border-2 border-buttonPrimary bg-bgBase text-buttonPrimary hover:bg-bgHover active:bg-bgActive']:
-              variant === 'outlined',
+              variant === 'outlined' && color === 'primary',
+            ['border-2 border-borderPrimary bg-bgBase text-textBody hover:bg-bgHover active:bg-bgActive']:
+              variant === 'outlined' && color === 'gray',
             ['cursor-not-allowed bg-bgBase opacity-35 hover:bg-bgBase active:bg-bgBase']:
               disabled && variant === 'outlined',
           },
