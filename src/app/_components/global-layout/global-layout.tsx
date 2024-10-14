@@ -2,6 +2,7 @@ import Link from 'next/link';
 import { FC, ReactNode } from 'react';
 import { Heading } from '../../../components/heading';
 import { ToggleTheme } from '../toggle-theme';
+import { ColorFilters } from '@/components/color-filters';
 
 export const GlobalLayout: FC<{ children: ReactNode }> = ({
   children,
@@ -13,8 +14,11 @@ export const GlobalLayout: FC<{ children: ReactNode }> = ({
           <Link href="/">
             <Heading type="h1">k8o</Heading>
           </Link>
-          <div className="-my-2">
-            <ToggleTheme />
+          <div className="flex items-center gap-4">
+            <ColorFilters.ListBox />
+            <div className="-my-2">
+              <ToggleTheme />
+            </div>
           </div>
         </div>
       </header>

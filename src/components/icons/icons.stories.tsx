@@ -5,6 +5,7 @@ import { Twitter } from './twitter';
 import { Qiita } from './qiita';
 import {
   ArrowBigRightDash,
+  Blend,
   Calendar,
   Check,
   ChevronDown,
@@ -101,6 +102,10 @@ export const Primary: Story = {
         <div className="flex flex-col items-center justify-center">
           <Clock className="size-24" />
           <p className="text-center">Clock</p>
+        </div>
+        <div className="flex flex-col items-center justify-center">
+          <Blend className="size-24" />
+          <p className="text-center">Blend</p>
         </div>
       </div>
     );

@@ -106,7 +106,9 @@ const MenuProvider: FC<
   );
 };
 
-const Content: FC = () => {
+const Content: FC<{
+  helpContent?: ReactElement;
+}> = ({ helpContent }) => {
   const { options, contentProps, itemElementsRef } = useMenuContent();
 
   return (
@@ -118,6 +120,7 @@ const Content: FC = () => {
             {...contentProps}
             className="flex max-h-48 min-w-56 flex-col overflow-y-auto rounded-xl border border-borderSecondary bg-bgBase py-2 shadow-xl"
           >
+            {helpContent}
             {options.map(({ key, label }, idx) => (
               <Item key={key} label={label} index={idx} />
             ))}
