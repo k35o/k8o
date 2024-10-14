@@ -1,30 +1,19 @@
 import { cn } from '@/utils/cn';
 import {
+  ButtonHTMLAttributes,
   forwardRef,
   PropsWithChildren,
-  ReactEventHandler,
 } from 'react';
 
 type Props = PropsWithChildren<{
   size?: 'sm' | 'md' | 'lg';
   bg?: 'transparent' | 'base';
-  disabled?: boolean;
   label?: string;
-  onClick?: ReactEventHandler<HTMLButtonElement>;
-}>;
+}> &
+  Omit<ButtonHTMLAttributes<HTMLButtonElement>, 'size' | 'type'>;
 
 export const IconButton = forwardRef<HTMLButtonElement, Props>(
-  (
-    {
-      size = 'md',
-      bg = 'transparent',
-      disabled = false,
-      label,
-      onClick,
-      children,
-    },
-    ref,
-  ) => {
+  ({ size = 'md', bg = 'transparent', label, ...props }, ref) => {
     return (
       <button
         ref={ref}
@@ -37,15 +26,12 @@ export const IconButton = forwardRef<HTMLButtonElement, Props>(
           size === 'sm' && 'p-1',
           size === 'md' && 'p-2',
           size === 'lg' && 'p-3',
-          disabled &&
+          props.disabled &&
             'cursor-not-allowed opacity-50 hover:bg-bgTransparent active:bg-bgTransparent',
         )}
-        disabled={disabled}
-        onClick={onClick}
         aria-label={label}
-      >
-        {children}
-      </button>
+        {...props}
+      />
     );
   },
 );

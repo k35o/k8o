@@ -4,6 +4,7 @@ import {
   ComponentProps,
   FC,
   PropsWithChildren,
+  ReactElement,
   useRef,
   useState,
 } from 'react';
@@ -25,6 +26,7 @@ import clsx from 'clsx';
 import { Popover } from '../popover';
 import { useFloatingUIContext } from '../popover/hooks';
 import { Button } from '../button';
+import { IconButton } from '../icon-button';
 
 const Root: FC<
   PropsWithChildren<{
@@ -175,8 +177,30 @@ const Trigger: FC<{
   );
 };
 
+const TriggerIcon: FC<{
+  size?: ComponentProps<typeof Button>['size'];
+  icon: ReactElement;
+}> = ({ size = 'md', icon }) => {
+  const { label, getTriggerProps } = useMenuTrigger();
+
+  return (
+    <Popover.Trigger
+      renderItem={(props) => (
+        <IconButton
+          aria-label={label}
+          size={size}
+          {...getTriggerProps(props)}
+        >
+          {icon}
+        </IconButton>
+      )}
+    />
+  );
+};
+
 export const ListBox = {
   Root,
   Content,
   Trigger,
+  TriggerIcon,
 };
