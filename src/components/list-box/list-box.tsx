@@ -13,7 +13,7 @@ import {
   useInteractions,
   useListNavigation,
 } from '@floating-ui/react';
-import { ChevronDown } from 'lucide-react';
+import { Check, ChevronDown } from 'lucide-react';
 import {
   MenuContextProvider,
   Option,
@@ -139,11 +139,12 @@ const Item: FC<{
         'hover:bg-bgHover hover:text-textBody',
         'active:bg-bgActive',
         'focus-visible:border-borderTransparent focus-visible:bg-bgHover focus-visible:outline-none',
-        selected &&
-          'bg-buttonHover text-textOnFill focus-visible:bg-buttonActive focus-visible:text-textOnFill',
+        !selected && 'pl-9',
+        selected && 'inline-flex items-center gap-1',
       )}
       {...props}
     >
+      {selected && <Check className="size-6 text-textSuccess" />}
       {label}
     </button>
   );
