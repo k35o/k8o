@@ -4,6 +4,7 @@ import {
   ComponentProps,
   FC,
   PropsWithChildren,
+  ReactElement,
   useRef,
   useState,
 } from 'react';
@@ -13,7 +14,7 @@ import {
   useInteractions,
   useListNavigation,
 } from '@floating-ui/react';
-import { ChevronDown } from 'lucide-react';
+import { Check, ChevronDown } from 'lucide-react';
 import {
   MenuContextProvider,
   Option,
@@ -25,6 +26,7 @@ import clsx from 'clsx';
 import { Popover } from '../popover';
 import { useFloatingUIContext } from '../popover/hooks';
 import { Button } from '../button';
+import { IconButton } from '../icon-button';
 
 const Root: FC<
   PropsWithChildren<{
@@ -104,7 +106,9 @@ const MenuProvider: FC<
   );
 };
 
-const Content: FC = () => {
+const Content: FC<{
+  helpContent?: ReactElement;
+}> = ({ helpContent }) => {
   const { options, contentProps, itemElementsRef } = useMenuContent();
 
   return (
@@ -114,8 +118,9 @@ const Content: FC = () => {
           <section
             {...props}
             {...contentProps}
-            className="flex max-h-48 min-w-56 flex-col overflow-y-auto rounded-xl border border-borderSecondary bg-bgBase py-2 shadow-xl"
+            className="flex max-h-48 min-w-40 flex-col overflow-y-auto rounded-xl border border-borderSecondary bg-bgBase py-2 shadow-xl"
           >
+            {helpContent}
             {options.map(({ key, label }, idx) => (
               <Item key={key} label={label} index={idx} />
             ))}
@@ -139,11 +144,12 @@ const Item: FC<{
         'hover:bg-bgHover hover:text-textBody',
         'active:bg-bgActive',
         'focus-visible:border-borderTransparent focus-visible:bg-bgHover focus-visible:outline-none',
-        selected &&
-          'bg-buttonHover text-textOnFill focus-visible:bg-buttonActive focus-visible:text-textOnFill',
+        !selected && 'pl-9',
+        selected && 'inline-flex items-center gap-1',
       )}
       {...props}
     >
+      {selected && <Check className="size-6 text-textSuccess" />}
       {label}
     </button>
   );
@@ -174,8 +180,30 @@ const Trigger: FC<{
   );
 };
 
+const TriggerIcon: FC<{
+  size?: ComponentProps<typeof Button>['size'];
+  icon: ReactElement;
+}> = ({ size = 'md', icon }) => {
+  const { label, getTriggerProps } = useMenuTrigger();
+
+  return (
+    <Popover.Trigger
+      renderItem={(props) => (
+        <IconButton
+          aria-label={label}
+          size={size}
+          {...getTriggerProps(props)}
+        >
+          {icon}
+        </IconButton>
+      )}
+    />
+  );
+};
+
 export const ListBox = {
   Root,
   Content,
   Trigger,
+  TriggerIcon,
 };

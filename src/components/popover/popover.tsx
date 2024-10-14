@@ -26,6 +26,8 @@ import {
 } from './hooks';
 import { AnimatePresence, motion, Variants } from 'framer-motion';
 
+export { useOpenContext } from './hooks';
+
 const Root: FC<
   PropsWithChildren<{
     placement?: Placement;

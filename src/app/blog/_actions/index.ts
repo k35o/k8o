@@ -17,6 +17,9 @@ export const getBlogs = async (): Promise<Blog[]> => {
             },
           },
         },
+        orderBy(fields, operators) {
+          return operators.desc(fields.createdAt);
+        },
       }),
     ['blog'],
   )();
