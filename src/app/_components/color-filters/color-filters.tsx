@@ -8,10 +8,12 @@ import {
   useContext,
   useState,
 } from 'react';
-import { ListBox } from '../list-box';
+import { ListBox } from '../../../components/list-box';
 import { Transfer } from './transfer';
 import { Blend, Info } from 'lucide-react';
 import clsx from 'clsx';
+import Link from 'next/link';
+import { useOpenContext } from '@/components/popover';
 
 const FILTERS = [
   { key: 'nomaly', name: '3色覚' },
@@ -83,21 +85,26 @@ export const ColorFilterBox: FC = () => {
       onSelect={handleSelect}
     >
       <ListBox.TriggerIcon icon={<Blend className="size-8" />} />
-      <ListBox.Content
-        helpContent={
-          <button
-            className={clsx(
-              'inline-flex w-full items-center gap-1 px-2 py-1',
-              'hover:bg-bgHover hover:text-textBody',
-              'active:bg-bgActive',
-              'focus-visible:border-borderTransparent focus-visible:bg-bgHover focus-visible:outline-none',
-            )}
-          >
-            {<Info className="size-6 text-textInfo" />}
-            この機能について学ぶ
-          </button>
-        }
-      />
+      <ListBox.Content helpContent={<HelpContent />} />
     </ListBox.Root>
+  );
+};
+
+const HelpContent: FC = () => {
+  const { onClose } = useOpenContext();
+  return (
+    <Link
+      href="/blog/color-perception"
+      onClick={onClose}
+      className={clsx(
+        'inline-flex w-full items-center gap-1 px-2 py-1',
+        'hover:bg-bgHover hover:text-textBody',
+        'active:bg-bgActive',
+        'focus-visible:border-borderTransparent focus-visible:bg-bgHover focus-visible:outline-none',
+      )}
+    >
+      {<Info className="size-6 text-textInfo" />}
+      色覚特性について
+    </Link>
   );
 };

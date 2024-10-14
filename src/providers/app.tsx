@@ -1,6 +1,6 @@
 'use client';
 
-import { ColorFilters } from '@/components/color-filters';
+import { ColorFilters } from '@/app/_components/color-filters';
 import { ToastProvider } from '@/components/toast';
 import { ThemeProvider } from 'next-themes';
 import { FC, PropsWithChildren } from 'react';

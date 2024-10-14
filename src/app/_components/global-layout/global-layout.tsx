@@ -2,7 +2,7 @@ import Link from 'next/link';
 import { FC, ReactNode } from 'react';
 import { Heading } from '../../../components/heading';
 import { ToggleTheme } from '../toggle-theme';
-import { ColorFilters } from '@/components/color-filters';
+import { ColorFilters } from '../color-filters';
 
 export const GlobalLayout: FC<{ children: ReactNode }> = ({
   children,
