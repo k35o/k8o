@@ -8,6 +8,7 @@ const config: StorybookConfig = {
     '@storybook/addon-essentials',
     '@storybook/addon-interactions',
     'storybook-addon-mock-date',
+    '@storybook/experimental-addon-test'
   ],
 
   framework: {
