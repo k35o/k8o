@@ -1,5 +1,5 @@
 import { TextField } from './_components/text-field';
-import { isSegmenter } from './_utils/countText';
+import { isSegmenter } from './_utils/count-text';
 
 export default function Counter() {
   return (

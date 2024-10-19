@@ -42,12 +42,6 @@ pnpm run test:ui
 pnpm run coverage
 ```
 
-The other is a test using storybook's test runner
-
-```command
-pnpm run test-storybook
-```
-
 ### lint
 
 Using `elsint` affected by `next.js`.
