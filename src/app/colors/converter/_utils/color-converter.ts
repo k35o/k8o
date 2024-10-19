@@ -73,7 +73,7 @@ export const hexToRgb = (hex: string): RGB => {
       r: parseSafeRgb(r),
       g: parseSafeRgb(g),
       b: parseSafeRgb(b),
-      a: Math.round((parseSafeAlpha(a) * 100) / 255) / 1,
+      a: Math.round((parseSafeRgb(a) * 100) / 255) / 1,
     };
   }
   if (hex.length === 6) {
@@ -96,7 +96,7 @@ export const hexToRgb = (hex: string): RGB => {
       r: parseSafeRgb(r),
       g: parseSafeRgb(g),
       b: parseSafeRgb(b),
-      a: Math.round((parseSafeAlpha(a) * 100) / 255) / 100,
+      a: Math.round((parseSafeRgb(a) * 100) / 255) / 100,
     };
   }
   return { r: 255, g: 255, b: 255, a: 1 };
