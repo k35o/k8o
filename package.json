@@ -8,9 +8,9 @@
       "storybook": "./src/mocks/vercel-kv.mock.ts",
       "default": "@vercel/kv"
     },
-    "#next/env": {
-      "storybook": "./src/mocks/next-env.mock.ts",
-      "default": "@next/env"
+    "#drizzle/db": {
+      "storybook": "./src/mocks/drizzle-db.mock.ts",
+      "default": "./src/drizzle/db.ts"
     },
     "#actions/blog": {
       "storybook": "./src/mocks/actions/blog.mock.ts",

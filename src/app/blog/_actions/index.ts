@@ -1,6 +1,6 @@
 'use server';
 
-import { db } from '@/drizzle/db';
+import { db } from '#drizzle/db';
 import * as schema from '@/drizzle/schema';
 import { AnyColumn, eq, InferSelectModel, sql } from 'drizzle-orm';
 import { unstable_cache as cache } from 'next/cache';
