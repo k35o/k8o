@@ -37,6 +37,14 @@ export const NumberField: FC<Props> = ({
   const [displayValue, setDisplayValue] = useState(
     value.toFixed(precision),
   );
+
+  const [prevValue, setPrevValue] = useState(value);
+
+  if (value !== prevValue) {
+    setDisplayValue(value.toFixed(precision));
+    setPrevValue(value);
+  }
+
   return (
     <div
       className={cn(

@@ -1,18 +1,6 @@
-export type RGB = { r: string; g: string; b: string; a?: string };
+export type RGB = { r: number; g: number; b: number; a?: number };
 
-export const rgbToHex = (rgb: RGB): string => {
-  const { r, g, b, a } = rgb;
-  return `${parseSafeRgb(r).toString(16)}${parseSafeRgb(g).toString(
-    16,
-  )}${parseSafeRgb(b).toString(16)}${Math.round(
-    parseSafeRgb(Number(a ? a : '1') * 255),
-  ).toString(16)}`;
-};
-
-export const parseSafeRgb = (number: number | string): number => {
-  if (typeof number === 'string') {
-    return parseSafeRgb(Number(number));
-  }
+export const parseSafeRgb = (number: number): number => {
   if (isNaN(number)) {
     return 255;
   }
@@ -22,9 +10,18 @@ export const parseSafeRgb = (number: number | string): number => {
   return number;
 };
 
-export const hexToRgb = (
-  hex: string,
-): { r: number; g: number; b: number; a: number } => {
+export const rgbToHex = (rgb: RGB): string => {
+  const { r, g, b, a } = rgb;
+  return `${parseSafeRgb(r).toString(16)}${parseSafeRgb(g).toString(
+    16,
+  )}${parseSafeRgb(b).toString(16)}${
+    a !== undefined && a < 1
+      ? Math.round(parseSafeRgb(a * 255)).toString(16)
+      : ''
+  }`;
+};
+
+export const hexToRgb = (hex: string): RGB => {
   if (hex.length === 3) {
     const r = parseInt(hex.slice(0, 1).repeat(2), 16);
     const g = parseInt(hex.slice(1, 2).repeat(2), 16);

@@ -1,8 +1,7 @@
 'use client';
 
-import { Option, Select } from '@/components/form/select/select';
 import { TextField } from '@/components/form/text-field';
-import { useMemo, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import { ColorTip } from './color-tip';
 import {
   hexToRgb,
@@ -11,144 +10,82 @@ import {
   rgbToHex,
 } from '../../_utils/color-converter';
 import { FormControl } from '@/components/form/form-control';
-import { ArrowBigRightDash } from 'lucide-react';
-
-type ColorType = 'rgb' | 'hex';
-
-const COLOR_TYPE_OPTIONS = [
-  { value: 'hex', label: 'hex' },
-  { value: 'rgb', label: 'rgb' },
-] as const satisfies readonly Option[];
+import { NumberField } from '@/components/form/number-field';
 
 export const ColorConverter = () => {
-  const [colorTypeFrom, setColorTypeFrom] =
-    useState<ColorType>('hex');
-  const [colorTypeTo, setColorTypeTo] = useState<ColorType>('rgb');
-  const [hexFrom, setHexFrom] = useState('ffffff');
-  const [rgbFrom, setRgbFrom] = useState<RGB>({
-    r: '255',
-    g: '255',
-    b: '255',
-  });
-  const handleChangeRgbFrom = (value: string, part: keyof RGB) => {
-    setRgbFrom({ ...rgbFrom, [part]: value });
-  };
+  const [baseColor, setBaseColor] = useState('50e2d2');
+  const rgb = useMemo(() => hexToRgb(baseColor), [baseColor]);
 
-  const handleChangeColorType = (
-    colorType: string,
-    setColorType: (base: ColorType) => void,
-  ) => {
-    if (colorType === 'hex' || colorType === 'rgb') {
-      setHexFrom('ffffff');
-      setRgbFrom({ r: '255', g: '255', b: '255' });
-      setColorType(colorType);
-    }
-  };
-
-  const textTo: string = useMemo(() => {
-    if (colorTypeFrom === 'hex') {
-      if (colorTypeTo === 'hex') {
-        return `#${hexFrom}`;
-      }
-      const rgb = hexToRgb(hexFrom);
-      return `rgb(${rgb.r}, ${rgb.g}, ${rgb.b}, ${rgb.a})`;
-    } else {
-      if (colorTypeTo === 'hex') {
-        return `#${rgbToHex(rgbFrom)}`;
-      }
-      return `rgb(${parseSafeRgb(rgbFrom.r)}, ${parseSafeRgb(
-        rgbFrom.g,
-      )}, ${parseSafeRgb(rgbFrom.b)}, ${parseSafeRgb(
-        rgbFrom.a ?? '1',
-      )})`;
-    }
-  }, [colorTypeFrom, colorTypeTo, hexFrom, rgbFrom]);
+  const handleChangeRgb = useCallback(
+    (value: number, type: keyof RGB) => {
+      const newValue = parseSafeRgb(value);
+      const newRgb = { ...rgb, [type]: newValue };
+      setBaseColor(rgbToHex(newRgb));
+    },
+    [rgb],
+  );
 
   return (
-    <div className="flex flex-col gap-4">
-      <div className="flex items-center justify-center gap-3">
-        <FormControl
-          label="変換前"
-          renderInput={({ describedbyId, ...props }) => {
-            return (
-              <Select
-                describedbyId={describedbyId}
-                value={colorTypeFrom.toString()}
-                onChange={(value) =>
-                  handleChangeColorType(value, setColorTypeFrom)
-                }
-                options={COLOR_TYPE_OPTIONS}
-                {...props}
-              />
-            );
-          }}
-        />
-        <ArrowBigRightDash aria-label="右矢印" className="size-14" />
-        <FormControl
-          label="変換後"
-          renderInput={({ describedbyId, ...props }) => {
-            return (
-              <Select
-                describedbyId={describedbyId}
-                value={colorTypeTo.toString()}
-                onChange={(value) =>
-                  handleChangeColorType(value, setColorTypeTo)
-                }
-                options={COLOR_TYPE_OPTIONS}
-                {...props}
-              />
-            );
-          }}
-        />
+    <div className="flex flex-col gap-8">
+      <div className="flex items-center justify-center">
+        <ColorTip color={`#${baseColor}`} />
       </div>
-      <div className="flex items-center gap-2">
+      <div className="flex flex-col items-center gap-6">
         <FormControl
-          label="変換する値"
+          label="hex"
           renderInput={(props) => {
-            if (colorTypeFrom === 'hex') {
-              return (
-                <div className="flex w-full items-center gap-2">
-                  #
-                  <TextField
-                    value={hexFrom}
-                    onChange={(from: string) => setHexFrom(from)}
-                    {...props}
-                  />
-                </div>
-              );
-            }
+            return (
+              <div className="flex w-full items-center gap-4">
+                #
+                <TextField
+                  value={baseColor}
+                  onChange={(newColor) => setBaseColor(newColor)}
+                  {...props}
+                />
+              </div>
+            );
+          }}
+        />
+        <FormControl
+          label="rgb"
+          renderInput={(props) => {
             const { id, describedbyId, ...rest } = props;
             return (
               <div className="flex items-center gap-2">
                 rgb(
-                <TextField
+                <NumberField
                   id={id}
                   describedbyId={describedbyId}
-                  value={rgbFrom.r.toString()}
-                  onChange={(from: string) =>
-                    handleChangeRgbFrom(from, 'r')
-                  }
+                  value={rgb.r}
+                  onChange={(red) => handleChangeRgb(red, 'r')}
+                  max={255}
+                  min={0}
                   {...rest}
                 />
-                <TextField
-                  value={rgbFrom.g.toString()}
-                  onChange={(from: string) =>
-                    handleChangeRgbFrom(from, 'g')
-                  }
+                ,
+                <NumberField
+                  value={rgb.g}
+                  onChange={(green) => handleChangeRgb(green, 'g')}
+                  max={255}
+                  min={0}
                   {...rest}
                 />
-                <TextField
-                  value={rgbFrom.b.toString()}
-                  onChange={(from: string) =>
-                    handleChangeRgbFrom(from, 'b')
-                  }
+                ,
+                <NumberField
+                  value={rgb.b}
+                  onChange={(blue) => handleChangeRgb(blue, 'b')}
+                  max={255}
+                  min={0}
                   {...rest}
                 />
-                <TextField
-                  value={rgbFrom.a?.toString() ?? ''}
-                  onChange={(from: string) =>
-                    handleChangeRgbFrom(from, 'a')
-                  }
+                ,
+                <NumberField
+                  value={rgb.a ?? 1}
+                  onChange={(alpha) => handleChangeRgb(alpha, 'a')}
+                  max={1}
+                  min={0}
+                  step={0.01}
+                  precision={2}
                   {...rest}
                 />
                 )
@@ -156,10 +93,6 @@ export const ColorConverter = () => {
             );
           }}
         />
-      </div>
-      <div className="flex items-center justify-center gap-2">
-        <ColorTip color={textTo} />
-        <p className="text-lg font-bold">{textTo}</p>
       </div>
     </div>
   );
