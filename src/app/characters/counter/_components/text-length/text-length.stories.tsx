@@ -9,4 +9,8 @@ const meta: Meta<typeof TextLength> = {
 export default meta;
 type Story = StoryObj<typeof TextLength>;
 
-export const Primary: Story = {};
+export const Primary: Story = {
+  args: {
+    text: 'Hello, world!',
+  },
+};
