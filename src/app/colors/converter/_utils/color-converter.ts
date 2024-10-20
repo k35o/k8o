@@ -47,7 +47,7 @@ export const rgbToHex = (rgb: RGB): string => {
     16,
   )}${parseSafeRgb(b).toString(16)}${
     a !== undefined && a < 1
-      ? Math.round(parseSafeAlpha(a * 255)).toString(16)
+      ? Math.round(parseSafeAlpha(a) * 255).toString(16)
       : ''
   }`;
 };

@@ -16,16 +16,70 @@ import {
 import { FormControl } from '@/components/form/form-control';
 import { NumberField } from '@/components/form/number-field';
 
+type BaseColor =
+  | {
+      type: 'hex';
+      value: string;
+    }
+  | {
+      type: 'rgb';
+      value: RGB;
+    }
+  | {
+      type: 'hsl';
+      value: HSL;
+    };
+
 export const ColorConverter = () => {
-  const [baseColor, setBaseColor] = useState('50e2d2');
-  const rgb = useMemo(() => hexToRgb(baseColor), [baseColor]);
-  const hsl = useMemo(() => hexToHsl(baseColor), [baseColor]);
+  const [baseColor, setBaseColor] = useState<BaseColor>({
+    type: 'hex',
+    value: '50e2d2',
+  });
+  const hex = useMemo(() => {
+    if (baseColor.type === 'hex') {
+      return baseColor.value;
+    }
+    if (baseColor.type === 'rgb') {
+      return rgbToHex(baseColor.value);
+    }
+    return hslToHex(baseColor.value);
+  }, [baseColor]);
+
+  const rgb = useMemo(() => {
+    if (baseColor.type === 'rgb') {
+      return baseColor.value;
+    }
+    if (baseColor.type === 'hsl') {
+      return hexToRgb(hslToHex(baseColor.value));
+    }
+    return hexToRgb(baseColor.value);
+  }, [baseColor]);
+
+  const hsl = useMemo(() => {
+    if (baseColor.type === 'hsl') {
+      return baseColor.value;
+    }
+    if (baseColor.type === 'rgb') {
+      return hexToHsl(rgbToHex(baseColor.value));
+    }
+    return hexToHsl(baseColor.value);
+  }, [baseColor]);
+
+  const handleChangeHex = useCallback((newColor: string) => {
+    setBaseColor({
+      type: 'hex',
+      value: newColor,
+    });
+  }, []);
 
   const handleChangeRgb = useCallback(
     (value: number, type: keyof RGB) => {
       const newValue = parseSafeRgb(value);
       const newRgb = { ...rgb, [type]: newValue };
-      setBaseColor(rgbToHex(newRgb));
+      setBaseColor({
+        type: 'rgb',
+        value: newRgb,
+      });
     },
     [rgb],
   );
@@ -34,7 +88,10 @@ export const ColorConverter = () => {
     (value: number, type: keyof HSL) => {
       const newValue = parseSafeHsl(value, type);
       const newHsl = { ...hsl, [type]: newValue };
-      setBaseColor(hslToHex(newHsl));
+      setBaseColor({
+        type: 'hsl',
+        value: newHsl,
+      });
     },
     [hsl],
   );
@@ -42,7 +99,7 @@ export const ColorConverter = () => {
   return (
     <div className="flex flex-col gap-8">
       <div className="flex items-center justify-center">
-        <ColorTip color={`#${baseColor}`} />
+        <ColorTip color={`#${hex}`} />
       </div>
       <div className="flex flex-col items-center gap-6">
         <FormControl
@@ -52,8 +109,8 @@ export const ColorConverter = () => {
               <div className="flex w-full items-center gap-4">
                 #
                 <TextField
-                  value={baseColor}
-                  onChange={(newColor) => setBaseColor(newColor)}
+                  value={hex}
+                  onChange={handleChangeHex}
                   {...props}
                 />
               </div>
