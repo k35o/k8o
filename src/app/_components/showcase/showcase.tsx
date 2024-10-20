@@ -22,7 +22,7 @@ const Item: FC<{
       <Link href={link} scroll={false} className="block size-40">
         <div className="flex flex-col items-center justify-center gap-2 p-4">
           <Heading type="h3">{title}</Heading>
-          <div className="flex size-24 shrink-0 items-center justify-center rounded-lg text-7xl">
+          <div className="flex size-20 shrink-0 items-center justify-center rounded-lg text-7xl">
             {emotion}
           </div>
         </div>
