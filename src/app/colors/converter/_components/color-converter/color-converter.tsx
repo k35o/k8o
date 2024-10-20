@@ -106,7 +106,7 @@ export const ColorConverter = () => {
           label="hex"
           renderInput={(props) => {
             return (
-              <div className="flex w-full items-center gap-4">
+              <div className="flex w-full items-center gap-2">
                 #
                 <TextField
                   value={hex}
@@ -119,11 +119,18 @@ export const ColorConverter = () => {
         />
         <FormControl
           label="rgb"
+          labelAs="legend"
           renderInput={(props) => {
             const { id, describedbyId, ...rest } = props;
             return (
-              <div className="flex items-center gap-2">
-                rgb(
+              <div className="flex flex-wrap items-center gap-2 sm:flex-nowrap">
+                <span className="sr-only sm:not-sr-only">rgb(</span>
+                <label
+                  htmlFor={id}
+                  className="not-sr-only text-sm font-bold sm:sr-only"
+                >
+                  Red
+                </label>
                 <NumberField
                   id={id}
                   describedbyId={describedbyId}
@@ -133,24 +140,45 @@ export const ColorConverter = () => {
                   min={0}
                   {...rest}
                 />
-                ,
+                <span className="sr-only sm:not-sr-only">,</span>
+                <label
+                  htmlFor={`${id}-rgb-green`}
+                  className="not-sr-only text-sm font-bold sm:sr-only"
+                >
+                  Green
+                </label>
                 <NumberField
+                  id={`${id}-rgb-green`}
                   value={rgb.g}
                   onChange={(green) => handleChangeRgb(green, 'g')}
                   max={255}
                   min={0}
                   {...rest}
                 />
-                ,
+                <span className="sr-only sm:not-sr-only">,</span>
+                <label
+                  htmlFor={`${id}-rgb-blue`}
+                  className="not-sr-only text-sm font-bold sm:sr-only"
+                >
+                  Blue
+                </label>
                 <NumberField
+                  id={`${id}-rgb-blue`}
                   value={rgb.b}
                   onChange={(blue) => handleChangeRgb(blue, 'b')}
                   max={255}
                   min={0}
                   {...rest}
                 />
-                /
+                <span className="sr-only sm:not-sr-only">/</span>
+                <label
+                  htmlFor={`${id}-rgb-alpha`}
+                  className="not-sr-only text-sm font-bold sm:sr-only"
+                >
+                  Alpha
+                </label>
                 <NumberField
+                  id={`${id}-rgb-alpha`}
                   value={rgb.a ?? 1}
                   onChange={(alpha) => handleChangeRgb(alpha, 'a')}
                   max={1}
@@ -159,18 +187,25 @@ export const ColorConverter = () => {
                   precision={2}
                   {...rest}
                 />
-                )
+                <span className="sr-only sm:not-sr-only">)</span>
               </div>
             );
           }}
         />
         <FormControl
           label="hsl"
+          labelAs="legend"
           renderInput={(props) => {
             const { id, describedbyId, ...rest } = props;
             return (
-              <div className="flex items-center gap-2">
-                hsl(
+              <div className="flex flex-wrap items-center gap-2 sm:flex-nowrap">
+                <span className="sr-only sm:not-sr-only">hsl(</span>
+                <label
+                  htmlFor={id}
+                  className="not-sr-only text-sm font-bold sm:sr-only"
+                >
+                  Hue
+                </label>
                 <NumberField
                   id={id}
                   describedbyId={describedbyId}
@@ -180,8 +215,15 @@ export const ColorConverter = () => {
                   min={0}
                   {...rest}
                 />
-                ,
+                <span className="sr-only sm:not-sr-only">,</span>
+                <label
+                  htmlFor={`${id}-hsl-saturation`}
+                  className="not-sr-only text-sm font-bold sm:sr-only"
+                >
+                  Saturation
+                </label>
                 <NumberField
+                  id={`${id}-hsl-saturation`}
                   value={hsl.s}
                   onChange={(saturation) =>
                     handleChangeHsl(saturation, 's')
@@ -190,8 +232,15 @@ export const ColorConverter = () => {
                   min={0}
                   {...rest}
                 />
-                ,
+                <span className="sr-only sm:not-sr-only">,</span>
+                <label
+                  htmlFor={`${id}-hsl-lightness`}
+                  className="not-sr-only text-sm font-bold sm:sr-only"
+                >
+                  Lightness
+                </label>
                 <NumberField
+                  id={`${id}-hsl-lightness`}
                   value={hsl.l}
                   onChange={(lightness) =>
                     handleChangeHsl(lightness, 'l')
@@ -200,8 +249,15 @@ export const ColorConverter = () => {
                   min={0}
                   {...rest}
                 />
-                /
+                <span className="sr-only sm:not-sr-only">/</span>
+                <label
+                  htmlFor={`${id}-hsl-alpha`}
+                  className="not-sr-only text-sm font-bold sm:sr-only"
+                >
+                  Alpha
+                </label>
                 <NumberField
+                  id={`${id}-hsl-alpha`}
                   value={hsl.a ?? 1}
                   onChange={(alpha) => handleChangeHsl(alpha, 'a')}
                   max={1}
@@ -210,7 +266,7 @@ export const ColorConverter = () => {
                   precision={2}
                   {...rest}
                 />
-                )
+                <span className="sr-only sm:not-sr-only">)</span>
               </div>
             );
           }}
