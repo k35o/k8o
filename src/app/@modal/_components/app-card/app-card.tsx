@@ -15,7 +15,7 @@ export const AppCard = ({
   description: string;
 }) => {
   return (
-    <InteractiveCard variant="secondary">
+    <InteractiveCard variant="secondary" animation="low">
       <Link href={link} className="block w-full">
         <div className="flex flex-col gap-6 p-4">
           <Heading type="h3">
