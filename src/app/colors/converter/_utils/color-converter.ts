@@ -1,18 +1,8 @@
-export type RGB = { r: string; g: string; b: string; a?: string };
+export type RGB = { r: number; g: number; b: number; a?: number };
 
-export const rgbToHex = (rgb: RGB): string => {
-  const { r, g, b, a } = rgb;
-  return `${parseSafeRgb(r).toString(16)}${parseSafeRgb(g).toString(
-    16,
-  )}${parseSafeRgb(b).toString(16)}${Math.round(
-    parseSafeRgb(Number(a ? a : '1') * 255),
-  ).toString(16)}`;
-};
+export type HSL = { h: number; s: number; l: number; a?: number };
 
-export const parseSafeRgb = (number: number | string): number => {
-  if (typeof number === 'string') {
-    return parseSafeRgb(Number(number));
-  }
+export const parseSafeRgb = (number: number): number => {
   if (isNaN(number)) {
     return 255;
   }
@@ -22,9 +12,47 @@ export const parseSafeRgb = (number: number | string): number => {
   return number;
 };
 
-export const hexToRgb = (
-  hex: string,
-): { r: number; g: number; b: number; a: number } => {
+export const parseSafeHsl = (
+  number: number,
+  part: keyof HSL,
+): number => {
+  if (isNaN(number)) {
+    return 100;
+  }
+  if (part === 'h' && (number < 0 || number > 360)) {
+    return 360;
+  }
+  if (part === 'a') {
+    return parseSafeAlpha(number);
+  }
+  if (number < 0 || number > 100) {
+    return 100;
+  }
+  return number;
+};
+
+export const parseSafeAlpha = (number: number): number => {
+  if (isNaN(number)) {
+    return 1;
+  }
+  if (number < 0 || number > 1) {
+    return 1;
+  }
+  return number;
+};
+
+export const rgbToHex = (rgb: RGB): string => {
+  const { r, g, b, a } = rgb;
+  return `${parseSafeRgb(r).toString(16)}${parseSafeRgb(g).toString(
+    16,
+  )}${parseSafeRgb(b).toString(16)}${
+    a !== undefined && a < 1
+      ? Math.round(parseSafeAlpha(a) * 255).toString(16)
+      : ''
+  }`;
+};
+
+export const hexToRgb = (hex: string): RGB => {
   if (hex.length === 3) {
     const r = parseInt(hex.slice(0, 1).repeat(2), 16);
     const g = parseInt(hex.slice(1, 2).repeat(2), 16);
@@ -72,4 +100,69 @@ export const hexToRgb = (
     };
   }
   return { r: 255, g: 255, b: 255, a: 1 };
+};
+
+// ref: https://www.jameslmilner.com/posts/converting-rgb-hex-hsl-colors/
+export const hslToHex = (hsl: HSL): string => {
+  const h = parseSafeHsl(hsl.h, 'h');
+  const s = parseSafeHsl(hsl.s, 's');
+  const l = parseSafeHsl(hsl.l, 'l');
+  const parsedA = parseSafeHsl(hsl.a ?? 1, 'a');
+  const hexA =
+    parsedA < 1 ? Math.round(parsedA * 255).toString(16) : '';
+
+  const hDecimal = l / 100;
+  const a = (s * Math.min(hDecimal, 1 - hDecimal)) / 100;
+  const f = (n: number) => {
+    const k = (n + h / 30) % 12;
+    const color =
+      hDecimal - a * Math.max(Math.min(k - 3, 9 - k, 1), -1);
+
+    return Math.round(255 * color)
+      .toString(16)
+      .padStart(2, '0');
+  };
+
+  return `${f(0)}${f(8)}${f(4)}${hexA}`;
+};
+
+// ref: https://www.jameslmilner.com/posts/converting-rgb-hex-hsl-colors/
+export const hexToHsl = (hex: string): HSL => {
+  const { r, g, b, a } = hexToRgb(hex);
+  const red = r / 255;
+  const green = g / 255;
+  const blue = b / 255;
+
+  const max = Math.max(red, green, blue);
+  const min = Math.min(red, green, blue);
+
+  let h = 0;
+  let s = 0;
+  let l = (max + min) / 2;
+  const delta = max - min;
+
+  if (max === min) {
+    return { h: 0, s: 0, l };
+  }
+
+  s = l >= 0.5 ? delta / (2 - (max + min)) : delta / (max + min);
+
+  switch (max) {
+    case red:
+      h = ((green - blue) / delta + 0) * 60;
+      break;
+    case green:
+      h = ((blue - red) / delta + 2) * 60;
+      break;
+    case blue:
+      h = ((red - green) / delta + 4) * 60;
+      break;
+  }
+
+  return {
+    h: Math.round(h < 0 ? h + 360 : h),
+    s: Math.round(s * 100),
+    l: Math.round(l * 100),
+    ...(a !== undefined ? { a } : {}),
+  };
 };

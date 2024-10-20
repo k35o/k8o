@@ -37,6 +37,14 @@ export const NumberField: FC<Props> = ({
   const [displayValue, setDisplayValue] = useState(
     value.toFixed(precision),
   );
+
+  const [prevValue, setPrevValue] = useState(value);
+
+  if (value !== prevValue) {
+    setDisplayValue(value.toFixed(precision));
+    setPrevValue(value);
+  }
+
   return (
     <div
       className={cn(
@@ -104,7 +112,7 @@ export const NumberField: FC<Props> = ({
           }
         }}
         className={cn(
-          'w-full grow bg-bgTransparent pl-3 pr-8 focus-visible:outline-none',
+          'h-full w-full grow bg-bgTransparent pl-3 pr-8 focus-visible:outline-none',
           'disabled:cursor-not-allowed',
         )}
         placeholder={placeholder}

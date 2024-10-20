@@ -1,165 +1,276 @@
 'use client';
 
-import { Option, Select } from '@/components/form/select/select';
 import { TextField } from '@/components/form/text-field';
-import { useMemo, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import { ColorTip } from './color-tip';
 import {
+  hexToHsl,
   hexToRgb,
+  HSL,
+  hslToHex,
+  parseSafeHsl,
   parseSafeRgb,
   RGB,
   rgbToHex,
 } from '../../_utils/color-converter';
 import { FormControl } from '@/components/form/form-control';
-import { ArrowBigRightDash } from 'lucide-react';
+import { NumberField } from '@/components/form/number-field';
 
-type ColorType = 'rgb' | 'hex';
-
-const COLOR_TYPE_OPTIONS = [
-  { value: 'hex', label: 'hex' },
-  { value: 'rgb', label: 'rgb' },
-] as const satisfies readonly Option[];
+type BaseColor =
+  | {
+      type: 'hex';
+      value: string;
+    }
+  | {
+      type: 'rgb';
+      value: RGB;
+    }
+  | {
+      type: 'hsl';
+      value: HSL;
+    };
 
 export const ColorConverter = () => {
-  const [colorTypeFrom, setColorTypeFrom] =
-    useState<ColorType>('hex');
-  const [colorTypeTo, setColorTypeTo] = useState<ColorType>('rgb');
-  const [hexFrom, setHexFrom] = useState('ffffff');
-  const [rgbFrom, setRgbFrom] = useState<RGB>({
-    r: '255',
-    g: '255',
-    b: '255',
+  const [baseColor, setBaseColor] = useState<BaseColor>({
+    type: 'hex',
+    value: '50e2d2',
   });
-  const handleChangeRgbFrom = (value: string, part: keyof RGB) => {
-    setRgbFrom({ ...rgbFrom, [part]: value });
-  };
-
-  const handleChangeColorType = (
-    colorType: string,
-    setColorType: (base: ColorType) => void,
-  ) => {
-    if (colorType === 'hex' || colorType === 'rgb') {
-      setHexFrom('ffffff');
-      setRgbFrom({ r: '255', g: '255', b: '255' });
-      setColorType(colorType);
+  const hex = useMemo(() => {
+    if (baseColor.type === 'hex') {
+      return baseColor.value;
     }
-  };
-
-  const textTo: string = useMemo(() => {
-    if (colorTypeFrom === 'hex') {
-      if (colorTypeTo === 'hex') {
-        return `#${hexFrom}`;
-      }
-      const rgb = hexToRgb(hexFrom);
-      return `rgb(${rgb.r}, ${rgb.g}, ${rgb.b}, ${rgb.a})`;
-    } else {
-      if (colorTypeTo === 'hex') {
-        return `#${rgbToHex(rgbFrom)}`;
-      }
-      return `rgb(${parseSafeRgb(rgbFrom.r)}, ${parseSafeRgb(
-        rgbFrom.g,
-      )}, ${parseSafeRgb(rgbFrom.b)}, ${parseSafeRgb(
-        rgbFrom.a ?? '1',
-      )})`;
+    if (baseColor.type === 'rgb') {
+      return rgbToHex(baseColor.value);
     }
-  }, [colorTypeFrom, colorTypeTo, hexFrom, rgbFrom]);
+    return hslToHex(baseColor.value);
+  }, [baseColor]);
+
+  const rgb = useMemo(() => {
+    if (baseColor.type === 'rgb') {
+      return baseColor.value;
+    }
+    if (baseColor.type === 'hsl') {
+      return hexToRgb(hslToHex(baseColor.value));
+    }
+    return hexToRgb(baseColor.value);
+  }, [baseColor]);
+
+  const hsl = useMemo(() => {
+    if (baseColor.type === 'hsl') {
+      return baseColor.value;
+    }
+    if (baseColor.type === 'rgb') {
+      return hexToHsl(rgbToHex(baseColor.value));
+    }
+    return hexToHsl(baseColor.value);
+  }, [baseColor]);
+
+  const handleChangeHex = useCallback((newColor: string) => {
+    setBaseColor({
+      type: 'hex',
+      value: newColor,
+    });
+  }, []);
+
+  const handleChangeRgb = useCallback(
+    (value: number, type: keyof RGB) => {
+      const newValue = parseSafeRgb(value);
+      const newRgb = { ...rgb, [type]: newValue };
+      setBaseColor({
+        type: 'rgb',
+        value: newRgb,
+      });
+    },
+    [rgb],
+  );
+
+  const handleChangeHsl = useCallback(
+    (value: number, type: keyof HSL) => {
+      const newValue = parseSafeHsl(value, type);
+      const newHsl = { ...hsl, [type]: newValue };
+      setBaseColor({
+        type: 'hsl',
+        value: newHsl,
+      });
+    },
+    [hsl],
+  );
 
   return (
-    <div className="flex flex-col gap-4">
-      <div className="flex items-center justify-center gap-3">
-        <FormControl
-          label="変換前"
-          renderInput={({ describedbyId, ...props }) => {
-            return (
-              <Select
-                describedbyId={describedbyId}
-                value={colorTypeFrom.toString()}
-                onChange={(value) =>
-                  handleChangeColorType(value, setColorTypeFrom)
-                }
-                options={COLOR_TYPE_OPTIONS}
-                {...props}
-              />
-            );
-          }}
-        />
-        <ArrowBigRightDash aria-label="右矢印" className="size-14" />
-        <FormControl
-          label="変換後"
-          renderInput={({ describedbyId, ...props }) => {
-            return (
-              <Select
-                describedbyId={describedbyId}
-                value={colorTypeTo.toString()}
-                onChange={(value) =>
-                  handleChangeColorType(value, setColorTypeTo)
-                }
-                options={COLOR_TYPE_OPTIONS}
-                {...props}
-              />
-            );
-          }}
-        />
+    <div className="flex flex-col gap-8">
+      <div className="flex items-center justify-center">
+        <ColorTip color={`#${hex}`} />
       </div>
-      <div className="flex items-center gap-2">
+      <div className="flex flex-col items-center gap-6">
         <FormControl
-          label="変換する値"
+          label="hex"
           renderInput={(props) => {
-            if (colorTypeFrom === 'hex') {
-              return (
-                <div className="flex w-full items-center gap-2">
-                  #
-                  <TextField
-                    value={hexFrom}
-                    onChange={(from: string) => setHexFrom(from)}
-                    {...props}
-                  />
-                </div>
-              );
-            }
-            const { id, describedbyId, ...rest } = props;
             return (
-              <div className="flex items-center gap-2">
-                rgb(
+              <div className="flex w-full items-center gap-2">
+                #
                 <TextField
-                  id={id}
-                  describedbyId={describedbyId}
-                  value={rgbFrom.r.toString()}
-                  onChange={(from: string) =>
-                    handleChangeRgbFrom(from, 'r')
-                  }
-                  {...rest}
+                  value={hex}
+                  onChange={handleChangeHex}
+                  {...props}
                 />
-                <TextField
-                  value={rgbFrom.g.toString()}
-                  onChange={(from: string) =>
-                    handleChangeRgbFrom(from, 'g')
-                  }
-                  {...rest}
-                />
-                <TextField
-                  value={rgbFrom.b.toString()}
-                  onChange={(from: string) =>
-                    handleChangeRgbFrom(from, 'b')
-                  }
-                  {...rest}
-                />
-                <TextField
-                  value={rgbFrom.a?.toString() ?? ''}
-                  onChange={(from: string) =>
-                    handleChangeRgbFrom(from, 'a')
-                  }
-                  {...rest}
-                />
-                )
               </div>
             );
           }}
         />
-      </div>
-      <div className="flex items-center justify-center gap-2">
-        <ColorTip color={textTo} />
-        <p className="text-lg font-bold">{textTo}</p>
+        <FormControl
+          label="rgb"
+          labelAs="legend"
+          renderInput={(props) => {
+            const { id, describedbyId, ...rest } = props;
+            return (
+              <div className="flex flex-wrap items-center gap-2 sm:flex-nowrap">
+                <span className="sr-only sm:not-sr-only">rgb(</span>
+                <label
+                  htmlFor={id}
+                  className="not-sr-only text-sm font-bold sm:sr-only"
+                >
+                  Red
+                </label>
+                <NumberField
+                  id={id}
+                  describedbyId={describedbyId}
+                  value={rgb.r}
+                  onChange={(red) => handleChangeRgb(red, 'r')}
+                  max={255}
+                  min={0}
+                  {...rest}
+                />
+                <span className="sr-only sm:not-sr-only">,</span>
+                <label
+                  htmlFor={`${id}-rgb-green`}
+                  className="not-sr-only text-sm font-bold sm:sr-only"
+                >
+                  Green
+                </label>
+                <NumberField
+                  id={`${id}-rgb-green`}
+                  value={rgb.g}
+                  onChange={(green) => handleChangeRgb(green, 'g')}
+                  max={255}
+                  min={0}
+                  {...rest}
+                />
+                <span className="sr-only sm:not-sr-only">,</span>
+                <label
+                  htmlFor={`${id}-rgb-blue`}
+                  className="not-sr-only text-sm font-bold sm:sr-only"
+                >
+                  Blue
+                </label>
+                <NumberField
+                  id={`${id}-rgb-blue`}
+                  value={rgb.b}
+                  onChange={(blue) => handleChangeRgb(blue, 'b')}
+                  max={255}
+                  min={0}
+                  {...rest}
+                />
+                <span className="sr-only sm:not-sr-only">/</span>
+                <label
+                  htmlFor={`${id}-rgb-alpha`}
+                  className="not-sr-only text-sm font-bold sm:sr-only"
+                >
+                  Alpha
+                </label>
+                <NumberField
+                  id={`${id}-rgb-alpha`}
+                  value={rgb.a ?? 1}
+                  onChange={(alpha) => handleChangeRgb(alpha, 'a')}
+                  max={1}
+                  min={0}
+                  step={0.01}
+                  precision={2}
+                  {...rest}
+                />
+                <span className="sr-only sm:not-sr-only">)</span>
+              </div>
+            );
+          }}
+        />
+        <FormControl
+          label="hsl"
+          labelAs="legend"
+          renderInput={(props) => {
+            const { id, describedbyId, ...rest } = props;
+            return (
+              <div className="flex flex-wrap items-center gap-2 sm:flex-nowrap">
+                <span className="sr-only sm:not-sr-only">hsl(</span>
+                <label
+                  htmlFor={id}
+                  className="not-sr-only text-sm font-bold sm:sr-only"
+                >
+                  Hue
+                </label>
+                <NumberField
+                  id={id}
+                  describedbyId={describedbyId}
+                  value={hsl.h}
+                  onChange={(hue) => handleChangeHsl(hue, 'h')}
+                  max={360}
+                  min={0}
+                  {...rest}
+                />
+                <span className="sr-only sm:not-sr-only">,</span>
+                <label
+                  htmlFor={`${id}-hsl-saturation`}
+                  className="not-sr-only text-sm font-bold sm:sr-only"
+                >
+                  Saturation
+                </label>
+                <NumberField
+                  id={`${id}-hsl-saturation`}
+                  value={hsl.s}
+                  onChange={(saturation) =>
+                    handleChangeHsl(saturation, 's')
+                  }
+                  max={100}
+                  min={0}
+                  {...rest}
+                />
+                <span className="sr-only sm:not-sr-only">,</span>
+                <label
+                  htmlFor={`${id}-hsl-lightness`}
+                  className="not-sr-only text-sm font-bold sm:sr-only"
+                >
+                  Lightness
+                </label>
+                <NumberField
+                  id={`${id}-hsl-lightness`}
+                  value={hsl.l}
+                  onChange={(lightness) =>
+                    handleChangeHsl(lightness, 'l')
+                  }
+                  max={100}
+                  min={0}
+                  {...rest}
+                />
+                <span className="sr-only sm:not-sr-only">/</span>
+                <label
+                  htmlFor={`${id}-hsl-alpha`}
+                  className="not-sr-only text-sm font-bold sm:sr-only"
+                >
+                  Alpha
+                </label>
+                <NumberField
+                  id={`${id}-hsl-alpha`}
+                  value={hsl.a ?? 1}
+                  onChange={(alpha) => handleChangeHsl(alpha, 'a')}
+                  max={1}
+                  min={0}
+                  step={0.01}
+                  precision={2}
+                  {...rest}
+                />
+                <span className="sr-only sm:not-sr-only">)</span>
+              </div>
+            );
+          }}
+        />
       </div>
     </div>
   );
