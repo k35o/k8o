@@ -51,7 +51,7 @@
     "@vercel/postgres": "0.10.0",
     "@vercel/speed-insights": "1.0.12",
     "autoprefixer": "10.4.20",
-    "budoux": "0.6.2",
+    "budoux": "0.6.3",
     "clsx": "2.1.1",
     "date-fns": "4.1.0",
     "drizzle-orm": "0.35.2",
