@@ -41,7 +41,7 @@
     "install-playwright": "playwright install --with-deps"
   },
   "dependencies": {
-    "@floating-ui/react": "0.26.25",
+    "@floating-ui/react": "0.26.27",
     "@mdx-js/loader": "3.1.0",
     "@mdx-js/react": "3.1.0",
     "@next/env": "14.2.16",
