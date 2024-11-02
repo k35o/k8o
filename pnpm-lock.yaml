@@ -105,9 +105,6 @@ importers:
       '@storybook/addon-essentials':
         specifier: 8.4.1
         version: 8.4.1(@types/react@18.3.12)(storybook@8.4.1(bufferutil@4.0.8)(prettier@3.3.3))
-      '@storybook/addon-interactions':
-        specifier: 8.4.1
-        version: 8.4.1(storybook@8.4.1(bufferutil@4.0.8)(prettier@3.3.3))
       '@storybook/addon-links':
         specifier: 8.4.1
         version: 8.4.1(react@18.3.1)(storybook@8.4.1(bufferutil@4.0.8)(prettier@3.3.3))
@@ -116,7 +113,7 @@ importers:
         version: 8.4.1(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(storybook@8.4.1(bufferutil@4.0.8)(prettier@3.3.3))
       '@storybook/experimental-addon-test':
         specifier: 8.4.1
-        version: 8.4.1(@vitest/browser@2.1.4(@types/node@22.8.6)(bufferutil@4.0.8)(playwright@1.48.2)(typescript@5.6.3)(vite@5.3.5(@types/node@22.8.6)(terser@5.31.3))(vitest@2.1.4))(@vitest/runner@2.1.4)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(storybook@8.4.1(bufferutil@4.0.8)(prettier@3.3.3))(vitest@2.1.4(@types/node@22.8.6)(@vitest/browser@2.1.4)(@vitest/ui@2.1.4)(jsdom@25.0.1(bufferutil@4.0.8))(msw@2.6.0(@types/node@22.8.6)(typescript@5.6.3))(terser@5.31.3))
+        version: 8.4.1(@vitest/browser@2.1.4)(@vitest/runner@2.1.4)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(storybook@8.4.1(bufferutil@4.0.8)(prettier@3.3.3))(vitest@2.1.4)
       '@storybook/experimental-nextjs-vite':
         specifier: 8.4.1
         version: 8.4.1(@babel/core@7.25.2)(@storybook/test@8.4.1(storybook@8.4.1(bufferutil@4.0.8)(prettier@3.3.3)))(next@14.2.16(@babel/core@7.25.2)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(storybook@8.4.1(bufferutil@4.0.8)(prettier@3.3.3))(typescript@5.6.3)(vite@5.3.5(@types/node@22.8.6)(terser@5.31.3))
@@ -155,7 +152,7 @@ importers:
         version: 2.1.4(@types/node@22.8.6)(bufferutil@4.0.8)(playwright@1.48.2)(typescript@5.6.3)(vite@5.3.5(@types/node@22.8.6)(terser@5.31.3))(vitest@2.1.4)
       '@vitest/coverage-istanbul':
         specifier: 2.1.4
-        version: 2.1.4(vitest@2.1.4(@types/node@22.8.6)(@vitest/browser@2.1.4)(@vitest/ui@2.1.4)(jsdom@25.0.1(bufferutil@4.0.8))(msw@2.6.0(@types/node@22.8.6)(typescript@5.6.3))(terser@5.31.3))
+        version: 2.1.4(vitest@2.1.4)
       '@vitest/ui':
         specifier: 2.1.4
         version: 2.1.4(vitest@2.1.4)
@@ -1832,11 +1829,6 @@ packages:
 
   '@storybook/addon-highlight@8.4.1':
     resolution: {integrity: sha512-BBkUd6+i7lUEWZwoJDlUIwrs7EXkk+EoREUi27iiA1Lilw+NNhoC3kcBmj3+MccjRyeMeIWAgYyXF5qeB2s/JQ==}
-    peerDependencies:
-      storybook: ^8.4.1
-
-  '@storybook/addon-interactions@8.4.1':
-    resolution: {integrity: sha512-rMxKehtQogV6Scjb/oqMFM0Mwn8NJRuGFDRJE3TBijNSJ2HPJms+xXp8KVZJengadlsF5HFwQBbnZzIeFDQRLw==}
     peerDependencies:
       storybook: ^8.4.1
 
@@ -7788,15 +7780,6 @@ snapshots:
       '@storybook/global': 5.0.0
       storybook: 8.4.1(bufferutil@4.0.8)(prettier@3.3.3)
 
-  '@storybook/addon-interactions@8.4.1(storybook@8.4.1(bufferutil@4.0.8)(prettier@3.3.3))':
-    dependencies:
-      '@storybook/global': 5.0.0
-      '@storybook/instrumenter': 8.4.1(storybook@8.4.1(bufferutil@4.0.8)(prettier@3.3.3))
-      '@storybook/test': 8.4.1(storybook@8.4.1(bufferutil@4.0.8)(prettier@3.3.3))
-      polished: 4.3.1
-      storybook: 8.4.1(bufferutil@4.0.8)(prettier@3.3.3)
-      ts-dedent: 2.2.0
-
   '@storybook/addon-links@8.4.1(react@18.3.1)(storybook@8.4.1(bufferutil@4.0.8)(prettier@3.3.3))':
     dependencies:
       '@storybook/csf': 0.1.11
@@ -7921,7 +7904,7 @@ snapshots:
     dependencies:
       type-fest: 2.19.0
 
-  '@storybook/experimental-addon-test@8.4.1(@vitest/browser@2.1.4(@types/node@22.8.6)(bufferutil@4.0.8)(playwright@1.48.2)(typescript@5.6.3)(vite@5.3.5(@types/node@22.8.6)(terser@5.31.3))(vitest@2.1.4))(@vitest/runner@2.1.4)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(storybook@8.4.1(bufferutil@4.0.8)(prettier@3.3.3))(vitest@2.1.4(@types/node@22.8.6)(@vitest/browser@2.1.4)(@vitest/ui@2.1.4)(jsdom@25.0.1(bufferutil@4.0.8))(msw@2.6.0(@types/node@22.8.6)(typescript@5.6.3))(terser@5.31.3))':
+  '@storybook/experimental-addon-test@8.4.1(@vitest/browser@2.1.4)(@vitest/runner@2.1.4)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(storybook@8.4.1(bufferutil@4.0.8)(prettier@3.3.3))(vitest@2.1.4)':
     dependencies:
       '@storybook/csf': 0.1.11
       '@storybook/global': 5.0.0
@@ -8464,7 +8447,7 @@ snapshots:
       - utf-8-validate
       - vite
 
-  '@vitest/coverage-istanbul@2.1.4(vitest@2.1.4(@types/node@22.8.6)(@vitest/browser@2.1.4)(@vitest/ui@2.1.4)(jsdom@25.0.1(bufferutil@4.0.8))(msw@2.6.0(@types/node@22.8.6)(typescript@5.6.3))(terser@5.31.3))':
+  '@vitest/coverage-istanbul@2.1.4(vitest@2.1.4)':
     dependencies:
       '@istanbuljs/schema': 0.1.3
       debug: 4.3.7
@@ -9696,7 +9679,7 @@ snapshots:
       debug: 4.3.7
       enhanced-resolve: 5.17.1
       eslint: 8.57.1
-      eslint-module-utils: 2.8.1(@typescript-eslint/parser@7.2.0(eslint@8.57.1)(typescript@5.6.3))(eslint-import-resolver-node@0.3.9)(eslint-import-resolver-typescript@3.6.1(@typescript-eslint/parser@7.2.0(eslint@8.57.1)(typescript@5.6.3))(eslint-import-resolver-node@0.3.9)(eslint-plugin-import@2.29.1)(eslint@8.57.1))(eslint@8.57.1)
+      eslint-module-utils: 2.8.1(@typescript-eslint/parser@7.2.0(eslint@8.57.1)(typescript@5.6.3))(eslint-import-resolver-node@0.3.9)(eslint-import-resolver-typescript@3.6.1)(eslint@8.57.1)
       eslint-plugin-import: 2.29.1(@typescript-eslint/parser@7.2.0(eslint@8.57.1)(typescript@5.6.3))(eslint-import-resolver-typescript@3.6.1)(eslint@8.57.1)
       fast-glob: 3.3.2
       get-tsconfig: 4.7.6
@@ -9708,7 +9691,7 @@ snapshots:
       - eslint-import-resolver-webpack
       - supports-color
 
-  eslint-module-utils@2.8.1(@typescript-eslint/parser@7.2.0(eslint@8.57.1)(typescript@5.6.3))(eslint-import-resolver-node@0.3.9)(eslint-import-resolver-typescript@3.6.1(@typescript-eslint/parser@7.2.0(eslint@8.57.1)(typescript@5.6.3))(eslint-import-resolver-node@0.3.9)(eslint-plugin-import@2.29.1)(eslint@8.57.1))(eslint@8.57.1):
+  eslint-module-utils@2.8.1(@typescript-eslint/parser@7.2.0(eslint@8.57.1)(typescript@5.6.3))(eslint-import-resolver-node@0.3.9)(eslint-import-resolver-typescript@3.6.1)(eslint@8.57.1):
     dependencies:
       debug: 3.2.7
     optionalDependencies:
@@ -9729,7 +9712,7 @@ snapshots:
       doctrine: 2.1.0
       eslint: 8.57.1
       eslint-import-resolver-node: 0.3.9
-      eslint-module-utils: 2.8.1(@typescript-eslint/parser@7.2.0(eslint@8.57.1)(typescript@5.6.3))(eslint-import-resolver-node@0.3.9)(eslint-import-resolver-typescript@3.6.1(@typescript-eslint/parser@7.2.0(eslint@8.57.1)(typescript@5.6.3))(eslint-import-resolver-node@0.3.9)(eslint-plugin-import@2.29.1)(eslint@8.57.1))(eslint@8.57.1)
+      eslint-module-utils: 2.8.1(@typescript-eslint/parser@7.2.0(eslint@8.57.1)(typescript@5.6.3))(eslint-import-resolver-node@0.3.9)(eslint-import-resolver-typescript@3.6.1)(eslint@8.57.1)
       hasown: 2.0.2
       is-core-module: 2.15.0
       is-glob: 4.0.3
