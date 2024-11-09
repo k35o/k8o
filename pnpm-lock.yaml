@@ -48,8 +48,8 @@ importers:
         specifier: 4.1.0
         version: 4.1.0
       drizzle-orm:
-        specifier: 0.36.0
-        version: 0.36.0(@libsql/client-wasm@0.14.0)(@neondatabase/serverless@0.9.4)(@types/pg@8.11.6)(@types/react@18.3.12)(@vercel/postgres@0.10.0)(react@18.3.1)
+        specifier: 0.36.1
+        version: 0.36.1(@libsql/client-wasm@0.14.0)(@neondatabase/serverless@0.9.4)(@types/pg@8.11.6)(@types/react@18.3.12)(@vercel/postgres@0.10.0)(react@18.3.1)
       framer-motion:
         specifier: 11.11.11
         version: 11.11.11(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
@@ -3162,8 +3162,8 @@ packages:
     resolution: {integrity: sha512-4BNA0T2blN+jW5wSwhtc+FIlCMuxYSMWCnYYdOBi5rttwq8aVXRUid0d0NCzcBKtZQSPZGAUxy+TXr7Q1OgEug==}
     hasBin: true
 
-  drizzle-orm@0.36.0:
-    resolution: {integrity: sha512-6BETYPdKSR7cDHC0ZfqZk2VrKJ8n/Rfd3ajFPsAbc69gi87nwZ6oBA2wUGMELHA0tQE4kUKN0Ds00LUZQ6Z69A==}
+  drizzle-orm@0.36.1:
+    resolution: {integrity: sha512-F4hbimnMEhyWzDowQB4xEuVJJWXLHZYD7FYwvo8RImY+N7pStGqsbfmT95jDbec1s4qKmQbiuxEDZY90LRrfIw==}
     peerDependencies:
       '@aws-sdk/client-rds-data': '>=3'
       '@cloudflare/workers-types': '>=3'
@@ -9396,7 +9396,7 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  drizzle-orm@0.36.0(@libsql/client-wasm@0.14.0)(@neondatabase/serverless@0.9.4)(@types/pg@8.11.6)(@types/react@18.3.12)(@vercel/postgres@0.10.0)(react@18.3.1):
+  drizzle-orm@0.36.1(@libsql/client-wasm@0.14.0)(@neondatabase/serverless@0.9.4)(@types/pg@8.11.6)(@types/react@18.3.12)(@vercel/postgres@0.10.0)(react@18.3.1):
     optionalDependencies:
       '@libsql/client-wasm': 0.14.0
       '@neondatabase/serverless': 0.9.4
