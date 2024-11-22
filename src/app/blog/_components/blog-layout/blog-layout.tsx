@@ -72,9 +72,11 @@ export const BlogLayout: FC<{
           {children}
         </article>
       )}
-      <div className="hidden h-full w-64 flex-shrink-0 xl:block">
-        <TableOfContext slug={slug} />
-      </div>
+      <ErrorBoundary fallback={<></>}>
+        <div className="hidden h-full w-64 flex-shrink-0 xl:block">
+          <TableOfContext slug={slug} />
+        </div>
+      </ErrorBoundary>
     </div>
   );
 };
