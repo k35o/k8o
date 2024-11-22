@@ -7,6 +7,7 @@ import { getBlog } from '#actions/blog';
 import { Separator } from '@/components/separator';
 import { ReportView } from '../report-view';
 import { TextTag } from '@/components/text-tag';
+import { TableOfContext } from '../table-of-context';
 
 export const BlogLayout: FC<{
   children: ReactNode;
@@ -15,7 +16,7 @@ export const BlogLayout: FC<{
   const blog = await getBlog({ slug });
 
   return (
-    <div className="flex flex-col gap-4">
+    <div className="relative flex flex-col gap-4">
       {blog ? (
         <article className="rounded-lg bg-bgBase/90 px-3 pb-14 pt-8 sm:px-10">
           <ReportView blogId={blog.id} />
@@ -71,6 +72,9 @@ export const BlogLayout: FC<{
           {children}
         </article>
       )}
+      <div className="absolute -right-72 top-0 h-full w-64">
+        <TableOfContext slug={slug} />
+      </div>
     </div>
   );
 };
