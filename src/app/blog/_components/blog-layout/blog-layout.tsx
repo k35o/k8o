@@ -16,7 +16,7 @@ export const BlogLayout: FC<{
   const blog = await getBlog({ slug });
 
   return (
-    <div className="relative flex flex-col gap-4">
+    <div className="relative gap-4 xl:-mx-36 xl:flex">
       {blog ? (
         <article className="rounded-lg bg-bgBase/90 px-3 pb-14 pt-8 sm:px-10">
           <ReportView blogId={blog.id} />
@@ -72,7 +72,7 @@ export const BlogLayout: FC<{
           {children}
         </article>
       )}
-      <div className="absolute -right-72 top-0 h-full w-64">
+      <div className="hidden h-full w-64 flex-shrink-0 xl:block">
         <TableOfContext slug={slug} />
       </div>
     </div>
