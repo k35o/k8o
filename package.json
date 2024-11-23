@@ -101,7 +101,7 @@
     "eslint-config-next": "14.2.18",
     "eslint-config-prettier": "9.1.0",
     "eslint-plugin-jsx-a11y": "6.10.2",
-    "eslint-plugin-storybook": "0.11.0",
+    "eslint-plugin-storybook": "0.11.1",
     "lefthook": "1.8.2",
     "msw": "2.6.5",
     "msw-storybook-addon": "2.0.4",
