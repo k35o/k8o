@@ -5,10 +5,12 @@ import { PropsWithChildren } from 'react';
 
 export const metadata = {
   title: 'Blog',
-  description: 'k8oのブログです。',
+  description:
+    'k8oのブログです。ジャンルを問わず、身の回りのことを書きます。',
   openGraph: {
     title: 'Blog',
-    description: 'k8oのブログです。',
+    description:
+      'k8oのブログです。ジャンルを問わず、身の回りのことを書きます。',
     url: 'https://k8o.me/blog',
     siteName: 'k8o',
     locale: 'ja',
@@ -17,7 +19,8 @@ export const metadata = {
   twitter: {
     title: 'Blog',
     card: 'summary',
-    description: 'k8oのブログです。',
+    description:
+      'k8oのブログです。ジャンルを問わず、身の回りのことを書きます。',
   },
 };
 

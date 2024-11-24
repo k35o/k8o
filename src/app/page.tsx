@@ -3,8 +3,9 @@ import k8o from './_images/k8o.jpg';
 import Image from 'next/image';
 import { IconLink } from '@/components/icon-link';
 import { GithubMark, Qiita, Zenn } from '@/components/icons';
-import { ShowCase } from './_components/showcase';
 import { Card } from '@/components/card';
+import { AppCard } from './_components/app-card';
+import { RoundedIcon } from './radius-maker/_components/rounded-icon';
 
 export default function Home() {
   return (
@@ -55,31 +56,62 @@ export default function Home() {
       </Card>
       <div className="flex flex-col gap-6">
         <Heading type="h2">アプリケーション</Heading>
-        <ShowCase.Container>
-          <ShowCase.Item
-            link="/characters"
-            emotion="📄"
-            title="Characters"
+        <div className="grid gap-8 md:grid-cols-2">
+          <AppCard
+            link="/blog"
+            symbol="📕"
+            title="Blog"
+            description="k8oのブログです。ジャンルを問わず、身の回りのことを書きます。"
           />
-          <ShowCase.Item link="/number" emotion="🔢" title="Number" />
-          <ShowCase.Item link="/colors" emotion="🎨" title="Colors" />
-          <ShowCase.Item
-            link="/designs"
-            emotion="🧑‍🎨"
-            title="Designs"
+          <AppCard
+            link="/moji-count"
+            symbol="📏"
+            title="もじカウント"
+            description="テキストの文字数を簡単かつ正確にカウントできるシンプルなツールです。日本語、英語、記号、絵文字、テキストの種類を問わず分析できます。"
           />
-          <ShowCase.Item
-            link="/engineerings"
-            emotion="🧑‍💻"
-            title="Engineerings"
+          <AppCard
+            link="/japanese-text-fixer"
+            symbol="🧐"
+            title="日本語校正くん"
+            description="日本語文章の誤字脱字、文法ミス、表現の改善ポイントを簡単にチェックできるツールです。"
           />
-          <ShowCase.Item
+          <AppCard
+            link="/base-converter"
+            symbol="🧬"
+            title="基数チェンジャー"
+            description="整数を簡単に異なる進数表現に変換するツールです。"
+          />
+          <AppCard
+            link="/contrast-checker"
+            symbol="⚖️"
+            title="コントラストチェッカー"
+            description="2つの色のコントラスト比を計算し、アクセシビリティ基準を満たしているか確認するツールです。"
+          />
+          <AppCard
+            link="/color-converter"
+            symbol="🎨"
+            title="カラーコード職人"
+            description="色の表現方法を自由に変換できるツールです。"
+          />
+          <AppCard
+            link="/radius-maker"
+            symbol={<RoundedIcon />}
+            title="かどまるラボ"
+            description="角丸を決めてお気に入りの図形を探しましょう"
+          />
+          <AppCard
+            link="/sql-table-builder"
+            symbol="🔨"
+            title="SQLテーブルメーカー"
+            description="データベーステーブルの作成用SQL分を簡単に生成するツールです。"
+          />
+          <AppCard
             link="/quizzes"
-            emotion="💡"
+            symbol="💡"
             title="Quizzes"
+            description="色々なジャンルのクイズを出します"
           />
-          <ShowCase.Item link="/blog" emotion="📕" title="Blog" />
-        </ShowCase.Container>
+        </div>
       </div>
     </div>
   );
