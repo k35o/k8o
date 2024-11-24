@@ -36,7 +36,7 @@ export default async function TwitterImage() {
             width: 384,
           }}
         >
-          🧑‍💻
+          🔨
         </div>
       </div>
     ),

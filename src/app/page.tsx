@@ -5,6 +5,7 @@ import { IconLink } from '@/components/icon-link';
 import { GithubMark, Qiita, Zenn } from '@/components/icons';
 import { Card } from '@/components/card';
 import { AppCard } from './_components/app-card';
+import { RoundedIcon } from './radius-maker/_components/rounded-icon';
 
 export default function Home() {
   return (
@@ -94,13 +95,13 @@ export default function Home() {
           />
           <AppCard
             link="/radius-maker"
-            symbol="🧑‍🎨"
+            symbol={<RoundedIcon />}
             title="かどまるラボ"
             description="角丸を決めてお気に入りの図形を探しましょう"
           />
           <AppCard
             link="/sql-table-builder"
-            symbol="🧑‍💻"
+            symbol="🔨"
             title="SQLテーブルメーカー"
             description="データベーステーブルの作成用SQL分を簡単に生成するツールです。"
           />

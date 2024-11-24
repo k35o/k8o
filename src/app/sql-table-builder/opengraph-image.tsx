@@ -36,7 +36,7 @@ export default async function OpenGraphImage() {
             justifyContent: 'center',
           }}
         >
-          🧑‍💻
+          🔨
         </div>
       </div>
     ),
