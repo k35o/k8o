@@ -51,10 +51,8 @@ export const metadata: Metadata = {
 
 export default function RootLayout({
   children,
-  modal,
 }: {
   children: ReactNode;
-  modal: ReactNode;
 }) {
   return (
     <html lang="ja" suppressHydrationWarning>
@@ -67,7 +65,6 @@ export default function RootLayout({
       >
         <AppProvider>
           <GlobalLayout>{children}</GlobalLayout>
-          {modal}
         </AppProvider>
         <Analytics />
         <SpeedInsights />

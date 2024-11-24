@@ -12,18 +12,20 @@ type Story = StoryObj<typeof AppCard>;
 
 export const Primary: Story = {
   args: {
-    link: '/characters/counter',
-    emotion: '📏',
-    title: '文字数カウンター',
-    description: '入力した文字列の長さをカウントします。',
+    link: '/moji-count',
+    symbol: '📏',
+    title: 'もじカウント',
+    description:
+      'テキストの文字数を簡単かつ正確にカウントできるシンプルなツールです。日本語、英語、記号、絵文字、テキストの種類を問わず分析できます。',
   },
 };
 
 export const EmotionIsElement: Story = {
   args: {
-    link: '/characters/counter',
-    emotion: <Link className="size-24 text-textHighlight" />,
-    title: '文字数カウンター',
-    description: '入力した文字列の長さをカウントします。',
+    link: '/moji-count',
+    symbol: <Link className="size-12 text-textHighlight" />,
+    title: 'もじカウント',
+    description:
+      'テキストの文字数を簡単かつ正確にカウントできるシンプルなツールです。日本語、英語、記号、絵文字、テキストの種類を問わず分析できます。',
   },
 };

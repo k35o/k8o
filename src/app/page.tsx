@@ -3,8 +3,8 @@ import k8o from './_images/k8o.jpg';
 import Image from 'next/image';
 import { IconLink } from '@/components/icon-link';
 import { GithubMark, Qiita, Zenn } from '@/components/icons';
-import { ShowCase } from './_components/showcase';
 import { Card } from '@/components/card';
+import { AppCard } from './_components/app-card';
 
 export default function Home() {
   return (
@@ -55,49 +55,62 @@ export default function Home() {
       </Card>
       <div className="flex flex-col gap-6">
         <Heading type="h2">アプリケーション</Heading>
-        <ShowCase.Container>
-          <ShowCase.Item link="/blog" emotion="📕" title="Blog" />
-          <ShowCase.Item
+        <div className="grid gap-8 md:grid-cols-2">
+          <AppCard
+            link="/blog"
+            symbol="📕"
+            title="Blog"
+            description="k8oのブログです。ジャンルを問わず、身の回りのことを書きます。"
+          />
+          <AppCard
             link="/moji-count"
-            emotion="📏"
+            symbol="📏"
             title="もじカウント"
+            description="テキストの文字数を簡単かつ正確にカウントできるシンプルなツールです。日本語、英語、記号、絵文字、テキストの種類を問わず分析できます。"
           />
-          <ShowCase.Item
+          <AppCard
             link="/japanese-text-fixer"
-            emotion="🧐"
+            symbol="🧐"
             title="日本語校正くん"
+            description="日本語文章の誤字脱字、文法ミス、表現の改善ポイントを簡単にチェックできるツールです。"
           />
-          <ShowCase.Item
+          <AppCard
             link="/base-converter"
-            emotion="🧬"
+            symbol="🧬"
             title="基数チェンジャー"
+            description="整数を簡単に異なる進数表現に変換するツールです。"
           />
-          <ShowCase.Item
+          <AppCard
             link="/contrast-checker"
-            emotion="⚖️"
+            symbol="⚖️"
             title="コントラストチェッカー"
+            description="2つの色のコントラスト比を計算し、アクセシビリティ基準を満たしているか確認するツールです。"
           />
-          <ShowCase.Item
+          <AppCard
             link="/color-converter"
-            emotion="🎨"
+            symbol="🎨"
             title="カラーコード職人"
+            description="色の表現方法を自由に変換できるツールです。"
           />
-          <ShowCase.Item
+          <AppCard
             link="/radius-maker"
-            emotion="🧑‍🎨"
+            symbol="🧑‍🎨"
             title="かどまるラボ"
+            description="角丸を決めてお気に入りの図形を探しましょう"
           />
-          <ShowCase.Item
+          <AppCard
             link="/sql-table-builder"
-            emotion="🧑‍💻"
+            symbol="🧑‍💻"
             title="SQLテーブルメーカー"
+            description="データベーステーブルの作成用SQL分を簡単に生成するツールです。"
           />
-          <ShowCase.Item
+          <AppCard
             link="/quizzes"
-            emotion="💡"
+            symbol="💡"
             title="Quizzes"
+            description="色々なジャンルのクイズを出します"
           />
-        </ShowCase.Container>
+        </div>
       </div>
     </div>
   );
