@@ -56,29 +56,47 @@ export default function Home() {
       <div className="flex flex-col gap-6">
         <Heading type="h2">アプリケーション</Heading>
         <ShowCase.Container>
+          <ShowCase.Item link="/blog" emotion="📕" title="Blog" />
           <ShowCase.Item
-            link="/characters"
-            emotion="📄"
-            title="Characters"
+            link="/moji-count"
+            emotion="📏"
+            title="もじカウント"
           />
-          <ShowCase.Item link="/number" emotion="🔢" title="Number" />
-          <ShowCase.Item link="/colors" emotion="🎨" title="Colors" />
           <ShowCase.Item
-            link="/designs"
+            link="/japanese-text-fixer"
+            emotion="🧐"
+            title="日本語校正くん"
+          />
+          <ShowCase.Item
+            link="/base-converter"
+            emotion="🧬"
+            title="基数チェンジャー"
+          />
+          <ShowCase.Item
+            link="/contrast-checker"
+            emotion="⚖️"
+            title="コントラストチェッカー"
+          />
+          <ShowCase.Item
+            link="/color-converter"
+            emotion="🎨"
+            title="カラーコード職人"
+          />
+          <ShowCase.Item
+            link="/radius-maker"
             emotion="🧑‍🎨"
-            title="Designs"
+            title="かどまるラボ"
           />
           <ShowCase.Item
-            link="/engineerings"
+            link="/sql-table-builder"
             emotion="🧑‍💻"
-            title="Engineerings"
+            title="SQLテーブルメーカー"
           />
           <ShowCase.Item
             link="/quizzes"
             emotion="💡"
             title="Quizzes"
           />
-          <ShowCase.Item link="/blog" emotion="📕" title="Blog" />
         </ShowCase.Container>
       </div>
     </div>
