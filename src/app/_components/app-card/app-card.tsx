@@ -17,7 +17,7 @@ export const AppCard = <T extends string>({
 }) => {
   return (
     <InteractiveCard>
-      <Link href={link} scroll={false}>
+      <Link href={link}>
         <div className="flex flex-col items-center gap-4 p-4">
           <div className="flex size-24 shrink-0 items-center justify-center rounded-full bg-bgSecondary text-5xl">
             {symbol}
