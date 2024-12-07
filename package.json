@@ -88,7 +88,7 @@
     "@types/mdast": "4.0.4",
     "@types/mdx": "2.0.13",
     "@types/node": "22.10.1",
-    "@types/react": "18.3.14",
+    "@types/react": "18.3.13",
     "@types/react-dom": "18.3.2",
     "@vitejs/plugin-react": "4.3.4",
     "@vitest/browser": "2.1.8",
