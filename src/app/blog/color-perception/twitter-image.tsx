@@ -26,7 +26,7 @@ export default async function TwitterImage() {
           display: 'flex',
           backgroundColor: '#50e2d2',
           backgroundImage:
-            'linear-gradient(62deg, #50e2d2 0%, #8584ae 100%)',
+            'linear-gradient(62deg, #50e2d2 0%, #0ea5e9 100%)',
           justifyContent: 'center',
           width: '100%',
           height: '100%',
