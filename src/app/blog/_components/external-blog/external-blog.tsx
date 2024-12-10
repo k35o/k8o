@@ -2,6 +2,7 @@
 
 import { IconLink } from '@/components/icon-link';
 import { Qiita, Zenn } from '@/components/icons';
+import { Rss } from 'lucide-react';
 import { FC } from 'react';
 
 export const ExternalBlog: FC = () => {
@@ -12,6 +13,9 @@ export const ExternalBlog: FC = () => {
       </IconLink>
       <IconLink href="https://zenn.dev/kokisakano" bg="base">
         <Zenn title="Zennのアカウント" className="size-6" />
+      </IconLink>
+      <IconLink href="/blog/feed" bg="base" label="rss">
+        <Rss className="size-6" />
       </IconLink>
     </div>
   );
