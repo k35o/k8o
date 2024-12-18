@@ -1,0 +1,1 @@
+ALTER TABLE "blogs" ALTER COLUMN "updated_at" SET DEFAULT now();

@@ -99,7 +99,8 @@ export const blogs = pgTable(
       .defaultNow(),
     updatedAt: timestamp('updated_at', { withTimezone: true })
       .notNull()
-      .$onUpdate(() => new Date()),
+      .$onUpdate(() => new Date())
+      .defaultNow(),
   },
   (table) => [
     uniqueIndex().on(table.title),
