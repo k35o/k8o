@@ -46,14 +46,16 @@ export const BlogLayout: FC<{
                 </Suspense>
               </ErrorBoundary>
             </div>
-            <div
-              className="rounded-lg bg-bgSecondary p-4"
-              aria-label="記事の要約"
-            >
-              <p className="text-sm text-textBody sm:text-base">
-                {blog.description}
-              </p>
-            </div>
+            {blog.description && (
+              <div
+                className="rounded-lg bg-bgSecondary p-4"
+                aria-label="記事の要約"
+              >
+                <p className="text-sm text-textBody sm:text-base">
+                  {blog.description}
+                </p>
+              </div>
+            )}
           </div>
           <div className="mb-2 mt-4 w-full sm:mb-4 sm:mt-8">
             <Separator />
@@ -73,7 +75,7 @@ export const BlogLayout: FC<{
         </article>
       )}
       <ErrorBoundary fallback={<></>}>
-        <div className="hidden w-64 flex-shrink-0 xl:block">
+        <div className="hidden w-64 flex-shrink-0 empty:hidden xl:block">
           <TableOfContext slug={slug} />
         </div>
       </ErrorBoundary>

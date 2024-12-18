@@ -139,6 +139,10 @@ export const TableOfContext: FC<{ slug: string }> = async ({
       ),
     );
 
+  if (headingTree.children.length === 0) {
+    return null;
+  }
+
   return (
     <div className="sticky top-4 rounded-lg bg-bgBase/90 p-4">
       <h3 className="text-lg font-bold text-textBody">目次</h3>

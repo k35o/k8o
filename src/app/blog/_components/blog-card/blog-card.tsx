@@ -49,9 +49,11 @@ export const BlogCardContent: FC<Omit<BlogCardProps, 'link'>> = ({
       <Heading type="h3" lineClamp={3}>
         {title}
       </Heading>
-      <p className="line-clamp-3 text-sm text-textDescription">
-        {description}
-      </p>
+      {description && (
+        <p className="line-clamp-3 text-sm text-textDescription">
+          {description}
+        </p>
+      )}
     </div>
     <div className="flex flex-wrap items-center justify-between gap-2">
       {tags.length > 0 && (
