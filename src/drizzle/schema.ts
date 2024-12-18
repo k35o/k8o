@@ -17,11 +17,7 @@ export const quizzes = pgTable(
       .notNull()
       .references(() => quizType.id),
   },
-  (table) => {
-    return {
-      typeIdx: index().on(table.type),
-    };
-  },
+  (table) => [index().on(table.type)],
 );
 
 export const quizType = pgTable(
@@ -30,11 +26,7 @@ export const quizType = pgTable(
     id: serial('id').primaryKey(),
     name: text('name').notNull(),
   },
-  (table) => {
-    return {
-      uniqueNameIdx: uniqueIndex().on(table.name),
-    };
-  },
+  (table) => [uniqueIndex().on(table.name)],
 );
 
 export const quizQuestions = pgTable(
@@ -47,11 +39,7 @@ export const quizQuestions = pgTable(
     highlight: text('highlight'),
     question: text('question').notNull(),
   },
-  (table) => {
-    return {
-      quizIdx: uniqueIndex().on(table.quizId),
-    };
-  },
+  (table) => [uniqueIndex().on(table.quizId)],
 );
 
 export const quizAnswers = pgTable(
@@ -64,11 +52,7 @@ export const quizAnswers = pgTable(
     answer: text('answer').notNull(),
     explanation: text('explanation'),
   },
-  (table) => {
-    return {
-      quizIdx: index().on(table.quizId),
-    };
-  },
+  (table) => [index().on(table.quizId)],
 );
 
 export const quizzesRelations = relations(
@@ -115,14 +99,13 @@ export const blogs = pgTable(
       .defaultNow(),
     updatedAt: timestamp('updated_at', { withTimezone: true })
       .notNull()
-      .$onUpdate(() => new Date()),
+      .$onUpdate(() => new Date())
+      .defaultNow(),
   },
-  (table) => {
-    return {
-      uniqueTitleIdx: uniqueIndex().on(table.title),
-      uniqueSlugIdx: uniqueIndex().on(table.slug),
-    };
-  },
+  (table) => [
+    uniqueIndex().on(table.title),
+    uniqueIndex().on(table.slug),
+  ],
 );
 
 export const blogViews = pgTable(
@@ -134,11 +117,7 @@ export const blogViews = pgTable(
       .primaryKey(),
     views: integer('views').notNull().default(0),
   },
-  (table) => {
-    return {
-      blogIdx: index().on(table.blogId),
-    };
-  },
+  (table) => [index().on(table.blogId)],
 );
 
 export const tags = pgTable(
@@ -147,11 +126,7 @@ export const tags = pgTable(
     id: serial('id').primaryKey(),
     name: text('name').notNull(),
   },
-  (table) => {
-    return {
-      uniqueNameIdx: uniqueIndex().on(table.name),
-    };
-  },
+  (table) => [uniqueIndex().on(table.name)],
 );
 
 export const blogTag = pgTable(
@@ -164,13 +139,11 @@ export const blogTag = pgTable(
       .notNull()
       .references(() => tags.id),
   },
-  (table) => {
-    return {
-      blogIdx: index().on(table.blogId),
-      tagIdx: index().on(table.tagId),
-      uniqueBlogTagIdx: uniqueIndex().on(table.blogId, table.tagId),
-    };
-  },
+  (table) => [
+    index().on(table.blogId),
+    index().on(table.tagId),
+    uniqueIndex().on(table.blogId, table.tagId),
+  ],
 );
 
 export const blogsRelations = relations(blogs, ({ one, many }) => ({

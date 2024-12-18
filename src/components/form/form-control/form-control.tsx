@@ -1,4 +1,4 @@
-import { FC, useId } from 'react';
+import { FC, ReactElement, useId } from 'react';
 
 type FormControlProps = {
   isDisabled?: boolean;
@@ -15,7 +15,7 @@ type FormControlProps = {
     isDisabled: boolean;
     isInvalid: boolean;
     isRequired: boolean;
-  }) => JSX.Element;
+  }) => ReactElement;
 };
 
 export const FormControl: FC<FormControlProps> = ({
