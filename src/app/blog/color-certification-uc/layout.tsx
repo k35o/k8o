@@ -13,11 +13,11 @@ export async function generateMetadata(): Promise<Metadata> {
 
   return {
     title: blog.title,
-    description: blog.description,
+    description: blog.description ?? blog.title,
     category: '色彩検定 UC級',
     openGraph: {
       title: blog.title,
-      description: blog.description,
+      description: blog.description ?? blog.title,
       url: 'https://k8o.me/blog/color-certification-uc',
       publishedTime: blog.createdAt.toString(),
       authors: ['k8o'],
@@ -28,7 +28,7 @@ export async function generateMetadata(): Promise<Metadata> {
     twitter: {
       title: blog.title,
       card: 'summary_large_image',
-      description: blog.description,
+      description: blog.description ?? blog.title,
     },
   };
 }
