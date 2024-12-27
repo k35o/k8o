@@ -90,7 +90,7 @@ export const ControlPanel: FC = () => {
           }}
           position={{
             top: '-9px',
-            left: `calc(${position.topLeftX}% - 9px)`,
+            left: `calc(${position.topLeftX.toString()}% - 9px)`,
           }}
         />
         <OperateButton
@@ -108,7 +108,7 @@ export const ControlPanel: FC = () => {
           }}
           position={{
             top: '-9px',
-            right: `calc(${position.topRightX}% - 9px)`,
+            right: `calc(${position.topRightX.toString()}% - 9px)`,
           }}
         />
         <OperateButton
@@ -125,7 +125,7 @@ export const ControlPanel: FC = () => {
             keyDownHandler(e, 'topLeftY');
           }}
           position={{
-            top: `calc(${position.topLeftY}% - 9px)`,
+            top: `calc(${position.topLeftY.toString()}% - 9px)`,
             left: '-9px',
           }}
         />
@@ -143,7 +143,7 @@ export const ControlPanel: FC = () => {
             keyDownHandler(e, 'topRightY');
           }}
           position={{
-            top: `calc(${position.topRightY}% - 9px)`,
+            top: `calc(${position.topRightY.toString()}% - 9px)`,
             right: '-9px',
           }}
         />
@@ -161,7 +161,7 @@ export const ControlPanel: FC = () => {
             keyDownHandler(e, 'bottomLeftY');
           }}
           position={{
-            bottom: `calc(${position.bottomLeftY}% - 9px)`,
+            bottom: `calc(${position.bottomLeftY.toString()}% - 9px)`,
             left: '-9px',
           }}
         />
@@ -179,7 +179,7 @@ export const ControlPanel: FC = () => {
             keyDownHandler(e, 'bottomRightY');
           }}
           position={{
-            bottom: `calc(${position.bottomRightY}% - 9px)`,
+            bottom: `calc(${position.bottomRightY.toString()}% - 9px)`,
             right: '-9px',
           }}
         />
@@ -198,7 +198,7 @@ export const ControlPanel: FC = () => {
           }}
           position={{
             bottom: '-9px',
-            left: `calc(${position.bottomLeftX}% - 9px)`,
+            left: `calc(${position.bottomLeftX.toString()}% - 9px)`,
           }}
         />
         <OperateButton
@@ -216,7 +216,7 @@ export const ControlPanel: FC = () => {
           }}
           position={{
             bottom: '-9px',
-            right: `calc(${position.bottomRightX}% - 9px)`,
+            right: `calc(${position.bottomRightX.toString()}% - 9px)`,
           }}
         />
       </div>
@@ -226,7 +226,7 @@ export const ControlPanel: FC = () => {
           label="値をコピーする"
           bg="base"
           onClick={() =>
-            writeClipboard(`border-radius: ${borderRadius}`)
+            void writeClipboard(`border-radius: ${borderRadius}`)
           }
         >
           <ClipboardPenLine className="size-6" />

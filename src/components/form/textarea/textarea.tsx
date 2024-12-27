@@ -33,7 +33,8 @@ export const Textarea: FC<Props> = ({
   useEffect(() => {
     if (ref.current && autoResize) {
       ref.current.style.height = 'auto';
-      ref.current.style.height = ref.current.scrollHeight + 'px';
+      ref.current.style.height =
+        ref.current.scrollHeight.toString() + 'px';
     }
   });
   return (

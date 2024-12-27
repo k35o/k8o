@@ -104,12 +104,10 @@ export const CreateRestriction: FC<Props> = ({
                 <Select
                   value={restriction.column}
                   onChange={(column) => {
-                    if (restriction.type === 'foreign') {
-                      setRestriction({
-                        ...restriction,
-                        column,
-                      });
-                    }
+                    setRestriction({
+                      ...restriction,
+                      column,
+                    });
                   }}
                   options={columnOptions}
                   {...props}

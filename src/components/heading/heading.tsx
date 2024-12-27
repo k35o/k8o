@@ -18,7 +18,7 @@ export const Heading: FC<Props> = ({
       <h1
         id={id}
         className={cn('text-3xl font-bold', {
-          [`line-clamp-${lineClamp}`]: lineClamp,
+          [`line-clamp-${lineClamp?.toString() ?? ''}`]: lineClamp,
         })}
       >
         {children}
@@ -30,7 +30,7 @@ export const Heading: FC<Props> = ({
       <h2
         id={id}
         className={cn('text-2xl font-bold', {
-          [`line-clamp-${lineClamp}`]: lineClamp,
+          [`line-clamp-${lineClamp?.toString() ?? ''}`]: lineClamp,
         })}
       >
         {children}
@@ -42,7 +42,7 @@ export const Heading: FC<Props> = ({
       <h3
         id={id}
         className={cn('text-xl font-bold', {
-          [`line-clamp-${lineClamp}`]: lineClamp,
+          [`line-clamp-${lineClamp?.toString() ?? ''}`]: lineClamp,
         })}
       >
         {children}
@@ -54,7 +54,7 @@ export const Heading: FC<Props> = ({
       <h4
         id={id}
         className={cn('text-lg font-bold', {
-          [`line-clamp-${lineClamp}`]: lineClamp,
+          [`line-clamp-${lineClamp?.toString() ?? ''}`]: lineClamp,
         })}
       >
         {children}
@@ -66,24 +66,21 @@ export const Heading: FC<Props> = ({
       <h5
         id={id}
         className={cn('font-bold', {
-          [`line-clamp-${lineClamp}`]: lineClamp,
+          [`line-clamp-${lineClamp?.toString() ?? ''}`]: lineClamp,
         })}
       >
         {children}
       </h5>
     );
   }
-  if (type === 'h6') {
-    return (
-      <h6
-        id={id}
-        className={cn('text-sm font-bold', {
-          [`line-clamp-${lineClamp}`]: lineClamp,
-        })}
-      >
-        {children}
-      </h6>
-    );
-  }
-  return null;
+  return (
+    <h6
+      id={id}
+      className={cn('text-sm font-bold', {
+        [`line-clamp-${lineClamp?.toString() ?? ''}`]: lineClamp,
+      })}
+    >
+      {children}
+    </h6>
+  );
 };

@@ -35,7 +35,7 @@ export const useControlPanel = () => {
     useState<Position | null>(null);
 
   const borderRadius = useMemo(() => {
-    return `${position.topLeftX}% ${position.topRightX}% ${position.bottomRightX}% ${position.bottomLeftX}% / ${position.topLeftY}% ${position.topRightY}% ${position.bottomRightY}% ${position.bottomLeftY}%`;
+    return `${position.topLeftX.toString()}% ${position.topRightX.toString()}% ${position.bottomRightX.toString()}% ${position.bottomLeftX.toString()}% / ${position.topLeftY.toString()}% ${position.topRightY.toString()}% ${position.bottomRightY.toString()}% ${position.bottomLeftY.toString()}%`;
   }, [position]);
 
   const mouseDownHandler = useCallback(

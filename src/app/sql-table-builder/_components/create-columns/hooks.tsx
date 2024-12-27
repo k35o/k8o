@@ -48,7 +48,7 @@ export const useCreateColumns = (
         return;
       }
       setRestrictions((restrictions) => {
-        return Object.fromEntries(
+        return Object.fromEntries<Restriction>(
           Object.entries(restrictions).map(
             ([restrictionId, restriction]) => {
               if (restriction.type === 'foreign') {

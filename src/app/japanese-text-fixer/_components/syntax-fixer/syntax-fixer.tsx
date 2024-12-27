@@ -126,14 +126,14 @@ const FixText: FC<{ count: number }> = ({ count }) => {
                       idx === texts.length - 1 ? '' : '\n';
                     if (idx !== resultIdx) {
                       return (
-                        <Fragment key={`${idx}_${text}`}>
+                        <Fragment key={`${idx.toString()}_${text}`}>
                           {text + separator}
                         </Fragment>
                       );
                     }
                     return (
                       <span
-                        key={`${idx}_${text}`}
+                        key={`${idx.toString()}_${text}`}
                         className="bg-bgInfo"
                       >
                         {text + separator}

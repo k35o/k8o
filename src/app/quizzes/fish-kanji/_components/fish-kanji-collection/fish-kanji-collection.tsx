@@ -4,7 +4,7 @@ import { unstable_cache as cache } from 'next/cache';
 import { FC } from 'react';
 import { QUIZ_TYPE } from '../../_utils/constants';
 
-const getAllQuizzes = await cache(
+const getAllQuizzes = cache(
   () => getQuizzes({ type: QUIZ_TYPE.FISH_KANJI }),
   ['fish-kanji-collection'],
 );

@@ -56,7 +56,7 @@ export const Start: FC = () => {
         />
       </div>
       <LinkButton
-        href={`/quizzes/${selectedQuiz}?questionCount=${questionCount}`}
+        href={`/quizzes/${selectedQuiz}?questionCount=${questionCount.toString()}`}
       >
         スタート
       </LinkButton>

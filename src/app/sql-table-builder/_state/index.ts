@@ -6,7 +6,9 @@ export const useColumnsType = () => {
   const [columnsType, setColumnsType] = useState<'table' | 'form'>(
     () => {
       const savedValue = localStorage.getItem(key);
-      const parsedValue = savedValue ? JSON.parse(savedValue) : null;
+      const parsedValue = savedValue
+        ? (JSON.parse(savedValue) as string)
+        : null;
       if (parsedValue === 'table' || parsedValue === 'form') {
         return parsedValue;
       }

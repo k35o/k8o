@@ -34,7 +34,7 @@ export const Result: FC = () => {
             修正後のテキスト
           </Heading>
           <Button
-            onClick={() => writeClipboard(fixedText)}
+            onClick={() => void writeClipboard(fixedText)}
             endIcon={
               <ClipboardPenLine aria-label="" className="size-6" />
             }

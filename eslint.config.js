@@ -52,9 +52,9 @@ export default tseslint.config(
     },
   },
   {
-    files: ['*.stories.tsx'],
+    files: ['**/*.test.{ts,tsx}'],
     rules: {
-      'react-hooks/rules-of-hooks': 'off',
+      '@typescript-eslint/unbound-method': 'off',
     },
   },
 );

@@ -79,7 +79,7 @@ export const usePopoverContent = () => {
   const popover = usePopoverContext();
   const isHover = popover.type === 'tooltip';
   const ref = useClickAway<HTMLDivElement>((event) => {
-    if (!open) {
+    if (!popover.isOpen) {
       return;
     }
     if (

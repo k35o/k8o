@@ -218,14 +218,11 @@ export const makeStatement = (
           );
           return `  UNIQUE (${columnNames}),`;
         }
-        if (restriction.type === 'foreign') {
-          const columnName = columns[restriction.column]?.name;
-          if (!columnName) {
-            return '';
-          }
-          return `  FOREIGN KEY (${columnName}) REFERENCES ${restriction.reference.table}(${restriction.reference.column}),`;
+        const columnName = columns[restriction.column]?.name;
+        if (!columnName) {
+          return '';
         }
-        return '';
+        return `  FOREIGN KEY (${columnName}) REFERENCES ${restriction.reference.table}(${restriction.reference.column}),`;
       })
       .join(
         '\n',

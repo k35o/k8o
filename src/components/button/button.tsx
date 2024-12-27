@@ -50,7 +50,7 @@ export const Button: FC<
         size === 'md' && 'text-md px-4 py-2',
         size === 'lg' && 'px-6 py-3 text-lg',
         fullWidth && 'w-full',
-        Boolean(startIcon || endIcon) &&
+        Boolean(startIcon ?? endIcon) &&
           'flex items-center justify-between gap-2',
       )}
       disabled={disabled}

@@ -33,7 +33,7 @@ export const Default: Story = {
     const input = canvas.getByRole('spinbutton');
     await userEvent.type(input, '2.0[Tab]');
 
-    expect(input).toHaveValue('2');
+    await expect(input).toHaveValue('2');
 
     await userEvent.click(input);
 
@@ -42,7 +42,7 @@ export const Default: Story = {
     await userEvent.keyboard('{ArrowDown}');
     await userEvent.keyboard('{ArrowDown}');
 
-    expect(input).toHaveValue('0');
+    await expect(input).toHaveValue('0');
   },
 };
 
@@ -60,19 +60,19 @@ export const Min0Max100: Story = {
     const input = canvas.getByRole('spinbutton');
     await userEvent.type(input, '-10[Tab]');
 
-    expect(input).toHaveValue('0');
+    await expect(input).toHaveValue('0');
 
     await userEvent.keyboard('{ArrowDown}');
 
-    expect(input).toHaveValue('0');
+    await expect(input).toHaveValue('0');
 
     await userEvent.type(input, '111[Tab]');
 
-    expect(input).toHaveValue('100');
+    await expect(input).toHaveValue('100');
 
     await userEvent.keyboard('{ArrowUp}');
 
-    expect(input).toHaveValue('100');
+    await expect(input).toHaveValue('100');
   },
 };
 
