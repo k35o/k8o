@@ -4,7 +4,7 @@ import {
   createContext,
   HTMLProps,
   MouseEventHandler,
-  MutableRefObject,
+  RefObject,
   use,
   useMemo,
 } from 'react';
@@ -13,7 +13,7 @@ import { useListItem } from '@floating-ui/react';
 
 type MenuContext = {
   activeIndex: number | null;
-  itemElementsRef: MutableRefObject<(HTMLElement | null)[]>;
+  itemElementsRef: RefObject<(HTMLElement | null)[]>;
   getTriggerProps: (
     userProps?: HTMLProps<HTMLElement>,
   ) => Record<string, unknown>;

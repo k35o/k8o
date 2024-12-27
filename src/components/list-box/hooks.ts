@@ -3,7 +3,7 @@
 import {
   createContext,
   HTMLProps,
-  MutableRefObject,
+  RefObject,
   use,
   useMemo,
 } from 'react';
@@ -20,7 +20,7 @@ type MenuContext = {
   activeIndex: number | null;
   selectedIndex: number | null;
   handleSelect: (index: number) => void;
-  itemElementsRef: MutableRefObject<(HTMLElement | null)[]>;
+  itemElementsRef: RefObject<(HTMLElement | null)[]>;
   getTriggerProps: (
     userProps?: HTMLProps<HTMLElement>,
   ) => Record<string, unknown>;

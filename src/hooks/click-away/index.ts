@@ -1,11 +1,11 @@
 'use client';
 
-import { MutableRefObject, useEffect, useRef } from 'react';
+import { RefObject, useEffect, useRef } from 'react';
 
 export const useClickAway = <T extends Element = HTMLElement>(
   callback: (e: Event) => void,
   enabled = true,
-): MutableRefObject<T | null> => {
+): RefObject<T | null> => {
   const ref = useRef<T>(null);
 
   useEffect(() => {

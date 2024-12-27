@@ -11,7 +11,7 @@ import {
   CSSProperties,
   HTMLProps,
   KeyboardEvent,
-  MutableRefObject,
+  RefObject,
   use,
   useMemo,
 } from 'react';
@@ -26,7 +26,7 @@ type PopoverContext = {
 
   context: FloatingContext;
   placement: Placement;
-  triggerRef: MutableRefObject<Element | null>;
+  triggerRef: RefObject<Element | null>;
   setTriggerRef: (node: ReferenceType | null) => void;
   setContentRef: (node: HTMLElement | null) => void;
   contentStyles: CSSProperties;
