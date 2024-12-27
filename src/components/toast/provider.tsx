@@ -9,7 +9,7 @@ import {
   PropsWithChildren,
   SetStateAction,
   useCallback,
-  useContext,
+  use,
   useEffect,
   useRef,
   useState,
@@ -29,7 +29,7 @@ const SetToastContext = createContext<
 >(undefined);
 
 export const useToast = () => {
-  const setToasts = useContext(SetToastContext);
+  const setToasts = use(SetToastContext);
   if (!setToasts) {
     throw new Error('useToast must be used within a ToastProvider');
   }
@@ -102,7 +102,7 @@ export const ToastProvider: FC<PropsWithChildren> = ({
   }, []);
 
   return (
-    <SetToastContext.Provider value={setToasts}>
+    <SetToastContext value={setToasts}>
       {children}
       {ref.current
         ? createPortal(
@@ -137,6 +137,6 @@ export const ToastProvider: FC<PropsWithChildren> = ({
             ref.current,
           )
         : null}
-    </SetToastContext.Provider>
+    </SetToastContext>
   );
 };

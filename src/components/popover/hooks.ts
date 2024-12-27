@@ -12,7 +12,7 @@ import {
   HTMLProps,
   KeyboardEvent,
   MutableRefObject,
-  useContext,
+  use,
   useMemo,
 } from 'react';
 
@@ -34,10 +34,10 @@ type PopoverContext = {
 
 const PopoverContext = createContext<PopoverContext | null>(null);
 
-export const PopoverProvider = PopoverContext.Provider;
+export const PopoverProvider = PopoverContext;
 
 const usePopoverContext = (): PopoverContext => {
-  const popover = useContext(PopoverContext);
+  const popover = use(PopoverContext);
   if (!popover) {
     throw new Error(
       'usePopoverContext must be used within a Popover.Root',

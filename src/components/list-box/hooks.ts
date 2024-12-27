@@ -4,7 +4,7 @@ import {
   createContext,
   HTMLProps,
   MutableRefObject,
-  useContext,
+  use,
   useMemo,
 } from 'react';
 import { useOpenContext } from '../popover/hooks';
@@ -34,10 +34,10 @@ type MenuContext = {
 
 const MenuContext = createContext<MenuContext | null>(null);
 
-export const MenuContextProvider = MenuContext.Provider;
+export const MenuContextProvider = MenuContext;
 
 const useMenuContext = (): MenuContext => {
-  const menu = useContext(MenuContext);
+  const menu = use(MenuContext);
   if (!menu) {
     throw new Error(
       'useMenuContext must be used within a DropdownMenu.Root',
