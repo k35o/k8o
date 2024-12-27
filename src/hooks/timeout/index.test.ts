@@ -6,7 +6,9 @@ describe('useTimeout', () => {
     const fn = vi.fn();
     vi.useFakeTimers();
 
-    renderHook(() => useTimeout(fn, 1000));
+    renderHook(() => {
+      useTimeout(fn, 1000);
+    });
     vi.advanceTimersByTime(1000);
 
     expect(fn).toHaveBeenCalledOnce();
@@ -16,7 +18,9 @@ describe('useTimeout', () => {
     const fn = vi.fn();
     vi.useFakeTimers();
 
-    renderHook(() => useTimeout(fn, 1000));
+    renderHook(() => {
+      useTimeout(fn, 1000);
+    });
     vi.advanceTimersByTime(10);
 
     expect(fn).not.toHaveBeenCalled();
@@ -26,7 +30,9 @@ describe('useTimeout', () => {
     const fn = vi.fn();
     vi.useFakeTimers();
 
-    const { unmount } = renderHook(() => useTimeout(fn, 1000));
+    const { unmount } = renderHook(() => {
+      useTimeout(fn, 1000);
+    });
     unmount();
 
     expect(fn).not.toHaveBeenCalled();

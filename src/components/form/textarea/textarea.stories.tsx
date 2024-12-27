@@ -15,7 +15,9 @@ const meta: Meta<typeof Textarea> = {
     id: 'textarea',
     describedbyId: 'textarea-feedback',
     value: '10',
-    onChange: (value: string) => console.log(value),
+    onChange: (value: string) => {
+      console.log(value);
+    },
   },
 };
 

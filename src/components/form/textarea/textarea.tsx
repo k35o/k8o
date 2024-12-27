@@ -41,7 +41,9 @@ export const Textarea: FC<Props> = ({
       id={id}
       ref={ref}
       value={value}
-      onChange={(e) => onChange(e.target.value)}
+      onChange={(e) => {
+        onChange(e.target.value);
+      }}
       aria-describedby={describedbyId}
       aria-invalid={isInvalid}
       aria-required={isRequired}

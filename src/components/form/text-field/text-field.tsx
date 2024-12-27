@@ -30,7 +30,9 @@ export const TextField: FC<Props> = ({
       aria-required={isRequired}
       type="text"
       value={value}
-      onChange={(e) => onChange(e.target.value)}
+      onChange={(e) => {
+        onChange(e.target.value);
+      }}
       className={cn(
         'w-full rounded-lg border border-borderPrimary bg-bgBase px-3 py-2',
         'hover:bg-bgHover',

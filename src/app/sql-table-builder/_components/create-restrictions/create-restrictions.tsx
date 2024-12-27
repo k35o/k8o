@@ -37,23 +37,22 @@ export const CreateRestrictions: FC<Props> = ({
       <div className="flex items-center justify-between py-2">
         <legend className="text-lg font-bold">制限</legend>
         <Button
-          onClick={() =>
+          onClick={() => {
             setRestrictions({
               ...restrictions,
               [uuidV4()]: {
                 type: 'primary',
                 columns: [],
               },
-            })
-          }
+            });
+          }}
         >
           カラムを追加
         </Button>
       </div>
       <Accordion>
         {restrictionsEntries.map(([id, restriction], idx) => {
-          const restrictionError =
-            restroctionsError && restroctionsError[id];
+          const restrictionError = restroctionsError?.[id];
           return (
             <AccordionItem key={id} defaultOpen={true}>
               <AccordionButton>
@@ -84,7 +83,7 @@ export const CreateRestrictions: FC<Props> = ({
                   <CreateRestriction
                     columns={columns}
                     restriction={restriction}
-                    setRestriction={(value) =>
+                    setRestriction={(value) => {
                       setRestrictions(
                         Object.fromEntries(
                           restrictionsEntries.map(
@@ -96,8 +95,8 @@ export const CreateRestrictions: FC<Props> = ({
                             },
                           ),
                         ),
-                      )
-                    }
+                      );
+                    }}
                     restrictionError={restrictionError}
                   />
                 </div>

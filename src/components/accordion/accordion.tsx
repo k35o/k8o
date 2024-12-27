@@ -1,9 +1,7 @@
 import { cn } from '@/utils/cn';
 import { FC, PropsWithChildren } from 'react';
 
-export const Accordion: FC<PropsWithChildren<{}>> = ({
-  children,
-}) => {
+export const Accordion: FC<PropsWithChildren> = ({ children }) => {
   return (
     <div
       className={cn(

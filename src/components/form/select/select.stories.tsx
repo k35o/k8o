@@ -14,7 +14,9 @@ const meta: Meta<typeof Select> = {
       { value: '16', label: '16進数' },
     ],
     value: '10',
-    onChange: (value: string) => console.log(value),
+    onChange: (value: string) => {
+      console.log(value);
+    },
   },
 };
 

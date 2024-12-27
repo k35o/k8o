@@ -138,7 +138,7 @@ export const hexToHsl = (hex: string): HSL => {
 
   let h = 0;
   let s = 0;
-  let l = (max + min) / 2;
+  const l = (max + min) / 2;
   const delta = max - min;
 
   if (max === min) {

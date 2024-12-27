@@ -16,9 +16,15 @@ export const Checkbox: FC<Props> = ({ label, value, onChange }) => {
         type="checkbox"
         className="sr-only"
         checked={value}
-        onFocus={() => setIsFocus(true)}
-        onBlur={() => setIsFocus(false)}
-        onChange={(e) => onChange(e.target.checked)}
+        onFocus={() => {
+          setIsFocus(true);
+        }}
+        onBlur={() => {
+          setIsFocus(false);
+        }}
+        onChange={(e) => {
+          onChange(e.target.checked);
+        }}
       />
       <span
         className={cn(

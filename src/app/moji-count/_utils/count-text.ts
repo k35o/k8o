@@ -1,6 +1,5 @@
 export const isSegmenter =
   typeof window === 'undefined' ||
-  window.Intl === undefined ||
   window.Intl.Segmenter === undefined;
 
 export const countGraphemeLength = (text: string): number => {

@@ -10,7 +10,8 @@ export const ToggleTheme: FC = () => {
 
   const handleThemeCallback = useCallback(() => {
     if (theme === 'system') {
-      return setTheme(systemTheme === 'dark' ? 'light' : 'dark');
+      setTheme(systemTheme === 'dark' ? 'light' : 'dark');
+      return;
     }
     setTheme(theme === 'dark' ? 'light' : 'dark');
   }, [theme, setTheme, systemTheme]);

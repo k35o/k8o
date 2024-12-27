@@ -5,7 +5,7 @@ import { useItemId, useOpen, useToggleOpen } from './context';
 import { cn } from '@/utils/cn';
 import { ChevronDown, ChevronUp } from 'lucide-react';
 
-export const AccordionButton: FC<PropsWithChildren<{}>> = ({
+export const AccordionButton: FC<PropsWithChildren> = ({
   children,
 }) => {
   const id = useItemId();

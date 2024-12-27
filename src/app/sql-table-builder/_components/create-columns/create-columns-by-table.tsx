@@ -54,7 +54,7 @@ export const CreateColumnsByTable: FC<Props> = ({
         </thead>
         <tbody>
           {columnsEntries.map(([id, column], idx) => {
-            const columnError = columnsError && columnsError[id];
+            const columnError = columnsError?.[id];
             return (
               <tr key={id}>
                 <td className="px-2 py-3">
@@ -66,9 +66,9 @@ export const CreateColumnsByTable: FC<Props> = ({
                         : undefined
                     }
                     value={column.name}
-                    onChange={(name) =>
-                      handleChangeColumn(id)({ ...column, name })
-                    }
+                    onChange={(name) => {
+                      handleChangeColumn(id)({ ...column, name });
+                    }}
                     placeholder="id"
                     isInvalid={Boolean(columnError?.name)}
                     isDisabled={false}
@@ -92,9 +92,9 @@ export const CreateColumnsByTable: FC<Props> = ({
                         : undefined
                     }
                     value={column.alias}
-                    onChange={(alias) =>
-                      handleChangeColumn(id)({ ...column, alias })
-                    }
+                    onChange={(alias) => {
+                      handleChangeColumn(id)({ ...column, alias });
+                    }}
                     placeholder="ID"
                     isInvalid={Boolean(columnError?.alias)}
                     isDisabled={false}
@@ -118,12 +118,12 @@ export const CreateColumnsByTable: FC<Props> = ({
                         : undefined
                     }
                     value={column.type}
-                    onChange={(type) =>
+                    onChange={(type) => {
                       handleChangeColumn(id)({
                         ...column,
                         type: type as ColumnType,
-                      })
-                    }
+                      });
+                    }}
                     options={TYPE_OPTIONS}
                     isDisabled={false}
                     isInvalid={Boolean(columnError?.type)}
@@ -142,12 +142,12 @@ export const CreateColumnsByTable: FC<Props> = ({
                   <Checkbox
                     label=""
                     value={column.nullable}
-                    onChange={(type) =>
+                    onChange={(type) => {
                       handleChangeColumn(id)({
                         ...column,
                         nullable: type,
-                      })
-                    }
+                      });
+                    }}
                   />
                   {columnError?.nullable && (
                     <p className="text-sm text-textError">
@@ -164,12 +164,12 @@ export const CreateColumnsByTable: FC<Props> = ({
                         : undefined
                     }
                     value={column.default ?? ''}
-                    onChange={(defaultVal) =>
+                    onChange={(defaultVal) => {
                       handleChangeColumn(id)({
                         ...column,
                         default: defaultVal,
-                      })
-                    }
+                      });
+                    }}
                     isDisabled={false}
                     isInvalid={Boolean(columnError?.type)}
                     isRequired={false}

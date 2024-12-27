@@ -82,9 +82,9 @@ export const CreateRestriction: FC<Props> = ({
               {...props}
               options={columnOptions}
               value={restriction.columns}
-              onChange={(columns) =>
-                setRestriction({ ...restriction, columns })
-              }
+              onChange={(columns) => {
+                setRestriction({ ...restriction, columns });
+              }}
             />
           )}
           isInvalid={Boolean(restrictionError?.columns)}
@@ -127,12 +127,12 @@ export const CreateRestriction: FC<Props> = ({
                 <TextField
                   {...props}
                   value={restriction.reference.table}
-                  onChange={(table) =>
+                  onChange={(table) => {
                     setRestriction({
                       ...restriction,
                       reference: { ...restriction.reference, table },
-                    })
-                  }
+                    });
+                  }}
                 />
               );
             }}
@@ -147,12 +147,12 @@ export const CreateRestriction: FC<Props> = ({
                 <TextField
                   {...props}
                   value={restriction.reference.column}
-                  onChange={(column) =>
+                  onChange={(column) => {
                     setRestriction({
                       ...restriction,
                       reference: { ...restriction.reference, column },
-                    })
-                  }
+                    });
+                  }}
                 />
               );
             }}

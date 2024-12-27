@@ -43,7 +43,9 @@ export const Select: FC<Props> = ({
           'focus-visible:border-borderTransparent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-borderFocus',
         )}
         value={value}
-        onChange={(e) => onChange(e.target.value)}
+        onChange={(e) => {
+          onChange(e.target.value);
+        }}
         disabled={isDisabled}
       >
         {options.map((option) => (

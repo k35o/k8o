@@ -228,7 +228,9 @@ export const Autocomplete: FC<Props> = ({
                     onMouseEnter={() => {
                       setSelectIndex(idx);
                     }}
-                    onKeyDown={(e) => e.preventDefault()}
+                    onKeyDown={(e) => {
+                      e.preventDefault();
+                    }}
                     onClick={(e) => {
                       e.stopPropagation();
                       reset();

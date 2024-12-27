@@ -39,9 +39,9 @@ export const CreateColumns: FC<Props> = ({
         <div className="flex items-center gap-2 self-end md:self-auto">
           <Button
             variant="outlined"
-            onClick={() =>
-              setColumnsType(showTable ? 'form' : 'table')
-            }
+            onClick={() => {
+              setColumnsType(showTable ? 'form' : 'table');
+            }}
             startIcon={
               showTable ? (
                 <ListMinus className="size-6" />

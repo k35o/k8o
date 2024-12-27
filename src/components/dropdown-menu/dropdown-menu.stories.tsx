@@ -17,15 +17,21 @@ export const Default: Story = {
       <DropdownMenu.Content>
         <DropdownMenu.Item
           label="Item 1"
-          onClick={() => console.log(1)}
+          onClick={() => {
+            console.log(1);
+          }}
         />
         <DropdownMenu.Item
           label="Item 2"
-          onClick={() => console.log(2)}
+          onClick={() => {
+            console.log(2);
+          }}
         />
         <DropdownMenu.Item
           label="Item 3"
-          onClick={() => console.log(3)}
+          onClick={() => {
+            console.log(3);
+          }}
         />
       </DropdownMenu.Content>
     </DropdownMenu.Root>
@@ -42,15 +48,21 @@ export const TriggerByIcon: Story = {
       <DropdownMenu.Content>
         <DropdownMenu.Item
           label="Item 1"
-          onClick={() => console.log(1)}
+          onClick={() => {
+            console.log(1);
+          }}
         />
         <DropdownMenu.Item
           label="Item 2"
-          onClick={() => console.log(2)}
+          onClick={() => {
+            console.log(2);
+          }}
         />
         <DropdownMenu.Item
           label="Item 3"
-          onClick={() => console.log(3)}
+          onClick={() => {
+            console.log(3);
+          }}
         />
       </DropdownMenu.Content>
     </DropdownMenu.Root>

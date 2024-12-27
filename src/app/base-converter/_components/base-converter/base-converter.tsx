@@ -66,9 +66,9 @@ export const BaseConverter = () => {
             return (
               <Select
                 value={baseFrom.toString()}
-                onChange={(value) =>
-                  handleChangeBase(value, setBaseFrom)
-                }
+                onChange={(value) => {
+                  handleChangeBase(value, setBaseFrom);
+                }}
                 options={BASE_OPTIONS}
                 {...props}
               />
@@ -82,9 +82,9 @@ export const BaseConverter = () => {
             return (
               <Select
                 value={baseTo.toString()}
-                onChange={(value) =>
-                  handleChangeBase(value, setBaseTo)
-                }
+                onChange={(value) => {
+                  handleChangeBase(value, setBaseTo);
+                }}
                 options={BASE_OPTIONS}
                 {...props}
               />
@@ -98,7 +98,9 @@ export const BaseConverter = () => {
           return (
             <TextField
               value={textFrom}
-              onChange={(textFrom: string) => setTextFrom(textFrom)}
+              onChange={(textFrom: string) => {
+                setTextFrom(textFrom);
+              }}
               {...props}
             />
           );

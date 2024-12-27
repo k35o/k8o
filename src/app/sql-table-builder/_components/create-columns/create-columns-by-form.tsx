@@ -47,7 +47,7 @@ export const CreateColumnsByForm: FC<Props> = ({
   return (
     <Accordion>
       {columnsEntries.map(([id, column], idx) => {
-        const columnError = columnsError && columnsError[id];
+        const columnError = columnsError?.[id];
         return (
           <AccordionItem key={id} defaultOpen={true}>
             <AccordionButton>
@@ -76,12 +76,12 @@ export const CreateColumnsByForm: FC<Props> = ({
                       return (
                         <TextField
                           value={column.name}
-                          onChange={(name) =>
+                          onChange={(name) => {
                             handleChangeColumn(id)({
                               ...column,
                               name,
-                            })
-                          }
+                            });
+                          }}
                           placeholder="id"
                           {...props}
                         />
@@ -97,12 +97,12 @@ export const CreateColumnsByForm: FC<Props> = ({
                       return (
                         <TextField
                           value={column.alias}
-                          onChange={(alias) =>
+                          onChange={(alias) => {
                             handleChangeColumn(id)({
                               ...column,
                               alias,
-                            })
-                          }
+                            });
+                          }}
                           placeholder="ID"
                           {...props}
                         />
@@ -116,12 +116,12 @@ export const CreateColumnsByForm: FC<Props> = ({
                         <Select
                           describedbyId={describedbyId}
                           value={column.type}
-                          onChange={(type) =>
+                          onChange={(type) => {
                             handleChangeColumn(id)({
                               ...column,
                               type: type as ColumnType,
-                            })
-                          }
+                            });
+                          }}
                           options={TYPE_OPTIONS}
                           {...props}
                         />
@@ -141,12 +141,12 @@ export const CreateColumnsByForm: FC<Props> = ({
                       <Radio
                         {...props}
                         value={column.nullable ? '0' : '1'}
-                        onChange={(type) =>
+                        onChange={(type) => {
                           handleChangeColumn(id)({
                             ...column,
                             nullable: type === '0',
-                          })
-                        }
+                          });
+                        }}
                         options={[
                           { value: '0', label: '許容' },
                           { value: '1', label: '不許容' },
@@ -162,12 +162,12 @@ export const CreateColumnsByForm: FC<Props> = ({
                       return (
                         <TextField
                           value={column.default ?? ''}
-                          onChange={(defaultVal) =>
+                          onChange={(defaultVal) => {
                             handleChangeColumn(id)({
                               ...column,
                               default: defaultVal,
-                            })
-                          }
+                            });
+                          }}
                           {...props}
                         />
                       );
