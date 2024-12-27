@@ -16,6 +16,7 @@ export default tseslint.config(
   eslint.configs.recommended,
   tseslint.configs.strictTypeChecked,
   tseslint.configs.stylisticTypeChecked,
+  ...compat.extends('plugin:drizzle/recommended'),
   ...compat.config({
     extends: ['next/core-web-vitals'],
   }),
