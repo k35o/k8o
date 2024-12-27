@@ -4,7 +4,7 @@ import { FC, PropsWithChildren } from 'react';
 import { useItemId, useOpen } from './context';
 import { cn } from '@/utils/cn';
 
-export const AccordionPanel: FC<PropsWithChildren<{}>> = ({
+export const AccordionPanel: FC<PropsWithChildren> = ({
   children,
 }) => {
   const id = useItemId();

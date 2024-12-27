@@ -41,7 +41,9 @@ export const Default: Story = {
         <ListBox.Root
           options={OPTIONS}
           value={selected}
-          onSelect={(key: string) => setSelected(key)}
+          onSelect={(key: string) => {
+            setSelected(key);
+          }}
         >
           <ListBox.Trigger />
           <ListBox.Content />

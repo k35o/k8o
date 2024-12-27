@@ -54,21 +54,21 @@ export const CreateColumnsByTable: FC<Props> = ({
         </thead>
         <tbody>
           {columnsEntries.map(([id, column], idx) => {
-            const columnError = columnsError && columnsError[id];
+            const columnError = columnsError?.[id];
             return (
               <tr key={id}>
                 <td className="px-2 py-3">
                   <TextField
-                    id={`column-name_${idx}-${formId}`}
+                    id={`column-name_${idx.toString()}-${formId}`}
                     describedbyId={
                       columnError?.name
-                        ? `column-name_${idx}-${formId}-feedback`
+                        ? `column-name_${idx.toString()}-${formId}-feedback`
                         : undefined
                     }
                     value={column.name}
-                    onChange={(name) =>
-                      handleChangeColumn(id)({ ...column, name })
-                    }
+                    onChange={(name) => {
+                      handleChangeColumn(id)({ ...column, name });
+                    }}
                     placeholder="id"
                     isInvalid={Boolean(columnError?.name)}
                     isDisabled={false}
@@ -76,7 +76,7 @@ export const CreateColumnsByTable: FC<Props> = ({
                   />
                   {columnError?.name && (
                     <p
-                      id={`column-name_${idx}-${formId}-feedback`}
+                      id={`column-name_${idx.toString()}-${formId}-feedback`}
                       className="text-sm text-textError"
                     >
                       {columnError.name}
@@ -85,16 +85,16 @@ export const CreateColumnsByTable: FC<Props> = ({
                 </td>
                 <td className="px-2 py-3">
                   <TextField
-                    id={`column-alias_${idx}-${formId}`}
+                    id={`column-alias_${idx.toString()}-${formId}`}
                     describedbyId={
                       columnError?.alias
-                        ? `column-alias-${idx}-${formId}-feedback`
+                        ? `column-alias-${idx.toString()}-${formId}-feedback`
                         : undefined
                     }
                     value={column.alias}
-                    onChange={(alias) =>
-                      handleChangeColumn(id)({ ...column, alias })
-                    }
+                    onChange={(alias) => {
+                      handleChangeColumn(id)({ ...column, alias });
+                    }}
                     placeholder="ID"
                     isInvalid={Boolean(columnError?.alias)}
                     isDisabled={false}
@@ -102,7 +102,7 @@ export const CreateColumnsByTable: FC<Props> = ({
                   />
                   {columnError?.alias && (
                     <p
-                      id={`column-alias-${idx}-${formId}-feedback`}
+                      id={`column-alias-${idx.toString()}-${formId}-feedback`}
                       className="text-sm text-textError"
                     >
                       {columnError.alias}
@@ -111,19 +111,19 @@ export const CreateColumnsByTable: FC<Props> = ({
                 </td>
                 <td className="px-2 py-3">
                   <Select
-                    id={`column-type_${idx}-${formId}`}
+                    id={`column-type_${idx.toString()}-${formId}`}
                     describedbyId={
                       columnError?.type
-                        ? `column-type_${idx}-${formId}-feedback`
+                        ? `column-type_${idx.toString()}-${formId}-feedback`
                         : undefined
                     }
                     value={column.type}
-                    onChange={(type) =>
+                    onChange={(type) => {
                       handleChangeColumn(id)({
                         ...column,
                         type: type as ColumnType,
-                      })
-                    }
+                      });
+                    }}
                     options={TYPE_OPTIONS}
                     isDisabled={false}
                     isInvalid={Boolean(columnError?.type)}
@@ -131,7 +131,7 @@ export const CreateColumnsByTable: FC<Props> = ({
                   />
                   {columnError?.type && (
                     <p
-                      id={`column-type_${idx}-${formId}-feedback`}
+                      id={`column-type_${idx.toString()}-${formId}-feedback`}
                       className="text-sm text-textError"
                     >
                       {columnError.type}
@@ -142,12 +142,12 @@ export const CreateColumnsByTable: FC<Props> = ({
                   <Checkbox
                     label=""
                     value={column.nullable}
-                    onChange={(type) =>
+                    onChange={(type) => {
                       handleChangeColumn(id)({
                         ...column,
                         nullable: type,
-                      })
-                    }
+                      });
+                    }}
                   />
                   {columnError?.nullable && (
                     <p className="text-sm text-textError">
@@ -157,26 +157,26 @@ export const CreateColumnsByTable: FC<Props> = ({
                 </td>
                 <td className="px-2 py-3">
                   <TextField
-                    id={`default_${idx}-${formId}`}
+                    id={`default_${idx.toString()}-${formId}`}
                     describedbyId={
                       columnError?.default
-                        ? `default_${idx}-${formId}-feedback`
+                        ? `default_${idx.toString()}-${formId}-feedback`
                         : undefined
                     }
                     value={column.default ?? ''}
-                    onChange={(defaultVal) =>
+                    onChange={(defaultVal) => {
                       handleChangeColumn(id)({
                         ...column,
                         default: defaultVal,
-                      })
-                    }
+                      });
+                    }}
                     isDisabled={false}
                     isInvalid={Boolean(columnError?.type)}
                     isRequired={false}
                   />
                   {columnError?.default && (
                     <p
-                      id={`default_${idx}-${formId}-feedback`}
+                      id={`default_${idx.toString()}-${formId}-feedback`}
                       className="text-sm text-textError"
                     >
                       {columnError.default}

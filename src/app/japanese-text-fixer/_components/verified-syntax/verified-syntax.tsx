@@ -24,7 +24,7 @@ export const VerifiedSyntax: FC = () => {
           戻る
         </Button>
         <Button
-          onClick={() => writeClipboard(text)}
+          onClick={() => void writeClipboard(text)}
           endIcon={
             <ClipboardPenLine aria-label="" className="size-6" />
           }

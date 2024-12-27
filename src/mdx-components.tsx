@@ -66,7 +66,7 @@ export function useMDXComponents(
     h5: ({ children }) => (
       <LinkHeading type="h6">{children}</LinkHeading>
     ),
-    a: ({ href, children }) => (
+    a: ({ href, children }: PropsWithChildren<{ href: string }>) => (
       <>
         {href ? (
           <Anchor href={href}>{children}</Anchor>
@@ -80,16 +80,22 @@ export function useMDXComponents(
         {children}
       </p>
     ),
-    code: (props) => {
-      if (typeof props.children === 'string') {
+    code: ({ children, ...props }) => {
+      if (typeof children === 'string') {
         return (
           <code
             {...props}
             className="m-1 rounded-lg bg-bgPrimary px-1 text-xs sm:text-base"
-          />
+          >
+            {children}
+          </code>
         );
       }
-      return <code {...props} className="p-1 text-xs sm:text-base" />;
+      return (
+        <code {...props} className="p-1 text-xs sm:text-base">
+          {children}
+        </code>
+      );
     },
     pre: ({ children, ...rest }) => {
       return (

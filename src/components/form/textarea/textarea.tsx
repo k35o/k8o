@@ -33,7 +33,8 @@ export const Textarea: FC<Props> = ({
   useEffect(() => {
     if (ref.current && autoResize) {
       ref.current.style.height = 'auto';
-      ref.current.style.height = ref.current.scrollHeight + 'px';
+      ref.current.style.height =
+        ref.current.scrollHeight.toString() + 'px';
     }
   });
   return (
@@ -41,7 +42,9 @@ export const Textarea: FC<Props> = ({
       id={id}
       ref={ref}
       value={value}
-      onChange={(e) => onChange(e.target.value)}
+      onChange={(e) => {
+        onChange(e.target.value);
+      }}
       aria-describedby={describedbyId}
       aria-invalid={isInvalid}
       aria-required={isRequired}

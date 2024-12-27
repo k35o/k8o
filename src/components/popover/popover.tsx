@@ -153,7 +153,7 @@ const Content: FC<{
           >
             <div ref={setContentRef} style={contentStyles}>
               <motion.div
-                animate={isOpen ? 'open' : 'closed'}
+                animate="open"
                 initial="closed"
                 exit="closed"
                 variants={motionVariants}

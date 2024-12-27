@@ -46,7 +46,9 @@ export const Radio: FC<Props> = ({
             )}
             value={option.value}
             checked={value === option.value}
-            onChange={(e) => onChange(e.target.value)}
+            onChange={(e) => {
+              onChange(e.target.value);
+            }}
             disabled={isDisabled}
           />
           <span>{option.label}</span>

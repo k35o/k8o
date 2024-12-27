@@ -79,35 +79,53 @@ export const ControlPanel: FC = () => {
           label="左上の上側の丸みを調整する(左右キーで操作します)"
           variable="primary"
           isActive={activePosition === 'topLeftX'}
-          onMouseDown={(e) => mouseDownHandler(e, 'topLeftX')}
-          onTouchStart={(e) => touchStartHandler(e, 'topLeftX')}
-          onKeyDown={(e) => keyDownHandler(e, 'topLeftX')}
+          onMouseDown={(e) => {
+            mouseDownHandler(e, 'topLeftX');
+          }}
+          onTouchStart={(e) => {
+            touchStartHandler(e, 'topLeftX');
+          }}
+          onKeyDown={(e) => {
+            keyDownHandler(e, 'topLeftX');
+          }}
           position={{
             top: '-9px',
-            left: `calc(${position.topLeftX}% - 9px)`,
+            left: `calc(${position.topLeftX.toString()}% - 9px)`,
           }}
         />
         <OperateButton
           label="右上の上側の丸みを調整する(左右キーで操作します)"
           variable="secondary"
           isActive={activePosition === 'topRightX'}
-          onMouseDown={(e) => mouseDownHandler(e, 'topRightX')}
-          onTouchStart={(e) => touchStartHandler(e, 'topRightX')}
-          onKeyDown={(e) => keyDownHandler(e, 'topRightX')}
+          onMouseDown={(e) => {
+            mouseDownHandler(e, 'topRightX');
+          }}
+          onTouchStart={(e) => {
+            touchStartHandler(e, 'topRightX');
+          }}
+          onKeyDown={(e) => {
+            keyDownHandler(e, 'topRightX');
+          }}
           position={{
             top: '-9px',
-            right: `calc(${position.topRightX}% - 9px)`,
+            right: `calc(${position.topRightX.toString()}% - 9px)`,
           }}
         />
         <OperateButton
           label="左上の左側の丸みを調整する(上下キーで操作します)"
           variable="primary"
           isActive={activePosition === 'topLeftY'}
-          onMouseDown={(e) => mouseDownHandler(e, 'topLeftY')}
-          onTouchStart={(e) => touchStartHandler(e, 'topLeftY')}
-          onKeyDown={(e) => keyDownHandler(e, 'topLeftY')}
+          onMouseDown={(e) => {
+            mouseDownHandler(e, 'topLeftY');
+          }}
+          onTouchStart={(e) => {
+            touchStartHandler(e, 'topLeftY');
+          }}
+          onKeyDown={(e) => {
+            keyDownHandler(e, 'topLeftY');
+          }}
           position={{
-            top: `calc(${position.topLeftY}% - 9px)`,
+            top: `calc(${position.topLeftY.toString()}% - 9px)`,
             left: '-9px',
           }}
         />
@@ -115,11 +133,17 @@ export const ControlPanel: FC = () => {
           label="右上の右側の丸みを調整する(上下キーで操作します)"
           variable="secondary"
           isActive={activePosition === 'topRightY'}
-          onMouseDown={(e) => mouseDownHandler(e, 'topRightY')}
-          onTouchStart={(e) => touchStartHandler(e, 'topRightY')}
-          onKeyDown={(e) => keyDownHandler(e, 'topRightY')}
+          onMouseDown={(e) => {
+            mouseDownHandler(e, 'topRightY');
+          }}
+          onTouchStart={(e) => {
+            touchStartHandler(e, 'topRightY');
+          }}
+          onKeyDown={(e) => {
+            keyDownHandler(e, 'topRightY');
+          }}
           position={{
-            top: `calc(${position.topRightY}% - 9px)`,
+            top: `calc(${position.topRightY.toString()}% - 9px)`,
             right: '-9px',
           }}
         />
@@ -127,11 +151,17 @@ export const ControlPanel: FC = () => {
           label="左下の左側の丸みを調整する(上下キーで操作します)"
           variable="quaternary"
           isActive={activePosition === 'bottomLeftY'}
-          onMouseDown={(e) => mouseDownHandler(e, 'bottomLeftY')}
-          onTouchStart={(e) => touchStartHandler(e, 'bottomLeftY')}
-          onKeyDown={(e) => keyDownHandler(e, 'bottomLeftY')}
+          onMouseDown={(e) => {
+            mouseDownHandler(e, 'bottomLeftY');
+          }}
+          onTouchStart={(e) => {
+            touchStartHandler(e, 'bottomLeftY');
+          }}
+          onKeyDown={(e) => {
+            keyDownHandler(e, 'bottomLeftY');
+          }}
           position={{
-            bottom: `calc(${position.bottomLeftY}% - 9px)`,
+            bottom: `calc(${position.bottomLeftY.toString()}% - 9px)`,
             left: '-9px',
           }}
         />
@@ -139,11 +169,17 @@ export const ControlPanel: FC = () => {
           label="右下の右側の丸みを調整する(上下キーで操作します)"
           variable="tertiary"
           isActive={activePosition === 'bottomRightY'}
-          onMouseDown={(e) => mouseDownHandler(e, 'bottomRightY')}
-          onTouchStart={(e) => touchStartHandler(e, 'bottomRightY')}
-          onKeyDown={(e) => keyDownHandler(e, 'bottomRightY')}
+          onMouseDown={(e) => {
+            mouseDownHandler(e, 'bottomRightY');
+          }}
+          onTouchStart={(e) => {
+            touchStartHandler(e, 'bottomRightY');
+          }}
+          onKeyDown={(e) => {
+            keyDownHandler(e, 'bottomRightY');
+          }}
           position={{
-            bottom: `calc(${position.bottomRightY}% - 9px)`,
+            bottom: `calc(${position.bottomRightY.toString()}% - 9px)`,
             right: '-9px',
           }}
         />
@@ -151,24 +187,36 @@ export const ControlPanel: FC = () => {
           label="左下の下側の丸みを調整する(左右キーで操作します)"
           variable="quaternary"
           isActive={activePosition === 'bottomLeftX'}
-          onMouseDown={(e) => mouseDownHandler(e, 'bottomLeftX')}
-          onTouchStart={(e) => touchStartHandler(e, 'bottomLeftX')}
-          onKeyDown={(e) => keyDownHandler(e, 'bottomLeftX')}
+          onMouseDown={(e) => {
+            mouseDownHandler(e, 'bottomLeftX');
+          }}
+          onTouchStart={(e) => {
+            touchStartHandler(e, 'bottomLeftX');
+          }}
+          onKeyDown={(e) => {
+            keyDownHandler(e, 'bottomLeftX');
+          }}
           position={{
             bottom: '-9px',
-            left: `calc(${position.bottomLeftX}% - 9px)`,
+            left: `calc(${position.bottomLeftX.toString()}% - 9px)`,
           }}
         />
         <OperateButton
           label="右下の下側の丸みを調整する(左右キーで操作します)"
           variable="tertiary"
           isActive={activePosition === 'bottomRightX'}
-          onMouseDown={(e) => mouseDownHandler(e, 'bottomRightX')}
-          onTouchStart={(e) => touchStartHandler(e, 'bottomRightX')}
-          onKeyDown={(e) => keyDownHandler(e, 'bottomRightX')}
+          onMouseDown={(e) => {
+            mouseDownHandler(e, 'bottomRightX');
+          }}
+          onTouchStart={(e) => {
+            touchStartHandler(e, 'bottomRightX');
+          }}
+          onKeyDown={(e) => {
+            keyDownHandler(e, 'bottomRightX');
+          }}
           position={{
             bottom: '-9px',
-            right: `calc(${position.bottomRightX}% - 9px)`,
+            right: `calc(${position.bottomRightX.toString()}% - 9px)`,
           }}
         />
       </div>
@@ -178,7 +226,7 @@ export const ControlPanel: FC = () => {
           label="値をコピーする"
           bg="base"
           onClick={() =>
-            writeClipboard(`border-radius: ${borderRadius}`)
+            void writeClipboard(`border-radius: ${borderRadius}`)
           }
         >
           <ClipboardPenLine className="size-6" />

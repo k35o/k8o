@@ -17,7 +17,9 @@ const meta: Meta<typeof ToastProvider> = {
     const { onOpen } = useToast();
     return (
       <Button
-        onClick={() => onOpen('success', 'トーストを呼びました')}
+        onClick={() => {
+          onOpen('success', 'トーストを呼びました');
+        }}
       >
         トーストを呼ぶ
       </Button>

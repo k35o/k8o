@@ -14,22 +14,20 @@ export const useCreateColumns = (
 ) => {
   const columnsEntries = Object.entries(columns);
 
-  const handleAddColumn = useCallback(
-    () =>
-      setColumns({
-        ...columns,
-        [uuidV4()]: {
-          name: '',
-          alias: '',
-          type: 'uuid',
-          nullable: false,
-        },
-      }),
-    [columns, setColumns],
-  );
+  const handleAddColumn = useCallback(() => {
+    setColumns({
+      ...columns,
+      [uuidV4()]: {
+        name: '',
+        alias: '',
+        type: 'uuid',
+        nullable: false,
+      },
+    });
+  }, [columns, setColumns]);
 
   const handleChangeColumn = useCallback(
-    (id: string) => (value: Column) =>
+    (id: string) => (value: Column) => {
       setColumns(
         Object.fromEntries(
           columnsEntries.map(([columnId, column]) => {
@@ -39,7 +37,8 @@ export const useCreateColumns = (
             return [columnId, column];
           }),
         ),
-      ),
+      );
+    },
     [columnsEntries, setColumns],
   );
 
@@ -49,7 +48,7 @@ export const useCreateColumns = (
         return;
       }
       setRestrictions((restrictions) => {
-        return Object.fromEntries(
+        return Object.fromEntries<Restriction>(
           Object.entries(restrictions).map(
             ([restrictionId, restriction]) => {
               if (restriction.type === 'foreign') {

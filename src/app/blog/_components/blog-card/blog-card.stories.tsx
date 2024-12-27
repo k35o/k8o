@@ -11,7 +11,7 @@ type Story = StoryObj<typeof BlogCard>;
 
 export const Primary: Story = {
   args: {
-    link: '/blog/tanstack-router-introduction' as any,
+    link: '/blog/tanstack-router-introduction',
     title:
       'Reactの新しいルーティングライブラリ、TanStackRouterを学ぶ',
     description:

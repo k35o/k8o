@@ -13,7 +13,9 @@ export const Progress: FC<{
         aria-valuemin={minProgress}
         aria-valuenow={progress}
         className="h-4 rounded-md bg-chartPrimary"
-        style={{ width: `${(progress / maxProgress) * 100}%` }}
+        style={{
+          width: `${((progress / maxProgress) * 100).toString()}%`,
+        }}
       />
     </div>
   );

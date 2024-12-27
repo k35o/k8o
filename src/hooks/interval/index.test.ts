@@ -6,7 +6,9 @@ describe('useInterval', () => {
     const fn = vi.fn();
     vi.useFakeTimers();
 
-    renderHook(() => useInterval(fn, 1000));
+    renderHook(() => {
+      useInterval(fn, 1000);
+    });
     vi.advanceTimersByTime(2000);
 
     expect(fn).toHaveBeenCalledTimes(2);
@@ -16,7 +18,9 @@ describe('useInterval', () => {
     const fn = vi.fn();
     vi.useFakeTimers();
 
-    renderHook(() => useInterval(fn, 1000));
+    renderHook(() => {
+      useInterval(fn, 1000);
+    });
     vi.advanceTimersByTime(10);
 
     expect(fn).not.toHaveBeenCalled();
@@ -26,7 +30,9 @@ describe('useInterval', () => {
     const fn = vi.fn();
     vi.useFakeTimers();
 
-    const { unmount } = renderHook(() => useInterval(fn, 1000));
+    const { unmount } = renderHook(() => {
+      useInterval(fn, 1000);
+    });
     unmount();
     vi.advanceTimersByTime(2000);
 

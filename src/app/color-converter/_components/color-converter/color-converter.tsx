@@ -135,7 +135,9 @@ export const ColorConverter = () => {
                   id={id}
                   describedbyId={describedbyId}
                   value={rgb.r}
-                  onChange={(red) => handleChangeRgb(red, 'r')}
+                  onChange={(red) => {
+                    handleChangeRgb(red, 'r');
+                  }}
                   max={255}
                   min={0}
                   {...rest}
@@ -150,7 +152,9 @@ export const ColorConverter = () => {
                 <NumberField
                   id={`${id}-rgb-green`}
                   value={rgb.g}
-                  onChange={(green) => handleChangeRgb(green, 'g')}
+                  onChange={(green) => {
+                    handleChangeRgb(green, 'g');
+                  }}
                   max={255}
                   min={0}
                   {...rest}
@@ -165,7 +169,9 @@ export const ColorConverter = () => {
                 <NumberField
                   id={`${id}-rgb-blue`}
                   value={rgb.b}
-                  onChange={(blue) => handleChangeRgb(blue, 'b')}
+                  onChange={(blue) => {
+                    handleChangeRgb(blue, 'b');
+                  }}
                   max={255}
                   min={0}
                   {...rest}
@@ -180,7 +186,9 @@ export const ColorConverter = () => {
                 <NumberField
                   id={`${id}-rgb-alpha`}
                   value={rgb.a ?? 1}
-                  onChange={(alpha) => handleChangeRgb(alpha, 'a')}
+                  onChange={(alpha) => {
+                    handleChangeRgb(alpha, 'a');
+                  }}
                   max={1}
                   min={0}
                   step={0.01}
@@ -210,7 +218,9 @@ export const ColorConverter = () => {
                   id={id}
                   describedbyId={describedbyId}
                   value={hsl.h}
-                  onChange={(hue) => handleChangeHsl(hue, 'h')}
+                  onChange={(hue) => {
+                    handleChangeHsl(hue, 'h');
+                  }}
                   max={360}
                   min={0}
                   {...rest}
@@ -225,9 +235,9 @@ export const ColorConverter = () => {
                 <NumberField
                   id={`${id}-hsl-saturation`}
                   value={hsl.s}
-                  onChange={(saturation) =>
-                    handleChangeHsl(saturation, 's')
-                  }
+                  onChange={(saturation) => {
+                    handleChangeHsl(saturation, 's');
+                  }}
                   max={100}
                   min={0}
                   {...rest}
@@ -242,9 +252,9 @@ export const ColorConverter = () => {
                 <NumberField
                   id={`${id}-hsl-lightness`}
                   value={hsl.l}
-                  onChange={(lightness) =>
-                    handleChangeHsl(lightness, 'l')
-                  }
+                  onChange={(lightness) => {
+                    handleChangeHsl(lightness, 'l');
+                  }}
                   max={100}
                   min={0}
                   {...rest}
@@ -259,7 +269,9 @@ export const ColorConverter = () => {
                 <NumberField
                   id={`${id}-hsl-alpha`}
                   value={hsl.a ?? 1}
-                  onChange={(alpha) => handleChangeHsl(alpha, 'a')}
+                  onChange={(alpha) => {
+                    handleChangeHsl(alpha, 'a');
+                  }}
                   max={1}
                   min={0}
                   step={0.01}

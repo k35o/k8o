@@ -10,7 +10,7 @@ import {
 } from '../../_state/text';
 import { Button } from '@/components/button';
 import { FormEventHandler, useState } from 'react';
-import { checkJapaneseSyntax } from '../../_utils/japaneseSyntax';
+import { checkJapaneseSyntax } from '../../_utils/japanese-syntax';
 import { FormControl } from '@/components/form/form-control';
 
 export const EditField = () => {
@@ -20,11 +20,11 @@ export const EditField = () => {
   const setResultText = useSetResultText();
   const setResultMessages = useSetResultMessages();
 
-  const handleCheck: FormEventHandler = async (e) => {
+  const handleCheck: FormEventHandler = (e) => {
     e.preventDefault();
     if (text === '') return;
     setIsMutating(true);
-    checkJapaneseSyntax({ text })
+    void checkJapaneseSyntax({ text })
       .then((res) => {
         setResultText(res.text.split('\n'));
         setResultMessages(
