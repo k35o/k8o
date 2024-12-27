@@ -38,3 +38,6 @@ next-env.d.ts
 # storybook
 build-storybook.log
 storybook-static
+
+# mise
+.mise.toml
