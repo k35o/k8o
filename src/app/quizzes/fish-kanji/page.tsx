@@ -27,9 +27,9 @@ const FishKanjiQuestion: FC<{ limit: number }> = async ({
 export default async function Page({
   searchParams,
 }: {
-  searchParams: { questionCount: string };
+  searchParams: Promise<{ questionCount: string }>;
 }) {
-  const limit = getLimit(searchParams.questionCount);
+  const limit = getLimit((await searchParams).questionCount);
 
   return (
     <div className="flex flex-col gap-2">
