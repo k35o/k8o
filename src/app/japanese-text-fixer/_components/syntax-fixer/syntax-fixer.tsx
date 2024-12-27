@@ -55,7 +55,7 @@ export const SyntaxFixer: FC = () => {
         >
           <ChevronLeft className="size-8" />
         </IconButton>
-        <div className="flex size-14 items-center justify-center rounded-full bg-bgPrimary">
+        <div className="flex size-14 items-center justify-center rounded-full bg-bgBase">
           <p className="font-bold leading-none">
             {count}/{invalidCount}
           </p>
