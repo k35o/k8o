@@ -3,22 +3,22 @@ import {
   FC,
   PropsWithChildren,
   useCallback,
-  useContext,
+  use,
   useState,
 } from 'react';
 
-const openContext = createContext(false);
+const OpenContext = createContext(false);
 
 type ToggleOpen = () => void;
-const toggleOpenContext = createContext<ToggleOpen | undefined>(
+const ToggleOpenContext = createContext<ToggleOpen | undefined>(
   undefined,
 );
-const itemIdContext = createContext<string | undefined>(undefined);
+const ItemIdContext = createContext<string | undefined>(undefined);
 
-export const useOpen = (): boolean => useContext(openContext);
+export const useOpen = (): boolean => use(OpenContext);
 
 export const useToggleOpen = (): ToggleOpen => {
-  const toggleOpen = useContext(toggleOpenContext);
+  const toggleOpen = use(ToggleOpenContext);
   if (!toggleOpen) {
     throw new Error(
       'useToggleOpen must be used within AccordionProvider',
@@ -28,7 +28,7 @@ export const useToggleOpen = (): ToggleOpen => {
 };
 
 export const useItemId = (): string => {
-  const id = useContext(itemIdContext);
+  const id = use(ItemIdContext);
   if (!id) {
     throw new Error(
       'useItemId must be used within AccordionProvider',
@@ -50,12 +50,10 @@ export const AccordionItemProvider: FC<
   }, []);
 
   return (
-    <openContext.Provider value={open}>
-      <toggleOpenContext.Provider value={toggleOpen}>
-        <itemIdContext.Provider value={id}>
-          {children}
-        </itemIdContext.Provider>
-      </toggleOpenContext.Provider>
-    </openContext.Provider>
+    <OpenContext value={open}>
+      <ToggleOpenContext value={toggleOpen}>
+        <ItemIdContext value={id}>{children}</ItemIdContext>
+      </ToggleOpenContext>
+    </OpenContext>
   );
 };

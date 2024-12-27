@@ -11,8 +11,8 @@ import {
   CSSProperties,
   HTMLProps,
   KeyboardEvent,
-  MutableRefObject,
-  useContext,
+  RefObject,
+  use,
   useMemo,
 } from 'react';
 
@@ -26,7 +26,7 @@ type PopoverContext = {
 
   context: FloatingContext;
   placement: Placement;
-  triggerRef: MutableRefObject<Element | null>;
+  triggerRef: RefObject<Element | null>;
   setTriggerRef: (node: ReferenceType | null) => void;
   setContentRef: (node: HTMLElement | null) => void;
   contentStyles: CSSProperties;
@@ -34,10 +34,10 @@ type PopoverContext = {
 
 const PopoverContext = createContext<PopoverContext | null>(null);
 
-export const PopoverProvider = PopoverContext.Provider;
+export const PopoverProvider = PopoverContext;
 
 const usePopoverContext = (): PopoverContext => {
-  const popover = useContext(PopoverContext);
+  const popover = use(PopoverContext);
   if (!popover) {
     throw new Error(
       'usePopoverContext must be used within a Popover.Root',

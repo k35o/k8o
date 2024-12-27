@@ -4,8 +4,8 @@ import {
   createContext,
   FC,
   PropsWithChildren,
+  use,
   useCallback,
-  useContext,
   useState,
 } from 'react';
 import { ListBox } from '../../../components/list-box';
@@ -35,8 +35,8 @@ const SetColorFilterContext = createContext<
 >(undefined);
 
 const useColorFilter = () => {
-  const value = useContext(ColorFilterContext);
-  const setValue = useContext(SetColorFilterContext);
+  const value = use(ColorFilterContext);
+  const setValue = use(SetColorFilterContext);
   if (!setValue) {
     throw new Error(
       'useColorFilter must be used within a ColorFilterProvider',
@@ -51,8 +51,8 @@ export const ColorFilterProvider: FC<PropsWithChildren> = ({
   const [filter, setFilter] = useState<FilterKey>('nomaly');
 
   return (
-    <ColorFilterContext.Provider value={filter}>
-      <SetColorFilterContext.Provider value={setFilter}>
+    <ColorFilterContext value={filter}>
+      <SetColorFilterContext value={setFilter}>
         <div
           style={{
             filter:
@@ -62,8 +62,8 @@ export const ColorFilterProvider: FC<PropsWithChildren> = ({
           {children}
         </div>
         <Transfer />
-      </SetColorFilterContext.Provider>
-    </ColorFilterContext.Provider>
+      </SetColorFilterContext>
+    </ColorFilterContext>
   );
 };
 

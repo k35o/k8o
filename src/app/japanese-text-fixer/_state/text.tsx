@@ -7,7 +7,7 @@ import {
   PropsWithChildren,
   SetStateAction,
   useCallback,
-  useContext,
+  use,
   useState,
 } from 'react';
 
@@ -51,7 +51,7 @@ const SetCompleteContext = createContext<Setter<boolean> | undefined>(
 );
 
 export const useText = (): string => {
-  const text = useContext(TextContext);
+  const text = use(TextContext);
 
   if (text === undefined) {
     throw Error('useText must be used within a TextProvider');
@@ -61,7 +61,7 @@ export const useText = (): string => {
 };
 
 export const useSetText = (): Setter<string> => {
-  const setText = useContext(SetTextContext);
+  const setText = use(SetTextContext);
 
   if (setText === undefined) {
     throw Error('useText must be used within a TextProvider');
@@ -71,7 +71,7 @@ export const useSetText = (): Setter<string> => {
 };
 
 export const useResultText = (): string[] => {
-  const text = useContext(ResultTextContext);
+  const text = use(ResultTextContext);
 
   if (text === undefined) {
     throw Error('useText must be used within a TextProvider');
@@ -81,7 +81,7 @@ export const useResultText = (): string[] => {
 };
 
 export const useSetResultText = (): Setter<string[]> => {
-  const setText = useContext(SetResultTextContext);
+  const setText = use(SetResultTextContext);
 
   if (setText === undefined) {
     throw Error('useText must be used within a TextProvider');
@@ -91,7 +91,7 @@ export const useSetResultText = (): Setter<string[]> => {
 };
 
 const useResultMessages = (): ResultMessage => {
-  const text = useContext(ResultMessagesContext);
+  const text = use(ResultMessagesContext);
 
   if (text === undefined) {
     throw Error('useText must be used within a TextProvider');
@@ -101,7 +101,7 @@ const useResultMessages = (): ResultMessage => {
 };
 
 export const useSetResultMessages = (): Setter<ResultMessage> => {
-  const setText = useContext(SetResultTextMessagesContext);
+  const setText = use(SetResultTextMessagesContext);
 
   if (setText === undefined) {
     throw Error('useText must be used within a TextProvider');
@@ -111,7 +111,7 @@ export const useSetResultMessages = (): Setter<ResultMessage> => {
 };
 
 const useFixTexts = (): Record<number, string> => {
-  const text = useContext(FixTextContext);
+  const text = use(FixTextContext);
 
   if (text === undefined) {
     throw Error('useText must be used within a TextProvider');
@@ -121,7 +121,7 @@ const useFixTexts = (): Record<number, string> => {
 };
 
 export const useSetFixTexts = (): Setter<Record<number, string>> => {
-  const setText = useContext(SetFixTextContext);
+  const setText = use(SetFixTextContext);
 
   if (setText === undefined) {
     throw Error('useText must be used within a TextProvider');
@@ -131,7 +131,7 @@ export const useSetFixTexts = (): Setter<Record<number, string>> => {
 };
 
 const useComplete = (): boolean => {
-  const text = useContext(CompleteContext);
+  const text = use(CompleteContext);
 
   if (text === undefined) {
     throw Error('useText must be used within a TextProvider');
@@ -141,7 +141,7 @@ const useComplete = (): boolean => {
 };
 
 const useSetComplete = (): Setter<boolean> => {
-  const setText = useContext(SetCompleteContext);
+  const setText = use(SetCompleteContext);
 
   if (setText === undefined) {
     throw Error('useText must be used within a TextProvider');
@@ -176,31 +176,27 @@ export const CheckSyntaxProvider: FC<
   const [complete, setComplete] = useState(false);
 
   return (
-    <TextContext.Provider value={text}>
-      <SetTextContext.Provider value={setText}>
-        <ResultTextContext.Provider value={resultText}>
-          <SetResultTextContext.Provider value={setResultText}>
-            <ResultMessagesContext.Provider value={resultMessages}>
-              <SetResultTextMessagesContext.Provider
-                value={setResultMessages}
-              >
-                <FixTextContext.Provider value={fixTexts}>
-                  <SetFixTextContext.Provider value={setFixTexts}>
-                    <CompleteContext.Provider value={complete}>
-                      <SetCompleteContext.Provider
-                        value={setComplete}
-                      >
+    <TextContext value={text}>
+      <SetTextContext value={setText}>
+        <ResultTextContext value={resultText}>
+          <SetResultTextContext value={setResultText}>
+            <ResultMessagesContext value={resultMessages}>
+              <SetResultTextMessagesContext value={setResultMessages}>
+                <FixTextContext value={fixTexts}>
+                  <SetFixTextContext value={setFixTexts}>
+                    <CompleteContext value={complete}>
+                      <SetCompleteContext value={setComplete}>
                         {children}
-                      </SetCompleteContext.Provider>
-                    </CompleteContext.Provider>
-                  </SetFixTextContext.Provider>
-                </FixTextContext.Provider>
-              </SetResultTextMessagesContext.Provider>
-            </ResultMessagesContext.Provider>
-          </SetResultTextContext.Provider>
-        </ResultTextContext.Provider>
-      </SetTextContext.Provider>
-    </TextContext.Provider>
+                      </SetCompleteContext>
+                    </CompleteContext>
+                  </SetFixTextContext>
+                </FixTextContext>
+              </SetResultTextMessagesContext>
+            </ResultMessagesContext>
+          </SetResultTextContext>
+        </ResultTextContext>
+      </SetTextContext>
+    </TextContext>
   );
 };
 

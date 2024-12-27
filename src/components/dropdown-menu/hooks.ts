@@ -4,8 +4,8 @@ import {
   createContext,
   HTMLProps,
   MouseEventHandler,
-  MutableRefObject,
-  useContext,
+  RefObject,
+  use,
   useMemo,
 } from 'react';
 import { useOpenContext } from '../popover/hooks';
@@ -13,7 +13,7 @@ import { useListItem } from '@floating-ui/react';
 
 type MenuContext = {
   activeIndex: number | null;
-  itemElementsRef: MutableRefObject<(HTMLElement | null)[]>;
+  itemElementsRef: RefObject<(HTMLElement | null)[]>;
   getTriggerProps: (
     userProps?: HTMLProps<HTMLElement>,
   ) => Record<string, unknown>;
@@ -30,10 +30,10 @@ type MenuContext = {
 
 const MenuContext = createContext<MenuContext | null>(null);
 
-export const MenuContextProvider = MenuContext.Provider;
+export const MenuContextProvider = MenuContext;
 
 const useMenuContext = (): MenuContext => {
-  const menu = useContext(MenuContext);
+  const menu = use(MenuContext);
   if (!menu) {
     throw new Error(
       'useMenuContext must be used within a DropdownMenu.Root',
