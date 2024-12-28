@@ -119,11 +119,11 @@
       #0ea5e9 100%
     );
     .dark & {
-      background-color: #08453e;
+      background-color: #082f49;
       background-image: linear-gradient(
         62deg,
-        #08453e 0%,
-        #082f49 100%
+        #082f49 0%,
+        #164e63 100%
       );
     }
   }
