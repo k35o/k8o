@@ -5,6 +5,8 @@ import { notFound } from 'next/navigation';
 import { Calendar, Clock } from 'lucide-react';
 import { formatDate } from '@/utils/date/format';
 
+export const dynamic = 'force-dynamic';
+
 export async function generateStaticParams() {
   const url = `${process.env.MICROCMS_API_ENDPOINT ?? ''}/news`;
   const newsList = await fetch(url, {
