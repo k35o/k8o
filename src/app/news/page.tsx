@@ -1,40 +1,47 @@
 import { NewsCard } from './news-card';
 
-export default function Counter() {
+type News = {
+  contents: {
+    title: string;
+    summary: string;
+    createdAt: string;
+    updatedAt: string;
+  }[];
+  totalCount: number;
+  offset: number;
+  limit: number;
+};
+
+async function getNews(): Promise<News> {
+  const res = await fetch(
+    `${process.env.MICROCMS_API_ENDPOINT ?? ''}/news`,
+    {
+      headers: {
+        'X-MICROCMS-API-KEY': process.env.MICROCMS_API_KEY ?? '',
+      },
+      cache: 'force-cache',
+    },
+  );
+
+  return res.json() as Promise<News>;
+}
+
+export default async function Page() {
+  // TODO: Paginationに対応する
+  const { contents } = await getNews();
   return (
     <section className="flex h-full flex-col gap-6">
-      <NewsCard
-        title="お知らせ機能を作成しました"
-        summary={
-          'お知らせ機能を作成しました。\nこの機能では、重要なお知らせやアップデート情報、ブログの更新などをアプリ内で確認できます。'
-        }
-        createdAt="2024-12-28T07:00:00.000Z"
-        updatedAt="2024-12-28T07:00:00.000Z"
-      />
-      <NewsCard
-        title="お知らせ機能を作成しました"
-        summary={
-          'お知らせ機能を作成しました。\nこの機能では、重要なお知らせやアップデート情報、ブログの更新などをアプリ内で確認できます。'
-        }
-        createdAt="2024-12-28T07:00:00.000Z"
-        updatedAt="2024-12-28T07:00:00.000Z"
-      />
-      <NewsCard
-        title="お知らせ機能を作成しました"
-        summary={
-          'お知らせ機能を作成しました。\nこの機能では、重要なお知らせやアップデート情報、ブログの更新などをアプリ内で確認できます。'
-        }
-        createdAt="2024-12-28T07:00:00.000Z"
-        updatedAt="2024-12-28T07:00:00.000Z"
-      />
-      <NewsCard
-        title="お知らせ機能を作成しました"
-        summary={
-          'お知らせ機能を作成しました。\nこの機能では、重要なお知らせやアップデート情報、ブログの更新などをアプリ内で確認できます。'
-        }
-        createdAt="2024-12-28T07:00:00.000Z"
-        updatedAt="2024-12-28T07:00:00.000Z"
-      />
+      {contents.map((news) => {
+        return (
+          <NewsCard
+            key={news.title}
+            title={news.title}
+            summary={news.summary}
+            createdAt={news.createdAt}
+            updatedAt={news.updatedAt}
+          />
+        );
+      })}
     </section>
   );
 }
