@@ -22,7 +22,7 @@ export const NewsCard: FC<Props> = ({
   draftKey,
 }) => {
   return (
-    <InteractiveCard variant="secondary">
+    <InteractiveCard>
       <Link
         href={
           draftKey
