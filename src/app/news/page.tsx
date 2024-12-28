@@ -1,5 +1,5 @@
 import { draftMode } from 'next/headers';
-import { NewsCard } from './news-card';
+import { NewsCard } from './_components/news-card';
 
 type News = {
   contents: {
