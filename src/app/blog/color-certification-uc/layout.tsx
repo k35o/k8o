@@ -1,5 +1,5 @@
 import { Metadata } from 'next';
-import { BlogLayout } from '../_components/blog-layout/blog-layout';
+import { BlogLayout } from '../_components/blog-layout';
 import { PropsWithChildren } from 'react';
 import { getBlog } from '#actions/blog';
 
