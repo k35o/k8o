@@ -1,3 +1,4 @@
+import { draftMode } from 'next/headers';
 import { NewsCard } from './news-card';
 
 type News = {
@@ -12,23 +13,33 @@ type News = {
   limit: number;
 };
 
-async function getNews(): Promise<News> {
-  const res = await fetch(
-    `${process.env.MICROCMS_API_ENDPOINT ?? ''}/news`,
-    {
-      headers: {
-        'X-MICROCMS-API-KEY': process.env.MICROCMS_API_KEY ?? '',
-      },
-      cache: 'force-cache',
+async function getNews(draftKey?: string): Promise<News> {
+  const { isEnabled } = await draftMode();
+  const baseUrl = `${process.env.MICROCMS_API_ENDPOINT ?? ''}/news`;
+  const url =
+    isEnabled && draftKey
+      ? `${baseUrl}?draftKey=${draftKey}`
+      : baseUrl;
+  const res = await fetch(url, {
+    headers: {
+      'X-MICROCMS-API-KEY': process.env.MICROCMS_API_KEY ?? '',
     },
-  );
+    cache: 'force-cache',
+  });
 
   return res.json() as Promise<News>;
 }
 
-export default async function Page() {
+export default async function Page({
+  searchParams,
+}: {
+  searchParams: Promise<{ draftKey: string }>;
+}) {
+  const { draftKey } = await searchParams;
+
   // TODO: Paginationに対応する
-  const { contents } = await getNews();
+  const { contents } = await getNews(draftKey);
+
   return (
     <section className="flex h-full flex-col gap-6">
       {contents.map((news) => {
