@@ -48,7 +48,7 @@ export function Modal({
             e.stopPropagation();
           }}
         >
-          <Heading type="h2">{title}</Heading>
+          <Heading type="h3">{title}</Heading>
           {children}
         </div>
         <div className="absolute right-2 top-2">

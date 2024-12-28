@@ -2,6 +2,7 @@ import { formatDate } from '@/utils/date/format';
 import { Calendar, Clock } from 'lucide-react';
 import { FC, PropsWithChildren } from 'react';
 import { Separator } from '@/components/separator';
+import { Heading } from '@/components/heading';
 
 type Props = PropsWithChildren<{
   title: string;
@@ -18,7 +19,7 @@ export const NewsLayout: FC<Props> = ({
   return (
     <article className="h-full rounded-lg bg-bgBase/90 px-10 pb-14 pt-8">
       <div className="flex flex-col gap-3">
-        <h2 className="text-2xl font-bold">{title}</h2>
+        <Heading type="h3">{title}</Heading>
         <div className="flex flex-row items-center justify-end gap-2 text-sm text-textDescription">
           <div className="flex flex-wrap items-center justify-end gap-1">
             <div className="flex items-center gap-1">
