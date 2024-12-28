@@ -1,19 +1,8 @@
 import { draftMode } from 'next/headers';
 import { NewsCard } from './_components/news-card';
+import { NewsPagination } from './_types';
 
-type News = {
-  contents: {
-    title: string;
-    summary: string;
-    createdAt: string;
-    updatedAt: string;
-  }[];
-  totalCount: number;
-  offset: number;
-  limit: number;
-};
-
-async function getNews(draftKey?: string): Promise<News> {
+async function getNews(draftKey?: string): Promise<NewsPagination> {
   const { isEnabled } = await draftMode();
   const baseUrl = `${process.env.MICROCMS_API_ENDPOINT ?? ''}/news`;
   const url =
@@ -27,7 +16,7 @@ async function getNews(draftKey?: string): Promise<News> {
     cache: 'force-cache',
   });
 
-  return res.json() as Promise<News>;
+  return res.json() as Promise<NewsPagination>;
 }
 
 export default async function Page({
@@ -36,7 +25,6 @@ export default async function Page({
   searchParams: Promise<{ draftKey: string }>;
 }) {
   const { draftKey } = await searchParams;
-
   // TODO: Paginationに対応する
   const { contents } = await getNews(draftKey);
 
@@ -45,11 +33,13 @@ export default async function Page({
       {contents.map((news) => {
         return (
           <NewsCard
-            key={news.title}
+            key={news.id}
+            id={news.id}
             title={news.title}
             summary={news.summary}
             createdAt={news.createdAt}
             updatedAt={news.updatedAt}
+            draftKey={draftKey}
           />
         );
       })}
