@@ -43,7 +43,7 @@ const Root: FC<
       aria-describedby={`${rootId}-content`}
       role={role}
       tabIndex={tabIndex}
-      className="relative max-w-80 rounded-xl bg-bgBase shadow-xl"
+      className="relative w-full rounded-xl bg-bgBase shadow-xl"
     >
       <DialogContext value={{ rootId }}>{children}</DialogContext>
     </section>
@@ -78,7 +78,14 @@ const Header: FC<{
 export const Content: FC<PropsWithChildren> = ({ children }) => {
   const { rootId } = useDialogContext();
   return (
-    <div id={`${rootId}-content`} className="p-4">
+    // eslint-disable-next-line jsx-a11y/click-events-have-key-events, jsx-a11y/no-static-element-interactions -- 参考:https://github.com/jsx-eslint/eslint-plugin-jsx-a11y/blob/main/docs/rules/no-static-element-interactions.md#case-the-event-handler-is-only-being-used-to-capture-bubbled-events
+    <div
+      id={`${rootId}-content`}
+      className="p-4"
+      onClick={(e) => {
+        e.stopPropagation();
+      }}
+    >
       {children}
     </div>
   );
