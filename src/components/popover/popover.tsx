@@ -31,7 +31,7 @@ export { useOpenContext } from './hooks';
 const Root: FC<
   PropsWithChildren<{
     placement?: Placement;
-    type?: 'menu' | 'tooltip' | 'listbox';
+    type?: 'dialog' | 'menu' | 'tooltip' | 'listbox';
     flipDisabled?: boolean;
   }>
 > = ({

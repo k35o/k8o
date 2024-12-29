@@ -18,7 +18,7 @@ import {
 
 type PopoverContext = {
   rootId: string;
-  type: 'menu' | 'tooltip' | 'listbox';
+  type: 'dialog' | 'menu' | 'tooltip' | 'listbox';
   isOpen: boolean;
   toggleOpen: () => void;
   onOpen: () => void;
@@ -94,6 +94,13 @@ export const usePopoverContent = () => {
 
   const itemProps = useMemo(() => {
     switch (popover.type) {
+      case 'dialog':
+        return {
+          id: `${popover.rootId}_list`,
+          ref,
+          role: 'dialog',
+          tabIndex: -1,
+        };
       case 'menu':
         return {
           id: `${popover.rootId}_list`,
@@ -150,6 +157,23 @@ export const usePopoverTrigger = (): Omit<
   const popover = usePopoverContext();
   return useMemo(() => {
     switch (popover.type) {
+      case 'dialog':
+        return {
+          onClick: popover.toggleOpen,
+          onKeyDown: (e: KeyboardEvent) => {
+            e.preventDefault();
+            if (e.key === 'Enter' || e.key === ' ') {
+              e.preventDefault();
+              popover.toggleOpen();
+            }
+          },
+          'aria-haspopup': 'dialog',
+          'aria-expanded': popover.isOpen,
+          'aria-controls': popover.isOpen
+            ? `${popover.rootId}_list`
+            : undefined,
+          ref: popover.setTriggerRef,
+        };
       case 'tooltip':
         return {
           onMouseEnter: popover.onOpen,
@@ -178,7 +202,9 @@ export const usePopoverTrigger = (): Omit<
           },
           'aria-haspopup': 'menu',
           'aria-expanded': popover.isOpen,
-          'aria-controls': `${popover.rootId}_list`,
+          'aria-controls': popover.isOpen
+            ? `${popover.rootId}_list`
+            : undefined,
           ref: popover.setTriggerRef,
         };
       case 'listbox':
@@ -201,7 +227,9 @@ export const usePopoverTrigger = (): Omit<
           role: 'combobox',
           'aria-haspopup': 'listbox',
           'aria-expanded': popover.isOpen,
-          'aria-controls': `${popover.rootId}_list`,
+          'aria-controls': popover.isOpen
+            ? `${popover.rootId}_list`
+            : undefined,
           ref: popover.setTriggerRef,
         };
     }
