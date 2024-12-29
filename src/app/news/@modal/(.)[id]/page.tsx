@@ -1,6 +1,6 @@
 import { draftMode } from 'next/headers';
 import { News, NewsPagination } from '../../_types';
-import { Modal } from '../_components/modal';
+import { NewsModal } from '../_components/news-modal';
 import { notFound } from 'next/navigation';
 import { Calendar, Clock } from 'lucide-react';
 import { formatDate } from '@/utils/date/format';
@@ -54,7 +54,7 @@ export default async function Page({
   const news = await getNews(id, draftKey);
 
   return (
-    <Modal title={news.title}>
+    <NewsModal title={news.title}>
       <div className="flex w-full flex-col gap-5">
         <div className="flex flex-wrap items-center justify-center gap-1 text-xs text-textDescription">
           <div className="flex items-center gap-1">
@@ -71,6 +71,6 @@ export default async function Page({
           dangerouslySetInnerHTML={{ __html: news.description }}
         />
       </div>
-    </Modal>
+    </NewsModal>
   );
 }
