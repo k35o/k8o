@@ -101,7 +101,9 @@ const FixText: FC<{ count: number }> = ({ count }) => {
                 <Textarea
                   {...props}
                   value={fixText}
-                  onChange={handleFixTextChange}
+                  onChange={(e) => {
+                    handleFixTextChange(e.target.value);
+                  }}
                   autoResize
                   isRequired
                 />

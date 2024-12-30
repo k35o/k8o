@@ -1,5 +1,5 @@
 import { cn } from '@/utils/cn';
-import { FC, useEffect, useRef } from 'react';
+import { ChangeEventHandler, FC, useEffect, useRef } from 'react';
 
 type Props = {
   id: string;
@@ -7,13 +7,19 @@ type Props = {
   isInvalid: boolean;
   isDisabled: boolean;
   isRequired: boolean;
-  value: string;
-  onChange: (value: string) => void;
   placeholder?: string;
   rows?: number;
   fullHeight?: boolean;
   autoResize?: boolean;
-};
+} & (
+  | {
+      defaultValue?: string;
+    }
+  | {
+      value: string;
+      onChange: ChangeEventHandler<HTMLTextAreaElement>;
+    }
+);
 
 export const Textarea: FC<Props> = ({
   id,
@@ -21,12 +27,11 @@ export const Textarea: FC<Props> = ({
   isInvalid,
   isDisabled,
   isRequired,
-  value,
-  onChange,
   placeholder,
   rows,
   fullHeight = false,
   autoResize = false,
+  ...props
 }) => {
   const ref = useRef<HTMLTextAreaElement>(null);
 
@@ -41,10 +46,6 @@ export const Textarea: FC<Props> = ({
     <textarea
       id={id}
       ref={ref}
-      value={value}
-      onChange={(e) => {
-        onChange(e.target.value);
-      }}
       aria-describedby={describedbyId}
       aria-invalid={isInvalid}
       aria-required={isRequired}
@@ -62,6 +63,7 @@ export const Textarea: FC<Props> = ({
       onKeyDown={(e) => {
         e.stopPropagation();
       }}
+      {...props}
     />
   );
 };
