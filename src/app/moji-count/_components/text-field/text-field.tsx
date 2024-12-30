@@ -19,7 +19,9 @@ export const TextField = () => {
               <Textarea
                 {...props}
                 value={text}
-                onChange={setText}
+                onChange={(e) => {
+                  setText(e.target.value);
+                }}
                 placeholder="ここに文字列を入力してください"
                 fullHeight
                 isRequired
