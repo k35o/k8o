@@ -90,7 +90,7 @@
     "@testing-library/react": "16.1.0",
     "@types/mdast": "4.0.4",
     "@types/mdx": "2.0.13",
-    "@types/node": "22.10.2",
+    "@types/node": "22.10.3",
     "@types/react": "19.0.2",
     "@types/react-dom": "19.0.2",
     "@types/rss": "0.0.32",
@@ -116,7 +116,7 @@
     "storybook": "8.4.7",
     "storybook-addon-mock-date": "0.6.0",
     "typescript": "5.7.2",
-    "typescript-eslint": "8.18.2",
+    "typescript-eslint": "8.19.0",
     "vitest": "2.1.8"
   },
   "engines": {
