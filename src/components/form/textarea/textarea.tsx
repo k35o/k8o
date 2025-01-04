@@ -3,6 +3,7 @@ import { ChangeEventHandler, FC, useEffect, useRef } from 'react';
 
 type Props = {
   id: string;
+  name?: string;
   describedbyId: string | undefined;
   isInvalid: boolean;
   isDisabled: boolean;
@@ -23,6 +24,7 @@ type Props = {
 
 export const Textarea: FC<Props> = ({
   id,
+  name,
   describedbyId,
   isInvalid,
   isDisabled,
@@ -46,6 +48,7 @@ export const Textarea: FC<Props> = ({
     <textarea
       id={id}
       ref={ref}
+      name={name}
       aria-describedby={describedbyId}
       aria-invalid={isInvalid}
       aria-required={isRequired}
