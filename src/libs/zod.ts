@@ -74,60 +74,44 @@ const errorMap: ZodErrorMap = (issue, _ctx) => {
       break;
     case ZodIssueCode.too_small:
       if (issue.type === 'array')
-        message = `配列は${
-          issue.exact
-            ? 'ちょうど'
-            : issue.inclusive
-              ? `少なくとも`
-              : `以上`
-        }${issue.minimum.toString()}要素を含む必要があります`;
+        message = issue.exact
+          ? `配列はちょうど${issue.minimum.toString()}要素にしてください`
+          : `配列は${issue.minimum.toString()}要素${issue.inclusive ? '以上に' : 'より大きく'}してください`;
       else if (issue.type === 'string')
-        message = `文字列は${
-          issue.exact
-            ? 'ちょうど'
-            : issue.inclusive
-              ? `少なくとも`
-              : `以上`
-        }${issue.minimum.toString()}文字を含む必要があります`;
+        message = issue.exact
+          ? `文字列はちょうど${issue.minimum.toString()}文字にしてください`
+          : `文字列は${issue.minimum.toString()}文字${issue.inclusive ? '以上に' : 'より大きく'}してください`;
       else if (issue.type === 'number')
-        message = `数値は${
-          issue.exact
-            ? `ちょうど`
-            : issue.inclusive
-              ? `以上`
-              : `より大きい`
-        }${issue.minimum.toString()}である必要があります`;
+        message = issue.exact
+          ? `数値はちょうど${issue.minimum.toString()}にしてください`
+          : `数値は${issue.minimum.toString()}${issue.inclusive ? '以上に' : 'より大きく'}してください`;
       else if (issue.type === 'date')
-        message = `日付は${
-          issue.exact
-            ? `ちょうど`
-            : issue.inclusive
-              ? `以上`
-              : `より大きい`
-        }${formatDate(new Date(Number(issue.minimum)))}である必要があります`;
+        message = issue.exact
+          ? `日付はちょうど${formatDate(new Date(Number(issue.minimum)))}にしてください`
+          : `日付は${formatDate(new Date(Number(issue.minimum)))}${issue.inclusive ? '以上に' : 'より大きく'}してください`;
       else message = '無効な入力';
       break;
     case ZodIssueCode.too_big:
       if (issue.type === 'array')
-        message = `配列は${
-          issue.exact ? `ちょうど` : issue.inclusive ? `以下` : `未満`
-        }${issue.maximum.toString()}要素を含む必要があります`;
+        message = issue.exact
+          ? `配列はちょうど${issue.maximum.toString()}要素にしてください`
+          : `配列は${issue.maximum.toString()}文字${issue.inclusive ? '以下' : '未満'}にしてください`;
       else if (issue.type === 'string')
-        message = `文字列は${
-          issue.exact ? `ちょうど` : issue.inclusive ? `以下` : `未満`
-        }${issue.maximum.toString()}文字を含む必要があります`;
+        message = issue.exact
+          ? `文字列はちょうど${issue.maximum.toString()}文字にしてください`
+          : `文字列は${issue.maximum.toString()}文字${issue.inclusive ? '以下' : '未満'}にしてください`;
       else if (issue.type === 'number')
-        message = `数値は${
-          issue.exact ? `ちょうど` : issue.inclusive ? `以下` : `未満`
-        }${issue.maximum.toString()}である必要があります`;
+        message = issue.exact
+          ? `数値はちょうど${issue.maximum.toString()}にしてください`
+          : `数値は${issue.maximum.toString()}${issue.inclusive ? '以下' : '未満'}にしてください`;
       else if (issue.type === 'bigint')
-        message = `BigIntは${
-          issue.exact ? `ちょうど` : issue.inclusive ? `以下` : `未満`
-        }${issue.maximum.toString()} である必要があります`;
+        message = issue.exact
+          ? `数値はちょうど${issue.maximum.toString()}にしてください`
+          : `数値は${formatDate(new Date(Number(issue.maximum)))}${issue.inclusive ? '以下' : '未満'}にしてください`;
       else if (issue.type === 'date')
-        message = `日付は${
-          issue.exact ? `ちょうど` : issue.inclusive ? `以下` : `未満`
-        }${formatDate(new Date(Number(issue.maximum)))}である必要があります`;
+        message = issue.exact
+          ? `日付はちょうど${issue.maximum.toString()}にしてください`
+          : `日付は${formatDate(new Date(Number(issue.maximum)))}${issue.inclusive ? '以下' : '未満'}にしてください`;
       else message = '無効な入力';
       break;
     case ZodIssueCode.custom:
