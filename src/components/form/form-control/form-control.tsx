@@ -66,7 +66,11 @@ export const FormControl: FC<FormControlProps> = ({
         isRequired,
       })}
       {isInvalid && errorText ? (
-        <p id={`${id}-feedback`} className="text-sm text-textError">
+        <p
+          id={`${id}-feedback`}
+          className="text-sm text-textError"
+          aria-live="polite"
+        >
           {errorText}
         </p>
       ) : (
