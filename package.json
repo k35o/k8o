@@ -99,7 +99,7 @@
     "@vitest/coverage-istanbul": "2.1.8",
     "@vitest/ui": "2.1.8",
     "axe-playwright": "2.0.3",
-    "chromatic": "11.21.0",
+    "chromatic": "11.22.0",
     "drizzle-kit": "0.30.1",
     "eslint": "9.17.0",
     "eslint-config-next": "15.1.3",
