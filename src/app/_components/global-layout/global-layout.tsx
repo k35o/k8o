@@ -5,6 +5,7 @@ import { IconLink } from '@/components/icon-link';
 import { ToggleTheme } from '../toggle-theme';
 import { ColorFilters } from '../color-filters';
 import { Bell } from 'lucide-react';
+import { ContactToMe } from '../contact-to-me';
 
 export const GlobalLayout: FC<{ children: ReactNode }> = ({
   children,
@@ -17,6 +18,7 @@ export const GlobalLayout: FC<{ children: ReactNode }> = ({
             <Heading type="h1">k8o</Heading>
           </Link>
           <div className="flex items-center gap-4">
+            <ContactToMe />
             <IconLink href="/news">
               <span className="sr-only">お知らせ</span>
               <Bell className="size-8" />
