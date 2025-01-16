@@ -36,18 +36,6 @@ export const contact = async (
   _previousState: Result,
   formData: FormData,
 ): Promise<Result> => {
-  const identifier = 'api';
-  const { success } = await ratelimit.limit(identifier);
-
-  if (!success) {
-    return {
-      success: false,
-      message:
-        'お問い合わせの送信回数が上限に達しました。数分後に再度お試しください。',
-      defaultValue: formData.get('message') as string,
-    };
-  }
-
   const date = new Date();
   const validatedFields = contactSchema.safeParse({
     message: formData.get('message'),
@@ -60,6 +48,18 @@ export const contact = async (
       message:
         validatedFields.error.errors[0]?.message ??
         'お問い合わせ内容が不正です',
+    };
+  }
+
+  const identifier = 'api';
+  const { success } = await ratelimit.limit(identifier);
+
+  if (!success) {
+    return {
+      success: false,
+      message:
+        'お問い合わせの送信回数が上限に達しました。数分後に再度お試しください。',
+      defaultValue: formData.get('message') as string,
     };
   }
 
