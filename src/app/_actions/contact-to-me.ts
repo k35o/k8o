@@ -3,10 +3,18 @@
 import { db } from '#drizzle/db';
 import * as schema from '@/drizzle/schema';
 import { z } from 'zod';
+import { Ratelimit } from '@upstash/ratelimit';
+import { Redis } from '@upstash/redis';
 import '@/libs/zod';
 
 const contactSchema = z.object({
   message: z.string().max(255).min(1),
+});
+
+const ratelimit = new Ratelimit({
+  redis: Redis.fromEnv(),
+  limiter: Ratelimit.slidingWindow(10, '10 s'),
+  analytics: true,
 });
 
 type Result =
@@ -28,6 +36,18 @@ export const contact = async (
   _previousState: Result,
   formData: FormData,
 ): Promise<Result> => {
+  const identifier = 'api';
+  const { success } = await ratelimit.limit(identifier);
+
+  if (!success) {
+    return {
+      success: false,
+      message:
+        'お問い合わせの送信回数が上限に達しました。数分後に再度お試しください。',
+      defaultValue: formData.get('message') as string,
+    };
+  }
+
   const date = new Date();
   const validatedFields = contactSchema.safeParse({
     message: formData.get('message'),
