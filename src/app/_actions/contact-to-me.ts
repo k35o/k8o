@@ -6,10 +6,14 @@ import { z } from 'zod';
 import '@/libs/zod';
 
 const contactSchema = z.object({
-  message: z.string().max(255),
+  message: z.string().max(255).min(1),
 });
 
 type Result =
+  | {
+      success: null;
+      defaultValue: '';
+    }
   | {
       success: true;
       defaultValue: '';

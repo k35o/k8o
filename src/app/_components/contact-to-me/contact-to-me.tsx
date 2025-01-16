@@ -2,7 +2,13 @@
 
 import { Modal } from '@/components/modal';
 import { IconButton } from '@/components/icon-button';
-import { FC, useActionState, useCallback, useState } from 'react';
+import {
+  FC,
+  useActionState,
+  useCallback,
+  useEffect,
+  useState,
+} from 'react';
 import { Send } from 'lucide-react';
 import { Textarea } from '@/components/form/textarea';
 import { FormControl } from '@/components/form/form-control';
@@ -40,18 +46,14 @@ const ContactToMeModal: FC<{ onClose: () => void }> = ({
     defaultValue: '',
   });
   const { onOpen: onToastOpen } = useToast();
-  const [prevSuccess, setPrevSuccess] = useState<boolean | null>(
-    null,
-  );
 
-  // TODO: To locate the bad setState() call inside `ContactToMeModal`,
-  if (prevSuccess !== state.success) {
+  // TODO: useEffectを用いない方法で実装する
+  useEffect(() => {
     if (state.success) {
-      setPrevSuccess(state.success);
       onToastOpen('success', 'お問い合わせの送信に成功しました');
       onClose();
     }
-  }
+  }, [onClose, onToastOpen, state.success]);
 
   return (
     <Modal title="お問い合わせ" onClose={onClose}>
