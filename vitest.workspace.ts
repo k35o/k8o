@@ -45,11 +45,6 @@ export default defineWorkspace([
       include: ['src/**/*.stories.tsx'],
       browser: {
         enabled: true,
-        instances: [
-          {
-            browser: 'chromium',
-          },
-        ],
         provider: 'playwright',
         headless: true,
         screenshotFailures: false,
