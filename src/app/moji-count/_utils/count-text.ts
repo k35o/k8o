@@ -6,7 +6,7 @@ export const isSegmenter =
 export const countGraphemeLength = (text: string): number => {
   // Intl.Segmenterを実装していないブラウザでは、ユニコードのコードポイント単位で数える
   if (isSegmenter) {
-    return [...text].length;
+    return text.split('').length;
   }
 
   // Intlを実装しているブラウザでは、grapheme単位で数える
