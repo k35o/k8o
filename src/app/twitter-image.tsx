@@ -36,7 +36,6 @@ export default function TwitterImage() {
             width: 384,
           }}
         >
-          {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             src="https://k8o.me/icon.png"
             width={384}

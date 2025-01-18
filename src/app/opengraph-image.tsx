@@ -36,7 +36,6 @@ export default function OpenGraphImage() {
             justifyContent: 'center',
           }}
         >
-          {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             src="https://k8o.me/icon.png"
             width={512}

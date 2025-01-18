@@ -42,7 +42,6 @@ export default defineWorkspace([
     publicDir: '.storybook/public/',
     test: {
       name: 'storybook test',
-      include: ['src/**/*.stories.tsx'],
       browser: {
         enabled: true,
         // TODO: deprecateなので別の方法で書く
@@ -53,12 +52,6 @@ export default defineWorkspace([
       },
       isolate: false,
       setupFiles: ['./.storybook/vitest.setup.ts'],
-      // NOTE: コンポーネントが自動的にclient componentsに解釈されるので、async/awaitコンポーネントは除外する
-      // TODO: async/awaitコンポーネントのテストも実行できるようにする
-      exclude: [
-        'src/app/blog/_components/view-counter/view-counter.stories.tsx',
-        'src/app/blog/_components/blog-layout/blog-layout.stories.tsx',
-      ],
     },
   },
 ]);

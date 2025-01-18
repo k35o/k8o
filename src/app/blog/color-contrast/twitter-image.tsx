@@ -62,7 +62,6 @@ export default async function TwitterImage() {
               </span>
             ))}
           </div>
-          {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             src="https://k8o.me/icon.png"
             width={128}

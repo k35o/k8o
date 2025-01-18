@@ -12,5 +12,11 @@ export default defineConfig({
       all: false,
       provider: 'istanbul',
     },
+    // NOTE: コンポーネントが自動的にclient componentsに解釈されるので、async/awaitコンポーネントは除外する
+    // TODO: async/awaitコンポーネントのテストも実行できるようにする
+    exclude: [
+      '**/view-counter.stories.tsx',
+      '**/blog-layout.stories.tsx',
+    ],
   },
 });
