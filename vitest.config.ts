@@ -15,8 +15,8 @@ export default defineConfig({
     // NOTE: コンポーネントが自動的にclient componentsに解釈されるので、async/awaitコンポーネントは除外する
     // TODO: async/awaitコンポーネントのテストも実行できるようにする
     exclude: [
-      'src/app/blog/_components/view-counter/view-counter.stories.tsx',
-      'src/app/blog/_components/blog-layout/blog-layout.stories.tsx',
+      '**/view-counter.stories.tsx',
+      '**/blog-layout.stories.tsx',
     ],
   },
 });
