@@ -45,6 +45,8 @@ export default defineWorkspace([
       include: ['src/**/*.stories.tsx'],
       browser: {
         enabled: true,
+        // TODO: deprecateなので別の方法で書く
+        name: 'chromium',
         provider: 'playwright',
         headless: true,
         screenshotFailures: false,
