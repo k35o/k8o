@@ -20,7 +20,11 @@ export default defineWorkspace([
       include: ['src/!(utils)/**/*.test.{ts,tsx}'],
       browser: {
         enabled: true,
-        name: 'chromium',
+        instances: [
+          {
+            browser: 'chromium',
+          },
+        ],
         provider: 'playwright',
         headless: true,
         screenshotFailures: false,
@@ -41,7 +45,11 @@ export default defineWorkspace([
       include: ['src/**/*.stories.tsx'],
       browser: {
         enabled: true,
-        name: 'chromium',
+        instances: [
+          {
+            browser: 'chromium',
+          },
+        ],
         provider: 'playwright',
         headless: true,
         screenshotFailures: false,
