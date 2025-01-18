@@ -42,7 +42,6 @@ export default defineWorkspace([
     publicDir: '.storybook/public/',
     test: {
       name: 'storybook test',
-      include: ['src/**/*.stories.tsx'],
       browser: {
         enabled: true,
         // TODO: deprecateなので別の方法で書く
