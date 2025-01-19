@@ -29,7 +29,7 @@ export const TableOfContext: FC<{ slug: string }> = async ({
     depth: 0,
     children: [],
   };
-  await cache(async (slug) =>
+  await cache(async (slug: string) =>
     remark()
       .use(function () {
         return (tree: Root) => {
