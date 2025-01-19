@@ -17,6 +17,9 @@ importers:
       '@mdx-js/react':
         specifier: 3.1.0
         version: 3.1.0(@types/react@19.0.7)(react@19.0.0)
+      '@neondatabase/serverless':
+        specifier: 0.10.4
+        version: 0.10.4
       '@next/env':
         specifier: 15.1.5
         version: 15.1.5
@@ -32,9 +35,6 @@ importers:
       '@vercel/analytics':
         specifier: 1.4.1
         version: 1.4.1(next@15.1.5(@babel/core@7.26.0)(react-dom@19.0.0(react@19.0.0))(react@19.0.0))(react@19.0.0)
-      '@vercel/postgres':
-        specifier: 0.10.0
-        version: 0.10.0
       '@vercel/speed-insights':
         specifier: 1.1.0
         version: 1.1.0(next@15.1.5(@babel/core@7.26.0)(react-dom@19.0.0(react@19.0.0))(react@19.0.0))(react@19.0.0)
@@ -52,7 +52,7 @@ importers:
         version: 4.1.0
       drizzle-orm:
         specifier: 0.38.4
-        version: 0.38.4(@libsql/client-wasm@0.14.0)(@types/pg@8.11.6)(@types/react@19.0.7)(@vercel/postgres@0.10.0)(react@19.0.0)
+        version: 0.38.4(@libsql/client-wasm@0.14.0)(@neondatabase/serverless@0.10.4)(@types/pg@8.11.6)(@types/react@19.0.7)(@vercel/postgres@0.10.0)(react@19.0.0)
       framer-motion:
         specifier: 11.18.1
         version: 11.18.1(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
@@ -1597,6 +1597,9 @@ packages:
   '@mswjs/interceptors@0.37.0':
     resolution: {integrity: sha512-lDiHQMCBV9qz8c7+zxaNFQtWWaSogTYkqJ3Pg+FGYYC76nsfSxkMQ0df8fojyz16E+w4vp57NLjN2muNG7LugQ==}
     engines: {node: '>=18'}
+
+  '@neondatabase/serverless@0.10.4':
+    resolution: {integrity: sha512-2nZuh3VUO9voBauuh+IGYRhGU/MskWHt1IuZvHcJw6GLjDgtqj/KViKo7SIrLdGLdot7vFbiRRw+BgEy3wT9HA==}
 
   '@neondatabase/serverless@0.9.4':
     resolution: {integrity: sha512-D0AXgJh6xkf+XTlsO7iwE2Q1w8981E1cLCPAALMU2YKtkF/1SF6BiAzYARZFYo175ON+b1RNIy9TdSFHm5nteg==}
@@ -7738,9 +7741,14 @@ snapshots:
       outvariant: 1.4.3
       strict-event-emitter: 0.5.1
 
+  '@neondatabase/serverless@0.10.4':
+    dependencies:
+      '@types/pg': 8.11.6
+
   '@neondatabase/serverless@0.9.4':
     dependencies:
       '@types/pg': 8.11.6
+    optional: true
 
   '@next/bundle-analyzer@15.1.5(bufferutil@4.0.8)':
     dependencies:
@@ -8736,6 +8744,7 @@ snapshots:
       ws: 8.18.0(bufferutil@4.0.8)
     transitivePeerDependencies:
       - utf-8-validate
+    optional: true
 
   '@vercel/speed-insights@1.1.0(next@15.1.5(@babel/core@7.26.0)(react-dom@19.0.0(react@19.0.0))(react@19.0.0))(react@19.0.0)':
     optionalDependencies:
@@ -9310,6 +9319,7 @@ snapshots:
   bufferutil@4.0.8:
     dependencies:
       node-gyp-build: 4.8.1
+    optional: true
 
   builtin-status-codes@3.0.0: {}
 
@@ -9721,9 +9731,10 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  drizzle-orm@0.38.4(@libsql/client-wasm@0.14.0)(@types/pg@8.11.6)(@types/react@19.0.7)(@vercel/postgres@0.10.0)(react@19.0.0):
+  drizzle-orm@0.38.4(@libsql/client-wasm@0.14.0)(@neondatabase/serverless@0.10.4)(@types/pg@8.11.6)(@types/react@19.0.7)(@vercel/postgres@0.10.0)(react@19.0.0):
     optionalDependencies:
       '@libsql/client-wasm': 0.14.0
+      '@neondatabase/serverless': 0.10.4
       '@types/pg': 8.11.6
       '@types/react': 19.0.7
       '@vercel/postgres': 0.10.0
@@ -11656,7 +11667,8 @@ snapshots:
 
   node-abort-controller@3.1.1: {}
 
-  node-gyp-build@4.8.1: {}
+  node-gyp-build@4.8.1:
+    optional: true
 
   node-polyfill-webpack-plugin@2.0.1(webpack@5.93.0(esbuild@0.21.5)):
     dependencies:
