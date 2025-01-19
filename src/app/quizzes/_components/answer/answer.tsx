@@ -23,7 +23,7 @@ export const Answer: FC<{
       )}
       <FormControl
         label={question}
-        renderInput={(props) => {
+        renderInput={({ labelId: _, ...props }) => {
           return (
             <TextField
               {...props}

@@ -72,7 +72,7 @@ export const CreateColumnsByForm: FC<Props> = ({
                     isRequired
                     isInvalid={Boolean(columnError?.name)}
                     errorText={columnError?.name}
-                    renderInput={(props) => {
+                    renderInput={({ labelId: _, ...props }) => {
                       return (
                         <TextField
                           value={column.name}
@@ -93,7 +93,7 @@ export const CreateColumnsByForm: FC<Props> = ({
                     isRequired
                     isInvalid={Boolean(columnError?.alias)}
                     errorText={columnError?.alias}
-                    renderInput={(props) => {
+                    renderInput={({ labelId: _, ...props }) => {
                       return (
                         <TextField
                           value={column.alias}
@@ -111,10 +111,9 @@ export const CreateColumnsByForm: FC<Props> = ({
                   />
                   <FormControl
                     label="型"
-                    renderInput={({ describedbyId, ...props }) => {
+                    renderInput={({ labelId: _, ...props }) => {
                       return (
                         <Select
-                          describedbyId={describedbyId}
                           value={column.type}
                           onChange={(type) => {
                             handleChangeColumn(id)({
@@ -158,7 +157,7 @@ export const CreateColumnsByForm: FC<Props> = ({
                     label="デフォルト値"
                     isInvalid={Boolean(columnError?.default)}
                     errorText={columnError?.default}
-                    renderInput={(props) => {
+                    renderInput={({ labelId: _, ...props }) => {
                       return (
                         <TextField
                           value={column.default ?? ''}

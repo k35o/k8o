@@ -50,7 +50,7 @@ export const EditField = () => {
       <div className="h-full *:h-full">
         <FormControl
           label="校正したいテキスト"
-          renderInput={(props) => {
+          renderInput={({ labelId: _, ...props }) => {
             return (
               <Textarea
                 {...props}

@@ -31,7 +31,7 @@ export const CreateTable: FC<Props> = ({
           isRequired
           isInvalid={Boolean(tableError?.name)}
           errorText={tableError?.name}
-          renderInput={(props) => {
+          renderInput={({ labelId: _, ...props }) => {
             return (
               <TextField
                 value={table.name}
@@ -47,7 +47,7 @@ export const CreateTable: FC<Props> = ({
           isRequired
           isInvalid={Boolean(tableError?.alias)}
           errorText={tableError?.alias}
-          renderInput={(props) => {
+          renderInput={({ labelId: _, ...props }) => {
             return (
               <TextField
                 value={table.alias}

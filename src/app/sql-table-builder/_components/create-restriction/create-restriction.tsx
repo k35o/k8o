@@ -43,7 +43,7 @@ export const CreateRestriction: FC<Props> = ({
     <div className="flex flex-col justify-center gap-4">
       <FormControl
         label="種類"
-        renderInput={(props) => {
+        renderInput={({ labelId: _, ...props }) => {
           return (
             <Select
               value={restriction.type}
@@ -77,7 +77,7 @@ export const CreateRestriction: FC<Props> = ({
         <FormControl
           label="カラム"
           isRequired
-          renderInput={(props) => (
+          renderInput={({ labelId: _, ...props }) => (
             <Autocomplete
               {...props}
               options={columnOptions}
@@ -99,7 +99,7 @@ export const CreateRestriction: FC<Props> = ({
             isRequired
             isInvalid={Boolean(restrictionError?.column)}
             errorText={restrictionError?.column}
-            renderInput={(props) => {
+            renderInput={({ labelId: _, ...props }) => {
               return (
                 <Select
                   value={restriction.column}
@@ -120,7 +120,7 @@ export const CreateRestriction: FC<Props> = ({
             isRequired
             isInvalid={Boolean(restrictionError?.referrence?.table)}
             errorText={restrictionError?.referrence?.table}
-            renderInput={(props) => {
+            renderInput={({ labelId: _, ...props }) => {
               return (
                 <TextField
                   {...props}
@@ -140,7 +140,7 @@ export const CreateRestriction: FC<Props> = ({
             isRequired
             isInvalid={Boolean(restrictionError?.referrence?.column)}
             errorText={restrictionError?.referrence?.column}
-            renderInput={(props) => {
+            renderInput={({ labelId: _, ...props }) => {
               return (
                 <TextField
                   {...props}

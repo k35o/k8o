@@ -104,7 +104,7 @@ export const ColorConverter = () => {
       <div className="flex flex-col items-center gap-6">
         <FormControl
           label="hex"
-          renderInput={(props) => {
+          renderInput={({ labelId: _, ...props }) => {
             return (
               <div className="flex w-full items-center gap-2">
                 #
@@ -121,7 +121,7 @@ export const ColorConverter = () => {
           label="rgb"
           labelAs="legend"
           renderInput={(props) => {
-            const { id, describedbyId, ...rest } = props;
+            const { id, describedbyId, labelId: _, ...rest } = props;
             return (
               <div className="flex flex-wrap items-center gap-2 sm:flex-nowrap">
                 <span className="sr-only sm:not-sr-only">rgb(</span>
@@ -204,7 +204,7 @@ export const ColorConverter = () => {
           label="hsl"
           labelAs="legend"
           renderInput={(props) => {
-            const { id, describedbyId, ...rest } = props;
+            const { id, describedbyId, labelId: _, ...rest } = props;
             return (
               <div className="flex flex-wrap items-center gap-2 sm:flex-nowrap">
                 <span className="sr-only sm:not-sr-only">hsl(</span>
