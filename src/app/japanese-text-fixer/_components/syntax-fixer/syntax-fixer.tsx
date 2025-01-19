@@ -96,7 +96,7 @@ const FixText: FC<{ count: number }> = ({ count }) => {
           </Heading>
           <FormControl
             label="修正後のテキスト"
-            renderInput={(props) => {
+            renderInput={({ labelId: _, ...props }) => {
               return (
                 <Textarea
                   {...props}

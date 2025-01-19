@@ -44,7 +44,7 @@ export const Start: FC = () => {
         <FormControl
           label="問題数"
           helpText="数値が問題数を超える場合は全ての問題が出題されます"
-          renderInput={(props) => (
+          renderInput={({ labelId: _, ...props }) => (
             <NumberField
               {...props}
               value={questionCount}

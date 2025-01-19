@@ -62,7 +62,7 @@ export const BaseConverter = () => {
       <div className="flex items-center justify-center gap-3">
         <FormControl
           label="変換前"
-          renderInput={(props) => {
+          renderInput={({ labelId: _, ...props }) => {
             return (
               <Select
                 value={baseFrom.toString()}
@@ -78,7 +78,7 @@ export const BaseConverter = () => {
         <ArrowBigRightDash aria-label="右矢印" className="size-14" />
         <FormControl
           label="変換後"
-          renderInput={(props) => {
+          renderInput={({ labelId: _, ...props }) => {
             return (
               <Select
                 value={baseTo.toString()}
@@ -94,7 +94,7 @@ export const BaseConverter = () => {
       </div>
       <FormControl
         label="変換する値"
-        renderInput={(props) => {
+        renderInput={({ labelId: _, ...props }) => {
           return (
             <TextField
               value={textFrom}

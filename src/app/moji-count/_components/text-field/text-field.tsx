@@ -14,7 +14,7 @@ export const TextField = () => {
       <div className="h-full *:h-full">
         <FormControl
           label="カウントしたい文字列"
-          renderInput={(props) => {
+          renderInput={({ labelId: _, ...props }) => {
             return (
               <Textarea
                 {...props}
