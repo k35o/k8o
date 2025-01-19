@@ -3,6 +3,7 @@ import { remark } from 'remark';
 import { readFileSync } from 'fs';
 import type { Root } from 'mdast';
 import Link from 'next/link';
+import { unstable_cache as cache } from 'next/cache';
 
 type HeadingTree = {
   depth: 0;
@@ -20,10 +21,7 @@ type HeadingTree = {
   }[];
 };
 
-export const TableOfContext: FC<{ slug: string }> = async ({
-  slug,
-}) => {
-  // Heading 2, 3, 4 のみをツリーに起こす
+const getHeadingTree = cache(async (slug: string) => {
   let headingTree: HeadingTree = {
     depth: 0,
     children: [],
@@ -138,6 +136,14 @@ export const TableOfContext: FC<{ slug: string }> = async ({
         'utf-8',
       ),
     );
+  return headingTree;
+});
+
+export const TableOfContext: FC<{ slug: string }> = async ({
+  slug,
+}) => {
+  // Heading 2, 3, 4 のみをツリーに起こす
+  const headingTree = await getHeadingTree(slug);
 
   if (headingTree.children.length === 0) {
     return null;
