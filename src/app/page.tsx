@@ -6,6 +6,7 @@ import { GithubMark, Qiita, Zenn } from '@/components/icons';
 import { Card } from '@/components/card';
 import { AppCard } from './_components/app-card';
 import { RoundedIcon } from './radius-maker/_components/rounded-icon';
+import { EmailTooltip } from './_components/email-tooltip';
 
 export default function Home() {
   return (
@@ -23,6 +24,7 @@ export default function Home() {
             <div className="flex h-full flex-col justify-evenly md:h-auto md:flex-row md:items-center md:justify-between">
               <Heading type="h3">k8o</Heading>
               <div className="flex items-center justify-end gap-1">
+                <EmailTooltip />
                 <IconLink href="https://github.com/k35o">
                   <GithubMark
                     title="GitHubのアカウント"
