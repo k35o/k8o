@@ -24,7 +24,7 @@ import {
   usePopoverContent,
   usePopoverTrigger,
 } from './hooks';
-import { AnimatePresence, motion, Variants } from 'framer-motion';
+import { AnimatePresence, motion, Variants } from 'motion/react';
 
 export { useOpenContext } from './hooks';
 
