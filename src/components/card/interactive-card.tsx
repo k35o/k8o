@@ -1,6 +1,6 @@
 'use client';
 
-import { motion } from 'framer-motion';
+import { motion } from 'motion/react';
 import { FC } from 'react';
 import { CardProps } from './type';
 import clsx from 'clsx';
