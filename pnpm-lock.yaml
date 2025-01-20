@@ -53,9 +53,6 @@ importers:
       drizzle-orm:
         specifier: 0.38.4
         version: 0.38.4(@libsql/client-wasm@0.14.0)(@neondatabase/serverless@0.10.4)(@types/pg@8.11.6)(@types/react@19.0.7)(@vercel/postgres@0.10.0)(react@19.0.0)
-      framer-motion:
-        specifier: 11.18.1
-        version: 11.18.1(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
       lucide-react:
         specifier: 0.473.0
         version: 0.473.0(react@19.0.0)
