@@ -1,6 +1,7 @@
 'use client';
 
-import { AnimatePresence, motion, Variants } from 'motion/react';
+import * as motion from 'motion/react-client';
+import { AnimatePresence, Variants } from 'motion/react';
 import { StatusType } from '@/types';
 import {
   createContext,
