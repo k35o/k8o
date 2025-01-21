@@ -8,6 +8,7 @@ import { Separator } from '@/components/separator';
 import { ReportView } from '../report-view';
 import { TextTag } from '@/components/text-tag';
 import { TableOfContext } from '../table-of-context';
+import { ScrollLinked } from '@/components/scroll-linked';
 
 export const BlogLayout: FC<{
   children: ReactNode;
@@ -79,6 +80,7 @@ export const BlogLayout: FC<{
           <TableOfContext slug={slug} />
         </div>
       </ErrorBoundary>
+      <ScrollLinked />
     </div>
   );
 };
