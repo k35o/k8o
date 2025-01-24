@@ -48,11 +48,11 @@ export const NumberField: FC<Props> = ({
   return (
     <div
       className={cn(
-        'relative flex h-12 w-full items-center justify-between gap-2 rounded-lg border border-borderPrimary bg-bgBase shadow-sm',
-        'focus-within:border-borderTransparent focus-within:outline-none focus-within:ring-2 focus-within:ring-borderFocus',
+        'border-borderPrimary bg-bgBase relative flex h-12 w-full items-center justify-between gap-2 rounded-lg border shadow-xs',
+        'focus-within:border-borderTransparent focus-within:ring-borderFocus focus-within:ring-2 focus-within:outline-hidden',
         'has-[input:hover]:bg-bgActive',
-        'has-[[aria-invalid=true]]:border-borderError',
-        'has-[:disabled]:cursor-not-allowed has-[:disabled]:border-borderDisabled has-[:disabled]:has-[:hover]:hover:bg-bgBase',
+        'has-aria-invalid:border-borderError',
+        'has-disabled:border-borderDisabled has-disabled:has-[:hover]:hover:bg-bgBase has-disabled:cursor-not-allowed',
       )}
     >
       <input
@@ -112,7 +112,7 @@ export const NumberField: FC<Props> = ({
           }
         }}
         className={cn(
-          'h-full w-full grow bg-bgTransparent pl-3 pr-8 focus-visible:outline-none',
+          'bg-bgTransparent h-full w-full grow pr-8 pl-3 focus-visible:outline-hidden',
           'disabled:cursor-not-allowed',
         )}
         placeholder={placeholder}
@@ -139,7 +139,7 @@ export const NumberField: FC<Props> = ({
             setDisplayValue(newValue.toFixed(precision));
           }}
           className={cn(
-            'flex w-6 grow items-center justify-center rounded-tr-lg border-b border-l bg-bgSecondary',
+            'bg-bgSecondary flex w-6 grow items-center justify-center rounded-tr-lg border-b border-l',
             'disabled:cursor-not-allowed',
           )}
           disabled={isDisabled}
@@ -163,7 +163,7 @@ export const NumberField: FC<Props> = ({
             setDisplayValue(newValue.toFixed(precision));
           }}
           className={cn(
-            'flex w-6 grow items-center justify-center rounded-br-lg border-l bg-bgSecondary',
+            'bg-bgSecondary flex w-6 grow items-center justify-center rounded-br-lg border-l',
             'disabled:cursor-not-allowed',
           )}
           disabled={isDisabled}

@@ -102,10 +102,10 @@ const HelpContent: FC = () => {
         'inline-flex w-full items-center gap-1 px-2 py-1',
         'hover:bg-bgHover hover:text-textBody',
         'active:bg-bgActive',
-        'focus-visible:border-borderTransparent focus-visible:bg-bgHover focus-visible:outline-none',
+        'focus-visible:border-borderTransparent focus-visible:bg-bgHover focus-visible:outline-hidden',
       )}
     >
-      {<Info className="size-6 text-textInfo" />}
+      {<Info className="text-textInfo size-6" />}
       色覚特性について
     </Link>
   );

@@ -118,7 +118,7 @@ const Content: FC<{
           <section
             {...props}
             {...contentProps}
-            className="flex max-h-48 min-w-40 flex-col overflow-y-auto rounded-xl border border-borderSecondary bg-bgBase py-2 shadow-xl"
+            className="border-borderSecondary bg-bgBase flex max-h-48 min-w-40 flex-col overflow-y-auto rounded-xl border py-2 shadow-xl"
           >
             {helpContent}
             {options.map(({ key, label }, idx) => (
@@ -143,13 +143,13 @@ const Item: FC<{
         'w-full px-2 py-1 text-left',
         'hover:bg-bgHover hover:text-textBody',
         'active:bg-bgActive',
-        'focus-visible:border-borderTransparent focus-visible:bg-bgHover focus-visible:outline-none',
+        'focus-visible:border-borderTransparent focus-visible:bg-bgHover focus-visible:outline-hidden',
         !selected && 'pl-9',
         selected && 'inline-flex items-center gap-1',
       )}
       {...props}
     >
-      {selected && <Check className="size-6 text-textSuccess" />}
+      {selected && <Check className="text-textSuccess size-6" />}
       {label}
     </button>
   );

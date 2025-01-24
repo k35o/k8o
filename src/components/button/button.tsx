@@ -36,16 +36,16 @@ export const Button: FC<
             variant === 'contained' && color === 'primary',
           ['bg-bgBase text-textBody hover:bg-bgHover active:bg-bgActive']:
             variant === 'contained' && color === 'gray',
-          ['cursor-not-allowed opacity-35 hover:bg-buttonPrimary active:bg-buttonPrimary']:
+          ['hover:bg-buttonPrimary active:bg-buttonPrimary cursor-not-allowed opacity-35']:
             disabled && variant === 'contained',
-          ['border-2 border-buttonPrimary bg-bgBase text-buttonPrimary hover:bg-bgHover active:bg-bgActive']:
+          ['border-buttonPrimary bg-bgBase text-buttonPrimary hover:bg-bgHover active:bg-bgActive border-2']:
             variant === 'outlined' && color === 'primary',
-          ['border-2 border-borderPrimary bg-bgBase text-textBody hover:bg-bgHover active:bg-bgActive']:
+          ['border-borderPrimary bg-bgBase text-textBody hover:bg-bgHover active:bg-bgActive border-2']:
             variant === 'outlined' && color === 'gray',
-          ['cursor-not-allowed bg-bgBase opacity-35 hover:bg-bgBase active:bg-bgBase']:
+          ['bg-bgBase hover:bg-bgBase active:bg-bgBase cursor-not-allowed opacity-35']:
             disabled && variant === 'outlined',
         },
-        'focus-visible:border-borderTransparent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-borderFocus',
+        'focus-visible:border-borderTransparent focus-visible:ring-borderFocus focus-visible:ring-2 focus-visible:outline-hidden',
         size === 'sm' && 'px-3 py-1 text-sm',
         size === 'md' && 'text-md px-4 py-2',
         size === 'lg' && 'px-6 py-3 text-lg',
