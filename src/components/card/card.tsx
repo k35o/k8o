@@ -8,9 +8,9 @@ export const Card: FC<CardProps> = ({
 }) => (
   <section
     className={clsx(
-      'rounded-xl bg-bgBase/55 shadow-md',
-      variant === 'primary' && 'bg-bgBase/55',
-      variant === 'secondary' && 'bg-bgSecondary',
+      'bg-bg-base/55 rounded-xl shadow-md',
+      variant === 'primary' && 'bg-bg-base/55',
+      variant === 'secondary' && 'bg-bg-secondary',
     )}
   >
     {children}

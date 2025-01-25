@@ -118,7 +118,7 @@ const Content: FC<{
           <section
             {...props}
             {...contentProps}
-            className="border-borderSecondary bg-bgBase flex max-h-48 min-w-40 flex-col overflow-y-auto rounded-xl border py-2 shadow-xl"
+            className="border-border-secondary bg-bg-base flex max-h-48 min-w-40 flex-col overflow-y-auto rounded-xl border py-2 shadow-xl"
           >
             {helpContent}
             {options.map(({ key, label }, idx) => (
@@ -141,15 +141,15 @@ const Item: FC<{
     <button
       className={clsx(
         'w-full px-2 py-1 text-left',
-        'hover:bg-bgHover hover:text-textBody',
-        'active:bg-bgActive',
-        'focus-visible:border-borderTransparent focus-visible:bg-bgHover focus-visible:outline-hidden',
+        'hover:bg-bg-hover hover:text-text-body',
+        'active:bg-bg-active',
+        'focus-visible:border-border-transparent focus-visible:bg-bg-hover focus-visible:outline-hidden',
         !selected && 'pl-9',
         selected && 'inline-flex items-center gap-1',
       )}
       {...props}
     >
-      {selected && <Check className="text-textSuccess size-6" />}
+      {selected && <Check className="text-text-success size-6" />}
       {label}
     </button>
   );

@@ -3,7 +3,7 @@ import { FC } from 'react';
 export const ColorTip: FC<{ color: string }> = ({ color }) => {
   return (
     <div
-      className="size-48 rounded-lg border border-borderPrimary"
+      className="border-border-primary size-48 rounded-lg border"
       style={{ backgroundColor: color }}
     />
   );

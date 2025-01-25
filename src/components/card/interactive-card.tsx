@@ -12,9 +12,9 @@ export const InteractiveCard: FC<
     whileHover={{ scale: animation === 'medium' ? 1.05 : 1.02 }}
     whileTap={{ scale: animation === 'medium' ? 0.95 : 0.98 }}
     className={clsx(
-      'rounded-xl bg-bgBase/55 shadow-md',
-      variant === 'primary' && 'bg-bgBase/55',
-      variant === 'secondary' && 'bg-bgSecondary',
+      'bg-bg-base/55 rounded-xl shadow-md',
+      variant === 'primary' && 'bg-bg-base/55',
+      variant === 'secondary' && 'bg-bg-secondary',
     )}
   >
     {children}

@@ -33,7 +33,7 @@ export const NewsCard: FC<Props> = ({
         <div className="flex flex-col gap-4 px-6 py-4">
           <div className="flex flex-col gap-1">
             <Heading type="h3">{title}</Heading>
-            <div className="flex flex-wrap items-center gap-1 text-textDescription">
+            <div className="text-text-description flex flex-wrap items-center gap-1">
               <div className="flex items-center gap-1">
                 <Calendar className="size-4" aria-label="" />
                 <span className="text-sm">

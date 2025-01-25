@@ -18,13 +18,13 @@ export const BlogLayout: FC<{
   return (
     <div className="gap-4 xl:flex xl:has-[>:nth-child(2)]:-mx-36">
       {blog ? (
-        <article className="bg-bgBase/90 rounded-lg px-3 pt-8 pb-14 sm:px-10">
+        <article className="bg-bg-base/90 rounded-lg px-3 pt-8 pb-14 sm:px-10">
           <ReportView blogId={blog.id} />
           <div className="flex flex-col gap-3">
             <h2 className="text-xl font-bold sm:text-2xl">
               {blog.title}
             </h2>
-            <div className="text-textDescription flex flex-col items-end gap-1 text-xs sm:flex-row sm:items-center sm:justify-end sm:gap-2 sm:text-sm">
+            <div className="text-text-description flex flex-col items-end gap-1 text-xs sm:flex-row sm:items-center sm:justify-end sm:gap-2 sm:text-sm">
               <div className="flex flex-wrap items-center justify-end gap-1">
                 <div className="flex items-center gap-1">
                   <Calendar className="size-4" aria-label="" />
@@ -48,10 +48,10 @@ export const BlogLayout: FC<{
             </div>
             {blog.description && (
               <div
-                className="bg-bgSecondary rounded-lg p-4"
+                className="bg-bg-secondary rounded-lg p-4"
                 aria-label="記事の要約"
               >
-                <p className="text-textBody text-sm sm:text-base">
+                <p className="text-text-body text-sm sm:text-base">
                   {blog.description}
                 </p>
               </div>
@@ -70,7 +70,7 @@ export const BlogLayout: FC<{
           {children}
         </article>
       ) : (
-        <article className="bg-bgBase/90 rounded-lg px-3 py-14 pt-4 sm:px-10">
+        <article className="bg-bg-base/90 rounded-lg px-3 py-14 pt-4 sm:px-10">
           {children}
         </article>
       )}

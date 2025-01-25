@@ -34,7 +34,7 @@ export const VerifiedSyntax: FC = () => {
       </div>
       <CircleCheck
         aria-label=""
-        className="size-36 text-textSuccess"
+        className="text-text-success size-36"
       />
       <p className="text-lg font-bold">
         テキストに問題は見つかりませんでした
@@ -49,7 +49,7 @@ export const VerifiedSyntax: FC = () => {
             </h4>
             <AccordionPanel>
               <div className="p-3">
-                <p className="whitespace-pre-wrap text-wrap break-all">
+                <p className="text-wrap break-all whitespace-pre-wrap">
                   {text}
                 </p>
               </div>

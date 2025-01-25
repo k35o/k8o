@@ -20,9 +20,9 @@ export const IconLink: FC<IconLinkProps> = ({
   return isInternalRoute(href) ? (
     <Link
       className={cn(
-        'block rounded-full hover:bg-bgHover focus-visible:ring-2 focus-visible:ring-borderFocus active:bg-bgActive',
-        bg === 'base' && 'bg-bgBase/55',
-        bg === 'transparent' && 'bg-bgTransparent',
+        'hover:bg-bg-hover focus-visible:ring-border-focus active:bg-bg-active block rounded-full focus-visible:ring-2',
+        bg === 'base' && 'bg-bg-base/55',
+        bg === 'transparent' && 'bg-bg-transparent',
         size === 'sm' && 'p-1',
         size === 'md' && 'p-2',
         size === 'lg' && 'p-3',
@@ -35,9 +35,9 @@ export const IconLink: FC<IconLinkProps> = ({
   ) : (
     <a
       className={cn(
-        'block rounded-full hover:bg-bgHover focus-visible:ring-2 focus-visible:ring-borderFocus active:bg-bgActive',
-        bg === 'base' && 'bg-bgBase/55',
-        bg === 'transparent' && 'bg-bgTransparent',
+        'hover:bg-bg-hover focus-visible:ring-border-focus active:bg-bg-active block rounded-full focus-visible:ring-2',
+        bg === 'base' && 'bg-bg-base/55',
+        bg === 'transparent' && 'bg-bg-transparent',
         size === 'sm' && 'p-1',
         size === 'md' && 'p-2',
         size === 'lg' && 'p-3',

@@ -1,148 +1,215 @@
 @import 'tailwindcss';
 
-@config '../../../tailwind.config.ts';
-
-/*
-  The default border color has changed to `currentColor` in Tailwind CSS v4,
-  so we've added these compatibility styles to make sure everything still
-  looks the same as it did with Tailwind CSS v3.
-
-  If we ever want to remove these styles, we need to add an explicit border
-  color utility to any element that depends on these defaults.
-*/
-@layer base {
-  *,
-  ::after,
-  ::before,
-  ::backdrop,
-  ::file-selector-button {
-    border-color: var(--color-gray-200, currentColor);
-  }
+body:has(dialog[open]) {
+  overflow: hidden;
+  scrollbar-gutter: stable;
 }
 
-@layer base {
-  :root {
-    /* foreground */
-    --text-body: 3 7 18;
-    --text-description: 55 65 81;
-    --text-link: 37 99 235;
-    --text-on-fill: 249 250 251;
-    --text-highlight: 15 118 110;
-    --text-error: 220 38 38;
-    --text-warning: 161 98 7;
-    --text-success: 21 128 61;
-    --text-info: 37 99 235;
+/* dark themeの値を使うための宣言 */
+@custom-variant dark (&:where(.dark, .dark *));
 
-    /* background */
-    --bg-base: 249 250 251;
-    --bg-primary: 203 213 225;
-    --bg-secondary: 226 232 240;
-    --bg-tertiary: 248 250 252;
-    --bg-code-block: 30 41 59;
-    --bg-error: 254 226 226;
-    --bg-warning: 254 249 195;
-    --bg-success: 220 252 231;
-    --bg-info: 219 234 254;
-    --bg-hover: 229 231 235;
-    --bg-active: 209 213 219;
-    --bg-transparent: transparent;
-    --bg-back-drop: 0 0 0 0.5;
+:root {
+  /* foreground */
+  --text-body: oklch(12.81% 0.0287 256.42);
+  --text-description: oklch(37.29% 0.0306 259.73);
+  --text-link: oklch(54.61% 0.2152 262.88);
+  --text-on-fill: oklch(98.46% 0.0017 247.84);
+  --text-highlight: oklch(51.09% 0.0861 186.39);
+  --text-error: oklch(57.71% 0.2152 27.33);
+  --text-warning: oklch(55.38% 0.1207 66.44);
+  --text-success: oklch(52.73% 0.1371 150.07);
+  --text-info: oklch(54.61% 0.2152 262.88);
 
-    /* border */
-    --border-primary: 75 85 99;
-    --border-secondary: 209 213 219;
-    --border-focus: 59 130 246;
-    --border-disabled: 209 213 219;
-    --border-error: 220 38 38;
-    --border-warning: 161 98 7;
-    --border-success: 21 128 61;
-    --border-info: 37 99 235;
-    --border-transparent: transparent;
+  /* background */
+  --bg-base: oklch(98.46% 0.0017 247.84);
+  --bg-primary: oklch(86.9% 0.0198 252.89);
+  --bg-secondary: oklch(92.88% 0.0126 255.5);
+  --bg-tertiary: oklch(98.42% 0.0034 247.86);
+  --bg-code-block: oklch(27.95% 0.0368 260.03);
+  --bg-error: oklch(93.56% 0.0309 17.72);
+  --bg-warning: oklch(97.29% 0.0693 103.19);
+  --bg-success: oklch(96.24% 0.0434 156.74);
+  --bg-info: oklch(93.19% 0.0316 255.59);
+  --bg-hover: oklch(92.76% 0.0058 264.53);
+  --bg-active: oklch(87.17% 0.0093 258.34);
+  --bg-transparent: transparent;
+  --bg-back-drop: rgb(0, 0, 0, 0.5);
 
-    /* button */
-    --button-primary: 15 118 110;
-    --button-hover: 17 94 89;
-    --button-active: 19 78 74;
+  /* border */
+  --border-primary: oklch(44.61% 0.0263 256.8);
+  --border-secondary: oklch(87.17% 0.0093 258.34);
+  --border-focus: oklch(62.31% 0.188 259.81);
+  --border-disabled: oklch(87.17% 0.0093 258.34);
+  --border-error: oklch(57.71% 0.2152 27.33);
+  --border-warning: oklch(55.38% 0.1207 66.44);
+  --border-success: oklch(52.73% 0.1371 150.07);
+  --border-info: oklch(54.61% 0.2152 262.88);
+  --border-transparent: transparent;
 
-    /* chart */
-    --chart-primary: 45 212 191;
-    --chart-empty: 243 244 246;
+  /* button */
+  --button-primary: oklch(51.09% 0.0861 186.39);
+  --button-hover: oklch(43.7% 0.0705 188.22);
+  --button-active: oklch(38.61% 0.059 188.42);
 
-    /* group */
-    --group-primary: 45 212 191;
-    --group-secondary: 56 189 248;
-    --group-tertiary: 129 140 248;
-    --group-quaternary: 232 121 249;
-  }
+  /* chart */
+  --chart-primary: oklch(78.45% 0.1325 181.91);
+  --chart-empty: oklch(96.7% 0.0029 264.54);
 
-  .dark {
-    /* foreground */
-    --text-body: 249 250 251;
-    --text-description: 156 163 175;
-    --text-link: 147 197 253;
-    --text-on-fill: 3 7 18;
-    --text-highlight: 13 148 136;
-    --text-error: 220 38 38;
-    --text-warning: 161 98 7;
-    --text-success: 21 128 61;
-    --text-info: 37 99 235;
+  /* group */
+  --group-primary: oklch(78.45% 0.1325 181.91);
+  --group-secondary: oklch(75.35% 0.139 232.66);
+  --group-tertiary: oklch(68.01% 0.1583 276.93);
+  --group-quaternary: oklch(74.77% 0.207 322.16);
+}
+.dark {
+  /* foreground */
+  --text-body: oklch(98.46% 0.0017 247.84);
+  --text-description: oklch(71.37% 0.0192 261.32);
+  --text-link: oklch(80.91% 0.0956 251.81);
+  --text-on-fill: oklch(12.81% 0.0287 256.42);
+  --text-highlight: oklch(51.09% 0.0861 186.39);
+  --text-error: oklch(57.71% 0.2152 27.33);
+  --text-warning: oklch(55.38% 0.1207 66.44);
+  --text-success: oklch(52.73% 0.1371 150.07);
+  --text-info: oklch(54.61% 0.2152 262.88);
 
-    /* background */
-    --bg-base: 17 24 39;
-    --bg-primary: 30 41 59;
-    --bg-secondary: 51 65 85;
-    --bg-tertiary: 71 85 105;
-    --bg-code-block: 15 23 42;
-    --bg-error: 254 226 226;
-    --bg-warning: 254 249 195;
-    --bg-success: 220 252 231;
-    --bg-info: 219 234 254;
-    --bg-hover: 31 41 55;
-    --bg-active: 55 65 81;
-    --bg-transparent: transparent;
-    --bg-back-drop: 0 0 0 0.5;
+  /* background */
+  --bg-base: oklch(21.01% 0.0318 264.66);
+  --bg-primary: oklch(27.95% 0.0368 260.03);
+  --bg-secondary: oklch(37.17% 0.0392 257.29);
+  --bg-tertiary: oklch(44.55% 0.0374 257.28);
+  --bg-code-block: oklch(20.77% 0.0398 265.75);
+  --bg-error: oklch(93.56% 0.0309 17.72);
+  --bg-warning: oklch(97.29% 0.0693 103.19);
+  --bg-success: oklch(96.24% 0.0434 156.74);
+  --bg-info: oklch(93.19% 0.0316 255.59);
+  --bg-hover: oklch(27.81% 0.0296 256.85);
+  --bg-active: oklch(37.29% 0.0306 259.73);
+  --bg-back-drop: rgb(0, 0, 0, 0.5);
 
-    /* border */
-    --border-primary: 107 114 128;
-    --border-secondary: 75 85 99;
-    --border-focus: 59 130 246;
-    --border-disabled: 75 85 99;
-    --border-error: 220 38 38;
-    --border-warning: 161 98 7;
-    --border-success: 21 128 61;
-    --border-info: 37 99 235;
-    --border-transparent: transparent;
+  /* border */
+  --border-primary: oklch(55.1% 0.0234 264.36);
+  --border-secondary: oklch(44.61% 0.0263 256.8);
+  --border-focus: oklch(62.31% 0.188 259.81);
+  --border-disabled: oklch(44.61% 0.0263 256.8);
+  --border-error: oklch(57.71% 0.2152 27.33);
+  --border-warning: oklch(55.38% 0.1207 66.44);
+  --border-success: oklch(52.73% 0.1371 150.07);
+  --border-info: oklch(54.61% 0.2152 262.88);
 
-    /* button */
-    --button-primary: 20 184 166;
-    --button-hover: 13 148 136;
-    --button-active: 15 118 110;
+  /* button */
+  --button-primary: oklch(70.38% 0.123 182.5);
+  --button-hover: oklch(60.02% 0.1038 184.7);
+  --button-active: oklch(51.09% 0.0861 186.39);
 
-    /* chart */
-    --chart-primary: 94 234 212;
-    --chart-empty: 75 85 99;
+  /* chart */
+  --chart-primary: oklch(85.49% 0.1251 181.07);
+  --chart-empty: oklch(44.61% 0.0263 256.8);
 
-    /* group */
-    --group-primary: 94 234 212;
-    --group-secondary: 125 211 252;
-    --group-tertiary: 165 180 252;
-    --group-quaternary: 240 171 252;
-  }
+  /* group */
+  --group-primary: oklch(85.49% 0.1251 181.07);
+  --group-secondary: oklch(82.76% 0.1013 230.32);
+  --group-tertiary: oklch(78.53% 0.1041 274.71);
+  --group-quaternary: oklch(83.3% 0.1322 321.43);
+}
 
-  .app-background {
-    background-color: #50e2d2;
+@theme inline {
+  --font-noto-sans-jp: var(--font-noto-sans-jp);
+
+  /* TODO: spacingをもっと定義する */
+  --spacing-lg: 32rem;
+
+  --color-*: initial;
+  /* foreground */
+  --color-text-body: var(--text-body);
+  --color-text-description: var(--text-description);
+  --color-text-link: var(--text-link);
+  --color-text-on-fill: var(--text-on-fill);
+  --color-text-highlight: var(--text-highlight);
+  --color-text-error: var(--text-error);
+  --color-text-warning: var(--text-warning);
+  --color-text-success: var(--text-success);
+  --color-text-info: var(--text-info);
+
+  /* background */
+  --color-bg-base: var(--bg-base);
+  --color-bg-primary: var(--bg-primary);
+  --color-bg-secondary: var(--bg-secondary);
+  --color-bg-tertiary: var(--bg-tertiary);
+  --color-bg-code-block: var(--bg-code-block);
+  --color-bg-error: var(--bg-error);
+  --color-bg-warning: var(--bg-warning);
+  --color-bg-success: var(--bg-success);
+  --color-bg-info: var(--bg-info);
+  --color-bg-hover: var(--bg-hover);
+  --color-bg-active: var(--bg-active);
+  --color-bg-transparent: transparent;
+  --color-bg-back-drop: var(--bg-back-drop);
+
+  /* border */
+  --color-border-primary: var(--border-primary);
+  --color-border-secondary: var(--border-secondary);
+  --color-border-focus: var(--border-focus);
+  --color-border-disabled: var(--border-disabled);
+  --color-border-error: var(--border-error);
+  --color-border-warning: var(--border-warning);
+  --color-border-success: var(--border-success);
+  --color-border-info: var(--border-info);
+  --color-border-transparent: transparent;
+
+  /* button */
+  --color-button-primary: var(--button-primary);
+  --color-button-hover: var(--button-hover);
+  --color-button-active: var(--button-active);
+
+  /* chart */
+  --color-chart-primary: var(--chart-primary);
+  --color-chart-empty: var(--chart-empty);
+
+  /* group */
+  --color-group-primary: var(--group-primary);
+  --color-group-secondary: var(--group-secondary);
+  --color-group-tertiary: var(--group-tertiary);
+  --color-group-quaternary: var(--group-quaternary);
+}
+
+@utility grid-cols-auto-fill-* {
+  grid-template-columns: repeat(
+    auto-fill,
+    minmax(min(calc(var(--spacing) * --value(integer)), 100%), 1fr)
+  );
+}
+
+@utility grid-cols-auto-fit-* {
+  grid-template-columns: repeat(
+    auto-fit,
+    minmax(min(calc(var(--spacing) * --value(integer)), 100%), 1fr)
+  );
+}
+
+@utility grid-rows-auto-fill-* {
+  grid-template-rows: repeat(
+    auto-fill,
+    minmax(min(calc(var(--spacing) * --value(integer)), 100%), 1fr)
+  );
+}
+
+@utility grid-rows-auto-fit-* {
+  grid-template-rows: repeat(
+    auto-fit,
+    minmax(min(calc(var(--spacing) * --value(integer)), 100%), 1fr)
+  );
+}
+
+.app-background {
+  background-color: #50e2d2;
+  background-image: linear-gradient(62deg, #50e2d2 0%, #0ea5e9 100%);
+  .dark & {
+    background-color: #082f49;
     background-image: linear-gradient(
       62deg,
-      #50e2d2 0%,
-      #0ea5e9 100%
+      #082f49 0%,
+      #164e63 100%
     );
-    .dark & {
-      background-color: #082f49;
-      background-image: linear-gradient(
-        62deg,
-        #082f49 0%,
-        #164e63 100%
-      );
-    }
   }
 }

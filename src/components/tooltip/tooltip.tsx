@@ -44,7 +44,7 @@ const Content: FC<PropsWithChildren> = ({ children }) => {
       renderItem={(props) => (
         <section
           {...props}
-          className="rounded-xl border border-borderSecondary bg-bgBase px-4 py-2 shadow-xl"
+          className="border-border-secondary bg-bg-base rounded-xl border px-4 py-2 shadow-xl"
         >
           {children}
         </section>

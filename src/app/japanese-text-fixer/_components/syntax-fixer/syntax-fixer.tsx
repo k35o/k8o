@@ -55,8 +55,8 @@ export const SyntaxFixer: FC = () => {
         >
           <ChevronLeft className="size-8" />
         </IconButton>
-        <div className="flex size-14 items-center justify-center rounded-full bg-bgBase">
-          <p className="font-bold leading-none">
+        <div className="bg-bg-base flex size-14 items-center justify-center rounded-full">
+          <p className="leading-none font-bold">
             {count}/{invalidCount}
           </p>
         </div>
@@ -122,7 +122,7 @@ const FixText: FC<{ count: number }> = ({ count }) => {
                 </AccordionButton>
               </Heading>
               <AccordionPanel>
-                <p className="whitespace-pre-wrap text-wrap break-all">
+                <p className="text-wrap break-all whitespace-pre-wrap">
                   {texts.map((text, idx) => {
                     const separator =
                       idx === texts.length - 1 ? '' : '\n';
@@ -136,7 +136,7 @@ const FixText: FC<{ count: number }> = ({ count }) => {
                     return (
                       <span
                         key={`${idx.toString()}_${text}`}
-                        className="bg-bgInfo"
+                        className="bg-bg-info"
                       >
                         {text + separator}
                       </span>

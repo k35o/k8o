@@ -5,8 +5,8 @@ export const Accordion: FC<PropsWithChildren> = ({ children }) => {
   return (
     <div
       className={cn(
-        'border-borderSecondary bg-bgBase rounded-lg border-2 p-2',
-        'focus-within:border-borderTransparent focus-within:ring-borderFocus focus-within:ring-2 focus-within:outline-hidden',
+        'border-border-secondary bg-bg-base rounded-lg border-2 p-2',
+        'focus-within:border-border-transparent focus-within:ring-border-focus focus-within:ring-2 focus-within:outline-hidden',
       )}
     >
       {children}

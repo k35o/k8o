@@ -6,7 +6,7 @@ export const Separator: FC<{
 }> = ({ orientation = 'horizontal' }) => {
   return (
     <div
-      className={clsx('bg-borderPrimary', {
+      className={clsx('bg-border-primary', {
         'h-full w-px': orientation === 'vertical',
         'h-px w-full': orientation === 'horizontal',
       })}

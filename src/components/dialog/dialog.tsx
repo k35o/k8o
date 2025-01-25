@@ -43,7 +43,7 @@ const Root: FC<
       aria-describedby={`${rootId}-content`}
       role={role}
       tabIndex={tabIndex}
-      className="relative w-full rounded-xl bg-bgBase shadow-xl"
+      className="bg-bg-base relative w-full rounded-xl shadow-xl"
     >
       <DialogContext value={{ rootId }}>{children}</DialogContext>
     </section>
@@ -61,7 +61,7 @@ const Header: FC<{
       className="flex items-center justify-center p-4 pb-0"
     >
       <Heading type="h3">{title}</Heading>
-      <div className="absolute right-2 top-2">
+      <div className="absolute top-2 right-2">
         <IconButton
           onClick={(e) => {
             e.stopPropagation();

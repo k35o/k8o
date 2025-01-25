@@ -22,9 +22,9 @@ export const metadata = {
 export default function Layout({ children }: PropsWithChildren) {
   return (
     <div className="flex h-full flex-col gap-4">
-      <div className="font-notoSansJp" />
+      <div className="font-noto-sans-jp" />
       <Heading type="h3">うおへんクイズ</Heading>
-      <section className="h-full rounded-lg bg-bgBase/55 p-10">
+      <section className="bg-bg-base/55 h-full rounded-lg p-10">
         {children}
       </section>
     </div>
