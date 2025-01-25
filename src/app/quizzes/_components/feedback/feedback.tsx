@@ -25,12 +25,12 @@ export const Feedback: FC<{
       {status === 'correct' ? (
         <div className="flex items-center gap-1">
           <AlertIcon status="success" />
-          <p className="text-xl font-bold text-textSuccess">正解</p>
+          <p className="text-text-success text-xl font-bold">正解</p>
         </div>
       ) : (
         <div className="flex items-center gap-1">
           <AlertIcon status="error" />
-          <p className="text-xl font-bold text-textError">不正解</p>
+          <p className="text-text-error text-xl font-bold">不正解</p>
         </div>
       )}
       <div className="flex w-full flex-col gap-1">
@@ -40,7 +40,7 @@ export const Feedback: FC<{
         <div className="flex flex-col items-center">
           <p>{question}</p>
           {highlight && (
-            <p className="font-notoSansJp text-9xl">{highlight}</p>
+            <p className="font-noto-sans-jp text-9xl">{highlight}</p>
           )}
         </div>
       </div>

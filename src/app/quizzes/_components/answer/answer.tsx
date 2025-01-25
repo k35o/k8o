@@ -19,7 +19,7 @@ export const Answer: FC<{
   return (
     <div className="flex flex-col items-center gap-2">
       {highlight && (
-        <p className="font-notoSansJp text-9xl">{highlight}</p>
+        <p className="font-noto-sans-jp text-9xl">{highlight}</p>
       )}
       <FormControl
         label={question}

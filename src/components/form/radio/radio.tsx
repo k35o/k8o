@@ -35,7 +35,7 @@ export const Radio: FC<Props> = ({
           key={option.value}
           className={cn(
             'flex cursor-pointer items-center gap-2',
-            'has-[:disabled]:cursor-not-allowed',
+            'has-disabled:cursor-not-allowed',
           )}
         >
           <input

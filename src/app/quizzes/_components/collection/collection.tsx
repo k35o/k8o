@@ -18,14 +18,14 @@ export const CollectionByHighlight: CollectionProps = ({
   return (
     <div
       className={clsx(
-        'grid place-items-center gap-2 grid-cols-auto-fit-36',
+        'grid-cols-auto-fit-36 grid place-items-center gap-2',
         subFont.className,
       )}
     >
       {quizzes.map((quiz) => (
         <div
           key={quiz.id}
-          className="flex size-36 flex-col items-center justify-center rounded-lg border border-borderPrimary p-2"
+          className="border-border-primary flex size-36 flex-col items-center justify-center rounded-lg border p-2"
         >
           <p className="text-xs">
             {quiz.answers.map((a) => a.answer).join('・')}

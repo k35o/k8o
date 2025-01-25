@@ -150,9 +150,9 @@ export const TableOfContext: FC<{ slug: string }> = async ({
   }
 
   return (
-    <div className="sticky top-4 rounded-lg bg-bgBase/90 p-4">
-      <h3 className="text-lg font-bold text-textBody">目次</h3>
-      <ol className="list-inside list-decimal text-sm text-textBody">
+    <div className="bg-bg-base/90 sticky top-4 rounded-lg p-4">
+      <h3 className="text-text-body text-lg font-bold">目次</h3>
+      <ol className="text-text-body list-inside list-decimal text-sm">
         {headingTree.children.map((depth1) => {
           if (depth1.children.length === 0) {
             return (

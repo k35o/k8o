@@ -53,11 +53,11 @@ export const Textarea: FC<Props> = ({
       aria-invalid={isInvalid}
       aria-required={isRequired}
       className={cn(
-        'w-full resize-none rounded-lg border border-borderPrimary bg-bgBase px-3 py-2',
-        'hover:bg-bgHover',
-        'aria-invalid:border-borderError',
-        'disabled:cursor-not-allowed disabled:border-borderDisabled disabled:hover:bg-bgBase',
-        'focus-visible:border-borderTransparent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-borderFocus',
+        'border-border-primary bg-bg-base w-full resize-none rounded-lg border px-3 py-2',
+        'hover:bg-bg-hover',
+        'aria-invalid:border-border-error',
+        'disabled:border-border-disabled disabled:hover:bg-bg-base disabled:cursor-not-allowed',
+        'focus-visible:border-border-transparent focus-visible:ring-border-focus focus-visible:ring-2 focus-visible:outline-hidden',
         fullHeight && 'h-full',
       )}
       disabled={isDisabled}

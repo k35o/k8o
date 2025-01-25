@@ -79,7 +79,7 @@ const Content: FC<PropsWithChildren> = ({ children }) => {
           <section
             {...props}
             {...contentProps}
-            className="flex min-w-40 flex-col rounded-xl border border-borderSecondary bg-bgBase py-2 shadow-xl"
+            className="border-border-secondary bg-bg-base flex min-w-40 flex-col rounded-xl border py-2 shadow-xl"
           >
             {children}
           </section>
@@ -99,9 +99,9 @@ const Item: FC<{ onClick: MouseEventHandler; label: string }> = ({
     <button
       className={clsx(
         'w-full px-2 py-1 text-left',
-        'hover:bg-bgHover',
-        'active:bg-bgActive',
-        'focus-visible:border-borderTransparent focus-visible:bg-bgHover focus-visible:outline-none',
+        'hover:bg-bg-hover',
+        'active:bg-bg-active',
+        'focus-visible:border-border-transparent focus-visible:bg-bg-hover focus-visible:outline-hidden',
       )}
       {...props}
     >

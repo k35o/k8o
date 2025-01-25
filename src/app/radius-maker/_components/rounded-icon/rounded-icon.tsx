@@ -3,7 +3,7 @@ import { FC } from 'react';
 export const RoundedIcon: FC = () => {
   return (
     <div
-      className="h-16 w-16 bg-textHighlight"
+      className="bg-text-highlight h-16 w-16"
       style={{
         borderBottomLeftRadius: '63% 57%',
         borderBottomRightRadius: '37% 63%',

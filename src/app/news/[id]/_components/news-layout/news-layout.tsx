@@ -17,10 +17,10 @@ export const NewsLayout: FC<Props> = ({
   children,
 }) => {
   return (
-    <article className="h-full rounded-lg bg-bgBase/90 px-10 pb-14 pt-8">
+    <article className="bg-bg-base/90 h-full rounded-lg px-10 pt-8 pb-14">
       <div className="flex flex-col gap-3">
         <Heading type="h3">{title}</Heading>
-        <div className="flex flex-row items-center justify-end gap-2 text-sm text-textDescription">
+        <div className="text-text-description flex flex-row items-center justify-end gap-2 text-sm">
           <div className="flex flex-wrap items-center justify-end gap-1">
             <div className="flex items-center gap-1">
               <Calendar className="size-4" aria-label="" />
@@ -33,7 +33,7 @@ export const NewsLayout: FC<Props> = ({
           </div>
         </div>
       </div>
-      <div className="mb-2 mt-4 w-full sm:mb-4 sm:mt-8">
+      <div className="mt-4 mb-2 w-full sm:mt-8 sm:mb-4">
         <Separator />
       </div>
       {children}

@@ -25,11 +25,11 @@ export function Modal({
   }
 
   return createPortal(
-    <div className="absolute bottom-0 left-0 right-0 top-0 z-50 bg-bgBackDrop">
+    <div className="bg-bg-back-drop absolute top-0 right-0 bottom-0 left-0 z-50">
       {/* eslint-disable-next-line jsx-a11y/no-noninteractive-element-interactions -- https://github.com/jsx-eslint/eslint-plugin-jsx-a11y/pull/940待ち */}
       <dialog
         ref={dialogRef}
-        className="max-h-lg w-5/6 max-w-2xl rounded-xl bg-bgBase shadow-xl"
+        className="max-h-lg bg-bg-base m-auto w-5/6 max-w-2xl rounded-xl shadow-xl"
         onClose={onDismiss}
         onClick={() => dialogRef.current?.close()}
         onKeyDown={(e) =>

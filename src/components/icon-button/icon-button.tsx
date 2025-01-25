@@ -18,16 +18,16 @@ export const IconButton: FC<Props> = ({
     <button
       ref={ref}
       className={cn(
-        'inline-flex rounded-full bg-bgTransparent',
-        'hover:bg-bgHover',
-        'focus-visible:border-borderTransparent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-borderFocus active:bg-bgActive',
-        bg === 'base' && 'bg-bgBase/55',
-        bg === 'transparent' && 'bg-bgTransparent',
+        'bg-bg-transparent inline-flex rounded-full',
+        'hover:bg-bg-hover',
+        'focus-visible:border-border-transparent focus-visible:ring-border-focus active:bg-bg-active focus-visible:ring-2 focus-visible:outline-hidden',
+        bg === 'base' && 'bg-bg-base/55',
+        bg === 'transparent' && 'bg-bg-transparent',
         size === 'sm' && 'p-1',
         size === 'md' && 'p-2',
         size === 'lg' && 'p-3',
         props.disabled &&
-          'cursor-not-allowed opacity-50 hover:bg-bgTransparent active:bg-bgTransparent',
+          'hover:bg-bg-transparent active:bg-bg-transparent cursor-not-allowed opacity-50',
       )}
       aria-label={label}
       {...props}
