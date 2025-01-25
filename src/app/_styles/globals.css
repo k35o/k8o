@@ -67,7 +67,7 @@ body:has(dialog[open]) {
   --text-description: oklch(71.37% 0.0192 261.32);
   --text-link: oklch(80.91% 0.0956 251.81);
   --text-on-fill: oklch(12.81% 0.0287 256.42);
-  --text-highlight: oklch(51.09% 0.0861 186.39);
+  --text-highlight: oklch(60.02% 0.1038 184.7);
   --text-error: oklch(57.71% 0.2152 27.33);
   --text-warning: oklch(55.38% 0.1207 66.44);
   --text-success: oklch(52.73% 0.1371 150.07);
