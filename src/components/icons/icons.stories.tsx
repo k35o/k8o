@@ -35,7 +35,7 @@ type Story = StoryObj<typeof GithubMark>;
 export const Primary: Story = {
   render: () => {
     return (
-      <div className="grid place-items-center gap-4 grid-cols-auto-fit-36">
+      <div className="grid-cols-auto-fit-36 grid place-items-center gap-4">
         <div className="flex flex-col items-center justify-center">
           <X className="size-24" />
           <p className="text-center">Close</p>
