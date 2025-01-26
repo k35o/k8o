@@ -63,5 +63,3 @@ export const Button: FC<
     </button>
   );
 };
-
-Button.displayName = 'Button';
