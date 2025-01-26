@@ -99,9 +99,8 @@ const Item: FC<{ onClick: MouseEventHandler; label: string }> = ({
     <button
       className={clsx(
         'w-full px-2 py-1 text-left',
-        'hover:bg-bg-hover',
-        'active:bg-bg-active',
-        'focus-visible:border-border-transparent focus-visible:bg-bg-hover focus-visible:outline-hidden',
+        'hover:bg-bg-highlight dark:hover:bg-text-on-fill',
+        'focus-visible:border-border-transparent focus-visible:bg-bg-highlight dark:focus-visible:text-text-on-fill focus-visible:outline-hidden',
       )}
       {...props}
     >
