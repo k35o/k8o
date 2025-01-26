@@ -14,7 +14,7 @@ export const ScrollLinked: FC = () => {
   return (
     <motion.div
       style={{ scaleX }}
-      className="fixed left-0 right-0 top-0 h-3 origin-left bg-textHighlight"
+      className="bg-text-highlight fixed top-0 right-0 left-0 h-3 origin-left"
     />
   );
 };
