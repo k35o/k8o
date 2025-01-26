@@ -34,5 +34,3 @@ export const IconButton: FC<Props> = ({
     />
   );
 };
-
-IconButton.displayName = 'IconButton';

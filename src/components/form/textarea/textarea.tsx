@@ -56,7 +56,7 @@ export const Textarea: FC<Props> = ({
         'border-border-primary bg-bg-base w-full resize-none rounded-lg border px-3 py-2',
         'hover:bg-bg-hover',
         'aria-invalid:border-border-error',
-        'disabled:border-border-disabled disabled:hover:bg-bg-base disabled:cursor-not-allowed',
+        'disabled:border-border-disabled disabled:bg-bg-disabled disabled:hover:bg-bg-disabled disabled:cursor-not-allowed',
         'focus-visible:border-border-transparent focus-visible:ring-border-focus focus-visible:ring-2 focus-visible:outline-hidden',
         fullHeight && 'h-full',
       )}

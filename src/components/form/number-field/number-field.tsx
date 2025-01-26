@@ -52,7 +52,7 @@ export const NumberField: FC<Props> = ({
         'focus-within:border-border-transparent focus-within:ring-border-focus focus-within:ring-2 focus-within:outline-hidden',
         'has-[input:hover]:bg-bg-active',
         'has-aria-invalid:border-border-error',
-        'has-disabled:border-border-disabled has-disabled:has-[:hover]:hover:bg-bg-base has-disabled:cursor-not-allowed',
+        'has-disabled:border-border-disabled has-disabled:has-hover:hover:bg-bg-disabled has-disabled:bg-bg-disabled has-disabled:cursor-not-allowed',
       )}
     >
       <input

@@ -19,12 +19,14 @@ body:has(dialog[open]) {
   --text-warning: oklch(55.38% 0.1207 66.44);
   --text-success: oklch(52.73% 0.1371 150.07);
   --text-info: oklch(54.61% 0.2152 262.88);
+  --text-disabled: oklch(37.29% 0.0306 259.73);
 
   /* background */
   --bg-base: oklch(98.46% 0.0017 247.84);
   --bg-primary: oklch(86.9% 0.0198 252.89);
   --bg-secondary: oklch(92.88% 0.0126 255.5);
   --bg-tertiary: oklch(98.42% 0.0034 247.86);
+  --bg-highlight: oklch(78.45% 0.1325 181.91);
   --bg-code-block: oklch(27.95% 0.0368 260.03);
   --bg-error: oklch(93.56% 0.0309 17.72);
   --bg-warning: oklch(97.29% 0.0693 103.19);
@@ -32,19 +34,20 @@ body:has(dialog[open]) {
   --bg-info: oklch(93.19% 0.0316 255.59);
   --bg-hover: oklch(92.76% 0.0058 264.53);
   --bg-active: oklch(87.17% 0.0093 258.34);
+  --bg-disabled: oklch(86.9% 0.0198 252.89);
   --bg-transparent: transparent;
   --bg-back-drop: rgb(0, 0, 0, 0.5);
 
   /* border */
   --border-primary: oklch(44.61% 0.0263 256.8);
   --border-secondary: oklch(87.17% 0.0093 258.34);
-  --border-focus: oklch(62.31% 0.188 259.81);
-  --border-disabled: oklch(87.17% 0.0093 258.34);
   --border-error: oklch(57.71% 0.2152 27.33);
   --border-warning: oklch(55.38% 0.1207 66.44);
   --border-success: oklch(52.73% 0.1371 150.07);
   --border-info: oklch(54.61% 0.2152 262.88);
   --border-transparent: transparent;
+  --border-focus: oklch(62.31% 0.188 259.81);
+  --border-disabled: oklch(87.17% 0.0093 258.34);
 
   /* button */
   --button-primary: oklch(51.09% 0.0861 186.39);
@@ -72,12 +75,14 @@ body:has(dialog[open]) {
   --text-warning: oklch(55.38% 0.1207 66.44);
   --text-success: oklch(52.73% 0.1371 150.07);
   --text-info: oklch(54.61% 0.2152 262.88);
+  --text-disabled: oklch(71.37% 0.0192 261.32);
 
   /* background */
   --bg-base: oklch(21.01% 0.0318 264.66);
   --bg-primary: oklch(27.95% 0.0368 260.03);
   --bg-secondary: oklch(37.17% 0.0392 257.29);
   --bg-tertiary: oklch(44.55% 0.0374 257.28);
+  --bg-highlight: oklch(70.38% 0.123 182.5);
   --bg-code-block: oklch(20.77% 0.0398 265.75);
   --bg-error: oklch(93.56% 0.0309 17.72);
   --bg-warning: oklch(97.29% 0.0693 103.19);
@@ -85,17 +90,18 @@ body:has(dialog[open]) {
   --bg-info: oklch(93.19% 0.0316 255.59);
   --bg-hover: oklch(27.81% 0.0296 256.85);
   --bg-active: oklch(37.29% 0.0306 259.73);
+  --bg-disabled: oklch(27.95% 0.0368 260.03);
   --bg-back-drop: rgb(0, 0, 0, 0.5);
 
   /* border */
   --border-primary: oklch(55.1% 0.0234 264.36);
   --border-secondary: oklch(44.61% 0.0263 256.8);
-  --border-focus: oklch(62.31% 0.188 259.81);
-  --border-disabled: oklch(44.61% 0.0263 256.8);
   --border-error: oklch(57.71% 0.2152 27.33);
   --border-warning: oklch(55.38% 0.1207 66.44);
   --border-success: oklch(52.73% 0.1371 150.07);
   --border-info: oklch(54.61% 0.2152 262.88);
+  --border-focus: oklch(62.31% 0.188 259.81);
+  --border-disabled: oklch(44.61% 0.0263 256.8);
 
   /* button */
   --button-primary: oklch(70.38% 0.123 182.5);
@@ -130,31 +136,34 @@ body:has(dialog[open]) {
   --color-text-warning: var(--text-warning);
   --color-text-success: var(--text-success);
   --color-text-info: var(--text-info);
+  --color-text-disabled: var(--text-disabled);
 
   /* background */
   --color-bg-base: var(--bg-base);
   --color-bg-primary: var(--bg-primary);
   --color-bg-secondary: var(--bg-secondary);
   --color-bg-tertiary: var(--bg-tertiary);
+  --color-bg-highlight: var(--bg-highlight);
   --color-bg-code-block: var(--bg-code-block);
   --color-bg-error: var(--bg-error);
   --color-bg-warning: var(--bg-warning);
   --color-bg-success: var(--bg-success);
   --color-bg-info: var(--bg-info);
-  --color-bg-hover: var(--bg-hover);
-  --color-bg-active: var(--bg-active);
+  --color-bg-disabled: var(--bg-disabled);
   --color-bg-transparent: transparent;
   --color-bg-back-drop: var(--bg-back-drop);
 
   /* border */
   --color-border-primary: var(--border-primary);
   --color-border-secondary: var(--border-secondary);
-  --color-border-focus: var(--border-focus);
-  --color-border-disabled: var(--border-disabled);
   --color-border-error: var(--border-error);
   --color-border-warning: var(--border-warning);
   --color-border-success: var(--border-success);
   --color-border-info: var(--border-info);
+  --color-border-focus: var(--border-focus);
+  --color-bg-hover: var(--bg-hover);
+  --color-bg-active: var(--bg-active);
+  --color-border-disabled: var(--border-disabled);
   --color-border-transparent: transparent;
 
   /* button */

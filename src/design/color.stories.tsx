@@ -76,6 +76,12 @@ const COLORS = {
       lightCode: '#2563eb',
       darkCode: '#2563eb',
     },
+    {
+      name: 'Disabled',
+      Sample: <Circle className="bg-text-disabled" />,
+      lightCode: '#374151',
+      darkCode: '#9ca3af',
+    },
   ],
   background: [
     {
@@ -101,6 +107,12 @@ const COLORS = {
       Sample: <Circle className="bg-bg-tertiary" />,
       lightCode: '#f8fafc',
       darkCode: '#475569',
+    },
+    {
+      name: 'Highlight',
+      Sample: <Circle className="bg-bg-highlight" />,
+      lightCode: '#2dd4bf',
+      darkCode: '#5eead4',
     },
     {
       name: 'Code Block',
@@ -145,6 +157,12 @@ const COLORS = {
       darkCode: '#374151',
     },
     {
+      name: 'Disabled',
+      Sample: <Circle className="bg-bg-disabled" />,
+      lightCode: '#e2e8f0',
+      darkCode: '#334155',
+    },
+    {
       name: 'Transparent',
       Sample: <Circle className="bg-bg-transparent" />,
       lightCode: 'transparent',
@@ -173,20 +191,6 @@ const COLORS = {
       darkCode: '#4b5563',
     },
     {
-      name: 'Focus',
-      Sample: <Circle className="border-border-focus bg-bg-base" />,
-      lightCode: '#3b82f6',
-      darkCode: '#3b82f6',
-    },
-    {
-      name: 'Disabled',
-      Sample: (
-        <Circle className="border-border-disabled bg-bg-base" />
-      ),
-      lightCode: '#d1d5db',
-      darkCode: '#4b5563',
-    },
-    {
       name: 'Error',
       Sample: <Circle className="border-border-error bg-bg-base" />,
       lightCode: '#dc2626',
@@ -209,6 +213,20 @@ const COLORS = {
       Sample: <Circle className="border-border-info bg-bg-base" />,
       lightCode: '#2563eb',
       darkCode: '#2563eb',
+    },
+    {
+      name: 'Focus',
+      Sample: <Circle className="border-border-focus bg-bg-base" />,
+      lightCode: '#3b82f6',
+      darkCode: '#3b82f6',
+    },
+    {
+      name: 'Disabled',
+      Sample: (
+        <Circle className="border-border-disabled bg-bg-base" />
+      ),
+      lightCode: '#d1d5db',
+      darkCode: '#4b5563',
     },
     {
       name: 'Transparent',

@@ -14,6 +14,7 @@ export const InteractiveCard: FC<
       variant === 'primary' && 'bg-bg-base/55',
       variant === 'secondary' && 'bg-bg-secondary',
     )}
+    tabIndex={-1}
   >
     {children}
   </motion.section>

@@ -61,9 +61,9 @@ export const Autocomplete: FC<Props> = ({
       className={cn(
         'border-border-primary bg-bg-base relative w-full rounded-lg border shadow-xs',
         'focus-within:border-border-transparent focus-within:ring-border-focus focus-within:ring-2 focus-within:outline-hidden',
-        'has-[:hover]:bg-bg-active',
+        'has-hover:bg-bg-active',
         'has-aria-invalid:border-border-error',
-        'has-disabled:border-border-disabled has-disabled:has-[:hover]:hover:bg-bg-base has-disabled:cursor-not-allowed',
+        'has-disabled:border-border-disabled has-disabled:has-hover:hover:bg-bg-disabled has-disabled:bg-bg-disabled has-disabled:cursor-not-allowed',
       )}
     >
       <div className="flex min-h-12 items-center justify-between gap-2 px-3 py-2">
