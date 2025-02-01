@@ -28,7 +28,7 @@ export async function GET() {
       return operators.desc(fields.createdAt);
     },
   });
-  
+
   for (const blog of blogs) {
     feed.item({
       title: blog.title,
