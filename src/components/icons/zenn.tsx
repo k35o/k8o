@@ -12,7 +12,7 @@ export const Zenn: FC<{ title?: string; className?: string }> = ({
       height="96"
       xmlns="http://www.w3.org/2000/svg"
     >
-      <title>{title ? title : 'Zenn'}</title>
+      <title>{title ?? 'Zenn'}</title>
       <g fill="#3EA8FF">
         <path
           d="M3.9,83.3h17c0.9,0,1.7-0.5,2.2-1.2L69.9,5.2c0.6-1-0.1-2.2-1.3-2.2H52.5c-0.8,0-1.5,0.4-1.9,1.1L3.1,81.9
