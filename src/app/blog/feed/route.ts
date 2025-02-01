@@ -35,7 +35,7 @@ export async function GET() {
       description: blog.description,
       url: `${BLOG_URL}/${blog.slug}`,
       date: blog.updatedAt,
-      categories: blog.tags,
+      categories: blog.blogTag.map((blogTag) => blogTag.tag.name),
       author: 'k8o',
     });
   }
