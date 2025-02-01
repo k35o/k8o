@@ -1,7 +1,7 @@
 import RSS from 'rss';
 import { metadata } from '../layout';
-import { getBlogs } from '#actions/blog';
 import { NextResponse } from 'next/server';
+import { db } from '#drizzle/db';
 
 export const dynamic = 'force-static';
 
@@ -16,7 +16,18 @@ export async function GET() {
     language: 'ja',
   });
 
-  const blogs = await getBlogs();
+  const blogs = await db.query.blogs.findMany({
+    with: {
+      blogTag: {
+        with: {
+          tag: true,
+        },
+      },
+    },
+    orderBy(fields, operators) {
+      return operators.desc(fields.createdAt);
+    },
+  });
 
   for (const blog of blogs) {
     feed.item({
@@ -24,7 +35,7 @@ export async function GET() {
       description: blog.description,
       url: `${BLOG_URL}/${blog.slug}`,
       date: blog.updatedAt,
-      categories: blog.tags,
+      categories: blog.blogTag.map((blogTag) => blogTag.tag.name),
       author: 'k8o',
     });
   }
