@@ -12,7 +12,7 @@ export const Qiita: FC<{ title?: string; className?: string }> = ({
       viewBox="0 0 300 300"
       enableBackground="new 0 0 300 300"
     >
-      <title>{title ? title : 'Qiita'}</title>
+      <title>{title ?? 'Qiita'}</title>
       <path
         fill="#55C500"
         opacity="1.000000"
