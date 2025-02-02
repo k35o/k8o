@@ -299,8 +299,8 @@ export const Color: FC = () => {
             <div className="flex flex-wrap gap-3">
               <ColorInfo
                 name="base"
-                code="gray.300"
-                codeDark="gray.700"
+                code="gray.400"
+                codeDark="gray.600"
                 variant="border"
               />
               <ColorInfo
@@ -317,7 +317,7 @@ export const Color: FC = () => {
               />
               <ColorInfo
                 name="emphasize"
-                code="gray.400"
+                code="gray.500"
                 codeDark="gray.500"
                 variant="border"
               />

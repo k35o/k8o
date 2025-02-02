@@ -131,10 +131,10 @@ body:has(dialog[open]) {
   --bg-warning: var(--yellow-100);
   --bg-error: var(--red-100);
 
-  --border-base: var(--gray-300);
+  --border-base: var(--gray-400);
   --border-subtle: var(--gray-100);
   --border-mute: var(--gray-200);
-  --border-emphasize: var(--gray-400);
+  --border-emphasize: var(--gray-500);
   --border-inverse: var(--gray-700);
   --border-info: var(--blue-500);
   --border-success: var(--green-500);
@@ -183,7 +183,7 @@ body:has(dialog[open]) {
   --bg-warning: var(--yellow-900);
   --bg-error: var(--red-900);
 
-  --border-base: var(--gray-700);
+  --border-base: var(--gray-600);
   --border-subtle: var(--gray-900);
   --border-mute: var(--gray-800);
   --border-emphasize: var(--gray-500);
