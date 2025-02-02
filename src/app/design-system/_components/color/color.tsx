@@ -158,64 +158,400 @@ const ColorInfo: FC<{
   const colorCodeDark = getColorCode(codeDark);
 
   return (
-    <div className="flex w-36 flex-col items-center gap-2">
-      <p>{name}</p>
-      <div className="flex items-center gap-3">
-        <div className="light flex flex-col items-center gap-1">
-          <div
-            className="border-border-base flex size-12 items-center justify-center rounded-full border"
-            style={
-              variant === 'foreground'
-                ? {
-                    // backgroundColor:
-                    //   COLOR_VARIANTS[contrastColor][contrastStage],
+    <div className="relative flex flex-wrap items-center gap-2 rounded-lg border p-4">
+      <p className="bg-bg-base absolute top-0 left-0 -translate-y-3 translate-x-2 px-1">
+        {name}
+      </p>
+      {variant === 'foreground' && (
+        <>
+          <div className="flex w-32 flex-col items-center gap-2">
+            <p>bg-base</p>
+            <div className="flex items-center gap-3">
+              <div className="light flex flex-col items-center gap-1">
+                <div
+                  className="border-border-base bg-bg-base flex size-12 items-center justify-center rounded-full border"
+                  style={{
                     color: colorCode,
-                  }
-                : variant === 'background'
-                  ? {
-                      backgroundColor: colorCode,
-                      // color:
-                      //   COLOR_VARIANTS[contrastColor][contrastStage],
-                    }
-                  : {
-                      borderColor: colorCode,
-                    }
-            }
-          >
-            light
-          </div>
-          <p className="text-xs">{code}</p>
-        </div>
-        <div className="dark flex flex-col items-center gap-1">
-          <div
-            className="border-border-base flex size-12 items-center justify-center rounded-full border"
-            style={
-              variant === 'foreground'
-                ? {
-                    // backgroundColor:
-                    //   COLOR_VARIANTS[contrastColorDark][
-                    //     contrastStageDark
-                    //   ],
+                  }}
+                >
+                  light
+                </div>
+                <p className="text-xs">{code}</p>
+              </div>
+              <div className="dark flex flex-col items-center gap-1">
+                <div
+                  className="border-border-base bg-bg-base flex size-12 items-center justify-center rounded-full border"
+                  style={{
                     color: colorCodeDark,
-                  }
-                : variant === 'background'
-                  ? {
-                      backgroundColor: colorCodeDark,
-                      // color:
-                      //   COLOR_VARIANTS[contrastColorDark][
-                      //     contrastStageDark
-                      //   ],
-                    }
-                  : {
-                      borderColor: colorCodeDark,
-                    }
-            }
-          >
-            dark
+                  }}
+                >
+                  dark
+                </div>
+                <p className="text-xs">{codeDark}</p>
+              </div>
+            </div>
           </div>
-          <p className="text-xs">{codeDark}</p>
-        </div>
-      </div>
+          <div className="flex w-32 flex-col items-center gap-2">
+            <p>bg-subtle</p>
+            <div className="flex items-center gap-3">
+              <div className="light flex flex-col items-center gap-1">
+                <div
+                  className="border-border-base bg-bg-subtle flex size-12 items-center justify-center rounded-full border"
+                  style={{
+                    color: colorCode,
+                  }}
+                >
+                  light
+                </div>
+                <p className="text-xs">{code}</p>
+              </div>
+              <div className="dark flex flex-col items-center gap-1">
+                <div
+                  className="border-border-base bg-bg-subtle flex size-12 items-center justify-center rounded-full border"
+                  style={{
+                    color: colorCodeDark,
+                  }}
+                >
+                  dark
+                </div>
+                <p className="text-xs">{codeDark}</p>
+              </div>
+            </div>
+          </div>
+          <div className="flex w-32 flex-col items-center gap-2">
+            <p>bg-mute</p>
+            <div className="flex items-center gap-3">
+              <div className="light flex flex-col items-center gap-1">
+                <div
+                  className="border-border-base bg-bg-mute flex size-12 items-center justify-center rounded-full border"
+                  style={{
+                    color: colorCode,
+                  }}
+                >
+                  light
+                </div>
+                <p className="text-xs">{code}</p>
+              </div>
+              <div className="dark flex flex-col items-center gap-1">
+                <div
+                  className="border-border-base bg-bg-mute flex size-12 items-center justify-center rounded-full border"
+                  style={{
+                    color: colorCodeDark,
+                  }}
+                >
+                  dark
+                </div>
+                <p className="text-xs">{codeDark}</p>
+              </div>
+            </div>
+          </div>
+          <div className="flex w-32 flex-col items-center gap-2">
+            <p>bg-emphasize</p>
+            <div className="flex items-center gap-3">
+              <div className="light flex flex-col items-center gap-1">
+                <div
+                  className="border-border-base bg-bg-emphasize flex size-12 items-center justify-center rounded-full border"
+                  style={{
+                    color: colorCode,
+                  }}
+                >
+                  light
+                </div>
+                <p className="text-xs">{code}</p>
+              </div>
+              <div className="dark flex flex-col items-center gap-1">
+                <div
+                  className="border-border-base bg-bg-emphasize flex size-12 items-center justify-center rounded-full border"
+                  style={{
+                    color: colorCodeDark,
+                  }}
+                >
+                  dark
+                </div>
+                <p className="text-xs">{codeDark}</p>
+              </div>
+            </div>
+          </div>
+          <div className="flex w-32 flex-col items-center gap-2">
+            <p>bg-inverse</p>
+            <div className="flex items-center gap-3">
+              <div className="light flex flex-col items-center gap-1">
+                <div
+                  className="border-border-base bg-bg-inverse flex size-12 items-center justify-center rounded-full border"
+                  style={{
+                    color: colorCode,
+                  }}
+                >
+                  light
+                </div>
+                <p className="text-xs">{code}</p>
+              </div>
+              <div className="dark flex flex-col items-center gap-1">
+                <div
+                  className="border-border-base bg-bg-inverse flex size-12 items-center justify-center rounded-full border"
+                  style={{
+                    color: colorCodeDark,
+                  }}
+                >
+                  dark
+                </div>
+                <p className="text-xs">{codeDark}</p>
+              </div>
+            </div>
+          </div>
+        </>
+      )}
+      {variant === 'background' && (
+        <>
+          <div className="flex w-32 flex-col items-center gap-2">
+            <p>fg-base</p>
+            <div className="flex items-center gap-3">
+              <div className="light flex flex-col items-center gap-1">
+                <div
+                  className="border-border-base text-text-base flex size-12 items-center justify-center rounded-full border"
+                  style={{
+                    backgroundColor: colorCode,
+                  }}
+                >
+                  light
+                </div>
+                <p className="text-xs">{code}</p>
+              </div>
+              <div className="dark flex flex-col items-center gap-1">
+                <div
+                  className="border-border-base text-text-base flex size-12 items-center justify-center rounded-full border"
+                  style={{
+                    backgroundColor: colorCodeDark,
+                  }}
+                >
+                  dark
+                </div>
+                <p className="text-xs">{codeDark}</p>
+              </div>
+            </div>
+          </div>
+          <div className="flex w-32 flex-col items-center gap-2">
+            <p>fg-subtle</p>
+            <div className="flex items-center gap-3">
+              <div className="light flex flex-col items-center gap-1">
+                <div
+                  className="border-border-base text-text-subtle flex size-12 items-center justify-center rounded-full border"
+                  style={{
+                    backgroundColor: colorCode,
+                  }}
+                >
+                  light
+                </div>
+                <p className="text-xs">{code}</p>
+              </div>
+              <div className="dark flex flex-col items-center gap-1">
+                <div
+                  className="border-border-base text-text-subtle flex size-12 items-center justify-center rounded-full border"
+                  style={{
+                    backgroundColor: colorCodeDark,
+                  }}
+                >
+                  dark
+                </div>
+                <p className="text-xs">{codeDark}</p>
+              </div>
+            </div>
+          </div>
+          <div className="flex w-32 flex-col items-center gap-2">
+            <p>fg-mute</p>
+            <div className="flex items-center gap-3">
+              <div className="light flex flex-col items-center gap-1">
+                <div
+                  className="border-border-base text-text-mute flex size-12 items-center justify-center rounded-full border"
+                  style={{
+                    backgroundColor: colorCode,
+                  }}
+                >
+                  light
+                </div>
+                <p className="text-xs">{code}</p>
+              </div>
+              <div className="dark flex flex-col items-center gap-1">
+                <div
+                  className="border-border-base text-text-mute flex size-12 items-center justify-center rounded-full border"
+                  style={{
+                    backgroundColor: colorCodeDark,
+                  }}
+                >
+                  dark
+                </div>
+                <p className="text-xs">{codeDark}</p>
+              </div>
+            </div>
+          </div>
+          <div className="flex w-32 flex-col items-center gap-2">
+            <p>fg-inverse</p>
+            <div className="flex items-center gap-3">
+              <div className="light flex flex-col items-center gap-1">
+                <div
+                  className="border-border-base text-text-inverse flex size-12 items-center justify-center rounded-full border"
+                  style={{
+                    backgroundColor: colorCode,
+                  }}
+                >
+                  light
+                </div>
+                <p className="text-xs">{code}</p>
+              </div>
+              <div className="dark flex flex-col items-center gap-1">
+                <div
+                  className="border-border-base text-text-inverse flex size-12 items-center justify-center rounded-full border"
+                  style={{
+                    backgroundColor: colorCodeDark,
+                  }}
+                >
+                  dark
+                </div>
+                <p className="text-xs">{codeDark}</p>
+              </div>
+            </div>
+          </div>
+        </>
+      )}
+      {variant === 'border' && (
+        <>
+          <div className="flex w-32 flex-col items-center gap-2">
+            <p>bg-base</p>
+            <div className="flex items-center gap-3">
+              <div className="light flex flex-col items-center gap-1">
+                <div
+                  className="border-border-base bg-bg-base flex size-12 items-center justify-center rounded-full border"
+                  style={{
+                    borderColor: colorCode,
+                  }}
+                >
+                  light
+                </div>
+                <p className="text-xs">{code}</p>
+              </div>
+              <div className="dark flex flex-col items-center gap-1">
+                <div
+                  className="border-border-base bg-bg-base flex size-12 items-center justify-center rounded-full border"
+                  style={{
+                    borderColor: colorCodeDark,
+                  }}
+                >
+                  dark
+                </div>
+                <p className="text-xs">{codeDark}</p>
+              </div>
+            </div>
+          </div>
+          <div className="flex w-32 flex-col items-center gap-2">
+            <p>bg-subtle</p>
+            <div className="flex items-center gap-3">
+              <div className="light flex flex-col items-center gap-1">
+                <div
+                  className="border-border-base bg-bg-subtle flex size-12 items-center justify-center rounded-full border"
+                  style={{
+                    borderColor: colorCode,
+                  }}
+                >
+                  light
+                </div>
+                <p className="text-xs">{code}</p>
+              </div>
+              <div className="dark flex flex-col items-center gap-1">
+                <div
+                  className="border-border-base bg-bg-subtle flex size-12 items-center justify-center rounded-full border"
+                  style={{
+                    borderColor: colorCodeDark,
+                  }}
+                >
+                  dark
+                </div>
+                <p className="text-xs">{codeDark}</p>
+              </div>
+            </div>
+          </div>
+          <div className="flex w-32 flex-col items-center gap-2">
+            <p>bg-mute</p>
+            <div className="flex items-center gap-3">
+              <div className="light flex flex-col items-center gap-1">
+                <div
+                  className="border-border-base bg-bg-mute flex size-12 items-center justify-center rounded-full border"
+                  style={{
+                    borderColor: colorCode,
+                  }}
+                >
+                  light
+                </div>
+                <p className="text-xs">{code}</p>
+              </div>
+              <div className="dark flex flex-col items-center gap-1">
+                <div
+                  className="border-border-base bg-bg-mute flex size-12 items-center justify-center rounded-full border"
+                  style={{
+                    borderColor: colorCodeDark,
+                  }}
+                >
+                  dark
+                </div>
+                <p className="text-xs">{codeDark}</p>
+              </div>
+            </div>
+          </div>
+          <div className="flex w-32 flex-col items-center gap-2">
+            <p>bg-emphasize</p>
+            <div className="flex items-center gap-3">
+              <div className="light flex flex-col items-center gap-1">
+                <div
+                  className="border-border-base bg-bg-emphasize flex size-12 items-center justify-center rounded-full border"
+                  style={{
+                    borderColor: colorCode,
+                  }}
+                >
+                  light
+                </div>
+                <p className="text-xs">{code}</p>
+              </div>
+              <div className="dark flex flex-col items-center gap-1">
+                <div
+                  className="border-border-base bg-bg-emphasize flex size-12 items-center justify-center rounded-full border"
+                  style={{
+                    borderColor: colorCodeDark,
+                  }}
+                >
+                  dark
+                </div>
+                <p className="text-xs">{codeDark}</p>
+              </div>
+            </div>
+          </div>
+          <div className="flex w-32 flex-col items-center gap-2">
+            <p>bg-inverse</p>
+            <div className="flex items-center gap-3">
+              <div className="light flex flex-col items-center gap-1">
+                <div
+                  className="border-border-base bg-bg-inverse flex size-12 items-center justify-center rounded-full border"
+                  style={{
+                    borderColor: colorCode,
+                  }}
+                >
+                  light
+                </div>
+                <p className="text-xs">{code}</p>
+              </div>
+              <div className="dark flex flex-col items-center gap-1">
+                <div
+                  className="border-border-base bg-bg-inverse flex size-12 items-center justify-center rounded-full border"
+                  style={{
+                    borderColor: colorCodeDark,
+                  }}
+                >
+                  dark
+                </div>
+                <p className="text-xs">{codeDark}</p>
+              </div>
+            </div>
+          </div>
+        </>
+      )}
     </div>
   );
 };
@@ -232,7 +568,7 @@ export const Color: FC = () => {
         <div className="flex flex-col gap-3">
           <div className="flex flex-col justify-between gap-3 rounded-xl p-3">
             <Heading type="h4">Foreground Color</Heading>
-            <div className="flex flex-wrap gap-3">
+            <div className="flex flex-col gap-5">
               <ColorInfo
                 name="base"
                 code="gray.900"
@@ -261,7 +597,7 @@ export const Color: FC = () => {
           </div>
           <div className="flex flex-col justify-between gap-3 rounded-xl p-3">
             <Heading type="h4">Background Color</Heading>
-            <div className="flex flex-wrap gap-3">
+            <div className="flex flex-col gap-5">
               <ColorInfo
                 name="base"
                 code="white"
@@ -296,7 +632,7 @@ export const Color: FC = () => {
           </div>
           <div className="flex flex-col justify-between gap-3 rounded-xl p-3">
             <Heading type="h4">Border Color</Heading>
-            <div className="flex flex-wrap gap-3">
+            <div className="flex flex-col gap-5">
               <ColorInfo
                 name="base"
                 code="gray.400"
@@ -338,7 +674,7 @@ export const Color: FC = () => {
         </p>
         <div className="flex flex-col gap-2">
           <Heading type="h4">Primary</Heading>
-          <div className="flex flex-wrap gap-3">
+          <div className="flex flex-col gap-5">
             <ColorInfo
               name="fg"
               code="teal.700"
@@ -427,7 +763,7 @@ export const Color: FC = () => {
         <div className="flex flex-col gap-3">
           <div className="flex flex-col justify-between gap-3 rounded-xl p-3">
             <Heading type="h4">Foreground Color</Heading>
-            <div className="flex flex-wrap gap-3">
+            <div className="flex flex-col gap-5">
               <ColorInfo
                 name="info"
                 code="blue.600"
@@ -456,7 +792,7 @@ export const Color: FC = () => {
           </div>
           <div className="flex flex-col justify-between gap-3 rounded-xl p-3">
             <Heading type="h4">Background Color</Heading>
-            <div className="flex flex-wrap gap-3">
+            <div className="flex flex-col gap-5">
               <ColorInfo
                 name="info"
                 code="blue.100"
@@ -485,7 +821,7 @@ export const Color: FC = () => {
           </div>
           <div className="flex flex-col justify-between gap-3 rounded-xl p-3">
             <Heading type="h4">Border Color</Heading>
-            <div className="flex flex-wrap gap-3">
+            <div className="flex flex-col gap-5">
               <ColorInfo
                 name="info"
                 code="blue.500"
