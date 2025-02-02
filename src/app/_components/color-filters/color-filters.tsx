@@ -100,8 +100,8 @@ const HelpContent: FC = () => {
       onClick={onClose}
       className={clsx(
         'inline-flex w-full items-center gap-1 px-2 py-1',
-        'hover:bg-primary-bg dark:hover:text-fg-inverse',
-        'focus-visible:bordertransparent focus-visible:bg-primary-bg dark:focus-visible::text-fg-inverse focus-visible:outline-hidden',
+        'hover:bg-primary-bg hover:text-fg-inverse',
+        'focus-visible:bordertransparent focus-visible:bg-primary-bg focus-visible::text-fg-inverse focus-visible:outline-hidden',
       )}
     >
       {<Info className="text-fg-info size-6" />}
