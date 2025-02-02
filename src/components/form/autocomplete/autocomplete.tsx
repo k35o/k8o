@@ -61,7 +61,6 @@ export const Autocomplete: FC<Props> = ({
       className={cn(
         'border-border-base bg-bg-base relative w-full rounded-lg border shadow-xs',
         'focus-within:bordertransparent focus-within:ring-border-info focus-within:ring-2 focus-within:outline-hidden',
-        'has-hover:bg-bg-emphasize',
         'has-aria-invalid:border-border-error',
         'has-disabled:border-border-mute has-disabled:has-hover:hover:bg-bg-mute has-disabled:bg-bg-mute has-disabled:cursor-not-allowed',
       )}

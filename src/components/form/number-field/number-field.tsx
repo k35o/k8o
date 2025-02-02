@@ -50,7 +50,6 @@ export const NumberField: FC<Props> = ({
       className={cn(
         'border-border-base bg-bg-base relative flex h-12 w-full items-center justify-between gap-2 rounded-lg border shadow-xs',
         'focus-within:bordertransparent focus-within:ring-border-info focus-within:ring-2 focus-within:outline-hidden',
-        'has-[input:hover]:bg-bg-emphasize',
         'has-aria-invalid:border-border-error',
         'has-disabled:border-border-mute has-disabled:has-hover:hover:bg-bg-mute has-disabled:bg-bg-mute has-disabled:cursor-not-allowed',
       )}
