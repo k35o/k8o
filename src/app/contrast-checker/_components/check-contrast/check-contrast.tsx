@@ -1,7 +1,7 @@
 'use client';
 
 import { FC, useState } from 'react';
-import { calcContrast } from '../../_utils/calc_contrast';
+import { calcContrast } from '@/utils/color/calc_contrast';
 import { ResultTable } from '../result-table';
 import { ColorPallet } from '../color-pallet';
 
