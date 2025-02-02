@@ -19,7 +19,7 @@ export const AppCard = <T extends string>({
     <InteractiveCard>
       <Link href={link}>
         <div className="flex h-full flex-col items-center gap-4 p-4">
-          <div className="bg-bg-secondary flex size-24 shrink-0 items-center justify-center rounded-full text-5xl">
+          <div className="bg-bg-mute flex size-24 shrink-0 items-center justify-center rounded-full text-5xl">
             {symbol}
           </div>
           <div className="flex flex-col items-center gap-1">

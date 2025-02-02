@@ -10,7 +10,7 @@ export const Card: FC<CardProps> = ({
     className={clsx(
       'bg-bg-base/55 rounded-xl shadow-md',
       variant === 'primary' && 'bg-bg-base/55',
-      variant === 'secondary' && 'bg-bg-secondary',
+      variant === 'secondary' && 'bg-bg-mute',
     )}
   >
     {children}

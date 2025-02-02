@@ -9,7 +9,7 @@ export const AccordionItem: FC<
   const id = useId();
   return (
     <AccordionItemProvider defaultOpen={defaultOpen} id={id}>
-      <div className="border-border-secondary border-t last:border-b">
+      <div className="border-border-mute border-t last:border-b">
         {children}
       </div>
     </AccordionItemProvider>

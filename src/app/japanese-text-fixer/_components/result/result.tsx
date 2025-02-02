@@ -42,7 +42,7 @@ export const Result: FC = () => {
             テキストをコピーする
           </Button>
         </div>
-        <div className="border-border-primary bg-bg-base rounded-lg border px-3 py-2">
+        <div className="border-border-base bg-bg-base rounded-lg border px-3 py-2">
           <p className="text-wrap break-all whitespace-pre-wrap">
             {fixedText}
           </p>

@@ -30,10 +30,10 @@ export const Checkbox: FC<Props> = ({ label, value, onChange }) => {
         className={cn(
           'inline-flex size-5 items-center justify-center rounded-lg border-2',
           isFocus &&
-            'border-border-transparent ring-border-focus ring-2 outline-hidden',
+            'bordertransparent ring-border-info ring-2 outline-hidden',
           value
-            ? 'border-border-primary bg-button-primary text-text-on-fill'
-            : 'border-border-secondary bg-bg-base',
+            ? 'border-border-base bg-primary-bg text-fg-inverse'
+            : 'border-border-mute bg-bg-base',
         )}
         aria-hidden={true}
       >

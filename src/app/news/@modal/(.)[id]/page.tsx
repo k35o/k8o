@@ -56,7 +56,7 @@ export default async function Page({
   return (
     <NewsModal title={news.title}>
       <div className="flex w-full flex-col gap-5">
-        <div className="text-text-description flex flex-wrap items-center justify-center gap-1 text-xs">
+        <div className="text-fg-mute flex flex-wrap items-center justify-center gap-1 text-xs">
           <div className="flex items-center gap-1">
             <Calendar className="size-4" aria-label="" />
             <span>公開: {formatDate(new Date(news.createdAt))}</span>

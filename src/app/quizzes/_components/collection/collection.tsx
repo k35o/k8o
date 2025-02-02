@@ -25,7 +25,7 @@ export const CollectionByHighlight: CollectionProps = ({
       {quizzes.map((quiz) => (
         <div
           key={quiz.id}
-          className="border-border-primary flex size-36 flex-col items-center justify-center rounded-lg border p-2"
+          className="border-border-base flex size-36 flex-col items-center justify-center rounded-lg border p-2"
         >
           <p className="text-xs">
             {quiz.answers.map((a) => a.answer).join('・')}

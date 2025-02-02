@@ -40,10 +40,10 @@ export const CreateColumnsByTable: FC<Props> = ({
   const formId = useId();
 
   return (
-    <div className="border-border-primary bg-bg-base w-[calc(100vw-64px)] max-w-[51rem] overflow-x-auto rounded-lg border">
+    <div className="border-border-base bg-bg-base w-[calc(100vw-64px)] max-w-[51rem] overflow-x-auto rounded-lg border">
       <table className="w-[51rem]">
         <thead>
-          <tr className="border-border-primary border-b">
+          <tr className="border-border-base border-b">
             <th className="px-2 py-3 text-nowrap">カラム名</th>
             <th className="px-2 py-3 text-nowrap">コメント</th>
             <th className="px-2 py-3 text-nowrap">型</th>
@@ -77,7 +77,7 @@ export const CreateColumnsByTable: FC<Props> = ({
                   {columnError?.name && (
                     <p
                       id={`column-name_${idx.toString()}-${formId}-feedback`}
-                      className="text-text-error text-sm"
+                      className="text-fg-error text-sm"
                     >
                       {columnError.name}
                     </p>
@@ -103,7 +103,7 @@ export const CreateColumnsByTable: FC<Props> = ({
                   {columnError?.alias && (
                     <p
                       id={`column-alias-${idx.toString()}-${formId}-feedback`}
-                      className="text-text-error text-sm"
+                      className="text-fg-error text-sm"
                     >
                       {columnError.alias}
                     </p>
@@ -132,7 +132,7 @@ export const CreateColumnsByTable: FC<Props> = ({
                   {columnError?.type && (
                     <p
                       id={`column-type_${idx.toString()}-${formId}-feedback`}
-                      className="text-text-error text-sm"
+                      className="text-fg-error text-sm"
                     >
                       {columnError.type}
                     </p>
@@ -150,7 +150,7 @@ export const CreateColumnsByTable: FC<Props> = ({
                     }}
                   />
                   {columnError?.nullable && (
-                    <p className="text-text-error text-sm">
+                    <p className="text-fg-error text-sm">
                       {columnError.nullable}
                     </p>
                   )}
@@ -177,7 +177,7 @@ export const CreateColumnsByTable: FC<Props> = ({
                   {columnError?.default && (
                     <p
                       id={`default_${idx.toString()}-${formId}-feedback`}
-                      className="text-text-error text-sm"
+                      className="text-fg-error text-sm"
                     >
                       {columnError.default}
                     </p>

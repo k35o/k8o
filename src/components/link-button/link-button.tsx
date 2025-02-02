@@ -13,8 +13,8 @@ export const LinkButton: FC<
 > = ({ children, size = 'md', href, startIcon, endIcon }) => {
   const className = cn(
     'rounded-xl font-bold text-center',
-    'bg-button-primary text-text-on-fill hover:bg-button-hover active:bg-button-active',
-    'focus-visible:border-border-transparent focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-border-focus',
+    'bg-primary-bg text-fg-inverse hover:bg-button-hover active:bg-button-active',
+    'focus-visible:bordertransparent focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-border-info',
     size === 'sm' && 'px-3 py-1 text-sm',
     size === 'md' && 'text-md px-4 py-2',
     size === 'lg' && 'px-6 py-3 text-lg',

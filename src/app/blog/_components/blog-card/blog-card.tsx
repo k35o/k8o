@@ -50,7 +50,7 @@ export const BlogCardContent: FC<Omit<BlogCardProps, 'link'>> = ({
         {title}
       </Heading>
       {description && (
-        <p className="text-text-description line-clamp-3 text-sm">
+        <p className="text-fg-mute line-clamp-3 text-sm">
           {description}
         </p>
       )}
@@ -63,7 +63,7 @@ export const BlogCardContent: FC<Omit<BlogCardProps, 'link'>> = ({
           })}
         </div>
       )}
-      <div className="text-text-description ml-auto flex items-center gap-4 gap-x-8 text-xs">
+      <div className="text-fg-mute ml-auto flex items-center gap-4 gap-x-8 text-xs">
         <div className="flex items-center gap-1">
           <Calendar className="size-4" aria-label="" />
           <span>公開: {formatDate(createdAt, 'yyyy年M月d日')}</span>

@@ -34,7 +34,7 @@ export const VerifiedSyntax: FC = () => {
       </div>
       <CircleCheck
         aria-label=""
-        className="text-text-success size-36"
+        className="text-fg-success size-36"
       />
       <p className="text-lg font-bold">
         テキストに問題は見つかりませんでした
