@@ -42,7 +42,7 @@ export const Radio: FC<Props> = ({
             type="radio"
             className={cn(
               'cursor-pointer',
-              'disabled:bg-bg-disabled disabled:cursor-not-allowed',
+              'disabled:bg-bg-mute disabled:cursor-not-allowed',
             )}
             value={option.value}
             checked={value === option.value}

@@ -163,7 +163,7 @@ const ColorInfo: FC<{
       <div className="flex items-center gap-3">
         <div className="light flex flex-col items-center gap-1">
           <div
-            className="border-border-primary flex size-12 items-center justify-center rounded-full border"
+            className="border-border-base flex size-12 items-center justify-center rounded-full border"
             style={
               variant === 'foreground'
                 ? {
@@ -188,7 +188,7 @@ const ColorInfo: FC<{
         </div>
         <div className="dark flex flex-col items-center gap-1">
           <div
-            className="border-border-primary flex size-12 items-center justify-center rounded-full border"
+            className="border-border-base flex size-12 items-center justify-center rounded-full border"
             style={
               variant === 'foreground'
                 ? {
@@ -226,7 +226,7 @@ export const Color: FC = () => {
       <Heading type="h2">Color Token</Heading>
       <div className="bg-bg-base flex flex-col justify-between gap-3 rounded-xl p-3">
         <Heading type="h3">Neutral Color</Heading>
-        <p className="text-text-description text-sm">
+        <p className="text-fg-mute text-sm">
           グレースケールを元にした色、理由がない限りこの色を利用する
         </p>
         <div className="flex flex-col gap-3">
@@ -333,7 +333,7 @@ export const Color: FC = () => {
       </div>
       <div className="bg-bg-base flex flex-col justify-between gap-1 rounded-xl p-3">
         <Heading type="h3">Primitive Color</Heading>
-        <p className="text-text-description text-sm">
+        <p className="text-fg-mute text-sm">
           情緒的な役割を持つ色、強調やアクセントに利用する
         </p>
         <div className="flex flex-col gap-2">
@@ -421,7 +421,7 @@ export const Color: FC = () => {
       </div>
       <div className="bg-bg-base flex flex-col justify-between gap-3 rounded-xl p-3">
         <Heading type="h3">Semantic Color</Heading>
-        <p className="text-text-description text-sm">
+        <p className="text-fg-mute text-sm">
           機能的な役割を持つ色(情報、成功、警告、エラー)、利用者に色を用いて情報を届けたいときに利用する
         </p>
         <div className="flex flex-col gap-3">
@@ -516,7 +516,7 @@ export const Color: FC = () => {
       </div>
       <div className="bg-bg-base flex flex-col justify-between gap-1 rounded-xl p-3">
         <Heading type="h3">Base Color</Heading>
-        <p className="text-text-description text-sm">
+        <p className="text-fg-mute text-sm">
           デザインシステム全体で利用する基本色
         </p>
         <div className="flex flex-col gap-3">
@@ -530,7 +530,7 @@ export const Color: FC = () => {
                 {typeof value[1] === 'string' ? (
                   <div className="dark flex flex-col items-center gap-1">
                     <div
-                      className="border-border-primary flex h-12 w-24 items-center justify-center rounded-4xl border"
+                      className="border-border-base flex h-12 w-24 items-center justify-center rounded-4xl border"
                       style={{
                         backgroundColor: value[1],
                       }}
@@ -547,13 +547,13 @@ export const Color: FC = () => {
                         >
                           <div
                             className={cn(
-                              'border-border-primary flex h-12 w-24 items-center justify-center rounded-4xl border',
+                              'border-border-base flex h-12 w-24 items-center justify-center rounded-4xl border',
                               calcContrast(
                                 color[1],
                                 COLOR_VARIANTS.white,
                               ) < 4.5
                                 ? 'text-fg-base'
-                                : 'text-text-on-fill',
+                                : 'text-fg-inverse',
                             )}
                             style={{
                               backgroundColor: color[1],

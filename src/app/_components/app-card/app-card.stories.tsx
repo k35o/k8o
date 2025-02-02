@@ -23,7 +23,7 @@ export const Primary: Story = {
 export const EmotionIsElement: Story = {
   args: {
     link: '/moji-count',
-    symbol: <Link className="text-text-highlight size-12" />,
+    symbol: <Link className="text-primary-fg size-12" />,
     title: 'もじカウント',
     description:
       'テキストの文字数を簡単かつ正確にカウントできるシンプルなツールです。日本語、英語、記号、絵文字、テキストの種類を問わず分析できます。',

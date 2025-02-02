@@ -20,32 +20,32 @@ export const ResultTable: FC<Props> = ({
   return (
     <table className="w-full">
       <thead>
-        <tr className="border-border-primary border-b">
+        <tr className="border-border-base border-b">
           <th>AA基準</th>
           <th>AAA基準</th>
           <th>テキスト</th>
         </tr>
       </thead>
       <tbody>
-        <tr className="border-border-primary h-16 border-b">
+        <tr className="border-border-base h-16 border-b">
           <td className="px-2 text-2xl">
             {isInvalidAAContrstLarge ? (
-              <p className="text-text-error text-center font-bold">
+              <p className="text-fg-error text-center font-bold">
                 NG
               </p>
             ) : (
-              <p className="text-text-success text-center font-bold">
+              <p className="text-fg-success text-center font-bold">
                 OK
               </p>
             )}
           </td>
           <td className="px-2 text-2xl">
             {isInvalidAAAContrstLarge ? (
-              <p className="text-text-error text-center font-bold">
+              <p className="text-fg-error text-center font-bold">
                 NG
               </p>
             ) : (
-              <p className="text-text-success text-center font-bold">
+              <p className="text-fg-success text-center font-bold">
                 OK
               </p>
             )}
@@ -60,25 +60,25 @@ export const ResultTable: FC<Props> = ({
             大文字の太字のテキスト（18.66px bold）
           </td>
         </tr>
-        <tr className="border-border-primary h-16 border-b">
+        <tr className="border-border-base h-16 border-b">
           <td className="px-2 text-2xl">
             {isInvalidAAContrstLarge ? (
-              <p className="text-text-error text-center font-bold">
+              <p className="text-fg-error text-center font-bold">
                 NG
               </p>
             ) : (
-              <p className="text-text-success text-center font-bold">
+              <p className="text-fg-success text-center font-bold">
                 OK
               </p>
             )}
           </td>
           <td className="px-2 text-2xl">
             {isInvalidAAAContrstLarge ? (
-              <p className="text-text-error text-center font-bold">
+              <p className="text-fg-error text-center font-bold">
                 NG
               </p>
             ) : (
-              <p className="text-text-success text-center font-bold">
+              <p className="text-fg-success text-center font-bold">
                 OK
               </p>
             )}
@@ -93,25 +93,25 @@ export const ResultTable: FC<Props> = ({
             大文字のテキスト（24px）
           </td>
         </tr>
-        <tr className="border-border-primary h-16 border-b">
+        <tr className="border-border-base h-16 border-b">
           <td className="px-2 text-2xl">
             {isInvalidAAContrstSmall ? (
-              <p className="text-text-error text-center font-bold">
+              <p className="text-fg-error text-center font-bold">
                 NG
               </p>
             ) : (
-              <p className="text-text-success text-center font-bold">
+              <p className="text-fg-success text-center font-bold">
                 OK
               </p>
             )}
           </td>
           <td className="px-2 text-2xl">
             {isInvalidAAAContrstSmall ? (
-              <p className="text-text-error text-center font-bold">
+              <p className="text-fg-error text-center font-bold">
                 NG
               </p>
             ) : (
-              <p className="text-text-success text-center font-bold">
+              <p className="text-fg-success text-center font-bold">
                 OK
               </p>
             )}
@@ -126,25 +126,25 @@ export const ResultTable: FC<Props> = ({
             小文字の太字のテキスト（16px bold）
           </td>
         </tr>
-        <tr className="border-border-primary h-16 border-b">
+        <tr className="border-border-base h-16 border-b">
           <td className="px-2 text-2xl">
             {isInvalidAAContrstSmall ? (
-              <p className="text-text-error text-center font-bold">
+              <p className="text-fg-error text-center font-bold">
                 NG
               </p>
             ) : (
-              <p className="text-text-success text-center font-bold">
+              <p className="text-fg-success text-center font-bold">
                 OK
               </p>
             )}
           </td>
           <td className="px-2 text-2xl">
             {isInvalidAAAContrstLarge ? (
-              <p className="text-text-error text-center font-bold">
+              <p className="text-fg-error text-center font-bold">
                 NG
               </p>
             ) : (
-              <p className="text-text-success text-center font-bold">
+              <p className="text-fg-success text-center font-bold">
                 OK
               </p>
             )}

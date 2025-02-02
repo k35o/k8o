@@ -32,20 +32,20 @@ export const Button: FC<
       className={cn(
         'rounded-xl text-center font-bold',
         {
-          ['bg-button-primary text-text-on-fill hover:bg-button-hover active:bg-button-active']:
+          ['bg-primary-bg text-fg-inverse hover:bg-primary-bg/90 active:bg-primary-bg/80']:
             variant === 'contained' && color === 'primary',
-          ['bg-bg-base text-text-body hover:bg-bg-hover active:bg-bg-active']:
+          ['bg-bg-base text-fg-base hover:bg-bg-subtle active:bg-bg-emphasize']:
             variant === 'contained' && color === 'gray',
-          ['hover:bg-button-primary active:bg-button-primary cursor-not-allowed opacity-35']:
+          ['hover:bg-primary-bg active:bg-primary-bg cursor-not-allowed opacity-35']:
             disabled && variant === 'contained',
-          ['border-button-primary bg-bg-base text-button-primary hover:bg-bg-hover active:bg-bg-active border-2']:
+          ['border-primary-bg bg-bg-base text-primary-bg hover:bg-bg-subtle active:bg-bg-emphasize border-2']:
             variant === 'outlined' && color === 'primary',
-          ['border-border-primary bg-bg-base text-text-body hover:bg-bg-hover active:bg-bg-active border-2']:
+          ['border-border-base bg-bg-base text-fg-base hover:bg-bg-subtle active:bg-bg-emphasize border-2']:
             variant === 'outlined' && color === 'gray',
           ['bg-bg-base hover:bg-bg-base active:bg-bg-base cursor-not-allowed opacity-35']:
             disabled && variant === 'outlined',
         },
-        'focus-visible:border-border-transparent focus-visible:ring-border-focus focus-visible:ring-2 focus-visible:outline-hidden',
+        'focus-visible:bordertransparent focus-visible:ring-border-info focus-visible:ring-2 focus-visible:outline-hidden',
         size === 'sm' && 'px-3 py-1 text-sm',
         size === 'md' && 'text-md px-4 py-2',
         size === 'lg' && 'px-6 py-3 text-lg',

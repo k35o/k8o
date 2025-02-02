@@ -60,7 +60,7 @@ export default function RootLayout({
         className={cn(
           font.className,
           subFont.variable,
-          'text-text-body',
+          'text-fg-base',
         )}
       >
         <AppProvider>

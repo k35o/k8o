@@ -25,7 +25,7 @@ export function Modal({
   }
 
   return createPortal(
-    <div className="bg-bg-back-drop absolute top-0 right-0 bottom-0 left-0 z-50">
+    <div className="bg-back-drop absolute top-0 right-0 bottom-0 left-0 z-50">
       {/* eslint-disable-next-line jsx-a11y/no-noninteractive-element-interactions -- https://github.com/jsx-eslint/eslint-plugin-jsx-a11y/pull/940待ち */}
       <dialog
         ref={dialogRef}

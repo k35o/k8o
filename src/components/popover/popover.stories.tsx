@@ -23,7 +23,7 @@ export const Default: Story = {
       <Popover.Content
         renderItem={(props) => (
           <section
-            className="bg-bg-secondary rounded-md p-4 shadow-md"
+            className="bg-bg-mute rounded-md p-4 shadow-md"
             {...props}
           >
             <p>Popover content</p>

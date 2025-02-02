@@ -19,10 +19,9 @@ export const Complete: FC<{
         {/* 0.8以上でsuccess 0.5以下でwarning 0.3以下でerror */}
         <p
           className={cn('text-2xl', {
-            'text-text-success': percentage >= 0.8,
-            'text-text-warning':
-              percentage <= 0.5 && percentage > 0.3,
-            'text-text-error': percentage <= 0.3,
+            'text-fg-success': percentage >= 0.8,
+            'text-fg-warning': percentage <= 0.5 && percentage > 0.3,
+            'text-fg-error': percentage <= 0.3,
           })}
         >
           スコア: {score}/{maxCount}

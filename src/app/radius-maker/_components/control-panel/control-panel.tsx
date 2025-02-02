@@ -33,15 +33,15 @@ const OperateButton: FC<{
     <button
       aria-label={label}
       className={clsx(
-        'border-border-primary absolute size-4 border',
+        'border-border-base absolute size-4 border',
         variable === 'primary' && 'bg-group-primary',
         variable === 'secondary' && 'bg-group-secondary',
         variable === 'quaternary' && 'bg-group-quaternary',
         variable === 'tertiary' && 'bg-group-tertiary',
         isActive &&
-          'border-border-transparent ring-text-description ring-4 outline-hidden',
-        'hover:border-border-transparent hover:ring-text-description hover:ring-4 hover:outline-hidden',
-        'focus-visible:border-border-transparent focus-visible:ring-text-description focus-visible:ring-4 focus-visible:outline-hidden',
+          'bordertransparent ring-fg-mute ring-4 outline-hidden',
+        'hover:bordertransparent hover:ring-fg-mute hover:ring-4 hover:outline-hidden',
+        'focus-visible:bordertransparent focus-visible:ring-fg-mute focus-visible:ring-4 focus-visible:outline-hidden',
       )}
       onMouseDown={onMouseDown}
       onTouchStart={onTouchStart}
@@ -70,7 +70,7 @@ export const ControlPanel: FC = () => {
         className="border-borderPrimar relative size-64 border-2 border-dashed sm:size-96"
       >
         <div
-          className="bg-text-highlight absolute size-full"
+          className="bg-primary-fg absolute size-full"
           style={{
             borderRadius,
           }}

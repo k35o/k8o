@@ -25,12 +25,12 @@ export const Feedback: FC<{
       {status === 'correct' ? (
         <div className="flex items-center gap-1">
           <AlertIcon status="success" />
-          <p className="text-text-success text-xl font-bold">正解</p>
+          <p className="text-fg-success text-xl font-bold">正解</p>
         </div>
       ) : (
         <div className="flex items-center gap-1">
           <AlertIcon status="error" />
-          <p className="text-text-error text-xl font-bold">不正解</p>
+          <p className="text-fg-error text-xl font-bold">不正解</p>
         </div>
       )}
       <div className="flex w-full flex-col gap-1">

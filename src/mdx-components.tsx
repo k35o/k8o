@@ -34,7 +34,7 @@ const LinkHeading: FC<
         >
           <Link
             className={clsx(
-              'text-text-description absolute top-1 box-content opacity-0 sm:group-hover:opacity-100',
+              'text-fg-mute absolute top-1 box-content opacity-0 sm:group-hover:opacity-100',
               type === 'h2' && '-left-7 size-6 pr-2',
               type === 'h3' && '-left-7 size-6 pr-2',
               type === 'h4' && '-left-6 size-5 pr-2',
@@ -85,7 +85,7 @@ export function useMDXComponents(
         return (
           <code
             {...props}
-            className="bg-bg-primary m-1 rounded-lg px-1 text-xs sm:text-base"
+            className="bg-bg-mute m-1 rounded-lg px-1 text-xs sm:text-base"
           >
             {children}
           </code>
@@ -101,7 +101,7 @@ export function useMDXComponents(
       return (
         <pre
           {...rest}
-          className="bg-bg-code-block my-4 overflow-x-auto rounded-xl p-1 sm:p-4"
+          className="my-4 overflow-x-auto rounded-xl p-1 sm:p-4"
         >
           {children}
         </pre>
