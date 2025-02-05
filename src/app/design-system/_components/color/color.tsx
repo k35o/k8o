@@ -346,9 +346,9 @@ export const Color: FC = () => {
                               backgroundColor: color[1],
                             }}
                           >
-                            {color[0]}
+                            {color[1]}
                           </div>
-                          <p className="text-xs">{color[1]}</p>
+                          <p className="text-xs">{color[0]}</p>
                         </div>
                       );
                     })}
