@@ -1,31 +1,10 @@
 'use client';
 
 import { FormControl } from '@/components/form/form-control';
-import { Option, Select } from '@/components/form/select/select';
 import { TextField } from '@/components/form/text-field';
-import { ArrowBigRightDash } from 'lucide-react';
-import { useMemo, useState } from 'react';
+import { useCallback, useState } from 'react';
 
 type Base = 2 | 8 | 10 | 16;
-
-const BASE_OPTIONS = [
-  { value: '2', label: '2進数' },
-  { value: '8', label: '8進数' },
-  { value: '10', label: '10進数' },
-  { value: '16', label: '16進数' },
-] as const satisfies readonly Option[];
-
-const isBaseNumber = (number: number): Base => {
-  switch (number) {
-    case 2:
-    case 8:
-    case 10:
-    case 16:
-      return number;
-    default:
-      throw new Error('Invalid base number');
-  }
-};
 
 const convertNumber = (
   number: string,
@@ -38,75 +17,139 @@ const convertNumber = (
 };
 
 export const BaseConverter = () => {
-  const [baseFrom, setBaseFrom] = useState<Base>(10);
-  const [baseTo, setBaseTo] = useState<Base>(10);
-  const handleChangeBase = (
-    base: string,
-    setBase: (base: Base) => void,
-  ) => {
-    const parsedValue = isNaN(Number(base)) ? 2 : Number(base);
-    setBase(isBaseNumber(parsedValue));
-  };
+  const [invalid, setInvalid] = useState<{
+    target: Base;
+    message: string;
+  } | null>(null);
+  const [binary, setBinary] = useState('0');
+  const [octal, setOctal] = useState('0');
+  const [decimal, setDecimal] = useState('0');
+  const [hexadecimal, setHexadecimal] = useState('0');
 
-  const [textFrom, setTextFrom] = useState('');
-  const textTo: string = useMemo(() => {
-    const convertedNumber = convertNumber(textFrom, baseFrom, baseTo);
-    if (!convertedNumber || convertedNumber === 'NaN') {
-      return '0';
+  const handleChange = useCallback((value: string, base: Base) => {
+    setInvalid(null);
+    switch (base) {
+      case 2:
+        setBinary(value);
+        if (!/^[01]+$/.test(value)) {
+          setInvalid({
+            target: 2,
+            message: '2進数は0または1で入力してください',
+          });
+          return;
+        }
+        setOctal(convertNumber(value, 2, 8));
+        setDecimal(convertNumber(value, 2, 10));
+        setHexadecimal(convertNumber(value, 2, 16));
+        break;
+      case 8:
+        setOctal(value);
+        if (!/^[0-7]+$/.test(value)) {
+          setInvalid({
+            target: 8,
+            message: '8進数は0から7で入力してください',
+          });
+          return;
+        }
+        setBinary(convertNumber(value, 8, 2));
+        setDecimal(convertNumber(value, 8, 10));
+        setHexadecimal(convertNumber(value, 8, 16));
+        break;
+      case 10:
+        setDecimal(value);
+        if (!/^\d+$/.test(value)) {
+          setInvalid({
+            target: 10,
+            message: '10進数は0から9で入力してください',
+          });
+          return;
+        }
+        setBinary(convertNumber(value, 10, 2));
+        setOctal(convertNumber(value, 10, 8));
+        setHexadecimal(convertNumber(value, 10, 16));
+        break;
+      case 16:
+        setHexadecimal(value);
+        if (!/^[0-9a-fA-F]+$/.test(value)) {
+          setInvalid({
+            target: 16,
+            message: '16進数は0から9またはaからfで入力してください',
+          });
+          return;
+        }
+        setBinary(convertNumber(value, 16, 2));
+        setOctal(convertNumber(value, 16, 8));
+        setDecimal(convertNumber(value, 16, 10));
+        break;
     }
-    return convertedNumber;
-  }, [textFrom, baseFrom, baseTo]);
+  }, []);
 
   return (
     <div className="flex flex-col gap-4">
-      <div className="flex items-center justify-center gap-3">
-        <FormControl
-          label="変換前"
-          renderInput={({ labelId: _, ...props }) => {
-            return (
-              <Select
-                value={baseFrom.toString()}
-                onChange={(value) => {
-                  handleChangeBase(value, setBaseFrom);
-                }}
-                options={BASE_OPTIONS}
-                {...props}
-              />
-            );
-          }}
-        />
-        <ArrowBigRightDash aria-label="右矢印" className="size-14" />
-        <FormControl
-          label="変換後"
-          renderInput={({ labelId: _, ...props }) => {
-            return (
-              <Select
-                value={baseTo.toString()}
-                onChange={(value) => {
-                  handleChangeBase(value, setBaseTo);
-                }}
-                options={BASE_OPTIONS}
-                {...props}
-              />
-            );
-          }}
-        />
-      </div>
       <FormControl
-        label="変換する値"
+        label="2進数"
+        isInvalid={invalid?.target === 2}
+        errorText={invalid?.message ?? undefined}
         renderInput={({ labelId: _, ...props }) => {
           return (
             <TextField
-              value={textFrom}
-              onChange={(textFrom: string) => {
-                setTextFrom(textFrom);
+              value={binary}
+              onChange={(text: string) => {
+                handleChange(text, 2);
               }}
               {...props}
             />
           );
         }}
       />
-      <p className="text-center text-xl font-bold">{textTo}</p>
+      <FormControl
+        label="8進数"
+        isInvalid={invalid?.target === 8}
+        errorText={invalid?.message ?? undefined}
+        renderInput={({ labelId: _, ...props }) => {
+          return (
+            <TextField
+              value={octal}
+              onChange={(text: string) => {
+                handleChange(text, 8);
+              }}
+              {...props}
+            />
+          );
+        }}
+      />
+      <FormControl
+        label="10進数"
+        isInvalid={invalid?.target === 10}
+        errorText={invalid?.message ?? undefined}
+        renderInput={({ labelId: _, ...props }) => {
+          return (
+            <TextField
+              value={decimal}
+              onChange={(text: string) => {
+                handleChange(text, 10);
+              }}
+              {...props}
+            />
+          );
+        }}
+      />
+      <FormControl
+        label="16進数"
+        isInvalid={invalid?.target === 16}
+        errorText={invalid?.message ?? undefined}
+        renderInput={({ labelId: _, ...props }) => {
+          return (
+            <TextField
+              value={hexadecimal}
+              onChange={(text: string) => {
+                handleChange(text, 16);
+              }}
+              {...props}
+            />
+          );
+        }}
+      />
     </div>
   );
 };
