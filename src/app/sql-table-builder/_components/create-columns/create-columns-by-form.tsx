@@ -140,10 +140,10 @@ export const CreateColumnsByForm: FC<Props> = ({
                       <Radio
                         {...props}
                         value={column.nullable ? '0' : '1'}
-                        onChange={(type) => {
+                        onChange={(e) => {
                           handleChangeColumn(id)({
                             ...column,
-                            nullable: type === '0',
+                            nullable: e.target.value === '0',
                           });
                         }}
                         options={[
