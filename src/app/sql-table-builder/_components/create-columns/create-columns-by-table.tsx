@@ -66,8 +66,11 @@ export const CreateColumnsByTable: FC<Props> = ({
                         : undefined
                     }
                     value={column.name}
-                    onChange={(name) => {
-                      handleChangeColumn(id)({ ...column, name });
+                    onChange={(e) => {
+                      handleChangeColumn(id)({
+                        ...column,
+                        name: e.target.value,
+                      });
                     }}
                     placeholder="id"
                     isInvalid={Boolean(columnError?.name)}
@@ -92,8 +95,11 @@ export const CreateColumnsByTable: FC<Props> = ({
                         : undefined
                     }
                     value={column.alias}
-                    onChange={(alias) => {
-                      handleChangeColumn(id)({ ...column, alias });
+                    onChange={(e) => {
+                      handleChangeColumn(id)({
+                        ...column,
+                        alias: e.target.value,
+                      });
                     }}
                     placeholder="ID"
                     isInvalid={Boolean(columnError?.alias)}
@@ -118,10 +124,10 @@ export const CreateColumnsByTable: FC<Props> = ({
                         : undefined
                     }
                     value={column.type}
-                    onChange={(type) => {
+                    onChange={(e) => {
                       handleChangeColumn(id)({
                         ...column,
-                        type: type as ColumnType,
+                        type: e.target.value as ColumnType,
                       });
                     }}
                     options={TYPE_OPTIONS}
@@ -142,10 +148,10 @@ export const CreateColumnsByTable: FC<Props> = ({
                   <Checkbox
                     label=""
                     value={column.nullable}
-                    onChange={(type) => {
+                    onChange={(e) => {
                       handleChangeColumn(id)({
                         ...column,
-                        nullable: type,
+                        nullable: e.target.checked,
                       });
                     }}
                   />
@@ -164,10 +170,10 @@ export const CreateColumnsByTable: FC<Props> = ({
                         : undefined
                     }
                     value={column.default ?? ''}
-                    onChange={(defaultVal) => {
+                    onChange={(e) => {
                       handleChangeColumn(id)({
                         ...column,
-                        default: defaultVal,
+                        default: e.target.value,
                       });
                     }}
                     isDisabled={false}

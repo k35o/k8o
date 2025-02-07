@@ -22,7 +22,9 @@ export const Default: Story = {
       <Radio
         labelId="radio"
         value={value}
-        onChange={setValue}
+        onChange={(e) => {
+          setValue(e.target.value);
+        }}
         options={options}
         isDisabled={false}
       />
@@ -42,7 +44,9 @@ export const Disabled: Story = {
       <Radio
         labelId="radio"
         value={value}
-        onChange={setValue}
+        onChange={(e) => {
+          setValue(e.target.value);
+        }}
         options={options}
         isDisabled
       />

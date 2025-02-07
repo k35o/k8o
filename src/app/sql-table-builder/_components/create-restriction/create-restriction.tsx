@@ -47,7 +47,8 @@ export const CreateRestriction: FC<Props> = ({
           return (
             <Select
               value={restriction.type}
-              onChange={(type) => {
+              onChange={(e) => {
+                const type = e.target.value;
                 if (type === 'primary') {
                   setRestriction({ type, columns: [] });
                 } else if (type === 'unique') {
@@ -103,10 +104,10 @@ export const CreateRestriction: FC<Props> = ({
               return (
                 <Select
                   value={restriction.column}
-                  onChange={(column) => {
+                  onChange={(e) => {
                     setRestriction({
                       ...restriction,
-                      column,
+                      column: e.target.value,
                     });
                   }}
                   options={columnOptions}
@@ -125,10 +126,13 @@ export const CreateRestriction: FC<Props> = ({
                 <TextField
                   {...props}
                   value={restriction.reference.table}
-                  onChange={(table) => {
+                  onChange={(e) => {
                     setRestriction({
                       ...restriction,
-                      reference: { ...restriction.reference, table },
+                      reference: {
+                        ...restriction.reference,
+                        table: e.target.value,
+                      },
                     });
                   }}
                 />
@@ -145,10 +149,13 @@ export const CreateRestriction: FC<Props> = ({
                 <TextField
                   {...props}
                   value={restriction.reference.column}
-                  onChange={(column) => {
+                  onChange={(e) => {
                     setRestriction({
                       ...restriction,
-                      reference: { ...restriction.reference, column },
+                      reference: {
+                        ...restriction.reference,
+                        column: e.target.value,
+                      },
                     });
                   }}
                 />

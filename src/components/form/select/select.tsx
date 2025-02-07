@@ -1,4 +1,4 @@
-import { FC } from 'react';
+import { ChangeEventHandler, FC } from 'react';
 import { cn } from '@/utils/cn';
 import { ChevronDown } from 'lucide-react';
 
@@ -15,7 +15,7 @@ type Props = {
   isRequired: boolean;
   options: readonly Option[];
   value: string;
-  onChange: (value: string) => void;
+  onChange: ChangeEventHandler<HTMLSelectElement>;
 };
 
 export const Select: FC<Props> = ({
@@ -42,9 +42,7 @@ export const Select: FC<Props> = ({
           'focus-visible:bordertransparent focus-visible:ring-border-info focus-visible:ring-2 focus-visible:outline-hidden',
         )}
         value={value}
-        onChange={(e) => {
-          onChange(e.target.value);
-        }}
+        onChange={onChange}
         disabled={isDisabled}
       >
         {options.map((option) => (

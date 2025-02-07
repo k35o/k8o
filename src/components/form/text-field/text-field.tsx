@@ -1,5 +1,5 @@
 import { cn } from '@/utils/cn';
-import { FC } from 'react';
+import { ChangeEventHandler, FC } from 'react';
 
 type Props = {
   id?: string;
@@ -8,7 +8,7 @@ type Props = {
   isDisabled: boolean;
   isRequired: boolean;
   value: string;
-  onChange: (value: string) => void;
+  onChange: ChangeEventHandler<HTMLInputElement>;
   placeholder?: string;
 };
 
@@ -30,9 +30,7 @@ export const TextField: FC<Props> = ({
       aria-required={isRequired}
       type="text"
       value={value}
-      onChange={(e) => {
-        onChange(e.target.value);
-      }}
+      onChange={onChange}
       className={cn(
         'border-border-base bg-bg-base w-full rounded-lg border px-3 py-2',
         'aria-invalid:border-border-error',

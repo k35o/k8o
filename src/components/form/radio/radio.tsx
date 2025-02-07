@@ -1,5 +1,5 @@
 import { cn } from '@/utils/cn';
-import { FC } from 'react';
+import { ChangeEventHandler, FC } from 'react';
 
 export type Option = Readonly<{
   value: string;
@@ -10,7 +10,7 @@ type Props = {
   labelId: string;
   isDisabled: boolean;
   value: string;
-  onChange: (value: string) => void;
+  onChange: ChangeEventHandler<HTMLInputElement>;
   options: readonly Option[];
 };
 
@@ -46,9 +46,7 @@ export const Radio: FC<Props> = ({
             )}
             value={option.value}
             checked={value === option.value}
-            onChange={(e) => {
-              onChange(e.target.value);
-            }}
+            onChange={onChange}
             disabled={isDisabled}
           />
           <span>{option.label}</span>
