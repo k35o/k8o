@@ -13,8 +13,8 @@ const meta: Meta<typeof FormControl> = {
         <TextField
           {...props}
           value={state}
-          onChange={(v) => {
-            setState(v);
+          onChange={(e) => {
+            setState(e.target.value);
           }}
         />
       );

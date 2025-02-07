@@ -125,10 +125,13 @@ export const CreateRestriction: FC<Props> = ({
                 <TextField
                   {...props}
                   value={restriction.reference.table}
-                  onChange={(table) => {
+                  onChange={(e) => {
                     setRestriction({
                       ...restriction,
-                      reference: { ...restriction.reference, table },
+                      reference: {
+                        ...restriction.reference,
+                        table: e.target.value,
+                      },
                     });
                   }}
                 />
@@ -145,10 +148,13 @@ export const CreateRestriction: FC<Props> = ({
                 <TextField
                   {...props}
                   value={restriction.reference.column}
-                  onChange={(column) => {
+                  onChange={(e) => {
                     setRestriction({
                       ...restriction,
-                      reference: { ...restriction.reference, column },
+                      reference: {
+                        ...restriction.reference,
+                        column: e.target.value,
+                      },
                     });
                   }}
                 />

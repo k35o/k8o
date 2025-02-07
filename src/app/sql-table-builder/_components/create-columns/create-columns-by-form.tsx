@@ -76,10 +76,10 @@ export const CreateColumnsByForm: FC<Props> = ({
                       return (
                         <TextField
                           value={column.name}
-                          onChange={(name) => {
+                          onChange={(e) => {
                             handleChangeColumn(id)({
                               ...column,
-                              name,
+                              name: e.target.value,
                             });
                           }}
                           placeholder="id"
@@ -97,10 +97,10 @@ export const CreateColumnsByForm: FC<Props> = ({
                       return (
                         <TextField
                           value={column.alias}
-                          onChange={(alias) => {
+                          onChange={(e) => {
                             handleChangeColumn(id)({
                               ...column,
-                              alias,
+                              alias: e.target.value,
                             });
                           }}
                           placeholder="ID"
@@ -161,10 +161,10 @@ export const CreateColumnsByForm: FC<Props> = ({
                       return (
                         <TextField
                           value={column.default ?? ''}
-                          onChange={(defaultVal) => {
+                          onChange={(e) => {
                             handleChangeColumn(id)({
                               ...column,
-                              default: defaultVal,
+                              default: e.target.value,
                             });
                           }}
                           {...props}

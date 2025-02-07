@@ -28,7 +28,9 @@ export const Answer: FC<{
             <TextField
               {...props}
               value={answer}
-              onChange={handleChange}
+              onChange={(e) => {
+                handleChange(e.target.value);
+              }}
               isRequired
             />
           );

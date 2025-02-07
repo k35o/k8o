@@ -94,8 +94,8 @@ export const BaseConverter = () => {
           return (
             <TextField
               value={binary}
-              onChange={(text: string) => {
-                handleChange(text, 2);
+              onChange={(e) => {
+                handleChange(e.target.value, 2);
               }}
               {...props}
             />
@@ -110,8 +110,8 @@ export const BaseConverter = () => {
           return (
             <TextField
               value={octal}
-              onChange={(text: string) => {
-                handleChange(text, 8);
+              onChange={(e) => {
+                handleChange(e.target.value, 8);
               }}
               {...props}
             />
@@ -126,8 +126,8 @@ export const BaseConverter = () => {
           return (
             <TextField
               value={decimal}
-              onChange={(text: string) => {
-                handleChange(text, 10);
+              onChange={(e) => {
+                handleChange(e.target.value, 10);
               }}
               {...props}
             />
@@ -142,8 +142,8 @@ export const BaseConverter = () => {
           return (
             <TextField
               value={hexadecimal}
-              onChange={(text: string) => {
-                handleChange(text, 16);
+              onChange={(e) => {
+                handleChange(e.target.value, 16);
               }}
               {...props}
             />

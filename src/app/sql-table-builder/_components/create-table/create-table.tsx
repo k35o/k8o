@@ -1,5 +1,5 @@
 import { TextField } from '@/components/form/text-field';
-import { FC } from 'react';
+import { ChangeEvent, FC } from 'react';
 import { InvalidTable, Table } from '../../_types/table';
 import { FormControl } from '@/components/form/form-control';
 
@@ -14,12 +14,16 @@ export const CreateTable: FC<Props> = ({
   setTable,
   tableError,
 }) => {
-  const handleChangeTableName = (name: string) => {
-    setTable({ ...table, name });
+  const handleChangeTableName = (
+    e: ChangeEvent<HTMLInputElement>,
+  ) => {
+    setTable({ ...table, name: e.target.value });
   };
 
-  const handleChangeTableAlias = (alias: string) => {
-    setTable({ ...table, alias });
+  const handleChangeTableAlias = (
+    e: ChangeEvent<HTMLInputElement>,
+  ) => {
+    setTable({ ...table, alias: e.target.value });
   };
 
   return (

@@ -8,8 +8,8 @@ const meta: Meta<typeof TextField> = {
     id: 'textfield',
     describedbyId: 'textfield-feedback',
     value: '',
-    onChange: (value: string) => {
-      console.log(value);
+    onChange: (e) => {
+      console.log(e.target.value);
     },
   },
 };

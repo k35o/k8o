@@ -1,7 +1,12 @@
 'use client';
 
 import { TextField } from '@/components/form/text-field';
-import { useCallback, useMemo, useState } from 'react';
+import {
+  ChangeEventHandler,
+  useCallback,
+  useMemo,
+  useState,
+} from 'react';
 import { ColorTip } from './color-tip';
 import {
   hexToHsl,
@@ -65,12 +70,13 @@ export const ColorConverter = () => {
     return hexToHsl(baseColor.value);
   }, [baseColor]);
 
-  const handleChangeHex = useCallback((newColor: string) => {
-    setBaseColor({
-      type: 'hex',
-      value: newColor,
-    });
-  }, []);
+  const handleChangeHex: ChangeEventHandler<HTMLInputElement> =
+    useCallback((e) => {
+      setBaseColor({
+        type: 'hex',
+        value: e.target.value,
+      });
+    }, []);
 
   const handleChangeRgb = useCallback(
     (value: number, type: keyof RGB) => {
