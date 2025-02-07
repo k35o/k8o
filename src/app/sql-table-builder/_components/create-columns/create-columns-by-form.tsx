@@ -115,10 +115,10 @@ export const CreateColumnsByForm: FC<Props> = ({
                       return (
                         <Select
                           value={column.type}
-                          onChange={(type) => {
+                          onChange={(e) => {
                             handleChangeColumn(id)({
                               ...column,
-                              type: type as ColumnType,
+                              type: e.target.value as ColumnType,
                             });
                           }}
                           options={TYPE_OPTIONS}
