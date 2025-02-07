@@ -1,11 +1,11 @@
 import { cn } from '@/utils/cn';
 import { Check } from 'lucide-react';
-import { FC, useState } from 'react';
+import { ChangeEventHandler, FC, useState } from 'react';
 
 type Props = {
   label: string;
   value: boolean;
-  onChange: (value: boolean) => void;
+  onChange: ChangeEventHandler<HTMLInputElement>;
 };
 
 export const Checkbox: FC<Props> = ({ label, value, onChange }) => {
@@ -22,9 +22,7 @@ export const Checkbox: FC<Props> = ({ label, value, onChange }) => {
         onBlur={() => {
           setIsFocus(false);
         }}
-        onChange={(e) => {
-          onChange(e.target.checked);
-        }}
+        onChange={onChange}
       />
       <span
         className={cn(

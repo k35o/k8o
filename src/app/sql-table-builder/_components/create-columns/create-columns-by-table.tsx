@@ -148,10 +148,10 @@ export const CreateColumnsByTable: FC<Props> = ({
                   <Checkbox
                     label=""
                     value={column.nullable}
-                    onChange={(type) => {
+                    onChange={(e) => {
                       handleChangeColumn(id)({
                         ...column,
-                        nullable: type,
+                        nullable: e.target.checked,
                       });
                     }}
                   />
