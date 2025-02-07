@@ -220,7 +220,7 @@ export const Autocomplete: FC<Props> = ({
                         'bg-bg-emphasize',
                       selectIndex === idx &&
                         selected &&
-                        'bg-button-hover',
+                        'hover:bg-primary-bg/90',
                     )}
                     onMouseEnter={() => {
                       setSelectIndex(idx);

@@ -85,7 +85,7 @@ export const BaseConverter = () => {
   }, []);
 
   return (
-    <div className="flex flex-col gap-4">
+    <>
       <FormControl
         label="2進数"
         isInvalid={invalid?.target === 2}
@@ -150,6 +150,6 @@ export const BaseConverter = () => {
           );
         }}
       />
-    </div>
+    </>
   );
 };

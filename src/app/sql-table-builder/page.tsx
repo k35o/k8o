@@ -56,10 +56,7 @@ export default function Page() {
     useState<InvalidRestrictions['errors']>();
 
   return (
-    <section
-      ref={topRef}
-      className="bg-bg-base/85 flex flex-col gap-6 rounded-lg p-4"
-    >
+    <section ref={topRef} className="grid gap-6 py-4">
       <CreateTable
         table={table}
         setTable={setTable}

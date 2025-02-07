@@ -7,7 +7,7 @@ import { useStatus } from './_state/text';
 export default function CheckSyntax() {
   const status = useStatus();
   return (
-    <div className="bg-bg-base/85 h-full rounded-lg p-10">
+    <div className="h-full rounded-lg py-10">
       {status.isExecuted ? <CheckedField /> : <EditField />}
     </div>
   );

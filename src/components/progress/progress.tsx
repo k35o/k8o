@@ -6,7 +6,7 @@ export const Progress: FC<{
   minProgress?: number;
 }> = ({ progress, maxProgress, minProgress = 0 }) => {
   return (
-    <div className="bg-bg-base w-full rounded-md">
+    <div className="bg-bg-emphasize w-full rounded-md">
       <div
         role="progressbar"
         aria-valuemax={maxProgress}
