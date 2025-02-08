@@ -3,7 +3,10 @@ import { Heading } from '@/components/heading';
 import { FC } from 'react';
 import { calcContrast } from '@/utils/color/calc_contrast';
 import { ColorInfo } from './color-info';
-import { COLOR_VARIANTS } from '../../_utils/color';
+import {
+  COLOR_VARIANTS,
+  SEMANTIC_COLOR_VARIANTS,
+} from '../../_utils/color';
 
 export const Color: FC = () => {
   return (
@@ -20,26 +23,28 @@ export const Color: FC = () => {
             <div className="flex flex-col gap-5">
               <ColorInfo
                 name="base"
-                code="gray.900"
-                codeDark="gray.50"
+                code={SEMANTIC_COLOR_VARIANTS.base.fg.base.light}
+                codeDark={SEMANTIC_COLOR_VARIANTS.base.fg.base.dark}
                 variant="foreground"
               />
               <ColorInfo
                 name="subtle"
-                code="gray.400"
-                codeDark="gray.500"
+                code={SEMANTIC_COLOR_VARIANTS.base.fg.subtle.light}
+                codeDark={SEMANTIC_COLOR_VARIANTS.base.fg.subtle.dark}
                 variant="foreground"
               />
               <ColorInfo
                 name="mute"
-                code="gray.700"
-                codeDark="gray.300"
+                code={SEMANTIC_COLOR_VARIANTS.base.fg.mute.light}
+                codeDark={SEMANTIC_COLOR_VARIANTS.base.fg.mute.dark}
                 variant="foreground"
               />
               <ColorInfo
                 name="inverse"
-                code="gray.50"
-                codeDark="gray.900"
+                code={SEMANTIC_COLOR_VARIANTS.base.fg.inverse.light}
+                codeDark={
+                  SEMANTIC_COLOR_VARIANTS.base.fg.inverse.dark
+                }
                 variant="foreground"
               />
             </div>
@@ -49,32 +54,36 @@ export const Color: FC = () => {
             <div className="flex flex-col gap-5">
               <ColorInfo
                 name="base"
-                code="white"
-                codeDark="gray.900"
+                code={SEMANTIC_COLOR_VARIANTS.base.bg.base.light}
+                codeDark={SEMANTIC_COLOR_VARIANTS.base.bg.base.dark}
                 variant="background"
               />
               <ColorInfo
                 name="subtle"
-                code="gray.100"
-                codeDark="gray.800"
+                code={SEMANTIC_COLOR_VARIANTS.base.bg.subtle.light}
+                codeDark={SEMANTIC_COLOR_VARIANTS.base.bg.subtle.dark}
                 variant="background"
               />
               <ColorInfo
                 name="mute"
-                code="gray.200"
-                codeDark="gray.700"
+                code={SEMANTIC_COLOR_VARIANTS.base.bg.mute.light}
+                codeDark={SEMANTIC_COLOR_VARIANTS.base.bg.mute.dark}
                 variant="background"
               />
               <ColorInfo
                 name="emphasize"
-                code="gray.300"
-                codeDark="gray.600"
+                code={SEMANTIC_COLOR_VARIANTS.base.bg.emphasize.light}
+                codeDark={
+                  SEMANTIC_COLOR_VARIANTS.base.bg.emphasize.dark
+                }
                 variant="background"
               />
               <ColorInfo
                 name="inverse"
-                code="gray.900"
-                codeDark="white"
+                code={SEMANTIC_COLOR_VARIANTS.base.bg.inverse.light}
+                codeDark={
+                  SEMANTIC_COLOR_VARIANTS.base.bg.inverse.dark
+                }
                 variant="background"
               />
             </div>
@@ -84,32 +93,48 @@ export const Color: FC = () => {
             <div className="flex flex-col gap-5">
               <ColorInfo
                 name="base"
-                code="gray.400"
-                codeDark="gray.600"
+                code={SEMANTIC_COLOR_VARIANTS.base.border.base.light}
+                codeDark={
+                  SEMANTIC_COLOR_VARIANTS.base.border.base.dark
+                }
                 variant="border"
               />
               <ColorInfo
                 name="subtle"
-                code="gray.100"
-                codeDark="gray.900"
+                code={
+                  SEMANTIC_COLOR_VARIANTS.base.border.subtle.light
+                }
+                codeDark={
+                  SEMANTIC_COLOR_VARIANTS.base.border.subtle.dark
+                }
                 variant="border"
               />
               <ColorInfo
                 name="mute"
-                code="gray.200"
-                codeDark="gray.800"
+                code={SEMANTIC_COLOR_VARIANTS.base.border.mute.light}
+                codeDark={
+                  SEMANTIC_COLOR_VARIANTS.base.border.mute.dark
+                }
                 variant="border"
               />
               <ColorInfo
                 name="emphasize"
-                code="gray.500"
-                codeDark="gray.500"
+                code={
+                  SEMANTIC_COLOR_VARIANTS.base.border.emphasize.light
+                }
+                codeDark={
+                  SEMANTIC_COLOR_VARIANTS.base.border.emphasize.dark
+                }
                 variant="border"
               />
               <ColorInfo
                 name="inverse"
-                code="gray.700"
-                codeDark="gray.300"
+                code={
+                  SEMANTIC_COLOR_VARIANTS.base.border.inverse.light
+                }
+                codeDark={
+                  SEMANTIC_COLOR_VARIANTS.base.border.inverse.dark
+                }
                 variant="border"
               />
             </div>
@@ -127,38 +152,70 @@ export const Color: FC = () => {
             <div className="flex flex-col gap-5">
               <ColorInfo
                 name="fg"
-                code="teal.700"
-                codeDark="teal.300"
+                code={
+                  SEMANTIC_COLOR_VARIANTS.primitive.primary.fg.light
+                }
+                codeDark={
+                  SEMANTIC_COLOR_VARIANTS.primitive.primary.fg.dark
+                }
                 variant="foreground"
               />
               <ColorInfo
                 name="bg"
-                code="teal.400"
-                codeDark="teal.700"
+                code={
+                  SEMANTIC_COLOR_VARIANTS.primitive.primary.bg.light
+                }
+                codeDark={
+                  SEMANTIC_COLOR_VARIANTS.primitive.primary.bg.dark
+                }
                 variant="background"
               />
               <ColorInfo
                 name="bg subtle"
-                code="teal.100"
-                codeDark="teal.900"
+                code={
+                  SEMANTIC_COLOR_VARIANTS.primitive.primary.bgSubtle
+                    .light
+                }
+                codeDark={
+                  SEMANTIC_COLOR_VARIANTS.primitive.primary.bgSubtle
+                    .dark
+                }
                 variant="background"
               />
               <ColorInfo
                 name="bg mute"
-                code="teal.200"
-                codeDark="teal.800"
+                code={
+                  SEMANTIC_COLOR_VARIANTS.primitive.primary.bgMute
+                    .light
+                }
+                codeDark={
+                  SEMANTIC_COLOR_VARIANTS.primitive.primary.bgMute
+                    .dark
+                }
                 variant="background"
               />
               <ColorInfo
                 name="bg emphasize"
-                code="teal.300"
-                codeDark="teal.700"
+                code={
+                  SEMANTIC_COLOR_VARIANTS.primitive.primary
+                    .bgEmphasize.light
+                }
+                codeDark={
+                  SEMANTIC_COLOR_VARIANTS.primitive.primary
+                    .bgEmphasize.dark
+                }
                 variant="background"
               />
               <ColorInfo
                 name="border"
-                code="teal.600"
-                codeDark="teal.600"
+                code={
+                  SEMANTIC_COLOR_VARIANTS.primitive.primary.border
+                    .light
+                }
+                codeDark={
+                  SEMANTIC_COLOR_VARIANTS.primitive.primary.border
+                    .dark
+                }
                 variant="border"
               />
             </div>
@@ -168,38 +225,70 @@ export const Color: FC = () => {
             <div className="flex flex-col gap-5">
               <ColorInfo
                 name="fg"
-                code="cyan.700"
-                codeDark="cyan.300"
+                code={
+                  SEMANTIC_COLOR_VARIANTS.primitive.secondary.fg.light
+                }
+                codeDark={
+                  SEMANTIC_COLOR_VARIANTS.primitive.secondary.fg.dark
+                }
                 variant="foreground"
               />
               <ColorInfo
                 name="bg"
-                code="cyan.400"
-                codeDark="cyan.700"
+                code={
+                  SEMANTIC_COLOR_VARIANTS.primitive.secondary.bg.light
+                }
+                codeDark={
+                  SEMANTIC_COLOR_VARIANTS.primitive.secondary.bg.dark
+                }
                 variant="background"
               />
               <ColorInfo
                 name="bg subtle"
-                code="cyan.100"
-                codeDark="cyan.900"
+                code={
+                  SEMANTIC_COLOR_VARIANTS.primitive.secondary.bgSubtle
+                    .light
+                }
+                codeDark={
+                  SEMANTIC_COLOR_VARIANTS.primitive.secondary.bgSubtle
+                    .dark
+                }
                 variant="background"
               />
               <ColorInfo
                 name="bg mute"
-                code="cyan.200"
-                codeDark="cyan.800"
+                code={
+                  SEMANTIC_COLOR_VARIANTS.primitive.secondary.bgMute
+                    .light
+                }
+                codeDark={
+                  SEMANTIC_COLOR_VARIANTS.primitive.secondary.bgMute
+                    .dark
+                }
                 variant="background"
               />
               <ColorInfo
                 name="bg emphasize"
-                code="cyan.300"
-                codeDark="cyan.700"
+                code={
+                  SEMANTIC_COLOR_VARIANTS.primitive.secondary
+                    .bgEmphasize.light
+                }
+                codeDark={
+                  SEMANTIC_COLOR_VARIANTS.primitive.secondary
+                    .bgEmphasize.dark
+                }
                 variant="background"
               />
               <ColorInfo
                 name="border"
-                code="cyan.600"
-                codeDark="cyan.600"
+                code={
+                  SEMANTIC_COLOR_VARIANTS.primitive.secondary.border
+                    .light
+                }
+                codeDark={
+                  SEMANTIC_COLOR_VARIANTS.primitive.secondary.border
+                    .dark
+                }
                 variant="border"
               />
             </div>
@@ -217,26 +306,38 @@ export const Color: FC = () => {
             <div className="flex flex-col gap-5">
               <ColorInfo
                 name="info"
-                code="blue.700"
-                codeDark="blue.300"
+                code={SEMANTIC_COLOR_VARIANTS.semantic.fg.info.light}
+                codeDark={
+                  SEMANTIC_COLOR_VARIANTS.semantic.fg.info.dark
+                }
                 variant="foreground"
               />
               <ColorInfo
                 name="success"
-                code="green.700"
-                codeDark="green.300"
+                code={
+                  SEMANTIC_COLOR_VARIANTS.semantic.fg.success.light
+                }
+                codeDark={
+                  SEMANTIC_COLOR_VARIANTS.semantic.fg.success.dark
+                }
                 variant="foreground"
               />
               <ColorInfo
                 name="warning"
-                code="yellow.700"
-                codeDark="yellow.300"
+                code={
+                  SEMANTIC_COLOR_VARIANTS.semantic.fg.warning.light
+                }
+                codeDark={
+                  SEMANTIC_COLOR_VARIANTS.semantic.fg.warning.dark
+                }
                 variant="foreground"
               />
               <ColorInfo
                 name="error"
-                code="red.700"
-                codeDark="red.300"
+                code={SEMANTIC_COLOR_VARIANTS.semantic.fg.error.light}
+                codeDark={
+                  SEMANTIC_COLOR_VARIANTS.semantic.fg.error.dark
+                }
                 variant="foreground"
               />
             </div>
@@ -246,26 +347,38 @@ export const Color: FC = () => {
             <div className="flex flex-col gap-5">
               <ColorInfo
                 name="info"
-                code="blue.100"
-                codeDark="blue.900"
+                code={SEMANTIC_COLOR_VARIANTS.semantic.bg.info.light}
+                codeDark={
+                  SEMANTIC_COLOR_VARIANTS.semantic.bg.info.dark
+                }
                 variant="background"
               />
               <ColorInfo
                 name="success"
-                code="green.100"
-                codeDark="green.900"
+                code={
+                  SEMANTIC_COLOR_VARIANTS.semantic.bg.success.light
+                }
+                codeDark={
+                  SEMANTIC_COLOR_VARIANTS.semantic.bg.success.dark
+                }
                 variant="background"
               />
               <ColorInfo
                 name="warning"
-                code="yellow.100"
-                codeDark="yellow.900"
+                code={
+                  SEMANTIC_COLOR_VARIANTS.semantic.bg.warning.light
+                }
+                codeDark={
+                  SEMANTIC_COLOR_VARIANTS.semantic.bg.warning.dark
+                }
                 variant="background"
               />
               <ColorInfo
                 name="error"
-                code="red.100"
-                codeDark="red.900"
+                code={SEMANTIC_COLOR_VARIANTS.semantic.bg.error.light}
+                codeDark={
+                  SEMANTIC_COLOR_VARIANTS.semantic.bg.error.dark
+                }
                 variant="background"
               />
             </div>
@@ -275,26 +388,44 @@ export const Color: FC = () => {
             <div className="flex flex-col gap-5">
               <ColorInfo
                 name="info"
-                code="blue.500"
-                codeDark="blue.400"
+                code={
+                  SEMANTIC_COLOR_VARIANTS.semantic.border.info.light
+                }
+                codeDark={
+                  SEMANTIC_COLOR_VARIANTS.semantic.border.info.dark
+                }
                 variant="border"
               />
               <ColorInfo
                 name="success"
-                code="green.500"
-                codeDark="green.400"
+                code={
+                  SEMANTIC_COLOR_VARIANTS.semantic.border.success
+                    .light
+                }
+                codeDark={
+                  SEMANTIC_COLOR_VARIANTS.semantic.border.success.dark
+                }
                 variant="border"
               />
               <ColorInfo
                 name="warning"
-                code="yellow.500"
-                codeDark="yellow.400"
+                code={
+                  SEMANTIC_COLOR_VARIANTS.semantic.border.warning
+                    .light
+                }
+                codeDark={
+                  SEMANTIC_COLOR_VARIANTS.semantic.border.warning.dark
+                }
                 variant="border"
               />
               <ColorInfo
                 name="error"
-                code="red.500"
-                codeDark="red.400"
+                code={
+                  SEMANTIC_COLOR_VARIANTS.semantic.border.error.light
+                }
+                codeDark={
+                  SEMANTIC_COLOR_VARIANTS.semantic.border.error.dark
+                }
                 variant="border"
               />
             </div>

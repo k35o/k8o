@@ -219,8 +219,8 @@ export const SEMANTIC_COLOR_VARIANTS = {
         dark: 'teal.300',
       },
       bg: {
-        light: 'teal.600',
-        dark: 'teal.600',
+        light: 'teal.400',
+        dark: 'teal.700',
       },
       bgSubtle: {
         light: 'teal.100',
@@ -245,8 +245,8 @@ export const SEMANTIC_COLOR_VARIANTS = {
         dark: 'cyan.300',
       },
       bg: {
-        light: 'cyan.600',
-        dark: 'cyan.600',
+        light: 'cyan.400',
+        dark: 'cyan.700',
       },
       bgSubtle: {
         light: 'cyan.100',
@@ -269,19 +269,19 @@ export const SEMANTIC_COLOR_VARIANTS = {
   semantic: {
     fg: {
       info: {
-        light: 'blue.600',
+        light: 'blue.700',
         dark: 'blue.300',
       },
       success: {
-        light: 'green.600',
+        light: 'green.700',
         dark: 'green.300',
       },
       warning: {
-        light: 'yellow.600',
+        light: 'yellow.700',
         dark: 'yellow.300',
       },
       error: {
-        light: 'red.600',
+        light: 'red.700',
         dark: 'red.300',
       },
     },
