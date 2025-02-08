@@ -6,12 +6,7 @@ import {
   Stage,
 } from '@/app/design-system/_utils/color';
 import { FC, useId, useState } from 'react';
-import {
-  ChevronDown,
-  ChevronUp,
-  Contrast,
-  PaintBucket,
-} from 'lucide-react';
+import { ChevronDown, Contrast, PaintBucket } from 'lucide-react';
 import { cn } from '@/utils/cn';
 import {
   hexToHsl,
@@ -20,6 +15,7 @@ import {
 import { toPrecision } from '@/utils/number/to-precision';
 import { ColorContrastFg } from './color-contrast-fg';
 import { ColorContrastBg } from './color-contrast-bg';
+import * as motion from 'motion/react-client';
 
 export const ColorInfo: FC<{
   name: string;
@@ -37,11 +33,16 @@ export const ColorInfo: FC<{
   const hslDark = hexToHsl(colorCodeDark.slice(1));
 
   return (
-    <div
+    <motion.div
       className={cn(
-        'border-border-base flex flex-col gap-2 rounded-lg border',
+        'border-border-base flex flex-col rounded-lg border',
         isOpen && 'col-span-full',
       )}
+      transition={{
+        default: { ease: 'spring' },
+        layout: { duration: 0.3 },
+      }}
+      layout
     >
       <button
         aria-expanded={isOpen}
@@ -78,76 +79,85 @@ export const ColorInfo: FC<{
           </div>
           <p className="text-xl font-bold">{name}</p>
         </div>
-        {isOpen ? (
-          <ChevronUp className="size-6" />
-        ) : (
+        <motion.span
+          animate={isOpen ? { rotate: 180 } : { rotate: 0 }}
+          transition={{ duration: 0.3 }}
+        >
           <ChevronDown className="size-6" />
-        )}
+        </motion.span>
       </button>
-      <div
+      <motion.div
         id={`${id}-panel`}
         role="region"
         aria-labelledby={`${id}-button`}
         hidden={!isOpen}
-        className={cn('flex flex-col gap-4 p-4 pt-0', {
-          hidden: !open,
-        })}
+        className={isOpen ? undefined : 'hidden'}
+        animate={{
+          opacity: isOpen ? 1 : 0,
+          height: isOpen ? 'auto' : 0,
+          transition: {
+            duration: 0.5,
+            delay: 0.3,
+          },
+        }}
       >
-        <section className="flex flex-col gap-2">
-          <p className="flex items-center text-lg font-bold">
-            <PaintBucket />
-            色の情報（light&nbsp;/&nbsp;dark）
-          </p>
-          <p className="font-bold">
-            基本色:&nbsp;
-            <span className="text-lg font-normal">
-              {code}&nbsp;/&nbsp;{codeDark}
-            </span>
-          </p>
-          <p className="font-bold">
-            HEX:&nbsp;
-            <span className="text-lg font-normal">
-              {colorCode}&nbsp;/&nbsp;{colorCodeDark}
-            </span>
-          </p>
-          <p className="font-bold">
-            RGB:&nbsp;
-            <span className="text-lg font-normal">
-              {`${rgb.r.toString()}, ${rgb.g.toString()}, ${rgb.b.toString()}`}
-              &nbsp;/&nbsp;
-              {`${rgbDark.r.toString()}, ${rgbDark.g.toString()}, ${rgbDark.b.toString()}`}
-            </span>
-          </p>
-          <p className="font-bold">
-            HSL:&nbsp;
-            <span className="text-lg font-normal">
-              {`${toPrecision(hsl.h, 0).toString()}, ${toPrecision(hsl.s, 0).toString()}, ${toPrecision(hsl.l, 0).toString()}`}
-              &nbsp;/&nbsp;
-              {`${toPrecision(hslDark.h, 0).toString()}, ${toPrecision(hslDark.s, 0).toString()}, ${toPrecision(hslDark.l, 0).toString()}`}
-            </span>
-          </p>
-        </section>
-        {(variant === 'foreground' || variant === 'background') && (
+        <div className="flex flex-col gap-4 p-4 pt-2">
           <section className="flex flex-col gap-2">
             <p className="flex items-center text-lg font-bold">
-              <Contrast />
-              色のコントラスト
+              <PaintBucket />
+              色の情報（light&nbsp;/&nbsp;dark）
             </p>
-            {variant === 'foreground' && (
-              <ColorContrastFg
-                colorCode={colorCode}
-                colorCodeDark={colorCodeDark}
-              />
-            )}
-            {variant === 'background' && (
-              <ColorContrastBg
-                colorCode={colorCode}
-                colorCodeDark={colorCodeDark}
-              />
-            )}
+            <p className="font-bold">
+              基本色:&nbsp;
+              <span className="text-lg font-normal">
+                {code}&nbsp;/&nbsp;{codeDark}
+              </span>
+            </p>
+            <p className="font-bold">
+              HEX:&nbsp;
+              <span className="text-lg font-normal">
+                {colorCode}&nbsp;/&nbsp;{colorCodeDark}
+              </span>
+            </p>
+            <p className="font-bold">
+              RGB:&nbsp;
+              <span className="text-lg font-normal">
+                {`${rgb.r.toString()}, ${rgb.g.toString()}, ${rgb.b.toString()}`}
+                &nbsp;/&nbsp;
+                {`${rgbDark.r.toString()}, ${rgbDark.g.toString()}, ${rgbDark.b.toString()}`}
+              </span>
+            </p>
+            <p className="font-bold">
+              HSL:&nbsp;
+              <span className="text-lg font-normal">
+                {`${toPrecision(hsl.h, 0).toString()}, ${toPrecision(hsl.s, 0).toString()}, ${toPrecision(hsl.l, 0).toString()}`}
+                &nbsp;/&nbsp;
+                {`${toPrecision(hslDark.h, 0).toString()}, ${toPrecision(hslDark.s, 0).toString()}, ${toPrecision(hslDark.l, 0).toString()}`}
+              </span>
+            </p>
           </section>
-        )}
-      </div>
-    </div>
+          {(variant === 'foreground' || variant === 'background') && (
+            <section className="flex flex-col gap-2">
+              <p className="flex items-center text-lg font-bold">
+                <Contrast />
+                色のコントラスト
+              </p>
+              {variant === 'foreground' && (
+                <ColorContrastFg
+                  colorCode={colorCode}
+                  colorCodeDark={colorCodeDark}
+                />
+              )}
+              {variant === 'background' && (
+                <ColorContrastBg
+                  colorCode={colorCode}
+                  colorCodeDark={colorCodeDark}
+                />
+              )}
+            </section>
+          )}
+        </div>
+      </motion.div>
+    </motion.div>
   );
 };

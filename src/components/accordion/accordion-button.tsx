@@ -3,7 +3,8 @@
 import { FC, PropsWithChildren } from 'react';
 import { useItemId, useOpen, useToggleOpen } from './context';
 import { cn } from '@/utils/cn';
-import { ChevronDown, ChevronUp } from 'lucide-react';
+import { ChevronDown } from 'lucide-react';
+import * as motion from 'motion/react-client';
 
 export const AccordionButton: FC<PropsWithChildren> = ({
   children,
@@ -26,11 +27,12 @@ export const AccordionButton: FC<PropsWithChildren> = ({
       onClick={toggleOpen}
     >
       {children}
-      {open ? (
-        <ChevronUp className="size-4 shrink-0" />
-      ) : (
-        <ChevronDown className="size-4 shrink-0" />
-      )}
+      <motion.span
+        animate={open ? { rotate: 180 } : { rotate: 0 }}
+        transition={{ duration: 0.3 }}
+      >
+        <ChevronDown className="size-6" />
+      </motion.span>
     </button>
   );
 };
