@@ -82,4 +82,4 @@ pnpm run type-check
 
 ### animation
 
-[FramerMotion](https://www.framer.com/motion/)
+[motion](https://motion.dev)
