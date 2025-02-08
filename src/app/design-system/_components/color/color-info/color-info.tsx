@@ -1,17 +1,25 @@
+'use client';
+
 import {
   Color,
-  COLOR_VARIANTS,
-  SEMANTIC_COLOR_VARIANTS,
+  getColorCode,
   Stage,
 } from '@/app/design-system/_utils/color';
-import { FC } from 'react';
-import { ColorUnit } from './color-unit';
-
-const getColorCode = (code: `${Color}.${Stage}` | 'white') => {
-  if (code === 'white') return COLOR_VARIANTS.white;
-  const [color, stage] = code.split('.') as [Color, Stage];
-  return COLOR_VARIANTS[color][stage];
-};
+import { FC, useId, useState } from 'react';
+import {
+  ChevronDown,
+  ChevronUp,
+  Contrast,
+  PaintBucket,
+} from 'lucide-react';
+import { cn } from '@/utils/cn';
+import {
+  hexToHsl,
+  hexToRgb,
+} from '@/app/color-converter/_utils/color-converter';
+import { toPrecision } from '@/utils/number/to-precision';
+import { ColorContrastFg } from './color-contrast-fg';
+import { ColorContrastBg } from './color-contrast-bg';
 
 export const ColorInfo: FC<{
   name: string;
@@ -19,197 +27,127 @@ export const ColorInfo: FC<{
   codeDark: `${Color}.${Stage}` | 'white';
   variant: 'background' | 'border' | 'foreground';
 }> = ({ name, code, codeDark, variant }) => {
+  const id = useId();
+  const [isOpen, setIsOpen] = useState(false);
   const colorCode = getColorCode(code);
   const colorCodeDark = getColorCode(codeDark);
+  const rgb = hexToRgb(colorCode.slice(1));
+  const rgbDark = hexToRgb(colorCodeDark.slice(1));
+  const hsl = hexToHsl(colorCode.slice(1));
+  const hslDark = hexToHsl(colorCodeDark.slice(1));
 
   return (
-    <div className="relative flex flex-wrap items-center gap-2 rounded-lg border p-4">
-      <p className="bg-bg-base absolute top-0 left-0 -translate-y-3 translate-x-2 px-1 font-bold">
-        {name}
-        <span className="font-normal">
-          （{code}&nbsp;/&nbsp;{codeDark}）
-        </span>
-      </p>
-      {variant === 'foreground' && (
-        <>
-          <ColorUnit
-            colorCode={colorCode}
-            colorCodeDark={colorCodeDark}
-            contrastName="bg-base"
-            contrastCode={getColorCode(
-              SEMANTIC_COLOR_VARIANTS.base.bg.base.light,
-            )}
-            contrastCodeDark={getColorCode(
-              SEMANTIC_COLOR_VARIANTS.base.bg.base.dark,
-            )}
-            variant="foreground"
-          />
-          <ColorUnit
-            colorCode={colorCode}
-            colorCodeDark={colorCodeDark}
-            contrastName="bg-subtle"
-            contrastCode={getColorCode(
-              SEMANTIC_COLOR_VARIANTS.base.bg.subtle.light,
-            )}
-            contrastCodeDark={getColorCode(
-              SEMANTIC_COLOR_VARIANTS.base.bg.subtle.dark,
-            )}
-            variant="foreground"
-          />
-          <ColorUnit
-            colorCode={colorCode}
-            colorCodeDark={colorCodeDark}
-            contrastName="bg-mute"
-            contrastCode={getColorCode(
-              SEMANTIC_COLOR_VARIANTS.base.bg.mute.light,
-            )}
-            contrastCodeDark={getColorCode(
-              SEMANTIC_COLOR_VARIANTS.base.bg.mute.dark,
-            )}
-            variant="foreground"
-          />
-          <ColorUnit
-            colorCode={colorCode}
-            colorCodeDark={colorCodeDark}
-            contrastName="bg-emphasize"
-            contrastCode={getColorCode(
-              SEMANTIC_COLOR_VARIANTS.base.bg.emphasize.light,
-            )}
-            contrastCodeDark={getColorCode(
-              SEMANTIC_COLOR_VARIANTS.base.bg.emphasize.dark,
-            )}
-            variant="foreground"
-          />
-          <ColorUnit
-            colorCode={colorCode}
-            colorCodeDark={colorCodeDark}
-            contrastName="bg-inverse"
-            contrastCode={getColorCode(
-              SEMANTIC_COLOR_VARIANTS.base.bg.inverse.light,
-            )}
-            contrastCodeDark={getColorCode(
-              SEMANTIC_COLOR_VARIANTS.base.bg.inverse.dark,
-            )}
-            variant="foreground"
-          />
-        </>
+    <div
+      className={cn(
+        'border-border-base flex flex-col gap-2 rounded-lg border',
+        isOpen && 'col-span-full',
       )}
-      {variant === 'background' && (
-        <>
-          <ColorUnit
-            colorCode={colorCode}
-            colorCodeDark={colorCodeDark}
-            contrastName="fg-base"
-            contrastCode={getColorCode(
-              SEMANTIC_COLOR_VARIANTS.base.fg.base.light,
+    >
+      <button
+        aria-expanded={isOpen}
+        aria-controls={`${id}-panel`}
+        aria-label={
+          isOpen
+            ? `${name}の詳細情報を非表示にする`
+            : `${name}の詳細情報を表示する`
+        }
+        id={`${id}-button`}
+        className={cn(
+          'flex items-center justify-between gap-4 p-4',
+          'hover:bg-bg-mute rounded-lg',
+          'focus-visible::first:ring-border-info focus-visible:bg-bg-mute',
+        )}
+        onClick={() => {
+          setIsOpen((prev) => !prev);
+        }}
+      >
+        <div className="flex items-center gap-4">
+          <div className="border-border-base flex rounded-full border">
+            <div
+              className="h-12 w-6 rounded-l-full"
+              style={{
+                backgroundColor: colorCode,
+              }}
+            />
+            <div
+              className="h-12 w-6 rounded-r-full"
+              style={{
+                backgroundColor: colorCodeDark,
+              }}
+            />
+          </div>
+          <p className="text-xl font-bold">{name}</p>
+        </div>
+        {isOpen ? (
+          <ChevronUp className="size-6" />
+        ) : (
+          <ChevronDown className="size-6" />
+        )}
+      </button>
+      <div
+        id={`${id}-panel`}
+        role="region"
+        aria-labelledby={`${id}-button`}
+        hidden={!isOpen}
+        className={cn('flex flex-col gap-4 p-4 pt-0', {
+          hidden: !open,
+        })}
+      >
+        <section className="flex flex-col gap-2">
+          <p className="flex items-center text-lg font-bold">
+            <PaintBucket />
+            色の情報（light&nbsp;/&nbsp;dark）
+          </p>
+          <p className="font-bold">
+            基本色:&nbsp;
+            <span className="text-lg font-normal">
+              {code}&nbsp;/&nbsp;{codeDark}
+            </span>
+          </p>
+          <p className="font-bold">
+            HEX:&nbsp;
+            <span className="text-lg font-normal">
+              {colorCode}&nbsp;/&nbsp;{colorCodeDark}
+            </span>
+          </p>
+          <p className="font-bold">
+            RGB:&nbsp;
+            <span className="text-lg font-normal">
+              {`${rgb.r.toString()}, ${rgb.g.toString()}, ${rgb.b.toString()}`}
+              &nbsp;/&nbsp;
+              {`${rgbDark.r.toString()}, ${rgbDark.g.toString()}, ${rgbDark.b.toString()}`}
+            </span>
+          </p>
+          <p className="font-bold">
+            HSL:&nbsp;
+            <span className="text-lg font-normal">
+              {`${toPrecision(hsl.h, 0).toString()}, ${toPrecision(hsl.s, 0).toString()}, ${toPrecision(hsl.l, 0).toString()}`}
+              &nbsp;/&nbsp;
+              {`${toPrecision(hslDark.h, 0).toString()}, ${toPrecision(hslDark.s, 0).toString()}, ${toPrecision(hslDark.l, 0).toString()}`}
+            </span>
+          </p>
+        </section>
+        {(variant === 'foreground' || variant === 'background') && (
+          <section className="flex flex-col gap-2">
+            <p className="flex items-center text-lg font-bold">
+              <Contrast />
+              色のコントラスト
+            </p>
+            {variant === 'foreground' && (
+              <ColorContrastFg
+                colorCode={colorCode}
+                colorCodeDark={colorCodeDark}
+              />
             )}
-            contrastCodeDark={getColorCode(
-              SEMANTIC_COLOR_VARIANTS.base.fg.base.dark,
+            {variant === 'background' && (
+              <ColorContrastBg
+                colorCode={colorCode}
+                colorCodeDark={colorCodeDark}
+              />
             )}
-            variant="background"
-          />
-          <ColorUnit
-            colorCode={colorCode}
-            colorCodeDark={colorCodeDark}
-            contrastName="fg-subtle"
-            contrastCode={getColorCode(
-              SEMANTIC_COLOR_VARIANTS.base.fg.subtle.light,
-            )}
-            contrastCodeDark={getColorCode(
-              SEMANTIC_COLOR_VARIANTS.base.fg.subtle.dark,
-            )}
-            variant="background"
-          />
-          <ColorUnit
-            colorCode={colorCode}
-            colorCodeDark={colorCodeDark}
-            contrastName="fg-mute"
-            contrastCode={getColorCode(
-              SEMANTIC_COLOR_VARIANTS.base.fg.mute.light,
-            )}
-            contrastCodeDark={getColorCode(
-              SEMANTIC_COLOR_VARIANTS.base.fg.mute.dark,
-            )}
-            variant="background"
-          />
-          <ColorUnit
-            colorCode={colorCode}
-            colorCodeDark={colorCodeDark}
-            contrastName="fg-inverse"
-            contrastCode={getColorCode(
-              SEMANTIC_COLOR_VARIANTS.base.fg.inverse.light,
-            )}
-            contrastCodeDark={getColorCode(
-              SEMANTIC_COLOR_VARIANTS.base.fg.inverse.dark,
-            )}
-            variant="background"
-          />
-        </>
-      )}
-      {variant === 'border' && (
-        <>
-          <ColorUnit
-            colorCode={colorCode}
-            colorCodeDark={colorCodeDark}
-            contrastName="bg-base"
-            contrastCode={getColorCode(
-              SEMANTIC_COLOR_VARIANTS.base.bg.base.light,
-            )}
-            contrastCodeDark={getColorCode(
-              SEMANTIC_COLOR_VARIANTS.base.bg.base.dark,
-            )}
-            variant="border"
-          />
-          <ColorUnit
-            colorCode={colorCode}
-            colorCodeDark={colorCodeDark}
-            contrastName="bg-subtle"
-            contrastCode={getColorCode(
-              SEMANTIC_COLOR_VARIANTS.base.bg.subtle.light,
-            )}
-            contrastCodeDark={getColorCode(
-              SEMANTIC_COLOR_VARIANTS.base.bg.subtle.dark,
-            )}
-            variant="border"
-          />
-          <ColorUnit
-            colorCode={colorCode}
-            colorCodeDark={colorCodeDark}
-            contrastName="bg-mute"
-            contrastCode={getColorCode(
-              SEMANTIC_COLOR_VARIANTS.base.bg.mute.light,
-            )}
-            contrastCodeDark={getColorCode(
-              SEMANTIC_COLOR_VARIANTS.base.bg.mute.dark,
-            )}
-            variant="border"
-          />
-          <ColorUnit
-            colorCode={colorCode}
-            colorCodeDark={colorCodeDark}
-            contrastName="bg-emphasize"
-            contrastCode={getColorCode(
-              SEMANTIC_COLOR_VARIANTS.base.bg.emphasize.light,
-            )}
-            contrastCodeDark={getColorCode(
-              SEMANTIC_COLOR_VARIANTS.base.bg.emphasize.dark,
-            )}
-            variant="border"
-          />
-          <ColorUnit
-            colorCode={colorCode}
-            colorCodeDark={colorCodeDark}
-            contrastName="bg-inverse"
-            contrastCode={getColorCode(
-              SEMANTIC_COLOR_VARIANTS.base.bg.inverse.light,
-            )}
-            contrastCodeDark={getColorCode(
-              SEMANTIC_COLOR_VARIANTS.base.bg.inverse.dark,
-            )}
-            variant="border"
-          />
-        </>
-      )}
+          </section>
+        )}
+      </div>
     </div>
   );
 };

@@ -3,7 +3,7 @@ import { calcContrast } from '@/utils/color/calc_contrast';
 import { FC } from 'react';
 import { cn } from '@/utils/cn';
 
-export const ColorUnit: FC<{
+export const ColorContrastUnit: FC<{
   colorCode: string;
   colorCodeDark: string;
   contrastName: string;
@@ -28,7 +28,7 @@ export const ColorUnit: FC<{
   );
 
   return (
-    <div className="flex w-32 flex-col items-center gap-2">
+    <div className="flex w-44 flex-col items-center gap-2">
       <p>{contrastName}</p>
       <div className="flex items-center gap-3">
         <div className="flex flex-col items-center gap-1">

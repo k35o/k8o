@@ -20,7 +20,7 @@ export const Color: FC = () => {
         <div className="flex flex-col gap-6 p-2">
           <div className="flex flex-col gap-3">
             <Heading type="h4">Foreground Color</Heading>
-            <div className="flex flex-col gap-5">
+            <div className="grid-cols-auto-fill-70 grid gap-5">
               <ColorInfo
                 name="base"
                 code={SEMANTIC_COLOR_VARIANTS.base.fg.base.light}
@@ -51,7 +51,7 @@ export const Color: FC = () => {
           </div>
           <div className="flex flex-col gap-3">
             <Heading type="h4">Background Color</Heading>
-            <div className="flex flex-col gap-5">
+            <div className="grid-cols-auto-fill-70 grid gap-5">
               <ColorInfo
                 name="base"
                 code={SEMANTIC_COLOR_VARIANTS.base.bg.base.light}
@@ -90,7 +90,7 @@ export const Color: FC = () => {
           </div>
           <div className="flex flex-col gap-3">
             <Heading type="h4">Border Color</Heading>
-            <div className="flex flex-col gap-5">
+            <div className="grid-cols-auto-fill-70 grid gap-5">
               <ColorInfo
                 name="base"
                 code={SEMANTIC_COLOR_VARIANTS.base.border.base.light}
@@ -149,7 +149,7 @@ export const Color: FC = () => {
         <div className="flex flex-col gap-6 p-2">
           <div className="flex flex-col gap-4">
             <Heading type="h4">Primary</Heading>
-            <div className="flex flex-col gap-5">
+            <div className="grid-cols-auto-fill-70 grid gap-5">
               <ColorInfo
                 name="fg"
                 code={
@@ -222,7 +222,7 @@ export const Color: FC = () => {
           </div>
           <div className="flex flex-col gap-4">
             <Heading type="h4">Secondary</Heading>
-            <div className="flex flex-col gap-5">
+            <div className="grid-cols-auto-fill-70 grid gap-5">
               <ColorInfo
                 name="fg"
                 code={
@@ -303,7 +303,7 @@ export const Color: FC = () => {
         <div className="flex flex-col gap-3 p-2">
           <div className="flex flex-col gap-3">
             <Heading type="h4">Foreground Color</Heading>
-            <div className="flex flex-col gap-5">
+            <div className="grid-cols-auto-fill-70 grid gap-5">
               <ColorInfo
                 name="info"
                 code={SEMANTIC_COLOR_VARIANTS.semantic.fg.info.light}
@@ -344,7 +344,7 @@ export const Color: FC = () => {
           </div>
           <div className="flex flex-col justify-between gap-3">
             <Heading type="h4">Background Color</Heading>
-            <div className="flex flex-col gap-5">
+            <div className="grid-cols-auto-fill-70 grid gap-5">
               <ColorInfo
                 name="info"
                 code={SEMANTIC_COLOR_VARIANTS.semantic.bg.info.light}
@@ -385,7 +385,7 @@ export const Color: FC = () => {
           </div>
           <div className="flex flex-col justify-between gap-3">
             <Heading type="h4">Border Color</Heading>
-            <div className="flex flex-col gap-5">
+            <div className="grid-cols-auto-fill-70 grid gap-5">
               <ColorInfo
                 name="info"
                 code={
@@ -446,7 +446,7 @@ export const Color: FC = () => {
               >
                 <Heading type="h4">{value[0]}</Heading>
                 {typeof value[1] === 'string' ? (
-                  <div className="dark flex flex-col items-center gap-1">
+                  <div className="flex flex-col items-center gap-1">
                     <div
                       className="border-border-base flex h-12 w-24 items-center justify-center rounded-4xl border"
                       style={{

@@ -17,9 +17,11 @@ import {
   CircleCheck,
   ClipboardPenLine,
   Clock,
+  Contrast,
   Info,
   Link,
   ListMinus,
+  PaintBucket,
   Table2,
   TriangleAlert,
   X,
@@ -111,6 +113,14 @@ export const Primary: Story = {
         <div className="flex flex-col items-center justify-center">
           <Bell className="size-24" />
           <p className="text-center">お知らせ</p>
+        </div>
+        <div className="flex flex-col items-center justify-center">
+          <PaintBucket className="size-24" />
+          <p className="text-center">色についての情報</p>
+        </div>
+        <div className="flex flex-col items-center justify-center">
+          <Contrast className="size-24" />
+          <p className="text-center">コントラスト</p>
         </div>
       </div>
     );

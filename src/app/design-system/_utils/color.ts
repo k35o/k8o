@@ -323,3 +323,9 @@ export const SEMANTIC_COLOR_VARIANTS = {
     },
   },
 } as const;
+
+export const getColorCode = (code: `${Color}.${Stage}` | 'white') => {
+  if (code === 'white') return COLOR_VARIANTS.white;
+  const [color, stage] = code.split('.') as [Color, Stage];
+  return COLOR_VARIANTS[color][stage];
+};
