@@ -24,7 +24,7 @@ export default function Layout({ children }: PropsWithChildren) {
     <div className="flex h-full flex-col gap-4">
       <div className="font-noto-sans-jp" />
       <Heading type="h3">うおへんクイズ</Heading>
-      <section className="bg-bg-base/85 h-full rounded-lg p-10">
+      <section className="bg-bg-base h-full rounded-lg p-10">
         {children}
       </section>
     </div>

@@ -27,7 +27,7 @@ export const Start: FC = () => {
   }, []);
 
   return (
-    <section className="bg-bg-base/85 flex h-full flex-col gap-12 rounded-lg p-10">
+    <section className="grid gap-12 py-10">
       <div className="flex flex-col gap-4">
         <fieldset role="group" className="flex w-full flex-col gap-2">
           <p className="text-md text-fg-base font-bold">種類</p>
