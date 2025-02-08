@@ -133,8 +133,8 @@ export const Color: FC = () => {
               />
               <ColorInfo
                 name="bg"
-                code="teal.600"
-                codeDark="teal.600"
+                code="teal.400"
+                codeDark="teal.700"
                 variant="background"
               />
               <ColorInfo
@@ -174,8 +174,8 @@ export const Color: FC = () => {
               />
               <ColorInfo
                 name="bg"
-                code="cyan.600"
-                codeDark="cyan.600"
+                code="cyan.400"
+                codeDark="cyan.700"
                 variant="background"
               />
               <ColorInfo
@@ -217,25 +217,25 @@ export const Color: FC = () => {
             <div className="flex flex-col gap-5">
               <ColorInfo
                 name="info"
-                code="blue.600"
+                code="blue.700"
                 codeDark="blue.300"
                 variant="foreground"
               />
               <ColorInfo
                 name="success"
-                code="green.600"
+                code="green.700"
                 codeDark="green.300"
                 variant="foreground"
               />
               <ColorInfo
                 name="warning"
-                code="yellow.600"
+                code="yellow.700"
                 codeDark="yellow.300"
                 variant="foreground"
               />
               <ColorInfo
                 name="error"
-                code="red.600"
+                code="red.700"
                 codeDark="red.300"
                 variant="foreground"
               />
