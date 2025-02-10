@@ -21,7 +21,7 @@ export const IconLink: FC<IconLinkProps> = ({
     <Link
       className={cn(
         'hover:bg-bg-subtle focus-visible:ring-border-info active:bg-bg-emphasize block rounded-full focus-visible:ring-2',
-        bg === 'base' && 'bg-bg-base/55',
+        bg === 'base' && 'bg-bg-base/90',
         bg === 'transparent' && 'bgtransparent',
         size === 'sm' && 'p-1',
         size === 'md' && 'p-2',
@@ -36,7 +36,7 @@ export const IconLink: FC<IconLinkProps> = ({
     <a
       className={cn(
         'hover:bg-bg-subtle focus-visible:ring-border-info active:bg-bg-emphasize block rounded-full focus-visible:ring-2',
-        bg === 'base' && 'bg-bg-base/55',
+        bg === 'base' && 'bg-bg-base/90',
         bg === 'transparent' && 'bgtransparent',
         size === 'sm' && 'p-1',
         size === 'md' && 'p-2',

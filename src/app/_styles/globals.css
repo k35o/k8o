@@ -167,7 +167,7 @@ body:has(dialog[open]) {
   --fg-base: var(--gray-50);
   --fg-subtle: var(--gray-500);
   --fg-mute: var(--gray-300);
-  --fg-inverse: var(--gray-50);
+  --fg-inverse: var(--gray-900);
   --fg-info: var(--blue-300);
   --fg-success: var(--green-300);
   --fg-warning: var(--yellow-300);
@@ -303,14 +303,18 @@ body:has(dialog[open]) {
 }
 
 .app-background {
-  background-color: #50e2d2;
-  background-image: linear-gradient(62deg, #50e2d2 0%, #0ea5e9 100%);
+  background-color: var(--teal-100);
+  background-image: linear-gradient(
+    62deg,
+    var(--teal-100) 0%,
+    var(--cyan-100) 100%
+  );
   .dark & {
-    background-color: #082f49;
+    background-color: var(--teal-900);
     background-image: linear-gradient(
       62deg,
-      #082f49 0%,
-      #164e63 100%
+      var(--teal-900) 0%,
+      var(--cyan-900) 100%
     );
   }
 }
