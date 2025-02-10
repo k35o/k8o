@@ -1,4 +1,4 @@
-name: Create/Delete Branch for Pull Request
+name: Create/Delete Neon Branch for Pull Request
 
 on:
   pull_request:
@@ -34,50 +34,43 @@ jobs:
       || github.event.action == 'opened'
       || github.event.action == 'reopened')
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write
     steps:
       - name: Create Neon Branch
         id: create_neon_branch
         uses: neondatabase/create-branch-action@v5
         with:
           project_id: ${{ vars.NEON_PROJECT_ID }}
+          username: default
+          database: verceldb
           branch_name: preview/pr-${{ github.event.number }}-${{ needs.setup.outputs.branch }}
           api_key: ${{ secrets.NEON_API_KEY }}
 
-  # The step above creates a new Neon branch.
-  # You may want to do something with the new branch, such as run migrations, run tests
-  # on it, or send the connection details to a hosting platform environment.
-  # The branch DATABASE_URL is available to you via:
-  # "${{ steps.create_neon_branch.outputs.db_url_with_pooler }}".
-  # It's important you don't log the DATABASE_URL as output as it contains a username and
-  # password for your database.
-  # For example, you can uncomment the lines below to run a database migration command:
-  #      - name: Run Migrations
-  #        run: npm run db:migrate
-  #        env:
-  #          # to use pooled connection
-  #          DATABASE_URL: "${{ steps.create_neon_branch.outputs.db_url_with_pooler }}"
-  #          # OR to use unpooled connection
-  #          # DATABASE_URL: "${{ steps.create_neon_branch.outputs.db_url }}"
+      - name: Checkout branch
+        uses: actions/checkout@v4
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: 'package.json'
+          cache: 'pnpm'
+      - name: Install dependencies
+        run: pnpm install
+      - name: Run Migrations
+        run: pnpm run generate && pnpm run migrate
+        env:
+          POSTGRES_URL: '${{ steps.create_neon_branch.outputs.db_url_with_pooler }}'
 
-  # Following the step above, which runs database migrations, you may want to check
-  # for schema changes in your database. We recommend using the following action to
-  # post a comment to your pull request with the schema diff. For this action to work,
-  # you also need to give permissions to the workflow job to be able to post comments
-  # and read your repository contents. Add the following permissions to the workflow job:
-  #
-  # permissions:
-  #   contents: read
-  #   pull-requests: write
-  #
-  # You can also check out https://github.com/neondatabase/schema-diff-action for more
-  # information on how to use the schema diff action.
-  # You can uncomment the lines below to enable the schema diff action.
-  #      - name: Post Schema Diff Comment to PR
-  #        uses: neondatabase/schema-diff-action@v1
-  #        with:
-  #          project_id: ${{ vars.NEON_PROJECT_ID }}
-  #          compare_branch: preview/pr-${{ github.event.number }}-${{ needs.setup.outputs.branch }}
-  #          api_key: ${{ secrets.NEON_API_KEY }}
+      - name: Post Schema Diff Comment to PR
+        uses: neondatabase/schema-diff-action@v1
+        with:
+          project_id: ${{ vars.NEON_PROJECT_ID }}
+          compare_branch: preview/pr-${{ github.event.number }}-${{ needs.setup.outputs.branch }}
+          api_key: ${{ secrets.NEON_API_KEY }}
+          database: verceldb
 
   delete_neon_branch:
     name: Delete Neon Branch
