@@ -10,8 +10,7 @@ import {
 
 export const Color: FC = () => {
   return (
-    <section className="text-fg-base flex flex-col gap-4">
-      <Heading type="h2">Color Token</Heading>
+    <section className="flex flex-col gap-4">
       <div className="bg-bg-base flex flex-col justify-between gap-1 rounded-xl p-3">
         <Heading type="h3">Neutral Color</Heading>
         <p className="text-fg-mute text-sm">
@@ -470,8 +469,8 @@ export const Color: FC = () => {
                                 color[1],
                                 COLOR_VARIANTS.white,
                               ) < 4.5
-                                ? 'text-fg-base'
-                                : 'text-fg-inverse',
+                                ? 'text-fg-base dark:text-fg-inverse'
+                                : 'text-fg-inverse dark:text-fg-base',
                             )}
                             style={{
                               backgroundColor: color[1],
