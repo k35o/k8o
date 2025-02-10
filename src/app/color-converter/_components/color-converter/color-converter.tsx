@@ -38,7 +38,7 @@ type BaseColor =
 export const ColorConverter = () => {
   const [baseColor, setBaseColor] = useState<BaseColor>({
     type: 'hex',
-    value: '50e2d2',
+    value: '5eead4',
   });
   const hex = useMemo(() => {
     if (baseColor.type === 'hex') {

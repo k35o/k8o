@@ -32,13 +32,13 @@ export const Button: FC<
       className={cn(
         'rounded-xl text-center font-bold',
         {
-          ['bg-primary-bg text-fg-inverse hover:bg-primary-bg/90 active:bg-primary-bg/80']:
+          ['bg-primary-bg text-fg hover:bg-primary-bg/90 active:bg-primary-bg/80']:
             variant === 'contained' && color === 'primary',
           ['bg-bg-base text-fg-base hover:bg-bg-subtle active:bg-bg-emphasize']:
             variant === 'contained' && color === 'gray',
           ['hover:bg-primary-bg active:bg-primary-bg cursor-not-allowed opacity-35']:
             disabled && variant === 'contained',
-          ['border-primary-bg bg-bg-base text-primary-bg hover:bg-bg-subtle active:bg-bg-emphasize border-2']:
+          ['border-primary-border bg-bg-base text-primary-fg hover:bg-bg-subtle active:bg-bg-emphasize border-2']:
             variant === 'outlined' && color === 'primary',
           ['border-border-base bg-bg-base text-fg-base hover:bg-bg-subtle active:bg-bg-emphasize border-2']:
             variant === 'outlined' && color === 'gray',

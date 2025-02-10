@@ -10,8 +10,8 @@ export const InteractiveCard: FC<
     whileHover={{ scale: animation === 'medium' ? 1.05 : 1.02 }}
     whileTap={{ scale: animation === 'medium' ? 0.95 : 0.98 }}
     className={clsx(
-      'bg-bg-base/55 rounded-xl shadow-md',
-      variant === 'primary' && 'bg-bg-base/55',
+      'bg-bg-base/90 rounded-xl shadow-md',
+      variant === 'primary' && 'bg-bg-base/90',
       variant === 'secondary' && 'bg-bg-mute',
     )}
     tabIndex={-1}

@@ -21,7 +21,7 @@ export const IconButton: FC<Props> = ({
         'bgtransparent inline-flex rounded-full',
         'hover:bg-bg-subtle',
         'focus-visible:bordertransparent focus-visible:ring-border-info active:bg-bg-emphasize focus-visible:ring-2 focus-visible:outline-hidden',
-        bg === 'base' && 'bg-bg-base/55',
+        bg === 'base' && 'bg-bg-base/90',
         bg === 'transparent' && 'bgtransparent',
         size === 'sm' && 'p-1',
         size === 'md' && 'p-2',

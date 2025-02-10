@@ -25,18 +25,16 @@ export const Alert: FC<Props> = ({ status, message }) => {
         message.length > 1 ? (
           <ul className="ml-4 list-disc">
             {message.map((msg) => (
-              <li key={msg} className="dark:text-fg-inverse text-lg">
+              <li key={msg} className="text-lg">
                 {msg}
               </li>
             ))}
           </ul>
         ) : (
-          <p className="dark:text-fg-inverse text-lg">{message[0]}</p>
+          <p className="text-lg">{message[0]}</p>
         )
       ) : (
-        <p className="dark:text-fg-inverse text-lg font-bold">
-          {message}
-        </p>
+        <p className="text-lg font-bold">{message}</p>
       )}
     </div>
   );

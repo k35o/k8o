@@ -141,15 +141,15 @@ const Item: FC<{
     <button
       className={clsx(
         'group w-full px-2 py-1 text-left',
-        'hover:bg-primary-bg hover:text-fg-inverse',
-        'focus-visible:bordertransparent focus-visible:bg-primary-bg focus-visible:text-fg-inverse focus-visible:outline-hidden',
+        'hover:bg-primary-bg',
+        'focus-visible:bordertransparent focus-visible:bg-primary-bg focus-visible:outline-hidden',
         !selected && 'pl-9',
         selected && 'inline-flex items-center gap-1',
       )}
       {...props}
     >
       {selected && (
-        <Check className="text-fg-success group-hover:text-fg-inverse group-focus-visible:text-fg-inverse size-6" />
+        <Check className="text-fg-success group-hover:text-fg-base group-focus-visible:text-fg-base size-6" />
       )}
       {label}
     </button>

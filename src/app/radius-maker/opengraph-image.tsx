@@ -15,7 +15,7 @@ export default function OpenGraphImage() {
     (
       <div
         style={{
-          background: '#cbd5e1',
+          background: '#2dd4bf',
           width: '100%',
           height: '100%',
           display: 'flex',
