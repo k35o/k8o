@@ -118,9 +118,9 @@
   },
   "engines": {
     "node": "22.13.1",
-    "pnpm": "9.15.5"
+    "pnpm": "10.2.1"
   },
-  "packageManager": "pnpm@9.15.5",
+  "packageManager": "pnpm@10.2.1",
   "msw": {
     "workerDirectory": [
       ".storybook/public"
