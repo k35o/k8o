@@ -182,3 +182,12 @@ export const inquiry = pgTable(
   },
   (table) => [index().on(table.id)],
 );
+
+export const test = pgTable(
+  'test',
+  {
+    id: serial('id').primaryKey(),
+    name: text('name').notNull(),
+  },
+  (table) => [uniqueIndex().on(table.name)],
+);
