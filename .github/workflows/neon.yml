@@ -84,3 +84,24 @@ jobs:
           project_id: ${{ vars.NEON_PROJECT_ID }}
           branch: preview/pr-${{ github.event.number }}-${{ needs.setup.outputs.branch }}
           api_key: ${{ secrets.NEON_API_KEY }}
+      # local用の環境を作成したらこれをオンにして本番公開に備える
+      # - name: Checkout branch
+      #   if: github.event.pull_request.merged == true
+      #   uses: actions/checkout@v4
+      # - name: Setup pnpm
+      #   if: github.event.pull_request.merged == true
+      #   uses: pnpm/action-setup@v4
+      # - name: Setup Node.js
+      #   if: github.event.pull_request.merged == true
+      #   uses: actions/setup-node@v4
+      #   with:
+      #     node-version-file: 'package.json'
+      #     cache: 'pnpm'
+      # - name: Install dependencies
+      #   if: github.event.pull_request.merged == true
+      #   run: pnpm install
+      # - name: Apply migrations to production
+      #   if: github.event.pull_request.merged == true
+      #   run: pnpm run generate && pnpm run migrate
+      #   env:
+      #     POSTGRES_URL: '${{ secrets.POSTGRES_URL }}'
