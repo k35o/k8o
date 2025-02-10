@@ -16,7 +16,7 @@ export default function TwitterImage() {
       <div
         style={{
           alignItems: 'center',
-          background: '#cbd5e1',
+          background: '#2dd4bf',
           display: 'flex',
           fontSize: 192,
           flexDirection: 'column',

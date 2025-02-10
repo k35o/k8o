@@ -16,7 +16,7 @@ export const Valid: Story = {
     isInvalidAAContrstSmall: false,
     isInvalidAAAContrstSmall: false,
     compareColor: '#000000',
-    baseColor: '#cbd5e1',
+    baseColor: '#2dd4bf',
   },
 };
 
@@ -27,7 +27,7 @@ export const Invalid: Story = {
     isInvalidAAContrstSmall: true,
     isInvalidAAAContrstSmall: true,
     compareColor: '#000000',
-    baseColor: '#cbd5e1',
+    baseColor: '#2dd4bf',
   },
 };
 
@@ -38,6 +38,6 @@ export const ValidOnlyAA: Story = {
     isInvalidAAContrstSmall: false,
     isInvalidAAAContrstSmall: true,
     compareColor: '#000000',
-    baseColor: '#cbd5e1',
+    baseColor: '#2dd4bf',
   },
 };
