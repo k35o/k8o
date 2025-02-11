@@ -9,14 +9,7 @@ jobs:
       - name: Checkout branch
         uses: actions/checkout@v4
       - name: Setup pnpm
-        uses: pnpm/action-setup@v4
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version-file: 'package.json'
-          cache: 'pnpm'
-      - name: Install dependencies
-        run: pnpm install
+        uses: ./.github/actions/setup-pnpm
 
       - name: Run format
         run: pnpm run format:check
