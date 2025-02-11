@@ -68,6 +68,24 @@ pnpm run type-check
 
 ## composition
 
+### platform
+
+#### Application
+
+[Vercel](https://vercel.com/k35o/k8o)
+
+#### Database
+
+[Neon](https://console.neon.tech/app/projects/cool-king-69719941)
+
+#### KV
+
+[Upstash](https://console.upstash.com/vercel/kv/6ae3d043-1c14-4a5e-b4e2-18872bbd81bb)
+
+#### CMS
+
+[MicroCMS](https://k35o.microcms.io)
+
 ### framework
 
 [next.js](https://nextjs.org/)
