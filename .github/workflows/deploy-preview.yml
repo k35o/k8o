@@ -69,9 +69,12 @@ jobs:
       - create_neon_branch
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout branch
+        uses: actions/checkout@v4
       - name: Install Vercel CLI
         run: npm install --global vercel@latest
+      - name: Setup pnpm
+        uses: ./.github/actions/setup-pnpm
       - name: Pull Vercel Environment Information
         run: vercel pull --yes --environment=preview --token=${{ secrets.VERCEL_TOKEN }}
       - name: Build Project Artifacts
