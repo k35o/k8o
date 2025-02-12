@@ -62,16 +62,11 @@ jobs:
         env:
           POSTGRES_URL: '${{ steps.create_neon_branch.outputs.db_url_with_pooler }}'
 
-      - name: Post Schema Diff Comment to PR
-        uses: neondatabase/schema-diff-action@v1
-        with:
-          project_id: ${{ vars.NEON_PROJECT_ID }}
-          compare_branch: preview/pr-${{ github.event.number }}-${{ needs.setup.outputs.branch }}
-          api_key: ${{ secrets.NEON_API_KEY }}
-          database: verceldb
-
   deploy:
-    needs: create_neon_branch
+    name: Deploy To Vercel
+    needs:
+      - setup
+      - create_neon_branch
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -83,6 +78,21 @@ jobs:
         run: vercel build --token=${{ secrets.VERCEL_TOKEN }}
       - name: Deploy Project Artifacts to Vercel
         run: vercel deploy --prebuilt --token=${{ secrets.VERCEL_TOKEN }} --env POSTGRES_URL=${{ needs.create_neon_branch.outputs.db_url_with_pooler }}
+
+  comment_schema_diff:
+    name: Comment Schema Diff
+    needs:
+      - setup
+      - create_neon_branch
+    runs-on: ubuntu-latest
+    steps:
+      - name: Post Schema Diff Comment to PR
+        uses: neondatabase/schema-diff-action@v1
+        with:
+          project_id: ${{ vars.NEON_PROJECT_ID }}
+          compare_branch: preview/pr-${{ github.event.number }}-${{ needs.setup.outputs.branch }}
+          api_key: ${{ secrets.NEON_API_KEY }}
+          database: verceldb
 
   delete_neon_branch:
     name: Delete Neon Branch
