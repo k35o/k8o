@@ -34,6 +34,8 @@ jobs:
       || github.event.action == 'opened'
       || github.event.action == 'reopened')
     runs-on: ubuntu-latest
+    outputs:
+      preview_url: ${{ steps.deploy_project.outputs.preview_url }}
     steps:
       - name: Checkout branch
         uses: actions/checkout@v4
@@ -70,30 +72,87 @@ jobs:
         env:
           POSTGRES_URL: '${{ steps.create_neon_branch.outputs.db_url }}'
       - name: Deploy Project Artifacts to Vercel
-        run: vercel deploy --prebuilt --token=${{ secrets.VERCEL_TOKEN }} --env POSTGRES_URL=${{ steps.create_neon_branch.outputs.db_url }}
+        id: deploy_project
+        run: |
+          vercel deploy --prebuilt --token=${{ secrets.VERCEL_TOKEN }} --env POSTGRES_URL=${{ steps.create_neon_branch.outputs.db_url }} > preview-url.txt
+          echo "preview_url=$(cat preview-url.txt)" >> $GITHUB_OUTPUT
 
-  comment_schema_diff:
-    name: Comment Schema Diff
-    needs:
-      - setup
-      - deploy_preview
+  # 400が返ってくるのでコメントアウト
+  # comment_schema_diff:
+  #   name: Comment Schema Diff
+  #   continue-on-error: true
+  #   needs:
+  #     - setup
+  #     - deploy_preview
+  #   if: |
+  #     github.event_name == 'pull_request' && (
+  #     github.event.action == 'synchronize'
+  #     || github.event.action == 'opened'
+  #     || github.event.action == 'reopened')
+  #   runs-on: ubuntu-latest
+  #   permissions:
+  #     pull-requests: write
+  #   steps:
+  #     - name: Post Schema Diff Comment to PR
+  #       uses: neondatabase/schema-diff-action@v1
+  #       with:
+  #         project_id: ${{ vars.NEON_PROJECT_ID }}
+  #         compare_branch: preview/pr-${{ github.event.number }}-${{ needs.setup.outputs.branch }}
+  #         api_key: ${{ secrets.NEON_API_KEY }}
+  #         database: verceldb
+
+  comment_preview_url:
+    runs-on: ubuntu-latest
+    continue-on-error: true
+    needs: deploy_preview
     if: |
       github.event_name == 'pull_request' && (
       github.event.action == 'synchronize'
       || github.event.action == 'opened'
       || github.event.action == 'reopened')
-    runs-on: ubuntu-latest
     permissions:
-      contents: read
       pull-requests: write
     steps:
-      - name: Post Schema Diff Comment to PR
-        uses: neondatabase/schema-diff-action@v1
+      - name: Preview URL Comment to PR
+        env:
+          PREVIEW_URL: ${{needs.deploy_preview.outputs.preview_url}}
+        uses: actions/github-script@v6
+        id: my-script
         with:
-          project_id: ${{ vars.NEON_PROJECT_ID }}
-          compare_branch: preview/pr-${{ github.event.number }}-${{ needs.setup.outputs.branch }}
-          api_key: ${{ secrets.NEON_API_KEY }}
-          database: verceldb
+          script: |
+            const pullRequests = await github.rest.pulls.list({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              state: 'open',
+              head: `${context.repo.owner}:${context.ref.replace('refs/heads/', '')}`
+            })
+            const issueNumber = context.issue.number || pullRequests.data[0].number
+
+            const {data: comments} = await github.rest.issues.listComments({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: issueNumber,
+            })
+            const botComment = comments.find(comment => {
+              return comment.user.type === 'Bot' && comment.body.includes('Deployed at')
+            })
+
+            const output = `Deployed at ${process.env.PREVIEW_URL}`
+            if (botComment) {
+              github.rest.issues.updateComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                comment_id: botComment.id,
+                body: output,
+              })
+            } else {
+              github.rest.issues.createComment({
+                issue_number: issueNumber,
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                body: output,
+              })
+            }
 
   delete_neon_branch:
     name: Delete Neon Branch
