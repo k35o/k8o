@@ -1,15 +1,15 @@
 import withMdx from '@next/mdx';
 import BundleAnalyzer from '@next/bundle-analyzer';
-import rehypePrettyCode from 'rehype-pretty-code';
+import rehypePrettyCode, { Options } from 'rehype-pretty-code';
 import rehypeKatex from 'rehype-katex';
 import remarkMath from 'remark-math';
 import {
-  createHighlighter,
   createJavaScriptRegexEngine,
+  getSingletonHighlighter,
 } from 'shiki';
+import { NextConfig } from 'next';
 
-/** @type {import('next').NextConfig} */
-const nextConfig = {
+const nextConfig: NextConfig = {
   reactStrictMode: true,
   pageExtensions: ['tsx', 'mdx', 'ts'],
   compiler: {
@@ -34,16 +34,14 @@ export default withBundleAnalyzer(
         rehypeKatex,
         [
           rehypePrettyCode,
-          /** @type {Partial<import("rehype-pretty-code").Options>} */
-          ({
+          {
             theme: 'one-dark-pro',
-            createHighlighter: (options) => {
-              createHighlighter({
+            getHighlighter: (options) =>
+              getSingletonHighlighter({
                 ...options,
                 engine: createJavaScriptRegexEngine(),
-              });
-            },
-          }),
+              }),
+          } satisfies Options,
         ],
       ],
     },
