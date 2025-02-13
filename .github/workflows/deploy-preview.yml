@@ -41,6 +41,13 @@ jobs:
         uses: ./.github/actions/setup-pnpm
       - name: Install Vercel CLI
         run: npm install --global vercel@latest
+      - name: Use Latest Corepack
+        run: |
+          echo "Before: corepack version => $(corepack --version || echo 'not installed')"
+          npm install -g corepack@latest
+          echo "After : corepack version => $(corepack --version)"
+          corepack enable
+          pnpm --version
 
       - name: Create Neon Branch
         id: create_neon_branch
