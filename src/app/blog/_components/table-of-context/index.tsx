@@ -190,7 +190,10 @@ export const TableOfContext: FC<{ slug: string }> = async ({
                   }
                   return (
                     <li key={depth2.text} className="pt-1">
-                      <Link href={`#${depth2.text}`}>
+                      <Link
+                        href={`#${depth2.text}`}
+                        className="hover:underline"
+                      >
                         {depth2.text}
                       </Link>
                       <ol className="list-inside list-decimal pl-4">
