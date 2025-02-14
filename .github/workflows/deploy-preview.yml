@@ -116,7 +116,7 @@ jobs:
       - name: Preview URL Comment to PR
         env:
           PREVIEW_URL: ${{needs.deploy_preview.outputs.preview_url}}
-        uses: actions/github-script@v6
+        uses: actions/github-script@v7
         id: my-script
         with:
           script: |
