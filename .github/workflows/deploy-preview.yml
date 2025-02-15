@@ -16,6 +16,7 @@ concurrency:
 
 jobs:
   setup:
+    if: ${{ github.actor != 'renovate[bot]' }}
     name: Setup
     outputs:
       branch: ${{ steps.branch_name.outputs.current_branch }}
