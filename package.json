@@ -23,6 +23,7 @@
     "build": "next build",
     "start": "next start",
     "generate": "drizzle-kit generate",
+    "generate:custom": "drizzle-kit generate --custom",
     "migrate": "drizzle-kit migrate",
     "lint": "next lint --max-warnings 0",
     "lint:fix": "next lint --fix --max-warnings 0",
