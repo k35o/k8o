@@ -1,5 +1,6 @@
 'use client';
 
+import { Anchor } from '@/components/anchor';
 import { Breadcrumb } from '@/components/breadcrumb';
 import { usePathname } from 'next/navigation';
 import { FC } from 'react';
@@ -23,10 +24,19 @@ export const QuizBreadcrumb: FC = () => {
         <>
           <Breadcrumb.Separator />
           <Breadcrumb.Item>
-            <h3>
+            <h3 className="flex gap-1">
               <Breadcrumb.Link href="/quizzes/fish-kanji" current>
                 うおへんクイズ
               </Breadcrumb.Link>
+              {pathname.endsWith('/quizzes/fish-kanji') && (
+                <div className="text-fg-base font-normal">
+                  (
+                  <Anchor href="/quizzes/fish-kanji/list">
+                    問題一覧
+                  </Anchor>
+                  )
+                </div>
+              )}
             </h3>
           </Breadcrumb.Item>
         </>
