@@ -1,3 +1,4 @@
+import { range } from '@/utils/array/range';
 import { Quiz } from './../../_types';
 import clsx from 'clsx';
 import { Noto_Sans_JP } from 'next/font/google';
@@ -32,6 +33,19 @@ export const CollectionByHighlight: CollectionProps = ({
           </p>
           <p className="text-8xl">{quiz.highlight}</p>
         </div>
+      ))}
+    </div>
+  );
+};
+
+export const CollectionByHighlightLoading: FC = () => {
+  return (
+    <div className="grid-cols-auto-fit-36 grid animate-pulse place-items-center gap-2">
+      {range(0, 100).map((key) => (
+        <div
+          key={key}
+          className="border-border-base bg-bg-mute flex size-36 flex-col items-center justify-center rounded-lg border p-2"
+        />
       ))}
     </div>
   );
