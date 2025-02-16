@@ -47,7 +47,7 @@ export const CreateRestrictions: FC<Props> = ({
             });
           }}
         >
-          カラムを追加
+          制約を追加
         </Button>
       </div>
       <Accordion>
