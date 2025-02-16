@@ -21,13 +21,20 @@ export const BaseConverter = () => {
     target: Base;
     message: string;
   } | null>(null);
-  const [binary, setBinary] = useState('0');
-  const [octal, setOctal] = useState('0');
-  const [decimal, setDecimal] = useState('0');
-  const [hexadecimal, setHexadecimal] = useState('0');
+  const [binary, setBinary] = useState('');
+  const [octal, setOctal] = useState('');
+  const [decimal, setDecimal] = useState('');
+  const [hexadecimal, setHexadecimal] = useState('');
 
   const handleChange = useCallback((value: string, base: Base) => {
     setInvalid(null);
+    if (value === '') {
+      setBinary('');
+      setOctal('');
+      setDecimal('');
+      setHexadecimal('');
+      return;
+    }
     switch (base) {
       case 2:
         setBinary(value);
