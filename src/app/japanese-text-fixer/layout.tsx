@@ -5,11 +5,11 @@ import { PropsWithChildren } from 'react';
 export const metadata = {
   title: '日本語校正くん',
   description:
-    '日本語文章の誤字脱字、文法ミス、表現の改善ポイントを簡単にチェックできるツールです。',
+    '日本語で書かれた文章の誤字や脱字、文法ミス、表現の改善ポイントをチェックします。',
   openGraph: {
     title: '日本語校正くん',
     description:
-      '日本語文章の誤字脱字、文法ミス、表現の改善ポイントを簡単にチェックできるツールです。',
+      '日本語で書かれた文章の誤字や脱字、文法ミス、表現の改善ポイントをチェックします。',
     url: 'https://k8o.me/japanese-text-fixer',
     siteName: 'k8o',
     locale: 'ja',
@@ -19,7 +19,7 @@ export const metadata = {
     title: '日本語校正くん',
     card: 'summary',
     description:
-      '日本語文章の誤字脱字、文法ミス、表現の改善ポイントを簡単にチェックできるツールです。',
+      '日本語で書かれた文章の誤字や脱字、文法ミス、表現の改善ポイントをチェックします。',
   },
 };
 

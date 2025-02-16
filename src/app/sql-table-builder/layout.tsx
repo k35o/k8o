@@ -3,19 +3,18 @@ import { PropsWithChildren } from 'react';
 
 export const metadata = {
   title: 'SQLテーブルメーカー',
-  description:
-    'データベーステーブルの作成用SQL分を簡単に生成するツールです。',
+  description: 'データベースのテーブルを作成するSQL文を発行します。',
   openGraph: {
     title: 'SQLテーブルメーカー',
     description:
-      'データベーステーブルの作成用SQL分を簡単に生成するツールです。',
+      'データベースのテーブルを作成するSQL文を発行します。',
     url: 'https://k8o.me/sql-table-builder',
   },
   twitter: {
     title: 'SQLテーブルメーカー',
     card: 'summary',
     description:
-      'データベーステーブルの作成用SQL分を簡単に生成するツールです。',
+      'データベースのテーブルを作成するSQL文を発行します。',
   },
 };
 

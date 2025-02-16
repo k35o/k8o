@@ -3,10 +3,11 @@ import { PropsWithChildren } from 'react';
 
 export const metadata = {
   title: 'カラーコード職人',
-  description: '色の表現方法を自由に変換できるツールです。',
+  description: 'RGBとHEXのように、特定の色の異なる表現を確認します。',
   openGraph: {
     title: 'カラーコード職人',
-    description: '色の表現方法を自由に変換できるツールです。',
+    description:
+      'RGBとHEXのように、特定の色の異なる表現を確認します。',
     url: 'https://k8o.me/colors/converter',
     siteName: 'k8o',
     locale: 'ja',
@@ -15,7 +16,8 @@ export const metadata = {
   twitter: {
     title: 'カラーコード職人',
     card: 'summary',
-    description: '色の表現方法を自由に変換できるツールです。',
+    description:
+      'RGBとHEXのように、特定の色の異なる表現を確認します。',
   },
 };
 
