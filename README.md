@@ -10,6 +10,16 @@ Install the package after preparing `Node.js` and `pnpm` with reference to the v
 pnpm i --frozen-lockfile
 ```
 
+Copy environment variables and launch docker to use SQL and KV.
+
+```command
+cp .env.example .env.local
+docker compose up -d
+pnpm run migration
+```
+
+If you want to use the MicroCMS locally, ask k8o for the MICROCMS_API_KEY.
+
 ## development
 
 ### dev server
