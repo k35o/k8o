@@ -76,6 +76,32 @@ It work in `typescript`(`tsc --noEmit`).
 pnpm run type-check
 ```
 
+### database
+
+Generate migration file by schema file(`src/drizzle/schema.ts`).
+
+```command
+pnpm run generate
+```
+
+Generate custom migration file, such as seeding data.
+
+```command
+pnpm run generage:custom
+```
+
+Execute database migration in `migrations/*.sql`.
+
+```command
+pnpm run migrate
+```
+
+Connect local postgres database.
+
+```command
+docker compose exec postgres psql -U postgres -d main
+```
+
 ## composition
 
 ### platform
