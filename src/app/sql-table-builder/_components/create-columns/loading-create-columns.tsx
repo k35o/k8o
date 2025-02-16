@@ -4,12 +4,20 @@ import { Button } from '@/components/button';
 export const LoadingCreateColumns: FC = () => {
   return (
     <fieldset className="p-2">
-      <div className="flex flex-col justify-between gap-2 py-2 md:flex-row md:items-center md:gap-0">
-        <legend className="text-lg font-bold">カラム情報</legend>
-        <div className="flex items-center gap-2 self-end md:self-auto">
+      <div className="flex flex-col justify-between gap-2 py-2">
+        <div className="flex items-center justify-between gap-2">
+          <legend className="text-lg font-bold">カラム情報</legend>
           <Button>カラムを追加</Button>
         </div>
+        <div className="flex justify-end">
+          <div className="w-52 animate-pulse">
+            <Button fullWidth variant="outlined">
+              &nbsp;
+            </Button>
+          </div>
+        </div>
       </div>
+      <div className="bg-bg-mute border-border-base h-96 animate-pulse rounded-lg border" />
     </fieldset>
   );
 };

@@ -34,9 +34,12 @@ export const CreateColumns: FC<Props> = ({
 
   return (
     <fieldset className="relative p-2">
-      <div className="flex flex-col justify-between gap-2 py-2 md:flex-row md:items-center md:gap-0">
-        <legend className="text-lg font-bold">カラム情報</legend>
-        <div className="flex items-center gap-2 self-end md:self-auto">
+      <div className="flex flex-col justify-between gap-2 py-2">
+        <div className="flex items-center justify-between gap-2">
+          <legend className="text-lg font-bold">カラム情報</legend>
+          <Button onClick={handleAddColumn}>カラムを追加</Button>
+        </div>
+        <div className="flex justify-end">
           <Button
             variant="outlined"
             onClick={() => {
@@ -52,7 +55,6 @@ export const CreateColumns: FC<Props> = ({
           >
             {showTable ? 'フォーム' : 'テーブル'}形式に変更
           </Button>
-          <Button onClick={handleAddColumn}>カラムを追加</Button>
         </div>
       </div>
       {showTable ? (

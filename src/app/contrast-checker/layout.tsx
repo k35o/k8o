@@ -4,11 +4,11 @@ import { PropsWithChildren } from 'react';
 export const metadata = {
   title: 'コントラストチェッカー',
   description:
-    '2つの色のコントラスト比を計算し、アクセシビリティ基準を満たしているか確認するツールです。',
+    '選択した2つの色からコントラスト比を計算します。WCAGが定める基準から色の組み合わせの妥当性を確認できます。',
   openGraph: {
     title: 'コントラストチェッカー',
     description:
-      '2つの色のコントラスト比を計算し、アクセシビリティ基準を満たしているか確認するツールです。',
+      '選択した2つの色からコントラスト比を計算します。WCAGが定める基準から色の組み合わせの妥当性を確認できます。',
     url: 'https://k8o.me/colors/contrasts',
     siteName: 'k8o',
     locale: 'ja',
@@ -18,7 +18,7 @@ export const metadata = {
     title: 'コントラストチェッカー',
     card: 'summary',
     description:
-      '2つの色のコントラスト比を計算し、アクセシビリティ基準を満たしているか確認するツールです。',
+      '選択した2つの色からコントラスト比を計算します。WCAGが定める基準から色の組み合わせの妥当性を確認できます。',
   },
 };
 

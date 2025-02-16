@@ -7,6 +7,7 @@ const meta: Meta<typeof LinkButton> = {
   component: LinkButton,
   args: {
     href: '',
+    children: 'ボタン',
   },
 };
 
@@ -17,17 +18,11 @@ export const Large: Story = {
   args: {
     size: 'lg',
   },
-  render: (props) => {
-    return <LinkButton {...props}>ボタン</LinkButton>;
-  },
 };
 
 export const Medium: Story = {
   args: {
     size: 'md',
-  },
-  render: (props) => {
-    return <LinkButton {...props}>ボタン</LinkButton>;
   },
 };
 
@@ -35,8 +30,11 @@ export const Small: Story = {
   args: {
     size: 'sm',
   },
-  render: (props) => {
-    return <LinkButton {...props}>ボタン</LinkButton>;
+};
+
+export const Outline: Story = {
+  args: {
+    variant: 'outlined',
   },
 };
 
@@ -44,16 +42,10 @@ export const StartIcon: Story = {
   args: {
     startIcon: <ClipboardPenLine className="size-6" />,
   },
-  render: (props) => {
-    return <LinkButton {...props}>ボタン</LinkButton>;
-  },
 };
 
 export const EndIcon: Story = {
   args: {
     endIcon: <ClipboardPenLine className="size-6" />,
-  },
-  render: (props) => {
-    return <LinkButton {...props}>ボタン</LinkButton>;
   },
 };

@@ -3,10 +3,10 @@ import { PropsWithChildren } from 'react';
 
 export const metadata = {
   title: 'かどまるラボ',
-  description: '角丸を決めてお気に入りの図形を探しましょう',
+  description: '角丸を変化させてお気に入りの図形を探しましょう',
   openGraph: {
     title: 'かどまるラボ',
-    description: '角丸を決めてお気に入りの図形を探しましょう',
+    description: '角丸を変化させてお気に入りの図形を探しましょう',
     url: 'https://k8o.me/designs/rounded',
     siteName: 'k8o',
     locale: 'ja',
@@ -15,7 +15,7 @@ export const metadata = {
   twitter: {
     title: 'かどまるラボ',
     card: 'summary',
-    description: '角丸を決めてお気に入りの図形を探しましょう',
+    description: '角丸を変化させてお気に入りの図形を探しましょう',
   },
 };
 

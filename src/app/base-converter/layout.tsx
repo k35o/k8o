@@ -3,10 +3,10 @@ import { PropsWithChildren } from 'react';
 
 export const metadata = {
   title: '基数チェンジャー',
-  description: '整数を簡単に異なる進数表現に変換するツールです。',
+  description: '2進数・8進数・10進数・16進数を相互に変換します。',
   openGraph: {
     title: '基数チェンジャー',
-    description: '整数を簡単に異なる進数表現に変換するツールです。',
+    description: '2進数・8進数・10進数・16進数を相互に変換します。',
     url: 'https://k8o.me/number/converter',
     siteName: 'k8o',
     locale: 'ja',

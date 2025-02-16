@@ -1,12 +1,10 @@
 'use client';
 
 import { Quiz } from './../../_types';
-import { FC, useCallback, useState } from 'react';
+import { FC, useCallback, useMemo, useState } from 'react';
 import { Complete } from '../complete';
 import { QuizProgress } from '../quiz-progress';
 import { Answer } from '../answer';
-import { Feedback } from '../feedback';
-import { checkAnswer } from '../../_utils/check-answer';
 import { useRouter } from 'next/navigation';
 
 type QuestionProps = FC<{
@@ -18,9 +16,10 @@ type Status = 'correct' | 'incorrect' | 'none' | 'complete';
 export const Question: QuestionProps = ({ quizzes }) => {
   const [status, setStatus] = useState<Status>('none');
   const [count, setCount] = useState(0);
-  const [answer, setAnswer] = useState('');
   const [score, setScore] = useState(0);
-  const currentQuiz = quizzes[count];
+  const currentQuiz = useMemo(() => {
+    return quizzes[count];
+  }, [count, quizzes]);
 
   const router = useRouter();
 
@@ -28,26 +27,21 @@ export const Question: QuestionProps = ({ quizzes }) => {
     throw new Error('クイズがありません');
   }
 
-  const handleAnswer = useCallback(() => {
-    const isCorrect = currentQuiz.answers.some((a) =>
-      checkAnswer(answer, a.answer),
-    );
+  const handleAnswer = useCallback((isCorrect: boolean) => {
     if (isCorrect) {
       setScore((prev) => prev + 1);
     }
 
     setStatus(isCorrect ? 'correct' : 'incorrect');
-  }, [answer, currentQuiz.answers]);
+  }, []);
 
   const handleNextQuestion = useCallback(() => {
     if (count + 1 >= quizzes.length) {
       setStatus('complete');
-      setAnswer('');
       return;
     }
     setCount((prev) => prev + 1);
     setStatus('none');
-    setAnswer('');
   }, [count, quizzes.length]);
 
   const handleReset = useCallback(() => {
@@ -71,24 +65,13 @@ export const Question: QuestionProps = ({ quizzes }) => {
         progress={count + 1}
         maxProgress={quizzes.length}
       />
-      {status === 'none' ? (
-        <Answer
-          question={currentQuiz.question}
-          highlight={currentQuiz.highlight}
-          answer={answer}
-          handleAnswer={handleAnswer}
-          handleChange={setAnswer}
-        />
-      ) : (
-        <Feedback
-          question={currentQuiz.question}
-          highlight={currentQuiz.highlight}
-          answer={answer}
-          answers={currentQuiz.answers}
-          status={status}
-          handleNextQuestion={handleNextQuestion}
-        />
-      )}
+      <Answer
+        key={count}
+        currentQuiz={currentQuiz}
+        status={status}
+        handleAnswer={handleAnswer}
+        handleNextQuestion={handleNextQuestion}
+      />
     </div>
   );
 };

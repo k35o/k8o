@@ -1,5 +1,8 @@
 import type { Meta, StoryObj } from '@storybook/react';
-import { CollectionByHighlight } from '.';
+import {
+  CollectionByHighlight,
+  CollectionByHighlightLoading,
+} from '.';
 
 const meta: Meta<typeof CollectionByHighlight> = {
   title: 'app/quizzes/collection',
@@ -212,4 +215,8 @@ export const Default: Story = {
       },
     ],
   },
+};
+
+export const Loading: Story = {
+  render: () => <CollectionByHighlightLoading />,
 };
