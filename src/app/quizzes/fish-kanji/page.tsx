@@ -1,7 +1,6 @@
 import { getQuizzes } from './../_actions';
 import { QUIZ_TYPE } from './_utils/constants';
 import { Question } from '../_components/question';
-import { LinkButton } from '@/components/link-button';
 import { FC, Suspense } from 'react';
 
 const getLimit = (questionCount: string): number => {
@@ -32,13 +31,7 @@ export default async function Page({
   const limit = getLimit((await searchParams).questionCount);
 
   return (
-    <div className="flex flex-col gap-2">
-      <div className="flex items-center justify-between">
-        <LinkButton href="/quizzes">問題設定に戻る</LinkButton>
-        <LinkButton href="/quizzes/fish-kanji/list">
-          うおへんの漢字一覧
-        </LinkButton>
-      </div>
+    <section>
       {/* NOTE:route.refreshでsuspenseを有効にするために常に変わり続けるkeyを指定する */}
       <Suspense
         key={new Date().toString()}
@@ -52,6 +45,6 @@ export default async function Page({
       >
         <FishKanjiQuestion limit={limit} />
       </Suspense>
-    </div>
+    </section>
   );
 }

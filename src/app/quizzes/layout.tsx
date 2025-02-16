@@ -1,6 +1,5 @@
-import Link from 'next/link';
-import { Heading } from '../../components/heading';
 import { PropsWithChildren } from 'react';
+import { QuizBreadcrumb } from './_components/quiz-breadcrumb';
 
 export const metadata = {
   title: 'Quizzes',
@@ -22,10 +21,8 @@ export const metadata = {
 
 export default function Layout({ children }: PropsWithChildren) {
   return (
-    <div className="flex h-full flex-col gap-6">
-      <Link href="/quizzes" className="hover:underline">
-        <Heading type="h2">Quizzes</Heading>
-      </Link>
+    <div className="flex h-full flex-col gap-8">
+      <QuizBreadcrumb />
       {children}
     </div>
   );
