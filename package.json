@@ -23,6 +23,7 @@
     "build": "next build",
     "start": "next start",
     "generate": "drizzle-kit generate",
+    "generate:custom": "drizzle-kit generate --custom",
     "migrate": "drizzle-kit migrate",
     "lint": "next lint --max-warnings 0",
     "lint:fix": "next lint --fix --max-warnings 0",
@@ -68,6 +69,7 @@
     "shiki": "2.3.2",
     "tailwind-merge": "3.0.1",
     "tailwindcss": "4.0.6",
+    "ws": "8.18.0",
     "zod": "3.24.2"
   },
   "devDependencies": {
@@ -91,6 +93,7 @@
     "@types/react": "19.0.8",
     "@types/react-dom": "19.0.3",
     "@types/rss": "0.0.32",
+    "@types/ws": "8.5.14",
     "@vitejs/plugin-react": "4.3.4",
     "@vitest/browser": "3.0.5",
     "@vitest/coverage-istanbul": "3.0.5",
@@ -108,6 +111,7 @@
     "msw": "2.7.0",
     "msw-storybook-addon": "2.0.4",
     "playwright": "1.50.1",
+    "postgres": "3.4.5",
     "prettier": "3.5.1",
     "prettier-plugin-tailwindcss": "0.6.11",
     "storybook": "8.5.6",

@@ -10,6 +10,16 @@ Install the package after preparing `Node.js` and `pnpm` with reference to the v
 pnpm i --frozen-lockfile
 ```
 
+Copy environment variables and launch docker to use SQL and KV.
+
+```command
+cp .env.example .env.local
+docker compose up -d
+pnpm run migration
+```
+
+If you want to use the MicroCMS locally, ask k8o for the MICROCMS_API_KEY.
+
 ## development
 
 ### dev server
@@ -64,6 +74,32 @@ It work in `typescript`(`tsc --noEmit`).
 
 ```command
 pnpm run type-check
+```
+
+### database
+
+Generate migration file by schema file(`src/drizzle/schema.ts`).
+
+```command
+pnpm run generate
+```
+
+Generate custom migration file, such as seeding data.
+
+```command
+pnpm run generage:custom
+```
+
+Execute database migration in `migrations/*.sql`.
+
+```command
+pnpm run migrate
+```
+
+Connect local postgres database.
+
+```command
+docker compose exec postgres psql -U postgres -d main
 ```
 
 ## composition
