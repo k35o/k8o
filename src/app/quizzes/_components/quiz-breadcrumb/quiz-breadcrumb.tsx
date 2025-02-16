@@ -25,19 +25,35 @@ export const QuizBreadcrumb: FC = () => {
           <Breadcrumb.Separator />
           <Breadcrumb.Item>
             <h3 className="flex gap-1">
-              <Breadcrumb.Link href="/quizzes/fish-kanji" current>
-                うおへんクイズ
-              </Breadcrumb.Link>
-              {pathname.endsWith('/quizzes/fish-kanji') && (
-                <div className="text-fg-base font-normal">
-                  (
-                  <Anchor href="/quizzes/fish-kanji/list">
-                    問題一覧
-                  </Anchor>
-                  )
-                </div>
+              {pathname.endsWith('/quizzes/fish-kanji') ? (
+                <>
+                  <Breadcrumb.Link href="/quizzes/fish-kanji" current>
+                    うおへんクイズ
+                  </Breadcrumb.Link>
+                  <div className="text-fg-base font-normal">
+                    (
+                    <Anchor href="/quizzes/fish-kanji/list">
+                      問題一覧
+                    </Anchor>
+                    )
+                  </div>
+                </>
+              ) : (
+                <Breadcrumb.Link href="/quizzes/fish-kanji">
+                  うおへんクイズ
+                </Breadcrumb.Link>
               )}
             </h3>
+          </Breadcrumb.Item>
+        </>
+      )}
+      {pathname.startsWith('/quizzes/fish-kanji/list') && (
+        <>
+          <Breadcrumb.Separator />
+          <Breadcrumb.Item>
+            <Breadcrumb.Link href="/quizzes/fish-kanji/list" current>
+              問題一覧
+            </Breadcrumb.Link>
           </Breadcrumb.Item>
         </>
       )}
