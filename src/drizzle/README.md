@@ -1,2 +1,2 @@
-![schema (1)](https://github.com/user-attachments/assets/541fc669-cb44-4751-a36c-e935d8be4431)
+![visualized db schema](https://github.com/user-attachments/assets/b8a1d82e-bc5f-4f4a-beaf-eb6d23483f26)
 created by npx drizzle-lab@latest visualizer
