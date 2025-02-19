@@ -17,7 +17,7 @@ export const NewsLayout: FC<Props> = ({
   children,
 }) => {
   return (
-    <article className="bg-bg-base/90 h-full rounded-lg px-10 pt-8 pb-14">
+    <article className="bg-bg-base/90 h-full rounded-md px-10 pt-8 pb-14">
       <div className="flex flex-col gap-3">
         <Heading type="h3">{title}</Heading>
         <div className="text-fg-mute flex flex-row items-center justify-end gap-2 text-sm">

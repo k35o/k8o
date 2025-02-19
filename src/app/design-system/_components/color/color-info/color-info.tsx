@@ -35,7 +35,7 @@ export const ColorInfo: FC<{
   return (
     <motion.div
       className={cn(
-        'border-border-base flex flex-col rounded-lg border',
+        'border-border-base flex flex-col rounded-md border',
         isOpen && 'col-span-full',
       )}
       transition={{
@@ -55,7 +55,7 @@ export const ColorInfo: FC<{
         id={`${id}-button`}
         className={cn(
           'flex items-center justify-between gap-4 p-4',
-          'hover:bg-bg-mute rounded-lg',
+          'hover:bg-bg-mute rounded-md',
           'focus-visible::first:ring-border-info focus-visible:bg-bg-mute',
         )}
         onClick={() => {

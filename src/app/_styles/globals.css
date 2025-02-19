@@ -272,6 +272,11 @@ body:has(dialog[open]) {
   --color-group-secondary: var(--group-secondary);
   --color-group-tertiary: var(--group-tertiary);
   --color-group-quaternary: var(--group-quaternary);
+
+  --radius-*: initial;
+  --radius-sm: 0.375rem;
+  --radius-md: 0.5rem;
+  --radius-lg: 0.75rem;
 }
 
 @utility grid-cols-auto-fill-* {

@@ -17,7 +17,7 @@ export const LoadingCreateColumns: FC = () => {
           </div>
         </div>
       </div>
-      <div className="bg-bg-mute border-border-base h-96 animate-pulse rounded-lg border" />
+      <div className="bg-bg-mute border-border-base h-96 animate-pulse rounded-md border" />
     </fieldset>
   );
 };

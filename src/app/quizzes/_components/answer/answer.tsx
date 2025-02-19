@@ -76,7 +76,7 @@ export const Answer: FC<{
             <p className="text-md text-fg-base font-bold">
               あなたの解答
             </p>
-            <p className="w-full rounded-lg border border-transparent px-3 py-2">
+            <p className="w-full rounded-md border border-transparent px-3 py-2">
               {answer ? answer : '未回答'}
             </p>
           </div>

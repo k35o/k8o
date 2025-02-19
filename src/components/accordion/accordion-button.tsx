@@ -17,7 +17,7 @@ export const AccordionButton: FC<PropsWithChildren> = ({
     <button
       type="button"
       className={cn(
-        'flex w-full flex-row items-center justify-between rounded-lg p-2',
+        'flex w-full flex-row items-center justify-between rounded-md p-2',
         'hover:bg-bg-mute',
         'focus-visible::first:ring-border-info focus-visible:bg-bg-mute focus-visible::first:bordertransparent focus-visible::first:outline-none focus-visible::first:ring-2',
       )}

@@ -14,7 +14,7 @@ export default function Home() {
       <Card>
         <div className="flex gap-6 p-4">
           <Image
-            className="size-32 rounded-lg"
+            className="size-32 rounded-md"
             src={k8o}
             width={128}
             height={128}

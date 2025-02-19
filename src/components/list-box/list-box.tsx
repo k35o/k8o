@@ -118,7 +118,7 @@ const Content: FC<{
           <section
             {...props}
             {...contentProps}
-            className="border-border-mute bg-bg-base flex max-h-48 min-w-40 flex-col overflow-y-auto rounded-xl border py-2 shadow-xl"
+            className="border-border-mute bg-bg-base flex max-h-48 min-w-40 flex-col overflow-y-auto rounded-lg border py-2 shadow-xl"
           >
             {helpContent}
             {options.map(({ key, label }, idx) => (

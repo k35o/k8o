@@ -85,7 +85,7 @@ export function useMDXComponents(
         return (
           <code
             {...props}
-            className="bg-bg-mute m-1 rounded-lg px-1 text-xs sm:text-base"
+            className="bg-bg-mute m-1 rounded-md px-1 text-xs sm:text-base"
           >
             {children}
           </code>
@@ -101,7 +101,7 @@ export function useMDXComponents(
       return (
         <pre
           {...rest}
-          className="my-4 overflow-x-auto rounded-xl p-1 sm:p-4"
+          className="my-4 overflow-x-auto rounded-lg p-1 sm:p-4"
         >
           {children}
         </pre>

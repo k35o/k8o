@@ -48,7 +48,7 @@ export const NumberField: FC<Props> = ({
   return (
     <div
       className={cn(
-        'border-border-base bg-bg-base relative flex h-12 w-full items-center justify-between gap-2 rounded-lg border shadow-xs',
+        'border-border-base bg-bg-base relative flex h-12 w-full items-center justify-between gap-2 rounded-md border shadow-xs',
         'focus-within:bordertransparent focus-within:ring-border-info focus-within:ring-2 focus-within:outline-hidden',
         'has-aria-invalid:border-border-error',
         'has-disabled:border-border-mute has-disabled:has-hover:hover:bg-bg-mute has-disabled:bg-bg-mute has-disabled:cursor-not-allowed',
@@ -138,7 +138,7 @@ export const NumberField: FC<Props> = ({
             setDisplayValue(newValue.toFixed(precision));
           }}
           className={cn(
-            'bg-bg-mute flex w-6 grow items-center justify-center rounded-tr-lg border-b border-l',
+            'bg-bg-mute flex w-6 grow items-center justify-center rounded-tr-md border-b border-l',
             'disabled:cursor-not-allowed',
           )}
           disabled={isDisabled}
@@ -162,7 +162,7 @@ export const NumberField: FC<Props> = ({
             setDisplayValue(newValue.toFixed(precision));
           }}
           className={cn(
-            'bg-bg-mute flex w-6 grow items-center justify-center rounded-br-lg border-l',
+            'bg-bg-mute flex w-6 grow items-center justify-center rounded-br-md border-l',
             'disabled:cursor-not-allowed',
           )}
           disabled={isDisabled}
