@@ -8,7 +8,7 @@ export const Card: FC<CardProps> = ({
 }) => (
   <section
     className={clsx(
-      'bg-bg-base/90 rounded-xl shadow-md',
+      'bg-bg-base/90 rounded-lg shadow-md',
       variant === 'primary' && 'bg-bg-base/90',
       variant === 'secondary' && 'bg-bg-mute',
     )}

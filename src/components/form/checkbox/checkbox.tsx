@@ -26,7 +26,7 @@ export const Checkbox: FC<Props> = ({ label, value, onChange }) => {
       />
       <span
         className={cn(
-          'inline-flex size-5 items-center justify-center rounded-lg border-2',
+          'inline-flex size-5 items-center justify-center rounded-md border-2',
           isFocus &&
             'bordertransparent ring-border-info ring-2 outline-hidden',
           value

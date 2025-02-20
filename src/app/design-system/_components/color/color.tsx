@@ -11,7 +11,7 @@ import {
 export const Color: FC = () => {
   return (
     <section className="flex flex-col gap-4">
-      <div className="bg-bg-base flex flex-col justify-between gap-1 rounded-xl p-3">
+      <div className="bg-bg-base flex flex-col justify-between gap-1 rounded-lg p-3">
         <Heading type="h3">Neutral Color</Heading>
         <p className="text-fg-mute text-sm">
           グレースケールを元にした色、理由がない限りこの色を利用する
@@ -140,7 +140,7 @@ export const Color: FC = () => {
           </div>
         </div>
       </div>
-      <div className="bg-bg-base flex flex-col justify-between gap-1 rounded-xl p-3">
+      <div className="bg-bg-base flex flex-col justify-between gap-1 rounded-lg p-3">
         <Heading type="h3">Primitive Color</Heading>
         <p className="text-fg-mute text-sm">
           情緒的な役割を持つ色、強調やアクセントに利用する
@@ -294,7 +294,7 @@ export const Color: FC = () => {
           </div>
         </div>
       </div>
-      <div className="bg-bg-base flex flex-col justify-between gap-3 rounded-xl p-3">
+      <div className="bg-bg-base flex flex-col justify-between gap-3 rounded-lg p-3">
         <Heading type="h3">Semantic Color</Heading>
         <p className="text-fg-mute text-sm">
           機能的な役割を持つ色(情報、成功、警告、エラー)、利用者に色を用いて情報を届けたいときに利用する
@@ -431,7 +431,7 @@ export const Color: FC = () => {
           </div>
         </div>
       </div>
-      <div className="bg-bg-base flex flex-col justify-between gap-1 rounded-xl p-3">
+      <div className="bg-bg-base flex flex-col justify-between gap-1 rounded-lg p-3">
         <Heading type="h3">Base Color</Heading>
         <p className="text-fg-mute text-sm">
           デザインシステム全体で利用する基本色
@@ -441,13 +441,13 @@ export const Color: FC = () => {
             return (
               <div
                 key={value[0]}
-                className="flex flex-col justify-between gap-3 rounded-xl p-3"
+                className="flex flex-col justify-between gap-3 rounded-lg p-3"
               >
                 <Heading type="h4">{value[0]}</Heading>
                 {typeof value[1] === 'string' ? (
                   <div className="flex flex-col items-center gap-1">
                     <div
-                      className="border-border-base flex h-12 w-24 items-center justify-center rounded-4xl border"
+                      className="border-border-base flex h-12 w-24 items-center justify-center rounded-full border"
                       style={{
                         backgroundColor: value[1],
                       }}
@@ -464,7 +464,7 @@ export const Color: FC = () => {
                         >
                           <div
                             className={cn(
-                              'border-border-base flex h-12 w-24 items-center justify-center rounded-4xl border',
+                              'border-border-base flex h-12 w-24 items-center justify-center rounded-full border',
                               calcContrast(
                                 color[1],
                                 COLOR_VARIANTS.white,

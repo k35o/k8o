@@ -20,7 +20,7 @@ export const LinkButton: FC<
   endIcon,
 }) => {
   const className = cn(
-    'rounded-xl text-center font-bold',
+    'rounded-lg text-center font-bold',
     {
       ['bg-primary-bg text-fg hover:bg-primary-bg/90 active:bg-primary-bg/80']:
         variant === 'contained',

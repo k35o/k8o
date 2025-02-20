@@ -79,7 +79,7 @@ const Content: FC<PropsWithChildren> = ({ children }) => {
           <section
             {...props}
             {...contentProps}
-            className="border-border-mute bg-bg-base flex min-w-40 flex-col rounded-xl border py-2 shadow-xl"
+            className="border-border-mute bg-bg-base flex min-w-40 flex-col rounded-lg border py-2 shadow-xl"
           >
             {children}
           </section>

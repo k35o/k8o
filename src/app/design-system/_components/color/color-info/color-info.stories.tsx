@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from '@storybook/react';
 import { ColorInfo } from './color-info';
 
 const meta: Meta<typeof ColorInfo> = {
-  title: 'app/design-system/color-info',
+  title: 'app/design-system/color/color-info',
   component: ColorInfo,
   decorators: [
     (Story) => (

@@ -104,7 +104,7 @@ export default function Page() {
           ref={(node) => {
             node?.scrollIntoView();
           }}
-          className="bg-bg-mute rounded-lg p-4 text-xs whitespace-pre-wrap sm:text-base"
+          className="bg-bg-mute rounded-md p-4 text-xs whitespace-pre-wrap sm:text-base"
         >
           {statement}
         </code>

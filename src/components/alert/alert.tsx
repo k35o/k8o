@@ -13,7 +13,7 @@ export const Alert: FC<Props> = ({ status, message }) => {
     <div
       role="alert"
       className={cn(
-        'flex items-center gap-2 rounded-lg p-4',
+        'flex items-center gap-2 rounded-md p-4',
         status === 'success' && 'bg-bg-success',
         status === 'info' && 'bg-bg-info',
         status === 'warning' && 'bg-bg-warning',

@@ -26,7 +26,7 @@ export const CollectionByHighlight: CollectionProps = ({
       {quizzes.map((quiz) => (
         <div
           key={quiz.id}
-          className="border-border-base flex size-36 flex-col items-center justify-center rounded-lg border p-2"
+          className="border-border-base flex size-36 flex-col items-center justify-center rounded-md border p-2"
         >
           <p className="text-xs">
             {quiz.answers.map((a) => a.answer).join('・')}
@@ -44,7 +44,7 @@ export const CollectionByHighlightLoading: FC = () => {
       {range(0, 100).map((key) => (
         <div
           key={key}
-          className="border-border-base bg-bg-mute flex size-36 flex-col items-center justify-center rounded-lg border p-2"
+          className="border-border-base bg-bg-mute flex size-36 flex-col items-center justify-center rounded-md border p-2"
         />
       ))}
     </div>
