@@ -8,6 +8,7 @@ import { AppProvider } from '@/providers/app';
 import { cn } from '@/utils/cn';
 import { ReactNode } from 'react';
 import { Metadata } from 'next';
+import { ReactScan } from '@/libs/react-scan';
 
 const font = M_PLUS_2({
   subsets: ['latin'],
@@ -56,6 +57,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="ja" suppressHydrationWarning>
+      <ReactScan />
       <body
         className={cn(
           font.className,
