@@ -129,5 +129,11 @@
     "workerDirectory": [
       ".storybook/public"
     ]
+  },
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "lefthook",
+      "msw"
+    ]
   }
 }
