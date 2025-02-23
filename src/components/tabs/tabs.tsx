@@ -1,6 +1,7 @@
 'use client';
 
 import { cn } from '@/utils/cn';
+import Link from 'next/link';
 import {
   createContext,
   FC,
@@ -130,10 +131,69 @@ const Tab: FC<PropsWithChildren<{ id: string }>> = ({
           return;
         }
       }}
-      onClick={() => { setSelectedId(id); }}
+      onClick={() => {
+        setSelectedId(id);
+      }}
     >
       {children}
     </div>
+  );
+};
+
+const LinkTab: FC<PropsWithChildren<{ id: string }>> = ({
+  id,
+  children,
+}) => {
+  const { rootId, ids, activeIndex, selectedId, setSelectedId } =
+    useTabsState();
+  const ref = useRef<HTMLAnchorElement>(null);
+  const index = ids.indexOf(id);
+
+  useEffect(() => {
+    if (activeIndex === index) {
+      ref.current?.focus();
+    }
+  }, [activeIndex, index]);
+
+  return (
+    <Link
+      ref={ref}
+      href={`#${id}`}
+      id={`${rootId}-tab-${id}`}
+      role="tab"
+      aria-controls={
+        selectedId === id ? `${rootId}-panel-${id}` : undefined
+      }
+      aria-selected={selectedId === id}
+      tabIndex={activeIndex === index ? 0 : -1}
+      className={cn(
+        'cursor-pointer p-3',
+        selectedId === id && 'border-primary-border border-b-3',
+      )}
+      onKeyDown={(e) => {
+        if (e.key === 'ArrowLeft') {
+          const nextActiveIndex =
+            index === 0 ? ids.length - 1 : index - 1;
+          setSelectedId(ids[nextActiveIndex] ?? ids[0]);
+          return;
+        }
+        if (e.key === 'ArrowRight') {
+          const nextActiveIndex =
+            index === ids.length - 1 ? 0 : index + 1;
+          setSelectedId(ids[nextActiveIndex] ?? ids[0]);
+          return;
+        }
+        if (e.key === 'Enter') {
+          setSelectedId(id);
+          return;
+        }
+      }}
+      onClick={() => {
+        setSelectedId(id);
+      }}
+    >
+      {children}
+    </Link>
   );
 };
 
@@ -164,5 +224,6 @@ export const Tabs = {
   Root,
   List,
   Tab,
+  LinkTab,
   Panel,
 };

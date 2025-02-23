@@ -41,3 +41,21 @@ export const DefaultSelected: Story = {
     </Tabs.Root>
   ),
 };
+
+export const Link: Story = {
+  render: () => (
+    <Tabs.Root
+      ids={['tab1', 'tab2', 'tab3']}
+      defaultSelectedId="tab2"
+    >
+      <Tabs.List label="Tabs Example">
+        <Tabs.LinkTab id="tab1">Tab1</Tabs.LinkTab>
+        <Tabs.LinkTab id="tab2">Tab2</Tabs.LinkTab>
+        <Tabs.LinkTab id="tab3">Tab3</Tabs.LinkTab>
+      </Tabs.List>
+      <Tabs.Panel id="tab1">Panel1</Tabs.Panel>
+      <Tabs.Panel id="tab2">Panel2</Tabs.Panel>
+      <Tabs.Panel id="tab3">Panel3</Tabs.Panel>
+    </Tabs.Root>
+  ),
+};
