@@ -31,17 +31,20 @@ export const Primary: Story = {
       'Panel1',
     );
 
-    await userEvent.keyboard('{arrowright}');
+    await userEvent.keyboard('{ArrowLeft}');
+    await userEvent.keyboard('{ArrowRight}');
+    await userEvent.keyboard('{ArrowRight}');
     await waitFor(() =>
       expect(canvas.getByRole('tabpanel')).toHaveTextContent(
         'Panel2',
       ),
     );
 
-    await userEvent.keyboard('{Arrowleft}');
+    await userEvent.keyboard('{ArrowLeft}');
+    await userEvent.keyboard('{ArrowLeft}');
     await waitFor(() =>
       expect(canvas.getByRole('tabpanel')).toHaveTextContent(
-        'Panel1',
+        'Panel3',
       ),
     );
   },
@@ -63,6 +66,12 @@ export const DefaultSelected: Story = {
       <Tabs.Panel id="tab3">Panel3</Tabs.Panel>
     </Tabs.Root>
   ),
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    await expect(canvas.getByRole('tabpanel')).toHaveTextContent(
+      'Panel2',
+    );
+  },
 };
 
 export const HashLink: Story = {
