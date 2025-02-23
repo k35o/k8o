@@ -79,7 +79,9 @@ const Root: FC<
         hashLink,
       }}
     >
-      <div className="flex flex-col gap-1">{children}</div>
+      <div className="flex flex-col gap-1 overflow-x-auto">
+        {children}
+      </div>
     </TabsProvider>
   );
 };
@@ -96,7 +98,7 @@ const List: FC<
       role="tablist"
       aria-label={label}
       aria-orientation="horizontal"
-      className="border-border-base flex border-b"
+      className="border-border-base flex overflow-x-auto overflow-y-hidden border-b"
     >
       {children}
     </div>
