@@ -9,7 +9,7 @@ export const metadata = {
     title: 'コントラストチェッカー',
     description:
       '選択した2つの色からコントラスト比を計算します。WCAGが定める基準から色の組み合わせの妥当性を確認できます。',
-    url: 'https://k8o.me/colors/contrasts',
+    url: 'https://k8o.me/contrast-checker',
     siteName: 'k8o',
     locale: 'ja',
     type: 'website',

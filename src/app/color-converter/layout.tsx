@@ -8,7 +8,7 @@ export const metadata = {
     title: 'カラーコード職人',
     description:
       'RGBとHEXのように、特定の色の異なる表現を確認します。',
-    url: 'https://k8o.me/colors/converter',
+    url: 'https://k8o.me/color-converter',
     siteName: 'k8o',
     locale: 'ja',
     type: 'website',

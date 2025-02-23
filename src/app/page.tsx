@@ -7,6 +7,7 @@ import { Card } from '@/components/card';
 import { AppCard } from './_components/app-card';
 import { RoundedIcon } from './radius-maker/_components/rounded-icon';
 import { EmailTooltip } from './_components/email-tooltip';
+import { Earth } from 'lucide-react';
 
 export default function Home() {
   return (
@@ -64,6 +65,13 @@ export default function Home() {
             symbol="📕"
             title="Blog"
             description="k8oのブログです。ジャンルを問わず、身の回りのことを書きます。"
+          />
+          <AppCard
+            link="/design-system"
+            // 仮のアイコン
+            symbol={<Earth className="text-primary-fg size-16" />}
+            title="ArteOdyssey"
+            description="k8o.meで利用しているデザインシステムを紹介します。コンポーネントやデザイントークンを確認できます。"
           />
           <AppCard
             link="/moji-count"
