@@ -79,6 +79,7 @@ const Root: FC<
         hashLink,
       }}
     >
+      {/* TODO: スクロール以外の見せ方を考えても良さそう */}
       <div className="flex flex-col gap-1 overflow-x-auto">
         {children}
       </div>
