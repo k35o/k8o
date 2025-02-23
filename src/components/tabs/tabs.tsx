@@ -62,7 +62,7 @@ const Root: FC<
   const hash = useHash();
 
   const hansleChangeHash = (id: string) => {
-    router.push(`#${id}`);
+    router.push(`#${id}`, { scroll: false });
   };
 
   return (
@@ -161,7 +161,7 @@ const Tab: FC<PropsWithChildren<{ id: string }>> = ({
   };
 
   return hashLink ? (
-    <Link ref={ref} href={`#${id}`} {...props} />
+    <Link ref={ref} href={`#${id}`} scroll={false} {...props} />
   ) : (
     // eslint-disable-next-line jsx-a11y/no-static-element-interactions, jsx-a11y/click-events-have-key-events -- propsを別の場所で定義することで解決済み
     <div
