@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useClient } from '../client';
 
 const getHash = () =>
@@ -10,6 +10,10 @@ export const useHash = (): string | null => {
   const isClient = useClient();
   const [hash, setHash] = useState<string | null>(getHash);
 
+  const handleUpdateHash = useCallback(() => {
+    setHash(getHash());
+  }, []);
+
   useEffect(() => {
     // eslint-disable-next-line @typescript-eslint/unbound-method
     const { pushState, replaceState } = window.history;
@@ -17,25 +21,25 @@ export const useHash = (): string | null => {
     window.history.pushState = (...args) => {
       pushState.apply(window.history, args);
       setTimeout(() => {
-        setHash(window.location.hash);
+        handleUpdateHash();
       });
     };
     window.history.replaceState = (...args) => {
       replaceState.apply(window.history, args);
       setTimeout(() => {
-        setHash(window.location.hash);
+        handleUpdateHash();
       });
     };
 
     // hash changeに応じてhashを更新
     const hashChange = () => {
-      setHash(getHash());
+      handleUpdateHash();
     };
     window.addEventListener('hashchange', hashChange);
     return () => {
       window.removeEventListener('hashchange', hashChange);
     };
-  }, []);
+  }, [handleUpdateHash]);
 
   return isClient ? hash : null;
 };
