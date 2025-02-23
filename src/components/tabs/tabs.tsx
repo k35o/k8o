@@ -12,6 +12,7 @@ import {
   useState,
 } from 'react';
 import * as motion from 'motion/react-client';
+import { cn } from '@/utils/cn';
 
 type TabsContext = {
   rootId: string;
@@ -109,7 +110,10 @@ const Tab: FC<PropsWithChildren<{ id: string }>> = ({
       }
       aria-selected={selectedId === id}
       tabIndex={activeIndex === index ? 0 : -1}
-      className="relative cursor-pointer p-3"
+      className={cn(
+        'relative cursor-pointer rounded-md p-3',
+        'focus-visible:bordertransparent focus-visible:ring-border-info focus-visible:ring-2 focus-visible:outline-hidden',
+      )}
       onKeyDown={(e) => {
         if (e.key === 'ArrowLeft') {
           const nextActiveIndex =
@@ -169,7 +173,10 @@ const LinkTab: FC<PropsWithChildren<{ id: string }>> = ({
       }
       aria-selected={selectedId === id}
       tabIndex={activeIndex === index ? 0 : -1}
-      className="relative cursor-pointer p-3"
+      className={cn(
+        'relative cursor-pointer rounded-md p-3',
+        'focus-visible:bordertransparent focus-visible:ring-border-info focus-visible:ring-2 focus-visible:outline-hidden',
+      )}
       onKeyDown={(e) => {
         if (e.key === 'ArrowLeft') {
           const nextActiveIndex =
@@ -219,7 +226,10 @@ const Panel: FC<PropsWithChildren<{ id: string }>> = ({
       role="tabpanel"
       aria-labelledby={`${rootId}-tab-${id}`}
       tabIndex={0}
-      className="p-3"
+      className={cn(
+        'rounded-md p-3',
+        'focus-visible:bordertransparent focus-visible:ring-border-info focus-visible:ring-2 focus-visible:outline-hidden',
+      )}
     >
       {children}
     </div>
