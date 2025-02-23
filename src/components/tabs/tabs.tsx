@@ -1,6 +1,5 @@
 'use client';
 
-import { cn } from '@/utils/cn';
 import Link from 'next/link';
 import {
   createContext,
@@ -12,6 +11,7 @@ import {
   useRef,
   useState,
 } from 'react';
+import * as motion from 'motion/react-client';
 
 type TabsContext = {
   rootId: string;
@@ -109,10 +109,7 @@ const Tab: FC<PropsWithChildren<{ id: string }>> = ({
       }
       aria-selected={selectedId === id}
       tabIndex={activeIndex === index ? 0 : -1}
-      className={cn(
-        'cursor-pointer p-3',
-        selectedId === id && 'border-primary-border border-b-3',
-      )}
+      className="relative cursor-pointer p-3"
       onKeyDown={(e) => {
         if (e.key === 'ArrowLeft') {
           const nextActiveIndex =
@@ -135,6 +132,12 @@ const Tab: FC<PropsWithChildren<{ id: string }>> = ({
         setSelectedId(id);
       }}
     >
+      {selectedId === id && (
+        <motion.div
+          layoutId="underline"
+          className="bg-primary-border absolute right-0 -bottom-0.5 left-0 h-1"
+        />
+      )}
       {children}
     </div>
   );
@@ -166,10 +169,7 @@ const LinkTab: FC<PropsWithChildren<{ id: string }>> = ({
       }
       aria-selected={selectedId === id}
       tabIndex={activeIndex === index ? 0 : -1}
-      className={cn(
-        'cursor-pointer p-3',
-        selectedId === id && 'border-primary-border border-b-3',
-      )}
+      className="relative cursor-pointer p-3"
       onKeyDown={(e) => {
         if (e.key === 'ArrowLeft') {
           const nextActiveIndex =
@@ -192,6 +192,12 @@ const LinkTab: FC<PropsWithChildren<{ id: string }>> = ({
         setSelectedId(id);
       }}
     >
+      {selectedId === id && (
+        <motion.div
+          layoutId="underline"
+          className="bg-primary-border absolute right-0 -bottom-0.5 left-0 h-1"
+        />
+      )}
       {children}
     </Link>
   );
