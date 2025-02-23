@@ -110,29 +110,25 @@ export const ColorInfo: FC<{
             <p className="font-bold">
               基本色:&nbsp;
               <span className="text-lg font-normal">
-                {code}&nbsp;/&nbsp;{codeDark}
+                {`${code} / ${codeDark}`}
               </span>
             </p>
             <p className="font-bold">
               HEX:&nbsp;
               <span className="text-lg font-normal">
-                {colorCode}&nbsp;/&nbsp;{colorCodeDark}
+                {`${colorCode} / ${colorCodeDark}`}
               </span>
             </p>
             <p className="font-bold">
               RGB:&nbsp;
               <span className="text-lg font-normal">
-                {`${rgb.r.toString()}, ${rgb.g.toString()}, ${rgb.b.toString()}`}
-                &nbsp;/&nbsp;
-                {`${rgbDark.r.toString()}, ${rgbDark.g.toString()}, ${rgbDark.b.toString()}`}
+                {`${rgb.r.toString()},${rgb.g.toString()},${rgb.b.toString()} / ${rgbDark.r.toString()},${rgbDark.g.toString()},${rgbDark.b.toString()}`}
               </span>
             </p>
             <p className="font-bold">
               HSL:&nbsp;
               <span className="text-lg font-normal">
-                {`${toPrecision(hsl.h, 0).toString()}, ${toPrecision(hsl.s, 0).toString()}, ${toPrecision(hsl.l, 0).toString()}`}
-                &nbsp;/&nbsp;
-                {`${toPrecision(hslDark.h, 0).toString()}, ${toPrecision(hslDark.s, 0).toString()}, ${toPrecision(hslDark.l, 0).toString()}`}
+                {`${toPrecision(hsl.h, 0).toString()},${toPrecision(hsl.s, 0).toString()},${toPrecision(hsl.l, 0).toString()} / ${toPrecision(hslDark.h, 0).toString()},${toPrecision(hslDark.s, 0).toString()},${toPrecision(hslDark.l, 0).toString()}`}
               </span>
             </p>
           </section>
