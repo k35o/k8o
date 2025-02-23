@@ -22,6 +22,7 @@ import {
   Link,
   ListMinus,
   PaintBucket,
+  Rocket,
   Table2,
   TriangleAlert,
   X,
@@ -121,6 +122,10 @@ export const Primary: Story = {
         <div className="flex flex-col items-center justify-center">
           <Contrast className="size-24" />
           <p className="text-center">コントラスト</p>
+        </div>
+        <div className="flex flex-col items-center justify-center">
+          <Rocket className="size-24" />
+          <p className="text-center">準備中</p>
         </div>
       </div>
     );
