@@ -7,7 +7,7 @@ export const metadata = {
   openGraph: {
     title: 'かどまるラボ',
     description: '角丸を変化させてお気に入りの図形を探しましょう',
-    url: 'https://k8o.me/designs/rounded',
+    url: 'https://k8o.me/rounded-maker',
     siteName: 'k8o',
     locale: 'ja',
     type: 'website',

@@ -7,7 +7,7 @@ export const metadata = {
   openGraph: {
     title: '基数チェンジャー',
     description: '2進数・8進数・10進数・16進数を相互に変換します。',
-    url: 'https://k8o.me/number/converter',
+    url: 'https://k8o.me/base-converter',
     siteName: 'k8o',
     locale: 'ja',
     type: 'website',
