@@ -1,5 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import { Tabs } from './tabs';
+import { expect, userEvent, waitFor, within } from '@storybook/test';
 
 const meta: Meta<typeof Tabs.Root> = {
   title: 'components/tabs',
@@ -22,6 +23,24 @@ export const Primary: Story = {
       <Tabs.Panel id="tab3">Panel3</Tabs.Panel>
     </Tabs.Root>
   ),
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    await expect(canvas.getByRole('tabpanel')).toHaveTextContent('Panel1');
+
+    await userEvent.keyboard('{arrowright}');
+    await waitFor(() =>
+      expect(canvas.getByRole('tabpanel')).toHaveTextContent(
+        'Panel2',
+      ),
+    );
+
+    await userEvent.keyboard('{Arrowleft}');
+    await waitFor(() =>
+      expect(canvas.getByRole('tabpanel')).toHaveTextContent(
+        'Panel1',
+      ),
+    );
+  },
 };
 
 export const DefaultSelected: Story = {
