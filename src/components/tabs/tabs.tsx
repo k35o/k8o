@@ -80,7 +80,7 @@ const Root: FC<
       }}
     >
       {/* TODO: スクロール以外の見せ方を考えても良さそう */}
-      <div className="flex flex-col gap-1 overflow-x-auto">
+      <div className="flex flex-col gap-1 overflow-x-auto p-0.5">
         {children}
       </div>
     </TabsProvider>
@@ -99,7 +99,7 @@ const List: FC<
       role="tablist"
       aria-label={label}
       aria-orientation="horizontal"
-      className="border-border-base flex overflow-x-auto overflow-y-hidden border-b"
+      className="border-border-base flex overflow-x-auto overflow-y-hidden border-b p-0.5"
     >
       {children}
     </div>
@@ -130,7 +130,7 @@ const Tab: FC<PropsWithChildren<{ id: string }>> = ({
     'aria-selected': selectedId === id,
     tabIndex: activeIndex === index ? 0 : -1,
     className: cn(
-      'relative cursor-pointer rounded-md p-3',
+      'relative cursor-pointer rounded-md p-2',
       'focus-visible:bordertransparent focus-visible:ring-border-info focus-visible:ring-2 focus-visible:outline-hidden',
     ),
     onKeyDown: (e: KeyboardEvent) => {
@@ -191,7 +191,7 @@ const Panel: FC<PropsWithChildren<{ id: string }>> = ({
       aria-labelledby={`${rootId}-tab-${id}`}
       tabIndex={0}
       className={cn(
-        'rounded-md p-3',
+        'rounded-md p-2',
         'focus-visible:bordertransparent focus-visible:ring-border-info focus-visible:ring-2 focus-visible:outline-hidden',
       )}
     >
