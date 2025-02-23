@@ -1,6 +1,11 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import { Tabs } from './tabs';
-import { expect, userEvent, waitFor, within } from '@storybook/test';
+import {
+  expect,
+  fireEvent,
+  userEvent,
+  within,
+} from '@storybook/test';
 import { getRouter } from '@storybook/nextjs/navigation.mock';
 import { Alert } from '../alert';
 
@@ -34,19 +39,21 @@ export const Primary: Story = {
     await userEvent.keyboard('{ArrowLeft}');
     await userEvent.keyboard('{ArrowRight}');
     await userEvent.keyboard('{ArrowRight}');
-    await waitFor(() =>
-      expect(canvas.getByRole('tabpanel')).toHaveTextContent(
-        'Panel2',
-      ),
+    await fireEvent.animationEnd(canvas.getByRole('tabpanel'));
+
+    await expect(canvas.getByRole('tabpanel')).toHaveTextContent(
+      'Panel2',
     );
 
     await userEvent.keyboard('{ArrowLeft}');
     await userEvent.keyboard('{ArrowLeft}');
-    await waitFor(() =>
-      expect(canvas.getByRole('tabpanel')).toHaveTextContent(
-        'Panel3',
-      ),
+    await fireEvent.animationEnd(canvas.getByRole('tabpanel'));
+    await expect(canvas.getByRole('tabpanel')).toHaveTextContent(
+      'Panel3',
     );
+  },
+  parameters: {
+    chromatic: {},
   },
 };
 
