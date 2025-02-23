@@ -4,11 +4,6 @@ import { Question } from '.';
 const meta: Meta<typeof Question> = {
   title: 'app/quizzes/question',
   component: Question,
-  parameters: {
-    nextjs: {
-      appDirectory: true,
-    },
-  },
 };
 
 export default meta;
