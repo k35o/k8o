@@ -20,7 +20,4 @@ export const White: Story = {
     text: 'TypeScript',
     color: 'white',
   },
-  parameters: {
-    backgrounds: { default: 'dark' },
-  },
 };
