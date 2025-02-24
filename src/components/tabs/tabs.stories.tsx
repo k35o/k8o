@@ -3,7 +3,7 @@ import { Tabs } from './tabs';
 import { expect, userEvent, waitFor, within } from '@storybook/test';
 import { getRouter } from '@storybook/nextjs/navigation.mock';
 import { Alert } from '../alert';
-import isChromatic from 'chromatic/isChromatic';
+import { sleep } from '@/utils/sleep';
 
 const meta: Meta<typeof Tabs.Root> = {
   title: 'components/tabs',
@@ -28,13 +28,6 @@ export const Primary: Story = {
   ),
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
-    // TODO: Chromaticでも動くようにする vitestでこの機能が壊れていないことは保証できている
-    if (isChromatic()) {
-      await expect(canvas.getByRole('tabpanel')).toHaveTextContent(
-        'Panel1',
-      );
-      return;
-    }
     await expect(canvas.getByRole('tabpanel')).toHaveTextContent(
       'Panel1',
     );
@@ -42,6 +35,7 @@ export const Primary: Story = {
     await userEvent.keyboard('{ArrowLeft}');
     await userEvent.keyboard('{ArrowRight}');
     await userEvent.keyboard('{ArrowRight}');
+    await sleep(1000);
     await waitFor(() =>
       expect(canvas.getByRole('tabpanel')).toHaveTextContent(
         'Panel2',
@@ -50,6 +44,7 @@ export const Primary: Story = {
 
     await userEvent.keyboard('{ArrowLeft}');
     await userEvent.keyboard('{ArrowLeft}');
+    await sleep(1000);
     await waitFor(() =>
       expect(canvas.getByRole('tabpanel')).toHaveTextContent(
         'Panel3',
