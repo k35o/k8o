@@ -4,10 +4,10 @@ import { FC } from 'react';
 export const CommingSoon: FC = () => {
   return (
     <div className="flex flex-col items-center gap-4 p-6">
-      <p className="text-2xl font-bold">作成中</p>
+      <p className="text-2xl font-bold">Comming Soon</p>
       <Rocket className="text-primary-fg size-8" />
       <p className="text-gray-600">
-        新しい機能の準備を進めています。もうしばらくお待ちください。
+        準備中の機能です。ご利用までもうしばらくお待ちください。
       </p>
       <div className="text-fg-mute flex items-center justify-center gap-2">
         <Clock className="size-4" />
