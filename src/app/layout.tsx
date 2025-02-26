@@ -1,6 +1,5 @@
 import { GlobalLayout } from './_components/global-layout';
 import './_styles/globals.css';
-import { M_PLUS_2, Noto_Sans_JP } from 'next/font/google';
 import { Analytics } from '@vercel/analytics/react';
 import { SpeedInsights } from '@vercel/speed-insights/next';
 import '@/libs/zod';
@@ -9,15 +8,7 @@ import { cn } from '@/utils/cn';
 import { ReactNode } from 'react';
 import { Metadata } from 'next';
 import { ReactScan } from '@/libs/react-scan';
-
-const font = M_PLUS_2({
-  subsets: ['latin'],
-});
-
-const subFont = Noto_Sans_JP({
-  subsets: ['latin'],
-  variable: '--font-noto-sans-jp',
-});
+import { mPlus2, notoSansJp } from './_styles/font';
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://k8o.me'),
@@ -60,9 +51,9 @@ export default function RootLayout({
       <ReactScan />
       <body
         className={cn(
-          font.className,
-          subFont.variable,
-          'text-fg-base font-medium antialiased',
+          mPlus2.variable,
+          notoSansJp.variable,
+          'text-fg-base font-m-plus-2 font-medium antialiased',
         )}
       >
         <AppProvider>

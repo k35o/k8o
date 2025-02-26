@@ -1,12 +1,14 @@
 import React, { FC, memo } from 'react';
+import Script from 'next/script';
 import type { Preview } from '@storybook/react';
-import '../src/app/_styles/globals.css';
 import { AppProvider } from '../src/providers/app';
 import { cn } from '../src/utils/cn';
-import { M_PLUS_2, Noto_Sans_JP } from 'next/font/google';
 import { useTheme } from 'next-themes';
 import { initialize, mswLoader } from 'msw-storybook-addon';
 import { handlers } from '../src/mocks/handlers';
+import { mPlus2, notoSansJp } from '../src/app/_styles/font';
+
+import '../src/app/_styles/globals.css';
 
 initialize(
   {
@@ -14,13 +16,6 @@ initialize(
   },
   handlers,
 );
-
-const font = M_PLUS_2({ subsets: ['latin'] });
-
-const subFont = Noto_Sans_JP({
-  subsets: ['latin'],
-  variable: '--font-noto-sans-jp',
-});
 
 const ApplayThemeByStorybook: FC<{ theme: string }> = memo(
   ({ theme }) => {
@@ -33,6 +28,8 @@ const ApplayThemeByStorybook: FC<{ theme: string }> = memo(
     return null;
   },
 );
+
+ApplayThemeByStorybook.displayName = 'ApplayThemeByStorybook';
 
 const preview: Preview = {
   globalTypes: {
@@ -61,22 +58,26 @@ const preview: Preview = {
   decorators: [
     (Story, { globals, parameters }) => (
       <AppProvider>
-        <div
-          className={cn(
-            font.className,
-            subFont.variable,
-            'app-background text-fg-base min-h-screen p-6 font-medium',
-          )}
-        >
+        <Script id="add-class-list">
+          {`document.body.classList.add(${cn(
+            mPlus2.variable,
+            notoSansJp.variable,
+            'text-fg-base font-medium font-m-plus-2',
+          )
+            .split(' ')
+            .map((c) => `'${c}'`)
+            .join(', ')})`}
+        </Script>
+        <div className="app-background min-h-screen p-6">
           <Story />
         </div>
         <ApplayThemeByStorybook
           theme={
-            parameters.theme
+            (parameters.theme
               ? parameters.theme
               : globals.theme
                 ? globals.theme
-                : 'light'
+                : 'light') as string
           }
         />
       </AppProvider>

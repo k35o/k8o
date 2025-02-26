@@ -215,8 +215,6 @@ body:has(dialog[open]) {
 }
 
 @theme inline {
-  --font-noto-sans-jp: var(--font-noto-sans-jp);
-
   /* TODO: spacingをもっと定義する */
   --spacing-lg: 32rem;
 
@@ -277,6 +275,10 @@ body:has(dialog[open]) {
   --radius-sm: 0.375rem;
   --radius-md: 0.5rem;
   --radius-lg: 0.75rem;
+
+  --font-*: initial;
+  --font-noto-sans-jp: var(--font-noto-sans-jp);
+  --font-m-plus-2: var(--font-m-plus-2);
 
   --font-weight-*: initial;
   --font-weight-medium: 500;
