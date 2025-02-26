@@ -9,7 +9,7 @@ export const QuizProgress: FC<{
     <div className="flex flex-col items-center gap-1">
       <p className="text-xl font-bold">
         第{progress}問
-        <span className="text-base font-normal">
+        <span className="text-base font-medium">
           （{progress}/{maxProgress}）
         </span>
       </p>
