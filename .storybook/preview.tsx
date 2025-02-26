@@ -65,7 +65,7 @@ const preview: Preview = {
           className={cn(
             font.className,
             subFont.variable,
-            'app-background text-fg-base min-h-screen p-6',
+            'app-background text-fg-base min-h-screen p-6 font-medium',
           )}
         >
           <Story />

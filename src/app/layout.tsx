@@ -62,7 +62,7 @@ export default function RootLayout({
         className={cn(
           font.className,
           subFont.variable,
-          'text-fg-base antialiased',
+          'text-fg-base font-medium antialiased',
         )}
       >
         <AppProvider>
