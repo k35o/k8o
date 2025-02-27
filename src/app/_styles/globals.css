@@ -298,7 +298,7 @@ body:has(dialog[open]) {
   --text-emphasize: 3rem;
   --text-emphasize--line-height: 1;
   --text-highlight: 6rem;
-  --text-highlight-ine-height: 1;
+  --text-highlight--line-height: 1;
 
   --font-weight-*: initial;
   --font-weight-medium: 450;
