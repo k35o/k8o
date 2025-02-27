@@ -295,18 +295,10 @@ body:has(dialog[open]) {
   --text-2xl--line-height: calc(2 / 1.5);
   --text-3xl: 1.875rem;
   --text-3xl--line-height: calc(2.25 / 1.875);
-  --text-4xl: 2.25rem;
-  --text-4xl--line-height: calc(2.5 / 2.25);
-  --text-5xl: 3rem;
-  --text-5xl--line-height: 1;
-  --text-6xl: 3.75rem;
-  --text-6xl--line-height: 1;
-  --text-7xl: 4.5rem;
-  --text-7xl--line-height: 1;
-  --text-8xl: 6rem;
-  --text-8xl--line-height: 1;
-  --text-9xl: 8rem;
-  --text-9xl--line-height: 1;
+  --text-emphasize: 3rem;
+  --text-emphasize--line-height: 1;
+  --text-highlight: 6rem;
+  --text-highlight-ine-height: 1;
 
   --font-weight-*: initial;
   --font-weight-medium: 450;
