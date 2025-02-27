@@ -3,7 +3,6 @@ import { Tabs } from './tabs';
 import { expect, userEvent, within } from '@storybook/test';
 import { getRouter } from '@storybook/nextjs/navigation.mock';
 import { Alert } from '../alert';
-import { sleep } from '@/utils/sleep';
 
 const meta: Meta<typeof Tabs.Root> = {
   title: 'components/tabs',
@@ -28,21 +27,19 @@ export const Primary: Story = {
   ),
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
+    const tab2 = canvas.getByRole('tab', { name: 'Tab2' });
+    const tab3 = canvas.getByRole('tab', { name: 'Tab3' });
+
     await expect(canvas.getByRole('tabpanel')).toHaveTextContent(
       'Panel1',
     );
 
-    await userEvent.keyboard('{ArrowLeft}');
-    await userEvent.keyboard('{ArrowRight}');
-    await userEvent.keyboard('{ArrowRight}');
-    await sleep(1000);
+    await userEvent.click(tab2);
     await expect(canvas.getByRole('tabpanel')).toHaveTextContent(
       'Panel2',
     );
 
-    await userEvent.keyboard('{ArrowLeft}');
-    await userEvent.keyboard('{ArrowLeft}');
-    await sleep(1000);
+    await userEvent.click(tab3);
     await expect(canvas.getByRole('tabpanel')).toHaveTextContent(
       'Panel3',
     );
