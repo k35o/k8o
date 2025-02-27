@@ -1,9 +1,8 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import { Tabs } from './tabs';
-import { expect, userEvent, waitFor, within } from '@storybook/test';
+import { expect, userEvent, within } from '@storybook/test';
 import { getRouter } from '@storybook/nextjs/navigation.mock';
 import { Alert } from '../alert';
-import isChromatic from 'chromatic/isChromatic';
 
 const meta: Meta<typeof Tabs.Root> = {
   title: 'components/tabs',
@@ -28,32 +27,21 @@ export const Primary: Story = {
   ),
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
-    // TODO: Chromaticでも動くようにする vitestでこの機能が壊れていないことは保証できている
-    if (isChromatic()) {
-      await expect(canvas.getByRole('tabpanel')).toHaveTextContent(
-        'Panel1',
-      );
-      return;
-    }
+    const tab2 = canvas.getByRole('tab', { name: 'Tab2' });
+    const tab3 = canvas.getByRole('tab', { name: 'Tab3' });
+
     await expect(canvas.getByRole('tabpanel')).toHaveTextContent(
       'Panel1',
     );
 
-    await userEvent.keyboard('{ArrowLeft}');
-    await userEvent.keyboard('{ArrowRight}');
-    await userEvent.keyboard('{ArrowRight}');
-    await waitFor(() =>
-      expect(canvas.getByRole('tabpanel')).toHaveTextContent(
-        'Panel2',
-      ),
+    await userEvent.click(tab2);
+    await expect(canvas.getByRole('tabpanel')).toHaveTextContent(
+      'Panel2',
     );
 
-    await userEvent.keyboard('{ArrowLeft}');
-    await userEvent.keyboard('{ArrowLeft}');
-    await waitFor(() =>
-      expect(canvas.getByRole('tabpanel')).toHaveTextContent(
-        'Panel3',
-      ),
+    await userEvent.click(tab3);
+    await expect(canvas.getByRole('tabpanel')).toHaveTextContent(
+      'Panel3',
     );
   },
 };
