@@ -21,8 +21,8 @@ const LinkHeading: FC<
         type === 'h2' && 'mb-4 text-xl sm:text-2xl',
         type === 'h3' && 'text-xl sm:text-2xl',
         type === 'h4' && 'text-lg sm:text-xl',
-        type === 'h5' && 'text-base sm:text-lg',
-        type === 'h6' && 'text-sm sm:text-base',
+        type === 'h5' && 'text-md sm:text-lg',
+        type === 'h6' && 'sm:text-md text-sm',
       )}
     >
       {isStringChildren && (
@@ -76,7 +76,7 @@ export function useMDXComponents(
       </>
     ),
     p: ({ children }) => (
-      <p className="my-2 text-xs leading-normal sm:text-base">
+      <p className="sm:text-md my-2 text-xs leading-normal">
         {children}
       </p>
     ),
@@ -85,14 +85,14 @@ export function useMDXComponents(
         return (
           <code
             {...props}
-            className="bg-bg-mute m-1 rounded-md px-1 text-xs sm:text-base"
+            className="bg-bg-mute sm:text-md m-1 rounded-md px-1 text-xs"
           >
             {children}
           </code>
         );
       }
       return (
-        <code {...props} className="p-1 text-xs sm:text-base">
+        <code {...props} className="sm:text-md p-1 text-xs">
           {children}
         </code>
       );

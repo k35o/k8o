@@ -15,7 +15,7 @@ const List: FC<
         className={cn(
           'text-fg-mute flex list-none items-center gap-1 font-bold',
           size === 'sm' && 'text-xs',
-          size === 'md' && 'text-base',
+          size === 'md' && 'text-md',
           size === 'lg' && 'text-2xl',
         )}
       >
