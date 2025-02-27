@@ -1,45 +1,36 @@
-import { useCallback, useEffect, useState } from 'react';
-import { useClient } from '../client';
+import { useSyncExternalStore } from 'react';
 
 const getHash = () =>
   typeof window !== 'undefined'
     ? decodeURIComponent(window.location.hash.replace('#', ''))
     : null;
 
+const subscribe = (callback: () => void) => {
+  // eslint-disable-next-line @typescript-eslint/unbound-method
+  const { pushState, replaceState } = window.history;
+
+  window.history.pushState = (...args) => {
+    pushState.apply(window.history, args);
+    setTimeout(callback);
+  };
+  window.history.replaceState = (...args) => {
+    replaceState.apply(window.history, args);
+    setTimeout(callback);
+  };
+
+  // hash changeに応じてhashを更新
+  window.addEventListener('hashchange', callback);
+  return () => {
+    window.removeEventListener('hashchange', callback);
+  };
+};
+
 export const useHash = (): string | null => {
-  const isClient = useClient();
-  const [hash, setHash] = useState<string | null>(getHash);
+  const hash = useSyncExternalStore<string | null>(
+    subscribe,
+    () => getHash(),
+    () => null,
+  );
 
-  const handleUpdateHash = useCallback(() => {
-    setHash(getHash());
-  }, []);
-
-  useEffect(() => {
-    // eslint-disable-next-line @typescript-eslint/unbound-method
-    const { pushState, replaceState } = window.history;
-
-    window.history.pushState = (...args) => {
-      pushState.apply(window.history, args);
-      setTimeout(() => {
-        handleUpdateHash();
-      });
-    };
-    window.history.replaceState = (...args) => {
-      replaceState.apply(window.history, args);
-      setTimeout(() => {
-        handleUpdateHash();
-      });
-    };
-
-    // hash changeに応じてhashを更新
-    const hashChange = () => {
-      handleUpdateHash();
-    };
-    window.addEventListener('hashchange', hashChange);
-    return () => {
-      window.removeEventListener('hashchange', hashChange);
-    };
-  }, [handleUpdateHash]);
-
-  return isClient ? hash : null;
+  return hash;
 };
