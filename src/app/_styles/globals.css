@@ -281,7 +281,7 @@ body:has(dialog[open]) {
   --font-m-plus-2: var(--font-m-plus-2);
 
   --font-weight-*: initial;
-  --font-weight-medium: 500;
+  --font-weight-medium: 450;
   --font-weight-bold: 700;
 }
 
