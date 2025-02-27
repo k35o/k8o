@@ -283,6 +283,10 @@ body:has(dialog[open]) {
   --font-weight-*: initial;
   --font-weight-medium: 450;
   --font-weight-bold: 700;
+
+  --tracking-*: initial;
+  --tracking-none: 0em;
+  --tracking-normal: 0.025em;
 }
 
 @utility grid-cols-auto-fill-* {
