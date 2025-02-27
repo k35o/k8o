@@ -37,7 +37,7 @@ export const Answer: FC<{
         </div>
       )}
       {currentQuiz.highlight && (
-        <p className="font-noto-sans-jp text-9xl">
+        <p className="font-noto-sans-jp text-highlight">
           {currentQuiz.highlight}
         </p>
       )}

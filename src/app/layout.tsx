@@ -53,7 +53,7 @@ export default function RootLayout({
         className={cn(
           mPlus2.variable,
           notoSansJp.variable,
-          'text-fg-base font-m-plus-2 font-medium antialiased',
+          'text-fg-base font-m-plus-2 tracking-none font-medium antialiased',
         )}
       >
         <AppProvider>

@@ -47,10 +47,10 @@ export default function Home() {
               </div>
             </div>
             <div className="hidden md:block">
-              <p className="line-clamp-1 text-base">
+              <p className="text-md line-clamp-1">
                 WebフロントとTypeScriptに興味があります。
               </p>
-              <p className="line-clamp-2 text-base">
+              <p className="text-md line-clamp-2">
                 このサイトは日常で欲したアプリケーションやブログを公開しています。
               </p>
             </div>

@@ -31,7 +31,7 @@ export const CollectionByHighlight: CollectionProps = ({
           <p className="text-xs">
             {quiz.answers.map((a) => a.answer).join('・')}
           </p>
-          <p className="text-8xl">{quiz.highlight}</p>
+          <p className="text-highlight">{quiz.highlight}</p>
         </div>
       ))}
     </div>

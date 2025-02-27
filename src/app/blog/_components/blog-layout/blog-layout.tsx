@@ -52,7 +52,7 @@ export const BlogLayout: FC<{
                 className="bg-bg-mute rounded-md p-4"
                 aria-label="記事の要約"
               >
-                <p className="text-fg-base text-sm sm:text-base">
+                <p className="text-fg-base sm:text-md text-sm">
                   {blog.description}
                 </p>
               </div>
