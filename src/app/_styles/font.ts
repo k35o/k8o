@@ -8,6 +8,8 @@ const mPlus2 = M_PLUS_2({
 const notoSansJp = Noto_Sans_JP({
   subsets: ['latin'],
   variable: '--font-noto-sans-jp',
+  display: 'optional',
+  fallback: ['system-ui', 'sans-serif'],
 });
 
 export { mPlus2, notoSansJp };
