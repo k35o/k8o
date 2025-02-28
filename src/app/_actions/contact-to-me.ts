@@ -1,7 +1,7 @@
 'use server';
 
 import { db } from '#database/db';
-import * as schema from '#src/database/schema.js';
+import * as schema from '@/database/schema';
 import { z } from 'zod';
 import { Ratelimit } from '@upstash/ratelimit';
 import { Redis } from '@upstash/redis';
