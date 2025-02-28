@@ -1,7 +1,7 @@
 'use server';
 
-import { db } from '#drizzle/db';
-import * as schema from '@/drizzle/schema';
+import { db } from '#database/db';
+import * as schema from '@/database/schema';
 import { InferSelectModel, sql as ormSql } from 'drizzle-orm';
 import { Quiz } from '../_types';
 

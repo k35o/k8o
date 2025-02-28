@@ -4,9 +4,9 @@
   "private": true,
   "type": "module",
   "imports": {
-    "#drizzle/db": {
-      "storybook": "./src/mocks/drizzle-db.mock.ts",
-      "default": "./src/drizzle/db.ts"
+    "#database/db": {
+      "storybook": "./src/mocks/db.mock.ts",
+      "default": "./src/database/db.ts"
     },
     "#actions/blog": {
       "storybook": "./src/mocks/actions/blog.mock.ts",
