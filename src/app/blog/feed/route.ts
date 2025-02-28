@@ -1,7 +1,7 @@
 import RSS from 'rss';
 import { metadata } from '../layout';
 import { NextResponse } from 'next/server';
-import { db } from '#drizzle/db';
+import { db } from '#database/db';
 
 export const dynamic = 'force-static';
 
