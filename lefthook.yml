@@ -3,7 +3,7 @@ pre-commit:
   commands:
     format:
       glob: 'src/**/*.{js,ts,cjs,d.cts,d.ts,jsx,tsx}'
-      run: pnpm prettier --write {staged_files}
+      run: node --experimental-strip-types node_modules/prettier/bin/prettier.cjs --write {staged_files}
       stage_fixed: true
     lint:
       glob: 'src/**/*.{js,ts,cjs,d.cts,d.ts,jsx,tsx}'
@@ -15,7 +15,7 @@ pre-push:
   commands:
     format:
       glob: 'src/**/*.{js,ts,cjs,d.cts,d.ts,jsx,tsx}'
-      run: pnpm prettier --check {staged_files}
+      run: node --experimental-strip-types node_modules/prettier/bin/prettier.cjs --check {staged_files}
     lint:
       glob: 'src/**/*.{js,ts,cjs,d.cts,d.ts,jsx,tsx}'
       run: pnpm run lint --file {staged_files}
