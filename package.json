@@ -52,7 +52,7 @@
     "budoux": "0.6.4",
     "clsx": "2.1.1",
     "date-fns": "4.1.0",
-    "drizzle-orm": "0.39.3",
+    "drizzle-orm": "0.40.0",
     "lucide-react": "0.477.0",
     "motion": "12.4.7",
     "next": "15.1.7",
