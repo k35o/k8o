@@ -1,8 +1,8 @@
 import { FlatCompat } from '@eslint/eslintrc';
 import eslint from '@eslint/js';
 import tseslint from 'typescript-eslint';
-import configPrettier from "eslint-config-prettier";
-import storybook from 'eslint-plugin-storybook'
+import configPrettier from 'eslint-config-prettier';
+import storybook from 'eslint-plugin-storybook';
 import jsxA11y from 'eslint-plugin-jsx-a11y';
 
 const compat = new FlatCompat({
@@ -28,18 +28,21 @@ export default tseslint.config(
   },
   {
     rules: {
-      "semi": "off",
-      "@typescript-eslint/consistent-type-definitions": ["error", "type"],
-      "@typescript-eslint/no-unused-vars": [
-        "error",
+      semi: 'off',
+      '@typescript-eslint/consistent-type-definitions': [
+        'error',
+        'type',
+      ],
+      '@typescript-eslint/no-unused-vars': [
+        'error',
         {
-          "args": "all",
-          "argsIgnorePattern": "^_",
-          "caughtErrors": "all",
-          "caughtErrorsIgnorePattern": "^_",
-          "destructuredArrayIgnorePattern": "^_",
-          "varsIgnorePattern": "^_",
-          "ignoreRestSiblings": true
+          args: 'all',
+          argsIgnorePattern: '^_',
+          caughtErrors: 'all',
+          caughtErrorsIgnorePattern: '^_',
+          destructuredArrayIgnorePattern: '^_',
+          varsIgnorePattern: '^_',
+          ignoreRestSiblings: true,
         },
       ],
     },
