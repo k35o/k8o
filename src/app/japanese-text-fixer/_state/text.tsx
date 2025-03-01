@@ -171,7 +171,7 @@ export const CheckSyntaxProvider: FC<
     __test?.defaultResultMessages ?? {},
   );
   const [fixTexts, setFixTexts] = useState<Record<number, string>>(
-    __test?.defaultFixTexts ?? : {},
+    __test?.defaultFixTexts ?? {},
   );
   const [complete, setComplete] = useState(false);
 
