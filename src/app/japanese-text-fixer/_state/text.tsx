@@ -161,17 +161,15 @@ export const CheckSyntaxProvider: FC<
     };
   }>
 > = ({ children, __test }) => {
-  const [text, setText] = useState(
-    __test?.defaultText ? __test.defaultText : '',
-  );
+  const [text, setText] = useState(__test?.defaultText ?? '');
   const [resultText, setResultText] = useState<string[]>(
-    __test?.defaultResultText ? __test.defaultResultText : [],
+    __test?.defaultResultText ?? [],
   );
   const [resultMessages, setResultMessages] = useState<ResultMessage>(
-    __test?.defaultResultMessages ? __test.defaultResultMessages : {},
+    __test?.defaultResultMessages ?? {},
   );
   const [fixTexts, setFixTexts] = useState<Record<number, string>>(
-    __test?.defaultFixTexts ? __test.defaultFixTexts : {},
+    __test?.defaultFixTexts ?? {},
   );
   const [complete, setComplete] = useState(false);
 
