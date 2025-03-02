@@ -161,9 +161,7 @@ export const CheckSyntaxProvider: FC<
     };
   }>
 > = ({ children, __test }) => {
-  const [text, setText] = useState(
-    __test?.defaultText ?? '',
-  );
+  const [text, setText] = useState(__test?.defaultText ?? '');
   const [resultText, setResultText] = useState<string[]>(
     __test?.defaultResultText ?? [],
   );
