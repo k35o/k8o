@@ -115,7 +115,7 @@
     "postgres": "3.4.5",
     "prettier": "3.5.3",
     "prettier-plugin-tailwindcss": "0.6.11",
-    "react-scan": "0.2.8",
+    "react-scan": "0.2.9",
     "storybook": "8.6.3",
     "storybook-addon-mock-date": "0.6.0",
     "typescript": "5.8.2",
