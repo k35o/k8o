@@ -1,7 +1,7 @@
-import * as motion from 'motion/react-client';
-import { FC } from 'react';
 import { CardProps } from './type';
 import { cn } from '@/utils/cn';
+import * as motion from 'motion/react-client';
+import { FC } from 'react';
 
 export const InteractiveCard: FC<
   CardProps & { animation?: 'low' | 'medium' }

@@ -1,7 +1,7 @@
-import { isInternalRoute } from '@/utils/is-internal-route';
 import { cn } from '@/utils/cn';
-import { FC, PropsWithChildren } from 'react';
+import { isInternalRoute } from '@/utils/is-internal-route';
 import Link from 'next/link';
+import { FC, PropsWithChildren } from 'react';
 
 type IconLinkProps = PropsWithChildren<{
   size?: 'sm' | 'md' | 'lg';

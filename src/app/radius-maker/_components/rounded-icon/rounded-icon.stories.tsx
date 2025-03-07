@@ -1,5 +1,5 @@
-import type { Meta, StoryObj } from '@storybook/react';
 import { RoundedIcon } from './rounded-icon';
+import type { Meta, StoryObj } from '@storybook/react';
 
 const meta: Meta<typeof RoundedIcon> = {
   title: 'app/radius-maker/rounded-icon',

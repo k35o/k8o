@@ -1,5 +1,5 @@
-import type { Meta, StoryObj } from '@storybook/react';
 import { ContactToMe } from './contact-to-me';
+import type { Meta, StoryObj } from '@storybook/react';
 
 const meta: Meta<typeof ContactToMe> = {
   title: 'app/globals/contact-to-me',

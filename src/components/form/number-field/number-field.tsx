@@ -1,9 +1,9 @@
-import { cast } from '@/utils/number/cast';
 import { cn } from '@/utils/cn';
-import { FC, useState } from 'react';
-import { Minus, Plus } from 'lucide-react';
 import { between } from '@/utils/number/between';
+import { cast } from '@/utils/number/cast';
 import { toPrecision } from '@/utils/number/to-precision';
+import { Minus, Plus } from 'lucide-react';
+import { FC, useState } from 'react';
 
 type Props = {
   id?: string;

@@ -1,11 +1,11 @@
 'use client';
 
-import { Quiz } from './../../_types';
-import { FC, useCallback, useMemo, useState } from 'react';
+import { Answer } from '../answer';
 import { Complete } from '../complete';
 import { QuizProgress } from '../quiz-progress';
-import { Answer } from '../answer';
+import { Quiz } from './../../_types';
 import { useRouter } from 'next/navigation';
+import { FC, useCallback, useMemo, useState } from 'react';
 
 type QuestionProps = FC<{
   quizzes: Quiz[];

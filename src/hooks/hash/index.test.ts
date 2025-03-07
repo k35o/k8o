@@ -1,5 +1,5 @@
-import { renderHook, waitFor } from '@testing-library/react';
 import { useHash } from '.';
+import { renderHook, waitFor } from '@testing-library/react';
 import { act } from 'react';
 
 vi.mock('../client', () => ({

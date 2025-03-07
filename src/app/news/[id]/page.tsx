@@ -1,6 +1,6 @@
-import { draftMode } from 'next/headers';
-import { NewsLayout } from './_components/news-layout';
 import { News, NewsPagination } from '../_types';
+import { NewsLayout } from './_components/news-layout';
+import { draftMode } from 'next/headers';
 import { notFound } from 'next/navigation';
 
 export async function generateStaticParams() {

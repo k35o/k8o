@@ -1,5 +1,5 @@
-import { range } from '@/utils/array/range';
 import { Quiz } from './../../_types';
+import { range } from '@/utils/array/range';
 import { cn } from '@/utils/cn';
 import { Noto_Sans_JP } from 'next/font/google';
 import { FC } from 'react';

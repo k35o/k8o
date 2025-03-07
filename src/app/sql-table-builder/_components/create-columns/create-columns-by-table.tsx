@@ -1,14 +1,14 @@
-import { IconButton } from '@/components/icon-button';
-import { FC, useId } from 'react';
 import {
   Column,
   ColumnType,
   InvalidColumns,
 } from '../../_types/column';
-import { TextField } from '@/components/form/text-field';
-import { Select } from '@/components/form/select/select';
 import { Checkbox } from '@/components/form/checkbox';
+import { Select } from '@/components/form/select/select';
+import { TextField } from '@/components/form/text-field';
+import { IconButton } from '@/components/icon-button';
 import { X } from 'lucide-react';
+import { FC, useId } from 'react';
 
 type Props = {
   handleChangeColumn: (id: string) => (column: Column) => void;

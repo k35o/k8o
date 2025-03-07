@@ -1,9 +1,9 @@
 'use client';
 
 import { Color } from './_components/color';
-import { Tabs } from '@/components/tabs';
 import { Radius } from './_components/radius';
 import { CommingSoon } from '../_components/comming-soon';
+import { Tabs } from '@/components/tabs';
 
 export default function Page() {
   return (

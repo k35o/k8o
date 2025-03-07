@@ -1,6 +1,6 @@
-import type { Meta, StoryObj } from '@storybook/react';
-import { ListBox } from './list-box';
 import { Option } from './hooks';
+import { ListBox } from './list-box';
+import type { Meta, StoryObj } from '@storybook/react';
 import { useState } from 'react';
 
 const meta: Meta<typeof ListBox.Root> = {

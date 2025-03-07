@@ -1,11 +1,11 @@
-import { formatDate } from '@/utils/date/format';
+import { InteractiveCard } from '@/components/card';
 import { Heading } from '@/components/heading';
 import { TextTag } from '@/components/text-tag';
+import { formatDate } from '@/utils/date/format';
 import { isInternalRoute } from '@/utils/is-internal-route';
 import { Calendar, Clock } from 'lucide-react';
 import Link from 'next/link';
 import { FC } from 'react';
-import { InteractiveCard } from '@/components/card';
 
 type BlogCardProps = {
   link: string;

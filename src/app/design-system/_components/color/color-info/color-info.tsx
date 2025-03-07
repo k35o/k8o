@@ -1,21 +1,21 @@
 'use client';
 
+import { ColorContrastBg } from './color-contrast-bg';
+import { ColorContrastFg } from './color-contrast-fg';
+import {
+  hexToHsl,
+  hexToRgb,
+} from '@/app/color-converter/_utils/color-converter';
 import {
   Color,
   getColorCode,
   Stage,
 } from '@/app/design-system/_utils/color';
-import { FC, useId, useState } from 'react';
-import { ChevronDown, Contrast, PaintBucket } from 'lucide-react';
 import { cn } from '@/utils/cn';
-import {
-  hexToHsl,
-  hexToRgb,
-} from '@/app/color-converter/_utils/color-converter';
 import { toPrecision } from '@/utils/number/to-precision';
-import { ColorContrastFg } from './color-contrast-fg';
-import { ColorContrastBg } from './color-contrast-bg';
+import { ChevronDown, Contrast, PaintBucket } from 'lucide-react';
 import * as motion from 'motion/react-client';
+import { FC, useId, useState } from 'react';
 
 export const ColorInfo: FC<{
   name: string;

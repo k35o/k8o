@@ -1,6 +1,6 @@
-import { draftMode } from 'next/headers';
 import { NewsCard } from './_components/news-card';
 import { NewsPagination } from './_types';
+import { draftMode } from 'next/headers';
 
 async function getNews(draftKey?: string): Promise<NewsPagination> {
   const { isEnabled } = await draftMode();

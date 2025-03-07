@@ -2,9 +2,9 @@
 
 import { db } from '#database/db';
 import * as schema from '@/database/schema';
-import { z } from 'zod';
 import { Ratelimit } from '@upstash/ratelimit';
 import { Redis } from '@upstash/redis';
+import { z } from 'zod';
 import '@/libs/zod';
 
 const contactSchema = z.object({

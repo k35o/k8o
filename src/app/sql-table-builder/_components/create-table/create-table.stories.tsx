@@ -1,7 +1,7 @@
-import type { Meta, StoryObj } from '@storybook/react';
 import { CreateTable } from './create-table';
-import { useState } from 'react';
 import { Table } from '../../_types/table';
+import type { Meta, StoryObj } from '@storybook/react';
+import { useState } from 'react';
 
 const meta: Meta<typeof CreateTable> = {
   title: 'app/sql-table-builder/create-table',

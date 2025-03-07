@@ -1,8 +1,8 @@
-import type { Meta, StoryObj } from '@storybook/react';
 import { Tabs } from './tabs';
-import { expect, userEvent, within } from '@storybook/test';
-import { getRouter } from '@storybook/nextjs/navigation.mock';
 import { Alert } from '../alert';
+import { getRouter } from '@storybook/nextjs/navigation.mock';
+import type { Meta, StoryObj } from '@storybook/react';
+import { expect, userEvent, within } from '@storybook/test';
 
 const meta: Meta<typeof Tabs.Root> = {
   title: 'components/tabs',

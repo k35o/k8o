@@ -1,8 +1,8 @@
-import type { Meta, StoryObj } from '@storybook/react';
 import { CreateColumns } from './create-columns';
-import { useState } from 'react';
 import { Column } from '../../_types/column';
 import { uuidV4 } from '@/utils/uuid-v4';
+import type { Meta, StoryObj } from '@storybook/react';
+import { useState } from 'react';
 
 const meta: Meta<typeof CreateColumns> = {
   title: 'app/sql-table-builder/columns-info',

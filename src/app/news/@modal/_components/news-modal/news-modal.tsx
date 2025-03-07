@@ -1,8 +1,8 @@
 'use client';
 
-import { PropsWithChildren } from 'react';
-import { useRouter } from 'next/navigation';
 import { Modal } from '@/components/modal';
+import { useRouter } from 'next/navigation';
+import { PropsWithChildren } from 'react';
 
 export function NewsModal({
   title,

@@ -1,7 +1,7 @@
-import RSS from 'rss';
 import { metadata } from '../layout';
-import { NextResponse } from 'next/server';
 import { db } from '#database/db';
+import { NextResponse } from 'next/server';
+import RSS from 'rss';
 
 export const dynamic = 'force-static';
 

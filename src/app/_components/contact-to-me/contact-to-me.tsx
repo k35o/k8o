@@ -1,7 +1,13 @@
 'use client';
 
-import { Modal } from '@/components/modal';
+import { contact } from '@/app/_actions/contact-to-me';
+import { Button } from '@/components/button';
+import { FormControl } from '@/components/form/form-control';
+import { Textarea } from '@/components/form/textarea';
 import { IconButton } from '@/components/icon-button';
+import { Modal } from '@/components/modal';
+import { useToast } from '@/components/toast';
+import { Send } from 'lucide-react';
 import {
   FC,
   useActionState,
@@ -9,12 +15,6 @@ import {
   useEffect,
   useState,
 } from 'react';
-import { Send } from 'lucide-react';
-import { Textarea } from '@/components/form/textarea';
-import { FormControl } from '@/components/form/form-control';
-import { Button } from '@/components/button';
-import { contact } from '@/app/_actions/contact-to-me';
-import { useToast } from '@/components/toast';
 
 export const ContactToMe: FC = () => {
   const [isOpen, setIsOpen] = useState(false);

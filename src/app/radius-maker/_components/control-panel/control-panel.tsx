@@ -1,11 +1,11 @@
 'use client';
 
-import { FC, KeyboardEvent, MouseEvent, TouchEvent } from 'react';
 import { useControlPanel } from './use-control-panel';
-import { cn } from '@/utils/cn';
 import { IconButton } from '@/components/icon-button';
-import { ClipboardPenLine } from 'lucide-react';
 import { useClipboard } from '@/hooks/clipboard';
+import { cn } from '@/utils/cn';
+import { ClipboardPenLine } from 'lucide-react';
+import { FC, KeyboardEvent, MouseEvent, TouchEvent } from 'react';
 
 const OperateButton: FC<{
   label: string;

@@ -1,15 +1,10 @@
 'use client';
 
 import {
-  FC,
-  HTMLProps,
-  PropsWithChildren,
-  ReactElement,
-  useCallback,
-  useEffect,
-  useId,
-  useState,
-} from 'react';
+  PopoverProvider,
+  usePopoverContent,
+  usePopoverTrigger,
+} from './hooks';
 import {
   autoUpdate,
   flip,
@@ -19,13 +14,18 @@ import {
   Placement,
   useFloating,
 } from '@floating-ui/react';
-import {
-  PopoverProvider,
-  usePopoverContent,
-  usePopoverTrigger,
-} from './hooks';
 import { AnimatePresence, Variants } from 'motion/react';
 import * as motion from 'motion/react-client';
+import {
+  FC,
+  HTMLProps,
+  PropsWithChildren,
+  ReactElement,
+  useCallback,
+  useEffect,
+  useId,
+  useState,
+} from 'react';
 
 export { useOpenContext } from './hooks';
 

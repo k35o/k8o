@@ -1,3 +1,5 @@
+import { Heading } from '../heading';
+import { IconButton } from '../icon-button';
 import { X } from 'lucide-react';
 import {
   createContext,
@@ -7,8 +9,6 @@ import {
   use,
   useId,
 } from 'react';
-import { IconButton } from '../icon-button';
-import { Heading } from '../heading';
 
 const DialogContext = createContext<{
   rootId: string;

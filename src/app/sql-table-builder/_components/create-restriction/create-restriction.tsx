@@ -1,14 +1,14 @@
-import { FC } from 'react';
 import { Column } from '../../_types/column';
 import {
   InvalidRestrictions,
   Restriction,
   RestrictionType,
 } from '../../_types/restriction';
-import { Select } from '@/components/form/select/select';
-import { TextField } from '@/components/form/text-field';
 import { Autocomplete } from '@/components/form/autocomplete';
 import { FormControl } from '@/components/form/form-control';
+import { Select } from '@/components/form/select/select';
+import { TextField } from '@/components/form/text-field';
+import { FC } from 'react';
 
 const TYPE_OPTIONS = [
   { value: 'primary', label: 'PRIMARY KEY' },

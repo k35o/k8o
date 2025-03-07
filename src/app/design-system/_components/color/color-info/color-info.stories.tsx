@@ -1,5 +1,5 @@
-import type { Meta, StoryObj } from '@storybook/react';
 import { ColorInfo } from './color-info';
+import type { Meta, StoryObj } from '@storybook/react';
 
 const meta: Meta<typeof ColorInfo> = {
   title: 'app/design-system/color/color-info',

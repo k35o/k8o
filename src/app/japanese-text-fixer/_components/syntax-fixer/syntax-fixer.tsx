@@ -1,6 +1,5 @@
 'use client';
 
-import { FC, Fragment, useId } from 'react';
 import {
   useConvertComplete,
   useInvalidCount,
@@ -9,20 +8,21 @@ import {
   useResultText,
   useSetFixTextsField,
 } from '../../_state/text';
-import { Button } from '@/components/button';
-import { IconButton } from '@/components/icon-button';
-import { useStep } from '@/hooks/step';
-import { Alert } from '@/components/alert';
-import { Heading } from '@/components/heading';
-import { Textarea } from '@/components/form/textarea';
 import {
   Accordion,
   AccordionButton,
   AccordionItem,
   AccordionPanel,
 } from '@/components/accordion';
+import { Alert } from '@/components/alert';
+import { Button } from '@/components/button';
 import { FormControl } from '@/components/form/form-control';
+import { Textarea } from '@/components/form/textarea';
+import { Heading } from '@/components/heading';
+import { IconButton } from '@/components/icon-button';
+import { useStep } from '@/hooks/step';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
+import { FC, Fragment, useId } from 'react';
 
 export const SyntaxFixer: FC = () => {
   const invalidCount = useInvalidCount();

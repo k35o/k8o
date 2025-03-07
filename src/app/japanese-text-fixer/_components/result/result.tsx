@@ -1,6 +1,5 @@
 'use client';
 
-import { FC, useId } from 'react';
 import {
   useConvertIncomplete,
   useFixedText,
@@ -10,6 +9,7 @@ import { Button } from '@/components/button';
 import { Heading } from '@/components/heading';
 import { useClipboard } from '@/hooks/clipboard';
 import { ClipboardPenLine } from 'lucide-react';
+import { FC, useId } from 'react';
 
 export const Result: FC = () => {
   const id = useId();

@@ -1,5 +1,5 @@
-import { renderHook } from '@testing-library/react';
 import { useTimeout } from '.';
+import { renderHook } from '@testing-library/react';
 
 describe('useTimeout', () => {
   it('指定時間後に実行される', () => {

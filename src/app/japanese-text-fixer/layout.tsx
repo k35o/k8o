@@ -1,5 +1,5 @@
-import { Heading } from '@/components/heading';
 import { CheckSyntaxProvider } from './_state/text';
+import { Heading } from '@/components/heading';
 import { PropsWithChildren } from 'react';
 
 export const metadata = {

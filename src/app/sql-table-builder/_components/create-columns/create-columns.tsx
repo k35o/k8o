@@ -1,12 +1,12 @@
-import { FC } from 'react';
-import { Column, InvalidColumns } from '../../_types/column';
-import { Button } from '@/components/button';
-import { Restriction } from '../../_types/restriction';
-import { useCreateColumns } from './hooks';
 import { CreateColumnsByForm } from './create-columns-by-form';
 import { CreateColumnsByTable } from './create-columns-by-table';
+import { useCreateColumns } from './hooks';
 import { useColumnsType } from '../../_state';
+import { Column, InvalidColumns } from '../../_types/column';
+import { Restriction } from '../../_types/restriction';
+import { Button } from '@/components/button';
 import { ListMinus, Table2 } from 'lucide-react';
+import { FC } from 'react';
 
 type Props = {
   columns: Record<string, Column>;

@@ -1,9 +1,9 @@
 'use client';
 
-import { FC, PropsWithChildren, ReactElement } from 'react';
 import { Popover } from '../popover';
-import { Placement } from '@floating-ui/react';
 import { usePlacement } from '../popover/hooks';
+import { Placement } from '@floating-ui/react';
+import { FC, PropsWithChildren, ReactElement } from 'react';
 
 const Root: FC<PropsWithChildren<{ placement?: Placement }>> = ({
   children,

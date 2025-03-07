@@ -1,8 +1,8 @@
-import type { MDXComponents } from 'mdx/types';
-import { Link } from 'lucide-react';
 import { Anchor } from './components/anchor';
-import { FC, PropsWithChildren } from 'react';
 import { cn } from '@/utils/cn';
+import { Link } from 'lucide-react';
+import type { MDXComponents } from 'mdx/types';
+import { FC, PropsWithChildren } from 'react';
 
 const LinkHeading: FC<
   PropsWithChildren<{

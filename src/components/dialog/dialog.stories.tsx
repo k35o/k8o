@@ -1,8 +1,8 @@
-import type { Meta, StoryObj } from '@storybook/react';
 import { Dialog } from './dialog';
-import { fn } from '@storybook/test';
-import { Popover, useOpenContext } from '../popover';
 import { Button } from '../button';
+import { Popover, useOpenContext } from '../popover';
+import type { Meta, StoryObj } from '@storybook/react';
+import { fn } from '@storybook/test';
 import { FC, HTMLProps } from 'react';
 
 const meta: Meta<typeof Dialog.Root> = {

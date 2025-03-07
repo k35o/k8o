@@ -1,6 +1,5 @@
-import { fn } from '@storybook/test';
-
 import * as actual from '@/app/blog/_actions';
+import { fn } from '@storybook/test';
 
 export const getBlogs = fn(actual.getBlogs).mockName('getBlogs');
 

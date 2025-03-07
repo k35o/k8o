@@ -1,8 +1,8 @@
-import { StatusType } from '@/types';
-import { FC, useCallback } from 'react';
 import { Alert } from '../alert';
 import { useToast } from './provider';
 import { useTimeout } from '@/hooks/timeout';
+import { StatusType } from '@/types';
+import { FC, useCallback } from 'react';
 
 type ToastProps = {
   id: string;

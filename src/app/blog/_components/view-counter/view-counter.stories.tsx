@@ -1,6 +1,6 @@
-import type { Meta, StoryObj } from '@storybook/react';
 import { ViewCounter } from './view-counter';
 import { getBlogView } from '#src/mocks/actions/blog.mock';
+import type { Meta, StoryObj } from '@storybook/react';
 
 const meta: Meta<typeof ViewCounter> = {
   title: 'app/blog/view-counter',

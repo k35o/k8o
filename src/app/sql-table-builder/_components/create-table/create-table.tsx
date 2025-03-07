@@ -1,7 +1,7 @@
-import { TextField } from '@/components/form/text-field';
-import { ChangeEvent, FC } from 'react';
 import { InvalidTable, Table } from '../../_types/table';
 import { FormControl } from '@/components/form/form-control';
+import { TextField } from '@/components/form/text-field';
+import { ChangeEvent, FC } from 'react';
 
 type Props = {
   table: Table;

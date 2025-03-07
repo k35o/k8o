@@ -1,5 +1,5 @@
-import type { Meta, StoryObj } from '@storybook/react';
 import { CommingSoon } from './comming-soon';
+import type { Meta, StoryObj } from '@storybook/react';
 
 const meta: Meta<typeof CommingSoon> = {
   title: 'app/globals/comming-soon',

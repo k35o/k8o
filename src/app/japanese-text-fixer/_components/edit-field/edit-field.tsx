@@ -1,6 +1,5 @@
 'use client';
 
-import { Textarea } from '@/components/form/textarea';
 import {
   ResultMessage,
   useSetResultMessages,
@@ -8,10 +7,11 @@ import {
   useSetText,
   useText,
 } from '../../_state/text';
-import { Button } from '@/components/button';
-import { FormEventHandler, useState } from 'react';
 import { checkJapaneseSyntax } from '../../_utils/japanese-syntax';
+import { Button } from '@/components/button';
 import { FormControl } from '@/components/form/form-control';
+import { Textarea } from '@/components/form/textarea';
+import { FormEventHandler, useState } from 'react';
 
 export const EditField = () => {
   const text = useText();

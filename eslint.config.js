@@ -32,17 +32,18 @@ export default tseslint.config(
     name: 'eslint-config-prettier',
     ...eslintConfigPrettier,
   },
-
   ...storybookPlugin.configs['flat/recommended'],
-
-
-
   jsxA11yPlugin.flatConfigs.recommended,
 
   {
     name: 'other rules',
     files: ['**/*.{ts,tsx}'],
     rules: {
+      ...nextPlugin.configs.recommended.rules,
+      ...nextPlugin.configs['core-web-vitals'].rules,
+      ...drizzlePlugin.configs.recommended.rules,
+      ...importPlugin.flatConfigs.recommended.rules,
+      ...importPlugin.flatConfigs.typescript.rules,
       semi: 'off',
       '@typescript-eslint/consistent-type-definitions': [
         'error',
@@ -60,11 +61,15 @@ export default tseslint.config(
           ignoreRestSiblings: true,
         },
       ],
-      ...nextPlugin.configs.recommended.rules,
-      ...nextPlugin.configs['core-web-vitals'].rules,
-      ...drizzlePlugin.configs.recommended.rules,
-      ...importPlugin.flatConfigs.recommended.rules,
-      ...importPlugin.flatConfigs.typescript.rules,
+      'import/order': ['error', {
+        groups: [
+          "builtin",
+          ["sibling", "parent"],
+          "index",
+          "object",
+        ],
+        alphabetize: { order: 'asc' }
+      }],
     },
     settings: {
       ...importPlugin.flatConfigs.typescript.settings,
