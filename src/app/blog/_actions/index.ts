@@ -1,10 +1,10 @@
 'use server';
 
+import { Blog } from '../_types';
 import { db } from '#database/db';
 import * as schema from '@/database/schema';
 import { AnyColumn, eq, InferSelectModel, sql } from 'drizzle-orm';
 import { unstable_cache as cache } from 'next/cache';
-import { Blog } from '../_types';
 
 export const getBlogs = async (): Promise<Blog[]> => {
   const blog = await cache(

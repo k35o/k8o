@@ -1,9 +1,9 @@
-import { draftMode } from 'next/headers';
 import { News, NewsPagination } from '../../_types';
 import { NewsModal } from '../_components/news-modal';
-import { notFound } from 'next/navigation';
-import { Calendar, Clock } from 'lucide-react';
 import { formatDate } from '@/utils/date/format';
+import { Calendar, Clock } from 'lucide-react';
+import { draftMode } from 'next/headers';
+import { notFound } from 'next/navigation';
 
 export const dynamic = 'force-dynamic';
 

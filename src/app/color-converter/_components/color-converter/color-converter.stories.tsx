@@ -1,5 +1,5 @@
-import type { Meta, StoryObj } from '@storybook/react';
 import { ColorConverter } from './color-converter';
+import type { Meta, StoryObj } from '@storybook/react';
 
 const meta: Meta<typeof ColorConverter> = {
   title: 'app/color-converter/color-converter',

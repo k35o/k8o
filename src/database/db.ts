@@ -1,7 +1,7 @@
 import '@/database/env-config';
-import { drizzle } from 'drizzle-orm/neon-http';
-import { neon, neonConfig } from '@neondatabase/serverless';
 import * as schema from './schema';
+import { neon, neonConfig } from '@neondatabase/serverless';
+import { drizzle } from 'drizzle-orm/neon-http';
 import { ws } from 'msw';
 
 const DATABASE_URL = process.env.POSTGRES_URL ?? '';

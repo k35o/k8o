@@ -1,5 +1,5 @@
-import { PropsWithChildren } from 'react';
 import { Heading } from '@/components/heading';
+import { PropsWithChildren } from 'react';
 
 export default function Layout({ children }: PropsWithChildren) {
   return (

@@ -1,6 +1,6 @@
-import { userEvent } from '@vitest/browser/context';
-import { act, renderHook } from '@testing-library/react';
 import { useStep } from '.';
+import { act, renderHook } from '@testing-library/react';
+import { userEvent } from '@vitest/browser/context';
 
 describe('useStep', () => {
   it('初期状態', () => {

@@ -1,14 +1,14 @@
+import { ReportView } from '../report-view';
+import { TableOfContext } from '../table-of-context';
+import { ViewCounter } from '../view-counter';
+import { getBlog } from '#actions/blog';
+import { ScrollLinked } from '@/components/scroll-linked';
+import { Separator } from '@/components/separator';
+import { TextTag } from '@/components/text-tag';
 import { formatDate } from '@/utils/date/format';
 import { Calendar, Clock, Eye } from 'lucide-react';
 import { FC, ReactNode, Suspense } from 'react';
-import { ViewCounter } from '../view-counter';
 import { ErrorBoundary } from 'react-error-boundary';
-import { getBlog } from '#actions/blog';
-import { Separator } from '@/components/separator';
-import { ReportView } from '../report-view';
-import { TextTag } from '@/components/text-tag';
-import { TableOfContext } from '../table-of-context';
-import { ScrollLinked } from '@/components/scroll-linked';
 
 export const BlogLayout: FC<{
   children: ReactNode;

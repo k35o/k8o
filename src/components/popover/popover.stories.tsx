@@ -1,6 +1,6 @@
-import type { Meta, StoryObj } from '@storybook/react';
 import { Popover } from './popover';
 import { Button } from '../button';
+import type { Meta, StoryObj } from '@storybook/react';
 
 const meta: Meta<typeof Popover.Root> = {
   title: 'components/popover',

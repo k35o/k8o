@@ -1,8 +1,8 @@
-import type { Meta, StoryObj } from '@storybook/react';
 import { Accordion } from './accordion';
-import { AccordionItem } from './accordion-item';
 import { AccordionButton } from './accordion-button';
+import { AccordionItem } from './accordion-item';
 import { AccordionPanel } from './accordion-panel';
+import type { Meta, StoryObj } from '@storybook/react';
 
 const meta: Meta<typeof Accordion> = {
   title: 'components/accordion',

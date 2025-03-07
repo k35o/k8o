@@ -1,6 +1,6 @@
-import { ChangeEventHandler, FC } from 'react';
 import { cn } from '@/utils/cn';
 import { ChevronDown } from 'lucide-react';
+import { ChangeEventHandler, FC } from 'react';
 
 export type Option = Readonly<{
   value: string;

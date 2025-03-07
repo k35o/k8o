@@ -1,5 +1,5 @@
-import type { Meta, StoryObj } from '@storybook/react';
 import { LinkButton } from './link-button';
+import type { Meta, StoryObj } from '@storybook/react';
 import { ClipboardPenLine } from 'lucide-react';
 
 const meta: Meta<typeof LinkButton> = {

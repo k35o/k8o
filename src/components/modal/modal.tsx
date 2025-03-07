@@ -1,3 +1,4 @@
+import { Dialog } from '../dialog';
 import {
   ComponentRef,
   PropsWithChildren,
@@ -5,7 +6,6 @@ import {
   useRef,
 } from 'react';
 import { createPortal } from 'react-dom';
-import { Dialog } from '../dialog';
 
 export function Modal({
   title,

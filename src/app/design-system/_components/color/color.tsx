@@ -1,12 +1,12 @@
-import { cn } from '@/utils/cn';
-import { Heading } from '@/components/heading';
-import { FC } from 'react';
-import { calcContrast } from '@/utils/color/calc_contrast';
 import { ColorInfo } from './color-info';
 import {
   COLOR_VARIANTS,
   SEMANTIC_COLOR_VARIANTS,
 } from '../../_utils/color';
+import { Heading } from '@/components/heading';
+import { cn } from '@/utils/cn';
+import { calcContrast } from '@/utils/color/calc_contrast';
+import { FC } from 'react';
 
 export const Color: FC = () => {
   return (

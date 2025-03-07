@@ -1,6 +1,10 @@
 'use client';
 
+import { useHash } from '@/hooks/hash';
+import { cn } from '@/utils/cn';
+import * as motion from 'motion/react-client';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import {
   createContext,
   FC,
@@ -12,10 +16,6 @@ import {
   useRef,
   useState,
 } from 'react';
-import * as motion from 'motion/react-client';
-import { cn } from '@/utils/cn';
-import { useRouter } from 'next/navigation';
-import { useHash } from '@/hooks/hash';
 
 type TabsContext = {
   rootId: string;

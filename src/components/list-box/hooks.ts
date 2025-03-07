@@ -1,5 +1,7 @@
 'use client';
 
+import { useOpenContext } from '../popover/hooks';
+import { useListItem } from '@floating-ui/react';
 import {
   createContext,
   HTMLProps,
@@ -7,8 +9,6 @@ import {
   use,
   useMemo,
 } from 'react';
-import { useOpenContext } from '../popover/hooks';
-import { useListItem } from '@floating-ui/react';
 
 export type Option = {
   key: string;

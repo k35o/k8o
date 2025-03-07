@@ -1,5 +1,5 @@
-import type { Meta, StoryObj } from '@storybook/react';
 import { TextLength } from './text-length';
+import type { Meta, StoryObj } from '@storybook/react';
 
 const meta: Meta<typeof TextLength> = {
   title: 'app/moji-count/text-length',

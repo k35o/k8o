@@ -1,13 +1,17 @@
 'use client';
 
 import {
-  ComponentProps,
-  FC,
-  PropsWithChildren,
-  ReactElement,
-  useRef,
-  useState,
-} from 'react';
+  MenuContextProvider,
+  Option,
+  useMenuContent,
+  useMenuItem,
+  useMenuTrigger,
+} from './hooks';
+import { Button } from '../button';
+import { IconButton } from '../icon-button';
+import { Popover } from '../popover';
+import { useFloatingUIContext } from '../popover/hooks';
+import { cn } from '@/utils/cn';
 import {
   FloatingList,
   Placement,
@@ -16,17 +20,13 @@ import {
 } from '@floating-ui/react';
 import { Check, ChevronDown } from 'lucide-react';
 import {
-  MenuContextProvider,
-  Option,
-  useMenuContent,
-  useMenuItem,
-  useMenuTrigger,
-} from './hooks';
-import clsx from 'clsx';
-import { Popover } from '../popover';
-import { useFloatingUIContext } from '../popover/hooks';
-import { Button } from '../button';
-import { IconButton } from '../icon-button';
+  ComponentProps,
+  FC,
+  PropsWithChildren,
+  ReactElement,
+  useRef,
+  useState,
+} from 'react';
 
 const Root: FC<
   PropsWithChildren<{
@@ -139,7 +139,7 @@ const Item: FC<{
 
   return (
     <button
-      className={clsx(
+      className={cn(
         'group w-full px-2 py-1 text-left',
         'hover:bg-primary-bg',
         'focus-visible:bordertransparent focus-visible:bg-primary-bg focus-visible:outline-hidden',

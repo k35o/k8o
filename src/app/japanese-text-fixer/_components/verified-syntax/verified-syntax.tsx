@@ -1,6 +1,5 @@
 'use client';
 
-import { FC } from 'react';
 import { useResetResult, useText } from '../../_state/text';
 import {
   Accordion,
@@ -11,6 +10,7 @@ import {
 import { Button } from '@/components/button';
 import { useClipboard } from '@/hooks/clipboard';
 import { CircleCheck, ClipboardPenLine } from 'lucide-react';
+import { FC } from 'react';
 
 export const VerifiedSyntax: FC = () => {
   const text = useText();

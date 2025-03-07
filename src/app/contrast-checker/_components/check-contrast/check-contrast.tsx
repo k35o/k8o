@@ -1,9 +1,9 @@
 'use client';
 
-import { FC, useState } from 'react';
-import { calcContrast } from '@/utils/color/calc_contrast';
-import { ResultTable } from '../result-table';
 import { ColorPallet } from '../color-pallet';
+import { ResultTable } from '../result-table';
+import { calcContrast } from '@/utils/color/calc_contrast';
+import { FC, useState } from 'react';
 
 export const CheckContrast: FC = () => {
   const [baseColor, setBaseColor] = useState('#000000');

@@ -1,8 +1,10 @@
 'use client';
 
-import * as motion from 'motion/react-client';
-import { AnimatePresence, Variants } from 'motion/react';
+import { Toast } from './toast';
 import { StatusType } from '@/types';
+import { uuidV4 } from '@/utils/uuid-v4';
+import { AnimatePresence, Variants } from 'motion/react';
+import * as motion from 'motion/react-client';
 import {
   createContext,
   Dispatch,
@@ -16,8 +18,6 @@ import {
   useState,
 } from 'react';
 import { createPortal } from 'react-dom';
-import { Toast } from './toast';
-import { uuidV4 } from '@/utils/uuid-v4';
 
 type ToastType = {
   id: string;

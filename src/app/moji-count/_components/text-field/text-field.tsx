@@ -1,9 +1,9 @@
 'use client';
 
-import { Textarea } from '@/components/form/textarea';
 import { TextLength } from '../text-length';
-import { useDeferredValue, useState } from 'react';
 import { FormControl } from '@/components/form/form-control';
+import { Textarea } from '@/components/form/textarea';
+import { useDeferredValue, useState } from 'react';
 
 export const TextField = () => {
   const [text, setText] = useState('');

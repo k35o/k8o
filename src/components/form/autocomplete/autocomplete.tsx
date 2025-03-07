@@ -1,7 +1,7 @@
-import { FC, useEffect, useRef, useState } from 'react';
 import { IconButton } from '../../icon-button';
 import { cn } from '@/utils/cn';
 import { X } from 'lucide-react';
+import { FC, useEffect, useRef, useState } from 'react';
 
 export type Option = Readonly<{
   value: string;

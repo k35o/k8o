@@ -1,11 +1,11 @@
-import Link from 'next/link';
-import { FC, ReactNode } from 'react';
+import { ColorFilters } from '../color-filters';
+import { ContactToMe } from '../contact-to-me';
+import { ToggleTheme } from '../toggle-theme';
 import { Heading } from '@/components/heading';
 import { IconLink } from '@/components/icon-link';
-import { ToggleTheme } from '../toggle-theme';
-import { ColorFilters } from '../color-filters';
 import { Bell } from 'lucide-react';
-import { ContactToMe } from '../contact-to-me';
+import Link from 'next/link';
+import { FC, ReactNode } from 'react';
 
 export const GlobalLayout: FC<{ children: ReactNode }> = ({
   children,

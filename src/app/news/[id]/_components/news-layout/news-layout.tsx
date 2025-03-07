@@ -1,8 +1,8 @@
+import { Heading } from '@/components/heading';
+import { Separator } from '@/components/separator';
 import { formatDate } from '@/utils/date/format';
 import { Calendar, Clock } from 'lucide-react';
 import { FC, PropsWithChildren } from 'react';
-import { Separator } from '@/components/separator';
-import { Heading } from '@/components/heading';
 
 type Props = PropsWithChildren<{
   title: string;

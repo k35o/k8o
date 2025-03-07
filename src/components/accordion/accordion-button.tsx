@@ -1,10 +1,10 @@
 'use client';
 
-import { FC, PropsWithChildren } from 'react';
 import { useItemId, useOpen, useToggleOpen } from './context';
 import { cn } from '@/utils/cn';
 import { ChevronDown } from 'lucide-react';
 import * as motion from 'motion/react-client';
+import { FC, PropsWithChildren } from 'react';
 
 export const AccordionButton: FC<PropsWithChildren> = ({
   children,

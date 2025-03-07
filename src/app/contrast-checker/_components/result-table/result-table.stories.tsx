@@ -1,5 +1,5 @@
-import type { Meta, StoryObj } from '@storybook/react';
 import { ResultTable } from './result-table';
+import type { Meta, StoryObj } from '@storybook/react';
 
 const meta: Meta<typeof ResultTable> = {
   title: 'app/colors/contrasts/result-table',

@@ -1,5 +1,5 @@
-import type { Meta, StoryObj } from '@storybook/react';
 import { Radio } from './radio';
+import type { Meta, StoryObj } from '@storybook/react';
 import { useState } from 'react';
 
 const meta: Meta<typeof Radio> = {

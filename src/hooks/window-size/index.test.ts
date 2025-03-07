@@ -1,5 +1,5 @@
-import { renderHook, act } from '@testing-library/react';
 import { useWindowSize } from '.';
+import { renderHook, act } from '@testing-library/react';
 
 describe('useWindowSize', () => {
   it('windowサイズの変更に合わせて現在のwindowサイズを取得する', () => {

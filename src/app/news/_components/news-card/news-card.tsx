@@ -1,10 +1,10 @@
-import { Heading } from '@/components/heading';
-import { InteractiveCard } from '@/components/card';
-import { FC } from 'react';
-import { Calendar, Clock } from 'lucide-react';
-import { formatDate } from '@/utils/date/format';
 import { News } from '../../_types';
+import { InteractiveCard } from '@/components/card';
+import { Heading } from '@/components/heading';
+import { formatDate } from '@/utils/date/format';
+import { Calendar, Clock } from 'lucide-react';
 import Link from 'next/link';
+import { FC } from 'react';
 
 type Props = Pick<
   News,

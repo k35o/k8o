@@ -1,7 +1,7 @@
-import { toPrecision } from '@/utils/number/to-precision';
-import { calcContrast } from '@/utils/color/calc_contrast';
-import { FC } from 'react';
 import { cn } from '@/utils/cn';
+import { calcContrast } from '@/utils/color/calc_contrast';
+import { toPrecision } from '@/utils/number/to-precision';
+import { FC } from 'react';
 
 export const ColorContrastUnit: FC<{
   colorCode: string;

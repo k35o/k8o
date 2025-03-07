@@ -1,5 +1,5 @@
-import type { Meta, StoryObj } from '@storybook/react';
 import { EmailTooltip } from './email-tooltip';
+import type { Meta, StoryObj } from '@storybook/react';
 
 const meta: Meta<typeof EmailTooltip> = {
   title: 'app/globals/email-tooltip',

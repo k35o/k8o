@@ -1,5 +1,5 @@
-import type { Meta, StoryObj } from '@storybook/react';
 import { BaseConverter } from './base-converter';
+import type { Meta, StoryObj } from '@storybook/react';
 
 const meta: Meta<typeof BaseConverter> = {
   title: 'app/base-converter/base-converter',

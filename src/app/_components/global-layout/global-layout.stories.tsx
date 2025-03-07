@@ -1,5 +1,5 @@
-import type { Meta, StoryObj } from '@storybook/react';
 import { GlobalLayout } from './global-layout';
+import type { Meta, StoryObj } from '@storybook/react';
 
 const meta: Meta<typeof GlobalLayout> = {
   title: 'app/globals/global-layout',

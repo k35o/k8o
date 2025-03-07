@@ -1,6 +1,6 @@
-import Link from 'next/link';
-import { Heading } from '../../components/heading';
 import { ExternalBlog } from './_components/external-blog';
+import { Heading } from '../../components/heading';
+import Link from 'next/link';
 import { PropsWithChildren } from 'react';
 
 export const metadata = {

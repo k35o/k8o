@@ -1,5 +1,5 @@
-import type { Meta, StoryObj } from '@storybook/react';
 import { Start } from './start';
+import type { Meta, StoryObj } from '@storybook/react';
 
 const meta: Meta<typeof Start> = {
   title: 'app/quizzes/start',

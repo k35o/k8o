@@ -1,33 +1,49 @@
-import { FlatCompat } from '@eslint/eslintrc';
 import eslint from '@eslint/js';
 import tseslint from 'typescript-eslint';
-import configPrettier from 'eslint-config-prettier';
-import storybook from 'eslint-plugin-storybook';
-import jsxA11y from 'eslint-plugin-jsx-a11y';
-
-const compat = new FlatCompat({
-  baseDirectory: import.meta.dirname,
-});
+import eslintConfigPrettier from "eslint-config-prettier";
+import storybookPlugin from 'eslint-plugin-storybook';
+import jsxA11yPlugin from 'eslint-plugin-jsx-a11y';
+import importPlugin from 'eslint-plugin-import';
+import nextPlugin from '@next/eslint-plugin-next';
+import drizzlePlugin from 'eslint-plugin-drizzle';
 
 /**
  * @type {import('eslint').Linter.Config}
  */
 export default tseslint.config(
-  eslint.configs.recommended,
+  {
+    name: 'declare eslint plugins',
+    plugins: {
+      ['@typescript-eslint']: tseslint.plugin,
+      ['import']: importPlugin,
+      ['jsx-a11y']: jsxA11yPlugin.flatConfigs.recommended.plugins['jsx-a11y'],
+      ['drizzle']: drizzlePlugin,
+      ['@next/next']: nextPlugin,
+    },
+  },
+
+  {
+    name: 'eslint recommended',
+    ...eslint.configs.recommended,
+  },
   tseslint.configs.strictTypeChecked,
   tseslint.configs.stylisticTypeChecked,
-  ...compat.extends('plugin:drizzle/recommended'),
-  ...compat.config({
-    extends: ['next/core-web-vitals'],
-  }),
-  configPrettier,
-  ...storybook.configs['flat/recommended'],
   {
-    ...jsxA11y.flatConfigs.recommended,
-    plugins: { 'jsx-a11y': jsxA11y },
+    name: 'eslint-config-prettier',
+    ...eslintConfigPrettier,
   },
+  ...storybookPlugin.configs['flat/recommended'],
+  jsxA11yPlugin.flatConfigs.recommended,
+
   {
+    name: 'other rules',
+    files: ['**/*.{ts,tsx}'],
     rules: {
+      ...nextPlugin.configs.recommended.rules,
+      ...nextPlugin.configs['core-web-vitals'].rules,
+      ...drizzlePlugin.configs.recommended.rules,
+      ...importPlugin.flatConfigs.recommended.rules,
+      ...importPlugin.flatConfigs.typescript.rules,
       semi: 'off',
       '@typescript-eslint/consistent-type-definitions': [
         'error',
@@ -45,9 +61,30 @@ export default tseslint.config(
           ignoreRestSiblings: true,
         },
       ],
+      'import/order': ['error', {
+        groups: [
+          "builtin",
+          ["sibling", "parent"],
+          "index",
+          "object",
+        ],
+        alphabetize: { order: 'asc' }
+      }],
+      'import/namespace': 'off',
+    },
+    settings: {
+      ...importPlugin.flatConfigs.typescript.settings,
+      "import/resolver": {
+        typescript: {
+          alwaysTryTypes: true,
+          project: true,
+        },
+      },
     },
   },
+
   {
+    name: 'language options',
     languageOptions: {
       parserOptions: {
         projectService: true,
@@ -55,7 +92,9 @@ export default tseslint.config(
       },
     },
   },
+
   {
+    name: 'test',
     files: ['**/*.test.{ts,tsx}'],
     rules: {
       '@typescript-eslint/unbound-method': 'off',

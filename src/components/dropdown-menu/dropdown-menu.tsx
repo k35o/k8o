@@ -1,14 +1,16 @@
 'use client';
 
 import {
-  ComponentProps,
-  FC,
-  MouseEventHandler,
-  PropsWithChildren,
-  ReactNode,
-  useRef,
-  useState,
-} from 'react';
+  MenuContextProvider,
+  useMenuContent,
+  useMenuItem,
+  useMenuTrigger,
+} from './hooks';
+import { Button } from '../button';
+import { IconButton } from '../icon-button';
+import { Popover } from '../popover';
+import { useFloatingUIContext } from '../popover/hooks';
+import { cn } from '@/utils/cn';
 import {
   FloatingList,
   Placement,
@@ -17,16 +19,14 @@ import {
 } from '@floating-ui/react';
 import { ChevronDown } from 'lucide-react';
 import {
-  MenuContextProvider,
-  useMenuContent,
-  useMenuItem,
-  useMenuTrigger,
-} from './hooks';
-import clsx from 'clsx';
-import { Popover } from '../popover';
-import { useFloatingUIContext } from '../popover/hooks';
-import { Button } from '../button';
-import { IconButton } from '../icon-button';
+  ComponentProps,
+  FC,
+  MouseEventHandler,
+  PropsWithChildren,
+  ReactNode,
+  useRef,
+  useState,
+} from 'react';
 
 const Root: FC<PropsWithChildren<{ placement?: Placement }>> = ({
   children,
@@ -97,7 +97,7 @@ const Item: FC<{ onClick: MouseEventHandler; label: string }> = ({
 
   return (
     <button
-      className={clsx(
+      className={cn(
         'w-full px-2 py-1 text-left',
         'hover:bg-primary-bg',
         'focus-visible:bordertransparent focus-visible:bg-primary-bg focus-visible:outline-hidden',

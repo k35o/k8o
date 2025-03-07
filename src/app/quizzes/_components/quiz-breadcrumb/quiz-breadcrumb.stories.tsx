@@ -1,5 +1,5 @@
-import type { Meta, StoryObj } from '@storybook/react';
 import { QuizBreadcrumb } from '.';
+import type { Meta, StoryObj } from '@storybook/react';
 
 const meta: Meta<typeof QuizBreadcrumb> = {
   title: 'app/quizzes/quiz-breadcrumb',

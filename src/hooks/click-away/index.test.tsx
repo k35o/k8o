@@ -1,5 +1,5 @@
-import { fireEvent, render } from '@testing-library/react';
 import { useClickAway } from '.';
+import { fireEvent, render } from '@testing-library/react';
 import { FC } from 'react';
 
 const OutsideClicker: FC<{

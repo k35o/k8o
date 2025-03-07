@@ -1,6 +1,6 @@
-import { range } from '@/utils/array/range';
 import { Quiz } from './../../_types';
-import clsx from 'clsx';
+import { range } from '@/utils/array/range';
+import { cn } from '@/utils/cn';
 import { Noto_Sans_JP } from 'next/font/google';
 import { FC } from 'react';
 
@@ -18,7 +18,7 @@ export const CollectionByHighlight: CollectionProps = ({
 }) => {
   return (
     <div
-      className={clsx(
+      className={cn(
         'grid-cols-auto-fit-36 grid place-items-center gap-2',
         subFont.className,
       )}

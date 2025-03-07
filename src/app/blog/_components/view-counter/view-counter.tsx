@@ -1,6 +1,6 @@
-import { FC } from 'react';
-import { commalize } from '@/utils/number/commalize';
 import { getBlogView } from '#actions/blog';
+import { commalize } from '@/utils/number/commalize';
+import { FC } from 'react';
 
 export const ViewCounter: FC<{ blogId: number }> = async ({
   blogId,

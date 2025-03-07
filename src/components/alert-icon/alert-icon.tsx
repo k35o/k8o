@@ -1,4 +1,3 @@
-import { FC } from 'react';
 import type { StatusType } from '@/types';
 import {
   CircleAlert,
@@ -6,6 +5,7 @@ import {
   Info,
   TriangleAlert,
 } from 'lucide-react';
+import { FC } from 'react';
 
 export const AlertIcon: FC<{ status: StatusType }> = ({ status }) => {
   return (

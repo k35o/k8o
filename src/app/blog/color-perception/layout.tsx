@@ -1,7 +1,7 @@
-import { Metadata } from 'next';
 import { BlogLayout } from '../_components/blog-layout';
-import { PropsWithChildren } from 'react';
 import { getBlog } from '#actions/blog';
+import { Metadata } from 'next';
+import { PropsWithChildren } from 'react';
 
 export async function generateMetadata(): Promise<Metadata> {
   const blog = await getBlog({

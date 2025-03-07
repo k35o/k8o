@@ -1,11 +1,11 @@
+import { Quiz } from '../../_types';
+import { CollectionByHighlight } from '../collection';
 import { Button } from '@/components/button';
 import { Heading } from '@/components/heading';
-import { cn } from '@/utils/cn';
-import { FC } from 'react';
-import { CollectionByHighlight } from '../collection';
-import { Quiz } from '../../_types';
 import { LinkButton } from '@/components/link-button';
+import { cn } from '@/utils/cn';
 import { History, List } from 'lucide-react';
+import { FC } from 'react';
 
 export const Complete: FC<{
   score: number;

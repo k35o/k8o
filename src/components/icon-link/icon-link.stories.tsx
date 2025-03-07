@@ -1,5 +1,5 @@
-import type { Meta, StoryObj } from '@storybook/react';
 import { IconLink } from './icon-link';
+import type { Meta, StoryObj } from '@storybook/react';
 import { ClipboardPenLine } from 'lucide-react';
 
 const meta: Meta<typeof IconLink> = {

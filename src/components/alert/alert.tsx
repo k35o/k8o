@@ -1,7 +1,7 @@
-import { FC } from 'react';
-import type { StatusType } from '@/types';
 import { AlertIcon } from '../alert-icon';
+import type { StatusType } from '@/types';
 import { cn } from '@/utils/cn';
+import { FC } from 'react';
 
 type Props = {
   status: StatusType;

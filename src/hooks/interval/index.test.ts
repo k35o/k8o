@@ -1,5 +1,5 @@
-import { renderHook } from '@testing-library/react';
 import { useInterval } from '.';
+import { renderHook } from '@testing-library/react';
 
 describe('useInterval', () => {
   it('指定時間ごとに実行される', () => {

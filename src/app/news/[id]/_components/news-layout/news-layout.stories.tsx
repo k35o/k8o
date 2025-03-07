@@ -1,5 +1,5 @@
-import type { Meta, StoryObj } from '@storybook/react';
 import { NewsLayout } from './news-layout';
+import type { Meta, StoryObj } from '@storybook/react';
 
 const meta: Meta<typeof NewsLayout> = {
   title: 'app/news/news-layout',

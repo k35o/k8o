@@ -1,5 +1,5 @@
-import { act, renderHook } from '@testing-library/react';
 import { useClipboard } from '.';
+import { act, renderHook } from '@testing-library/react';
 
 const onOpenMockFn = vi.fn();
 

@@ -1,8 +1,8 @@
+import { Heading } from '../../../components/heading';
+import { InteractiveCard } from '@/components/card';
 import { Route } from 'next';
 import Link from 'next/link';
-import { Heading } from '../../../components/heading';
 import { ReactNode } from 'react';
-import { InteractiveCard } from '@/components/card';
 
 export const AppCard = <T extends string>({
   link,

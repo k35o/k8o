@@ -1,9 +1,9 @@
-import type { Meta, StoryObj } from '@storybook/react';
 import { CreateRestrictions } from './create-restrictions';
-import { useState } from 'react';
-import { Restriction } from '../../_types/restriction';
 import { Column } from '../../_types/column';
+import { Restriction } from '../../_types/restriction';
 import { uuidV4 } from '@/utils/uuid-v4';
+import type { Meta, StoryObj } from '@storybook/react';
+import { useState } from 'react';
 
 const meta: Meta<typeof CreateRestrictions> = {
   title: 'app/sql-table-builder/create-restrictions',

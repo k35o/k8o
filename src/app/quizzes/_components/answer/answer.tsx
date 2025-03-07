@@ -1,10 +1,10 @@
+import { Quiz } from '../../_types';
+import { checkAnswer } from '../../_utils/check-answer';
 import { AlertIcon } from '@/components/alert-icon';
 import { Button } from '@/components/button';
 import { FormControl } from '@/components/form/form-control';
 import { TextField } from '@/components/form/text-field';
 import { FC, useMemo, useState } from 'react';
-import { checkAnswer } from '../../_utils/check-answer';
-import { Quiz } from '../../_types';
 
 export const Answer: FC<{
   currentQuiz: Quiz;

@@ -1,9 +1,9 @@
-import { FC } from 'react';
 import { ColorContrastUnit } from './color-contrast-unit';
 import {
   SEMANTIC_COLOR_VARIANTS,
   getColorCode,
 } from '@/app/design-system/_utils/color';
+import { FC } from 'react';
 
 export const ColorContrastFg: FC<{
   colorCode: string;

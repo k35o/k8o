@@ -1,12 +1,5 @@
 'use client';
 
-import { TextField } from '@/components/form/text-field';
-import {
-  ChangeEventHandler,
-  useCallback,
-  useMemo,
-  useState,
-} from 'react';
 import { ColorTip } from './color-tip';
 import {
   hexToHsl,
@@ -20,6 +13,13 @@ import {
 } from '../../_utils/color-converter';
 import { FormControl } from '@/components/form/form-control';
 import { NumberField } from '@/components/form/number-field';
+import { TextField } from '@/components/form/text-field';
+import {
+  ChangeEventHandler,
+  useCallback,
+  useMemo,
+  useState,
+} from 'react';
 
 type BaseColor =
   | {

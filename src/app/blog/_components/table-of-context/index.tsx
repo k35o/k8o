@@ -1,9 +1,9 @@
-import { FC } from 'react';
-import { remark } from 'remark';
 import { readFileSync } from 'fs';
 import type { Root } from 'mdast';
-import Link from 'next/link';
 import { unstable_cache as cache } from 'next/cache';
+import Link from 'next/link';
+import { FC } from 'react';
+import { remark } from 'remark';
 
 type HeadingTree = {
   depth: 0;

@@ -1,7 +1,7 @@
 'use client';
 
-import { scan } from 'react-scan';
 import { FC, useEffect } from 'react';
+import { scan } from 'react-scan';
 
 export const ReactScan: FC = () => {
   useEffect(() => {

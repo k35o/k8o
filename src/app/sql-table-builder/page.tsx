@@ -1,19 +1,19 @@
 'use client';
 
-import { useRef, useState } from 'react';
-import { InvalidTable, Table } from './_types/table';
-import { Column, InvalidColumns } from './_types/column';
+import { LoadingCreateColumns } from './_components/create-columns/loading-create-columns';
+import { CreateRestrictions } from './_components/create-restrictions';
 import { CreateTable } from './_components/create-table';
-import { Button } from '@/components/button';
-import { makeStatement } from './_utils/statement';
+import { Column, InvalidColumns } from './_types/column';
 import {
   InvalidRestrictions,
   Restriction,
 } from './_types/restriction';
-import { CreateRestrictions } from './_components/create-restrictions';
-import dynamic from 'next/dynamic';
-import { LoadingCreateColumns } from './_components/create-columns/loading-create-columns';
+import { InvalidTable, Table } from './_types/table';
+import { makeStatement } from './_utils/statement';
+import { Button } from '@/components/button';
 import { uuidV4 } from '@/utils/uuid-v4';
+import dynamic from 'next/dynamic';
+import { useRef, useState } from 'react';
 
 const CreateColumns = dynamic(
   () =>

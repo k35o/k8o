@@ -1,5 +1,5 @@
-import type { Meta, StoryObj } from '@storybook/react';
 import { Description } from './description';
+import type { Meta, StoryObj } from '@storybook/react';
 
 const meta: Meta<typeof Description> = {
   title: 'app/colors/contrasts/description',

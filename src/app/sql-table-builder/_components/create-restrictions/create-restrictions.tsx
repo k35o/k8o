@@ -1,20 +1,20 @@
-import { FC } from 'react';
 import { Column } from '../../_types/column';
-import { Button } from '@/components/button';
+import {
+  InvalidRestrictions,
+  Restriction,
+} from '../../_types/restriction';
+import { CreateRestriction } from '../create-restriction/create-restriction';
 import {
   Accordion,
   AccordionButton,
   AccordionItem,
   AccordionPanel,
 } from '@/components/accordion';
+import { Button } from '@/components/button';
 import { IconButton } from '@/components/icon-button';
-import {
-  InvalidRestrictions,
-  Restriction,
-} from '../../_types/restriction';
-import { CreateRestriction } from '../create-restriction/create-restriction';
 import { uuidV4 } from '@/utils/uuid-v4';
 import { X } from 'lucide-react';
+import { FC } from 'react';
 
 type Props = {
   columns: Record<string, Column>;

@@ -1,21 +1,21 @@
 import {
+  Column,
+  ColumnType,
+  InvalidColumns,
+} from '../../_types/column';
+import {
   Accordion,
   AccordionButton,
   AccordionItem,
   AccordionPanel,
 } from '@/components/accordion';
-import { IconButton } from '@/components/icon-button';
-import { FC } from 'react';
-import {
-  Column,
-  ColumnType,
-  InvalidColumns,
-} from '../../_types/column';
-import { TextField } from '@/components/form/text-field';
-import { Select } from '@/components/form/select/select';
-import { Radio } from '@/components/form/radio';
 import { FormControl } from '@/components/form/form-control';
+import { Radio } from '@/components/form/radio';
+import { Select } from '@/components/form/select/select';
+import { TextField } from '@/components/form/text-field';
+import { IconButton } from '@/components/icon-button';
 import { X } from 'lucide-react';
+import { FC } from 'react';
 
 type Props = {
   handleChangeColumn: (id: string) => (column: Column) => void;

@@ -1,5 +1,5 @@
-import type { Meta, StoryObj } from '@storybook/react';
 import { DropdownMenu } from './dropdown-menu';
+import type { Meta, StoryObj } from '@storybook/react';
 import { MoonStar } from 'lucide-react';
 
 const meta: Meta<typeof DropdownMenu.Root> = {
