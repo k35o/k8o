@@ -70,6 +70,7 @@ export default tseslint.config(
         ],
         alphabetize: { order: 'asc' }
       }],
+      'import/namespace': 'off',
     },
     settings: {
       ...importPlugin.flatConfigs.typescript.settings,
