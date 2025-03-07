@@ -11,7 +11,7 @@ import {
 import { ListBox } from '../../../components/list-box';
 import { Transfer } from './transfer';
 import { Blend, Info } from 'lucide-react';
-import clsx from 'clsx';
+import { cn } from '@/utils/cn';
 import Link from 'next/link';
 import { useOpenContext } from '@/components/popover';
 import { Route } from 'next';
@@ -98,7 +98,7 @@ const HelpContent: FC = () => {
       // mdxのrouteがtyped routeに対応しなくなったため、as Routeを追加
       href={'/blog/color-perception' as Route}
       onClick={onClose}
-      className={clsx(
+      className={cn(
         'inline-flex w-full items-center gap-1 px-2 py-1',
         'hover:bg-primary-bg hover:text-fg-inverse',
         'focus-visible:bordertransparent focus-visible:bg-primary-bg focus-visible::text-fg-inverse focus-visible:outline-hidden',

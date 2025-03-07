@@ -2,7 +2,7 @@
 
 import { FC, KeyboardEvent, MouseEvent, TouchEvent } from 'react';
 import { useControlPanel } from './use-control-panel';
-import clsx from 'clsx';
+import { cn } from '@/utils/cn';
 import { IconButton } from '@/components/icon-button';
 import { ClipboardPenLine } from 'lucide-react';
 import { useClipboard } from '@/hooks/clipboard';
@@ -32,7 +32,7 @@ const OperateButton: FC<{
   return (
     <button
       aria-label={label}
-      className={clsx(
+      className={cn(
         'border-border-base absolute size-4 border',
         variable === 'primary' && 'bg-group-primary',
         variable === 'secondary' && 'bg-group-secondary',

@@ -1,13 +1,13 @@
 import { FC } from 'react';
 import { CardProps } from './type';
-import clsx from 'clsx';
+import { cn } from '@/utils/cn';
 
 export const Card: FC<CardProps> = ({
   children,
   variant = 'primary',
 }) => (
   <section
-    className={clsx(
+    className={cn(
       'bg-bg-base/90 rounded-lg shadow-md',
       variant === 'primary' && 'bg-bg-base/90',
       variant === 'secondary' && 'bg-bg-mute',

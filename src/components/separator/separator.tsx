@@ -1,4 +1,4 @@
-import clsx from 'clsx';
+import { cn } from '@/utils/cn';
 import { FC } from 'react';
 
 export const Separator: FC<{
@@ -6,7 +6,7 @@ export const Separator: FC<{
 }> = ({ orientation = 'horizontal' }) => {
   return (
     <div
-      className={clsx('bg-border-base', {
+      className={cn('bg-border-base', {
         'h-full w-px': orientation === 'vertical',
         'h-px w-full': orientation === 'horizontal',
       })}

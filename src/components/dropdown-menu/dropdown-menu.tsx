@@ -22,7 +22,7 @@ import {
   useMenuItem,
   useMenuTrigger,
 } from './hooks';
-import clsx from 'clsx';
+import { cn } from '@/utils/cn';
 import { Popover } from '../popover';
 import { useFloatingUIContext } from '../popover/hooks';
 import { Button } from '../button';
@@ -97,7 +97,7 @@ const Item: FC<{ onClick: MouseEventHandler; label: string }> = ({
 
   return (
     <button
-      className={clsx(
+      className={cn(
         'w-full px-2 py-1 text-left',
         'hover:bg-primary-bg',
         'focus-visible:bordertransparent focus-visible:bg-primary-bg focus-visible:outline-hidden',

@@ -2,7 +2,7 @@ import type { MDXComponents } from 'mdx/types';
 import { Link } from 'lucide-react';
 import { Anchor } from './components/anchor';
 import { FC, PropsWithChildren } from 'react';
-import clsx from 'clsx';
+import { cn } from '@/utils/cn';
 
 const LinkHeading: FC<
   PropsWithChildren<{
@@ -16,7 +16,7 @@ const LinkHeading: FC<
   return (
     <Comp
       id={isStringChildren ? children : undefined}
-      className={clsx(
+      className={cn(
         'group my-4 font-bold',
         type === 'h2' && 'mb-4 text-xl sm:text-2xl',
         type === 'h3' && 'text-xl sm:text-2xl',
@@ -33,7 +33,7 @@ const LinkHeading: FC<
           href={`#${encodeURIComponent(children)}`}
         >
           <Link
-            className={clsx(
+            className={cn(
               'text-fg-mute absolute top-1 box-content opacity-0 sm:group-hover:opacity-100',
               type === 'h2' && '-left-7 size-6 pr-2',
               type === 'h3' && '-left-7 size-6 pr-2',
