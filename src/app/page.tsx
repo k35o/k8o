@@ -63,7 +63,7 @@ export default function Home() {
           <AppCard
             link="/design-system"
             symbol={
-              <Image src={arteodyssey} alt="" className="size-28" />
+              <Image src={arteodyssey} alt="" className="size-16" />
             }
             title="ArteOdyssey"
             description="k8o.meで利用しているデザインシステムを紹介します。コンポーネントやデザイントークンを確認できます。"
