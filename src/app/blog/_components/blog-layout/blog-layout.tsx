@@ -67,7 +67,7 @@ export const BlogLayout: FC<{
             <Separator />
           </div>
           {blog.tags.length > 0 && (
-            <div className="mb-4 flex gap-2">
+            <div className="mb-4 flex flex-wrap gap-2">
               {blog.tags.slice(0, 5).map((tag) => {
                 return <TextTag key={tag} text={tag} />;
               })}
