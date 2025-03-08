@@ -76,7 +76,7 @@ jobs:
         uses: neondatabase/create-branch-action@v6
         with:
           project_id: ${{ vars.NEON_PROJECT_ID }}
-          username: default
+          role: default
           database: verceldb
           branch_name: preview/pr-${{ github.event.number }}-${{ needs.setup.outputs.branch }}
           api_key: ${{ secrets.NEON_API_KEY }}
@@ -84,7 +84,7 @@ jobs:
         if: needs.setup.outputs.has_migration == 'true'
         run: pnpm run generate && pnpm run migrate
         env:
-          POSTGRES_URL: '${{ steps.create_neon_branch.outputs.db_url_with_pooler }}'
+          POSTGRES_URL: '${{ steps.create_neon_branch.outputs.db_url_pooled }}'
 
       - name: Pull Vercel Environment Information
         run: vercel pull --yes --environment=preview --token=${{ secrets.VERCEL_TOKEN }}
