@@ -1,4 +1,109 @@
+import { BaselineStatus } from '@/components/baseline-status';
+
 # 関数の同期・非同期を気にせず処理するPromise.tryとは
 
+<BaselineStatus featureId="promise-try"></BaselineStatus>
+
 ## はじめに
-こんにちは
+
+2025年のBaselineに`Promise.try`が追加されました。`Promise.try`は同期的な関数と非同期的な関数を区別せずに手続きを進めさせるメソッドです。
+
+[`Promise.try`の提案と仕様](https://github.com/tc39/proposal-promise-try)
+
+この記事では`Promise.try`の使い方と、有効な場面について解説します。
+
+## Promise.tryとは
+`Promise.try`は引数に与えた関数の同期・非同期に関わらず、結果を`Promise`に包んでから返します。
+```js
+Promise.try(callback)
+  .then(() => console.log('fulfilled'))
+  .catch(() => console.log('rejected'))
+  .finally(() => console.log('settled'));
+```
+
+`Promise`で包まれた結果が渡ってくるので、非同期に書かれた`asyncFn`だけではなく、`syncFn`の結果も`then`を通して取り出せます。
+```js
+const syncFn = () => {
+  return 'sync';
+};
+
+const asyncFn = async () => {
+  return 'async';
+};
+
+console.log(Promise.try(syncFn)) // Promise {<fulfilled>: 'sync'}
+console.log(Promise.try(asyncFn)) // Promise {<pending>}
+
+Promise.try(syncFn).then(console.log); // sync
+Promise.try(asyncFn).then(console.log); // async
+```
+
+例外の処理も`try...catch`を利用するのではなく、`catch`を通して行います。
+
+```js
+const syncFn = () => {
+  throw 'sync';
+};
+
+const asyncFn = async () => {
+  throw 'async';
+};
+
+console.log(Promise.try(syncFn)) // Promise {<rejected>: 'sync'}
+console.log(Promise.try(asyncFn)) // Promise {<pending>}
+
+Promise.try(syncFn).catch(console.log); // sync
+Promise.try(asyncFn).catch(console.log); // async
+```
+
+これまでも`new Promise`で`Promise`を生成することで同様の挙動を実現できましたが、今後は`Promise.try`を使うだけで表現可能なので便利になりました。
+```js
+const try = (callback, ...args) => {
+  return new Promise((resolve) => callback(...args));
+};
+```
+
+`Promise.try`で呼び出す関数に引数を渡す方法は、第2引数以降に渡す方法と関数を新たらしく作る2つの方法があります。
+
+```js
+const fn = (arg1, arg2) => {
+  return arg1 + arg2;
+};
+
+Promise.try(fn, 1, 2).then(console.log); // 3
+Promise.try(() => fn(1, 2)).then(console.log); // 3
+```
+
+## Promise.tryが有効な場面
+`Promise.try`は同期的な関数と非同期的な関数が入り乱れたものを取り扱う時に便利です。
+以下の例を考えてみましょう。
+
+```js
+const cache = new Map();
+
+const readFileWithCache = (path): string => {
+  if (cache.has(path)) {
+    return cache.get(path);
+  }
+
+  return fs.readFile(path, 'utf8').then((data) => {
+    cache.set(path, data);
+    return data;
+  });
+};
+```
+上記の`readFileWithCache`関数は`path`に存在するファイルを読み込む関数です。
+初回の読み込みは`fs.readFile`を用いて非同期に値を取り出しますが、2回目以降は`cache`に保存された値を返します。
+
+この関数を実行してみると、1度目の読み込みは`Promise<Buffer>`が返されますが、それ以降は`Buffer`を返巣ようになっています。キャッシュしてくれるのは嬉しいですが、取り出した値を利用する視点ではとても不便です。
+```js
+console.log(readFileWithCache('path/to/file')); // Promise {<pending>} or Buffer
+```
+
+このような関数も`Promise.try`を使えば初回とそれ以降の動作を意識せずに活用できます。
+```js
+console.log(Promise.try(() => readFileWithCache('path/to/file'))); // Promise {<pending>}
+```
+
+キャッシュされた結果を返す時も、`Promise.try`で実行することで`Promise<Buffer>`を返すようになります。
+この例では`Promise.try`を使う以外でも使いやすい形に改良可能ではありますが、`Promise.try`の威力が伝わったかと思います。
