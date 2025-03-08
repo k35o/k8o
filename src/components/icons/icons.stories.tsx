@@ -1,5 +1,5 @@
 import { ArteOdyssey } from './arte-odyssey';
-import { GithubMark } from './github-mark';
+import { GitHubIcon } from './github-mark';
 import {
   AlertIcon,
   CheckIcon,
@@ -27,17 +27,18 @@ import {
   UpdateDateIcon,
   ViewIcon,
 } from './lucide';
-import { Qiita } from './qiita';
-import { Twitter } from './twitter';
-import { Zenn } from './zenn';
+import { QiitaIcon } from './qiita';
+import { TwitterIcon } from './twitter';
+import { ZennIcon } from './zenn';
 import type { Meta, StoryObj } from '@storybook/react';
+import { FC } from 'react';
 
 const meta: Meta<typeof SVGAElement> = {
   title: 'components/icons',
 };
 
 export default meta;
-type Story = StoryObj<typeof GithubMark>;
+type Story = StoryObj<FC>;
 
 export const Primary: Story = {
   render: () => {
@@ -168,33 +169,26 @@ export const Primary: Story = {
           <p className="text-center">RSS</p>
         </div>
         <div className="flex flex-col items-center justify-center">
+          <GitHubIcon />
+          <p className="text-center">GitHub</p>
+        </div>
+        <div className="flex flex-col items-center justify-center">
+          <TwitterIcon />
+          <p className="text-center">Twitter</p>
+        </div>
+        <div className="flex flex-col items-center justify-center">
+          <QiitaIcon />
+          <p className="text-center">Qiita</p>
+        </div>
+        <div className="flex flex-col items-center justify-center">
+          <ZennIcon />
+          <p className="text-center">Zenn</p>
+        </div>
+        <div className="flex flex-col items-center justify-center">
           <ArteOdyssey className="size-8" />
           <p className="text-center">Arte Odyssey</p>
         </div>
       </div>
     );
   },
-};
-
-export const External: Story = {
-  render: () => (
-    <div className="flex flex-wrap gap-4">
-      <div>
-        <GithubMark className="size-24" />
-        <p className="text-center">GitHub Mark</p>
-      </div>
-      <div>
-        <Twitter className="size-24" />
-        <p className="text-center">Twitter</p>
-      </div>
-      <div>
-        <Qiita className="size-24" />
-        <p className="text-center">qiita</p>
-      </div>
-      <div>
-        <Zenn className="size-24" />
-        <p className="text-center">Zenn</p>
-      </div>
-    </div>
-  ),
 };

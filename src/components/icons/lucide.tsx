@@ -1,5 +1,5 @@
+import { BaseIcon, BaseIconProps } from './base';
 import { Direction, StatusType } from '@/types';
-import { cn } from '@/utils/cn';
 import {
   Bell,
   Blend,
@@ -33,28 +33,12 @@ import {
   TriangleAlert,
   X,
 } from 'lucide-react';
-import { FC, ReactNode } from 'react';
+import { FC } from 'react';
 
-type IconProps = {
-  size: 'sm' | 'md' | 'lg';
-};
-
-const BaseIcon: FC<
-  IconProps & {
-    renderItem: (arg: { className: string }) => ReactNode;
-  }
-> = ({ size, renderItem }) => {
-  return renderItem({
-    className: cn(
-      size === 'sm' && 'size-4',
-      size === 'md' && 'size-6',
-      size === 'lg' && 'size-8',
-    ),
-  });
-};
+type IconProps = Partial<BaseIconProps>;
 
 export const ChevronIcon: FC<
-  Partial<IconProps> & { direction: Direction }
+  IconProps & { direction: Direction }
 > = ({ direction, size = 'md' }) => {
   return (
     <BaseIcon
@@ -75,9 +59,7 @@ export const ChevronIcon: FC<
   );
 };
 
-export const CloseIcon: FC<Partial<IconProps>> = ({
-  size = 'md',
-}) => {
+export const CloseIcon: FC<IconProps> = ({ size = 'md' }) => {
   return (
     <BaseIcon
       size={size}
@@ -88,9 +70,7 @@ export const CloseIcon: FC<Partial<IconProps>> = ({
   );
 };
 
-export const CheckIcon: FC<Partial<IconProps>> = ({
-  size = 'md',
-}) => {
+export const CheckIcon: FC<IconProps> = ({ size = 'md' }) => {
   return (
     <BaseIcon
       size={size}
@@ -101,9 +81,10 @@ export const CheckIcon: FC<Partial<IconProps>> = ({
   );
 };
 
-export const AlertIcon: FC<
-  Partial<IconProps> & { status: StatusType }
-> = ({ status, size = 'md' }) => {
+export const AlertIcon: FC<IconProps & { status: StatusType }> = ({
+  status,
+  size = 'md',
+}) => {
   return (
     <BaseIcon
       size={size}
@@ -123,7 +104,7 @@ export const AlertIcon: FC<
   );
 };
 
-export const LinkIcon: FC<Partial<IconProps>> = ({ size = 'md' }) => {
+export const LinkIcon: FC<IconProps> = ({ size = 'md' }) => {
   return (
     <BaseIcon
       size={size}
@@ -134,7 +115,7 @@ export const LinkIcon: FC<Partial<IconProps>> = ({ size = 'md' }) => {
   );
 };
 
-export const FormIcon: FC<Partial<IconProps>> = ({ size = 'md' }) => {
+export const FormIcon: FC<IconProps> = ({ size = 'md' }) => {
   return (
     <BaseIcon
       size={size}
@@ -145,9 +126,7 @@ export const FormIcon: FC<Partial<IconProps>> = ({ size = 'md' }) => {
   );
 };
 
-export const TableIcon: FC<Partial<IconProps>> = ({
-  size = 'md',
-}) => {
+export const TableIcon: FC<IconProps> = ({ size = 'md' }) => {
   return (
     <BaseIcon
       size={size}
@@ -158,7 +137,7 @@ export const TableIcon: FC<Partial<IconProps>> = ({
   );
 };
 
-export const CopyIcon: FC<Partial<IconProps>> = ({ size = 'md' }) => {
+export const CopyIcon: FC<IconProps> = ({ size = 'md' }) => {
   return (
     <BaseIcon
       size={size}
@@ -169,9 +148,7 @@ export const CopyIcon: FC<Partial<IconProps>> = ({ size = 'md' }) => {
   );
 };
 
-export const PublishDateIcon: FC<Partial<IconProps>> = ({
-  size = 'md',
-}) => {
+export const PublishDateIcon: FC<IconProps> = ({ size = 'md' }) => {
   return (
     <BaseIcon
       size={size}
@@ -182,9 +159,7 @@ export const PublishDateIcon: FC<Partial<IconProps>> = ({
   );
 };
 
-export const UpdateDateIcon: FC<Partial<IconProps>> = ({
-  size = 'md',
-}) => {
+export const UpdateDateIcon: FC<IconProps> = ({ size = 'md' }) => {
   return (
     <BaseIcon
       size={size}
@@ -195,9 +170,7 @@ export const UpdateDateIcon: FC<Partial<IconProps>> = ({
   );
 };
 
-export const MixedColorIcon: FC<Partial<IconProps>> = ({
-  size = 'md',
-}) => {
+export const MixedColorIcon: FC<IconProps> = ({ size = 'md' }) => {
   return (
     <BaseIcon
       size={size}
@@ -208,9 +181,7 @@ export const MixedColorIcon: FC<Partial<IconProps>> = ({
   );
 };
 
-export const ColorInfoIcon: FC<Partial<IconProps>> = ({
-  size = 'md',
-}) => {
+export const ColorInfoIcon: FC<IconProps> = ({ size = 'md' }) => {
   return (
     <BaseIcon
       size={size}
@@ -221,9 +192,7 @@ export const ColorInfoIcon: FC<Partial<IconProps>> = ({
   );
 };
 
-export const ColorContrastIcon: FC<Partial<IconProps>> = ({
-  size = 'md',
-}) => {
+export const ColorContrastIcon: FC<IconProps> = ({ size = 'md' }) => {
   return (
     <BaseIcon
       size={size}
@@ -234,7 +203,7 @@ export const ColorContrastIcon: FC<Partial<IconProps>> = ({
   );
 };
 
-export const NewsIcon: FC<Partial<IconProps>> = ({ size = 'md' }) => {
+export const NewsIcon: FC<IconProps> = ({ size = 'md' }) => {
   return (
     <BaseIcon
       size={size}
@@ -245,9 +214,7 @@ export const NewsIcon: FC<Partial<IconProps>> = ({ size = 'md' }) => {
   );
 };
 
-export const PrepareIcon: FC<Partial<IconProps>> = ({
-  size = 'md',
-}) => {
+export const PrepareIcon: FC<IconProps> = ({ size = 'md' }) => {
   return (
     <BaseIcon
       size={size}
@@ -258,7 +225,7 @@ export const PrepareIcon: FC<Partial<IconProps>> = ({
   );
 };
 
-export const SendIcon: FC<Partial<IconProps>> = ({ size = 'md' }) => {
+export const SendIcon: FC<IconProps> = ({ size = 'md' }) => {
   return (
     <BaseIcon
       size={size}
@@ -269,7 +236,7 @@ export const SendIcon: FC<Partial<IconProps>> = ({ size = 'md' }) => {
   );
 };
 
-export const MailIcon: FC<Partial<IconProps>> = ({ size = 'md' }) => {
+export const MailIcon: FC<IconProps> = ({ size = 'md' }) => {
   return (
     <BaseIcon
       size={size}
@@ -280,7 +247,7 @@ export const MailIcon: FC<Partial<IconProps>> = ({ size = 'md' }) => {
   );
 };
 
-export const PlusIcon: FC<Partial<IconProps>> = ({ size = 'md' }) => {
+export const PlusIcon: FC<IconProps> = ({ size = 'md' }) => {
   return (
     <BaseIcon
       size={size}
@@ -291,9 +258,7 @@ export const PlusIcon: FC<Partial<IconProps>> = ({ size = 'md' }) => {
   );
 };
 
-export const MinusIcon: FC<Partial<IconProps>> = ({
-  size = 'md',
-}) => {
+export const MinusIcon: FC<IconProps> = ({ size = 'md' }) => {
   return (
     <BaseIcon
       size={size}
@@ -304,9 +269,7 @@ export const MinusIcon: FC<Partial<IconProps>> = ({
   );
 };
 
-export const DarkModeIcon: FC<Partial<IconProps>> = ({
-  size = 'md',
-}) => {
+export const DarkModeIcon: FC<IconProps> = ({ size = 'md' }) => {
   return (
     <BaseIcon
       size={size}
@@ -317,9 +280,7 @@ export const DarkModeIcon: FC<Partial<IconProps>> = ({
   );
 };
 
-export const LightModeIcon: FC<Partial<IconProps>> = ({
-  size = 'md',
-}) => {
+export const LightModeIcon: FC<IconProps> = ({ size = 'md' }) => {
   return (
     <BaseIcon
       size={size}
@@ -330,7 +291,7 @@ export const LightModeIcon: FC<Partial<IconProps>> = ({
   );
 };
 
-export const ViewIcon: FC<Partial<IconProps>> = ({ size = 'md' }) => {
+export const ViewIcon: FC<IconProps> = ({ size = 'md' }) => {
   return (
     <BaseIcon
       size={size}
@@ -341,7 +302,7 @@ export const ViewIcon: FC<Partial<IconProps>> = ({ size = 'md' }) => {
   );
 };
 
-export const RSSIcon: FC<Partial<IconProps>> = ({ size = 'md' }) => {
+export const RSSIcon: FC<IconProps> = ({ size = 'md' }) => {
   return (
     <BaseIcon
       size={size}
@@ -352,9 +313,7 @@ export const RSSIcon: FC<Partial<IconProps>> = ({ size = 'md' }) => {
   );
 };
 
-export const HistoryIcon: FC<Partial<IconProps>> = ({
-  size = 'md',
-}) => {
+export const HistoryIcon: FC<IconProps> = ({ size = 'md' }) => {
   return (
     <BaseIcon
       size={size}
@@ -365,7 +324,7 @@ export const HistoryIcon: FC<Partial<IconProps>> = ({
   );
 };
 
-export const ListIcon: FC<Partial<IconProps>> = ({ size = 'md' }) => {
+export const ListIcon: FC<IconProps> = ({ size = 'md' }) => {
   return (
     <BaseIcon
       size={size}

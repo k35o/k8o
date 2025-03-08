@@ -1,19 +1,22 @@
 'use client';
 
 import { IconLink } from '@/components/icon-link';
-import { Qiita, RSSIcon, Zenn } from '@/components/icons';
+import { QiitaIcon, RSSIcon, ZennIcon } from '@/components/icons';
 import { FC } from 'react';
 
 export const ExternalBlog: FC = () => {
   return (
     <div className="flex gap-4">
       <IconLink href="https://qiita.com/KokiSakano" bg="base">
-        <Qiita title="Qiitaのアカウント" className="size-6" />
+        <span className="sr-only">Qiitaのアカウント</span>
+        <QiitaIcon />
       </IconLink>
       <IconLink href="https://zenn.dev/kokisakano" bg="base">
-        <Zenn title="Zennのアカウント" className="size-6" />
+        <span className="sr-only">Zennのアカウント</span>
+        <ZennIcon />
       </IconLink>
       <IconLink href="/blog/feed" bg="base" label="rss">
+        <span className="sr-only">RSSフィード</span>
         <RSSIcon />
       </IconLink>
     </div>

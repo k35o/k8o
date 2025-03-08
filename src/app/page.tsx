@@ -7,9 +7,9 @@ import { Card } from '@/components/card';
 import { IconLink } from '@/components/icon-link';
 import {
   ArteOdyssey,
-  GithubMark,
-  Qiita,
-  Zenn,
+  GitHubIcon,
+  QiitaIcon,
+  ZennIcon,
 } from '@/components/icons';
 import Image from 'next/image';
 
@@ -31,22 +31,16 @@ export default function Home() {
               <div className="flex items-center justify-end gap-1">
                 <EmailTooltip />
                 <IconLink href="https://github.com/k35o">
-                  <GithubMark
-                    title="GitHubのアカウント"
-                    className="size-5 md:size-6"
-                  />
+                  <span className="sr-only">GitHubのアカウント</span>
+                  <GitHubIcon />
                 </IconLink>
                 <IconLink href="https://qiita.com/KokiSakano">
-                  <Qiita
-                    title="Qiitaのアカウント"
-                    className="size-5 md:size-6"
-                  />
+                  <span className="sr-only">Qiitaのアカウント</span>
+                  <QiitaIcon />
                 </IconLink>
                 <IconLink href="https://zenn.dev/kokisakano">
-                  <Zenn
-                    title="Zennのアカウント"
-                    className="size-5 md:size-6"
-                  />
+                  <span className="sr-only">Zennのアカウント</span>
+                  <ZennIcon />
                 </IconLink>
               </div>
             </div>
