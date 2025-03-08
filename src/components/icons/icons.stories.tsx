@@ -185,7 +185,7 @@ export const Primary: Story = {
           <p className="text-center">Zenn</p>
         </div>
         <div className="flex flex-col items-center justify-center">
-          <ArteOdyssey className="size-8" />
+          <ArteOdyssey />
           <p className="text-center">Arte Odyssey</p>
         </div>
       </div>

@@ -1,16 +1,12 @@
 import { Heading } from '../components/heading';
 import { AppCard } from './_components/app-card';
 import { EmailTooltip } from './_components/email-tooltip';
+import arteodyssey from './_images/arteodyssey.png';
 import k8o from './_images/k8o.jpg';
 import { RoundedIcon } from './radius-maker/_components/rounded-icon';
 import { Card } from '@/components/card';
 import { IconLink } from '@/components/icon-link';
-import {
-  ArteOdyssey,
-  GitHubIcon,
-  QiitaIcon,
-  ZennIcon,
-} from '@/components/icons';
+import { GitHubIcon, QiitaIcon, ZennIcon } from '@/components/icons';
 import Image from 'next/image';
 
 export default function Home() {
@@ -67,7 +63,12 @@ export default function Home() {
           <AppCard
             link="/design-system"
             symbol={
-              <ArteOdyssey className="text-primary-fg size-16" />
+              <Image
+                src={arteodyssey}
+                alt=""
+                className="size-16"
+                loading="eager"
+              />
             }
             title="ArteOdyssey"
             description="k8o.meで利用しているデザインシステムを紹介します。コンポーネントやデザイントークンを確認できます。"
