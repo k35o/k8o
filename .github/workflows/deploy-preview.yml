@@ -22,6 +22,9 @@ jobs:
       has_migration: ${{ steps.has_migration.outputs.has_migration }}
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
       - name: Get branch name
         id: branch_name
         uses: tj-actions/branch-names@v8
