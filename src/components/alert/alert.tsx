@@ -1,4 +1,4 @@
-import { AlertIcon } from '../alert-icon';
+import { AlertIcon } from '../icons';
 import type { StatusType } from '@/types';
 import { cn } from '@/utils/cn';
 import { FC } from 'react';
@@ -20,7 +20,17 @@ export const Alert: FC<Props> = ({ status, message }) => {
         status === 'error' && 'bg-bg-error',
       )}
     >
-      <AlertIcon status={status} />
+      <span
+        className={cn(
+          'size-8',
+          status === 'success' && 'text-fg-success',
+          status === 'info' && 'text-fg-info',
+          status === 'warning' && 'text-fg-warning',
+          status === 'error' && 'text-fg-error',
+        )}
+      >
+        <AlertIcon status={status} size="lg" />
+      </span>
       {Array.isArray(message) ? (
         message.length > 1 ? (
           <ul className="ml-4 list-disc">

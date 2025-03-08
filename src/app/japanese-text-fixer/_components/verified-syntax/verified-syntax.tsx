@@ -8,8 +8,9 @@ import {
   AccordionPanel,
 } from '@/components/accordion';
 import { Button } from '@/components/button';
+import { AlertIcon } from '@/components/icons';
 import { useClipboard } from '@/hooks/clipboard';
-import { CircleCheck, ClipboardPenLine } from 'lucide-react';
+import { ClipboardPenLine } from 'lucide-react';
 import { FC } from 'react';
 
 export const VerifiedSyntax: FC = () => {
@@ -32,11 +33,10 @@ export const VerifiedSyntax: FC = () => {
           テキストをコピーする
         </Button>
       </div>
-      <CircleCheck
-        aria-label=""
-        className="text-fg-success size-36"
-      />
-      <p className="text-lg font-bold">
+      <p className="flex gap-1 text-lg font-bold">
+        <span className="text-fg-success">
+          <AlertIcon status="success" size="lg" />
+        </span>
         テキストに問題は見つかりませんでした
       </p>
       <div className="w-full">

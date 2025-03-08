@@ -1,4 +1,4 @@
-import { Direction } from '@/types';
+import { Direction, StatusType } from '@/types';
 import { cn } from '@/utils/cn';
 import {
   Check,
@@ -6,6 +6,10 @@ import {
   ChevronLeft,
   ChevronRight,
   ChevronUp,
+  CircleAlert,
+  CircleCheck,
+  Info,
+  TriangleAlert,
   X,
 } from 'lucide-react';
 import { FC, ReactNode } from 'react';
@@ -71,6 +75,28 @@ export const CheckIcon: FC<Partial<IconProps>> = ({
       size={size}
       renderItem={(props) => {
         return <Check {...props} />;
+      }}
+    />
+  );
+};
+
+export const AlertIcon: FC<
+  Partial<IconProps> & { status: StatusType }
+> = ({ status, size = 'md' }) => {
+  return (
+    <BaseIcon
+      size={size}
+      renderItem={(props) => {
+        switch (status) {
+          case 'success':
+            return <CircleCheck {...props} />;
+          case 'info':
+            return <Info {...props} />;
+          case 'warning':
+            return <TriangleAlert {...props} />;
+          case 'error':
+            return <CircleAlert {...props} />;
+        }
       }}
     />
   );

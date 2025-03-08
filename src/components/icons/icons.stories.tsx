@@ -1,5 +1,10 @@
 import { GithubMark } from './github-mark';
-import { CheckIcon, ChevronIcon, CloseIcon } from './lucide';
+import {
+  AlertIcon,
+  CheckIcon,
+  ChevronIcon,
+  CloseIcon,
+} from './lucide';
 import { Qiita } from './qiita';
 import { Twitter } from './twitter';
 import { Zenn } from './zenn';
@@ -8,18 +13,14 @@ import {
   Bell,
   Blend,
   Calendar,
-  CircleAlert,
-  CircleCheck,
   ClipboardPenLine,
   Clock,
   Contrast,
-  Info,
   Link,
   ListMinus,
   PaintBucket,
   Rocket,
   Table2,
-  TriangleAlert,
 } from 'lucide-react';
 
 const meta: Meta<typeof SVGAElement> = {
@@ -39,38 +40,38 @@ export const Primary: Story = {
         </div>
         <div className="flex flex-col items-center justify-center">
           <ChevronIcon direction="left" />
-          <p className="text-center">ChevronIcon Left</p>
+          <p className="text-center">Chevron Left</p>
         </div>
         <div className="flex flex-col items-center justify-center">
           <ChevronIcon direction="up" />
-          <p className="text-center">ChevronIcon Up</p>
+          <p className="text-center">Chevron Up</p>
         </div>
         <div className="flex flex-col items-center justify-center">
           <ChevronIcon direction="right" />
-          <p className="text-center">ChevronIcon Right</p>
+          <p className="text-center">Chevron Right</p>
         </div>
         <div className="flex flex-col items-center justify-center">
           <ChevronIcon direction="down" />
-          <p className="text-center">ChevronIcon Down</p>
+          <p className="text-center">Chevron Down</p>
         </div>
         <div className="flex flex-col items-center justify-center">
           <CheckIcon />
           <p className="text-center">Check</p>
         </div>
         <div className="flex flex-col items-center justify-center">
-          <Info className="size-24" />
+          <AlertIcon status="info" />
           <p className="text-center">Info</p>
         </div>
         <div className="flex flex-col items-center justify-center">
-          <CircleCheck className="size-24" />
+          <AlertIcon status="success" />
           <p className="text-center">Success</p>
         </div>
         <div className="flex flex-col items-center justify-center">
-          <TriangleAlert className="size-24" />
+          <AlertIcon status="warning" />
           <p className="text-center">Warning</p>
         </div>
         <div className="flex flex-col items-center justify-center">
-          <CircleAlert className="size-24" />
+          <AlertIcon status="error" />
           <p className="text-center">Error</p>
         </div>
         <div className="flex flex-col items-center justify-center">

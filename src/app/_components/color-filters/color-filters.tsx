@@ -2,9 +2,10 @@
 
 import { Transfer } from './transfer';
 import { ListBox } from '../../../components/list-box';
+import { AlertIcon } from '@/components/icons';
 import { useOpenContext } from '@/components/popover';
 import { cn } from '@/utils/cn';
-import { Blend, Info } from 'lucide-react';
+import { Blend } from 'lucide-react';
 import { Route } from 'next';
 import Link from 'next/link';
 import {
@@ -104,7 +105,9 @@ const HelpContent: FC = () => {
         'focus-visible:bordertransparent focus-visible:bg-primary-bg focus-visible::text-fg-inverse focus-visible:outline-hidden',
       )}
     >
-      {<Info className="text-fg-info size-6" />}
+      <span className="text-fg-info">
+        <AlertIcon status="info" />
+      </span>
       色覚特性について
     </Link>
   );
