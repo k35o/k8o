@@ -31,7 +31,7 @@ jobs:
       - name: Check for migrations
         id: has_migration
         run: |
-          if git diff --name-only origin/${{ github.event.pull_request.base.ref }} ${{ github.event.pull_request.head.ref }} | grep -q '^migrations/'; then
+          if git diff --name-only origin/${{ github.event.pull_request.base.ref }} HEAD | grep -q '^migrations/'; then
             echo "has_migration=true" >> $GITHUB_OUTPUT
           else
             echo "has_migration=false" >> $GITHUB_OUTPUT
