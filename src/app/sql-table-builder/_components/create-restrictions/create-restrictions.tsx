@@ -12,7 +12,7 @@ import {
 } from '@/components/accordion';
 import { Button } from '@/components/button';
 import { IconButton } from '@/components/icon-button';
-import { Close } from '@/components/icons';
+import { CloseIcon } from '@/components/icons';
 import { uuidV4 } from '@/utils/uuid-v4';
 import { FC } from 'react';
 
@@ -76,7 +76,7 @@ export const CreateRestrictions: FC<Props> = ({
                           );
                         }}
                       >
-                        <Close />
+                        <CloseIcon />
                       </IconButton>
                     </div>
                   )}

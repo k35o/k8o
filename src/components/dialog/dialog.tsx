@@ -1,6 +1,6 @@
 import { Heading } from '../heading';
 import { IconButton } from '../icon-button';
-import { Close } from '../icons';
+import { CloseIcon } from '../icons';
 import {
   createContext,
   FC,
@@ -69,7 +69,7 @@ const Header: FC<{
             onClose();
           }}
         >
-          <Close size="sm" />
+          <CloseIcon size="sm" />
         </IconButton>
       </div>
     </div>

@@ -1,4 +1,4 @@
-import { Chevron } from '@/components/icons';
+import { ChevronIcon } from '@/components/icons';
 import { cn } from '@/utils/cn';
 import { ChangeEventHandler, FC } from 'react';
 
@@ -52,7 +52,7 @@ export const Select: FC<Props> = ({
         ))}
       </select>
       <div className="absolute top-2/4 right-3 -translate-y-1/2">
-        <Chevron size="sm" direction="down" />
+        <ChevronIcon size="sm" direction="down" />
       </div>
     </div>
   );

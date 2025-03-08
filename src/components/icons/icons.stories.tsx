@@ -1,11 +1,10 @@
 import { GithubMark } from './github-mark';
-import { Chevron, Close } from './lucide';
+import { ChevronIcon, CloseIcon } from './lucide';
 import { Qiita } from './qiita';
 import { Twitter } from './twitter';
 import { Zenn } from './zenn';
 import type { Meta, StoryObj } from '@storybook/react';
 import {
-  ArrowBigRightDash,
   Bell,
   Blend,
   Calendar,
@@ -36,28 +35,24 @@ export const Primary: Story = {
     return (
       <div className="grid-cols-auto-fit-36 grid place-items-center gap-4">
         <div className="flex flex-col items-center justify-center">
-          <Close />
+          <CloseIcon />
           <p className="text-center">Close</p>
         </div>
         <div className="flex flex-col items-center justify-center">
-          <Chevron direction="left" />
-          <p className="text-center">Chevron Left</p>
+          <ChevronIcon direction="left" />
+          <p className="text-center">ChevronIcon Left</p>
         </div>
         <div className="flex flex-col items-center justify-center">
-          <Chevron direction="up" />
-          <p className="text-center">Chevron Up</p>
+          <ChevronIcon direction="up" />
+          <p className="text-center">ChevronIcon Up</p>
         </div>
         <div className="flex flex-col items-center justify-center">
-          <Chevron direction="right" />
-          <p className="text-center">Chevron Right</p>
+          <ChevronIcon direction="right" />
+          <p className="text-center">ChevronIcon Right</p>
         </div>
         <div className="flex flex-col items-center justify-center">
-          <Chevron direction="down" />
-          <p className="text-center">Chevron Down</p>
-        </div>
-        <div className="flex flex-col items-center justify-center">
-          <ArrowBigRightDash className="size-24" />
-          <p className="text-center">Arrow Big Right Down</p>
+          <ChevronIcon direction="down" />
+          <p className="text-center">ChevronIcon Down</p>
         </div>
         <div className="flex flex-col items-center justify-center">
           <Check className="size-24" />

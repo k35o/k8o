@@ -1,4 +1,4 @@
-import { Chevron } from '../icons';
+import { ChevronIcon } from '../icons';
 import { cn } from '@/utils/cn';
 import { Route } from 'next';
 import Link from 'next/link';
@@ -32,7 +32,7 @@ const Item: FC<PropsWithChildren> = ({ children }) => {
 const Separator: FC = () => {
   return (
     <li className="text-fg-mute">
-      <Chevron size="sm" direction="right" />
+      <ChevronIcon size="sm" direction="right" />
     </li>
   );
 };

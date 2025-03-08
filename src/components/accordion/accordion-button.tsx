@@ -1,7 +1,7 @@
 'use client';
 
 import { useItemId, useOpen, useToggleOpen } from './context';
-import { Chevron } from '../icons';
+import { ChevronIcon } from '../icons';
 import { cn } from '@/utils/cn';
 import * as motion from 'motion/react-client';
 import { FC, PropsWithChildren } from 'react';
@@ -31,7 +31,7 @@ export const AccordionButton: FC<PropsWithChildren> = ({
         animate={open ? { rotate: 180 } : { rotate: 0 }}
         transition={{ duration: 0.3 }}
       >
-        <Chevron direction="down" />
+        <ChevronIcon direction="down" />
       </motion.span>
     </button>
   );

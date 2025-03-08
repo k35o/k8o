@@ -7,7 +7,7 @@ import { Checkbox } from '@/components/form/checkbox';
 import { Select } from '@/components/form/select/select';
 import { TextField } from '@/components/form/text-field';
 import { IconButton } from '@/components/icon-button';
-import { Close } from '@/components/icons';
+import { CloseIcon } from '@/components/icons';
 import { FC, useId } from 'react';
 
 type Props = {
@@ -196,7 +196,7 @@ export const CreateColumnsByTable: FC<Props> = ({
                       size="sm"
                       onClick={handleDeleteColumn(id)}
                     >
-                      <Close />
+                      <CloseIcon />
                     </IconButton>
                   )}
                 </td>

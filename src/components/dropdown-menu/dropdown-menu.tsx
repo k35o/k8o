@@ -8,7 +8,7 @@ import {
 } from './hooks';
 import { Button } from '../button';
 import { IconButton } from '../icon-button';
-import { Chevron } from '../icons';
+import { ChevronIcon } from '../icons';
 import { Popover } from '../popover';
 import { useFloatingUIContext } from '../popover/hooks';
 import { cn } from '@/utils/cn';
@@ -123,7 +123,7 @@ const Trigger: FC<{
           size={size}
           color="gray"
           variant="contained"
-          endIcon={<Chevron direction="down" />}
+          endIcon={<ChevronIcon direction="down" />}
           {...getTriggerProps(props)}
         >
           {text}

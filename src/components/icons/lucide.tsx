@@ -27,7 +27,7 @@ const BaseIcon: FC<
   });
 };
 
-export const Chevron: FC<
+export const ChevronIcon: FC<
   Partial<IconProps> & { direction: Direction }
 > = ({ direction, size = 'md' }) => {
   return (
@@ -49,7 +49,9 @@ export const Chevron: FC<
   );
 };
 
-export const Close: FC<Partial<IconProps>> = ({ size = 'md' }) => {
+export const CloseIcon: FC<Partial<IconProps>> = ({
+  size = 'md',
+}) => {
   return (
     <BaseIcon
       size={size}

@@ -1,5 +1,5 @@
 import { IconButton } from '../../icon-button';
-import { Close } from '../../icons';
+import { CloseIcon } from '../../icons';
 import { cn } from '@/utils/cn';
 import { FC, useEffect, useRef, useState } from 'react';
 
@@ -87,7 +87,7 @@ export const Autocomplete: FC<Props> = ({
                     onChange(value.filter((v) => v !== text));
                   }}
                 >
-                  <Close size="sm" />
+                  <CloseIcon size="sm" />
                 </IconButton>
               </div>
             );
@@ -185,7 +185,7 @@ export const Autocomplete: FC<Props> = ({
               onChange([]);
             }}
           >
-            <Close size="sm" />
+            <CloseIcon size="sm" />
           </IconButton>
         )}
       </div>

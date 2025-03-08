@@ -11,7 +11,7 @@ import {
   getColorCode,
   Stage,
 } from '@/app/design-system/_utils/color';
-import { Chevron } from '@/components/icons';
+import { ChevronIcon } from '@/components/icons';
 import { cn } from '@/utils/cn';
 import { toPrecision } from '@/utils/number/to-precision';
 import { Contrast, PaintBucket } from 'lucide-react';
@@ -84,7 +84,7 @@ export const ColorInfo: FC<{
           animate={isOpen ? { rotate: 180 } : { rotate: 0 }}
           transition={{ duration: 0.3 }}
         >
-          <Chevron direction="down" />
+          <ChevronIcon direction="down" />
         </motion.span>
       </button>
       <motion.div
