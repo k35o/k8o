@@ -1,5 +1,5 @@
+import { CheckIcon } from '../../icons';
 import { cn } from '@/utils/cn';
-import { Check } from 'lucide-react';
 import { ChangeEventHandler, FC, useState } from 'react';
 
 type Props = {
@@ -35,7 +35,7 @@ export const Checkbox: FC<Props> = ({ label, value, onChange }) => {
         )}
         aria-hidden={true}
       >
-        {value ? <Check className="size-4" /> : null}
+        {value ? <CheckIcon size="sm" /> : null}
       </span>
       <span className="text-lg">{label}</span>
     </label>

@@ -1,6 +1,7 @@
 import { Direction } from '@/types';
 import { cn } from '@/utils/cn';
 import {
+  Check,
   ChevronDown,
   ChevronLeft,
   ChevronRight,
@@ -57,6 +58,19 @@ export const CloseIcon: FC<Partial<IconProps>> = ({
       size={size}
       renderItem={(props) => {
         return <X {...props} />;
+      }}
+    />
+  );
+};
+
+export const CheckIcon: FC<Partial<IconProps>> = ({
+  size = 'md',
+}) => {
+  return (
+    <BaseIcon
+      size={size}
+      renderItem={(props) => {
+        return <Check {...props} />;
       }}
     />
   );

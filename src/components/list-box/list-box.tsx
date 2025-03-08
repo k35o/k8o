@@ -9,7 +9,7 @@ import {
 } from './hooks';
 import { Button } from '../button';
 import { IconButton } from '../icon-button';
-import { ChevronIcon } from '../icons';
+import { CheckIcon, ChevronIcon } from '../icons';
 import { Popover } from '../popover';
 import { useFloatingUIContext } from '../popover/hooks';
 import { cn } from '@/utils/cn';
@@ -19,7 +19,6 @@ import {
   useInteractions,
   useListNavigation,
 } from '@floating-ui/react';
-import { Check } from 'lucide-react';
 import {
   ComponentProps,
   FC,
@@ -150,7 +149,9 @@ const Item: FC<{
       {...props}
     >
       {selected && (
-        <Check className="text-fg-success group-hover:text-fg-base group-focus-visible:text-fg-base size-6" />
+        <span className="text-fg-success group-hover:text-fg-base group-focus-visible:text-fg-base">
+          <CheckIcon />
+        </span>
       )}
       {label}
     </button>

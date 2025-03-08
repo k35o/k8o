@@ -1,5 +1,5 @@
 import { GithubMark } from './github-mark';
-import { ChevronIcon, CloseIcon } from './lucide';
+import { CheckIcon, ChevronIcon, CloseIcon } from './lucide';
 import { Qiita } from './qiita';
 import { Twitter } from './twitter';
 import { Zenn } from './zenn';
@@ -8,7 +8,6 @@ import {
   Bell,
   Blend,
   Calendar,
-  Check,
   CircleAlert,
   CircleCheck,
   ClipboardPenLine,
@@ -55,7 +54,7 @@ export const Primary: Story = {
           <p className="text-center">ChevronIcon Down</p>
         </div>
         <div className="flex flex-col items-center justify-center">
-          <Check className="size-24" />
+          <CheckIcon />
           <p className="text-center">Check</p>
         </div>
         <div className="flex flex-col items-center justify-center">
