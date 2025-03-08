@@ -12,8 +12,8 @@ import {
 } from '@/components/accordion';
 import { Button } from '@/components/button';
 import { IconButton } from '@/components/icon-button';
+import { CloseIcon } from '@/components/icons';
 import { uuidV4 } from '@/utils/uuid-v4';
-import { X } from 'lucide-react';
 import { FC } from 'react';
 
 type Props = {
@@ -76,7 +76,7 @@ export const CreateRestrictions: FC<Props> = ({
                           );
                         }}
                       >
-                        <X className="size-6" />
+                        <CloseIcon />
                       </IconButton>
                     </div>
                   )}

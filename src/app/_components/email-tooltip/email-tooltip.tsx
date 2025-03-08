@@ -1,8 +1,8 @@
 'use client';
 
 import { IconButton } from '@/components/icon-button';
+import { MailIcon } from '@/components/icons';
 import { Tooltip } from '@/components/tooltip';
-import { Mail } from 'lucide-react';
 import { FC } from 'react';
 
 export const EmailTooltip: FC = () => {
@@ -11,7 +11,7 @@ export const EmailTooltip: FC = () => {
       <Tooltip.Trigger
         renderItem={(props) => (
           <IconButton {...props} label="メールアドレスを確認">
-            <Mail className="size-5 md:size-6" />
+            <MailIcon />
           </IconButton>
         )}
       />

@@ -1,5 +1,5 @@
+import { ChevronIcon } from '@/components/icons';
 import { cn } from '@/utils/cn';
-import { ChevronDown } from 'lucide-react';
 import { ChangeEventHandler, FC } from 'react';
 
 export type Option = Readonly<{
@@ -52,7 +52,7 @@ export const Select: FC<Props> = ({
         ))}
       </select>
       <div className="absolute top-2/4 right-3 -translate-y-1/2">
-        <ChevronDown className="size-4" />
+        <ChevronIcon size="sm" direction="down" />
       </div>
     </div>
   );

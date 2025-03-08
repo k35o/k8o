@@ -2,11 +2,15 @@ import { ReportView } from '../report-view';
 import { TableOfContext } from '../table-of-context';
 import { ViewCounter } from '../view-counter';
 import { getBlog } from '#actions/blog';
+import {
+  PublishDateIcon,
+  UpdateDateIcon,
+  ViewIcon,
+} from '@/components/icons';
 import { ScrollLinked } from '@/components/scroll-linked';
 import { Separator } from '@/components/separator';
 import { TextTag } from '@/components/text-tag';
 import { formatDate } from '@/utils/date/format';
-import { Calendar, Clock, Eye } from 'lucide-react';
 import { FC, ReactNode, Suspense } from 'react';
 import { ErrorBoundary } from 'react-error-boundary';
 
@@ -28,18 +32,19 @@ export const BlogLayout: FC<{
             <div className="text-fg-mute flex flex-col items-end gap-1 text-xs sm:flex-row sm:items-center sm:justify-end sm:gap-2 sm:text-sm">
               <div className="flex flex-wrap items-center justify-end gap-1">
                 <div className="flex items-center gap-1">
-                  <Calendar className="size-4" aria-label="" />
+                  <PublishDateIcon size="sm" />
                   <span>公開: {formatDate(blog.createdAt)}</span>
                 </div>
                 <div className="flex items-center gap-1">
-                  <Clock className="size-4" aria-label="" />
+                  <UpdateDateIcon size="sm" />
                   <span>更新: {formatDate(blog.updatedAt)}</span>
                 </div>
               </div>
               <ErrorBoundary fallback={<></>}>
                 <Suspense fallback={<></>}>
                   <div className="flex items-center gap-1">
-                    <Eye className="size-4" aria-label="閲覧数" />
+                    <ViewIcon size="sm" />
+                    <span className="sr-only">閲覧数</span>
                     <span>
                       <ViewCounter blogId={blog.id} /> views
                     </span>

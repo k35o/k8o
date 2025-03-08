@@ -1,9 +1,9 @@
 import { InteractiveCard } from '@/components/card';
 import { Heading } from '@/components/heading';
+import { PublishDateIcon, UpdateDateIcon } from '@/components/icons';
 import { TextTag } from '@/components/text-tag';
 import { formatDate } from '@/utils/date/format';
 import { isInternalRoute } from '@/utils/is-internal-route';
-import { Calendar, Clock } from 'lucide-react';
 import Link from 'next/link';
 import { FC } from 'react';
 
@@ -65,11 +65,11 @@ export const BlogCardContent: FC<Omit<BlogCardProps, 'link'>> = ({
       )}
       <div className="text-fg-mute ml-auto flex items-center gap-4 gap-x-8 text-xs">
         <div className="flex items-center gap-1">
-          <Calendar className="size-4" aria-label="" />
+          <PublishDateIcon size="sm" />
           <span>公開: {formatDate(createdAt, 'yyyy年M月d日')}</span>
         </div>
         <div className="flex items-center gap-1">
-          <Clock className="size-4" aria-label="" />
+          <UpdateDateIcon size="sm" />
           <span>更新: {formatDate(updatedAt, 'yyyy年M月d日')}</span>
         </div>
       </div>

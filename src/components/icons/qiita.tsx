@@ -1,9 +1,7 @@
+import { BaseIcon, BaseIconProps } from './base';
 import { FC } from 'react';
 
-export const Qiita: FC<{ title?: string; className?: string }> = ({
-  title,
-  className,
-}) => {
+const Qiita: FC<{ className: string }> = ({ className }) => {
   return (
     <svg
       className={className}
@@ -12,7 +10,6 @@ export const Qiita: FC<{ title?: string; className?: string }> = ({
       viewBox="0 0 300 300"
       enableBackground="new 0 0 300 300"
     >
-      <title>{title ?? 'Qiita'}</title>
       <path
         fill="#55C500"
         opacity="1.000000"
@@ -114,5 +111,18 @@ M201.225189,166.276794
 z"
       />
     </svg>
+  );
+};
+
+export const QiitaIcon: FC<Partial<BaseIconProps>> = ({
+  size = 'md',
+}) => {
+  return (
+    <BaseIcon
+      size={size}
+      renderItem={(props) => {
+        return <Qiita {...props} />;
+      }}
+    />
   );
 };

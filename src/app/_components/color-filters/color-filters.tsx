@@ -1,10 +1,10 @@
 'use client';
 
 import { Transfer } from './transfer';
-import { ListBox } from '../../../components/list-box';
+import { AlertIcon, MixedColorIcon } from '@/components/icons';
+import { ListBox } from '@/components/list-box';
 import { useOpenContext } from '@/components/popover';
 import { cn } from '@/utils/cn';
-import { Blend, Info } from 'lucide-react';
 import { Route } from 'next';
 import Link from 'next/link';
 import {
@@ -85,7 +85,7 @@ export const ColorFilterBox: FC = () => {
       value={selectedFilter}
       onSelect={handleSelect}
     >
-      <ListBox.TriggerIcon icon={<Blend className="size-8" />} />
+      <ListBox.TriggerIcon icon={<MixedColorIcon size="lg" />} />
       <ListBox.Content helpContent={<HelpContent />} />
     </ListBox.Root>
   );
@@ -104,7 +104,9 @@ const HelpContent: FC = () => {
         'focus-visible:bordertransparent focus-visible:bg-primary-bg focus-visible::text-fg-inverse focus-visible:outline-hidden',
       )}
     >
-      {<Info className="text-fg-info size-6" />}
+      <span className="text-fg-info">
+        <AlertIcon status="info" />
+      </span>
       色覚特性について
     </Link>
   );

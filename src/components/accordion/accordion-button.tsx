@@ -1,8 +1,8 @@
 'use client';
 
 import { useItemId, useOpen, useToggleOpen } from './context';
+import { ChevronIcon } from '../icons';
 import { cn } from '@/utils/cn';
-import { ChevronDown } from 'lucide-react';
 import * as motion from 'motion/react-client';
 import { FC, PropsWithChildren } from 'react';
 
@@ -31,7 +31,7 @@ export const AccordionButton: FC<PropsWithChildren> = ({
         animate={open ? { rotate: 180 } : { rotate: 0 }}
         transition={{ duration: 0.3 }}
       >
-        <ChevronDown className="size-6" />
+        <ChevronIcon direction="down" />
       </motion.span>
     </button>
   );

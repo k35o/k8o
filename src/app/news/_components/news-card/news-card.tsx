@@ -1,8 +1,8 @@
 import { News } from '../../_types';
 import { InteractiveCard } from '@/components/card';
 import { Heading } from '@/components/heading';
+import { PublishDateIcon, UpdateDateIcon } from '@/components/icons';
 import { formatDate } from '@/utils/date/format';
-import { Calendar, Clock } from 'lucide-react';
 import Link from 'next/link';
 import { FC } from 'react';
 
@@ -35,13 +35,13 @@ export const NewsCard: FC<Props> = ({
             <Heading type="h3">{title}</Heading>
             <div className="text-fg-mute flex flex-wrap items-center gap-1">
               <div className="flex items-center gap-1">
-                <Calendar className="size-4" aria-label="" />
+                <PublishDateIcon size="sm" />
                 <span className="text-sm">
                   公開: {formatDate(new Date(createdAt))}
                 </span>
               </div>
               <div className="flex items-center gap-1">
-                <Clock className="size-4" aria-label="" />
+                <UpdateDateIcon size="sm" />
                 <span className="text-sm">
                   更新: {formatDate(new Date(updatedAt))}
                 </span>

@@ -1,9 +1,9 @@
 import { Quiz } from '../../_types';
 import { checkAnswer } from '../../_utils/check-answer';
-import { AlertIcon } from '@/components/alert-icon';
 import { Button } from '@/components/button';
 import { FormControl } from '@/components/form/form-control';
 import { TextField } from '@/components/form/text-field';
+import { AlertIcon } from '@/components/icons';
 import { FC, useMemo, useState } from 'react';
 
 export const Answer: FC<{
@@ -25,15 +25,15 @@ export const Answer: FC<{
   return (
     <div className="flex flex-col items-center gap-4">
       {status === 'correct' && (
-        <div className="flex items-center gap-1">
-          <AlertIcon status="success" />
-          <p className="text-fg-success text-xl font-bold">正解</p>
+        <div className="text-fg-success flex items-center gap-1">
+          <AlertIcon status="success" size="lg" />
+          <p className="text-xl font-bold">正解</p>
         </div>
       )}
       {status === 'incorrect' && (
-        <div className="flex items-center gap-1">
-          <AlertIcon status="error" />
-          <p className="text-fg-error text-xl font-bold">不正解</p>
+        <div className="text-fg-error flex items-center gap-1">
+          <AlertIcon status="error" size="lg" />
+          <p className="text-xl font-bold">不正解</p>
         </div>
       )}
       {currentQuiz.highlight && (

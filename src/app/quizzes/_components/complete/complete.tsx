@@ -2,9 +2,9 @@ import { Quiz } from '../../_types';
 import { CollectionByHighlight } from '../collection';
 import { Button } from '@/components/button';
 import { Heading } from '@/components/heading';
+import { HistoryIcon, ListIcon } from '@/components/icons';
 import { LinkButton } from '@/components/link-button';
 import { cn } from '@/utils/cn';
-import { History, List } from 'lucide-react';
 import { FC } from 'react';
 
 export const Complete: FC<{
@@ -33,14 +33,11 @@ export const Complete: FC<{
         <LinkButton
           href="/quizzes/fish-kanji/list"
           variant="outlined"
-          startIcon={<List className="size-6" />}
+          startIcon={<ListIcon />}
         >
           うおへんの漢字一覧
         </LinkButton>
-        <Button
-          onClick={reset}
-          startIcon={<History className="size-6" />}
-        >
+        <Button onClick={reset} startIcon={<HistoryIcon />}>
           もう一度挑戦する
         </Button>
       </div>

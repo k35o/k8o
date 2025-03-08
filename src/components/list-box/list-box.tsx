@@ -9,6 +9,7 @@ import {
 } from './hooks';
 import { Button } from '../button';
 import { IconButton } from '../icon-button';
+import { CheckIcon, ChevronIcon } from '../icons';
 import { Popover } from '../popover';
 import { useFloatingUIContext } from '../popover/hooks';
 import { cn } from '@/utils/cn';
@@ -18,7 +19,6 @@ import {
   useInteractions,
   useListNavigation,
 } from '@floating-ui/react';
-import { Check, ChevronDown } from 'lucide-react';
 import {
   ComponentProps,
   FC,
@@ -149,7 +149,9 @@ const Item: FC<{
       {...props}
     >
       {selected && (
-        <Check className="text-fg-success group-hover:text-fg-base group-focus-visible:text-fg-base size-6" />
+        <span className="text-fg-success group-hover:text-fg-base group-focus-visible:text-fg-base">
+          <CheckIcon />
+        </span>
       )}
       {label}
     </button>
@@ -171,7 +173,7 @@ const Trigger: FC<{
           color="gray"
           variant="contained"
           fullWidth
-          endIcon={<ChevronDown aria-label="" className="size-8" />}
+          endIcon={<ChevronIcon direction="down" />}
           {...getTriggerProps(props)}
         >
           {label}

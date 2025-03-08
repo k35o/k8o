@@ -2,9 +2,9 @@
 
 import { useControlPanel } from './use-control-panel';
 import { IconButton } from '@/components/icon-button';
+import { CopyIcon } from '@/components/icons';
 import { useClipboard } from '@/hooks/clipboard';
 import { cn } from '@/utils/cn';
-import { ClipboardPenLine } from 'lucide-react';
 import { FC, KeyboardEvent, MouseEvent, TouchEvent } from 'react';
 
 const OperateButton: FC<{
@@ -229,7 +229,7 @@ export const ControlPanel: FC = () => {
             void writeClipboard(`border-radius: ${borderRadius}`)
           }
         >
-          <ClipboardPenLine className="size-6" />
+          <CopyIcon />
         </IconButton>
       </div>
     </div>

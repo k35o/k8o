@@ -1,5 +1,5 @@
+import { ChevronIcon } from '../icons';
 import { cn } from '@/utils/cn';
-import { ChevronRight } from 'lucide-react';
 import { Route } from 'next';
 import Link from 'next/link';
 import { FC, PropsWithChildren } from 'react';
@@ -32,7 +32,7 @@ const Item: FC<PropsWithChildren> = ({ children }) => {
 const Separator: FC = () => {
   return (
     <li className="text-fg-mute">
-      <ChevronRight className="size-4" />
+      <ChevronIcon size="sm" direction="right" />
     </li>
   );
 };

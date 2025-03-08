@@ -1,6 +1,6 @@
 import { Heading } from '../heading';
 import { IconButton } from '../icon-button';
-import { X } from 'lucide-react';
+import { CloseIcon } from '../icons';
 import {
   createContext,
   FC,
@@ -63,12 +63,13 @@ const Header: FC<{
       <Heading type="h3">{title}</Heading>
       <div className="absolute top-2 right-2">
         <IconButton
+          aria-label="閉じる"
           onClick={(e) => {
             e.stopPropagation();
             onClose();
           }}
         >
-          <X aria-label="閉じる" className="size-4" />
+          <CloseIcon size="sm" />
         </IconButton>
       </div>
     </div>

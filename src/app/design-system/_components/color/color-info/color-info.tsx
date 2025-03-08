@@ -11,9 +11,13 @@ import {
   getColorCode,
   Stage,
 } from '@/app/design-system/_utils/color';
+import {
+  ChevronIcon,
+  ColorContrastIcon,
+  ColorInfoIcon,
+} from '@/components/icons';
 import { cn } from '@/utils/cn';
 import { toPrecision } from '@/utils/number/to-precision';
-import { ChevronDown, Contrast, PaintBucket } from 'lucide-react';
 import * as motion from 'motion/react-client';
 import { FC, useId, useState } from 'react';
 
@@ -83,7 +87,7 @@ export const ColorInfo: FC<{
           animate={isOpen ? { rotate: 180 } : { rotate: 0 }}
           transition={{ duration: 0.3 }}
         >
-          <ChevronDown className="size-6" />
+          <ChevronIcon direction="down" />
         </motion.span>
       </button>
       <motion.div
@@ -104,7 +108,7 @@ export const ColorInfo: FC<{
         <div className="flex flex-col gap-4 p-4 pt-2">
           <section className="flex flex-col gap-2">
             <p className="flex items-center text-lg font-bold">
-              <PaintBucket />
+              <ColorInfoIcon />
               色の情報（light&nbsp;/&nbsp;dark）
             </p>
             <p className="font-bold">
@@ -135,7 +139,7 @@ export const ColorInfo: FC<{
           {(variant === 'foreground' || variant === 'background') && (
             <section className="flex flex-col gap-2">
               <p className="flex items-center text-lg font-bold">
-                <Contrast />
+                <ColorContrastIcon />
                 色のコントラスト
               </p>
               {variant === 'foreground' && (

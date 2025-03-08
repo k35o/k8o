@@ -1,7 +1,7 @@
 import { Heading } from '@/components/heading';
+import { PublishDateIcon, UpdateDateIcon } from '@/components/icons';
 import { Separator } from '@/components/separator';
 import { formatDate } from '@/utils/date/format';
-import { Calendar, Clock } from 'lucide-react';
 import { FC, PropsWithChildren } from 'react';
 
 type Props = PropsWithChildren<{
@@ -23,11 +23,11 @@ export const NewsLayout: FC<Props> = ({
         <div className="text-fg-mute flex flex-row items-center justify-end gap-2 text-sm">
           <div className="flex flex-wrap items-center justify-end gap-1">
             <div className="flex items-center gap-1">
-              <Calendar className="size-4" aria-label="" />
+              <PublishDateIcon size="sm" />
               <span>公開: {formatDate(new Date(createdAt))}</span>
             </div>
             <div className="flex items-center gap-1">
-              <Clock className="size-4" aria-label="" />
+              <UpdateDateIcon size="sm" />
               <span>更新: {formatDate(new Date(updatedAt))}</span>
             </div>
           </div>

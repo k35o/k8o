@@ -1,9 +1,7 @@
+import { BaseIcon, BaseIconProps } from './base';
 import { FC } from 'react';
 
-export const Zenn: FC<{ title?: string; className?: string }> = ({
-  title,
-  className,
-}) => {
+export const Zenn: FC<{ className?: string }> = ({ className }) => {
   return (
     <svg
       className={className}
@@ -12,7 +10,6 @@ export const Zenn: FC<{ title?: string; className?: string }> = ({
       height="96"
       xmlns="http://www.w3.org/2000/svg"
     >
-      <title>{title ?? 'Zenn'}</title>
       <g fill="#3EA8FF">
         <path
           d="M3.9,83.3h17c0.9,0,1.7-0.5,2.2-1.2L69.9,5.2c0.6-1-0.1-2.2-1.3-2.2H52.5c-0.8,0-1.5,0.4-1.9,1.1L3.1,81.9
@@ -24,5 +21,18 @@ export const Zenn: FC<{ title?: string; className?: string }> = ({
         />
       </g>
     </svg>
+  );
+};
+
+export const ZennIcon: FC<Partial<BaseIconProps>> = ({
+  size = 'md',
+}) => {
+  return (
+    <BaseIcon
+      size={size}
+      renderItem={(props) => {
+        return <Zenn {...props} />;
+      }}
+    />
   );
 };

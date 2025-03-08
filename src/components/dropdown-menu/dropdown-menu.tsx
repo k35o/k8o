@@ -8,6 +8,7 @@ import {
 } from './hooks';
 import { Button } from '../button';
 import { IconButton } from '../icon-button';
+import { ChevronIcon } from '../icons';
 import { Popover } from '../popover';
 import { useFloatingUIContext } from '../popover/hooks';
 import { cn } from '@/utils/cn';
@@ -17,7 +18,6 @@ import {
   useInteractions,
   useListNavigation,
 } from '@floating-ui/react';
-import { ChevronDown } from 'lucide-react';
 import {
   ComponentProps,
   FC,
@@ -123,7 +123,7 @@ const Trigger: FC<{
           size={size}
           color="gray"
           variant="contained"
-          endIcon={<ChevronDown className="size-8" />}
+          endIcon={<ChevronIcon direction="down" />}
           {...getTriggerProps(props)}
         >
           {text}
