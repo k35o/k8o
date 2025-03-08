@@ -1,4 +1,5 @@
 import { GithubMark } from './github-mark';
+import { Chevron } from './lucide';
 import { Qiita } from './qiita';
 import { Twitter } from './twitter';
 import { Zenn } from './zenn';
@@ -9,10 +10,6 @@ import {
   Blend,
   Calendar,
   Check,
-  ChevronDown,
-  ChevronLeft,
-  ChevronRight,
-  ChevronUp,
   CircleAlert,
   CircleCheck,
   ClipboardPenLine,
@@ -44,19 +41,19 @@ export const Primary: Story = {
           <p className="text-center">Close</p>
         </div>
         <div className="flex flex-col items-center justify-center">
-          <ChevronLeft className="size-24" />
+          <Chevron direction="left" />
           <p className="text-center">Chevron Left</p>
         </div>
         <div className="flex flex-col items-center justify-center">
-          <ChevronUp className="size-24" />
+          <Chevron direction="up" />
           <p className="text-center">Chevron Up</p>
         </div>
         <div className="flex flex-col items-center justify-center">
-          <ChevronRight className="size-24" />
+          <Chevron direction="right" />
           <p className="text-center">Chevron Right</p>
         </div>
         <div className="flex flex-col items-center justify-center">
-          <ChevronDown className="size-24" />
+          <Chevron direction="down" />
           <p className="text-center">Chevron Down</p>
         </div>
         <div className="flex flex-col items-center justify-center">

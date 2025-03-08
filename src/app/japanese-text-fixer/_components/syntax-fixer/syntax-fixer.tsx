@@ -20,8 +20,8 @@ import { FormControl } from '@/components/form/form-control';
 import { Textarea } from '@/components/form/textarea';
 import { Heading } from '@/components/heading';
 import { IconButton } from '@/components/icon-button';
+import { Chevron } from '@/components/icons';
 import { useStep } from '@/hooks/step';
-import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { FC, Fragment, useId } from 'react';
 
 export const SyntaxFixer: FC = () => {
@@ -53,7 +53,7 @@ export const SyntaxFixer: FC = () => {
           onClick={back}
           disabled={isDisabledBack}
         >
-          <ChevronLeft className="size-8" />
+          <Chevron direction="left" size="lg" />
         </IconButton>
         <div className="bg-bg-base flex size-14 items-center justify-center rounded-full">
           <p className="leading-none font-bold">
@@ -65,7 +65,7 @@ export const SyntaxFixer: FC = () => {
           onClick={next}
           disabled={isDisabledNext}
         >
-          <ChevronRight className="size-8" />
+          <Chevron direction="right" size="lg" />
         </IconButton>
       </div>
       <FixText key={count} count={count} />
