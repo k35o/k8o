@@ -1,6 +1,6 @@
 import { IconButton } from '../../icon-button';
+import { Close } from '../../icons';
 import { cn } from '@/utils/cn';
-import { X } from 'lucide-react';
 import { FC, useEffect, useRef, useState } from 'react';
 
 export type Option = Readonly<{
@@ -87,7 +87,7 @@ export const Autocomplete: FC<Props> = ({
                     onChange(value.filter((v) => v !== text));
                   }}
                 >
-                  <X className="size-4" />
+                  <Close size="sm" />
                 </IconButton>
               </div>
             );
@@ -185,7 +185,7 @@ export const Autocomplete: FC<Props> = ({
               onChange([]);
             }}
           >
-            <X className="size-4" />
+            <Close size="sm" />
           </IconButton>
         )}
       </div>

@@ -1,5 +1,5 @@
 import { GithubMark } from './github-mark';
-import { Chevron } from './lucide';
+import { Chevron, Close } from './lucide';
 import { Qiita } from './qiita';
 import { Twitter } from './twitter';
 import { Zenn } from './zenn';
@@ -22,7 +22,6 @@ import {
   Rocket,
   Table2,
   TriangleAlert,
-  X,
 } from 'lucide-react';
 
 const meta: Meta<typeof SVGAElement> = {
@@ -37,7 +36,7 @@ export const Primary: Story = {
     return (
       <div className="grid-cols-auto-fit-36 grid place-items-center gap-4">
         <div className="flex flex-col items-center justify-center">
-          <X className="size-24" />
+          <Close />
           <p className="text-center">Close</p>
         </div>
         <div className="flex flex-col items-center justify-center">

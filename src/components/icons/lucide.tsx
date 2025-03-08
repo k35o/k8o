@@ -5,6 +5,7 @@ import {
   ChevronLeft,
   ChevronRight,
   ChevronUp,
+  X,
 } from 'lucide-react';
 import { FC, ReactNode } from 'react';
 
@@ -43,6 +44,17 @@ export const Chevron: FC<
           case 'right':
             return <ChevronRight {...props} />;
         }
+      }}
+    />
+  );
+};
+
+export const Close: FC<Partial<IconProps>> = ({ size = 'md' }) => {
+  return (
+    <BaseIcon
+      size={size}
+      renderItem={(props) => {
+        return <X {...props} />;
       }}
     />
   );
