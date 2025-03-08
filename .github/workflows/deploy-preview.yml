@@ -21,14 +21,19 @@ jobs:
       branch: ${{ steps.branch_name.outputs.current_branch }}
       has_migration: ${{ steps.has_migration.outputs.has_migration }}
     runs-on: ubuntu-latest
+    permissions:
+      pull-requests: write
     steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
       - name: Get branch name
         id: branch_name
         uses: tj-actions/branch-names@v8
       - name: Check for migrations
         id: has_migration
         run: |
-          if git diff --name-only origin/${{ github.event.pull_request.base.ref }} ${{ github.event.pull_request.head.ref }} | grep -q '^migrations/'; then
+          if git diff --name-only origin/${{ github.event.pull_request.base.ref }} HEAD | grep -q '^migrations/'; then
             echo "has_migration=true" >> $GITHUB_OUTPUT
           else
             echo "has_migration=false" >> $GITHUB_OUTPUT
@@ -36,6 +41,8 @@ jobs:
       - name: Add migration label
         if: ${{ steps.has_migration.outputs.has_migration == 'true' }}
         run: gh issue edit ${{ github.event.pull_request.number }} --add-label "migration"
+        env:
+          GH_TOKEN: ${{ github.token }}
 
   deploy_preview:
     name: Deploy Preview
@@ -69,7 +76,7 @@ jobs:
         uses: neondatabase/create-branch-action@v6
         with:
           project_id: ${{ vars.NEON_PROJECT_ID }}
-          username: default
+          role: default
           database: verceldb
           branch_name: preview/pr-${{ github.event.number }}-${{ needs.setup.outputs.branch }}
           api_key: ${{ secrets.NEON_API_KEY }}
@@ -77,7 +84,7 @@ jobs:
         if: needs.setup.outputs.has_migration == 'true'
         run: pnpm run generate && pnpm run migrate
         env:
-          POSTGRES_URL: '${{ steps.create_neon_branch.outputs.db_url_with_pooler }}'
+          POSTGRES_URL: '${{ steps.create_neon_branch.outputs.db_url_pooled }}'
 
       - name: Pull Vercel Environment Information
         run: vercel pull --yes --environment=preview --token=${{ secrets.VERCEL_TOKEN }}
@@ -95,7 +102,6 @@ jobs:
           fi
           echo "preview_url=$(cat preview-url.txt)" >> $GITHUB_OUTPUT
 
-  # 400が返ってくるのでコメントアウト
   # comment_schema_diff:
   #   name: Comment Schema Diff
   #   continue-on-error: true
@@ -106,7 +112,8 @@ jobs:
   #     github.event_name == 'pull_request' && (
   #     github.event.action == 'synchronize'
   #     || github.event.action == 'opened'
-  #     || github.event.action == 'reopened')
+  #     || github.event.action == 'reopened') && (
+  #     needs.setup.outputs.has_migration == 'true')
   #   runs-on: ubuntu-latest
   #   permissions:
   #     pull-requests: write
