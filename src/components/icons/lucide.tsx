@@ -1,5 +1,5 @@
 import { BaseIcon, BaseIconProps } from './base';
-import { Direction, StatusType } from '@/types';
+import { Direction, Status } from '@/types';
 import {
   Bell,
   Blend,
@@ -81,7 +81,7 @@ export const CheckIcon: FC<IconProps> = ({ size = 'md' }) => {
   );
 };
 
-export const AlertIcon: FC<IconProps & { status: StatusType }> = ({
+export const AlertIcon: FC<IconProps & { status: Status }> = ({
   status,
   size = 'md',
 }) => {

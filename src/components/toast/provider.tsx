@@ -1,7 +1,7 @@
 'use client';
 
 import { Toast } from './toast';
-import { StatusType } from '@/types';
+import { Status } from '@/types';
 import { uuidV4 } from '@/utils/uuid-v4';
 import { AnimatePresence, Variants } from 'motion/react';
 import * as motion from 'motion/react-client';
@@ -21,7 +21,7 @@ import { createPortal } from 'react-dom';
 
 type ToastType = {
   id: string;
-  status: StatusType;
+  status: Status;
   message: string;
 };
 
@@ -36,7 +36,7 @@ export const useToast = () => {
   }
 
   const onOpen = useCallback(
-    (status: StatusType, message: string) => {
+    (status: Status, message: string) => {
       setToasts((prev) => [
         ...prev,
         {

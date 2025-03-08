@@ -1,10 +1,10 @@
 import { AlertIcon } from '../icons';
-import type { StatusType } from '@/types';
+import type { Status } from '@/types';
 import { cn } from '@/utils/cn';
 import { FC } from 'react';
 
 type Props = {
-  status: StatusType;
+  status: Status;
   message: string | string[];
 };
 
