@@ -27,6 +27,7 @@
     "migrate": "drizzle-kit migrate",
     "lint": "next lint --max-warnings 0",
     "lint:fix": "next lint --fix --max-warnings 0",
+    "lint:inspect": "eslint-config-inspector",
     "format": "node --experimental-strip-types node_modules/prettier/bin/prettier.cjs --write src/",
     "format:check": "node --experimental-strip-types node_modules/prettier/bin/prettier.cjs --check src/",
     "type-check": "tsc --noEmit",
@@ -73,6 +74,7 @@
     "zod": "3.24.2"
   },
   "devDependencies": {
+    "@eslint/config-inspector": "1.0.2",
     "@eslint/js": "9.21.0",
     "@next/bundle-analyzer": "15.2.1",
     "@next/eslint-plugin-next": "15.2.1",
