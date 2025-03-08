@@ -21,6 +21,8 @@ jobs:
       branch: ${{ steps.branch_name.outputs.current_branch }}
       has_migration: ${{ steps.has_migration.outputs.has_migration }}
     runs-on: ubuntu-latest
+    permissions:
+      pull-requests: write
     steps:
       - uses: actions/checkout@v4
         with:
