@@ -85,6 +85,13 @@
       "when": 1739695485245,
       "tag": "0011_aromatic_robin_chapel",
       "breakpoints": true
+    },
+    {
+      "idx": 12,
+      "version": "7",
+      "when": 1741414814047,
+      "tag": "0012_pink_gladiator",
+      "breakpoints": true
     }
   ]
 }
