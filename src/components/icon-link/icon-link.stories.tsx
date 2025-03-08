@@ -1,13 +1,13 @@
 import { IconLink } from './icon-link';
+import { CopyIcon } from '../icons';
 import type { Meta, StoryObj } from '@storybook/react';
-import { ClipboardPenLine } from 'lucide-react';
 
 const meta: Meta<typeof IconLink> = {
   title: 'components/icon-link',
   component: IconLink,
   args: {
     href: 'https://example.com',
-    children: <ClipboardPenLine className="size-6" />,
+    children: <CopyIcon />,
     label: 'Copy to clipboard',
   },
 };

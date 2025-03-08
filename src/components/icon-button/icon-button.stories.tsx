@@ -1,6 +1,6 @@
 import { IconButton } from './icon-button';
+import { CopyIcon } from '../icons';
 import type { Meta, StoryObj } from '@storybook/react';
-import { ClipboardPenLine } from 'lucide-react';
 
 const meta: Meta<typeof IconButton> = {
   title: 'components/button/icon-button',
@@ -16,7 +16,7 @@ export const Large: Story = {
     onClick: () => {
       console.log('clicked');
     },
-    children: <ClipboardPenLine className="size-6" />,
+    children: <CopyIcon />,
   },
 };
 
@@ -26,7 +26,7 @@ export const Medium: Story = {
     onClick: () => {
       console.log('clicked');
     },
-    children: <ClipboardPenLine className="size-6" />,
+    children: <CopyIcon />,
   },
 };
 
@@ -36,7 +36,7 @@ export const Small: Story = {
     onClick: () => {
       console.log('clicked');
     },
-    children: <ClipboardPenLine className="size-6" />,
+    children: <CopyIcon />,
   },
 };
 
@@ -46,7 +46,7 @@ export const Disabled: Story = {
     onClick: () => {
       console.log('clicked');
     },
-    children: <ClipboardPenLine className="size-6" />,
+    children: <CopyIcon />,
   },
 };
 
@@ -56,6 +56,6 @@ export const BgBase: Story = {
     onClick: () => {
       console.log('clicked');
     },
-    children: <ClipboardPenLine className="size-6" />,
+    children: <CopyIcon />,
   },
 };

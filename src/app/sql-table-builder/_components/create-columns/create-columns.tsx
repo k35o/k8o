@@ -5,7 +5,7 @@ import { useColumnsType } from '../../_state';
 import { Column, InvalidColumns } from '../../_types/column';
 import { Restriction } from '../../_types/restriction';
 import { Button } from '@/components/button';
-import { ListMinus, Table2 } from 'lucide-react';
+import { FormIcon, TableIcon } from '@/components/icons';
 import { FC } from 'react';
 
 type Props = {
@@ -45,13 +45,7 @@ export const CreateColumns: FC<Props> = ({
             onClick={() => {
               setColumnsType(showTable ? 'form' : 'table');
             }}
-            startIcon={
-              showTable ? (
-                <ListMinus className="size-6" />
-              ) : (
-                <Table2 className="size-6" />
-              )
-            }
+            startIcon={showTable ? <FormIcon /> : <TableIcon />}
           >
             {showTable ? 'フォーム' : 'テーブル'}形式に変更
           </Button>

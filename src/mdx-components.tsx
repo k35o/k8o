@@ -1,6 +1,6 @@
 import { Anchor } from './components/anchor';
+import { LinkIcon } from './components/icons';
 import { cn } from '@/utils/cn';
-import { Link } from 'lucide-react';
 import type { MDXComponents } from 'mdx/types';
 import { FC, PropsWithChildren } from 'react';
 
@@ -32,16 +32,18 @@ const LinkHeading: FC<
           tabIndex={-1}
           href={`#${encodeURIComponent(children)}`}
         >
-          <Link
+          <span
             className={cn(
-              'text-fg-mute absolute top-1 box-content opacity-0 sm:group-hover:opacity-100',
-              type === 'h2' && '-left-7 size-6 pr-2',
-              type === 'h3' && '-left-7 size-6 pr-2',
-              type === 'h4' && '-left-6 size-5 pr-2',
-              type === 'h5' && '-left-6 size-5 pr-2',
-              type === 'h6' && '-left-6 size-5 pr-2',
+              'text-fg-mute absolute top-1 box-content opacity-0 sm:group-hover:opacity-100 transition-opacity duration-500',
+              type === 'h2' && '-left-7 pr-2 top-1.5',
+              type === 'h3' && '-left-7 pr-2',
+              type === 'h4' && '-left-5 pr-2 top-2',
+              type === 'h5' && '-left-5 pr-2 top-1.5',
+              type === 'h6' && '-left-5 pr-2',
             )}
-          />
+          >
+            <LinkIcon size={['h2', 'h3'].includes(type) ? 'md' : 'sm'} />
+          </span>
         </a>
       )}
       {children}

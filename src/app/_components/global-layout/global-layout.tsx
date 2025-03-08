@@ -3,7 +3,7 @@ import { ContactToMe } from '../contact-to-me';
 import { ToggleTheme } from '../toggle-theme';
 import { Heading } from '@/components/heading';
 import { IconLink } from '@/components/icon-link';
-import { Bell } from 'lucide-react';
+import { NewsIcon } from '@/components/icons';
 import Link from 'next/link';
 import { FC, ReactNode } from 'react';
 
@@ -21,7 +21,7 @@ export const GlobalLayout: FC<{ children: ReactNode }> = ({
             <ContactToMe />
             <IconLink href="/news">
               <span className="sr-only">お知らせ</span>
-              <Bell className="size-8" />
+              <NewsIcon size="lg" />
             </IconLink>
             <ColorFilters.ListBox />
             <div className="-my-2">

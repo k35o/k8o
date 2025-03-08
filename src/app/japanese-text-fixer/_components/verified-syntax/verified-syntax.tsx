@@ -8,9 +8,8 @@ import {
   AccordionPanel,
 } from '@/components/accordion';
 import { Button } from '@/components/button';
-import { AlertIcon } from '@/components/icons';
+import { AlertIcon, CopyIcon } from '@/components/icons';
 import { useClipboard } from '@/hooks/clipboard';
-import { ClipboardPenLine } from 'lucide-react';
 import { FC } from 'react';
 
 export const VerifiedSyntax: FC = () => {
@@ -26,9 +25,7 @@ export const VerifiedSyntax: FC = () => {
         </Button>
         <Button
           onClick={() => void writeClipboard(text)}
-          endIcon={
-            <ClipboardPenLine aria-label="" className="size-6" />
-          }
+          endIcon={<CopyIcon />}
         >
           テキストをコピーする
         </Button>

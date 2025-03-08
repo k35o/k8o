@@ -1,7 +1,7 @@
 import { News, NewsPagination } from '../../_types';
 import { NewsModal } from '../_components/news-modal';
+import { PublishDateIcon, UpdateDateIcon } from '@/components/icons';
 import { formatDate } from '@/utils/date/format';
-import { Calendar, Clock } from 'lucide-react';
 import { draftMode } from 'next/headers';
 import { notFound } from 'next/navigation';
 
@@ -58,11 +58,11 @@ export default async function Page({
       <div className="flex w-full flex-col gap-5">
         <div className="text-fg-mute flex flex-wrap items-center justify-center gap-1 text-xs">
           <div className="flex items-center gap-1">
-            <Calendar className="size-4" aria-label="" />
+            <PublishDateIcon size="sm" />
             <span>公開: {formatDate(new Date(news.createdAt))}</span>
           </div>
           <div className="flex items-center gap-1">
-            <Clock className="size-4" aria-label="" />
+            <UpdateDateIcon size="sm" />
             <span>更新: {formatDate(new Date(news.updatedAt))}</span>
           </div>
         </div>

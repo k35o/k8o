@@ -1,6 +1,6 @@
 import { Button } from './button';
+import { CopyIcon } from '../icons';
 import type { Meta, StoryObj } from '@storybook/react';
-import { ClipboardPenLine } from 'lucide-react';
 
 const meta: Meta<typeof Button> = {
   title: 'components/button',
@@ -78,12 +78,12 @@ export const DisabledOutlined: Story = {
 
 export const StartIcon: Story = {
   args: {
-    startIcon: <ClipboardPenLine className="size-6" />,
+    startIcon: <CopyIcon />,
   },
 };
 
 export const EndIcon: Story = {
   args: {
-    endIcon: <ClipboardPenLine className="size-6" />,
+    endIcon: <CopyIcon />,
   },
 };

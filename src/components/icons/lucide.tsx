@@ -1,6 +1,9 @@
 import { Direction, StatusType } from '@/types';
 import { cn } from '@/utils/cn';
 import {
+  Bell,
+  Blend,
+  Calendar,
   Check,
   ChevronDown,
   ChevronLeft,
@@ -8,7 +11,15 @@ import {
   ChevronUp,
   CircleAlert,
   CircleCheck,
+  ClipboardPenLine,
+  Clock,
+  Contrast,
   Info,
+  Link,
+  ListMinus,
+  PaintBucket,
+  Rocket,
+  Table2,
   TriangleAlert,
   X,
 } from 'lucide-react';
@@ -97,6 +108,141 @@ export const AlertIcon: FC<
           case 'error':
             return <CircleAlert {...props} />;
         }
+      }}
+    />
+  );
+};
+
+export const LinkIcon: FC<Partial<IconProps>> = ({ size = 'md' }) => {
+  return (
+    <BaseIcon
+      size={size}
+      renderItem={(props) => {
+        return <Link {...props} />;
+      }}
+    />
+  );
+};
+
+export const FormIcon: FC<Partial<IconProps>> = ({ size = 'md' }) => {
+  return (
+    <BaseIcon
+      size={size}
+      renderItem={(props) => {
+        return <ListMinus {...props} />;
+      }}
+    />
+  );
+};
+
+export const TableIcon: FC<Partial<IconProps>> = ({
+  size = 'md',
+}) => {
+  return (
+    <BaseIcon
+      size={size}
+      renderItem={(props) => {
+        return <Table2 {...props} />;
+      }}
+    />
+  );
+};
+
+export const CopyIcon: FC<Partial<IconProps>> = ({ size = 'md' }) => {
+  return (
+    <BaseIcon
+      size={size}
+      renderItem={(props) => {
+        return <ClipboardPenLine {...props} />;
+      }}
+    />
+  );
+};
+
+export const PublishDateIcon: FC<Partial<IconProps>> = ({
+  size = 'md',
+}) => {
+  return (
+    <BaseIcon
+      size={size}
+      renderItem={(props) => {
+        return <Calendar {...props} />;
+      }}
+    />
+  );
+};
+
+export const UpdateDateIcon: FC<Partial<IconProps>> = ({
+  size = 'md',
+}) => {
+  return (
+    <BaseIcon
+      size={size}
+      renderItem={(props) => {
+        return <Clock {...props} />;
+      }}
+    />
+  );
+};
+
+export const MixedColorIcon: FC<Partial<IconProps>> = ({
+  size = 'md',
+}) => {
+  return (
+    <BaseIcon
+      size={size}
+      renderItem={(props) => {
+        return <Blend {...props} />;
+      }}
+    />
+  );
+};
+
+export const ColorInfoIcon: FC<Partial<IconProps>> = ({
+  size = 'md',
+}) => {
+  return (
+    <BaseIcon
+      size={size}
+      renderItem={(props) => {
+        return <PaintBucket {...props} />;
+      }}
+    />
+  );
+};
+
+export const ColorContrastIcon: FC<Partial<IconProps>> = ({
+  size = 'md',
+}) => {
+  return (
+    <BaseIcon
+      size={size}
+      renderItem={(props) => {
+        return <Contrast {...props} />;
+      }}
+    />
+  );
+};
+
+export const NewsIcon: FC<Partial<IconProps>> = ({ size = 'md' }) => {
+  return (
+    <BaseIcon
+      size={size}
+      renderItem={(props) => {
+        return <Bell {...props} />;
+      }}
+    />
+  );
+};
+
+export const PrepareIcon: FC<Partial<IconProps>> = ({
+  size = 'md',
+}) => {
+  return (
+    <BaseIcon
+      size={size}
+      renderItem={(props) => {
+        return <Rocket {...props} />;
       }}
     />
   );

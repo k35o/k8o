@@ -4,24 +4,22 @@ import {
   CheckIcon,
   ChevronIcon,
   CloseIcon,
+  ColorContrastIcon,
+  ColorInfoIcon,
+  CopyIcon,
+  FormIcon,
+  LinkIcon,
+  MixedColorIcon,
+  NewsIcon,
+  PrepareIcon,
+  PublishDateIcon,
+  TableIcon,
+  UpdateDateIcon,
 } from './lucide';
 import { Qiita } from './qiita';
 import { Twitter } from './twitter';
 import { Zenn } from './zenn';
 import type { Meta, StoryObj } from '@storybook/react';
-import {
-  Bell,
-  Blend,
-  Calendar,
-  ClipboardPenLine,
-  Clock,
-  Contrast,
-  Link,
-  ListMinus,
-  PaintBucket,
-  Rocket,
-  Table2,
-} from 'lucide-react';
 
 const meta: Meta<typeof SVGAElement> = {
   title: 'components/icons',
@@ -75,47 +73,47 @@ export const Primary: Story = {
           <p className="text-center">Error</p>
         </div>
         <div className="flex flex-col items-center justify-center">
-          <Link className="size-24" />
+          <LinkIcon />
           <p className="text-center">Link</p>
         </div>
         <div className="flex flex-col items-center justify-center">
-          <ListMinus className="size-24" />
+          <FormIcon />
           <p className="text-center">Form</p>
         </div>
         <div className="flex flex-col items-center justify-center">
-          <Table2 className="size-24" />
+          <TableIcon />
           <p className="text-center">Table</p>
         </div>
         <div className="flex flex-col items-center justify-center">
-          <ClipboardPenLine className="size-24" />
+          <CopyIcon />
           <p className="text-center">Copy</p>
         </div>
         <div className="flex flex-col items-center justify-center">
-          <Calendar className="size-24" />
-          <p className="text-center">Calendar</p>
+          <PublishDateIcon />
+          <p className="text-center">公開日時</p>
         </div>
         <div className="flex flex-col items-center justify-center">
-          <Clock className="size-24" />
-          <p className="text-center">Clock</p>
+          <UpdateDateIcon />
+          <p className="text-center">更新日時</p>
         </div>
         <div className="flex flex-col items-center justify-center">
-          <Blend className="size-24" />
-          <p className="text-center">Blend</p>
-        </div>
-        <div className="flex flex-col items-center justify-center">
-          <Bell className="size-24" />
+          <NewsIcon />
           <p className="text-center">お知らせ</p>
         </div>
         <div className="flex flex-col items-center justify-center">
-          <PaintBucket className="size-24" />
+          <ColorInfoIcon />
           <p className="text-center">色についての情報</p>
         </div>
         <div className="flex flex-col items-center justify-center">
-          <Contrast className="size-24" />
+          <ColorContrastIcon />
           <p className="text-center">コントラスト</p>
         </div>
         <div className="flex flex-col items-center justify-center">
-          <Rocket className="size-24" />
+          <MixedColorIcon />
+          <p className="text-center">混ざり合った色</p>
+        </div>
+        <div className="flex flex-col items-center justify-center">
+          <PrepareIcon />
           <p className="text-center">準備中</p>
         </div>
       </div>
