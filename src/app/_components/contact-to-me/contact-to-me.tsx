@@ -5,9 +5,9 @@ import { Button } from '@/components/button';
 import { FormControl } from '@/components/form/form-control';
 import { Textarea } from '@/components/form/textarea';
 import { IconButton } from '@/components/icon-button';
+import { SendIcon } from '@/components/icons';
 import { Modal } from '@/components/modal';
 import { useToast } from '@/components/toast';
-import { Send } from 'lucide-react';
 import {
   FC,
   useActionState,
@@ -31,7 +31,7 @@ export const ContactToMe: FC = () => {
     <>
       <IconButton onClick={onOpen}>
         <span className="sr-only">お問い合わせ</span>
-        <Send className="size-8" />
+        <SendIcon size="lg" />
       </IconButton>
       {isOpen && <ContactToMeModal onClose={onClose} />}
     </>

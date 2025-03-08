@@ -14,11 +14,21 @@ import {
   ClipboardPenLine,
   Clock,
   Contrast,
+  Eye,
+  History,
   Info,
   Link,
+  List,
   ListMinus,
+  Mail,
+  Minus,
+  MoonStar,
   PaintBucket,
+  Plus,
   Rocket,
+  Rss,
+  Send,
+  Sun,
   Table2,
   TriangleAlert,
   X,
@@ -243,6 +253,124 @@ export const PrepareIcon: FC<Partial<IconProps>> = ({
       size={size}
       renderItem={(props) => {
         return <Rocket {...props} />;
+      }}
+    />
+  );
+};
+
+export const SendIcon: FC<Partial<IconProps>> = ({ size = 'md' }) => {
+  return (
+    <BaseIcon
+      size={size}
+      renderItem={(props) => {
+        return <Send {...props} />;
+      }}
+    />
+  );
+};
+
+export const MailIcon: FC<Partial<IconProps>> = ({ size = 'md' }) => {
+  return (
+    <BaseIcon
+      size={size}
+      renderItem={(props) => {
+        return <Mail {...props} />;
+      }}
+    />
+  );
+};
+
+export const PlusIcon: FC<Partial<IconProps>> = ({ size = 'md' }) => {
+  return (
+    <BaseIcon
+      size={size}
+      renderItem={(props) => {
+        return <Plus {...props} />;
+      }}
+    />
+  );
+};
+
+export const MinusIcon: FC<Partial<IconProps>> = ({
+  size = 'md',
+}) => {
+  return (
+    <BaseIcon
+      size={size}
+      renderItem={(props) => {
+        return <Minus {...props} />;
+      }}
+    />
+  );
+};
+
+export const DarkModeIcon: FC<Partial<IconProps>> = ({
+  size = 'md',
+}) => {
+  return (
+    <BaseIcon
+      size={size}
+      renderItem={(props) => {
+        return <MoonStar {...props} />;
+      }}
+    />
+  );
+};
+
+export const LightModeIcon: FC<Partial<IconProps>> = ({
+  size = 'md',
+}) => {
+  return (
+    <BaseIcon
+      size={size}
+      renderItem={(props) => {
+        return <Sun {...props} />;
+      }}
+    />
+  );
+};
+
+export const ViewIcon: FC<Partial<IconProps>> = ({ size = 'md' }) => {
+  return (
+    <BaseIcon
+      size={size}
+      renderItem={(props) => {
+        return <Eye {...props} />;
+      }}
+    />
+  );
+};
+
+export const RSSIcon: FC<Partial<IconProps>> = ({ size = 'md' }) => {
+  return (
+    <BaseIcon
+      size={size}
+      renderItem={(props) => {
+        return <Rss {...props} />;
+      }}
+    />
+  );
+};
+
+export const HistoryIcon: FC<Partial<IconProps>> = ({
+  size = 'md',
+}) => {
+  return (
+    <BaseIcon
+      size={size}
+      renderItem={(props) => {
+        return <History {...props} />;
+      }}
+    />
+  );
+};
+
+export const ListIcon: FC<Partial<IconProps>> = ({ size = 'md' }) => {
+  return (
+    <BaseIcon
+      size={size}
+      renderItem={(props) => {
+        return <List {...props} />;
       }}
     />
   );

@@ -5,8 +5,12 @@ import k8o from './_images/k8o.jpg';
 import { RoundedIcon } from './radius-maker/_components/rounded-icon';
 import { Card } from '@/components/card';
 import { IconLink } from '@/components/icon-link';
-import { GithubMark, Qiita, Zenn } from '@/components/icons';
-import { Earth } from 'lucide-react';
+import {
+  ArteOdyssey,
+  GithubMark,
+  Qiita,
+  Zenn,
+} from '@/components/icons';
 import Image from 'next/image';
 
 export default function Home() {
@@ -68,8 +72,9 @@ export default function Home() {
           />
           <AppCard
             link="/design-system"
-            // 仮のアイコン
-            symbol={<Earth className="text-primary-fg size-16" />}
+            symbol={
+              <ArteOdyssey className="text-primary-fg size-16" />
+            }
             title="ArteOdyssey"
             description="k8o.meで利用しているデザインシステムを紹介します。コンポーネントやデザイントークンを確認できます。"
           />

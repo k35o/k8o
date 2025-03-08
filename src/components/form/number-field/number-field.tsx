@@ -1,8 +1,8 @@
+import { MinusIcon, PlusIcon } from '../../icons';
 import { cn } from '@/utils/cn';
 import { between } from '@/utils/number/between';
 import { cast } from '@/utils/number/cast';
 import { toPrecision } from '@/utils/number/to-precision';
-import { Minus, Plus } from 'lucide-react';
 import { FC, useState } from 'react';
 
 type Props = {
@@ -143,7 +143,7 @@ export const NumberField: FC<Props> = ({
           )}
           disabled={isDisabled}
         >
-          <Plus className="size-3" />
+          <PlusIcon size="sm" />
         </button>
         <button
           type="button"
@@ -167,7 +167,7 @@ export const NumberField: FC<Props> = ({
           )}
           disabled={isDisabled}
         >
-          <Minus className="size-3" />
+          <MinusIcon size="sm" />
         </button>
       </div>
     </div>

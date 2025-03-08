@@ -1,3 +1,4 @@
+import { ArteOdyssey } from './arte-odyssey';
 import { GithubMark } from './github-mark';
 import {
   AlertIcon,
@@ -7,14 +8,24 @@ import {
   ColorContrastIcon,
   ColorInfoIcon,
   CopyIcon,
+  DarkModeIcon,
   FormIcon,
+  HistoryIcon,
+  LightModeIcon,
   LinkIcon,
+  ListIcon,
+  MailIcon,
+  MinusIcon,
   MixedColorIcon,
   NewsIcon,
+  PlusIcon,
   PrepareIcon,
   PublishDateIcon,
+  RSSIcon,
+  SendIcon,
   TableIcon,
   UpdateDateIcon,
+  ViewIcon,
 } from './lucide';
 import { Qiita } from './qiita';
 import { Twitter } from './twitter';
@@ -85,6 +96,10 @@ export const Primary: Story = {
           <p className="text-center">Table</p>
         </div>
         <div className="flex flex-col items-center justify-center">
+          <ListIcon />
+          <p className="text-center">List</p>
+        </div>
+        <div className="flex flex-col items-center justify-center">
           <CopyIcon />
           <p className="text-center">Copy</p>
         </div>
@@ -95,6 +110,38 @@ export const Primary: Story = {
         <div className="flex flex-col items-center justify-center">
           <UpdateDateIcon />
           <p className="text-center">更新日時</p>
+        </div>
+        <div className="flex flex-col items-center justify-center">
+          <SendIcon />
+          <p className="text-center">送信</p>
+        </div>
+        <div className="flex flex-col items-center justify-center">
+          <HistoryIcon />
+          <p className="text-center">履歴</p>
+        </div>
+        <div className="flex flex-col items-center justify-center">
+          <MailIcon />
+          <p className="text-center">メール</p>
+        </div>
+        <div className="flex flex-col items-center justify-center">
+          <PlusIcon />
+          <p className="text-center">プラス</p>
+        </div>
+        <div className="flex flex-col items-center justify-center">
+          <MinusIcon />
+          <p className="text-center">マイナス</p>
+        </div>
+        <div className="flex flex-col items-center justify-center">
+          <LightModeIcon />
+          <p className="text-center">ライトモード</p>
+        </div>
+        <div className="flex flex-col items-center justify-center">
+          <DarkModeIcon />
+          <p className="text-center">ダークモード</p>
+        </div>
+        <div className="flex flex-col items-center justify-center">
+          <ViewIcon />
+          <p className="text-center">閲覧数</p>
         </div>
         <div className="flex flex-col items-center justify-center">
           <NewsIcon />
@@ -115,6 +162,14 @@ export const Primary: Story = {
         <div className="flex flex-col items-center justify-center">
           <PrepareIcon />
           <p className="text-center">準備中</p>
+        </div>
+        <div className="flex flex-col items-center justify-center">
+          <RSSIcon />
+          <p className="text-center">RSS</p>
+        </div>
+        <div className="flex flex-col items-center justify-center">
+          <ArteOdyssey className="size-8" />
+          <p className="text-center">Arte Odyssey</p>
         </div>
       </div>
     );

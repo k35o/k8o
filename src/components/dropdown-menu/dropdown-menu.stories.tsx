@@ -1,6 +1,6 @@
+import { DarkModeIcon } from '../icons';
 import { DropdownMenu } from './dropdown-menu';
 import type { Meta, StoryObj } from '@storybook/react';
-import { MoonStar } from 'lucide-react';
 
 const meta: Meta<typeof DropdownMenu.Root> = {
   title: 'components/dropdown-menu',
@@ -42,7 +42,7 @@ export const TriggerByIcon: Story = {
   render: () => (
     <DropdownMenu.Root>
       <DropdownMenu.IconTrigger
-        icon={<MoonStar className="size-8" />}
+        icon={<DarkModeIcon size="lg" />}
         label="Options"
       />
       <DropdownMenu.Content>
