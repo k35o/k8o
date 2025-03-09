@@ -40,7 +40,8 @@ pnpm run storybook
 
 ### tests
 
-One side is tested by VITEST. It will run in `browser mode` except for the `utils` test.
+All tests is written by Vitest. It will run in `browser mode` except for the `utils` test.
+Storybook test is also with Vitest.
 
 ```command
 pnpm run test
@@ -54,7 +55,7 @@ pnpm run coverage
 
 ### lint
 
-Using `elsint` affected by `next.js`.
+Using `elsint` affected by `Next.js`.
 
 ```command
 pnpm run lint
