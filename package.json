@@ -55,7 +55,7 @@
     "@vercel/analytics": "1.5.0",
     "@vercel/speed-insights": "1.2.0",
     "baseline-status": "1.0.11",
-    "budoux": "0.6.4",
+    "budoux": "0.7.0",
     "clsx": "2.1.1",
     "date-fns": "4.1.0",
     "drizzle-orm": "0.40.0",
