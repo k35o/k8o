@@ -1,6 +1,6 @@
 import { Anchor } from '../anchor';
 import { ExternalLinkIcon } from '../icons';
-import { getMetadata } from './get-metadata';
+import { getMetadata } from '#link-card/metadata';
 import Image from 'next/image';
 import { FC, Suspense } from 'react';
 
