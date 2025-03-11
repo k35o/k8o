@@ -2,7 +2,7 @@ pre-commit:
   paralell: true
   commands:
     format:
-      glob: 'src/**/*.{js,ts,cjs,d.cts,d.ts,jsx,tsx}'
+      glob: 'src/**/*.{js,ts,cjs,d.cts,d.ts,jsx,tsx,md,mdx}'
       run: node --experimental-strip-types node_modules/prettier/bin/prettier.cjs --write {staged_files}
       stage_fixed: true
     lint:
@@ -14,7 +14,7 @@ pre-push:
   paralell: true
   commands:
     format:
-      glob: 'src/**/*.{js,ts,cjs,d.cts,d.ts,jsx,tsx}'
+      glob: 'src/**/*.{js,ts,cjs,d.cts,d.ts,jsx,tsx,md,mdx}'
       run: node --experimental-strip-types node_modules/prettier/bin/prettier.cjs --check {staged_files}
     lint:
       glob: 'src/**/*.{js,ts,cjs,d.cts,d.ts,jsx,tsx}'

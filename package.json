@@ -12,6 +12,10 @@
       "storybook": "./src/mocks/actions/blog.mock.ts",
       "default": "./src/app/blog/_actions/index.ts"
     },
+    "#link-card/metadata": {
+      "storybook": "./src/mocks/link-card/metadata.mock.ts",
+      "default": "./src/components/link-card/metadata.ts"
+    },
     "#*": [
       "./*",
       "./*.ts",
