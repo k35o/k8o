@@ -35,12 +35,12 @@ const Content: FC<{ href: string }> = async ({ href }) => {
     <a href={href} target="_blank" rel="noopener noreferrer">
       <div className="bg-bg-base/90 border-border-base flex flex-col gap-4 rounded-md border sm:flex-row">
         {metaData.image && (
-          <div className="bg-bg-mute relative h-40 w-full rounded-l-sm sm:h-auto sm:w-1/3">
+          <div className="bg-bg-emphasize relative h-40 w-full rounded-l-sm sm:h-auto sm:w-1/3">
             <Image
               src={metaData.image}
               alt=""
               fill
-              className="rounded-l-sm object-cover"
+              className="rounded-l-sm object-contain"
               unoptimized
             />
           </div>
@@ -52,7 +52,7 @@ const Content: FC<{ href: string }> = async ({ href }) => {
                 <p className="text-lg font-bold">{metaData.title}</p>
               )}
               {metaData.description && (
-                <p className="text-fg-mute text-sm">
+                <p className="text-fg-mute line-clamp-2 text-sm">
                   {metaData.description}
                 </p>
               )}
