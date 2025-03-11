@@ -1,6 +1,6 @@
 import { Anchor } from '../anchor';
 import { ExternalLinkIcon } from '../icons';
-import { unstable_cache as cache } from 'next/cache';
+import { getMetadata } from './get-metadata';
 import Image from 'next/image';
 import { FC, Suspense } from 'react';
 
@@ -25,25 +25,7 @@ const Loading: FC<{ href: string }> = ({ href }) => {
 };
 
 const Content: FC<{ href: string }> = async ({ href }) => {
-  const metaData = await cache(async () => {
-    const proxyUrl = `https://corsproxy.io/?url=${encodeURIComponent(href)}`;
-    const res = await fetch(proxyUrl);
-    const html = (await res.text()).trim();
-    const title = /<title>(.*?)<\/title>/i.exec(html)?.[1];
-    const ogTitle =
-      /<meta\s+property="og:title"\s+content="(.*?)"/i.exec(
-        html,
-      )?.[1];
-    const description =
-      /<meta\s+property="og:description"\s+content="(.*?)"/i.exec(
-        html,
-      )?.[1];
-    const image =
-      /<meta\s+property="og:image"\s+content="(.*?)"/i.exec(
-        html,
-      )?.[1];
-    return { title: title ?? ogTitle, description, image };
-  }, [`link-card-${href}`])();
+  const metaData = await getMetadata(href);
 
   if (!metaData.title && !metaData.description && !metaData.image) {
     return <Anchor href={href}>{href}</Anchor>;
