@@ -9,6 +9,7 @@ import {
   ColorInfoIcon,
   CopyIcon,
   DarkModeIcon,
+  ExternalLinkIcon,
   FormIcon,
   HistoryIcon,
   LightModeIcon,
@@ -87,6 +88,10 @@ export const Primary: Story = {
         <div className="flex flex-col items-center justify-center">
           <LinkIcon />
           <p className="text-center">Link</p>
+        </div>
+        <div className="flex flex-col items-center justify-center">
+          <ExternalLinkIcon />
+          <p className="text-center">External Link</p>
         </div>
         <div className="flex flex-col items-center justify-center">
           <FormIcon />

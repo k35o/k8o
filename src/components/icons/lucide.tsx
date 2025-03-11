@@ -14,6 +14,7 @@ import {
   ClipboardPenLine,
   Clock,
   Contrast,
+  ExternalLink,
   Eye,
   History,
   Info,
@@ -110,6 +111,17 @@ export const LinkIcon: FC<IconProps> = ({ size = 'md' }) => {
       size={size}
       renderItem={(props) => {
         return <Link {...props} />;
+      }}
+    />
+  );
+};
+
+export const ExternalLinkIcon: FC<IconProps> = ({ size = 'md' }) => {
+  return (
+    <BaseIcon
+      size={size}
+      renderItem={(props) => {
+        return <ExternalLink {...props} />;
       }}
     />
   );
