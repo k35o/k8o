@@ -198,6 +198,7 @@ jobs:
           branch: preview/pr-${{ github.event.number }}-${{ needs.setup.outputs.branch }}
           api_key: ${{ secrets.NEON_API_KEY }}
       - name: Setup pnpm
+        if: github.event.pull_request.merged == true
         uses: ./.github/actions/setup-pnpm
       - name: Apply migrations to production
         if: github.event.pull_request.merged == true
