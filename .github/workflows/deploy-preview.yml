@@ -94,7 +94,7 @@ jobs:
       - name: Deploy Project Artifacts to Vercel
         id: deploy_project
         run: |
-          if ${{ contains(github.event.pull_request.labels.*.name, 'migration') }}; thens
+          if ${{ contains(github.event.pull_request.labels.*.name, 'migration') }}; then
             vercel deploy --prebuilt --token=${{ secrets.VERCEL_TOKEN }} --env POSTGRES_URL=${{ steps.create_neon_branch.outputs.db_url }} > preview-url.txt
           else
             vercel deploy --prebuilt --token=${{ secrets.VERCEL_TOKEN }} > preview-url.txt
