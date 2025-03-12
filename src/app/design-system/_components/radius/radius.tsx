@@ -2,7 +2,7 @@ import { FC } from 'react';
 
 export const Radius: FC = () => {
   return (
-    <section className="bg-bg-base grid-cols-auto-fill-48 grid justify-between gap-8 rounded-lg p-3">
+    <section className="grid-cols-auto-fill-48 grid justify-between gap-8">
       <div className="border-border-base flex flex-col items-center justify-center gap-2 rounded-md border p-2">
         <p className="text-2xl font-bold">none:&nbsp;0px</p>
         <div className="flex items-center gap-4">
