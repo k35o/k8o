@@ -19,7 +19,6 @@ jobs:
     name: Setup
     outputs:
       branch: ${{ steps.branch_name.outputs.current_branch }}
-      has_migration: ${{ steps.has_migration.outputs.has_migration }}
     runs-on: ubuntu-latest
     permissions:
       pull-requests: write
@@ -71,7 +70,7 @@ jobs:
           pnpm --version
 
       - name: Create Neon Branch
-        if: needs.setup.outputs.has_migration == 'true'
+        if: contains(github.event.pull_request.labels.*.name, 'migration')
         id: create_neon_branch
         uses: neondatabase/create-branch-action@v6
         with:
@@ -81,7 +80,7 @@ jobs:
           branch_name: preview/pr-${{ github.event.number }}-${{ needs.setup.outputs.branch }}
           api_key: ${{ secrets.NEON_API_KEY }}
       - name: Run Migrations
-        if: needs.setup.outputs.has_migration == 'true'
+        if: contains(github.event.pull_request.labels.*.name, 'migration')
         run: pnpm run generate && pnpm run migrate
         env:
           POSTGRES_URL: '${{ steps.create_neon_branch.outputs.db_url_pooled }}'
@@ -91,11 +90,11 @@ jobs:
       - name: Build Project Artifacts
         run: vercel build --token=${{ secrets.VERCEL_TOKEN }}
         env:
-          POSTGRES_URL: ${{ needs.setup.outputs.has_migration == 'true' && steps.create_neon_branch.outputs.db_url || secrets.POSTGRES_URL }}
+          POSTGRES_URL: ${{ contains(github.event.pull_request.labels.*.name, 'migration') && steps.create_neon_branch.outputs.db_url || secrets.POSTGRES_URL }}
       - name: Deploy Project Artifacts to Vercel
         id: deploy_project
         run: |
-          if [ "${{ needs.setup.outputs.has_migration }}" == "true" ]; then
+          if [ ${{ contains(github.event.pull_request.labels.*.name, 'migration') }} == "true" ]; thens
             vercel deploy --prebuilt --token=${{ secrets.VERCEL_TOKEN }} --env POSTGRES_URL=${{ steps.create_neon_branch.outputs.db_url }} > preview-url.txt
           else
             vercel deploy --prebuilt --token=${{ secrets.VERCEL_TOKEN }} > preview-url.txt
@@ -182,7 +181,10 @@ jobs:
   delete_neon_branch:
     name: Delete Neon Branch
     needs: setup
-    if: github.event_name == 'pull_request' && github.event.action == 'closed' && needs.setup.outputs.has_migration == 'true'
+    if: |
+      github.event_name == 'pull_request' &&
+      github.event.action == 'closed' &&
+      contains(github.event.pull_request.labels.*.name, 'migration')
     runs-on: ubuntu-latest
     steps:
       - name: Checkout branch
