@@ -11,7 +11,7 @@ import { FC } from 'react';
 export const Color: FC = () => {
   return (
     <section className="flex flex-col gap-4">
-      <div className="bg-bg-base flex flex-col justify-between gap-1 rounded-lg p-3">
+      <div className="flex flex-col justify-between gap-1">
         <Heading type="h3">Neutral Color</Heading>
         <p className="text-fg-mute text-sm">
           グレースケールを元にした色、理由がない限りこの色を利用する
@@ -140,7 +140,7 @@ export const Color: FC = () => {
           </div>
         </div>
       </div>
-      <div className="bg-bg-base flex flex-col justify-between gap-1 rounded-lg p-3">
+      <div className="flex flex-col justify-between gap-1">
         <Heading type="h3">Primitive Color</Heading>
         <p className="text-fg-mute text-sm">
           情緒的な役割を持つ色、強調やアクセントに利用する
@@ -294,7 +294,7 @@ export const Color: FC = () => {
           </div>
         </div>
       </div>
-      <div className="bg-bg-base flex flex-col justify-between gap-3 rounded-lg p-3">
+      <div className="flex flex-col justify-between gap-3">
         <Heading type="h3">Semantic Color</Heading>
         <p className="text-fg-mute text-sm">
           機能的な役割を持つ色(情報、成功、警告、エラー)、利用者に色を用いて情報を届けたいときに利用する
@@ -431,7 +431,7 @@ export const Color: FC = () => {
           </div>
         </div>
       </div>
-      <div className="bg-bg-base flex flex-col justify-between gap-1 rounded-lg p-3">
+      <div className="flex flex-col justify-between gap-1">
         <Heading type="h3">Base Color</Heading>
         <p className="text-fg-mute text-sm">
           デザインシステム全体で利用する基本色

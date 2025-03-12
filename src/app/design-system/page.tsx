@@ -3,6 +3,7 @@
 import { Color } from './_components/color';
 import { Radius } from './_components/radius';
 import { CommingSoon } from '../_components/comming-soon';
+import { Typography } from './_components/typography';
 import { Tabs } from '@/components/tabs';
 
 export default function Page() {
@@ -25,11 +26,11 @@ export default function Page() {
           <Tabs.Tab id="radius">
             <p className="text-xl font-bold">Radius</p>
           </Tabs.Tab>
-          <Tabs.Tab id="spacing">
-            <p className="text-xl font-bold">Spacing</p>
-          </Tabs.Tab>
           <Tabs.Tab id="typography">
             <p className="text-xl font-bold">Typography</p>
+          </Tabs.Tab>
+          <Tabs.Tab id="spacing">
+            <p className="text-xl font-bold">Spacing</p>
           </Tabs.Tab>
           <Tabs.Tab id="components">
             <p className="text-xl font-bold">Components</p>
@@ -41,10 +42,10 @@ export default function Page() {
         <Tabs.Panel id="radius">
           <Radius />
         </Tabs.Panel>
-        <Tabs.Panel id="spacing">
-          <CommingSoon />
-        </Tabs.Panel>
         <Tabs.Panel id="typography">
+          <Typography />
+        </Tabs.Panel>
+        <Tabs.Panel id="spacing">
           <CommingSoon />
         </Tabs.Panel>
         <Tabs.Panel id="components">
