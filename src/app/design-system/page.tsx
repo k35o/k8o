@@ -3,6 +3,7 @@
 import { Color } from './_components/color';
 import { Radius } from './_components/radius';
 import { CommingSoon } from '../_components/comming-soon';
+import { Spacing } from './_components/spacing';
 import { Typography } from './_components/typography';
 import { Tabs } from '@/components/tabs';
 
@@ -46,7 +47,7 @@ export default function Page() {
           <Typography />
         </Tabs.Panel>
         <Tabs.Panel id="spacing">
-          <CommingSoon />
+          <Spacing />
         </Tabs.Panel>
         <Tabs.Panel id="components">
           <CommingSoon />
