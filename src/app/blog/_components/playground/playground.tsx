@@ -6,9 +6,13 @@ export const Playground: FC<
   }>
 > = ({ title = 'Playground', children }) => {
   return (
-    <div className="border-border-base my-8 rounded-md border">
-      <p className="bg-bg-mute rounded-t-sm p-4">{title}</p>
-      <div className="p-4">{children}</div>
+    <div className="sm:text-md my-8 text-xs">
+      <p className="border-border-base bg-bg-mute rounded-t-sm border-x border-t p-4 font-bold">
+        {title}
+      </p>
+      <div className="bg-bg-base border-border-base rounded-b-sm border p-4">
+        {children}
+      </div>
     </div>
   );
 };
