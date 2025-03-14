@@ -5,7 +5,7 @@ import { ImageResponse } from 'next/og';
 const parser = new Parser(jaModel);
 
 export const alt =
-  '色のコントラスト比は重要だけどどうやって求めるんだっけ？';
+  '関数の同期・非同期を気にせず処理するPromise.tryとは';
 export const size = {
   width: 1200,
   height: 600,
