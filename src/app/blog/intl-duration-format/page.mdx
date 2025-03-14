@@ -1,0 +1,169 @@
+import { BaselineStatus } from '@/components/baseline-status';
+import { LinkCard } from '@/components/link-card';
+
+# Intl.DurationFormatで期間を日本語で表現する
+
+<BaselineStatus featureId="intl-duration-format"></BaselineStatus>
+
+## はじめに
+
+Firefox 136.0のリリースで`Intl`の`DurationFormat`が2025年のBaselineに追加されました。
+`Intl.DurationFormat`は`locale`に基づいた書式設定で期間を表現するものです。
+
+```js
+const duration = {
+  years: 1,
+  months: 2,
+  weeks: 3,
+  days: 3,
+  hours: 4,
+  minutes: 5,
+  seconds: 6,
+};
+
+new Intl.DurationFormat('ja').format(duration);
+// 1 年 2 か月 3 週間 3 日 4 時間 5 分 6 秒
+```
+
+<LinkCard href="https://github.com/tc39/proposal-intl-duration-format" />
+
+## Intl.DurationFormat
+
+`Intl.DurationFormat`は`locale`に応じた書式の期間を表示するためのオブジェクトです。
+他の`Intl`オブジェクトと同じように静的メソッドとして`supportedLocalesOf()`やインスタンスメソッド`resolvedOptions()`を持っています。
+
+`locale`に応じた期間の出力は`IntlDurationFormat`オブジェクトを作成して、`format`及びに`formatToParts`メソッドで行います。
+
+`locale`や書式設定は`Intl.DurationFormat`オブジェクトを作成するタイミングで設定します。
+
+```js
+new Intl.DurationFormat('ja-JP', {
+  style: 'long',
+});
+```
+
+第一引数に`locale`を文字列や配列で渡し、第二引数でその他のオプションをオブジェクト形式で渡します。
+
+オプションの全ては説明しませんが、`style`で表示する期間の長さ、`years`・`months`等で個別の`style`を決定、`yearsDisplay`・`monthsDisplay`などで0の時の表示を決めます。
+
+`style`には`long`と`short`と`narrow`と`digital`の4つがあります。それぞれ以下のような表示になります。
+
+```js
+// long 1 年 2 か月 3 週間 3 日 4 時間 5 分 6 秒 7 ミリ秒 8 マイクロ秒 9 ナノ秒
+// short 1 年 2 か月 3 週間 3 日 4 時間 5 分 6 秒 7 ms 8 μs 9 ns
+// narrow 1y2m3w3d4h5m6s7ms8μs9ns
+// digital 1 年 2 か月 3 週間 3 日 4:05:06.007008009
+```
+
+## format
+
+作成した`Intl.DurationFormat`オブジェクトに対して`format`メソッドを呼び出すことで期間を表示します。
+`format`は対応している期間をオブジェクト形式で受け取ります。
+
+```js
+const duration = {
+  years: 1,
+  months: 2,
+  hours: 4,
+  seconds: 6,
+};
+
+new Intl.DurationFormat('ja').format(duration);
+// 1 年 2 か月 4 時間 6 秒
+```
+
+全ての期間を含める必要はありません。
+
+言い忘れましたが、期間は`years`、`months`、`weeks`、`days`、`hours`、`minutes`、`seconds`、`milliseconds`、`microseconds`、`nanoseconds`の9つに対応しています。これらを`format`に渡すオブジェクトのキーとして利用します。
+
+## formatToParts
+
+`formatToParts`メソッドは`format`メソッドと同じように期間を表示しますが、`format`メソッドが文字列を返すのに対して、`formatToParts`メソッドはオブジェクトの配列を返します。
+
+```js
+const duration = {
+  years: 1,
+  months: 2,
+  hours: 4,
+  seconds: 6,
+};
+
+new Intl.DurationFormat('ja').formatToParts(duration);
+// [
+//     {
+//         "type": "integer",
+//         "value": "1",
+//         "unit": "year"
+//     },
+//     {
+//         "type": "literal",
+//         "value": " ",
+//         "unit": "year"
+//     },
+//     {
+//         "type": "unit",
+//         "value": "年",
+//         "unit": "year"
+//     },
+//     {
+//         "type": "literal",
+//         "value": " "
+//     },
+//     {
+//         "type": "integer",
+//         "value": "2",
+//         "unit": "month"
+//     },
+//     {
+//         "type": "literal",
+//         "value": " ",
+//         "unit": "month"
+//     },
+//     {
+//         "type": "unit",
+//         "value": "か月",
+//         "unit": "month"
+//     },
+//     {
+//         "type": "literal",
+//         "value": " "
+//     },
+//     {
+//         "type": "integer",
+//         "value": "4",
+//         "unit": "hour"
+//     },
+//     {
+//         "type": "literal",
+//         "value": " ",
+//         "unit": "hour"
+//     },
+//     {
+//         "type": "unit",
+//         "value": "時間",
+//         "unit": "hour"
+//     },
+//     {
+//         "type": "literal",
+//         "value": " "
+//     },
+//     {
+//         "type": "integer",
+//         "value": "6",
+//         "unit": "second"
+//     },
+//     {
+//         "type": "literal",
+//         "value": " ",
+//         "unit": "second"
+//     },
+//     {
+//         "type": "unit",
+//         "value": "秒",
+//         "unit": "second"
+//     }
+// ]
+```
+
+期間を元に自分なりの表示を作成する場合はこちらが便利です。
+日本語で`format`した場合スペースが気になるので、こちらを利用した方が見栄えが良いかもしれません。
