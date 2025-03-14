@@ -15,7 +15,7 @@ export async function generateMetadata(): Promise<Metadata> {
     title: blog.title,
     description:
       blog.description === '' ? blog.description : blog.title,
-    category: '色彩検定 UC級',
+    category: blog.tags.join(', '),
     openGraph: {
       title: blog.title,
       description:

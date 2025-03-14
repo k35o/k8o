@@ -19,6 +19,7 @@ export const getBlogsWithoutCache = async (): Promise<Blog[]> => {
         },
       },
     },
+    limit: 10,
     orderBy(fields, operators) {
       return operators.desc(fields.createdAt);
     },

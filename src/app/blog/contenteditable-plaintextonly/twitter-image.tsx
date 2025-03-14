@@ -5,8 +5,7 @@ import { ImageResponse } from 'next/og';
 const parser = new Parser(jaModel);
 
 export const alt =
-  'Reactの新しいルーティングライブラリ、TanStackRouterを学ぶ';
-
+  'contenteditableな要素でテキストだけを編集可能にする';
 export const size = {
   width: 1200,
   height: 600,
@@ -14,9 +13,9 @@ export const size = {
 
 export const contentType = 'image/png';
 
-export default async function OpenGraphImage() {
+export default async function TwitterImage() {
   const blog = await getBlogWitoutCache({
-    slug: 'tanstack-router-introduction',
+    slug: 'contenteditable-plaintextonly',
   });
 
   const words = parser.parse(blog ? blog.title : alt);
