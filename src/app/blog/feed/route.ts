@@ -1,5 +1,5 @@
 import { metadata } from '../layout';
-import { db } from '#database/db';
+import { getBlogsWithoutCache } from '#actions/blog';
 import { NextResponse } from 'next/server';
 import RSS from 'rss';
 
@@ -16,18 +16,7 @@ export async function GET() {
     language: 'ja',
   });
 
-  const blogs = await db.query.blogs.findMany({
-    with: {
-      blogTag: {
-        with: {
-          tag: true,
-        },
-      },
-    },
-    orderBy(fields, operators) {
-      return operators.desc(fields.createdAt);
-    },
-  });
+  const blogs = await getBlogsWithoutCache();
 
   for (const blog of blogs) {
     feed.item({
@@ -35,7 +24,7 @@ export async function GET() {
       description: blog.description,
       url: `${BLOG_URL}/${blog.slug}`,
       date: blog.updatedAt,
-      categories: blog.blogTag.map((blogTag) => blogTag.tag.name),
+      categories: blog.tags,
       author: 'k8o',
     });
   }

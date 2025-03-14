@@ -1,4 +1,4 @@
-import { getBlog } from '#actions/blog';
+import { getBlogWitoutCache } from '#actions/blog';
 import { Parser, jaModel } from 'budoux';
 import { ImageResponse } from 'next/og';
 
@@ -13,7 +13,7 @@ export const size = {
 export const contentType = 'image/png';
 
 export default async function OpenGraphImage() {
-  const blog = await getBlog({
+  const blog = await getBlogWitoutCache({
     slug: 'color-certification-uc',
   });
 

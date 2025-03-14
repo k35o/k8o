@@ -7,22 +7,22 @@ import { AnyColumn, eq, InferSelectModel, sql } from 'drizzle-orm';
 import { unstable_cache as cache } from 'next/cache';
 
 export const getBlogs = async (): Promise<Blog[]> => {
-  const blog = await cache(
-    async () =>
-      db.query.blogs.findMany({
+  return cache(getBlogsWithoutCache, ['blog'])();
+};
+
+export const getBlogsWithoutCache = async (): Promise<Blog[]> => {
+  const blog = await db.query.blogs.findMany({
+    with: {
+      blogTag: {
         with: {
-          blogTag: {
-            with: {
-              tag: true,
-            },
-          },
+          tag: true,
         },
-        orderBy(fields, operators) {
-          return operators.desc(fields.createdAt);
-        },
-      }),
-    ['blog'],
-  )();
+      },
+    },
+    orderBy(fields, operators) {
+      return operators.desc(fields.createdAt);
+    },
+  });
 
   return blog.map((blog) => ({
     id: blog.id,
@@ -40,20 +40,27 @@ export const getBlog = async ({
 }: {
   slug: InferSelectModel<typeof schema.blogs>['slug'];
 }): Promise<Blog | undefined> => {
-  const blog = await cache(
-    async (slug: string) =>
-      db.query.blogs.findFirst({
-        where: (blog, { eq }) => eq(blog.slug, slug),
-        with: {
-          blogTag: {
-            with: {
-              tag: true,
-            },
-          },
-        },
-      }),
+  return cache(
+    async (slug: string) => getBlogWitoutCache({ slug }),
     ['blog'],
   )(slug);
+};
+
+export const getBlogWitoutCache = async ({
+  slug,
+}: {
+  slug: InferSelectModel<typeof schema.blogs>['slug'];
+}): Promise<Blog | undefined> => {
+  const blog = await db.query.blogs.findFirst({
+    where: (blog, { eq }) => eq(blog.slug, slug),
+    with: {
+      blogTag: {
+        with: {
+          tag: true,
+        },
+      },
+    },
+  });
 
   if (!blog) {
     return undefined;
