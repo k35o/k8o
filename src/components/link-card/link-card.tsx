@@ -3,6 +3,7 @@ import { ExternalLinkIcon } from '../icons';
 import { getMetadata } from '#link-card/metadata';
 import Image from 'next/image';
 import { FC, Suspense } from 'react';
+import { ErrorBoundary } from 'react-error-boundary';
 
 const Loading: FC<{ href: string }> = ({ href }) => {
   return (
@@ -70,8 +71,10 @@ const Content: FC<{ href: string }> = async ({ href }) => {
 
 export const LinkCard: FC<{ href: string }> = ({ href }) => {
   return (
-    <Suspense fallback={<Loading href={href} />}>
-      <Content href={href} />
-    </Suspense>
+    <ErrorBoundary fallback={<Anchor href={href}>{href}</Anchor>}>
+      <Suspense fallback={<Loading href={href} />}>
+        <Content href={href} />
+      </Suspense>
+    </ErrorBoundary>
   );
 };
