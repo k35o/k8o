@@ -18,7 +18,7 @@ export async function generateMetadata(): Promise<Metadata> {
     openGraph: {
       title: blog.title,
       description: blog.description,
-      url: 'intl-duration-format',
+      url: 'https://k8o.me/blog/intl-duration-format',
       publishedTime: blog.createdAt.toString(),
       authors: ['k8o'],
       siteName: 'k8o',
