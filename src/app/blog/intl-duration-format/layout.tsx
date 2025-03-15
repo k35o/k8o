@@ -35,7 +35,7 @@ export async function generateMetadata(): Promise<Metadata> {
 
 export default function Layout({ children }: PropsWithChildren) {
   return (
-    <BlogLayout slug="contenteditable-plaintextonly">
+    <BlogLayout slug="intl-duration-format">
       {children}
     </BlogLayout>
   );
