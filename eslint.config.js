@@ -1,6 +1,6 @@
 import eslint from '@eslint/js';
 import tseslint from 'typescript-eslint';
-import eslintConfigPrettier from "eslint-config-prettier";
+import eslintConfigPrettier from 'eslint-config-prettier';
 import storybookPlugin from 'eslint-plugin-storybook';
 import jsxA11yPlugin from 'eslint-plugin-jsx-a11y';
 import importPlugin from 'eslint-plugin-import';
@@ -16,7 +16,8 @@ export default tseslint.config(
     plugins: {
       ['@typescript-eslint']: tseslint.plugin,
       ['import']: importPlugin,
-      ['jsx-a11y']: jsxA11yPlugin.flatConfigs.recommended.plugins['jsx-a11y'],
+      ['jsx-a11y']:
+        jsxA11yPlugin.flatConfigs.recommended.plugins['jsx-a11y'],
       ['drizzle']: drizzlePlugin,
       ['@next/next']: nextPlugin,
     },
@@ -61,20 +62,23 @@ export default tseslint.config(
           ignoreRestSiblings: true,
         },
       ],
-      'import/order': ['error', {
-        groups: [
-          "builtin",
-          ["sibling", "parent"],
-          "index",
-          "object",
-        ],
-        alphabetize: { order: 'asc' }
-      }],
+      'import/order': [
+        'error',
+        {
+          groups: [
+            'builtin',
+            ['sibling', 'parent'],
+            'index',
+            'object',
+          ],
+          alphabetize: { order: 'asc' },
+        },
+      ],
       'import/namespace': 'off',
     },
     settings: {
       ...importPlugin.flatConfigs.typescript.settings,
-      "import/resolver": {
+      'import/resolver': {
         typescript: {
           alwaysTryTypes: true,
           project: true,
