@@ -1,0 +1,20 @@
+name: Get Current Branch
+description: A composite action to get the current branch event_name
+
+outputs:
+  current_branch:
+    value: ${{ steps.get_current_branch.outputs.current_branch }}
+    description: 'The current branch name'
+
+runs:
+  using: 'composite'
+  steps:
+    - name: Get current branch name
+      id: get_current_branch
+      run: |
+        if [[  "${{ github.event_name }}" == "pull_request" ]]; then
+          echo "current_branch=${{ github.event.pull_request.head.ref }}" >> $GITHUB_OUTPUT
+        else
+          echo "current_branch=${{ github.ref }}" >> $GITHUB_OUTPUT
+        fi
+      shell: bash
