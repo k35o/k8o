@@ -19,7 +19,8 @@ Popover APIはツールチップやドロップダウンメニューのような
 </Playground>
 
 これらのUIは、表示させる重ね合わせコンテキストの階層の管理やアクセシビリティを考慮した実装はかなりハードルが高く、ライブラリを頼らざるを得ないことが多かったのでBaselineに追加されたことは大きな進歩です。
-[CSS Anchor Positioning](https://drafts.csswg.org/css-anchor-position-1/)がBaselineに追加されると、表示位置も決められるのでとても楽しみですね。
+
+Popover APIでは表示位置までは決められません。[CSS Anchor Positioning](https://drafts.csswg.org/css-anchor-position-1/)がは利用可能になると表示位置も決められので後一歩といった感じですね。
 
 ## Popover APIの全体像
 
@@ -32,7 +33,7 @@ Popover APIによって作られたポップオーバーは
 
 の性質を持ちます。
 
-Popover APIは関連するHTMLの3つの属性とCSSの2つの機能が用意されています(それらを管理するJavaScriptも存在しますが、この記事ではHMTLとCSSにだけ注目します)。
+Popover APIは関連する3つのHTMLの属性と2つのCSSの機能が用意されています(それらを管理するJavaScriptの機能も存在しますが、この記事ではHMTLとCSSにだけ注目します)。
 HTMLの属性は`popover`と`popovertarget`、`popovertargetaction`、CSSの機能は`::backdrop`と`:popover-open`です。
 
 ### HTML属性
@@ -86,6 +87,10 @@ HTMLの属性は`popover`と`popovertarget`、`popovertargetaction`、CSSの機�
 Popover APIを使った簡単な例を紹介します。3つのボタンがあり、それぞれ異なる`popovertargetaction`を持っています。
 表示されるコンテンツは`:popover-open`を利用して、開閉時のアニメーションを付与しています。
 
+<Playground title="Popover APIのサンプル">
+  <Example2 />
+</Playground>
+
 ```html
 <div class="wrapper">
   <button popovertarget="popover1" popovertargetaction="toggle">
@@ -134,7 +139,3 @@ Popover APIを使った簡単な例を紹介します。3つのボタンがあ�
   background-color: #00000080;
 }
 ```
-
-<Playground>
-  <Example2 />
-</Playground>
