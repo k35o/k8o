@@ -1,13 +1,13 @@
-import withMdx from '@next/mdx';
 import BundleAnalyzer from '@next/bundle-analyzer';
-import rehypePrettyCode, { Options } from 'rehype-pretty-code';
+import withMdx from '@next/mdx';
+import { NextConfig } from 'next';
 import rehypeKatex from 'rehype-katex';
+import { rehypePrettyCode, Options } from 'rehype-pretty-code';
 import remarkMath from 'remark-math';
 import {
   createJavaScriptRegexEngine,
   getSingletonHighlighter,
 } from 'shiki';
-import { NextConfig } from 'next';
 
 const nextConfig: NextConfig = {
   reactStrictMode: true,
