@@ -112,7 +112,8 @@ const Item: FC<{ onClick: MouseEventHandler; label: string }> = ({
 const Trigger: FC<{
   text: string;
   size?: ComponentProps<typeof Button>['size'];
-}> = ({ text, size = 'md' }) => {
+  variant?: ComponentProps<typeof Button>['variant'];
+}> = ({ text, size = 'md', variant = 'contained' }) => {
   const getTriggerProps = useMenuTrigger();
 
   return (
@@ -122,7 +123,7 @@ const Trigger: FC<{
           type="button"
           size={size}
           color="gray"
-          variant="contained"
+          variant={variant}
           endIcon={<ChevronIcon direction="down" />}
           {...getTriggerProps(props)}
         >
