@@ -111,6 +111,14 @@ export function useMDXComponents(
         </pre>
       );
     },
+    li: ({ children }) => (
+      <li className="sm:text-md list-inside list-disc text-xs">
+        {children}
+      </li>
+    ),
+    ul: ({ children }) => (
+      <ul className="sm:text-md text-xs">{children}</ul>
+    ),
     ...components,
   };
 }

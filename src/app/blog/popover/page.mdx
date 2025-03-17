@@ -1,0 +1,141 @@
+import { BaselineStatus } from '@/components/baseline-status';
+import { LinkCard } from '@/components/link-card';
+import { Button } from '@/components/button';
+import { Example1 } from './_components/example1';
+import { Example2 } from './_components/example2';
+import { Playground } from '@/app/blog/_components/playground';
+
+# Popover APIを使ってJavaScriptなしで要素の側に異なる要素を表示する
+
+<BaselineStatus featureId="popover"></BaselineStatus>
+
+## はじめに
+
+Popover APIがついに2025年のBaselineに追加されました。
+Popover APIはツールチップやドロップダウンメニューのようなUIを作成するためのAPIです。
+
+<Playground title="ツールチップとドロップダウンメニュー">
+  <Example1 />
+</Playground>
+
+これらのUIは、表示させる重ね合わせコンテキストの階層の管理やアクセシビリティを考慮した実装はかなりハードルが高く、ライブラリを頼らざるを得ないことが多かったのでBaselineに追加されたことは大きな進歩です。
+
+Popover APIでは表示位置までは決められません。[CSS Anchor Positioning](https://drafts.csswg.org/css-anchor-position-1/)がは利用可能になると表示位置も決められので後一歩といった感じですね。
+
+## Popover APIの全体像
+
+Popover APIによって作られたポップオーバーは
+
+- その外側をクリックすると閉じられる
+- ESCキーを押すと閉じられる
+- 開いた時にフォーカスが内部に移動する
+- Top layer（最上位のレイヤー）に配置される
+
+の性質を持ちます。
+
+Popover APIは関連する3つのHTMLの属性と2つのCSSの機能が用意されています(それらを管理するJavaScriptの機能も存在しますが、この記事ではHMTLとCSSにだけ注目します)。
+HTMLの属性は`popover`と`popovertarget`、`popovertargetaction`、CSSの機能は`::backdrop`と`:popover-open`です。
+
+### HTML属性
+
+ポップオーバーで表示させたいコンテンツには`popover`属性を付与します。
+
+```html
+<p id="popover1" popover>ポップオーバーで表示されるコンテンツ</p>
+```
+
+デフォルトの値は`auto`です(JSXで記述する際は明示的に付与する必要がありそうです)。値を`manual`にするとESCキーの押下や外側のクリックで閉じられなくなります。`manual`は主にJavaScriptを使って制御する場合に使用します。
+
+ポップオーバーの表示を管理する要素には`popovertarget`属性を付与します。表示するコンテンツとリンクさせるために`popover`を持たせた要素の`id`を値にします。
+
+```html
+<button popovertarget="popover1">
+  ポップオーバーの表示を管理する要素
+</button>
+```
+
+`popovertargetaction`は`popovertarget`属性が付与された要素がどのようなアクションを行うか指定します。
+
+```html
+<button popovertarget="popover1" popovertargetaction="show">
+  クリックでポップオーバーを表示
+</button>
+```
+
+デフォルトは表示非表示を切り替える`toggle`です。その他にも表示だけさせる`show`と、非表示にするだけの`hide`があります。
+
+### CSS機能
+
+ポップオーバー要素の後ろには全画面を覆うコンテンツが配置されます。`::backdrop`はそんな背景にスタイルを付与するための擬似要素です。
+
+```css
+::backdrop {
+  background-color: #00000080;
+}
+```
+
+`:popover-open`はポップオーバーが表示されたときに付与される擬似クラスです。
+
+```css
+.popover:popover-open {
+  min-width: 50vw;
+}
+```
+
+### サンプル
+
+Popover APIを使った簡単な例を紹介します。3つのボタンがあり、それぞれ異なる`popovertargetaction`を持っています。
+表示されるコンテンツは`:popover-open`を利用して、開閉時のアニメーションを付与しています。
+
+<Playground title="Popover APIのサンプル">
+  <Example2 />
+</Playground>
+
+```html
+<div class="wrapper">
+  <button popovertarget="popover1" popovertargetaction="toggle">
+    popovertargetaction: toggle
+  </button>
+  <button popovertarget="popover1" popovertargetaction="show">
+    popovertargetaction: show
+  </button>
+  <button popovertarget="popover1" popovertargetaction="hide">
+    popovertargetaction: hide
+  </button>
+</div>
+<p id="popover1" popover>
+  このポップオーバーはPopover APIによって表示されました。
+  ESCキーやこのコンテンツの外側のクリック、toggleまたはhideボタンで閉じられます。
+</p>
+```
+
+```css
+.wrapper {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2rem;
+}
+
+#popover1 {
+  border-radius: 0.5rem;
+  margin: auto;
+  padding: 1rem;
+  max-width: calc(1 / 3 * 100%);
+  opacity: 0;
+  transition: opacity 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+#popover1:popover-open {
+  opacity: 1;
+}
+
+@starting-style {
+  #popover1:popover-open {
+    opacity: 0;
+  }
+}
+
+::backdrop {
+  background-color: #00000080;
+}
+```

@@ -5,7 +5,7 @@ import { PropsWithChildren } from 'react';
 
 export async function generateMetadata(): Promise<Metadata> {
   const blog = await getBlog({
-    slug: 'intl-duration-format',
+    slug: 'popover',
   });
   if (!blog) {
     throw new Error('Blog not found');
@@ -18,7 +18,7 @@ export async function generateMetadata(): Promise<Metadata> {
     openGraph: {
       title: blog.title,
       description: blog.description,
-      url: 'https://k8o.me/blog/intl-duration-format',
+      url: 'https://k8o.me/blog/popover',
       publishedTime: blog.createdAt.toString(),
       authors: ['k8o'],
       siteName: 'k8o',
@@ -34,7 +34,5 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 export default function Layout({ children }: PropsWithChildren) {
-  return (
-    <BlogLayout slug="intl-duration-format">{children}</BlogLayout>
-  );
+  return <BlogLayout slug="popover">{children}</BlogLayout>;
 }
