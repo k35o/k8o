@@ -34,3 +34,12 @@ export const calcContrast = (color1: string, color2: string) => {
   const l2 = calcLuminance(rgb2);
   return (Math.max(l1, l2) + 0.05) / (Math.min(l1, l2) + 0.05);
 };
+
+if (import.meta.vitest) {
+  it('色のコントラスト比を計算する', () => {
+    expect(calcContrast('#000000', '#ffffff')).toBe(21);
+    expect(calcContrast('#ffffff', '#000000')).toBe(21);
+    expect(calcContrast('#000000', '#000000')).toBe(1);
+    expect(calcContrast('#ffffff', '#ffffff')).toBe(1);
+  });
+}
