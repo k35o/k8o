@@ -1,5 +1,5 @@
 import { cn } from '@/utils/cn';
-import { calcContrast } from '@/utils/color/calc_contrast';
+import { calcContrast } from '@/utils/color/calc-contrast';
 import { toPrecision } from '@/utils/number/to-precision';
 import { FC } from 'react';
 

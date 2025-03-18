@@ -5,7 +5,7 @@ import {
 } from '../../_utils/color';
 import { Heading } from '@/components/heading';
 import { cn } from '@/utils/cn';
-import { calcContrast } from '@/utils/color/calc_contrast';
+import { calcContrast } from '@/utils/color/calc-contrast';
 import { FC } from 'react';
 
 export const Color: FC = () => {
