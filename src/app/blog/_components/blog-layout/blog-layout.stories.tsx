@@ -1,15 +1,12 @@
 import { BlogLayout } from './blog-layout';
-import {
-  getBlogWitoutCache,
-  getBlogView,
-} from '#src/mocks/actions/blog.mock';
+import { getBlog, getBlogView } from '#src/mocks/actions/blog.mock';
 import type { Meta, StoryObj } from '@storybook/react';
 
 const meta: Meta<typeof BlogLayout> = {
   title: 'app/blog/blog-layout',
   component: BlogLayout,
   beforeEach: () => {
-    getBlogWitoutCache.mockResolvedValue({
+    getBlog.mockResolvedValue({
       id: 1,
       title:
         'Reactの新しいルーティングライブラリ、TanStackRouterを学ぶ',
