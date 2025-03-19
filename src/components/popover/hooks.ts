@@ -161,7 +161,6 @@ export const usePopoverTrigger = (): Omit<
         return {
           onClick: popover.toggleOpen,
           onKeyDown: (e: KeyboardEvent) => {
-            e.preventDefault();
             if (e.key === 'Enter' || e.key === ' ') {
               e.preventDefault();
               popover.toggleOpen();
