@@ -10,6 +10,7 @@ import {
   FC,
   KeyboardEvent,
   PropsWithChildren,
+  RefObject,
   use,
   useEffect,
   useId,
@@ -87,12 +88,32 @@ const Root: FC<
   );
 };
 
+const TabsListProvider = createContext<
+  | {
+      setFocusRef: RefObject<boolean>;
+    }
+  | undefined
+>(undefined);
+
+const useTabsListState = (): {
+  setFocusRef: RefObject<boolean>;
+} => {
+  const context = use(TabsListProvider);
+  if (!context) {
+    throw new Error(
+      'useTabListState must be used within a TabListProvider',
+    );
+  }
+  return context;
+};
+
 const List: FC<
   PropsWithChildren<{
     label: string;
   }>
 > = ({ label, children }) => {
   const { rootId } = useTabsState();
+  const setFocusRef = useRef<boolean>(false);
   return (
     <div
       id={`${rootId}-tablist`}
@@ -101,7 +122,9 @@ const List: FC<
       aria-orientation="horizontal"
       className="border-border-base flex overflow-x-auto overflow-y-hidden border-b p-0.5"
     >
-      {children}
+      <TabsListProvider value={{ setFocusRef }}>
+        {children}
+      </TabsListProvider>
     </div>
   );
 };
@@ -112,13 +135,16 @@ const Tab: FC<PropsWithChildren<{ id: string }>> = ({
 }) => {
   const { rootId, hashLink, ids, selectedId, setSelectedId } =
     useTabsState();
+  const { setFocusRef } = useTabsListState();
   const ref = useRef<HTMLAnchorElement & HTMLDivElement>(null);
   const activeIndex = ids.indexOf(selectedId);
   const index = ids.indexOf(id);
 
   useEffect(() => {
-    if (activeIndex === index) {
+    if (activeIndex === index && setFocusRef.current) {
+      console.log(1);
       ref.current?.focus();
+      setFocusRef.current = false;
     }
   }, [activeIndex, index]);
 
@@ -138,12 +164,14 @@ const Tab: FC<PropsWithChildren<{ id: string }>> = ({
         const nextActiveIndex =
           index === 0 ? ids.length - 1 : index - 1;
         setSelectedId(ids[nextActiveIndex] ?? ids[0]);
+        setFocusRef.current = true;
         return;
       }
       if (e.key === 'ArrowRight') {
         const nextActiveIndex =
           index === ids.length - 1 ? 0 : index + 1;
         setSelectedId(ids[nextActiveIndex] ?? ids[0]);
+        setFocusRef.current = true;
         return;
       }
     },
