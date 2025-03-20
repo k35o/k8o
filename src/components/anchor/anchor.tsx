@@ -1,3 +1,4 @@
+import { ExternalLinkIcon } from '../icons';
 import { isInternalRoute } from '@/utils/is-internal-route';
 import Link from 'next/link';
 import { ReactNode } from 'react';
@@ -23,9 +24,10 @@ export const Anchor = ({
           href={href}
           target="_blank"
           rel="noopener noreferrer"
-          className="text-fg-info cursor-pointer hover:underline"
+          className="text-fg-info inline-flex cursor-pointer items-center gap-0.5 hover:underline"
         >
           {children}
+          <ExternalLinkIcon size="sm" />
         </a>
       )}
     </>

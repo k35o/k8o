@@ -1,4 +1,5 @@
 import { CommingSoon } from './comming-soon';
+import { Anchor } from '@/components/anchor';
 import type { Meta, StoryObj } from '@storybook/react';
 
 const meta: Meta<typeof CommingSoon> = {
@@ -16,9 +17,9 @@ export const HasDescription: Story = {
     description: (
       <p className="text-fg-mute text-sm">
         コンポーネントの一覧を管理する
-        <a href="https://main--647acebb9da23d6c605c4afd.chromatic.com/">
+        <Anchor href="https://main--647acebb9da23d6c605c4afd.chromatic.com/">
           Storybook
-        </a>
+        </Anchor>
         は閲覧できます。
       </p>
     ),
