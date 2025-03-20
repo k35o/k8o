@@ -5,6 +5,7 @@ import { Radius } from './_components/radius';
 import { CommingSoon } from '../_components/comming-soon';
 import { Spacing } from './_components/spacing';
 import { Typography } from './_components/typography';
+import { Anchor } from '@/components/anchor';
 import { Tabs } from '@/components/tabs';
 
 export default function Page() {
@@ -50,7 +51,17 @@ export default function Page() {
           <Spacing />
         </Tabs.Panel>
         <Tabs.Panel id="components">
-          <CommingSoon />
+          <CommingSoon
+            description={
+              <p className="text-fg-mute text-sm">
+                コンポーネントの一覧を管理する
+                <Anchor href="https://main--647acebb9da23d6c605c4afd.chromatic.com/">
+                  Storybook
+                </Anchor>
+                は閲覧できます。
+              </p>
+            }
+          />
         </Tabs.Panel>
       </Tabs.Root>
     </section>
