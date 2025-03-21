@@ -1,16 +1,15 @@
 'use client';
 
 import { Color } from './_components/color';
+import { Components } from './_components/components';
 import { Radius } from './_components/radius';
-import { CommingSoon } from '../_components/comming-soon';
 import { Spacing } from './_components/spacing';
 import { Typography } from './_components/typography';
-import { Anchor } from '@/components/anchor';
 import { Tabs } from '@/components/tabs';
 
 export default function Page() {
   return (
-    <section className="bg-bg-base grid h-full gap-6 rounded-md p-10">
+    <section className="bg-bg-base grid h-full gap-6 rounded-md p-4">
       <Tabs.Root
         ids={[
           'color',
@@ -51,17 +50,7 @@ export default function Page() {
           <Spacing />
         </Tabs.Panel>
         <Tabs.Panel id="components">
-          <CommingSoon
-            description={
-              <p className="text-fg-mute text-sm">
-                コンポーネントの一覧を管理する
-                <Anchor href="https://main--647acebb9da23d6c605c4afd.chromatic.com/">
-                  Storybook
-                </Anchor>
-                は閲覧できます。
-              </p>
-            }
-          />
+          <Components />
         </Tabs.Panel>
       </Tabs.Root>
     </section>
