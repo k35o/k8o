@@ -219,7 +219,7 @@ const Panel: FC<PropsWithChildren<{ id: string }>> = ({
       aria-labelledby={`${rootId}-tab-${id}`}
       tabIndex={0}
       className={cn(
-        'rounded-md p-2',
+        'flex-grow rounded-md p-2',
         'focus-visible:bordertransparent focus-visible:ring-border-info focus-visible:ring-2 focus-visible:outline-hidden',
       )}
     >
