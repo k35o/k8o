@@ -26,13 +26,13 @@ export const metadata = {
 
 export default function Layout({ children }: PropsWithChildren) {
   return (
-    <>
+    <div className="flex justify-center">
       {/* Get the latest one from: https://katex.org/docs/browser */}
       <link
         href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css"
         rel="stylesheet"
       />
-      <div className="flex flex-col gap-6">
+      <div className="flex max-w-4xl flex-col gap-6">
         <div className="flex items-center justify-between">
           <Link href="/blog" className="hover:underline">
             <Heading type="h2">Blog</Heading>
@@ -41,6 +41,6 @@ export default function Layout({ children }: PropsWithChildren) {
         </div>
         {children}
       </div>
-    </>
+    </div>
   );
 }
