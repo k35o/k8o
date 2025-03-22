@@ -41,11 +41,10 @@ export default function Home() {
               </div>
             </div>
             <div className="hidden md:block">
-              <p className="text-md line-clamp-1">
-                WebフロントとTypeScriptに興味があります。
-              </p>
-              <p className="text-md line-clamp-2">
-                このサイトは日常で欲したアプリケーションやブログを公開しています。
+              <p className="text-md line-clamp-3">
+                WebフロントエンドとTypeScriptに興味があり、特にフロントエンドとデザインの境界に関心があります。
+                <br />
+                現在、デザインを中心に学びながら、別の角度からフロントエンドの理解を深めています。
               </p>
             </div>
           </div>
