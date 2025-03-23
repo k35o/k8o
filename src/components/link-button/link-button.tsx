@@ -5,11 +5,12 @@ import { FC, PropsWithChildren, ReactNode } from 'react';
 
 export const LinkButton: FC<
   PropsWithChildren<{
-    variant?: 'contained' | 'outlined';
+    variant?: 'contained' | 'outlined' | 'skeleton';
     size?: 'sm' | 'md' | 'lg';
     href: string;
     startIcon?: ReactNode;
     endIcon?: ReactNode;
+    active?: boolean;
   }>
 > = ({
   children,
@@ -18,6 +19,7 @@ export const LinkButton: FC<
   href,
   startIcon,
   endIcon,
+  active = false,
 }) => {
   const className = cn(
     'rounded-lg text-center font-bold',
@@ -26,6 +28,8 @@ export const LinkButton: FC<
         variant === 'contained',
       ['border-primary-border bg-bg-base text-primary-fg hover:bg-bg-subtle active:bg-bg-emphasize border-2']:
         variant === 'outlined',
+      ['bg-transparent text-fg-mute hover:text-fg-base active:text-fg-base']:
+        variant === 'skeleton',
     },
     'focus-visible:bordertransparent focus-visible:ring-border-info focus-visible:ring-2 focus-visible:outline-hidden',
     size === 'sm' && 'px-3 py-1 text-sm',
@@ -33,6 +37,7 @@ export const LinkButton: FC<
     size === 'lg' && 'px-6 py-3 text-lg',
     Boolean(startIcon ?? endIcon) && 'flex items-center gap-2',
     Boolean(endIcon) && 'justify-between',
+    active && 'text-fg-info',
   );
   return isInternalRoute(href) ? (
     <Link className={className} href={href}>
