@@ -11,7 +11,7 @@ import Image from 'next/image';
 
 export default function Home() {
   return (
-    <div className="flex flex-col gap-10">
+    <div className="flex flex-col gap-12">
       <Card>
         <div className="flex gap-6 p-4">
           <Image
@@ -41,19 +41,23 @@ export default function Home() {
               </div>
             </div>
             <div className="hidden md:block">
-              <p className="text-md line-clamp-1">
-                WebフロントとTypeScriptに興味があります。
-              </p>
-              <p className="text-md line-clamp-2">
-                このサイトは日常で欲したアプリケーションやブログを公開しています。
+              <p className="text-md line-clamp-3">
+                WebフロントエンドとTypeScriptに興味があり、特にフロントエンドとデザインの境界に関心があります。
+                <br />
+                現在、デザインを中心に学びながら、別の角度からフロントエンドの理解を深めています。
               </p>
             </div>
           </div>
         </div>
       </Card>
       <div className="flex flex-col gap-6">
-        <Heading type="h2">アプリケーション</Heading>
-        <div className="grid gap-8 md:grid-cols-2">
+        <div>
+          <Heading type="h2">Forge</Heading>
+          <p className="text-fg-mute text-sm">
+            ブログ、デザインなど、思考やアイデアを形にする場。発想を練り、磨きながら創造を深めていきます。
+          </p>
+        </div>
+        <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
           <AppCard
             link="/blog"
             symbol="📕"
@@ -73,6 +77,16 @@ export default function Home() {
             title="ArteOdyssey"
             description="k8o.meで利用しているデザインシステムを紹介します。コンポーネントやデザイントークンを確認できます。"
           />
+        </div>
+      </div>
+      <div className="flex flex-col gap-6">
+        <div>
+          <Heading type="h2">Assist</Heading>
+          <p className="text-fg-mute text-sm">
+            制作をサポートするツール群。創作をスムーズに進めるための実用的な機能を提供します。
+          </p>
+        </div>
+        <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
           <AppCard
             link="/moji-count"
             symbol="📏"
