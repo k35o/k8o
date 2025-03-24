@@ -32,6 +32,7 @@ export const LinkButton: FC<
     size === 'md' && 'text-md px-4 py-2',
     size === 'lg' && 'px-6 py-3 text-lg',
     Boolean(startIcon ?? endIcon) && 'flex items-center gap-2',
+        Boolean(endIcon) && 'justify-center',
   );
   return isInternalRoute(href) ? (
     <Link className={className} href={href}>
