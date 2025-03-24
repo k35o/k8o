@@ -51,6 +51,7 @@ export const Button: FC<
         size === 'lg' && 'px-6 py-3 text-lg',
         fullWidth && 'w-full',
         Boolean(startIcon ?? endIcon) && 'flex items-center gap-2',
+        Boolean(endIcon) && 'justify-center',
       )}
       disabled={disabled}
       onClick={onClick}
