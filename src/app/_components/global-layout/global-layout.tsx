@@ -2,6 +2,7 @@ import { ColorFilters } from '../color-filters';
 import { ContactToMe } from '../contact-to-me';
 import { NewsLink } from './news-link';
 import { ToggleTheme } from '../toggle-theme';
+import { NavigationMenu } from './navigation-menu';
 import { Heading } from '@/components/heading';
 import Link from 'next/link';
 import { FC, ReactNode } from 'react';
@@ -17,16 +18,19 @@ export const GlobalLayout: FC<{ children: ReactNode }> = ({
             <Link href="/">
               <Heading type="h1">k8o</Heading>
             </Link>
-            <div className="flex items-center gap-2">
+            <div className="hidden items-center gap-2 sm:flex">
               <NewsLink />
               <ContactToMe />
             </div>
           </div>
-          <div className="flex items-center gap-4">
+          <div className="hidden items-center gap-4 sm:flex">
             <ColorFilters.ListBox />
             <div className="-my-2">
               <ToggleTheme />
             </div>
+          </div>
+          <div className="block sm:hidden">
+            <NavigationMenu />
           </div>
         </div>
       </header>

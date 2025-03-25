@@ -29,7 +29,7 @@ export const ContactToMe: FC = () => {
   return (
     <>
       {isOpen ? (
-        <p className="text-md text-fg-info flex items-center justify-between gap-2 px-4 py-2 text-center font-bold">
+        <p className="text-md text-fg-info flex items-center gap-2 px-4 py-2 text-center font-bold">
           <SendIcon />
           お問い合わせ
         </p>
