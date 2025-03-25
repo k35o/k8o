@@ -15,7 +15,9 @@ import {
   useState,
 } from 'react';
 
-export const ContactToMe: FC = () => {
+export const ContactToMe: FC<{
+  fullWidth?: boolean;
+}> = ({ fullWidth = false }) => {
   const [isOpen, setIsOpen] = useState(false);
 
   const onOpen = useCallback(() => {
@@ -38,6 +40,7 @@ export const ContactToMe: FC = () => {
           onClick={onOpen}
           startIcon={<SendIcon />}
           variant="skeleton"
+          fullWidth={fullWidth}
         >
           お問い合わせ
         </Button>

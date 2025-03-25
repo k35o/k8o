@@ -35,7 +35,7 @@ export const NavigationMenu: FC = () => {
           }
         }}
       >
-        <div className="p-4">
+        <div className="flex flex-col gap-4 p-4">
           <div className="absolute top-2 right-2">
             <IconButton
               aria-label="メニューを閉じる"
@@ -52,7 +52,7 @@ export const NavigationMenu: FC = () => {
                 <NewsLink />
               </li>
               <li>
-                <ContactToMe />
+                <ContactToMe fullWidth />
               </li>
             </ul>
           </nav>
