@@ -1,6 +1,7 @@
 import { BaseIcon, BaseIconProps } from './base';
 import { Direction, Status } from '@/types';
 import {
+  AlignRight,
   Bell,
   Blend,
   Calendar,
@@ -342,6 +343,19 @@ export const ListIcon: FC<IconProps> = ({ size = 'md' }) => {
       size={size}
       renderItem={(props) => {
         return <List {...props} />;
+      }}
+    />
+  );
+};
+
+export const NavigationMenuIcon: FC<IconProps> = ({
+  size = 'md',
+}) => {
+  return (
+    <BaseIcon
+      size={size}
+      renderItem={(props) => {
+        return <AlignRight {...props} />;
       }}
     />
   );
