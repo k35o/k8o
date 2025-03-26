@@ -4,7 +4,6 @@ import { contact } from '@/app/_actions/contact-to-me';
 import { Button } from '@/components/button';
 import { FormControl } from '@/components/form/form-control';
 import { Textarea } from '@/components/form/textarea';
-import { IconButton } from '@/components/icon-button';
 import { SendIcon } from '@/components/icons';
 import { Modal } from '@/components/modal';
 import { useToast } from '@/components/toast';
@@ -16,7 +15,9 @@ import {
   useState,
 } from 'react';
 
-export const ContactToMe: FC = () => {
+export const ContactToMe: FC<{
+  fullWidth?: boolean;
+}> = ({ fullWidth = false }) => {
   const [isOpen, setIsOpen] = useState(false);
 
   const onOpen = useCallback(() => {
@@ -29,10 +30,21 @@ export const ContactToMe: FC = () => {
 
   return (
     <>
-      <IconButton onClick={onOpen}>
-        <span className="sr-only">お問い合わせ</span>
-        <SendIcon size="lg" />
-      </IconButton>
+      {isOpen ? (
+        <p className="text-md text-fg-info flex items-center gap-2 px-4 py-2 text-center font-bold">
+          <SendIcon />
+          お問い合わせ
+        </p>
+      ) : (
+        <Button
+          onClick={onOpen}
+          startIcon={<SendIcon />}
+          variant="skeleton"
+          fullWidth={fullWidth}
+        >
+          お問い合わせ
+        </Button>
+      )}
       {isOpen && <ContactToMeModal onClose={onClose} />}
     </>
   );

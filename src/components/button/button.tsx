@@ -6,7 +6,7 @@ export const Button: FC<
     type?: 'button' | 'submit';
     size?: 'sm' | 'md' | 'lg';
     color?: 'primary' | 'gray';
-    variant?: 'contained' | 'outlined';
+    variant?: 'contained' | 'outlined' | 'skeleton';
     fullWidth?: boolean;
     startIcon?: ReactNode;
     endIcon?: ReactNode;
@@ -30,7 +30,7 @@ export const Button: FC<
       ref={ref}
       type={type}
       className={cn(
-        'rounded-lg text-center font-bold',
+        'cursor-pointer rounded-lg text-center font-bold',
         {
           ['bg-primary-bg text-fg hover:bg-primary-bg/90 active:bg-primary-bg/80']:
             variant === 'contained' && color === 'primary',
@@ -44,6 +44,10 @@ export const Button: FC<
             variant === 'outlined' && color === 'gray',
           ['bg-bg-base hover:bg-bg-base active:bg-bg-base cursor-not-allowed opacity-35']:
             disabled && variant === 'outlined',
+          ['text-fg-mute hover:text-fg-base active:text-fg-base bg-transparent']:
+            variant === 'skeleton',
+          ['text-fg-mute hover:text-fg-mute active:text-fg-mute cursor-not-allowed bg-transparent opacity-35']:
+            disabled && variant === 'skeleton',
         },
         'focus-visible:bordertransparent focus-visible:ring-border-info focus-visible:ring-2 focus-visible:outline-hidden',
         size === 'sm' && 'px-3 py-1 text-sm',

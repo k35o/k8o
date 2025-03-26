@@ -67,7 +67,9 @@ export const ColorFilterProvider: FC<PropsWithChildren> = ({
   );
 };
 
-export const ColorFilterBox: FC = () => {
+export const ColorFilterBox: FC<{ placement?: 'top' | 'bottom' }> = ({
+  placement = 'bottom',
+}) => {
   const [selectedFilter, setSelectedFilter] = useColorFilter();
   const handleSelect = useCallback(
     (filter: string) => {
@@ -84,6 +86,7 @@ export const ColorFilterBox: FC = () => {
       }))}
       value={selectedFilter}
       onSelect={handleSelect}
+      placement={placement}
     >
       <ListBox.TriggerIcon icon={<MixedColorIcon size="lg" />} />
       <ListBox.Content helpContent={<HelpContent />} />

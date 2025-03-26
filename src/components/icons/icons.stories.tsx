@@ -18,6 +18,7 @@ import {
   MailIcon,
   MinusIcon,
   MixedColorIcon,
+  NavigationMenuIcon,
   NewsIcon,
   PlusIcon,
   PrepareIcon,
@@ -104,6 +105,10 @@ export const Primary: Story = {
         <div className="flex flex-col items-center justify-center">
           <ListIcon />
           <p className="text-center">List</p>
+        </div>
+        <div className="flex flex-col items-center justify-center">
+          <NavigationMenuIcon />
+          <p className="text-center">Navigation Menu</p>
         </div>
         <div className="flex flex-col items-center justify-center">
           <CopyIcon />
