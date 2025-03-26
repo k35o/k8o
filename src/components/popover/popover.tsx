@@ -5,6 +5,7 @@ import {
   usePopoverContent,
   usePopoverTrigger,
 } from './hooks';
+import { usePortalRoot } from '@/providers/poratl-root';
 import {
   autoUpdate,
   flip,
@@ -143,10 +144,13 @@ const Content: FC<{
     itemProps,
   } = usePopoverContent();
 
+  const root = usePortalRoot();
+  const protalProps = root ? { root } : {};
+
   return (
     <AnimatePresence>
       {isOpen && (
-        <FloatingPortal>
+        <FloatingPortal {...protalProps}>
           <FloatingFocusManager
             context={context}
             modal={false}
