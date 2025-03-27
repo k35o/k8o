@@ -104,7 +104,7 @@
     "@vitest/coverage-istanbul": "3.0.9",
     "@vitest/ui": "3.0.9",
     "axe-playwright": "2.1.0",
-    "budoux": "0.6.4",
+    "budoux": "0.7.0",
     "chromatic": "11.27.0",
     "drizzle-kit": "0.30.5",
     "eslint": "9.23.0",
