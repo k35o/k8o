@@ -18,8 +18,8 @@ importers:
         specifier: 3.1.0
         version: 3.1.0(@types/react@19.0.12)(react@19.0.0)
       '@neondatabase/serverless':
-        specifier: 0.10.4
-        version: 0.10.4
+        specifier: 1.0.0
+        version: 1.0.0
       '@next/env':
         specifier: 15.2.4
         version: 15.2.4
@@ -55,7 +55,7 @@ importers:
         version: 4.1.0
       drizzle-orm:
         specifier: 0.41.0
-        version: 0.41.0(@libsql/client-wasm@0.14.0)(@neondatabase/serverless@0.10.4)(@types/pg@8.11.6)(@vercel/postgres@0.10.0)(gel@2.0.0)(postgres@3.4.5)
+        version: 0.41.0(@libsql/client-wasm@0.14.0)(@neondatabase/serverless@1.0.0)(@types/pg@8.11.6)(@vercel/postgres@0.10.0)(gel@2.0.0)(postgres@3.4.5)
       lucide-react:
         specifier: 0.485.0
         version: 0.485.0(react@19.0.0)
@@ -1972,11 +1972,12 @@ packages:
     resolution: {integrity: sha512-lDiHQMCBV9qz8c7+zxaNFQtWWaSogTYkqJ3Pg+FGYYC76nsfSxkMQ0df8fojyz16E+w4vp57NLjN2muNG7LugQ==}
     engines: {node: '>=18'}
 
-  '@neondatabase/serverless@0.10.4':
-    resolution: {integrity: sha512-2nZuh3VUO9voBauuh+IGYRhGU/MskWHt1IuZvHcJw6GLjDgtqj/KViKo7SIrLdGLdot7vFbiRRw+BgEy3wT9HA==}
-
   '@neondatabase/serverless@0.9.4':
     resolution: {integrity: sha512-D0AXgJh6xkf+XTlsO7iwE2Q1w8981E1cLCPAALMU2YKtkF/1SF6BiAzYARZFYo175ON+b1RNIy9TdSFHm5nteg==}
+
+  '@neondatabase/serverless@1.0.0':
+    resolution: {integrity: sha512-XWmEeWpBXIoksZSDN74kftfTnXFEGZ3iX8jbANWBc+ag6dsiQuvuR4LgB0WdCOKMb5AQgjqgufc0TgAsZubUYw==}
+    engines: {node: '>=19.0.0'}
 
   '@next/bundle-analyzer@15.2.4':
     resolution: {integrity: sha512-72OXS/+r3Q6PW9oCBlkxogsEJ9DIoD64dGe8OZc2nKcHu3HbKKaXoDkutC8u7cxmBFd+ERt3D0/MoP7eZkhhog==}
@@ -8605,14 +8606,15 @@ snapshots:
       outvariant: 1.4.3
       strict-event-emitter: 0.5.1
 
-  '@neondatabase/serverless@0.10.4':
-    dependencies:
-      '@types/pg': 8.11.6
-
   '@neondatabase/serverless@0.9.4':
     dependencies:
       '@types/pg': 8.11.6
     optional: true
+
+  '@neondatabase/serverless@1.0.0':
+    dependencies:
+      '@types/node': 22.13.14
+      '@types/pg': 8.11.6
 
   '@next/bundle-analyzer@15.2.4(bufferutil@4.0.8)':
     dependencies:
@@ -10684,10 +10686,10 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  drizzle-orm@0.41.0(@libsql/client-wasm@0.14.0)(@neondatabase/serverless@0.10.4)(@types/pg@8.11.6)(@vercel/postgres@0.10.0)(gel@2.0.0)(postgres@3.4.5):
+  drizzle-orm@0.41.0(@libsql/client-wasm@0.14.0)(@neondatabase/serverless@1.0.0)(@types/pg@8.11.6)(@vercel/postgres@0.10.0)(gel@2.0.0)(postgres@3.4.5):
     optionalDependencies:
       '@libsql/client-wasm': 0.14.0
-      '@neondatabase/serverless': 0.10.4
+      '@neondatabase/serverless': 1.0.0
       '@types/pg': 8.11.6
       '@vercel/postgres': 0.10.0
       gel: 2.0.0
