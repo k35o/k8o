@@ -32,7 +32,7 @@ export default function Layout({ children }: PropsWithChildren) {
         href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css"
         rel="stylesheet"
       />
-      <div className="flex max-w-4xl flex-col gap-6">
+      <div className="flex flex-col gap-6">
         <div className="flex items-center justify-between">
           <Link href="/blog" className="hover:underline">
             <Heading type="h2">Blog</Heading>
