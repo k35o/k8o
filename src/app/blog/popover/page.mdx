@@ -18,9 +18,9 @@ Popover APIはツールチップやドロップダウンメニューのような
   <Example1 />
 </Playground>
 
-これらのUIは、表示させる重ね合わせコンテキストの階層の管理やアクセシビリティを考慮した実装はかなりハードルが高く、ライブラリを頼らざるを得ないことが多かったのでBaselineに追加されたことは大きな進歩です。
+これらのUIは、重ね合わせコンテキストの階層の管理やアクセシビリティを考慮した実装がかなりハードルが高く、ライブラリを頼らざるを得ないことが多かったのでBaselineに追加されたことは大きな進歩です。
 
-Popover APIでは表示位置までは決められません。[CSS Anchor Positioning](https://drafts.csswg.org/css-anchor-position-1/)がは利用可能になると表示位置も決められので後一歩といった感じですね。
+Popover APIでは表示位置までは決められません。[CSS Anchor Positioning](https://drafts.csswg.org/css-anchor-position-1/)が利用可能になると表示位置も決められるので後一歩といった感じですね。
 
 ## Popover APIの全体像
 
@@ -29,16 +29,17 @@ Popover APIによって作られたポップオーバーは
 - その外側をクリックすると閉じられる
 - ESCキーを押すと閉じられる
 - 開いた時にフォーカスが内部に移動する
-- Top layer（最上位のレイヤー）に配置される
+- Top layer（重ね合わせコンテキストの最上位のレイヤー）に配置される
 
 の性質を持ちます。
 
 Popover APIは関連する3つのHTMLの属性と2つのCSSの機能が用意されています(それらを管理するJavaScriptの機能も存在しますが、この記事ではHMTLとCSSにだけ注目します)。
+
 HTMLの属性は`popover`と`popovertarget`、`popovertargetaction`、CSSの機能は`::backdrop`と`:popover-open`です。
 
 ### HTML属性
 
-ポップオーバーで表示させたいコンテンツには`popover`属性を付与します。
+`popover`属性はポップオーバーで表示させたいコンテンツを指定します。
 
 ```html
 <p id="popover1" popover>ポップオーバーで表示されるコンテンツ</p>
@@ -46,7 +47,7 @@ HTMLの属性は`popover`と`popovertarget`、`popovertargetaction`、CSSの機�
 
 デフォルトの値は`auto`です(JSXで記述する際は明示的に付与する必要がありそうです)。値を`manual`にするとESCキーの押下や外側のクリックで閉じられなくなります。`manual`は主にJavaScriptを使って制御する場合に使用します。
 
-ポップオーバーの表示を管理する要素には`popovertarget`属性を付与します。表示するコンテンツとリンクさせるために`popover`を持たせた要素の`id`を値にします。
+ポップオーバーの表示を管理する要素には`popovertarget`属性を付与します。管理するコンテンツを伝えるために、値には`popover`を持たせた要素の`id`を渡します。
 
 ```html
 <button popovertarget="popover1">
@@ -54,7 +55,7 @@ HTMLの属性は`popover`と`popovertarget`、`popovertargetaction`、CSSの機�
 </button>
 ```
 
-`popovertargetaction`は`popovertarget`属性が付与された要素がどのようなアクションを行うか指定します。
+`popovertargetaction`は`popovertarget`属性が付与された要素がどのように管理するかを示します。
 
 ```html
 <button popovertarget="popover1" popovertargetaction="show">
@@ -74,7 +75,9 @@ HTMLの属性は`popover`と`popovertarget`、`popovertargetaction`、CSSの機�
 }
 ```
 
-`:popover-open`はポップオーバーが表示されたときに付与される擬似クラスです。
+`::backdrop`はPopover API専用の擬似要素ではなく、`dialog`要素のようなTop Layerに配置される要素の背景にスタイルを渡す時に利用されます。
+
+`:popover-open`はポップオーバーが表示されたときにスタイルを付与する擬似クラスです。
 
 ```css
 .popover:popover-open {
