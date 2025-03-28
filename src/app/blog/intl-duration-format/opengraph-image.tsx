@@ -4,7 +4,8 @@ import { ImageResponse } from 'next/og';
 
 const parser = new Parser(jaModel);
 
-export const alt = 'Intl.DurationFormatで期間を日本語で表現する';
+export const alt =
+  'Intl.DurationFormatで期間をlocaleに基づいて表現する';
 export const size = {
   width: 1200,
   height: 630,
