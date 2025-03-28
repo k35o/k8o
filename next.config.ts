@@ -1,13 +1,9 @@
 import BundleAnalyzer from '@next/bundle-analyzer';
 import withMdx from '@next/mdx';
+import rehypeShiki, { RehypeShikiOptions } from '@shikijs/rehype';
 import { NextConfig } from 'next';
 import rehypeKatex from 'rehype-katex';
-import { rehypePrettyCode, Options } from 'rehype-pretty-code';
 import remarkMath from 'remark-math';
-import {
-  createJavaScriptRegexEngine,
-  getSingletonHighlighter,
-} from 'shiki';
 
 const nextConfig: NextConfig = {
   reactStrictMode: true,
@@ -33,16 +29,11 @@ export default withBundleAnalyzer(
       rehypePlugins: [
         rehypeKatex,
         [
-          rehypePrettyCode,
+          rehypeShiki,
           {
-            theme: 'one-dark-pro',
-            getHighlighter: (options) =>
-              getSingletonHighlighter({
-                ...options,
-                engine: createJavaScriptRegexEngine(),
-              }),
-          } satisfies Options,
-        ],
+            theme: 'plastic',
+          } satisfies RehypeShikiOptions,
+        ]
       ],
     },
   })(nextConfig),

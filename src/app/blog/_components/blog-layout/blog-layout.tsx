@@ -23,7 +23,7 @@ export const BlogLayout: FC<{
   return (
     <div className="gap-4 xl:flex xl:has-[>:nth-child(2)]:-mx-36">
       {blog ? (
-        <article className="bg-bg-base/90 m-auto max-w-4xl rounded-md px-3 pt-8 pb-14 sm:px-10">
+        <article className="bg-bg-base/90 m-auto rounded-md px-3 pt-8 pb-14 sm:px-10 xl:max-w-4xl">
           <ReportView blogId={blog.id} />
           <div className="flex flex-col gap-3">
             <h2 className="text-xl font-bold sm:text-2xl">

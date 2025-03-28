@@ -1,7 +1,7 @@
 import { BaselineStatus } from '@/components/baseline-status';
 import { LinkCard } from '@/components/link-card';
 
-# Intl.DurationFormatで期間を日本語で表現する
+# Intl.DurationFormatで期間をlocaleに基づいて表現する
 
 <BaselineStatus featureId="intl-duration-format"></BaselineStatus>
 
@@ -46,7 +46,7 @@ new Intl.DurationFormat('ja-JP', {
 
 オプションの全ては説明しませんが、`style`で表示する期間の長さ、`years`・`months`等で個別の`style`を決定、`yearsDisplay`・`monthsDisplay`などで0の時の表示を決めます。
 
-`style`には`long`と`short`と`narrow`と`digital`の4つがあります。それぞれ以下のような表示になります。
+`style`には`long`と`short`と`narrow`と`digital`の4つがあります。`locale`が`ja`の場合、以下のような表示になります。
 
 ```js
 // long 1 年 2 か月 3 週間 3 日 4 時間 5 分 6 秒 7 ミリ秒 8 マイクロ秒 9 ナノ秒
@@ -74,7 +74,7 @@ new Intl.DurationFormat('ja').format(duration);
 
 全ての期間を含める必要はありません。
 
-言い忘れましたが、期間は`years`、`months`、`weeks`、`days`、`hours`、`minutes`、`seconds`、`milliseconds`、`microseconds`、`nanoseconds`の9つに対応しています。これらを`format`に渡すオブジェクトのキーとして利用します。
+言い忘れましたが、期間は`years`、`months`、`weeks`、`days`、`hours`、`minutes`、`seconds`、`milliseconds`、`microseconds`、`nanoseconds`の9つに対応しています。これらを`format`に渡すオブジェクトのキーとして利用できます。
 
 ## formatToParts
 

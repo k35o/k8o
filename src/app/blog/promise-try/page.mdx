@@ -15,7 +15,7 @@ import { LinkCard } from '@/components/link-card';
 
 ## Promise.tryとは
 
-`Promise.try`は引数に与えた関数の同期・非同期に関わらず、結果を`Promise`に包んでから返します。
+`Promise.try`は引数に与えた関数の同期・非同期に関わらず、結果を`Promise`に包んでから返すメソッドです。
 
 ```js
 Promise.try(callback)
@@ -60,15 +60,9 @@ Promise.try(syncFn).catch(console.log); // sync
 Promise.try(asyncFn).catch(console.log); // async
 ```
 
-これまでも`new Promise`で`Promise`を生成することで同様の挙動を実現できましたが、今後は`Promise.try`を使うだけで表現可能なので便利になりました。
+### Promise.tryで引数付きの関数を呼び出す
 
-```js
-const try = (callback, ...args) => {
-  return new Promise((resolve) => callback(...args));
-};
-```
-
-`Promise.try`で呼び出す関数に引数を渡す方法は、第2引数以降に渡す方法と関数を新たらしく作る2つの方法があります。
+`Promise.try`を使用する際に関数へ引数を渡す方法として、直接第2引数以降に渡す方法と、新たに関数を作成して渡す方法の2つがあります。
 
 ```js
 const fn = (arg1, arg2) => {
@@ -78,6 +72,24 @@ const fn = (arg1, arg2) => {
 Promise.try(fn, 1, 2).then(console.log); // 3
 Promise.try(() => fn(1, 2)).then(console.log); // 3
 ```
+
+TypeScriptでは`Promise.try`の型が以下の様に定義されているので、どちらの方法でも型安全に引数を渡すことができます。
+
+```ts
+try<T, U extends unknown[]>(callbackFn: (...args: U) => T | PromiseLike<T>, ...args: U): Promise<Awaited<T>>;
+```
+
+## Promise.tryが使えない場合
+
+`Promise.try`が使えない時代では、`Promise.try`と同じことをするために`new Promise`を用いて以下のように実装されていました。
+
+```js
+const try = (callback, ...args) => {
+  return new Promise((resolve) => callback(...args));
+};
+```
+
+記述は複雑になってしまい、知らない人からすると何をしているかが読み取りづらいです。`Promise.try`があればこのような実装なしに簡単に利用できるのでとても便利です。
 
 ## Promise.tryが有効な場面
 
@@ -108,11 +120,11 @@ const readFileWithCache = (path): string => {
 console.log(readFileWithCache('path/to/file')); // Promise {<pending>} or Buffer
 ```
 
-このような関数も`Promise.try`を使えば初回とそれ以降の動作を意識せずに活用できます。
+このような関数は`Promise.try`を使うことで、初回と2回目以降の呼び出しで同じように`Promise<Buffer>`を返すようにできます。
 
 ```js
 console.log(Promise.try(() => readFileWithCache('path/to/file'))); // Promise {<pending>}
 ```
 
-キャッシュされた結果を返す時も、`Promise.try`で実行することで`Promise<Buffer>`を返すようになります。
-この例では`Promise.try`を使う以外でも使いやすい形に改良可能ではありますが、`Promise.try`の威力が伝わったかと思います。
+この例では`Promise.try`を使う以外でも使いやすい形に改良可能ではありますが、Promise.tryを活用することで、同期・非同期を意識せず統一的に扱えるメリットがよく分かるのではないでしょうか。
+適切に活用することで、コードの可読性や保守性を向上させることができます。

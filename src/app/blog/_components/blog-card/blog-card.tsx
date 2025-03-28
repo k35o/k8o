@@ -63,7 +63,7 @@ export const BlogCardContent: FC<Omit<BlogCardProps, 'link'>> = ({
           })}
         </div>
       )}
-      <div className="text-fg-mute ml-auto flex items-center gap-4 gap-x-8 text-xs">
+      <div className="text-fg-mute ml-auto flex items-center gap-4 text-xs">
         <div className="flex items-center gap-1">
           <PublishDateIcon size="sm" />
           <span>公開: {formatDate(createdAt, 'yyyy年M月d日')}</span>
