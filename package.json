@@ -105,7 +105,7 @@
     "axe-playwright": "2.1.0",
     "budoux": "0.7.0",
     "chromatic": "11.27.0",
-    "drizzle-kit": "0.30.5",
+    "drizzle-kit": "0.30.6",
     "eslint": "9.23.0",
     "eslint-config-next": "15.2.3",
     "eslint-config-prettier": "10.1.1",
