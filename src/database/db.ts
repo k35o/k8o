@@ -2,7 +2,7 @@ import '@/database/env-config';
 import * as schema from './schema';
 import { neon, neonConfig } from '@neondatabase/serverless';
 import { drizzle } from 'drizzle-orm/neon-http';
-import { ws } from 'msw';
+import { WebSocket } from 'ws';
 
 const DATABASE_URL = process.env.POSTGRES_URL ?? '';
 
@@ -18,7 +18,7 @@ if (process.env.NODE_ENV === 'development') {
   neonConfig.wsProxy = (host) =>
     host === 'db.localtest.me' ? `${host}:4444/v2` : `${host}/v2`;
 }
-neonConfig.webSocketConstructor = ws;
+neonConfig.webSocketConstructor = WebSocket;
 
 const sql = neon(DATABASE_URL);
 export const db = drizzle({ client: sql, schema });
