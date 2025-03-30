@@ -10,13 +10,10 @@ export function middleware(request: NextRequest) {
       process.env.ADMIN_ALLOWED_IPS?.split(',') ?? [];
     if (!isDevelopment && (!ip || !allowedIPs.includes(ip))) {
       // notFoundページに飛ばすために存在しないページにリライトする
-      return NextResponse.rewrite(
-        new URL('/404', request.url),
-        {
-          status: 404,
-          statusText: 'Not Found',
-        }
-      )
+      return NextResponse.rewrite(new URL('/404', request.url), {
+        status: 404,
+        statusText: 'Not Found',
+      });
     }
   }
   return NextResponse.next();
