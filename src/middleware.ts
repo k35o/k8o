@@ -1,24 +1,22 @@
+import { ipAddress } from '@vercel/functions';
 import { NextRequest, NextResponse } from 'next/server';
+
+const isDevelopment = process.env.NODE_ENV === 'development';
 
 export function middleware(request: NextRequest) {
   if (request.nextUrl.pathname.startsWith('/admin')) {
-    const basicAuth = request.headers.get('authorization');
-    const url = request.nextUrl;
-
-    if (basicAuth) {
-      const authValue = basicAuth.split(' ')[1];
-      const [user, pwd] = atob(authValue ?? '').split(':');
-
-      if (
-        user === process.env.BASIC_AUTH_USERNAME &&
-        pwd === process.env.BASIC_AUTH_PASSWORD
-      ) {
-        return NextResponse.next();
-      }
+    const ip = ipAddress(request);
+    const allowedIPs = process.env.ADMIN_ALLOWED_IPS?.split(',') ?? [];
+    console.log(allowedIPs);
+    console.log(ip);
+    if (!isDevelopment && (!ip || !allowedIPs.includes(ip))) {
+      return NextResponse.json(
+        { error: 'Not Found' },
+        {
+          status: 404
+        }
+      );
     }
-    url.pathname = '/api/auth';
-
-    return NextResponse.rewrite(url);
   }
   return NextResponse.next();
 }
