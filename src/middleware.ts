@@ -1,4 +1,4 @@
-import { ipAddress } from '@vercel/functions';
+import { ipAddress } from '@/utils/ipaddress';
 import { NextRequest, NextResponse } from 'next/server';
 
 const isDevelopment = process.env.NODE_ENV === 'development';
