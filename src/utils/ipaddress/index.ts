@@ -10,6 +10,12 @@ export const ipAddress = (
     return cfConnectingIp;
   }
 
+  const xForwardedFor = headers.get('X-Forwarded-For');
+  const xForwardedForIp = xForwardedFor?.split(',')[0];
+  if (xForwardedForIp) {
+    return xForwardedForIp.trim();
+  }
+
   const ip = vercelIpAddress(req);
   return ip;
 };
