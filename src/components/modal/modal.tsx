@@ -5,7 +5,6 @@ import {
   useEffect,
   useRef,
 } from 'react';
-import { createPortal } from 'react-dom';
 
 export function Modal({
   title,
@@ -24,28 +23,25 @@ export function Modal({
     onClose();
   }
 
-  return createPortal(
-    <div className="bg-back-drop absolute top-0 right-0 bottom-0 left-0 z-50">
-      {/* eslint-disable-next-line jsx-a11y/no-noninteractive-element-interactions -- https://github.com/jsx-eslint/eslint-plugin-jsx-a11y/pull/940待ち */}
-      <dialog
-        ref={dialogRef}
-        className="max-h-lg bg-bg-base m-auto w-5/6 max-w-2xl rounded-lg shadow-xl"
-        onClose={onDismiss}
-        onClick={(e) => {
-          if (e.target === e.currentTarget) {
-            dialogRef.current?.close();
-          }
-        }}
-        onKeyDown={(e) =>
-          e.key === 'Escape' && dialogRef.current?.close()
+  return (
+    // eslint-disable-next-line jsx-a11y/no-noninteractive-element-interactions -- https://github.com/jsx-eslint/eslint-plugin-jsx-a11y/pull/940待ち
+    <dialog
+      ref={dialogRef}
+      className="max-h-lg bg-bg-base border-border-mute backdrop:bg-back-drop m-auto w-5/6 max-w-2xl rounded-lg shadow-xl dark:border"
+      onClose={onDismiss}
+      onClick={(e) => {
+        if (e.target === e.currentTarget) {
+          dialogRef.current?.close();
         }
-      >
-        <Dialog.Root>
-          <Dialog.Header title={title} onClose={onDismiss} />
-          <Dialog.Content>{children}</Dialog.Content>
-        </Dialog.Root>
-      </dialog>
-    </div>,
-    document.body,
+      }}
+      onKeyDown={(e) =>
+        e.key === 'Escape' && dialogRef.current?.close()
+      }
+    >
+      <Dialog.Root>
+        <Dialog.Header title={title} onClose={onDismiss} />
+        <Dialog.Content>{children}</Dialog.Content>
+      </Dialog.Root>
+    </dialog>
   );
 }

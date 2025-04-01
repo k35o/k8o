@@ -30,7 +30,7 @@ export const NavigationMenu: FC = () => {
       {/* eslint-disable-next-line jsx-a11y/no-noninteractive-element-interactions, jsx-a11y/click-events-have-key-events -- https://github.com/jsx-eslint/eslint-plugin-jsx-a11y/pull/940待ち */}
       <dialog
         ref={dialogRef}
-        className="bg-bg-base border-border-mute mt-auto w-screen max-w-screen rounded-t-lg border-t"
+        className="bg-bg-base border-border-mute backdrop:bg-back-drop mt-auto w-screen max-w-screen rounded-t-lg shadow-xl dark:border-t"
         onClick={(e) => {
           if (e.target === e.currentTarget) {
             onClose();
