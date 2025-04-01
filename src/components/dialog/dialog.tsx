@@ -58,7 +58,7 @@ const Header: FC<{
   return (
     <div
       id={`${rootId}-header`}
-      className="flex items-center justify-center p-4 pb-0"
+      className="flex items-center justify-center p-4 pb-2"
     >
       <Heading type="h3">{title}</Heading>
       <div className="absolute top-2 right-2">

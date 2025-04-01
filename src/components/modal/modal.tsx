@@ -31,7 +31,11 @@ export function Modal({
         ref={dialogRef}
         className="max-h-lg bg-bg-base m-auto w-5/6 max-w-2xl rounded-lg shadow-xl"
         onClose={onDismiss}
-        onClick={() => dialogRef.current?.close()}
+        onClick={(e) => {
+          if (e.target === e.currentTarget) {
+            dialogRef.current?.close();
+          }
+        }}
         onKeyDown={(e) =>
           e.key === 'Escape' && dialogRef.current?.close()
         }
