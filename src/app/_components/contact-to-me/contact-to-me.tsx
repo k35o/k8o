@@ -1,6 +1,7 @@
 'use client';
 
 import { contact } from '@/app/_actions/contact-to-me';
+import { Anchor } from '@/components/anchor';
 import { Button } from '@/components/button';
 import { FormControl } from '@/components/form/form-control';
 import { Textarea } from '@/components/form/textarea';
@@ -71,7 +72,7 @@ const ContactToMeModal: FC<{ onClose: () => void }> = ({
     <Modal title="お問い合わせ" onClose={onClose}>
       <form className="flex flex-col gap-4" action={formAction}>
         <FormControl
-          label="お問い合わせ内容"
+          label="不具合やご要望をご記入ください"
           isInvalid={state.success === false}
           errorText={
             state.success === false ? state.message : undefined
@@ -95,6 +96,12 @@ const ContactToMeModal: FC<{ onClose: () => void }> = ({
             />
           )}
         />
+        <p className="self-end text-sm">
+          <Anchor href="https://github.com/k35o/k8o/issues/new">
+            GitHub&nbsp;Issue
+          </Anchor>
+          からのお問い合わせもお待ちしております。
+        </p>
         <div className="w-full">
           <Button type="submit" fullWidth disabled={pending}>
             送信

@@ -263,7 +263,7 @@ body:has(dialog[open]) {
   --color-secondary-border: var(--secondary-border);
 
   --color-transparent: transparent;
-  --color-back-drop: var(--bg-back-drop);
+  --color-back-drop: var(--back-drop);
 
   /* group */
   --color-group-primary: var(--group-primary);
