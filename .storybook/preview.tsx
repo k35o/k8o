@@ -1,4 +1,4 @@
-import React, { FC, memo } from 'react';
+import React, { FC, memo, useEffect } from 'react';
 import Script from 'next/script';
 import type { Preview } from '@storybook/react';
 import { AppProvider } from '../src/providers/app';
@@ -13,6 +13,7 @@ import '../src/app/_styles/globals.css';
 initialize(
   {
     onUnhandledRequest: 'bypass',
+    quiet: process.env.MODE === 'test',
   },
   handlers,
 );
@@ -21,9 +22,11 @@ const ApplayThemeByStorybook: FC<{ theme: string }> = memo(
   ({ theme }) => {
     const { theme: currentTheme, setTheme } = useTheme();
 
-    if (currentTheme !== theme) {
-      setTheme(theme === 'dark' ? 'dark' : 'light');
-    }
+    useEffect(() => {
+      if (currentTheme !== theme) {
+        setTheme(theme === 'dark' ? 'dark' : 'light');
+      }
+    }, [theme, currentTheme, setTheme]);
 
     return null;
   },
