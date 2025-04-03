@@ -1,4 +1,4 @@
-import { readFileSync } from 'fs';
+import { promises as fs } from 'fs';
 import type { Root } from 'mdast';
 import { unstable_cache as cache } from 'next/cache';
 import Link from 'next/link';
@@ -26,6 +26,10 @@ const getHeadingTree = cache(async (slug: string) => {
     depth: 0,
     children: [],
   };
+  const content = await fs.readFile(
+    process.cwd() + `/src/app/blog/${slug}/page.mdx`,
+    'utf-8',
+  );
   await remark()
     .use(function () {
       return (tree: Root) => {
@@ -130,12 +134,7 @@ const getHeadingTree = cache(async (slug: string) => {
         }
       };
     })
-    .process(
-      readFileSync(
-        process.cwd() + `/src/app/blog/${slug}/page.mdx`,
-        'utf-8',
-      ),
-    );
+    .process(content);
   return headingTree;
 });
 
