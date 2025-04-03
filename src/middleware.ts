@@ -29,7 +29,7 @@ export function middleware(request: NextRequest) {
           },
           body: JSON.stringify({ slug }),
         });
-      })
+      });
     }
   }
   return NextResponse.next();
