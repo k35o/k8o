@@ -3,11 +3,11 @@ import { z } from 'zod';
 
 export async function POST(req: Request): Promise<Response> {
   const schema = z.object({
-    blogId: z.number(),
+    slug: z.string(),
   });
   const parsed = schema.parse(await req.json());
-  const { blogId } = parsed;
-  await incrementBlogView({ blogId });
+  const { slug } = parsed;
+  await incrementBlogView({ slug });
 
   return new Response(null, { status: 204 });
 }

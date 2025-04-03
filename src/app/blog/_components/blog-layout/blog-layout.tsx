@@ -1,4 +1,3 @@
-import { ReportView } from '../report-view';
 import { TableOfContext } from '../table-of-context';
 import { ViewCounter } from '../view-counter';
 import { getBlog } from '#actions/blog';
@@ -24,7 +23,6 @@ export const BlogLayout: FC<{
     <div className="gap-4 xl:flex xl:has-[>:nth-child(2)]:-mx-36">
       {blog ? (
         <article className="bg-bg-base/90 m-auto rounded-md px-3 pt-8 pb-14 sm:px-10 xl:max-w-4xl">
-          <ReportView blogId={blog.id} />
           <div className="flex flex-col gap-3">
             <h2 className="text-xl font-bold sm:text-2xl">
               {blog.title}
