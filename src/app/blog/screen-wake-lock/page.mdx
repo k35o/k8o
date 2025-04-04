@@ -1,0 +1,88 @@
+import { BaselineStatus } from '@/components/baseline-status';
+import { LinkCard } from '@/components/link-card';
+import { Example1 } from './_components/example1';
+import { Playground } from './../_components/playground';
+import { Image } from './../_components/image';
+import monitor from './_images/monitor.png';
+
+# 画面のスリープを防ぐScreen Wake Lock API
+
+<BaselineStatus featureId="screen-wake-lock"></BaselineStatus>
+
+## はじめに
+
+Screen Wake Lock APIが2025年のBaselineに追加されました。
+Screen Wake Lock APIは、デバイスの画面がスリープ状態に入るのを防ぐためのAPIです。 料理中もずっとレシピを表示しておけるようにするなど、処理を行わず継続的に画面を表示させたいアプリケーションに役立ちます。
+
+## Screen Wake Lock APIによるスリープを体験する
+
+Screen Wake Lock APIを使用してスリープのロックを取得するボタンを用意しました。
+
+<Playground title="Screen Wake Lock API">
+  <Example1 />
+</Playground>
+
+Macをご使用の場合は、標準のアクティビティモニタを開いて「エネルギー」を確認すると、お使いのブラウザの項目の「非スリープ」が「はい」になっていることでロックされていることを確認できます。
+
+<Image
+  src={monitor}
+  alt="Macのアクティビティモニタのエネルギーの表でGoogle Chromeの非スリープの項目が「はい」になっている"
+/>
+
+ブラウザのタブを切り替えたり、スクリーンを畳んだりすると「非スリープ」が「いいえ」に変わります。
+
+先ほどのボタンはボタンを押すとロックを解除するためのボタンに切り替わっていましたが、タブを切り替えて戻ってくるとロックを取得するためのボタンに戻ります。
+
+## Screen Wake Lock APIの使い方
+
+Screen Wake Lock APIは、`navigator.wakeLock`を使用して取得します。
+
+`navigator.wakeLock.request()`メソッドを使用すると、画面のスリープを防ぎ、`WakeLockSentinel`オブジェクトを返します。このオブジェクトは、スリープロックを解除するための`release()`メソッドを持っています。
+
+```js
+let wakeLock = null;
+
+// 画面をロックする
+wakeLock = await navigator.wakeLock.request('screen');
+
+// 画面のロックを解除する
+await wakeLock.release();
+```
+
+### navigator.wakeLock.request
+
+`navigator.wakeLock.request`は第一引数に画面をロックする種類を渡します。この引数は省略可能で、執筆現在は画面のスリープを制御する`screen`のみがサポートされています。
+
+また、`navigator.wakeLock.request`はロックする権限がない時などに`NotAllowedError`をスローします。
+
+### WakeLockSentinel
+
+`WakeLockSentinel`オブジェクトは`released`プロパティと`type`プロパティ、`release()`メソッド、`release`イベントを持ちます。
+
+`released`プロパティはロックが解除されているかどうかを示すプロパティで、`type`プロパティはロックの種類を示します。
+
+```js
+wakeLock.released; // false
+wakeLock.type; // 'screen'
+```
+
+`release()`メソッドはロックを解除するためのメソッドです。
+
+```js
+// 画面のロックを解除する
+await wakeLock.release();
+```
+
+`release`イベントはロックが解除されたときに発火します。
+
+```js
+// タブを切り替えるなど、何かしらの操作によるロックの解除を検知する
+navigator.wakeLock.addEventListener('release', () => {
+  console.log('Wake Lock was released');
+});
+```
+
+## おわりに
+
+2025年のBaseLineに追加された、Screen Wake Lock APIの紹介を行いました。ページを開いたままデバイスの外側で作業を行うときに悩まされるスリープの問題を解決してくれるより良い経験を提供してくれるAPIです。
+ぜひ、Screen Wake Lock APIを使用して、より良い体験を提供できるようにしましょう。
