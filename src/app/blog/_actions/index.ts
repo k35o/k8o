@@ -103,14 +103,20 @@ const increment = (column: AnyColumn, value = 1) => {
 };
 
 export const incrementBlogView = async ({
-  blogId,
+  slug,
 }: {
-  blogId: InferSelectModel<typeof schema.blogViews>['blogId'];
+  slug: InferSelectModel<typeof schema.blogs>['slug'];
 }) => {
+  const blog = await getBlog({ slug });
+
+  if (!blog) {
+    return;
+  }
+
   return db
     .update(schema.blogViews)
     .set({
       views: increment(schema.blogViews.views),
     })
-    .where(eq(schema.blogViews.blogId, blogId));
+    .where(eq(schema.blogViews.blogId, blog.id));
 };

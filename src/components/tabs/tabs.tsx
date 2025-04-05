@@ -142,7 +142,6 @@ const Tab: FC<PropsWithChildren<{ id: string }>> = ({
 
   useEffect(() => {
     if (activeIndex === index && setFocusRef.current) {
-      console.log(1);
       ref.current?.focus();
       setFocusRef.current = false;
     }
