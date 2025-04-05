@@ -16,6 +16,10 @@
       "storybook": "./src/mocks/link-card/metadata.mock.ts",
       "default": "./src/components/link-card/metadata.ts"
     },
+    "#utils/mdx/toc-tree": {
+      "storybook": "./src/mocks/utils/mdx/toc-tree.mock.ts",
+      "default": "./src/utils/mdx/toc-tree.ts"
+    },
     "#*": [
       "./*",
       "./*.ts",

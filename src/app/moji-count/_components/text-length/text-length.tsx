@@ -8,7 +8,3 @@ export const TextLength: FC<{ text: string }> = memo(({ text }) => {
 
   return <>{length}</>;
 });
-
-if (process.env.NODE_ENV !== 'production') {
-  TextLength.displayName = 'TextLength';
-}
