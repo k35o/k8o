@@ -12,7 +12,7 @@ export const TableOfContext: FC<{ slug: string }> = async ({
   }
 
   return (
-    <div className="bg-bg-base/90 sticky top-4 rounded-md p-4">
+    <div className="bg-bg-base/90 sticky top-24 rounded-md p-4">
       <h3 className="text-fg-base text-lg font-bold">目次</h3>
       <ol className="text-fg-base list-inside list-decimal text-sm">
         {headingTree.children.map((depth1) => {
