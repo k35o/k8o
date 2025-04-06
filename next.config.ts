@@ -33,7 +33,7 @@ export default withBundleAnalyzer(
           {
             theme: 'plastic',
           } satisfies RehypeShikiOptions,
-        ]
+        ],
       ],
     },
   })(nextConfig),
