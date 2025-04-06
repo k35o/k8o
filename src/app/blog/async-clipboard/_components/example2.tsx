@@ -24,25 +24,32 @@ export const Example2: FC = () => {
   );
 
   const copyText = async () => {
-    if (!ref.current) return;
-    const canvas = document.createElement('canvas');
-    canvas.width = ref.current.naturalWidth;
-    canvas.height = ref.current.naturalHeight;
-    const ctx = canvas.getContext('2d');
-    if (!ctx) return;
-    ctx.drawImage(ref.current, 0, 0);
-    const blob = await new Promise<Blob>((resolve) => {
-      canvas.toBlob((blob) => {
-        if (!blob) {
-          throw new Error('Blobが取得できませんでした');
-        }
-        resolve(blob);
+    try {
+      if (!ref.current) return;
+      const canvas = document.createElement('canvas');
+      canvas.width = ref.current.naturalWidth;
+      canvas.height = ref.current.naturalHeight;
+      const ctx = canvas.getContext('2d');
+      if (!ctx) return;
+      ctx.drawImage(ref.current, 0, 0);
+      const blob = await new Promise<Blob>((resolve) => {
+        canvas.toBlob((blob) => {
+          if (!blob) {
+            throw new Error('Blobが取得できませんでした');
+          }
+          resolve(blob);
+        });
       });
-    });
-    const file = new File([blob], 'k8o.png', { type: 'image/png' });
-    const data = [new ClipboardItem({ 'image/png': file })];
-    await navigator.clipboard.write(data);
-    onOpen('success', 'クリップボードにPNG画像をコピーしました');
+      const file = new File([blob], 'k8o.png', { type: 'image/png' });
+      const data = [new ClipboardItem({ 'image/png': file })];
+      await navigator.clipboard.write(data);
+      onOpen('success', 'クリップボードにPNG画像をコピーしました');
+    } catch {
+      onOpen(
+        'error',
+        'クリップボードにPNG画像をコピーできませんでした',
+      );
+    }
   };
 
   const pasteText = async () => {
