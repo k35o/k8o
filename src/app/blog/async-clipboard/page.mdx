@@ -1,0 +1,232 @@
+import { BaselineStatus } from '@/components/baseline-status';
+import { LinkCard } from '@/components/link-card';
+import { Example1 } from './_components/example1';
+import { Example2 } from './_components/example2';
+import { Playground } from '@/app/blog/_components/playground';
+
+# 任意のデータをコピー&ペーストするClipboard API
+
+## Clipboard API
+
+<BaselineStatus featureId="async-clipboard"></BaselineStatus>
+
+Clipboard APIは、クリップボードにアクセスするためのAPIです。これを使うことで、ユーザーが選択したテキストや画像などをクリップボードにコピーしたり、クリップボードからデータを取得したりすることができます。
+
+Clipboard APIは`Clipboard`インターフェースにより実装されており、`navigator.clipboard`を通じてアクセスできます。
+
+`Clipboard`インターフェースは、以下の非同期なメソッドを提供しています。
+
+- `readText()`: クリップボードからテキストデータを読みとる
+- `writeText()`: クリップボードにテキストデータを書き込む
+- `read()`: クリップボードからデータを読みとる
+- `write()`: クリップボードにデータを書き込む
+
+```js
+// readText
+navigator.clipboard.readText().then(console.log);
+
+// writeText
+navigator.clipboard
+  .writeText('Hello, world!')
+  .then(() => console.log('Text copied to clipboard!'));
+
+// read
+navigator.clipboard.read().then((clipboardItems) => {
+  for (const clipboardItem of clipboardItems) {
+    for (const type of clipboardItem.types) {
+      const blob = clipboardItem.getType(type);
+      console.log(blob);
+    }
+  }
+});
+
+// write
+const item = new ClipboardItem({
+  'image/png': new Blob(['...'], { type: 'image/png' }),
+});
+navigator.clipboard
+  .write([item])
+  .then(() => console.log('Image copied to clipboard!'));
+```
+
+`readText`と`writeText`は、テキストデータを扱うための簡単なメソッドです。`read`と`write`もベースは同じですが、テキスト以外のコンテンツも扱うため少し複雑です。こちらについては後ほど詳しく紹介します。
+
+### 権限
+
+Clipboard APIはセキュリティ上の都合で実行に対する制限がかけられています。
+
+制限はブラウザによって異なります。例えばChromeではPermissions APIを使って、`clipboard-read`で読み込みを、`clipboard-write`で書き込みの権限を確認することができます。
+
+```js
+const readPermission = await navigator.permissions.query({
+  name: 'clipboard-read',
+});
+
+readPermission.state === 'granted'; // クリップボードの読み取りが許可されている
+readPermission.state === 'prompt'; // ユーザーに許可を求める
+readPermission.state === 'denied'; // クリップボードの読み取りが拒否されている
+
+const writePermission = await navigator.permissions.query({
+  name: 'clipboard-write',
+});
+
+writePermission.state === 'granted'; // クリップボードの書き込みが許可されている
+writePermission.state === 'prompt'; // ユーザーに許可を求める
+writePermission.state === 'denied'; // クリップボードの書き込みが拒否されている
+```
+
+これに対し、FirefoxやSafariでは、これらの権限はサポートされていません。FirefoxやSafariはオリジン間の読み込みは許可されていますが、異なるオリジンで読み込むことは許可されていません(書き込みはデフォルトで許可されています)。
+
+Safariで発生するエラー: The request is not allowed by the user agent or the platform in the current context, possibly because the user denied permission.
+
+### 権限チェックとテキストの読み書き
+
+Permission APIと合わせて、`readText`と`writeText`を用いた例を下に示します。
+
+<Playground title="権限チェックとテキストの読み書き">
+  <Example1 />
+</Playground>
+
+Permission APIを使って権限判定を行なっています。SafariやFirefoxを利用の方は利用できないです🙏。
+
+## ClipboardItem
+
+`ClipboardItem`は、クリップボードに書き込むデータを表すオブジェクトです。先ほどの例の`read`と`write`で使われているものです。
+`read`はクリップボードから読み取ったデータを`ClipboardItem`の配列で解決し、`write`は引数に渡した`ClipboardItem`の配列をクリップボードに書き込みます。
+
+```ts
+// read
+navigator.clipboard.read().then((clipboardItems: ClipboardItem) => {
+  for (const clipboardItem of clipboardItems) {
+    for (const type of clipboardItem.types) {
+      const blob = clipboardItem.getType(type);
+      console.log(blob);
+    }
+  }
+});
+
+// write
+const item = new ClipboardItem({
+  'image/png': new Blob(['...'], { type: 'image/png' }),
+});
+navigator.clipboard
+  .write([item])
+  .then(() => console.log('Image copied to clipboard!'));
+```
+
+`ClipboardItem`は2つの引数によって組み立てられます。
+
+1つ目の引数はオブジェクトをデータで渡します。`MIME`タイプをキーに、Blobや文字列、これらをPromiseでラップしたものを値に持つオブジェクトを渡します。
+
+```js
+{
+  'image/png': new Blob(['...'], { type: 'image/png' }),
+  'text/plain': 'Hello, world!',
+}
+```
+
+2つ目の引数はオブジェクトでオプションを渡します。現在は`presentationStyle`をサポートしています。値には`unspecified`、`inline`、`attachment`を渡せます。デフォルト値は `unspecified`です。
+`inline`はクリップボードにコピーしたデータを表示するためのもの、`attachment`はクリップボードにコピーしたデータを添付ファイルとして扱うためのものです。
+
+作成された`ClipboardItem`インスタンスは、`types`プロパティ、`getType()`メソッドを持ちます（Baselineで対応しているものだけを紹介しています）。
+`types`は利用可能なMIMEタイプを配列で返し、`getType()`は第一引数に渡したMIMEタイプをもとにPromiseで解決したBlobを返します。
+
+```js
+const item = new ClipboardItem(
+  {
+    'image/png': new Blob(['...'], { type: 'image/png' }),
+    'text/plain': 'Hello, world!',
+  },
+  { presentationStyle: 'inline' },
+);
+console.log(item.types); // ['image/png', 'text/plain']
+for (const type of item.types) {
+  item.getType(type).then((blob) => {
+    // Blob {size: 3, type: 'image/png'}
+    // Blob {size: 13, type: 'text/plain'}
+    console.log(blob);
+  });
+}
+item.getType('text/html').catch((err) => {
+  // NotFoundError: Failed to execute 'getType' on 'ClipboardItem': The type was not found
+  console.error(err);
+});
+```
+
+### ClipboardItem supports
+
+<BaselineStatus featureId="clipboard-supports"></BaselineStatus>
+
+ClipboardItemの静的メソッド`supports`がBaseline 2025で追加されました。`supports`はユーザーの環境で特定のMIMEタイプがClipboard APIでサポートされていることを確認するためのものです。
+
+`text/plain`、`text/html`、`image/png`は常にサポートされていますが、`text/uri-list`、`image/svg+xml`と`web `で始めるカスタムMIMEタイプは、ブラウザやOSによって結果が異なります。
+
+<LinkCard href="https://w3c.github.io/clipboard-apis/#dom-clipboarditem-supports" />
+
+サポートされていれば`true`、サポートされていなければ`false`を返します。
+
+```js
+ClipboardItem.supports('text/plain'); // true
+ClipboardItem.supports('text/html'); // true
+ClipboardItem.supports('image/png'); // true
+
+ClipboardItem.supports('text/uri-list'); // true or false
+ClipboardItem.supports('image/svg+xml'); // true or false
+ClipboardItem.supports('web image/png'); // true or false
+
+ClipboardItem.supports('application/json'); // false
+```
+
+### PNG画像のコピーと貼り付け
+
+ClipboardItemを利用してPNG画像のコピーと貼り付けを行う例を作成しました。
+
+<Playground title="PNG画像のコピーと貼り付けを行う">
+  <Example2 />
+</Playground>
+
+コピーを行う関数と貼り付けを行う関数は以下のようになっています。
+
+```ts
+const copyImage = async () => {
+  const img = document.getElementById(xxx) as HTMLImageElement | null;
+  if (!img) return;
+  const canvas = document.createElement('canvas');
+  canvas.width = img.naturalWidth;
+  canvas.height = img.naturalHeight;
+  const ctx = canvas.getContext('2d');
+  if (!ctx) return;
+  ctx.drawImage(img, 0, 0);
+  const blob = await new Promise<Blob>((resolve) => {
+    canvas.toBlob((blob) => {
+      if (!blob) {
+        throw new Error('Blobが取得できませんでした');
+      }
+      resolve(blob);
+    });
+  });
+  const file = new File([blob], 'xxx.png', { type: 'image/png' });
+  const data = [new ClipboardItem({ 'image/png': file })];
+  await navigator.clipboard.write(data);
+};
+
+const pasteImage = async () => {
+  const img = document.getElementById(xxx) as HTMLImageElement | null;
+  if (!img) return;
+  const items = await navigator.clipboard.read();
+  for (const item of items) {
+    for (const type of item.types) {
+      if (type === 'image/png') {
+        const blob = await item.getType(type);
+        const url = URL.createObjectURL(blob);
+        img.src = url;
+      }
+    }
+  }
+};
+```
+
+### おわりに
+
+Clipboard APIは、クリップボードにアクセスするためのAPIです。これを使うことで、ユーザーが選択したテキストや画像などをクリップボードにコピーしたり、クリップボードからデータを取得したりすることができます。
+過去には`execCommand()`を利用していましたが、Clipboard APIを利用することで、より簡単にクリップボードにアクセスできるようになりました。`execCommand()`は非推奨なので、今後はClipboard APIを利用するようにしましょう。
