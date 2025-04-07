@@ -1,4 +1,4 @@
-import { getBlogWitoutCache } from '#actions/blog';
+import { getBlogMetadata } from '#services/blog';
 import { Parser, jaModel } from 'budoux';
 import { ImageResponse } from 'next/og';
 
@@ -15,11 +15,11 @@ export const size = {
 export const contentType = 'image/png';
 
 export default async function OpenGraphImage() {
-  const blog = await getBlogWitoutCache({
-    slug: 'tanstack-router-introduction',
-  });
+  const metadata = await getBlogMetadata(
+    'tanstack-router-introduction',
+  );
 
-  const words = parser.parse(blog ? blog.title : alt);
+  const words = parser.parse(metadata.title);
   return new ImageResponse(
     (
       <div

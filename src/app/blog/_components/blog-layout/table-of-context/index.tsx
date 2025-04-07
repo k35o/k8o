@@ -1,11 +1,11 @@
-import { getTocTreeWithCache } from '#utils/mdx/toc-tree';
+import { getBlogToc } from '#services/blog';
 import Link from 'next/link';
 import { FC } from 'react';
 
 export const TableOfContext: FC<{ slug: string }> = async ({
   slug,
 }) => {
-  const headingTree = await getTocTreeWithCache(slug);
+  const headingTree = await getBlogToc(slug);
 
   if (headingTree.children.length === 0) {
     return null;
