@@ -1,9 +1,7 @@
 import { readFile } from 'fs/promises';
-import { join } from 'path';
-import { cwd } from 'process';
 import { Root } from 'mdast';
-import { unstable_cache as cache } from 'next/cache';
 import { remark } from 'remark';
+import remarkFrontmatter from 'remark-frontmatter';
 
 type HeadingTree = {
   depth: 0;
@@ -21,16 +19,14 @@ type HeadingTree = {
   }[];
 };
 
-export const getTocTree = async (slug: string) => {
+export const getTocTree = async (path: string) => {
   let headingTree: HeadingTree = {
     depth: 0,
     children: [],
   };
-  const content = await readFile(
-    join(cwd(), `/src/app/blog/${slug}/page.mdx`),
-    'utf-8',
-  );
+  const content = await readFile(path, 'utf-8');
   await remark()
+    .use(remarkFrontmatter)
     .use(function () {
       return (tree: Root) => {
         for (const content of tree.children) {
@@ -137,7 +133,3 @@ export const getTocTree = async (slug: string) => {
     .process(content);
   return headingTree;
 };
-
-export const getTocTreeWithCache = cache((slug: string) =>
-  getTocTree(slug),
-);

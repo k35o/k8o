@@ -1,5 +1,5 @@
 import { metadata } from '../layout';
-import { getBlogsWithoutCache } from '#actions/blog';
+import { getBlogMetadata, getBlogs } from '#services/blog';
 import { NextResponse } from 'next/server';
 import RSS from 'rss';
 
@@ -16,14 +16,15 @@ export async function GET() {
     language: 'ja',
   });
 
-  const blogs = await getBlogsWithoutCache();
+  const blogs = await getBlogs();
 
   for (const blog of blogs) {
+    const metadata = await getBlogMetadata(blog.slug);
     feed.item({
-      title: blog.title,
-      description: blog.description,
+      title: metadata.title,
+      description: metadata.description,
       url: `${BLOG_URL}/${blog.slug}`,
-      date: blog.updatedAt,
+      date: metadata.updatedAt,
       categories: blog.tags,
       author: 'k8o',
     });

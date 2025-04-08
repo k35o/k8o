@@ -1,6 +1,10 @@
 import { BlogLayout } from './blog-layout';
-import { getBlog, getBlogView } from '#src/mocks/actions/blog.mock';
-import { getTocTreeWithCache } from '#src/mocks/utils/mdx/toc-tree.mock';
+import {
+  getBlog,
+  getBlogToc,
+  getBlogMetadata,
+  getBlogView,
+} from '#src/mocks/services/blog.mock';
 import type { Meta, StoryObj } from '@storybook/react';
 
 const meta: Meta<typeof BlogLayout> = {
@@ -9,17 +13,19 @@ const meta: Meta<typeof BlogLayout> = {
   beforeEach: () => {
     getBlog.mockResolvedValue({
       id: 1,
+      slug: 'tanstack-router-introduction',
+      tags: ['React', 'TypeScript', 'TanStackRouter'],
+    });
+    getBlogMetadata.mockResolvedValue({
       title:
         'Reactの新しいルーティングライブラリ、TanStackRouterを学ぶ',
       description:
         'Reactのルーティングには主にNextjs等のフレームワークやReact Routeが利用されます。この記事では新たなルーティング手法の選択肢としてTanStack Routerを紹介します。TanStack Routerでは最初に挙げた選択肢の使い心地を踏襲しつつ、ルーティングやサーチパラメータの型安全性や他にない便利な機能を提供します。',
-      slug: 'tanstack-router-introduction',
       createdAt: new Date('2023/05/01'),
       updatedAt: new Date('2023/07/13'),
-      tags: ['React', 'TypeScript', 'TanStackRouter'],
     });
     getBlogView.mockResolvedValue(74931);
-    getTocTreeWithCache.mockResolvedValue({
+    getBlogToc.mockResolvedValue({
       depth: 0,
       children: [
         {

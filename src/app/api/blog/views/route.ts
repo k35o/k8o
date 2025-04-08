@@ -1,4 +1,4 @@
-import { incrementBlogView } from '#actions/blog';
+import { incrementBlogView } from '#services/blog';
 import { z } from 'zod';
 
 export async function POST(req: Request): Promise<Response> {
@@ -7,7 +7,7 @@ export async function POST(req: Request): Promise<Response> {
   });
   const parsed = schema.parse(await req.json());
   const { slug } = parsed;
-  await incrementBlogView({ slug });
+  await incrementBlogView(slug);
 
   return new Response(null, { status: 204 });
 }

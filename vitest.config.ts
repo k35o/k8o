@@ -1,6 +1,6 @@
 /// <reference types="vitest" />
-import { defineConfig } from 'vitest/config';
 import { fileURLToPath } from 'url';
+import { defineConfig } from 'vitest/config';
 
 export default defineConfig({
   test: {
@@ -15,8 +15,8 @@ export default defineConfig({
     // NOTE: コンポーネントが自動的にclient componentsに解釈されるので、async/awaitコンポーネントは除外する
     // TODO: async/awaitコンポーネントのテストも実行できるようにする
     exclude: [
-      '**/view-counter.stories.tsx',
       '**/blog-layout.stories.tsx',
+      '**/blog-card.stories.tsx',
     ],
   },
 });

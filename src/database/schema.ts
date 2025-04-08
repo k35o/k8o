@@ -91,21 +91,12 @@ export const blogs = pgTable(
   'blogs',
   {
     id: serial('id').primaryKey(),
-    title: text('title').notNull(),
-    description: text('description').notNull(),
     slug: text('slug').notNull(),
     createdAt: timestamp('created_at', { withTimezone: true })
       .notNull()
       .defaultNow(),
-    updatedAt: timestamp('updated_at', { withTimezone: true })
-      .notNull()
-      .$onUpdate(() => new Date())
-      .defaultNow(),
   },
-  (table) => [
-    uniqueIndex().on(table.title),
-    uniqueIndex().on(table.slug),
-  ],
+  (table) => [uniqueIndex().on(table.slug)],
 );
 
 export const blogViews = pgTable(

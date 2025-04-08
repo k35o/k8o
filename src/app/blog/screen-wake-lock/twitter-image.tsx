@@ -1,4 +1,4 @@
-import { getBlogWitoutCache } from '#actions/blog';
+import { getBlogMetadata } from '#services/blog';
 import { Parser, jaModel } from 'budoux';
 import { ImageResponse } from 'next/og';
 
@@ -13,11 +13,9 @@ export const size = {
 export const contentType = 'image/png';
 
 export default async function TwitterImage() {
-  const blog = await getBlogWitoutCache({
-    slug: 'screen-wake-lock',
-  });
+  const metadata = await getBlogMetadata('screen-wake-lock');
 
-  const words = parser.parse(blog ? blog.title : alt);
+  const words = parser.parse(metadata.title);
   return new ImageResponse(
     (
       <div

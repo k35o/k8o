@@ -3,6 +3,7 @@ import withMdx from '@next/mdx';
 import rehypeShiki, { RehypeShikiOptions } from '@shikijs/rehype';
 import { NextConfig } from 'next';
 import rehypeKatex from 'rehype-katex';
+import remarkFrontmatter from 'remark-frontmatter';
 import remarkMath from 'remark-math';
 
 const nextConfig: NextConfig = {
@@ -25,7 +26,7 @@ const withBundleAnalyzer = BundleAnalyzer({
 export default withBundleAnalyzer(
   withMdx({
     options: {
-      remarkPlugins: [remarkMath],
+      remarkPlugins: [remarkMath, remarkFrontmatter],
       rehypePlugins: [
         rehypeKatex,
         [

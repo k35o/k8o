@@ -1,42 +1,36 @@
 import { BlogLayout } from '../_components/blog-layout';
-import { getBlog } from '#actions/blog';
+import { getBlog, getBlogMetadata } from '#services/blog';
 import { Metadata } from 'next';
 import { PropsWithChildren } from 'react';
 
+const slug = 'contenteditable-plaintextonly';
+
 export async function generateMetadata(): Promise<Metadata> {
-  const blog = await getBlog({
-    slug: 'contenteditable-plaintextonly',
-  });
-  if (!blog) {
-    throw new Error('Blog not found');
-  }
+  const blog = await getBlog(slug);
+  const metadata = await getBlogMetadata(slug);
 
   return {
-    title: blog.title,
-    description: blog.description,
+    title: metadata.title,
+    description: metadata.description,
     category: blog.tags.join(', '),
     openGraph: {
-      title: blog.title,
-      description: blog.description,
-      url: 'https://k8o.me/blog/contenteditable-plaintextonly',
-      publishedTime: blog.createdAt.toString(),
+      title: metadata.title,
+      description: metadata.description,
+      url: `https://k8o.me/blog/${slug}`,
+      publishedTime: metadata.createdAt.toString(),
       authors: ['k8o'],
       siteName: 'k8o',
       locale: 'ja',
       type: 'article',
     },
     twitter: {
-      title: blog.title,
+      title: metadata.title,
       card: 'summary_large_image',
-      description: blog.description,
+      description: metadata.description,
     },
   };
 }
 
 export default function Layout({ children }: PropsWithChildren) {
-  return (
-    <BlogLayout slug="contenteditable-plaintextonly">
-      {children}
-    </BlogLayout>
-  );
+  return <BlogLayout slug={slug}>{children}</BlogLayout>;
 }
