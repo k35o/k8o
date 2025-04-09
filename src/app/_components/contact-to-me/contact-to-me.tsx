@@ -1,6 +1,6 @@
 'use client';
 
-import { contact } from '@/app/_actions/contact-to-me';
+import { contact } from '@/app/_services/contact-to-me';
 import { Anchor } from '@/components/anchor';
 import { Button } from '@/components/button';
 import { FormControl } from '@/components/form/form-control';

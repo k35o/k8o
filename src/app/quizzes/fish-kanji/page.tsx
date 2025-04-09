@@ -1,4 +1,4 @@
-import { getQuizzes } from './../_actions';
+import { getQuizzes } from '../_services';
 import { QUIZ_TYPE } from './_utils/constants';
 import { Question } from '../_components/question';
 import { FC, Suspense } from 'react';
