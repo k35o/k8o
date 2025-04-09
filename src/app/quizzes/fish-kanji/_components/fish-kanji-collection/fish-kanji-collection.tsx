@@ -1,5 +1,5 @@
+import { getQuizzes } from '../../../_services';
 import { QUIZ_TYPE } from '../../_utils/constants';
-import { getQuizzes } from './../../../_actions';
 import { CollectionByHighlight } from '@/app/quizzes/_components/collection';
 import { unstable_cache as cache } from 'next/cache';
 import { FC } from 'react';
