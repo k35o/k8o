@@ -5,7 +5,6 @@ import { AlertIcon, MixedColorIcon } from '@/components/icons';
 import { ListBox } from '@/components/list-box';
 import { useOpenContext } from '@/components/popover';
 import { cn } from '@/utils/cn';
-import { Route } from 'next';
 import Link from 'next/link';
 import {
   createContext,
@@ -98,8 +97,7 @@ const HelpContent: FC = () => {
   const { onClose } = useOpenContext();
   return (
     <Link
-      // mdxのrouteがtyped routeに対応しなくなったため、as Routeを追加
-      href={'/blog/color-perception' as Route}
+      href={'/blog/color-perception'}
       onNavigate={onClose}
       className={cn(
         'inline-flex w-full items-center gap-1 px-2 py-1',
