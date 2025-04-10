@@ -100,7 +100,7 @@ const HelpContent: FC = () => {
     <Link
       // mdxのrouteがtyped routeに対応しなくなったため、as Routeを追加
       href={'/blog/color-perception' as Route}
-      onClick={onClose}
+      onNavigate={onClose}
       className={cn(
         'inline-flex w-full items-center gap-1 px-2 py-1',
         'hover:bg-primary-bg hover:text-fg-inverse',
