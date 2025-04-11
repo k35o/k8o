@@ -111,6 +111,28 @@ export const blogViews = pgTable(
   (table) => [index().on(table.blogId)],
 );
 
+export const feedbacks = pgTable('feedbacks', {
+  id: serial('id').primaryKey(),
+  name: text('name').notNull(),
+});
+
+export const blogFeedback = pgTable(
+  'blog_feedback',
+  {
+    id: serial('id').primaryKey(),
+    blogId: integer('blog_id')
+      .notNull()
+      .references(() => blogs.id),
+    feedbackId: integer('feedback_id')
+      .notNull()
+      .references(() => feedbacks.id),
+    createdAt: timestamp('created_at', { withTimezone: true })
+      .notNull()
+      .defaultNow(),
+  },
+  (table) => [index().on(table.blogId), index().on(table.feedbackId)],
+);
+
 export const tags = pgTable(
   'tags',
   {

@@ -2,6 +2,8 @@ import { BaseIcon, BaseIconProps } from './base';
 import { Direction, Status } from '@/types';
 import {
   AlignRight,
+  Angry,
+  Annoyed,
   Bell,
   Blend,
   Calendar,
@@ -15,10 +17,13 @@ import {
   ClipboardPenLine,
   Clock,
   Contrast,
+  Droplets,
   ExternalLink,
   Eye,
   History,
   Info,
+  Laugh,
+  Lightbulb,
   Link,
   List,
   ListMinus,
@@ -30,8 +35,11 @@ import {
   Rocket,
   Rss,
   Send,
+  Smile,
   Sun,
   Table2,
+  ThumbsDown,
+  ThumbsUp,
   TriangleAlert,
   X,
 } from 'lucide-react';
@@ -356,6 +364,94 @@ export const NavigationMenuIcon: FC<IconProps> = ({
       size={size}
       renderItem={(props) => {
         return <AlignRight {...props} />;
+      }}
+    />
+  );
+};
+
+export const GoodIcon: FC<IconProps> = ({ size = 'md' }) => {
+  return (
+    <BaseIcon
+      size={size}
+      renderItem={(props) => {
+        return <ThumbsUp {...props} />;
+      }}
+    />
+  );
+};
+
+export const BadIcon: FC<IconProps> = ({ size = 'md' }) => {
+  return (
+    <BaseIcon
+      size={size}
+      renderItem={(props) => {
+        return <ThumbsDown {...props} />;
+      }}
+    />
+  );
+};
+
+export const InterestingIcon: FC<IconProps> = ({ size = 'md' }) => {
+  return (
+    <BaseIcon
+      size={size}
+      renderItem={(props) => {
+        return <Smile {...props} />;
+      }}
+    />
+  );
+};
+
+export const BoringIcon: FC<IconProps> = ({ size = 'md' }) => {
+  return (
+    <BaseIcon
+      size={size}
+      renderItem={(props) => {
+        return <Annoyed {...props} />;
+      }}
+    />
+  );
+};
+
+export const InformativeIcon: FC<IconProps> = ({ size = 'md' }) => {
+  return (
+    <BaseIcon
+      size={size}
+      renderItem={(props) => {
+        return <Lightbulb {...props} />;
+      }}
+    />
+  );
+};
+
+export const ShallowIcon: FC<IconProps> = ({ size = 'md' }) => {
+  return (
+    <BaseIcon
+      size={size}
+      renderItem={(props) => {
+        return <Droplets {...props} />;
+      }}
+    />
+  );
+};
+
+export const EasyIcon: FC<IconProps> = ({ size = 'md' }) => {
+  return (
+    <BaseIcon
+      size={size}
+      renderItem={(props) => {
+        return <Laugh {...props} />;
+      }}
+    />
+  );
+};
+
+export const DifficultIcon: FC<IconProps> = ({ size = 'md' }) => {
+  return (
+    <BaseIcon
+      size={size}
+      renderItem={(props) => {
+        return <Angry {...props} />;
       }}
     />
   );
