@@ -98,7 +98,7 @@
     "@types/mdast": "4.0.4",
     "@types/mdx": "2.0.13",
     "@types/node": "22.14.0",
-    "@types/react": "19.1.0",
+    "@types/react": "19.1.1",
     "@types/react-dom": "19.1.2",
     "@types/rss": "0.0.32",
     "@types/ws": "8.18.1",
