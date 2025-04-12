@@ -11,7 +11,7 @@ export const FeedbackCard: FC<{
 }> = ({ title, onSubmit }) => {
   return (
     <Card title={title} width="fit" variant="secondary">
-      <div className="grid grid-cols-4 gap-4 p-6">
+      <div className="grid grid-cols-2 gap-4 p-6 sm:grid-cols-4">
         {FEEDBACK_OPTIONS.map((option) => {
           const Icon = option.icon;
           return (
