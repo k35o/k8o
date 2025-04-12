@@ -73,7 +73,7 @@ export const BlogLayout: FC<{
         <div className="mt-4 mb-2 w-full sm:mt-8 sm:mb-4">
           <Separator />
         </div>
-        <Feedback />
+        <Feedback slug={slug} />
       </article>
       <ErrorBoundary fallback={<></>}>
         <div className="hidden w-64 shrink-0 empty:hidden xl:block">

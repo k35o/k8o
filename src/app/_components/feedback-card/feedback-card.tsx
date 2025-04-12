@@ -7,7 +7,7 @@ import { FC } from 'react';
 
 export const FeedbackCard: FC<{
   title: string;
-  onSubmit: (feedback: number) => void;
+  onSubmit: (feedback: number) => Promise<void>;
 }> = ({ title, onSubmit }) => {
   return (
     <Card title={title} width="fit" variant="secondary">
@@ -20,7 +20,7 @@ export const FeedbackCard: FC<{
               type="button"
               className="bg-primary-bg-subtle text-primary-fg flex aspect-square flex-col items-center gap-2 rounded-lg p-4"
               onClick={() => {
-                onSubmit(option.id);
+                void onSubmit(option.id);
               }}
               whileHover={{ scale: 1.1 }}
               whileTap={{ scale: 0.9 }}
