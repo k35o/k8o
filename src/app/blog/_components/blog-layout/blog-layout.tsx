@@ -1,3 +1,4 @@
+import { Feedback } from './feedback';
 import { TableOfContext } from './table-of-context';
 import { Tags } from './tags';
 import { ViewCounter } from './view-counter';
@@ -69,6 +70,10 @@ export const BlogLayout: FC<{
           </Suspense>
         </ErrorBoundary>
         {children}
+        <div className="mt-4 mb-2 w-full sm:mt-8 sm:mb-4">
+          <Separator />
+        </div>
+        <Feedback slug={slug} />
       </article>
       <ErrorBoundary fallback={<></>}>
         <div className="hidden w-64 shrink-0 empty:hidden xl:block">

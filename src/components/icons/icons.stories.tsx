@@ -2,6 +2,8 @@ import { ArteOdyssey } from './arte-odyssey';
 import { GitHubIcon } from './github-mark';
 import {
   AlertIcon,
+  BadIcon,
+  BoringIcon,
   CheckIcon,
   ChevronIcon,
   CloseIcon,
@@ -9,9 +11,14 @@ import {
   ColorInfoIcon,
   CopyIcon,
   DarkModeIcon,
+  DifficultIcon,
+  EasyIcon,
   ExternalLinkIcon,
   FormIcon,
+  GoodIcon,
   HistoryIcon,
+  InformativeIcon,
+  InterestingIcon,
   LightModeIcon,
   LinkIcon,
   ListIcon,
@@ -25,6 +32,7 @@ import {
   PublishDateIcon,
   RSSIcon,
   SendIcon,
+  ShallowIcon,
   TableIcon,
   UpdateDateIcon,
   ViewIcon,
@@ -141,6 +149,38 @@ export const Primary: Story = {
         <div className="flex flex-col items-center justify-center">
           <MinusIcon />
           <p className="text-center">マイナス</p>
+        </div>
+        <div className="flex flex-col items-center justify-center">
+          <GoodIcon />
+          <p className="text-center">良い</p>
+        </div>
+        <div className="flex flex-col items-center justify-center">
+          <BadIcon />
+          <p className="text-center">悪い</p>
+        </div>
+        <div className="flex flex-col items-center justify-center">
+          <InformativeIcon />
+          <p className="text-center">有益</p>
+        </div>
+        <div className="flex flex-col items-center justify-center">
+          <ShallowIcon />
+          <p className="text-center">浅い</p>
+        </div>
+        <div className="flex flex-col items-center justify-center">
+          <InterestingIcon />
+          <p className="text-center">面白い</p>
+        </div>
+        <div className="flex flex-col items-center justify-center">
+          <BoringIcon />
+          <p className="text-center">退屈</p>
+        </div>
+        <div className="flex flex-col items-center justify-center">
+          <EasyIcon />
+          <p className="text-center">簡単</p>
+        </div>
+        <div className="flex flex-col items-center justify-center">
+          <DifficultIcon />
+          <p className="text-center">難解</p>
         </div>
         <div className="flex flex-col items-center justify-center">
           <LightModeIcon />

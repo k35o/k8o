@@ -5,17 +5,30 @@ import { FC } from 'react';
 
 export const InteractiveCard: FC<
   CardProps & { animation?: 'low' | 'medium' }
-> = ({ children, variant = 'primary', animation = 'medium' }) => (
+> = ({
+  children,
+  variant = 'primary',
+  animation = 'medium',
+  width = 'full',
+  title,
+}) => (
   <motion.section
     whileHover={{ scale: animation === 'medium' ? 1.05 : 1.02 }}
     whileTap={{ scale: animation === 'medium' ? 0.95 : 0.98 }}
     className={cn(
       'bg-bg-base/90 rounded-lg shadow-md',
+      width === 'full' && 'w-full',
+      width === 'fit' && 'w-fit',
       variant === 'primary' && 'bg-bg-base/90',
       variant === 'secondary' && 'bg-bg-mute',
     )}
     tabIndex={-1}
   >
+    {title && (
+      <div className="from-primary-bg-mute to-secondary-bg-mute flex justify-center rounded-t-lg bg-linear-60 p-4">
+        <p className="text-xl font-bold">{title}</p>
+      </div>
+    )}
     {children}
   </motion.section>
 );

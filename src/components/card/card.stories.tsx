@@ -16,6 +16,13 @@ export const Primary: Story = {
   },
 };
 
+export const Title: Story = {
+  args: {
+    children: 'card',
+    title: 'title',
+  },
+};
+
 export const Secondary: Story = {
   args: {
     children: 'card',
