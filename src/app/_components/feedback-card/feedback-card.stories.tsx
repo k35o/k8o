@@ -13,6 +13,6 @@ type Story = StoryObj<typeof FeedbackCard>;
 export const Primary: Story = {
   args: {
     title: 'この記事はどうでしたか？',
-    onSubmit: fn,
+    onSubmit: fn(),
   },
 };
