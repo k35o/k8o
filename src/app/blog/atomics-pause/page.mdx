@@ -1,0 +1,174 @@
+---
+title: Atomicsで共有メモリ上のデータを安全に取り扱う
+description: AtomicsはSharedArrayBufferなどで定義された共有メモリ上のデータを安全に操作するための仕組みで、不可分操作や待機・通知による制御を提供します。新たに追加されたAtomics.pauseにより、スピンロック中のリソース最適化も可能になりました。
+createdAt: 2025-04-13 02:50:57+00
+updatedAt: 2025-04-13 02:50:57+00
+---
+
+import { BaselineStatus } from '@/components/baseline-status';
+
+# Atomicsで共有メモリ上のデータを安全に取り扱う
+
+## Atomics
+
+<BaselineStatus featureId="shared-memory"></BaselineStatus>
+
+`Atomics`は複数のスレッド間で同じデータを安全に読み書きするための仕組みです。
+
+`SharedArrayBuffer`や`ArrayBuffer`と合わせて利用されます。
+
+```js
+// 4バイトのSharedArrayBufferを作成
+// SharedArrayBufferはcrossOriginIsolatedで安全なコンテキストでのみ実行可能です。
+const sab = new SharedArrayBuffer(4);
+// 4バイトのInt32Arrayを作成
+const int32 = new Int32Array(sab);
+```
+
+`Atomics`は静的なメソッドのみを持つオブジェクトで、共有メモリ上のデータを他の処理に割り込まれずに一度に完了する操作（不可分操作、Atomics操作）を行う関数や複数の実行単位でイベントを待機したり通知したりするための関数を提供します。​
+
+### 不可分操作、Atomics操作
+
+`Atomics`が提供する基本的な不可分操作は以下の通りです。
+
+`Atomics.load`は指定したインデックスの値を読み込みます。
+
+```js
+// 0番目の値を読み込む
+const value = Atomics.load(int32, 0);
+console.log(value); // 0
+```
+
+`Atomics.store`は指定したインデックスに値を書き込みます。
+
+```js
+// 0番目の値に1を書き込む
+Atomics.store(int32, 0, 1);
+console.log(Atomics.load(int32, 0)); // 1
+```
+
+`Atomics.add`は指定したインデックスの値に指定した値を加算します。
+
+```js
+// 0番目の値に1を加算する
+Atomics.add(int32, 0, 1);
+console.log(Atomics.load(int32, 0)); // 2
+```
+
+`Atomics.sub`は指定したインデックスの値から指定した値を減算します。
+
+```js
+// 0番目の値から1を減算する
+Atomics.sub(int32, 0, 1);
+console.log(Atomics.load(int32, 0)); // 1
+```
+
+`Atomics.and`は指定したインデックスの値と指定した値の論理積を計算します。
+
+```js
+// 0番目の値と1の論理積を計算する
+Atomics.and(int32, 0, 1);
+console.log(Atomics.load(int32, 0)); // 1
+```
+
+`Atomics.or`は指定したインデックスの値と指定した値の論理和を計算します。
+
+```js
+// 0番目の値と1の論理和を計算する
+Atomics.or(int32, 0, 1);
+console.log(Atomics.load(int32, 0)); // 1
+```
+
+`Atomics.xor`は指定したインデックスの値と指定した値の排他的論理和を計算します。
+
+```js
+// 0番目の値と1の排他的論理和を計算する
+Atomics.xor(int32, 0, 1);
+console.log(Atomics.load(int32, 0)); // 0
+```
+
+`Atomics.exchange`は指定したインデックスの値を指定した値で置き換えます。返り値は置き換え前の値です。
+
+```js
+// 0番目の値を1で置き換える
+const oldValue = Atomics.exchange(int32, 0, 1);
+console.log(oldValue); // 0
+console.log(Atomics.load(int32, 0)); // 1
+```
+
+`Atomics.compareExchange`は指定したインデックスの値が指定した値と等しい場合にのみ、指定した値で置き換えます。返り値は置き換え前の値です。
+
+```js
+// 0番目の値が0の場合に1で置き換える
+const oldValue = Atomics.compareExchange(int32, 0, 1, 0);
+console.log(oldValue); // 1
+console.log(Atomics.load(int32, 0)); // 0
+```
+
+### イベントの待機と通知
+
+`Atomics`は`wait`と`notify`によってスレッド間でイベントを待機したり通知したりします。
+`wait`は指定したインデックスの値が指定した値である間待機します。待機中、スレッドはブロックされます。
+
+```js
+// 0番目の値が0以外になるまで待機する
+// 第4引数はタイムアウト時間(ミリ秒)で、デフォルトはInfinityで無限
+Atomics.wait(int32, 0, 0);
+// 待機完了後に呼ばれる
+console.log('waited');
+// 下の例と合わせて実行されたとき
+console.log(Atomics.load(int32, 0)); // 1
+```
+
+`wait`で待機したスレッドが自動で再開することはありません。`notify`等を使って通知する必要があります。
+`notify`は指定したインデックスの値で待機しているスレッドに対して通知を送信します。
+
+```js
+// 0番目の値を1にする
+Atomics.store(int32, 0, 1);
+// 0番目の値が1になったことを通知する
+const agent = Atomics.notify(int32, 0);
+// 通知されたAgentの数を返す
+console.log(agent); // 1
+```
+
+上記の2つの例では、待機中のスレッドは、共有配列の0番目の値が0以外になるのを待っています。値が1に更新されると、`notify`によって通知が行われ、スレッドは値の変化を確認してから待機状態を抜けます。
+
+## Atomics.pause
+
+<BaselineStatus featureId="atomics-pause"></BaselineStatus>
+
+`Atomics.pause`はBaseline 2025で追加された、マイクロウェイト（非常に短い待機）を実現するための新しい静的メソッドです。
+このメソッドは、スピンロック、ビジーウェイトのループ内で使用され、CPUに対してスピン中であるというヒントを与え、リソースの消費を最適化します。
+
+```js
+let spins = 0;
+do {
+  if (TryLock()) {
+    return;
+  }
+
+  spins++;
+} while (spins < kSpinCount);
+```
+
+上記のようなループは、ロックが解放されるまでCPUをフル稼働させるので、他のプロセスやスレッドに悪影響を及ぼす可能性があります。
+
+```js
+let spins = 0;
+do {
+  if (TryLock()) {
+    // Lock acquired.
+    return;
+  }
+
+  SpinForALittleBit();
+  spins++;
+} while (spins < kSpinCount);
+```
+
+上記の`SpinForALittleBit`はロックが解放されるのを待つ間に短時間だけ待機させるように、CPUに対して「現在スピン中である」というヒントを与える関数です。これによりリソースの消費の最適化が行われます。
+`Atomics.pause`はこれを実現したメソッドになります。
+
+`Atomics.pause`には任意引数があり、待機時間についてのヒントを正の整数で渡します(ヒントが利用されることは保証されていません)。利用された場合は、与えられた値より小さい値を渡された時の待機時間以上は待つように働きます。
+[Intleの最適化マニュアル](https://www.intel.com/content/www/us/en/content-details/671488/intel-64-and-ia-32-architectures-optimization-reference-manual-volume-1.html)ではループにおいてこれを使ったBackoff戦略を利用することが推奨されています。
