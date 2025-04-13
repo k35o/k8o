@@ -4,16 +4,16 @@ import { ImageResponse } from 'next/og';
 
 const parser = new Parser(jaModel);
 
-export const alt = '任意のデータをコピー&ペーストするClipboard API';
+export const alt = '16bit浮動小数点が使える！Float16Array';
 export const size = {
   width: 1200,
-  height: 600,
+  height: 630,
 };
 
 export const contentType = 'image/png';
 
-export default async function TwitterImage() {
-  const metadata = await getBlogMetadata('async-clipboard');
+export default async function OpenGraphImage() {
+  const metadata = await getBlogMetadata('float16array');
 
   const words = parser.parse(metadata.title);
   return new ImageResponse(

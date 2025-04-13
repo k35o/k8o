@@ -1,0 +1,78 @@
+---
+title: 16bit浮動小数点が使える！Float16Array
+description: Float16ArrayがBaselineに追加されたことで、16bitの浮動小数点を扱えるようになりました。機械学習やグラフィックス用途などで威力を発揮する新しいTypedArrayについて解説します。
+createdAt: 2025-04-13 23:01:11.000000+00
+updatedAt: 2025-04-13 23:01:11.000000+00
+---
+
+import { BaselineStatus } from '@/components/baseline-status';
+
+# 16bit浮動小数点が使える！Float16Array
+
+## Float16Array
+
+<BaselineStatus featureId="float16array"></BaselineStatus>
+
+`Float32Array`、`Float64Array`のように、浮動小数点数を扱う`TypedArray`として`Float16Array`がBaseline 2025に追加されました。これは、16bit浮動小数点数を扱うための配列です。
+
+`Float16Array`が持つプロパティやメソッドは親メソッドである`TypedArray`と共通しています。
+各要素のサイズは2byteで、-65,504から65,504までの範囲の数値を扱えます。
+
+```js
+// 要素数3のFloat16Arrayを作成 初期値は0
+const float16 = new Float16Array(3);
+float16[0] = 1.5;
+float16[1] = 100000;
+console.log(float16[0]); // 1.5
+console.log(float16[1]); // Infinity
+console.log(float16[2]); // 0
+console.log(float16.length); // 3
+console.log(float16.BYTES_PER_ELEMENT); // 2
+```
+
+### 嬉しいこと
+
+これまで、浮動小数点型の大量データを扱いたい場合は、メモリ効率を重視しても`Float32Array`を使うしかなく最小でも32bitという制約がありました。
+あるいは、どうにか`Uint16Array`などの別の型を使って自前で変換するような工夫が必要でした。
+
+その点、`Float16Array`の登場によって浮動小数点型のまま小さなサイズで扱えるのはとても嬉しい進化です。
+
+特に、WebGPUやWebGL、Stable Diffusionなど、16bit浮動小数点数を扱うことが多い機械学習・グラフィックス等のAPIではこの進化が輝きます。
+
+### 注意すべきこと
+
+`Float16Array`を扱う時の注意点がいくつかあります。
+
+1つは、精度の低さです。16bitの範囲で値を扱うので、`Float32Array`や`Float64Array`で利用していた値をそのまま格納すると、精度が落ちてしまうことがあります。
+
+```js
+const f64 = new Float64Array([0.3333]);
+console.log(f64[0]); // 0.3333
+const f32 = new Float32Array([0.3333]);
+console.log(f32[0]); // 0.33329999446868896
+const f16 = new Float16Array(f64);
+console.log(f16[0]); // 0.333251953125
+```
+
+一度落ちた精度は元に戻せないため変換操作には注意が必要です。
+
+次に注意すべきは、`Float16`という型が存在しないということです。
+`f16[0]`のように値を取り出した瞬間それはただの`number`型になります。つまり、16bit浮動小数点である保証は失われている状態になります。
+
+```js
+const f16 = new Float16Array([1 / 3]);
+const value = f16[0];
+console.log(value); // 0.333251953125（16bitで丸められた値）
+console.log(typeof value); // 'number'
+```
+
+`Float16Array`に格納されている間だけが、16bit浮動小数点数として安全な状態です。`Float16Array`は型ではなく格納形式でしかないという点を意識しておくと安心です。
+
+最後に、「精度は低くてもいいからメモリを節約したい」という理由だけで`Float16Array`を使うのは避けましょう。
+万能ではないので、WebGPUのような最適化されたシステムのやり取り以外では、JavaScriptエンジンの高速化の影響を受けられずに逆にパフォーマンスが低下する恐れも考えられます。
+
+### おわりに
+
+普段のフロントエンド開発では`Float16Array`を使う機会は多くありませんが、WebGPUやAIモデルの推論処理などをフロントエンドで扱う場合は非常に有効な選択肢になります。
+
+昨今のWebの高性能化とAIの発達が進む中で、このような低レベル最適化の知識も重要になってくると考えられるので周辺の知識を積極的に取り入れたいです。
