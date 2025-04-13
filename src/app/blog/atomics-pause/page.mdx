@@ -174,6 +174,7 @@ do {
 [Intleの最適化マニュアル](https://www.intel.com/content/www/us/en/content-details/671488/intel-64-and-ia-32-architectures-optimization-reference-manual-volume-1.html)ではループにおいてこれを使ったBackoff戦略を利用することが推奨されています。
 
 ## おわりに
+
 共有メモリの安全な操作方法として、`Atomics`の静的メソッドの基本的な使い方から、新たに提案されている`Atomics.pause`の活用までを解説しました。
 
 `Atomics`を適切に利用することで、マルチスレッド環境におけるデータの整合性を保ちつつ、効率的な同期処理が可能になります。特に`Atomics.pause`がBaseline 2025に導入されたことにより、、スピンロック中のリソース最適化が期待され、より高性能な並列処理が実現できるようになったことには注目です。
