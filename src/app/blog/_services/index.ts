@@ -17,7 +17,7 @@ export const getBlogs = cache(async () => {
         },
       },
     },
-    limit: 10,
+    limit: 50,
     orderBy(fields, operators) {
       return operators.desc(fields.createdAt);
     },
