@@ -17,11 +17,13 @@ services:
       retries: 5
 
   neon-proxy:
-    image: ghcr.io/timowilhelm/local-neon-http-proxy:main
+    image: ghcr.io/neondatabase/wsproxy:latest
     environment:
-      - PG_CONNECTION_STRING=postgres://postgres:postgres@postgres:5432/main
+      APPEND_PORT: 'postgres:5432'
+      ALLOW_ADDR_REGEX: '.*'
+      LOG_TRAFFIC: 'true'
     ports:
-      - '4444:4444'
+      - '5433:80'
     depends_on:
       postgres:
         condition: service_healthy
