@@ -1,6 +1,7 @@
 'use server';
 
 import { db } from '#database/db';
+import { blogComment } from '@/database/schema/blog-comment';
 import { comments } from '@/database/schema/comments';
 import { Ratelimit } from '@upstash/ratelimit';
 import { Redis } from '@upstash/redis';
@@ -26,7 +27,7 @@ export const feedback = async (
   feedbackId: number | null,
   comment: string,
 ): Promise<Result> => {
-  if (!comment || !feedbackId) {
+  if (!comment && !feedbackId) {
     return {
       success: false,
       message: 'フィードバックの選択か、コメントの入力をしてください',
@@ -61,10 +62,20 @@ export const feedback = async (
     };
   }
 
-  await db.insert(comments).values({
-    message: comment,
-    feedbackId: feedbackId,
-  });
+  const insertComments = await db
+    .insert(comments)
+    .values({
+      message: comment,
+      feedbackId: feedbackId,
+    })
+    .returning({ insertedId: comments.id });
+
+  if (insertComments[0]?.insertedId !== undefined) {
+    await db.insert(blogComment).values({
+      blogId: blog.id,
+      commentId: insertComments[0].insertedId,
+    });
+  }
 
   return {
     success: true,

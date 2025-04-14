@@ -23,7 +23,8 @@ export const FeedbackCard: FC<{
     <Card title={title} width="fit" variant="secondary">
       <form
         className="flex flex-col gap-6 p-6"
-        onSubmit={() => {
+        onSubmit={(e) => {
+          e.preventDefault();
           void onSubmit(feedbackId, comment);
         }}
       >
@@ -66,7 +67,7 @@ export const FeedbackCard: FC<{
               : undefined
           }
           isInvalid={isInvalidComment}
-          renderInput={(props) => (
+          renderInput={({ labelId: _, ...props }) => (
             <Textarea
               {...props}
               value={comment}
@@ -76,7 +77,10 @@ export const FeedbackCard: FC<{
             />
           )}
         />
-        <Button type="submit" disabled={!feedbackId && !comment}>
+        <Button
+          type="submit"
+          disabled={(!feedbackId && !comment) || isInvalidComment}
+        >
           送信
         </Button>
       </form>
