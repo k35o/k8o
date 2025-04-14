@@ -5,10 +5,14 @@ pre-commit:
       glob: '*.{js,ts,cjs,d.cts,d.ts,jsx,tsx,md,mdx}'
       run: node --experimental-strip-types node_modules/prettier/bin/prettier.cjs --write {staged_files}
       stage_fixed: true
+      exclude:
+        - '**/mockServiceWorker.js'
     lint:
       glob: '*.{js,ts,cjs,d.cts,d.ts,jsx,tsx}'
       run: pnpm run lint:fix --file {staged_files}
       stage_fixed: true
+      exclude:
+        - '**/mockServiceWorker.js'
 
 pre-push:
   paralell: true
@@ -16,9 +20,15 @@ pre-push:
     format:
       glob: '*.{js,ts,cjs,d.cts,d.ts,jsx,tsx,md,mdx}'
       run: node --experimental-strip-types node_modules/prettier/bin/prettier.cjs --check {staged_files}
+      exclude:
+        - '**/mockServiceWorker.js'
     lint:
       glob: '*.{js,ts,cjs,d.cts,d.ts,jsx,tsx}'
       run: pnpm run lint --file {staged_files}
+      exclude:
+        - '**/mockServiceWorker.js'
     test:
       glob: '*.test.{js,ts,cjs,d.cts,d.ts,jsx,tsx}'
       run: pnpm run test run {staged_files}
+      exclude:
+        - '**/mockServiceWorker.js'
