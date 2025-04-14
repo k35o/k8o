@@ -2,8 +2,8 @@ import { blogFeedback, blogFeedbackRelations } from './blog-feedback';
 import { blogTag, blogTagRelations } from './blog-tag';
 import { blogViews } from './blog-views';
 import { blogs, blogsRelations } from './blogs';
+import { comments } from './comments';
 import { feedbacks, feedbacksRelations } from './feedback';
-import { inquiry } from './inquiry';
 import { quizAnswers, quizAnswersRelations } from './quiz-answers';
 import {
   quizQuestions,
@@ -17,7 +17,7 @@ export const schema = {
   // 全体
   feedbacks,
   tags,
-  inquiry,
+  comments,
   // ブログ関連
   blogs,
   blogViews,

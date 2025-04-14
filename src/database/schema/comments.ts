@@ -6,8 +6,8 @@ import {
   timestamp,
 } from 'drizzle-orm/pg-core';
 
-export const inquiry = pgTable(
-  'inquiry',
+export const comments = pgTable(
+  'comments',
   {
     id: serial('id').primaryKey(),
     message: text('message').notNull(),
