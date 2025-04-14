@@ -1,5 +1,5 @@
 import '@/database/env-config';
-import * as schema from './schema';
+import { schema, relations } from './schema';
 import { neonConfig, Pool } from '@neondatabase/serverless';
 import { drizzle } from 'drizzle-orm/neon-serverless';
 import { WebSocket } from 'ws';
@@ -17,4 +17,9 @@ if (process.env.NODE_ENV === 'production') {
 }
 
 const pool = new Pool({ connectionString: DATABASE_URL });
-export const db = drizzle(pool, { schema });
+export const db = drizzle(pool, {
+  schema: {
+    ...schema,
+    ...relations,
+  },
+});

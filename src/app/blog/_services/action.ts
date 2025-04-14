@@ -1,7 +1,7 @@
 'use server';
 
 import { db } from '#database/db';
-import * as schema from '@/database/schema';
+import { blogFeedback } from '@/database/schema/blog-feedback';
 import { Ratelimit } from '@upstash/ratelimit';
 import { Redis } from '@upstash/redis';
 import '@/libs/zod';
@@ -46,7 +46,7 @@ export const feedback = async (
     };
   }
 
-  await db.insert(schema.blogFeedback).values({
+  await db.insert(blogFeedback).values({
     blogId: blog.id,
     feedbackId: feedbackId,
   });

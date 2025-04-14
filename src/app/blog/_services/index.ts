@@ -1,7 +1,7 @@
 import { join } from 'path';
 import { cwd } from 'process';
 import { db } from '#database/db';
-import * as schema from '@/database/schema';
+import { blogViews } from '@/database/schema/blog-views';
 import { increment } from '@/database/utils';
 import { getFrontmatter } from '@/utils/mdx/frontmatter';
 import { getTocTree } from '@/utils/mdx/toc-tree';
@@ -83,9 +83,9 @@ export const incrementBlogView = async (slug: string) => {
   const blog = await getBlog(slug);
 
   return db
-    .update(schema.blogViews)
+    .update(blogViews)
     .set({
-      views: increment(schema.blogViews.views),
+      views: increment(blogViews.views),
     })
-    .where(eq(schema.blogViews.blogId, blog.id));
+    .where(eq(blogViews.blogId, blog.id));
 };

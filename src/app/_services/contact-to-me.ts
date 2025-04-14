@@ -1,7 +1,7 @@
 'use server';
 
 import { db } from '#database/db';
-import * as schema from '@/database/schema';
+import { inquiry } from '@/database/schema/inquiry';
 import { Ratelimit } from '@upstash/ratelimit';
 import { Redis } from '@upstash/redis';
 import { z } from 'zod';
@@ -63,7 +63,7 @@ export const contact = async (
     };
   }
 
-  await db.insert(schema.inquiry).values({
+  await db.insert(inquiry).values({
     message: validatedFields.data.message,
     sentAt: date,
   });
