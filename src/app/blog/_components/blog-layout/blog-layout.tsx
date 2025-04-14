@@ -22,59 +22,60 @@ export const BlogLayout: FC<{
 
   return (
     <div className="gap-4 xl:flex xl:has-[>:nth-child(2)]:-mx-36">
-      <article className="bg-bg-base/90 m-auto rounded-md px-3 pt-8 pb-14 sm:px-10 xl:max-w-4xl">
-        <div className="flex flex-col gap-3">
-          <h2 className="text-xl font-bold sm:text-2xl">
-            {metadata.title}
-          </h2>
-          <div className="text-fg-mute flex flex-col items-end gap-1 text-xs sm:flex-row sm:items-center sm:justify-end sm:gap-2 sm:text-sm">
-            <div className="flex flex-wrap items-center justify-end gap-1">
-              <div className="flex items-center gap-1">
-                <PublishDateIcon size="sm" />
-                <span>公開: {formatDate(metadata.createdAt)}</span>
-              </div>
-              <div className="flex items-center gap-1">
-                <UpdateDateIcon size="sm" />
-                <span>更新: {formatDate(metadata.updatedAt)}</span>
-              </div>
-            </div>
-            <ErrorBoundary fallback={<></>}>
-              <Suspense fallback={<></>}>
+      <div className="m-auto flex flex-col gap-8 xl:max-w-4xl">
+        <article className="bg-bg-base/90 rounded-md px-3 pt-8 pb-14 sm:px-10">
+          <div className="flex flex-col gap-3">
+            <h2 className="text-xl font-bold sm:text-2xl">
+              {metadata.title}
+            </h2>
+            <div className="text-fg-mute flex flex-col items-end gap-1 text-xs sm:flex-row sm:items-center sm:justify-end sm:gap-2 sm:text-sm">
+              <div className="flex flex-wrap items-center justify-end gap-1">
                 <div className="flex items-center gap-1">
-                  <ViewIcon size="sm" />
-                  <span className="sr-only">閲覧数</span>
-                  <span>
-                    <ViewCounter slug={slug} /> views
-                  </span>
+                  <PublishDateIcon size="sm" />
+                  <span>公開: {formatDate(metadata.createdAt)}</span>
                 </div>
-              </Suspense>
-            </ErrorBoundary>
-          </div>
-          {metadata.description && (
-            <div
-              className="bg-bg-mute rounded-md p-4"
-              aria-label="記事の要約"
-            >
-              <p className="text-fg-base sm:text-md text-sm">
-                {metadata.description}
-              </p>
+                <div className="flex items-center gap-1">
+                  <UpdateDateIcon size="sm" />
+                  <span>更新: {formatDate(metadata.updatedAt)}</span>
+                </div>
+              </div>
+              <ErrorBoundary fallback={<></>}>
+                <Suspense fallback={<></>}>
+                  <div className="flex items-center gap-1">
+                    <ViewIcon size="sm" />
+                    <span className="sr-only">閲覧数</span>
+                    <span>
+                      <ViewCounter slug={slug} /> views
+                    </span>
+                  </div>
+                </Suspense>
+              </ErrorBoundary>
             </div>
-          )}
-        </div>
-        <div className="mt-4 mb-2 w-full sm:mt-8 sm:mb-4">
-          <Separator />
-        </div>
-        <ErrorBoundary fallback={<></>}>
-          <Suspense fallback={<></>}>
-            <Tags slug={slug} />
-          </Suspense>
-        </ErrorBoundary>
-        {children}
-        <div className="mt-4 mb-2 w-full sm:mt-8 sm:mb-4">
-          <Separator />
-        </div>
-        <Feedback slug={slug} />
-      </article>
+            {metadata.description && (
+              <div
+                className="bg-bg-mute rounded-md p-4"
+                aria-label="記事の要約"
+              >
+                <p className="text-fg-base sm:text-md text-sm">
+                  {metadata.description}
+                </p>
+              </div>
+            )}
+          </div>
+          <div className="mt-4 mb-2 w-full sm:mt-8 sm:mb-4">
+            <Separator />
+          </div>
+          <ErrorBoundary fallback={<></>}>
+            <Suspense fallback={<></>}>
+              <Tags slug={slug} />
+            </Suspense>
+          </ErrorBoundary>
+          {children}
+        </article>
+        <section className="bg-bg-base/90 w-full rounded-md px-3 pt-8 pb-14 sm:px-10">
+          <Feedback slug={slug} />
+        </section>
+      </div>
       <ErrorBoundary fallback={<></>}>
         <div className="hidden w-64 shrink-0 empty:hidden xl:block">
           <TableOfContext slug={slug} />

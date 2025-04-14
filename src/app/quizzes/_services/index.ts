@@ -2,13 +2,13 @@
 
 import { Quiz } from '../_types';
 import { db } from '#database/db';
-import * as schema from '@/database/schema';
+import { quizType } from '@/database/schema/quiz-type';
 import { InferSelectModel, sql as ormSql } from 'drizzle-orm';
 
 export const getQuizType = async ({
   type,
 }: {
-  type: InferSelectModel<typeof schema.quizType>['id'];
+  type: InferSelectModel<typeof quizType>['id'];
 }) => {
   return db.query.quizType.findFirst({
     where: (quiz, { eq }) => eq(quiz.id, type),
@@ -21,7 +21,7 @@ export const getQuizzes = async ({
   byRandom = false,
   limit,
 }: {
-  type: InferSelectModel<typeof schema.quizType>['id'];
+  type: InferSelectModel<typeof quizType>['id'];
   byRandom?: boolean;
   limit?: number;
 }): Promise<Quiz[]> => {

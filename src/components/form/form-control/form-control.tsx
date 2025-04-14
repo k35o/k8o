@@ -37,12 +37,12 @@ export const FormControl: FC<FormControlProps> = ({
         : undefined;
   const labelId = `${id}-label`;
   return (
-    <fieldset role="group" className="flex w-full flex-col gap-2">
+    <fieldset role="group" className="flex w-full flex-col">
       {labelAs === 'label' ? (
         <label
           id={labelId}
           htmlFor={id}
-          className="text-md text-fg-base flex gap-2 font-bold"
+          className="text-md text-fg-base mb-1 flex gap-2 font-bold"
         >
           {label}
           {isRequired && (
@@ -50,7 +50,7 @@ export const FormControl: FC<FormControlProps> = ({
           )}
         </label>
       ) : (
-        <legend className="text-md text-fg-base flex gap-2 font-bold">
+        <legend className="text-md text-fg-base mb-1 flex gap-2 font-bold">
           {label}
           {isRequired && (
             <span className="text-fg-error font-medium">必須</span>

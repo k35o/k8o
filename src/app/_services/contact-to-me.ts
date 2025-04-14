@@ -1,7 +1,7 @@
 'use server';
 
 import { db } from '#database/db';
-import * as schema from '@/database/schema';
+import { comments } from '@/database/schema/comments';
 import { Ratelimit } from '@upstash/ratelimit';
 import { Redis } from '@upstash/redis';
 import { z } from 'zod';
@@ -36,7 +36,6 @@ export const contact = async (
   _previousState: Result,
   formData: FormData,
 ): Promise<Result> => {
-  const date = new Date();
   const validatedFields = contactSchema.safeParse({
     message: formData.get('message'),
   });
@@ -63,9 +62,8 @@ export const contact = async (
     };
   }
 
-  await db.insert(schema.inquiry).values({
+  await db.insert(comments).values({
     message: validatedFields.data.message,
-    sentAt: date,
   });
 
   return {

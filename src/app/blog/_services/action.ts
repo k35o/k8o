@@ -1,7 +1,8 @@
 'use server';
 
 import { db } from '#database/db';
-import * as schema from '@/database/schema';
+import { blogComment } from '@/database/schema/blog-comment';
+import { comments } from '@/database/schema/comments';
 import { Ratelimit } from '@upstash/ratelimit';
 import { Redis } from '@upstash/redis';
 import '@/libs/zod';
@@ -23,8 +24,23 @@ type Result =
 
 export const feedback = async (
   slug: string,
-  feedbackId: number,
+  feedbackId: number | null,
+  comment: string,
 ): Promise<Result> => {
+  if (!comment && !feedbackId) {
+    return {
+      success: false,
+      message: 'フィードバックの選択か、コメントの入力をしてください',
+    };
+  }
+
+  if (comment.length > 500) {
+    return {
+      success: false,
+      message: 'コメントは500文字以内で入力してください',
+    };
+  }
+
   const identifier = 'api';
   const { success } = await ratelimit.limit(identifier);
 
@@ -46,10 +62,20 @@ export const feedback = async (
     };
   }
 
-  await db.insert(schema.blogFeedback).values({
-    blogId: blog.id,
-    feedbackId: feedbackId,
-  });
+  const insertComments = await db
+    .insert(comments)
+    .values({
+      message: comment,
+      feedbackId: feedbackId,
+    })
+    .returning({ insertedId: comments.id });
+
+  if (insertComments[0]?.insertedId !== undefined) {
+    await db.insert(blogComment).values({
+      blogId: blog.id,
+      commentId: insertComments[0].insertedId,
+    });
+  }
 
   return {
     success: true,
