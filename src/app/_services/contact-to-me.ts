@@ -36,7 +36,6 @@ export const contact = async (
   _previousState: Result,
   formData: FormData,
 ): Promise<Result> => {
-  const date = new Date();
   const validatedFields = contactSchema.safeParse({
     message: formData.get('message'),
   });
@@ -65,7 +64,6 @@ export const contact = async (
 
   await db.insert(comments).values({
     message: validatedFields.data.message,
-    sentAt: date,
   });
 
   return {
