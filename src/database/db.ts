@@ -1,24 +1,20 @@
 import '@/database/env-config';
 import * as schema from './schema';
-import { neon, neonConfig } from '@neondatabase/serverless';
-import { drizzle } from 'drizzle-orm/neon-http';
+import { neonConfig, Pool } from '@neondatabase/serverless';
+import { drizzle } from 'drizzle-orm/neon-serverless';
 import { WebSocket } from 'ws';
 
 const DATABASE_URL = process.env.POSTGRES_URL ?? '';
 
-if (process.env.NODE_ENV === 'development') {
-  neonConfig.fetchEndpoint = (host) => {
-    const [protocol, port] =
-      host === 'db.localtest.me' ? ['http', 4444] : ['https', 443];
-    return `${protocol}://${host}:${port.toString()}/sql`;
-  };
-  const connectionStringUrl = new URL(DATABASE_URL);
-  neonConfig.useSecureWebSocket =
-    connectionStringUrl.hostname !== 'db.localtest.me';
-  neonConfig.wsProxy = (host) =>
-    host === 'db.localtest.me' ? `${host}:4444/v2` : `${host}/v2`;
+if (process.env.NODE_ENV === 'production') {
+  neonConfig.webSocketConstructor = WebSocket;
+  neonConfig.poolQueryViaFetch = true;
+} else {
+  neonConfig.wsProxy = (host) => `${host}:5433/v1`;
+  neonConfig.useSecureWebSocket = false;
+  neonConfig.pipelineTLS = false;
+  neonConfig.pipelineConnect = false;
 }
-neonConfig.webSocketConstructor = WebSocket;
 
-const sql = neon(DATABASE_URL);
-export const db = drizzle({ client: sql, schema });
+const pool = new Pool({ connectionString: DATABASE_URL });
+export const db = drizzle(pool, { schema });
