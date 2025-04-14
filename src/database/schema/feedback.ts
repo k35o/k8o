@@ -1,4 +1,4 @@
-import { blogFeedback } from './blog-feedback';
+import { comments } from './comments';
 import { relations } from 'drizzle-orm';
 import { pgTable, serial, text } from 'drizzle-orm/pg-core';
 
@@ -10,6 +10,6 @@ export const feedbacks = pgTable('feedbacks', {
 export const feedbacksRelations = relations(
   feedbacks,
   ({ many }) => ({
-    blogFeedback: many(blogFeedback),
+    comments: many(comments),
   }),
 );

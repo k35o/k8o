@@ -13,8 +13,8 @@ export const Feedback: FC<{
     <div className="flex items-center justify-center">
       <FeedbackCard
         title="この記事はどうでしたか？"
-        onSubmit={async (id) => {
-          const result = await feedback(slug, id);
+        onSubmit={async (id, comment) => {
+          const result = await feedback(slug, id, comment);
           if (result.success) {
             onOpen('success', 'フィードバックを送信しました！');
           } else {

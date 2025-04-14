@@ -1,8 +1,8 @@
-import { blogFeedback, blogFeedbackRelations } from './blog-feedback';
+import { blogComment, blogCommentRelations } from './blog-comment';
 import { blogTag, blogTagRelations } from './blog-tag';
 import { blogViews } from './blog-views';
 import { blogs, blogsRelations } from './blogs';
-import { comments } from './comments';
+import { comments, commentsRelations } from './comments';
 import { feedbacks, feedbacksRelations } from './feedback';
 import { quizAnswers, quizAnswersRelations } from './quiz-answers';
 import {
@@ -22,7 +22,7 @@ export const schema = {
   blogs,
   blogViews,
   blogTag,
-  blogFeedback,
+  blogComment,
   // クイズ関連
   quizzes,
   quizType,
@@ -34,10 +34,11 @@ export const relations = {
   // 全体
   feedbacksRelations,
   tagsRelations,
+  commentsRelations,
   // ブログ関連
   blogsRelations,
   blogTagRelations,
-  blogFeedbackRelations,
+  blogCommentRelations,
   // クイズ関連
   quizzesRelations,
   quizQuestionsRelations,
