@@ -15,13 +15,23 @@ export const FeedbackCard: FC<{
 }> = ({ title, onSubmit }) => {
   const [feedbackId, setFeedbackId] = useState<number | null>(null);
   const [comment, setComment] = useState<string>('');
+  const [isPending, setIsPending] = useState(false);
   const isInvalidComment = comment.length > 500;
+
+  const isDisabled =
+    (!feedbackId && !comment) || isInvalidComment || isPending;
+
   return (
     <form
       className="flex flex-col gap-6"
       onSubmit={(e) => {
         e.preventDefault();
-        void onSubmit(feedbackId, comment);
+        setIsPending(true);
+        void onSubmit(feedbackId, comment).then(() => {
+          setIsPending(false);
+          setComment('');
+          setFeedbackId(null);
+        });
       }}
     >
       <p className="text-xl font-bold">{title}</p>
@@ -37,7 +47,7 @@ export const FeedbackCard: FC<{
                 type="button"
                 className={cn(
                   'bg-primary-bg-subtle text-primary-fg flex w-full max-w-28 flex-col items-center justify-center gap-2 rounded-lg p-3',
-                  'aria-selected:text-fg-base aria-selected:bg-primary-bg',
+                  'aria-selected:text-fg-base aria-selected:bg-primary-bg aria-selected:border-primary-border aria-selected:border-2',
                 )}
                 aria-selected={feedbackId === option.id}
                 onClick={() => {
@@ -76,10 +86,7 @@ export const FeedbackCard: FC<{
           />
         )}
       />
-      <Button
-        type="submit"
-        disabled={(!feedbackId && !comment) || isInvalidComment}
-      >
+      <Button type="submit" disabled={isDisabled}>
         送信
       </Button>
     </form>
