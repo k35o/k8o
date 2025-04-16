@@ -7,7 +7,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const blogMap = blogs.map((blog) => {
     return {
       url: `https://k8o.me/blog/${blog.slug}`,
-      changeFrequency: 'weekly',
     } satisfies MetadataRoute.Sitemap[number];
   });
 
@@ -17,6 +16,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     },
     {
       url: 'https://k8o.me/blog',
+      changeFrequency: 'weekly',
     },
     ...blogMap,
     {
