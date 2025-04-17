@@ -5,12 +5,20 @@ import WeeklyNotification, {
   Notification,
 } from '@/emails/weekly-notification';
 import { inArray } from 'drizzle-orm';
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import { Resend } from 'resend';
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
-export async function GET() {
+export async function GET(req: NextRequest) {
+  if (
+    process.env.CRON_SECRET &&
+    req.headers.get('Authorization') !==
+      `Bearer ${process.env.CRON_SECRET}`
+  ) {
+    return NextResponse.json({ ok: false }, { status: 401 });
+  }
+
   const unsentComments = await db.query.comments.findMany({
     where: (comments, { isNull }) => isNull(comments.sentAt),
     with: {
