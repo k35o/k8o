@@ -12,7 +12,7 @@ const resend = new Resend(process.env.RESEND_API_KEY);
 
 export async function GET(req: NextRequest) {
   if (
-    process.env.CRON_SECRET &&
+    !process.env.CRON_SECRET ||
     req.headers.get('Authorization') !==
       `Bearer ${process.env.CRON_SECRET}`
   ) {
