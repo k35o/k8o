@@ -1,8 +1,10 @@
 import { db } from '#database/db';
 import { getBlogMetadata } from '#services/blog';
+import { comments } from '@/database/schema/comments';
 import WeeklyNotification, {
   Notification,
 } from '@/emails/weekly-notification';
+import { inArray } from 'drizzle-orm';
 import { NextResponse } from 'next/server';
 import { Resend } from 'resend';
 
@@ -52,12 +54,32 @@ export async function GET() {
     }),
   );
 
-  await resend.emails.send({
+  if (notifications.length === 0) {
+    return NextResponse.json({ ok: true });
+  }
+
+  const { error } = await resend.emails.send({
     from: 'notifications@k8o.me',
     to: 'kosakanoki@gmail.com',
     subject: 'ユーザーからのお知らせ',
     react: WeeklyNotification({ notifications }),
   });
+
+  if (error) {
+    console.error('Error sending email:', error);
+    return NextResponse.json({ ok: false }, { status: 500 });
+  }
+
+  await db
+    .update(comments)
+    .set({ sentAt: new Date() })
+    .where(
+      inArray(
+        comments.id,
+        notifications.map((n) => n.id),
+      ),
+    )
+    .execute();
 
   return NextResponse.json({ ok: true });
 }
