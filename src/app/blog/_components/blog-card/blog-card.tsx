@@ -29,11 +29,11 @@ export const BlogCard: FC<BlogCardProps> = async ({ slug, tags }) => {
               </p>
             )}
           </div>
-          <div className="flex flex-wrap items-center justify-between gap-2">
+          <div className="flex flex-wrap items-center justify-between gap-4">
             {tags.length > 0 && (
-              <div className="hidden gap-2 md:flex">
-                {tags.slice(0, 5).map((tag) => {
-                  return <TextTag key={tag} text={tag} />;
+              <div className="flex flex-wrap gap-2">
+                {tags.map((tag) => {
+                  return <TextTag key={tag} text={tag} size="sm" />;
                 })}
               </div>
             )}

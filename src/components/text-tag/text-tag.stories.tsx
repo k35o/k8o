@@ -21,3 +21,11 @@ export const White: Story = {
     color: 'white',
   },
 };
+
+export const Small: Story = {
+  args: {
+    text: 'TypeScript',
+    color: 'white',
+    size: 'sm',
+  },
+};
