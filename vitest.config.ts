@@ -16,6 +16,7 @@ export default defineConfig({
     // TODO: async/awaitコンポーネントのテストも実行できるようにする
     exclude: [
       '**/blog-layout.stories.tsx',
+      '**/blog-layout/**/recommend.stories.tsx',
       '**/blog-card.stories.tsx',
     ],
   },
