@@ -1,4 +1,5 @@
 import { Feedback } from './feedback';
+import { Recommend } from './recommend';
 import { TableOfContext } from './table-of-context';
 import { Tags } from './tags';
 import { ViewCounter } from './view-counter';
@@ -72,9 +73,14 @@ export const BlogLayout: FC<{
           </ErrorBoundary>
           {children}
         </article>
-        <section className="bg-bg-base/90 w-full rounded-md px-3 pt-8 pb-14 sm:px-10">
-          <Feedback slug={slug} />
-        </section>
+        <ErrorBoundary fallback={<></>}>
+          <section className="bg-bg-base/90 w-full rounded-md px-3 pt-8 pb-14 sm:px-10">
+            <Feedback slug={slug} />
+          </section>
+        </ErrorBoundary>
+        <ErrorBoundary fallback={<></>}>
+          <Recommend slug={slug} />
+        </ErrorBoundary>
       </div>
       <ErrorBoundary fallback={<></>}>
         <div className="hidden w-64 shrink-0 empty:hidden xl:block">
