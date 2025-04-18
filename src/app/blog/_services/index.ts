@@ -88,33 +88,36 @@ export const getBlogsByTags = cache(async (slug: string) => {
     },
   });
 
-  blogs
-    .sort((a, b) => {
-      const aBlogTagIds = a.blogTag.map((blogTag) => blogTag.tag.id);
-      const bBlogTagIds = b.blogTag.map((blogTag) => blogTag.tag.id);
-      const aTagCount = tagIds.filter((tagId) =>
-        aBlogTagIds.includes(tagId),
-      ).length;
-      const bTagCount = tagIds.filter((tagId) =>
-        bBlogTagIds.includes(tagId),
-      ).length;
-      return bTagCount - aTagCount;
-    })
-    .slice(0, 6);
-
   return Promise.all(
-    blogs.map(async (blog) => {
-      const blogMetadata = await getFrontmatter(
-        join(cwd(), `src/app/blog/${blog.slug}/page.mdx`),
-      );
-      return {
-        id: blog.id,
-        slug: blog.slug,
-        title: blogMetadata.title,
-        createdAt: blogMetadata.createdAt,
-        tags: blog.blogTag.map((blogTag) => blogTag.tag.name),
-      };
-    }),
+    blogs
+      .sort((a, b) => {
+        const aBlogTagIds = a.blogTag.map(
+          (blogTag) => blogTag.tag.id,
+        );
+        const bBlogTagIds = b.blogTag.map(
+          (blogTag) => blogTag.tag.id,
+        );
+        const aTagCount = tagIds.filter((tagId) =>
+          aBlogTagIds.includes(tagId),
+        ).length;
+        const bTagCount = tagIds.filter((tagId) =>
+          bBlogTagIds.includes(tagId),
+        ).length;
+        return bTagCount - aTagCount;
+      })
+      .slice(0, 6)
+      .map(async (blog) => {
+        const blogMetadata = await getFrontmatter(
+          join(cwd(), `src/app/blog/${blog.slug}/page.mdx`),
+        );
+        return {
+          id: blog.id,
+          slug: blog.slug,
+          title: blogMetadata.title,
+          createdAt: blogMetadata.createdAt,
+          tags: blog.blogTag.map((blogTag) => blogTag.tag.name),
+        };
+      }),
   );
 });
 
