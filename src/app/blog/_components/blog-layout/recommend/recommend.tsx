@@ -10,6 +10,10 @@ import { FC } from 'react';
 
 export const Recommend: FC<{ slug: string }> = async ({ slug }) => {
   const blogs = await getBlogsByTags(slug);
+  if (blogs.length === 0) {
+    return null;
+  }
+
   return (
     <div className="flex flex-col gap-8">
       <Heading type="h3">関連記事</Heading>
