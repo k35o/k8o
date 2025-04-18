@@ -14,7 +14,20 @@ const meta: Meta<typeof BlogLayout> = {
     getBlog.mockResolvedValue({
       id: 1,
       slug: 'tanstack-router-introduction',
-      tags: ['React', 'TypeScript', 'TanStackRouter'],
+      tags: [
+        {
+          id: 1,
+          name: 'React',
+        },
+        {
+          id: 2,
+          name: 'TypeScript',
+        },
+        {
+          id: 3,
+          name: 'TanStack Router',
+        },
+      ],
     });
     getBlogMetadata.mockResolvedValue({
       title:

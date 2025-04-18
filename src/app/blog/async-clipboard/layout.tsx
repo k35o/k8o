@@ -12,7 +12,7 @@ export async function generateMetadata(): Promise<Metadata> {
   return {
     title: metadata.title,
     description: metadata.description,
-    category: blog.tags.join(', '),
+    category: blog.tags.map((tag) => tag.name).join(', '),
     openGraph: {
       title: metadata.title,
       description: metadata.description,

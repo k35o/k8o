@@ -9,8 +9,8 @@ export const Tags: FC<{ slug: string }> = async ({ slug }) => {
     <>
       {tags.length > 0 && (
         <div className="mb-4 flex flex-wrap gap-2">
-          {tags.slice(0, 5).map((tag) => {
-            return <TextTag key={tag} text={tag} />;
+          {tags.map((tag) => {
+            return <TextTag key={tag.id} text={tag.name} />;
           })}
         </div>
       )}

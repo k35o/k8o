@@ -49,7 +49,10 @@ export const getBlog = cache(async (slug: string) => {
   return {
     id: blog.id,
     slug: blog.slug,
-    tags: blog.blogTag.map((blogTag) => blogTag.tag.name),
+    tags: blog.blogTag.map((blogTag) => ({
+      id: blogTag.tag.id,
+      name: blogTag.tag.name,
+    })),
   };
 });
 
