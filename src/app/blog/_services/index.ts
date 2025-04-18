@@ -60,6 +60,64 @@ export const getBlogMetadata = cache(async (slug: string) =>
   getFrontmatter(join(cwd(), `src/app/blog/${slug}/page.mdx`)),
 );
 
+export const getBlogsByTags = cache(async (slug: string) => {
+  const blog = await getBlog(slug);
+  const tagIds = blog.tags.map((tag) => tag.id);
+
+  const blogIds = (
+    await db.query.blogTag.findMany({
+      where: (blogTag, { inArray }) => inArray(blogTag.tagId, tagIds),
+      columns: {
+        blogId: true,
+      },
+    })
+  ).map((blogTag) => blogTag.blogId);
+
+  const blogs = await db.query.blogs.findMany({
+    where: (blogs, { not, eq, inArray, and }) =>
+      and(not(eq(blogs.slug, slug)), inArray(blogs.id, blogIds)),
+    with: {
+      blogTag: {
+        with: {
+          tag: true,
+        },
+      },
+    },
+    orderBy(fields, operators) {
+      return [operators.desc(fields.createdAt)];
+    },
+  });
+
+  blogs
+    .sort((a, b) => {
+      const aBlogTagIds = a.blogTag.map((blogTag) => blogTag.tag.id);
+      const bBlogTagIds = b.blogTag.map((blogTag) => blogTag.tag.id);
+      const aTagCount = tagIds.filter((tagId) =>
+        aBlogTagIds.includes(tagId),
+      ).length;
+      const bTagCount = tagIds.filter((tagId) =>
+        bBlogTagIds.includes(tagId),
+      ).length;
+      return bTagCount - aTagCount;
+    })
+    .slice(0, 6);
+
+  return Promise.all(
+    blogs.map(async (blog) => {
+      const blogMetadata = await getFrontmatter(
+        join(cwd(), `src/app/blog/${blog.slug}/page.mdx`),
+      );
+      return {
+        id: blog.id,
+        slug: blog.slug,
+        title: blogMetadata.title,
+        createdAt: blogMetadata.createdAt,
+        tags: blog.blogTag.map((blogTag) => blogTag.tag.name),
+      };
+    }),
+  );
+});
+
 export const getBlogToc = cache(async (slug: string) =>
   getTocTree(join(cwd(), `src/app/blog/${slug}/page.mdx`)),
 );
