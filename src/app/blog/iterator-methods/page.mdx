@@ -62,7 +62,7 @@ Array.from(nodeList).forEach((x) => console.log(x.innerText)); // '...', '...'
 上記のコードは`[...set.values()]`のように`Iterator`オブジェクトを配列に変換してから操作を行うという中間処理が挟まれるので非効率です。
 また、配列に変換するタイミングで全てのデータを取り出すので、`Iterator`オブジェクトの呼び出されたタイミングにデータを取り出すという性質を生かせません。
 
-`Iterator`オブジェクトにも配列で扱えるような便利な操作が追加されたことで、これらが解決されます。
+Baseline 2025で`Iterator`オブジェクトにも配列で扱えるような便利な操作が追加されたことにより、これらが解決されます。
 
 ```js
 const set = new Set([1, 2, 3]);
@@ -80,7 +80,7 @@ const nodeList = document.querySelectorAll('div');
 nodeList[Symbol.iterator]().forEach((x) => console.log(x.innerText)); // '...', '...'
 ```
 
-コード上で宣言的で読みやすい（`[Symbol.iterator]()`は見慣れないかもですが）他に、`Iterator`オブジェクトのまま扱えるので`some`等の処理が遅延評価されるようになります（`forEach`はされません）。
+コード上で宣言的で読みやすい（`[Symbol.iterator]()`は見慣れないかもですが）ことに加えて、`Iterator`オブジェクトのまま扱えるので`some`等の処理が遅延評価されるようになります（`forEach`はされません）。
 これにより、必要な分のデータだけが評価されるので、パフォーマンスの面でも有利です。
 
 ## できること
