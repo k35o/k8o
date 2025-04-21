@@ -176,6 +176,13 @@
       "when": 1744630360546,
       "tag": "0024_cute_wallow",
       "breakpoints": true
+    },
+    {
+      "idx": 25,
+      "version": "7",
+      "when": 1745210099875,
+      "tag": "0025_typical_xavin",
+      "breakpoints": true
     }
   ]
 }
