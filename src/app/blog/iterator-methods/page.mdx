@@ -26,7 +26,7 @@ Baseline 2025にIterator Helpersが追加されました。
 `next`という操作で次のデータを表す`value`と後続のデータがないことを示す`done`を返します。
 
 `Iterator`オブジェクトは、他の多くの組み込みイテレータの基盤となる存在です。
-`Array.prototype[Symbol.iterator]`や`Map.prototype.values`、`Set.prototype.values`、`Intl.Segmenter.prototype.segment`等の結果や`NodeList`など、さまざまな反復処理は`Iterator`オブジェクトを継承されています。
+`Array.prototype[Symbol.iterator]`や`Map.prototype.values`、`Set.prototype.values`、`Intl.Segmenter.prototype.segment`等の結果や`NodeList`など、さまざまな反復処理は`Iterator`オブジェクトを継承しています。
 
 ```js
 const iterator = [1, 2, 3][Symbol.iterator]();
@@ -42,7 +42,7 @@ for (const str of 'hello'[Symbol.iterator]()) {
 
 ## Iterator Helpers追加の背景
 
-これまで`Iterator`オブジェクトに対して何らかの処理を行いたい場合、`for...of`ループを使ってデータを単体で処理を記述したり、配列に変換してから配列に実装されているメソッド（`map`や`filter`など）を利用する方法がよく使われていました。
+これまで`Iterator`オブジェクトに対して何らかの処理を行いたい場合、`for...of`ループを使って自前で煩雑な処理を記述したり、配列に変換してから配列に実装されているメソッド（`map`や`filter`など）を利用する方法がよく使われていました。
 
 ```js
 const set = new Set([1, 2, 3]);
@@ -59,10 +59,10 @@ const nodeList = document.querySelectorAll('div');
 Array.from(nodeList).forEach((x) => console.log(x.innerText)); // '...', '...'
 ```
 
-上記のコードは`[...set.values()]`のように`Iterator`オブジェクトを配列に変換してから操作を行うという中間処理が挟まれるので非効率です。
-また、配列に変換するタイミングで全てのデータを取り出すので、`Iterator`オブジェクトの呼び出されたタイミングにデータを取り出すという性質を生かせません。
+上記のコードでは`[...set.values()]`のように`Iterator`オブジェクトを配列に変換するような中間処理が挟まれるので非効率です。
+また、配列に変換するタイミングで全てのデータを取り出すので、`Iterator`オブジェクトが持つ呼び出されたタイミングにデータを取り出すという性質を生かせません。
 
-Baseline 2025で`Iterator`オブジェクトにも配列で扱えるような便利な操作が追加されたことにより、これらが解決されます。
+Baseline 2025で追加された`Iterator`オブジェクトに対する便利な操作を使えば、これらの問題を解決できます。
 
 ```js
 const set = new Set([1, 2, 3]);
@@ -122,7 +122,7 @@ console.log(counterIter[Symbol.iterator]().next()); // { value: 2, done: false }
 console.log(counterIter[Symbol.iterator]().next()); // { value: undefined, done: true }
 ```
 
-以後紹介するメソッドの利用もこれにより可能になります。
+以後紹介するメソッドはこの変換を通すことで利用可能になります（`Set.prototype.values`のような`Iterator`オブジェクトを継承したオブジェクトで実行する場合は変換不要です）。
 
 ### map
 
@@ -137,7 +137,8 @@ console.log(mappedIter.next()); // { value: 4, done: false }
 console.log(mappedIter.next()); // { value: undefined, done: true }
 ```
 
-`map`を実行したタイミングではなく、`next()`を呼び出すタイミングで数値の計算が行われています。
+`map`を実行したタイミングではなく、`next()`を呼び出すタイミングで指定した関数の計算が行われています。
+
 本来`map`中の副作用は避けるべきですが、遅延評価をわかりやすくするために`console.log`を入れると、評価されるタイミングがわかります。
 
 ```js
@@ -151,7 +152,7 @@ console.log(mappedIter.next()); // 1 { value: 2, done: false }
 console.log(mappedIter.next()); // 2 { value: 4, done: false }
 ```
 
-今後紹介する操作のほとんどはこのように遅延評価が行われます。わかりにくい遅延評価をする関数や遅延評価しない関数についてのみ言及します。
+今後紹介する操作のほとんどはこのように遅延評価が行われます。遅延評価の仕組みが分かりにくい関数や遅延評価しない関数についてのみこの仕様について言及します。
 
 ### filter
 
@@ -231,7 +232,7 @@ const reducedValue = counterIter.reduce((acc, x) => {
 console.log(reducedValue); // 3
 ```
 
-`reduce`は遅延評価されません。全ての要素を取り出しながら指定した関数を適用します。`take`や`drop`で実行する個数を調整します。
+`reduce`は遅延評価されません。全ての要素を取り出しながら指定した関数を適用します。`take`や`drop`で実行する個数を調整できます。
 
 ### toArray
 
@@ -271,7 +272,7 @@ const hasOdd = counterIter.some((x) => x % 2 === 0);
 console.log(hasOdd); // true
 ```
 
-`some`は遅延評価されます。真となる要素が見つかるまで値を取り出し続けます。
+`some`は遅延評価されます。真となる要素が見つかるまで値を取り出し続け、見つからない場合に`false`を返します。
 
 ```js
 const counterIter = Iterator.from(counter);
