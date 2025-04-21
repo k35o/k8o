@@ -18,7 +18,7 @@ docker compose up -d
 pnpm run migration
 ```
 
-If you want to use the MicroCMS locally, ask k8o for the MICROCMS_API_KEY.
+If you want to use the MicroCMS or Resend locally, ask k8o for the `MICROCMS_API_KEY` or `RESEND_API_KEY`.
 
 ## development
 
@@ -123,6 +123,10 @@ docker compose exec postgres psql -U postgres -d main
 
 [MicroCMS](https://k35o.microcms.io)
 
+#### Email
+
+[Resend](https://resend.com)
+
 ### framework
 
 [next.js](https://nextjs.org/)
@@ -133,7 +137,7 @@ docker compose exec postgres psql -U postgres -d main
 
 ### icon
 
-[heroicons](https://heroicons.com/)
+[Lucide](https://lucide.dev)
 
 ### animation
 
