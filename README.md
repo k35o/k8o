@@ -79,7 +79,7 @@ pnpm run type-check
 
 ### database
 
-Generate migration file by schema file(`src/database/schema/*.ts`).
+Generate migration file by schema files (`src/database/schema/*.ts`).
 
 ```command
 pnpm run generate
