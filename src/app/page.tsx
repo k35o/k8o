@@ -65,6 +65,12 @@ export default function Home() {
             description="k8oのブログです。ジャンルを問わず、身の回りのことを書きます。"
           />
           <AppCard
+            link="/talks"
+            symbol="🎙️"
+            title="Talks"
+            description="過去の登壇内容をまとめたページです。講演のテーマや資料へのリンクを掲載しています。"
+          />
+          <AppCard
             link="/design-system"
             symbol={
               <Image
