@@ -1,7 +1,7 @@
 import { getBlogsByTags } from '#services/blog';
 import { InteractiveCard } from '@/components/card';
 import { Heading } from '@/components/heading';
-import { PublishDateIcon } from '@/components/icons';
+import { PublishDateIcon, TagIcon } from '@/components/icons';
 import { TextTag } from '@/components/text-tag';
 import { formatDate } from '@/utils/date/format';
 import { Route } from 'next';
@@ -24,7 +24,8 @@ export const Recommend: FC<{ slug: string }> = async ({ slug }) => {
               <div className="flex flex-col gap-4 p-4">
                 <Heading type="h4">{blog.title}</Heading>
                 <div className="flex flex-col flex-wrap gap-2">
-                  <div className="flex flex-wrap gap-1">
+                  <div className="flex flex-wrap items-center gap-1">
+                    <TagIcon size="sm" />
                     {blog.tags.map((tag) => {
                       return (
                         <TextTag key={tag} text={tag} size="sm" />
