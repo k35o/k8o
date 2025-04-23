@@ -1,7 +1,11 @@
 import { getBlogMetadata } from '#services/blog';
 import { InteractiveCard } from '@/components/card';
 import { Heading } from '@/components/heading';
-import { PublishDateIcon, UpdateDateIcon } from '@/components/icons';
+import {
+  PublishDateIcon,
+  UpdateDateIcon,
+  TagIcon,
+} from '@/components/icons';
 import { TextTag } from '@/components/text-tag';
 import { formatDate } from '@/utils/date/format';
 import { Route } from 'next';
@@ -31,7 +35,8 @@ export const BlogCard: FC<BlogCardProps> = async ({ slug, tags }) => {
           </div>
           <div className="flex flex-wrap items-center justify-between gap-4">
             {tags.length > 0 && (
-              <div className="flex flex-wrap gap-2">
+              <div className="flex flex-wrap items-center gap-2">
+                <TagIcon size="sm" />
                 {tags.map((tag) => {
                   return <TextTag key={tag} text={tag} size="sm" />;
                 })}

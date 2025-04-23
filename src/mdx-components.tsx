@@ -89,7 +89,7 @@ export function useMDXComponents(
         return (
           <code
             {...props}
-            className="bg-bg-mute sm:text-md m-1 rounded-md px-1.5 text-xs sm:py-0.5"
+            className="bg-bg-mute sm:text-md m-0.5 rounded-md px-1.5 text-xs sm:py-0.5"
           >
             {children}
           </code>
