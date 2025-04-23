@@ -6,6 +6,7 @@ import {
   Annoyed,
   Bell,
   Blend,
+  BookText,
   Calendar,
   Check,
   ChevronDown,
@@ -28,16 +29,19 @@ import {
   List,
   ListMinus,
   Mail,
+  MapPin,
   Minus,
   MoonStar,
   PaintBucket,
   Plus,
+  Presentation,
   Rocket,
   Rss,
   Send,
   Smile,
   Sun,
   Table2,
+  Tag,
   ThumbsDown,
   ThumbsUp,
   TriangleAlert,
@@ -131,6 +135,50 @@ export const ExternalLinkIcon: FC<IconProps> = ({ size = 'md' }) => {
       size={size}
       renderItem={(props) => {
         return <ExternalLink {...props} />;
+      }}
+    />
+  );
+};
+
+export const BlogIcon: FC<IconProps> = ({ size = 'md' }) => {
+  return (
+    <BaseIcon
+      size={size}
+      renderItem={(props) => {
+        return <BookText {...props} />;
+      }}
+    />
+  );
+};
+
+export const SlideIcon: FC<IconProps> = ({ size = 'md' }) => {
+  return (
+    <BaseIcon
+      size={size}
+      renderItem={(props) => {
+        return <Presentation {...props} />;
+      }}
+    />
+  );
+};
+
+export const TagIcon: FC<IconProps> = ({ size = 'md' }) => {
+  return (
+    <BaseIcon
+      size={size}
+      renderItem={(props) => {
+        return <Tag {...props} />;
+      }}
+    />
+  );
+};
+
+export const LocationIcon: FC<IconProps> = ({ size = 'md' }) => {
+  return (
+    <BaseIcon
+      size={size}
+      renderItem={(props) => {
+        return <MapPin {...props} />;
       }}
     />
   );

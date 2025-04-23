@@ -3,6 +3,7 @@ import { GitHubIcon } from './github-mark';
 import {
   AlertIcon,
   BadIcon,
+  BlogIcon,
   BoringIcon,
   CheckIcon,
   ChevronIcon,
@@ -22,6 +23,7 @@ import {
   LightModeIcon,
   LinkIcon,
   ListIcon,
+  LocationIcon,
   MailIcon,
   MinusIcon,
   MixedColorIcon,
@@ -33,7 +35,9 @@ import {
   RSSIcon,
   SendIcon,
   ShallowIcon,
+  SlideIcon,
   TableIcon,
+  TagIcon,
   UpdateDateIcon,
   ViewIcon,
 } from './lucide';
@@ -101,6 +105,22 @@ export const Primary: Story = {
         <div className="flex flex-col items-center justify-center">
           <ExternalLinkIcon />
           <p className="text-center">External Link</p>
+        </div>
+        <div className="flex flex-col items-center justify-center">
+          <BlogIcon />
+          <p className="text-center">Blog</p>
+        </div>
+        <div className="flex flex-col items-center justify-center">
+          <SlideIcon />
+          <p className="text-center">Slide</p>
+        </div>
+        <div className="flex flex-col items-center justify-center">
+          <TagIcon />
+          <p className="text-center">Tag</p>
+        </div>
+        <div className="flex flex-col items-center justify-center">
+          <LocationIcon />
+          <p className="text-center">Location</p>
         </div>
         <div className="flex flex-col items-center justify-center">
           <FormIcon />
