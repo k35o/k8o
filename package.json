@@ -16,6 +16,10 @@
       "storybook": "./src/mocks/link-card/metadata.mock.ts",
       "default": "./src/components/link-card/metadata.ts"
     },
+    "#libs/react": {
+      "storybook": "./src/mocks/libs/react.mock.ts",
+      "default": "./src/libs/react.ts"
+    },
     "#*": [
       "./*",
       "./*.ts",

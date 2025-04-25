@@ -1,3 +1,4 @@
+import { ViewTransition } from '#libs/react';
 import { getBlogMetadata } from '#services/blog';
 import { InteractiveCard } from '@/components/card';
 import { Heading } from '@/components/heading';
@@ -10,7 +11,7 @@ import { TextTag } from '@/components/text-tag';
 import { formatDate } from '@/utils/date/format';
 import { Route } from 'next';
 import Link from 'next/link';
-import { FC, unstable_ViewTransition as ViewTransition } from 'react';
+import { FC } from 'react';
 
 type BlogCardProps = {
   slug: string;

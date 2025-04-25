@@ -1,7 +1,8 @@
+import { ViewTransition } from '#libs/react';
 import { getBlog } from '#services/blog';
 import { TagIcon } from '@/components/icons';
 import { TextTag } from '@/components/text-tag';
-import { FC, unstable_ViewTransition as ViewTransition } from 'react';
+import { FC } from 'react';
 
 export const Tags: FC<{ slug: string }> = async ({ slug }) => {
   const tags = (await getBlog(slug)).tags;

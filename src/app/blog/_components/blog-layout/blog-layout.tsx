@@ -3,6 +3,7 @@ import { Recommend } from './recommend';
 import { TableOfContext } from './table-of-context';
 import { Tags } from './tags';
 import { ViewCounter } from './view-counter';
+import { ViewTransition } from '#libs/react';
 import { getBlogMetadata } from '#services/blog';
 import {
   PublishDateIcon,
@@ -12,12 +13,7 @@ import {
 import { ScrollLinked } from '@/components/scroll-linked';
 import { Separator } from '@/components/separator';
 import { formatDate } from '@/utils/date/format';
-import {
-  FC,
-  ReactNode,
-  Suspense,
-  unstable_ViewTransition as ViewTransition,
-} from 'react';
+import { FC, ReactNode, Suspense } from 'react';
 import { ErrorBoundary } from 'react-error-boundary';
 
 export const BlogLayout: FC<{
