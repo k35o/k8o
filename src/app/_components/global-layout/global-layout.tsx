@@ -4,6 +4,7 @@ import { NewsLink } from './news-link';
 import { ToggleTheme } from '../toggle-theme';
 import { NavigationMenu } from './navigation-menu';
 import { Heading } from '@/components/heading';
+import { formatDate } from '@/utils/date/format';
 import Link from 'next/link';
 import { FC, ReactNode } from 'react';
 
@@ -35,8 +36,16 @@ export const GlobalLayout: FC<{ children: ReactNode }> = ({
         </div>
       </header>
       <main className="flex grow justify-center">
-        <div className="w-full max-w-5xl px-4 py-10">{children}</div>
+        <div className="w-full max-w-5xl p-4 pt-10">{children}</div>
       </main>
+      <footer className="flex items-center justify-center p-4">
+        <div className="max-w-5xl">
+          <p className="text-fg-mute md:text-lg">
+            ©︎ 2024〜{formatDate(new Date(), 'yyyy')} k8o. All Right
+            Reserved.
+          </p>
+        </div>
+      </footer>
     </div>
   );
 };
