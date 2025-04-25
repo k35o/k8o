@@ -1,3 +1,4 @@
+import { ViewTransition } from '#libs/react';
 import { getBlog } from '#services/blog';
 import { TagIcon } from '@/components/icons';
 import { TextTag } from '@/components/text-tag';
@@ -7,7 +8,7 @@ export const Tags: FC<{ slug: string }> = async ({ slug }) => {
   const tags = (await getBlog(slug)).tags;
 
   return (
-    <>
+    <ViewTransition name={`tags-${slug}`}>
       {tags.length > 0 && (
         <div className="mb-4 flex flex-wrap items-center gap-2">
           <TagIcon size="sm" />
@@ -16,6 +17,6 @@ export const Tags: FC<{ slug: string }> = async ({ slug }) => {
           })}
         </div>
       )}
-    </>
+    </ViewTransition>
   );
 };
