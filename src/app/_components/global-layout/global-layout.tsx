@@ -41,7 +41,7 @@ export const GlobalLayout: FC<{ children: ReactNode }> = ({
       <footer className="flex items-center justify-center p-4">
         <div className="max-w-5xl">
           <p className="text-fg-mute md:text-lg">
-            ©︎ 2024〜{formatDate(new Date(), 'yyyy')} k8o. All Right
+            ©︎ 2024〜{formatDate(new Date(), 'yyyy')} k8o. All Rights
             Reserved.
           </p>
         </div>
