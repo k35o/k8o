@@ -29,14 +29,14 @@ export const BlogLayout: FC<{
           <article className="bg-bg-base/90 rounded-md px-3 pt-8 pb-14 sm:px-10">
             <div className="flex flex-col gap-3">
               <ViewTransition name={`title-${slug}`}>
-                <h2 className="mb-4 text-xl font-bold sm:text-2xl">
+                <h2 className="text-xl font-bold sm:text-2xl">
                   {metadata.title}
                 </h2>
               </ViewTransition>
               {metadata.description && (
                 <ViewTransition name={`description-${slug}`}>
                   <div
-                    className="bg-bg-mute rounded-md p-4"
+                    className="bg-bg-mute rounded-md p-4 sm:mt-4"
                     aria-label="記事の要約"
                   >
                     <p className="text-fg-base sm:text-md text-sm">
