@@ -33,6 +33,18 @@ export const BlogLayout: FC<{
                   {metadata.title}
                 </h2>
               </ViewTransition>
+              {metadata.description && (
+                <ViewTransition name={`description-${slug}`}>
+                  <div
+                    className="bg-bg-mute rounded-md p-4 sm:mt-4"
+                    aria-label="記事の要約"
+                  >
+                    <p className="text-fg-base sm:text-md text-sm">
+                      {metadata.description}
+                    </p>
+                  </div>
+                </ViewTransition>
+              )}
               <div className="text-fg-mute flex flex-col items-end gap-1 text-xs sm:flex-row sm:items-center sm:justify-end sm:gap-2 sm:text-sm">
                 <div className="flex flex-wrap items-center justify-end gap-1">
                   <ViewTransition name={`date-${slug}`}>
@@ -62,20 +74,8 @@ export const BlogLayout: FC<{
                   </Suspense>
                 </ErrorBoundary>
               </div>
-              {metadata.description && (
-                <ViewTransition name={`description-${slug}`}>
-                  <div
-                    className="bg-bg-mute rounded-md p-4"
-                    aria-label="記事の要約"
-                  >
-                    <p className="text-fg-base sm:text-md text-sm">
-                      {metadata.description}
-                    </p>
-                  </div>
-                </ViewTransition>
-              )}
             </div>
-            <div className="mt-4 mb-2 w-full sm:mt-8 sm:mb-4">
+            <div className="m-2 w-full sm:mt-4">
               <Separator />
             </div>
             <ErrorBoundary fallback={<></>}>
