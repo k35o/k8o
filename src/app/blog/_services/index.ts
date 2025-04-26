@@ -8,6 +8,9 @@ import { getTocTree } from '@/utils/mdx/toc-tree';
 import { eq } from 'drizzle-orm';
 import { unstable_cache as cache } from 'next/cache';
 
+const blogPath = (slug: string) =>
+  join(cwd(), `src/app/blog/(articles)/${slug}/page.mdx`);
+
 export const getBlogs = cache(async () => {
   const blogs = await db.query.blogs.findMany({
     with: {
@@ -57,7 +60,7 @@ export const getBlog = cache(async (slug: string) => {
 });
 
 export const getBlogMetadata = cache(async (slug: string) =>
-  getFrontmatter(join(cwd(), `src/app/blog/${slug}/page.mdx`)),
+  getFrontmatter(blogPath(slug)),
 );
 
 export const getBlogsByTags = cache(async (slug: string) => {
@@ -108,7 +111,7 @@ export const getBlogsByTags = cache(async (slug: string) => {
       .slice(0, 6)
       .map(async (blog) => {
         const blogMetadata = await getFrontmatter(
-          join(cwd(), `src/app/blog/${blog.slug}/page.mdx`),
+          blogPath(blog.slug),
         );
         return {
           id: blog.id,
@@ -122,7 +125,7 @@ export const getBlogsByTags = cache(async (slug: string) => {
 });
 
 export const getBlogToc = cache(async (slug: string) =>
-  getTocTree(join(cwd(), `src/app/blog/${slug}/page.mdx`)),
+  getTocTree(blogPath(slug)),
 );
 
 export const getBlogView = async (slug: string): Promise<number> => {
