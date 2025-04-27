@@ -44,8 +44,11 @@ export default defineWorkspace([
       name: 'storybook test',
       browser: {
         enabled: true,
-        // TODO: deprecateなので別の方法で書く
-        name: 'chromium',
+        instances: [
+          {
+            browser: 'chromium',
+          },
+        ],
         provider: 'playwright',
         headless: true,
         screenshotFailures: false,
