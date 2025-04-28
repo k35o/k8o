@@ -13,7 +13,7 @@
   "packageRules": [
     {
       "matchUpdateTypes": ["minor", "patch"],
-      "matchPackageNames": ["!/^(pnpm|node)$/"],
+      "matchPackageNames": ["!/^(pnpm|node|vitest|@vitest/browser|@vitest/coverage-istanbul|@vitest/ui|budoux)$/"],
       "groupName": "minor and patch dependencies"
     }
   ]
