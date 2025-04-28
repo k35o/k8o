@@ -38,12 +38,11 @@ export const subscribe = async (
     }
   }
 
-  await sendVerificationEmail(email);
-
   try {
     await db.insert(subscribers).values({
       email,
     });
+    await sendVerificationEmail(email);
     return {
       success: true,
       data: null,
