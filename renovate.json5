@@ -13,6 +13,8 @@
   "packageRules": [
     {
       "matchUpdateTypes": ["minor", "patch"],
+      // vitestはStorybookと組み合わせたbrowser testがうまく動かないので治るまで除外
+      // bodouxはcanvas周りのエラーが発生するので治るまで除外
       "matchPackageNames": ["!/^(pnpm|node|vitest|@vitest/browser|@vitest/coverage-istanbul|@vitest/ui|budoux)$/"],
       "groupName": "minor and patch dependencies"
     }
