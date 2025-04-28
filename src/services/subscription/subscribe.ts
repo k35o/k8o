@@ -2,7 +2,6 @@ import { Result } from '../type';
 import { sendVerificationEmail } from './verify';
 import { db } from '#database/db';
 import { subscribers } from '@/database/schema/subscribers';
-import { compareDate } from '@/utils/date/compare';
 import { z } from 'zod';
 
 export const subscribe = async (
@@ -21,21 +20,19 @@ export const subscribe = async (
 
   if (subscriber) {
     if (subscriber.isVerified) {
-      return {
-        success: false,
-        message: 'すでに登録済みのメールアドレスです',
-      };
-    }
-    if (
-      subscriber.tokenExpiresAt &&
-      compareDate(subscriber.tokenExpiresAt, new Date()) === 'less'
-    ) {
-      await sendVerificationEmail(email);
+      // すでに登録済みなので何もしない
+      // 登録済みと悟られないように送信完了を装う
       return {
         success: true,
         data: null,
       };
     }
+    // 認証済みでなければ再度招待メールを送る
+    await sendVerificationEmail(email);
+    return {
+      success: true,
+      data: null,
+    };
   }
 
   try {
