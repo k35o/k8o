@@ -4,7 +4,8 @@
     "config:recommended",
     "monorepo:storybook",
     "monorepo:react",
-    "monorepo:nextjs"
+    "monorepo:nextjs",
+    "monorepo:vitest"
   ],
   "timezone": "Asia/Tokyo",
   "prConcurrentLimit": 10,
