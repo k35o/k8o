@@ -44,11 +44,7 @@ export default defineWorkspace([
       name: 'storybook test',
       browser: {
         enabled: true,
-        instances: [
-          {
-            browser: 'chromium',
-          },
-        ],
+        name: 'chromium',
         provider: 'playwright',
         headless: true,
         screenshotFailures: false,
