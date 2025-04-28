@@ -11,6 +11,7 @@ import {
 } from './quiz-questions';
 import { quizType } from './quiz-type';
 import { quizzes, quizzesRelations } from './quzzes';
+import { subscribers } from './subscribers';
 import { tags, tagsRelations } from './tags';
 
 export const schema = {
@@ -18,6 +19,7 @@ export const schema = {
   feedbacks,
   tags,
   comments,
+  subscribers,
   // ブログ関連
   blogs,
   blogViews,
