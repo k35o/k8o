@@ -183,6 +183,13 @@
       "when": 1745210099875,
       "tag": "0025_typical_xavin",
       "breakpoints": true
+    },
+    {
+      "idx": 26,
+      "version": "7",
+      "when": 1745836482029,
+      "tag": "0026_tense_hellfire_club",
+      "breakpoints": true
     }
   ]
 }
