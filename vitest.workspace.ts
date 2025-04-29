@@ -14,10 +14,18 @@ export default defineWorkspace([
   },
   {
     extends: 'vitest.config.ts',
+    test: {
+      name: 'services test',
+      include: ['src/services/**/*.test.{ts,tsx}'],
+      includeSource: ['src/services/**/*.{ts,tsx}'],
+    },
+  },
+  {
+    extends: 'vitest.config.ts',
     plugins: [react()],
     test: {
       name: 'browser test',
-      include: ['src/!(utils)/**/*.test.{ts,tsx}'],
+      include: ['src/!(utils|services)/**/*.test.{ts,tsx}'],
       browser: {
         enabled: true,
         instances: [
