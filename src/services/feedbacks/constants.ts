@@ -1,3 +1,4 @@
+import { FeedbackType } from './type';
 import {
   BadIcon,
   BoringIcon,
@@ -9,16 +10,6 @@ import {
   ShallowIcon,
 } from '@/components/icons';
 import { FC } from 'react';
-
-export type FeedbackType =
-  | 'good'
-  | 'bad'
-  | 'interesting'
-  | 'boring'
-  | 'informative'
-  | 'shallow'
-  | 'easy'
-  | 'difficult';
 
 export const FEEDBACK_OPTIONS = [
   {
