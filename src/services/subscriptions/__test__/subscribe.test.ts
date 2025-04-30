@@ -3,7 +3,7 @@ import { sendVerificationEmail } from '../verify';
 import { db } from '#database/db';
 
 vi.mock('#database/db');
-vi.mock('@/services/subscription/verify');
+vi.mock('@/services/subscriptions/verify');
 
 describe('subscribe', () => {
   describe('subscribe', () => {
