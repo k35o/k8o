@@ -1,7 +1,7 @@
 import { Result } from '../type';
 import { db } from '#database/db';
 import { subscribers } from '@/database/schema/subscribers';
-import { sendVerificationEmail } from '@/services/subscription/verify';
+import { sendVerificationEmail } from '@/services/subscriptions/verify';
 import { z } from 'zod';
 
 export const subscribe = async (
