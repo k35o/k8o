@@ -43,7 +43,7 @@ export const sendVerificationEmail = async (
         tokenExpiresAt: new Date(Date.now() + 1000 * 2 * 60 * 60),
       })
       .where(eq(subscribers.id, subscriber.id));
-    const { error } = await resend.emails.send({
+    const { error } = await resend().emails.send({
       from: 'notifications@k8o.me',
       to: email,
       subject: 'メールアドレスの確認',

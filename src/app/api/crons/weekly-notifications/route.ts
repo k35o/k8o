@@ -64,7 +64,7 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ ok: true });
   }
 
-  const { error } = await resend.emails.send({
+  const { error } = await resend().emails.send({
     from: 'notifications@k8o.me',
     to: 'kosakanoki@gmail.com',
     subject: 'ユーザーからのお知らせ',

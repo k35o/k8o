@@ -114,7 +114,12 @@ describe('verify.ts', () => {
       const mockSend = vi.fn().mockReturnValue({
         error: null,
       });
-      vi.mocked(resend.emails.send).mockImplementation(mockSend);
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
+      vi.mocked<any>(resend).mockReturnValue({
+        emails: {
+          send: mockSend,
+        },
+      });
 
       const mockFirst = vi.fn().mockResolvedValue({
         id: 1,
