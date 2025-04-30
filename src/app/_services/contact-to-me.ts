@@ -2,19 +2,12 @@
 
 import { db } from '#database/db';
 import { comments } from '@/database/schema/comments';
-import { Ratelimit } from '@upstash/ratelimit';
-import { Redis } from '@upstash/redis';
+import { ratelimit } from '@/utils/ratelimit';
 import { z } from 'zod';
 import '@/libs/zod';
 
 const contactSchema = z.object({
   message: z.string().max(255).min(1),
-});
-
-const ratelimit = new Ratelimit({
-  redis: Redis.fromEnv(),
-  limiter: Ratelimit.slidingWindow(10, '10 s'),
-  analytics: true,
 });
 
 type Result =

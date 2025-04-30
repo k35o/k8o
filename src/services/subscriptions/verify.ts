@@ -1,13 +1,11 @@
 import { Result } from '../type';
 import { db } from '#database/db';
-import VerifyEmail from '#src/emails/verify-email.jsx';
 import { subscribers } from '@/database/schema/subscribers';
+import VerifyEmail from '@/emails/verify-email';
+import { resend } from '@/services/email';
 import { compareDate } from '@/utils/date/compare';
 import { eq } from 'drizzle-orm';
-import { Resend } from 'resend';
 import { z } from 'zod';
-
-const resend = new Resend(process.env.RESEND_API_KEY);
 
 export const sendVerificationEmail = async (
   email: string,
@@ -33,9 +31,7 @@ export const sendVerificationEmail = async (
   if (!subscriber.tokenExpiresAt || !subscriber.verificationToken) {
     return;
   }
-  if (
-    compareDate(subscriber.tokenExpiresAt, new Date()) === 'greater'
-  ) {
+  if (compareDate(subscriber.tokenExpiresAt, new Date()) === 'less') {
     return;
   }
   try {
@@ -47,7 +43,7 @@ export const sendVerificationEmail = async (
         tokenExpiresAt: new Date(Date.now() + 1000 * 2 * 60 * 60),
       })
       .where(eq(subscribers.id, subscriber.id));
-    const { error } = await resend.emails.send({
+    const { error } = await resend().emails.send({
       from: 'notifications@k8o.me',
       to: email,
       subject: 'メールアドレスの確認',
@@ -95,12 +91,15 @@ export const verifyEmail = async (
       message: '登録されていないメールアドレスです',
     };
   }
+  if (!subscriber.verificationToken || !subscriber.tokenExpiresAt) {
+    return {
+      success: false,
+      message: 'トークンが不正です',
+    };
+  }
   if (
-    (subscriber.verificationToken &&
-      subscriber.verificationToken !== token) ||
-    (subscriber.tokenExpiresAt &&
-      compareDate(subscriber.tokenExpiresAt, new Date()) ===
-        'greater')
+    subscriber.verificationToken !== token ||
+    compareDate(subscriber.tokenExpiresAt, new Date()) === 'less'
   ) {
     return {
       success: false,

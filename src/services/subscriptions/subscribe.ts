@@ -1,7 +1,7 @@
 import { Result } from '../type';
-import { sendVerificationEmail } from './verify';
 import { db } from '#database/db';
 import { subscribers } from '@/database/schema/subscribers';
+import { sendVerificationEmail } from '@/services/subscriptions/verify';
 import { z } from 'zod';
 
 export const subscribe = async (
@@ -14,7 +14,7 @@ export const subscribe = async (
     };
   }
   const subscriber = await db.query.subscribers.findFirst({
-    columns: { id: true, isVerified: true, tokenExpiresAt: true },
+    columns: { id: true, isVerified: true },
     where: (subscribers, { eq }) => eq(subscribers.email, email),
   });
 
