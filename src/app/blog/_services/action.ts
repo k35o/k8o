@@ -3,15 +3,8 @@
 import { db } from '#database/db';
 import { blogComment } from '@/database/schema/blog-comment';
 import { comments } from '@/database/schema/comments';
-import { Ratelimit } from '@upstash/ratelimit';
-import { Redis } from '@upstash/redis';
+import { ratelimit } from '@/utils/ratelimit';
 import '@/libs/zod';
-
-const ratelimit = new Ratelimit({
-  redis: Redis.fromEnv(),
-  limiter: Ratelimit.slidingWindow(10, '10 s'),
-  analytics: true,
-});
 
 type Result =
   | {
