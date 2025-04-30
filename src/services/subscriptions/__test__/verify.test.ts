@@ -197,7 +197,7 @@ describe('verify.ts', () => {
         message: 'トークンが不正です',
       });
     });
-    it('verificationTokenがない場合は何もしない', async () => {
+    it('tokenExpiresAtがない場合は何もしない', async () => {
       const mockFirst = vi.fn().mockResolvedValue({
         id: 1,
         isVerified: false,
