@@ -36,6 +36,7 @@ import {
   SendIcon,
   ShallowIcon,
   SlideIcon,
+  SubscribeIcon,
   TableIcon,
   TagIcon,
   UpdateDateIcon,
@@ -217,6 +218,10 @@ export const Primary: Story = {
         <div className="flex flex-col items-center justify-center">
           <NewsIcon />
           <p className="text-center">お知らせ</p>
+        </div>
+        <div className="flex flex-col items-center justify-center">
+          <SubscribeIcon />
+          <p className="text-center">メールの購読</p>
         </div>
         <div className="flex flex-col items-center justify-center">
           <ColorInfoIcon />
