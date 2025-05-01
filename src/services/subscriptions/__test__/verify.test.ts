@@ -160,7 +160,7 @@ describe('verify.ts', () => {
       expect(mockUpdate).not.toHaveBeenCalled();
       expect(result).toEqual({
         success: false,
-        message: 'メールアドレスが不正です',
+        message: '不正なメールアドレスです。',
       });
     });
     it('対象のsubscriberが存在しない場合は何もしない', async () => {
@@ -199,7 +199,7 @@ describe('verify.ts', () => {
       expect(mockUpdate).not.toHaveBeenCalled();
       expect(result).toEqual({
         success: false,
-        message: 'トークンが不正です',
+        message: '不正なトークンです。',
       });
     });
     it('tokenExpiresAtがない場合は何もしない', async () => {
@@ -221,7 +221,7 @@ describe('verify.ts', () => {
       expect(mockUpdate).not.toHaveBeenCalled();
       expect(result).toEqual({
         success: false,
-        message: 'トークンが不正です',
+        message: '不正なトークンです。',
       });
     });
     it('トークンが古い場合は何もしない', async () => {
@@ -242,7 +242,7 @@ describe('verify.ts', () => {
       expect(mockUpdate).not.toHaveBeenCalled();
       expect(result).toEqual({
         success: false,
-        message: 'トークンが不正です',
+        message: '不正なトークンです。',
       });
     });
     it('トークンが誤っている場合は何もしない', async () => {
@@ -266,7 +266,7 @@ describe('verify.ts', () => {
       expect(mockUpdate).not.toHaveBeenCalled();
       expect(result).toEqual({
         success: false,
-        message: 'トークンが不正です',
+        message: '不正なトークンです。',
       });
     });
     it('トークンが正しい場合はメールアドレスを確認する', async () => {
