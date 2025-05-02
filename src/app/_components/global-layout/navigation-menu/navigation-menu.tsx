@@ -41,7 +41,7 @@ export const NavigationMenu: FC = () => {
           <div className="flex flex-col gap-4 p-4">
             <div className="absolute top-2 right-2">
               <IconButton
-                aria-label="メニューを閉じる"
+                label="メニューを閉じる"
                 onClick={onClose}
                 size="lg"
               >

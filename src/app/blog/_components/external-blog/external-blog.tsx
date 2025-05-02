@@ -7,16 +7,21 @@ import { FC } from 'react';
 export const ExternalBlog: FC = () => {
   return (
     <div className="flex gap-4">
-      <IconLink href="https://qiita.com/KokiSakano" bg="base">
-        <span className="sr-only">Qiitaのアカウント</span>
+      <IconLink
+        href="https://qiita.com/KokiSakano"
+        bg="base"
+        label="Qiitaのアカウント"
+      >
         <QiitaIcon />
       </IconLink>
-      <IconLink href="https://zenn.dev/kokisakano" bg="base">
-        <span className="sr-only">Zennのアカウント</span>
+      <IconLink
+        href="https://zenn.dev/kokisakano"
+        bg="base"
+        label="Zennのアカウント"
+      >
         <ZennIcon />
       </IconLink>
-      <IconLink href="/blog/feed" bg="base" label="rss">
-        <span className="sr-only">RSSフィード</span>
+      <IconLink href="/blog/feed" bg="base" label="RSSフィード">
         <RSSIcon />
       </IconLink>
     </div>

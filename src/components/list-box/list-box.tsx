@@ -193,7 +193,7 @@ const TriggerIcon: FC<{
     <Popover.Trigger
       renderItem={(props) => (
         <IconButton
-          aria-label={label}
+          label={label}
           size={size}
           {...getTriggerProps(props)}
         >
