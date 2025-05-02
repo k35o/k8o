@@ -69,7 +69,7 @@ export const verifyEmail = async (
   if (!z.string().email().safeParse(email).success) {
     return {
       success: false,
-      message: 'メールアドレスが不正です',
+      message: '不正なメールアドレスです。',
     };
   }
   const subscriber = await db.query.subscribers.findFirst({
@@ -94,7 +94,7 @@ export const verifyEmail = async (
   if (!subscriber.verificationToken || !subscriber.tokenExpiresAt) {
     return {
       success: false,
-      message: 'トークンが不正です',
+      message: '不正なトークンです。',
     };
   }
   if (
@@ -103,7 +103,7 @@ export const verifyEmail = async (
   ) {
     return {
       success: false,
-      message: 'トークンが不正です',
+      message: '不正なトークンです。',
     };
   }
   try {
@@ -123,7 +123,7 @@ export const verifyEmail = async (
     console.log(error);
     return {
       success: false,
-      message: '登録に失敗しました',
+      message: '不明なエラーが発生しました。',
     };
   }
 };

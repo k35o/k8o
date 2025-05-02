@@ -29,6 +29,7 @@ import {
   List,
   ListMinus,
   Mail,
+  MailCheck,
   MapPin,
   Minus,
   MoonStar,
@@ -278,6 +279,17 @@ export const NewsIcon: FC<IconProps> = ({ size = 'md' }) => {
       size={size}
       renderItem={(props) => {
         return <Bell {...props} />;
+      }}
+    />
+  );
+};
+
+export const SubscribeIcon: FC<IconProps> = ({ size = 'md' }) => {
+  return (
+    <BaseIcon
+      size={size}
+      renderItem={(props) => {
+        return <MailCheck {...props} />;
       }}
     />
   );
