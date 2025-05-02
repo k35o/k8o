@@ -63,7 +63,7 @@ const Header: FC<{
       <Heading type="h3">{title}</Heading>
       <div className="absolute top-2 right-2">
         <IconButton
-          aria-label="閉じる"
+          label="閉じる"
           onClick={(e) => {
             e.stopPropagation();
             onClose();

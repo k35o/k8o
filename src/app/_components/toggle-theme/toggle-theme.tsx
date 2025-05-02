@@ -21,7 +21,10 @@ export const ToggleTheme: FC = () => {
   }, [nextTheme, setTheme]);
 
   return (
-    <IconButton onClick={handleThemeCallback}>
+    <IconButton
+      onClick={handleThemeCallback}
+      label="テーマを切り替える"
+    >
       <motion.span
         className="size-8 scale-100 dark:scale-0"
         animate={nextTheme}
@@ -54,7 +57,6 @@ export const ToggleTheme: FC = () => {
       >
         <LightModeIcon size="lg" />
       </motion.span>
-      <span className="sr-only">テーマを切り替える</span>
     </IconButton>
   );
 };

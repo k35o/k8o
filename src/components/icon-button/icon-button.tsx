@@ -12,6 +12,7 @@ export const IconButton: FC<Props> = ({
   size = 'md',
   bg = 'transparent',
   label,
+  children,
   ...props
 }) => {
   return (
@@ -29,8 +30,10 @@ export const IconButton: FC<Props> = ({
         props.disabled &&
           'hover:bgtransparent active:bgtransparent cursor-not-allowed opacity-50',
       )}
-      aria-label={label}
       {...props}
-    />
+    >
+      <span className="sr-only">{label}</span>
+      {children}
+    </button>
   );
 };
