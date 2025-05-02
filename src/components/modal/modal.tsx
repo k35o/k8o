@@ -1,4 +1,3 @@
-import { Dialog } from '../dialog';
 import {
   ComponentRef,
   PropsWithChildren,
@@ -7,10 +6,9 @@ import {
 } from 'react';
 
 export function Modal({
-  title,
   children,
   onClose,
-}: PropsWithChildren<{ title: string; onClose: () => void }>) {
+}: PropsWithChildren<{ onClose: () => void }>) {
   const dialogRef = useRef<ComponentRef<'dialog'>>(null);
 
   useEffect(() => {
@@ -38,10 +36,7 @@ export function Modal({
         e.key === 'Escape' && dialogRef.current?.close()
       }
     >
-      <Dialog.Root>
-        <Dialog.Header title={title} onClose={onDismiss} />
-        <Dialog.Content>{children}</Dialog.Content>
-      </Dialog.Root>
+      {children}
     </dialog>
   );
 }
