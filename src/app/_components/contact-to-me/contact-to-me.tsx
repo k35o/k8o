@@ -3,6 +3,7 @@
 import { contact } from '@/app/_services/contact-to-me';
 import { Anchor } from '@/components/anchor';
 import { Button } from '@/components/button';
+import { Dialog } from '@/components/dialog';
 import { FormControl } from '@/components/form/form-control';
 import { Textarea } from '@/components/form/textarea';
 import { SendIcon } from '@/components/icons';
@@ -46,14 +47,15 @@ export const ContactToMe: FC<{
           お問い合わせ
         </Button>
       )}
-      {isOpen && <ContactToMeModal onClose={onClose} />}
+      <ContactToMeModal isOpen={isOpen} onClose={onClose} />
     </>
   );
 };
 
-const ContactToMeModal: FC<{ onClose: () => void }> = ({
-  onClose,
-}) => {
+const ContactToMeModal: FC<{
+  isOpen: boolean;
+  onClose: () => void;
+}> = ({ isOpen, onClose }) => {
   const [state, formAction, pending] = useActionState(contact, {
     success: null,
     defaultValue: '',
@@ -69,45 +71,50 @@ const ContactToMeModal: FC<{ onClose: () => void }> = ({
   }, [onClose, onToastOpen, state.success]);
 
   return (
-    <Modal title="お問い合わせ" onClose={onClose}>
-      <form className="flex flex-col gap-4" action={formAction}>
-        <FormControl
-          label="不具合やご要望をご記入ください"
-          isInvalid={state.success === false}
-          errorText={
-            state.success === false ? state.message : undefined
-          }
-          helpText="255文字以内で入力してください"
-          renderInput={({
-            id,
-            describedbyId,
-            isDisabled,
-            isInvalid,
-          }) => (
-            <Textarea
-              id={id}
-              name="message"
-              defaultValue={state.defaultValue}
-              describedbyId={describedbyId}
-              isDisabled={isDisabled}
-              isInvalid={isInvalid}
-              isRequired={true}
-              rows={5}
+    <Modal isOpen={isOpen} onClose={onClose}>
+      <Dialog.Root>
+        <Dialog.Header title="お問い合わせ" onClose={onClose} />
+        <Dialog.Content>
+          <form className="flex flex-col gap-4" action={formAction}>
+            <FormControl
+              label="不具合やご要望をご記入ください"
+              isInvalid={state.success === false}
+              errorText={
+                state.success === false ? state.message : undefined
+              }
+              helpText="255文字以内で入力してください"
+              renderInput={({
+                id,
+                describedbyId,
+                isDisabled,
+                isInvalid,
+              }) => (
+                <Textarea
+                  id={id}
+                  name="message"
+                  defaultValue={state.defaultValue}
+                  describedbyId={describedbyId}
+                  isDisabled={isDisabled}
+                  isInvalid={isInvalid}
+                  isRequired={true}
+                  rows={5}
+                />
+              )}
             />
-          )}
-        />
-        <p className="self-end text-sm">
-          <Anchor href="https://github.com/k35o/k8o/issues/new">
-            GitHub&nbsp;Issue
-          </Anchor>
-          からのお問い合わせもお待ちしております。
-        </p>
-        <div className="w-full">
-          <Button type="submit" fullWidth disabled={pending}>
-            送信
-          </Button>
-        </div>
-      </form>
+            <p className="self-end text-sm">
+              <Anchor href="https://github.com/k35o/k8o/issues/new">
+                GitHub&nbsp;Issue
+              </Anchor>
+              からのお問い合わせもお待ちしております。
+            </p>
+            <div className="w-full">
+              <Button type="submit" fullWidth disabled={pending}>
+                送信
+              </Button>
+            </div>
+          </form>
+        </Dialog.Content>
+      </Dialog.Root>
     </Modal>
   );
 };

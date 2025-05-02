@@ -1,47 +1,74 @@
-import { Dialog } from '../dialog';
+import { cn } from '@/utils/cn';
 import {
-  ComponentRef,
+  FC,
   PropsWithChildren,
+  RefObject,
+  useCallback,
   useEffect,
   useRef,
+  useState,
 } from 'react';
 
-export function Modal({
-  title,
-  children,
+export const Modal: FC<
+  PropsWithChildren<{
+    ref?: RefObject<HTMLDialogElement | null>;
+    type?: 'center' | 'bottom';
+    defaultOpen?: boolean;
+    isOpen?: boolean;
+    onClose?: () => void;
+  }>
+> = ({
+  ref,
+  type = 'center',
+  defaultOpen,
+  isOpen,
   onClose,
-}: PropsWithChildren<{ title: string; onClose: () => void }>) {
-  const dialogRef = useRef<ComponentRef<'dialog'>>(null);
+  children,
+}) => {
+  const dialogRef = useRef<HTMLDialogElement>(null);
+  const [dialogOpen, setDialogOpen] = useState(defaultOpen ?? false);
+
+  const realDialogOpen =
+    isOpen === true || isOpen === false ? isOpen : dialogOpen;
+  const realOnClose = useCallback(() => {
+    onClose?.();
+    if (isOpen === undefined) {
+      return;
+    }
+    setDialogOpen(false);
+  }, [isOpen, onClose]);
+  const realRef = ref ?? dialogRef;
 
   useEffect(() => {
-    if (!dialogRef.current?.open) {
-      dialogRef.current?.showModal();
+    if (realDialogOpen === realRef.current?.open) {
+      return;
     }
-  }, []);
-
-  function onDismiss() {
-    onClose();
-  }
+    if (realDialogOpen) {
+      realRef.current?.showModal();
+    } else {
+      realRef.current?.close();
+    }
+  }, [realDialogOpen]);
 
   return (
-    // eslint-disable-next-line jsx-a11y/no-noninteractive-element-interactions -- https://github.com/jsx-eslint/eslint-plugin-jsx-a11y/pull/940待ち
+    // eslint-disable-next-line jsx-a11y/no-noninteractive-element-interactions, jsx-a11y/click-events-have-key-events -- https://github.com/jsx-eslint/eslint-plugin-jsx-a11y/pull/940待ち
     <dialog
-      ref={dialogRef}
-      className="max-h-lg bg-bg-base border-border-mute backdrop:bg-back-drop m-auto w-5/6 max-w-2xl rounded-lg shadow-xl dark:border"
-      onClose={onDismiss}
+      ref={realRef}
+      className={cn(
+        'bg-bg-base border-border-mute backdrop:bg-back-drop shadow-xl',
+        type === 'center' &&
+          'max-h-lg m-auto w-5/6 max-w-2xl rounded-lg dark:border',
+        type === 'bottom' &&
+          'mt-auto w-screen max-w-screen rounded-t-lg dark:border-t',
+      )}
+      onClose={realOnClose}
       onClick={(e) => {
         if (e.target === e.currentTarget) {
-          dialogRef.current?.close();
+          realRef.current?.close();
         }
       }}
-      onKeyDown={(e) =>
-        e.key === 'Escape' && dialogRef.current?.close()
-      }
     >
-      <Dialog.Root>
-        <Dialog.Header title={title} onClose={onDismiss} />
-        <Dialog.Content>{children}</Dialog.Content>
-      </Dialog.Root>
+      {children}
     </dialog>
   );
-}
+};

@@ -1,5 +1,6 @@
 'use client';
 
+import { Dialog } from '@/components/dialog';
 import { Modal } from '@/components/modal';
 import { useRouter } from 'next/navigation';
 import { PropsWithChildren } from 'react';
@@ -12,12 +13,20 @@ export function NewsModal({
 
   return (
     <Modal
-      title={title}
+      defaultOpen={true}
       onClose={() => {
         router.back();
       }}
     >
-      {children}
+      <Dialog.Root>
+        <Dialog.Header
+          title={title}
+          onClose={() => {
+            router.back();
+          }}
+        />
+        <Dialog.Content>{children}</Dialog.Content>
+      </Dialog.Root>
     </Modal>
   );
 }

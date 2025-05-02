@@ -1,5 +1,6 @@
 import { Dialog } from './dialog';
 import { Button } from '../button';
+import { Modal } from '../modal';
 import { Popover, useOpenContext } from '../popover';
 import type { Meta, StoryObj } from '@storybook/react';
 import { fn } from '@storybook/test';
@@ -48,5 +49,16 @@ export const PopoverDialog: Story = {
         renderItem={(props) => <StoryDialog {...props} />}
       />
     </Popover.Root>
+  ),
+};
+
+export const ModalDialog: Story = {
+  render: () => (
+    <Modal onClose={fn}>
+      <Dialog.Root>
+        <Dialog.Header title="モーダル" onClose={fn} />
+        <Dialog.Content>こんにちは</Dialog.Content>
+      </Dialog.Root>
+    </Modal>
   ),
 };
