@@ -6,38 +6,29 @@ import { ToggleTheme } from '../../toggle-theme';
 import { NewsLink } from '../news-link';
 import { IconButton } from '@/components/icon-button';
 import { CloseIcon, NavigationMenuIcon } from '@/components/icons';
+import { Modal } from '@/components/modal';
 import { PortalRootProvider } from '@/providers/poratl-root';
 import { FC, useRef } from 'react';
 
 export const NavigationMenu: FC = () => {
-  const dialogRef = useRef<HTMLDialogElement>(null);
+  const ref = useRef<HTMLDialogElement>(null);
 
   const onClose = () => {
-    dialogRef.current?.close();
+    ref.current?.close();
   };
-
   return (
     <>
       <IconButton
         label="メニューを表示する"
         onClick={() => {
-          dialogRef.current?.showModal();
+          ref.current?.showModal();
         }}
         size="lg"
       >
         <NavigationMenuIcon />
       </IconButton>
-      {/* eslint-disable-next-line jsx-a11y/no-noninteractive-element-interactions, jsx-a11y/click-events-have-key-events -- https://github.com/jsx-eslint/eslint-plugin-jsx-a11y/pull/940待ち */}
-      <dialog
-        ref={dialogRef}
-        className="bg-bg-base border-border-mute backdrop:bg-back-drop mt-auto w-screen max-w-screen rounded-t-lg shadow-xl dark:border-t"
-        onClick={(e) => {
-          if (e.target === e.currentTarget) {
-            onClose();
-          }
-        }}
-      >
-        <PortalRootProvider value={dialogRef}>
+      <Modal type="bottom" ref={ref}>
+        <PortalRootProvider value={ref}>
           <div className="flex flex-col gap-4 p-4">
             <div className="absolute top-2 right-2">
               <IconButton
@@ -67,7 +58,7 @@ export const NavigationMenu: FC = () => {
             </div>
           </div>
         </PortalRootProvider>
-      </dialog>
+      </Modal>
     </>
   );
 };

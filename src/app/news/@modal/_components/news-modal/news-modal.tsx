@@ -13,6 +13,7 @@ export function NewsModal({
 
   return (
     <Modal
+      defaultOpen={true}
       onClose={() => {
         router.back();
       }}

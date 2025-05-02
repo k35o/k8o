@@ -47,14 +47,15 @@ export const ContactToMe: FC<{
           お問い合わせ
         </Button>
       )}
-      {isOpen && <ContactToMeModal onClose={onClose} />}
+      <ContactToMeModal isOpen={isOpen} onClose={onClose} />
     </>
   );
 };
 
-const ContactToMeModal: FC<{ onClose: () => void }> = ({
-  onClose,
-}) => {
+const ContactToMeModal: FC<{
+  isOpen: boolean;
+  onClose: () => void;
+}> = ({ isOpen, onClose }) => {
   const [state, formAction, pending] = useActionState(contact, {
     success: null,
     defaultValue: '',
@@ -70,7 +71,7 @@ const ContactToMeModal: FC<{ onClose: () => void }> = ({
   }, [onClose, onToastOpen, state.success]);
 
   return (
-    <Modal onClose={onClose}>
+    <Modal isOpen={isOpen} onClose={onClose}>
       <Dialog.Root>
         <Dialog.Header title="お問い合わせ" onClose={onClose} />
         <Dialog.Content>
