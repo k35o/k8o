@@ -28,8 +28,8 @@ export const IconLink: FC<IconLinkProps> = ({
         size === 'lg' && 'p-3',
       )}
       href={href}
-      aria-label={label}
     >
+      <span className="sr-only">{label}</span>
       {children}
     </Link>
   ) : (
@@ -45,8 +45,8 @@ export const IconLink: FC<IconLinkProps> = ({
       target="_blank"
       rel="noopener noreferrer"
       href={href}
-      aria-label={label}
     >
+      <span className="sr-only">{label}</span>
       {children}
     </a>
   );

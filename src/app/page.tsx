@@ -26,16 +26,22 @@ export default function Home() {
               <Heading type="h3">k8o</Heading>
               <div className="flex items-center justify-end gap-1">
                 <EmailTooltip />
-                <IconLink href="https://github.com/k35o">
-                  <span className="sr-only">GitHubのアカウント</span>
+                <IconLink
+                  href="https://github.com/k35o"
+                  label="GitHubのアカウント"
+                >
                   <GitHubIcon />
                 </IconLink>
-                <IconLink href="https://qiita.com/KokiSakano">
-                  <span className="sr-only">Qiitaのアカウント</span>
+                <IconLink
+                  href="https://qiita.com/KokiSakano"
+                  label="Qiitaのアカウント"
+                >
                   <QiitaIcon />
                 </IconLink>
-                <IconLink href="https://zenn.dev/kokisakano">
-                  <span className="sr-only">Zennのアカウント</span>
+                <IconLink
+                  href="https://zenn.dev/kokisakano"
+                  label="Zennのアカウント"
+                >
                   <ZennIcon />
                 </IconLink>
               </div>
