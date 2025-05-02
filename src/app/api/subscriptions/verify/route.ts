@@ -13,7 +13,7 @@ export async function GET(request: Request) {
   const result = await verifyEmail(email, token);
 
   if (!result.success) {
-    return redirect(
+    redirect(
       `/subscriptions?status=false&message=${encodeURIComponent(result.message)}`,
     );
   }
