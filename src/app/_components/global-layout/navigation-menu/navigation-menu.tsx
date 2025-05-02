@@ -19,7 +19,7 @@ export const NavigationMenu: FC = () => {
   return (
     <>
       <IconButton
-        aria-label="メニューを表示する"
+        label="メニューを表示する"
         onClick={() => {
           dialogRef.current?.showModal();
         }}

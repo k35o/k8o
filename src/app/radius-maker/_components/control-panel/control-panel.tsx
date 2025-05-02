@@ -31,7 +31,6 @@ const OperateButton: FC<{
 }) => {
   return (
     <button
-      aria-label={label}
       className={cn(
         'border-border-base absolute size-4 border',
         variable === 'primary' && 'bg-group-primary',
@@ -47,7 +46,9 @@ const OperateButton: FC<{
       onTouchStart={onTouchStart}
       onKeyDown={onKeyDown}
       style={position}
-    />
+    >
+      <span className="sr-only">{label}</span>
+    </button>
   );
 };
 

@@ -167,7 +167,6 @@ const Trigger: FC<{
     <Popover.Trigger
       renderItem={(props) => (
         <Button
-          aria-label={label}
           type="button"
           size={size}
           color="gray"

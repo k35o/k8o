@@ -123,7 +123,6 @@ export const NumberField: FC<Props> = ({
       >
         <button
           type="button"
-          aria-label="増やす"
           tabIndex={-1}
           onClick={() => {
             const newValue = between(
@@ -143,12 +142,12 @@ export const NumberField: FC<Props> = ({
           )}
           disabled={isDisabled}
         >
+          <span className="sr-only">増やす</span>
           <PlusIcon size="sm" />
         </button>
         <button
           type="button"
           tabIndex={-1}
-          aria-label="減らす"
           onClick={() => {
             const newValue = between(
               toPrecision(
@@ -167,6 +166,7 @@ export const NumberField: FC<Props> = ({
           )}
           disabled={isDisabled}
         >
+          <span className="sr-only">減らす</span>
           <MinusIcon size="sm" />
         </button>
       </div>
