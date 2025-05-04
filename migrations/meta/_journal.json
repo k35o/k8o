@@ -190,6 +190,20 @@
       "when": 1745836482029,
       "tag": "0026_tense_hellfire_club",
       "breakpoints": true
+    },
+    {
+      "idx": 27,
+      "version": "7",
+      "when": 1746344385711,
+      "tag": "0027_bored_daimon_hellstrom",
+      "breakpoints": true
+    },
+    {
+      "idx": 28,
+      "version": "7",
+      "when": 1746344398106,
+      "tag": "0028_charming_texas_twister",
+      "breakpoints": true
     }
   ]
 }

@@ -3,6 +3,7 @@ import { blogTag } from './blog-tag';
 import { blogViews } from './blog-views';
 import { relations } from 'drizzle-orm';
 import {
+  boolean,
   pgTable,
   serial,
   text,
@@ -15,6 +16,7 @@ export const blogs = pgTable(
   {
     id: serial('id').primaryKey(),
     slug: text('slug').notNull(),
+    published: boolean('published').notNull(),
     createdAt: timestamp('created_at', { withTimezone: true })
       .notNull()
       .defaultNow(),
