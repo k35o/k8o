@@ -79,7 +79,11 @@ export const getBlogsByTags = cache(async (slug: string) => {
 
   const blogs = await db.query.blogs.findMany({
     where: (blogs, { not, eq, inArray, and }) =>
-      and(not(eq(blogs.slug, slug)), inArray(blogs.id, blogIds)),
+      and(
+        not(eq(blogs.slug, slug)),
+        inArray(blogs.id, blogIds),
+        eq(blogs.published, true),
+      ),
     with: {
       blogTag: {
         with: {
