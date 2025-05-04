@@ -117,7 +117,7 @@
     "@vitest/ui": "3.1.1",
     "axe-playwright": "2.1.0",
     "chromatic": "11.28.2",
-    "drizzle-kit": "0.31.0",
+    "drizzle-kit": "0.31.1",
     "eslint": "9.26.0",
     "eslint-config-next": "15.3.1",
     "eslint-config-prettier": "10.1.2",
