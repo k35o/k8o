@@ -1,1 +1,1 @@
-ALTER TABLE "blogs" ADD COLUMN "published" boolean DEFAULT false NOT NULL;
+ALTER TABLE "blogs" ADD COLUMN "published" boolean DEFAULT true NOT NULL;
