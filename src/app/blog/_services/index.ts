@@ -20,6 +20,7 @@ export const getBlogs = cache(async () => {
         },
       },
     },
+    where: (blogs, { eq }) => eq(blogs.published, true),
     limit: 50,
     orderBy(fields, operators) {
       return operators.desc(fields.createdAt);
