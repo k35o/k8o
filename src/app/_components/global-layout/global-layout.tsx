@@ -3,7 +3,7 @@ import { ContactToMe } from '../contact-to-me';
 import { NewsLink } from './news-link';
 import { ToggleTheme } from '../toggle-theme';
 import { NavigationMenu } from './navigation-menu';
-import { Heading } from '@/components/heading';
+import { Logo } from '@/components/icons/logo';
 import { formatDate } from '@/utils/date/format';
 import Link from 'next/link';
 import { FC, ReactNode } from 'react';
@@ -17,7 +17,10 @@ export const GlobalLayout: FC<{ children: ReactNode }> = ({
         <div className="bg-bg-base/60 flex w-full max-w-5xl items-center justify-between rounded-full px-8 py-2 shadow-md backdrop-blur-md">
           <div className="flex items-center gap-4">
             <Link href="/">
-              <Heading type="h1">k8o</Heading>
+              <h1>
+                <span className="sr-only">k8o</span>
+                <Logo className="h-10" />
+              </h1>
             </Link>
             <div className="hidden items-center gap-2 sm:flex">
               <NewsLink />

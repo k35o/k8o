@@ -219,7 +219,7 @@ export const SEMANTIC_COLOR_VARIANTS = {
         dark: 'teal.300',
       },
       bg: {
-        light: 'teal.400',
+        light: 'teal.300',
         dark: 'teal.700',
       },
       bgSubtle: {
@@ -245,7 +245,7 @@ export const SEMANTIC_COLOR_VARIANTS = {
         dark: 'cyan.300',
       },
       bg: {
-        light: 'cyan.400',
+        light: 'cyan.300',
         dark: 'cyan.700',
       },
       bgSubtle: {
