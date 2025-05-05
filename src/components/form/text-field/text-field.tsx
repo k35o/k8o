@@ -3,14 +3,21 @@ import { ChangeEventHandler, FC } from 'react';
 
 type Props = {
   id?: string;
+  name?: string;
   describedbyId?: string | undefined;
   isInvalid: boolean;
   isDisabled: boolean;
   isRequired: boolean;
-  value: string;
-  onChange: ChangeEventHandler<HTMLInputElement>;
   placeholder?: string;
-};
+} & (
+  | {
+      defaultValue?: string;
+    }
+  | {
+      value: string;
+      onChange: ChangeEventHandler<HTMLInputElement>;
+    }
+);
 
 export const TextField: FC<Props> = ({
   id,
@@ -18,9 +25,8 @@ export const TextField: FC<Props> = ({
   isInvalid,
   isDisabled,
   isRequired,
-  value,
-  onChange,
   placeholder,
+  ...props
 }) => {
   return (
     <input
@@ -29,8 +35,6 @@ export const TextField: FC<Props> = ({
       aria-invalid={isInvalid}
       aria-required={isRequired}
       type="text"
-      value={value}
-      onChange={onChange}
       className={cn(
         'border-border-base bg-bg-base w-full rounded-md border px-3 py-2',
         'aria-invalid:border-border-error',
@@ -39,6 +43,7 @@ export const TextField: FC<Props> = ({
       )}
       placeholder={placeholder}
       disabled={isDisabled}
+      {...props}
     />
   );
 };
