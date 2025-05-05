@@ -1,5 +1,6 @@
 import { ArteOdyssey } from './arte-odyssey';
 import { GitHubIcon } from './github-mark';
+import { LogoIcon } from './logo';
 import {
   AlertIcon,
   BadIcon,
@@ -59,6 +60,10 @@ export const Primary: Story = {
   render: () => {
     return (
       <div className="grid-cols-auto-fit-36 grid place-items-center gap-4">
+        <div className="flex flex-col items-center justify-center">
+          <LogoIcon />
+          <p className="text-center">Logo</p>
+        </div>
         <div className="flex flex-col items-center justify-center">
           <CloseIcon />
           <p className="text-center">Close</p>
