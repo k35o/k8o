@@ -142,14 +142,14 @@ body:has(dialog[open]) {
   --border-error: var(--red-500);
 
   --primary-fg: var(--teal-700);
-  --primary-bg: var(--teal-400);
+  --primary-bg: var(--teal-300);
   --primary-bg-subtle: var(--teal-100);
   --primary-bg-mute: var(--teal-200);
   --primary-bg-emphasize: var(--teal-300);
   --primary-border: var(--teal-600);
 
   --secondary-fg: var(--cyan-700);
-  --secondary-bg: var(--cyan-400);
+  --secondary-bg: var(--cyan-300);
   --secondary-bg-subtle: var(--cyan-100);
   --secondary-bg-mute: var(--cyan-200);
   --secondary-bg-emphasize: var(--cyan-300);
