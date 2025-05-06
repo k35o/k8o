@@ -12,7 +12,7 @@ import {
 export const Modal: FC<
   PropsWithChildren<{
     ref?: RefObject<HTMLDialogElement | null>;
-    type?: 'center' | 'bottom';
+    type?: 'center' | 'bottom' | 'right';
     defaultOpen?: boolean;
     isOpen?: boolean;
     onClose?: () => void;
@@ -60,6 +60,8 @@ export const Modal: FC<
           'max-h-lg m-auto w-5/6 max-w-2xl rounded-lg dark:border',
         type === 'bottom' &&
           'mt-auto w-screen max-w-screen rounded-t-lg dark:border-t',
+        type === 'right' &&
+          'ml-auto min-h-screen w-screen max-w-sm rounded-l-lg dark:border-l',
       )}
       onClose={realOnClose}
       onClick={(e) => {
