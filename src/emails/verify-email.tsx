@@ -21,7 +21,7 @@ const VerifyEmail = ({ email, token, expiresAt }: Props) => {
   return (
     <Html>
       <Head />
-      <Preview>メールアドレスの確認</Preview>
+      <Preview>メールアドレス確認のお願い</Preview>
       <Tailwind>
         <Body
           className="m-auto p-[16px]"
@@ -32,16 +32,19 @@ const VerifyEmail = ({ email, token, expiresAt }: Props) => {
         >
           <Container className="mx-auto my-[40px] rounded-xl bg-white p-[16px] text-[#18181b]">
             <Heading className="text-fg-base text-center text-2xl font-bold">
-              k8o.meを購読いただきありがとうございます
+              【k8o.me】購読確認メール
             </Heading>
             <Text className="m-0 text-center text-base font-normal">
-              メールアドレスの確認を行うため、下記のリンクをクリックしてください
+              ブログの購読を登録いただきありがとうございます。
+            </Text>
+            <Text className="m-0 text-center text-base font-normal">
+              以下のリンクをクリックすることで手続きが完了します。
             </Text>
             <Link
               href={`${process.env.NODE_ENV === 'production' ? 'https' : 'http'}://${process.env.VERCEL_URL ?? 'www.k8o.me'}/api/subscriptions/verify?email=${encodeURIComponent(email)}&token=${token}`}
               className="m-4 mb-1 block rounded-lg bg-blue-500 px-4 py-2 text-center text-white hover:bg-blue-600"
             >
-              メールアドレスを確認する
+              購読を確認する
             </Link>
             <Text className="mx-4 my-0 text-sm text-[#3f3f46]">
               ※このリンクの有効期限は
@@ -49,15 +52,13 @@ const VerifyEmail = ({ email, token, expiresAt }: Props) => {
               です。
             </Text>
             <Text className="mx-4 my-0 text-sm text-[#3f3f46]">
-              ※期限を過ぎた場合は、お手数ですが再度ご登録をお願いいたします。
+              ※期限を過ぎた場合は、お手数ですが再度ご登録の程お願いいたします。
             </Text>
-            <Text className="text-center">
-              このメールにお心当たりがない場合は、誤って送信された可能性があります。
-              <br />
-              その際はお手数ですが、このメールを破棄してください。
+            <Text className="text-sm">
+              このメールに覚えがない場合は、破棄してください。
             </Text>
-            <Text className="text-center">
-              ご不明点がありましたら、このメールに返信する形でお問い合わせください
+            <Text className="text-sm">
+              お問い合わせは、このメールにご返信ください。
             </Text>
           </Container>
         </Body>

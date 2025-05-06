@@ -40,7 +40,7 @@ export const sendVerificationEmail = async (
     const { error } = await resend().emails.send({
       from: 'notifications@k8o.me',
       to: email,
-      subject: 'メールアドレスの確認',
+      subject: 'メールアドレス確認のお願い',
       react: VerifyEmail({
         email,
         token: verificationToken,
