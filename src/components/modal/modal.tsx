@@ -1,5 +1,7 @@
 import { ToastProvider } from '../toast';
 import { cn } from '@/utils/cn';
+import { Variants } from 'motion/react';
+import * as motion from 'motion/react-client';
 import {
   FC,
   PropsWithChildren,
@@ -10,8 +12,65 @@ import {
   useState,
 } from 'react';
 
+const centerVariants: Variants = {
+  open: {
+    opacity: 1,
+    scale: 1,
+    transition: {
+      duration: 0.2,
+      ease: [0.4, 0, 0.2, 1],
+    },
+  },
+  closed: {
+    opacity: 0,
+    scale: 0.9,
+    transition: {
+      duration: 0.2,
+      ease: [0.4, 0, 0.2, 1],
+    },
+  },
+};
+
+const bottomVariants: Variants = {
+  open: {
+    opacity: 1,
+    y: 0,
+    transition: {
+      duration: 0.2,
+      ease: [0.4, 0, 0.2, 1],
+    },
+  },
+  closed: {
+    opacity: 0,
+    y: '100%',
+    transition: {
+      duration: 0.2,
+      ease: [0.4, 0, 0.2, 1],
+    },
+  },
+};
+const rightVariants: Variants = {
+  open: {
+    opacity: 1,
+    x: 0,
+    transition: {
+      duration: 0.3,
+      ease: [0.4, 0, 0.2, 1],
+    },
+  },
+  closed: {
+    opacity: 0,
+    x: '100%',
+    transition: {
+      duration: 0.3,
+      ease: [0.4, 0, 0.2, 1],
+    },
+  },
+};
+
 export const Modal: FC<
   PropsWithChildren<{
+    // TODO: 外部のref.current.showModal()にrealDialogOpenが追従するようにする
     ref?: RefObject<HTMLDialogElement | null>;
     type?: 'center' | 'bottom' | 'right';
     defaultOpen?: boolean;
@@ -52,9 +111,18 @@ export const Modal: FC<
   }, [realDialogOpen]);
 
   return (
-    // eslint-disable-next-line jsx-a11y/no-noninteractive-element-interactions, jsx-a11y/click-events-have-key-events -- https://github.com/jsx-eslint/eslint-plugin-jsx-a11y/pull/940待ち
-    <dialog
+    <motion.dialog
       ref={realRef}
+      animate={realDialogOpen ? 'open' : 'closed'}
+      initial="closed"
+      exit="closed"
+      variants={
+        type === 'center'
+          ? centerVariants
+          : type === 'bottom'
+            ? bottomVariants
+            : rightVariants
+      }
       className={cn(
         'bg-bg-base border-border-mute backdrop:bg-back-drop shadow-xl',
         type === 'center' &&
@@ -74,6 +142,6 @@ export const Modal: FC<
       <ToastProvider portalRef={realRef} position="absolute">
         {children}
       </ToastProvider>
-    </dialog>
+    </motion.dialog>
   );
 };

@@ -8,26 +8,28 @@ import { IconButton } from '@/components/icon-button';
 import { CloseIcon, NavigationMenuIcon } from '@/components/icons';
 import { Modal } from '@/components/modal';
 import { PortalRootProvider } from '@/providers/poratl-root';
-import { FC, useRef } from 'react';
+import { FC, useCallback, useRef, useState } from 'react';
 
 export const NavigationMenu: FC = () => {
   const ref = useRef<HTMLDialogElement>(null);
+  const [open, setOpen] = useState(false);
 
-  const onClose = () => {
-    ref.current?.close();
-  };
+  const onClose = useCallback(() => {
+    setOpen(false);
+  }, []);
+
   return (
     <>
       <IconButton
         label="メニューを表示する"
         onClick={() => {
-          ref.current?.showModal();
+          setOpen(true);
         }}
         size="lg"
       >
         <NavigationMenuIcon />
       </IconButton>
-      <Modal type="bottom" ref={ref}>
+      <Modal type="bottom" ref={ref} isOpen={open} onClose={onClose}>
         <PortalRootProvider value={ref}>
           <div className="flex flex-col gap-4 p-4">
             <div className="absolute top-2 right-2">
