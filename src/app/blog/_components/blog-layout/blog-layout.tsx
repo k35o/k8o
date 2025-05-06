@@ -3,6 +3,7 @@ import { Recommend } from './recommend';
 import { TableOfContext } from './table-of-context';
 import { Tags } from './tags';
 import { ViewCounter } from './view-counter';
+import { Subscribe } from '../subscribe';
 import { ViewTransition } from '#libs/react';
 import { getBlogMetadata } from '#services/blog';
 import {
@@ -98,6 +99,7 @@ export const BlogLayout: FC<{
           <TableOfContext slug={slug} />
         </div>
       </ErrorBoundary>
+      <Subscribe reading />
       <ScrollLinked />
     </div>
   );

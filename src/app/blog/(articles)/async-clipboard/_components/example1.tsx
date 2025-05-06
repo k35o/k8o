@@ -71,7 +71,7 @@ export const Example1: FC = () => {
         </p>
       </div>
       <FormControl
-        renderInput={(props) => (
+        renderInput={({ labelId: _, ...props }) => (
           <TextField
             value={text}
             onChange={(e) => {

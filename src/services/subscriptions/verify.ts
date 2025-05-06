@@ -17,8 +17,6 @@ export const sendVerificationEmail = async (
     columns: {
       id: true,
       isVerified: true,
-      verificationToken: true,
-      tokenExpiresAt: true,
     },
     where: (subscribers, { eq }) => eq(subscribers.email, email),
   });
@@ -28,29 +26,25 @@ export const sendVerificationEmail = async (
   if (subscriber.isVerified) {
     return;
   }
-  if (!subscriber.tokenExpiresAt || !subscriber.verificationToken) {
-    return;
-  }
-  if (compareDate(subscriber.tokenExpiresAt, new Date()) === 'less') {
-    return;
-  }
   try {
+    const verificationToken = crypto.randomUUID();
+    const tokenExpiresAt = new Date(Date.now() + 1000 * 2 * 60 * 60);
     await db
       .update(subscribers)
       .set({
-        verificationToken: crypto.randomUUID(),
+        verificationToken,
         // 2時間後に期限切れ
-        tokenExpiresAt: new Date(Date.now() + 1000 * 2 * 60 * 60),
+        tokenExpiresAt,
       })
       .where(eq(subscribers.id, subscriber.id));
     const { error } = await resend().emails.send({
       from: 'notifications@k8o.me',
       to: email,
-      subject: 'メールアドレスの確認',
+      subject: 'メールアドレス確認のお願い',
       react: VerifyEmail({
         email,
-        token: subscriber.verificationToken,
-        expiresAt: subscriber.tokenExpiresAt,
+        token: verificationToken,
+        expiresAt: tokenExpiresAt,
       }),
     });
     if (error) {

@@ -6,6 +6,7 @@ import {
   Annoyed,
   Bell,
   Blend,
+  Bookmark,
   BookText,
   Calendar,
   Check,
@@ -29,7 +30,6 @@ import {
   List,
   ListMinus,
   Mail,
-  MailCheck,
   MapPin,
   Minus,
   MoonStar,
@@ -289,7 +289,7 @@ export const SubscribeIcon: FC<IconProps> = ({ size = 'md' }) => {
     <BaseIcon
       size={size}
       renderItem={(props) => {
-        return <MailCheck {...props} />;
+        return <Bookmark {...props} />;
       }}
     />
   );

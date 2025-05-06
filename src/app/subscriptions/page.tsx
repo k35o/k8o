@@ -23,7 +23,9 @@ export default async function Page({
         <div className="flex flex-col items-center justify-center gap-4">
           <Heading type="h2">購読に失敗しました</Heading>
           <p>
-            {message ?? '不明なエラーが発生しました。'}
+            {decodeURIComponent(
+              message ?? '不明なエラーが発生しました。',
+            )}
             <br />
             お手数ですが、再度ご登録をお願いいたします。
           </p>
