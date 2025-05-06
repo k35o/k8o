@@ -1,7 +1,7 @@
 'use client';
 
 import { Anchor } from '@/components/anchor/anchor';
-import { Button } from '@/components/button';
+import { IconButton } from '@/components/icon-button';
 import { CopyIcon, RSSIcon } from '@/components/icons';
 import { useClipboard } from '@/hooks/clipboard';
 import { FC } from 'react';
@@ -16,14 +16,15 @@ export const RssPanel: FC = () => {
       </p>
       <div className="bg-bg-mute flex w-full items-center justify-between gap-2 rounded-md p-2">
         <p>https://k8o.me/blog/feed</p>
-        <Button
-          startIcon={<CopyIcon />}
+        <IconButton
+          label="コピー"
+          bg="base"
           onClick={() => {
             void writeClipboard('https://k8o.me/blog/feed');
           }}
         >
-          コピー
-        </Button>
+          <CopyIcon />
+        </IconButton>
       </div>
       <Anchor href="/blog/feed">
         <span className="flex items-center gap-2">
