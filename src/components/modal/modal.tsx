@@ -1,3 +1,4 @@
+import { ToastProvider } from '../toast';
 import { cn } from '@/utils/cn';
 import {
   FC,
@@ -70,7 +71,9 @@ export const Modal: FC<
         }
       }}
     >
-      {children}
+      <ToastProvider portalRef={realRef} position="absolute">
+        {children}
+      </ToastProvider>
     </dialog>
   );
 };

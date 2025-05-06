@@ -2,6 +2,7 @@
 
 import { Toast } from './toast';
 import { Status } from '@/types';
+import { cn } from '@/utils/cn';
 import { uuidV4 } from '@/utils/uuid-v4';
 import { AnimatePresence, Variants } from 'motion/react';
 import * as motion from 'motion/react-client';
@@ -16,6 +17,7 @@ import {
   useEffect,
   useRef,
   useState,
+  RefObject,
 } from 'react';
 import { createPortal } from 'react-dom';
 
@@ -92,9 +94,12 @@ const toastMotionVariants: Variants = {
   },
 };
 
-export const ToastProvider: FC<PropsWithChildren> = ({
-  children,
-}) => {
+export const ToastProvider: FC<
+  PropsWithChildren<{
+    portalRef?: RefObject<HTMLElement | null>;
+    position?: 'fixed' | 'absolute';
+  }>
+> = ({ children, portalRef = null, position = 'fixed' }) => {
   const [toasts, setToasts] = useState<ToastType[]>([]);
   const ref = useRef<HTMLElement | null>(null);
 
@@ -102,16 +107,22 @@ export const ToastProvider: FC<PropsWithChildren> = ({
     ref.current = document.body;
   }, []);
 
+  const container = portalRef?.current ?? ref.current;
+
   return (
     <SetToastContext value={setToasts}>
       {children}
-      {ref.current
+      {container
         ? createPortal(
             <div
               role="region"
               aria-live="polite"
               aria-label="通知"
-              className="fixed bottom-3 z-50 flex w-full flex-col items-center justify-center gap-4"
+              className={cn(
+                'absolute bottom-3 z-50 flex w-full flex-col items-center justify-center gap-4',
+                position === 'fixed' && 'fixed',
+                position === 'absolute' && 'absolute',
+              )}
             >
               <AnimatePresence initial={false}>
                 {toasts.map((toast) => (
@@ -135,7 +146,7 @@ export const ToastProvider: FC<PropsWithChildren> = ({
                 ))}
               </AnimatePresence>
             </div>,
-            ref.current,
+            container,
           )
         : null}
     </SetToastContext>
