@@ -58,8 +58,8 @@ export const Button: FC<
         startIcon && endIcon
           ? 'justify-between'
           : startIcon && variant !== 'skeleton'
-          ? 'justify-center'
-          : endIcon && 'justify-between',
+            ? 'justify-center'
+            : endIcon && 'justify-between',
       )}
       disabled={disabled}
       onClick={onClick}
