@@ -34,10 +34,10 @@ const VerifyEmail = ({ email, token, expiresAt }: Props) => {
             <Heading className="text-fg-base text-center text-2xl font-bold">
               【k8o.me】購読確認メール
             </Heading>
-            <Text className="m-0 text-center text-base font-normal">
+            <Text className="m-0 text-base font-normal">
               ブログの購読を登録いただきありがとうございます。
             </Text>
-            <Text className="m-0 text-center text-base font-normal">
+            <Text className="m-0 text-base font-normal">
               以下のリンクをクリックすることで手続きが完了します。
             </Text>
             <Link
