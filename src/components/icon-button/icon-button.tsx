@@ -3,7 +3,7 @@ import { FC, HTMLProps } from 'react';
 
 type Props = {
   size?: 'sm' | 'md' | 'lg';
-  bg?: 'transparent' | 'base';
+  bg?: 'transparent' | 'base' | 'primary';
   label?: string;
 } & Omit<HTMLProps<HTMLButtonElement>, 'size' | 'type'>;
 
@@ -24,6 +24,8 @@ export const IconButton: FC<Props> = ({
         'focus-visible:bordertransparent focus-visible:ring-border-info active:bg-bg-emphasize focus-visible:ring-2 focus-visible:outline-hidden',
         bg === 'base' && 'bg-bg-base/90',
         bg === 'transparent' && 'bgtransparent',
+        bg === 'primary' &&
+          'bg-primary-bg/90 hover:bg-primary-bg active:bg-primary-bg-emphasize',
         size === 'sm' && 'p-1',
         size === 'md' && 'p-2',
         size === 'lg' && 'p-3',

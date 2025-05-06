@@ -59,3 +59,13 @@ export const BgBase: Story = {
     children: <CopyIcon />,
   },
 };
+
+export const BgPrimary: Story = {
+  args: {
+    bg: 'primary',
+    onClick: () => {
+      console.log('clicked');
+    },
+    children: <CopyIcon />,
+  },
+};

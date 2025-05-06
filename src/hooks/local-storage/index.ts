@@ -20,6 +20,7 @@ export const useLocalStorage = <T>(key: string, initialValue: T) => {
   const store = useSyncExternalStore(
     localStorageSubscribe,
     getSnapshot,
+    () => null,
   );
 
   const current = useMemo(() => {

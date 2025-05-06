@@ -33,7 +33,9 @@ export const MailPanel: FC = () => {
           helpText="登録いただいたメールアドレスは、購読のためにのみ使用されます。"
           isInvalid={state?.success === false}
           isDisabled={isPending}
-          errorText={state?.success ? state.message : undefined}
+          errorText={
+            state?.success === false ? state.message : undefined
+          }
           renderInput={({ labelId: _, ...props }) => (
             <TextField
               name="email"
