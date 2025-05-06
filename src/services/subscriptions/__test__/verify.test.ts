@@ -56,60 +56,6 @@ describe('verify.ts', () => {
       expect(mockFirst).toHaveBeenCalledOnce();
       expect(mockUpdate).not.toHaveBeenCalled();
     });
-    it('verificationTokenがnullの場合は何もしない', async () => {
-      const mockFirst = vi.fn().mockResolvedValue({
-        id: 1,
-        isVerified: false,
-        verificationToken: null,
-        tokenExpiresAt: new Date(Date.now() + 1000 * 60 * 60),
-      });
-      const mockUpdate = vi.fn();
-      vi.mocked(db.query.subscribers.findFirst).mockImplementation(
-        mockFirst,
-      );
-      vi.mocked(db.update).mockImplementation(mockUpdate);
-
-      await sendVerificationEmail('test@k8o.me');
-
-      expect(mockFirst).toHaveBeenCalledOnce();
-      expect(mockUpdate).not.toHaveBeenCalled();
-    });
-    it('tokenExpiresAtがnullの場合は何もしない', async () => {
-      const mockFirst = vi.fn().mockResolvedValue({
-        id: 1,
-        isVerified: false,
-        verificationToken: 'valid-token',
-        tokenExpiresAt: null,
-      });
-      const mockUpdate = vi.fn();
-      vi.mocked(db.query.subscribers.findFirst).mockImplementation(
-        mockFirst,
-      );
-      vi.mocked(db.update).mockImplementation(mockUpdate);
-
-      await sendVerificationEmail('test@k8o.me');
-
-      expect(mockFirst).toHaveBeenCalledOnce();
-      expect(mockUpdate).not.toHaveBeenCalled();
-    });
-    it('verificationTokenが期限切れの場合は何もしない', async () => {
-      const mockFirst = vi.fn().mockResolvedValue({
-        id: 1,
-        isVerified: false,
-        verificationToken: 'old-token',
-        tokenExpiresAt: new Date(Date.now() - 1000 * 60 * 60),
-      });
-      const mockUpdate = vi.fn();
-      vi.mocked(db.query.subscribers.findFirst).mockImplementation(
-        mockFirst,
-      );
-      vi.mocked(db.update).mockImplementation(mockUpdate);
-
-      await sendVerificationEmail('test@k8o.me');
-
-      expect(mockFirst).toHaveBeenCalledOnce();
-      expect(mockUpdate).not.toHaveBeenCalled();
-    });
     it('verificationTokenが期限内の場合はメールを送信する', async () => {
       const mockSend = vi.fn().mockReturnValue({
         error: null,

@@ -30,7 +30,7 @@ const VerifyEmail = ({ email, token, expiresAt }: Props) => {
               'linear-gradient(62deg, #ccfbf1 0%, #cffafe 100%)',
           }}
         >
-          <Container className="mx-auto my-[40px] rounded-xl bg-white text-[#18181b]">
+          <Container className="mx-auto my-[40px] rounded-xl bg-white p-[16px] text-[#18181b]">
             <Heading className="text-fg-base text-center text-2xl font-bold">
               k8o.meを購読いただきありがとうございます
             </Heading>
@@ -38,7 +38,7 @@ const VerifyEmail = ({ email, token, expiresAt }: Props) => {
               メールアドレスの確認を行うため、下記のリンクをクリックしてください
             </Text>
             <Link
-              href={`https://k8o.me/api/subscriptions/verify?email=${email}&token=${token}`}
+              href={`${process.env.NODE_ENV === 'production' ? 'https' : 'http'}://${process.env.VERCEL_URL ?? 'www.k8o.me'}/api/subscriptions/verify?email=${encodeURIComponent(email)}&token=${token}`}
               className="m-4 mb-1 block rounded-lg bg-blue-500 px-4 py-2 text-center text-white hover:bg-blue-600"
             >
               メールアドレスを確認する

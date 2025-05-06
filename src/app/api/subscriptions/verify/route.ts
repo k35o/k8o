@@ -10,7 +10,7 @@ export async function GET(request: Request) {
     return new Response('Invalid request', { status: 400 });
   }
 
-  const result = await verifyEmail(email, token);
+  const result = await verifyEmail(decodeURIComponent(email), token);
 
   if (!result.success) {
     redirect(
