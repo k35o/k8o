@@ -20,7 +20,7 @@ export const MailPanel: FC = () => {
     if (state?.success === true) {
       onOpen('success', '登録確認メールを送信しました。');
     }
-  }, [state]);
+  }, [state, onOpen]);
 
   return (
     <div className="flex flex-col justify-center gap-6">
