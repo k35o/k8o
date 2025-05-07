@@ -130,7 +130,7 @@ export const Modal: FC<
         type === 'bottom' &&
           'mt-auto w-screen max-w-screen rounded-t-lg dark:border-t',
         type === 'right' &&
-          'ml-auto min-h-screen w-screen max-w-sm rounded-l-lg dark:border-l',
+          'ml-auto min-h-svh w-screen max-w-sm rounded-l-lg dark:border-l',
       )}
       onClose={realOnClose}
       onClick={(e) => {

@@ -21,7 +21,7 @@ export const Drawer: FC<
         id={rootId}
         aria-labelledby={`${rootId}-header`}
         aria-describedby={`${rootId}-content`}
-        className="min-h-screen"
+        className="min-h-svh"
       >
         <div
           id={`${rootId}-header`}
