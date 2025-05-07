@@ -1,1 +1,3 @@
-export const after = (callback: () => void) => { callback(); };
+export const after = (callback: () => void) => {
+  callback();
+};
