@@ -12,7 +12,7 @@ export const GlobalLayout: FC<{ children: ReactNode }> = ({
   children,
 }) => {
   return (
-    <div className="app-background flex min-h-screen flex-col">
+    <div className="app-background flex min-h-svh flex-col">
       <header className="sticky top-0 z-50 flex items-center justify-center p-4">
         <div className="bg-bg-base/60 flex w-full max-w-5xl items-center justify-between rounded-full px-8 py-2 shadow-md backdrop-blur-md">
           <div className="flex items-center gap-4">

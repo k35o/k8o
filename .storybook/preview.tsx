@@ -71,7 +71,7 @@ const preview: Preview = {
             .map((c) => `'${c}'`)
             .join(', ')})`}
         </Script>
-        <div className="app-background min-h-screen p-6">
+        <div className="app-background min-h-svh p-6">
           <Story />
         </div>
         <ApplayThemeByStorybook
