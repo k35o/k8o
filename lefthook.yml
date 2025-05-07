@@ -8,11 +8,9 @@ pre-commit:
       exclude:
         - '**/mockServiceWorker.js'
     lint:
-      glob: '*.{js,ts,cjs,d.cts,d.ts,jsx,tsx}'
+      glob: 'src/**/*.{js,ts,cjs,d.cts,d.ts,jsx,tsx}'
       run: pnpm run lint:fix --file {staged_files}
       stage_fixed: true
-      exclude:
-        - '**/mockServiceWorker.js'
 
 pre-push:
   paralell: true
@@ -23,12 +21,8 @@ pre-push:
       exclude:
         - '**/mockServiceWorker.js'
     lint:
-      glob: '*.{js,ts,cjs,d.cts,d.ts,jsx,tsx}'
+      glob: 'src/**/*.{js,ts,cjs,d.cts,d.ts,jsx,tsx}'
       run: pnpm run lint --file {staged_files}
-      exclude:
-        - '**/mockServiceWorker.js'
     test:
-      glob: '*.test.{js,ts,cjs,d.cts,d.ts,jsx,tsx}'
+      glob: 'src/**/*.test.{js,ts,cjs,d.cts,d.ts,jsx,tsx}'
       run: pnpm run test run {staged_files}
-      exclude:
-        - '**/mockServiceWorker.js'
