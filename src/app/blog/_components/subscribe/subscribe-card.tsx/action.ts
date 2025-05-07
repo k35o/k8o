@@ -1,5 +1,6 @@
 'use server';
 
+import { after } from '#next/server';
 import { subscribe } from '@/services/subscriptions/subscribe';
 
 export const registerEmail = async (
@@ -15,7 +16,7 @@ export const registerEmail = async (
     };
   }
 
-  const result = await subscribe(email);
+  const result = await subscribe(email, after);
 
   if (result.success) {
     return {

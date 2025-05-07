@@ -9,6 +9,9 @@ import { z } from 'zod';
 
 export const sendVerificationEmail = async (
   email: string,
+  waitUntilResend: (task: () => void) => void = (cb) => {
+    cb();
+  },
 ): Promise<void> => {
   if (!z.string().email().safeParse(email).success) {
     return;
@@ -37,20 +40,26 @@ export const sendVerificationEmail = async (
         tokenExpiresAt,
       })
       .where(eq(subscribers.id, subscriber.id));
-    const { error } = await resend().emails.send({
-      from: 'notifications@k8o.me',
-      to: email,
-      subject: 'メールアドレス確認のお願い',
-      react: VerifyEmail({
-        email,
-        token: verificationToken,
-        expiresAt: tokenExpiresAt,
-      }),
+    waitUntilResend(() => {
+      void resend()
+        .emails.send({
+          from: 'notifications@k8o.me',
+          to: email,
+          subject: 'メールアドレス確認のお願い',
+          react: VerifyEmail({
+            email,
+            token: verificationToken,
+            expiresAt: tokenExpiresAt,
+          }),
+        })
+        .then((res) => {
+          const { error } = res;
+          if (error) {
+            console.log(error);
+            throw new Error('メールの送信に失敗しました');
+          }
+        });
     });
-    if (error) {
-      console.log(error);
-      throw new Error('メールの送信に失敗しました');
-    }
   } catch (error) {
     console.log(error);
   }

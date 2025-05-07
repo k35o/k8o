@@ -6,6 +6,9 @@ import { z } from 'zod';
 
 export const subscribe = async (
   email: string,
+  waitUntilResend: (task: () => void) => void = (cb) => {
+    cb();
+  },
 ): Promise<Result<null>> => {
   if (!z.string().email().safeParse(email).success) {
     return {
@@ -28,7 +31,7 @@ export const subscribe = async (
       };
     }
     // 認証済みでなければ再度招待メールを送る
-    await sendVerificationEmail(email);
+    await sendVerificationEmail(email, waitUntilResend);
     return {
       success: true,
       data: null,
@@ -39,7 +42,7 @@ export const subscribe = async (
     await db.insert(subscribers).values({
       email,
     });
-    await sendVerificationEmail(email);
+    await sendVerificationEmail(email, waitUntilResend);
     return {
       success: true,
       data: null,
