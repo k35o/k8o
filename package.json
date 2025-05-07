@@ -20,6 +20,10 @@
       "storybook": "./src/mocks/libs/react.mock.ts",
       "default": "./src/libs/react.ts"
     },
+    "#next/server": {
+      "storybook": "./src/mocks/libs/next/server.mock.ts",
+      "default": "next/server"
+    },
     "#*": [
       "./*",
       "./*.ts",

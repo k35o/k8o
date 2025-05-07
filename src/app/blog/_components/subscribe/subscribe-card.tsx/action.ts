@@ -1,7 +1,7 @@
 'use server';
 
+import { after } from '#next/server';
 import { subscribe } from '@/services/subscriptions/subscribe';
-import { after } from 'next/server';
 
 export const registerEmail = async (
   _: unknown,
