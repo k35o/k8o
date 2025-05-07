@@ -6,7 +6,9 @@ import { z } from 'zod';
 
 export const subscribe = async (
   email: string,
-  waitUntilResend: (task: () => void) => void,
+  waitUntilResend: (task: () => void) => void = (cb) => {
+    cb();
+  },
 ): Promise<Result<null>> => {
   if (!z.string().email().safeParse(email).success) {
     return {
