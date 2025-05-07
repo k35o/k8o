@@ -9,7 +9,9 @@ import { z } from 'zod';
 
 export const sendVerificationEmail = async (
   email: string,
-  waitUntilResend: (task: () => void) => void = (cb) => { cb(); },
+  waitUntilResend: (task: () => void) => void = (cb) => {
+    cb();
+  },
 ): Promise<void> => {
   if (!z.string().email().safeParse(email).success) {
     return;
