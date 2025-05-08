@@ -4,6 +4,7 @@ import { mPlus2, notoSansJp } from './_styles/font';
 import { ReactScan } from '@/libs/react-scan';
 import { AppProvider } from '@/providers/app';
 import { cn } from '@/utils/cn';
+import { GoogleAnalytics } from '@next/third-parties/google';
 import { SpeedInsights } from '@vercel/speed-insights/next';
 import '@/libs/zod';
 import { Metadata } from 'next';
@@ -58,6 +59,9 @@ export default function RootLayout({
         <AppProvider>
           <GlobalLayout>{children}</GlobalLayout>
         </AppProvider>
+        <GoogleAnalytics
+          gaId={process.env.GOOGLE_ANALYTICS_ID ?? ''}
+        />
         <SpeedInsights />
       </body>
     </html>
