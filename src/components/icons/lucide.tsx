@@ -8,6 +8,7 @@ import {
   Blend,
   Bookmark,
   BookText,
+  Bot,
   Calendar,
   Check,
   ChevronDown,
@@ -378,6 +379,17 @@ export const ViewIcon: FC<IconProps> = ({ size = 'md' }) => {
       size={size}
       renderItem={(props) => {
         return <Eye {...props} />;
+      }}
+    />
+  );
+};
+
+export const AIIcon: FC<IconProps> = ({ size = 'md' }) => {
+  return (
+    <BaseIcon
+      size={size}
+      renderItem={(props) => {
+        return <Bot {...props} />;
       }}
     />
   );

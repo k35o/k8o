@@ -3,7 +3,7 @@ import { matter } from 'vfile-matter';
 
 type Frontmatter = {
   title: string;
-  description: string;
+  description: string | null;
   createdAt: Date;
   updatedAt: Date;
 };

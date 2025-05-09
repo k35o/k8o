@@ -2,6 +2,7 @@ import { ArteOdyssey } from './arte-odyssey';
 import { GitHubIcon } from './github-mark';
 import { LogoIcon } from './logo';
 import {
+  AIIcon,
   AlertIcon,
   BadIcon,
   BlogIcon,
@@ -243,6 +244,10 @@ export const Primary: Story = {
         <div className="flex flex-col items-center justify-center">
           <PrepareIcon />
           <p className="text-center">準備中</p>
+        </div>
+        <div className="flex flex-col items-center justify-center">
+          <AIIcon />
+          <p className="text-center">AI</p>
         </div>
         <div className="flex flex-col items-center justify-center">
           <RSSIcon />
