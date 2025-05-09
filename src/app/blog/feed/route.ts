@@ -22,7 +22,7 @@ export async function GET() {
     const metadata = await getBlogMetadata(blog.slug);
     feed.item({
       title: metadata.title,
-      description: metadata.description,
+      description: metadata.description ?? '',
       url: `${BLOG_URL}/${blog.slug}`,
       date: metadata.updatedAt,
       categories: blog.tags,

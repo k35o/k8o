@@ -15,7 +15,7 @@ export async function generateMetadata(): Promise<Metadata> {
     category: blog.tags.map((tag) => tag.name).join(', '),
     openGraph: {
       title: metadata.title,
-      description: metadata.description,
+      description: metadata.description ?? undefined,
       url: `https://k8o.me/blog/${slug}`,
       publishedTime: metadata.createdAt.toString(),
       authors: ['k8o'],
@@ -26,7 +26,7 @@ export async function generateMetadata(): Promise<Metadata> {
     twitter: {
       title: metadata.title,
       card: 'summary_large_image',
-      description: metadata.description,
+      description: metadata.description ?? undefined,
     },
   };
 }
