@@ -83,7 +83,6 @@
     "@liam-hq/cli": "0.6.4",
     "@storybook/nextjs-vite": "9.0.17",
     "@types/mdx": "2.0.13",
-    "@types/node": "22.16.5",
     "@types/rss": "0.0.32",
     "@types/ws": "8.18.1",
     "axe-playwright": "2.1.0",
