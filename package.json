@@ -41,8 +41,8 @@
     "lint": "next lint --max-warnings 0",
     "lint:fix": "next lint --fix --max-warnings 0",
     "lint:inspect": "eslint-config-inspector",
-    "format": "NODE_OPTIONS='--experimental-strip-types' prettier --write src/",
-    "format:check": "NODE_OPTIONS='--experimental-strip-types' prettier --check src/",
+    "format": "prettier --write src/",
+    "format:check": "prettier --check src/",
     "type-check": "tsc --noEmit",
     "storybook": "storybook dev -p 6006 --no-open",
     "build-storybook": "storybook build",
@@ -146,7 +146,7 @@
     "vitest": "3.1.1"
   },
   "engines": {
-    "node": "22.15.0"
+    "node": "24.0.1"
   },
   "packageManager": "pnpm@10.10.0",
   "msw": {
