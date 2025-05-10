@@ -119,6 +119,13 @@ export function useMDXComponents(
     ul: ({ children }) => (
       <ul className="sm:text-md text-xs">{children}</ul>
     ),
+    blockquote: ({ children }) => (
+      <figure className="bg-bg-mute my-4 rounded-lg p-2 pl-3">
+        <blockquote className="border-border-base text-fg-mute border-l-3 pl-2 text-sm">
+          {children}
+        </blockquote>
+      </figure>
+    ),
     ...components,
   };
 }
