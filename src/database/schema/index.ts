@@ -11,6 +11,9 @@ import {
 } from './quiz-questions';
 import { quizType } from './quiz-type';
 import { quizzes, quizzesRelations } from './quzzes';
+import { serviceTag, serviceTagRelations } from './service-tag';
+import { serviceType } from './service-type';
+import { services, servicesRelations } from './services';
 import { subscribers } from './subscribers';
 import { tags, tagsRelations } from './tags';
 
@@ -30,6 +33,10 @@ export const schema = {
   quizType,
   quizQuestions,
   quizAnswers,
+  // アプリ関連
+  services,
+  serviceTag,
+  serviceType,
 };
 
 export const relations = {
@@ -45,4 +52,7 @@ export const relations = {
   quizzesRelations,
   quizQuestionsRelations,
   quizAnswersRelations,
+  // アプリ関連
+  servicesRelations,
+  serviceTagRelations,
 };
