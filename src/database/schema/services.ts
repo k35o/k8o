@@ -14,6 +14,7 @@ export const services = pgTable(
   'services',
   {
     id: serial('id').primaryKey(),
+    name: text('name').notNull(),
     slug: text('slug').notNull(),
     type: integer('type')
       .notNull()
