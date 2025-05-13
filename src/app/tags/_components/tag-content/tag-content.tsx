@@ -94,9 +94,7 @@ export const TagContent: FC<{
                     </div>
                     <Separator />
                     <div className="flex items-center justify-between gap-2">
-                      <span className="text-sm">
-                        サービスを利用する
-                      </span>
+                      <span className="text-sm">ブログを読む</span>
                       <span className="hidden group-hover:block">
                         <ChevronIcon direction="right" size="sm" />
                       </span>
