@@ -4,7 +4,7 @@ import * as motion from 'motion/react-client';
 import { FC } from 'react';
 
 export const InteractiveCard: FC<
-  CardProps & { animation?: 'low' | 'medium' }
+  CardProps & { animation?: 'low' | 'medium' | 'off' }
 > = ({
   children,
   variant = 'primary',
@@ -13,8 +13,22 @@ export const InteractiveCard: FC<
   title,
 }) => (
   <motion.section
-    whileHover={{ scale: animation === 'medium' ? 1.05 : 1.02 }}
-    whileTap={{ scale: animation === 'medium' ? 0.95 : 0.98 }}
+    whileHover={{
+      scale:
+        animation === 'off'
+          ? 1
+          : animation === 'medium'
+            ? 1.05
+            : 1.02,
+    }}
+    whileTap={{
+      scale:
+        animation === 'off'
+          ? 1
+          : animation === 'medium'
+            ? 0.95
+            : 0.98,
+    }}
     className={cn(
       'bg-bg-base/90 rounded-lg shadow-md',
       width === 'full' && 'w-full',
