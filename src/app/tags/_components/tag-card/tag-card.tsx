@@ -14,7 +14,7 @@ export const TagCard: FC<{
       <Link
         href={`/tags/${id.toString()}`}
         aria-label="コンテンツを見る"
-        className="group hover:bg-primary-bg-mute hover:text-primary-fg hover:border-primary-border flex w-70 flex-col gap-2 rounded-lg p-4"
+        className="group hover:bg-primary-bg-mute hover:text-primary-fg hover:border-primary-border flex w-70 flex-col gap-2 rounded-lg p-4 hover:border"
       >
         <div className="flex w-full items-center justify-between">
           <span className="text-lg font-bold">{name}</span>
