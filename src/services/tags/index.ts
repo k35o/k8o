@@ -35,7 +35,8 @@ export const getTags = async (
   return tags.map((tag) => ({
     id: tag.id,
     name: tag.name,
-    blogCount: tag.blogTag.length,
+    blogCount: tag.blogTag.filter((blogTag) => blogTag.blog.published)
+      .length,
     serviceCount: tag.serviceTag.length,
   }));
 };
@@ -77,14 +78,16 @@ export const getTag = async (
   }
 
   const blogs = await Promise.all(
-    tag.blogTag.map(async (blogTag) => {
-      const metadata = await getBlogMetadata(blogTag.blog.slug);
-      return {
-        id: blogTag.blog.id,
-        slug: blogTag.blog.slug,
-        title: metadata.title,
-      };
-    }),
+    tag.blogTag
+      .filter((blogTag) => blogTag.blog.published)
+      .map(async (blogTag) => {
+        const metadata = await getBlogMetadata(blogTag.blog.slug);
+        return {
+          id: blogTag.blog.id,
+          slug: blogTag.blog.slug,
+          title: metadata.title,
+        };
+      }),
   );
 
   return {
