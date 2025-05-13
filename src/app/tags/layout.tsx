@@ -1,0 +1,48 @@
+import { Heading } from '../../components/heading';
+import { TagIcon } from '@/components/icons';
+import Link from 'next/link';
+import { PropsWithChildren } from 'react';
+
+export const metadata = {
+  title: 'Tags',
+  description:
+    'k8oで提供するサービスやブログのタグ一覧をまとめたページです。各タグの関連するコンテンツへのリンクを掲載しています。',
+  openGraph: {
+    title: 'Tags',
+    description:
+      'k8oで提供するサービスやブログのタグ一覧をまとめたページです。各タグの関連するコンテンツへのリンクを掲載しています。',
+    url: 'https://k8o.me/tags',
+    siteName: 'k8o',
+    locale: 'ja',
+    type: 'website',
+  },
+  twitter: {
+    title: 'Tags',
+    card: 'summary',
+    description:
+      'k8oで提供するサービスやブログのタグ一覧をまとめたページです。各タグの関連するコンテンツへのリンクを掲載しています。',
+  },
+};
+
+export default function Layout({ children }: PropsWithChildren) {
+  return (
+    <div className="flex flex-col gap-6">
+      <div className="flex flex-col gap-4">
+        <Link href="/tags">
+          <Heading type="h2">
+            <span className="flex items-center gap-1">
+              <span className="text-primary-fg">
+                <TagIcon />
+              </span>
+              タグ置き場
+            </span>
+          </Heading>
+        </Link>
+        <p>
+          k8oで提供するサービスやブログのタグをまとめました。各タグを利用するコンテンツを確認できます。
+        </p>
+      </div>
+      {children}
+    </div>
+  );
+}
