@@ -15,6 +15,11 @@ describe('Tags', () => {
           blogTag: [
             {
               id: 1,
+              blog: {
+                id: 1,
+                slug: 'blog1',
+                published: true,
+              },
             },
           ],
           serviceTag: [],
@@ -41,6 +46,7 @@ describe('Tags', () => {
             blog: {
               id: 1,
               slug: 'blog1',
+              published: true,
             },
           },
         ],
