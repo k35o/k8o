@@ -4,6 +4,7 @@ import { ColorFilters } from '../../color-filters';
 import { ContactToMe } from '../../contact-to-me';
 import { ToggleTheme } from '../../toggle-theme';
 import { NewsLink } from '../news-link';
+import { TagsLink } from '../tags-link';
 import { IconButton } from '@/components/icon-button';
 import { CloseIcon, NavigationMenuIcon } from '@/components/icons';
 import { Modal } from '@/components/modal';
@@ -49,6 +50,10 @@ export const NavigationMenu: FC = () => {
                 </li>
                 <li>
                   <ContactToMe fullWidth />
+                </li>
+                {/* eslint-disable-next-line jsx-a11y/click-events-have-key-events, jsx-a11y/no-noninteractive-element-interactions -- NewsLinkのおこぼれをもらう */}
+                <li onClick={onClose}>
+                  <TagsLink />
                 </li>
               </ul>
             </nav>

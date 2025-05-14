@@ -3,6 +3,7 @@ import { ContactToMe } from '../contact-to-me';
 import { NewsLink } from './news-link';
 import { ToggleTheme } from '../toggle-theme';
 import { NavigationMenu } from './navigation-menu';
+import { TagsLink } from './tags-link';
 import { Logo } from '@/components/icons/logo';
 import { formatDate } from '@/utils/date/format';
 import Link from 'next/link';
@@ -22,18 +23,19 @@ export const GlobalLayout: FC<{ children: ReactNode }> = ({
                 <Logo className="h-10" />
               </h1>
             </Link>
-            <div className="hidden items-center gap-2 sm:flex">
+            <div className="hidden items-center gap-2 md:flex">
               <NewsLink />
               <ContactToMe />
+              <TagsLink />
             </div>
           </div>
-          <div className="hidden items-center gap-4 sm:flex">
+          <div className="hidden items-center gap-4 md:flex">
             <ColorFilters.ListBox />
             <div className="-my-2">
               <ToggleTheme />
             </div>
           </div>
-          <div className="block sm:hidden">
+          <div className="block md:hidden">
             <NavigationMenu />
           </div>
         </div>
