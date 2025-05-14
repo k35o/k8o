@@ -225,6 +225,13 @@
       "when": 1747119142099,
       "tag": "0031_nappy_cobalt_man",
       "breakpoints": true
+    },
+    {
+      "idx": 32,
+      "version": "7",
+      "when": 1747208789741,
+      "tag": "0032_old_captain_midlands",
+      "breakpoints": true
     }
   ]
 }
