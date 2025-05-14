@@ -11,8 +11,19 @@ type Story = StoryObj<typeof TagCard>;
 
 export const Primary: Story = {
   args: {
-    id: 1,
-    name: 'k8o',
+    title: 'k8o',
     count: 10,
+    href: '/tags',
+    label: 'コンテンツを見る',
+    linkLabel: '「k8o」に関連するコンテンツを表示する',
+  },
+};
+
+export const NoCount: Story = {
+  args: {
+    title: 'k8o',
+    href: '/tags',
+    label: 'コンテンツを見る',
+    linkLabel: '「k8o」に関連するコンテンツを表示する',
   },
 };
