@@ -107,7 +107,7 @@ const str = '　';
 const escapedStr = RegExp.escape(str);
 ```
 
-`ab\uD800`や`\uDFFFab`のような孤立サロゲート（文字列に対して`isWellFormed()`でチェックできます。）も`\u`に続くUTF-16コード単位へエスケープされます。
+`ab\uD800`（文字化け対策のため、全角バックスラッシュで書くと`ab＼uD800`）や`\uDFFFab`（`＼uDFFFab`）のような孤立サロゲート（文字列に対して`isWellFormed()`でチェックできます。）も`\u`に続くUTF-16コード単位へエスケープされます。
 
 ```ts
 const str = 'ab\uD800 \uDFFFab';
