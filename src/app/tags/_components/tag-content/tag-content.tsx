@@ -42,7 +42,7 @@ export const TagContent: FC<{
                 <TagCard
                   key={service.id}
                   title={service.title}
-                  href={`/services/${service.slug}` as Route}
+                  href={`/${service.slug}` as Route}
                   label="サービスを利用する"
                   linkLabel={`「${service.title}」のサービスを利用する`}
                 />
