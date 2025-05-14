@@ -9,23 +9,23 @@ const meta: Meta<typeof TextTag> = {
 export default meta;
 type Story = StoryObj<typeof TextTag>;
 
-export const Primary: Story = {
+export const Medium: Story = {
   args: {
     text: 'TypeScript',
+    size: 'md',
   },
 };
 
-export const White: Story = {
+export const Link: Story = {
   args: {
     text: 'TypeScript',
-    color: 'white',
+    href: '/tags',
   },
 };
 
 export const Small: Story = {
   args: {
     text: 'TypeScript',
-    color: 'white',
     size: 'sm',
   },
 };
