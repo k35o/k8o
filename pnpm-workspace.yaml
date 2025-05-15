@@ -1,0 +1,11 @@
+ignoredBuiltDependencies:
+  - '@tailwindcss/oxide'
+  - bufferutil
+  - core-js-pure
+  - esbuild
+  - sharp
+  - unrs-resolver
+onlyBuiltDependencies:
+  - '@vercel/speed-insights'
+  - lefthook
+  - msw
