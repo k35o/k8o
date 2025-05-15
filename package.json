@@ -153,18 +153,5 @@
     "workerDirectory": [
       ".storybook/public"
     ]
-  },
-  "pnpm": {
-    "onlyBuiltDependencies": [
-      "@vercel/speed-insights",
-      "lefthook",
-      "msw"
-    ],
-    "ignoredBuiltDependencies": [
-      "bufferutil",
-      "core-js-pure",
-      "esbuild",
-      "sharp"
-    ]
   }
 }
