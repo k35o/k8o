@@ -14,7 +14,7 @@ export const TagCard: FC<{
   linkLabel: string;
 }> = ({ title, href, count, label, linkLabel }) => {
   return (
-    <InteractiveCard width="fit" animation="off">
+    <InteractiveCard width="fit" animation="low">
       <Link
         href={href}
         aria-label={linkLabel}
