@@ -1,6 +1,6 @@
 import { FormControl } from './form-control';
 import { TextField } from '../text-field';
-import type { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/nextjs';
 import { useState } from 'react';
 
 const meta: Meta<typeof FormControl> = {

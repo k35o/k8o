@@ -1,5 +1,5 @@
 import { TextTag } from './text-tag';
-import type { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/nextjs';
 
 const meta: Meta<typeof TextTag> = {
   title: 'components/text-tag',

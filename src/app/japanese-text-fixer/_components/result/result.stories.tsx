@@ -1,6 +1,6 @@
 import { Result } from './result';
 import { CheckSyntaxProvider } from '../../_state/text';
-import type { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/nextjs';
 
 const meta: Meta<typeof Result> = {
   title: 'app/japanese-text-fixer/result',

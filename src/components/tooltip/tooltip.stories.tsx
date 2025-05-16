@@ -1,6 +1,6 @@
 import { Tooltip } from './tooltip';
 import { Button } from '../button';
-import type { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/nextjs';
 
 const meta: Meta<typeof Tooltip.Root> = {
   title: 'components/tooltip',

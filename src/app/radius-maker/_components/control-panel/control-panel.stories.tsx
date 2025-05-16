@@ -1,5 +1,5 @@
 import { ControlPanel } from './control-panel';
-import type { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/nextjs';
 
 const meta: Meta<typeof ControlPanel> = {
   title: 'app/radius-maker/control-panel',

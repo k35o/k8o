@@ -1,5 +1,5 @@
 import { ToggleTheme } from './toggle-theme';
-import type { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/nextjs';
 
 const meta: Meta<typeof ToggleTheme> = {
   title: 'app/globals/toggle-theme',

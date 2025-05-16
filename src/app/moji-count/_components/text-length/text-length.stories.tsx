@@ -1,5 +1,5 @@
 import { TextLength } from './text-length';
-import type { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/nextjs';
 
 const meta: Meta<typeof TextLength> = {
   title: 'app/moji-count/text-length',

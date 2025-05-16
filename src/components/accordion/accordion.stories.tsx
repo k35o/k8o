@@ -2,7 +2,7 @@ import { Accordion } from './accordion';
 import { AccordionButton } from './accordion-button';
 import { AccordionItem } from './accordion-item';
 import { AccordionPanel } from './accordion-panel';
-import type { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/nextjs';
 
 const meta: Meta<typeof Accordion> = {
   title: 'components/accordion',

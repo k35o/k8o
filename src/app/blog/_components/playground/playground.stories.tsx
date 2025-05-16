@@ -1,6 +1,6 @@
 import { Playground } from './playground';
 import { Button } from '@/components/button';
-import type { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/nextjs';
 import { FC, useState } from 'react';
 
 const meta: Meta<typeof Playground> = {

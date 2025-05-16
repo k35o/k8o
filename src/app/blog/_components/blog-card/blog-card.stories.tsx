@@ -1,6 +1,6 @@
 import { BlogCard } from './blog-card';
 import { getBlogMetadata } from '#src/mocks/services/blog.mock';
-import type { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/nextjs';
 
 const meta: Meta<typeof BlogCard> = {
   title: 'app/blog/blog-card',

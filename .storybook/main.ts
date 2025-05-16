@@ -5,9 +5,9 @@ const config: StorybookConfig = {
   addons: [
     '@storybook/addon-a11y',
     '@storybook/addon-links',
-    '@storybook/addon-essentials',
     'storybook-addon-mock-date',
-    '@storybook/experimental-addon-test',
+    '@storybook/addon-vitest',
+    '@storybook/addon-docs',
   ],
 
   framework: {
@@ -17,10 +17,6 @@ const config: StorybookConfig = {
 
   features: {
     experimentalRSC: true,
-  },
-
-  docs: {
-    autodocs: 'tag',
   },
 
   typescript: {

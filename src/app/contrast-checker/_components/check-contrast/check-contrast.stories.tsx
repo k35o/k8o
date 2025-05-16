@@ -1,5 +1,5 @@
 import { CheckContrast } from './check-contrast';
-import type { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/nextjs';
 
 const meta: Meta<typeof CheckContrast> = {
   title: 'app/contrast-checker/check-contrast',

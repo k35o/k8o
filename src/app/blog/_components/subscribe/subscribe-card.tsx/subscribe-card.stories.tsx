@@ -1,5 +1,5 @@
 import { SubscribeCard } from './subscribe-card';
-import type { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/nextjs';
 
 const meta: Meta<typeof SubscribeCard> = {
   title: 'app/blog/subscribe/subscribe-card',
