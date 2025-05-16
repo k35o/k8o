@@ -5,7 +5,6 @@ const config: StorybookConfig = {
   addons: [
     '@storybook/addon-a11y',
     '@storybook/addon-links',
-    'storybook-addon-mock-date',
     '@storybook/addon-vitest',
     '@storybook/addon-docs',
   ],
