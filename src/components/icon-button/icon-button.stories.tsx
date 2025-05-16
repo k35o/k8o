@@ -1,6 +1,6 @@
 import { IconButton } from './icon-button';
 import { CopyIcon } from '../icons';
-import type { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/nextjs';
 
 const meta: Meta<typeof IconButton> = {
   title: 'components/button/icon-button',

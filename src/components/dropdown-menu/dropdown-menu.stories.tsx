@@ -1,6 +1,6 @@
 import { DarkModeIcon } from '../icons';
 import { DropdownMenu } from './dropdown-menu';
-import type { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/nextjs';
 
 const meta: Meta<typeof DropdownMenu.Root> = {
   title: 'components/dropdown-menu',

@@ -1,5 +1,5 @@
-import { storybookTest } from '@storybook/experimental-addon-test/vitest-plugin';
-import { storybookNextJsPlugin } from '@storybook/experimental-nextjs-vite/vite-plugin';
+import { storybookTest } from '@storybook/addon-vitest/vitest-plugin';
+import { storybookNextJsPlugin } from '@storybook/nextjs-vite/vite-plugin';
 import react from '@vitejs/plugin-react';
 import { defineWorkspace } from 'vitest/config';
 

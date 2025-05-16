@@ -1,6 +1,6 @@
 import { Drawer } from './drawer';
-import type { Meta, StoryObj } from '@storybook/react';
-import { fn } from '@storybook/test';
+import type { Meta, StoryObj } from '@storybook/nextjs';
+import { fn } from 'storybook/test';
 
 const meta: Meta<typeof Drawer> = {
   title: 'components/drawer',

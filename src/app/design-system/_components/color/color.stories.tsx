@@ -1,5 +1,5 @@
 import { Color } from './color';
-import type { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/nextjs';
 
 const meta: Meta<typeof Color> = {
   title: 'app/design-system/color',

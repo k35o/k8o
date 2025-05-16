@@ -1,5 +1,5 @@
 import { ScrollLinked } from './scroll-linked';
-import type { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/nextjs';
 
 const meta: Meta<typeof ScrollLinked> = {
   title: 'components/scroll-linked',

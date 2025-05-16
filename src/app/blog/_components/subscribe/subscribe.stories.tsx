@@ -1,6 +1,6 @@
 import { Subscribe } from './subscribe';
-import type { Meta, StoryObj } from '@storybook/react';
-import { userEvent, within } from '@storybook/test';
+import type { Meta, StoryObj } from '@storybook/nextjs';
+import { userEvent, within } from 'storybook/test';
 
 const meta: Meta<typeof Subscribe> = {
   title: 'app/blog/subscribe',

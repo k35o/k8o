@@ -1,5 +1,5 @@
 import { RoundedIcon } from './rounded-icon';
-import type { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/nextjs';
 
 const meta: Meta<typeof RoundedIcon> = {
   title: 'app/radius-maker/rounded-icon',

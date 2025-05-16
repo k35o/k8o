@@ -1,7 +1,7 @@
 import { NumberField } from './number-field';
-import type { Meta, StoryObj } from '@storybook/react';
-import { userEvent, within, expect } from '@storybook/test';
+import type { Meta, StoryObj } from '@storybook/nextjs';
 import { useState } from 'react';
+import { userEvent, within, expect } from 'storybook/test';
 
 const meta: Meta<typeof NumberField> = {
   title: 'components/form/number-field',

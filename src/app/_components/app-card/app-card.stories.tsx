@@ -1,5 +1,5 @@
 import { AppCard } from './app-card';
-import type { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/nextjs';
 import { Link } from 'lucide-react';
 
 const meta: Meta<typeof AppCard> = {

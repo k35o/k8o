@@ -1,5 +1,5 @@
 import { ExternalBlog } from './external-blog';
-import type { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/nextjs';
 
 const meta: Meta<typeof ExternalBlog> = {
   title: 'app/blog/external-blog',

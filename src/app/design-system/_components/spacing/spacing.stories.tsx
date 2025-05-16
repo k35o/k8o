@@ -1,5 +1,5 @@
 import { Spacing } from './spacing';
-import type { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/nextjs';
 
 const meta: Meta<typeof Spacing> = {
   title: 'app/design-system/spacing',

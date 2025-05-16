@@ -6,7 +6,7 @@ import {
   getBlogView,
   getBlogsByTags,
 } from '#src/mocks/services/blog.mock';
-import type { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/nextjs';
 
 const meta: Meta<typeof BlogLayout> = {
   title: 'app/blog/blog-layout',

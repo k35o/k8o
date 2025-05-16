@@ -1,5 +1,5 @@
 import { Components } from './components';
-import type { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/nextjs';
 
 const meta: Meta<typeof Components> = {
   title: 'app/design-system/components',
