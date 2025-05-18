@@ -27,6 +27,10 @@ export const talks = pgTable(
   (table) => [index().on(table.id), index().on(table.blogId)],
 );
 
-export const talksRelations = relations(talks, ({ many }) => ({
+export const talksRelations = relations(talks, ({ many, one }) => ({
   talkTag: many(talkTag),
+  blog: one(blogs, {
+    fields: [talks.blogId],
+    references: [blogs.id],
+  }),
 }));
