@@ -16,6 +16,8 @@ import { serviceType } from './service-type';
 import { services, servicesRelations } from './services';
 import { subscribers } from './subscribers';
 import { tags, tagsRelations } from './tags';
+import { talkTag, talkTagRelations } from './talk-tag';
+import { talks, talksRelations } from './talks';
 
 export const schema = {
   // 全体
@@ -28,6 +30,9 @@ export const schema = {
   blogViews,
   blogTag,
   blogComment,
+  // Talks関連
+  talks,
+  talkTag,
   // クイズ関連
   quizzes,
   quizType,
@@ -48,6 +53,9 @@ export const relations = {
   blogsRelations,
   blogTagRelations,
   blogCommentRelations,
+  // Talks関連
+  talksRelations,
+  talkTagRelations,
   // クイズ関連
   quizzesRelations,
   quizQuestionsRelations,
