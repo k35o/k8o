@@ -23,6 +23,15 @@ describe('Tags', () => {
             },
           ],
           serviceTag: [],
+          talkTag: [
+            {
+              id: 1,
+              talk: {
+                id: 1,
+                title: 'Talk Title',
+              },
+            },
+          ],
         },
       ]);
       vi.mocked(db.query.tags.findMany).mockImplementation(mockMany);
@@ -33,6 +42,7 @@ describe('Tags', () => {
       expect(tags[0]?.name).toBe('tag1');
       expect(tags[0]?.blogCount).toBe(1);
       expect(tags[0]?.serviceCount).toBe(0);
+      expect(tags[0]?.talkCount).toBe(1);
     });
   });
   describe('getTag', () => {
@@ -57,6 +67,15 @@ describe('Tags', () => {
               id: 1,
               name: 'ArteOdyssey',
               slug: 'design-system',
+            },
+          },
+        ],
+        talkTag: [
+          {
+            id: 1,
+            talk: {
+              id: 1,
+              title: 'Talk Title',
             },
           },
         ],
@@ -89,6 +108,12 @@ describe('Tags', () => {
             id: 1,
             slug: 'design-system',
             title: 'ArteOdyssey',
+          },
+        ],
+        talks: [
+          {
+            id: 1,
+            title: 'Talk Title',
           },
         ],
       });

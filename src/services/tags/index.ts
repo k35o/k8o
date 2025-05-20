@@ -9,6 +9,7 @@ export const getTags = async (
     name: string;
     blogCount: number;
     serviceCount: number;
+    talkCount: number;
   }[]
 > => {
   const tags = await db.query.tags.findMany({
@@ -27,6 +28,11 @@ export const getTags = async (
           service: true,
         },
       },
+      talkTag: {
+        with: {
+          talk: true,
+        },
+      },
     },
     limit: 100,
     offset: (page - 1) * 100,
@@ -38,6 +44,7 @@ export const getTags = async (
     blogCount: tag.blogTag.filter((blogTag) => blogTag.blog.published)
       .length,
     serviceCount: tag.serviceTag.length,
+    talkCount: tag.talkTag.length,
   }));
 };
 
@@ -56,6 +63,10 @@ export const getTag = async (
     slug: string;
     title: string;
   }[];
+  talks: {
+    id: number;
+    title: string;
+  }[];
 } | null> => {
   const tag = await db.query.tags.findFirst({
     where: (tags, { eq }) => eq(tags.id, id),
@@ -68,6 +79,11 @@ export const getTag = async (
       serviceTag: {
         with: {
           service: true,
+        },
+      },
+      talkTag: {
+        with: {
+          talk: true,
         },
       },
     },
@@ -98,6 +114,10 @@ export const getTag = async (
       id: serviceTag.service.id,
       slug: serviceTag.service.slug,
       title: serviceTag.service.name,
+    })),
+    talks: tag.talkTag.map((talkTag) => ({
+      id: talkTag.talk.id,
+      title: talkTag.talk.title,
     })),
   };
 };

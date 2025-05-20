@@ -26,5 +26,11 @@ export const Primary: Story = {
         title: 'k8o',
       },
     ],
+    talks: [
+      {
+        id: 1,
+        title: 'k8o',
+      },
+    ],
   },
 };
