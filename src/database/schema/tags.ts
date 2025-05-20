@@ -1,5 +1,6 @@
 import { blogTag } from './blog-tag';
 import { serviceTag } from './service-tag';
+import { talkTag } from './talk-tag';
 import { relations } from 'drizzle-orm';
 import {
   pgTable,
@@ -20,4 +21,5 @@ export const tags = pgTable(
 export const tagsRelations = relations(tags, ({ many }) => ({
   blogTag: many(blogTag),
   serviceTag: many(serviceTag),
+  talkTag: many(talkTag),
 }));

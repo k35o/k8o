@@ -8,7 +8,7 @@ export default async function Page() {
   return (
     <section className="grid-cols-auto-fill-70 grid justify-items-center gap-4">
       {tags.map((tag) => {
-        if (tag.blogCount + tag.serviceCount === 0) {
+        if (tag.blogCount + tag.serviceCount + tag.talkCount === 0) {
           return null;
         }
         return (
@@ -16,7 +16,7 @@ export default async function Page() {
             key={tag.id}
             title={tag.name}
             href={`/tags/${tag.id.toString()}` as Route}
-            count={tag.blogCount + tag.serviceCount}
+            count={tag.blogCount + tag.serviceCount + tag.talkCount}
             label="コンテンツを見る"
             linkLabel={`「${tag.name}」に関連するコンテンツを表示する`}
           />
