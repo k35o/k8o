@@ -24,9 +24,9 @@ export const GlobalLayout: FC<{ children: ReactNode }> = ({
               </h1>
             </Link>
             <div className="hidden items-center gap-2 md:flex">
+              <TagsLink />
               <NewsLink />
               <ContactToMe />
-              <TagsLink />
             </div>
           </div>
           <div className="hidden items-center gap-4 md:flex">

@@ -46,14 +46,14 @@ export const NavigationMenu: FC = () => {
               <ul className="flex w-full flex-col gap-4 p-4">
                 {/* eslint-disable-next-line jsx-a11y/click-events-have-key-events, jsx-a11y/no-noninteractive-element-interactions -- NewsLinkのおこぼれをもらう */}
                 <li onClick={onClose}>
+                  <TagsLink />
+                </li>
+                {/* eslint-disable-next-line jsx-a11y/click-events-have-key-events, jsx-a11y/no-noninteractive-element-interactions -- NewsLinkのおこぼれをもらう */}
+                <li onClick={onClose}>
                   <NewsLink />
                 </li>
                 <li>
                   <ContactToMe fullWidth />
-                </li>
-                {/* eslint-disable-next-line jsx-a11y/click-events-have-key-events, jsx-a11y/no-noninteractive-element-interactions -- NewsLinkのおこぼれをもらう */}
-                <li onClick={onClose}>
-                  <TagsLink />
                 </li>
               </ul>
             </nav>
