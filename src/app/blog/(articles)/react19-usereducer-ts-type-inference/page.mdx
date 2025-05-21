@@ -1,28 +1,54 @@
 ---
 title: React19で変化したuseReducerの型から学ぶTypeScriptの型推論
-description: '@types/reactのバージョン19ではuseReducerの型の変更が行われました。これまではreducer関数から状態の型を推論していましたが、バージョン19からは初期値も含めた型推論の形に変更され、型引数を用いないことがベストプラクティスになりました。この変更を元にTypeScriptで型推論活かす方法について学びます。'
+description: '@types/reactのバージョン19ではuseReducerの型の変更が行われました。これまではreducer関数から状態の型を推論していましたが、バージョン19からはreducer関数と初期値から状態の型を推論する形に変更されました。この記事では、この変更を元にTypeScriptにおける型の推論方法について提案します。'
 createdAt: 2025-05-24 14:00:00.000000+00
 updatedAt: 2025-05-24 14:00:00.000000+00
 ---
 
 import { LinkCard } from '@/components/link-card';
+import { Image } from '@/app/blog/_components/image';
+import inferencePattern from './_images/inference-pattern.png';
+import react18vsreact19 from './_images/react18vsreact19.png';
 
 # React19で変化したuseReducerの型から学ぶTypeScriptの型推論
 
 ## はじめに
 
-`@types/react`のバージョン19では、React本体の変更に対する追従の他に幾つかの変更が加えられました（[Changelog](https://github.com/DefinitelyTyped/DefinitelyTyped/pull/69022)）。その中の1つとして`useReducer`の型の変更があります。
+`@types/react`のバージョン19では、React本体の変更に対する追従の他に幾つかの変更が加えられました（[Changelog](https://github.com/DefinitelyTyped/DefinitelyTyped/pull/69022)）。
+その中の1つとして`useReducer`の型の変更があります。
 
-`useReducer`の型の変更は型推論の向上を目的として行われました。これまでは`useReducer`を用いるために`reducer`関数から状態の型を推論していました。しかし、バージョン19からは初期値を含めた引数全体から型を推論する形に変更され、型引数を用いないことがベストプラクティスになりました。
-これにより、開発者の冗長な型定義を防ぎつつ、堅安全性を維持することが可能になりました。
+`useReducer`の型の変更は型推論の向上を目的として行われました。
+これまでは`useReducer`を用いるために`reducer`関数から状態の型を推論していました。しかし、バージョン19からは初期値を含めた引数全体から型を推論する形に変更されました。
+これにより、これまで通りの使い心地を保ちつつ、冗長な型定義を防ぐことに成功しました。
 
-この記事では、React 19における`useReducer`の型の変更点と、その変更点からTypeScriptの型推論を活用する方法について学びます。
+以下の例は、型の推論方法の変更によって、React18の`useReducer`で型エラーの発生する記述が、React19で起きないようになったものです。
+
+```ts
+// React18
+// [any, Dispatch<Action>]
+const [state, dispatch] = useReducer(
+  // 💣 Parameter 'state' implicitly has an 'any' type.
+  (prevCount) => prevCount + 1,
+  0,
+);
+
+// React19
+// [number, ActionDispatch<[]>]
+const [state, dispatch] = useReducer(
+  // prevCount: number
+  (prevCount) => prevCount + 1,
+  0,
+);
+```
+
+この記事では、React19における`useReducer`の型定義の変更点に焦点を当て、以前は型エラーとなっていたケースがどのように解消されたのかを解説します。
+さらに、これらの変化を紐解きながら、TypeScriptにおける型の推論方法について考察します。
 
 ## useReducer
 
-`useReducer`はReactの状態を管理するAPIの1つです（[状態について](https://ja.react.dev/learn/state-a-components-memory)）。
+`useReducer`はReactの状態を管理する機能の1つです（[状態について](https://ja.react.dev/learn/state-a-components-memory)）。
 
-状態を更新する方法を指定する`reducer`関数と初期値を指定する値を引数に取り、状態と状態を更新するための関数を返します。
+状態を更新する方法を指定する`reducer`関数と初期値を指定する値を引数に取り、状態と状態を更新するための関数を配列で返します。
 
 ```ts
 const [state, dispatch] = useReducer(reducer, {
@@ -32,7 +58,7 @@ const [state, dispatch] = useReducer(reducer, {
 });
 ```
 
-`reducer`は状態の更新方法を指定するので、古い状態とそれに対する指示を引数に取り、新しい状態を返します。
+`reducer`関数は状態の更新方法を指定するので、古い状態とそれに対する指示を引数に取り、新しい状態を返します。
 
 ```ts
 type Action = { type: 'age-increment' } | { type: 'age-decrement' };
@@ -50,10 +76,11 @@ const reducer = (state: State, action: Action): State => {
 };
 ```
 
-上記は、年齢を1歳増やす更新方法と年齢を1歳減らす更新方法を持つ`reducer`です。
-`State`は初期値を含む型である必要があります。
+上記の`reducer`関数は、年齢を1歳増やす更新方法と年齢を1歳減らす更新方法を持ちます。
+`State`型は状態の型で、`Action`型は更新方法を指示する値の型です。
 
-この`reducer`を引数に持つ`useReducer`が返す`dispatch`関数は、`action`を受け取って状態を更新します。
+この`reducer`関数を持つ`useReducer`が返す`dispatch`関数は、`Action`型の値を引数に渡して実行します。
+実行すると`reducer`関数に定義した方法で状態を更新します。
 
 ```ts
 const [state, dispatch] = useReducer(reducer, {
@@ -69,7 +96,9 @@ const decrement = () => {
 };
 ```
 
-`reducer`で指定した更新方法に従った形でしか状態を更新できないので、厳密な状態管理が可能になります。
+この例では`id`や`name`の更新方法を提供されていません。そのため、`age`を1歳増やす、減らす以外の更新ができません。
+
+このように、`useReducer`は`reducer`関数で指定した更新方法でしか状態を更新できないので、厳密な状態管理が可能になります。
 
 ### 初期値の与え方
 
@@ -105,7 +134,7 @@ const [state, dispatch] = useReducer(reducer, init(initialArg));
 それにもかかわらず、2つ目の方法がある理由はコンポーネントの初回の計算以降の`init(initialArg)`の実行を避けるためにあります。
 
 1つ目の方法では引数に`init(initialArg)`を記述しているので、コンポーネントを計算するたびに`init(initialArg)`が実行されてしまいます。
-しかし、2つ目の方法は`init`と`initialArg`を別々で渡しているので、Reactは初回の計算でのみ`init(initialArg)`を実行するようにしてくれます。
+しかし、2つ目の方法は`init`と`initialArg`を別々で渡しているので、Reactは初回の計算でのみ`init(initialArg)`を実行するように最適化してくれます。
 
 `init`関数が複雑で時間のかかるものだった場合、コンポーネントの再計算のたびにその重い処理が何度も実行され、パフォーマンス低下に繋がります。
 そのようなケースでは2つ目の方法が有効です。
@@ -125,14 +154,14 @@ const [state, dispatch] = useReducer(reducer, init(initialArg));
 さて、`useReducer`の基本的な振る舞いを確認したところで、`@types/react`に書かれた`useReducer`の型を見ていきましょう。
 ここで紹介する型は`@types/react`バージョン19.1.4から`useReducer`に関する型を抜粋したものです（[React19の型](https://github.com/DefinitelyTyped/DefinitelyTyped/blob/fc149b4c31aabbd6ebb0dfd27d3af7db8a79e84e/types/react/index.d.ts)、[React18の型](https://github.com/DefinitelyTyped/DefinitelyTyped/blob/fc149b4c31aabbd6ebb0dfd27d3af7db8a79e84e/types/react/v18/index.d.ts)）。
 
-それぞれの型の動きを確認するために[TypeScriptのPlayground](https://www.typescriptlang.org/play/?ts=5.8.3#code/C4TwDgpgBAIglgZzAQ2AYwBYB4CCA+KAXigAoA3ZAGwFcIAuKHASiILIHs4ATAbgChQkWIhToMAdTjAM7asBxpgcdgDsipFoTadeA8NABKELtTQQATlgDKAGkYFiJMOYhkrwVPSi2oyRcpUGZlZvfkFDY1MLSWlZeX9VawdSZ1d3TwYrTQIrMP0oIxMzc3TgCCwDKAgADzKVLgQCyOKsZBUQOzaQPAc+Spq6hqaiiyw4FQAzC29O9oIAfm8oBhVXCzyhQqjzBSVE-tqIesatlq7Z7t6DwZPm0fOocanzeyhFnGWoVbJ1vU27koeMoxGRyXYBLB9KqHY7DbYguLgxJdPA2PjJa5HIanaJSUHxPYqMaTaZWBZLFZrcz8PhcCBoSjIFxQCbUFQJNTUBAQHHmACMFWhNzhxQRYI5rTmdgAkngSHwXCNzAwDGjxlI4FQ4AAvCw4cwAcwY0rVKg1Wt1ytITKNUGl2RFFlKEDFBIhBlRfCYDAA2rzna6kUSPXZ4EhUJhAxyALr8OkMpnQVnswlQLk8gECzGw3lRwmSy7yxXbFWm82UHV6w0qgEBvGIiUhvjqpQWizzBhsukTcbGNHeqB+2tAl318X5kPCcNiPMBWO0+mM5nJjlp7m8rNCrG3JUFi6ou1yhUA0vNs2tiuW-W26VQABkjsBngqnpbmsvFgYJBtxvvj+dL4Ov6I4vv2vrAc+k5hqImAVACQYvng87xkuSZsqu6YboKAzbo+e6+FKh5FieBRlhelY7NWdpke+FFfj+dpAcOkGegOQ5KgBUEiBG2C8ghHpIXGi6Jiy6GpphmbYTC2IAvhKJHsWxSnm+VDOjWHEgU2KkfuYHZpvUEA9qsXBgYOEFlKBU4wbx8GNj085-NAODtEG17qD60ZQAAPoOXTzuEjActBPG4Bybk4bCzkgK5hrJPKUBQAAdMlNoIEEYWGl6IQcNwNIoSJK7ieuAIAEzWHYHwRUMUUxQaR4JYpn4pC4bgjpkdjJYlqVBA6th8Al2lqTMXq+j4QbBWIuCCQuCbLmJARrhmSplT4JqMFukUuRldXxVAjVWk4LVDT4nXdYwvVogN57vtexqXY855fnAxoXSNg5jUF3GTfgsZAA)で`useReducer1`と`useReducer2`として確認できる環境を用意しました。
+それぞれの型の動きを手元で確認したい型のために[TypeScriptのPlayground](https://www.typescriptlang.org/play/?ts=5.8.3#code/C4TwDgpgBAIglgZzAQ2AYwBYB4CCA+KAXigAoA3ZAGwFcIAuKHASiILIHs4ATAbgChQkWIhToMAdTjAM7asBxpgcdgDsipFoTadeA8NABKELtTQQATlgDKAGkYFiJMOYhkrwVPSi2oyRcpUGZlZvfkFDY1MLSWlZeX9VawdSZ1d3TwYrTQIrMP0oIxMzc3TgCCwDKAgADzKVLgQCyOKsZBUQOzaQPAc+Spq6hqaiiyw4FQAzC29O9oIAfm8oBhVXCzyhQqjzBSVE-tqIesatlq7Z7t6DwZPm0fOocanzeyhFnGWoVbJ1vU27koeMoxGRyXYBLB9KqHY7DbYguLgxJdPA2PjJa5HIanaJSUHxPYqMaTaZWBZLFZrcz8PhcCBoSjIFxQCbUFQJNTUBAQHHmACMFWhNzhxQRYI5rTmdgAkngSHwXCNzAwDGjxlI4FQ4AAvCw4cwAcwY0rVKg1Wt1ytITKNUGl2RFFlKEDFBIhBlRfCYDAA2rzna6kUSPXZ4EhUJhAxyALr8OkMpnQVnswlQLk8gECzGw3lRwmSy7yxXbFWm82UHV6w0qgEBvGIiUhvjqpQWizzBhsukTcbGNHeqB+2tAl318X5kPCcNiPMBWO0+mM5nJjlp7m8rNCrG3JUFi6ou1yhUA0vNs2tiuW-W26VQABkjsBngqnpbmsvFgYJBtxvvj+dL4Ov6I4vv2vrAc+k5hqImAVACQYvng87xkuSZsqu6YboKAzbo+e6+FKh5FieBRlhelY7NWdpke+FFfj+dpAcOkGegOQ5KgBUEiBG2C8ghHpIXGi6Jiy6GpphmbYTC2IAvhKJHsWxSnm+VDOjWHEgU2KkfuYHZpvUEA9qsXBgYOEFlKBU4wbx8GNj085-NAODtEG17qD60ZQAAPoOXTzuEjActBPG4Bybk4bCzkgK5hrJPKUBQAAdMlNoIEEYWGl6IQcNwNIoSJK7ieuAIAEzWHYHwRUMUUxQaR4JYpn4pC4bgjpkdjJYlqVBA6th8Al2lqTMXq+j4QbBWIuCCQuCbLmJARrhmSplT4JqMFukUuRldXxVAjVWk4LVDT4nXdYwvVogN57vtexqXY855fnAxoXSNg5jUF3GTfgsZAA)で`useReducer1`と`useReducer2`として確認できる環境を用意しました。
 
 ### React18
 
 React18の`useReducer`の型は以下のようになっています（`namespace`は適当です）。
 
 ```ts
-declare namespace Reducer {
+declare namespace React18 {
   type Dispatch<A> = (value: A) => void;
   type DispatchWithoutAction = () => void;
   type Reducer<S, A> = (prevState: S, action: A) => S;
@@ -173,25 +202,37 @@ declare namespace Reducer {
 }
 ```
 
-オーバーロード関数で5つに分けて実装されています。
-
 最初にあるいくつかの型は、関数の型を表現するために利用する共通の型です。
 
-`Dispatch`は戻り値の型で、`DispatchWithoutAction`は`reducer`に状態の更新方法を指示する引数がない時の型です。
+`Dispatch`型は戻り値の型で、`DispatchWithoutAction`型は`reducer`関数に状態の更新方法を指示する引数がない時の型です。
 
 ```ts
 type Dispatch<A> = (value: A) => void;
 type DispatchWithoutAction = () => void;
 ```
 
-`Reducer`は状態を更新するための関数の型で、`ReducerWithoutAction`は状態の更新方法を指示する引数がない時の型です。
+`reducer`関数に状態の更新方法を指示する引数がない時の例を挙げると、以下のような形になります。
+
+```ts
+const [count, dispatch] = useReducer(
+  (prevCount: number) => prevCount + 1,
+  0,
+);
+const increment = () => {
+  dispatch();
+};
+```
+
+このケースでは、`Action`（`reducer`関数の第2引数）がないので状態の更新方法が1通りしかないです。今後このケースは単に`Action`がないケースと呼びます。
+
+`Reducer`型は状態を更新するための関数の型で、`ReducerWithoutAction`型は`Action`がない時の型です。
 
 ```ts
 type Reducer<S, A> = (prevState: S, action: A) => S;
 type ReducerWithoutAction<S> = (prevState: S) => S;
 ```
 
-`ReducerState`は`Reducer`から状態の型を取得するための型で、`ReducerStateWithoutAction`は`ReducerWithoutAction`から状態の型を取得するための型です。
+`ReducerState`型は`Reducer`型から状態の型を抽出するための型で、`ReducerStateWithoutAction`型は`ReducerWithoutAction`型から状態の型を抽出するための型です。
 
 ```ts
 type ReducerState<R extends Reducer<any, any>> =
@@ -200,14 +241,17 @@ type ReducerStateWithoutAction<R extends ReducerWithoutAction<any>> =
   R extends ReducerWithoutAction<infer S> ? S : never;
 ```
 
-`ReducerAction`は`Reducer`からアクションの型を取得するための型です。
+`ReducerAction`型は`Reducer`型から`Action`型を抽出するための型です。
 
 ```ts
 type ReducerAction<R extends Reducer<any, any>> =
   R extends Reducer<any, infer A> ? A : never;
 ```
 
-1つ目の関数は`reducer`が更新方法を指示する引数を持たず、初期化関数を持つものです。
+続いて、`useReducer`自体の型を見ていきます。
+`useReducer`はオーバーロード関数で5つに分けて実装されています。
+
+1つ目は`Action`がなく、初期化関数を持つものです。
 
 ```ts
 function useReducer<R extends ReducerWithoutAction<any>, I>(
@@ -217,7 +261,7 @@ function useReducer<R extends ReducerWithoutAction<any>, I>(
 ): [ReducerStateWithoutAction<R>, DispatchWithoutAction];
 ```
 
-2つ目の関数は`reducer`が更新方法を指示する引数を持たず、初期化関数も持たないものです。
+2つ目は`Action`がなく、初期化関数も持たないものです。
 
 ```ts
 function useReducer<R extends ReducerWithoutAction<any>>(
@@ -227,8 +271,8 @@ function useReducer<R extends ReducerWithoutAction<any>>(
 ): [ReducerStateWithoutAction<R>, DispatchWithoutAction];
 ```
 
-3つ目、4つ目の関数は`reducer`が更新方法を指示する引数を持ち、初期化関数も持つものです。
-3つ目は`useReducer`の2つ目の型引数の`I`と`ReducerState`の交差型を初期化関数に渡すもので、4つ目は`I`だけを初期化関数に渡すものです。
+3つ目、4つ目の関数は`Action`を持ち、初期化関数も持つものです。
+3つ目は`useReducer`の2つ目の型引数の`I`型と`ReducerState`型の交差型を初期化関数に渡すもので、4つ目は`I`型だけを初期化関数に渡すものです。
 
 ```ts
 function useReducer<R extends Reducer<any, any>, I>(
@@ -243,7 +287,7 @@ function useReducer<R extends Reducer<any, any>, I>(
 ): [ReducerState<R>, Dispatch<ReducerAction<R>>];
 ```
 
-5つ目の関数は`reducer`が更新方法を指示する引数を持ち、初期化関数を持たないものです。
+5つ目の関数は`Action`を持ち、初期化関数を持たないものです。
 
 ```ts
 function useReducer<R extends Reducer<any, any>>(
@@ -253,12 +297,12 @@ function useReducer<R extends Reducer<any, any>>(
 ): [ReducerState<R>, Dispatch<ReducerAction<R>>];
 ```
 
-どの関数も`reducer`から`Reducer<S, A>`、`ReducerWithoutAction<S>`を推論して、そこから状態の型を求めています。
+どの関数も`reducer`関数から`Reducer<S, A>`型か`ReducerWithoutAction<S>`型を推論して、そこから状態の型や`Action`型、`Dispatch<ReducerAction<R>>`型を求めています。
 
 ### React19
 
 React19の`useReducer`の型は以下のようになっています。
-React18の型と比べて、オーバーロード関数の数が3つまで減って、読みやすくなりました。
+React18の型と比べて、オーバーロード関数の数が2つまで減って、読みやすくなりました。
 
 ```ts
 declare namespace Reducer {
@@ -279,7 +323,7 @@ declare namespace Reducer {
 }
 ```
 
-`AnyActionArg`は`reducer`に更新方法を指示する関数の引数、`ActionDispatch`は更新関数の型です。
+`AnyActionArg`型は`Action`自体、`ActionDispatch`型は更新関数の型です。
 
 ```ts
 type AnyActionArg = [] | [any];
@@ -307,13 +351,13 @@ function useReducer<S, I, A extends AnyActionArg>(
 ): [S, ActionDispatch<A>];
 ```
 
-`reducer`だけではなく、初期状態からも状態の型を推論しています。
+React19では、`reducer`関数から各型を推論するのではなく、状態の型（`S`型）と`Action`型（`A`型）を推論してから各型の推論するようになりました。
 
 ### 明示的な型付け方法の変更
 
-`useReducer`に渡す型引数が変更されました。
+React19になって、`useReducer`の受け取る型引数が変更されました。
 
-初期値を関数から生成する時の引数の型を渡すことは変わりませんが、React18では`reducer`の型を渡していたところから、React19では状態と更新方法を指示する関数の引数の型を渡すように変更されました。
+React18では`reducer`関数の型（`Reducer<S, A>`型か`ReducerWithoutAction<S>`型）を渡していたところから、React19では状態の型（`S`型）と`Action`型（`AnyActionArg`型）を渡すように変更されました。
 
 ```ts
 // React18
@@ -341,7 +385,7 @@ const [state, dispatch] = useReducer<State, I, [Action]>(
 );
 ```
 
-`I`を渡す順番には違和感を覚えますが、内部の型を使わずに型を渡せるようになったのは良い変化だと感じました。
+初期化関数を用いるときに利用する型引数`I`型を渡す順番には違和感を覚えますが、内部の型を使わずに型を渡せるようになったのは良い変化だと感じました。
 
 なお、React19では`useReducer`に型引数を渡さないことがベストプラクティスとされているので、推論でカバーできないときにのみ型引数を利用するようにしましょう。
 
@@ -349,7 +393,11 @@ const [state, dispatch] = useReducer<State, I, [Action]>(
 
 ### 型の推論の向上
 
-React18の`useReducer`では`reducer`関数からのみ状態の型を推論するので、インラインで`reducer`を定義した場合に`state`の型を定義せずに状態の型を特定できませんでした。
+はじめに紹介したReact18では型推論がうまく働かず、型エラーが発生してしまう例についてです。
+
+このエラーは、React18の`useReducer`では`reducer`関数からのみ状態の型を推論することが原因で起きています。`reducer`関数の型が不十分なので、状態の型を推論する方法がなく、型エラーが生じていたのです。
+
+そのため、React18では`reducer`関数が型を持っていない状態で、`useReducer`の宣言はできませんでした。
 
 ```ts
 type Action = { type: 'age-increment' } | { type: 'age-decrement' };
@@ -376,7 +424,7 @@ const [state, dispatch] = useReducer(
 );
 ```
 
-React19では状態の型を初期値からも推論できるので、インラインで`reducer`を定義した場合に`state`の型を付与せずとも、状態の型を特定できるようになりました。
+React19では状態の型を初期値からも推論できるの問題なく宣言できます。
 
 ```ts
 // [
@@ -407,34 +455,37 @@ const [state, dispatch] = useReducer(
 );
 ```
 
+これは、React19の`useReducer`が状態の型を`reducer`関数だけに頼らず、初期値からも推論するように変更されたためです。
+
 実は、React19における`useReducer`の型が変更はこの変更のために行われたものです。
 
 <LinkCard href="https://github.com/DefinitelyTyped/DefinitelyTyped/discussions/63607" />
 
 ## useReducerから学ぶ型推論
 
-React19の`useReducer`の型変更から、関数を引数にもつ関数の型を定義する方法を学ぶことができます。
+React18からReact19の`useReducer`の型変更から、関数を引数にもつ関数の型を定義する方法を学ぶことができます。
 
-```ts
-const [state, dispatch] = useReducer(
-  (state, action: Action) => {
-    const type = action.type;
-    switch (type) {
-      case 'age-increment':
-        return { ...state, age: state.age + 1 };
-      case 'age-decrement':
-        return { ...state, age: state.age - 1 };
-      default:
-        throw new Error(type satisfies never);
-    }
-  },
-  {
-    id: 1,
-    name: 'k8o',
-    age: 26,
-  },
-);
-```
+React18では、`reducer`関数という主体となる型があり、そこから状態の型や`Action`型を推論する形でした。
+一方、React19では状態の型と`Action`型を主体として、そこから`reducer`関数の型や`ActionDispatch`型を推論する形になりました。
+
+<Image
+  src={react18vsreact19}
+  alt="React18とReact19のuseReducerの型の違いを図示したもの"
+/>
+
+これを一般化して、以下のように定義します。
+
+- React18式: 主体となる型があり、それから従属する型を推論させる方法
+- React19式: 値の主従関係を決めずに基本的な方から型を推論させる方法
+
+<Image
+  src={inferencePattern}
+  alt="React18式とReact19式の型推論法の違いを図示したもの"
+/>
+
+React19式は型の定義が簡潔で可読性も高くなりやすく利用しやすい使いやすい型になっていますが、React18式は値の主従関係を型に持ち込むような複雑な定義となります。
+
+そのため、React19式は汎用的に使い、React18式は型の上でも主従関係を明確にした強い制約を持たせたい場合に有効です。React19式だけが良いわけではなく、React18式も有効なケースがある事に注意が必要です。
 
 ### 配列をフィルタする関数を例に
 
@@ -459,7 +510,7 @@ const arrayFilter2 = <T>(array: T[], filter: Filter<T>): T[] => {
 };
 ```
 
-`arrayFilter1`はReact18の`useReducer`型に寄せた型で、`arrayFilter2`はReact19に寄せた型です。
+`arrayFilter1`はReact18式の型定義で、`arrayFilter2`はReact19式の型定義です。
 
 それぞれの関数の型は以下のように推論されます。
 
@@ -489,19 +540,22 @@ const result2 = arrayFilter2(
 `arrayFilter1`は関数から型を推論しているので、関数に型情報を付与するもしくは、型引数を渡さないと型が`any[]`になってしまいます。
 一方、`arrayFilter2`は配列からも型を推論しているので、型引数を渡さなくても型が特定できるようになっています。
 
-この振る舞いの良し悪しは状況によって異なります。提供したい関数のインターフェースによって使い分けると便利です。
+例に挙げた関数であれば、フィルタ関数を主役と考えてフィルタ関数が対応する型のみを配列の値に許可させたい場合は`arrayFilter1`のように、配列の値からも値の型を推論可能にして作用させるフィルタ関数の型を推論させたい場合は`arrayFilter2`のようにするのが良いでしょう。
 
-例に挙げた関数であれば、フィルタ関数が対応する型のみを配列の値に許可させたい場合は`arrayFilter1`のように、配列の値を元に作用させるフィルタ関数を記述させたい場合は`arrayFilter2`のようにするのが良いでしょう。
+### React18式が有効なケース
 
-### 型推論の使い分け
+React18式が有効なケースを紹介します。
 
-React18の`useReducer`のような形式の型は、代表的な型がありそれに追従する型を持つ場合で有効的です。
+ここでは、部分適用を実装した関数を紹介します。部分適用とはある関数から引数の一部分を代入した状態の関数を作り出すような操作を意味します（厳密な定義ではない）。
 
-例えば、渡した関数の最初の引数を固定した関数を返すような関数を考えます。
-この関数は渡した関数を主とし、固定する引数がそれに従う形で記述したいです。
+```math
+f(x, y, z) \to g(x)(y, z)
+```
+
+この関数は適用元の関数が存在する上で代入する値が存在すると考えられます。そのため、部分適用の制約を型の上でも表現したい場合はReact18式が有効です。
 
 ```ts
-type CurriedFunc<T, U extends any[], K> = (arg: T, ...args: U) => K;
+type TargetFunc<T, U extends any[], K> = (arg: T, ...args: U) => K;
 type FirstArg<T> = T extends (arg: infer U, ...args: never) => void
   ? U
   : never;
@@ -509,21 +563,27 @@ type RestArg<T> = T extends (arg: never, ...args: infer U) => void
   ? U
   : never;
 
-const curry = <F extends CurriedFunc<any, any, any>>(
+const partial = <F extends TargetFunc<any, any, any>>(
   func: F,
   value: FirstArg<F>,
 ): ((...rest: RestArg<F>) => ReturnType<F>) => {
   return (...rest) => func(value, ...rest);
 };
 
-const plus3 = curry((num1: number, num2: number) => num1 + num2, 3);
+const plus3 = partial((num1: number, num2: number) => num1 + num2, 3);
 ```
 
-`plus3`は、2つの数値を足し合わせる関数をベースに、一方の数値を3に固定した関数になります。
+`plus3`は、2つの数値を足し合わせる関数をベースに、一方の数値を3へ固定した関数になります。
 
-このような関数で、固定する値が関数の型を決定することが可能になると、主従関係が逆転してしまいます。厳密に管理させたいケースでは、`curry`のように型の上でも主従関係を明確にした方が良いでしょう。
+この関数は適用元の関数が主役となるように作られているので、適用元の関数に型がない場合は型エラーが発生します。
+また、適用元の関数が受け取れない値を第二引数に渡したときは第二引数だけにエラーが発生します。
 
-その他のケースでは、React19の`useReducer`のように、各引数から型を推論させる形で記述するのがおすすめです。
+これらのエラーは適用元の関数を主として考える上であえて発生させた（ある種リンターのような意味合いを持つ）ものです。このような制約をあえて設けたいケースでは、React18式を用いることがおすすめです。
+
+### React19式が使われるケース
+
+React19式が使われるケースは巷にあふれています。
+
 例えば配列に実装されている`reduce`メソッドは、配列の要素から型を推論する形で実装されています。
 
 ```ts
@@ -555,7 +615,7 @@ const sum2 = [1, 2, 3].reduce(
 そして、`sum2`の計算では、`callbackfn`の引数である`previousValue`と`currentValue`の型は明示的に指定しています。この時は、配列、初期値、`previousValue`、`currentValue`の型に矛盾ないことが求められます。
 
 `previousValue`と`currentValue`が関数の型を決定するだけではなく、配列と初期値からも型を決定できる柔軟な型の実装になっています。
-これが、React19の`useReducer`の形式のメリットになります。柔軟で使いやすい形なので、ほとんどのパターンではReact19の`useReducer`のような形式で型を実装するのが良いでしょう。
+これが、React19式の便利で汎用性の高いところです。このようにReact19式は柔軟で使いやすい形なので、ほとんどのパターンではReact19式で実装するのが良いでしょう。
 
 この考えを元にすると、`useReducer`は`reducer`に従って状態が決まるわけではないので、React19における`useReducer`の型の変更は良い変更だと考えられます。
 
@@ -566,4 +626,6 @@ const sum2 = [1, 2, 3].reduce(
 React19では、`useReducer`の型が変更され、よりシンプルで使いやすくなりました。特に、型推論の向上により、冗長な型定義を避けることができるようになりました。
 この変更は、`useReducer`を使用するReact・TypeScriptユーザーにとって、より快適な開発体験をもたらせてくれました。
 
-さらに、React19の型変更を通じて、TypeScriptの型推論についての活用方法を学びました。作成したい型の振る舞いを考え、React18の`useReducer`式の型とReact19の`useReducer`式の型を使い分けることで、より柔軟で堅牢な型定義が可能になります。
+さらに、React19の型変更を通じて、TypeScriptの型推論について考察しました。作成したい型の振る舞いを考え、React18式の型とReact19式の型を使い分けることで、より柔軟で堅牢な型定義が可能になります。
+
+今回の考察は日頃、身近で複雑な機能の型を実装して実際の型と比較することで生まれました。皆さんも普段ライブラリで利用するような機能の型について思いを馳せてみてはいかがでしょうか。
