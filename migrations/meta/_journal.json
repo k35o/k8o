@@ -246,6 +246,13 @@
       "when": 1747561422684,
       "tag": "0034_thin_millenium_guard",
       "breakpoints": true
+    },
+    {
+      "idx": 35,
+      "version": "7",
+      "when": 1747712761900,
+      "tag": "0035_bright_shaman",
+      "breakpoints": true
     }
   ]
 }
