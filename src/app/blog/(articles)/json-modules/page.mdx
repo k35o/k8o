@@ -1,0 +1,53 @@
+---
+title: withキーワードを使用したJSONモジュールのインポート
+description:
+createdAt: 2025-05-21 14:00:00.00000+00
+updatedAt: 2025-05-21 14:00:00.00000+00
+---
+
+import { BaselineStatus } from '@/components/baseline-status';
+
+# withキーワードを使用したJSONモジュールのインポート
+
+<BaselineStatus featureId="json-modules"></BaselineStatus>
+
+## Import Attribute
+
+Import Attributeは、ESMモジュールのインポート時に、モジュールの形式に関する情報をランタイムに伝えるための属性です。
+
+```ts
+import json from './data.json' with { type: 'json' };
+import('./data.json', { with: { type: 'json' } });
+```
+
+`with`キーワードを使って、モジュールの形式を指定します。
+
+構文に中括弧`{}`が使われているのは、以下のような理由があります。
+
+- 多くのユーザーがオブジェクトの構文に慣れている
+- 末尾のコンマが許可されるため編集が簡単
+- 複数行に分割するときに終わりを明確にするため
+
+現在多くの場所でサポートされているモジュール形式は、`json`だけでです。執筆当時のBaseline 2025に追加された構文も`json`だけになります。
+
+## JSON Import Attribute
+
+`with: { type: 'json' }`を付けて、インポートされたデータをJSONとして解釈するように伝えることができます。
+
+JSONと伝えた状態で、JSON以外のファイルをインポートしたときに下記のようなエラーが発生します（下の引用はChromeで`text/html`なものをインポートしたとき）。
+
+> Failed to load module script: Expected a JSON module script but the server responded with a MIME type of "text/html". Strict MIME type checking is enforced for module scripts per HTML spec.
+
+JSON Import Attributeをつけない場合は、エラーを発生させずにインポートした結果をそのまま利用してしまいます。
+JavaScriptがインポートされたときは、構文解析及びに実行まで行うので、セキュリティ上のリスクになります。
+
+<iframe
+  height="300"
+  className="w-full"
+  title="JSON Import Attribute"
+  src="https://codepen.io/kokisakano/embed/dPPBMxz?default-tab=result"
+  loading="lazy"
+/>
+
+上記の例では、取得ボタンを押すとインプットテキストをJSON Import Attribute付きインポートします。
+デフォルトの入力はJSONを返すので問題なくインポートできますが、他の形式を入力するように変えるとコンソールにエラーが発生します。
