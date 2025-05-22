@@ -6,7 +6,12 @@ import k8o from './_images/k8o.jpg';
 import { RoundedIcon } from './radius-maker/_components/rounded-icon';
 import { Card } from '@/components/card';
 import { IconLink } from '@/components/icon-link';
-import { GitHubIcon, QiitaIcon, ZennIcon } from '@/components/icons';
+import {
+  GitHubIcon,
+  QiitaIcon,
+  TwitterIcon,
+  ZennIcon,
+} from '@/components/icons';
 import Image from 'next/image';
 
 export default function Home() {
@@ -24,26 +29,34 @@ export default function Home() {
           <div className="flex h-32 w-full flex-col justify-around">
             <div className="flex h-full flex-col justify-evenly md:h-auto md:flex-row md:items-center md:justify-between">
               <Heading type="h3">k8o</Heading>
-              <div className="flex items-center justify-end gap-1">
+              <div className="flex flex-wrap items-center justify-end gap-1">
                 <EmailTooltip />
                 <IconLink
-                  href="https://github.com/k35o"
-                  label="GitHubのアカウント"
+                  href="https://x.com/k35o53k"
+                  label="Xのアカウント"
                 >
-                  <GitHubIcon />
+                  <TwitterIcon />
                 </IconLink>
-                <IconLink
-                  href="https://qiita.com/KokiSakano"
-                  label="Qiitaのアカウント"
-                >
-                  <QiitaIcon />
-                </IconLink>
-                <IconLink
-                  href="https://zenn.dev/kokisakano"
-                  label="Zennのアカウント"
-                >
-                  <ZennIcon />
-                </IconLink>
+                <div className="flex flex-wrap items-center justify-end gap-1">
+                  <IconLink
+                    href="https://github.com/k35o"
+                    label="GitHubのアカウント"
+                  >
+                    <GitHubIcon />
+                  </IconLink>
+                  <IconLink
+                    href="https://qiita.com/KokiSakano"
+                    label="Qiitaのアカウント"
+                  >
+                    <QiitaIcon />
+                  </IconLink>
+                  <IconLink
+                    href="https://zenn.dev/kokisakano"
+                    label="Zennのアカウント"
+                  >
+                    <ZennIcon />
+                  </IconLink>
+                </div>
               </div>
             </div>
             <div className="hidden md:block">

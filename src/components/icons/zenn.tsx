@@ -6,8 +6,6 @@ export const Zenn: FC<{ className?: string }> = ({ className }) => {
     <svg
       className={className}
       viewBox="0 0 98 96"
-      width="98"
-      height="96"
       xmlns="http://www.w3.org/2000/svg"
     >
       <g fill="#3EA8FF">
