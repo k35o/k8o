@@ -6,7 +6,12 @@ import k8o from './_images/k8o.jpg';
 import { RoundedIcon } from './radius-maker/_components/rounded-icon';
 import { Card } from '@/components/card';
 import { IconLink } from '@/components/icon-link';
-import { GitHubIcon, QiitaIcon, ZennIcon } from '@/components/icons';
+import {
+  GitHubIcon,
+  QiitaIcon,
+  TwitterIcon,
+  ZennIcon,
+} from '@/components/icons';
 import Image from 'next/image';
 
 export default function Home() {
@@ -26,6 +31,12 @@ export default function Home() {
               <Heading type="h3">k8o</Heading>
               <div className="flex items-center justify-end gap-1">
                 <EmailTooltip />
+                <IconLink
+                  href="https://x.com/k35o53k"
+                  label="Xのアカウント"
+                >
+                  <TwitterIcon />
+                </IconLink>
                 <IconLink
                   href="https://github.com/k35o"
                   label="GitHubのアカウント"
