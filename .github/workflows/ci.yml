@@ -12,6 +12,9 @@ jobs:
       - name: Setup pnpm
         uses: ./.github/actions/setup-pnpm
 
+      - name: Run ls-lint
+        run: pnpm run ls-lint
+
       - name: Run format
         run: pnpm run format:check
 

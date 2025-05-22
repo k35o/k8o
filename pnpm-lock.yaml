@@ -135,6 +135,9 @@ importers:
       '@eslint/js':
         specifier: 9.27.0
         version: 9.27.0
+      '@ls-lint/ls-lint':
+        specifier: 2.3.0
+        version: 2.3.0
       '@next/bundle-analyzer':
         specifier: 15.3.2
         version: 15.3.2(bufferutil@4.0.8)
@@ -1836,6 +1839,12 @@ packages:
 
   '@lit/task@1.0.2':
     resolution: {integrity: sha512-ofj/fahKhhS1SpbPSC57OMo2BXMxHG/y4sxH/ahWzXT5dh1kxjex7WqbL8ammb6zIlqbFCj6z2aGFYOh/qCQ+g==}
+
+  '@ls-lint/ls-lint@2.3.0':
+    resolution: {integrity: sha512-lsT5/7SxtImOIjpefC9wcoXt2lkikKhCjd6U+Q9Z6X5h2HBU/71ggt+XStdodZ0HkJGO333zDUeec7JROMCPFw==}
+    cpu: [x64, arm64, s390x, ppc64le]
+    os: [darwin, linux, win32]
+    hasBin: true
 
   '@mdx-js/loader@3.1.0':
     resolution: {integrity: sha512-xU/lwKdOyfXtQGqn3VnJjlDrmKXEvMi1mgYxVmukEUtVycIz1nh7oQ40bKTd4cA7rLStqu0740pnhGYxGoqsCg==}
@@ -8634,6 +8643,8 @@ snapshots:
   '@lit/task@1.0.2':
     dependencies:
       '@lit/reactive-element': 2.0.4
+
+  '@ls-lint/ls-lint@2.3.0': {}
 
   '@mdx-js/loader@3.1.0(webpack@5.93.0(esbuild@0.25.2))':
     dependencies:

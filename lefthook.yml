@@ -11,6 +11,11 @@ pre-commit:
       glob: 'src/**/*.{js,ts,cjs,d.cts,d.ts,jsx,tsx}'
       run: pnpm run lint:fix --file {staged_files}
       stage_fixed: true
+    
+    ls-lint:
+      glob: 'src/**/*.{js,ts,cjs,d.cts,d.ts,jsx,tsx}'
+      run: pnpm run ls-lint
+      stage_fixed: true
 
 pre-push:
   paralell: true
@@ -23,6 +28,7 @@ pre-push:
     lint:
       glob: 'src/**/*.{js,ts,cjs,d.cts,d.ts,jsx,tsx}'
       run: pnpm run lint --file {staged_files}
+
     test:
       glob: 'src/**/*.test.{js,ts,cjs,d.cts,d.ts,jsx,tsx}'
       run: pnpm run test run {staged_files}
