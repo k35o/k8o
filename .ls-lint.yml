@@ -1,0 +1,4 @@
+ls:
+  src:
+    .dir: kebab-case | regex:^_*[a-z-\[\]\(\)@.]* | regex:^__test__$
+    .*: kebab-case | regex:^README$
