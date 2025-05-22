@@ -29,7 +29,7 @@ export default function Home() {
           <div className="flex h-32 w-full flex-col justify-around">
             <div className="flex h-full flex-col justify-evenly md:h-auto md:flex-row md:items-center md:justify-between">
               <Heading type="h3">k8o</Heading>
-              <div className="flex items-center justify-end gap-1">
+              <div className="flex flex-wrap items-center justify-end gap-1">
                 <EmailTooltip />
                 <IconLink
                   href="https://x.com/k35o53k"
@@ -37,24 +37,26 @@ export default function Home() {
                 >
                   <TwitterIcon />
                 </IconLink>
-                <IconLink
-                  href="https://github.com/k35o"
-                  label="GitHubのアカウント"
-                >
-                  <GitHubIcon />
-                </IconLink>
-                <IconLink
-                  href="https://qiita.com/KokiSakano"
-                  label="Qiitaのアカウント"
-                >
-                  <QiitaIcon />
-                </IconLink>
-                <IconLink
-                  href="https://zenn.dev/kokisakano"
-                  label="Zennのアカウント"
-                >
-                  <ZennIcon />
-                </IconLink>
+                <div className="flex flex-wrap items-center justify-end gap-1">
+                  <IconLink
+                    href="https://github.com/k35o"
+                    label="GitHubのアカウント"
+                  >
+                    <GitHubIcon />
+                  </IconLink>
+                  <IconLink
+                    href="https://qiita.com/KokiSakano"
+                    label="Qiitaのアカウント"
+                  >
+                    <QiitaIcon />
+                  </IconLink>
+                  <IconLink
+                    href="https://zenn.dev/kokisakano"
+                    label="Zennのアカウント"
+                  >
+                    <ZennIcon />
+                  </IconLink>
+                </div>
               </div>
             </div>
             <div className="hidden md:block">
