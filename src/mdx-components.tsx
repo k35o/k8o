@@ -96,7 +96,7 @@ export function useMDXComponents(
         );
       }
       return (
-        <code {...props} className="sm:text-md p-1 text-xs">
+        <code {...props} className="sm:text-md text-xs">
           {children}
         </code>
       );
@@ -105,7 +105,7 @@ export function useMDXComponents(
       return (
         <pre
           {...rest}
-          className="my-4 overflow-x-auto rounded-lg p-1 sm:p-4"
+          className="my-4 overflow-x-auto rounded-lg px-2 py-1 sm:p-4"
         >
           {children}
         </pre>
