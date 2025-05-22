@@ -4,8 +4,6 @@ import { FC } from 'react';
 const Twitter: FC<{ className?: string }> = ({ className }) => {
   return (
     <svg
-      width="1200"
-      height="1227"
       viewBox="0 0 1200 1227"
       fill="none"
       className={className}
