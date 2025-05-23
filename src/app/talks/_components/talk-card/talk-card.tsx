@@ -1,4 +1,3 @@
-import { Button } from '@/components/button';
 import { Card } from '@/components/card';
 import { IconLink } from '@/components/icon-link';
 import {
@@ -39,7 +38,6 @@ export const TalkCard: FC<{
   blog,
   tags,
 }) => {
-  const isFeature = new Date(eventDate) > new Date();
   return (
     <Card>
       <div className="flex flex-col gap-6 p-8">
@@ -75,43 +73,21 @@ export const TalkCard: FC<{
           ))}
         </div>
         <div className="flex gap-4">
-          {isFeature ? (
-            <>
-              <Button
-                variant="outlined"
-                size="sm"
-                startIcon={<SlideIcon size="sm" />}
-                disabled
-              >
-                スライドを見る
-              </Button>
-              <Button
-                size="sm"
-                startIcon={<BlogIcon size="sm" />}
-                disabled
-              >
-                ブログで解説を読む
-              </Button>
-            </>
-          ) : (
-            <>
-              <LinkButton
-                href={slideUrl}
-                variant="outlined"
-                size="sm"
-                startIcon={<SlideIcon size="sm" />}
-              >
-                スライドを見る
-              </LinkButton>
-              <LinkButton
-                size="sm"
-                startIcon={<BlogIcon size="sm" />}
-                href={`/blog/${blog.slug}` as Route}
-              >
-                ブログで解説を読む
-              </LinkButton>
-            </>
-          )}
+          <LinkButton
+            href={slideUrl}
+            variant="outlined"
+            size="sm"
+            startIcon={<SlideIcon size="sm" />}
+          >
+            スライドを見る
+          </LinkButton>
+          <LinkButton
+            size="sm"
+            startIcon={<BlogIcon size="sm" />}
+            href={`/blog/${blog.slug}` as Route}
+          >
+            ブログで解説を読む
+          </LinkButton>
         </div>
       </div>
     </Card>
