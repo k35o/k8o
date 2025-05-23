@@ -72,7 +72,7 @@ export const TalkCard: FC<{
             />
           ))}
         </div>
-        <div className="flex gap-4">
+        <div className="flex flex-wrap gap-4">
           <LinkButton
             href={slideUrl}
             variant="outlined"
