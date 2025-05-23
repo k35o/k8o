@@ -253,6 +253,13 @@
       "when": 1747712761900,
       "tag": "0035_bright_shaman",
       "breakpoints": true
+    },
+    {
+      "idx": 36,
+      "version": "7",
+      "when": 1747881420935,
+      "tag": "0036_regular_landau",
+      "breakpoints": true
     }
   ]
 }

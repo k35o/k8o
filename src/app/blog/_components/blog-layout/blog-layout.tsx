@@ -4,6 +4,7 @@ import { TableOfContext } from './table-of-context';
 import { Tags } from './tags';
 import { ViewCounter } from './view-counter';
 import { Subscribe } from '../subscribe';
+import { TalkLink } from './talks-link';
 import { ViewTransition } from '#libs/react';
 import { getBlogMetadata } from '#services/blog';
 import {
@@ -45,6 +46,7 @@ export const BlogLayout: FC<{
                 </div>
               </ViewTransition>
             )}
+            <TalkLink slug={slug} />
             <div className="text-fg-mute flex flex-col items-end gap-1 text-xs sm:flex-row sm:items-center sm:justify-end sm:gap-2 sm:text-sm">
               <div className="flex flex-wrap items-center justify-end gap-1">
                 <ViewTransition name={`date-${slug}`}>
