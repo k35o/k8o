@@ -1,6 +1,7 @@
 import { blogComment } from './blog-comment';
 import { blogTag } from './blog-tag';
 import { blogViews } from './blog-views';
+import { talks } from './talks';
 import { relations } from 'drizzle-orm';
 import {
   boolean,
@@ -28,4 +29,5 @@ export const blogsRelations = relations(blogs, ({ one, many }) => ({
   views: one(blogViews),
   blogTag: many(blogTag),
   blogComment: many(blogComment),
+  talks: many(talks),
 }));

@@ -43,6 +43,7 @@ export const getBlog = cache(async (slug: string) => {
           tag: true,
         },
       },
+      talks: true,
     },
   });
 
@@ -57,6 +58,7 @@ export const getBlog = cache(async (slug: string) => {
       id: blogTag.tag.id,
       name: blogTag.tag.name,
     })),
+    slideUrl: blog.talks[0]?.slideUrl,
   };
 });
 

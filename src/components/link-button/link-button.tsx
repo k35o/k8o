@@ -46,7 +46,12 @@ export const LinkButton: FC<
       {endIcon}
     </Link>
   ) : (
-    <a className={className} href={href}>
+    <a
+      className={className}
+      href={href}
+      target="_blank"
+      rel="noopener noreferrer"
+    >
       {startIcon}
       {children}
       {endIcon}
