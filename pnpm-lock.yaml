@@ -126,8 +126,8 @@ importers:
         specifier: 8.18.2
         version: 8.18.2(bufferutil@4.0.8)
       zod:
-        specifier: 3.25.27
-        version: 3.25.27
+        specifier: 3.25.28
+        version: 3.25.28
     devDependencies:
       '@eslint/config-inspector':
         specifier: 1.0.2
@@ -7119,8 +7119,8 @@ packages:
     resolution: {integrity: sha512-GQHQqAopRhwU8Kt1DDM8NjibDXHC8eoh1erhGAJPEyveY9qqVeXvVikNKrDz69sHowPMorbPUrH/mx8c50eiBQ==}
     engines: {node: '>=18'}
 
-  zod@3.25.27:
-    resolution: {integrity: sha512-xkYsE+ztNLzBeoAG8Ipd2ICr86gyMpovQlB+Vid1LT7V16/Dj0z+Up1u1qxNX58cmJ/AtG2mvGw/7+jK48xEYw==}
+  zod@3.25.28:
+    resolution: {integrity: sha512-/nt/67WYKnr5by3YS7LroZJbtcCBurDKKPBPWWzaxvVCGuG/NOsiKkrjoOhI8mJ+SQUXEbUzeB3S+6XDUEEj7Q==}
 
   zwitch@2.0.4:
     resolution: {integrity: sha512-bXE4cR/kVZhKZX/RjPEflHaKVhUVl85noU3v6b8apfQEc1x4A+zBxjZ4lN8LqGd6WZ3dl98pY4o717VFmoPp+A==}
@@ -14869,6 +14869,6 @@ snapshots:
 
   yoctocolors@2.1.1: {}
 
-  zod@3.25.27: {}
+  zod@3.25.28: {}
 
   zwitch@2.0.4: {}
