@@ -63,7 +63,7 @@ export default function Home() {
               <p className="text-md line-clamp-3">
                 WebフロントエンドとTypeScriptに興味があり、特にフロントエンドとデザインの境界に関心があります。
                 <br />
-                現在、デザインを中心に学びながら、別の角度からフロントエンドの理解を深めています。
+                現在、デザインを中心に学びながら、別の角度からフロントエンドを探求しています。
               </p>
             </div>
           </div>
