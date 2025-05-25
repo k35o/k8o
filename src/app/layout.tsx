@@ -5,6 +5,7 @@ import { ReactScan } from '@/libs/react-scan';
 import { AppProvider } from '@/providers/app';
 import { cn } from '@/utils/cn';
 import { GoogleAnalytics } from '@next/third-parties/google';
+import { Analytics } from '@vercel/analytics/react';
 import { SpeedInsights } from '@vercel/speed-insights/next';
 import '@/libs/zod';
 import { Metadata } from 'next';
@@ -59,6 +60,7 @@ export default function RootLayout({
         <AppProvider>
           <GlobalLayout>{children}</GlobalLayout>
         </AppProvider>
+        <Analytics />
         <GoogleAnalytics
           gaId={process.env.GOOGLE_ANALYTICS_ID ?? ''}
         />
