@@ -41,3 +41,9 @@ storybook-static
 
 # mise
 .mise.toml
+
+## debug
+schema.sql
+
+# liam-erd
+dist

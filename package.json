@@ -38,6 +38,9 @@
     "generate": "drizzle-kit generate",
     "generate:custom": "drizzle-kit generate --custom",
     "migrate": "drizzle-kit migrate",
+    "export:schema": "drizzle-kit export > ./schema.sql",
+    "build:erd": "liam erd build --input ./schema.sql --format postgres",
+    "preview:erd": "pnpm run build:erd && pnpm run preview:dist",
     "lint": "next lint --max-warnings 0",
     "lint:fix": "next lint --fix --max-warnings 0",
     "lint:inspect": "eslint-config-inspector",
@@ -50,7 +53,8 @@
     "test": "TZ=UTC vitest",
     "test:ui": "TZ=UTC vitest --ui",
     "coverage": "TZ=UTC vitest run --coverage",
-    "install-playwright": "playwright install --with-deps"
+    "install-playwright": "playwright install --with-deps",
+    "preview:dist": "pnpm dlx http-server dist"
   },
   "dependencies": {
     "@floating-ui/react": "0.27.8",
@@ -98,6 +102,7 @@
   "devDependencies": {
     "@eslint/config-inspector": "1.0.2",
     "@eslint/js": "9.27.0",
+    "@liam-hq/cli": "0.5.5",
     "@ls-lint/ls-lint": "2.3.0",
     "@next/bundle-analyzer": "15.3.2",
     "@next/eslint-plugin-next": "15.3.2",
