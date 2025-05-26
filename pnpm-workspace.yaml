@@ -1,4 +1,5 @@
 ignoredBuiltDependencies:
+  - '@prisma/engines'
   - '@tailwindcss/oxide'
   - bufferutil
   - core-js-pure
