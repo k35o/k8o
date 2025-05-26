@@ -1,0 +1,41 @@
+name: Publish ERD
+on:
+  push:
+    branches: "main"
+
+concurrency:
+  group: deploy-erd
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout branch
+        uses: actions/checkout@v4
+      - name: Setup pnpm
+        uses: ./.github/actions/setup-pnpm
+
+      - name: Export schema.sql
+        run: pnpm run export:schema
+
+      - name: Generate ER Diagrams
+        run: pnpm run build:erd
+
+      - name: Upload ER Diagrams
+        id: erd
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: dist/
+          retention-days: 1
+  
+  deploy:
+    runs-on: ubuntu-latest
+    needs: build
+    permissions:
+      pages: write      # to deploy to Pages
+      id-token: write
+    steps:
+      - name: Deploy to GitHub Pages
+        id: erd
+        uses: actions/deploy-pages@v4
