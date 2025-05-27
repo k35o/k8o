@@ -1,4 +1,4 @@
-import { getQuizzes } from './quiz';
+import { getQuizzes } from '../quiz';
 import { db } from '#database/db';
 
 vi.mock('#database/db');
