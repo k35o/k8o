@@ -1,4 +1,4 @@
-import { FeedbackType } from './type';
+import { FeedbackType } from './types';
 import {
   BadIcon,
   BoringIcon,
