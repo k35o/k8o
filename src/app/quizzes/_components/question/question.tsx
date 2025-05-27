@@ -3,7 +3,7 @@
 import { Answer } from '../answer';
 import { Complete } from '../complete';
 import { QuizProgress } from '../quiz-progress';
-import { Quiz } from './../../_types';
+import { Quiz } from '@/services/quizzes';
 import { useRouter } from 'next/navigation';
 import { FC, useCallback, useMemo, useState } from 'react';
 

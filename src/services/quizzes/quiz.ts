@@ -1,19 +1,6 @@
-'use server';
-
-import { Quiz } from '../_types';
+import { Quiz, QuizType } from './types';
 import { db } from '#database/db';
-import { quizType } from '@/database/schema/quiz-type';
-import { InferSelectModel, sql as ormSql } from 'drizzle-orm';
-
-export const getQuizType = async ({
-  type,
-}: {
-  type: InferSelectModel<typeof quizType>['id'];
-}) => {
-  return db.query.quizType.findFirst({
-    where: (quiz, { eq }) => eq(quiz.id, type),
-  });
-};
+import { sql } from 'drizzle-orm';
 
 // NOTE:問題数が多いクイズを作った場合はページネーションを実装する
 export const getQuizzes = async ({
@@ -21,7 +8,7 @@ export const getQuizzes = async ({
   byRandom = false,
   limit,
 }: {
-  type: InferSelectModel<typeof quizType>['id'];
+  type: QuizType;
   byRandom?: boolean;
   limit?: number;
 }): Promise<Quiz[]> => {
@@ -31,7 +18,7 @@ export const getQuizzes = async ({
       question: true,
       answers: true,
     },
-    orderBy: byRandom ? [ormSql`random()`] : [],
+    orderBy: byRandom ? [sql`random()`] : [],
     ...(limit ? { limit } : {}),
   });
 

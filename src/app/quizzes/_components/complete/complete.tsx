@@ -1,9 +1,9 @@
-import { Quiz } from '../../_types';
 import { CollectionByHighlight } from '../collection';
 import { Button } from '@/components/button';
 import { Heading } from '@/components/heading';
 import { HistoryIcon, ListIcon } from '@/components/icons';
 import { LinkButton } from '@/components/link-button';
+import { Quiz } from '@/services/quizzes';
 import { cn } from '@/utils/cn';
 import { FC } from 'react';
 

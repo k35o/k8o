@@ -1,6 +1,6 @@
-import { getQuizzes } from '../../../_services';
-import { QUIZ_TYPE } from '../../_utils/constants';
 import { CollectionByHighlight } from '@/app/quizzes/_components/collection';
+import { QUIZ_TYPE } from '@/services/quizzes';
+import { getQuizzes } from '@/services/quizzes/quiz';
 import { unstable_cache as cache } from 'next/cache';
 import { FC } from 'react';
 

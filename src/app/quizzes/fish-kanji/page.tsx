@@ -1,6 +1,6 @@
-import { getQuizzes } from '../_services';
-import { QUIZ_TYPE } from './_utils/constants';
 import { Question } from '../_components/question';
+import { QUIZ_TYPE } from '@/services/quizzes';
+import { getQuizzes } from '@/services/quizzes/quiz';
 import { FC, Suspense } from 'react';
 
 const getLimit = (questionCount: string): number => {

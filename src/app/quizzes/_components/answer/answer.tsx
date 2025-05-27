@@ -1,9 +1,9 @@
-import { Quiz } from '../../_types';
 import { checkAnswer } from '../../_utils/check-answer';
 import { Button } from '@/components/button';
 import { FormControl } from '@/components/form/form-control';
 import { TextField } from '@/components/form/text-field';
 import { AlertIcon } from '@/components/icons';
+import { Quiz } from '@/services/quizzes';
 import { FC, useMemo, useState } from 'react';
 
 export const Answer: FC<{
