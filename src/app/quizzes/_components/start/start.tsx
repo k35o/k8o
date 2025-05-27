@@ -4,25 +4,17 @@ import { FormControl } from '@/components/form/form-control';
 import { NumberField } from '@/components/form/number-field';
 import { LinkButton } from '@/components/link-button';
 import { ListBox } from '@/components/list-box';
-import { ComponentProps, FC, useCallback, useState } from 'react';
-
-const QUIZ_OPTIONS = [
-  {
-    key: 'fish-kanji',
-    label: 'うおへんクイズ',
-  },
-] as const satisfies ComponentProps<typeof ListBox.Root>['options'];
-
-type QuizType = (typeof QUIZ_OPTIONS)[number]['key'];
+import { QUIZ_OPTIONS, QuizKey } from '@/services/quizzes';
+import { FC, useCallback, useState } from 'react';
 
 export const Start: FC = () => {
   const [selectedQuiz, setSelectedQuiz] =
-    useState<QuizType>('fish-kanji');
+    useState<QuizKey>('fish-kanji');
   const [questionCount, setQuestionCount] = useState(10);
 
   const onSelect = useCallback((key: string) => {
     if (QUIZ_OPTIONS.some((option) => option.key === key)) {
-      setSelectedQuiz(key as QuizType);
+      setSelectedQuiz(key as QuizKey);
     }
   }, []);
 
