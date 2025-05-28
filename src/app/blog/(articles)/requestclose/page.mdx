@@ -1,6 +1,6 @@
 ---
 title: <dialog>要素を閉じるように要求するrequestClose
-description: HTMLDialogElementのrequestCloseメソッドは<dialog>要素を閉じるように要求します。「要求」するつまり、closeメソッドのように即座に閉じるのではなく、猶予を与えてから閉じます。閉じる処理を条件付きで制御することで、対話中の内容の保持が可能になり、より良いUXの提供が可能になります。
+description: HTMLDialogElementのrequestCloseメソッドは<dialog>要素を閉じるように要求します。「要求」するつまり、closeメソッドのように即座に閉じるのではなく、猶予を与えてから閉じます。閉じる処理を条件付きで制御することで、対話中の状態の保持が可能になり、より良いUXの提供が可能になります。
 createdAt: 2025-05-28 15:00:00.000000+00
 updatedAt: 2025-05-28 15:00:00.000000+00
 ---
@@ -12,8 +12,8 @@ import { Playground } from '@/app/blog/_components/playground';
 # \<dialog\>要素を制御された状態で閉じるrequestClose
 
 <BaselineStatus featureId="requestclose"></BaselineStatus>
-## HTMLDialogElement.requestClose Firefox
-139で`HTMLDialogElement`の`requestClose`メソッドが実装され、Baseline
+## HTMLDialogElement.requestClose 
+Firefox 139で`HTMLDialogElement`の`requestClose`メソッドが実装され、Baseline
 2025に仲間入りしました。
 
 `requestClose`メソッドは、`<dialog>`要素を閉じるように要求します。
@@ -27,7 +27,7 @@ import { Playground } from '@/app/blog/_components/playground';
 
 ### 使用例
 
-下の例は、ダイアログ内のフォームに入力中のテキストがあれば、「閉じる」でダイアログを閉じれないように実装しています。
+下の例は、ダイアログ内のフォームに入力中のテキストがあれば、「閉じる」ボタンや`Escape`キーでダイアログを閉じれないように実装しています。
 
 <Playground title="requestCloseの例">
   <Example1 />
