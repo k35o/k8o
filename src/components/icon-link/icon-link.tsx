@@ -8,6 +8,7 @@ type IconLinkProps = PropsWithChildren<{
   bg?: 'transparent' | 'base';
   label?: string;
   href: string;
+  openInNewTab?: boolean;
 }>;
 
 export const IconLink: FC<IconLinkProps> = ({
@@ -16,8 +17,9 @@ export const IconLink: FC<IconLinkProps> = ({
   label,
   href,
   children,
+  openInNewTab = false,
 }) => {
-  return isInternalRoute(href) ? (
+  return isInternalRoute(href) && !openInNewTab ? (
     <Link
       className={cn(
         'hover:bg-bg-subtle focus-visible:ring-border-info active:bg-bg-emphasize block rounded-full focus-visible:ring-2',

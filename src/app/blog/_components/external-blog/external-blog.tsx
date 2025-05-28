@@ -26,10 +26,15 @@ export const ExternalBlog: FC = () => {
       >
         <ZennIcon />
       </IconLink>
-      <IconLink href="/llms.txt" bg="base" label="LLMS">
+      <IconLink href="/llms.txt" bg="base" label="LLMS" openInNewTab>
         <AIIcon />
       </IconLink>
-      <IconLink href="/blog/feed" bg="base" label="RSSフィード">
+      <IconLink
+        href="/blog/feed"
+        bg="base"
+        label="RSSフィード"
+        openInNewTab
+      >
         <RSSIcon />
       </IconLink>
     </div>
