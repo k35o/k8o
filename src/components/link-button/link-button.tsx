@@ -11,6 +11,7 @@ export const LinkButton: FC<
     startIcon?: ReactNode;
     endIcon?: ReactNode;
     active?: boolean;
+    openInNewTab?: boolean;
   }>
 > = ({
   children,
@@ -20,6 +21,7 @@ export const LinkButton: FC<
   startIcon,
   endIcon,
   active = false,
+  openInNewTab = false,
 }) => {
   const className = cn(
     'rounded-lg text-center font-bold',
@@ -39,7 +41,7 @@ export const LinkButton: FC<
     Boolean(endIcon) && 'justify-between',
     active && 'text-fg-info hover:text-fg-info active:text-fg-info',
   );
-  return isInternalRoute(href) ? (
+  return isInternalRoute(href) && !openInNewTab ? (
     <Link className={className} href={href}>
       {startIcon}
       {children}
