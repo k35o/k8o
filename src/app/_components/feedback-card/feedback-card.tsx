@@ -35,7 +35,11 @@ export const FeedbackCard: FC<{
       }}
     >
       <p className="text-xl font-bold">{title}</p>
-      <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
+      <div
+        role="radiogroup"
+        aria-required="false"
+        className="grid grid-cols-2 gap-4 sm:grid-cols-4"
+      >
         {FEEDBACK_OPTIONS.map((option) => {
           const Icon = option.icon;
           return (
@@ -45,11 +49,13 @@ export const FeedbackCard: FC<{
             >
               <motion.button
                 type="button"
+                role="radio"
                 className={cn(
                   'bg-primary-bg-subtle text-primary-fg flex w-full max-w-28 flex-col items-center justify-center gap-2 rounded-lg p-3',
                   'aria-selected:text-fg-base aria-selected:bg-primary-bg aria-selected:border-primary-border aria-selected:border-2',
                 )}
-                aria-selected={feedbackId === option.id}
+                aria-checked={feedbackId === option.id}
+                value={option.id}
                 onClick={() => {
                   if (feedbackId === option.id) {
                     setFeedbackId(null);
