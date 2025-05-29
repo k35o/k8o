@@ -1,5 +1,6 @@
 import { TagContent } from '../_components/tag-content';
-import { getTag, getTags } from '@/services/tags';
+import { getTag } from '@/services/tags/tag';
+import { getTags } from '@/services/tags/tags';
 import { unstable_cache as cache } from 'next/cache';
 import { notFound } from 'next/navigation';
 
