@@ -1,5 +1,5 @@
 import { TagCard } from './_components/tag-card';
-import { getTags } from '@/services/tags';
+import { getTags } from '@/services/tags/tags';
 import { Route } from 'next';
 import { unstable_cache as cache } from 'next/cache';
 

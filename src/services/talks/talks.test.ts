@@ -1,4 +1,4 @@
-import { getTalks } from './index';
+import { getTalks } from './talks';
 import { db } from '#database/db';
 
 vi.mock('#database/db');
