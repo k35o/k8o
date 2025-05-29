@@ -7,6 +7,7 @@ const config: StorybookConfig = {
     '@storybook/addon-links',
     '@storybook/addon-vitest',
     '@storybook/addon-docs',
+    'storybook-addon-mock-date',
   ],
 
   framework: {
