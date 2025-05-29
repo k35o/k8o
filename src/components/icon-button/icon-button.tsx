@@ -32,9 +32,10 @@ export const IconButton: FC<Props> = ({
         props.disabled &&
           'hover:bgtransparent active:bgtransparent cursor-not-allowed opacity-50',
       )}
+      aria-label={props.role ? label : undefined}
       {...props}
     >
-      <span className="sr-only">{label}</span>
+      {!props.role && <span className="sr-only">{label}</span>}
       {children}
     </button>
   );
