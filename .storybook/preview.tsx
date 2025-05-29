@@ -53,6 +53,7 @@ const preview: Preview = {
   parameters: {
     backgrounds: { disable: true },
     layout: 'fullscreen',
+    mockingDate: new Date(2023, 0, 2, 12, 34, 56),
     nextjs: {
       appDirectory: true,
     },

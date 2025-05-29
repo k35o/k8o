@@ -270,6 +270,9 @@ importers:
       storybook:
         specifier: 9.0.0
         version: 9.0.0(@testing-library/dom@10.4.0)(bufferutil@4.0.8)(prettier@3.5.3)
+      storybook-addon-mock-date:
+        specifier: 0.10.0
+        version: 0.10.0(storybook@9.0.0(@testing-library/dom@10.4.0)(bufferutil@4.0.8)(prettier@3.5.3))
       typescript:
         specifier: 5.8.3
         version: 5.8.3
@@ -7292,6 +7295,12 @@ packages:
   stdin-discarder@0.2.2:
     resolution: {integrity: sha512-UhDfHmA92YAlNnCfhmq0VeNL5bDbiZGg7sZ2IvPsXubGkiNa9EC+tUTsjBRsYUAz87btI6/1wf4XoVvQ3uRnmQ==}
     engines: {node: '>=18'}
+
+  storybook-addon-mock-date@0.10.0:
+    resolution: {integrity: sha512-qITw+mm2T9E5z/t19B0ARbM2K2KkCd+sY080PXtDcI/tJoYddM7IPFj26YLW4IrJcs9zId5dyN0rsRfQ4/UlaA==}
+    engines: {node: 22.16.0}
+    peerDependencies:
+      storybook: ^9.0.0
 
   storybook@9.0.0:
     resolution: {integrity: sha512-/deRNPirp/q2JIZVXrgO4YtzCSvOXTKat4mYn76vqElwwN7GcD87ELNMm99SJIvghX+Ed/AfyR30Mf37B3E4/A==}
@@ -15981,6 +15990,11 @@ snapshots:
   std-env@3.9.0: {}
 
   stdin-discarder@0.2.2: {}
+
+  storybook-addon-mock-date@0.10.0(storybook@9.0.0(@testing-library/dom@10.4.0)(bufferutil@4.0.8)(prettier@3.5.3)):
+    dependencies:
+      storybook: 9.0.0(@testing-library/dom@10.4.0)(bufferutil@4.0.8)(prettier@3.5.3)
+      util: 0.12.5
 
   storybook@9.0.0(@testing-library/dom@10.4.0)(bufferutil@4.0.8)(prettier@3.5.3):
     dependencies:
