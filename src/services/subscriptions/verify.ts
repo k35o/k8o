@@ -5,7 +5,7 @@ import VerifyEmail from '@/emails/verify-email';
 import { resend } from '@/services/email';
 import { compareDate } from '@/utils/date/compare';
 import { eq } from 'drizzle-orm';
-import { z } from 'zod';
+import { z } from 'zod/v4';
 
 export const sendVerificationEmail = async (
   email: string,
@@ -13,7 +13,7 @@ export const sendVerificationEmail = async (
     cb();
   },
 ): Promise<void> => {
-  if (!z.string().email().safeParse(email).success) {
+  if (!z.email().safeParse(email).success) {
     return;
   }
   const subscriber = await db.query.subscribers.findFirst({
@@ -69,7 +69,7 @@ export const verifyEmail = async (
   email: string,
   token: string,
 ): Promise<Result<null>> => {
-  if (!z.string().email().safeParse(email).success) {
+  if (!z.email().safeParse(email).success) {
     return {
       success: false,
       message: '不正なメールアドレスです。',
