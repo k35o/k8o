@@ -2,7 +2,7 @@ import { Result } from '../type';
 import { db } from '#database/db';
 import { subscribers } from '@/database/schema/subscribers';
 import { sendVerificationEmail } from '@/services/subscriptions/verify';
-import { z } from 'zod';
+import { z } from 'zod/v4';
 
 export const subscribe = async (
   email: string,
@@ -10,7 +10,7 @@ export const subscribe = async (
     cb();
   },
 ): Promise<Result<null>> => {
-  if (!z.string().email().safeParse(email).success) {
+  if (!z.email().safeParse(email).success) {
     return {
       success: false,
       message: 'メールアドレスが不正です',

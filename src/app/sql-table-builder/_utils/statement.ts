@@ -4,7 +4,7 @@ import {
   Restriction,
 } from '../_types/restriction';
 import { InvalidTable, Table } from '../_types/table';
-import { z } from 'zod';
+import { z } from 'zod/v4';
 
 type Result =
   | {

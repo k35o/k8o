@@ -1,5 +1,5 @@
 import { incrementBlogView } from '#services/blog';
-import { z } from 'zod';
+import { z } from 'zod/v4';
 
 export async function POST(req: Request): Promise<Response> {
   const schema = z.object({

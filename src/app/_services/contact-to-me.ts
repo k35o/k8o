@@ -3,7 +3,7 @@
 import { db } from '#database/db';
 import { comments } from '@/database/schema/comments';
 import { ratelimit } from '@/utils/ratelimit';
-import { z } from 'zod';
+import { z } from 'zod/v4';
 import '@/libs/zod';
 
 const contactSchema = z.object({
@@ -38,7 +38,7 @@ export const contact = async (
       success: false,
       defaultValue: formData.get('message') as string,
       message:
-        validatedFields.error.errors[0]?.message ??
+        validatedFields.error.issues[0]?.message ??
         'お問い合わせ内容が不正です',
     };
   }
