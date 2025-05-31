@@ -1,7 +1,7 @@
 import { Anchor } from '../anchor';
 import { ExternalLinkIcon } from '../icons';
+import { MetaImage } from './image';
 import { getMetadata } from '#link-card/metadata';
-import Image from 'next/image';
 import { FC, Suspense } from 'react';
 import { ErrorBoundary } from 'react-error-boundary';
 
@@ -35,17 +35,7 @@ const Content: FC<{ href: string }> = async ({ href }) => {
   return (
     <a href={href} target="_blank" rel="noopener noreferrer">
       <div className="bg-bg-base/90 border-border-base flex flex-col gap-4 rounded-md border sm:flex-row">
-        {metaData.image && (
-          <div className="bg-bg-emphasize relative h-40 w-full rounded-l-sm sm:h-auto sm:w-1/3">
-            <Image
-              src={metaData.image}
-              alt=""
-              fill
-              className="rounded-l-sm object-contain"
-              unoptimized
-            />
-          </div>
-        )}
+        {metaData.image && <MetaImage src={metaData.image} />}
         <div className="flex flex-1 flex-col gap-3 p-4">
           {metaData.title && (
             <div className="flex flex-col gap-1">

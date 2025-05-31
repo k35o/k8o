@@ -267,6 +267,13 @@
       "when": 1748410082796,
       "tag": "0037_cynical_smiling_tiger",
       "breakpoints": true
+    },
+    {
+      "idx": 38,
+      "version": "7",
+      "when": 1748583203878,
+      "tag": "0038_pink_salo",
+      "breakpoints": true
     }
   ]
 }
