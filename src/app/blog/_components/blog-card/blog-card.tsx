@@ -1,5 +1,4 @@
 import { ViewTransition } from '#libs/react';
-import { getBlogMetadata } from '#services/blog';
 import { InteractiveCard } from '@/components/card';
 import { Heading } from '@/components/heading';
 import {
@@ -16,10 +15,19 @@ import { FC } from 'react';
 type BlogCardProps = {
   slug: string;
   tags: string[];
+  metadata: {
+    title: string;
+    description: string | null;
+    createdAt: Date;
+    updatedAt: Date;
+  };
 };
 
-export const BlogCard: FC<BlogCardProps> = async ({ slug, tags }) => {
-  const metadata = await getBlogMetadata(slug);
+export const BlogCard: FC<BlogCardProps> = ({
+  slug,
+  tags,
+  metadata,
+}) => {
   return (
     <InteractiveCard>
       <Link href={`/blog/${slug}` as Route} className="block h-full">

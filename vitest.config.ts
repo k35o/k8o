@@ -17,7 +17,6 @@ export default defineConfig({
     exclude: [
       '**/blog-layout.stories.tsx',
       '**/blog-layout/**/recommend.stories.tsx',
-      '**/blog-card.stories.tsx',
     ],
   },
 });
