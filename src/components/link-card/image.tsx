@@ -19,7 +19,9 @@ export const MetaImage: FC<{
         fill
         className="rounded-l-sm object-contain"
         unoptimized
-        onError={() => { setIsError(true); }}
+        onError={() => {
+          setIsError(true);
+        }}
       />
     </div>
   );
