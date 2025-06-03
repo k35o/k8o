@@ -1,22 +1,20 @@
-import { getBlogMetadata } from '@/services/blogs/blog';
-import { getBlogs } from '@/services/blogs/blogs';
+import { getBlogContents } from '#api/blog';
 import { NextResponse } from 'next/server';
 
 export const dynamic = 'force-static';
 
 export async function GET() {
-  const blogs = await getBlogs();
+  const blogs = await getBlogContents();
 
   const blogContent = (
     await Promise.all(
-      blogs.map(async (blog) => {
-        const metadata = await getBlogMetadata(blog.slug);
-        if (!metadata.description) {
-          return `#### ${metadata.title}`;
+      blogs.map((blog) => {
+        if (!blog.description) {
+          return `#### ${blog.title}`;
         }
         return `
-#### ${metadata.title}
-${metadata.description}
+#### ${blog.title}
+${blog.description}
     `;
       }),
     )
