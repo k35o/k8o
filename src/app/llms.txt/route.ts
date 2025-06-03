@@ -1,4 +1,5 @@
-import { getBlogMetadata, getBlogs } from '#services/blog';
+import { getBlogMetadata } from '@/services/blogs/blog';
+import { getBlogs } from '@/services/blogs/blogs';
 import { NextResponse } from 'next/server';
 
 export const dynamic = 'force-static';

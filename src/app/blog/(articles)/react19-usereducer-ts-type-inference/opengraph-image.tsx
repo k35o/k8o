@@ -1,11 +1,10 @@
-import { getBlogMetadata } from '#services/blog';
+import { getBlogContent } from '#api/blog';
 import { Parser, jaModel } from 'budoux';
 import { ImageResponse } from 'next/og';
 
 const parser = new Parser(jaModel);
 
-export const alt =
-  'React19で変化したuseReducerの型から学ぶTypeScriptの型推論';
+export const alt = '任意のデータをコピー&ペーストするClipboard API';
 export const size = {
   width: 1200,
   height: 630,
@@ -14,11 +13,9 @@ export const size = {
 export const contentType = 'image/png';
 
 export default async function OpenGraphImage() {
-  const metadata = await getBlogMetadata(
-    'react19-usereducer-ts-type-inference',
-  );
+  const blog = await getBlogContent('async-clipboard');
 
-  const words = parser.parse(metadata.title);
+  const words = parser.parse(blog.title);
   return new ImageResponse(
     (
       <div

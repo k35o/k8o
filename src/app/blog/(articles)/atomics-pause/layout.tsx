@@ -1,4 +1,4 @@
-import { getBlog, getBlogMetadata } from '#services/blog';
+import { getBlogContent } from '#api/blog';
 import { BlogLayout } from '@/app/blog/_components/blog-layout';
 import { Metadata } from 'next';
 import { PropsWithChildren } from 'react';
@@ -6,27 +6,26 @@ import { PropsWithChildren } from 'react';
 const slug = 'atomics-pause';
 
 export async function generateMetadata(): Promise<Metadata> {
-  const blog = await getBlog(slug);
-  const metadata = await getBlogMetadata(slug);
+  const blog = await getBlogContent(slug);
 
   return {
-    title: metadata.title,
-    description: metadata.description,
+    title: blog.title,
+    description: blog.description,
     category: blog.tags.map((tag) => tag.name).join(', '),
     openGraph: {
-      title: metadata.title,
-      description: metadata.description ?? undefined,
+      title: blog.title,
+      description: blog.description ?? undefined,
       url: `https://k8o.me/blog/${slug}`,
-      publishedTime: metadata.createdAt.toString(),
+      publishedTime: blog.createdAt.toString(),
       authors: ['k8o'],
       siteName: 'k8o',
       locale: 'ja',
       type: 'article',
     },
     twitter: {
-      title: metadata.title,
+      title: blog.title,
       card: 'summary_large_image',
-      description: metadata.description ?? undefined,
+      description: blog.description ?? undefined,
     },
   };
 }

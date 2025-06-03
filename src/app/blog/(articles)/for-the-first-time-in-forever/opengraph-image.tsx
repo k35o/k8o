@@ -1,10 +1,10 @@
-import { getBlogMetadata } from '#services/blog';
+import { getBlogContent } from '#api/blog';
 import { Parser, jaModel } from 'budoux';
 import { ImageResponse } from 'next/og';
 
 const parser = new Parser(jaModel);
 
-export const alt = '【TSKaigi】初めて登壇しました！';
+export const alt = '任意のデータをコピー&ペーストするClipboard API';
 export const size = {
   width: 1200,
   height: 630,
@@ -13,11 +13,9 @@ export const size = {
 export const contentType = 'image/png';
 
 export default async function OpenGraphImage() {
-  const metadata = await getBlogMetadata(
-    'for-the-first-time-in-forever',
-  );
+  const blog = await getBlogContent('async-clipboard');
 
-  const words = parser.parse(metadata.title);
+  const words = parser.parse(blog.title);
   return new ImageResponse(
     (
       <div

@@ -1,25 +1,21 @@
-import { getBlogMetadata } from '#services/blog';
+import { getBlogContent } from '#api/blog';
 import { Parser, jaModel } from 'budoux';
 import { ImageResponse } from 'next/og';
 
 const parser = new Parser(jaModel);
 
-export const alt =
-  'Reactの新しいルーティングライブラリ、TanStackRouterを学ぶ';
-
+export const alt = '任意のデータをコピー&ペーストするClipboard API';
 export const size = {
   width: 1200,
-  height: 600,
+  height: 630,
 };
 
 export const contentType = 'image/png';
 
 export default async function OpenGraphImage() {
-  const metadata = await getBlogMetadata(
-    'tanstack-router-introduction',
-  );
+  const blog = await getBlogContent('async-clipboard');
 
-  const words = parser.parse(metadata.title);
+  const words = parser.parse(blog.title);
   return new ImageResponse(
     (
       <div

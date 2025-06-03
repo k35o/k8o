@@ -1,9 +1,9 @@
 import { getTag } from './tag';
 import { db } from '#database/db';
-import { getBlogMetadata } from '#services/blog';
+import { getBlogMetadata } from '@/services/blogs/blog';
 
 vi.mock('#database/db');
-vi.mock('#services/blog');
+vi.mock('@/services/blogs/blog');
 
 describe('getTag', () => {
   it('タグの詳細を取得できる', async () => {

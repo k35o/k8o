@@ -8,9 +8,9 @@
       "storybook": "./src/mocks/db.mock.ts",
       "default": "./src/database/db.ts"
     },
-    "#services/blog": {
-      "storybook": "./src/mocks/services/blog.mock.ts",
-      "default": "./src/app/blog/_services/index.ts"
+    "#api/blog": {
+      "storybook": "./src/mocks/api/blog.mock.ts",
+      "default": "./src/app/blog/_api/index.ts"
     },
     "#link-card/metadata": {
       "storybook": "./src/mocks/link-card/metadata.mock.ts",

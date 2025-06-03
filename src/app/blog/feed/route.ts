@@ -1,5 +1,6 @@
 import { metadata } from '../layout';
-import { getBlogMetadata, getBlogs } from '#services/blog';
+import { getBlogMetadata } from '@/services/blogs/blog';
+import { getBlogs } from '@/services/blogs/blogs';
 import { NextResponse } from 'next/server';
 import RSS from 'rss';
 
@@ -18,17 +19,23 @@ export async function GET() {
 
   const blogs = await getBlogs();
 
-  for (const blog of blogs) {
-    const metadata = await getBlogMetadata(blog.slug);
-    feed.item({
-      title: metadata.title,
-      description: metadata.description ?? '',
-      url: `${BLOG_URL}/${blog.slug}`,
-      date: metadata.updatedAt,
-      categories: blog.tags,
-      author: 'k8o',
-    });
-  }
+  const items = await Promise.all(
+    blogs.map<Promise<RSS.ItemOptions>>(async (blog) => {
+      const metadata = await getBlogMetadata(blog.slug);
+      return {
+        title: metadata.title,
+        description: metadata.description ?? '',
+        url: `${BLOG_URL}/${blog.slug}`,
+        date: metadata.updatedAt,
+        categories: blog.tags,
+        author: 'k8o',
+      };
+    }),
+  );
+
+  items.forEach((item) => {
+    feed.item(item);
+  });
 
   return new NextResponse(feed.xml(), {
     headers: {

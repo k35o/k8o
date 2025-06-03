@@ -15,18 +15,19 @@ import { FC } from 'react';
 type BlogCardProps = {
   slug: string;
   tags: string[];
-  metadata: {
-    title: string;
-    description: string | null;
-    createdAt: Date;
-    updatedAt: Date;
-  };
+  title: string;
+  description: string | null;
+  createdAt: Date;
+  updatedAt: Date;
 };
 
 export const BlogCard: FC<BlogCardProps> = ({
   slug,
   tags,
-  metadata,
+  title,
+  description,
+  createdAt,
+  updatedAt,
 }) => {
   return (
     <InteractiveCard>
@@ -35,13 +36,13 @@ export const BlogCard: FC<BlogCardProps> = ({
           <div className="flex flex-col gap-1">
             <ViewTransition name={`title-${slug}`}>
               <Heading type="h3" lineClamp={3}>
-                {metadata.title}
+                {title}
               </Heading>
             </ViewTransition>
-            {metadata.description && (
+            {description && (
               <ViewTransition name={`description-${slug}`}>
                 <p className="text-fg-mute line-clamp-3 text-sm">
-                  {metadata.description}
+                  {description}
                 </p>
               </ViewTransition>
             )}
@@ -62,15 +63,13 @@ export const BlogCard: FC<BlogCardProps> = ({
                 <div className="flex items-center gap-1">
                   <PublishDateIcon size="sm" />
                   <span>
-                    公開:{' '}
-                    {formatDate(metadata.createdAt, 'yyyy年M月d日')}
+                    公開: {formatDate(createdAt, 'yyyy年M月d日')}
                   </span>
                 </div>
                 <div className="flex items-center gap-1">
                   <UpdateDateIcon size="sm" />
                   <span>
-                    更新:{' '}
-                    {formatDate(metadata.updatedAt, 'yyyy年M月d日')}
+                    更新: {formatDate(updatedAt, 'yyyy年M月d日')}
                   </span>
                 </div>
               </ViewTransition>

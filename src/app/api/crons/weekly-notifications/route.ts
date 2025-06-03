@@ -1,5 +1,5 @@
+import { getBlogContent } from '#api/blog';
 import { db } from '#database/db';
-import { getBlogMetadata } from '#services/blog';
 import { comments } from '@/database/schema/comments';
 import WeeklyNotification, {
   Notification,
@@ -34,7 +34,7 @@ export async function GET(req: NextRequest) {
     unsentComments.map(async (comment) => {
       // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
       const blog = comment.blogComment
-        ? await getBlogMetadata(comment.blogComment.blog.slug)
+        ? await getBlogContent(comment.blogComment.blog.slug)
         : null;
 
       return {

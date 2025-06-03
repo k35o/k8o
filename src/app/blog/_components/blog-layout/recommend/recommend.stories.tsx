@@ -1,5 +1,5 @@
 import { Recommend } from './recommend';
-import { getBlogsByTags } from '#src/mocks/services/blog.mock';
+import { getBlogsByTags } from '#src/mocks/api/blog.mock';
 import type { Meta, StoryObj } from '@storybook/nextjs';
 
 const meta: Meta<typeof Recommend> = {

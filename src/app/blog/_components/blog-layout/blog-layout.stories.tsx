@@ -1,18 +1,17 @@
 import { BlogLayout } from './blog-layout';
 import {
-  getBlog,
   getBlogToc,
-  getBlogMetadata,
   getBlogView,
   getBlogsByTags,
-} from '#src/mocks/services/blog.mock';
+  getBlogContent,
+} from '#src/mocks/api/blog.mock';
 import type { Meta, StoryObj } from '@storybook/nextjs';
 
 const meta: Meta<typeof BlogLayout> = {
   title: 'app/blog/blog-layout',
   component: BlogLayout,
   beforeEach: () => {
-    getBlog.mockResolvedValue({
+    getBlogContent.mockResolvedValue({
       id: 1,
       slug: 'tanstack-router-introduction',
       tags: [
@@ -29,8 +28,6 @@ const meta: Meta<typeof BlogLayout> = {
           name: 'TanStack Router',
         },
       ],
-    });
-    getBlogMetadata.mockResolvedValue({
       title:
         'Reactの新しいルーティングライブラリ、TanStackRouterを学ぶ',
       description:
