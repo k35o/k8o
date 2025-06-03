@@ -1,5 +1,5 @@
 import { metadata } from '../layout';
-import { getBlogMetadata, getBlogs } from '#services/blog';
+import { getBlogContents } from '#api/blog';
 import { NextResponse } from 'next/server';
 import RSS from 'rss';
 
@@ -16,19 +16,17 @@ export async function GET() {
     language: 'ja',
   });
 
-  const blogs = await getBlogs();
+  const blogs = await getBlogContents();
 
-  for (const blog of blogs) {
-    const metadata = await getBlogMetadata(blog.slug);
+  blogs.forEach((blog) => {
     feed.item({
-      title: metadata.title,
-      description: metadata.description ?? '',
+      title: blog.title,
+      description: blog.description ?? '',
       url: `${BLOG_URL}/${blog.slug}`,
-      date: metadata.updatedAt,
-      categories: blog.tags,
-      author: 'k8o',
+      date: blog.updatedAt,
+      categories: blog.tags.map((tag) => tag),
     });
-  }
+  });
 
   return new NextResponse(feed.xml(), {
     headers: {

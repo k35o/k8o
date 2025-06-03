@@ -1,10 +1,10 @@
-import { getBlogMetadata } from '#services/blog';
+import { getBlogContent } from '#api/blog';
 import { Parser, jaModel } from 'budoux';
 import { ImageResponse } from 'next/og';
 
 const parser = new Parser(jaModel);
 
-export const alt = '<dialog>要素を制御された状態で閉じるrequestClose';
+export const alt = '<dialog>要素を閉じるように要求するrequestClose';
 export const size = {
   width: 1200,
   height: 630,
@@ -13,9 +13,9 @@ export const size = {
 export const contentType = 'image/png';
 
 export default async function OpenGraphImage() {
-  const metadata = await getBlogMetadata('requestclose');
+  const blog = await getBlogContent('requestclose');
 
-  const words = parser.parse(metadata.title);
+  const words = parser.parse(blog.title);
   return new ImageResponse(
     (
       <div

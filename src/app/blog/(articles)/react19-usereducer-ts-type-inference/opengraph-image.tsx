@@ -1,4 +1,4 @@
-import { getBlogMetadata } from '#services/blog';
+import { getBlogContent } from '#api/blog';
 import { Parser, jaModel } from 'budoux';
 import { ImageResponse } from 'next/og';
 
@@ -14,11 +14,11 @@ export const size = {
 export const contentType = 'image/png';
 
 export default async function OpenGraphImage() {
-  const metadata = await getBlogMetadata(
+  const blog = await getBlogContent(
     'react19-usereducer-ts-type-inference',
   );
 
-  const words = parser.parse(metadata.title);
+  const words = parser.parse(blog.title);
   return new ImageResponse(
     (
       <div

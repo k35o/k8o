@@ -1,4 +1,4 @@
-import { getBlogsByTags } from '#services/blog';
+import { getBlogsByTags } from '#api/blog';
 import { InteractiveCard } from '@/components/card';
 import { Heading } from '@/components/heading';
 import { PublishDateIcon, TagIcon } from '@/components/icons';

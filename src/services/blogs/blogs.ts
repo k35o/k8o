@@ -1,17 +1,8 @@
-import { join } from 'path';
-import { cwd } from 'process';
+import { blogPath } from './path';
 import { db } from '#database/db';
-import { blogViews } from '@/database/schema/blog-views';
-import { increment } from '@/database/utils';
 import { getFrontmatter } from '@/utils/mdx/frontmatter';
-import { getTocTree } from '@/utils/mdx/toc-tree';
-import { eq } from 'drizzle-orm';
-import { unstable_cache as cache } from 'next/cache';
 
-const blogPath = (slug: string) =>
-  join(cwd(), `src/app/blog/(articles)/${slug}/page.mdx`);
-
-export const getBlogs = cache(async () => {
+export const getBlogs = async () => {
   const blogs = await db.query.blogs.findMany({
     with: {
       blogTag: {
@@ -32,44 +23,12 @@ export const getBlogs = cache(async () => {
     slug: blog.slug,
     tags: blog.blogTag.map((blogTag) => blogTag.tag.name),
   }));
-});
+};
 
-export const getBlog = cache(async (slug: string) => {
-  const blog = await db.query.blogs.findFirst({
-    where: (blog, { eq }) => eq(blog.slug, slug),
-    with: {
-      blogTag: {
-        with: {
-          tag: true,
-        },
-      },
-      talks: true,
-    },
-  });
-
-  if (!blog) {
-    throw new Error(`Blog with slug ${slug} not found`);
-  }
-
-  return {
-    id: blog.id,
-    slug: blog.slug,
-    tags: blog.blogTag.map((blogTag) => ({
-      id: blogTag.tag.id,
-      name: blogTag.tag.name,
-    })),
-    slideUrl: blog.talks[0]?.slideUrl,
-  };
-});
-
-export const getBlogMetadata = cache(async (slug: string) =>
-  getFrontmatter(blogPath(slug)),
-);
-
-export const getBlogsByTags = cache(async (slug: string) => {
-  const blog = await getBlog(slug);
-  const tagIds = blog.tags.map((tag) => tag.id);
-
+export const getBlogsByTags = async (
+  slug: string,
+  tagIds: number[],
+) => {
   const blogIds = (
     await db.query.blogTag.findMany({
       where: (blogTag, { inArray }) => inArray(blogTag.tagId, tagIds),
@@ -129,37 +88,4 @@ export const getBlogsByTags = cache(async (slug: string) => {
         };
       }),
   );
-});
-
-export const getBlogToc = cache(async (slug: string) =>
-  getTocTree(blogPath(slug)),
-);
-
-export const getBlogView = async (slug: string): Promise<number> => {
-  const blog = await getBlog(slug);
-
-  return cache(
-    async (blogId: number) =>
-      await db.query.blogViews
-        .findFirst({
-          where: (blogViews, { eq }) => eq(blogViews.blogId, blogId),
-        })
-        .then((res) => res?.views ?? 0),
-    ['blogView'],
-    {
-      tags: ['blog', 'blogView'],
-      revalidate: 60,
-    },
-  )(blog.id);
-};
-
-export const incrementBlogView = async (slug: string) => {
-  const blog = await getBlog(slug);
-
-  return db
-    .update(blogViews)
-    .set({
-      views: increment(blogViews.views),
-    })
-    .where(eq(blogViews.blogId, blog.id));
 };

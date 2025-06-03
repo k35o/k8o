@@ -1,4 +1,5 @@
-import { incrementBlogView } from '#services/blog';
+import { getBlogContent } from '#api/blog';
+import { incrementBlogView } from '@/services/blogs/view';
 import { z } from 'zod/v4';
 
 export async function POST(req: Request): Promise<Response> {
@@ -7,7 +8,8 @@ export async function POST(req: Request): Promise<Response> {
   });
   const parsed = schema.parse(await req.json());
   const { slug } = parsed;
-  await incrementBlogView(slug);
+  const blog = await getBlogContent(slug);
+  await incrementBlogView(blog.id);
 
   return new Response(null, { status: 204 });
 }

@@ -1,5 +1,4 @@
 import { ViewTransition } from '#libs/react';
-import { getBlogMetadata } from '#services/blog';
 import { InteractiveCard } from '@/components/card';
 import { Heading } from '@/components/heading';
 import {
@@ -16,10 +15,20 @@ import { FC } from 'react';
 type BlogCardProps = {
   slug: string;
   tags: string[];
+  title: string;
+  description: string | null;
+  createdAt: Date;
+  updatedAt: Date;
 };
 
-export const BlogCard: FC<BlogCardProps> = async ({ slug, tags }) => {
-  const metadata = await getBlogMetadata(slug);
+export const BlogCard: FC<BlogCardProps> = ({
+  slug,
+  tags,
+  title,
+  description,
+  createdAt,
+  updatedAt,
+}) => {
   return (
     <InteractiveCard>
       <Link href={`/blog/${slug}` as Route} className="block h-full">
@@ -27,13 +36,13 @@ export const BlogCard: FC<BlogCardProps> = async ({ slug, tags }) => {
           <div className="flex flex-col gap-1">
             <ViewTransition name={`title-${slug}`}>
               <Heading type="h3" lineClamp={3}>
-                {metadata.title}
+                {title}
               </Heading>
             </ViewTransition>
-            {metadata.description && (
+            {description && (
               <ViewTransition name={`description-${slug}`}>
                 <p className="text-fg-mute line-clamp-3 text-sm">
-                  {metadata.description}
+                  {description}
                 </p>
               </ViewTransition>
             )}
@@ -54,15 +63,13 @@ export const BlogCard: FC<BlogCardProps> = async ({ slug, tags }) => {
                 <div className="flex items-center gap-1">
                   <PublishDateIcon size="sm" />
                   <span>
-                    公開:{' '}
-                    {formatDate(metadata.createdAt, 'yyyy年M月d日')}
+                    公開: {formatDate(createdAt, 'yyyy年M月d日')}
                   </span>
                 </div>
                 <div className="flex items-center gap-1">
                   <UpdateDateIcon size="sm" />
                   <span>
-                    更新:{' '}
-                    {formatDate(metadata.updatedAt, 'yyyy年M月d日')}
+                    更新: {formatDate(updatedAt, 'yyyy年M月d日')}
                   </span>
                 </div>
               </ViewTransition>

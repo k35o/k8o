@@ -1,4 +1,4 @@
-import { getBlogMetadata } from '#services/blog';
+import { getBlogContent } from '#api/blog';
 import { Parser, jaModel } from 'budoux';
 import { ImageResponse } from 'next/og';
 
@@ -13,9 +13,9 @@ export const size = {
 export const contentType = 'image/png';
 
 export default async function OpenGraphImage() {
-  const metadata = await getBlogMetadata('screen-wake-lock');
+  const blog = await getBlogContent('screen-wake-lock');
 
-  const words = parser.parse(metadata.title);
+  const words = parser.parse(blog.title);
   return new ImageResponse(
     (
       <div
