@@ -4,7 +4,7 @@ import { ImageResponse } from 'next/og';
 
 const parser = new Parser(jaModel);
 
-export const alt = '色覚タイプの分類';
+export const alt = '色覚タイプとその分類';
 export const size = {
   width: 1200,
   height: 600,

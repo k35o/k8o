@@ -4,7 +4,7 @@ import { ImageResponse } from 'next/og';
 
 const parser = new Parser(jaModel);
 
-export const alt = '任意のデータをコピー&ペーストするClipboard API';
+export const alt = '画面のスリープを防ぐScreen Wake Lock API';
 export const size = {
   width: 1200,
   height: 630,
@@ -13,7 +13,7 @@ export const size = {
 export const contentType = 'image/png';
 
 export default async function OpenGraphImage() {
-  const blog = await getBlogContent('async-clipboard');
+  const blog = await getBlogContent('screen-wake-lock');
 
   const words = parser.parse(blog.title);
   return new ImageResponse(
