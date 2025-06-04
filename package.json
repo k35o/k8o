@@ -108,7 +108,6 @@
     "@next/eslint-plugin-next": "15.3.3",
     "@storybook/addon-a11y": "9.0.4",
     "@storybook/addon-docs": "9.0.4",
-    "@storybook/addon-links": "9.0.4",
     "@storybook/addon-vitest": "9.0.4",
     "@storybook/nextjs": "9.0.4",
     "@storybook/nextjs-vite": "9.0.4",
