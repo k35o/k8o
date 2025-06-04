@@ -57,6 +57,10 @@ const preview: Preview = {
     nextjs: {
       appDirectory: true,
     },
+    a11y: {
+      // errorに切り替えられるようにする
+      test: 'todo',
+    },
   },
   decorators: [
     (Story, { globals, parameters }) => (
