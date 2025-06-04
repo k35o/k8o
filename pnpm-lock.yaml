@@ -156,9 +156,6 @@ importers:
       '@storybook/addon-docs':
         specifier: 9.0.4
         version: 9.0.4(@types/react@19.1.6)(storybook@9.0.4(@testing-library/dom@10.4.0)(bufferutil@4.0.8)(prettier@3.5.3))
-      '@storybook/addon-links':
-        specifier: 9.0.4
-        version: 9.0.4(react@19.1.0)(storybook@9.0.4(@testing-library/dom@10.4.0)(bufferutil@4.0.8)(prettier@3.5.3))
       '@storybook/addon-vitest':
         specifier: 9.0.4
         version: 9.0.4(@vitest/browser@3.2.0)(@vitest/runner@3.2.0)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(storybook@9.0.4(@testing-library/dom@10.4.0)(bufferutil@4.0.8)(prettier@3.5.3))(vitest@3.2.0)
@@ -2946,15 +2943,6 @@ packages:
     resolution: {integrity: sha512-g9Cywdicc8iXFwQm3XFLwZgFMel7BF21zTumErLs30tsowTCqE9dTxwPSrqlbvfknhLp7I/lwyzDXGf9SXmERA==}
     peerDependencies:
       storybook: ^9.0.4
-
-  '@storybook/addon-links@9.0.4':
-    resolution: {integrity: sha512-lvO/8wOEmhybxWBNIVbyNLy4cBYIaMFct7Mz6Yw0SxvEJoglktJt7gBAknbMN36XFJxj4bAnnPglP55s4wf7sg==}
-    peerDependencies:
-      react: ^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0-beta
-      storybook: ^9.0.4
-    peerDependenciesMeta:
-      react:
-        optional: true
 
   '@storybook/addon-vitest@9.0.4':
     resolution: {integrity: sha512-BLcS7uEmSAVbNeU+LzNY3dBnXw17zGCr+vf/XEu76d69K9Kw1LNIoq6w5PwlY1eh0z90y5S7ukC2VfuH/7IalA==}
@@ -10733,13 +10721,6 @@ snapshots:
     transitivePeerDependencies:
       - '@types/react'
 
-  '@storybook/addon-links@9.0.4(react@19.1.0)(storybook@9.0.4(@testing-library/dom@10.4.0)(bufferutil@4.0.8)(prettier@3.5.3))':
-    dependencies:
-      '@storybook/global': 5.0.0
-      storybook: 9.0.4(@testing-library/dom@10.4.0)(bufferutil@4.0.8)(prettier@3.5.3)
-    optionalDependencies:
-      react: 19.1.0
-
   '@storybook/addon-vitest@9.0.4(@vitest/browser@3.2.0)(@vitest/runner@3.2.0)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(storybook@9.0.4(@testing-library/dom@10.4.0)(bufferutil@4.0.8)(prettier@3.5.3))(vitest@3.2.0)':
     dependencies:
       '@storybook/global': 5.0.0
@@ -13348,7 +13329,7 @@ snapshots:
   gel@2.0.0:
     dependencies:
       '@petamoriken/float16': 3.9.1
-      debug: 4.4.0
+      debug: 4.4.1
       env-paths: 3.0.0
       semver: 7.7.1
       shell-quote: 1.8.2
