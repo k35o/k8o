@@ -32,7 +32,7 @@ export default function Home() {
               <div className="flex flex-wrap items-center justify-end gap-1">
                 <EmailTooltip />
                 <IconLink
-                  href="https://x.com/k35o53k"
+                  href="https://x.com/k8ome"
                   label="Xのアカウント"
                 >
                   <TwitterIcon />
