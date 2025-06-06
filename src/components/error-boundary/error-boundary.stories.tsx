@@ -9,7 +9,7 @@ import {
   NotFoundError,
   ValidationError,
 } from '@/utils/errors/custom-errors';
-import type { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/nextjs';
 import { useState } from 'react';
 
 // エラーを投げるコンポーネント
@@ -33,18 +33,18 @@ function ErrorDemo({
 }) {
   const [shouldThrow, setShouldThrow] = useState(false);
 
-  const getError = () => {
+  const getError = (): Error | null => {
     switch (errorType) {
       case 'general':
         return new Error('一般的なJavaScriptエラーです');
       case 'validation':
-        return new ValidationError('バリデーションエラーです', {
+        throw new ValidationError('バリデーションエラーです', {
           field: 'email',
         });
       case 'notfound':
-        return new NotFoundError('Blog', 'test-slug');
+        throw new NotFoundError('Blog', 'test-slug');
       case 'ratelimit':
-        return new AppError('Rate limit exceeded', {
+        throw new AppError('Rate limit exceeded', {
           code: ErrorCode.RATE_LIMITED,
           userMessage: 'レート制限に達しました',
           statusCode: 429,
@@ -58,7 +58,9 @@ function ErrorDemo({
     <div className="space-y-4">
       <div>
         <Button
-          onClick={() => { setShouldThrow(!shouldThrow); }}
+          onClick={() => {
+            setShouldThrow(!shouldThrow);
+          }}
           variant={shouldThrow ? 'outlined' : 'filled'}
         >
           {shouldThrow ? 'エラーを解除' : 'エラーを発生させる'}

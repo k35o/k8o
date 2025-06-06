@@ -3,19 +3,19 @@
 import { Button } from '@/components/button';
 import { Card } from '@/components/card';
 import { Heading } from '@/components/heading';
-import { AppError, isAppError } from '@/utils/errors/custom-errors';
+import { isAppError, ErrorCode } from '@/utils/errors/custom-errors';
 import { Component, ErrorInfo, ReactNode } from 'react';
 
 type Props = {
   children: ReactNode;
   fallback?: (error: Error, retry: () => void) => ReactNode;
   onError?: (error: Error, errorInfo: ErrorInfo) => void;
-}
+};
 
 type State = {
   hasError: boolean;
   error: Error | null;
-}
+};
 
 export class ErrorBoundary extends Component<Props, State> {
   constructor(props: Props) {
@@ -73,7 +73,7 @@ export class ErrorBoundary extends Component<Props, State> {
 type ErrorFallbackProps = {
   error: Error;
   retry: () => void;
-}
+};
 
 function DefaultErrorFallback({ error, retry }: ErrorFallbackProps) {
   const isCustomError = isAppError(error);
@@ -138,7 +138,9 @@ function DefaultErrorFallback({ error, retry }: ErrorFallbackProps) {
               再試行
             </Button>
             <Button
-              onClick={() => { window.location.reload(); }}
+              onClick={() => {
+                window.location.reload();
+              }}
               variant="filled"
             >
               ページを再読み込み
@@ -172,14 +174,18 @@ export function NotFoundErrorBoundary({
   return (
     <ErrorBoundary
       fallback={(error, retry) => {
-        if (isAppError(error) && error.code === 'NOT_FOUND') {
+        if (isAppError(error) && error.code === ErrorCode.NOT_FOUND) {
           return (
             <div className="flex min-h-[400px] items-center justify-center p-4">
               <Card className="w-full max-w-md space-y-4 text-center">
                 <div className="text-6xl">🔍</div>
                 <Heading level={2}>ページが見つかりません</Heading>
                 <p className="text-fg-mute">{error.userMessage}</p>
-                <Button onClick={() => { window.history.back(); }}>
+                <Button
+                  onClick={() => {
+                    window.history.back();
+                  }}
+                >
                   前のページに戻る
                 </Button>
               </Card>

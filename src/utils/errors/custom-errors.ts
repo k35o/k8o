@@ -32,14 +32,14 @@ export enum ErrorCode {
 export type ErrorMetadata = {
   code: ErrorCode;
   userMessage?: string;
-  details?: Record<string, any>;
+  details?: Record<string, unknown>;
   statusCode?: number;
-}
+};
 
 export class AppError extends Error {
   public readonly code: ErrorCode;
   public readonly userMessage: string;
-  public readonly details: Record<string, any>;
+  public readonly details: Record<string, unknown>;
   public readonly statusCode: number;
   public readonly timestamp: Date;
 
@@ -54,7 +54,7 @@ export class AppError extends Error {
     this.timestamp = new Date();
 
     // エラースタックの最適化
-    if (Error.captureStackTrace) {
+    if (typeof Error.captureStackTrace === 'function') {
       Error.captureStackTrace(this, AppError);
     }
   }
@@ -75,7 +75,7 @@ export class AppError extends Error {
 
 // 特定のエラータイプ
 export class ValidationError extends AppError {
-  constructor(message: string, details?: Record<string, any>) {
+  constructor(message: string, details?: Record<string, unknown>) {
     super(message, {
       code: ErrorCode.VALIDATION,
       userMessage: '入力内容に問題があります',
@@ -150,7 +150,7 @@ export class BlogNotFoundError extends AppError {
 }
 
 export class FeedbackValidationError extends AppError {
-  constructor(message: string, details?: Record<string, any>) {
+  constructor(message: string, details?: Record<string, unknown>) {
     super(message, {
       code: ErrorCode.FEEDBACK_VALIDATION,
       userMessage: 'フィードバックの内容に問題があります',
@@ -167,7 +167,7 @@ export const createAppError = (
   code: ErrorCode,
   statusCode = 500,
   userMessage?: string,
-  details?: Record<string, any>,
+  details?: Record<string, unknown>,
 ): AppError => {
   return new AppError(message, {
     code,
