@@ -21,7 +21,8 @@ describe('feedback', () => {
 
     expect(result).toEqual({
       success: false,
-      message: 'フィードバックの内容に問題があります',
+      message:
+        'コメントまたはフィードバックIDのいずれかを入力してください',
     });
   });
 
@@ -31,19 +32,19 @@ describe('feedback', () => {
 
     expect(result).toEqual({
       success: false,
-      message: 'フィードバックの内容に問題があります',
+      message: 'コメントは500文字以内で入力してください',
     });
   });
 
   it('レート制限に引っかかった場合はエラーを返す', async () => {
     vi.mocked(checkRateLimit).mockResolvedValue({
       success: false,
-      limit: 10,
+      limit: 3,
       remaining: 0,
       reset: Date.now() + 60000,
       pending: Promise.resolve({
         success: false,
-        limit: 10,
+        limit: 3,
         remaining: 0,
         reset: Date.now() + 60000,
       }),
@@ -54,20 +55,20 @@ describe('feedback', () => {
     expect(result).toEqual({
       success: false,
       message:
-        '送信回数が上限に達しました。しばらく時間をおいて再度お試しください',
+        '送信回数が上限に達しました。数分後に再度お試しください。',
     });
   });
 
   it('存在しないブログスラッグの場合はエラーを返す', async () => {
     vi.mocked(checkRateLimit).mockResolvedValue({
       success: true,
-      limit: 10,
-      remaining: 9,
+      limit: 3,
+      remaining: 2,
       reset: Date.now() + 60000,
       pending: Promise.resolve({
         success: true,
-        limit: 10,
-        remaining: 9,
+        limit: 3,
+        remaining: 2,
         reset: Date.now() + 60000,
       }),
     });
@@ -81,7 +82,7 @@ describe('feedback', () => {
 
     expect(result).toEqual({
       success: false,
-      message: '不明なエラーが発生しました',
+      message: '指定されたブログが見つかりません',
     });
   });
 
@@ -96,13 +97,13 @@ describe('feedback', () => {
 
     vi.mocked(checkRateLimit).mockResolvedValue({
       success: true,
-      limit: 10,
-      remaining: 9,
+      limit: 3,
+      remaining: 2,
       reset: Date.now() + 60000,
       pending: Promise.resolve({
         success: true,
-        limit: 10,
-        remaining: 9,
+        limit: 3,
+        remaining: 2,
         reset: Date.now() + 60000,
       }),
     });
@@ -133,13 +134,13 @@ describe('feedback', () => {
 
     vi.mocked(checkRateLimit).mockResolvedValue({
       success: true,
-      limit: 10,
-      remaining: 9,
+      limit: 3,
+      remaining: 2,
       reset: Date.now() + 60000,
       pending: Promise.resolve({
         success: true,
-        limit: 10,
-        remaining: 9,
+        limit: 3,
+        remaining: 2,
         reset: Date.now() + 60000,
       }),
     });

@@ -86,7 +86,7 @@ describe('blog service', () => {
       );
 
       await expect(getBlog('non-existent-slug')).rejects.toThrow(
-        "Blog with slug 'non-existent-slug' not found",
+        'Blog not found: non-existent-slug',
       );
     });
   });
