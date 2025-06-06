@@ -27,7 +27,7 @@ export class ErrorBoundary extends Component<Props, State> {
     return { hasError: true, error };
   }
 
-  componentDidCatch(error: Error, errorInfo: ErrorInfo) {
+  override componentDidCatch(error: Error, errorInfo: ErrorInfo) {
     console.error('ErrorBoundary caught an error:', error, errorInfo);
 
     // エラー情報をログ出力
@@ -49,7 +49,7 @@ export class ErrorBoundary extends Component<Props, State> {
     this.setState({ hasError: false, error: null });
   };
 
-  render() {
+  override render() {
     if (this.state.hasError && this.state.error) {
       if (this.props.fallback) {
         return this.props.fallback(
@@ -84,13 +84,11 @@ function DefaultErrorFallback({ error, retry }: ErrorFallbackProps) {
 
   return (
     <div className="flex min-h-[400px] items-center justify-center p-4">
-      <Card className="w-full max-w-md">
+      <Card width="full">
         <div className="space-y-4 text-center">
           <div className="text-6xl">⚠️</div>
 
-          <Heading level={2} className="text-fg-danger">
-            エラーが発生しました
-          </Heading>
+          <Heading type="h2">エラーが発生しました</Heading>
 
           <p className="text-fg-mute">{userMessage}</p>
 
@@ -141,7 +139,7 @@ function DefaultErrorFallback({ error, retry }: ErrorFallbackProps) {
               onClick={() => {
                 window.location.reload();
               }}
-              variant="filled"
+              variant="contained"
             >
               ページを再読み込み
             </Button>
@@ -158,11 +156,11 @@ export function ErrorBoundaryWrapper({
   fallback,
   onError,
 }: Props) {
-  return (
-    <ErrorBoundary fallback={fallback} onError={onError}>
-      {children}
-    </ErrorBoundary>
-  );
+  const props: Partial<Props> = {};
+  if (fallback) props.fallback = fallback;
+  if (onError) props.onError = onError;
+
+  return <ErrorBoundary {...props}>{children}</ErrorBoundary>;
 }
 
 // 特定のエラータイプ用のエラー境界
@@ -177,9 +175,9 @@ export function NotFoundErrorBoundary({
         if (isAppError(error) && error.code === ErrorCode.NOT_FOUND) {
           return (
             <div className="flex min-h-[400px] items-center justify-center p-4">
-              <Card className="w-full max-w-md space-y-4 text-center">
+              <Card width="full">
                 <div className="text-6xl">🔍</div>
-                <Heading level={2}>ページが見つかりません</Heading>
+                <Heading type="h2">ページが見つかりません</Heading>
                 <p className="text-fg-mute">{error.userMessage}</p>
                 <Button
                   onClick={() => {

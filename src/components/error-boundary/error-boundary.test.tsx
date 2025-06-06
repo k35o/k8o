@@ -10,7 +10,7 @@ import {
 import { render, screen } from '@testing-library/react';
 
 // エラーを投げるテスト用コンポーネント
-function ThrowError({ error }: { error: Error }) {
+function ThrowError({ error }: { error: Error }): never {
   throw error;
 }
 

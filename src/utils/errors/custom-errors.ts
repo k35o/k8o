@@ -79,7 +79,7 @@ export class ValidationError extends AppError {
     super(message, {
       code: ErrorCode.VALIDATION,
       userMessage: '入力内容に問題があります',
-      details,
+      details: details ?? {},
       statusCode: 400,
     });
     this.name = 'ValidationError';
@@ -154,7 +154,7 @@ export class FeedbackValidationError extends AppError {
     super(message, {
       code: ErrorCode.FEEDBACK_VALIDATION,
       userMessage: 'フィードバックの内容に問題があります',
-      details,
+      details: details ?? {},
       statusCode: 400,
     });
     this.name = 'FeedbackValidationError';
@@ -172,8 +172,8 @@ export const createAppError = (
   return new AppError(message, {
     code,
     statusCode,
-    userMessage,
-    details,
+    userMessage: userMessage ?? 'An error occurred',
+    details: details ?? {},
   });
 };
 

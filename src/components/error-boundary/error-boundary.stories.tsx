@@ -6,8 +6,8 @@ import { Button } from '@/components/button';
 import {
   AppError,
   ErrorCode,
-  NotFoundError,
-  ValidationError,
+  NotFoundError as NotFoundCustomError,
+  ValidationError as ValidationCustomError,
 } from '@/utils/errors/custom-errors';
 import type { Meta, StoryObj } from '@storybook/nextjs';
 import { useState } from 'react';
@@ -38,13 +38,13 @@ function ErrorDemo({
       case 'general':
         return new Error('一般的なJavaScriptエラーです');
       case 'validation':
-        throw new ValidationError('バリデーションエラーです', {
+        return new ValidationCustomError('バリデーションエラーです', {
           field: 'email',
         });
       case 'notfound':
-        throw new NotFoundError('Blog', 'test-slug');
+        return new NotFoundCustomError('Blog', 'test-slug');
       case 'ratelimit':
-        throw new AppError('Rate limit exceeded', {
+        return new AppError('Rate limit exceeded', {
           code: ErrorCode.RATE_LIMITED,
           userMessage: 'レート制限に達しました',
           statusCode: 429,
@@ -61,7 +61,7 @@ function ErrorDemo({
           onClick={() => {
             setShouldThrow(!shouldThrow);
           }}
-          variant={shouldThrow ? 'outlined' : 'filled'}
+          variant={shouldThrow ? 'outlined' : 'contained'}
         >
           {shouldThrow ? 'エラーを解除' : 'エラーを発生させる'}
         </Button>
@@ -104,7 +104,7 @@ export const Default: Story = {
   },
 };
 
-export const ValidationError: Story = {
+export const ValidationErrorStory: Story = {
   render: () => (
     <ErrorBoundary>
       <ErrorDemo errorType="validation" />
@@ -120,7 +120,7 @@ export const ValidationError: Story = {
   },
 };
 
-export const NotFoundError: Story = {
+export const NotFoundErrorStory: Story = {
   render: () => (
     <NotFoundErrorBoundary>
       <ErrorDemo errorType="notfound" />
