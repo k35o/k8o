@@ -217,7 +217,7 @@ describe('blogs service', () => {
       }));
       const mockBlogs = Array.from({ length: 10 }, (_, i) => ({
         id: i + 1,
-        slug: `blog-${i + 1}`,
+        slug: `blog-${(i + 1).toString()}`,
         published: true,
         createdAt: new Date(
           `2023-01-${String(i + 1).padStart(2, '0')}`,

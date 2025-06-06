@@ -79,7 +79,7 @@ describe('ErrorBoundary', () => {
 
   it('カスタムfallbackが提供された場合はそれを使用する', () => {
     const error = new Error('テストエラー');
-    const customFallback = (error: Error, retry: () => void) => (
+    const customFallback = (_error: Error, retry: () => void) => (
       <div>
         <div>カスタムエラー画面</div>
         <button onClick={retry}>リトライ</button>

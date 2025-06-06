@@ -5,7 +5,7 @@ import { feedback } from './action';
 import { db } from '#database/db';
 import { blogComment } from '@/database/schema/blog-comment';
 import { comments } from '@/database/schema/comments';
-import { ratelimit } from '@/utils/ratelimit';
+import { checkRateLimit } from '@/utils/ratelimit';
 
 vi.mock('#database/db');
 vi.mock('@/utils/ratelimit');
@@ -21,7 +21,7 @@ describe('feedback', () => {
 
     expect(result).toEqual({
       success: false,
-      message: 'フィードバックの選択か、コメントの入力をしてください',
+      message: 'フィードバックの内容に問題があります',
     });
   });
 
@@ -31,12 +31,12 @@ describe('feedback', () => {
 
     expect(result).toEqual({
       success: false,
-      message: 'コメントは500文字以内で入力してください',
+      message: 'フィードバックの内容に問題があります',
     });
   });
 
   it('レート制限に引っかかった場合はエラーを返す', async () => {
-    vi.mocked(ratelimit.limit).mockResolvedValue({
+    vi.mocked(checkRateLimit).mockResolvedValue({
       success: false,
       limit: 10,
       remaining: 0,
@@ -54,12 +54,12 @@ describe('feedback', () => {
     expect(result).toEqual({
       success: false,
       message:
-        '送信回数が上限に達しました。数分後に再度お試しください。',
+        '送信回数が上限に達しました。しばらく時間をおいて再度お試しください',
     });
   });
 
   it('存在しないブログスラッグの場合はエラーを返す', async () => {
-    vi.mocked(ratelimit.limit).mockResolvedValue({
+    vi.mocked(checkRateLimit).mockResolvedValue({
       success: true,
       limit: 10,
       remaining: 9,
@@ -94,7 +94,7 @@ describe('feedback', () => {
     };
     const mockInsertResult = [{ insertedId: 123 }];
 
-    vi.mocked(ratelimit.limit).mockResolvedValue({
+    vi.mocked(checkRateLimit).mockResolvedValue({
       success: true,
       limit: 10,
       remaining: 9,
@@ -111,7 +111,7 @@ describe('feedback', () => {
       values: vi.fn().mockReturnValue({
         returning: vi.fn().mockResolvedValue(mockInsertResult),
       }),
-    } as any);
+    } as unknown as ReturnType<typeof db.insert>);
 
     const result = await feedback('test-slug', 1, 'test comment');
 
@@ -131,7 +131,7 @@ describe('feedback', () => {
     };
     const mockInsertResult = [{ insertedId: 123 }];
 
-    vi.mocked(ratelimit.limit).mockResolvedValue({
+    vi.mocked(checkRateLimit).mockResolvedValue({
       success: true,
       limit: 10,
       remaining: 9,
@@ -148,7 +148,7 @@ describe('feedback', () => {
       values: vi.fn().mockReturnValue({
         returning: vi.fn().mockResolvedValue(mockInsertResult),
       }),
-    } as any);
+    } as unknown as ReturnType<typeof db.insert>);
 
     const result = await feedback('test-slug', null, 'test comment');
 
