@@ -3,7 +3,7 @@
 import { db } from '#database/db';
 import { blogComment } from '@/database/schema/blog-comment';
 import { comments } from '@/database/schema/comments';
-import { ratelimit } from '@/utils/ratelimit';
+import { checkRateLimit, RateLimitType } from '@/utils/ratelimit';
 import '@/libs/zod';
 
 type Result =
@@ -23,7 +23,8 @@ export const feedback = async (
   if (!comment && !feedbackId) {
     return {
       success: false,
-      message: 'フィードバックの選択か、コメントの入力をしてください',
+      message:
+        'コメントまたはフィードバックIDのいずれかを入力してください',
     };
   }
 
@@ -34,8 +35,10 @@ export const feedback = async (
     };
   }
 
-  const identifier = 'api';
-  const { success } = await ratelimit.limit(identifier);
+  const { success } = await checkRateLimit(
+    'feedback',
+    RateLimitType.FEEDBACK,
+  );
 
   if (!success) {
     return {
@@ -51,7 +54,7 @@ export const feedback = async (
   if (!blog) {
     return {
       success: false,
-      message: '不明なエラーが発生しました',
+      message: '指定されたブログが見つかりません',
     };
   }
 

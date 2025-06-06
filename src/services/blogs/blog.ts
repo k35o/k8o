@@ -17,7 +17,7 @@ export const getBlog = async (slug: string) => {
   });
 
   if (!blog) {
-    throw new Error(`Blog with slug ${slug} not found`);
+    throw new Error(`Blog not found: ${slug}`);
   }
 
   return {

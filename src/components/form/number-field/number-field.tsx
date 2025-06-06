@@ -137,7 +137,7 @@ export const NumberField: FC<Props> = ({
             setDisplayValue(newValue.toFixed(precision));
           }}
           className={cn(
-            'bg-bg-mute flex w-6 grow items-center justify-center rounded-tr-md border-b border-l',
+            'bg-bg-mute border-border-base flex w-6 grow items-center justify-center rounded-tr-sm border-b border-l',
             'disabled:cursor-not-allowed',
           )}
           disabled={isDisabled}
@@ -161,7 +161,7 @@ export const NumberField: FC<Props> = ({
             setDisplayValue(newValue.toFixed(precision));
           }}
           className={cn(
-            'bg-bg-mute flex w-6 grow items-center justify-center rounded-br-md border-l',
+            'bg-bg-mute border-border-base flex w-6 grow items-center justify-center rounded-br-sm border-l',
             'disabled:cursor-not-allowed',
           )}
           disabled={isDisabled}

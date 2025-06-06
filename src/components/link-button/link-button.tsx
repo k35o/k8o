@@ -33,7 +33,7 @@ export const LinkButton: FC<
       ['bg-transparent text-fg-mute hover:text-fg-base active:text-fg-base']:
         variant === 'skeleton',
     },
-    'focus-visible:bordertransparent focus-visible:ring-border-info focus-visible:ring-2 focus-visible:outline-hidden',
+    'focus-visible:border-transparent focus-visible:ring-border-info focus-visible:ring-2 focus-visible:outline-hidden',
     size === 'sm' && 'px-3 py-1 text-sm',
     size === 'md' && 'text-md px-4 py-2',
     size === 'lg' && 'px-6 py-3 text-lg',

@@ -142,7 +142,7 @@ const Item: FC<{
       className={cn(
         'group w-full px-2 py-1 text-left',
         'hover:bg-primary-bg',
-        'focus-visible:bordertransparent focus-visible:bg-primary-bg focus-visible:outline-hidden',
+        'focus-visible:bg-primary-bg focus-visible:border-transparent focus-visible:outline-hidden',
         !selected && 'pl-9',
         selected && 'inline-flex items-center gap-1',
       )}

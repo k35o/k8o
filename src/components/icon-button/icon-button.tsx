@@ -21,7 +21,7 @@ export const IconButton: FC<Props> = ({
       className={cn(
         'bgtransparent inline-flex rounded-full',
         'hover:bg-bg-subtle',
-        'focus-visible:bordertransparent focus-visible:ring-border-info active:bg-bg-emphasize focus-visible:ring-2 focus-visible:outline-hidden',
+        'focus-visible:ring-border-info active:bg-bg-emphasize focus-visible:border-transparent focus-visible:ring-2 focus-visible:outline-hidden',
         bg === 'base' && 'bg-bg-base/90',
         bg === 'transparent' && 'bgtransparent',
         bg === 'primary' &&
