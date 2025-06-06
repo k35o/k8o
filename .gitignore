@@ -47,3 +47,6 @@ schema.sql
 
 # liam-erd
 dist
+
+# claude
+.claude/settings.local.json
