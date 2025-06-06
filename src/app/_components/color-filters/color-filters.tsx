@@ -102,7 +102,7 @@ const HelpContent: FC = () => {
       className={cn(
         'inline-flex w-full items-center gap-1 px-2 py-1',
         'hover:bg-primary-bg hover:text-fg-inverse',
-        'focus-visible:bordertransparent focus-visible:bg-primary-bg focus-visible::text-fg-inverse focus-visible:outline-hidden',
+        'focus-visible:bg-primary-bg focus-visible::text-fg-inverse focus-visible:border-transparent focus-visible:outline-hidden',
       )}
     >
       <span className="text-fg-info">

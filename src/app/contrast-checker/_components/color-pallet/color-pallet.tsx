@@ -26,7 +26,7 @@ export const ColorPallet: FC<Props> = ({
             id={id}
             className={cn(
               'border-border-base w-16 grow rounded-md border',
-              'focus-visible:bordertransparent focus-visible:ring-border-info focus-visible:ring-2 focus-visible:outline-hidden',
+              'focus-visible:ring-border-info focus-visible:border-transparent focus-visible:ring-2 focus-visible:outline-hidden',
             )}
             type="color"
             value={color}

@@ -1,4 +1,4 @@
-import { quizzes } from './quzzes';
+import { quizzes } from './quizzes';
 import { relations } from 'drizzle-orm';
 import {
   integer,

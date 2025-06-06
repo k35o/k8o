@@ -40,7 +40,7 @@ const OperateButton: FC<{
         isActive &&
           'bordertransparent ring-fg-mute ring-4 outline-hidden',
         'hover:bordertransparent hover:ring-fg-mute hover:ring-4 hover:outline-hidden',
-        'focus-visible:bordertransparent focus-visible:ring-fg-mute focus-visible:ring-4 focus-visible:outline-hidden',
+        'focus-visible:ring-fg-mute focus-visible:border-transparent focus-visible:ring-4 focus-visible:outline-hidden',
       )}
       onMouseDown={onMouseDown}
       onTouchStart={onTouchStart}

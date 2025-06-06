@@ -1,5 +1,6 @@
 import { blogPath } from './path';
 import { db } from '#database/db';
+import { BlogNotFoundError } from '@/utils/errors/custom-errors';
 import { getFrontmatter } from '@/utils/mdx/frontmatter';
 import { getTocTree } from '@/utils/mdx/toc-tree';
 
@@ -17,7 +18,7 @@ export const getBlog = async (slug: string) => {
   });
 
   if (!blog) {
-    throw new Error(`Blog with slug ${slug} not found`);
+    throw new BlogNotFoundError(slug);
   }
 
   return {

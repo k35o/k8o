@@ -10,7 +10,7 @@ import {
   quizQuestionsRelations,
 } from './quiz-questions';
 import { quizType } from './quiz-type';
-import { quizzes, quizzesRelations } from './quzzes';
+import { quizzes, quizzesRelations } from './quizzes';
 import { serviceTag, serviceTagRelations } from './service-tag';
 import { serviceType } from './service-type';
 import { services, servicesRelations } from './services';

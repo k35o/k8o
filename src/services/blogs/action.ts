@@ -3,7 +3,12 @@
 import { db } from '#database/db';
 import { blogComment } from '@/database/schema/blog-comment';
 import { comments } from '@/database/schema/comments';
-import { ratelimit } from '@/utils/ratelimit';
+import {
+  FeedbackValidationError,
+  RateLimitError,
+  BlogNotFoundError,
+} from '@/utils/errors/custom-errors';
+import { checkRateLimit, RateLimitType } from '@/utils/ratelimit';
 import '@/libs/zod';
 
 type Result =
@@ -20,57 +25,76 @@ export const feedback = async (
   feedbackId: number | null,
   comment: string,
 ): Promise<Result> => {
-  if (!comment && !feedbackId) {
-    return {
-      success: false,
-      message: 'フィードバックの選択か、コメントの入力をしてください',
-    };
-  }
+  try {
+    if (!comment && !feedbackId) {
+      throw new FeedbackValidationError(
+        'フィードバックの選択か、コメントの入力をしてください',
+      );
+    }
 
-  if (comment.length > 500) {
-    return {
-      success: false,
-      message: 'コメントは500文字以内で入力してください',
-    };
-  }
+    if (comment.length > 500) {
+      throw new FeedbackValidationError(
+        'コメントは500文字以内で入力してください',
+      );
+    }
 
-  const identifier = 'api';
-  const { success } = await ratelimit.limit(identifier);
+    const { success } = await checkRateLimit(
+      'feedback',
+      RateLimitType.FEEDBACK,
+    );
 
-  if (!success) {
-    return {
-      success: false,
-      message:
-        '送信回数が上限に達しました。数分後に再度お試しください。',
-    };
-  }
+    if (!success) {
+      throw new RateLimitError();
+    }
 
-  const blog = await db.query.blogs.findFirst({
-    where: (blogs, { eq }) => eq(blogs.slug, slug),
-  });
-  if (!blog) {
-    return {
-      success: false,
-      message: '不明なエラーが発生しました',
-    };
-  }
-
-  const insertComments = await db
-    .insert(comments)
-    .values({
-      message: comment,
-      feedbackId: feedbackId,
-    })
-    .returning({ insertedId: comments.id });
-
-  if (insertComments[0]?.insertedId !== undefined) {
-    await db.insert(blogComment).values({
-      blogId: blog.id,
-      commentId: insertComments[0].insertedId,
+    const blog = await db.query.blogs.findFirst({
+      where: (blogs, { eq }) => eq(blogs.slug, slug),
     });
-  }
+    if (!blog) {
+      throw new BlogNotFoundError(slug);
+    }
 
-  return {
-    success: true,
-  };
+    const insertComments = await db
+      .insert(comments)
+      .values({
+        message: comment,
+        feedbackId: feedbackId,
+      })
+      .returning({ insertedId: comments.id });
+
+    if (insertComments[0]?.insertedId !== undefined) {
+      await db.insert(blogComment).values({
+        blogId: blog.id,
+        commentId: insertComments[0].insertedId,
+      });
+    }
+
+    return {
+      success: true,
+    };
+  } catch (error) {
+    if (
+      error instanceof FeedbackValidationError ||
+      error instanceof RateLimitError
+    ) {
+      return {
+        success: false,
+        message: error.userMessage,
+      };
+    }
+
+    if (error instanceof BlogNotFoundError) {
+      return {
+        success: false,
+        message: '不明なエラーが発生しました',
+      };
+    }
+
+    // 予期しないエラーの場合
+    console.error('Unexpected error in feedback:', error);
+    return {
+      success: false,
+      message: 'システムエラーが発生しました',
+    };
+  }
 };

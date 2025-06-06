@@ -156,7 +156,7 @@ const Tab: FC<PropsWithChildren<{ id: string }>> = ({
     tabIndex: activeIndex === index ? 0 : -1,
     className: cn(
       'relative cursor-pointer rounded-md p-2',
-      'focus-visible:bordertransparent focus-visible:ring-border-info focus-visible:ring-2 focus-visible:outline-hidden',
+      'focus-visible:border-transparent focus-visible:ring-border-info focus-visible:ring-2 focus-visible:outline-hidden',
     ),
     onKeyDown: (e: KeyboardEvent) => {
       if (e.key === 'ArrowLeft') {
@@ -219,7 +219,7 @@ const Panel: FC<PropsWithChildren<{ id: string }>> = ({
       tabIndex={0}
       className={cn(
         'flex-grow rounded-md p-2',
-        'focus-visible:bordertransparent focus-visible:ring-border-info focus-visible:ring-2 focus-visible:outline-hidden',
+        'focus-visible:ring-border-info focus-visible:border-transparent focus-visible:ring-2 focus-visible:outline-hidden',
       )}
     >
       {children}
