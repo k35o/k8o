@@ -1,4 +1,8 @@
 import { ExternalBlog } from './_components/external-blog';
+import {
+  ToggleWritingMode,
+  WritingModeProvider,
+} from './_components/toggle-writing-mode';
 import { Heading } from '../../components/heading';
 import Link from 'next/link';
 import { PropsWithChildren } from 'react';
@@ -32,15 +36,20 @@ export default function Layout({ children }: PropsWithChildren) {
         href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css"
         rel="stylesheet"
       />
-      <div className="flex flex-col gap-6">
-        <div className="flex items-center justify-between">
-          <Link href="/blog" className="hover:underline">
-            <Heading type="h2">Blog</Heading>
-          </Link>
-          <ExternalBlog />
+      <WritingModeProvider>
+        <div className="flex flex-col gap-6">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-4">
+              <Link href="/blog" className="hover:underline">
+                <Heading type="h2">Blog</Heading>
+              </Link>
+              <ToggleWritingMode />
+            </div>
+            <ExternalBlog />
+          </div>
+          {children}
         </div>
-        {children}
-      </div>
+      </WritingModeProvider>
     </>
   );
 }
