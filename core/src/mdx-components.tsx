@@ -99,7 +99,7 @@ export function useMDXComponents(
       return (
         <pre
           {...rest}
-          className="my-4 overflow-x-auto rounded-lg px-2 py-1 sm:p-4"
+          className="writing-mode-horizontal-tb my-4 h-full overflow-x-auto overflow-y-scroll rounded-lg px-2 py-1 sm:p-4"
         >
           {children}
         </pre>
