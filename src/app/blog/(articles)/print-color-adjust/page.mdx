@@ -67,11 +67,11 @@ CSSのプロパティに付与する値としては珍しい名前ですね。
 }
 
 .directions .step:nth-child(even) {
-  background-color: var(--color-bg); # 白
+  background-color: var(--color-bg); /* 白 */
 }
 
 .directions .step:nth-child(odd) {
-  background-color: var(--color-bg-light); # ライトグレー
+  background-color: var(--color-bg-light); /* ライトグレー */
 }
 ```
 
@@ -82,8 +82,9 @@ CSSのプロパティに付与する値としては珍しい名前ですね。
 そのサイト、サービス、企業の代表的な色を印刷時にも保持したい場合です（`svg`などはデフォルトでも保持されることが多いです）。
 
 ```css
-.logo, .brand-element {
-  background-color: var(--color-primary); # ブランドカラー
+.logo,
+.brand-element {
+  background-color: var(--color-primary); /* ブランドカラー */
   color: white;
   print-color-adjust: exact;
 }
@@ -98,9 +99,15 @@ CSSのプロパティに付与する値としては珍しい名前ですね。
   print-color-adjust: exact;
 }
 
-.chart .series-1 { background-color: var(--color-blue-700); # 青色 }
-.chart .series-2 { background-color: var(--color-red-700); # 赤色 }
-.chart .series-3 { background-color: var(--color-green-700); # 緑色 }
+.chart .series-1 {
+  background-color: var(--color-blue-700); /* 青色 */
+}
+.chart .series-2 {
+  background-color: var(--color-red-700); /* 赤色 */
+}
+.chart .series-3 {
+  background-color: var(--color-green-700); /* 緑色 */
+}
 ```
 
 このケースに該当して`print-color-adjust`を利用する場合は、先に色以外の方法で区別できるかを検討しましょう。
