@@ -1,0 +1,115 @@
+---
+title: print-color-adjustで印刷時の色調整を制御する
+description: print-color-adjustプロパティを使用して、ブラウザが印刷時に行う色やコントラストの調整を制御する方法を学びます。
+createdAt: 2025-01-06 00:00:00+00
+updatedAt: 2025-01-06 00:00:00+00
+---
+
+import { BaselineStatus } from '@/components/baseline-status';
+import { Example1 } from './_components/example1';
+import { Playground } from '@/app/blog/_components/playground';
+
+# print-color-adjustで印刷時の外観を制御する
+
+<BaselineStatus featureId="print-color-adjust"></BaselineStatus>
+
+## はじめに
+
+Webページを印刷する際、ブラウザは自動的に色やコントラストを調整することがあります。
+これは印刷コストを削減し、テキストの可読性を向上させるためですが、そのWebページにとって色やコントラストが重要な場合には望ましくないです。
+
+CSSの`print-color-adjust`プロパティは、この動作に対してヒントを提供できます。
+
+<Playground title="ボタンを押して設定をこのサイトの設定を変える">
+  <Example1 />
+</Playground>
+
+上記の設定を切り替えながら印刷プレビューを確認すると、設定によって色やスタイルが変化することを確認できます。
+
+## print-color-adjustプロパティの基本的な仕様
+
+値は`economy`（初期値）と`exact`の2つがあります。`print-color-adjust`プロパティの値は親要素から子要素へ継承されます。
+
+#### economy（初期値）
+
+ユーザーエージェントが出力デバイスに応じて、スタイリングを調整することを許可します。
+
+```css
+.content {
+  print-color-adjust: economy; /* デフォルト値 */
+}
+```
+
+CSSのプロパティに付与する値としては珍しい名前ですね。
+ブラウザが自動的に調整することを許可する、つまり印刷コストの削減を優先する値なので`economy`と名付けられているのでしょう。
+
+#### exact
+
+色とスタイリングをユーザーから指示があった時を除いて変更しないように指示します。
+
+```css
+.preserve-design {
+  print-color-adjust: exact;
+}
+```
+
+各ブラウザがユーザーに提供する設定が優先されることには注意が必要です。
+
+## 実用的な使用例
+
+### 1. W3Cの例：地図サイトでの方向案内
+
+[仕様書](https://drafts.csswg.org/css-color-adjust/#print-color-adjust)では、`exact`が有効な例として道案内中の地図を印刷する状況を紹介しています。
+
+```css
+.directions {
+  print-color-adjust: exact;
+}
+
+.directions .step:nth-child(even) {
+  background-color: var(--color-bg); # 白
+}
+
+.directions .step:nth-child(odd) {
+  background-color: var(--color-bg-light); # ライトグレー
+}
+```
+
+上記のように、経路を白とライトグレーを交互に表示することで表現している場合、デフォルトでは白だけで印刷されてしまうため道順が読みにくくなります。
+
+### 2. ブランドカラーの保持
+
+そのサイト、サービス、企業の代表的な色を印刷時にも保持したい場合です（`svg`などはデフォルトでも保持されることが多いです）。
+
+```css
+.logo, .brand-element {
+  background-color: var(--color-primary); # ブランドカラー
+  color: white;
+  print-color-adjust: exact;
+}
+```
+
+### 3. データ可視化での色分け保持
+
+チャートやグラフで色による区別が重要な場合です。同じ色に印刷されてしまうと、情報が失われてしまいます。
+
+```css
+.chart {
+  print-color-adjust: exact;
+}
+
+.chart .series-1 { background-color: var(--color-blue-700); # 青色 }
+.chart .series-2 { background-color: var(--color-red-700); # 赤色 }
+.chart .series-3 { background-color: var(--color-green-700); # 緑色 }
+```
+
+このケースに該当して`print-color-adjust`を利用する場合は、先に色以外の方法で区別できるかを検討しましょう。
+
+[W3Cで紹介されるWebアクセシビリティのテクニック G111](https://www.w3.org/TR/WCAG20-TECHS/G111.html)で詳しく紹介されています。
+
+## まとめ
+
+`print-color-adjust`プロパティは、印刷時の色調整に対してユーザーエージェントにヒントを提供する有用な機能です。
+
+適切に使用することで、印刷時でもデザインの意図を保ちながら、ユーザーフレンドリーな印刷体験を提供できます。
+ただし、これはあくまでヒントであり、最終的な表示はユーザーの設定とブラウザの実装に依存することに注意が必要です。
