@@ -20,6 +20,7 @@ import {
   FormIcon,
   GoodIcon,
   HistoryIcon,
+  HorizontalIcon,
   InformativeIcon,
   InterestingIcon,
   LightModeIcon,
@@ -42,6 +43,7 @@ import {
   TableIcon,
   TagIcon,
   UpdateDateIcon,
+  VerticalIcon,
   ViewIcon,
 } from './lucide';
 import { QiitaIcon } from './qiita';
@@ -252,6 +254,14 @@ export const Primary: Story = {
         <div className="flex flex-col items-center justify-center">
           <RSSIcon />
           <p className="text-center">RSS</p>
+        </div>
+        <div className="flex flex-col items-center justify-center">
+          <VerticalIcon />
+          <p className="text-center">縦書き</p>
+        </div>
+        <div className="flex flex-col items-center justify-center">
+          <HorizontalIcon />
+          <p className="text-center">横書き</p>
         </div>
         <div className="flex flex-col items-center justify-center">
           <GitHubIcon />
