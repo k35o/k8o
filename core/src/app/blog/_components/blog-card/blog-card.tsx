@@ -1,3 +1,6 @@
+'use client';
+
+import { useWritingModeValue } from '../toggle-writing-mode';
 import { ViewTransition } from '#libs/react';
 import { InteractiveCard } from '@/components/card';
 import { Heading } from '@/components/heading';
@@ -7,6 +10,7 @@ import {
   TagIcon,
 } from '@/components/icons';
 import { TextTag } from '@/components/text-tag';
+import { cn } from '@k8o/helpers/cn';
 import { formatDate } from '@k8o/helpers/date';
 import { Route } from 'next';
 import Link from 'next/link';
@@ -29,10 +33,29 @@ export const BlogCard: FC<BlogCardProps> = ({
   createdAt,
   updatedAt,
 }) => {
+  const writingMode = useWritingModeValue();
   return (
-    <InteractiveCard>
-      <Link href={`/blog/${slug}` as Route} className="block h-full">
-        <div className="flex h-full flex-col justify-between gap-4 p-4">
+    <InteractiveCard
+      width={writingMode === 'vertical-rl' ? 'fit' : 'full'}
+      height={writingMode === 'vertical-rl' ? 'fit' : 'full'}
+    >
+      <Link
+        href={`/blog/${slug}` as Route}
+        className={cn(
+          'block',
+          writingMode === 'vertical-rl'
+            ? 'h-5/6 w-full md:h-1/2'
+            : 'h-full',
+        )}
+      >
+        <div
+          className={cn(
+            'flex flex-col justify-between gap-4 p-4',
+            writingMode === 'vertical-rl'
+              ? 'writing-mode-vertical-rl h-5/6 md:h-1/2'
+              : 'writing-mode-horizontal-tb h-full',
+          )}
+        >
           <div className="flex flex-col gap-1">
             <ViewTransition name={`title-${slug}`}>
               <Heading type="h3" lineClamp={3}>
@@ -41,7 +64,14 @@ export const BlogCard: FC<BlogCardProps> = ({
             </ViewTransition>
             {description && (
               <ViewTransition name={`description-${slug}`}>
-                <p className="text-fg-mute line-clamp-3 text-sm">
+                <p
+                  className={cn(
+                    'text-fg-mute text-sm',
+                    writingMode === 'vertical-rl'
+                      ? 'line-clamp-5'
+                      : 'line-clamp-3',
+                  )}
+                >
                   {description}
                 </p>
               </ViewTransition>
