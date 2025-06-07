@@ -4,4 +4,5 @@ export type CardProps = PropsWithChildren<{
   variant?: 'primary' | 'secondary';
   title?: string;
   width?: 'full' | 'fit';
+  height?: 'full' | 'fit';
 }>;
