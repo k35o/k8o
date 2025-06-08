@@ -361,6 +361,8 @@
   --tracking-*: initial;
   --tracking-none: 0em;
   --tracking-normal: 0.025em;
+
+  --columns-50svh: 50svh;
 }
 
 @utility grid-cols-auto-fill-* {
@@ -391,11 +393,24 @@
   );
 }
 
-.writing-mode-vertical-rl {
+@utility column-rule {
+  column-rule-width: 1px;
+  column-rule-style: var(--tw-border-style);
+}
+
+@utility column-fill-auto {
+  column-fill: auto;
+}
+
+@utility column-rule-color-* {
+  column-rule-color: --value(--color-*);
+}
+
+@utility writing-mode-vertical-rl {
   writing-mode: vertical-rl;
 }
 
-.writing-mode-horizontal-tb {
+@utility writing-mode-horizontal-tb {
   writing-mode: horizontal-tb;
 }
 
