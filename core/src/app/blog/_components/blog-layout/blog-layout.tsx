@@ -2,8 +2,9 @@ import { Content } from './content';
 import { Feedback } from './feedback';
 import { Recommend } from './recommend';
 import { TableOfContext } from './table-of-context';
+import { ViewCounter } from './view-counter';
 import { Subscribe } from '../subscribe';
-import { getBlogContent, getBlogView } from '#api/blog';
+import { getBlogContent } from '#api/blog';
 import { ViewIcon } from '@/components/icons';
 import { FC, ReactNode, Suspense } from 'react';
 import { ErrorBoundary } from 'react-error-boundary';
@@ -13,7 +14,6 @@ export const BlogLayout: FC<{
   slug: string;
 }> = async ({ children, slug }) => {
   const blog = await getBlogContent(slug);
-  const views = await getBlogView(blog.id);
 
   return (
     <div className="gap-4 xl:flex xl:has-[>:nth-child(2)]:-mx-36">
@@ -26,7 +26,9 @@ export const BlogLayout: FC<{
                 <div className="flex items-center gap-1">
                   <ViewIcon size="sm" />
                   <span className="sr-only">閲覧数</span>
-                  <span>{views} views</span>
+                  <span>
+                    <ViewCounter id={blog.id} /> views
+                  </span>
                 </div>
               </Suspense>
             </ErrorBoundary>
