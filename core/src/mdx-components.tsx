@@ -97,12 +97,14 @@ export function useMDXComponents(
     },
     pre: ({ children, ...rest }) => {
       return (
-        <pre
-          {...rest}
-          className="writing-mode-horizontal-tb my-4 h-full overflow-x-auto overflow-y-scroll rounded-lg px-2 py-1 sm:p-4"
-        >
-          {children}
-        </pre>
+        <div className="my-4">
+          <pre
+            {...rest}
+            className="writing-mode-horizontal-tb h-full overflow-x-auto overflow-y-scroll rounded-lg px-2 py-1 sm:p-4"
+          >
+            {children}
+          </pre>
+        </div>
       );
     },
     li: ({ children }) => (
