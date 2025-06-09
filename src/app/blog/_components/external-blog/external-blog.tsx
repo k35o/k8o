@@ -11,7 +11,7 @@ export const ExternalBlog: FC = () => {
   return (
     <div className="flex gap-4">
       <IconLink
-        href="https://qiita.com/KokiSakano"
+        href="https://qiita.com/k8o"
         bg="base"
         label="Qiitaのアカウント"
       >
