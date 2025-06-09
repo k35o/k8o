@@ -79,4 +79,15 @@ export const Legend: Story = {
     helpText: 'RFCに準拠したメールアドレスを入力してください。',
     labelAs: 'legend',
   },
+  parameters: {
+    a11y: {
+      options: {
+        rules: {
+          // labelが不要なケースに使うのでoffにする
+          label: { enabled: false },
+          'label-title-only': { enabled: false },
+        },
+      },
+    },
+  },
 };

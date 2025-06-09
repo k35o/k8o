@@ -19,6 +19,17 @@ const meta: Meta<typeof Textarea> = {
       console.log(e.target.value);
     },
   },
+  parameters: {
+    a11y: {
+      options: {
+        rules: {
+          // TextArea単体ではラベルを付随しない
+          label: { enabled: false },
+          'label-title-only': { enabled: false },
+        },
+      },
+    },
+  },
 };
 
 export default meta;

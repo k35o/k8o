@@ -18,6 +18,17 @@ const meta: Meta<typeof Select> = {
       console.log(e.target.value);
     },
   },
+  parameters: {
+    a11y: {
+      options: {
+        rules: {
+          // Select単体ではラベルを付随しない
+          'label-title-only': { enabled: false },
+          'select-name': { enabled: false },
+        },
+      },
+    },
+  },
 };
 
 export default meta;
