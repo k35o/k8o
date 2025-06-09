@@ -168,6 +168,7 @@ const Trigger: FC<{
       renderItem={(props) => (
         <Button
           type="button"
+          aria-label={label}
           size={size}
           color="gray"
           variant="contained"

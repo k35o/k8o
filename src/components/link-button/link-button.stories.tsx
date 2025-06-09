@@ -40,12 +40,12 @@ export const Outline: Story = {
 
 export const StartIcon: Story = {
   args: {
-    children: <CopyIcon />,
+    startIcon: <CopyIcon />,
   },
 };
 
 export const EndIcon: Story = {
   args: {
-    children: <CopyIcon />,
+    endIcon: <CopyIcon />,
   },
 };

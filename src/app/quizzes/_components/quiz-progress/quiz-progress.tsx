@@ -13,7 +13,11 @@ export const QuizProgress: FC<{
           （{progress}/{maxProgress}）
         </span>
       </p>
-      <Progress progress={progress} maxProgress={maxProgress} />
+      <Progress
+        progress={progress}
+        maxProgress={maxProgress}
+        label={`${maxProgress.toString()}問中${progress.toString()}問目を出題`}
+      />
     </div>
   );
 };
