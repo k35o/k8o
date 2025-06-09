@@ -42,7 +42,11 @@ export const Content: FC<
       className={cn(
         'bg-bg-base/90 rounded-md px-3 pb-14 sm:px-10',
         writingMode === 'vertical-rl'
-          ? 'writing-mode-vertical-rl h-5/6 overflow-x-scroll overflow-y-hidden pr-8'
+          ? cn(
+              'writing-mode-vertical-rl overflow-x-scroll overflow-y-hidden py-8',
+              'h-5/6',
+              'md:columns-50svh md:column-rule md:column-rule-color-border-base md:column-fill-auto md:h-auto md:gap-x-8',
+            )
           : 'writing-mode-horizontal-tb pt-8',
       )}
     >

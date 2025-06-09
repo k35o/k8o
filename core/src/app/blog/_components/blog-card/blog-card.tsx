@@ -52,7 +52,7 @@ export const BlogCard: FC<BlogCardProps> = ({
           className={cn(
             'flex flex-col justify-between gap-4 p-4',
             writingMode === 'vertical-rl'
-              ? 'writing-mode-vertical-rl h-5/6 md:h-1/2'
+              ? 'writing-mode-vertical-rl h-5/6 w-full md:h-1/2'
               : 'writing-mode-horizontal-tb h-full',
           )}
         >
@@ -68,7 +68,7 @@ export const BlogCard: FC<BlogCardProps> = ({
                   className={cn(
                     'text-fg-mute text-sm',
                     writingMode === 'vertical-rl'
-                      ? 'line-clamp-5'
+                      ? ''
                       : 'line-clamp-3',
                   )}
                 >

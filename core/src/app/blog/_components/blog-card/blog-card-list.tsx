@@ -11,7 +11,7 @@ export const BlogCardList: FC<PropsWithChildren> = ({ children }) => {
       className={cn(
         'relative flex gap-4',
         writingMode === 'vertical-rl'
-          ? 'flex-row-reverse flex-nowrap overflow-x-scroll md:flex-wrap'
+          ? 'flex-row-reverse flex-nowrap items-start overflow-x-scroll md:flex-wrap md:*:grow'
           : 'flex-col',
       )}
     >
