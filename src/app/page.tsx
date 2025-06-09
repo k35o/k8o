@@ -45,7 +45,7 @@ export default function Home() {
                     <GitHubIcon />
                   </IconLink>
                   <IconLink
-                    href="https://qiita.com/KokiSakano"
+                    href="https://qiita.com/k8o"
                     label="Qiitaのアカウント"
                   >
                     <QiitaIcon />
