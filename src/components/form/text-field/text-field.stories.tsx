@@ -12,6 +12,17 @@ const meta: Meta<typeof TextField> = {
       console.log(e.target.value);
     },
   },
+  parameters: {
+    a11y: {
+      options: {
+        rules: {
+          // TextField単体ではラベルを付随しない
+          'label-title-only': { enabled: false },
+          label: { enabled: false },
+        },
+      },
+    },
+  },
 };
 
 export default meta;

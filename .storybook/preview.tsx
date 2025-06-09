@@ -58,8 +58,7 @@ const preview: Preview = {
       appDirectory: true,
     },
     a11y: {
-      // errorに切り替えられるようにする
-      test: 'todo',
+      test: 'error',
     },
   },
   decorators: [

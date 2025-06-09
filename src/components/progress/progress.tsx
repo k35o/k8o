@@ -1,14 +1,20 @@
+import { toPrecision } from '@/utils/number/to-precision';
 import { FC } from 'react';
 
 export const Progress: FC<{
   progress: number;
   maxProgress: number;
   minProgress?: number;
-}> = ({ progress, maxProgress, minProgress = 0 }) => {
+  label?: string;
+}> = ({ progress, maxProgress, minProgress = 0, label }) => {
   return (
     <div className="bg-bg-emphasize w-full rounded-sm">
       <div
         role="progressbar"
+        aria-label={
+          label ??
+          `${toPrecision(progress / maxProgress).toString()}%`
+        }
         aria-valuemax={maxProgress}
         aria-valuemin={minProgress}
         aria-valuenow={progress}

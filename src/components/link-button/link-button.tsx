@@ -1,19 +1,18 @@
 import { cn } from '@/utils/cn';
 import { isInternalRoute } from '@/utils/is-internal-route';
 import Link from 'next/link';
-import { FC, PropsWithChildren, ReactNode } from 'react';
+import { FC, ReactNode } from 'react';
 
-export const LinkButton: FC<
-  PropsWithChildren<{
-    variant?: 'contained' | 'outlined' | 'skeleton';
-    size?: 'sm' | 'md' | 'lg';
-    href: string;
-    startIcon?: ReactNode;
-    endIcon?: ReactNode;
-    active?: boolean;
-    openInNewTab?: boolean;
-  }>
-> = ({
+export const LinkButton: FC<{
+  variant?: 'contained' | 'outlined' | 'skeleton';
+  size?: 'sm' | 'md' | 'lg';
+  href: string;
+  startIcon?: ReactNode;
+  endIcon?: ReactNode;
+  active?: boolean;
+  openInNewTab?: boolean;
+  children: string;
+}> = ({
   children,
   size = 'md',
   variant = 'contained',
@@ -42,7 +41,7 @@ export const LinkButton: FC<
     active && 'text-fg-info hover:text-fg-info active:text-fg-info',
   );
   return isInternalRoute(href) && !openInNewTab ? (
-    <Link className={className} href={href}>
+    <Link className={className} aria-label={children} href={href}>
       {startIcon}
       {children}
       {endIcon}
@@ -50,6 +49,7 @@ export const LinkButton: FC<
   ) : (
     <a
       className={className}
+      aria-label={children}
       href={href}
       target="_blank"
       rel="noopener noreferrer"

@@ -16,6 +16,17 @@ const meta: Meta<typeof NumberField> = {
       <NumberField {...args} value={value} onChange={setValue} />
     );
   },
+  parameters: {
+    a11y: {
+      options: {
+        rules: {
+          // NumberField単体ではラベルを付随しない
+          'label-title-only': { enabled: false },
+          label: { enabled: false },
+        },
+      },
+    },
+  },
 };
 
 export default meta;
