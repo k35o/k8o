@@ -39,7 +39,7 @@ export default async function OpenGraphImage() {
             display: 'flex',
             flexDirection: 'column',
             justifyContent: 'space-around',
-            borderRadius: 6,
+            borderRadius: 12,
           }}
         >
           <div
