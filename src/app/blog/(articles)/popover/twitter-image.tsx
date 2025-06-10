@@ -6,10 +6,6 @@ const parser = new Parser(jaModel);
 
 export const alt =
   'Popover APIを使ってJavaScriptなしで要素の側に異なる要素を表示する';
-export const size = {
-  width: 1200,
-  height: 600,
-};
 
 export const contentType = 'image/png';
 
@@ -76,8 +72,5 @@ export default async function TwitterImage() {
         </div>
       </div>
     ),
-    {
-      ...size,
-    },
   );
 }
