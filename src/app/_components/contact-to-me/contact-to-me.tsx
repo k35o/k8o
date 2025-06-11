@@ -1,6 +1,6 @@
 'use client';
 
-import { contact } from '#src/app/_api/contact-to-me.js';
+import { contact } from '@/app/_api/contact-to-me';
 import { Anchor } from '@/components/anchor';
 import { Button } from '@/components/button';
 import { Dialog } from '@/components/dialog';
