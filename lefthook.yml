@@ -1,5 +1,4 @@
 pre-commit:
-  paralell: true
   commands:
     format:
       glob: '*.{js,ts,cjs,d.cts,d.ts,jsx,tsx,md,mdx}'
@@ -18,7 +17,6 @@ pre-commit:
       stage_fixed: true
 
 pre-push:
-  paralell: true
   commands:
     format:
       glob: '*.{js,ts,cjs,d.cts,d.ts,jsx,tsx,md,mdx}'
