@@ -281,6 +281,13 @@
       "when": 1749212813527,
       "tag": "0039_massive_ozymandias",
       "breakpoints": true
+    },
+    {
+      "idx": 40,
+      "version": "7",
+      "when": 1749737440916,
+      "tag": "0040_fluffy_maginty",
+      "breakpoints": true
     }
   ]
 }

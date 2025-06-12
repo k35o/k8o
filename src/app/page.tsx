@@ -125,6 +125,12 @@ export default function Home() {
             description="日本語で書かれた文章の誤字や脱字、文法ミス、表現の改善ポイントをチェックします。"
           />
           <AppCard
+            link="/qr-generator"
+            symbol="📱"
+            title="QRKit"
+            description="任意のテキストやURLからQRコードを生成できるツールです。"
+          />
+          <AppCard
             link="/base-converter"
             symbol="🧬"
             title="基数チェンジャー"
