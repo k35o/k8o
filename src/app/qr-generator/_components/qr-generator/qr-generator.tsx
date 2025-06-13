@@ -2,6 +2,7 @@
 
 import { Button } from '@/components/button';
 import { FormControl } from '@/components/form/form-control';
+import { RangeField } from '@/components/form/range-field';
 import { TextField } from '@/components/form/text-field';
 import { useState, useCallback, useMemo, ChangeEvent } from 'react';
 import { renderSVG } from 'uqr';
@@ -34,7 +35,7 @@ export const QrGenerator = () => {
   );
 
   const handleSizeChange = useCallback((newSize: number) => {
-    setSize(Math.max(100, Math.min(500, newSize)));
+    setSize(newSize);
   }, []);
 
   const handleDownload = useCallback(() => {
@@ -71,21 +72,15 @@ export const QrGenerator = () => {
         <FormControl
           label="サイズ調整"
           renderInput={(props) => (
-            <div className="flex items-center gap-4">
-              <input
-                type="range"
-                min="100"
-                max="500"
-                step="10"
-                value={size}
-                onChange={(e) => {
-                  handleSizeChange(Number(e.target.value));
-                }}
-                className="flex-1"
-                id={props.id}
-              />
-              <span className="w-16 text-sm">{size}px</span>
-            </div>
+            <RangeField
+              value={size}
+              onChange={handleSizeChange}
+              min={100}
+              max={500}
+              step={10}
+              unit="px"
+              {...props}
+            />
           )}
         />
       </div>
