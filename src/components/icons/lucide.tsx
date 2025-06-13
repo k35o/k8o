@@ -4,6 +4,8 @@ import {
   AlignRight,
   Angry,
   Annoyed,
+  ArrowLeftRight,
+  ArrowUpDown,
   Bell,
   Blend,
   Bookmark,
@@ -401,6 +403,28 @@ export const RSSIcon: FC<IconProps> = ({ size = 'md' }) => {
       size={size}
       renderItem={(props) => {
         return <Rss {...props} />;
+      }}
+    />
+  );
+};
+
+export const VerticalIcon: FC<IconProps> = ({ size = 'md' }) => {
+  return (
+    <BaseIcon
+      size={size}
+      renderItem={(props) => {
+        return <ArrowUpDown {...props} />;
+      }}
+    />
+  );
+};
+
+export const HorizontalIcon: FC<IconProps> = ({ size = 'md' }) => {
+  return (
+    <BaseIcon
+      size={size}
+      renderItem={(props) => {
+        return <ArrowLeftRight {...props} />;
       }}
     />
   );

@@ -10,6 +10,7 @@ export const InteractiveCard: FC<
   variant = 'primary',
   animation = 'medium',
   width = 'full',
+  height = 'full',
   title,
 }) => (
   <motion.section
@@ -23,6 +24,8 @@ export const InteractiveCard: FC<
       'bg-bg-base/90 rounded-lg shadow-md',
       width === 'full' && 'w-full',
       width === 'fit' && 'w-fit',
+      height === 'full' && 'h-full',
+      height === 'fit' && 'h-fit',
       variant === 'primary' && 'bg-bg-base/90',
       variant === 'secondary' && 'bg-bg-mute',
     )}
