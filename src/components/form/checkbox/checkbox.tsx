@@ -1,5 +1,5 @@
 import { CheckIcon } from '../../icons';
-import { cn } from '@/utils/cn';
+import { cn } from '@/helpers/cn';
 import { ChangeEventHandler, FC, useState } from 'react';
 
 type Props = {

@@ -5,10 +5,10 @@ import { feedback } from './action';
 import { db } from '#database/db';
 import { blogComment } from '@/database/schema/blog-comment';
 import { comments } from '@/database/schema/comments';
-import { checkRateLimit } from '@/utils/ratelimit';
+import { checkRateLimit } from '@/helpers/ratelimit';
 
 vi.mock('#database/db');
-vi.mock('@/utils/ratelimit');
+vi.mock('@/helpers/ratelimit');
 vi.mock('@/libs/zod', () => ({}));
 
 describe('feedback', () => {

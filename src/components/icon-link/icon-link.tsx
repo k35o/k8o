@@ -1,5 +1,5 @@
-import { cn } from '@/utils/cn';
-import { isInternalRoute } from '@/utils/is-internal-route';
+import { cn } from '@/helpers/cn';
+import { isInternalRoute } from '@/helpers/is-internal-route';
 import Link from 'next/link';
 import { FC, PropsWithChildren } from 'react';
 

@@ -1,5 +1,5 @@
 import { CardProps } from './type';
-import { cn } from '@/utils/cn';
+import { cn } from '@/helpers/cn';
 import * as motion from 'motion/react-client';
 import { FC } from 'react';
 

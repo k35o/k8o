@@ -1,6 +1,6 @@
+import { range } from '@/helpers/array/range';
+import { cn } from '@/helpers/cn';
 import { Quiz } from '@/services/quizzes';
-import { range } from '@/utils/array/range';
-import { cn } from '@/utils/cn';
 import { Noto_Sans_JP } from 'next/font/google';
 import { FC } from 'react';
 

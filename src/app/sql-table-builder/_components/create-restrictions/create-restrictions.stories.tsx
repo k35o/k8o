@@ -1,7 +1,7 @@
 import { CreateRestrictions } from './create-restrictions';
 import { Column } from '../../_types/column';
 import { Restriction } from '../../_types/restriction';
-import { uuidV4 } from '@/utils/uuid-v4';
+import { uuidV4 } from '@/helpers/uuid-v4';
 import type { Meta, StoryObj } from '@storybook/nextjs';
 import { useState } from 'react';
 

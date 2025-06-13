@@ -9,7 +9,7 @@ import {
 } from '@/components/icons';
 import { LinkButton } from '@/components/link-button';
 import { TextTag } from '@/components/text-tag';
-import { formatDate } from '@/utils/date/format';
+import { formatDate } from '@/helpers/date/format';
 import { Route } from 'next';
 import { FC } from 'react';
 

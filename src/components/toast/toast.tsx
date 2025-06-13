@@ -1,7 +1,7 @@
 import { Alert } from '../alert';
 import { useToast } from './provider';
+import { Status } from '@/helpers';
 import { useTimeout } from '@/hooks/timeout';
-import { Status } from '@/types';
 import { FC, useCallback } from 'react';
 
 type ToastProps = {

@@ -1,6 +1,6 @@
 import { AlertIcon } from '../icons';
-import type { Status } from '@/types';
-import { cn } from '@/utils/cn';
+import type { Status } from '@/helpers';
+import { cn } from '@/helpers/cn';
 import { FC } from 'react';
 
 type Props = {

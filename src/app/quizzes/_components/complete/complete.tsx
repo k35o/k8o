@@ -3,8 +3,8 @@ import { Button } from '@/components/button';
 import { Heading } from '@/components/heading';
 import { HistoryIcon, ListIcon } from '@/components/icons';
 import { LinkButton } from '@/components/link-button';
+import { cn } from '@/helpers/cn';
 import { Quiz } from '@/services/quizzes';
-import { cn } from '@/utils/cn';
 import { FC } from 'react';
 
 export const Complete: FC<{

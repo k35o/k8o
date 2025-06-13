@@ -1,6 +1,6 @@
-import { cn } from '@/utils/cn';
-import { calcContrast } from '@/utils/color/calc-contrast';
-import { toPrecision } from '@/utils/number/to-precision';
+import { cn } from '@/helpers/cn';
+import { calcContrast } from '@/helpers/color/calc-contrast';
+import { toPrecision } from '@/helpers/number/to-precision';
 import { FC } from 'react';
 
 export const ColorContrastUnit: FC<{

@@ -13,7 +13,7 @@ import {
 import { Button } from '@/components/button';
 import { IconButton } from '@/components/icon-button';
 import { CloseIcon } from '@/components/icons';
-import { uuidV4 } from '@/utils/uuid-v4';
+import { uuidV4 } from '@/helpers/uuid-v4';
 import { FC } from 'react';
 
 type Props = {

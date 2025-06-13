@@ -16,7 +16,7 @@ import { LinkButton } from '@/components/link-button';
 import { ScrollLinked } from '@/components/scroll-linked';
 import { Separator } from '@/components/separator';
 import { TextTag } from '@/components/text-tag';
-import { formatDate } from '@/utils/date/format';
+import { formatDate } from '@/helpers/date/format';
 import { Route } from 'next';
 import { FC, ReactNode, Suspense } from 'react';
 import { ErrorBoundary } from 'react-error-boundary';

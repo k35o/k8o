@@ -2,7 +2,7 @@
 
 import { db } from '#database/db';
 import { comments } from '@/database/schema/comments';
-import { ratelimit } from '@/utils/ratelimit';
+import { ratelimit } from '@/helpers/ratelimit';
 import { z } from 'zod/v4';
 import '@/libs/zod';
 
