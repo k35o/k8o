@@ -7,6 +7,15 @@ const meta: Meta<typeof RangeField> = {
   component: RangeField,
   parameters: {
     layout: 'centered',
+    a11y: {
+      options: {
+        rules: {
+          // RangeField単体ではラベルを付随しない
+          'label-title-only': { enabled: false },
+          label: { enabled: false },
+        },
+      },
+    },
   },
   argTypes: {
     onChange: { action: 'changed' },
