@@ -1,5 +1,5 @@
 import { ChevronIcon } from '../icons';
-import { cn } from '@/utils/cn';
+import { cn } from '@/helpers/cn';
 import { Route } from 'next';
 import Link from 'next/link';
 import { FC, PropsWithChildren } from 'react';

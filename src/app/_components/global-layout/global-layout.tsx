@@ -5,7 +5,7 @@ import { ToggleTheme } from '../toggle-theme';
 import { NavigationMenu } from './navigation-menu';
 import { TagsLink } from './tags-link';
 import { Logo } from '@/components/icons/logo';
-import { formatDate } from '@/utils/date/format';
+import { formatDate } from '@/helpers/date/format';
 import Link from 'next/link';
 import { FC, ReactNode } from 'react';
 

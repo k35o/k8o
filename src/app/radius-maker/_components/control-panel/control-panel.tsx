@@ -3,8 +3,8 @@
 import { useControlPanel } from './use-control-panel';
 import { IconButton } from '@/components/icon-button';
 import { CopyIcon } from '@/components/icons';
+import { cn } from '@/helpers/cn';
 import { useClipboard } from '@/hooks/clipboard';
-import { cn } from '@/utils/cn';
 import { FC, KeyboardEvent, MouseEvent, TouchEvent } from 'react';
 
 const OperateButton: FC<{

@@ -1,4 +1,4 @@
-import { cn } from '@/utils/cn';
+import { cn } from '@/helpers/cn';
 import { FC, HTMLProps, ReactNode } from 'react';
 
 export const Button: FC<

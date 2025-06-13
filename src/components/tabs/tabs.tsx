@@ -1,7 +1,7 @@
 'use client';
 
+import { cn } from '@/helpers/cn';
 import { useHash } from '@/hooks/hash';
-import { cn } from '@/utils/cn';
 import * as motion from 'motion/react-client';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';

@@ -1,4 +1,4 @@
-import { cn } from '@/utils/cn';
+import { cn } from '@/helpers/cn';
 import { FC, PropsWithChildren } from 'react';
 
 type Props = PropsWithChildren<{

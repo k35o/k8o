@@ -1,4 +1,4 @@
-import { toPrecision } from '@/utils/number/to-precision';
+import { toPrecision } from '@/helpers/number/to-precision';
 import { FC } from 'react';
 
 export const Progress: FC<{

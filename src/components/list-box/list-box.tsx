@@ -12,7 +12,7 @@ import { IconButton } from '../icon-button';
 import { CheckIcon, ChevronIcon } from '../icons';
 import { Popover } from '../popover';
 import { useFloatingUIContext } from '../popover/hooks';
-import { cn } from '@/utils/cn';
+import { cn } from '@/helpers/cn';
 import {
   FloatingList,
   Placement,

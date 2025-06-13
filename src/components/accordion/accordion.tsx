@@ -1,4 +1,4 @@
-import { cn } from '@/utils/cn';
+import { cn } from '@/helpers/cn';
 import { FC, PropsWithChildren } from 'react';
 
 export const Accordion: FC<PropsWithChildren> = ({ children }) => {

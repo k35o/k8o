@@ -1,12 +1,12 @@
 import { getBlog, getBlogMetadata, getBlogToc } from './blog';
 import { blogPath } from './path';
 import { db } from '#database/db';
-import { getFrontmatter } from '@/utils/mdx/frontmatter';
-import { getTocTree } from '@/utils/mdx/toc-tree';
+import { getFrontmatter } from '@/helpers/mdx/frontmatter';
+import { getTocTree } from '@/helpers/mdx/toc-tree';
 
 vi.mock('#database/db');
-vi.mock('@/utils/mdx/frontmatter');
-vi.mock('@/utils/mdx/toc-tree');
+vi.mock('@/helpers/mdx/frontmatter');
+vi.mock('@/helpers/mdx/toc-tree');
 vi.mock('./path');
 
 describe('blog service', () => {

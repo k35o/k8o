@@ -1,6 +1,6 @@
 import { Anchor } from './components/anchor';
 import { LinkIcon } from './components/icons';
-import { cn } from '@/utils/cn';
+import { cn } from '@/helpers/cn';
 import type { MDXComponents } from 'mdx/types';
 import { FC, PropsWithChildren } from 'react';
 

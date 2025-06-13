@@ -2,7 +2,7 @@
 
 import { useItemId, useOpen, useToggleOpen } from './context';
 import { ChevronIcon } from '../icons';
-import { cn } from '@/utils/cn';
+import { cn } from '@/helpers/cn';
 import * as motion from 'motion/react-client';
 import { FC, PropsWithChildren } from 'react';
 

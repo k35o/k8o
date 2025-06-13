@@ -3,7 +3,7 @@
 import { db } from '#database/db';
 import { blogComment } from '@/database/schema/blog-comment';
 import { comments } from '@/database/schema/comments';
-import { checkRateLimit, RateLimitType } from '@/utils/ratelimit';
+import { checkRateLimit, RateLimitType } from '@/helpers/ratelimit';
 import '@/libs/zod';
 
 type Result =

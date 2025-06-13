@@ -1,6 +1,6 @@
 import { Column } from '../../_types/column';
 import { Restriction } from '../../_types/restriction';
-import { uuidV4 } from '@/utils/uuid-v4';
+import { uuidV4 } from '@/helpers/uuid-v4';
 import { useCallback } from 'react';
 
 export const useCreateColumns = (

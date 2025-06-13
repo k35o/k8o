@@ -1,4 +1,4 @@
-import { cn } from '@/utils/cn';
+import { cn } from '@/helpers/cn';
 import { ChangeEventHandler, FC, useEffect, useRef } from 'react';
 
 type Props = {

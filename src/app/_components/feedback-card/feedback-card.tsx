@@ -1,8 +1,8 @@
 import { Button } from '@/components/button';
 import { FormControl } from '@/components/form/form-control';
 import { Textarea } from '@/components/form/textarea';
+import { cn } from '@/helpers/cn';
 import { FEEDBACK_OPTIONS } from '@/services/feedbacks';
-import { cn } from '@/utils/cn';
 import * as motion from 'motion/react-client';
 import { FC, useState } from 'react';
 

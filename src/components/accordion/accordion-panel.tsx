@@ -1,7 +1,7 @@
 'use client';
 
 import { useItemId, useOpen } from './context';
-import { cn } from '@/utils/cn';
+import { cn } from '@/helpers/cn';
 import { FC, PropsWithChildren } from 'react';
 
 export const AccordionPanel: FC<PropsWithChildren> = ({

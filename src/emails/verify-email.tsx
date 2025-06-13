@@ -1,4 +1,4 @@
-import { formatDate } from '@/utils/date/format';
+import { formatDate } from '@/helpers/date/format';
 import {
   Body,
   Container,

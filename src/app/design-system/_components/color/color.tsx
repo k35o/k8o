@@ -4,8 +4,8 @@ import {
   SEMANTIC_COLOR_VARIANTS,
 } from '../../_utils/color';
 import { Heading } from '@/components/heading';
-import { cn } from '@/utils/cn';
-import { calcContrast } from '@/utils/color/calc-contrast';
+import { cn } from '@/helpers/cn';
+import { calcContrast } from '@/helpers/color/calc-contrast';
 import { FC } from 'react';
 
 export const Color: FC = () => {
