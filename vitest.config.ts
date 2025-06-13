@@ -25,9 +25,9 @@ export default defineConfig({
       {
         extends: true,
         test: {
-          name: { label: 'utils test', color: 'blue' },
-          include: ['src/utils/**/*.test.{ts,tsx}'],
-          includeSource: ['src/utils/**/*.{ts,tsx}'],
+          name: { label: 'helpers test', color: 'blue' },
+          include: ['src/helpers/**/*.test.{ts,tsx}'],
+          includeSource: ['src/helpers/**/*.{ts,tsx}'],
         },
       },
       {
@@ -43,7 +43,7 @@ export default defineConfig({
         plugins: [react()],
         test: {
           name: { label: 'browser test', color: 'green' },
-          include: ['src/!(utils|services)/**/*.test.{ts,tsx}'],
+          include: ['src/!(helpers|services)/**/*.test.{ts,tsx}'],
           browser: {
             enabled: true,
             instances: [
