@@ -5,6 +5,13 @@ import { fn } from 'storybook/test';
 const meta: Meta<typeof FeedbackCard> = {
   title: 'app/globals/feedback-card',
   component: FeedbackCard,
+  decorators: [
+    (Story) => (
+      <div className="bg-bg-base p-4">
+        <Story />
+      </div>
+    ),
+  ],
 };
 
 export default meta;
