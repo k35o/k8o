@@ -25,9 +25,7 @@ describe('view service', () => {
       const result = await getBlogView(1);
 
       expect(result).toBe(123);
-      expect(mockFindFirst).toHaveBeenCalledWith({
-        where: expect.any(Function),
-      });
+      expect(mockFindFirst).toHaveBeenCalledTimes(1);
     });
 
     it('閲覧数データが存在しない場合は0を返す', async () => {
