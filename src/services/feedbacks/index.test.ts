@@ -57,22 +57,20 @@ describe('feedbacks service', () => {
       const goodOption = FEEDBACK_OPTIONS.find(
         (option) => option.value === 'good',
       );
-      expect(goodOption).toEqual({
-        id: 1,
-        value: 'good',
-        label: '良い',
-        icon: expect.any(Function),
-      });
+      expect(goodOption).toBeDefined();
+      expect(goodOption?.id).toBe(1);
+      expect(goodOption?.value).toBe('good');
+      expect(goodOption?.label).toBe('良い');
+      expect(typeof goodOption?.icon).toBe('function');
 
       const badOption = FEEDBACK_OPTIONS.find(
         (option) => option.value === 'bad',
       );
-      expect(badOption).toEqual({
-        id: 2,
-        value: 'bad',
-        label: '悪い',
-        icon: expect.any(Function),
-      });
+      expect(badOption).toBeDefined();
+      expect(badOption?.id).toBe(2);
+      expect(badOption?.value).toBe('bad');
+      expect(badOption?.label).toBe('悪い');
+      expect(typeof badOption?.icon).toBe('function');
     });
   });
 });
