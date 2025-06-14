@@ -16,16 +16,16 @@ export const QrGenerator = () => {
 
     try {
       const svg = renderSVG(text);
-      // Add size styling to the SVG
+      // Remove any existing width/height attributes and add responsive classes
       const styledSvg = svg.replace(
-        '<svg',
-        `<svg style="width: ${String(size)}px; height: ${String(size)}px;"`,
+        /<svg([^>]*)>/,
+        '<svg$1 class="w-full h-full max-w-full max-h-full">',
       );
       return styledSvg;
     } catch {
       return null;
     }
-  }, [text, size]);
+  }, [text]);
 
   const handleTextChange = useCallback(
     (e: ChangeEvent<HTMLInputElement>) => {
@@ -87,10 +87,16 @@ export const QrGenerator = () => {
 
       <div className="flex flex-col items-center gap-4">
         {qrCodeSvg ? (
-          <div className="flex items-center justify-center rounded-lg bg-white p-4 shadow-lg">
+          <div className="flex w-full max-w-full items-center justify-center overflow-hidden rounded-lg bg-white p-4 shadow-lg">
             <div
               dangerouslySetInnerHTML={{ __html: qrCodeSvg }}
-              className="flex items-center justify-center"
+              className="flex max-h-full max-w-full items-center justify-center"
+              style={{
+                width: `min(${String(size)}px, 100%)`,
+                height: `min(${String(size)}px, 100%)`,
+                maxWidth: '100vw',
+                maxHeight: '100vh',
+              }}
             />
           </div>
         ) : text.trim() ? (
