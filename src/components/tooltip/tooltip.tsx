@@ -58,8 +58,7 @@ const Content: FC<PropsWithChildren> = ({ children }) => {
           },
         },
         open: {
-          translateX: 0,
-          translateY: 0,
+          translate: 0,
           opacity: 1,
           transition: {
             duration: 0.4,

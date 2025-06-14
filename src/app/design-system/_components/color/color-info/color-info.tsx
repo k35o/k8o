@@ -43,7 +43,7 @@ export const ColorInfo: FC<{
         isOpen && 'col-span-full',
       )}
       transition={{
-        default: { ease: 'spring' },
+        default: { ease: 'easeInOut' },
         layout: { duration: 0.3 },
       }}
       layout
