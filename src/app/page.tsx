@@ -19,16 +19,14 @@ export default function Home() {
     <div className="flex flex-col gap-12">
       <Card>
         <div className="p-6">
-          <div className="flex flex-col gap-6 sm:flex-row sm:gap-8">
-            <div className="flex-shrink-0">
-              <Image
-                className="size-24 rounded-3xl shadow-lg sm:size-32"
-                src={k8o}
-                width={128}
-                height={128}
-                alt="k8oのアイコン"
-              />
-            </div>
+          <div className="flex flex-col items-center gap-6 sm:flex-row sm:gap-8">
+            <Image
+              className="size-24 rounded-md sm:size-32"
+              src={k8o}
+              width={128}
+              height={128}
+              alt="k8oのアイコン"
+            />
 
             <div className="flex min-w-0 flex-1 flex-col gap-4">
               <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
