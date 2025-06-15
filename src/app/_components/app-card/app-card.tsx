@@ -4,13 +4,13 @@ import { Route } from 'next';
 import Link from 'next/link';
 import { ReactNode } from 'react';
 
-export const AppCard = <T extends string>({
+export const AppCard = ({
   link,
   symbol,
   title,
   description,
 }: {
-  link: Route<T>;
+  link: Route;
   symbol: ReactNode;
   title: string;
   description: string;
