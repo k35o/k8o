@@ -18,26 +18,29 @@ export default function Home() {
   return (
     <div className="flex flex-col gap-12">
       <Card>
-        <div className="flex gap-6 p-4">
-          <Image
-            className="size-32 rounded-md"
-            src={k8o}
-            width={128}
-            height={128}
-            alt="k8oのアイコン"
-          />
-          <div className="flex h-32 w-full flex-col justify-around">
-            <div className="flex h-full flex-col justify-evenly md:h-auto md:flex-row md:items-center md:justify-between">
-              <Heading type="h3">k8o</Heading>
-              <div className="flex flex-wrap items-center justify-end gap-1">
-                <EmailTooltip />
-                <IconLink
-                  href="https://x.com/k8ome"
-                  label="Xのアカウント"
-                >
-                  <TwitterIcon />
-                </IconLink>
-                <div className="flex flex-wrap items-center justify-end gap-1">
+        <div className="p-6">
+          <div className="flex flex-col gap-6 sm:flex-row sm:gap-8">
+            <div className="flex-shrink-0">
+              <Image
+                className="size-24 rounded-3xl shadow-lg sm:size-32"
+                src={k8o}
+                width={128}
+                height={128}
+                alt="k8oのアイコン"
+              />
+            </div>
+
+            <div className="flex min-w-0 flex-1 flex-col gap-4">
+              <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+                <Heading type="h3">k8o</Heading>
+                <div className="flex flex-wrap items-center gap-2">
+                  <EmailTooltip />
+                  <IconLink
+                    href="https://x.com/k8ome"
+                    label="Xのアカウント"
+                  >
+                    <TwitterIcon />
+                  </IconLink>
                   <IconLink
                     href="https://github.com/k35o"
                     label="GitHubのアカウント"
@@ -58,11 +61,21 @@ export default function Home() {
                   </IconLink>
                 </div>
               </div>
-            </div>
-            <div className="hidden md:block">
-              <p className="text-md line-clamp-3">
+
+              <div className="flex flex-wrap gap-2">
+                <span className="inline-flex items-center rounded-full bg-blue-50 px-3 py-1 text-xs font-medium text-blue-700 ring-1 ring-blue-700/20 ring-inset">
+                  フロントエンド
+                </span>
+                <span className="inline-flex items-center rounded-full bg-indigo-50 px-3 py-1 text-xs font-medium text-indigo-700 ring-1 ring-indigo-700/20 ring-inset">
+                  TypeScript
+                </span>
+                <span className="inline-flex items-center rounded-full bg-purple-50 px-3 py-1 text-xs font-medium text-purple-700 ring-1 ring-purple-700/20 ring-inset">
+                  デザイン
+                </span>
+              </div>
+
+              <p className="text-fg-mute text-sm leading-relaxed">
                 WebフロントエンドとTypeScriptに興味があり、特にフロントエンドとデザインの境界に関心があります。
-                <br />
                 現在、デザインを中心に学びながら、別の角度からフロントエンドを探求しています。
               </p>
             </div>
