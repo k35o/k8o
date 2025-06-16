@@ -12,6 +12,7 @@ import {
   TwitterIcon,
   ZennIcon,
 } from '@/components/icons';
+import { TextTag } from '@/components/text-tag';
 import Image from 'next/image';
 
 export default function Home() {
@@ -61,15 +62,9 @@ export default function Home() {
               </div>
 
               <div className="flex flex-wrap gap-2">
-                <span className="inline-flex items-center rounded-full bg-blue-50 px-3 py-1 text-xs font-medium text-blue-700 ring-1 ring-blue-700/20 ring-inset">
-                  フロントエンド
-                </span>
-                <span className="inline-flex items-center rounded-full bg-indigo-50 px-3 py-1 text-xs font-medium text-indigo-700 ring-1 ring-indigo-700/20 ring-inset">
-                  TypeScript
-                </span>
-                <span className="inline-flex items-center rounded-full bg-purple-50 px-3 py-1 text-xs font-medium text-purple-700 ring-1 ring-purple-700/20 ring-inset">
-                  デザイン
-                </span>
+                <TextTag text="フロントエンド" size="sm" />
+                <TextTag text="TypeScript" size="sm" />
+                <TextTag text="デザイン" size="sm" />
               </div>
 
               <p className="text-fg-mute text-sm leading-relaxed">
