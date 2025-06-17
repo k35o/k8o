@@ -5,7 +5,7 @@ import { ImageResponse } from 'next/og';
 const parser = new Parser(jaModel);
 
 export const alt =
-  'Popover APIを使ってJavaScriptなしで要素の側に異なる要素を表示する';
+  'Popover APIを使ってJavaScriptなしでツールチップやドロップダウンメニューを実装する';
 export const size = {
   width: 1200,
   height: 630,
