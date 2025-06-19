@@ -107,7 +107,7 @@ export const ColorConverter = () => {
       <div className="flex items-center justify-center">
         <ColorTip color={`#${hex}`} />
       </div>
-      <div className="flex flex-col items-center gap-6">
+      <div className="flex flex-col items-center gap-6 wrap-normal">
         <FormControl
           label="hex"
           renderInput={({ labelId: _, ...props }) => {
