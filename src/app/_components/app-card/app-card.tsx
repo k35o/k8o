@@ -24,7 +24,9 @@ export const AppCard = ({
           </div>
           <div className="flex flex-col items-center gap-1">
             <Heading type="h3">{title}</Heading>
-            <p className="line-clamp-3">{description}</p>
+            <p className="text-fg-mute line-clamp-3 text-sm">
+              {description}
+            </p>
           </div>
         </div>
       </Link>
