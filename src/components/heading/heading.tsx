@@ -17,7 +17,7 @@ export const Heading: FC<Props> = ({
     return (
       <h1
         id={id}
-        className={cn('text-3xl font-bold', {
+        className={cn('text-2xl font-bold md:text-3xl', {
           [`line-clamp-${lineClamp?.toString() ?? ''}`]: lineClamp,
         })}
       >
@@ -29,7 +29,7 @@ export const Heading: FC<Props> = ({
     return (
       <h2
         id={id}
-        className={cn('text-2xl font-bold', {
+        className={cn('text-xl font-bold md:text-2xl', {
           [`line-clamp-${lineClamp?.toString() ?? ''}`]: lineClamp,
         })}
       >
@@ -41,7 +41,7 @@ export const Heading: FC<Props> = ({
     return (
       <h3
         id={id}
-        className={cn('text-xl font-bold', {
+        className={cn('text-lg font-bold md:text-xl', {
           [`line-clamp-${lineClamp?.toString() ?? ''}`]: lineClamp,
         })}
       >
@@ -53,7 +53,7 @@ export const Heading: FC<Props> = ({
     return (
       <h4
         id={id}
-        className={cn('text-lg font-bold', {
+        className={cn('text-md font-bold md:text-lg', {
           [`line-clamp-${lineClamp?.toString() ?? ''}`]: lineClamp,
         })}
       >
@@ -65,7 +65,7 @@ export const Heading: FC<Props> = ({
     return (
       <h5
         id={id}
-        className={cn('font-bold', {
+        className={cn('md:text-md text-sm font-bold', {
           [`line-clamp-${lineClamp?.toString() ?? ''}`]: lineClamp,
         })}
       >
@@ -76,7 +76,7 @@ export const Heading: FC<Props> = ({
   return (
     <h6
       id={id}
-      className={cn('text-sm font-bold', {
+      className={cn('text-xs font-bold md:text-sm', {
         [`line-clamp-${lineClamp?.toString() ?? ''}`]: lineClamp,
       })}
     >

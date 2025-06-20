@@ -48,7 +48,7 @@ export const BaselineStatus: FC<{ featureId: string }> = ({
 
   return (
     <baseline-status
-      className="bg-bg-base border-border-base max-w-full rounded-md border p-4"
+      className="bg-bg-base border-border-base max-w-full rounded-md border p-4 wrap-normal"
       featureId={featureId}
     ></baseline-status>
   );

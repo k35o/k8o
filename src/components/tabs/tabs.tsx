@@ -120,7 +120,7 @@ const List: FC<
       role="tablist"
       aria-label={label}
       aria-orientation="horizontal"
-      className="border-border-base flex overflow-x-auto overflow-y-hidden border-b p-0.5"
+      className="border-border-base flex overflow-x-auto overflow-y-hidden border-b p-0.5 wrap-normal"
     >
       <TabsListProvider value={{ setFocusRef }}>
         {children}

@@ -18,17 +18,17 @@ export const ResultTable: FC<Props> = ({
   baseColor,
 }) => {
   return (
-    <table className="w-full">
+    <table className="w-full wrap-normal">
       <thead>
-        <tr className="border-border-base border-b">
-          <th>AA基準</th>
-          <th>AAA基準</th>
+        <tr className="border-border-base md:texxt-md border-b text-sm font-medium">
+          <th>AA</th>
+          <th>AAA</th>
           <th>テキスト</th>
         </tr>
       </thead>
       <tbody>
         <tr className="border-border-base h-16 border-b">
-          <td className="px-2 text-2xl">
+          <td className="px-2 text-lg md:text-2xl">
             {isInvalidAAContrstLarge ? (
               <p className="text-fg-error text-center font-bold">
                 NG
@@ -39,7 +39,7 @@ export const ResultTable: FC<Props> = ({
               </p>
             )}
           </td>
-          <td className="px-2 text-2xl">
+          <td className="px-2 text-lg md:text-2xl">
             {isInvalidAAAContrstLarge ? (
               <p className="text-fg-error text-center font-bold">
                 NG
@@ -61,7 +61,7 @@ export const ResultTable: FC<Props> = ({
           </td>
         </tr>
         <tr className="border-border-base h-16 border-b">
-          <td className="px-2 text-2xl">
+          <td className="px-2 text-lg md:text-2xl">
             {isInvalidAAContrstLarge ? (
               <p className="text-fg-error text-center font-bold">
                 NG
@@ -72,7 +72,7 @@ export const ResultTable: FC<Props> = ({
               </p>
             )}
           </td>
-          <td className="px-2 text-2xl">
+          <td className="px-2 text-lg md:text-2xl">
             {isInvalidAAAContrstLarge ? (
               <p className="text-fg-error text-center font-bold">
                 NG
@@ -94,7 +94,7 @@ export const ResultTable: FC<Props> = ({
           </td>
         </tr>
         <tr className="border-border-base h-16 border-b">
-          <td className="px-2 text-2xl">
+          <td className="px-2 text-lg md:text-2xl">
             {isInvalidAAContrstSmall ? (
               <p className="text-fg-error text-center font-bold">
                 NG
@@ -105,7 +105,7 @@ export const ResultTable: FC<Props> = ({
               </p>
             )}
           </td>
-          <td className="px-2 text-2xl">
+          <td className="px-2 text-lg md:text-2xl">
             {isInvalidAAAContrstSmall ? (
               <p className="text-fg-error text-center font-bold">
                 NG
@@ -127,7 +127,7 @@ export const ResultTable: FC<Props> = ({
           </td>
         </tr>
         <tr className="border-border-base h-16 border-b">
-          <td className="px-2 text-2xl">
+          <td className="px-2 text-lg md:text-2xl">
             {isInvalidAAContrstSmall ? (
               <p className="text-fg-error text-center font-bold">
                 NG
@@ -138,7 +138,7 @@ export const ResultTable: FC<Props> = ({
               </p>
             )}
           </td>
-          <td className="px-2 text-2xl">
+          <td className="px-2 text-lg md:text-2xl">
             {isInvalidAAAContrstLarge ? (
               <p className="text-fg-error text-center font-bold">
                 NG
