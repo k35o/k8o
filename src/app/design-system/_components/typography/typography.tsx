@@ -7,16 +7,16 @@ export const Typography: FC = () => {
   return (
     <div className="flex flex-col gap-8">
       <div className="flex flex-col gap-2">
-        <h3 className="text-2xl font-bold">Font</h3>
+        <h3 className="text-xl font-bold md:text-2xl">Font</h3>
         <div className="border-border-base flex flex-col gap-4 rounded-md border p-2">
           <div className="flex flex-col gap-2">
-            <h4 className="font-noto-sans-jp text-xl font-bold">
+            <h4 className="font-noto-sans-jp text-lg font-bold md:text-xl">
               M PLUS 2
             </h4>
             <p className="font-m-plus-2 line-clamp-1">{sampleText}</p>
           </div>
           <div className="flex flex-col gap-2">
-            <h4 className="font-noto-sans-jp text-xl font-bold">
+            <h4 className="font-noto-sans-jp text-lg font-bold md:text-xl">
               Noto Sans Japanese
             </h4>
             <p className="font-noto-sans-jp line-clamp-1">
@@ -26,7 +26,7 @@ export const Typography: FC = () => {
         </div>
       </div>
       <div className="flex flex-col gap-2">
-        <h3 className="text-2xl font-bold">text</h3>
+        <h3 className="text-xl font-bold md:text-2xl">text</h3>
         <div className="border-border-base flex flex-col gap-4 rounded-md border p-2 md:gap-6">
           <div>
             <p className="text-xs md:hidden">k8o</p>
@@ -126,14 +126,16 @@ export const Typography: FC = () => {
         </div>
       </div>
       <div className="flex flex-col gap-2">
-        <h3 className="text-2xl font-bold">weight</h3>
+        <h3 className="text-xl font-bold md:text-2xl">weight</h3>
         <div className="border-border-base flex flex-col gap-4 rounded-md border p-2">
           <div className="flex flex-col gap-2">
-            <h4 className="text-xl">medium(450)</h4>
+            <h4 className="text-lg md:text-xl">medium(450)</h4>
             <p className="font-medium">{sampleText}</p>
           </div>
           <div className="flex flex-col gap-2">
-            <h4 className="text-xl font-bold">bold(700)</h4>
+            <h4 className="text-lg font-bold md:text-xl">
+              bold(700)
+            </h4>
             <p className="font-bold">{sampleText}</p>
           </div>
         </div>

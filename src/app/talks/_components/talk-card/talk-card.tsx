@@ -42,21 +42,23 @@ export const TalkCard: FC<{
     <Card>
       <div className="flex flex-col gap-6 p-8">
         <div className="flex flex-col gap-2">
-          <h2 className="flex items-center gap-2 text-2xl font-bold">
+          <h2 className="flex items-center gap-2 text-lg font-bold md:text-2xl">
             {title}
             <IconLink label="イベントのリンク" href={eventUrl}>
               <ExternalLinkIcon />
             </IconLink>
           </h2>
-          <p className="text-fg-mute text-lg">{eventName}</p>
+          <p className="text-fg-mute text-md md:text-lg">
+            {eventName}
+          </p>
         </div>
         <div className="flex flex-wrap gap-2">
-          <div className="text-fg-mute flex items-center gap-1">
+          <div className="text-fg-mute md:text-md flex items-center gap-1 text-sm">
             <PublishDateIcon size="sm" />
             <span>{formatDate(new Date(eventDate))}</span>
           </div>
           {eventLocation && (
-            <div className="text-fg-mute flex items-center gap-1">
+            <div className="text-fg-mute md:text-md flex items-center gap-1 text-sm">
               <LocationIcon size="sm" />
               <span>{eventLocation}</span>
             </div>

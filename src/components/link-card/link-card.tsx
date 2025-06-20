@@ -12,8 +12,10 @@ const Loading: FC<{ href: string }> = ({ href }) => {
         <div className="bg-bg-mute h-40 w-full rounded-l-sm sm:h-auto sm:w-1/3 sm:max-w-56" />
         <div className="flex flex-1 flex-col gap-3 p-4">
           <div className="flex animate-pulse flex-col gap-1">
-            <p className="text-lg font-bold">Loading...</p>
-            <p className="text-fg-mute text-sm">Loading...</p>
+            <p className="text-md font-bold md:text-lg">Loading...</p>
+            <p className="text-fg-mute text-xs md:text-sm">
+              Loading...
+            </p>
           </div>
           <div className="text-fg-mute flex items-center gap-1">
             <ExternalLinkIcon size="sm" />
@@ -40,10 +42,12 @@ const Content: FC<{ href: string }> = async ({ href }) => {
           {metaData.title && (
             <div className="flex flex-col gap-1">
               {metaData.title && (
-                <p className="text-lg font-bold">{metaData.title}</p>
+                <p className="text-md font-bold md:text-lg">
+                  {metaData.title}
+                </p>
               )}
               {metaData.description && (
-                <p className="text-fg-mute line-clamp-2 text-sm">
+                <p className="text-fg-mute line-clamp-2 text-xs md:text-sm">
                   {metaData.description}
                 </p>
               )}
