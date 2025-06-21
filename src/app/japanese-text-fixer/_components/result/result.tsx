@@ -37,7 +37,9 @@ export const Result: FC = () => {
             onClick={() => void writeClipboard(fixedText)}
             endIcon={<CopyIcon />}
           >
-            テキストをコピーする
+            <span className="sr-only md:not-sr-only">
+              テキストをコピーする
+            </span>
           </Button>
         </div>
         <div className="border-border-base bg-bg-base rounded-md border px-3 py-2">
