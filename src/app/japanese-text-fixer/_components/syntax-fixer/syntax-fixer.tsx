@@ -38,13 +38,13 @@ export const SyntaxFixer: FC = () => {
     <div className="flex flex-col items-center justify-center gap-8">
       <div className="flex w-full justify-between gap-4">
         <Button variant="outlined" onClick={resetResult}>
-          テキスト入力に戻る
+          戻る
         </Button>
         <Button
           variant={isDisabledNext ? 'contained' : 'outlined'}
           onClick={isCheckResult}
         >
-          修正した内容を確認する
+          修正後のテキストを確認する
         </Button>
       </div>
       <div className="flex w-full items-center justify-evenly">
