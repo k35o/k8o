@@ -1,10 +1,10 @@
 'use client';
 
-import { getTime, purgeCache } from './data';
 import { Checkbox } from '@/components/form/checkbox';
 import { FormControl } from '@/components/form/form-control';
 import { Select } from '@/components/form/select';
 import { cn } from '@/helpers/cn';
+import { sleep } from '@/helpers/sleep';
 import {
   FC,
   useState,
@@ -12,10 +12,28 @@ import {
   Suspense,
   SuspenseListProps,
   use,
+  useCallback,
   SuspenseListTailMode,
 } from 'react';
 
+type Data = {
+  cacheKey: 'key1' | 'key2' | 'key3' | 'key4';
+  getTime: Promise<number>;
+};
+
+const generateData = (): Data[] =>
+  [
+    { cacheKey: 'key1', getTime: sleep(2000).then(() => 2000) },
+    { cacheKey: 'key2', getTime: sleep(1500).then(() => 1500) },
+    { cacheKey: 'key3', getTime: sleep(500).then(() => 500) },
+    { cacheKey: 'key4', getTime: sleep(1000).then(() => 1000) },
+  ] as const;
+
 export const Example1: FC = () => {
+  const [data, setData] = useState(() => generateData());
+  const resetData = useCallback(() => {
+    setData(() => generateData());
+  }, []);
   const [useSuspenseList, setUseSuspenseList] = useState(true);
   const [revealOrder, setRevealOrder] =
     useState<Exclude<SuspenseListProps['revealOrder'], undefined>>(
@@ -40,7 +58,7 @@ export const Example1: FC = () => {
           label="SuspenseListを利用する"
           value={useSuspenseList}
           onChange={(e) => {
-            purgeCache();
+            resetData();
             setUseSuspenseList(e.target.checked);
           }}
         />
@@ -56,7 +74,7 @@ export const Example1: FC = () => {
               ]}
               value={revealOrder}
               onChange={(e) => {
-                purgeCache();
+                resetData();
                 setRevealOrder(e.target.value as typeof revealOrder);
               }}
             />
@@ -73,7 +91,7 @@ export const Example1: FC = () => {
               ]}
               value={tail}
               onChange={(e) => {
-                purgeCache();
+                resetData();
                 setTail(e.target.value as typeof tail);
               }}
             />
@@ -89,6 +107,7 @@ export const Example1: FC = () => {
       </div>
       <DataList
         key={`SuspenseList-${JSON.stringify(suspenseListProps)}`}
+        data={data}
         useSuspenseList={useSuspenseList}
         suspenseListProps={suspenseListProps}
       />
@@ -96,14 +115,8 @@ export const Example1: FC = () => {
   );
 };
 
-const data = [
-  { cacheKey: 'key1', time: 2000 },
-  { cacheKey: 'key2', time: 1500 },
-  { cacheKey: 'key3', time: 500 },
-  { cacheKey: 'key4', time: 1000 },
-] as const;
-
 const DataList: FC<{
+  data: Data[];
   useSuspenseList: boolean;
   suspenseListProps:
     | {
@@ -117,11 +130,11 @@ const DataList: FC<{
         revealOrder: 'together' | 'independent';
         tail?: never;
       };
-}> = ({ useSuspenseList, suspenseListProps }) => {
+}> = ({ data, useSuspenseList, suspenseListProps }) => {
   if (useSuspenseList) {
     return (
       <SuspenseList {...suspenseListProps}>
-        {data.map(({ cacheKey, time }) => (
+        {data.map(({ cacheKey, getTime }) => (
           <Suspense
             key={cacheKey}
             fallback={
@@ -130,7 +143,7 @@ const DataList: FC<{
               </div>
             }
           >
-            <Data cacheKey={cacheKey} time={time} />
+            <Data data={{ cacheKey, getTime }} />
           </Suspense>
         ))}
       </SuspenseList>
@@ -138,7 +151,7 @@ const DataList: FC<{
   }
   return (
     <>
-      {data.map(({ cacheKey, time }) => (
+      {data.map(({ cacheKey, getTime }) => (
         <Suspense
           fallback={
             <div className="border-border-mute rounded-md border p-4">
@@ -147,7 +160,7 @@ const DataList: FC<{
           }
           key={cacheKey}
         >
-          <Data cacheKey={cacheKey} time={time} />
+          <Data data={{ cacheKey, getTime }} />
         </Suspense>
       ))}
     </>
@@ -155,10 +168,10 @@ const DataList: FC<{
 };
 
 const Data: FC<{
-  cacheKey: (typeof data)[number]['cacheKey'];
-  time: number;
-}> = ({ cacheKey, time }) => {
-  const data = use(getTime(cacheKey, time));
+  data: Data;
+}> = ({ data }) => {
+  const { cacheKey, getTime } = data;
+  const resolvedTime = use(getTime);
   return (
     <div className="border-border-mute flex items-center gap-2 rounded-md border p-4">
       <span
@@ -174,7 +187,7 @@ const Data: FC<{
         )}
       />
       <p>Cache Key: {cacheKey}</p>
-      <p>Time: {data}ms</p>
+      <p>Time: {resolvedTime}ms</p>
     </div>
   );
 };
