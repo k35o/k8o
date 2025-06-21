@@ -23,8 +23,8 @@ type Data = {
 
 const generateData = (): Data[] =>
   [
-    { cacheKey: 'key1', getTime: sleep(2000).then(() => 2000) },
-    { cacheKey: 'key2', getTime: sleep(1500).then(() => 1500) },
+    { cacheKey: 'key1', getTime: sleep(2000).then(() => 1500) },
+    { cacheKey: 'key2', getTime: sleep(1500).then(() => 2000) },
     { cacheKey: 'key3', getTime: sleep(500).then(() => 500) },
     { cacheKey: 'key4', getTime: sleep(1000).then(() => 1000) },
   ] as const;
