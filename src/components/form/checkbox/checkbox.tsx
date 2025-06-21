@@ -30,7 +30,7 @@ export const Checkbox: FC<Props> = ({ label, value, onChange }) => {
           isFocus &&
             'bordertransparent ring-border-info ring-2 outline-hidden',
           value
-            ? 'border-border-base bg-primary-bg text-fg-inverse'
+            ? 'border-border-base bg-primary-bg text-fg-base'
             : 'border-border-mute bg-bg-base',
         )}
         aria-hidden={true}
