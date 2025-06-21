@@ -23,8 +23,8 @@ type Data = {
 
 const generateData = (): Data[] =>
   [
-    { cacheKey: 'key1', getTime: sleep(2000).then(() => 1500) },
-    { cacheKey: 'key2', getTime: sleep(1500).then(() => 2000) },
+    { cacheKey: 'key1', getTime: sleep(1500).then(() => 1500) },
+    { cacheKey: 'key2', getTime: sleep(2000).then(() => 2000) },
     { cacheKey: 'key3', getTime: sleep(500).then(() => 500) },
     { cacheKey: 'key4', getTime: sleep(1000).then(() => 1000) },
   ] as const;
@@ -35,6 +35,7 @@ export const Example1: FC = () => {
     setData(() => generateData());
   }, []);
   const [useSuspenseList, setUseSuspenseList] = useState(true);
+  const [hasFallback, setHasFallback] = useState(true);
   const [revealOrder, setRevealOrder] =
     useState<Exclude<SuspenseListProps['revealOrder'], undefined>>(
       'together',
@@ -60,6 +61,14 @@ export const Example1: FC = () => {
           onChange={(e) => {
             resetData();
             setUseSuspenseList(e.target.checked);
+          }}
+        />
+        <Checkbox
+          label="フォルバックUIを表示する"
+          value={hasFallback}
+          onChange={(e) => {
+            resetData();
+            setHasFallback(e.target.checked);
           }}
         />
         <FormControl
@@ -108,6 +117,7 @@ export const Example1: FC = () => {
       <DataList
         key={`SuspenseList-${JSON.stringify(suspenseListProps)}`}
         data={data}
+        hasFallback={hasFallback}
         useSuspenseList={useSuspenseList}
         suspenseListProps={suspenseListProps}
       />
@@ -118,6 +128,7 @@ export const Example1: FC = () => {
 const DataList: FC<{
   data: Data[];
   useSuspenseList: boolean;
+  hasFallback: boolean;
   suspenseListProps:
     | {
         revealOrder:
@@ -130,19 +141,17 @@ const DataList: FC<{
         revealOrder: 'together' | 'independent';
         tail?: never;
       };
-}> = ({ data, useSuspenseList, suspenseListProps }) => {
+}> = ({ data, useSuspenseList, hasFallback, suspenseListProps }) => {
+  const fallback = hasFallback ? (
+    <div className="border-border-mute rounded-md border p-4">
+      Loading...
+    </div>
+  ) : null;
   if (useSuspenseList) {
     return (
       <SuspenseList {...suspenseListProps}>
         {data.map(({ cacheKey, getTime }) => (
-          <Suspense
-            key={cacheKey}
-            fallback={
-              <div className="border-border-mute rounded-md border p-4">
-                Loading...
-              </div>
-            }
-          >
+          <Suspense key={cacheKey} fallback={fallback}>
             <Data data={{ cacheKey, getTime }} />
           </Suspense>
         ))}
@@ -152,14 +161,7 @@ const DataList: FC<{
   return (
     <>
       {data.map(({ cacheKey, getTime }) => (
-        <Suspense
-          fallback={
-            <div className="border-border-mute rounded-md border p-4">
-              Loading...
-            </div>
-          }
-          key={cacheKey}
-        >
+        <Suspense fallback={fallback} key={cacheKey}>
           <Data data={{ cacheKey, getTime }} />
         </Suspense>
       ))}
