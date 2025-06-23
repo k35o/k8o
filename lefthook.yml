@@ -2,7 +2,7 @@ pre-commit:
   commands:
     format:
       glob: '*.{js,ts,cjs,d.cts,d.ts,jsx,tsx,md,mdx}'
-      run: NODE_OPTIONS='--experimental-strip-types' pnpm prettier --write {staged_files}
+      run: pnpm prettier --write --experimental-cli {staged_files}
       stage_fixed: true
       exclude:
         - '**/mockServiceWorker.js'
@@ -10,7 +10,7 @@ pre-commit:
       glob: 'src/**/*.{js,ts,cjs,d.cts,d.ts,jsx,tsx}'
       run: pnpm run lint:fix --file {staged_files}
       stage_fixed: true
-    
+
     ls-lint:
       glob: 'src/**/*.{js,ts,cjs,d.cts,d.ts,jsx,tsx}'
       run: pnpm run ls-lint
@@ -20,7 +20,7 @@ pre-push:
   commands:
     format:
       glob: '*.{js,ts,cjs,d.cts,d.ts,jsx,tsx,md,mdx}'
-      run: NODE_OPTIONS='--experimental-strip-types' pnpm prettier --check {staged_files}
+      run: pnpm prettier --check --experimental-cli {staged_files}
       exclude:
         - '**/mockServiceWorker.js'
     lint:
