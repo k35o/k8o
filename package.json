@@ -141,7 +141,7 @@
     "msw-storybook-addon": "2.0.5",
     "playwright": "1.53.0",
     "postgres": "3.4.7",
-    "prettier": "3.5.3",
+    "prettier": "3.6.0",
     "prettier-plugin-tailwindcss": "0.6.12",
     "react-email": "4.0.16",
     "react-scan": "0.3.4",
