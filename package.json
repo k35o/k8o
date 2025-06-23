@@ -126,7 +126,7 @@
     "@vitest/coverage-istanbul": "3.2.3",
     "@vitest/ui": "3.2.3",
     "axe-playwright": "2.1.0",
-    "chromatic": "12.2.0",
+    "chromatic": "13.0.1",
     "drizzle-kit": "0.31.1",
     "eslint": "9.29.0",
     "eslint-config-next": "15.3.3",

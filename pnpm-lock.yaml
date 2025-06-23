@@ -211,8 +211,8 @@ importers:
         specifier: 2.1.0
         version: 2.1.0(playwright@1.53.0)
       chromatic:
-        specifier: 12.2.0
-        version: 12.2.0
+        specifier: 13.0.1
+        version: 13.0.1
       drizzle-kit:
         specifier: 0.31.1
         version: 0.31.1
@@ -4186,8 +4186,8 @@ packages:
     resolution: {integrity: sha512-+IxzY9BZOQd/XuYPRmrvEVjF/nqj5kgT4kEq7VofrDoM1MxoRjEWkrCC3EtLi59TVawxTAn+orJwFQcrqEN1+g==}
     engines: {node: '>=18'}
 
-  chromatic@12.2.0:
-    resolution: {integrity: sha512-GswmBW9ZptAoTns1BMyjbm55Z7EsIJnUvYKdQqXIBZIKbGErmpA+p4c0BYA+nzw5B0M+rb3Iqp1IaH8TFwIQew==}
+  chromatic@13.0.1:
+    resolution: {integrity: sha512-vX0Rs/pAeFAnGuQiVrA4h0XD36MYbTUp9Mlm1jFqXo3Cejd2BdBY1CA+vd6CkeO5CRSc6TRWmCz0zQAsE1q3Hw==}
     hasBin: true
     peerDependencies:
       '@chromatic-com/cypress': ^0.*.* || ^1.0.0
@@ -12365,7 +12365,7 @@ snapshots:
 
   chownr@3.0.0: {}
 
-  chromatic@12.2.0: {}
+  chromatic@13.0.1: {}
 
   chrome-trace-event@1.0.4: {}
 
