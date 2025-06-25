@@ -3,21 +3,18 @@ import { cn } from '@/helpers/cn';
 import * as motion from 'motion/react-client';
 import { FC } from 'react';
 
-export const InteractiveCard: FC<
-  CardProps & { animation?: 'low' | 'medium' }
-> = ({
+export const InteractiveCard: FC<CardProps> = ({
   children,
   variant = 'primary',
-  animation = 'medium',
   width = 'full',
   title,
 }) => (
   <motion.section
     whileHover={{
-      scale: animation === 'medium' ? 1.05 : 1.02,
+      scale: 1.02,
     }}
     whileTap={{
-      scale: animation === 'medium' ? 0.95 : 0.98,
+      scale: 0.98,
     }}
     className={cn(
       'bg-bg-base/90 rounded-lg shadow-md',
