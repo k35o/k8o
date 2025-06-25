@@ -1,7 +1,5 @@
-import { Parser, jaModel } from 'budoux';
+import { loadDefaultJapaneseParser } from 'budoux';
 import { ImageResponse } from 'next/og';
-
-const parser = new Parser(jaModel);
 
 export const alt = 'QRKit';
 export const size = {
@@ -13,7 +11,7 @@ export const contentType = 'image/png';
 
 export default function OpenGraphImage() {
   const title = 'QRKit';
-  const words = parser.parse(title);
+  const words = loadDefaultJapaneseParser().parse(title);
 
   return new ImageResponse(
     (

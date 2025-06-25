@@ -1,8 +1,6 @@
 import { getBlogContent } from '#api/blog';
-import { Parser, jaModel } from 'budoux';
+import { loadDefaultJapaneseParser } from 'budoux';
 import { ImageResponse } from 'next/og';
-
-const parser = new Parser(jaModel);
 
 export const alt =
   '文字列に潜む正規表現の構文を置き換えるRegExp.escape';
@@ -16,7 +14,7 @@ export const contentType = 'image/png';
 export default async function OpenGraphImage() {
   const blog = await getBlogContent('regexp-escape');
 
-  const words = parser.parse(blog.title);
+  const words = loadDefaultJapaneseParser().parse(blog.title);
   return new ImageResponse(
     (
       <div

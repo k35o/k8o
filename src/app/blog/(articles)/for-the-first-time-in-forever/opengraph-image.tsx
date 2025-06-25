@@ -1,8 +1,6 @@
 import { getBlogContent } from '#api/blog';
-import { Parser, jaModel } from 'budoux';
+import { loadDefaultJapaneseParser } from 'budoux';
 import { ImageResponse } from 'next/og';
-
-const parser = new Parser(jaModel);
 
 export const alt = '【TSKaigi】初めて登壇しました！';
 export const size = {
@@ -15,7 +13,7 @@ export const contentType = 'image/png';
 export default async function OpenGraphImage() {
   const blog = await getBlogContent('for-the-first-time-in-forever');
 
-  const words = parser.parse(blog.title);
+  const words = loadDefaultJapaneseParser().parse(blog.title);
   return new ImageResponse(
     (
       <div

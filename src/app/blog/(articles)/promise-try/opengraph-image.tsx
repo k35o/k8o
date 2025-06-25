@@ -1,8 +1,6 @@
 import { getBlogContent } from '#api/blog';
-import { Parser, jaModel } from 'budoux';
+import { loadDefaultJapaneseParser } from 'budoux';
 import { ImageResponse } from 'next/og';
-
-const parser = new Parser(jaModel);
 
 export const alt =
   '関数の同期・非同期を気にせず処理するPromise.tryとは';
@@ -16,7 +14,7 @@ export const contentType = 'image/png';
 export default async function OpenGraphImage() {
   const blog = await getBlogContent('promise-try');
 
-  const words = parser.parse(blog.title);
+  const words = loadDefaultJapaneseParser().parse(blog.title);
   return new ImageResponse(
     (
       <div
