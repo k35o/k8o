@@ -1,7 +1,6 @@
 import { loadDefaultJapaneseParser } from 'budoux';
 import { ImageResponse } from 'next/og';
 
-
 export const alt = 'QRKit';
 export const size = {
   width: 1200,
