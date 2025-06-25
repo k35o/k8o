@@ -14,8 +14,7 @@
   "packageRules": [
     {
       "matchUpdateTypes": ["minor", "patch"],
-      // bodouxはcanvas周りのエラーが発生するので治るまで除外
-      "matchPackageNames": ["!/^(pnpm|node|budoux)$/"],
+      "matchPackageNames": ["!/^(pnpm|node)$/"],
       "groupName": "minor and patch dependencies"
     }
   ]
