@@ -14,7 +14,7 @@
   "packageRules": [
     {
       "matchUpdateTypes": ["minor", "patch"],
-      "matchPackageNames": ["!/^(pnpm|node)$/"],
+      "matchPackageNames": ["!/^(pnpm|node)$/", "!/@storybook/", "!/storybook$/"],
       "groupName": "minor and patch dependencies"
     }
   ]
