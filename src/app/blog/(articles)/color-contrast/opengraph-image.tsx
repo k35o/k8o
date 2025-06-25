@@ -1,8 +1,6 @@
 import { getBlogContent } from '#api/blog';
-import { Parser, jaModel } from 'budoux';
+import { loadDefaultJapaneseParser } from 'budoux';
 import { ImageResponse } from 'next/og';
-
-const parser = new Parser(jaModel);
 
 export const alt =
   '色のコントラスト比は重要だけどどうやって求めるんだっけ？';
@@ -16,7 +14,7 @@ export const contentType = 'image/png';
 export default async function OpenGraphImage() {
   const blog = await getBlogContent('color-contrast');
 
-  const words = parser.parse(blog.title);
+  const words = loadDefaultJapaneseParser().parse(blog.title);
   return new ImageResponse(
     (
       <div

@@ -1,8 +1,6 @@
 import { getBlogContent } from '#api/blog';
-import { Parser, jaModel } from 'budoux';
+import { loadDefaultJapaneseParser } from 'budoux';
 import { ImageResponse } from 'next/og';
-
-const parser = new Parser(jaModel);
 
 export const alt =
   'React19で変化したuseReducerの型から学ぶTypeScriptの型推論';
@@ -18,7 +16,7 @@ export default async function OpenGraphImage() {
     'react19-usereducer-ts-type-inference',
   );
 
-  const words = parser.parse(blog.title);
+  const words = loadDefaultJapaneseParser().parse(blog.title);
   return new ImageResponse(
     (
       <div
