@@ -185,6 +185,20 @@ describe('useCustomHook', () => {
 
 **モック戦略**: import mapsを使用して条件分岐なしで実装を交換する包括的なStorybookモックシステム。
 
+**TailwindCSS設計システム**: `src/app/_styles/globals.css`の`@theme`セクションでカスタムデザイントークンを定義。標準のTailwindクラス（`text-gray-600`など）は使用せず、必ずカスタムトークンを使用：
+
+- **Color**: `text-fg-base`, `bg-bg-subtle`, `border-border-base`など
+- **Font Size**: `text-xs`, `text-sm`, `text-md`など（カスタム定義）
+- **Font Weight**: `font-medium`, `font-bold`（カスタム定義）
+- **Radius**: `rounded-sm`, `rounded-md`, `rounded-lg`（カスタム定義）
+- **Spacing**: カスタムスペーシングトークン
+
+利用可能なカスタムクラス例：
+
+- テキスト色: `text-fg-base`, `text-fg-subtle`, `text-fg-mute`, `text-fg-info`など
+- 背景色: `bg-bg-base`, `bg-bg-subtle`, `bg-bg-mute`, `bg-primary-bg`など
+- ボーダー色: `border-border-base`, `border-border-subtle`, `border-primary-border`など
+
 **コードスタイル**:
 
 - 日本語コメント推奨
@@ -192,6 +206,7 @@ describe('useCustomHook', () => {
   - Helpers → in-source testing
   - Components → Storybookストーリー
   - Hooks・React関連 → `.test.ts`ファイル
+- **TailwindCSS**: `@theme`で定義されたカスタムトークンのみ使用（`text-gray-600`等の標準クラスは使用禁止）
 - ESLint zero warnings policy
 - Prettier自動フォーマット
 
