@@ -14,7 +14,7 @@
   "packageRules": [
     {
       "matchUpdateTypes": ["minor", "patch"],
-      "matchPackageNames": ["!/^(pnpm|node)$/", "!/@storybook/", "!/storybook$/"],
+      "matchPackageNames": ["!/^(pnpm|node)$/", "!/@storybook/", "!/storybook$/", "!/react$/", "!/react-dom$/", "!/next$/", "!/vitest$/", "!/@vitejs/", "!/@vitest/"],
       "groupName": "minor and patch dependencies"
     }
   ]
