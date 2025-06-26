@@ -1,79 +1,226 @@
 # CLAUDE.md
 
-This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+このファイルは、Claude Code (claude.ai/code) がこのリポジトリで作業する際のガイダンスを提供します。
 
-## Essential Commands
+## 必須コマンド
 
-### Development
+### 開発
 
-- `pnpm run dev` - Start development server
-- `pnpm run storybook` - Launch Storybook design system (port 6006)
+- `pnpm run dev` - 開発サーバーを開始
+- `pnpm run storybook` - Storybookデザインシステムを起動（ポート6006）
+- `pnpm run email` - メールテンプレート開発サーバー（ポート3333）
 
-### Database
+### データベース
 
-- `pnpm run generate` - Generate migration from schema files
-- `pnpm run migrate` - Execute database migrations
-- `docker compose up -d` - Start local PostgreSQL and KV services
-- `docker compose exec postgres psql -U postgres -d main` - Connect to local database
+- `pnpm run generate` - スキーマファイルからマイグレーションを生成
+- `pnpm run migrate` - データベースマイグレーションを実行
+- `pnpm run export:schema` - スキーマをSQLファイルにエクスポート
+- `pnpm run build:erd` - ERDを構築
+- `docker compose up -d` - ローカルPostgreSQLとKVサービスを開始
+- `docker compose exec postgres psql -U postgres -d main` - ローカルデータベースに接続
 
-### Testing
+### テスト
 
-- `pnpm run test` - Run all tests (Vitest with multiple projects)
-- `pnpm run test:ui` - Launch Vitest UI
-- `pnpm run coverage` - Generate test coverage report
+- `pnpm run test` - すべてのテストを実行（複数プロジェクトでVitest）
+- `pnpm run test:ui` - Vitest UIを起動
+- `pnpm run coverage` - テストカバレッジレポートを生成
 
-### Code Quality
+### コード品質
 
-- `pnpm run lint` - ESLint with zero warnings policy
-- `pnpm run type-check` - TypeScript type checking
-- `pnpm run format` - Format code with Prettier
+- `pnpm run lint` - ESLint（警告ゼロポリシー）
+- `pnpm run lint:fix` - ESLintで自動修正
+- `pnpm run lint:inspect` - ESLint設定インスペクター
+- `pnpm run ls-lint` - ファイル名/ディレクトリ名の検証
+- `pnpm run type-check` - TypeScript型チェック
+- `pnpm run format` - Prettierでコードフォーマット
+- `pnpm run format:check` - フォーマットの確認
 
-### Build
+### ビルド
 
-- `pnpm run build` - Build for production
-- `ANALYZE=true pnpm run build` - Build with bundle analysis
+- `pnpm run build` - プロダクション用ビルド
+- `ANALYZE=true pnpm run build` - バンドル分析付きビルド
 
-## Architecture Overview
+## アーキテクチャ概要
 
-### Application Structure
+### アプリケーション構造
 
-- **Next.js 15** with App Router and TypeScript
-- **MDX Integration** for blog content with math/syntax highlighting
-- **Database**: Drizzle ORM with PostgreSQL (Neon in production)
-- **Styling**: TailwindCSS with design system in Storybook
-- **Testing**: Vitest with browser mode for components, separate projects for utils/services
+- **Next.js 15** App RouterとTypeScript使用
+- **MDXインテグレーション** 数式・シンタックスハイライト付きブログコンテンツ
+- **データベース**: Drizzle ORMとPostgreSQL（本番環境ではNeon）
+- **スタイリング**: TailwindCSS、Storybookのデザインシステム
+- **テスト**: コンポーネント用ブラウザモード、utils/services用独立プロジェクトでVitest
+- **メール**: React Emailテンプレート
 
-### Key Patterns
+### 重要なパターン
 
-**Import Maps**: Uses custom import maps in package.json with environment-specific mocking:
+**Import Maps**: package.jsonのカスタムimport mapsと環境固有モック：
 
-- `#database/db` - Database connection (mocked in Storybook)
-- `#api/blog` - Blog API (mocked in Storybook)
-- `#libs/react` - React utilities (mocked in Storybook)
+- `#database/db` - データベース接続（Storybookではモック）
+- `#api/blog` - ブログAPI（Storybookではモック）
+- `#libs/react` - Reactユーティリティ（Storybookではモック）
+- `#link-card/metadata` - リンクカードメタデータ（Storybookではモック）
+- `#next/server` - Next.jsサーバー（Storybookではモック）
 
-**Database Schema**: Located in `src/database/schema/` with organized relations:
+**データベーススキーマ**: `src/database/schema/`に整理された関係：
 
-- Content: blogs, talks, quizzes
-- User data: comments, feedbacks, subscribers
-- Tagging system: blog-tag, talk-tag, service-tag
+- コンテンツ: blogs, talks, quizzes
+- ユーザーデータ: comments, feedbacks, subscribers
+- タグシステム: blog-tag, talk-tag, service-tag
 
-**Component Organization**:
+**コンポーネント構成**:
 
-- Reusable UI components in `src/components/`
-- Page-specific components in `src/app/[page]/_components/`
-- Each component has `.stories.tsx` for Storybook
+- 再利用可能UIコンポーネント: `src/components/`
+- ページ固有コンポーネント: `src/app/[page]/_components/`
+- 各コンポーネントには`.stories.tsx`がある
 
-**Testing Strategy**:
+**ヘルパー関数**: `src/helpers/`に分類別整理：
 
-- Utils/services: Node.js environment
-- Components: Browser mode with Playwright
-- Stories: Storybook integration tests
-- MSW for API mocking
+- `color/` - 色関連（calc-contrast, extract-color, find-all-colors）
+- `date/` - 日付関連（compare, format）
+- `number/` - 数値関連（between, cast, commalize, to-precision）
+- `array/`, `mdx/`, `ipaddress/`, `ratelimit/` など
 
-### Development Notes
+**テスト戦略**:
 
-**Environment Setup**: Copy `.env.example` to `.env.local` and start Docker for local database. Production uses Neon PostgreSQL, Upstash KV, MicroCMS, and Resend.
+- **Helpers**: In-source testing（同一ファイル内）
+- **Components**: Storybookストーリーでテスト
+- **Hooks・React関連**: `.test.ts`ファイルでVitest
+- **Utils/services**: Node.js環境でVitest
+- **Stories**: Storybookインテグレーションテスト
+- MSWでAPIモック
 
-**MDX Processing**: Blog articles use frontmatter, math rendering (KaTeX), and syntax highlighting (Shiki). Located in `src/app/blog/(articles)/`.
+**テスト記述ガイドライン（必須）**:
 
-**Mock Strategy**: Comprehensive mocking system for Storybook using import maps to swap implementations without conditional imports.
+各テスト対象に応じて以下のガイドラインに従う：
+
+### Helpers（`src/helpers/`）
+
+すべてのヘルパー関数にはin-source testingを適用：
+
+1. **テスト配置**: 同一ファイル内に`if (import.meta.vitest)`ブロックでテストを記述
+2. **テスト構造**:
+   - `describe`でグループ化し、日本語で記述
+   - `it`で個別テストケースを記述、日本語で分かりやすく命名
+   - BDD（Behavior-Driven Development）スタイルで構成
+3. **テスト範囲**:
+   - 正常系（Happy Path）
+   - 異常系（Error Cases）
+   - エッジケース（Edge Cases）
+   - 境界値テスト（Boundary Value Testing）
+4. **テスト命名**:
+   - 「〜の場合」「〜すべき」形式で日本語記述
+   - 何をテストしているかが明確に分かる名前
+5. **包括的カバレッジ**:
+   - 関数のすべての分岐をカバー
+   - 想定される入力パターンをすべてテスト
+   - 複数の条件の組み合わせもテスト
+
+例：
+
+```typescript
+if (import.meta.vitest) {
+  const { describe, expect, it } = import.meta.vitest;
+
+  describe('functionName', () => {
+    describe('正常な入力の場合', () => {
+      it('基本的なケースで正しい結果を返すべき', () => {
+        // テストコード
+      });
+    });
+
+    describe('異常な入力の場合', () => {
+      it('nullの場合はnullを返すべき', () => {
+        // テストコード
+      });
+    });
+
+    describe('エッジケース', () => {
+      it('空文字列の場合は適切に処理すべき', () => {
+        // テストコード
+      });
+    });
+  });
+}
+```
+
+### Components（`src/components/`）
+
+Storybookストーリーでテストを記述：
+
+1. **ストーリー作成**: `.stories.tsx`ファイルでコンポーネントの様々な状態を定義
+2. **Play関数**: インタラクションテストに`play`関数を使用
+3. **A11y**: アクセシビリティテストを含める
+4. **視覚的テスト**: 異なるpropsでの表示状態をテスト
+
+### Hooks・React関連（`src/hooks/`、`src/libs/react`）
+
+`.test.ts`ファイルでVitestを使用：
+
+1. **ファイル配置**: 対象ファイルと同じディレクトリに`.test.ts`ファイルを作成
+2. **React Testing Library**: コンポーネントやhooksのテストに使用
+3. **カスタムフック**: `@testing-library/react-hooks`でテスト
+4. **非同期処理**: `waitFor`や`act`を適切に使用
+
+例：
+
+```typescript
+// useCustomHook.test.ts
+import { renderHook } from '@testing-library/react';
+import { describe, expect, it } from 'vitest';
+import { useCustomHook } from './useCustomHook';
+
+describe('useCustomHook', () => {
+  it('初期値が正しく設定されるべき', () => {
+    const { result } = renderHook(() => useCustomHook());
+    expect(result.current.value).toBe(null);
+  });
+});
+```
+
+### 開発メモ
+
+**環境セットアップ**: `.env.example`を`.env.local`にコピーし、ローカルデータベース用Dockerを開始。本番環境ではNeon PostgreSQL、Upstash KV、MicroCMS、Resendを使用。
+
+**MDX処理**: ブログ記事はfrontmatter、数式レンダリング（KaTeX）、シンタックスハイライト（Shiki）を使用。`src/app/blog/(articles)/`に配置。
+
+**モック戦略**: import mapsを使用して条件分岐なしで実装を交換する包括的なStorybookモックシステム。
+
+**TailwindCSS設計システム**: `src/app/_styles/globals.css`の`@theme`セクションでカスタムデザイントークンを定義。標準のTailwindクラス（`text-gray-600`など）は使用せず、必ずカスタムトークンを使用：
+
+- **Color**: `text-fg-base`, `bg-bg-subtle`, `border-border-base`など
+- **Font Size**: `text-xs`, `text-sm`, `text-md`など（カスタム定義）
+- **Font Weight**: `font-medium`, `font-bold`（カスタム定義）
+- **Radius**: `rounded-sm`, `rounded-md`, `rounded-lg`（カスタム定義）
+- **Spacing**: カスタムスペーシングトークン
+
+利用可能なカスタムクラス例：
+
+- テキスト色: `text-fg-base`, `text-fg-subtle`, `text-fg-mute`, `text-fg-info`など
+- 背景色: `bg-bg-base`, `bg-bg-subtle`, `bg-bg-mute`, `bg-primary-bg`など
+- ボーダー色: `border-border-base`, `border-border-subtle`, `border-primary-border`など
+
+**コードスタイル**:
+
+- 日本語コメント推奨
+- **テスト必須**:
+  - Helpers → in-source testing
+  - Components → Storybookストーリー
+  - Hooks・React関連 → `.test.ts`ファイル
+- **TailwindCSS**: `@theme`で定義されたカスタムトークンのみ使用（`text-gray-600`等の標準クラスは使用禁止）
+- ESLint zero warnings policy
+- Prettier自動フォーマット
+
+**新機能開発**:
+
+- UIコンポーネントは`src/components/`にStorybookストーリー付きで作成
+- Hooksは`src/hooks/`に`.test.ts`ファイル付きで作成
+- ブログ記事は`src/app/blog/(articles)/[slug]/`に配置
+- **重要**: 新しい関数・コンポーネント作成時は適切なテスト方法でテストを追加
+
+**テスト実行の確認**:
+
+- **Helpers**: `pnpm run test [ファイルパス]`でin-source testingが通ることを確認
+- **Components**: `pnpm run storybook`でストーリーが正常に表示されることを確認
+- **Hooks・React関連**: `pnpm run test [ファイルパス]`で`.test.ts`が通ることを確認
+- テストカバレッジは包括的であることを重視
+- テストが失敗する場合は実装とテストの両方を見直す
