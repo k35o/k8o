@@ -1,79 +1,110 @@
 # CLAUDE.md
 
-This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+このファイルは、Claude Code (claude.ai/code) がこのリポジトリで作業する際のガイダンスを提供します。
 
-## Essential Commands
+## 必須コマンド
 
-### Development
+### 開発
 
-- `pnpm run dev` - Start development server
-- `pnpm run storybook` - Launch Storybook design system (port 6006)
+- `pnpm run dev` - 開発サーバーを開始
+- `pnpm run storybook` - Storybookデザインシステムを起動（ポート6006）
+- `pnpm run email` - メールテンプレート開発サーバー（ポート3333）
 
-### Database
+### データベース
 
-- `pnpm run generate` - Generate migration from schema files
-- `pnpm run migrate` - Execute database migrations
-- `docker compose up -d` - Start local PostgreSQL and KV services
-- `docker compose exec postgres psql -U postgres -d main` - Connect to local database
+- `pnpm run generate` - スキーマファイルからマイグレーションを生成
+- `pnpm run migrate` - データベースマイグレーションを実行
+- `pnpm run export:schema` - スキーマをSQLファイルにエクスポート
+- `pnpm run build:erd` - ERDを構築
+- `docker compose up -d` - ローカルPostgreSQLとKVサービスを開始
+- `docker compose exec postgres psql -U postgres -d main` - ローカルデータベースに接続
 
-### Testing
+### テスト
 
-- `pnpm run test` - Run all tests (Vitest with multiple projects)
-- `pnpm run test:ui` - Launch Vitest UI
-- `pnpm run coverage` - Generate test coverage report
+- `pnpm run test` - すべてのテストを実行（複数プロジェクトでVitest）
+- `pnpm run test:ui` - Vitest UIを起動
+- `pnpm run coverage` - テストカバレッジレポートを生成
 
-### Code Quality
+### コード品質
 
-- `pnpm run lint` - ESLint with zero warnings policy
-- `pnpm run type-check` - TypeScript type checking
-- `pnpm run format` - Format code with Prettier
+- `pnpm run lint` - ESLint（警告ゼロポリシー）
+- `pnpm run lint:fix` - ESLintで自動修正
+- `pnpm run lint:inspect` - ESLint設定インスペクター
+- `pnpm run ls-lint` - ファイル名/ディレクトリ名の検証
+- `pnpm run type-check` - TypeScript型チェック
+- `pnpm run format` - Prettierでコードフォーマット
+- `pnpm run format:check` - フォーマットの確認
 
-### Build
+### ビルド
 
-- `pnpm run build` - Build for production
-- `ANALYZE=true pnpm run build` - Build with bundle analysis
+- `pnpm run build` - プロダクション用ビルド
+- `ANALYZE=true pnpm run build` - バンドル分析付きビルド
 
-## Architecture Overview
+## アーキテクチャ概要
 
-### Application Structure
+### アプリケーション構造
 
-- **Next.js 15** with App Router and TypeScript
-- **MDX Integration** for blog content with math/syntax highlighting
-- **Database**: Drizzle ORM with PostgreSQL (Neon in production)
-- **Styling**: TailwindCSS with design system in Storybook
-- **Testing**: Vitest with browser mode for components, separate projects for utils/services
+- **Next.js 15** App RouterとTypeScript使用
+- **MDXインテグレーション** 数式・シンタックスハイライト付きブログコンテンツ
+- **データベース**: Drizzle ORMとPostgreSQL（本番環境ではNeon）
+- **スタイリング**: TailwindCSS、Storybookのデザインシステム
+- **テスト**: コンポーネント用ブラウザモード、utils/services用独立プロジェクトでVitest
+- **メール**: React Emailテンプレート
 
-### Key Patterns
+### 重要なパターン
 
-**Import Maps**: Uses custom import maps in package.json with environment-specific mocking:
+**Import Maps**: package.jsonのカスタムimport mapsと環境固有モック：
 
-- `#database/db` - Database connection (mocked in Storybook)
-- `#api/blog` - Blog API (mocked in Storybook)
-- `#libs/react` - React utilities (mocked in Storybook)
+- `#database/db` - データベース接続（Storybookではモック）
+- `#api/blog` - ブログAPI（Storybookではモック）
+- `#libs/react` - Reactユーティリティ（Storybookではモック）
+- `#link-card/metadata` - リンクカードメタデータ（Storybookではモック）
+- `#next/server` - Next.jsサーバー（Storybookではモック）
 
-**Database Schema**: Located in `src/database/schema/` with organized relations:
+**データベーススキーマ**: `src/database/schema/`に整理された関係：
 
-- Content: blogs, talks, quizzes
-- User data: comments, feedbacks, subscribers
-- Tagging system: blog-tag, talk-tag, service-tag
+- コンテンツ: blogs, talks, quizzes
+- ユーザーデータ: comments, feedbacks, subscribers
+- タグシステム: blog-tag, talk-tag, service-tag
 
-**Component Organization**:
+**コンポーネント構成**:
 
-- Reusable UI components in `src/components/`
-- Page-specific components in `src/app/[page]/_components/`
-- Each component has `.stories.tsx` for Storybook
+- 再利用可能UIコンポーネント: `src/components/`
+- ページ固有コンポーネント: `src/app/[page]/_components/`
+- 各コンポーネントには`.stories.tsx`がある
 
-**Testing Strategy**:
+**ヘルパー関数**: `src/helpers/`に分類別整理：
 
-- Utils/services: Node.js environment
-- Components: Browser mode with Playwright
-- Stories: Storybook integration tests
-- MSW for API mocking
+- `color/` - 色関連（calc-contrast, extract-color, find-all-colors）
+- `date/` - 日付関連（compare, format）
+- `number/` - 数値関連（between, cast, commalize, to-precision）
+- `array/`, `mdx/`, `ipaddress/`, `ratelimit/` など
 
-### Development Notes
+**テスト戦略**:
 
-**Environment Setup**: Copy `.env.example` to `.env.local` and start Docker for local database. Production uses Neon PostgreSQL, Upstash KV, MicroCMS, and Resend.
+- Utils/services: Node.js環境
+- コンポーネント: ブラウザモードでPlaywright
+- Stories: Storybookインテグレーションテスト
+- **In-source testing**: t_wadaメソッドに従ったヘルパー関数のテスト
+- MSWでAPIモック
 
-**MDX Processing**: Blog articles use frontmatter, math rendering (KaTeX), and syntax highlighting (Shiki). Located in `src/app/blog/(articles)/`.
+### 開発メモ
 
-**Mock Strategy**: Comprehensive mocking system for Storybook using import maps to swap implementations without conditional imports.
+**環境セットアップ**: `.env.example`を`.env.local`にコピーし、ローカルデータベース用Dockerを開始。本番環境ではNeon PostgreSQL、Upstash KV、MicroCMS、Resendを使用。
+
+**MDX処理**: ブログ記事はfrontmatter、数式レンダリング（KaTeX）、シンタックスハイライト（Shiki）を使用。`src/app/blog/(articles)/`に配置。
+
+**モック戦略**: import mapsを使用して条件分岐なしで実装を交換する包括的なStorybookモックシステム。
+
+**コードスタイル**:
+
+- 日本語コメント推奨
+- In-source testingでヘルパー関数をテスト
+- ESLint zero warnings policy
+- Prettier自動フォーマット
+
+**新機能開発**:
+
+- 色関連機能は`src/helpers/color/`に追加
+- UIコンポーネントは`src/components/`にStorybookストーリー付きで作成
+- ブログ記事は`src/app/blog/(articles)/[slug]/`に配置
