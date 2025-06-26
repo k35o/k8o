@@ -3,6 +3,7 @@ import { LinkIcon } from './components/icons';
 import { cn } from '@/helpers/cn';
 import type { MDXComponents } from 'mdx/types';
 import { FC, PropsWithChildren } from 'react';
+import { Code } from './components/code';
 
 const LinkHeading: FC<
   PropsWithChildren<{
@@ -86,14 +87,7 @@ export function useMDXComponents(
     ),
     code: ({ children, ...props }) => {
       if (typeof children === 'string') {
-        return (
-          <code
-            {...props}
-            className="bg-bg-mute sm:text-md m-0.5 rounded-md px-1.5 text-xs sm:py-0.5"
-          >
-            {children}
-          </code>
-        );
+        return <Code>{children}</Code>;
       }
       return (
         <code {...props} className="sm:text-md text-xs">
