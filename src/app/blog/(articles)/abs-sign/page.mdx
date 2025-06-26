@@ -1,0 +1,60 @@
+---
+title: Chrome138・Edge138でBaseline2025入りしたCSS abs()とsign()関数
+description: 数値の符号を扱うCSS 値関数abs()とsign()がChrome138・Edge138でBaseline2025に追加されました。absは絶対値の取得、signは符号の判定ができる便利な関数です。
+createdAt: 2025-06-26 00:00:00.000000+09
+updatedAt: 2025-06-26 00:00:00.000000+09
+---
+
+import { BaselineStatus } from '@/components/baseline-status';
+import { Example1 } from './_components/example1';
+import { Playground } from '@/app/blog/_components/playground';
+
+# Chrome138・Edge138でBaseline2025入りしたCSS abs()とsign()関数
+
+## CSS数学関数の新機能
+
+<BaselineStatus featureId="abs-sign"></BaselineStatus>
+
+Chrome138・Edge138でBaseline2025に追加された新しいCSS 値関数、`abs()`と`sign()`について解説します。
+
+## abs()関数
+
+`abs()`関数は絶対値を返す関数です。負の数を正の数に変換し、正の数はそのまま返します。
+
+```css
+.element {
+  width: abs(-100px); /* 100px */
+  height: abs(50px); /* 50px */
+  margin: abs(calc(-20px + 10px)); /* 10px */
+  --offset: -30px;
+  padding: abs(var(--offset)); /* 30px */
+}
+```
+
+## sign()関数
+
+`sign()`関数は数値の符号を判定し、以下の値を返します：
+
+- 正の数の場合：`1`
+- 負の数の場合：`-1`
+- ゼロの場合：`0`（ゼロのネガポジは引き継ぐ）
+
+```css
+.element {
+  --positive: sign(50px); /* 1 */
+  --negative: sign(-30px); /* -1 */
+  --zero: sign(0px); /* 0 */
+}
+```
+
+## 例
+
+`abs()`と`sign()`を利用した例を用意しました。
+
+<Playground title="CSS abs()とsign()の実例">
+  <Example1 />
+</Playground>
+
+## まとめ
+
+`abs()`と`sign()`関数の追加により、CSSでの数学的な処理がより直感的で強力になりました。
