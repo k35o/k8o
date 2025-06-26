@@ -82,11 +82,100 @@
 
 **テスト戦略**:
 
-- Utils/services: Node.js環境
-- コンポーネント: ブラウザモードでPlaywright
-- Stories: Storybookインテグレーションテスト
-- **In-source testing**: t_wadaメソッドに従ったヘルパー関数のテスト
+- **Helpers**: In-source testing（同一ファイル内）
+- **Components**: Storybookストーリーでテスト
+- **Hooks・React関連**: `.test.ts`ファイルでVitest
+- **Utils/services**: Node.js環境でVitest
+- **Stories**: Storybookインテグレーションテスト
 - MSWでAPIモック
+
+**テスト記述ガイドライン（必須）**:
+
+各テスト対象に応じて以下のガイドラインに従う：
+
+### Helpers（`src/helpers/`）
+
+すべてのヘルパー関数にはin-source testingを適用：
+
+1. **テスト配置**: 同一ファイル内に`if (import.meta.vitest)`ブロックでテストを記述
+2. **テスト構造**:
+   - `describe`でグループ化し、日本語で記述
+   - `it`で個別テストケースを記述、日本語で分かりやすく命名
+   - BDD（Behavior-Driven Development）スタイルで構成
+3. **テスト範囲**:
+   - 正常系（Happy Path）
+   - 異常系（Error Cases）
+   - エッジケース（Edge Cases）
+   - 境界値テスト（Boundary Value Testing）
+4. **テスト命名**:
+   - 「〜の場合」「〜すべき」形式で日本語記述
+   - 何をテストしているかが明確に分かる名前
+5. **包括的カバレッジ**:
+   - 関数のすべての分岐をカバー
+   - 想定される入力パターンをすべてテスト
+   - 複数の条件の組み合わせもテスト
+
+例：
+
+```typescript
+if (import.meta.vitest) {
+  const { describe, expect, it } = import.meta.vitest;
+
+  describe('functionName', () => {
+    describe('正常な入力の場合', () => {
+      it('基本的なケースで正しい結果を返すべき', () => {
+        // テストコード
+      });
+    });
+
+    describe('異常な入力の場合', () => {
+      it('nullの場合はnullを返すべき', () => {
+        // テストコード
+      });
+    });
+
+    describe('エッジケース', () => {
+      it('空文字列の場合は適切に処理すべき', () => {
+        // テストコード
+      });
+    });
+  });
+}
+```
+
+### Components（`src/components/`）
+
+Storybookストーリーでテストを記述：
+
+1. **ストーリー作成**: `.stories.tsx`ファイルでコンポーネントの様々な状態を定義
+2. **Play関数**: インタラクションテストに`play`関数を使用
+3. **A11y**: アクセシビリティテストを含める
+4. **視覚的テスト**: 異なるpropsでの表示状態をテスト
+
+### Hooks・React関連（`src/hooks/`、`src/libs/react`）
+
+`.test.ts`ファイルでVitestを使用：
+
+1. **ファイル配置**: 対象ファイルと同じディレクトリに`.test.ts`ファイルを作成
+2. **React Testing Library**: コンポーネントやhooksのテストに使用
+3. **カスタムフック**: `@testing-library/react-hooks`でテスト
+4. **非同期処理**: `waitFor`や`act`を適切に使用
+
+例：
+
+```typescript
+// useCustomHook.test.ts
+import { renderHook } from '@testing-library/react';
+import { describe, expect, it } from 'vitest';
+import { useCustomHook } from './useCustomHook';
+
+describe('useCustomHook', () => {
+  it('初期値が正しく設定されるべき', () => {
+    const { result } = renderHook(() => useCustomHook());
+    expect(result.current.value).toBe(null);
+  });
+});
+```
 
 ### 開発メモ
 
@@ -99,12 +188,24 @@
 **コードスタイル**:
 
 - 日本語コメント推奨
-- In-source testingでヘルパー関数をテスト
+- **テスト必須**:
+  - Helpers → in-source testing
+  - Components → Storybookストーリー
+  - Hooks・React関連 → `.test.ts`ファイル
 - ESLint zero warnings policy
 - Prettier自動フォーマット
 
 **新機能開発**:
 
-- 色関連機能は`src/helpers/color/`に追加
 - UIコンポーネントは`src/components/`にStorybookストーリー付きで作成
+- Hooksは`src/hooks/`に`.test.ts`ファイル付きで作成
 - ブログ記事は`src/app/blog/(articles)/[slug]/`に配置
+- **重要**: 新しい関数・コンポーネント作成時は適切なテスト方法でテストを追加
+
+**テスト実行の確認**:
+
+- **Helpers**: `pnpm run test [ファイルパス]`でin-source testingが通ることを確認
+- **Components**: `pnpm run storybook`でストーリーが正常に表示されることを確認
+- **Hooks・React関連**: `pnpm run test [ファイルパス]`で`.test.ts`が通ることを確認
+- テストカバレッジは包括的であることを重視
+- テストが失敗する場合は実装とテストの両方を見直す
