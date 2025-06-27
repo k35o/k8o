@@ -122,9 +122,9 @@
     "@types/rss": "0.0.32",
     "@types/ws": "8.18.1",
     "@vitejs/plugin-react": "4.5.2",
-    "@vitest/browser": "3.2.3",
-    "@vitest/coverage-istanbul": "3.2.3",
-    "@vitest/ui": "3.2.3",
+    "@vitest/browser": "3.2.4",
+    "@vitest/coverage-istanbul": "3.2.4",
+    "@vitest/ui": "3.2.4",
     "axe-playwright": "2.1.0",
     "chromatic": "13.0.1",
     "drizzle-kit": "0.31.1",
@@ -149,7 +149,7 @@
     "storybook-addon-mock-date": "1.0.1",
     "typescript": "5.8.3",
     "typescript-eslint": "8.34.0",
-    "vitest": "3.2.3"
+    "vitest": "3.2.4"
   },
   "engines": {
     "node": "22.16.0"
