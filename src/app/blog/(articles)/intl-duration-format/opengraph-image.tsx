@@ -15,7 +15,5 @@ export default async function Image() {
 
   return BlogOgImage({
     title: blog.title,
-    description: blog.description,
-    tags: blog.tags,
   });
 }
