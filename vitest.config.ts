@@ -25,7 +25,7 @@ export default defineConfig({
       {
         extends: true,
         test: {
-          name: { label: 'helpers test', color: 'blue' },
+          name: { label: 'helpers', color: 'blue' },
           include: ['src/helpers/**/*.test.{ts,tsx}'],
           includeSource: ['src/helpers/**/*.{ts,tsx}'],
         },
@@ -33,7 +33,7 @@ export default defineConfig({
       {
         extends: true,
         test: {
-          name: { label: 'services test', color: 'cyan' },
+          name: { label: 'services', color: 'cyan' },
           include: ['src/services/**/*.test.{ts,tsx}'],
           includeSource: ['src/services/**/*.{ts,tsx}'],
         },
@@ -42,13 +42,14 @@ export default defineConfig({
         extends: true,
         plugins: [react()],
         test: {
-          name: { label: 'browser test', color: 'green' },
+          name: { label: 'browser', color: 'green' },
           include: ['src/!(helpers|services)/**/*.test.{ts,tsx}'],
           browser: {
             enabled: true,
             instances: [
               {
                 browser: 'chromium',
+                name: 'browser-chromium',
               },
             ],
             provider: 'playwright',
@@ -66,8 +67,27 @@ export default defineConfig({
           storybookNextJsPlugin(),
         ],
         publicDir: '.storybook/public/',
+        resolve: {
+          alias: {
+            // @react-email/componentsをモックに置き換え
+            '@react-email/components': fileURLToPath(
+              new URL(
+                './.storybook/mocks/react-email-components.ts',
+                import.meta.url,
+              ),
+            ),
+            '@react-email/render': fileURLToPath(
+              new URL(
+                './.storybook/mocks/react-email-render.ts',
+                import.meta.url,
+              ),
+            ),
+            // react-dom/server.browserを通常のreact-dom/serverに置き換え
+            'react-dom/server.browser': 'react-dom/server',
+          },
+        },
         test: {
-          name: { label: 'storybook test', color: 'magenta' },
+          name: { label: 'storybook', color: 'magenta' },
           browser: {
             enabled: true,
             name: 'chromium',
