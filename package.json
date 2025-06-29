@@ -97,7 +97,7 @@
     "to-vfile": "8.0.0",
     "uqr": "0.1.2",
     "vfile-matter": "5.0.1",
-    "ws": "8.18.2",
+    "ws": "8.18.3",
     "zod": "3.25.67"
   },
   "devDependencies": {
@@ -144,7 +144,7 @@
     "prettier": "3.6.2",
     "prettier-plugin-tailwindcss": "0.6.13",
     "react-email": "4.0.17",
-    "react-scan": "0.3.4",
+    "react-scan": "0.3.6",
     "storybook": "9.0.9",
     "storybook-addon-mock-date": "1.0.1",
     "typescript": "5.8.3",
