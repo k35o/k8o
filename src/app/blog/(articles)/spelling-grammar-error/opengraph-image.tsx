@@ -1,7 +1,8 @@
 import { getBlogContent } from '#api/blog';
 import { BlogOgImage } from '@/app/blog/_components/og-image';
 
-export const alt = '::spelling-errorと::grammar-error';
+export const alt =
+  'スペルミス・文法エラーに対してスタイルを設定する::spelling-errorと::grammar-error';
 export const size = {
   width: 1200,
   height: 630,
