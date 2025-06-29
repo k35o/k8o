@@ -1,0 +1,72 @@
+---
+title: スペルミス・文法エラーに対してスタイルを設定する::spelling-errorと::grammar-error
+description:
+createdAt: 2025-06-29 00:00:00.000000+09
+updatedAt: 2025-06-29 00:00:00.000000+09
+---
+
+import { BaselineStatus } from '@/components/baseline-status';
+import { Example1 } from './_components/example1';
+import { Playground } from '@/app/blog/_components/playground';
+
+# スペルミス・文法エラーに対してスタイルを設定する::spelling-errorと::grammar-error
+
+<BaselineStatus featureId="spelling-grammar-error" />
+
+## はじめに
+
+Firefox 140で`::spelling-error`と`::grammar-error`のCSS擬似要素がサポートされました。これにより、全てのコアブラウザでこれらの擬似要素が利用可能になりました。
+これらの擬似要素は、スペルミスや文法エラーとしてフラグ付けされたテキストに対するスタイルを定義するために使用されます。
+
+## ::spelling-error
+
+スペルミスとしてフラグ付けされたテキストに対するスタイルを定義します。
+
+```css
+::spelling-error {
+  background-color: #ffcccc;
+  color: #d8000c;
+  text-decoration-line: underline;
+  text-decoration-style: wavy;
+  text-decoration-color: red;
+}
+```
+
+`::spelling-error`の中では、`color`と`background-color`、`cursor`、`caret-color`、`outline`、`outlint-*`、`text-decoration`、`text-decoration-*`、`text-emphasis-color`、`text-shadow`のみが使用可能です。
+
+## ::grammar-error
+
+文法エラーとしてフラグ付けされたテキストに対するスタイルを定義します。
+
+```css
+::grammar-error {
+  color: #d8000c;
+  text-decoration-line: underline;
+  text-decoration-style: dotted;
+  text-decoration-color: red;
+}
+```
+
+`::grammar-error`も`::spelling-error`と同様のプロパティしか定義できません。
+
+## 例
+
+`contenteditable`属性で編集可能なテキストエリアを準備しました。`spellcheck`属性が`true`に設定されているため、スペルミスや文法エラーが自動的に検出されます。
+
+`contenteditable`属性の値は`plaintext-only`です。これもまた、Baseline 2025の機能ですね（[`plaintext-only`についても記事](https://www.k8o.me/blog/contenteditable-plaintextonly)を書いているので良ければ読んでください）。
+
+ここで検出されたエラーが`::spelling-error`と`::grammar-error`の擬似要素でスタイリングされます。
+
+<Playground title="スペルミス・文法エラーのスタイル設定例">
+  <Example1 />
+</Playground>
+
+そのままでは`spellcheck`属性の確認が行われず、見た目の変化がないことがあります。その場合は、テキストの一部を編集して再確認させることで、エラーが表示されるようになると思います。
+
+また、ブラウザごとに`spellcheck`の挙動が異なるため、デフォルトの文章で両方のエラーを確認できない恐れがあります（Safariで確認しました）。期待としては、`speling`がスペルミス、`an grammar`の`an`が文法エラーとして検出されることです。
+
+## まとめ
+
+Baseline 2025入りした`::spelling-error`と`::grammar-error`を紹介しました。
+
+`spellcheck`自体が日本語対応していないので、日本語ユーザーにとってはあまり恩恵がないかもしれませんが、英語のコンテンツを扱うときのために覚えておきたいです。
