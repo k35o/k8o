@@ -14,7 +14,10 @@ export const getBlogs = async () => {
     where: (blogs, { eq }) => eq(blogs.published, true),
     limit: 50,
     orderBy(fields, operators) {
-      return operators.desc(fields.createdAt);
+      return [
+        operators.desc(fields.createdAt),
+        operators.desc(fields.id),
+      ];
     },
   });
 
@@ -53,7 +56,10 @@ export const getBlogsByTags = async (
       },
     },
     orderBy(fields, operators) {
-      return [operators.desc(fields.createdAt)];
+      return [
+        operators.desc(fields.createdAt),
+        operators.desc(fields.id),
+      ];
     },
   });
 
