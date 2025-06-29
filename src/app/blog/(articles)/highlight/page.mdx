@@ -1,6 +1,6 @@
 ---
 title: CSS Custom Highlight APIで任意の範囲のテキストをハイライトする
-description: Firefox 140でCSS Custom Highlight APIがサポートされ、DOMを変更せずに任意のテキスト範囲をハイライトできるようになりました。JavaScriptでRangeオブジェクトを定義し、Highlightオブジェクトとして登録後、CSSの::highlight擬似要素でスタイリングします。
+description: Firefox 140でCSS Custom Highlight APIがサポートされ、DOMを変更せずに任意のテキスト範囲をハイライトできるようになりました。JavaScriptでRangeオブジェクトを定義し、Highlightオブジェクトとして登録後、CSSの::highlight擬似要素でスタイリングしてハイライトを作ります。
 createdAt: 2025-06-29 00:00:00.000000+09
 updatedAt: 2025-06-29 00:00:00.000000+09
 ---
@@ -19,13 +19,13 @@ import { Playground } from '@/app/blog/_components/playground';
 
 Firefox 140がリリースされ、`CSS Custom Highlight API`がサポートされました。この新機能により、JavaScriptで定義した任意のテキスト範囲をCSSでスタイリングできるようになります。
 
-これは、構文ハイライト、検索結果のハイライト、スペルチェックエラーの表示など、多くの用途で活用できる画期的な機能です。
+これは、構文ハイライト、検索結果のハイライト、スペルミスの表示など、多くの用途で活用できる画期的な機能です。
 
 ## CSS Custom Highlight APIとは
 
 `CSS Custom Highlight API`は、ページ内のDOMに影響を与えることなく任意のテキスト範囲をハイライトさせるAPIです。
 
-ハイライトには`::selection`、`::spelling-error`、`::grammar-error`、`::target-text`のような擬似要素を拡張した`::highlight`擬似要素を利用します。
+このAPIは`::selection`、`::spelling-error`、`::grammar-error`、`::target-text`のような擬似要素を拡張したようなもので、`::highlight`擬似要素を利用します。
 
 ### 特徴
 
@@ -52,7 +52,7 @@ range.setEnd(targetNode, 2);
 
 次に、`Range`オブジェクトを使用して`Highlight`オブジェクトを作成し、それを`HighlightRegistry`に登録します。
 
-`HighlightRegistry`は`CSS.highlights`からアクセスできます。
+`HighlightRegistry`には`CSS.highlights`からアクセスします。
 
 ```ts
 // Highlightオブジェクトを作成
@@ -81,7 +81,7 @@ CSS.highlights.set('my-highlight', highlight);
 
 ### Highlightオブジェクト
 
-`Highlight`オブジェクトは、一連の`Range`オブジェクトを同じハイライトのグループとして管理するためのものです。
+`Highlight`オブジェクトは、一連の`Range`オブジェクトを同じハイライトを行うグループとして管理するためのものです。
 
 #### オブジェクトの作成
 
@@ -153,11 +153,11 @@ console.log(defaultPriorityHighlight.priority); // 0
 
 定義の通り優先度が高い青色と黄色が優先して表示されます。そして、優先度が同じ場合は`CSS.highlights`に後から登録されたハイライトが優先されます。
 
-そのため、今回は青色->黄色->赤色の順に登録したので、黄色が優先されて表示されています。
+今回は青色->黄色->赤色の順に登録したので、黄色が優先されて表示されています。
 
-#### セマンティックな意味の指定
+#### ハイライトの意味を指定
 
-`type`プロパティはハイライトのセマンティックな意味を指定できます。これにより、支援技術がハイライトの内容を理解しやすくなります。
+`type`プロパティはハイライトの意味を指定できます。これにより、支援技術がハイライトの内容を理解しやすくなります。
 
 ```ts
 const spellErrorHighlight = new Highlight(errorRange);
@@ -166,7 +166,7 @@ spellErrorHighlight.type = 'spelling-error';
 
 `type`にはデフォルトの`highlight`の他に、`spelling-error`や`grammar-error`などの値を指定できます。
 
-`highlight`には特別な意味がありません。`spelling-error`はスペルミスの強調、`grammar-error`は文法エラーの強調を意味します。
+`highlight`には特別な意味がありません。`spelling-error`はスペルミス、`grammar-error`は文法エラーを意味します。
 
 <Playground title="grammer-errorでハイライトした例">
   <Example3 />
