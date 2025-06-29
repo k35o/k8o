@@ -265,8 +265,8 @@ importers:
         specifier: 4.0.17
         version: 4.0.17(@babel/core@7.27.4)(bufferutil@4.0.8)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
       react-scan:
-        specifier: 0.3.6
-        version: 0.3.6(@types/react@19.1.8)(next@15.3.4(@babel/core@7.27.4)(react-dom@19.1.0(react@19.1.0))(react@19.1.0))(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(rollup@4.19.1)
+        specifier: 0.4.0
+        version: 0.4.0(@types/react@19.1.8)(next@15.3.4(@babel/core@7.27.4)(react-dom@19.1.0(react@19.1.0))(react@19.1.0))(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(rollup@4.19.1)
       storybook:
         specifier: 9.0.9
         version: 9.0.9(@testing-library/dom@10.4.0)(bufferutil@4.0.8)(prettier@3.6.2)
@@ -7081,8 +7081,8 @@ packages:
       react: ^16.14.0 || ^17.0.0 || ^18.0.0 || ^19.0.0 || ^19.0.0-rc
       react-dom: ^16.14.0 || ^17.0.0 || ^18.0.0 || ^19.0.0 || ^19.0.0-rc
 
-  react-scan@0.3.6:
-    resolution: {integrity: sha512-HCXRaP/zirXbNoI+mm11AibURYxkz4vCCnP64bzPRln3T8W9J2UGI1nxBygQIoKqrGz9W++rOROPvyNB+FpvXA==}
+  react-scan@0.4.0:
+    resolution: {integrity: sha512-0GYmdWH/LVhoU+913bpBuEemBQ62DDeWIda0ktV2LYhnlVVPkLl81kBL59W1tgxTnXCdgjoSpbTT1eU+xFMvQw==}
     hasBin: true
     peerDependencies:
       '@remix-run/react': '>=1.0.0'
@@ -16193,7 +16193,7 @@ snapshots:
       react: 18.3.1
       react-dom: 19.1.0(react@19.1.0)
 
-  react-scan@0.3.6(@types/react@19.1.8)(next@15.3.4(@babel/core@7.27.4)(react-dom@19.1.0(react@19.1.0))(react@19.1.0))(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(rollup@4.19.1):
+  react-scan@0.4.0(@types/react@19.1.8)(next@15.3.4(@babel/core@7.27.4)(react-dom@19.1.0(react@19.1.0))(react@19.1.0))(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(rollup@4.19.1):
     dependencies:
       '@babel/core': 7.27.4
       '@babel/generator': 7.27.5
