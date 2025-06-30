@@ -1,0 +1,121 @@
+'use client';
+
+import arteodysseyIcon from '@/app/_images/arteodyssey.png';
+import primaryIcon from '@/app/blog/(articles)/async-clipboard/_images/primary.png';
+import k8oIcon from '@/app/icon.png';
+import { Button } from '@/components/button';
+import { FormControl } from '@/components/form/form-control';
+import { Select } from '@/components/form/select';
+import { useToast } from '@/components/toast';
+import Image from 'next/image';
+import { FC, useRef, useState } from 'react';
+
+const OPTIONS = [
+  { value: '1', label: '画像1' },
+  { value: '2', label: '画像2' },
+] as const;
+
+export const ClipboardImageDemo: FC = () => {
+  const ref = useRef<HTMLImageElement>(null);
+  const [src, setSrc] = useState(primaryIcon.src);
+  const { onOpen } = useToast();
+  const [selectedSrc, setSelectedSrc] = useState<string>(
+    OPTIONS[0].value,
+  );
+
+  const copyText = async () => {
+    try {
+      if (!ref.current) return;
+      const canvas = document.createElement('canvas');
+      canvas.width = ref.current.naturalWidth;
+      canvas.height = ref.current.naturalHeight;
+      const ctx = canvas.getContext('2d');
+      if (!ctx) return;
+      ctx.drawImage(ref.current, 0, 0);
+      const blob = await new Promise<Blob>((resolve) => {
+        canvas.toBlob((blob) => {
+          if (!blob) {
+            throw new Error('Blobが取得できませんでした');
+          }
+          resolve(blob);
+        });
+      });
+      const file = new File([blob], 'k8o.png', { type: 'image/png' });
+      const data = [new ClipboardItem({ 'image/png': file })];
+      await navigator.clipboard.write(data);
+      onOpen('success', 'クリップボードにPNG画像をコピーしました');
+    } catch {
+      onOpen(
+        'error',
+        'クリップボードにPNG画像をコピーできませんでした',
+      );
+    }
+  };
+
+  const pasteText = async () => {
+    const items = await navigator.clipboard.read();
+    for (const item of items) {
+      for (const type of item.types) {
+        if (type === 'image/png') {
+          const blob = await item.getType(type);
+          const url = URL.createObjectURL(blob);
+          setSrc(url);
+        }
+      }
+    }
+    onOpen('success', 'クリップボードにPNG画像を貼り付けました。');
+  };
+
+  return (
+    <div className="flex w-full flex-wrap items-end justify-around gap-4">
+      <div className="flex flex-col items-center gap-2">
+        <FormControl
+          label="画像を選択する"
+          renderInput={(props) => (
+            <Select
+              {...props}
+              value={selectedSrc}
+              onChange={(e) => {
+                setSelectedSrc(e.currentTarget.value);
+              }}
+              options={OPTIONS}
+            />
+          )}
+        />
+        <Image
+          className="border-border-base rounded-md border"
+          ref={ref}
+          src={selectedSrc === '1' ? k8oIcon : arteodysseyIcon}
+          alt={`コピーする画像${selectedSrc}`}
+          width={128}
+          height={128}
+          unoptimized
+        />
+        <Button onClick={() => void copyText()}>
+          PNG画像をコピーする
+        </Button>
+      </div>
+      <div className="flex flex-col items-center gap-2">
+        <div className="flex w-full flex-col items-center gap-4">
+          <div className="flex w-full flex-col gap-2">
+            <p className="self-start font-bold">ペーストされた画像</p>
+            <p className="text-fg-mute self-end text-sm">
+              権限があれば、外部でコピーした画像も貼り付けられます
+            </p>
+          </div>
+          <Image
+            className="border-border-base rounded-md border"
+            src={src}
+            alt="ペーストされた画像"
+            width={128}
+            height={128}
+            unoptimized
+          />
+        </div>
+        <Button onClick={() => void pasteText()}>
+          保存されたPNG画像を表示する
+        </Button>
+      </div>
+    </div>
+  );
+};
