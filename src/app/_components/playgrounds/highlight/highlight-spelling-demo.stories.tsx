@@ -1,12 +1,17 @@
 import { HighlightSpellingDemo } from './highlight-spelling-demo';
+import { Playground } from '../playground';
 import type { Meta, StoryObj } from '@storybook/nextjs';
 
 const meta: Meta<typeof HighlightSpellingDemo> = {
   title: 'playgrounds/highlight/HighlightSpellingDemo',
   component: HighlightSpellingDemo,
-  parameters: {
-    layout: 'centered',
-  },
+  decorators: [
+    (Story) => (
+      <Playground>
+        <Story />
+      </Playground>
+    ),
+  ],
 };
 
 export default meta;

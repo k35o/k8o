@@ -1,12 +1,17 @@
 import { PopoverApiDemo } from './popover-api-demo';
+import { Playground } from '../playground';
 import type { Meta, StoryObj } from '@storybook/nextjs';
 
 const meta: Meta<typeof PopoverApiDemo> = {
   title: 'playgrounds/popover/PopoverApiDemo',
   component: PopoverApiDemo,
-  parameters: {
-    layout: 'centered',
-  },
+  decorators: [
+    (Story) => (
+      <Playground>
+        <Story />
+      </Playground>
+    ),
+  ],
 };
 
 export default meta;

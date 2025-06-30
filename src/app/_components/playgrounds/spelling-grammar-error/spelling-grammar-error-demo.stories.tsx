@@ -1,13 +1,18 @@
 import { SpellingGrammarErrorDemo } from './spelling-grammar-error-demo';
+import { Playground } from '../playground';
 import type { Meta, StoryObj } from '@storybook/nextjs';
 
 const meta: Meta<typeof SpellingGrammarErrorDemo> = {
   title:
     'playgrounds/spelling-grammar-error/SpellingGrammarErrorDemo',
   component: SpellingGrammarErrorDemo,
-  parameters: {
-    layout: 'centered',
-  },
+  decorators: [
+    (Story) => (
+      <Playground>
+        <Story />
+      </Playground>
+    ),
+  ],
 };
 
 export default meta;

@@ -4,7 +4,7 @@ import type { Meta, StoryObj } from '@storybook/nextjs';
 import { FC, useState } from 'react';
 
 const meta: Meta<typeof Playground> = {
-  title: 'app/blog/playground',
+  title: 'playgrounds/Playground',
   component: Playground,
 };
 

@@ -1,12 +1,17 @@
 import { CssMathFunctionsDemo } from './css-math-functions-demo';
+import { Playground } from '../playground';
 import type { Meta, StoryObj } from '@storybook/nextjs';
 
 const meta: Meta<typeof CssMathFunctionsDemo> = {
   title: 'playgrounds/abs-sign/CssMathFunctionsDemo',
   component: CssMathFunctionsDemo,
-  parameters: {
-    layout: 'centered',
-  },
+  decorators: [
+    (Story) => (
+      <Playground>
+        <Story />
+      </Playground>
+    ),
+  ],
 };
 
 export default meta;

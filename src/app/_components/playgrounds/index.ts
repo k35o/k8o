@@ -1,3 +1,4 @@
+export { Playground } from './playground';
 export * from './async-clipboard';
 export * from './popover';
 export * from './requestclose';

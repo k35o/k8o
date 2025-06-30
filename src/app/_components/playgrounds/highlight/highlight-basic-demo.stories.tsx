@@ -1,12 +1,17 @@
 import { HighlightBasicDemo } from './highlight-basic-demo';
+import { Playground } from '../playground';
 import type { Meta, StoryObj } from '@storybook/nextjs';
 
 const meta: Meta<typeof HighlightBasicDemo> = {
   title: 'playgrounds/highlight/HighlightBasicDemo',
   component: HighlightBasicDemo,
-  parameters: {
-    layout: 'centered',
-  },
+  decorators: [
+    (Story) => (
+      <Playground>
+        <Story />
+      </Playground>
+    ),
+  ],
 };
 
 export default meta;
