@@ -1,5 +1,6 @@
 'use client';
 
+import { SuspenseList } from '#libs/react';
 import { Checkbox } from '@/components/form/checkbox';
 import { FormControl } from '@/components/form/form-control';
 import { Select } from '@/components/form/select';
@@ -8,7 +9,6 @@ import { sleep } from '@/helpers/sleep';
 import {
   FC,
   useState,
-  unstable_SuspenseList as SuspenseList,
   Suspense,
   SuspenseListProps,
   use,
