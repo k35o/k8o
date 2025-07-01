@@ -1,0 +1,23 @@
+{
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Write|Edit|MultiEdit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "jq -r '.tool_input.file_path | select(endswith(\".ts\")or endswith(\".tsx\"))' | xargs -r pnpm prettier --write --experimental-cli"
+          },
+          {
+            "type": "command",
+            "command": "jq -r '.tool_input.file_path | select(endswith(\".ts\")or endswith(\".tsx\"))' | xargs -r pnpm lint:fix --file"
+          },
+          {
+            "type": "command",
+            "command": "pnpm ls-lint"
+          }
+        ]
+      }
+    ]
+  }
+}
