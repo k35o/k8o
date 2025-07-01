@@ -12,8 +12,8 @@ import { LinkButton } from '@/components/link-button';
 import { ScrollLinked } from '@/components/scroll-linked';
 import { Separator } from '@/components/separator';
 import { TextTag } from '@/components/text-tag';
-import { cn } from '@/utils/cn';
-import { formatDate } from '@/utils/date/format';
+import { cn } from '@/helpers/cn';
+import { formatDate } from '@/helpers/date/format';
 import { Route } from 'next';
 import { FC, PropsWithChildren, ReactNode } from 'react';
 
