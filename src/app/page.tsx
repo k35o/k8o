@@ -96,6 +96,12 @@ export default function Home() {
             description="過去の登壇内容をまとめたページです。講演のテーマや資料へのリンクを掲載しています。"
           />
           <AppCard
+            link="/playgrounds"
+            symbol="🎮"
+            title="Playgrounds"
+            description="インタラクティブなWeb技術のデモとサンプルコード集。最新のWeb API、CSS機能、React技術を実際に試すことができます。"
+          />
+          <AppCard
             link="/design-system"
             symbol={
               <Image
