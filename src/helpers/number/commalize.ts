@@ -1,8 +1,10 @@
 export const commalize = (num: number) => {
   // 少数は四捨五入して整数にする
-  return Math.round(num)
-    .toString()
-    .replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+  const roundedNumber = Math.round(num);
+  const numberString = roundedNumber.toString();
+
+  // 3桁ごとにカンマを挿入
+  return numberString.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
 };
 
 if (import.meta.vitest) {
