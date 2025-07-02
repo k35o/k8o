@@ -99,7 +99,7 @@ export default function Home() {
             link="/playgrounds"
             symbol="👾"
             title="Playgrounds"
-            description="Blogや趣味で作成した簡単なWeb技術の試作を集めたページです。"
+            description="Blogのために作成したサンプルや趣味で作成した試作品を集めました。"
           />
           <AppCard
             link="/design-system"

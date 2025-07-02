@@ -4,18 +4,18 @@ import type { ReactNode } from 'react';
 export const metadata: Metadata = {
   title: 'Playgrounds',
   description:
-    'Blogや趣味で作成した簡単なWeb技術の試作を集めたページです。',
+    'Blogのために作成したサンプルや趣味で作成した試作品を集めました。',
   openGraph: {
     title: 'Playgrounds',
     description:
-      'Blogや趣味で作成した簡単なWeb技術の試作を集めたページです。',
+      'Blogのために作成したサンプルや趣味で作成した試作品を集めました。',
     type: 'website',
   },
   twitter: {
     card: 'summary_large_image',
     title: 'Playgrounds',
     description:
-      'Blogや趣味で作成した簡単なWeb技術の試作を集めたページです。',
+      'Blogのために作成したサンプルや趣味で作成した試作品を集めました。',
   },
 };
 
