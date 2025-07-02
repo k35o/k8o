@@ -96,6 +96,12 @@ export default function Home() {
             description="過去の登壇内容をまとめたページです。講演のテーマや資料へのリンクを掲載しています。"
           />
           <AppCard
+            link="/playgrounds"
+            symbol="👾"
+            title="Playgrounds"
+            description="Blogのために作成したサンプルや趣味で作成した試作品を集めました。"
+          />
+          <AppCard
             link="/design-system"
             symbol={
               <Image
