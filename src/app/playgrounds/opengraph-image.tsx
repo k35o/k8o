@@ -2,10 +2,10 @@ import { ImageResponse } from 'next/og';
 
 export const runtime = 'edge';
 
-export const alt = 'Playgrounds | K8O';
+export const alt = 'Playgrounds';
 export const size = {
   width: 1200,
-  height: 630,
+  height: 600,
 };
 
 export const contentType = 'image/png';
@@ -15,29 +15,28 @@ export default function Image() {
     (
       <div
         style={{
-          fontSize: 60,
-          background:
-            'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+          fontSize: 256,
+          background: '#2dd4bf',
           width: '100%',
           height: '100%',
           display: 'flex',
+          flexDirection: 'column',
           alignItems: 'center',
           justifyContent: 'center',
-          color: 'white',
-          flexDirection: 'column',
         }}
       >
-        <div style={{ marginBottom: 20 }}>🎮</div>
-        <div style={{ textAlign: 'center' }}>Playgrounds</div>
         <div
           style={{
-            fontSize: 24,
-            opacity: 0.8,
-            textAlign: 'center',
-            marginTop: 20,
+            background: 'white',
+            width: 512,
+            height: 512,
+            display: 'flex',
+            borderRadius: 9999,
+            alignItems: 'center',
+            justifyContent: 'center',
           }}
         >
-          インタラクティブなWeb技術のデモ集
+          👾
         </div>
       </div>
     ),

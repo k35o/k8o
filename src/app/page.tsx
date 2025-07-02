@@ -97,9 +97,9 @@ export default function Home() {
           />
           <AppCard
             link="/playgrounds"
-            symbol="🎮"
+            symbol="👾"
             title="Playgrounds"
-            description="インタラクティブなWeb技術のデモとサンプルコード集。最新のWeb API、CSS機能、React技術を実際に試すことができます。"
+            description="Blogや趣味で作成した簡単なWeb技術の試作を集めたページです。"
           />
           <AppCard
             link="/design-system"
