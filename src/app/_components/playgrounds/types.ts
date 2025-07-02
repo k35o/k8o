@@ -1,7 +1,7 @@
-import { ComponentType } from 'react';
+import { FC } from 'react';
 
 export type PlaygroundDemo = {
-  component: ComponentType;
+  component: FC;
   title: string;
 };
 
