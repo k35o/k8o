@@ -1,5 +1,5 @@
 import { getBlogContent } from '#api/blog';
-import { BlogOgImage } from '@/app/blog/_components/og-image';
+import { OgImage } from '@/app/_components/og-image';
 
 export const alt =
   '色のコントラスト比は重要だけどどうやって求めるんだっけ？';
@@ -13,7 +13,7 @@ export const contentType = 'image/png';
 export default async function Image() {
   const blog = await getBlogContent('color-contrast');
 
-  return BlogOgImage({
+  return OgImage({
     title: blog.title,
   });
 }

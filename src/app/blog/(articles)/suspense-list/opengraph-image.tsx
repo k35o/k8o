@@ -1,5 +1,5 @@
 import { getBlogContent } from '#api/blog';
-import { BlogOgImage } from '@/app/blog/_components/og-image';
+import { OgImage } from '@/app/_components/og-image';
 
 export const alt = 'React SuspenseListでローディング順序を制御する';
 export const size = {
@@ -12,7 +12,7 @@ export const contentType = 'image/png';
 export default async function Image() {
   const blog = await getBlogContent('suspense-list');
 
-  return BlogOgImage({
+  return OgImage({
     title: blog.title,
   });
 }

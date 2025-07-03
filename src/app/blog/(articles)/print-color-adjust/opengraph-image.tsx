@@ -1,5 +1,5 @@
 import { getBlogContent } from '#api/blog';
-import { BlogOgImage } from '@/app/blog/_components/og-image';
+import { OgImage } from '@/app/_components/og-image';
 
 export const alt = 'print-color-adjustで印刷時の色調整を制御する';
 export const size = {
@@ -12,7 +12,7 @@ export const contentType = 'image/png';
 export default async function Image() {
   const blog = await getBlogContent('print-color-adjust');
 
-  return BlogOgImage({
+  return OgImage({
     title: blog.title,
   });
 }
