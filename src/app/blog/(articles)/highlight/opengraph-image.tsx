@@ -1,5 +1,5 @@
 import { getBlogContent } from '#api/blog';
-import { BlogOgImage } from '@/app/blog/_components/og-image';
+import { OgImage } from '@/app/_components/og-image';
 
 export const alt =
   'CSS Custom Highlight APIで任意の範囲のテキストをハイライトする';
@@ -13,7 +13,7 @@ export const contentType = 'image/png';
 export default async function Image() {
   const blog = await getBlogContent('highlight');
 
-  return BlogOgImage({
+  return OgImage({
     title: blog.title,
   });
 }

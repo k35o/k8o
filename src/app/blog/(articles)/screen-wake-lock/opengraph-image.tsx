@@ -1,5 +1,5 @@
 import { getBlogContent } from '#api/blog';
-import { BlogOgImage } from '@/app/blog/_components/og-image';
+import { OgImage } from '@/app/_components/og-image';
 
 export const alt = '画面のスリープを防ぐScreen Wake Lock API';
 export const size = {
@@ -12,7 +12,7 @@ export const contentType = 'image/png';
 export default async function Image() {
   const blog = await getBlogContent('screen-wake-lock');
 
-  return BlogOgImage({
+  return OgImage({
     title: blog.title,
   });
 }

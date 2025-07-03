@@ -1,11 +1,11 @@
 import { loadDefaultJapaneseParser } from 'budoux';
 import { ImageResponse } from 'next/og';
 
-type BlogOgImageProps = {
+type OgImageProps = {
   title: string;
 };
 
-export function BlogOgImage({ title }: BlogOgImageProps) {
+export function OgImage({ title }: OgImageProps) {
   const words = loadDefaultJapaneseParser().parse(title);
 
   return new ImageResponse(
@@ -54,7 +54,7 @@ export function BlogOgImage({ title }: BlogOgImageProps) {
               </span>
             ))}
           </div>
-          {/* eslint-disable-next-line @next/next/no-img-element */}
+          {/* eslint-disable-next-line @next/next/no-img-element -- ogではIamgeを使えない */}
           <img
             src="https://k8o.me/icon.png"
             width={128}

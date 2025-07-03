@@ -1,5 +1,5 @@
 import { getBlogContent } from '#api/blog';
-import { BlogOgImage } from '@/app/blog/_components/og-image';
+import { OgImage } from '@/app/_components/og-image';
 
 export const alt =
   'Chrome138・Edge138でBaseline2025入りしたCSS abs()とsign()関数';
@@ -13,7 +13,7 @@ export const contentType = 'image/png';
 export default async function Image() {
   const blog = await getBlogContent('abs-sign');
 
-  return BlogOgImage({
+  return OgImage({
     title: blog.title,
   });
 }

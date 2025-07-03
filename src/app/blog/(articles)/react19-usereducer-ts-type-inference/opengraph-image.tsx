@@ -1,5 +1,5 @@
 import { getBlogContent } from '#api/blog';
-import { BlogOgImage } from '@/app/blog/_components/og-image';
+import { OgImage } from '@/app/_components/og-image';
 
 export const alt =
   'React19で変化したuseReducerの型から学ぶTypeScriptの型推論';
@@ -15,7 +15,7 @@ export default async function Image() {
     'react19-usereducer-ts-type-inference',
   );
 
-  return BlogOgImage({
+  return OgImage({
     title: blog.title,
   });
 }
