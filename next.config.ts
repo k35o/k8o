@@ -1,10 +1,14 @@
-import BundleAnalyzer from '@next/bundle-analyzer';
 import withMdx from '@next/mdx';
 import rehypeShiki, { RehypeShikiOptions } from '@shikijs/rehype';
 import { NextConfig } from 'next';
 import rehypeKatex from 'rehype-katex';
 import remarkFrontmatter from 'remark-frontmatter';
 import remarkMath from 'remark-math';
+import Sonda from 'sonda/next';
+
+const withSondaAnalyzer = Sonda({
+  enabled: process.env.ANALYZE === 'true',
+});
 
 const nextConfig: NextConfig = {
   reactStrictMode: true,
@@ -18,13 +22,10 @@ const nextConfig: NextConfig = {
     typedRoutes: true,
     viewTransition: true,
   },
+  productionBrowserSourceMaps: process.env.ANALYZE === 'true',
 };
 
-const withBundleAnalyzer = BundleAnalyzer({
-  enabled: process.env.ANALYZE === 'true',
-});
-
-export default withBundleAnalyzer(
+export default withSondaAnalyzer(
   withMdx({
     options: {
       remarkPlugins: [remarkMath, remarkFrontmatter],

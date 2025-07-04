@@ -267,6 +267,9 @@ importers:
       react-scan:
         specifier: 0.4.3
         version: 0.4.3(@types/react@19.1.8)(next@15.3.4(@babel/core@7.27.4)(react-dom@19.1.0(react@19.1.0))(react@19.1.0))(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(rollup@4.19.1)
+      sonda:
+        specifier: 0.8.2
+        version: 0.8.2
       storybook:
         specifier: 9.0.9
         version: 9.0.9(@testing-library/dom@10.4.0)(bufferutil@4.0.8)(prettier@3.6.2)
@@ -7373,6 +7376,11 @@ packages:
   socket.io@4.8.1:
     resolution: {integrity: sha512-oZ7iUCxph8WYRHHcjBEc9unw3adt5CmSNlppj/5Q4k2RIrhl8Z5yY2Xr4j9zj0+wzVZ0bxmYoGSzKJnRl6A4yg==}
     engines: {node: '>=10.2.0'}
+
+  sonda@0.8.2:
+    resolution: {integrity: sha512-OzLlgd4TVjNzhk+Q7NWrdHc4hAU3gchF9u9ZQ4GcQLKk3IX6OTbaf4U7Itq9XssuuCPVVPTl8p0rGAjBHalxsg==}
+    engines: {node: '>=20.19 || >=22.12'}
+    hasBin: true
 
   source-map-js@1.2.1:
     resolution: {integrity: sha512-UXWMKhLOwVKb728IUtQPXxfYU+usdybtUrK/8uGE8CQMvrhOpwvzDBwj0QhSL7MQc7vIsISBG8VQ8+IDQxpfQA==}
@@ -16564,6 +16572,11 @@ snapshots:
       - bufferutil
       - supports-color
       - utf-8-validate
+
+  sonda@0.8.2:
+    dependencies:
+      '@ampproject/remapping': 2.3.0
+      open: 10.1.2
 
   source-map-js@1.2.1: {}
 
