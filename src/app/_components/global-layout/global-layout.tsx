@@ -2,6 +2,7 @@ import { Header } from './header';
 import { ColorFilters } from '../color-filters';
 import { ContactToMe } from '../contact-to-me';
 import { ToggleTheme } from '../toggle-theme';
+import { LlmLink } from './llm-link';
 import { NavigationMenu } from './navigation-menu';
 import { NewsLink } from './news-link';
 import { TagsLink } from './tags-link';
@@ -16,20 +17,21 @@ export const GlobalLayout: FC<{ children: ReactNode }> = ({
   return (
     <div className="app-background flex min-h-svh flex-col">
       <Header>
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-3">
           <Link href="/">
             <h1>
               <span className="sr-only">k8o</span>
               <Logo className="h-10" />
             </h1>
           </Link>
-          <div className="hidden items-center gap-2 md:flex">
+          <div className="hidden items-center gap-1 md:flex">
             <TagsLink />
             <NewsLink />
             <ContactToMe />
           </div>
         </div>
-        <div className="hidden items-center gap-4 md:flex">
+        <div className="hidden items-center gap-1 md:flex">
+          <LlmLink />
           <ColorFilters.ListBox />
           <div className="-my-2">
             <ToggleTheme />
