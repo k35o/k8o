@@ -3,6 +3,7 @@
 import { ColorFilters } from '../../color-filters';
 import { ContactToMe } from '../../contact-to-me';
 import { ToggleTheme } from '../../toggle-theme';
+import { LlmLink } from '../llm-link';
 import { NewsLink } from '../news-link';
 import { TagsLink } from '../tags-link';
 import { IconButton } from '@/components/icon-button';
@@ -59,6 +60,7 @@ export const NavigationMenu: FC = () => {
             </nav>
             <div className="flex items-center justify-center">
               <div className="flex justify-center gap-4">
+                <LlmLink />
                 <ColorFilters.ListBox placement="top" />
                 <ToggleTheme />
               </div>

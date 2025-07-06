@@ -1,10 +1,5 @@
 import { IconLink } from '@/components/icon-link';
-import {
-  AIIcon,
-  QiitaIcon,
-  RSSIcon,
-  ZennIcon,
-} from '@/components/icons';
+import { QiitaIcon, RSSIcon, ZennIcon } from '@/components/icons';
 import { FC } from 'react';
 
 export const ExternalBlog: FC = () => {
@@ -23,9 +18,6 @@ export const ExternalBlog: FC = () => {
         label="Zennのアカウント"
       >
         <ZennIcon />
-      </IconLink>
-      <IconLink href="/llms.txt" bg="base" label="LLMS" openInNewTab>
-        <AIIcon />
       </IconLink>
       <IconLink
         href="/blog/feed"
