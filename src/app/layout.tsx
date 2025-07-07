@@ -49,7 +49,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="ja" suppressHydrationWarning>
-      <ReactScan />
+      {process.env.NODE_ENV === 'development' && <ReactScan />}
       <body
         className={cn(
           mPlus2.variable,
