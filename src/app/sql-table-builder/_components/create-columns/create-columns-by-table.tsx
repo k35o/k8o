@@ -40,16 +40,16 @@ export const CreateColumnsByTable: FC<Props> = ({
   const formId = useId();
 
   return (
-    <div className="border-border-base bg-bg-base w-[calc(100vw-48px)] max-w-[53rem] overflow-x-auto rounded-lg border">
-      <table className="w-[51rem]">
+    <div className="border-border-base bg-bg-base w-full overflow-x-auto rounded-lg border">
+      <table className="min-w-full">
         <thead>
           <tr className="border-border-base border-b">
-            <th className="px-2 py-3 text-nowrap">カラム名</th>
-            <th className="px-2 py-3 text-nowrap">コメント</th>
-            <th className="px-2 py-3 text-nowrap">型</th>
-            <th className="px-2 py-3 text-nowrap">null許容</th>
-            <th className="px-2 py-3 text-nowrap">デフォルト値</th>
-            <th className="px-2 py-3"></th>
+            <th className="px-2 py-3 text-nowrap min-w-[120px]">カラム名</th>
+            <th className="px-2 py-3 text-nowrap min-w-[120px]">コメント</th>
+            <th className="px-2 py-3 text-nowrap min-w-[160px]">型</th>
+            <th className="px-2 py-3 text-nowrap min-w-[80px]">null許容</th>
+            <th className="px-2 py-3 text-nowrap min-w-[120px]">デフォルト値</th>
+            <th className="px-2 py-3 w-12"></th>
           </tr>
         </thead>
         <tbody>
@@ -57,7 +57,7 @@ export const CreateColumnsByTable: FC<Props> = ({
             const columnError = columnsError?.[id];
             return (
               <tr key={id}>
-                <td className="px-2 py-3">
+                <td className="px-2 py-3 min-w-[120px]">
                   <TextField
                     id={`column-name_${idx.toString()}-${formId}`}
                     describedbyId={
@@ -86,7 +86,7 @@ export const CreateColumnsByTable: FC<Props> = ({
                     </p>
                   )}
                 </td>
-                <td className="px-2 py-3">
+                <td className="px-2 py-3 min-w-[120px]">
                   <TextField
                     id={`column-alias_${idx.toString()}-${formId}`}
                     describedbyId={
@@ -115,7 +115,7 @@ export const CreateColumnsByTable: FC<Props> = ({
                     </p>
                   )}
                 </td>
-                <td className="px-2 py-3">
+                <td className="px-2 py-3 min-w-[160px]">
                   <Select
                     id={`column-type_${idx.toString()}-${formId}`}
                     describedbyId={
@@ -144,7 +144,7 @@ export const CreateColumnsByTable: FC<Props> = ({
                     </p>
                   )}
                 </td>
-                <td className="px-2 py-3 text-center">
+                <td className="px-2 py-3 min-w-[80px] text-center">
                   <Checkbox
                     label=""
                     value={column.nullable}
@@ -161,7 +161,7 @@ export const CreateColumnsByTable: FC<Props> = ({
                     </p>
                   )}
                 </td>
-                <td className="px-2 py-3">
+                <td className="px-2 py-3 min-w-[120px]">
                   <TextField
                     id={`default_${idx.toString()}-${formId}`}
                     describedbyId={
@@ -189,7 +189,7 @@ export const CreateColumnsByTable: FC<Props> = ({
                     </p>
                   )}
                 </td>
-                <td className="px-2 py-3">
+                <td className="px-2 py-3 w-12">
                   {columnsEntries.length > 1 && (
                     <IconButton
                       label="削除"
