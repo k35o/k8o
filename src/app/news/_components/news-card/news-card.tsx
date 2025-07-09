@@ -2,7 +2,7 @@ import { News } from '../../_types';
 import { InteractiveCard } from '@/components/card';
 import { Heading } from '@/components/heading';
 import { PublishDateIcon, UpdateDateIcon } from '@/components/icons';
-import { formatDate } from '@/helpers/date/format';
+import { formatDate } from '@k8o/helpers/date';
 import Link from 'next/link';
 import { FC } from 'react';
 

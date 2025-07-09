@@ -4,8 +4,8 @@ import { SuspenseList } from '#libs/react';
 import { Checkbox } from '@/components/form/checkbox';
 import { FormControl } from '@/components/form/form-control';
 import { Select } from '@/components/form/select';
-import { cn } from '@/helpers/cn';
-import { sleep } from '@/helpers/sleep';
+import { cn } from '@k8o/helpers/cn';
+import { sleep } from '@k8o/helpers/sleep';
 import {
   FC,
   useState,

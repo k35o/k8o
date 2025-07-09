@@ -1,5 +1,5 @@
 import { CardProps } from './type';
-import { cn } from '@/helpers/cn';
+import { cn } from '@k8o/helpers/cn';
 import { FC } from 'react';
 
 export const Card: FC<CardProps> = ({

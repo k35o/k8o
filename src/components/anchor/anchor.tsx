@@ -1,5 +1,5 @@
 import { ExternalLinkIcon } from '../icons';
-import { isInternalRoute } from '@/helpers/is-internal-route';
+import { isInternalRoute } from '@k8o/helpers/is-internal-route';
 import Link from 'next/link';
 import { ReactNode } from 'react';
 

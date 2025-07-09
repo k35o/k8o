@@ -1,6 +1,6 @@
 import { IconButton } from '../../icon-button';
 import { CloseIcon } from '../../icons';
-import { cn } from '@/helpers/cn';
+import { cn } from '@k8o/helpers/cn';
 import { FC, useEffect, useRef, useState } from 'react';
 
 export type Option = Readonly<{

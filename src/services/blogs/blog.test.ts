@@ -1,8 +1,7 @@
 import { getBlog, getBlogMetadata, getBlogToc } from './blog';
 import { blogPath } from './path';
 import { db } from '#database/db';
-import { getFrontmatter } from '@/helpers/mdx/frontmatter';
-import { getTocTree } from '@/helpers/mdx/toc-tree';
+import { getFrontmatter, getTocTree } from '@k8o/helpers/mdx';
 
 vi.mock('#database/db');
 vi.mock('@/helpers/mdx/frontmatter');

@@ -1,8 +1,6 @@
 import { MinusIcon, PlusIcon } from '../../icons';
-import { cn } from '@/helpers/cn';
-import { between } from '@/helpers/number/between';
-import { cast } from '@/helpers/number/cast';
-import { toPrecision } from '@/helpers/number/to-precision';
+import { cn } from '@k8o/helpers/cn';
+import { between, cast, toPrecision } from '@k8o/helpers/number';
 import { FC, useState } from 'react';
 
 type Props = {

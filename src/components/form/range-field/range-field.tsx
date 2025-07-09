@@ -1,4 +1,4 @@
-import { cn } from '@/helpers/cn';
+import { cn } from '@k8o/helpers/cn';
 import { FC } from 'react';
 
 type Props = {

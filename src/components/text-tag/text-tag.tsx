@@ -1,4 +1,4 @@
-import { cn } from '@/helpers/cn';
+import { cn } from '@k8o/helpers/cn';
 import { Route } from 'next';
 import Link from 'next/link';
 

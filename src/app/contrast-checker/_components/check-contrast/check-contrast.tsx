@@ -2,7 +2,7 @@
 
 import { ColorPallet } from '../color-pallet';
 import { ResultTable } from '../result-table';
-import { calcContrast } from '@/helpers/color/calc-contrast';
+import { calcContrast } from '@k8o/helpers/color';
 import { FC, useState } from 'react';
 
 export const CheckContrast: FC = () => {

@@ -3,7 +3,7 @@ import { InteractiveCard } from '@/components/card';
 import { Heading } from '@/components/heading';
 import { PublishDateIcon, TagIcon } from '@/components/icons';
 import { TextTag } from '@/components/text-tag';
-import { formatDate } from '@/helpers/date/format';
+import { formatDate } from '@k8o/helpers/date';
 import { Route } from 'next';
 import Link from 'next/link';
 import { FC } from 'react';

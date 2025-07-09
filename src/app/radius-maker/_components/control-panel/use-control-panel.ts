@@ -1,4 +1,4 @@
-import { between } from '@/helpers/number/between';
+import { between } from '@k8o/helpers/number';
 import {
   useCallback,
   useMemo,

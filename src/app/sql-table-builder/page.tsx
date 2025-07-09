@@ -11,7 +11,7 @@ import {
 import { InvalidTable, Table } from './_types/table';
 import { makeStatement } from './_utils/statement';
 import { Button } from '@/components/button';
-import { uuidV4 } from '@/helpers/uuid-v4';
+import { uuidV4 } from '@k8o/helpers/uuid-v4';
 import dynamic from 'next/dynamic';
 import { useRef, useState } from 'react';
 

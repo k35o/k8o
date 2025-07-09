@@ -2,8 +2,8 @@ import { Result } from '../type';
 import { db } from '#database/db';
 import { subscribers } from '@/database/schema/subscribers';
 import VerifyEmail from '@/emails/verify-email';
-import { compareDate } from '@/helpers/date/compare';
 import { resend } from '@/services/email';
+import { compareDate } from '@k8o/helpers/date';
 import { eq } from 'drizzle-orm';
 import { z } from 'zod/v4';
 

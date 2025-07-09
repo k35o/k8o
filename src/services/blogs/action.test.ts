@@ -5,7 +5,7 @@ import { feedback } from './action';
 import { db } from '#database/db';
 import { blogComment } from '@/database/schema/blog-comment';
 import { comments } from '@/database/schema/comments';
-import { checkRateLimit } from '@/helpers/ratelimit';
+import { checkRateLimit } from '@k8o/helpers/ratelimit';
 
 vi.mock('#database/db');
 vi.mock('@/helpers/ratelimit');

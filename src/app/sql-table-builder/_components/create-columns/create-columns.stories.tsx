@@ -1,6 +1,6 @@
 import { CreateColumns } from './create-columns';
 import { Column } from '../../_types/column';
-import { uuidV4 } from '@/helpers/uuid-v4';
+import { uuidV4 } from '@k8o/helpers/uuid-v4';
 import type { Meta, StoryObj } from '@storybook/nextjs';
 import { useState } from 'react';
 
