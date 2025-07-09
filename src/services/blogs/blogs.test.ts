@@ -4,7 +4,7 @@ import { db } from '#database/db';
 import { getFrontmatter } from '@k8o/helpers/mdx';
 
 vi.mock('#database/db');
-vi.mock('@/helpers/mdx/frontmatter');
+vi.mock('@k8o/helpers/mdx');
 vi.mock('./path');
 
 describe('blogs service', () => {

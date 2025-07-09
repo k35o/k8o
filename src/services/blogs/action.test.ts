@@ -8,7 +8,7 @@ import { comments } from '@/database/schema/comments';
 import { checkRateLimit } from '@k8o/helpers/ratelimit';
 
 vi.mock('#database/db');
-vi.mock('@/helpers/ratelimit');
+vi.mock('@k8o/helpers/ratelimit');
 vi.mock('@/libs/zod', () => ({}));
 
 describe('feedback', () => {

@@ -4,8 +4,7 @@ import { db } from '#database/db';
 import { getFrontmatter, getTocTree } from '@k8o/helpers/mdx';
 
 vi.mock('#database/db');
-vi.mock('@/helpers/mdx/frontmatter');
-vi.mock('@/helpers/mdx/toc-tree');
+vi.mock('@k8o/helpers/mdx');
 vi.mock('./path');
 
 describe('blog service', () => {
