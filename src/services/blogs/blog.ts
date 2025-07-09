@@ -1,7 +1,6 @@
 import { blogPath } from './path';
 import { db } from '#database/db';
-import { getFrontmatter } from '@/helpers/mdx/frontmatter';
-import { getTocTree } from '@/helpers/mdx/toc-tree';
+import { getFrontmatter, getTocTree } from '@k8o/helpers/mdx';
 
 export const getBlog = async (slug: string) => {
   const blog = await db.query.blogs.findFirst({

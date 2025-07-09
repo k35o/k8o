@@ -1,6 +1,6 @@
 import { AlertIcon } from '../icons';
-import type { Status } from '@/helpers';
-import { cn } from '@/helpers/cn';
+import type { Status } from '@k8o/helpers';
+import { cn } from '@k8o/helpers/cn';
 import { FC } from 'react';
 
 type Props = {

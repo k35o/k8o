@@ -11,13 +11,13 @@ import { IconButton } from '../icon-button';
 import { ChevronIcon } from '../icons';
 import { Popover } from '../popover';
 import { useFloatingUIContext } from '../popover/hooks';
-import { cn } from '@/helpers/cn';
 import {
   FloatingList,
   Placement,
   useInteractions,
   useListNavigation,
 } from '@floating-ui/react';
+import { cn } from '@k8o/helpers/cn';
 import {
   ComponentProps,
   FC,

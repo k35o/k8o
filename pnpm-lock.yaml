@@ -11,6 +11,9 @@ importers:
       '@floating-ui/react':
         specifier: 0.27.13
         version: 0.27.13(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
+      '@k8o/helpers':
+        specifier: workspace:*
+        version: link:packages/helpers
       '@mdx-js/loader':
         specifier: 3.1.0
         version: 3.1.0(webpack@5.93.0(esbuild@0.25.5))
@@ -59,9 +62,6 @@ importers:
       budoux:
         specifier: 0.7.0
         version: 0.7.0
-      clsx:
-        specifier: 2.1.1
-        version: 2.1.1
       date-fns:
         specifier: 4.1.0
         version: 4.1.0
@@ -113,9 +113,6 @@ importers:
       server-only:
         specifier: 0.0.1
         version: 0.0.1
-      tailwind-merge:
-        specifier: 3.3.1
-        version: 3.3.1
       tailwindcss:
         specifier: 4.1.11
         version: 4.1.11
@@ -282,6 +279,22 @@ importers:
       vitest:
         specifier: 3.2.4
         version: 3.2.4(@types/debug@4.1.12)(@types/node@22.16.0)(@vitest/browser@3.2.4)(@vitest/ui@3.2.4)(jsdom@26.0.0(bufferutil@4.0.8))(lightningcss@1.30.1)(msw@2.10.3(@types/node@22.16.0)(typescript@5.8.3))(terser@5.31.3)
+
+  packages/helpers:
+    dependencies:
+      clsx:
+        specifier: 2.1.1
+        version: 2.1.1
+      tailwind-merge:
+        specifier: 3.3.1
+        version: 3.3.1
+    devDependencies:
+      '@typescript/native-preview':
+        specifier: 7.0.0-dev.20250709.1
+        version: 7.0.0-dev.20250709.1
+      typescript:
+        specifier: 5.8.3
+        version: 5.8.3
 
 packages:
 
@@ -3421,6 +3434,53 @@ packages:
   '@typescript-eslint/visitor-keys@8.35.1':
     resolution: {integrity: sha512-VRwixir4zBWCSTP/ljEo091lbpypz57PoeAQ9imjG+vbeof9LplljsL1mos4ccG6H9IjfrVGM359RozUnuFhpw==}
     engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
+
+  '@typescript/native-preview-darwin-arm64@7.0.0-dev.20250709.1':
+    resolution: {integrity: sha512-4BNMXUKYmx7ECcQgff0i4yJXJVVNq6GfFC/8lvXv5GT/l8SzBUE0cm7rbCF2CNEk1mnVB31jEPFaGlsHIk4buA==}
+    engines: {node: '>=20.6.0'}
+    cpu: [arm64]
+    os: [darwin]
+
+  '@typescript/native-preview-darwin-x64@7.0.0-dev.20250709.1':
+    resolution: {integrity: sha512-xN1T3WjfZkf49X+iHat3UB0sHR8BJfYT0IpOwMPV5NkjBH9SnX1DpWW6sXU6rkwelcu9FM6edGkzaVbWZ55jvw==}
+    engines: {node: '>=20.6.0'}
+    cpu: [x64]
+    os: [darwin]
+
+  '@typescript/native-preview-linux-arm64@7.0.0-dev.20250709.1':
+    resolution: {integrity: sha512-dKB0OIIkeUl4M10Yw8VwjvHG+RIAUIOv16+3tgVQpcxH9pKlJJ6I0ZXdfuvw7xJ1NfcrPXpbB75aE4+Mfv0Ofw==}
+    engines: {node: '>=20.6.0'}
+    cpu: [arm64]
+    os: [linux]
+
+  '@typescript/native-preview-linux-arm@7.0.0-dev.20250709.1':
+    resolution: {integrity: sha512-s4iPbI+a3SsrcuO3BBljmQlSI8Q+SLDuqoOKmRwXWtXMa8jFxdFz/E5Oj6L3QfEApV6RZGlB4M1M79VlYfNhuQ==}
+    engines: {node: '>=20.6.0'}
+    cpu: [arm]
+    os: [linux]
+
+  '@typescript/native-preview-linux-x64@7.0.0-dev.20250709.1':
+    resolution: {integrity: sha512-iQqqEHl1FJqgARJTZu2HR+3/IS20gimFK6Yw/P0wT/Mgy8hqIVJfxuywI6qO08LTIrU/QlbvUbMPebG1NLv8Og==}
+    engines: {node: '>=20.6.0'}
+    cpu: [x64]
+    os: [linux]
+
+  '@typescript/native-preview-win32-arm64@7.0.0-dev.20250709.1':
+    resolution: {integrity: sha512-oDLav/1eCOivx14cVidbMXh2KXhSL9sGJFC6xa8G8RAQdxLiokDe9ZeUew4k4QNMiG1TSuSO9uRAPM5EHr6zuw==}
+    engines: {node: '>=20.6.0'}
+    cpu: [arm64]
+    os: [win32]
+
+  '@typescript/native-preview-win32-x64@7.0.0-dev.20250709.1':
+    resolution: {integrity: sha512-XG5mUFMVzdtrBhat9wBOPZ4lWy+8GbhtvySx5nxINhZGFyUUhgx9wY87ZIJZBrDRVHfYIYN0JPVdfaZ3Trk1nw==}
+    engines: {node: '>=20.6.0'}
+    cpu: [x64]
+    os: [win32]
+
+  '@typescript/native-preview@7.0.0-dev.20250709.1':
+    resolution: {integrity: sha512-EM5u/BLK3A7KAOPPLdlMmlZywtQpQp64Srwec5fWnKROKLiGeSct4O3LAjM7tDDbGdwJcLLcyJPzBmyRMSqRkQ==}
+    engines: {node: '>=20.6.0'}
+    hasBin: true
 
   '@ungap/structured-clone@1.2.0':
     resolution: {integrity: sha512-zuVdFrMJiuCDQUMCzQaD6KL28MjnqqN8XnAqiEq9PNm/hCPTSGfrXCOfwj1ow4LFb/tNymJPwsNbVePc1xFqrQ==}
@@ -11510,7 +11570,7 @@ snapshots:
 
   '@types/cors@2.8.17':
     dependencies:
-      '@types/node': 22.16.0
+      '@types/node': 20.17.19
 
   '@types/d3-color@3.1.3': {}
 
@@ -11597,7 +11657,7 @@ snapshots:
 
   '@types/pg@8.11.6':
     dependencies:
-      '@types/node': 22.16.0
+      '@types/node': 20.17.19
       pg-protocol: 1.6.1
       pg-types: 4.0.2
 
@@ -11780,6 +11840,37 @@ snapshots:
     dependencies:
       '@typescript-eslint/types': 8.35.1
       eslint-visitor-keys: 4.2.1
+
+  '@typescript/native-preview-darwin-arm64@7.0.0-dev.20250709.1':
+    optional: true
+
+  '@typescript/native-preview-darwin-x64@7.0.0-dev.20250709.1':
+    optional: true
+
+  '@typescript/native-preview-linux-arm64@7.0.0-dev.20250709.1':
+    optional: true
+
+  '@typescript/native-preview-linux-arm@7.0.0-dev.20250709.1':
+    optional: true
+
+  '@typescript/native-preview-linux-x64@7.0.0-dev.20250709.1':
+    optional: true
+
+  '@typescript/native-preview-win32-arm64@7.0.0-dev.20250709.1':
+    optional: true
+
+  '@typescript/native-preview-win32-x64@7.0.0-dev.20250709.1':
+    optional: true
+
+  '@typescript/native-preview@7.0.0-dev.20250709.1':
+    optionalDependencies:
+      '@typescript/native-preview-darwin-arm64': 7.0.0-dev.20250709.1
+      '@typescript/native-preview-darwin-x64': 7.0.0-dev.20250709.1
+      '@typescript/native-preview-linux-arm': 7.0.0-dev.20250709.1
+      '@typescript/native-preview-linux-arm64': 7.0.0-dev.20250709.1
+      '@typescript/native-preview-linux-x64': 7.0.0-dev.20250709.1
+      '@typescript/native-preview-win32-arm64': 7.0.0-dev.20250709.1
+      '@typescript/native-preview-win32-x64': 7.0.0-dev.20250709.1
 
   '@ungap/structured-clone@1.2.0': {}
 
@@ -13037,7 +13128,7 @@ snapshots:
   engine.io@6.6.4(bufferutil@4.0.8):
     dependencies:
       '@types/cors': 2.8.17
-      '@types/node': 22.16.0
+      '@types/node': 20.17.19
       accepts: 1.3.8
       base64id: 2.0.0
       cookie: 0.7.2
@@ -14535,7 +14626,7 @@ snapshots:
 
   jest-worker@27.5.1:
     dependencies:
-      '@types/node': 22.16.0
+      '@types/node': 20.17.19
       merge-stream: 2.0.0
       supports-color: 8.1.1
 

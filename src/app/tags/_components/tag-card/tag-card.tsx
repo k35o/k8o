@@ -1,7 +1,7 @@
 import { InteractiveCard } from '@/components/card';
 import { ChevronIcon } from '@/components/icons';
 import { Separator } from '@/components/separator';
-import { cn } from '@/helpers/cn';
+import { cn } from '@k8o/helpers/cn';
 import { Route } from 'next';
 import Link from 'next/link';
 import { FC } from 'react';

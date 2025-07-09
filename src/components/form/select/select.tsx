@@ -1,5 +1,5 @@
 import { ChevronIcon } from '@/components/icons';
-import { cn } from '@/helpers/cn';
+import { cn } from '@k8o/helpers/cn';
 import { ChangeEventHandler, FC } from 'react';
 
 export type Option = Readonly<{

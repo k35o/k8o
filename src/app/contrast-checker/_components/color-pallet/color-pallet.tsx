@@ -1,5 +1,5 @@
 import { FormControl } from '@/components/form/form-control';
-import { cn } from '@/helpers/cn';
+import { cn } from '@k8o/helpers/cn';
 import { ChangeEventHandler, FC } from 'react';
 
 type Props = {

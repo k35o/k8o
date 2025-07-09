@@ -1,5 +1,5 @@
 import { BaseIcon, BaseIconProps } from './base';
-import { Direction, Status } from '@/helpers';
+import { Direction, Status } from '@k8o/helpers';
 import {
   AlignRight,
   Angry,

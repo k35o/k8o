@@ -1,5 +1,6 @@
-import { cn } from '@/helpers/cn';
-import { isInternalRoute } from '@/helpers/is-internal-route';
+import { cn } from '@k8o/helpers/cn';
+import { isInternalRoute } from '@k8o/helpers/is-internal-route';
+import { Route } from 'next';
 import Link from 'next/link';
 import { FC, ReactNode } from 'react';
 
@@ -40,7 +41,7 @@ export const LinkButton: FC<{
     Boolean(endIcon) && 'justify-between',
     active && 'text-fg-info hover:text-fg-info active:text-fg-info',
   );
-  return isInternalRoute(href) && !openInNewTab ? (
+  return isInternalRoute<Route>(href) && !openInNewTab ? (
     <Link className={className} aria-label={children} href={href}>
       {startIcon}
       {children}

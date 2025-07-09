@@ -1,7 +1,7 @@
 import { Heading } from '@/components/heading';
 import { PublishDateIcon, UpdateDateIcon } from '@/components/icons';
 import { Separator } from '@/components/separator';
-import { formatDate } from '@/helpers/date/format';
+import { formatDate } from '@k8o/helpers/date';
 import { FC, PropsWithChildren } from 'react';
 
 type Props = PropsWithChildren<{

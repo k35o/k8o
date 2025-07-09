@@ -1,4 +1,4 @@
-import { findAllColors } from '@/helpers';
+import { findAllColors } from '@k8o/helpers/color';
 import { FC, Fragment } from 'react';
 
 export const Code: FC<{

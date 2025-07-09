@@ -1,10 +1,10 @@
 import { getBlogs, getBlogsByTags } from './blogs';
 import { blogPath } from './path';
 import { db } from '#database/db';
-import { getFrontmatter } from '@/helpers/mdx/frontmatter';
+import { getFrontmatter } from '@k8o/helpers/mdx';
 
 vi.mock('#database/db');
-vi.mock('@/helpers/mdx/frontmatter');
+vi.mock('@k8o/helpers/mdx');
 vi.mock('./path');
 
 describe('blogs service', () => {

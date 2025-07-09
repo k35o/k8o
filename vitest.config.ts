@@ -1,9 +1,9 @@
 /// <reference types="vitest" />
 import { fileURLToPath } from 'url';
-import { defineConfig } from 'vitest/config';
 import { storybookTest } from '@storybook/addon-vitest/vitest-plugin';
 import { storybookNextJsPlugin } from '@storybook/nextjs-vite/vite-plugin';
 import react from '@vitejs/plugin-react';
+import { defineConfig } from 'vitest/config';
 
 export default defineConfig({
   test: {
@@ -26,8 +26,8 @@ export default defineConfig({
         extends: true,
         test: {
           name: { label: 'helpers', color: 'blue' },
-          include: ['src/helpers/**/*.test.{ts,tsx}'],
-          includeSource: ['src/helpers/**/*.{ts,tsx}'],
+          include: ['packages/helpers/**/*.test.{ts,tsx}'],
+          includeSource: ['packages/helpers/**/*.{ts,tsx}'],
         },
       },
       {
@@ -43,7 +43,7 @@ export default defineConfig({
         plugins: [react()],
         test: {
           name: { label: 'browser', color: 'green' },
-          include: ['src/!(helpers|services)/**/*.test.{ts,tsx}'],
+          include: ['src/!(services)/**/*.test.{ts,tsx}'],
           browser: {
             enabled: true,
             instances: [

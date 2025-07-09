@@ -1,5 +1,5 @@
 import { ToastProvider } from '../toast';
-import { cn } from '@/helpers/cn';
+import { cn } from '@k8o/helpers/cn';
 import { Variants } from 'motion/react';
 import * as motion from 'motion/react-client';
 import {

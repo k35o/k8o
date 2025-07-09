@@ -1,5 +1,5 @@
 import { getBlogView } from '#api/blog';
-import { commalize } from '@/helpers/number/commalize';
+import { commalize } from '@k8o/helpers/number';
 import { FC } from 'react';
 
 export const ViewCounter: FC<{ id: number }> = async ({ id }) => {

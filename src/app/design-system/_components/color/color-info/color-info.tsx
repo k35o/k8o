@@ -16,8 +16,8 @@ import {
   ColorContrastIcon,
   ColorInfoIcon,
 } from '@/components/icons';
-import { cn } from '@/helpers/cn';
-import { toPrecision } from '@/helpers/number/to-precision';
+import { cn } from '@k8o/helpers/cn';
+import { toPrecision } from '@k8o/helpers/number';
 import * as motion from 'motion/react-client';
 import { FC, useId, useState } from 'react';
 

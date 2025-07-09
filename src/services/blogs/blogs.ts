@@ -1,6 +1,6 @@
 import { blogPath } from './path';
 import { db } from '#database/db';
-import { getFrontmatter } from '@/helpers/mdx/frontmatter';
+import { getFrontmatter } from '@k8o/helpers/mdx';
 
 export const getBlogs = async () => {
   const blogs = await db.query.blogs.findMany({

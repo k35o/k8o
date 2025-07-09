@@ -7,7 +7,7 @@ import { NavigationMenu } from './navigation-menu';
 import { NewsLink } from './news-link';
 import { TagsLink } from './tags-link';
 import { Logo } from '@/components/icons/logo';
-import { formatDate } from '@/helpers/date/format';
+import { formatDate } from '@k8o/helpers/date';
 import Link from 'next/link';
 import { FC, ReactNode } from 'react';
 

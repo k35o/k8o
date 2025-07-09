@@ -1,7 +1,7 @@
 import { Anchor } from './components/anchor';
 import { Code } from './components/code';
 import { LinkIcon } from './components/icons';
-import { cn } from '@/helpers/cn';
+import { cn } from '@k8o/helpers/cn';
 import type { MDXComponents } from 'mdx/types';
 import { FC, PropsWithChildren } from 'react';
 

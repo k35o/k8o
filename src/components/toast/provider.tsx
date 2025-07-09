@@ -1,9 +1,9 @@
 'use client';
 
 import { Toast } from './toast';
-import { Status } from '@/helpers';
-import { cn } from '@/helpers/cn';
-import { uuidV4 } from '@/helpers/uuid-v4';
+import { Status } from '@k8o/helpers';
+import { cn } from '@k8o/helpers/cn';
+import { uuidV4 } from '@k8o/helpers/uuid-v4';
 import { AnimatePresence, Variants } from 'motion/react';
 import * as motion from 'motion/react-client';
 import {

@@ -1,5 +1,6 @@
-import { cn } from '@/helpers/cn';
-import { isInternalRoute } from '@/helpers/is-internal-route';
+import { cn } from '@k8o/helpers/cn';
+import { isInternalRoute } from '@k8o/helpers/is-internal-route';
+import { Route } from 'next';
 import Link from 'next/link';
 import { FC, PropsWithChildren } from 'react';
 
@@ -19,7 +20,7 @@ export const IconLink: FC<IconLinkProps> = ({
   children,
   openInNewTab = false,
 }) => {
-  return isInternalRoute(href) && !openInNewTab ? (
+  return isInternalRoute<Route>(href) && !openInNewTab ? (
     <Link
       className={cn(
         'hover:bg-bg-subtle focus-visible:ring-border-info active:bg-bg-emphasize block rounded-full focus-visible:ring-2',
