@@ -1,5 +1,6 @@
 import { ExternalLinkIcon } from '../icons';
 import { isInternalRoute } from '@k8o/helpers/is-internal-route';
+import { Route } from 'next';
 import Link from 'next/link';
 import { ReactNode } from 'react';
 
@@ -12,7 +13,7 @@ export const Anchor = ({
   children: ReactNode;
   openInNewTab?: boolean;
 }) => {
-  return isInternalRoute(href) && !openInNewTab ? (
+  return isInternalRoute<Route>(href) && !openInNewTab ? (
     <Link
       href={href}
       className="text-fg-info cursor-pointer hover:underline"
