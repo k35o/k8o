@@ -300,10 +300,6 @@ importers:
         version: 5.8.3
 
   packages/hooks:
-    dependencies:
-      react:
-        specifier: '>=18.0.0'
-        version: 19.1.0
     devDependencies:
       '@typescript/native-preview':
         specifier: 7.0.0-dev.20250709.1
