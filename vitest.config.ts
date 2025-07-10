@@ -1,8 +1,6 @@
-/// <reference types="vitest" />
 import { fileURLToPath } from 'url';
 import { storybookTest } from '@storybook/addon-vitest/vitest-plugin';
 import { storybookNextJsPlugin } from '@storybook/nextjs-vite/vite-plugin';
-import react from '@vitejs/plugin-react';
 import { defineConfig } from 'vitest/config';
 
 export default defineConfig({
@@ -22,40 +20,13 @@ export default defineConfig({
       '**/blog-layout/**/recommend.stories.tsx',
     ],
     projects: [
+      'packages/*',
       {
         extends: true,
         test: {
           name: { label: 'helpers', color: 'blue' },
           include: ['packages/helpers/**/*.test.{ts,tsx}'],
           includeSource: ['packages/helpers/**/*.{ts,tsx}'],
-        },
-      },
-      {
-        extends: true,
-        test: {
-          name: { label: 'services', color: 'cyan' },
-          include: ['src/services/**/*.test.{ts,tsx}'],
-          includeSource: ['src/services/**/*.{ts,tsx}'],
-        },
-      },
-      {
-        extends: true,
-        plugins: [react()],
-        test: {
-          name: { label: 'hooks', color: 'green' },
-          include: ['packages/hooks/**/*.test.{ts,tsx}'],
-          browser: {
-            enabled: true,
-            instances: [
-              {
-                browser: 'chromium',
-                name: 'browser-chromium',
-              },
-            ],
-            provider: 'playwright',
-            headless: true,
-            screenshotFailures: false,
-          },
         },
       },
       {
