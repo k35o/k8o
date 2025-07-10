@@ -114,7 +114,6 @@
     "@types/react-dom": "19.1.6",
     "@types/rss": "0.0.32",
     "@types/ws": "8.18.1",
-    "@vitejs/plugin-react": "4.6.0",
     "@vitest/browser": "3.2.4",
     "@vitest/coverage-istanbul": "3.2.4",
     "@vitest/ui": "3.2.4",

@@ -64,6 +64,7 @@
     "prepare": "pnpm build",
     "build": "rm -rf dist && tsgo",
     "dev": "tsgo --watch",
+    "test": "vitest",
     "type-check": "tsgo --noEmit"
   },
   "dependencies": {
