@@ -1,7 +1,7 @@
 import { Alert } from '../alert';
 import { useToast } from './provider';
-import { useTimeout } from '@/hooks/timeout';
 import { Status } from '@k8o/helpers';
+import { useTimeout } from '@k8o/hooks/timeout';
 import { FC, useCallback } from 'react';
 
 type ToastProps = {

@@ -21,7 +21,7 @@ import { Textarea } from '@/components/form/textarea';
 import { Heading } from '@/components/heading';
 import { IconButton } from '@/components/icon-button';
 import { ChevronIcon } from '@/components/icons';
-import { useStep } from '@/hooks/step';
+import { useStep } from '@k8o/hooks/step';
 import { FC, Fragment, useId } from 'react';
 
 export const SyntaxFixer: FC = () => {

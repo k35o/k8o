@@ -42,8 +42,8 @@ export default defineConfig({
         extends: true,
         plugins: [react()],
         test: {
-          name: { label: 'browser', color: 'green' },
-          include: ['src/!(services)/**/*.test.{ts,tsx}'],
+          name: { label: 'hooks', color: 'green' },
+          include: ['packages/hooks/**/*.test.{ts,tsx}'],
           browser: {
             enabled: true,
             instances: [

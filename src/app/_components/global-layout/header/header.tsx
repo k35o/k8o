@@ -1,6 +1,6 @@
 'use client';
 
-import { useScrollDirection } from '@/hooks/scroll-direction';
+import { useScrollDirection } from '@k8o/hooks/scroll-direction';
 import { FC, ReactNode } from 'react';
 
 export const Header: FC<{ children: ReactNode }> = ({ children }) => {

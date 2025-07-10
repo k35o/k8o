@@ -9,13 +9,15 @@ import {
 } from '@/components/accordion';
 import { Button } from '@/components/button';
 import { AlertIcon, CopyIcon } from '@/components/icons';
-import { useClipboard } from '@/hooks/clipboard';
+import { useToast } from '@/components/toast';
+import { useClipboard } from '@k8o/hooks/clipboard';
 import { FC } from 'react';
 
 export const VerifiedSyntax: FC = () => {
   const text = useText();
   const resetResult = useResetResult();
   const { writeClipboard } = useClipboard();
+  const { onOpen } = useToast();
 
   return (
     <div className="flex flex-col items-center justify-center gap-8">
@@ -24,7 +26,11 @@ export const VerifiedSyntax: FC = () => {
           戻る
         </Button>
         <Button
-          onClick={() => void writeClipboard(text)}
+          onClick={() =>
+            void writeClipboard(text).then(() => {
+              onOpen('success', 'クリップボードにコピーしました');
+            })
+          }
           endIcon={<CopyIcon />}
         >
           テキストをコピーする

@@ -8,7 +8,8 @@ import {
 import { Button } from '@/components/button';
 import { Heading } from '@/components/heading';
 import { CopyIcon } from '@/components/icons';
-import { useClipboard } from '@/hooks/clipboard';
+import { useToast } from '@/components/toast';
+import { useClipboard } from '@k8o/hooks/clipboard';
 import { FC, useId } from 'react';
 
 export const Result: FC = () => {
@@ -17,6 +18,7 @@ export const Result: FC = () => {
   const resetResult = useResetResult();
   const isCheckResult = useConvertIncomplete();
   const { writeClipboard } = useClipboard();
+  const { onOpen } = useToast();
 
   return (
     <div className="flex flex-col items-center justify-center gap-8">
@@ -34,7 +36,11 @@ export const Result: FC = () => {
             修正後のテキスト
           </Heading>
           <Button
-            onClick={() => void writeClipboard(fixedText)}
+            onClick={() => {
+              void writeClipboard(fixedText).then(() => {
+                onOpen('success', 'クリップボードにコピーしました');
+              });
+            }}
             endIcon={<CopyIcon />}
           >
             <span className="sr-only md:not-sr-only">
