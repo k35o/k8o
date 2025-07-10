@@ -5,7 +5,7 @@ import VerifyEmail from '@/emails/verify-email';
 import { resend } from '@/services/email';
 import { compareDate } from '@k8o/helpers/date';
 import { eq } from 'drizzle-orm';
-import { z } from 'zod/v4';
+import { z } from 'zod';
 
 export const sendVerificationEmail = async (
   email: string,
