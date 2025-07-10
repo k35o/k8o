@@ -53,9 +53,6 @@ importers:
       '@vercel/analytics':
         specifier: 1.5.0
         version: 1.5.0(next@15.3.5(@babel/core@7.27.4)(react-dom@19.1.0(react@19.1.0))(react@19.1.0))(react@19.1.0)
-      '@vercel/functions':
-        specifier: 2.2.3
-        version: 2.2.3
       '@vercel/speed-insights':
         specifier: 1.2.0
         version: 1.2.0(next@15.3.5(@babel/core@7.27.4)(react-dom@19.1.0(react@19.1.0))(react@19.1.0))(react@19.1.0)
@@ -65,9 +62,6 @@ importers:
       budoux:
         specifier: 0.7.0
         version: 0.7.0
-      date-fns:
-        specifier: 4.1.0
-        version: 4.1.0
       drizzle-orm:
         specifier: 0.44.2
         version: 0.44.2(@libsql/client-wasm@0.14.0)(@neondatabase/serverless@1.0.1)(@types/pg@8.11.6)(@upstash/redis@1.35.1)(@vercel/postgres@0.10.0)(gel@2.0.0)(postgres@3.4.7)
@@ -98,9 +92,6 @@ importers:
       rehype-katex:
         specifier: 7.0.1
         version: 7.0.1
-      remark:
-        specifier: 15.0.1
-        version: 15.0.1
       remark-frontmatter:
         specifier: 5.0.0
         version: 5.0.0
@@ -119,15 +110,9 @@ importers:
       tailwindcss:
         specifier: 4.1.11
         version: 4.1.11
-      to-vfile:
-        specifier: 8.0.0
-        version: 8.0.0
       uqr:
         specifier: 0.1.2
         version: 0.1.2
-      vfile-matter:
-        specifier: 5.0.1
-        version: 5.0.1
       ws:
         specifier: 8.18.3
         version: 8.18.3(bufferutil@4.0.8)
@@ -171,9 +156,6 @@ importers:
       '@testing-library/react':
         specifier: 16.3.0
         version: 16.3.0(@testing-library/dom@10.4.0)(@types/react-dom@19.1.6(@types/react@19.1.8))(@types/react@19.1.8)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
-      '@types/mdast':
-        specifier: 4.0.4
-        version: 4.0.4
       '@types/mdx':
         specifier: 2.0.13
         version: 2.0.13
@@ -285,13 +267,31 @@ importers:
 
   packages/helpers:
     dependencies:
+      '@vercel/functions':
+        specifier: 2.2.3
+        version: 2.2.3
       clsx:
         specifier: 2.1.1
         version: 2.1.1
+      date-fns:
+        specifier: 4.1.0
+        version: 4.1.0
+      remark:
+        specifier: 15.0.1
+        version: 15.0.1
       tailwind-merge:
         specifier: 3.3.1
         version: 3.3.1
+      to-vfile:
+        specifier: 8.0.0
+        version: 8.0.0
+      vfile-matter:
+        specifier: 5.0.1
+        version: 5.0.1
     devDependencies:
+      '@types/mdast':
+        specifier: 4.0.4
+        version: 4.0.4
       '@typescript/native-preview':
         specifier: 7.0.0-dev.20250709.1
         version: 7.0.0-dev.20250709.1
@@ -8290,9 +8290,9 @@ packages:
     resolution: {integrity: sha512-r3vXyErRCYJ7wg28yvBY5VSoAF8ZvlcW9/BwUzEtUsjvX/DKs24dIkuwjtuprwJJHsbyUbLApepYTR1BN4uHrg==}
     engines: {node: '>= 6'}
 
-  yaml@2.7.1:
-    resolution: {integrity: sha512-10ULxpnOCQXxJvBgxsn9ptjq6uviG/htZKk9veJGhlqn3w/DxQ631zFF+nlQXLwmImeS5amR2dl2U8sg6U9jsQ==}
-    engines: {node: '>= 14'}
+  yaml@2.8.0:
+    resolution: {integrity: sha512-4lLa/EcQCB0cJkyts+FpIRx5G/llPxfP6VQU5KByHEhLxY3IJCH0f0Hy1MHI8sClTvsIb8qwRJ6R/ZdlDJ/leQ==}
+    engines: {node: '>= 14.6'}
     hasBin: true
 
   yargs-parser@21.1.1:
@@ -17322,7 +17322,7 @@ snapshots:
   vfile-matter@5.0.1:
     dependencies:
       vfile: 6.0.2
-      yaml: 2.7.1
+      yaml: 2.8.0
 
   vfile-message@4.0.2:
     dependencies:
@@ -17621,7 +17621,7 @@ snapshots:
 
   yaml@1.10.2: {}
 
-  yaml@2.7.1: {}
+  yaml@2.8.0: {}
 
   yargs-parser@21.1.1: {}
 

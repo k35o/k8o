@@ -1,5 +1,5 @@
 import { readFile } from 'fs/promises';
-import { Root } from 'mdast';
+import type { Root } from 'mdast';
 import { remark } from 'remark';
 import remarkFrontmatter from 'remark-frontmatter';
 

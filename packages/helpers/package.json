@@ -64,14 +64,19 @@
     "prepare": "pnpm build",
     "build": "rm -rf dist && tsgo",
     "dev": "tsgo --watch",
-    "test": "vitest",
     "type-check": "tsgo --noEmit"
   },
   "dependencies": {
+    "@vercel/functions": "2.2.3",
     "clsx": "2.1.1",
-    "tailwind-merge": "3.3.1"
+    "date-fns": "4.1.0",
+    "remark": "15.0.1",
+    "tailwind-merge": "3.3.1",
+    "to-vfile": "8.0.0",
+    "vfile-matter": "5.0.1"
   },
   "devDependencies": {
+    "@types/mdast": "4.0.4",
     "@typescript/native-preview": "7.0.0-dev.20250709.1",
     "typescript": "5.8.3"
   }
