@@ -1,7 +1,7 @@
 'use client';
 
-import { useHash } from '@/hooks/hash';
 import { cn } from '@k8o/helpers/cn';
+import { useHash } from '@k8o/hooks/hash';
 import * as motion from 'motion/react-client';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';

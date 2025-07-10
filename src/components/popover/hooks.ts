@@ -1,11 +1,11 @@
 'use client';
 
-import { useClickAway } from '@/hooks/click-away';
 import {
   FloatingContext,
   Placement,
   ReferenceType,
 } from '@floating-ui/react';
+import { useClickAway } from '@k8o/hooks/click-away';
 import {
   createContext,
   CSSProperties,

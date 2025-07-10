@@ -3,11 +3,13 @@
 import { Anchor } from '@/components/anchor/anchor';
 import { IconButton } from '@/components/icon-button';
 import { CopyIcon, RSSIcon } from '@/components/icons';
-import { useClipboard } from '@/hooks/clipboard';
+import { useToast } from '@/components/toast';
+import { useClipboard } from '@k8o/hooks/clipboard';
 import { FC } from 'react';
 
 export const RssPanel: FC = () => {
   const { writeClipboard } = useClipboard();
+  const { onOpen } = useToast();
 
   return (
     <div className="flex flex-col justify-center gap-6">
@@ -20,7 +22,11 @@ export const RssPanel: FC = () => {
           label="コピー"
           bg="base"
           onClick={() => {
-            void writeClipboard('https://k8o.me/blog/feed');
+            void writeClipboard('https://k8o.me/blog/feed').then(
+              () => {
+                onOpen('success', 'クリップボードにコピーしました');
+              },
+            );
           }}
         >
           <CopyIcon />

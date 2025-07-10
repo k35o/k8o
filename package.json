@@ -59,6 +59,7 @@
   "dependencies": {
     "@floating-ui/react": "0.27.13",
     "@k8o/helpers": "workspace:*",
+    "@k8o/hooks": "workspace:*",
     "@mdx-js/loader": "3.1.0",
     "@mdx-js/react": "3.1.0",
     "@neondatabase/serverless": "1.0.1",

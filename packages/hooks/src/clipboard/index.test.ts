@@ -1,14 +1,6 @@
 import { useClipboard } from '.';
 import { act, renderHook } from '@testing-library/react';
 
-const onOpenMockFn = vi.fn();
-
-vi.mock('@/components/toast', () => ({
-  useToast: () => ({
-    onOpen: onOpenMockFn,
-  }),
-}));
-
 describe('useClipboard', () => {
   afterEach(() => {
     vi.unstubAllGlobals();
@@ -28,11 +20,6 @@ describe('useClipboard', () => {
       await result.current.writeClipboard(writeText);
     });
 
-    expect(onOpenMockFn).toBeCalledWith(
-      'success',
-      'クリップボードにコピーしました',
-    );
-    expect(onOpenMockFn).toHaveBeenCalledOnce();
     expect(writeTextMockFn).toBeCalledWith(writeText);
     expect(navigator.clipboard.writeText).toHaveBeenCalledOnce();
   });

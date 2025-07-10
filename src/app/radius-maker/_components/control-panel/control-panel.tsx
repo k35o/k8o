@@ -3,8 +3,9 @@
 import { useControlPanel } from './use-control-panel';
 import { IconButton } from '@/components/icon-button';
 import { CopyIcon } from '@/components/icons';
-import { useClipboard } from '@/hooks/clipboard';
+import { useToast } from '@/components/toast';
 import { cn } from '@k8o/helpers/cn';
+import { useClipboard } from '@k8o/hooks/clipboard';
 import { FC, KeyboardEvent, MouseEvent, TouchEvent } from 'react';
 
 const OperateButton: FC<{
@@ -63,6 +64,7 @@ export const ControlPanel: FC = () => {
     position,
   } = useControlPanel();
   const { writeClipboard } = useClipboard();
+  const { onOpen } = useToast();
 
   return (
     <div className="flex flex-col items-center justify-center gap-8">
@@ -227,7 +229,11 @@ export const ControlPanel: FC = () => {
           label="値をコピーする"
           bg="base"
           onClick={() =>
-            void writeClipboard(`border-radius: ${borderRadius}`)
+            void writeClipboard(
+              `border-radius: ${borderRadius}`,
+            ).then(() => {
+              onOpen('success', 'クリップボードにコピーしました');
+            })
           }
         >
           <CopyIcon />

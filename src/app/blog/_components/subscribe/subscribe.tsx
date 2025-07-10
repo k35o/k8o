@@ -6,7 +6,7 @@ import { Checkbox } from '@/components/form/checkbox';
 import { IconButton } from '@/components/icon-button';
 import { SubscribeIcon } from '@/components/icons';
 import { Separator } from '@/components/separator';
-import { useLocalStorage } from '@/hooks/local-storage';
+import { useLocalStorage } from '@k8o/hooks/local-storage';
 import { FC, useState } from 'react';
 
 export const Subscribe: FC<{
