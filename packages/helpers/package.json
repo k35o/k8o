@@ -78,7 +78,7 @@
   },
   "devDependencies": {
     "@types/mdast": "4.0.4",
-    "@typescript/native-preview": "7.0.0-dev.20250710.1",
+    "@typescript/native-preview": "7.0.0-dev.20250711.1",
     "typescript": "5.8.3"
   }
 }
