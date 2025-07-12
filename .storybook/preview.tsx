@@ -64,7 +64,7 @@ const preview: Preview = {
   decorators: [
     (Story, { globals, parameters }) => (
       <AppProvider>
-        <Script id="add-class-list">
+        <Script>
           {`document.body.classList.add(${cn(
             mPlus2.variable,
             notoSansJp.variable,
