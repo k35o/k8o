@@ -15,15 +15,15 @@
     {
       "matchUpdateTypes": ["minor", "patch"],
       "matchPackageNames": [
-　　　　  "!/^(pnpm|node)$/",
-　　　　  "!/@storybook/",
-　　　　  "!/storybook$/",
-　　　　  "!/react$/",
-　　　　  "!/react-dom$/",
-　　　　  "!/next$/",
-　　　　  "!/vitest$/",
-　　　　  "!/@vitest/",
-        "@​typescript/native-preview",
+        "!/^(pnpm|node)$/",
+        "!/@storybook/",
+        "!/storybook$/",
+        "!/react$/",
+        "!/react-dom$/",
+        "!/next$/",
+        "!/vitest$/",
+        "!/@vitest/",
+        "@typescript/native-preview",
       ],
       "groupName": "minor and patch dependencies"
     }
