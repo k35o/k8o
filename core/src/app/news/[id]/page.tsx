@@ -4,10 +4,20 @@ import { draftMode } from 'next/headers';
 import { notFound } from 'next/navigation';
 
 export async function generateStaticParams() {
-  const url = `${process.env.MICROCMS_API_ENDPOINT ?? ''}/news`;
+  const apiEndpoint = process.env.MICROCMS_API_ENDPOINT;
+  const apiKey = process.env.MICROCMS_API_KEY;
+
+  if (!apiEndpoint || !apiKey) {
+    console.warn(
+      'MICROCMS_API_ENDPOINT or MICROCMS_API_KEY is not configured',
+    );
+    return [];
+  }
+
+  const url = `${apiEndpoint}/news`;
   const newsList = await fetch(url, {
     headers: {
-      'X-MICROCMS-API-KEY': process.env.MICROCMS_API_KEY ?? '',
+      'X-MICROCMS-API-KEY': apiKey,
     },
     cache: 'force-cache',
   }).then((res) => res.json() as Promise<NewsPagination>);
@@ -19,14 +29,21 @@ export async function generateStaticParams() {
 
 async function getNews(id: string, draftKey?: string): Promise<News> {
   const { isEnabled } = await draftMode();
-  const baseUrl = `${process.env.MICROCMS_API_ENDPOINT ?? ''}/news/${id}`;
+  const apiEndpoint = process.env.MICROCMS_API_ENDPOINT;
+  const apiKey = process.env.MICROCMS_API_KEY;
+
+  if (!apiEndpoint || !apiKey) {
+    notFound();
+  }
+
+  const baseUrl = `${apiEndpoint}/news/${id}`;
   const url =
     isEnabled && draftKey
       ? `${baseUrl}?draftKey=${draftKey}`
       : baseUrl;
   const res = await fetch(url, {
     headers: {
-      'X-MICROCMS-API-KEY': process.env.MICROCMS_API_KEY ?? '',
+      'X-MICROCMS-API-KEY': apiKey,
     },
     cache: 'force-cache',
   });
