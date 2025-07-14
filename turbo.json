@@ -1,9 +1,44 @@
 {
   "$schema": "https://turborepo.com/schema.json",
   "tasks": {
+    "dev": {
+      "cache": false,
+      "dependsOn": ["^dev"],
+      "outputs": []
+    },
     "build": {
       "dependsOn": ["^build"],
       "outputs": ["dist/**"]
+    },
+    "start": {
+      "dependsOn": ["^start"],
+      "cache": false,
+      "outputs": []
+    },
+    "lint": {
+      "dependsOn": ["^lint"],
+      "cache": false,
+      "outputs": []
+    },
+    "lint:fix": {
+      "dependsOn": ["^lint:fix"],
+      "cache": false,
+      "outputs": []
+    },
+    "format": {
+      "dependsOn": ["^format"],
+      "cache": false,
+      "outputs": []
+    },
+    "format:check": {
+      "dependsOn": ["^format:check"],
+      "cache": false,
+      "outputs": []
+    },
+    "type-check": {
+      "dependsOn": ["^type-check"],
+      "cache": false,
+      "outputs": []
     }
   }
 }

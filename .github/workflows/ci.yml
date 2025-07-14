@@ -18,7 +18,6 @@ jobs:
       - name: Run format
         run: pnpm run format:check
 
-      # MEMO: ここでnext-env.d.tsが生成される。そのためtype-checkよりも先に実行する必要がある
       - name: Run lint
         run: pnpm run lint
 

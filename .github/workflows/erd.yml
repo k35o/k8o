@@ -1,7 +1,7 @@
 name: Publish ERD
 on:
   push:
-    branches: "main"
+    branches: 'main'
 
 concurrency:
   group: deploy-erd
@@ -17,10 +17,10 @@ jobs:
         uses: ./.github/actions/setup-pnpm
 
       - name: Export schema.sql
-        run: pnpm run export:schema
+        run: pnpm -F core run export:schema
 
       - name: Generate ER Diagrams
-        run: pnpm run build:erd
+        run: pnpm -F core run build:erd
 
       - name: Upload ER Diagrams
         id: erd

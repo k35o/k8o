@@ -3,123 +3,45 @@
   "version": "0.1.0",
   "private": true,
   "type": "module",
-  "imports": {
-    "#database/db": {
-      "storybook": "./src/mocks/db.mock.ts",
-      "default": "./src/database/db.ts"
-    },
-    "#api/blog": {
-      "storybook": "./src/mocks/api/blog.mock.ts",
-      "default": "./src/app/blog/_api/index.ts"
-    },
-    "#link-card/metadata": {
-      "storybook": "./src/mocks/link-card/metadata.mock.ts",
-      "default": "./src/components/link-card/metadata.ts"
-    },
-    "#libs/react": {
-      "storybook": "./src/mocks/libs/react.mock.ts",
-      "default": "./src/libs/react.ts"
-    },
-    "#next/server": {
-      "storybook": "./src/mocks/libs/next/server.mock.ts",
-      "default": "next/server"
-    },
-    "#*": [
-      "./*",
-      "./*.ts",
-      "./*.tsx"
-    ]
-  },
   "scripts": {
-    "dev": "next dev",
-    "build": "turbo build && next build",
-    "start": "next start",
-    "email": "email dev --dir src/emails --port 3333",
-    "generate": "drizzle-kit generate",
-    "generate:custom": "drizzle-kit generate --custom",
-    "migrate": "drizzle-kit migrate",
-    "export:schema": "drizzle-kit export > ./schema.sql",
-    "build:erd": "liam erd build --input ./schema.sql --format postgres",
-    "preview:erd": "pnpm run build:erd && pnpm run preview:dist",
-    "lint": "next lint --max-warnings 0",
-    "lint:fix": "next lint --fix --max-warnings 0",
+    "dev": "turbo dev",
+    "build": "turbo build",
+    "start": "turbo start",
+    "lint": "turbo lint",
+    "lint:fix": "turbo lint:fix",
     "lint:inspect": "eslint-config-inspector",
     "ls-lint": "ls-lint",
-    "format": "prettier --write --experimental-cli src/",
-    "format:check": "prettier --check --experimental-cli src/",
-    "type-check": "tsc --noEmit",
-    "storybook": "storybook dev -p 6006 --no-open",
-    "build-storybook": "storybook build",
+    "format": "turbo format",
+    "format:check": "turbo format:check",
+    "type-check": "turbo type-check",
     "test": "TZ=UTC vitest",
     "test:ui": "TZ=UTC vitest --ui --coverage",
     "coverage": "TZ=UTC vitest run --coverage",
-    "install-playwright": "playwright install --with-deps",
-    "preview:dist": "pnpm dlx http-server dist"
+    "install-playwright": "playwright install --with-deps"
   },
   "dependencies": {
-    "@floating-ui/react": "0.27.13",
     "@k8o/helpers": "workspace:*",
     "@k8o/hooks": "workspace:*",
-    "@mdx-js/loader": "3.1.0",
-    "@mdx-js/react": "3.1.0",
-    "@neondatabase/serverless": "1.0.1",
-    "@next/env": "15.3.5",
-    "@next/mdx": "15.3.5",
-    "@next/third-parties": "15.3.5",
-    "@react-email/components": "0.3.1",
-    "@shikijs/rehype": "3.7.0",
-    "@tailwindcss/postcss": "4.1.11",
     "@upstash/ratelimit": "2.0.5",
     "@upstash/redis": "1.35.1",
-    "@vercel/analytics": "1.5.0",
-    "@vercel/speed-insights": "1.2.0",
-    "baseline-status": "1.0.11",
-    "budoux": "0.7.0",
-    "drizzle-orm": "0.44.2",
-    "lucide-react": "0.525.0",
-    "motion": "12.23.3",
-    "next": "15.3.5",
-    "next-themes": "0.4.6",
-    "postcss": "8.5.6",
     "react": "19.1.0",
     "react-dom": "19.1.0",
-    "react-error-boundary": "6.0.0",
-    "rehype-katex": "7.0.1",
     "remark-frontmatter": "5.0.0",
-    "remark-math": "6.0.0",
-    "resend": "4.6.0",
-    "rss": "1.2.2",
-    "server-only": "0.0.1",
-    "tailwindcss": "4.1.11",
-    "uqr": "0.1.2",
-    "ws": "8.18.3",
-    "zod": "4.0.5"
+    "server-only": "0.0.1"
   },
   "devDependencies": {
     "@eslint/config-inspector": "1.1.0",
     "@eslint/js": "9.31.0",
-    "@liam-hq/cli": "0.6.4",
     "@ls-lint/ls-lint": "2.3.1",
     "@next/eslint-plugin-next": "15.3.5",
-    "@storybook/addon-a11y": "9.0.9",
-    "@storybook/addon-docs": "9.0.9",
-    "@storybook/addon-vitest": "9.0.9",
-    "@storybook/nextjs": "9.0.9",
-    "@storybook/nextjs-vite": "9.0.9",
     "@testing-library/dom": "10.4.0",
     "@testing-library/react": "16.3.0",
-    "@types/mdx": "2.0.13",
-    "@types/node": "22.16.3",
     "@types/react": "19.1.8",
     "@types/react-dom": "19.1.6",
-    "@types/rss": "0.0.32",
-    "@types/ws": "8.18.1",
     "@vitest/browser": "3.2.4",
     "@vitest/coverage-istanbul": "3.2.4",
     "@vitest/ui": "3.2.4",
-    "axe-playwright": "2.1.0",
     "chromatic": "13.1.2",
-    "drizzle-kit": "0.31.4",
     "eslint": "9.31.0",
     "eslint-config-next": "15.3.5",
     "eslint-config-prettier": "10.1.5",
@@ -129,17 +51,10 @@
     "eslint-plugin-react-hooks": "5.2.0",
     "eslint-plugin-storybook": "9.0.9",
     "lefthook": "1.12.2",
-    "msw": "2.10.4",
-    "msw-storybook-addon": "2.0.5",
     "playwright": "1.54.1",
     "postgres": "3.4.7",
     "prettier": "3.6.2",
     "prettier-plugin-tailwindcss": "0.6.14",
-    "react-email": "4.1.3",
-    "react-scan": "0.4.3",
-    "sonda": "0.9.0",
-    "storybook": "9.0.9",
-    "storybook-addon-mock-date": "1.0.1",
     "turbo": "2.5.4",
     "typescript": "5.8.3",
     "typescript-eslint": "8.36.0",
@@ -148,10 +63,5 @@
   "engines": {
     "node": "22.17.0"
   },
-  "packageManager": "pnpm@10.13.1",
-  "msw": {
-    "workerDirectory": [
-      ".storybook/public"
-    ]
-  }
+  "packageManager": "pnpm@10.13.1"
 }
