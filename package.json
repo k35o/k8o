@@ -20,8 +20,6 @@
     "install-playwright": "playwright install --with-deps"
   },
   "dependencies": {
-    "@k8o/helpers": "workspace:*",
-    "@k8o/hooks": "workspace:*",
     "@upstash/ratelimit": "2.0.5",
     "@upstash/redis": "1.35.1",
     "react": "19.1.0",
