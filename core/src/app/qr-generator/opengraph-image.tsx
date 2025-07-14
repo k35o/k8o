@@ -56,7 +56,6 @@ export default function OpenGraphImage() {
               </span>
             ))}
           </div>
-          {/* eslint-disable-next-line @next/next/no-img-element -- ogなので */}
           <img
             src="https://k8o.me/icon.png"
             width={128}

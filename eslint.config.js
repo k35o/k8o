@@ -49,6 +49,13 @@ export default tseslint.config(
     },
   },
   {
+    name: 'next opengraph images',
+    files: ['core/**/opengraph-image.{ts,tsx}'],
+    rules: {
+      '@next/next/no-img-element': 'off',
+    },
+  },
+  {
     name: 'other rules',
     files: ['**/*.{ts,tsx}'],
     rules: {
