@@ -35,13 +35,30 @@ export default tseslint.config(
   },
   ...storybookPlugin.configs['flat/recommended'],
   jsxA11yPlugin.flatConfigs.recommended,
-
+  {
+    name: 'next',
+    files: ['core/**/*.{ts,tsx}'],
+    rules: {
+      ...nextPlugin.configs.recommended.rules,
+      ...nextPlugin.configs['core-web-vitals'].rules,
+    },
+    settings: {
+      next: {
+        rootDir: 'core/',
+      },
+    },
+  },
+  {
+    name: 'next opengraph images',
+    files: ['core/**/opengraph-image.{ts,tsx}'],
+    rules: {
+      '@next/next/no-img-element': 'off',
+    },
+  },
   {
     name: 'other rules',
     files: ['**/*.{ts,tsx}'],
     rules: {
-      ...nextPlugin.configs.recommended.rules,
-      ...nextPlugin.configs['core-web-vitals'].rules,
       ...drizzlePlugin.configs.recommended.rules,
       ...importPlugin.flatConfigs.recommended.rules,
       ...importPlugin.flatConfigs.typescript.rules,
@@ -81,7 +98,11 @@ export default tseslint.config(
       'import/resolver': {
         typescript: {
           alwaysTryTypes: true,
-          project: true,
+          project: [
+            'tsconfig.json',
+            'core/tsconfig.json',
+            'packages/*/tsconfig.json',
+          ],
         },
       },
     },
@@ -91,7 +112,7 @@ export default tseslint.config(
     name: 'language options',
     languageOptions: {
       parserOptions: {
-        projectService: true,
+        project: true,
         tsconfigRootDir: import.meta.dirname,
       },
     },

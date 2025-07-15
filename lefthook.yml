@@ -7,12 +7,11 @@ pre-commit:
       exclude:
         - '**/mockServiceWorker.js'
     lint:
-      glob: '{src,packages}/**/*.{js,ts,cjs,d.cts,d.ts,jsx,tsx}'
-      run: pnpm run lint:fix --file {staged_files}
+      glob: '**/src/**/*.{js,ts,cjs,d.cts,d.ts,jsx,tsx}'
+      run: pnpm eslint --fix --max-warnings 0 {staged_files}
       stage_fixed: true
 
     ls-lint:
-      glob: '{src,packages}/**/*.{js,ts,cjs,d.cts,d.ts,jsx,tsx}'
       run: pnpm run ls-lint
       stage_fixed: true
 
@@ -24,9 +23,9 @@ pre-push:
       exclude:
         - '**/mockServiceWorker.js'
     lint:
-      glob: '{src,packages}/**/*.{js,ts,cjs,d.cts,d.ts,jsx,tsx}'
-      run: pnpm run lint --file {staged_files}
+      glob: '**/src/**/*.{js,ts,cjs,d.cts,d.ts,jsx,tsx}'
+      run: pnpm eslint --fix --max-warnings 0 {staged_files}
 
     test:
-      glob: '{src,packages}/**/*.test.{js,ts,cjs,d.cts,d.ts,jsx,tsx}'
-      run: pnpm run test run {staged_files}
+      glob: '**/src/**/*.test.{js,ts,cjs,d.cts,d.ts,jsx,tsx}'
+      run: pnpm run test {staged_files}

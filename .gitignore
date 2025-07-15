@@ -6,15 +6,15 @@ node_modules
 .pnp.js
 
 # testing
-/coverage
+coverage
 vitest.config.ts.*
 
 # next.js
-/.next/
-/out/
+.next
+out
 
 # production
-/build
+build
 
 # misc
 .DS_Store

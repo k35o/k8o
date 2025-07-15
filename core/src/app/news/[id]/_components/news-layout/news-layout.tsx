@@ -1,0 +1,42 @@
+import { Heading } from '@/components/heading';
+import { PublishDateIcon, UpdateDateIcon } from '@/components/icons';
+import { Separator } from '@/components/separator';
+import { formatDate } from '@k8o/helpers/date';
+import { FC, PropsWithChildren } from 'react';
+
+type Props = PropsWithChildren<{
+  title: string;
+  createdAt: string;
+  updatedAt: string;
+}>;
+
+export const NewsLayout: FC<Props> = ({
+  title,
+  createdAt,
+  updatedAt,
+  children,
+}) => {
+  return (
+    <article className="bg-bg-base/90 h-full rounded-md px-10 pb-14 pt-8">
+      <div className="flex flex-col gap-3">
+        <Heading type="h3">{title}</Heading>
+        <div className="text-fg-mute flex flex-row items-center justify-end gap-2 text-sm">
+          <div className="flex flex-wrap items-center justify-end gap-1">
+            <div className="flex items-center gap-1">
+              <PublishDateIcon size="sm" />
+              <span>公開: {formatDate(new Date(createdAt))}</span>
+            </div>
+            <div className="flex items-center gap-1">
+              <UpdateDateIcon size="sm" />
+              <span>更新: {formatDate(new Date(updatedAt))}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div className="mb-2 mt-4 w-full sm:mb-4 sm:mt-8">
+        <Separator />
+      </div>
+      {children}
+    </article>
+  );
+};

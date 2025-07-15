@@ -4,66 +4,15 @@
   "description": "Helper functions for k8o project",
   "private": true,
   "type": "module",
-  "main": "dist/index.js",
-  "module": "dist/index.js",
-  "types": "dist/index.d.ts",
   "exports": {
-    ".": {
-      "import": "./dist/index.js",
-      "types": "./dist/index.d.ts"
-    },
-    "./cn": {
-      "import": "./dist/cn/index.js",
-      "types": "./dist/cn/index.d.ts"
-    },
-    "./sleep": {
-      "import": "./dist/sleep/index.js",
-      "types": "./dist/sleep/index.d.ts"
-    },
-    "./color": {
-      "import": "./dist/color/index.js",
-      "types": "./dist/color/index.d.ts"
-    },
-    "./date": {
-      "import": "./dist/date/index.js",
-      "types": "./dist/date/index.d.ts"
-    },
-    "./number": {
-      "import": "./dist/number/index.js",
-      "types": "./dist/number/index.d.ts"
-    },
-    "./array": {
-      "import": "./dist/array/index.js",
-      "types": "./dist/array/index.d.ts"
-    },
-    "./is-internal-route": {
-      "import": "./dist/is-internal-route/index.js",
-      "types": "./dist/is-internal-route/index.d.ts"
-    },
-    "./ipaddress": {
-      "import": "./dist/ipaddress/index.js",
-      "types": "./dist/ipaddress/index.d.ts"
-    },
-    "./mdx": {
-      "import": "./dist/mdx/index.js",
-      "types": "./dist/mdx/index.d.ts"
-    },
-    "./ratelimit": {
-      "import": "./dist/ratelimit/index.js",
-      "types": "./dist/ratelimit/index.d.ts"
-    },
-    "./uuid-v4": {
-      "import": "./dist/uuid-v4/index.js",
-      "types": "./dist/uuid-v4/index.d.ts"
-    }
+    ".": "./src/index.ts",
+    "./*": "./src/*/index.ts"
   },
-  "files": [
-    "dist"
-  ],
   "scripts": {
-    "prepare": "pnpm build",
-    "build": "rm -rf dist && tsgo",
-    "dev": "tsgo --watch",
+    "lint": "eslint --max-warnings 0 ./src",
+    "lint:fix": "eslint --fix --max-warnings 0 ./src",
+    "format": "prettier --write --experimental-cli src/",
+    "format:check": "prettier --check --experimental-cli src/",
     "test": "vitest",
     "type-check": "tsgo --noEmit"
   },
@@ -77,8 +26,6 @@
     "vfile-matter": "5.0.1"
   },
   "devDependencies": {
-    "@types/mdast": "4.0.4",
-    "@typescript/native-preview": "7.0.0-dev.20250711.1",
-    "typescript": "5.8.3"
+    "@types/mdast": "4.0.4"
   }
 }

@@ -33,7 +33,7 @@ jobs:
       - name: Check for migrations
         id: has_migration
         run: |
-          if git diff --name-only origin/${{ github.event.pull_request.base.ref }} HEAD | grep -q '^migrations/'; then
+          if git diff --name-only origin/${{ github.event.pull_request.base.ref }} HEAD | grep -q '^core/migrations/'; then
             echo "has_migration=true" >> $GITHUB_OUTPUT
           else
             echo "has_migration=false" >> $GITHUB_OUTPUT
@@ -82,7 +82,7 @@ jobs:
           api_key: ${{ secrets.NEON_API_KEY }}
       - name: Run Migrations
         if: needs.setup.outputs.has_migration == 'true'
-        run: pnpm run generate && pnpm run migrate
+        run: pnpm run -F core generate && pnpm run -F core migrate
         env:
           POSTGRES_URL: '${{ steps.create_neon_branch.outputs.db_url_pooled }}'
 
