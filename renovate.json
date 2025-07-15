@@ -23,7 +23,7 @@
         "!/next$/",
         "!/vitest$/",
         "!/@vitest/",
-        "@typescript/native-preview"
+        "!/@typescript/native-preview/"
       ],
       "groupName": "minor and patch dependencies"
     }
