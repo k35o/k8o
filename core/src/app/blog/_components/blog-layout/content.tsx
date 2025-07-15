@@ -12,8 +12,8 @@ import { LinkButton } from '@/components/link-button';
 import { ScrollLinked } from '@/components/scroll-linked';
 import { Separator } from '@/components/separator';
 import { TextTag } from '@/components/text-tag';
-import { cn } from '@/helpers/cn';
-import { formatDate } from '@/helpers/date/format';
+import { cn } from '@k8o/helpers/cn';
+import { formatDate } from '@k8o/helpers/date';
 import { Route } from 'next';
 import { FC, PropsWithChildren, ReactNode } from 'react';
 
@@ -43,7 +43,7 @@ export const Content: FC<
         'bg-bg-base/90 rounded-md px-3 pb-14 sm:px-10',
         writingMode === 'vertical-rl'
           ? cn(
-              'writing-mode-vertical-rl overflow-x-scroll overflow-y-hidden py-8',
+              'writing-mode-vertical-rl overflow-y-hidden overflow-x-scroll py-8',
               'h-5/6',
               'md:columns-50svh md:column-rule md:column-rule-color-border-base md:column-fill-auto md:h-auto md:gap-x-8',
             )
