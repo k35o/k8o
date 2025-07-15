@@ -26,7 +26,7 @@ jobs:
         id: erd
         uses: actions/upload-pages-artifact@v3
         with:
-          path: dist/
+          path: core/dist/
           retention-days: 1
 
   deploy:
