@@ -205,7 +205,7 @@ importers:
         specifier: 4.1.11
         version: 4.1.11
       test:
-        specifier: ^3.3.0
+        specifier: 3.3.0
         version: 3.3.0
       uqr:
         specifier: 0.1.2
