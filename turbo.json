@@ -3,42 +3,26 @@
   "tasks": {
     "dev": {
       "cache": false,
-      "dependsOn": ["^dev"],
-      "outputs": []
+      "persistent": true
     },
     "build": {
       "dependsOn": ["^build"],
-      "outputs": [".next/**", "!.next/cache/**", "dist/**"]
-    },
-    "start": {
-      "dependsOn": ["^start"],
-      "cache": false,
-      "outputs": []
+      "outputs": [".next/**", "!.next/cache/**"]
     },
     "lint": {
-      "dependsOn": ["^lint"],
-      "cache": false,
-      "outputs": []
+      "dependsOn": ["^lint"]
     },
     "lint:fix": {
-      "dependsOn": ["^lint:fix"],
-      "cache": false,
-      "outputs": []
+      "dependsOn": ["^lint:fix"]
     },
     "format": {
-      "dependsOn": ["^format"],
-      "cache": false,
-      "outputs": []
+      "dependsOn": ["^format"]
     },
     "format:check": {
-      "dependsOn": ["^format:check"],
-      "cache": false,
-      "outputs": []
+      "dependsOn": ["^format:check"]
     },
     "type-check": {
-      "dependsOn": ["^type-check"],
-      "cache": false,
-      "outputs": []
+      "dependsOn": ["^type-check"]
     }
   }
 }

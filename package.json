@@ -6,7 +6,6 @@
   "scripts": {
     "dev": "turbo dev",
     "build": "turbo build",
-    "start": "turbo start",
     "lint": "turbo lint",
     "lint:fix": "turbo lint:fix",
     "lint:inspect": "eslint-config-inspector",
