@@ -97,7 +97,6 @@
     "@types/node": "22.16.3",
     "@types/rss": "0.0.32",
     "@types/ws": "8.18.1",
-    "@typescript/native-preview": "7.0.0-dev.20250711.1",
     "axe-playwright": "2.1.0",
     "chromatic": "13.1.2",
     "drizzle-kit": "0.31.4",

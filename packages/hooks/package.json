@@ -4,62 +4,11 @@
   "description": "React hooks for k8o project",
   "private": true,
   "type": "module",
-  "main": "dist/index.js",
-  "module": "dist/index.js",
-  "types": "dist/index.d.ts",
   "exports": {
-    ".": {
-      "import": "./dist/index.js",
-      "types": "./dist/index.d.ts"
-    },
-    "./click-away": {
-      "import": "./dist/click-away/index.js",
-      "types": "./dist/click-away/index.d.ts"
-    },
-    "./client": {
-      "import": "./dist/client/index.js",
-      "types": "./dist/client/index.d.ts"
-    },
-    "./clipboard": {
-      "import": "./dist/clipboard/index.js",
-      "types": "./dist/clipboard/index.d.ts"
-    },
-    "./hash": {
-      "import": "./dist/hash/index.js",
-      "types": "./dist/hash/index.d.ts"
-    },
-    "./interval": {
-      "import": "./dist/interval/index.js",
-      "types": "./dist/interval/index.d.ts"
-    },
-    "./local-storage": {
-      "import": "./dist/local-storage/index.js",
-      "types": "./dist/local-storage/index.d.ts"
-    },
-    "./scroll-direction": {
-      "import": "./dist/scroll-direction/index.js",
-      "types": "./dist/scroll-direction/index.d.ts"
-    },
-    "./step": {
-      "import": "./dist/step/index.js",
-      "types": "./dist/step/index.d.ts"
-    },
-    "./timeout": {
-      "import": "./dist/timeout/index.js",
-      "types": "./dist/timeout/index.d.ts"
-    },
-    "./window-size": {
-      "import": "./dist/window-size/index.js",
-      "types": "./dist/window-size/index.d.ts"
-    }
+    ".": "./src/index.ts",
+    "./*": "./src/*/index.ts"
   },
-  "files": [
-    "dist"
-  ],
   "scripts": {
-    "prepare": "pnpm build",
-    "build": "rm -rf dist && tsgo",
-    "dev": "tsgo --watch",
     "lint": "eslint --max-warnings 0 ./src",
     "lint:fix": "eslint --fix --max-warnings 0 ./src",
     "format": "prettier --write --experimental-cli src/",
@@ -68,8 +17,6 @@
     "type-check": "tsgo --noEmit"
   },
   "devDependencies": {
-    "@typescript/native-preview": "7.0.0-dev.20250711.1",
-    "@vitejs/plugin-react": "4.6.0",
-    "typescript": "5.8.3"
+    "@vitejs/plugin-react": "4.6.0"
   }
 }
