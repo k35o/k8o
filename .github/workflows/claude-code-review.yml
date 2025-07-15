@@ -27,14 +27,33 @@ jobs:
         uses: anthropics/claude-code-action@beta
         with:
           claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
-
+          use_sticky_comment: true
+          allowed_tools: >-
+            mcp__github__create_pending_pull_request_review,
+            mcp__github__add_pull_request_review_comment_to_pending_review,
+            mcp__github__submit_pending_pull_request_review,
+            mcp__github__get_pull_request_diff
           direct_prompt: |
-            Please review this pull request and provide feedback on:
-            - Code quality and best practices
-            - Potential bugs or issues
-            - Performance considerations
-            - Security concerns
-            - Test coverage
+            このPRをGitHubのレビュー機能を使ってフィードバックを提供してください。
 
-            Be constructive and helpful in your feedback.
-            Responses should be in Japanese.
+            フィードバックは以下の手順に従ってください。
+            1. **レビューの開始**: `mcp__github__create_pending_pull_request_review`を使って保留中のレビューを開始する。過去のフィードバックと意味が重複しないようにする。
+            2. **差分情報の取得**: `mcp__github__get_pull_request_diff`を使ってコードの変更内容と行数を確認する。
+            3. **インラインコメントの追加**: `mcp__github__add_pull_request_review_comment_to_pending_review`を使って特定の行に対する具体的なフィードバックを追加する。修正方針が存在する場合は必ずsuggestion機能を利用する
+            4. **レビューの提出**: `mcp__github__submit_pending_pull_request_review`を使ってレビューを提出する。
+
+            レビューの観点：
+            - CLAUDE.mdのガイドラインに従っているか
+            - コード品質とベストプラクティスに沿っているか
+            - 潜在的なバグや問題がないか
+            - パフォーマンス・セキュリティの懸念がないか
+            - 保守性と可読性が高いか
+            - ユーザビリティとアクセシビリティの考慮がされているか
+            - ドキュメントやコメントが適切に追加されているか
+            - テストが適切に追加されているか
+
+            日本語で具体的で実行可能なフィードバックを提供してください。
+            **インラインコメントを積極的に使用** - 観測事項、提案、改善点について特定の行にコメントを追加してください。
+            些細な提案やベストプラクティスでもインラインでコメントしてください。
+            行固有の問題にはインラインコメントを使用し、レビュー提出時には全体の要約を含めてください。
+            suggestion機能を使用して、修正方針が存在する場合は必ず提案を行ってください。
