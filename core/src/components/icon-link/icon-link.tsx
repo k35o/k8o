@@ -10,6 +10,7 @@ type IconLinkProps = PropsWithChildren<{
   label?: string;
   href: string;
   openInNewTab?: boolean;
+  prefetch?: boolean | 'auto';
 }>;
 
 export const IconLink: FC<IconLinkProps> = ({
@@ -19,6 +20,7 @@ export const IconLink: FC<IconLinkProps> = ({
   href,
   children,
   openInNewTab = false,
+  prefetch = 'auto',
 }) => {
   return isInternalRoute<Route>(href) && !openInNewTab ? (
     <Link
@@ -31,6 +33,7 @@ export const IconLink: FC<IconLinkProps> = ({
         size === 'lg' && 'p-3',
       )}
       href={href}
+      prefetch={prefetch}
     >
       <span className="sr-only">{label}</span>
       {children}
