@@ -69,9 +69,6 @@ importers:
       '@vitest/ui':
         specifier: 3.2.4
         version: 3.2.4(vitest@3.2.4)
-      chromatic:
-        specifier: 13.1.2
-        version: 13.1.2
       eslint:
         specifier: 9.31.0
         version: 9.31.0(jiti@2.4.2)
