@@ -10,7 +10,6 @@ import {
 import { LinkButton } from '@/components/link-button';
 import { TextTag } from '@/components/text-tag';
 import { formatDate } from '@k8o/helpers/date';
-import { Route } from 'next';
 import { FC } from 'react';
 
 export const TalkCard: FC<{
@@ -70,7 +69,7 @@ export const TalkCard: FC<{
               key={tag.id}
               size="sm"
               text={tag.name}
-              href={`/tags/${tag.id.toString()}` as Route}
+              href={`/tags/${tag.id.toString()}`}
             />
           ))}
         </div>
@@ -86,7 +85,7 @@ export const TalkCard: FC<{
           <LinkButton
             size="sm"
             startIcon={<BlogIcon size="sm" />}
-            href={`/blog/${blog.slug}` as Route}
+            href={`/blog/${blog.slug}`}
           >
             ブログで解説を読む
           </LinkButton>

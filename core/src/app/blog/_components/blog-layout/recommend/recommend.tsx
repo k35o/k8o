@@ -4,7 +4,6 @@ import { Heading } from '@/components/heading';
 import { PublishDateIcon, TagIcon } from '@/components/icons';
 import { TextTag } from '@/components/text-tag';
 import { formatDate } from '@k8o/helpers/date';
-import { Route } from 'next';
 import Link from 'next/link';
 import { FC } from 'react';
 
@@ -20,7 +19,7 @@ export const Recommend: FC<{ slug: string }> = async ({ slug }) => {
       <div className="grid-cols-auto-fit-80 grid gap-4">
         {blogs.map((blog) => (
           <InteractiveCard key={blog.id}>
-            <Link href={`/blog/${blog.slug}` as Route}>
+            <Link href={`/blog/${blog.slug}`}>
               <div className="flex flex-col gap-4 p-4">
                 <Heading type="h4">{blog.title}</Heading>
                 <div className="flex flex-col flex-wrap gap-2">

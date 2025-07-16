@@ -19,7 +19,6 @@ const nextConfig: NextConfig = {
     },
   },
   experimental: {
-    typedRoutes: true,
     viewTransition: true,
   },
   productionBrowserSourceMaps: process.env.ANALYZE === 'true',

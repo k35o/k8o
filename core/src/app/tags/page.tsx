@@ -1,6 +1,5 @@
 import { TagCard } from './_components/tag-card';
 import { getTags } from '@/services/tags/tags';
-import { Route } from 'next';
 import { unstable_cache as cache } from 'next/cache';
 
 export default async function Page() {
@@ -15,7 +14,7 @@ export default async function Page() {
           <TagCard
             key={tag.id}
             title={tag.name}
-            href={`/tags/${tag.id.toString()}` as Route}
+            href={`/tags/${tag.id.toString()}`}
             count={tag.blogCount + tag.serviceCount + tag.talkCount}
             label="コンテンツを見る"
             linkLabel={`「${tag.name}」に関連するコンテンツを表示する`}

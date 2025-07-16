@@ -1,6 +1,5 @@
 import { Heading } from '../../../components/heading';
 import { InteractiveCard } from '@/components/card';
-import { Route } from 'next';
 import Link from 'next/link';
 import { ReactNode } from 'react';
 
@@ -10,7 +9,7 @@ export const AppCard = ({
   title,
   description,
 }: {
-  link: Route;
+  link: string;
   symbol: ReactNode;
   title: string;
   description: string;

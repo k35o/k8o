@@ -1,7 +1,6 @@
 import { TagCard } from '../tag-card';
 import { Heading } from '@/components/heading';
 import { TagIcon } from '@/components/icons';
-import { Route } from 'next';
 import Link from 'next/link';
 import { FC } from 'react';
 
@@ -47,7 +46,7 @@ export const TagContent: FC<{
                 <TagCard
                   key={service.id}
                   title={service.title}
-                  href={`/${service.slug}` as Route}
+                  href={`/${service.slug}`}
                   label="サービスを利用する"
                   linkLabel={`「${service.title}」のサービスを利用する`}
                 />
@@ -65,7 +64,7 @@ export const TagContent: FC<{
                 <TagCard
                   key={blog.id}
                   title={blog.title}
-                  href={`/blog/${blog.slug}` as Route}
+                  href={`/blog/${blog.slug}`}
                   label="ブログを読む"
                   linkLabel={`「${blog.title}」のブログを読む`}
                 />
