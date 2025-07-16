@@ -17,7 +17,6 @@ import { ScrollLinked } from '@/components/scroll-linked';
 import { Separator } from '@/components/separator';
 import { TextTag } from '@/components/text-tag';
 import { formatDate } from '@k8o/helpers/date';
-import { Route } from 'next';
 import { FC, ReactNode, Suspense } from 'react';
 import { ErrorBoundary } from 'react-error-boundary';
 
@@ -99,7 +98,7 @@ export const BlogLayout: FC<{
                     <TextTag
                       key={tag.id}
                       text={tag.name}
-                      href={`/tags/${tag.id.toString()}` as Route}
+                      href={`/tags/${tag.id.toString()}`}
                     />
                   );
                 })}

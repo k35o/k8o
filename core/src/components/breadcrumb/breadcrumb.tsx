@@ -1,6 +1,5 @@
 import { ChevronIcon } from '../icons';
 import { cn } from '@k8o/helpers/cn';
-import { Route } from 'next';
 import Link from 'next/link';
 import { FC, PropsWithChildren } from 'react';
 
@@ -38,7 +37,7 @@ const Separator: FC = () => {
 };
 
 const _Link: FC<
-  PropsWithChildren<{ href: Route; current?: boolean }>
+  PropsWithChildren<{ href: string; current?: boolean }>
 > = ({ href, current = false, children }) => {
   return current ? (
     <span className="text-fg-base">{children}</span>

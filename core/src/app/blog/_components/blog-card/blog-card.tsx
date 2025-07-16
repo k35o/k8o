@@ -8,7 +8,6 @@ import {
 } from '@/components/icons';
 import { TextTag } from '@/components/text-tag';
 import { formatDate } from '@k8o/helpers/date';
-import { Route } from 'next';
 import Link from 'next/link';
 import { FC } from 'react';
 
@@ -31,7 +30,7 @@ export const BlogCard: FC<BlogCardProps> = ({
 }) => {
   return (
     <InteractiveCard>
-      <Link href={`/blog/${slug}` as Route} className="block h-full">
+      <Link href={`/blog/${slug}`} className="block h-full">
         <div className="flex h-full flex-col justify-between gap-4 p-4">
           <div className="flex flex-col gap-1">
             <ViewTransition name={`title-${slug}`}>

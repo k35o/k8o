@@ -2,13 +2,12 @@ import { InteractiveCard } from '@/components/card';
 import { ChevronIcon } from '@/components/icons';
 import { Separator } from '@/components/separator';
 import { cn } from '@k8o/helpers/cn';
-import { Route } from 'next';
 import Link from 'next/link';
 import { FC } from 'react';
 
 export const TagCard: FC<{
   title: string;
-  href: Route;
+  href: string;
   count?: number;
   label: string;
   linkLabel: string;
