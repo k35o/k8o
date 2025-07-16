@@ -4,7 +4,7 @@ import { FC } from 'react';
 
 export const LlmLink: FC = () => {
   return (
-    <IconLink href="/llms.txt" label="LLMS">
+    <IconLink href="/llms.txt" label="LLMS" prefetch={false}>
       <AIIcon size="lg" />
     </IconLink>
   );

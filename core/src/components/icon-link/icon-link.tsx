@@ -10,6 +10,7 @@ type IconLinkProps = PropsWithChildren<{
   label?: string;
   href: string;
   openInNewTab?: boolean;
+  prefetch?: boolean;
 }>;
 
 export const IconLink: FC<IconLinkProps> = ({
@@ -19,18 +20,20 @@ export const IconLink: FC<IconLinkProps> = ({
   href,
   children,
   openInNewTab = false,
+  ...linkProps
 }) => {
   return isInternalRoute<Route>(href) && !openInNewTab ? (
     <Link
       className={cn(
         'hover:bg-bg-subtle focus-visible:ring-border-info active:bg-bg-emphasize block rounded-full focus-visible:ring-2',
         bg === 'base' && 'bg-bg-base/90',
-        bg === 'transparent' && 'bgtransparent',
+        bg === 'transparent' && 'bg-transparent',
         size === 'sm' && 'p-1',
         size === 'md' && 'p-2',
         size === 'lg' && 'p-3',
       )}
       href={href}
+      {...linkProps}
     >
       <span className="sr-only">{label}</span>
       {children}
@@ -40,7 +43,7 @@ export const IconLink: FC<IconLinkProps> = ({
       className={cn(
         'hover:bg-bg-subtle focus-visible:ring-border-info active:bg-bg-emphasize block rounded-full focus-visible:ring-2',
         bg === 'base' && 'bg-bg-base/90',
-        bg === 'transparent' && 'bgtransparent',
+        bg === 'transparent' && 'bg-transparent',
         size === 'sm' && 'p-1',
         size === 'md' && 'p-2',
         size === 'lg' && 'p-3',
