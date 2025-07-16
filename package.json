@@ -3,6 +3,10 @@
   "version": "0.1.0",
   "private": true,
   "type": "module",
+  "engines": {
+    "node": "22.17.0"
+  },
+  "packageManager": "pnpm@10.13.1",
   "scripts": {
     "dev": "turbo dev",
     "build": "turbo build",
@@ -19,6 +23,8 @@
     "install-playwright": "playwright install --with-deps"
   },
   "dependencies": {
+    "@k8o/helpers": "workspace:*",
+    "@k8o/hooks": "workspace:*",
     "@upstash/ratelimit": "2.0.5",
     "@upstash/redis": "1.35.1",
     "react": "19.1.0",
@@ -39,7 +45,6 @@
     "@vitest/browser": "3.2.4",
     "@vitest/coverage-istanbul": "3.2.4",
     "@vitest/ui": "3.2.4",
-    "chromatic": "13.1.2",
     "eslint": "9.31.0",
     "eslint-config-next": "15.3.5",
     "eslint-config-prettier": "10.1.5",
@@ -57,9 +62,5 @@
     "typescript": "5.8.3",
     "typescript-eslint": "8.36.0",
     "vitest": "3.2.4"
-  },
-  "engines": {
-    "node": "22.17.0"
-  },
-  "packageManager": "pnpm@10.13.1"
+  }
 }
