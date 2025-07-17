@@ -1,7 +1,7 @@
 'use client';
 
-import { NewsIcon } from '@/components/icons';
-import { LinkButton } from '@/components/link-button';
+import { NewsIcon } from '@k8o/components/icons';
+import { LinkButton } from '@k8o/components/link-button';
 import { usePathname } from 'next/navigation';
 import { FC } from 'react';
 

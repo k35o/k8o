@@ -5,10 +5,10 @@ import {
   useFixedText,
   useResetResult,
 } from '../../_state/text';
-import { Button } from '@/components/button';
-import { Heading } from '@/components/heading';
-import { CopyIcon } from '@/components/icons';
-import { useToast } from '@/components/toast';
+import { Button } from '@k8o/components/button';
+import { Heading } from '@k8o/components/heading';
+import { CopyIcon } from '@k8o/components/icons';
+import { useToast } from '@k8o/components/toast';
 import { useClipboard } from '@k8o/hooks/clipboard';
 import { FC, useId } from 'react';
 
@@ -49,7 +49,7 @@ export const Result: FC = () => {
           </Button>
         </div>
         <div className="border-border-base bg-bg-base rounded-md border px-3 py-2">
-          <p className="whitespace-pre-wrap text-wrap break-all">
+          <p className="text-wrap break-all whitespace-pre-wrap">
             {fixedText}
           </p>
         </div>

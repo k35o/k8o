@@ -1,9 +1,9 @@
 'use client';
 
-import { Anchor } from '@/components/anchor/anchor';
-import { IconButton } from '@/components/icon-button';
-import { CopyIcon, RSSIcon } from '@/components/icons';
-import { useToast } from '@/components/toast';
+import { Anchor } from '@k8o/components/anchor';
+import { IconButton } from '@k8o/components/icon-button';
+import { CopyIcon, RSSIcon } from '@k8o/components/icons';
+import { useToast } from '@k8o/components/toast';
 import { useClipboard } from '@k8o/hooks/clipboard';
 import { FC } from 'react';
 

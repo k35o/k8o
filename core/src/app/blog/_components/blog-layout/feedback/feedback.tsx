@@ -1,8 +1,8 @@
 'use client';
 
 import { FeedbackCard } from '@/app/_components/feedback-card';
-import { useToast } from '@/components/toast';
 import { feedback } from '@/services/blogs/action';
+import { useToast } from '@k8o/components/toast';
 import { FC } from 'react';
 
 export const Feedback: FC<{

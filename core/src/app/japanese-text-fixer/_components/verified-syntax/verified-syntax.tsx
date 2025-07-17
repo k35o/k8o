@@ -6,10 +6,10 @@ import {
   AccordionButton,
   AccordionItem,
   AccordionPanel,
-} from '@/components/accordion';
-import { Button } from '@/components/button';
-import { AlertIcon, CopyIcon } from '@/components/icons';
-import { useToast } from '@/components/toast';
+} from '@k8o/components/accordion';
+import { Button } from '@k8o/components/button';
+import { AlertIcon, CopyIcon } from '@k8o/components/icons';
+import { useToast } from '@k8o/components/toast';
 import { useClipboard } from '@k8o/hooks/clipboard';
 import { FC } from 'react';
 
@@ -52,7 +52,7 @@ export const VerifiedSyntax: FC = () => {
             </h4>
             <AccordionPanel>
               <div className="p-3">
-                <p className="whitespace-pre-wrap text-wrap break-all">
+                <p className="text-wrap break-all whitespace-pre-wrap">
                   {text}
                 </p>
               </div>

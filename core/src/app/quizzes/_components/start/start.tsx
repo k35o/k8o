@@ -1,10 +1,10 @@
 'use client';
 
-import { FormControl } from '@/components/form/form-control';
-import { NumberField } from '@/components/form/number-field';
-import { LinkButton } from '@/components/link-button';
-import { ListBox } from '@/components/list-box';
 import { QUIZ_OPTIONS, QuizKey } from '@/services/quizzes';
+import { FormControl } from '@k8o/components/form/form-control';
+import { NumberField } from '@k8o/components/form/number-field';
+import { LinkButton } from '@k8o/components/link-button';
+import { ListBox } from '@k8o/components/list-box';
 import { FC, useCallback, useState } from 'react';
 
 export const Start: FC = () => {

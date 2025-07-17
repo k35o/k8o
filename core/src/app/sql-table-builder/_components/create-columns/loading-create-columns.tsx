@@ -1,4 +1,4 @@
-import { Button } from '@/components/button';
+import { Button } from '@k8o/components/button';
 import { FC } from 'react';
 
 export const LoadingCreateColumns: FC = () => {

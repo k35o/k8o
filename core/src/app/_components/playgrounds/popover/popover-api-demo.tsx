@@ -1,4 +1,4 @@
-import { Button } from '@/components/button';
+import { Button } from '@k8o/components/button';
 import { FC } from 'react';
 
 export const PopoverApiDemo: FC = () => {
@@ -18,7 +18,7 @@ export const PopoverApiDemo: FC = () => {
       <p
         id="popover1"
         popover="auto"
-        className="max-w-1/3 starting:open:opacity-0 m-auto rounded-md p-4 opacity-0 transition-opacity duration-500 backdrop:bg-[#00000080] open:opacity-100"
+        className="m-auto max-w-1/3 rounded-md p-4 opacity-0 transition-opacity duration-500 backdrop:bg-[#00000080] open:opacity-100 starting:open:opacity-0"
       >
         このポップオーバーはPopover APIによって表示されました。
         ESCキーやこのコンテンツの外側のクリック、toggleまたはhideボタンで閉じられます。

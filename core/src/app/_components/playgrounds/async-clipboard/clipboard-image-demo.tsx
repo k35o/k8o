@@ -3,10 +3,10 @@
 import arteodysseyIcon from '@/app/_images/arteodyssey.png';
 import primaryIcon from '@/app/blog/(articles)/async-clipboard/_images/primary.png';
 import k8oIcon from '@/app/icon.png';
-import { Button } from '@/components/button';
-import { FormControl } from '@/components/form/form-control';
-import { Select } from '@/components/form/select';
-import { useToast } from '@/components/toast';
+import { Button } from '@k8o/components/button';
+import { FormControl } from '@k8o/components/form/form-control';
+import { Select } from '@k8o/components/form/select';
+import { useToast } from '@k8o/components/toast';
 import Image from 'next/image';
 import { FC, useRef, useState } from 'react';
 

@@ -1,7 +1,7 @@
 'use client';
 
-import { Anchor } from '@/components/anchor';
-import { Breadcrumb } from '@/components/breadcrumb';
+import { Anchor } from '@k8o/components/anchor';
+import { Breadcrumb } from '@k8o/components/breadcrumb';
 import { usePathname } from 'next/navigation';
 import { FC } from 'react';
 

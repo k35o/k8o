@@ -3,7 +3,7 @@ import {
   COLOR_VARIANTS,
   SEMANTIC_COLOR_VARIANTS,
 } from '../../_utils/color';
-import { Heading } from '@/components/heading';
+import { Heading } from '@k8o/components/heading';
 import { cn } from '@k8o/helpers/cn';
 import { calcContrast } from '@k8o/helpers/color';
 import { FC } from 'react';

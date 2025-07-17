@@ -8,13 +8,13 @@ import {
   AccordionButton,
   AccordionItem,
   AccordionPanel,
-} from '@/components/accordion';
-import { FormControl } from '@/components/form/form-control';
-import { Radio } from '@/components/form/radio';
-import { Select } from '@/components/form/select/select';
-import { TextField } from '@/components/form/text-field';
-import { IconButton } from '@/components/icon-button';
-import { CloseIcon } from '@/components/icons';
+} from '@k8o/components/accordion';
+import { FormControl } from '@k8o/components/form/form-control';
+import { Radio } from '@k8o/components/form/radio';
+import { Select } from '@k8o/components/form/select';
+import { TextField } from '@k8o/components/form/text-field';
+import { IconButton } from '@k8o/components/icon-button';
+import { CloseIcon } from '@k8o/components/icons';
 import { FC } from 'react';
 
 type Props = {

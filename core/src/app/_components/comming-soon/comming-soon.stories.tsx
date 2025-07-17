@@ -1,5 +1,5 @@
 import { CommingSoon } from './comming-soon';
-import { Anchor } from '@/components/anchor';
+import { Anchor } from '@k8o/components/anchor';
 import type { Meta, StoryObj } from '@storybook/nextjs';
 
 const meta: Meta<typeof CommingSoon> = {

@@ -4,10 +4,10 @@ import {
   Restriction,
   RestrictionType,
 } from '../../_types/restriction';
-import { Autocomplete } from '@/components/form/autocomplete';
-import { FormControl } from '@/components/form/form-control';
-import { Select } from '@/components/form/select/select';
-import { TextField } from '@/components/form/text-field';
+import { Autocomplete } from '@k8o/components/form/autocomplete';
+import { FormControl } from '@k8o/components/form/form-control';
+import { Select } from '@k8o/components/form/select';
+import { TextField } from '@k8o/components/form/text-field';
 import { FC } from 'react';
 
 const TYPE_OPTIONS = [

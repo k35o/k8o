@@ -1,9 +1,9 @@
 'use client';
 
 import { useControlPanel } from './use-control-panel';
-import { IconButton } from '@/components/icon-button';
-import { CopyIcon } from '@/components/icons';
-import { useToast } from '@/components/toast';
+import { IconButton } from '@k8o/components/icon-button';
+import { CopyIcon } from '@k8o/components/icons';
+import { useToast } from '@k8o/components/toast';
 import { cn } from '@k8o/helpers/cn';
 import { useClipboard } from '@k8o/hooks/clipboard';
 import { FC, KeyboardEvent, MouseEvent, TouchEvent } from 'react';
@@ -39,9 +39,9 @@ const OperateButton: FC<{
         variable === 'quaternary' && 'bg-group-quaternary',
         variable === 'tertiary' && 'bg-group-tertiary',
         isActive &&
-          'bordertransparent ring-fg-mute outline-hidden ring-4',
-        'hover:bordertransparent hover:ring-fg-mute hover:outline-hidden hover:ring-4',
-        'focus-visible:ring-fg-mute focus-visible:outline-hidden focus-visible:border-transparent focus-visible:ring-4',
+          'bordertransparent ring-fg-mute ring-4 outline-hidden',
+        'hover:bordertransparent hover:ring-fg-mute hover:ring-4 hover:outline-hidden',
+        'focus-visible:ring-fg-mute focus-visible:border-transparent focus-visible:ring-4 focus-visible:outline-hidden',
       )}
       onMouseDown={onMouseDown}
       onTouchStart={onTouchStart}

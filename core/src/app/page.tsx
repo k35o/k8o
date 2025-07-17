@@ -1,18 +1,18 @@
-import { Heading } from '../components/heading';
 import { AppCard } from './_components/app-card';
 import { EmailTooltip } from './_components/email-tooltip';
 import arteodyssey from './_images/arteodyssey.png';
 import k8o from './_images/k8o.jpg';
 import { RoundedIcon } from './radius-maker/_components/rounded-icon';
-import { Card } from '@/components/card';
-import { IconLink } from '@/components/icon-link';
+import { Card } from '@k8o/components/card';
+import { Heading } from '@k8o/components/heading';
+import { IconLink } from '@k8o/components/icon-link';
 import {
   GitHubIcon,
   QiitaIcon,
   TwitterIcon,
   ZennIcon,
-} from '@/components/icons';
-import { TextTag } from '@/components/text-tag';
+} from '@k8o/components/icons';
+import { TextTag } from '@k8o/components/text-tag';
 import Image from 'next/image';
 
 export default function Home() {

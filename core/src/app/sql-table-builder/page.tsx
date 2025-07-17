@@ -10,7 +10,7 @@ import {
 } from './_types/restriction';
 import { InvalidTable, Table } from './_types/table';
 import { makeStatement } from './_utils/statement';
-import { Button } from '@/components/button';
+import { Button } from '@k8o/components/button';
 import { uuidV4 } from '@k8o/helpers/uuid-v4';
 import dynamic from 'next/dynamic';
 import { useRef, useState } from 'react';
@@ -104,7 +104,7 @@ export default function Page() {
           ref={(node) => {
             node?.scrollIntoView();
           }}
-          className="bg-bg-mute sm:text-md whitespace-pre-wrap rounded-md p-4 text-xs"
+          className="bg-bg-mute sm:text-md rounded-md p-4 text-xs whitespace-pre-wrap"
         >
           {statement}
         </code>

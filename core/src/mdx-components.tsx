@@ -1,6 +1,6 @@
-import { Anchor } from './components/anchor';
-import { Code } from './components/code';
-import { LinkIcon } from './components/icons';
+import { Anchor } from '@k8o/components/anchor';
+import { Code } from '@k8o/components/code';
+import { LinkIcon } from '@k8o/components/icons';
 import { cn } from '@k8o/helpers/cn';
 import type { MDXComponents } from 'mdx/types';
 import { FC, PropsWithChildren } from 'react';
@@ -36,10 +36,10 @@ const LinkHeading: FC<
           <span
             className={cn(
               'text-fg-mute absolute top-1 box-content opacity-0 transition-opacity duration-500 sm:group-hover:opacity-100',
-              type === 'h2' && '-left-7 top-1.5 pr-2',
+              type === 'h2' && 'top-1.5 -left-7 pr-2',
               type === 'h3' && '-left-7 pr-2',
-              type === 'h4' && '-left-5 top-2 pr-2',
-              type === 'h5' && '-left-5 top-1.5 pr-2',
+              type === 'h4' && 'top-2 -left-5 pr-2',
+              type === 'h5' && 'top-1.5 -left-5 pr-2',
               type === 'h6' && '-left-5 pr-2',
             )}
           >

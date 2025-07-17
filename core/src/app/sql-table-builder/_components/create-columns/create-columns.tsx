@@ -4,8 +4,8 @@ import { useCreateColumns } from './hooks';
 import { useColumnsType } from '../../_state';
 import { Column, InvalidColumns } from '../../_types/column';
 import { Restriction } from '../../_types/restriction';
-import { Button } from '@/components/button';
-import { FormIcon, TableIcon } from '@/components/icons';
+import { Button } from '@k8o/components/button';
+import { FormIcon, TableIcon } from '@k8o/components/icons';
 import { FC } from 'react';
 
 type Props = {

@@ -6,10 +6,10 @@ import { ToggleTheme } from '../../toggle-theme';
 import { LlmLink } from '../llm-link';
 import { NewsLink } from '../news-link';
 import { TagsLink } from '../tags-link';
-import { IconButton } from '@/components/icon-button';
-import { CloseIcon, NavigationMenuIcon } from '@/components/icons';
-import { Modal } from '@/components/modal';
-import { PortalRootProvider } from '@/providers/poratl-root';
+import { IconButton } from '@k8o/components/icon-button';
+import { CloseIcon, NavigationMenuIcon } from '@k8o/components/icons';
+import { Modal } from '@k8o/components/modal';
+import { PortalRootProvider } from '@k8o/components/providers';
 import { FC, useCallback, useRef, useState } from 'react';
 
 export const NavigationMenu: FC = () => {
@@ -34,7 +34,7 @@ export const NavigationMenu: FC = () => {
       <Modal type="bottom" ref={ref} isOpen={open} onClose={onClose}>
         <PortalRootProvider value={ref}>
           <div className="flex flex-col gap-4 p-4">
-            <div className="absolute right-2 top-2">
+            <div className="absolute top-2 right-2">
               <IconButton
                 label="メニューを閉じる"
                 onClick={onClose}

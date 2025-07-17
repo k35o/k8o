@@ -5,7 +5,7 @@ import { Components } from './_components/components';
 import { Radius } from './_components/radius';
 import { Spacing } from './_components/spacing';
 import { Typography } from './_components/typography';
-import { Tabs } from '@/components/tabs';
+import { Tabs } from '@k8o/components/tabs';
 
 export default function Page() {
   return (

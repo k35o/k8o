@@ -1,14 +1,14 @@
 'use client';
 
 import { contact } from '@/app/_api/contact-to-me';
-import { Anchor } from '@/components/anchor';
-import { Button } from '@/components/button';
-import { Dialog } from '@/components/dialog';
-import { FormControl } from '@/components/form/form-control';
-import { Textarea } from '@/components/form/textarea';
-import { SendIcon } from '@/components/icons';
-import { Modal } from '@/components/modal';
-import { useToast } from '@/components/toast';
+import { Anchor } from '@k8o/components/anchor';
+import { Button } from '@k8o/components/button';
+import { Dialog } from '@k8o/components/dialog';
+import { FormControl } from '@k8o/components/form/form-control';
+import { Textarea } from '@k8o/components/form/textarea';
+import { SendIcon } from '@k8o/components/icons';
+import { Modal } from '@k8o/components/modal';
+import { useToast } from '@k8o/components/toast';
 import {
   FC,
   useActionState,

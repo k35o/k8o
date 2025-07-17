@@ -1,8 +1,8 @@
 'use client';
 
-import { IconButton } from '@/components/icon-button';
-import { MailIcon } from '@/components/icons';
-import { Tooltip } from '@/components/tooltip';
+import { IconButton } from '@k8o/components/icon-button';
+import { MailIcon } from '@k8o/components/icons';
+import { Tooltip } from '@k8o/components/tooltip';
 import { FC } from 'react';
 
 export const EmailTooltip: FC = () => {

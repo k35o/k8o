@@ -1,4 +1,4 @@
-import { Heading } from '@/components/heading';
+import { Heading } from '@k8o/components/heading';
 import { PropsWithChildren } from 'react';
 
 export default function Layout({ children }: PropsWithChildren) {

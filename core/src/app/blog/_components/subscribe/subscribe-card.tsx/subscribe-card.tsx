@@ -1,7 +1,11 @@
 import { MailPanel } from './mail-panel';
 import { RssPanel } from './rss-panel';
-import { MailIcon, RSSIcon, SubscribeIcon } from '@/components/icons';
-import { Tabs } from '@/components/tabs';
+import {
+  MailIcon,
+  RSSIcon,
+  SubscribeIcon,
+} from '@k8o/components/icons';
+import { Tabs } from '@k8o/components/tabs';
 import { FC } from 'react';
 
 export const SubscribeCard: FC = () => {

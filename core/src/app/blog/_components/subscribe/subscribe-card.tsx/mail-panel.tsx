@@ -1,11 +1,11 @@
 'use client';
 
 import { registerEmail } from './action';
-import { Button } from '@/components/button';
-import { FormControl } from '@/components/form/form-control';
-import { TextField } from '@/components/form/text-field';
-import { SendIcon } from '@/components/icons';
-import { useToast } from '@/components/toast';
+import { Button } from '@k8o/components/button';
+import { FormControl } from '@k8o/components/form/form-control';
+import { TextField } from '@k8o/components/form/text-field';
+import { SendIcon } from '@k8o/components/icons';
+import { useToast } from '@k8o/components/toast';
 import { FC, useActionState, useEffect } from 'react';
 
 export const MailPanel: FC = () => {

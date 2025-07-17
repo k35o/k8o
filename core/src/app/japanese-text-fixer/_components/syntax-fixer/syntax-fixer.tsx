@@ -13,14 +13,14 @@ import {
   AccordionButton,
   AccordionItem,
   AccordionPanel,
-} from '@/components/accordion';
-import { Alert } from '@/components/alert';
-import { Button } from '@/components/button';
-import { FormControl } from '@/components/form/form-control';
-import { Textarea } from '@/components/form/textarea';
-import { Heading } from '@/components/heading';
-import { IconButton } from '@/components/icon-button';
-import { ChevronIcon } from '@/components/icons';
+} from '@k8o/components/accordion';
+import { Alert } from '@k8o/components/alert';
+import { Button } from '@k8o/components/button';
+import { FormControl } from '@k8o/components/form/form-control';
+import { Textarea } from '@k8o/components/form/textarea';
+import { Heading } from '@k8o/components/heading';
+import { IconButton } from '@k8o/components/icon-button';
+import { ChevronIcon } from '@k8o/components/icons';
 import { useStep } from '@k8o/hooks/step';
 import { FC, Fragment, useId } from 'react';
 
@@ -56,7 +56,7 @@ export const SyntaxFixer: FC = () => {
           <ChevronIcon direction="left" size="lg" />
         </IconButton>
         <div className="bg-bg-base flex size-14 items-center justify-center rounded-full">
-          <p className="font-bold leading-none">
+          <p className="leading-none font-bold">
             {count}/{invalidCount}
           </p>
         </div>
@@ -122,7 +122,7 @@ const FixText: FC<{ count: number }> = ({ count }) => {
                 </AccordionButton>
               </Heading>
               <AccordionPanel>
-                <p className="whitespace-pre-wrap text-wrap break-all">
+                <p className="text-wrap break-all whitespace-pre-wrap">
                   {texts.map((text, idx) => {
                     const separator =
                       idx === texts.length - 1 ? '' : '\n';

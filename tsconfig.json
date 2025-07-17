@@ -37,6 +37,9 @@
       "path": "./core/tsconfig.json"
     },
     {
+      "path": "./packages/components/tsconfig.json"
+    },
+    {
       "path": "./packages/hooks/tsconfig.json"
     },
     {
