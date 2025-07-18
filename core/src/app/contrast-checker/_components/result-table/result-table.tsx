@@ -18,7 +18,7 @@ export const ResultTable: FC<Props> = ({
   baseColor,
 }) => {
   return (
-    <table className="wrap-normal w-full">
+    <table className="w-full wrap-normal">
       <thead>
         <tr className="border-border-base md:texxt-md border-b text-sm font-medium">
           <th>AA</th>
