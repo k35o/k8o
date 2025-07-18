@@ -1,4 +1,5 @@
 @import 'tailwindcss';
+@source '../src';
 
 @layer base {
   body:has(dialog[open]) {
