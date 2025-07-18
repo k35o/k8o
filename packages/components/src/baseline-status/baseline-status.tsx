@@ -24,7 +24,7 @@ export const BaselineStatus: FC<{ featureId: string }> = ({
     (onStoreChange: () => void) => {
       if (!didInit) {
         didInit = true;
-        void import('baseline-status').then(() => {
+        void import('baseline-status' as string).then(() => {
           onStoreChange();
         });
       }
