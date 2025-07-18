@@ -9,7 +9,6 @@ import { handlers } from '../src/mocks/handlers';
 import { mPlus2, notoSansJp } from '../src/app/_styles/font';
 
 import '../src/app/_styles/globals.css';
-import '@k8o/components/styles.css';
 
 initialize(
   {

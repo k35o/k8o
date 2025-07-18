@@ -1,6 +1,5 @@
 import { GlobalLayout } from './_components/global-layout';
 import './_styles/globals.css';
-import '@k8o/components/styles.css';
 import { mPlus2, notoSansJp } from './_styles/font';
 import { ReactScan } from '@/libs/react-scan';
 import { AppProvider } from '@/providers/app';
