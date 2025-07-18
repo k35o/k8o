@@ -1,0 +1,26 @@
+name: 'Chromatic Components'
+
+on:
+  push:
+    paths:
+      - 'pnpm-lock.yaml'
+      - 'packages/components/**'
+
+jobs:
+  chromatic-deployment:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout branch
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Setup pnpm
+        uses: ./.github/actions/setup-pnpm
+      - name: Publish Components to Chromatic
+        uses: chromaui/action@v13
+        with:
+          projectToken: ${{ secrets.CHROMATIC_PROJECT_TOKEN_ARTE_ODYSSEY }}
+          onlyChanged: true
+          skip: 'renovate/**'
+          workingDir: packages/components
