@@ -5,20 +5,20 @@ import { ViewCounter } from './view-counter';
 import { Subscribe } from '../subscribe';
 import { getBlogContent } from '#api/blog';
 import { ViewTransition } from '#libs/react';
+import { ErrorBoundary } from '@k8o/components/error-boundary';
 import {
   PublishDateIcon,
   SlideIcon,
   TagIcon,
   UpdateDateIcon,
   ViewIcon,
-} from '@/components/icons';
-import { LinkButton } from '@/components/link-button';
-import { ScrollLinked } from '@/components/scroll-linked';
-import { Separator } from '@/components/separator';
-import { TextTag } from '@/components/text-tag';
+} from '@k8o/components/icons';
+import { LinkButton } from '@k8o/components/link-button';
+import { ScrollLinked } from '@k8o/components/scroll-linked';
+import { Separator } from '@k8o/components/separator';
+import { TextTag } from '@k8o/components/text-tag';
 import { formatDate } from '@k8o/helpers/date';
 import { FC, ReactNode, Suspense } from 'react';
-import { ErrorBoundary } from 'react-error-boundary';
 
 export const BlogLayout: FC<{
   children: ReactNode;
@@ -29,7 +29,7 @@ export const BlogLayout: FC<{
   return (
     <div className="gap-4 xl:flex xl:has-[>:nth-child(2)]:-mx-36">
       <div className="m-auto flex flex-col gap-8 xl:max-w-4xl">
-        <article className="bg-bg-base/90 rounded-md px-3 pb-14 pt-8 sm:px-10">
+        <article className="bg-bg-base/90 rounded-md px-3 pt-8 pb-14 sm:px-10">
           <div className="flex flex-col gap-3">
             <ViewTransition name={`title-${slug}`}>
               <h2 className="text-xl font-bold sm:text-2xl">
@@ -108,7 +108,7 @@ export const BlogLayout: FC<{
           {children}
         </article>
         <ErrorBoundary fallback={<></>}>
-          <section className="bg-bg-base/90 w-full rounded-md px-3 pb-14 pt-8 sm:px-10">
+          <section className="bg-bg-base/90 w-full rounded-md px-3 pt-8 pb-14 sm:px-10">
             <Feedback slug={slug} />
           </section>
         </ErrorBoundary>

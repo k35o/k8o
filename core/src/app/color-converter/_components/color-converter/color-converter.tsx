@@ -11,9 +11,9 @@ import {
   RGB,
   rgbToHex,
 } from '../../_utils/color-converter';
-import { FormControl } from '@/components/form/form-control';
-import { NumberField } from '@/components/form/number-field';
-import { TextField } from '@/components/form/text-field';
+import { FormControl } from '@k8o/components/form/form-control';
+import { NumberField } from '@k8o/components/form/number-field';
+import { TextField } from '@k8o/components/form/text-field';
 import {
   ChangeEventHandler,
   useCallback,
@@ -107,7 +107,7 @@ export const ColorConverter = () => {
       <div className="flex items-center justify-center">
         <ColorTip color={`#${hex}`} />
       </div>
-      <div className="wrap-normal flex flex-col items-center gap-6">
+      <div className="flex flex-col items-center gap-6 wrap-normal">
         <FormControl
           label="hex"
           renderInput={({ labelId: _, ...props }) => {

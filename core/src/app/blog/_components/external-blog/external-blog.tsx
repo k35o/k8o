@@ -1,5 +1,5 @@
-import { IconLink } from '@/components/icon-link';
-import { QiitaIcon, RSSIcon, ZennIcon } from '@/components/icons';
+import { IconLink } from '@k8o/components/icon-link';
+import { QiitaIcon, RSSIcon, ZennIcon } from '@k8o/components/icons';
 import { FC } from 'react';
 
 export const ExternalBlog: FC = () => {

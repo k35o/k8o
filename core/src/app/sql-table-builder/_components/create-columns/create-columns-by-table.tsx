@@ -3,11 +3,11 @@ import {
   ColumnType,
   InvalidColumns,
 } from '../../_types/column';
-import { Checkbox } from '@/components/form/checkbox';
-import { Select } from '@/components/form/select/select';
-import { TextField } from '@/components/form/text-field';
-import { IconButton } from '@/components/icon-button';
-import { CloseIcon } from '@/components/icons';
+import { Checkbox } from '@k8o/components/form/checkbox';
+import { Select } from '@k8o/components/form/select';
+import { TextField } from '@k8o/components/form/text-field';
+import { IconButton } from '@k8o/components/icon-button';
+import { CloseIcon } from '@k8o/components/icons';
 import { FC, useId } from 'react';
 
 type Props = {
@@ -44,11 +44,11 @@ export const CreateColumnsByTable: FC<Props> = ({
       <table className="w-[51rem]">
         <thead>
           <tr className="border-border-base border-b">
-            <th className="text-nowrap px-2 py-3">カラム名</th>
-            <th className="text-nowrap px-2 py-3">コメント</th>
-            <th className="text-nowrap px-2 py-3">型</th>
-            <th className="text-nowrap px-2 py-3">null許容</th>
-            <th className="text-nowrap px-2 py-3">デフォルト値</th>
+            <th className="px-2 py-3 text-nowrap">カラム名</th>
+            <th className="px-2 py-3 text-nowrap">コメント</th>
+            <th className="px-2 py-3 text-nowrap">型</th>
+            <th className="px-2 py-3 text-nowrap">null許容</th>
+            <th className="px-2 py-3 text-nowrap">デフォルト値</th>
             <th className="px-2 py-3"></th>
           </tr>
         </thead>

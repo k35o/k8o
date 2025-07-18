@@ -1,6 +1,6 @@
-import { InteractiveCard } from '@/components/card';
-import { ChevronIcon } from '@/components/icons';
-import { Separator } from '@/components/separator';
+import { InteractiveCard } from '@k8o/components/card';
+import { ChevronIcon } from '@k8o/components/icons';
+import { Separator } from '@k8o/components/separator';
 import { cn } from '@k8o/helpers/cn';
 import Link from 'next/link';
 import { FC } from 'react';
@@ -18,7 +18,7 @@ export const TagCard: FC<{
         href={href}
         aria-label={linkLabel}
         className={cn(
-          'w-70 flex h-full flex-col gap-2 rounded-lg border border-transparent p-4',
+          'flex h-full w-70 flex-col gap-2 rounded-lg border border-transparent p-4',
           'group',
           'hover:bg-primary-bg-mute hover:text-primary-fg hover:border-primary-border',
         )}

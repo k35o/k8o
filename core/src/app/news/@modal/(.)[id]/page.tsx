@@ -1,6 +1,9 @@
 import { News, NewsPagination } from '../../_types';
 import { NewsModal } from '../_components/news-modal';
-import { PublishDateIcon, UpdateDateIcon } from '@/components/icons';
+import {
+  PublishDateIcon,
+  UpdateDateIcon,
+} from '@k8o/components/icons';
 import { formatDate } from '@k8o/helpers/date';
 import { draftMode } from 'next/headers';
 import { notFound } from 'next/navigation';

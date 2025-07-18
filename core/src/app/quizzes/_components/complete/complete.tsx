@@ -1,9 +1,9 @@
 import { CollectionByHighlight } from '../collection';
-import { Button } from '@/components/button';
-import { Heading } from '@/components/heading';
-import { HistoryIcon, ListIcon } from '@/components/icons';
-import { LinkButton } from '@/components/link-button';
 import { Quiz } from '@/services/quizzes';
+import { Button } from '@k8o/components/button';
+import { Heading } from '@k8o/components/heading';
+import { HistoryIcon, ListIcon } from '@k8o/components/icons';
+import { LinkButton } from '@k8o/components/link-button';
 import { cn } from '@k8o/helpers/cn';
 import { FC } from 'react';
 

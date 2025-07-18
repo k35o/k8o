@@ -1,8 +1,8 @@
 'use client';
 
-import { Code } from '@/components/code';
-import { FormControl } from '@/components/form/form-control/form-control';
-import { RangeField } from '@/components/form/range-field/range-field';
+import { Code } from '@k8o/components/code';
+import { FormControl } from '@k8o/components/form/form-control';
+import { RangeField } from '@k8o/components/form/range-field';
 import { useState } from 'react';
 
 export function CssMathFunctionsDemo() {
@@ -44,8 +44,8 @@ export function CssMathFunctionsDemo() {
       <div className="flex flex-col items-center gap-4">
         <div className="border-border-base relative aspect-square w-full max-w-80 overflow-hidden border">
           {/* 中心線 */}
-          <div className="bg-fg-subtle absolute left-1/2 top-0 h-full w-px"></div>
-          <div className="bg-fg-subtle absolute left-0 top-1/2 h-px w-full"></div>
+          <div className="bg-fg-subtle absolute top-0 left-1/2 h-full w-px"></div>
+          <div className="bg-fg-subtle absolute top-1/2 left-0 h-px w-full"></div>
           {/* 移動する要素 */}
           <div
             className="absolute z-10 h-6 w-6 rounded-full transition-all duration-300 ease-out"
@@ -64,7 +64,7 @@ export function CssMathFunctionsDemo() {
           ></div>
 
           {/* 座標表示 */}
-          <div className="text-fg-mute absolute left-2 top-2 text-xs">
+          <div className="text-fg-mute absolute top-2 left-2 text-xs">
             <p>
               座標: ({xValue}, {yValue})
             </p>

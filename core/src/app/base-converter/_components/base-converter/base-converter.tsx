@@ -1,7 +1,7 @@
 'use client';
 
-import { FormControl } from '@/components/form/form-control';
-import { TextField } from '@/components/form/text-field';
+import { FormControl } from '@k8o/components/form/form-control';
+import { TextField } from '@k8o/components/form/text-field';
 import { useCallback, useState } from 'react';
 
 type Base = 2 | 8 | 10 | 16;

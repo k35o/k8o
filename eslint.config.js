@@ -12,6 +12,10 @@ import drizzlePlugin from 'eslint-plugin-drizzle';
  */
 export default tseslint.config(
   {
+    name: 'global ignores',
+    ignores: ['**/*.d.ts'],
+  },
+  {
     name: 'declare eslint plugins',
     plugins: {
       ['@typescript-eslint']: tseslint.plugin,

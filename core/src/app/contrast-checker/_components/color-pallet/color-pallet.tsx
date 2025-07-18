@@ -1,4 +1,4 @@
-import { FormControl } from '@/components/form/form-control';
+import { FormControl } from '@k8o/components/form/form-control';
 import { cn } from '@k8o/helpers/cn';
 import { ChangeEventHandler, FC } from 'react';
 
@@ -26,7 +26,7 @@ export const ColorPallet: FC<Props> = ({
             id={id}
             className={cn(
               'border-border-base w-16 grow rounded-md border',
-              'focus-visible:ring-border-info focus-visible:outline-hidden focus-visible:border-transparent focus-visible:ring-2',
+              'focus-visible:ring-border-info focus-visible:border-transparent focus-visible:ring-2 focus-visible:outline-hidden',
             )}
             type="color"
             value={color}

@@ -1,9 +1,9 @@
 import { checkAnswer } from '../../_utils/check-answer';
-import { Button } from '@/components/button';
-import { FormControl } from '@/components/form/form-control';
-import { TextField } from '@/components/form/text-field';
-import { AlertIcon } from '@/components/icons';
 import { Quiz } from '@/services/quizzes';
+import { Button } from '@k8o/components/button';
+import { FormControl } from '@k8o/components/form/form-control';
+import { TextField } from '@k8o/components/form/text-field';
+import { AlertIcon } from '@k8o/components/icons';
 import { FC, useMemo, useState } from 'react';
 
 export const Answer: FC<{

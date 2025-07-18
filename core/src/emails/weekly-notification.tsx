@@ -59,7 +59,7 @@ const WeeklyNotification = ({ notifications }: Props) => {
                   key={notification.id}
                   className="mb-[24px] rounded-md border border-solid border-[#a1a1aa] p-[12px]"
                 >
-                  <Text className="mb-[16px] mt-0 text-xl font-bold">
+                  <Text className="mt-0 mb-[16px] text-xl font-bold">
                     お問い合わせ通知
                     {notification.feedback && (
                       <span className="ml-[2px] rounded-full border border-solid border-[#a1a1aa] bg-[#f0f0f0] px-[12px] py-[4px] text-sm font-normal">

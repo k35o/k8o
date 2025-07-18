@@ -1,13 +1,14 @@
 pre-commit:
   commands:
     format:
-      glob: '*.{js,ts,cjs,d.cts,d.ts,jsx,tsx,md,mdx}'
+      glob: '*.{js,ts,d.ts,tsx,md,mdx}'
       run: pnpm prettier --write --experimental-cli {staged_files}
       stage_fixed: true
       exclude:
         - '**/mockServiceWorker.js'
     lint:
-      glob: '**/src/**/*.{js,ts,cjs,d.cts,d.ts,jsx,tsx}'
+      glob: '**/src/**/*.{js,ts,tsx}'
+      exclude: 'baseline-status.d.ts'
       run: pnpm eslint --fix --max-warnings 0 {staged_files}
       stage_fixed: true
 
@@ -18,12 +19,13 @@ pre-commit:
 pre-push:
   commands:
     format:
-      glob: '*.{js,ts,cjs,d.cts,d.ts,jsx,tsx,md,mdx}'
+      glob: '*.{js,ts,d.ts,tsx,md,mdx}'
       run: pnpm prettier --check --experimental-cli {staged_files}
       exclude:
         - '**/mockServiceWorker.js'
     lint:
-      glob: '**/src/**/*.{js,ts,cjs,d.cts,d.ts,jsx,tsx}'
+      glob: '**/src/**/*.{js,ts,tsx}'
+      exclude: 'baseline-status.d.ts'
       run: pnpm eslint --fix --max-warnings 0 {staged_files}
 
     test:

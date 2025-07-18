@@ -1,5 +1,5 @@
-import { Heading } from '../../../components/heading';
-import { InteractiveCard } from '@/components/card';
+import { InteractiveCard } from '@k8o/components/card';
+import { Heading } from '@k8o/components/heading';
 import Link from 'next/link';
 import { ReactNode } from 'react';
 

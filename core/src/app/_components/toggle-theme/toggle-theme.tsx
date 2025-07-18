@@ -1,7 +1,7 @@
 'use client';
 
-import { IconButton } from '@/components/icon-button';
-import { DarkModeIcon, LightModeIcon } from '@/components/icons';
+import { IconButton } from '@k8o/components/icon-button';
+import { DarkModeIcon, LightModeIcon } from '@k8o/components/icons';
 import * as motion from 'motion/react-client';
 import { useTheme } from 'next-themes';
 import { FC, useCallback, useMemo } from 'react';

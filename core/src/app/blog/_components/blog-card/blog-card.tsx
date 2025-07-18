@@ -1,12 +1,12 @@
 import { ViewTransition } from '#libs/react';
-import { InteractiveCard } from '@/components/card';
-import { Heading } from '@/components/heading';
+import { InteractiveCard } from '@k8o/components/card';
+import { Heading } from '@k8o/components/heading';
 import {
   PublishDateIcon,
   UpdateDateIcon,
   TagIcon,
-} from '@/components/icons';
-import { TextTag } from '@/components/text-tag';
+} from '@k8o/components/icons';
+import { TextTag } from '@k8o/components/text-tag';
 import { formatDate } from '@k8o/helpers/date';
 import Link from 'next/link';
 import { FC } from 'react';

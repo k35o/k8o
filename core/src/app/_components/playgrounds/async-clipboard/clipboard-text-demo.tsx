@@ -1,8 +1,8 @@
 'use client';
 
-import { Button } from '@/components/button';
-import { FormControl } from '@/components/form/form-control';
-import { TextField } from '@/components/form/text-field';
+import { Button } from '@k8o/components/button';
+import { FormControl } from '@k8o/components/form/form-control';
+import { TextField } from '@k8o/components/form/text-field';
 import { FC, useEffect, useState } from 'react';
 
 export const ClipboardTextDemo: FC = () => {

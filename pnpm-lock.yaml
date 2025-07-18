@@ -8,18 +8,36 @@ importers:
 
   .:
     dependencies:
+      '@floating-ui/react':
+        specifier: 0.27.13
+        version: 0.27.13(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
+      '@k8o/components':
+        specifier: workspace:*
+        version: link:packages/components
       '@k8o/helpers':
         specifier: workspace:*
         version: link:packages/helpers
       '@k8o/hooks':
         specifier: workspace:*
         version: link:packages/hooks
+      '@tailwindcss/postcss':
+        specifier: 4.1.11
+        version: 4.1.11
       '@upstash/ratelimit':
         specifier: 2.0.5
         version: 2.0.5(@upstash/redis@1.35.1)
       '@upstash/redis':
         specifier: 1.35.1
         version: 1.35.1
+      motion:
+        specifier: 12.23.3
+        version: 12.23.3(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
+      next:
+        specifier: 15.3.5
+        version: 15.3.5(@babel/core@7.27.4)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
+      postcss:
+        specifier: 8.5.6
+        version: 8.5.6
       react:
         specifier: 19.1.0
         version: 19.1.0
@@ -32,6 +50,9 @@ importers:
       server-only:
         specifier: 0.0.1
         version: 0.0.1
+      tailwindcss:
+        specifier: 4.1.11
+        version: 4.1.11
     devDependencies:
       '@eslint/config-inspector':
         specifier: 1.1.0
@@ -45,6 +66,21 @@ importers:
       '@next/eslint-plugin-next':
         specifier: 15.3.5
         version: 15.3.5
+      '@storybook/addon-a11y':
+        specifier: 9.0.9
+        version: 9.0.9(storybook@9.0.9(@testing-library/dom@10.4.0)(bufferutil@4.0.8)(prettier@3.6.2))
+      '@storybook/addon-docs':
+        specifier: 9.0.9
+        version: 9.0.9(@types/react@19.1.8)(storybook@9.0.9(@testing-library/dom@10.4.0)(bufferutil@4.0.8)(prettier@3.6.2))
+      '@storybook/addon-vitest':
+        specifier: 9.0.9
+        version: 9.0.9(@vitest/browser@3.2.4)(@vitest/runner@3.2.4)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(storybook@9.0.9(@testing-library/dom@10.4.0)(bufferutil@4.0.8)(prettier@3.6.2))(vitest@3.2.4)
+      '@storybook/nextjs':
+        specifier: 9.0.9
+        version: 9.0.9(esbuild@0.25.5)(next@15.3.5(react-dom@19.1.0(react@19.1.0))(react@19.1.0))(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(storybook@9.0.9(@testing-library/dom@10.4.0)(bufferutil@4.0.8)(prettier@3.6.2))(type-fest@4.41.0)(typescript@5.8.3)(webpack-hot-middleware@2.26.1)(webpack@5.93.0(esbuild@0.25.5))
+      '@storybook/nextjs-vite':
+        specifier: 9.0.9
+        version: 9.0.9(next@15.3.5(react-dom@19.1.0(react@19.1.0))(react@19.1.0))(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(rollup@4.19.1)(storybook@9.0.9(@testing-library/dom@10.4.0)(bufferutil@4.0.8)(prettier@3.6.2))(typescript@5.8.3)(vite@5.3.5(@types/node@22.16.3)(lightningcss@1.30.1)(terser@5.31.3))
       '@testing-library/dom':
         specifier: 10.4.0
         version: 10.4.0
@@ -69,6 +105,9 @@ importers:
       '@vitest/ui':
         specifier: 3.2.4
         version: 3.2.4(vitest@3.2.4)
+      chromatic:
+        specifier: 13.1.2
+        version: 13.1.2
       eslint:
         specifier: 9.31.0
         version: 9.31.0(jiti@2.4.2)
@@ -108,6 +147,12 @@ importers:
       prettier-plugin-tailwindcss:
         specifier: 0.6.14
         version: 0.6.14(prettier@3.6.2)
+      storybook:
+        specifier: 9.0.9
+        version: 9.0.9(@testing-library/dom@10.4.0)(bufferutil@4.0.8)(prettier@3.6.2)
+      storybook-addon-mock-date:
+        specifier: 1.0.1
+        version: 1.0.1(storybook@9.0.9(@testing-library/dom@10.4.0)(bufferutil@4.0.8)(prettier@3.6.2))
       turbo:
         specifier: 2.5.4
         version: 2.5.4
@@ -123,9 +168,6 @@ importers:
 
   core:
     dependencies:
-      '@floating-ui/react':
-        specifier: 0.27.13
-        version: 0.27.13(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
       '@mdx-js/loader':
         specifier: 3.1.0
         version: 3.1.0(webpack@5.93.0(esbuild@0.25.5))
@@ -150,42 +192,21 @@ importers:
       '@shikijs/rehype':
         specifier: 3.7.0
         version: 3.7.0
-      '@tailwindcss/postcss':
-        specifier: 4.1.11
-        version: 4.1.11
       '@vercel/analytics':
         specifier: 1.5.0
         version: 1.5.0(next@15.3.5(@babel/core@7.27.4)(react-dom@19.1.0(react@19.1.0))(react@19.1.0))(react@19.1.0)
       '@vercel/speed-insights':
         specifier: 1.2.0
         version: 1.2.0(next@15.3.5(@babel/core@7.27.4)(react-dom@19.1.0(react@19.1.0))(react@19.1.0))(react@19.1.0)
-      baseline-status:
-        specifier: 1.0.11
-        version: 1.0.11
       budoux:
         specifier: 0.7.0
         version: 0.7.0
       drizzle-orm:
         specifier: 0.44.2
         version: 0.44.2(@libsql/client-wasm@0.14.0)(@neondatabase/serverless@1.0.1)(@types/pg@8.11.6)(@upstash/redis@1.35.1)(@vercel/postgres@0.10.0)(gel@2.0.0)(postgres@3.4.7)
-      lucide-react:
-        specifier: 0.525.0
-        version: 0.525.0(react@19.1.0)
-      motion:
-        specifier: 12.23.3
-        version: 12.23.3(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
-      next:
-        specifier: 15.3.5
-        version: 15.3.5(@babel/core@7.27.4)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
       next-themes:
         specifier: 0.4.6
         version: 0.4.6(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
-      postcss:
-        specifier: 8.5.6
-        version: 8.5.6
-      react-error-boundary:
-        specifier: 6.0.0
-        version: 6.0.0(react@19.1.0)
       rehype-katex:
         specifier: 7.0.1
         version: 7.0.1
@@ -198,9 +219,6 @@ importers:
       rss:
         specifier: 1.2.2
         version: 1.2.2
-      tailwindcss:
-        specifier: 4.1.11
-        version: 4.1.11
       uqr:
         specifier: 0.1.2
         version: 0.1.2
@@ -214,21 +232,6 @@ importers:
       '@liam-hq/cli':
         specifier: 0.6.4
         version: 0.6.4(@types/node@22.16.3)(@types/react-dom@19.1.6(@types/react@19.1.8))(@types/react@19.1.8)(bufferutil@4.0.8)(next@15.3.5(@babel/core@7.27.4)(react-dom@19.1.0(react@19.1.0))(react@19.1.0))(typescript@5.8.3)
-      '@storybook/addon-a11y':
-        specifier: 9.0.9
-        version: 9.0.9(storybook@9.0.9(@testing-library/dom@10.4.0)(bufferutil@4.0.8)(prettier@3.6.2))
-      '@storybook/addon-docs':
-        specifier: 9.0.9
-        version: 9.0.9(@types/react@19.1.8)(storybook@9.0.9(@testing-library/dom@10.4.0)(bufferutil@4.0.8)(prettier@3.6.2))
-      '@storybook/addon-vitest':
-        specifier: 9.0.9
-        version: 9.0.9(@vitest/browser@3.2.4)(@vitest/runner@3.2.4)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(storybook@9.0.9(@testing-library/dom@10.4.0)(bufferutil@4.0.8)(prettier@3.6.2))(vitest@3.2.4)
-      '@storybook/nextjs':
-        specifier: 9.0.9
-        version: 9.0.9(esbuild@0.25.5)(next@15.3.5(@babel/core@7.27.4)(react-dom@19.1.0(react@19.1.0))(react@19.1.0))(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(storybook@9.0.9(@testing-library/dom@10.4.0)(bufferutil@4.0.8)(prettier@3.6.2))(type-fest@4.41.0)(typescript@5.8.3)(webpack-hot-middleware@2.26.1)(webpack@5.93.0(esbuild@0.25.5))
-      '@storybook/nextjs-vite':
-        specifier: 9.0.9
-        version: 9.0.9(@babel/core@7.27.4)(next@15.3.5(@babel/core@7.27.4)(react-dom@19.1.0(react@19.1.0))(react@19.1.0))(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(rollup@4.19.1)(storybook@9.0.9(@testing-library/dom@10.4.0)(bufferutil@4.0.8)(prettier@3.6.2))(typescript@5.8.3)(vite@5.3.5(@types/node@22.16.3)(lightningcss@1.30.1)(terser@5.31.3))
       '@types/mdx':
         specifier: 2.0.13
         version: 2.0.13
@@ -244,9 +247,6 @@ importers:
       axe-playwright:
         specifier: 2.1.0
         version: 2.1.0(playwright@1.54.1)
-      chromatic:
-        specifier: 13.1.2
-        version: 13.1.2
       drizzle-kit:
         specifier: 0.31.4
         version: 0.31.4
@@ -268,12 +268,25 @@ importers:
       sonda:
         specifier: 0.9.0
         version: 0.9.0
-      storybook:
+
+  packages/components:
+    dependencies:
+      baseline-status:
+        specifier: 1.0.11
+        version: 1.0.11
+      lucide-react:
+        specifier: 0.525.0
+        version: 0.525.0(react@19.1.0)
+      react-error-boundary:
+        specifier: 6.0.0
+        version: 6.0.0(react@19.1.0)
+    devDependencies:
+      '@storybook/nextjs':
         specifier: 9.0.9
-        version: 9.0.9(@testing-library/dom@10.4.0)(bufferutil@4.0.8)(prettier@3.6.2)
-      storybook-addon-mock-date:
-        specifier: 1.0.1
-        version: 1.0.1(storybook@9.0.9(@testing-library/dom@10.4.0)(bufferutil@4.0.8)(prettier@3.6.2))
+        version: 9.0.9(esbuild@0.25.5)(next@15.3.5(react-dom@19.1.0(react@19.1.0))(react@19.1.0))(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(storybook@9.0.9(@testing-library/dom@10.4.0)(bufferutil@4.0.8)(prettier@3.6.2))(type-fest@4.41.0)(typescript@5.8.3)(webpack-hot-middleware@2.26.1)(webpack@5.93.0(esbuild@0.25.5))
+      '@types/mdast':
+        specifier: 4.0.4
+        version: 4.0.4
 
   packages/helpers:
     dependencies:
@@ -11339,7 +11352,7 @@ snapshots:
       react: 19.1.0
       react-dom: 19.1.0(react@19.1.0)
 
-  '@storybook/nextjs-vite@9.0.9(@babel/core@7.27.4)(next@15.3.5(@babel/core@7.27.4)(react-dom@19.1.0(react@19.1.0))(react@19.1.0))(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(rollup@4.19.1)(storybook@9.0.9(@testing-library/dom@10.4.0)(bufferutil@4.0.8)(prettier@3.6.2))(typescript@5.8.3)(vite@5.3.5(@types/node@22.16.3)(lightningcss@1.30.1)(terser@5.31.3))':
+  '@storybook/nextjs-vite@9.0.9(next@15.3.5(react-dom@19.1.0(react@19.1.0))(react@19.1.0))(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(rollup@4.19.1)(storybook@9.0.9(@testing-library/dom@10.4.0)(bufferutil@4.0.8)(prettier@3.6.2))(typescript@5.8.3)(vite@5.3.5(@types/node@22.16.3)(lightningcss@1.30.1)(terser@5.31.3))':
     dependencies:
       '@storybook/builder-vite': 9.0.9(storybook@9.0.9(@testing-library/dom@10.4.0)(bufferutil@4.0.8)(prettier@3.6.2))(vite@5.3.5(@types/node@22.16.3)(lightningcss@1.30.1)(terser@5.31.3))
       '@storybook/react': 9.0.9(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(storybook@9.0.9(@testing-library/dom@10.4.0)(bufferutil@4.0.8)(prettier@3.6.2))(typescript@5.8.3)
@@ -11350,7 +11363,7 @@ snapshots:
       storybook: 9.0.9(@testing-library/dom@10.4.0)(bufferutil@4.0.8)(prettier@3.6.2)
       styled-jsx: 5.1.6(@babel/core@7.27.4)(react@19.1.0)
       vite: 5.3.5(@types/node@22.16.3)(lightningcss@1.30.1)(terser@5.31.3)
-      vite-plugin-storybook-nextjs: 2.0.0(next@15.3.5(@babel/core@7.27.4)(react-dom@19.1.0(react@19.1.0))(react@19.1.0))(storybook@9.0.9(@testing-library/dom@10.4.0)(bufferutil@4.0.8)(prettier@3.6.2))(vite@5.3.5(@types/node@22.16.3)(lightningcss@1.30.1)(terser@5.31.3))
+      vite-plugin-storybook-nextjs: 2.0.0(next@15.3.5(react-dom@19.1.0(react@19.1.0))(react@19.1.0))(storybook@9.0.9(@testing-library/dom@10.4.0)(bufferutil@4.0.8)(prettier@3.6.2))(vite@5.3.5(@types/node@22.16.3)(lightningcss@1.30.1)(terser@5.31.3))
     optionalDependencies:
       typescript: 5.8.3
     transitivePeerDependencies:
@@ -11359,7 +11372,7 @@ snapshots:
       - rollup
       - supports-color
 
-  '@storybook/nextjs@9.0.9(esbuild@0.25.5)(next@15.3.5(@babel/core@7.27.4)(react-dom@19.1.0(react@19.1.0))(react@19.1.0))(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(storybook@9.0.9(@testing-library/dom@10.4.0)(bufferutil@4.0.8)(prettier@3.6.2))(type-fest@4.41.0)(typescript@5.8.3)(webpack-hot-middleware@2.26.1)(webpack@5.93.0(esbuild@0.25.5))':
+  '@storybook/nextjs@9.0.9(esbuild@0.25.5)(next@15.3.5(react-dom@19.1.0(react@19.1.0))(react@19.1.0))(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(storybook@9.0.9(@testing-library/dom@10.4.0)(bufferutil@4.0.8)(prettier@3.6.2))(type-fest@4.41.0)(typescript@5.8.3)(webpack-hot-middleware@2.26.1)(webpack@5.93.0(esbuild@0.25.5))':
     dependencies:
       '@babel/core': 7.27.4
       '@babel/plugin-syntax-bigint': 7.8.3(@babel/core@7.27.4)
@@ -17608,7 +17621,7 @@ snapshots:
       - supports-color
       - terser
 
-  vite-plugin-storybook-nextjs@2.0.0(next@15.3.5(@babel/core@7.27.4)(react-dom@19.1.0(react@19.1.0))(react@19.1.0))(storybook@9.0.9(@testing-library/dom@10.4.0)(bufferutil@4.0.8)(prettier@3.6.2))(vite@5.3.5(@types/node@22.16.3)(lightningcss@1.30.1)(terser@5.31.3)):
+  vite-plugin-storybook-nextjs@2.0.0(next@15.3.5(react-dom@19.1.0(react@19.1.0))(react@19.1.0))(storybook@9.0.9(@testing-library/dom@10.4.0)(bufferutil@4.0.8)(prettier@3.6.2))(vite@5.3.5(@types/node@22.16.3)(lightningcss@1.30.1)(terser@5.31.3)):
     dependencies:
       '@next/env': 15.3.5
       image-size: 2.0.2

@@ -1,5 +1,5 @@
 import notFoundImage from './_images/404.png';
-import { LinkButton } from '@/components/link-button';
+import { LinkButton } from '@k8o/components/link-button';
 import Image from 'next/image';
 
 export default function NotFound() {

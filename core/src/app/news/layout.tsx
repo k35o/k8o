@@ -1,4 +1,4 @@
-import { Heading } from '../../components/heading';
+import { Heading } from '@k8o/components/heading';
 import Link from 'next/link';
 import { ReactNode } from 'react';
 

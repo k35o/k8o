@@ -1,9 +1,9 @@
 'use client';
 
 import { Transfer } from './transfer';
-import { AlertIcon, MixedColorIcon } from '@/components/icons';
-import { ListBox } from '@/components/list-box';
-import { useOpenContext } from '@/components/popover';
+import { AlertIcon, MixedColorIcon } from '@k8o/components/icons';
+import { ListBox } from '@k8o/components/list-box';
+import { useOpenContext } from '@k8o/components/popover';
 import { cn } from '@k8o/helpers/cn';
 import Link from 'next/link';
 import {
@@ -102,7 +102,7 @@ const HelpContent: FC = () => {
       className={cn(
         'inline-flex w-full items-center gap-1 px-2 py-1',
         'hover:bg-primary-bg hover:text-fg-inverse',
-        'focus-visible:bg-primary-bg focus-visible::text-fg-inverse focus-visible:outline-hidden focus-visible:border-transparent',
+        'focus-visible:bg-primary-bg focus-visible:text-fg-inverse focus-visible:border-transparent focus-visible:outline-hidden',
       )}
     >
       <span className="text-fg-info">

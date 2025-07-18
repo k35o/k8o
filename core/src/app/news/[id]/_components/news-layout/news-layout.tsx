@@ -1,6 +1,9 @@
-import { Heading } from '@/components/heading';
-import { PublishDateIcon, UpdateDateIcon } from '@/components/icons';
-import { Separator } from '@/components/separator';
+import { Heading } from '@k8o/components/heading';
+import {
+  PublishDateIcon,
+  UpdateDateIcon,
+} from '@k8o/components/icons';
+import { Separator } from '@k8o/components/separator';
 import { formatDate } from '@k8o/helpers/date';
 import { FC, PropsWithChildren } from 'react';
 
@@ -17,7 +20,7 @@ export const NewsLayout: FC<Props> = ({
   children,
 }) => {
   return (
-    <article className="bg-bg-base/90 h-full rounded-md px-10 pb-14 pt-8">
+    <article className="bg-bg-base/90 h-full rounded-md px-10 pt-8 pb-14">
       <div className="flex flex-col gap-3">
         <Heading type="h3">{title}</Heading>
         <div className="text-fg-mute flex flex-row items-center justify-end gap-2 text-sm">
@@ -33,7 +36,7 @@ export const NewsLayout: FC<Props> = ({
           </div>
         </div>
       </div>
-      <div className="mb-2 mt-4 w-full sm:mb-4 sm:mt-8">
+      <div className="mt-4 mb-2 w-full sm:mt-8 sm:mb-4">
         <Separator />
       </div>
       {children}

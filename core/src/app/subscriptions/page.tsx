@@ -1,4 +1,4 @@
-import { Heading } from '@/components/heading';
+import { Heading } from '@k8o/components/heading';
 import { notFound } from 'next/navigation';
 
 export default async function Page({

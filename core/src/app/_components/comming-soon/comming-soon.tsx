@@ -1,4 +1,4 @@
-import { PrepareIcon, UpdateDateIcon } from '@/components/icons';
+import { PrepareIcon, UpdateDateIcon } from '@k8o/components/icons';
 import { FC, ReactNode } from 'react';
 
 export const CommingSoon: FC<{ description?: ReactNode }> = ({

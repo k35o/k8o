@@ -1,6 +1,6 @@
 'use client';
 
-import { Button } from '@/components/button/button';
+import { Button } from '@k8o/components/button';
 import { FC, useEffect, useState } from 'react';
 
 export const PrintColorAdjustDemo: FC = () => {

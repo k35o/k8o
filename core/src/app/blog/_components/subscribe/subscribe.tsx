@@ -1,11 +1,11 @@
 'use client';
 
 import { SubscribeCard } from './subscribe-card.tsx';
-import { Drawer } from '@/components/drawer/drawer';
-import { Checkbox } from '@/components/form/checkbox';
-import { IconButton } from '@/components/icon-button';
-import { SubscribeIcon } from '@/components/icons';
-import { Separator } from '@/components/separator';
+import { Drawer } from '@k8o/components/drawer';
+import { Checkbox } from '@k8o/components/form/checkbox';
+import { IconButton } from '@k8o/components/icon-button';
+import { SubscribeIcon } from '@k8o/components/icons';
+import { Separator } from '@k8o/components/separator';
 import { useLocalStorage } from '@k8o/hooks/local-storage';
 import { FC, useState } from 'react';
 
@@ -20,7 +20,7 @@ export const Subscribe: FC<{
   const showIconButton = showWhileReading || !reading;
 
   return (
-    <div className="fixed bottom-4 right-4 xl:bottom-8 xl:right-16">
+    <div className="fixed right-4 bottom-4 xl:right-16 xl:bottom-8">
       {showIconButton && (
         <IconButton
           bg="primary"
