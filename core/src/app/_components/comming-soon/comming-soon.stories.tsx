@@ -17,7 +17,7 @@ export const HasDescription: Story = {
     description: (
       <p className="text-fg-mute text-sm">
         コンポーネントの一覧を管理する
-        <Anchor href="https://main--647acebb9da23d6c605c4afd.chromatic.com/">
+        <Anchor href="https://main--687a213c85e2e4589d8db1bb.chromatic.com">
           Storybook
         </Anchor>
         は閲覧できます。
