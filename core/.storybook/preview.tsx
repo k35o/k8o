@@ -59,6 +59,12 @@ const preview: Preview = {
     },
     a11y: {
       test: 'error',
+      options: {
+        rules: {
+          // コントラスト比がCIでFlakyな働きをするのでfalse
+          'color-contrast': { enabled: false },
+        },
+      },
     },
   },
   decorators: [

@@ -11,16 +11,6 @@ const meta: Meta<typeof Color> = {
       </div>
     ),
   ],
-  parameters: {
-    a11y: {
-      options: {
-        rules: {
-          // コントラスト比が合わない組み合わせもあえて表示しているので無視させる
-          'color-contrast': { enabled: false },
-        },
-      },
-    },
-  },
 };
 
 export default meta;
