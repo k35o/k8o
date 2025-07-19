@@ -13,6 +13,7 @@ type Story = StoryObj<typeof Modal>;
 
 export const Default: Story = {
   args: {
+    defaultOpen: true,
     children: (
       <Dialog.Root>
         <Dialog.Header title="Hello" onClose={fn()} />

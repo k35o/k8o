@@ -54,7 +54,7 @@ export const PopoverDialog: Story = {
 
 export const ModalDialog: Story = {
   render: () => (
-    <Modal onClose={fn}>
+    <Modal defaultOpen>
       <Dialog.Root>
         <Dialog.Header title="モーダル" onClose={fn} />
         <Dialog.Content>こんにちは</Dialog.Content>
