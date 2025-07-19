@@ -9,6 +9,7 @@
   dialog,
   [popover] {
     overscroll-behavior-block: contain;
+    color: var(--color-fg-base);
   }
 
   body {
