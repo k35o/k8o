@@ -3,6 +3,28 @@ import { ComponentProvider } from '../src/providers';
 import { cn } from '@k8o/helpers/cn';
 
 import '../src/styles.css';
+import Script from 'next/script';
+import { FC, memo, useState } from 'react';
+
+const ApplayThemeByStorybook: FC<{ theme: 'light' | 'dark' }> = memo(
+  ({ theme }) => {
+    const [prevTheme, setPrevTheme] = useState<'light' | 'dark'>(
+      theme,
+    );
+
+    if (prevTheme !== theme) {
+      document.documentElement.classList.remove(
+        prevTheme === 'dark' ? 'dark' : 'light',
+      );
+      document.documentElement.classList.add(
+        theme === 'dark' ? 'dark' : 'light',
+      );
+      setPrevTheme(theme);
+    }
+
+    return null;
+  },
+);
 
 const preview: Preview = {
   globalTypes: {
@@ -39,12 +61,13 @@ const preview: Preview = {
           : ('light' as 'light' | 'dark');
       return (
         <ComponentProvider>
-          <div
-            className={cn(
-              'text-fg-base tracking-none bg-bg-base min-h-svh p-6 font-medium antialiased',
-              theme,
-            )}
-          >
+          <Script>
+            document.body.classList.add('text-fg-base',
+            'tracking-none', 'bg-bg-base', 'font-medium',
+            'antialiased')
+          </Script>
+          <ApplayThemeByStorybook theme={theme} />
+          <div className="min-h-svh p-6">
             <Story />
           </div>
         </ComponentProvider>
