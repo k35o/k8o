@@ -39,7 +39,12 @@ const preview: Preview = {
           : ('light' as 'light' | 'dark');
       return (
         <ComponentProvider>
-          <div className={cn('min-h-svh p-6', theme)}>
+          <div
+            className={cn(
+              'text-fg-base tracking-none bg-bg-base min-h-svh p-6 font-medium antialiased',
+              theme,
+            )}
+          >
             <Story />
           </div>
         </ComponentProvider>
