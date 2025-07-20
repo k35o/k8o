@@ -2,143 +2,198 @@
 
 This is a website for everything created by k8o!
 
-## setup
+## Setup
 
-Install the package after preparing `Node.js` and `pnpm` with reference to the version described in `package.json`.
+Install dependencies after preparing Node.js v22.17.1 and pnpm v10.13.1.
 
-```command
+```bash
 pnpm i --frozen-lockfile
 ```
 
-Copy environment variables and launch docker to use SQL and KV.
+Copy environment variables and launch Docker services for database and KV storage.
 
-```command
+```bash
 cp .env.example .env.local
 docker compose up -d
-pnpm run migration
+pnpm run -F core migrate
 ```
 
-If you want to use the MicroCMS or Resend locally, ask k8o for the `MICROCMS_API_KEY` or `RESEND_API_KEY`.
+For MicroCMS or Resend integration, ask k8o for the `MICROCMS_API_KEY` or `RESEND_API_KEY`.
 
-## development
+## Architecture
 
-### dev server
+**Turborepo Monorepo** with 3 workspaces:
 
-Starts the application in development mode with hot-code reloading, error reporting, and more.
+- **core** - Main Next.js 15 application with App Router
+- **packages/components** - Reusable UI component library with Storybook
+- **packages/helpers** - Utility functions with in-source testing
+- **packages/hooks** - Custom React hooks
 
-```
+## Development
+
+### Development Server
+
+Start the application in development mode with hot-code reloading.
+
+```bash
 pnpm run dev
 ```
 
-### storybook
+### Build
 
-There is a collection of components and a design system.
+Build for production using Turbo.
 
-```command
-pnpm run storybook
+```bash
+pnpm run build
+
+# Build with bundle analysis
+ANALYZE=true pnpm run build
 ```
 
-### tests
+### Storybook
 
-All tests is written by Vitest. It will run in `browser mode` except for the `utils` test.
-Storybook test is also with Vitest.
+Component library and design system.
 
-```command
+```bash
+pnpm run -F core storybook
+pnpm run -F components storybook
+```
+
+### Email Templates
+
+Development server for React Email templates (port 3333).
+
+```bash
+pnpm run -F core email
+```
+
+## Testing
+
+All tests use Vitest with timezone set to UTC.
+
+```bash
 pnpm run test
 
-# using Vitest UI
-pnpm run test:ui
-
-# If you want to get covarage result ...
-pnpm run coverage
+# Install Playwright dependencies
+pnpm run install-playwright
 ```
 
-### lint
+**Testing Strategy**:
 
-Using `elsint` affected by `Next.js`.
+- **Helpers**: In-source testing with `if (import.meta.vitest)` blocks
+- **Components**: Storybook stories with `@storybook/addon-vitest`
+- **Hooks**: `.test.tsx` files with `@testing-library/react`
+- **Core App**: Browser mode for React components, Node.js for services/utils
 
-```command
+## Code Quality
+
+### Linting
+
+Using ESLint with zero warnings policy.
+
+```bash
 pnpm run lint
+
+# Auto-fix linting issues
+pnpm run lint:fix
+
+# Inspect ESLint configuration
+pnpm run lint:inspect
+
+# Validate file/directory names
+pnpm run ls-lint
 ```
 
-### format
+### Formatting
 
-By `prettier`.
+Code formatting with Prettier.
 
-```
+```bash
 pnpm run format
+
+# Check formatting without modifying files
+pnpm run format:check
 ```
 
-### type-check
+### Type Checking
 
-It work in `typescript`(`tsc --noEmit`).
+TypeScript type checking with `tsc --noEmit`.
 
-```command
+```bash
 pnpm run type-check
 ```
 
-### database
+## Database
 
-Generate migration file by schema files (`src/database/schema/*.ts`).
+Using Drizzle ORM with PostgreSQL.
 
-```command
-pnpm run generate
-```
+```bash
+# Generate migration files from schema
+pnpm run -F core generate
 
-Generate custom migration file, such as seeding data.
+# Generate custom migration files
+pnpm run -F core generate:custom
 
-```command
-pnpm run generage:custom
-```
+# Execute database migrations
+pnpm run -F core migrate
 
-Execute database migration in `migrations/*.sql`.
+# Export schema to SQL file
+pnpm run -F core export:schema
 
-```command
-pnpm run migrate
-```
+# Build ERD (Entity Relationship Diagram)
+pnpm run -F core build:erd
 
-Connect local postgres database.
-
-```command
+# Connect to local PostgreSQL
 docker compose exec postgres psql -U postgres -d main
 ```
 
-## composition
+## Tech Stack
 
-### platform
+### Frontend
 
-#### Application
+- **Next.js 15** - App Router, React 19, TypeScript
+- **TailwindCSS 4** - Custom design tokens (no standard classes like `text-gray-600`)
+- **Motion** - Animations
+- **MDX** - Blog content with KaTeX math and Shiki syntax highlighting
 
-[Vercel](https://vercel.com/k35o/k8o)
+### Backend & Database
 
-#### Database
+- **Drizzle ORM** - TypeScript-first ORM
+- **PostgreSQL** - Neon (production), Docker (local)
+- **Redis** - Upstash (production), Docker (local)
 
-[Neon](https://console.neon.tech/app/projects/cool-king-69719941)
+### Development Tools
 
-#### KV
+- **Turbo** - Monorepo build system
+- **Vitest** - Test runner with browser mode support
+- **Storybook** - Component development environment
+- **React Email** - Email templates
+- **MSW** - API mocking
+- **Lefthook** - Git hooks
 
-[Upstash](https://console.upstash.com/vercel/kv/6ae3d043-1c14-4a5e-b4e2-18872bbd81bb)
+## Production Services
 
-#### CMS
+- **Hosting**: [Vercel](https://vercel.com/k35o/k8o)
+- **Database**: [Neon](https://console.neon.tech/app/projects/cool-king-69719941)
+- **KV Storage**: [Upstash](https://console.upstash.com/vercel/kv/6ae3d043-1c14-4a5e-b4e2-18872bbd81bb)
+- **CMS**: [MicroCMS](https://k35o.microcms.io)
+- **Email**: [Resend](https://resend.com)
 
-[MicroCMS](https://k35o.microcms.io)
+## Docker Services
 
-#### Email
+Local development services (via `docker compose up -d`):
 
-[Resend](https://resend.com)
+- **postgres**: PostgreSQL 17 (port 5432)
+- **neon-proxy**: Neon WebSocket proxy (port 5433)
+- **redis**: Redis (port 6379)
+- **serverless-redis-http**: Upstash-compatible HTTP proxy (port 8079)
 
-### framework
+## Key Features
 
-[next.js](https://nextjs.org/)
+- **Conditional Import Maps**: Environment-specific mocking for Storybook
+- **Custom Design System**: TailwindCSS with custom tokens in `@theme`
+- **Comprehensive Testing**: In-source, Storybook, and Vitest integration
+- **Type Safety**: Full TypeScript coverage with strict configuration
+- **Performance**: Bundle analysis, tree shaking, and optimization
 
-### styling
-
-[tailwdindcss](https://tailwindcss.com/)
-
-### icon
-
-[Lucide](https://lucide.dev)
-
-### animation
-
-[motion](https://motion.dev)
+For detailed development guidelines, see [CLAUDE.md](./CLAUDE.md).
