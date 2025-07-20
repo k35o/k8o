@@ -18,6 +18,7 @@ import { ScrollLinked } from '@k8o/components/scroll-linked';
 import { Separator } from '@k8o/components/separator';
 import { TextTag } from '@k8o/components/text-tag';
 import { formatDate } from '@k8o/helpers/date';
+import Link from 'next/link';
 import { FC, ReactNode, Suspense } from 'react';
 
 export const BlogLayout: FC<{
@@ -95,11 +96,16 @@ export const BlogLayout: FC<{
                 <TagIcon size="sm" />
                 {blog.tags.map((tag) => {
                   return (
-                    <TextTag
+                    <Link
                       key={tag.id}
-                      text={tag.name}
                       href={`/tags/${tag.id.toString()}`}
-                    />
+                    >
+                      <TextTag
+                        key={tag.id}
+                        text={tag.name}
+                        clickable
+                      />
+                    </Link>
                   );
                 })}
               </div>

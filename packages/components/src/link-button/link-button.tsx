@@ -1,6 +1,5 @@
 import { cn } from '@k8o/helpers/cn';
 import { isInternalRoute } from '@k8o/helpers/is-internal-route';
-import Link from 'next/link';
 import { FC, ReactNode } from 'react';
 
 export const LinkButton: FC<{
@@ -12,6 +11,14 @@ export const LinkButton: FC<{
   active?: boolean;
   openInNewTab?: boolean;
   children: string;
+  renderAnchor?: (props: {
+    ['aria-label']?: string;
+    href: string;
+    className: string;
+    target?: string;
+    rel?: string;
+    children: ReactNode;
+  }) => ReactNode;
 }> = ({
   children,
   size = 'md',
@@ -21,7 +28,16 @@ export const LinkButton: FC<{
   endIcon,
   active = false,
   openInNewTab = false,
+  renderAnchor = ({ children, ...props }) => (
+    <a {...props}>{children}</a>
+  ),
 }) => {
+  const type =
+    isInternalRoute(href) && !openInNewTab ? 'internal' : 'external';
+  const props =
+    type === 'internal'
+      ? {}
+      : { target: '_blank', rel: 'noopener noreferrer' };
   const className = cn(
     'rounded-lg text-center font-bold',
     {
@@ -40,23 +56,17 @@ export const LinkButton: FC<{
     Boolean(endIcon) && 'justify-between',
     active && 'text-fg-info hover:text-fg-info active:text-fg-info',
   );
-  return isInternalRoute(href) && !openInNewTab ? (
-    <Link className={className} aria-label={children} href={href}>
-      {startIcon}
-      {children}
-      {endIcon}
-    </Link>
-  ) : (
-    <a
-      className={className}
-      aria-label={children}
-      href={href}
-      target="_blank"
-      rel="noopener noreferrer"
-    >
-      {startIcon}
-      {children}
-      {endIcon}
-    </a>
-  );
+  return renderAnchor({
+    href,
+    className,
+    'aria-label': children,
+    ...props,
+    children: (
+      <>
+        {startIcon}
+        {children}
+        {endIcon}
+      </>
+    ),
+  });
 };

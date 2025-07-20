@@ -1,5 +1,5 @@
 import { Alert } from './alert';
-import type { Meta, StoryObj } from '@storybook/nextjs';
+import type { Meta, StoryObj } from '@storybook/react-vite';
 
 const meta: Meta<typeof Alert> = {
   title: 'components/alert',

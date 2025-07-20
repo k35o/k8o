@@ -2,6 +2,7 @@
 
 import { NewsIcon } from '@k8o/components/icons';
 import { LinkButton } from '@k8o/components/link-button';
+import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { FC } from 'react';
 
@@ -13,6 +14,7 @@ export const NewsLink: FC = () => {
       startIcon={<NewsIcon />}
       variant="skeleton"
       active={pathname.startsWith('/news')}
+      renderAnchor={(props) => <Link {...props} />}
     >
       お知らせ
     </LinkButton>

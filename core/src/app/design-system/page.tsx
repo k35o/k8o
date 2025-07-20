@@ -18,7 +18,6 @@ export default function Page() {
           'typography',
           'components',
         ]}
-        hashLink
       >
         <Tabs.List label="Design System">
           <Tabs.Tab id="color">

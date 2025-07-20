@@ -5,6 +5,7 @@ import {
 import { Anchor } from '@k8o/components/anchor';
 import { Card } from '@k8o/components/card';
 import { Heading } from '@k8o/components/heading';
+import Link from 'next/link';
 
 export default function PlaygroundsPage() {
   return (
@@ -29,7 +30,10 @@ export default function PlaygroundsPage() {
                   {section.description}
                 </p>
                 {section.type === 'blog' && (
-                  <Anchor href={`/blog/${section.slug}`}>
+                  <Anchor
+                    href={`/blog/${section.slug}`}
+                    renderAnchor={(props) => <Link {...props} />}
+                  >
                     ブログを読む
                   </Anchor>
                 )}

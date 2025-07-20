@@ -1,6 +1,6 @@
 import { Option } from './hooks';
 import { ListBox } from './list-box';
-import type { Meta, StoryObj } from '@storybook/nextjs';
+import type { Meta, StoryObj } from '@storybook/react-vite';
 import { useState } from 'react';
 
 const meta: Meta<typeof ListBox.Root> = {

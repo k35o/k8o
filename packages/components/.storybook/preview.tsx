@@ -1,16 +1,14 @@
-import type { Preview } from '@storybook/nextjs';
+import type { Preview } from '@storybook/react-vite';
 import { ComponentProvider } from '../src/providers';
-import { cn } from '@k8o/helpers/cn';
 
 import '../src/styles.css';
-import Script from 'next/script';
-import { FC, memo, useState } from 'react';
+import { FC, memo, useEffect, useState } from 'react';
 
 const ApplayThemeByStorybook: FC<{ theme: 'light' | 'dark' }> = memo(
   ({ theme }) => {
-    const [prevTheme, setPrevTheme] = useState<'light' | 'dark'>(
-      theme,
-    );
+    const [prevTheme, setPrevTheme] = useState<
+      'light' | 'dark' | null
+    >(null);
 
     if (prevTheme !== theme) {
       document.documentElement.classList.remove(
@@ -45,9 +43,6 @@ const preview: Preview = {
     backgrounds: { disable: true },
     layout: 'fullscreen',
     mockingDate: new Date(2023, 0, 2, 12, 34, 56),
-    nextjs: {
-      appDirectory: true,
-    },
     a11y: {
       test: 'error',
       options: {
@@ -66,13 +61,17 @@ const preview: Preview = {
         : globals.theme
           ? globals.theme
           : ('light' as 'light' | 'dark');
+      useEffect(() => {
+        document.body.classList.add(
+          'text-fg-base',
+          'tracking-none',
+          'bg-bg-base',
+          'font-medium',
+          'antialiased',
+        );
+      }, []);
       return (
         <ComponentProvider>
-          <Script>
-            document.body.classList.add('text-fg-base',
-            'tracking-none', 'bg-bg-base', 'font-medium',
-            'antialiased')
-          </Script>
           <ApplayThemeByStorybook theme={theme} />
           <div className="min-h-svh p-6">
             <Story />

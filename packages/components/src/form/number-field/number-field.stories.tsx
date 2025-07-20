@@ -1,5 +1,5 @@
 import { NumberField } from './number-field';
-import type { Meta, StoryObj } from '@storybook/nextjs';
+import type { Meta, StoryObj } from '@storybook/react-vite';
 import { useState } from 'react';
 import { userEvent, within, expect } from 'storybook/test';
 

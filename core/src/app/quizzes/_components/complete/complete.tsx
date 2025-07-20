@@ -5,6 +5,7 @@ import { Heading } from '@k8o/components/heading';
 import { HistoryIcon, ListIcon } from '@k8o/components/icons';
 import { LinkButton } from '@k8o/components/link-button';
 import { cn } from '@k8o/helpers/cn';
+import Link from 'next/link';
 import { FC } from 'react';
 
 export const Complete: FC<{
@@ -34,6 +35,7 @@ export const Complete: FC<{
           href="/quizzes/fish-kanji/list"
           variant="outlined"
           startIcon={<ListIcon />}
+          renderAnchor={(props) => <Link {...props} />}
         >
           うおへんの漢字一覧
         </LinkButton>

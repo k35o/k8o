@@ -1,5 +1,5 @@
 import { TextTag } from './text-tag';
-import type { Meta, StoryObj } from '@storybook/nextjs';
+import type { Meta, StoryObj } from '@storybook/react-vite';
 
 const meta: Meta<typeof TextTag> = {
   title: 'components/text-tag',
@@ -16,10 +16,10 @@ export const Medium: Story = {
   },
 };
 
-export const Link: Story = {
+export const Clickable: Story = {
   args: {
     text: 'TypeScript',
-    href: '/tags',
+    clickable: true,
   },
 };
 

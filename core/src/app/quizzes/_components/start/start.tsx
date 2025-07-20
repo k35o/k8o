@@ -5,6 +5,7 @@ import { FormControl } from '@k8o/components/form/form-control';
 import { NumberField } from '@k8o/components/form/number-field';
 import { LinkButton } from '@k8o/components/link-button';
 import { ListBox } from '@k8o/components/list-box';
+import Link from 'next/link';
 import { FC, useCallback, useState } from 'react';
 
 export const Start: FC = () => {
@@ -49,6 +50,7 @@ export const Start: FC = () => {
       </div>
       <LinkButton
         href={`/quizzes/${selectedQuiz}?questionCount=${questionCount.toString()}`}
+        renderAnchor={(props) => <Link {...props} />}
       >
         スタート
       </LinkButton>

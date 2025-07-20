@@ -1,6 +1,6 @@
 import { Dialog } from '../dialog';
 import { Modal } from './modal';
-import type { Meta, StoryObj } from '@storybook/nextjs';
+import type { Meta, StoryObj } from '@storybook/react-vite';
 import { fn } from 'storybook/test';
 
 const meta: Meta<typeof Modal> = {

@@ -10,6 +10,7 @@ import {
 import { LinkButton } from '@k8o/components/link-button';
 import { TextTag } from '@k8o/components/text-tag';
 import { formatDate } from '@k8o/helpers/date';
+import Link from 'next/link';
 import { FC } from 'react';
 
 export const TalkCard: FC<{
@@ -65,12 +66,14 @@ export const TalkCard: FC<{
         </div>
         <div className="flex flex-wrap items-center gap-2">
           {tags.map((tag) => (
-            <TextTag
-              key={tag.id}
-              size="sm"
-              text={tag.name}
-              href={`/tags/${tag.id.toString()}`}
-            />
+            <Link key={tag.id} href={`/tags/${tag.id.toString()}`}>
+              <TextTag
+                key={tag.id}
+                size="sm"
+                text={tag.name}
+                clickable
+              />
+            </Link>
           ))}
         </div>
         <div className="flex flex-wrap gap-4">
@@ -86,6 +89,7 @@ export const TalkCard: FC<{
             size="sm"
             startIcon={<BlogIcon size="sm" />}
             href={`/blog/${blog.slug}`}
+            renderAnchor={(props) => <Link {...props} />}
           >
             ブログで解説を読む
           </LinkButton>

@@ -1,7 +1,6 @@
 import { cn } from '@k8o/helpers/cn';
 import { isInternalRoute } from '@k8o/helpers/is-internal-route';
-import Link from 'next/link';
-import { FC, PropsWithChildren } from 'react';
+import { FC, PropsWithChildren, ReactNode } from 'react';
 
 type IconLinkProps = PropsWithChildren<{
   size?: 'sm' | 'md' | 'lg';
@@ -9,7 +8,13 @@ type IconLinkProps = PropsWithChildren<{
   label?: string;
   href: string;
   openInNewTab?: boolean;
-  prefetch?: boolean;
+  renderAnchor?: (props: {
+    href: string;
+    className: string;
+    target?: string;
+    rel?: string;
+    children: ReactNode;
+  }) => ReactNode;
 }>;
 
 export const IconLink: FC<IconLinkProps> = ({
@@ -19,40 +24,35 @@ export const IconLink: FC<IconLinkProps> = ({
   href,
   children,
   openInNewTab = false,
-  ...linkProps
+  renderAnchor = ({ children, ...props }) => (
+    <a {...props}>{children}</a>
+  ),
 }) => {
-  return isInternalRoute(href) && !openInNewTab ? (
-    <Link
-      className={cn(
-        'hover:bg-bg-subtle focus-visible:ring-border-info active:bg-bg-emphasize block rounded-full focus-visible:ring-2',
-        bg === 'base' && 'bg-bg-base/90',
-        bg === 'transparent' && 'bg-transparent',
-        size === 'sm' && 'p-1',
-        size === 'md' && 'p-2',
-        size === 'lg' && 'p-3',
-      )}
-      href={href}
-      {...linkProps}
-    >
-      <span className="sr-only">{label}</span>
-      {children}
-    </Link>
-  ) : (
-    <a
-      className={cn(
-        'hover:bg-bg-subtle focus-visible:ring-border-info active:bg-bg-emphasize block rounded-full focus-visible:ring-2',
-        bg === 'base' && 'bg-bg-base/90',
-        bg === 'transparent' && 'bg-transparent',
-        size === 'sm' && 'p-1',
-        size === 'md' && 'p-2',
-        size === 'lg' && 'p-3',
-      )}
-      target="_blank"
-      rel="noopener noreferrer"
-      href={href}
-    >
-      <span className="sr-only">{label}</span>
-      {children}
-    </a>
-  );
+  const type =
+    isInternalRoute(href) && !openInNewTab ? 'internal' : 'external';
+  const props =
+    type === 'internal'
+      ? {}
+      : {
+          target: '_blank',
+          rel: 'noopener noreferrer',
+        };
+  return renderAnchor({
+    href,
+    className: cn(
+      'hover:bg-bg-subtle focus-visible:ring-border-info active:bg-bg-emphasize block rounded-full focus-visible:ring-2',
+      bg === 'base' && 'bg-bg-base/90',
+      bg === 'transparent' && 'bg-transparent',
+      size === 'sm' && 'p-1',
+      size === 'md' && 'p-2',
+      size === 'lg' && 'p-3',
+    ),
+    ...props,
+    children: (
+      <>
+        <span className="sr-only">{label}</span>
+        {children}
+      </>
+    ),
+  });
 };

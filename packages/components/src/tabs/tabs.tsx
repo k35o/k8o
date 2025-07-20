@@ -1,10 +1,7 @@
 'use client';
 
 import { cn } from '@k8o/helpers/cn';
-import { useHash } from '@k8o/hooks/hash';
 import * as motion from 'motion/react-client';
-import Link from 'next/link';
-import { useRouter } from 'next/navigation';
 import {
   createContext,
   FC,
@@ -23,7 +20,6 @@ type TabsContext = {
   ids: [string, ...string[]];
   selectedId: string;
   setSelectedId: (id: string) => void;
-  hashLink: boolean;
 };
 
 const TabsProvider = createContext<TabsContext | undefined>(
@@ -42,16 +38,10 @@ const useTabsState = (): TabsContext => {
 
 const Root: FC<
   PropsWithChildren<{
-    hashLink?: boolean;
     defaultSelectedId?: string | null;
     ids: [string, ...string[]];
   }>
-> = ({
-  defaultSelectedId = null,
-  ids,
-  children,
-  hashLink = false,
-}) => {
+> = ({ defaultSelectedId = null, ids, children }) => {
   const defaultIndex = defaultSelectedId
     ? ids.indexOf(defaultSelectedId)
     : 0;
@@ -59,25 +49,14 @@ const Root: FC<
     defaultSelectedId ?? ids[defaultIndex] ?? ids[0],
   );
   const rootId = useId();
-  const router = useRouter();
-  const hash = useHash();
-
-  const hansleChangeHash = (id: string) => {
-    router.push(`#${id}`, { scroll: false });
-  };
 
   return (
     <TabsProvider
       value={{
         rootId,
         ids,
-        selectedId: hashLink
-          ? hash === '' || hash === null
-            ? ids[0]
-            : hash
-          : selectedId,
-        setSelectedId: hashLink ? hansleChangeHash : setSelectedId,
-        hashLink,
+        selectedId,
+        setSelectedId,
       }}
     >
       {/* TODO: スクロール以外の見せ方を考えても良さそう */}
@@ -133,8 +112,7 @@ const Tab: FC<PropsWithChildren<{ id: string }>> = ({
   id,
   children,
 }) => {
-  const { rootId, hashLink, ids, selectedId, setSelectedId } =
-    useTabsState();
+  const { rootId, ids, selectedId, setSelectedId } = useTabsState();
   const { setFocusRef } = useTabsListState();
   const ref = useRef<HTMLAnchorElement & HTMLDivElement>(null);
   const activeIndex = ids.indexOf(selectedId);
@@ -147,57 +125,48 @@ const Tab: FC<PropsWithChildren<{ id: string }>> = ({
     }
   }, [activeIndex, index]);
 
-  const props = {
-    id: `${rootId}-tab-${id}`,
-    role: 'tab',
-    'aria-controls':
-      selectedId === id ? `${rootId}-panel-${id}` : undefined,
-    'aria-selected': selectedId === id,
-    tabIndex: activeIndex === index ? 0 : -1,
-    className: cn(
-      'relative cursor-pointer rounded-md p-2',
-      'focus-visible:border-transparent focus-visible:ring-border-info focus-visible:ring-2 focus-visible:outline-hidden',
-    ),
-    onKeyDown: (e: KeyboardEvent) => {
-      if (e.key === 'ArrowLeft') {
-        const nextActiveIndex =
-          index === 0 ? ids.length - 1 : index - 1;
-        setSelectedId(ids[nextActiveIndex] ?? ids[0]);
-        setFocusRef.current = true;
-        return;
-      }
-      if (e.key === 'ArrowRight') {
-        const nextActiveIndex =
-          index === ids.length - 1 ? 0 : index + 1;
-        setSelectedId(ids[nextActiveIndex] ?? ids[0]);
-        setFocusRef.current = true;
-        return;
-      }
-    },
-    children: (
-      <>
-        {selectedId === id && (
-          <motion.div
-            layoutId="underline"
-            className="bg-primary-border absolute right-0 -bottom-0.5 left-0 h-1"
-          />
-        )}
-        {children}
-      </>
-    ),
-  };
-
-  return hashLink ? (
-    <Link ref={ref} href={`#${id}`} scroll={false} {...props} />
-  ) : (
-    // eslint-disable-next-line jsx-a11y/no-static-element-interactions, jsx-a11y/click-events-have-key-events -- propsを別の場所で定義することで解決済み
+  return (
     <div
       ref={ref}
       onClick={() => {
         setSelectedId(id);
       }}
-      {...props}
-    />
+      id={`${rootId}-tab-${id}`}
+      role="tab"
+      aria-controls={
+        selectedId === id ? `${rootId}-panel-${id}` : undefined
+      }
+      aria-selected={selectedId === id}
+      tabIndex={activeIndex === index ? 0 : -1}
+      className={cn(
+        'relative cursor-pointer rounded-md p-2',
+        'focus-visible:ring-border-info focus-visible:border-transparent focus-visible:ring-2 focus-visible:outline-hidden',
+      )}
+      onKeyDown={(e: KeyboardEvent) => {
+        if (e.key === 'ArrowLeft') {
+          const nextActiveIndex =
+            index === 0 ? ids.length - 1 : index - 1;
+          setSelectedId(ids[nextActiveIndex] ?? ids[0]);
+          setFocusRef.current = true;
+          return;
+        }
+        if (e.key === 'ArrowRight') {
+          const nextActiveIndex =
+            index === ids.length - 1 ? 0 : index + 1;
+          setSelectedId(ids[nextActiveIndex] ?? ids[0]);
+          setFocusRef.current = true;
+          return;
+        }
+      }}
+    >
+      {selectedId === id && (
+        <motion.div
+          layoutId="underline"
+          className="bg-primary-border absolute right-0 -bottom-0.5 left-0 h-1"
+        />
+      )}
+      {children}
+    </div>
   );
 };
 
