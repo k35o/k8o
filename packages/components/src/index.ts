@@ -17,7 +17,6 @@ export * from './icon-button';
 export * from './icon-link';
 export * from './icons';
 export * from './link-button';
-export * from './link-card';
 export * from './list-box';
 export * from './modal';
 export * from './popover';

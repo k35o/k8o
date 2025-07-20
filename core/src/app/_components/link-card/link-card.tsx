@@ -1,9 +1,9 @@
-import { Anchor } from '../anchor';
-import { ExternalLinkIcon } from '../icons';
 import { MetaImage } from './image';
 import { getMetadata } from '#link-card/metadata';
+import { Anchor } from '@k8o/components/anchor';
+import { ErrorBoundary } from '@k8o/components/error-boundary';
+import { ExternalLinkIcon } from '@k8o/components/icons';
 import { FC, Suspense } from 'react';
-import { ErrorBoundary } from 'react-error-boundary';
 
 const Loading: FC<{ href: string }> = ({ href }) => {
   return (

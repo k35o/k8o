@@ -4,17 +4,6 @@
   "description": "UI components for k8o project",
   "private": true,
   "type": "module",
-  "imports": {
-    "#link-card/metadata": {
-      "storybook": "./mocks/link-card/metadata.mock.ts",
-      "default": "./src/link-card/metadata.ts"
-    },
-    "#*": [
-      "./*",
-      "./*.ts",
-      "./*.tsx"
-    ]
-  },
   "exports": {
     ".": "./src/index.ts",
     "./styles.css": "./src/styles.css",
