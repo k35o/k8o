@@ -47,7 +47,7 @@ import {
 import { QiitaIcon } from './qiita';
 import { TwitterIcon } from './twitter';
 import { ZennIcon } from './zenn';
-import type { Meta, StoryObj } from '@storybook/nextjs';
+import type { Meta, StoryObj } from '@storybook/react-vite';
 import { FC } from 'react';
 
 const meta: Meta<typeof SVGAElement> = {

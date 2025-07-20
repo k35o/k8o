@@ -2,7 +2,7 @@ import { Dialog } from './dialog';
 import { Button } from '../button';
 import { Modal } from '../modal';
 import { Popover, useOpenContext } from '../popover';
-import type { Meta, StoryObj } from '@storybook/nextjs';
+import type { Meta, StoryObj } from '@storybook/react-vite';
 import { FC, HTMLProps } from 'react';
 import { fn } from 'storybook/test';
 

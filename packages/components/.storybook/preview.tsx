@@ -1,4 +1,4 @@
-import type { Preview } from '@storybook/nextjs';
+import type { Preview } from '@storybook/react-vite';
 import { ComponentProvider } from '../src/providers';
 
 import '../src/styles.css';
@@ -43,9 +43,6 @@ const preview: Preview = {
     backgrounds: { disable: true },
     layout: 'fullscreen',
     mockingDate: new Date(2023, 0, 2, 12, 34, 56),
-    nextjs: {
-      appDirectory: true,
-    },
     a11y: {
       test: 'error',
       options: {

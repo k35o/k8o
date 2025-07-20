@@ -1,5 +1,5 @@
 import { Tabs } from './tabs';
-import type { Meta, StoryObj } from '@storybook/nextjs';
+import type { Meta, StoryObj } from '@storybook/react-vite';
 import { expect, userEvent, within } from 'storybook/test';
 
 const meta: Meta<typeof Tabs.Root> = {

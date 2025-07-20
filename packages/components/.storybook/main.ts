@@ -1,4 +1,4 @@
-import type { StorybookConfig } from '@storybook/nextjs';
+import type { StorybookConfig } from '@storybook/react-vite';
 
 const config: StorybookConfig = {
   stories: ['../src/**/*.stories.tsx'],
@@ -9,11 +9,8 @@ const config: StorybookConfig = {
     'storybook-addon-mock-date',
   ],
   framework: {
-    name: '@storybook/nextjs',
+    name: '@storybook/react-vite',
     options: {},
-  },
-  features: {
-    experimentalRSC: true,
   },
   staticDirs: ['./public'],
 };

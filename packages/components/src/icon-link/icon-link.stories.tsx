@@ -1,6 +1,6 @@
 import { IconLink } from './icon-link';
 import { CopyIcon } from '../icons';
-import type { Meta, StoryObj } from '@storybook/nextjs';
+import type { Meta, StoryObj } from '@storybook/react-vite';
 
 const meta: Meta<typeof IconLink> = {
   title: 'components/icon-link',

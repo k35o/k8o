@@ -1,5 +1,5 @@
 import { Heading } from './heading';
-import type { Meta, StoryObj } from '@storybook/nextjs';
+import type { Meta, StoryObj } from '@storybook/react-vite';
 
 const meta: Meta<typeof Heading> = {
   title: 'components/heading',
