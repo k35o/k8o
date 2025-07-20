@@ -16,6 +16,7 @@ export const QuizBreadcrumb: FC = () => {
           <Breadcrumb.Link
             href="/quizzes"
             current={pathname === '/quizzes'}
+            component={Link}
           >
             Quizzes
           </Breadcrumb.Link>
@@ -28,7 +29,11 @@ export const QuizBreadcrumb: FC = () => {
             <h3 className="flex gap-1">
               {pathname.endsWith('/quizzes/fish-kanji') ? (
                 <>
-                  <Breadcrumb.Link href="/quizzes/fish-kanji" current>
+                  <Breadcrumb.Link
+                    href="/quizzes/fish-kanji"
+                    current
+                    component={Link}
+                  >
                     うおへんクイズ
                   </Breadcrumb.Link>
                   <div className="text-fg-base font-normal">
@@ -43,7 +48,10 @@ export const QuizBreadcrumb: FC = () => {
                   </div>
                 </>
               ) : (
-                <Breadcrumb.Link href="/quizzes/fish-kanji">
+                <Breadcrumb.Link
+                  href="/quizzes/fish-kanji"
+                  component={Link}
+                >
                   うおへんクイズ
                 </Breadcrumb.Link>
               )}
@@ -55,7 +63,11 @@ export const QuizBreadcrumb: FC = () => {
         <>
           <Breadcrumb.Separator />
           <Breadcrumb.Item>
-            <Breadcrumb.Link href="/quizzes/fish-kanji/list" current>
+            <Breadcrumb.Link
+              href="/quizzes/fish-kanji/list"
+              current
+              component={Link}
+            >
               問題一覧
             </Breadcrumb.Link>
           </Breadcrumb.Item>
