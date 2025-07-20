@@ -10,6 +10,7 @@ import {
 import { LinkButton } from '@k8o/components/link-button';
 import { TextTag } from '@k8o/components/text-tag';
 import { formatDate } from '@k8o/helpers/date';
+import Link from 'next/link';
 import { FC } from 'react';
 
 export const TalkCard: FC<{
@@ -86,6 +87,7 @@ export const TalkCard: FC<{
             size="sm"
             startIcon={<BlogIcon size="sm" />}
             href={`/blog/${blog.slug}`}
+            renderAnchor={(props) => <Link {...props} />}
           >
             ブログで解説を読む
           </LinkButton>
