@@ -66,12 +66,14 @@ export const TalkCard: FC<{
         </div>
         <div className="flex flex-wrap items-center gap-2">
           {tags.map((tag) => (
-            <TextTag
-              key={tag.id}
-              size="sm"
-              text={tag.name}
-              href={`/tags/${tag.id.toString()}`}
-            />
+            <Link key={tag.id} href={`/tags/${tag.id.toString()}`}>
+              <TextTag
+                key={tag.id}
+                size="sm"
+                text={tag.name}
+                clickable
+              />
+            </Link>
           ))}
         </div>
         <div className="flex flex-wrap gap-4">
