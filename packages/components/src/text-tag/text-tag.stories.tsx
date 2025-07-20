@@ -16,10 +16,10 @@ export const Medium: Story = {
   },
 };
 
-export const Link: Story = {
+export const Clickable: Story = {
   args: {
     text: 'TypeScript',
-    href: '/tags',
+    clickable: true,
   },
 };
 
