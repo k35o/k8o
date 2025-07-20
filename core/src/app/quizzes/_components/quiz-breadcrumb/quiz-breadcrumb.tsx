@@ -2,6 +2,7 @@
 
 import { Anchor } from '@k8o/components/anchor';
 import { Breadcrumb } from '@k8o/components/breadcrumb';
+import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { FC } from 'react';
 
@@ -32,7 +33,10 @@ export const QuizBreadcrumb: FC = () => {
                   </Breadcrumb.Link>
                   <div className="text-fg-base font-normal">
                     (
-                    <Anchor href="/quizzes/fish-kanji/list">
+                    <Anchor
+                      href="/quizzes/fish-kanji/list"
+                      renderAnchor={(props) => <Link {...props} />}
+                    >
                       問題一覧
                     </Anchor>
                     )

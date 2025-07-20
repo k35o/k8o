@@ -3,6 +3,7 @@ import { Code } from '@k8o/components/code';
 import { LinkIcon } from '@k8o/components/icons';
 import { cn } from '@k8o/helpers/cn';
 import type { MDXComponents } from 'mdx/types';
+import Link from 'next/link';
 import { FC, PropsWithChildren } from 'react';
 
 const LinkHeading: FC<
@@ -74,7 +75,12 @@ export function useMDXComponents(
     a: ({ href, children }: PropsWithChildren<{ href: string }>) => (
       <>
         {href ? (
-          <Anchor href={href}>{children}</Anchor>
+          <Anchor
+            href={href}
+            renderAnchor={(props) => <Link {...props} />}
+          >
+            {children}
+          </Anchor>
         ) : (
           <p>{children}</p>
         )}

@@ -32,7 +32,7 @@ export const RssPanel: FC = () => {
           <CopyIcon />
         </IconButton>
       </div>
-      <Anchor href="/blog/feed">
+      <Anchor href="/blog/feed" openInNewTab>
         <span className="flex items-center gap-2">
           <RSSIcon size="sm" />
           <span>フィードを表示</span>
