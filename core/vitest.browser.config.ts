@@ -43,7 +43,11 @@ export default defineConfig({
     name: { label: 'storybook', color: 'magenta' },
     browser: {
       enabled: true,
-      name: 'chromium',
+      instances: [
+        {
+          browser: 'chromium',
+        },
+      ],
       provider: 'playwright',
       headless: true,
       screenshotFailures: false,
