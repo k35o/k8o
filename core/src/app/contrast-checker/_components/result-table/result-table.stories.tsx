@@ -1,5 +1,5 @@
 import { ResultTable } from './result-table';
-import type { Meta, StoryObj } from '@storybook/nextjs';
+import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 
 const meta: Meta<typeof ResultTable> = {
   title: 'app/contrast-checker/result-table',

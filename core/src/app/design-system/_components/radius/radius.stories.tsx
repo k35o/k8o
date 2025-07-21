@@ -1,5 +1,5 @@
 import { Radius } from './radius';
-import type { Meta, StoryObj } from '@storybook/nextjs';
+import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 
 const meta: Meta<typeof Radius> = {
   title: 'app/design-system/radius',

@@ -1,6 +1,6 @@
 import { CssMathFunctionsDemo } from './css-math-functions-demo';
 import { Playground } from '../playground';
-import type { Meta, StoryObj } from '@storybook/nextjs';
+import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 
 const meta: Meta<typeof CssMathFunctionsDemo> = {
   title: 'playgrounds/abs-sign/CssMathFunctionsDemo',

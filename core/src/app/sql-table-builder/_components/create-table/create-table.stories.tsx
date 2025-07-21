@@ -1,6 +1,6 @@
 import { CreateTable } from './create-table';
 import { Table } from '../../_types/table';
-import type { Meta, StoryObj } from '@storybook/nextjs';
+import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 import { useState } from 'react';
 
 const meta: Meta<typeof CreateTable> = {

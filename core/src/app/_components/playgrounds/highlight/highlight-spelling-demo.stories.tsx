@@ -1,6 +1,6 @@
 import { HighlightSpellingDemo } from './highlight-spelling-demo';
 import { Playground } from '../playground';
-import type { Meta, StoryObj } from '@storybook/nextjs';
+import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 
 const meta: Meta<typeof HighlightSpellingDemo> = {
   title: 'playgrounds/highlight/HighlightSpellingDemo',

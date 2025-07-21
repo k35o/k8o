@@ -1,6 +1,6 @@
 import React, { FC, memo, useEffect } from 'react';
 import Script from 'next/script';
-import type { Preview } from '@storybook/nextjs';
+import type { Preview } from '@storybook/nextjs-vite';
 import { AppProvider } from '../src/providers/app';
 import { cn } from '@k8o/helpers/cn';
 import { useTheme } from 'next-themes';

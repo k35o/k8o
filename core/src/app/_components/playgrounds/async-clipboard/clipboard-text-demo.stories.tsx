@@ -1,6 +1,6 @@
 import { ClipboardTextDemo } from './clipboard-text-demo';
 import { Playground } from '../playground';
-import type { Meta, StoryObj } from '@storybook/nextjs';
+import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 
 const meta: Meta<typeof ClipboardTextDemo> = {
   title: 'playgrounds/async-clipboard/ClipboardTextDemo',

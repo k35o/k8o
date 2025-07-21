@@ -1,5 +1,5 @@
 import { TagCard } from './tag-card';
-import type { Meta, StoryObj } from '@storybook/nextjs';
+import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 
 const meta: Meta<typeof TagCard> = {
   title: 'app/tags/tag-card',

@@ -1,6 +1,6 @@
 import { WakeLockDemo } from './wake-lock-demo';
 import { Playground } from '../playground';
-import type { Meta, StoryObj } from '@storybook/nextjs';
+import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 
 const meta: Meta<typeof WakeLockDemo> = {
   title: 'playgrounds/screen-wake-lock/WakeLockDemo',

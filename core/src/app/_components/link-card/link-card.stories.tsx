@@ -1,6 +1,6 @@
 import { LinkCard } from './link-card';
 import { getMetadata } from '#src/mocks/link-card/metadata.mock';
-import type { Meta, StoryObj } from '@storybook/nextjs';
+import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 
 const meta: Meta<typeof LinkCard> = {
   title: 'components/link-card',

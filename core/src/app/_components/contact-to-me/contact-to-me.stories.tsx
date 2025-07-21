@@ -1,5 +1,5 @@
 import { ContactToMe } from './contact-to-me';
-import type { Meta, StoryObj } from '@storybook/nextjs';
+import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 
 const meta: Meta<typeof ContactToMe> = {
   title: 'app/globals/contact-to-me',

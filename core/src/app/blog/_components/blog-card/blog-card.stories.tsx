@@ -1,5 +1,5 @@
 import { BlogCard } from './blog-card';
-import type { Meta, StoryObj } from '@storybook/nextjs';
+import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 
 const meta: Meta<typeof BlogCard> = {
   title: 'app/blog/blog-card',

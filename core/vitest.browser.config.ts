@@ -1,6 +1,5 @@
 import { fileURLToPath } from 'url';
 import { storybookTest } from '@storybook/addon-vitest/vitest-plugin';
-import { storybookNextJsPlugin } from '@storybook/nextjs-vite/vite-plugin';
 import { defineConfig } from 'vitest/config';
 
 export default defineConfig({
@@ -11,7 +10,6 @@ export default defineConfig({
         new URL('./.storybook', import.meta.url),
       ),
     }),
-    storybookNextJsPlugin(),
   ],
   publicDir: fileURLToPath(
     new URL('./.storybook/public', import.meta.url),
