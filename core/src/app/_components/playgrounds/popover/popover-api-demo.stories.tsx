@@ -1,6 +1,6 @@
 import { PopoverApiDemo } from './popover-api-demo';
 import { Playground } from '../playground';
-import type { Meta, StoryObj } from '@storybook/nextjs';
+import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 
 const meta: Meta<typeof PopoverApiDemo> = {
   title: 'playgrounds/popover/PopoverApiDemo',

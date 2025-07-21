@@ -1,6 +1,6 @@
 import { AppCard } from './app-card';
 import { LinkIcon } from '@k8o/components/icons';
-import type { Meta, StoryObj } from '@storybook/nextjs';
+import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 
 const meta: Meta<typeof AppCard> = {
   title: 'app/globals/app-card',

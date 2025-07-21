@@ -1,6 +1,6 @@
 import { Recommend } from './recommend';
 import { getBlogsByTags } from '#src/mocks/api/blog.mock';
-import type { Meta, StoryObj } from '@storybook/nextjs';
+import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 
 const meta: Meta<typeof Recommend> = {
   title: 'app/blog/blog-layout/recommend',

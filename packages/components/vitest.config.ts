@@ -22,10 +22,14 @@ export default mergeConfig(
       name: { label: 'components', color: 'magenta' },
       browser: {
         enabled: true,
-        name: 'chromium',
         provider: 'playwright',
         headless: true,
         screenshotFailures: false,
+        instances: [
+          {
+            browser: 'chromium',
+          },
+        ],
       },
       isolate: false,
       setupFiles: [

@@ -1,5 +1,5 @@
 import { Typography } from './typography';
-import type { Meta, StoryObj } from '@storybook/nextjs';
+import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 
 const meta: Meta<typeof Typography> = {
   title: 'app/design-system/typography',

@@ -1,6 +1,6 @@
 import { Playground } from './playground';
 import { Button } from '@k8o/components/button';
-import type { Meta, StoryObj } from '@storybook/nextjs';
+import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 import { FC, useState } from 'react';
 
 const meta: Meta<typeof Playground> = {

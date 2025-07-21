@@ -1,5 +1,5 @@
 import { FeedbackCard } from './feedback-card';
-import type { Meta, StoryObj } from '@storybook/nextjs';
+import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 import { fn } from 'storybook/test';
 
 const meta: Meta<typeof FeedbackCard> = {
