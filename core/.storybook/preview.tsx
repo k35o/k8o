@@ -13,7 +13,7 @@ import '../src/app/_styles/globals.css';
 initialize(
   {
     onUnhandledRequest: 'bypass',
-    quiet: process.env.MODE === 'test',
+    quiet: true,
   },
   handlers,
 );
