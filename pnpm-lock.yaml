@@ -8,9 +8,6 @@ importers:
 
   .:
     dependencies:
-      '@floating-ui/react':
-        specifier: 0.27.13
-        version: 0.27.13(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
       '@k8o/components':
         specifier: workspace:*
         version: link:packages/components
@@ -271,6 +268,9 @@ importers:
 
   packages/components:
     dependencies:
+      '@floating-ui/react':
+        specifier: 0.27.13
+        version: 0.27.13(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
       baseline-status:
         specifier: 1.0.11
         version: 1.0.11

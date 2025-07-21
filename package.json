@@ -26,7 +26,6 @@
     "@k8o/components": "workspace:*",
     "@k8o/helpers": "workspace:*",
     "@k8o/hooks": "workspace:*",
-    "@floating-ui/react": "0.27.13",
     "@tailwindcss/postcss": "4.1.11",
     "@upstash/ratelimit": "2.0.5",
     "@upstash/redis": "1.35.1",
