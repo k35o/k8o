@@ -1,5 +1,5 @@
 import notFoundImage from './_images/404.png';
-import { LinkButton } from '@k8o/components/link-button';
+import { LinkButton } from '@k8o/arte-odyssey/link-button';
 import Image from 'next/image';
 import Link from 'next/link';
 

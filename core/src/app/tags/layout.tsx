@@ -1,5 +1,5 @@
-import { Heading } from '@k8o/components/heading';
-import { TagIcon } from '@k8o/components/icons';
+import { Heading } from '@k8o/arte-odyssey/heading';
+import { TagIcon } from '@k8o/arte-odyssey/icons';
 import Link from 'next/link';
 import { PropsWithChildren } from 'react';
 

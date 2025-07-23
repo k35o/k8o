@@ -1,9 +1,9 @@
 'use client';
 
 import { SuspenseList } from '#libs/react';
-import { Checkbox } from '@k8o/components/form/checkbox';
-import { FormControl } from '@k8o/components/form/form-control';
-import { Select } from '@k8o/components/form/select';
+import { Checkbox } from '@k8o/arte-odyssey/form/checkbox';
+import { FormControl } from '@k8o/arte-odyssey/form/form-control';
+import { Select } from '@k8o/arte-odyssey/form/select';
 import { cn } from '@k8o/helpers/cn';
 import { sleep } from '@k8o/helpers/sleep';
 import {

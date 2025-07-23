@@ -2,9 +2,9 @@ import {
   Playground,
   playgroundSections,
 } from '@/app/_components/playgrounds';
-import { Anchor } from '@k8o/components/anchor';
-import { Card } from '@k8o/components/card';
-import { Heading } from '@k8o/components/heading';
+import { Anchor } from '@k8o/arte-odyssey/anchor';
+import { Card } from '@k8o/arte-odyssey/card';
+import { Heading } from '@k8o/arte-odyssey/heading';
 import Link from 'next/link';
 
 export default function PlaygroundsPage() {

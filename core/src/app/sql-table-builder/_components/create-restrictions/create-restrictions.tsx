@@ -9,10 +9,10 @@ import {
   AccordionButton,
   AccordionItem,
   AccordionPanel,
-} from '@k8o/components/accordion';
-import { Button } from '@k8o/components/button';
-import { IconButton } from '@k8o/components/icon-button';
-import { CloseIcon } from '@k8o/components/icons';
+} from '@k8o/arte-odyssey/accordion';
+import { Button } from '@k8o/arte-odyssey/button';
+import { IconButton } from '@k8o/arte-odyssey/icon-button';
+import { CloseIcon } from '@k8o/arte-odyssey/icons';
 import { uuidV4 } from '@k8o/helpers/uuid-v4';
 import { FC } from 'react';
 

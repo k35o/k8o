@@ -1,14 +1,14 @@
 'use client';
 
 import { contact } from '@/app/_api/contact-to-me';
-import { Anchor } from '@k8o/components/anchor';
-import { Button } from '@k8o/components/button';
-import { Dialog } from '@k8o/components/dialog';
-import { FormControl } from '@k8o/components/form/form-control';
-import { Textarea } from '@k8o/components/form/textarea';
-import { SendIcon } from '@k8o/components/icons';
-import { Modal } from '@k8o/components/modal';
-import { useToast } from '@k8o/components/toast';
+import { Anchor } from '@k8o/arte-odyssey/anchor';
+import { Button } from '@k8o/arte-odyssey/button';
+import { Dialog } from '@k8o/arte-odyssey/dialog';
+import { FormControl } from '@k8o/arte-odyssey/form/form-control';
+import { Textarea } from '@k8o/arte-odyssey/form/textarea';
+import { SendIcon } from '@k8o/arte-odyssey/icons';
+import { Modal } from '@k8o/arte-odyssey/modal';
+import { useToast } from '@k8o/arte-odyssey/toast';
 import {
   FC,
   useActionState,

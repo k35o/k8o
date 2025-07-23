@@ -6,10 +6,10 @@ import {
   AccordionButton,
   AccordionItem,
   AccordionPanel,
-} from '@k8o/components/accordion';
-import { Button } from '@k8o/components/button';
-import { AlertIcon, CopyIcon } from '@k8o/components/icons';
-import { useToast } from '@k8o/components/toast';
+} from '@k8o/arte-odyssey/accordion';
+import { Button } from '@k8o/arte-odyssey/button';
+import { AlertIcon, CopyIcon } from '@k8o/arte-odyssey/icons';
+import { useToast } from '@k8o/arte-odyssey/toast';
 import { useClipboard } from '@k8o/hooks/clipboard';
 import { FC } from 'react';
 

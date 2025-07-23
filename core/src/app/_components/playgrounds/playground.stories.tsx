@@ -1,5 +1,5 @@
 import { Playground } from './playground';
-import { Button } from '@k8o/components/button';
+import { Button } from '@k8o/arte-odyssey/button';
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 import { FC, useState } from 'react';
 

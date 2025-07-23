@@ -1,14 +1,14 @@
-import { Card } from '@k8o/components/card';
-import { IconLink } from '@k8o/components/icon-link';
+import { Card } from '@k8o/arte-odyssey/card';
+import { IconLink } from '@k8o/arte-odyssey/icon-link';
 import {
   BlogIcon,
   ExternalLinkIcon,
   LocationIcon,
   PublishDateIcon,
   SlideIcon,
-} from '@k8o/components/icons';
-import { LinkButton } from '@k8o/components/link-button';
-import { TextTag } from '@k8o/components/text-tag';
+} from '@k8o/arte-odyssey/icons';
+import { LinkButton } from '@k8o/arte-odyssey/link-button';
+import { TextTag } from '@k8o/arte-odyssey/text-tag';
 import { formatDate } from '@k8o/helpers/date';
 import Link from 'next/link';
 import { FC } from 'react';

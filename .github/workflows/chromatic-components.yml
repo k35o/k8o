@@ -1,10 +1,10 @@
-name: 'Chromatic Components'
+name: 'Chromatic Arte Odyssey'
 
 on:
   push:
     paths:
       - 'pnpm-lock.yaml'
-      - 'packages/components/**'
+      - 'packages/ui/**'
 
 jobs:
   chromatic-deployment:
@@ -17,10 +17,10 @@ jobs:
           fetch-depth: 0
       - name: Setup pnpm
         uses: ./.github/actions/setup-pnpm
-      - name: Publish Components to Chromatic
+      - name: Publish Arte Odyssey to Chromatic
         uses: chromaui/action@v13
         with:
           projectToken: ${{ secrets.CHROMATIC_PROJECT_TOKEN_ARTE_ODYSSEY }}
           onlyChanged: true
           skip: 'renovate/**'
-          workingDir: packages/components
+          workingDir: packages/ui

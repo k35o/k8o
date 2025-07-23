@@ -15,7 +15,7 @@ import {
   ChevronIcon,
   ColorContrastIcon,
   ColorInfoIcon,
-} from '@k8o/components/icons';
+} from '@k8o/arte-odyssey/icons';
 import { cn } from '@k8o/helpers/cn';
 import { toPrecision } from '@k8o/helpers/number';
 import * as motion from 'motion/react-client';

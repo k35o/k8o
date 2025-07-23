@@ -1,6 +1,6 @@
-import { Anchor } from '@k8o/components/anchor';
-import { Code } from '@k8o/components/code';
-import { LinkIcon } from '@k8o/components/icons';
+import { Anchor } from '@k8o/arte-odyssey/anchor';
+import { Code } from '@k8o/arte-odyssey/code';
+import { LinkIcon } from '@k8o/arte-odyssey/icons';
 import { cn } from '@k8o/helpers/cn';
 import type { MDXComponents } from 'mdx/types';
 import Link from 'next/link';

@@ -1,6 +1,6 @@
 import { InvalidTable, Table } from '../../_types/table';
-import { FormControl } from '@k8o/components/form/form-control';
-import { TextField } from '@k8o/components/form/text-field';
+import { FormControl } from '@k8o/arte-odyssey/form/form-control';
+import { TextField } from '@k8o/arte-odyssey/form/text-field';
 import { ChangeEvent, FC } from 'react';
 
 type Props = {

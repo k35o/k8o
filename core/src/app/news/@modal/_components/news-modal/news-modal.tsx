@@ -1,7 +1,7 @@
 'use client';
 
-import { Dialog } from '@k8o/components/dialog';
-import { Modal } from '@k8o/components/modal';
+import { Dialog } from '@k8o/arte-odyssey/dialog';
+import { Modal } from '@k8o/arte-odyssey/modal';
 import { useRouter } from 'next/navigation';
 import { PropsWithChildren } from 'react';
 

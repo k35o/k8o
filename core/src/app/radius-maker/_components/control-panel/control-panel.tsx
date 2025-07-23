@@ -1,9 +1,9 @@
 'use client';
 
 import { useControlPanel } from './use-control-panel';
-import { IconButton } from '@k8o/components/icon-button';
-import { CopyIcon } from '@k8o/components/icons';
-import { useToast } from '@k8o/components/toast';
+import { IconButton } from '@k8o/arte-odyssey/icon-button';
+import { CopyIcon } from '@k8o/arte-odyssey/icons';
+import { useToast } from '@k8o/arte-odyssey/toast';
 import { cn } from '@k8o/helpers/cn';
 import { useClipboard } from '@k8o/hooks/clipboard';
 import { FC, KeyboardEvent, MouseEvent, TouchEvent } from 'react';

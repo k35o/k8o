@@ -1,8 +1,8 @@
 'use client';
 
-import { Code } from '@k8o/components/code';
-import { FormControl } from '@k8o/components/form/form-control';
-import { RangeField } from '@k8o/components/form/range-field';
+import { Code } from '@k8o/arte-odyssey/code';
+import { FormControl } from '@k8o/arte-odyssey/form/form-control';
+import { RangeField } from '@k8o/arte-odyssey/form/range-field';
 import { useState } from 'react';
 
 export function CssMathFunctionsDemo() {

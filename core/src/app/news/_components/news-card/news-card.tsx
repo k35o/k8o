@@ -1,10 +1,10 @@
 import { News } from '../../_types';
-import { InteractiveCard } from '@k8o/components/card';
-import { Heading } from '@k8o/components/heading';
+import { InteractiveCard } from '@k8o/arte-odyssey/card';
+import { Heading } from '@k8o/arte-odyssey/heading';
 import {
   PublishDateIcon,
   UpdateDateIcon,
-} from '@k8o/components/icons';
+} from '@k8o/arte-odyssey/icons';
 import { formatDate } from '@k8o/helpers/date';
 import Link from 'next/link';
 import { FC } from 'react';

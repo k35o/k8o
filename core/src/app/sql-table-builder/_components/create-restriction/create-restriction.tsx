@@ -4,10 +4,10 @@ import {
   Restriction,
   RestrictionType,
 } from '../../_types/restriction';
-import { Autocomplete } from '@k8o/components/form/autocomplete';
-import { FormControl } from '@k8o/components/form/form-control';
-import { Select } from '@k8o/components/form/select';
-import { TextField } from '@k8o/components/form/text-field';
+import { Autocomplete } from '@k8o/arte-odyssey/form/autocomplete';
+import { FormControl } from '@k8o/arte-odyssey/form/form-control';
+import { Select } from '@k8o/arte-odyssey/form/select';
+import { TextField } from '@k8o/arte-odyssey/form/text-field';
 import { FC } from 'react';
 
 const TYPE_OPTIONS = [

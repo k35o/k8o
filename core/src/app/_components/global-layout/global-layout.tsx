@@ -6,7 +6,7 @@ import { LlmLink } from './llm-link';
 import { NavigationMenu } from './navigation-menu';
 import { NewsLink } from './news-link';
 import { TagsLink } from './tags-link';
-import { Logo } from '@k8o/components/icons';
+import { Logo } from '@k8o/arte-odyssey/icons';
 import { formatDate } from '@k8o/helpers/date';
 import Link from 'next/link';
 import { FC, ReactNode } from 'react';

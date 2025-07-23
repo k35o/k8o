@@ -1,8 +1,8 @@
 'use client';
 
 import { TextLength } from '../text-length';
-import { FormControl } from '@k8o/components/form/form-control';
-import { Textarea } from '@k8o/components/form/textarea';
+import { FormControl } from '@k8o/arte-odyssey/form/form-control';
+import { Textarea } from '@k8o/arte-odyssey/form/textarea';
 import { useDeferredValue, useState } from 'react';
 
 export const TextField = () => {

@@ -1,4 +1,4 @@
-import { Progress } from '@k8o/components/progress';
+import { Progress } from '@k8o/arte-odyssey/progress';
 import { FC } from 'react';
 
 export const QuizProgress: FC<{

@@ -3,7 +3,7 @@ import { NewsModal } from '../_components/news-modal';
 import {
   PublishDateIcon,
   UpdateDateIcon,
-} from '@k8o/components/icons';
+} from '@k8o/arte-odyssey/icons';
 import { formatDate } from '@k8o/helpers/date';
 import { draftMode } from 'next/headers';
 import { notFound } from 'next/navigation';

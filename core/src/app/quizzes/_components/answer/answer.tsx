@@ -1,9 +1,9 @@
 import { checkAnswer } from '../../_utils/check-answer';
 import { Quiz } from '@/services/quizzes';
-import { Button } from '@k8o/components/button';
-import { FormControl } from '@k8o/components/form/form-control';
-import { TextField } from '@k8o/components/form/text-field';
-import { AlertIcon } from '@k8o/components/icons';
+import { Button } from '@k8o/arte-odyssey/button';
+import { FormControl } from '@k8o/arte-odyssey/form/form-control';
+import { TextField } from '@k8o/arte-odyssey/form/text-field';
+import { AlertIcon } from '@k8o/arte-odyssey/icons';
 import { FC, useMemo, useState } from 'react';
 
 export const Answer: FC<{

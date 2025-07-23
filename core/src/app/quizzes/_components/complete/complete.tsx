@@ -1,9 +1,9 @@
 import { CollectionByHighlight } from '../collection';
 import { Quiz } from '@/services/quizzes';
-import { Button } from '@k8o/components/button';
-import { Heading } from '@k8o/components/heading';
-import { HistoryIcon, ListIcon } from '@k8o/components/icons';
-import { LinkButton } from '@k8o/components/link-button';
+import { Button } from '@k8o/arte-odyssey/button';
+import { Heading } from '@k8o/arte-odyssey/heading';
+import { HistoryIcon, ListIcon } from '@k8o/arte-odyssey/icons';
+import { LinkButton } from '@k8o/arte-odyssey/link-button';
 import { cn } from '@k8o/helpers/cn';
 import Link from 'next/link';
 import { FC } from 'react';

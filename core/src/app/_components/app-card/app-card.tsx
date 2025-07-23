@@ -1,5 +1,5 @@
-import { InteractiveCard } from '@k8o/components/card';
-import { Heading } from '@k8o/components/heading';
+import { InteractiveCard } from '@k8o/arte-odyssey/card';
+import { Heading } from '@k8o/arte-odyssey/heading';
 import Link from 'next/link';
 import { ReactNode } from 'react';
 
