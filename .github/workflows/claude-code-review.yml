@@ -32,7 +32,8 @@ jobs:
             mcp__github__create_pending_pull_request_review,
             mcp__github__add_pull_request_review_comment_to_pending_review,
             mcp__github__submit_pending_pull_request_review,
-            mcp__github__get_pull_request_diff
+            mcp__github__get_pull_request_diff,
+            mcp__github__get_pull_request_comments
           direct_prompt: |
             このPRをGitHubのレビュー機能を使ってフィードバックを提供してください。
 
@@ -40,7 +41,7 @@ jobs:
             1. **レビューの開始**: `mcp__github__create_pending_pull_request_review`を使って保留中のレビューを開始する。過去のフィードバックと意味が重複しないようにする。
             2. **差分情報の取得**: `mcp__github__get_pull_request_diff`を使ってコードの変更内容と行数を確認する。
             3. **インラインコメントの追加**: `mcp__github__add_pull_request_review_comment_to_pending_review`を使って特定の行に対する具体的なフィードバックを追加する。修正方針が存在する場合は必ずsuggestion機能を利用する
-            4. **レビューの提出**: `mcp__github__submit_pending_pull_request_review`を使ってレビューを提出する。
+            4. **レビューの提出**: `mcp__github__submit_pending_pull_request_review`を使ってイベント種別を**COMMENT**に設定しレビューを提出する。
 
             レビューの観点：
             - CLAUDE.mdのガイドラインに従っているか
@@ -52,8 +53,8 @@ jobs:
             - ドキュメントやコメントが適切に追加されているか
             - テストが適切に追加されているか
 
-            日本語で具体的で実行可能なフィードバックを提供してください。
-            **インラインコメントを積極的に使用** - 観測事項、提案、改善点について特定の行にコメントを追加してください。
-            些細な提案やベストプラクティスでもインラインでコメントしてください。
-            行固有の問題にはインラインコメントを使用し、レビュー提出時には全体の要約を含めてください。
-            suggestion機能を使用して、修正方針が存在する場合は必ず提案を行ってください。
+            日本語で具体的で実行可能なフィードバックを提供する。
+            **インラインコメントを積極的に使用** - 観測事項、提案、改善点について特定の行にコメントを追加する。
+            些細な提案やベストプラクティスでもインラインでコメントする。
+            行固有の問題にはインラインコメントを使用し、レビュー提出時には全体の要約を含める。
+            suggestion機能を使用して、修正方針が存在する場合は必ず提案する。
