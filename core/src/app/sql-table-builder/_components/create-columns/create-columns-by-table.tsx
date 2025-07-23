@@ -3,11 +3,11 @@ import {
   ColumnType,
   InvalidColumns,
 } from '../../_types/column';
-import { Checkbox } from '@k8o/components/form/checkbox';
-import { Select } from '@k8o/components/form/select';
-import { TextField } from '@k8o/components/form/text-field';
-import { IconButton } from '@k8o/components/icon-button';
-import { CloseIcon } from '@k8o/components/icons';
+import { Checkbox } from '@k8o/arte-odyssey/form/checkbox';
+import { Select } from '@k8o/arte-odyssey/form/select';
+import { TextField } from '@k8o/arte-odyssey/form/text-field';
+import { IconButton } from '@k8o/arte-odyssey/icon-button';
+import { CloseIcon } from '@k8o/arte-odyssey/icons';
 import { FC, useId } from 'react';
 
 type Props = {

@@ -5,7 +5,7 @@ import { Components } from './_components/components';
 import { Radius } from './_components/radius';
 import { Spacing } from './_components/spacing';
 import { Typography } from './_components/typography';
-import { Tabs } from '@k8o/components/tabs';
+import { Tabs } from '@k8o/arte-odyssey/tabs';
 
 export default function Page() {
   return (

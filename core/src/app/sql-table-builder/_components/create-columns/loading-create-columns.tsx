@@ -1,4 +1,4 @@
-import { Button } from '@k8o/components/button';
+import { Button } from '@k8o/arte-odyssey/button';
 import { FC } from 'react';
 
 export const LoadingCreateColumns: FC = () => {

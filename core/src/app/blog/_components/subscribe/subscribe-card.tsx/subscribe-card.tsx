@@ -4,8 +4,8 @@ import {
   MailIcon,
   RSSIcon,
   SubscribeIcon,
-} from '@k8o/components/icons';
-import { Tabs } from '@k8o/components/tabs';
+} from '@k8o/arte-odyssey/icons';
+import { Tabs } from '@k8o/arte-odyssey/tabs';
 import { FC } from 'react';
 
 export const SubscribeCard: FC = () => {

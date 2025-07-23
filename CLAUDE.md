@@ -8,7 +8,7 @@
 
 - `pnpm run dev` - 開発サーバーを開始
 - `pnpm run -F core storybook` - Storybookデザインシステムを起動（ポート6006、core package）
-- `pnpm run -F components storybook` - コンポーネントライブラリStorybook（components package）
+- `pnpm run -F ui storybook` - コンポーネントライブラリStorybook（ui package）
 - `pnpm run -F core email` - React Emailテンプレート開発サーバー（ポート3333、core package）
 
 ### データベース
@@ -50,7 +50,7 @@
 **Turborepo Monorepo**: 3つのワークスペースで構成
 
 - **core** - メインのNext.jsアプリケーション
-- **packages/components** - 再利用可能UIコンポーネントライブラリ
+- **packages/ui** - 再利用可能UIコンポーネントライブラリ
 - **packages/helpers** - ユーティリティ関数ライブラリ
 - **packages/hooks** - カスタムReactフックライブラリ
 
@@ -102,7 +102,7 @@
 
 **コンポーネント構成**:
 
-- 再利用可能UIコンポーネント: `packages/components/src/`
+- 再利用可能UIコンポーネント: `packages/ui/src/`
 - ページ固有コンポーネント: `core/src/app/[page]/_components/`
 - 各コンポーネントには`.stories.tsx`が必須
 
@@ -120,7 +120,7 @@
 - In-source testing（`if (import.meta.vitest)`ブロック）
 - 同一ファイル内にテストを記述
 
-**Components** (`packages/components/`):
+**Components** (`packages/ui/`):
 
 - Storybookストーリーでテスト
 - `@storybook/addon-vitest`でインテグレーション
@@ -174,7 +174,7 @@ if (import.meta.vitest) {
 }
 ```
 
-### Components（`packages/components/src/`）
+### Components（`packages/ui/src/`）
 
 Storybookストーリーでテストを記述：
 
@@ -221,7 +221,7 @@ describe('useCustomHook', () => {
 
 **新機能開発フロー**:
 
-1. **UIコンポーネント**: `packages/components/src/`にStorybookストーリー付きで作成
+1. **UIコンポーネント**: `packages/ui/src/`にStorybookストーリー付きで作成
 2. **Hooks**: `packages/hooks/src/`に`.test.tsx`ファイル付きで作成
 3. **Helpers**: `packages/helpers/src/`にin-source testing付きで作成
 4. **ページ/機能**: `core/src/app/`に配置、適切なテスト方法でテスト追加

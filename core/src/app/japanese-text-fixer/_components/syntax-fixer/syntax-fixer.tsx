@@ -13,14 +13,14 @@ import {
   AccordionButton,
   AccordionItem,
   AccordionPanel,
-} from '@k8o/components/accordion';
-import { Alert } from '@k8o/components/alert';
-import { Button } from '@k8o/components/button';
-import { FormControl } from '@k8o/components/form/form-control';
-import { Textarea } from '@k8o/components/form/textarea';
-import { Heading } from '@k8o/components/heading';
-import { IconButton } from '@k8o/components/icon-button';
-import { ChevronIcon } from '@k8o/components/icons';
+} from '@k8o/arte-odyssey/accordion';
+import { Alert } from '@k8o/arte-odyssey/alert';
+import { Button } from '@k8o/arte-odyssey/button';
+import { FormControl } from '@k8o/arte-odyssey/form/form-control';
+import { Textarea } from '@k8o/arte-odyssey/form/textarea';
+import { Heading } from '@k8o/arte-odyssey/heading';
+import { IconButton } from '@k8o/arte-odyssey/icon-button';
+import { ChevronIcon } from '@k8o/arte-odyssey/icons';
 import { useStep } from '@k8o/hooks/step';
 import { FC, Fragment, useId } from 'react';
 

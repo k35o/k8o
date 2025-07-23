@@ -8,9 +8,9 @@ import {
   useText,
 } from '../../_state/text';
 import { checkJapaneseSyntax } from '../../_utils/japanese-syntax';
-import { Button } from '@k8o/components/button';
-import { FormControl } from '@k8o/components/form/form-control';
-import { Textarea } from '@k8o/components/form/textarea';
+import { Button } from '@k8o/arte-odyssey/button';
+import { FormControl } from '@k8o/arte-odyssey/form/form-control';
+import { Textarea } from '@k8o/arte-odyssey/form/textarea';
 import { FormEventHandler, useState } from 'react';
 
 export const EditField = () => {

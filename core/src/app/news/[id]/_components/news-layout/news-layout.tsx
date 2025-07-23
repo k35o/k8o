@@ -1,9 +1,9 @@
-import { Heading } from '@k8o/components/heading';
+import { Heading } from '@k8o/arte-odyssey/heading';
 import {
   PublishDateIcon,
   UpdateDateIcon,
-} from '@k8o/components/icons';
-import { Separator } from '@k8o/components/separator';
+} from '@k8o/arte-odyssey/icons';
+import { Separator } from '@k8o/arte-odyssey/separator';
 import { formatDate } from '@k8o/helpers/date';
 import { FC, PropsWithChildren } from 'react';
 

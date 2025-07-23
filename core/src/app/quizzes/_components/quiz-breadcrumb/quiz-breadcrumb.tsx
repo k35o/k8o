@@ -1,7 +1,7 @@
 'use client';
 
-import { Anchor } from '@k8o/components/anchor';
-import { Breadcrumb } from '@k8o/components/breadcrumb';
+import { Anchor } from '@k8o/arte-odyssey/anchor';
+import { Breadcrumb } from '@k8o/arte-odyssey/breadcrumb';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { FC } from 'react';

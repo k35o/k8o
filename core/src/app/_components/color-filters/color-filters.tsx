@@ -1,9 +1,9 @@
 'use client';
 
 import { Transfer } from './transfer';
-import { AlertIcon, MixedColorIcon } from '@k8o/components/icons';
-import { ListBox } from '@k8o/components/list-box';
-import { useOpenContext } from '@k8o/components/popover';
+import { AlertIcon, MixedColorIcon } from '@k8o/arte-odyssey/icons';
+import { ListBox } from '@k8o/arte-odyssey/list-box';
+import { useOpenContext } from '@k8o/arte-odyssey/popover';
 import { cn } from '@k8o/helpers/cn';
 import Link from 'next/link';
 import {

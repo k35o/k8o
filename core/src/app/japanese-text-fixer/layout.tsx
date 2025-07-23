@@ -1,5 +1,5 @@
 import { CheckSyntaxProvider } from './_state/text';
-import { Heading } from '@k8o/components/heading';
+import { Heading } from '@k8o/arte-odyssey/heading';
 import { PropsWithChildren } from 'react';
 
 export const metadata = {

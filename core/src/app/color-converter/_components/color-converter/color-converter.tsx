@@ -11,9 +11,9 @@ import {
   RGB,
   rgbToHex,
 } from '../../_utils/color-converter';
-import { FormControl } from '@k8o/components/form/form-control';
-import { NumberField } from '@k8o/components/form/number-field';
-import { TextField } from '@k8o/components/form/text-field';
+import { FormControl } from '@k8o/arte-odyssey/form/form-control';
+import { NumberField } from '@k8o/arte-odyssey/form/number-field';
+import { TextField } from '@k8o/arte-odyssey/form/text-field';
 import {
   ChangeEventHandler,
   useCallback,

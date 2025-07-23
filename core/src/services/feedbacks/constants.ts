@@ -8,7 +8,7 @@ import {
   InformativeIcon,
   InterestingIcon,
   ShallowIcon,
-} from '@k8o/components/icons';
+} from '@k8o/arte-odyssey/icons';
 import { FC } from 'react';
 
 export const FEEDBACK_OPTIONS = [

@@ -5,18 +5,18 @@ import { ViewCounter } from './view-counter';
 import { Subscribe } from '../subscribe';
 import { getBlogContent } from '#api/blog';
 import { ViewTransition } from '#libs/react';
-import { ErrorBoundary } from '@k8o/components/error-boundary';
+import { ErrorBoundary } from '@k8o/arte-odyssey/error-boundary';
 import {
   PublishDateIcon,
   SlideIcon,
   TagIcon,
   UpdateDateIcon,
   ViewIcon,
-} from '@k8o/components/icons';
-import { LinkButton } from '@k8o/components/link-button';
-import { ScrollLinked } from '@k8o/components/scroll-linked';
-import { Separator } from '@k8o/components/separator';
-import { TextTag } from '@k8o/components/text-tag';
+} from '@k8o/arte-odyssey/icons';
+import { LinkButton } from '@k8o/arte-odyssey/link-button';
+import { ScrollLinked } from '@k8o/arte-odyssey/scroll-linked';
+import { Separator } from '@k8o/arte-odyssey/separator';
+import { TextTag } from '@k8o/arte-odyssey/text-tag';
 import { formatDate } from '@k8o/helpers/date';
 import Link from 'next/link';
 import { FC, ReactNode, Suspense } from 'react';

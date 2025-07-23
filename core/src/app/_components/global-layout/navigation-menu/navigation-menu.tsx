@@ -6,10 +6,13 @@ import { ToggleTheme } from '../../toggle-theme';
 import { LlmLink } from '../llm-link';
 import { NewsLink } from '../news-link';
 import { TagsLink } from '../tags-link';
-import { IconButton } from '@k8o/components/icon-button';
-import { CloseIcon, NavigationMenuIcon } from '@k8o/components/icons';
-import { Modal } from '@k8o/components/modal';
-import { PortalRootProvider } from '@k8o/components/providers';
+import { IconButton } from '@k8o/arte-odyssey/icon-button';
+import {
+  CloseIcon,
+  NavigationMenuIcon,
+} from '@k8o/arte-odyssey/icons';
+import { Modal } from '@k8o/arte-odyssey/modal';
+import { PortalRootProvider } from '@k8o/arte-odyssey/providers';
 import { FC, useCallback, useRef, useState } from 'react';
 
 export const NavigationMenu: FC = () => {

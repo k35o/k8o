@@ -23,7 +23,7 @@
     "install-playwright": "playwright install --with-deps"
   },
   "dependencies": {
-    "@k8o/components": "workspace:*",
+    "@k8o/arte-odyssey": "workspace:*",
     "@k8o/helpers": "workspace:*",
     "@k8o/hooks": "workspace:*",
     "@tailwindcss/postcss": "4.1.11",

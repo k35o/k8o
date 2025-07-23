@@ -1,9 +1,9 @@
 'use client';
 
-import { Button } from '@k8o/components/button';
-import { FormControl } from '@k8o/components/form/form-control';
-import { RangeField } from '@k8o/components/form/range-field';
-import { TextField } from '@k8o/components/form/text-field';
+import { Button } from '@k8o/arte-odyssey/button';
+import { FormControl } from '@k8o/arte-odyssey/form/form-control';
+import { RangeField } from '@k8o/arte-odyssey/form/range-field';
+import { TextField } from '@k8o/arte-odyssey/form/text-field';
 import { useState, useCallback, useMemo, ChangeEvent } from 'react';
 import { renderSVG } from 'uqr';
 

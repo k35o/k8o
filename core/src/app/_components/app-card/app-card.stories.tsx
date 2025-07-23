@@ -1,5 +1,5 @@
 import { AppCard } from './app-card';
-import { LinkIcon } from '@k8o/components/icons';
+import { LinkIcon } from '@k8o/arte-odyssey/icons';
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 
 const meta: Meta<typeof AppCard> = {

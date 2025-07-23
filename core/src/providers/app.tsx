@@ -1,7 +1,7 @@
 'use client';
 
 import { ColorFilters } from '@/app/_components/color-filters';
-import { ComponentProvider } from '@k8o/components/providers';
+import { ComponentProvider } from '@k8o/arte-odyssey/providers';
 import { ThemeProvider } from 'next-themes';
 import { FC, PropsWithChildren } from 'react';
 import '@/libs/zod';

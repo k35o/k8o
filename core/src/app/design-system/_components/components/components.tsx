@@ -1,4 +1,4 @@
-import { Anchor } from '@k8o/components/anchor';
+import { Anchor } from '@k8o/arte-odyssey/anchor';
 import { FC } from 'react';
 
 export const Components: FC = () => {

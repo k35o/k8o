@@ -1,4 +1,4 @@
-import { Heading } from '@k8o/components/heading';
+import { Heading } from '@k8o/arte-odyssey/heading';
 import { notFound } from 'next/navigation';
 
 export default async function Page({

@@ -1,11 +1,11 @@
 'use client';
 
 import { SubscribeCard } from './subscribe-card.tsx';
-import { Drawer } from '@k8o/components/drawer';
-import { Checkbox } from '@k8o/components/form/checkbox';
-import { IconButton } from '@k8o/components/icon-button';
-import { SubscribeIcon } from '@k8o/components/icons';
-import { Separator } from '@k8o/components/separator';
+import { Drawer } from '@k8o/arte-odyssey/drawer';
+import { Checkbox } from '@k8o/arte-odyssey/form/checkbox';
+import { IconButton } from '@k8o/arte-odyssey/icon-button';
+import { SubscribeIcon } from '@k8o/arte-odyssey/icons';
+import { Separator } from '@k8o/arte-odyssey/separator';
 import { useLocalStorage } from '@k8o/hooks/local-storage';
 import { FC, useState } from 'react';
 

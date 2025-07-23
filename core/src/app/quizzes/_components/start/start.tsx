@@ -1,10 +1,10 @@
 'use client';
 
 import { QUIZ_OPTIONS, QuizKey } from '@/services/quizzes';
-import { FormControl } from '@k8o/components/form/form-control';
-import { NumberField } from '@k8o/components/form/number-field';
-import { LinkButton } from '@k8o/components/link-button';
-import { ListBox } from '@k8o/components/list-box';
+import { FormControl } from '@k8o/arte-odyssey/form/form-control';
+import { NumberField } from '@k8o/arte-odyssey/form/number-field';
+import { LinkButton } from '@k8o/arte-odyssey/link-button';
+import { ListBox } from '@k8o/arte-odyssey/list-box';
 import Link from 'next/link';
 import { FC, useCallback, useState } from 'react';
 

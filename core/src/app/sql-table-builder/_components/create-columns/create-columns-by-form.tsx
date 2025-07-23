@@ -8,13 +8,13 @@ import {
   AccordionButton,
   AccordionItem,
   AccordionPanel,
-} from '@k8o/components/accordion';
-import { FormControl } from '@k8o/components/form/form-control';
-import { Radio } from '@k8o/components/form/radio';
-import { Select } from '@k8o/components/form/select';
-import { TextField } from '@k8o/components/form/text-field';
-import { IconButton } from '@k8o/components/icon-button';
-import { CloseIcon } from '@k8o/components/icons';
+} from '@k8o/arte-odyssey/accordion';
+import { FormControl } from '@k8o/arte-odyssey/form/form-control';
+import { Radio } from '@k8o/arte-odyssey/form/radio';
+import { Select } from '@k8o/arte-odyssey/form/select';
+import { TextField } from '@k8o/arte-odyssey/form/text-field';
+import { IconButton } from '@k8o/arte-odyssey/icon-button';
+import { CloseIcon } from '@k8o/arte-odyssey/icons';
 import { FC } from 'react';
 
 type Props = {

@@ -1,6 +1,6 @@
-import { InteractiveCard } from '@k8o/components/card';
-import { ChevronIcon } from '@k8o/components/icons';
-import { Separator } from '@k8o/components/separator';
+import { InteractiveCard } from '@k8o/arte-odyssey/card';
+import { ChevronIcon } from '@k8o/arte-odyssey/icons';
+import { Separator } from '@k8o/arte-odyssey/separator';
 import { cn } from '@k8o/helpers/cn';
 import Link from 'next/link';
 import { FC } from 'react';

@@ -25,7 +25,7 @@ For MicroCMS or Resend integration, ask k8o for the `MICROCMS_API_KEY` or `RESEN
 **Turborepo Monorepo** with 3 workspaces:
 
 - **core** - Main Next.js 15 application with App Router
-- **packages/components** - Reusable UI component library with Storybook
+- **packages/ui** - Reusable UI component library with Storybook
 - **packages/helpers** - Utility functions with in-source testing
 - **packages/hooks** - Custom React hooks
 
@@ -56,7 +56,7 @@ Component library and design system.
 
 ```bash
 pnpm run -F core storybook
-pnpm run -F components storybook
+pnpm run -F ui storybook
 ```
 
 ### Email Templates
@@ -81,7 +81,7 @@ pnpm run install-playwright
 **Testing Strategy**:
 
 - **Helpers**: In-source testing with `if (import.meta.vitest)` blocks
-- **Components**: Storybook stories with `@storybook/addon-vitest`
+- **UI**: Storybook stories with `@storybook/addon-vitest`
 - **Hooks**: `.test.tsx` files with `@testing-library/react`
 - **Core App**: Browser mode for React components, Node.js for services/utils
 

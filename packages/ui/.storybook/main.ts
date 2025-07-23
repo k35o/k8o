@@ -7,7 +7,7 @@ const config: StorybookConfig = {
     '@storybook/addon-vitest',
     '@storybook/addon-docs',
     'storybook-addon-mock-date',
-    '@chromatic-com/storybook'
+    '@chromatic-com/storybook',
   ],
   framework: {
     name: '@storybook/react-vite',

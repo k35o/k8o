@@ -5,10 +5,10 @@ import {
   useFixedText,
   useResetResult,
 } from '../../_state/text';
-import { Button } from '@k8o/components/button';
-import { Heading } from '@k8o/components/heading';
-import { CopyIcon } from '@k8o/components/icons';
-import { useToast } from '@k8o/components/toast';
+import { Button } from '@k8o/arte-odyssey/button';
+import { Heading } from '@k8o/arte-odyssey/heading';
+import { CopyIcon } from '@k8o/arte-odyssey/icons';
+import { useToast } from '@k8o/arte-odyssey/toast';
 import { useClipboard } from '@k8o/hooks/clipboard';
 import { FC, useId } from 'react';
 
