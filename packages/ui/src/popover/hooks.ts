@@ -115,6 +115,10 @@ export const usePopoverContent = () => {
           ref,
           role: 'tooltip',
           tabIndex: -1,
+          onMouseEnter: popover.onOpen,
+          onMouseLeave: popover.onClose,
+          onFocus: popover.onOpen,
+          onBlur: popover.onClose,
         };
       case 'listbox':
         return {
