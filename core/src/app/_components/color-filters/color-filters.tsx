@@ -101,7 +101,7 @@ const HelpContent: FC = () => {
       onNavigate={onClose}
       className={cn(
         'inline-flex w-full items-center gap-1 px-2 py-1',
-        'hover:bg-primary-bg hover:text-fg-inverse',
+        'hover:bg-primary-bg hover:text-fg-base',
         'focus-visible:bg-primary-bg focus-visible:text-fg-inverse focus-visible:border-transparent focus-visible:outline-hidden',
       )}
     >
