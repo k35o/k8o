@@ -34,7 +34,7 @@ export const Button: FC<
         {
           ['bg-primary-bg text-fg hover:bg-primary-bg/90 active:bg-primary-bg/80']:
             variant === 'contained' && color === 'primary',
-          ['bg-bg-base text-fg-base hover:bg-bg-subtle active:bg-bg-emphasize']:
+          ['bg-bg-subtle text-fg-base hover:bg-bg-mute active:bg-bg-emphasize']:
             variant === 'contained' && color === 'gray',
           ['hover:bg-primary-bg active:bg-primary-bg cursor-not-allowed opacity-35']:
             disabled && variant === 'contained',
