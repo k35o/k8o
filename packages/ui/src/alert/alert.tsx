@@ -8,10 +8,21 @@ type Props = {
   message: string | string[];
 };
 
+const STATUS_LABEL = {
+  success: '成功',
+  info: '情報',
+  warning: '警告',
+  error: 'エラー',
+} as const;
+
 export const Alert: FC<Props> = ({ status, message }) => {
   return (
     <div
-      role="alert"
+      role={
+        status === 'error' || status === 'warning'
+          ? 'alert'
+          : 'status'
+      }
       className={cn(
         'flex items-center gap-2 rounded-md p-4',
         status === 'success' && 'bg-bg-success',
@@ -30,6 +41,7 @@ export const Alert: FC<Props> = ({ status, message }) => {
         )}
       >
         <AlertIcon status={status} size="lg" />
+        <span className="sr-only">{STATUS_LABEL[status]}</span>
       </span>
       {Array.isArray(message) ? (
         message.length > 1 ? (
@@ -41,7 +53,7 @@ export const Alert: FC<Props> = ({ status, message }) => {
             ))}
           </ul>
         ) : (
-          <p className="text-lg">{message[0]}</p>
+          <p className="text-lg font-bold">{message[0]}</p>
         )
       ) : (
         <p className="text-lg font-bold">{message}</p>

@@ -46,7 +46,10 @@ const _Link: FC<
   return current ? (
     <span className="text-fg-base">{children}</span>
   ) : (
-    <Link href={href} className="hover:text-fg-base hover:underline">
+    <Link
+      href={href}
+      className="text-fg-mute hover:text-fg-base underline"
+    >
       {children}
     </Link>
   );

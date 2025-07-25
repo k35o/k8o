@@ -1,8 +1,8 @@
 import { GlobalLayout } from './_components/global-layout';
 import './_styles/globals.css';
+import { AppProvider } from './_providers/app';
 import { mPlus2, notoSansJp } from './_styles/font';
 import { ReactScan } from '@/libs/react-scan';
-import { AppProvider } from '@/providers/app';
 import { cn } from '@k8o/helpers/cn';
 import { GoogleAnalytics } from '@next/third-parties/google';
 import { Analytics } from '@vercel/analytics/react';
