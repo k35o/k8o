@@ -4,7 +4,7 @@ import { FC, HTMLProps } from 'react';
 type Props = {
   size?: 'sm' | 'md' | 'lg';
   bg?: 'transparent' | 'base' | 'primary';
-  label?: string;
+  label: string;
 } & Omit<HTMLProps<HTMLButtonElement>, 'size' | 'type'>;
 
 export const IconButton: FC<Props> = ({
