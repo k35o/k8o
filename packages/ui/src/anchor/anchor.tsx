@@ -27,12 +27,12 @@ export const Anchor = ({
   const props =
     type === 'internal'
       ? {
-          className: 'text-fg-info cursor-pointer hover:underline',
+          className: 'text-fg-info cursor-pointer underline',
           children,
         }
       : {
           className:
-            'text-fg-info inline-flex cursor-pointer items-center gap-0.5 hover:underline',
+            'text-fg-info inline-flex cursor-pointer items-center gap-0.5 underline',
           target: '_blank',
           rel: 'noopener noreferrer',
           children: (
