@@ -1,0 +1,50 @@
+{
+  "rules": {
+    "ja-simple-user-dictionary": {
+      "dictionary": [
+        {
+          "pattern": "シュミレーション",
+          "message": "「シュミレーション」ではなく「シミュレーション」です。"
+        },
+        {
+          "pattern": "メモリー",
+          "message": "「メモリー」ではなく「メモリ」です。"
+        },
+        {
+          "pattern": "コンピューター",
+          "message": "「コンピューター」ではなく「コンピュータ」です。"
+        }
+      ]
+    },
+    "max-ten": {
+      "max": 3,
+      "strict": false,
+      "touten": "、",
+      "kuten": "。"
+    },
+    "max-kanji-continuous-len": {
+      "max": 6
+    },
+    "no-mix-dearu-desumasu": {
+      "no-mix-dearu-desumasu": true
+    },
+    "no-double-negative-ja": true,
+    "no-hankaku-kana": true,
+    "ja-no-redundant-expression": true,
+    "ja-no-abusage": true,
+    "no-mixed-zenkaku-and-hankaku-alphabet": true,
+    "no-dropping-the-ra": true,
+    "no-doubled-conjunction": true,
+    "ja-no-mixed-period": {
+      "allowEmojiAtEnd": true
+    },
+    "ja-hiragana-keishikimeishi": true,
+    "ja-hiragana-fukushi": true,
+    "ja-hiragana-hojodoushi": true,
+    "@textlint-ja/textlint-rule-no-insert-dropping-sa": true,
+    "@textlint-ja/no-synonyms": true,
+    "ja-no-orthographic-variants": true,
+    "general-novel-style-ja": true,
+    "@textlint-ja/preset-ai-writing": true
+  }
+}
