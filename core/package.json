@@ -77,10 +77,10 @@
     "rss": "1.2.2",
     "uqr": "0.1.2",
     "ws": "8.18.3",
-    "zod": "4.0.5"
+    "zod": "4.0.10"
   },
   "devDependencies": {
-    "@liam-hq/cli": "0.6.4",
+    "@liam-hq/cli": "0.6.5",
     "@storybook/nextjs-vite": "9.0.18",
     "@types/mdx": "2.0.13",
     "@types/rss": "0.0.32",
@@ -90,7 +90,7 @@
     "msw": "2.10.4",
     "msw-storybook-addon": "2.0.5",
     "postgres": "3.4.7",
-    "react-email": "4.2.3",
+    "react-email": "4.2.4",
     "react-scan": "0.4.3",
     "sonda": "0.9.0"
   },
