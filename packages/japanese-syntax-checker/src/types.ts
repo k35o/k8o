@@ -1,13 +1,12 @@
 export type Response = {
   text: string;
   msgs: {
-    type: 'lint';
     ruleId: string;
     message: string;
     index: number;
     line: number;
     column: number;
-    range: number[];
+    range: readonly [startIndex: number, endIndex: number];
     loc: {
       start: {
         line: number;
