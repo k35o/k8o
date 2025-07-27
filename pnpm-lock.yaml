@@ -17,6 +17,9 @@ importers:
       '@k8o/hooks':
         specifier: workspace:*
         version: link:packages/hooks
+      '@k8o/japanese-syntax-checker':
+        specifier: workspace:*
+        version: link:packages/japanese-syntax-checker
       '@tailwindcss/postcss':
         specifier: 4.1.11
         version: 4.1.11
@@ -308,6 +311,15 @@ importers:
       '@textlint-ja/textlint-rule-preset-ai-writing':
         specifier: 1.6.0
         version: 1.6.0
+      '@textlint/kernel':
+        specifier: 15.2.1
+        version: 15.2.1
+      '@textlint/module-interop':
+        specifier: 15.2.1
+        version: 15.2.1
+      '@textlint/textlint-plugin-markdown':
+        specifier: 15.2.1
+        version: 15.2.1
       sudachi-synonyms-dictionary:
         specifier: 14.0.0
         version: 14.0.0

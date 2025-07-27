@@ -26,6 +26,7 @@
     "@k8o/arte-odyssey": "workspace:*",
     "@k8o/helpers": "workspace:*",
     "@k8o/hooks": "workspace:*",
+    "@k8o/japanese-syntax-checker": "workspace:*",
     "@tailwindcss/postcss": "4.1.11",
     "@upstash/ratelimit": "2.0.5",
     "@upstash/redis": "1.35.1",

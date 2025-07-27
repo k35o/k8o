@@ -7,10 +7,11 @@ import {
   useSetText,
   useText,
 } from '../../_state/text';
-import { checkJapaneseSyntax } from '../../_utils/japanese-syntax';
+// import { checkJapaneseSyntax } from '../../_utils/japanese-syntax';
 import { Button } from '@k8o/arte-odyssey/button';
 import { FormControl } from '@k8o/arte-odyssey/form/form-control';
 import { Textarea } from '@k8o/arte-odyssey/form/textarea';
+import { checkJapaneseSyntax } from '@k8o/japanese-syntax-checker';
 import { FormEventHandler, useState } from 'react';
 
 export const EditField = () => {
@@ -24,7 +25,7 @@ export const EditField = () => {
     e.preventDefault();
     if (text === '') return;
     setIsMutating(true);
-    void checkJapaneseSyntax({ text })
+    void checkJapaneseSyntax(text)
       .then((res) => {
         setResultText(res.text.split('\n'));
         setResultMessages(
