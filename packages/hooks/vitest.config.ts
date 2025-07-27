@@ -1,22 +1,24 @@
-import react from '@vitejs/plugin-react';
-import { defineConfig } from 'vitest/config';
+import { defineConfig, mergeConfig } from 'vitest/config';
+import viteConfig from './vite.config';
 
-export default defineConfig({
-  plugins: [react()],
-  test: {
-    globals: true,
-    name: { label: 'hooks', color: 'green' },
-    include: ['src/**/*.test.{ts,tsx}'],
-    browser: {
-      enabled: true,
-      instances: [
-        {
-          browser: 'chromium',
-        },
-      ],
-      provider: 'playwright',
-      headless: true,
-      screenshotFailures: false,
+export default mergeConfig(
+  viteConfig,
+  defineConfig({
+    test: {
+      globals: true,
+      name: { label: 'hooks', color: 'green' },
+      include: ['src/**/*.test.{ts,tsx}'],
+      browser: {
+        enabled: true,
+        instances: [
+          {
+            browser: 'chromium',
+          },
+        ],
+        provider: 'playwright',
+        headless: true,
+        screenshotFailures: false,
+      },
     },
-  },
-});
+  }),
+);
