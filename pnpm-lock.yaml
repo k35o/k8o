@@ -309,8 +309,8 @@ importers:
         specifier: 1.0.11
         version: 1.0.11
       lucide-react:
-        specifier: 0.526.0
-        version: 0.526.0(react@19.1.0)
+        specifier: 0.528.0
+        version: 0.528.0(react@19.1.0)
       react-error-boundary:
         specifier: 6.0.0
         version: 6.0.0(react@19.1.0)
@@ -5069,8 +5069,8 @@ packages:
     peerDependencies:
       react: ^16.5.1 || ^17.0.0 || ^18.0.0 || ^19.0.0
 
-  lucide-react@0.526.0:
-    resolution: {integrity: sha512-uGWG/2RKuDLeQHCodn5cmJ9Zij80EstOdcBP+j//B2sr78w7woiEL4aMu6CRlRkyOyJ8sZry8QLhQTmZjynLdA==}
+  lucide-react@0.528.0:
+    resolution: {integrity: sha512-Qeapzej+iIKQwOevWKtsSHJKkZh16ohe0Lm5bwdsmlMC7M3T9vIP+2jLiYjcvBl8Lekcc1BTtR4eUATqs3aAjw==}
     peerDependencies:
       react: ^16.5.1 || ^17.0.0 || ^18.0.0 || ^19.0.0
 
@@ -12222,7 +12222,7 @@ snapshots:
     dependencies:
       react: 18.3.1
 
-  lucide-react@0.526.0(react@19.1.0):
+  lucide-react@0.528.0(react@19.1.0):
     dependencies:
       react: 19.1.0
 
