@@ -5,7 +5,8 @@ export async function GET(req: NextRequest) {
   // CRON_SECRET による認証
   if (
     !process.env.CRON_SECRET ||
-    req.headers.get('Authorization') !== `Bearer ${process.env.CRON_SECRET}`
+    req.headers.get('Authorization') !==
+      `Bearer ${process.env.CRON_SECRET}`
   ) {
     return NextResponse.json({ ok: false }, { status: 401 });
   }
@@ -24,14 +25,18 @@ export async function GET(req: NextRequest) {
     const result = await redis.get(key);
 
     if (result === timestamp) {
-      console.log(`Upstash keepalive successful at ${timestamp}`);
+      console.log(
+        `Upstash keepalive successful at ${timestamp}`,
+      );
       return NextResponse.json({
         ok: true,
         timestamp,
-        message: 'Upstash keepalive ping successful'
+        message: 'Upstash keepalive ping successful',
       });
     } else {
-      console.error('Upstash keepalive failed: timestamp mismatch');
+      console.error(
+        'Upstash keepalive failed: timestamp mismatch',
+      );
       return NextResponse.json({ ok: false }, { status: 500 });
     }
   } catch (error) {
