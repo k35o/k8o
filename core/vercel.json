@@ -3,6 +3,10 @@
     {
       "path": "/api/crons/weekly-notifications",
       "schedule": "0 1 * * 6"
+    },
+    {
+      "path": "/api/crons/upstash-keepalive",
+      "schedule": "0 12 * * 0"
     }
   ]
 }
