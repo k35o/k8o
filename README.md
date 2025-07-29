@@ -25,7 +25,7 @@ For MicroCMS or Resend integration, ask k8o for the `MICROCMS_API_KEY` or `RESEN
 **Turborepo Monorepo** with 3 workspaces:
 
 - **core** - Main Next.js 15 application with App Router
-- **packages/ui** - Reusable UI component library with Storybook
+- **packages/arte-odyssey** - Reusable UI component library with Storybook
 - **packages/helpers** - Utility functions with in-source testing
 - **packages/hooks** - Custom React hooks
 
