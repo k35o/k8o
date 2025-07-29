@@ -4,7 +4,7 @@ on:
   push:
     paths:
       - 'pnpm-lock.yaml'
-      - 'packages/ui/**'
+      - 'packages/arte-odyssey/**'
 
 jobs:
   chromatic-deployment:
@@ -23,4 +23,4 @@ jobs:
           projectToken: ${{ secrets.CHROMATIC_PROJECT_TOKEN_ARTE_ODYSSEY }}
           onlyChanged: true
           skip: 'renovate/**'
-          workingDir: packages/ui
+          workingDir: packages/arte-odyssey
