@@ -7,7 +7,6 @@ export * from './breadcrumb';
 export * from './button';
 export * from './card';
 export * from './code';
-export * from './development-only';
 export * from './dialog';
 export * from './drawer';
 export * from './dropdown-menu';
