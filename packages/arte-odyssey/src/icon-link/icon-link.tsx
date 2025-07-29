@@ -40,7 +40,7 @@ export const IconLink: FC<IconLinkProps> = ({
   return renderAnchor({
     href,
     className: cn(
-      'hover:bg-bg-subtle focus-visible:ring-border-info active:bg-bg-emphasize block rounded-full focus-visible:ring-2',
+      'inline-flex rounded-full hover:bg-bg-subtle active:bg-bg-emphasize focus-visible:ring-2 focus-visible:ring-border-info',
       bg === 'base' && 'bg-bg-base/90',
       bg === 'transparent' && 'bg-transparent',
       size === 'sm' && 'p-1',
