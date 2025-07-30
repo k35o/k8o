@@ -43,7 +43,7 @@ const Root: FC<
       aria-describedby={`${rootId}-content`}
       role={role}
       tabIndex={tabIndex}
-      className="bg-bg-base relative w-full rounded-lg shadow-xl"
+      className="bg-bg-base border-border-subtle relative w-full rounded-lg border shadow-xl"
     >
       <DialogContext value={{ rootId }}>{children}</DialogContext>
     </section>
