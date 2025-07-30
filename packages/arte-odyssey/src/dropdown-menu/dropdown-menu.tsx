@@ -76,13 +76,13 @@ const Content: FC<PropsWithChildren> = ({ children }) => {
     <FloatingList elementsRef={itemElementsRef}>
       <Popover.Content
         renderItem={(props) => (
-          <section
+          <div
             {...props}
             {...contentProps}
             className="border-border-mute bg-bg-base flex min-w-40 flex-col rounded-lg border py-2 shadow-xl"
           >
             {children}
-          </section>
+          </div>
         )}
       />
     </FloatingList>

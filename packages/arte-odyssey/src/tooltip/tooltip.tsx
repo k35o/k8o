@@ -42,12 +42,12 @@ const Content: FC<PropsWithChildren> = ({ children }) => {
   return (
     <Popover.Content
       renderItem={(props) => (
-        <section
+        <div
           {...props}
           className="border-border-mute bg-bg-base rounded-lg border px-4 py-2 shadow-xl"
         >
           {children}
-        </section>
+        </div>
       )}
       motionVariants={{
         closed: {

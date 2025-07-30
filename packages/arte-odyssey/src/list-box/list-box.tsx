@@ -115,7 +115,7 @@ const Content: FC<{
     <FloatingList elementsRef={itemElementsRef}>
       <Popover.Content
         renderItem={(props) => (
-          <section
+          <div
             {...props}
             {...contentProps}
             className="border-border-mute bg-bg-base flex max-h-48 min-w-40 flex-col overflow-y-auto rounded-lg border py-2 shadow-xl"
@@ -124,7 +124,7 @@ const Content: FC<{
             {options.map(({ key, label }, idx) => (
               <Item key={key} label={label} index={idx} />
             ))}
-          </section>
+          </div>
         )}
       />
     </FloatingList>
