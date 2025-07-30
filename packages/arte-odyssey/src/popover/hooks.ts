@@ -99,7 +99,6 @@ export const usePopoverContent = () => {
           id: `${popover.rootId}_list`,
           ref,
           role: 'dialog',
-          tabIndex: -1,
         };
       case 'menu':
         return {
@@ -107,14 +106,12 @@ export const usePopoverContent = () => {
           ref,
           role: 'menu',
           'aria-orientation': 'vertical',
-          tabIndex: -1,
         };
       case 'tooltip':
         return {
           id: `${popover.rootId}_list`,
           ref,
           role: 'tooltip',
-          tabIndex: -1,
           onMouseEnter: popover.onOpen,
           onMouseLeave: popover.onClose,
           onFocus: popover.onOpen,
@@ -125,7 +122,6 @@ export const usePopoverContent = () => {
           id: `${popover.rootId}_list`,
           ref,
           role: 'listbox',
-          tabIndex: -1,
         };
     }
   }, [popover.rootId, popover.type, ref]);

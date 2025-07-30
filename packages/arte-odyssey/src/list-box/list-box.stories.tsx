@@ -2,10 +2,21 @@ import { Option } from './hooks';
 import { ListBox } from './list-box';
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { useState } from 'react';
+import { userEvent, within } from 'storybook/test';
 
 const meta: Meta<typeof ListBox.Root> = {
   title: 'components/list-box',
   component: ListBox.Root,
+  parameters: {
+    a11y: {
+      options: {
+        rules: {
+          // https://github.com/floating-ui/floating-ui/pull/2298#issuecomment-1518101512
+          'aria-hidden-focus': { enabled: false },
+        },
+      },
+    },
+  },
 };
 
 export default meta;
@@ -50,5 +61,13 @@ export const Default: Story = {
         </ListBox.Root>
       </div>
     );
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const trigger = canvas.getByRole('combobox', {
+      name: '選択してください',
+    });
+    trigger.focus();
+    await userEvent.keyboard('{Enter}');
   },
 };
