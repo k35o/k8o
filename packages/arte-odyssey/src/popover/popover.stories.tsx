@@ -1,10 +1,21 @@
 import { Popover } from './popover';
 import { Button } from '../button';
 import type { Meta, StoryObj } from '@storybook/react-vite';
+import { userEvent, within } from 'storybook/test';
 
 const meta: Meta<typeof Popover.Root> = {
   title: 'components/popover',
   component: Popover.Root,
+  parameters: {
+    a11y: {
+      options: {
+        rules: {
+          // https://github.com/floating-ui/floating-ui/pull/2298#issuecomment-1518101512
+          'aria-hidden-focus': { enabled: false },
+        },
+      },
+    },
+  },
 };
 
 export default meta;
@@ -22,14 +33,22 @@ export const Default: Story = {
       />
       <Popover.Content
         renderItem={(props) => (
-          <section
+          <div
             className="bg-bg-mute rounded-sm p-4 shadow-md"
             {...props}
           >
-            <p>Popover content</p>
-          </section>
+            <div role="menuitem">Popover content</div>
+          </div>
         )}
       />
     </Popover.Root>
   ),
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const trigger = canvas.getByRole('button', {
+      name: 'Popover',
+    });
+    trigger.focus();
+    await userEvent.keyboard('{Enter}');
+  },
 };

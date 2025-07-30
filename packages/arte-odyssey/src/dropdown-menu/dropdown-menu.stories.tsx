@@ -1,10 +1,21 @@
 import { DarkModeIcon } from '../icons';
 import { DropdownMenu } from './dropdown-menu';
 import type { Meta, StoryObj } from '@storybook/react-vite';
+import { userEvent, within } from 'storybook/test';
 
 const meta: Meta<typeof DropdownMenu.Root> = {
   title: 'components/dropdown-menu',
   component: DropdownMenu.Root,
+  parameters: {
+    a11y: {
+      options: {
+        rules: {
+          // https://github.com/floating-ui/floating-ui/pull/2298#issuecomment-1518101512
+          'aria-hidden-focus': { enabled: false },
+        },
+      },
+    },
+  },
 };
 
 export default meta;
@@ -36,6 +47,14 @@ export const Default: Story = {
       </DropdownMenu.Content>
     </DropdownMenu.Root>
   ),
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const trigger = canvas.getByRole('button', {
+      name: 'Options',
+    });
+    trigger.focus();
+    await userEvent.keyboard('{Enter}');
+  },
 };
 
 export const TriggerByIcon: Story = {
@@ -67,4 +86,12 @@ export const TriggerByIcon: Story = {
       </DropdownMenu.Content>
     </DropdownMenu.Root>
   ),
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const trigger = canvas.getByRole('button', {
+      name: 'Options',
+    });
+    trigger.focus();
+    await userEvent.keyboard('{Enter}');
+  },
 };
