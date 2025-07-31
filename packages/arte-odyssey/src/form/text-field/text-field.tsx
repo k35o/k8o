@@ -9,28 +9,27 @@ type Props = {
   isDisabled: boolean;
   isRequired: boolean;
   placeholder?: string;
-} & (
-  | {
-      defaultValue?: string;
-    }
-  | {
-      value: string;
-      onChange: ChangeEventHandler<HTMLInputElement>;
-    }
-);
+  defaultValue?: string;
+  value?: string;
+  onChange?: ChangeEventHandler<HTMLInputElement>;
+};
 
 export const TextField: FC<Props> = ({
   id,
+  name,
   describedbyId,
   isInvalid,
   isDisabled,
   isRequired,
   placeholder,
-  ...props
+  defaultValue,
+  value,
+  onChange,
 }) => {
   return (
     <input
       id={id}
+      name={name}
       aria-describedby={describedbyId}
       aria-invalid={isInvalid}
       aria-required={isRequired}
@@ -43,7 +42,9 @@ export const TextField: FC<Props> = ({
       )}
       placeholder={placeholder}
       disabled={isDisabled}
-      {...props}
+      defaultValue={defaultValue}
+      value={value}
+      onChange={onChange}
     />
   );
 };

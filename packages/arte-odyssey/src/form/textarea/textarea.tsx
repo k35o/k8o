@@ -12,15 +12,10 @@ type Props = {
   rows?: number;
   fullHeight?: boolean;
   autoResize?: boolean;
-} & (
-  | {
-      defaultValue?: string;
-    }
-  | {
-      value: string;
-      onChange: ChangeEventHandler<HTMLTextAreaElement>;
-    }
-);
+  defaultValue?: string;
+  value?: string;
+  onChange?: ChangeEventHandler<HTMLTextAreaElement>;
+};
 
 export const Textarea: FC<Props> = ({
   id,
@@ -33,7 +28,9 @@ export const Textarea: FC<Props> = ({
   rows,
   fullHeight = false,
   autoResize = false,
-  ...props
+  defaultValue,
+  value,
+  onChange,
 }) => {
   const ref = useRef<HTMLTextAreaElement>(null);
 
@@ -65,7 +62,9 @@ export const Textarea: FC<Props> = ({
       onKeyDown={(e) => {
         e.stopPropagation();
       }}
-      {...props}
+      defaultValue={defaultValue}
+      value={value}
+      onChange={onChange}
     />
   );
 };
