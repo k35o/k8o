@@ -1,6 +1,16 @@
 type RGB = [number, number, number];
 
+const isValidHexColor = (hex: string): boolean => {
+  return /^#[0-9A-Fa-f]{6}$/.test(hex);
+};
+
 const convertHexToRgb = (hex: string): RGB => {
+  if (!isValidHexColor(hex)) {
+    throw new Error(
+      `Invalid hex color format: ${hex}. Expected format: #RRGGBB`,
+    );
+  }
+
   const r = parseInt(hex.substring(1, 3), 16);
   const g = parseInt(hex.substring(3, 5), 16);
   const b = parseInt(hex.substring(5, 7), 16);
@@ -36,10 +46,44 @@ export const calcContrast = (color1: string, color2: string) => {
 };
 
 if (import.meta.vitest) {
-  it('色のコントラスト比を計算する', () => {
-    expect(calcContrast('#000000', '#ffffff')).toBe(21);
-    expect(calcContrast('#ffffff', '#000000')).toBe(21);
-    expect(calcContrast('#000000', '#000000')).toBe(1);
-    expect(calcContrast('#ffffff', '#ffffff')).toBe(1);
+  const { describe, expect, it } = import.meta.vitest;
+
+  describe('calcContrast', () => {
+    describe('正常な入力の場合', () => {
+      it('白と黒のコントラスト比を正しく計算するべき', () => {
+        expect(calcContrast('#000000', '#ffffff')).toBe(21);
+        expect(calcContrast('#ffffff', '#000000')).toBe(21);
+      });
+
+      it('同じ色のコントラスト比は1になるべき', () => {
+        expect(calcContrast('#000000', '#000000')).toBe(1);
+        expect(calcContrast('#ffffff', '#ffffff')).toBe(1);
+      });
+
+      it('小文字のhex値でも正しく計算するべき', () => {
+        expect(calcContrast('#000000', '#ffffff')).toBe(21);
+        expect(calcContrast('#ff0000', '#00ff00')).toBeGreaterThan(1);
+      });
+    });
+
+    describe('異常な入力の場合', () => {
+      it('無効なhex形式の場合はエラーを投げるべき', () => {
+        expect(() => calcContrast('invalid', '#ffffff')).toThrow(
+          'Invalid hex color format',
+        );
+        expect(() => calcContrast('#000000', 'invalid')).toThrow(
+          'Invalid hex color format',
+        );
+        expect(() => calcContrast('#00000', '#ffffff')).toThrow(
+          'Invalid hex color format',
+        );
+        expect(() => calcContrast('#0000000', '#ffffff')).toThrow(
+          'Invalid hex color format',
+        );
+        expect(() => calcContrast('000000', '#ffffff')).toThrow(
+          'Invalid hex color format',
+        );
+      });
+    });
   });
 }
