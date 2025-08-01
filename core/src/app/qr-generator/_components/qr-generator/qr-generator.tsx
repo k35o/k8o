@@ -4,6 +4,7 @@ import { Button } from '@k8o/arte-odyssey/button';
 import { FormControl } from '@k8o/arte-odyssey/form/form-control';
 import { RangeField } from '@k8o/arte-odyssey/form/range-field';
 import { TextField } from '@k8o/arte-odyssey/form/text-field';
+import DOMPurify from 'isomorphic-dompurify';
 import { useState, useCallback, useMemo, ChangeEvent } from 'react';
 import { renderSVG } from 'uqr';
 
@@ -21,7 +22,12 @@ export const QrGenerator = () => {
         /<svg([^>]*)>/,
         '<svg$1 class="w-full h-full max-w-full max-h-full">',
       );
-      return styledSvg;
+      // Sanitize SVG content to prevent XSS attacks
+      return DOMPurify.sanitize(styledSvg, {
+        USE_PROFILES: { svg: true, svgFilters: true },
+        ADD_TAGS: ['svg'],
+        ADD_ATTR: ['class', 'viewBox', 'width', 'height'],
+      });
     } catch {
       return null;
     }
