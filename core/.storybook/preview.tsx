@@ -1,6 +1,6 @@
 import React, { FC, memo, useEffect } from 'react';
 import Script from 'next/script';
-import { mocked, sb } from 'storybook/test';
+import { sb } from 'storybook/test';
 import type { Preview } from '@storybook/nextjs-vite';
 import { AppProvider } from '../src/app/_providers/app';
 import { cn } from '@k8o/helpers/cn';
@@ -13,6 +13,7 @@ import '../src/app/_styles/globals.css';
 
 sb.mock('./../src/app/_components/link-card/metadata.ts');
 sb.mock('./../src/libs/react.ts');
+sb.mock('./../src/app/blog/_api/index.ts');
 
 initialize(
   {

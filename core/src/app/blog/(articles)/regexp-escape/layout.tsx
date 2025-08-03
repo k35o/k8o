@@ -1,4 +1,4 @@
-import { getBlogContent } from '#api/blog';
+import { getBlogContent } from '@/app/blog/_api';
 import { BlogLayout } from '@/app/blog/_components/blog-layout';
 import { Metadata } from 'next';
 import { PropsWithChildren } from 'react';

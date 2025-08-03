@@ -1,4 +1,4 @@
-import { getBlogContents } from '#api/blog';
+import { getBlogContents } from '@/app/blog/_api';
 import { NextResponse } from 'next/server';
 
 export const dynamic = 'force-static';

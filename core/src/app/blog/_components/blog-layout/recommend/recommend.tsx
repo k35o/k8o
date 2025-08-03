@@ -1,4 +1,4 @@
-import { getBlogsByTags } from '#api/blog';
+import { getBlogsByTags } from '@/app/blog/_api';
 import { InteractiveCard } from '@k8o/arte-odyssey/card';
 import { Heading } from '@k8o/arte-odyssey/heading';
 import { PublishDateIcon, TagIcon } from '@k8o/arte-odyssey/icons';

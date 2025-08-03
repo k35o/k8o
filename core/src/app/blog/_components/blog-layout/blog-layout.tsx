@@ -3,7 +3,7 @@ import { Recommend } from './recommend';
 import { TableOfContext } from './table-of-context';
 import { ViewCounter } from './view-counter';
 import { Subscribe } from '../subscribe';
-import { getBlogContent } from '#api/blog';
+import { getBlogContent } from '@/app/blog/_api';
 import { ViewTransition } from '@/libs/react';
 import { ErrorBoundary } from '@k8o/arte-odyssey/error-boundary';
 import {

@@ -1,4 +1,4 @@
-import { getBlogToc } from '#api/blog';
+import { getBlogToc } from '@/app/blog/_api';
 import Link from 'next/link';
 import { FC } from 'react';
 
