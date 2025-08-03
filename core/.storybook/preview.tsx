@@ -12,6 +12,7 @@ import { mPlus2, notoSansJp } from '../src/app/_styles/font';
 import '../src/app/_styles/globals.css';
 
 sb.mock('./../src/app/_components/link-card/metadata.ts');
+sb.mock('./../src/libs/react.ts');
 
 initialize(
   {
