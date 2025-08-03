@@ -11,4 +11,192 @@ import { LinkCard } from '@/app/_components/link-card';
 
 ## はじめに
 
+Storybookのv9.1.0で`sb.mock`を用いてモジュールをモックする`Automocking`という機能が追加されました。
+
 <LinkCard href="https://github.com/storybookjs/storybook/releases/tag/v9.1.0" />
+
+従来のStorybookで主流だった、サブパスインポートや`Vite`・`Webpack`のエイリアス機能を利用した手法を置き換えるような機能となっています（[サブパスインポートを用いたモックについて](https://storybook.js.org/blog/type-safe-module-mocking/)）。
+
+## sb.mockを使ってみる
+
+`sb`は`storybook/test`からインポートできます。
+
+```ts
+import { sb } from 'storybook/test';
+```
+
+v9.1.0時点では`mock`メソッドのみが公開されています。
+
+`mock`メソッドは第一引数にモックするモジュールのパス、第二引数にオプションをオブジェクトで指定します。
+
+```ts
+// オプション無し
+sb.mock('./src/services/users');
+// オプション有り
+sb.mock('./src/services/users', {
+  spy: true,
+});
+```
+
+オプションはv9.1.0時点では`spy`のみがサポートされています。
+
+### mockしてみる
+
+`sb.mock`の第一引数に渡したモジュールをモックします。
+
+```ts
+// preview.ts
+sb.mock('./src/services/users');
+```
+
+`sb.mock`はグローバルなモックなので定義可能な箇所は`preview.ts(x)`のみであることに注意してください。
+
+#### デフォルトの挙動
+
+デフォルトのオプション、`spy`を`false`に設定した時はモックしたモジュールのメソッドを呼び出しません。
+
+```ts
+// preview.ts
+sb.mock('./src/services/users', {
+  spy: false,
+});
+
+// src/services/users.ts
+console.log('これは呼ばれちゃいます');
+export const getUser = () => {
+  return { id: '1', name: 'John Doe' };
+};
+```
+
+上記のように定義されていると、Storyに表示するコンポーネント内で`getUser`メソッドを呼び出しても`users.ts`に定義された`getUser`は呼び出されません。代わりに`fn()`が返されます。
+
+`users.ts`ファイル自体は読み込まれるので、例にある`console.log`のようなグローバルに定義された宣言は実行されることに注意してください。
+
+#### モックしたモジュールのメソッドをspyする
+
+`spy`を`true`に設定すると、モックしたモジュールのメソッドを呼び出すようにできます。
+
+```ts
+// preview.ts
+sb.mock('./src/services/users', {
+  spy: false,
+});
+
+// src/services/users.ts
+// この関数がそのまま使われる。
+export const getUser = async (id: number) => {
+  const user = await User.findById(id);
+  if (!user) {
+    return null;
+  }
+
+  return { id: user.id, name: user.name };
+};
+```
+
+元の関数の挙動を保ったまま、呼ばれた回数や引数を検証する際に便利です。
+
+### モックしたモジュールのメソッドを検証する
+
+デフォルトの挙動ではメソッドの戻り値がないため、何かしらの値を返すようにしたことが多いでしょう。spyした場合であっても（そうでなくても）、検証のためにモックしたメソッドを制御したいです。
+
+そのような場合はストーリーの`beforeEach`で`mocked`関数を用いて制御できます。
+
+```ts
+import { Meta, StoryObj } from '@storybook/react-vite';
+import { expect, mocked } from 'storybook/test';
+import { User } from './user';
+import { getUser } from '@/services/users';
+
+const meta = {
+  title: 'user',
+  component: User,
+  beforeEach: async () => {
+    mocked(getUser).mockResolvedValue({
+      id: '1',
+      name: 'John Doe',
+    });
+  },
+} satisfies Meta<typeof User>;
+export default meta;
+
+type Story = StoryObj<typeof meta>;
+
+export const Default: Story = {
+  play: async () => {
+    expect(getUser).toHaveBeenCalledWith(1);
+  },
+};
+
+export const NotFound: Story = {
+  beforeEach: async () => {
+    mocked(getUser).mockResolvedValue(null);
+  },
+  play: async ({ canvas, userEvent }) => {
+    expect(getUser).toHaveBeenCalledWith(1);
+
+    // ...
+    // ...
+    expect(user).toBeNull();
+  },
+};
+```
+
+`storybook/test`の`mocked`関数にモックしたモジュールのメソッドを渡すことで、モックしたメソッドを制御できます。
+[Storybookの`beforeEach`](https://storybook.js.org/docs/writing-tests/interaction-testing#beforeeach)の単位で制御できるので便利ですね。
+
+`mocked`関数は`Vitest`の`MaybeMocked`等を返すので、`Vitest`の`Mock Functions`で利用可能なすべてのメソッドを利用可能です。
+
+### 別のファイルを呼び出す
+
+`sb.mock`はデフォルトでモックしたモジュールのグローバルな宣言を呼び出すと言う話をしました。
+
+サーバーでのみ動くような宣言がグローバルに含まれていたり、いくつかのケースではモックした先のファイルを一切呼び出して欲しくないケースもあるでしょう。
+その場合はモック専用のファイルを用意することで、モジュールごと置き換えることができます。
+
+#### 手元のファイルのモック
+
+`src/services/users.ts`のような手元のファイルをモックしたい場合は、`src/services/__mocks__/users.ts`のように同一の階層に`__mocks__`ディレクトリを作成し、その中にモックしたいファイルと同じ名前のファイルを作成します。
+
+```ts
+// src/services/users.ts
+console.log('呼ばれなくなりました');
+export const getUser = async (id: number) => {
+  const user = await User.findById(id);
+  if (!user) {
+    return null;
+  }
+
+  return { id: user.id, name: user.name };
+};
+
+// src/services/__mocks__/users.ts
+export const getUser = () => {
+  return { id: '1', name: 'Mocked User' };
+};
+```
+
+#### ライブラリのモック
+
+`node_modules`から呼び出すようなパッケージのモジュールをモックしたい場合は、プロジェクトのルートに`__mocks__`ディレクトリを作成し、その中にモックしたいファイルと同じ名前のファイルを作成します。
+
+```ts
+// __mocks__/react.ts
+import { FC, PropsWithChildren } from 'react';
+
+export const ViewTransition: FC<PropsWithChildren> = ({ children }) =>
+  children;
+```
+
+プロジェクトのルートは`.git`がある位置がデフォルトです。`STORYBOOK_PROJECT_ROOT`環境変数を設定することで、プロジェクトのルートを変更できます。
+
+## おわりに
+
+従来の`alias`を用いたモックでは、きめ細かい制御が難しく、思うような実装ができないことがありました。
+サブパスインポートによるモックは詳細な制御が可能で便利でしたが、TypeScriptの`paths`設定と競合し、インポートの解決でトラブルが多くストレスを感じる場面がありました。
+
+新しく登場した`sb.mock`は、これらの問題を解決してくれました。現在のところ何のストレスもなく利用でき、まさに求めていた機能を手に入れることができました。
+
+近年のStorybookはテスト機能が大幅に充実し、これまで手が届かなかったテストも簡単に書けるようになるなど、開発者にとって非常に価値のある機能が次々と追加されています。
+
+今後もStorybookのさらなる進化に注目していきたいです。
