@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { getBlogContents } from '#api/blog';
+import { getBlogContents } from '@/app/blog/_api';
 
 export const dynamic = 'force-static';
 
