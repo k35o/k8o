@@ -14,7 +14,7 @@ import { formatDate } from '@k8o/helpers/date';
 import Link from 'next/link';
 import { type FC, type ReactNode, Suspense } from 'react';
 import { getBlogContent } from '#api/blog';
-import { ViewTransition } from '#libs/react';
+import { ViewTransition } from '@/libs/react';
 import { Subscribe } from '../subscribe';
 import { Feedback } from './feedback';
 import { Recommend } from './recommend';

@@ -17,10 +17,6 @@
       "storybook": "./src/mocks/api/blog.mock.ts",
       "default": "./src/app/blog/_api/index.ts"
     },
-    "#libs/react": {
-      "storybook": "./src/mocks/libs/react.mock.ts",
-      "default": "./src/libs/react.ts"
-    },
     "#next/server": {
       "storybook": "./src/mocks/libs/next/server.mock.ts",
       "default": "next/server"
