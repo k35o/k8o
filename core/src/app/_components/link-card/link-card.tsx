@@ -2,8 +2,8 @@ import { Anchor } from '@k8o/arte-odyssey/anchor';
 import { ErrorBoundary } from '@k8o/arte-odyssey/error-boundary';
 import { ExternalLinkIcon } from '@k8o/arte-odyssey/icons';
 import { type FC, Suspense } from 'react';
-import { getMetadata } from '#link-card/metadata';
 import { MetaImage } from './image';
+import { getMetadata } from './metadata';
 
 const Loading: FC<{ href: string }> = ({ href }) => {
   return (

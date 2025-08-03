@@ -25,10 +25,6 @@
       "storybook": "./src/mocks/libs/next/server.mock.ts",
       "default": "next/server"
     },
-    "#link-card/metadata": {
-      "storybook": "./src/mocks/link-card/metadata.mock.ts",
-      "default": "./src/app/_components/link-card/metadata.ts"
-    },
     "#*": [
       "./*",
       "./*.ts",
