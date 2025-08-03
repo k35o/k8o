@@ -1,12 +1,13 @@
 import { LinkCard } from './link-card';
-import { getMetadata } from '#src/mocks/link-card/metadata.mock';
+import { getMetadata } from './metadata';
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
+import { mocked } from 'storybook/test';
 
 const meta: Meta<typeof LinkCard> = {
   title: 'app/globals/link-card',
   component: LinkCard,
   beforeEach: () => {
-    getMetadata.mockResolvedValue({
+    mocked(getMetadata).mockResolvedValue({
       title:
         'Reactの新しいルーティングライブラリ、TanStackRouterを学ぶ',
       description:
@@ -30,7 +31,7 @@ export const NoData: Story = {
     href: 'https://example.com',
   },
   beforeEach: () => {
-    getMetadata.mockResolvedValue({
+    mocked(getMetadata).mockResolvedValue({
       title: undefined,
       description: undefined,
       image: undefined,
@@ -43,7 +44,7 @@ export const NoTitle: Story = {
     href: 'https://example.com',
   },
   beforeEach: () => {
-    getMetadata.mockResolvedValue({
+    mocked(getMetadata).mockResolvedValue({
       title: undefined,
       description:
         'Reactのルーティングには主にNextjs等のフレームワークやReact Routeが利用されます。この記事では新たなルーティング手法の選択肢としてTanStack Routerを紹介します。TanStack Routerでは最初に挙げた選択肢の使い心地を踏襲しつつ、ルーティングやサーチパラメータの型安全性や他にない便利な機能を提供します。',
@@ -57,7 +58,7 @@ export const NoDescription: Story = {
     href: 'https://example.com',
   },
   beforeEach: () => {
-    getMetadata.mockResolvedValue({
+    mocked(getMetadata).mockResolvedValue({
       title:
         'Reactの新しいルーティングライブラリ、TanStackRouterを学ぶ',
       description: undefined,
@@ -71,7 +72,7 @@ export const NoImage: Story = {
     href: 'https://example.com',
   },
   beforeEach: () => {
-    getMetadata.mockResolvedValue({
+    mocked(getMetadata).mockResolvedValue({
       title:
         'Reactの新しいルーティングライブラリ、TanStackRouterを学ぶ',
       description:

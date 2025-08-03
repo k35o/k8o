@@ -1,5 +1,6 @@
 import React, { FC, memo, useEffect } from 'react';
 import Script from 'next/script';
+import { mocked, sb } from 'storybook/test';
 import type { Preview } from '@storybook/nextjs-vite';
 import { AppProvider } from '../src/app/_providers/app';
 import { cn } from '@k8o/helpers/cn';
@@ -9,6 +10,8 @@ import { handlers } from '../src/mocks/handlers';
 import { mPlus2, notoSansJp } from '../src/app/_styles/font';
 
 import '../src/app/_styles/globals.css';
+
+sb.mock('./../src/app/_components/link-card/metadata.ts');
 
 initialize(
   {
