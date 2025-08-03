@@ -14,7 +14,7 @@ import {
   useCallback,
   useState,
 } from 'react';
-import { SuspenseList } from '#libs/react';
+import { SuspenseList } from '@/libs/react';
 
 type Data = {
   cacheKey: 'key1' | 'key2' | 'key3' | 'key4';
