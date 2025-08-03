@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import type { FC } from 'react';
-import { getBlogToc } from '#api/blog';
+import { getBlogToc } from '@/app/blog/_api';
 
 export const TableOfContext: FC<{ slug: string }> = async ({ slug }) => {
   const headingTree = await getBlogToc(slug);

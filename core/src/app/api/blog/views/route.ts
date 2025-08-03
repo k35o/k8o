@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { getBlogContent } from '#api/blog';
+import { getBlogContent } from '@/app/blog/_api';
 import { incrementBlogView } from '@/services/blogs/view';
 
 export async function POST(req: Request): Promise<Response> {

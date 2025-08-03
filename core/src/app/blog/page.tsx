@@ -1,4 +1,4 @@
-import { getBlogContents } from '#api/blog';
+import { getBlogContents } from '@/app/blog/_api';
 import { BlogCard } from './_components/blog-card';
 import { Subscribe } from './_components/subscribe';
 
