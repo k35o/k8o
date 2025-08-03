@@ -12,6 +12,7 @@ import { handlers } from '../src/mocks/handlers';
 import '../src/app/_styles/globals.css';
 
 sb.mock('./../src/app/_components/link-card/metadata.ts');
+sb.mock('./../src/libs/react.ts');
 
 initialize(
   {
