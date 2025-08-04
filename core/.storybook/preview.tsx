@@ -14,6 +14,7 @@ import '../src/app/_styles/globals.css';
 sb.mock('./../src/app/_components/link-card/metadata.ts');
 sb.mock('./../src/libs/react.ts');
 sb.mock('./../src/app/blog/_api/index.ts');
+sb.mock('./../src/database/db.ts');
 
 initialize(
   {
