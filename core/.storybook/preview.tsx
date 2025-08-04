@@ -16,6 +16,7 @@ sb.mock('./../src/libs/react.ts');
 sb.mock('./../src/app/blog/_api/index.ts');
 sb.mock('./../src/database/db.ts');
 sb.mock('@k8o/helpers/ratelimit');
+sb.mock('./../src/libs/next-server.ts');
 
 initialize(
   {

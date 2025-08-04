@@ -1,6 +1,6 @@
 'use server';
 
-import { after } from '#next/server';
+import { after } from '@/libs/next-server';
 import { subscribe } from '@/services/subscriptions/subscribe';
 
 export const registerEmail = async (_: unknown, formData: FormData) => {
