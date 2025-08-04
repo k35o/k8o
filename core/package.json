@@ -5,10 +5,6 @@
   "private": true,
   "type": "module",
   "imports": {
-    "#helpers/ratelimit": {
-      "storybook": "./src/mocks/helpers/ratelimit.mock.ts",
-      "default": "@k8o/helpers/ratelimit"
-    },
     "#next/server": {
       "storybook": "./src/mocks/libs/next/server.mock.ts",
       "default": "next/server"
