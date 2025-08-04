@@ -1,7 +1,7 @@
 'use server';
 
+import { checkRateLimit } from '@k8o/helpers/ratelimit';
 import { z } from 'zod';
-import { ratelimit } from '#helpers/ratelimit';
 import { db } from '@/database/db';
 import { comments } from '@/database/schema/comments';
 import '@/libs/zod';
@@ -44,7 +44,7 @@ export const contact = async (
   }
 
   const identifier = 'api';
-  const { success } = await ratelimit.limit(identifier);
+  const { success } = await checkRateLimit(identifier);
 
   if (!success) {
     return {
