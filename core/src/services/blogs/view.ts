@@ -1,4 +1,4 @@
-import { db } from '#database/db';
+import { db } from '@/database/db';
 import { blogViews } from '@/database/schema/blog-views';
 import { increment } from '@/database/utils';
 import { eq } from 'drizzle-orm';

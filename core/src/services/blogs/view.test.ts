@@ -1,10 +1,19 @@
 import { getBlogView, incrementBlogView } from './view';
-import { db } from '#database/db';
+import { db } from '@/database/db';
 import { blogViews } from '@/database/schema/blog-views';
 import { increment } from '@/database/utils';
 import { eq } from 'drizzle-orm';
 
-vi.mock('#database/db');
+vi.mock('@/database/db', () => ({
+  db: {
+    query: {
+      blogViews: {
+        findFirst: vi.fn(),
+      },
+    },
+    update: vi.fn(),
+  },
+}));
 vi.mock('@/database/utils');
 vi.mock('drizzle-orm');
 

@@ -1,5 +1,5 @@
 import { Result } from '../type';
-import { db } from '#database/db';
+import { db } from '@/database/db';
 import { subscribers } from '@/database/schema/subscribers';
 import VerifyEmail from '@/emails/verify-email';
 import { resend } from '@/services/email';

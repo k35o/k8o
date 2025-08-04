@@ -1,9 +1,20 @@
 import { getBlogs, getBlogsByTags } from './blogs';
 import { blogPath } from './path';
-import { db } from '#database/db';
+import { db } from '@/database/db';
 import { getFrontmatter } from '@k8o/helpers/mdx';
 
-vi.mock('#database/db');
+vi.mock('@/database/db', () => ({
+  db: {
+    query: {
+      blogs: {
+        findMany: vi.fn(),
+      },
+      blogTag: {
+        findMany: vi.fn(),
+      },
+    },
+  },
+}));
 vi.mock('@k8o/helpers/mdx');
 vi.mock('./path');
 

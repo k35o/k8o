@@ -1,7 +1,15 @@
 import { getQuizzes } from '../quiz';
-import { db } from '#database/db';
+import { db } from '@/database/db';
 
-vi.mock('#database/db');
+vi.mock('@/database/db', () => ({
+  db: {
+    query: {
+      quizzes: {
+        findMany: vi.fn(),
+      },
+    },
+  },
+}));
 
 describe('quiz', () => {
   it('クイズの一覧を取得できる', async () => {

@@ -1,5 +1,5 @@
 import { Quiz, QuizType } from './types';
-import { db } from '#database/db';
+import { db } from '@/database/db';
 import { sql } from 'drizzle-orm';
 
 // NOTE:問題数が多いクイズを作った場合はページネーションを実装する

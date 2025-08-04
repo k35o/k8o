@@ -1,8 +1,16 @@
 import { getTag } from './tag';
-import { db } from '#database/db';
+import { db } from '@/database/db';
 import { getBlogMetadata } from '@/services/blogs/blog';
 
-vi.mock('#database/db');
+vi.mock('@/database/db', () => ({
+  db: {
+    query: {
+      tags: {
+        findFirst: vi.fn(),
+      },
+    },
+  },
+}));
 vi.mock('@/services/blogs/blog');
 
 describe('getTag', () => {

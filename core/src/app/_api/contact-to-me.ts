@@ -1,7 +1,7 @@
 'use server';
 
-import { db } from '#database/db';
 import { ratelimit } from '#helpers/ratelimit';
+import { db } from '@/database/db';
 import { comments } from '@/database/schema/comments';
 import { z } from 'zod';
 import '@/libs/zod';
