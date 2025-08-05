@@ -7,8 +7,8 @@
   "exports": {
     ".": "./src/index.ts",
     "./ratelimit": {
-      "default": "./src/ratelimit/index.ts",
-      "storybook": "./src/__mocks__/ratelimit.ts"
+      "storybook": "./src/__mocks__/ratelimit.ts",
+      "default": "./src/ratelimit/index.ts"
     },
     "./*": "./src/*/index.ts"
   },
