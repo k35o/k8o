@@ -81,7 +81,7 @@ export const DialogRequestCloseDemo: FC = () => {
             <Button
               variant="outlined"
               onClick={() => {
-                // @ts-expect-error -- requestClose is not a standard 
+                // @ts-expect-error -- requestClose is not a standard
                 ref.current?.requestClose();
               }}
             >
