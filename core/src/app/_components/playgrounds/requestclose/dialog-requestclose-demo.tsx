@@ -81,8 +81,7 @@ export const DialogRequestCloseDemo: FC = () => {
             <Button
               variant="outlined"
               onClick={() => {
-                // @ts-expect-error -- requestClose is not a standard method
-                // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+                // @ts-expect-error -- requestClose is not a standard 
                 ref.current?.requestClose();
               }}
             >
