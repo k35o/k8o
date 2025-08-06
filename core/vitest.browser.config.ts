@@ -65,6 +65,7 @@ export default defineConfig({
       // TODO: server actionsを使用しているコンポーネントのテストも実行できるようにする
       '**/subscribe.stories.tsx',
       '**/contact-to-me.stories.tsx',
+      '**/global-layout.stories.tsx',
     ],
   },
 });
