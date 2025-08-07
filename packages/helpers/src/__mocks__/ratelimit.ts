@@ -6,7 +6,3 @@ export enum RateLimitType {
 }
 
 export const checkRateLimit = fn();
-
-export const ratelimit = {
-  limit: fn(),
-};

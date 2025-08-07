@@ -1,4 +1,4 @@
-import { getBlogView } from '#api/blog';
+import { getBlogView } from '@/app/blog/_api';
 import { commalize } from '@k8o/helpers/number';
 import { FC } from 'react';
 

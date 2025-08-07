@@ -1,5 +1,5 @@
 import { blogPath } from './path';
-import { db } from '#database/db';
+import { db } from '@/database/db';
 import { getFrontmatter } from '@k8o/helpers/mdx';
 
 export const getBlogs = async () => {

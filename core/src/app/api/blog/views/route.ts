@@ -1,4 +1,4 @@
-import { getBlogContent } from '#api/blog';
+import { getBlogContent } from '@/app/blog/_api';
 import { incrementBlogView } from '@/services/blogs/view';
 import { z } from 'zod';
 

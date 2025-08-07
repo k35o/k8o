@@ -6,6 +6,10 @@
   "type": "module",
   "exports": {
     ".": "./src/index.ts",
+    "./ratelimit": {
+      "storybook": "./src/__mocks__/ratelimit.ts",
+      "default": "./src/ratelimit/index.ts"
+    },
     "./*": "./src/*/index.ts"
   },
   "scripts": {

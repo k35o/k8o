@@ -1,5 +1,5 @@
 import { MetaImage } from './image';
-import { getMetadata } from '#link-card/metadata';
+import { getMetadata } from './metadata';
 import { Anchor } from '@k8o/arte-odyssey/anchor';
 import { ErrorBoundary } from '@k8o/arte-odyssey/error-boundary';
 import { ExternalLinkIcon } from '@k8o/arte-odyssey/icons';

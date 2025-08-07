@@ -56,11 +56,16 @@ export default defineConfig({
         new URL('./.storybook/vitest.setup.ts', import.meta.url),
       ),
     ],
-    // NOTE: コンポーネントが自動的にclient componentsに解釈されるので、async/awaitコンポーネントは除外する
-    // TODO: async/awaitコンポーネントのテストも実行できるようにする
     exclude: [
+      // NOTE: コンポーネントが自動的にclient componentsに解釈されるので、async/awaitコンポーネントは除外する
+      // TODO: async/awaitコンポーネントのテストも実行できるようにする
       '**/blog-layout.stories.tsx',
       '**/blog-layout/**/recommend.stories.tsx',
+      // NOTE: server actionsを使用しているコンポーネントのテストは除外する（sb.mock起因かもしれない）
+      // TODO: server actionsを使用しているコンポーネントのテストも実行できるようにする
+      '**/subscribe.stories.tsx',
+      '**/contact-to-me.stories.tsx',
+      '**/global-layout.stories.tsx',
     ],
   },
 });

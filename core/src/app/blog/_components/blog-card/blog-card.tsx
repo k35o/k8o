@@ -1,4 +1,4 @@
-import { ViewTransition } from '#libs/react';
+import { ViewTransition } from '@/libs/react';
 import { InteractiveCard } from '@k8o/arte-odyssey/card';
 import { Heading } from '@k8o/arte-odyssey/heading';
 import {

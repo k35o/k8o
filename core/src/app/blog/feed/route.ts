@@ -1,5 +1,5 @@
 import { metadata } from '../layout';
-import { getBlogContents } from '#api/blog';
+import { getBlogContents } from '@/app/blog/_api';
 import { NextResponse } from 'next/server';
 import RSS from 'rss';
 

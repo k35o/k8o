@@ -1,4 +1,4 @@
-import { db } from '#database/db';
+import { db } from '@/database/db';
 import { quizType } from '@/database/schema/quiz-type';
 import { InferSelectModel } from 'drizzle-orm';
 
