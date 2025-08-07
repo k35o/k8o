@@ -1,6 +1,5 @@
 import { Subscribe } from './subscribe';
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
-import { userEvent, within } from 'storybook/test';
 
 const meta: Meta<typeof Subscribe> = {
   title: 'app/blog/subscribe',
@@ -13,8 +12,7 @@ type Story = StoryObj<typeof Subscribe>;
 export const Primary: Story = {};
 
 export const IsOpen: Story = {
-  play: async ({ canvasElement }) => {
-    const canvas = within(canvasElement);
+  play: async ({ canvas, userEvent }) => {
     const button = await canvas.findByRole('button', {
       name: 'ブログの購読',
     });

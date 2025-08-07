@@ -1,7 +1,6 @@
 import { DarkModeIcon } from '../icons';
 import { DropdownMenu } from './dropdown-menu';
 import type { Meta, StoryObj } from '@storybook/react-vite';
-import { userEvent, within } from 'storybook/test';
 
 const meta: Meta<typeof DropdownMenu.Root> = {
   title: 'components/dropdown-menu',
@@ -47,8 +46,7 @@ export const Default: Story = {
       </DropdownMenu.Content>
     </DropdownMenu.Root>
   ),
-  play: async ({ canvasElement }) => {
-    const canvas = within(canvasElement);
+  play: async ({ canvas, userEvent }) => {
     const trigger = canvas.getByRole('button', {
       name: 'Options',
     });
@@ -86,8 +84,7 @@ export const TriggerByIcon: Story = {
       </DropdownMenu.Content>
     </DropdownMenu.Root>
   ),
-  play: async ({ canvasElement }) => {
-    const canvas = within(canvasElement);
+  play: async ({ canvas, userEvent }) => {
     const trigger = canvas.getByRole('button', {
       name: 'Options',
     });

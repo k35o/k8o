@@ -1,7 +1,7 @@
 import { NumberField } from './number-field';
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { useState } from 'react';
-import { userEvent, within, expect } from 'storybook/test';
+import { expect } from 'storybook/test';
 
 const meta: Meta<typeof NumberField> = {
   title: 'components/form/number-field',
@@ -38,9 +38,7 @@ export const Default: Story = {
     isInvalid: false,
     isRequired: false,
   },
-  play: async ({ canvasElement }) => {
-    const canvas = within(canvasElement);
-
+  play: async ({ canvas, userEvent }) => {
     const input = canvas.getByRole('spinbutton');
     await userEvent.type(input, '2.0[Tab]');
 
@@ -65,9 +63,7 @@ export const Min0Max100: Story = {
     min: 0,
     max: 100,
   },
-  play: async ({ canvasElement }) => {
-    const canvas = within(canvasElement);
-
+  play: async ({ canvas, userEvent }) => {
     const input = canvas.getByRole('spinbutton');
     await userEvent.type(input, '-10[Tab]');
 
