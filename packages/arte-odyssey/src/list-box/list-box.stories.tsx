@@ -2,7 +2,6 @@ import { Option } from './hooks';
 import { ListBox } from './list-box';
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { useState } from 'react';
-import { userEvent, within } from 'storybook/test';
 
 const meta: Meta<typeof ListBox.Root> = {
   title: 'components/list-box',
@@ -62,8 +61,7 @@ export const Default: Story = {
       </div>
     );
   },
-  play: async ({ canvasElement }) => {
-    const canvas = within(canvasElement);
+  play: async ({ canvas, userEvent }) => {
     const trigger = canvas.getByRole('combobox', {
       name: '選択してください',
     });

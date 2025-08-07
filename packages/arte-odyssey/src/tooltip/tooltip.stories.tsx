@@ -1,7 +1,6 @@
 import { Tooltip } from './tooltip';
 import { Button } from '../button';
 import type { Meta, StoryObj } from '@storybook/react-vite';
-import { userEvent, within } from 'storybook/test';
 
 const meta: Meta<typeof Tooltip.Root> = {
   title: 'components/tooltip',
@@ -36,8 +35,7 @@ export const Default: Story = {
       </Tooltip.Content>
     </Tooltip.Root>
   ),
-  play: async ({ canvasElement }) => {
-    const canvas = within(canvasElement);
+  play: async ({ canvas, userEvent }) => {
     const trigger = canvas.getByRole('button', {
       name: 'Tooltip',
     });

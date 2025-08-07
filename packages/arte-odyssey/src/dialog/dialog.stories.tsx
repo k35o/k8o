@@ -4,7 +4,7 @@ import { Modal } from '../modal';
 import { Popover, useOpenContext } from '../popover';
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { FC, HTMLProps, useState } from 'react';
-import { fn, userEvent, within } from 'storybook/test';
+import { fn } from 'storybook/test';
 
 const meta: Meta<typeof Dialog.Root> = {
   title: 'components/dialog',
@@ -50,8 +50,7 @@ export const PopoverDialog: Story = {
       />
     </Popover.Root>
   ),
-  play: async ({ canvasElement }) => {
-    const canvas = within(canvasElement);
+  play: async ({ canvas, userEvent }) => {
     const trigger = canvas.getByRole('button', {
       name: 'ポップオーバー',
     });
@@ -99,8 +98,7 @@ export const ModalDialog: Story = {
       </>
     );
   },
-  play: async ({ canvasElement }) => {
-    const canvas = within(canvasElement);
+  play: async ({ canvas, userEvent }) => {
     const trigger = canvas.getByRole('button', {
       name: 'モーダル',
     });

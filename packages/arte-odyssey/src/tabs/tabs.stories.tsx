@@ -1,6 +1,6 @@
 import { Tabs } from './tabs';
 import type { Meta, StoryObj } from '@storybook/react-vite';
-import { expect, userEvent, within } from 'storybook/test';
+import { expect } from 'storybook/test';
 
 const meta: Meta<typeof Tabs.Root> = {
   title: 'components/tabs',
@@ -23,8 +23,7 @@ export const Primary: Story = {
       <Tabs.Panel id="tab3">Panel3</Tabs.Panel>
     </Tabs.Root>
   ),
-  play: async ({ canvasElement }) => {
-    const canvas = within(canvasElement);
+  play: async ({ canvas, userEvent }) => {
     const tab2 = canvas.getByRole('tab', { name: 'Tab2' });
     const tab3 = canvas.getByRole('tab', { name: 'Tab3' });
 
@@ -60,8 +59,7 @@ export const DefaultSelected: Story = {
       <Tabs.Panel id="tab3">Panel3</Tabs.Panel>
     </Tabs.Root>
   ),
-  play: async ({ canvasElement }) => {
-    const canvas = within(canvasElement);
+  play: async ({ canvas }) => {
     await expect(canvas.getByRole('tabpanel')).toHaveTextContent(
       'Panel2',
     );

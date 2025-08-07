@@ -1,7 +1,6 @@
 import { Popover } from './popover';
 import { Button } from '../button';
 import type { Meta, StoryObj } from '@storybook/react-vite';
-import { userEvent, within } from 'storybook/test';
 
 const meta: Meta<typeof Popover.Root> = {
   title: 'components/popover',
@@ -43,8 +42,7 @@ export const Default: Story = {
       />
     </Popover.Root>
   ),
-  play: async ({ canvasElement }) => {
-    const canvas = within(canvasElement);
+  play: async ({ canvas, userEvent }) => {
     const trigger = canvas.getByRole('button', {
       name: 'Popover',
     });
