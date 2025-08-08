@@ -8,7 +8,7 @@ declare global {
   // biome-ignore lint/style/noNamespace: 上書きなので
   namespace React {
     // biome-ignore lint/style/noNamespace: 上書きなので
-    namespace Jsx {
+    namespace JSX {
       // biome-ignore lint/nursery/useConsistentTypeDefinitions: 上書きなので
       interface IntrinsicElements {
         'baseline-status': { featureId: string; className: string };
