@@ -33,7 +33,8 @@ export const Default: Story = {
       <Popover.Content
         renderItem={(props) => (
           <div className="rounded-sm bg-bg-mute p-4 shadow-md" {...props}>
-            <div>Popover content</div>
+            {/** biome-ignore lint/a11y/useFocusableInteractive: storyなので妥協 */}
+            <div role="menuitem">Popover content</div>
           </div>
         )}
       />
