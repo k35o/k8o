@@ -1,6 +1,6 @@
-import { CheckSyntaxProvider } from './_state/text';
 import { Heading } from '@k8o/arte-odyssey/heading';
-import { PropsWithChildren } from 'react';
+import type { PropsWithChildren } from 'react';
+import { CheckSyntaxProvider } from './_state/text';
 
 export const metadata = {
   title: '日本語校正くん',

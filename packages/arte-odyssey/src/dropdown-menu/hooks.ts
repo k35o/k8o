@@ -1,15 +1,15 @@
 'use client';
 
-import { useOpenContext } from '../popover/hooks';
 import { useListItem } from '@floating-ui/react';
 import {
   createContext,
-  HTMLProps,
-  MouseEventHandler,
-  RefObject,
+  type HTMLProps,
+  type MouseEventHandler,
+  type RefObject,
   use,
   useMemo,
 } from 'react';
+import { useOpenContext } from '../popover/hooks';
 
 type MenuContext = {
   activeIndex: number | null;
@@ -21,10 +21,7 @@ type MenuContext = {
     userProps?: HTMLProps<HTMLElement>,
   ) => Record<string, unknown>;
   getItemProps: (
-    userProps?: Omit<
-      HTMLProps<HTMLButtonElement>,
-      'selected' | 'active'
-    >,
+    userProps?: Omit<HTMLProps<HTMLButtonElement>, 'selected' | 'active'>,
   ) => Record<string, unknown>;
 };
 
@@ -35,9 +32,7 @@ export const MenuContextProvider = MenuContext;
 const useMenuContext = (): MenuContext => {
   const menu = use(MenuContext);
   if (!menu) {
-    throw new Error(
-      'useMenuContext must be used within a DropdownMenu.Root',
-    );
+    throw new Error('useMenuContext must be used within a DropdownMenu.Root');
   }
 
   return menu;
@@ -55,11 +50,7 @@ export const useMenuContent = () => {
   );
 };
 
-export const useMenuItem = ({
-  onClick,
-}: {
-  onClick: MouseEventHandler;
-}) => {
+export const useMenuItem = ({ onClick }: { onClick: MouseEventHandler }) => {
   const menu = useMenuContext();
   const { onClose } = useOpenContext();
   const item = useListItem();

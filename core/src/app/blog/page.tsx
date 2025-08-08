@@ -1,6 +1,6 @@
+import { getBlogContents } from '#api/blog';
 import { BlogCard } from './_components/blog-card';
 import { Subscribe } from './_components/subscribe';
-import { getBlogContents } from '#api/blog';
 
 export default async function Page() {
   const blogs = await getBlogContents();

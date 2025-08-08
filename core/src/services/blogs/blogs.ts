@@ -1,6 +1,6 @@
-import { blogPath } from './path';
-import { db } from '#database/db';
 import { getFrontmatter } from '@k8o/helpers/mdx';
+import { db } from '#database/db';
+import { blogPath } from './path';
 
 export const getBlogs = async () => {
   const blogs = await db.query.blogs.findMany({
@@ -14,10 +14,7 @@ export const getBlogs = async () => {
     where: (blogs, { eq }) => eq(blogs.published, true),
     limit: 50,
     orderBy(fields, operators) {
-      return [
-        operators.desc(fields.createdAt),
-        operators.desc(fields.id),
-      ];
+      return [operators.desc(fields.createdAt), operators.desc(fields.id)];
     },
   });
 
@@ -28,10 +25,7 @@ export const getBlogs = async () => {
   }));
 };
 
-export const getBlogsByTags = async (
-  slug: string,
-  tagIds: number[],
-) => {
+export const getBlogsByTags = async (slug: string, tagIds: number[]) => {
   const blogIds = (
     await db.query.blogTag.findMany({
       where: (blogTag, { inArray }) => inArray(blogTag.tagId, tagIds),
@@ -56,22 +50,15 @@ export const getBlogsByTags = async (
       },
     },
     orderBy(fields, operators) {
-      return [
-        operators.desc(fields.createdAt),
-        operators.desc(fields.id),
-      ];
+      return [operators.desc(fields.createdAt), operators.desc(fields.id)];
     },
   });
 
   return Promise.all(
     blogs
       .sort((a, b) => {
-        const aBlogTagIds = a.blogTag.map(
-          (blogTag) => blogTag.tag.id,
-        );
-        const bBlogTagIds = b.blogTag.map(
-          (blogTag) => blogTag.tag.id,
-        );
+        const aBlogTagIds = a.blogTag.map((blogTag) => blogTag.tag.id);
+        const bBlogTagIds = b.blogTag.map((blogTag) => blogTag.tag.id);
         const aTagCount = tagIds.filter((tagId) =>
           aBlogTagIds.includes(tagId),
         ).length;
@@ -82,9 +69,7 @@ export const getBlogsByTags = async (
       })
       .slice(0, 6)
       .map(async (blog) => {
-        const blogMetadata = await getFrontmatter(
-          blogPath(blog.slug),
-        );
+        const blogMetadata = await getFrontmatter(blogPath(blog.slug));
         return {
           id: blog.id,
           slug: blog.slug,

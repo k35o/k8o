@@ -1,7 +1,7 @@
+import { getFrontmatter, getTocTree } from '@k8o/helpers/mdx';
+import { db } from '#database/db';
 import { getBlog, getBlogMetadata, getBlogToc } from './blog';
 import { blogPath } from './path';
-import { db } from '#database/db';
-import { getFrontmatter, getTocTree } from '@k8o/helpers/mdx';
 
 vi.mock('#database/db');
 vi.mock('@k8o/helpers/mdx');
@@ -79,9 +79,7 @@ describe('blog service', () => {
     });
 
     it('存在しないスラッグの場合はエラーを投げる', async () => {
-      vi.mocked(db.query.blogs.findFirst).mockResolvedValue(
-        undefined,
-      );
+      vi.mocked(db.query.blogs.findFirst).mockResolvedValue(undefined);
 
       await expect(getBlog('non-existent-slug')).rejects.toThrow(
         'Blog not found: non-existent-slug',

@@ -1,6 +1,6 @@
-import { CardProps } from './type';
 import { cn } from '@k8o/helpers/cn';
-import { FC } from 'react';
+import type { FC } from 'react';
+import type { CardProps } from './type';
 
 export const Card: FC<CardProps> = ({
   children,
@@ -10,7 +10,7 @@ export const Card: FC<CardProps> = ({
 }) => (
   <section
     className={cn(
-      'bg-bg-base/90 rounded-lg shadow-md',
+      'rounded-lg bg-bg-base/90 shadow-md',
       width === 'full' && 'w-full',
       width === 'fit' && 'w-fit',
       variant === 'primary' && 'bg-bg-base/90',
@@ -18,8 +18,8 @@ export const Card: FC<CardProps> = ({
     )}
   >
     {title && (
-      <div className="from-primary-bg-mute to-secondary-bg-mute flex justify-center rounded-t-lg bg-linear-60 p-4">
-        <p className="text-xl font-bold">{title}</p>
+      <div className="flex justify-center rounded-t-lg bg-linear-60 from-primary-bg-mute to-secondary-bg-mute p-4">
+        <p className="font-bold text-xl">{title}</p>
       </div>
     )}
     {children}

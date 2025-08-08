@@ -1,12 +1,12 @@
-import { Radius } from './radius';
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
+import { Radius } from './radius';
 
 const meta: Meta<typeof Radius> = {
   title: 'app/design-system/radius',
   component: Radius,
   decorators: [
     (Story) => (
-      <div className="bg-bg-base -m-6 min-h-screen p-6">
+      <div className="-m-6 min-h-screen bg-bg-base p-6">
         <Story />
       </div>
     ),

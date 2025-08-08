@@ -1,5 +1,5 @@
-import { ColorConverter } from './color-converter';
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
+import { ColorConverter } from './color-converter';
 
 const meta: Meta<typeof ColorConverter> = {
   title: 'app/color-converter/color-converter',

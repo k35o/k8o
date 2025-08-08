@@ -1,6 +1,6 @@
-import { ColorPallet } from './color-pallet';
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 import { useState } from 'react';
+import { ColorPallet } from './color-pallet';
 
 const meta: Meta<typeof ColorPallet> = {
   title: 'app/contrast-checker/color-pallet',
@@ -13,8 +13,6 @@ type Story = StoryObj<typeof ColorPallet>;
 export const Primary: Story = {
   render: () => {
     const [color, setColor] = useState('#000000');
-    return (
-      <ColorPallet label="デモ" color={color} setColor={setColor} />
-    );
+    return <ColorPallet color={color} label="デモ" setColor={setColor} />;
   },
 };

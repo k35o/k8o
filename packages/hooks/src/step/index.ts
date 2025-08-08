@@ -10,10 +10,7 @@ type Step = {
   isDisabledNext: boolean;
 };
 
-type UseStep = (props: {
-  initialCount: number;
-  maxCount: number;
-}) => Step;
+type UseStep = (props: { initialCount: number; maxCount: number }) => Step;
 
 export const useStep: UseStep = ({ initialCount, maxCount }) => {
   const [count, setCount] = useState(initialCount);

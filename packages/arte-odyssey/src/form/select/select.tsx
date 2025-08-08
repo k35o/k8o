@@ -1,6 +1,6 @@
-import { ChevronIcon } from './../../icons';
 import { cn } from '@k8o/helpers/cn';
-import { ChangeEventHandler, FC } from 'react';
+import type { ChangeEventHandler, FC } from 'react';
+import { ChevronIcon } from './../../icons';
 
 export type Option = Readonly<{
   value: string;
@@ -31,19 +31,19 @@ export const Select: FC<Props> = ({
   return (
     <div className="relative h-fit w-full">
       <select
-        id={id}
         aria-describedby={describedbyId}
         aria-invalid={isInvalid}
         aria-required={isRequired}
         className={cn(
-          'border-border-base bg-bg-base w-full appearance-none rounded-md border px-3 py-2 shadow-xs',
+          'w-full appearance-none rounded-md border border-border-base bg-bg-base px-3 py-2 shadow-xs',
           'aria-invalid:border-border-error',
-          'disabled:border-border-mute disabled:bg-bg-mute disabled:hover:bg-bg-mute disabled:cursor-not-allowed',
-          'focus-visible:ring-border-info focus-visible:border-transparent focus-visible:ring-2 focus-visible:outline-hidden',
+          'disabled:cursor-not-allowed disabled:border-border-mute disabled:bg-bg-mute disabled:hover:bg-bg-mute',
+          'focus-visible:border-transparent focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-border-info',
         )}
-        value={value}
-        onChange={onChange}
         disabled={isDisabled}
+        id={id}
+        onChange={onChange}
+        value={value}
       >
         {options.map((option) => (
           <option key={option.value} value={option.value}>
@@ -51,8 +51,8 @@ export const Select: FC<Props> = ({
           </option>
         ))}
       </select>
-      <div className="absolute top-2/4 right-3 -translate-y-1/2">
-        <ChevronIcon size="sm" direction="down" />
+      <div className="-translate-y-1/2 absolute top-2/4 right-3">
+        <ChevronIcon direction="down" size="sm" />
       </div>
     </div>
   );

@@ -1,5 +1,5 @@
 import { Progress } from '@k8o/arte-odyssey/progress';
-import { FC } from 'react';
+import type { FC } from 'react';
 
 export const QuizProgress: FC<{
   progress: number;
@@ -7,16 +7,16 @@ export const QuizProgress: FC<{
 }> = ({ progress, maxProgress }) => {
   return (
     <div className="flex flex-col items-center gap-1">
-      <p className="text-xl font-bold">
+      <p className="font-bold text-xl">
         第{progress}問
-        <span className="text-md font-medium">
+        <span className="font-medium text-md">
           （{progress}/{maxProgress}）
         </span>
       </p>
       <Progress
-        progress={progress}
-        maxProgress={maxProgress}
         label={`${maxProgress.toString()}問中${progress.toString()}問目を出題`}
+        maxProgress={maxProgress}
+        progress={progress}
       />
     </div>
   );

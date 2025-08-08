@@ -1,7 +1,4 @@
-export const toPrecision = (
-  value: number,
-  precision?: number,
-): number => {
+export const toPrecision = (value: number, precision?: number): number => {
   const scaleFactor = 10 ** (precision ?? 10);
   return Math.round(value * scaleFactor) / scaleFactor;
 };

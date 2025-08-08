@@ -4,8 +4,8 @@ import { Button } from '@k8o/arte-odyssey/button';
 import { FormControl } from '@k8o/arte-odyssey/form/form-control';
 import { RangeField } from '@k8o/arte-odyssey/form/range-field';
 import { TextField } from '@k8o/arte-odyssey/form/text-field';
-import DOMPurify from 'isomorphic-dompurify';
-import { useState, useCallback, useMemo, ChangeEvent } from 'react';
+import DomPurify from 'isomorphic-dompurify';
+import { type ChangeEvent, useCallback, useMemo, useState } from 'react';
 import { renderSVG } from 'uqr';
 
 export const QrGenerator = () => {
@@ -23,7 +23,7 @@ export const QrGenerator = () => {
         '<svg$1 class="w-full h-full max-w-full max-h-full">',
       );
       // Sanitize SVG content to prevent XSS attacks
-      return DOMPurify.sanitize(styledSvg, {
+      return DomPurify.sanitize(styledSvg, {
         USE_PROFILES: { svg: true, svgFilters: true },
         ADD_TAGS: ['svg'],
         ADD_ATTR: ['class', 'viewBox', 'width', 'height'],
@@ -33,12 +33,9 @@ export const QrGenerator = () => {
     }
   }, [text]);
 
-  const handleTextChange = useCallback(
-    (e: ChangeEvent<HTMLInputElement>) => {
-      setText(e.target.value);
-    },
-    [],
-  );
+  const handleTextChange = useCallback((e: ChangeEvent<HTMLInputElement>) => {
+    setText(e.target.value);
+  }, []);
 
   const handleSizeChange = useCallback((newSize: number) => {
     setSize(newSize);
@@ -67,9 +64,9 @@ export const QrGenerator = () => {
           label="テキスト"
           renderInput={({ labelId: _, ...props }) => (
             <TextField
-              value={text}
               onChange={handleTextChange}
               placeholder="QRコードにしたいテキストやURLを入力してください"
+              value={text}
               {...props}
             />
           )}
@@ -79,12 +76,12 @@ export const QrGenerator = () => {
           label="サイズ調整"
           renderInput={(props) => (
             <RangeField
-              value={size}
-              onChange={handleSizeChange}
-              min={100}
               max={500}
+              min={100}
+              onChange={handleSizeChange}
               step={10}
               unit="px"
+              value={size}
               {...props}
             />
           )}
@@ -93,10 +90,11 @@ export const QrGenerator = () => {
 
       <div className="flex flex-col items-center gap-4">
         {qrCodeSvg ? (
-          <div className="bg-bg-mute flex w-full max-w-full items-center justify-center overflow-hidden rounded-lg bg-white p-4">
+          <div className="flex w-full max-w-full items-center justify-center overflow-hidden rounded-lg bg-bg-mute bg-white p-4">
             <div
-              dangerouslySetInnerHTML={{ __html: qrCodeSvg }}
               className="flex max-h-full max-w-full items-center justify-center"
+              // biome-ignore lint/security/noDangerouslySetInnerHtml: サニタイズされたsvgを使用する
+              dangerouslySetInnerHTML={{ __html: qrCodeSvg }}
               style={{
                 width: `min(${String(size)}px, 100%)`,
                 height: `min(${String(size)}px, 100%)`,
@@ -106,11 +104,11 @@ export const QrGenerator = () => {
             />
           </div>
         ) : text.trim() ? (
-          <div className="bg-bg-error text-fg-error rounded-lg p-4 text-center">
+          <div className="rounded-lg bg-bg-error p-4 text-center text-fg-error">
             QRコードの生成に失敗しました
           </div>
         ) : (
-          <div className="bg-bg-mute text-fg-base rounded-lg p-8 text-center">
+          <div className="rounded-lg bg-bg-mute p-8 text-center text-fg-base">
             QRコードを生成するにはテキストを入力してください
           </div>
         )}

@@ -5,10 +5,10 @@ import {
   Head,
   Heading,
   Html,
-  Preview,
-  Text,
-  Tailwind,
   Link,
+  Preview,
+  Tailwind,
+  Text,
 } from '@react-email/components';
 
 export type Notification = {
@@ -42,27 +42,26 @@ const WeeklyNotification = ({ notifications }: Props) => {
         <Body
           className="m-auto p-[16px]"
           style={{
-            backgroundImage:
-              'linear-gradient(62deg, #ccfbf1 0%, #cffafe 100%)',
+            backgroundImage: 'linear-gradient(62deg, #ccfbf1 0%, #cffafe 100%)',
           }}
         >
           <Container className="mx-auto my-[40px] rounded-xl bg-white text-[#18181b]">
-            <Heading className="text-fg-base text-center text-2xl font-bold">
+            <Heading className="text-center font-bold text-2xl text-fg-base">
               週次レポート
             </Heading>
-            <Text className="mb-0 text-center text-base font-normal">
+            <Text className="mb-0 text-center font-normal text-base">
               期間: {formatDate(oneWeekAgo)}〜{formatDate(now)}
             </Text>
             <div className="p-[32px]">
               {notifications.map((notification) => (
                 <div
+                  className="mb-[24px] rounded-md border border-[#a1a1aa] border-solid p-[12px]"
                   key={notification.id}
-                  className="mb-[24px] rounded-md border border-solid border-[#a1a1aa] p-[12px]"
                 >
-                  <Text className="mt-0 mb-[16px] text-xl font-bold">
+                  <Text className="mt-0 mb-[16px] font-bold text-xl">
                     お問い合わせ通知
                     {notification.feedback && (
-                      <span className="ml-[2px] rounded-full border border-solid border-[#a1a1aa] bg-[#f0f0f0] px-[12px] py-[4px] text-sm font-normal">
+                      <span className="ml-[2px] rounded-full border border-[#a1a1aa] border-solid bg-[#f0f0f0] px-[12px] py-[4px] font-normal text-sm">
                         {notification.feedback.name}
                       </span>
                     )}
@@ -72,16 +71,12 @@ const WeeklyNotification = ({ notifications }: Props) => {
                       <Text className="m-0 text-[#3f3f46]">
                         お問い合わせ内容:
                       </Text>
-                      <Text className="m-0">
-                        {notification.message}
-                      </Text>
+                      <Text className="m-0">{notification.message}</Text>
                     </div>
                   )}
                   {notification.blog && (
                     <div className="mb-[8px]">
-                      <Text className="m-0 text-[#3f3f46]">
-                        関連ブログ:
-                      </Text>
+                      <Text className="m-0 text-[#3f3f46]">関連ブログ:</Text>
                       <div className="flex items-end gap-[2px]">
                         <Link href={notification.blog.link}>
                           {notification.blog.title}

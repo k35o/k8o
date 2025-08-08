@@ -1,17 +1,17 @@
 'use client';
 
-import {
+import type {
   FloatingContext,
   Placement,
   ReferenceType,
 } from '@floating-ui/react';
 import { useClickAway } from '@k8o/hooks/click-away';
 import {
+  type CSSProperties,
   createContext,
-  CSSProperties,
-  HTMLProps,
-  KeyboardEvent,
-  RefObject,
+  type HTMLProps,
+  type KeyboardEvent,
+  type RefObject,
   use,
   useMemo,
 } from 'react';
@@ -39,9 +39,7 @@ export const PopoverProvider = PopoverContext;
 const usePopoverContext = (): PopoverContext => {
   const popover = use(PopoverContext);
   if (!popover) {
-    throw new Error(
-      'usePopoverContext must be used within a Popover.Root',
-    );
+    throw new Error('usePopoverContext must be used within a Popover.Root');
   }
 
   return popover;
@@ -66,12 +64,7 @@ export const useOpenContext = () => {
       onClose: popover.onClose,
       toggleOpen: popover.toggleOpen,
     }),
-    [
-      popover.isOpen,
-      popover.onClose,
-      popover.onOpen,
-      popover.toggleOpen,
-    ],
+    [popover.isOpen, popover.onClose, popover.onOpen, popover.toggleOpen],
   );
 };
 
@@ -82,11 +75,7 @@ export const usePopoverContent = () => {
     if (!popover.isOpen) {
       return;
     }
-    if (
-      popover.triggerRef.current?.contains(
-        event.target as HTMLElement,
-      )
-    ) {
+    if (popover.triggerRef.current?.contains(event.target as HTMLElement)) {
       return;
     }
     popover.onClose();
@@ -124,12 +113,12 @@ export const usePopoverContent = () => {
           role: 'listbox',
         };
     }
-  }, [popover.rootId, popover.type, ref]);
+  }, [popover.rootId, popover.type, ref, popover.onClose, popover.onOpen]);
 
   return useMemo(
     () => ({
       id: `${popover.rootId}_list`,
-      ref: ref,
+      ref,
       isOpen: popover.isOpen,
       isHover,
       context: popover.context,

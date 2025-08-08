@@ -1,6 +1,6 @@
-import { Answer } from '.';
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 import { fn } from 'storybook/test';
+import { Answer } from '.';
 
 const meta: Meta<typeof Answer> = {
   title: 'app/quizzes/answer',

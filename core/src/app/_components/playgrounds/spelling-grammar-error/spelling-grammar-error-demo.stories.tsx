@@ -1,10 +1,9 @@
-import { SpellingGrammarErrorDemo } from './spelling-grammar-error-demo';
-import { Playground } from '../playground';
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
+import { Playground } from '../playground';
+import { SpellingGrammarErrorDemo } from './spelling-grammar-error-demo';
 
 const meta: Meta<typeof SpellingGrammarErrorDemo> = {
-  title:
-    'playgrounds/spelling-grammar-error/SpellingGrammarErrorDemo',
+  title: 'playgrounds/spelling-grammar-error/SpellingGrammarErrorDemo',
   component: SpellingGrammarErrorDemo,
   decorators: [
     (Story) => (

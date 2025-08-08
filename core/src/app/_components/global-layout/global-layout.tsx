@@ -1,19 +1,17 @@
-import { Header } from './header';
+import { Logo } from '@k8o/arte-odyssey/icons';
+import { formatDate } from '@k8o/helpers/date';
+import Link from 'next/link';
+import type { FC, ReactNode } from 'react';
 import { ColorFilters } from '../color-filters';
 import { ContactToMe } from '../contact-to-me';
 import { ToggleTheme } from '../toggle-theme';
+import { Header } from './header';
 import { LlmLink } from './llm-link';
 import { NavigationMenu } from './navigation-menu';
 import { NewsLink } from './news-link';
 import { TagsLink } from './tags-link';
-import { Logo } from '@k8o/arte-odyssey/icons';
-import { formatDate } from '@k8o/helpers/date';
-import Link from 'next/link';
-import { FC, ReactNode } from 'react';
 
-export const GlobalLayout: FC<{ children: ReactNode }> = ({
-  children,
-}) => {
+export const GlobalLayout: FC<{ children: ReactNode }> = ({ children }) => {
   return (
     <div className="app-background flex min-h-svh flex-col">
       <Header>
@@ -47,8 +45,7 @@ export const GlobalLayout: FC<{ children: ReactNode }> = ({
       <footer className="flex items-center justify-center p-4">
         <div className="max-w-5xl">
           <p className="text-fg-mute md:text-lg">
-            ©︎ 2024〜{formatDate(new Date(), 'yyyy')} k8o. All Rights
-            Reserved.
+            ©︎ 2024〜{formatDate(new Date(), 'yyyy')} k8o. All Rights Reserved.
           </p>
         </div>
       </footer>

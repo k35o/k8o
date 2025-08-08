@@ -5,10 +5,7 @@ import { blogs, blogsRelations } from './blogs';
 import { comments, commentsRelations } from './comments';
 import { feedbacks, feedbacksRelations } from './feedback';
 import { quizAnswers, quizAnswersRelations } from './quiz-answers';
-import {
-  quizQuestions,
-  quizQuestionsRelations,
-} from './quiz-questions';
+import { quizQuestions, quizQuestionsRelations } from './quiz-questions';
 import { quizType } from './quiz-type';
 import { quizzes, quizzesRelations } from './quizzes';
 import { serviceTag, serviceTagRelations } from './service-tag';

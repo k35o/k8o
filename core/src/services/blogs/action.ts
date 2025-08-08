@@ -20,11 +20,10 @@ export const feedback = async (
   feedbackId: number | null,
   comment: string,
 ): Promise<Result> => {
-  if (!comment && !feedbackId) {
+  if (!(comment || feedbackId)) {
     return {
       success: false,
-      message:
-        'コメントまたはフィードバックIDのいずれかを入力してください',
+      message: 'コメントまたはフィードバックIDのいずれかを入力してください',
     };
   }
 
@@ -35,16 +34,12 @@ export const feedback = async (
     };
   }
 
-  const { success } = await checkRateLimit(
-    'feedback',
-    RateLimitType.FEEDBACK,
-  );
+  const { success } = await checkRateLimit('feedback', RateLimitType.FEEDBACK);
 
   if (!success) {
     return {
       success: false,
-      message:
-        '送信回数が上限に達しました。数分後に再度お試しください。',
+      message: '送信回数が上限に達しました。数分後に再度お試しください。',
     };
   }
 
@@ -62,7 +57,7 @@ export const feedback = async (
     .insert(comments)
     .values({
       message: comment,
-      feedbackId: feedbackId,
+      feedbackId,
     })
     .returning({ insertedId: comments.id });
 

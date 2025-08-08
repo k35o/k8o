@@ -1,6 +1,6 @@
 'use client';
 
-import { FC, useEffect, useRef } from 'react';
+import { type FC, useEffect, useRef } from 'react';
 
 const text = '食べれる';
 

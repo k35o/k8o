@@ -1,10 +1,3 @@
-import { Feedback } from './feedback';
-import { Recommend } from './recommend';
-import { TableOfContext } from './table-of-context';
-import { ViewCounter } from './view-counter';
-import { Subscribe } from '../subscribe';
-import { getBlogContent } from '#api/blog';
-import { ViewTransition } from '#libs/react';
 import { ErrorBoundary } from '@k8o/arte-odyssey/error-boundary';
 import {
   PublishDateIcon,
@@ -19,7 +12,14 @@ import { Separator } from '@k8o/arte-odyssey/separator';
 import { TextTag } from '@k8o/arte-odyssey/text-tag';
 import { formatDate } from '@k8o/helpers/date';
 import Link from 'next/link';
-import { FC, ReactNode, Suspense } from 'react';
+import { type FC, type ReactNode, Suspense } from 'react';
+import { getBlogContent } from '#api/blog';
+import { ViewTransition } from '#libs/react';
+import { Subscribe } from '../subscribe';
+import { Feedback } from './feedback';
+import { Recommend } from './recommend';
+import { TableOfContext } from './table-of-context';
+import { ViewCounter } from './view-counter';
 
 export const BlogLayout: FC<{
   children: ReactNode;
@@ -28,22 +28,17 @@ export const BlogLayout: FC<{
   const blog = await getBlogContent(slug);
 
   return (
-    <div className="gap-4 xl:flex xl:has-[>:nth-child(2)]:-mx-36">
+    <div className="xl:has-[>:nth-child(2)]:-mx-36 gap-4 xl:flex">
       <div className="m-auto flex flex-col gap-8 xl:max-w-4xl">
-        <article className="bg-bg-base/90 rounded-md px-3 pt-8 pb-14 sm:px-10">
+        <article className="rounded-md bg-bg-base/90 px-3 pt-8 pb-14 sm:px-10">
           <div className="flex flex-col gap-3">
             <ViewTransition name={`title-${slug}`}>
-              <h2 className="text-xl font-bold sm:text-2xl">
-                {blog.title}
-              </h2>
+              <h2 className="font-bold text-xl sm:text-2xl">{blog.title}</h2>
             </ViewTransition>
             {blog.description && (
               <ViewTransition name={`description-${slug}`}>
-                <div
-                  className="bg-bg-mute rounded-md p-4 sm:mt-4"
-                  aria-label="記事の要約"
-                >
-                  <p className="text-fg-base sm:text-md text-sm">
+                <div className="rounded-md bg-bg-mute p-4 sm:mt-4">
+                  <p className="text-fg-base text-sm sm:text-md">
                     {blog.description}
                   </p>
                 </div>
@@ -53,15 +48,15 @@ export const BlogLayout: FC<{
               <div className="flex self-end">
                 <LinkButton
                   href={blog.slideUrl}
-                  variant="outlined"
                   size="sm"
                   startIcon={<SlideIcon size="sm" />}
+                  variant="outlined"
                 >
                   スライドを見る
                 </LinkButton>
               </div>
             )}
-            <div className="text-fg-mute flex flex-col items-end gap-1 text-xs sm:flex-row sm:items-center sm:justify-end sm:gap-2 sm:text-sm">
+            <div className="flex flex-col items-end gap-1 text-fg-mute text-xs sm:flex-row sm:items-center sm:justify-end sm:gap-2 sm:text-sm">
               <div className="flex flex-wrap items-center justify-end gap-1">
                 <ViewTransition name={`date-${slug}`}>
                   <div className="flex items-center gap-1">
@@ -74,8 +69,8 @@ export const BlogLayout: FC<{
                   </div>
                 </ViewTransition>
               </div>
-              <ErrorBoundary fallback={<></>}>
-                <Suspense fallback={<></>}>
+              <ErrorBoundary fallback={null}>
+                <Suspense fallback={null}>
                   <div className="flex items-center gap-1">
                     <ViewIcon size="sm" />
                     <span className="sr-only">閲覧数</span>
@@ -96,15 +91,8 @@ export const BlogLayout: FC<{
                 <TagIcon size="sm" />
                 {blog.tags.map((tag) => {
                   return (
-                    <Link
-                      key={tag.id}
-                      href={`/tags/${tag.id.toString()}`}
-                    >
-                      <TextTag
-                        key={tag.id}
-                        text={tag.name}
-                        clickable
-                      />
+                    <Link href={`/tags/${tag.id.toString()}`} key={tag.id}>
+                      <TextTag clickable key={tag.id} text={tag.name} />
                     </Link>
                   );
                 })}
@@ -113,16 +101,16 @@ export const BlogLayout: FC<{
           </ViewTransition>
           {children}
         </article>
-        <ErrorBoundary fallback={<></>}>
-          <section className="bg-bg-base/90 w-full rounded-md px-3 pt-8 pb-14 sm:px-10">
+        <ErrorBoundary fallback={null}>
+          <section className="w-full rounded-md bg-bg-base/90 px-3 pt-8 pb-14 sm:px-10">
             <Feedback slug={slug} />
           </section>
         </ErrorBoundary>
-        <ErrorBoundary fallback={<></>}>
+        <ErrorBoundary fallback={null}>
           <Recommend slug={slug} />
         </ErrorBoundary>
       </div>
-      <ErrorBoundary fallback={<></>}>
+      <ErrorBoundary fallback={null}>
         <div className="hidden w-64 shrink-0 empty:hidden xl:block">
           <TableOfContext slug={slug} />
         </div>

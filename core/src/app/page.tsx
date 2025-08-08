@@ -1,8 +1,3 @@
-import { AppCard } from './_components/app-card';
-import { EmailTooltip } from './_components/email-tooltip';
-import arteodyssey from './_images/arteodyssey.png';
-import k8o from './_images/k8o.jpg';
-import { RoundedIcon } from './radius-maker/_components/rounded-icon';
 import { Card } from '@k8o/arte-odyssey/card';
 import { Heading } from '@k8o/arte-odyssey/heading';
 import { IconLink } from '@k8o/arte-odyssey/icon-link';
@@ -14,6 +9,11 @@ import {
 } from '@k8o/arte-odyssey/icons';
 import { TextTag } from '@k8o/arte-odyssey/text-tag';
 import Image from 'next/image';
+import { AppCard } from './_components/app-card';
+import { EmailTooltip } from './_components/email-tooltip';
+import arteodyssey from './_images/arteodyssey.png';
+import k8o from './_images/k8o.jpg';
+import { RoundedIcon } from './radius-maker/_components/rounded-icon';
 
 export default function Home() {
   return (
@@ -22,11 +22,11 @@ export default function Home() {
         <div className="p-6">
           <div className="flex flex-col items-center gap-6 sm:flex-row sm:gap-8">
             <Image
+              alt="k8oのアイコン"
               className="size-24 rounded-md sm:size-32"
+              height={128}
               src={k8o}
               width={128}
-              height={128}
-              alt="k8oのアイコン"
             />
 
             <div className="flex min-w-0 flex-1 flex-col gap-4">
@@ -34,10 +34,7 @@ export default function Home() {
                 <Heading type="h3">k8o</Heading>
                 <div className="flex flex-wrap items-center gap-2">
                   <EmailTooltip />
-                  <IconLink
-                    href="https://x.com/k8ome"
-                    label="Xのアカウント"
-                  >
+                  <IconLink href="https://x.com/k8ome" label="Xのアカウント">
                     <TwitterIcon />
                   </IconLink>
                   <IconLink
@@ -62,9 +59,9 @@ export default function Home() {
               </div>
 
               <div className="flex flex-wrap gap-2">
-                <TextTag text="フロントエンド" size="sm" />
-                <TextTag text="TypeScript" size="sm" />
-                <TextTag text="デザイン" size="sm" />
+                <TextTag size="sm" text="フロントエンド" />
+                <TextTag size="sm" text="TypeScript" />
+                <TextTag size="sm" text="デザイン" />
               </div>
 
               <p className="text-fg-mute text-sm leading-relaxed">
@@ -84,35 +81,35 @@ export default function Home() {
         </div>
         <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
           <AppCard
+            description="k8oのブログです。ジャンルを問わず、身の回りのことを書きます。"
             link="/blog"
             symbol="📕"
             title="Blog"
-            description="k8oのブログです。ジャンルを問わず、身の回りのことを書きます。"
           />
           <AppCard
+            description="過去の登壇内容をまとめたページです。講演のテーマや資料へのリンクを掲載しています。"
             link="/talks"
             symbol="🎙️"
             title="Talks"
-            description="過去の登壇内容をまとめたページです。講演のテーマや資料へのリンクを掲載しています。"
           />
           <AppCard
+            description="Blogのために作成したサンプルや趣味で作成した試作品を集めました。"
             link="/playgrounds"
             symbol="👾"
             title="Playgrounds"
-            description="Blogのために作成したサンプルや趣味で作成した試作品を集めました。"
           />
           <AppCard
+            description="k8o.meで利用しているデザインシステムを紹介します。コンポーネントやデザイントークンを確認できます。"
             link="/design-system"
             symbol={
               <Image
-                src={arteodyssey}
                 alt=""
                 className="size-16"
                 loading="eager"
+                src={arteodyssey}
               />
             }
             title="ArteOdyssey"
-            description="k8o.meで利用しているデザインシステムを紹介します。コンポーネントやデザイントークンを確認できます。"
           />
         </div>
       </div>
@@ -125,58 +122,58 @@ export default function Home() {
         </div>
         <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
           <AppCard
+            description="テキストの文字数を数えます。ひらがな・カタカナ・漢字・アルファベット・記号・絵文字など、文字の種類を問わず数えられます。"
             link="/moji-count"
             symbol="📏"
             title="もじカウント"
-            description="テキストの文字数を数えます。ひらがな・カタカナ・漢字・アルファベット・記号・絵文字など、文字の種類を問わず数えられます。"
           />
           <AppCard
+            description="日本語で書かれた文章の誤字や脱字、文法ミス、表現の改善ポイントをチェックします。"
             link="/japanese-text-fixer"
             symbol="🧐"
             title="日本語校正くん"
-            description="日本語で書かれた文章の誤字や脱字、文法ミス、表現の改善ポイントをチェックします。"
           />
           <AppCard
+            description="任意のテキストやURLからQRコードを生成できるツールです。"
             link="/qr-generator"
             symbol="📱"
             title="QRKit"
-            description="任意のテキストやURLからQRコードを生成できるツールです。"
           />
           <AppCard
+            description="2進数・8進数・10進数・16進数を相互に変換します。"
             link="/base-converter"
             symbol="🧬"
             title="基数チェンジャー"
-            description="2進数・8進数・10進数・16進数を相互に変換します。"
           />
           <AppCard
+            description="選択した2つの色からコントラスト比を計算します。WCAGが定める基準から色の組み合わせの妥当性を確認できます。"
             link="/contrast-checker"
             symbol="⚖️"
             title="コントラストチェッカー"
-            description="選択した2つの色からコントラスト比を計算します。WCAGが定める基準から色の組み合わせの妥当性を確認できます。"
           />
           <AppCard
+            description="RGBとHEXのように、特定の色の異なる表現を確認します。"
             link="/color-converter"
             symbol="🎨"
             title="カラーコード職人"
-            description="RGBとHEXのように、特定の色の異なる表現を確認します。"
           />
           <AppCard
+            description="角丸を変化させてお気に入りの図形を探しましょう"
             link="/radius-maker"
             symbol={<RoundedIcon />}
             title="かどまるラボ"
-            description="角丸を変化させてお気に入りの図形を探しましょう"
           />
           <AppCard
+            description="データベースのテーブルを作成するSQL文を発行します。"
             link="/sql-table-builder"
             symbol="🔨"
             title="SQLテーブルメーカー"
-            description="データベースのテーブルを作成するSQL文を発行します。"
           />
           <AppCard
+            description="色々なジャンルのクイズを出します"
             link="/quizzes"
             symbol="💡"
             title="Quizzes"
-            description="色々なジャンルのクイズを出します"
           />
         </div>
       </div>

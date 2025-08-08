@@ -1,9 +1,6 @@
 import { useEffect } from 'react';
 
-export const useTimeout = (
-  callback: () => void,
-  delay: number,
-): void => {
+export const useTimeout = (callback: () => void, delay: number): void => {
   useEffect(() => {
     let timeoutId: number | null = null;
 

@@ -1,5 +1,5 @@
-import { getQuizzes } from '../quiz';
 import { db } from '#database/db';
+import { getQuizzes } from '../quiz';
 
 vi.mock('#database/db');
 
@@ -33,9 +33,7 @@ describe('quiz', () => {
 
     expect(quizzes).toHaveLength(1);
     expect(quizzes[0]?.id).toBe(1);
-    expect(quizzes[0]?.question).toBe(
-      'What is the capital of France?',
-    );
+    expect(quizzes[0]?.question).toBe('What is the capital of France?');
     expect(quizzes[0]?.highlight).toBe('Highlight text');
     expect(quizzes[0]?.answers).toHaveLength(1);
     expect(quizzes[0]?.answers[0]?.answer).toBe('Paris');

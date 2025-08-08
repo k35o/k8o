@@ -1,5 +1,5 @@
-import { TalkCard } from './talk-card';
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
+import { TalkCard } from './talk-card';
 
 const meta: Meta<typeof TalkCard> = {
   title: 'app/talks/talk-card',

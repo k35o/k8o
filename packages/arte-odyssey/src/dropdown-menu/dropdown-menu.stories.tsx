@@ -1,6 +1,6 @@
+import type { Meta, StoryObj } from '@storybook/react-vite';
 import { DarkModeIcon } from '../icons';
 import { DropdownMenu } from './dropdown-menu';
-import type { Meta, StoryObj } from '@storybook/react-vite';
 
 const meta: Meta<typeof DropdownMenu.Root> = {
   title: 'components/dropdown-menu',

@@ -1,9 +1,9 @@
-import { FC } from 'react';
+import type { FC } from 'react';
 
 export const RoundedIcon: FC = () => {
   return (
     <div
-      className="bg-primary-fg h-16 w-16"
+      className="h-16 w-16 bg-primary-fg"
       style={{
         borderBottomLeftRadius: '63% 57%',
         borderBottomRightRadius: '37% 63%',

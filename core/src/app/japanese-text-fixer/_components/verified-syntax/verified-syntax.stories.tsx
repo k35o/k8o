@@ -1,6 +1,6 @@
-import { VerifiedSyntax } from './verified-syntax';
-import { CheckSyntaxProvider } from '../../_state/text';
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
+import { CheckSyntaxProvider } from '../../_state/text';
+import { VerifiedSyntax } from './verified-syntax';
 
 const meta: Meta<typeof VerifiedSyntax> = {
   title: 'app/japanese-text-fixer/verified-syntax',

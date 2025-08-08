@@ -1,12 +1,9 @@
-import { useSyncExternalStore, useCallback, useMemo } from 'react';
+import { useCallback, useMemo, useSyncExternalStore } from 'react';
 
 const dispatchStorageEvent = (key: string, newValue: string | null) =>
-  window.dispatchEvent(
-    new StorageEvent('storage', { key, newValue }),
-  );
+  window.dispatchEvent(new StorageEvent('storage', { key, newValue }));
 
-const getLocalStorageItem = (key: string) =>
-  window.localStorage.getItem(key);
+const getLocalStorageItem = (key: string) => window.localStorage.getItem(key);
 
 const localStorageSubscribe = (cb: () => void) => {
   window.addEventListener('storage', cb);
@@ -50,7 +47,7 @@ export const useLocalStorage = <T>(key: string, initialValue: T) => {
         dispatchStorageEvent(key, stringifiedValue);
       }
     },
-    [key],
+    [key, handleRemove],
   );
 
   return [current, setState, handleRemove] as const;

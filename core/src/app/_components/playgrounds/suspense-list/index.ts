@@ -1,7 +1,7 @@
-import { PlaygroundSection } from '../types';
+import type { PlaygroundSection } from '../types';
 import { SuspenseListDemo } from './suspense-list-demo';
 
-export { SuspenseListDemo };
+export { SuspenseListDemo } from './suspense-list-demo';
 
 export const suspenseListSection: PlaygroundSection = {
   id: 'suspense-list',

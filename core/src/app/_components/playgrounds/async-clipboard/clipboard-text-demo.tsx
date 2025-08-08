@@ -3,14 +3,12 @@
 import { Button } from '@k8o/arte-odyssey/button';
 import { FormControl } from '@k8o/arte-odyssey/form/form-control';
 import { TextField } from '@k8o/arte-odyssey/form/text-field';
-import { FC, useEffect, useState } from 'react';
+import { type FC, useEffect, useState } from 'react';
 
 export const ClipboardTextDemo: FC = () => {
   const [text, setText] = useState<string>('');
-  const [readPermissions, setReadPermissions] =
-    useState<PermissionState>();
-  const [writePermissions, setWritePermissions] =
-    useState<PermissionState>();
+  const [readPermissions, setReadPermissions] = useState<PermissionState>();
+  const [writePermissions, setWritePermissions] = useState<PermissionState>();
 
   const copyText = async () => {
     await navigator.clipboard.writeText(text);
@@ -62,33 +60,29 @@ export const ClipboardTextDemo: FC = () => {
     <div className="flex flex-col items-center gap-4">
       <div>
         <p>
-          クリップボードの読み取り:{' '}
-          {readPermissions ?? '読み込めませんでした'}
+          クリップボードの読み取り: {readPermissions ?? '読み込めませんでした'}
         </p>
         <p>
-          クリップボードの書き込み:{' '}
-          {writePermissions ?? '読み込めませんでした'}
+          クリップボードの書き込み: {writePermissions ?? '読み込めませんでした'}
         </p>
       </div>
       <FormControl
+        isDisabled={false}
+        isInvalid={false}
+        isRequired={false}
+        label="テキスト"
         renderInput={({ labelId: _, ...props }) => (
           <TextField
-            value={text}
             onChange={(e) => {
               setText(e.currentTarget.value);
             }}
+            value={text}
             {...props}
           />
         )}
-        label="テキスト"
-        isRequired={false}
-        isDisabled={false}
-        isInvalid={false}
       />
       <div className="flex flex-wrap gap-4">
-        <Button onClick={() => void copyText()}>
-          クリップボードにコピー
-        </Button>
+        <Button onClick={() => void copyText()}>クリップボードにコピー</Button>
         <Button onClick={() => void pasteText()}>
           クリップボードからペースト
         </Button>

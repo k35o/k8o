@@ -1,7 +1,7 @@
 import { Heading } from '@k8o/arte-odyssey/heading';
 import { TagIcon } from '@k8o/arte-odyssey/icons';
 import Link from 'next/link';
-import { PropsWithChildren } from 'react';
+import type { PropsWithChildren } from 'react';
 
 export const metadata = {
   title: 'Tags',

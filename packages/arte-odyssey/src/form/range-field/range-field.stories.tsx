@@ -1,6 +1,6 @@
-import { RangeField } from './range-field';
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { useState } from 'react';
+import { RangeField } from './range-field';
 
 const meta: Meta<typeof RangeField> = {
   title: 'components/form/RangeField',
@@ -32,11 +32,11 @@ export const Default: Story = {
       <div className="w-80">
         <RangeField
           {...args}
-          value={value}
           onChange={(newValue) => {
             setValue(newValue);
             args.onChange(newValue);
           }}
+          value={value}
         />
       </div>
     );
@@ -60,11 +60,11 @@ export const WithUnit: Story = {
       <div className="w-80">
         <RangeField
           {...args}
-          value={value}
           onChange={(newValue) => {
             setValue(newValue);
             args.onChange(newValue);
           }}
+          value={value}
         />
       </div>
     );
@@ -89,11 +89,11 @@ export const WithoutValue: Story = {
       <div className="w-80">
         <RangeField
           {...args}
-          value={value}
           onChange={(newValue) => {
             setValue(newValue);
             args.onChange(newValue);
           }}
+          value={value}
         />
       </div>
     );
@@ -117,11 +117,11 @@ export const Disabled: Story = {
       <div className="w-80">
         <RangeField
           {...args}
-          value={value}
           onChange={(newValue) => {
             setValue(newValue);
             args.onChange(newValue);
           }}
+          value={value}
         />
       </div>
     );
@@ -145,11 +145,11 @@ export const Invalid: Story = {
       <div className="w-80">
         <RangeField
           {...args}
-          value={value}
           onChange={(newValue) => {
             setValue(newValue);
             args.onChange(newValue);
           }}
+          value={value}
         />
       </div>
     );

@@ -1,11 +1,11 @@
 'use client';
 
+import { useRouter } from 'next/navigation';
+import { type FC, useCallback, useMemo, useState } from 'react';
+import type { Quiz } from '@/services/quizzes';
 import { Answer } from '../answer';
 import { Complete } from '../complete';
 import { QuizProgress } from '../quiz-progress';
-import { Quiz } from '@/services/quizzes';
-import { useRouter } from 'next/navigation';
-import { FC, useCallback, useMemo, useState } from 'react';
 
 type QuestionProps = FC<{
   quizzes: Quiz[];
@@ -51,26 +51,23 @@ export const Question: QuestionProps = ({ quizzes }) => {
   if (status === 'complete') {
     return (
       <Complete
-        score={score}
         maxCount={quizzes.length}
-        reset={handleReset}
         quizzes={quizzes}
+        reset={handleReset}
+        score={score}
       />
     );
   }
 
   return (
     <div className="flex flex-col gap-10">
-      <QuizProgress
-        progress={count + 1}
-        maxProgress={quizzes.length}
-      />
+      <QuizProgress maxProgress={quizzes.length} progress={count + 1} />
       <Answer
-        key={count}
         currentQuiz={currentQuiz}
-        status={status}
         handleAnswer={handleAnswer}
         handleNextQuestion={handleNextQuestion}
+        key={count}
+        status={status}
       />
     </div>
   );

@@ -4,17 +4,17 @@ import { NewsIcon } from '@k8o/arte-odyssey/icons';
 import { LinkButton } from '@k8o/arte-odyssey/link-button';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { FC } from 'react';
+import type { FC } from 'react';
 
 export const NewsLink: FC = () => {
   const pathname = usePathname();
   return (
     <LinkButton
+      active={pathname.startsWith('/news')}
       href="/news"
+      renderAnchor={(props) => <Link {...props} />}
       startIcon={<NewsIcon />}
       variant="skeleton"
-      active={pathname.startsWith('/news')}
-      renderAnchor={(props) => <Link {...props} />}
     >
       お知らせ
     </LinkButton>

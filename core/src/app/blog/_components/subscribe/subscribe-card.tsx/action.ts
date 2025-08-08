@@ -3,10 +3,7 @@
 import { after } from '#next/server';
 import { subscribe } from '@/services/subscriptions/subscribe';
 
-export const registerEmail = async (
-  _: unknown,
-  formData: FormData,
-) => {
+export const registerEmail = async (_: unknown, formData: FormData) => {
   const email = formData.get('email') as string | null;
 
   if (!email) {

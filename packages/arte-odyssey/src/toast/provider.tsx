@@ -1,25 +1,25 @@
 'use client';
 
-import { Toast } from './toast';
-import { Status } from '@k8o/helpers';
+import type { Status } from '@k8o/helpers';
 import { cn } from '@k8o/helpers/cn';
 import { uuidV4 } from '@k8o/helpers/uuid-v4';
-import { AnimatePresence, Variants } from 'motion/react';
+import { AnimatePresence, type Variants } from 'motion/react';
 import * as motion from 'motion/react-client';
 import {
   createContext,
-  Dispatch,
-  FC,
-  PropsWithChildren,
-  SetStateAction,
-  useCallback,
+  type Dispatch,
+  type FC,
+  type PropsWithChildren,
+  type RefObject,
+  type SetStateAction,
   use,
+  useCallback,
   useEffect,
   useRef,
   useState,
-  RefObject,
 } from 'react';
 import { createPortal } from 'react-dom';
+import { Toast } from './toast';
 
 type ToastType = {
   id: string;
@@ -114,10 +114,9 @@ export const ToastProvider: FC<
       {children}
       {container
         ? createPortal(
-            <div
-              role="region"
-              aria-live="polite"
+            <section
               aria-label="通知"
+              aria-live="polite"
               className={cn(
                 'absolute bottom-3 z-50 flex w-full flex-col items-center justify-center gap-4',
                 position === 'fixed' && 'fixed',
@@ -127,25 +126,29 @@ export const ToastProvider: FC<
               <AnimatePresence initial={false}>
                 {toasts.map((toast) => (
                   <motion.div
+                    animate="animate"
+                    custom={{ position: 'bottom' }}
+                    exit="exit"
+                    initial="initial"
                     key={toast.id}
                     layout
                     variants={toastMotionVariants}
-                    initial="initial"
-                    animate="animate"
-                    exit="exit"
-                    custom={{ position: 'bottom' }}
                   >
                     <div
-                      role="status"
                       aria-atomic={true}
                       className="shadow-lg"
+                      role={
+                        toast.status === 'error' || toast.status === 'warning'
+                          ? 'alert'
+                          : 'status'
+                      }
                     >
                       <Toast {...toast} />
                     </div>
                   </motion.div>
                 ))}
               </AnimatePresence>
-            </div>,
+            </section>,
             container,
           )
         : null}

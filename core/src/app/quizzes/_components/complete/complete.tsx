@@ -1,12 +1,12 @@
-import { CollectionByHighlight } from '../collection';
-import { Quiz } from '@/services/quizzes';
 import { Button } from '@k8o/arte-odyssey/button';
 import { Heading } from '@k8o/arte-odyssey/heading';
 import { HistoryIcon, ListIcon } from '@k8o/arte-odyssey/icons';
 import { LinkButton } from '@k8o/arte-odyssey/link-button';
 import { cn } from '@k8o/helpers/cn';
 import Link from 'next/link';
-import { FC } from 'react';
+import type { FC } from 'react';
+import type { Quiz } from '@/services/quizzes';
+import { CollectionByHighlight } from '../collection';
 
 export const Complete: FC<{
   score: number;
@@ -33,9 +33,9 @@ export const Complete: FC<{
       <div className="flex flex-col-reverse justify-around gap-6 md:w-full md:flex-row">
         <LinkButton
           href="/quizzes/fish-kanji/list"
-          variant="outlined"
-          startIcon={<ListIcon />}
           renderAnchor={(props) => <Link {...props} />}
+          startIcon={<ListIcon />}
+          variant="outlined"
         >
           うおへんの漢字一覧
         </LinkButton>

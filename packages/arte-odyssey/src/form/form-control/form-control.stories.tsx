@@ -1,7 +1,7 @@
-import { FormControl } from './form-control';
-import { TextField } from '../text-field';
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { useState } from 'react';
+import { TextField } from '../text-field';
+import { FormControl } from './form-control';
 
 const meta: Meta<typeof FormControl> = {
   title: 'components/form/form-control',
@@ -12,10 +12,10 @@ const meta: Meta<typeof FormControl> = {
       return (
         <TextField
           {...props}
-          value={state}
           onChange={(e) => {
             setState(e.target.value);
           }}
+          value={state}
         />
       );
     },

@@ -1,7 +1,7 @@
-import { PlaygroundSection } from '../types';
+import type { PlaygroundSection } from '../types';
 import { CssMathFunctionsDemo } from './css-math-functions-demo';
 
-export { CssMathFunctionsDemo };
+export { CssMathFunctionsDemo } from './css-math-functions-demo';
 
 export const absSignSection: PlaygroundSection = {
   id: 'abs-sign',
@@ -9,7 +9,5 @@ export const absSignSection: PlaygroundSection = {
   description: '数値の絶対値と符号を取得するCSS関数です。',
   type: 'blog',
   slug: 'abs-sign',
-  demos: [
-    { component: CssMathFunctionsDemo, title: 'CSS数学関数デモ' },
-  ],
+  demos: [{ component: CssMathFunctionsDemo, title: 'CSS数学関数デモ' }],
 };

@@ -1,8 +1,6 @@
 import { ipAddress as vercelIpAddress } from '@vercel/functions';
 
-export const ipAddress = (
-  req: Request | Headers,
-): string | undefined => {
+export const ipAddress = (req: Request | Headers): string | undefined => {
   // Cloudflareを経由するとCF-Connecting-IPヘッダーにユーザーのIPアドレスが入っている
   const headers = 'headers' in req ? req.headers : req;
   const cfConnectingIp = headers.get('CF-Connecting-IP');

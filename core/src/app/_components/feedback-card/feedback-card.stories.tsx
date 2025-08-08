@@ -1,6 +1,6 @@
-import { FeedbackCard } from './feedback-card';
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 import { fn } from 'storybook/test';
+import { FeedbackCard } from './feedback-card';
 
 const meta: Meta<typeof FeedbackCard> = {
   title: 'app/globals/feedback-card',

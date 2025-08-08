@@ -1,6 +1,6 @@
-import { TooltipDropdownDemo } from './tooltip-dropdown-demo';
-import { Playground } from '../playground';
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
+import { Playground } from '../playground';
+import { TooltipDropdownDemo } from './tooltip-dropdown-demo';
 
 const meta: Meta<typeof TooltipDropdownDemo> = {
   title: 'playgrounds/popover/TooltipDropdownDemo',

@@ -1,5 +1,5 @@
-import { ControlPanel } from './control-panel';
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
+import { ControlPanel } from './control-panel';
 
 const meta: Meta<typeof ControlPanel> = {
   title: 'app/radius-maker/control-panel',

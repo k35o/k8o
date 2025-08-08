@@ -1,16 +1,5 @@
 'use client';
 
-import { ColorContrastBg } from './color-contrast-bg';
-import { ColorContrastFg } from './color-contrast-fg';
-import {
-  hexToHsl,
-  hexToRgb,
-} from '@/app/color-converter/_utils/color-converter';
-import {
-  Color,
-  getColorCode,
-  Stage,
-} from '@/app/design-system/_utils/color';
 import {
   ChevronIcon,
   ColorContrastIcon,
@@ -19,7 +8,18 @@ import {
 import { cn } from '@k8o/helpers/cn';
 import { toPrecision } from '@k8o/helpers/number';
 import * as motion from 'motion/react-client';
-import { FC, useId, useState } from 'react';
+import { type FC, useId, useState } from 'react';
+import {
+  hexToHsl,
+  hexToRgb,
+} from '@/app/color-converter/_utils/color-converter';
+import {
+  type Color,
+  getColorCode,
+  type Stage,
+} from '@/app/design-system/_utils/color';
+import { ColorContrastBg } from './color-contrast-bg';
+import { ColorContrastFg } from './color-contrast-fg';
 
 export const ColorInfo: FC<{
   name: string;
@@ -39,35 +39,36 @@ export const ColorInfo: FC<{
   return (
     <motion.div
       className={cn(
-        'border-border-base flex flex-col rounded-md border',
+        'flex flex-col rounded-md border border-border-base',
         isOpen && 'col-span-full',
       )}
+      layout
       transition={{
         default: { ease: 'easeInOut' },
         layout: { duration: 0.3 },
       }}
-      layout
     >
       <button
-        aria-expanded={isOpen}
         aria-controls={`${id}-panel`}
+        aria-expanded={isOpen}
         aria-label={
           isOpen
             ? `${name}の詳細情報を非表示にする`
             : `${name}の詳細情報を表示する`
         }
-        id={`${id}-button`}
         className={cn(
           'flex items-center justify-between gap-4 p-4',
-          'hover:bg-bg-mute rounded-md',
-          'focus-visible::first:ring-border-info focus-visible:bg-bg-mute',
+          'rounded-md hover:bg-bg-mute',
+          'focus-visible:bg-bg-mute focus-visible::first:ring-border-info',
         )}
+        id={`${id}-button`}
         onClick={() => {
           setIsOpen((prev) => !prev);
         }}
+        type="button"
       >
         <div className="flex items-center gap-4">
-          <div className="border-border-base flex rounded-full border">
+          <div className="flex rounded-full border border-border-base">
             <div
               className="h-12 w-6 rounded-l-full"
               style={{
@@ -81,7 +82,7 @@ export const ColorInfo: FC<{
               }}
             />
           </div>
-          <p className="text-xl font-bold">{name}</p>
+          <p className="font-bold text-xl">{name}</p>
         </div>
         <motion.span
           animate={isOpen ? { rotate: 180 } : { rotate: 0 }}
@@ -90,12 +91,7 @@ export const ColorInfo: FC<{
           <ChevronIcon direction="down" />
         </motion.span>
       </button>
-      <motion.div
-        id={`${id}-panel`}
-        role="region"
-        aria-labelledby={`${id}-button`}
-        hidden={!isOpen}
-        className={isOpen ? undefined : 'hidden'}
+      <motion.section
         animate={{
           opacity: isOpen ? 1 : 0,
           height: isOpen ? 'auto' : 0,
@@ -104,41 +100,45 @@ export const ColorInfo: FC<{
             delay: 0.3,
           },
         }}
+        aria-labelledby={`${id}-button`}
+        className={isOpen ? undefined : 'hidden'}
+        hidden={!isOpen}
+        id={`${id}-panel`}
       >
         <div className="flex flex-col gap-4 p-4 pt-2">
           <section className="flex flex-col gap-2">
-            <p className="flex items-center text-lg font-bold">
+            <p className="flex items-center font-bold text-lg">
               <ColorInfoIcon />
               色の情報（light&nbsp;/&nbsp;dark）
             </p>
             <p className="font-bold">
               基本色:&nbsp;
-              <span className="text-lg font-normal">
+              <span className="font-normal text-lg">
                 {`${code} / ${codeDark}`}
               </span>
             </p>
             <p className="font-bold">
               HEX:&nbsp;
-              <span className="text-lg font-normal">
+              <span className="font-normal text-lg">
                 {`${colorCode} / ${colorCodeDark}`}
               </span>
             </p>
             <p className="font-bold">
               RGB:&nbsp;
-              <span className="text-lg font-normal">
+              <span className="font-normal text-lg">
                 {`${rgb.r.toString()},${rgb.g.toString()},${rgb.b.toString()} / ${rgbDark.r.toString()},${rgbDark.g.toString()},${rgbDark.b.toString()}`}
               </span>
             </p>
             <p className="font-bold">
               HSL:&nbsp;
-              <span className="text-lg font-normal">
+              <span className="font-normal text-lg">
                 {`${toPrecision(hsl.h, 0).toString()},${toPrecision(hsl.s, 0).toString()},${toPrecision(hsl.l, 0).toString()} / ${toPrecision(hslDark.h, 0).toString()},${toPrecision(hslDark.s, 0).toString()},${toPrecision(hslDark.l, 0).toString()}`}
               </span>
             </p>
           </section>
           {(variant === 'foreground' || variant === 'background') && (
             <section className="flex flex-col gap-2">
-              <p className="flex items-center text-lg font-bold">
+              <p className="flex items-center font-bold text-lg">
                 <ColorContrastIcon />
                 色のコントラスト
               </p>
@@ -157,7 +157,7 @@ export const ColorInfo: FC<{
             </section>
           )}
         </div>
-      </motion.div>
+      </motion.section>
     </motion.div>
   );
 };

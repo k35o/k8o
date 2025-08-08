@@ -1,11 +1,11 @@
 // server-onlyをモック
 vi.mock('server-only', () => ({}));
 
-import { feedback } from './action';
+import { checkRateLimit } from '@k8o/helpers/ratelimit';
 import { db } from '#database/db';
 import { blogComment } from '@/database/schema/blog-comment';
 import { comments } from '@/database/schema/comments';
-import { checkRateLimit } from '@k8o/helpers/ratelimit';
+import { feedback } from './action';
 
 vi.mock('#database/db');
 vi.mock('@k8o/helpers/ratelimit');
@@ -21,8 +21,7 @@ describe('feedback', () => {
 
     expect(result).toEqual({
       success: false,
-      message:
-        'コメントまたはフィードバックIDのいずれかを入力してください',
+      message: 'コメントまたはフィードバックIDのいずれかを入力してください',
     });
   });
 
@@ -54,8 +53,7 @@ describe('feedback', () => {
 
     expect(result).toEqual({
       success: false,
-      message:
-        '送信回数が上限に達しました。数分後に再度お試しください。',
+      message: '送信回数が上限に達しました。数分後に再度お試しください。',
     });
   });
 
@@ -74,11 +72,7 @@ describe('feedback', () => {
     });
     vi.mocked(db.query.blogs.findFirst).mockResolvedValue(undefined);
 
-    const result = await feedback(
-      'non-existent-slug',
-      1,
-      'test comment',
-    );
+    const result = await feedback('non-existent-slug', 1, 'test comment');
 
     expect(result).toEqual({
       success: false,

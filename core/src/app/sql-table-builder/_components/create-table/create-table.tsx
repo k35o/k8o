@@ -1,7 +1,7 @@
-import { InvalidTable, Table } from '../../_types/table';
 import { FormControl } from '@k8o/arte-odyssey/form/form-control';
 import { TextField } from '@k8o/arte-odyssey/form/text-field';
-import { ChangeEvent, FC } from 'react';
+import type { ChangeEvent, FC } from 'react';
+import type { InvalidTable, Table } from '../../_types/table';
 
 type Props = {
   table: Table;
@@ -9,54 +9,46 @@ type Props = {
   tableError: InvalidTable['errors'] | undefined;
 };
 
-export const CreateTable: FC<Props> = ({
-  table,
-  setTable,
-  tableError,
-}) => {
-  const handleChangeTableName = (
-    e: ChangeEvent<HTMLInputElement>,
-  ) => {
+export const CreateTable: FC<Props> = ({ table, setTable, tableError }) => {
+  const handleChangeTableName = (e: ChangeEvent<HTMLInputElement>) => {
     setTable({ ...table, name: e.target.value });
   };
 
-  const handleChangeTableAlias = (
-    e: ChangeEvent<HTMLInputElement>,
-  ) => {
+  const handleChangeTableAlias = (e: ChangeEvent<HTMLInputElement>) => {
     setTable({ ...table, alias: e.target.value });
   };
 
   return (
     <fieldset className="p-2">
-      <legend className="text-lg font-bold">テーブル情報</legend>
+      <legend className="font-bold text-lg">テーブル情報</legend>
       <div className="flex flex-col justify-center gap-4">
         <FormControl
-          label="テーブル名"
-          isRequired
-          isInvalid={Boolean(tableError?.name)}
           errorText={tableError?.name}
+          isInvalid={Boolean(tableError?.name)}
+          isRequired
+          label="テーブル名"
           renderInput={({ labelId: _, ...props }) => {
             return (
               <TextField
-                value={table.name}
                 onChange={handleChangeTableName}
                 placeholder="users"
+                value={table.name}
                 {...props}
               />
             );
           }}
         />
         <FormControl
-          label="コメント"
-          isRequired
-          isInvalid={Boolean(tableError?.alias)}
           errorText={tableError?.alias}
+          isInvalid={Boolean(tableError?.alias)}
+          isRequired
+          label="コメント"
           renderInput={({ labelId: _, ...props }) => {
             return (
               <TextField
-                value={table.alias}
                 onChange={handleChangeTableAlias}
                 placeholder="ユーザーテーブル"
+                value={table.alias}
                 {...props}
               />
             );

@@ -1,14 +1,10 @@
-import {
-  Column,
-  ColumnType,
-  InvalidColumns,
-} from '../../_types/column';
 import { Checkbox } from '@k8o/arte-odyssey/form/checkbox';
 import { Select } from '@k8o/arte-odyssey/form/select';
 import { TextField } from '@k8o/arte-odyssey/form/text-field';
 import { IconButton } from '@k8o/arte-odyssey/icon-button';
 import { CloseIcon } from '@k8o/arte-odyssey/icons';
-import { FC, useId } from 'react';
+import { type FC, useId } from 'react';
+import type { Column, ColumnType, InvalidColumns } from '../../_types/column';
 
 type Props = {
   handleChangeColumn: (id: string) => (column: Column) => void;
@@ -40,16 +36,16 @@ export const CreateColumnsByTable: FC<Props> = ({
   const formId = useId();
 
   return (
-    <div className="border-border-base bg-bg-base w-[calc(100vw-48px)] max-w-[53rem] overflow-x-auto rounded-lg border">
+    <div className="w-[calc(100vw-48px)] max-w-[53rem] overflow-x-auto rounded-lg border border-border-base bg-bg-base">
       <table className="w-[51rem]">
         <thead>
           <tr className="border-border-base border-b">
-            <th className="px-2 py-3 text-nowrap">カラム名</th>
-            <th className="px-2 py-3 text-nowrap">コメント</th>
-            <th className="px-2 py-3 text-nowrap">型</th>
-            <th className="px-2 py-3 text-nowrap">null許容</th>
-            <th className="px-2 py-3 text-nowrap">デフォルト値</th>
-            <th className="px-2 py-3"></th>
+            <th className="text-nowrap px-2 py-3">カラム名</th>
+            <th className="text-nowrap px-2 py-3">コメント</th>
+            <th className="text-nowrap px-2 py-3">型</th>
+            <th className="text-nowrap px-2 py-3">null許容</th>
+            <th className="text-nowrap px-2 py-3">デフォルト値</th>
+            <th className="px-2 py-3" />
           </tr>
         </thead>
         <tbody>
@@ -59,13 +55,15 @@ export const CreateColumnsByTable: FC<Props> = ({
               <tr key={id}>
                 <td className="px-2 py-3">
                   <TextField
-                    id={`column-name_${idx.toString()}-${formId}`}
                     describedbyId={
                       columnError?.name
                         ? `column-name_${idx.toString()}-${formId}-feedback`
                         : undefined
                     }
-                    value={column.name}
+                    id={`column-name_${idx.toString()}-${formId}`}
+                    isDisabled={false}
+                    isInvalid={Boolean(columnError?.name)}
+                    isRequired={true}
                     onChange={(e) => {
                       handleChangeColumn(id)({
                         ...column,
@@ -73,14 +71,12 @@ export const CreateColumnsByTable: FC<Props> = ({
                       });
                     }}
                     placeholder="id"
-                    isInvalid={Boolean(columnError?.name)}
-                    isDisabled={false}
-                    isRequired={true}
+                    value={column.name}
                   />
                   {columnError?.name && (
                     <p
-                      id={`column-name_${idx.toString()}-${formId}-feedback`}
                       className="text-fg-error text-sm"
+                      id={`column-name_${idx.toString()}-${formId}-feedback`}
                     >
                       {columnError.name}
                     </p>
@@ -88,13 +84,15 @@ export const CreateColumnsByTable: FC<Props> = ({
                 </td>
                 <td className="px-2 py-3">
                   <TextField
-                    id={`column-alias_${idx.toString()}-${formId}`}
                     describedbyId={
                       columnError?.alias
                         ? `column-alias-${idx.toString()}-${formId}-feedback`
                         : undefined
                     }
-                    value={column.alias}
+                    id={`column-alias_${idx.toString()}-${formId}`}
+                    isDisabled={false}
+                    isInvalid={Boolean(columnError?.alias)}
+                    isRequired={true}
                     onChange={(e) => {
                       handleChangeColumn(id)({
                         ...column,
@@ -102,14 +100,12 @@ export const CreateColumnsByTable: FC<Props> = ({
                       });
                     }}
                     placeholder="ID"
-                    isInvalid={Boolean(columnError?.alias)}
-                    isDisabled={false}
-                    isRequired={true}
+                    value={column.alias}
                   />
                   {columnError?.alias && (
                     <p
-                      id={`column-alias-${idx.toString()}-${formId}-feedback`}
                       className="text-fg-error text-sm"
+                      id={`column-alias-${idx.toString()}-${formId}-feedback`}
                     >
                       {columnError.alias}
                     </p>
@@ -117,13 +113,15 @@ export const CreateColumnsByTable: FC<Props> = ({
                 </td>
                 <td className="px-2 py-3">
                   <Select
-                    id={`column-type_${idx.toString()}-${formId}`}
                     describedbyId={
                       columnError?.type
                         ? `column-type_${idx.toString()}-${formId}-feedback`
                         : undefined
                     }
-                    value={column.type}
+                    id={`column-type_${idx.toString()}-${formId}`}
+                    isDisabled={false}
+                    isInvalid={Boolean(columnError?.type)}
+                    isRequired={true}
                     onChange={(e) => {
                       handleChangeColumn(id)({
                         ...column,
@@ -131,14 +129,12 @@ export const CreateColumnsByTable: FC<Props> = ({
                       });
                     }}
                     options={TYPE_OPTIONS}
-                    isDisabled={false}
-                    isInvalid={Boolean(columnError?.type)}
-                    isRequired={true}
+                    value={column.type}
                   />
                   {columnError?.type && (
                     <p
-                      id={`column-type_${idx.toString()}-${formId}-feedback`}
                       className="text-fg-error text-sm"
+                      id={`column-type_${idx.toString()}-${formId}-feedback`}
                     >
                       {columnError.type}
                     </p>
@@ -147,13 +143,13 @@ export const CreateColumnsByTable: FC<Props> = ({
                 <td className="px-2 py-3 text-center">
                   <Checkbox
                     label=""
-                    value={column.nullable}
                     onChange={(e) => {
                       handleChangeColumn(id)({
                         ...column,
                         nullable: e.target.checked,
                       });
                     }}
+                    value={column.nullable}
                   />
                   {columnError?.nullable && (
                     <p className="text-fg-error text-sm">
@@ -163,27 +159,27 @@ export const CreateColumnsByTable: FC<Props> = ({
                 </td>
                 <td className="px-2 py-3">
                   <TextField
-                    id={`default_${idx.toString()}-${formId}`}
                     describedbyId={
                       columnError?.default
                         ? `default_${idx.toString()}-${formId}-feedback`
                         : undefined
                     }
-                    value={column.default ?? ''}
+                    id={`default_${idx.toString()}-${formId}`}
+                    isDisabled={false}
+                    isInvalid={Boolean(columnError?.type)}
+                    isRequired={false}
                     onChange={(e) => {
                       handleChangeColumn(id)({
                         ...column,
                         default: e.target.value,
                       });
                     }}
-                    isDisabled={false}
-                    isInvalid={Boolean(columnError?.type)}
-                    isRequired={false}
+                    value={column.default ?? ''}
                   />
                   {columnError?.default && (
                     <p
-                      id={`default_${idx.toString()}-${formId}-feedback`}
                       className="text-fg-error text-sm"
+                      id={`default_${idx.toString()}-${formId}-feedback`}
                     >
                       {columnError.default}
                     </p>
@@ -193,8 +189,8 @@ export const CreateColumnsByTable: FC<Props> = ({
                   {columnsEntries.length > 1 && (
                     <IconButton
                       label="削除"
-                      size="sm"
                       onClick={handleDeleteColumn(id)}
+                      size="sm"
                     >
                       <CloseIcon />
                     </IconButton>

@@ -2,12 +2,12 @@
 
 import {
   createContext,
-  Dispatch,
-  FC,
-  PropsWithChildren,
-  SetStateAction,
-  useCallback,
+  type Dispatch,
+  type FC,
+  type PropsWithChildren,
+  type SetStateAction,
   use,
+  useCallback,
   useState,
 } from 'react';
 
@@ -16,17 +16,13 @@ export type ResultMessage = Record<number, string[]>;
 
 const TextContext = createContext<string | undefined>(undefined);
 
-const SetTextContext = createContext<Setter<string> | undefined>(
+const SetTextContext = createContext<Setter<string> | undefined>(undefined);
+
+const ResultTextContext = createContext<string[] | undefined>(undefined);
+
+const SetResultTextContext = createContext<Setter<string[]> | undefined>(
   undefined,
 );
-
-const ResultTextContext = createContext<string[] | undefined>(
-  undefined,
-);
-
-const SetResultTextContext = createContext<
-  Setter<string[]> | undefined
->(undefined);
 
 const ResultMessagesContext = createContext<
   Record<number, string[]> | undefined
@@ -36,9 +32,9 @@ const SetResultTextMessagesContext = createContext<
   Setter<Record<number, string[]>> | undefined
 >(undefined);
 
-const FixTextContext = createContext<
-  Record<number, string> | undefined
->(undefined);
+const FixTextContext = createContext<Record<number, string> | undefined>(
+  undefined,
+);
 
 const SetFixTextContext = createContext<
   Setter<Record<number, string>> | undefined
@@ -54,7 +50,7 @@ export const useText = (): string => {
   const text = use(TextContext);
 
   if (text === undefined) {
-    throw Error('useText must be used within a TextProvider');
+    throw new Error('useText must be used within a TextProvider');
   }
 
   return text;
@@ -64,7 +60,7 @@ export const useSetText = (): Setter<string> => {
   const setText = use(SetTextContext);
 
   if (setText === undefined) {
-    throw Error('useText must be used within a TextProvider');
+    throw new Error('useText must be used within a TextProvider');
   }
 
   return setText;
@@ -74,7 +70,7 @@ export const useResultText = (): string[] => {
   const text = use(ResultTextContext);
 
   if (text === undefined) {
-    throw Error('useText must be used within a TextProvider');
+    throw new Error('useText must be used within a TextProvider');
   }
 
   return text;
@@ -84,7 +80,7 @@ export const useSetResultText = (): Setter<string[]> => {
   const setText = use(SetResultTextContext);
 
   if (setText === undefined) {
-    throw Error('useText must be used within a TextProvider');
+    throw new Error('useText must be used within a TextProvider');
   }
 
   return setText;
@@ -94,7 +90,7 @@ const useResultMessages = (): ResultMessage => {
   const text = use(ResultMessagesContext);
 
   if (text === undefined) {
-    throw Error('useText must be used within a TextProvider');
+    throw new Error('useText must be used within a TextProvider');
   }
 
   return text;
@@ -104,7 +100,7 @@ export const useSetResultMessages = (): Setter<ResultMessage> => {
   const setText = use(SetResultTextMessagesContext);
 
   if (setText === undefined) {
-    throw Error('useText must be used within a TextProvider');
+    throw new Error('useText must be used within a TextProvider');
   }
 
   return setText;
@@ -114,7 +110,7 @@ const useFixTexts = (): Record<number, string> => {
   const text = use(FixTextContext);
 
   if (text === undefined) {
-    throw Error('useText must be used within a TextProvider');
+    throw new Error('useText must be used within a TextProvider');
   }
 
   return text;
@@ -124,7 +120,7 @@ export const useSetFixTexts = (): Setter<Record<number, string>> => {
   const setText = use(SetFixTextContext);
 
   if (setText === undefined) {
-    throw Error('useText must be used within a TextProvider');
+    throw new Error('useText must be used within a TextProvider');
   }
 
   return setText;
@@ -134,7 +130,7 @@ const useComplete = (): boolean => {
   const text = use(CompleteContext);
 
   if (text === undefined) {
-    throw Error('useText must be used within a TextProvider');
+    throw new Error('useText must be used within a TextProvider');
   }
 
   return text;
@@ -144,7 +140,7 @@ const useSetComplete = (): Setter<boolean> => {
   const setText = use(SetCompleteContext);
 
   if (setText === undefined) {
-    throw Error('useText must be used within a TextProvider');
+    throw new Error('useText must be used within a TextProvider');
   }
 
   return setText;
@@ -215,10 +211,7 @@ export const useFixedText = (): string => {
   }, '');
 };
 
-export const useSetFixTextsField = (
-  count: number,
-  originalText: string,
-) => {
+export const useSetFixTextsField = (count: number, originalText: string) => {
   const fixTexts = useFixTexts();
   const setFixTexts = useSetFixTexts();
   const fixText = fixTexts[count] ?? originalText;
@@ -279,7 +272,7 @@ export const useInvalidResult = (count: number) => {
   const text = resultText[resultIdx];
   const message = resultMessages[messagesKey];
   if (text === undefined || message === undefined) {
-    throw Error('Invalid result');
+    throw new Error('Invalid result');
   }
 
   return {

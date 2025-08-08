@@ -1,9 +1,4 @@
-import {
-  pgTable,
-  serial,
-  text,
-  uniqueIndex,
-} from 'drizzle-orm/pg-core';
+import { pgTable, serial, text, uniqueIndex } from 'drizzle-orm/pg-core';
 
 export const quizType = pgTable(
   'quiz_type',

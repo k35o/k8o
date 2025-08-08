@@ -1,5 +1,5 @@
-import { LlmLink } from './llm-link';
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
+import { LlmLink } from './llm-link';
 
 const meta: Meta<typeof LlmLink> = {
   title: 'app/globals/global-layout/llm-link',

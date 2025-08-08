@@ -1,7 +1,7 @@
 'use client';
 
 import { motion, useScroll, useSpring } from 'motion/react';
-import { FC } from 'react';
+import type { FC } from 'react';
 
 export const ScrollLinked: FC = () => {
   const { scrollYProgress } = useScroll();
@@ -13,8 +13,8 @@ export const ScrollLinked: FC = () => {
 
   return (
     <motion.div
+      className="fixed top-0 right-0 left-0 h-2 origin-left bg-primary-fg"
       style={{ scaleX }}
-      className="bg-primary-fg fixed top-0 right-0 left-0 h-2 origin-left"
     />
   );
 };

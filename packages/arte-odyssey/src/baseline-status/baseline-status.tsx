@@ -1,25 +1,23 @@
 'use client';
 
-import { FC, useSyncExternalStore } from 'react';
+import { type FC, useSyncExternalStore } from 'react';
 
 let didInit = false;
 
 declare global {
-  // eslint-disable-next-line @typescript-eslint/no-namespace
+  // biome-ignore lint/style/noNamespace: 上書きなので
   namespace React {
-    // eslint-disable-next-line @typescript-eslint/no-namespace
-    namespace JSX {
-      // eslint-disable-next-line @typescript-eslint/consistent-type-definitions
+    // biome-ignore lint/style/noNamespace: 上書きなので
+    namespace Jsx {
+      // biome-ignore lint/nursery/useConsistentTypeDefinitions: 上書きなので
       interface IntrinsicElements {
-        ['baseline-status']: { featureId: string; className: string };
+        'baseline-status': { featureId: string; className: string };
       }
     }
   }
 }
 
-export const BaselineStatus: FC<{ featureId: string }> = ({
-  featureId,
-}) => {
+export const BaselineStatus: FC<{ featureId: string }> = ({ featureId }) => {
   const isLoad = useSyncExternalStore(
     (onStoreChange: () => void) => {
       if (!didInit) {
@@ -40,7 +38,7 @@ export const BaselineStatus: FC<{ featureId: string }> = ({
     // TODO: レスポンシブな見た目に対応する
     return (
       <div
-        className="bg-bg-base border-border-base max-w-full animate-pulse rounded-md border p-4"
+        className="max-w-full animate-pulse rounded-md border border-border-base bg-bg-base p-4"
         style={{ height: '120px' }}
       />
     );
@@ -48,8 +46,8 @@ export const BaselineStatus: FC<{ featureId: string }> = ({
 
   return (
     <baseline-status
-      className="bg-bg-base border-border-base max-w-full rounded-md border p-4 wrap-normal"
+      className="wrap-normal max-w-full rounded-md border border-border-base bg-bg-base p-4"
       featureId={featureId}
-    ></baseline-status>
+    />
   );
 };

@@ -2,9 +2,9 @@
 
 import {
   createContext,
-  FC,
-  PropsWithChildren,
-  RefObject,
+  type FC,
+  type PropsWithChildren,
+  type RefObject,
   use,
 } from 'react';
 
@@ -21,7 +21,5 @@ export const PortalRootProvider: FC<
     value?: RefObject<HTMLElement | null> | undefined;
   }>
 > = ({ value, children }) => {
-  return (
-    <PortalRootContext value={value}>{children}</PortalRootContext>
-  );
+  return <PortalRootContext value={value}>{children}</PortalRootContext>;
 };

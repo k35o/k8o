@@ -62,8 +62,7 @@ export function extractColor(text: string): string | null {
   }
 
   // HEXパターン: #rgb または #rrggbb（単語境界または文字列の終端が必要）
-  const hexPattern =
-    /#([0-9a-fA-F]{3}|[0-9a-fA-F]{6})(?=\s|;|,|$|\)|]|})/;
+  const hexPattern = /#([0-9a-fA-F]{3}|[0-9a-fA-F]{6})(?=\s|;|,|$|\)|]|})/;
   const hexMatch = hexPattern.exec(text);
   if (hexMatch) {
     return hexMatch[0];
@@ -132,9 +131,7 @@ if (import.meta.vitest) {
       });
 
       it('CSSプロパティからHSL色を抽出する', () => {
-        const result = extractColor(
-          'background-color: hsl(280, 70%, 50%);',
-        );
+        const result = extractColor('background-color: hsl(280, 70%, 50%);');
         expect(result).toBe('hsl(280, 70%, 50%)');
       });
 
@@ -320,9 +317,7 @@ if (import.meta.vitest) {
         const result = extractColor(
           'hsl(calc(sign(var(--x)) * 80 + 200), 70%, 50%)',
         );
-        expect(result).toBe(
-          'hsl(calc(sign(var(--x)) * 80 + 200), 70%, 50%)',
-        );
+        expect(result).toBe('hsl(calc(sign(var(--x)) * 80 + 200), 70%, 50%)');
       });
 
       it('複数行CSSから色を抽出する', () => {
@@ -370,9 +365,7 @@ if (import.meta.vitest) {
       });
 
       it('ネストした括弧を処理する', () => {
-        const result = extractColor(
-          'hsl(calc(var(--base) + 50), 70%, 50%)',
-        );
+        const result = extractColor('hsl(calc(var(--base) + 50), 70%, 50%)');
         expect(result).toBe('hsl(calc(var(--base) + 50), 70%, 50%)');
       });
 

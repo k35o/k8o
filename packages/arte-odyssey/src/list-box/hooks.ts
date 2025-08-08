@@ -1,14 +1,14 @@
 'use client';
 
-import { useOpenContext } from '../popover/hooks';
 import { useListItem } from '@floating-ui/react';
 import {
   createContext,
-  HTMLProps,
-  RefObject,
+  type HTMLProps,
+  type RefObject,
   use,
   useMemo,
 } from 'react';
+import { useOpenContext } from '../popover/hooks';
 
 export type Option = {
   key: string;
@@ -39,9 +39,7 @@ export const MenuContextProvider = MenuContext;
 const useMenuContext = (): MenuContext => {
   const menu = use(MenuContext);
   if (!menu) {
-    throw new Error(
-      'useMenuContext must be used within a DropdownMenu.Root',
-    );
+    throw new Error('useMenuContext must be used within a DropdownMenu.Root');
   }
 
   return menu;

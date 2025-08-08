@@ -1,9 +1,9 @@
-import { ColorContrastUnit } from './color-contrast-unit';
+import type { FC } from 'react';
 import {
-  SEMANTIC_COLOR_VARIANTS,
   getColorCode,
+  SEMANTIC_COLOR_VARIANTS,
 } from '@/app/design-system/_utils/color';
-import { FC } from 'react';
+import { ColorContrastUnit } from './color-contrast-unit';
 
 export const ColorContrastBg: FC<{
   colorCode: string;
@@ -14,121 +14,117 @@ export const ColorContrastBg: FC<{
       <ColorContrastUnit
         colorCode={colorCode}
         colorCodeDark={colorCodeDark}
-        contrastName="base"
-        contrastCode={getColorCode(
-          SEMANTIC_COLOR_VARIANTS.base.fg.base.light,
-        )}
+        contrastCode={getColorCode(SEMANTIC_COLOR_VARIANTS.base.fg.base.light)}
         contrastCodeDark={getColorCode(
           SEMANTIC_COLOR_VARIANTS.base.fg.base.dark,
         )}
+        contrastName="base"
         variant="background"
       />
       <ColorContrastUnit
         colorCode={colorCode}
         colorCodeDark={colorCodeDark}
-        contrastName="subtle"
         contrastCode={getColorCode(
           SEMANTIC_COLOR_VARIANTS.base.fg.subtle.light,
         )}
         contrastCodeDark={getColorCode(
           SEMANTIC_COLOR_VARIANTS.base.fg.subtle.dark,
         )}
+        contrastName="subtle"
         variant="background"
       />
       <ColorContrastUnit
         colorCode={colorCode}
         colorCodeDark={colorCodeDark}
-        contrastName="mute"
-        contrastCode={getColorCode(
-          SEMANTIC_COLOR_VARIANTS.base.fg.mute.light,
-        )}
+        contrastCode={getColorCode(SEMANTIC_COLOR_VARIANTS.base.fg.mute.light)}
         contrastCodeDark={getColorCode(
           SEMANTIC_COLOR_VARIANTS.base.fg.mute.dark,
         )}
+        contrastName="mute"
         variant="background"
       />
       <ColorContrastUnit
         colorCode={colorCode}
         colorCodeDark={colorCodeDark}
-        contrastName="inverse"
         contrastCode={getColorCode(
           SEMANTIC_COLOR_VARIANTS.base.fg.inverse.light,
         )}
         contrastCodeDark={getColorCode(
           SEMANTIC_COLOR_VARIANTS.base.fg.inverse.dark,
         )}
+        contrastName="inverse"
         variant="background"
       />
       <ColorContrastUnit
         colorCode={colorCode}
         colorCodeDark={colorCodeDark}
-        contrastName="primary"
         contrastCode={getColorCode(
           SEMANTIC_COLOR_VARIANTS.primitive.primary.fg.light,
         )}
         contrastCodeDark={getColorCode(
           SEMANTIC_COLOR_VARIANTS.primitive.primary.fg.dark,
         )}
+        contrastName="primary"
         variant="background"
       />
       <ColorContrastUnit
         colorCode={colorCode}
         colorCodeDark={colorCodeDark}
-        contrastName="secondary"
         contrastCode={getColorCode(
           SEMANTIC_COLOR_VARIANTS.primitive.secondary.fg.light,
         )}
         contrastCodeDark={getColorCode(
           SEMANTIC_COLOR_VARIANTS.primitive.secondary.fg.dark,
         )}
+        contrastName="secondary"
         variant="background"
       />
       <ColorContrastUnit
         colorCode={colorCode}
         colorCodeDark={colorCodeDark}
-        contrastName="info"
         contrastCode={getColorCode(
           SEMANTIC_COLOR_VARIANTS.semantic.fg.info.light,
         )}
         contrastCodeDark={getColorCode(
           SEMANTIC_COLOR_VARIANTS.semantic.fg.info.dark,
         )}
+        contrastName="info"
         variant="background"
       />
       <ColorContrastUnit
         colorCode={colorCode}
         colorCodeDark={colorCodeDark}
-        contrastName="success"
         contrastCode={getColorCode(
           SEMANTIC_COLOR_VARIANTS.semantic.fg.success.light,
         )}
         contrastCodeDark={getColorCode(
           SEMANTIC_COLOR_VARIANTS.semantic.fg.success.dark,
         )}
+        contrastName="success"
         variant="background"
       />
       <ColorContrastUnit
         colorCode={colorCode}
         colorCodeDark={colorCodeDark}
-        contrastName="warning"
         contrastCode={getColorCode(
           SEMANTIC_COLOR_VARIANTS.semantic.fg.warning.light,
         )}
         contrastCodeDark={getColorCode(
           SEMANTIC_COLOR_VARIANTS.semantic.fg.warning.dark,
         )}
+        contrastName="warning"
         variant="background"
       />
       <ColorContrastUnit
         colorCode={colorCode}
         colorCodeDark={colorCodeDark}
-        contrastName="error"
         contrastCode={getColorCode(
           SEMANTIC_COLOR_VARIANTS.semantic.fg.error.light,
         )}
         contrastCodeDark={getColorCode(
           SEMANTIC_COLOR_VARIANTS.semantic.fg.error.dark,
         )}
+        contrastName="error"
         variant="background"
       />
     </div>

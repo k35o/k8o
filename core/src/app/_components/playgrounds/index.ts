@@ -1,14 +1,14 @@
-export { Playground } from './playground';
-export * from './async-clipboard';
-export * from './popover';
-export * from './requestclose';
-export * from './print-color-adjust';
-export * from './screen-wake-lock';
-export * from './suspense-list';
 export * from './abs-sign';
+export * from './async-clipboard';
 export * from './highlight';
+export { Playground } from './playground';
+export * from './popover';
+export * from './print-color-adjust';
+export * from './requestclose';
+export * from './screen-wake-lock';
 export * from './spelling-grammar-error';
-export type { PlaygroundSection, PlaygroundDemo } from './types';
+export * from './suspense-list';
+export type { PlaygroundDemo, PlaygroundSection } from './types';
 
 import { absSignSection } from './abs-sign';
 import { asyncClipboardSection } from './async-clipboard';
@@ -19,7 +19,7 @@ import { requestCloseSection } from './requestclose';
 import { screenWakeLockSection } from './screen-wake-lock';
 import { spellingGrammarErrorSection } from './spelling-grammar-error';
 import { suspenseListSection } from './suspense-list';
-import { PlaygroundSection } from './types';
+import type { PlaygroundSection } from './types';
 
 export const playgroundSections: PlaygroundSection[] = [
   asyncClipboardSection,

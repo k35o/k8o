@@ -1,7 +1,7 @@
+import { cn } from '@k8o/helpers/cn';
+import { type FC, useCallback, useEffect, useRef, useState } from 'react';
 import { IconButton } from '../../icon-button';
 import { CloseIcon } from '../../icons';
-import { cn } from '@k8o/helpers/cn';
-import { FC, useEffect, useRef, useState } from 'react';
 
 export type Option = Readonly<{
   value: string;
@@ -38,11 +38,11 @@ export const Autocomplete: FC<Props> = ({
     option.label.includes(text),
   );
 
-  const reset = () => {
+  const reset = useCallback(() => {
     setText('');
     setOpen(false);
     setSelectIndex(undefined);
-  };
+  }, []);
 
   useEffect(() => {
     const handleClick = (e: MouseEvent) => {
@@ -53,17 +53,17 @@ export const Autocomplete: FC<Props> = ({
     return () => {
       document.removeEventListener('click', handleClick);
     };
-  }, []);
+  }, [reset]);
 
   return (
     <div
-      ref={ref}
       className={cn(
-        'border-border-base bg-bg-base relative w-full rounded-md border shadow-xs',
-        'focus-within:bordertransparent focus-within:ring-border-info focus-within:ring-2 focus-within:outline-hidden',
+        'relative w-full rounded-md border border-border-base bg-bg-base shadow-xs',
+        'focus-within:bordertransparent focus-within:outline-hidden focus-within:ring-2 focus-within:ring-border-info',
         'has-aria-invalid:border-border-error',
-        'has-disabled:border-border-mute has-disabled:has-hover:hover:bg-bg-mute has-disabled:bg-bg-mute has-disabled:cursor-not-allowed',
+        'has-disabled:cursor-not-allowed has-disabled:border-border-mute has-disabled:bg-bg-mute has-disabled:has-hover:hover:bg-bg-mute',
       )}
+      ref={ref}
     >
       <div className="flex min-h-12 items-center justify-between gap-2 px-3 py-2">
         <div className="flex w-full flex-wrap gap-1">
@@ -73,19 +73,19 @@ export const Autocomplete: FC<Props> = ({
             )?.label;
             return (
               <div
+                className="inline-flex items-center gap-2 rounded-full bg-bg-mute px-3 py-1 font-medium text-sm"
                 key={text}
                 tabIndex={-1}
-                className="bg-bg-mute inline-flex items-center gap-2 rounded-full px-3 py-1 text-sm font-medium"
               >
                 {label}
                 <IconButton
                   label="閉じる"
-                  size="sm"
                   onClick={(e) => {
                     e.stopPropagation();
                     reset();
                     onChange(value.filter((v) => v !== text));
                   }}
+                  size="sm"
                 >
                   <CloseIcon size="sm" />
                 </IconButton>
@@ -93,33 +93,29 @@ export const Autocomplete: FC<Props> = ({
             );
           })}
           <input
-            id={id}
-            aria-describedby={describedbyId}
-            role="combobox"
-            aria-expanded={open}
             aria-autocomplete="list"
             aria-controls={open ? `${id}_listbox` : undefined}
+            aria-describedby={describedbyId}
+            aria-expanded={open}
             aria-invalid={isInvalid}
             aria-required={isRequired}
+            autoComplete="off"
             className={cn(
               'grow bg-transparent focus-visible:outline-hidden',
               'disabled:cursor-not-allowed',
             )}
-            type="text"
             disabled={isDisabled}
-            value={text}
-            autoComplete="off"
-            placeholder="入力して絞り込めます"
-            onChange={(e) => {
-              setOpen(true);
-              setText(e.target.value);
-              setSelectIndex(undefined);
-            }}
+            id={id}
             onBlur={(e) => {
               if (e.relatedTarget?.id.startsWith(`${id}_option_`)) {
                 return;
               }
               setOpen(false);
+            }}
+            onChange={(e) => {
+              setOpen(true);
+              setText(e.target.value);
+              setSelectIndex(undefined);
             }}
             onClick={() => {
               if (open && text.length === 0) {
@@ -155,35 +151,39 @@ export const Autocomplete: FC<Props> = ({
                 });
                 return;
               }
-              if (e.key === 'Enter') {
-                if (selectIndex !== undefined && selectIndex >= 0) {
-                  const selected = filteredOptions[selectIndex];
-                  if (!selected) {
-                    return;
-                  }
-                  if (value.includes(selected.value)) {
-                    onChange(
-                      value.filter((v) => v !== selected.value),
-                    );
-                    reset();
-                    return;
-                  }
-                  onChange([...value, selected.value]);
+              if (
+                e.key === 'Enter' &&
+                selectIndex !== undefined &&
+                selectIndex >= 0
+              ) {
+                const selected = filteredOptions[selectIndex];
+                if (!selected) {
+                  return;
+                }
+                if (value.includes(selected.value)) {
+                  onChange(value.filter((v) => v !== selected.value));
                   reset();
                   return;
                 }
+                onChange([...value, selected.value]);
+                reset();
+                return;
               }
             }}
+            placeholder="入力して絞り込めます"
+            role="combobox"
+            type="text"
+            value={text}
           />
         </div>
         {value.length > 0 && (
           <IconButton
             label="すべて閉じる"
-            size="sm"
             onClick={(e) => {
               e.stopPropagation();
               onChange([]);
             }}
+            size="sm"
           >
             <CloseIcon size="sm" />
           </IconButton>
@@ -192,53 +192,43 @@ export const Autocomplete: FC<Props> = ({
       <div className="relative w-full">
         {open && (
           <div
+            className="absolute top-1 z-10 w-full rounded-md border border-border-mute bg-bg-base shadow-md"
             role="presentation"
-            className="border-border-mute bg-bg-base absolute top-1 z-10 w-full rounded-md border shadow-md"
           >
-            <ul
-              id={`${id}_listbox`}
-              role="listbox"
-              className="max-h-96 py-2"
-            >
+            <ul className="max-h-96 py-2" id={`${id}_listbox`}>
               {filteredOptions.length === 0 && (
-                <li className="text-fg-mute px-3 py-2">該当なし</li>
+                <li className="px-3 py-2 text-fg-mute">該当なし</li>
               )}
               {filteredOptions.map((option, idx) => {
                 const selected = value.includes(option.value);
                 return (
                   <li
-                    key={option.value}
-                    id={`${id}_option_${option.value}`}
-                    role="option"
-                    aria-selected={selected}
-                    tabIndex={-1}
                     className={cn(
                       'cursor-pointer px-3 py-2',
                       selected && 'bg-primary-bg text-fg-inverse',
-                      selectIndex === idx &&
-                        !selected &&
-                        'bg-bg-emphasize',
+                      selectIndex === idx && !selected && 'bg-bg-emphasize',
                       selectIndex === idx &&
                         selected &&
                         'hover:bg-primary-bg/90',
                     )}
-                    onMouseEnter={() => {
-                      setSelectIndex(idx);
-                    }}
-                    onKeyDown={(e) => {
-                      e.preventDefault();
-                    }}
+                    id={`${id}_option_${option.value}`}
+                    key={option.value}
                     onClick={(e) => {
                       e.stopPropagation();
                       reset();
                       if (selected) {
-                        onChange(
-                          value.filter((v) => v !== option.value),
-                        );
+                        onChange(value.filter((v) => v !== option.value));
                         return;
                       }
                       onChange([...value, option.value]);
                     }}
+                    onKeyDown={(e) => {
+                      e.preventDefault();
+                    }}
+                    onMouseEnter={() => {
+                      setSelectIndex(idx);
+                    }}
+                    tabIndex={-1}
                   >
                     {option.label}
                   </li>

@@ -1,6 +1,6 @@
+import { z } from 'zod';
 import { getBlogContent } from '#api/blog';
 import { incrementBlogView } from '@/services/blogs/view';
-import { z } from 'zod';
 
 export async function POST(req: Request): Promise<Response> {
   const schema = z.object({

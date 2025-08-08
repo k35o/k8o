@@ -1,32 +1,28 @@
 'use client';
 
-import { usePortalRoot } from './../providers';
-import {
-  PopoverProvider,
-  usePopoverContent,
-  usePopoverTrigger,
-} from './hooks';
 import {
   autoUpdate,
-  flip,
   FloatingFocusManager,
   FloatingPortal,
+  flip,
   offset,
-  Placement,
+  type Placement,
   useFloating,
 } from '@floating-ui/react';
-import { AnimatePresence, Variants } from 'motion/react';
+import { AnimatePresence, type Variants } from 'motion/react';
 import * as motion from 'motion/react-client';
 import {
-  FC,
-  HTMLProps,
-  PropsWithChildren,
-  ReactElement,
+  type FC,
+  type HTMLProps,
+  type PropsWithChildren,
+  type ReactElement,
   useCallback,
   useEffect,
   useId,
   useState,
 } from 'react';
+import { usePortalRoot } from './../providers';
+import { PopoverProvider, usePopoverContent, usePopoverTrigger } from './hooks';
 
 export { useOpenContext } from './hooks';
 
@@ -52,7 +48,7 @@ const Root: FC<
     placement: computedPlacement,
   } = useFloating({
     strategy: 'fixed',
-    placement: placement,
+    placement,
     open: isOpen,
     whileElementsMounted: autoUpdate,
     // 要素と8pxだけ離す
@@ -135,14 +131,8 @@ const Content: FC<{
   renderItem: (props: Record<string, unknown>) => ReactElement;
   motionVariants?: Variants;
 }> = ({ renderItem, motionVariants = contentMotionVariants }) => {
-  const {
-    isOpen,
-    isHover,
-    context,
-    setContentRef,
-    contentStyles,
-    itemProps,
-  } = usePopoverContent();
+  const { isOpen, isHover, context, setContentRef, contentStyles, itemProps } =
+    usePopoverContent();
 
   const root = usePortalRoot();
   const protalProps = root ? { root } : {};
@@ -153,14 +143,14 @@ const Content: FC<{
         <FloatingPortal {...protalProps}>
           <FloatingFocusManager
             context={context}
-            modal={false}
             disabled={isHover}
+            modal={false}
           >
             <div ref={setContentRef} style={contentStyles}>
               <motion.div
                 animate="open"
-                initial="closed"
                 exit="closed"
+                initial="closed"
                 variants={motionVariants}
               >
                 {renderItem(itemProps)}
@@ -175,10 +165,7 @@ const Content: FC<{
 
 const Trigger: FC<{
   renderItem: (
-    props: Omit<
-      HTMLProps<HTMLButtonElement>,
-      'selected' | 'active' | 'color'
-    >,
+    props: Omit<HTMLProps<HTMLButtonElement>, 'selected' | 'active' | 'color'>,
   ) => ReactElement;
 }> = ({ renderItem }) => {
   const props = usePopoverTrigger();

@@ -1,32 +1,32 @@
 'use client';
 
 import {
-  MenuContextProvider,
-  Option,
-  useMenuContent,
-  useMenuItem,
-  useMenuTrigger,
-} from './hooks';
+  FloatingList,
+  type Placement,
+  useInteractions,
+  useListNavigation,
+} from '@floating-ui/react';
+import { cn } from '@k8o/helpers/cn';
+import {
+  type ComponentProps,
+  type FC,
+  type PropsWithChildren,
+  type ReactElement,
+  useRef,
+  useState,
+} from 'react';
 import { Button } from '../button';
 import { IconButton } from '../icon-button';
 import { CheckIcon, ChevronIcon } from '../icons';
 import { Popover } from '../popover';
 import { useFloatingUIContext } from '../popover/hooks';
 import {
-  FloatingList,
-  Placement,
-  useInteractions,
-  useListNavigation,
-} from '@floating-ui/react';
-import { cn } from '@k8o/helpers/cn';
-import {
-  ComponentProps,
-  FC,
-  PropsWithChildren,
-  ReactElement,
-  useRef,
-  useState,
-} from 'react';
+  MenuContextProvider,
+  type Option,
+  useMenuContent,
+  useMenuItem,
+  useMenuTrigger,
+} from './hooks';
 
 const Root: FC<
   PropsWithChildren<{
@@ -35,20 +35,10 @@ const Root: FC<
     value: Option['key'] | undefined;
     onSelect: (key: Option['key']) => void;
   }>
-> = ({
-  children,
-  placement = 'bottom',
-  options,
-  value,
-  onSelect,
-}) => {
+> = ({ children, placement = 'bottom', options, value, onSelect }) => {
   return (
-    <Popover.Root placement={placement} type="listbox" flipDisabled>
-      <MenuProvider
-        options={options}
-        value={value}
-        onSelect={onSelect}
-      >
+    <Popover.Root flipDisabled placement={placement} type="listbox">
+      <MenuProvider onSelect={onSelect} options={options} value={value}>
         {children}
       </MenuProvider>
     </Popover.Root>
@@ -62,9 +52,7 @@ const MenuProvider: FC<
     onSelect: (key: Option['key']) => void;
   }>
 > = ({ children, options, onSelect, value }) => {
-  const selectedIndex = options.findIndex(
-    (option) => option.key === value,
-  );
+  const selectedIndex = options.findIndex((option) => option.key === value);
   const [activeIndex, setActiveIndex] = useState<number | null>(null);
   const itemElementsRef = useRef<(HTMLElement | null)[]>([]);
 
@@ -77,8 +65,9 @@ const MenuProvider: FC<
     onNavigate: setActiveIndex,
     loop: true,
   });
-  const { getReferenceProps, getFloatingProps, getItemProps } =
-    useInteractions([listNavigation]);
+  const { getReferenceProps, getFloatingProps, getItemProps } = useInteractions(
+    [listNavigation],
+  );
 
   const handleSelect = (index: number) => {
     const key = options[index]?.key;
@@ -118,11 +107,11 @@ const Content: FC<{
           <div
             {...props}
             {...contentProps}
-            className="border-border-mute bg-bg-base flex max-h-48 min-w-40 flex-col overflow-y-auto rounded-lg border py-2 shadow-xl"
+            className="flex max-h-48 min-w-40 flex-col overflow-y-auto rounded-lg border border-border-mute bg-bg-base py-2 shadow-xl"
           >
             {helpContent}
             {options.map(({ key, label }, idx) => (
-              <Item key={key} label={label} index={idx} />
+              <Item index={idx} key={key} label={label} />
             ))}
           </div>
         )}
@@ -142,7 +131,7 @@ const Item: FC<{
       className={cn(
         'group w-full px-2 py-1 text-left',
         'hover:bg-primary-bg',
-        'focus-visible:bg-primary-bg focus-visible:border-transparent focus-visible:outline-hidden',
+        'focus-visible:border-transparent focus-visible:bg-primary-bg focus-visible:outline-hidden',
         !selected && 'pl-9',
         selected && 'inline-flex items-center gap-1',
       )}
@@ -167,13 +156,13 @@ const Trigger: FC<{
     <Popover.Trigger
       renderItem={(props) => (
         <Button
-          type="button"
           aria-label={label}
-          size={size}
           color="gray"
-          variant="contained"
-          fullWidth
           endIcon={<ChevronIcon direction="down" />}
+          fullWidth
+          size={size}
+          type="button"
+          variant="contained"
           {...getTriggerProps(props)}
         >
           {label}
@@ -192,11 +181,7 @@ const TriggerIcon: FC<{
   return (
     <Popover.Trigger
       renderItem={(props) => (
-        <IconButton
-          label={label}
-          size={size}
-          {...getTriggerProps(props)}
-        >
+        <IconButton label={label} size={size} {...getTriggerProps(props)}>
           {icon}
         </IconButton>
       )}

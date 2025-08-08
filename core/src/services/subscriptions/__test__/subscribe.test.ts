@@ -1,6 +1,6 @@
+import { db } from '#database/db';
 import { subscribe } from '../subscribe';
 import { sendVerificationEmail } from '../verify';
-import { db } from '#database/db';
 
 vi.mock('#database/db');
 vi.mock('@/services/subscriptions/verify');
@@ -20,9 +20,7 @@ describe('subscribe', () => {
         isVerified: true,
       });
       const mockInsert = vi.fn();
-      vi.mocked(db.query.subscribers.findFirst).mockImplementation(
-        mockFirst,
-      );
+      vi.mocked(db.query.subscribers.findFirst).mockImplementation(mockFirst);
       vi.mocked(db.insert).mockImplementation(mockInsert);
 
       const result = await subscribe('test@k8o.me');
@@ -41,9 +39,7 @@ describe('subscribe', () => {
       });
       const mockInsert = vi.fn();
       const mockSendVerificationEmail = vi.fn();
-      vi.mocked(db.query.subscribers.findFirst).mockImplementation(
-        mockFirst,
-      );
+      vi.mocked(db.query.subscribers.findFirst).mockImplementation(mockFirst);
       vi.mocked(db.insert).mockImplementation(mockInsert);
       vi.mocked(sendVerificationEmail).mockImplementation(
         mockSendVerificationEmail,
@@ -65,9 +61,7 @@ describe('subscribe', () => {
         values: vi.fn(),
       });
       const mockSendVerificationEmail = vi.fn();
-      vi.mocked(db.query.subscribers.findFirst).mockImplementation(
-        mockFirst,
-      );
+      vi.mocked(db.query.subscribers.findFirst).mockImplementation(mockFirst);
       vi.mocked(db.insert).mockImplementation(mockInsert);
       vi.mocked(sendVerificationEmail).mockImplementation(
         mockSendVerificationEmail,

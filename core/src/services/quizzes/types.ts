@@ -1,4 +1,4 @@
-import { QUIZ_OPTIONS, QUIZ_TYPE } from './constants';
+import type { QUIZ_OPTIONS, QUIZ_TYPE } from './constants';
 
 export type Quiz = {
   id: number;

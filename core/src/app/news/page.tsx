@@ -1,14 +1,12 @@
-import { NewsCard } from './_components/news-card';
-import { NewsPagination } from './_types';
 import { draftMode } from 'next/headers';
+import { NewsCard } from './_components/news-card';
+import type { NewsPagination } from './_types';
 
 async function getNews(draftKey?: string): Promise<NewsPagination> {
   const { isEnabled } = await draftMode();
   const baseUrl = `${process.env.MICROCMS_API_ENDPOINT ?? ''}/news`;
   const url =
-    isEnabled && draftKey
-      ? `${baseUrl}?draftKey=${draftKey}`
-      : baseUrl;
+    isEnabled && draftKey ? `${baseUrl}?draftKey=${draftKey}` : baseUrl;
   const res = await fetch(url, {
     headers: {
       'X-MICROCMS-API-KEY': process.env.MICROCMS_API_KEY ?? '',
@@ -33,13 +31,13 @@ export default async function Page({
       {contents.map((news) => {
         return (
           <NewsCard
-            key={news.id}
-            id={news.id}
-            title={news.title}
-            summary={news.summary}
             createdAt={news.createdAt}
-            updatedAt={news.updatedAt}
             draftKey={draftKey}
+            id={news.id}
+            key={news.id}
+            summary={news.summary}
+            title={news.title}
+            updatedAt={news.updatedAt}
           />
         );
       })}

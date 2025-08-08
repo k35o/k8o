@@ -1,6 +1,6 @@
-import { CheckIcon } from '../../icons';
 import { cn } from '@k8o/helpers/cn';
-import { ChangeEventHandler, FC, useState } from 'react';
+import { type ChangeEventHandler, type FC, useState } from 'react';
+import { CheckIcon } from '../../icons';
 
 type Props = {
   label: string;
@@ -13,27 +13,26 @@ export const Checkbox: FC<Props> = ({ label, value, onChange }) => {
   return (
     <label className="inline-flex cursor-pointer items-center gap-2">
       <input
-        type="checkbox"
-        className="sr-only"
         checked={value}
-        onFocus={() => {
-          setIsFocus(true);
-        }}
+        className="sr-only"
         onBlur={() => {
           setIsFocus(false);
         }}
         onChange={onChange}
+        onFocus={() => {
+          setIsFocus(true);
+        }}
+        type="checkbox"
       />
       <span
+        aria-hidden={true}
         className={cn(
           'inline-flex size-5 items-center justify-center rounded-md border-2',
-          isFocus &&
-            'bordertransparent ring-border-info ring-2 outline-hidden',
+          isFocus && 'bordertransparent outline-hidden ring-2 ring-border-info',
           value
             ? 'border-border-base bg-primary-bg text-fg-base'
             : 'border-border-mute bg-bg-base',
         )}
-        aria-hidden={true}
       >
         {value ? <CheckIcon size="sm" /> : null}
       </span>

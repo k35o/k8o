@@ -1,12 +1,9 @@
-import { News, NewsPagination } from '../../_types';
-import { NewsModal } from '../_components/news-modal';
-import {
-  PublishDateIcon,
-  UpdateDateIcon,
-} from '@k8o/arte-odyssey/icons';
+import { PublishDateIcon, UpdateDateIcon } from '@k8o/arte-odyssey/icons';
 import { formatDate } from '@k8o/helpers/date';
 import { draftMode } from 'next/headers';
 import { notFound } from 'next/navigation';
+import type { News, NewsPagination } from '../../_types';
+import { NewsModal } from '../_components/news-modal';
 
 export const dynamic = 'force-dynamic';
 
@@ -28,9 +25,7 @@ async function getNews(id: string, draftKey?: string): Promise<News> {
   const { isEnabled } = await draftMode();
   const baseUrl = `${process.env.MICROCMS_API_ENDPOINT ?? ''}/news/${id}`;
   const url =
-    isEnabled && draftKey
-      ? `${baseUrl}?draftKey=${draftKey}`
-      : baseUrl;
+    isEnabled && draftKey ? `${baseUrl}?draftKey=${draftKey}` : baseUrl;
   const res = await fetch(url, {
     headers: {
       'X-MICROCMS-API-KEY': process.env.MICROCMS_API_KEY ?? '',
@@ -59,7 +54,7 @@ export default async function Page({
   return (
     <NewsModal title={news.title}>
       <div className="flex w-full flex-col gap-5">
-        <div className="text-fg-mute flex flex-wrap items-center justify-center gap-1 text-xs">
+        <div className="flex flex-wrap items-center justify-center gap-1 text-fg-mute text-xs">
           <div className="flex items-center gap-1">
             <PublishDateIcon size="sm" />
             <span>公開: {formatDate(new Date(news.createdAt))}</span>
@@ -71,6 +66,7 @@ export default async function Page({
         </div>
         <section
           className="max-h-96 overflow-y-auto"
+          // biome-ignore lint/security/noDangerouslySetInnerHtml: MicroCMSのhtml
           dangerouslySetInnerHTML={{ __html: news.description }}
         />
       </div>

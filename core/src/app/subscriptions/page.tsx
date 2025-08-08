@@ -13,7 +13,7 @@ export default async function Page({
   const isSuccess = status === 'true';
 
   return (
-    <section className="bg-bg-base grid h-full gap-6 rounded-md p-10">
+    <section className="grid h-full gap-6 rounded-md bg-bg-base p-10">
       {isSuccess ? (
         <div className="flex flex-col items-center justify-center gap-4">
           <Heading type="h2">購読が完了しました</Heading>
@@ -23,9 +23,7 @@ export default async function Page({
         <div className="flex flex-col items-center justify-center gap-4">
           <Heading type="h2">購読に失敗しました</Heading>
           <p>
-            {decodeURIComponent(
-              message ?? '不明なエラーが発生しました。',
-            )}
+            {decodeURIComponent(message ?? '不明なエラーが発生しました。')}
             <br />
             お手数ですが、再度ご登録をお願いいたします。
           </p>

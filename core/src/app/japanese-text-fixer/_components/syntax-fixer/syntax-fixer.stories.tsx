@@ -1,6 +1,6 @@
-import { SyntaxFixer } from './syntax-fixer';
-import { CheckSyntaxProvider } from '../../_state/text';
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
+import { CheckSyntaxProvider } from '../../_state/text';
+import { SyntaxFixer } from './syntax-fixer';
 
 const meta: Meta<typeof SyntaxFixer> = {
   title: 'app/japanese-text-fixer/syntax-fixer',

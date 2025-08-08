@@ -1,7 +1,7 @@
 import { cn } from '@k8o/helpers/cn';
 import { calcContrast } from '@k8o/helpers/color';
 import { toPrecision } from '@k8o/helpers/number';
-import { FC } from 'react';
+import type { FC } from 'react';
 
 export const ColorContrastUnit: FC<{
   colorCode: string;
@@ -18,10 +18,7 @@ export const ColorContrastUnit: FC<{
   contrastCodeDark,
   variant,
 }) => {
-  const colorContrast = toPrecision(
-    calcContrast(colorCode, contrastCode),
-    2,
-  );
+  const colorContrast = toPrecision(calcContrast(colorCode, contrastCode), 2);
   const colorContrastDark = toPrecision(
     calcContrast(colorCodeDark, contrastCodeDark),
     2,
@@ -33,7 +30,7 @@ export const ColorContrastUnit: FC<{
       <div className="flex items-center gap-3">
         <div className="flex flex-col items-center gap-1">
           <div
-            className="border-border-base flex size-12 items-center justify-center rounded-full border"
+            className="flex size-12 items-center justify-center rounded-full border border-border-base"
             style={
               variant === 'foreground'
                 ? {
@@ -57,9 +54,7 @@ export const ColorContrastUnit: FC<{
             <p
               className={cn(
                 'text-xs',
-                colorContrast >= 4.5
-                  ? 'text-fg-success'
-                  : 'text-fg-error',
+                colorContrast >= 4.5 ? 'text-fg-success' : 'text-fg-error',
               )}
             >
               {colorContrast}
@@ -68,7 +63,7 @@ export const ColorContrastUnit: FC<{
         </div>
         <div className="flex flex-col items-center gap-1">
           <div
-            className="border-border-base flex size-12 items-center justify-center rounded-full border"
+            className="flex size-12 items-center justify-center rounded-full border border-border-base"
             style={
               variant === 'foreground'
                 ? {
@@ -92,9 +87,7 @@ export const ColorContrastUnit: FC<{
             <p
               className={cn(
                 'text-xs',
-                colorContrastDark >= 4.5
-                  ? 'text-fg-success'
-                  : 'text-fg-error',
+                colorContrastDark >= 4.5 ? 'text-fg-success' : 'text-fg-error',
               )}
             >
               {colorContrastDark}

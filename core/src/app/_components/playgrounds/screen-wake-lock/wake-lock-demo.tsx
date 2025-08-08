@@ -1,14 +1,13 @@
 'use client';
 
 import { Button } from '@k8o/arte-odyssey/button';
-import { FC, useCallback, useRef, useState } from 'react';
+import { type FC, useCallback, useRef, useState } from 'react';
 
 export const WakeLockDemo: FC = () => {
   const [isLocked, setIsLocked] = useState(false);
   const wakeLock = useRef<WakeLockSentinel | null>(null);
 
   const handleClick = useCallback(async () => {
-    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
     if (navigator.wakeLock) {
       if (wakeLock.current) {
         wakeLock.current
@@ -34,9 +33,7 @@ export const WakeLockDemo: FC = () => {
 
   return (
     <Button onClick={() => void handleClick()}>
-      {isLocked
-        ? 'スリープ機能のロックを解除する'
-        : 'スリープ機能をロックする'}
+      {isLocked ? 'スリープ機能のロックを解除する' : 'スリープ機能をロックする'}
     </Button>
   );
 };

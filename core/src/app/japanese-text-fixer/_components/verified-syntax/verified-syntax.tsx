@@ -1,6 +1,5 @@
 'use client';
 
-import { useResetResult, useText } from '../../_state/text';
 import {
   Accordion,
   AccordionButton,
@@ -11,7 +10,8 @@ import { Button } from '@k8o/arte-odyssey/button';
 import { AlertIcon, CopyIcon } from '@k8o/arte-odyssey/icons';
 import { useToast } from '@k8o/arte-odyssey/toast';
 import { useClipboard } from '@k8o/hooks/clipboard';
-import { FC } from 'react';
+import type { FC } from 'react';
+import { useResetResult, useText } from '../../_state/text';
 
 export const VerifiedSyntax: FC = () => {
   const text = useText();
@@ -22,23 +22,23 @@ export const VerifiedSyntax: FC = () => {
   return (
     <div className="flex flex-col items-center justify-center gap-8">
       <div className="flex w-full items-start justify-between">
-        <Button variant="outlined" onClick={resetResult}>
+        <Button onClick={resetResult} variant="outlined">
           戻る
         </Button>
         <Button
+          endIcon={<CopyIcon />}
           onClick={() =>
             void writeClipboard(text).then(() => {
               onOpen('success', 'クリップボードにコピーしました');
             })
           }
-          endIcon={<CopyIcon />}
         >
           テキストをコピーする
         </Button>
       </div>
-      <p className="flex gap-1 text-lg font-bold">
+      <p className="flex gap-1 font-bold text-lg">
         <span className="text-fg-success">
-          <AlertIcon status="success" size="lg" />
+          <AlertIcon size="lg" status="success" />
         </span>
         テキストに問題は見つかりませんでした
       </p>
@@ -52,7 +52,7 @@ export const VerifiedSyntax: FC = () => {
             </h4>
             <AccordionPanel>
               <div className="p-3">
-                <p className="text-wrap break-all whitespace-pre-wrap">
+                <p className="whitespace-pre-wrap text-wrap break-all">
                   {text}
                 </p>
               </div>

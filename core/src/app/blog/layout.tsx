@@ -1,12 +1,11 @@
-import { ExternalBlog } from './_components/external-blog';
 import { Heading } from '@k8o/arte-odyssey/heading';
 import Link from 'next/link';
-import { PropsWithChildren } from 'react';
+import type { PropsWithChildren } from 'react';
+import { ExternalBlog } from './_components/external-blog';
 
 export const metadata = {
   title: 'Blog',
-  description:
-    'k8oのブログです。ジャンルを問わず、身の回りのことを書きます。',
+  description: 'k8oのブログです。ジャンルを問わず、身の回りのことを書きます。',
   openGraph: {
     title: 'Blog',
     description:
@@ -34,7 +33,7 @@ export default function Layout({ children }: PropsWithChildren) {
       />
       <div className="flex flex-col gap-6">
         <div className="flex items-center justify-between">
-          <Link href="/blog" className="hover:underline">
+          <Link className="hover:underline" href="/blog">
             <Heading type="h2">Blog</Heading>
           </Link>
           <ExternalBlog />

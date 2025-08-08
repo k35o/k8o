@@ -1,6 +1,6 @@
-import { LinkButton } from './link-button';
-import { CopyIcon } from '../icons';
 import type { Meta, StoryObj } from '@storybook/react-vite';
+import { CopyIcon } from '../icons';
+import { LinkButton } from './link-button';
 
 const meta: Meta<typeof LinkButton> = {
   title: 'components/link-button',

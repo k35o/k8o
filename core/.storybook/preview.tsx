@@ -1,12 +1,12 @@
-import React, { FC, memo, useEffect } from 'react';
-import Script from 'next/script';
-import type { Preview } from '@storybook/nextjs-vite';
-import { AppProvider } from '../src/app/_providers/app';
 import { cn } from '@k8o/helpers/cn';
-import { useTheme } from 'next-themes';
+import type { Preview } from '@storybook/nextjs-vite';
 import { initialize, mswLoader } from 'msw-storybook-addon';
-import { handlers } from '../src/mocks/handlers';
+import Script from 'next/script';
+import { useTheme } from 'next-themes';
+import { type FC, memo, useEffect } from 'react';
+import { AppProvider } from '../src/app/_providers/app';
 import { mPlus2, notoSansJp } from '../src/app/_styles/font';
+import { handlers } from '../src/mocks/handlers';
 
 import '../src/app/_styles/globals.css';
 
@@ -18,19 +18,17 @@ initialize(
   handlers,
 );
 
-const ApplayThemeByStorybook: FC<{ theme: string }> = memo(
-  ({ theme }) => {
-    const { theme: currentTheme, setTheme } = useTheme();
+const ApplayThemeByStorybook: FC<{ theme: string }> = memo(({ theme }) => {
+  const { theme: currentTheme, setTheme } = useTheme();
 
-    useEffect(() => {
-      if (currentTheme !== theme) {
-        setTheme(theme === 'dark' ? 'dark' : 'light');
-      }
-    }, [theme, currentTheme, setTheme]);
+  useEffect(() => {
+    if (currentTheme !== theme) {
+      setTheme(theme === 'dark' ? 'dark' : 'light');
+    }
+  }, [theme, currentTheme, setTheme]);
 
-    return null;
-  },
-);
+  return null;
+});
 
 ApplayThemeByStorybook.displayName = 'ApplayThemeByStorybook';
 

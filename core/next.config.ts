@@ -1,6 +1,6 @@
 import withMdx from '@next/mdx';
-import rehypeShiki, { RehypeShikiOptions } from '@shikijs/rehype';
-import { NextConfig } from 'next';
+import rehypeShiki, { type RehypeShikiOptions } from '@shikijs/rehype';
+import type { NextConfig } from 'next';
 import rehypeKatex from 'rehype-katex';
 import remarkFrontmatter from 'remark-frontmatter';
 import remarkMath from 'remark-math';

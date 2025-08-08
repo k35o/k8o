@@ -3,7 +3,7 @@
 import { IconButton } from '@k8o/arte-odyssey/icon-button';
 import { MailIcon } from '@k8o/arte-odyssey/icons';
 import { Tooltip } from '@k8o/arte-odyssey/tooltip';
-import { FC } from 'react';
+import type { FC } from 'react';
 
 export const EmailTooltip: FC = () => {
   return (

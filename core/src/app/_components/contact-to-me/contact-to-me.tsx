@@ -1,6 +1,5 @@
 'use client';
 
-import { contact } from '@/app/_api/contact-to-me';
 import { Anchor } from '@k8o/arte-odyssey/anchor';
 import { Button } from '@k8o/arte-odyssey/button';
 import { Dialog } from '@k8o/arte-odyssey/dialog';
@@ -10,12 +9,13 @@ import { SendIcon } from '@k8o/arte-odyssey/icons';
 import { Modal } from '@k8o/arte-odyssey/modal';
 import { useToast } from '@k8o/arte-odyssey/toast';
 import {
-  FC,
+  type FC,
   useActionState,
   useCallback,
   useEffect,
   useState,
 } from 'react';
+import { contact } from '@/app/_api/contact-to-me';
 
 export const ContactToMe: FC<{
   fullWidth?: boolean;
@@ -33,16 +33,16 @@ export const ContactToMe: FC<{
   return (
     <>
       {isOpen ? (
-        <p className="text-md text-fg-info flex items-center gap-2 px-4 py-2 text-center font-bold">
+        <p className="flex items-center gap-2 px-4 py-2 text-center font-bold text-fg-info text-md">
           <SendIcon />
           お問い合わせ
         </p>
       ) : (
         <Button
+          fullWidth={fullWidth}
           onClick={onOpen}
           startIcon={<SendIcon />}
           variant="skeleton"
-          fullWidth={fullWidth}
         >
           お問い合わせ
         </Button>
@@ -73,30 +73,23 @@ const ContactToMeModal: FC<{
   return (
     <Modal isOpen={isOpen} onClose={onClose}>
       <Dialog.Root>
-        <Dialog.Header title="お問い合わせ" onClose={onClose} />
+        <Dialog.Header onClose={onClose} title="お問い合わせ" />
         <Dialog.Content>
-          <form className="flex flex-col gap-4" action={formAction}>
+          <form action={formAction} className="flex flex-col gap-4">
             <FormControl
-              label="不具合やご要望をご記入ください"
-              isInvalid={state.success === false}
-              errorText={
-                state.success === false ? state.message : undefined
-              }
+              errorText={state.success === false ? state.message : undefined}
               helpText="255文字以内で入力してください"
-              renderInput={({
-                id,
-                describedbyId,
-                isDisabled,
-                isInvalid,
-              }) => (
+              isInvalid={state.success === false}
+              label="不具合やご要望をご記入ください"
+              renderInput={({ id, describedbyId, isDisabled, isInvalid }) => (
                 <Textarea
-                  id={id}
-                  name="message"
                   defaultValue={state.defaultValue}
                   describedbyId={describedbyId}
+                  id={id}
                   isDisabled={isDisabled}
                   isInvalid={isInvalid}
                   isRequired={true}
+                  name="message"
                   rows={5}
                 />
               )}
@@ -108,7 +101,7 @@ const ContactToMeModal: FC<{
               からのお問い合わせもお待ちしております。
             </p>
             <div className="w-full">
-              <Button type="submit" fullWidth disabled={pending}>
+              <Button disabled={pending} fullWidth type="submit">
                 送信
               </Button>
             </div>

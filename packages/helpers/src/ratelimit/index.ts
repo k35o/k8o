@@ -18,10 +18,12 @@ const feedbackRatelimit = new Ratelimit({
 });
 
 // レート制限タイプ
-export enum RateLimitType {
-  GENERAL = 'general',
-  FEEDBACK = 'feedback',
-}
+export const RateLimitType = {
+  GENERAL: 'general',
+  FEEDBACK: 'feedback',
+} as const;
+
+export type RateLimitType = (typeof RateLimitType)[keyof typeof RateLimitType];
 
 // レート制限インスタンスを取得
 export function getRateLimiter(type: RateLimitType): Ratelimit {

@@ -1,6 +1,6 @@
-import { PrintColorAdjustDemo } from './print-color-adjust-demo';
-import { Playground } from '../playground';
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
+import { Playground } from '../playground';
+import { PrintColorAdjustDemo } from './print-color-adjust-demo';
 
 const meta: Meta<typeof PrintColorAdjustDemo> = {
   title: 'playgrounds/print-color-adjust/PrintColorAdjustDemo',

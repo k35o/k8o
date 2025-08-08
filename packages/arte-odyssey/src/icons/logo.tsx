@@ -1,14 +1,14 @@
-import { BaseIcon, BaseIconProps } from './base';
-import { FC } from 'react';
+import type { FC } from 'react';
+import { BaseIcon, type BaseIconProps } from './base';
 
 export const Logo: FC<{
   className?: string;
 }> = ({ className }) => {
   return (
     <svg
-      xmlns="http://www.w3.org/2000/svg"
-      viewBox="0 128 1280 896"
       className={className}
+      viewBox="0 128 1280 896"
+      xmlns="http://www.w3.org/2000/svg"
     >
       <path
         className="fill-[var(--teal-800)] dark:fill-[var(--teal-300)]"
@@ -26,15 +26,13 @@ export const Logo: FC<{
   );
 };
 
-export const LogoIcon: FC<Partial<BaseIconProps>> = ({
-  size = 'md',
-}) => {
+export const LogoIcon: FC<Partial<BaseIconProps>> = ({ size = 'md' }) => {
   return (
     <BaseIcon
-      size={size}
       renderItem={(props) => {
         return <Logo {...props} />;
       }}
+      size={size}
     />
   );
 };

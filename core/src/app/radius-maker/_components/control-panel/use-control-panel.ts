@@ -1,12 +1,12 @@
 import { between } from '@k8o/helpers/number';
 import {
+  type KeyboardEvent as ReactKeyboardEvent,
+  type MouseEvent as ReactMouseEvent,
+  type TouchEvent as ReactTouchEvent,
   useCallback,
   useMemo,
   useRef,
   useState,
-  KeyboardEvent as ReactKeyboardEvent,
-  MouseEvent as ReactMouseEvent,
-  TouchEvent as ReactTouchEvent,
 } from 'react';
 
 type Position =
@@ -31,8 +31,7 @@ export const useControlPanel = () => {
     bottomRightX: 32,
     bottomRightY: 36,
   });
-  const [activePosition, setActivePosition] =
-    useState<Position | null>(null);
+  const [activePosition, setActivePosition] = useState<Position | null>(null);
 
   const borderRadius = useMemo(() => {
     return `${position.topLeftX.toString()}% ${position.topRightX.toString()}% ${position.bottomRightX.toString()}% ${position.bottomLeftX.toString()}% / ${position.topLeftY.toString()}% ${position.topRightY.toString()}% ${position.bottomRightY.toString()}% ${position.bottomLeftY.toString()}%`;
@@ -71,8 +70,7 @@ export const useControlPanel = () => {
           return {
             ...prev,
             [position]:
-              (position.startsWith('top') &&
-                position.endsWith('Y')) ||
+              (position.startsWith('top') && position.endsWith('Y')) ||
               (position.includes('Left') && position.endsWith('X'))
                 ? newValue
                 : 100 - newValue,
@@ -107,19 +105,15 @@ export const useControlPanel = () => {
         e.preventDefault();
         setPosition((prev) => {
           const changedTouches = e.changedTouches[0];
-          if (!containerRef.current || !changedTouches) {
+          if (!(containerRef.current && changedTouches)) {
             return prev;
           }
           const rect = containerRef.current.getBoundingClientRect();
           const newValue = Math.floor(
             between(
               position.endsWith('X')
-                ? ((changedTouches.clientX - rect.left) /
-                    rect.width) *
-                    100
-                : ((changedTouches.clientY - rect.top) /
-                    rect.height) *
-                    100,
+                ? ((changedTouches.clientX - rect.left) / rect.width) * 100
+                : ((changedTouches.clientY - rect.top) / rect.height) * 100,
               0,
               100,
             ),
@@ -127,8 +121,7 @@ export const useControlPanel = () => {
           return {
             ...prev,
             [position]:
-              (position.startsWith('top') &&
-                position.endsWith('Y')) ||
+              (position.startsWith('top') && position.endsWith('Y')) ||
               (position.includes('Left') && position.endsWith('X'))
                 ? newValue
                 : 100 - newValue,

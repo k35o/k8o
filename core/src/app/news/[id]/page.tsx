@@ -1,7 +1,7 @@
-import { News, NewsPagination } from '../_types';
-import { NewsLayout } from './_components/news-layout';
 import { draftMode } from 'next/headers';
 import { notFound } from 'next/navigation';
+import type { News, NewsPagination } from '../_types';
+import { NewsLayout } from './_components/news-layout';
 
 export async function generateStaticParams() {
   const url = `${process.env.MICROCMS_API_ENDPOINT ?? ''}/news`;
@@ -21,9 +21,7 @@ async function getNews(id: string, draftKey?: string): Promise<News> {
   const { isEnabled } = await draftMode();
   const baseUrl = `${process.env.MICROCMS_API_ENDPOINT ?? ''}/news/${id}`;
   const url =
-    isEnabled && draftKey
-      ? `${baseUrl}?draftKey=${draftKey}`
-      : baseUrl;
+    isEnabled && draftKey ? `${baseUrl}?draftKey=${draftKey}` : baseUrl;
   const res = await fetch(url, {
     headers: {
       'X-MICROCMS-API-KEY': process.env.MICROCMS_API_KEY ?? '',
@@ -51,9 +49,8 @@ export default async function Page({
 
   return (
     <NewsLayout {...news}>
-      <section
-        dangerouslySetInnerHTML={{ __html: news.description }}
-      />
+      {/** biome-ignore lint/security/noDangerouslySetInnerHtml: MicroCMSのhtml */}
+      <section dangerouslySetInnerHTML={{ __html: news.description }} />
     </NewsLayout>
   );
 }

@@ -3,7 +3,7 @@ export type RGB = { r: number; g: number; b: number; a?: number };
 export type HSL = { h: number; s: number; l: number; a?: number };
 
 export const parseSafeRgb = (number: number): number => {
-  if (isNaN(number)) {
+  if (Number.isNaN(number)) {
     return 255;
   }
   if (number < 0 || number > 255) {
@@ -12,11 +12,8 @@ export const parseSafeRgb = (number: number): number => {
   return number;
 };
 
-export const parseSafeHsl = (
-  number: number,
-  part: keyof HSL,
-): number => {
-  if (isNaN(number)) {
+export const parseSafeHsl = (number: number, part: keyof HSL): number => {
+  if (Number.isNaN(number)) {
     return 100;
   }
   if (part === 'h' && (number < 0 || number > 360)) {
@@ -32,7 +29,7 @@ export const parseSafeHsl = (
 };
 
 export const parseSafeAlpha = (number: number): number => {
-  if (isNaN(number)) {
+  if (Number.isNaN(number)) {
     return 1;
   }
   if (number < 0 || number > 1) {
@@ -54,9 +51,9 @@ export const rgbToHex = (rgb: RGB): string => {
 
 export const hexToRgb = (hex: string): RGB => {
   if (hex.length === 3) {
-    const r = parseInt(hex.slice(0, 1).repeat(2), 16);
-    const g = parseInt(hex.slice(1, 2).repeat(2), 16);
-    const b = parseInt(hex.slice(2, 3).repeat(2), 16);
+    const r = Number.parseInt(hex.slice(0, 1).repeat(2), 16);
+    const g = Number.parseInt(hex.slice(1, 2).repeat(2), 16);
+    const b = Number.parseInt(hex.slice(2, 3).repeat(2), 16);
     return {
       r: parseSafeRgb(r),
       g: parseSafeRgb(g),
@@ -65,10 +62,10 @@ export const hexToRgb = (hex: string): RGB => {
     };
   }
   if (hex.length === 4) {
-    const r = parseInt(hex.slice(0, 1).repeat(2), 16);
-    const g = parseInt(hex.slice(1, 2).repeat(2), 16);
-    const b = parseInt(hex.slice(2, 3).repeat(2), 16);
-    const a = parseInt(hex.slice(3, 4).repeat(2), 16);
+    const r = Number.parseInt(hex.slice(0, 1).repeat(2), 16);
+    const g = Number.parseInt(hex.slice(1, 2).repeat(2), 16);
+    const b = Number.parseInt(hex.slice(2, 3).repeat(2), 16);
+    const a = Number.parseInt(hex.slice(3, 4).repeat(2), 16);
     return {
       r: parseSafeRgb(r),
       g: parseSafeRgb(g),
@@ -77,9 +74,9 @@ export const hexToRgb = (hex: string): RGB => {
     };
   }
   if (hex.length === 6) {
-    const r = parseInt(hex.slice(0, 2), 16);
-    const g = parseInt(hex.slice(2, 4), 16);
-    const b = parseInt(hex.slice(4, 6), 16);
+    const r = Number.parseInt(hex.slice(0, 2), 16);
+    const g = Number.parseInt(hex.slice(2, 4), 16);
+    const b = Number.parseInt(hex.slice(4, 6), 16);
     return {
       r: parseSafeRgb(r),
       g: parseSafeRgb(g),
@@ -88,10 +85,10 @@ export const hexToRgb = (hex: string): RGB => {
     };
   }
   if (hex.length === 8) {
-    const r = parseInt(hex.slice(0, 2), 16);
-    const g = parseInt(hex.slice(2, 4), 16);
-    const b = parseInt(hex.slice(4, 6), 16);
-    const a = parseInt(hex.slice(6, 8), 16);
+    const r = Number.parseInt(hex.slice(0, 2), 16);
+    const g = Number.parseInt(hex.slice(2, 4), 16);
+    const b = Number.parseInt(hex.slice(4, 6), 16);
+    const a = Number.parseInt(hex.slice(6, 8), 16);
     return {
       r: parseSafeRgb(r),
       g: parseSafeRgb(g),
@@ -108,15 +105,13 @@ export const hslToHex = (hsl: HSL): string => {
   const s = parseSafeHsl(hsl.s, 's');
   const l = parseSafeHsl(hsl.l, 'l');
   const parsedA = parseSafeHsl(hsl.a ?? 1, 'a');
-  const hexA =
-    parsedA < 1 ? Math.round(parsedA * 255).toString(16) : '';
+  const hexA = parsedA < 1 ? Math.round(parsedA * 255).toString(16) : '';
 
   const hDecimal = l / 100;
   const a = (s * Math.min(hDecimal, 1 - hDecimal)) / 100;
   const f = (n: number) => {
     const k = (n + h / 30) % 12;
-    const color =
-      hDecimal - a * Math.max(Math.min(k - 3, 9 - k, 1), -1);
+    const color = hDecimal - a * Math.max(Math.min(k - 3, 9 - k, 1), -1);
 
     return Math.round(255 * color)
       .toString(16)

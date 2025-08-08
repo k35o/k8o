@@ -1,7 +1,7 @@
-import { Option } from './hooks';
-import { ListBox } from './list-box';
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { useState } from 'react';
+import type { Option } from './hooks';
+import { ListBox } from './list-box';
 
 const meta: Meta<typeof ListBox.Root> = {
   title: 'components/list-box',
@@ -49,11 +49,11 @@ export const Default: Story = {
     return (
       <div className="w-56">
         <ListBox.Root
-          options={OPTIONS}
-          value={selected}
           onSelect={(key: string) => {
             setSelected(key);
           }}
+          options={OPTIONS}
+          value={selected}
         >
           <ListBox.Trigger />
           <ListBox.Content />

@@ -7,9 +7,7 @@ export default function Counter() {
       <TextField />
       <div className="text-right">
         {isSegmenter ? (
-          <p className="text-sm">
-            ※書記素単位に分解して文字数を計測しています
-          </p>
+          <p className="text-sm">※書記素単位に分解して文字数を計測しています</p>
         ) : (
           <p className="text-sm">
             ※ユニコードのコードポイント単位で文字数を計測しています

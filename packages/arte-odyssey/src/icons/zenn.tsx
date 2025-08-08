@@ -1,5 +1,5 @@
-import { BaseIcon, BaseIconProps } from './base';
-import { FC } from 'react';
+import type { FC } from 'react';
+import { BaseIcon, type BaseIconProps } from './base';
 
 export const Zenn: FC<{ className?: string }> = ({ className }) => {
   return (
@@ -22,15 +22,13 @@ export const Zenn: FC<{ className?: string }> = ({ className }) => {
   );
 };
 
-export const ZennIcon: FC<Partial<BaseIconProps>> = ({
-  size = 'md',
-}) => {
+export const ZennIcon: FC<Partial<BaseIconProps>> = ({ size = 'md' }) => {
   return (
     <BaseIcon
-      size={size}
       renderItem={(props) => {
         return <Zenn {...props} />;
       }}
+      size={size}
     />
   );
 };

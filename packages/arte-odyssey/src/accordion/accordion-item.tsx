@@ -1,7 +1,7 @@
 'use client';
 
+import { type FC, type PropsWithChildren, useId } from 'react';
 import { AccordionItemProvider } from './context';
-import { FC, PropsWithChildren, useId } from 'react';
 
 export const AccordionItem: FC<
   PropsWithChildren<{ defaultOpen?: boolean }>

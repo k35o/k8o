@@ -1,25 +1,19 @@
 'use client';
 
-import { LoadingCreateColumns } from './_components/create-columns/loading-create-columns';
-import { CreateRestrictions } from './_components/create-restrictions';
-import { CreateTable } from './_components/create-table';
-import { Column, InvalidColumns } from './_types/column';
-import {
-  InvalidRestrictions,
-  Restriction,
-} from './_types/restriction';
-import { InvalidTable, Table } from './_types/table';
-import { makeStatement } from './_utils/statement';
 import { Button } from '@k8o/arte-odyssey/button';
 import { uuidV4 } from '@k8o/helpers/uuid-v4';
 import dynamic from 'next/dynamic';
 import { useRef, useState } from 'react';
+import { LoadingCreateColumns } from './_components/create-columns/loading-create-columns';
+import { CreateRestrictions } from './_components/create-restrictions';
+import { CreateTable } from './_components/create-table';
+import type { Column, InvalidColumns } from './_types/column';
+import type { InvalidRestrictions, Restriction } from './_types/restriction';
+import type { InvalidTable, Table } from './_types/table';
+import { makeStatement } from './_utils/statement';
 
 const CreateColumns = dynamic(
-  () =>
-    import('./_components/create-columns').then(
-      (mod) => mod.CreateColumns,
-    ),
+  () => import('./_components/create-columns').then((mod) => mod.CreateColumns),
   { ssr: false, loading: () => <LoadingCreateColumns /> },
 );
 
@@ -38,41 +32,35 @@ export default function Page() {
       nullable: false,
     },
   });
-  const [restrictions, setRestrictions] = useState<
-    Record<string, Restriction>
-  >({
-    [uuidV4()]: {
-      type: 'primary',
-      columns: [],
+  const [restrictions, setRestrictions] = useState<Record<string, Restriction>>(
+    {
+      [uuidV4()]: {
+        type: 'primary',
+        columns: [],
+      },
     },
-  });
+  );
 
   const [statement, setStatement] = useState<string>('');
-  const [tableError, setTableError] =
-    useState<InvalidTable['errors']>();
-  const [columnsError, setColumnsError] =
-    useState<InvalidColumns['errors']>();
+  const [tableError, setTableError] = useState<InvalidTable['errors']>();
+  const [columnsError, setColumnsError] = useState<InvalidColumns['errors']>();
   const [restroctionsError, setRestroctionsError] =
     useState<InvalidRestrictions['errors']>();
 
   return (
-    <section ref={topRef} className="grid gap-6 py-4">
-      <CreateTable
-        table={table}
-        setTable={setTable}
-        tableError={tableError}
-      />
+    <section className="grid gap-6 py-4" ref={topRef}>
+      <CreateTable setTable={setTable} table={table} tableError={tableError} />
       <CreateColumns
         columns={columns}
+        columnsError={columnsError}
         setColumns={setColumns}
         setRestrictions={setRestrictions}
-        columnsError={columnsError}
       />
       <CreateRestrictions
         columns={columns}
         restrictions={restrictions}
-        setRestrictions={setRestrictions}
         restroctionsError={restroctionsError}
+        setRestrictions={setRestrictions}
       />
       <Button
         onClick={() => {
@@ -80,17 +68,11 @@ export default function Page() {
           setColumnsError(undefined);
           setRestroctionsError(undefined);
           setStatement('');
-          const statementResult = makeStatement(
-            table,
-            columns,
-            restrictions,
-          );
+          const statementResult = makeStatement(table, columns, restrictions);
           if (!statementResult.isSuccessful) {
             setTableError(statementResult.invalidTable?.errors);
             setColumnsError(statementResult.invalidColumns?.errors);
-            setRestroctionsError(
-              statementResult.invalidRestrictions?.errors,
-            );
+            setRestroctionsError(statementResult.invalidRestrictions?.errors);
             topRef.current?.scrollIntoView();
             return;
           }
@@ -101,10 +83,10 @@ export default function Page() {
       </Button>
       {statement && (
         <code
+          className="whitespace-pre-wrap rounded-md bg-bg-mute p-4 text-xs sm:text-md"
           ref={(node) => {
             node?.scrollIntoView();
           }}
-          className="bg-bg-mute sm:text-md rounded-md p-4 text-xs whitespace-pre-wrap"
         >
           {statement}
         </code>

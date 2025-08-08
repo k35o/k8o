@@ -11,6 +11,19 @@ export * from './dialog';
 export * from './drawer';
 export * from './dropdown-menu';
 export * from './error-boundary';
+export type { Option as AutocompleteOption } from './form/autocomplete';
+// Form components
+export { Autocomplete } from './form/autocomplete';
+export * from './form/checkbox';
+export * from './form/form-control';
+export * from './form/number-field';
+export type { Option as RadioOption } from './form/radio';
+export { Radio } from './form/radio';
+export * from './form/range-field';
+export type { Option as SelectOption } from './form/select';
+export { Select } from './form/select';
+export * from './form/text-field';
+export * from './form/textarea';
 export * from './heading';
 export * from './icon-button';
 export * from './icon-link';
@@ -27,17 +40,3 @@ export * from './tabs';
 export * from './text-tag';
 export * from './toast';
 export * from './tooltip';
-
-// Form components
-export { Autocomplete } from './form/autocomplete';
-export type { Option as AutocompleteOption } from './form/autocomplete';
-export * from './form/checkbox';
-export * from './form/form-control';
-export * from './form/number-field';
-export { Radio } from './form/radio';
-export type { Option as RadioOption } from './form/radio';
-export * from './form/range-field';
-export { Select } from './form/select';
-export type { Option as SelectOption } from './form/select';
-export * from './form/text-field';
-export * from './form/textarea';

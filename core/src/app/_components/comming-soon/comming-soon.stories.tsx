@@ -1,6 +1,6 @@
-import { CommingSoon } from './comming-soon';
 import { Anchor } from '@k8o/arte-odyssey/anchor';
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
+import { CommingSoon } from './comming-soon';
 
 const meta: Meta<typeof CommingSoon> = {
   title: 'app/globals/comming-soon',

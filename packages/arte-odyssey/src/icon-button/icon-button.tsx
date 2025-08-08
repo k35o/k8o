@@ -1,5 +1,5 @@
 import { cn } from '@k8o/helpers/cn';
-import { FC, HTMLProps } from 'react';
+import type { FC, HTMLProps } from 'react';
 
 type Props = {
   size?: 'sm' | 'md' | 'lg';
@@ -17,11 +17,11 @@ export const IconButton: FC<Props> = ({
 }) => {
   return (
     <button
-      ref={ref}
+      aria-label={props.role ? label : undefined}
       className={cn(
         'inline-flex rounded-full bg-transparent',
         'hover:bg-bg-subtle',
-        'focus-visible:ring-border-info active:bg-bg-emphasize focus-visible:border-transparent focus-visible:ring-2 focus-visible:outline-hidden',
+        'focus-visible:border-transparent focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-border-info active:bg-bg-emphasize',
         bg === 'base' && 'bg-bg-base/90',
         bg === 'transparent' && 'bg-transparent',
         bg === 'primary' &&
@@ -32,7 +32,7 @@ export const IconButton: FC<Props> = ({
         props.disabled &&
           'cursor-not-allowed opacity-50 hover:bg-transparent active:bg-transparent',
       )}
-      aria-label={props.role ? label : undefined}
+      ref={ref}
       {...props}
     >
       {!props.role && <span className="sr-only">{label}</span>}

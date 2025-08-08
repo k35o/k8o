@@ -1,20 +1,18 @@
 import { Heading } from '@k8o/arte-odyssey/heading';
-import { PropsWithChildren } from 'react';
+import type { PropsWithChildren } from 'react';
 
 export const metadata = {
   title: 'SQLテーブルメーカー',
   description: 'データベースのテーブルを作成するSQL文を発行します。',
   openGraph: {
     title: 'SQLテーブルメーカー',
-    description:
-      'データベースのテーブルを作成するSQL文を発行します。',
+    description: 'データベースのテーブルを作成するSQL文を発行します。',
     url: 'https://k8o.me/sql-table-builder',
   },
   twitter: {
     title: 'SQLテーブルメーカー',
     card: 'summary',
-    description:
-      'データベースのテーブルを作成するSQL文を発行します。',
+    description: 'データベースのテーブルを作成するSQL文を発行します。',
   },
 };
 

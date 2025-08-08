@@ -1,9 +1,9 @@
 'use client';
 
+import type { Placement } from '@floating-ui/react';
+import type { FC, PropsWithChildren, ReactElement } from 'react';
 import { Popover } from '../popover';
 import { usePlacement } from '../popover/hooks';
-import { Placement } from '@floating-ui/react';
-import { FC, PropsWithChildren, ReactElement } from 'react';
 
 const Root: FC<PropsWithChildren<{ placement?: Placement }>> = ({
   children,
@@ -19,11 +19,7 @@ const Root: FC<PropsWithChildren<{ placement?: Placement }>> = ({
 const Trigger: FC<{
   renderItem: (props: Record<string, unknown>) => ReactElement;
 }> = ({ renderItem }) => {
-  return (
-    <Popover.Trigger
-      renderItem={(props) => renderItem({ ...props })}
-    />
-  );
+  return <Popover.Trigger renderItem={(props) => renderItem({ ...props })} />;
 };
 
 const Content: FC<PropsWithChildren> = ({ children }) => {
@@ -34,21 +30,11 @@ const Content: FC<PropsWithChildren> = ({ children }) => {
     left: { translateX: 5 },
     right: { translateX: -5 },
   }[
-    placement.includes('-')
-      ? (placement.split('-')[0] ?? 'bottom')
-      : placement
+    placement.includes('-') ? (placement.split('-')[0] ?? 'bottom') : placement
   ];
 
   return (
     <Popover.Content
-      renderItem={(props) => (
-        <div
-          {...props}
-          className="border-border-mute bg-bg-base rounded-lg border px-4 py-2 shadow-xl"
-        >
-          {children}
-        </div>
-      )}
       motionVariants={{
         closed: {
           ...translate,
@@ -66,6 +52,14 @@ const Content: FC<PropsWithChildren> = ({ children }) => {
           },
         },
       }}
+      renderItem={(props) => (
+        <div
+          {...props}
+          className="rounded-lg border border-border-mute bg-bg-base px-4 py-2 shadow-xl"
+        >
+          {children}
+        </div>
+      )}
     />
   );
 };

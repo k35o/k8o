@@ -1,9 +1,9 @@
 'use client';
 
+import { useToast } from '@k8o/arte-odyssey/toast';
+import type { FC } from 'react';
 import { FeedbackCard } from '@/app/_components/feedback-card';
 import { feedback } from '@/services/blogs/action';
-import { useToast } from '@k8o/arte-odyssey/toast';
-import { FC } from 'react';
 
 export const Feedback: FC<{
   slug: string;
@@ -11,7 +11,6 @@ export const Feedback: FC<{
   const { onOpen } = useToast();
   return (
     <FeedbackCard
-      title="この記事はどうでしたか？"
       onSubmit={async (id, comment) => {
         const result = await feedback(slug, id, comment);
         if (result.success) {
@@ -20,6 +19,7 @@ export const Feedback: FC<{
           onOpen('error', result.message);
         }
       }}
+      title="この記事はどうでしたか？"
     />
   );
 };

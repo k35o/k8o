@@ -5,7 +5,7 @@ import { IconButton } from '@k8o/arte-odyssey/icon-button';
 import { CopyIcon, RSSIcon } from '@k8o/arte-odyssey/icons';
 import { useToast } from '@k8o/arte-odyssey/toast';
 import { useClipboard } from '@k8o/hooks/clipboard';
-import { FC } from 'react';
+import type { FC } from 'react';
 
 export const RssPanel: FC = () => {
   const { writeClipboard } = useClipboard();
@@ -16,17 +16,15 @@ export const RssPanel: FC = () => {
       <p className="text-fg-mute text-sm">
         RSSリーダーを使用してブログの更新情報を受け取ることができます。以下のURLをRSSリーダーに追加してください。
       </p>
-      <div className="bg-bg-mute flex w-full items-center justify-between gap-2 rounded-md p-2">
+      <div className="flex w-full items-center justify-between gap-2 rounded-md bg-bg-mute p-2">
         <p>https://k8o.me/blog/feed</p>
         <IconButton
-          label="コピー"
           bg="base"
+          label="コピー"
           onClick={() => {
-            void writeClipboard('https://k8o.me/blog/feed').then(
-              () => {
-                onOpen('success', 'クリップボードにコピーしました');
-              },
-            );
+            void writeClipboard('https://k8o.me/blog/feed').then(() => {
+              onOpen('success', 'クリップボードにコピーしました');
+            });
           }}
         >
           <CopyIcon />

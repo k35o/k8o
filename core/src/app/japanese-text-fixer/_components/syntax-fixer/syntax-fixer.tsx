@@ -1,14 +1,6 @@
 'use client';
 
 import {
-  useConvertComplete,
-  useInvalidCount,
-  useInvalidResult,
-  useResetResult,
-  useResultText,
-  useSetFixTextsField,
-} from '../../_state/text';
-import {
   Accordion,
   AccordionButton,
   AccordionItem,
@@ -22,53 +14,52 @@ import { Heading } from '@k8o/arte-odyssey/heading';
 import { IconButton } from '@k8o/arte-odyssey/icon-button';
 import { ChevronIcon } from '@k8o/arte-odyssey/icons';
 import { useStep } from '@k8o/hooks/step';
-import { FC, Fragment, useId } from 'react';
+import { type FC, Fragment, useId } from 'react';
+import {
+  useConvertComplete,
+  useInvalidCount,
+  useInvalidResult,
+  useResetResult,
+  useResultText,
+  useSetFixTextsField,
+} from '../../_state/text';
 
 export const SyntaxFixer: FC = () => {
   const invalidCount = useInvalidCount();
-  const { count, isDisabledBack, isDisabledNext, back, next } =
-    useStep({
-      initialCount: 1,
-      maxCount: invalidCount,
-    });
+  const { count, isDisabledBack, isDisabledNext, back, next } = useStep({
+    initialCount: 1,
+    maxCount: invalidCount,
+  });
   const resetResult = useResetResult();
   const isCheckResult = useConvertComplete();
 
   return (
     <div className="flex flex-col items-center justify-center gap-8">
       <div className="flex w-full justify-between gap-4">
-        <Button variant="outlined" onClick={resetResult}>
+        <Button onClick={resetResult} variant="outlined">
           戻る
         </Button>
         <Button
-          variant={isDisabledNext ? 'contained' : 'outlined'}
           onClick={isCheckResult}
+          variant={isDisabledNext ? 'contained' : 'outlined'}
         >
           修正後のテキストを確認する
         </Button>
       </div>
       <div className="flex w-full items-center justify-evenly">
-        <IconButton
-          label="戻る"
-          onClick={back}
-          disabled={isDisabledBack}
-        >
+        <IconButton disabled={isDisabledBack} label="戻る" onClick={back}>
           <ChevronIcon direction="left" size="lg" />
         </IconButton>
-        <div className="bg-bg-base flex size-14 items-center justify-center rounded-full">
-          <p className="leading-none font-bold">
+        <div className="flex size-14 items-center justify-center rounded-full bg-bg-base">
+          <p className="font-bold leading-none">
             {count}/{invalidCount}
           </p>
         </div>
-        <IconButton
-          label="次へ"
-          onClick={next}
-          disabled={isDisabledNext}
-        >
+        <IconButton disabled={isDisabledNext} label="次へ" onClick={next}>
           <ChevronIcon direction="right" size="lg" />
         </IconButton>
       </div>
-      <FixText key={count} count={count} />
+      <FixText count={count} key={count} />
     </div>
   );
 };
@@ -76,8 +67,7 @@ export const SyntaxFixer: FC = () => {
 const FixText: FC<{ count: number }> = ({ count }) => {
   const id = useId();
   const texts = useResultText();
-  const { resultText, resultMessage, resultIdx } =
-    useInvalidResult(count);
+  const { resultText, resultMessage, resultIdx } = useInvalidResult(count);
   const { fixText, handleFixTextChange } = useSetFixTextsField(
     resultIdx,
     resultText,
@@ -85,12 +75,9 @@ const FixText: FC<{ count: number }> = ({ count }) => {
 
   return (
     <div className="w-full">
-      <Alert status="error" message={resultMessage} />
+      <Alert message={resultMessage} status="error" />
       <div className="mt-8 grid gap-6">
-        <section
-          aria-labelledby={`fixer_${id}`}
-          className="grid gap-3"
-        >
+        <section aria-labelledby={`fixer_${id}`} className="grid gap-3">
           <Heading id={`fixer_${id}`} type="h4">
             テキストを修正
           </Heading>
@@ -100,12 +87,12 @@ const FixText: FC<{ count: number }> = ({ count }) => {
               return (
                 <Textarea
                   {...props}
-                  value={fixText}
+                  autoResize
+                  isRequired
                   onChange={(e) => {
                     handleFixTextChange(e.target.value);
                   }}
-                  autoResize
-                  isRequired
+                  value={fixText}
                 />
               );
             }}
@@ -116,16 +103,15 @@ const FixText: FC<{ count: number }> = ({ count }) => {
             <AccordionItem>
               <Heading type="h4">
                 <AccordionButton>
-                  <p id={`all_${id}`} className="text-lg">
+                  <p className="text-lg" id={`all_${id}`}>
                     原文を確認する
                   </p>
                 </AccordionButton>
               </Heading>
               <AccordionPanel>
-                <p className="text-wrap break-all whitespace-pre-wrap">
+                <p className="whitespace-pre-wrap text-wrap break-all">
                   {texts.map((text, idx) => {
-                    const separator =
-                      idx === texts.length - 1 ? '' : '\n';
+                    const separator = idx === texts.length - 1 ? '' : '\n';
                     if (idx !== resultIdx) {
                       return (
                         <Fragment key={`${idx.toString()}_${text}`}>
@@ -135,8 +121,8 @@ const FixText: FC<{ count: number }> = ({ count }) => {
                     }
                     return (
                       <span
-                        key={`${idx.toString()}_${text}`}
                         className="bg-bg-info"
+                        key={`${idx.toString()}_${text}`}
                       >
                         {text + separator}
                       </span>

@@ -1,5 +1,5 @@
 import { cn } from '@k8o/helpers/cn';
-import { ChangeEventHandler, FC } from 'react';
+import type { ChangeEventHandler, FC } from 'react';
 
 export type Option = Readonly<{
   value: string;
@@ -24,30 +24,30 @@ export const Radio: FC<Props> = ({
   return (
     <div
       aria-labelledby={labelId}
-      role="radiogroup"
       className={cn(
         'flex cursor-pointer flex-col gap-2',
         isDisabled && 'cursor-not-allowed',
       )}
+      role="radiogroup"
     >
       {options.map((option) => (
         <label
-          key={option.value}
           className={cn(
             'flex cursor-pointer items-center gap-2',
             'has-disabled:cursor-not-allowed',
           )}
+          key={option.value}
         >
           <input
-            type="radio"
+            checked={value === option.value}
             className={cn(
               'cursor-pointer',
-              'disabled:bg-bg-mute disabled:cursor-not-allowed',
+              'disabled:cursor-not-allowed disabled:bg-bg-mute',
             )}
-            value={option.value}
-            checked={value === option.value}
-            onChange={onChange}
             disabled={isDisabled}
+            onChange={onChange}
+            type="radio"
+            value={option.value}
           />
           <span>{option.label}</span>
         </label>

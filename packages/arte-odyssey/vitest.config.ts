@@ -1,4 +1,4 @@
-import { fileURLToPath } from 'url';
+import { fileURLToPath } from 'node:url';
 import { storybookTest } from '@storybook/addon-vitest/vitest-plugin';
 import { defineConfig, mergeConfig } from 'vitest/config';
 import viteConfig from './vite.config';
@@ -9,14 +9,10 @@ export default mergeConfig(
     plugins: [
       storybookTest({
         storybookScript: 'pnpm storybook --ci',
-        configDir: fileURLToPath(
-          new URL('./.storybook', import.meta.url),
-        ),
+        configDir: fileURLToPath(new URL('./.storybook', import.meta.url)),
       }),
     ],
-    publicDir: fileURLToPath(
-      new URL('./.storybook/public', import.meta.url),
-    ),
+    publicDir: fileURLToPath(new URL('./.storybook/public', import.meta.url)),
     test: {
       globals: true,
       name: { label: 'components', color: 'magenta' },
@@ -33,9 +29,7 @@ export default mergeConfig(
       },
       isolate: false,
       setupFiles: [
-        fileURLToPath(
-          new URL('./.storybook/vitest.setup.ts', import.meta.url),
-        ),
+        fileURLToPath(new URL('./.storybook/vitest.setup.ts', import.meta.url)),
       ],
     },
   }),

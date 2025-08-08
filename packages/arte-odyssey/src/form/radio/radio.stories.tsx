@@ -1,6 +1,6 @@
-import { Radio } from './radio';
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { useState } from 'react';
+import { Radio } from './radio';
 
 const meta: Meta<typeof Radio> = {
   title: 'components/form/radio',
@@ -20,13 +20,13 @@ export const Default: Story = {
 
     return (
       <Radio
+        isDisabled={false}
         labelId="radio"
-        value={value}
         onChange={(e) => {
           setValue(e.target.value);
         }}
         options={options}
-        isDisabled={false}
+        value={value}
       />
     );
   },
@@ -42,13 +42,13 @@ export const Disabled: Story = {
 
     return (
       <Radio
+        isDisabled
         labelId="radio"
-        value={value}
         onChange={(e) => {
           setValue(e.target.value);
         }}
         options={options}
-        isDisabled
+        value={value}
       />
     );
   },

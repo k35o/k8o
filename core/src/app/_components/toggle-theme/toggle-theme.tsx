@@ -4,7 +4,7 @@ import { IconButton } from '@k8o/arte-odyssey/icon-button';
 import { DarkModeIcon, LightModeIcon } from '@k8o/arte-odyssey/icons';
 import * as motion from 'motion/react-client';
 import { useTheme } from 'next-themes';
-import { FC, useCallback, useMemo } from 'react';
+import { type FC, useCallback, useMemo } from 'react';
 
 export const ToggleTheme: FC = () => {
   const { theme, setTheme, systemTheme } = useTheme();
@@ -21,13 +21,10 @@ export const ToggleTheme: FC = () => {
   }, [nextTheme, setTheme]);
 
   return (
-    <IconButton
-      onClick={handleThemeCallback}
-      label="テーマを切り替える"
-    >
+    <IconButton label="テーマを切り替える" onClick={handleThemeCallback}>
       <motion.span
-        className="size-8 scale-100 dark:scale-0"
         animate={nextTheme}
+        className="size-8 scale-100 dark:scale-0"
         variants={{
           light: {
             scale: 0,
@@ -42,8 +39,8 @@ export const ToggleTheme: FC = () => {
         <DarkModeIcon size="lg" />
       </motion.span>
       <motion.span
-        className="absolute size-8 scale-0 dark:scale-100"
         animate={nextTheme}
+        className="absolute size-8 scale-0 dark:scale-100"
         variants={{
           dark: {
             scale: 0,

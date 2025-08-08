@@ -1,6 +1,6 @@
-import { useClickAway } from '.';
 import { fireEvent, render } from '@testing-library/react';
-import { FC } from 'react';
+import type { FC } from 'react';
+import { useClickAway } from '.';
 
 const OutsideClicker: FC<{
   callback: () => void;

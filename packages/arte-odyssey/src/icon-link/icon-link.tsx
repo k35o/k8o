@@ -1,6 +1,6 @@
 import { cn } from '@k8o/helpers/cn';
 import { isInternalRoute } from '@k8o/helpers/is-internal-route';
-import { FC, PropsWithChildren, ReactNode } from 'react';
+import type { FC, PropsWithChildren, ReactNode } from 'react';
 
 type IconLinkProps = PropsWithChildren<{
   size?: 'sm' | 'md' | 'lg';
@@ -24,12 +24,9 @@ export const IconLink: FC<IconLinkProps> = ({
   href,
   children,
   openInNewTab = false,
-  renderAnchor = ({ children, ...props }) => (
-    <a {...props}>{children}</a>
-  ),
+  renderAnchor = ({ children, ...props }) => <a {...props}>{children}</a>,
 }) => {
-  const type =
-    isInternalRoute(href) && !openInNewTab ? 'internal' : 'external';
+  const type = isInternalRoute(href) && !openInNewTab ? 'internal' : 'external';
   const props =
     type === 'internal'
       ? {}

@@ -1,4 +1,4 @@
-import { FC, ReactElement, useId } from 'react';
+import { type FC, type ReactElement, useId } from 'react';
 
 type FormControlProps = {
   isDisabled?: boolean;
@@ -37,23 +37,23 @@ export const FormControl: FC<FormControlProps> = ({
         : undefined;
   const labelId = `${id}-label`;
   return (
-    <fieldset role="group" className="flex w-full flex-col">
+    <fieldset className="flex w-full flex-col">
       {labelAs === 'label' ? (
         <label
-          id={labelId}
+          className="mb-1 flex gap-2 font-bold text-fg-base text-md"
           htmlFor={id}
-          className="text-md text-fg-base mb-1 flex gap-2 font-bold"
+          id={labelId}
         >
           {label}
           {isRequired && (
-            <span className="text-fg-error font-medium">必須</span>
+            <span className="font-medium text-fg-error">必須</span>
           )}
         </label>
       ) : (
-        <legend className="text-md text-fg-base mb-1 flex gap-2 font-bold">
+        <legend className="mb-1 flex gap-2 font-bold text-fg-base text-md">
           {label}
           {isRequired && (
-            <span className="text-fg-error font-medium">必須</span>
+            <span className="font-medium text-fg-error">必須</span>
           )}
         </legend>
       )}
@@ -67,15 +67,15 @@ export const FormControl: FC<FormControlProps> = ({
       })}
       {isInvalid && errorText ? (
         <p
-          id={`${id}-feedback`}
-          className="text-fg-error text-sm"
           aria-live="polite"
+          className="text-fg-error text-sm"
+          id={`${id}-feedback`}
         >
           {errorText}
         </p>
       ) : (
         helpText && (
-          <p id={`${id}-helptext`} className="text-fg-mute text-sm">
+          <p className="text-fg-mute text-sm" id={`${id}-helptext`}>
             {helpText}
           </p>
         )

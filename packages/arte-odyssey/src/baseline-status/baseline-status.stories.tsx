@@ -1,5 +1,5 @@
-import { BaselineStatus } from './baseline-status';
 import type { Meta, StoryObj } from '@storybook/react-vite';
+import { BaselineStatus } from './baseline-status';
 
 const meta: Meta<typeof BaselineStatus> = {
   title: 'components/baseline-status',

@@ -1,12 +1,12 @@
+import { Button } from '@k8o/arte-odyssey/button';
+import { FormIcon, TableIcon } from '@k8o/arte-odyssey/icons';
+import type { FC } from 'react';
+import { useColumnsType } from '../../_state';
+import type { Column, InvalidColumns } from '../../_types/column';
+import type { Restriction } from '../../_types/restriction';
 import { CreateColumnsByForm } from './create-columns-by-form';
 import { CreateColumnsByTable } from './create-columns-by-table';
 import { useCreateColumns } from './hooks';
-import { useColumnsType } from '../../_state';
-import { Column, InvalidColumns } from '../../_types/column';
-import { Restriction } from '../../_types/restriction';
-import { Button } from '@k8o/arte-odyssey/button';
-import { FormIcon, TableIcon } from '@k8o/arte-odyssey/icons';
-import { FC } from 'react';
 
 type Props = {
   columns: Record<string, Column>;
@@ -36,16 +36,16 @@ export const CreateColumns: FC<Props> = ({
     <fieldset className="relative p-2">
       <div className="flex flex-col justify-between gap-2 py-2">
         <div className="flex items-center justify-between gap-2">
-          <legend className="text-lg font-bold">カラム情報</legend>
+          <legend className="font-bold text-lg">カラム情報</legend>
           <Button onClick={handleAddColumn}>カラムを追加</Button>
         </div>
         <div className="flex justify-end">
           <Button
-            variant="outlined"
             onClick={() => {
               setColumnsType(showTable ? 'form' : 'table');
             }}
             startIcon={showTable ? <FormIcon /> : <TableIcon />}
+            variant="outlined"
           >
             {showTable ? 'フォーム' : 'テーブル'}形式に変更
           </Button>
@@ -53,17 +53,17 @@ export const CreateColumns: FC<Props> = ({
       </div>
       {showTable ? (
         <CreateColumnsByTable
-          handleChangeColumn={handleChangeColumn}
-          handleDeleteColumn={handleDeleteColumn}
           columnsEntries={columnsEntries}
           columnsError={columnsError}
+          handleChangeColumn={handleChangeColumn}
+          handleDeleteColumn={handleDeleteColumn}
         />
       ) : (
         <CreateColumnsByForm
-          handleChangeColumn={handleChangeColumn}
-          handleDeleteColumn={handleDeleteColumn}
           columnsEntries={columnsEntries}
           columnsError={columnsError}
+          handleChangeColumn={handleChangeColumn}
+          handleDeleteColumn={handleDeleteColumn}
         />
       )}
     </fieldset>

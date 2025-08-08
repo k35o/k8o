@@ -1,12 +1,9 @@
-import { ColorInfo } from './color-info';
-import {
-  COLOR_VARIANTS,
-  SEMANTIC_COLOR_VARIANTS,
-} from '../../_utils/color';
 import { Heading } from '@k8o/arte-odyssey/heading';
 import { cn } from '@k8o/helpers/cn';
 import { calcContrast } from '@k8o/helpers/color';
-import { FC } from 'react';
+import type { FC } from 'react';
+import { COLOR_VARIANTS, SEMANTIC_COLOR_VARIANTS } from '../../_utils/color';
+import { ColorInfo } from './color-info';
 
 export const Color: FC = () => {
   return (
@@ -19,121 +16,99 @@ export const Color: FC = () => {
         <div className="flex flex-col gap-6 p-2">
           <div className="flex flex-col gap-3">
             <Heading type="h4">Foreground Color</Heading>
-            <div className="grid-cols-auto-fill-70 grid gap-5">
+            <div className="grid grid-cols-auto-fill-70 gap-5">
               <ColorInfo
-                name="base"
                 code={SEMANTIC_COLOR_VARIANTS.base.fg.base.light}
                 codeDark={SEMANTIC_COLOR_VARIANTS.base.fg.base.dark}
+                name="base"
                 variant="foreground"
               />
               <ColorInfo
-                name="subtle"
                 code={SEMANTIC_COLOR_VARIANTS.base.fg.subtle.light}
                 codeDark={SEMANTIC_COLOR_VARIANTS.base.fg.subtle.dark}
+                name="subtle"
                 variant="foreground"
               />
               <ColorInfo
-                name="mute"
                 code={SEMANTIC_COLOR_VARIANTS.base.fg.mute.light}
                 codeDark={SEMANTIC_COLOR_VARIANTS.base.fg.mute.dark}
+                name="mute"
                 variant="foreground"
               />
               <ColorInfo
-                name="inverse"
                 code={SEMANTIC_COLOR_VARIANTS.base.fg.inverse.light}
-                codeDark={
-                  SEMANTIC_COLOR_VARIANTS.base.fg.inverse.dark
-                }
+                codeDark={SEMANTIC_COLOR_VARIANTS.base.fg.inverse.dark}
+                name="inverse"
                 variant="foreground"
               />
             </div>
           </div>
           <div className="flex flex-col gap-3">
             <Heading type="h4">Background Color</Heading>
-            <div className="grid-cols-auto-fill-70 grid gap-5">
+            <div className="grid grid-cols-auto-fill-70 gap-5">
               <ColorInfo
-                name="base"
                 code={SEMANTIC_COLOR_VARIANTS.base.bg.base.light}
                 codeDark={SEMANTIC_COLOR_VARIANTS.base.bg.base.dark}
+                name="base"
                 variant="background"
               />
               <ColorInfo
-                name="subtle"
                 code={SEMANTIC_COLOR_VARIANTS.base.bg.subtle.light}
                 codeDark={SEMANTIC_COLOR_VARIANTS.base.bg.subtle.dark}
+                name="subtle"
                 variant="background"
               />
               <ColorInfo
-                name="mute"
                 code={SEMANTIC_COLOR_VARIANTS.base.bg.mute.light}
                 codeDark={SEMANTIC_COLOR_VARIANTS.base.bg.mute.dark}
+                name="mute"
                 variant="background"
               />
               <ColorInfo
-                name="emphasize"
                 code={SEMANTIC_COLOR_VARIANTS.base.bg.emphasize.light}
-                codeDark={
-                  SEMANTIC_COLOR_VARIANTS.base.bg.emphasize.dark
-                }
+                codeDark={SEMANTIC_COLOR_VARIANTS.base.bg.emphasize.dark}
+                name="emphasize"
                 variant="background"
               />
               <ColorInfo
-                name="inverse"
                 code={SEMANTIC_COLOR_VARIANTS.base.bg.inverse.light}
-                codeDark={
-                  SEMANTIC_COLOR_VARIANTS.base.bg.inverse.dark
-                }
+                codeDark={SEMANTIC_COLOR_VARIANTS.base.bg.inverse.dark}
+                name="inverse"
                 variant="background"
               />
             </div>
           </div>
           <div className="flex flex-col gap-3">
             <Heading type="h4">Border Color</Heading>
-            <div className="grid-cols-auto-fill-70 grid gap-5">
+            <div className="grid grid-cols-auto-fill-70 gap-5">
               <ColorInfo
-                name="base"
                 code={SEMANTIC_COLOR_VARIANTS.base.border.base.light}
-                codeDark={
-                  SEMANTIC_COLOR_VARIANTS.base.border.base.dark
-                }
+                codeDark={SEMANTIC_COLOR_VARIANTS.base.border.base.dark}
+                name="base"
                 variant="border"
               />
               <ColorInfo
+                code={SEMANTIC_COLOR_VARIANTS.base.border.subtle.light}
+                codeDark={SEMANTIC_COLOR_VARIANTS.base.border.subtle.dark}
                 name="subtle"
-                code={
-                  SEMANTIC_COLOR_VARIANTS.base.border.subtle.light
-                }
-                codeDark={
-                  SEMANTIC_COLOR_VARIANTS.base.border.subtle.dark
-                }
                 variant="border"
               />
               <ColorInfo
-                name="mute"
                 code={SEMANTIC_COLOR_VARIANTS.base.border.mute.light}
-                codeDark={
-                  SEMANTIC_COLOR_VARIANTS.base.border.mute.dark
-                }
+                codeDark={SEMANTIC_COLOR_VARIANTS.base.border.mute.dark}
+                name="mute"
                 variant="border"
               />
               <ColorInfo
+                code={SEMANTIC_COLOR_VARIANTS.base.border.emphasize.light}
+                codeDark={SEMANTIC_COLOR_VARIANTS.base.border.emphasize.dark}
                 name="emphasize"
-                code={
-                  SEMANTIC_COLOR_VARIANTS.base.border.emphasize.light
-                }
-                codeDark={
-                  SEMANTIC_COLOR_VARIANTS.base.border.emphasize.dark
-                }
                 variant="border"
               />
               <ColorInfo
+                code={SEMANTIC_COLOR_VARIANTS.base.border.inverse.light}
+                codeDark={SEMANTIC_COLOR_VARIANTS.base.border.inverse.dark}
                 name="inverse"
-                code={
-                  SEMANTIC_COLOR_VARIANTS.base.border.inverse.light
-                }
-                codeDark={
-                  SEMANTIC_COLOR_VARIANTS.base.border.inverse.dark
-                }
                 variant="border"
               />
             </div>
@@ -148,146 +123,100 @@ export const Color: FC = () => {
         <div className="flex flex-col gap-6 p-2">
           <div className="flex flex-col gap-4">
             <Heading type="h4">Primary</Heading>
-            <div className="grid-cols-auto-fill-70 grid gap-5">
+            <div className="grid grid-cols-auto-fill-70 gap-5">
               <ColorInfo
+                code={SEMANTIC_COLOR_VARIANTS.primitive.primary.fg.light}
+                codeDark={SEMANTIC_COLOR_VARIANTS.primitive.primary.fg.dark}
                 name="fg"
-                code={
-                  SEMANTIC_COLOR_VARIANTS.primitive.primary.fg.light
-                }
-                codeDark={
-                  SEMANTIC_COLOR_VARIANTS.primitive.primary.fg.dark
-                }
                 variant="foreground"
               />
               <ColorInfo
+                code={SEMANTIC_COLOR_VARIANTS.primitive.primary.bg.light}
+                codeDark={SEMANTIC_COLOR_VARIANTS.primitive.primary.bg.dark}
                 name="bg"
-                code={
-                  SEMANTIC_COLOR_VARIANTS.primitive.primary.bg.light
-                }
-                codeDark={
-                  SEMANTIC_COLOR_VARIANTS.primitive.primary.bg.dark
-                }
                 variant="background"
               />
               <ColorInfo
+                code={SEMANTIC_COLOR_VARIANTS.primitive.primary.bgSubtle.light}
+                codeDark={
+                  SEMANTIC_COLOR_VARIANTS.primitive.primary.bgSubtle.dark
+                }
                 name="bg subtle"
-                code={
-                  SEMANTIC_COLOR_VARIANTS.primitive.primary.bgSubtle
-                    .light
-                }
-                codeDark={
-                  SEMANTIC_COLOR_VARIANTS.primitive.primary.bgSubtle
-                    .dark
-                }
                 variant="background"
               />
               <ColorInfo
+                code={SEMANTIC_COLOR_VARIANTS.primitive.primary.bgMute.light}
+                codeDark={SEMANTIC_COLOR_VARIANTS.primitive.primary.bgMute.dark}
                 name="bg mute"
-                code={
-                  SEMANTIC_COLOR_VARIANTS.primitive.primary.bgMute
-                    .light
-                }
-                codeDark={
-                  SEMANTIC_COLOR_VARIANTS.primitive.primary.bgMute
-                    .dark
-                }
                 variant="background"
               />
               <ColorInfo
+                code={
+                  SEMANTIC_COLOR_VARIANTS.primitive.primary.bgEmphasize.light
+                }
+                codeDark={
+                  SEMANTIC_COLOR_VARIANTS.primitive.primary.bgEmphasize.dark
+                }
                 name="bg emphasize"
-                code={
-                  SEMANTIC_COLOR_VARIANTS.primitive.primary
-                    .bgEmphasize.light
-                }
-                codeDark={
-                  SEMANTIC_COLOR_VARIANTS.primitive.primary
-                    .bgEmphasize.dark
-                }
                 variant="background"
               />
               <ColorInfo
+                code={SEMANTIC_COLOR_VARIANTS.primitive.primary.border.light}
+                codeDark={SEMANTIC_COLOR_VARIANTS.primitive.primary.border.dark}
                 name="border"
-                code={
-                  SEMANTIC_COLOR_VARIANTS.primitive.primary.border
-                    .light
-                }
-                codeDark={
-                  SEMANTIC_COLOR_VARIANTS.primitive.primary.border
-                    .dark
-                }
                 variant="border"
               />
             </div>
           </div>
           <div className="flex flex-col gap-4">
             <Heading type="h4">Secondary</Heading>
-            <div className="grid-cols-auto-fill-70 grid gap-5">
+            <div className="grid grid-cols-auto-fill-70 gap-5">
               <ColorInfo
+                code={SEMANTIC_COLOR_VARIANTS.primitive.secondary.fg.light}
+                codeDark={SEMANTIC_COLOR_VARIANTS.primitive.secondary.fg.dark}
                 name="fg"
-                code={
-                  SEMANTIC_COLOR_VARIANTS.primitive.secondary.fg.light
-                }
-                codeDark={
-                  SEMANTIC_COLOR_VARIANTS.primitive.secondary.fg.dark
-                }
                 variant="foreground"
               />
               <ColorInfo
+                code={SEMANTIC_COLOR_VARIANTS.primitive.secondary.bg.light}
+                codeDark={SEMANTIC_COLOR_VARIANTS.primitive.secondary.bg.dark}
                 name="bg"
-                code={
-                  SEMANTIC_COLOR_VARIANTS.primitive.secondary.bg.light
-                }
-                codeDark={
-                  SEMANTIC_COLOR_VARIANTS.primitive.secondary.bg.dark
-                }
                 variant="background"
               />
               <ColorInfo
+                code={
+                  SEMANTIC_COLOR_VARIANTS.primitive.secondary.bgSubtle.light
+                }
+                codeDark={
+                  SEMANTIC_COLOR_VARIANTS.primitive.secondary.bgSubtle.dark
+                }
                 name="bg subtle"
-                code={
-                  SEMANTIC_COLOR_VARIANTS.primitive.secondary.bgSubtle
-                    .light
-                }
-                codeDark={
-                  SEMANTIC_COLOR_VARIANTS.primitive.secondary.bgSubtle
-                    .dark
-                }
                 variant="background"
               />
               <ColorInfo
+                code={SEMANTIC_COLOR_VARIANTS.primitive.secondary.bgMute.light}
+                codeDark={
+                  SEMANTIC_COLOR_VARIANTS.primitive.secondary.bgMute.dark
+                }
                 name="bg mute"
-                code={
-                  SEMANTIC_COLOR_VARIANTS.primitive.secondary.bgMute
-                    .light
-                }
-                codeDark={
-                  SEMANTIC_COLOR_VARIANTS.primitive.secondary.bgMute
-                    .dark
-                }
                 variant="background"
               />
               <ColorInfo
+                code={
+                  SEMANTIC_COLOR_VARIANTS.primitive.secondary.bgEmphasize.light
+                }
+                codeDark={
+                  SEMANTIC_COLOR_VARIANTS.primitive.secondary.bgEmphasize.dark
+                }
                 name="bg emphasize"
-                code={
-                  SEMANTIC_COLOR_VARIANTS.primitive.secondary
-                    .bgEmphasize.light
-                }
-                codeDark={
-                  SEMANTIC_COLOR_VARIANTS.primitive.secondary
-                    .bgEmphasize.dark
-                }
                 variant="background"
               />
               <ColorInfo
-                name="border"
-                code={
-                  SEMANTIC_COLOR_VARIANTS.primitive.secondary.border
-                    .light
-                }
+                code={SEMANTIC_COLOR_VARIANTS.primitive.secondary.border.light}
                 codeDark={
-                  SEMANTIC_COLOR_VARIANTS.primitive.secondary.border
-                    .dark
+                  SEMANTIC_COLOR_VARIANTS.primitive.secondary.border.dark
                 }
+                name="border"
                 variant="border"
               />
             </div>
@@ -302,129 +231,87 @@ export const Color: FC = () => {
         <div className="flex flex-col gap-3 p-2">
           <div className="flex flex-col gap-3">
             <Heading type="h4">Foreground Color</Heading>
-            <div className="grid-cols-auto-fill-70 grid gap-5">
+            <div className="grid grid-cols-auto-fill-70 gap-5">
               <ColorInfo
-                name="info"
                 code={SEMANTIC_COLOR_VARIANTS.semantic.fg.info.light}
-                codeDark={
-                  SEMANTIC_COLOR_VARIANTS.semantic.fg.info.dark
-                }
+                codeDark={SEMANTIC_COLOR_VARIANTS.semantic.fg.info.dark}
+                name="info"
                 variant="foreground"
               />
               <ColorInfo
+                code={SEMANTIC_COLOR_VARIANTS.semantic.fg.success.light}
+                codeDark={SEMANTIC_COLOR_VARIANTS.semantic.fg.success.dark}
                 name="success"
-                code={
-                  SEMANTIC_COLOR_VARIANTS.semantic.fg.success.light
-                }
-                codeDark={
-                  SEMANTIC_COLOR_VARIANTS.semantic.fg.success.dark
-                }
                 variant="foreground"
               />
               <ColorInfo
+                code={SEMANTIC_COLOR_VARIANTS.semantic.fg.warning.light}
+                codeDark={SEMANTIC_COLOR_VARIANTS.semantic.fg.warning.dark}
                 name="warning"
-                code={
-                  SEMANTIC_COLOR_VARIANTS.semantic.fg.warning.light
-                }
-                codeDark={
-                  SEMANTIC_COLOR_VARIANTS.semantic.fg.warning.dark
-                }
                 variant="foreground"
               />
               <ColorInfo
-                name="error"
                 code={SEMANTIC_COLOR_VARIANTS.semantic.fg.error.light}
-                codeDark={
-                  SEMANTIC_COLOR_VARIANTS.semantic.fg.error.dark
-                }
+                codeDark={SEMANTIC_COLOR_VARIANTS.semantic.fg.error.dark}
+                name="error"
                 variant="foreground"
               />
             </div>
           </div>
           <div className="flex flex-col justify-between gap-3">
             <Heading type="h4">Background Color</Heading>
-            <div className="grid-cols-auto-fill-70 grid gap-5">
+            <div className="grid grid-cols-auto-fill-70 gap-5">
               <ColorInfo
-                name="info"
                 code={SEMANTIC_COLOR_VARIANTS.semantic.bg.info.light}
-                codeDark={
-                  SEMANTIC_COLOR_VARIANTS.semantic.bg.info.dark
-                }
+                codeDark={SEMANTIC_COLOR_VARIANTS.semantic.bg.info.dark}
+                name="info"
                 variant="background"
               />
               <ColorInfo
+                code={SEMANTIC_COLOR_VARIANTS.semantic.bg.success.light}
+                codeDark={SEMANTIC_COLOR_VARIANTS.semantic.bg.success.dark}
                 name="success"
-                code={
-                  SEMANTIC_COLOR_VARIANTS.semantic.bg.success.light
-                }
-                codeDark={
-                  SEMANTIC_COLOR_VARIANTS.semantic.bg.success.dark
-                }
                 variant="background"
               />
               <ColorInfo
+                code={SEMANTIC_COLOR_VARIANTS.semantic.bg.warning.light}
+                codeDark={SEMANTIC_COLOR_VARIANTS.semantic.bg.warning.dark}
                 name="warning"
-                code={
-                  SEMANTIC_COLOR_VARIANTS.semantic.bg.warning.light
-                }
-                codeDark={
-                  SEMANTIC_COLOR_VARIANTS.semantic.bg.warning.dark
-                }
                 variant="background"
               />
               <ColorInfo
-                name="error"
                 code={SEMANTIC_COLOR_VARIANTS.semantic.bg.error.light}
-                codeDark={
-                  SEMANTIC_COLOR_VARIANTS.semantic.bg.error.dark
-                }
+                codeDark={SEMANTIC_COLOR_VARIANTS.semantic.bg.error.dark}
+                name="error"
                 variant="background"
               />
             </div>
           </div>
           <div className="flex flex-col justify-between gap-3">
             <Heading type="h4">Border Color</Heading>
-            <div className="grid-cols-auto-fill-70 grid gap-5">
+            <div className="grid grid-cols-auto-fill-70 gap-5">
               <ColorInfo
+                code={SEMANTIC_COLOR_VARIANTS.semantic.border.info.light}
+                codeDark={SEMANTIC_COLOR_VARIANTS.semantic.border.info.dark}
                 name="info"
-                code={
-                  SEMANTIC_COLOR_VARIANTS.semantic.border.info.light
-                }
-                codeDark={
-                  SEMANTIC_COLOR_VARIANTS.semantic.border.info.dark
-                }
                 variant="border"
               />
               <ColorInfo
+                code={SEMANTIC_COLOR_VARIANTS.semantic.border.success.light}
+                codeDark={SEMANTIC_COLOR_VARIANTS.semantic.border.success.dark}
                 name="success"
-                code={
-                  SEMANTIC_COLOR_VARIANTS.semantic.border.success
-                    .light
-                }
-                codeDark={
-                  SEMANTIC_COLOR_VARIANTS.semantic.border.success.dark
-                }
                 variant="border"
               />
               <ColorInfo
+                code={SEMANTIC_COLOR_VARIANTS.semantic.border.warning.light}
+                codeDark={SEMANTIC_COLOR_VARIANTS.semantic.border.warning.dark}
                 name="warning"
-                code={
-                  SEMANTIC_COLOR_VARIANTS.semantic.border.warning
-                    .light
-                }
-                codeDark={
-                  SEMANTIC_COLOR_VARIANTS.semantic.border.warning.dark
-                }
                 variant="border"
               />
               <ColorInfo
+                code={SEMANTIC_COLOR_VARIANTS.semantic.border.error.light}
+                codeDark={SEMANTIC_COLOR_VARIANTS.semantic.border.error.dark}
                 name="error"
-                code={
-                  SEMANTIC_COLOR_VARIANTS.semantic.border.error.light
-                }
-                codeDark={
-                  SEMANTIC_COLOR_VARIANTS.semantic.border.error.dark
-                }
                 variant="border"
               />
             </div>
@@ -440,14 +327,14 @@ export const Color: FC = () => {
           {Object.entries(COLOR_VARIANTS).map((value) => {
             return (
               <div
-                key={value[0]}
                 className="flex flex-col justify-between gap-3 rounded-lg p-3"
+                key={value[0]}
               >
                 <Heading type="h4">{value[0]}</Heading>
                 {typeof value[1] === 'string' ? (
                   <div className="flex flex-col items-center gap-1">
                     <div
-                      className="border-border-base flex h-12 w-24 items-center justify-center rounded-full border"
+                      className="flex h-12 w-24 items-center justify-center rounded-full border border-border-base"
                       style={{
                         backgroundColor: value[1],
                       }}
@@ -459,16 +346,13 @@ export const Color: FC = () => {
                     {Object.entries(value[1]).map((color) => {
                       return (
                         <div
-                          key={color[0]}
                           className="flex flex-col items-center gap-2"
+                          key={color[0]}
                         >
                           <div
                             className={cn(
-                              'border-border-base flex h-12 w-24 items-center justify-center rounded-full border',
-                              calcContrast(
-                                color[1],
-                                COLOR_VARIANTS.white,
-                              ) < 4.5
+                              'flex h-12 w-24 items-center justify-center rounded-full border border-border-base',
+                              calcContrast(color[1], COLOR_VARIANTS.white) < 4.5
                                 ? 'text-fg-base dark:text-fg-inverse'
                                 : 'text-fg-inverse dark:text-fg-base',
                             )}

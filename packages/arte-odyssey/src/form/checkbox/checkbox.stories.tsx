@@ -1,6 +1,6 @@
-import { Checkbox } from './checkbox';
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { useState } from 'react';
+import { Checkbox } from './checkbox';
 
 const meta: Meta<typeof Checkbox> = {
   title: 'components/form/checkbox',
@@ -17,10 +17,10 @@ export const Default: Story = {
     return (
       <Checkbox
         label="checkbox"
-        value={value}
         onChange={(e) => {
           setValue(e.target.checked);
         }}
+        value={value}
       />
     );
   },

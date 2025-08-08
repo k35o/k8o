@@ -1,5 +1,5 @@
-import { QrGenerator } from './qr-generator';
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
+import { QrGenerator } from './qr-generator';
 
 const meta: Meta<typeof QrGenerator> = {
   title: 'app/qr-generator/QrGenerator',

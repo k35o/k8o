@@ -1,32 +1,32 @@
 'use client';
 
 import {
-  MenuContextProvider,
-  useMenuContent,
-  useMenuItem,
-  useMenuTrigger,
-} from './hooks';
+  FloatingList,
+  type Placement,
+  useInteractions,
+  useListNavigation,
+} from '@floating-ui/react';
+import { cn } from '@k8o/helpers/cn';
+import {
+  type ComponentProps,
+  type FC,
+  type MouseEventHandler,
+  type PropsWithChildren,
+  type ReactNode,
+  useRef,
+  useState,
+} from 'react';
 import { Button } from '../button';
 import { IconButton } from '../icon-button';
 import { ChevronIcon } from '../icons';
 import { Popover } from '../popover';
 import { useFloatingUIContext } from '../popover/hooks';
 import {
-  FloatingList,
-  Placement,
-  useInteractions,
-  useListNavigation,
-} from '@floating-ui/react';
-import { cn } from '@k8o/helpers/cn';
-import {
-  ComponentProps,
-  FC,
-  MouseEventHandler,
-  PropsWithChildren,
-  ReactNode,
-  useRef,
-  useState,
-} from 'react';
+  MenuContextProvider,
+  useMenuContent,
+  useMenuItem,
+  useMenuTrigger,
+} from './hooks';
 
 const Root: FC<PropsWithChildren<{ placement?: Placement }>> = ({
   children,
@@ -51,8 +51,9 @@ const MenuProvider: FC<PropsWithChildren> = ({ children }) => {
     onNavigate: setActiveIndex,
     loop: true,
   });
-  const { getReferenceProps, getFloatingProps, getItemProps } =
-    useInteractions([listNavigation]);
+  const { getReferenceProps, getFloatingProps, getItemProps } = useInteractions(
+    [listNavigation],
+  );
 
   return (
     <MenuContextProvider
@@ -79,7 +80,7 @@ const Content: FC<PropsWithChildren> = ({ children }) => {
           <div
             {...props}
             {...contentProps}
-            className="border-border-mute bg-bg-base flex min-w-40 flex-col rounded-lg border py-2 shadow-xl"
+            className="flex min-w-40 flex-col rounded-lg border border-border-mute bg-bg-base py-2 shadow-xl"
           >
             {children}
           </div>
@@ -100,7 +101,7 @@ const Item: FC<{ onClick: MouseEventHandler; label: string }> = ({
       className={cn(
         'w-full px-2 py-1 text-left',
         'hover:bg-primary-bg',
-        'focus-visible:bg-primary-bg focus-visible:border-transparent focus-visible:outline-hidden',
+        'focus-visible:border-transparent focus-visible:bg-primary-bg focus-visible:outline-hidden',
       )}
       {...props}
     >
@@ -120,11 +121,11 @@ const Trigger: FC<{
     <Popover.Trigger
       renderItem={(props) => (
         <Button
-          type="button"
-          size={size}
           color="gray"
-          variant={variant}
           endIcon={<ChevronIcon direction="down" />}
+          size={size}
+          type="button"
+          variant={variant}
           {...getTriggerProps(props)}
         >
           {text}
@@ -143,11 +144,7 @@ const IconTrigger: FC<{
   return (
     <Popover.Trigger
       renderItem={(props) => (
-        <IconButton
-          bg="base"
-          label={label}
-          {...getTriggerProps(props)}
-        >
+        <IconButton bg="base" label={label} {...getTriggerProps(props)}>
           {icon}
         </IconButton>
       )}

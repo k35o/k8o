@@ -1,18 +1,15 @@
-import {
-  Playground,
-  playgroundSections,
-} from '@/app/_components/playgrounds';
 import { Anchor } from '@k8o/arte-odyssey/anchor';
 import { Card } from '@k8o/arte-odyssey/card';
 import { Heading } from '@k8o/arte-odyssey/heading';
 import Link from 'next/link';
+import { Playground, playgroundSections } from '@/app/_components/playgrounds';
 
 export default function PlaygroundsPage() {
   return (
     <div className="flex flex-col gap-8">
       <div>
         <Heading type="h1">Playgrounds</Heading>
-        <p className="text-fg-mute mt-2">
+        <p className="mt-2 text-fg-mute">
           インタラクティブなWeb技術のデモ集。最新のWeb
           API、CSS機能、React技術を実際に体験できます。
         </p>
@@ -26,9 +23,7 @@ export default function PlaygroundsPage() {
                 <div className="mb-3 flex items-start justify-between gap-4">
                   <Heading type="h2">{section.title}</Heading>
                 </div>
-                <p className="text-fg-mute mb-3">
-                  {section.description}
-                </p>
+                <p className="mb-3 text-fg-mute">{section.description}</p>
                 {section.type === 'blog' && (
                   <Anchor
                     href={`/blog/${section.slug}`}

@@ -1,5 +1,5 @@
-import { getTags } from './tags';
 import { db } from '#database/db';
+import { getTags } from './tags';
 
 vi.mock('#database/db');
 

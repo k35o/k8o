@@ -1,6 +1,6 @@
 'use client';
 
-import { RefObject, useEffect, useRef } from 'react';
+import { type RefObject, useEffect, useRef } from 'react';
 
 export const useClickAway = <T extends Element = HTMLElement>(
   callback: (e: Event) => void,

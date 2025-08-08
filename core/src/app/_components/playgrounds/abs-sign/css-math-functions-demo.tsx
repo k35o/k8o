@@ -13,39 +13,39 @@ export function CssMathFunctionsDemo() {
     <div className="space-y-6">
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
         <FormControl
-          label="X値"
           helpText="横方向の位置を調整します"
+          label="X値"
           renderInput={({ labelId: _, ...props }) => (
             <RangeField
               {...props}
-              value={xValue}
-              onChange={setXValue}
-              min={-100}
               max={100}
+              min={-100}
+              onChange={setXValue}
               unit="px"
+              value={xValue}
             />
           )}
         />
         <FormControl
-          label="Y値"
           helpText="縦方向の位置を調整します"
+          label="Y値"
           renderInput={({ labelId: _, ...props }) => (
             <RangeField
               {...props}
-              value={yValue}
-              onChange={setYValue}
-              min={-100}
               max={100}
+              min={-100}
+              onChange={setYValue}
               unit="px"
+              value={yValue}
             />
           )}
         />
       </div>
       <div className="flex flex-col items-center gap-4">
-        <div className="border-border-base relative aspect-square w-full max-w-80 overflow-hidden border">
+        <div className="relative aspect-square w-full max-w-80 overflow-hidden border border-border-base">
           {/* 中心線 */}
-          <div className="bg-fg-subtle absolute top-0 left-1/2 h-full w-px"></div>
-          <div className="bg-fg-subtle absolute top-1/2 left-0 h-px w-full"></div>
+          <div className="absolute top-0 left-1/2 h-full w-px bg-fg-subtle" />
+          <div className="absolute top-1/2 left-0 h-px w-full bg-fg-subtle" />
           {/* 移動する要素 */}
           <div
             className="absolute z-10 h-6 w-6 rounded-full transition-all duration-300 ease-out"
@@ -58,19 +58,16 @@ export function CssMathFunctionsDemo() {
               bottom: `${(50 + yValue / 2).toString()}%`,
               transform:
                 'translate(-50%, 50%) scale(calc(1 + (abs(var(--x)) + abs(var(--y))) / 200))',
-              opacity:
-                'calc(0.5 + (abs(var(--x)) + abs(var(--y))) / 200)',
+              opacity: 'calc(0.5 + (abs(var(--x)) + abs(var(--y))) / 200)',
             }}
-          ></div>
+          />
 
           {/* 座標表示 */}
-          <div className="text-fg-mute absolute top-2 left-2 text-xs">
+          <div className="absolute top-2 left-2 text-fg-mute text-xs">
             <p>
               座標: ({xValue}, {yValue})
             </p>
-            <p>
-              座標の絶対値の和: {Math.abs(xValue) + Math.abs(yValue)}
-            </p>
+            <p>座標の絶対値の和: {Math.abs(xValue) + Math.abs(yValue)}</p>
             <p>
               象限:{' '}
               {xValue >= 0
@@ -83,18 +80,15 @@ export function CssMathFunctionsDemo() {
             </p>
           </div>
         </div>
-        <div className="text-fg-mute flex flex-col items-start gap-2 text-xs md:text-sm">
+        <div className="flex flex-col items-start gap-2 text-fg-mute text-xs md:text-sm">
           <p>
             ※<Code>abs</Code>
             を用いて、座標の絶対値の和が大きいほど要素のサイズを大きくしています。透明度も同じようにしています。
             <br />
             要素のサイズ:{' '}
-            <Code>
-              transform: scale(calc(1 + (abs(x) + abs(y)) / 200))
-            </Code>
+            <Code>transform: scale(calc(1 + (abs(x) + abs(y)) / 200))</Code>
             <br />
-            透明度:{' '}
-            <Code>opacity: calc(0.5 + (abs(x) + abs(y)) / 200)</Code>
+            透明度: <Code>opacity: calc(0.5 + (abs(x) + abs(y)) / 200)</Code>
           </p>
           <p>
             ※<Code>sign</Code>
@@ -105,8 +99,8 @@ export function CssMathFunctionsDemo() {
             <br />
             座標の点の色:{' '}
             <Code>
-              background-color: 'hsl(calc(sign(var(--x) + var(--y)) *
-              80 + 200), 70%, 50%)'
+              background-color: 'hsl(calc(sign(var(--x) + var(--y)) * 80 + 200),
+              70%, 50%)'
             </Code>
           </p>
         </div>

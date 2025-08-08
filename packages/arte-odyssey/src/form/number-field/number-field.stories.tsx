@@ -1,7 +1,7 @@
-import { NumberField } from './number-field';
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { useState } from 'react';
 import { expect } from 'storybook/test';
+import { NumberField } from './number-field';
 
 const meta: Meta<typeof NumberField> = {
   title: 'components/form/number-field',
@@ -12,9 +12,7 @@ const meta: Meta<typeof NumberField> = {
   },
   render: (args) => {
     const [value, setValue] = useState(0);
-    return (
-      <NumberField {...args} value={value} onChange={setValue} />
-    );
+    return <NumberField {...args} onChange={setValue} value={value} />;
   },
   parameters: {
     a11y: {

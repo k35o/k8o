@@ -1,5 +1,5 @@
+import { act, renderHook } from '@testing-library/react';
 import { useScrollDirection } from '.';
-import { renderHook, act } from '@testing-library/react';
 
 describe('useScrollDirection', () => {
   beforeEach(() => {
@@ -122,10 +122,7 @@ describe('useScrollDirection', () => {
   });
 
   it('アンマウント後はイベントリスナーが削除される', () => {
-    const removeEventListenerSpy = vi.spyOn(
-      window,
-      'removeEventListener',
-    );
+    const removeEventListenerSpy = vi.spyOn(window, 'removeEventListener');
 
     const { unmount } = renderHook(() => useScrollDirection());
 

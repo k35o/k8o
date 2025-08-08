@@ -1,13 +1,13 @@
 'use client';
 
-import { SubscribeCard } from './subscribe-card.tsx';
 import { Drawer } from '@k8o/arte-odyssey/drawer';
 import { Checkbox } from '@k8o/arte-odyssey/form/checkbox';
 import { IconButton } from '@k8o/arte-odyssey/icon-button';
 import { SubscribeIcon } from '@k8o/arte-odyssey/icons';
 import { Separator } from '@k8o/arte-odyssey/separator';
 import { useLocalStorage } from '@k8o/hooks/local-storage';
-import { FC, useState } from 'react';
+import { type FC, useState } from 'react';
+import { SubscribeCard } from './subscribe-card.tsx';
 
 export const Subscribe: FC<{
   reading?: boolean;
@@ -25,20 +25,20 @@ export const Subscribe: FC<{
         <IconButton
           bg="primary"
           label="ブログの購読"
-          size="lg"
           onClick={() => {
             setIsOpen(true);
           }}
+          size="lg"
         >
           <SubscribeIcon />
         </IconButton>
       )}
       <Drawer
-        title="ブログの購読"
         isOpen={isOpen}
         onClose={() => {
           setIsOpen(false);
         }}
+        title="ブログの購読"
       >
         <div className="flex flex-col items-center justify-between gap-6">
           <SubscribeCard />
@@ -46,10 +46,10 @@ export const Subscribe: FC<{
           <div>
             <Checkbox
               label="読書中は自動的に非表示にする"
-              value={!showWhileReading}
               onChange={(e) => {
                 setShowWhileReading(!e.currentTarget.checked);
               }}
+              value={!showWhileReading}
             />
           </div>
         </div>
