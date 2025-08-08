@@ -1,33 +1,18 @@
 pre-commit:
-  commands:
-    format:
-      glob: '*.{js,ts,d.ts,tsx,md,mdx}'
-      run: pnpm prettier --write {staged_files}
-      stage_fixed: true
-      exclude:
-        - '**/mockServiceWorker.js'
-    lint:
-      glob: '**/src/**/*.{js,ts,tsx}'
-      exclude: 'baseline-status.d.ts'
-      run: pnpm eslint --fix --max-warnings 0 {staged_files}
-      stage_fixed: true
+  check:
+    glob: "*.{js,ts,tsx,json}"
+    run: pnpm biome check --write --no-errors-on-unmatched --files-ignore-unknown=true --colors=off --unsafe {staged_files}
+    stage_fixed: true
 
-    ls-lint:
-      run: pnpm run ls-lint
-      stage_fixed: true
+  ls-lint:
+    run: pnpm run ls-lint
 
 pre-push:
   commands:
-    format:
-      glob: '*.{js,ts,d.ts,tsx,md,mdx}'
-      run: pnpm prettier --write {staged_files}
-      exclude:
-        - '**/mockServiceWorker.js'
-    lint:
-      glob: '**/src/**/*.{js,ts,tsx}'
-      exclude: 'baseline-status.d.ts'
-      run: pnpm eslint --fix --max-warnings 0 {staged_files}
+    check:
+      glob: "*.{js,ts,tsx,json}"
+      run: pnpm biome check --no-errors-on-unmatched --files-ignore-unknown=true --colors=off {staged_files}
 
     test:
-      glob: '**/src/**/*.test.{js,ts,cjs,d.cts,d.ts,jsx,tsx}'
+      glob: '*.test.{ts,tsx}'
       run: pnpm run test {staged_files}

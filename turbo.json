@@ -9,17 +9,11 @@
       "dependsOn": ["^build"],
       "outputs": [".next/**", "!.next/cache/**"]
     },
-    "lint": {
-      "dependsOn": ["^lint"]
+    "check": {
+      "dependsOn": ["^check"]
     },
-    "lint:fix": {
-      "dependsOn": ["^lint:fix"]
-    },
-    "format": {
-      "dependsOn": ["^format"]
-    },
-    "format:check": {
-      "dependsOn": ["^format:check"]
+    "check:write": {
+      "dependsOn": ["^check:write"]
     },
     "type-check": {
       "dependsOn": ["^type-check"]

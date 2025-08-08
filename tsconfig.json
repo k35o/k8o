@@ -26,24 +26,6 @@
         "name": "next"
       }
     ],
-    "types": [
-      "vitest/globals",
-      "@vitest/browser/matchers",
-      "vitest/importMeta"
-    ]
-  },
-  "references": [
-    {
-      "path": "./core/tsconfig.json"
-    },
-    {
-      "path": "./packages/arte-odyssey/tsconfig.json"
-    },
-    {
-      "path": "./packages/hooks/tsconfig.json"
-    },
-    {
-      "path": "./packages/helpers/tsconfig.json"
-    }
-  ]
+    "types": ["vitest/globals", "@vitest/browser/matchers", "vitest/importMeta"]
+  }
 }
