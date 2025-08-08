@@ -1,11 +1,11 @@
 pre-commit:
-  check:
-    glob: "*.{js,ts,tsx,json}"
-    run: pnpm biome check --write --no-errors-on-unmatched --files-ignore-unknown=true --colors=off --unsafe {staged_files}
-    stage_fixed: true
-
-  ls-lint:
-    run: pnpm run ls-lint
+  commands:
+    check:
+      glob: "*.{js,ts,tsx,json}"
+      run: pnpm biome check --write --no-errors-on-unmatched --files-ignore-unknown=true --colors=off --unsafe {staged_files}
+      stage_fixed: true
+    ls-lint:
+      run: pnpm run ls-lint
 
 pre-push:
   commands:
