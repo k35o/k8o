@@ -1,8 +1,8 @@
-import { Result } from '../type';
+import { z } from 'zod';
 import { db } from '#database/db';
 import { subscribers } from '@/database/schema/subscribers';
 import { sendVerificationEmail } from '@/services/subscriptions/verify';
-import { z } from 'zod';
+import type { Result } from '../type';
 
 export const subscribe = async (
   email: string,

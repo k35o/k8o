@@ -1,7 +1,5 @@
 export const isSegmenter =
-  typeof window === 'undefined' ||
-  // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition -- 対応していないブラウザを検知するため
-  window.Intl.Segmenter === undefined;
+  typeof window === 'undefined' || window.Intl.Segmenter === undefined;
 
 export const countGraphemeLength = (text: string): number => {
   // Intl.Segmenterを実装していないブラウザでは、ユニコードのコードポイント単位で数える

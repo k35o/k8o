@@ -1,7 +1,7 @@
+import { getFrontmatter } from '@k8o/helpers/mdx';
+import { db } from '#database/db';
 import { getBlogs, getBlogsByTags } from './blogs';
 import { blogPath } from './path';
-import { db } from '#database/db';
-import { getFrontmatter } from '@k8o/helpers/mdx';
 
 vi.mock('#database/db');
 vi.mock('@k8o/helpers/mdx');
@@ -127,9 +127,7 @@ describe('blogs service', () => {
         updatedAt: new Date('2023-01-01'),
       };
 
-      vi.mocked(db.query.blogTag.findMany).mockResolvedValue(
-        mockBlogTags,
-      );
+      vi.mocked(db.query.blogTag.findMany).mockResolvedValue(mockBlogTags);
       vi.mocked(db.query.blogs.findMany).mockResolvedValue(mockBlogs);
       vi.mocked(blogPath).mockReturnValue('/path/to/blog');
       vi.mocked(getFrontmatter).mockResolvedValue(mockMetadata);
@@ -196,9 +194,7 @@ describe('blogs service', () => {
         updatedAt: new Date('2023-01-01'),
       };
 
-      vi.mocked(db.query.blogTag.findMany).mockResolvedValue(
-        mockBlogTags,
-      );
+      vi.mocked(db.query.blogTag.findMany).mockResolvedValue(mockBlogTags);
       vi.mocked(db.query.blogs.findMany).mockResolvedValue(mockBlogs);
       vi.mocked(blogPath).mockReturnValue('/path/to/blog');
       vi.mocked(getFrontmatter).mockResolvedValue(mockMetadata);
@@ -219,9 +215,7 @@ describe('blogs service', () => {
         id: i + 1,
         slug: `blog-${(i + 1).toString()}`,
         published: true,
-        createdAt: new Date(
-          `2023-01-${String(i + 1).padStart(2, '0')}`,
-        ),
+        createdAt: new Date(`2023-01-${String(i + 1).padStart(2, '0')}`),
         blogTag: [
           {
             tag: {
@@ -239,9 +233,7 @@ describe('blogs service', () => {
         updatedAt: new Date('2023-01-01'),
       };
 
-      vi.mocked(db.query.blogTag.findMany).mockResolvedValue(
-        mockBlogTags,
-      );
+      vi.mocked(db.query.blogTag.findMany).mockResolvedValue(mockBlogTags);
       vi.mocked(db.query.blogs.findMany).mockResolvedValue(mockBlogs);
       vi.mocked(blogPath).mockReturnValue('/path/to/blog');
       vi.mocked(getFrontmatter).mockResolvedValue(mockMetadata);

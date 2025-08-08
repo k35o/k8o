@@ -3,7 +3,7 @@
 import { Dialog } from '@k8o/arte-odyssey/dialog';
 import { Modal } from '@k8o/arte-odyssey/modal';
 import { useRouter } from 'next/navigation';
-import { PropsWithChildren } from 'react';
+import type { PropsWithChildren } from 'react';
 
 export function NewsModal({
   title,
@@ -20,10 +20,10 @@ export function NewsModal({
     >
       <Dialog.Root>
         <Dialog.Header
-          title={title}
           onClose={() => {
             router.back();
           }}
+          title={title}
         />
         <Dialog.Content>{children}</Dialog.Content>
       </Dialog.Root>

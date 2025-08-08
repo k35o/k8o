@@ -1,9 +1,6 @@
 import { useEffect } from 'react';
 
-export const useInterval = (
-  callback: () => void,
-  timeout: number,
-): void => {
+export const useInterval = (callback: () => void, timeout: number): void => {
   useEffect(() => {
     let intervalId: number | null = null;
 

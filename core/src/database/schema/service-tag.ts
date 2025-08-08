@@ -1,12 +1,7 @@
+import { relations } from 'drizzle-orm';
+import { index, integer, pgTable, uniqueIndex } from 'drizzle-orm/pg-core';
 import { services } from './services';
 import { tags } from './tags';
-import { relations } from 'drizzle-orm';
-import {
-  index,
-  integer,
-  pgTable,
-  uniqueIndex,
-} from 'drizzle-orm/pg-core';
 
 export const serviceTag = pgTable(
   'service_tag',
@@ -25,16 +20,13 @@ export const serviceTag = pgTable(
   ],
 );
 
-export const serviceTagRelations = relations(
-  serviceTag,
-  ({ one }) => ({
-    service: one(services, {
-      fields: [serviceTag.serviceId],
-      references: [services.id],
-    }),
-    tag: one(tags, {
-      fields: [serviceTag.tagId],
-      references: [tags.id],
-    }),
+export const serviceTagRelations = relations(serviceTag, ({ one }) => ({
+  service: one(services, {
+    fields: [serviceTag.serviceId],
+    references: [services.id],
   }),
-);
+  tag: one(tags, {
+    fields: [serviceTag.tagId],
+    references: [tags.id],
+  }),
+}));

@@ -1,17 +1,13 @@
+import { MailIcon, RSSIcon, SubscribeIcon } from '@k8o/arte-odyssey/icons';
+import { Tabs } from '@k8o/arte-odyssey/tabs';
+import type { FC } from 'react';
 import { MailPanel } from './mail-panel';
 import { RssPanel } from './rss-panel';
-import {
-  MailIcon,
-  RSSIcon,
-  SubscribeIcon,
-} from '@k8o/arte-odyssey/icons';
-import { Tabs } from '@k8o/arte-odyssey/tabs';
-import { FC } from 'react';
 
 export const SubscribeCard: FC = () => {
   return (
-    <section className="border-border-mute flex flex-col items-center justify-center gap-2 rounded-lg border p-4">
-      <h2 className="flex items-center gap-2 text-lg font-bold">
+    <section className="flex flex-col items-center justify-center gap-2 rounded-lg border border-border-mute p-4">
+      <h2 className="flex items-center gap-2 font-bold text-lg">
         <SubscribeIcon />
         k8oのブログを購読する
       </h2>

@@ -1,18 +1,15 @@
 'use client';
 
-import { registerEmail } from './action';
 import { Button } from '@k8o/arte-odyssey/button';
 import { FormControl } from '@k8o/arte-odyssey/form/form-control';
 import { TextField } from '@k8o/arte-odyssey/form/text-field';
 import { SendIcon } from '@k8o/arte-odyssey/icons';
 import { useToast } from '@k8o/arte-odyssey/toast';
-import { FC, useActionState, useEffect } from 'react';
+import { type FC, useActionState, useEffect } from 'react';
+import { registerEmail } from './action';
 
 export const MailPanel: FC = () => {
-  const [state, action, isPending] = useActionState(
-    registerEmail,
-    null,
-  );
+  const [state, action, isPending] = useActionState(registerEmail, null);
 
   const { onOpen } = useToast();
 
@@ -24,31 +21,22 @@ export const MailPanel: FC = () => {
 
   return (
     <div className="flex flex-col justify-center gap-6">
-      <form
-        className="flex flex-col items-center gap-4"
-        action={action}
-      >
+      <form action={action} className="flex flex-col items-center gap-4">
         <FormControl
-          label="メールアドレス"
+          errorText={state?.success === false ? state.message : undefined}
           helpText="登録いただいたメールアドレスは、購読のためにのみ使用されます。"
-          isInvalid={state?.success === false}
           isDisabled={isPending}
-          errorText={
-            state?.success === false ? state.message : undefined
-          }
+          isInvalid={state?.success === false}
+          label="メールアドレス"
           renderInput={({ labelId: _, ...props }) => (
-            <TextField
-              name="email"
-              {...props}
-              placeholder="k8o@k8o.me"
-            />
+            <TextField name="email" {...props} placeholder="k8o@k8o.me" />
           )}
         />
         <Button
-          type="submit"
-          startIcon={<SendIcon size="sm" />}
           disabled={isPending}
           fullWidth
+          startIcon={<SendIcon size="sm" />}
+          type="submit"
         >
           登録
         </Button>

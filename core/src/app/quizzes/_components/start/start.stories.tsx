@@ -1,5 +1,5 @@
-import { Start } from './start';
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
+import { Start } from './start';
 
 const meta: Meta<typeof Start> = {
   title: 'app/quizzes/start',

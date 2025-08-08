@@ -1,6 +1,6 @@
-import { Tabs } from './tabs';
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { expect } from 'storybook/test';
+import { Tabs } from './tabs';
 
 const meta: Meta<typeof Tabs.Root> = {
   title: 'components/tabs',
@@ -27,28 +27,19 @@ export const Primary: Story = {
     const tab2 = canvas.getByRole('tab', { name: 'Tab2' });
     const tab3 = canvas.getByRole('tab', { name: 'Tab3' });
 
-    await expect(canvas.getByRole('tabpanel')).toHaveTextContent(
-      'Panel1',
-    );
+    await expect(canvas.getByRole('tabpanel')).toHaveTextContent('Panel1');
 
     await userEvent.click(tab2);
-    await expect(canvas.getByRole('tabpanel')).toHaveTextContent(
-      'Panel2',
-    );
+    await expect(canvas.getByRole('tabpanel')).toHaveTextContent('Panel2');
 
     await userEvent.click(tab3);
-    await expect(canvas.getByRole('tabpanel')).toHaveTextContent(
-      'Panel3',
-    );
+    await expect(canvas.getByRole('tabpanel')).toHaveTextContent('Panel3');
   },
 };
 
 export const DefaultSelected: Story = {
   render: () => (
-    <Tabs.Root
-      ids={['tab1', 'tab2', 'tab3']}
-      defaultSelectedId="tab2"
-    >
+    <Tabs.Root defaultSelectedId="tab2" ids={['tab1', 'tab2', 'tab3']}>
       <Tabs.List label="Tabs Example">
         <Tabs.Tab id="tab1">Tab1</Tabs.Tab>
         <Tabs.Tab id="tab2">Tab2</Tabs.Tab>
@@ -60,8 +51,6 @@ export const DefaultSelected: Story = {
     </Tabs.Root>
   ),
   play: async ({ canvas }) => {
-    await expect(canvas.getByRole('tabpanel')).toHaveTextContent(
-      'Panel2',
-    );
+    await expect(canvas.getByRole('tabpanel')).toHaveTextContent('Panel2');
   },
 };

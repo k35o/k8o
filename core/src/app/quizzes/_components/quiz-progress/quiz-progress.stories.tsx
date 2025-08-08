@@ -1,5 +1,5 @@
-import { QuizProgress } from '.';
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
+import { QuizProgress } from '.';
 
 const meta: Meta<typeof QuizProgress> = {
   title: 'app/quizzes/quiz-progress',

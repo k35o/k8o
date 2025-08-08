@@ -1,14 +1,12 @@
 import { Heading } from '@k8o/arte-odyssey/heading';
-import { PropsWithChildren } from 'react';
+import type { PropsWithChildren } from 'react';
 
 export const metadata = {
   title: 'QRKit',
-  description:
-    '任意のテキストやURLからQRコードを生成できるツールです。',
+  description: '任意のテキストやURLからQRコードを生成できるツールです。',
   openGraph: {
     title: 'QRKit',
-    description:
-      '任意のテキストやURLからQRコードを生成できるツールです。',
+    description: '任意のテキストやURLからQRコードを生成できるツールです。',
     url: 'https://k8o.me/qr-generator',
     siteName: 'k8o',
     locale: 'ja',
@@ -17,8 +15,7 @@ export const metadata = {
   twitter: {
     title: 'QRKit',
     card: 'summary',
-    description:
-      '任意のテキストやURLからQRコードを生成できるツールです。',
+    description: '任意のテキストやURLからQRコードを生成できるツールです。',
   },
 };
 

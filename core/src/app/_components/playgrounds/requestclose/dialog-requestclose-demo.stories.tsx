@@ -1,6 +1,6 @@
-import { DialogRequestCloseDemo } from './dialog-requestclose-demo';
-import { Playground } from '../playground';
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
+import { Playground } from '../playground';
+import { DialogRequestCloseDemo } from './dialog-requestclose-demo';
 
 const meta: Meta<typeof DialogRequestCloseDemo> = {
   title: 'playgrounds/requestclose/DialogRequestCloseDemo',

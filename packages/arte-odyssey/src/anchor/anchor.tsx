@@ -1,14 +1,12 @@
-import { ExternalLinkIcon } from '../icons';
 import { isInternalRoute } from '@k8o/helpers/is-internal-route';
-import { ReactNode } from 'react';
+import type { ReactNode } from 'react';
+import { ExternalLinkIcon } from '../icons';
 
 export const Anchor = ({
   href,
   children,
   openInNewTab = false,
-  renderAnchor = ({ children, ...props }) => (
-    <a {...props}>{children}</a>
-  ),
+  renderAnchor = ({ children, ...props }) => <a {...props}>{children}</a>,
 }: {
   href: string;
   children: ReactNode;
@@ -22,8 +20,7 @@ export const Anchor = ({
     children: ReactNode;
   }) => ReactNode;
 }) => {
-  const type =
-    isInternalRoute(href) && !openInNewTab ? 'internal' : 'external';
+  const type = isInternalRoute(href) && !openInNewTab ? 'internal' : 'external';
   const props =
     type === 'internal'
       ? {

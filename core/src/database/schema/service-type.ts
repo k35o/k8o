@@ -1,9 +1,4 @@
-import {
-  pgTable,
-  serial,
-  text,
-  uniqueIndex,
-} from 'drizzle-orm/pg-core';
+import { pgTable, serial, text, uniqueIndex } from 'drizzle-orm/pg-core';
 
 export const serviceType = pgTable(
   'service_type',

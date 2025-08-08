@@ -1,5 +1,5 @@
-import { TalkCard } from './_components/talk-card';
 import { getTalks } from '@/services/talks/talks';
+import { TalkCard } from './_components/talk-card';
 
 export default async function Page() {
   const talks = await getTalks();

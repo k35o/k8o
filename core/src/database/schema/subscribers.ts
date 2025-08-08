@@ -27,8 +27,5 @@ export const subscribers = pgTable(
       .defaultNow(),
     deletedAt: timestamp('deleted_at', { withTimezone: true }),
   },
-  (table) => [
-    index().on(table.id),
-    uniqueIndex('email').on(table.email),
-  ],
+  (table) => [index().on(table.id), uniqueIndex('email').on(table.email)],
 );

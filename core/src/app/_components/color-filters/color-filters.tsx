@@ -1,6 +1,5 @@
 'use client';
 
-import { Transfer } from './transfer';
 import { AlertIcon, MixedColorIcon } from '@k8o/arte-odyssey/icons';
 import { ListBox } from '@k8o/arte-odyssey/list-box';
 import { useOpenContext } from '@k8o/arte-odyssey/popover';
@@ -8,12 +7,13 @@ import { cn } from '@k8o/helpers/cn';
 import Link from 'next/link';
 import {
   createContext,
-  FC,
-  PropsWithChildren,
+  type FC,
+  type PropsWithChildren,
   use,
   useCallback,
   useState,
 } from 'react';
+import { Transfer } from './transfer';
 
 const FILTERS = [
   { key: 'nomaly', name: '3色覚' },
@@ -37,16 +37,12 @@ const useColorFilter = () => {
   const value = use(ColorFilterContext);
   const setValue = use(SetColorFilterContext);
   if (!setValue) {
-    throw new Error(
-      'useColorFilter must be used within a ColorFilterProvider',
-    );
+    throw new Error('useColorFilter must be used within a ColorFilterProvider');
   }
   return [value, setValue] as const;
 };
 
-export const ColorFilterProvider: FC<PropsWithChildren> = ({
-  children,
-}) => {
+export const ColorFilterProvider: FC<PropsWithChildren> = ({ children }) => {
   const [filter, setFilter] = useState<FilterKey>('nomaly');
 
   return (
@@ -54,8 +50,7 @@ export const ColorFilterProvider: FC<PropsWithChildren> = ({
       <SetColorFilterContext value={setFilter}>
         <div
           style={{
-            filter:
-              filter === 'nomaly' ? undefined : `url('#${filter}')`,
+            filter: filter === 'nomaly' ? undefined : `url('#${filter}')`,
           }}
         >
           {children}
@@ -79,13 +74,13 @@ export const ColorFilterBox: FC<{ placement?: 'top' | 'bottom' }> = ({
 
   return (
     <ListBox.Root
+      onSelect={handleSelect}
       options={FILTERS.map((filter) => ({
         key: filter.key,
         label: filter.name,
       }))}
-      value={selectedFilter}
-      onSelect={handleSelect}
       placement={placement}
+      value={selectedFilter}
     >
       <ListBox.TriggerIcon icon={<MixedColorIcon size="lg" />} />
       <ListBox.Content helpContent={<HelpContent />} />
@@ -97,13 +92,13 @@ const HelpContent: FC = () => {
   const { onClose } = useOpenContext();
   return (
     <Link
-      href={'/blog/color-perception'}
-      onNavigate={onClose}
       className={cn(
         'inline-flex w-full items-center gap-1 px-2 py-1',
         'hover:bg-primary-bg hover:text-fg-base',
-        'focus-visible:bg-primary-bg focus-visible:text-fg-inverse focus-visible:border-transparent focus-visible:outline-hidden',
+        'focus-visible:border-transparent focus-visible:bg-primary-bg focus-visible:text-fg-inverse focus-visible:outline-hidden',
       )}
+      href="/blog/color-perception"
+      onNavigate={onClose}
     >
       <span className="text-fg-info">
         <AlertIcon status="info" />

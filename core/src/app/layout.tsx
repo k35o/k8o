@@ -1,15 +1,15 @@
 import { GlobalLayout } from './_components/global-layout';
 import './_styles/globals.css';
-import { AppProvider } from './_providers/app';
-import { mPlus2, notoSansJp } from './_styles/font';
-import { ReactScan } from '@/libs/react-scan';
 import { cn } from '@k8o/helpers/cn';
 import { GoogleAnalytics } from '@next/third-parties/google';
 import { Analytics } from '@vercel/analytics/react';
 import { SpeedInsights } from '@vercel/speed-insights/next';
+import { ReactScan } from '@/libs/react-scan';
+import { AppProvider } from './_providers/app';
+import { mPlus2, notoSansJp } from './_styles/font';
 import '@/libs/zod';
-import { Metadata } from 'next';
-import { ReactNode } from 'react';
+import type { Metadata } from 'next';
+import type { ReactNode } from 'react';
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://k8o.me'),
@@ -42,11 +42,7 @@ export const metadata: Metadata = {
   },
 };
 
-export default function RootLayout({
-  children,
-}: {
-  children: ReactNode;
-}) {
+export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html lang="ja" suppressHydrationWarning>
       {process.env.NODE_ENV === 'development' && <ReactScan />}
@@ -54,16 +50,14 @@ export default function RootLayout({
         className={cn(
           mPlus2.variable,
           notoSansJp.variable,
-          'text-fg-base font-m-plus-2 tracking-none font-medium antialiased',
+          'font-m-plus-2 font-medium text-fg-base tracking-none antialiased',
         )}
       >
         <AppProvider>
           <GlobalLayout>{children}</GlobalLayout>
         </AppProvider>
         <Analytics />
-        <GoogleAnalytics
-          gaId={process.env.GOOGLE_ANALYTICS_ID ?? ''}
-        />
+        <GoogleAnalytics gaId={process.env.GOOGLE_ANALYTICS_ID ?? ''} />
         <SpeedInsights />
       </body>
     </html>

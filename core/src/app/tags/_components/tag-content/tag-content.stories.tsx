@@ -1,5 +1,5 @@
-import { TagContent } from './tag-content';
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
+import { TagContent } from './tag-content';
 
 const meta: Meta<typeof TagContent> = {
   title: 'app/tags/tag-content',

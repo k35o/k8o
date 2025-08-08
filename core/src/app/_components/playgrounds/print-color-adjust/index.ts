@@ -1,7 +1,7 @@
-import { PlaygroundSection } from '../types';
+import type { PlaygroundSection } from '../types';
 import { PrintColorAdjustDemo } from './print-color-adjust-demo';
 
-export { PrintColorAdjustDemo };
+export { PrintColorAdjustDemo } from './print-color-adjust-demo';
 
 export const printColorAdjustSection: PlaygroundSection = {
   id: 'print-color-adjust',

@@ -1,9 +1,9 @@
 'use server';
 
+import { z } from 'zod';
 import { db } from '#database/db';
 import { ratelimit } from '#helpers/ratelimit';
 import { comments } from '@/database/schema/comments';
-import { z } from 'zod';
 import '@/libs/zod';
 
 const contactSchema = z.object({

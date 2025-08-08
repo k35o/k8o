@@ -1,6 +1,6 @@
-import { getBlogView } from '#api/blog';
 import { commalize } from '@k8o/helpers/number';
-import { FC } from 'react';
+import type { FC } from 'react';
+import { getBlogView } from '#api/blog';
 
 export const ViewCounter: FC<{ id: number }> = async ({ id }) => {
   const views = await getBlogView(id);

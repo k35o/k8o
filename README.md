@@ -87,32 +87,15 @@ pnpm run install-playwright
 
 ## Code Quality
 
-### Linting
+### Linting & Formatting
 
-Using ESLint with zero warnings policy.
-
-```bash
-pnpm run lint
-
-# Auto-fix linting issues
-pnpm run lint:fix
-
-# Inspect ESLint configuration
-pnpm run lint:inspect
-
-# Validate file/directory names
-pnpm run ls-lint
-```
-
-### Formatting
-
-Code formatting with Prettier.
+Using Biome.
 
 ```bash
-pnpm run format
+pnpm run check
 
-# Check formatting without modifying files
-pnpm run format:check
+# Auto-fix
+pnpm run check:fix
 ```
 
 ### Type Checking

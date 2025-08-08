@@ -40,8 +40,7 @@ export const getTags = async (
   return tags.map((tag) => ({
     id: tag.id,
     name: tag.name,
-    blogCount: tag.blogTag.filter((blogTag) => blogTag.blog.published)
-      .length,
+    blogCount: tag.blogTag.filter((blogTag) => blogTag.blog.published).length,
     serviceCount: tag.serviceTag.length,
     talkCount: tag.talkTag.length,
   }));

@@ -1,6 +1,6 @@
-import { Recommend } from './recommend';
-import { getBlogsByTags } from '#src/mocks/api/blog.mock';
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
+import { getBlogsByTags } from '#src/mocks/api/blog.mock';
+import { Recommend } from './recommend';
 
 const meta: Meta<typeof Recommend> = {
   title: 'app/blog/blog-layout/recommend',
@@ -12,12 +12,7 @@ const meta: Meta<typeof Recommend> = {
         slug: 'atomics-pause',
         title: 'Atomicsで共有メモリ上のデータを安全に取り扱う',
         createdAt: '2025-04-13 02:50:57+00',
-        tags: [
-          'JavaScript',
-          'Baseline 2025',
-          'Atomics',
-          'Atomics.pause',
-        ],
+        tags: ['JavaScript', 'Baseline 2025', 'Atomics', 'Atomics.pause'],
       },
       {
         id: 9,

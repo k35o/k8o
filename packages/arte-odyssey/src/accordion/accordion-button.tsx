@@ -1,30 +1,28 @@
 'use client';
 
-import { useItemId, useOpen, useToggleOpen } from './context';
-import { ChevronIcon } from '../icons';
 import { cn } from '@k8o/helpers/cn';
 import * as motion from 'motion/react-client';
-import { FC, PropsWithChildren } from 'react';
+import type { FC, PropsWithChildren } from 'react';
+import { ChevronIcon } from '../icons';
+import { useItemId, useOpen, useToggleOpen } from './context';
 
-export const AccordionButton: FC<PropsWithChildren> = ({
-  children,
-}) => {
+export const AccordionButton: FC<PropsWithChildren> = ({ children }) => {
   const id = useItemId();
   const open = useOpen();
   const toggleOpen = useToggleOpen();
 
   return (
     <button
-      type="button"
+      aria-controls={`${id}-panel`}
+      aria-expanded={open}
       className={cn(
         'flex w-full flex-row items-center justify-between rounded-md p-2',
         'hover:bg-bg-mute',
-        'focus-visible::first:ring-border-info focus-visible:bg-bg-mute focus-visible::first:bordertransparent focus-visible::first:outline-none focus-visible::first:ring-2',
+        'focus-visible::first:bordertransparent focus-visible:bg-bg-mute focus-visible::first:outline-none focus-visible::first:ring-2 focus-visible::first:ring-border-info',
       )}
-      aria-expanded={open}
-      aria-controls={`${id}-panel`}
       id={`${id}-button`}
       onClick={toggleOpen}
+      type="button"
     >
       {children}
       <motion.span

@@ -8,9 +8,7 @@ type Frontmatter = {
   updatedAt: Date;
 };
 
-export const getFrontmatter = async (
-  path: string,
-): Promise<Frontmatter> => {
+export const getFrontmatter = async (path: string): Promise<Frontmatter> => {
   const file = await read(path);
   matter(file);
   return file.data.matter as Frontmatter;

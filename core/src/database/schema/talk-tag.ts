@@ -1,12 +1,7 @@
+import { relations } from 'drizzle-orm';
+import { index, integer, pgTable, uniqueIndex } from 'drizzle-orm/pg-core';
 import { tags } from './tags';
 import { talks } from './talks';
-import { relations } from 'drizzle-orm';
-import {
-  index,
-  integer,
-  pgTable,
-  uniqueIndex,
-} from 'drizzle-orm/pg-core';
 
 export const talkTag = pgTable(
   'talk_tag',

@@ -30,13 +30,10 @@
 
 ### コード品質
 
-- `pnpm run lint` - ESLint（警告ゼロポリシー）
-- `pnpm run lint:fix` - ESLintで自動修正
-- `pnpm run lint:inspect` - ESLint設定インスペクター
+- `pnpm run check` - Biome（警告のみ）
+- `pnpm run check:write` - Biome（修正も込み）
 - `pnpm run ls-lint` - ファイル名/ディレクトリ名の検証
 - `pnpm run type-check` - TypeScript型チェック
-- `pnpm run format` - Prettierでコードフォーマット
-- `pnpm run format:check` - フォーマットの確認
 
 ### ビルド
 

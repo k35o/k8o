@@ -1,8 +1,8 @@
-import { Quiz } from '@/services/quizzes';
 import { range } from '@k8o/helpers/array';
 import { cn } from '@k8o/helpers/cn';
 import { Noto_Sans_JP } from 'next/font/google';
-import { FC } from 'react';
+import type { FC } from 'react';
+import type { Quiz } from '@/services/quizzes';
 
 type CollectionProps = FC<{
   quizzes: Quiz[];
@@ -13,20 +13,18 @@ const subFont = Noto_Sans_JP({
   variable: '--font-noto-sans-jp',
 });
 
-export const CollectionByHighlight: CollectionProps = ({
-  quizzes,
-}) => {
+export const CollectionByHighlight: CollectionProps = ({ quizzes }) => {
   return (
     <div
       className={cn(
-        'grid-cols-auto-fit-36 grid place-items-center gap-2',
+        'grid grid-cols-auto-fit-36 place-items-center gap-2',
         subFont.className,
       )}
     >
       {quizzes.map((quiz) => (
         <div
+          className="flex size-36 flex-col items-center justify-center rounded-md border border-border-base p-2"
           key={quiz.id}
-          className="border-border-base flex size-36 flex-col items-center justify-center rounded-md border p-2"
         >
           <p className="text-xs">
             {quiz.answers.map((a) => a.answer).join('・')}
@@ -40,11 +38,11 @@ export const CollectionByHighlight: CollectionProps = ({
 
 export const CollectionByHighlightLoading: FC = () => {
   return (
-    <div className="grid-cols-auto-fit-36 grid animate-pulse place-items-center gap-2">
+    <div className="grid animate-pulse grid-cols-auto-fit-36 place-items-center gap-2">
       {range(0, 100).map((key) => (
         <div
+          className="flex size-36 flex-col items-center justify-center rounded-md border border-border-base bg-bg-mute p-2"
           key={key}
-          className="border-border-base bg-bg-mute flex size-36 flex-col items-center justify-center rounded-md border p-2"
         />
       ))}
     </div>

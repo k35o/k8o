@@ -13,7 +13,7 @@ const convertNumber = (
 ): string => {
   if (baseFrom === baseTo) return number;
 
-  return parseInt(number, baseFrom).toString(baseTo);
+  return Number.parseInt(number, baseFrom).toString(baseTo);
 };
 
 export const BaseConverter = () => {
@@ -94,64 +94,64 @@ export const BaseConverter = () => {
   return (
     <>
       <FormControl
-        label="2進数"
-        isInvalid={invalid?.target === 2}
         errorText={invalid?.message ?? undefined}
+        isInvalid={invalid?.target === 2}
+        label="2進数"
         renderInput={({ labelId: _, ...props }) => {
           return (
             <TextField
-              value={binary}
               onChange={(e) => {
                 handleChange(e.target.value, 2);
               }}
+              value={binary}
               {...props}
             />
           );
         }}
       />
       <FormControl
-        label="8進数"
-        isInvalid={invalid?.target === 8}
         errorText={invalid?.message ?? undefined}
+        isInvalid={invalid?.target === 8}
+        label="8進数"
         renderInput={({ labelId: _, ...props }) => {
           return (
             <TextField
-              value={octal}
               onChange={(e) => {
                 handleChange(e.target.value, 8);
               }}
+              value={octal}
               {...props}
             />
           );
         }}
       />
       <FormControl
-        label="10進数"
-        isInvalid={invalid?.target === 10}
         errorText={invalid?.message ?? undefined}
+        isInvalid={invalid?.target === 10}
+        label="10進数"
         renderInput={({ labelId: _, ...props }) => {
           return (
             <TextField
-              value={decimal}
               onChange={(e) => {
                 handleChange(e.target.value, 10);
               }}
+              value={decimal}
               {...props}
             />
           );
         }}
       />
       <FormControl
-        label="16進数"
-        isInvalid={invalid?.target === 16}
         errorText={invalid?.message ?? undefined}
+        isInvalid={invalid?.target === 16}
+        label="16進数"
         renderInput={({ labelId: _, ...props }) => {
           return (
             <TextField
-              value={hexadecimal}
               onChange={(e) => {
                 handleChange(e.target.value, 16);
               }}
+              value={hexadecimal}
               {...props}
             />
           );

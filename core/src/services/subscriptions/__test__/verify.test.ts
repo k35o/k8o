@@ -1,6 +1,6 @@
-import { sendVerificationEmail, verifyEmail } from '../verify';
 import { db } from '#database/db';
 import { resend } from '@/services/email';
+import { sendVerificationEmail, verifyEmail } from '../verify';
 
 vi.mock('#database/db');
 vi.mock('@/services/email');
@@ -15,9 +15,7 @@ describe('verify.ts', () => {
     it('emailの形をしていないメールアドレスの場合は何もしない', async () => {
       const mockFirst = vi.fn();
       const mockUpdate = vi.fn();
-      vi.mocked(db.query.subscribers.findFirst).mockImplementation(
-        mockFirst,
-      );
+      vi.mocked(db.query.subscribers.findFirst).mockImplementation(mockFirst);
       vi.mocked(db.update).mockImplementation(mockUpdate);
 
       await sendVerificationEmail('invalid-email');
@@ -28,9 +26,7 @@ describe('verify.ts', () => {
     it('対象のsubscriberが存在しない場合は何もしない', async () => {
       const mockFirst = vi.fn().mockResolvedValue(null);
       const mockUpdate = vi.fn();
-      vi.mocked(db.query.subscribers.findFirst).mockImplementation(
-        mockFirst,
-      );
+      vi.mocked(db.query.subscribers.findFirst).mockImplementation(mockFirst);
       vi.mocked(db.update).mockImplementation(mockUpdate);
 
       await sendVerificationEmail('test@k8o.me');
@@ -46,9 +42,7 @@ describe('verify.ts', () => {
         tokenExpiresAt: null,
       });
       const mockUpdate = vi.fn();
-      vi.mocked(db.query.subscribers.findFirst).mockImplementation(
-        mockFirst,
-      );
+      vi.mocked(db.query.subscribers.findFirst).mockImplementation(mockFirst);
       vi.mocked(db.update).mockImplementation(mockUpdate);
 
       await sendVerificationEmail('test@k8o.me');
@@ -60,7 +54,7 @@ describe('verify.ts', () => {
       const mockSend = vi.fn().mockReturnValue({
         error: null,
       });
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
+      // biome-ignore lint/suspicious/noExplicitAny: testのため
       vi.mocked<any>(resend).mockReturnValue({
         emails: {
           send: mockSend,
@@ -78,9 +72,7 @@ describe('verify.ts', () => {
           where: vi.fn(),
         }),
       });
-      vi.mocked(db.query.subscribers.findFirst).mockImplementation(
-        mockFirst,
-      );
+      vi.mocked(db.query.subscribers.findFirst).mockImplementation(mockFirst);
       vi.mocked(db.update).mockImplementation(mockUpdate);
 
       await sendVerificationEmail('test@k8o.me');
@@ -95,9 +87,7 @@ describe('verify.ts', () => {
     it('emailの形をしていないメールアドレスの場合は何もしない', async () => {
       const mockFirst = vi.fn();
       const mockUpdate = vi.fn();
-      vi.mocked(db.query.subscribers.findFirst).mockImplementation(
-        mockFirst,
-      );
+      vi.mocked(db.query.subscribers.findFirst).mockImplementation(mockFirst);
       vi.mocked(db.update).mockImplementation(mockUpdate);
 
       const result = await verifyEmail('invalid-email', '');
@@ -112,9 +102,7 @@ describe('verify.ts', () => {
     it('対象のsubscriberが存在しない場合は何もしない', async () => {
       const mockFirst = vi.fn().mockResolvedValue(null);
       const mockUpdate = vi.fn();
-      vi.mocked(db.query.subscribers.findFirst).mockImplementation(
-        mockFirst,
-      );
+      vi.mocked(db.query.subscribers.findFirst).mockImplementation(mockFirst);
       vi.mocked(db.update).mockImplementation(mockUpdate);
 
       const result = await verifyEmail('test@k8o.me', '');
@@ -134,9 +122,7 @@ describe('verify.ts', () => {
         tokenExpiresAt: new Date(Date.now() + 1000 * 60 * 60),
       });
       const mockUpdate = vi.fn();
-      vi.mocked(db.query.subscribers.findFirst).mockImplementation(
-        mockFirst,
-      );
+      vi.mocked(db.query.subscribers.findFirst).mockImplementation(mockFirst);
       vi.mocked(db.update).mockImplementation(mockUpdate);
 
       const result = await verifyEmail('test@k8o.me', 'valid-token');
@@ -156,9 +142,7 @@ describe('verify.ts', () => {
         tokenExpiresAt: null,
       });
       const mockUpdate = vi.fn();
-      vi.mocked(db.query.subscribers.findFirst).mockImplementation(
-        mockFirst,
-      );
+      vi.mocked(db.query.subscribers.findFirst).mockImplementation(mockFirst);
       vi.mocked(db.update).mockImplementation(mockUpdate);
 
       const result = await verifyEmail('test@k8o.me', 'valid-token');
@@ -178,9 +162,7 @@ describe('verify.ts', () => {
         tokenExpiresAt: new Date(Date.now() - 1000 * 60 * 60),
       });
       const mockUpdate = vi.fn();
-      vi.mocked(db.query.subscribers.findFirst).mockImplementation(
-        mockFirst,
-      );
+      vi.mocked(db.query.subscribers.findFirst).mockImplementation(mockFirst);
       vi.mocked(db.update).mockImplementation(mockUpdate);
 
       const result = await verifyEmail('test@k8o.me', 'old-token');
@@ -199,15 +181,10 @@ describe('verify.ts', () => {
         tokenExpiresAt: new Date(Date.now() + 1000 * 60 * 60),
       });
       const mockUpdate = vi.fn();
-      vi.mocked(db.query.subscribers.findFirst).mockImplementation(
-        mockFirst,
-      );
+      vi.mocked(db.query.subscribers.findFirst).mockImplementation(mockFirst);
       vi.mocked(db.update).mockImplementation(mockUpdate);
 
-      const result = await verifyEmail(
-        'test@k8o.me',
-        'invalid-token',
-      );
+      const result = await verifyEmail('test@k8o.me', 'invalid-token');
       expect(mockFirst).toHaveBeenCalledOnce();
       expect(mockUpdate).not.toHaveBeenCalled();
       expect(result).toEqual({
@@ -227,9 +204,7 @@ describe('verify.ts', () => {
           where: vi.fn(),
         }),
       });
-      vi.mocked(db.query.subscribers.findFirst).mockImplementation(
-        mockFirst,
-      );
+      vi.mocked(db.query.subscribers.findFirst).mockImplementation(mockFirst);
       vi.mocked(db.update).mockImplementation(mockUpdate);
 
       const result = await verifyEmail('test@k8o.me', 'valid-token');

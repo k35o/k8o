@@ -1,5 +1,5 @@
 import { cn } from '@k8o/helpers/cn';
-import { FC, ReactNode } from 'react';
+import type { FC, ReactNode } from 'react';
 
 export type BaseIconProps = {
   size: 'sm' | 'md' | 'lg';

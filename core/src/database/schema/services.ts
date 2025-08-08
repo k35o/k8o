@@ -1,5 +1,3 @@
-import { serviceTag } from './service-tag';
-import { serviceType } from './service-type';
 import { relations } from 'drizzle-orm';
 import {
   index,
@@ -9,6 +7,8 @@ import {
   text,
   uniqueIndex,
 } from 'drizzle-orm/pg-core';
+import { serviceTag } from './service-tag';
+import { serviceType } from './service-type';
 
 export const services = pgTable(
   'services',
@@ -27,10 +27,7 @@ export const services = pgTable(
   ],
 );
 
-export const servicesRelations = relations(
-  services,
-  ({ one, many }) => ({
-    serviceTag: many(serviceTag),
-    serviceType: one(serviceType),
-  }),
-);
+export const servicesRelations = relations(services, ({ one, many }) => ({
+  serviceTag: many(serviceTag),
+  serviceType: one(serviceType),
+}));

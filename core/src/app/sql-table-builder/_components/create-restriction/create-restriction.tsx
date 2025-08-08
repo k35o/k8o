@@ -1,14 +1,14 @@
-import { Column } from '../../_types/column';
-import {
-  InvalidRestrictions,
-  Restriction,
-  RestrictionType,
-} from '../../_types/restriction';
 import { Autocomplete } from '@k8o/arte-odyssey/form/autocomplete';
 import { FormControl } from '@k8o/arte-odyssey/form/form-control';
 import { Select } from '@k8o/arte-odyssey/form/select';
 import { TextField } from '@k8o/arte-odyssey/form/text-field';
-import { FC } from 'react';
+import type { FC } from 'react';
+import type { Column } from '../../_types/column';
+import type {
+  InvalidRestrictions,
+  Restriction,
+  RestrictionType,
+} from '../../_types/restriction';
 
 const TYPE_OPTIONS = [
   { value: 'primary', label: 'PRIMARY KEY' },
@@ -20,9 +20,7 @@ type Props = {
   columns: Record<string, Column>;
   restriction: Restriction;
   setRestriction: (restriction: Restriction) => void;
-  restrictionError:
-    | InvalidRestrictions['errors']['string']
-    | undefined;
+  restrictionError: InvalidRestrictions['errors']['string'] | undefined;
 };
 
 export const CreateRestriction: FC<Props> = ({
@@ -42,11 +40,13 @@ export const CreateRestriction: FC<Props> = ({
   return (
     <div className="flex flex-col justify-center gap-4">
       <FormControl
+        errorText={restrictionError?.type}
+        isInvalid={Boolean(restrictionError?.type)}
+        isRequired
         label="種類"
         renderInput={({ labelId: _, ...props }) => {
           return (
             <Select
-              value={restriction.type}
               onChange={(e) => {
                 const type = e.target.value;
                 if (type === 'primary') {
@@ -65,45 +65,41 @@ export const CreateRestriction: FC<Props> = ({
                 }
               }}
               options={TYPE_OPTIONS}
+              value={restriction.type}
               {...props}
             />
           );
         }}
-        isRequired
-        isInvalid={Boolean(restrictionError?.type)}
-        errorText={restrictionError?.type}
       />
-      {(restriction.type === 'primary' ||
-        restriction.type === 'unique') && (
+      {(restriction.type === 'primary' || restriction.type === 'unique') && (
         <FormControl
-          label="カラム"
+          errorText={restrictionError?.columns}
+          isInvalid={Boolean(restrictionError?.columns)}
           isRequired
+          label="カラム"
           renderInput={({ labelId: _, ...props }) => (
             <Autocomplete
               {...props}
-              options={columnOptions}
-              value={restriction.columns}
               onChange={(columns) => {
                 setRestriction({ ...restriction, columns });
               }}
+              options={columnOptions}
+              value={restriction.columns}
             />
           )}
-          isInvalid={Boolean(restrictionError?.columns)}
-          errorText={restrictionError?.columns}
         />
       )}
       {restriction.type === 'foreign' && (
         <>
           <FormControl
-            label="参照するカラム"
-            isDisabled={columnOptions.length === 0}
-            isRequired
-            isInvalid={Boolean(restrictionError?.column)}
             errorText={restrictionError?.column}
+            isDisabled={columnOptions.length === 0}
+            isInvalid={Boolean(restrictionError?.column)}
+            isRequired
+            label="参照するカラム"
             renderInput={({ labelId: _, ...props }) => {
               return (
                 <Select
-                  value={restriction.column}
                   onChange={(e) => {
                     setRestriction({
                       ...restriction,
@@ -111,21 +107,21 @@ export const CreateRestriction: FC<Props> = ({
                     });
                   }}
                   options={columnOptions}
+                  value={restriction.column}
                   {...props}
                 />
               );
             }}
           />
           <FormControl
-            label="参照先のテーブル名"
-            isRequired
-            isInvalid={Boolean(restrictionError?.referrence?.table)}
             errorText={restrictionError?.referrence?.table}
+            isInvalid={Boolean(restrictionError?.referrence?.table)}
+            isRequired
+            label="参照先のテーブル名"
             renderInput={({ labelId: _, ...props }) => {
               return (
                 <TextField
                   {...props}
-                  value={restriction.reference.table}
                   onChange={(e) => {
                     setRestriction({
                       ...restriction,
@@ -135,20 +131,20 @@ export const CreateRestriction: FC<Props> = ({
                       },
                     });
                   }}
+                  value={restriction.reference.table}
                 />
               );
             }}
           />
           <FormControl
-            label="参照先のカラム名"
-            isRequired
-            isInvalid={Boolean(restrictionError?.referrence?.column)}
             errorText={restrictionError?.referrence?.column}
+            isInvalid={Boolean(restrictionError?.referrence?.column)}
+            isRequired
+            label="参照先のカラム名"
             renderInput={({ labelId: _, ...props }) => {
               return (
                 <TextField
                   {...props}
-                  value={restriction.reference.column}
                   onChange={(e) => {
                     setRestriction({
                       ...restriction,
@@ -158,6 +154,7 @@ export const CreateRestriction: FC<Props> = ({
                       },
                     });
                   }}
+                  value={restriction.reference.column}
                 />
               );
             }}

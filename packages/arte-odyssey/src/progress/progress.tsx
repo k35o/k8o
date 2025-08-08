@@ -1,5 +1,5 @@
 import { toPrecision } from '@k8o/helpers/number';
-import { FC } from 'react';
+import type { FC } from 'react';
 
 export const Progress: FC<{
   progress: number;
@@ -8,17 +8,16 @@ export const Progress: FC<{
   label?: string;
 }> = ({ progress, maxProgress, minProgress = 0, label }) => {
   return (
-    <div className="bg-bg-emphasize w-full rounded-sm">
+    <div className="w-full rounded-sm bg-bg-emphasize">
       <div
-        role="progressbar"
         aria-label={
-          label ??
-          `${toPrecision(progress / maxProgress).toString()}%`
+          label ?? `${toPrecision(progress / maxProgress).toString()}%`
         }
         aria-valuemax={maxProgress}
         aria-valuemin={minProgress}
         aria-valuenow={progress}
-        className="bg-primary-fg h-4 rounded-sm"
+        className="h-4 rounded-sm bg-primary-fg"
+        role="progressbar"
         style={{
           width: `${((progress / maxProgress) * 100).toString()}%`,
         }}

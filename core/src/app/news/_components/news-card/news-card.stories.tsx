@@ -1,5 +1,5 @@
-import { NewsCard } from './news-card';
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
+import { NewsCard } from './news-card';
 
 const meta: Meta<typeof NewsCard> = {
   title: 'app/news/news-card',

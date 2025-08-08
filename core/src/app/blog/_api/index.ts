@@ -1,14 +1,14 @@
+import { unstable_cache as cache } from 'next/cache';
 import {
+  getBlogToc as _getBlogToc,
   getBlog,
   getBlogMetadata,
-  getBlogToc as _getBlogToc,
 } from '@/services/blogs/blog';
 import {
-  getBlogs,
   getBlogsByTags as _getBlogsByTags,
+  getBlogs,
 } from '@/services/blogs/blogs';
 import { getBlogView as _getBlogView } from '@/services/blogs/view';
-import { unstable_cache as cache } from 'next/cache';
 
 export const getBlogContents = cache(async () => {
   const blogs = await getBlogs();
@@ -58,7 +58,7 @@ export const getBlogsByTags = cache(async (slug: string) => {
 
 export const getBlogView = cache(
   async (id: number) => {
-    return _getBlogView(id);
+    return await _getBlogView(id);
   },
   ['blogView'],
   {

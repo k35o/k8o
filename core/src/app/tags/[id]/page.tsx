@@ -1,8 +1,8 @@
-import { TagContent } from '../_components/tag-content';
-import { getTag } from '@/services/tags/tag';
-import { getTags } from '@/services/tags/tags';
 import { unstable_cache as cache } from 'next/cache';
 import { notFound } from 'next/navigation';
+import { getTag } from '@/services/tags/tag';
+import { getTags } from '@/services/tags/tags';
+import { TagContent } from '../_components/tag-content';
 
 export async function generateStaticParams() {
   const tags = await cache(getTags)();

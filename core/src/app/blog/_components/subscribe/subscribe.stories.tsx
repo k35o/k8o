@@ -1,5 +1,5 @@
-import { Subscribe } from './subscribe';
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
+import { Subscribe } from './subscribe';
 
 const meta: Meta<typeof Subscribe> = {
   title: 'app/blog/subscribe',

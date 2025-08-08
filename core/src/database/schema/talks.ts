@@ -1,5 +1,3 @@
-import { blogs } from './blogs';
-import { talkTag } from './talk-tag';
 import { relations } from 'drizzle-orm';
 import {
   date,
@@ -9,6 +7,8 @@ import {
   serial,
   text,
 } from 'drizzle-orm/pg-core';
+import { blogs } from './blogs';
+import { talkTag } from './talk-tag';
 
 export const talks = pgTable(
   'talks',

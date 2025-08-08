@@ -1,4 +1,4 @@
-import { fileURLToPath } from 'url';
+import { fileURLToPath } from 'node:url';
 import { storybookTest } from '@storybook/addon-vitest/vitest-plugin';
 import { defineConfig } from 'vitest/config';
 
@@ -6,14 +6,10 @@ export default defineConfig({
   plugins: [
     storybookTest({
       storybookScript: 'pnpm storybook --ci',
-      configDir: fileURLToPath(
-        new URL('./.storybook', import.meta.url),
-      ),
+      configDir: fileURLToPath(new URL('./.storybook', import.meta.url)),
     }),
   ],
-  publicDir: fileURLToPath(
-    new URL('./.storybook/public', import.meta.url),
-  ),
+  publicDir: fileURLToPath(new URL('./.storybook/public', import.meta.url)),
   resolve: {
     alias: {
       // @react-email/componentsをモックに置き換え
@@ -24,10 +20,7 @@ export default defineConfig({
         ),
       ),
       '@react-email/render': fileURLToPath(
-        new URL(
-          './.storybook/mocks/react-email-render.ts',
-          import.meta.url,
-        ),
+        new URL('./.storybook/mocks/react-email-render.ts', import.meta.url),
       ),
       // react-dom/server.browserを通常のreact-dom/serverに置き換え
       'react-dom/server.browser': 'react-dom/server',
@@ -52,9 +45,7 @@ export default defineConfig({
     },
     isolate: false,
     setupFiles: [
-      fileURLToPath(
-        new URL('./.storybook/vitest.setup.ts', import.meta.url),
-      ),
+      fileURLToPath(new URL('./.storybook/vitest.setup.ts', import.meta.url)),
     ],
     // NOTE: コンポーネントが自動的にclient componentsに解釈されるので、async/awaitコンポーネントは除外する
     // TODO: async/awaitコンポーネントのテストも実行できるようにする

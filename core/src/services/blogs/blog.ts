@@ -1,6 +1,6 @@
-import { blogPath } from './path';
-import { db } from '#database/db';
 import { getFrontmatter, getTocTree } from '@k8o/helpers/mdx';
+import { db } from '#database/db';
+import { blogPath } from './path';
 
 export const getBlog = async (slug: string) => {
   const blog = await db.query.blogs.findFirst({
@@ -33,5 +33,4 @@ export const getBlog = async (slug: string) => {
 export const getBlogMetadata = async (slug: string) =>
   getFrontmatter(blogPath(slug));
 
-export const getBlogToc = async (slug: string) =>
-  getTocTree(blogPath(slug));
+export const getBlogToc = async (slug: string) => getTocTree(blogPath(slug));

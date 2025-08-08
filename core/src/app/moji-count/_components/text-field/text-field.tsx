@@ -1,9 +1,9 @@
 'use client';
 
-import { TextLength } from '../text-length';
 import { FormControl } from '@k8o/arte-odyssey/form/form-control';
 import { Textarea } from '@k8o/arte-odyssey/form/textarea';
 import { useDeferredValue, useState } from 'react';
+import { TextLength } from '../text-length';
 
 export const TextField = () => {
   const [text, setText] = useState('');
@@ -18,13 +18,13 @@ export const TextField = () => {
             return (
               <Textarea
                 {...props}
-                value={text}
+                fullHeight
+                isRequired
                 onChange={(e) => {
                   setText(e.target.value);
                 }}
                 placeholder="ここに文字列を入力してください"
-                fullHeight
-                isRequired
+                value={text}
               />
             );
           }}
@@ -32,7 +32,7 @@ export const TextField = () => {
       </div>
       <div className="flex gap-2">
         <p className="text-lg">文字数：</p>
-        <p className="text-xl font-bold">
+        <p className="font-bold text-xl">
           <TextLength text={deferredText} />
         </p>
       </div>

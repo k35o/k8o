@@ -1,7 +1,7 @@
-import { AlertIcon } from '../icons';
 import type { Status } from '@k8o/helpers';
 import { cn } from '@k8o/helpers/cn';
-import { FC } from 'react';
+import type { FC } from 'react';
+import { AlertIcon } from '../icons';
 
 type Props = {
   status: Status;
@@ -18,11 +18,6 @@ const STATUS_LABEL = {
 export const Alert: FC<Props> = ({ status, message }) => {
   return (
     <div
-      role={
-        status === 'error' || status === 'warning'
-          ? 'alert'
-          : 'status'
-      }
       className={cn(
         'flex items-center gap-2 rounded-md p-4',
         status === 'success' && 'bg-bg-success',
@@ -30,6 +25,7 @@ export const Alert: FC<Props> = ({ status, message }) => {
         status === 'warning' && 'bg-bg-warning',
         status === 'error' && 'bg-bg-error',
       )}
+      role={status === 'error' || status === 'warning' ? 'alert' : 'status'}
     >
       <span
         className={cn(
@@ -40,23 +36,23 @@ export const Alert: FC<Props> = ({ status, message }) => {
           status === 'error' && 'text-fg-error',
         )}
       >
-        <AlertIcon status={status} size="lg" />
+        <AlertIcon size="lg" status={status} />
         <span className="sr-only">{STATUS_LABEL[status]}</span>
       </span>
       {Array.isArray(message) ? (
         message.length > 1 ? (
           <ul className="ml-4 list-disc">
             {message.map((msg) => (
-              <li key={msg} className="text-lg">
+              <li className="text-lg" key={msg}>
                 {msg}
               </li>
             ))}
           </ul>
         ) : (
-          <p className="text-lg font-bold">{message[0]}</p>
+          <p className="font-bold text-lg">{message[0]}</p>
         )
       ) : (
-        <p className="text-lg font-bold">{message}</p>
+        <p className="font-bold text-lg">{message}</p>
       )}
     </div>
   );

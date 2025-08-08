@@ -1,25 +1,20 @@
 'use client';
 
-import { ColorTip } from './color-tip';
-import {
-  hexToHsl,
-  hexToRgb,
-  HSL,
-  hslToHex,
-  parseSafeHsl,
-  parseSafeRgb,
-  RGB,
-  rgbToHex,
-} from '../../_utils/color-converter';
 import { FormControl } from '@k8o/arte-odyssey/form/form-control';
 import { NumberField } from '@k8o/arte-odyssey/form/number-field';
 import { TextField } from '@k8o/arte-odyssey/form/text-field';
+import { type ChangeEventHandler, useCallback, useMemo, useState } from 'react';
 import {
-  ChangeEventHandler,
-  useCallback,
-  useMemo,
-  useState,
-} from 'react';
+  type HSL,
+  hexToHsl,
+  hexToRgb,
+  hslToHex,
+  parseSafeHsl,
+  parseSafeRgb,
+  type RGB,
+  rgbToHex,
+} from '../../_utils/color-converter';
+import { ColorTip } from './color-tip';
 
 type BaseColor =
   | {
@@ -70,13 +65,15 @@ export const ColorConverter = () => {
     return hexToHsl(baseColor.value);
   }, [baseColor]);
 
-  const handleChangeHex: ChangeEventHandler<HTMLInputElement> =
-    useCallback((e) => {
+  const handleChangeHex: ChangeEventHandler<HTMLInputElement> = useCallback(
+    (e) => {
       setBaseColor({
         type: 'hex',
         value: e.target.value,
       });
-    }, []);
+    },
+    [],
+  );
 
   const handleChangeRgb = useCallback(
     (value: number, type: keyof RGB) => {
@@ -107,18 +104,14 @@ export const ColorConverter = () => {
       <div className="flex items-center justify-center">
         <ColorTip color={`#${hex}`} />
       </div>
-      <div className="flex flex-col items-center gap-6 wrap-normal">
+      <div className="wrap-normal flex flex-col items-center gap-6">
         <FormControl
           label="hex"
           renderInput={({ labelId: _, ...props }) => {
             return (
               <div className="flex w-full items-center gap-2">
                 #
-                <TextField
-                  value={hex}
-                  onChange={handleChangeHex}
-                  {...props}
-                />
+                <TextField onChange={handleChangeHex} value={hex} {...props} />
               </div>
             );
           }}
@@ -132,73 +125,73 @@ export const ColorConverter = () => {
               <div className="flex flex-wrap items-center gap-2 sm:flex-nowrap">
                 <span className="sr-only sm:not-sr-only">rgb(</span>
                 <label
+                  className="not-sr-only font-bold text-sm sm:sr-only"
                   htmlFor={id}
-                  className="not-sr-only text-sm font-bold sm:sr-only"
                 >
                   Red
                 </label>
                 <NumberField
-                  id={id}
                   describedbyId={describedbyId}
-                  value={rgb.r}
+                  id={id}
+                  max={255}
+                  min={0}
                   onChange={(red) => {
                     handleChangeRgb(red, 'r');
                   }}
-                  max={255}
-                  min={0}
+                  value={rgb.r}
                   {...rest}
                 />
                 <span className="sr-only sm:not-sr-only">,</span>
                 <label
+                  className="not-sr-only font-bold text-sm sm:sr-only"
                   htmlFor={`${id}-rgb-green`}
-                  className="not-sr-only text-sm font-bold sm:sr-only"
                 >
                   Green
                 </label>
                 <NumberField
                   id={`${id}-rgb-green`}
-                  value={rgb.g}
+                  max={255}
+                  min={0}
                   onChange={(green) => {
                     handleChangeRgb(green, 'g');
                   }}
-                  max={255}
-                  min={0}
+                  value={rgb.g}
                   {...rest}
                 />
                 <span className="sr-only sm:not-sr-only">,</span>
                 <label
+                  className="not-sr-only font-bold text-sm sm:sr-only"
                   htmlFor={`${id}-rgb-blue`}
-                  className="not-sr-only text-sm font-bold sm:sr-only"
                 >
                   Blue
                 </label>
                 <NumberField
                   id={`${id}-rgb-blue`}
-                  value={rgb.b}
+                  max={255}
+                  min={0}
                   onChange={(blue) => {
                     handleChangeRgb(blue, 'b');
                   }}
-                  max={255}
-                  min={0}
+                  value={rgb.b}
                   {...rest}
                 />
                 <span className="sr-only sm:not-sr-only">/</span>
                 <label
+                  className="not-sr-only font-bold text-sm sm:sr-only"
                   htmlFor={`${id}-rgb-alpha`}
-                  className="not-sr-only text-sm font-bold sm:sr-only"
                 >
                   Alpha
                 </label>
                 <NumberField
                   id={`${id}-rgb-alpha`}
-                  value={rgb.a ?? 1}
+                  max={1}
+                  min={0}
                   onChange={(alpha) => {
                     handleChangeRgb(alpha, 'a');
                   }}
-                  max={1}
-                  min={0}
-                  step={0.01}
                   precision={2}
+                  step={0.01}
+                  value={rgb.a ?? 1}
                   {...rest}
                 />
                 <span className="sr-only sm:not-sr-only">)</span>
@@ -215,73 +208,73 @@ export const ColorConverter = () => {
               <div className="flex flex-wrap items-center gap-2 sm:flex-nowrap">
                 <span className="sr-only sm:not-sr-only">hsl(</span>
                 <label
+                  className="not-sr-only font-bold text-sm sm:sr-only"
                   htmlFor={id}
-                  className="not-sr-only text-sm font-bold sm:sr-only"
                 >
                   Hue
                 </label>
                 <NumberField
-                  id={id}
                   describedbyId={describedbyId}
-                  value={hsl.h}
+                  id={id}
+                  max={360}
+                  min={0}
                   onChange={(hue) => {
                     handleChangeHsl(hue, 'h');
                   }}
-                  max={360}
-                  min={0}
+                  value={hsl.h}
                   {...rest}
                 />
                 <span className="sr-only sm:not-sr-only">,</span>
                 <label
+                  className="not-sr-only font-bold text-sm sm:sr-only"
                   htmlFor={`${id}-hsl-saturation`}
-                  className="not-sr-only text-sm font-bold sm:sr-only"
                 >
                   Saturation
                 </label>
                 <NumberField
                   id={`${id}-hsl-saturation`}
-                  value={hsl.s}
+                  max={100}
+                  min={0}
                   onChange={(saturation) => {
                     handleChangeHsl(saturation, 's');
                   }}
-                  max={100}
-                  min={0}
+                  value={hsl.s}
                   {...rest}
                 />
                 <span className="sr-only sm:not-sr-only">,</span>
                 <label
+                  className="not-sr-only font-bold text-sm sm:sr-only"
                   htmlFor={`${id}-hsl-lightness`}
-                  className="not-sr-only text-sm font-bold sm:sr-only"
                 >
                   Lightness
                 </label>
                 <NumberField
                   id={`${id}-hsl-lightness`}
-                  value={hsl.l}
+                  max={100}
+                  min={0}
                   onChange={(lightness) => {
                     handleChangeHsl(lightness, 'l');
                   }}
-                  max={100}
-                  min={0}
+                  value={hsl.l}
                   {...rest}
                 />
                 <span className="sr-only sm:not-sr-only">/</span>
                 <label
+                  className="not-sr-only font-bold text-sm sm:sr-only"
                   htmlFor={`${id}-hsl-alpha`}
-                  className="not-sr-only text-sm font-bold sm:sr-only"
                 >
                   Alpha
                 </label>
                 <NumberField
                   id={`${id}-hsl-alpha`}
-                  value={hsl.a ?? 1}
+                  max={1}
+                  min={0}
                   onChange={(alpha) => {
                     handleChangeHsl(alpha, 'a');
                   }}
-                  max={1}
-                  min={0}
-                  step={0.01}
                   precision={2}
+                  step={0.01}
+                  value={hsl.a ?? 1}
                   {...rest}
                 />
                 <span className="sr-only sm:not-sr-only">)</span>

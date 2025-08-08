@@ -1,5 +1,5 @@
-import { BaseIcon, BaseIconProps } from './base';
-import { FC } from 'react';
+import type { FC } from 'react';
+import { BaseIcon, type BaseIconProps } from './base';
 
 const GitHub: FC<{
   className?: string;
@@ -18,15 +18,13 @@ const GitHub: FC<{
   );
 };
 
-export const GitHubIcon: FC<Partial<BaseIconProps>> = ({
-  size = 'md',
-}) => {
+export const GitHubIcon: FC<Partial<BaseIconProps>> = ({ size = 'md' }) => {
   return (
     <BaseIcon
-      size={size}
       renderItem={(props) => {
         return <GitHub {...props} />;
       }}
+      size={size}
     />
   );
 };

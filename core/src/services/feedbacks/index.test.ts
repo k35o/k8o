@@ -45,9 +45,7 @@ describe('feedbacks service', () => {
         'difficult',
       ];
 
-      const actualValues = FEEDBACK_OPTIONS.map(
-        (option) => option.value,
-      );
+      const actualValues = FEEDBACK_OPTIONS.map((option) => option.value);
       expectedValues.forEach((value) => {
         expect(actualValues).toContain(value);
       });

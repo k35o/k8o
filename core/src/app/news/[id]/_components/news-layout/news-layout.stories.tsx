@@ -1,5 +1,5 @@
-import { NewsLayout } from './news-layout';
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
+import { NewsLayout } from './news-layout';
 
 const meta: Meta<typeof NewsLayout> = {
   title: 'app/news/news-layout',

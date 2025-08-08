@@ -1,12 +1,6 @@
-import { quizzes } from './quizzes';
 import { relations } from 'drizzle-orm';
-import {
-  index,
-  integer,
-  pgTable,
-  serial,
-  text,
-} from 'drizzle-orm/pg-core';
+import { index, integer, pgTable, serial, text } from 'drizzle-orm/pg-core';
+import { quizzes } from './quizzes';
 
 export const quizAnswers = pgTable(
   'quiz_answers',
@@ -21,12 +15,9 @@ export const quizAnswers = pgTable(
   (table) => [index().on(table.quizId)],
 );
 
-export const quizAnswersRelations = relations(
-  quizAnswers,
-  ({ one }) => ({
-    quiz: one(quizzes, {
-      fields: [quizAnswers.quizId],
-      references: [quizzes.id],
-    }),
+export const quizAnswersRelations = relations(quizAnswers, ({ one }) => ({
+  quiz: one(quizzes, {
+    fields: [quizAnswers.quizId],
+    references: [quizzes.id],
   }),
-);
+}));

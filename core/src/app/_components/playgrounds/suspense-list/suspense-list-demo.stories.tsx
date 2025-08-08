@@ -1,6 +1,6 @@
-import { SuspenseListDemo } from './suspense-list-demo';
-import { Playground } from '../playground';
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
+import { Playground } from '../playground';
+import { SuspenseListDemo } from './suspense-list-demo';
 
 const meta: Meta<typeof SuspenseListDemo> = {
   title: 'playgrounds/suspense-list/SuspenseListDemo',

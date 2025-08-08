@@ -1,5 +1,5 @@
-import { useClipboard } from '.';
 import { act, renderHook } from '@testing-library/react';
+import { useClipboard } from '.';
 
 describe('useClipboard', () => {
   afterEach(() => {

@@ -1,6 +1,6 @@
-import { Popover } from './popover';
-import { Button } from '../button';
 import type { Meta, StoryObj } from '@storybook/react-vite';
+import { Button } from '../button';
+import { Popover } from './popover';
 
 const meta: Meta<typeof Popover.Root> = {
   title: 'components/popover',
@@ -25,17 +25,15 @@ export const Default: Story = {
     <Popover.Root>
       <Popover.Trigger
         renderItem={(props) => (
-          <Button {...props} type="button" size="md">
+          <Button {...props} size="md" type="button">
             Popover
           </Button>
         )}
       />
       <Popover.Content
         renderItem={(props) => (
-          <div
-            className="bg-bg-mute rounded-sm p-4 shadow-md"
-            {...props}
-          >
+          <div className="rounded-sm bg-bg-mute p-4 shadow-md" {...props}>
+            {/** biome-ignore lint/a11y/useFocusableInteractive: storyなので妥協 */}
             <div role="menuitem">Popover content</div>
           </div>
         )}

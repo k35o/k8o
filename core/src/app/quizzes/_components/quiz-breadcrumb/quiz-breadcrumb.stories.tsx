@@ -1,5 +1,5 @@
-import { QuizBreadcrumb } from '.';
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
+import { QuizBreadcrumb } from '.';
 
 const meta: Meta<typeof QuizBreadcrumb> = {
   title: 'app/quizzes/quiz-breadcrumb',

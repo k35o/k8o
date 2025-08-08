@@ -1,6 +1,6 @@
-import { Quiz, QuizType } from './types';
-import { db } from '#database/db';
 import { sql } from 'drizzle-orm';
+import { db } from '#database/db';
+import type { Quiz, QuizType } from './types';
 
 // NOTE:問題数が多いクイズを作った場合はページネーションを実装する
 export const getQuizzes = async ({

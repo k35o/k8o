@@ -1,10 +1,7 @@
-import { Column, InvalidColumns } from '../_types/column';
-import {
-  InvalidRestrictions,
-  Restriction,
-} from '../_types/restriction';
-import { InvalidTable, Table } from '../_types/table';
 import { z } from 'zod';
+import type { Column, InvalidColumns } from '../_types/column';
+import type { InvalidRestrictions, Restriction } from '../_types/restriction';
+import type { InvalidTable, Table } from '../_types/table';
 
 type Result =
   | {
@@ -63,13 +60,14 @@ export const makeStatement = (
 ): Result => {
   const tableResult = tableSchema.safeParse(table);
   const columnResults = columnsSchema.safeParse(columns);
-  const restrictionResults =
-    restrictionsSchema.safeParse(restrictions);
+  const restrictionResults = restrictionsSchema.safeParse(restrictions);
 
   if (
-    !tableResult.success ||
-    !columnResults.success ||
-    !restrictionResults.success
+    !(
+      tableResult.success &&
+      columnResults.success &&
+      restrictionResults.success
+    )
   ) {
     return {
       isSuccessful: false,
@@ -101,10 +99,7 @@ export const makeStatement = (
                 (errors: InvalidColumns['errors'], issue) => {
                   const id = issue.path[0];
                   const name = issue.path[1];
-                  if (
-                    typeof id !== 'string' ||
-                    typeof name !== 'string'
-                  ) {
+                  if (typeof id !== 'string' || typeof name !== 'string') {
                     return errors;
                   }
                   return {
@@ -128,10 +123,7 @@ export const makeStatement = (
                 (errors: InvalidRestrictions['errors'], issue) => {
                   const id = issue.path[0];
                   const type = issue.path[1];
-                  if (
-                    typeof id !== 'string' ||
-                    typeof type !== 'string'
-                  ) {
+                  if (typeof id !== 'string' || typeof type !== 'string') {
                     return errors;
                   }
                   if (type === 'reference') {
@@ -169,9 +161,7 @@ export const makeStatement = (
     isSuccessful: true,
     statement: `CREATE TABLE ${table.name} (\n${Object.values(columns)
       .map((column) => {
-        const defaultQuery = column.default
-          ? ` DEFAULT ${column.default}`
-          : '';
+        const defaultQuery = column.default ? ` DEFAULT ${column.default}` : '';
         if (['timestamp', 'timestamptz'].includes(column.type)) {
           return `  ${column.name} timestamp ${column.nullable ? 'NULL' : 'NOT NULL'} ${column.type === 'timestamptz' ? 'WITH TIME ZONE' : 'WITHOUT TIME ZONE'}${defaultQuery}`;
         }
@@ -187,35 +177,29 @@ export const makeStatement = (
     )
       .map((restriction) => {
         if (restriction.type === 'primary') {
-          const columnNames = restriction.columns.reduce(
-            (acc, column) => {
-              const columnName = columns[column]?.name;
-              if (!columnName) {
-                return acc;
-              }
-              if (!acc) {
-                return columnName;
-              }
-              return `${acc}, ${columnName}`;
-            },
-            '',
-          );
+          const columnNames = restriction.columns.reduce((acc, column) => {
+            const columnName = columns[column]?.name;
+            if (!columnName) {
+              return acc;
+            }
+            if (!acc) {
+              return columnName;
+            }
+            return `${acc}, ${columnName}`;
+          }, '');
           return `  PRIMARY KEY (${columnNames}),`;
         }
         if (restriction.type === 'unique') {
-          const columnNames = restriction.columns.reduce(
-            (acc, column) => {
-              const columnName = columns[column]?.name;
-              if (!columnName) {
-                return acc;
-              }
-              if (!acc) {
-                return columnName;
-              }
-              return `${acc}, ${columnName}`;
-            },
-            '',
-          );
+          const columnNames = restriction.columns.reduce((acc, column) => {
+            const columnName = columns[column]?.name;
+            if (!columnName) {
+              return acc;
+            }
+            if (!acc) {
+              return columnName;
+            }
+            return `${acc}, ${columnName}`;
+          }, '');
           return `  UNIQUE (${columnNames}),`;
         }
         const columnName = columns[restriction.column]?.name;

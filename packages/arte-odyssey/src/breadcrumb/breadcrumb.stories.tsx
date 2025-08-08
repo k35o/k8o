@@ -1,5 +1,5 @@
-import { Breadcrumb } from './breadcrumb';
 import type { Meta, StoryObj } from '@storybook/react-vite';
+import { Breadcrumb } from './breadcrumb';
 
 const meta: Meta<typeof Breadcrumb.List> = {
   title: 'components/breadcrumb',
@@ -21,7 +21,7 @@ export const Medium: Story = {
       </Breadcrumb.Item>
       <Breadcrumb.Separator />
       <Breadcrumb.Item>
-        <Breadcrumb.Link href="/quizzes/fish-kanji" current>
+        <Breadcrumb.Link current href="/quizzes/fish-kanji">
           うおへんクイズ
         </Breadcrumb.Link>
       </Breadcrumb.Item>
@@ -41,7 +41,7 @@ export const Large: Story = {
       </Breadcrumb.Item>
       <Breadcrumb.Separator />
       <Breadcrumb.Item>
-        <Breadcrumb.Link href="/quizzes/fish-kanji" current>
+        <Breadcrumb.Link current href="/quizzes/fish-kanji">
           うおへんクイズ
         </Breadcrumb.Link>
       </Breadcrumb.Item>
@@ -61,7 +61,7 @@ export const Small: Story = {
       </Breadcrumb.Item>
       <Breadcrumb.Separator />
       <Breadcrumb.Item>
-        <Breadcrumb.Link href="/quizzes/fish-kanji" current>
+        <Breadcrumb.Link current href="/quizzes/fish-kanji">
           うおへんクイズ
         </Breadcrumb.Link>
       </Breadcrumb.Item>

@@ -1,8 +1,8 @@
+import type { Status } from '@k8o/helpers';
+import { useTimeout } from '@k8o/hooks/timeout';
+import { type FC, useCallback } from 'react';
 import { Alert } from '../alert';
 import { useToast } from './provider';
-import { Status } from '@k8o/helpers';
-import { useTimeout } from '@k8o/hooks/timeout';
-import { FC, useCallback } from 'react';
 
 type ToastProps = {
   id: string;
@@ -22,5 +22,5 @@ export const Toast: FC<ToastProps> = ({ id, status, message }) => {
     DELAY_MS,
   );
 
-  return <Alert status={status} message={message} />;
+  return <Alert message={message} status={status} />;
 };

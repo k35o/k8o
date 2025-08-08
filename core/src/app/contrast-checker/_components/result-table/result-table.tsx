@@ -1,4 +1,4 @@
-import { FC } from 'react';
+import type { FC } from 'react';
 
 type Props = {
   isInvalidAAContrstLarge: boolean;
@@ -18,40 +18,32 @@ export const ResultTable: FC<Props> = ({
   baseColor,
 }) => {
   return (
-    <table className="w-full wrap-normal">
+    <table className="wrap-normal w-full">
       <thead>
-        <tr className="border-border-base md:texxt-md border-b text-sm font-medium">
+        <tr className="md:texxt-md border-border-base border-b font-medium text-sm">
           <th>AA</th>
           <th>AAA</th>
           <th>テキスト</th>
         </tr>
       </thead>
       <tbody>
-        <tr className="border-border-base h-16 border-b">
+        <tr className="h-16 border-border-base border-b">
           <td className="px-2 text-lg md:text-2xl">
             {isInvalidAAContrstLarge ? (
-              <p className="text-fg-error text-center font-bold">
-                NG
-              </p>
+              <p className="text-center font-bold text-fg-error">NG</p>
             ) : (
-              <p className="text-fg-success text-center font-bold">
-                OK
-              </p>
+              <p className="text-center font-bold text-fg-success">OK</p>
             )}
           </td>
           <td className="px-2 text-lg md:text-2xl">
             {isInvalidAAAContrstLarge ? (
-              <p className="text-fg-error text-center font-bold">
-                NG
-              </p>
+              <p className="text-center font-bold text-fg-error">NG</p>
             ) : (
-              <p className="text-fg-success text-center font-bold">
-                OK
-              </p>
+              <p className="text-center font-bold text-fg-success">OK</p>
             )}
           </td>
           <td
-            className="px-4 text-[18.66px] font-bold"
+            className="px-4 font-bold text-[18.66px]"
             style={{
               color: compareColor,
               backgroundColor: baseColor,
@@ -60,27 +52,19 @@ export const ResultTable: FC<Props> = ({
             大文字の太字のテキスト（18.66px bold）
           </td>
         </tr>
-        <tr className="border-border-base h-16 border-b">
+        <tr className="h-16 border-border-base border-b">
           <td className="px-2 text-lg md:text-2xl">
             {isInvalidAAContrstLarge ? (
-              <p className="text-fg-error text-center font-bold">
-                NG
-              </p>
+              <p className="text-center font-bold text-fg-error">NG</p>
             ) : (
-              <p className="text-fg-success text-center font-bold">
-                OK
-              </p>
+              <p className="text-center font-bold text-fg-success">OK</p>
             )}
           </td>
           <td className="px-2 text-lg md:text-2xl">
             {isInvalidAAAContrstLarge ? (
-              <p className="text-fg-error text-center font-bold">
-                NG
-              </p>
+              <p className="text-center font-bold text-fg-error">NG</p>
             ) : (
-              <p className="text-fg-success text-center font-bold">
-                OK
-              </p>
+              <p className="text-center font-bold text-fg-success">OK</p>
             )}
           </td>
           <td
@@ -93,31 +77,23 @@ export const ResultTable: FC<Props> = ({
             大文字のテキスト（24px）
           </td>
         </tr>
-        <tr className="border-border-base h-16 border-b">
+        <tr className="h-16 border-border-base border-b">
           <td className="px-2 text-lg md:text-2xl">
             {isInvalidAAContrstSmall ? (
-              <p className="text-fg-error text-center font-bold">
-                NG
-              </p>
+              <p className="text-center font-bold text-fg-error">NG</p>
             ) : (
-              <p className="text-fg-success text-center font-bold">
-                OK
-              </p>
+              <p className="text-center font-bold text-fg-success">OK</p>
             )}
           </td>
           <td className="px-2 text-lg md:text-2xl">
             {isInvalidAAAContrstSmall ? (
-              <p className="text-fg-error text-center font-bold">
-                NG
-              </p>
+              <p className="text-center font-bold text-fg-error">NG</p>
             ) : (
-              <p className="text-fg-success text-center font-bold">
-                OK
-              </p>
+              <p className="text-center font-bold text-fg-success">OK</p>
             )}
           </td>
           <td
-            className="px-4 text-[16px] font-bold"
+            className="px-4 font-bold text-[16px]"
             style={{
               color: compareColor,
               backgroundColor: baseColor,
@@ -126,27 +102,19 @@ export const ResultTable: FC<Props> = ({
             小文字の太字のテキスト（16px bold）
           </td>
         </tr>
-        <tr className="border-border-base h-16 border-b">
+        <tr className="h-16 border-border-base border-b">
           <td className="px-2 text-lg md:text-2xl">
             {isInvalidAAContrstSmall ? (
-              <p className="text-fg-error text-center font-bold">
-                NG
-              </p>
+              <p className="text-center font-bold text-fg-error">NG</p>
             ) : (
-              <p className="text-fg-success text-center font-bold">
-                OK
-              </p>
+              <p className="text-center font-bold text-fg-success">OK</p>
             )}
           </td>
           <td className="px-2 text-lg md:text-2xl">
             {isInvalidAAAContrstLarge ? (
-              <p className="text-fg-error text-center font-bold">
-                NG
-              </p>
+              <p className="text-center font-bold text-fg-error">NG</p>
             ) : (
-              <p className="text-fg-success text-center font-bold">
-                OK
-              </p>
+              <p className="text-center font-bold text-fg-success">OK</p>
             )}
           </td>
           <td

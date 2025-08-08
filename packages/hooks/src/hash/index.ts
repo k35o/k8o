@@ -6,7 +6,6 @@ const getHash = () =>
     : null;
 
 const subscribe = (callback: () => void) => {
-  // eslint-disable-next-line @typescript-eslint/unbound-method
   const { pushState, replaceState } = window.history;
 
   window.history.pushState = (...args) => {

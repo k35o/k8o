@@ -1,19 +1,16 @@
-import { BaseIcon, BaseIconProps } from './base';
-import { FC } from 'react';
+import type { FC } from 'react';
+import { BaseIcon, type BaseIconProps } from './base';
 
 const Qiita: FC<{ className: string }> = ({ className }) => {
   return (
     <svg
       className={className}
-      version="1.1"
-      xmlns="http://www.w3.org/2000/svg"
-      viewBox="0 0 300 300"
       enableBackground="new 0 0 300 300"
+      version="1.1"
+      viewBox="0 0 300 300"
+      xmlns="http://www.w3.org/2000/svg"
     >
       <path
-        fill="#55C500"
-        opacity="1.000000"
-        stroke="none"
         d="
 M170.000000,301.000000 
 	C155.979111,301.000000 141.958206,301.000000 127.345764,300.629639 
@@ -71,11 +68,11 @@ M170.000000,301.000000
 	C228.576508,281.865814 211.133575,290.646606 191.990906,295.945251 
 	C184.749069,297.949768 177.335373,299.333374 170.000000,301.000000 
 z"
-      />
-      <path
         fill="#55C500"
         opacity="1.000000"
         stroke="none"
+      />
+      <path
         d="
 M201.225189,166.276794 
 	C189.031174,176.100708 175.086823,180.471069 160.137070,181.956238 
@@ -109,20 +106,21 @@ M201.225189,166.276794
 	C224.529892,129.574585 224.529892,129.574585 212.763885,127.405243 
 	C214.084839,141.788361 212.905441,155.465408 201.225189,166.276794 
 z"
+        fill="#55C500"
+        opacity="1.000000"
+        stroke="none"
       />
     </svg>
   );
 };
 
-export const QiitaIcon: FC<Partial<BaseIconProps>> = ({
-  size = 'md',
-}) => {
+export const QiitaIcon: FC<Partial<BaseIconProps>> = ({ size = 'md' }) => {
   return (
     <BaseIcon
-      size={size}
       renderItem={(props) => {
         return <Qiita {...props} />;
       }}
+      size={size}
     />
   );
 };

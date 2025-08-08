@@ -1,9 +1,4 @@
 import {
-  Column,
-  ColumnType,
-  InvalidColumns,
-} from '../../_types/column';
-import {
   Accordion,
   AccordionButton,
   AccordionItem,
@@ -15,7 +10,8 @@ import { Select } from '@k8o/arte-odyssey/form/select';
 import { TextField } from '@k8o/arte-odyssey/form/text-field';
 import { IconButton } from '@k8o/arte-odyssey/icon-button';
 import { CloseIcon } from '@k8o/arte-odyssey/icons';
-import { FC } from 'react';
+import type { FC } from 'react';
+import type { Column, ColumnType, InvalidColumns } from '../../_types/column';
 
 type Props = {
   handleChangeColumn: (id: string) => (column: Column) => void;
@@ -49,9 +45,9 @@ export const CreateColumnsByForm: FC<Props> = ({
       {columnsEntries.map(([id, column], idx) => {
         const columnError = columnsError?.[id];
         return (
-          <AccordionItem key={id} defaultOpen={true}>
+          <AccordionItem defaultOpen={true} key={id}>
             <AccordionButton>
-              <p className="text-lg font-bold">カラム{idx + 1}</p>
+              <p className="font-bold text-lg">カラム{idx + 1}</p>
             </AccordionButton>
             <AccordionPanel>
               <div className="relative">
@@ -59,8 +55,8 @@ export const CreateColumnsByForm: FC<Props> = ({
                   <div className="absolute flex w-full items-center justify-end">
                     <IconButton
                       label="削除"
-                      size="sm"
                       onClick={handleDeleteColumn(id)}
+                      size="sm"
                     >
                       <CloseIcon />
                     </IconButton>
@@ -68,14 +64,13 @@ export const CreateColumnsByForm: FC<Props> = ({
                 )}
                 <div className="flex flex-col justify-center gap-4">
                   <FormControl
-                    label="カラム名"
-                    isRequired
-                    isInvalid={Boolean(columnError?.name)}
                     errorText={columnError?.name}
+                    isInvalid={Boolean(columnError?.name)}
+                    isRequired
+                    label="カラム名"
                     renderInput={({ labelId: _, ...props }) => {
                       return (
                         <TextField
-                          value={column.name}
                           onChange={(e) => {
                             handleChangeColumn(id)({
                               ...column,
@@ -83,20 +78,20 @@ export const CreateColumnsByForm: FC<Props> = ({
                             });
                           }}
                           placeholder="id"
+                          value={column.name}
                           {...props}
                         />
                       );
                     }}
                   />
                   <FormControl
-                    label="コメント"
-                    isRequired
-                    isInvalid={Boolean(columnError?.alias)}
                     errorText={columnError?.alias}
+                    isInvalid={Boolean(columnError?.alias)}
+                    isRequired
+                    label="コメント"
                     renderInput={({ labelId: _, ...props }) => {
                       return (
                         <TextField
-                          value={column.alias}
                           onChange={(e) => {
                             handleChangeColumn(id)({
                               ...column,
@@ -104,17 +99,20 @@ export const CreateColumnsByForm: FC<Props> = ({
                             });
                           }}
                           placeholder="ID"
+                          value={column.alias}
                           {...props}
                         />
                       );
                     }}
                   />
                   <FormControl
+                    errorText={columnError?.type}
+                    isInvalid={Boolean(columnError?.type)}
+                    isRequired
                     label="型"
                     renderInput={({ labelId: _, ...props }) => {
                       return (
                         <Select
-                          value={column.type}
                           onChange={(e) => {
                             handleChangeColumn(id)({
                               ...column,
@@ -122,24 +120,21 @@ export const CreateColumnsByForm: FC<Props> = ({
                             });
                           }}
                           options={TYPE_OPTIONS}
+                          value={column.type}
                           {...props}
                         />
                       );
                     }}
-                    isRequired
-                    isInvalid={Boolean(columnError?.type)}
-                    errorText={columnError?.type}
                   />
                   <FormControl
+                    errorText={columnError?.nullable}
+                    isInvalid={Boolean(columnError?.nullable)}
+                    isRequired
                     label="null許容"
                     labelAs="legend"
-                    isRequired
-                    isInvalid={Boolean(columnError?.nullable)}
-                    errorText={columnError?.nullable}
                     renderInput={(props) => (
                       <Radio
                         {...props}
-                        value={column.nullable ? '0' : '1'}
                         onChange={(e) => {
                           handleChangeColumn(id)({
                             ...column,
@@ -150,23 +145,24 @@ export const CreateColumnsByForm: FC<Props> = ({
                           { value: '0', label: '許容' },
                           { value: '1', label: '不許容' },
                         ]}
+                        value={column.nullable ? '0' : '1'}
                       />
                     )}
                   />
                   <FormControl
-                    label="デフォルト値"
-                    isInvalid={Boolean(columnError?.default)}
                     errorText={columnError?.default}
+                    isInvalid={Boolean(columnError?.default)}
+                    label="デフォルト値"
                     renderInput={({ labelId: _, ...props }) => {
                       return (
                         <TextField
-                          value={column.default ?? ''}
                           onChange={(e) => {
                             handleChangeColumn(id)({
                               ...column,
                               default: e.target.value,
                             });
                           }}
+                          value={column.default ?? ''}
                           {...props}
                         />
                       );

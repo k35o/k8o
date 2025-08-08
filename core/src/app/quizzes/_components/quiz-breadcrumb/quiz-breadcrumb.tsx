@@ -4,7 +4,7 @@ import { Anchor } from '@k8o/arte-odyssey/anchor';
 import { Breadcrumb } from '@k8o/arte-odyssey/breadcrumb';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { FC } from 'react';
+import type { FC } from 'react';
 
 export const QuizBreadcrumb: FC = () => {
   const pathname = usePathname();
@@ -14,9 +14,9 @@ export const QuizBreadcrumb: FC = () => {
       <Breadcrumb.Item>
         <h2>
           <Breadcrumb.Link
-            href="/quizzes"
-            current={pathname === '/quizzes'}
             component={Link}
+            current={pathname === '/quizzes'}
+            href="/quizzes"
           >
             Quizzes
           </Breadcrumb.Link>
@@ -30,13 +30,13 @@ export const QuizBreadcrumb: FC = () => {
               {pathname.endsWith('/quizzes/fish-kanji') ? (
                 <>
                   <Breadcrumb.Link
-                    href="/quizzes/fish-kanji"
-                    current
                     component={Link}
+                    current
+                    href="/quizzes/fish-kanji"
                   >
                     うおへんクイズ
                   </Breadcrumb.Link>
-                  <div className="text-fg-base font-normal">
+                  <div className="font-normal text-fg-base">
                     (
                     <Anchor
                       href="/quizzes/fish-kanji/list"
@@ -48,10 +48,7 @@ export const QuizBreadcrumb: FC = () => {
                   </div>
                 </>
               ) : (
-                <Breadcrumb.Link
-                  href="/quizzes/fish-kanji"
-                  component={Link}
-                >
+                <Breadcrumb.Link component={Link} href="/quizzes/fish-kanji">
                   うおへんクイズ
                 </Breadcrumb.Link>
               )}
@@ -64,9 +61,9 @@ export const QuizBreadcrumb: FC = () => {
           <Breadcrumb.Separator />
           <Breadcrumb.Item>
             <Breadcrumb.Link
-              href="/quizzes/fish-kanji/list"
-              current
               component={Link}
+              current
+              href="/quizzes/fish-kanji/list"
             >
               問題一覧
             </Breadcrumb.Link>

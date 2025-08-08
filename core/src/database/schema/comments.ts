@@ -1,5 +1,3 @@
-import { blogComment } from './blog-comment';
-import { feedbacks } from './feedback';
 import { relations } from 'drizzle-orm';
 import {
   index,
@@ -9,6 +7,8 @@ import {
   text,
   timestamp,
 } from 'drizzle-orm/pg-core';
+import { blogComment } from './blog-comment';
+import { feedbacks } from './feedback';
 
 export const comments = pgTable(
   'comments',

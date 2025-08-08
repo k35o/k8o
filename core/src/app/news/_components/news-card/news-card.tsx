@@ -1,13 +1,10 @@
-import { News } from '../../_types';
 import { InteractiveCard } from '@k8o/arte-odyssey/card';
 import { Heading } from '@k8o/arte-odyssey/heading';
-import {
-  PublishDateIcon,
-  UpdateDateIcon,
-} from '@k8o/arte-odyssey/icons';
+import { PublishDateIcon, UpdateDateIcon } from '@k8o/arte-odyssey/icons';
 import { formatDate } from '@k8o/helpers/date';
 import Link from 'next/link';
-import { FC } from 'react';
+import type { FC } from 'react';
+import type { News } from '../../_types';
 
 type Props = Pick<
   News,
@@ -27,16 +24,12 @@ export const NewsCard: FC<Props> = ({
   return (
     <InteractiveCard>
       <Link
-        href={
-          draftKey
-            ? `/news/${id}?draftKey=${draftKey}`
-            : `/news/${id}`
-        }
+        href={draftKey ? `/news/${id}?draftKey=${draftKey}` : `/news/${id}`}
       >
         <div className="flex flex-col gap-4 px-6 py-4">
           <div className="flex flex-col gap-1">
             <Heading type="h3">{title}</Heading>
-            <div className="text-fg-mute flex flex-wrap items-center gap-1">
+            <div className="flex flex-wrap items-center gap-1 text-fg-mute">
               <div className="flex items-center gap-1">
                 <PublishDateIcon size="sm" />
                 <span className="text-sm">

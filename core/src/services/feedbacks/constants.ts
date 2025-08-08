@@ -1,4 +1,3 @@
-import { FeedbackType } from './types';
 import {
   BadIcon,
   BoringIcon,
@@ -9,7 +8,8 @@ import {
   InterestingIcon,
   ShallowIcon,
 } from '@k8o/arte-odyssey/icons';
-import { FC } from 'react';
+import type { FC } from 'react';
+import type { FeedbackType } from './types';
 
 export const FEEDBACK_OPTIONS = [
   {

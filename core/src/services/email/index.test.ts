@@ -17,7 +17,7 @@ describe('email service', () => {
 
     it('環境変数が設定されていない場合でもインスタンスを作成できる', () => {
       const originalEnv = process.env.RESEND_API_KEY;
-      delete process.env.RESEND_API_KEY;
+      process.env.RESEND_API_KEY = undefined;
 
       const instance = resend();
 

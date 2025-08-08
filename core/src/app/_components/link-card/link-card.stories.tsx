@@ -1,14 +1,13 @@
-import { LinkCard } from './link-card';
-import { getMetadata } from '#src/mocks/link-card/metadata.mock';
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
+import { getMetadata } from '#src/mocks/link-card/metadata.mock';
+import { LinkCard } from './link-card';
 
 const meta: Meta<typeof LinkCard> = {
   title: 'app/globals/link-card',
   component: LinkCard,
   beforeEach: () => {
     getMetadata.mockResolvedValue({
-      title:
-        'Reactの新しいルーティングライブラリ、TanStackRouterを学ぶ',
+      title: 'Reactの新しいルーティングライブラリ、TanStackRouterを学ぶ',
       description:
         'Reactのルーティングには主にNextjs等のフレームワークやReact Routeが利用されます。この記事では新たなルーティング手法の選択肢としてTanStack Routerを紹介します。TanStack Routerでは最初に挙げた選択肢の使い心地を踏襲しつつ、ルーティングやサーチパラメータの型安全性や他にない便利な機能を提供します。',
       image: 'k8o.jpg',
@@ -58,8 +57,7 @@ export const NoDescription: Story = {
   },
   beforeEach: () => {
     getMetadata.mockResolvedValue({
-      title:
-        'Reactの新しいルーティングライブラリ、TanStackRouterを学ぶ',
+      title: 'Reactの新しいルーティングライブラリ、TanStackRouterを学ぶ',
       description: undefined,
       image: 'k8o.jpg',
     });
@@ -72,8 +70,7 @@ export const NoImage: Story = {
   },
   beforeEach: () => {
     getMetadata.mockResolvedValue({
-      title:
-        'Reactの新しいルーティングライブラリ、TanStackRouterを学ぶ',
+      title: 'Reactの新しいルーティングライブラリ、TanStackRouterを学ぶ',
       description:
         'Reactのルーティングには主にNextjs等のフレームワークやReact Routeが利用されます。この記事では新たなルーティング手法の選択肢としてTanStack Routerを紹介します。TanStack Routerでは最初に挙げた選択肢の使い心地を踏襲しつつ、ルーティングやサーチパラメータの型安全性や他にない便利な機能を提供します。',
       image: undefined,

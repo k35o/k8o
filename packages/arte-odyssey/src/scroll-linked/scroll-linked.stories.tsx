@@ -1,5 +1,5 @@
-import { ScrollLinked } from './scroll-linked';
 import type { Meta, StoryObj } from '@storybook/react-vite';
+import { ScrollLinked } from './scroll-linked';
 
 const meta: Meta<typeof ScrollLinked> = {
   title: 'components/scroll-linked',

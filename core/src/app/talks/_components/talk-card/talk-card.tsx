@@ -11,7 +11,7 @@ import { LinkButton } from '@k8o/arte-odyssey/link-button';
 import { TextTag } from '@k8o/arte-odyssey/text-tag';
 import { formatDate } from '@k8o/helpers/date';
 import Link from 'next/link';
-import { FC } from 'react';
+import type { FC } from 'react';
 
 export const TalkCard: FC<{
   title: string;
@@ -42,23 +42,21 @@ export const TalkCard: FC<{
     <Card>
       <div className="flex flex-col gap-6 p-8">
         <div className="flex flex-col gap-2">
-          <h2 className="flex items-center gap-2 text-lg font-bold md:text-2xl">
+          <h2 className="flex items-center gap-2 font-bold text-lg md:text-2xl">
             {title}
-            <IconLink label="イベントのリンク" href={eventUrl}>
+            <IconLink href={eventUrl} label="イベントのリンク">
               <ExternalLinkIcon />
             </IconLink>
           </h2>
-          <p className="text-fg-mute text-md md:text-lg">
-            {eventName}
-          </p>
+          <p className="text-fg-mute text-md md:text-lg">{eventName}</p>
         </div>
         <div className="flex flex-wrap gap-2">
-          <div className="text-fg-mute md:text-md flex items-center gap-1 text-sm">
+          <div className="flex items-center gap-1 text-fg-mute text-sm md:text-md">
             <PublishDateIcon size="sm" />
             <span>{formatDate(new Date(eventDate))}</span>
           </div>
           {eventLocation && (
-            <div className="text-fg-mute md:text-md flex items-center gap-1 text-sm">
+            <div className="flex items-center gap-1 text-fg-mute text-sm md:text-md">
               <LocationIcon size="sm" />
               <span>{eventLocation}</span>
             </div>
@@ -66,30 +64,25 @@ export const TalkCard: FC<{
         </div>
         <div className="flex flex-wrap items-center gap-2">
           {tags.map((tag) => (
-            <Link key={tag.id} href={`/tags/${tag.id.toString()}`}>
-              <TextTag
-                key={tag.id}
-                size="sm"
-                text={tag.name}
-                clickable
-              />
+            <Link href={`/tags/${tag.id.toString()}`} key={tag.id}>
+              <TextTag clickable key={tag.id} size="sm" text={tag.name} />
             </Link>
           ))}
         </div>
         <div className="flex flex-wrap gap-4">
           <LinkButton
             href={slideUrl}
-            variant="outlined"
             size="sm"
             startIcon={<SlideIcon size="sm" />}
+            variant="outlined"
           >
             スライドを見る
           </LinkButton>
           <LinkButton
-            size="sm"
-            startIcon={<BlogIcon size="sm" />}
             href={`/blog/${blog.slug}`}
             renderAnchor={(props) => <Link {...props} />}
+            size="sm"
+            startIcon={<BlogIcon size="sm" />}
           >
             ブログで解説を読む
           </LinkButton>

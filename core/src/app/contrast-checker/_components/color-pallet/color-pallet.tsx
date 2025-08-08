@@ -1,6 +1,6 @@
 import { FormControl } from '@k8o/arte-odyssey/form/form-control';
 import { cn } from '@k8o/helpers/cn';
-import { ChangeEventHandler, FC } from 'react';
+import type { ChangeEventHandler, FC } from 'react';
 
 type Props = {
   label: string;
@@ -8,11 +8,7 @@ type Props = {
   setColor: (color: string) => void;
 };
 
-export const ColorPallet: FC<Props> = ({
-  label,
-  color,
-  setColor,
-}) => {
+export const ColorPallet: FC<Props> = ({ label, color, setColor }) => {
   const handleChange: ChangeEventHandler<HTMLInputElement> = (e) => {
     setColor(e.target.value);
   };
@@ -23,14 +19,14 @@ export const ColorPallet: FC<Props> = ({
       renderInput={({ id }) => (
         <div className="flex gap-2">
           <input
-            id={id}
             className={cn(
-              'border-border-base w-16 grow rounded-md border',
-              'focus-visible:ring-border-info focus-visible:border-transparent focus-visible:ring-2 focus-visible:outline-hidden',
+              'w-16 grow rounded-md border border-border-base',
+              'focus-visible:border-transparent focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-border-info',
             )}
+            id={id}
+            onChange={handleChange}
             type="color"
             value={color}
-            onChange={handleChange}
           />
           <p>{color}</p>
         </div>

@@ -1,11 +1,11 @@
-import { BlogLayout } from './blog-layout';
+import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 import {
+  getBlogContent,
+  getBlogsByTags,
   getBlogToc,
   getBlogView,
-  getBlogsByTags,
-  getBlogContent,
 } from '#src/mocks/api/blog.mock';
-import type { Meta, StoryObj } from '@storybook/nextjs-vite';
+import { BlogLayout } from './blog-layout';
 
 const meta: Meta<typeof BlogLayout> = {
   title: 'app/blog/blog-layout',
@@ -28,8 +28,7 @@ const meta: Meta<typeof BlogLayout> = {
           name: 'TanStack Router',
         },
       ],
-      title:
-        'Reactの新しいルーティングライブラリ、TanStackRouterを学ぶ',
+      title: 'Reactの新しいルーティングライブラリ、TanStackRouterを学ぶ',
       description:
         'Reactのルーティングには主にNextjs等のフレームワークやReact Routeが利用されます。この記事では新たなルーティング手法の選択肢としてTanStack Routerを紹介します。TanStack Routerでは最初に挙げた選択肢の使い心地を踏襲しつつ、ルーティングやサーチパラメータの型安全性や他にない便利な機能を提供します。',
       createdAt: new Date('2023/05/01'),
@@ -68,12 +67,7 @@ const meta: Meta<typeof BlogLayout> = {
         slug: 'atomics-pause',
         title: 'Atomicsで共有メモリ上のデータを安全に取り扱う',
         createdAt: '2025-04-13 02:50:57+00',
-        tags: [
-          'JavaScript',
-          'Baseline 2025',
-          'Atomics',
-          'Atomics.pause',
-        ],
+        tags: ['JavaScript', 'Baseline 2025', 'Atomics', 'Atomics.pause'],
       },
       {
         id: 9,

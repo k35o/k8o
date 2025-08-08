@@ -1,7 +1,7 @@
-import { CreateTable } from './create-table';
-import { Table } from '../../_types/table';
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 import { useState } from 'react';
+import type { Table } from '../../_types/table';
+import { CreateTable } from './create-table';
 
 const meta: Meta<typeof CreateTable> = {
   title: 'app/sql-table-builder/create-table',
@@ -17,11 +17,7 @@ export const Primary: Story = {
       alias: '',
     });
     return (
-      <CreateTable
-        table={table}
-        setTable={setTable}
-        tableError={undefined}
-      />
+      <CreateTable setTable={setTable} table={table} tableError={undefined} />
     );
   },
 };

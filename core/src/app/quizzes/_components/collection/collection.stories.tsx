@@ -1,8 +1,5 @@
-import {
-  CollectionByHighlight,
-  CollectionByHighlightLoading,
-} from '.';
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
+import { CollectionByHighlight, CollectionByHighlightLoading } from '.';
 
 const meta: Meta<typeof CollectionByHighlight> = {
   title: 'app/quizzes/collection',

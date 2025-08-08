@@ -1,6 +1,6 @@
-import { getTag } from './tag';
 import { db } from '#database/db';
 import { getBlogMetadata } from '@/services/blogs/blog';
+import { getTag } from './tag';
 
 vi.mock('#database/db');
 vi.mock('@/services/blogs/blog');
@@ -45,9 +45,7 @@ describe('getTag', () => {
       title: 'Blog Title',
       slug: 'blog1',
     });
-    vi.mocked(getBlogMetadata).mockImplementation(
-      mockGetBlogMetadata,
-    );
+    vi.mocked(getBlogMetadata).mockImplementation(mockGetBlogMetadata);
 
     const tag = await getTag(1);
 

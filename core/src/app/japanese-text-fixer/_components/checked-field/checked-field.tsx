@@ -9,7 +9,7 @@ export const CheckedField = () => {
   const status = useStatus();
 
   if (!status.isExecuted) {
-    return <></>;
+    return null;
   }
 
   return (

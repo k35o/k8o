@@ -1,5 +1,5 @@
 import { findAllColors } from '@k8o/helpers/color';
-import { FC, Fragment } from 'react';
+import { type FC, Fragment } from 'react';
 
 export const Code: FC<{
   children: string;
@@ -8,7 +8,7 @@ export const Code: FC<{
 
   if (colors.length === 0) {
     return (
-      <code className="bg-bg-mute m-0.5 rounded-md px-1.5 sm:py-0.5">
+      <code className="m-0.5 rounded-md bg-bg-mute px-1.5 sm:py-0.5">
         {children}
       </code>
     );
@@ -28,10 +28,10 @@ export const Code: FC<{
     parts.push(
       <Fragment key={`color-${String(index)}`}>
         <span
-          className="inline-block h-3 w-3 flex-shrink-0 rounded-sm border border-gray-300"
-          style={{ backgroundColor: colorInfo.color }}
-          role="img"
           aria-label={`Color: ${colorInfo.color}`}
+          className="inline-block h-3 w-3 flex-shrink-0 rounded-sm border border-gray-300"
+          role="img"
+          style={{ backgroundColor: colorInfo.color }}
         />
         {children.slice(colorInfo.start, colorInfo.end)}
       </Fragment>,
@@ -46,7 +46,7 @@ export const Code: FC<{
   }
 
   return (
-    <code className="bg-bg-mute m-0.5 inline-flex items-center gap-1 rounded-md px-1.5 sm:py-0.5">
+    <code className="m-0.5 inline-flex items-center gap-1 rounded-md bg-bg-mute px-1.5 sm:py-0.5">
       {parts}
     </code>
   );

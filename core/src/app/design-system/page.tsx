@@ -1,39 +1,33 @@
 'use client';
 
+import { Tabs } from '@k8o/arte-odyssey/tabs';
 import { Color } from './_components/color';
 import { Components } from './_components/components';
 import { Radius } from './_components/radius';
 import { Spacing } from './_components/spacing';
 import { Typography } from './_components/typography';
-import { Tabs } from '@k8o/arte-odyssey/tabs';
 
 export default function Page() {
   return (
-    <section className="bg-bg-base grid h-full gap-6 rounded-md p-4">
+    <section className="grid h-full gap-6 rounded-md bg-bg-base p-4">
       <Tabs.Root
-        ids={[
-          'color',
-          'radius',
-          'spacing',
-          'typography',
-          'components',
-        ]}
+        ids={['color', 'radius', 'spacing', 'typography', 'components']}
       >
         <Tabs.List label="Design System">
           <Tabs.Tab id="color">
-            <p className="text-lg font-bold md:text-xl">Color</p>
+            <p className="font-bold text-lg md:text-xl">Color</p>
           </Tabs.Tab>
           <Tabs.Tab id="radius">
-            <p className="text-lg font-bold md:text-xl">Radius</p>
+            <p className="font-bold text-lg md:text-xl">Radius</p>
           </Tabs.Tab>
           <Tabs.Tab id="typography">
-            <p className="text-lg font-bold md:text-xl">Typography</p>
+            <p className="font-bold text-lg md:text-xl">Typography</p>
           </Tabs.Tab>
           <Tabs.Tab id="spacing">
-            <p className="text-lg font-bold md:text-xl">Spacing</p>
+            <p className="font-bold text-lg md:text-xl">Spacing</p>
           </Tabs.Tab>
           <Tabs.Tab id="components">
-            <p className="text-lg font-bold md:text-xl">Components</p>
+            <p className="font-bold text-lg md:text-xl">Components</p>
           </Tabs.Tab>
         </Tabs.List>
         <Tabs.Panel id="color">

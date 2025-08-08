@@ -1,5 +1,5 @@
-import { Description } from './description';
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
+import { Description } from './description';
 
 const meta: Meta<typeof Description> = {
   title: 'app/contrast-checker/description',

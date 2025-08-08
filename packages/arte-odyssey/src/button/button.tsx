@@ -1,5 +1,5 @@
 import { cn } from '@k8o/helpers/cn';
-import { FC, HTMLProps, ReactNode } from 'react';
+import type { FC, HTMLProps, ReactNode } from 'react';
 
 export const Button: FC<
   {
@@ -27,31 +27,29 @@ export const Button: FC<
 }) => {
   return (
     <button
-      ref={ref}
-      type={type}
       className={cn(
         'cursor-pointer rounded-lg text-center font-bold',
         {
-          ['bg-primary-bg text-fg hover:bg-primary-bg/90 active:bg-primary-bg/80']:
+          'bg-primary-bg text-fg hover:bg-primary-bg/90 active:bg-primary-bg/80':
             variant === 'contained' && color === 'primary',
-          ['bg-bg-subtle text-fg-base hover:bg-bg-mute active:bg-bg-emphasize']:
+          'bg-bg-subtle text-fg-base hover:bg-bg-mute active:bg-bg-emphasize':
             variant === 'contained' && color === 'gray',
-          ['hover:bg-primary-bg active:bg-primary-bg cursor-not-allowed opacity-35']:
+          'cursor-not-allowed opacity-35 hover:bg-primary-bg active:bg-primary-bg':
             disabled && variant === 'contained',
-          ['border-primary-border bg-bg-base text-primary-fg hover:bg-bg-subtle active:bg-bg-emphasize border-2']:
+          'border-2 border-primary-border bg-bg-base text-primary-fg hover:bg-bg-subtle active:bg-bg-emphasize':
             variant === 'outlined' && color === 'primary',
-          ['border-border-base bg-bg-base text-fg-base hover:bg-bg-subtle active:bg-bg-emphasize border-2']:
+          'border-2 border-border-base bg-bg-base text-fg-base hover:bg-bg-subtle active:bg-bg-emphasize':
             variant === 'outlined' && color === 'gray',
-          ['bg-bg-base hover:bg-bg-base active:bg-bg-base cursor-not-allowed opacity-35']:
+          'cursor-not-allowed bg-bg-base opacity-35 hover:bg-bg-base active:bg-bg-base':
             disabled && variant === 'outlined',
-          ['text-fg-mute hover:text-fg-base active:text-fg-base bg-transparent']:
+          'bg-transparent text-fg-mute hover:text-fg-base active:text-fg-base':
             variant === 'skeleton',
-          ['text-fg-mute hover:text-fg-mute active:text-fg-mute cursor-not-allowed bg-transparent opacity-35']:
+          'cursor-not-allowed bg-transparent text-fg-mute opacity-35 hover:text-fg-mute active:text-fg-mute':
             disabled && variant === 'skeleton',
         },
-        'focus-visible:ring-border-info focus-visible:border-transparent focus-visible:ring-2 focus-visible:outline-hidden',
+        'focus-visible:border-transparent focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-border-info',
         size === 'sm' && 'px-3 py-1 text-sm',
-        size === 'md' && 'text-md px-4 py-2',
+        size === 'md' && 'px-4 py-2 text-md',
         size === 'lg' && 'px-6 py-3 text-lg',
         fullWidth && 'w-full',
         Boolean(startIcon ?? endIcon) && 'flex items-center gap-2',
@@ -63,6 +61,8 @@ export const Button: FC<
       )}
       disabled={disabled}
       onClick={onClick}
+      ref={ref}
+      type={type}
       {...rest}
     >
       {startIcon}

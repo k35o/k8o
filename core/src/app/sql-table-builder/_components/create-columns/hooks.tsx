@@ -1,7 +1,7 @@
-import { Column } from '../../_types/column';
-import { Restriction } from '../../_types/restriction';
 import { uuidV4 } from '@k8o/helpers/uuid-v4';
 import { useCallback } from 'react';
+import type { Column } from '../../_types/column';
+import type { Restriction } from '../../_types/restriction';
 
 export const useCreateColumns = (
   columns: Record<string, Column>,
@@ -49,32 +49,30 @@ export const useCreateColumns = (
       }
       setRestrictions((restrictions) => {
         return Object.fromEntries<Restriction>(
-          Object.entries(restrictions).map(
-            ([restrictionId, restriction]) => {
-              if (restriction.type === 'foreign') {
-                const firstColumn = Object.keys(columns)[0] ?? '';
-                return [
-                  restrictionId,
-                  {
-                    ...restriction,
-                    column:
-                      restriction.column === id
-                        ? firstColumn
-                        : restriction.column,
-                  },
-                ];
-              }
+          Object.entries(restrictions).map(([restrictionId, restriction]) => {
+            if (restriction.type === 'foreign') {
+              const firstColumn = Object.keys(columns)[0] ?? '';
               return [
                 restrictionId,
                 {
                   ...restriction,
-                  columns: restriction.columns.filter(
-                    (columnId) => columnId !== id,
-                  ),
+                  column:
+                    restriction.column === id
+                      ? firstColumn
+                      : restriction.column,
                 },
               ];
-            },
-          ),
+            }
+            return [
+              restrictionId,
+              {
+                ...restriction,
+                columns: restriction.columns.filter(
+                  (columnId) => columnId !== id,
+                ),
+              },
+            ];
+          }),
         );
       });
       setColumns(

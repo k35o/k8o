@@ -1,6 +1,6 @@
-import { Complete } from '.';
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 import { fn } from 'storybook/test';
+import { Complete } from '.';
 
 const meta: Meta<typeof Complete> = {
   title: 'app/quizzes/complete',

@@ -1,18 +1,17 @@
+import { inArray } from 'drizzle-orm';
+import { type NextRequest, NextResponse } from 'next/server';
 import { getBlogContent } from '#api/blog';
 import { db } from '#database/db';
 import { comments } from '@/database/schema/comments';
 import WeeklyNotification, {
-  Notification,
+  type Notification,
 } from '@/emails/weekly-notification';
 import { resend } from '@/services/email';
-import { inArray } from 'drizzle-orm';
-import { NextRequest, NextResponse } from 'next/server';
 
 export async function GET(req: NextRequest) {
   if (
     !process.env.CRON_SECRET ||
-    req.headers.get('Authorization') !==
-      `Bearer ${process.env.CRON_SECRET}`
+    req.headers.get('Authorization') !== `Bearer ${process.env.CRON_SECRET}`
   ) {
     return NextResponse.json({ ok: false }, { status: 401 });
   }
@@ -32,7 +31,6 @@ export async function GET(req: NextRequest) {
 
   const notifications = await Promise.all(
     unsentComments.map(async (comment) => {
-      // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
       const blog = comment.blogComment
         ? await getBlogContent(comment.blogComment.blog.slug)
         : null;
@@ -42,7 +40,6 @@ export async function GET(req: NextRequest) {
         type: 'comment',
         message: comment.message,
         blog:
-          // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
           comment.blogComment && blog
             ? {
                 title: blog.title,

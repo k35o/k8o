@@ -1,7 +1,7 @@
-import { metadata } from '../layout';
-import { getBlogContents } from '#api/blog';
 import { NextResponse } from 'next/server';
 import RSS from 'rss';
+import { getBlogContents } from '#api/blog';
+import { metadata } from '../layout';
 
 export const dynamic = 'force-static';
 

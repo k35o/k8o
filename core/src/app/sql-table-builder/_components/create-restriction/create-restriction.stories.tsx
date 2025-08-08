@@ -1,9 +1,9 @@
-import { CreateRestriction } from './create-restriction';
-import { Column } from '../../_types/column';
-import { Restriction } from '../../_types/restriction';
 import { uuidV4 } from '@k8o/helpers/uuid-v4';
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 import { useState } from 'react';
+import type { Column } from '../../_types/column';
+import type { Restriction } from '../../_types/restriction';
+import { CreateRestriction } from './create-restriction';
 
 const meta: Meta<typeof CreateRestriction> = {
   title: 'app/sql-table-builder/create-restriction',
@@ -13,11 +13,7 @@ const meta: Meta<typeof CreateRestriction> = {
 export default meta;
 type Story = StoryObj<typeof CreateRestriction>;
 
-const uuids: [string, string, string] = [
-  uuidV4(),
-  uuidV4(),
-  uuidV4(),
-];
+const uuids: [string, string, string] = [uuidV4(), uuidV4(), uuidV4()];
 
 export const Primary: Story = {
   render: () => {
@@ -50,8 +46,8 @@ export const Primary: Story = {
       <CreateRestriction
         columns={columns}
         restriction={restriction}
-        setRestriction={setRestriction}
         restrictionError={undefined}
+        setRestriction={setRestriction}
       />
     );
   },
@@ -88,8 +84,8 @@ export const Unique: Story = {
       <CreateRestriction
         columns={columns}
         restriction={restriction}
-        setRestriction={setRestriction}
         restrictionError={undefined}
+        setRestriction={setRestriction}
       />
     );
   },
@@ -130,8 +126,8 @@ export const Foreign: Story = {
       <CreateRestriction
         columns={columns}
         restriction={restriction}
-        setRestriction={setRestriction}
         restrictionError={undefined}
+        setRestriction={setRestriction}
       />
     );
   },

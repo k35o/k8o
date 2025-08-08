@@ -1,5 +1,5 @@
-import { blogs } from './blogs';
 import { index, integer, pgTable } from 'drizzle-orm/pg-core';
+import { blogs } from './blogs';
 
 export const blogViews = pgTable(
   'blog_views',

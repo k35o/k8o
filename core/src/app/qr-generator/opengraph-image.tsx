@@ -14,64 +14,62 @@ export default function OpenGraphImage() {
   const words = loadDefaultJapaneseParser().parse(title);
 
   return new ImageResponse(
-    (
+    <div
+      style={{
+        alignItems: 'center',
+        display: 'flex',
+        backgroundColor: '#5eead4',
+        backgroundImage: 'linear-gradient(62deg, #5eead4 0%, #67e8f9 100%)',
+        justifyContent: 'center',
+        width: '100%',
+        height: '100%',
+      }}
+    >
       <div
         style={{
-          alignItems: 'center',
+          background: 'white',
+          width: 1136,
+          height: 566,
           display: 'flex',
-          backgroundColor: '#5eead4',
-          backgroundImage:
-            'linear-gradient(62deg, #5eead4 0%, #67e8f9 100%)',
-          justifyContent: 'center',
-          width: '100%',
-          height: '100%',
+          flexDirection: 'column',
+          justifyContent: 'space-around',
+          borderRadius: 36,
         }}
       >
         <div
           style={{
-            background: 'white',
-            width: 1136,
-            height: 566,
             display: 'flex',
-            flexDirection: 'column',
-            justifyContent: 'space-around',
-            borderRadius: 36,
+            justifyContent: 'center',
+            flexWrap: 'wrap',
+            alignItems: 'center',
+            margin: 64,
+            color: 'black',
+            fontSize: 60,
+            fontWeight: 'bold',
           }}
         >
-          <div
-            style={{
-              display: 'flex',
-              justifyContent: 'center',
-              flexWrap: 'wrap',
-              alignItems: 'center',
-              margin: 64,
-              color: 'black',
-              fontSize: 60,
-              fontWeight: 'bold',
-            }}
-          >
-            {words.map((word) => (
-              <span style={{ display: 'block' }} key={word}>
-                {word}
-              </span>
-            ))}
-          </div>
-          <img
-            src="https://k8o.me/icon.png"
-            width={128}
-            height={128}
-            alt="アイコン"
-            style={{
-              borderRadius: 9999,
-              objectFit: 'cover',
-              margin: 64,
-              marginTop: 0,
-              alignSelf: 'flex-end',
-            }}
-          />
+          {words.map((word) => (
+            <span key={word} style={{ display: 'block' }}>
+              {word}
+            </span>
+          ))}
         </div>
+        {/** biome-ignore lint/performance/noImgElement: ogのため */}
+        <img
+          alt="アイコン"
+          height={128}
+          src="https://k8o.me/icon.png"
+          style={{
+            borderRadius: 9999,
+            objectFit: 'cover',
+            margin: 64,
+            marginTop: 0,
+            alignSelf: 'flex-end',
+          }}
+          width={128}
+        />
       </div>
-    ),
+    </div>,
     {
       ...size,
     },

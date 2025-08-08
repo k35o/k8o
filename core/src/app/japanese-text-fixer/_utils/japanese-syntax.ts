@@ -1,7 +1,6 @@
 'use server';
 
-const JAPANESE_SYNTAX_CHECK_API =
-  'https://japanese-syntax-checker.k8o.me/api';
+const JAPANESE_SYNTAX_CHECK_API = 'https://japanese-syntax-checker.k8o.me/api';
 
 type Request = {
   text: string;

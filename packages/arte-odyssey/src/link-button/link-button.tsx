@@ -1,6 +1,6 @@
 import { cn } from '@k8o/helpers/cn';
 import { isInternalRoute } from '@k8o/helpers/is-internal-route';
-import { FC, ReactNode } from 'react';
+import type { FC, ReactNode } from 'react';
 
 export const LinkButton: FC<{
   variant?: 'contained' | 'outlined' | 'skeleton';
@@ -12,7 +12,7 @@ export const LinkButton: FC<{
   openInNewTab?: boolean;
   children: string;
   renderAnchor?: (props: {
-    ['aria-label']?: string;
+    'aria-label'?: string;
     href: string;
     className: string;
     target?: string;
@@ -28,24 +28,19 @@ export const LinkButton: FC<{
   endIcon,
   active = false,
   openInNewTab = false,
-  renderAnchor = ({ children, ...props }) => (
-    <a {...props}>{children}</a>
-  ),
+  renderAnchor = ({ children, ...props }) => <a {...props}>{children}</a>,
 }) => {
-  const type =
-    isInternalRoute(href) && !openInNewTab ? 'internal' : 'external';
+  const type = isInternalRoute(href) && !openInNewTab ? 'internal' : 'external';
   const props =
-    type === 'internal'
-      ? {}
-      : { target: '_blank', rel: 'noopener noreferrer' };
+    type === 'internal' ? {} : { target: '_blank', rel: 'noopener noreferrer' };
   const className = cn(
     'rounded-lg text-center font-bold',
     {
-      ['bg-primary-bg text-fg hover:bg-primary-bg/90 active:bg-primary-bg/80']:
+      'bg-primary-bg text-fg hover:bg-primary-bg/90 active:bg-primary-bg/80':
         variant === 'contained',
-      ['border-primary-border bg-bg-base text-primary-fg hover:bg-bg-subtle active:bg-bg-emphasize border-2']:
+      'border-primary-border bg-bg-base text-primary-fg hover:bg-bg-subtle active:bg-bg-emphasize border-2':
         variant === 'outlined',
-      ['bg-transparent text-fg-mute hover:text-fg-base active:text-fg-base']:
+      'bg-transparent text-fg-mute hover:text-fg-base active:text-fg-base':
         variant === 'skeleton',
     },
     'focus-visible:border-transparent focus-visible:ring-border-info focus-visible:ring-2 focus-visible:outline-hidden',

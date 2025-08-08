@@ -1,23 +1,20 @@
 'use client';
 
-import { useItemId, useOpen } from './context';
 import { cn } from '@k8o/helpers/cn';
-import { FC, PropsWithChildren } from 'react';
+import type { FC, PropsWithChildren } from 'react';
+import { useItemId, useOpen } from './context';
 
-export const AccordionPanel: FC<PropsWithChildren> = ({
-  children,
-}) => {
+export const AccordionPanel: FC<PropsWithChildren> = ({ children }) => {
   const id = useItemId();
   const open = useOpen();
   return (
-    <div
-      id={`${id}-panel`}
-      role="region"
+    <section
       aria-labelledby={`${id}-button`}
-      hidden={!open}
       className={cn({ hidden: !open }, 'p-2')}
+      hidden={!open}
+      id={`${id}-panel`}
     >
       {children}
-    </div>
+    </section>
   );
 };

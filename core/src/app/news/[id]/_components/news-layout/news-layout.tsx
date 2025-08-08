@@ -1,11 +1,8 @@
 import { Heading } from '@k8o/arte-odyssey/heading';
-import {
-  PublishDateIcon,
-  UpdateDateIcon,
-} from '@k8o/arte-odyssey/icons';
+import { PublishDateIcon, UpdateDateIcon } from '@k8o/arte-odyssey/icons';
 import { Separator } from '@k8o/arte-odyssey/separator';
 import { formatDate } from '@k8o/helpers/date';
-import { FC, PropsWithChildren } from 'react';
+import type { FC, PropsWithChildren } from 'react';
 
 type Props = PropsWithChildren<{
   title: string;
@@ -20,10 +17,10 @@ export const NewsLayout: FC<Props> = ({
   children,
 }) => {
   return (
-    <article className="bg-bg-base/90 h-full rounded-md px-10 pt-8 pb-14">
+    <article className="h-full rounded-md bg-bg-base/90 px-10 pt-8 pb-14">
       <div className="flex flex-col gap-3">
         <Heading type="h3">{title}</Heading>
-        <div className="text-fg-mute flex flex-row items-center justify-end gap-2 text-sm">
+        <div className="flex flex-row items-center justify-end gap-2 text-fg-mute text-sm">
           <div className="flex flex-wrap items-center justify-end gap-1">
             <div className="flex items-center gap-1">
               <PublishDateIcon size="sm" />

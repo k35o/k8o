@@ -1,5 +1,5 @@
 import { cn } from '@k8o/helpers/cn';
-import { FC, PropsWithChildren } from 'react';
+import type { FC, PropsWithChildren } from 'react';
 
 type Props = PropsWithChildren<{
   id?: string;
@@ -7,19 +7,14 @@ type Props = PropsWithChildren<{
   lineClamp?: number;
 }>;
 
-export const Heading: FC<Props> = ({
-  children,
-  id,
-  type,
-  lineClamp,
-}) => {
+export const Heading: FC<Props> = ({ children, id, type, lineClamp }) => {
   if (type === 'h1') {
     return (
       <h1
-        id={id}
-        className={cn('text-2xl font-bold md:text-3xl', {
+        className={cn('font-bold text-2xl md:text-3xl', {
           [`line-clamp-${lineClamp?.toString() ?? ''}`]: lineClamp,
         })}
+        id={id}
       >
         {children}
       </h1>
@@ -28,10 +23,10 @@ export const Heading: FC<Props> = ({
   if (type === 'h2') {
     return (
       <h2
-        id={id}
-        className={cn('text-xl font-bold md:text-2xl', {
+        className={cn('font-bold text-xl md:text-2xl', {
           [`line-clamp-${lineClamp?.toString() ?? ''}`]: lineClamp,
         })}
+        id={id}
       >
         {children}
       </h2>
@@ -40,10 +35,10 @@ export const Heading: FC<Props> = ({
   if (type === 'h3') {
     return (
       <h3
-        id={id}
-        className={cn('text-lg font-bold md:text-xl', {
+        className={cn('font-bold text-lg md:text-xl', {
           [`line-clamp-${lineClamp?.toString() ?? ''}`]: lineClamp,
         })}
+        id={id}
       >
         {children}
       </h3>
@@ -52,10 +47,10 @@ export const Heading: FC<Props> = ({
   if (type === 'h4') {
     return (
       <h4
-        id={id}
-        className={cn('text-md font-bold md:text-lg', {
+        className={cn('font-bold text-md md:text-lg', {
           [`line-clamp-${lineClamp?.toString() ?? ''}`]: lineClamp,
         })}
+        id={id}
       >
         {children}
       </h4>
@@ -64,10 +59,10 @@ export const Heading: FC<Props> = ({
   if (type === 'h5') {
     return (
       <h5
-        id={id}
-        className={cn('md:text-md text-sm font-bold', {
+        className={cn('font-bold text-sm md:text-md', {
           [`line-clamp-${lineClamp?.toString() ?? ''}`]: lineClamp,
         })}
+        id={id}
       >
         {children}
       </h5>
@@ -75,10 +70,10 @@ export const Heading: FC<Props> = ({
   }
   return (
     <h6
-      id={id}
-      className={cn('text-xs font-bold md:text-sm', {
+      className={cn('font-bold text-xs md:text-sm', {
         [`line-clamp-${lineClamp?.toString() ?? ''}`]: lineClamp,
       })}
+      id={id}
     >
       {children}
     </h6>

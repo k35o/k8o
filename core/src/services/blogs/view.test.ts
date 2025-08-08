@@ -1,8 +1,8 @@
-import { getBlogView, incrementBlogView } from './view';
+import { eq } from 'drizzle-orm';
 import { db } from '#database/db';
 import { blogViews } from '@/database/schema/blog-views';
 import { increment } from '@/database/utils';
-import { eq } from 'drizzle-orm';
+import { getBlogView, incrementBlogView } from './view';
 
 vi.mock('#database/db');
 vi.mock('@/database/utils');
@@ -18,9 +18,7 @@ describe('view service', () => {
       const mockViewData = { views: 123 };
       const mockFindFirst = vi.fn().mockResolvedValue(mockViewData);
 
-      vi.mocked(db.query.blogViews.findFirst).mockImplementation(
-        mockFindFirst,
-      );
+      vi.mocked(db.query.blogViews.findFirst).mockImplementation(mockFindFirst);
 
       const result = await getBlogView(1);
 
@@ -31,9 +29,7 @@ describe('view service', () => {
     it('閲覧数データが存在しない場合は0を返す', async () => {
       const mockFindFirst = vi.fn().mockResolvedValue(null);
 
-      vi.mocked(db.query.blogViews.findFirst).mockImplementation(
-        mockFindFirst,
-      );
+      vi.mocked(db.query.blogViews.findFirst).mockImplementation(mockFindFirst);
 
       const result = await getBlogView(1);
 
@@ -44,9 +40,7 @@ describe('view service', () => {
       const mockViewData = { views: undefined };
       const mockFindFirst = vi.fn().mockResolvedValue(mockViewData);
 
-      vi.mocked(db.query.blogViews.findFirst).mockImplementation(
-        mockFindFirst,
-      );
+      vi.mocked(db.query.blogViews.findFirst).mockImplementation(mockFindFirst);
 
       const result = await getBlogView(1);
 
@@ -56,9 +50,7 @@ describe('view service', () => {
 
   describe('incrementBlogView', () => {
     it('ブログの閲覧数をインクリメントできる', async () => {
-      const mockIncrement = vi
-        .fn()
-        .mockReturnValue('INCREMENTED_VALUE');
+      const mockIncrement = vi.fn().mockReturnValue('INCREMENTED_VALUE');
       const mockUpdate = vi.fn().mockReturnValue({
         set: vi.fn().mockReturnValue({
           where: vi.fn().mockResolvedValue(true),
@@ -79,9 +71,7 @@ describe('view service', () => {
     });
 
     it('異なるブログIDでも正しく動作する', async () => {
-      const mockIncrement = vi
-        .fn()
-        .mockReturnValue('INCREMENTED_VALUE');
+      const mockIncrement = vi.fn().mockReturnValue('INCREMENTED_VALUE');
       const mockUpdate = vi.fn().mockReturnValue({
         set: vi.fn().mockReturnValue({
           where: vi.fn().mockResolvedValue(true),

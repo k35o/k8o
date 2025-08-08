@@ -16,11 +16,10 @@ export function findAllColors(
     funcName: string,
   ): { color: string; start: number; end: number }[] {
     const funcPattern = new RegExp(`${funcName}\\s*\\(`, 'gi');
-    const matches: { color: string; start: number; end: number }[] =
-      [];
-    let match;
+    const matches: { color: string; start: number; end: number }[] = [];
+    let match = funcPattern.exec(text);
 
-    while ((match = funcPattern.exec(text)) !== null) {
+    while (match !== null) {
       const startIndex = match.index + match[0].length - 1; // 開き括弧の位置
       let depth = 0;
       let endIndex = -1;
@@ -46,6 +45,7 @@ export function findAllColors(
           end: endIndex + 1,
         });
       }
+      match = funcPattern.exec(text);
     }
 
     return matches;
@@ -59,15 +59,16 @@ export function findAllColors(
   }
 
   // HEX色を見つける
-  const hexPattern =
-    /#([0-9a-fA-F]{3}|[0-9a-fA-F]{6})(?=\s|;|,|$|\)|]|})/g;
-  let hexMatch;
-  while ((hexMatch = hexPattern.exec(text)) !== null) {
+  const hexPattern = /#([0-9a-fA-F]{3}|[0-9a-fA-F]{6})(?=\s|;|,|$|\)|]|})/g;
+  let hexMatch = hexPattern.exec(text);
+  while (hexMatch !== null) {
     results.push({
       color: hexMatch[0],
       start: hexMatch.index,
       end: hexMatch.index + hexMatch[0].length,
     });
+
+    hexMatch = hexPattern.exec(text);
   }
 
   // 名前付き色を見つける
@@ -100,23 +101,16 @@ export function findAllColors(
   const lowerText = text.toLowerCase();
   for (const color of namedColors) {
     let startIndex = 0;
-    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition -- We need this check for the loop
-    while (true) {
-      const index = lowerText.indexOf(color, startIndex);
-      if (index === -1) break;
-
+    let index = lowerText.indexOf(color, startIndex);
+    while (index !== -1) {
       // 完全な単語かどうかをチェック
-      const beforeChar =
-        index > 0 ? (lowerText[index - 1] ?? ' ') : ' ';
+      const beforeChar = index > 0 ? (lowerText[index - 1] ?? ' ') : ' ';
       const afterChar =
         index + color.length < lowerText.length
           ? (lowerText[index + color.length] ?? ' ')
           : ' ';
 
-      if (
-        /\s|;|,|:/.test(beforeChar) &&
-        /\s|;|,|$|\)|]|}/.test(afterChar)
-      ) {
+      if (/\s|;|,|:/.test(beforeChar) && /\s|;|,|$|\)|]|}/.test(afterChar)) {
         results.push({
           color,
           start: index,
@@ -125,6 +119,7 @@ export function findAllColors(
       }
 
       startIndex = index + 1;
+      index = lowerText.indexOf(color, startIndex);
     }
   }
 
@@ -139,11 +134,9 @@ export function findAllColors(
   for (const result of results) {
     const hasOverlap = filteredResults.some(
       (existing) =>
-        (result.start >= existing.start &&
-          result.start < existing.end) ||
+        (result.start >= existing.start && result.start < existing.end) ||
         (result.end > existing.start && result.end <= existing.end) ||
-        (result.start <= existing.start &&
-          result.end >= existing.end),
+        (result.start <= existing.start && result.end >= existing.end),
     );
 
     if (!hasOverlap) {
@@ -168,16 +161,12 @@ if (import.meta.vitest) {
 
       it('HEX色を見つける', () => {
         const result = findAllColors('#ff0080');
-        expect(result).toEqual([
-          { color: '#ff0080', start: 0, end: 7 },
-        ]);
+        expect(result).toEqual([{ color: '#ff0080', start: 0, end: 7 }]);
       });
 
       it('名前付き色を見つける', () => {
         const result = findAllColors('background-color: red;');
-        expect(result).toEqual([
-          { color: 'red', start: 18, end: 21 },
-        ]);
+        expect(result).toEqual([{ color: 'red', start: 18, end: 21 }]);
       });
     });
 
@@ -216,17 +205,13 @@ if (import.meta.vitest) {
 
       it('重複する領域では最初の色のみを保持する', () => {
         const result = findAllColors('background-color: red');
-        expect(result).toEqual([
-          { color: 'red', start: 18, end: 21 },
-        ]);
+        expect(result).toEqual([{ color: 'red', start: 18, end: 21 }]);
       });
     });
 
     describe('複雑なCSS関数の場合', () => {
       it('calc式を含むHSL色を見つける', () => {
-        const result = findAllColors(
-          'hsl(calc(var(--hue) + 50), 70%, 50%)',
-        );
+        const result = findAllColors('hsl(calc(var(--hue) + 50), 70%, 50%)');
         expect(result).toEqual([
           {
             color: 'hsl(calc(var(--hue) + 50), 70%, 50%)',
@@ -257,18 +242,14 @@ if (import.meta.vitest) {
       });
 
       it('色でないテキストでは空の配列を返す', () => {
-        const result = findAllColors(
-          'font-size: 16px; margin: 10px;',
-        );
+        const result = findAllColors('font-size: 16px; margin: 10px;');
         expect(result).toEqual([]);
       });
     });
 
     describe('エッジケース', () => {
       it('同じ色が複数回出現する場合', () => {
-        const result = findAllColors(
-          'color: red; border-color: red;',
-        );
+        const result = findAllColors('color: red; border-color: red;');
         expect(result).toEqual([
           { color: 'red', start: 7, end: 10 },
           { color: 'red', start: 26, end: 29 },

@@ -1,5 +1,5 @@
-import { TagsLink } from './tags-link';
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
+import { TagsLink } from './tags-link';
 
 const meta: Meta<typeof TagsLink> = {
   title: 'app/globals/global-layout/tags-link',

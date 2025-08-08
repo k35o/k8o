@@ -1,13 +1,13 @@
-import { FC } from 'react';
+import type { FC } from 'react';
 
 export const SpellingGrammarErrorDemo: FC = () => {
   return (
     <div>
       <p
         contentEditable="plaintext-only"
-        suppressContentEditableWarning
-        spellCheck="true"
         lang="en"
+        spellCheck="true"
+        suppressContentEditableWarning
       >
         Check a speling error and an grammar error.
       </p>

@@ -1,8 +1,7 @@
 import { getBlogContent } from '#api/blog';
 import { OgImage } from '@/app/_components/og-image';
 
-export const alt =
-  'Intl.DurationFormatで期間をlocaleに基づいて表現する';
+export const alt = 'Intl.DurationFormatで期間をlocaleに基づいて表現する';
 export const size = {
   width: 1200,
   height: 630,

@@ -1,20 +1,20 @@
 'use client';
 
-import { SuspenseList } from '#libs/react';
 import { Checkbox } from '@k8o/arte-odyssey/form/checkbox';
 import { FormControl } from '@k8o/arte-odyssey/form/form-control';
 import { Select } from '@k8o/arte-odyssey/form/select';
 import { cn } from '@k8o/helpers/cn';
 import { sleep } from '@k8o/helpers/sleep';
 import {
-  FC,
-  useState,
+  type FC,
   Suspense,
-  SuspenseListProps,
+  type SuspenseListProps,
+  type SuspenseListTailMode,
   use,
   useCallback,
-  SuspenseListTailMode,
+  useState,
 } from 'react';
+import { SuspenseList } from '#libs/react';
 
 type Data = {
   cacheKey: 'key1' | 'key2' | 'key3' | 'key4';
@@ -37,55 +37,48 @@ export const SuspenseListDemo: FC = () => {
   const [useSuspenseList, setUseSuspenseList] = useState(true);
   const [hasFallback, setHasFallback] = useState(true);
   const [revealOrder, setRevealOrder] =
-    useState<Exclude<SuspenseListProps['revealOrder'], undefined>>(
-      'together',
-    );
+    useState<Exclude<SuspenseListProps['revealOrder'], undefined>>('together');
   const [tail, setTail] =
-    useState<Exclude<SuspenseListProps['tail'], undefined>>(
-      'collapsed',
-    );
+    useState<Exclude<SuspenseListProps['tail'], undefined>>('collapsed');
 
-  const hasTail =
-    revealOrder !== 'together' && revealOrder !== 'independent';
+  const hasTail = revealOrder !== 'together' && revealOrder !== 'independent';
 
-  const suspenseListProps = hasTail
-    ? { revealOrder, tail }
-    : { revealOrder };
+  const suspenseListProps = hasTail ? { revealOrder, tail } : { revealOrder };
 
   return (
     <div className="flex flex-col gap-6">
       <div className="flex flex-col gap-4">
         <Checkbox
           label="SuspenseListを利用する"
-          value={useSuspenseList}
           onChange={(e) => {
             resetData();
             setUseSuspenseList(e.target.checked);
           }}
+          value={useSuspenseList}
         />
         <Checkbox
           label="フォルバックUIを表示する"
-          value={hasFallback}
           onChange={(e) => {
             resetData();
             setHasFallback(e.target.checked);
           }}
+          value={hasFallback}
         />
         <FormControl
           label="revealOrder"
           renderInput={({ labelId: _, ...props }) => (
             <Select
               {...props}
+              onChange={(e) => {
+                resetData();
+                setRevealOrder(e.target.value as typeof revealOrder);
+              }}
               options={[
                 { value: 'together', label: 'together' },
                 { value: 'forwards', label: 'forwards' },
                 { value: 'backwards', label: 'backwards' },
               ]}
               value={revealOrder}
-              onChange={(e) => {
-                resetData();
-                setRevealOrder(e.target.value as typeof revealOrder);
-              }}
             />
           )}
         />
@@ -94,20 +87,20 @@ export const SuspenseListDemo: FC = () => {
           renderInput={({ labelId: _, ...props }) => (
             <Select
               {...props}
+              onChange={(e) => {
+                resetData();
+                setTail(e.target.value as typeof tail);
+              }}
               options={[
                 { value: 'collapsed', label: 'collapsed' },
                 { value: 'hidden', label: 'hidden' },
               ]}
               value={tail}
-              onChange={(e) => {
-                resetData();
-                setTail(e.target.value as typeof tail);
-              }}
             />
           )}
         />
       </div>
-      <div className="bg-bg-mute flex items-center justify-center rounded-md p-4">
+      <div className="flex items-center justify-center rounded-md bg-bg-mute p-4">
         <p className="text-fg-mute">
           {useSuspenseList
             ? `<SuspenseList revealOrder="${revealOrder}"${hasTail ? ` tail="${tail}"` : ''}>`
@@ -115,11 +108,11 @@ export const SuspenseListDemo: FC = () => {
         </p>
       </div>
       <DataList
-        key={`SuspenseList-${JSON.stringify(suspenseListProps)}`}
         data={data}
         hasFallback={hasFallback}
-        useSuspenseList={useSuspenseList}
+        key={`SuspenseList-${JSON.stringify(suspenseListProps)}`}
         suspenseListProps={suspenseListProps}
+        useSuspenseList={useSuspenseList}
       />
     </div>
   );
@@ -131,10 +124,7 @@ const DataList: FC<{
   hasFallback: boolean;
   suspenseListProps:
     | {
-        revealOrder:
-          | 'forwards'
-          | 'backwards'
-          | 'unstable_legacy-backwards';
+        revealOrder: 'forwards' | 'backwards' | 'unstable_legacy-backwards';
         tail: SuspenseListTailMode;
       }
     | {
@@ -143,15 +133,13 @@ const DataList: FC<{
       };
 }> = ({ data, useSuspenseList, hasFallback, suspenseListProps }) => {
   const fallback = hasFallback ? (
-    <div className="border-border-mute rounded-md border p-4">
-      Loading...
-    </div>
+    <div className="rounded-md border border-border-mute p-4">Loading...</div>
   ) : null;
   if (useSuspenseList) {
     return (
       <SuspenseList {...suspenseListProps}>
         {data.map(({ cacheKey, getTime }) => (
-          <Suspense key={cacheKey} fallback={fallback}>
+          <Suspense fallback={fallback} key={cacheKey}>
             <Data data={{ cacheKey, getTime }} />
           </Suspense>
         ))}
@@ -175,7 +163,7 @@ const Data: FC<{
   const { cacheKey, getTime } = data;
   const resolvedTime = use(getTime);
   return (
-    <div className="border-border-mute flex items-center gap-2 rounded-md border p-4">
+    <div className="flex items-center gap-2 rounded-md border border-border-mute p-4">
       <span
         className={cn(
           'size-4 rounded-full',

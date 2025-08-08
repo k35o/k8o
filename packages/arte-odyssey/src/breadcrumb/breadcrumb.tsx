@@ -1,6 +1,6 @@
-import { ChevronIcon } from '../icons';
 import { cn } from '@k8o/helpers/cn';
-import { FC, PropsWithChildren } from 'react';
+import type { FC, PropsWithChildren } from 'react';
+import { ChevronIcon } from '../icons';
 
 const List: FC<
   PropsWithChildren<{
@@ -11,9 +11,9 @@ const List: FC<
     <nav aria-label="パンクズリスト">
       <ol
         className={cn(
-          'text-fg-mute flex list-none items-center gap-1 font-bold',
+          'flex list-none items-center gap-1 font-bold text-fg-mute',
           size === 'sm' && 'text-xs',
-          size === 'md' && 'md:text-md text-xs',
+          size === 'md' && 'text-xs md:text-md',
           size === 'lg' && 'text-xl md:text-2xl',
         )}
       >
@@ -30,7 +30,7 @@ const Item: FC<PropsWithChildren> = ({ children }) => {
 const Separator: FC = () => {
   return (
     <li className="text-fg-mute">
-      <ChevronIcon size="sm" direction="right" />
+      <ChevronIcon direction="right" size="sm" />
     </li>
   );
 };
@@ -46,10 +46,7 @@ const _Link: FC<
   return current ? (
     <span className="text-fg-base">{children}</span>
   ) : (
-    <Link
-      href={href}
-      className="text-fg-mute hover:text-fg-base underline"
-    >
+    <Link className="text-fg-mute underline hover:text-fg-base" href={href}>
       {children}
     </Link>
   );

@@ -1,6 +1,6 @@
-import { EditField } from './edit-field';
-import { CheckSyntaxProvider } from '../../_state/text';
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
+import { CheckSyntaxProvider } from '../../_state/text';
+import { EditField } from './edit-field';
 
 const meta: Meta<typeof EditField> = {
   title: 'app/japanese-text-fixer/edit-field',

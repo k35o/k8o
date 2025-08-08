@@ -1,13 +1,8 @@
+import { relations } from 'drizzle-orm';
+import { pgTable, serial, text, uniqueIndex } from 'drizzle-orm/pg-core';
 import { blogTag } from './blog-tag';
 import { serviceTag } from './service-tag';
 import { talkTag } from './talk-tag';
-import { relations } from 'drizzle-orm';
-import {
-  pgTable,
-  serial,
-  text,
-  uniqueIndex,
-} from 'drizzle-orm/pg-core';
 
 export const tags = pgTable(
   'tags',

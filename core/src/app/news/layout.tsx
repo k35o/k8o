@@ -1,6 +1,6 @@
 import { Heading } from '@k8o/arte-odyssey/heading';
 import Link from 'next/link';
-import { ReactNode } from 'react';
+import type { ReactNode } from 'react';
 
 export default function Layout({
   children,
@@ -11,7 +11,7 @@ export default function Layout({
 }) {
   return (
     <div className="flex h-full flex-col gap-6">
-      <Link href="/news" className="hover:underline">
+      <Link className="hover:underline" href="/news">
         <Heading type="h2">お知らせ</Heading>
       </Link>
       {children}

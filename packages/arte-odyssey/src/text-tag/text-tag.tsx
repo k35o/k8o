@@ -12,8 +12,8 @@ export const TextTag = ({
   return (
     <span
       className={cn(
-        'bg-bg-mute inline-block rounded-full font-medium',
-        clickable && 'hover:bg-bg-emphasize cursor-pointer',
+        'inline-block rounded-full bg-bg-mute font-medium',
+        clickable && 'cursor-pointer hover:bg-bg-emphasize',
         size === 'sm' && 'px-2 py-0.5 text-xs',
         size === 'md' && 'px-3 py-1 text-sm',
       )}

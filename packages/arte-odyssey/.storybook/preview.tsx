@@ -2,13 +2,11 @@ import type { Preview } from '@storybook/react-vite';
 import { ComponentProvider } from '../src/providers';
 
 import '../src/styles.css';
-import { FC, memo, useEffect, useState } from 'react';
+import { type FC, memo, useEffect, useState } from 'react';
 
 const ApplayThemeByStorybook: FC<{ theme: 'light' | 'dark' }> = memo(
   ({ theme }) => {
-    const [prevTheme, setPrevTheme] = useState<
-      'light' | 'dark' | null
-    >(null);
+    const [prevTheme, setPrevTheme] = useState<'light' | 'dark' | null>(null);
 
     if (prevTheme !== theme) {
       document.documentElement.classList.remove(

@@ -1,16 +1,16 @@
-import { ToastProvider } from '../toast';
 import { cn } from '@k8o/helpers/cn';
-import { Variants } from 'motion/react';
+import type { Variants } from 'motion/react';
 import * as motion from 'motion/react-client';
 import {
-  FC,
-  PropsWithChildren,
-  RefObject,
+  type FC,
+  type PropsWithChildren,
+  type RefObject,
   useCallback,
   useEffect,
   useRef,
   useState,
 } from 'react';
+import { ToastProvider } from '../toast';
 
 const centerVariants: Variants = {
   open: {
@@ -77,14 +77,7 @@ export const Modal: FC<
     isOpen?: boolean;
     onClose?: () => void;
   }>
-> = ({
-  ref,
-  type = 'center',
-  defaultOpen,
-  isOpen,
-  onClose,
-  children,
-}) => {
+> = ({ ref, type = 'center', defaultOpen, isOpen, onClose, children }) => {
   const dialogRef = useRef<HTMLDialogElement>(null);
   const [dialogOpen, setDialogOpen] = useState(defaultOpen ?? false);
 
@@ -108,14 +101,34 @@ export const Modal: FC<
     } else {
       realRef.current?.close();
     }
-  }, [realDialogOpen]);
+  }, [
+    realDialogOpen,
+    realRef.current?.close,
+    realRef.current?.open,
+    realRef.current?.showModal,
+  ]);
 
   return (
     <motion.dialog
-      ref={realRef}
       animate={realDialogOpen ? 'open' : 'closed'}
-      initial="closed"
+      className={cn(
+        'border-border-mute bg-bg-base shadow-xl backdrop:bg-back-drop',
+        type === 'center' &&
+          'm-auto max-h-lg w-5/6 max-w-2xl rounded-lg dark:border',
+        type === 'bottom' &&
+          'mt-auto w-screen max-w-screen rounded-t-lg dark:border-t',
+        type === 'right' &&
+          'ml-auto min-h-svh w-screen max-w-sm rounded-l-lg dark:border-l',
+      )}
       exit="closed"
+      initial="closed"
+      onClick={(e) => {
+        if (e.target === e.currentTarget) {
+          realRef.current?.close();
+        }
+      }}
+      onClose={realOnClose}
+      ref={realRef}
       variants={
         type === 'center'
           ? centerVariants
@@ -123,21 +136,6 @@ export const Modal: FC<
             ? bottomVariants
             : rightVariants
       }
-      className={cn(
-        'bg-bg-base border-border-mute backdrop:bg-back-drop shadow-xl',
-        type === 'center' &&
-          'max-h-lg m-auto w-5/6 max-w-2xl rounded-lg dark:border',
-        type === 'bottom' &&
-          'mt-auto w-screen max-w-screen rounded-t-lg dark:border-t',
-        type === 'right' &&
-          'ml-auto min-h-svh w-screen max-w-sm rounded-l-lg dark:border-l',
-      )}
-      onClose={realOnClose}
-      onClick={(e) => {
-        if (e.target === e.currentTarget) {
-          realRef.current?.close();
-        }
-      }}
     >
       <ToastProvider portalRef={realRef} position="absolute">
         {children}

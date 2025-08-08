@@ -13,5 +13,5 @@ export async function GET(request: Request) {
   const draft = await draftMode();
   draft.enable();
 
-  redirect('/news?draftKey=' + draftKey);
+  redirect(`/news?draftKey=${draftKey}`);
 }

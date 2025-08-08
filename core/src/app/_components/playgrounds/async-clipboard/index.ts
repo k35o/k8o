@@ -1,8 +1,9 @@
-import { PlaygroundSection } from '../types';
+import type { PlaygroundSection } from '../types';
 import { ClipboardImageDemo } from './clipboard-image-demo';
 import { ClipboardTextDemo } from './clipboard-text-demo';
 
-export { ClipboardImageDemo, ClipboardTextDemo };
+export { ClipboardImageDemo } from './clipboard-image-demo';
+export { ClipboardTextDemo } from './clipboard-text-demo';
 
 export const asyncClipboardSection: PlaygroundSection = {
   id: 'async-clipboard',

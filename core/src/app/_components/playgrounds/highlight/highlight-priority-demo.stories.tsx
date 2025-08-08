@@ -1,6 +1,6 @@
-import { HighlightPriorityDemo } from './highlight-priority-demo';
-import { Playground } from '../playground';
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
+import { Playground } from '../playground';
+import { HighlightPriorityDemo } from './highlight-priority-demo';
 
 const meta: Meta<typeof HighlightPriorityDemo> = {
   title: 'playgrounds/highlight/HighlightPriorityDemo',

@@ -1,12 +1,12 @@
-import { verifyEmail } from '@/services/subscriptions/verify';
 import { redirect } from 'next/navigation';
+import { verifyEmail } from '@/services/subscriptions/verify';
 
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
   const email = searchParams.get('email');
   const token = searchParams.get('token');
 
-  if (!email || !token) {
+  if (!(email && token)) {
     return new Response('Invalid request', { status: 400 });
   }
 

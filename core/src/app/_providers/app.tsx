@@ -1,9 +1,9 @@
 'use client';
 
-import { ColorFilters } from '@/app/_components/color-filters';
 import { ComponentProvider } from '@k8o/arte-odyssey/providers';
 import { ThemeProvider } from 'next-themes';
-import { FC, PropsWithChildren } from 'react';
+import type { FC, PropsWithChildren } from 'react';
+import { ColorFilters } from '@/app/_components/color-filters';
 import '@/libs/zod';
 
 export const AppProvider: FC<PropsWithChildren> = ({ children }) => {

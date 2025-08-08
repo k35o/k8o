@@ -1,6 +1,6 @@
-import { Autocomplete } from './autocomplete';
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { useState } from 'react';
+import { Autocomplete } from './autocomplete';
 
 const meta: Meta<typeof Autocomplete> = {
   title: 'components/form/autocomplete',
@@ -17,9 +17,9 @@ const meta: Meta<typeof Autocomplete> = {
     return (
       <Autocomplete
         {...props}
+        onChange={setValue}
         options={options}
         value={value}
-        onChange={setValue}
       />
     );
   },

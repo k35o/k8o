@@ -1,11 +1,11 @@
-import { Result } from '../type';
+import { compareDate } from '@k8o/helpers/date';
+import { eq } from 'drizzle-orm';
+import { z } from 'zod';
 import { db } from '#database/db';
 import { subscribers } from '@/database/schema/subscribers';
 import VerifyEmail from '@/emails/verify-email';
 import { resend } from '@/services/email';
-import { compareDate } from '@k8o/helpers/date';
-import { eq } from 'drizzle-orm';
-import { z } from 'zod';
+import type { Result } from '../type';
 
 export const sendVerificationEmail = async (
   email: string,
@@ -82,10 +82,7 @@ export const verifyEmail = async (
       tokenExpiresAt: true,
     },
     where: (subscribers, { eq, and }) =>
-      and(
-        eq(subscribers.email, email),
-        eq(subscribers.isVerified, false),
-      ),
+      and(eq(subscribers.email, email), eq(subscribers.isVerified, false)),
   });
   if (!subscriber) {
     return {
@@ -94,7 +91,7 @@ export const verifyEmail = async (
       message: '登録されていないメールアドレスです',
     };
   }
-  if (!subscriber.verificationToken || !subscriber.tokenExpiresAt) {
+  if (!(subscriber.verificationToken && subscriber.tokenExpiresAt)) {
     return {
       success: false,
       message: '不正なトークンです。',

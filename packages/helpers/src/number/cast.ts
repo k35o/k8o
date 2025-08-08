@@ -13,7 +13,7 @@ const sanitize = (value: string): string =>
 
 // 数値を綺麗に変換する
 const parse = (value: string | number): number => {
-  return parseFloat(value.toString().replace(/[^\w.-]+/g, ''));
+  return Number.parseFloat(value.toString().replace(/[^\w.-]+/g, ''));
 };
 
 // 小数点以下の桁数を取得する

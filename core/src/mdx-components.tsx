@@ -4,7 +4,7 @@ import { LinkIcon } from '@k8o/arte-odyssey/icons';
 import { cn } from '@k8o/helpers/cn';
 import type { MDXComponents } from 'mdx/types';
 import Link from 'next/link';
-import { FC, PropsWithChildren } from 'react';
+import type { FC, PropsWithChildren } from 'react';
 
 const LinkHeading: FC<
   PropsWithChildren<{
@@ -17,36 +17,33 @@ const LinkHeading: FC<
 
   return (
     <Comp
-      id={isStringChildren ? children : undefined}
       className={cn(
         'group my-4 font-bold',
         type === 'h2' && 'mb-4 text-xl sm:text-2xl',
         type === 'h3' && 'text-xl sm:text-2xl',
         type === 'h4' && 'text-lg sm:text-xl',
         type === 'h5' && 'text-md sm:text-lg',
-        type === 'h6' && 'sm:text-md text-sm',
+        type === 'h6' && 'text-sm sm:text-md',
       )}
+      id={isStringChildren ? children : undefined}
     >
       {isStringChildren && (
         <a
           className="relative"
-          aria-hidden="true"
-          tabIndex={-1}
           href={`#${encodeURIComponent(children)}`}
+          tabIndex={-1}
         >
           <span
             className={cn(
-              'text-fg-mute absolute top-1 box-content opacity-0 transition-opacity duration-500 sm:group-hover:opacity-100',
-              type === 'h2' && 'top-1.5 -left-7 pr-2',
+              'absolute top-1 box-content text-fg-mute opacity-0 transition-opacity duration-500 sm:group-hover:opacity-100',
+              type === 'h2' && '-left-7 top-1.5 pr-2',
               type === 'h3' && '-left-7 pr-2',
-              type === 'h4' && 'top-2 -left-5 pr-2',
-              type === 'h5' && 'top-1.5 -left-5 pr-2',
+              type === 'h4' && '-left-5 top-2 pr-2',
+              type === 'h5' && '-left-5 top-1.5 pr-2',
               type === 'h6' && '-left-5 pr-2',
             )}
           >
-            <LinkIcon
-              size={['h2', 'h3'].includes(type) ? 'md' : 'sm'}
-            />
+            <LinkIcon size={['h2', 'h3'].includes(type) ? 'md' : 'sm'} />
           </span>
         </a>
       )}
@@ -55,30 +52,17 @@ const LinkHeading: FC<
   );
 };
 
-export function useMDXComponents(
-  components: MDXComponents,
-): MDXComponents {
+export function useMDXComponents(components: MDXComponents): MDXComponents {
   return {
     h1: () => null,
-    h2: ({ children }) => (
-      <LinkHeading type="h3">{children}</LinkHeading>
-    ),
-    h3: ({ children }) => (
-      <LinkHeading type="h4">{children}</LinkHeading>
-    ),
-    h4: ({ children }) => (
-      <LinkHeading type="h5">{children}</LinkHeading>
-    ),
-    h5: ({ children }) => (
-      <LinkHeading type="h6">{children}</LinkHeading>
-    ),
+    h2: ({ children }) => <LinkHeading type="h3">{children}</LinkHeading>,
+    h3: ({ children }) => <LinkHeading type="h4">{children}</LinkHeading>,
+    h4: ({ children }) => <LinkHeading type="h5">{children}</LinkHeading>,
+    h5: ({ children }) => <LinkHeading type="h6">{children}</LinkHeading>,
     a: ({ href, children }: PropsWithChildren<{ href: string }>) => (
       <>
         {href ? (
-          <Anchor
-            href={href}
-            renderAnchor={(props) => <Link {...props} />}
-          >
+          <Anchor href={href} renderAnchor={(props) => <Link {...props} />}>
             {children}
           </Anchor>
         ) : (
@@ -87,16 +71,14 @@ export function useMDXComponents(
       </>
     ),
     p: ({ children }) => (
-      <p className="sm:text-md my-2 text-xs leading-normal">
-        {children}
-      </p>
+      <p className="my-2 text-xs leading-normal sm:text-md">{children}</p>
     ),
     code: ({ children, ...props }) => {
       if (typeof children === 'string') {
         return <Code>{children}</Code>;
       }
       return (
-        <code {...props} className="sm:text-md text-xs">
+        <code {...props} className="text-xs sm:text-md">
           {children}
         </code>
       );
@@ -112,16 +94,12 @@ export function useMDXComponents(
       );
     },
     li: ({ children }) => (
-      <li className="sm:text-md list-inside list-disc text-xs">
-        {children}
-      </li>
+      <li className="list-inside list-disc text-xs sm:text-md">{children}</li>
     ),
-    ul: ({ children }) => (
-      <ul className="sm:text-md text-xs">{children}</ul>
-    ),
+    ul: ({ children }) => <ul className="text-xs sm:text-md">{children}</ul>,
     blockquote: ({ children }) => (
-      <figure className="bg-bg-mute my-4 rounded-lg p-2 pl-3">
-        <blockquote className="border-border-base text-fg-mute border-l-3 pl-2 text-sm">
+      <figure className="my-4 rounded-lg bg-bg-mute p-2 pl-3">
+        <blockquote className="border-border-base border-l-3 pl-2 text-fg-mute text-sm">
           {children}
         </blockquote>
       </figure>

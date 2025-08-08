@@ -1,9 +1,3 @@
-import { Column } from '../../_types/column';
-import {
-  InvalidRestrictions,
-  Restriction,
-} from '../../_types/restriction';
-import { CreateRestriction } from '../create-restriction/create-restriction';
 import {
   Accordion,
   AccordionButton,
@@ -14,14 +8,18 @@ import { Button } from '@k8o/arte-odyssey/button';
 import { IconButton } from '@k8o/arte-odyssey/icon-button';
 import { CloseIcon } from '@k8o/arte-odyssey/icons';
 import { uuidV4 } from '@k8o/helpers/uuid-v4';
-import { FC } from 'react';
+import type { FC } from 'react';
+import type { Column } from '../../_types/column';
+import type {
+  InvalidRestrictions,
+  Restriction,
+} from '../../_types/restriction';
+import { CreateRestriction } from '../create-restriction/create-restriction';
 
 type Props = {
   columns: Record<string, Column>;
   restrictions: Record<string, Restriction>;
-  setRestrictions: (
-    restrictions: Record<string, Restriction>,
-  ) => void;
+  setRestrictions: (restrictions: Record<string, Restriction>) => void;
   restroctionsError: InvalidRestrictions['errors'] | undefined;
 };
 
@@ -35,7 +33,7 @@ export const CreateRestrictions: FC<Props> = ({
   return (
     <fieldset className="p-2">
       <div className="flex items-center justify-between py-2">
-        <legend className="text-lg font-bold">制限</legend>
+        <legend className="font-bold text-lg">制限</legend>
         <Button
           onClick={() => {
             setRestrictions({
@@ -54,9 +52,9 @@ export const CreateRestrictions: FC<Props> = ({
         {restrictionsEntries.map(([id, restriction], idx) => {
           const restrictionError = restroctionsError?.[id];
           return (
-            <AccordionItem key={id} defaultOpen={true}>
+            <AccordionItem defaultOpen={true} key={id}>
               <AccordionButton>
-                <p className="text-lg font-bold">制約{idx + 1}</p>
+                <p className="font-bold text-lg">制約{idx + 1}</p>
               </AccordionButton>
               <AccordionPanel>
                 <div className="relative">
@@ -64,17 +62,16 @@ export const CreateRestrictions: FC<Props> = ({
                     <div className="absolute flex w-full items-center justify-end">
                       <IconButton
                         label="削除"
-                        size="sm"
                         onClick={() => {
                           setRestrictions(
                             Object.fromEntries(
                               restrictionsEntries.filter(
-                                ([restrictionId]) =>
-                                  restrictionId !== id,
+                                ([restrictionId]) => restrictionId !== id,
                               ),
                             ),
                           );
                         }}
+                        size="sm"
                       >
                         <CloseIcon />
                       </IconButton>
@@ -83,6 +80,7 @@ export const CreateRestrictions: FC<Props> = ({
                   <CreateRestriction
                     columns={columns}
                     restriction={restriction}
+                    restrictionError={restrictionError}
                     setRestriction={(value) => {
                       setRestrictions(
                         Object.fromEntries(
@@ -97,7 +95,6 @@ export const CreateRestrictions: FC<Props> = ({
                         ),
                       );
                     }}
-                    restrictionError={restrictionError}
                   />
                 </div>
               </AccordionPanel>

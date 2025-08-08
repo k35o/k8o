@@ -1,5 +1,4 @@
-export const isInternalRoute = (href: string) =>
-  !href.startsWith('http');
+export const isInternalRoute = (href: string) => !href.startsWith('http');
 
 if (import.meta.vitest) {
   it('httpから始まるhrefはexternalなものとして判定する', () => {

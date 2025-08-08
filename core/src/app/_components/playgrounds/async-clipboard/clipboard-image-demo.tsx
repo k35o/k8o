@@ -1,14 +1,14 @@
 'use client';
 
-import arteodysseyIcon from '@/app/_images/arteodyssey.png';
-import primaryIcon from '@/app/blog/(articles)/async-clipboard/_images/primary.png';
-import k8oIcon from '@/app/icon.png';
 import { Button } from '@k8o/arte-odyssey/button';
 import { FormControl } from '@k8o/arte-odyssey/form/form-control';
 import { Select } from '@k8o/arte-odyssey/form/select';
 import { useToast } from '@k8o/arte-odyssey/toast';
 import Image from 'next/image';
-import { FC, useRef, useState } from 'react';
+import { type FC, useRef, useState } from 'react';
+import arteodysseyIcon from '@/app/_images/arteodyssey.png';
+import primaryIcon from '@/app/blog/(articles)/async-clipboard/_images/primary.png';
+import k8oIcon from '@/app/icon.png';
 
 const OPTIONS = [
   { value: '1', label: '画像1' },
@@ -19,9 +19,7 @@ export const ClipboardImageDemo: FC = () => {
   const ref = useRef<HTMLImageElement>(null);
   const [src, setSrc] = useState(primaryIcon.src);
   const { onOpen } = useToast();
-  const [selectedSrc, setSelectedSrc] = useState<string>(
-    OPTIONS[0].value,
-  );
+  const [selectedSrc, setSelectedSrc] = useState<string>(OPTIONS[0].value);
 
   const copyText = async () => {
     try {
@@ -45,10 +43,7 @@ export const ClipboardImageDemo: FC = () => {
       await navigator.clipboard.write(data);
       onOpen('success', 'クリップボードにPNG画像をコピーしました');
     } catch {
-      onOpen(
-        'error',
-        'クリップボードにPNG画像をコピーできませんでした',
-      );
+      onOpen('error', 'クリップボードにPNG画像をコピーできませんでした');
     }
   };
 
@@ -74,42 +69,40 @@ export const ClipboardImageDemo: FC = () => {
           renderInput={(props) => (
             <Select
               {...props}
-              value={selectedSrc}
               onChange={(e) => {
                 setSelectedSrc(e.currentTarget.value);
               }}
               options={OPTIONS}
+              value={selectedSrc}
             />
           )}
         />
         <Image
-          className="border-border-base rounded-md border"
+          alt={`コピーする画像${selectedSrc}`}
+          className="rounded-md border border-border-base"
+          height={128}
           ref={ref}
           src={selectedSrc === '1' ? k8oIcon : arteodysseyIcon}
-          alt={`コピーする画像${selectedSrc}`}
-          width={128}
-          height={128}
           unoptimized
+          width={128}
         />
-        <Button onClick={() => void copyText()}>
-          PNG画像をコピーする
-        </Button>
+        <Button onClick={() => void copyText()}>PNG画像をコピーする</Button>
       </div>
       <div className="flex flex-col items-center gap-2">
         <div className="flex w-full flex-col items-center gap-4">
           <div className="flex w-full flex-col gap-2">
             <p className="self-start font-bold">ペーストされた画像</p>
-            <p className="text-fg-mute self-end text-sm">
+            <p className="self-end text-fg-mute text-sm">
               権限があれば、外部でコピーした画像も貼り付けられます
             </p>
           </div>
           <Image
-            className="border-border-base rounded-md border"
-            src={src}
             alt="ペーストされた画像"
-            width={128}
+            className="rounded-md border border-border-base"
             height={128}
+            src={src}
             unoptimized
+            width={128}
           />
         </div>
         <Button onClick={() => void pasteText()}>

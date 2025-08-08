@@ -1,7 +1,3 @@
-import { blogComment } from './blog-comment';
-import { blogTag } from './blog-tag';
-import { blogViews } from './blog-views';
-import { talks } from './talks';
 import { relations } from 'drizzle-orm';
 import {
   boolean,
@@ -11,6 +7,10 @@ import {
   timestamp,
   uniqueIndex,
 } from 'drizzle-orm/pg-core';
+import { blogComment } from './blog-comment';
+import { blogTag } from './blog-tag';
+import { blogViews } from './blog-views';
+import { talks } from './talks';
 
 export const blogs = pgTable(
   'blogs',

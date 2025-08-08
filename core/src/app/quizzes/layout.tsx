@@ -1,5 +1,5 @@
+import type { PropsWithChildren } from 'react';
 import { QuizBreadcrumb } from './_components/quiz-breadcrumb';
-import { PropsWithChildren } from 'react';
 
 export const metadata = {
   title: 'Quizzes',

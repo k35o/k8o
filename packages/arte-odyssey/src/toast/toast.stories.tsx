@@ -1,7 +1,7 @@
-import { ToastProvider, useToast } from './provider';
-import { Button } from '../button';
-import { Toast } from './toast';
 import type { Meta, StoryObj } from '@storybook/react-vite';
+import { Button } from '../button';
+import { ToastProvider, useToast } from './provider';
+import { Toast } from './toast';
 
 const meta: Meta<typeof ToastProvider> = {
   title: 'components/toast',
@@ -33,21 +33,17 @@ type Story = StoryObj<typeof ToastProvider>;
 export const Primary: Story = {};
 
 export const ToastSuccess: Story = {
-  render: () => (
-    <Toast id="1" status="success" message="成功しました" />
-  ),
+  render: () => <Toast id="1" message="成功しました" status="success" />,
 };
 
 export const ToasInfo: Story = {
-  render: () => <Toast id="1" status="info" message="情報です" />,
+  render: () => <Toast id="1" message="情報です" status="info" />,
 };
 
 export const ToastError: Story = {
-  render: () => (
-    <Toast id="1" status="error" message="失敗しました" />
-  ),
+  render: () => <Toast id="1" message="失敗しました" status="error" />,
 };
 
 export const ToastWarning: Story = {
-  render: () => <Toast id="1" status="warning" message="警告です" />,
+  render: () => <Toast id="1" message="警告です" status="warning" />,
 };

@@ -1,7 +1,7 @@
-import { PlaygroundSection } from '../types';
+import type { PlaygroundSection } from '../types';
 import { DialogRequestCloseDemo } from './dialog-requestclose-demo';
 
-export { DialogRequestCloseDemo };
+export { DialogRequestCloseDemo } from './dialog-requestclose-demo';
 
 export const requestCloseSection: PlaygroundSection = {
   id: 'requestclose',

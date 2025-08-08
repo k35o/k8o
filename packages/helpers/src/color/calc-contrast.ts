@@ -1,39 +1,32 @@
-type RGB = [number, number, number];
+type Rgb = [number, number, number];
+
+const validHexColorRegex = /^#[0-9A-Fa-f]{6}$/;
 
 const isValidHexColor = (hex: string): boolean => {
-  return /^#[0-9A-Fa-f]{6}$/.test(hex);
+  return validHexColorRegex.test(hex);
 };
 
-const convertHexToRgb = (hex: string): RGB => {
+const convertHexToRgb = (hex: string): Rgb => {
   if (!isValidHexColor(hex)) {
     throw new Error(
       `Invalid hex color format: ${hex}. Expected format: #RRGGBB`,
     );
   }
 
-  const r = parseInt(hex.substring(1, 3), 16);
-  const g = parseInt(hex.substring(3, 5), 16);
-  const b = parseInt(hex.substring(5, 7), 16);
+  const r = Number.parseInt(hex.substring(1, 3), 16);
+  const g = Number.parseInt(hex.substring(3, 5), 16);
+  const b = Number.parseInt(hex.substring(5, 7), 16);
   return [r, g, b];
 };
 
-const calcLuminance = (rgbColor: RGB) => {
+const calcLuminance = (rgbColor: Rgb) => {
   const [r8, g8, b8] = rgbColor;
   const rsrgb = r8 / 255;
   const gsrgb = g8 / 255;
   const bsrgb = b8 / 255;
-  const r =
-    rsrgb <= 0.04045
-      ? rsrgb / 12.92
-      : Math.pow((rsrgb + 0.055) / 1.055, 2.4);
-  const g =
-    gsrgb <= 0.04045
-      ? gsrgb / 12.92
-      : Math.pow((gsrgb + 0.055) / 1.055, 2.4);
-  const b =
-    bsrgb <= 0.04045
-      ? bsrgb / 12.92
-      : Math.pow((bsrgb + 0.055) / 1.055, 2.4);
+  const r = rsrgb <= 0.04045 ? rsrgb / 12.92 : ((rsrgb + 0.055) / 1.055) ** 2.4;
+  const g = gsrgb <= 0.04045 ? gsrgb / 12.92 : ((gsrgb + 0.055) / 1.055) ** 2.4;
+  const b = bsrgb <= 0.04045 ? bsrgb / 12.92 : ((bsrgb + 0.055) / 1.055) ** 2.4;
   return 0.2126 * r + 0.7152 * g + 0.0722 * b;
 };
 
@@ -51,8 +44,9 @@ if (import.meta.vitest) {
   describe('calcContrast', () => {
     describe('正常な入力の場合', () => {
       it('白と黒のコントラスト比を正しく計算するべき', () => {
-        expect(calcContrast('#000000', '#ffffff')).toBe(21);
-        expect(calcContrast('#ffffff', '#000000')).toBe(21);
+        const result = 21;
+        expect(calcContrast('#000000', '#ffffff')).toBe(result);
+        expect(calcContrast('#ffffff', '#000000')).toBe(result);
       });
 
       it('同じ色のコントラスト比は1になるべき', () => {
@@ -61,7 +55,8 @@ if (import.meta.vitest) {
       });
 
       it('小文字のhex値でも正しく計算するべき', () => {
-        expect(calcContrast('#000000', '#ffffff')).toBe(21);
+        const result = 21;
+        expect(calcContrast('#000000', '#ffffff')).toBe(result);
         expect(calcContrast('#ff0000', '#00ff00')).toBeGreaterThan(1);
       });
     });
