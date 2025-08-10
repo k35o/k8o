@@ -61,7 +61,7 @@
     "@next/env": "15.4.6",
     "@next/mdx": "15.4.6",
     "@next/third-parties": "15.4.6",
-    "@react-email/components": "0.4.0",
+    "@react-email/components": "0.5.0",
     "@shikijs/rehype": "3.9.2",
     "@vercel/analytics": "1.5.0",
     "@vercel/speed-insights": "1.2.0",
@@ -76,7 +76,7 @@
     "rss": "1.2.2",
     "uqr": "0.1.2",
     "ws": "8.18.3",
-    "zod": "4.0.15"
+    "zod": "4.0.17"
   },
   "devDependencies": {
     "@liam-hq/cli": "0.7.1",
