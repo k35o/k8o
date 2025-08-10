@@ -19,7 +19,7 @@
     "check": "biome check",
     "check:write": "biome check --write --unsafe",
     "test": "vitest",
-    "type-check": "tsgo --noEmit"
+    "type-check": "tsc --noEmit"
   },
   "dependencies": {
     "@floating-ui/react": "0.27.15",
