@@ -97,7 +97,7 @@ importers:
         specifier: 1.12.2
         version: 1.12.2
       node:
-        specifier: runtime:^22.16.0
+        specifier: runtime:^22.18.0
         version: runtime:22.18.0
       playwright:
         specifier: 1.54.2
