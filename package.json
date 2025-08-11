@@ -4,12 +4,12 @@
   "private": true,
   "type": "module",
   "engines": {
-    "node": "22.16.0"
+    "node": "22.18.0"
   },
   "devEngines": {
     "runtime": {
       "name": "node",
-      "version": "^22.16.0",
+      "version": "^22.18.0",
       "onFail": "download"
     }
   },
