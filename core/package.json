@@ -80,7 +80,7 @@
   },
   "devDependencies": {
     "@liam-hq/cli": "0.7.1",
-    "@storybook/nextjs-vite": "9.1.1",
+    "@storybook/nextjs-vite": "9.1.2",
     "@types/mdx": "2.0.13",
     "@types/rss": "0.0.32",
     "@types/ws": "8.18.1",
