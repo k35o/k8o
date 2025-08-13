@@ -9,7 +9,7 @@ import { TextTag } from '@k8o/arte-odyssey/text-tag';
 import { formatDate } from '@k8o/helpers/date';
 import Link from 'next/link';
 import type { FC } from 'react';
-import { ViewTransition } from '#libs/react';
+import { ViewTransition } from '@/libs/react';
 
 type BlogCardProps = {
   slug: string;

@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
 import type { PropsWithChildren } from 'react';
-import { getBlogContent } from '#api/blog';
+import { getBlogContent } from '@/app/blog/_api';
 import { BlogLayout } from '@/app/blog/_components/blog-layout';
 
 const slug = 'color-certification-uc';
