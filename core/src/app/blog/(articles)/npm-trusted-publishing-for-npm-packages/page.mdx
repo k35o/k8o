@@ -1,0 +1,180 @@
+---
+title: OIDCを利用したnpmパッケージの公開が可能になったので、Changeset×GitHub Actionsで試してみる
+description: npmパッケージの公開で利用可能になったOIDC認証を、ChangesetsとGitHub Actionsを組み合わせて実装する方法を紹介します。従来のAccess Tokenによる認証と比べて、定期的な更新作業が不要になり効率的な開発環境を構築できます。設定も簡単なので、npmパッケージを公開する方にはぜひおすすめしたい認証方法です。
+createdAt: 2025-08-14 00:00:00.00000+00
+updatedAt: 2025-08-14 00:00:00.00000+00
+---
+
+import { LinkCard } from '@/app/_components/link-card';
+import { Image } from '@/app/blog/_components/image';
+import initTP from './_images/init-trusted-publisher.png';
+import setTP from './_images/set-trusted-publisher.png';
+
+# OIDCを利用したnpmパッケージの公開が可能になったので、Changeset×GitHub Actionsで試してみる
+
+## はじめに
+npmパッケージを公開するにあたり、GitHub ActionsまたはGitLab CI/CD PipelinesではOIDCを利用した認証が可能になりました。
+
+<LinkCard href="https://github.blog/changelog/2025-07-31-npm-trusted-publishing-with-oidc-is-generally-available/" />
+
+これまで、これらのCI・CDからの公開は、npmで生成したAccess Tokensを用いて行う必要がありました。
+トークンは生成する際に有効期限を設ける必要があり、定期的な更新が面倒でした。
+
+OIDCを利用した公開に切り替えると最初にnpm側の設定を行うだけで、トークンの交換を考えずに開発を行えるようになります。
+
+これを機に、このウェブサイトで利用していたReactのコンポーネントとhooksをnpmパッケージとして公開してみました。
+[@k8o/arte-odyssey](https://www.npmjs.com/package/@k8o/arte-odyssey)という名前で公開していますが、このサイトから剥がしただけで使いやすい状況になっていません。今後使いやすい形にしていく予定です。
+
+そんなパッケージの公開では、[Changesets](https://github.com/changesets/changesets)とGitHub Actionsを利用して行いました。
+この記事ではChangesetsとGitHub Actionsの設定と、設定中に詰まったポイントについて紹介します。GitLabでもOIDCを利用したパッケージの公開ができますが、GitLabについてはこれ以降言及しません。
+
+## Changesets
+詳しい使い方は[公式のREADME.md](https://github.com/changesets/changesets/blob/main/README.md)やこれを紹介するブログ記事に譲りますが、
+`Changesets`はバージョンと変更履歴の管理とパッケージの公開を自動化してくれる便利なツールです。
+
+まずは、`Changesets`を利用できるようにワークスペースの初期設定を行います。
+```sh
+npx @changesets/cli init
+```
+`.changeset`ディレクトリが作成され、`README.md`と`config.json`が生成されます。
+
+```json
+{
+  "$schema": "https://unpkg.com/@changesets/config@3.1.1/schema.json",
+  "changelog": "@changesets/cli/changelog",
+  "commit": false,
+  "fixed": [],
+  "linked": [],
+  "access": "restricted",
+  "baseBranch": "main",
+  "updateInternalDependencies": "patch",
+  "ignore": []
+}
+```
+
+細かい設定の変更はしませんが、GitHub内の変更履歴を更新したいので、`config.json`の`changelog`の部分だけ変更します。
+```json
+{
+  "changelog": [
+    "@changesets/changelog-github",
+    {
+      "repo": "k35o/ArteOdyssey"
+    }
+  ]
+}
+```
+
+これで基本的な準備は完了です。
+
+`npx @changesets/cli`で変更履歴を追加して、`npx @changesets/cli version`で変更履歴の整理とバージョンの更新を行い、`npx @changesets/cli publish`でパッケージを公開します。
+
+`npx @changesets/cli version`を行うと、`npx @changesets/cli`で追加された変更履歴が削除され、`CHANGELOG.md`にバージョンとその変更内容が列挙されます。
+
+OIDCに関連する設定はパッケージごとに行う必要があるため、npmにパッケージのページを作成する目的で、ここで一度パッケージを公開しました。
+
+## GitHub Actions
+
+GitHub Actionsを利用して、`npx @changesets/cli version`と`npx @changesets/cli publish`の自動化を行います。
+
+まずは、GitHub上でChangesetsが作業を行えるように、リポジトリに[ChangesetsのGitHub App](https://github.com/apps/changeset-bot)を導入します。
+
+導入が完了したら、[`changesets/action`](https://github.com/changesets/action)を利用したGitHub Actionを記述します。
+
+```yml
+name: Release
+
+on:
+  push:
+    branches:
+      - main
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+
+permissions:
+  contents: write
+  id-token: write
+  pull-requests: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: 'package.json'
+
+      - name: Install latest npm
+        run: npm install -g npm@latest
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Create release Pull Request or publish to NPM
+        uses: changesets/action@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+```
+このファイルは`.github/workflows`に`release.yml`という名前で作成しました。
+
+このActionは`main`ブランチにpushされたときに、Changesetsが`.changeset`の変更履歴に応じてバージョンアップのPRを作成・更新してくれます。（`npx @changesets/cli version`の役割）
+さらに、そのPRがマージされた時はnpmパッケージへのリリースまでを行なってくれます。（`npx @changesets/cli publish`の役割）
+
+このままではこのActionは失敗します。npmに認証するため方法が提供されていないためです。
+
+これまでは、環境変数としてnpmで生成したAccess Tokensを`NPM_TOKEN`として追加し、`NPM_TOKEN: ${{ secrets.NPM_TOKEN }}`のように設定していました。
+
+OIDCを利用する場合は、`NPM_TOKEN`の設定は不要です。
+
+リリースするパッケージの`Settings`ページを開き、`Trusted Publisher`で`GitHub Actions`を選択します。
+
+<Image src={initTP} alt="Trusted Publisherの選択画面、GitHub ActionsとGitLab CI/CDの選択肢がある" />
+
+`GitHub Actions`を選択すると、`Trusted Publisher`の設定が開始されます。
+
+<Image src={setTP} alt="Trusted Publisherの設定画面、Organization or userにk35o、RepositoryにArteOdyssey、Workflow filenameにrelease.ymlを記述している" />
+
+`Workflow filename`には拡張子を含めたファイル名だけを記述することに注意してください。
+
+これで全ての準備が完了です。GitHub Actionsは滞りなく動くことでしょう。
+
+## 詰まったポイント
+ドキュメントに書いてあることも多いですが、いくつかのポイントを紹介します。
+
+うまく動かない場合は以下の点を確認してください。
+
+### id-token権限の追加
+GitHub Actionsの`permissions`で`id-tokens`に`write`権限を付与する必要があります。
+
+ドキュメントに大きく書いてありますが、OIDCを利用しないケースでは不要なため、つけ忘れが起きました。
+
+### npmのバージョン
+`npm`のバージョンが`11.5.1`以上である必要があります。
+`pnpm`を利用していたので、`npm`のバージョンに無頓着で、GitHub Actions上では10系を用いていたので動きませんでした。
+
+そのため、`npm`のバージョンを最新にする`steps`を追加しました。
+
+```yml
+- name: Install latest npm
+  run: npm install -g npm@latest
+```
+
+`npm`のバージョンを上げるより良い方法がありそうな気がしているので、あればコメントや[Issue](https://github.com/k35o/k8o/issues/new)などで教えていただきたいです。
+
+### package.jsonのrepositoryフィールドの設定
+`package.json`の`repository`フィールドにtypoがあるとリリースが失敗します。
+
+これは、OIDCを利用しなくても失敗するかもしれませんが、念の為記述しました。
+
+## おわりに
+今回OIDCによる認証を導入したことで、より安定した開発環境を構築できました。
+
+OIDCは一度設定してしまえばほぼ永続的に認証が維持されるため、期限切れを気にする必要がありません。
+簡単で安全に設定できるので、今後のパッケージ開発においてはこの認証方式を使用していきたいです。
+
+ただし、リリース用のワークファイル名を変更すると動作しなくなる点は忘れないようにしたいです。
