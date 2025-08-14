@@ -1,10 +1,6 @@
-name: 'Chromatic Arte Odyssey'
+name: 'Chromatic'
 
-on:
-  push:
-    paths:
-      - 'pnpm-lock.yaml'
-      - 'packages/arte-odyssey/**'
+on: push
 
 jobs:
   chromatic-deployment:
@@ -17,10 +13,10 @@ jobs:
           fetch-depth: 0
       - name: Setup pnpm
         uses: ./.github/actions/setup-pnpm
-      - name: Publish Arte Odyssey to Chromatic
+      - name: Publish Core to Chromatic
         uses: chromaui/action@v13
         with:
-          projectToken: ${{ secrets.CHROMATIC_PROJECT_TOKEN_ARTE_ODYSSEY }}
+          projectToken: ${{ secrets.CHROMATIC_PROJECT_TOKEN }}
           onlyChanged: true
           skip: 'renovate/**'
-          workingDir: packages/arte-odyssey
+          workingDir: core
