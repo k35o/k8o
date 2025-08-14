@@ -2,10 +2,10 @@
 
 import { Drawer } from '@k8o/arte-odyssey/drawer';
 import { Checkbox } from '@k8o/arte-odyssey/form/checkbox';
+import { useLocalStorage } from '@k8o/arte-odyssey/hooks/local-storage';
 import { IconButton } from '@k8o/arte-odyssey/icon-button';
 import { SubscribeIcon } from '@k8o/arte-odyssey/icons';
 import { Separator } from '@k8o/arte-odyssey/separator';
-import { useLocalStorage } from '@k8o/hooks/local-storage';
 import { type FC, useState } from 'react';
 import { SubscribeCard } from './subscribe-card.tsx';
 

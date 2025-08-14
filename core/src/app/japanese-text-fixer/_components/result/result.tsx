@@ -2,9 +2,9 @@
 
 import { Button } from '@k8o/arte-odyssey/button';
 import { Heading } from '@k8o/arte-odyssey/heading';
+import { useClipboard } from '@k8o/arte-odyssey/hooks/clipboard';
 import { CopyIcon } from '@k8o/arte-odyssey/icons';
 import { useToast } from '@k8o/arte-odyssey/toast';
-import { useClipboard } from '@k8o/hooks/clipboard';
 import { type FC, useId } from 'react';
 import {
   useConvertIncomplete,
