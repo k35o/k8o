@@ -2,7 +2,7 @@ import { getBlogContent } from '#api/blog';
 import { OgImage } from '@/app/_components/og-image';
 
 export const alt =
-  'GitHub ActionsでOIDCを使ったnpmパッケージの簡単で安全な公開方法';
+  'OIDCを利用したnpmパッケージの公開が可能になったので、Changeset×GitHub Actionsで試してみる';
 export const size = {
   width: 1200,
   height: 630,
