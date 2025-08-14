@@ -27,9 +27,7 @@
     "install-playwright": "playwright install --with-deps"
   },
   "dependencies": {
-    "@k8o/arte-odyssey": "workspace:*",
     "@k8o/helpers": "workspace:*",
-    "@k8o/hooks": "workspace:*",
     "@tailwindcss/postcss": "4.1.11",
     "@upstash/ratelimit": "2.0.6",
     "@upstash/redis": "1.35.3",

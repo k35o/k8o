@@ -1,10 +1,10 @@
 'use client';
 
 import { Anchor } from '@k8o/arte-odyssey/anchor';
+import { useClipboard } from '@k8o/arte-odyssey/hooks/clipboard';
 import { IconButton } from '@k8o/arte-odyssey/icon-button';
 import { CopyIcon, RSSIcon } from '@k8o/arte-odyssey/icons';
 import { useToast } from '@k8o/arte-odyssey/toast';
-import { useClipboard } from '@k8o/hooks/clipboard';
 import type { FC } from 'react';
 
 export const RssPanel: FC = () => {
