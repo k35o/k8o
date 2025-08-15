@@ -80,14 +80,14 @@
     "zod": "4.0.17"
   },
   "devDependencies": {
-    "@liam-hq/cli": "0.7.1",
+    "@liam-hq/cli": "0.7.3",
     "@storybook/nextjs-vite": "9.1.2",
     "@types/mdx": "2.0.13",
     "@types/rss": "0.0.32",
     "@types/ws": "8.18.1",
     "axe-playwright": "2.1.0",
     "drizzle-kit": "0.31.4",
-    "msw": "2.10.4",
+    "msw": "2.10.5",
     "msw-storybook-addon": "2.0.5",
     "postgres": "3.4.7",
     "react-email": "4.2.8",
