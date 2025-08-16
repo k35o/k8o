@@ -26,21 +26,19 @@
       "complexity": {
         "noExcessiveNestedTestSuites": "error",
         "noUselessStringConcat": "error",
-        "useSimplifiedLogicExpression": "error"
+        "useSimplifiedLogicExpression": "error",
+        "useIndexOf": "error"
       },
       "correctness": {
         "noRenderReturnValue": "error",
         "useExhaustiveDependencies": "error",
         "useHookAtTopLevel": "error",
-        "useJsxKeyInIterable": "error"
+        "useJsxKeyInIterable": "error",
+        "useJsonImportAttributes": "error",
+        "noReactPropAssignments": "error",
+        "useUniqueElementIds": "off"
       },
       "nursery": {
-        "noReactPropAssign": "error",
-        "noTsIgnore": "error",
-        "noUnassignedVariables": "error",
-        "noUselessEscapeInString": "error",
-        "noUselessBackrefInRegex": "error",
-        "useConsistentObjectDefinition": "error",
         "useConsistentTypeDefinitions": {
           "level": "error",
           "options": {
@@ -49,14 +47,8 @@
         },
         "useExhaustiveSwitchCases": "error",
         "useImageSize": "error",
-        "useIndexOf": "error",
-        "useIterableCallbackReturn": "error",
-        "useJsonImportAttribute": "error",
-        "useObjectSpread": "error",
         "useReactFunctionComponents": "error",
-        "useReadonlyClassProperties": "error",
-        "useSortedClasses": "error",
-        "useSymbolDescription": "error"
+        "useSortedClasses": "error"
       },
       "performance": {
         "noDelete": "error",
@@ -90,7 +82,11 @@
         "useShorthandAssign": "error",
         "useThrowNewError": "error",
         "useThrowOnlyError": "error",
-        "useTrimStartEnd": "error"
+        "useTrimStartEnd": "error",
+        "useReadonlyClassProperties": "error",
+        "useSymbolDescription": "error",
+        "useObjectSpread": "error",
+        "useConsistentObjectDefinitions": "error"
       },
       "suspicious": {
         "noAlert": "error",
@@ -103,7 +99,10 @@
         "noVar": "error",
         "useAwait": "error",
         "useErrorMessage": "error",
-        "noShadowRestrictedNames": "off"
+        "noShadowRestrictedNames": "off",
+        "noUnassignedVariables": "error",
+        "noUselessEscapeInString": "error",
+        "noTsIgnore": "error"
       }
     }
   },
