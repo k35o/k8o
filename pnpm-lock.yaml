@@ -67,8 +67,8 @@ importers:
   core:
     dependencies:
       '@k8o/arte-odyssey':
-        specifier: 0.0.4
-        version: 0.0.4(@types/react-dom@19.1.7(@types/react@19.1.10))(@types/react@19.1.10)(react-dom@19.1.1(react@19.1.1))(react@19.1.1)(tailwindcss@4.1.12)(typescript@5.9.2)
+        specifier: 0.0.5
+        version: 0.0.5(@types/react-dom@19.1.7(@types/react@19.1.10))(@types/react@19.1.10)(react-dom@19.1.1(react@19.1.1))(react@19.1.1)(tailwindcss@4.1.12)(typescript@5.9.2)
       '@mdx-js/loader':
         specifier: 3.1.0
         version: 3.1.0(acorn@8.15.0)
@@ -1059,15 +1059,15 @@ packages:
   '@jridgewell/trace-mapping@0.3.30':
     resolution: {integrity: sha512-GQ7Nw5G2lTu/BtHTKfXhKHok2WGetd4XYcVKGx00SjAk8GMwgJM3zr6zORiPGuOE+/vkc90KtTosSSvaCjKb2Q==}
 
-  '@k8o/arte-odyssey@0.0.4':
-    resolution: {integrity: sha512-hcuf2Y79b5pIHkUJN2cHY19we5clHhThqtxDYsacWtvUbe4ffDTjIbRZrUro0Ys476C37QnuMqheJOrtCgKWCg==}
+  '@k8o/arte-odyssey@0.0.5':
+    resolution: {integrity: sha512-fl7GWqYXRg+m2oQp7P+BPZjomc0olqJpu+8ntLvE57OYIHv4rRqYUGol1F0ut5Cs3iCxcpvxVFHDRpWTRCfkSQ==}
     peerDependencies:
       '@types/react': '>=19.0.0'
       '@types/react-dom': '>=19.0.0'
-      react: 19.1.1
-      react-dom: 19.1.1
-      tailwindcss: 4.1.12
-      typescript: 5.9.2
+      react: '>=19.0.0'
+      react-dom: '>=19.0.0'
+      tailwindcss: '>=4.0.0'
+      typescript: '>=5.9.0'
 
   '@liam-hq/cli@0.7.3':
     resolution: {integrity: sha512-FbFCHIjGqYjy3/8CWv2i1xxpEwttm/D7Yx5n9ZhPAg0X/CjVzrHZ4mmqm08YNmsu73YzvgMw1cJV0YWsUXi61w==}
@@ -6129,7 +6129,7 @@ snapshots:
       '@jridgewell/resolve-uri': 3.1.2
       '@jridgewell/sourcemap-codec': 1.5.5
 
-  '@k8o/arte-odyssey@0.0.4(@types/react-dom@19.1.7(@types/react@19.1.10))(@types/react@19.1.10)(react-dom@19.1.1(react@19.1.1))(react@19.1.1)(tailwindcss@4.1.12)(typescript@5.9.2)':
+  '@k8o/arte-odyssey@0.0.5(@types/react-dom@19.1.7(@types/react@19.1.10))(@types/react@19.1.10)(react-dom@19.1.1(react@19.1.1))(react@19.1.1)(tailwindcss@4.1.12)(typescript@5.9.2)':
     dependencies:
       '@floating-ui/react': 0.27.15(react-dom@19.1.1(react@19.1.1))(react@19.1.1)
       '@types/react': 19.1.10

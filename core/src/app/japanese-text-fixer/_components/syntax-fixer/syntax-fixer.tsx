@@ -1,11 +1,6 @@
 'use client';
 
-import {
-  Accordion,
-  AccordionButton,
-  AccordionItem,
-  AccordionPanel,
-} from '@k8o/arte-odyssey/accordion';
+import { Accordion } from '@k8o/arte-odyssey/accordion';
 import { Alert } from '@k8o/arte-odyssey/alert';
 import { Button } from '@k8o/arte-odyssey/button';
 import { FormControl } from '@k8o/arte-odyssey/form/form-control';
@@ -99,16 +94,16 @@ const FixText: FC<{ count: number }> = ({ count }) => {
           />
         </section>
         <section aria-labelledby={`all_${id}`} className="w-full">
-          <Accordion>
-            <AccordionItem>
+          <Accordion.Root>
+            <Accordion.Item>
               <Heading type="h4">
-                <AccordionButton>
+                <Accordion.Button>
                   <p className="text-lg" id={`all_${id}`}>
                     原文を確認する
                   </p>
-                </AccordionButton>
+                </Accordion.Button>
               </Heading>
-              <AccordionPanel>
+              <Accordion.Panel>
                 <p className="whitespace-pre-wrap text-wrap break-all">
                   {texts.map((text, idx) => {
                     const separator = idx === texts.length - 1 ? '' : '\n';
@@ -129,9 +124,9 @@ const FixText: FC<{ count: number }> = ({ count }) => {
                     );
                   })}
                 </p>
-              </AccordionPanel>
-            </AccordionItem>
-          </Accordion>
+              </Accordion.Panel>
+            </Accordion.Item>
+          </Accordion.Root>
         </section>
       </div>
     </div>

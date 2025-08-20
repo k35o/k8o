@@ -1,9 +1,4 @@
-import {
-  Accordion,
-  AccordionButton,
-  AccordionItem,
-  AccordionPanel,
-} from '@k8o/arte-odyssey/accordion';
+import { Accordion } from '@k8o/arte-odyssey/accordion';
 import { FormControl } from '@k8o/arte-odyssey/form/form-control';
 import { Radio } from '@k8o/arte-odyssey/form/radio';
 import { Select } from '@k8o/arte-odyssey/form/select';
@@ -41,15 +36,15 @@ export const CreateColumnsByForm: FC<Props> = ({
   columnsError,
 }) => {
   return (
-    <Accordion>
+    <Accordion.Root>
       {columnsEntries.map(([id, column], idx) => {
         const columnError = columnsError?.[id];
         return (
-          <AccordionItem defaultOpen={true} key={id}>
-            <AccordionButton>
+          <Accordion.Item defaultOpen={true} key={id}>
+            <Accordion.Button>
               <p className="font-bold text-lg">カラム{idx + 1}</p>
-            </AccordionButton>
-            <AccordionPanel>
+            </Accordion.Button>
+            <Accordion.Panel>
               <div className="relative">
                 {columnsEntries.length > 1 && (
                   <div className="absolute flex w-full items-center justify-end">
@@ -170,10 +165,10 @@ export const CreateColumnsByForm: FC<Props> = ({
                   />
                 </div>
               </div>
-            </AccordionPanel>
-          </AccordionItem>
+            </Accordion.Panel>
+          </Accordion.Item>
         );
       })}
-    </Accordion>
+    </Accordion.Root>
   );
 };

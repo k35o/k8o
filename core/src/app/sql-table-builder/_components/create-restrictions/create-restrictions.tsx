@@ -1,9 +1,4 @@
-import {
-  Accordion,
-  AccordionButton,
-  AccordionItem,
-  AccordionPanel,
-} from '@k8o/arte-odyssey/accordion';
+import { Accordion } from '@k8o/arte-odyssey/accordion';
 import { Button } from '@k8o/arte-odyssey/button';
 import { IconButton } from '@k8o/arte-odyssey/icon-button';
 import { CloseIcon } from '@k8o/arte-odyssey/icons';
@@ -48,15 +43,15 @@ export const CreateRestrictions: FC<Props> = ({
           制約を追加
         </Button>
       </div>
-      <Accordion>
+      <Accordion.Root>
         {restrictionsEntries.map(([id, restriction], idx) => {
           const restrictionError = restroctionsError?.[id];
           return (
-            <AccordionItem defaultOpen={true} key={id}>
-              <AccordionButton>
+            <Accordion.Item defaultOpen={true} key={id}>
+              <Accordion.Button>
                 <p className="font-bold text-lg">制約{idx + 1}</p>
-              </AccordionButton>
-              <AccordionPanel>
+              </Accordion.Button>
+              <Accordion.Panel>
                 <div className="relative">
                   {restrictionsEntries.length > 0 && (
                     <div className="absolute flex w-full items-center justify-end">
@@ -97,11 +92,11 @@ export const CreateRestrictions: FC<Props> = ({
                     }}
                   />
                 </div>
-              </AccordionPanel>
-            </AccordionItem>
+              </Accordion.Panel>
+            </Accordion.Item>
           );
         })}
-      </Accordion>
+      </Accordion.Root>
     </fieldset>
   );
 };
