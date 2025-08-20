@@ -55,7 +55,7 @@
     "preview:dist": "pnpm dlx http-server dist"
   },
   "dependencies": {
-    "@k8o/arte-odyssey": "0.0.4",
+    "@k8o/arte-odyssey": "0.0.5",
     "@mdx-js/loader": "3.1.0",
     "@mdx-js/react": "3.1.0",
     "@neondatabase/serverless": "1.0.1",

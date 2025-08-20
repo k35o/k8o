@@ -1,11 +1,6 @@
 'use client';
 
-import {
-  Accordion,
-  AccordionButton,
-  AccordionItem,
-  AccordionPanel,
-} from '@k8o/arte-odyssey/accordion';
+import { Accordion } from '@k8o/arte-odyssey/accordion';
 import { Button } from '@k8o/arte-odyssey/button';
 import { useClipboard } from '@k8o/arte-odyssey/hooks/clipboard';
 import { AlertIcon, CopyIcon } from '@k8o/arte-odyssey/icons';
@@ -43,22 +38,22 @@ export const VerifiedSyntax: FC = () => {
         テキストに問題は見つかりませんでした
       </p>
       <div className="w-full">
-        <Accordion>
-          <AccordionItem>
+        <Accordion.Root>
+          <Accordion.Item>
             <h4>
-              <AccordionButton>
+              <Accordion.Button>
                 <p className="text-lg">入力したテキストを確認する</p>
-              </AccordionButton>
+              </Accordion.Button>
             </h4>
-            <AccordionPanel>
+            <Accordion.Panel>
               <div className="p-3">
                 <p className="whitespace-pre-wrap text-wrap break-all">
                   {text}
                 </p>
               </div>
-            </AccordionPanel>
-          </AccordionItem>
-        </Accordion>
+            </Accordion.Panel>
+          </Accordion.Item>
+        </Accordion.Root>
       </div>
     </div>
   );
