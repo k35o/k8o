@@ -10,6 +10,7 @@ import {
 import { LinkButton } from '@k8o/arte-odyssey/link-button';
 import { TextTag } from '@k8o/arte-odyssey/text-tag';
 import { formatDate } from '@k8o/helpers/date';
+import type { Route } from 'next';
 import Link from 'next/link';
 import type { FC } from 'react';
 
@@ -80,7 +81,9 @@ export const TalkCard: FC<{
           </LinkButton>
           <LinkButton
             href={`/blog/${blog.slug}`}
-            renderAnchor={(props) => <Link {...props} />}
+            renderAnchor={(props) => (
+              <Link {...props} href={`/blog/${blog.slug}` as Route} />
+            )}
             size="sm"
             startIcon={<BlogIcon size="sm" />}
           >

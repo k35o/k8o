@@ -1,5 +1,3 @@
-import type { PropsWithChildren } from 'react';
-
 export const metadata = {
   title: 'うおへんクイズ',
   description: 'うおへんを持つ漢字の問題を出します',
@@ -18,6 +16,8 @@ export const metadata = {
   },
 };
 
-export default function Layout({ children }: PropsWithChildren) {
+export default function Layout({
+  children,
+}: LayoutProps<'/quizzes/fish-kanji/list'>) {
   return children;
 }

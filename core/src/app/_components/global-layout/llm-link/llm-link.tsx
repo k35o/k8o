@@ -1,6 +1,5 @@
 import { IconLink } from '@k8o/arte-odyssey/icon-link';
 import { AIIcon } from '@k8o/arte-odyssey/icons';
-import Link from 'next/link';
 import type { FC } from 'react';
 
 export const LlmLink: FC = () => {
@@ -9,7 +8,7 @@ export const LlmLink: FC = () => {
       href="/llms.txt"
       label="LLMS"
       openInNewTab
-      renderAnchor={(props) => <Link {...props} prefetch={false} />}
+      renderAnchor={(props) => <a {...props} />}
     >
       <AIIcon size="lg" />
     </IconLink>

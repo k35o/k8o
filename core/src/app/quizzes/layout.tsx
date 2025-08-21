@@ -1,4 +1,3 @@
-import type { PropsWithChildren } from 'react';
 import { QuizBreadcrumb } from './_components/quiz-breadcrumb';
 
 export const metadata = {
@@ -19,7 +18,7 @@ export const metadata = {
   },
 };
 
-export default function Layout({ children }: PropsWithChildren) {
+export default function Layout({ children }: LayoutProps<'/quizzes'>) {
   return (
     <div className="flex h-full flex-col gap-8">
       <QuizBreadcrumb />

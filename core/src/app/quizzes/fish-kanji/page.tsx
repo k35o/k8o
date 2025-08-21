@@ -3,7 +3,10 @@ import { QUIZ_TYPE } from '@/services/quizzes';
 import { getQuizzes } from '@/services/quizzes/quiz';
 import { Question } from '../_components/question';
 
-const getLimit = (questionCount: string): number => {
+const getLimit = (questionCount: string | string[] | undefined): number => {
+  if (typeof questionCount !== 'string') {
+    return 10;
+  }
   const limit = Number.parseInt(questionCount, 10);
   if (Number.isNaN(limit) || limit < 1) {
     return 10;
@@ -23,9 +26,7 @@ const FishKanjiQuestion: FC<{ limit: number }> = async ({ limit }) => {
 
 export default async function Page({
   searchParams,
-}: {
-  searchParams: Promise<{ questionCount: string }>;
-}) {
+}: PageProps<'/quizzes/fish-kanji'>) {
   const limit = getLimit((await searchParams).questionCount);
 
   return (

@@ -1,5 +1,4 @@
 import { Heading } from '@k8o/arte-odyssey/heading';
-import type { PropsWithChildren } from 'react';
 
 export const metadata = {
   title: 'Talks',
@@ -22,7 +21,7 @@ export const metadata = {
   },
 };
 
-export default function Layout({ children }: PropsWithChildren) {
+export default function Layout({ children }: LayoutProps<'/talks'>) {
   return (
     <div className="flex flex-col gap-6">
       <Heading type="h2">Talks</Heading>

@@ -12,7 +12,7 @@ export const TagsLink: FC = () => {
     <LinkButton
       active={pathname.startsWith('/tags')}
       href="/tags"
-      renderAnchor={(props) => <Link {...props} />}
+      renderAnchor={(props) => <Link {...props} href="/tags" />}
       startIcon={<TagIcon />}
       variant="skeleton"
     >

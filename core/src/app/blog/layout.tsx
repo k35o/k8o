@@ -1,6 +1,5 @@
 import { Heading } from '@k8o/arte-odyssey/heading';
 import Link from 'next/link';
-import type { PropsWithChildren } from 'react';
 import { ExternalBlog } from './_components/external-blog';
 
 export const metadata = {
@@ -23,7 +22,7 @@ export const metadata = {
   },
 };
 
-export default function Layout({ children }: PropsWithChildren) {
+export default function Layout({ children }: LayoutProps<'/blog'>) {
   return (
     <>
       {/* Get the latest one from: https://katex.org/docs/browser */}

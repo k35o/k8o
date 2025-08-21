@@ -1,7 +1,6 @@
 import { Heading } from '@k8o/arte-odyssey/heading';
 import { TagIcon } from '@k8o/arte-odyssey/icons';
 import Link from 'next/link';
-import type { PropsWithChildren } from 'react';
 
 export const metadata = {
   title: 'Tags',
@@ -24,7 +23,7 @@ export const metadata = {
   },
 };
 
-export default function Layout({ children }: PropsWithChildren) {
+export default function Layout({ children }: LayoutProps<'/tags'>) {
   return (
     <div className="flex flex-col gap-6">
       <div className="flex flex-col gap-4">

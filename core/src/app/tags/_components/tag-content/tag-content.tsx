@@ -1,5 +1,6 @@
 import { Heading } from '@k8o/arte-odyssey/heading';
 import { TagIcon } from '@k8o/arte-odyssey/icons';
+import type { Route } from 'next';
 import Link from 'next/link';
 import type { FC } from 'react';
 import { TagCard } from '../tag-card';
@@ -44,7 +45,7 @@ export const TagContent: FC<{
             <div className="grid grid-cols-auto-fill-70 justify-items-center gap-4">
               {services.map((service) => (
                 <TagCard
-                  href={`/${service.slug}`}
+                  href={`/${service.slug}` as Route}
                   key={service.id}
                   label="サービスを利用する"
                   linkLabel={`「${service.title}」のサービスを利用する`}
@@ -62,7 +63,7 @@ export const TagContent: FC<{
             <div className="grid grid-cols-auto-fill-70 justify-items-center gap-4">
               {blogs.map((blog) => (
                 <TagCard
-                  href={`/blog/${blog.slug}`}
+                  href={`/blog/${blog.slug}` as Route}
                   key={blog.id}
                   label="ブログを読む"
                   linkLabel={`「${blog.title}」のブログを読む`}

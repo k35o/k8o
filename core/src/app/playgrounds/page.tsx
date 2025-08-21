@@ -1,6 +1,7 @@
 import { Anchor } from '@k8o/arte-odyssey/anchor';
 import { Card } from '@k8o/arte-odyssey/card';
 import { Heading } from '@k8o/arte-odyssey/heading';
+import type { Route } from 'next';
 import Link from 'next/link';
 import { Playground, playgroundSections } from '@/app/_components/playgrounds';
 
@@ -27,7 +28,12 @@ export default function PlaygroundsPage() {
                 {section.type === 'blog' && (
                   <Anchor
                     href={`/blog/${section.slug}`}
-                    renderAnchor={(props) => <Link {...props} />}
+                    renderAnchor={(props) => (
+                      <Link
+                        {...props}
+                        href={`/blog/${section.slug}` as Route}
+                      />
+                    )}
                   >
                     ブログを読む
                   </Anchor>

@@ -17,14 +17,12 @@ async function getNews(draftKey?: string): Promise<NewsPagination> {
   return res.json() as Promise<NewsPagination>;
 }
 
-export default async function Page({
-  searchParams,
-}: {
-  searchParams: Promise<{ draftKey: string }>;
-}) {
+export default async function Page({ searchParams }: PageProps<'/news'>) {
   const { draftKey } = await searchParams;
   // TODO: Paginationに対応する
-  const { contents } = await getNews(draftKey);
+  const { contents } = await getNews(
+    typeof draftKey === 'string' ? draftKey : undefined,
+  );
 
   return (
     <section className="flex h-full flex-col gap-6">
@@ -32,7 +30,7 @@ export default async function Page({
         return (
           <NewsCard
             createdAt={news.createdAt}
-            draftKey={draftKey}
+            draftKey={typeof draftKey === 'string' ? draftKey : ''}
             id={news.id}
             key={news.id}
             summary={news.summary}
