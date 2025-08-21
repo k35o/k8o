@@ -1,14 +1,7 @@
 import { Heading } from '@k8o/arte-odyssey/heading';
 import Link from 'next/link';
-import type { ReactNode } from 'react';
 
-export default function Layout({
-  children,
-  modal,
-}: {
-  children: ReactNode;
-  modal: ReactNode;
-}) {
+export default function Layout({ children, modal }: LayoutProps<'/news'>) {
   return (
     <div className="flex h-full flex-col gap-6">
       <Link className="hover:underline" href="/news">

@@ -1,5 +1,4 @@
 import type { Metadata } from 'next';
-import type { ReactNode } from 'react';
 
 export const metadata: Metadata = {
   title: 'Playgrounds',
@@ -19,10 +18,8 @@ export const metadata: Metadata = {
   },
 };
 
-type LayoutProps = {
-  children: ReactNode;
-};
-
-export default function PlaygroundsLayout({ children }: LayoutProps) {
+export default function PlaygroundsLayout({
+  children,
+}: LayoutProps<'/playgrounds'>) {
   return children;
 }

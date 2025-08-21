@@ -9,7 +9,6 @@ import { AppProvider } from './_providers/app';
 import { mPlus2, notoSansJp } from './_styles/font';
 import '@/libs/zod';
 import type { Metadata } from 'next';
-import type { ReactNode } from 'react';
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://k8o.me'),
@@ -42,7 +41,7 @@ export const metadata: Metadata = {
   },
 };
 
-export default function RootLayout({ children }: { children: ReactNode }) {
+export default function RootLayout({ children }: LayoutProps<'/'>) {
   return (
     <html lang="ja" suppressHydrationWarning>
       {process.env.NODE_ENV === 'development' && <ReactScan />}

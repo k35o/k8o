@@ -1,8 +1,10 @@
 import { Anchor } from '@k8o/arte-odyssey/anchor';
 import { Code } from '@k8o/arte-odyssey/code';
 import { LinkIcon } from '@k8o/arte-odyssey/icons';
+import { isInternalRoute } from '@k8o/helpers';
 import { cn } from '@k8o/helpers/cn';
 import type { MDXComponents } from 'mdx/types';
+import type { Route } from 'next';
 import Link from 'next/link';
 import type { FC, PropsWithChildren } from 'react';
 
@@ -62,9 +64,18 @@ export function useMDXComponents(components: MDXComponents): MDXComponents {
     a: ({ href, children }: PropsWithChildren<{ href: string }>) => (
       <>
         {href ? (
-          <Anchor href={href} renderAnchor={(props) => <Link {...props} />}>
-            {children}
-          </Anchor>
+          isInternalRoute<Route>(href) ? (
+            <Anchor
+              href={href}
+              renderAnchor={(props) => <Link {...props} href={href} />}
+            >
+              {children}
+            </Anchor>
+          ) : (
+            <Anchor href={href} renderAnchor={(props) => <a {...props} />}>
+              {children}
+            </Anchor>
+          )
         ) : (
           <p>{children}</p>
         )}

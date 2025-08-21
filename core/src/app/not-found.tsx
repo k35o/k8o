@@ -9,7 +9,7 @@ export default function NotFound() {
       <Image alt="404 Not Found" src={notFoundImage} />
       <LinkButton
         href="/"
-        renderAnchor={(props) => <Link {...props} />}
+        renderAnchor={(props) => <Link {...props} href="/" />}
         size="lg"
       >
         トップへ戻る

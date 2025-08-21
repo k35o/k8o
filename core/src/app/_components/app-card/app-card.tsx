@@ -1,5 +1,6 @@
 import { InteractiveCard } from '@k8o/arte-odyssey/card';
 import { Heading } from '@k8o/arte-odyssey/heading';
+import type { Route } from 'next';
 import Link from 'next/link';
 import type { ReactNode } from 'react';
 
@@ -9,7 +10,7 @@ export const AppCard = ({
   title,
   description,
 }: {
-  link: string;
+  link: Route;
   symbol: ReactNode;
   title: string;
   description: string;

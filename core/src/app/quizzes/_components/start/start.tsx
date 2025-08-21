@@ -4,6 +4,7 @@ import { FormControl } from '@k8o/arte-odyssey/form/form-control';
 import { NumberField } from '@k8o/arte-odyssey/form/number-field';
 import { LinkButton } from '@k8o/arte-odyssey/link-button';
 import { ListBox } from '@k8o/arte-odyssey/list-box';
+import type { Route } from 'next';
 import Link from 'next/link';
 import { type FC, useCallback, useState } from 'react';
 import { QUIZ_OPTIONS, type QuizKey } from '@/services/quizzes';
@@ -49,7 +50,14 @@ export const Start: FC = () => {
       </div>
       <LinkButton
         href={`/quizzes/${selectedQuiz}?questionCount=${questionCount.toString()}`}
-        renderAnchor={(props) => <Link {...props} />}
+        renderAnchor={(props) => (
+          <Link
+            {...props}
+            href={
+              `/quizzes/${selectedQuiz}?questionCount=${questionCount.toString()}` as Route
+            }
+          />
+        )}
       >
         スタート
       </LinkButton>

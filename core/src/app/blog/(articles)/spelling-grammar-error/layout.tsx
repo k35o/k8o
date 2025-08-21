@@ -1,5 +1,4 @@
 import type { Metadata } from 'next';
-import type { PropsWithChildren } from 'react';
 import { getBlogContent } from '#api/blog';
 import { BlogLayout } from '@/app/blog/_components/blog-layout';
 
@@ -30,6 +29,8 @@ export async function generateMetadata(): Promise<Metadata> {
   };
 }
 
-export default function Layout({ children }: PropsWithChildren) {
+export default function Layout({
+  children,
+}: LayoutProps<'/blog/spelling-grammar-error'>) {
   return <BlogLayout slug={slug}>{children}</BlogLayout>;
 }

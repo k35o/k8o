@@ -3,6 +3,7 @@ import { Heading } from '@k8o/arte-odyssey/heading';
 import { PublishDateIcon, TagIcon } from '@k8o/arte-odyssey/icons';
 import { TextTag } from '@k8o/arte-odyssey/text-tag';
 import { formatDate } from '@k8o/helpers/date';
+import type { Route } from 'next';
 import Link from 'next/link';
 import type { FC } from 'react';
 import { getBlogsByTags } from '#api/blog';
@@ -19,7 +20,7 @@ export const Recommend: FC<{ slug: string }> = async ({ slug }) => {
       <div className="grid grid-cols-auto-fit-80 gap-4">
         {blogs.map((blog) => (
           <InteractiveCard key={blog.id}>
-            <Link href={`/blog/${blog.slug}`}>
+            <Link href={`/blog/${blog.slug}` as Route}>
               <div className="flex flex-col gap-4 p-4">
                 <Heading type="h4">{blog.title}</Heading>
                 <div className="flex flex-col flex-wrap gap-2">

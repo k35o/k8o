@@ -3,11 +3,9 @@ import { notFound } from 'next/navigation';
 
 export default async function Page({
   searchParams,
-}: {
-  searchParams: Promise<{ status?: string; message?: string }>;
-}) {
+}: PageProps<'/subscriptions'>) {
   const { status, message } = await searchParams;
-  if (status === undefined) {
+  if (status === undefined || typeof status !== 'string') {
     notFound();
   }
   const isSuccess = status === 'true';
@@ -23,7 +21,11 @@ export default async function Page({
         <div className="flex flex-col items-center justify-center gap-4">
           <Heading type="h2">購読に失敗しました</Heading>
           <p>
-            {decodeURIComponent(message ?? '不明なエラーが発生しました。')}
+            {decodeURIComponent(
+              typeof message === 'string'
+                ? message
+                : (message?.[0] ?? '不明なエラーが発生しました。'),
+            )}
             <br />
             お手数ですが、再度ご登録をお願いいたします。
           </p>

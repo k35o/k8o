@@ -1,5 +1,4 @@
 import { Heading } from '@k8o/arte-odyssey/heading';
-import type { PropsWithChildren } from 'react';
 
 export const metadata = {
   title: 'SQLテーブルメーカー',
@@ -16,7 +15,9 @@ export const metadata = {
   },
 };
 
-export default function Layout({ children }: PropsWithChildren) {
+export default function Layout({
+  children,
+}: LayoutProps<'/sql-table-builder'>) {
   return (
     <div className="flex flex-col gap-4">
       <Heading type="h2">SQLテーブルメーカー</Heading>

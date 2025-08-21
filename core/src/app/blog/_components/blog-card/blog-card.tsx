@@ -7,6 +7,7 @@ import {
 } from '@k8o/arte-odyssey/icons';
 import { TextTag } from '@k8o/arte-odyssey/text-tag';
 import { formatDate } from '@k8o/helpers/date';
+import type { Route } from 'next';
 import Link from 'next/link';
 import type { FC } from 'react';
 import { ViewTransition } from '#libs/react';
@@ -30,7 +31,7 @@ export const BlogCard: FC<BlogCardProps> = ({
 }) => {
   return (
     <InteractiveCard>
-      <Link className="block h-full" href={`/blog/${slug}`}>
+      <Link className="block h-full" href={`/blog/${slug}` as Route}>
         <div className="flex h-full flex-col justify-between gap-4 p-4">
           <div className="flex flex-col gap-1">
             <ViewTransition name={`title-${slug}`}>

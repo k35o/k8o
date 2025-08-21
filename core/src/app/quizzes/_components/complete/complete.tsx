@@ -33,7 +33,9 @@ export const Complete: FC<{
       <div className="flex flex-col-reverse justify-around gap-6 md:w-full md:flex-row">
         <LinkButton
           href="/quizzes/fish-kanji/list"
-          renderAnchor={(props) => <Link {...props} />}
+          renderAnchor={(props) => (
+            <Link {...props} href="/quizzes/fish-kanji/list" />
+          )}
           startIcon={<ListIcon />}
           variant="outlined"
         >

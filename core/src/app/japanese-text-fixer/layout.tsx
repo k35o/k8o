@@ -1,5 +1,4 @@
 import { Heading } from '@k8o/arte-odyssey/heading';
-import type { PropsWithChildren } from 'react';
 import { CheckSyntaxProvider } from './_state/text';
 
 export const metadata = {
@@ -23,7 +22,9 @@ export const metadata = {
   },
 };
 
-export default function Layout({ children }: PropsWithChildren) {
+export default function Layout({
+  children,
+}: LayoutProps<'/japanese-text-fixer'>) {
   return (
     <div className="flex h-full flex-col gap-4">
       <Heading type="h2">日本語校正くん</Heading>

@@ -39,13 +39,13 @@ async function getNews(id: string, draftKey?: string): Promise<News> {
 export default async function Page({
   params,
   searchParams,
-}: {
-  params: Promise<{ id: string }>;
-  searchParams: Promise<{ draftKey: string }>;
-}) {
+}: PageProps<'/news/[id]'>) {
   const { id } = await params;
   const { draftKey } = await searchParams;
-  const news = await getNews(id, draftKey);
+  const news = await getNews(
+    id,
+    typeof draftKey === 'string' ? draftKey : undefined,
+  );
 
   return (
     <NewsLayout {...news}>

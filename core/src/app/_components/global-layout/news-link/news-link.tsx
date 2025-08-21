@@ -12,7 +12,7 @@ export const NewsLink: FC = () => {
     <LinkButton
       active={pathname.startsWith('/news')}
       href="/news"
-      renderAnchor={(props) => <Link {...props} />}
+      renderAnchor={(props) => <Link {...props} href="/news" />}
       startIcon={<NewsIcon />}
       variant="skeleton"
     >

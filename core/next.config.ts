@@ -18,6 +18,7 @@ const nextConfig: NextConfig = {
       exclude: ['error', 'warn'],
     },
   },
+  typedRoutes: true,
   experimental: {
     viewTransition: true,
   },
