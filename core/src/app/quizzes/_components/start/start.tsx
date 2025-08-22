@@ -49,15 +49,10 @@ export const Start: FC = () => {
         />
       </div>
       <LinkButton
-        href={`/quizzes/${selectedQuiz}?questionCount=${questionCount.toString()}`}
-        renderAnchor={(props) => (
-          <Link
-            {...props}
-            href={
-              `/quizzes/${selectedQuiz}?questionCount=${questionCount.toString()}` as Route
-            }
-          />
-        )}
+        href={
+          `/quizzes/${selectedQuiz}?questionCount=${questionCount.toString()}` as Route
+        }
+        renderAnchor={(props) => <Link {...props} />}
       >
         スタート
       </LinkButton>

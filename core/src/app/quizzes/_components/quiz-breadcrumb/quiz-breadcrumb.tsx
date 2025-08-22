@@ -14,7 +14,7 @@ export const QuizBreadcrumb: FC = () => {
       <Breadcrumb.Item>
         <h2>
           <Breadcrumb.Link
-            component={Link as FC<{ href: string; className: string }>}
+            component={Link}
             current={pathname === '/quizzes'}
             href="/quizzes"
           >
@@ -30,7 +30,7 @@ export const QuizBreadcrumb: FC = () => {
               {pathname.endsWith('/quizzes/fish-kanji') ? (
                 <>
                   <Breadcrumb.Link
-                    component={Link as FC<{ href: string; className: string }>}
+                    component={Link}
                     current
                     href="/quizzes/fish-kanji"
                   >
@@ -40,9 +40,7 @@ export const QuizBreadcrumb: FC = () => {
                     (
                     <Anchor
                       href="/quizzes/fish-kanji/list"
-                      renderAnchor={(props) => (
-                        <Link {...props} href="/quizzes/fish-kanji/list" />
-                      )}
+                      renderAnchor={(props) => <Link {...props} />}
                     >
                       問題一覧
                     </Anchor>
@@ -50,10 +48,7 @@ export const QuizBreadcrumb: FC = () => {
                   </div>
                 </>
               ) : (
-                <Breadcrumb.Link
-                  component={Link as FC<{ href: string; className: string }>}
-                  href="/quizzes/fish-kanji"
-                >
+                <Breadcrumb.Link component={Link} href="/quizzes/fish-kanji">
                   うおへんクイズ
                 </Breadcrumb.Link>
               )}
@@ -66,7 +61,7 @@ export const QuizBreadcrumb: FC = () => {
           <Breadcrumb.Separator />
           <Breadcrumb.Item>
             <Breadcrumb.Link
-              component={Link as FC<{ href: string; className: string }>}
+              component={Link}
               current
               href="/quizzes/fish-kanji/list"
             >
