@@ -67,8 +67,8 @@ importers:
   core:
     dependencies:
       '@k8o/arte-odyssey':
-        specifier: 0.0.5
-        version: 0.0.5(@types/react-dom@19.1.7(@types/react@19.1.10))(@types/react@19.1.10)(react-dom@19.1.1(react@19.1.1))(react@19.1.1)(tailwindcss@4.1.12)(typescript@5.9.2)
+        specifier: 0.0.6
+        version: 0.0.6(@types/react-dom@19.1.7(@types/react@19.1.10))(@types/react@19.1.10)(react-dom@19.1.1(react@19.1.1))(react@19.1.1)(tailwindcss@4.1.12)(typescript@5.9.2)
       '@mdx-js/loader':
         specifier: 3.1.0
         version: 3.1.0(acorn@8.15.0)
@@ -1059,8 +1059,8 @@ packages:
   '@jridgewell/trace-mapping@0.3.30':
     resolution: {integrity: sha512-GQ7Nw5G2lTu/BtHTKfXhKHok2WGetd4XYcVKGx00SjAk8GMwgJM3zr6zORiPGuOE+/vkc90KtTosSSvaCjKb2Q==}
 
-  '@k8o/arte-odyssey@0.0.5':
-    resolution: {integrity: sha512-fl7GWqYXRg+m2oQp7P+BPZjomc0olqJpu+8ntLvE57OYIHv4rRqYUGol1F0ut5Cs3iCxcpvxVFHDRpWTRCfkSQ==}
+  '@k8o/arte-odyssey@0.0.6':
+    resolution: {integrity: sha512-jguwG3G24VwNkXjIoDaW0Qe+XL0bp5+AxZtIIK4WcmNazu0AGVZKZCHbrrkabV28GYKJolT8tAruqH7VLNBdXg==}
     peerDependencies:
       '@types/react': '>=19.0.0'
       '@types/react-dom': '>=19.0.0'
@@ -6129,7 +6129,7 @@ snapshots:
       '@jridgewell/resolve-uri': 3.1.2
       '@jridgewell/sourcemap-codec': 1.5.5
 
-  '@k8o/arte-odyssey@0.0.5(@types/react-dom@19.1.7(@types/react@19.1.10))(@types/react@19.1.10)(react-dom@19.1.1(react@19.1.1))(react@19.1.1)(tailwindcss@4.1.12)(typescript@5.9.2)':
+  '@k8o/arte-odyssey@0.0.6(@types/react-dom@19.1.7(@types/react@19.1.10))(@types/react@19.1.10)(react-dom@19.1.1(react@19.1.1))(react@19.1.1)(tailwindcss@4.1.12)(typescript@5.9.2)':
     dependencies:
       '@floating-ui/react': 0.27.15(react-dom@19.1.1(react@19.1.1))(react@19.1.1)
       '@types/react': 19.1.10
@@ -6157,7 +6157,7 @@ snapshots:
       commander: 13.1.0
       glob: 11.0.3
       ink: 6.0.1(@types/react@19.1.10)(react@19.1.0)
-      ink-gradient: 3.0.0(ink@6.0.1(@types/react@19.1.10)(react@19.1.0))
+      ink-gradient: 3.0.0(ink@6.0.1(@types/react@19.1.10)(react@19.1.1))
       inquirer: 12.6.3(@types/node@22.17.2)
       react: 19.1.0
       react-dom: 19.1.0(react@19.1.0)
@@ -8585,7 +8585,7 @@ snapshots:
 
   indent-string@5.0.0: {}
 
-  ink-gradient@3.0.0(ink@6.0.1(@types/react@19.1.10)(react@19.1.0)):
+  ink-gradient@3.0.0(ink@6.0.1(@types/react@19.1.10)(react@19.1.1)):
     dependencies:
       '@types/gradient-string': 1.1.6
       gradient-string: 2.0.2

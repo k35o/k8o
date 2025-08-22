@@ -80,10 +80,8 @@ export const TalkCard: FC<{
             スライドを見る
           </LinkButton>
           <LinkButton
-            href={`/blog/${blog.slug}`}
-            renderAnchor={(props) => (
-              <Link {...props} href={`/blog/${blog.slug}` as Route} />
-            )}
+            href={`/blog/${blog.slug}` as Route}
+            renderAnchor={(props) => <Link {...props} />}
             size="sm"
             startIcon={<BlogIcon size="sm" />}
           >

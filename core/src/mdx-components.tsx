@@ -72,9 +72,7 @@ export function useMDXComponents(components: MDXComponents): MDXComponents {
               {children}
             </Anchor>
           ) : (
-            <Anchor href={href} renderAnchor={(props) => <a {...props} />}>
-              {children}
-            </Anchor>
+            <Anchor href={href}>{children}</Anchor>
           )
         ) : (
           <p>{children}</p>

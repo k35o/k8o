@@ -27,13 +27,8 @@ export default function PlaygroundsPage() {
                 <p className="mb-3 text-fg-mute">{section.description}</p>
                 {section.type === 'blog' && (
                   <Anchor
-                    href={`/blog/${section.slug}`}
-                    renderAnchor={(props) => (
-                      <Link
-                        {...props}
-                        href={`/blog/${section.slug}` as Route}
-                      />
-                    )}
+                    href={`/blog/${section.slug}` as Route}
+                    renderAnchor={(props) => <Link {...props} />}
                   >
                     ブログを読む
                   </Anchor>
