@@ -13,7 +13,7 @@ export function GetComposedRanges() {
   >(null);
 
   useEffect(() => {
-    if (ref.current) {
+    if (ref.current && !shadow.current) {
       const innerHTML1 = ref.current.innerHTML;
       const shadowRoot1 = ref.current.attachShadow({ mode: 'closed' });
       shadowRoot1.innerHTML = innerHTML1;
