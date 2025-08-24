@@ -1,0 +1,88 @@
+---
+title: SelectionでShadow DOMを跨いだ選択範囲を取得するgetComposedRanges
+description:
+createdAt: 2025-08-24 00:00:00.000000+09
+updatedAt: 2025-08-24 00:00:00.000000+09
+---
+
+import { BaselineStatus } from '@k8o/arte-odyssey/baseline-status';
+import { SelectionProperties as Example1, SelectionMethods as Example2, GetComposedRanges as Example3 } from '@/app/_components/playgrounds/composed-ranges';
+import { Playground } from '@/app/_components/playgrounds';
+
+# SelectionでShadow DOMを跨いだ選択範囲を取得するgetComposedRanges
+
+<BaselineStatus featureId="composed-ranges" />
+
+## はじめに
+`Selection`オブジェクトの`getComposedRanges`メソッドがBaseline 2025入りを果たしました。このメソッドは、Shadow DOMを含む文書全体での選択範囲を取得できるようにします。
+
+この記事では、`Selection`オブジェクトとその`getComposedRanges`メソッドについてサンプルを交えて解説します。
+
+## Selection
+`Selection`はユーザーが選択したテキストの範囲やキャレットの位置を扱うオブジェクトです。
+
+`window.getSelection()`を使用して、現在の選択範囲を取得できます。
+
+```ts
+const selection = window.getSelection();
+
+// 選択範囲の文字列を取得
+const text = selection.toString();
+```
+
+<Playground title="Selectionオブジェクトのプロパティの紹介">
+  <Example1 />
+</Playground>
+
+上記の例では、`Selection`オブジェクトが持つ選択中の文字列の表示と、いくつかのプロパティを紹介しています。
+
+この他にも、`Selection`オブジェクトは選択中の範囲の個数を返す`rangeCount`プロパティや、テキストが選択されているかどうかを表す`isCollapsed`プロパティなどを持ちます。
+
+テキストの選択範囲やキャレットの変更は、`selectionchange`イベントによって検知することができます。
+```ts
+document.addEventListener('selectionchange', () => {
+  const selection = window.getSelection();
+  ...
+});
+```
+`document`に対して登録しているので、上の例はこのページ内のどこを選択しても動作します。
+
+続いて、`Selection`オブジェクトが持つメソッドの紹介です。
+
+<Playground title="Selectionオブジェクトのメソッドの紹介">
+  <Example2 />
+</Playground>
+
+`addRange`は`Range`オブジェクトを引数に取り、選択範囲に対象を追加します。
+Firefox以外のブラウザでは複数の選択をサポートしていないです。`addRange`を実行する前に、`rangeCount`プロパティを確認して`1`以上の場合は選択範囲をクリアする必要があるので注意してください。
+
+`extend`は選択範囲から指定したノードの先頭までを選択範囲に拡張します。先頭以外の位置を指定したい場合は、オフセットを第2引数に渡します。
+
+メソッドについても、プロパティと同様に、ここで紹介したもの以外に多数存在します。
+しかし、この章の目的は`Selection`オブジェクトの概要と基本的な機能を理解するところなので、説明はここまでとします。
+
+## getComposedRanges
+
+`getComposedRanges()`はShadow DOM境界を跨いだ選択範囲の処理を可能にするメソッドです。
+
+```ts
+const ranges = getComposedRanges({ shadowRoots: [shadowRoot1, shadowRoot2] });
+```
+
+戻り値は`StaticRange`オブジェクトの配列です。`StaticRange`は`Range`と似ていますが、重要な違いがあります。`Range`はDOMの変更に動的に追従するのに対し、`StaticRange`は作成時点のDOM状態を固定的に保持します。
+
+オプションには`ShadowRoot`オブジェクトの配列を渡します。選択範囲に渡した`ShadowRoot`内の要素が含まれている場合、その要素も選択範囲に含めて返します。
+選択範囲にオプションにない`ShadowRoot`がある場合は、`ShadowRoot`全体が返されます。
+
+<Playground title="getComposedRangesメソッドの紹介">
+  <Example3 />
+</Playground>
+
+これまで使われていた`getRangeAt`メソッドと、`getComposedRanges`メソッドを使った時の比較、および`getComposedRanges`メソッドの引数に`ShadowRoot`を渡した場合と渡さなかった場合の違いを確認できます。
+
+背景色があるテキストの部分にShadow DOMツリーを追加しました
+
+背景色があるテキスト部分を全て含めて選択した場合や、背景色があるテキストを一部含めた場合を試してください。
+`getComposedRanges`メソッドにオプションを渡した場合は`startContainer`と`endContainer`にShadow DOMが渡りますが、それ以外は実際の選択範囲と検出された要素に違いがあることが確認できます（ブラウザによって動きが違うので例外があるかも）。
+
+このように、適切なオプションを付与した`getComposedRanges`メソッドを用いることで、Shadow DOM境界を跨いだ選択が行われたとしても、他の要素と同じようにShadow DOM内の要素を正しく扱えるようになります。

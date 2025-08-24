@@ -12,6 +12,7 @@ export type { PlaygroundDemo, PlaygroundSection } from './types';
 
 import { absSignSection } from './abs-sign';
 import { asyncClipboardSection } from './async-clipboard';
+import { composedRangesSection } from './composed-ranges';
 import { highlightSection } from './highlight';
 import { popoverSection } from './popover';
 import { printColorAdjustSection } from './print-color-adjust';
@@ -23,6 +24,7 @@ import type { PlaygroundSection } from './types';
 
 export const playgroundSections: PlaygroundSection[] = [
   asyncClipboardSection,
+  composedRangesSection,
   popoverSection,
   requestCloseSection,
   printColorAdjustSection,
