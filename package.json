@@ -37,7 +37,7 @@
     "@biomejs/biome": "2.2.2",
     "@ls-lint/ls-lint": "2.3.1",
     "@types/node": "22.18.0",
-    "@typescript/native-preview": "7.0.0-dev.20250816.1",
+    "@typescript/native-preview": "7.0.0-dev.20250825.1",
     "@vitest/browser": "3.2.4",
     "@vitest/coverage-istanbul": "3.2.4",
     "@vitest/ui": "3.2.4",
