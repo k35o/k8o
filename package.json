@@ -34,15 +34,15 @@
     "server-only": "0.0.1"
   },
   "devDependencies": {
-    "@biomejs/biome": "2.2.0",
+    "@biomejs/biome": "2.2.2",
     "@ls-lint/ls-lint": "2.3.1",
-    "@types/node": "22.17.2",
+    "@types/node": "22.18.0",
     "@typescript/native-preview": "7.0.0-dev.20250816.1",
     "@vitest/browser": "3.2.4",
     "@vitest/coverage-istanbul": "3.2.4",
     "@vitest/ui": "3.2.4",
     "lefthook": "1.12.3",
-    "playwright": "1.54.2",
+    "playwright": "1.55.0",
     "turbo": "2.5.6",
     "typescript": "5.9.2",
     "vitest": "3.2.4"
