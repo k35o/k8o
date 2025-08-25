@@ -2,7 +2,7 @@ import { getBlogContent } from '#api/blog';
 import { OgImage } from '@/app/_components/og-image';
 
 export const alt =
-  'SelectionでShadow DOMを跨いだ選択範囲を取得するgetComposedRanges';
+  'Shadow DOM境界を跨いだ選択範囲の処理を可能にするgetComposedRanges';
 export const size = {
   width: 1200,
   height: 630,

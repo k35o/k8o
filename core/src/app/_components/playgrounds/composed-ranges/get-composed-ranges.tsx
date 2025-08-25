@@ -5,7 +5,7 @@ import { Code } from '@k8o/arte-odyssey/code';
 import { useEffect, useRef, useState } from 'react';
 
 export function GetComposedRanges() {
-  const ref = useRef<HTMLSpanElement>(null);
+  const ref = useRef<HTMLParagraphElement>(null);
   const shadow = useRef<ShadowRoot | null>(null);
 
   const [ranges, setRanges] = useState<
@@ -27,12 +27,12 @@ export function GetComposedRanges() {
         <p className="font-bold">
           サンプルテキスト
           <span className="text-fg-mute text-sm">
-            （背景色を持った要素がShadow DOM）
+            （テキスト全体が閉じたShadow Tree）
           </span>
         </p>
-        <p>
+        <p ref={ref}>
           あさ、眼をさますときの気持は、面白い。
-          <span className="bg-bg-info" ref={ref}>
+          <span style={{ backgroundColor: '#dbeafe', color: '#18181b' }}>
             かくれんぼのとき
             、押入れの真っ暗い中に、じっと、しゃがんで隠れていて、突然、でこちゃんに、がらっと襖をあけられ、日の光がどっと来て、でこちゃんに、「見つけた！」と大声で言われて
           </span>
@@ -130,6 +130,9 @@ export function GetComposedRanges() {
       >
         選択範囲のテキストを取得する
       </Button>
+      <p className="text-fg-mute text-sm">
+        SafariやIOSのChrome等ではoptionsを含んだgetComposedRangesメソッドが正しく動作しない場合があります。
+      </p>
     </div>
   );
 }

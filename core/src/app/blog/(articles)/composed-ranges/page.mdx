@@ -1,15 +1,15 @@
 ---
-title: SelectionでShadow DOMを跨いだ選択範囲を取得するgetComposedRanges
+title: Shadow DOM境界を跨いだ選択範囲の処理を可能にするgetComposedRanges
 description:
-createdAt: 2025-08-24 00:00:00.000000+09
-updatedAt: 2025-08-24 00:00:00.000000+09
+createdAt: 2025-08-25 00:00:00.000000+09
+updatedAt: 2025-08-25 00:00:00.000000+09
 ---
 
 import { BaselineStatus } from '@k8o/arte-odyssey/baseline-status';
 import { SelectionProperties as Example1, SelectionMethods as Example2, GetComposedRanges as Example3 } from '@/app/_components/playgrounds/composed-ranges';
 import { Playground } from '@/app/_components/playgrounds';
 
-# SelectionでShadow DOMを跨いだ選択範囲を取得するgetComposedRanges
+# Shadow DOM境界を跨いだ選択範囲の処理を可能にするgetComposedRanges
 
 <BaselineStatus featureId="composed-ranges" />
 
@@ -71,8 +71,8 @@ const ranges = getComposedRanges({ shadowRoots: [shadowRoot1, shadowRoot2] });
 
 戻り値は`StaticRange`オブジェクトの配列です。`StaticRange`は`Range`と似ていますが、重要な違いがあります。`Range`はDOMの変更に動的に追従するのに対し、`StaticRange`は作成時点のDOM状態を固定的に保持します。
 
-オプションには`ShadowRoot`オブジェクトの配列を渡します。選択範囲に渡した`ShadowRoot`内の要素が含まれている場合、その要素も選択範囲に含めて返します。
-選択範囲にオプションにない`ShadowRoot`がある場合は、`ShadowRoot`全体が返されます。
+オプションには`ShadowRoot`オブジェクトの配列を渡します。渡した`ShadowRoot`オブジェクトに含まれる要素であれば、Shadow DOM内の要素であっても選択範囲として検出されます。
+選択範囲にオプションで指定していない`ShadowRoot`オブジェクトが持つ要素が含まれる場合は、そのShadow DOMのホスト要素が返されます。
 
 <Playground title="getComposedRangesメソッドの紹介">
   <Example3 />
@@ -80,9 +80,9 @@ const ranges = getComposedRanges({ shadowRoots: [shadowRoot1, shadowRoot2] });
 
 これまで使われていた`getRangeAt`メソッドと、`getComposedRanges`メソッドを使った時の比較、および`getComposedRanges`メソッドの引数に`ShadowRoot`を渡した場合と渡さなかった場合の違いを確認できます。
 
-背景色があるテキストの部分にShadow DOMツリーを追加しました
+サンプルテキスト全体に`attachShadow`しています（`closed`）。
 
-背景色があるテキスト部分を全て含めて選択した場合や、背景色があるテキストを一部含めた場合を試してください。
-`getComposedRanges`メソッドにオプションを渡した場合は`startContainer`と`endContainer`にShadow DOMが渡りますが、それ以外は実際の選択範囲と検出された要素に違いがあることが確認できます（ブラウザによって動きが違うので例外があるかも）。
+背景色があるテキスト部分を全て含めて選択した場合や、背景色があるテキストを一部含めた場合、サンプルテキスト以外も含めた選択を試してください。
+`getComposedRanges`メソッドにオプションを渡した場合は`startContainer`と`endContainer`に正確な要素が渡りますが、それ以外はShadow Treeを含む要素全体が返されます（MacOSのChromeを用いた結果のため、他のブラウザでは異なる結果になるかもしれません）。
 
 このように、適切なオプションを付与した`getComposedRanges`メソッドを用いることで、Shadow DOM境界を跨いだ選択が行われたとしても、他の要素と同じようにShadow DOM内の要素を正しく扱えるようになります。
