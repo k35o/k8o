@@ -4330,8 +4330,7 @@ packages:
           targets:
             - cpu: x86
               os: win32
-    version: 22.18.0
-    hasBin: true
+    version: 0.0.0
 
   normalize-path@3.0.0:
     resolution: {integrity: sha512-6eZs5Ls3WtCisHWp9S2GUy8dqkpGi4BVSz3GaqiE6ezub0512ESztXUwUB6C6IKbQkY2Pnb/mD4WYojCRwcwLA==}

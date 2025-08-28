@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import RSS from 'rss';
-import { getBlogContents } from '#api/blog';
+import { getBlogContents } from '@/app/blog/_api';
 import { metadata } from '../layout';
 
 export const dynamic = 'force-static';

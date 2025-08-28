@@ -1,5 +1,5 @@
 import { getFrontmatter, getTocTree } from '@k8o/helpers/mdx';
-import { db } from '#database/db';
+import { db } from '@/database/db';
 import { blogPath } from './path';
 
 export const getBlog = async (slug: string) => {

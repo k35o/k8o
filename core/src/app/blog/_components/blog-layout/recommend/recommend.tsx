@@ -6,7 +6,7 @@ import { formatDate } from '@k8o/helpers/date';
 import type { Route } from 'next';
 import Link from 'next/link';
 import type { FC } from 'react';
-import { getBlogsByTags } from '#api/blog';
+import { getBlogsByTags } from '@/app/blog/_api';
 
 export const Recommend: FC<{ slug: string }> = async ({ slug }) => {
   const blogs = await getBlogsByTags(slug);
