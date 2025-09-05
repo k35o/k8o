@@ -62,7 +62,7 @@
     "@next/env": "15.5.2",
     "@next/mdx": "15.5.2",
     "@next/third-parties": "15.5.2",
-    "@react-email/components": "0.5.1",
+    "@react-email/components": "0.5.2",
     "@shikijs/rehype": "3.12.2",
     "@tailwindcss/postcss": "4.1.13",
     "@vercel/analytics": "1.5.0",
