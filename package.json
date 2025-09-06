@@ -34,7 +34,7 @@
     "server-only": "0.0.1"
   },
   "devDependencies": {
-    "@biomejs/biome": "2.2.2",
+    "@biomejs/biome": "2.2.3",
     "@ls-lint/ls-lint": "2.3.1",
     "@types/node": "22.18.1",
     "@typescript/native-preview": "7.0.0-dev.20250904.1",
