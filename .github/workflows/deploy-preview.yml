@@ -24,7 +24,7 @@ jobs:
     permissions:
       pull-requests: write
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8
         with:
           fetch-depth: 0
       - name: Get branch name
@@ -57,7 +57,7 @@ jobs:
       preview_url: ${{ steps.deploy_project.outputs.preview_url }}
     steps:
       - name: Checkout branch
-        uses: actions/checkout@v5
+        uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8
       - name: Setup pnpm
         uses: ./.github/actions/setup-pnpm
       - name: Install Vercel CLI
@@ -73,7 +73,7 @@ jobs:
       - name: Create Neon Branch
         if: needs.setup.outputs.has_migration == 'true'
         id: create_neon_branch
-        uses: neondatabase/create-branch-action@v6
+        uses: neondatabase/create-branch-action@5c59720f0092955bc8b846ac0cd184b1093c27a2
         with:
           project_id: ${{ vars.NEON_PROJECT_ID }}
           role: default
@@ -119,7 +119,7 @@ jobs:
   #     pull-requests: write
   #   steps:
   #     - name: Post Schema Diff Comment to PR
-  #       uses: neondatabase/schema-diff-action@v1
+  #       uses: neondatabase/schema-diff-action@80cfa8521628e890015b60f5291a7738926617dc
   #       with:
   #         project_id: ${{ vars.NEON_PROJECT_ID }}
   #         compare_branch: preview/pr-${{ github.event.number }}-${{ needs.setup.outputs.branch }}
@@ -141,7 +141,7 @@ jobs:
       - name: Preview URL Comment to PR
         env:
           PREVIEW_URL: ${{needs.deploy_preview.outputs.preview_url}}
-        uses: actions/github-script@v8
+        uses: actions/github-script@ed597411d8f924073f98dfc5c65a23a2325f34cd
         id: my-script
         with:
           script: |
@@ -189,10 +189,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout branch
-        uses: actions/checkout@v5
+        uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8
 
       - name: Delete Neon Branch
-        uses: neondatabase/delete-branch-action@v3
+        uses: neondatabase/delete-branch-action@ed7d9bfda9b787d3269d18596eea76633ec34fe2
         with:
           project_id: ${{ vars.NEON_PROJECT_ID }}
           branch: preview/pr-${{ github.event.number }}-${{ needs.setup.outputs.branch }}
