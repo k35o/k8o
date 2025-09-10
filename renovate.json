@@ -11,6 +11,7 @@
   "prConcurrentLimit": 10,
   "schedule": ["every weekend"],
   "rangeStrategy": "pin",
+  "minimumReleaseAge": "7 days",
   "packageRules": [
     {
       "matchUpdateTypes": ["minor", "patch"],
