@@ -192,7 +192,7 @@ jobs:
         uses: actions/checkout@ff7abcd0c3c05ccf6adc123a8cd1fd4fb30fb493
 
       - name: Delete Neon Branch
-        uses: neondatabase/delete-branch-action@ed7d9bfda9b787d3269d18596eea76633ec34fe2
+        uses: neondatabase/delete-branch-action@8094a597f668f3ad180f1515c71db347fcde812f
         with:
           project_id: ${{ vars.NEON_PROJECT_ID }}
           branch: preview/pr-${{ github.event.number }}-${{ needs.setup.outputs.branch }}
