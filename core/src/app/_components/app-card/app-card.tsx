@@ -17,9 +17,9 @@ export const AppCard = ({
 }) => {
   return (
     <InteractiveCard>
-      <Link href={link}>
-        <div className="flex h-full flex-col items-center gap-4 p-4">
-          <div className="flex size-24 shrink-0 items-center justify-center rounded-full bg-bg-mute text-emphasize">
+      <Link className="group" href={link}>
+        <div className="flex h-full flex-col items-center gap-4 p-4 group-hover:text-primary-fg">
+          <div className="flex size-24 shrink-0 items-center justify-center rounded-full bg-bg-mute text-emphasize group-hover:bg-primary-bg-mute">
             {symbol}
           </div>
           <div className="flex flex-col items-center gap-1">
