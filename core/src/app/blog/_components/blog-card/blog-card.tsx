@@ -31,9 +31,9 @@ export const BlogCard: FC<BlogCardProps> = ({
 }) => {
   return (
     <InteractiveCard>
-      <Link className="block h-full" href={`/blog/${slug}` as Route}>
+      <Link className="group block h-full" href={`/blog/${slug}` as Route}>
         <div className="flex h-full flex-col justify-between gap-4 p-4">
-          <div className="flex flex-col gap-1">
+          <div className="flex flex-col gap-1 group-hover:text-primary-fg">
             <ViewTransition name={`title-${slug}`}>
               <Heading lineClamp={3} type="h3">
                 {title}
