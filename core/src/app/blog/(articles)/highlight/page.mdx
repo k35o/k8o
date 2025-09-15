@@ -2,9 +2,10 @@
 title: CSS Custom Highlight APIで任意の範囲のテキストをハイライトする
 description: Firefox 140でCSS Custom Highlight APIがサポートされ、DOMを変更せずに任意のテキスト範囲をハイライトできるようになりました。JavaScriptでRangeオブジェクトを定義し、Highlightオブジェクトとして登録後、CSSの::highlight擬似要素でスタイリングしてハイライトを作ります。
 createdAt: 2025-06-29 00:00:00.000000+09
-updatedAt: 2025-06-29 00:00:00.000000+09
+updatedAt: 2025-09-15 09:00:00.000000+09
 ---
 
+import { Alert } from '@k8o/arte-odyssey/alert';
 import { BaselineStatus } from '@k8o/arte-odyssey/baseline-status';
 import { HighlightBasicDemo as Example1 } from '@/app/_components/playgrounds/highlight';
 import { HighlightPriorityDemo as Example2 } from '@/app/_components/playgrounds/highlight';
@@ -16,6 +17,11 @@ import { Playground } from '@/app/_components/playgrounds';
 <BaselineStatus featureId="highlight" />
 
 ## はじめに
+
+<Alert
+  status="warning"
+  message="【訂正】この記事で紹介する機能がFirefox 140のリリースによってBaseline入りしたような記述をしていますが、実際には一部の機能が導入されておらずBaseline 2025にはなっていませんでした。"
+/>
 
 Firefox 140がリリースされ、`CSS Custom Highlight API`がサポートされました。この新機能により、JavaScriptで定義した任意のテキスト範囲をCSSでスタイリングできるようになります。
 
