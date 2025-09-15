@@ -2,9 +2,10 @@
 title: スペルミス・文法エラーに対してスタイルを設定する::spelling-errorと::grammar-error
 description:
 createdAt: 2025-06-29 00:00:00.000000+09
-updatedAt: 2025-06-29 00:00:00.000000+09
+updatedAt: 2025-09-15 00:00:00.000000+09
 ---
 
+import { Alert } from '@k8o/arte-odyssey/alert';
 import { BaselineStatus } from '@k8o/arte-odyssey/baseline-status';
 import { SpellingGrammarErrorDemo as Example1 } from '@/app/_components/playgrounds/spelling-grammar-error';
 import { Playground } from '@/app/_components/playgrounds';
@@ -15,7 +16,11 @@ import { Playground } from '@/app/_components/playgrounds';
 
 ## はじめに
 
-Firefox 140で`::spelling-error`と`::grammar-error`のCSS擬似要素がサポートされました。これにより、全てのコアブラウザでこれらの擬似要素が利用可能になりました。
+<Alert
+  status="warning"
+  message="【連絡】この記事では以前、紹介する機能がFirefox 140のリリースによってBaseline入りしたと記述していましたが、実際には導入されていませんでしたのでその部分を修正しています。"
+/>
+
 これらの擬似要素は、スペルミスや文法エラーとしてフラグ付けされたテキストに対するスタイルを定義するために使用されます。
 
 ## ::spelling-error
