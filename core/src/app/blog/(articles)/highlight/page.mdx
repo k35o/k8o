@@ -20,7 +20,7 @@ import { Playground } from '@/app/_components/playgrounds';
 
 <Alert
   status="warning"
-  message="【訂正】この記事で紹介する機能がFirefox 140のリリースによってBaseline入りしたような記述をしていますが、実際には一部の機能が導入されておらずBaseline 2025にはなっていませんでした。"
+  message="【訂正】この記事では、Firefox 140のリリースによってCSS Custom Highlight APIがBaseline入りしたと記述していますが、実際にはまだBaseline 2025の対象にはなっていませんでした（MDNではBaseline入りしているように見えます）。"
 />
 
 Firefox 140がリリースされ、`CSS Custom Highlight API`がサポートされました。この新機能により、JavaScriptで定義した任意のテキスト範囲をCSSでスタイリングできるようになります。
@@ -174,7 +174,7 @@ spellErrorHighlight.type = 'spelling-error';
 
 `highlight`には特別な意味がありません。`spelling-error`はスペルミス、`grammar-error`は文法エラーを意味します。
 
-<Playground title="grammer-errorでハイライトした例">
+<Playground title="grammar-errorでハイライトした例">
   <Example3 />
 </Playground>
 
