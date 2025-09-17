@@ -24,7 +24,8 @@
     "test": "TZ=UTC vitest",
     "test:ui": "TZ=UTC vitest --ui --coverage",
     "coverage": "TZ=UTC vitest run --coverage",
-    "install-playwright": "playwright install --with-deps"
+    "install-playwright": "playwright install --with-deps",
+    "mcp-playwright": "mcp-server-playwright"
   },
   "dependencies": {
     "@k8o/helpers": "workspace:*",
@@ -36,6 +37,7 @@
   "devDependencies": {
     "@biomejs/biome": "2.2.3",
     "@ls-lint/ls-lint": "2.3.1",
+    "@playwright/mcp": "0.0.37",
     "@types/node": "22.18.1",
     "@typescript/native-preview": "7.0.0-dev.20250908.1",
     "@vitest/browser": "3.2.4",
