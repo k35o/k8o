@@ -73,7 +73,7 @@ jobs:
       - name: Create Neon Branch
         if: needs.setup.outputs.has_migration == 'true'
         id: create_neon_branch
-        uses: neondatabase/create-branch-action@5c59720f0092955bc8b846ac0cd184b1093c27a2
+        uses: neondatabase/create-branch-action@f642cf9c91ab9bf742ec8217b9615e0e42e437dd
         with:
           project_id: ${{ vars.NEON_PROJECT_ID }}
           role: default
