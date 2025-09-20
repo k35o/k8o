@@ -1,7 +1,7 @@
 import { getBlogContent } from '#api/blog';
 import { OgImage } from '@/app/_components/og-image';
 
-export const alt = '';
+export const alt = 'Uint8Arrayとbase64、Hex（16進数）の相互変換';
 export const size = {
   width: 1200,
   height: 630,
