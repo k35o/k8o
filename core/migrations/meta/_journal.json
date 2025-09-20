@@ -337,6 +337,13 @@
       "when": 1757731359860,
       "tag": "0047_panoramic_spot",
       "breakpoints": true
+    },
+    {
+      "idx": 48,
+      "version": "7",
+      "when": 1758353889357,
+      "tag": "0048_overconfident_sentinels",
+      "breakpoints": true
     }
   ]
 }
