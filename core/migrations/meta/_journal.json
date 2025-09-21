@@ -330,6 +330,13 @@
       "when": 1755827090746,
       "tag": "0046_loving_steve_rogers",
       "breakpoints": true
+    },
+    {
+      "idx": 47,
+      "version": "7",
+      "when": 1757731359860,
+      "tag": "0047_panoramic_spot",
+      "breakpoints": true
     }
   ]
 }
