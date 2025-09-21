@@ -1,13 +1,197 @@
 ---
-title: 
+title: URLのパターンマッチを簡単にするURLPattern API
 description:
 createdAt: 2025-09-20
 updatedAt: 2025-09-20
 ---
 
 import { BaselineStatus } from '@k8o/arte-odyssey/baseline-status';
-import { LinkCard } from '@/app/_components/link-card';
 
-# 
+# URLのパターンマッチを簡単にするURLPattern API
 
 <BaselineStatus featureId="urlpattern" />
+
+## はじめに
+URLPattern APIは、URLのパターンマッチを簡単にするためのAPIです。Safari 26のサポートによって、Baseline 2025入りした新しい機能です。
+
+この記事では、URLPattern APIの基本的な使い方について紹介します。
+
+## URLPattern
+URLPattern APIは、生成した`URLPattern`オブジェクトを使って、URLのパターンマッチを行います。
+
+```ts
+const pattern = new URLPattern(
+  input,
+  baseURL,
+  options,
+)
+```
+
+`input`は必須で、`baseURL`と`options`は省略可能です。`baseURL`を省略して`input`と`options`を指定することもできます。
+
+```ts
+// これはもちろんOK
+new URLPattern(
+  input,
+)
+
+// baseURLだけを省略可能
+new URLPattern(
+  input,
+  options,
+)
+```
+
+第1引数の`input`にはURLのパターンを文字列かオブジェクトで渡します。
+```ts
+const pattern1 = new URLPattern("https://k8o.me/blog/:id");
+```
+オブジェクトの場合は、`protocol`、`username`、`password`、`hostname`、`port`、`pathname`、`search`、`hash`、`baseURL`の各プロパティにパターンを指定します。
+```ts
+const pattern2 = new URLPattern({
+  protocol: "https",
+  hostname: "k8o.me",
+  pathname: "/blog/:id",
+});
+
+const pattern3 = new URLPattern({
+  pathname: "/blog/:id",
+  baseURL: "https://k8o.me",
+});
+```
+
+`pattern1`、`pattern2`、`pattern3`はすべて同じ意味になります。
+
+指定していないプロパティは`*`が渡された、つまりワイルドカードとして扱われます。ただし、`baseURL`を指定した場合はその限りではなく、各プロパティに`''`が設定されたとして扱われます。
+
+```ts
+// 同じ
+const pattern1 = new URLPattern({
+  protocol: "https",
+  hostname: "k8o.me",
+  pathname: "/blog/:id",
+});
+const pattern2 = new URLPattern({
+  protocol: "https",
+  username: "*",
+  password: "*",
+  hostname: "k8o.me",
+  port: "*",
+  pathname: "/blog/:id",
+  search: "*",
+  hash: "*",
+});
+
+// 同じ
+const pattern3 = new URLPattern({
+  baseURL: "https://k8o.me",
+});
+const pattern4 = new URLPattern({
+  protocol: "https",
+  username: "*",
+  password: "*",
+  hostname: "k8o.me",
+  port: "",
+  pathname: "/",
+  search: "",
+  hash: "",
+});
+```
+
+第2引数の`baseURL`には、相対URLを解決するための基準となるURLを文字列で渡します。
+```ts
+// pattern1とpattern2は同じ意味になる
+const pattern1 = new URLPattern("https://k8o.me/blog/:id");
+const pattern2 = new URLPattern("/blog/:id", "https://k8o.me");
+```
+
+第3引数の`options`にはパターンマッチのオプションを渡せます。現在付与できるのは`ignoreCase`のみで、デフォルトは`false`です。
+デフォルトでは大文字小文字を区別しますが、`ignoreCase`を`true`にすると大文字小文字を区別しなくなります。
+
+```ts
+const pattern = new URLPattern("/blog/:id", "https://k8o.me", { ignoreCase: true });
+```
+
+## 定義したパターンと照合するexecメソッド
+作成した`URLPattern`オブジェクトは、URLのパターンマッチを`exec`メソッドで行います。
+`exec`メソッドは、指定したURLが定義したパターンに一致するかどうかを確認し、一致した場合はマッチした部品ごとの情報を返します。
+
+```ts
+const pattern = new URLPattern("https://k8o.me/blog/:id");
+const result = pattern.exec("https://k8o.me/blog/urlpattern?query=abc#section1");
+
+// 一致しない場合はnullが返る
+if (result) {
+  console.log(result.inputs);  // ["https://k8o.me/blog/urlpattern?query=abc#section1"]
+  console.log(result.pathname); // { input: "/blog/urlpattern", groups: {id: 'urlpattern'} }
+  console.log(result.search);   // { input: "query=abc", groups: {} }
+  console.log(result.hash);     // { input: "section1", groups: {} }
+  console.log(result.username); // { input: "", groups: {} }
+} else {
+  console.log("パターンに一致しませんでした");
+}
+```
+戻り値は各部品ごとに一致した情報をオブジェクトで返します。`input`には一致した文字列が、`groups`にはパターンマッチでキャプチャされた値が格納されます。
+
+返り値のオブジェクトは部品の他に`inputs`プロパティも持ち、入力された情報が配列で返ってきます。
+
+`exec`メソッドの引数にはコンストラクタと同様に`input`と`baseURL`を渡せます。
+渡すのは照合するURLですので、オブジェクトを`input`に渡した場合、指定していない部分は`''`が渡されたものとされます。
+
+## 定義したパターンに一致すること確認するtestメソッド
+作成した`URLPattern`オブジェクトは、URLのパターンマッチの一致を`test`メソッドで確認できます。
+`test`メソッドは、指定したURLが定義したパターンに一致するかどうかを真偽値で返します。
+```ts
+const pattern = new URLPattern("/blog/:id", "https://k8o.me");
+console.log(pattern.test("https://k8o.me/blog/urlpattern?query=abc#section1")); // true
+console.log(pattern.test("https://k8o.me/blog")); // false
+```
+
+`test`メソッドの引数は`exec`メソッドと同様です。
+
+## 適用されたパターンマッチを部品ごとに確認する
+作成した`URLPattern`オブジェクトが適用されたパターンマッチを部品ごとに確認するためのメソッドを提供します。
+`protocol`、`username`、`password`、`hostname`、`port`、`pathname`、`search`、`hash`の各部品にどのようなパターンが適用されたかを確認できます。
+
+```ts
+const pattern1 = new URLPattern("https://k8o.me");
+console.log(pattern1.protocol); // "https"
+console.log(pattern1.username); // "*"
+console.log(pattern1.password); // "*"
+console.log(pattern1.hostname); // "k8o.me"
+console.log(pattern1.port);     // ""
+console.log(pattern1.pathname); // "*"
+console.log(pattern1.search);   // "*"
+console.log(pattern1.hash);     // "*"
+
+const pattern2 = new URLPattern({
+  baseURL: "https://k8o.me",
+});
+console.log(pattern2.protocol); // "https"
+console.log(pattern2.username); // "*"
+console.log(pattern2.password); // "*"
+console.log(pattern2.hostname); // "k8o.me"
+console.log(pattern2.port);     // ""
+console.log(pattern2.pathname); // "/"
+console.log(pattern2.search);   // ""
+console.log(pattern2.hash);     // ""
+
+const pattern3 = new URLPattern({
+  baseURL: "https://k8o.me",
+  protocol: "https",
+  hostname: "k8o.me",
+});
+console.log(pattern3.protocol); // "https"
+console.log(pattern3.username); // "*"
+console.log(pattern3.password); // "*"
+console.log(pattern3.hostname); // "k8o.me"
+console.log(pattern3.port);     // "*"
+console.log(pattern3.pathname); // "*"
+console.log(pattern3.search);   // "*"
+console.log(pattern3.hash);     // "*"
+```
+
+## おわりに
+URLのパターンマッチを簡単にするためのURLPattern APIについて紹介しました。
+
+これまではRegExp等を使って、URLのパターンマッチを行っていましたが、URLPattern APIを使うことで、より簡単かつ正確にパターンマッチを行うことができます。
