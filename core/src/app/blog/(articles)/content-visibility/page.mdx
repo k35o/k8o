@@ -1,0 +1,38 @@
+---
+title: 要素のレイアウトとレンダリングを必要なタイミングまでスキップさせるCSSのcontent-visibilityプロパティ
+description:
+createdAt: 2025-09-21
+updatedAt: 2025-09-21
+---
+
+import { BaselineStatus } from '@k8o/arte-odyssey/baseline-status';
+import { LinkCard } from '@/app/_components/link-card';
+
+# 要素のレイアウトとレンダリングを必要なタイミングまでスキップさせるCSSのcontent-visibilityプロパティ
+
+<BaselineStatus featureId="content-visibility" />
+
+## はじめに
+Safari26のリリースから、Baselineのブラウザセット全てでCSSの`content-visibility`プロパティに`auto`プロパティを付与できるようになりました。
+
+`visible`や`hidden`といった従来の値に加えて、`auto`を指定することで要素のレイアウトとレンダリングを必要なタイミングまでスキップさせることが可能になりました。
+
+## visileとhidden
+`content-visibility`プロパティは、要素の内容が表示されるかどうかを制御します。
+
+`visible`は付与していない時と同じように要素が表示されます。
+
+`hidden`はその要素は読み飛ばされます。スクリーンリーダーやブラウザ検索からのアクセスも不可になります。
+
+## auto
+`auto`はビューポート内やトップレイヤーに表示されたり、フォーカスや要素の選択がない限り、要素が読み飛ばされます。
+
+ただし、`hidden`とは異なり、アクセシビリティツリーに表示されるのでスクリーンリーダーからの検出は行われます。
+DOM上にも存在するのでブラウザ検索からのアクセスも可能になります。
+
+要素が読み飛ばされている間は要素の高さが0になるので、読み込まれたタイミングでスクロールバーの位置がズレる可能性があります。
+これらの問題は要素のスタイルに適切な`contain-intrinsic-size`を付与して、あらかじめブラウザにレイアウトのサイズが伝えることで防ぐことができます。
+
+## おわりに
+`content-visibility: auto`はBaseline 2025で追加されたのでユーザーの環境ではサポートされていないことが多いです。
+しかし、サポートされていないブラウザであっても、このプロパティは付与されていないものと振る舞うだけですので、`content-visibility: auto`を使用してパフォーマンスの向上が期待できる場合は使用すると良いです。

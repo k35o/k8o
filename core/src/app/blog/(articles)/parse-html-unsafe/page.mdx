@@ -1,0 +1,26 @@
+---
+title: parseHtmlUnsafeでHTMLをDocumentに変換する
+description:
+createdAt: 2025-09-21
+updatedAt: 2025-09-21
+---
+
+import { BaselineStatus } from '@k8o/arte-odyssey/baseline-status';
+import { LinkCard } from '@/app/_components/link-card';
+
+# parseHtmlUnsafeでHTMLをDocumentに変換する
+
+<BaselineStatus featureId="parse-html-unsafe" />
+
+`TrustedHTML`またはHTML文字列を`Document`オブジェクトに変換する`parseHtmlUnsafe`関数がBaseline 2025に追加されました。
+
+`unsafe`と名がついている通り、XSSに対して安全ではない要素は削除されません。
+これらを常に削除する`parseHTML`関数もあるのですが、この関数は多くのブラウザで実装されていないので、`parseHtmlUnsafe`関数が代わりに使われます。
+
+`unsafe`を軽減するために、変換する元となる値として`TrustedHTML`を用いられること、第2引数にオプションとして`sanitizer`を指定させるような対策が考えられます。
+`TrustedHTML`は、執筆現在はFirefoxではサポートされておりませんし、オプションの`sanitizer`も多くのブラウザでサポートされていません。この記事ではBaselineに追加されている機能のみを紹介したいので、これらの機能が追加されたタイミングで紹介します。
+
+この機能は宣言型シャドウDOMを扱う場合に有効です。
+`innerHTML`を使って宣言型シャドウDOMを利用したWeb Components等を挿入しても`innerHTML`は解析しないのでレンダーしません。
+しかし、`parseHtmlUnsafe`は宣言型シャドウDOMの要素の解析も可能なので、宣言型シャドウDOMを利用したWeb Components等をレンダーできます。
+

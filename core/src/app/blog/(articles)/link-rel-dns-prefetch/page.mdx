@@ -1,0 +1,34 @@
+---
+title: リソースへのリクエスト前にドメイン名を解決するdns-prefetch
+description:
+createdAt: 2025-09-21
+updatedAt: 2025-09-21
+---
+
+import { BaselineStatus } from '@k8o/arte-odyssey/baseline-status';
+import { LinkCard } from '@/app/_components/link-card';
+
+# リソースへのリクエスト前にドメイン名を解決するdns-prefetch
+
+<BaselineStatus featureId="link-rel-dns-prefetch" />
+
+外部のリソースを読み込む際、ブラウザはまずそのリソースのドメイン名をIPアドレスに変換するためにDNSルックアップを行います。
+このプロセスは時間がかかることがあり、リソースの読み込みパフォーマンスに影響を与えることがありました。
+
+`link`タグの`rel`属性に`dns-prefetch`を付与すると、リソースへのリクエストの前に対象のドメイン名のDNSルックアップを行うよう指示できます。
+これにより、実際にそのドメインからリソースを取得する際の待機時間が短縮され、ページのパフォーマンスが向上します。
+
+そんな、`<link rel="dns-prefetch">`はBaseline 2025で追加された機能です。
+
+```html
+<!-- head内に置く必要があります -->
+<head>
+  <!-- example.comに対してDNSルックアップを行う -->
+  <link rel="dns-prefetch" href="https://example.com">
+</head>
+```
+
+`preconnect`と似ていますが、`preconnect`は`dns-prefetch`で行うDNSルックアップに加えて、TCP接続やTLSハンドシェイクを行うところに違いがあります。
+
+`preconnect`は多くのリソースを消費するので、複数のサイトでリソースの解決を早めたい場合に全て`preconnect`を使うのは避けるべきです。
+重要なリソースに対してのみ、`preconnect`を使用し、その他のリソースに対しては`dns-prefetch`を使用することが推奨されます。
