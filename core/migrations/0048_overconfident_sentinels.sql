@@ -10,7 +10,7 @@ INSERT INTO blog_tag (blog_id, tag_id) VALUES (29, 11);
 INSERT INTO blog_tag (blog_id, tag_id) VALUES (29, 47);
 INSERT INTO blog_tag (blog_id, tag_id) VALUES (29, 74);
 
-INSERT INTO blogs (id, slug, published) VALUES (30, 'parse-html-unsafe', true);
+INSERT INTO blogs (id, slug, published) VALUES (30, 'parse-html-unsafe', false);
 INSERT INTO blog_views (blog_id, views) VALUES (30, 0);
 INSERT INTO blog_tag (blog_id, tag_id) VALUES (30, 10);
 INSERT INTO blog_tag (blog_id, tag_id) VALUES (30, 11);
