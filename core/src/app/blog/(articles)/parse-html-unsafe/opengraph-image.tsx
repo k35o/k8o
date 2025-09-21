@@ -1,7 +1,7 @@
 import { getBlogContent } from '#api/blog';
 import { OgImage } from '@/app/_components/og-image';
 
-export const alt = '';
+export const alt = 'parseHtmlUnsafeでHTMLをDocumentに変換する';
 export const size = {
   width: 1200,
   height: 630,
