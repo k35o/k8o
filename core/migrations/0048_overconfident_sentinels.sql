@@ -20,7 +20,7 @@ INSERT INTO blog_tag (blog_id, tag_id) VALUES (30, 75);
 INSERT INTO blogs (id, slug, published) VALUES (31, 'link-rel-dns-prefetch', true);
 INSERT INTO blog_views (blog_id, views) VALUES (31, 0);
 INSERT INTO blog_tag (blog_id, tag_id) VALUES (31, 11);
-INSERT INTO blog_tag (blog_id, tag_id) VALUES (30, 15);
+INSERT INTO blog_tag (blog_id, tag_id) VALUES (31, 15);
 INSERT INTO blog_tag (blog_id, tag_id) VALUES (31, 76);
 
 INSERT INTO blogs (id, slug, published) VALUES (32, 'content-visibility', true);
