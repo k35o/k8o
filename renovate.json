@@ -10,20 +10,32 @@
   "prConcurrentLimit": 10,
   "packageRules": [
     {
-      "matchUpdateTypes": ["minor", "patch"],
-      "matchPackageNames": [
-        "!/^(pnpm|node)$/",
-        "!/^@storybook/",
-        "!/storybook$/",
-        "!/react$/",
-        "!/react-dom$/",
-        "!/next$/",
-        "!/^@next/",
-        "!/vitest$/",
-        "!/@vitest/",
-        "!/^@typescript/native-preview$/"
-      ],
-      "groupName": "minor and patch dependencies"
+      "matchPackageNames": ["/next$/", "/^@next/"],
+      "groupName": "next dependencies"
+    },
+    {
+      "matchPackageNames": ["/^@storybook/", "/storybook$/"],
+      "groupName": "storybook dependencies"
+    },
+    {
+      "matchPackageNames": ["/vitest$/", "/@vitest/"],
+      "groupName": "vitest dependencies"
+    },
+    {
+      "matchPackageNames": ["/^@typescript/native-preview$/"],
+      "groupName": "tsgo dependencies"
+    },
+    {
+      "matchPackageNames": ["/react$/", "/react-dom$/"],
+      "groupName": "react dependencies"
+    },
+    {
+      "matchPackageNames": ["/^pnpm$/"],
+      "groupName": "pnpm dependencies"
+    },
+    {
+      "matchPackageNames": ["/node$/"],
+      "groupName": "node dependencies"
     }
   ]
 }
