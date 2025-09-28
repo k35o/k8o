@@ -10,15 +10,15 @@
   "prConcurrentLimit": 10,
   "packageRules": [
     {
-      "matchPackageNames": ["/next$/", "/^@next/"],
+      "matchPackageNames": ["/^next$/", "/^@next/"],
       "groupName": "next dependencies"
     },
     {
-      "matchPackageNames": ["/^@storybook/", "/storybook$/"],
+      "matchPackageNames": ["/^@storybook/", "/^storybook$/"],
       "groupName": "storybook dependencies"
     },
     {
-      "matchPackageNames": ["/vitest$/", "/@vitest/"],
+      "matchPackageNames": ["/^vitest$/", "/@vitest/"],
       "groupName": "vitest dependencies"
     },
     {
@@ -26,7 +26,7 @@
       "groupName": "tsgo dependencies"
     },
     {
-      "matchPackageNames": ["/react$/", "/react-dom$/"],
+      "matchPackageNames": ["/^react$/", "/^react-dom$/"],
       "groupName": "react dependencies"
     },
     {
@@ -34,7 +34,7 @@
       "groupName": "pnpm dependencies"
     },
     {
-      "matchPackageNames": ["/node$/"],
+      "matchPackageNames": ["/^node$/", "/^@types/node$/"],
       "groupName": "node dependencies"
     }
   ]
