@@ -30,21 +30,21 @@
   "dependencies": {
     "@k8o/helpers": "workspace:*",
     "@upstash/ratelimit": "2.0.6",
-    "@upstash/redis": "1.35.3",
+    "@upstash/redis": "1.35.4",
     "remark-frontmatter": "5.0.0",
     "server-only": "0.0.1"
   },
   "devDependencies": {
     "@biomejs/biome": "2.2.4",
     "@ls-lint/ls-lint": "2.3.1",
-    "@playwright/mcp": "0.0.37",
+    "@playwright/mcp": "0.0.39",
     "@types/node": "22.18.3",
     "@typescript/native-preview": "7.0.0-dev.20250915.1",
     "@vitest/browser": "3.2.4",
     "@vitest/coverage-istanbul": "3.2.4",
     "@vitest/ui": "3.2.4",
-    "lefthook": "1.13.0",
-    "playwright": "1.55.0",
+    "lefthook": "1.13.3",
+    "playwright": "1.55.1",
     "turbo": "2.5.6",
     "typescript": "5.9.2",
     "vitest": "3.2.4"
