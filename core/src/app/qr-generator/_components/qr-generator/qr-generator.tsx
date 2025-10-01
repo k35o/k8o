@@ -4,7 +4,7 @@ import { Button } from '@k8o/arte-odyssey/button';
 import { FormControl } from '@k8o/arte-odyssey/form/form-control';
 import { RangeField } from '@k8o/arte-odyssey/form/range-field';
 import { TextField } from '@k8o/arte-odyssey/form/text-field';
-import DomPurify from 'isomorphic-dompurify';
+import DomPurify from 'dompurify';
 import { type ChangeEvent, useCallback, useMemo, useState } from 'react';
 import { renderSVG } from 'uqr';
 
