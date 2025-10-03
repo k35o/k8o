@@ -2,12 +2,32 @@
 vi.mock('server-only', () => ({}));
 
 import { checkRateLimit } from '@k8o/helpers/ratelimit';
-import { db } from '#database/db';
+import { db } from '@/database/db';
 import { blogComment } from '@/database/schema/blog-comment';
 import { comments } from '@/database/schema/comments';
 import { feedback } from './action';
 
-vi.mock('#database/db');
+vi.mock('@/database/db', () => ({
+  db: {
+    query: {
+      blogs: {
+        findFirst: vi.fn(),
+      },
+    },
+    insert: vi.fn().mockReturnValue({
+      values: vi.fn().mockReturnValue({
+        returning: vi.fn(),
+      }),
+    }),
+    update: vi.fn().mockReturnValue({
+      set: vi.fn().mockReturnValue({
+        where: vi.fn().mockReturnValue({
+          returning: vi.fn(),
+        }),
+      }),
+    }),
+  },
+}));
 vi.mock('@k8o/helpers/ratelimit');
 vi.mock('@/libs/zod', () => ({}));
 

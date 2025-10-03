@@ -1,7 +1,7 @@
 import { compareDate } from '@k8o/helpers/date';
 import { eq } from 'drizzle-orm';
 import { z } from 'zod';
-import { db } from '#database/db';
+import { db } from '@/database/db';
 import { subscribers } from '@/database/schema/subscribers';
 import VerifyEmail from '@/emails/verify-email';
 import { resend } from '@/services/email';

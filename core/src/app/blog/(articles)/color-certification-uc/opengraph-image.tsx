@@ -1,5 +1,5 @@
-import { getBlogContent } from '#api/blog';
 import { OgImage } from '@/app/_components/og-image';
+import { getBlogContent } from '@/app/blog/_api';
 
 export const alt = '色彩検定UC級に合格しました！';
 export const size = {

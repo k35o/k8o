@@ -1,7 +1,15 @@
-import { db } from '#database/db';
+import { db } from '@/database/db';
 import { getTalks } from './talks';
 
-vi.mock('#database/db');
+vi.mock('@/database/db', () => ({
+  db: {
+    query: {
+      talks: {
+        findMany: vi.fn(),
+      },
+    },
+  },
+}));
 
 describe('talks', () => {
   describe('getTalks', () => {
