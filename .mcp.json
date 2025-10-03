@@ -3,6 +3,10 @@
     "playwright": {
       "command": "pnpm",
       "args": ["mcp-playwright"]
+    },
+    "chrome": {
+      "command": "pnpm",
+      "args": ["mcp-chrome"]
     }
   }
 }
