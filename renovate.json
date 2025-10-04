@@ -2,6 +2,7 @@
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "extends": [
     "github>k35o/renovate-config",
+    "customManagers:biomeVersions",
     "monorepo:storybook",
     "monorepo:react",
     "monorepo:nextjs",
