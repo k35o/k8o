@@ -1,6 +1,6 @@
 services:
   postgres:
-    image: postgres:17
+    image: postgres:17@sha256:e6a4209d1a4893f2df3bdcde58f8926c3c929c4d51df90990ed1b36d83c1382a
     command: '-d 1'
     volumes:
       - db_data:/var/lib/postgresql/data
@@ -17,7 +17,7 @@ services:
       retries: 5
 
   neon-proxy:
-    image: ghcr.io/neondatabase/wsproxy:latest
+    image: ghcr.io/neondatabase/wsproxy:latest@sha256:7f2e2149aa6a57ba382a140102fba44f5053f3e44389ccc18adcecf896054efb
     environment:
       APPEND_PORT: 'postgres:5432'
       ALLOW_ADDR_REGEX: '.*'
@@ -29,14 +29,14 @@ services:
         condition: service_healthy
 
   redis:
-    image: redis
+    image: redis@sha256:f0957bcaa75fd58a9a1847c1f07caf370579196259d69ac07f2e27b5b389b021
     ports:
       - '6379:6379'
 
   serverless-redis-http:
     ports:
       - '8079:80'
-    image: hiett/serverless-redis-http:latest
+    image: hiett/serverless-redis-http:latest@sha256:5b0bb9239fce53abf87b2018a7a0deb9ec7bd900c5360738fe5fbeeb426f9150
     environment:
       SRH_MODE: env
       SRH_TOKEN: example_token
