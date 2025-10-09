@@ -125,7 +125,7 @@
 **Hooks** (`packages/hooks/`):
 
 - `.test.tsx`ファイルでVitest
-- `@testing-library/react`使用
+- `vitest-browser-react`使用
 
 **Core Application** (`core/src/`):
 
@@ -184,7 +184,7 @@ Storybookストーリーでテストを記述：
 `.test.tsx`ファイルでVitestを使用：
 
 ```typescript
-import { renderHook } from '@testing-library/react';
+import { renderHook } from 'vitest-browser-react';
 import { describe, expect, it } from 'vitest';
 
 describe('useCustomHook', () => {
