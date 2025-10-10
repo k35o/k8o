@@ -82,7 +82,7 @@ pnpm run install-playwright
 
 - **Helpers**: In-source testing with `if (import.meta.vitest)` blocks
 - **UI**: Storybook stories with `@storybook/addon-vitest`
-- **Hooks**: `.test.tsx` files with `@testing-library/react`
+- **Hooks**: `.test.tsx` files with `vitest-browser-react`
 - **Core App**: Browser mode for React components, Node.js for services/utils
 
 ## Code Quality

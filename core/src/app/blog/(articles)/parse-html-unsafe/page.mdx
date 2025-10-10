@@ -12,15 +12,15 @@ import { LinkCard } from '@/app/_components/link-card';
 
 <BaselineStatus featureId="parse-html-unsafe" />
 
-`TrustedHTML`またはHTML文字列を`Document`オブジェクトに変換する`parseHtmlUnsafe`関数がBaseline 2025に追加されました。
+`TrustedHTML`またはHTML文字列を`Document`オブジェクトに変換する`parseHtmlUnsafe()`関数がBaseline 2025に追加されました。
 
-`unsafe`と名がついている通り、XSSに対して安全ではない要素は削除されません。
-これらを常に削除する`parseHTML`関数もあるのですが、この関数は多くのブラウザで実装されていないので、`parseHtmlUnsafe`関数が代わりに使われます。
+名前に`Unsafe`とついている通り、このメソッドはXSSの危険性がある要素を自動的には削除しません。
+安全性を重視した`parseHTML()`メソッドも存在しますが、こちらは多くのブラウザでまだ実装されていないため、現時点では`parseHTMLUnsafe()`が主に使用されています。
 
-`unsafe`を軽減するために、変換する元となる値として`TrustedHTML`を用いられること、第2引数にオプションとして`sanitizer`を指定させるような対策が考えられます。
-`TrustedHTML`は、執筆現在はFirefoxではサポートされておりませんし、オプションの`sanitizer`も多くのブラウザでサポートされていません。この記事ではBaselineに追加されている機能のみを紹介したいので、これらの機能が追加されたタイミングで紹介します。
+`Unsafe`な状況を軽減するため、いくつかの対策が用意されています。
+変換元の値として`TrustedHTML`を使用する方法や、第2引数のオプションで`sanitizer`を指定する方法などです。ただし、`TrustedHTML`は本記事執筆時点ではFirefoxでサポートされておらず、`sanitizer`オプションも多くのブラウザで未対応という状況です。
 
-この機能は宣言型シャドウDOMを扱う場合に有効です。
-`innerHTML`を使って宣言型シャドウDOMを利用したWeb Components等を挿入しても`innerHTML`は解析しないのでレンダーしません。
-しかし、`parseHtmlUnsafe`は宣言型シャドウDOMの要素の解析も可能なので、宣言型シャドウDOMを利用したWeb Components等をレンダーできます。
+この機能はShadow DOMを扱う際に特に有効です。
+`innerHTML`プロパティを使って宣言的Shadow DOMを含むWeb Componentsなどを挿入しても、`innerHTML`は宣言的Shadow DOMを解析しないためレンダリングされません。
+一方、`parseHTMLUnsafe()`は宣言的Shadow DOMの要素も解析できるため、これらのコンポーネントを正しくレンダリングすることが可能です。
 
