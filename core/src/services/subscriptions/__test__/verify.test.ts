@@ -1,8 +1,17 @@
-import { db } from '#database/db';
+import { db } from '@/database/db';
 import { resend } from '@/services/email';
 import { sendVerificationEmail, verifyEmail } from '../verify';
 
-vi.mock('#database/db');
+vi.mock('@/database/db', () => ({
+  db: {
+    query: {
+      subscribers: {
+        findFirst: vi.fn(),
+      },
+    },
+    update: vi.fn(),
+  },
+}));
 vi.mock('@/services/email');
 vi.mock('@/emails/verify-email');
 

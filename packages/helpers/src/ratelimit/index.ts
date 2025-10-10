@@ -4,7 +4,7 @@ import { Ratelimit } from '@upstash/ratelimit';
 import { Redis } from '@upstash/redis';
 
 // 一般API用レート制限（10req/10s）
-export const ratelimit = new Ratelimit({
+const ratelimit = new Ratelimit({
   redis: Redis.fromEnv(),
   limiter: Ratelimit.slidingWindow(10, '10 s'),
   analytics: true,
@@ -26,7 +26,7 @@ export const RateLimitType = {
 export type RateLimitType = (typeof RateLimitType)[keyof typeof RateLimitType];
 
 // レート制限インスタンスを取得
-export function getRateLimiter(type: RateLimitType): Ratelimit {
+function getRateLimiter(type: RateLimitType): Ratelimit {
   switch (type) {
     case RateLimitType.FEEDBACK:
       return feedbackRatelimit;

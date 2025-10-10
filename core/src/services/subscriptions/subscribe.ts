@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { db } from '#database/db';
+import { db } from '@/database/db';
 import { subscribers } from '@/database/schema/subscribers';
 import { sendVerificationEmail } from '@/services/subscriptions/verify';
 import type { Result } from '../type';
