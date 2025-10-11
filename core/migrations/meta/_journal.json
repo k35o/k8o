@@ -344,6 +344,13 @@
       "when": 1758353889357,
       "tag": "0048_overconfident_sentinels",
       "breakpoints": true
+    },
+    {
+      "idx": 49,
+      "version": "7",
+      "when": 1760154890760,
+      "tag": "0049_faithful_slapstick",
+      "breakpoints": true
     }
   ]
 }
