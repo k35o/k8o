@@ -23,7 +23,7 @@ export default defineConfig({
   // 共通設定
   use: {
     // ベースURL
-    baseURL: 'http://localhost:3001',
+    baseURL: 'http://localhost:3000',
 
     // トレース設定
     trace: 'on-first-retry',
@@ -63,7 +63,7 @@ export default defineConfig({
   // 開発サーバー設定
   webServer: {
     command: 'pnpm run dev',
-    url: 'http://localhost:3001',
+    url: 'http://localhost:3000',
     reuseExistingServer: !process.env.CI,
     timeout: 120 * 1000,
   },
