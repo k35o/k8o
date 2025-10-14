@@ -4,6 +4,10 @@
       "command": "pnpm",
       "args": ["mcp-playwright"]
     },
+    "playwright-test": {
+      "command": "pnpm",
+      "args": ["playwright", "run-test-mcp-server"]
+    },
     "chrome": {
       "command": "pnpm",
       "args": ["mcp-chrome"]
