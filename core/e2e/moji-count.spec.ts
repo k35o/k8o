@@ -5,8 +5,8 @@ import { expect, test } from '@playwright/test';
 
 test.describe('もじカウントアプリケーションのE2Eテスト', () => {
   test.beforeEach(async ({ page }) => {
-    // もじカウントページに直接アクセス
-    await page.goto('http://localhost:3001/moji-count');
+    // もじカウントページに直接アクセス（baseURLからの相対パス）
+    await page.goto('/moji-count');
   });
 
   test('ページの初期状態を確認', async ({ page }) => {
