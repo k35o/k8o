@@ -14,8 +14,8 @@ export default defineConfig({
   // CI環境でのリトライ設定
   retries: process.env.CI ? 2 : 0,
 
-  // ワーカー数
-  workers: process.env.CI ? 1 : undefined,
+  // ワーカー数（CI環境では1、ローカルではデフォルト）
+  ...(process.env.CI && { workers: 1 }),
 
   // レポーター設定
   reporter: [['html', { outputFolder: 'playwright-report' }], ['list']],
