@@ -31,24 +31,24 @@
   "dependencies": {
     "@k8o/helpers": "workspace:*",
     "@upstash/ratelimit": "2.0.6",
-    "@upstash/redis": "1.35.4",
+    "@upstash/redis": "1.35.5",
     "remark-frontmatter": "5.0.0",
     "server-only": "0.0.1"
   },
   "devDependencies": {
-    "@biomejs/biome": "2.2.4",
+    "@biomejs/biome": "2.2.5",
     "@ls-lint/ls-lint": "2.3.1",
-    "@playwright/mcp": "0.0.40",
+    "@playwright/mcp": "0.0.41",
     "@types/node": "22.18.8",
     "@typescript/native-preview": "7.0.0-dev.20251006.1",
     "@vitest/browser": "3.2.4",
     "@vitest/coverage-istanbul": "3.2.4",
     "@vitest/ui": "3.2.4",
     "chrome-devtools-mcp": "0.6.0",
-    "lefthook": "1.13.4",
-    "playwright": "1.55.1",
+    "lefthook": "1.13.6",
+    "playwright": "1.56.0",
     "turbo": "2.5.8",
-    "typescript": "5.9.2",
+    "typescript": "5.9.3",
     "vitest": "3.2.4"
   }
 }
