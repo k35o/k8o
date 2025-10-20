@@ -39,7 +39,7 @@
     "@biomejs/biome": "2.2.5",
     "@ls-lint/ls-lint": "2.3.1",
     "@playwright/mcp": "0.0.41",
-    "@types/node": "22.18.9",
+    "@types/node": "22.18.10",
     "@typescript/native-preview": "7.0.0-dev.20251013.1",
     "@vitest/browser": "3.2.4",
     "@vitest/coverage-istanbul": "3.2.4",
