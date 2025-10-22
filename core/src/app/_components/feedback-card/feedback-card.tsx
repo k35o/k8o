@@ -40,7 +40,6 @@ export const FeedbackCard: FC<{
           const Icon = option.icon;
           return (
             <div className="flex items-center justify-center" key={option.id}>
-              {/** biome-ignore lint/a11y/useSemanticElements: buttonとして表現したいため */}
               <motion.button
                 aria-checked={feedbackId === option.id}
                 className={cn(

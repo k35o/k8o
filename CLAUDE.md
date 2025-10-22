@@ -85,7 +85,7 @@
   "storybook": "./src/mocks/db.mock.ts",
   "default": "./src/database/db.ts"
 },
-"#api/blog": {
+"@/app/blog/_api": {
   "storybook": "./src/mocks/api/blog.mock.ts",
   "default": "./src/app/blog/_api/index.ts"
 }
