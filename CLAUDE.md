@@ -8,7 +8,6 @@
 
 - `pnpm run dev` - 開発サーバーを開始
 - `pnpm run -F core storybook` - Storybookデザインシステムを起動（ポート6006、core package）
-- `pnpm run -F ui storybook` - コンポーネントライブラリStorybook（ui package）
 - `pnpm run -F core email` - React Emailテンプレート開発サーバー（ポート3333、core package）
 
 ### データベース
@@ -44,36 +43,41 @@
 
 ### プロジェクト構造
 
-**Turborepo Monorepo**: 3つのワークスペースで構成
+**Turborepo Monorepo**: 2つのワークスペースで構成
 
 - **core** - メインのNext.jsアプリケーション
-- **packages/arte-odyssey** - 再利用可能UIコンポーネントライブラリ
 - **packages/helpers** - ユーティリティ関数ライブラリ
-- **packages/hooks** - カスタムReactフックライブラリ
+
+外部パッケージ:
+
+- **@k8o/arte-odyssey** - 再利用可能UIコンポーネントライブラリ(npm公開、外部リポジトリ: [ArteOdyssey](https://github.com/k35o/ArteOdyssey))
 
 ### 技術スタック
 
 **フロントエンド**:
 
-- **Next.js 15** - App Router、React 19、TypeScript
-- **TailwindCSS 4** - カスタムデザイントークンベース
+- **Next.js 15.5** - App Router、React 19、TypeScript
+- **TailwindCSS 4.1** - カスタムデザイントークンベース
 - **Motion** - アニメーション
 - **MDX** - 数式（KaTeX）・シンタックスハイライト（Shiki）付きブログコンテンツ
+- **ArteOdyssey** - UIコンポーネントライブラリ(npm: @k8o/arte-odyssey)
 
 **バックエンド・データベース**:
 
-- **Drizzle ORM** - TypeScriptファーストORM
-- **PostgreSQL** - 本番環境はNeon、ローカルはDocker
+- **Drizzle ORM 0.44** - TypeScriptファーストORM
+- **PostgreSQL 18** - 本番環境はNeon、ローカルはDocker
 - **Redis** - KV ストレージ（本番環境はUpstash、ローカルはDocker）
+- **Zod 4.1** - スキーマバリデーション
 
 **開発ツール**:
 
-- **Turbo** - モノレポビルドシステム
-- **Vitest** - テストランナー（ブラウザモード対応）
-- **Storybook** - コンポーネント開発環境
-- **React Email** - メールテンプレート
-- **MSW** - APIモック
-- **Lefthook** - Git フック
+- **Turbo 2.5** - モノレポビルドシステム
+- **Vitest 3.2** - テストランナー（ブラウザモード対応）
+- **Storybook 9.1** - コンポーネント開発環境
+- **React Email 4.3** - メールテンプレート
+- **MSW 2.11** - APIモック
+- **Lefthook 1.13** - Git フック
+- **Playwright 1.56** - E2Eテスト
 
 ### 重要なパターン
 
@@ -93,14 +97,17 @@
 
 **データベーススキーマ**: `core/src/database/schema/`に関係別整理
 
-- コンテンツ: blogs, talks, quizzes
+- コンテンツ: blogs, talks, quizzes, services
 - ユーザーデータ: comments, feedbacks, subscribers
+- ビュー・回答: blog-views, quiz-answers
 - タグシステム: blog-tag, talk-tag, service-tag
+- タイプ: quiz-type, service-type
 
 **コンポーネント構成**:
 
-- 再利用可能UIコンポーネント: `packages/arte-odyssey/src/`
+- 再利用可能UIコンポーネント: npmパッケージ `@k8o/arte-odyssey`(外部リポジトリ)
 - ページ固有コンポーネント: `core/src/app/[page]/_components/`
+- アプリ共通コンポーネント: `core/src/app/_components/`
 - 各コンポーネントには`.stories.tsx`が必須
 
 **ヘルパー関数**: `packages/helpers/src/`に分類別整理
@@ -117,15 +124,10 @@
 - In-source testing（`if (import.meta.vitest)`ブロック）
 - 同一ファイル内にテストを記述
 
-**Components** (`packages/arte-odyssey/`):
+**Components** (`core/src/app/_components/`):
 
 - Storybookストーリーでテスト
 - `@storybook/addon-vitest`でインテグレーション
-
-**Hooks** (`packages/hooks/`):
-
-- `.test.tsx`ファイルでVitest
-- `vitest-browser-react`使用
 
 **Core Application** (`core/src/`):
 
@@ -171,7 +173,7 @@ if (import.meta.vitest) {
 }
 ```
 
-### Components（`packages/arte-odyssey/src/`）
+### Components（`core/src/app/_components/`）
 
 Storybookストーリーでテストを記述：
 
@@ -179,25 +181,9 @@ Storybookストーリーでテストを記述：
 2. **Play関数**: インタラクションテストに`play`関数を使用
 3. **A11y**: アクセシビリティテストを含める
 
-### Hooks（`packages/hooks/src/`）
-
-`.test.tsx`ファイルでVitestを使用：
-
-```typescript
-import { renderHook } from 'vitest-browser-react';
-import { describe, expect, it } from 'vitest';
-
-describe('useCustomHook', () => {
-  it('初期値が正しく設定されるべき', () => {
-    const { result } = renderHook(() => useCustomHook());
-    expect(result.current.value).toBe(null);
-  });
-});
-```
-
 ### TailwindCSS設計システム
 
-**重要**: `core/src/app/_styles/globals.css`の`@theme`セクションで定義されたカスタムデザイントークンのみ使用。標準のTailwindクラス（`text-gray-600`など）は使用禁止。
+**重要**: ArteOdyssey（`@k8o/arte-odyssey/styles.css`）で定義されたカスタムデザイントークンのみ使用。標準のTailwindクラス（`text-gray-600`など）は使用禁止。
 
 利用可能なカスタムクラス例：
 
@@ -207,6 +193,8 @@ describe('useCustomHook', () => {
 - **フォントサイズ**: `text-xs`, `text-sm`, `text-md`（カスタム定義）
 - **Font Weight**: `font-medium`, `font-bold`（カスタム定義）
 - **Radius**: `rounded-sm`, `rounded-md`, `rounded-lg`（カスタム定義）
+
+デザイントークンは `@k8o/arte-odyssey` パッケージで一元管理されています。
 
 ### 開発ガイドライン
 
@@ -218,8 +206,8 @@ describe('useCustomHook', () => {
 
 **新機能開発フロー**:
 
-1. **UIコンポーネント**: `packages/arte-odyssey/src/`にStorybookストーリー付きで作成
-2. **Hooks**: `packages/hooks/src/`に`.test.tsx`ファイル付きで作成
+1. **汎用UIコンポーネント**: 別リポジトリ [ArteOdyssey](https://github.com/k35o/ArteOdyssey) で開発しnpm公開
+2. **ページ固有コンポーネント**: `core/src/app/_components/`にStorybookストーリー付きで作成
 3. **Helpers**: `packages/helpers/src/`にin-source testing付きで作成
 4. **ページ/機能**: `core/src/app/`に配置、適切なテスト方法でテスト追加
 
@@ -227,9 +215,9 @@ describe('useCustomHook', () => {
 
 - 日本語コメント推奨
 - **テスト必須**: 機能に応じた適切なテスト方法を選択
-- **TailwindCSS**: カスタムトークンのみ使用
-- ESLint zero warnings policy
-- Prettier自動フォーマット
+- **TailwindCSS**: カスタムトークンのみ使用（ArteOdyssey定義）
+- **Biome**: リンター・フォーマッター（ESLint/Prettierの代替）
+- **ls-lint**: ファイル名/ディレクトリ名の検証
 
 **本番環境**:
 
@@ -243,7 +231,7 @@ describe('useCustomHook', () => {
 
 ローカル開発用のDockerサービス：
 
-- **postgres**: PostgreSQL 17（ポート5432）
+- **postgres**: PostgreSQL 18（ポート5432）
 - **neon-proxy**: Neon WebSocket プロキシ（ポート5433）
 - **redis**: Redis（ポート6379）
 - **serverless-redis-http**: Upstash互換HTTPプロキシ（ポート8079）

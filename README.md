@@ -4,7 +4,7 @@ This is a website for everything created by k8o!
 
 ## Setup
 
-Install dependencies after preparing Node.js v22.17.1 and pnpm v10.13.1.
+Install dependencies after preparing Node.js v22.20.0 and pnpm v10.18.0.
 
 ```bash
 pnpm i --frozen-lockfile
@@ -22,12 +22,14 @@ For MicroCMS or Resend integration, ask k8o for the `MICROCMS_API_KEY` or `RESEN
 
 ## Architecture
 
-**Turborepo Monorepo** with 3 workspaces:
+**Turborepo Monorepo** with 2 workspaces:
 
 - **core** - Main Next.js 15 application with App Router
-- **packages/arte-odyssey** - Reusable UI component library with Storybook
 - **packages/helpers** - Utility functions with in-source testing
-- **packages/hooks** - Custom React hooks
+
+External packages:
+
+- **@k8o/arte-odyssey** - Reusable UI component library (published on npm, external repository: [ArteOdyssey](https://github.com/k35o/ArteOdyssey))
 
 ## Development
 
@@ -56,7 +58,6 @@ Component library and design system.
 
 ```bash
 pnpm run -F core storybook
-pnpm run -F ui storybook
 ```
 
 ### Email Templates
@@ -82,7 +83,6 @@ pnpm run install-playwright
 
 - **Helpers**: In-source testing with `if (import.meta.vitest)` blocks
 - **UI**: Storybook stories with `@storybook/addon-vitest`
-- **Hooks**: `.test.tsx` files with `vitest-browser-react`
 - **Core App**: Browser mode for React components, Node.js for services/utils
 
 ## Code Quality
@@ -95,7 +95,7 @@ Using Biome.
 pnpm run check
 
 # Auto-fix
-pnpm run check:fix
+pnpm run check:write
 ```
 
 ### Type Checking
@@ -134,25 +134,29 @@ docker compose exec postgres psql -U postgres -d main
 
 ### Frontend
 
-- **Next.js 15** - App Router, React 19, TypeScript
-- **TailwindCSS 4** - Custom design tokens (no standard classes like `text-gray-600`)
+- **Next.js 15.5** - App Router, React 19, TypeScript
+- **TailwindCSS 4.1** - Custom design tokens (no standard classes like `text-gray-600`)
 - **Motion** - Animations
 - **MDX** - Blog content with KaTeX math and Shiki syntax highlighting
+- **ArteOdyssey** - UI component library (npm: @k8o/arte-odyssey)
 
 ### Backend & Database
 
-- **Drizzle ORM** - TypeScript-first ORM
-- **PostgreSQL** - Neon (production), Docker (local)
+- **Drizzle ORM 0.44** - TypeScript-first ORM
+- **PostgreSQL 18** - Neon (production), Docker (local)
 - **Redis** - Upstash (production), Docker (local)
+- **Zod 4.1** - Schema validation
 
 ### Development Tools
 
-- **Turbo** - Monorepo build system
-- **Vitest** - Test runner with browser mode support
-- **Storybook** - Component development environment
-- **React Email** - Email templates
-- **MSW** - API mocking
-- **Lefthook** - Git hooks
+- **Turbo 2.5** - Monorepo build system
+- **Vitest 3.2** - Test runner with browser mode support
+- **Storybook 9.1** - Component development environment
+- **React Email 4.3** - Email templates
+- **MSW 2.11** - API mocking
+- **Lefthook 1.13** - Git hooks
+- **Playwright 1.56** - E2E testing
+- **Biome** - Linter and formatter (ESLint/Prettier alternative)
 
 ## Production Services
 
@@ -166,7 +170,7 @@ docker compose exec postgres psql -U postgres -d main
 
 Local development services (via `docker compose up -d`):
 
-- **postgres**: PostgreSQL 17 (port 5432)
+- **postgres**: PostgreSQL 18 (port 5432)
 - **neon-proxy**: Neon WebSocket proxy (port 5433)
 - **redis**: Redis (port 6379)
 - **serverless-redis-http**: Upstash-compatible HTTP proxy (port 8079)
@@ -174,9 +178,10 @@ Local development services (via `docker compose up -d`):
 ## Key Features
 
 - **Conditional Import Maps**: Environment-specific mocking for Storybook
-- **Custom Design System**: TailwindCSS with custom tokens in `@theme`
-- **Comprehensive Testing**: In-source, Storybook, and Vitest integration
+- **Custom Design System**: TailwindCSS with custom tokens from ArteOdyssey
+- **Comprehensive Testing**: In-source, Storybook, Vitest, and Playwright E2E
 - **Type Safety**: Full TypeScript coverage with strict configuration
 - **Performance**: Bundle analysis, tree shaking, and optimization
+- **External UI Library**: ArteOdyssey package for reusable components
 
 For detailed development guidelines, see [CLAUDE.md](./CLAUDE.md).
