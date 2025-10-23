@@ -2,17 +2,18 @@ packages:
   - core
   - packages/*
 
-minimumReleaseAge: 4320
-
 ignoredBuiltDependencies:
   - '@prisma/engines'
   - '@swc/core'
   - '@tailwindcss/oxide'
   - bufferutil
+  - core-js
   - core-js-pure
   - esbuild
   - sharp
   - unrs-resolver
+
+minimumReleaseAge: 4320
 
 onlyBuiltDependencies:
   - '@vercel/speed-insights'
