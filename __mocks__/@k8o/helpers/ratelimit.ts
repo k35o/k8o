@@ -1,8 +1,8 @@
 import { fn } from 'storybook/test';
 
-export enum RateLimitType {
-  GENERAL = 'general',
-  FEEDBACK = 'feedback',
-}
+export const RateLimitType = {
+  GENERAL: 'general',
+  FEEDBACK: 'feedback',
+} as const;
 
 export const checkRateLimit = fn();
