@@ -1,9 +1,17 @@
 import { getFrontmatter, getTocTree } from '@k8o/helpers/mdx';
-import { db } from '#database/db';
+import { db } from '@/database/db';
 import { getBlog, getBlogMetadata, getBlogToc } from './blog';
 import { blogPath } from './path';
 
-vi.mock('#database/db');
+vi.mock('@/database/db', () => ({
+  db: {
+    query: {
+      blogs: {
+        findFirst: vi.fn(),
+      },
+    },
+  },
+}));
 vi.mock('@k8o/helpers/mdx');
 vi.mock('./path');
 

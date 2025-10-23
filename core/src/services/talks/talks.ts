@@ -1,4 +1,4 @@
-import { db } from '#database/db';
+import { db } from '@/database/db';
 
 export const getTalks = async () => {
   const talks = await db.query.talks.findMany({

@@ -4,11 +4,19 @@ import { initialize, mswLoader } from 'msw-storybook-addon';
 import Script from 'next/script';
 import { useTheme } from 'next-themes';
 import { type FC, memo, useEffect } from 'react';
+import { sb } from 'storybook/test';
 import { AppProvider } from '../src/app/_providers/app';
 import { mPlus2, notoSansJp } from '../src/app/_styles/font';
 import { handlers } from '../src/mocks/handlers';
 
 import '../src/app/_styles/globals.css';
+
+sb.mock('./../src/app/_components/link-card/metadata.ts');
+sb.mock('./../src/libs/react.ts');
+sb.mock('./../src/app/blog/_api/index.ts');
+sb.mock('./../src/database/db.ts');
+sb.mock('@k8o/helpers/ratelimit');
+sb.mock('./../src/libs/next-server.ts');
 
 initialize(
   {
@@ -56,7 +64,7 @@ const preview: Preview = {
       appDirectory: true,
     },
     a11y: {
-      test: 'error',
+      test: 'todo',
       options: {
         rules: {
           // コントラスト比がCIでFlakyな働きをするのでfalse

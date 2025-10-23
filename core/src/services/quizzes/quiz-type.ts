@@ -1,5 +1,5 @@
 import type { InferSelectModel } from 'drizzle-orm';
-import { db } from '#database/db';
+import { db } from '@/database/db';
 import type { quizType } from '@/database/schema/quiz-type';
 
 export const getQuizType = async ({

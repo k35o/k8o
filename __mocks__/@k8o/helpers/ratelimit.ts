@@ -5,10 +5,4 @@ export const RateLimitType = {
   FEEDBACK: 'feedback',
 } as const;
 
-export type RateLimitType = (typeof RateLimitType)[keyof typeof RateLimitType];
-
 export const checkRateLimit = fn();
-
-export const ratelimit = {
-  limit: fn(),
-};
