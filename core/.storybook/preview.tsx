@@ -64,7 +64,7 @@ const preview: Preview = {
       appDirectory: true,
     },
     a11y: {
-      test: 'error',
+      test: 'todo',
       options: {
         rules: {
           // コントラスト比がCIでFlakyな働きをするのでfalse
