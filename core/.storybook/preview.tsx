@@ -49,7 +49,7 @@ const preview: Preview = {
   },
   loaders: [mswLoader],
   parameters: {
-    backgrounds: { disable: true },
+    backgrounds: { disabled: true },
     layout: 'fullscreen',
     mockingDate: new Date(2023, 0, 2, 12, 34, 56),
     nextjs: {
