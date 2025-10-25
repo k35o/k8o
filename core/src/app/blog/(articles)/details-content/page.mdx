@@ -1,0 +1,106 @@
+---
+title: details要素に命を吹き込む::details-content擬似要素の登場
+description:
+createdAt: 2025-10-25
+updatedAt: 2025-10-25
+---
+
+import { BaselineStatus } from '@k8o/arte-odyssey/baseline-status';
+import {
+  DetailsAnimationDemo as Example2,
+  DetailsContentDemo as Example1,
+} from '@/app/_components/playgrounds/details-content';
+import { Playground } from '@/app/_components/playgrounds';
+import { Image } from '@/app/blog/_components/image';
+import detailsSlot from './_images/details-slot.png';
+
+# details要素に命を吹き込む::details-content擬似要素の登場
+
+<BaselineStatus featureId="details-content" />
+
+`details`要素に関する新たなCSS擬似要素`::details-content`が導入されました。
+`::details-content`擬似要素を使用することで、`details`要素内のコンテンツ部分に対してスタイルを適用できます。
+
+`details`要素は、アコーディオンのように折りたたみ可能なコンテンツを作成するためのHTML要素です。
+`summary`要素と組み合わせて使用され、ユーザーのアクションに合わせてコンテンツが開閉するUIを提供します。
+
+```html
+<details>
+  <summary>詳細を見る</summary>
+  <p>ここに詳細が記述されます。</p>
+</details>
+```
+
+上記のhtmlは、以下のように表示されます。
+
+<Playground title="details要素とsummary要素を使った例">
+  <details>
+    <summary>詳細を見る</summary>
+    <p>ここに詳細が記述されます。</p>
+  </details>
+</Playground>
+
+開発者ツールなどを確認すると、コンテンツ部分が`slot`要素として表示されていることがわかります。
+
+<Image
+  src={detailsSlot}
+  alt="details要素の展開部分がslot要素として表示されている"
+/>
+
+`::details-content`擬似要素は、この`slot`要素に対してスタイルを付与できます。
+
+<Playground>
+  <Example1 />
+</Playground>
+
+上記の例は`details`の子要素（`summary`要素を除いたもの）に対してスタイルを適用した場合（前者）と、`::details-content`擬似要素に対してスタイルを適用した場合（後者）の違いを示しています。
+
+```css
+/* 前者 */
+details:not(*:is(summary)) {
+  border: 2px solid var(--color-primary-border);
+}
+/* 後者 */
+details::details-content {
+  border: 2px solid var(--color-primary-border);
+}
+```
+
+前者は`details`の子要素がただ一つの要素でなければ想定した通りにスタイルを割り当てられず、後者は常に`details`のコンテンツ部分にスタイルを適用できることがわかります。
+
+`details`の子要素の中身に依存せずに、`details`のコンテンツ部分にスタイルを付与できる`::details-content`擬似要素の強力さが読み取れます。
+
+後者のケースは`slot`要素に対するスタイルなので、閉じている時にも装飾が行われます。
+展開中の時のみスタイルを付与したいときは`[open]`を利用して以下のように書きます。
+
+```css
+/* 後者 */
+details[open]::details-content {
+  border: 2px solid var(--color-primary-border);
+}
+```
+
+`::details-content`擬似要素は、開閉時のアニメーションを定義する際にも便利です。
+
+`details`要素が持つ`[open]`という状態は、即座に変化するため、アニメーションを適用するのは困難でした。
+しかし、`::details-content`擬似要素は`slot`要素に対するスタイルなので、`[open]`に引っ張られずにそれ自身の大きさ等をトリガーにアニメーションを適用できます。
+
+<Playground title="アニメーション付きdetails要素の例">
+  <Example2 />
+</Playground>
+
+```css
+details::details-content {
+  interpolate-size: allow-keywords;
+  transition: height 0.5s ease, content-visibility 0.5s ease allow-discrete;
+  height: 0;
+  overflow: clip;
+}
+
+details[open]::details-content {
+  height: auto;
+}
+```
+
+以上が、`details`要素に命を吹き込む`::details-content`擬似要素の紹介です。
+Baseline 2025で導入され、主要なブラウザはすでに利用可能です。ぜひ利用してみてください。
