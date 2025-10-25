@@ -1,5 +1,5 @@
-import { getBlogContent } from '#api/blog';
 import { OgImage } from '@/app/_components/og-image';
+import { getBlogContent } from '@/app/blog/_api';
 
 export const alt = '16bit浮動小数点が使える！Float16Array';
 export const size = {

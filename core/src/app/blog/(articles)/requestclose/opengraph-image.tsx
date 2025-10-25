@@ -1,5 +1,5 @@
-import { getBlogContent } from '#api/blog';
 import { OgImage } from '@/app/_components/og-image';
+import { getBlogContent } from '@/app/blog/_api';
 
 export const alt = '<dialog>要素を閉じるように要求するrequestClose';
 export const size = {

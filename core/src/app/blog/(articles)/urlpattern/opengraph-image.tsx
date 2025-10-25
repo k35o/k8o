@@ -1,5 +1,5 @@
-import { getBlogContent } from '#api/blog';
 import { OgImage } from '@/app/_components/og-image';
+import { getBlogContent } from '@/app/blog/_api';
 
 export const alt = 'URLのパターンマッチを簡単にするURLPattern API';
 export const size = {

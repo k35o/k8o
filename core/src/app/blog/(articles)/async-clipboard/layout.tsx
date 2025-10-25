@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import { getBlogContent } from '#api/blog';
+import { getBlogContent } from '@/app/blog/_api';
 import { BlogLayout } from '@/app/blog/_components/blog-layout';
 
 const slug = 'async-clipboard';
