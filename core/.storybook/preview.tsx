@@ -4,11 +4,14 @@ import { initialize, mswLoader } from 'msw-storybook-addon';
 import Script from 'next/script';
 import { useTheme } from 'next-themes';
 import { type FC, memo, useEffect } from 'react';
+import { sb } from 'storybook/test';
 import { AppProvider } from '../src/app/_providers/app';
 import { mPlus2, notoSansJp } from '../src/app/_styles/font';
 import { handlers } from '../src/mocks/handlers';
 
 import '../src/app/_styles/globals.css';
+
+sb.mock(import('./../src/app/_components/link-card/metadata.ts'));
 
 initialize(
   {
@@ -49,7 +52,7 @@ const preview: Preview = {
   },
   loaders: [mswLoader],
   parameters: {
-    backgrounds: { disable: true },
+    backgrounds: { disabled: true },
     layout: 'fullscreen',
     mockingDate: new Date(2023, 0, 2, 12, 34, 56),
     nextjs: {

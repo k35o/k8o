@@ -25,10 +25,6 @@
       "storybook": "./src/mocks/libs/next/server.mock.ts",
       "default": "next/server"
     },
-    "#link-card/metadata": {
-      "storybook": "./src/mocks/link-card/metadata.mock.ts",
-      "default": "./src/app/_components/link-card/metadata.ts"
-    },
     "#*": [
       "./*",
       "./*.ts",
@@ -56,7 +52,7 @@
     "preview:dist": "pnpm dlx http-server dist"
   },
   "dependencies": {
-    "@k8o/arte-odyssey": "1.0.0",
+    "@k8o/arte-odyssey": "1.1.0",
     "@mdx-js/loader": "3.1.1",
     "@mdx-js/react": "3.1.1",
     "@neondatabase/serverless": "1.0.2",
@@ -89,10 +85,10 @@
   "devDependencies": {
     "@liam-hq/cli": "0.7.20",
     "@playwright/test": "1.56.1",
-    "@storybook/addon-a11y": "9.1.12",
-    "@storybook/addon-docs": "9.1.12",
-    "@storybook/addon-vitest": "9.1.12",
-    "@storybook/nextjs-vite": "9.1.12",
+    "@storybook/addon-a11y": "9.1.13",
+    "@storybook/addon-docs": "9.1.13",
+    "@storybook/addon-vitest": "9.1.13",
+    "@storybook/nextjs-vite": "9.1.13",
     "@types/mdx": "2.0.13",
     "@types/react": "19.2.2",
     "@types/react-dom": "19.2.2",
@@ -107,7 +103,7 @@
     "react-email": "4.3.0",
     "react-scan": "0.4.3",
     "sonda": "0.9.0",
-    "storybook": "9.1.12",
+    "storybook": "9.1.13",
     "storybook-addon-mock-date": "1.0.2",
     "vitest-browser-react": "1.0.1"
   },
