@@ -1,0 +1,122 @@
+---
+title: WebRTC Encoded TransformsでWebRTCの一連の処理にメスを入れる
+description:
+createdAt: 2025-10-25
+updatedAt: 2025-10-25
+---
+
+import { BaselineStatus } from '@k8o/arte-odyssey/baseline-status';
+
+# WebRTC Encoded TransformsでWebRTCの一連の処理にメスを入れる
+
+<BaselineStatus featureId="webrtc-encoded-transform" />
+
+## はじめに
+
+WebRTCの登場によって、あらゆるデバイスが共通のプラットフォーム上で簡単に直接通信できるようになりました。
+
+そして、Chrome 141（Edge 141）からはBaselineのすべてのブラウザにて、WebRTC Encoded Transformという機能が利用可能になりました（Chromeでは2020年から初期バージョンは利用可能でしたが、仕様変更後の実装が行われていませんでした）。
+WebRTC Encoded Transformにより、より高度なメディア処理が可能となり、リアルタイムコミュニケーションの質が向上します。
+
+この記事では、WebRTCについて簡単に紹介したのちに、WebRTC Encoded Transformの簡単な使い方を解説します。
+
+## WebRTCとは
+
+[WebRTC（Web Real-Time Communication）](https://webrtc.org)は、ブラウザ間でリアルタイムに音声や映像など任意のデータを直接やり取りできる技術です。
+
+実際に試してみたい方は、公式から提供されている[簡単なサンプル群](https://webrtc.github.io/samples/)や、Googleが用意する[コードラボ](https://codelabs.developers.google.com/codelabs/webrtc-web)を見るのがおすすめです。
+
+## WebRTC Encoded Transformとは
+
+WebRTC Encoded Transformは、WebRTC APIの一部で、エンコードされたメディアフレームを変換するために使用される機能です。
+Workerスレッドで実行される変換処理をWebRTCの送信・受信パイプラインに挿入できます。
+
+この機能は`RTCRtpScriptTransform`インターフェイスや`RTCRtpSender・RTCRtpReceiver`の`transform`プロパティを利用して実装されます。
+```ts
+new RTCRtpScriptTransform(worker, options, transfer)
+```
+第1引数には変換処理を実行するWorkerオブジェクトを指定します。
+第2引数には変換処理に関するオプションを、第3引数には、Workerに転送するオブジェクトの配列を指定します。
+第2、第3引数は省略可能です。
+
+`RTCRtpSender・RTCRtpReceiver`の`transform`プロパティは`RTCRtpScriptTransform`を設定するものです。
+
+```ts
+videoSender.transform = new RTCRtpScriptTransform(worker);
+```
+
+## 使用例
+例としてE2EE（End-to-End Encryption）を搭載してみます。
+
+まずは、メインスレッド側のコードです。
+```ts
+async function setupSecureVideoCall() {
+  const pc = new RTCPeerConnection();
+  const stream = await navigator.mediaDevices.getUserMedia({
+    video: true,
+    audio: true,
+  });
+  const videoTrack = stream.getVideoTracks()[0]!;
+  const sender = pc.addTrack(videoTrack, stream);
+
+  // 暗号化キーを生成
+  const encryptionKey = await generateKey();
+
+  // 送信側の暗号化設定
+  const encryptWorker = new Worker('e2e-encryption-worker.js');
+  sender.transform = new RTCRtpScriptTransform(encryptWorker, {
+    operation: 'encrypt',
+    key: encryptionKey
+  });
+
+  // 受信側の復号化設定も同様に行う
+}
+```
+
+次に、Workerスレッド側（`e2e-encryption-worker.js`）のコードです。
+```ts
+self.addEventListener('rtctransform', (event: RTCTransformEvent) => {
+  const transformer = event.transformer;
+  const { operation, key } = transformer.options;
+
+  const cryptoTransform = new TransformStream({
+    async transform(encodedFrame, controller) {
+      if (operation === 'encrypt') {
+        // フレームデータを暗号化
+        encodedFrame.data = await encryptData(encodedFrame.data, key);
+      } else if (operation === 'decrypt') {
+        // フレームデータを復号化
+        encodedFrame.data = await decryptData(encodedFrame.data, key);
+      }
+
+      controller.enqueue(encodedFrame);
+    }
+  });
+
+  transformer.readable
+    .pipeThrough(cryptoTransform)
+    .pipeTo(transformer.writable);
+});
+```
+
+このように、WebRTC Encoded Transformを使用することで、リアルタイムのビデオストリームに対してカスタムエフェクトを適用できます。
+
+エンコードされたメディアフレームに対して直接操作を行うため、パフォーマンスへの影響を最小限に抑えつつ、高度なメディア処理が可能です。
+
+```ts
+// これまで
+[getUserMedia] → [Encoder] → [Network] → [Decoder] → [Display]
+                     ↑                        ↑
+                 触れられない               触れられない
+// これから
+[getUserMedia] → [Encoder] → [Transform] → [Network] → [Transform] → [Decoder] → [Display]
+                                  ↑                          ↑
+                             E2EEを追加可能               E2EEを追加可能
+```
+
+## まとめ
+WebRTCとWebRTC Encoded Transformについて簡単に紹介しました。
+
+WebRTC Encoded Transformは、Baseline 2025に追加された、WebRTCに関する強力な機能です。
+
+これにより、WebRTCにおける一連の処理中にカスタムエフェクトや高度なメディア処理が可能となり、大きなパフォーマンスと柔軟性の向上が期待されます。
