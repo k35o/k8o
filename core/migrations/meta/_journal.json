@@ -351,6 +351,13 @@
       "when": 1760154890760,
       "tag": "0049_faithful_slapstick",
       "breakpoints": true
+    },
+    {
+      "idx": 50,
+      "version": "7",
+      "when": 1760158280885,
+      "tag": "0050_right_oracle",
+      "breakpoints": true
     }
   ]
 }
