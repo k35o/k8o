@@ -12,6 +12,7 @@ import { handlers } from '../src/mocks/handlers';
 import '../src/app/_styles/globals.css';
 
 sb.mock(import('./../src/app/_components/link-card/metadata.ts'));
+sb.mock(import('./../src/app/blog/_api/index.ts'));
 
 initialize(
   {

@@ -13,10 +13,6 @@
       "storybook": "./src/mocks/helpers/ratelimit.mock.ts",
       "default": "@k8o/helpers/ratelimit"
     },
-    "#api/blog": {
-      "storybook": "./src/mocks/api/blog.mock.ts",
-      "default": "./src/app/blog/_api/index.ts"
-    },
     "#libs/react": {
       "storybook": "./src/mocks/libs/react.mock.ts",
       "default": "./src/libs/react.ts"

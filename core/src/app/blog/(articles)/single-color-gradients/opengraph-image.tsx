@@ -1,5 +1,5 @@
-import { getBlogContent } from '#api/blog';
 import { OgImage } from '@/app/_components/og-image';
+import { getBlogContent } from '@/app/blog/_api';
 
 export const alt = 'CSS グラデーションの新仕様：単色カラーストップの導入';
 export const size = {
