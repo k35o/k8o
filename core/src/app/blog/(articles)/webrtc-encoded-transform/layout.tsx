@@ -31,6 +31,6 @@ export async function generateMetadata(): Promise<Metadata> {
 
 export default function Layout({
   children,
-}: LayoutProps<'/blog/suspense-list'>) {
+}: LayoutProps<'/blog/webrtc-encoded-transform'>) {
   return <BlogLayout slug={slug}>{children}</BlogLayout>;
 }

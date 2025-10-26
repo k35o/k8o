@@ -3,7 +3,7 @@ import { Playground } from '../playground';
 import { DetailsAnimationDemo } from './details-animation-demo';
 
 const meta: Meta<typeof DetailsAnimationDemo> = {
-  title: 'playgrounds/details-animation/DetailsAnimationDemo',
+  title: 'playgrounds/details-content/DetailsAnimationDemo',
   component: DetailsAnimationDemo,
   decorators: [
     (Story) => (
