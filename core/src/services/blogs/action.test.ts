@@ -1,14 +1,11 @@
-// server-onlyをモック
-vi.mock('server-only', () => ({}));
-
-import { checkRateLimit } from '@k8o/helpers/ratelimit';
+import { checkRateLimit } from '@k8o/helpers/server';
 import { db } from '#database/db';
 import { blogComment } from '@/database/schema/blog-comment';
 import { comments } from '@/database/schema/comments';
 import { feedback } from './action';
 
 vi.mock('#database/db');
-vi.mock('@k8o/helpers/ratelimit');
+vi.mock('@k8o/helpers/server');
 vi.mock('@/libs/zod', () => ({}));
 
 describe('feedback', () => {

@@ -11,7 +11,7 @@
     },
     "#helpers/ratelimit": {
       "storybook": "./src/mocks/helpers/ratelimit.mock.ts",
-      "default": "@k8o/helpers/ratelimit"
+      "default": "@k8o/helpers/server"
     },
     "#libs/react": {
       "storybook": "./src/mocks/libs/react.mock.ts",

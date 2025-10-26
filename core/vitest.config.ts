@@ -7,6 +7,7 @@ export default defineConfig({
       '@': fileURLToPath(new URL('./src', import.meta.url)),
     },
     globals: true,
+    setupFiles: ['./vitest.setup.ts'],
     name: { label: 'services test', color: 'cyan' },
     include: ['src/services/**/*.test.{ts,tsx}'],
   },
