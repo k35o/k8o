@@ -1,4 +1,4 @@
-import { getFrontmatter } from '@k8o/helpers/mdx';
+import { getFrontmatter } from '@k8o/helpers/server';
 import { db } from '#database/db';
 import { blogPath } from './path';
 
