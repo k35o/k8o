@@ -57,7 +57,7 @@ import detailsSlot from './_images/details-slot.png';
 
 ```css
 /* 前者 */
-details:not(*:is(summary)) {
+details > :not(summary) {
   border: 2px solid var(--color-primary-border);
 }
 /* 後者 */
