@@ -1,3 +1,6 @@
+// server-onlyをモック
+vi.mock('server-only', () => ({}));
+
 import { db } from '#database/db';
 import { getBlogMetadata } from '@/services/blogs/blog';
 import { getTag } from './tag';
