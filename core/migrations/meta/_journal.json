@@ -358,6 +358,13 @@
       "when": 1760158280885,
       "tag": "0050_right_oracle",
       "breakpoints": true
+    },
+    {
+      "idx": 51,
+      "version": "7",
+      "when": 1761385684101,
+      "tag": "0051_parched_scarlet_witch",
+      "breakpoints": true
     }
   ]
 }

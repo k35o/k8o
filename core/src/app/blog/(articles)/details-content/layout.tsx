@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 import { getBlogContent } from '@/app/blog/_api';
 import { BlogLayout } from '@/app/blog/_components/blog-layout';
 
-const slug = 'webrtc-encoded-transform';
+const slug = 'details-content';
 
 export async function generateMetadata(): Promise<Metadata> {
   const blog = await getBlogContent(slug);
@@ -31,6 +31,6 @@ export async function generateMetadata(): Promise<Metadata> {
 
 export default function Layout({
   children,
-}: LayoutProps<'/blog/webrtc-encoded-transform'>) {
+}: LayoutProps<'/blog/details-content'>) {
   return <BlogLayout slug={slug}>{children}</BlogLayout>;
 }
