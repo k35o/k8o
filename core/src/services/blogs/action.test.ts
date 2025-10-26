@@ -1,6 +1,3 @@
-// server-onlyをモック
-vi.mock('server-only', () => ({}));
-
 import { checkRateLimit } from '@k8o/helpers/server';
 import { db } from '#database/db';
 import { blogComment } from '@/database/schema/blog-comment';

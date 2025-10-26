@@ -1,6 +1,3 @@
-// server-onlyをモック
-vi.mock('server-only', () => ({}));
-
 import { getFrontmatter, getTocTree } from '@k8o/helpers/server';
 import { db } from '#database/db';
 import { getBlog, getBlogMetadata, getBlogToc } from './blog';
