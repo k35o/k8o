@@ -1,7 +1,15 @@
-import { db } from '#database/db';
+import { db } from '@/database/db';
 import { getQuizType } from '../quiz-type';
 
-vi.mock('#database/db');
+vi.mock('@/database/db', () => ({
+  db: {
+    query: {
+      quizType: {
+        findFirst: vi.fn(),
+      },
+    },
+  },
+}));
 
 describe('quiz-type', () => {
   it('クイズの種別を取得できる', async () => {

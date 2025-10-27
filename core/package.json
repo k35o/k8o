@@ -5,10 +5,6 @@
   "private": true,
   "type": "module",
   "imports": {
-    "#database/db": {
-      "storybook": "./src/mocks/db.mock.ts",
-      "default": "./src/database/db.ts"
-    },
     "#helpers/ratelimit": {
       "storybook": "./src/mocks/helpers/ratelimit.mock.ts",
       "default": "@k8o/helpers/server"

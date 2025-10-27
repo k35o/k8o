@@ -1,7 +1,7 @@
 import { inArray } from 'drizzle-orm';
 import { type NextRequest, NextResponse } from 'next/server';
-import { db } from '#database/db';
 import { getBlogContent } from '@/app/blog/_api';
+import { db } from '@/database/db';
 import { comments } from '@/database/schema/comments';
 import WeeklyNotification, {
   type Notification,

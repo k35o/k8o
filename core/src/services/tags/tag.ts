@@ -1,4 +1,4 @@
-import { db } from '#database/db';
+import { db } from '@/database/db';
 import { getBlogMetadata } from '@/services/blogs/blog';
 
 export const getTag = async (
