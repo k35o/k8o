@@ -11,7 +11,7 @@ export default defineConfig({
   ],
   publicDir: fileURLToPath(new URL('./.storybook/public', import.meta.url)),
   optimizeDeps: {
-    include: ['drizzle-orm/neon-http'],
+    include: ['drizzle-orm/neon-serverless'],
   },
   resolve: {
     alias: {
