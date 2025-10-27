@@ -10,6 +10,9 @@ export default defineConfig({
     }),
   ],
   publicDir: fileURLToPath(new URL('./.storybook/public', import.meta.url)),
+  optimizeDeps: {
+    include: ['drizzle-orm/neon-serverless'],
+  },
   resolve: {
     alias: {
       // @react-email/componentsをモックに置き換え

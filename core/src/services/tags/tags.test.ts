@@ -1,7 +1,15 @@
-import { db } from '#database/db';
+import { db } from '@/database/db';
 import { getTags } from './tags';
 
-vi.mock('#database/db');
+vi.mock('@/database/db', () => ({
+  db: {
+    query: {
+      tags: {
+        findMany: vi.fn(),
+      },
+    },
+  },
+}));
 
 describe('getTags', () => {
   it('タグの一覧を取得できる', async () => {
