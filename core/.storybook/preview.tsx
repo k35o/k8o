@@ -20,6 +20,7 @@ sb.mock(
     './../src/app/blog/_components/subscribe/subscribe-card.tsx/action.ts'
   ),
 );
+sb.mock(import('./../src/app/_api/contact-to-me.ts'));
 
 initialize(
   {
