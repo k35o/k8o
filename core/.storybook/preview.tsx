@@ -21,6 +21,7 @@ sb.mock(
   ),
 );
 sb.mock(import('./../src/app/_api/contact-to-me.ts'));
+sb.mock(import('./../src/services/blogs/action.ts'));
 
 initialize(
   {
