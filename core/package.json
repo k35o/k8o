@@ -9,10 +9,6 @@
       "storybook": "./src/mocks/helpers/ratelimit.mock.ts",
       "default": "@k8o/helpers/server"
     },
-    "#next/server": {
-      "storybook": "./src/mocks/libs/next/server.mock.ts",
-      "default": "next/server"
-    },
     "#*": [
       "./*",
       "./*.ts",
