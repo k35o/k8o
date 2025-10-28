@@ -1,7 +1,7 @@
 'use server';
 
+import { ratelimit } from '@k8o/helpers/server';
 import { z } from 'zod';
-import { ratelimit } from '#helpers/ratelimit';
 import { db } from '@/database/db';
 import { comments } from '@/database/schema/comments';
 import '@/libs/zod';
