@@ -1,6 +1,5 @@
-// @ts-expect-error: next16まではunsableなViewTransitinoのみが使える
-import { unstable_SuspenseList, unstable_ViewTransition } from 'react';
+import { unstable_SuspenseList } from 'react';
 
-export const ViewTransition = unstable_ViewTransition;
+export { ViewTransition } from 'react';
 
 export const SuspenseList = unstable_SuspenseList;
