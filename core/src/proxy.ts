@@ -1,6 +1,6 @@
 import { after, type NextRequest, NextResponse } from 'next/server';
 
-export function middleware(request: NextRequest) {
+export function proxy(request: NextRequest) {
   // blog
   if (request.nextUrl.pathname.startsWith('/blog')) {
     const slug = request.nextUrl.pathname.split('/')[2];
