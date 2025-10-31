@@ -1,5 +1,6 @@
 import { fileURLToPath } from 'node:url';
 import { storybookTest } from '@storybook/addon-vitest/vitest-plugin';
+import { playwright } from '@vitest/browser-playwright';
 import { defineConfig } from 'vitest/config';
 
 export default defineConfig({
@@ -42,7 +43,7 @@ export default defineConfig({
           browser: 'chromium',
         },
       ],
-      provider: 'playwright',
+      provider: playwright(),
       headless: true,
       screenshotFailures: false,
     },
