@@ -14,7 +14,7 @@ jobs:
       - name: Setup pnpm
         uses: ./.github/actions/setup-pnpm
       - name: Publish Core to Chromatic
-        uses: chromaui/action@bc2d84ad2b60813a67d995c5582d696104a19383
+        uses: chromaui/action@ac86f2ff0a458ffbce7b40698abd44c0fa34d4b6
         with:
           projectToken: ${{ secrets.CHROMATIC_PROJECT_TOKEN }}
           onlyChanged: true
