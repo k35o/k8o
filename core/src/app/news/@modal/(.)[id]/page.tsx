@@ -66,7 +66,6 @@ export default async function Page({
         </div>
         <section
           className="max-h-96 overflow-y-auto"
-          // biome-ignore lint/security/noDangerouslySetInnerHtml: MicroCMSのhtml
           dangerouslySetInnerHTML={{ __html: news.description }}
         />
       </div>

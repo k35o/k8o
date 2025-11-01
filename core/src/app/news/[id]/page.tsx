@@ -49,7 +49,6 @@ export default async function Page({
 
   return (
     <NewsLayout {...news}>
-      {/** biome-ignore lint/security/noDangerouslySetInnerHtml: MicroCMSのhtml */}
       <section dangerouslySetInnerHTML={{ __html: news.description }} />
     </NewsLayout>
   );

@@ -1,5 +1,5 @@
 {
-  "$schema": "https://biomejs.dev/schemas/2.2.6/schema.json",
+  "$schema": "https://biomejs.dev/schemas/2.3.0/schema.json",
   "vcs": {
     "enabled": true,
     "clientKind": "git",
@@ -36,18 +36,11 @@
         "useJsxKeyInIterable": "error",
         "useJsonImportAttributes": "error",
         "noReactPropAssignments": "error",
-        "useUniqueElementIds": "off"
+        "useUniqueElementIds": "off",
+        "useImageSize": "error"
       },
       "nursery": {
-        "useConsistentTypeDefinitions": {
-          "level": "error",
-          "options": {
-            "style": "type"
-          }
-        },
         "useExhaustiveSwitchCases": "error",
-        "useImageSize": "error",
-        "useReactFunctionComponents": "error",
         "useSortedClasses": "error"
       },
       "performance": {
@@ -86,7 +79,14 @@
         "useReadonlyClassProperties": "error",
         "useSymbolDescription": "error",
         "useObjectSpread": "error",
-        "useConsistentObjectDefinitions": "error"
+        "useConsistentObjectDefinitions": "error",
+        "useConsistentTypeDefinitions": {
+          "level": "error",
+          "options": {
+            "style": "type"
+          }
+        },
+        "useReactFunctionComponents": "error"
       },
       "suspicious": {
         "noAlert": "error",
