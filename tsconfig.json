@@ -26,6 +26,6 @@
         "name": "next"
       }
     ],
-    "types": ["vitest/globals", "@vitest/browser/matchers", "vitest/importMeta"]
+    "types": ["vitest/globals", "vitest/importMeta"]
   }
 }
