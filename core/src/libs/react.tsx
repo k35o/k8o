@@ -1,8 +1,8 @@
 import { ErrorBoundary } from '@k8o/arte-odyssey/error-boundary';
-// @ts-expect-error
 import {
   type FC,
   type PropsWithChildren,
+  // @ts-expect-error
   SuspenseList as StableSuspenseList,
   type SuspenseListProps,
   unstable_SuspenseList as UnstableSuspenseList,
