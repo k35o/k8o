@@ -93,7 +93,6 @@ export const QrGenerator = () => {
           <div className="flex w-full max-w-full items-center justify-center overflow-hidden rounded-lg bg-bg-mute bg-white p-4">
             <div
               className="flex max-h-full max-w-full items-center justify-center"
-              // biome-ignore lint/security/noDangerouslySetInnerHtml: サニタイズされたsvgを使用する
               dangerouslySetInnerHTML={{ __html: qrCodeSvg }}
               style={{
                 width: `min(${String(size)}px, 100%)`,
