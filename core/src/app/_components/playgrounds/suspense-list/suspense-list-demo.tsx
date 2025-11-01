@@ -1,5 +1,6 @@
 'use client';
 
+import { Alert } from '@k8o/arte-odyssey/alert';
 import { Checkbox } from '@k8o/arte-odyssey/form/checkbox';
 import { FormControl } from '@k8o/arte-odyssey/form/form-control';
 import { Select } from '@k8o/arte-odyssey/form/select';
@@ -47,6 +48,10 @@ export const SuspenseListDemo: FC = () => {
 
   return (
     <div className="flex flex-col gap-6">
+      <Alert
+        message="React v19.2、Nextjs v16で利用ができなくなったため、現在こちらの機能は利用できません。"
+        status="info"
+      />
       <div className="flex flex-col gap-4">
         <Checkbox
           label="SuspenseListを利用する"
