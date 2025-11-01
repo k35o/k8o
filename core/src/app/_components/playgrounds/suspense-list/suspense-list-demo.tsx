@@ -1,5 +1,6 @@
 'use client';
 
+import { Alert } from '@k8o/arte-odyssey/alert';
 import { Checkbox } from '@k8o/arte-odyssey/form/checkbox';
 import { FormControl } from '@k8o/arte-odyssey/form/form-control';
 import { Select } from '@k8o/arte-odyssey/form/select';
@@ -14,7 +15,6 @@ import {
   useCallback,
   useState,
 } from 'react';
-import { SuspenseList } from '@/libs/react';
 
 type Data = {
   cacheKey: 'key1' | 'key2' | 'key3' | 'key4';
@@ -47,6 +47,10 @@ export const SuspenseListDemo: FC = () => {
 
   return (
     <div className="flex flex-col gap-6">
+      <Alert
+        message="React v19.2、Nextjs v16で利用ができなくなったため、現在こちらの機能は利用できません。"
+        status="info"
+      />
       <div className="flex flex-col gap-4">
         <Checkbox
           label="SuspenseListを利用する"
@@ -131,19 +135,20 @@ const DataList: FC<{
         revealOrder: 'together' | 'independent';
         tail?: never;
       };
-}> = ({ data, useSuspenseList, hasFallback, suspenseListProps }) => {
+}> = ({ data, useSuspenseList, hasFallback, suspenseListProps: _ }) => {
   const fallback = hasFallback ? (
     <div className="rounded-md border border-border-mute p-4">Loading...</div>
   ) : null;
   if (useSuspenseList) {
     return (
-      <SuspenseList {...suspenseListProps}>
+      // Nextjs,React側でSuspenseListが復活したらここに追加する
+      <>
         {data.map(({ cacheKey, getTime }) => (
           <Suspense fallback={fallback} key={cacheKey}>
             <Data data={{ cacheKey, getTime }} />
           </Suspense>
         ))}
-      </SuspenseList>
+      </>
     );
   }
   return (
