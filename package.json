@@ -36,7 +36,7 @@
     "server-only": "0.0.1"
   },
   "devDependencies": {
-    "@biomejs/biome": "2.3.0",
+    "@biomejs/biome": "2.3.1",
     "@ls-lint/ls-lint": "2.3.1",
     "@playwright/mcp": "0.0.44",
     "@types/node": "22.18.12",
