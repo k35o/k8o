@@ -48,7 +48,7 @@
     "react-dom": "19.2.0",
     "rehype-katex": "7.0.1",
     "remark-math": "6.0.0",
-    "resend": "6.2.2",
+    "resend": "6.3.0",
     "rss": "1.2.2",
     "tailwindcss": "4.1.16",
     "uqr": "0.1.2",
