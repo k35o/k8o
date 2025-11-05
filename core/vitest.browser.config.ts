@@ -16,17 +16,6 @@ export default defineConfig({
   },
   resolve: {
     alias: {
-      // @react-email/componentsをモックに置き換え
-      '@react-email/components': fileURLToPath(
-        new URL(
-          './.storybook/mocks/react-email-components.ts',
-          import.meta.url,
-        ),
-      ),
-      '@react-email/render': fileURLToPath(
-        new URL('./.storybook/mocks/react-email-render.ts', import.meta.url),
-      ),
-      // react-dom/server.browserを通常のreact-dom/serverに置き換え
       'react-dom/server.browser': 'react-dom/server',
     },
   },
