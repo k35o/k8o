@@ -2,9 +2,22 @@
 
 This is a website for everything created by k8o!
 
+## Documentation
+
+Comprehensive documentation is available:
+
+- **[CONTRIBUTING.md](./CONTRIBUTING.md)** - Development workflow and coding standards
+- **[ARCHITECTURE.md](./ARCHITECTURE.md)** - System architecture and design patterns
+- **[docs/API.md](./docs/API.md)** - API endpoints documentation
+- **[docs/TESTING.md](./docs/TESTING.md)** - Testing strategies and guidelines
+- **[docs/DEPLOYMENT.md](./docs/DEPLOYMENT.md)** - Deployment procedures
+- **[docs/SECURITY.md](./docs/SECURITY.md)** - Security policies and best practices
+- **[docs/TROUBLESHOOTING.md](./docs/TROUBLESHOOTING.md)** - Common issues and solutions
+- **[core/src/database/README.md](./core/src/database/README.md)** - Database schema and operations
+
 ## Setup
 
-Install dependencies after preparing Node.js v22.20.0 and pnpm v10.18.0.
+Install dependencies after preparing Node.js v22.21.0 and pnpm v10.20.0.
 
 ```bash
 pnpm i --frozen-lockfile
@@ -13,7 +26,7 @@ pnpm i --frozen-lockfile
 Copy environment variables and launch Docker services for database and KV storage.
 
 ```bash
-cp .env.example .env.local
+cp core/.env.example core/.env.local
 docker compose up -d
 pnpm run -F core migrate
 ```
