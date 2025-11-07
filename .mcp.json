@@ -11,6 +11,10 @@
     "chrome": {
       "command": "pnpm",
       "args": ["mcp-chrome"]
+    },
+    "storybook-mcp": {
+      "url": "http://localhost:6006/mcp",
+      "type": "http"
     }
   }
 }
