@@ -1,0 +1,283 @@
+---
+title: UIが遷移するアニメーションを簡単にするView Transition API
+description: View Transition APIがBaseline 2025に追加され、Web上のUI遷移を簡単にアニメーション化可能になりました。異なるページ間の遷移や同一ページ内のDOM更新時に、要素の位置やスタイルの変化をアニメーション化できます。CSSによるスタイル制御も豊富に用意されており、柔軟なカスタマイズが可能です。
+createdAt: 2025-11-08
+updatedAt: 2025-11-08
+---
+
+import { BaselineStatus } from '@k8o/arte-odyssey/baseline-status';
+import { ViewTransitionBasicDemo } from '@/app/_components/playgrounds/view-transitions';
+import { Playground } from '@/app/_components/playgrounds';
+
+# view-transitions
+
+<div className="flex gap-4 flex-col">
+  <BaselineStatus featureId="view-transitions" />
+  <BaselineStatus featureId="view-transition-class" />
+</div>
+
+## はじめに
+Web上のさまざまなUIの遷移を簡単にアニメーション化するView Transition APIがBaseline 2025に追加されました。
+
+異なる`Document`間（同一のオリジン）の遷移や、同一`Document`内のDOM更新時に、要素の位置やスタイルの変化に対するアニメーションを付与します。
+
+例として、当サイトではブログの一覧とブログ記事の遷移で、View Transition APIをベースとしたReactの`ViewTransition`コンポーネントを利用したアニメーションを作成しています。
+記事のタイトルや、タグ、作成・更新日時の位置が変化するアニメーションを確認できるかと思います。
+
+この記事では、そんなView Transition APIについて紹介します。この記事ではView Transition APIによって発生するアニメーションのことを「遷移アニメーション」と呼びます。
+
+## 異なるDocument間の遷移アニメーション
+異なる`Document`間の遷移アニメーションは同一のオリジン間でのみ適用できます。
+さらに、両者がそれぞれ読み込むCSSでView Transitionを`@view-transition`を用いて有効にする必要があります（Firefoxは`@view-transition`未対応）。
+
+```css
+@view-transition {
+  navigation: auto;
+}
+```
+
+`view-transition-name`に同一の値を付与することで、遷移前の古いページと遷移後の新しいページの要素が対応付けられ、アニメーションが適用されます。
+
+デフォルトでは、`:root`に`view-transition-name: root;`が付与されており、特別な指定がない場合は画面全体に対してアニメーションが適用されます。
+
+## 同一Document内の遷移アニメーション
+同一`Document`内のDOM更新に対して遷移アニメーションを適用する時は`startViewTransition`を使用します。
+
+`startViewTransition`は`Document`オブジェクトのメソッドとして実装されており、呼び出しに応じて`ViewTransition`オブジェクトを返します。
+
+引数には`updateCallback`という、遷移アニメーションの対象となるDOMの更新を行う関数を渡します。
+
+```js
+document.startViewTransition(() => {
+  // DOMの更新処理
+  updateViewTransitionTargetDom();
+});
+```
+
+また、オプションとして、オブジェクト、`update`と`types`を指定することができます。
+`update`は`updateCallback`と同じものを指しており、`types`は遷移アニメーションに対するクラス名や識別子を指定できます。これによって、遷移アニメーションのスタイルをカスタマイズできます。
+
+```js
+document.startViewTransition({
+  update: () => {
+    // DOMの更新処理
+    updateViewTransitionTargetDom();
+  },
+  types: ['custom-transition']
+});
+```
+
+`ViewTransition`オブジェクトは`finished`、`ready`、`updateCallbackDone`という3つのプロミスをプロパティに持っています。
+
+```js
+const transition = document.startViewTransition(() =>
+  updateTheDOMSomehow(data),
+);
+// 遷移アニメーションが完了したら解決する
+transition.finished.then(() => {
+  // ...
+});
+
+// 遷移アニメーションが開始する直前に解決する
+transition.ready.then(() => {
+  // ...
+});
+
+// DOMの更新処理が完了したら解決する
+transition.updateCallbackDone.then(() => {
+  // ...
+});
+```
+
+また、遷移アニメーションをスキップする`skipTransition`メソッドも持ちます。
+
+```js
+const transition = document.startViewTransition(() =>
+  updateTheDOMSomehow(data),
+);
+
+const timeoutId = setTimeout(() => {
+  // 1秒経ったら遷移アニメーションをスキップする
+  transition.skipTransition();
+}, 1000);
+
+transition.finished.then(() => {
+  // 完了していたらスキップタイムアウトをクリアする
+  clearTimeout(timeoutId);
+});
+```
+
+## 関連するCSSプロパティ
+### view-transition-name
+`view-transition-name`プロパティは、ある要素に対して特別な遷移アニメーションを適用するための識別子を指定します。
+
+```css
+/* デフォルトのUAのスタイル */
+:root {
+  view-transition-name: root;
+}
+
+:root {
+  view-transition-name: none;
+}
+
+.article {
+  view-transition-name: article;
+}
+
+.tag-list {
+  view-transition-name: tag-list;
+}
+```
+
+遷移の前後に同一の`view-transition-name`を持つ要素が存在する場合、それらの要素間で遷移アニメーションが適用されます。
+
+`view-transition-name`に`none`を指定した場合のみ、指定した要素が遷移アニメーションの対象から除外されます。
+
+一つの画面に同一の`view-transition-name`がある場合、その遷移アニメーションはスキップされます。
+
+### view-transition-class
+
+`view-transition-class`は後に紹介する`::view-transition-group`や`view-transition-image-pair`疑似要素等を用いた遷移アニメーションのスタイルをまとめて適用するためのプロパティです。
+
+```css
+.tag {
+  view-transition-name: tag-1;
+  view-transition-class: tag-transition;
+}
+
+::view-transition-group(.tag-transition) {
+  animation-duration: 0.5s;
+}
+```
+
+### :active-view-transition
+`:active-view-transition`疑似クラスは、現在進行中の遷移アニメーションに対してスタイルを適用するために使用されます。
+
+```css
+/* 遷移中の時はbuttonが無効であることを伝わるように薄く表示する */
+.transition-button:active-view-transition {
+  opacity: 0.8;
+}
+```
+
+### ::view-transition
+`::view-transition`疑似要素は、遷移アニメーション全体のOverlayに対するスタイルを付与できます。
+
+遷移アニメーション中は最上位レイヤーにビューポート全体を覆うコンテナが存在し（`<dialog>`要素の`overlay`のような感じ？）、それに対するスタイルを適用することができます。
+
+```css
+/* デフォルトのUAのスタイル */
+:root::view-transition {
+  position: absolute;
+  inset: 0;
+}
+
+::view-transition {
+  /* トランジション中は半透明にする */
+  background-color: rgba(0, 0, 0, 0.5);
+}
+```
+
+### ::view-transition-group
+`::view-transition-group`擬似要素は、特定の遷移アニメーションに対するスタイルを付与できる`::view-transition`です。`::view-transition`とは親と子の関係にあります。
+
+スタイルの適用には、`view-transition-name`や`view-transition-class`で指定した値や、それらが割り当てられていない遷移アニメーションに割り当てられる`root`、全ての遷移アニメーションに対する`*`を用います。
+
+```css
+/* デフォルトのUAのスタイル */
+:root::view-transition-group(*) {
+  position: absolute;
+  top: 0;
+  left: 0;
+
+  animation-duration: 0.25s;
+  animation-fill-mode: both;
+}
+
+::view-transition-group(root) {
+  /* 特別な割り当てがないものに対するスタイル */
+}
+
+::view-transition-group(card1) {
+  /* view-transition-nameでcard1を付与されたものに対するスタイル */
+}
+
+::view-transition-group(.card) {
+  /* view-transition-classでcardを付与されたものに対するスタイル */
+}
+```
+
+### ::view-transition-image-pair
+`::view-transition-image-pair`疑似要素は、遷移アニメーションの前後の要素に対してスタイルを適用するために使用されます。`::view-transition-group`とは親と子の関係にあります。
+
+スタイルの適用方法は`::view-transition-group`と同様に、`view-transition-name`や`view-transition-class`で指定した値や、それらが割り当てられていない遷移アニメーションに割り当てられる`root`、全ての遷移アニメーションに対する`*`を用います。
+
+```css
+/* デフォルトのUAのスタイルを合成したもの */
+:root::view-transition-image-pair(*) {
+  position: absolute;
+  inset: 0;
+
+  animation-duration: inherit;
+  animation-fill-mode: inherit;
+  animation-delay: inherit;
+  animation-timing-function: inherit;
+  animation-iteration-count: inherit;
+  animation-direction: inherit;
+  animation-play-state: inherit;
+}
+```
+
+### ::view-transition-newと::view-transition-old
+`::view-transition-new`疑似要素と`::view-transition-old`疑似要素は、遷移アニメーションの新しい要素と古い要素に対してスタイルを適用するために使用されます。これらは`::view-transition-image-pair`の子要素です。
+
+```css
+/* デフォルトのUAのスタイルを合成したもの */
+:root::view-transition-old(*),
+:root::view-transition-new(*) {
+  position: absolute;
+  inset-block-start: 0;
+  inline-size: 100%;
+  block-size: auto;
+
+  animation-duration: inherit;
+  animation-fill-mode: inherit;
+  animation-delay: inherit;
+  animation-timing-function: inherit;
+  animation-iteration-count: inherit;
+  animation-direction: inherit;
+  animation-play-state: inherit;
+}
+/* Default cross-fade transition */
+@keyframes -ua-view-transition-fade-out {
+  to { opacity: 0; }
+}
+@keyframes -ua-view-transition-fade-in {
+  from { opacity: 0; }
+}
+
+/* Keyframes for blending when there are 2 images */
+@keyframes -ua-mix-blend-mode-plus-lighter {
+  from { mix-blend-mode: plus-lighter }
+  to { mix-blend-mode: plus-lighter }
+}
+```
+
+## 例
+`startViewTransition`を使ったDOMの更新アニメーションの例です。
+
+<Playground title="View Transition基本デモ">
+  <ViewTransitionBasicDemo />
+</Playground>
+
+各擬似要素がどのような役割でどのようにスタイルが適用されているがなんとなくわかると思います。
+
+## おわりに
+View Transition APIは、Webアプリケーションに滑らかで自然な遷移アニメーションを簡単に実装できる強力なAPIです。
+
+このAPIによるアニメーションは同一`Document`内のDOM更新だけではなく、異なる`Document`間の遷移にも対応しているため、幅広いユースケースで活用できます。
+
+CSSの`view-transition-name`や`view-transition-class`を使った要素の対応付け、`::view-transition`などの疑似要素による細かなスタイル制御など、柔軟なカスタマイズが可能な点も魅力です。
+
+ReactなどのUIライブラリにも専用のコンポーネント`<ViewTransition>`が組み込まれていたり、使いやすい状況になっているため、ぜひ活用してみてください。
