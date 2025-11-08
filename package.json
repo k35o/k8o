@@ -36,17 +36,17 @@
     "server-only": "0.0.1"
   },
   "devDependencies": {
-    "@biomejs/biome": "2.3.1",
+    "@biomejs/biome": "2.3.2",
     "@ls-lint/ls-lint": "2.3.1",
-    "@playwright/mcp": "0.0.44",
+    "@playwright/mcp": "0.0.45",
     "@types/node": "22.18.12",
     "@typescript/native-preview": "7.0.0-dev.20251031.1",
     "@vitest/coverage-istanbul": "4.0.6",
     "@vitest/ui": "4.0.6",
     "chrome-devtools-mcp": "0.9.0",
-    "lefthook": "2.0.1",
+    "lefthook": "2.0.2",
     "playwright": "1.56.1",
-    "turbo": "2.5.8",
+    "turbo": "2.6.0",
     "typescript": "5.9.3",
     "vitest": "4.0.6"
   }
