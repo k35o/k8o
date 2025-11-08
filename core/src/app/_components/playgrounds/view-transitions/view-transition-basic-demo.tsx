@@ -38,17 +38,21 @@ export function ViewTransitionBasicDemo() {
   const [items, setItems] = useState<Item[]>(INIT_ITEMS);
   const [isViewTransitionEnabled, setIsViewTransitionEnabled] = useState(true);
 
+  const withViewTransition = (updateDOM: () => void) => {
+    if (isViewTransitionEnabled && 'startViewTransition' in document) {
+      document.startViewTransition(updateDOM);
+    } else {
+      updateDOM();
+    }
+  };
+
   // アイテムをシャッフル
   const shuffleItems = () => {
     const updateDOM = () => {
       setItems((prev) => [...prev].sort(() => Math.random() - 0.5));
     };
 
-    if (isViewTransitionEnabled && 'startViewTransition' in document) {
-      document.startViewTransition(updateDOM);
-    } else {
-      updateDOM();
-    }
+    withViewTransition(updateDOM);
   };
 
   // アイテムを追加
@@ -67,11 +71,7 @@ export function ViewTransitionBasicDemo() {
       setCount(newId);
     };
 
-    if (isViewTransitionEnabled && 'startViewTransition' in document) {
-      document.startViewTransition(updateDOM);
-    } else {
-      updateDOM();
-    }
+    withViewTransition(updateDOM);
   };
 
   // アイテムを削除
@@ -80,11 +80,7 @@ export function ViewTransitionBasicDemo() {
       setItems((prev) => prev.filter((item) => item.id !== id));
     };
 
-    if (isViewTransitionEnabled && 'startViewTransition' in document) {
-      document.startViewTransition(updateDOM);
-    } else {
-      updateDOM();
-    }
+    withViewTransition(updateDOM);
   };
 
   return (
@@ -126,9 +122,9 @@ export function ViewTransitionBasicDemo() {
         </Button>
       </div>
 
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
+      <ul className="grid grid-cols-1 gap-4 sm:grid-cols-3">
         {items.map((item) => (
-          <div
+          <li
             className="flex items-center justify-between rounded-md p-4 text-white opacity-80"
             key={item.id}
             style={{
@@ -148,9 +144,9 @@ export function ViewTransitionBasicDemo() {
             >
               削除
             </Button>
-          </div>
+          </li>
         ))}
-      </div>
+      </ul>
 
       <ul className="flex list-inside list-disc flex-col gap-1 text-sm">
         <li>
