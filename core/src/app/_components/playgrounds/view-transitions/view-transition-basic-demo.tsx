@@ -2,18 +2,19 @@
 
 import { Button } from '@k8o/arte-odyssey/button';
 import { Code } from '@k8o/arte-odyssey/code';
+import { useTheme } from 'next-themes';
 import { useState } from 'react';
 
 const COLORS = [
-  'var(--red-200)',
-  'var(--pink-200)',
-  'var(--purple-200)',
-  'var(--cyan-200)',
-  'var(--blue-200)',
-  'var(--teal-200)',
-  'var(--green-200)',
-  'var(--yellow-200)',
-  'var(--orange-200)',
+  { light: 'var(--red-200)', dark: 'var(--red-800)' },
+  { light: 'var(--pink-200)', dark: 'var(--pink-800)' },
+  { light: 'var(--purple-200)', dark: 'var(--purple-800)' },
+  { light: 'var(--cyan-200)', dark: 'var(--cyan-800)' },
+  { light: 'var(--blue-200)', dark: 'var(--blue-800)' },
+  { light: 'var(--teal-200)', dark: 'var(--teal-800)' },
+  { light: 'var(--green-200)', dark: 'var(--green-800)' },
+  { light: 'var(--yellow-200)', dark: 'var(--yellow-800)' },
+  { light: 'var(--orange-200)', dark: 'var(--orange-800)' },
 ] as const;
 
 type Item = {
@@ -36,6 +37,7 @@ const INIT_ITEMS = [
 export function ViewTransitionBasicDemo() {
   const [count, setCount] = useState<number>(INIT_ITEMS.length);
   const [items, setItems] = useState<Item[]>(INIT_ITEMS);
+  const { resolvedTheme } = useTheme();
   const [isViewTransitionEnabled, setIsViewTransitionEnabled] = useState(true);
 
   const withViewTransition = (updateDOM: () => void) => {
@@ -88,18 +90,19 @@ export function ViewTransitionBasicDemo() {
       <style>{`
         ::view-transition-group(.item) {
           border-radius: var(--radius-md);
+          animation-duration: 1000ms;
         }
         ::view-transition-group(item-1) {
-          background-color: var(--red-800);
+          background-color: ${resolvedTheme === 'dark' ? COLORS[0].light : COLORS[0].dark};
         }
         ::view-transition-image-pair(item-2) {
-          background-color: var(--pink-800);
+          background-color: ${resolvedTheme === 'dark' ? COLORS[2].light : COLORS[2].dark};
         }
         ::view-transition-old(item-3) {
-          background-color: var(--purple-800);
+          background-color: ${resolvedTheme === 'dark' ? COLORS[4].light : COLORS[4].dark};
         }
         ::view-transition-new(item-4) {
-          background-color: var(--cyan-800);
+          background-color: ${resolvedTheme === 'dark' ? COLORS[6].light : COLORS[6].dark};
         }
       `}</style>
       <div className="flex flex-wrap gap-2">
@@ -123,29 +126,33 @@ export function ViewTransitionBasicDemo() {
       </div>
 
       <ul className="grid grid-cols-1 gap-4 sm:grid-cols-3">
-        {items.map((item) => (
-          <li
-            className="flex items-center justify-between rounded-md p-4 text-white opacity-80"
-            key={item.id}
-            style={{
-              viewTransitionName: isViewTransitionEnabled
-                ? `item-${item.id}`
-                : 'none',
-              // @ts-expect-error: view-transition-classに未対応だった
-              viewTransitionClass: 'item',
-              backgroundColor: item.color,
-            }}
-          >
-            <span className="font-bold">{item.text}</span>
-            <Button
-              onClick={() => removeItem(item.id)}
-              size="sm"
-              variant="skeleton"
+        {items.map((item) => {
+          const bgColor =
+            resolvedTheme === 'dark' ? item.color.dark : item.color.light;
+          return (
+            <li
+              className="flex items-center justify-between rounded-md p-4 text-white opacity-80"
+              key={item.id}
+              style={{
+                viewTransitionName: isViewTransitionEnabled
+                  ? `item-${item.id}`
+                  : 'none',
+                // @ts-expect-error: view-transition-classに未対応だった
+                viewTransitionClass: 'item',
+                backgroundColor: bgColor,
+              }}
             >
-              削除
-            </Button>
-          </li>
-        ))}
+              <span className="font-bold">{item.text}</span>
+              <Button
+                onClick={() => removeItem(item.id)}
+                size="sm"
+                variant="skeleton"
+              >
+                削除
+              </Button>
+            </li>
+          );
+        })}
       </ul>
 
       <ul className="flex list-inside list-disc flex-col gap-1 text-sm">
