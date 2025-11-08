@@ -4,7 +4,7 @@
   "private": true,
   "type": "module",
   "engines": {
-    "node": "22.21.0"
+    "node": "22.21.1"
   },
   "devEngines": {
     "runtime": {
@@ -39,7 +39,7 @@
     "@biomejs/biome": "2.3.2",
     "@ls-lint/ls-lint": "2.3.1",
     "@playwright/mcp": "0.0.45",
-    "@types/node": "22.18.12",
+    "@types/node": "22.18.13",
     "@typescript/native-preview": "7.0.0-dev.20251031.1",
     "@vitest/coverage-istanbul": "4.0.6",
     "@vitest/ui": "4.0.6",
