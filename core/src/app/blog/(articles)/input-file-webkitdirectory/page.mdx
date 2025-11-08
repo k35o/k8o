@@ -1,0 +1,130 @@
+---
+title: input要素でディレクトリを扱うwebkitdirectory属性
+description: input要素のwebkitdirectory属性がBaseline 2025に追加されました。webkitdirectory属性を利用することで、input要素のtype="file"でディレクトリを選択できるようになります。
+createdAt: 2025-11-08
+updatedAt: 2025-11-08
+---
+
+import { FormControl } from '@k8o/arte-odyssey/form/form-control';
+import { BaselineStatus } from '@k8o/arte-odyssey/baseline-status';
+import { Playground } from '@/app/_components/playgrounds';
+import {
+  WebkitRelativePathDemo,
+} from '@/app/_components/playgrounds/input-file-webkitdirectory';
+import { LinkCard } from '@/app/_components/link-card';
+
+# input要素でディレクトリを扱うwebkitdirectory属性
+
+<BaselineStatus featureId="input-file-webkitdirectory" />
+
+## はじめに
+`<input>`要素に`type="file"`を付与すると、ファイルを入力するための要素になります。
+
+```html
+<!-- 単一ファイル選択 -->
+<input type="file" />
+
+<!-- 複数ファイル選択 -->
+<input type="file" multiple />
+```
+
+<div className="flex flex-col gap-4">
+  <FormControl
+    label="単一ファイル選択"
+    renderInput={({ id, describedbyId }) => (
+      <input
+        type="file"
+        className="max-w-80 cursor-pointer rounded-lg text-center font-bold bg-primary-bg text-fg hover:bg-primary-bg/90 active:bg-primary-bg/80 focus-visible:border-transparent focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-border-info px-4 py-2 text-md"
+        aria-describedby={describedbyId}
+        id={id}
+      />
+    )}
+  />
+
+  <FormControl
+    label="複数ファイル選択"
+    renderInput={({ id, describedbyId }) => (
+      <input
+        type="file"
+        multiple
+        className="max-w-80 cursor-pointer rounded-lg text-center font-bold bg-primary-bg text-fg hover:bg-primary-bg/90 active:bg-primary-bg/80 focus-visible:border-transparent focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-border-info px-4 py-2 text-md"
+        aria-describedby={describedbyId}
+        id={id}
+      />
+    )}
+  />
+</div>
+
+この機能に加えて、ディレクトリごと選択させる`webkitdirectory`属性が、Firefox Androidの対応によってBaseline 2025に追加されました。
+
+```html
+<!-- ディレクトリ選択 -->
+<input type="file" webkitdirectory />
+```
+
+<FormControl
+  label="ディレクトリ選択"
+  renderInput={({ id, describedbyId }) => (
+    <input
+      type="file"
+      webkitdirectory="true"
+      className="max-w-80 cursor-pointer rounded-lg text-center font-bold bg-primary-bg text-fg hover:bg-primary-bg/90 active:bg-primary-bg/80 focus-visible:border-transparent focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-border-info px-4 py-2 text-md"
+      aria-describedby={describedbyId}
+      id={id}
+    />
+  )}
+/>
+
+## webkitdirectory属性
+`webkitdirectory`属性にはユーザーにディレクトリの選択をさせるときに`true`、ファイルを選択するときは`false`を渡します。
+デフォルトは挙動からもわかる通り`false`です。
+
+### ファイルの取得
+`webkitdirectory`属性を付与した`<input>`要素で選択したファイルを取得は、`multiple`属性を指定した時の取得方法と同じように`files`プロパティから取得します。
+
+`files`プロパティは`FileList`オブジェクトまたは`null`を返します。
+
+`FileList`オブジェクトは`File`オブジェクトの集合体で、`File`は添え字からのアクセスと`item()`メソッドでアクセスできます。また、イテレーターとしての機能も持っています。
+
+```ts
+const files = inputElement.files;
+
+// 選択されたファイル数
+console.log(files?.length);
+// 添え字でのアクセス
+console.log(files?.[0]);
+// item()メソッドでのアクセス なければnullを返す
+console.log(files?.item(0));
+// イテレーターでのアクセス
+for (const file of files ?? []) {
+  console.log(file);
+}
+```
+
+`webkitdirectory`属性を付与した`<input>`要素から入力された`File`は書き換え不可な`webkitRelativePath`プロパティを持ちます。
+このプロパティには、選択されたファイルの相対パスが格納されます。
+
+```ts
+const files = inputElement.files;
+
+for (const file of files ?? []) {
+  console.log(file.webkitRelativePath);
+}
+```
+
+<Playground title="webkitRelativePathの例">
+  <WebkitRelativePathDemo />
+</Playground>
+
+`webkitEntries`プロパティからの取得はいくつかのブラウザでは、`webkitdirectory`属性と併用できないようなので気をつけてください。
+
+> INTEROP: In Chrome, if webkitdirectory is specified on a HTMLInputElement, webkitEntries is not populated; the files collection and webkitRelativePath properties must be used instead to reconstruct the directory structure. Should we fix this so it is always populated?
+
+> AIによる翻訳: Chromeにおいて、HTMLInputElementにwebkitdirectoryが指定されている場合、webkitEntriesは設定されません。代わりに、filesコレクションとwebkitRelativePathプロパティを使用してディレクトリ構造を再構築する必要があります。これを常に設定されるように修正すべきでしょうか？
+
+<LinkCard href="https://wicg.github.io/entries-api/#html-forms" />
+
+## おわりに
+`webkitRelativePath`属性を利用することで、ディレクトリごとファイルを受け取れるため、より高度なファイル操作が可能になりました。
+
+`webkitdirectory`属性のような`webkit`prefixがついている機能は利用を躊躇いますが、Baseline 2025に追加されたことで安心して利用できるようになり嬉しいです。

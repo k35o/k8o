@@ -2,6 +2,7 @@ export * from './abs-sign';
 export * from './async-clipboard';
 export * from './details-content';
 export * from './highlight';
+export * from './input-file-webkitdirectory';
 export { Playground } from './playground';
 export * from './popover';
 export * from './print-color-adjust';
@@ -17,6 +18,7 @@ import { asyncClipboardSection } from './async-clipboard';
 import { composedRangesSection } from './composed-ranges';
 import { detailsContentSection } from './details-content';
 import { highlightSection } from './highlight';
+import { inputFileWebkitdirectorySection } from './input-file-webkitdirectory';
 import { popoverSection } from './popover';
 import { printColorAdjustSection } from './print-color-adjust';
 import { requestCloseSection } from './requestclose';
@@ -30,6 +32,7 @@ export const playgroundSections: PlaygroundSection[] = [
   asyncClipboardSection,
   composedRangesSection,
   detailsContentSection,
+  inputFileWebkitdirectorySection,
   popoverSection,
   requestCloseSection,
   printColorAdjustSection,
