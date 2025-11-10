@@ -4,7 +4,7 @@ import { IconButton } from '@k8o/arte-odyssey/icon-button';
 import { CloseIcon, NavigationMenuIcon } from '@k8o/arte-odyssey/icons';
 import { Modal } from '@k8o/arte-odyssey/modal';
 import { PortalRootProvider } from '@k8o/arte-odyssey/providers';
-import { type FC, useCallback, useRef, useState } from 'react';
+import { type FC, useCallback, useEffect, useRef, useState } from 'react';
 import { ColorFilters } from '../../color-filters';
 import { ContactToMe } from '../../contact-to-me';
 import { ToggleTheme } from '../../toggle-theme';
@@ -19,6 +19,20 @@ export const NavigationMenu: FC = () => {
   const onClose = useCallback(() => {
     setOpen(false);
   }, []);
+
+  useEffect(() => {
+    const handleResize = () => {
+      if (open) {
+        onClose();
+      }
+    };
+
+    window.addEventListener('resize', handleResize);
+
+    return () => {
+      window.removeEventListener('resize', handleResize);
+    };
+  }, [open, onClose]);
 
   return (
     <>
