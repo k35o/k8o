@@ -14,7 +14,7 @@ ignoredBuiltDependencies:
   - unrs-resolver
 
 minimumReleaseAge: 4320
-minimumReleaseAgeExclude: '@k8o/arte-odyssey'
+minimumReleaseAgeExclude: '@k8o/**'
 
 onlyBuiltDependencies:
   - '@vercel/speed-insights'
