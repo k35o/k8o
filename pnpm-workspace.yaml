@@ -1,5 +1,4 @@
 packages:
-  - core
   - packages/*
 
 ignoredBuiltDependencies:

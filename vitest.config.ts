@@ -8,9 +8,9 @@ export default defineConfig({
       provider: 'istanbul',
     },
     projects: [
-      'packages/*',
-      'core/vitest.config.ts',
-      'core/vitest.browser.config.ts',
+      'packages/helpers/vitest.config.ts',
+      'packages/core/vitest.config.service.ts',
+      'packages/core/vitest.config.browser.ts',
     ],
   },
 });

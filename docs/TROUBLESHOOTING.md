@@ -463,7 +463,7 @@ pnpm run -F core email
 
 ### Q: Storybookでモックデータを使うには？
 
-A: MSWハンドラーを`core/src/mocks/handlers/`に追加してください。
+A: MSWハンドラーを`packages/core/src/mocks/handlers/`に追加してください。
 
 ### Q: E2Eテストをデバッグモードで実行するには？
 

@@ -325,7 +325,7 @@ MICROCMS_API_KEY="..."
 ### 下書きプレビュー
 
 ```typescript
-// core/src/app/api/draft-news/route.ts
+// packages/core/src/app/api/draft-news/route.ts
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
   const secret = searchParams.get('secret');
@@ -380,7 +380,7 @@ pnpm run -F core email
 
 テンプレート例：
 ```tsx
-// core/src/emails/verification-email.tsx
+// packages/core/src/emails/verification-email.tsx
 export const VerificationEmail = ({ verificationUrl }: Props) => (
   <Html>
     <Head />
@@ -545,7 +545,7 @@ Core Web Vitals:
 ### Google Analytics
 
 ```typescript
-// core/src/app/layout.tsx
+// packages/core/src/app/layout.tsx
 import { GoogleTagManager } from '@next/third-parties/google';
 
 export default function RootLayout({ children }: Props) {

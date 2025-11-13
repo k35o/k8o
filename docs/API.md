@@ -451,4 +451,4 @@ RESEND_API_KEY="..."
 
 ---
 
-詳細な実装は各APIルートファイル（`core/src/app/api/`）を参照してください。
+詳細な実装は各APIルートファイル（`packages/core/src/app/api/`）を参照してください。
