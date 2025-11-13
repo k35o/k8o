@@ -616,7 +616,7 @@
 ## テスト自動化の推奨アプローチ
 
 ### ユニットテスト
-- **対象**: `countGraphemeLength`関数（`core/src/app/moji-count/_utils/count-text.ts`）
+- **対象**: `countGraphemeLength`関数（`packages/core/src/app/moji-count/_utils/count-text.ts`）
 - **フレームワーク**: Vitest（in-source testing）
 - **カバレッジ目標**: 100%
 

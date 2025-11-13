@@ -95,7 +95,7 @@
 }
 ```
 
-**データベーススキーマ**: `core/src/database/schema/`に関係別整理
+**データベーススキーマ**: `packages/core/src/database/schema/`に関係別整理
 
 - コンテンツ: blogs, talks, quizzes, services
 - ユーザーデータ: comments, feedbacks, subscribers
@@ -106,8 +106,8 @@
 **コンポーネント構成**:
 
 - 再利用可能UIコンポーネント: npmパッケージ `@k8o/arte-odyssey`(外部リポジトリ)
-- ページ固有コンポーネント: `core/src/app/[page]/_components/`
-- アプリ共通コンポーネント: `core/src/app/_components/`
+- ページ固有コンポーネント: `packages/core/src/app/[page]/_components/`
+- アプリ共通コンポーネント: `packages/core/src/app/_components/`
 - 各コンポーネントには`.stories.tsx`が必須
 
 **ヘルパー関数**: `packages/helpers/src/`に分類別整理
@@ -124,12 +124,12 @@
 - In-source testing（`if (import.meta.vitest)`ブロック）
 - 同一ファイル内にテストを記述
 
-**Components** (`core/src/app/_components/`):
+**Components** (`packages/core/src/app/_components/`):
 
 - Storybookストーリーでテスト
 - `@storybook/addon-vitest`でインテグレーション
 
-**Core Application** (`core/src/`):
+**Core Application** (`packages/core/src/`):
 
 - Services/Utils: Node.js環境でVitest
 - React Components: ブラウザモードでVitest
@@ -173,7 +173,7 @@ if (import.meta.vitest) {
 }
 ```
 
-### Components（`core/src/app/_components/`）
+### Components（`packages/core/src/app/_components/`）
 
 Storybookストーリーでテストを記述：
 
@@ -207,9 +207,9 @@ Storybookストーリーでテストを記述：
 **新機能開発フロー**:
 
 1. **汎用UIコンポーネント**: 別リポジトリ [ArteOdyssey](https://github.com/k35o/ArteOdyssey) で開発しnpm公開
-2. **ページ固有コンポーネント**: `core/src/app/_components/`にStorybookストーリー付きで作成
+2. **ページ固有コンポーネント**: `packages/core/src/app/_components/`にStorybookストーリー付きで作成
 3. **Helpers**: `packages/helpers/src/`にin-source testing付きで作成
-4. **ページ/機能**: `core/src/app/`に配置、適切なテスト方法でテスト追加
+4. **ページ/機能**: `packages/core/src/app/`に配置、適切なテスト方法でテスト追加
 
 **コードスタイル**:
 

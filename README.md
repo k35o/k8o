@@ -13,7 +13,7 @@ Comprehensive documentation is available:
 - **[docs/DEPLOYMENT.md](./docs/DEPLOYMENT.md)** - Deployment procedures
 - **[docs/SECURITY.md](./docs/SECURITY.md)** - Security policies and best practices
 - **[docs/TROUBLESHOOTING.md](./docs/TROUBLESHOOTING.md)** - Common issues and solutions
-- **[core/src/database/README.md](./core/src/database/README.md)** - Database schema and operations
+- **[packages/core/src/database/README.md](./packages/core/src/database/README.md)** - Database schema and operations
 
 ## Setup
 
@@ -26,7 +26,7 @@ pnpm i --frozen-lockfile
 Copy environment variables and launch Docker services for database and KV storage.
 
 ```bash
-cp core/.env.example core/.env.local
+cp packages/core/.env.example packages/core/.env.local
 docker compose up -d
 pnpm run -F core migrate
 ```

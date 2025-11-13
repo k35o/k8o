@@ -67,7 +67,7 @@ importers:
         specifier: 4.0.6
         version: 4.0.6(@types/debug@4.1.12)(@types/node@22.18.13)(@vitest/browser-playwright@4.0.6)(@vitest/ui@4.0.6)(jiti@2.6.1)(lightningcss@1.30.2)(msw@2.11.6(@types/node@22.18.13)(typescript@5.9.3))(tsx@4.20.6)(yaml@2.8.1)
 
-  core:
+  packages/core:
     dependencies:
       '@k8o/arte-odyssey':
         specifier: 1.3.0
@@ -195,10 +195,10 @@ importers:
         version: 8.18.1
       '@vitest/browser-playwright':
         specifier: 4.0.6
-        version: 4.0.6(msw@2.11.6(@types/node@22.18.13)(typescript@5.9.3))(playwright@1.56.1)(vite@7.2.2(@types/node@22.18.13)(jiti@2.6.1)(lightningcss@1.30.2)(tsx@4.20.6)(yaml@2.8.1))(vitest@4.0.6)
+        version: 4.0.6(msw@2.11.6(@types/node@22.18.13)(typescript@5.9.3))(playwright@1.57.0-alpha-1761929702000)(vite@7.2.2(@types/node@22.18.13)(jiti@2.6.1)(lightningcss@1.30.2)(tsx@4.20.6)(yaml@2.8.1))(vitest@4.0.6)
       axe-playwright:
         specifier: 2.2.2
-        version: 2.2.2(playwright@1.56.1)
+        version: 2.2.2(playwright@1.57.0-alpha-1761929702000)
       chromatic:
         specifier: 13.3.3
         version: 13.3.3
@@ -5944,7 +5944,7 @@ snapshots:
       ts-dedent: 2.2.0
     optionalDependencies:
       '@vitest/browser': 4.0.6(msw@2.11.6(@types/node@22.18.13)(typescript@5.9.3))(vite@7.2.2(@types/node@22.18.13)(jiti@2.6.1)(lightningcss@1.30.2)(tsx@4.20.6)(yaml@2.8.1))(vitest@4.0.6)
-      '@vitest/browser-playwright': 4.0.6(msw@2.11.6(@types/node@22.18.13)(typescript@5.9.3))(playwright@1.56.1)(vite@7.2.2(@types/node@22.18.13)(jiti@2.6.1)(lightningcss@1.30.2)(tsx@4.20.6)(yaml@2.8.1))(vitest@4.0.6)
+      '@vitest/browser-playwright': 4.0.6(msw@2.11.6(@types/node@22.18.13)(typescript@5.9.3))(playwright@1.57.0-alpha-1761929702000)(vite@7.2.2(@types/node@22.18.13)(jiti@2.6.1)(lightningcss@1.30.2)(tsx@4.20.6)(yaml@2.8.1))(vitest@4.0.6)
       '@vitest/runner': 4.0.6
       vitest: 4.0.6(@types/debug@4.1.12)(@types/node@22.18.13)(@vitest/browser-playwright@4.0.6)(@vitest/ui@4.0.6)(jiti@2.6.1)(lightningcss@1.30.2)(msw@2.11.6(@types/node@22.18.13)(typescript@5.9.3))(tsx@4.20.6)(yaml@2.8.1)
     transitivePeerDependencies:
@@ -6402,6 +6402,20 @@ snapshots:
       - msw
       - utf-8-validate
       - vite
+    optional: true
+
+  '@vitest/browser-playwright@4.0.6(msw@2.11.6(@types/node@22.18.13)(typescript@5.9.3))(playwright@1.57.0-alpha-1761929702000)(vite@7.2.2(@types/node@22.18.13)(jiti@2.6.1)(lightningcss@1.30.2)(tsx@4.20.6)(yaml@2.8.1))(vitest@4.0.6)':
+    dependencies:
+      '@vitest/browser': 4.0.6(msw@2.11.6(@types/node@22.18.13)(typescript@5.9.3))(vite@7.2.2(@types/node@22.18.13)(jiti@2.6.1)(lightningcss@1.30.2)(tsx@4.20.6)(yaml@2.8.1))(vitest@4.0.6)
+      '@vitest/mocker': 4.0.6(msw@2.11.6(@types/node@22.18.13)(typescript@5.9.3))(vite@7.2.2(@types/node@22.18.13)(jiti@2.6.1)(lightningcss@1.30.2)(tsx@4.20.6)(yaml@2.8.1))
+      playwright: 1.57.0-alpha-1761929702000
+      tinyrainbow: 3.0.3
+      vitest: 4.0.6(@types/debug@4.1.12)(@types/node@22.18.13)(@vitest/browser-playwright@4.0.6)(@vitest/ui@4.0.6)(jiti@2.6.1)(lightningcss@1.30.2)(msw@2.11.6(@types/node@22.18.13)(typescript@5.9.3))(tsx@4.20.6)(yaml@2.8.1)
+    transitivePeerDependencies:
+      - bufferutil
+      - msw
+      - utf-8-validate
+      - vite
 
   '@vitest/browser@4.0.6(msw@2.11.6(@types/node@22.18.13)(typescript@5.9.3))(vite@7.2.2(@types/node@22.18.13)(jiti@2.6.1)(lightningcss@1.30.2)(tsx@4.20.6)(yaml@2.8.1))(vitest@4.0.6)':
     dependencies:
@@ -6573,14 +6587,14 @@ snapshots:
       axe-core: 4.11.0
       mustache: 4.2.0
 
-  axe-playwright@2.2.2(playwright@1.56.1):
+  axe-playwright@2.2.2(playwright@1.57.0-alpha-1761929702000):
     dependencies:
       '@types/junit-report-builder': 3.0.2
       axe-core: 4.11.0
       axe-html-reporter: 2.2.11(axe-core@4.11.0)
       junit-report-builder: 5.1.1
       picocolors: 1.1.1
-      playwright: 1.56.1
+      playwright: 1.57.0-alpha-1761929702000
 
   bail@2.0.2: {}
 

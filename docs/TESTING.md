@@ -22,8 +22,8 @@ k8oプロジェクトでは、コンポーネントの性質に応じて3つの�
 | テスト対象 | テスト手法 | ツール | 場所 |
 |-----------|----------|--------|------|
 | Helpers | In-source testing | Vitest | `packages/helpers/src/**/*.ts` |
-| Components | Storybook stories | Storybook + Vitest | `core/src/app/**/*.stories.tsx` |
-| Services | Unit tests | Vitest | `core/src/services/**/*.test.ts` |
+| Components | Storybook stories | Storybook + Vitest | `packages/core/src/app/**/*.stories.tsx` |
+| Services | Unit tests | Vitest | `packages/core/src/services/**/*.test.ts` |
 | E2E | End-to-end tests | Playwright | `core/tests/**/*.spec.ts` |
 
 ### テストピラミッド
@@ -147,7 +147,7 @@ pnpm run test --watch
 
 ### Storybook Testing (Components)
 
-**対象**: `core/src/app/_components/` 配下のUIコンポーネント
+**対象**: `packages/core/src/app/_components/` 配下のUIコンポーネント
 
 **特徴**:
 - ビジュアルリグレッションテスト
@@ -158,7 +158,7 @@ pnpm run test --watch
 **例**:
 
 ```tsx
-// core/src/app/_components/button/button.stories.tsx
+// packages/core/src/app/_components/button/button.stories.tsx
 import type { Meta, StoryObj } from '@storybook/react';
 import { expect, userEvent, within } from '@storybook/test';
 import { Button } from './button';
@@ -247,7 +247,7 @@ pnpm run -F core chromatic
 
 ### Unit Testing (Services)
 
-**対象**: `core/src/services/` 配下のビジネスロジック
+**対象**: `packages/core/src/services/` 配下のビジネスロジック
 
 **特徴**:
 - ビジネスロジックの検証
@@ -258,7 +258,7 @@ pnpm run -F core chromatic
 **例**:
 
 ```typescript
-// core/src/services/blogs/blog.test.ts
+// packages/core/src/services/blogs/blog.test.ts
 import { describe, expect, it, beforeEach, afterEach } from 'vitest';
 import { getBlog, createBlog } from './blog';
 import { db } from '@/database/db';
@@ -352,7 +352,7 @@ describe('blog service', () => {
 pnpm run test --project="services test"
 
 # 特定のファイル
-pnpm run test core/src/services/blogs/blog.test.ts
+pnpm run test packages/core/src/services/blogs/blog.test.ts
 
 # カバレッジ付き
 pnpm run coverage
@@ -568,7 +568,7 @@ describe('異常系', () => {
 外部APIのモック：
 
 ```typescript
-// core/src/mocks/handlers/microcms.ts
+// packages/core/src/mocks/handlers/microcms.ts
 import { http, HttpResponse } from 'msw';
 
 export const microCMSHandlers = [

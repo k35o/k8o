@@ -266,7 +266,7 @@ if (import.meta.vitest) {
 }
 ```
 
-#### 2. コンポーネント（`core/src/app/_components/`）
+#### 2. コンポーネント（`packages/core/src/app/_components/`）
 
 **Storybookストーリー**でテスト：
 
@@ -289,7 +289,7 @@ export const Primary: Story = {
 };
 ```
 
-#### 3. サービス層（`core/src/services/`）
+#### 3. サービス層（`packages/core/src/services/`）
 
 **Vitest**でユニットテスト：
 
