@@ -39,6 +39,11 @@ jobs:
   e2e:
     runs-on: ubuntu-latest
     timeout-minutes: 15
+    strategy:
+      fail-fast: false
+      matrix:
+        shardIndex: [1, 2, 3, 4]
+        shardTotal: [4]
     steps:
       - name: Checkout branch
         uses: actions/checkout@71cf2267d89c5cb81562390fa70a37fa40b1305e
@@ -49,4 +54,39 @@ jobs:
         run: pnpm run install-playwright
 
       - name: Run E2E tests
-        run: pnpm run -F core test:e2e
+        run: pnpm run -F core test:e2e -- --shard=${{ matrix.shardIndex }}/${{ matrix.shardTotal }}
+
+      - name: Upload blob report to GitHub Actions Artifacts
+        if: ${{ !cancelled() }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: blob-report-${{ matrix.shardIndex }}
+          path: packages/core/blob-report
+          retention-days: 1
+
+  merge-reports:
+    if: ${{ !cancelled() }}
+    needs: [e2e]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout branch
+        uses: actions/checkout@71cf2267d89c5cb81562390fa70a37fa40b1305e
+      - name: Setup pnpm
+        uses: ./.github/actions/setup-pnpm
+
+      - name: Download blob reports from GitHub Actions Artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: all-blob-reports
+          pattern: blob-report-*
+          merge-multiple: true
+
+      - name: Merge into HTML Report
+        run: pnpm dlx playwright merge-reports --reporter html ./all-blob-reports
+
+      - name: Upload HTML report
+        uses: actions/upload-artifact@v4
+        with:
+          name: html-report--attempt-${{ github.run_attempt }}
+          path: playwright-report
+          retention-days: 14

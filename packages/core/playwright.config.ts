@@ -18,7 +18,9 @@ export default defineConfig({
   ...(process.env.CI && { workers: 1 }),
 
   // レポーター設定
-  reporter: [['html', { outputFolder: 'playwright-report' }], ['list']],
+  reporter: process.env.CI
+    ? [['blob', { outputDir: 'blob-report' }]]
+    : [['html', { outputFolder: 'playwright-report' }], ['list']],
 
   // 共通設定
   use: {
