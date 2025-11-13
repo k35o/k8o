@@ -53,6 +53,17 @@ jobs:
       - name: Install Playwright
         run: pnpm run install-playwright
 
+      - name: Build application
+        run: pnpm run build
+
+      - name: Start server
+        run: pnpm run -F core start &
+        env:
+          PORT: 3000
+
+      - name: Wait for server
+        run: npx wait-on http://localhost:3000 --timeout 60000
+
       - name: Run E2E tests
         run: pnpm run -F core test:e2e -- --shard=${{ matrix.shardIndex }}/${{ matrix.shardTotal }}
 

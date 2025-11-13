@@ -62,11 +62,15 @@ export default defineConfig({
     },
   ],
 
-  // 開発サーバー設定
-  webServer: {
-    command: 'pnpm run dev',
-    url: 'http://localhost:3000',
-    reuseExistingServer: !process.env.CI,
-    timeout: 120 * 1000,
-  },
+  // 開発サーバー設定（CI環境では外部で起動したサーバーを使用）
+  ...(process.env.CI
+    ? {}
+    : {
+        webServer: {
+          command: 'pnpm run dev',
+          url: 'http://localhost:3000',
+          reuseExistingServer: true,
+          timeout: 120 * 1000,
+        },
+      }),
 });
