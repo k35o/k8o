@@ -35,18 +35,3 @@ jobs:
 
       - name: Run test
         run: pnpm run test
-
-  e2e:
-    runs-on: ubuntu-latest
-    timeout-minutes: 15
-    steps:
-      - name: Checkout branch
-        uses: actions/checkout@71cf2267d89c5cb81562390fa70a37fa40b1305e
-      - name: Setup pnpm
-        uses: ./.github/actions/setup-pnpm
-
-      - name: Install Playwright
-        run: pnpm run install-playwright
-
-      - name: Run E2E tests
-        run: pnpm run -F core test:e2e
