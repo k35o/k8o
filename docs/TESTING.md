@@ -10,7 +10,6 @@
   - [In-source Testing (Helpers)](#in-source-testing-helpers)
   - [Storybook Testing (Components)](#storybook-testing-components)
   - [Unit Testing (Services)](#unit-testing-services)
-  - [E2E Testing (Playwright)](#e2e-testing-playwright)
 - [テスト作成ガイドライン](#テスト作成ガイドライン)
 - [モック戦略](#モック戦略)
 - [カバレッジ](#カバレッジ)
@@ -24,15 +23,11 @@ k8oプロジェクトでは、コンポーネントの性質に応じて3つの�
 | Helpers | In-source testing | Vitest | `packages/helpers/src/**/*.ts` |
 | Components | Storybook stories | Storybook + Vitest | `packages/core/src/app/**/*.stories.tsx` |
 | Services | Unit tests | Vitest | `packages/core/src/services/**/*.test.ts` |
-| E2E | End-to-end tests | Playwright | `core/tests/**/*.spec.ts` |
 
 ### テストピラミッド
 
 ```
         ┌─────────────────┐
-        │   E2E Tests     │ 少ない（重要なユーザーフロー）
-        │   (Playwright)  │
-        ├─────────────────┤
         │ Component Tests │ 中程度（UIコンポーネント）
         │  (Storybook)    │
         ├─────────────────┤
@@ -47,12 +42,6 @@ k8oプロジェクトでは、コンポーネントの性質に応じて3つの�
 
 ```bash
 pnpm install --frozen-lockfile
-```
-
-### Playwrightのセットアップ
-
-```bash
-pnpm run install-playwright
 ```
 
 ### 環境変数
@@ -367,109 +356,6 @@ pnpm run coverage
 
 ---
 
-### E2E Testing (Playwright)
-
-**対象**: ユーザーフロー全体
-
-**特徴**:
-- 実際のブラウザでのテスト
-- ユーザー視点のテスト
-- 複数ページにまたがるフロー
-
-**例**:
-
-```typescript
-// core/tests/blog.spec.ts
-import { test, expect } from '@playwright/test';
-
-test.describe('ブログ機能', () => {
-  test('ブログ一覧から記事詳細に遷移できる', async ({ page }) => {
-    // ブログ一覧ページに移動
-    await page.goto('/blog');
-
-    // ページタイトルを確認
-    await expect(page).toHaveTitle(/ブログ/);
-
-    // 最初のブログ記事をクリック
-    const firstArticle = page.locator('article').first();
-    const articleTitle = await firstArticle.locator('h2').textContent();
-    await firstArticle.click();
-
-    // 記事詳細ページに遷移
-    await expect(page.locator('h1')).toContainText(articleTitle || '');
-
-    // ビューカウントが表示される
-    await expect(page.locator('[data-testid="view-count"]')).toBeVisible();
-  });
-
-  test('コメントを投稿できる', async ({ page }) => {
-    await page.goto('/blog/test-article');
-
-    // コメントフォームに入力
-    await page.fill('[name="author"]', 'テストユーザー');
-    await page.fill('[name="content"]', 'テストコメント');
-
-    // 送信
-    await page.click('button[type="submit"]');
-
-    // 成功メッセージ
-    await expect(page.locator('[role="alert"]')).toContainText('コメントを投稿しました');
-
-    // コメントが表示される
-    await expect(page.locator('article').last()).toContainText('テストコメント');
-  });
-
-  test('タグでフィルタリングできる', async ({ page }) => {
-    await page.goto('/blog');
-
-    // タグをクリック
-    await page.click('a[href*="?tag="]');
-
-    // URLが変わる
-    expect(page.url()).toContain('?tag=');
-
-    // フィルタリングされた記事のみ表示
-    const articles = page.locator('article');
-    await expect(articles).not.toHaveCount(0);
-  });
-});
-
-test.describe('アクセシビリティ', () => {
-  test('ブログ一覧ページのa11y', async ({ page }) => {
-    await page.goto('/blog');
-
-    // axe-playwrightでチェック
-    const { violations } = await injectAxe(page);
-    expect(violations).toHaveLength(0);
-  });
-});
-```
-
-**実行方法**:
-
-```bash
-# すべてのE2Eテスト
-pnpm run -F core test:e2e
-
-# ヘッドレスモード
-pnpm run -F core test:e2e --headed
-
-# 特定のブラウザ
-pnpm run -F core test:e2e --project=chromium
-
-# デバッグモード
-pnpm run -F core test:e2e --debug
-```
-
-**ベストプラクティス**:
-- ユーザーの視点でテストを書く
-- data-testid属性を使用（実装の詳細に依存しない）
-- ページオブジェクトパターンを使用（大規模なテストの場合）
-- タイムアウトを適切に設定
-- スクリーンショットを活用
-
----
-
 ## テスト作成ガイドライン
 
 ### 命名規則
@@ -713,13 +599,6 @@ it('時間のかかる処理', async () => {
 docker compose down -v
 docker compose up -d
 pnpm run -F core migrate
-```
-
-**3. Playwrightのブラウザが起動しない**
-
-```bash
-# ブラウザを再インストール
-pnpm run install-playwright
 ```
 
 ---
