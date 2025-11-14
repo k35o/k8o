@@ -18,9 +18,7 @@ export default defineConfig({
   ...(process.env.CI && { workers: 1 }),
 
   // レポーター設定
-  reporter: process.env.CI
-    ? [['blob', { outputDir: 'blob-report' }]]
-    : [['html', { outputFolder: 'playwright-report' }], ['list']],
+  reporter: [['html', { outputFolder: 'playwright-report' }], ['list']],
 
   // 共通設定
   use: {
@@ -62,15 +60,11 @@ export default defineConfig({
     },
   ],
 
-  // 開発サーバー設定（CI環境では外部で起動したサーバーを使用）
-  ...(process.env.CI
-    ? {}
-    : {
-        webServer: {
-          command: 'pnpm run dev',
-          url: 'http://localhost:3000',
-          reuseExistingServer: true,
-          timeout: 120 * 1000,
-        },
-      }),
+  // 開発サーバー設定
+  webServer: {
+    command: 'pnpm run dev',
+    url: 'http://localhost:3000',
+    reuseExistingServer: !process.env.CI,
+    timeout: 120 * 1000,
+  },
 });
