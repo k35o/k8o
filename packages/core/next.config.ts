@@ -21,6 +21,7 @@ const nextConfig: NextConfig = {
   typedRoutes: true,
   experimental: {
     viewTransition: true,
+    typedEnv: true,
   },
   productionBrowserSourceMaps: process.env.ANALYZE === 'true',
 };
