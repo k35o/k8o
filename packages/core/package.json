@@ -66,6 +66,7 @@
     "@types/react-dom": "19.2.2",
     "@types/rss": "0.0.32",
     "@types/ws": "8.18.1",
+    "@vitest/browser-playwright": "4.0.8",
     "chromatic": "13.3.3",
     "drizzle-kit": "0.31.6",
     "msw": "2.11.6",
