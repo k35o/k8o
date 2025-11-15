@@ -29,19 +29,19 @@
   },
   "dependencies": {
     "@k8o/helpers": "workspace:*",
-    "@upstash/ratelimit": "2.0.6",
+    "@upstash/ratelimit": "2.0.7",
     "@upstash/redis": "1.35.6",
     "remark-frontmatter": "5.0.0",
     "server-only": "0.0.1"
   },
   "devDependencies": {
-    "@biomejs/biome": "2.3.2",
+    "@biomejs/biome": "2.3.4",
     "@ls-lint/ls-lint": "2.3.1",
     "@types/node": "22.18.13",
     "@typescript/native-preview": "7.0.0-dev.20251101.1",
     "@vitest/coverage-istanbul": "4.0.6",
     "@vitest/ui": "4.0.6",
-    "chrome-devtools-mcp": "0.9.0",
+    "chrome-devtools-mcp": "0.10.1",
     "lefthook": "2.0.2",
     "playwright": "1.56.1",
     "turbo": "2.6.0",
