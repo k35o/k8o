@@ -1,8 +1,8 @@
 ---
 title: Atomicsで共有メモリ上のデータを安全に取り扱う
 description: AtomicsはSharedArrayBufferなどで定義された共有メモリ上のデータを安全に操作するための仕組みで、不可分操作や待機・通知による制御を提供します。新たに追加されたAtomics.pauseにより、スピンロック中のリソース最適化も可能になりました。
-createdAt: 2025-04-13 02:50:57+00
-updatedAt: 2025-04-13 07:23:07+00
+createdAt: 2025-04-13
+updatedAt: 2025-11-15
 ---
 
 import { BaselineStatus } from '@k8o/arte-odyssey/baseline-status';
@@ -19,7 +19,7 @@ import { BaselineStatus } from '@k8o/arte-odyssey/baseline-status';
 
 ```js
 // 4バイトのSharedArrayBufferを作成
-// SharedArrayBufferはcrossOriginIsolatedで安全なコンテキストでのみ実行可能です。
+// SharedArrayBufferはcrossOriginIsolatedで安全なコンテキストでのみ実行可能
 const sab = new SharedArrayBuffer(4);
 // 4バイトのInt32Arrayを作成
 const int32 = new Int32Array(sab);
@@ -29,7 +29,7 @@ const int32 = new Int32Array(sab);
 
 ### 不可分操作、Atomics操作
 
-`Atomics`が提供する基本的な不可分操作は以下の通りです。
+`Atomics`が提供する基本的な不可分操作は以下の通りです。一連の処理で`int32`は共通した変数です。
 
 `Atomics.load`は指定したインデックスの値を読み込みます。
 
@@ -99,20 +99,27 @@ console.log(Atomics.load(int32, 0)); // 1
 `Atomics.compareExchange`は指定したインデックスの値が指定した値と等しい場合にのみ、指定した値で置き換えます。返り値は置き換え前の値です。
 
 ```js
-// 0番目の値が0の場合に1で置き換える
-const oldValue = Atomics.compareExchange(int32, 0, 1, 0);
+// 0番目の値が1の場合に2で置き換える
+const oldValue = Atomics.compareExchange(int32, 0, 1, 2);
 console.log(oldValue); // 1
-console.log(Atomics.load(int32, 0)); // 0
+console.log(Atomics.load(int32, 0)); // 2
 ```
 
 ### イベントの待機と通知
 
 `Atomics`は`wait`と`notify`によってスレッド間でイベントを待機したり通知したりします。
-`wait`は指定したインデックスの値が指定した値である間待機します。待機中、スレッドはブロックされます。
+これらのメソッドは`SharedArrayBuffer`を元にした`Int32Array`または`BigInt64Array`でのみ利用可能です。
+
+`wait`は指定したインデックスの値が指定した値と一致する場合`notify`からの通知があるまで待機します。
+待機中、スレッドはブロックされます。そのため、メインスレッドから呼び出すことは許可されていません。
 
 ```js
-// 0番目の値が0以外になるまで待機する
+// notifyから通知が来るまで待機する
 // 第4引数はタイムアウト時間(ミリ秒)で、デフォルトはInfinityで無限
+// 返り値は"ok"、"not-equal"、"timed-out"のいずれか
+// "ok": notifyから通知が来て待機が解除された場合
+// "not-equal": 指定したインデックスの値が指定した値と異なっていた場合
+// "timed-out": タイムアウト時間が経過した場合
 Atomics.wait(int32, 0, 0);
 // 待機完了後に呼ばれる
 console.log('waited');
@@ -120,19 +127,21 @@ console.log('waited');
 console.log(Atomics.load(int32, 0)); // 1
 ```
 
-`wait`で待機したスレッドが自動で再開することはありません。`notify`等を使って通知する必要があります。
+`wait`で待機したスレッドが自動で再開することはありません。`notify`を使って通知する必要があります。
 `notify`は指定したインデックスの値で待機しているスレッドに対して通知を送信します。
 
 ```js
 // 0番目の値を1にする
 Atomics.store(int32, 0, 1);
-// 0番目の値が1になったことを通知する
+// 0番目の値で待機中のwaitに通知する
+// 第3引数には通知する対象の個数、デフォルトはInfinity
 const agent = Atomics.notify(int32, 0);
 // 通知されたAgentの数を返す
 console.log(agent); // 1
 ```
 
-上記の2つの例では、待機中のスレッドは、共有配列の0番目の値が0以外になるのを待っています。値が1に更新されると、`notify`によって通知が行われ、スレッドは値の変化を確認してから待機状態を抜けます。
+上記の2つの例では、待機中のスレッドは、`int32`の0番目の値に対して通知が送られるのを待っています。
+値を`1`に更新したあと`notify`によって通知が行われ、スレッドは待機状態を抜けます。
 
 ## Atomics.pause
 
