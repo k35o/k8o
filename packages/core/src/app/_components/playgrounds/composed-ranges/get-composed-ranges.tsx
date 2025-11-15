@@ -113,7 +113,6 @@ export function GetComposedRanges() {
         </div>
       )}
       <Button
-        disabled={window.getSelection()?.rangeCount === 0}
         onClick={() => {
           const selection = window.getSelection();
           if (selection && shadow.current && selection.rangeCount > 0) {
