@@ -1,0 +1,82 @@
+---
+title: Atomics.waitAsyncで非同期に共有メモリ上のデータを待機する
+description: Baseline 2025にAtomics.waitAsyncが追加されました。Atomics.waitの非同期版のメソッドで、メインスレッドでも利用できます。この記事ではこのAPIの使い方を紹介します。
+createdAt: 2025-11-15
+updatedAt: 2025-11-15
+---
+
+import { BaselineStatus } from '@k8o/arte-odyssey/baseline-status';
+
+# Atomics.waitAsyncで非同期に共有メモリ上のデータを待機する
+
+<BaselineStatus featureId="atomics-wait-async"></BaselineStatus>
+
+## はじめに
+
+`Atomics.pause`に続き、`Atomics.waitAsync`がBaseline 2025に追加されました。
+
+`Atomics`と`Atomics.pause`についての簡単な説明は[Atomicsで共有メモリ上のデータを安全に取り扱う](/blog/atomics-pause)をご覧ください。
+
+この記事では`Atomics.waitAsync`について解説します。
+
+## Atomics.waitAsync
+`Atomics.waitAsync`は名前の通り、`Atomics.wait`の非同期バージョンです。
+
+`waitAsync`は非同期に`notify`を待機するので、プロセスをブロックしません。そのため、メインスレッドでも利用できる利点を持ちます。
+
+`waitAsync`は、第1引数に`SharedArrayBuffer`を元にした`Int32Array`または`BigInt64Array`、第2引数にその配列内のインデックスを受け取ります。
+
+第3引数には、引数の配列とインデックスが指す位置に存在することを期待する値を渡します。
+
+最後に、第4引数には任意ででタイムアウト時間をミリ秒で指定できます。
+
+```ts
+const sab = new SharedArrayBuffer(4);
+const int32 = new Int32Array(sab);
+// int32の0番目の値が0であることを期待して待機、タイムアウトは1秒
+const result = Atomics.waitAsync(int32, 0, 0, 1000);
+```
+
+非同期な処理を行うメソッドですが、戻り値は同期的で、`value`が`Promise`かどうかを示す`async`プロパティと、`waitAsync`の結果を表す`value`プロパティを持つオブジェクトを返します。
+
+TypeScriptでの型定義を考えると以下のようになります。
+```ts
+type ReturnValue =
+	| { async: false; value: "not-equal" | "timed-out" }
+	| { async: true; value: Promise<"ok" | "timed-out"> };
+```
+
+`{ async: false; value: "not-equal" }`が返される時は、引数の配列とインデックスが指す位置に存在する値が第3引数で渡した値と異なっていた場合です。
+
+`{ async: false; value: "timed-out" }`が返される時は、、タイムアウトが0ミリ秒に指定されていた場合です。
+
+`{ async: true; value: Promise<"ok" | "timed-out"> }`が通常返されるであろう値で、`notify`によって呼び出された場合に`"ok"`、`notify`が呼び出される前にタイムアウトした場合に`"timed-out"`を返す`value`が`Promise`に包まれて格納されています。
+
+```ts
+const sab = new SharedArrayBuffer(4);
+const int32 = new Int32Array(sab);
+const result = Atomics.waitAsync(int32, 0, 0, 1000);
+
+if (result.value === 'not-equal') {
+  // 指定した位置に存在する値が期待した値と異なる場合の処理
+}
+if (result.value === 'timed-out') {
+  // タイムアウト時間が0ミリ秒に指定された場合の処理
+}
+if (result.async) {
+  result.value.then(
+    (value) => {
+      if (value == 'ok') {
+        // notifyによって呼び出された場合の処理
+      } else {
+        // タイムアウトした場合の処理
+      }
+    });
+}
+```
+考えられる例外は`not-equal`のパターンぐらいで、他には考えられないので`value`が`reject`されることはありません。
+
+## おわりに
+`Atomics`の新しいメソッド、`waitAsync`について解説しました。
+
+`Atomics.wait`が同期的に`notify`を待機するのに対して、`waitAsync`は非同期に`notify`を待機できるので、メインスレッドで共有メモリ上のデータを待機したい場合に便利です。
