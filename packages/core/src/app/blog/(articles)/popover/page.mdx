@@ -1,8 +1,8 @@
 ---
 title: Popover APIを使ってJavaScriptなしでツールチップやドロップダウンメニューを実装する
-description: Popover APIは、ツールチップやドロップダウンメニューをJavaScriptなしで実装できるAPIで、2025年のBaselineに追加されました。表示するコンテンツにpopover属性を渡し、その要素をpopovertargetで制御します。シンプルなHTMLとCSSで手軽に機能に富んだポップオーバーを作成する方法を学びます。
-createdAt: 2025-03-17 04:35:28.996814+00
-updatedAt: 2025-03-28 13:24:15.492815+00
+description: Popover APIは、ツールチップやドロップダウンメニューをJavaScriptなしで実装できるAPIで、Baseline 2025に追加されました。表示するコンテンツにpopover属性を渡し、その要素をpopovertargetで制御します。シンプルなHTMLとCSSで手軽に機能に富んだポップオーバーを作成する方法を学びます。
+createdAt: 2025-03-17
+updatedAt: 2025-11-15
 ---
 
 import { BaselineStatus } from '@k8o/arte-odyssey/baseline-status';
@@ -18,16 +18,17 @@ import { Playground } from '@/app/_components/playgrounds';
 
 ## はじめに
 
-Popover APIがついに2025年のBaselineに追加されました。
+Popover APIがついにBaseline 2025に追加されました。
 Popover APIはツールチップやドロップダウンメニューのようなUIを作成するためのAPIです。
 
 <Playground title="ツールチップとドロップダウンメニュー">
   <Example1 />
 </Playground>
 
-これらのUIは、重ね合わせコンテキストの階層の管理やアクセシビリティを考慮した実装がかなりハードルが高く、ライブラリを頼らざるを得ないことが多かったのでBaselineに追加されたことは大きな進歩です。
+Popover APIはこれらのUIが持つ、表示レイヤーの管理やアクセシビリティを考慮した表示を行ってくれます。
+これらの機能は、既存の機能では実装のハードルが高くライブラリを頼らざるを得ないことが多かったのでBaselineに追加されたことは大きな進歩です。
 
-Popover APIでは表示位置までは決められません。[CSS Anchor Positioning](https://drafts.csswg.org/css-anchor-position-1/)が利用可能になると表示位置も決められるので後一歩といった感じですね。
+この記事ではPopover APIの基本的な使い方を紹介します。
 
 ## Popover APIの全体像
 
@@ -62,7 +63,7 @@ HTMLの属性は`popover`と`popovertarget`、`popovertargetaction`、CSSの機�
 </button>
 ```
 
-`popovertargetaction`は`popovertarget`属性が付与された要素がどのように管理するかを示します。
+`popovertargetaction`は`popovertarget`属性が付与された要素が、ポップオーバーで表示させる要素の管理方法を指定します。
 
 ```html
 <button popovertarget="popover1" popovertargetaction="show">
@@ -149,3 +150,13 @@ Popover APIを使った簡単な例を紹介します。3つのボタンがあ�
   background-color: #00000080;
 }
 ```
+
+## おわりに
+この記事ではPopover APIの基本的な使い方を紹介しました。
+
+Popover APIは表示するポップオーバーを`popover`属性で表し、その表示を管理する要素に`popovertarget`属性を渡すことで利用できます。
+従来はJavaScriptで実装する必要があったツールチップやドロップダウンメニューの表示非表示を、HTMLとCSSだけで簡単に実装できるようになったのは大きな進歩でした。
+
+サンプルで画面の中央にポップオーバーを表示していたように、まだ表示位置を制御する方法は提供されていません。
+[CSS Anchor Positioning](https://drafts.csswg.org/css-anchor-position-1/)が利用可能になると、HTMLとCSSだけでポップオーバーやツールチップの位置を制御できるようになるので、表示を誘発する要素の側にポップオーバーを表示することが可能になります。
+Popover APIの登場がとてもありがたいと同時に、`CSS Anchor Positioning`への期待も高まりますね。

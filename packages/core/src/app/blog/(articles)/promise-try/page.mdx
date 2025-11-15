@@ -1,8 +1,8 @@
 ---
 title: 関数の同期・非同期を気にせず処理するPromise.tryとは
 description: Promise.tryは、同期・非同期関数を区別せず手続きを進めさせるBaseline 2025で追加されたメソッドです。同期・非同期が混在する処理に有効で、キャッシュを利用する関数などで一貫したPromiseの形で結果を扱えます。同期・非同期が混在する関数の複雑さとは別れを告げましょう。
-createdAt: 2025-03-08 13:42:08.387102+00
-updatedAt: 2025-03-28 13:24:15.492815+00
+createdAt: 2025-03-08
+updatedAt: 2025-11-15
 ---
 
 import { BaselineStatus } from '@k8o/arte-odyssey/baseline-status';
@@ -135,3 +135,8 @@ console.log(Promise.try(() => readFileWithCache('path/to/file'))); // Promise {
 
 この例では`Promise.try`を使う以外でも使いやすい形に改良可能ではありますが、Promise.tryを活用することで、同期・非同期を意識せず統一的に扱えるメリットがよく分かるのではないでしょうか。
 適切に活用することで、コードの可読性や保守性を向上させることができます。
+
+## おわりに
+`Promise.try`の登場で、同期的な値を返すか非同期的な値を返すかを気にせずに関数の結果を扱えるようになりました。
+
+同期・非同期が混在する関数を扱う際には、`Promise.try`を活用してコードの可読性と保守性を向上させましょう。

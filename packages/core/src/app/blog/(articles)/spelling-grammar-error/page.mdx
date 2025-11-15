@@ -1,8 +1,8 @@
 ---
 title: スペルミス・文法エラーに対してスタイルを設定する::spelling-errorと::grammar-error
-description:
-createdAt: 2025-06-29 00:00:00.000000+09
-updatedAt: 2025-09-15 09:00:00.000000+09
+description: ::spelling-errorと::grammar-error擬似要素は、ブラウザが検出したスペルミスや文法エラーにスタイルを適用できる機能です。デフォルトの下線表示をカスタマイズし、ユーザー体験を向上させられます
+createdAt: 2025-06-29
+updatedAt: 2025-11-15
 ---
 
 import { Alert } from '@k8o/arte-odyssey/alert';
@@ -58,7 +58,7 @@ import { Playground } from '@/app/_components/playgrounds';
 
 `contenteditable`属性で編集可能なテキストエリアを準備しました。`spellcheck`属性が`true`に設定されているため、スペルミスや文法エラーが自動的に検出されます。
 
-`contenteditable`属性の値は`plaintext-only`です。これもまた、Baseline 2025の機能ですね（[`plaintext-only`についても記事](https://www.k8o.me/blog/contenteditable-plaintextonly)を書いているので良ければ読んでください）。
+この例では`contenteditable`属性の値を`plaintext-only`にすることでテキストの入力しか行えないようにしています。[`plaintext-only`についても記事](/blog/contenteditable-plaintextonly)を書いているので良ければ読んでください。
 
 ここで検出されたエラーが`::spelling-error`と`::grammar-error`の擬似要素でスタイリングされます。
 
@@ -70,7 +70,7 @@ import { Playground } from '@/app/_components/playgrounds';
 
 また、ブラウザごとに`spellcheck`の挙動が異なるため、デフォルトの文章で両方のエラーを確認できない恐れがあります（Safariで確認しました）。期待としては、`speling`がスペルミス、`an grammar`の`an`が文法エラーとして検出されることです。
 
-## まとめ
+## おわりに
 
 Baseline 2025入りした`::spelling-error`と`::grammar-error`を紹介しました。
 

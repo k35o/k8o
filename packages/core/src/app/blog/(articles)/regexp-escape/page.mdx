@@ -1,8 +1,8 @@
 ---
 title: 文字列に潜む特殊文字を構文として解釈されないように置き換えるRegExp.escape
-description: RegExpオブジェクトを生成するときに正規表現のテキストをそのままの文字として扱いたい時があります。これまでは手動でエスケープする必要がありましたが、RegExp.escape()を使うことで構文として解釈されないような文字列に変換し、文字通りの並びとして検索できます。RegExp.escapeを使ってエスケープ漏れとは縁のない生活を送りましょう。
-createdAt: 2025-05-15 00:00:00.00000+00
-updatedAt: 2025-05-15 00:00:00.00000+00
+description: RegExpオブジェクトを生成するときに正規表現のテキストをそのままの文字として扱いたい時があります。これまでは手動でエスケープする必要がありましたが、RegExp.escapeを使うことで構文として解釈されないような文字列に変換し、文字通りの並びとして検索できます。RegExp.escapeを使ってエスケープ漏れとは縁のない生活を送りましょう。
+createdAt: 2025-05-15
+updatedAt: 2025-11-15
 ---
 
 import { BaselineStatus } from '@k8o/arte-odyssey/baseline-status';
@@ -11,10 +11,10 @@ import { BaselineStatus } from '@k8o/arte-odyssey/baseline-status';
 
 <BaselineStatus featureId="regexp-escape"></BaselineStatus>
 
-## RegExp.escape()
+## RegExp.escape
 
 `RegExp`オブジェクトを作る時は、`new RegExp(str)`のように正規表現のテキスト`str`を渡します。
-正規表現のテキストをそのままの文字として扱いたい場合、`new RegExp(str)`のままではうまく動かないことがあります。
+正規表現のテキストをただの文字として扱いたい場合、`new RegExp(str)`ではうまく動かないことがあります。
 
 例えば、正規表現のテキストの中に特殊文字が含まれていると、それらが構文として解釈されてしまい、意図した通りに文字列がマッチしないです。
 
@@ -29,7 +29,7 @@ console.log(regexp.test('ab')); // true
 上記は特殊文字`*`を含む文字列`abc*`を正規表現のテキストとして渡しています。
 `*`は正規表現の構文であり、直前の文字が0回以上繰り返されることを意味します。そのため、上記の例では`abc*`だけではなく、`abc`や`ab`にもマッチしてしまいます。
 
-`abc*`という文字列のままマッチさせたい時は、`RegExp.escape()`を使うことで構文として解釈されないように特定の文字列に変換し、文字通りの並びとして検索することができます。
+`abc*`という文字列のままマッチさせたい時は、`RegExp.escape`を使うことで構文として解釈されないように特定の文字列に変換し、文字通りの並びとして検索することができます。
 
 ```ts
 const str = 'abc*';
@@ -41,10 +41,10 @@ console.log(regexp.test('abc*')); // true
 console.log(regexp.test('ab')); // false
 ```
 
-`abc*`という文字列が`RegExp.escape()`によって`\\x61bc\\*`に変換され、`ab`や`abc`にはマッチしなくなりました。
+`abc*`という文字列が`RegExp.escape`によって`\\x61bc\\*`に変換され、`ab`や`abc`にはマッチしなくなりました。
 
-`RegExp.escape()`は手動では達成できない複数のパターンを考慮して実装されています。
-単純に正規表現の構文の前に`\`を追加するだけでは対処できないケースをカバーしてくれるので、古いブラウザのバージョンをサポートしていない限りは`RegExp.escape()`を使うようにしましょう。
+`RegExp.escape`は手動では達成できない複数のパターンを考慮して実装されています。
+単純に正規表現の構文の前に`\`を追加するだけでは対処できないケースをカバーしてくれるので、古いブラウザのバージョンをサポートしていない限りは`RegExp.escape`を使うようにしましょう。
 
 ### 変更の規則
 
@@ -52,7 +52,7 @@ console.log(regexp.test('ab')); // false
 
 先ほどの例で、`RegExp.escape('abc*')`は`\\x61bc\\*`に変換されました。`\\*`は想定通りですが、`a`が`\\x61`に変換されるのは、少し意外だった人もいるのではないでしょうか。
 
-`RegExp.escape()`は、テキストの先頭の文字が`0~9,a~z,A~Z`である場合、特殊なエスケープをします。
+`RegExp.escape`は、テキストの先頭の文字が`0~9,a~z,A~Z`である場合、特殊なエスケープをします。
 これらの文字は、`\x`に続く16進数コード（例: `a`はASCIIコードが61なので`\x61`）としてエスケープされます。
 
 これは、別の文字列の後ろに連結して使用する場合に、前の文字列を引き継いだ構文として解釈されないようにするためです。
@@ -67,7 +67,7 @@ console.log(escapedRegexp.test('aa0')); // true
 ```
 
 上の例では、`(.)\\1`の後ろに`0`を連結しています。`0`をエスケープしない場合、`new RegExp('(.)\\10')`となり「後方参照 10」のように解釈されてしまいます。
-`RegExp.escape()`を使うことで、`0`は`\x30`に変換され、`new RegExp('(.)\\1\\x30')`となり「後方参照 1」と「0」で分けて解釈してくれるので、意図した通りに`aa0`がマッチします。
+`RegExp.escape`を使うことで、`0`は`\x30`に変換され、`new RegExp('(.)\\1\\x30')`となり「後方参照 1」と「0」で分けて解釈してくれるので、意図した通りに`aa0`がマッチします。
 
 #### 特殊文字
 
@@ -76,7 +76,7 @@ console.log(escapedRegexp.test('aa0')); // true
 ```ts
 const str = '^$\.*+?()[]{}|/';
 // \\^\\$\\.\\*\\+\\?\\(\\)\\[\\]\\{\\}\\|\\/
-const escapedStr = RegExp.escape(str);
+console.log(RegExp.escape(str));
 ```
 
 これは、正規表現の構文として解釈されないようにするためです。
@@ -86,7 +86,7 @@ const escapedStr = RegExp.escape(str);
 ```ts
 const str = ',-=<>#&!%:;@~`" ';
 // \\x2c\\x2d\\x3d\\x3c\\x3e\\x23\\x26\\x21\\x25\\x3a\\x3b\\x40\\x7e\\x60\\x22\\x20
-const escapedStr = RegExp.escape(str);
+console.log(RegExp.escape(str));
 ```
 
 `\n`のような制御文字は、`\`を前につけてエスケープされます。
@@ -94,7 +94,7 @@ const escapedStr = RegExp.escape(str);
 ```ts
 const str = '\f\n\r\t\v';
 // \\f\\n\\r\\t\\v
-const escapedStr = RegExp.escape(str);
+console.log(RegExp.escape(str));
 ```
 
 #### その他の文字
@@ -104,7 +104,7 @@ const escapedStr = RegExp.escape(str);
 ```ts
 const str = '　';
 // \\u3000
-const escapedStr = RegExp.escape(str);
+console.log(RegExp.escape(str));
 ```
 
 `ab\uD800`（文字化け対策のため、全角バックスラッシュで書くと`ab＼uD800`）や`\uDFFFab`（`＼uDFFFab`）のような孤立サロゲート（文字列に対して`isWellFormed()`でチェックできます。）も`\u`に続くUTF-16コード単位へエスケープされます。
@@ -112,5 +112,13 @@ const escapedStr = RegExp.escape(str);
 ```ts
 const str = 'ab\uD800 \uDFFFab';
 // \\x61b\\ud800\\x20\\udfffab
-const escapedStr = RegExp.escape(str);
+console.log(RegExp.escape(str));
 ```
+
+## おわりに
+正規表現に渡す文字列をただの文字列として扱うための`RegExp.escape`について紹介しました。
+
+`RegExp.escape`を使うことで、正規表現の構文として解釈されないようにエスケープされた文字列に変換できるので、
+手動でエスケープする必要がなくなり、エスケープ漏れの心配もなくなります。
+
+`RegExp.escape`はBaseline 2025で導入されたので、対象の環境で利用できる場合は積極的に活用していきましょう。

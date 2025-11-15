@@ -1,17 +1,17 @@
 ---
 title: 16bit浮動小数点が使える！Float16Array
 description: Float16ArrayがBaselineに追加されたことで、16bitの浮動小数点を扱えるようになりました。機械学習やグラフィックス用途などで威力を発揮する新しいTypedArrayについて解説します。
-createdAt: 2025-04-13 23:01:11.000000+00
-updatedAt: 2025-04-13 23:01:11.000000+00
+createdAt: 2025-04-13
+updatedAt: 2025-04-13
 ---
 
 import { BaselineStatus } from '@k8o/arte-odyssey/baseline-status';
 
 # 16bit浮動小数点が使える！Float16Array
 
-## Float16Array
-
 <BaselineStatus featureId="float16array"></BaselineStatus>
+
+## Float16Array
 
 `Float32Array`、`Float64Array`のように、浮動小数点数を扱う`TypedArray`として`Float16Array`がBaseline 2025に追加されました。これは、16bit浮動小数点数を扱うための配列です。
 
@@ -75,4 +75,4 @@ console.log(typeof value); // 'number'
 
 普段のフロントエンド開発では`Float16Array`を使う機会は多くありませんが、WebGPUやAIモデルの推論処理などをフロントエンドで扱う場合は非常に有効な選択肢になります。
 
-昨今のWebの高性能化とAIの発達が進む中で、このような低レベル最適化の知識も重要になってくると考えられるので周辺の知識を積極的に取り入れたいです。
+昨今のWebの高性能化とAIの発達が進む中で、このような低レベル最適化の知識も重要になってくると考えられるので周辺の知識を積極的に取り入れていきたいです。
