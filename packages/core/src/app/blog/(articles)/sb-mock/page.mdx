@@ -1,8 +1,8 @@
 ---
 title: sb.mockでStorybookで利用するモジュールをモックしよう！
 description: Storybook v9.1.0で新たに導入されたsb.mock機能により、モジュールのモックがこれまで以上に簡単に行えるようになりました。sb.mockはStorybookを活用したテストの取り組みやすさを大幅に向上させる画期的な新機能です。ぜひ活用してみてください。
-createdAt: 2025-08-04 00:00:00.00000+00
-updatedAt: 2025-08-04 00:00:00.00000+00
+createdAt: 2025-08-04
+updatedAt: 2025-11-15
 ---
 
 import { LinkCard } from '@/app/_components/link-card';
@@ -50,6 +50,13 @@ sb.mock('./src/services/users');
 ```
 
 `sb.mock`はグローバルなモックなので定義可能な箇所は`preview.ts(x)`のみであることに注意してください。
+
+`import()`構文を用いてより確実にモジュールをモックすることも可能です。
+```ts
+// preview.ts
+sb.mock(import('./src/services/users'));
+```
+
 
 #### デフォルトの挙動
 

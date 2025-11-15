@@ -1,8 +1,8 @@
 ---
 title: OIDCを利用したnpmパッケージの公開が可能になったので、Changeset×GitHub Actionsで試してみる
 description: npmパッケージの公開で利用可能になったOIDC認証を、ChangesetsとGitHub Actionsを組み合わせて実装する方法を紹介します。従来のAccess Tokenによる認証と比べて、定期的な更新作業が不要になり効率的な開発環境を構築できます。設定も簡単なので、npmパッケージを公開する方にはぜひおすすめしたい認証方法です。
-createdAt: 2025-08-14 00:00:00.00000+00
-updatedAt: 2025-08-14 00:00:00.00000+00
+createdAt: 2025-08-14
+updatedAt: 2025-11-15
 ---
 
 import { LinkCard } from '@/app/_components/link-card';
@@ -23,10 +23,10 @@ npmパッケージを公開するにあたり、GitHub ActionsまたはGitLab CI
 OIDCを利用した公開に切り替えると最初にnpm側の設定を行うだけで、トークンの交換を考えずに開発を行えるようになります。
 
 これを機に、このウェブサイトで利用していたReactのコンポーネントとhooksをnpmパッケージとして公開してみました。
-[@k8o/arte-odyssey](https://www.npmjs.com/package/@k8o/arte-odyssey)という名前で公開していますが、このサイトから剥がしただけで使いやすい状況になっていません。今後使いやすい形にしていく予定です。
+[@k8o/arte-odyssey](https://www.npmjs.com/package/@k8o/arte-odyssey)という名前で公開していますので興味があれば覗いてみてください（このサイトから剥がしただけで使いやすい状況になっていません。今後使いやすい形にしていく予定です）。
 
-そんなパッケージの公開では、[Changesets](https://github.com/changesets/changesets)とGitHub Actionsを利用して行いました。
-この記事ではChangesetsとGitHub Actionsの設定と、設定中に詰まったポイントについて紹介します。GitLabでもOIDCを利用したパッケージの公開ができますが、GitLabについてはこれ以降言及しません。
+このパッケージの公開は、[Changesets](https://github.com/changesets/changesets)とGitHub Actionsを利用して行いました。
+この記事ではChangesetsとGitHub Actionsの設定と、設定中に詰まったポイントについて紹介します。GitLabでもOIDCを利用したパッケージの公開ができますが、GitLabについては言及していません。
 
 ## Changesets
 詳しい使い方は[公式のREADME.md](https://github.com/changesets/changesets/blob/main/README.md)やこれを紹介するブログ記事に譲りますが、
@@ -66,9 +66,13 @@ npx @changesets/cli init
 
 これで基本的な準備は完了です。
 
-`npx @changesets/cli`で変更履歴を追加して、`npx @changesets/cli version`で変更履歴の整理とバージョンの更新を行い、`npx @changesets/cli publish`でパッケージを公開します。
+これ以降は、`npx @changesets/cli`で変更履歴を追加して、`npx @changesets/cli version`で変更履歴の整理とバージョンの更新を行い、`npx @changesets/cli publish`でパッケージを公開します。
 
-`npx @changesets/cli version`を行うと、`npx @changesets/cli`で追加された変更履歴が削除され、`CHANGELOG.md`にバージョンとその変更内容が列挙されます。
+最初に行う`npx @changesets/cli`は、実行するとCLIで変更の内容を入力が促されます。完了後、それをまとめたMarkdownファイルが`.changeset`ディレクトリに作成されます。
+
+次に行う`npx @changesets/cli version`は、`npx @changesets/cli`で追加されたMarkdownが削除され、その内容をまとめたものが`CHANGELOG.md`に記述されます。さらに、`package.json`のバージョンも更新されます。
+
+最後に行う`npx @changesets/cli publish`は、現在のプロジェクト情報をもとにnpmに公開します。
 
 OIDCに関連する設定はパッケージごとに行う必要があるため、npmにパッケージのページを作成する目的で、ここで一度パッケージを公開しました。
 
@@ -123,11 +127,11 @@ jobs:
 このファイルは`.github/workflows`に`release.yml`という名前で作成しました。
 
 このActionは`main`ブランチにpushされたときに、Changesetsが`.changeset`の変更履歴に応じてバージョンアップのPRを作成・更新してくれます。（`npx @changesets/cli version`の役割）
-さらに、そのPRがマージされた時はnpmパッケージへのリリースまでを行なってくれます。（`npx @changesets/cli publish`の役割）
+さらに、そこで作成されたPRが`main`ブランチにpushされたタイミングではnpmパッケージへのリリースを行なってくれます。（`npx @changesets/cli publish`の役割）
 
 このままではこのActionは失敗します。npmに認証するため方法が提供されていないためです。
 
-これまでは、環境変数としてnpmで生成したAccess Tokensを`NPM_TOKEN`として追加し、`NPM_TOKEN: ${{ secrets.NPM_TOKEN }}`のように設定していました。
+OIDCを利用しない場合は、npmで生成したAccess Tokensを環境変数として`NPM_TOKEN`に追加し、`changesets/action@v1`の`env`に`NPM_TOKEN: ${{ secrets.NPM_TOKEN }}`のように設定していました。
 
 OIDCを利用する場合は、`NPM_TOKEN`の設定は不要です。
 
