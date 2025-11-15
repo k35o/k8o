@@ -1,8 +1,8 @@
 ---
 title: CSS Custom Highlight APIで任意の範囲のテキストをハイライトする
-description: Firefox 140でCSS Custom Highlight APIがサポートされ、DOMを変更せずに任意のテキスト範囲をハイライトできるようになりました。JavaScriptでRangeオブジェクトを定義し、Highlightオブジェクトとして登録後、CSSの::highlight擬似要素でスタイリングしてハイライトを作ります。
-createdAt: 2025-06-29 00:00:00.000000+09
-updatedAt: 2025-09-15 09:00:00.000000+09
+description: CSS Custom Highlight APIはDOMを変更せずに任意のテキスト範囲をハイライトする機能です。JavaScriptでRangeオブジェクトを定義し、Highlightオブジェクトとして登録後、CSSの::highlight擬似要素でスタイリングして特定の範囲をハイライトします。
+createdAt: 2025-06-29
+updatedAt: 2025-09-15
 ---
 
 import { Alert } from '@k8o/arte-odyssey/alert';
@@ -23,9 +23,9 @@ import { Playground } from '@/app/_components/playgrounds';
   message="【訂正】この記事では、Firefox 140のリリースによってCSS Custom Highlight APIがBaseline入りしたと記述していますが、実際にはまだBaseline 2025の対象にはなっていませんでした（MDNではBaseline入りしているように見えます）。"
 />
 
-Firefox 140がリリースされ、`CSS Custom Highlight API`がサポートされました。この新機能により、JavaScriptで定義した任意のテキスト範囲をCSSでスタイリングできるようになります。
+Firefox 140のリリースで、`CSS Custom Highlight API`がサポートされました。この新機能により、JavaScriptで定義した任意のテキスト範囲をCSSでスタイリングできるようになります。
 
-これは、構文ハイライト、検索結果のハイライト、スペルミスの表示など、多くの用途で活用できる画期的な機能です。
+これは、構文ハイライト・検索結果のハイライト・スペルミスの表示など、多くの用途で活用できるとても便利な機能です。
 
 ## CSS Custom Highlight APIとは
 
@@ -157,9 +157,9 @@ console.log(defaultPriorityHighlight.priority); // 0
 
 上記の例では、`Imagination`の部分に3つのハイライトを定義しています。一つは優先度1で青色、もう一つは優先度1で黄色、最後は優先度0で赤色です。
 
-定義の通り優先度が高い青色と黄色が優先して表示されます。そして、優先度が同じ場合は`CSS.highlights`に後から登録されたハイライトが優先されます。
+優先度が同じ場合は`CSS.highlights`に後から登録されたハイライトが優先されます。
 
-今回は青色->黄色->赤色の順に登録したので、黄色が優先されて表示されています。
+今回は青色と黄色が同じ優先度、登録順は青色->黄色->赤色の順ですので、黄色が優先されて表示されています。
 
 #### ハイライトの意味を指定
 
@@ -215,8 +215,8 @@ CSS.highlights
 
 この中では`color`と`background-color`、`text-decoration`、`text-shadow`しか、利用できないことに注意してください（`-webkit`から始まる一部のプロパティも利用可能です）。
 
-## まとめ
+## おわりに
 
 Firefox 140での`CSS Custom Highlight API`対応により、柔軟で効率的なテキストハイライト機能を実装できるようになりました。
 
-DOMを操作するような古典的な手法と比較して、パフォーマンス面でも大きなメリットがあるため利用していきたいですね！
+DOMを操作するような古典的な手法と比較して、パフォーマンス面でも大きなメリットがあるため利用していきたいです。

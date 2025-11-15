@@ -115,7 +115,7 @@ export function GetComposedRanges() {
       <Button
         onClick={() => {
           const selection = window.getSelection();
-          if (selection && shadow.current) {
+          if (selection && shadow.current && selection.rangeCount > 0) {
             const range1 = selection.getRangeAt(0);
             console.log(selection.getComposedRanges());
             const range2 = selection.getComposedRanges({

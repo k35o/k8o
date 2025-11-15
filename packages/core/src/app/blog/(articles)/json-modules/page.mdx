@@ -1,8 +1,8 @@
 ---
 title: withキーワードを使用したJSONモジュールのインポート
-description:
-createdAt: 2025-05-21 14:00:00.00000+00
-updatedAt: 2025-05-21 14:00:00.00000+00
+description: ESMでwithキーワードを利用してJSONをインポートする方法について解説します。Import Attributeという属性を利用して、JSONモジュールを安全にJavaScriptから利用できるようになりました。
+createdAt: 2025-05-21
+updatedAt: 2025-11-15
 ---
 
 import { BaselineStatus } from '@k8o/arte-odyssey/baseline-status';
@@ -10,6 +10,12 @@ import { BaselineStatus } from '@k8o/arte-odyssey/baseline-status';
 # withキーワードを使用したJSONモジュールのインポート
 
 <BaselineStatus featureId="json-modules"></BaselineStatus>
+
+## はじめに
+ESMモジュールのインポート時に、`with`キーワードを利用してJSONモジュールをインポートする機能がBaseline 2025に追加されました。
+この機能を利用することで、JSONファイルを安全にインポートし、JavaScriptコード内で直接利用できるようになります。
+
+この記事では、機能の元となるImport Attributeの概要と、JSON Import Attributeの使い方について解説します。
 
 ## Import Attribute
 
@@ -28,7 +34,7 @@ import('./data.json', { with: { type: 'json' } });
 - 末尾のコンマが許可されるため編集が簡単
 - 複数行に分割するときに終わりを明確にするため
 
-現在多くの場所でサポートされているモジュール形式は、`json`だけです。執筆時点のBaseline 2025に追加された構文も`json`だけになります。
+現在多くの場所でサポートされているモジュール形式は、`json`だけです。Baseline 2025に追加された構文も`json`だけになります。
 
 ## JSON Import Attribute
 
@@ -51,3 +57,8 @@ JavaScriptがインポートされたときは、構文解析及びに実行ま�
 
 上記の例では、取得ボタンを押すとインプットテキストをJSON Import Attribute付きインポートします。
 デフォルトの入力はJSONを返すので問題なくインポートできますが、他の形式を入力するように変えるとコンソールにエラーが発生します。
+
+## おわりに
+JSON Import Attributeを紹介しました。この機能を利用することで、ESMモジュールのインポート時に、その対象がJSONであることをランタイムに伝えられるような機能でした。
+
+無秩序にファイルのインポートを行うのは危険ですので、Import Attributeを使って、JSONファイルであることを明示的に伝えるようにしましょう。

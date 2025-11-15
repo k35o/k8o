@@ -1,8 +1,8 @@
 ---
 title: Intl.DurationFormatで期間をlocaleに基づいて表現する
 description: Intl.DurationFormatはlocaleに応じた形式で期間を表現するIntlの新機能で、Baseline 2025で利用可能です。formatメソッドで文字列として期間を取得でき、formatToPartsメソッドでは各部分をオブジェクトの配列として取得できます。言語による期間の表現の違いを標準に従って簡単扱いましょう。
-createdAt: 2025-03-14 12:43:14.741353+00
-updatedAt: 2025-03-28 13:24:15.492815+00
+createdAt: 2025-03-14
+updatedAt: 2025-11-15
 ---
 
 import { BaselineStatus } from '@k8o/arte-odyssey/baseline-status';
@@ -14,7 +14,7 @@ import { LinkCard } from '@/app/_components/link-card';
 
 ## はじめに
 
-Firefox 136.0のリリースで`Intl`の`DurationFormat`が2025年のBaselineに追加されました。
+Firefox 136.0のリリースで`Intl`の`DurationFormat`がBaseline 2025に追加されました。
 `Intl.DurationFormat`は`locale`に基づいた書式設定で期間を表現するものです。
 
 ```js
@@ -39,7 +39,7 @@ new Intl.DurationFormat('ja').format(duration);
 `Intl.DurationFormat`は`locale`に応じた書式の期間を表示するためのオブジェクトです。
 他の`Intl`オブジェクトと同じように静的メソッドとして`supportedLocalesOf()`やインスタンスメソッド`resolvedOptions()`を持っています。
 
-`locale`に応じた期間の出力は`IntlDurationFormat`オブジェクトを作成して、`format`及びに`formatToParts`メソッドで行います。
+`locale`に応じた期間の出力は`Intl.DurationFormat`オブジェクトを作成して、`format`及びに`formatToParts`メソッドで行います。
 
 `locale`や書式設定は`Intl.DurationFormat`オブジェクトを作成するタイミングで設定します。
 
@@ -174,3 +174,11 @@ new Intl.DurationFormat('ja').formatToParts(duration);
 
 期間を元に自分なりの表示を作成する場合はこちらが便利です。
 日本語で`format`した場合スペースが気になるので、こちらを利用した方が見栄えが良いかもしれません。
+
+## おわりに
+Baseline 2025に追加された`Intl.DurationFormat`を紹介しました。
+
+`locale`に基づいた期間の表現は、かなり実装が大変で、ライブラリを利用した場合でも満足が得られる結果を簡単に得ることはできませんでした。
+そのため、`Intl.DurationFormat`によって、これらの表現を簡単にできるようになったことはとても嬉しいです。
+
+`Intl`系の機能は日本・日本語であることによって、困っていた点を解決してくれるので今後の追加も楽しみです。

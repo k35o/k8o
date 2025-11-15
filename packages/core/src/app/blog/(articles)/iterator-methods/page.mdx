@@ -1,8 +1,8 @@
 ---
 title: Iteratorに対してmapやfilterのようなヘルパー関数を作用させる
-description: Baseline 2025でIterator Helpersが導入され、Iteratorオブジェクトにmapやfilterなどの便利な操作が直接適用可能になりました。これにより、配列への変換が不要になり、コードの可読性向上と遅延評価によるパフォーマンス改善が期待できます。
-createdAt: 2025-04-21 20:55:41.000000+00
-updatedAt: 2025-04-21 20:55:41.000000+00
+description: Baseline 2025でIterator Helpersが導入され、Iteratorオブジェクトにmapやfilterなどの便利な操作を作用できるようになりました。これにより、配列への変換が不要になり、コードの可読性向上と遅延評価によるパフォーマンス改善が期待できます。
+createdAt: 2025-04-21
+updatedAt: 2025-11-15
 ---
 
 import { BaselineStatus } from '@k8o/arte-odyssey/baseline-status';
@@ -10,9 +10,9 @@ import { LinkCard } from '@/app/_components/link-card';
 
 # Iteratorに対してmapやfilterのようなヘルパー関数を作用させる
 
-## はじめに
+<BaselineStatus featureId="iterator-methods" />
 
-<BaselineStatus featureId="iterator-methods"></BaselineStatus>
+## はじめに
 
 Baseline 2025にIterator Helpersが追加されました。
 
@@ -23,7 +23,7 @@ Baseline 2025にIterator Helpersが追加されました。
 ## Iteratorオブジェクト
 
 `Iterator`オブジェクトは繰り返し可能なデータの並びを処理するオブジェクトです。
-`next`という操作で次のデータを表す`value`と後続のデータがないことを示す`done`を返します。
+`next`という操作で次のステップで進み、戻り値は次のデータを表す`value`と後続のデータの有無を示す`done`のオブジェクトです。
 
 `Iterator`オブジェクトは、他の多くの組み込みイテレータの基盤となる存在です。
 `Array.prototype[Symbol.iterator]`や`Map.prototype.values`、`Set.prototype.values`、`Intl.Segmenter.prototype.segment`等の結果や`NodeList`など、さまざまな反復処理は`Iterator`オブジェクトを継承しています。
@@ -40,9 +40,10 @@ for (const str of 'hello'[Symbol.iterator]()) {
 }
 ```
 
-## Iterator Helpers追加の背景
+## Iterator Helpers
 
-これまで`Iterator`オブジェクトに対して何らかの処理を行いたい場合、`for...of`ループを使って自前で煩雑な処理を記述したり、配列に変換してから配列に実装されているメソッド（`map`や`filter`など）を利用する方法がよく使われていました。
+これまで`Iterator`オブジェクトに対して何らかの処理を行いたい場合、`for...of`ループを使って自前で煩雑な処理を記述したり、
+配列に変換してから配列に実装されているメソッド（`map`や`filter`など）を利用していました。
 
 ```js
 const set = new Set([1, 2, 3]);
@@ -62,7 +63,7 @@ Array.from(nodeList).forEach((x) => console.log(x.innerText)); // '...', '...'
 上記のコードでは`[...set.values()]`のように`Iterator`オブジェクトを配列に変換するような中間処理が挟まれるので非効率です。
 また、配列に変換するタイミングで全てのデータを取り出すので、`Iterator`オブジェクトが持つ呼び出されたタイミングにデータを取り出すという性質を生かせません。
 
-Baseline 2025で追加された`Iterator`オブジェクトに対する便利な操作を使えば、これらの問題を解決できます。
+Baseline 2025で追加された`Iterator`オブジェクトに対する便利な操作（Iterator Helpers）を使えば、これらの問題を解決できます。
 
 ```js
 const set = new Set([1, 2, 3]);
@@ -83,7 +84,7 @@ nodeList[Symbol.iterator]().forEach((x) => console.log(x.innerText)); // '...', 
 コード上で宣言的で読みやすい（`[Symbol.iterator]()`は見慣れないかもですが）ことに加えて、`Iterator`オブジェクトのまま扱えるので`some`等の処理が遅延評価されるようになります（`forEach`はされません）。
 これにより、必要な分のデータだけが評価されるので、パフォーマンスの面でも有利です。
 
-## できること
+### 使い方
 
 `next`メソッドを実行すると0から3までの値を返す`Iterator`オブジェクトのような値`counter`について考えます。
 
@@ -108,7 +109,7 @@ console.log(counter.next()); // { value: 2, done: false }
 console.log(counter.next()); // { value: undefined, done: true }
 ```
 
-### from
+#### from
 
 `from`は、`Iterator`オブジェクトの静的メソッドです。引数に渡した反復可能なオブジェクトから新しい`Iterator`オブジェクトを生成します。
 
@@ -124,7 +125,7 @@ console.log(counterIter[Symbol.iterator]().next()); // { value: undefined, done:
 
 以後紹介するメソッドはこの変換を通すことで利用可能になります（`Set.prototype.values`のような`Iterator`オブジェクトを継承したオブジェクトで実行する場合は変換不要です）。
 
-### map
+#### map
 
 `map`は、`Iterator`オブジェクトの各要素に対して指定した関数を適用し、新しい`Iterator`オブジェクトを返します。
 
@@ -152,9 +153,11 @@ console.log(mappedIter.next()); // 1 { value: 2, done: false }
 console.log(mappedIter.next()); // 2 { value: 4, done: false }
 ```
 
+`map`のコールバック関数中の`console.log`が`next`を呼び出したタイミングで呼び出されていることがわかります。
+
 今後紹介する操作のほとんどはこのように遅延評価が行われます。遅延評価の仕組みが分かりにくい関数や遅延評価しない関数についてのみこの仕様について言及します。
 
-### filter
+#### filter
 
 `filter`は、`Iterator`オブジェクトの各要素に対して指定した関数を適用し、真となる要素だけを含む新しい`Iterator`オブジェクトを返します。
 
@@ -179,7 +182,7 @@ console.log(filteredIter.next()); // 1 2 { value: 2, done: false }
 console.log(filteredIter.next()); // undefined { value: undefined, done: true }
 ```
 
-### take
+#### take
 
 `take`は、`Iterator`オブジェクトから指定した数の要素を取り出し、新しい`Iterator`オブジェクトを返します。
 
@@ -191,7 +194,7 @@ console.log(takenIter.next()); // { value: 1, done: false }
 console.log(takenIter.next()); // { value: undefined, done: true }
 ```
 
-### drop
+#### drop
 
 `drop`は、`Iterator`オブジェクトから指定した数の要素をスキップし、新しい`Iterator`オブジェクトを返します。
 
@@ -202,7 +205,7 @@ console.log(droppedIter.next()); // { value: 2, done: false }
 console.log(droppedIter.next()); // { value: undefined, done: true }
 ```
 
-### flatMap
+#### flatMap
 
 `flatMap`は、`Iterator`オブジェクトの各要素に対して指定した関数を適用し、得られた値をフラットにした新しい`Iterator`オブジェクトを返します。
 
@@ -218,9 +221,9 @@ console.log(flatMappedIter.next()); // { value: 4, done: false }
 console.log(flatMappedIter.next()); // { value: undefined, done: true }
 ```
 
-配列を返した場合、`next`で配列をそのまま返すのではなく、配列の要素を1つずつ返します。
+フラットにしているので、`next`で配列がそのまま`value`になるのではなく、配列の要素を1つずつ`next`が呼ばれたタイミングで返します。
 
-### reduce
+#### reduce
 
 `reduce`は、`Iterator`オブジェクトの各要素に対して指定した関数を適用し、最終的な値を返します。
 
@@ -234,7 +237,7 @@ console.log(reducedValue); // 3
 
 `reduce`は遅延評価されません。全ての要素を取り出しながら指定した関数を適用します。`take`や`drop`で実行する個数を調整できます。
 
-### toArray
+#### toArray
 
 `toArray`は、`Iterator`オブジェクトの全ての要素を配列に変換します。
 
@@ -246,7 +249,7 @@ console.log(array); // [ 0, 1, 2 ]
 
 `toArray`も遅延評価されません。全ての要素を取り出しながら配列に変換します。
 
-### forEach
+#### forEach
 
 `forEach`は、`Iterator`オブジェクトの各要素に対して指定した関数を適用します。
 
@@ -262,7 +265,7 @@ counterIter.forEach((x) => {
 
 `forEach`も遅延評価されません。全ての要素を取り出しながら指定した関数を作用させます。
 
-### some
+#### some
 
 `some`は、`Iterator`オブジェクトの各要素に対して指定した関数を適用し、真となる要素が1つでもあれば`true`を返します。
 
@@ -283,7 +286,7 @@ const hasOdd = counterIter.some((x) => {
 console.log(hasOdd); // 0 1 true
 ```
 
-### every
+#### every
 
 `every`は、`Iterator`オブジェクトの各要素に対して指定した関数を適用し、全ての要素が真であれば`true`を返します。
 
@@ -304,7 +307,7 @@ const allEven = counterIter.every((x) => {
 console.log(allEven); // 0 1 false
 ```
 
-### find
+#### find
 
 `find`は、`Iterator`オブジェクトの各要素に対して指定した関数を適用し、真となる要素を返します。
 
@@ -329,7 +332,8 @@ console.log(found); // 0 1 1
 
 `Iterator`オブジェクトに追加された便利な操作について紹介しました。
 
-これまでは、`for...of`を使って操作を記述したり、配列に変換してから便利な操作を利用したりしていましたが、これからは`Iterator`オブジェクトに対して直接便利な操作を記述できるようになります。
+これまでは、`for...of`を使って操作を記述したり、配列に変換してから便利な操作を利用したりしていましたが、これからはIterator Helpersによる簡易な記述が可能となりました。
+
 コードがシンプルになり可読性が上がるだけではなく、`Iterator`オブジェクトのまま扱えることで遅延評価の恩恵を受けられるのでパフォーマンスの面でも有効です。
 
-これからの`Iterator`オブジェクトの利用が楽しみです。
+これまでは`Iterator`オブジェクトの取り扱いが大変でとりあえず配列に変換していましたが、今後はIterator Helpersを活用して効率的に扱っていきたいです。

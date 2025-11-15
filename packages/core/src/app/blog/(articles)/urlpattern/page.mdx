@@ -1,6 +1,6 @@
 ---
 title: URLのパターンマッチを簡単にするURLPattern API
-description:
+description: URLPattern APIは、URLのパターンマッチを簡単に行うためのAPIです。従来のRegExpによる実装と比べて、より直感的かつ正確にパス変数の抽出やURLの照合ができます。
 createdAt: 2025-09-21
 updatedAt: 2025-09-21
 ---
@@ -191,7 +191,9 @@ console.log(pattern3.search);   // "*"
 console.log(pattern3.hash);     // "*"
 ```
 
+初めの方に紹介した`URLPattern`オブジェクトの異なる第1引数による同一性は、この機能を用いて確認しました。
+
 ## おわりに
 URLのパターンマッチを簡単にするためのURLPattern APIについて紹介しました。
 
-これまではRegExp等を使って、URLのパターンマッチを行っていましたが、URLPattern APIを使うことで、より簡単かつ正確にパターンマッチを行うことができます。
+これまではRegExp等を使って行ってきたURLのパターンマッチを、URLPattern APIによってより簡単かつ正確にパターンマッチを行えるのは非常に便利だと感じました。

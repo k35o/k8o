@@ -1,8 +1,8 @@
 ---
 title: CSS グラデーションの新仕様：単色カラーストップの導入
 description:
-createdAt: 2025-04-21 20:55:31.000000+00
-updatedAt: 2025-04-21 20:55:31.000000+00
+createdAt: 2025-04-21
+updatedAt: 2025-04-21
 ---
 
 import { BaselineStatus } from '@k8o/arte-odyssey/baseline-status';
@@ -16,9 +16,10 @@ Baseline 2025に、グラデーションを表現するCSS関数である`liner-
 
 <LinkCard href="https://github.com/w3c/csswg-drafts/issues/10092" />
 
-「グラデーションは少なくとも2つの色間の移行を意味する」という従来の[CSS Images 4](https://www.w3.org/TR/css-images-4/)の仕様と、実際には単色グラデーションを実装している主要なブラウザとの間に矛盾が存在していました。
+これまでは、「グラデーションは少なくとも2つの色間の移行を意味する」という従来の[CSS Images 4](https://www.w3.org/TR/css-images-4/)の仕様と、実際には単色グラデーションを実装している主要なブラウザとの間に矛盾が存在していました。
 
-この矛盾を解決するため、単一のカラーストップを許可する以下の利点からCSS Images 4の仕様が更新されました
+この矛盾を解決するため、CSS Images 4の仕様がブラウザ側の実装サイドの仕様に変更されました。
+変更された背景にある、単一のカラーストップを許可する利点は以下が挙げられます。
 
 - CSS の開発体験の向上
 - 冗長性の軽減

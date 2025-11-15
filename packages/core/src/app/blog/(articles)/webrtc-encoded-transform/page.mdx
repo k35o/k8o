@@ -1,13 +1,13 @@
 ---
-title: WebRTC Encoded TransformsでWebRTCの一連の処理にメスを入れる
-description:
+title: WebRTC Encoded TransformでWebRTCの一連の処理にメスを入れる
+description: WebRTC Encoded Transformは、WebRTCの送信・受信パイプラインにカスタム変換処理を挿入できる機能です。RTCRtpScriptTransformを使用してWorkerスレッドでエンコード済みフレームを直接操作し、E2EEやカスタムエフェクトを実装できます。
 createdAt: 2025-10-25
 updatedAt: 2025-10-25
 ---
 
 import { BaselineStatus } from '@k8o/arte-odyssey/baseline-status';
 
-# WebRTC Encoded TransformsでWebRTCの一連の処理にメスを入れる
+# WebRTC Encoded TransformでWebRTCの一連の処理にメスを入れる
 
 <BaselineStatus featureId="webrtc-encoded-transform" />
 
@@ -18,7 +18,7 @@ WebRTCの登場によって、あらゆるデバイスが共通のプラット�
 そして、Chrome 141（Edge 141）からはBaselineのすべてのブラウザにて、WebRTC Encoded Transformという機能が利用可能になりました（Chromeでは2020年から初期バージョンは利用可能でしたが、仕様変更後の実装が行われていませんでした）。
 WebRTC Encoded Transformにより、より高度なメディア処理が可能となり、リアルタイムコミュニケーションの質が向上します。
 
-この記事では、WebRTCについて簡単に紹介したのちに、WebRTC Encoded Transformの簡単な使い方を解説します。
+この記事では、WebRTC Encoded Transformの簡単な使い方を解説します。
 
 ## WebRTCとは
 
@@ -114,7 +114,7 @@ self.addEventListener('rtctransform', (event: RTCTransformEvent) => {
                              E2EEを追加可能               E2EEを追加可能
 ```
 
-## まとめ
+## おわりに
 WebRTCとWebRTC Encoded Transformについて簡単に紹介しました。
 
 WebRTC Encoded Transformは、Baseline 2025に追加された、WebRTCに関する強力な機能です。

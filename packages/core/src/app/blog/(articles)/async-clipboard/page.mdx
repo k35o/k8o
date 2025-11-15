@@ -1,8 +1,8 @@
 ---
 title: 任意のデータをコピー&ペーストするClipboard API
-description: Clipboard APIは、navigator.clipboardを通じてクリップボードへの読み書きを非同期で行えるAPIです。テキストや画像のコピー・貼り付けに対応し、ClipboardItemを使えばMIMEタイプ別のデータ操作も可能です。
-createdAt: 2025-04-06 10:02:57.807659+00
-updatedAt: 2025-04-06 10:02:57.807659+00
+description: Clipboard APIは、navigator.clipboardを通じてクリップボードへの読み書きを非同期で行うAPIです。テキストや画像のコピー・貼り付けに対応し、ClipboardItemを使えばMIMEタイプ別のデータ操作も可能です。
+createdAt: 2025-04-06
+updatedAt: 2025-11-15
 ---
 
 import { BaselineStatus } from '@k8o/arte-odyssey/baseline-status';
@@ -12,6 +12,12 @@ import { ClipboardImageDemo as Example2 } from '@/app/_components/playgrounds/as
 import { Playground } from '@/app/_components/playgrounds';
 
 # 任意のデータをコピー&ペーストするClipboard API
+
+## はじめに
+`ClipboardItem.supports()`がBaseline 2025に追加されました。
+この機能はユーザーの環境で特定のMIMEタイプがClipboard APIでサポートされていることを確認するためのものです。
+
+この記事では、Clipboard APIの使い方を最初に確認してから、`ClipboardItem.supports()`について紹介します。
 
 ## Clipboard API
 
@@ -62,7 +68,7 @@ navigator.clipboard
 
 Clipboard APIはセキュリティ上の都合で実行に対する制限がかけられています。
 
-制限はブラウザによって異なります。例えばChromeではPermissions APIを使って、`clipboard-read`で読み込みを、`clipboard-write`で書き込みの権限を確認することができます。
+制限はブラウザによって異なります。例えばChromeでは読み込みと書き込みをPermissions APIを使って、`clipboard-read`と`clipboard-write`で確認できます。
 
 ```js
 const readPermission = await navigator.permissions.query({
@@ -84,7 +90,7 @@ writePermission.state === 'denied'; // クリップボードの書き込みが�
 
 これに対し、FirefoxやSafariでは、これらの権限はサポートされていません。FirefoxやSafariはオリジン間の読み込みは許可されていますが、異なるオリジンで読み込むことは許可されていません(書き込みはデフォルトで許可されています)。
 
-Safariで発生するエラー: The request is not allowed by the user agent or the platform in the current context, possibly because the user denied permission.
+> Safariで発生するエラー: The request is not allowed by the user agent or the platform in the current context, possibly because the user denied permission.
 
 ### 権限チェックとテキストの読み書き
 
@@ -98,7 +104,7 @@ Permission APIを使って権限判定を行なっています。SafariやFirefo
 
 ## ClipboardItem
 
-`ClipboardItem`は、クリップボードに書き込むデータを表すオブジェクトです。先ほどの例の`read`と`write`で使われているものです。
+`ClipboardItem`は、クリップボードに書き込むデータを表すオブジェクトです。先ほど上げた`Clipboard`インターフェースで利用できる`read`と`write`で使われます。
 `read`はクリップボードから読み取ったデータを`ClipboardItem`の配列で解決し、`write`は引数に渡した`ClipboardItem`の配列をクリップボードに書き込みます。
 
 ```ts
@@ -133,7 +139,22 @@ navigator.clipboard
 ```
 
 2つ目の引数はオブジェクトでオプションを渡します。現在は`presentationStyle`をサポートしています。値には`unspecified`、`inline`、`attachment`を渡せます。デフォルト値は `unspecified`です。
-`inline`はクリップボードにコピーしたデータを表示するためのもの、`attachment`はクリップボードにコピーしたデータを添付ファイルとして扱うためのものです。
+コンテンツを貼り付ける際に、貼り付け位置に適切な表現をインラインで表示する`inline`と添付ファイルとして扱う`attachment`があります。
+
+```ts
+new ClipboardItem(
+  { 'text/plain': 'Hello, world!', },
+  { presentationStyle: 'unspecified' },
+);
+new ClipboardItem(
+  { 'text/plain': 'Hello, world!', },
+  { presentationStyle: 'inline' },
+);
+new ClipboardItem(
+  { 'text/plain': 'Hello, world!', },
+  { presentationStyle: 'attachment' },
+);
+```
 
 作成された`ClipboardItem`インスタンスは、`types`プロパティ、`getType()`メソッドを持ちます（Baselineで対応しているものだけを紹介しています）。
 `types`は利用可能なMIMEタイプを配列で返し、`getType()`は第一引数に渡したMIMEタイプをもとにPromiseで解決したBlobを返します。
@@ -164,7 +185,7 @@ item.getType('text/html').catch((err) => {
 
 <BaselineStatus featureId="clipboard-supports"></BaselineStatus>
 
-ClipboardItemの静的メソッド`supports`がBaseline 2025で追加されました。`supports`はユーザーの環境で特定のMIMEタイプがClipboard APIでサポートされていることを確認するためのものです。
+`ClipboardItem.supports`はClipboard APIとして、特定のMIMEタイプがサポートされていることを確認するためのものです。
 
 `text/plain`、`text/html`、`image/png`は常にサポートされていますが、`text/uri-list`、`image/svg+xml`と`web `で始めるカスタムMIMEタイプは、ブラウザやOSによって結果が異なります。
 
@@ -235,5 +256,8 @@ const pasteImage = async () => {
 
 ### おわりに
 
-Clipboard APIは、クリップボードにアクセスするためのAPIです。これを使うことで、ユーザーが選択したテキストや画像などをクリップボードにコピーしたり、クリップボードからデータを取得したりすることができます。
-過去には`execCommand()`を利用していましたが、Clipboard APIを利用することで、より簡単にクリップボードにアクセスできるようになりました。`execCommand()`は非推奨なので、今後はClipboard APIを利用するようにしましょう。
+Clipboard APIは、クリップボードにアクセスするためのAPIです。
+これを使うことで、ユーザーが選択したテキストや画像などをクリップボードへコピーしたり、クリップボードからデータを貼り付けられます。
+
+過去には`execCommand()`を利用していましたが、Clipboard APIを利用することで、より簡単に安全にクリップボードにアクセスできるようになりました。
+`execCommand()`は非推奨なので、今後はClipboard APIを利用するようにしましょう。

@@ -1,38 +1,48 @@
 ---
 title: 要素のレイアウトとレンダリングを必要なタイミングまでスキップさせるCSSのcontent-visibilityプロパティ
-description:
+description: CSSのcontent-visibilityプロパティは、要素のレンダリングを制御しパフォーマンスを向上させる機能です。auto値を指定することで、ビューポート外の要素のレイアウト処理を必要なタイミングまでスキップできます。
 createdAt: 2025-09-21
-updatedAt: 2025-09-21
+updatedAt: 2025-11-15
 ---
 
 import { BaselineStatus } from '@k8o/arte-odyssey/baseline-status';
 import { LinkCard } from '@/app/_components/link-card';
+import { ContentVisibilityDemo } from '@/app/_components/playgrounds/content-visibility';
+import { Playground } from '@/app/_components/playgrounds';
 
 # 要素のレイアウトとレンダリングを必要なタイミングまでスキップさせるCSSのcontent-visibilityプロパティ
 
 <BaselineStatus featureId="content-visibility" />
 
 ## はじめに
-Safari26のリリースから、Baselineのブラウザセット全てでCSSの`content-visibility`プロパティに`auto`プロパティを付与できるようになりました。
+Safari26のリリースから、Baseline 2025に`content-visibility`プロパティの`auto`プロパティが仲間入りしました。
 
 `visible`や`hidden`といった従来の値に加えて、`auto`を指定することで要素のレイアウトとレンダリングを必要なタイミングまでスキップさせることが可能になりました。
 
 ## visileとhidden
 `content-visibility`プロパティは、要素の内容が表示されるかどうかを制御します。
 
-`visible`は付与していない時と同じように要素が表示されます。
+`visible`は付与していない時と同じように要素が表示されます。付与しても効果が全くありません。
 
-`hidden`はその要素は読み飛ばされます。スクリーンリーダーやブラウザ検索からのアクセスも不可になります。
+`hidden`はその要素のレンダリング処理が行われません。スクリーンリーダーやブラウザ検索からのアクセスも不可になります。
+`display: none`と似ていますが、`content-visibility: hidden`は要素のレイアウト情報を保持するので、要素が再び表示される際にレンダリングが不要になるという違いがあります。
 
 ## auto
-`auto`はビューポート内やトップレイヤーに表示されたり、フォーカスや要素の選択がない限り、要素が読み飛ばされます。
+`auto`はビューポート内やトップレイヤーに表示されたり、フォーカスや要素の選択がない限り、要素のレンダリング処理が行われません。
+逆に、要素がビューポート内に入ったり、トップレイヤーに表示されたり、フォーカスや要素の選択が行われた場合にレンダリング処理が行われます。
 
-ただし、`hidden`とは異なり、アクセシビリティツリーに表示されるのでスクリーンリーダーからの検出は行われます。
-DOM上にも存在するのでブラウザ検索からのアクセスも可能になります。
+そして非表示の間も`hidden`とは異なり、アクセシビリティツリーに表示されるのでスクリーンリーダーからの検出は行われます。また、ブラウザからの検索も問題なく行われます。
+
+<Playground title="content-visibilityのhiddenとautoの比較">
+  <ContentVisibilityDemo />
+</Playground>
+
+上記のデモでは、`hidden`と`auto`の違いを実際に確認できます。
+ブラウザの検索機能や開発者ツールでアクセシビリティツリーを確認してみると、`auto`の方だけ検索できることがわかります。
 
 要素が読み飛ばされている間は要素の高さが0になるので、読み込まれたタイミングでスクロールバーの位置がズレる可能性があります。
-これらの問題は要素のスタイルに適切な`contain-intrinsic-size`を付与して、あらかじめブラウザにレイアウトのサイズが伝えることで防ぐことができます。
+これらの問題は要素のスタイルに適切な`contain-intrinsic-size`を付与して、あらかじめブラウザにレイアウトのサイズが伝わるようにして防ぎます。
 
 ## おわりに
 `content-visibility: auto`はBaseline 2025で追加されたのでユーザーの環境ではサポートされていないことが多いです。
-しかし、サポートされていないブラウザであっても、このプロパティは付与されていないものと振る舞うだけですので、`content-visibility: auto`を使用してパフォーマンスの向上が期待できる場合は使用すると良いです。
+しかし、サポートされていないブラウザであっても、このプロパティは付与されていないものと振る舞うだけですので、`content-visibility: auto`を使用してパフォーマンスの向上が期待できる場合は使用してみてはいかがでしょうか。

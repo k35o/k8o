@@ -1,8 +1,8 @@
 ---
 title: contenteditableな要素でテキストだけを編集可能にする
-description: Baseline 2025でcontenteditableにplaintext-onlyを渡せるようになりました。plaintext-onlyを指定すると、要素内での編集が可能になりつつリッチテキスト（太字やリンクなど）のスタイルが適用されないようになります。従来から存在するtrueを指定した時の挙動を振り返って違いを確認します。
-createdAt: 2025-03-14 11:50:57.391414+00
-updatedAt: 2025-03-28 13:24:15.492815+00
+description: Baseline 2025でcontenteditableにplaintext-onlyを渡せるようになりました。plaintext-onlyを指定すると、要素内での編集が可能な状態でリッチテキスト（太字やリンクなど）のスタイルが適用されないようになります。従来から存在するtrueを指定した時の挙動を復習してから挙動の違いを確認します。
+createdAt: 2025-03-14
+updatedAt: 2025-11-15
 ---
 
 import { BaselineStatus } from '@k8o/arte-odyssey/baseline-status';
@@ -27,6 +27,12 @@ Firefox 136.0のリリースで`contenteditable`属性の値に`plaintext-only`�
 `contenteditable`はグローバル属性(全てのHTML要素で共通な属性)で、付与した要素の中身を直接編集できるようにします。
 `contenteditable`はグローバル属性ではありますが、一部の要素では利用できません。利用の可否はJavaScriptで`HTMLElement.isContentEditable`から確認できます。
 
+```html
+<div contenteditable="true">
+  ここを編集できます
+</div>
+```
+
 <Playground
   title={'div要素にcontenteditable="true"を付与したサンプル'}
 >
@@ -49,7 +55,13 @@ Firefox 136.0のリリースで`contenteditable`属性の値に`plaintext-only`�
 
 ## plaintext-only
 
-`true`ではなく`plaintext-only`を付与すると、その要素のテキストのみを編集可能にします。
+`contenteditable`に`true`ではなく`plaintext-only`を付与すると、その要素のテキストのみを編集可能にします。
+
+```html
+<div contenteditable="plaintext-only">
+  ここを編集できます
+</div>
+```
 
 <Playground
   title={
@@ -64,6 +76,13 @@ Firefox 136.0のリリースで`contenteditable`属性の値に`plaintext-only`�
   </div>
 </Playground>
 
-先ほどのサンプルに対して、値を`plaintext-only`に変更したものになります。
+上記は先ほどのサンプルと同じ条件で、値を`plaintext-only`に変更したものです。
 「div要素にcontenteditable="plaintext-only"を付与したサンプル」をコピーして貼り付けを行うと、テキストだけが追加されることが確認できます。背景やフォントの太さは反映されません。
 これが`plaintext-only`の特徴です。`true`を付与したときと異なり、テキストのみを編集可能にするので、実装上で考慮するケースが少なくなります。
+
+## おわりに
+これまでは、`contenteditable`を利用する際には、リッチテキストのスタイルが付与されることを考慮して実装を行う必要がありました。
+
+Baseline 2025で追加された`contenteditable="plaintext-only"`を利用することで、テキストのみを編集可能にできるので、よりシンプルに実装できるようになります。
+
+リッチなテキストの編集が不要なケースでは、想定外を防ぐためにも`plaintext-only`を利用することを検討してみてください。
