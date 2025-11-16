@@ -111,8 +111,10 @@ export const BlogLayout: FC<{
         </ErrorBoundary>
       </div>
       <ErrorBoundary fallback={null}>
-        <div className="hidden w-64 shrink-0 empty:hidden xl:block">
-          <TableOfContext slug={slug} />
+        <div className="hidden w-64 shrink-0 has-empty:hidden xl:block">
+          <div className="sticky top-24">
+            <TableOfContext slug={slug} />
+          </div>
         </div>
       </ErrorBoundary>
       <Subscribe reading />
