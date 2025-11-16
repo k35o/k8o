@@ -82,9 +82,6 @@ export const BlogLayout: FC<{
               </ErrorBoundary>
             </div>
           </div>
-          <div className="m-2 w-full sm:mt-4">
-            <Separator />
-          </div>
           <ViewTransition name={`tags-${slug}`}>
             {blog.tags.length > 0 && (
               <div className="mb-4 flex flex-wrap items-center gap-2">
@@ -99,6 +96,17 @@ export const BlogLayout: FC<{
               </div>
             )}
           </ViewTransition>
+          <div className="m-2 sm:mt-4">
+            <Separator />
+          </div>
+          <ErrorBoundary fallback={null}>
+            <div className="block empty:hidden xl:hidden">
+              <TableOfContext slug={slug} />
+              <div className="m-2 sm:mt-4">
+                <Separator />
+              </div>
+            </div>
+          </ErrorBoundary>
           {children}
         </article>
         <ErrorBoundary fallback={null}>
