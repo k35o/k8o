@@ -69,7 +69,7 @@
     "@vitest/browser-playwright": "4.0.8",
     "chromatic": "13.3.3",
     "drizzle-kit": "0.31.6",
-    "msw": "2.12.0",
+    "msw": "2.12.1",
     "msw-storybook-addon": "2.0.6",
     "postgres": "3.4.7",
     "react-email": "5.0.1",
