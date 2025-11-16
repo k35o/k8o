@@ -38,7 +38,7 @@
     "@biomejs/biome": "2.3.4",
     "@ls-lint/ls-lint": "2.3.1",
     "@types/node": "22.19.0",
-    "@typescript/native-preview": "7.0.0-dev.20251107.1",
+    "@typescript/native-preview": "7.0.0-dev.20251108.1",
     "@vitest/coverage-istanbul": "4.0.8",
     "@vitest/ui": "4.0.8",
     "chrome-devtools-mcp": "0.10.1",
