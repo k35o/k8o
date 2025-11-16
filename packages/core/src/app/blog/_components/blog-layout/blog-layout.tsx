@@ -82,21 +82,21 @@ export const BlogLayout: FC<{
                 </Suspense>
               </ErrorBoundary>
             </div>
+            <ViewTransition name={`tags-${slug}`}>
+              {blog.tags.length > 0 && (
+                <div className="mb-4 flex flex-wrap items-center gap-2">
+                  <TagIcon size="sm" />
+                  {blog.tags.map((tag) => {
+                    return (
+                      <Link href={`/tags/${tag.id.toString()}`} key={tag.id}>
+                        <TextTag clickable key={tag.id} text={tag.name} />
+                      </Link>
+                    );
+                  })}
+                </div>
+              )}
+            </ViewTransition>
           </div>
-          <ViewTransition name={`tags-${slug}`}>
-            {blog.tags.length > 0 && (
-              <div className="mb-4 flex flex-wrap items-center gap-2">
-                <TagIcon size="sm" />
-                {blog.tags.map((tag) => {
-                  return (
-                    <Link href={`/tags/${tag.id.toString()}`} key={tag.id}>
-                      <TextTag clickable key={tag.id} text={tag.name} />
-                    </Link>
-                  );
-                })}
-              </div>
-            )}
-          </ViewTransition>
           <div className="m-2 sm:mt-4">
             <Separator />
           </div>
