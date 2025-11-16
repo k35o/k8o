@@ -29,11 +29,11 @@ export const TableOfContext: FC<{ slug: string }> = async ({ slug }) => {
   }
 
   return (
-    <div className="rounded-lg bg-bg-base/90">
-      <div className="border-border-base border-b p-4 pb-2">
+    <div className="flex max-h-[80vh] flex-col rounded-lg bg-bg-base/90">
+      <div className="border-border-base p-2 xl:border-b xl:p-4">
         <h3 className="font-bold text-lg text-primary-fg">目次</h3>
       </div>
-      <ul className="flex flex-col p-2 text-fg-base text-sm">
+      <ul className="flex flex-col overflow-y-auto p-2 text-fg-base text-sm">
         {headingTree.children.map((depth1) => {
           if (depth1.children.length === 0) {
             return (
