@@ -1,13 +1,17 @@
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
-import { mocked } from 'storybook/test';
-import { getBlogToc } from '@/app/blog/_api';
 import { TableOfContext } from './table-of-context';
 
 const meta: Meta<typeof TableOfContext> = {
   title: 'app/blog/blog-layout/table-of-context',
   component: TableOfContext,
-  beforeEach: () => {
-    mocked(getBlogToc).mockResolvedValue({
+};
+
+export default meta;
+type Story = StoryObj<typeof TableOfContext>;
+
+export const Primary: Story = {
+  args: {
+    headingTree: {
       depth: 0,
       children: [
         {
@@ -57,11 +61,6 @@ const meta: Meta<typeof TableOfContext> = {
           ],
         },
       ],
-    });
+    },
   },
 };
-
-export default meta;
-type Story = StoryObj<typeof TableOfContext>;
-
-export const Primary: Story = {};

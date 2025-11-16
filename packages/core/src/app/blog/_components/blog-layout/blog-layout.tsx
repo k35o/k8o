@@ -13,7 +13,7 @@ import { TextTag } from '@k8o/arte-odyssey/text-tag';
 import { formatDate } from '@k8o/helpers/date';
 import Link from 'next/link';
 import { type FC, type ReactNode, Suspense } from 'react';
-import { getBlogContent } from '@/app/blog/_api';
+import { getBlogContent, getBlogToc } from '@/app/blog/_api';
 import { ViewTransition } from '@/libs/react';
 import { Subscribe } from '../subscribe';
 import { Feedback } from './feedback';
@@ -26,6 +26,7 @@ export const BlogLayout: FC<{
   slug: string;
 }> = async ({ children, slug }) => {
   const blog = await getBlogContent(slug);
+  const headingTree = await getBlogToc(slug);
 
   return (
     <div className="xl:has-[>:nth-child(2)]:-mx-36 gap-4 xl:flex">
@@ -101,7 +102,7 @@ export const BlogLayout: FC<{
           </div>
           <ErrorBoundary fallback={null}>
             <div className="block empty:hidden xl:hidden">
-              <TableOfContext slug={slug} />
+              <TableOfContext headingTree={headingTree} />
               <div className="m-2 sm:mt-4">
                 <Separator />
               </div>
@@ -121,7 +122,7 @@ export const BlogLayout: FC<{
       <ErrorBoundary fallback={null}>
         <div className="hidden w-64 shrink-0 has-empty:hidden xl:block">
           <div className="sticky top-24">
-            <TableOfContext slug={slug} />
+            <TableOfContext headingTree={headingTree} />
           </div>
         </div>
       </ErrorBoundary>
