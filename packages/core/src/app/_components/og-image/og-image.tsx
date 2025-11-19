@@ -3,9 +3,10 @@ import { ImageResponse } from 'next/og';
 
 type OgImageProps = {
   title: string;
+  category?: string;
 };
 
-export function OgImage({ title }: OgImageProps) {
+export function OgImage({ title, category }: OgImageProps) {
   const words = loadDefaultJapaneseParser().parse(title);
 
   return new ImageResponse(
@@ -13,59 +14,160 @@ export function OgImage({ title }: OgImageProps) {
       style={{
         alignItems: 'center',
         display: 'flex',
-        backgroundColor: '#5eead4',
-        backgroundImage: 'linear-gradient(62deg, #5eead4 0%, #67e8f9 100%)',
+        backgroundImage: 'linear-gradient(135deg, #cffafe 0%, #dbeafe 100%)',
         justifyContent: 'center',
         width: '100%',
         height: '100%',
+        position: 'relative',
       }}
     >
+      {/* 装飾的なグラデーション円 */}
       <div
         style={{
-          background: 'white',
-          width: 1136,
-          height: 566,
+          position: 'absolute',
+          width: 600,
+          height: 600,
+          borderRadius: 9999,
+          background: 'linear-gradient(135deg, #22d3ee, #5eead4)',
+          filter: 'blur(100px)',
+          top: -200,
+          right: -100,
+          display: 'flex',
+          opacity: 0.4,
+        }}
+      />
+      <div
+        style={{
+          position: 'absolute',
+          width: 500,
+          height: 500,
+          borderRadius: 9999,
+          background: 'linear-gradient(135deg, #60a5fa, #2dd4bf)',
+          filter: 'blur(100px)',
+          bottom: -150,
+          left: -100,
+          display: 'flex',
+          opacity: 0.4,
+        }}
+      />
+      <div
+        style={{
+          background: '#ffffff',
+          width: 1100,
+          height: 550,
           display: 'flex',
           flexDirection: 'column',
-          justifyContent: 'space-around',
-          borderRadius: 36,
+          justifyContent: 'space-between',
+          borderRadius: 32,
+          boxShadow: '0 25px 50px -12px #27272a',
+          position: 'relative',
+          overflow: 'hidden',
+          opacity: 0.98,
         }}
       >
         <div
           style={{
             display: 'flex',
-            justifyContent: 'center',
+            justifyContent: 'flex-start',
             flexWrap: 'wrap',
-            alignItems: 'center',
+            alignItems: 'flex-start',
             margin: 64,
-            color: 'black',
-            fontSize: 60,
-            fontWeight: 'bold',
+            marginTop: 80,
+            marginBottom: 40,
+            color: '#18181b',
+            fontSize: 68,
+            fontWeight: 800,
+            lineHeight: 1.2,
+            letterSpacing: '-0.02em',
           }}
         >
           {words.map((word, index) => (
             <span
               key={`${word}-${index.toString()}`}
-              style={{ display: 'block' }}
+              style={{
+                display: 'block',
+                background: 'linear-gradient(135deg, #18181b 0%, #52525b 100%)',
+                backgroundClip: 'text',
+                color: 'transparent',
+              }}
             >
               {word}
             </span>
           ))}
         </div>
-        {/** biome-ignore lint/performance/noImgElement: ogなので */}
-        <img
-          alt="アイコン"
-          height={128}
-          src="https://k8o.me/icon.png"
+        <div
           style={{
-            borderRadius: 9999,
-            objectFit: 'cover',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
             margin: 64,
             marginTop: 0,
-            alignSelf: 'flex-end',
+            paddingTop: 32,
+            borderTop: '2px solid #e4e4e7',
           }}
-          width={128}
-        />
+        >
+          <div
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: 24,
+            }}
+          >
+            {/** biome-ignore lint/performance/noImgElement: ogなので */}
+            <img
+              alt="アイコン"
+              height={96}
+              src="https://k8o.me/icon.png"
+              style={{
+                borderRadius: 9999,
+                objectFit: 'cover',
+                boxShadow: '0 10px 25px -5px #27272a',
+              }}
+              width={96}
+            />
+            <div
+              style={{
+                display: 'flex',
+                flexDirection: 'column',
+                gap: 4,
+              }}
+            >
+              {category && (
+                <span
+                  style={{
+                    color: '#52525b',
+                    fontSize: 32,
+                    fontWeight: 600,
+                    letterSpacing: '0.1em',
+                    textTransform: 'uppercase',
+                  }}
+                >
+                  {category}
+                </span>
+              )}
+              <span
+                style={{
+                  color: '#18181b',
+                  fontSize: 48,
+                  fontWeight: 700,
+                }}
+              >
+                k8o
+              </span>
+            </div>
+          </div>
+          <div
+            style={{
+              width: 120,
+              height: 8,
+              borderRadius: 4,
+              background:
+                'linear-gradient(90deg, #22d3ee, #5eead4, #60a5fa, #2dd4bf)',
+              display: 'flex',
+              alignSelf: 'flex-end',
+            }}
+          />
+        </div>
       </div>
     </div>,
     {
