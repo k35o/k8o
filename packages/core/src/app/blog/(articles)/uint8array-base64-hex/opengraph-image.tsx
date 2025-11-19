@@ -13,6 +13,7 @@ export default async function Image() {
   const blog = await getBlogContent('uint8array-base64-hex');
 
   return OgImage({
+    category: 'Blog',
     title: blog.title,
   });
 }

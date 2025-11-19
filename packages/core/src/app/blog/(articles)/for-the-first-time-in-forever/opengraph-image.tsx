@@ -13,6 +13,7 @@ export default async function Image() {
   const blog = await getBlogContent('for-the-first-time-in-forever');
 
   return OgImage({
+    category: 'Blog',
     title: blog.title,
   });
 }

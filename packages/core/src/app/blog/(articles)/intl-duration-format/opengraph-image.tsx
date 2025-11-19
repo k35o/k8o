@@ -13,6 +13,7 @@ export default async function Image() {
   const blog = await getBlogContent('intl-duration-format');
 
   return OgImage({
+    category: 'Blog',
     title: blog.title,
   });
 }

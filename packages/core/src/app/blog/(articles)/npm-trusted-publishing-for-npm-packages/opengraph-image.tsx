@@ -14,6 +14,7 @@ export default async function Image() {
   const blog = await getBlogContent('npm-trusted-publishing-for-npm-packages');
 
   return OgImage({
+    category: 'Blog',
     title: blog.title,
   });
 }

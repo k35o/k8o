@@ -11,5 +11,5 @@ export const size = {
 export const contentType = 'image/png';
 
 export default function OpenGraphImage() {
-  return OgImage({ title: 'fish kanji' });
+  return OgImage({ title: 'fish kanji', category: 'quizzes' });
 }

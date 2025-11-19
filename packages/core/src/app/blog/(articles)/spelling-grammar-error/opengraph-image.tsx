@@ -14,6 +14,7 @@ export default async function Image() {
   const blog = await getBlogContent('spelling-grammar-error');
 
   return OgImage({
+    category: 'Blog',
     title: blog.title,
   });
 }

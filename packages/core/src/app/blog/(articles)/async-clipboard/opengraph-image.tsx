@@ -14,5 +14,6 @@ export default async function Image() {
 
   return OgImage({
     title: blog.title,
+    category: 'Blog',
   });
 }
