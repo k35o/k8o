@@ -14,6 +14,7 @@ export default async function Image() {
   const blog = await getBlogContent('content-visibility');
 
   return OgImage({
+    category: 'Blog',
     title: blog.title,
   });
 }

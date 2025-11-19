@@ -11,5 +11,5 @@ export const size = {
 export const contentType = 'image/png';
 
 export default function OpenGraphImage() {
-  return OgImage({ title: 'blog' });
+  return OgImage({ title: 'k8oのBlog' });
 }

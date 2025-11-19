@@ -14,6 +14,7 @@ export default async function Image() {
   const blog = await getBlogContent('composed-ranges');
 
   return OgImage({
+    category: 'Blog',
     title: blog.title,
   });
 }

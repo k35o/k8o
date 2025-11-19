@@ -13,6 +13,7 @@ export default async function Image() {
   const blog = await getBlogContent('atomics-wait-async');
 
   return OgImage({
+    category: 'Blog',
     title: blog.title,
   });
 }
