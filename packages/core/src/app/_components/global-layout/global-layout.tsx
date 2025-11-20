@@ -5,6 +5,7 @@ import type { FC, ReactNode } from 'react';
 import { ColorFilters } from '../color-filters';
 import { ContactToMe } from '../contact-to-me';
 import { ToggleTheme } from '../toggle-theme';
+import { Background } from './background/background';
 import { Header } from './header';
 import { LlmLink } from './llm-link';
 import { NavigationMenu } from './navigation-menu';
@@ -13,7 +14,8 @@ import { TagsLink } from './tags-link';
 
 export const GlobalLayout: FC<{ children: ReactNode }> = ({ children }) => {
   return (
-    <div className="app-background flex min-h-svh flex-col">
+    <div className="flex min-h-svh flex-col">
+      <Background />
       <Header>
         <div className="flex items-center gap-3">
           <Link href="/">
