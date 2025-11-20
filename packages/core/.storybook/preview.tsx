@@ -5,6 +5,7 @@ import Script from 'next/script';
 import { useTheme } from 'next-themes';
 import { type FC, memo, useEffect } from 'react';
 import { sb } from 'storybook/test';
+import { Background } from '../src/app/_components/global-layout/background/background';
 import { AppProvider } from '../src/app/_providers/app';
 import { mPlus2, notoSansJp } from '../src/app/_styles/font';
 import { handlers } from '../src/mocks/handlers';
@@ -91,7 +92,8 @@ const preview: Preview = {
             .map((c) => `'${c}'`)
             .join(', ')})`}
         </Script>
-        <div className="app-background min-h-svh p-6">
+        <div className="min-h-svh p-6">
+          <Background />
           <Story />
         </div>
         <ApplayThemeByStorybook
