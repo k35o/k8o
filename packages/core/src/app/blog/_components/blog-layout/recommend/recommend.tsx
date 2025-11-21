@@ -2,7 +2,7 @@ import { InteractiveCard } from '@k8o/arte-odyssey/card';
 import { Heading } from '@k8o/arte-odyssey/heading';
 import { PublishDateIcon, TagIcon } from '@k8o/arte-odyssey/icons';
 import { TextTag } from '@k8o/arte-odyssey/text-tag';
-import { formatDate } from '@k8o/helpers/date';
+import { formatDate } from '@k8o/helpers/date/format';
 import type { Route } from 'next';
 import Link from 'next/link';
 import type { FC } from 'react';

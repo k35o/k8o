@@ -1,4 +1,4 @@
-import { compareDate } from '@k8o/helpers/date';
+import { compareDate } from '@k8o/helpers/date/compare';
 import { eq } from 'drizzle-orm';
 import { z } from 'zod';
 import { db } from '@/database/db';

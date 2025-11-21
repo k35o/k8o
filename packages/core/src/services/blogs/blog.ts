@@ -1,4 +1,5 @@
-import { getFrontmatter, getTocTree } from '@k8o/helpers/server';
+import { getFrontmatter } from '@k8o/helpers/mdx/frontmatter';
+import { getTocTree } from '@k8o/helpers/mdx/toc-tree';
 import { db } from '@/database/db';
 import { blogPath } from './path';
 

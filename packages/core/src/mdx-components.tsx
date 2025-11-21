@@ -1,8 +1,8 @@
 import { Anchor } from '@k8o/arte-odyssey/anchor';
 import { Code } from '@k8o/arte-odyssey/code';
 import { LinkIcon } from '@k8o/arte-odyssey/icons';
-import { isInternalRoute } from '@k8o/helpers';
 import { cn } from '@k8o/helpers/cn';
+import { isInternalRoute } from '@k8o/helpers/is-internal-route';
 import type { MDXComponents } from 'mdx/types';
 import type { Route } from 'next';
 import Link from 'next/link';
