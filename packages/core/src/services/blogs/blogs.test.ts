@@ -15,7 +15,7 @@ vi.mock('@/database/db', () => ({
     },
   },
 }));
-vi.mock('@k8o/helpers/server');
+vi.mock('@k8o/helpers/mdx/frontmatter');
 vi.mock('./path');
 
 describe('blogs service', () => {

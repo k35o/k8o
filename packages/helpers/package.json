@@ -35,6 +35,7 @@
     },
     "./ipaddress": {
       "types": "./src/ipaddress.ts",
+      "node": "./src/ipaddress.ts",
       "default": "./src/ipaddress.ts"
     },
     "./is-internal-route": {
@@ -43,10 +44,12 @@
     },
     "./mdx/frontmatter": {
       "types": "./src/mdx/frontmatter.ts",
+      "node": "./src/mdx/frontmatter.ts",
       "default": "./src/mdx/frontmatter.ts"
     },
     "./mdx/toc-tree": {
       "types": "./src/mdx/toc-tree.ts",
+      "node": "./src/mdx/toc-tree.ts",
       "default": "./src/mdx/toc-tree.ts"
     },
     "./number/between": {
@@ -67,6 +70,7 @@
     },
     "./ratelimit": {
       "types": "./src/ratelimit.ts",
+      "node": "./src/ratelimit.ts",
       "default": "./src/ratelimit.ts"
     },
     "./sleep": {
