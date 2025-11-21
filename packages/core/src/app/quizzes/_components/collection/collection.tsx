@@ -1,4 +1,4 @@
-import { range } from '@k8o/helpers/array';
+import { range } from '@k8o/helpers/array/range';
 import { cn } from '@k8o/helpers/cn';
 import { Noto_Sans_JP } from 'next/font/google';
 import type { FC } from 'react';

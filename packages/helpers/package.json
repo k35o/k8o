@@ -5,9 +5,82 @@
   "private": true,
   "type": "module",
   "exports": {
-    ".": "./src/index.ts",
-    "./server": "./src/server.ts",
-    "./*": "./src/*/index.ts"
+    "./array/range": {
+      "types": "./src/array/range.ts",
+      "default": "./src/array/range.ts"
+    },
+    "./cn": {
+      "types": "./src/cn.ts",
+      "default": "./src/cn.ts"
+    },
+    "./color/calc-contrast": {
+      "types": "./src/color/calc-contrast.ts",
+      "default": "./src/color/calc-contrast.ts"
+    },
+    "./color/extract-color": {
+      "types": "./src/color/extract-color.ts",
+      "default": "./src/color/extract-color.ts"
+    },
+    "./color/find-all-colors": {
+      "types": "./src/color/find-all-colors.ts",
+      "default": "./src/color/find-all-colors.ts"
+    },
+    "./date/compare": {
+      "types": "./src/date/compare.ts",
+      "default": "./src/date/compare.ts"
+    },
+    "./date/format": {
+      "types": "./src/date/format.ts",
+      "default": "./src/date/format.ts"
+    },
+    "./ipaddress": {
+      "types": "./src/ipaddress.ts",
+      "node": "./src/ipaddress.ts",
+      "default": "./src/ipaddress.ts"
+    },
+    "./is-internal-route": {
+      "types": "./src/is-internal-route.ts",
+      "default": "./src/is-internal-route.ts"
+    },
+    "./mdx/frontmatter": {
+      "types": "./src/mdx/frontmatter.ts",
+      "node": "./src/mdx/frontmatter.ts",
+      "default": "./src/mdx/frontmatter.ts"
+    },
+    "./mdx/toc-tree": {
+      "types": "./src/mdx/toc-tree.ts",
+      "node": "./src/mdx/toc-tree.ts",
+      "default": "./src/mdx/toc-tree.ts"
+    },
+    "./number/between": {
+      "types": "./src/number/between.ts",
+      "default": "./src/number/between.ts"
+    },
+    "./number/cast": {
+      "types": "./src/number/cast.ts",
+      "default": "./src/number/cast.ts"
+    },
+    "./number/commalize": {
+      "types": "./src/number/commalize.ts",
+      "default": "./src/number/commalize.ts"
+    },
+    "./number/to-precision": {
+      "types": "./src/number/to-precision.ts",
+      "default": "./src/number/to-precision.ts"
+    },
+    "./ratelimit": {
+      "types": "./src/ratelimit.ts",
+      "node": "./src/ratelimit.ts",
+      "default": "./src/ratelimit.ts"
+    },
+    "./sleep": {
+      "types": "./src/sleep.ts",
+      "default": "./src/sleep.ts"
+    },
+    "./uuid-v4": {
+      "types": "./src/uuid-v4.ts",
+      "default": "./src/uuid-v4.ts"
+    }
   },
   "scripts": {
     "check": "biome check",

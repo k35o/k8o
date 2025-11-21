@@ -1,4 +1,5 @@
-import { getFrontmatter, getTocTree } from '@k8o/helpers/server';
+import { getFrontmatter } from '@k8o/helpers/mdx/frontmatter';
+import { getTocTree } from '@k8o/helpers/mdx/toc-tree';
 import { db } from '@/database/db';
 import { getBlog, getBlogMetadata, getBlogToc } from './blog';
 import { blogPath } from './path';
@@ -12,7 +13,8 @@ vi.mock('@/database/db', () => ({
     },
   },
 }));
-vi.mock('@k8o/helpers/server');
+vi.mock('@k8o/helpers/mdx/frontmatter');
+vi.mock('@k8o/helpers/mdx/toc-tree');
 vi.mock('./path');
 
 describe('blog service', () => {

@@ -1,4 +1,4 @@
-import { checkRateLimit } from '@k8o/helpers/server';
+import { checkRateLimit } from '@k8o/helpers/ratelimit';
 import { db } from '@/database/db';
 import { blogComment } from '@/database/schema/blog-comment';
 import { comments } from '@/database/schema/comments';
@@ -25,7 +25,7 @@ vi.mock('@/database/db', () => ({
     }),
   },
 }));
-vi.mock('@k8o/helpers/server');
+vi.mock('@k8o/helpers/ratelimit');
 vi.mock('@/libs/zod', () => ({}));
 
 describe('feedback', () => {

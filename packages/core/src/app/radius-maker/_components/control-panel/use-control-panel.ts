@@ -1,4 +1,4 @@
-import { between } from '@k8o/helpers/number';
+import { between } from '@k8o/helpers/number/between';
 import {
   type KeyboardEvent as ReactKeyboardEvent,
   type MouseEvent as ReactMouseEvent,

@@ -1,6 +1,6 @@
 import { Heading } from '@k8o/arte-odyssey/heading';
 import { cn } from '@k8o/helpers/cn';
-import { calcContrast } from '@k8o/helpers/color';
+import { calcContrast } from '@k8o/helpers/color/calc-contrast';
 import type { FC } from 'react';
 import { COLOR_VARIANTS, SEMANTIC_COLOR_VARIANTS } from '../../_utils/color';
 import { ColorInfo } from './color-info';
