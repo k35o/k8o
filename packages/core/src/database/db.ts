@@ -9,6 +9,7 @@ const DATABASE_URL = process.env.POSTGRES_URL ?? '';
 if (process.env.NODE_ENV === 'production') {
   neonConfig.webSocketConstructor = WebSocket;
   neonConfig.poolQueryViaFetch = true;
+  neonConfig.fetchConnectionCache = true;
 } else {
   neonConfig.wsProxy = (host) => `${host}:5433/v1`;
   neonConfig.useSecureWebSocket = false;
@@ -16,7 +17,11 @@ if (process.env.NODE_ENV === 'production') {
   neonConfig.pipelineConnect = false;
 }
 
-const pool = new Pool({ connectionString: DATABASE_URL });
+const pool = new Pool({
+  connectionString: DATABASE_URL,
+  connectionTimeoutMillis: 10000,
+  max: 10,
+});
 export const db = drizzle(pool, {
   schema: {
     ...schema,
