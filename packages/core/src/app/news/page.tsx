@@ -4,12 +4,12 @@ import type { NewsPagination } from './_types';
 
 async function getNews(draftKey?: string): Promise<NewsPagination> {
   const { isEnabled } = await draftMode();
-  const baseUrl = `${process.env.MICROCMS_API_ENDPOINT ?? ''}/news`;
+  const baseUrl = `${process.env['MICROCMS_API_ENDPOINT'] ?? ''}/news`;
   const url =
     isEnabled && draftKey ? `${baseUrl}?draftKey=${draftKey}` : baseUrl;
   const res = await fetch(url, {
     headers: {
-      'X-MICROCMS-API-KEY': process.env.MICROCMS_API_KEY ?? '',
+      'X-MICROCMS-API-KEY': process.env['MICROCMS_API_KEY'] ?? '',
     },
     cache: 'force-cache',
   });

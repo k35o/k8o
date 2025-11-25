@@ -9,12 +9,6 @@
       "dependsOn": ["^build"],
       "outputs": [".next/**", "!.next/cache/**"]
     },
-    "check": {
-      "dependsOn": ["^check"]
-    },
-    "check:write": {
-      "dependsOn": ["^check:write"]
-    },
     "type-check": {
       "dependsOn": ["^type-check"]
     }

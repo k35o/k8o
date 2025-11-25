@@ -4,8 +4,8 @@ import { type NextRequest, NextResponse } from 'next/server';
 export async function GET(req: NextRequest) {
   // CRON_SECRET による認証
   if (
-    !process.env.CRON_SECRET ||
-    req.headers.get('Authorization') !== `Bearer ${process.env.CRON_SECRET}`
+    !process.env['CRON_SECRET'] ||
+    req.headers.get('Authorization') !== `Bearer ${process.env['CRON_SECRET']}`
   ) {
     return NextResponse.json({ ok: false }, { status: 401 });
   }

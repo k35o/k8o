@@ -8,7 +8,7 @@ export const DetailsAnimationDemo: FC = () => {
       <details
         className={cn(
           'rounded-md border border-border-base p-4',
-          styles.detailsAnimation,
+          styles['detailsAnimation'],
         )}
       >
         <summary className="cursor-pointer font-bold text-fg-base">

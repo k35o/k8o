@@ -4,10 +4,10 @@ import type { News, NewsPagination } from '../_types';
 import { NewsLayout } from './_components/news-layout';
 
 export async function generateStaticParams() {
-  const url = `${process.env.MICROCMS_API_ENDPOINT ?? ''}/news`;
+  const url = `${process.env['MICROCMS_API_ENDPOINT'] ?? ''}/news`;
   const newsList = await fetch(url, {
     headers: {
-      'X-MICROCMS-API-KEY': process.env.MICROCMS_API_KEY ?? '',
+      'X-MICROCMS-API-KEY': process.env['MICROCMS_API_KEY'] ?? '',
     },
     cache: 'force-cache',
   }).then((res) => res.json() as Promise<NewsPagination>);
@@ -19,12 +19,12 @@ export async function generateStaticParams() {
 
 async function getNews(id: string, draftKey?: string): Promise<News> {
   const { isEnabled } = await draftMode();
-  const baseUrl = `${process.env.MICROCMS_API_ENDPOINT ?? ''}/news/${id}`;
+  const baseUrl = `${process.env['MICROCMS_API_ENDPOINT'] ?? ''}/news/${id}`;
   const url =
     isEnabled && draftKey ? `${baseUrl}?draftKey=${draftKey}` : baseUrl;
   const res = await fetch(url, {
     headers: {
-      'X-MICROCMS-API-KEY': process.env.MICROCMS_API_KEY ?? '',
+      'X-MICROCMS-API-KEY': process.env['MICROCMS_API_KEY'] ?? '',
     },
     cache: 'force-cache',
   });

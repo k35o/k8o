@@ -17,8 +17,8 @@
   "scripts": {
     "dev": "turbo dev",
     "build": "turbo build",
-    "check": "turbo check",
-    "check:write": "turbo check:write",
+    "check": "biome check",
+    "check:write": "biome check --write --unsafe",
     "ls-lint": "ls-lint",
     "type-check": "turbo type-check",
     "test": "TZ=UTC vitest",

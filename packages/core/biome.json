@@ -4,6 +4,11 @@
   "linter": {
     "domains": {
       "next": "all"
+    },
+    "rules": {
+      "complexity": {
+        "useLiteralKeys": "off"
+      }
     }
   }
 }

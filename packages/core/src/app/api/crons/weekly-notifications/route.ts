@@ -10,8 +10,8 @@ import { resend } from '@/services/email';
 
 export async function GET(req: NextRequest) {
   if (
-    !process.env.CRON_SECRET ||
-    req.headers.get('Authorization') !== `Bearer ${process.env.CRON_SECRET}`
+    !process.env['CRON_SECRET'] ||
+    req.headers.get('Authorization') !== `Bearer ${process.env['CRON_SECRET']}`
   ) {
     return NextResponse.json({ ok: false }, { status: 401 });
   }

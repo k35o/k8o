@@ -7,14 +7,14 @@ import remarkMath from 'remark-math';
 import Sonda from 'sonda/next';
 
 const withSondaAnalyzer = Sonda({
-  enabled: process.env.ANALYZE === 'true',
+  enabled: process.env['ANALYZE'] === 'true',
 });
 
 const nextConfig: NextConfig = {
   reactStrictMode: true,
   pageExtensions: ['tsx', 'mdx', 'ts'],
   compiler: {
-    removeConsole: process.env.NODE_ENV === 'production' && {
+    removeConsole: process.env['NODE_ENV'] === 'production' && {
       exclude: ['error', 'warn'],
     },
   },
@@ -23,7 +23,7 @@ const nextConfig: NextConfig = {
     viewTransition: true,
     typedEnv: true,
   },
-  productionBrowserSourceMaps: process.env.ANALYZE === 'true',
+  productionBrowserSourceMaps: process.env['ANALYZE'] === 'true',
 };
 
 export default withSondaAnalyzer(
