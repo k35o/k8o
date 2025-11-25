@@ -27,6 +27,9 @@ importers:
       '@biomejs/biome':
         specifier: 2.3.4
         version: 2.3.4
+      '@k8o/typescript-config':
+        specifier: workspace:*
+        version: link:packages/typescript-config
       '@ls-lint/ls-lint':
         specifier: 2.3.1
         version: 2.3.1
@@ -251,6 +254,8 @@ importers:
       '@types/mdast':
         specifier: 4.0.4
         version: 4.0.4
+
+  packages/typescript-config: {}
 
 packages:
 
