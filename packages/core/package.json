@@ -18,7 +18,7 @@
     "export:schema": "drizzle-kit export > ./schema.sql",
     "build:erd": "liam erd build --input ./schema.sql --format postgres",
     "preview:erd": "pnpm run build:erd && pnpm run preview:dist",
-    "type-check": "next typegen && tsc --noEmit",
+    "type-check": "next typegen && tsgo --noEmit",
     "storybook": "storybook dev -p 6006 --no-open",
     "build-storybook": "storybook build",
     "preview:dist": "pnpm dlx http-server dist"

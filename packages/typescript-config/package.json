@@ -1,0 +1,7 @@
+{
+  "name": "@k8o/typescript-config",
+  "version": "1.0.0",
+  "description": "TypeScript configuration for k8o project",
+  "private": true,
+  "type": "module"
+}

@@ -4,9 +4,9 @@ import { drizzle } from 'drizzle-orm/neon-serverless';
 import { WebSocket } from 'ws';
 import { relations, schema } from './schema';
 
-const DATABASE_URL = process.env.POSTGRES_URL ?? '';
+const DATABASE_URL = process.env['POSTGRES_URL'] ?? '';
 
-if (process.env.NODE_ENV === 'production') {
+if (process.env['NODE_ENV'] === 'production') {
   neonConfig.webSocketConstructor = WebSocket;
   neonConfig.poolQueryViaFetch = true;
 } else {

@@ -83,8 +83,6 @@
     }
   },
   "scripts": {
-    "check": "biome check",
-    "check:write": "biome check --write --unsafe",
     "test": "vitest",
     "type-check": "tsgo --noEmit"
   },

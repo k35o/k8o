@@ -6,7 +6,7 @@ export async function GET(request: Request) {
   const secret = searchParams.get('secret');
   const draftKey = searchParams.get('draft-key');
 
-  if (secret !== process.env.MICROCMS_API_KEY || !draftKey) {
+  if (secret !== process.env['MICROCMS_API_KEY'] || !draftKey) {
     return new Response('Invalid token', { status: 401 });
   }
 

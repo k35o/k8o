@@ -41,7 +41,7 @@ const VerifyEmail = ({ email, token, expiresAt }: Props) => {
             </Text>
             <Link
               className="m-4 mb-1 block rounded-lg bg-blue-500 px-4 py-2 text-center text-white hover:bg-blue-600"
-              href={`${process.env.NODE_ENV === 'production' ? 'https' : 'http'}://${process.env.VERCEL_URL ?? 'www.k8o.me'}/api/subscriptions/verify?email=${encodeURIComponent(email)}&token=${token}`}
+              href={`${process.env['NODE_ENV'] === 'production' ? 'https' : 'http'}://${process.env['VERCEL_URL'] ?? 'www.k8o.me'}/api/subscriptions/verify?email=${encodeURIComponent(email)}&token=${token}`}
             >
               購読を確認する
             </Link>

@@ -27,7 +27,8 @@
         "noExcessiveNestedTestSuites": "error",
         "noUselessStringConcat": "error",
         "useSimplifiedLogicExpression": "error",
-        "useIndexOf": "error"
+        "useIndexOf": "error",
+        "useLiteralKeys": "off"
       },
       "correctness": {
         "noRenderReturnValue": "error",

@@ -27,7 +27,8 @@ const FishKanjiQuestion: FC<{ limit: number }> = async ({ limit }) => {
 export default async function Page({
   searchParams,
 }: PageProps<'/quizzes/fish-kanji'>) {
-  const limit = getLimit((await searchParams).questionCount);
+  const params = await searchParams;
+  const limit = getLimit(params['questionCount']);
 
   return (
     <section>

@@ -44,7 +44,7 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: LayoutProps<'/'>) {
   return (
     <html lang="ja" suppressHydrationWarning>
-      {process.env.NODE_ENV === 'development' && <ReactScan />}
+      {process.env['NODE_ENV'] === 'development' && <ReactScan />}
       <body
         className={cn(
           mPlus2.variable,
@@ -56,7 +56,7 @@ export default function RootLayout({ children }: LayoutProps<'/'>) {
           <GlobalLayout>{children}</GlobalLayout>
         </AppProvider>
         <Analytics />
-        <GoogleAnalytics gaId={process.env.GOOGLE_ANALYTICS_ID ?? ''} />
+        <GoogleAnalytics gaId={process.env['GOOGLE_ANALYTICS_ID'] ?? ''} />
         <SpeedInsights />
       </body>
     </html>

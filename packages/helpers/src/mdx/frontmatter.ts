@@ -11,5 +11,5 @@ type Frontmatter = {
 export const getFrontmatter = async (path: string): Promise<Frontmatter> => {
   const file = await read(path);
   matter(file);
-  return file.data.matter as Frontmatter;
+  return file.data['matter'] as Frontmatter;
 };
