@@ -2,7 +2,7 @@ import { Accordion } from '@k8o/arte-odyssey/accordion';
 import { Button } from '@k8o/arte-odyssey/button';
 import { IconButton } from '@k8o/arte-odyssey/icon-button';
 import { CloseIcon } from '@k8o/arte-odyssey/icons';
-import { uuidV4 } from '@k8o/helpers/uuid-v4';
+import { uuidV4 } from '@repo/helpers/uuid-v4';
 import type { FC } from 'react';
 import type { Column } from '../../_types/column';
 import type {

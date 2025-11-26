@@ -1,7 +1,7 @@
 import { Button } from '@k8o/arte-odyssey/button';
 import { FormControl } from '@k8o/arte-odyssey/form/form-control';
 import { Textarea } from '@k8o/arte-odyssey/form/textarea';
-import { cn } from '@k8o/helpers/cn';
+import { cn } from '@repo/helpers/cn';
 import * as motion from 'motion/react-client';
 import { type FC, useState } from 'react';
 import { FEEDBACK_OPTIONS } from '@/services/feedbacks';

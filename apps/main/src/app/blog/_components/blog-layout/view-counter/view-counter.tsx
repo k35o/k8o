@@ -1,4 +1,4 @@
-import { commalize } from '@k8o/helpers/number/commalize';
+import { commalize } from '@repo/helpers/number/commalize';
 import type { FC } from 'react';
 import { getBlogView } from '@/app/blog/_api';
 

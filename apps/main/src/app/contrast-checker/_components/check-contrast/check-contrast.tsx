@@ -1,6 +1,6 @@
 'use client';
 
-import { calcContrast } from '@k8o/helpers/color/calc-contrast';
+import { calcContrast } from '@repo/helpers/color/calc-contrast';
 import { type FC, useState } from 'react';
 import { ColorPallet } from '../color-pallet';
 import { ResultTable } from '../result-table';

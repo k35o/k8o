@@ -3,7 +3,7 @@
 import { AlertIcon, MixedColorIcon } from '@k8o/arte-odyssey/icons';
 import { ListBox } from '@k8o/arte-odyssey/list-box';
 import { useOpenContext } from '@k8o/arte-odyssey/popover';
-import { cn } from '@k8o/helpers/cn';
+import { cn } from '@repo/helpers/cn';
 import Link from 'next/link';
 import {
   createContext,

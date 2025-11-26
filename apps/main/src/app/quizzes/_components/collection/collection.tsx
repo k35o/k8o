@@ -1,5 +1,5 @@
-import { range } from '@k8o/helpers/array/range';
-import { cn } from '@k8o/helpers/cn';
+import { range } from '@repo/helpers/array/range';
+import { cn } from '@repo/helpers/cn';
 import { Noto_Sans_JP } from 'next/font/google';
 import type { FC } from 'react';
 import type { Quiz } from '@/services/quizzes';

@@ -1,7 +1,7 @@
 import { InteractiveCard } from '@k8o/arte-odyssey/card';
 import { Heading } from '@k8o/arte-odyssey/heading';
 import { PublishDateIcon, UpdateDateIcon } from '@k8o/arte-odyssey/icons';
-import { formatDate } from '@k8o/helpers/date/format';
+import { formatDate } from '@repo/helpers/date/format';
 import Link from 'next/link';
 import type { FC } from 'react';
 import type { News } from '../../_types';

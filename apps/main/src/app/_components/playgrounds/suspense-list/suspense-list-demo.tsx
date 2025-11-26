@@ -4,8 +4,8 @@ import { Alert } from '@k8o/arte-odyssey/alert';
 import { Checkbox } from '@k8o/arte-odyssey/form/checkbox';
 import { FormControl } from '@k8o/arte-odyssey/form/form-control';
 import { Select } from '@k8o/arte-odyssey/form/select';
-import { cn } from '@k8o/helpers/cn';
-import { sleep } from '@k8o/helpers/sleep';
+import { cn } from '@repo/helpers/cn';
+import { sleep } from '@repo/helpers/sleep';
 import {
   type FC,
   Suspense,

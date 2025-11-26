@@ -1,5 +1,5 @@
 import { PublishDateIcon, UpdateDateIcon } from '@k8o/arte-odyssey/icons';
-import { formatDate } from '@k8o/helpers/date/format';
+import { formatDate } from '@repo/helpers/date/format';
 import { draftMode } from 'next/headers';
 import { notFound } from 'next/navigation';
 import type { News, NewsPagination } from '../../_types';

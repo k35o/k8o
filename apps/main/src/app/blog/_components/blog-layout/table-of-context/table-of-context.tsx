@@ -1,6 +1,6 @@
 'use client';
 
-import { cn } from '@k8o/helpers/cn';
+import { cn } from '@repo/helpers/cn';
 import Link from 'next/link';
 import { type FC, useEffect, useState } from 'react';
 import type { getBlogToc } from '@/app/blog/_api';

@@ -1,7 +1,7 @@
 import { InteractiveCard } from '@k8o/arte-odyssey/card';
 import { ChevronIcon } from '@k8o/arte-odyssey/icons';
 import { Separator } from '@k8o/arte-odyssey/separator';
-import { cn } from '@k8o/helpers/cn';
+import { cn } from '@repo/helpers/cn';
 import type { Route } from 'next';
 import Link from 'next/link';
 import type { FC } from 'react';

@@ -5,8 +5,8 @@ import {
   ColorContrastIcon,
   ColorInfoIcon,
 } from '@k8o/arte-odyssey/icons';
-import { cn } from '@k8o/helpers/cn';
-import { toPrecision } from '@k8o/helpers/number/to-precision';
+import { cn } from '@repo/helpers/cn';
+import { toPrecision } from '@repo/helpers/number/to-precision';
 import * as motion from 'motion/react-client';
 import { type FC, useId, useState } from 'react';
 import {

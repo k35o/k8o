@@ -4,7 +4,7 @@ import { useClipboard } from '@k8o/arte-odyssey/hooks/clipboard';
 import { IconButton } from '@k8o/arte-odyssey/icon-button';
 import { CopyIcon } from '@k8o/arte-odyssey/icons';
 import { useToast } from '@k8o/arte-odyssey/toast';
-import { cn } from '@k8o/helpers/cn';
+import { cn } from '@repo/helpers/cn';
 import type { FC, KeyboardEvent, MouseEvent, TouchEvent } from 'react';
 import { useControlPanel } from './use-control-panel';
 

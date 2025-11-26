@@ -1,7 +1,7 @@
 'use client';
 
 import { Button } from '@k8o/arte-odyssey/button';
-import { uuidV4 } from '@k8o/helpers/uuid-v4';
+import { uuidV4 } from '@repo/helpers/uuid-v4';
 import dynamic from 'next/dynamic';
 import { useRef, useState } from 'react';
 import { LoadingCreateColumns } from './_components/create-columns/loading-create-columns';

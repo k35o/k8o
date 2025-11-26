@@ -1,4 +1,3 @@
-import { formatDate } from '@k8o/helpers/date/format';
 import {
   Body,
   Container,
@@ -10,6 +9,7 @@ import {
   Tailwind,
   Text,
 } from '@react-email/components';
+import { formatDate } from '@repo/helpers/date/format';
 
 type Props = {
   email: string;

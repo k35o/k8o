@@ -9,7 +9,7 @@ import {
 } from '@k8o/arte-odyssey/icons';
 import { LinkButton } from '@k8o/arte-odyssey/link-button';
 import { TextTag } from '@k8o/arte-odyssey/text-tag';
-import { formatDate } from '@k8o/helpers/date/format';
+import { formatDate } from '@repo/helpers/date/format';
 import type { Route } from 'next';
 import Link from 'next/link';
 import type { FC } from 'react';

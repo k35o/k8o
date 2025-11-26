@@ -2,7 +2,7 @@ import { Button } from '@k8o/arte-odyssey/button';
 import { Heading } from '@k8o/arte-odyssey/heading';
 import { HistoryIcon, ListIcon } from '@k8o/arte-odyssey/icons';
 import { LinkButton } from '@k8o/arte-odyssey/link-button';
-import { cn } from '@k8o/helpers/cn';
+import { cn } from '@repo/helpers/cn';
 import Link from 'next/link';
 import type { FC } from 'react';
 import type { Quiz } from '@/services/quizzes';

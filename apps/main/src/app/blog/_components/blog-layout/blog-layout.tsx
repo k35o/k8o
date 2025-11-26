@@ -10,7 +10,7 @@ import { LinkButton } from '@k8o/arte-odyssey/link-button';
 import { ScrollLinked } from '@k8o/arte-odyssey/scroll-linked';
 import { Separator } from '@k8o/arte-odyssey/separator';
 import { TextTag } from '@k8o/arte-odyssey/text-tag';
-import { formatDate } from '@k8o/helpers/date/format';
+import { formatDate } from '@repo/helpers/date/format';
 import Link from 'next/link';
 import { type FC, type ReactNode, Suspense } from 'react';
 import { getBlogContent, getBlogToc } from '@/app/blog/_api';

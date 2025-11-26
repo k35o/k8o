@@ -1,5 +1,5 @@
 import { Logo } from '@k8o/arte-odyssey/icons';
-import { formatDate } from '@k8o/helpers/date/format';
+import { formatDate } from '@repo/helpers/date/format';
 import Link from 'next/link';
 import type { FC, ReactNode } from 'react';
 import { ColorFilters } from '../color-filters';

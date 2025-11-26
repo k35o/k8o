@@ -1,6 +1,6 @@
 'use server';
 
-import { checkRateLimit, RateLimitType } from '@k8o/helpers/ratelimit';
+import { checkRateLimit, RateLimitType } from '@repo/helpers/ratelimit';
 import { db } from '@/database/db';
 import { blogComment } from '@/database/schema/blog-comment';
 import { comments } from '@/database/schema/comments';

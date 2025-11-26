@@ -1,4 +1,4 @@
-import { cn } from '@k8o/helpers/cn';
+import { cn } from '@repo/helpers/cn';
 import type { FC } from 'react';
 import styles from './details-animation-demo.module.css';
 

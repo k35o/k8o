@@ -1,5 +1,5 @@
 import { FormControl } from '@k8o/arte-odyssey/form/form-control';
-import { cn } from '@k8o/helpers/cn';
+import { cn } from '@repo/helpers/cn';
 import type { ChangeEventHandler, FC } from 'react';
 
 type Props = {

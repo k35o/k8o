@@ -1,7 +1,7 @@
 import { GlobalLayout } from './_components/global-layout';
 import './_styles/globals.css';
-import { cn } from '@k8o/helpers/cn';
 import { GoogleAnalytics } from '@next/third-parties/google';
+import { cn } from '@repo/helpers/cn';
 import { Analytics } from '@vercel/analytics/react';
 import { SpeedInsights } from '@vercel/speed-insights/next';
 import { ReactScan } from '@/libs/react-scan';

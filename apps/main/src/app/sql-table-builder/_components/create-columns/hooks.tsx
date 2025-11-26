@@ -1,4 +1,4 @@
-import { uuidV4 } from '@k8o/helpers/uuid-v4';
+import { uuidV4 } from '@repo/helpers/uuid-v4';
 import { useCallback } from 'react';
 import type { Column } from '../../_types/column';
 import type { Restriction } from '../../_types/restriction';
