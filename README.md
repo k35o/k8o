@@ -13,7 +13,7 @@ Comprehensive documentation is available:
 - **[docs/DEPLOYMENT.md](./docs/DEPLOYMENT.md)** - Deployment procedures
 - **[docs/SECURITY.md](./docs/SECURITY.md)** - Security policies and best practices
 - **[docs/TROUBLESHOOTING.md](./docs/TROUBLESHOOTING.md)** - Common issues and solutions
-- **[packages/core/src/database/README.md](./packages/core/src/database/README.md)** - Database schema and operations
+- **[apps/main/src/database/README.md](./apps/main/src/database/README.md)** - Database schema and operations
 
 ## Setup
 
@@ -26,9 +26,9 @@ pnpm i --frozen-lockfile
 Copy environment variables and launch Docker services for database and KV storage.
 
 ```bash
-cp packages/core/.env.example packages/core/.env.local
+cp apps/main/.env.example apps/main/.env.local
 docker compose up -d
-pnpm run -F core migrate
+pnpm run -F main migrate
 ```
 
 For MicroCMS or Resend integration, ask k8o for the `MICROCMS_API_KEY` or `RESEND_API_KEY`.
@@ -70,7 +70,7 @@ ANALYZE=true pnpm run build
 Component library and design system.
 
 ```bash
-pnpm run -F core storybook
+pnpm run -F main storybook
 ```
 
 ### Email Templates
@@ -78,7 +78,7 @@ pnpm run -F core storybook
 Development server for React Email templates (port 3333).
 
 ```bash
-pnpm run -F core email
+pnpm run -F main email
 ```
 
 ## Testing
@@ -125,19 +125,19 @@ Using Drizzle ORM with PostgreSQL.
 
 ```bash
 # Generate migration files from schema
-pnpm run -F core generate
+pnpm run -F main generate
 
 # Generate custom migration files
-pnpm run -F core generate:custom
+pnpm run -F main generate:custom
 
 # Execute database migrations
-pnpm run -F core migrate
+pnpm run -F main migrate
 
 # Export schema to SQL file
-pnpm run -F core export:schema
+pnpm run -F main export:schema
 
 # Build ERD (Entity Relationship Diagram)
-pnpm run -F core build:erd
+pnpm run -F main build:erd
 
 # Connect to local PostgreSQL
 docker compose exec postgres psql -U postgres -d main

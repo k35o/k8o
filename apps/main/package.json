@@ -1,5 +1,5 @@
 {
-  "name": "@k8o/core",
+  "name": "main",
   "version": "1.0.0",
   "description": "k8o site",
   "private": true,

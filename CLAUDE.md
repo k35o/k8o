@@ -7,16 +7,16 @@
 ### 開発
 
 - `pnpm run dev` - 開発サーバーを開始
-- `pnpm run -F core storybook` - Storybookデザインシステムを起動（ポート6006、core package）
-- `pnpm run -F core email` - React Emailテンプレート開発サーバー（ポート3333、core package）
+- `pnpm run -F main storybook` - Storybookデザインシステムを起動（ポート6006、main app）
+- `pnpm run -F main email` - React Emailテンプレート開発サーバー（ポート3333、main app）
 
 ### データベース
 
-- `pnpm run -F core generate` - Drizzle ORMスキーマファイルからマイグレーションを生成
-- `pnpm run -F core generate:custom` - カスタムマイグレーションファイルを生成
-- `pnpm run -F core migrate` - データベースマイグレーションを実行
-- `pnpm run -F core export:schema` - スキーマをSQLファイル（schema.sql）にエクスポート
-- `pnpm run -F core build:erd` - ERD（Entity Relationship Diagram）を構築
+- `pnpm run -F main generate` - Drizzle ORMスキーマファイルからマイグレーションを生成
+- `pnpm run -F main generate:custom` - カスタムマイグレーションファイルを生成
+- `pnpm run -F main migrate` - データベースマイグレーションを実行
+- `pnpm run -F main export:schema` - スキーマをSQLファイル（schema.sql）にエクスポート
+- `pnpm run -F main build:erd` - ERD（Entity Relationship Diagram）を構築
 - `docker compose up -d` - ローカルPostgreSQL、Redis、プロキシサービスを開始
 - `docker compose exec postgres psql -U postgres -d main` - ローカルデータベースに接続
 
@@ -45,7 +45,7 @@
 
 **Turborepo Monorepo**: 2つのワークスペースで構成
 
-- **core** - メインのNext.jsアプリケーション
+- **apps/main** - メインのNext.jsアプリケーション
 - **packages/helpers** - ユーティリティ関数ライブラリ
 
 外部パッケージ:
@@ -95,7 +95,7 @@
 }
 ```
 
-**データベーススキーマ**: `packages/core/src/database/schema/`に関係別整理
+**データベーススキーマ**: `apps/main/src/database/schema/`に関係別整理
 
 - コンテンツ: blogs, talks, quizzes, services
 - ユーザーデータ: comments, feedbacks, subscribers
@@ -106,8 +106,8 @@
 **コンポーネント構成**:
 
 - 再利用可能UIコンポーネント: npmパッケージ `@k8o/arte-odyssey`(外部リポジトリ)
-- ページ固有コンポーネント: `packages/core/src/app/[page]/_components/`
-- アプリ共通コンポーネント: `packages/core/src/app/_components/`
+- ページ固有コンポーネント: `apps/main/src/app/[page]/_components/`
+- アプリ共通コンポーネント: `apps/main/src/app/_components/`
 - 各コンポーネントには`.stories.tsx`が必須
 
 **ヘルパー関数**: `packages/helpers/src/`に分類別整理
@@ -124,12 +124,12 @@
 - In-source testing（`if (import.meta.vitest)`ブロック）
 - 同一ファイル内にテストを記述
 
-**Components** (`packages/core/src/app/_components/`):
+**Components** (`apps/main/src/app/_components/`):
 
 - Storybookストーリーでテスト
 - `@storybook/addon-vitest`でインテグレーション
 
-**Core Application** (`packages/core/src/`):
+**Main Application** (`apps/main/src/`):
 
 - Services/Utils: Node.js環境でVitest
 - React Components: ブラウザモードでVitest
@@ -173,7 +173,7 @@ if (import.meta.vitest) {
 }
 ```
 
-### Components（`packages/core/src/app/_components/`）
+### Components（`apps/main/src/app/_components/`）
 
 Storybookストーリーでテストを記述：
 
@@ -202,14 +202,14 @@ Storybookストーリーでテストを記述：
 
 1. `.env.example`を`.env.local`にコピー
 2. `docker compose up -d`でローカルサービス開始
-3. `pnpm run -F core migrate`でデータベースセットアップ
+3. `pnpm run -F main migrate`でデータベースセットアップ
 
 **新機能開発フロー**:
 
 1. **汎用UIコンポーネント**: 別リポジトリ [ArteOdyssey](https://github.com/k35o/ArteOdyssey) で開発しnpm公開
-2. **ページ固有コンポーネント**: `packages/core/src/app/_components/`にStorybookストーリー付きで作成
+2. **ページ固有コンポーネント**: `apps/main/src/app/_components/`にStorybookストーリー付きで作成
 3. **Helpers**: `packages/helpers/src/`にin-source testing付きで作成
-4. **ページ/機能**: `packages/core/src/app/`に配置、適切なテスト方法でテスト追加
+4. **ページ/機能**: `apps/main/src/app/`に配置、適切なテスト方法でテスト追加
 
 **コードスタイル**:
 
