@@ -121,7 +121,7 @@ k8o/
 ### ディレクトリ構造の原則
 
 ```
-packages/core/src/
+apps/main/src/
 ├── app/                              # Next.js App Router
 │   ├── _api/                         # アプリ共通API層
 │   ├── _components/                  # アプリ共通コンポーネント

@@ -9,8 +9,8 @@ export default defineConfig({
     },
     projects: [
       'packages/helpers/vitest.config.ts',
-      'packages/core/vitest.config.service.ts',
-      'packages/core/vitest.config.browser.ts',
+      'apps/main/vitest.config.service.ts',
+      'apps/main/vitest.config.browser.ts',
     ],
   },
 });

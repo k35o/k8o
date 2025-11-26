@@ -121,7 +121,7 @@ error TS2307: Cannot find module '@/...'
 **解決策:**
 ```bash
 # 型定義を生成
-pnpm run -F core type-check
+pnpm run -F main type-check
 
 # VSCodeを再起動
 # Cmd+Shift+P > "Reload Window"
@@ -143,7 +143,7 @@ pnpm install @storybook/nextjs-vite --save-dev
 rm -rf core/.storybook/cache
 
 # 再起動
-pnpm run -F core storybook
+pnpm run -F main storybook
 ```
 
 ## テスト時の問題
@@ -177,7 +177,7 @@ docker compose down -v
 docker compose up -d
 
 # マイグレーション実行
-pnpm run -F core migrate
+pnpm run -F main migrate
 
 # テストを再実行
 pnpm run test
@@ -209,7 +209,7 @@ Cannot find storybook
 **解決策:**
 ```bash
 # Storybookを起動してからテスト実行
-pnpm run -F core storybook
+pnpm run -F main storybook
 
 # 別ターミナルで
 pnpm run test --project=storybook
@@ -259,7 +259,7 @@ Type error: Property 'foo' does not exist
 **解決策:**
 ```bash
 # 型定義を更新
-pnpm run -F core type-check
+pnpm run -F main type-check
 
 # tsconfig.jsonを確認
 cat core/tsconfig.json
@@ -331,13 +331,13 @@ Error: Migration failed
 **解決策:**
 ```bash
 # マイグレーション状態を確認
-pnpm run -F core drizzle-kit status
+pnpm run -F main drizzle-kit status
 
 # 手動でロールバック
-pnpm run -F core drizzle-kit drop
+pnpm run -F main drizzle-kit drop
 
 # 再マイグレーション
-pnpm run -F core migrate
+pnpm run -F main migrate
 ```
 
 ### データベース接続が遅い
@@ -458,18 +458,18 @@ A: 推奨しません。monorepoの管理とパフォーマンスのためpnpm�
 
 A: はい。React Emailの開発サーバーを使用できます：
 ```bash
-pnpm run -F core email
+pnpm run -F main email
 ```
 
 ### Q: Storybookでモックデータを使うには？
 
-A: MSWハンドラーを`packages/core/src/mocks/handlers/`に追加してください。
+A: MSWハンドラーを`apps/main/src/mocks/handlers/`に追加してください。
 
 ### Q: E2Eテストをデバッグモードで実行するには？
 
 A:
 ```bash
-pnpm run -F core test:e2e --debug
+pnpm run -F main test:e2e --debug
 ```
 
 ### Q: デプロイ前にどんなチェックをすべきですか？

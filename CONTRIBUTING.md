@@ -49,7 +49,7 @@ docker compose up -d
 5. データベースマイグレーションを実行
 
 ```bash
-pnpm run -F core migrate
+pnpm run -F main migrate
 ```
 
 6. 開発サーバーを起動
@@ -266,7 +266,7 @@ if (import.meta.vitest) {
 }
 ```
 
-#### 2. コンポーネント（`packages/core/src/app/_components/`）
+#### 2. コンポーネント（`apps/main/src/app/_components/`）
 
 **Storybookストーリー**でテスト：
 
@@ -289,7 +289,7 @@ export const Primary: Story = {
 };
 ```
 
-#### 3. サービス層（`packages/core/src/services/`）
+#### 3. サービス層（`apps/main/src/services/`）
 
 **Vitest**でユニットテスト：
 
@@ -319,7 +319,7 @@ pnpm run test:ui
 pnpm run coverage
 
 # E2Eテスト
-pnpm run -F core test:e2e
+pnpm run -F main test:e2e
 ```
 
 ### テスト作成のガイドライン
@@ -352,7 +352,7 @@ describe('ブログ記事取得', () => {
 コンポーネント開発にはStorybookを使用：
 
 ```bash
-pnpm run -F core storybook
+pnpm run -F main storybook
 ```
 
 - すべてのコンポーネントにストーリーを作成

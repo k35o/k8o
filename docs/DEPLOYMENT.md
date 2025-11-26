@@ -228,7 +228,7 @@ POSTGRES_URL="postgresql://username:password@ep-xxx.ap-northeast-1.aws.neon.tech
 export POSTGRES_URL="postgresql://..."
 
 # マイグレーション実行
-pnpm run -F core migrate
+pnpm run -F main migrate
 ```
 
 ### Neon Proxy (ローカル開発)
@@ -325,7 +325,7 @@ MICROCMS_API_KEY="..."
 ### 下書きプレビュー
 
 ```typescript
-// packages/core/src/app/api/draft-news/route.ts
+// apps/main/src/app/api/draft-news/route.ts
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
   const secret = searchParams.get('secret');
@@ -373,14 +373,14 @@ React Emailでテンプレート作成：
 
 ```bash
 # 開発サーバー起動
-pnpm run -F core email
+pnpm run -F main email
 
 # http://localhost:3333 でプレビュー
 ```
 
 テンプレート例：
 ```tsx
-// packages/core/src/emails/verification-email.tsx
+// apps/main/src/emails/verification-email.tsx
 export const VerificationEmail = ({ verificationUrl }: Props) => (
   <Html>
     <Head />
@@ -545,7 +545,7 @@ Core Web Vitals:
 ### Google Analytics
 
 ```typescript
-// packages/core/src/app/layout.tsx
+// apps/main/src/app/layout.tsx
 import { GoogleTagManager } from '@next/third-parties/google';
 
 export default function RootLayout({ children }: Props) {

@@ -1,5 +1,5 @@
 {
-  "extends": "@k8o/typescript-config/next.json",
+  "extends": "@repo/typescript-config/next.json",
   "compilerOptions": {
     "types": ["node", "vitest/globals", "vitest/importMeta"]
   },

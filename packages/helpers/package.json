@@ -1,5 +1,5 @@
 {
-  "name": "@k8o/helpers",
+  "name": "@repo/helpers",
   "version": "1.0.0",
   "description": "Helper functions for k8o project",
   "private": true,

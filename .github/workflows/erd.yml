@@ -17,16 +17,16 @@ jobs:
         uses: ./.github/actions/setup-pnpm
 
       - name: Export schema.sql
-        run: pnpm -F core run export:schema
+        run: pnpm -F main run export:schema
 
       - name: Generate ER Diagrams
-        run: pnpm -F core run build:erd
+        run: pnpm -F main run build:erd
 
       - name: Upload ER Diagrams
         id: erd
         uses: actions/upload-pages-artifact@7b1f4a764d45c48632c6b24a0339c27f5614fb0b
         with:
-          path: packages/core/dist/
+          path: apps/main/dist/
           retention-days: 1
 
   deploy:
