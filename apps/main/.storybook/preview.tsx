@@ -1,4 +1,4 @@
-import { cn } from '@k8o/helpers/cn';
+import { cn } from '@repo/helpers/cn';
 import type { Preview } from '@storybook/nextjs-vite';
 import { initialize, mswLoader } from 'msw-storybook-addon';
 import Script from 'next/script';

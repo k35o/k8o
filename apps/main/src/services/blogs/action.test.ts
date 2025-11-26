@@ -25,7 +25,7 @@ vi.mock('@/database/db', () => ({
     }),
   },
 }));
-vi.mock('@k8o/helpers/ratelimit');
+vi.mock('@repo/helpers/ratelimit');
 vi.mock('@/libs/zod', () => ({}));
 
 describe('feedback', () => {

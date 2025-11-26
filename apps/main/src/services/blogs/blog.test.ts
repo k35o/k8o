@@ -13,8 +13,8 @@ vi.mock('@/database/db', () => ({
     },
   },
 }));
-vi.mock('@k8o/helpers/mdx/frontmatter');
-vi.mock('@k8o/helpers/mdx/toc-tree');
+vi.mock('@repo/helpers/mdx/frontmatter');
+vi.mock('@repo/helpers/mdx/toc-tree');
 vi.mock('./path');
 
 describe('blog service', () => {
