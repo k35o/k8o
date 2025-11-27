@@ -1,4 +1,5 @@
 import { draftMode } from 'next/headers';
+import { Suspense } from 'react';
 import { NewsCard } from './_components/news-card';
 import type { NewsPagination } from './_types';
 
@@ -25,12 +26,22 @@ async function getNews(draftKey?: string): Promise<NewsPagination> {
   return _fetchNews(isEnabled, draftKey);
 }
 
-export default async function Page({ searchParams }: PageProps<'/news'>) {
+async function NewsContent({ searchParams }: PageProps<'/news'>) {
   const { draftKey } = await searchParams;
   // TODO: Paginationに対応する
-  const { contents } = await getNews(
+  const newsData = await getNews(
     typeof draftKey === 'string' ? draftKey : undefined,
   );
+
+  if (!newsData?.contents) {
+    return (
+      <section className="flex h-full flex-col gap-6">
+        <p>ニュースが見つかりませんでした。</p>
+      </section>
+    );
+  }
+
+  const { contents } = newsData;
 
   return (
     <section className="flex h-full flex-col gap-6">
@@ -48,5 +59,13 @@ export default async function Page({ searchParams }: PageProps<'/news'>) {
         );
       })}
     </section>
+  );
+}
+
+export default function Page(props: PageProps<'/news'>) {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <NewsContent {...props} />
+    </Suspense>
   );
 }

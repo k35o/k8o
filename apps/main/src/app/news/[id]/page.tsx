@@ -1,5 +1,6 @@
 import { draftMode } from 'next/headers';
 import { notFound } from 'next/navigation';
+import { Suspense } from 'react';
 import type { News, NewsPagination } from '../_types';
 import { NewsLayout } from './_components/news-layout';
 
@@ -53,10 +54,7 @@ async function getNews(id: string, draftKey?: string): Promise<News> {
   return _fetchNews(id, isEnabled, draftKey);
 }
 
-export default async function Page({
-  params,
-  searchParams,
-}: PageProps<'/news/[id]'>) {
+async function NewsContent({ params, searchParams }: PageProps<'/news/[id]'>) {
   const { id } = await params;
   const { draftKey } = await searchParams;
   const news = await getNews(
@@ -68,5 +66,13 @@ export default async function Page({
     <NewsLayout {...news}>
       <section dangerouslySetInnerHTML={{ __html: news.description }} />
     </NewsLayout>
+  );
+}
+
+export default function Page(props: PageProps<'/news/[id]'>) {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <NewsContent {...props} />
+    </Suspense>
   );
 }
