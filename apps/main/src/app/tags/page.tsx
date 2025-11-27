@@ -1,12 +1,6 @@
 import type { Route } from 'next';
-import { getTags as _getTags } from '@/services/tags/tags';
+import { getTags } from '@/services/tags/tags';
 import { TagCard } from './_components/tag-card';
-
-async function getTags() {
-  'use cache';
-
-  return await _getTags();
-}
 
 export default async function Page() {
   const tags = await getTags();
