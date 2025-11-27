@@ -2,6 +2,7 @@ import { PublishDateIcon, UpdateDateIcon } from '@k8o/arte-odyssey/icons';
 import { formatDate } from '@repo/helpers/date/format';
 import { draftMode } from 'next/headers';
 import { notFound } from 'next/navigation';
+import { Suspense } from 'react';
 import type { News, NewsPagination } from '../../_types';
 import { NewsModal } from '../_components/news-modal';
 
@@ -55,7 +56,7 @@ async function getNews(id: string, draftKey?: string): Promise<News> {
   return _fetchNews(id, isEnabled, draftKey);
 }
 
-export default async function Page({
+async function NewsModalContent({
   params,
   searchParams,
 }: PageProps<'/news/[id]'>) {
@@ -85,5 +86,13 @@ export default async function Page({
         />
       </div>
     </NewsModal>
+  );
+}
+
+export default function Page(props: PageProps<'/news/[id]'>) {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <NewsModalContent {...props} />
+    </Suspense>
   );
 }

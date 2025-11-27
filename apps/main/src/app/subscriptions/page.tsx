@@ -1,7 +1,8 @@
 import { Heading } from '@k8o/arte-odyssey/heading';
 import { notFound } from 'next/navigation';
+import { Suspense } from 'react';
 
-export default async function Page({
+async function SubscriptionContent({
   searchParams,
 }: PageProps<'/subscriptions'>) {
   const { status, message } = await searchParams;
@@ -35,5 +36,13 @@ export default async function Page({
         </div>
       )}
     </section>
+  );
+}
+
+export default function Page(props: PageProps<'/subscriptions'>) {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <SubscriptionContent {...props} />
+    </Suspense>
   );
 }

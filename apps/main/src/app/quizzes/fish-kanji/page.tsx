@@ -24,9 +24,7 @@ const FishKanjiQuestion: FC<{ limit: number }> = async ({ limit }) => {
   return <Question quizzes={quizzes} />;
 };
 
-export default async function Page({
-  searchParams,
-}: PageProps<'/quizzes/fish-kanji'>) {
+async function QuizContent({ searchParams }: PageProps<'/quizzes/fish-kanji'>) {
   const params = await searchParams;
   const limit = getLimit(params['questionCount']);
 
@@ -44,5 +42,13 @@ export default async function Page({
         <FishKanjiQuestion limit={limit} />
       </Suspense>
     </section>
+  );
+}
+
+export default function Page(props: PageProps<'/quizzes/fish-kanji'>) {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <QuizContent {...props} />
+    </Suspense>
   );
 }
