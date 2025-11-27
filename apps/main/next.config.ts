@@ -19,7 +19,7 @@ const nextConfig: NextConfig = {
     },
   },
   typedRoutes: true,
-  cacheComponents: true, // Cache Components mode enabled (moved from experimental in 16.0.1+)
+  cacheComponents: true,
   experimental: {
     viewTransition: true,
     typedEnv: true,
