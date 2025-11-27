@@ -1,4 +1,4 @@
-import { unstable_cache as cache } from 'next/cache';
+import { cacheLife } from 'next/cache';
 import {
   getBlogToc as _getBlogToc,
   getBlog,
@@ -10,7 +10,9 @@ import {
 } from '@/services/blogs/blogs';
 import { getBlogView as _getBlogView } from '@/services/blogs/view';
 
-export const getBlogContents = cache(async () => {
+export async function getBlogContents() {
+  'use cache';
+
   const blogs = await getBlogs();
   return await Promise.all(
     blogs.map(async (blog) => {
@@ -26,9 +28,11 @@ export const getBlogContents = cache(async () => {
       };
     }),
   );
-});
+}
 
-export const getBlogContent = cache(async (slug: string) => {
+export async function getBlogContent(slug: string) {
+  'use cache';
+
   const blog = await getBlog(slug);
   const metadata = await getBlogMetadata(slug);
 
@@ -42,27 +46,27 @@ export const getBlogContent = cache(async (slug: string) => {
     createdAt: metadata.createdAt,
     updatedAt: metadata.updatedAt,
   };
-});
+}
 
-export const getBlogToc = cache(async (slug: string) => {
+export async function getBlogToc(slug: string) {
+  'use cache';
+
   return await _getBlogToc(slug);
-});
+}
 
-export const getBlogsByTags = cache(async (slug: string) => {
+export async function getBlogsByTags(slug: string) {
+  'use cache';
+
   const blog = await getBlogContent(slug);
   return await _getBlogsByTags(
     slug,
     blog.tags.map((tag) => tag.id),
   );
-});
+}
 
-export const getBlogView = cache(
-  async (id: number) => {
-    return await _getBlogView(id);
-  },
-  ['blogView'],
-  {
-    tags: ['blog', 'blogView'],
-    revalidate: 60,
-  },
-);
+export async function getBlogView(id: number) {
+  'use cache';
+  cacheLife('minutes');
+
+  return await _getBlogView(id);
+}

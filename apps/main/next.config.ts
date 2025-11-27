@@ -19,6 +19,7 @@ const nextConfig: NextConfig = {
     },
   },
   typedRoutes: true,
+  cacheComponents: true,
   experimental: {
     viewTransition: true,
     typedEnv: true,

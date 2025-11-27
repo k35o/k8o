@@ -1,8 +1,6 @@
 import { db } from '@/database/db';
 
-export const getTags = async (
-  page = 1,
-): Promise<
+export async function getTags(page = 1): Promise<
   {
     id: number;
     name: string;
@@ -10,7 +8,8 @@ export const getTags = async (
     serviceCount: number;
     talkCount: number;
   }[]
-> => {
+> {
+  'use cache';
   const tags = await db.query.tags.findMany({
     columns: {
       id: true,
@@ -44,4 +43,4 @@ export const getTags = async (
     serviceCount: tag.serviceTag.length,
     talkCount: tag.talkTag.length,
   }));
-};
+}

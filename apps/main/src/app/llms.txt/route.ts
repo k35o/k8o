@@ -1,9 +1,9 @@
 import { NextResponse } from 'next/server';
 import { getBlogContents } from '@/app/blog/_api';
 
-export const dynamic = 'force-static';
+async function _generateLlmContent() {
+  'use cache';
 
-export async function GET() {
   const blogs = await getBlogContents();
 
   const blogContent = (
@@ -19,7 +19,8 @@ ${blog.description}
       }),
     )
   ).join('\n');
-  const content = `
+
+  return `
 # k8o
 WebフロントエンドとTypeScriptに興味があり、特にフロントエンドとデザインの境界に関心があります。
 現在、デザインを中心に学びながら、別の角度からフロントエンドの理解を深めています。
@@ -65,6 +66,11 @@ RGBとHEXのように、特定の色の異なる表現を確認します。
 ### Quizzes
 色々なジャンルのクイズを出します。
   `;
+}
+
+export async function GET() {
+  const content = await _generateLlmContent();
+
   return new NextResponse(content, {
     headers: {
       'Content-Type': 'text/plain; charset=utf-8',

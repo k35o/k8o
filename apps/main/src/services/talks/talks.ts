@@ -1,6 +1,7 @@
 import { db } from '@/database/db';
 
-export const getTalks = async () => {
+export async function getTalks() {
+  'use cache';
   const talks = await db.query.talks.findMany({
     with: {
       blog: true,
@@ -30,4 +31,4 @@ export const getTalks = async () => {
       name: tag.tag.name,
     })),
   }));
-};
+}

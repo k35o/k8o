@@ -1,9 +1,7 @@
 import { db } from '@/database/db';
 import { getBlogMetadata } from '@/services/blogs/blog';
 
-export const getTag = async (
-  id: number,
-): Promise<{
+export async function getTag(id: number): Promise<{
   id: number;
   name: string;
   blogs: {
@@ -20,7 +18,8 @@ export const getTag = async (
     id: number;
     title: string;
   }[];
-} | null> => {
+} | null> {
+  'use cache';
   const tag = await db.query.tags.findFirst({
     where: (tags, { eq }) => eq(tags.id, id),
     with: {
@@ -73,4 +72,4 @@ export const getTag = async (
       title: talkTag.talk.title,
     })),
   };
-};
+}

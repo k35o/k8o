@@ -3,11 +3,11 @@ import RSS from 'rss';
 import { getBlogContents } from '@/app/blog/_api';
 import { metadata } from '../layout';
 
-export const dynamic = 'force-static';
-
 const BLOG_URL = 'https://k8o.me/blog';
 
-export async function GET() {
+async function generateRssFeed() {
+  'use cache';
+
   const feed = new RSS({
     title: metadata.title,
     description: metadata.description,
@@ -28,7 +28,13 @@ export async function GET() {
     });
   });
 
-  return new NextResponse(feed.xml(), {
+  return feed.xml();
+}
+
+export async function GET() {
+  const xml = await generateRssFeed();
+
+  return new NextResponse(xml, {
     headers: {
       'Content-Type': 'application/xml',
     },

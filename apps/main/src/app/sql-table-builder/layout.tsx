@@ -1,4 +1,5 @@
 import { Heading } from '@k8o/arte-odyssey/heading';
+import { Suspense } from 'react';
 
 export const metadata = {
   title: 'SQLテーブルメーカー',
@@ -21,7 +22,7 @@ export default function Layout({
   return (
     <div className="flex flex-col gap-4">
       <Heading type="h2">SQLテーブルメーカー</Heading>
-      {children}
+      <Suspense fallback={null}>{children}</Suspense>
     </div>
   );
 }
