@@ -41,7 +41,7 @@ async function SubscriptionContent({
 
 export default function Page(props: PageProps<'/subscriptions'>) {
   return (
-    <Suspense fallback={<div>Loading...</div>}>
+    <Suspense fallback={null}>
       <SubscriptionContent {...props} />
     </Suspense>
   );

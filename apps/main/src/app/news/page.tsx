@@ -64,7 +64,7 @@ async function NewsContent({ searchParams }: PageProps<'/news'>) {
 
 export default function Page(props: PageProps<'/news'>) {
   return (
-    <Suspense fallback={<div>Loading...</div>}>
+    <Suspense fallback={null}>
       <NewsContent {...props} />
     </Suspense>
   );

@@ -47,7 +47,7 @@ async function QuizContent({ searchParams }: PageProps<'/quizzes/fish-kanji'>) {
 
 export default function Page(props: PageProps<'/quizzes/fish-kanji'>) {
   return (
-    <Suspense fallback={<div>Loading...</div>}>
+    <Suspense fallback={null}>
       <QuizContent {...props} />
     </Suspense>
   );

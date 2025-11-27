@@ -22,7 +22,7 @@ export default function Layout({
   return (
     <div className="flex flex-col gap-4">
       <Heading type="h2">SQLテーブルメーカー</Heading>
-      <Suspense fallback={<div>Loading...</div>}>{children}</Suspense>
+      <Suspense fallback={null}>{children}</Suspense>
     </div>
   );
 }
