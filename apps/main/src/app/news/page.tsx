@@ -2,11 +2,14 @@ import { draftMode } from 'next/headers';
 import { NewsCard } from './_components/news-card';
 import type { NewsPagination } from './_types';
 
-async function getNews(draftKey?: string): Promise<NewsPagination> {
-  const { isEnabled } = await draftMode();
+async function _fetchNews(
+  isDraft: boolean,
+  draftKey?: string,
+): Promise<NewsPagination> {
+  'use cache';
+
   const baseUrl = `${process.env['MICROCMS_API_ENDPOINT'] ?? ''}/news`;
-  const url =
-    isEnabled && draftKey ? `${baseUrl}?draftKey=${draftKey}` : baseUrl;
+  const url = isDraft && draftKey ? `${baseUrl}?draftKey=${draftKey}` : baseUrl;
   const res = await fetch(url, {
     headers: {
       'X-MICROCMS-API-KEY': process.env['MICROCMS_API_KEY'] ?? '',
@@ -15,6 +18,11 @@ async function getNews(draftKey?: string): Promise<NewsPagination> {
   });
 
   return res.json() as Promise<NewsPagination>;
+}
+
+async function getNews(draftKey?: string): Promise<NewsPagination> {
+  const { isEnabled } = await draftMode();
+  return _fetchNews(isEnabled, draftKey);
 }
 
 export default async function Page({ searchParams }: PageProps<'/news'>) {

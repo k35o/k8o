@@ -1,11 +1,11 @@
 import { Logo } from '@k8o/arte-odyssey/icons';
-import { formatDate } from '@repo/helpers/date/format';
 import Link from 'next/link';
-import type { FC, ReactNode } from 'react';
+import { type FC, type ReactNode, Suspense } from 'react';
 import { ColorFilters } from '../color-filters';
 import { ContactToMe } from '../contact-to-me';
 import { ToggleTheme } from '../toggle-theme';
-import { Background } from './background/background';
+import { Background } from './background';
+import { Footer } from './footer';
 import { Header } from './header';
 import { LlmLink } from './llm-link';
 import { NavigationMenu } from './navigation-menu';
@@ -27,7 +27,9 @@ export const GlobalLayout: FC<{ children: ReactNode }> = ({ children }) => {
           <div className="hidden items-center gap-1 md:flex">
             <TagsLink />
             <NewsLink />
-            <ContactToMe />
+            <Suspense fallback={null}>
+              <ContactToMe />
+            </Suspense>
           </div>
         </div>
         <div className="hidden items-center gap-1 md:flex">
@@ -44,13 +46,19 @@ export const GlobalLayout: FC<{ children: ReactNode }> = ({ children }) => {
       <main className="flex grow justify-center">
         <div className="w-full max-w-5xl p-4 pt-10">{children}</div>
       </main>
-      <footer className="flex items-center justify-center p-4">
-        <div className="max-w-5xl">
-          <p className="text-fg-mute md:text-lg">
-            ©︎ 2024〜{formatDate(new Date(), 'yyyy')} k8o. All Rights Reserved.
-          </p>
-        </div>
-      </footer>
+      <Suspense
+        fallback={
+          <footer className="flex items-center justify-center p-4">
+            <div className="max-w-5xl">
+              <p className="text-fg-mute md:text-lg">
+                ©︎ 2024〜2025 k8o. All Rights Reserved.
+              </p>
+            </div>
+          </footer>
+        }
+      >
+        <Footer />
+      </Suspense>
     </div>
   );
 };

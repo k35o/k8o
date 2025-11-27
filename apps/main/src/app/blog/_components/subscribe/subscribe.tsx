@@ -6,7 +6,7 @@ import { useLocalStorage } from '@k8o/arte-odyssey/hooks/local-storage';
 import { IconButton } from '@k8o/arte-odyssey/icon-button';
 import { SubscribeIcon } from '@k8o/arte-odyssey/icons';
 import { Separator } from '@k8o/arte-odyssey/separator';
-import { type FC, useState } from 'react';
+import { type FC, Suspense, useState } from 'react';
 import { SubscribeCard } from './subscribe-card.tsx';
 
 export const Subscribe: FC<{
@@ -41,7 +41,9 @@ export const Subscribe: FC<{
         title="ブログの購読"
       >
         <div className="flex flex-col items-center justify-between gap-6">
-          <SubscribeCard />
+          <Suspense fallback={null}>
+            <SubscribeCard />
+          </Suspense>
           <Separator />
           <div>
             <Checkbox

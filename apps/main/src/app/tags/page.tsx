@@ -1,10 +1,15 @@
 import type { Route } from 'next';
-import { unstable_cache as cache } from 'next/cache';
-import { getTags } from '@/services/tags/tags';
+import { getTags as _getTags } from '@/services/tags/tags';
 import { TagCard } from './_components/tag-card';
 
+async function getTags() {
+  'use cache';
+
+  return await _getTags();
+}
+
 export default async function Page() {
-  const tags = await cache(getTags)();
+  const tags = await getTags();
   return (
     <section className="grid grid-cols-auto-fill-70 justify-items-center gap-4">
       {tags.map((tag) => {

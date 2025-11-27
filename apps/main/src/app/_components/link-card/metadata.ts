@@ -1,6 +1,6 @@
-import { unstable_cache as cache } from 'next/cache';
+export async function getMetadata(href: string) {
+  'use cache';
 
-export const getMetadata = cache(async (href: string) => {
   const proxyUrl = `https://corsproxy.io/?url=${encodeURIComponent(href)}`;
   const res = await fetch(proxyUrl);
   const html = (await res.text()).trim();
@@ -14,4 +14,4 @@ export const getMetadata = cache(async (href: string) => {
     html,
   )?.[1];
   return { title: title ?? ogTitle, description, image };
-});
+}
