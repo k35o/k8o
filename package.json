@@ -25,7 +25,8 @@
     "test:ui": "TZ=UTC vitest --ui --coverage",
     "coverage": "TZ=UTC vitest run --coverage",
     "install-playwright": "playwright install --with-deps",
-    "mcp-chrome": "chrome-devtools-mcp"
+    "mcp-chrome": "chrome-devtools-mcp",
+    "mcp-next": "next-devtools-mcp"
   },
   "dependencies": {
     "@repo/helpers": "workspace:*",
@@ -44,6 +45,7 @@
     "@vitest/ui": "4.0.8",
     "chrome-devtools-mcp": "0.10.1",
     "lefthook": "2.0.2",
+    "next-devtools-mcp": "0.3.5",
     "playwright": "1.56.1",
     "turbo": "2.6.0",
     "typescript": "5.9.3",
