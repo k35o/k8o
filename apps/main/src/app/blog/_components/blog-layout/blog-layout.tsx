@@ -103,7 +103,7 @@ export const BlogLayout: FC<{
           <ErrorBoundary fallback={null}>
             <div className="block empty:hidden xl:hidden">
               <TableOfContext headingTree={headingTree} />
-              <div className="m-2 sm:mt-4">
+              <div className="m-2 first:hidden sm:mt-4">
                 <Separator />
               </div>
             </div>
