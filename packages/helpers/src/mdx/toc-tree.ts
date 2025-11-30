@@ -2,22 +2,7 @@ import { readFile } from 'node:fs/promises';
 import type { Root } from 'mdast';
 import { remark } from 'remark';
 import remarkFrontmatter from 'remark-frontmatter';
-
-type HeadingTree = {
-  depth: 0;
-  children: {
-    depth: 1;
-    text: string;
-    children: {
-      depth: 2;
-      text: string;
-      children: {
-        depth: 3;
-        text: string;
-      }[];
-    }[];
-  }[];
-};
+import type { HeadingTree } from './types';
 
 export const getTocTree = async (path: string) => {
   let headingTree: HeadingTree = {
