@@ -1,9 +1,11 @@
 'use client';
 
 import { cn } from '@repo/helpers/cn';
+import type { HeadingTree } from '@repo/helpers/mdx/types';
 import Link from 'next/link';
 import { type FC, useEffect, useState } from 'react';
-import type { getBlogToc } from '@/app/blog/_api';
+import { END_OF_CONTENT_ID } from '../constants';
+import { ProgressBar } from './progress-bar';
 
 const LinkButton: FC<{
   depth: number;
@@ -13,9 +15,9 @@ const LinkButton: FC<{
   return (
     <Link
       className={cn(
-        'inline-block w-full rounded-md px-4 py-2 transition-colors hover:bg-bg-mute focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-border-info focus-visible:ring-offset-2',
-        depth === 2 && 'pl-8 text-sm',
-        depth === 3 && 'pl-12 text-xs',
+        'inline-block w-full rounded-md px-4 py-2 transition-colors hover:bg-bg-mute focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-border-info focus-visible:ring-offset-2 sm:text-lg',
+        depth === 2 && 'pl-8 text-sm sm:text-md',
+        depth === 3 && 'pl-12 text-xs sm:text-sm',
         isActive && 'xl:bg-primary-bg xl:font-bold xl:text-fg-base',
       )}
       href={`#${text}`}
@@ -26,7 +28,7 @@ const LinkButton: FC<{
 };
 
 export const TableOfContext: FC<{
-  headingTree: Awaited<ReturnType<typeof getBlogToc>>;
+  headingTree: HeadingTree;
 }> = ({ headingTree }) => {
   const [activeId, setActiveId] = useState<string>('');
 
@@ -49,6 +51,10 @@ export const TableOfContext: FC<{
     headings.forEach((heading) => {
       observer.observe(heading);
     });
+    const eocElement = document.getElementById(END_OF_CONTENT_ID);
+    if (eocElement) {
+      observer.observe(eocElement);
+    }
 
     return () => observer.disconnect();
   }, []);
@@ -58,11 +64,16 @@ export const TableOfContext: FC<{
   }
 
   return (
-    <div className="flex max-h-[80vh] flex-col rounded-lg bg-bg-base/90">
-      <div className="border-border-base p-2 xl:border-b xl:p-4">
-        <h3 className="font-bold text-lg text-primary-fg">目次</h3>
-      </div>
-      <ul className="flex flex-col overflow-y-auto p-2 text-fg-base text-sm">
+    <details className="fixed right-4 bottom-4 w-80 rounded-md border border-border-mute bg-bg-base p-4 shadow-xl open:right-0 open:bottom-0 details-content:open:border-border-base details-content:open:border-t sm:right-16 sm:bottom-8 sm:open:right-16 sm:open:bottom-8">
+      <summary className="flex items-center gap-2 font-bold text-lg text-primary-fg sm:text-xl">
+        <ProgressBar activeId={activeId} headingTree={headingTree} />
+        <span className="truncate">
+          {activeId === '' || activeId === END_OF_CONTENT_ID
+            ? 'もくじ'
+            : activeId}
+        </span>
+      </summary>
+      <ul className="flex flex-col overflow-y-auto p-2 text-fg-base">
         {headingTree.children.map((depth1) => {
           if (depth1.children.length === 0) {
             return (
@@ -123,6 +134,6 @@ export const TableOfContext: FC<{
           );
         })}
       </ul>
-    </div>
+    </details>
   );
 };

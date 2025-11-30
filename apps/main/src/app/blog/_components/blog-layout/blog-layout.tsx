@@ -7,7 +7,6 @@ import {
   ViewIcon,
 } from '@k8o/arte-odyssey/icons';
 import { LinkButton } from '@k8o/arte-odyssey/link-button';
-import { ScrollLinked } from '@k8o/arte-odyssey/scroll-linked';
 import { Separator } from '@k8o/arte-odyssey/separator';
 import { TextTag } from '@k8o/arte-odyssey/text-tag';
 import { formatDate } from '@repo/helpers/date/format';
@@ -15,7 +14,7 @@ import Link from 'next/link';
 import { type FC, type ReactNode, Suspense } from 'react';
 import { getBlogContent, getBlogToc } from '@/app/blog/_api';
 import { ViewTransition } from '@/libs/react';
-import { Subscribe } from '../subscribe';
+import { END_OF_CONTENT_ID } from './constants';
 import { Feedback } from './feedback';
 import { Recommend } from './recommend';
 import { TableOfContext } from './table-of-context';
@@ -30,7 +29,7 @@ export const BlogLayout: FC<{
 
   return (
     <div className="xl:has-[>:nth-child(2)]:-mx-36 gap-4 xl:flex">
-      <div className="m-auto flex flex-col gap-8 xl:max-w-4xl">
+      <div className="m-auto flex flex-col gap-8 xl:max-w-5xl">
         <article className="rounded-md bg-bg-base/90 px-3 pt-8 pb-14 sm:px-10">
           <div className="flex flex-col gap-3">
             <ViewTransition name={`title-${slug}`}>
@@ -100,15 +99,8 @@ export const BlogLayout: FC<{
           <div className="m-2 sm:mt-4">
             <Separator />
           </div>
-          <ErrorBoundary fallback={null}>
-            <div className="block empty:hidden xl:hidden">
-              <TableOfContext headingTree={headingTree} />
-              <div className="m-2 first:hidden sm:mt-4">
-                <Separator />
-              </div>
-            </div>
-          </ErrorBoundary>
           {children}
+          <div aria-hidden="true" className="sr-only" id={END_OF_CONTENT_ID} />
         </article>
         <ErrorBoundary fallback={null}>
           <section className="w-full rounded-md bg-bg-base/90 px-3 pt-8 pb-14 sm:px-10">
@@ -120,14 +112,8 @@ export const BlogLayout: FC<{
         </ErrorBoundary>
       </div>
       <ErrorBoundary fallback={null}>
-        <div className="hidden w-64 shrink-0 has-empty:hidden xl:block">
-          <div className="sticky top-24">
-            <TableOfContext headingTree={headingTree} />
-          </div>
-        </div>
+        <TableOfContext headingTree={headingTree} />
       </ErrorBoundary>
-      <Subscribe reading />
-      <ScrollLinked />
     </div>
   );
 };
