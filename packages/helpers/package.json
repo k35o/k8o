@@ -42,6 +42,10 @@
       "types": "./src/is-internal-route.ts",
       "default": "./src/is-internal-route.ts"
     },
+    "./mdx/calculate-toc-percentage": {
+      "types": "./src/mdx/calculate-toc-percentage.ts",
+      "default": "./src/mdx/calculate-toc-percentage.ts"
+    },
     "./mdx/frontmatter": {
       "types": "./src/mdx/frontmatter.ts",
       "node": "./src/mdx/frontmatter.ts",
@@ -51,6 +55,10 @@
       "types": "./src/mdx/toc-tree.ts",
       "node": "./src/mdx/toc-tree.ts",
       "default": "./src/mdx/toc-tree.ts"
+    },
+    "./mdx/types": {
+      "types": "./src/mdx/types.ts",
+      "default": "./src/mdx/types.ts"
     },
     "./number/between": {
       "types": "./src/number/between.ts",
