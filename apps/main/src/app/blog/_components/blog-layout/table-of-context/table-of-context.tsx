@@ -1,5 +1,6 @@
 'use client';
 
+import { useClickAway } from '@k8o/arte-odyssey';
 import { cn } from '@repo/helpers/cn';
 import type { HeadingTree } from '@repo/helpers/mdx/types';
 import Link from 'next/link';
@@ -31,6 +32,12 @@ export const TableOfContext: FC<{
   headingTree: HeadingTree;
 }> = ({ headingTree }) => {
   const [activeId, setActiveId] = useState<string>('');
+
+  const ref = useClickAway<HTMLDetailsElement>(() => {
+    if (ref.current) {
+      ref.current.open = false;
+    }
+  });
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -64,8 +71,15 @@ export const TableOfContext: FC<{
   }
 
   return (
-    <details className="fixed right-4 bottom-4 w-80 rounded-md border border-border-mute bg-bg-base p-4 shadow-xl open:right-0 open:bottom-0 details-content:open:border-border-base details-content:open:border-t sm:right-16 sm:bottom-8 sm:open:right-16 sm:open:bottom-8">
-      <summary className="flex items-center gap-2 font-bold text-lg text-primary-fg sm:text-xl">
+    <details
+      className={cn(
+        'fixed w-80 rounded-md border border-border-mute bg-bg-base shadow-xl',
+        'right-4 bottom-4 open:right-0 open:bottom-0 sm:right-16 sm:bottom-8 sm:open:right-16 sm:open:bottom-8',
+        'open:details-content:border-border-mute open:details-content:border-t-2 open:details-content:p-4 open:details-content:pt-0',
+      )}
+      ref={ref}
+    >
+      <summary className="flex items-center gap-2 p-4 font-bold text-lg text-primary-fg sm:text-xl">
         <ProgressBar activeId={activeId} headingTree={headingTree} />
         <span className="truncate">
           {activeId === '' || activeId === END_OF_CONTENT_ID
