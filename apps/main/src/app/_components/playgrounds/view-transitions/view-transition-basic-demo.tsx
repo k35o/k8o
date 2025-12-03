@@ -137,7 +137,6 @@ export function ViewTransitionBasicDemo() {
                 viewTransitionName: isViewTransitionEnabled
                   ? `item-${item.id}`
                   : 'none',
-                // @ts-expect-error: view-transition-classに未対応だった
                 viewTransitionClass: 'item',
                 backgroundColor: bgColor,
               }}
