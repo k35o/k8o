@@ -1,10 +1,8 @@
+import { db } from '@repo/database';
 import { eq } from 'drizzle-orm';
-import { db } from '@/database/db';
-import { blogViews } from '@/database/schema/blog-views';
-import { increment } from '@/database/utils';
 import { getBlogView, incrementBlogView } from './view';
 
-vi.mock('@/database/db', () => ({
+vi.mock('@repo/database', () => ({
   db: {
     query: {
       blogViews: {
@@ -12,9 +10,17 @@ vi.mock('@/database/db', () => ({
       },
     },
     update: vi.fn(),
+    _schema: {
+      blogViews: {
+        views: 'blogViews.views',
+        blogId: 'blogViews.blogId',
+      },
+    },
+    _utils: {
+      increment: vi.fn(),
+    },
   },
 }));
-vi.mock('@/database/utils');
 vi.mock('drizzle-orm');
 
 describe('view service', () => {
@@ -67,15 +73,15 @@ describe('view service', () => {
       });
       const mockEq = vi.fn().mockReturnValue('WHERE_CONDITION');
 
-      vi.mocked(increment).mockImplementation(mockIncrement);
+      vi.mocked(db._utils.increment).mockImplementation(mockIncrement);
       vi.mocked(db.update).mockImplementation(mockUpdate);
       vi.mocked(eq).mockImplementation(mockEq);
 
       const result = await incrementBlogView(1);
 
-      expect(db.update).toHaveBeenCalledWith(blogViews);
-      expect(mockIncrement).toHaveBeenCalledWith(blogViews.views);
-      expect(mockEq).toHaveBeenCalledWith(blogViews.blogId, 1);
+      expect(db.update).toHaveBeenCalledWith(db._schema.blogViews);
+      expect(mockIncrement).toHaveBeenCalledWith(db._schema.blogViews.views);
+      expect(mockEq).toHaveBeenCalledWith(db._schema.blogViews.blogId, 1);
       expect(result).toBe(true);
     });
 
@@ -88,13 +94,13 @@ describe('view service', () => {
       });
       const mockEq = vi.fn().mockReturnValue('WHERE_CONDITION');
 
-      vi.mocked(increment).mockImplementation(mockIncrement);
+      vi.mocked(db._utils.increment).mockImplementation(mockIncrement);
       vi.mocked(db.update).mockImplementation(mockUpdate);
       vi.mocked(eq).mockImplementation(mockEq);
 
       await incrementBlogView(999);
 
-      expect(mockEq).toHaveBeenCalledWith(blogViews.blogId, 999);
+      expect(mockEq).toHaveBeenCalledWith(db._schema.blogViews.blogId, 999);
     });
   });
 });

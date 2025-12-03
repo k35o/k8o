@@ -1,6 +1,5 @@
+import { db } from '@repo/database';
 import { z } from 'zod';
-import { db } from '@/database/db';
-import { subscribers } from '@/database/schema/subscribers';
 import { sendVerificationEmail } from '@/services/subscriptions/verify';
 import type { Result } from '../type';
 
@@ -39,7 +38,7 @@ export const subscribe = async (
   }
 
   try {
-    await db.insert(subscribers).values({
+    await db.insert(db._schema.subscribers).values({
       email,
     });
     await sendVerificationEmail(email, waitUntilResend);

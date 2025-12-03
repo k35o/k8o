@@ -1,7 +1,7 @@
-import { db } from '@/database/db';
+import { db } from '@repo/database';
 import { getQuizType } from '../quiz-type';
 
-vi.mock('@/database/db', () => ({
+vi.mock('@repo/database', () => ({
   db: {
     query: {
       quizType: {

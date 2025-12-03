@@ -1,5 +1,6 @@
-import '@/database/env-config';
+import './env-config';
 import { neonConfig, Pool } from '@neondatabase/serverless';
+import { type AnyColumn, sql } from 'drizzle-orm';
 import { drizzle } from 'drizzle-orm/neon-serverless';
 import { WebSocket } from 'ws';
 import { relations, schema } from './schema';
@@ -17,9 +18,17 @@ if (process.env['NODE_ENV'] === 'production') {
 }
 
 const pool = new Pool({ connectionString: DATABASE_URL });
-export const db = drizzle(pool, {
+const drizzleDb = drizzle(pool, {
   schema: {
     ...schema,
     ...relations,
+  },
+});
+
+// db オブジェクトを拡張して、schema と utils も含める
+export const db = Object.assign(drizzleDb, {
+  _schema: schema,
+  _utils: {
+    increment: (column: AnyColumn, value = 1) => sql`${column} + ${value}`,
   },
 });

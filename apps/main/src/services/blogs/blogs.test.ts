@@ -1,9 +1,9 @@
+import { db } from '@repo/database';
 import { getFrontmatter } from '@repo/helpers/mdx/frontmatter';
-import { db } from '@/database/db';
 import { getBlogs, getBlogsByTags } from './blogs';
 import { blogPath } from './path';
 
-vi.mock('@/database/db', () => ({
+vi.mock('@repo/database', () => ({
   db: {
     query: {
       blogs: {
