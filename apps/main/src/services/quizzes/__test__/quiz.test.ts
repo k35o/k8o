@@ -1,7 +1,7 @@
 import { db } from '@repo/database';
 import { getQuizzes } from '../quiz';
 
-vi.mock('@/database/db', () => ({
+vi.mock('@repo/database', () => ({
   db: {
     query: {
       quizzes: {

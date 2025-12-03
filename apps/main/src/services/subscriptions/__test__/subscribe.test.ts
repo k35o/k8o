@@ -2,14 +2,19 @@ import { db } from '@repo/database';
 import { subscribe } from '../subscribe';
 import { sendVerificationEmail } from '../verify';
 
-vi.mock('@/database/db', () => ({
+vi.mock('@repo/database', () => ({
   db: {
     query: {
       subscribers: {
         findFirst: vi.fn(),
       },
     },
-    insert: vi.fn(),
+    insert: vi.fn().mockReturnValue({
+      values: vi.fn(),
+    }),
+    _schema: {
+      subscribers: {},
+    },
   },
 }));
 vi.mock('@/services/subscriptions/verify');

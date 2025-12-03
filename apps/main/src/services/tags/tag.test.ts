@@ -2,7 +2,7 @@ import { db } from '@repo/database';
 import { getBlogMetadata } from '@/services/blogs/blog';
 import { getTag } from './tag';
 
-vi.mock('@/database/db', () => ({
+vi.mock('@repo/database', () => ({
   db: {
     query: {
       tags: {
