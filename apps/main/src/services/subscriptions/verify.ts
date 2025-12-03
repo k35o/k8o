@@ -1,8 +1,7 @@
+import { db } from '@repo/database';
 import { compareDate } from '@repo/helpers/date/compare';
 import { eq } from 'drizzle-orm';
 import { z } from 'zod';
-import { db } from '@/database/db';
-import { subscribers } from '@/database/schema/subscribers';
 import VerifyEmail from '@/emails/verify-email';
 import { resend } from '@/services/email';
 import type { Result } from '../type';
@@ -33,13 +32,13 @@ export const sendVerificationEmail = async (
     const verificationToken = crypto.randomUUID();
     const tokenExpiresAt = new Date(Date.now() + 1000 * 2 * 60 * 60);
     await db
-      .update(subscribers)
+      .update(db._schema.subscribers)
       .set({
         verificationToken,
         // 2時間後に期限切れ
         tokenExpiresAt,
       })
-      .where(eq(subscribers.id, subscriber.id));
+      .where(eq(db._schema.subscribers.id, subscriber.id));
     waitUntilResend(() => {
       void resend()
         .emails.send({
@@ -82,7 +81,10 @@ export const verifyEmail = async (
       tokenExpiresAt: true,
     },
     where: (subscribers, { eq, and }) =>
-      and(eq(subscribers.email, email), eq(subscribers.isVerified, false)),
+      and(
+        eq(db._schema.subscribers.email, email),
+        eq(subscribers.isVerified, false),
+      ),
   });
   if (!subscriber) {
     return {
@@ -108,13 +110,13 @@ export const verifyEmail = async (
   }
   try {
     await db
-      .update(subscribers)
+      .update(db._schema.subscribers)
       .set({
         isVerified: true,
         verificationToken: null,
         tokenExpiresAt: null,
       })
-      .where(eq(subscribers.id, subscriber.id));
+      .where(eq(db._schema.subscribers.id, subscriber.id));
     return {
       success: true,
       data: null,

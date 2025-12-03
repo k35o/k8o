@@ -1,4 +1,4 @@
-import { db } from '@/database/db';
+import { db } from '@repo/database';
 
 export async function getTags(page = 1): Promise<
   {

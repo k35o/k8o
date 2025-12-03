@@ -1,8 +1,7 @@
+import { db } from '@repo/database';
 import { inArray } from 'drizzle-orm';
 import { type NextRequest, NextResponse } from 'next/server';
 import { getBlogContent } from '@/app/blog/_api';
-import { db } from '@/database/db';
-import { comments } from '@/database/schema/comments';
 import WeeklyNotification, {
   type Notification,
 } from '@/emails/weekly-notification';
@@ -74,11 +73,11 @@ export async function GET(req: NextRequest) {
   }
 
   await db
-    .update(comments)
+    .update(db._schema.comments)
     .set({ sentAt: new Date() })
     .where(
       inArray(
-        comments.id,
+        db._schema.comments.id,
         notifications.map((n) => n.id),
       ),
     )

@@ -1,0 +1,36 @@
+{
+  "name": "@repo/database",
+  "version": "1.0.0",
+  "description": "Database client for k8o project",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": {
+      "types": "./src/index.ts",
+      "storybook": "./src/__mocks__/db.ts",
+      "node": "./src/index.ts",
+      "default": "./src/index.ts"
+    }
+  },
+  "scripts": {
+    "type-check": "tsgo --noEmit",
+    "generate": "drizzle-kit generate",
+    "generate:custom": "drizzle-kit generate --custom",
+    "migrate": "drizzle-kit migrate",
+    "export:schema": "drizzle-kit export > ./schema.sql",
+    "build:erd": "liam erd build --input ./schema.sql --format postgres",
+    "preview:erd": "pnpm run build:erd && pnpm dlx http-server dist"
+  },
+  "dependencies": {
+    "@neondatabase/serverless": "1.0.2",
+    "@next/env": "16.0.6",
+    "drizzle-orm": "0.44.7",
+    "ws": "8.18.3"
+  },
+  "devDependencies": {
+    "@liam-hq/cli": "0.7.24",
+    "@types/ws": "8.18.1",
+    "drizzle-kit": "0.31.7",
+    "postgres": "3.4.7"
+  }
+}

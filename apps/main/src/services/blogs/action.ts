@@ -1,9 +1,7 @@
 'use server';
 
+import { db } from '@repo/database';
 import { checkRateLimit, RateLimitType } from '@repo/helpers/ratelimit';
-import { db } from '@/database/db';
-import { blogComment } from '@/database/schema/blog-comment';
-import { comments } from '@/database/schema/comments';
 import '@/libs/zod';
 
 type Result =
@@ -54,15 +52,15 @@ export const feedback = async (
   }
 
   const insertComments = await db
-    .insert(comments)
+    .insert(db._schema.comments)
     .values({
       message: comment,
       feedbackId,
     })
-    .returning({ insertedId: comments.id });
+    .returning({ insertedId: db._schema.comments.id });
 
   if (insertComments[0]?.insertedId !== undefined) {
-    await db.insert(blogComment).values({
+    await db.insert(db._schema.blogComment).values({
       blogId: blog.id,
       commentId: insertComments[0].insertedId,
     });

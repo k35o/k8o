@@ -1,6 +1,6 @@
+import { db } from '@repo/database';
 import { getFrontmatter } from '@repo/helpers/mdx/frontmatter';
 import { getTocTree } from '@repo/helpers/mdx/toc-tree';
-import { db } from '@/database/db';
 import { getBlog, getBlogMetadata, getBlogToc } from './blog';
 import { blogPath } from './path';
 

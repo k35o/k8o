@@ -12,11 +12,12 @@
 
 ### データベース
 
-- `pnpm run -F main generate` - Drizzle ORMスキーマファイルからマイグレーションを生成
-- `pnpm run -F main generate:custom` - カスタムマイグレーションファイルを生成
-- `pnpm run -F main migrate` - データベースマイグレーションを実行
-- `pnpm run -F main export:schema` - スキーマをSQLファイル（schema.sql）にエクスポート
-- `pnpm run -F main build:erd` - ERD（Entity Relationship Diagram）を構築
+- `pnpm run -F database generate` - Drizzle ORMスキーマファイルからマイグレーションを生成
+- `pnpm run -F database generate:custom` - カスタムマイグレーションファイルを生成
+- `pnpm run -F database migrate` - データベースマイグレーションを実行
+- `pnpm run -F database export:schema` - スキーマをSQLファイル（schema.sql）にエクスポート
+- `pnpm run -F database build:erd` - ERD（Entity Relationship Diagram）を構築
+- `pnpm run -F database preview:erd` - ERDをプレビュー
 - `docker compose up -d` - ローカルPostgreSQL、Redis、プロキシサービスを開始
 - `docker compose exec postgres psql -U postgres -d main` - ローカルデータベースに接続
 

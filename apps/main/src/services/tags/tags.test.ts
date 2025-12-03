@@ -1,4 +1,4 @@
-import { db } from '@/database/db';
+import { db } from '@repo/database';
 import { getTags } from './tags';
 
 vi.mock('@/database/db', () => ({

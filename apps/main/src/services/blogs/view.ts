@@ -1,7 +1,5 @@
+import { db } from '@repo/database';
 import { eq } from 'drizzle-orm';
-import { db } from '@/database/db';
-import { blogViews } from '@/database/schema/blog-views';
-import { increment } from '@/database/utils';
 
 export const getBlogView = async (id: number): Promise<number> => {
   return await db.query.blogViews
@@ -13,9 +11,9 @@ export const getBlogView = async (id: number): Promise<number> => {
 
 export const incrementBlogView = async (id: number) => {
   return await db
-    .update(blogViews)
+    .update(db._schema.blogViews)
     .set({
-      views: increment(blogViews.views),
+      views: db._utils.increment(db._schema.blogViews.views),
     })
-    .where(eq(blogViews.blogId, id));
+    .where(eq(db._schema.blogViews.blogId, id));
 };

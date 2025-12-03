@@ -1,4 +1,4 @@
-import { db } from '@/database/db';
+import { db } from '@repo/database';
 import { getBlogMetadata } from '@/services/blogs/blog';
 import { getTag } from './tag';
 

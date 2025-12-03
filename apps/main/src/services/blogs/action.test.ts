@@ -1,10 +1,8 @@
+import { db } from '@repo/database';
 import { checkRateLimit } from '@repo/helpers/ratelimit';
-import { db } from '@/database/db';
-import { blogComment } from '@/database/schema/blog-comment';
-import { comments } from '@/database/schema/comments';
 import { feedback } from './action';
 
-vi.mock('@/database/db', () => ({
+vi.mock('@repo/database', () => ({
   db: {
     query: {
       blogs: {
@@ -23,6 +21,12 @@ vi.mock('@/database/db', () => ({
         }),
       }),
     }),
+    _schema: {
+      comments: {
+        id: 'comments.id',
+      },
+      blogComment: {},
+    },
   },
 }));
 vi.mock('@repo/helpers/ratelimit');
@@ -130,8 +134,8 @@ describe('feedback', () => {
     expect(result).toEqual({
       success: true,
     });
-    expect(db.insert).toHaveBeenCalledWith(comments);
-    expect(db.insert).toHaveBeenCalledWith(blogComment);
+    expect(db.insert).toHaveBeenCalledWith(db._schema.comments);
+    expect(db.insert).toHaveBeenCalledWith(db._schema.blogComment);
   });
 
   it('フィードバックIDなしでコメントのみの場合も正常に動作する', async () => {

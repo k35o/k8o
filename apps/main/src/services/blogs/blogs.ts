@@ -1,5 +1,5 @@
+import { db } from '@repo/database';
 import { getFrontmatter } from '@repo/helpers/mdx/frontmatter';
-import { db } from '@/database/db';
 import { blogPath } from './path';
 
 export const getBlogs = async () => {
@@ -38,9 +38,9 @@ export const getBlogsByTags = async (slug: string, tagIds: number[]) => {
   const blogs = await db.query.blogs.findMany({
     where: (blogs, { not, eq, inArray, and }) =>
       and(
-        not(eq(blogs.slug, slug)),
+        not(eq(db._schema.blogs.slug, slug)),
         inArray(blogs.id, blogIds),
-        eq(blogs.published, true),
+        eq(db._schema.blogs.published, true),
       ),
     with: {
       blogTag: {

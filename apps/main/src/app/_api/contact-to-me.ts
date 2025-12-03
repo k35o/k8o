@@ -1,9 +1,8 @@
 'use server';
 
+import { db } from '@repo/database';
 import { ratelimit } from '@repo/helpers/ratelimit';
 import { z } from 'zod';
-import { db } from '@/database/db';
-import { comments } from '@/database/schema/comments';
 import '@/libs/zod';
 
 const contactSchema = z.object({
@@ -55,7 +54,7 @@ export const contact = async (
     };
   }
 
-  await db.insert(comments).values({
+  await db.insert(db._schema.comments).values({
     message: validatedFields.data.message,
   });
 

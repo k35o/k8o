@@ -1,4 +1,4 @@
-import { db } from '@/database/db';
+import { db } from '@repo/database';
 import { resend } from '@/services/email';
 import { sendVerificationEmail, verifyEmail } from '../verify';
 
