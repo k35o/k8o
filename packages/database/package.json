@@ -23,7 +23,7 @@
   },
   "dependencies": {
     "@neondatabase/serverless": "1.0.2",
-    "@next/env": "16.0.6",
+    "@next/env": "16.0.7",
     "drizzle-orm": "0.44.7",
     "ws": "8.18.3"
   },
