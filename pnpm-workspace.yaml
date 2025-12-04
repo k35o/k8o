@@ -18,10 +18,6 @@ minimumReleaseAge: 4320
 
 minimumReleaseAgeExclude:
   - '@k8o/*'
-  - react
-  - react-dom
-  - next
-  - '@next/*'
 
 onlyBuiltDependencies:
   - '@vercel/speed-insights'
