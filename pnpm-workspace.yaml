@@ -3,6 +3,7 @@ packages:
   - packages/*
 
 ignoredBuiltDependencies:
+  - '@parcel/watcher'
   - '@prisma/engines'
   - '@swc/core'
   - '@tailwindcss/oxide'
@@ -14,7 +15,13 @@ ignoredBuiltDependencies:
   - unrs-resolver
 
 minimumReleaseAge: 4320
-minimumReleaseAgeExclude: '@k8o/**'
+
+minimumReleaseAgeExclude:
+  - '@k8o/*'
+  - react
+  - react-dom
+  - next
+  - '@next/*'
 
 onlyBuiltDependencies:
   - '@vercel/speed-insights'
