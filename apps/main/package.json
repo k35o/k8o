@@ -56,7 +56,7 @@
     "@types/react": "19.2.7",
     "@types/react-dom": "19.2.3",
     "@types/rss": "0.0.32",
-    "@vitest/browser-playwright": "4.0.14",
+    "@vitest/browser-playwright": "4.0.15",
     "chromatic": "13.3.4",
     "msw": "2.12.3",
     "msw-storybook-addon": "2.0.6",
