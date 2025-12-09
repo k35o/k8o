@@ -1,0 +1,15 @@
+import type { FC } from 'react';
+
+/**
+ * {{DESCRIPTION}}
+ */
+export const {{COMPONENT_NAME}}: FC<{
+  // TODO: Propsの型定義を追加
+}> = () => {
+  return (
+    <div>
+      {/* TODO: コンポーネントの実装 */}
+      <p className="text-fg-base">{{COMPONENT_NAME}}</p>
+    </div>
+  );
+};
