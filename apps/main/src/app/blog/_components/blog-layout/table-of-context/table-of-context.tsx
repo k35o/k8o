@@ -79,15 +79,17 @@ export const TableOfContext: FC<{
       )}
       ref={ref}
     >
-      <summary className="flex items-center gap-2 p-4 font-bold text-lg text-primary-fg sm:text-xl">
+      <summary className="flex items-center gap-2 p-4 font-bold text-md text-primary-fg sm:text-lg">
         <ProgressBar activeId={activeId} headingTree={headingTree} />
         <span className="truncate">
-          {activeId === '' || activeId === END_OF_CONTENT_ID
+          {activeId === ''
             ? 'もくじ'
-            : activeId}
+            : activeId === END_OF_CONTENT_ID
+              ? 'さいごまで よみました'
+              : activeId}
         </span>
       </summary>
-      <ul className="flex flex-col overflow-y-auto p-2 text-fg-base">
+      <ul className="flex max-h-[75vh] flex-col overflow-y-scroll p-2 text-fg-base">
         {headingTree.children.map((depth1) => {
           if (depth1.children.length === 0) {
             return (
