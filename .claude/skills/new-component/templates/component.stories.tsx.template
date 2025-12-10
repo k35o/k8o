@@ -1,0 +1,17 @@
+import type { Meta, StoryObj } from '@storybook/nextjs-vite';
+import { {{COMPONENT_NAME}} } from '{{COMPONENT_PATH}}';
+
+/**
+ * {{DESCRIPTION}}
+ */
+const meta = {
+  component: {{COMPONENT_NAME}},
+} satisfies Meta<typeof {{COMPONENT_NAME}}>;
+
+export default meta;
+type Story = StoryObj<typeof meta>;
+
+/**
+ * デフォルト状態
+ */
+export const Default: Story = {};
