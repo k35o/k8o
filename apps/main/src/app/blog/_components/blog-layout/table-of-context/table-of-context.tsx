@@ -32,7 +32,6 @@ export const TableOfContext: FC<{
   headingTree: HeadingTree;
 }> = ({ headingTree }) => {
   const [activeId, setActiveId] = useState<string>('');
-  const isMountedRef = useRef(true);
   const ignoreObserverRef = useRef(false);
   const debounceTimerRef = useRef<NodeJS.Timeout | null>(null);
 
@@ -42,20 +41,9 @@ export const TableOfContext: FC<{
     }
   });
 
-  // マウント状態を管理
-  useEffect(() => {
-    isMountedRef.current = true;
-    return () => {
-      isMountedRef.current = false;
-    };
-  }, [isMountedRef]);
-
   // ハッシュ変更を監視してactiveIdを更新
   useEffect(() => {
     const updateActiveIdFromHash = () => {
-      // マウント状態をチェック
-      if (!isMountedRef.current) return;
-
       const hash = window.location.hash.slice(1);
 
       // ハッシュが空の場合、activeIdをリセット
@@ -88,18 +76,14 @@ export const TableOfContext: FC<{
         clearTimeout(debounceTimerRef.current);
       }
     };
-  }, [
-    debounceTimerRef, // ハッシュ変更後、500ms間IntersectionObserverを無効化
-    ignoreObserverRef,
-    isMountedRef.current,
-  ]);
+  }, [debounceTimerRef, ignoreObserverRef]);
 
   // IntersectionObserverで見出しを監視
   useEffect(() => {
     const observer = new IntersectionObserver(
       (entries) => {
-        // デバウンス中またはアンマウント後は処理をスキップ
-        if (ignoreObserverRef.current || !isMountedRef.current) {
+        // デバウンス中は処理をスキップ
+        if (ignoreObserverRef.current) {
           return;
         }
 
@@ -136,7 +120,7 @@ export const TableOfContext: FC<{
     return () => {
       observer.disconnect();
     };
-  }, [ignoreObserverRef.current, isMountedRef.current]);
+  }, [ignoreObserverRef.current]);
 
   if (headingTree.children.length === 0) {
     return null;
