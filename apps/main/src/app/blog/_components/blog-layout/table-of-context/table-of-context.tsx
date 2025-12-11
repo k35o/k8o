@@ -58,9 +58,11 @@ export const TableOfContext: FC<{
       ignoreObserverRef.current = true;
       if (debounceTimerRef.current) {
         clearTimeout(debounceTimerRef.current);
+        debounceTimerRef.current = null;
       }
       debounceTimerRef.current = setTimeout(() => {
         ignoreObserverRef.current = false;
+        debounceTimerRef.current = null;
       }, 500);
     };
 
@@ -74,6 +76,7 @@ export const TableOfContext: FC<{
       window.removeEventListener('hashchange', updateActiveIdFromHash);
       if (debounceTimerRef.current) {
         clearTimeout(debounceTimerRef.current);
+        debounceTimerRef.current = null;
       }
     };
   }, []);
