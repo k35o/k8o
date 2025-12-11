@@ -40,6 +40,20 @@ export const TableOfContext: FC<{
   });
 
   useEffect(() => {
+    // 初期ロード時やハッシュ変更時にactiveIdを設定
+    const updateActiveIdFromHash = () => {
+      const hash = window.location.hash.slice(1);
+      if (hash) {
+        setActiveId(decodeURIComponent(hash));
+      }
+    };
+
+    // 初回実行
+    updateActiveIdFromHash();
+
+    // ハッシュ変更を監視
+    window.addEventListener('hashchange', updateActiveIdFromHash);
+
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
@@ -63,7 +77,10 @@ export const TableOfContext: FC<{
       observer.observe(eocElement);
     }
 
-    return () => observer.disconnect();
+    return () => {
+      observer.disconnect();
+      window.removeEventListener('hashchange', updateActiveIdFromHash);
+    };
   }, []);
 
   if (headingTree.children.length === 0) {
