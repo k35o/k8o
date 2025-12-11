@@ -42,15 +42,21 @@ export const TableOfContext: FC<{
     }
   });
 
+  // マウント状態を管理
   useEffect(() => {
     isMountedRef.current = true;
+    return () => {
+      isMountedRef.current = false;
+    };
+  }, [isMountedRef]);
 
-    // 初期ロード時やハッシュ変更時にactiveIdを設定
+  // ハッシュ変更を監視してactiveIdを更新
+  useEffect(() => {
     const updateActiveIdFromHash = () => {
-      const hash = window.location.hash.slice(1);
-
       // マウント状態をチェック
       if (!isMountedRef.current) return;
+
+      const hash = window.location.hash.slice(1);
 
       // ハッシュが空の場合、activeIdをリセット
       if (!hash) {
@@ -76,6 +82,20 @@ export const TableOfContext: FC<{
     // ハッシュ変更を監視
     window.addEventListener('hashchange', updateActiveIdFromHash);
 
+    return () => {
+      window.removeEventListener('hashchange', updateActiveIdFromHash);
+      if (debounceTimerRef.current) {
+        clearTimeout(debounceTimerRef.current);
+      }
+    };
+  }, [
+    debounceTimerRef, // ハッシュ変更後、500ms間IntersectionObserverを無効化
+    ignoreObserverRef,
+    isMountedRef.current,
+  ]);
+
+  // IntersectionObserverで見出しを監視
+  useEffect(() => {
     const observer = new IntersectionObserver(
       (entries) => {
         // デバウンス中またはアンマウント後は処理をスキップ
@@ -114,18 +134,9 @@ export const TableOfContext: FC<{
     }
 
     return () => {
-      isMountedRef.current = false;
       observer.disconnect();
-      window.removeEventListener('hashchange', updateActiveIdFromHash);
-      if (debounceTimerRef.current) {
-        clearTimeout(debounceTimerRef.current);
-      }
     };
-  }, [
-    debounceTimerRef, // ハッシュ変更後、500ms間IntersectionObserverを無効化
-    ignoreObserverRef,
-    isMountedRef,
-  ]);
+  }, [ignoreObserverRef.current, isMountedRef.current]);
 
   if (headingTree.children.length === 0) {
     return null;
