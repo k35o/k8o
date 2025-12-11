@@ -4,7 +4,7 @@ import { useClickAway } from '@k8o/arte-odyssey';
 import { cn } from '@repo/helpers/cn';
 import type { HeadingTree } from '@repo/helpers/mdx/types';
 import Link from 'next/link';
-import { type FC, useEffect, useState } from 'react';
+import { type FC, useEffect, useRef, useState } from 'react';
 import { END_OF_CONTENT_ID } from '../constants';
 import { ProgressBar } from './progress-bar';
 
@@ -76,7 +76,7 @@ export const TableOfContext: FC<{
         clearTimeout(debounceTimerRef.current);
       }
     };
-  }, [debounceTimerRef, ignoreObserverRef]);
+  }, []);
 
   // IntersectionObserverで見出しを監視
   useEffect(() => {
@@ -120,7 +120,7 @@ export const TableOfContext: FC<{
     return () => {
       observer.disconnect();
     };
-  }, [ignoreObserverRef.current]);
+  }, []);
 
   if (headingTree.children.length === 0) {
     return null;
