@@ -56,11 +56,20 @@ export const TableOfContext: FC<{
 
     const observer = new IntersectionObserver(
       (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            setActiveId(entry.target.id);
-          }
-        });
+        // 交差している要素のうち、最も上にあるものを選択
+        const intersectingEntries = entries.filter(
+          (entry) => entry.isIntersecting,
+        );
+
+        if (intersectingEntries.length > 0) {
+          // boundingClientRectのtopが最も小さい（画面上部に近い）要素を選択
+          const topEntry = intersectingEntries.reduce((prev, current) =>
+            prev.boundingClientRect.top < current.boundingClientRect.top
+              ? prev
+              : current,
+          );
+          setActiveId(topEntry.target.id);
+        }
       },
       {
         rootMargin: '-80px 0px -80% 0px',
