@@ -32,6 +32,9 @@ export const TableOfContext: FC<{
   headingTree: HeadingTree;
 }> = ({ headingTree }) => {
   const [activeId, setActiveId] = useState<string>('');
+  const isMountedRef = useRef(true);
+  const ignoreObserverRef = useRef(false);
+  const debounceTimerRef = useRef<NodeJS.Timeout | null>(null);
 
   const ref = useClickAway<HTMLDetailsElement>(() => {
     if (ref.current) {
@@ -40,12 +43,31 @@ export const TableOfContext: FC<{
   });
 
   useEffect(() => {
+    isMountedRef.current = true;
+
     // 初期ロード時やハッシュ変更時にactiveIdを設定
     const updateActiveIdFromHash = () => {
       const hash = window.location.hash.slice(1);
-      if (hash) {
-        setActiveId(decodeURIComponent(hash));
+
+      // マウント状態をチェック
+      if (!isMountedRef.current) return;
+
+      // ハッシュが空の場合、activeIdをリセット
+      if (!hash) {
+        setActiveId('');
+        return;
       }
+
+      setActiveId(decodeURIComponent(hash));
+
+      // ハッシュ変更後、500ms間IntersectionObserverを無効化
+      ignoreObserverRef.current = true;
+      if (debounceTimerRef.current) {
+        clearTimeout(debounceTimerRef.current);
+      }
+      debounceTimerRef.current = setTimeout(() => {
+        ignoreObserverRef.current = false;
+      }, 500);
     };
 
     // 初回実行
@@ -56,6 +78,11 @@ export const TableOfContext: FC<{
 
     const observer = new IntersectionObserver(
       (entries) => {
+        // デバウンス中またはアンマウント後は処理をスキップ
+        if (ignoreObserverRef.current || !isMountedRef.current) {
+          return;
+        }
+
         // 交差している要素のうち、最も上にあるものを選択
         const intersectingEntries = entries.filter(
           (entry) => entry.isIntersecting,
@@ -87,10 +114,18 @@ export const TableOfContext: FC<{
     }
 
     return () => {
+      isMountedRef.current = false;
       observer.disconnect();
       window.removeEventListener('hashchange', updateActiveIdFromHash);
+      if (debounceTimerRef.current) {
+        clearTimeout(debounceTimerRef.current);
+      }
     };
-  }, []);
+  }, [
+    debounceTimerRef, // ハッシュ変更後、500ms間IntersectionObserverを無効化
+    ignoreObserverRef,
+    isMountedRef,
+  ]);
 
   if (headingTree.children.length === 0) {
     return null;
