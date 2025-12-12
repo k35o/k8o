@@ -44,9 +44,10 @@
 
 ### プロジェクト構造
 
-**Turborepo Monorepo**: 2つのワークスペースで構成
+**Turborepo Monorepo**: 3つのワークスペースで構成
 
 - **apps/main** - メインのNext.jsアプリケーション
+- **packages/database** - データベースクライアントとスキーマ（Drizzle ORM）
 - **packages/helpers** - ユーティリティ関数ライブラリ
 
 外部パッケージ:
@@ -57,7 +58,7 @@
 
 **フロントエンド**:
 
-- **Next.js 15.5** - App Router、React 19、TypeScript
+- **Next.js 16.0** - App Router、React 19、TypeScript
 - **TailwindCSS 4.1** - カスタムデザイントークンベース
 - **Motion** - アニメーション
 - **MDX** - 数式（KaTeX）・シンタックスハイライト（Shiki）付きブログコンテンツ
@@ -72,13 +73,13 @@
 
 **開発ツール**:
 
-- **Turbo 2.5** - モノレポビルドシステム
-- **Vitest 3.2** - テストランナー（ブラウザモード対応）
-- **Storybook 9.1** - コンポーネント開発環境
-- **React Email 4.3** - メールテンプレート
-- **MSW 2.11** - APIモック
-- **Lefthook 1.13** - Git フック
-- **Playwright 1.56** - E2Eテスト
+- **Turbo 2.6** - モノレポビルドシステム
+- **Vitest 4.0** - テストランナー（ブラウザモード対応）
+- **Storybook 10.1** - コンポーネント開発環境
+- **React Email 5.0** - メールテンプレート
+- **MSW 2.12** - APIモック
+- **Lefthook 2.0** - Git フック
+- **Playwright 1.57** - E2Eテスト
 
 ### 重要なパターン
 
@@ -96,7 +97,7 @@
 }
 ```
 
-**データベーススキーマ**: `apps/main/src/database/schema/`に関係別整理
+**データベーススキーマ**: `packages/database/src/schema/`に関係別整理
 
 - コンテンツ: blogs, talks, quizzes, services
 - ユーザーデータ: comments, feedbacks, subscribers
@@ -203,7 +204,7 @@ Storybookストーリーでテストを記述：
 
 1. `.env.example`を`.env.local`にコピー
 2. `docker compose up -d`でローカルサービス開始
-3. `pnpm run -F main migrate`でデータベースセットアップ
+3. `pnpm run -F database migrate`でデータベースセットアップ
 
 **新機能開発フロー**:
 

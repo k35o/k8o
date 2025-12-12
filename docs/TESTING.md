@@ -49,7 +49,7 @@ pnpm install --frozen-lockfile
 テスト用の環境変数を設定：
 
 ```bash
-# core/.env.test
+# apps/main/.env.test
 POSTGRES_URL="postgres://postgres:postgres@localhost:5432/test"
 KV_REST_API_URL="http://localhost:8079"
 KV_REST_API_TOKEN="test_token"
@@ -598,7 +598,7 @@ it('時間のかかる処理', async () => {
 # データベースをリセット
 docker compose down -v
 docker compose up -d
-pnpm run -F main migrate
+pnpm run -F database migrate
 ```
 
 ---

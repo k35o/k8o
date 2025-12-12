@@ -14,7 +14,7 @@
 
 ## システム概要
 
-k8oは、Next.js 15 App Routerをベースとした個人プロジェクトポートフォリオサイトです。
+k8oは、Next.js 16 App Routerをベースとした個人プロジェクトポートフォリオサイトです。
 ブログ、トーク、サービス紹介、インタラクティブなツール群を提供しています。
 
 ### 主な機能
@@ -37,15 +37,15 @@ k8oは、Next.js 15 App Routerをベースとした個人プロジェクトポ�
 
 | カテゴリ | 技術 | バージョン | 用途 |
 |---------|------|-----------|------|
-| フレームワーク | Next.js | 16.0.1 | App Router、SSR/SSG |
-| UIライブラリ | React | 19.2.0 | UI構築 |
+| フレームワーク | Next.js | 16.0.10 | App Router、SSR/SSG |
+| UIライブラリ | React | 19.2.3 | UI構築 |
 | 言語 | TypeScript | 5.9.3 | 型安全性 |
-| スタイリング | TailwindCSS | 4.1.16 | カスタムデザインシステム |
-| コンポーネント | @k8o/arte-odyssey | 1.1.0 | 再利用可能UIコンポーネント |
-| アニメーション | Motion | 12.23.24 | インタラクション |
-| MDX | @next/mdx | 16.0.1 | ブログコンテンツ |
+| スタイリング | TailwindCSS | 4.1.17 | カスタムデザインシステム |
+| コンポーネント | @k8o/arte-odyssey | 1.4.2 | 再利用可能UIコンポーネント |
+| アニメーション | Motion | 12.23.25 | インタラクション |
+| MDX | @next/mdx | 16.0.10 | ブログコンテンツ |
 | 数式 | rehype-katex | 7.0.1 | 数式レンダリング |
-| シンタックスハイライト | @shikijs/rehype | 3.14.0 | コードハイライト |
+| シンタックスハイライト | @shikijs/rehype | 3.17.1 | コードハイライト |
 
 ### バックエンド
 
@@ -54,44 +54,51 @@ k8oは、Next.js 15 App Routerをベースとした個人プロジェクトポ�
 | ORM | Drizzle ORM | 0.44.7 | データベース操作 |
 | データベース | PostgreSQL | 18 | メインデータストア |
 | KVストア | Redis | - | キャッシュ、レート制限 |
-| バリデーション | Zod | 4.1.12 | スキーマ検証 |
-| メール | Resend | 6.3.0 | トランザクションメール |
+| バリデーション | Zod | 4.1.13 | スキーマ検証 |
+| メール | Resend | 6.5.2 | トランザクションメール |
 | CMS | MicroCMS | - | ニュース管理 |
 
 ### 開発ツール
 
 | カテゴリ | 技術 | バージョン | 用途 |
 |---------|------|-----------|------|
-| モノレポ | Turbo | 2.5.8 | ビルドシステム |
-| テスト | Vitest | 4.0.6 | ユニットテスト |
-| E2E | Playwright | 1.56.1 | エンドツーエンドテスト |
-| Storybook | Storybook | 10.0.1 | コンポーネント開発 |
-| リンター | Biome | 2.3.1 | コード品質 |
-| Git hooks | Lefthook | 2.0.1 | pre-commit/pre-push |
-| モック | MSW | 2.11.6 | APIモック |
+| モノレポ | Turbo | 2.6.1 | ビルドシステム |
+| テスト | Vitest | 4.0.14 | ユニットテスト |
+| E2E | Playwright | 1.57.0 | エンドツーエンドテスト |
+| Storybook | Storybook | 10.1.2 | コンポーネント開発 |
+| リンター | Biome | 2.3.8 | コード品質 |
+| Git hooks | Lefthook | 2.0.4 | pre-commit/pre-push |
+| モック | MSW | 2.12.3 | APIモック |
 
 ## モノレポ構成
 
 ```
 k8o/
-├── core/                    # メインNext.jsアプリケーション
-│   ├── src/
-│   │   ├── app/            # Next.js App Router
-│   │   ├── database/       # Drizzleスキーマ
-│   │   ├── services/       # ビジネスロジック
-│   │   ├── emails/         # React Emailテンプレート
-│   │   └── mocks/          # MSWモック定義
-│   ├── .storybook/         # Storybook設定
-│   └── drizzle/            # マイグレーションファイル（生成時）
+├── apps/
+│   └── main/                # メインNext.jsアプリケーション
+│       ├── src/
+│       │   ├── app/        # Next.js App Router
+│       │   ├── services/   # ビジネスロジック
+│       │   ├── emails/     # React Emailテンプレート
+│       │   └── mocks/      # MSWモック定義
+│       └── .storybook/     # Storybook設定
 │
 ├── packages/
-│   └── helpers/            # 共有ユーティリティ関数
-│       └── src/
-│           ├── array/      # 配列操作
-│           ├── color/      # 色関連
-│           ├── date/       # 日付操作
-│           ├── number/     # 数値操作
-│           └── ...
+│   ├── database/           # データベースクライアントとスキーマ
+│   │   ├── src/
+│   │   │   ├── schema/    # Drizzleスキーマ定義
+│   │   │   └── __mocks__/ # モックDB
+│   │   └── migrations/    # マイグレーションファイル
+│   │
+│   ├── helpers/            # 共有ユーティリティ関数
+│   │   └── src/
+│   │       ├── array/     # 配列操作
+│   │       ├── color/     # 色関連
+│   │       ├── date/      # 日付操作
+│   │       ├── number/    # 数値操作
+│   │       └── ...
+│   │
+│   └── typescript-config/  # 共有TypeScript設定
 │
 └── node_modules/           # 共有依存関係
 ```
@@ -106,12 +113,17 @@ k8o/
                  ↑
                  │
 ┌────────────────┴────────────────────┐
-│            core                     │
+│          apps/main                  │
 │      Next.jsアプリケーション          │
 └────────────────┬────────────────────┘
                  ↓
 ┌─────────────────────────────────────┐
-│        @k8o/helpers                 │
+│        @repo/database               │
+│    データベースクライアント           │
+└─────────────────────────────────────┘
+                 ↓
+┌─────────────────────────────────────┐
+│        @repo/helpers                │
 │      ユーティリティ関数               │
 └─────────────────────────────────────┘
 ```
@@ -146,11 +158,6 @@ apps/main/src/
 │       ├── _utils/                 # ツール専用ユーティリティ
 │       └── page.tsx               # ツールページ
 │
-├── database/                        # データベース層
-│   ├── schema/                     # Drizzleスキーマ定義
-│   ├── db.ts                       # DB接続
-│   └── utils.ts                    # DB操作ヘルパー
-│
 ├── services/                        # ビジネスロジック層
 │   ├── blogs/                      # ブログサービス
 │   ├── talks/                      # トークサービス
@@ -164,6 +171,13 @@ apps/main/src/
 └── mocks/                           # MSWモック定義
     ├── handlers/                   # モックハンドラー
     └── browser.ts                  # ブラウザ用MSW設定
+
+packages/database/src/
+├── schema/                          # Drizzleスキーマ定義
+├── __mocks__/                       # モックDB
+├── db.ts                            # DB接続
+├── index.ts                         # エクスポート
+└── utils.ts                         # DB操作ヘルパー
 ```
 
 ### レイヤーアーキテクチャ
