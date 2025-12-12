@@ -4,7 +4,7 @@ import { useClickAway } from '@k8o/arte-odyssey';
 import { cn } from '@repo/helpers/cn';
 import type { HeadingTree } from '@repo/helpers/mdx/types';
 import Link from 'next/link';
-import { type FC, useEffect, useRef, useState } from 'react';
+import { type FC, useCallback, useEffect, useRef, useState } from 'react';
 import { END_OF_CONTENT_ID } from '../constants';
 import { ProgressBar } from './progress-bar';
 
@@ -12,7 +12,8 @@ const LinkButton: FC<{
   depth: number;
   text: string;
   isActive: boolean;
-}> = ({ depth, text, isActive }) => {
+  onNavigate: (id: string) => void;
+}> = ({ depth, text, isActive, onNavigate }) => {
   return (
     <Link
       className={cn(
@@ -22,6 +23,7 @@ const LinkButton: FC<{
         isActive && 'xl:bg-primary-bg xl:font-bold xl:text-fg-base',
       )}
       href={`#${text}`}
+      onClick={() => onNavigate(text)}
     >
       {text}
     </Link>
@@ -41,45 +43,49 @@ export const TableOfContext: FC<{
     }
   });
 
-  // ハッシュ変更を監視してactiveIdを更新
+  // リンククリック時やブラウザ戻る/進むボタン時のナビゲーション処理
+  const handleNavigate = useCallback((id: string) => {
+    setActiveId(id);
+
+    // ナビゲーション後、500ms間IntersectionObserverを無効化
+    ignoreObserverRef.current = true;
+    if (debounceTimerRef.current) {
+      clearTimeout(debounceTimerRef.current);
+      debounceTimerRef.current = null;
+    }
+    debounceTimerRef.current = setTimeout(() => {
+      ignoreObserverRef.current = false;
+      debounceTimerRef.current = null;
+    }, 500);
+  }, []);
+
+  // 初回ロード時とブラウザの戻る/進むボタン時にactiveIdを更新
   useEffect(() => {
-    const updateActiveIdFromHash = () => {
+    const hash = window.location.hash.slice(1);
+    if (hash) {
+      handleNavigate(decodeURIComponent(hash));
+    }
+
+    // ブラウザの戻る/進むボタンでのハッシュ変更を監視
+    const handleHashChange = () => {
       const hash = window.location.hash.slice(1);
-
-      // ハッシュが空の場合、activeIdをリセット
-      if (!hash) {
+      if (hash) {
+        handleNavigate(decodeURIComponent(hash));
+      } else {
         setActiveId('');
-        return;
       }
-
-      setActiveId(decodeURIComponent(hash));
-
-      // ハッシュ変更後、500ms間IntersectionObserverを無効化
-      ignoreObserverRef.current = true;
-      if (debounceTimerRef.current) {
-        clearTimeout(debounceTimerRef.current);
-        debounceTimerRef.current = null;
-      }
-      debounceTimerRef.current = setTimeout(() => {
-        ignoreObserverRef.current = false;
-        debounceTimerRef.current = null;
-      }, 500);
     };
 
-    // 初回実行
-    updateActiveIdFromHash();
-
-    // ハッシュ変更を監視
-    window.addEventListener('hashchange', updateActiveIdFromHash);
+    window.addEventListener('hashchange', handleHashChange);
 
     return () => {
-      window.removeEventListener('hashchange', updateActiveIdFromHash);
+      window.removeEventListener('hashchange', handleHashChange);
       if (debounceTimerRef.current) {
         clearTimeout(debounceTimerRef.current);
         debounceTimerRef.current = null;
       }
     };
-  }, []);
+  }, [handleNavigate]);
 
   // IntersectionObserverで見出しを監視
   useEffect(() => {
@@ -156,6 +162,7 @@ export const TableOfContext: FC<{
                 <LinkButton
                   depth={1}
                   isActive={activeId === depth1.text}
+                  onNavigate={handleNavigate}
                   text={depth1.text}
                 />
               </li>
@@ -166,6 +173,7 @@ export const TableOfContext: FC<{
               <LinkButton
                 depth={1}
                 isActive={activeId === depth1.text}
+                onNavigate={handleNavigate}
                 text={depth1.text}
               />
               <ul>
@@ -176,6 +184,7 @@ export const TableOfContext: FC<{
                         <LinkButton
                           depth={2}
                           isActive={activeId === depth2.text}
+                          onNavigate={handleNavigate}
                           text={depth2.text}
                         />
                       </li>
@@ -186,6 +195,7 @@ export const TableOfContext: FC<{
                       <LinkButton
                         depth={2}
                         isActive={activeId === depth2.text}
+                        onNavigate={handleNavigate}
                         text={depth2.text}
                       />
                       <ul>
@@ -195,6 +205,7 @@ export const TableOfContext: FC<{
                               <LinkButton
                                 depth={3}
                                 isActive={activeId === depth3.text}
+                                onNavigate={handleNavigate}
                                 text={depth3.text}
                               />
                             </li>
