@@ -234,5 +234,5 @@ Storybookストーリーでテストを記述：
 
 - **postgres**: PostgreSQL 18（ポート5432）
 - **neon-proxy**: Neon WebSocket プロキシ（ポート5433）
-- **redis**: Redis（ポート6379）
+- **redis**: Redis（ポート6380）
 - **serverless-redis-http**: Upstash互換HTTPプロキシ（ポート8079）
