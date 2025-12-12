@@ -59,34 +59,6 @@ export const TableOfContext: FC<{
     }, 500);
   }, []);
 
-  // 初回ロード時とブラウザの戻る/進むボタン時にactiveIdを更新
-  useEffect(() => {
-    const hash = window.location.hash.slice(1);
-    if (hash) {
-      handleNavigate(decodeURIComponent(hash));
-    }
-
-    // ブラウザの戻る/進むボタンでのハッシュ変更を監視
-    const handleHashChange = () => {
-      const hash = window.location.hash.slice(1);
-      if (hash) {
-        handleNavigate(decodeURIComponent(hash));
-      } else {
-        setActiveId('');
-      }
-    };
-
-    window.addEventListener('hashchange', handleHashChange);
-
-    return () => {
-      window.removeEventListener('hashchange', handleHashChange);
-      if (debounceTimerRef.current) {
-        clearTimeout(debounceTimerRef.current);
-        debounceTimerRef.current = null;
-      }
-    };
-  }, [handleNavigate]);
-
   // IntersectionObserverで見出しを監視
   useEffect(() => {
     const observer = new IntersectionObserver(
