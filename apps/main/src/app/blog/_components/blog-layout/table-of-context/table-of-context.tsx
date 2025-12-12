@@ -4,7 +4,7 @@ import { useClickAway } from '@k8o/arte-odyssey';
 import { cn } from '@repo/helpers/cn';
 import type { HeadingTree } from '@repo/helpers/mdx/types';
 import Link from 'next/link';
-import { type FC, useCallback, useEffect, useRef, useState } from 'react';
+import { type FC, useCallback, useEffect, useState } from 'react';
 import { END_OF_CONTENT_ID } from '../constants';
 import { ProgressBar } from './progress-bar';
 
@@ -34,8 +34,6 @@ export const TableOfContext: FC<{
   headingTree: HeadingTree;
 }> = ({ headingTree }) => {
   const [activeId, setActiveId] = useState<string>('');
-  const ignoreObserverRef = useRef(false);
-  const debounceTimerRef = useRef<NodeJS.Timeout | null>(null);
 
   const ref = useClickAway<HTMLDetailsElement>(() => {
     if (ref.current) {
@@ -43,31 +41,15 @@ export const TableOfContext: FC<{
     }
   });
 
-  // リンククリック時やブラウザ戻る/進むボタン時のナビゲーション処理
+  // リンククリック時のナビゲーション処理
   const handleNavigate = useCallback((id: string) => {
     setActiveId(id);
-
-    // ナビゲーション後、500ms間IntersectionObserverを無効化
-    ignoreObserverRef.current = true;
-    if (debounceTimerRef.current) {
-      clearTimeout(debounceTimerRef.current);
-      debounceTimerRef.current = null;
-    }
-    debounceTimerRef.current = setTimeout(() => {
-      ignoreObserverRef.current = false;
-      debounceTimerRef.current = null;
-    }, 500);
   }, []);
 
   // IntersectionObserverで見出しを監視
   useEffect(() => {
     const observer = new IntersectionObserver(
       (entries) => {
-        // デバウンス中は処理をスキップ
-        if (ignoreObserverRef.current) {
-          return;
-        }
-
         // 交差している要素のうち、最も上にあるものを選択
         const intersectingEntries = entries.filter(
           (entry) => entry.isIntersecting,
