@@ -58,28 +58,28 @@
 
 **フロントエンド**:
 
-- **Next.js 16.0** - App Router、React 19、TypeScript
-- **TailwindCSS 4.1** - カスタムデザイントークンベース
+- **Next.js** - App Router、React、TypeScript
+- **TailwindCSS** - カスタムデザイントークンベース
 - **Motion** - アニメーション
 - **MDX** - 数式（KaTeX）・シンタックスハイライト（Shiki）付きブログコンテンツ
 - **ArteOdyssey** - UIコンポーネントライブラリ(npm: @k8o/arte-odyssey)
 
 **バックエンド・データベース**:
 
-- **Drizzle ORM 0.44** - TypeScriptファーストORM
-- **PostgreSQL 18** - 本番環境はNeon、ローカルはDocker
+- **Drizzle ORM** - TypeScriptファーストORM
+- **PostgreSQL** - 本番環境はNeon、ローカルはDocker
 - **Redis** - KV ストレージ（本番環境はUpstash、ローカルはDocker）
-- **Zod 4.1** - スキーマバリデーション
+- **Zod** - スキーマバリデーション
 
 **開発ツール**:
 
-- **Turbo 2.6** - モノレポビルドシステム
-- **Vitest 4.0** - テストランナー（ブラウザモード対応）
-- **Storybook 10.1** - コンポーネント開発環境
-- **React Email 5.0** - メールテンプレート
-- **MSW 2.12** - APIモック
-- **Lefthook 2.0** - Git フック
-- **Playwright 1.57** - E2Eテスト
+- **Turbo** - モノレポビルドシステム
+- **Vitest** - テストランナー（ブラウザモード対応）
+- **Storybook** - コンポーネント開発環境
+- **React Email** - メールテンプレート
+- **MSW** - APIモック
+- **Lefthook** - Git フック
+- **Playwright** - E2Eテスト
 
 ### 重要なパターン
 

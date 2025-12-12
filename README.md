@@ -147,28 +147,28 @@ docker compose exec postgres psql -U postgres -d main
 
 ### Frontend
 
-- **Next.js 16.0** - App Router, React 19, TypeScript
-- **TailwindCSS 4.1** - Custom design tokens (no standard classes like `text-gray-600`)
+- **Next.js** - App Router, React, TypeScript
+- **TailwindCSS** - Custom design tokens (no standard classes like `text-gray-600`)
 - **Motion** - Animations
 - **MDX** - Blog content with KaTeX math and Shiki syntax highlighting
 - **ArteOdyssey** - UI component library (npm: @k8o/arte-odyssey)
 
 ### Backend & Database
 
-- **Drizzle ORM 0.44** - TypeScript-first ORM
-- **PostgreSQL 18** - Neon (production), Docker (local)
+- **Drizzle ORM** - TypeScript-first ORM
+- **PostgreSQL** - Neon (production), Docker (local)
 - **Redis** - Upstash (production), Docker (local)
-- **Zod 4.1** - Schema validation
+- **Zod** - Schema validation
 
 ### Development Tools
 
-- **Turbo 2.6** - Monorepo build system
-- **Vitest 4.0** - Test runner with browser mode support
-- **Storybook 10.1** - Component development environment
-- **React Email 5.0** - Email templates
-- **MSW 2.12** - API mocking
-- **Lefthook 2.0** - Git hooks
-- **Playwright 1.57** - E2E testing
+- **Turbo** - Monorepo build system
+- **Vitest** - Test runner with browser mode support
+- **Storybook** - Component development environment
+- **React Email** - Email templates
+- **MSW** - API mocking
+- **Lefthook** - Git hooks
+- **Playwright** - E2E testing
 - **Biome** - Linter and formatter (ESLint/Prettier alternative)
 
 ## Production Services
