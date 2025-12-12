@@ -185,7 +185,7 @@ Local development services (via `docker compose up -d`):
 
 - **postgres**: PostgreSQL 18 (port 5432)
 - **neon-proxy**: Neon WebSocket proxy (port 5433)
-- **redis**: Redis (port 6379)
+- **redis**: Redis (port 6380)
 - **serverless-redis-http**: Upstash-compatible HTTP proxy (port 8079)
 
 ## Key Features
