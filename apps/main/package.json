@@ -18,7 +18,7 @@
     "preview:dist": "pnpm dlx http-server dist"
   },
   "dependencies": {
-    "@k8o/arte-odyssey": "1.4.0",
+    "@k8o/arte-odyssey": "1.4.2",
     "@mdx-js/loader": "3.1.1",
     "@mdx-js/react": "3.1.1",
     "@next/mdx": "16.0.10",
