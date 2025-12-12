@@ -100,16 +100,17 @@ export const BlogLayout: FC<{
             <Separator />
           </div>
           {children}
-          <div aria-hidden="true" className="sr-only" id={END_OF_CONTENT_ID} />
         </article>
-        <ErrorBoundary fallback={null}>
-          <section className="w-full rounded-md bg-bg-base/90 px-3 pt-8 pb-14 sm:px-10">
-            <Feedback slug={slug} />
-          </section>
-        </ErrorBoundary>
-        <ErrorBoundary fallback={null}>
-          <Recommend slug={slug} />
-        </ErrorBoundary>
+        <div id={END_OF_CONTENT_ID}>
+          <ErrorBoundary fallback={null}>
+            <section className="w-full rounded-md bg-bg-base/90 px-3 pt-8 pb-14 sm:px-10">
+              <Feedback slug={slug} />
+            </section>
+          </ErrorBoundary>
+          <ErrorBoundary fallback={null}>
+            <Recommend slug={slug} />
+          </ErrorBoundary>
+        </div>
       </div>
       <ErrorBoundary fallback={null}>
         <TableOfContext headingTree={headingTree} />
