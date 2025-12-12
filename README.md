@@ -13,11 +13,10 @@ Comprehensive documentation is available:
 - **[docs/DEPLOYMENT.md](./docs/DEPLOYMENT.md)** - Deployment procedures
 - **[docs/SECURITY.md](./docs/SECURITY.md)** - Security policies and best practices
 - **[docs/TROUBLESHOOTING.md](./docs/TROUBLESHOOTING.md)** - Common issues and solutions
-- **[apps/main/src/database/README.md](./apps/main/src/database/README.md)** - Database schema and operations
 
 ## Setup
 
-Install dependencies after preparing Node.js v22.21.0 and pnpm v10.20.0.
+Install dependencies after preparing Node.js v22.21.1 and pnpm v10.24.0.
 
 ```bash
 pnpm i --frozen-lockfile
@@ -28,16 +27,17 @@ Copy environment variables and launch Docker services for database and KV storag
 ```bash
 cp apps/main/.env.example apps/main/.env.local
 docker compose up -d
-pnpm run -F main migrate
+pnpm run -F database migrate
 ```
 
 For MicroCMS or Resend integration, ask k8o for the `MICROCMS_API_KEY` or `RESEND_API_KEY`.
 
 ## Architecture
 
-**Turborepo Monorepo** with 2 workspaces:
+**Turborepo Monorepo** with 3 workspaces:
 
-- **core** - Main Next.js 15 application with App Router
+- **apps/main** - Main Next.js 16 application with App Router
+- **packages/database** - Database client and schema with Drizzle ORM
 - **packages/helpers** - Utility functions with in-source testing
 
 External packages:
@@ -125,19 +125,19 @@ Using Drizzle ORM with PostgreSQL.
 
 ```bash
 # Generate migration files from schema
-pnpm run -F main generate
+pnpm run -F database generate
 
 # Generate custom migration files
-pnpm run -F main generate:custom
+pnpm run -F database generate:custom
 
 # Execute database migrations
-pnpm run -F main migrate
+pnpm run -F database migrate
 
 # Export schema to SQL file
-pnpm run -F main export:schema
+pnpm run -F database export:schema
 
 # Build ERD (Entity Relationship Diagram)
-pnpm run -F main build:erd
+pnpm run -F database build:erd
 
 # Connect to local PostgreSQL
 docker compose exec postgres psql -U postgres -d main
@@ -147,28 +147,28 @@ docker compose exec postgres psql -U postgres -d main
 
 ### Frontend
 
-- **Next.js 15.5** - App Router, React 19, TypeScript
-- **TailwindCSS 4.1** - Custom design tokens (no standard classes like `text-gray-600`)
+- **Next.js** - App Router, React, TypeScript
+- **TailwindCSS** - Custom design tokens (no standard classes like `text-gray-600`)
 - **Motion** - Animations
 - **MDX** - Blog content with KaTeX math and Shiki syntax highlighting
 - **ArteOdyssey** - UI component library (npm: @k8o/arte-odyssey)
 
 ### Backend & Database
 
-- **Drizzle ORM 0.44** - TypeScript-first ORM
-- **PostgreSQL 18** - Neon (production), Docker (local)
+- **Drizzle ORM** - TypeScript-first ORM
+- **PostgreSQL** - Neon (production), Docker (local)
 - **Redis** - Upstash (production), Docker (local)
-- **Zod 4.1** - Schema validation
+- **Zod** - Schema validation
 
 ### Development Tools
 
-- **Turbo 2.5** - Monorepo build system
-- **Vitest 3.2** - Test runner with browser mode support
-- **Storybook 9.1** - Component development environment
-- **React Email 4.3** - Email templates
-- **MSW 2.11** - API mocking
-- **Lefthook 1.13** - Git hooks
-- **Playwright 1.56** - E2E testing
+- **Turbo** - Monorepo build system
+- **Vitest** - Test runner with browser mode support
+- **Storybook** - Component development environment
+- **React Email** - Email templates
+- **MSW** - API mocking
+- **Lefthook** - Git hooks
+- **Playwright** - E2E testing
 - **Biome** - Linter and formatter (ESLint/Prettier alternative)
 
 ## Production Services
@@ -190,7 +190,7 @@ Local development services (via `docker compose up -d`):
 
 ## Key Features
 
-- **Conditional Import Maps**: Environment-specific mocking for Storybook
+- **Conditional Export Maps**: Environment-specific mocking for Storybook
 - **Custom Design System**: TailwindCSS with custom tokens from ArteOdyssey
 - **Comprehensive Testing**: In-source, Storybook, Vitest, and Playwright E2E
 - **Type Safety**: Full TypeScript coverage with strict configuration

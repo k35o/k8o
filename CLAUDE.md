@@ -44,9 +44,10 @@
 
 ### プロジェクト構造
 
-**Turborepo Monorepo**: 2つのワークスペースで構成
+**Turborepo Monorepo**: 3つのワークスペースで構成
 
 - **apps/main** - メインのNext.jsアプリケーション
+- **packages/database** - データベースクライアントとスキーマ（Drizzle ORM）
 - **packages/helpers** - ユーティリティ関数ライブラリ
 
 外部パッケージ:
@@ -57,46 +58,46 @@
 
 **フロントエンド**:
 
-- **Next.js 15.5** - App Router、React 19、TypeScript
-- **TailwindCSS 4.1** - カスタムデザイントークンベース
+- **Next.js** - App Router、React、TypeScript
+- **TailwindCSS** - カスタムデザイントークンベース
 - **Motion** - アニメーション
 - **MDX** - 数式（KaTeX）・シンタックスハイライト（Shiki）付きブログコンテンツ
 - **ArteOdyssey** - UIコンポーネントライブラリ(npm: @k8o/arte-odyssey)
 
 **バックエンド・データベース**:
 
-- **Drizzle ORM 0.44** - TypeScriptファーストORM
-- **PostgreSQL 18** - 本番環境はNeon、ローカルはDocker
+- **Drizzle ORM** - TypeScriptファーストORM
+- **PostgreSQL** - 本番環境はNeon、ローカルはDocker
 - **Redis** - KV ストレージ（本番環境はUpstash、ローカルはDocker）
-- **Zod 4.1** - スキーマバリデーション
+- **Zod** - スキーマバリデーション
 
 **開発ツール**:
 
-- **Turbo 2.5** - モノレポビルドシステム
-- **Vitest 3.2** - テストランナー（ブラウザモード対応）
-- **Storybook 9.1** - コンポーネント開発環境
-- **React Email 4.3** - メールテンプレート
-- **MSW 2.11** - APIモック
-- **Lefthook 1.13** - Git フック
-- **Playwright 1.56** - E2Eテスト
+- **Turbo** - モノレポビルドシステム
+- **Vitest** - テストランナー（ブラウザモード対応）
+- **Storybook** - コンポーネント開発環境
+- **React Email** - メールテンプレート
+- **MSW** - APIモック
+- **Lefthook** - Git フック
+- **Playwright** - E2Eテスト
 
 ### 重要なパターン
 
-**Conditional Import Maps**: 環境に応じたモック切り替え
+**Conditional Export Maps**: 環境に応じたモック切り替え
 
 ```typescript
-// package.json imports
-"#database/db": {
-  "storybook": "./src/mocks/db.mock.ts",
-  "default": "./src/database/db.ts"
-},
-"@/app/blog/_api": {
-  "storybook": "./src/mocks/api/blog.mock.ts",
-  "default": "./src/app/blog/_api/index.ts"
+// packages/database/package.json exports
+"exports": {
+  ".": {
+    "types": "./src/index.ts",
+    "storybook": "./src/__mocks__/db.ts",
+    "node": "./src/index.ts",
+    "default": "./src/index.ts"
+  }
 }
 ```
 
-**データベーススキーマ**: `apps/main/src/database/schema/`に関係別整理
+**データベーススキーマ**: `packages/database/src/schema/`に関係別整理
 
 - コンテンツ: blogs, talks, quizzes, services
 - ユーザーデータ: comments, feedbacks, subscribers
@@ -203,7 +204,7 @@ Storybookストーリーでテストを記述：
 
 1. `.env.example`を`.env.local`にコピー
 2. `docker compose up -d`でローカルサービス開始
-3. `pnpm run -F main migrate`でデータベースセットアップ
+3. `pnpm run -F database migrate`でデータベースセットアップ
 
 **新機能開発フロー**:
 

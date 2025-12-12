@@ -228,7 +228,7 @@ POSTGRES_URL="postgresql://username:password@ep-xxx.ap-northeast-1.aws.neon.tech
 export POSTGRES_URL="postgresql://..."
 
 # マイグレーション実行
-pnpm run -F main migrate
+pnpm run -F database migrate
 ```
 
 ### Neon Proxy (ローカル開発)
@@ -432,7 +432,7 @@ VERCEL_URL="k8o.dev" # Vercelが自動設定
 
 | 環境 | ファイル | 用途 |
 |-----|---------|------|
-| ローカル | `core/.env.local` | 開発環境 |
+| ローカル | `apps/main/.env.local` | 開発環境 |
 | Vercel Preview | Vercel Dashboard | プレビューデプロイ |
 | Vercel Production | Vercel Dashboard | 本番環境 |
 
@@ -444,7 +444,7 @@ vercel env pull .env.production
 vercel env add RESEND_API_KEY production
 
 # .env.localをgitignoreに追加済み
-echo "core/.env.local" >> .gitignore
+echo "apps/main/.env.local" >> .gitignore
 ```
 
 ## Cronジョブ

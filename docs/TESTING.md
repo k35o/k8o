@@ -49,7 +49,7 @@ pnpm install --frozen-lockfile
 テスト用の環境変数を設定：
 
 ```bash
-# core/.env.test
+# apps/main/.env.test
 POSTGRES_URL="postgres://postgres:postgres@localhost:5432/test"
 KV_REST_API_URL="http://localhost:8079"
 KV_REST_API_TOKEN="test_token"
@@ -250,8 +250,8 @@ pnpm run -F main chromatic
 // apps/main/src/services/blogs/blog.test.ts
 import { describe, expect, it, beforeEach, afterEach } from 'vitest';
 import { getBlog, createBlog } from './blog';
-import { db } from '@/database/db';
-import { blogs } from '@/database/schema';
+import { db } from '@repo/database';
+import { blogs } from '@repo/database/schema';
 
 describe('blog service', () => {
   beforeEach(async () => {
@@ -506,17 +506,19 @@ describe('subscription', () => {
 });
 ```
 
-### Conditional Import Maps
+### Conditional Export Maps
 
 環境別のモック：
 
 ```json
+// packages/database/package.json
 {
-  "imports": {
-    "#database/db": {
-      "test": "./src/mocks/db.mock.ts",
-      "storybook": "./src/mocks/db.mock.ts",
-      "default": "./src/database/db.ts"
+  "exports": {
+    ".": {
+      "types": "./src/index.ts",
+      "storybook": "./src/__mocks__/db.ts",
+      "node": "./src/index.ts",
+      "default": "./src/index.ts"
     }
   }
 }
@@ -598,7 +600,7 @@ it('時間のかかる処理', async () => {
 # データベースをリセット
 docker compose down -v
 docker compose up -d
-pnpm run -F main migrate
+pnpm run -F database migrate
 ```
 
 ---

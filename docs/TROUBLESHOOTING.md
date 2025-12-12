@@ -88,10 +88,10 @@ TypeError: Cannot read properties of undefined
 **解決策:**
 ```bash
 # .env.exampleをコピー
-cp core/.env.example core/.env.local
+cp apps/main/.env.example apps/main/.env.local
 
 # 必要な値を設定
-vi core/.env.local
+vi apps/main/.env.local
 
 # 開発サーバーを再起動
 pnpm run dev
@@ -102,7 +102,7 @@ pnpm run dev
 **解決策:**
 ```bash
 # .nextキャッシュを削除
-rm -rf core/.next
+rm -rf apps/main/.next
 
 # node_modulesを再インストール
 pnpm install --force
@@ -140,7 +140,7 @@ Error: Cannot find module '@storybook/...'
 pnpm install @storybook/nextjs-vite --save-dev
 
 # キャッシュをクリア
-rm -rf core/.storybook/cache
+rm -rf apps/main/.storybook/cache
 
 # 再起動
 pnpm run -F main storybook
@@ -177,7 +177,7 @@ docker compose down -v
 docker compose up -d
 
 # マイグレーション実行
-pnpm run -F main migrate
+pnpm run -F database migrate
 
 # テストを再実行
 pnpm run test
@@ -227,7 +227,7 @@ Error: Failed to compile
 **解決策:**
 ```bash
 # キャッシュをクリア
-rm -rf core/.next
+rm -rf apps/main/.next
 
 # 再ビルド
 pnpm run build
@@ -262,7 +262,7 @@ Type error: Property 'foo' does not exist
 pnpm run -F main type-check
 
 # tsconfig.jsonを確認
-cat core/tsconfig.json
+cat apps/main/tsconfig.json
 ```
 
 ## デプロイ時の問題
@@ -331,13 +331,13 @@ Error: Migration failed
 **解決策:**
 ```bash
 # マイグレーション状態を確認
-pnpm run -F main drizzle-kit status
+pnpm run -F database drizzle-kit status
 
 # 手動でロールバック
-pnpm run -F main drizzle-kit drop
+pnpm run -F database drizzle-kit drop
 
 # 再マイグレーション
-pnpm run -F main migrate
+pnpm run -F database migrate
 ```
 
 ### データベース接続が遅い
