@@ -4,7 +4,7 @@ import { useClickAway } from '@k8o/arte-odyssey';
 import { cn } from '@repo/helpers/cn';
 import type { HeadingTree } from '@repo/helpers/mdx/types';
 import Link from 'next/link';
-import { type FC, useEffect, useState } from 'react';
+import { type FC, useCallback, useEffect, useState } from 'react';
 import { END_OF_CONTENT_ID } from '../constants';
 import { ProgressBar } from './progress-bar';
 
@@ -12,7 +12,8 @@ const LinkButton: FC<{
   depth: number;
   text: string;
   isActive: boolean;
-}> = ({ depth, text, isActive }) => {
+  onNavigate: (id: string) => void;
+}> = ({ depth, text, isActive, onNavigate }) => {
   return (
     <Link
       className={cn(
@@ -22,6 +23,7 @@ const LinkButton: FC<{
         isActive && 'xl:bg-primary-bg xl:font-bold xl:text-fg-base',
       )}
       href={`#${text}`}
+      onClick={() => onNavigate(text)}
     >
       {text}
     </Link>
@@ -39,14 +41,29 @@ export const TableOfContext: FC<{
     }
   });
 
+  // リンククリック時のナビゲーション処理
+  const handleNavigate = useCallback((id: string) => {
+    setActiveId(id);
+  }, []);
+
+  // IntersectionObserverで見出しを監視
   useEffect(() => {
     const observer = new IntersectionObserver(
       (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            setActiveId(entry.target.id);
-          }
-        });
+        // 交差している要素のうち、最も上にあるものを選択
+        const intersectingEntries = entries.filter(
+          (entry) => entry.isIntersecting,
+        );
+
+        if (intersectingEntries.length > 0) {
+          // boundingClientRectのtopが最も小さい（画面上部に近い）要素を選択
+          const topEntry = intersectingEntries.reduce((prev, current) =>
+            prev.boundingClientRect.top < current.boundingClientRect.top
+              ? prev
+              : current,
+          );
+          setActiveId(topEntry.target.id);
+        }
       },
       {
         rootMargin: '-80px 0px -80% 0px',
@@ -63,7 +80,9 @@ export const TableOfContext: FC<{
       observer.observe(eocElement);
     }
 
-    return () => observer.disconnect();
+    return () => {
+      observer.disconnect();
+    };
   }, []);
 
   if (headingTree.children.length === 0) {
@@ -97,6 +116,7 @@ export const TableOfContext: FC<{
                 <LinkButton
                   depth={1}
                   isActive={activeId === depth1.text}
+                  onNavigate={handleNavigate}
                   text={depth1.text}
                 />
               </li>
@@ -107,6 +127,7 @@ export const TableOfContext: FC<{
               <LinkButton
                 depth={1}
                 isActive={activeId === depth1.text}
+                onNavigate={handleNavigate}
                 text={depth1.text}
               />
               <ul>
@@ -117,6 +138,7 @@ export const TableOfContext: FC<{
                         <LinkButton
                           depth={2}
                           isActive={activeId === depth2.text}
+                          onNavigate={handleNavigate}
                           text={depth2.text}
                         />
                       </li>
@@ -127,6 +149,7 @@ export const TableOfContext: FC<{
                       <LinkButton
                         depth={2}
                         isActive={activeId === depth2.text}
+                        onNavigate={handleNavigate}
                         text={depth2.text}
                       />
                       <ul>
@@ -136,6 +159,7 @@ export const TableOfContext: FC<{
                               <LinkButton
                                 depth={3}
                                 isActive={activeId === depth3.text}
+                                onNavigate={handleNavigate}
                                 text={depth3.text}
                               />
                             </li>
