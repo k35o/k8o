@@ -190,7 +190,7 @@ Local development services (via `docker compose up -d`):
 
 ## Key Features
 
-- **Conditional Import Maps**: Environment-specific mocking for Storybook
+- **Conditional Export Maps**: Environment-specific mocking for Storybook
 - **Custom Design System**: TailwindCSS with custom tokens from ArteOdyssey
 - **Comprehensive Testing**: In-source, Storybook, Vitest, and Playwright E2E
 - **Type Safety**: Full TypeScript coverage with strict configuration

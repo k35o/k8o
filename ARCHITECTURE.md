@@ -213,17 +213,19 @@ packages/database/src/
 └─────────────────────────────────────┘
 ```
 
-### Conditional Import Maps
+### Conditional Export Maps
 
 環境に応じてモジュールを切り替える高度な機能：
 
 ```typescript
-// package.json
+// packages/database/package.json
 {
-  "imports": {
-    "#database/db": {
-      "storybook": "./src/mocks/db.mock.ts",
-      "default": "./src/database/db.ts"
+  "exports": {
+    ".": {
+      "types": "./src/index.ts",
+      "storybook": "./src/__mocks__/db.ts",
+      "node": "./src/index.ts",
+      "default": "./src/index.ts"
     }
   }
 }
@@ -232,7 +234,6 @@ packages/database/src/
 **用途：**
 - Storybook環境ではモックDBを使用
 - 本番環境では実際のDBを使用
-- テスト環境でも切り替え可能
 
 ## データフロー
 

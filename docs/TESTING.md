@@ -250,8 +250,8 @@ pnpm run -F main chromatic
 // apps/main/src/services/blogs/blog.test.ts
 import { describe, expect, it, beforeEach, afterEach } from 'vitest';
 import { getBlog, createBlog } from './blog';
-import { db } from '@/database/db';
-import { blogs } from '@/database/schema';
+import { db } from '@repo/database';
+import { blogs } from '@repo/database/schema';
 
 describe('blog service', () => {
   beforeEach(async () => {
@@ -506,17 +506,19 @@ describe('subscription', () => {
 });
 ```
 
-### Conditional Import Maps
+### Conditional Export Maps
 
 環境別のモック：
 
 ```json
+// packages/database/package.json
 {
-  "imports": {
-    "#database/db": {
-      "test": "./src/mocks/db.mock.ts",
-      "storybook": "./src/mocks/db.mock.ts",
-      "default": "./src/database/db.ts"
+  "exports": {
+    ".": {
+      "types": "./src/index.ts",
+      "storybook": "./src/__mocks__/db.ts",
+      "node": "./src/index.ts",
+      "default": "./src/index.ts"
     }
   }
 }

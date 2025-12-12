@@ -83,17 +83,17 @@
 
 ### 重要なパターン
 
-**Conditional Import Maps**: 環境に応じたモック切り替え
+**Conditional Export Maps**: 環境に応じたモック切り替え
 
 ```typescript
-// package.json imports
-"#database/db": {
-  "storybook": "./src/mocks/db.mock.ts",
-  "default": "./src/database/db.ts"
-},
-"@/app/blog/_api": {
-  "storybook": "./src/mocks/api/blog.mock.ts",
-  "default": "./src/app/blog/_api/index.ts"
+// packages/database/package.json exports
+"exports": {
+  ".": {
+    "types": "./src/index.ts",
+    "storybook": "./src/__mocks__/db.ts",
+    "node": "./src/index.ts",
+    "default": "./src/index.ts"
+  }
 }
 ```
 
