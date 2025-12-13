@@ -24,13 +24,13 @@
   "dependencies": {
     "@neondatabase/serverless": "1.0.2",
     "@next/env": "16.0.10",
-    "drizzle-orm": "0.44.7",
+    "drizzle-orm": "0.45.0",
     "ws": "8.18.3"
   },
   "devDependencies": {
     "@liam-hq/cli": "0.7.24",
     "@types/ws": "8.18.1",
-    "drizzle-kit": "0.31.7",
+    "drizzle-kit": "0.31.8",
     "postgres": "3.4.7"
   }
 }
