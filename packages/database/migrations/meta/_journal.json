@@ -386,6 +386,13 @@
       "when": 1763084861462,
       "tag": "0054_previous_magus",
       "breakpoints": true
+    },
+    {
+      "idx": 55,
+      "version": "7",
+      "when": 1765537656646,
+      "tag": "0055_mushy_cassandra_nova",
+      "breakpoints": true
     }
   ]
 }
