@@ -206,8 +206,8 @@ importers:
         specifier: 10.1.4
         version: 10.1.4(@testing-library/dom@10.4.1)(prettier@3.7.4)(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
       storybook-addon-mock-date:
-        specifier: 1.0.2
-        version: 1.0.2(storybook@10.1.4(@testing-library/dom@10.4.1)(prettier@3.7.4)(react-dom@19.2.3(react@19.2.3))(react@19.2.3))
+        specifier: 2.0.0
+        version: 2.0.0(storybook@10.1.4(@testing-library/dom@10.4.1)(prettier@3.7.4)(react-dom@19.2.3(react@19.2.3))(react@19.2.3))
       vitest-browser-react:
         specifier: 2.0.2
         version: 2.0.2(@types/react-dom@19.2.3(@types/react@19.2.7))(@types/react@19.2.7)(react-dom@19.2.3(react@19.2.3))(react@19.2.3)(vitest@4.0.15)
@@ -4934,11 +4934,11 @@ packages:
     resolution: {integrity: sha512-UhDfHmA92YAlNnCfhmq0VeNL5bDbiZGg7sZ2IvPsXubGkiNa9EC+tUTsjBRsYUAz87btI6/1wf4XoVvQ3uRnmQ==}
     engines: {node: '>=18'}
 
-  storybook-addon-mock-date@1.0.2:
-    resolution: {integrity: sha512-BslmJGQPizmeNNJv2y9T1wRHyX6ZtOnFk1u8bBYF6YLIMiZhXwH4ZQA38kfWnAGMpElsBT/vlVgyBGQaZ0eXrg==}
-    engines: {node: '>=20.0.0'}
+  storybook-addon-mock-date@2.0.0:
+    resolution: {integrity: sha512-wFq7timOCp5qNLyLyvDEngkqhswfdTAM/6zVSOhgDw/76xUQcSN2fgYkMZWdSka0Noa+SFbI/2fPYgLwMrrQJA==}
+    engines: {node: '>=22.0.0'}
     peerDependencies:
-      storybook: ^9.0.0
+      storybook: ^10.0.0
 
   storybook@10.1.4:
     resolution: {integrity: sha512-FrBjm8I8O+pYEOPHcdW9xWwgXSZxte7lza9q2lN3jFN4vuW79m5j0OnTQeR8z9MmIbBTvkIpp3yMBebl53Yt5Q==}
@@ -10170,7 +10170,7 @@ snapshots:
 
   stdin-discarder@0.2.2: {}
 
-  storybook-addon-mock-date@1.0.2(storybook@10.1.4(@testing-library/dom@10.4.1)(prettier@3.7.4)(react-dom@19.2.3(react@19.2.3))(react@19.2.3)):
+  storybook-addon-mock-date@2.0.0(storybook@10.1.4(@testing-library/dom@10.4.1)(prettier@3.7.4)(react-dom@19.2.3(react@19.2.3))(react@19.2.3)):
     dependencies:
       storybook: 10.1.4(@testing-library/dom@10.4.1)(prettier@3.7.4)(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
 
