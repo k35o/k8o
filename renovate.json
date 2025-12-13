@@ -9,6 +9,9 @@
     "monorepo:vitest"
   ],
   "prConcurrentLimit": 10,
+  "github-actions": {
+    "fileMatch": ["^\\.github/actions/[^/]+/action\\.ya?ml$"]
+  },
   "packageRules": [
     {
       "matchPackageNames": ["/^next$/", "/^@next/"],
