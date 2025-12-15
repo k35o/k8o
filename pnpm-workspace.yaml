@@ -18,12 +18,14 @@ minimumReleaseAge: 4320
 
 minimumReleaseAgeExclude:
   - '@k8o/*'
-  - react
-  - react-dom
-  - next
-  - '@next/*'
+  - next-devtools-mcp
+  - '@storybook/addon-mcp'
 
 onlyBuiltDependencies:
   - '@vercel/speed-insights'
   - lefthook
   - msw
+
+overrides:
+  valibot: '>=1.2.0'
+  esbuild: '>=0.25.0'

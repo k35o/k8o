@@ -45,7 +45,7 @@
     "@vitest/ui": "4.0.15",
     "chrome-devtools-mcp": "0.11.0",
     "lefthook": "2.0.8",
-    "next-devtools-mcp": "0.3.6",
+    "next-devtools-mcp": "0.3.7",
     "playwright": "1.57.0",
     "turbo": "2.6.3",
     "typescript": "5.9.3",
