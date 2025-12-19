@@ -2,6 +2,13 @@ packages:
   - apps/*
   - packages/*
 
+catalog:
+  '@vitest/browser-playwright': 4.0.15
+  '@vitest/coverage-istanbul': 4.0.15
+  '@vitest/ui': 4.0.15
+  vitest: 4.0.15
+  vitest-browser-react: 2.0.2
+
 ignoredBuiltDependencies:
   - '@parcel/watcher'
   - '@prisma/engines'
@@ -27,5 +34,5 @@ onlyBuiltDependencies:
   - msw
 
 overrides:
-  valibot: '>=1.2.0'
   esbuild: '>=0.25.0'
+  valibot: '>=1.2.0'
