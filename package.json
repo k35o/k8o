@@ -21,9 +21,8 @@
     "check:write": "biome check --write --unsafe",
     "ls-lint": "ls-lint",
     "type-check": "turbo type-check",
-    "test": "TZ=UTC vitest",
-    "test:ui": "TZ=UTC vitest --ui --coverage",
-    "coverage": "TZ=UTC vitest run --coverage",
+    "test": "turbo test",
+    "test:watch": "turbo test:watch",
     "install-playwright": "playwright install --with-deps",
     "mcp-chrome": "chrome-devtools-mcp",
     "mcp-next": "next-devtools-mcp"
@@ -41,14 +40,11 @@
     "@repo/typescript-config": "workspace:*",
     "@types/node": "24.10.2",
     "@typescript/native-preview": "7.0.0-dev.20251207.1",
-    "@vitest/coverage-istanbul": "4.0.15",
-    "@vitest/ui": "4.0.15",
     "chrome-devtools-mcp": "0.11.0",
     "lefthook": "2.0.8",
     "next-devtools-mcp": "0.3.7",
     "playwright": "1.57.0",
     "turbo": "2.6.3",
-    "typescript": "5.9.3",
-    "vitest": "4.0.15"
+    "typescript": "5.9.3"
   }
 }

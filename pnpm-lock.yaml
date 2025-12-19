@@ -4,6 +4,24 @@ settings:
   autoInstallPeers: true
   excludeLinksFromLockfile: false
 
+catalogs:
+  default:
+    '@vitest/browser-playwright':
+      specifier: 4.0.15
+      version: 4.0.15
+    '@vitest/coverage-istanbul':
+      specifier: 4.0.15
+      version: 4.0.15
+    '@vitest/ui':
+      specifier: 4.0.15
+      version: 4.0.15
+    vitest:
+      specifier: 4.0.15
+      version: 4.0.15
+    vitest-browser-react:
+      specifier: 2.0.2
+      version: 2.0.2
+
 overrides:
   valibot: '>=1.2.0'
   esbuild: '>=0.25.0'
@@ -43,12 +61,6 @@ importers:
       '@typescript/native-preview':
         specifier: 7.0.0-dev.20251207.1
         version: 7.0.0-dev.20251207.1
-      '@vitest/coverage-istanbul':
-        specifier: 4.0.15
-        version: 4.0.15(vitest@4.0.15)
-      '@vitest/ui':
-        specifier: 4.0.15
-        version: 4.0.15(vitest@4.0.15)
       chrome-devtools-mcp:
         specifier: 0.11.0
         version: 0.11.0
@@ -70,9 +82,6 @@ importers:
       typescript:
         specifier: 5.9.3
         version: 5.9.3
-      vitest:
-        specifier: 4.0.15
-        version: 4.0.15(@types/node@24.10.2)(@vitest/browser-playwright@4.0.15)(@vitest/ui@4.0.15)(jiti@2.6.1)(lightningcss@1.30.2)(msw@2.12.4(@types/node@24.10.2)(typescript@5.9.3))(terser@5.44.1)(tsx@4.21.0)(yaml@2.8.2)
 
   apps/main:
     dependencies:
@@ -186,8 +195,14 @@ importers:
         specifier: 0.0.32
         version: 0.0.32
       '@vitest/browser-playwright':
-        specifier: 4.0.15
+        specifier: 'catalog:'
         version: 4.0.15(msw@2.12.4(@types/node@24.10.2)(typescript@5.9.3))(playwright@1.57.0)(vite@7.2.6(@types/node@24.10.2)(jiti@2.6.1)(lightningcss@1.30.2)(terser@5.44.1)(tsx@4.21.0)(yaml@2.8.2))(vitest@4.0.15)
+      '@vitest/coverage-istanbul':
+        specifier: 'catalog:'
+        version: 4.0.15(vitest@4.0.15)
+      '@vitest/ui':
+        specifier: 'catalog:'
+        version: 4.0.15(vitest@4.0.15)
       chromatic:
         specifier: 13.3.4
         version: 13.3.4
@@ -212,8 +227,11 @@ importers:
       storybook-addon-mock-date:
         specifier: 2.0.0
         version: 2.0.0(storybook@10.1.4(@testing-library/dom@10.4.1)(prettier@3.7.4)(react-dom@19.2.3(react@19.2.3))(react@19.2.3))
+      vitest:
+        specifier: 'catalog:'
+        version: 4.0.15(@types/node@24.10.2)(@vitest/browser-playwright@4.0.15)(@vitest/ui@4.0.15)(jiti@2.6.1)(lightningcss@1.30.2)(msw@2.12.4(@types/node@24.10.2)(typescript@5.9.3))(terser@5.44.1)(tsx@4.21.0)(yaml@2.8.2)
       vitest-browser-react:
-        specifier: 2.0.2
+        specifier: 'catalog:'
         version: 2.0.2(@types/react-dom@19.2.3(@types/react@19.2.7))(@types/react@19.2.7)(react-dom@19.2.3(react@19.2.3))(react@19.2.3)(vitest@4.0.15)
 
   packages/database:
@@ -271,6 +289,15 @@ importers:
       '@types/mdast':
         specifier: 4.0.4
         version: 4.0.4
+      '@vitest/coverage-istanbul':
+        specifier: 'catalog:'
+        version: 4.0.15(vitest@4.0.15)
+      '@vitest/ui':
+        specifier: 'catalog:'
+        version: 4.0.15(vitest@4.0.15)
+      vitest:
+        specifier: 'catalog:'
+        version: 4.0.15(@types/node@24.10.2)(@vitest/browser-playwright@4.0.15)(@vitest/ui@4.0.15)(jiti@2.6.1)(lightningcss@1.30.2)(msw@2.12.4(@types/node@24.10.2)(typescript@5.9.3))(terser@5.44.1)(tsx@4.21.0)(yaml@2.8.2)
 
   packages/typescript-config: {}
 
@@ -10365,7 +10392,7 @@ snapshots:
 
   vite@7.2.6(@types/node@24.10.2)(jiti@2.6.1)(lightningcss@1.30.2)(terser@5.44.1)(tsx@4.21.0)(yaml@2.8.2):
     dependencies:
-      esbuild: 0.25.12
+      esbuild: 0.27.1
       fdir: 6.5.0(picomatch@4.0.3)
       picomatch: 4.0.3
       postcss: 8.5.6
