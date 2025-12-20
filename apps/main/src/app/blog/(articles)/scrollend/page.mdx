@@ -1,0 +1,80 @@
+---
+title: 'scrollendイベントでスクロール終了を検知する'
+description: 'scrollendイベントはスクロール操作が完了したときに発火するイベントです。Baseline 2025で主要ブラウザすべてで利用可能になりました。従来のscrollイベントとsetTimeoutを組み合わせた方法と比べて、正確なタイミングでスクロール終了を検知できるようになりました。'
+createdAt: 2025-12-20
+updatedAt: 2025-12-20
+---
+
+import { BaselineStatus } from '@k8o/arte-odyssey/baseline-status';
+import { ScrollendDemo, ScrollendTriggerDemo } from '@/app/_components/playgrounds/scrollend';
+import { Playground } from '@/app/_components/playgrounds';
+
+# scrollendイベントでスクロール終了を検知する
+
+<BaselineStatus featureId="scrollend"></BaselineStatus>
+
+## はじめに
+
+スクロールが終了したタイミングを検知したいケースがあります。例えば、スクロールが止まった位置をURLに反映したり、スクロール終了後にアニメーションを開始したりする場合です。
+
+しかし、今まではブラウザにスクロールが終了したことを検知するイベントがなく、`scroll`イベントを監視して擬似的に終了のタイミングを測ることしかできませんでした。
+
+`scrollend`イベントは、この問題を解決するためにスクロール操作が完了したときに発火してくれるイベントです。Baseline 2025として主要ブラウザすべてで利用可能になりました。
+
+## 従来の手法
+
+従来はスクロール終了を検知するために、`scroll`イベントと`setTimeout`を組み合わせる方法が一般的でした。
+
+```ts
+let scrollTimeout;
+
+element.addEventListener('scroll', () => {
+  // 前回のタイマーをクリア
+  clearTimeout(scrollTimeout);
+
+  // 一定時間後にスクロール終了と判定
+  scrollTimeout = setTimeout(() => {
+    console.log('スクロールが終了しました');
+  }, 150);
+});
+```
+
+しかし、この方法ではタイムアウト値の調整が難しいという課題があります。
+値が短すぎるとスクロール中に誤検知し、長すぎると反応が遅くなります。
+
+また、タッチデバイスとマウスホイールではスクロールの特性が異なるため、デバイスによって最適な値が変わってきます。
+特にモバイルの慣性スクロールでは、指を離した後もスクロールが続くため、タイマーが切れて誤検知してしまう可能性があります。
+
+## scrollendイベント
+
+`scrollend`イベントを使うと、ブラウザがスクロールの終了を正確に検知してくれます。
+
+```javascript
+element.addEventListener('scrollend', () => {
+  console.log('スクロールが終了しました');
+});
+```
+
+タイムアウト値を気にする必要がなく、シンプルに記述できます。
+
+<Playground>
+  <ScrollendDemo />
+</Playground>
+
+### 発火条件
+
+`scrollend`イベントは、ユーザーのスクロール操作（タッチ、マウスホイール、キーボード）が完了したときに発火します。また、`scrollTo()`や`scrollBy()`などのAPIによるスクロールや、`scroll-snap`によるスナップ位置への移動が完了したときにも発火します。
+
+一方で、スクロール位置が変化しなかった場合は発火しません。
+
+<Playground>
+  <ScrollendTriggerDemo />
+</Playground>
+
+## おわりに
+
+`scrollend`イベントを紹介しました。
+
+従来の`setTimeout`を使った方法では、適切なタイムアウト値の設定が難しく、デバイスごとの挙動の違いに悩まされることがありました。`scrollend`イベントにより、ブラウザが正確なタイミングでスクロール終了を通知してくれるようになりました。
+
+Baseline 2025として主要ブラウザすべてで利用可能になったので、スクロール終了の検知が必要な場面があれば採用を検討してみてください。
