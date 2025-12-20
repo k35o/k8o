@@ -9,6 +9,7 @@ export { Playground } from './playground';
 export * from './popover';
 export * from './print-color-adjust';
 export * from './requestclose';
+export * from './scope';
 export * from './screen-wake-lock';
 export * from './spelling-grammar-error';
 export * from './suspense-list';
@@ -25,6 +26,7 @@ import { inputFileWebkitdirectorySection } from './input-file-webkitdirectory';
 import { popoverSection } from './popover';
 import { printColorAdjustSection } from './print-color-adjust';
 import { requestCloseSection } from './requestclose';
+import { scopeSection } from './scope';
 import { screenWakeLockSection } from './screen-wake-lock';
 import { spellingGrammarErrorSection } from './spelling-grammar-error';
 import { suspenseListSection } from './suspense-list';
@@ -40,6 +42,7 @@ export const playgroundSections: PlaygroundSection[] = [
   popoverSection,
   requestCloseSection,
   printColorAdjustSection,
+  scopeSection,
   screenWakeLockSection,
   suspenseListSection,
   absSignSection,

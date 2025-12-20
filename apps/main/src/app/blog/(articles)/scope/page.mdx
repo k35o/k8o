@@ -1,14 +1,239 @@
 ---
 title: '@scopeでCSSスタイルの適用範囲を制御する'
-description:
-createdAt: 2025-12-12
-updatedAt: 2025-12-12
+description: '@scopeはCSSスタイルの適用範囲を特定のDOM部分木に限定できるアットルールです。Baseline 2025で利用可能になりました。スコープルートとスコープリミットを使ったドーナツスコープや、スコープの近接性によるスタイル優先順位の決定など、強力な機能を持っています。'
+createdAt: 2025-12-20
+updatedAt: 2025-12-20
 ---
 
 import { BaselineStatus } from '@k8o/arte-odyssey/baseline-status';
+import { DonutScopeDemo, ScopeLimitDemo, ScopeProximityDemo } from '@/app/_components/playgrounds/scope';
+import { Playground } from '@/app/_components/playgrounds';
 
 # @scopeでCSSスタイルの適用範囲を制御する
 
 <BaselineStatus featureId="scope"></BaselineStatus>
 
 ## はじめに
+
+CSSでコンポーネントのスタイルを書くとき、スタイルが意図しない要素に適用されてしまったり、詳細度が高すぎるセレクタを書いてしまったりすることがあります。
+
+`@scope`アットルールは、このような問題を解決するためにCSSスタイルの適用範囲を特定のDOM部分木に限定できる機能です。Firefox 146での実装により、Baseline 2025として主要ブラウザすべてで利用可能になりました。
+
+## 基本的な構文
+
+`@scope`には2つの使い方があります。
+
+### スタイルシート形式
+
+CSSファイル内でスコープルート（適用範囲）を指定します。
+
+```css
+@scope (.card) {
+  /* .card内のh2要素にのみ適用 */
+  h2 {
+    color: var(--color-primary);
+  }
+  /* .card内のp要素にのみ適用 */
+  p {
+    color: var(--color-text);
+  }
+}
+```
+
+### インライン形式
+
+HTMLの`<style>`要素内で使用する場合、親要素が自動的にスコープルートになります。
+
+```html
+<div class="card">
+  <style>
+    @scope {
+      /* .card内のh2要素にのみ適用 */
+      h2 {
+        color: var(--color-primary);
+      }
+    }
+  </style>
+  <h2>カードのタイトル</h2>
+</div>
+```
+
+## ドーナツスコープ
+
+`@scope`をスタイルシート形式で記述するときは、スコープルートの他にスコープリミットも指定できます。
+
+スコープリミットを指定することで、スタイルの適用範囲に下限を設けることができます。
+このように上限（スコープルート）と下限（スコープリミット）があるスコープは「ドーナツスコープ」と呼ばれます。
+
+```css
+@scope (.article) to (.nested-content) {
+  img {
+    border: 2px solid var(--color-border);
+    border-radius: var(--radius-md);
+  }
+}
+```
+この例では、`.article`内のすべての`<img>`要素にスタイルが適用されますが、`.nested-content`内の`<img>`は除外されます。
+
+```html
+<div class="container">
+  <article class="article">
+    <p>この記事の内容</p>
+    <!-- スタイルが反映される -->
+    <img src="image1.jpg" alt="記事の画像1" />
+    <div class="nested-content">
+      <p>ネストされたコンテンツ</p>
+      <!-- スタイルが反映されない -->
+      <img src="image2.jpg" alt="記事の画像2" />
+    </div>
+  </article>
+  <!-- スタイルが反映されない -->
+  <img src="image3.jpg" alt="記事の画像3" />
+</div>
+```
+
+<Playground>
+  <DonutScopeDemo />
+</Playground>
+
+## :scope疑似クラス
+
+`@scope`内からスコープルートにスタイルを記述するには`:scope`疑似クラスを使用します。
+
+```css
+@scope (.card) {
+  :scope {
+    background: var(--color-bg-subtle);
+    padding: var(--spacing-lg);
+    border-radius: var(--radius-lg);
+  }
+
+  h3 {
+    margin-bottom: var(--spacing-sm);
+  }
+}
+```
+
+`:scope`疑似クラスは、スコープリミットでも利用できます。
+
+```css
+@scope (.article) to (:scope > .nested-content) {
+  img {
+    border: 2px solid var(--color-border);
+    border-radius: var(--radius-md);
+  }
+}
+```
+
+この場合、`.article`内のすべての`<img>`要素にスタイルが適用されますが、`.nested-content`がスコープルートの直接の子である場合に限り、その中の`<img>`は除外されます。
+
+```html
+<div class="container">
+  <article class="article">
+    <p>この記事の内容</p>
+    <!-- スタイルが反映される -->
+    <img src="image1.jpg" alt="記事の画像1" />
+    <div class="nested-content">
+      <p>ネストされたコンテンツ</p>
+      <!-- スタイルが反映されない -->
+      <img src="image2.jpg" alt="記事の画像2" />
+    </div>
+    <div>
+      <div class="nested-content">
+        <p>ネストされたコンテンツ</p>
+        <!-- スタイルが反映される -->
+        <img src="image2.jpg" alt="記事の画像2" />
+      </div>
+    </div>
+  </article>
+  <!-- スタイルが反映されない -->
+  <img src="image3.jpg" alt="記事の画像3" />
+</div>
+```
+上記のHTMLは、`.article`内の最初の`.nested-content`内の`<img>`にはスタイルが適用されませんが、2番目の`.nested-content`内の`<img>`にはスタイルが適用されます。
+
+<Playground>
+  <ScopeLimitDemo />
+</Playground>
+
+## スコープの近接性
+
+`@scope`によって、「スコープの近接性」という新しい基準が導入されました。
+
+「スコープの近接性」では、同じ詳細度のスタイルが競合した場合、スコープルートまでのDOM距離が短いほうを優先します。
+
+```css
+@scope (.info-box) {
+  .message {
+    color: var(--color-fg-info);
+    background-color: var(--color-bg-info);
+  }
+}
+
+@scope (.warning-box) {
+  .message {
+    color: var(--color-fg-warning);
+    background-color: var(--color-bg-warning);
+  }
+}
+```
+
+```html
+<div class="info-box">
+  <p class="message">情報メッセージ</p>
+  <div class="warning-box">
+    <p class="message">警告メッセージ</p>
+    <div class="info-box">
+      <p class="message">ネストされた情報メッセージ</p>
+    </div>
+  </div>
+</div>
+```
+
+最も内側の`.message`は、`.info-box`スコープまでの距離が`.warning-box`スコープまでの距離より短いため、`.info-box`のスタイルが適用されます。
+
+`@scope`がない場合、同じ詳細度のスタイルが競合したときは、後に定義された`.warning-box`のスタイルが優先されます。
+
+<Playground>
+  <ScopeProximityDemo />
+</Playground>
+
+## @scopeの注意点
+
+### スタイルの継承は制限されない
+
+`@scope`はセレクタの適用範囲を制限しますが、CSSの継承は制限しません。
+つまり、`@scope`はShadow DOMのような完全なカプセル化ではなく、スタイルが適用される範囲を狭めるだけの役割を持ちます。
+
+```css
+@scope (.container) to (.nested) {
+  p {
+    color: red;
+  }
+}
+```
+
+この場合、`.nested`内の`<p>`にはスタイルが直接適用されませんが、`.container`直下の`<p>`から`color`プロパティが継承される可能性があります。
+
+### スコープ外の要素は選択できない
+`.card`の外側にある要素を選択しようとすると、無効なセレクタとして扱われます。
+
+```css
+@scope (.card) {
+  /* 無効：スコープ外の要素を選択しようとしている */
+  :scope + .sibling { }
+}
+```
+
+`@scope`はスコープルート内のスタイルを管理するための機能であり、スコープ外への影響を意図的に制限しています。
+
+## おわりに
+
+`@scope`を紹介しました。
+
+これまで、特定の範囲にのみスタイルを適用することは簡単ではなく、CSS Modulesやスタイリングライブラリでスコープを制御したり、BEM記法で命名規則による衝突回避をしてきました。
+`@scope`により、純粋なCSSだけでスタイルの適用範囲を柔軟に制御できるようになります。
+
+特に、ドーナツスコープによる部分的な除外や、スコープの近接性による直感的なスタイル優先順位は、コンポーネントベースの開発において強力な武器の一つになると思います。
+
+Baseline 2025として主要ブラウザすべてで利用可能になった今、ぜひ活用してみてください。
