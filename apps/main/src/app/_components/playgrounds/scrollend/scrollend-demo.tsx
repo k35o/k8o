@@ -1,6 +1,6 @@
 'use client';
 
-import { useCallback, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 
 /**
  * scrollendイベントのデモ
@@ -12,6 +12,7 @@ export function ScrollendDemo() {
   const [lastScrollendTime, setLastScrollendTime] = useState<string | null>(
     null,
   );
+  const scrollRef = useRef<HTMLDivElement>(null);
 
   const handleScroll = useCallback(() => {
     setScrollCount((prev) => prev + 1);
@@ -27,6 +28,20 @@ export function ScrollendDemo() {
     setScrollendCount(0);
     setLastScrollendTime(null);
   }, []);
+
+  useEffect(() => {
+    const element = scrollRef.current;
+    if (!element) return;
+
+    element.tabIndex = 0;
+    element.addEventListener('scroll', handleScroll);
+    element.addEventListener('scrollend', handleScrollend);
+
+    return () => {
+      element.removeEventListener('scroll', handleScroll);
+      element.removeEventListener('scrollend', handleScrollend);
+    };
+  }, [handleScroll, handleScrollend]);
 
   return (
     <div className="space-y-4">
@@ -56,8 +71,7 @@ export function ScrollendDemo() {
 
       <div
         className="h-48 overflow-y-scroll rounded-lg border border-border-base bg-bg-mute p-4"
-        onScroll={handleScroll}
-        onScrollEnd={handleScrollend}
+        ref={scrollRef}
       >
         <div className="space-y-4">
           {Array.from({ length: 20 }, (_, i) => (

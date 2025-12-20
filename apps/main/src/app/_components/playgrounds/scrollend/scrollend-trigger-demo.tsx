@@ -16,6 +16,26 @@ export function ScrollendTriggerDemo() {
   const snapRef = useRef<HTMLDivElement>(null);
   const flashTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
+  const handleScrollendScrollTo = useCallback(() => {
+    setScrollendCount((prev) => prev + 1);
+    setLastTrigger('scrollTo()');
+    setShowFlash(true);
+    if (flashTimeoutRef.current) {
+      clearTimeout(flashTimeoutRef.current);
+    }
+    flashTimeoutRef.current = setTimeout(() => setShowFlash(false), 300);
+  }, []);
+
+  const handleScrollendSnap = useCallback(() => {
+    setScrollendCount((prev) => prev + 1);
+    setLastTrigger('scroll-snap');
+    setShowFlash(true);
+    if (flashTimeoutRef.current) {
+      clearTimeout(flashTimeoutRef.current);
+    }
+    flashTimeoutRef.current = setTimeout(() => setShowFlash(false), 300);
+  }, []);
+
   useEffect(() => {
     return () => {
       if (flashTimeoutRef.current) {
@@ -24,17 +44,29 @@ export function ScrollendTriggerDemo() {
     };
   }, []);
 
-  const handleScrollend = useCallback((trigger: string) => {
+  useEffect(() => {
+    const element = scrollToRef.current;
+    if (!element) return;
+
+    element.tabIndex = 0;
+    element.addEventListener('scrollend', handleScrollendScrollTo);
+
     return () => {
-      setScrollendCount((prev) => prev + 1);
-      setLastTrigger(trigger);
-      setShowFlash(true);
-      if (flashTimeoutRef.current) {
-        clearTimeout(flashTimeoutRef.current);
-      }
-      flashTimeoutRef.current = setTimeout(() => setShowFlash(false), 300);
+      element.removeEventListener('scrollend', handleScrollendScrollTo);
     };
-  }, []);
+  }, [handleScrollendScrollTo]);
+
+  useEffect(() => {
+    const element = snapRef.current;
+    if (!element) return;
+
+    element.tabIndex = 0;
+    element.addEventListener('scrollend', handleScrollendSnap);
+
+    return () => {
+      element.removeEventListener('scrollend', handleScrollendSnap);
+    };
+  }, [handleScrollendSnap]);
 
   const scrollToTop = useCallback(() => {
     scrollToRef.current?.scrollTo({ top: 0, behavior: 'smooth' });
@@ -106,7 +138,6 @@ export function ScrollendTriggerDemo() {
           </div>
           <div
             className="h-40 overflow-y-scroll rounded-lg border border-border-base bg-bg-mute p-3"
-            onScrollEnd={handleScrollend('scrollTo()')}
             ref={scrollToRef}
           >
             <div className="space-y-2">
@@ -126,7 +157,6 @@ export function ScrollendTriggerDemo() {
           <h4 className="font-bold text-sm">scroll-snap</h4>
           <div
             className="flex h-40 snap-x snap-mandatory gap-3 overflow-x-scroll rounded-lg border border-border-base bg-bg-mute p-3"
-            onScrollEnd={handleScrollend('scroll-snap')}
             ref={snapRef}
           >
             {Array.from({ length: 8 }, (_, i) => (
