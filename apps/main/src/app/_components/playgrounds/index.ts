@@ -11,6 +11,7 @@ export * from './print-color-adjust';
 export * from './requestclose';
 export * from './scope';
 export * from './screen-wake-lock';
+export * from './scrollend';
 export * from './spelling-grammar-error';
 export * from './suspense-list';
 export type { PlaygroundDemo, PlaygroundSection } from './types';
@@ -28,6 +29,7 @@ import { printColorAdjustSection } from './print-color-adjust';
 import { requestCloseSection } from './requestclose';
 import { scopeSection } from './scope';
 import { screenWakeLockSection } from './screen-wake-lock';
+import { scrollendSection } from './scrollend';
 import { spellingGrammarErrorSection } from './spelling-grammar-error';
 import { suspenseListSection } from './suspense-list';
 import type { PlaygroundSection } from './types';
@@ -44,6 +46,7 @@ export const playgroundSections: PlaygroundSection[] = [
   printColorAdjustSection,
   scopeSection,
   screenWakeLockSection,
+  scrollendSection,
   suspenseListSection,
   absSignSection,
   highlightSection,
