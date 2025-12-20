@@ -1,0 +1,59 @@
+---
+title: 'scrollbar-colorでスクロールバーの色を変更する'
+description: 'scrollbar-colorはスクロールバーのトラックとつまみの色をカスタマイズできるCSSプロパティです。Baseline 2025で主要ブラウザすべてで利用可能になりました。標準化されたシンプルな記述でスクロールバーをスタイリングできます。'
+createdAt: 2025-12-20
+updatedAt: 2025-12-20
+---
+
+import { BaselineStatus } from '@k8o/arte-odyssey/baseline-status';
+import { ScrollbarColorDemo } from '@/app/_components/playgrounds/scrollbar-color';
+import { Playground } from '@/app/_components/playgrounds';
+
+# scrollbar-colorでスクロールバーの色を変更する
+
+<BaselineStatus featureId="scrollbar-color"></BaselineStatus>
+
+## はじめに
+
+Baseline 2024で`scrollbar-width`がサポートされて、スクロールバーの大きさを制御する方法が標準化されました。
+しかし、スクロールバーの色を変更する方法は依然としてブラウザごとに異なっており悩みの種でした。
+
+Safari 26.2のリリースによって、`scrollbar-color`プロパティが主要ブラウザすべてで利用可能になりBaseline 2025に加わりました。
+これにより、スクロールバーのトラックとつまみの色を標準的な方法でカスタマイズできるようになりました。
+
+## scrollbar-colorプロパティ
+
+`scrollbar-color`プロパティを使うと、シンプルにスクロールバーの色を指定できます。
+
+```css
+/* デフォルトと同じ */
+.container {
+  scrollbar-color: auto;
+}
+
+.container {
+  scrollbar-color: #6366f1 #e2e8f0;
+}
+
+/* デフォルトのscrollbarの色を変更 */
+:root {
+  scrollbar-color: var(--color-primary-fg) var(--color-primary-bg);
+}
+```
+
+最初の値がつまみの色、2番目の値がトラックの色です。
+
+<Playground>
+  <ScrollbarColorDemo />
+</Playground>
+
+スクロールバーの色を変更する際は、アクセシビリティを考慮してつまみとトラックで十分なコントラストを確保しましょう。
+
+## おわりに
+
+`scrollbar-color`プロパティを紹介しました。
+
+従来の方法では、`::-webkit-scrollbar`擬似要素などを利用した、ブラウザごとに異なる実装が必要でした。
+`scrollbar-color`プロパティにより、標準化されたシンプルな記述でスクロールバーをスタイリングできるようになりました。
+
+ダークモード対応やブランドカラーに合わせたデザインを実現するために活用してみてください。
