@@ -30,7 +30,7 @@
   "dependencies": {
     "@repo/helpers": "workspace:*",
     "@upstash/ratelimit": "2.0.7",
-    "@upstash/redis": "1.35.7",
+    "@upstash/redis": "1.35.8",
     "remark-frontmatter": "5.0.0",
     "server-only": "0.0.1"
   },
@@ -40,8 +40,8 @@
     "@repo/typescript-config": "workspace:*",
     "@types/node": "24.10.2",
     "@typescript/native-preview": "7.0.0-dev.20251207.1",
-    "chrome-devtools-mcp": "0.11.0",
-    "lefthook": "2.0.8",
+    "chrome-devtools-mcp": "0.12.1",
+    "lefthook": "2.0.11",
     "next-devtools-mcp": "0.3.7",
     "playwright": "1.57.0",
     "turbo": "2.6.3",
