@@ -38,7 +38,7 @@
     "@biomejs/biome": "2.3.8",
     "@ls-lint/ls-lint": "2.3.1",
     "@repo/typescript-config": "workspace:*",
-    "@types/node": "24.10.2",
+    "@types/node": "24.10.3",
     "@typescript/native-preview": "7.0.0-dev.20251207.1",
     "chrome-devtools-mcp": "0.11.0",
     "lefthook": "2.0.8",
