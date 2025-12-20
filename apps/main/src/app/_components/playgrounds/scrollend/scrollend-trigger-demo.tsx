@@ -2,7 +2,7 @@
 
 import { Button } from '@k8o/arte-odyssey/button';
 import { AnimatePresence, motion } from 'motion/react';
-import { useCallback, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 
 /**
  * scrollendイベントの発火条件デモ
@@ -14,13 +14,25 @@ export function ScrollendTriggerDemo() {
   const [showFlash, setShowFlash] = useState(false);
   const scrollToRef = useRef<HTMLDivElement>(null);
   const snapRef = useRef<HTMLDivElement>(null);
+  const flashTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  useEffect(() => {
+    return () => {
+      if (flashTimeoutRef.current) {
+        clearTimeout(flashTimeoutRef.current);
+      }
+    };
+  }, []);
 
   const handleScrollend = useCallback((trigger: string) => {
     return () => {
       setScrollendCount((prev) => prev + 1);
       setLastTrigger(trigger);
       setShowFlash(true);
-      setTimeout(() => setShowFlash(false), 300);
+      if (flashTimeoutRef.current) {
+        clearTimeout(flashTimeoutRef.current);
+      }
+      flashTimeoutRef.current = setTimeout(() => setShowFlash(false), 300);
     };
   }, []);
 
