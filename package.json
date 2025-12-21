@@ -39,7 +39,7 @@
     "@ls-lint/ls-lint": "2.3.1",
     "@repo/typescript-config": "workspace:*",
     "@types/node": "24.10.3",
-    "@typescript/native-preview": "7.0.0-dev.20251207.1",
+    "@typescript/native-preview": "7.0.0-dev.20251213.1",
     "chrome-devtools-mcp": "0.12.1",
     "lefthook": "2.0.11",
     "next-devtools-mcp": "0.3.7",
