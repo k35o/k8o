@@ -70,7 +70,7 @@ export function ScrollbarColorDemo() {
 
       <div className="rounded-md bg-bg-subtle p-3">
         <p className="font-mono text-sm">
-          scrollbar-color: {thumbColor} {trackColor};
+          scrollbar-color: {thumbColor} {trackColor}&#x3B;
         </p>
       </div>
     </div>

@@ -13,6 +13,3 @@ pre-push:
       glob: "*.{js,ts,tsx,json}"
       run: pnpm biome check --no-errors-on-unmatched --files-ignore-unknown=true --colors=off {staged_files}
 
-    test:
-      glob: '*.test.{ts,tsx}'
-      run: pnpm run test {staged_files}

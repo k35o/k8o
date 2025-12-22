@@ -44,8 +44,6 @@ const ApplayThemeByStorybook: FC<{ theme: string }> = memo(({ theme }) => {
   return null;
 });
 
-ApplayThemeByStorybook.displayName = 'ApplayThemeByStorybook';
-
 const preview: Preview = {
   globalTypes: {
     theme: {
