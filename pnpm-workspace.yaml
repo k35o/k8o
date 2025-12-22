@@ -25,14 +25,8 @@ minimumReleaseAge: 4320
 
 minimumReleaseAgeExclude:
   - '@k8o/*'
-  - next-devtools-mcp
-  - '@storybook/addon-mcp'
 
 onlyBuiltDependencies:
   - '@vercel/speed-insights'
   - lefthook
   - msw
-
-overrides:
-  esbuild: '>=0.25.0'
-  valibot: '>=1.2.0'
