@@ -28,7 +28,7 @@ export const BlogLayout: FC<{
   const headingTree = await getBlogToc(slug);
 
   return (
-    <div className="xl:has-[>:nth-child(2)]:-mx-36 gap-4 xl:flex">
+    <div className="gap-4 xl:flex xl:has-[>:nth-child(2)]:-mx-36">
       <div className="m-auto flex flex-col gap-8 xl:max-w-5xl">
         <article className="rounded-md bg-bg-base/90 px-3 pt-8 pb-14 sm:px-10">
           <div className="flex flex-col gap-3">

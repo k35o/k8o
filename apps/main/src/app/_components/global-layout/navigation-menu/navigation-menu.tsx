@@ -44,13 +44,11 @@ export const NavigationMenu: FC = () => {
             </div>
             <nav className="mt-8">
               <ul className="flex w-full flex-col gap-4 p-4">
-                {/** biome-ignore lint/a11y/useKeyWithClickEvents: propagation */}
-                <li onClick={onClose}>
-                  <TagsLink />
+                <li>
+                  <TagsLink onNavigate={onClose} />
                 </li>
-                {/** biome-ignore lint/a11y/useKeyWithClickEvents: propagation */}
-                <li onClick={onClose}>
-                  <NewsLink />
+                <li>
+                  <NewsLink onNavigate={onClose} />
                 </li>
                 <li>
                   <Suspense fallback={null}>

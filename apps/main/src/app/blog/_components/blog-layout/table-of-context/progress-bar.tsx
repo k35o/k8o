@@ -23,7 +23,7 @@ export const ProgressBar: FC<{
     <div className="relative h-8 w-8 shrink-0">
       <svg
         aria-hidden="true"
-        className="-rotate-90 h-full w-full"
+        className="h-full w-full -rotate-90"
         viewBox="0 0 32 32"
       >
         {/* 背景の円 */}

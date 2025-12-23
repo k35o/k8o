@@ -6,13 +6,15 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import type { FC } from 'react';
 
-export const TagsLink: FC = () => {
+export const TagsLink: FC<{
+  onNavigate?: () => void;
+}> = (props) => {
   const pathname = usePathname();
   return (
     <LinkButton
       active={pathname.startsWith('/tags')}
       href="/tags"
-      renderAnchor={(props) => <Link {...props} />}
+      renderAnchor={(anchorProps) => <Link {...anchorProps} {...props} />}
       startIcon={<TagIcon />}
       variant="skeleton"
     >

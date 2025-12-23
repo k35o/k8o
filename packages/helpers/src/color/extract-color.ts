@@ -279,10 +279,10 @@ if (import.meta.vitest) {
           'violet',
         ];
 
-        namedColors.forEach((color) => {
+        for (const color of namedColors) {
           const result = extractColor(color);
           expect(result).toBe(color);
-        });
+        }
       });
     });
 

@@ -38,10 +38,10 @@ const LinkHeading: FC<
           <span
             className={cn(
               'absolute top-1 box-content text-fg-mute opacity-0 transition-opacity duration-500 sm:group-hover:opacity-100',
-              type === 'h2' && '-left-7 top-1.5 pr-2',
+              type === 'h2' && 'top-1.5 -left-7 pr-2',
               type === 'h3' && '-left-7 pr-2',
-              type === 'h4' && '-left-5 top-2 pr-2',
-              type === 'h5' && '-left-5 top-1.5 pr-2',
+              type === 'h4' && 'top-2 -left-5 pr-2',
+              type === 'h5' && 'top-1.5 -left-5 pr-2',
               type === 'h6' && '-left-5 pr-2',
             )}
           >
