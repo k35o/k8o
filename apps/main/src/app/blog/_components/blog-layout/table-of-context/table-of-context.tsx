@@ -72,9 +72,9 @@ export const TableOfContext: FC<{
 
     // すべての見出し要素を監視
     const headings = document.querySelectorAll('h2[id], h3[id], h4[id]');
-    headings.forEach((heading) => {
+    for (const heading of headings) {
       observer.observe(heading);
-    });
+    }
     const eocElement = document.getElementById(END_OF_CONTENT_ID);
     if (eocElement) {
       observer.observe(eocElement);

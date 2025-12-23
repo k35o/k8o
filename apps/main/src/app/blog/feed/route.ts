@@ -18,7 +18,7 @@ async function generateRssFeed() {
 
   const blogs = await getBlogContents();
 
-  blogs.forEach((blog) => {
+  for (const blog of blogs) {
     feed.item({
       title: blog.title,
       description: blog.description ?? '',
@@ -26,7 +26,7 @@ async function generateRssFeed() {
       date: blog.updatedAt,
       categories: blog.tags.map((tag) => tag),
     });
-  });
+  }
 
   return feed.xml();
 }

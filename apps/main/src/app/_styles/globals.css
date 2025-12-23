@@ -21,6 +21,7 @@
   ::view-transition-group(*),
   ::view-transition-old(*),
   ::view-transition-new(*) {
+    /* biome-ignore lint/complexity/noImportantStyles: ユーザーの設定を強制するため */
     animation: none !important;
   }
 }

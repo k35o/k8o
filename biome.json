@@ -1,5 +1,5 @@
 {
-  "$schema": "https://biomejs.dev/schemas/2.3.8/schema.json",
+  "$schema": "https://biomejs.dev/schemas/2.3.10/schema.json",
   "vcs": {
     "enabled": true,
     "clientKind": "git",
@@ -16,45 +16,66 @@
   "linter": {
     "enabled": true,
     "domains": {
-      "test": "all"
+      "test": "all",
+      "turborepo": "all"
     },
     "rules": {
       "recommended": true,
       "a11y": {
+        "noNoninteractiveElementInteractions": "error",
         "noSvgWithoutTitle": "off"
       },
       "complexity": {
         "noExcessiveNestedTestSuites": "error",
+        "noForEach": "error",
         "noUselessStringConcat": "error",
         "useSimplifiedLogicExpression": "error",
-        "useIndexOf": "error",
         "useLiteralKeys": "off"
       },
       "correctness": {
-        "noRenderReturnValue": "error",
-        "useExhaustiveDependencies": "error",
-        "useHookAtTopLevel": "error",
-        "useJsxKeyInIterable": "error",
-        "useJsonImportAttributes": "error",
+        "noNestedComponentDefinitions": "error",
         "noReactPropAssignments": "error",
-        "useUniqueElementIds": "off",
-        "useImageSize": "error"
+        "useJsonImportAttributes": "error",
+        "useUniqueElementIds": "off"
       },
       "nursery": {
+        "noDeprecatedImports": "error",
+        "noForIn": "error",
+        "noFloatingPromises": "error",
+        "noImportCycles": "error",
+        "noMisusedPromises": "error",
+        "noMultiStr": "error",
+        "noNextAsyncClientComponent": "error",
+        "noParametersOnlyUsedInRecursion": "error",
+        "noProto": "error",
+        "noReactForwardRef": "error",
+        "noScriptUrl": "error",
+        "noSyncScripts": "error",
+        "noUndeclaredEnvVars": "error",
+        "noUnknownAttribute": "error",
+        "noUnusedExpressions": "error",
+        "noUselessCatchBinding": "error",
+        "noUselessUndefined": "error",
+        "useArraySortCompare": "error",
         "useExhaustiveSwitchCases": "error",
-        "useSortedClasses": "error"
+        "useFind": "error",
+        "useRegexpExec": "error",
+        "useSortedClasses": "error",
+        "useSpread": "error",
+        "noEmptySource": "error",
+        "noDuplicateDependencies": "error",
+        "useRequiredScripts": "error"
       },
       "performance": {
+        "noAwaitInLoops": "error",
         "noDelete": "error",
-        "noDynamicNamespaceImportAccess": "error",
-        "noImgElement": "error",
         "noAccumulatingSpread": "off"
       },
       "style": {
         "noCommonJs": "error",
+        "noDoneCallback": "error",
         "noEnum": "error",
         "noExportedImports": "error",
-        "noHeadElement": "error",
         "noNamespace": "error",
         "noNegationElse": "error",
         "noParameterAssign": "error",
@@ -114,13 +135,17 @@
   },
   "css": {
     "linter": {
-      "enabled": false
+      "enabled": true
     },
     "assist": {
-      "enabled": false
+      "enabled": true
     },
     "formatter": {
-      "enabled": false
+      "enabled": true
+    },
+    "parser": {
+      "cssModules": true,
+      "tailwindDirectives": true
     }
   },
   "assist": {

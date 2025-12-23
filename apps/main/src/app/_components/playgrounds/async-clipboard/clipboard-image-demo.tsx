@@ -49,16 +49,27 @@ export const ClipboardImageDemo: FC = () => {
 
   const pasteText = async () => {
     const items = await navigator.clipboard.read();
-    for (const item of items) {
-      for (const type of item.types) {
-        if (type === 'image/png') {
-          const blob = await item.getType(type);
-          const url = URL.createObjectURL(blob);
-          setSrc(url);
-        }
-      }
+
+    // 全てのアイテムとタイプの組み合わせを並列で処理
+    const results = await Promise.all(
+      items.flatMap((item) =>
+        item.types
+          .filter((type) => type === 'image/png')
+          .map(async (type) => {
+            const blob = await item.getType(type);
+            return URL.createObjectURL(blob);
+          }),
+      ),
+    );
+
+    // 最初に見つかったPNG画像を使用
+    const firstResult = results[0];
+    if (firstResult) {
+      setSrc(firstResult);
+      onOpen('success', 'クリップボードにPNG画像を貼り付けました。');
+    } else {
+      onOpen('error', 'PNG画像が見つかりませんでした。');
     }
-    onOpen('success', 'クリップボードにPNG画像を貼り付けました。');
   };
 
   return (
