@@ -225,11 +225,11 @@ Vercel Cronからのリクエストのみ許可
 
 **実行スケジュール：**
 ```yaml
-# vercel.json
+# apps/main/vercel.json
 {
   "crons": [{
     "path": "/api/crons/weekly-notifications",
-    "schedule": "0 9 * * 1"  # 毎週月曜日 9:00 JST
+    "schedule": "0 1 * * 6"  # 毎週土曜日 1:00 UTC (10:00 JST)
   }]
 }
 ```
@@ -262,11 +262,11 @@ Vercel Cronからのリクエストのみ許可
 
 **実行スケジュール：**
 ```yaml
-# vercel.json
+# apps/main/vercel.json
 {
   "crons": [{
     "path": "/api/crons/upstash-keepalive",
-    "schedule": "*/5 * * * *"  # 5分ごと
+    "schedule": "0 12 * * 0"  # 毎週日曜日 12:00 UTC (21:00 JST)
   }]
 }
 ```

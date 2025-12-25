@@ -15,46 +15,30 @@
 
 ### 必要な環境
 
-- Node.js: 22.21.0
-- pnpm: 10.20.0
+- Node.js: 24.12.0
+- pnpm: 10.25.0
 - Docker（ローカルデータベース用）
 
 ### セットアップ手順
 
-1. リポジトリをクローン
-
 ```bash
+# 1. リポジトリをクローン
 git clone https://github.com/k35o/k8o.git
 cd k8o
-```
 
-2. 依存関係をインストール
-
-```bash
+# 2. 依存関係をインストール
 pnpm i --frozen-lockfile
-```
 
-3. 環境変数を設定
+# 3. 環境変数を設定
+cp apps/main/.env.example apps/main/.env.local
 
-```bash
-cp core/.env.example core/.env.local
-```
-
-4. Dockerサービスを起動
-
-```bash
+# 4. Dockerサービスを起動
 docker compose up -d
-```
 
-5. データベースマイグレーションを実行
+# 5. データベースマイグレーションを実行
+pnpm run -F @repo/database migrate
 
-```bash
-pnpm run -F main migrate
-```
-
-6. 開発サーバーを起動
-
-```bash
+# 6. 開発サーバーを起動
 pnpm run dev
 ```
 
@@ -70,47 +54,18 @@ pnpm run dev
 ### 開発ステップ
 
 1. **Issueの作成または確認**
-   - 既存のIssueを確認するか、新しいIssueを作成
-
-2. **ブランチの作成**
-
-```bash
-git checkout -b feature/your-feature-name
-```
-
-3. **開発**
-   - コードを書く前に、関連するドキュメントを確認
-   - テストを書きながら開発（TDD推奨）
-
-4. **コード品質チェック**
-
-```bash
-# リンター・フォーマッター
-pnpm run check:write
-
-# ファイル名検証
-pnpm run ls-lint
-
-# 型チェック
-pnpm run type-check
-
-# テスト
-pnpm run test
-```
-
-5. **コミット**
-   - Lefthookが自動的にpre-commitフックを実行
-   - コミットメッセージ規約に従う
-
-6. **プッシュ**
-
-```bash
-git push origin feature/your-feature-name
-```
-
+2. **ブランチの作成**: `git checkout -b feature/your-feature-name`
+3. **開発**: テストを書きながら開発（TDD推奨）
+4. **コード品質チェック**:
+   ```bash
+   pnpm run check:write  # リンター・フォーマッター
+   pnpm run ls-lint      # ファイル名検証
+   pnpm run type-check   # 型チェック
+   pnpm run test         # テスト
+   ```
+5. **コミット**: Lefthookが自動的にpre-commitフックを実行
+6. **プッシュ**: `git push origin feature/your-feature-name`
 7. **プルリクエスト作成**
-   - GitHub上でプルリクエストを作成
-   - テンプレートに従って記述
 
 ## コーディング規約
 
@@ -120,40 +75,15 @@ git push origin feature/your-feature-name
 - 型は明示的に定義（`any`の使用は避ける）
 - 関数の戻り値の型を明示
 
-```typescript
-// Good
-function getUserName(id: string): string {
-  return `user-${id}`;
-}
-
-// Bad
-function getUserName(id) {
-  return `user-${id}`;
-}
-```
-
 ### React/Next.js
 
 - **Server Componentsをデフォルト**とし、必要な場合のみClient Componentsを使用
 - コンポーネントは小さく、単一責任の原則に従う
 - Props型は`type`で定義
 
-```typescript
-// Good
-type ButtonProps = {
-  label: string;
-  onClick: () => void;
-};
-
-export const Button: FC<ButtonProps> = ({ label, onClick }) => {
-  return <button onClick={onClick}>{label}</button>;
-};
-```
-
 ### TailwindCSS
 
-- **ArteOdysseyのカスタムトークンのみ使用**
-- 標準のTailwindクラス（`text-gray-600`など）は**使用禁止**
+**ArteOdysseyのカスタムトークンのみ使用**。標準のTailwindクラス（`text-gray-600`など）は**使用禁止**。
 
 ```tsx
 // Good
@@ -163,10 +93,7 @@ export const Button: FC<ButtonProps> = ({ label, onClick }) => {
 <div className="text-gray-900 bg-white">
 ```
 
-利用可能なクラス：
-- テキスト色: `text-fg-base`, `text-fg-subtle`, `text-fg-mute`
-- 背景色: `bg-bg-base`, `bg-bg-subtle`, `bg-bg-mute`
-- ボーダー色: `border-border-base`, `border-border-subtle`
+詳細は[CLAUDE.md](./CLAUDE.md)を参照。
 
 ### ファイル命名規則
 
@@ -181,15 +108,7 @@ ls-lintが自動的に検証します。
 
 - 日本語コメントを推奨
 - 複雑なロジックには必ずコメントを追加
-- TODOコメントにはIssue番号を含める
-
-```typescript
-// Good
-// TODO(#123): async/awaitコンポーネントのテスト対応
-
-// Bad
-// TODO: fix this later
-```
+- TODOコメントにはIssue番号を含める: `// TODO(#123): 説明`
 
 ## コミットメッセージ
 
@@ -205,13 +124,15 @@ ls-lintが自動的に検証します。
 
 ### Type
 
-- `feat`: 新機能
-- `fix`: バグ修正
-- `docs`: ドキュメントのみの変更
-- `style`: コードの動作に影響しない変更（空白、フォーマット等）
-- `refactor`: リファクタリング
-- `test`: テストの追加・修正
-- `chore`: ビルドプロセスやツールの変更
+| Type | 用途 |
+|------|------|
+| `feat` | 新機能 |
+| `fix` | バグ修正 |
+| `docs` | ドキュメントのみの変更 |
+| `style` | コードの動作に影響しない変更 |
+| `refactor` | リファクタリング |
+| `test` | テストの追加・修正 |
+| `chore` | ビルドプロセスやツールの変更 |
 
 ### 例
 
@@ -226,7 +147,7 @@ Closes #123
 
 ## プルリクエスト
 
-### プルリクエストの条件
+### 条件
 
 - [ ] すべてのテストが通る
 - [ ] コード品質チェックが通る（Biome、ls-lint、type-check）
@@ -242,114 +163,25 @@ Closes #123
 
 ## テスト
 
-### テスト戦略
-
 プロジェクトでは3つのテスト方法を使い分けます：
 
-#### 1. Helpers（`packages/helpers/`）
-
-**In-source testing**を使用：
-
-```typescript
-export function add(a: number, b: number): number {
-  return a + b;
-}
-
-if (import.meta.vitest) {
-  const { describe, it, expect } = import.meta.vitest;
-
-  describe('add', () => {
-    it('2つの数値を正しく加算する', () => {
-      expect(add(1, 2)).toBe(3);
-    });
-  });
-}
-```
-
-#### 2. コンポーネント（`apps/main/src/app/_components/`）
-
-**Storybookストーリー**でテスト：
-
-```tsx
-// button.stories.tsx
-import type { Meta, StoryObj } from '@storybook/react';
-import { Button } from './button';
-
-const meta = {
-  component: Button,
-} satisfies Meta<typeof Button>;
-
-export default meta;
-type Story = StoryObj<typeof meta>;
-
-export const Primary: Story = {
-  args: {
-    label: 'Click me',
-  },
-};
-```
-
-#### 3. サービス層（`apps/main/src/services/`）
-
-**Vitest**でユニットテスト：
-
-```typescript
-// blog.test.ts
-import { describe, expect, it } from 'vitest';
-import { getBlog } from './blog';
-
-describe('getBlog', () => {
-  it('ブログ記事を取得できる', async () => {
-    const blog = await getBlog('test-slug');
-    expect(blog).toBeDefined();
-  });
-});
-```
+| テスト対象 | テスト手法 | 場所 |
+|-----------|----------|------|
+| Helpers | In-source testing | `packages/helpers/src/**/*.ts` |
+| Components | Storybook stories | `apps/main/src/app/**/*.stories.tsx` |
+| Services | Vitest unit tests | `apps/main/src/services/**/*.test.ts` |
 
 ### テスト実行
 
 ```bash
-# すべてのテスト
-pnpm run test
-
-# Vitest UI
-pnpm run test:ui
-
-# カバレッジ
-pnpm run coverage
-
-# E2Eテスト
-pnpm run -F main test:e2e
+pnpm run test        # すべてのテスト
+pnpm run test:ui     # Vitest UI
+pnpm run coverage    # カバレッジ
 ```
 
-### テスト作成のガイドライン
-
-1. **テストは必須** - すべての新機能にテストを追加
-2. **日本語で記述** - describeとitは日本語で分かりやすく
-3. **BDDスタイル** - Given-When-Thenパターンを推奨
-4. **モックの使用** - 外部APIはMSWでモック
-
-```typescript
-describe('ブログ記事取得', () => {
-  describe('正常系', () => {
-    it('公開済み記事を取得できる', async () => {
-      // Given: 公開済み記事が存在する
-      // When: 記事を取得
-      // Then: 記事データが返される
-    });
-  });
-
-  describe('異常系', () => {
-    it('存在しない記事の場合はnullを返す', async () => {
-      // ...
-    });
-  });
-});
-```
+詳細なテスト作成ガイドラインは[docs/TESTING.md](./docs/TESTING.md)を参照。
 
 ## Storybook開発
-
-コンポーネント開発にはStorybookを使用：
 
 ```bash
 pnpm run -F main storybook
@@ -357,7 +189,7 @@ pnpm run -F main storybook
 
 - すべてのコンポーネントにストーリーを作成
 - アクセシビリティチェック（a11y addon）を活用
-- 様々な状態（バリエーション）をストーリーで表現
+- 様々な状態をストーリーで表現
 
 ## 質問・相談
 

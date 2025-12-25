@@ -600,7 +600,7 @@ it('時間のかかる処理', async () => {
 # データベースをリセット
 docker compose down -v
 docker compose up -d
-pnpm run -F database migrate
+pnpm run -F @repo/database migrate
 ```
 
 ---
