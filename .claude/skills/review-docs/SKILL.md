@@ -99,7 +99,7 @@ ls apps/main/src/app/_components/
 
 - [ ] 環境変数リストが最新か
 - [ ] Cronジョブ設定が `vercel.json` と一致するか
-- [ ] Docker設定が `docker-compose.yml` と一致するか
+- [ ] Docker設定が `compose.yml` と一致するか
 - [ ] デプロイフローが現状を反映しているか
 
 #### 検証方法
@@ -109,10 +109,10 @@ ls apps/main/src/app/_components/
 cat apps/main/.env.example
 
 # Cronジョブ
-cat vercel.json | jq '.crons'
+cat apps/main/vercel.json | jq '.crons'
 
 # Docker設定
-cat docker-compose.yml
+cat compose.yml
 ```
 
 ### 5. CONTRIBUTING.md の監査
@@ -249,6 +249,8 @@ cat docker-compose.yml
 3. 必要な更新を提案
 
 ## 自動検出パターン
+
+以下は検出ロジックの実装イメージを示す疑似コードです。
 
 ### API不整合の検出
 

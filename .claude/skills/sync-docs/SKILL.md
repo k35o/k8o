@@ -13,7 +13,7 @@ description: コード変更を検出し、関連ドキュメントを自動更�
 |-------------|-----------|
 | `docs/API.md` | `apps/main/src/app/api/**` |
 | `docs/TESTING.md` | `vitest.config.ts`, `**/*.test.ts`, `**/*.stories.tsx` |
-| `docs/DEPLOYMENT.md` | `vercel.json`, `docker-compose.yml`, `next.config.ts` |
+| `docs/DEPLOYMENT.md` | `apps/main/vercel.json`, `compose.yml`, `next.config.ts` |
 | `docs/SECURITY.md` | 認証/認可関連コード、セキュリティヘッダー設定 |
 | `docs/TROUBLESHOOTING.md` | 新しいエラーパターン、解決策 |
 | `ARCHITECTURE.md` | `packages/`, ディレクトリ構造、技術スタック変更 |
@@ -46,7 +46,7 @@ git diff HEAD~1 --name-only
 |-------------|-----------------|
 | `apps/main/src/app/api/**/*.ts` | `docs/API.md` |
 | `packages/database/src/schema/**` | `ARCHITECTURE.md`, `CLAUDE.md` |
-| `vercel.json`, `docker-compose.yml` | `docs/DEPLOYMENT.md` |
+| `apps/main/vercel.json`, `compose.yml` | `docs/DEPLOYMENT.md` |
 | `packages/helpers/src/**` | `CLAUDE.md` (ヘルパー関数セクション) |
 | `vitest.*.ts`, `**/*.test.ts` | `docs/TESTING.md` |
 | `package.json` (scripts変更) | `CLAUDE.md` (必須コマンド) |
