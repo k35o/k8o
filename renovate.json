@@ -10,35 +10,56 @@
   ],
   "prConcurrentLimit": 10,
   "github-actions": {
-    "fileMatch": ["^\\.github/actions/[^/]+/action\\.ya?ml$"]
+    "managerFilePatterns": [
+      "/^\\.github/actions/[^/]+/action\\.ya?ml$/"
+    ]
   },
   "packageRules": [
     {
-      "matchPackageNames": ["/^next$/", "/^@next/"],
+      "matchPackageNames": [
+        "/^next$/",
+        "/^@next/"
+      ],
       "groupName": "next dependencies"
     },
     {
-      "matchPackageNames": ["/^@storybook/", "/^storybook$/"],
+      "matchPackageNames": [
+        "/^@storybook/",
+        "/^storybook$/"
+      ],
       "groupName": "storybook dependencies"
     },
     {
-      "matchPackageNames": ["/^vitest$/", "/@vitest/"],
+      "matchPackageNames": [
+        "/^vitest$/",
+        "/@vitest/"
+      ],
       "groupName": "vitest dependencies"
     },
     {
-      "matchPackageNames": ["/^@typescript/native-preview$/"],
+      "matchPackageNames": [
+        "/^@typescript/native-preview$/"
+      ],
       "groupName": "tsgo dependencies"
     },
     {
-      "matchPackageNames": ["/^react$/", "/^react-dom$/"],
+      "matchPackageNames": [
+        "/^react$/",
+        "/^react-dom$/"
+      ],
       "groupName": "react dependencies"
     },
     {
-      "matchPackageNames": ["/^pnpm$/"],
+      "matchPackageNames": [
+        "/^pnpm$/"
+      ],
       "groupName": "pnpm dependencies"
     },
     {
-      "matchPackageNames": ["/^node$/", "/^@types/node$/"],
+      "matchPackageNames": [
+        "/^node$/",
+        "/^@types/node$/"
+      ],
       "groupName": "node dependencies"
     }
   ]
