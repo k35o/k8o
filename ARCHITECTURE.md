@@ -65,7 +65,7 @@ k8oは、Next.js App Routerをベースとした個人プロジェクトポー�
 | モノレポ | Turbo | ビルドシステム |
 | テスト | Vitest | ユニットテスト |
 | E2E | Playwright | エンドツーエンドテスト |
-| Storybook | Storybook | コンポーネント開発 |
+| Storybook | Storybook 10 | コンポーネント開発 |
 | リンター | Biome | コード品質 |
 | Git hooks | Lefthook | pre-commit/pre-push |
 | モック | MSW | APIモック |
@@ -96,7 +96,8 @@ k8o/
 │   │       ├── color/     # 色関連
 │   │       ├── date/      # 日付操作
 │   │       ├── number/    # 数値操作
-│   │       └── ...
+│   │       ├── mdx/       # MDX処理
+│   │       └── *.ts       # 個別ユーティリティ
 │   │
 │   └── typescript-config/  # 共有TypeScript設定
 │

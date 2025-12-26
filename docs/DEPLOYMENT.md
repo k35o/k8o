@@ -117,7 +117,7 @@ Vercelダッシュボードから：
 - Import Git Repository
 - `k35o/k8o`を選択
 - Framework Preset: `Next.js`
-- Root Directory: `./core`
+- Root Directory: `apps/main`
 
 3. **ビルド設定**
 
@@ -173,31 +173,16 @@ vercel --prod
 ### Vercel設定ファイル
 
 ```json
-// vercel.json
+// apps/main/vercel.json
 {
   "crons": [
     {
       "path": "/api/crons/weekly-notifications",
-      "schedule": "0 9 * * 1"
+      "schedule": "0 1 * * 6"
     },
     {
       "path": "/api/crons/upstash-keepalive",
-      "schedule": "*/5 * * * *"
-    }
-  ],
-  "headers": [
-    {
-      "source": "/(.*)",
-      "headers": [
-        {
-          "key": "X-Frame-Options",
-          "value": "SAMEORIGIN"
-        },
-        {
-          "key": "X-Content-Type-Options",
-          "value": "nosniff"
-        }
-      ]
+      "schedule": "0 12 * * 0"
     }
   ]
 }
@@ -228,7 +213,7 @@ POSTGRES_URL="postgresql://username:password@ep-xxx.ap-northeast-1.aws.neon.tech
 export POSTGRES_URL="postgresql://..."
 
 # マイグレーション実行
-pnpm run -F database migrate
+pnpm run -F @repo/database migrate
 ```
 
 ### Neon Proxy (ローカル開発)
@@ -452,12 +437,16 @@ echo "apps/main/.env.local" >> .gitignore
 ### 設定
 
 ```json
-// vercel.json
+// apps/main/vercel.json
 {
   "crons": [
     {
       "path": "/api/crons/weekly-notifications",
-      "schedule": "0 9 * * 1"
+      "schedule": "0 1 * * 6"
+    },
+    {
+      "path": "/api/crons/upstash-keepalive",
+      "schedule": "0 12 * * 0"
     }
   ]
 }
@@ -477,8 +466,8 @@ Cron式（UTC時刻）：
 ```
 
 例：
-- `0 9 * * 1` - 毎週月曜日 9:00 UTC (18:00 JST)
-- `*/5 * * * *` - 5分ごと
+- `0 1 * * 6` - 毎週土曜日 1:00 UTC (10:00 JST)
+- `0 12 * * 0` - 毎週日曜日 12:00 UTC (21:00 JST)
 - `0 0 * * *` - 毎日 0:00 UTC
 
 ### ログ確認

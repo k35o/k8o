@@ -28,9 +28,9 @@ ERR_PNPM_UNSUPPORTED_ENGINE Unsupported engine
 # Node.jsバージョンを確認
 node -v
 
-# 22.21.0にアップデート
-nvm install 22.21.0
-nvm use 22.21.0
+# 24.12.0にアップデート
+nvm install 24.12.0
+nvm use 24.12.0
 
 # 再インストール
 pnpm install --frozen-lockfile
@@ -177,7 +177,7 @@ docker compose down -v
 docker compose up -d
 
 # マイグレーション実行
-pnpm run -F database migrate
+pnpm run -F @repo/database migrate
 
 # テストを再実行
 pnpm run test
@@ -337,7 +337,7 @@ pnpm run -F database drizzle-kit status
 pnpm run -F database drizzle-kit drop
 
 # 再マイグレーション
-pnpm run -F database migrate
+pnpm run -F @repo/database migrate
 ```
 
 ### データベース接続が遅い
@@ -448,7 +448,7 @@ await redis.set('key', 'value', { ex: 3600 }); // 1時間
 
 ### Q: Node.jsのバージョンはいくつを使うべきですか？
 
-A: `22.21.0`を推奨します。`package.json`の`engines`フィールドを参照してください。
+A: `24.12.0`を推奨します。`package.json`の`engines`フィールドを参照してください。
 
 ### Q: pnpmではなくnpm/yarnを使えますか？
 
