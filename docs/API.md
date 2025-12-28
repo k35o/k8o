@@ -5,7 +5,6 @@
 ## 目次
 
 - [認証](#認証)
-- [レート制限](#レート制限)
 - [エンドポイント一覧](#エンドポイント一覧)
   - [ブログAPI](#ブログapi)
   - [購読API](#購読api)
@@ -26,23 +25,6 @@
 以下のエンドポイントは認証が必要：
 - `GET /api/draft-news` - ニュース下書きモード
 - `POST /api/crons/*` - Cronジョブ（Vercel Cronのみ）
-
-## レート制限
-
-Upstash Redisを使用したレート制限を実装しています。
-
-**制限値：**
-- 購読API: 5リクエスト/分/IP
-- その他のAPI: 10リクエスト/分/IP
-
-**レート制限を超えた場合：**
-```json
-{
-  "error": "Too many requests",
-  "retryAfter": 60
-}
-```
-ステータスコード: `429 Too Many Requests`
 
 ## エンドポイント一覧
 
@@ -97,7 +79,6 @@ const incrementView = async (slug: string) => {
 
 **実装詳細：**
 - Zodによるバリデーション
-- Redis経由でビューカウントをキャッシュ
 - PostgreSQLに永続化
 
 ---
@@ -241,43 +222,6 @@ Vercel Cronからのリクエストのみ許可
 
 ---
 
-#### Upstash Keepalive
-
-Upstash Redisの接続を維持します。
-
-```
-POST /api/crons/upstash-keepalive
-```
-
-**認証：**
-Vercel Cronからのリクエストのみ許可
-
-**レスポンス：**
-```json
-{
-  "success": true,
-  "timestamp": "2025-01-01T00:00:00.000Z"
-}
-```
-
-**実行スケジュール：**
-```yaml
-# apps/main/vercel.json
-{
-  "crons": [{
-    "path": "/api/crons/upstash-keepalive",
-    "schedule": "0 12 * * 0"  # 毎週日曜日 12:00 UTC (21:00 JST)
-  }]
-}
-```
-
-**実装詳細：**
-- Redis接続のウォームアップ
-- レート制限カウンターのクリーンアップ
-- ヘルスチェック
-
----
-
 ## エラーハンドリング
 
 ### エラーレスポンスフォーマット
@@ -301,7 +245,6 @@ Vercel Cronからのリクエストのみ許可
 | 400 | バリデーションエラー | 不正なリクエストボディ |
 | 401 | 認証エラー | 無効なAPIキー |
 | 404 | リソースが見つからない | 存在しないブログ記事 |
-| 429 | レート制限超過 | 短時間に多数のリクエスト |
 | 500 | サーバーエラー | 予期しないエラー |
 
 ### Zodバリデーションエラー
@@ -340,11 +283,6 @@ const response = await fetch('/api/blog/views', {
 });
 
 if (!response.ok) {
-  if (response.status === 429) {
-    // レート制限の処理
-    const retryAfter = response.headers.get('Retry-After');
-    console.log(`Retry after ${retryAfter} seconds`);
-  }
   throw new Error('Failed to increment view');
 }
 ```
@@ -357,13 +295,6 @@ const fetchWithRetry = async (url: string, options: RequestInit, maxRetries = 3)
     try {
       const response = await fetch(url, options);
       if (response.ok) return response;
-
-      if (response.status === 429) {
-        const retryAfter = parseInt(response.headers.get('Retry-After') || '60');
-        await new Promise(resolve => setTimeout(resolve, retryAfter * 1000));
-        continue;
-      }
-
       throw new Error(`HTTP ${response.status}`);
     } catch (error) {
       if (i === maxRetries - 1) throw error;
@@ -426,16 +357,6 @@ export const blogHandlers = [
 const allowedOrigins = ['https://k8o.dev'];
 ```
 
-### レート制限
-
-```typescript
-// Upstash Redisでレート制限
-const ratelimit = new Ratelimit({
-  redis: Redis.fromEnv(),
-  limiter: Ratelimit.slidingWindow(10, '1 m'),
-});
-```
-
 ### 環境変数
 
 APIに必要な環境変数：
@@ -443,8 +364,6 @@ APIに必要な環境変数：
 ```bash
 # .env.local
 POSTGRES_URL="postgres://..."
-KV_REST_API_URL="https://..."
-KV_REST_API_TOKEN="..."
 MICROCMS_API_KEY="..."
 RESEND_API_KEY="..."
 ```

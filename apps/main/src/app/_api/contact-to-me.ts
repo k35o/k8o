@@ -1,7 +1,6 @@
 'use server';
 
 import { db } from '@repo/database';
-import { ratelimit } from '@repo/helpers/ratelimit';
 import { z } from 'zod';
 import '@/libs/zod';
 
@@ -42,24 +41,27 @@ export const contact = async (
     };
   }
 
-  const identifier = 'api';
-  const { success } = await ratelimit.limit(identifier);
+  try {
+    await db.insert(db._schema.comments).values({
+      message: validatedFields.data.message,
+    });
 
-  if (!success) {
+    return {
+      success: true,
+      defaultValue: '',
+    };
+  } catch (error) {
+    console.error('Failed to insert contact comment:', {
+      error,
+      messageLength: validatedFields.data.message.length,
+      timestamp: new Date().toISOString(),
+    });
+
     return {
       success: false,
       message:
-        'お問い合わせの送信回数が上限に達しました。数分後に再度お試しください。',
+        'お問い合わせの送信に失敗しました。しばらくしてから再度お試しください。',
       defaultValue: formData.get('message') as string,
     };
   }
-
-  await db.insert(db._schema.comments).values({
-    message: validatedFields.data.message,
-  });
-
-  return {
-    success: true,
-    defaultValue: '',
-  };
 };

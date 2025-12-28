@@ -8,7 +8,6 @@
 - [本番環境](#本番環境)
 - [Vercelへのデプロイ](#vercelへのデプロイ)
 - [データベース (Neon)](#データベース-neon)
-- [KVストア (Upstash Redis)](#kvストア-upstash-redis)
 - [CMS (MicroCMS)](#cms-microcms)
 - [メール (Resend)](#メール-resend)
 - [環境変数](#環境変数)
@@ -29,19 +28,17 @@ k8oは以下のサービスを使用してデプロイされています：
 │    - CDN                                │
 └────────┬────────────────────────────────┘
          │
-         ├─────────┐
-         │         │
-┌────────▼─────┐ ┌▼──────────────┐
-│     Neon     │ │    Upstash    │
-│  PostgreSQL  │ │     Redis     │
-└──────────────┘ └───────────────┘
-         │         │
-         ├─────────┴──────────┐
-         │                    │
-┌────────▼─────┐    ┌────────▼───────┐
-│   MicroCMS   │    │    Resend      │
-│     (CMS)    │    │    (Email)     │
-└──────────────┘    └────────────────┘
+         ├──────────────────────┐
+         │                      │
+┌────────▼─────┐      ┌────────▼───────┐
+│     Neon     │      │   MicroCMS     │
+│  PostgreSQL  │      │     (CMS)      │
+└──────────────┘      └────────────────┘
+                              │
+                      ┌───────▼────────┐
+                      │    Resend      │
+                      │    (Email)     │
+                      └────────────────┘
 ```
 
 ## 本番環境
@@ -52,7 +49,6 @@ k8oは以下のサービスを使用してデプロイされています：
 |---------|------|-----|
 | Vercel | ホスティング | https://vercel.com/k35o/k8o |
 | Neon | PostgreSQL | https://console.neon.tech/app/projects/cool-king-69719941 |
-| Upstash | Redis | https://console.upstash.com/vercel/kv/6ae3d043-1c14-4a5e-b4e2-18872bbd81bb |
 | MicroCMS | CMS | https://k35o.microcms.io |
 | Resend | Email | https://resend.com |
 
@@ -139,10 +135,6 @@ Vercelダッシュボードで以下を設定：
 # Database
 POSTGRES_URL="postgresql://..."
 
-# KV Store
-KV_REST_API_URL="https://..."
-KV_REST_API_TOKEN="..."
-
 # CMS
 MICROCMS_API_ENDPOINT="https://k35o.microcms.io/api/v1"
 MICROCMS_API_KEY="..."
@@ -179,10 +171,6 @@ vercel --prod
     {
       "path": "/api/crons/weekly-notifications",
       "schedule": "0 1 * * 6"
-    },
-    {
-      "path": "/api/crons/upstash-keepalive",
-      "schedule": "0 12 * * 0"
     }
   ]
 }
@@ -235,52 +223,6 @@ Neonは自動バックアップを提供：
 - Point-in-time recovery (PITR): 7日間
 - 毎日の自動スナップショット
 - マニュアルスナップショットも可能
-
-## KVストア (Upstash Redis)
-
-### セットアップ
-
-1. **データベース作成**
-
-Upstash Console:
-- Create Database
-- Name: `k8o-redis`
-- Type: `Regional`
-- Region: `ap-northeast-1` (Tokyo)
-- TLS: 有効
-
-2. **REST API設定**
-
-```bash
-KV_REST_API_URL="https://xxx.upstash.io"
-KV_REST_API_TOKEN="..."
-```
-
-### 使用用途
-
-- レート制限
-- セッションキャッシュ
-- ブログビューカウントキャッシュ
-- 一時データストレージ
-
-### ローカル開発
-
-Dockerで互換サーバーを起動：
-
-```yaml
-services:
-  redis:
-    image: redis:latest
-    ports:
-      - "6380:6379"
-
-  serverless-redis-http:
-    image: hiett/serverless-redis-http:latest
-    ports:
-      - "8079:80"
-    environment:
-      SRH_CONNECTION_STRING: "redis://redis:6379"
-```
 
 ## CMS (MicroCMS)
 
@@ -388,10 +330,6 @@ export const VerificationEmail = ({ verificationUrl }: Props) => (
 # Database
 POSTGRES_URL="postgresql://..."
 
-# KV Store
-KV_REST_API_URL="https://..."
-KV_REST_API_TOKEN="..."
-
 # CMS
 MICROCMS_API_ENDPOINT="https://k35o.microcms.io/api/v1"
 MICROCMS_API_KEY="..."
@@ -443,10 +381,6 @@ echo "apps/main/.env.local" >> .gitignore
     {
       "path": "/api/crons/weekly-notifications",
       "schedule": "0 1 * * 6"
-    },
-    {
-      "path": "/api/crons/upstash-keepalive",
-      "schedule": "0 12 * * 0"
     }
   ]
 }
@@ -467,7 +401,6 @@ Cron式（UTC時刻）：
 
 例：
 - `0 1 * * 6` - 毎週土曜日 1:00 UTC (10:00 JST)
-- `0 12 * * 0` - 毎週日曜日 12:00 UTC (21:00 JST)
 - `0 0 * * *` - 毎日 0:00 UTC
 
 ### ログ確認

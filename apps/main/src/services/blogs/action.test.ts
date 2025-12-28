@@ -1,5 +1,4 @@
 import { db } from '@repo/database';
-import { checkRateLimit } from '@repo/helpers/ratelimit';
 import { feedback } from './action';
 
 vi.mock('@repo/database', () => ({
@@ -29,7 +28,6 @@ vi.mock('@repo/database', () => ({
     },
   },
 }));
-vi.mock('@repo/helpers/ratelimit');
 vi.mock('@/libs/zod', () => ({}));
 
 describe('feedback', () => {
@@ -56,41 +54,7 @@ describe('feedback', () => {
     });
   });
 
-  it('レート制限に引っかかった場合はエラーを返す', async () => {
-    vi.mocked(checkRateLimit).mockResolvedValue({
-      success: false,
-      limit: 3,
-      remaining: 0,
-      reset: Date.now() + 60000,
-      pending: Promise.resolve({
-        success: false,
-        limit: 3,
-        remaining: 0,
-        reset: Date.now() + 60000,
-      }),
-    });
-
-    const result = await feedback('test-slug', 1, 'test comment');
-
-    expect(result).toEqual({
-      success: false,
-      message: '送信回数が上限に達しました。数分後に再度お試しください。',
-    });
-  });
-
   it('存在しないブログスラッグの場合はエラーを返す', async () => {
-    vi.mocked(checkRateLimit).mockResolvedValue({
-      success: true,
-      limit: 3,
-      remaining: 2,
-      reset: Date.now() + 60000,
-      pending: Promise.resolve({
-        success: true,
-        limit: 3,
-        remaining: 2,
-        reset: Date.now() + 60000,
-      }),
-    });
     vi.mocked(db.query.blogs.findFirst).mockResolvedValue(undefined);
 
     const result = await feedback('non-existent-slug', 1, 'test comment');
@@ -110,18 +74,6 @@ describe('feedback', () => {
     };
     const mockInsertResult = [{ insertedId: 123 }];
 
-    vi.mocked(checkRateLimit).mockResolvedValue({
-      success: true,
-      limit: 3,
-      remaining: 2,
-      reset: Date.now() + 60000,
-      pending: Promise.resolve({
-        success: true,
-        limit: 3,
-        remaining: 2,
-        reset: Date.now() + 60000,
-      }),
-    });
     vi.mocked(db.query.blogs.findFirst).mockResolvedValue(mockBlog);
     vi.mocked(db.insert).mockReturnValue({
       values: vi.fn().mockReturnValue({
@@ -147,18 +99,6 @@ describe('feedback', () => {
     };
     const mockInsertResult = [{ insertedId: 123 }];
 
-    vi.mocked(checkRateLimit).mockResolvedValue({
-      success: true,
-      limit: 3,
-      remaining: 2,
-      reset: Date.now() + 60000,
-      pending: Promise.resolve({
-        success: true,
-        limit: 3,
-        remaining: 2,
-        reset: Date.now() + 60000,
-      }),
-    });
     vi.mocked(db.query.blogs.findFirst).mockResolvedValue(mockBlog);
     vi.mocked(db.insert).mockReturnValue({
       values: vi.fn().mockReturnValue({

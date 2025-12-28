@@ -54,13 +54,22 @@ export const sendVerificationEmail = async (
         .then((res) => {
           const { error } = res;
           if (error) {
-            console.log(error);
+            console.error('Failed to send verification email via Resend:', {
+              error,
+              email,
+              timestamp: new Date().toISOString(),
+            });
             throw new Error('メールの送信に失敗しました');
           }
         });
     });
   } catch (error) {
-    console.log(error);
+    console.error('Failed to send verification email:', {
+      error,
+      email,
+      subscriberId: subscriber.id,
+      timestamp: new Date().toISOString(),
+    });
   }
 };
 
@@ -122,7 +131,12 @@ export const verifyEmail = async (
       data: null,
     };
   } catch (error) {
-    console.log(error);
+    console.error('Failed to verify email:', {
+      error,
+      email,
+      subscriberId: subscriber.id,
+      timestamp: new Date().toISOString(),
+    });
     return {
       success: false,
       message: '不明なエラーが発生しました。',

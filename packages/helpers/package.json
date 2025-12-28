@@ -76,11 +76,6 @@
       "types": "./src/number/to-precision.ts",
       "default": "./src/number/to-precision.ts"
     },
-    "./ratelimit": {
-      "types": "./src/ratelimit.ts",
-      "node": "./src/ratelimit.ts",
-      "default": "./src/ratelimit.ts"
-    },
     "./sleep": {
       "types": "./src/sleep.ts",
       "default": "./src/sleep.ts"

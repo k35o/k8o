@@ -1,7 +1,6 @@
 'use server';
 
 import { db } from '@repo/database';
-import { checkRateLimit, RateLimitType } from '@repo/helpers/ratelimit';
 import '@/libs/zod';
 
 type Result =
@@ -32,15 +31,6 @@ export const feedback = async (
     };
   }
 
-  const { success } = await checkRateLimit('feedback', RateLimitType.FEEDBACK);
-
-  if (!success) {
-    return {
-      success: false,
-      message: '送信回数が上限に達しました。数分後に再度お試しください。',
-    };
-  }
-
   const blog = await db.query.blogs.findFirst({
     where: (blogs, { eq }) => eq(blogs.slug, slug),
   });
@@ -51,22 +41,39 @@ export const feedback = async (
     };
   }
 
-  const insertComments = await db
-    .insert(db._schema.comments)
-    .values({
-      message: comment,
-      feedbackId,
-    })
-    .returning({ insertedId: db._schema.comments.id });
+  try {
+    const insertComments = await db
+      .insert(db._schema.comments)
+      .values({
+        message: comment,
+        feedbackId,
+      })
+      .returning({ insertedId: db._schema.comments.id });
 
-  if (insertComments[0]?.insertedId !== undefined) {
-    await db.insert(db._schema.blogComment).values({
+    if (insertComments[0]?.insertedId !== undefined) {
+      await db.insert(db._schema.blogComment).values({
+        blogId: blog.id,
+        commentId: insertComments[0].insertedId,
+      });
+    }
+
+    return {
+      success: true,
+    };
+  } catch (error) {
+    console.error('Failed to insert blog feedback:', {
+      error,
+      slug,
       blogId: blog.id,
-      commentId: insertComments[0].insertedId,
+      commentLength: comment.length,
+      feedbackId,
+      timestamp: new Date().toISOString(),
     });
-  }
 
-  return {
-    success: true,
-  };
+    return {
+      success: false,
+      message:
+        'フィードバックの送信に失敗しました。しばらくしてから再度お試しください。',
+    };
+  }
 };

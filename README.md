@@ -51,6 +51,5 @@ pnpm run -F main storybook # Storybook
 
 - **Hosting**: [Vercel](https://vercel.com)
 - **Database**: [Neon](https://neon.tech) (PostgreSQL)
-- **KV**: [Upstash](https://upstash.com) (Redis)
 - **CMS**: [MicroCMS](https://microcms.io)
 - **Email**: [Resend](https://resend.com)
