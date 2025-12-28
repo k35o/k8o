@@ -15,7 +15,7 @@ pnpm run -F main email                # React Email開発サーバー（ポー�
 # データベース
 pnpm run -F @repo/database generate   # マイグレーション生成
 pnpm run -F @repo/database migrate    # マイグレーション実行
-docker compose up -d                  # ローカルDB/Redis起動
+docker compose up -d                  # ローカルDB起動
 
 # テスト・品質
 pnpm run test                         # 全テスト実行
@@ -92,7 +92,6 @@ k8o/
 - `mdx/` - MDX処理
 - `cn.ts` - クラス名結合
 - `ipaddress.ts` - IPアドレス処理
-- `ratelimit.ts` - レート制限
 - `sleep.ts` - 遅延処理
 - `uuid-v4.ts` - UUID生成
 - `is-internal-route.ts` - 内部ルート判定
@@ -111,6 +110,5 @@ k8o/
 
 - **Hosting**: Vercel
 - **Database**: Neon PostgreSQL
-- **KV**: Upstash Redis
 - **CMS**: MicroCMS
 - **Email**: Resend

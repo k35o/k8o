@@ -274,34 +274,6 @@ export async function POST(request: Request) {
 }
 ```
 
-### レート制限
-
-✅ Upstash Redisによるレート制限：
-
-```typescript
-import { Ratelimit } from '@upstash/ratelimit';
-import { Redis } from '@upstash/redis';
-
-const ratelimit = new Ratelimit({
-  redis: Redis.fromEnv(),
-  limiter: Ratelimit.slidingWindow(10, '1 m'),
-  analytics: true,
-});
-
-const identifier = request.headers.get('x-forwarded-for') || 'anonymous';
-const { success, limit, remaining } = await ratelimit.limit(identifier);
-
-if (!success) {
-  return new Response('Too Many Requests', {
-    status: 429,
-    headers: {
-      'X-RateLimit-Limit': limit.toString(),
-      'X-RateLimit-Remaining': remaining.toString(),
-    },
-  });
-}
-```
-
 ### Content Security Policy (CSP)
 
 ```typescript
@@ -353,7 +325,7 @@ if (!success) {
 
 **収集するデータ：**
 - メールアドレス（購読者）
-- IPアドレス（レート制限、アクセスログ）
+- IPアドレス（アクセスログ）
 - ブラウザ情報（Analytics）
 
 **保護措置：**
@@ -521,7 +493,6 @@ console.log(JSON.stringify(auditLog));
 - [ ] SQLインジェクション対策（Drizzle ORM）
 - [ ] XSS対策（React自動エスケープ）
 - [ ] CSRF対策（SameSite Cookie）
-- [ ] レート制限の実装（Upstash）
 - [ ] 環境変数の適切な管理
 - [ ] セキュリティヘッダーの設定
 - [ ] HTTPS通信の強制

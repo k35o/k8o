@@ -28,19 +28,5 @@ services:
       postgres:
         condition: service_healthy
 
-  redis:
-    image: redis@sha256:3906b477e4b60250660573105110c28bfce93b01243eab37610a484daebceb04
-    ports:
-      - '6380:6379'
-
-  serverless-redis-http:
-    ports:
-      - '8079:80'
-    image: hiett/serverless-redis-http:latest@sha256:5b0bb9239fce53abf87b2018a7a0deb9ec7bd900c5360738fe5fbeeb426f9150
-    environment:
-      SRH_MODE: env
-      SRH_TOKEN: example_token
-      SRH_CONNECTION_STRING: 'redis://redis:6379'
-
 volumes:
   db_data:

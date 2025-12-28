@@ -430,20 +430,6 @@ export const revalidate = 3600; // 1時間ごとに再生成
 }
 ```
 
-### Redisが遅い
-
-**解決策:**
-```typescript
-// パイプラインを使用
-const pipeline = redis.pipeline();
-pipeline.set('key1', 'value1');
-pipeline.set('key2', 'value2');
-await pipeline.exec();
-
-// キャッシュのTTLを設定
-await redis.set('key', 'value', { ex: 3600 }); // 1時間
-```
-
 ## よくある質問 (FAQ)
 
 ### Q: Node.jsのバージョンはいくつを使うべきですか？

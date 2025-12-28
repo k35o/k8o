@@ -1,7 +1,6 @@
 'use server';
 
 import { db } from '@repo/database';
-import { ratelimit } from '@repo/helpers/ratelimit';
 import { z } from 'zod';
 import '@/libs/zod';
 
@@ -39,18 +38,6 @@ export const contact = async (
       message:
         validatedFields.error.issues[0]?.message ??
         'お問い合わせ内容が不正です',
-    };
-  }
-
-  const identifier = 'api';
-  const { success } = await ratelimit.limit(identifier);
-
-  if (!success) {
-    return {
-      success: false,
-      message:
-        'お問い合わせの送信回数が上限に達しました。数分後に再度お試しください。',
-      defaultValue: formData.get('message') as string,
     };
   }
 

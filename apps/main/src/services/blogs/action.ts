@@ -1,7 +1,6 @@
 'use server';
 
 import { db } from '@repo/database';
-import { checkRateLimit, RateLimitType } from '@repo/helpers/ratelimit';
 import '@/libs/zod';
 
 type Result =
@@ -29,15 +28,6 @@ export const feedback = async (
     return {
       success: false,
       message: 'コメントは500文字以内で入力してください',
-    };
-  }
-
-  const { success } = await checkRateLimit('feedback', RateLimitType.FEEDBACK);
-
-  if (!success) {
-    return {
-      success: false,
-      message: '送信回数が上限に達しました。数分後に再度お試しください。',
     };
   }
 
