@@ -47,7 +47,10 @@ export const subscribe = async (
       data: null,
     };
   } catch (error) {
-    console.log(error);
+    console.error('Failed to insert subscriber:', {
+      error,
+      timestamp: new Date().toISOString(),
+    });
     return {
       success: false,
       message: '登録に失敗しました',

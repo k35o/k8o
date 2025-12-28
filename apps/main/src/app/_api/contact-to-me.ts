@@ -41,12 +41,27 @@ export const contact = async (
     };
   }
 
-  await db.insert(db._schema.comments).values({
-    message: validatedFields.data.message,
-  });
+  try {
+    await db.insert(db._schema.comments).values({
+      message: validatedFields.data.message,
+    });
 
-  return {
-    success: true,
-    defaultValue: '',
-  };
+    return {
+      success: true,
+      defaultValue: '',
+    };
+  } catch (error) {
+    console.error('Failed to insert contact comment:', {
+      error,
+      messageLength: validatedFields.data.message.length,
+      timestamp: new Date().toISOString(),
+    });
+
+    return {
+      success: false,
+      message:
+        'お問い合わせの送信に失敗しました。しばらくしてから再度お試しください。',
+      defaultValue: formData.get('message') as string,
+    };
+  }
 };
