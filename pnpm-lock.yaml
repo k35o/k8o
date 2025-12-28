@@ -26,9 +26,6 @@ importers:
 
   .:
     dependencies:
-      '@repo/helpers':
-        specifier: workspace:*
-        version: link:packages/helpers
       '@upstash/ratelimit':
         specifier: 2.0.7
         version: 2.0.7(@upstash/redis@1.35.8)
@@ -48,9 +45,6 @@ importers:
       '@ls-lint/ls-lint':
         specifier: 2.3.1
         version: 2.3.1
-      '@repo/typescript-config':
-        specifier: workspace:*
-        version: link:packages/typescript-config
       '@types/node':
         specifier: 24.10.4
         version: 24.10.4
@@ -99,6 +93,9 @@ importers:
       '@repo/database':
         specifier: workspace:*
         version: link:../../packages/database
+      '@repo/helpers':
+        specifier: workspace:*
+        version: link:../../packages/helpers
       '@shikijs/rehype':
         specifier: 3.20.0
         version: 3.20.0
@@ -160,6 +157,9 @@ importers:
         specifier: 4.2.1
         version: 4.2.1
     devDependencies:
+      '@repo/typescript-config':
+        specifier: workspace:*
+        version: link:../../packages/typescript-config
       '@storybook/addon-a11y':
         specifier: 10.1.10
         version: 10.1.10(storybook@10.1.10(@testing-library/dom@10.4.1)(prettier@3.7.4)(react-dom@19.2.3(react@19.2.3))(react@19.2.3))
@@ -245,6 +245,9 @@ importers:
       '@liam-hq/cli':
         specifier: 0.7.24
         version: 0.7.24(@types/node@24.10.4)(@types/react@19.2.7)(typescript@5.9.3)
+      '@repo/typescript-config':
+        specifier: workspace:*
+        version: link:../typescript-config
       '@types/ws':
         specifier: 8.18.1
         version: 8.18.1
@@ -279,6 +282,9 @@ importers:
         specifier: 5.0.1
         version: 5.0.1
     devDependencies:
+      '@repo/typescript-config':
+        specifier: workspace:*
+        version: link:../typescript-config
       '@types/mdast':
         specifier: 4.0.4
         version: 4.0.4

@@ -28,6 +28,7 @@
     "@next/third-parties": "16.1.0",
     "@react-email/components": "1.0.2",
     "@repo/database": "workspace:*",
+    "@repo/helpers": "workspace:*",
     "@shikijs/rehype": "3.20.0",
     "@tailwindcss/postcss": "4.1.18",
     "@vercel/analytics": "1.6.1",
@@ -50,6 +51,7 @@
     "zod": "4.2.1"
   },
   "devDependencies": {
+    "@repo/typescript-config": "workspace:*",
     "@storybook/addon-a11y": "10.1.10",
     "@storybook/addon-docs": "10.1.10",
     "@storybook/addon-mcp": "0.1.6",

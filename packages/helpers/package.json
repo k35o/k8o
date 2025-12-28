@@ -107,6 +107,7 @@
     "vfile-matter": "5.0.1"
   },
   "devDependencies": {
+    "@repo/typescript-config": "workspace:*",
     "@types/mdast": "4.0.4",
     "@vitest/coverage-istanbul": "catalog:",
     "@vitest/ui": "catalog:",
