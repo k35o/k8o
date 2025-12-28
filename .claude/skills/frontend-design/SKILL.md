@@ -88,3 +88,13 @@ description: 独自性のある本番品質のフロントエンドインター�
 
 - **ArteOdyssey**: 基本的なUIコンポーネントは `@k8o/arte-odyssey` から利用
 - **カスタム**: 独自の視覚表現が必要な場合はプロジェクト固有のコンポーネントを作成
+
+## ライセンス
+
+このスキルは [anthropics/skills](https://github.com/anthropics/skills) の
+[frontend-design (0075614)](https://github.com/anthropics/skills/tree/0075614/skills/frontend-design)
+をベースに作成されています。
+
+原作は Apache License 2.0 でライセンスされています。
+変更点: 日本語に翻訳し、k8oプロジェクト固有の設定（ArteOdyssey UIライブラリ、
+TailwindCSSカスタムトークン等）を追加しました。
