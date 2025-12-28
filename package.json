@@ -37,7 +37,7 @@
     "lefthook": "2.0.12",
     "next-devtools-mcp": "0.3.7",
     "playwright": "1.57.0",
-    "turbo": "2.7.0",
+    "turbo": "2.7.1",
     "typescript": "5.9.3"
   }
 }
