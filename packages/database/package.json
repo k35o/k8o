@@ -29,6 +29,7 @@
   },
   "devDependencies": {
     "@liam-hq/cli": "0.7.24",
+    "@repo/typescript-config": "workspace:*",
     "@types/ws": "8.18.1",
     "drizzle-kit": "0.31.8",
     "postgres": "3.4.7"
