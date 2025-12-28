@@ -45,7 +45,9 @@ export const CreateColumnsByTable: FC<Props> = ({
             <th className="text-nowrap px-2 py-3">型</th>
             <th className="text-nowrap px-2 py-3">null許容</th>
             <th className="text-nowrap px-2 py-3">デフォルト値</th>
-            <th className="px-2 py-3" />
+            <th className="px-2 py-3">
+              <span className="sr-only">操作</span>
+            </th>
           </tr>
         </thead>
         <tbody>
@@ -54,6 +56,12 @@ export const CreateColumnsByTable: FC<Props> = ({
             return (
               <tr key={id}>
                 <td className="px-2 py-3">
+                  <label
+                    className="sr-only"
+                    htmlFor={`column-name_${idx.toString()}-${formId}`}
+                  >
+                    カラム名
+                  </label>
                   <TextField
                     describedbyId={
                       columnError?.name
@@ -83,6 +91,12 @@ export const CreateColumnsByTable: FC<Props> = ({
                   )}
                 </td>
                 <td className="px-2 py-3">
+                  <label
+                    className="sr-only"
+                    htmlFor={`column-alias_${idx.toString()}-${formId}`}
+                  >
+                    コメント
+                  </label>
                   <TextField
                     describedbyId={
                       columnError?.alias
@@ -112,6 +126,12 @@ export const CreateColumnsByTable: FC<Props> = ({
                   )}
                 </td>
                 <td className="px-2 py-3">
+                  <label
+                    className="sr-only"
+                    htmlFor={`column-type_${idx.toString()}-${formId}`}
+                  >
+                    型
+                  </label>
                   <Select
                     describedbyId={
                       columnError?.type
@@ -142,7 +162,7 @@ export const CreateColumnsByTable: FC<Props> = ({
                 </td>
                 <td className="px-2 py-3 text-center">
                   <Checkbox
-                    label=""
+                    label="null許容"
                     onChange={(e) => {
                       handleChangeColumn(id)({
                         ...column,
@@ -158,6 +178,12 @@ export const CreateColumnsByTable: FC<Props> = ({
                   )}
                 </td>
                 <td className="px-2 py-3">
+                  <label
+                    className="sr-only"
+                    htmlFor={`default_${idx.toString()}-${formId}`}
+                  >
+                    デフォルト値
+                  </label>
                   <TextField
                     describedbyId={
                       columnError?.default
