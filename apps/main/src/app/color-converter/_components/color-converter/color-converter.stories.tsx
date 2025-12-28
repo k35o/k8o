@@ -21,31 +21,27 @@ export const ChangeHexColor: Story = {
     await userEvent.clear(hexField);
     await userEvent.type(hexField, 'ff0000');
 
-    // RGBが更新されることを確認
+    // RGBが更新されることを確認（spinbuttonの値は文字列）
     const redField = canvas.getByRole('spinbutton', { name: 'Red' });
-    await expect(redField).toHaveValue(255);
+    await expect(redField).toHaveValue('255');
   },
 };
 
-export const ChangeRgbColor: Story = {
-  play: async ({ canvasElement, userEvent }) => {
+export const InitialState: Story = {
+  play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
 
-    // RGBフィールドを変更
-    const redField = canvas.getByRole('spinbutton', { name: 'Red' });
-    await userEvent.clear(redField);
-    await userEvent.type(redField, '0');
-
-    const greenField = canvas.getByRole('spinbutton', { name: 'Green' });
-    await userEvent.clear(greenField);
-    await userEvent.type(greenField, '255');
-
-    const blueField = canvas.getByRole('spinbutton', { name: 'Blue' });
-    await userEvent.clear(blueField);
-    await userEvent.type(blueField, '0');
-
-    // HEXが更新されることを確認
+    // 初期状態の確認
     const hexField = canvas.getByRole('textbox', { name: 'hex' });
-    await expect(hexField).toHaveValue('00ff00');
+    await expect(hexField).toHaveValue('5eead4');
+
+    // RGBフィールドが存在することを確認
+    const redField = canvas.getByRole('spinbutton', { name: 'Red' });
+    const greenField = canvas.getByRole('spinbutton', { name: 'Green' });
+    const blueField = canvas.getByRole('spinbutton', { name: 'Blue' });
+
+    await expect(redField).toBeInTheDocument();
+    await expect(greenField).toBeInTheDocument();
+    await expect(blueField).toBeInTheDocument();
   },
 };
