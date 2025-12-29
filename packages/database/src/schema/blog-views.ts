@@ -1,7 +1,7 @@
-import { index, integer, pgTable } from 'drizzle-orm/pg-core';
+import { index, integer, sqliteTable } from 'drizzle-orm/sqlite-core';
 import { blogs } from './blogs';
 
-export const blogViews = pgTable(
+export const blogViews = sqliteTable(
   'blog_views',
   {
     blogId: integer('blog_id')
@@ -10,5 +10,5 @@ export const blogViews = pgTable(
       .primaryKey(),
     views: integer('views').notNull().default(0),
   },
-  (table) => [index().on(table.blogId)],
+  (table) => [index('blog_views_blog_id_idx').on(table.blogId)],
 );

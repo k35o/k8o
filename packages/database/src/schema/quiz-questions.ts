@@ -1,24 +1,23 @@
 import { relations } from 'drizzle-orm';
 import {
   integer,
-  pgTable,
-  serial,
+  sqliteTable,
   text,
   uniqueIndex,
-} from 'drizzle-orm/pg-core';
+} from 'drizzle-orm/sqlite-core';
 import { quizzes } from './quizzes';
 
-export const quizQuestions = pgTable(
+export const quizQuestions = sqliteTable(
   'quiz_questions',
   {
-    id: serial('id').primaryKey(),
+    id: integer('id').primaryKey({ autoIncrement: true }),
     quizId: integer('quiz_id')
       .notNull()
       .references(() => quizzes.id),
     highlight: text('highlight'),
     question: text('question').notNull(),
   },
-  (table) => [uniqueIndex().on(table.quizId)],
+  (table) => [uniqueIndex('quiz_questions_quiz_id_idx').on(table.quizId)],
 );
 
 export const quizQuestionsRelations = relations(quizQuestions, ({ one }) => ({

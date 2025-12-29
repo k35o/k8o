@@ -1,9 +1,14 @@
 import { relations } from 'drizzle-orm';
-import { index, integer, pgTable, uniqueIndex } from 'drizzle-orm/pg-core';
+import {
+  index,
+  integer,
+  sqliteTable,
+  uniqueIndex,
+} from 'drizzle-orm/sqlite-core';
 import { tags } from './tags';
 import { talks } from './talks';
 
-export const talkTag = pgTable(
+export const talkTag = sqliteTable(
   'talk_tag',
   {
     talkId: integer('talk_id')
@@ -14,9 +19,9 @@ export const talkTag = pgTable(
       .references(() => tags.id),
   },
   (table) => [
-    index().on(table.talkId),
-    index().on(table.tagId),
-    uniqueIndex().on(table.talkId, table.tagId),
+    index('talk_tag_talk_id_idx').on(table.talkId),
+    index('talk_tag_tag_id_idx').on(table.tagId),
+    uniqueIndex('talk_tag_unique_idx').on(table.talkId, table.tagId),
   ],
 );
 

@@ -1,16 +1,21 @@
 import { relations } from 'drizzle-orm';
-import { pgTable, serial, text, uniqueIndex } from 'drizzle-orm/pg-core';
+import {
+  integer,
+  sqliteTable,
+  text,
+  uniqueIndex,
+} from 'drizzle-orm/sqlite-core';
 import { blogTag } from './blog-tag';
 import { serviceTag } from './service-tag';
 import { talkTag } from './talk-tag';
 
-export const tags = pgTable(
+export const tags = sqliteTable(
   'tags',
   {
-    id: serial('id').primaryKey(),
+    id: integer('id').primaryKey({ autoIncrement: true }),
     name: text('name').notNull(),
   },
-  (table) => [uniqueIndex().on(table.name)],
+  (table) => [uniqueIndex('tags_name_idx').on(table.name)],
 );
 
 export const tagsRelations = relations(tags, ({ many }) => ({

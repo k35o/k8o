@@ -2,18 +2,17 @@ import { relations } from 'drizzle-orm';
 import {
   index,
   integer,
-  pgTable,
-  serial,
+  sqliteTable,
   text,
   uniqueIndex,
-} from 'drizzle-orm/pg-core';
+} from 'drizzle-orm/sqlite-core';
 import { serviceTag } from './service-tag';
 import { serviceType } from './service-type';
 
-export const services = pgTable(
+export const services = sqliteTable(
   'services',
   {
-    id: serial('id').primaryKey(),
+    id: integer('id').primaryKey({ autoIncrement: true }),
     name: text('name').notNull(),
     slug: text('slug').notNull(),
     type: integer('type')
@@ -21,9 +20,9 @@ export const services = pgTable(
       .references(() => serviceType.id),
   },
   (table) => [
-    uniqueIndex().on(table.slug),
-    index().on(table.id),
-    index().on(table.type),
+    uniqueIndex('services_slug_idx').on(table.slug),
+    index('services_id_idx').on(table.id),
+    index('services_type_idx').on(table.type),
   ],
 );
 

@@ -1,31 +1,32 @@
 import {
-  boolean,
   index,
-  pgTable,
-  serial,
+  integer,
+  sqliteTable,
   text,
-  timestamp,
   uniqueIndex,
-} from 'drizzle-orm/pg-core';
+} from 'drizzle-orm/sqlite-core';
 
-export const subscribers = pgTable(
+export const subscribers = sqliteTable(
   'subscribers',
   {
-    id: serial('id').primaryKey(),
+    id: integer('id').primaryKey({ autoIncrement: true }),
     email: text('email').notNull(),
-    isVerified: boolean('is_verified').notNull().default(false),
+    isVerified: integer('is_verified', { mode: 'boolean' })
+      .notNull()
+      .default(false),
     verificationToken: text('verification_token'),
-    tokenExpiresAt: timestamp('token_expires_at', {
-      withTimezone: true,
-    }),
-    createdAt: timestamp('created_at', { withTimezone: true })
+    tokenExpiresAt: text('token_expires_at'),
+    createdAt: text('created_at')
       .notNull()
-      .defaultNow(),
-    updatedAt: timestamp('updated_at', { withTimezone: true })
+      .$defaultFn(() => new Date().toISOString()),
+    updatedAt: text('updated_at')
       .notNull()
-      .$onUpdate(() => new Date())
-      .defaultNow(),
-    deletedAt: timestamp('deleted_at', { withTimezone: true }),
+      .$defaultFn(() => new Date().toISOString())
+      .$onUpdate(() => new Date().toISOString()),
+    deletedAt: text('deleted_at'),
   },
-  (table) => [index().on(table.id), uniqueIndex('email').on(table.email)],
+  (table) => [
+    index('subscribers_id_idx').on(table.id),
+    uniqueIndex('subscribers_email_idx').on(table.email),
+  ],
 );
