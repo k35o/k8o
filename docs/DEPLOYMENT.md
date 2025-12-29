@@ -7,7 +7,7 @@
 - [デプロイメント概要](#デプロイメント概要)
 - [本番環境](#本番環境)
 - [Vercelへのデプロイ](#vercelへのデプロイ)
-- [データベース (Neon)](#データベース-neon)
+- [データベース (Turso)](#データベース-turso)
 - [CMS (MicroCMS)](#cms-microcms)
 - [メール (Resend)](#メール-resend)
 - [環境変数](#環境変数)
@@ -31,8 +31,8 @@ k8oは以下のサービスを使用してデプロイされています：
          ├──────────────────────┐
          │                      │
 ┌────────▼─────┐      ┌────────▼───────┐
-│     Neon     │      │   MicroCMS     │
-│  PostgreSQL  │      │     (CMS)      │
+│    Turso     │      │   MicroCMS     │
+│   (libSQL)   │      │     (CMS)      │
 └──────────────┘      └────────────────┘
                               │
                       ┌───────▼────────┐
@@ -48,7 +48,7 @@ k8oは以下のサービスを使用してデプロイされています：
 | サービス | 用途 | URL |
 |---------|------|-----|
 | Vercel | ホスティング | https://vercel.com/k35o/k8o |
-| Neon | PostgreSQL | https://console.neon.tech/app/projects/cool-king-69719941 |
+| Turso | libSQL (SQLite) | https://app.turso.tech/k8ome/databases/k8o |
 | MicroCMS | CMS | https://k35o.microcms.io |
 | Resend | Email | https://resend.com |
 
@@ -132,8 +132,9 @@ Vercelダッシュボードから：
 Vercelダッシュボードで以下を設定：
 
 ```bash
-# Database
-POSTGRES_URL="postgresql://..."
+# Database (Turso)
+TURSO_DATABASE_URL="libsql://xxx.turso.io"
+TURSO_AUTH_TOKEN="..."
 
 # CMS
 MICROCMS_API_ENDPOINT="https://k35o.microcms.io/api/v1"
@@ -176,53 +177,73 @@ vercel --prod
 }
 ```
 
-## データベース (Neon)
+## データベース (Turso)
 
 ### セットアップ
 
-1. **プロジェクト作成**
-
-Neon Console:
-- Create Project
-- プロジェクト名: `k8o`
-- Region: `AWS ap-northeast-1` (Tokyo)
-- PostgreSQL version: `18`
-
-2. **接続文字列の取得**
+1. **Turso CLIのインストール**
 
 ```bash
-POSTGRES_URL="postgresql://username:password@ep-xxx.ap-northeast-1.aws.neon.tech/main?sslmode=require"
+# macOS
+brew install tursodatabase/tap/turso
+
+# その他
+curl -sSfL https://get.tur.so/install.sh | bash
 ```
 
-3. **マイグレーション実行**
+2. **ログインとデータベース作成**
 
 ```bash
-# ローカルで接続文字列を設定
-export POSTGRES_URL="postgresql://..."
+# ログイン
+turso auth login
 
-# マイグレーション実行
+# データベース作成
+turso db create k8o --location nrt  # Tokyo region
+
+# 接続情報の取得
+turso db show k8o --url
+turso db tokens create k8o
+```
+
+3. **環境変数の設定**
+
+```bash
+TURSO_DATABASE_URL="libsql://k8o-xxx.turso.io"
+TURSO_AUTH_TOKEN="..."
+```
+
+4. **マイグレーション実行**
+
+```bash
 pnpm run -F @repo/database migrate
 ```
 
-### Neon Proxy (ローカル開発)
+### ローカル開発
 
-WebSocketプロキシを使用してローカルからNeonに接続：
+Turso CLIを使用してローカルでlibSQLサーバーを起動：
 
 ```bash
-# docker-compose.ymlに含まれている
-services:
-  neon-proxy:
-    image: ghcr.io/neondatabase/wsproxy:latest
-    ports:
-      - "5433:80"
+# ローカルサーバー起動（ポート8787）
+pnpm run -F @repo/database dev
+
+# 別ターミナルでマイグレーション実行
+pnpm run -F @repo/database migrate
+
+# Next.js開発サーバー起動
+pnpm run dev
+```
+
+ローカル開発時の環境変数（`.env.local`）：
+```bash
+TURSO_DATABASE_URL="http://127.0.0.1:8787"
+TURSO_AUTH_TOKEN=dummy
 ```
 
 ### バックアップ戦略
 
-Neonは自動バックアップを提供：
-- Point-in-time recovery (PITR): 7日間
-- 毎日の自動スナップショット
-- マニュアルスナップショットも可能
+Tursoは自動バックアップを提供：
+- Point-in-time recovery
+- ダッシュボードからのスナップショット取得
 
 ## CMS (MicroCMS)
 
@@ -327,8 +348,9 @@ export const VerificationEmail = ({ verificationUrl }: Props) => (
 ### 必須環境変数
 
 ```bash
-# Database
-POSTGRES_URL="postgresql://..."
+# Database (Turso)
+TURSO_DATABASE_URL="libsql://..."
+TURSO_AUTH_TOKEN="..."
 
 # CMS
 MICROCMS_API_ENDPOINT="https://k35o.microcms.io/api/v1"
@@ -510,10 +532,10 @@ vercel logs --follow
 
 ```bash
 # 接続文字列を確認
-echo $POSTGRES_URL
+echo $TURSO_DATABASE_URL
 
-# Neonダッシュボードで接続状態を確認
-# Connection Poolingが有効か確認
+# Tursoダッシュボードで接続状態を確認
+# turso db shell k8o で直接接続テスト
 ```
 
 ### 環境変数が反映されない

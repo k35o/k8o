@@ -13,9 +13,9 @@ pnpm run -F main storybook            # Storybook起動（ポート6006）
 pnpm run -F main email                # React Email開発サーバー（ポート3333）
 
 # データベース
+pnpm run -F @repo/database dev        # ローカルTursoサーバー起動
 pnpm run -F @repo/database generate   # マイグレーション生成
 pnpm run -F @repo/database migrate    # マイグレーション実行
-docker compose up -d                  # ローカルDB起動
 
 # テスト・品質
 pnpm run test                         # 全テスト実行
@@ -109,6 +109,6 @@ k8o/
 ## 本番環境
 
 - **Hosting**: Vercel
-- **Database**: Neon PostgreSQL
+- **Database**: Turso (libSQL/SQLite)
 - **CMS**: MicroCMS
 - **Email**: Resend
