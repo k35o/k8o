@@ -144,7 +144,7 @@ MICROCMS_API_KEY="..."
 RESEND_API_KEY="..."
 
 # Analytics
-GOOGLE_ANALYTICS_ID="G-..."
+NEXT_PUBLIC_GOOGLE_ANALYTICS_ID="G-..."
 
 # Vercel
 VERCEL_URL (自動設定)
@@ -361,7 +361,7 @@ RESEND_API_KEY="re_..."
 
 ```bash
 # Analytics
-GOOGLE_ANALYTICS_ID="G-..."
+NEXT_PUBLIC_GOOGLE_ANALYTICS_ID="G-..."
 
 # Deployment
 VERCEL_URL="k8o.dev" # Vercelが自動設定
@@ -490,7 +490,7 @@ export default function RootLayout({ children }: Props) {
   return (
     <html>
       <body>{children}</body>
-      <GoogleTagManager gtmId={process.env.GOOGLE_ANALYTICS_ID!} />
+      <GoogleTagManager gtmId={process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS_ID!} />
     </html>
   );
 }

@@ -56,7 +56,9 @@ export default function RootLayout({ children }: LayoutProps<'/'>) {
           <GlobalLayout>{children}</GlobalLayout>
         </AppProvider>
         <Analytics />
-        <GoogleAnalytics gaId={process.env['GOOGLE_ANALYTICS_ID'] ?? ''} />
+        <GoogleAnalytics
+          gaId={process.env['NEXT_PUBLIC_GOOGLE_ANALYTICS_ID'] ?? ''}
+        />
         <SpeedInsights />
       </body>
     </html>
