@@ -51,7 +51,7 @@ export async function GET(req: NextRequest) {
               name: comment.feedback.name,
             }
           : null,
-        createdAt: comment.createdAt,
+        createdAt: new Date(comment.createdAt),
       } satisfies Notification;
     }),
   );
@@ -74,7 +74,7 @@ export async function GET(req: NextRequest) {
 
   await db
     .update(db._schema.comments)
-    .set({ sentAt: new Date() })
+    .set({ sentAt: new Date().toISOString() })
     .where(
       inArray(
         db._schema.comments.id,

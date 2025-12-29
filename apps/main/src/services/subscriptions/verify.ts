@@ -36,7 +36,7 @@ export const sendVerificationEmail = async (
       .set({
         verificationToken,
         // 2時間後に期限切れ
-        tokenExpiresAt,
+        tokenExpiresAt: tokenExpiresAt.toISOString(),
       })
       .where(eq(db._schema.subscribers.id, subscriber.id));
     waitUntilResend(() => {
@@ -110,7 +110,7 @@ export const verifyEmail = async (
   }
   if (
     subscriber.verificationToken !== token ||
-    compareDate(subscriber.tokenExpiresAt, new Date()) === 'less'
+    compareDate(new Date(subscriber.tokenExpiresAt), new Date()) === 'less'
   ) {
     return {
       success: false,
