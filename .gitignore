@@ -57,3 +57,8 @@ dist
 # claude
 .claude/settings.local.json
 .plan/
+
+# turso local db
+local.db
+local.db-shm
+local.db-wal
