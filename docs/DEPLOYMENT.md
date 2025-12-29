@@ -146,9 +146,6 @@ RESEND_API_KEY="..."
 # Analytics
 GOOGLE_ANALYTICS_ID="G-..."
 
-# Admin
-ADMIN_ALLOWED_IPS="xxx.xxx.xxx.xxx,yyy.yyy.yyy.yyy"
-
 # Vercel
 VERCEL_URL (自動設定)
 ```
@@ -365,9 +362,6 @@ RESEND_API_KEY="re_..."
 ```bash
 # Analytics
 GOOGLE_ANALYTICS_ID="G-..."
-
-# Admin
-ADMIN_ALLOWED_IPS="xxx.xxx.xxx.xxx,yyy.yyy.yyy.yyy"
 
 # Deployment
 VERCEL_URL="k8o.dev" # Vercelが自動設定

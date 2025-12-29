@@ -97,18 +97,6 @@ const sanitized = DOMPurify.sanitize(userInput);
 
 #### 2. 認証の不備
 
-✅ Admin APIの保護：
-
-```typescript
-// IP制限
-const allowedIPs = process.env.ADMIN_ALLOWED_IPS?.split(',') || [];
-const clientIP = request.headers.get('x-forwarded-for');
-
-if (!allowedIPs.includes(clientIP)) {
-  return new Response('Unauthorized', { status: 401 });
-}
-```
-
 ✅ トークンベースの認証：
 
 ```typescript
