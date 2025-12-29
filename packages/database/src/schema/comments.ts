@@ -1,31 +1,27 @@
 import { relations } from 'drizzle-orm';
-import {
-  index,
-  integer,
-  pgTable,
-  serial,
-  text,
-  timestamp,
-} from 'drizzle-orm/pg-core';
+import { index, integer, sqliteTable, text } from 'drizzle-orm/sqlite-core';
 import { blogComment } from './blog-comment';
 import { feedbacks } from './feedback';
 
-export const comments = pgTable(
+export const comments = sqliteTable(
   'comments',
   {
-    id: serial('id').primaryKey(),
+    id: integer('id').primaryKey({ autoIncrement: true }),
     message: text('message'),
-    sentAt: timestamp('sent_at', { withTimezone: true }),
+    sentAt: text('sent_at'),
     feedbackId: integer('feedback_id').references(() => feedbacks.id),
-    createdAt: timestamp('created_at', { withTimezone: true })
+    createdAt: text('created_at')
       .notNull()
-      .defaultNow(),
-    updatedAt: timestamp('updated_at', { withTimezone: true })
+      .$defaultFn(() => new Date().toISOString()),
+    updatedAt: text('updated_at')
       .notNull()
-      .$onUpdate(() => new Date())
-      .defaultNow(),
+      .$defaultFn(() => new Date().toISOString())
+      .$onUpdate(() => new Date().toISOString()),
   },
-  (table) => [index().on(table.id), index().on(table.feedbackId)],
+  (table) => [
+    index('comments_id_idx').on(table.id),
+    index('comments_feedback_id_idx').on(table.feedbackId),
+  ],
 );
 
 export const commentsRelations = relations(comments, ({ one }) => ({

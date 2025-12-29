@@ -70,7 +70,7 @@ describe('feedback', () => {
       id: 1,
       slug: 'test-slug',
       published: true,
-      createdAt: new Date(),
+      createdAt: new Date().toISOString(),
     };
     const mockInsertResult = [{ insertedId: 123 }];
 
@@ -95,7 +95,7 @@ describe('feedback', () => {
       id: 1,
       slug: 'test-slug',
       published: true,
-      createdAt: new Date(),
+      createdAt: new Date().toISOString(),
     };
     const mockInsertResult = [{ insertedId: 123 }];
 

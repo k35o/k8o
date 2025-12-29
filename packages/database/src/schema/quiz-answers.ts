@@ -1,18 +1,18 @@
 import { relations } from 'drizzle-orm';
-import { index, integer, pgTable, serial, text } from 'drizzle-orm/pg-core';
+import { index, integer, sqliteTable, text } from 'drizzle-orm/sqlite-core';
 import { quizzes } from './quizzes';
 
-export const quizAnswers = pgTable(
+export const quizAnswers = sqliteTable(
   'quiz_answers',
   {
-    id: serial('id').primaryKey(),
+    id: integer('id').primaryKey({ autoIncrement: true }),
     quizId: integer('quiz_id')
       .notNull()
       .references(() => quizzes.id),
     answer: text('answer').notNull(),
     explanation: text('explanation'),
   },
-  (table) => [index().on(table.quizId)],
+  (table) => [index('quiz_answers_quiz_id_idx').on(table.quizId)],
 );
 
 export const quizAnswersRelations = relations(quizAnswers, ({ one }) => ({

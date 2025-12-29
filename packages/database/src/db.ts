@@ -1,24 +1,16 @@
-import './env-config';
-import { neonConfig, Pool } from '@neondatabase/serverless';
+import { createClient } from '@libsql/client/http';
 import { type AnyColumn, sql } from 'drizzle-orm';
-import { drizzle } from 'drizzle-orm/neon-serverless';
-import { WebSocket } from 'ws';
+import { drizzle } from 'drizzle-orm/libsql/http';
 import { relations, schema } from './schema';
 
-const DATABASE_URL = process.env['POSTGRES_URL'] ?? '';
+const authToken = process.env['TURSO_AUTH_TOKEN'];
 
-if (process.env['NODE_ENV'] === 'production') {
-  neonConfig.webSocketConstructor = WebSocket;
-  neonConfig.poolQueryViaFetch = true;
-} else {
-  neonConfig.wsProxy = (host) => `${host}:5433/v1`;
-  neonConfig.useSecureWebSocket = false;
-  neonConfig.pipelineTLS = false;
-  neonConfig.pipelineConnect = false;
-}
+const client = createClient({
+  url: process.env['TURSO_DATABASE_URL'] ?? '',
+  ...(authToken && { authToken }),
+});
 
-const pool = new Pool({ connectionString: DATABASE_URL });
-const drizzleDb = drizzle(pool, {
+const drizzleDb = drizzle(client, {
   schema: {
     ...schema,
     ...relations,

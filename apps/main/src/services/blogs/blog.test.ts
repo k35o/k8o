@@ -28,7 +28,7 @@ describe('blog service', () => {
         id: 1,
         slug: 'test-slug',
         published: true,
-        createdAt: new Date(),
+        createdAt: new Date().toISOString(),
         blogTag: [
           {
             tag: {
@@ -76,7 +76,7 @@ describe('blog service', () => {
         id: 1,
         slug: 'test-slug',
         published: true,
-        createdAt: new Date(),
+        createdAt: new Date().toISOString(),
         blogTag: [],
         talks: [],
       };

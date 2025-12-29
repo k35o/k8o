@@ -1,28 +1,26 @@
 import { relations } from 'drizzle-orm';
 import {
-  boolean,
-  pgTable,
-  serial,
+  integer,
+  sqliteTable,
   text,
-  timestamp,
   uniqueIndex,
-} from 'drizzle-orm/pg-core';
+} from 'drizzle-orm/sqlite-core';
 import { blogComment } from './blog-comment';
 import { blogTag } from './blog-tag';
 import { blogViews } from './blog-views';
 import { talks } from './talks';
 
-export const blogs = pgTable(
+export const blogs = sqliteTable(
   'blogs',
   {
-    id: serial('id').primaryKey(),
+    id: integer('id').primaryKey({ autoIncrement: true }),
     slug: text('slug').notNull(),
-    published: boolean('published').notNull(),
-    createdAt: timestamp('created_at', { withTimezone: true })
+    published: integer('published', { mode: 'boolean' }).notNull(),
+    createdAt: text('created_at')
       .notNull()
-      .defaultNow(),
+      .$defaultFn(() => new Date().toISOString()),
   },
-  (table) => [uniqueIndex().on(table.slug)],
+  (table) => [uniqueIndex('blogs_slug_idx').on(table.slug)],
 );
 
 export const blogsRelations = relations(blogs, ({ one, many }) => ({

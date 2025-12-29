@@ -16,6 +16,7 @@
   "packageManager": "pnpm@10.26.1",
   "scripts": {
     "dev": "turbo dev",
+    "dev:db": "turso dev --db-file local.db",
     "build": "turbo build",
     "check": "biome check",
     "check:write": "biome check --write --unsafe",

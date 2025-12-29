@@ -1,1 +1,0 @@
-ALTER TABLE "blogs" ALTER COLUMN "published" DROP DEFAULT;

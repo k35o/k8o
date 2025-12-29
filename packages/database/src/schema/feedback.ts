@@ -1,9 +1,9 @@
 import { relations } from 'drizzle-orm';
-import { pgTable, serial, text } from 'drizzle-orm/pg-core';
+import { integer, sqliteTable, text } from 'drizzle-orm/sqlite-core';
 import { comments } from './comments';
 
-export const feedbacks = pgTable('feedbacks', {
-  id: serial('id').primaryKey(),
+export const feedbacks = sqliteTable('feedbacks', {
+  id: integer('id').primaryKey({ autoIncrement: true }),
   name: text('name').notNull(),
 });
 
