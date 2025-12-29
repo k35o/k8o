@@ -14,8 +14,8 @@
           "notNull": true,
           "autoincrement": false
         },
-        "commend_id": {
-          "name": "commend_id",
+        "comment_id": {
+          "name": "comment_id",
           "type": "integer",
           "primaryKey": false,
           "notNull": true,
@@ -33,7 +33,7 @@
         "blog_comment_comment_id_idx": {
           "name": "blog_comment_comment_id_idx",
           "columns": [
-            "commend_id"
+            "comment_id"
           ],
           "isUnique": false
         }
@@ -52,12 +52,12 @@
           "onDelete": "no action",
           "onUpdate": "no action"
         },
-        "blog_comment_commend_id_comments_id_fk": {
-          "name": "blog_comment_commend_id_comments_id_fk",
+        "blog_comment_comment_id_comments_id_fk": {
+          "name": "blog_comment_comment_id_comments_id_fk",
           "tableFrom": "blog_comment",
           "tableTo": "comments",
           "columnsFrom": [
-            "commend_id"
+            "comment_id"
           ],
           "columnsTo": [
             "id"
@@ -163,15 +163,7 @@
           "default": 0
         }
       },
-      "indexes": {
-        "blog_views_blog_id_idx": {
-          "name": "blog_views_blog_id_idx",
-          "columns": [
-            "blog_id"
-          ],
-          "isUnique": false
-        }
-      },
+      "indexes": {},
       "foreignKeys": {
         "blog_views_blog_id_blogs_id_fk": {
           "name": "blog_views_blog_id_blogs_id_fk",

@@ -9,7 +9,7 @@ export const blogComment = sqliteTable(
     blogId: integer('blog_id')
       .notNull()
       .references(() => blogs.id),
-    commentId: integer('commend_id')
+    commentId: integer('comment_id')
       .notNull()
       .references(() => comments.id),
   },

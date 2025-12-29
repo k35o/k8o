@@ -1,12 +1,12 @@
 CREATE TABLE `blog_comment` (
 	`blog_id` integer NOT NULL,
-	`commend_id` integer NOT NULL,
+	`comment_id` integer NOT NULL,
 	FOREIGN KEY (`blog_id`) REFERENCES `blogs`(`id`) ON UPDATE no action ON DELETE no action,
-	FOREIGN KEY (`commend_id`) REFERENCES `comments`(`id`) ON UPDATE no action ON DELETE no action
+	FOREIGN KEY (`comment_id`) REFERENCES `comments`(`id`) ON UPDATE no action ON DELETE no action
 );
 --> statement-breakpoint
 CREATE INDEX `blog_comment_blog_id_idx` ON `blog_comment` (`blog_id`);--> statement-breakpoint
-CREATE INDEX `blog_comment_comment_id_idx` ON `blog_comment` (`commend_id`);--> statement-breakpoint
+CREATE INDEX `blog_comment_comment_id_idx` ON `blog_comment` (`comment_id`);--> statement-breakpoint
 CREATE TABLE `blog_tag` (
 	`blog_id` integer NOT NULL,
 	`tag_id` integer NOT NULL,
@@ -23,7 +23,6 @@ CREATE TABLE `blog_views` (
 	FOREIGN KEY (`blog_id`) REFERENCES `blogs`(`id`) ON UPDATE no action ON DELETE no action
 );
 --> statement-breakpoint
-CREATE INDEX `blog_views_blog_id_idx` ON `blog_views` (`blog_id`);--> statement-breakpoint
 CREATE TABLE `blogs` (
 	`id` integer PRIMARY KEY AUTOINCREMENT NOT NULL,
 	`slug` text NOT NULL,
