@@ -17,21 +17,19 @@
     "generate": "drizzle-kit generate",
     "generate:custom": "drizzle-kit generate --custom",
     "migrate": "drizzle-kit migrate",
+    "seed": "node src/seed.ts",
     "export:schema": "drizzle-kit export > ./schema.sql",
-    "build:erd": "liam erd build --input ./schema.sql --format postgres",
+    "build:erd": "liam erd build --input ./schema.sql --format sqlite",
     "preview:erd": "pnpm run build:erd && pnpm dlx http-server dist"
   },
   "dependencies": {
-    "@neondatabase/serverless": "1.0.2",
+    "@libsql/client": "0.15.15",
     "@next/env": "16.1.0",
-    "drizzle-orm": "0.45.1",
-    "ws": "8.18.3"
+    "drizzle-orm": "0.45.1"
   },
   "devDependencies": {
     "@liam-hq/cli": "0.7.24",
     "@repo/typescript-config": "workspace:*",
-    "@types/ws": "8.18.1",
-    "drizzle-kit": "0.31.8",
-    "postgres": "3.4.7"
+    "drizzle-kit": "0.31.8"
   }
 }
