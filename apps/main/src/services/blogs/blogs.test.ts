@@ -30,7 +30,7 @@ describe('blogs service', () => {
           id: 1,
           slug: 'blog-1',
           published: true,
-          createdAt: new Date(),
+          createdAt: new Date().toISOString(),
           blogTag: [
             {
               tag: {
@@ -48,7 +48,7 @@ describe('blogs service', () => {
           id: 2,
           slug: 'blog-2',
           published: true,
-          createdAt: new Date(),
+          createdAt: new Date().toISOString(),
           blogTag: [
             {
               tag: {
@@ -99,7 +99,7 @@ describe('blogs service', () => {
           id: 2,
           slug: 'blog-2',
           published: true,
-          createdAt: new Date('2023-01-02'),
+          createdAt: '2023-01-02T00:00:00.000Z',
           blogTag: [
             {
               tag: {
@@ -119,7 +119,7 @@ describe('blogs service', () => {
           id: 3,
           slug: 'blog-3',
           published: true,
-          createdAt: new Date('2023-01-03'),
+          createdAt: '2023-01-03T00:00:00.000Z',
           blogTag: [
             {
               tag: {
@@ -150,7 +150,7 @@ describe('blogs service', () => {
         id: 2,
         slug: 'blog-2',
         title: 'Test Blog',
-        createdAt: new Date('2023-01-01'),
+        createdAt: mockMetadata.createdAt,
         tags: ['TypeScript', 'React'],
       });
     });
@@ -166,7 +166,7 @@ describe('blogs service', () => {
           id: 1,
           slug: 'blog-1',
           published: true,
-          createdAt: new Date('2023-01-01'),
+          createdAt: '2023-01-01T00:00:00.000Z',
           blogTag: [
             {
               tag: {
@@ -180,7 +180,7 @@ describe('blogs service', () => {
           id: 2,
           slug: 'blog-2',
           published: true,
-          createdAt: new Date('2023-01-02'),
+          createdAt: '2023-01-02T00:00:00.000Z',
           blogTag: [
             {
               tag: {
@@ -226,7 +226,7 @@ describe('blogs service', () => {
         id: i + 1,
         slug: `blog-${(i + 1).toString()}`,
         published: true,
-        createdAt: new Date(`2023-01-${String(i + 1).padStart(2, '0')}`),
+        createdAt: `2023-01-${String(i + 1).padStart(2, '0')}T00:00:00.000Z`,
         blogTag: [
           {
             tag: {
