@@ -12,8 +12,43 @@
     {
       "idx": 1,
       "version": "6",
-      "when": 1766984800000,
-      "tag": "0001_initial_data",
+      "when": 1766984800001,
+      "tag": "0001_tags",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "6",
+      "when": 1766984800002,
+      "tag": "0002_quizzes",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "6",
+      "when": 1766984800003,
+      "tag": "0003_blogs",
+      "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "6",
+      "when": 1766984800004,
+      "tag": "0004_services",
+      "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "6",
+      "when": 1766984800005,
+      "tag": "0005_talks",
+      "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "6",
+      "when": 1766984800006,
+      "tag": "0006_feedbacks",
       "breakpoints": true
     }
   ]
