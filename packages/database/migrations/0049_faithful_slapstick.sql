@@ -1,1 +1,0 @@
-UPDATE blogs SET published = true WHERE id = 30;
