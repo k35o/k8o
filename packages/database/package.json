@@ -17,7 +17,6 @@
     "generate": "drizzle-kit generate",
     "generate:custom": "drizzle-kit generate --custom",
     "migrate": "drizzle-kit migrate",
-    "seed": "node src/seed.ts",
     "export:schema": "drizzle-kit export > ./schema.sql",
     "build:erd": "liam erd build --input ./schema.sql --format sqlite",
     "preview:erd": "pnpm run build:erd && pnpm dlx http-server dist"
