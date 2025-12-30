@@ -1,0 +1,197 @@
+---
+title: 'Performance Event Timing APIで操作の待ち時間を計測する'
+description: 'Performance Event Timing APIはユーザーの操作によって発生したイベントの待ち時間を計測するためのAPIです。クリックやキーボード等の操作で発生したイベントの処理時間を計測し、INP（Interaction to Next Paint）の計測に利用されます。'
+createdAt: 2025-12-30
+updatedAt: 2025-12-30
+---
+
+import { BaselineStatus } from '@k8o/arte-odyssey/baseline-status';
+import { EventTimingDemo, Playground } from '@/app/_components/playgrounds';
+
+# Performance Event Timing APIで操作の待ち時間を計測する
+
+<BaselineStatus featureId="event-timing"></BaselineStatus>
+
+## はじめに
+
+Webサイトの体験で、ユーザーの操作に対する応答速度は重要な指標です。ボタンをクリックしてから画面が更新されるまでの時間が長いと、ユーザーはストレスを感じます。
+
+しかし、この指標は、イベントハンドラの実行時間だけでなくブラウザが画面を更新するまでの時間も含めて計測する必要があるため、正確に計測するのは困難です。
+
+この問題を解決するために、Performance Event Timing APIというAPIが導入されました。
+Baseline 2025で導入されており、クリックやキーボード等の操作で発生したイベントの待ち時間を計測し、Web VitalsのINP（Interaction to Next Paint）の計測にも利用できます。
+
+## Performance Event Timing API
+
+Performance Event Timing APIは、ユーザーの操作で発生したイベントの待ち時間の分析結果を`PerformanceEventTiming`インターフェースで提供します。
+
+### PerformanceEntryから継承したプロパティ
+
+`PerformanceEventTiming`は`PerformanceEntry`を継承しており、`startTime`、`duration`、`entryType`、`name`のプロパティを持ちます。
+
+#### startTime
+
+ユーザーの操作が行われた時間、イベントが発生した時刻を記録した値です。
+
+計測の基準に使われる頻出のプロパティです。
+
+#### duration
+
+イベントが発生して（`startTime`）から次の「描画」までの時間をミリ秒単位で返します。値は8の倍数に丸められます。
+
+#### entryType
+
+`PerformanceEventTiming`の場合は、すべてのイベントの待ち時間を対象にするときは`"event"`、最初の入力イベントのみを対象にするときは`"first-input"`が返されます。
+
+#### name
+
+イベントの種別を返します。
+
+`PerformanceEventTiming`が利用可能なイベントは以下の通りです。
+
+- クリック: `auxclick`, `click`, `contextmenu`, `dblclick`
+- コンポジション: `compositionend`, `compositionstart`, `compositionupdate`
+- ドラッグ: `dragend`, `dragenter`, `dragleave`, `dragover`, `dragstart`, `drop`
+- 入力: `beforeinput`, `input`
+- キーボード: `keydown`, `keypress`, `keyup`
+- マウス: `mousedown`, `mouseenter`, `mouseleave`, `mouseout`, `mouseover`, `mouseup`
+- ポインター: `pointerover`, `pointerenter`, `pointerdown`, `pointerup`, `pointercancel`, `pointerout`, `pointerleave`, `gotpointercapture`, `lostpointercapture`
+- タッチ: `touchstart`, `touchend`, `touchcancel`
+
+### PerformanceEventTiming独自のプロパティ
+
+また、独自のプロパティとして、`cancelable`、`interactionId`、`processingEnd`、`processingStart`、`target`を持ちます。
+
+#### cancelable
+
+イベントを取り消し可能かどうかを示す真偽値です。
+
+取消可能とは、`Event.preventDefault()`を呼び出してイベントのデフォルト動作を防止できることを意味します。
+つまりこの値は、計測中のイベントの`Event.cancelable`と同じ値を返します。
+
+#### interactionId
+
+ユーザーのインタラクションを識別するための一意なIDを返します。
+
+ほとんどのイベントは識別の必要がないので0を返しますが、一度の操作で複数のイベントが発火する「`pointerdown`、`pointerup`、`click`」や「`keydown`、`keyup`」イベントは同じ`interactionId`を共有します。
+
+#### processingStart
+
+イベントハンドラの実行が開始された時刻を返します。
+
+`startTime`との差をとることで、ユーザー操作からイベントハンドラの実行が開始されるまでの時間を取得できます。
+
+#### processingEnd
+
+イベントハンドラの実行が完了した時刻を返します。
+
+登録されているイベントハンドラがない場合は、`processingStart`と同じ値になります。
+
+`processingStart`との差をとることで、イベントハンドラの処理時間を取得できます。
+
+#### target
+
+イベントのターゲット要素を返します。ただし、ターゲットがDOMから削除された場合や、Shadow DOM内にある場合は`null`を返します。
+
+### 基本的な使い方
+
+紹介した`PerformanceEventTiming`は、`PerformanceObserver`を使用して取得します。
+
+```ts
+const interactionMap = new Map();
+
+const observer = new PerformanceObserver((list) => {
+  for (const entry of list.getEntries()) {
+    // interactionIdがないイベントはスキップ
+    if (!entry.interactionId) continue;
+
+    // 同一インタラクションの中で最大のdurationを持つentryを記録
+    const existing = interactionMap.get(entry.interactionId);
+    if (!existing || entry.duration > existing.duration) {
+      interactionMap.set(entry.interactionId, entry);
+    }
+  }
+});
+
+observer.observe({
+  // Event Timing APIを使用する時に指定される
+  type: 'event',
+  buffered: true,
+  // durationThresholdを指定して、16ms以上のentryのみ取得
+  // デフォルトは104msなので、通常の操作がほとんどフィルタリングされてしまう
+  durationThreshold: 16,
+});
+```
+
+記録した`entry`から、各タイミングの内訳を計算できます。
+
+```ts
+for (const entry of interactionMap.values()) {
+  // 入力遅延: イベント発生からハンドラ実行開始まで
+  const inputDelay = entry.processingStart - entry.startTime;
+
+  // 処理時間: ハンドラの実行時間
+  const processingTime = entry.processingEnd - entry.processingStart;
+
+  // 描画遅延: ハンドラ実行完了から次の描画まで
+  const presentationDelay = entry.duration - (entry.processingEnd - entry.startTime);
+
+  console.log(`${entry.name}: ${entry.duration}ms`);
+  console.log(`入力遅延: ${inputDelay}ms`);
+  console.log(`処理時間: ${processingTime}ms`);
+  console.log(`描画遅延: ${presentationDelay}ms`);
+}
+```
+
+<Playground>
+  <EventTimingDemo />
+</Playground>
+
+## INP
+
+INP（Interaction to Next Paint）は、ページのライフサイクル全体を通じて最も遅いインタラクションの待ち時間を測定するCore Web Vitalsの指標です。
+
+INPはPerformance Event Timing APIの`duration`を監視することで計測できます。
+
+```ts
+const interactionMap = new Map();
+
+const observer = new PerformanceObserver((list) => {
+  for (const entry of list.getEntries()) {
+    if (!entry.interactionId) continue;
+
+    const existingEntry = interactionMap.get(entry.interactionId);
+    if (!existingEntry || entry.duration > existingEntry.duration) {
+      interactionMap.set(entry.interactionId, entry);
+    }
+  }
+});
+
+observer.observe({ type: 'event', buffered: true });
+```
+
+### FIDの計測
+
+`type: 'first-input'`を指定すると、最初の入力イベントのみを取得できます。つまり、FID（First Input Delay）を計測できます。FIDは2024年9月にCore Web VitalsからINPに置き換えられた指標です。
+
+```ts
+const observer = new PerformanceObserver((list) => {
+  for (const entry of list.getEntries()) {
+    const fid = entry.processingStart - entry.startTime;
+    console.log(`FID: ${fid}ms`);
+  }
+});
+
+observer.observe({ type: 'first-input', buffered: true });
+```
+
+FIDの計測なので、上記のコードではユーザーが最初にページを操作したときから、イベント ハンドラの処理を開始するまでの時間を測定しています。
+
+## おわりに
+
+Performance Event Timing APIを紹介しました。
+
+ユーザー操作に対する応答性は、Webサイトの使いやすさに直結する重要な要素です。Core Web VitalsにINPが含まれていることからも、その重要性がわかります。
+Performance Event Timing APIを使うことで、入力遅延、処理時間、描画遅延をそれぞれ分解して計測でき、パフォーマンスのボトルネックを特定しやすくなります。
+
+Baseline 2025に加わったばかりで、まだ対応していないブラウザもありますが、アプリケーションの機能に紐づかない機能ですのでパフォーマンスの調査では積極的に活用していきたいです。
