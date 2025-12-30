@@ -218,5 +218,6 @@ export const useControlPanel = () => {
     keyDownHandler,
     borderRadius,
     position,
+    setPosition,
   };
 };

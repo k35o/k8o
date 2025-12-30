@@ -6,6 +6,7 @@ import { CopyIcon } from '@k8o/arte-odyssey/icons';
 import { useToast } from '@k8o/arte-odyssey/toast';
 import { cn } from '@repo/helpers/cn';
 import type { FC, KeyboardEvent, MouseEvent, TouchEvent } from 'react';
+import { TemplateSelector } from '../template-selector/template-selector';
 import { useControlPanel } from './use-control-panel';
 
 const OperateButton: FC<{
@@ -62,12 +63,14 @@ export const ControlPanel: FC = () => {
     keyDownHandler,
     borderRadius,
     position,
+    setPosition,
   } = useControlPanel();
   const { writeClipboard } = useClipboard();
   const { onOpen } = useToast();
 
   return (
     <div className="flex flex-col items-center justify-center gap-8">
+      <TemplateSelector currentPosition={position} onSelect={setPosition} />
       <div
         className="relative size-64 border-2 border-borderPrimar border-dashed sm:size-96"
         ref={containerRef}
