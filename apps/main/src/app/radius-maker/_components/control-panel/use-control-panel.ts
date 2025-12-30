@@ -8,20 +8,14 @@ import {
   useRef,
   useState,
 } from 'react';
+import type { RadiusPosition } from '../../_types/radius-position';
+import { positionToBorderRadius } from '../../_utils/position-to-border-radius';
 
-type Position =
-  | 'topLeftX'
-  | 'topLeftY'
-  | 'topRightX'
-  | 'topRightY'
-  | 'bottomLeftX'
-  | 'bottomLeftY'
-  | 'bottomRightX'
-  | 'bottomRightY';
+type Position = keyof RadiusPosition;
 
 export const useControlPanel = () => {
   const containerRef = useRef<HTMLDivElement>(null);
-  const [position, setPosition] = useState<Record<Position, number>>({
+  const [position, setPosition] = useState<RadiusPosition>({
     topLeftX: 63,
     topLeftY: 37,
     topRightX: 24,
@@ -35,7 +29,7 @@ export const useControlPanel = () => {
   const [aspectRatio, setAspectRatio] = useState(1); // 0.5〜2.0（横幅/縦幅）
 
   const borderRadius = useMemo(() => {
-    return `${position.topLeftX.toString()}% ${position.topRightX.toString()}% ${position.bottomRightX.toString()}% ${position.bottomLeftX.toString()}% / ${position.topLeftY.toString()}% ${position.topRightY.toString()}% ${position.bottomRightY.toString()}% ${position.bottomLeftY.toString()}%`;
+    return positionToBorderRadius(position);
   }, [position]);
 
   const mouseDownHandler = useCallback(

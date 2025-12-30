@@ -2,18 +2,8 @@
 
 import { cn } from '@repo/helpers/cn';
 import type { FC } from 'react';
-
-// 8方向の角丸位置を定義
-type RadiusPosition = {
-  topLeftX: number;
-  topLeftY: number;
-  topRightX: number;
-  topRightY: number;
-  bottomLeftX: number;
-  bottomLeftY: number;
-  bottomRightX: number;
-  bottomRightY: number;
-};
+import type { RadiusPosition } from '../../_types/radius-position';
+import { positionToBorderRadius } from '../../_utils/position-to-border-radius';
 
 // テンプレート定義
 type RadiusTemplate = {
@@ -129,11 +119,6 @@ const TEMPLATES: RadiusTemplate[] = [
   },
 ];
 
-// border-radius文字列を生成（use-control-panelと同じ計算）
-const positionToBorderRadius = (position: RadiusPosition): string => {
-  return `${position.topLeftX}% ${position.topRightX}% ${position.bottomRightX}% ${position.bottomLeftX}% / ${position.topLeftY}% ${position.topRightY}% ${position.bottomRightY}% ${position.bottomLeftY}%`;
-};
-
 // ランダムな位置を生成
 const generateRandomPosition = (): RadiusPosition => {
   return {
@@ -164,7 +149,7 @@ export const TemplateSelector: FC<Props> = ({ onSelect, currentPosition }) => {
   };
 
   return (
-    <div className="flex w-full max-w-96 flex-col gap-3">
+    <div className="flex w-full flex-col gap-3">
       <p className="font-bold text-fg-base text-sm">テンプレート</p>
       <div className="grid grid-cols-3 gap-1">
         {TEMPLATES.map((template) => {

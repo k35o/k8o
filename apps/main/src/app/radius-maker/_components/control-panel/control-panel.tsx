@@ -261,7 +261,7 @@ export const ControlPanel: FC = () => {
           variable="tertiary"
         />
       </div>
-      <div className="flex w-full max-w-96 flex-col gap-4">
+      <div className="flex w-full flex-col gap-4">
         <FormControl
           label="縦横比"
           renderInput={(props) => (
