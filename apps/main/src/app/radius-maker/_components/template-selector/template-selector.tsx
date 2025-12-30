@@ -163,16 +163,16 @@ export const TemplateSelector: FC<Props> = ({ onSelect, currentPosition }) => {
   };
 
   return (
-    <div className="flex flex-col gap-4">
-      <p className="font-bold text-fg-base text-lg">テンプレート</p>
-      <div className="grid grid-cols-3 gap-3 sm:grid-cols-5 md:grid-cols-9">
+    <div className="flex w-full flex-col gap-3">
+      <p className="font-bold text-fg-base text-sm">テンプレート</p>
+      <div className="-mx-4 flex gap-2 overflow-x-auto px-4 pb-2 sm:mx-0 sm:flex-wrap sm:overflow-x-visible sm:px-0 sm:pb-0">
         {TEMPLATES.map((template) => {
           const isSelected = isMatchingTemplate(template);
           return (
             <button
               aria-pressed={isSelected}
               className={cn(
-                'group flex flex-col items-center gap-2 rounded-lg p-3 transition-all',
+                'group flex shrink-0 flex-col items-center gap-1.5 rounded-lg p-2 transition-all',
                 'hover:bg-bg-mute',
                 'focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-primary-fg',
                 isSelected && 'bg-bg-mute ring-2 ring-primary-fg',
@@ -184,7 +184,7 @@ export const TemplateSelector: FC<Props> = ({ onSelect, currentPosition }) => {
               <div
                 aria-hidden="true"
                 className={cn(
-                  'size-12 border-2 transition-all',
+                  'size-10 border-2 transition-all sm:size-12',
                   isSelected
                     ? 'border-primary-fg bg-primary-fg'
                     : 'border-border-base bg-bg-mute group-hover:border-fg-mute',

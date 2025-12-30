@@ -226,19 +226,24 @@ export const ControlPanel: FC = () => {
           variable="tertiary"
         />
       </div>
-      <div className="flex flex-wrap items-center justify-center gap-4">
-        <p className="font-bold text-2xl">{borderRadius}</p>
-        <IconButton
-          bg="base"
-          label="値をコピーする"
-          onClick={() =>
-            void writeClipboard(`border-radius: ${borderRadius}`).then(() => {
-              onOpen('success', 'クリップボードにコピーしました');
-            })
-          }
-        >
-          <CopyIcon />
-        </IconButton>
+      <div className="flex w-full max-w-96 flex-col gap-2">
+        <div className="flex items-center justify-between gap-2">
+          <p className="text-fg-mute text-sm">border-radius</p>
+          <IconButton
+            bg="base"
+            label="値をコピーする"
+            onClick={() =>
+              void writeClipboard(`border-radius: ${borderRadius}`).then(() => {
+                onOpen('success', 'クリップボードにコピーしました');
+              })
+            }
+          >
+            <CopyIcon />
+          </IconButton>
+        </div>
+        <code className="block overflow-x-auto rounded-md bg-bg-mute p-3 font-mono text-fg-base text-sm">
+          {borderRadius}
+        </code>
       </div>
     </div>
   );
