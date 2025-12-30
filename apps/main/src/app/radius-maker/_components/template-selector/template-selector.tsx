@@ -1,5 +1,6 @@
 'use client';
 
+import { Button } from '@k8o/arte-odyssey/button';
 import { cn } from '@repo/helpers/cn';
 import type { FC } from 'react';
 
@@ -39,18 +40,18 @@ const TEMPLATES: RadiusTemplate[] = [
   {
     name: '角丸',
     position: {
-      topLeftX: 20,
-      topLeftY: 20,
-      topRightX: 20,
-      topRightY: 20,
-      bottomLeftX: 20,
-      bottomLeftY: 20,
-      bottomRightX: 20,
-      bottomRightY: 20,
+      topLeftX: 10,
+      topLeftY: 10,
+      topRightX: 10,
+      topRightY: 10,
+      bottomLeftX: 10,
+      bottomLeftY: 10,
+      bottomRightX: 10,
+      bottomRightY: 10,
     },
   },
   {
-    name: '円形',
+    name: '円',
     position: {
       topLeftX: 50,
       topLeftY: 50,
@@ -63,33 +64,33 @@ const TEMPLATES: RadiusTemplate[] = [
     },
   },
   {
-    name: '楕円（横）',
+    name: '横長',
     position: {
       topLeftX: 50,
-      topLeftY: 25,
+      topLeftY: 30,
       topRightX: 50,
-      topRightY: 25,
+      topRightY: 30,
       bottomLeftX: 50,
-      bottomLeftY: 25,
+      bottomLeftY: 30,
       bottomRightX: 50,
-      bottomRightY: 25,
+      bottomRightY: 30,
     },
   },
   {
-    name: '楕円（縦）',
+    name: '縦長',
     position: {
-      topLeftX: 25,
+      topLeftX: 30,
       topLeftY: 50,
-      topRightX: 25,
+      topRightX: 30,
       topRightY: 50,
-      bottomLeftX: 25,
+      bottomLeftX: 30,
       bottomLeftY: 50,
-      bottomRightX: 25,
+      bottomRightX: 30,
       bottomRightY: 50,
     },
   },
   {
-    name: 'カプセル（上）',
+    name: '上丸',
     position: {
       topLeftX: 50,
       topLeftY: 50,
@@ -102,7 +103,7 @@ const TEMPLATES: RadiusTemplate[] = [
     },
   },
   {
-    name: 'カプセル（左）',
+    name: '左丸',
     position: {
       topLeftX: 50,
       topLeftY: 50,
@@ -115,36 +116,50 @@ const TEMPLATES: RadiusTemplate[] = [
     },
   },
   {
-    name: '有機的',
-    position: {
-      topLeftX: 63,
-      topLeftY: 37,
-      topRightX: 24,
-      topRightY: 54,
-      bottomLeftX: 53,
-      bottomLeftY: 26,
-      bottomRightX: 32,
-      bottomRightY: 36,
-    },
-  },
-  {
     name: 'しずく',
     position: {
-      topLeftX: 0,
+      topLeftX: 50,
       topLeftY: 50,
       topRightX: 50,
-      topRightY: 0,
-      bottomLeftX: 50,
-      bottomLeftY: 50,
+      topRightY: 50,
+      bottomLeftX: 0,
+      bottomLeftY: 0,
       bottomRightX: 50,
       bottomRightY: 50,
     },
   },
+  {
+    name: 'ブロブ',
+    position: {
+      topLeftX: 30,
+      topLeftY: 70,
+      topRightX: 70,
+      topRightY: 30,
+      bottomLeftX: 70,
+      bottomLeftY: 30,
+      bottomRightX: 30,
+      bottomRightY: 70,
+    },
+  },
 ];
 
-// border-radius文字列を生成
+// border-radius文字列を生成（use-control-panelと同じ計算）
 const positionToBorderRadius = (position: RadiusPosition): string => {
-  return `${position.topLeftX}% ${100 - position.topRightX}% ${100 - position.bottomRightX}% ${position.bottomLeftX}% / ${position.topLeftY}% ${position.topRightY}% ${100 - position.bottomRightY}% ${100 - position.bottomLeftY}%`;
+  return `${position.topLeftX}% ${position.topRightX}% ${position.bottomRightX}% ${position.bottomLeftX}% / ${position.topLeftY}% ${position.topRightY}% ${position.bottomRightY}% ${position.bottomLeftY}%`;
+};
+
+// ランダムな位置を生成
+const generateRandomPosition = (): RadiusPosition => {
+  return {
+    topLeftX: Math.floor(Math.random() * 101),
+    topLeftY: Math.floor(Math.random() * 101),
+    topRightX: Math.floor(Math.random() * 101),
+    topRightY: Math.floor(Math.random() * 101),
+    bottomLeftX: Math.floor(Math.random() * 101),
+    bottomLeftY: Math.floor(Math.random() * 101),
+    bottomRightX: Math.floor(Math.random() * 101),
+    bottomRightY: Math.floor(Math.random() * 101),
+  };
 };
 
 type Props = {
@@ -164,7 +179,12 @@ export const TemplateSelector: FC<Props> = ({ onSelect, currentPosition }) => {
 
   return (
     <div className="flex w-full max-w-96 flex-col gap-3">
-      <p className="font-bold text-fg-base text-sm">テンプレート</p>
+      <div className="flex items-center justify-between">
+        <p className="font-bold text-fg-base text-sm">テンプレート</p>
+        <Button onClick={() => onSelect(generateRandomPosition())} size="sm">
+          ランダム
+        </Button>
+      </div>
       <div className="grid grid-cols-3 gap-1">
         {TEMPLATES.map((template) => {
           const isSelected = isMatchingTemplate(template);

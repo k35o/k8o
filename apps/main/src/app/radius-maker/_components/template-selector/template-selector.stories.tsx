@@ -33,6 +33,11 @@ export const Default: Story = {
     // テンプレートラベルが表示されている
     await expect(canvas.getByText('テンプレート')).toBeInTheDocument();
 
+    // ランダムボタンが存在する
+    await expect(
+      canvas.getByRole('button', { name: 'ランダム' }),
+    ).toBeInTheDocument();
+
     // すべてのテンプレートボタンが存在する
     await expect(
       canvas.getByRole('button', { name: '正方形' }),
@@ -41,25 +46,25 @@ export const Default: Story = {
       canvas.getByRole('button', { name: '角丸' }),
     ).toBeInTheDocument();
     await expect(
-      canvas.getByRole('button', { name: '円形' }),
+      canvas.getByRole('button', { name: '円' }),
     ).toBeInTheDocument();
     await expect(
-      canvas.getByRole('button', { name: '楕円（横）' }),
+      canvas.getByRole('button', { name: '横長' }),
     ).toBeInTheDocument();
     await expect(
-      canvas.getByRole('button', { name: '楕円（縦）' }),
+      canvas.getByRole('button', { name: '縦長' }),
     ).toBeInTheDocument();
     await expect(
-      canvas.getByRole('button', { name: 'カプセル（上）' }),
+      canvas.getByRole('button', { name: '上丸' }),
     ).toBeInTheDocument();
     await expect(
-      canvas.getByRole('button', { name: 'カプセル（左）' }),
-    ).toBeInTheDocument();
-    await expect(
-      canvas.getByRole('button', { name: '有機的' }),
+      canvas.getByRole('button', { name: '左丸' }),
     ).toBeInTheDocument();
     await expect(
       canvas.getByRole('button', { name: 'しずく' }),
+    ).toBeInTheDocument();
+    await expect(
+      canvas.getByRole('button', { name: 'ブロブ' }),
     ).toBeInTheDocument();
 
     // 正方形が選択状態
@@ -85,8 +90,8 @@ export const CircleSelected: Story = {
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
 
-    // 円形が選択状態
-    const circleButton = canvas.getByRole('button', { name: '円形' });
+    // 円が選択状態
+    const circleButton = canvas.getByRole('button', { name: '円' });
     await expect(circleButton).toHaveAttribute('aria-pressed', 'true');
 
     // 正方形は非選択
@@ -95,26 +100,26 @@ export const CircleSelected: Story = {
   },
 };
 
-export const OrganicSelected: Story = {
+export const BlobSelected: Story = {
   args: {
     onSelect: fn(),
     currentPosition: {
-      topLeftX: 63,
-      topLeftY: 37,
-      topRightX: 24,
-      topRightY: 54,
-      bottomLeftX: 53,
-      bottomLeftY: 26,
-      bottomRightX: 32,
-      bottomRightY: 36,
+      topLeftX: 30,
+      topLeftY: 70,
+      topRightX: 70,
+      topRightY: 30,
+      bottomLeftX: 70,
+      bottomLeftY: 30,
+      bottomRightX: 30,
+      bottomRightY: 70,
     },
   },
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
 
-    // 有機的が選択状態
-    const organicButton = canvas.getByRole('button', { name: '有機的' });
-    await expect(organicButton).toHaveAttribute('aria-pressed', 'true');
+    // ブロブが選択状態
+    const blobButton = canvas.getByRole('button', { name: 'ブロブ' });
+    await expect(blobButton).toHaveAttribute('aria-pressed', 'true');
   },
 };
 
