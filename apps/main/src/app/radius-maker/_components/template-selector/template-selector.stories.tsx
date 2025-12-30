@@ -33,11 +33,6 @@ export const Default: Story = {
     // テンプレートラベルが表示されている
     await expect(canvas.getByText('テンプレート')).toBeInTheDocument();
 
-    // ランダムボタンが存在する
-    await expect(
-      canvas.getByRole('button', { name: 'ランダム' }),
-    ).toBeInTheDocument();
-
     // すべてのテンプレートボタンが存在する
     await expect(
       canvas.getByRole('button', { name: '正方形' }),
@@ -64,7 +59,7 @@ export const Default: Story = {
       canvas.getByRole('button', { name: 'しずく' }),
     ).toBeInTheDocument();
     await expect(
-      canvas.getByRole('button', { name: 'ブロブ' }),
+      canvas.getByRole('button', { name: 'ランダム' }),
     ).toBeInTheDocument();
 
     // 正方形が選択状態
@@ -100,26 +95,26 @@ export const CircleSelected: Story = {
   },
 };
 
-export const BlobSelected: Story = {
+export const DropSelected: Story = {
   args: {
     onSelect: fn(),
     currentPosition: {
-      topLeftX: 30,
-      topLeftY: 70,
-      topRightX: 70,
-      topRightY: 30,
-      bottomLeftX: 70,
-      bottomLeftY: 30,
-      bottomRightX: 30,
-      bottomRightY: 70,
+      topLeftX: 50,
+      topLeftY: 50,
+      topRightX: 50,
+      topRightY: 50,
+      bottomLeftX: 0,
+      bottomLeftY: 0,
+      bottomRightX: 50,
+      bottomRightY: 50,
     },
   },
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
 
-    // ブロブが選択状態
-    const blobButton = canvas.getByRole('button', { name: 'ブロブ' });
-    await expect(blobButton).toHaveAttribute('aria-pressed', 'true');
+    // しずくが選択状態
+    const dropButton = canvas.getByRole('button', { name: 'しずく' });
+    await expect(dropButton).toHaveAttribute('aria-pressed', 'true');
   },
 };
 
@@ -140,7 +135,7 @@ export const NoMatchingTemplate: Story = {
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
 
-    // どのテンプレートも選択されていない
+    // どのテンプレートも選択されていない（ランダムボタンは常にfalse）
     const buttons = canvas.getAllByRole('button');
     await Promise.all(
       buttons.map((button) =>

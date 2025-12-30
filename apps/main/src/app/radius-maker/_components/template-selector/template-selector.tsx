@@ -1,6 +1,5 @@
 'use client';
 
-import { Button } from '@k8o/arte-odyssey/button';
 import { cn } from '@repo/helpers/cn';
 import type { FC } from 'react';
 
@@ -128,19 +127,6 @@ const TEMPLATES: RadiusTemplate[] = [
       bottomRightY: 50,
     },
   },
-  {
-    name: 'ブロブ',
-    position: {
-      topLeftX: 30,
-      topLeftY: 70,
-      topRightX: 70,
-      topRightY: 30,
-      bottomLeftX: 70,
-      bottomLeftY: 30,
-      bottomRightX: 30,
-      bottomRightY: 70,
-    },
-  },
 ];
 
 // border-radius文字列を生成（use-control-panelと同じ計算）
@@ -179,12 +165,7 @@ export const TemplateSelector: FC<Props> = ({ onSelect, currentPosition }) => {
 
   return (
     <div className="flex w-full max-w-96 flex-col gap-3">
-      <div className="flex items-center justify-between">
-        <p className="font-bold text-fg-base text-sm">テンプレート</p>
-        <Button onClick={() => onSelect(generateRandomPosition())} size="sm">
-          ランダム
-        </Button>
-      </div>
+      <p className="font-bold text-fg-base text-sm">テンプレート</p>
       <div className="grid grid-cols-3 gap-1">
         {TEMPLATES.map((template) => {
           const isSelected = isMatchingTemplate(template);
@@ -224,6 +205,27 @@ export const TemplateSelector: FC<Props> = ({ onSelect, currentPosition }) => {
             </button>
           );
         })}
+        {/* ランダムボタン */}
+        <button
+          aria-pressed={false}
+          className={cn(
+            'group flex flex-col items-center gap-1.5 rounded-lg p-2 transition-all',
+            'hover:bg-bg-mute',
+            'focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-primary-fg',
+          )}
+          onClick={() => onSelect(generateRandomPosition())}
+          type="button"
+        >
+          <div
+            aria-hidden="true"
+            className="flex size-12 items-center justify-center border-2 border-border-base border-dashed bg-bg-mute text-fg-mute text-xl transition-all group-hover:border-fg-mute"
+          >
+            ?
+          </div>
+          <span className="text-fg-mute text-xs transition-colors">
+            ランダム
+          </span>
+        </button>
       </div>
     </div>
   );
