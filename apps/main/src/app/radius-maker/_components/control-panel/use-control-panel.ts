@@ -32,6 +32,7 @@ export const useControlPanel = () => {
     bottomRightY: 36,
   });
   const [activePosition, setActivePosition] = useState<Position | null>(null);
+  const [aspectRatio, setAspectRatio] = useState(1); // 0.5〜2.0（横幅/縦幅）
 
   const borderRadius = useMemo(() => {
     return `${position.topLeftX.toString()}% ${position.topRightX.toString()}% ${position.bottomRightX.toString()}% ${position.bottomLeftX.toString()}% / ${position.topLeftY.toString()}% ${position.topRightY.toString()}% ${position.bottomRightY.toString()}% ${position.bottomLeftY.toString()}%`;
@@ -219,5 +220,7 @@ export const useControlPanel = () => {
     borderRadius,
     position,
     setPosition,
+    aspectRatio,
+    setAspectRatio,
   };
 };
