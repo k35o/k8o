@@ -1,0 +1,140 @@
+---
+title: 'Largest Contentful Paint APIで最大コンテンツの描画時間を計測する'
+description: 'Largest Contentful Paint APIはビューポート内で最も大きなコンテンツ要素が描画されるまでの時間を計測するためのAPIです。Web VitalsのLCP指標の計測に使用され、ページの読み込み体験を評価する重要な機能です。'
+createdAt: 2025-12-30
+updatedAt: 2025-12-30
+---
+
+import { BaselineStatus } from '@k8o/arte-odyssey/baseline-status';
+import { LCPDemo, Playground } from '@/app/_components/playgrounds';
+
+# Largest Contentful Paint APIで最大コンテンツの描画時間を計測する
+
+<BaselineStatus featureId="largest-contentful-paint"></BaselineStatus>
+
+## はじめに
+
+Webページの体験において、ユーザーが「コンテンツの表示が完了した」と感じるタイミングは重要です。ファーストビューに大きな画像やテキストブロックが表示されるまでの時間が長いと、ユーザーはページが遅いと感じてしまいます。
+
+Web Vitalsでは、その体験を評価するための指標としてLCP（Largest Contentful Paint）を定義しています。LCPはビューポート内に表示される最大の画像、テキストブロック、動画のレンダリング時間を測定します。
+
+Largest Contentful Paint APIは、そんなLCPの計測に使用されるAPIです。このAPIを利用することで、開発者はページの読み込み体験を詳細に分析し、改善点を特定することができます。
+
+## Largest Contentful Paint API
+
+Largest Contentful Paint APIは、ビューポート内で最も大きなコンテンツ要素が描画されるまでの時間の分析結果を`LargestContentfulPaint`インターフェースで提供します。
+
+LCPの計測のためのAPIなので、`img`要素、`svg`内の`image`要素、`video`要素、`background-image`でスタイリングされた要素、`p`要素などのテキスト要素が対象となります。
+
+### PerformanceEntryから継承したプロパティ
+
+`LargestContentfulPaint`は`PerformanceEntry`を継承しており、`startTime`、`entryType`などのプロパティを持ちます。
+
+#### startTime
+
+後に紹介する`LargestContentfulPaint`独自のプロパティである`renderTime`または`loadTime`のいずれかの時刻を返します。
+具体的には基本的に`renderTime`を返すが、`renderTime`が0の場合は`loadTime`を返します。
+
+#### entryType
+
+`LargestContentfulPaint`の場合は`"largest-contentful-paint"`を返します。
+
+### LargestContentfulPaint独自のプロパティ
+
+また、独自のプロパティとして、`renderTime`、`loadTime`、`size`、`element`、`url`、`id`を持ちます。
+
+#### renderTime
+
+要素が実際にレンダリングされた時間です。
+
+クロスオリジンのリソースで`Timing-Allow-Origin`ヘッダーが設定されていない場合は`0`になります。
+
+#### loadTime
+
+リソースの読み込みが完了した時間です。
+
+テキスト要素の場合は0になります。
+
+#### size
+
+要素のサイズをピクセル単位の面積で返します。
+
+この値は要素の可視領域のサイズであり、クリップされた部分やビューポート外の部分は含まれません。
+
+#### element
+
+イベントのターゲット要素を返します。
+
+要素がDOMから削除された場合や、Shadow DOM内にある場合は`null`を返します。
+
+#### url
+
+リソースを持つ場合、そのリソースのURLを返します。
+
+#### id
+
+要素のid属性の値を返します。id属性がない場合は空文字列を返します。
+
+## 基本的な使い方
+
+`PerformanceObserver`を使用してLCPのタイミング情報を取得します。
+
+```ts
+const observer = new PerformanceObserver((list) => {
+  const entries = list.getEntries();
+  // 最後のエントリが最終的なLCP
+  const lastEntry = entries[entries.length - 1];
+
+  console.log(`LCP: ${lastEntry.startTime}ms`);
+  console.log(`要素: ${lastEntry.element?.tagName}`);
+  console.log(`サイズ: ${lastEntry.size}px²`);
+
+  if (lastEntry.url) {
+    console.log(`リソースURL: ${lastEntry.url}`);
+  }
+});
+
+observer.observe({ type: 'largest-contentful-paint', buffered: true });
+```
+
+<Playground>
+  <LCPDemo />
+</Playground>
+
+### 複数のEntry
+
+`PerformanceObserver`では複数の`entry`が報告されます。Largestなコンテンツ要素はどのように取得すれば良いのでしょうか。そもそも、なぜ複数の`entry`が報告されるのでしょうか。
+
+複数読み込まれるのは、ページの読み込みが進む中で、最大のコンテンツ要素は変化する可能性があるためです。最初は小さなテキストが最大でも、後から大きな画像が読み込まれると、その画像の要素は新たな`entry`として報告されます。
+
+そのため、`PerformanceObserver`は新しいLCP候補が見つかるたびに`entry`を報告します。つまり、Largestなコンテンツ要素は、`PerformanceObserver`で受け取った`entry`の中で最後のものとなります。
+
+```ts
+let lcpValue = 0;
+
+const observer = new PerformanceObserver((list) => {
+  const entries = list.getEntries();
+  const lastEntry = entries[entries.length - 1];
+  lcpValue = lastEntry.startTime;
+});
+
+observer.observe({ type: 'largest-contentful-paint', buffered: true });
+
+// ユーザーインタラクション時にLCPを確定
+['keydown', 'click', 'pointerdown'].forEach((type) => {
+  window.addEventListener(type, () => {
+    console.log(`最終LCP: ${lcpValue}ms`);
+    observer.disconnect();
+  }, { once: true });
+});
+```
+
+最終的な状態を確定することはできないので、ここではユーザーの最初のインタラクション時にLCPを確定しています。
+
+## おわりに
+
+Largest Contentful Paint APIを紹介しました。
+
+Web APIを用いて、Web Vitalsの計測ができると実際のユーザーの環境における計測が行いやすくとても便利に感じます。
+
+Baseline 2025に加わっていますので、LCPの改善やパフォーマンス監視が必要な場面で活用してみてください。

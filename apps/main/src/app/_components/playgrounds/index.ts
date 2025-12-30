@@ -3,8 +3,10 @@ export * from './async-clipboard';
 export * from './composed-ranges';
 export * from './content-visibility';
 export * from './details-content';
+export * from './event-timing';
 export * from './highlight';
 export * from './input-file-webkitdirectory';
+export * from './largest-contentful-paint';
 export { Playground } from './playground';
 export * from './popover';
 export * from './print-color-adjust';
@@ -23,8 +25,10 @@ import { asyncClipboardSection } from './async-clipboard';
 import { composedRangesSection } from './composed-ranges';
 import { contentVisibilitySection } from './content-visibility';
 import { detailsContentSection } from './details-content';
+import { eventTimingSection } from './event-timing';
 import { highlightSection } from './highlight';
 import { inputFileWebkitdirectorySection } from './input-file-webkitdirectory';
+import { lcpSection } from './largest-contentful-paint';
 import { popoverSection } from './popover';
 import { printColorAdjustSection } from './print-color-adjust';
 import { requestCloseSection } from './requestclose';
@@ -42,7 +46,9 @@ export const playgroundSections: PlaygroundSection[] = [
   composedRangesSection,
   contentVisibilitySection,
   detailsContentSection,
+  eventTimingSection,
   inputFileWebkitdirectorySection,
+  lcpSection,
   popoverSection,
   requestCloseSection,
   printColorAdjustSection,
