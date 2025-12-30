@@ -69,10 +69,9 @@ export const ControlPanel: FC = () => {
   const { onOpen } = useToast();
 
   return (
-    <div className="flex flex-col items-center justify-center gap-8">
-      <TemplateSelector currentPosition={position} onSelect={setPosition} />
+    <div className="flex flex-col items-center justify-center gap-6">
       <div
-        className="relative size-64 border-2 border-borderPrimar border-dashed sm:size-96"
+        className="relative size-48 border-2 border-borderPrimar border-dashed sm:size-96"
         ref={containerRef}
       >
         <div
@@ -245,6 +244,7 @@ export const ControlPanel: FC = () => {
           {borderRadius}
         </code>
       </div>
+      <TemplateSelector currentPosition={position} onSelect={setPosition} />
     </div>
   );
 };
