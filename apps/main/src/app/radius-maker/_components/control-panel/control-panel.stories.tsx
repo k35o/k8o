@@ -20,10 +20,12 @@ export const InitialState: Story = {
     const copyButton = canvas.getByRole('button', { name: '値をコピーする' });
     await expect(copyButton).toBeInTheDocument();
 
-    // border-radiusの値が表示されることを確認（初期値は 63% 24% 32% 53% / 37% 54% 36% 26%）
-    await expect(
-      canvas.getByText(/\d+%.*\d+%.*\d+%.*\d+%.*\/.*\d+%.*\d+%.*\d+%.*\d+%/),
-    ).toBeInTheDocument();
+    // border-radiusの値が水平/垂直で表示されることを確認
+    await expect(canvas.getByText('水平')).toBeInTheDocument();
+    await expect(canvas.getByText('垂直')).toBeInTheDocument();
+    // 水平と垂直の値（各4つのパーセント値）が2行あることを確認
+    const percentageRows = canvas.getAllByText(/\d+%\s+\d+%\s+\d+%\s+\d+%/);
+    await expect(percentageRows).toHaveLength(2);
   },
 };
 

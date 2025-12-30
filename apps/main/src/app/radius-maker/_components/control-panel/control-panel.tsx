@@ -1,12 +1,20 @@
 'use client';
 
+import { FormControl } from '@k8o/arte-odyssey/form/form-control';
+import { RangeField } from '@k8o/arte-odyssey/form/range-field';
 import { useClipboard } from '@k8o/arte-odyssey/hooks/clipboard';
 import { IconButton } from '@k8o/arte-odyssey/icon-button';
 import { CopyIcon } from '@k8o/arte-odyssey/icons';
 import { useToast } from '@k8o/arte-odyssey/toast';
 import { cn } from '@repo/helpers/cn';
 import type { FC, KeyboardEvent, MouseEvent, TouchEvent } from 'react';
+import { useMemo } from 'react';
+import { TemplateSelector } from '../template-selector/template-selector';
 import { useControlPanel } from './use-control-panel';
+
+// ベースサイズ（px）
+const BASE_SIZE = 192;
+const BASE_SIZE_SM = 384;
 
 const OperateButton: FC<{
   label: string;
@@ -62,18 +70,48 @@ export const ControlPanel: FC = () => {
     keyDownHandler,
     borderRadius,
     position,
+    setPosition,
+    aspectRatio,
+    setAspectRatio,
   } = useControlPanel();
   const { writeClipboard } = useClipboard();
   const { onOpen } = useToast();
 
+  // アスペクト比に応じたサイズを計算
+  const containerSize = useMemo(() => {
+    const calcSize = (base: number) => {
+      if (aspectRatio >= 1) {
+        return { width: base, height: base / aspectRatio };
+      }
+      return { width: base * aspectRatio, height: base };
+    };
+    return {
+      mobile: calcSize(BASE_SIZE),
+      desktop: calcSize(BASE_SIZE_SM),
+    };
+  }, [aspectRatio]);
+
   return (
-    <div className="flex flex-col items-center justify-center gap-8">
+    <div className="flex flex-col items-center justify-center gap-6">
       <div
-        className="relative size-64 border-2 border-borderPrimar border-dashed sm:size-96"
+        className="relative border-2 border-borderPrimar border-dashed"
         ref={containerRef}
+        style={{
+          width: containerSize.mobile.width,
+          height: containerSize.mobile.height,
+        }}
       >
+        <style>{`
+          @media (min-width: 640px) {
+            [data-radius-container] {
+              width: ${containerSize.desktop.width}px !important;
+              height: ${containerSize.desktop.height}px !important;
+            }
+          }
+        `}</style>
         <div
           className="absolute size-full bg-primary-fg"
+          data-radius-container
           style={{
             borderRadius,
           }}
@@ -223,20 +261,52 @@ export const ControlPanel: FC = () => {
           variable="tertiary"
         />
       </div>
-      <div className="flex flex-wrap items-center justify-center gap-4">
-        <p className="font-bold text-2xl">{borderRadius}</p>
-        <IconButton
-          bg="base"
-          label="値をコピーする"
-          onClick={() =>
-            void writeClipboard(`border-radius: ${borderRadius}`).then(() => {
-              onOpen('success', 'クリップボードにコピーしました');
-            })
-          }
-        >
-          <CopyIcon />
-        </IconButton>
+      <div className="flex w-full flex-col gap-4">
+        <FormControl
+          label="縦横比"
+          renderInput={(props) => (
+            <RangeField
+              {...props}
+              max={2}
+              min={0.5}
+              onChange={setAspectRatio}
+              step={0.1}
+              value={aspectRatio}
+            />
+          )}
+        />
+        <div className="flex flex-col gap-2">
+          <div className="flex items-center justify-between gap-2">
+            <p className="text-fg-mute text-sm">border-radius</p>
+            <IconButton
+              bg="base"
+              label="値をコピーする"
+              onClick={() =>
+                void writeClipboard(`border-radius: ${borderRadius}`).then(
+                  () => {
+                    onOpen('success', 'クリップボードにコピーしました');
+                  },
+                )
+              }
+            >
+              <CopyIcon />
+            </IconButton>
+          </div>
+          <code className="grid grid-cols-[auto_1fr] gap-x-3 gap-y-1 rounded-md bg-bg-mute p-3 font-mono text-fg-base text-sm">
+            <span className="text-fg-mute">水平</span>
+            <span>
+              {position.topLeftX}% {100 - position.topRightX}%{' '}
+              {100 - position.bottomRightX}% {position.bottomLeftX}%
+            </span>
+            <span className="text-fg-mute">垂直</span>
+            <span>
+              {position.topLeftY}% {position.topRightY}%{' '}
+              {100 - position.bottomRightY}% {100 - position.bottomLeftY}%
+            </span>
+          </code>
+        </div>
       </div>
+      <TemplateSelector currentPosition={position} onSelect={setPosition} />
     </div>
   );
 };
