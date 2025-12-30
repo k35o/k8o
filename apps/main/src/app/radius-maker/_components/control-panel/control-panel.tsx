@@ -240,8 +240,17 @@ export const ControlPanel: FC = () => {
             <CopyIcon />
           </IconButton>
         </div>
-        <code className="block overflow-x-auto rounded-md bg-bg-mute p-3 font-mono text-fg-base text-sm">
-          {borderRadius}
+        <code className="grid grid-cols-[auto_1fr] gap-x-3 gap-y-1 rounded-md bg-bg-mute p-3 font-mono text-fg-base text-sm">
+          <span className="text-fg-mute">水平</span>
+          <span>
+            {position.topLeftX}% {100 - position.topRightX}%{' '}
+            {100 - position.bottomRightX}% {position.bottomLeftX}%
+          </span>
+          <span className="text-fg-mute">垂直</span>
+          <span>
+            {position.topLeftY}% {position.topRightY}%{' '}
+            {100 - position.bottomRightY}% {100 - position.bottomLeftY}%
+          </span>
         </code>
       </div>
       <TemplateSelector currentPosition={position} onSelect={setPosition} />
