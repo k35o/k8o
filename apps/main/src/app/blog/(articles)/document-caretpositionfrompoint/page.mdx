@@ -1,0 +1,128 @@
+---
+title: 'document.caretPositionFromPointで座標からキャレット位置を取得する'
+description: 'document.caretPositionFromPointは、指定した座標にあるキャレット位置を取得するためのAPIです。マウスクリックやタッチイベントの座標から、テキスト内の挿入位置を特定できます。'
+createdAt: 2025-12-30
+updatedAt: 2025-12-30
+---
+
+import { BaselineStatus } from '@k8o/arte-odyssey/baseline-status';
+import { CaretPositionDemo, DragDropDemo, Playground } from '@/app/_components/playgrounds';
+
+# document.caretPositionFromPointで座標からキャレット位置を取得する
+
+<BaselineStatus featureId="document-caretpositionfrompoint"></BaselineStatus>
+
+## はじめに
+
+リッチテキストエディタやドラッグ&ドロップによるテキスト挿入を実装する際、マウスやタッチの座標からテキスト内の挿入位置を特定する必要があります。
+
+`document.caretPositionFromPoint`は、画面上の座標からキャレット（テキストカーソル）の位置を取得するためのAPIです。このAPIを使うことで、指定した座標がテキストのどの位置に対応するかを簡単に判定できます。
+
+## document.caretPositionFromPoint
+
+`document.caretPositionFromPoint`は、指定した座標に対応するキャレット位置を`CaretPosition`オブジェクトとして返します。
+
+```ts
+const caretPosition = document.caretPositionFromPoint(x, y);
+const caretPosition = document.caretPositionFromPoint(x, y, options);
+```
+
+第3引数の`options`は、APIをShadow Root内にも影響を及ばせるようにするために`shadowRoots`を指定できます。
+
+```ts
+const caretPosition = document.caretPositionFromPoint(x, y, {
+  shadowRoots: [shadowRoot],
+});
+```
+`shadowRoots`に含まれている場合は、Shadow DOM内のノードに対してもキャレット位置を取得できます。含まれていない場合はホスト要素が返されます。
+
+`caretPositionFromPoint`は以下の場合に`null`を返します。
+
+- ドキュメントにビューポートが関連付けられていない場合
+- 座標が負の値またはビューポート外の場合
+- 指定した座標にテキスト挿入ポイントがない場合
+
+### CaretPositionのプロパティ
+
+`CaretPosition`オブジェクトは以下のプロパティを持ちます。
+
+#### offsetNode
+
+キャレット位置を含むノードを返します。通常はテキストノードですが、要素ノードの場合もあります。
+
+#### offset
+
+`offsetNode`内でのキャレットのオフセット位置を返します。テキストノードの場合は文字のインデックス、要素ノードの場合は子ノードのインデックスになります。
+
+### CaretPositionのメソッド
+
+#### getClientRect()
+
+キャレット位置の矩形情報を`DOMRect`オブジェクトとして返します。キャレットの正確な画面上の位置を取得できます。
+
+## 基本的な使い方
+
+クリックした位置のキャレット情報を取得する例です。
+
+```ts
+document.addEventListener('click', (event) => {
+  const caretPosition = document.caretPositionFromPoint(
+    event.clientX,
+    event.clientY,
+  );
+
+  if (caretPosition) {
+    console.log('ノード:', caretPosition.offsetNode);
+    console.log('オフセット:', caretPosition.offset);
+
+    const rect = caretPosition.getClientRect();
+    if (rect) {
+      console.log('位置:', rect.x, rect.y);
+    }
+  }
+});
+```
+
+<Playground>
+  <CaretPositionDemo />
+</Playground>
+
+### ドラッグ&ドロップでのテキスト挿入
+
+ドラッグしたテキストをドロップ位置に挿入する実装例です。
+
+```ts
+dropZone.addEventListener('drop', (event) => {
+  event.preventDefault();
+
+  const text = event.dataTransfer?.getData('text/plain');
+  if (!text) return;
+
+  const caretPosition = document.caretPositionFromPoint(
+    event.clientX,
+    event.clientY,
+  );
+
+  if (caretPosition && caretPosition.offsetNode.nodeType === Node.TEXT_NODE) {
+    const textNode = caretPosition.offsetNode as Text;
+    const offset = caretPosition.offset;
+
+    // テキストを挿入位置で分割して挿入
+    const before = textNode.textContent?.slice(0, offset) ?? '';
+    const after = textNode.textContent?.slice(offset) ?? '';
+    textNode.textContent = before + text + after;
+  }
+});
+```
+
+<Playground>
+  <DragDropDemo />
+</Playground>
+
+## おわりに
+
+`document.caretPositionFromPoint`を紹介しました。似たような名前で`document.caretRangeFromPoint`もありますが、こちらは標準化されていないので`document.caretPositionFromPoint`を使用するようにしましょう。
+
+座標からテキスト内の位置を特定できるこのAPIは、リッチテキストエディタやドラッグ&ドロップ機能の実装などさまざまな箇所で役立ちます。
+
+Baseline 2025に含まれているため、最新のモダンブラウザのみをサポートしている場合は、テキスト編集機能を実装する際に活用してみてください。

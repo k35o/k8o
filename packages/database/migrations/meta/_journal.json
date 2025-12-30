@@ -57,6 +57,13 @@
       "when": 1766992204840,
       "tag": "0007_worthless_gwen_stacy",
       "breakpoints": true
+    },
+    {
+      "idx": 8,
+      "version": "6",
+      "when": 1767075601899,
+      "tag": "0008_ancient_punisher",
+      "breakpoints": true
     }
   ]
 }
