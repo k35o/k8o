@@ -6,6 +6,7 @@ export * from './details-content';
 export * from './event-timing';
 export * from './highlight';
 export * from './input-file-webkitdirectory';
+export * from './largest-contentful-paint';
 export { Playground } from './playground';
 export * from './popover';
 export * from './print-color-adjust';
@@ -27,6 +28,7 @@ import { detailsContentSection } from './details-content';
 import { eventTimingSection } from './event-timing';
 import { highlightSection } from './highlight';
 import { inputFileWebkitdirectorySection } from './input-file-webkitdirectory';
+import { lcpSection } from './largest-contentful-paint';
 import { popoverSection } from './popover';
 import { printColorAdjustSection } from './print-color-adjust';
 import { requestCloseSection } from './requestclose';
@@ -46,6 +48,7 @@ export const playgroundSections: PlaygroundSection[] = [
   detailsContentSection,
   eventTimingSection,
   inputFileWebkitdirectorySection,
+  lcpSection,
   popoverSection,
   requestCloseSection,
   printColorAdjustSection,
