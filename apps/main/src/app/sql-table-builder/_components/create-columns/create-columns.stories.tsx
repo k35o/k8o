@@ -105,12 +105,6 @@ export const AddColumn: Story = {
 };
 
 export const SwitchViewType: Story = {
-  // デスクトップビューポートで表示（切り替えボタンはスマホで非表示のため）
-  parameters: {
-    viewport: {
-      defaultViewport: 'desktop',
-    },
-  },
   render: () => {
     const [columns, setColumns] = useState<Record<string, Column>>({
       [uuidV4()]: {
@@ -135,7 +129,8 @@ export const SwitchViewType: Story = {
     const canvas = within(canvasElement);
 
     // 初期状態のボタンを探す（テキストを含むボタン）
-    const switchButton = canvas.getByRole('button', {
+    // デスクトップビューポートでのみ表示されるボタン
+    const switchButton = await canvas.findByRole('button', {
       name: /形式$/,
     });
     await expect(switchButton).toBeInTheDocument();
@@ -145,7 +140,7 @@ export const SwitchViewType: Story = {
 
     // ボタンが引き続き存在することを確認
     await expect(
-      canvas.getByRole('button', { name: /形式$/ }),
+      await canvas.findByRole('button', { name: /形式$/ }),
     ).toBeInTheDocument();
   },
 };
