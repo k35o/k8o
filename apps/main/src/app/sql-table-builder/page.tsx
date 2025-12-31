@@ -33,15 +33,15 @@ const StepIndicator = ({
   title: string;
   isActive?: boolean;
 }) => (
-  <div className="flex items-center gap-3">
+  <div className="flex items-center gap-2 sm:gap-3">
     <div
-      className={`flex h-8 w-8 items-center justify-center rounded-full font-bold text-sm transition-colors ${
+      className={`flex h-6 w-6 items-center justify-center rounded-full font-bold text-xs transition-colors sm:h-8 sm:w-8 sm:text-sm ${
         isActive ? 'bg-bg-primary text-fg-onFill' : 'bg-bg-mute text-fg-mute'
       }`}
     >
       {step}
     </div>
-    <h3 className="font-bold text-lg">{title}</h3>
+    <h3 className="font-bold text-base sm:text-lg">{title}</h3>
   </div>
 );
 
@@ -116,14 +116,14 @@ export default function Page() {
         transition={{ duration: 0.4, delay: 0.1 }}
       >
         <Card>
-          <div className="p-6">
-            <div className="mb-6">
+          <div className="p-4 sm:p-6">
+            <div className="mb-4 sm:mb-6">
               <StepIndicator step={1} title="テーブル情報" />
-              <p className="mt-2 pl-11 text-fg-mute text-sm">
+              <p className="mt-2 text-fg-mute text-sm sm:pl-11">
                 作成するテーブルの基本情報を入力してください
               </p>
             </div>
-            <div className="pl-11">
+            <div className="sm:pl-11">
               <CreateTable
                 setTable={setTable}
                 table={table}
@@ -141,14 +141,14 @@ export default function Page() {
         transition={{ duration: 0.4, delay: 0.2 }}
       >
         <Card>
-          <div className="p-6">
-            <div className="mb-6">
+          <div className="p-4 sm:p-6">
+            <div className="mb-4 sm:mb-6">
               <StepIndicator step={2} title="カラム情報" />
-              <p className="mt-2 pl-11 text-fg-mute text-sm">
+              <p className="mt-2 text-fg-mute text-sm sm:pl-11">
                 テーブルに含めるカラムを定義してください
               </p>
             </div>
-            <div className="pl-11">
+            <div className="sm:pl-11">
               <CreateColumns
                 columns={columns}
                 columnsError={columnsError}
@@ -167,14 +167,14 @@ export default function Page() {
         transition={{ duration: 0.4, delay: 0.3 }}
       >
         <Card>
-          <div className="p-6">
-            <div className="mb-6">
+          <div className="p-4 sm:p-6">
+            <div className="mb-4 sm:mb-6">
               <StepIndicator step={3} title="制約" />
-              <p className="mt-2 pl-11 text-fg-mute text-sm">
+              <p className="mt-2 text-fg-mute text-sm sm:pl-11">
                 主キーや外部キーなどの制約を設定してください
               </p>
             </div>
-            <div className="pl-11">
+            <div className="sm:pl-11">
               <CreateRestrictions
                 columns={columns}
                 restrictions={restrictions}
@@ -208,13 +208,15 @@ export default function Page() {
             transition={{ duration: 0.3 }}
           >
             <Card>
-              <div className="p-6">
-                <div className="mb-4 flex items-center justify-between">
-                  <div className="flex items-center gap-3">
-                    <div className="flex h-8 w-8 items-center justify-center rounded-full bg-bg-success text-fg-success">
-                      <span className="text-sm">✓</span>
+              <div className="p-4 sm:p-6">
+                <div className="mb-4 flex items-center justify-between gap-2">
+                  <div className="flex items-center gap-2 sm:gap-3">
+                    <div className="flex h-6 w-6 items-center justify-center rounded-full bg-bg-success text-fg-success sm:h-8 sm:w-8">
+                      <span className="text-xs sm:text-sm">✓</span>
                     </div>
-                    <h3 className="font-bold text-lg">生成されたSQL</h3>
+                    <h3 className="font-bold text-base sm:text-lg">
+                      生成されたSQL
+                    </h3>
                   </div>
                   <IconButton
                     label={isCopied ? 'コピー済み' : 'コピー'}
@@ -225,8 +227,8 @@ export default function Page() {
                   </IconButton>
                 </div>
                 <div className="overflow-x-auto rounded-lg bg-bg-mute">
-                  <pre className="p-4">
-                    <code className="font-mono text-fg-base text-sm">
+                  <pre className="p-3 sm:p-4">
+                    <code className="font-mono text-fg-base text-xs sm:text-sm">
                       {statement}
                     </code>
                   </pre>

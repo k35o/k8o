@@ -49,34 +49,47 @@ export const CreateColumns: FC<Props> = ({
             {columnsEntries.length}個のカラム
           </span>
         </div>
-        <Button
-          onClick={() => {
-            setColumnsType(showTable ? 'form' : 'table');
-          }}
-          size="sm"
-          startIcon={showTable ? <FormIcon /> : <TableIcon />}
-          variant="outlined"
-        >
-          {showTable ? 'フォーム' : 'テーブル'}形式
-        </Button>
+        {/* デスクトップのみ表示切り替えボタン */}
+        <div className="hidden sm:block">
+          <Button
+            onClick={() => {
+              setColumnsType(showTable ? 'form' : 'table');
+            }}
+            size="sm"
+            startIcon={showTable ? <FormIcon /> : <TableIcon />}
+            variant="outlined"
+          >
+            {showTable ? 'フォーム' : 'テーブル'}形式
+          </Button>
+        </div>
       </div>
 
-      {/* コンテンツ */}
-      {showTable ? (
-        <CreateColumnsByTable
-          columnsEntries={columnsEntries}
-          columnsError={columnsError}
-          handleChangeColumn={handleChangeColumn}
-          handleDeleteColumn={handleDeleteColumn}
-        />
-      ) : (
+      {/* コンテンツ - スマホではフォーム形式のみ */}
+      <div className="sm:hidden">
         <CreateColumnsByForm
           columnsEntries={columnsEntries}
           columnsError={columnsError}
           handleChangeColumn={handleChangeColumn}
           handleDeleteColumn={handleDeleteColumn}
         />
-      )}
+      </div>
+      <div className="hidden sm:block">
+        {showTable ? (
+          <CreateColumnsByTable
+            columnsEntries={columnsEntries}
+            columnsError={columnsError}
+            handleChangeColumn={handleChangeColumn}
+            handleDeleteColumn={handleDeleteColumn}
+          />
+        ) : (
+          <CreateColumnsByForm
+            columnsEntries={columnsEntries}
+            columnsError={columnsError}
+            handleChangeColumn={handleChangeColumn}
+            handleDeleteColumn={handleDeleteColumn}
+          />
+        )}
+      </div>
     </div>
   );
 };
