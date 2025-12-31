@@ -36,6 +36,41 @@ export const Primary: Story = {
   },
 };
 
+export const WithMultipleColumns: Story = {
+  render: () => {
+    const [columns, setColumns] = useState<Record<string, Column>>({
+      [uuidV4()]: {
+        name: 'id',
+        alias: 'ID',
+        type: 'uuid',
+        nullable: false,
+      },
+      [uuidV4()]: {
+        name: 'name',
+        alias: '名前',
+        type: 'text',
+        nullable: false,
+      },
+      [uuidV4()]: {
+        name: 'email',
+        alias: 'メールアドレス',
+        type: 'text',
+        nullable: true,
+      },
+    });
+    return (
+      <CreateColumns
+        columns={columns}
+        columnsError={undefined}
+        setColumns={setColumns}
+        setRestrictions={() => {
+          console.log();
+        }}
+      />
+    );
+  },
+};
+
 export const AddColumn: Story = {
   render: () => {
     const [columns, setColumns] = useState<Record<string, Column>>({
@@ -64,8 +99,8 @@ export const AddColumn: Story = {
     const addButton = canvas.getByRole('button', { name: 'カラムを追加' });
     await userEvent.click(addButton);
 
-    // カラム情報のレジェンドが存在することを確認
-    await expect(canvas.getByText('カラム情報')).toBeInTheDocument();
+    // カラムカウントが更新されることを確認
+    await expect(canvas.getByText('2個のカラム')).toBeInTheDocument();
   },
 };
 
@@ -95,7 +130,7 @@ export const SwitchViewType: Story = {
 
     // 初期状態のボタンを探す（テキストを含むボタン）
     const switchButton = canvas.getByRole('button', {
-      name: /形式に変更/,
+      name: /形式$/,
     });
     await expect(switchButton).toBeInTheDocument();
 
@@ -104,7 +139,7 @@ export const SwitchViewType: Story = {
 
     // ボタンが引き続き存在することを確認
     await expect(
-      canvas.getByRole('button', { name: /形式に変更/ }),
+      canvas.getByRole('button', { name: /形式$/ }),
     ).toBeInTheDocument();
   },
 };

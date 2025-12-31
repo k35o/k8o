@@ -1,5 +1,5 @@
 import { Button } from '@k8o/arte-odyssey/button';
-import { FormIcon, TableIcon } from '@k8o/arte-odyssey/icons';
+import { FormIcon, PlusIcon, TableIcon } from '@k8o/arte-odyssey/icons';
 import type { FC } from 'react';
 import { useColumnsType } from '../../_state';
 import type { Column, InvalidColumns } from '../../_types/column';
@@ -33,24 +33,35 @@ export const CreateColumns: FC<Props> = ({
   const columnsEntries = Object.entries(columns);
 
   return (
-    <fieldset className="relative p-2">
-      <div className="flex flex-col justify-between gap-2 py-2">
-        <div className="flex items-center justify-between gap-2">
-          <legend className="font-bold text-lg">カラム情報</legend>
-          <Button onClick={handleAddColumn}>カラムを追加</Button>
-        </div>
-        <div className="flex justify-end">
+    <div className="flex flex-col gap-4">
+      {/* ツールバー */}
+      <div className="flex flex-wrap items-center justify-between gap-3">
+        <div className="flex items-center gap-2">
           <Button
-            onClick={() => {
-              setColumnsType(showTable ? 'form' : 'table');
-            }}
-            startIcon={showTable ? <FormIcon /> : <TableIcon />}
+            onClick={handleAddColumn}
+            size="sm"
+            startIcon={<PlusIcon />}
             variant="outlined"
           >
-            {showTable ? 'フォーム' : 'テーブル'}形式に変更
+            カラムを追加
           </Button>
+          <span className="text-fg-mute text-sm">
+            {columnsEntries.length}個のカラム
+          </span>
         </div>
+        <Button
+          onClick={() => {
+            setColumnsType(showTable ? 'form' : 'table');
+          }}
+          size="sm"
+          startIcon={showTable ? <FormIcon /> : <TableIcon />}
+          variant="outlined"
+        >
+          {showTable ? 'フォーム' : 'テーブル'}形式
+        </Button>
       </div>
+
+      {/* コンテンツ */}
       {showTable ? (
         <CreateColumnsByTable
           columnsEntries={columnsEntries}
@@ -66,6 +77,6 @@ export const CreateColumns: FC<Props> = ({
           handleDeleteColumn={handleDeleteColumn}
         />
       )}
-    </fieldset>
+    </div>
   );
 };

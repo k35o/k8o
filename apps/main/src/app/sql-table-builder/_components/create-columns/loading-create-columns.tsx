@@ -1,23 +1,26 @@
 import { Button } from '@k8o/arte-odyssey/button';
+import { PlusIcon } from '@k8o/arte-odyssey/icons';
 import type { FC } from 'react';
 
 export const LoadingCreateColumns: FC = () => {
   return (
-    <fieldset className="p-2">
-      <div className="flex flex-col justify-between gap-2 py-2">
-        <div className="flex items-center justify-between gap-2">
-          <legend className="font-bold text-lg">カラム情報</legend>
-          <Button>カラムを追加</Button>
+    <div className="flex flex-col gap-4">
+      {/* ツールバー */}
+      <div className="flex flex-wrap items-center justify-between gap-3">
+        <div className="flex items-center gap-2">
+          <Button size="sm" startIcon={<PlusIcon />} variant="outlined">
+            カラムを追加
+          </Button>
+          <span className="text-fg-mute text-sm">0個のカラム</span>
         </div>
-        <div className="flex justify-end">
-          <div className="w-52 animate-pulse">
-            <Button fullWidth variant="outlined">
-              &nbsp;
-            </Button>
-          </div>
-        </div>
+        <div className="h-8 w-32 animate-pulse rounded-md bg-bg-mute" />
       </div>
-      <div className="h-96 animate-pulse rounded-md border border-border-base bg-bg-mute" />
-    </fieldset>
+
+      {/* スケルトン */}
+      <div className="flex flex-col gap-3">
+        <div className="h-14 animate-pulse rounded-lg border border-border-base bg-bg-mute" />
+        <div className="h-14 animate-pulse rounded-lg border border-border-base bg-bg-mute" />
+      </div>
+    </div>
   );
 };

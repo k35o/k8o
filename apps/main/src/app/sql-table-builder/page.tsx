@@ -1,7 +1,13 @@
 'use client';
 
 import { Button } from '@k8o/arte-odyssey/button';
+import { Card } from '@k8o/arte-odyssey/card';
+import { useClipboard } from '@k8o/arte-odyssey/hooks/clipboard';
+import { IconButton } from '@k8o/arte-odyssey/icon-button';
+import { CopyIcon } from '@k8o/arte-odyssey/icons';
+import { useToast } from '@k8o/arte-odyssey/toast';
 import { uuidV4 } from '@repo/helpers/uuid-v4';
+import { AnimatePresence, motion } from 'motion/react';
 import dynamic from 'next/dynamic';
 import { useRef, useState } from 'react';
 import { LoadingCreateColumns } from './_components/create-columns/loading-create-columns';
@@ -17,8 +23,33 @@ const CreateColumns = dynamic(
   { ssr: false, loading: () => <LoadingCreateColumns /> },
 );
 
+// ステップインジケーターコンポーネント
+const StepIndicator = ({
+  step,
+  title,
+  isActive = true,
+}: {
+  step: number;
+  title: string;
+  isActive?: boolean;
+}) => (
+  <div className="flex items-center gap-3">
+    <div
+      className={`flex h-8 w-8 items-center justify-center rounded-full font-bold text-sm transition-colors ${
+        isActive ? 'bg-bg-primary text-fg-onFill' : 'bg-bg-mute text-fg-mute'
+      }`}
+    >
+      {step}
+    </div>
+    <h3 className="font-bold text-lg">{title}</h3>
+  </div>
+);
+
 export default function Page() {
   const topRef = useRef<HTMLElement | null>(null);
+  const { writeClipboard } = useClipboard();
+  const { onOpen } = useToast();
+  const [isCopied, setIsCopied] = useState(false);
 
   const [table, setTable] = useState<Table>({
     name: '',
@@ -47,50 +78,164 @@ export default function Page() {
   const [restroctionsError, setRestroctionsError] =
     useState<InvalidRestrictions['errors']>();
 
+  const handleCopy = async () => {
+    await writeClipboard(statement);
+    setIsCopied(true);
+    onOpen('success', 'コピーしました');
+    setTimeout(() => setIsCopied(false), 2000);
+  };
+
+  const handleGenerate = () => {
+    setTableError(undefined);
+    setColumnsError(undefined);
+    setRestroctionsError(undefined);
+    setStatement('');
+    const statementResult = makeStatement(table, columns, restrictions);
+    if (!statementResult.isSuccessful) {
+      setTableError(statementResult.invalidTable?.errors);
+      setColumnsError(statementResult.invalidColumns?.errors);
+      setRestroctionsError(statementResult.invalidRestrictions?.errors);
+      topRef.current?.scrollIntoView({ behavior: 'smooth' });
+      return;
+    }
+    setStatement(statementResult.statement);
+  };
+
   return (
-    <section className="grid gap-6 py-4" ref={topRef}>
-      <CreateTable setTable={setTable} table={table} tableError={tableError} />
-      <CreateColumns
-        columns={columns}
-        columnsError={columnsError}
-        setColumns={setColumns}
-        setRestrictions={setRestrictions}
-      />
-      <CreateRestrictions
-        columns={columns}
-        restrictions={restrictions}
-        restroctionsError={restroctionsError}
-        setRestrictions={setRestrictions}
-      />
-      <Button
-        onClick={() => {
-          setTableError(undefined);
-          setColumnsError(undefined);
-          setRestroctionsError(undefined);
-          setStatement('');
-          const statementResult = makeStatement(table, columns, restrictions);
-          if (!statementResult.isSuccessful) {
-            setTableError(statementResult.invalidTable?.errors);
-            setColumnsError(statementResult.invalidColumns?.errors);
-            setRestroctionsError(statementResult.invalidRestrictions?.errors);
-            topRef.current?.scrollIntoView();
-            return;
-          }
-          setStatement(statementResult.statement);
-        }}
+    <motion.section
+      animate={{ opacity: 1 }}
+      className="grid gap-6 py-4"
+      initial={{ opacity: 0 }}
+      ref={topRef}
+      transition={{ duration: 0.3 }}
+    >
+      {/* Step 1: テーブル情報 */}
+      <motion.div
+        animate={{ opacity: 1, y: 0 }}
+        initial={{ opacity: 0, y: 20 }}
+        transition={{ duration: 0.4, delay: 0.1 }}
       >
-        生成
-      </Button>
-      {statement && (
-        <code
-          className="whitespace-pre-wrap rounded-md bg-bg-mute p-4 text-xs sm:text-md"
-          ref={(node) => {
-            node?.scrollIntoView();
-          }}
-        >
-          {statement}
-        </code>
-      )}
-    </section>
+        <Card>
+          <div className="p-6">
+            <div className="mb-6">
+              <StepIndicator step={1} title="テーブル情報" />
+              <p className="mt-2 pl-11 text-fg-mute text-sm">
+                作成するテーブルの基本情報を入力してください
+              </p>
+            </div>
+            <div className="pl-11">
+              <CreateTable
+                setTable={setTable}
+                table={table}
+                tableError={tableError}
+              />
+            </div>
+          </div>
+        </Card>
+      </motion.div>
+
+      {/* Step 2: カラム情報 */}
+      <motion.div
+        animate={{ opacity: 1, y: 0 }}
+        initial={{ opacity: 0, y: 20 }}
+        transition={{ duration: 0.4, delay: 0.2 }}
+      >
+        <Card>
+          <div className="p-6">
+            <div className="mb-6">
+              <StepIndicator step={2} title="カラム情報" />
+              <p className="mt-2 pl-11 text-fg-mute text-sm">
+                テーブルに含めるカラムを定義してください
+              </p>
+            </div>
+            <div className="pl-11">
+              <CreateColumns
+                columns={columns}
+                columnsError={columnsError}
+                setColumns={setColumns}
+                setRestrictions={setRestrictions}
+              />
+            </div>
+          </div>
+        </Card>
+      </motion.div>
+
+      {/* Step 3: 制約 */}
+      <motion.div
+        animate={{ opacity: 1, y: 0 }}
+        initial={{ opacity: 0, y: 20 }}
+        transition={{ duration: 0.4, delay: 0.3 }}
+      >
+        <Card>
+          <div className="p-6">
+            <div className="mb-6">
+              <StepIndicator step={3} title="制約" />
+              <p className="mt-2 pl-11 text-fg-mute text-sm">
+                主キーや外部キーなどの制約を設定してください
+              </p>
+            </div>
+            <div className="pl-11">
+              <CreateRestrictions
+                columns={columns}
+                restrictions={restrictions}
+                restroctionsError={restroctionsError}
+                setRestrictions={setRestrictions}
+              />
+            </div>
+          </div>
+        </Card>
+      </motion.div>
+
+      {/* 生成ボタン */}
+      <motion.div
+        animate={{ opacity: 1, y: 0 }}
+        className="flex justify-center"
+        initial={{ opacity: 0, y: 20 }}
+        transition={{ duration: 0.4, delay: 0.4 }}
+      >
+        <Button onClick={handleGenerate} size="lg">
+          SQL文を生成
+        </Button>
+      </motion.div>
+
+      {/* 結果表示 */}
+      <AnimatePresence>
+        {statement && (
+          <motion.div
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: -10, scale: 0.98 }}
+            initial={{ opacity: 0, y: 20, scale: 0.98 }}
+            transition={{ duration: 0.3 }}
+          >
+            <Card>
+              <div className="p-6">
+                <div className="mb-4 flex items-center justify-between">
+                  <div className="flex items-center gap-3">
+                    <div className="flex h-8 w-8 items-center justify-center rounded-full bg-bg-success text-fg-success">
+                      <span className="text-sm">✓</span>
+                    </div>
+                    <h3 className="font-bold text-lg">生成されたSQL</h3>
+                  </div>
+                  <IconButton
+                    label={isCopied ? 'コピー済み' : 'コピー'}
+                    onClick={handleCopy}
+                    size="sm"
+                  >
+                    <CopyIcon />
+                  </IconButton>
+                </div>
+                <div className="overflow-x-auto rounded-lg bg-bg-mute">
+                  <pre className="p-4">
+                    <code className="font-mono text-fg-base text-sm">
+                      {statement}
+                    </code>
+                  </pre>
+                </div>
+              </div>
+            </Card>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </motion.section>
   );
 }

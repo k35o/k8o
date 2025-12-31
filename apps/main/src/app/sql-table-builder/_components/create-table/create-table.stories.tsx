@@ -36,9 +36,6 @@ export const InputTableInfo: Story = {
   play: async ({ canvasElement, userEvent }) => {
     const canvas = within(canvasElement);
 
-    // テーブル情報のフィールドセットが存在することを確認
-    await expect(canvas.getByText('テーブル情報')).toBeInTheDocument();
-
     // テキストボックスを取得して入力
     const textboxes = canvas.getAllByRole('textbox');
     const tableNameField = textboxes[0];
@@ -53,5 +50,24 @@ export const InputTableInfo: Story = {
       await userEvent.type(aliasField, 'ユーザーテーブル');
       await expect(aliasField).toHaveValue('ユーザーテーブル');
     }
+  },
+};
+
+export const WithError: Story = {
+  render: () => {
+    const [table, setTable] = useState<Table>({
+      name: '',
+      alias: '',
+    });
+    return (
+      <CreateTable
+        setTable={setTable}
+        table={table}
+        tableError={{
+          name: 'テーブル名は必須です',
+          alias: 'コメントは必須です',
+        }}
+      />
+    );
   },
 };

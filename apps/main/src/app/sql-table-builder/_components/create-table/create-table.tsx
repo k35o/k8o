@@ -19,42 +19,39 @@ export const CreateTable: FC<Props> = ({ table, setTable, tableError }) => {
   };
 
   return (
-    <fieldset className="p-2">
-      <legend className="font-bold text-lg">テーブル情報</legend>
-      <div className="flex flex-col justify-center gap-4">
-        <FormControl
-          errorText={tableError?.name}
-          isInvalid={Boolean(tableError?.name)}
-          isRequired
-          label="テーブル名"
-          renderInput={({ labelId: _, ...props }) => {
-            return (
-              <TextField
-                onChange={handleChangeTableName}
-                placeholder="users"
-                value={table.name}
-                {...props}
-              />
-            );
-          }}
-        />
-        <FormControl
-          errorText={tableError?.alias}
-          isInvalid={Boolean(tableError?.alias)}
-          isRequired
-          label="コメント"
-          renderInput={({ labelId: _, ...props }) => {
-            return (
-              <TextField
-                onChange={handleChangeTableAlias}
-                placeholder="ユーザーテーブル"
-                value={table.alias}
-                {...props}
-              />
-            );
-          }}
-        />
-      </div>
-    </fieldset>
+    <div className="grid gap-4 sm:grid-cols-2">
+      <FormControl
+        errorText={tableError?.name}
+        isInvalid={Boolean(tableError?.name)}
+        isRequired
+        label="テーブル名"
+        renderInput={({ labelId: _, ...props }) => {
+          return (
+            <TextField
+              onChange={handleChangeTableName}
+              placeholder="users"
+              value={table.name}
+              {...props}
+            />
+          );
+        }}
+      />
+      <FormControl
+        errorText={tableError?.alias}
+        isInvalid={Boolean(tableError?.alias)}
+        isRequired
+        label="コメント"
+        renderInput={({ labelId: _, ...props }) => {
+          return (
+            <TextField
+              onChange={handleChangeTableAlias}
+              placeholder="ユーザーテーブル"
+              value={table.alias}
+              {...props}
+            />
+          );
+        }}
+      />
+    </div>
   );
 };
