@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
-import { fn } from 'storybook/test';
+import { expect, fn, within } from 'storybook/test';
 import { Answer } from '.';
 
 const meta: Meta<typeof Answer> = {
@@ -129,5 +129,77 @@ export const AfterAnswerIncorrect: Story = {
     status: 'incorrect',
     handleAnswer: fn(),
     handleNextQuestion: fn(),
+  },
+};
+
+export const SubmitAnswer: Story = {
+  args: {
+    currentQuiz: {
+      id: 2,
+      highlight: null,
+      question: 'What is the capital of Japan?',
+      answers: [
+        {
+          id: 4,
+          answer: 'Tokyo',
+          explanation: null,
+        },
+      ],
+    },
+    status: 'none',
+    handleAnswer: fn(),
+    handleNextQuestion: fn(),
+  },
+  play: async ({ canvasElement, userEvent, args }) => {
+    const canvas = within(canvasElement);
+
+    // 解答フィールドに入力
+    const answerField = canvas.getByRole('textbox', {
+      name: 'What is the capital of Japan?',
+    });
+    await userEvent.type(answerField, 'Tokyo');
+
+    // 入力値を確認
+    await expect(answerField).toHaveValue('Tokyo');
+
+    // 解答するボタンをクリック
+    const submitButton = canvas.getByRole('button', { name: '解答する' });
+    await userEvent.click(submitButton);
+
+    // handleAnswerが呼ばれたことを確認
+    await expect(args.handleAnswer).toHaveBeenCalledWith(true);
+  },
+};
+
+export const ClickNextQuestion: Story = {
+  args: {
+    currentQuiz: {
+      id: 2,
+      highlight: null,
+      question: 'What is the capital of Japan?',
+      answers: [
+        {
+          id: 4,
+          answer: 'Tokyo',
+          explanation: null,
+        },
+      ],
+    },
+    status: 'correct',
+    handleAnswer: fn(),
+    handleNextQuestion: fn(),
+  },
+  play: async ({ canvasElement, userEvent, args }) => {
+    const canvas = within(canvasElement);
+
+    // 正解表示が出ていることを確認
+    await expect(canvas.getByText('正解')).toBeInTheDocument();
+
+    // 次の問題に進むボタンをクリック
+    const nextButton = canvas.getByRole('button', { name: '次の問題に進む' });
+    await userEvent.click(nextButton);
+
+    // handleNextQuestionが呼ばれたことを確認
+    await expect(args.handleNextQuestion).toHaveBeenCalled();
   },
 };
