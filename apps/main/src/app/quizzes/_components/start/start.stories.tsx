@@ -54,7 +54,7 @@ export const ChangeQuestionCount: Story = {
     await userEvent.clear(spinbutton);
     await userEvent.type(spinbutton, '5');
 
-    // 入力値を確認
-    await expect(spinbutton).toHaveValue(5);
+    // 入力値を確認（input要素は文字列を返す）
+    await expect(spinbutton).toHaveValue('5');
   },
 };

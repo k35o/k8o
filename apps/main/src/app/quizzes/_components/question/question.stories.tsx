@@ -115,8 +115,8 @@ export const DisplaysProgress: Story = {
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
 
-    // プログレス表示を確認（1/2問目）
-    await expect(canvas.getByText('1 / 2')).toBeInTheDocument();
+    // プログレス表示を確認（第1問）
+    await expect(canvas.getByText('第1問')).toBeInTheDocument();
   },
 };
 
