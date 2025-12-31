@@ -52,12 +52,13 @@ export default defineConfig({
             provider: playwright({
               contextOptions: {
                 timezoneId: 'JST',
-                // デスクトップサイズでテストを実行（レスポンシブUIの正常動作のため）
                 viewport: { width: 1280, height: 720 },
               },
             }),
             headless: true,
             screenshotFailures: false,
+            // デスクトップサイズでテストを実行（レスポンシブUIの正常動作のため）
+            viewport: { width: 1280, height: 720 },
           },
           isolate: false,
           setupFiles: [
