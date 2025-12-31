@@ -105,6 +105,12 @@ export const AddColumn: Story = {
 };
 
 export const SwitchViewType: Story = {
+  // デスクトップビューポートで表示（切り替えボタンはスマホで非表示のため）
+  parameters: {
+    viewport: {
+      defaultViewport: 'desktop',
+    },
+  },
   render: () => {
     const [columns, setColumns] = useState<Record<string, Column>>({
       [uuidV4()]: {
