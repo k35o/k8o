@@ -122,7 +122,7 @@ const RestrictionItem: FC<{
             initial={{ height: 0, opacity: 0 }}
             transition={{ duration: 0.2 }}
           >
-            <div className="border-border-base border-t px-4 py-4">
+            <div className="overflow-hidden border-border-base border-t px-4 py-4">
               <CreateRestriction
                 columns={columns}
                 restriction={restriction}

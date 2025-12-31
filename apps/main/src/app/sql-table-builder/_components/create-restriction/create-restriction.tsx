@@ -38,7 +38,7 @@ export const CreateRestriction: FC<Props> = ({
     }));
 
   return (
-    <div className="grid gap-4 sm:grid-cols-2">
+    <div className="grid min-w-0 gap-4 sm:grid-cols-2">
       <FormControl
         errorText={restrictionError?.type}
         isInvalid={Boolean(restrictionError?.type)}
@@ -74,22 +74,24 @@ export const CreateRestriction: FC<Props> = ({
 
       {/* PRIMARY KEY / UNIQUE の場合 */}
       {(restriction.type === 'primary' || restriction.type === 'unique') && (
-        <FormControl
-          errorText={restrictionError?.columns}
-          isInvalid={Boolean(restrictionError?.columns)}
-          isRequired
-          label="対象カラム"
-          renderInput={({ labelId: _, ...props }) => (
-            <Autocomplete
-              {...props}
-              onChange={(columns) => {
-                setRestriction({ ...restriction, columns });
-              }}
-              options={columnOptions}
-              value={restriction.columns}
-            />
-          )}
-        />
+        <div className="min-w-0">
+          <FormControl
+            errorText={restrictionError?.columns}
+            isInvalid={Boolean(restrictionError?.columns)}
+            isRequired
+            label="対象カラム"
+            renderInput={({ labelId: _, ...props }) => (
+              <Autocomplete
+                {...props}
+                onChange={(columns) => {
+                  setRestriction({ ...restriction, columns });
+                }}
+                options={columnOptions}
+                value={restriction.columns}
+              />
+            )}
+          />
+        </div>
       )}
 
       {/* FOREIGN KEY の場合 */}
