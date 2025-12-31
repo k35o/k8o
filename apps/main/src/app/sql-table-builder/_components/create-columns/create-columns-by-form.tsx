@@ -60,6 +60,7 @@ const ColumnItem: FC<{
     >
       {/* ヘッダー */}
       <button
+        aria-expanded={isOpen}
         className="flex w-full items-center justify-between gap-3 px-4 py-3 text-left transition-colors hover:bg-bg-baseHover"
         onClick={() => setIsOpen(!isOpen)}
         type="button"
