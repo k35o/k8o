@@ -75,13 +75,13 @@ const RestrictionItem: FC<{
       transition={{ duration: 0.2 }}
     >
       {/* ヘッダー */}
-      <button
-        aria-expanded={isOpen}
-        className="flex w-full items-center justify-between gap-3 px-4 py-3 text-left transition-colors hover:bg-bg-baseHover"
-        onClick={() => setIsOpen(!isOpen)}
-        type="button"
-      >
-        <div className="flex items-center gap-3">
+      <div className="flex w-full items-center justify-between gap-3 px-4 py-3">
+        <button
+          aria-expanded={isOpen}
+          className="flex flex-1 items-center gap-3 text-left transition-colors hover:opacity-80"
+          onClick={() => setIsOpen(!isOpen)}
+          type="button"
+        >
           <span className="flex h-6 w-6 items-center justify-center rounded bg-bg-mute font-mono text-fg-mute text-xs">
             {index + 1}
           </span>
@@ -91,28 +91,25 @@ const RestrictionItem: FC<{
           >
             {config.label}
           </span>
-        </div>
-        <div className="flex items-center gap-2">
-          {canDelete && (
-            <IconButton
-              label="削除"
-              onClick={(e) => {
-                e.stopPropagation();
-                onDelete();
-              }}
-              size="sm"
-            >
-              <CloseIcon />
-            </IconButton>
-          )}
           <motion.div
             animate={{ rotate: isOpen ? 0 : -90 }}
             transition={{ duration: 0.2 }}
           >
             <ChevronIcon direction="down" />
           </motion.div>
-        </div>
-      </button>
+        </button>
+        {canDelete && (
+          <IconButton
+            label="削除"
+            onClick={() => {
+              onDelete();
+            }}
+            size="sm"
+          >
+            <CloseIcon />
+          </IconButton>
+        )}
+      </div>
 
       {/* コンテンツ */}
       <AnimatePresence initial={false}>
