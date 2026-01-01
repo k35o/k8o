@@ -4,7 +4,12 @@ import { TextField } from '@k8o/arte-odyssey/form/text-field';
 import { IconButton } from '@k8o/arte-odyssey/icon-button';
 import { CloseIcon } from '@k8o/arte-odyssey/icons';
 import { type FC, useId } from 'react';
-import type { Column, ColumnType, InvalidColumns } from '../../_types/column';
+import {
+  COLUMN_TYPE_OPTIONS_SHORT,
+  type Column,
+  type ColumnType,
+  type InvalidColumns,
+} from '../../_types/column';
 
 type Props = {
   handleChangeColumn: (id: string) => (column: Column) => void;
@@ -12,20 +17,6 @@ type Props = {
   columnsEntries: [string, Column][];
   columnsError: InvalidColumns['errors'] | undefined;
 };
-
-const TYPE_OPTIONS = [
-  { value: 'uuid', label: 'uuid' },
-  { value: 'serial', label: '自動採番' },
-  { value: 'text', label: '文字列' },
-  { value: 'integer', label: '整数' },
-  { value: 'numeric', label: '数値' },
-  { value: 'boolean', label: '真偽値' },
-  { value: 'date', label: '日付' },
-  { value: 'time', label: '時刻' },
-  { value: 'timetz', label: '時刻(TZ)' },
-  { value: 'timestamp', label: '日時' },
-  { value: 'timestamptz', label: '日時(TZ)' },
-] as const satisfies { value: ColumnType; label: string }[];
 
 export const CreateColumnsByTable: FC<Props> = ({
   handleChangeColumn,
@@ -67,12 +58,9 @@ export const CreateColumnsByTable: FC<Props> = ({
           <tbody className="divide-y divide-border-base">
             {columnsEntries.map(([id, column], idx) => {
               const columnError = columnsError?.[id];
-              const hasError =
-                columnError?.name ||
-                columnError?.alias ||
-                columnError?.type ||
-                columnError?.nullable ||
-                columnError?.default;
+              const hasError = columnError
+                ? Object.values(columnError).some(Boolean)
+                : false;
 
               return (
                 <tr
@@ -177,7 +165,7 @@ export const CreateColumnsByTable: FC<Props> = ({
                           type: e.target.value as ColumnType,
                         });
                       }}
-                      options={TYPE_OPTIONS}
+                      options={COLUMN_TYPE_OPTIONS_SHORT}
                       value={column.type}
                     />
                     {columnError?.type && (

@@ -6,7 +6,12 @@ import { IconButton } from '@k8o/arte-odyssey/icon-button';
 import { ChevronIcon, CloseIcon } from '@k8o/arte-odyssey/icons';
 import { AnimatePresence, motion } from 'motion/react';
 import { type FC, useState } from 'react';
-import type { Column, ColumnType, InvalidColumns } from '../../_types/column';
+import {
+  COLUMN_TYPE_OPTIONS,
+  type Column,
+  type ColumnType,
+  type InvalidColumns,
+} from '../../_types/column';
 
 type Props = {
   handleChangeColumn: (id: string) => (column: Column) => void;
@@ -14,20 +19,6 @@ type Props = {
   columnsEntries: [string, Column][];
   columnsError: InvalidColumns['errors'] | undefined;
 };
-
-const TYPE_OPTIONS = [
-  { value: 'uuid', label: 'uuid' },
-  { value: 'serial', label: '自動採番' },
-  { value: 'text', label: '文字列' },
-  { value: 'integer', label: '整数' },
-  { value: 'numeric', label: '数値' },
-  { value: 'boolean', label: '真偽値' },
-  { value: 'date', label: '日付' },
-  { value: 'time', label: '時刻' },
-  { value: 'timetz', label: '時刻(タイムゾーン付き)' },
-  { value: 'timestamp', label: '日時' },
-  { value: 'timestamptz', label: '日時(タイムゾーン付き)' },
-] as const satisfies { value: ColumnType; label: string }[];
 
 // 個別のカラムアイテムコンポーネント
 const ColumnItem: FC<{
@@ -74,7 +65,8 @@ const ColumnItem: FC<{
           </span>
           {column.name && (
             <span className="text-fg-mute text-sm">
-              ({TYPE_OPTIONS.find((t) => t.value === column.type)?.label})
+              ({COLUMN_TYPE_OPTIONS.find((t) => t.value === column.type)?.label}
+              )
             </span>
           )}
           <motion.div
@@ -164,7 +156,7 @@ const ColumnItem: FC<{
                             type: e.target.value as ColumnType,
                           });
                         }}
-                        options={TYPE_OPTIONS}
+                        options={COLUMN_TYPE_OPTIONS}
                         value={column.type}
                         {...props}
                       />
