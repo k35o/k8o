@@ -38,7 +38,7 @@ export const CreateRestriction: FC<Props> = ({
     }));
 
   return (
-    <div className="flex flex-col justify-center gap-4">
+    <div className="grid min-w-0 gap-4 sm:grid-cols-2">
       <FormControl
         errorText={restrictionError?.type}
         isInvalid={Boolean(restrictionError?.type)}
@@ -71,24 +71,30 @@ export const CreateRestriction: FC<Props> = ({
           );
         }}
       />
+
+      {/* PRIMARY KEY / UNIQUE の場合 */}
       {(restriction.type === 'primary' || restriction.type === 'unique') && (
-        <FormControl
-          errorText={restrictionError?.columns}
-          isInvalid={Boolean(restrictionError?.columns)}
-          isRequired
-          label="カラム"
-          renderInput={({ labelId: _, ...props }) => (
-            <Autocomplete
-              {...props}
-              onChange={(columns) => {
-                setRestriction({ ...restriction, columns });
-              }}
-              options={columnOptions}
-              value={restriction.columns}
-            />
-          )}
-        />
+        <div className="min-w-0">
+          <FormControl
+            errorText={restrictionError?.columns}
+            isInvalid={Boolean(restrictionError?.columns)}
+            isRequired
+            label="対象カラム"
+            renderInput={({ labelId: _, ...props }) => (
+              <Autocomplete
+                {...props}
+                onChange={(columns) => {
+                  setRestriction({ ...restriction, columns });
+                }}
+                options={columnOptions}
+                value={restriction.columns}
+              />
+            )}
+          />
+        </div>
       )}
+
+      {/* FOREIGN KEY の場合 */}
       {restriction.type === 'foreign' && (
         <>
           <FormControl
@@ -96,7 +102,7 @@ export const CreateRestriction: FC<Props> = ({
             isDisabled={columnOptions.length === 0}
             isInvalid={Boolean(restrictionError?.column)}
             isRequired
-            label="参照するカラム"
+            label="参照元カラム"
             renderInput={({ labelId: _, ...props }) => {
               return (
                 <Select
@@ -117,7 +123,7 @@ export const CreateRestriction: FC<Props> = ({
             errorText={restrictionError?.referrence?.table}
             isInvalid={Boolean(restrictionError?.referrence?.table)}
             isRequired
-            label="参照先のテーブル名"
+            label="参照先テーブル"
             renderInput={({ labelId: _, ...props }) => {
               return (
                 <TextField
@@ -131,6 +137,7 @@ export const CreateRestriction: FC<Props> = ({
                       },
                     });
                   }}
+                  placeholder="users"
                   value={restriction.reference.table}
                 />
               );
@@ -140,7 +147,7 @@ export const CreateRestriction: FC<Props> = ({
             errorText={restrictionError?.referrence?.column}
             isInvalid={Boolean(restrictionError?.referrence?.column)}
             isRequired
-            label="参照先のカラム名"
+            label="参照先カラム"
             renderInput={({ labelId: _, ...props }) => {
               return (
                 <TextField
@@ -154,6 +161,7 @@ export const CreateRestriction: FC<Props> = ({
                       },
                     });
                   }}
+                  placeholder="id"
                   value={restriction.reference.column}
                 />
               );
