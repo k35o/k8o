@@ -39,10 +39,10 @@
     "@types/node": "24.10.4",
     "@typescript/native-preview": "7.0.0-dev.20251221.1",
     "chrome-devtools-mcp": "0.12.1",
-    "lefthook": "2.0.12",
+    "lefthook": "2.0.13",
     "next-devtools-mcp": "0.3.7",
     "playwright": "1.57.0",
-    "turbo": "2.7.1",
+    "turbo": "2.7.2",
     "typescript": "5.9.3"
   }
 }
