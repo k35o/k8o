@@ -65,7 +65,7 @@
     "@vitest/coverage-istanbul": "catalog:",
     "@vitest/ui": "catalog:",
     "chromatic": "13.3.4",
-    "msw": "2.12.6",
+    "msw": "2.12.7",
     "msw-storybook-addon": "2.0.6",
     "react-email": "5.1.0",
     "react-scan": "0.4.3",
