@@ -11,6 +11,7 @@ import { TextTag } from '@k8o/arte-odyssey/text-tag';
 import Image from 'next/image';
 import { AppCard } from './_components/app-card';
 import { EmailTooltip } from './_components/email-tooltip';
+import { GitHubContributionGraph } from './_components/github-contribution-graph';
 import arteodyssey from './_images/arteodyssey.png';
 import k8o from './_images/k8o.jpg';
 import { RoundedIcon } from './radius-maker/_components/rounded-icon';
@@ -72,6 +73,7 @@ export default function Home() {
           </div>
         </div>
       </Card>
+      <GitHubContributionGraph username="k35o" />
       <div className="flex flex-col gap-6">
         <div>
           <Heading type="h2">Forge</Heading>
