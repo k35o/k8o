@@ -10,7 +10,6 @@ import { ColorFilters } from '../../color-filters';
 import { ContactToMe } from '../../contact-to-me';
 import { ToggleTheme } from '../../toggle-theme';
 import { LlmLink } from '../llm-link';
-import { NewsLink } from '../news-link';
 import { TagsLink } from '../tags-link';
 
 export const NavigationMenu: FC = () => {
@@ -46,9 +45,6 @@ export const NavigationMenu: FC = () => {
               <ul className="flex w-full flex-col gap-4 p-4">
                 <li>
                   <TagsLink onNavigate={onClose} />
-                </li>
-                <li>
-                  <NewsLink onNavigate={onClose} />
                 </li>
                 <li>
                   <Suspense fallback={null}>

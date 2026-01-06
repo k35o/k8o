@@ -130,51 +130,6 @@ https://k8o.dev/api/subscriptions/verify?email=user%40example.com&token=123e4567
 
 ---
 
-### ニュースAPI
-
-#### ニュース下書きモード
-
-MicroCMSの下書きプレビューモードを有効化します。
-
-```
-GET /api/draft-news?secret={apiKey}&draft-key={draftKey}
-```
-
-**クエリパラメータ：**
-| パラメータ | 型 | 必須 | 説明 |
-|-----------|-----|------|------|
-| secret | string | ✓ | MicroCMS API Key |
-| draft-key | string | ✓ | 下書きキー |
-
-**レスポンス：**
-
-成功時：
-```
-Redirect to: /news?draftKey={draftKey}
-```
-
-失敗時：
-```json
-{
-  "error": "Invalid token"
-}
-```
-ステータスコード: `401 Unauthorized`
-
-**使用例：**
-
-MicroCMS管理画面からのリンク：
-```
-https://k8o.dev/api/draft-news?secret=YOUR_API_KEY&draft-key=abc123
-```
-
-**実装詳細：**
-- Next.js Draft Modeを使用
-- 認証はMicroCMS API Keyで行う
-- 下書きモードは同一セッション内で有効
-
----
-
 ### Cronジョブ
 
 #### 週次通知送信
