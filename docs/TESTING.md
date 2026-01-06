@@ -449,37 +449,6 @@ describe('異常系', () => {
 
 ## モック戦略
 
-### MSW (Mock Service Worker)
-
-外部APIのモック：
-
-```typescript
-// apps/main/src/mocks/handlers/microcms.ts
-import { http, HttpResponse } from 'msw';
-
-export const microCMSHandlers = [
-  http.get('https://k35o.microcms.io/api/v1/news', () => {
-    return HttpResponse.json({
-      contents: [
-        {
-          id: 'news-1',
-          title: 'Test News',
-          content: 'Test content',
-        },
-      ],
-    });
-  }),
-
-  http.get('https://k35o.microcms.io/api/v1/news/:id', ({ params }) => {
-    return HttpResponse.json({
-      id: params.id,
-      title: 'Test News',
-      content: 'Test content',
-    });
-  }),
-];
-```
-
 ### Vitest Mock
 
 関数のモック：
