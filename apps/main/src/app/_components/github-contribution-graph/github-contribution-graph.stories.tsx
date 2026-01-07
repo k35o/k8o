@@ -31,13 +31,13 @@ export const DisplaysTitle: Story = {
 
     // タイトルが表示されることを確認
     await expect(
-      canvas.getByRole('heading', { name: 'GitHub Contributions' }),
+      canvas.getByRole('heading', { name: '開発の足あと' }),
     ).toBeInTheDocument();
   },
 };
 
 /**
- * Contributionの総数が表示されることを確認
+ * コミット総数が表示されることを確認
  */
 export const DisplaysTotalContributions: Story = {
   args: {
@@ -46,8 +46,8 @@ export const DisplaysTotalContributions: Story = {
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
 
-    // "contributions" テキストが表示されることを確認
-    await expect(canvas.getByText(/contributions/i)).toBeInTheDocument();
+    // "件" テキストが表示されることを確認
+    await expect(canvas.getByText(/件/)).toBeInTheDocument();
   },
 };
 
