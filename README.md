@@ -5,11 +5,14 @@ k8oが作成したすべてのコンテンツを公開するウェブサイト�
 ## Quick Start
 
 ```bash
-# 依存関係インストール（Node.js 24.12.0, pnpm 10.25.0）
+# 依存関係インストール(Node.js 24.12.0, pnpm 10.25.0)
 pnpm i --frozen-lockfile
 
 # 環境変数設定 & ローカルサービス起動
 cp apps/main/.env.example apps/main/.env.local
+# apps/main/.env.localにGITHUB_TOKENを設定(GitHub Contribution表示に必要)
+# GitHub Personal Access Token (classic)をhttps://github.com/settings/tokensで取得
+# 必要なスコープ: read:user
 docker compose up -d
 pnpm run -F @repo/database migrate
 
@@ -24,7 +27,7 @@ pnpm run dev
 - `apps/main` - Next.js 16 (App Router)
 - `packages/database` - Drizzle ORM + PostgreSQL
 - `packages/helpers` - ユーティリティ関数
-- `@k8o/arte-odyssey` - UIコンポーネント（[npm](https://www.npmjs.com/package/@k8o/arte-odyssey)）
+- `@k8o/arte-odyssey` - UIコンポーネント([npm](https://www.npmjs.com/package/@k8o/arte-odyssey))
 
 ## Documentation
 
