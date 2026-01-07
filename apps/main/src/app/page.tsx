@@ -73,7 +73,15 @@ export default function Home() {
           </div>
         </div>
       </Card>
-      <GitHubContributionGraph username="k35o" />
+
+      <div className="flex flex-col gap-6">
+        <div>
+          <Heading type="h2">Activity</Heading>
+        </div>
+        <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
+          <GitHubContributionGraph />
+        </div>
+      </div>
       <div className="flex flex-col gap-6">
         <div>
           <Heading type="h2">Forge</Heading>
