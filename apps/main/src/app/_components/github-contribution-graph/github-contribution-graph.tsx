@@ -9,44 +9,23 @@ const OWNER = 'k35o';
 const REPO = 'k8o';
 
 /**
- * 空のコントリビューションデータを生成（50日分）
+ * 空のコントリビューションデータ（10週間分の空データ）
+ * プリレンダリング時にnew Date()を使用しないよう、静的な空配列を使用
  */
-const _generateEmptyWeeks = (): ContributionWeek[] => {
-  const weeks: ContributionWeek[] = [];
-  const today = new Date();
-  const startDate = new Date(today);
-  startDate.setDate(today.getDate() - 49);
-
-  let currentWeek: Array<{ date: string; count: number; level: number }> = [];
-
-  for (let i = 0; i <= 49; i++) {
-    const date = new Date(startDate);
-    date.setDate(startDate.getDate() + i);
-    const dateStr = date.toISOString().split('T')[0];
-
-    if (dateStr) {
-      currentWeek.push({
-        date: dateStr,
-        count: 0,
-        level: 0,
-      });
-    }
-
-    if (currentWeek.length === 5 || i === 49) {
-      weeks.push({ days: [...currentWeek] });
-      currentWeek = [];
-    }
-  }
-
-  return weeks;
-};
+const EMPTY_WEEKS: ContributionWeek[] = Array.from({ length: 10 }, () => ({
+  days: Array.from({ length: 5 }, () => ({
+    date: '2000-01-01',
+    count: 0,
+    level: 0,
+  })),
+}));
 
 /**
  * GitHub Contributionグラフコンポーネント（Server Component）
  */
 export const GitHubContributionGraph = () => {
   return (
-    <Suspense fallback={<Presenter weeks={_generateEmptyWeeks()} />}>
+    <Suspense fallback={<Presenter weeks={EMPTY_WEEKS} />}>
       <RepositoryContributionsContent />
     </Suspense>
   );
