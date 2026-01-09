@@ -1,14 +1,9 @@
-import { readFile } from 'node:fs/promises';
-import { dirname, join } from 'node:path';
-import { fileURLToPath } from 'node:url';
+import { ICON_BASE64 } from './icon-data';
 
 /**
  * OG画像用のアイコンデータURLを取得
- * ビルド時にファイルシステムから読み込んでBase64エンコード
+ * Base64エンコードされた画像データを返す
  */
-export async function getIconDataUrl() {
-  const __dirname = dirname(fileURLToPath(import.meta.url));
-  const iconPath = join(__dirname, '../icon.png');
-  const iconBase64 = await readFile(iconPath, 'base64');
-  return `data:image/png;base64,${iconBase64}`;
+export function getIconDataUrl() {
+  return `data:image/png;base64,${ICON_BASE64}`;
 }
