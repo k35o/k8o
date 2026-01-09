@@ -1,13 +1,15 @@
 import { loadDefaultJapaneseParser } from 'budoux';
 import { ImageResponse } from 'next/og';
+import { getIconDataUrl } from '@/app/_utils/get-icon-data-url';
 
 type OgImageProps = {
   title: string;
   category?: string;
 };
 
-export function OgImage({ title, category }: OgImageProps) {
+export async function OgImage({ title, category }: OgImageProps) {
   const words = loadDefaultJapaneseParser().parse(title);
+  const iconDataUrl = await getIconDataUrl();
 
   return new ImageResponse(
     <div
@@ -117,7 +119,7 @@ export function OgImage({ title, category }: OgImageProps) {
             <img
               alt="アイコン"
               height={96}
-              src="https://k8o.me/icon.png"
+              src={iconDataUrl}
               style={{
                 borderRadius: 9999,
                 objectFit: 'cover',

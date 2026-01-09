@@ -12,7 +12,7 @@ export const contentType = 'image/png';
 export default async function Image() {
   const blog = await getBlogContent('color-perception');
 
-  return OgImage({
+  return await OgImage({
     category: 'Blog',
     title: blog.title,
   });
