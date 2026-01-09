@@ -13,7 +13,7 @@ export const contentType = 'image/png';
 export default async function Image() {
   const blog = await getBlogContent('view-transitions');
 
-  return OgImage({
+  return await OgImage({
     category: 'Blog',
     title: blog.title,
   });

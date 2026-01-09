@@ -1,5 +1,6 @@
 import { loadDefaultJapaneseParser } from 'budoux';
 import { ImageResponse } from 'next/og';
+import { getIconDataUrl } from '@/app/_utils/get-icon-data-url';
 
 export const alt = 'QRKit';
 export const size = {
@@ -9,9 +10,10 @@ export const size = {
 
 export const contentType = 'image/png';
 
-export default function OpenGraphImage() {
+export default async function OpenGraphImage() {
   const title = 'QRKit';
   const words = loadDefaultJapaneseParser().parse(title);
+  const iconDataUrl = await getIconDataUrl();
 
   return new ImageResponse(
     <div
@@ -58,7 +60,7 @@ export default function OpenGraphImage() {
         <img
           alt="アイコン"
           height={128}
-          src="https://k8o.me/icon.png"
+          src={iconDataUrl}
           style={{
             borderRadius: 9999,
             objectFit: 'cover',

@@ -1,7 +1,5 @@
 import { OgImage } from '@/app/_components/og-image';
 
-export const runtime = 'edge';
-
 export const alt = 'もじカウント';
 export const size = {
   width: 1200,
@@ -10,6 +8,6 @@ export const size = {
 
 export const contentType = 'image/png';
 
-export default function OpenGraphImage() {
-  return OgImage({ title: 'もじカウント' });
+export default async function OpenGraphImage() {
+  return await OgImage({ title: 'もじカウント' });
 }

@@ -12,7 +12,7 @@ export const contentType = 'image/png';
 export default async function Image() {
   const blog = await getBlogContent('react19-usereducer-ts-type-inference');
 
-  return OgImage({
+  return await OgImage({
     category: 'Blog',
     title: blog.title,
   });

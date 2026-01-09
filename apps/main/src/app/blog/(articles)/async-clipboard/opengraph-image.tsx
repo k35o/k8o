@@ -12,7 +12,7 @@ export const contentType = 'image/png';
 export default async function Image() {
   const blog = await getBlogContent('async-clipboard');
 
-  return OgImage({
+  return await OgImage({
     title: blog.title,
     category: 'Blog',
   });
