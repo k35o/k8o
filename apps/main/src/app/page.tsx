@@ -12,6 +12,7 @@ import Image from 'next/image';
 import { AppCard } from './_components/app-card';
 import { EmailTooltip } from './_components/email-tooltip';
 import { GitHubContributionGraph } from './_components/github-contribution-graph';
+import { RecentBlogs } from './_components/recent-blogs';
 import arteodyssey from './_images/arteodyssey.png';
 import k8o from './_images/k8o.jpg';
 import { RoundedIcon } from './radius-maker/_components/rounded-icon';
@@ -78,8 +79,13 @@ export default function Home() {
         <div>
           <Heading type="h2">Activity</Heading>
         </div>
-        <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
-          <GitHubContributionGraph />
+        <div className="grid items-start gap-8 md:grid-cols-2 lg:grid-cols-3">
+          <div className="lg:sticky lg:top-4">
+            <GitHubContributionGraph />
+          </div>
+          <div className="md:col-span-2">
+            <RecentBlogs />
+          </div>
         </div>
       </div>
       <div className="flex flex-col gap-6">
