@@ -40,7 +40,7 @@
     "@typescript/native-preview": "7.0.0-dev.20260102.1",
     "chrome-devtools-mcp": "0.12.1",
     "lefthook": "2.0.13",
-    "next-devtools-mcp": "0.3.7",
+    "next-devtools-mcp": "0.3.8",
     "playwright": "1.57.0",
     "turbo": "2.7.2",
     "typescript": "5.9.3"
