@@ -225,7 +225,7 @@ apps/main/src/app/blog/(articles)/{slug}/
 | `page.mdx` | ✅ |
 | `layout.tsx` | ✅ |
 | `opengraph-image.tsx` | ✅ |
-| Playground (`apps/main/src/app/_components/playgrounds/{slug}/`) | デモがある場合 |
+| Playground (`apps/main/src/app/_components/playgrounds/{feature-name}/`) | デモがある場合 |
 | マイグレーション (`packages/database/migrations/`) | ✅ |
 
 ### 2. 記事のMDX構造
@@ -265,12 +265,14 @@ import { Playground } from '@/app/_components/playgrounds';
 
 ### 3. layout.tsx
 
+`LayoutProps`の型パラメータには、実際のブログスラグを指定する（例: `/blog/my-article`）。
+
 ```typescript
 import type { Metadata } from 'next';
 import { getBlogContent } from '@/app/blog/_api';
 import { BlogLayout } from '@/app/blog/_components/blog-layout';
 
-const slug = '{slug}';
+const slug = 'my-article'; // 実際のスラグに置き換える
 
 export async function generateMetadata(): Promise<Metadata> {
   const blog = await getBlogContent(slug);
@@ -299,7 +301,7 @@ export async function generateMetadata(): Promise<Metadata> {
 
 export default function Layout({
   children,
-}: LayoutProps<'/blog/{slug}'>) {
+}: LayoutProps<'/blog/my-article'>) { // 実際のスラグに置き換える
   return <BlogLayout slug={slug}>{children}</BlogLayout>;
 }
 ```
@@ -330,13 +332,13 @@ export default async function Image() {
 
 ### 5. Playgroundコンポーネントの作成（デモがある場合）
 
-デモが必要な場合は以下のファイルを作成：
+デモが必要な場合は以下のファイルを作成。ディレクトリ名はブログスラグと一致させる必要はなく、機能の内容がわかる名前を使用する（例: `caret-position-from-point`, `event-timing`）。
 
 ```
-apps/main/src/app/_components/playgrounds/{slug}/
-├── {slug}-demo.tsx           # メインコンポーネント
-├── {slug}-demo.stories.tsx   # Storybook
-└── index.ts                  # エクスポート
+apps/main/src/app/_components/playgrounds/{feature-name}/
+├── {feature-name}-demo.tsx           # メインコンポーネント
+├── {feature-name}-demo.stories.tsx   # Storybook
+└── index.ts                          # エクスポート
 ```
 
 #### index.tsの例
@@ -366,8 +368,7 @@ export const mySection: PlaygroundSection = {
 ### 6. データベースマイグレーション
 
 ```bash
-cd packages/database
-pnpm run generate:custom
+pnpm run -F @repo/database generate:custom
 ```
 
 生成されたSQLファイルに以下を記述：
@@ -406,7 +407,7 @@ grep "INSERT INTO tags" packages/database/migrations/*.sql | grep -i "css"
 ```bash
 # 最新のタグIDを確認
 grep "INSERT INTO tags" packages/database/migrations/*.sql | \
-  sed 's/.*VALUES (\([0-9]*\).*/\1/' | sort -n | tail -1
+  grep -oE 'VALUES \([0-9]+' | grep -oE '[0-9]+' | sort -n | tail -1
 ```
 
 結果に+1した値が次のタグID。
@@ -420,15 +421,19 @@ grep "INSERT INTO tags" packages/database/migrations/*.sql | \
 | 15 | HTML |
 | 21 | Baseline 2024 |
 | 30 | CSS |
+| 90 | Performance API |
+| 91 | PerformanceEventTiming |
+| 92 | LCP |
+| 93 | document.caretPositionFromPoint() |
 
-全タグは `packages/database/migrations/0001_tags.sql` および後続のマイグレーションを参照。
+タグは随時追加されるため、上記は参考程度とし、既存タグの検索コマンドで最新の状態を確認することを推奨。全タグは `packages/database/migrations/` 配下のマイグレーションファイルを参照。
 
 #### 次のブログIDを取得
 
 ```bash
 # 最新のブログIDを確認
 grep "INSERT INTO blogs" packages/database/migrations/*.sql | \
-  sed 's/.*VALUES (\([0-9]*\).*/\1/' | sort -n | tail -1
+  grep -oE 'VALUES \([0-9]+' | grep -oE '[0-9]+' | sort -n | tail -1
 ```
 
 ### 8. チェックリスト
@@ -440,7 +445,7 @@ grep "INSERT INTO blogs" packages/database/migrations/*.sql | \
 - [ ] Storybookストーリー作成（必要な場合）
 - [ ] `playgrounds/index.ts` 更新（必要な場合）
 - [ ] マイグレーションSQL作成
-- [ ] `pnpm run generate:custom` 実行済み
+- [ ] `pnpm run -F @repo/database generate:custom` 実行済み
 
 ## 品質チェックリスト
 
