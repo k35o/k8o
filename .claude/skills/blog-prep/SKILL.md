@@ -55,13 +55,15 @@ createdAt: 2025-01-10
 updatedAt: 2025-01-10
 ---
 
-import { BaselineStatus } from '@k8o/arte-odyssey/baseline-status';
-import { MyDemo } from '@/app/_components/playgrounds/my-feature';
-import { Playground } from '@/app/_components/playgrounds';
+{/* 必要に応じてインポート */}
+{/* import { BaselineStatus } from '@k8o/arte-odyssey/baseline-status'; */}
+{/* import { MyDemo } from '@/app/_components/playgrounds/my-feature'; */}
+{/* import { Playground } from '@/app/_components/playgrounds'; */}
 
 # タイトル
 
-<BaselineStatus featureId="feature-id"></BaselineStatus>
+{/* Baseline機能を紹介する記事の場合 */}
+{/* <BaselineStatus featureId="feature-id"></BaselineStatus> */}
 
 {/* ここに記事の内容を執筆する */}
 ```
