@@ -216,22 +216,6 @@ grep "INSERT INTO tags" packages/database/migrations/*.sql | \
 
 結果に+1した値が次のタグID。
 
-#### よく使うタグID
-
-| ID | タグ名 |
-|----|--------|
-| 10 | JavaScript |
-| 11 | Baseline 2025 |
-| 15 | HTML |
-| 21 | Baseline 2024 |
-| 30 | CSS |
-| 90 | Performance API |
-| 91 | PerformanceEventTiming |
-| 92 | LCP |
-| 93 | document.caretPositionFromPoint() |
-
-タグは随時追加されるため、既存タグの検索コマンドで最新の状態を確認すること。
-
 #### 次のブログIDを取得
 
 ```bash
