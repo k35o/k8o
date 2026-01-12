@@ -1,0 +1,104 @@
+---
+title: 'font-family: mathで数式に適切なフォントを適用する'
+description: 'font-family: mathは数学的表現に特化した一般フォントファミリーです。上付き・下付き文字、複数行にまたがる括弧、数式の入れ子構造などを適切に表示できます。Baseline 2025で主要ブラウザすべてで利用可能になりました。'
+createdAt: 2026-01-12
+updatedAt: 2026-01-12
+---
+
+import { BaselineStatus } from '@k8o/arte-odyssey/baseline-status';
+import { FontFamilyMathDemo } from '@/app/_components/playgrounds/font-family-math';
+import { Playground } from '@/app/_components/playgrounds';
+
+# font-family: mathで数式に適切なフォントを適用する
+
+<BaselineStatus featureId="font-family-math"></BaselineStatus>
+
+## はじめに
+
+Webページで数式を表示する際、適切なフォントがないと正しく表示されないことがあります。
+上付き文字（$x^2$）や下付き文字（$a_n$）、分数（$\frac{a}{b}$）、積分記号（$\int$）など、数学特有の表現には専用のグリフが必要です。
+
+CSSではBaseline 2025より、`font-family`プロパティとして`math`を指定することで数式を適切に表示できるようになりました。
+
+## font-family: mathとは
+
+`math`は数学的表現に特化した一般フォントファミリーです。以下のような表現に対応しています。
+
+- 上付き文字・下付き文字: $x^2$や$a_n$などの指数や添字
+- 複数行にまたがる括弧: $$\left( \frac{a}{b} \right)$$
+- 数式の入れ子構造: $$\frac{\frac{a}{b}}{c}$$
+- Blackboard bold: $\mathbb{N}$、$\mathbb{Z}$、$\mathbb{R}$など
+
+一般フォントファミリーとは、特定のフォント名ではなくフォントの種類を指定するキーワードです。
+`serif`（明朝体）、`sans-serif`（ゴシック体）、`monospace`（等幅）などがあり、`math`はその数式版として追加されました。
+
+## 使い方
+
+一般フォントファミリーなので、フォントの読み込み指定は不要で、以下のように指定するだけで使用できます。
+
+```css
+.math-expression {
+  font-family: math;
+}
+```
+
+`<math>`要素はUAスタイルシートで`font-family: math`が指定することになっています。
+
+<math display="block">
+  <mrow>
+    <msubsup>
+      <mo>∫</mo>
+      <mn>0</mn>
+      <mn>1</mn>
+    </msubsup>
+    <msup><mi>x</mi><mn>2</mn></msup>
+    <mi>dx</mi>
+  </mrow>
+  <mo>=</mo>
+  <mfrac>
+    <mn>1</mn>
+    <mn>3</mn>
+  </mfrac>
+</math>
+
+```html
+<!-- 上記の数式を表示するHTML -->
+<math display="block">
+  <mrow>
+    <msubsup>
+      <mo>∫</mo>
+      <mn>0</mn>
+      <mn>1</mn>
+    </msubsup>
+    <msup><mi>x</mi><mn>2</mn></msup>
+    <mi>dx</mi>
+  </mrow>
+  <mo>=</mo>
+  <mfrac>
+    <mn>1</mn>
+    <mn>3</mn>
+  </mfrac>
+</math>
+```
+
+## 使われるフォント
+
+`font-family: math`を指定すると、ブラウザが数式表示に適したフォントを自動的に選択します。
+`serif`を指定したときに明朝体が選ばれるのと同じ仕組みです（実際に選ばれるフォントは環境によって異なります）。
+
+どのフォントが選ばれるかはブラウザとOSの組み合わせによって異なります。
+Windowsには`Cambria Math`、macOS（Ventura以降）には`STIX Two Math`がプリインストールされているため、多くの環境では追加のインストールなしこれらが利用されます。
+
+## デモ
+
+<Playground>
+  <FontFamilyMathDemo />
+</Playground>
+
+## おわりに
+
+`font-family: math`を紹介しました。
+
+`font-family`を`math`にするだけで、数式に適切なフォントが適用され、見やすく美しい表示が可能になる便利な機能です。
+
+数式を簡単に表示する際はぜひ活用してみてください。

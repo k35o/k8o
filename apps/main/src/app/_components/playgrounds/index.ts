@@ -5,6 +5,7 @@ export * from './composed-ranges';
 export * from './content-visibility';
 export * from './details-content';
 export * from './event-timing';
+export * from './font-family-math';
 export * from './highlight';
 export * from './input-file-webkitdirectory';
 export * from './largest-contentful-paint';
@@ -28,6 +29,7 @@ import { composedRangesSection } from './composed-ranges';
 import { contentVisibilitySection } from './content-visibility';
 import { detailsContentSection } from './details-content';
 import { eventTimingSection } from './event-timing';
+import { fontFamilyMathSection } from './font-family-math';
 import { highlightSection } from './highlight';
 import { inputFileWebkitdirectorySection } from './input-file-webkitdirectory';
 import { lcpSection } from './largest-contentful-paint';
@@ -50,6 +52,7 @@ export const playgroundSections: PlaygroundSection[] = [
   contentVisibilitySection,
   detailsContentSection,
   eventTimingSection,
+  fontFamilyMathSection,
   inputFileWebkitdirectorySection,
   lcpSection,
   popoverSection,
