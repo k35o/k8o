@@ -100,6 +100,7 @@ Invoker Commands APIは`commandfor`と`command`の2つの属性で構成され�
 ```html
 <button commandfor="my-image" command="--zoom-in">拡大</button>
 <button commandfor="my-image" command="--zoom-out">縮小</button>
+<button commandfor="my-image" command="--reset">リセット</button>
 <img id="my-image" src="photo.jpg" alt="写真" />
 ```
 
@@ -114,6 +115,8 @@ image.addEventListener('command', (event) => {
     scale = Math.min(scale + 0.25, 2);
   } else if (event.command === '--zoom-out') {
     scale = Math.max(scale - 0.25, 0.5);
+  } else if (event.command === '--reset') {
+    scale = 1;
   }
   image.style.scale = `${scale}`;
 });
