@@ -1,7 +1,8 @@
 import { OgImage } from '@/app/_components/og-image';
 import { getBlogContent } from '@/app/blog/_api';
 
-export const alt = 'Invoker Commands';
+export const alt =
+  'Invoker Commands APIでJavaScriptなしでボタンから他の要素を操作する';
 export const size = {
   width: 1200,
   height: 630,

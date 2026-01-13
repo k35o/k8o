@@ -8,6 +8,7 @@ export * from './event-timing';
 export * from './font-family-math';
 export * from './highlight';
 export * from './input-file-webkitdirectory';
+export * from './invoker-commands';
 export * from './largest-contentful-paint';
 export { Playground } from './playground';
 export * from './popover';
@@ -32,6 +33,7 @@ import { eventTimingSection } from './event-timing';
 import { fontFamilyMathSection } from './font-family-math';
 import { highlightSection } from './highlight';
 import { inputFileWebkitdirectorySection } from './input-file-webkitdirectory';
+import { invokerCommandsSection } from './invoker-commands';
 import { lcpSection } from './largest-contentful-paint';
 import { popoverSection } from './popover';
 import { printColorAdjustSection } from './print-color-adjust';
@@ -54,6 +56,7 @@ export const playgroundSections: PlaygroundSection[] = [
   eventTimingSection,
   fontFamilyMathSection,
   inputFileWebkitdirectorySection,
+  invokerCommandsSection,
   lcpSection,
   popoverSection,
   requestCloseSection,
