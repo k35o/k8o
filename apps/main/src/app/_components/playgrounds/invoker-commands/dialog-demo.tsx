@@ -14,6 +14,7 @@ export function DialogDemo() {
       </button>
 
       <dialog
+        aria-label="デモダイアログ"
         className="m-auto rounded-lg border border-border-base bg-bg-base p-6 backdrop:bg-black/50"
         id="demo-dialog"
       >

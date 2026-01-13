@@ -6,23 +6,25 @@ import k8oIcon from '@/app/_images/k8o.jpg';
 
 export function CustomCommandDemo() {
   const imageRef = useRef<HTMLDivElement>(null);
+  const scaleRef = useRef(1);
 
   useEffect(() => {
     const image = imageRef.current;
     if (!image) return;
 
-    let scale = 1;
-
     const handleCommand = (event: Event) => {
-      const commandEvent = event as CustomEvent & { command: string };
-      if (commandEvent.command === '--zoom-in') {
-        scale = Math.min(scale + 0.25, 2);
-        image.style.scale = `${scale}`;
-      } else if (commandEvent.command === '--zoom-out') {
-        scale = Math.max(scale - 0.25, 0.5);
-        image.style.scale = `${scale}`;
-      } else if (commandEvent.command === '--reset') {
-        scale = 1;
+      const commandEvent = event as Event & { command?: string };
+      const command = commandEvent.command;
+      if (!command) return;
+
+      if (command === '--zoom-in') {
+        scaleRef.current = Math.min(scaleRef.current + 0.25, 2);
+        image.style.scale = `${scaleRef.current}`;
+      } else if (command === '--zoom-out') {
+        scaleRef.current = Math.max(scaleRef.current - 0.25, 0.5);
+        image.style.scale = `${scaleRef.current}`;
+      } else if (command === '--reset') {
+        scaleRef.current = 1;
         image.style.scale = '1';
       }
     };

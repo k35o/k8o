@@ -81,7 +81,7 @@ Invoker Commands APIは`commandfor`と`command`の2つの属性で構成され�
 ポップオーバーの場合、従来の`popovertarget`と`popovertargetaction`属性でも同じことができます。
 
 ```html
-<button popovertarget="popover" popovertargetaction="toggle-popover">メニュー</button>
+<button popovertarget="popover" popovertargetaction="toggle">メニュー</button>
 
 <div id="popover" popover>
   ポップオーバーの内容
@@ -115,7 +115,7 @@ image.addEventListener('command', (event) => {
   } else if (event.command === '--zoom-out') {
     scale = Math.max(scale - 0.25, 0.5);
   }
-  image.style.scale = scale;
+  image.style.scale = `${scale}`;
 });
 ```
 

@@ -21,6 +21,7 @@ export function PopoverDemo() {
           <button
             className="rounded-md bg-primary-base px-4 py-2 text-primary-fg"
             popoverTarget="demo-popover"
+            popoverTargetAction="toggle"
             type="button"
           >
             メニュー
@@ -29,9 +30,11 @@ export function PopoverDemo() {
       </div>
 
       <div
+        aria-label="メニュー"
         className="inset-auto top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 rounded-lg border border-border-base bg-bg-base p-4 shadow-lg"
         id="demo-popover"
         popover=""
+        role="menu"
       >
         <p className="text-fg-base">Popoverの内容</p>
         <p className="text-fg-mute text-sm">
