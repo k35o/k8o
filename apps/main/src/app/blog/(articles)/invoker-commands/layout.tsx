@@ -1,7 +1,6 @@
 import type { Metadata } from 'next';
 import { getBlogContent } from '@/app/blog/_api';
 import { BlogLayout } from '@/app/blog/_components/blog-layout';
-import type { LayoutProps } from '@/types/layout';
 
 const slug = 'invoker-commands';
 
