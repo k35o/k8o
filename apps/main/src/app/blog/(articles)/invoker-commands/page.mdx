@@ -1,0 +1,139 @@
+---
+title: 'Invoker Commands APIでJavaScriptなしでボタンから他の要素を操作する'
+description: 'Invoker Commands APIを使うと、commandforとcommand属性だけでDialogやPopoverを操作できます。commandイベントを利用することで、独自のカスタムコマンドを定義することも可能です。'
+createdAt: 2026-01-13
+updatedAt: 2026-01-13
+---
+
+import { BaselineStatus } from '@k8o/arte-odyssey/baseline-status';
+import {
+  CustomCommandDemo,
+  DialogDemo,
+  PopoverDemo,
+} from '@/app/_components/playgrounds/invoker-commands';
+import { Playground } from '@/app/_components/playgrounds';
+
+# Invoker Commands APIでJavaScriptなしでボタンから他の要素を操作する
+
+<BaselineStatus featureId="invoker-commands"></BaselineStatus>
+
+## はじめに
+
+これまで、Dialogをモーダルで開くにはJavaScriptで`<dialog>`要素の`show()`・`showModal()`メソッドを呼び出す必要がありました。
+
+```js
+openButton.addEventListener('click', () => {
+  dialog.showModal(); // or dialog.show();
+});
+```
+
+Baseline 2025で追加されたInvoker Commands APIを使えば、これがHTML属性だけで実現できます。
+
+```html
+<button commandfor="my-dialog" command="show-modal">開く</button>
+
+<dialog id="my-dialog">Dialogの内容</dialog>
+```
+
+Popover APIの`popovertarget`属性と`popovertargetaction`属性と同じ考え方で、より一般化してDialog等も宣言的に操作できるようになりました。
+
+## 基本的な使い方
+
+Invoker Commands APIは`commandfor`と`command`の2つの属性で構成されます。
+
+```html
+<button commandfor="my-dialog" command="show-modal">開く</button>
+
+<dialog id="my-dialog">Dialogの内容</dialog>
+```
+
+`commandfor`は操作対象の要素の`id`を指定、`command`は実行するアクションを指定します。
+
+`command`は現在カスタム値を除いて、Dialogの`show-modal`・`close`・`request-close`、Popoverの`show-popover`・`hide-popover`・`toggle-popover`が使えます。
+
+`commandfor`で指定した要素をクリックすると、JavaScriptでは`showModal()`・`close()`・`requestClose()`、`showPopover()`・`hidePopover()`・`togglePopover()`メソッド相当の動作が実行されます。
+
+### Dialogの操作
+
+```html
+<button commandfor="dialog" command="show-modal">Dialogを開く</button>
+
+<dialog id="dialog">
+  <p>Dialogの内容</p>
+  <button commandfor="dialog" command="close">閉じる</button>
+</dialog>
+```
+
+<Playground>
+  <DialogDemo />
+</Playground>
+
+### Popoverの操作
+
+```html
+<button commandfor="popover" command="toggle-popover">メニュー</button>
+
+<div id="popover" popover>
+  ポップオーバーの内容
+</div>
+```
+
+ポップオーバーの場合、従来の`popovertarget`と`popovertargetaction`属性でも同じことができます。
+
+```html
+<button popovertarget="popover" popovertargetaction="toggle">メニュー</button>
+
+<div id="popover" popover>
+  ポップオーバーの内容
+</div>
+```
+
+<Playground>
+  <PopoverDemo />
+</Playground>
+
+## カスタムコマンド
+
+`show-modal`や`toggle-popover`のような組み込みコマンドだけでなく、独自のコマンドを定義することもできます(これにはJavaScriptが必要です)。
+カスタムコマンドは`--`で始まる名前で定義します。
+
+```html
+<button commandfor="my-image" command="--zoom-in">拡大</button>
+<button commandfor="my-image" command="--zoom-out">縮小</button>
+<button commandfor="my-image" command="--reset">リセット</button>
+<img id="my-image" src="photo.jpg" alt="写真" />
+```
+
+カスタムコマンドは`command`イベントで処理します。
+
+```javascript
+const image = document.getElementById('my-image');
+let scale = 1;
+
+image.addEventListener('command', (event) => {
+  if (event.command === '--zoom-in') {
+    scale = Math.min(scale + 0.25, 2);
+  } else if (event.command === '--zoom-out') {
+    scale = Math.max(scale - 0.25, 0.5);
+  } else if (event.command === '--reset') {
+    scale = 1;
+  }
+  image.style.scale = `${scale}`;
+});
+```
+
+`command`に応じた自由な動作を実装できます。`command`に`--`ではじまらない名前を渡した場合は`event.command`に値がセットされないので注意してください。
+
+<Playground>
+  <CustomCommandDemo />
+</Playground>
+
+## おわりに
+
+Invoker Commands APIを紹介しました。
+
+`commandfor`と`command`属性を使うことで、JavaScriptを書かずにDialogやPopoverを宣言的に操作できます。Popover APIの`popovertarget`属性と同じ考え方が、Dialogにも適用できるようになったのは嬉しいですね。
+
+また、`--`で始まるカスタムコマンドと`command`イベントを組み合わせれば、組み込みコマンドでカバーできない独自の操作も実装できます。
+
+Baseline 2025で全ブラウザ対応となったので、ぜひ活用してみてください。

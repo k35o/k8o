@@ -71,6 +71,13 @@
       "when": 1768021782501,
       "tag": "0009_careless_storm",
       "breakpoints": true
+    },
+    {
+      "idx": 10,
+      "version": "6",
+      "when": 1768214686895,
+      "tag": "0010_groovy_cable",
+      "breakpoints": true
     }
   ]
 }

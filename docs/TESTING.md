@@ -148,7 +148,7 @@ pnpm run test --watch
 
 ```tsx
 // apps/main/src/app/_components/button/button.stories.tsx
-import type { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 import { expect, userEvent, within } from '@storybook/test';
 import { Button } from './button';
 
