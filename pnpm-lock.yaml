@@ -45,6 +45,9 @@ importers:
       '@typescript/native-preview':
         specifier: 7.0.0-dev.20260102.1
         version: 7.0.0-dev.20260102.1
+      agent-browser:
+        specifier: 0.4.0
+        version: 0.4.0
       chrome-devtools-mcp:
         specifier: 0.12.1
         version: 0.12.1
@@ -2583,6 +2586,10 @@ packages:
   acorn@8.15.0:
     resolution: {integrity: sha512-NZyJarBfL7nWwIq+FDL6Zp/yHEhePMNnnJ0y3qfieCrmNvYct8uvtiV41UvlSe6apAfk0fY1FbWx+NwfmpvtTg==}
     engines: {node: '>=0.4.0'}
+    hasBin: true
+
+  agent-browser@0.4.0:
+    resolution: {integrity: sha512-Eg8Md2Jmmv3e4G6sn8ewkvRgT5VVgYM6zXhVKp9gtw70PCiMKaSjfpRKCpeZsVdZd/sQBumnem0/LZWl+FRraw==}
     hasBin: true
 
   ajv-formats@3.0.1:
@@ -7593,6 +7600,11 @@ snapshots:
       acorn: 8.15.0
 
   acorn@8.15.0: {}
+
+  agent-browser@0.4.0:
+    dependencies:
+      playwright-core: 1.57.0
+      zod: 3.25.76
 
   ajv-formats@3.0.1(ajv@8.17.1):
     optionalDependencies:
