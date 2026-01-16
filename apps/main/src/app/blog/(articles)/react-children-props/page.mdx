@@ -1,0 +1,138 @@
+---
+title: 'Reactコンポーネントでchildrenに対してpropsを渡す'
+description: 'Reactで子コンポーネントにpropsを渡す2つの方法を紹介します。レガシーなcloneElement APIと、推奨されるrender propパターンの違いを解説し、ツールチップの実装例を通じて実践的な使い方を学びます。'
+createdAt: 2023-05-20
+updatedAt: 2026-01-16
+---
+
+import { Alert } from '@k8o/arte-odyssey/alert';
+
+# Reactコンポーネントでchildrenに対してpropsを渡す
+
+## はじめに
+
+`children`として任意のコンポーネントを受け取る親コンポーネントから、子コンポーネントにpropsを渡したいことがあります。
+
+```tsx
+import { FC, PropsWithChildren } from 'react';
+
+const ParentComponent: FC<PropsWithChildren> = ({
+  children,
+}) => (
+  <div>
+    {/* childrenにonClick等のpropsを親から付与したい */}
+    {children}
+  </div>
+);
+```
+
+この記事では、これを実現する2つの方法と、それを活用したツールチップの実装例を紹介します。
+
+## cloneElement
+
+<Alert
+  status="warning"
+  message="ここで紹介するcloneElementとisValidElementはReactのレガシーAPIです。推奨されるAPIではないため新しく実装する場合はこの後に紹介するrender propパターンを使ってください。"
+/>
+
+最初に紹介する方法は`cloneElement`です。`cloneElement`は対象の`ReactElement`を複製する際に、第2引数で`props`を上書きできます。
+子コンポーネントに`onClick`を付与する例は以下のようになります。
+
+```tsx
+import { cloneElement, FC, isValidElement, PropsWithChildren } from 'react';
+
+const ParentComponent: FC<PropsWithChildren> = ({ children }) => {
+  const cloneChildren = cloneElement(
+    isValidElement(children) ? children : <button>{children}</button>,
+    {
+      onClick: () => alert('親から付与されたclickイベントです。'),
+    }
+  );
+
+  return <div>{cloneChildren}</div>;
+};
+```
+
+`cloneElement`の第1引数は`ReactElement`を渡したいので、`ReactNode`から`isValidElement`を用いて`ReactElement`を抽出しました。
+`children`が`ReactElement`ではなかった場合は`button`要素で囲んだものを渡すようにしています。
+
+第2引数には上書きしたい`props`をオブジェクトで渡します。ただし、この方法では`children`が元々持っていた`props`が全て置き換えられる点に注意してください。
+元の`props`を保持したい場合は以下のようにします。
+
+```ts
+const cloneChildren = isValidElement(children)
+  ? cloneElement(children, {
+      // この順番だと親のonClickが優先される
+      // 子要素のpropsを優先したい場合は順番を逆にする
+      ...children.props,
+      onClick: () => alert('親から付与されたclickイベントです。'),
+    })
+  : cloneElement(<button>{children}</button>, {
+      // ReactElementじゃないときは`button`に対して付与されるので考慮不要
+      onClick: () => alert('親から付与されたclickイベントです。'),
+    });
+```
+
+### Slotで隠蔽する
+
+`cloneElement`はレガシーAPIですが、[Radix Primitives](https://www.radix-ui.com/primitives)が提供する[`Slot`](https://www.radix-ui.com/primitives/docs/utilities/slot)コンポーネントを使うことで、アプリケーションコードから直接呼び出すことを避けられます。
+
+`Slot`は内部で`cloneElement`を使用していますが、より宣言的なAPIを提供します。
+
+```tsx
+import { Slot } from '@radix-ui/react-slot';
+import { FC, PropsWithChildren } from 'react';
+
+const ParentComponent: FC<PropsWithChildren> = ({ children }) => {
+  return (
+    <Slot onClick={() => alert('親から付与されたclickイベントです。')}>
+      {children}
+    </Slot>
+  );
+};
+```
+
+`Slot`は子要素に自身の`props`をマージして渡します。これにより、`cloneElement`を直接使用するよりも可読性が高く、型安全なコードを書けます。
+
+## render propパターン
+
+続いては[render propパターン](https://ja.react.dev/reference/react/cloneElement#passing-data-with-a-render-prop)呼ばれる`props`を利用した実装です。
+親コンポーネントは`renderItem`という関数を`props`として受け取り、渡したい`props`を引数にしてその関数を呼び出します。
+
+```tsx
+import { FC, ReactElement } from 'react';
+
+type Props = {
+  renderItem: (props: { onClick: () => void }) => ReactElement;
+};
+
+const ParentComponent: FC<Props> = ({ renderItem }) => {
+  return (
+    <div>
+      {renderItem({
+        onClick: () => alert('親から付与されたclickイベントです。'),
+      })}
+    </div>
+  );
+};
+```
+
+`renderItem`は`props`を引数に取り、`ReactElement`を返す関数です。利用側は受け取った`props`を要素に適用して返します。
+
+```tsx
+<ParentComponent
+  renderItem={(props) => (
+    <button {...props}>
+      親コンポーネントから渡ってきたonClickを付与したbutton要素
+    </button>
+  )}
+/>
+```
+
+この方法では指定したい`props`を子コンポーネント側に明示的に渡せることや子コンポーネントの実装を自身でハンドリングできるところに利点があります。
+
+## おわりに
+
+この記事では、`children`にpropsを渡す方法として`cloneElement`とrender propパターンを紹介しました。
+
+`cloneElement`はレガシーAPIのため、直接使用するのではなく`@radix-ui/react-slot`の`Slot`で隠蔽することをおすすめします。また、型安全で明示的なrender propパターンも検討してみてください。

@@ -1,0 +1,205 @@
+---
+title: '特定のケースではsatisfies演算子で型が絞り込まれてしまう？？？'
+description: 'TypeScript 4.9で追加されたsatisfies演算子の予期しない挙動について解説します。リテラル型のユニオンで制約を課された場合に型が絞り込まれる理由と、その仕組みを詳しく説明します。'
+createdAt: 2023-07-10
+updatedAt: 2026-01-16
+---
+
+# 特定のケースではsatisfies演算子で型が絞り込まれてしまう？？？
+
+## はじめに
+
+`satisfies`はTypeScript 4.9で追加された演算子です。[4.9のドキュメント](https://www.typescriptlang.org/docs/handbook/release-notes/typescript-4-9.html#the-satisfies-operator)では次のように紹介されています。
+
+> The new `satisfies` operator lets us validate that the type of an expression matches some type, without changing the resulting type of that expression.
+>
+> (翻訳 by DeepL)新しい `satisfies` 演算子を使うと、式の結果の型を変更することなく、式の型がある型にマッチするかどうかを検証することができる。
+
+下の3つの`palette`オブジェクトに注目してください（[TypeScript Playground](https://www.typescriptlang.org/play/?#code/FAFwngDgpgBAwgewDYIE4GcYF4YCJVQAmuMAPngOYFQB2J5uARkgK5S4DcwwAxgjehAwIAQyRQQIKAEZsMAN7AYymAUIAuPAGIAZjoAMh-bgA0SlVSi1NuLYb2HT55czY27RvU4C+MEZj4BEC5efkFhMQkpACZNACUoPlRCAB5EFAwTGEFUAEsaCgA+OUUVVSJ3ByMnMstrbXsDYzMy1yh3I30vM19-GEDBEIGhUXFJKABmEudyjW0qxxaLahoOrqaalTa1xp8-ALChdBEQXPQdXKhMBKTU9LR0LJz8oo4gA)）。
+
+```ts
+type Colors = "red" | "green" | "blue";
+
+const palette1 = {
+  red: "#ff0000",
+  green: "#00ff00",
+  bleu: "#0000ff"
+} as const;
+
+const palette2: Record<Colors, string> = {
+  red: "#ff0000",
+  green: "#00ff00",
+  bleu: "#0000ff"
+};
+
+const palette3 = {
+  red: "#ff0000",
+  green: "#00ff00",
+  bleu: "#0000ff"
+} as const satisfies Record<Colors, string>;
+```
+各例では`blue`を`bleu`と誤って記述しています。`palette1`には型の制約がないため、このミスを検出できません。一方、`palette2`は型注釈で、`palette3`は`satisfies`演算子で制約を課しているため、タイプミスがエラーとして検出されます。
+
+タイプミスを修正するとそれぞれの型は以下のように推論されます。
+
+```ts
+// palette1
+type Palette1 = {
+  readonly red: "#ff0000";
+  readonly green: "#00ff00";
+  readonly blue: "#0000ff";
+};
+
+// palette2
+type Palette2 = Record<Colors, string>;
+
+// palette3
+type Palette3 = {
+  readonly red: "#ff0000";
+  readonly green: "#00ff00";
+  readonly blue: "#0000ff";
+};
+```
+
+`palette1`と`palette3`は同じようにリテラル型が保持されますが、`palette2`は型注釈通りの`Record<Colors, string>`に推論されます。
+
+このように`satisfies`演算子は、式の型を変更せずに制約だけを課します。
+
+## 対象の式の型が変化するケース
+
+次に以下の`user1`と`user2`を比較してみましょう（[TypeScript Playground](https://www.typescriptlang.org/play?#code/C4TwDgpgBAqgzhATlAvFA3gKClAlgEwC4o5hFcA7AcwG5spRJiByYCAQwGMALJZqAD5RmYAK5hcAG2YAaehXYBbCMVLlqdHLjgB9AG5JcAM1wQiUAEYB7K5I4U6AXzqZOViqSiiEiAIyoMei1zZnZZIIZwFWE2Ll5EcJwcBWUWdigwuSS8XQNyEzNiMlEIOWdMV3dPbyQAJgCsbII0xKTGaNYOHj4spJSO9MyI7X1DAvNi0sxHEnZgbQK4WB8XIA)）。
+
+```ts
+type User = {
+  id: string;
+  type: 'teacher' | 'pupil',
+  name: string;
+  is_verified: boolean;
+};
+
+const user1 = {
+  id: 'a',
+  type: 'teacher',
+  name: 'a a',
+  is_verified: true,
+};
+
+const user2 = {
+  id: 'a',
+  type: 'teacher',
+  name: 'a a',
+  is_verified: true,
+} satisfies User;
+```
+
+`satisfies`演算子は「式の型を変更しない」はずなので、`user2`は`user1`と同じ型に推論されると期待されます。しかし、実際には異なる型に推論されます。
+
+```ts
+// user1
+type User1 = {
+  id: string;
+  type: string;
+  name: string;
+  is_verified: boolean;
+};
+
+// user2
+type User2 = {
+  id: string;
+  type: "teacher";
+  name: string;
+  is_verified: true;
+};
+```
+
+`id`や`name`は同一ですが、`user2`の`type`と`is_verified`は`'teacher'`や`true`のように具体的な型が推論されています。
+
+`satisfies`の定義に反しているように見えますが、オブジェクトの型推論と`satisfies`の制約で整合が取れなくなるためこのような挙動となっています。
+
+`user1`の推論結果から分かるように`'teacher'`のようなリテラルはそれを拡張した`string`のようなプリミティブな型として推論されます。
+しかし、そのように推論された場合、`satisfies`演算子における検証がうまく行えません。
+例えば`'guardian'`と`'teacher'`の両方ともが`string`として拡張されてしまうと、`satisfies`演算子で検証を行うとき、`string extends 'teacher' | 'pupil'`のようになるので常に制約を満たしていないと判断されます。
+
+この問題を避けるため、リテラル型のユニオンで制約が課された部分はリテラル型が保持されます。
+先ほどの例で言えば`'guardian' extends 'teacher' | 'pupil'`や`'teacher' extends 'teacher' | 'pupil'`のようになるので正しく判別できるようになっています。
+
+`is_verified`の制約は`boolean`ですが、`true`は`boolean`に拡張されていません。これは`boolean`が`true | false`のエイリアスであり、リテラル型のユニオンとして扱われるためです。
+
+配列の場合でも同じような型推論が行われます（[TypeScript Playground](https://www.typescriptlang.org/play?#code/C4TwDgpgBAcgrgWwEYQE4GcoF4oAoCMUAPlAEzFQDMFALAJQDaAugNwBQbAxgPYB26wKL0QoMhHA3wAaMjMqsOPfoOHI06chOmyqTKOgCGwAJboAZsYiZ4ajOyA)）。
+
+```ts
+type Numbers = (1 | 2 | 3 | 4)[];
+
+const numbers1 = [1, 2, 3];
+
+const numbers2 = [1, 2, 3] satisfies Numbers;
+```
+
+`numbers1`は単なる`number`型の配列として推論されますが、`numbers2`はリテラル型のユニオンが制約として設けられているので具体的な数値型の配列まで絞り込まれた状態に推論されます。
+
+```ts
+// numbers1
+type Numbers1 = number[];
+
+// numbers2
+type Numbers2 = (1 | 2 | 3)[];
+```
+
+なお、`as const`を使った場合のようなタプル型`[1, 2, 3]`にはならない点に注意してください。
+
+## 似た例
+
+`satisfies`の他にも、型の制約によって、リテラル型として推論される例は存在します。
+以下のコードを見てください（[TypeScript Playground](https://www.typescriptlang.org/play?#code/C4TwDgpgBAMglsCAnAhgGwCrmgXigbwCgopEBnYALigHIUaoAfWgIxoG5CBfT0SKAApI4AWwRwAbhCz88+KMVIQK1CsIB2Ac26dCAYwD26ilCTKArmmBQ5i8lVr0dhQgBMIetCjNRDx6-YAjNQAPBhQEAAeiOquZILCYsCS0tgAfAAU3prUGACUNmlQGJzunt7Qfib2AEyh4VExcbAIyOgyEJnZuQU4RSUuVdZmZJbAgTZKFIEZ8vbUdAxceZxDphZWNZO1s1MOi1DLnEA)）。
+
+```ts
+type PrimitiveType = {
+  test: string
+};
+type LiteralType = {
+  test: 'a' | 'b';
+};
+
+const result = {
+  test: 'a'
+};
+
+declare const test1: <T extends PrimitiveType>(arg: T) => T;
+declare const test2: <T extends LiteralType>(arg: T) => T;
+
+const result1 = test1({ test: 'a' });
+const result2 = test2({ test: 'a' });
+```
+
+`result`、`result1`、`result2`は以下のように型が推論されます。
+
+```ts
+// result
+type Result = {
+    test: string;
+};
+
+// result1
+type Result1 = {
+    test: string;
+};
+
+// result2
+type Result2 = {
+    test: "a";
+};
+```
+
+`result2`だけ、`string`ではなく`'a'`と推論されています。
+`test2`関数は、`T extends LiteralType`の箇所で`'a' | 'b'`という制約が課されているため型の推論結果が変化してしまいました。
+
+## まとめ
+
+リテラル型のユニオンで制約が課されると、リテラル型がそのまま保持されます。`satisfies`を使う際はこの挙動を理解しておくと良いでしょう。
+
+## 参考
+
+- [TypeScript#55189](https://github.com/microsoft/TypeScript/issues/55189)
+- [TypeScript#47920](https://github.com/microsoft/TypeScript/issues/47920)
+- [TypeScript#46827](https://github.com/microsoft/TypeScript/pull/46827)
+- [TypeScript#48696](https://github.com/microsoft/TypeScript/issues/48696)
