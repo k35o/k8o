@@ -23,7 +23,7 @@
     "preview:erd": "pnpm run build:erd && pnpm dlx http-server dist"
   },
   "dependencies": {
-    "@libsql/client": "0.15.15",
+    "@libsql/client": "0.17.0",
     "@next/env": "16.1.1",
     "drizzle-orm": "0.45.1"
   },
