@@ -1,5 +1,5 @@
 import { IconLink } from '@k8o/arte-odyssey/icon-link';
-import { QiitaIcon, RSSIcon, ZennIcon } from '@k8o/arte-odyssey/icons';
+import { QiitaIcon, RSSIcon } from '@k8o/arte-odyssey/icons';
 import type { FC } from 'react';
 
 export const ExternalBlog: FC = () => {
@@ -11,13 +11,6 @@ export const ExternalBlog: FC = () => {
         label="Qiitaのアカウント"
       >
         <QiitaIcon />
-      </IconLink>
-      <IconLink
-        bg="base"
-        href="https://zenn.dev/kokisakano"
-        label="Zennのアカウント"
-      >
-        <ZennIcon />
       </IconLink>
       <IconLink bg="base" href="/blog/feed" label="RSSフィード" openInNewTab>
         <RSSIcon />
