@@ -1,12 +1,7 @@
 import { Card } from '@k8o/arte-odyssey/card';
 import { Heading } from '@k8o/arte-odyssey/heading';
 import { IconLink } from '@k8o/arte-odyssey/icon-link';
-import {
-  GitHubIcon,
-  QiitaIcon,
-  TwitterIcon,
-  ZennIcon,
-} from '@k8o/arte-odyssey/icons';
+import { GitHubIcon, QiitaIcon, TwitterIcon } from '@k8o/arte-odyssey/icons';
 import { TextTag } from '@k8o/arte-odyssey/text-tag';
 import Image from 'next/image';
 import { AppCard } from './_components/app-card';
@@ -50,12 +45,6 @@ export default function Home() {
                     label="Qiitaのアカウント"
                   >
                     <QiitaIcon />
-                  </IconLink>
-                  <IconLink
-                    href="https://zenn.dev/kokisakano"
-                    label="Zennのアカウント"
-                  >
-                    <ZennIcon />
                   </IconLink>
                 </div>
               </div>
