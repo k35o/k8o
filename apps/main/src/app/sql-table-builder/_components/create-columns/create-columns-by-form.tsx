@@ -192,6 +192,7 @@ const ColumnItem: FC<{
                     renderInput={(props) => (
                       <Radio
                         {...props}
+                        name={`nullable-${id}`}
                         onChange={(e) => {
                           handleChangeColumn(id)({
                             ...column,
