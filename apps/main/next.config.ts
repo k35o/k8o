@@ -1,9 +1,6 @@
 import withMdx from '@next/mdx';
-import rehypeShiki, { type RehypeShikiOptions } from '@shikijs/rehype';
+import type { RehypeShikiOptions } from '@shikijs/rehype';
 import type { NextConfig } from 'next';
-import rehypeKatex from 'rehype-katex';
-import remarkFrontmatter from 'remark-frontmatter';
-import remarkMath from 'remark-math';
 import Sonda from 'sonda/next';
 
 const withSondaAnalyzer = Sonda({
@@ -30,15 +27,10 @@ const nextConfig: NextConfig = {
 export default withSondaAnalyzer(
   withMdx({
     options: {
-      remarkPlugins: [remarkMath, remarkFrontmatter],
+      remarkPlugins: ['remark-math', 'remark-frontmatter'],
       rehypePlugins: [
-        rehypeKatex,
-        [
-          rehypeShiki,
-          {
-            theme: 'plastic',
-          } satisfies RehypeShikiOptions,
-        ],
+        'rehype-katex',
+        ['@shikijs/rehype', { theme: 'plastic' } satisfies RehypeShikiOptions],
       ],
     },
   })(nextConfig),
