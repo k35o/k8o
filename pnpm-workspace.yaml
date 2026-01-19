@@ -28,6 +28,5 @@ minimumReleaseAgeExclude:
   - '@k8o/*'
 
 onlyBuiltDependencies:
-  - '@vercel/speed-insights'
   - lefthook
   - msw
