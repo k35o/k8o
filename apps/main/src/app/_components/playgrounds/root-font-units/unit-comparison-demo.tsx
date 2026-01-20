@@ -80,7 +80,7 @@ export function UnitComparisonDemo() {
       </div>
 
       <p className="text-fg-mute text-sm">
-        文字と単位バーを同じ倍率（{SCALE}倍）で表示しています。
+        文字と単位バーをそれぞれ{SCALE}倍にしたものを表示しています。
         <br />
         1ricは「水」の幅、1rch は「0」の幅、1rcap
         は大文字Hの高さ、1rexは小文字xの高さです。

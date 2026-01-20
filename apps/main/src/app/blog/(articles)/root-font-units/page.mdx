@@ -36,8 +36,8 @@ CSSにはフォントに基づいた相対単位があります。`em`や`ex`、
 
 これらの単位は、常にルート要素のフォント設定に基づいて計算されます。どこで使用しても同じ値になるため、ページ全体で一貫したサイズ指定が可能です。
 
-<Playground title="rcap, rch, rex, ricとそれの元となる文字の比較">
-  <UnitComparisonDemo />
+<Playground title="rのあるなしによる動作の比較">
+  <RootComparisonDemo />
 </Playground>
 
 ### rcap
@@ -93,30 +93,10 @@ CSSにはフォントに基づいた相対単位があります。`em`や`ex`、
 }
 ```
 
-## 通常版とルート版の違い
+### 単位の比較
 
-```css
-html {
-  font-size: 16px;
-}
-
-.parent {
-  font-size: 20px;
-}
-
-.child {
-  /* ch: 親要素（20px）のフォントの「0」の幅が基準 */
-  padding: 1ch;
-
-  /* rch: ルート要素（16px）のフォントの「0」の幅が基準 */
-  margin: 1rch;
-}
-```
-
-ルート版を使うことで、要素のネスト状況に関係なく、一貫した値を維持できます。
-
-<Playground>
-  <RootComparisonDemo />
+<Playground title="rcap, rch, rex, ricとそれの元となる文字の比較">
+  <UnitComparisonDemo />
 </Playground>
 
 ## おわりに
