@@ -14,6 +14,7 @@ export { Playground } from './playground';
 export * from './popover';
 export * from './print-color-adjust';
 export * from './requestclose';
+export * from './root-font-units';
 export * from './scope';
 export * from './screen-wake-lock';
 export * from './scrollbar-color';
@@ -38,6 +39,7 @@ import { lcpSection } from './largest-contentful-paint';
 import { popoverSection } from './popover';
 import { printColorAdjustSection } from './print-color-adjust';
 import { requestCloseSection } from './requestclose';
+import { rootFontUnitsSection } from './root-font-units';
 import { scopeSection } from './scope';
 import { screenWakeLockSection } from './screen-wake-lock';
 import { scrollbarColorSection } from './scrollbar-color';
@@ -61,6 +63,7 @@ export const playgroundSections: PlaygroundSection[] = [
   popoverSection,
   requestCloseSection,
   printColorAdjustSection,
+  rootFontUnitsSection,
   scopeSection,
   screenWakeLockSection,
   scrollbarColorSection,
