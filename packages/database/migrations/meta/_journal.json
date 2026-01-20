@@ -85,6 +85,13 @@
       "when": 1768355172950,
       "tag": "0011_unusual_shen",
       "breakpoints": true
+    },
+    {
+      "idx": 12,
+      "version": "6",
+      "when": 1768875110315,
+      "tag": "0012_melted_swordsman",
+      "breakpoints": true
     }
   ]
 }

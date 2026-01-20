@@ -1,0 +1,109 @@
+---
+title: 'rcap, rch, rex, ric単位でルート要素に基づいたサイズを指定する'
+description: 'rcap, rch, rex, ricはルート要素のフォントの特性に基づいたCSSの長さ単位です。cap, ch, ex, icのルート要素を基準にした単位として、ページ全体で一貫したサイズ指定が可能になります。'
+createdAt: 2026-01-20
+updatedAt: 2026-01-20
+---
+
+import { BaselineStatus } from '@k8o/arte-odyssey/baseline-status';
+import { Playground, UnitComparisonDemo, RootComparisonDemo } from '@/app/_components/playgrounds';
+
+# rcap, rch, rex, ric単位でルート要素に基づいたサイズを指定する
+
+## はじめに
+
+CSSにはフォントに基づいた相対単位があります。`em`や`ex`、`ch`などがその代表です。
+
+これらの単位は要素やその親に適用されているフォントに基づきます。一方、ルート要素（`<html>`）のフォントを基準にした`r`接頭辞付きの単位も存在します。`em`に対する`rem`がその例です。
+
+この記事ではそんなルート要素を元とした相対単位、`rcap`、`rch`、`rex`、`ric`の4つが、Firefox 147のリリースにより、Baseline 2026に追加されたので紹介します。
+
+## cap, ch, ex, ic単位の復習
+
+まず、Baseline 2026に追加された単位から`r`を取り除いたものを確認しましょう。
+
+- `cap`: 現在のフォントの大文字の高さ
+- `ch`: 現在のフォントの「0」の幅
+- `ex`: 現在のフォントの小文字xの高さ
+- `ic`: 現在のフォントの「水」の幅
+
+これらはその要素に付与されたフォントサイズか、親要素から継承されたフォントサイズに基づいて計算されます。
+そのため、ネストした要素では値が変わる可能性があります。
+
+## rcap, rch, rex, ric単位の紹介
+
+`rem`が`em`のルート要素を元としたものであるように、`rcap`、`rch`、`rex`、`ric`はそれぞれ`cap`、`ch`、`ex`、`ic`の基準をルート要素にした単位です。
+
+これらの単位は、常にルート要素のフォント設定に基づいて計算されます。どこで使用しても同じ値になるため、ページ全体で一貫したサイズ指定が可能です。
+
+<Playground title="rのあるなしによる動作の比較">
+  <RootComparisonDemo />
+</Playground>
+
+### rcap
+
+<BaselineStatus featureId="rcap" />
+
+ルート要素のキャップハイトに基づく単位です。
+
+```css
+.heading {
+  /* 大文字の高さを基準にしたマージン */
+  margin-bottom: 1rcap;
+}
+```
+
+### rch
+
+<BaselineStatus featureId="rch" />
+
+ルート要素の「0」の幅に基づく単位です。
+
+```css
+.input-number {
+  /* 数字10桁分の幅を確保 */
+  width: 10rch;
+}
+```
+
+### rex
+
+<BaselineStatus featureId="rex" />
+
+ルート要素の小文字「x」の高さに基づく単位です。
+
+```css
+.inline-icon {
+  /* xに合わせたアイコンサイズ */
+  height: 1rex;
+  width: 1rex;
+}
+```
+
+### ric
+
+<BaselineStatus featureId="ric" />
+
+ルート要素の「水」の幅に基づく単位です。CJKのテキストで特に有用です。
+
+```css
+.japanese-text {
+  /* 全角文字20文字分の幅 */
+  max-width: 20ric;
+}
+```
+
+### 単位の比較
+
+<Playground title="rcap, rch, rex, ricとそれの元となる文字の比較">
+  <UnitComparisonDemo />
+</Playground>
+
+## おわりに
+
+`rcap`、`rch`、`rex`、`ric`の4つの単位を紹介しました。
+
+これらは`rem`と同様にルート要素を基準とするため、コンポーネントがどこに配置されても一貫したサイズを維持できます。
+特定の文字サイズに基づいた精密で相対的なサイズの指定が可能になり、デザインの一貫性を保ちやすくなります。
+
+なお、行の高さに基づく`lh`単位のルート版である`rlh`はBaseline 2023から利用可能です。これで、フォント関連の相対単位のルート版が全て揃いました。

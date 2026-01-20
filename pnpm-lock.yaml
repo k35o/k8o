@@ -73,8 +73,8 @@ importers:
   apps/main:
     dependencies:
       '@k8o/arte-odyssey':
-        specifier: 2.0.1
-        version: 2.0.1(@types/react-dom@19.2.3(@types/react@19.2.8))(@types/react@19.2.8)(react-dom@19.2.3(react@19.2.3))(react@19.2.3)(tailwindcss@4.1.18)(typescript@5.9.3)
+        specifier: 2.0.2
+        version: 2.0.2(@types/react-dom@19.2.3(@types/react@19.2.8))(@types/react@19.2.8)(react-dom@19.2.3(react@19.2.3))(react@19.2.3)(tailwindcss@4.1.18)(typescript@5.9.3)
       '@mdx-js/loader':
         specifier: 3.1.1
         version: 3.1.1
@@ -1245,8 +1245,8 @@ packages:
   '@jridgewell/trace-mapping@0.3.31':
     resolution: {integrity: sha512-zzNR+SdQSDJzc8joaeP8QQoCQr8NuYx2dIIytl1QeBEZHJ9uW6hebsrYgbz8hJwUQao3TWCMtmfV8Nu1twOLAw==}
 
-  '@k8o/arte-odyssey@2.0.1':
-    resolution: {integrity: sha512-e45MP8vmiJ+5M4VJZWRkwUJGhqbwqFyplfpcRjw3XGE9TAr3/ivzZNncBxkWMKQmT5lqpgQpKusDsbXi9bX50g==}
+  '@k8o/arte-odyssey@2.0.2':
+    resolution: {integrity: sha512-eYDjVEkhw6uaDHktuR2AVqMjkNZqYZw4KDe4Q2HEr6BO8nRcOqeP2Nbpl6BfhwFtIWyx8V1WeiYiyC5S35Xoaw==}
     peerDependencies:
       '@types/react': '>=19.0.0'
       '@types/react-dom': '>=19.0.0'
@@ -6218,7 +6218,7 @@ snapshots:
       '@jridgewell/resolve-uri': 3.1.2
       '@jridgewell/sourcemap-codec': 1.5.5
 
-  '@k8o/arte-odyssey@2.0.1(@types/react-dom@19.2.3(@types/react@19.2.8))(@types/react@19.2.8)(react-dom@19.2.3(react@19.2.3))(react@19.2.3)(tailwindcss@4.1.18)(typescript@5.9.3)':
+  '@k8o/arte-odyssey@2.0.2(@types/react-dom@19.2.3(@types/react@19.2.8))(@types/react@19.2.8)(react-dom@19.2.3(react@19.2.3))(react@19.2.3)(tailwindcss@4.1.18)(typescript@5.9.3)':
     dependencies:
       '@floating-ui/react': 0.27.16(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
       '@types/react': 19.2.8
