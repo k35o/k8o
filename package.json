@@ -26,7 +26,6 @@
     "test:watch": "turbo test:watch",
     "turbo:devtools": "turbo devtools",
     "install-playwright": "playwright install --with-deps",
-    "mcp-chrome": "chrome-devtools-mcp",
     "mcp-next": "next-devtools-mcp"
   },
   "dependencies": {
@@ -39,7 +38,6 @@
     "@types/node": "24.10.7",
     "@typescript/native-preview": "7.0.0-dev.20260111.1",
     "agent-browser": "0.4.0",
-    "chrome-devtools-mcp": "0.12.1",
     "lefthook": "2.0.13",
     "next-devtools-mcp": "0.3.10",
     "playwright": "1.57.0",

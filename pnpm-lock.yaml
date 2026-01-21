@@ -48,9 +48,6 @@ importers:
       agent-browser:
         specifier: 0.4.0
         version: 0.4.0
-      chrome-devtools-mcp:
-        specifier: 0.12.1
-        version: 0.12.1
       lefthook:
         specifier: 2.0.13
         version: 2.0.13
@@ -2750,11 +2747,6 @@ packages:
         optional: true
       '@chromatic-com/playwright':
         optional: true
-
-  chrome-devtools-mcp@0.12.1:
-    resolution: {integrity: sha512-QREfGxJVVlBrjKdyis9px6UHyXix+Rre9nCkqX7CY7GsU8c6azOwwV8inQB8E3h2/QGqi4sCSF8fmjfAvmE07Q==}
-    engines: {node: ^20.19.0 || ^22.12.0 || >=23}
-    hasBin: true
 
   citty@0.1.6:
     resolution: {integrity: sha512-tskPPKEs8D2KPafUypv2gxwJP8h/OaJmC82QQGGDQcHvXX43xF2VDACcJVmZ0EuSxkpO9Kc4MlrA3q0+FG58AQ==}
@@ -7748,8 +7740,6 @@ snapshots:
       readdirp: 4.1.2
 
   chromatic@13.3.5: {}
-
-  chrome-devtools-mcp@0.12.1: {}
 
   citty@0.1.6:
     dependencies:
