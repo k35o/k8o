@@ -5,9 +5,10 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "next dev",
+    "dev": "next dev --inspect",
     "build": "next build",
     "start": "next start",
+    "analyze": "next experimental-analyze",
     "check": "biome check",
     "check:write": "biome check --write --unsafe",
     "test": "vitest run",
