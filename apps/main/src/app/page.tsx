@@ -180,6 +180,12 @@ export default function Home() {
             symbol="💡"
             title="Quizzes"
           />
+          <AppCard
+            description="2つのテキストを比較して差分を表示します。"
+            link="/text-diff"
+            symbol="🔍"
+            title="テキスト差分チェッカー"
+          />
         </div>
       </div>
     </div>
