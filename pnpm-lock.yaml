@@ -211,9 +211,6 @@ importers:
       react-scan:
         specifier: 0.4.3
         version: 0.4.3(@types/react@19.2.8)(next@16.1.1(@babel/core@7.28.5)(react-dom@19.2.3(react@19.2.3))(react@19.2.3))(react-dom@19.2.3(react@19.2.3))(react@19.2.3)(rollup@4.53.5)
-      sonda:
-        specifier: 0.10.1
-        version: 0.10.1
       storybook:
         specifier: 10.1.11
         version: 10.1.11(@testing-library/dom@10.4.1)(prettier@3.7.4)(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
@@ -4853,11 +4850,6 @@ packages:
   socket.io@4.8.1:
     resolution: {integrity: sha512-oZ7iUCxph8WYRHHcjBEc9unw3adt5CmSNlppj/5Q4k2RIrhl8Z5yY2Xr4j9zj0+wzVZ0bxmYoGSzKJnRl6A4yg==}
     engines: {node: '>=10.2.0'}
-
-  sonda@0.10.1:
-    resolution: {integrity: sha512-nXlQEVsw7833XADV94MXW9EKwLxn4S1U7oSUEgKCQeU4dt0CwYvEFcyRjhjM0Ae2taxsJ9HnFrtw8Eb40/rX4w==}
-    engines: {node: '>=20.19 || >=22.12'}
-    hasBin: true
 
   source-map-js@1.2.1:
     resolution: {integrity: sha512-UXWMKhLOwVKb728IUtQPXxfYU+usdybtUrK/8uGE8CQMvrhOpwvzDBwj0QhSL7MQc7vIsISBG8VQ8+IDQxpfQA==}
@@ -10172,11 +10164,6 @@ snapshots:
       - bufferutil
       - supports-color
       - utf-8-validate
-
-  sonda@0.10.1:
-    dependencies:
-      '@jridgewell/remapping': 2.3.5
-      open: 10.2.0
 
   source-map-js@1.2.1: {}
 
