@@ -1,11 +1,6 @@
 import withMdx from '@next/mdx';
 import type { RehypeShikiOptions } from '@shikijs/rehype';
 import type { NextConfig } from 'next';
-import Sonda from 'sonda/next';
-
-const withSondaAnalyzer = Sonda({
-  enabled: process.env['ANALYZE'] === 'true',
-});
 
 const nextConfig: NextConfig = {
   reactStrictMode: true,
@@ -24,14 +19,12 @@ const nextConfig: NextConfig = {
   productionBrowserSourceMaps: process.env['ANALYZE'] === 'true',
 };
 
-export default withSondaAnalyzer(
-  withMdx({
-    options: {
-      remarkPlugins: ['remark-math', 'remark-frontmatter'],
-      rehypePlugins: [
-        'rehype-katex',
-        ['@shikijs/rehype', { theme: 'plastic' } satisfies RehypeShikiOptions],
-      ],
-    },
-  })(nextConfig),
-);
+export default withMdx({
+  options: {
+    remarkPlugins: ['remark-math', 'remark-frontmatter'],
+    rehypePlugins: [
+      'rehype-katex',
+      ['@shikijs/rehype', { theme: 'plastic' } satisfies RehypeShikiOptions],
+    ],
+  },
+})(nextConfig);

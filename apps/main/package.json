@@ -69,7 +69,6 @@
     "msw-storybook-addon": "2.0.6",
     "react-email": "5.2.1",
     "react-scan": "0.4.3",
-    "sonda": "0.10.1",
     "storybook": "10.1.11",
     "storybook-addon-mock-date": "2.0.0",
     "vitest": "catalog:",
