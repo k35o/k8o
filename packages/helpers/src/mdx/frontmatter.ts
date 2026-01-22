@@ -8,10 +8,10 @@ type RawMetadata = {
   updatedAt: string;
 };
 
-// MDXファイルからexportされたmetadataオブジェクトを抽出
+// MDXファイルからexportされたblogMetadataオブジェクトを抽出
 const parseMetadataObject = (content: string, path: string): RawMetadata => {
-  // export const metadata = { ... }; の形式を抽出
-  const metadataRegex = /export\s+const\s+metadata\s*=\s*\{([\s\S]*?)\};/;
+  // export const blogMetadata = { ... }; の形式を抽出
+  const metadataRegex = /export\s+const\s+blogMetadata\s*=\s*\{([\s\S]*?)\};/;
   const metadataMatch = metadataRegex.exec(content);
   const objectContent = metadataMatch?.[1];
   if (!objectContent) {
