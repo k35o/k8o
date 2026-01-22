@@ -9,13 +9,13 @@ type RawMetadata = {
 };
 
 // MDXファイルからexportされたmetadataオブジェクトを抽出
-const parseMetadataObject = (content: string): RawMetadata => {
+const parseMetadataObject = (content: string, path: string): RawMetadata => {
   // export const metadata = { ... }; の形式を抽出
   const metadataRegex = /export\s+const\s+metadata\s*=\s*\{([\s\S]*?)\};/;
   const metadataMatch = metadataRegex.exec(content);
   const objectContent = metadataMatch?.[1];
   if (!objectContent) {
-    throw new Error('No metadata export found in file');
+    throw new Error(`No metadata export found in file: ${path}`);
   }
 
   // 各フィールドを抽出
@@ -45,7 +45,7 @@ const parseMetadataObject = (content: string): RawMetadata => {
 
   if (!(title && createdAt && updatedAt)) {
     throw new Error(
-      `Missing required fields: title=${title}, createdAt=${createdAt}, updatedAt=${updatedAt}`,
+      `Missing required fields in ${path}: title=${title}, createdAt=${createdAt}, updatedAt=${updatedAt}`,
     );
   }
 
@@ -59,7 +59,7 @@ const parseMetadataObject = (content: string): RawMetadata => {
 
 export const getMetadata = async (path: string): Promise<BlogMetadata> => {
   const content = await readFile(path, 'utf-8');
-  const raw = parseMetadataObject(content);
+  const raw = parseMetadataObject(content, path);
 
   return {
     title: raw.title,
