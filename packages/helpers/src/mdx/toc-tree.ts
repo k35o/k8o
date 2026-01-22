@@ -1,7 +1,6 @@
 import { readFile } from 'node:fs/promises';
 import type { Root } from 'mdast';
 import { remark } from 'remark';
-import remarkFrontmatter from 'remark-frontmatter';
 import type { HeadingTree } from './types';
 
 export const getTocTree = async (path: string) => {
@@ -11,7 +10,6 @@ export const getTocTree = async (path: string) => {
   };
   const content = await readFile(path, 'utf-8');
   await remark()
-    .use(remarkFrontmatter)
     .use(() => (tree: Root) => {
       for (const content of tree.children) {
         if (content.type !== 'heading') {

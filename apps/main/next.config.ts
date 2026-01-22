@@ -21,7 +21,7 @@ const nextConfig: NextConfig = {
 
 export default withMdx({
   options: {
-    remarkPlugins: ['remark-math', 'remark-frontmatter'],
+    remarkPlugins: ['remark-math'],
     rehypePlugins: [
       'rehype-katex',
       ['@shikijs/rehype', { theme: 'plastic' } satisfies RehypeShikiOptions],

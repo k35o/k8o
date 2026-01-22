@@ -1,3 +1,10 @@
+export type BlogMetadata = {
+  title: string;
+  description: string | null;
+  createdAt: Date;
+  updatedAt: Date;
+};
+
 export type HeadingTree = {
   depth: 0;
   children: {

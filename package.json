@@ -29,7 +29,6 @@
     "mcp-next": "next-devtools-mcp"
   },
   "dependencies": {
-    "remark-frontmatter": "5.0.0",
     "server-only": "0.0.1"
   },
   "devDependencies": {
