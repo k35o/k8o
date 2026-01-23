@@ -1,7 +1,7 @@
 import { db } from '@repo/database';
 import { compareDate } from '@repo/helpers/date/compare';
 import { eq } from 'drizzle-orm';
-import { z } from 'zod/mini';
+import * as z from 'zod/mini';
 import VerifyEmail from '@/emails/verify-email';
 import { resend } from '@/services/email';
 import type { Result } from '../type';

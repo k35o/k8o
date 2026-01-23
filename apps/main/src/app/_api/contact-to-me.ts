@@ -1,7 +1,7 @@
 'use server';
 
 import { db } from '@repo/database';
-import { z } from 'zod/mini';
+import * as z from 'zod/mini';
 import '@/libs/zod';
 
 const contactSchema = z.object({

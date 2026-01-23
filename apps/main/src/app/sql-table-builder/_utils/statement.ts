@@ -1,4 +1,4 @@
-import { z } from 'zod/mini';
+import * as z from 'zod/mini';
 import type { Column, InvalidColumns } from '../_types/column';
 import type { InvalidRestrictions, Restriction } from '../_types/restriction';
 import type { InvalidTable, Table } from '../_types/table';
