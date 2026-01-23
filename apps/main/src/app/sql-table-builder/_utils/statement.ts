@@ -1,4 +1,4 @@
-import { z } from 'zod';
+import * as z from 'zod/mini';
 import type { Column, InvalidColumns } from '../_types/column';
 import type { InvalidRestrictions, Restriction } from '../_types/restriction';
 import type { InvalidTable, Table } from '../_types/table';
@@ -17,37 +17,37 @@ type Result =
     };
 
 const tableSchema = z.object({
-  name: z.string().min(1),
-  alias: z.string().min(1),
+  name: z.string().check(z.minLength(1)),
+  alias: z.string().check(z.minLength(1)),
 });
 
 const columnsSchema = z.record(
-  z.string().min(1),
+  z.string().check(z.minLength(1)),
   z.object({
-    name: z.string().min(1),
-    alias: z.string().min(1),
-    type: z.string().min(1),
+    name: z.string().check(z.minLength(1)),
+    alias: z.string().check(z.minLength(1)),
+    type: z.string().check(z.minLength(1)),
     nullable: z.boolean(),
   }),
 );
 
 const restrictionsSchema = z.record(
-  z.string().min(1),
+  z.string().check(z.minLength(1)),
   z.union([
     z.object({
       type: z.literal('primary'),
-      columns: z.array(z.string().min(1)).min(1),
+      columns: z.array(z.string().check(z.minLength(1))).check(z.minLength(1)),
     }),
     z.object({
       type: z.literal('unique'),
-      columns: z.array(z.string().min(1)).min(1),
+      columns: z.array(z.string().check(z.minLength(1))).check(z.minLength(1)),
     }),
     z.object({
       type: z.literal('foreign'),
-      column: z.string().min(1),
+      column: z.string().check(z.minLength(1)),
       reference: z.object({
-        table: z.string().min(1),
-        column: z.string().min(1),
+        table: z.string().check(z.minLength(1)),
+        column: z.string().check(z.minLength(1)),
       }),
     }),
   ]),
