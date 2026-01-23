@@ -1,0 +1,117 @@
+---
+title: ':active-view-transition-type()で遷移タイプごとに異なるアニメーションを適用する'
+description: 'startViewTransitionのtypesオプションで指定したタイプに応じて異なるスタイルを適用できる:active-view-transition-type()疑似クラスについて解説します。'
+createdAt: 2026-01-22
+updatedAt: 2026-01-22
+---
+
+import { BaselineStatus } from '@k8o/arte-odyssey/baseline-status';
+import { ActiveViewTransitionDemo } from '@/app/_components/playgrounds/active-view-transition';
+import { Playground } from '@/app/_components/playgrounds';
+
+# :active-view-transition-type()で遷移タイプごとに異なるアニメーションを適用する
+
+<BaselineStatus featureId="active-view-transition"></BaselineStatus>
+
+## はじめに
+
+[以前紹介したBaseline 2025に追加されたView Transition API](/blog/view-transitions)は、DOM更新時やページ遷移時に滑らかなアニメーションを適用できるAPIです。
+
+この記事では、`startViewTransition`の`types`オプションで指定したタイプに応じて異なるスタイルを適用できる`:active-view-transition-type()`疑似クラスを紹介します。
+
+## :active-view-transition-type()とは
+
+`:active-view-transition-type()`は、**特定のタイプ**を持つView Transitionが進行中のときにマッチする疑似クラスです。`startViewTransition`の`types`オプションで指定したタイプに基づいて、異なるスタイルを適用できます。
+
+この疑似クラスはBaseline 2026で追加されました。
+
+## タイプの設定方法
+
+### 同一Document内（SPA）
+
+```js
+document.startViewTransition({
+  update: () => {
+    // DOMの更新処理
+  },
+  types: ['forwards'], // タイプを指定
+});
+```
+
+### 異なるDocument間（MPA）
+
+```css
+@view-transition {
+  navigation: auto;
+  types: slide;
+}
+```
+
+## 基本的な使い方
+
+「進む」と「戻る」で異なるアニメーションを適用する例です。
+
+```css
+/* カードのView Transition設定 */
+html:active-view-transition {
+  .card-content {
+    view-transition-name: card;
+  }
+}
+
+/* 進む：弾けて散る */
+html:active-view-transition-type(forwards) {
+  &::view-transition-old(card) {
+    animation: 500ms ease-out explode-out;
+  }
+  &::view-transition-new(card) {
+    animation: 500ms ease-out gather-in;
+  }
+}
+
+/* 戻る：集まってくる */
+html:active-view-transition-type(backwards) {
+  &::view-transition-old(card) {
+    animation: 500ms ease-out shrink-out;
+  }
+  &::view-transition-new(card) {
+    animation: 500ms ease-out expand-in;
+  }
+}
+
+@keyframes explode-out {
+  0% { transform: scale(1) rotate(0deg); opacity: 1; }
+  100% { transform: scale(1.5) rotate(10deg); opacity: 0; }
+}
+@keyframes gather-in {
+  0% { transform: scale(0.3) rotate(-10deg); opacity: 0; }
+  100% { transform: scale(1) rotate(0deg); opacity: 1; }
+}
+@keyframes shrink-out {
+  0% { transform: scale(1) rotate(0deg); opacity: 1; }
+  100% { transform: scale(0.3) rotate(-10deg); opacity: 0; }
+}
+@keyframes expand-in {
+  0% { transform: scale(1.5) rotate(10deg); opacity: 0; }
+  100% { transform: scale(1) rotate(0deg); opacity: 1; }
+}
+```
+
+## 例
+
+「進む」「戻る」ボタンでアニメーションの方向が変わるデモです。
+
+<Playground title="タイプ別アニメーション">
+  <ActiveViewTransitionDemo />
+</Playground>
+
+このデモでは以下のことを確認できます。
+
+- `:active-view-transition-type(forwards)`で「進む」時は弾けて散るアニメーション
+- `:active-view-transition-type(backwards)`で「戻る」時は集まってくるアニメーション
+
+## おわりに
+
+`:active-view-transition-type()`を使うことで、遷移のタイプに応じた柔軟なスタイル制御が可能になります。
+
+進む/戻るのような方向性を持つナビゲーションで、ユーザーの操作に応じた直感的なアニメーションを実現できる強力な機能です。

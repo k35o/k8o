@@ -1,4 +1,5 @@
 export * from './abs-sign';
+export * from './active-view-transition';
 export * from './async-clipboard';
 export * from './caret-position-from-point';
 export * from './composed-ranges';
@@ -25,6 +26,7 @@ export type { PlaygroundDemo, PlaygroundSection } from './types';
 export * from './view-transitions';
 
 import { absSignSection } from './abs-sign';
+import { activeViewTransitionSection } from './active-view-transition';
 import { asyncClipboardSection } from './async-clipboard';
 import { caretPositionFromPointSection } from './caret-position-from-point';
 import { composedRangesSection } from './composed-ranges';
@@ -50,6 +52,7 @@ import type { PlaygroundSection } from './types';
 import { viewTransitionsSection } from './view-transitions';
 
 export const playgroundSections: PlaygroundSection[] = [
+  activeViewTransitionSection,
   asyncClipboardSection,
   caretPositionFromPointSection,
   composedRangesSection,

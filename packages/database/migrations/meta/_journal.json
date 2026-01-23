@@ -92,6 +92,13 @@
       "when": 1768875110315,
       "tag": "0012_melted_swordsman",
       "breakpoints": true
+    },
+    {
+      "idx": 13,
+      "version": "6",
+      "when": 1769011202649,
+      "tag": "0013_zippy_tusk",
+      "breakpoints": true
     }
   ]
 }
