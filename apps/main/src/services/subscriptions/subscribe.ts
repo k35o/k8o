@@ -1,5 +1,5 @@
 import { db } from '@repo/database';
-import { z } from 'zod';
+import { z } from 'zod/mini';
 import { sendVerificationEmail } from '@/services/subscriptions/verify';
 import type { Result } from '../type';
 

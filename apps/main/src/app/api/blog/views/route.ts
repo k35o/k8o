@@ -1,4 +1,4 @@
-import { z } from 'zod';
+import { z } from 'zod/mini';
 import { getBlogContent } from '@/app/blog/_api';
 import { incrementBlogView } from '@/services/blogs/view';
 

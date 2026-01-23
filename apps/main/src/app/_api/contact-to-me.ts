@@ -1,11 +1,11 @@
 'use server';
 
 import { db } from '@repo/database';
-import { z } from 'zod';
+import { z } from 'zod/mini';
 import '@/libs/zod';
 
 const contactSchema = z.object({
-  message: z.string().max(255).min(1),
+  message: z.string().check(z.minLength(1), z.maxLength(255)),
 });
 
 type Result =
