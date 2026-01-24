@@ -3,10 +3,10 @@ packages:
   - packages/*
 
 catalog:
-  '@vitest/browser-playwright': 4.0.16
-  '@vitest/coverage-istanbul': 4.0.16
-  '@vitest/ui': 4.0.16
-  vitest: 4.0.16
+  '@vitest/browser-playwright': 4.0.17
+  '@vitest/coverage-istanbul': 4.0.17
+  '@vitest/ui': 4.0.17
+  vitest: 4.0.17
   vitest-browser-react: 2.0.2
 
 ignoredBuiltDependencies:
