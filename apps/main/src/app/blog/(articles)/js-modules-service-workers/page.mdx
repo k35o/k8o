@@ -1,14 +1,71 @@
 ---
-title: 'JavaScript modules in service workers'
-description: ''
-createdAt: 2026-01-24
-updatedAt: 2026-01-24
+title: 'Service WorkerでES Modulesを使う'
+description: 'Service Workerの登録時にtype: moduleオプションを指定することで、ES Modulesの静的インポートが使えるようになりました。ウェブアプリとService Workerでコードを共有できるようになります。'
+createdAt: 2026-01-25
+updatedAt: 2026-01-25
 ---
 
 import { BaselineStatus } from '@k8o/arte-odyssey/baseline-status';
 
-# JavaScript modules in service workers
+# Service WorkerでES Modulesを使う
 
-<BaselineStatus featureId="js-modules-service-workers"></BaselineStatus>
+<BaselineStatus featureId="js-modules-service-workers" />
 
-{/* ここに記事の内容を執筆する */}
+## はじめに
+
+Service Workerで外部モジュールを読み込むには、これまで`importScripts()`を使う必要がありました。
+
+```js
+// sw.js（従来の方法）
+importScripts('./utils.js');
+importScripts('./cache-config.js');
+```
+
+`importScripts()`は読み込んだスクリプトの変数や関数がすべてグローバルスコープに追加されるため、依存関係が不明確になりやすいという課題がありました。
+
+Baseline 2026では、Service Workerの登録時に`type: 'module'`オプションを指定することで、ES Modulesの`import`文が使えるようになりました。
+
+## 使い方
+
+Service Workerの登録時に`type`オプションで`'module'`を指定します。
+
+```js
+// main.js
+navigator.serviceWorker.register('./sw.js', {
+  type: 'module',
+});
+```
+
+`type`オプションには`'classic'`と`'module'`の2つの値があり、デフォルトは`'classic'`です。
+`'module'`を指定することで、Service Worker内でES Modulesの静的インポートが使えるようになります。
+
+```js
+// sw.js
+
+// ES Modulesのimportが使える！
+import { cacheName, precacheFiles } from './cache-config.js';
+import { handleFetch } from './fetch-handler.js';
+
+self.addEventListener('install', (event) => {
+  event.waitUntil(
+    caches.open(cacheName).then((cache) => {
+      return cache.addAll(precacheFiles);
+    }),
+  );
+});
+
+self.addEventListener('fetch', handleFetch);
+```
+
+ES Modulesを使う最大のメリットは、ウェブアプリとService Workerで同じコードを共有できることです。
+`importScripts()`では難しかったコードの再利用が、`import`文によって自然に行えるようになります。
+
+`import()`による動的なインポートはサポートされていないことに注意してください。
+また、`type`を`'module'`に設定すると、`importScripts()`の使用も不可になるので気をつけてください。
+
+## おわりに
+
+Service WorkerでES Modulesを使う方法を紹介しました。
+
+`type: 'module'`オプションを指定するだけで、`importScripts()`から静的`import`文への移行が可能です。
+動的インポートが使えないという制限はありますが、コードの整理やモジュールの再利用がしやすくなります。
