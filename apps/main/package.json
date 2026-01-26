@@ -9,8 +9,6 @@
     "build": "next build",
     "start": "next start",
     "analyze": "next experimental-analyze",
-    "check": "biome check",
-    "check:write": "biome check --write --unsafe",
     "test": "vitest run",
     "test:watch": "vitest",
     "test:ui": "vitest --ui --coverage",
@@ -18,8 +16,7 @@
     "email": "email dev --dir src/emails --port 3333",
     "type-check": "next typegen && tsgo --noEmit",
     "storybook": "storybook dev -p 6006 --no-open",
-    "build-storybook": "storybook build",
-    "preview:dist": "pnpm dlx http-server dist"
+    "build-storybook": "storybook build"
   },
   "dependencies": {
     "@k8o/arte-odyssey": "2.0.2",
