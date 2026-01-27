@@ -2,10 +2,19 @@ import { db } from '@repo/database';
 import { inArray } from 'drizzle-orm';
 import { type NextRequest, NextResponse } from 'next/server';
 import { getBlogContent } from '@/app/blog/_api';
-import WeeklyNotification, {
-  type Notification,
-} from '@/emails/weekly-notification';
-import { resend } from '@/services/email';
+
+type Notification = {
+  id: number;
+  message: string | null;
+  blog: {
+    title: string;
+    link: string;
+  } | null;
+  feedback: {
+    id: number;
+    name: string;
+  } | null;
+};
 
 export async function GET(req: NextRequest) {
   if (
@@ -36,7 +45,6 @@ export async function GET(req: NextRequest) {
 
       return {
         id: comment.id,
-        type: 'comment',
         message: comment.message,
         blog:
           comment.blogComment && blog
@@ -51,7 +59,6 @@ export async function GET(req: NextRequest) {
               name: comment.feedback.name,
             }
           : null,
-        createdAt: new Date(comment.createdAt),
       } satisfies Notification;
     }),
   );
@@ -60,15 +67,28 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ ok: true });
   }
 
-  const { error } = await resend().emails.send({
-    from: 'notifications@k8o.me',
-    to: 'kosakanoki@gmail.com',
-    subject: 'ユーザーからのお知らせ',
-    react: WeeklyNotification({ notifications }),
+  const apiKey = process.env['K8O_PUSH_API_KEY'];
+  if (!apiKey) {
+    console.error('K8O_PUSH_API_KEY is not configured');
+    return NextResponse.json({ ok: false }, { status: 500 });
+  }
+
+  // k8o-push APIに通知を送信
+  const response = await fetch('https://api.push.k8o.me/push', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'X-API-Key': apiKey,
+    },
+    body: JSON.stringify({
+      title: `週次レポート (${notifications.length}件)`,
+      body: `お問い合わせが${notifications.length}件あります`,
+      url: 'https://www.k8o.me',
+    }),
   });
 
-  if (error) {
-    console.error('Error sending email:', error);
+  if (!response.ok) {
+    console.error('Error sending push notification:', await response.text());
     return NextResponse.json({ ok: false }, { status: 500 });
   }
 
