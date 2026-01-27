@@ -1,6 +1,5 @@
 import { getBlogContents } from '@/app/blog/_api';
 import { BlogCard } from './_components/blog-card';
-import { Subscribe } from './_components/subscribe';
 
 export default async function Page() {
   const blogs = await getBlogContents();
@@ -9,7 +8,6 @@ export default async function Page() {
       {blogs.map((blog) => {
         return <BlogCard key={blog.id} {...blog} />;
       })}
-      <Subscribe />
     </div>
   );
 }

@@ -11,7 +11,6 @@ import { quizzes, quizzesRelations } from './quizzes';
 import { serviceTag, serviceTagRelations } from './service-tag';
 import { serviceType } from './service-type';
 import { services, servicesRelations } from './services';
-import { subscribers } from './subscribers';
 import { tags, tagsRelations } from './tags';
 import { talkTag, talkTagRelations } from './talk-tag';
 import { talks, talksRelations } from './talks';
@@ -21,7 +20,6 @@ export const schema = {
   feedbacks,
   tags,
   comments,
-  subscribers,
   // ブログ関連
   blogs,
   blogViews,
