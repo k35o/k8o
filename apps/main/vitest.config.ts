@@ -35,11 +35,6 @@ export default defineConfig({
         publicDir: fileURLToPath(
           new URL('./.storybook/public', import.meta.url),
         ),
-        resolve: {
-          alias: {
-            'react-dom/server.browser': 'react-dom/server',
-          },
-        },
         test: {
           name: { label: 'storybook', color: 'magenta' },
           browser: {
