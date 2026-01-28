@@ -14,7 +14,6 @@ import '../src/app/_styles/globals.css';
 
 sb.mock(import('./../src/app/_components/link-card/metadata.ts'));
 sb.mock(import('./../src/app/blog/_api/index.ts'));
-sb.mock(import('./../src/libs/react.ts'));
 sb.mock(import('@repo/database'));
 sb.mock(import('./../src/app/_api/contact-to-me.ts'));
 sb.mock(import('./../src/services/blogs/action.ts'));
