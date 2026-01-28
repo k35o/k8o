@@ -10,7 +10,7 @@ import { formatDate } from '@repo/helpers/date/format';
 import type { Route } from 'next';
 import Link from 'next/link';
 import type { FC } from 'react';
-import { ViewTransition } from '@/libs/react';
+import { ViewTransition } from 'react';
 
 type BlogCardProps = {
   slug: string;
