@@ -10,6 +10,37 @@ export type ContributionWeek = {
   days: ContributionDay[];
 };
 
+const DAYS_PER_WEEK = 7;
+const CONTRIBUTION_WEEKS = 10;
+const DAYS_RANGE = DAYS_PER_WEEK * CONTRIBUTION_WEEKS;
+const LAST_DAY_INDEX = DAYS_RANGE - 1;
+
+type ContributionResponse = {
+  user: {
+    contributionsCollection: {
+      commitContributionsByRepository: Array<{
+        repository: {
+          owner: {
+            login: string;
+          };
+          name: string;
+        };
+        contributions: {
+          totalCount: number;
+          pageInfo: {
+            hasNextPage: boolean;
+            endCursor: string | null;
+          };
+          nodes: Array<{
+            occurredAt: string;
+            commitCount: number;
+          }>;
+        };
+      }>;
+    };
+  };
+};
+
 /**
  * GitHubのcontributionLevelを数値レベルに変換
  */
@@ -25,13 +56,13 @@ function getLevelFromContributionLevel(level: string): number {
 }
 
 /**
- * 直近10週間の日付範囲を計算（50日分）
+ * 直近の期間の日付範囲を計算
  */
 function _getLastWeeksDateRange(): { from: string; to: string; days: number } {
   const now = new Date();
   const to = now.toISOString().split('T')[0] || '';
   const from = new Date(now);
-  const days = 49; // 50日分（0から49まで）
+  const days = LAST_DAY_INDEX; // 0..LAST_DAY_INDEX
   from.setDate(now.getDate() - days);
   return {
     from: from.toISOString().split('T')[0] || '',
@@ -110,12 +141,12 @@ export async function fetchGitHubContributions(
     }
   }
 
-  // 50日分の日付を生成してweeks形式に変換（5日ごとに区切る）
+  // 日付を生成してweeks形式に変換（7日ごとに区切る）
   const weeks: ContributionWeek[] = [];
   let currentWeek: ContributionDay[] = [];
   const fromDate = new Date(from);
 
-  for (let i = 0; i <= 49; i++) {
+  for (let i = 0; i <= LAST_DAY_INDEX; i++) {
     const date = new Date(fromDate);
     date.setDate(fromDate.getDate() + i);
     const dateStr = date.toISOString().split('T')[0];
@@ -130,8 +161,8 @@ export async function fetchGitHubContributions(
       level: data.level,
     });
 
-    // 5日ごとまたは最後の日付でweekを区切る
-    if (currentWeek.length === 5 || i === 49) {
+    // 7日ごとまたは最後の日付でweekを区切る
+    if (currentWeek.length === DAYS_PER_WEEK || i === LAST_DAY_INDEX) {
       weeks.push({ days: [...currentWeek] });
       currentWeek = [];
     }
@@ -160,7 +191,7 @@ export async function fetchK8oRepositoryContributions(
 
   // GitHub GraphQL APIで直接リポジトリのコントリビューションを取得
   const query = `
-    query($userName:String!, $from:DateTime!, $to:DateTime!) {
+    query($userName:String!, $from:DateTime!, $to:DateTime!, $after:String) {
       user(login: $userName) {
         contributionsCollection(from: $from, to: $to) {
           commitContributionsByRepository(maxRepositories: 100) {
@@ -170,8 +201,12 @@ export async function fetchK8oRepositoryContributions(
               }
               name
             }
-            contributions(first: 100) {
+            contributions(first: 100, after: $after) {
               totalCount
+              pageInfo {
+                hasNextPage
+                endCursor
+              }
               nodes {
                 occurredAt
                 commitCount
@@ -184,42 +219,28 @@ export async function fetchK8oRepositoryContributions(
   `;
 
   try {
-    const response = await octokit.graphql<{
-      user: {
-        contributionsCollection: {
-          commitContributionsByRepository: Array<{
-            repository: {
-              owner: {
-                login: string;
-              };
-              name: string;
-            };
-            contributions: {
-              totalCount: number;
-              nodes: Array<{
-                occurredAt: string;
-                commitCount: number;
-              }>;
-            };
-          }>;
-        };
-      };
-    }>(query, {
-      userName: username,
-      from: `${from}T00:00:00Z`,
-      to: `${to}T23:59:59Z`,
-    });
-
-    // 指定されたリポジトリのコントリビューションのみを抽出
-    const repoContributions =
-      response.user.contributionsCollection.commitContributionsByRepository.find(
-        (r) => r.repository.owner.login === owner && r.repository.name === repo,
-      );
-
-    // 日付ごとに集計
+    // 指定されたリポジトリのコントリビューションのみを抽出し、全ページを取得
     const contributionMap = new Map<string, number>();
+    const fetchPage = async (after: string | null): Promise<void> => {
+      const response: ContributionResponse = await octokit.graphql(query, {
+        userName: username,
+        from: `${from}T00:00:00Z`,
+        to: `${to}T23:59:59Z`,
+        after,
+      });
 
-    if (repoContributions) {
+      const repoContributions:
+        | ContributionResponse['user']['contributionsCollection']['commitContributionsByRepository'][number]
+        | undefined =
+        response.user.contributionsCollection.commitContributionsByRepository.find(
+          (r) =>
+            r.repository.owner.login === owner && r.repository.name === repo,
+        );
+
+      if (!repoContributions) {
+        return;
+      }
+
       for (const contribution of repoContributions.contributions.nodes) {
         const date = contribution.occurredAt.split('T')[0];
         if (date) {
@@ -229,14 +250,23 @@ export async function fetchK8oRepositoryContributions(
           );
         }
       }
-    }
 
-    // 10週間分の日付を生成してweeks形式に変換（5日ごとに区切る）
+      if (repoContributions.contributions.pageInfo.hasNextPage) {
+        const nextAfter = repoContributions.contributions.pageInfo.endCursor;
+        if (nextAfter) {
+          await fetchPage(nextAfter);
+        }
+      }
+    };
+
+    await fetchPage(null);
+
+    // 日付を生成してweeks形式に変換（7日ごとに区切る）
     const weeks: ContributionWeek[] = [];
     let currentWeek: ContributionDay[] = [];
     const fromDate = new Date(from);
 
-    for (let i = 0; i <= 49; i++) {
+    for (let i = 0; i <= LAST_DAY_INDEX; i++) {
       const date = new Date(fromDate);
       date.setDate(fromDate.getDate() + i);
       const dateStr = date.toISOString().split('T')[0];
@@ -252,8 +282,8 @@ export async function fetchK8oRepositoryContributions(
         level,
       });
 
-      // 5日ごとまたは最後の日付でweekを区切る
-      if (currentWeek.length === 5 || i === 49) {
+      // 7日ごとまたは最後の日付でweekを区切る
+      if (currentWeek.length === DAYS_PER_WEEK || i === LAST_DAY_INDEX) {
         weeks.push({ days: [...currentWeek] });
         currentWeek = [];
       }
