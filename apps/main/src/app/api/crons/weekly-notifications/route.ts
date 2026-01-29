@@ -104,11 +104,21 @@ export async function GET(req: NextRequest) {
   }
 
   const claimedAt = new Date().toISOString();
-  const claimed = await db
-    .update(db._schema.comments)
-    .set({ sentAt: claimedAt })
-    .where(isNull(db._schema.comments.sentAt))
-    .returning({ id: db._schema.comments.id });
+
+  let claimed: typeof db._schema.comments.$inferSelect[];
+  try {
+    claimed = await db
+      .update(db._schema.comments)
+      .set({ sentAt: claimedAt })
+      .where(isNull(db._schema.comments.sentAt))
+      .returning({ id: db._schema.comments.id });
+  } catch (error) {
+    console.error('未送信コメントの取得に失敗しました:', error);
+    return NextResponse.json(
+      { ok: false, error: 'データベース操作に失敗しました' },
+      { status: 500 },
+    );
+  }
 
   const notifications: UnsentComment[] = claimed;
 
