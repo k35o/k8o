@@ -139,19 +139,26 @@ export async function GET(req: NextRequest) {
       `k8o-push API呼び出しが${MAX_RETRY_ATTEMPTS}回失敗しました:`,
       error,
     );
-    await db
-      .update(db._schema.comments)
-      .set({ sentAt: null })
-      .where(
-        and(
-          inArray(
-            db._schema.comments.id,
-            notifications.map((n) => n.id),
+    try {
+      await db
+        .update(db._schema.comments)
+        .set({ sentAt: null })
+        .where(
+          and(
+            inArray(
+              db._schema.comments.id,
+              notifications.map((n) => n.id),
+            ),
+            eq(db._schema.comments.sentAt, claimedAt),
           ),
-          eq(db._schema.comments.sentAt, claimedAt),
-        ),
-      )
-      .execute();
+        )
+        .execute();
+    } catch (revertError) {
+      console.error(
+        'sentAtフィールドの復帰に失敗しました:',
+        revertError,
+      );
+    }
     return NextResponse.json(
       { ok: false, error: 'プッシュ通知の送信に失敗しました' },
       { status: 500 },
