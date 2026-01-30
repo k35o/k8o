@@ -15,8 +15,9 @@ import type {
  * GitHub Contributionグラフ（プレゼンター）
  */
 export const Presenter: FC<{
+  isError?: boolean;
   weeks: ContributionWeek[];
-}> = ({ weeks }) => {
+}> = ({ isError = false, weeks }) => {
   const totalContributions = weeks.reduce(
     (total, week) => total + week.days.reduce((sum, day) => sum + day.count, 0),
     0,
@@ -35,8 +36,11 @@ export const Presenter: FC<{
     <Card>
       <div className="flex flex-col gap-4 p-6">
         {/* タイトル */}
-        <div className="flex items-center gap-0.5">
+        <div className="flex items-center gap-2">
           <h3 className="font-bold text-fg-base text-sm">開発の足あと</h3>
+          {isError ? (
+            <span className="text-fg-mute text-xs">取得に失敗しました</span>
+          ) : null}
           <Tooltip.Root placement="top">
             <Tooltip.Trigger
               renderItem={(props) => (

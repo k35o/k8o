@@ -14,6 +14,7 @@ const DAYS_PER_WEEK = 7;
 const CONTRIBUTION_WEEKS = 10;
 const DAYS_RANGE = DAYS_PER_WEEK * CONTRIBUTION_WEEKS;
 const LAST_DAY_INDEX = DAYS_RANGE - 1;
+const GITHUB_CONTRIBUTION_PAGE_SIZE = 100;
 
 type ContributionResponse = {
   user: {
@@ -41,6 +42,9 @@ type ContributionResponse = {
   };
 };
 
+type RepositoryContributions =
+  ContributionResponse['user']['contributionsCollection']['commitContributionsByRepository'][number];
+
 /**
  * GitHubのcontributionLevelを数値レベルに変換
  */
@@ -60,10 +64,13 @@ function getLevelFromContributionLevel(level: string): number {
  */
 function _getLastWeeksDateRange(): { from: string; to: string; days: number } {
   const now = new Date();
-  const to = now.toISOString().split('T')[0] || '';
-  const from = new Date(now);
+  const toDate = new Date(
+    Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate()),
+  );
+  const to = toDate.toISOString().split('T')[0] || '';
+  const from = new Date(toDate);
   const days = LAST_DAY_INDEX; // 0..LAST_DAY_INDEX
-  from.setDate(now.getDate() - days);
+  from.setUTCDate(toDate.getUTCDate() - days);
   return {
     from: from.toISOString().split('T')[0] || '',
     to,
@@ -144,11 +151,11 @@ export async function fetchGitHubContributions(
   // 日付を生成してweeks形式に変換（7日ごとに区切る）
   const weeks: ContributionWeek[] = [];
   let currentWeek: ContributionDay[] = [];
-  const fromDate = new Date(from);
+  const fromDate = new Date(`${from}T00:00:00Z`);
 
   for (let i = 0; i <= LAST_DAY_INDEX; i++) {
     const date = new Date(fromDate);
-    date.setDate(fromDate.getDate() + i);
+    date.setUTCDate(fromDate.getUTCDate() + i);
     const dateStr = date.toISOString().split('T')[0];
 
     if (!dateStr) continue;
@@ -191,7 +198,7 @@ export async function fetchK8oRepositoryContributions(
 
   // GitHub GraphQL APIで直接リポジトリのコントリビューションを取得
   const query = `
-    query($userName:String!, $from:DateTime!, $to:DateTime!, $after:String) {
+    query($userName:String!, $from:DateTime!, $to:DateTime!, $after:String, $pageSize:Int!) {
       user(login: $userName) {
         contributionsCollection(from: $from, to: $to) {
           commitContributionsByRepository(maxRepositories: 100) {
@@ -201,7 +208,7 @@ export async function fetchK8oRepositoryContributions(
               }
               name
             }
-            contributions(first: 100, after: $after) {
+            contributions(first: $pageSize, after: $after) {
               totalCount
               pageInfo {
                 hasNextPage
@@ -221,26 +228,55 @@ export async function fetchK8oRepositoryContributions(
   try {
     // 指定されたリポジトリのコントリビューションのみを抽出し、全ページを取得
     const contributionMap = new Map<string, number>();
-    const fetchPage = async (after: string | null): Promise<void> => {
-      const response: ContributionResponse = await octokit.graphql(query, {
-        userName: username,
-        from: `${from}T00:00:00Z`,
-        to: `${to}T23:59:59Z`,
-        after,
-      });
+    const createRepoContributionsIterator =
+      (): AsyncIterable<RepositoryContributions> => {
+        let cursor: string | null = null;
+        let done = false;
 
-      const repoContributions:
-        | ContributionResponse['user']['contributionsCollection']['commitContributionsByRepository'][number]
-        | undefined =
-        response.user.contributionsCollection.commitContributionsByRepository.find(
-          (r) =>
-            r.repository.owner.login === owner && r.repository.name === repo,
-        );
+        return {
+          [Symbol.asyncIterator]: () => ({
+            next: async () => {
+              if (done) {
+                return { done: true, value: undefined };
+              }
 
-      if (!repoContributions) {
-        return;
-      }
+              const response: ContributionResponse = await octokit.graphql(
+                query,
+                {
+                  userName: username,
+                  from: `${from}T00:00:00Z`,
+                  to: `${to}T23:59:59Z`,
+                  after: cursor,
+                  pageSize: GITHUB_CONTRIBUTION_PAGE_SIZE,
+                },
+              );
 
+              const repoContributions =
+                response.user.contributionsCollection.commitContributionsByRepository.find(
+                  (r) =>
+                    r.repository.owner.login === owner &&
+                    r.repository.name === repo,
+                );
+
+              if (!repoContributions) {
+                done = true;
+                return { done: true, value: undefined };
+              }
+
+              const pageInfo = repoContributions.contributions.pageInfo;
+              if (pageInfo.hasNextPage && pageInfo.endCursor) {
+                cursor = pageInfo.endCursor;
+              } else {
+                done = true;
+              }
+
+              return { done: false, value: repoContributions };
+            },
+          }),
+        };
+      };
+
+    for await (const repoContributions of createRepoContributionsIterator()) {
       for (const contribution of repoContributions.contributions.nodes) {
         const date = contribution.occurredAt.split('T')[0];
         if (date) {
@@ -250,25 +286,16 @@ export async function fetchK8oRepositoryContributions(
           );
         }
       }
-
-      if (repoContributions.contributions.pageInfo.hasNextPage) {
-        const nextAfter = repoContributions.contributions.pageInfo.endCursor;
-        if (nextAfter) {
-          await fetchPage(nextAfter);
-        }
-      }
-    };
-
-    await fetchPage(null);
+    }
 
     // 日付を生成してweeks形式に変換（7日ごとに区切る）
     const weeks: ContributionWeek[] = [];
     let currentWeek: ContributionDay[] = [];
-    const fromDate = new Date(from);
+    const fromDate = new Date(`${from}T00:00:00Z`);
 
     for (let i = 0; i <= LAST_DAY_INDEX; i++) {
       const date = new Date(fromDate);
-      date.setDate(fromDate.getDate() + i);
+      date.setUTCDate(fromDate.getUTCDate() + i);
       const dateStr = date.toISOString().split('T')[0];
 
       if (!dateStr) continue;
@@ -292,8 +319,7 @@ export async function fetchK8oRepositoryContributions(
     return weeks;
   } catch (error) {
     console.error('Failed to fetch repository contributions:', error);
-    // エラー時は空のデータを返す
-    return [];
+    throw error;
   }
 }
 

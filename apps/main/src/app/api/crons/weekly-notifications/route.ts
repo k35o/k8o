@@ -1,5 +1,5 @@
 import { db } from '@repo/database';
-import { and, eq, inArray, isNull } from 'drizzle-orm';
+import { inArray, isNull } from 'drizzle-orm';
 import { type NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
 
@@ -103,6 +103,7 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ ok: false }, { status: 401 });
   }
 
+  // 並行実行時の重複送信を避けるため、未送信レコードを先にクレームする
   const claimedAt = new Date().toISOString();
 
   let claimed: UnsentComment[];
@@ -144,12 +145,9 @@ export async function GET(req: NextRequest) {
         .update(db._schema.comments)
         .set({ sentAt: null })
         .where(
-          and(
-            inArray(
-              db._schema.comments.id,
-              notifications.map((n) => n.id),
-            ),
-            eq(db._schema.comments.sentAt, claimedAt),
+          inArray(
+            db._schema.comments.id,
+            notifications.map((n) => n.id),
           ),
         )
         .execute();
