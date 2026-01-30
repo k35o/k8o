@@ -105,7 +105,7 @@ export async function GET(req: NextRequest) {
 
   const claimedAt = new Date().toISOString();
 
-  let claimed: typeof db._schema.comments.$inferSelect[];
+  let claimed: UnsentComment[];
   try {
     claimed = await db
       .update(db._schema.comments)
@@ -154,10 +154,7 @@ export async function GET(req: NextRequest) {
         )
         .execute();
     } catch (revertError) {
-      console.error(
-        'sentAtフィールドの復帰に失敗しました:',
-        revertError,
-      );
+      console.error('sentAtフィールドの復帰に失敗しました:', revertError);
     }
     return NextResponse.json(
       { ok: false, error: 'プッシュ通知の送信に失敗しました' },
