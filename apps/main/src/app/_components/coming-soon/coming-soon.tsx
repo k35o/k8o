@@ -1,12 +1,12 @@
 import { PrepareIcon, UpdateDateIcon } from '@k8o/arte-odyssey/icons';
 import type { FC, ReactNode } from 'react';
 
-export const CommingSoon: FC<{ description?: ReactNode }> = ({
+export const ComingSoon: FC<{ description?: ReactNode }> = ({
   description,
 }) => {
   return (
     <div className="flex flex-col items-center gap-4 p-6">
-      <p className="font-bold text-2xl">Comming Soon</p>
+      <p className="font-bold text-2xl">Coming Soon</p>
       <span className="text-primary-fg">
         <PrepareIcon size="lg" />
       </span>
