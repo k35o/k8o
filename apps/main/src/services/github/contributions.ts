@@ -15,6 +15,7 @@ const CONTRIBUTION_WEEKS = 10;
 const DAYS_RANGE = DAYS_PER_WEEK * CONTRIBUTION_WEEKS;
 const LAST_DAY_INDEX = DAYS_RANGE - 1;
 const GITHUB_CONTRIBUTION_PAGE_SIZE = 100;
+const JST_OFFSET_MS = 9 * 60 * 60 * 1000;
 
 type ContributionResponse = {
   user: {
@@ -64,15 +65,13 @@ function getLevelFromContributionLevel(level: string): number {
  */
 function _getLastWeeksDateRange(): { from: string; to: string; days: number } {
   const now = new Date();
-  const toDate = new Date(
-    Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate()),
-  );
-  const to = toDate.toISOString().split('T')[0] || '';
+  const toDate = _getJstDateBase(now);
+  const to = _formatDateString(toDate);
   const from = new Date(toDate);
   const days = LAST_DAY_INDEX; // 0..LAST_DAY_INDEX
   from.setUTCDate(toDate.getUTCDate() - days);
   return {
-    from: from.toISOString().split('T')[0] || '',
+    from: _formatDateString(from),
     to,
     days,
   };
@@ -130,8 +129,8 @@ export async function fetchGitHubContributions(
     };
   }>(query, {
     userName: username,
-    from: `${from}T00:00:00Z`,
-    to: `${to}T23:59:59Z`,
+    from: _getJstUtcStart(from),
+    to: _getJstUtcEnd(to),
   });
 
   const apiWeeks =
@@ -244,8 +243,8 @@ export async function fetchK8oRepositoryContributions(
                 query,
                 {
                   userName: username,
-                  from: `${from}T00:00:00Z`,
-                  to: `${to}T23:59:59Z`,
+                  from: _getJstUtcStart(from),
+                  to: _getJstUtcEnd(to),
                   after: cursor,
                   pageSize: GITHUB_CONTRIBUTION_PAGE_SIZE,
                 },
@@ -332,4 +331,37 @@ function getLevelFromCount(count: number): number {
   if (count <= 4) return 2;
   if (count <= 6) return 3;
   return 4;
+}
+
+function _getJstDateBase(date: Date): Date {
+  const jst = new Date(date.getTime() + JST_OFFSET_MS);
+  return new Date(
+    Date.UTC(jst.getUTCFullYear(), jst.getUTCMonth(), jst.getUTCDate()),
+  );
+}
+
+function _formatDateString(date: Date): string {
+  return date.toISOString().split('T')[0] || '';
+}
+
+function _getJstUtcStart(dateString: string): string {
+  const [year, month, day] = _parseDateString(dateString);
+  const utc = new Date(Date.UTC(year, month - 1, day) - JST_OFFSET_MS);
+  return utc.toISOString();
+}
+
+function _getJstUtcEnd(dateString: string): string {
+  const [year, month, day] = _parseDateString(dateString);
+  const utc = new Date(Date.UTC(year, month - 1, day + 1) - JST_OFFSET_MS - 1);
+  return utc.toISOString();
+}
+
+function _parseDateString(dateString: string): [number, number, number] {
+  const [year, month, day] = dateString.split('-');
+
+  if (!(year && month && day)) {
+    throw new Error(`Invalid date string: ${dateString}`);
+  }
+
+  return [Number(year), Number(month), Number(day)];
 }
