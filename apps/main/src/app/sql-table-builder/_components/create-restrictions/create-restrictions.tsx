@@ -21,7 +21,7 @@ type Props = {
   columns: Record<string, Column>;
   restrictions: Record<string, Restriction>;
   setRestrictions: (restrictions: Record<string, Restriction>) => void;
-  restroctionsError: InvalidRestrictions['errors'] | undefined;
+  restrictionsError: InvalidRestrictions['errors'] | undefined;
 };
 
 // 制約タイプに対応するラベルとスタイル
@@ -139,7 +139,7 @@ export const CreateRestrictions: FC<Props> = ({
   columns,
   restrictions,
   setRestrictions,
-  restroctionsError,
+  restrictionsError,
 }) => {
   const restrictionsEntries = Object.entries(restrictions);
 
@@ -197,7 +197,7 @@ export const CreateRestrictions: FC<Props> = ({
       <div className="flex flex-col gap-3">
         <AnimatePresence mode="popLayout">
           {restrictionsEntries.map(([id, restriction], idx) => {
-            const restrictionError = restroctionsError?.[id];
+            const restrictionError = restrictionsError?.[id];
             return (
               <RestrictionItem
                 canDelete

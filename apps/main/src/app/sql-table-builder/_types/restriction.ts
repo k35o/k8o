@@ -26,7 +26,7 @@ export type InvalidRestrictions = {
       type?: string;
       columns?: string;
       column?: string;
-      referrence?: {
+      reference?: {
         table?: string;
         column?: string;
       };

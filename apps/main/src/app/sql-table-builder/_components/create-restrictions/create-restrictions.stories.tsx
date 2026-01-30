@@ -62,7 +62,7 @@ export const Primary: Story = {
       <CreateRestrictions
         columns={columns}
         restrictions={restrictions}
-        restroctionsError={undefined}
+        restrictionsError={undefined}
         setRestrictions={setRestrictions}
       />
     );

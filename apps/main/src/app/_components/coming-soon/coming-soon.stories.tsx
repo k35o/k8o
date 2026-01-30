@@ -1,14 +1,14 @@
 import { Anchor } from '@k8o/arte-odyssey/anchor';
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
-import { CommingSoon } from './comming-soon';
+import { ComingSoon } from './coming-soon';
 
-const meta: Meta<typeof CommingSoon> = {
-  title: 'app/globals/comming-soon',
-  component: CommingSoon,
+const meta: Meta<typeof ComingSoon> = {
+  title: 'app/globals/coming-soon',
+  component: ComingSoon,
 };
 
 export default meta;
-type Story = StoryObj<typeof CommingSoon>;
+type Story = StoryObj<typeof ComingSoon>;
 
 export const Primary: Story = {};
 

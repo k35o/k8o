@@ -75,7 +75,7 @@ export default function Page() {
   const [statement, setStatement] = useState<string>('');
   const [tableError, setTableError] = useState<InvalidTable['errors']>();
   const [columnsError, setColumnsError] = useState<InvalidColumns['errors']>();
-  const [restroctionsError, setRestroctionsError] =
+  const [restrictionsError, setRestrictionsError] =
     useState<InvalidRestrictions['errors']>();
 
   const handleCopy = async () => {
@@ -88,13 +88,13 @@ export default function Page() {
   const handleGenerate = () => {
     setTableError(undefined);
     setColumnsError(undefined);
-    setRestroctionsError(undefined);
+    setRestrictionsError(undefined);
     setStatement('');
     const statementResult = makeStatement(table, columns, restrictions);
     if (!statementResult.isSuccessful) {
       setTableError(statementResult.invalidTable?.errors);
       setColumnsError(statementResult.invalidColumns?.errors);
-      setRestroctionsError(statementResult.invalidRestrictions?.errors);
+      setRestrictionsError(statementResult.invalidRestrictions?.errors);
       topRef.current?.scrollIntoView({ behavior: 'smooth' });
       return;
     }
@@ -178,7 +178,7 @@ export default function Page() {
               <CreateRestrictions
                 columns={columns}
                 restrictions={restrictions}
-                restroctionsError={restroctionsError}
+                restrictionsError={restrictionsError}
                 setRestrictions={setRestrictions}
               />
             </div>
