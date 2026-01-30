@@ -135,8 +135,8 @@ export const makeStatement = (
                       ...errors,
                       [id]: {
                         ...errors[id],
-                        referrence: {
-                          ...errors[id]?.referrence,
+                        reference: {
+                          ...errors[id]?.reference,
                           [reference]: issue.message,
                         },
                       },

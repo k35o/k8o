@@ -120,8 +120,8 @@ export const CreateRestriction: FC<Props> = ({
             }}
           />
           <FormControl
-            errorText={restrictionError?.referrence?.table}
-            isInvalid={Boolean(restrictionError?.referrence?.table)}
+            errorText={restrictionError?.reference?.table}
+            isInvalid={Boolean(restrictionError?.reference?.table)}
             isRequired
             label="参照先テーブル"
             renderInput={({ labelId: _, ...props }) => {
@@ -144,8 +144,8 @@ export const CreateRestriction: FC<Props> = ({
             }}
           />
           <FormControl
-            errorText={restrictionError?.referrence?.column}
-            isInvalid={Boolean(restrictionError?.referrence?.column)}
+            errorText={restrictionError?.reference?.column}
+            isInvalid={Boolean(restrictionError?.reference?.column)}
             isRequired
             label="参照先カラム"
             renderInput={({ labelId: _, ...props }) => {
