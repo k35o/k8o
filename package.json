@@ -13,7 +13,7 @@
       "onFail": "download"
     }
   },
-  "packageManager": "pnpm@10.28.0",
+  "packageManager": "pnpm@10.28.1",
   "scripts": {
     "dev": "turbo dev",
     "build": "turbo build",
