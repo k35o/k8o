@@ -32,7 +32,7 @@
     "diff": "8.0.3",
     "dompurify": "3.3.1",
     "drizzle-orm": "0.45.1",
-    "motion": "12.26.2",
+    "motion": "12.29.0",
     "next": "16.1.5",
     "next-themes": "0.4.6",
     "octokit": "5.0.5",
@@ -44,7 +44,7 @@
     "rss": "1.2.2",
     "tailwindcss": "4.1.18",
     "uqr": "0.1.2",
-    "zod": "4.3.5"
+    "zod": "4.3.6"
   },
   "devDependencies": {
     "@repo/typescript-config": "workspace:*",
@@ -54,7 +54,7 @@
     "@storybook/addon-vitest": "10.1.11",
     "@storybook/nextjs-vite": "10.1.11",
     "@types/mdx": "2.0.13",
-    "@types/react": "19.2.8",
+    "@types/react": "19.2.9",
     "@types/react-dom": "19.2.3",
     "@types/rss": "0.0.32",
     "@vitest/browser-playwright": "catalog:",
