@@ -36,11 +36,11 @@
     "@ls-lint/ls-lint": "2.3.1",
     "@types/node": "24.10.9",
     "@typescript/native-preview": "7.0.0-dev.20260124.1",
-    "agent-browser": "0.7.5",
+    "agent-browser": "0.7.6",
     "lefthook": "2.0.15",
     "next-devtools-mcp": "0.3.10",
     "playwright": "1.58.0",
-    "turbo": "2.7.5",
+    "turbo": "2.7.6",
     "typescript": "5.9.3"
   }
 }
