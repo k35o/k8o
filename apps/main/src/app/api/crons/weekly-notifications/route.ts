@@ -111,13 +111,8 @@ export async function GET(req: NextRequest) {
     claimed = await db.transaction((tx) => {
       return tx
         .update(db._schema.comments)
-        .set({ processingAt: claimedAt })
-        .where(
-          and(
-            isNull(db._schema.comments.sentAt),
-            isNull(db._schema.comments.processingAt),
-          ),
-        )
+        .set({ sentAt: claimedAt })
+        .where(isNull(db._schema.comments.sentAt))
         .returning({ id: db._schema.comments.id });
     });
   } catch (error) {
@@ -150,19 +145,19 @@ export async function GET(req: NextRequest) {
     try {
       await db
         .update(db._schema.comments)
-        .set({ processingAt: null })
+        .set({ sentAt: null })
         .where(
           and(
             inArray(
               db._schema.comments.id,
               notifications.map((n) => n.id),
             ),
-            eq(db._schema.comments.processingAt, claimedAt),
+            eq(db._schema.comments.sentAt, claimedAt),
           ),
         )
         .execute();
     } catch (revertError) {
-      console.error('processingAtフィールドの復帰に失敗しました:', {
+      console.error('sentAtフィールドの復帰に失敗しました:', {
         error: revertError,
         claimedAt,
         affectedIds: notifications.map((n) => n.id),
@@ -170,33 +165,6 @@ export async function GET(req: NextRequest) {
     }
     return NextResponse.json(
       { ok: false, error: 'プッシュ通知の送信に失敗しました' },
-      { status: 500 },
-    );
-  }
-
-  const sentAt = new Date().toISOString();
-  try {
-    await db
-      .update(db._schema.comments)
-      .set({ sentAt, processingAt: null })
-      .where(
-        and(
-          inArray(
-            db._schema.comments.id,
-            notifications.map((n) => n.id),
-          ),
-          eq(db._schema.comments.processingAt, claimedAt),
-        ),
-      )
-      .execute();
-  } catch (error) {
-    console.error('sentAtの更新に失敗しました:', {
-      error,
-      claimedAt,
-      affectedIds: notifications.map((n) => n.id),
-    });
-    return NextResponse.json(
-      { ok: false, error: 'データベース操作に失敗しました' },
       { status: 500 },
     );
   }
