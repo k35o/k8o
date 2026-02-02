@@ -25,12 +25,25 @@ const RepositoryContributionsContent = async () => {
 
   let weeks: ContributionWeek[] = [];
   let isError = false;
+  let errorMessage: string | undefined;
   try {
     weeks = await fetchK8oRepositoryContributions(USERNAME, OWNER, REPO);
   } catch (error) {
-    console.error('Failed to fetch k8o repository contributions:', error);
+    errorMessage = error instanceof Error ? error.message : 'Unknown error';
+    console.error('Failed to fetch k8o repository contributions:', {
+      error,
+      username: USERNAME,
+      owner: OWNER,
+      repo: REPO,
+    });
     isError = true;
   }
 
-  return <Presenter isError={isError} weeks={weeks} />;
+  return (
+    <Presenter
+      {...(errorMessage ? { errorMessage } : {})}
+      isError={isError}
+      weeks={weeks}
+    />
+  );
 };

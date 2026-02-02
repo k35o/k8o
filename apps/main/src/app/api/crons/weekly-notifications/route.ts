@@ -152,7 +152,11 @@ export async function GET(req: NextRequest) {
         )
         .execute();
     } catch (revertError) {
-      console.error('sentAtフィールドの復帰に失敗しました:', revertError);
+      console.error('sentAtフィールドの復帰に失敗しました:', {
+        error: revertError,
+        claimedAt,
+        affectedIds: notifications.map((n) => n.id),
+      });
     }
     return NextResponse.json(
       { ok: false, error: 'プッシュ通知の送信に失敗しました' },

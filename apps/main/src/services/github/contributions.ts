@@ -16,6 +16,8 @@ const DAYS_RANGE = DAYS_PER_WEEK * CONTRIBUTION_WEEKS;
 const LAST_DAY_INDEX = DAYS_RANGE - 1;
 const GITHUB_CONTRIBUTION_PAGE_SIZE = 100;
 const JST_OFFSET_MS = 9 * 60 * 60 * 1000;
+const ONE_DAY = 1;
+const ONE_MILLISECOND = 1;
 
 type ContributionResponse = {
   user: {
@@ -239,16 +241,29 @@ export async function fetchK8oRepositoryContributions(
                 return { done: true, value: undefined };
               }
 
-              const response: ContributionResponse = await octokit.graphql(
-                query,
-                {
+              let response: ContributionResponse;
+              try {
+                response = await octokit.graphql(query, {
                   userName: username,
                   from: _getJstUtcStart(from),
                   to: _getJstUtcEnd(to),
                   after: cursor,
                   pageSize: GITHUB_CONTRIBUTION_PAGE_SIZE,
-                },
-              );
+                });
+              } catch (error) {
+                done = true;
+                console.error(
+                  'Failed to fetch repository contributions page:',
+                  {
+                    error,
+                    cursor,
+                    username,
+                    owner,
+                    repo,
+                  },
+                );
+                throw error;
+              }
 
               const repoContributions =
                 response.user.contributionsCollection.commitContributionsByRepository.find(
@@ -318,6 +333,9 @@ export async function fetchK8oRepositoryContributions(
     return weeks;
   } catch (error) {
     console.error('Failed to fetch repository contributions:', error);
+    if (error instanceof Error) {
+      throw new Error(`GitHub API Error: ${error.message}`, { cause: error });
+    }
     throw error;
   }
 }
@@ -352,7 +370,10 @@ function _getJstUtcStart(dateString: string): string {
 
 function _getJstUtcEnd(dateString: string): string {
   const [year, month, day] = _parseDateString(dateString);
-  const utc = new Date(Date.UTC(year, month - 1, day + 1) - JST_OFFSET_MS - 1);
+  // JST日付の23:59:59.999を表現するため、翌日の00:00:00から1ミリ秒引く
+  const utc = new Date(
+    Date.UTC(year, month - 1, day + ONE_DAY) - JST_OFFSET_MS - ONE_MILLISECOND,
+  );
   return utc.toISOString();
 }
 
