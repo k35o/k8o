@@ -1,5 +1,5 @@
 import { db } from '@repo/database';
-import { inArray } from 'drizzle-orm';
+import { and, eq, inArray, isNull } from 'drizzle-orm';
 import { type NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
 
@@ -103,15 +103,27 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ ok: false }, { status: 401 });
   }
 
-  // 未送信のコメントを取得(IDのみ必要)
-  const unsentComments = await db.query.comments.findMany({
-    where: (comments, { isNull }) => isNull(comments.sentAt),
-    columns: {
-      id: true,
-    },
-  });
+  // 並行実行時の重複送信を避けるため、未送信レコードを先にクレームする
+  const claimedAt = new Date().toISOString();
 
-  const notifications: UnsentComment[] = unsentComments;
+  let claimed: UnsentComment[];
+  try {
+    claimed = await db.transaction((tx) => {
+      return tx
+        .update(db._schema.comments)
+        .set({ sentAt: claimedAt })
+        .where(isNull(db._schema.comments.sentAt))
+        .returning({ id: db._schema.comments.id });
+    });
+  } catch (error) {
+    console.error('未送信コメントの取得に失敗しました:', error);
+    return NextResponse.json(
+      { ok: false, error: 'データベース操作に失敗しました' },
+      { status: 500 },
+    );
+  }
+
+  const notifications: UnsentComment[] = claimed;
 
   if (notifications.length === 0) {
     return NextResponse.json({ ok: true });
@@ -130,23 +142,32 @@ export async function GET(req: NextRequest) {
       `k8o-push API呼び出しが${MAX_RETRY_ATTEMPTS}回失敗しました:`,
       error,
     );
+    try {
+      await db
+        .update(db._schema.comments)
+        .set({ sentAt: null })
+        .where(
+          and(
+            inArray(
+              db._schema.comments.id,
+              notifications.map((n) => n.id),
+            ),
+            eq(db._schema.comments.sentAt, claimedAt),
+          ),
+        )
+        .execute();
+    } catch (revertError) {
+      console.error('sentAtフィールドの復帰に失敗しました:', {
+        error: revertError,
+        claimedAt,
+        affectedIds: notifications.map((n) => n.id),
+      });
+    }
     return NextResponse.json(
       { ok: false, error: 'プッシュ通知の送信に失敗しました' },
       { status: 500 },
     );
   }
-
-  // DB更新
-  await db
-    .update(db._schema.comments)
-    .set({ sentAt: new Date().toISOString() })
-    .where(
-      inArray(
-        db._schema.comments.id,
-        notifications.map((n) => n.id),
-      ),
-    )
-    .execute();
 
   return NextResponse.json({ ok: true });
 }

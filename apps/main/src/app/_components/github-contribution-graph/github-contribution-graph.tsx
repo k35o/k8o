@@ -1,5 +1,8 @@
 import { cacheLife } from 'next/cache';
-import { fetchK8oRepositoryContributions } from '@/services/github/contributions';
+import {
+  type ContributionWeek,
+  fetchK8oRepositoryContributions,
+} from '@/services/github/contributions';
 import { Presenter } from './presenter';
 
 const USERNAME = 'k35o';
@@ -20,7 +23,27 @@ const RepositoryContributionsContent = async () => {
   'use cache';
   cacheLife('hours');
 
-  const weeks = await fetchK8oRepositoryContributions(USERNAME, OWNER, REPO);
+  let weeks: ContributionWeek[] = [];
+  let isError = false;
+  let errorMessage: string | undefined;
+  try {
+    weeks = await fetchK8oRepositoryContributions(USERNAME, OWNER, REPO);
+  } catch (error) {
+    errorMessage = error instanceof Error ? error.message : 'Unknown error';
+    console.error('Failed to fetch k8o repository contributions:', {
+      error,
+      username: USERNAME,
+      owner: OWNER,
+      repo: REPO,
+    });
+    isError = true;
+  }
 
-  return <Presenter weeks={weeks} />;
+  return (
+    <Presenter
+      {...(errorMessage ? { errorMessage } : {})}
+      isError={isError}
+      weeks={weeks}
+    />
+  );
 };

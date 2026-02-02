@@ -10,6 +10,44 @@ export type ContributionWeek = {
   days: ContributionDay[];
 };
 
+const DAYS_PER_WEEK = 7;
+const CONTRIBUTION_WEEKS = 10;
+const DAYS_RANGE = DAYS_PER_WEEK * CONTRIBUTION_WEEKS;
+const LAST_DAY_INDEX = DAYS_RANGE - 1;
+const GITHUB_CONTRIBUTION_PAGE_SIZE = 100;
+const JST_OFFSET_MS = 9 * 60 * 60 * 1000;
+const ONE_DAY = 1;
+const ONE_MILLISECOND = 1;
+
+type ContributionResponse = {
+  user: {
+    contributionsCollection: {
+      commitContributionsByRepository: Array<{
+        repository: {
+          owner: {
+            login: string;
+          };
+          name: string;
+        };
+        contributions: {
+          totalCount: number;
+          pageInfo: {
+            hasNextPage: boolean;
+            endCursor: string | null;
+          };
+          nodes: Array<{
+            occurredAt: string;
+            commitCount: number;
+          }>;
+        };
+      }>;
+    };
+  };
+};
+
+type RepositoryContributions =
+  ContributionResponse['user']['contributionsCollection']['commitContributionsByRepository'][number];
+
 /**
  * GitHubのcontributionLevelを数値レベルに変換
  */
@@ -25,16 +63,17 @@ function getLevelFromContributionLevel(level: string): number {
 }
 
 /**
- * 直近10週間の日付範囲を計算（50日分）
+ * 直近の期間の日付範囲を計算
  */
 function _getLastWeeksDateRange(): { from: string; to: string; days: number } {
   const now = new Date();
-  const to = now.toISOString().split('T')[0] || '';
-  const from = new Date(now);
-  const days = 49; // 50日分（0から49まで）
-  from.setDate(now.getDate() - days);
+  const toDate = _getJstDateBase(now);
+  const to = _formatDateString(toDate);
+  const from = new Date(toDate);
+  const days = LAST_DAY_INDEX; // 0..LAST_DAY_INDEX
+  from.setUTCDate(toDate.getUTCDate() - days);
   return {
-    from: from.toISOString().split('T')[0] || '',
+    from: _formatDateString(from),
     to,
     days,
   };
@@ -92,8 +131,8 @@ export async function fetchGitHubContributions(
     };
   }>(query, {
     userName: username,
-    from: `${from}T00:00:00Z`,
-    to: `${to}T23:59:59Z`,
+    from: _getJstUtcStart(from),
+    to: _getJstUtcEnd(to),
   });
 
   const apiWeeks =
@@ -110,14 +149,14 @@ export async function fetchGitHubContributions(
     }
   }
 
-  // 50日分の日付を生成してweeks形式に変換（5日ごとに区切る）
+  // 日付を生成してweeks形式に変換（7日ごとに区切る）
   const weeks: ContributionWeek[] = [];
   let currentWeek: ContributionDay[] = [];
-  const fromDate = new Date(from);
+  const fromDate = new Date(`${from}T00:00:00Z`);
 
-  for (let i = 0; i <= 49; i++) {
+  for (let i = 0; i <= LAST_DAY_INDEX; i++) {
     const date = new Date(fromDate);
-    date.setDate(fromDate.getDate() + i);
+    date.setUTCDate(fromDate.getUTCDate() + i);
     const dateStr = date.toISOString().split('T')[0];
 
     if (!dateStr) continue;
@@ -130,8 +169,8 @@ export async function fetchGitHubContributions(
       level: data.level,
     });
 
-    // 5日ごとまたは最後の日付でweekを区切る
-    if (currentWeek.length === 5 || i === 49) {
+    // 7日ごとまたは最後の日付でweekを区切る
+    if (currentWeek.length === DAYS_PER_WEEK || i === LAST_DAY_INDEX) {
       weeks.push({ days: [...currentWeek] });
       currentWeek = [];
     }
@@ -160,7 +199,7 @@ export async function fetchK8oRepositoryContributions(
 
   // GitHub GraphQL APIで直接リポジトリのコントリビューションを取得
   const query = `
-    query($userName:String!, $from:DateTime!, $to:DateTime!) {
+    query($userName:String!, $from:DateTime!, $to:DateTime!, $after:String, $pageSize:Int!) {
       user(login: $userName) {
         contributionsCollection(from: $from, to: $to) {
           commitContributionsByRepository(maxRepositories: 100) {
@@ -170,8 +209,12 @@ export async function fetchK8oRepositoryContributions(
               }
               name
             }
-            contributions(first: 100) {
+            contributions(first: $pageSize, after: $after) {
               totalCount
+              pageInfo {
+                hasNextPage
+                endCursor
+              }
               nodes {
                 occurredAt
                 commitCount
@@ -184,42 +227,70 @@ export async function fetchK8oRepositoryContributions(
   `;
 
   try {
-    const response = await octokit.graphql<{
-      user: {
-        contributionsCollection: {
-          commitContributionsByRepository: Array<{
-            repository: {
-              owner: {
-                login: string;
-              };
-              name: string;
-            };
-            contributions: {
-              totalCount: number;
-              nodes: Array<{
-                occurredAt: string;
-                commitCount: number;
-              }>;
-            };
-          }>;
+    // 指定されたリポジトリのコントリビューションのみを抽出し、全ページを取得
+    const contributionMap = new Map<string, number>();
+    const createRepoContributionsIterator =
+      (): AsyncIterable<RepositoryContributions> => {
+        let cursor: string | null = null;
+        let done = false;
+
+        return {
+          [Symbol.asyncIterator]: () => ({
+            next: async () => {
+              if (done) {
+                return { done: true, value: undefined };
+              }
+
+              let response: ContributionResponse;
+              try {
+                response = await octokit.graphql(query, {
+                  userName: username,
+                  from: _getJstUtcStart(from),
+                  to: _getJstUtcEnd(to),
+                  after: cursor,
+                  pageSize: GITHUB_CONTRIBUTION_PAGE_SIZE,
+                });
+              } catch (error) {
+                done = true;
+                console.error(
+                  'Failed to fetch repository contributions page:',
+                  {
+                    error,
+                    cursor,
+                    username,
+                    owner,
+                    repo,
+                  },
+                );
+                throw error;
+              }
+
+              const repoContributions =
+                response.user.contributionsCollection.commitContributionsByRepository.find(
+                  (r) =>
+                    r.repository.owner.login === owner &&
+                    r.repository.name === repo,
+                );
+
+              if (!repoContributions) {
+                done = true;
+                return { done: true, value: undefined };
+              }
+
+              const pageInfo = repoContributions.contributions.pageInfo;
+              if (pageInfo.hasNextPage && pageInfo.endCursor) {
+                cursor = pageInfo.endCursor;
+              } else {
+                done = true;
+              }
+
+              return { done: false, value: repoContributions };
+            },
+          }),
         };
       };
-    }>(query, {
-      userName: username,
-      from: `${from}T00:00:00Z`,
-      to: `${to}T23:59:59Z`,
-    });
 
-    // 指定されたリポジトリのコントリビューションのみを抽出
-    const repoContributions =
-      response.user.contributionsCollection.commitContributionsByRepository.find(
-        (r) => r.repository.owner.login === owner && r.repository.name === repo,
-      );
-
-    // 日付ごとに集計
-    const contributionMap = new Map<string, number>();
-
-    if (repoContributions) {
+    for await (const repoContributions of createRepoContributionsIterator()) {
       for (const contribution of repoContributions.contributions.nodes) {
         const date = contribution.occurredAt.split('T')[0];
         if (date) {
@@ -231,14 +302,14 @@ export async function fetchK8oRepositoryContributions(
       }
     }
 
-    // 10週間分の日付を生成してweeks形式に変換（5日ごとに区切る）
+    // 日付を生成してweeks形式に変換（7日ごとに区切る）
     const weeks: ContributionWeek[] = [];
     let currentWeek: ContributionDay[] = [];
-    const fromDate = new Date(from);
+    const fromDate = new Date(`${from}T00:00:00Z`);
 
-    for (let i = 0; i <= 49; i++) {
+    for (let i = 0; i <= LAST_DAY_INDEX; i++) {
       const date = new Date(fromDate);
-      date.setDate(fromDate.getDate() + i);
+      date.setUTCDate(fromDate.getUTCDate() + i);
       const dateStr = date.toISOString().split('T')[0];
 
       if (!dateStr) continue;
@@ -252,8 +323,8 @@ export async function fetchK8oRepositoryContributions(
         level,
       });
 
-      // 5日ごとまたは最後の日付でweekを区切る
-      if (currentWeek.length === 5 || i === 49) {
+      // 7日ごとまたは最後の日付でweekを区切る
+      if (currentWeek.length === DAYS_PER_WEEK || i === LAST_DAY_INDEX) {
         weeks.push({ days: [...currentWeek] });
         currentWeek = [];
       }
@@ -262,8 +333,10 @@ export async function fetchK8oRepositoryContributions(
     return weeks;
   } catch (error) {
     console.error('Failed to fetch repository contributions:', error);
-    // エラー時は空のデータを返す
-    return [];
+    if (error instanceof Error) {
+      throw new Error(`GitHub API Error: ${error.message}`, { cause: error });
+    }
+    throw error;
   }
 }
 
@@ -277,3 +350,44 @@ function getLevelFromCount(count: number): number {
   if (count <= 6) return 3;
   return 4;
 }
+
+function _getJstDateBase(date: Date): Date {
+  const jst = new Date(date.getTime() + JST_OFFSET_MS);
+  return new Date(
+    Date.UTC(jst.getUTCFullYear(), jst.getUTCMonth(), jst.getUTCDate()),
+  );
+}
+
+function _formatDateString(date: Date): string {
+  return date.toISOString().split('T')[0] || '';
+}
+
+function _getJstUtcStart(dateString: string): string {
+  const [year, month, day] = _parseDateString(dateString);
+  const utc = new Date(Date.UTC(year, month - 1, day) - JST_OFFSET_MS);
+  return utc.toISOString();
+}
+
+function _getJstUtcEnd(dateString: string): string {
+  const [year, month, day] = _parseDateString(dateString);
+  // JST日付の23:59:59.999を表現するため、翌日の00:00:00から1ミリ秒引く
+  const utc = new Date(
+    Date.UTC(year, month - 1, day + ONE_DAY) - JST_OFFSET_MS - ONE_MILLISECOND,
+  );
+  return utc.toISOString();
+}
+
+function _parseDateString(dateString: string): [number, number, number] {
+  const [year, month, day] = dateString.split('-');
+
+  if (!(year && month && day)) {
+    throw new Error(`Invalid date string: ${dateString}`);
+  }
+
+  return [Number(year), Number(month), Number(day)];
+}
+
+export const __test__ = {
+  getJstUtcStart: _getJstUtcStart,
+  getJstUtcEnd: _getJstUtcEnd,
+};
