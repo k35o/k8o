@@ -386,3 +386,8 @@ function _parseDateString(dateString: string): [number, number, number] {
 
   return [Number(year), Number(month), Number(day)];
 }
+
+export const __test__ = {
+  getJstUtcStart: _getJstUtcStart,
+  getJstUtcEnd: _getJstUtcEnd,
+};

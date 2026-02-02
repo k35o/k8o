@@ -9,6 +9,7 @@ export const comments = sqliteTable(
     id: integer('id').primaryKey({ autoIncrement: true }),
     message: text('message'),
     sentAt: text('sent_at'),
+    processingAt: text('processing_at'),
     feedbackId: integer('feedback_id').references(() => feedbacks.id),
     createdAt: text('created_at')
       .notNull()
@@ -21,6 +22,7 @@ export const comments = sqliteTable(
   (table) => [
     index('comments_id_idx').on(table.id),
     index('comments_feedback_id_idx').on(table.feedbackId),
+    index('comments_processing_at_idx').on(table.processingAt),
   ],
 );
 
