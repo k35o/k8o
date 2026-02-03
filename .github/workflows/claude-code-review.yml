@@ -29,7 +29,7 @@ jobs:
           claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
           use_sticky_comment: true
           claude_args: |
-            --allowedTools "Bash(gh issue view:*),Bash(gh search:*),Bash(gh issue list:*),Bash(gh pr comment:*),Bash(gh pr diff:*),Bash(gh pr view:*),Bash(gh pr list:*),Bash(gh pr review:*)"
+            --allowedTools "Bash(gh issue view:*),Bash(gh search:*),Bash(gh issue list:*),Bash(gh pr comment:*),Bash(gh pr diff:*),Bash(gh pr view:*),Bash(gh pr list:*)"
             --system-prompt "日本語で応答してください。"
           prompt: |
             REPO: ${{ github.repository }}
@@ -95,7 +95,8 @@ jobs:
             12. Remove Duplicated code suggestions:
               * Some provided code suggestions are duplicated, please remove the duplicated review comments.
             13. Don't Approve The Pull Request
-            14. Reference all shell variables as "${VAR}" (with quotes and braces)
+            14. Never submit a review with REQUEST_CHANGES. Use sticky comment or `gh pr comment` for feedback instead. REQUEST_CHANGES blocks merging and cannot be dismissed.
+            15. Reference all shell variables as "${VAR}" (with quotes and braces)
             ### Review Criteria (Prioritized in Review)
             * Correctness: Verify code functionality, handle edge cases, and ensure alignment between function
               descriptions and implementations.  Consider common correctness issues (logic errors, error handling,
