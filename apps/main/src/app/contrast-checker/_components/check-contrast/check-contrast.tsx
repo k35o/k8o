@@ -15,7 +15,7 @@ export const CheckContrast: FC = () => {
   const isInvalidAaaContrstSmall = contrast < 4.5;
 
   return (
-    <div className="flex flex-col gap-6">
+    <div className="flex flex-col gap-8">
       <div className="grid grid-cols-2 gap-4">
         <ColorPallet color={baseColor} label="背景色" setColor={setBaseColor} />
         <ColorPallet
@@ -24,19 +24,35 @@ export const CheckContrast: FC = () => {
           setColor={setCompareColor}
         />
       </div>
-      <div className="flex flex-col gap-4">
+      {/* プレビュー */}
+      <div
+        className="flex flex-col items-center justify-center gap-3 rounded-lg border border-border-base p-8"
+        style={{ backgroundColor: baseColor }}
+      >
+        <p
+          className="font-bold text-2xl md:text-3xl"
+          style={{ color: compareColor }}
+        >
+          テキストのプレビュー
+        </p>
+        <p className="text-sm md:text-base" style={{ color: compareColor }}>
+          この文字と背景色の組み合わせを確認できます
+        </p>
+      </div>
+      {/* コントラスト比 */}
+      <div className="flex flex-col items-center gap-2 rounded-lg bg-bg-mute p-6">
         <p className="font-bold text-xl">
           入力した色のコントラスト比は{contrast.toFixed(2)}:1です
         </p>
-        <ResultTable
-          baseColor={baseColor}
-          compareColor={compareColor}
-          isInvalidAAAContrstLarge={isInvalidAaaContrstLarge}
-          isInvalidAAAContrstSmall={isInvalidAaaContrstSmall}
-          isInvalidAAContrstLarge={isInvalidAaContrstLarge}
-          isInvalidAAContrstSmall={isInvalidAaContrstSmall}
-        />
       </div>
+      <ResultTable
+        baseColor={baseColor}
+        compareColor={compareColor}
+        isInvalidAAAContrstLarge={isInvalidAaaContrstLarge}
+        isInvalidAAAContrstSmall={isInvalidAaaContrstSmall}
+        isInvalidAAContrstLarge={isInvalidAaContrstLarge}
+        isInvalidAAContrstSmall={isInvalidAaContrstSmall}
+      />
     </div>
   );
 };
