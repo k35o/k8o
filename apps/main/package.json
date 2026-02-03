@@ -60,7 +60,7 @@
     "@vitest/browser-playwright": "catalog:",
     "@vitest/coverage-istanbul": "catalog:",
     "@vitest/ui": "catalog:",
-    "chromatic": "13.3.5",
+    "chromatic": "15.0.0",
     "msw": "2.12.7",
     "msw-storybook-addon": "2.0.6",
     "react-scan": "0.4.3",
