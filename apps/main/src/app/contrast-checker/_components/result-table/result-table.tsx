@@ -2,10 +2,10 @@ import { AlertIcon } from '@k8o/arte-odyssey/icons';
 import type { FC } from 'react';
 
 type Props = {
-  isInvalidAAContrstLarge: boolean;
-  isInvalidAAAContrstLarge: boolean;
-  isInvalidAAContrstSmall: boolean;
-  isInvalidAAAContrstSmall: boolean;
+  isInvalidAaLargeText: boolean;
+  isInvalidAaaLargeText: boolean;
+  isInvalidAaNormalText: boolean;
+  isInvalidAaaNormalText: boolean;
   compareColor: string;
   baseColor: string;
 };
@@ -27,10 +27,10 @@ const StatusCell: FC<{ isInvalid: boolean }> = ({ isInvalid }) => (
 );
 
 export const ResultTable: FC<Props> = ({
-  isInvalidAAContrstLarge,
-  isInvalidAAAContrstLarge,
-  isInvalidAAContrstSmall,
-  isInvalidAAAContrstSmall,
+  isInvalidAaLargeText,
+  isInvalidAaaLargeText,
+  isInvalidAaNormalText,
+  isInvalidAaaNormalText,
   compareColor,
   baseColor,
 }) => {
@@ -45,9 +45,10 @@ export const ResultTable: FC<Props> = ({
           </tr>
         </thead>
         <tbody>
+          {/* 大文字: 18pt（24px）以上、太字の場合は14pt（18.66px）以上 */}
           <tr className="h-16 border-border-base border-b">
-            <StatusCell isInvalid={isInvalidAAContrstLarge} />
-            <StatusCell isInvalid={isInvalidAAAContrstLarge} />
+            <StatusCell isInvalid={isInvalidAaLargeText} />
+            <StatusCell isInvalid={isInvalidAaaLargeText} />
             <td
               className="px-4 font-bold text-[18.66px]"
               style={{
@@ -59,8 +60,8 @@ export const ResultTable: FC<Props> = ({
             </td>
           </tr>
           <tr className="h-16 border-border-base border-b">
-            <StatusCell isInvalid={isInvalidAAContrstLarge} />
-            <StatusCell isInvalid={isInvalidAAAContrstLarge} />
+            <StatusCell isInvalid={isInvalidAaLargeText} />
+            <StatusCell isInvalid={isInvalidAaaLargeText} />
             <td
               className="px-4 text-[24px]"
               style={{
@@ -71,9 +72,10 @@ export const ResultTable: FC<Props> = ({
               大文字のテキスト（24px）
             </td>
           </tr>
+          {/* 小文字: 上記未満の通常テキスト */}
           <tr className="h-16 border-border-base border-b">
-            <StatusCell isInvalid={isInvalidAAContrstSmall} />
-            <StatusCell isInvalid={isInvalidAAAContrstSmall} />
+            <StatusCell isInvalid={isInvalidAaNormalText} />
+            <StatusCell isInvalid={isInvalidAaaNormalText} />
             <td
               className="px-4 font-bold text-[16px]"
               style={{
@@ -85,8 +87,8 @@ export const ResultTable: FC<Props> = ({
             </td>
           </tr>
           <tr className="h-16 border-border-base border-b">
-            <StatusCell isInvalid={isInvalidAAContrstSmall} />
-            <StatusCell isInvalid={isInvalidAAAContrstLarge} />
+            <StatusCell isInvalid={isInvalidAaNormalText} />
+            <StatusCell isInvalid={isInvalidAaaNormalText} />
             <td
               className="px-4 text-[18.66px]"
               style={{
