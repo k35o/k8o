@@ -11,10 +11,10 @@ type Story = StoryObj<typeof ResultTable>;
 
 export const Valid: Story = {
   args: {
-    isInvalidAAContrstLarge: false,
-    isInvalidAAAContrstLarge: false,
-    isInvalidAAContrstSmall: false,
-    isInvalidAAAContrstSmall: false,
+    isInvalidAaLargeText: false,
+    isInvalidAaaLargeText: false,
+    isInvalidAaNormalText: false,
+    isInvalidAaaNormalText: false,
     compareColor: '#000000',
     baseColor: '#2dd4bf',
   },
@@ -22,10 +22,10 @@ export const Valid: Story = {
 
 export const Invalid: Story = {
   args: {
-    isInvalidAAContrstLarge: true,
-    isInvalidAAAContrstLarge: true,
-    isInvalidAAContrstSmall: true,
-    isInvalidAAAContrstSmall: true,
+    isInvalidAaLargeText: true,
+    isInvalidAaaLargeText: true,
+    isInvalidAaNormalText: true,
+    isInvalidAaaNormalText: true,
     compareColor: '#000000',
     baseColor: '#2dd4bf',
   },
@@ -33,10 +33,10 @@ export const Invalid: Story = {
 
 export const ValidOnlyAA: Story = {
   args: {
-    isInvalidAAContrstLarge: false,
-    isInvalidAAAContrstLarge: true,
-    isInvalidAAContrstSmall: false,
-    isInvalidAAAContrstSmall: true,
+    isInvalidAaLargeText: false,
+    isInvalidAaaLargeText: true,
+    isInvalidAaNormalText: false,
+    isInvalidAaaNormalText: true,
     compareColor: '#000000',
     baseColor: '#2dd4bf',
   },
