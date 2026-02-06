@@ -18,7 +18,7 @@ export const InitialContrast: Story = {
 
     // 初期状態（黒と白）のコントラスト比は21:1
     await expect(
-      canvas.getByText('入力した色のコントラスト比は21.00:1です'),
+      canvas.getByText('コントラスト比 21.00:1'),
     ).toBeInTheDocument();
   },
 };
