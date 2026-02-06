@@ -1,5 +1,6 @@
 'use client';
 
+import { Alert } from '@k8o/arte-odyssey/alert';
 import { calcContrast } from '@repo/helpers/color/calc-contrast';
 import { type FC, useState } from 'react';
 import { ColorPallet } from '../color-pallet';
@@ -51,9 +52,10 @@ export const CheckContrast: FC = () => {
           この文字と背景色の組み合わせを確認できます
         </p>
         {contrast < WCAG_THRESHOLDS.LOW_VISIBILITY_WARNING && (
-          <p className="mt-2 rounded-md bg-bg-base px-3 py-1 text-fg-warning text-xs md:text-sm">
-            コントラスト比が非常に低いため、テキストが見えにくい場合があります
-          </p>
+          <Alert
+            message="コントラスト比が非常に低いため、テキストが見えにくい場合があります"
+            status="warning"
+          />
         )}
       </section>
       {/* コントラスト比 */}
