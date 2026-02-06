@@ -10,7 +10,11 @@ type Props = {
   baseColor: string;
 };
 
-const StatusCell: FC<{ isInvalid: boolean }> = ({ isInvalid }) => (
+type StatusCellProps = {
+  isInvalid: boolean;
+};
+
+const StatusCell: FC<StatusCellProps> = ({ isInvalid }) => (
   <td className="px-2">
     {isInvalid ? (
       <div className="flex items-center justify-center gap-1 text-fg-error">

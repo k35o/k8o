@@ -10,12 +10,20 @@ export const CheckContrast: FC = () => {
   const [compareColor, setCompareColor] = useState('#ffffff');
   const contrast = calcContrast(baseColor, compareColor);
 
+  const WCAG_THRESHOLDS = {
+    AA_LARGE_TEXT: 3,
+    AAA_LARGE_TEXT: 4.5,
+    AA_NORMAL_TEXT: 4.5,
+    AAA_NORMAL_TEXT: 7,
+    LOW_VISIBILITY_WARNING: 2,
+  } as const;
+
   // 大文字（≥18pt or ≥14pt bold）の基準
-  const isInvalidAaLargeText = contrast < 3; // AA: 3:1以上
-  const isInvalidAaaLargeText = contrast < 4.5; // AAA: 4.5:1以上
+  const isInvalidAaLargeText = contrast < WCAG_THRESHOLDS.AA_LARGE_TEXT; // AA: 3:1以上
+  const isInvalidAaaLargeText = contrast < WCAG_THRESHOLDS.AAA_LARGE_TEXT; // AAA: 4.5:1以上
   // 小文字（通常テキスト）の基準
-  const isInvalidAaNormalText = contrast < 4.5; // AA: 4.5:1以上
-  const isInvalidAaaNormalText = contrast < 7; // AAA: 7:1以上
+  const isInvalidAaNormalText = contrast < WCAG_THRESHOLDS.AA_NORMAL_TEXT; // AA: 4.5:1以上
+  const isInvalidAaaNormalText = contrast < WCAG_THRESHOLDS.AAA_NORMAL_TEXT; // AAA: 7:1以上
 
   return (
     <div className="flex flex-col gap-8">
@@ -28,7 +36,8 @@ export const CheckContrast: FC = () => {
         />
       </div>
       {/* プレビュー */}
-      <div
+      <section
+        aria-label="選択した色の組み合わせのプレビュー"
         className="flex flex-col items-center justify-center gap-3 rounded-lg border border-border-base p-6 md:p-8"
         style={{ backgroundColor: baseColor }}
       >
@@ -41,12 +50,12 @@ export const CheckContrast: FC = () => {
         <p className="text-xs md:text-base" style={{ color: compareColor }}>
           この文字と背景色の組み合わせを確認できます
         </p>
-        {contrast < 2 && (
+        {contrast < WCAG_THRESHOLDS.LOW_VISIBILITY_WARNING && (
           <p className="mt-2 rounded-md bg-bg-base px-3 py-1 text-fg-warning text-xs md:text-sm">
             コントラスト比が非常に低いため、テキストが見えにくい場合があります
           </p>
         )}
-      </div>
+      </section>
       {/* コントラスト比 */}
       <div className="flex flex-col items-center gap-2 rounded-lg bg-bg-mute p-6">
         <p className="font-bold text-xl">

@@ -19,6 +19,7 @@ export const ColorPallet: FC<Props> = ({ label, color, setColor }) => {
       renderInput={({ id }) => (
         <div className="flex flex-col gap-2">
           <input
+            aria-label={label}
             className={cn(
               'h-24 w-full cursor-pointer rounded-lg border border-border-base p-1',
               'focus-visible:border-transparent focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-border-info',
