@@ -36,7 +36,15 @@ export const CheckContrast: FC = () => {
           setColor={setCompareColor}
         />
       </div>
-      {/* プレビュー */}
+      <p className="text-center font-medium text-sm sm:text-base">
+        コントラスト比 {contrast.toFixed(2)}:1
+      </p>
+      {contrast < WCAG_THRESHOLDS.LOW_VISIBILITY_WARNING && (
+        <Alert
+          message="コントラスト比が非常に低いため、テキストが見えにくい場合があります"
+          status="warning"
+        />
+      )}
       <section
         aria-label="選択した色の組み合わせのプレビュー"
         className="flex flex-col items-center justify-center gap-3 rounded-lg border border-border-base p-6 md:p-8"
@@ -51,19 +59,7 @@ export const CheckContrast: FC = () => {
         <p className="text-xs md:text-base" style={{ color: compareColor }}>
           この文字と背景色の組み合わせを確認できます
         </p>
-        {contrast < WCAG_THRESHOLDS.LOW_VISIBILITY_WARNING && (
-          <Alert
-            message="コントラスト比が非常に低いため、テキストが見えにくい場合があります"
-            status="warning"
-          />
-        )}
       </section>
-      {/* コントラスト比 */}
-      <div className="flex flex-col items-center gap-2 rounded-lg bg-bg-mute p-6">
-        <p className="font-bold text-xl">
-          入力した色のコントラスト比は{contrast.toFixed(2)}:1です
-        </p>
-      </div>
       <ResultTable
         baseColor={baseColor}
         compareColor={compareColor}
