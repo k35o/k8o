@@ -16,7 +16,7 @@ export const Playground: FC<
       viewport={{ once: true, margin: '-48px' }}
       whileInView={{ opacity: 1, y: 0 }}
     >
-      <div className="overflow-hidden rounded-sm">
+      <div className="overflow-hidden rounded-sm border border-border-base">
         <div className="flex items-center gap-2.5 bg-primary-base px-4 py-2.5">
           <motion.div
             className="size-2 rotate-45 bg-primary-fg"
@@ -27,7 +27,7 @@ export const Playground: FC<
           />
           <p className="font-bold text-primary-fg tracking-wider">{title}</p>
         </div>
-        <div className="border-border-base border-x border-b bg-bg-base p-5">
+        <div className="border-border-base border-t bg-bg-base p-5">
           {children}
         </div>
       </div>
