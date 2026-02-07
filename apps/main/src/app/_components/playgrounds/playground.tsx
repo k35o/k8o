@@ -16,7 +16,30 @@ export const Playground: FC<
       viewport={{ once: true, margin: '-48px' }}
       whileInView={{ opacity: 1, y: 0 }}
     >
-      <div className="group relative overflow-hidden rounded-sm border border-border-base transition-colors duration-300 hover:border-primary">
+      <div className="mb-2 flex items-center gap-3">
+        <motion.div
+          className="size-2 rotate-45 bg-primary"
+          initial={{ scale: 0, rotate: 45 }}
+          transition={{ duration: 0.3, delay: 0.2 }}
+          viewport={{ once: true }}
+          whileInView={{ scale: 1, rotate: 45 }}
+        />
+        <span className="font-bold text-fg-base tracking-wider">{title}</span>
+        <motion.div
+          className="h-px flex-1 bg-primary opacity-30"
+          initial={{ scaleX: 0 }}
+          style={{ transformOrigin: 'left' }}
+          transition={{
+            duration: 0.5,
+            delay: 0.3,
+            ease: [0.22, 1, 0.36, 1],
+          }}
+          viewport={{ once: true }}
+          whileInView={{ scaleX: 1 }}
+        />
+      </div>
+
+      <div className="group relative overflow-hidden rounded-sm border border-border-base bg-bg-base transition-colors duration-300 hover:border-primary">
         <motion.div
           className="absolute inset-y-0 left-0 w-1 bg-primary"
           initial={{ scaleY: 0 }}
@@ -29,17 +52,7 @@ export const Playground: FC<
           viewport={{ once: true }}
           whileInView={{ scaleY: 1 }}
         />
-
-        <div className="pointer-events-none absolute top-0 right-0 overflow-hidden">
-          <div className="size-6 translate-x-3 -translate-y-3 rotate-45 bg-primary opacity-[0.07]" />
-        </div>
-
-        <div className="flex items-center gap-2.5 border-border-base border-b bg-bg-mute py-2.5 pr-4 pl-5">
-          <div className="size-2 rotate-45 bg-primary" />
-          <p className="font-bold text-fg-base tracking-wider">{title}</p>
-        </div>
-
-        <div className="bg-bg-base p-4 pl-5">{children}</div>
+        <div className="p-4 pl-5">{children}</div>
       </div>
     </motion.div>
   );
