@@ -10,13 +10,26 @@ export const Playground: FC<
 > = ({ title = 'Playground', children }) => {
   return (
     <motion.div
-      className="relative my-8 text-xs sm:text-md"
+      className="relative my-8 pl-4 text-xs sm:text-md"
       initial={{ opacity: 0, y: 16 }}
       transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
       viewport={{ once: true, margin: '-48px' }}
       whileInView={{ opacity: 1, y: 0 }}
     >
-      <div className="mb-2 flex items-center gap-3">
+      <motion.div
+        className="absolute inset-y-0 left-0 w-1 rounded-full bg-primary"
+        initial={{ scaleY: 0 }}
+        style={{ transformOrigin: 'top' }}
+        transition={{
+          duration: 0.5,
+          delay: 0.15,
+          ease: [0.22, 1, 0.36, 1],
+        }}
+        viewport={{ once: true }}
+        whileInView={{ scaleY: 1 }}
+      />
+
+      <div className="mb-2 flex items-center gap-2">
         <motion.div
           className="size-2 rotate-45 bg-primary"
           initial={{ scale: 0, rotate: 45 }}
@@ -39,20 +52,8 @@ export const Playground: FC<
         />
       </div>
 
-      <div className="group relative overflow-hidden rounded-sm border border-border-base bg-bg-base transition-colors duration-300 hover:border-primary">
-        <motion.div
-          className="absolute inset-y-0 left-0 w-1 bg-primary"
-          initial={{ scaleY: 0 }}
-          style={{ transformOrigin: 'top' }}
-          transition={{
-            duration: 0.5,
-            delay: 0.15,
-            ease: [0.22, 1, 0.36, 1],
-          }}
-          viewport={{ once: true }}
-          whileInView={{ scaleY: 1 }}
-        />
-        <div className="p-4 pl-5">{children}</div>
+      <div className="group rounded-sm border border-border-base bg-bg-base p-4 transition-colors duration-300 hover:border-primary">
+        {children}
       </div>
     </motion.div>
   );
