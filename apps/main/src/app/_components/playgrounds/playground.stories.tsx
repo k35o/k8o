@@ -28,15 +28,18 @@ const Counter: FC = () => {
   );
 };
 
-export const Primary: Story = {
+export const TopLeft: Story = {
   args: {
     title: 'Counterのサンプル',
+    titlePosition: 'top-left',
     children: <Counter />,
   },
 };
 
-export const DefaultTitle: Story = {
+export const BottomRight: Story = {
   args: {
+    title: 'Counterのサンプル',
+    titlePosition: 'bottom-right',
     children: <Counter />,
   },
 };
