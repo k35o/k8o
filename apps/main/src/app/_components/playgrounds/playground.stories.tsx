@@ -16,7 +16,7 @@ const Counter: FC = () => {
 
   return (
     <div className="flex flex-col items-center justify-center gap-4">
-      <p>{count}</p>
+      <p className="text-fg-base">{count}</p>
       <Button
         onClick={() => {
           setCount(count + 1);
@@ -31,6 +31,12 @@ const Counter: FC = () => {
 export const Primary: Story = {
   args: {
     title: 'Counterのサンプル',
+    children: <Counter />,
+  },
+};
+
+export const DefaultTitle: Story = {
+  args: {
     children: <Counter />,
   },
 };
