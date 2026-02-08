@@ -58,6 +58,9 @@ dist
 .claude/settings.local.json
 .plan/
 
+# agent skills (installed via `npx skills add`)
+.agents/
+
 # turso local db
 local.db
 local.db-shm
