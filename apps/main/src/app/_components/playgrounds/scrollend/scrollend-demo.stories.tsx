@@ -2,12 +2,14 @@ import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 import { Playground } from '../playground';
 import { ScrollendDemo } from './scrollend-demo';
 
+const playgroundTitle = ScrollendDemo.name;
+
 const meta: Meta<typeof ScrollendDemo> = {
   title: 'playgrounds/scrollend/ScrollendDemo',
   component: ScrollendDemo,
   decorators: [
     (Story) => (
-      <Playground>
+      <Playground title={playgroundTitle}>
         <Story />
       </Playground>
     ),

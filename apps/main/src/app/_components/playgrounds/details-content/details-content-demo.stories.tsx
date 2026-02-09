@@ -2,12 +2,14 @@ import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 import { Playground } from '../playground';
 import { DetailsContentDemo } from './details-content-demo';
 
+const playgroundTitle = DetailsContentDemo.name;
+
 const meta: Meta<typeof DetailsContentDemo> = {
   title: 'playgrounds/details-content/DetailsContentDemo',
   component: DetailsContentDemo,
   decorators: [
     (Story) => (
-      <Playground>
+      <Playground title={playgroundTitle}>
         <Story />
       </Playground>
     ),

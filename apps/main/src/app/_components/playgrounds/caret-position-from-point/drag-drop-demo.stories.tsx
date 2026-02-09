@@ -2,12 +2,14 @@ import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 import { Playground } from '../playground';
 import { DragDropDemo } from './drag-drop-demo';
 
+const playgroundTitle = DragDropDemo.name;
+
 const meta: Meta<typeof DragDropDemo> = {
   title: 'playgrounds/caret-position-from-point/DragDropDemo',
   component: DragDropDemo,
   decorators: [
     (Story) => (
-      <Playground>
+      <Playground title={playgroundTitle}>
         <Story />
       </Playground>
     ),

@@ -12,7 +12,7 @@ export default function PlaygroundsPage() {
         <Heading type="h1">Playgrounds</Heading>
         <p className="mt-2 text-fg-mute">
           インタラクティブなWeb技術のデモ集。最新のWeb
-          API、CSS機能、React技術を実際に体験できます。
+          API、CSS、Reactを用いた機能を実際に体験できます。
         </p>
       </div>
 
