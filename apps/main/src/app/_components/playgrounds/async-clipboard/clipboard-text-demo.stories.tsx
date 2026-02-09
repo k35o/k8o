@@ -2,12 +2,14 @@ import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 import { Playground } from '../playground';
 import { ClipboardTextDemo } from './clipboard-text-demo';
 
+const playgroundTitle = ClipboardTextDemo.name;
+
 const meta: Meta<typeof ClipboardTextDemo> = {
   title: 'playgrounds/async-clipboard/ClipboardTextDemo',
   component: ClipboardTextDemo,
   decorators: [
     (Story) => (
-      <Playground>
+      <Playground title={playgroundTitle}>
         <Story />
       </Playground>
     ),

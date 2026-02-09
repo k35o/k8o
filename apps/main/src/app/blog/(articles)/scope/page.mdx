@@ -92,7 +92,7 @@ HTMLの`<style>`要素内で使用する場合、親要素が自動的にスコ�
 </div>
 ```
 
-<Playground>
+<Playground title="ドーナツスコープの例">
   <DonutScopeDemo />
 </Playground>
 
@@ -152,7 +152,7 @@ HTMLの`<style>`要素内で使用する場合、親要素が自動的にスコ�
 ```
 上記のHTMLは、`.article`内の最初の`.nested-content`内の`<img>`にはスタイルが適用されませんが、2番目の`.nested-content`内の`<img>`にはスタイルが適用されます。
 
-<Playground>
+<Playground title="スコープ境界の例">
   <ScopeLimitDemo />
 </Playground>
 
@@ -194,7 +194,7 @@ HTMLの`<style>`要素内で使用する場合、親要素が自動的にスコ�
 
 `@scope`がない場合、同じ詳細度のスタイルが競合したときは、後に定義された`.warning-box`のスタイルが優先されます。
 
-<Playground>
+<Playground title="近接性の優先">
   <ScopeProximityDemo />
 </Playground>
 

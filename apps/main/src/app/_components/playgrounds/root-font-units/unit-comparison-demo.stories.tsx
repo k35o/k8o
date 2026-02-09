@@ -2,12 +2,14 @@ import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 import { Playground } from '../playground';
 import { UnitComparisonDemo } from './unit-comparison-demo';
 
+const playgroundTitle = UnitComparisonDemo.name;
+
 const meta: Meta<typeof UnitComparisonDemo> = {
   title: 'playgrounds/root-font-units/UnitComparisonDemo',
   component: UnitComparisonDemo,
   decorators: [
     (Story) => (
-      <Playground>
+      <Playground title={playgroundTitle}>
         <Story />
       </Playground>
     ),

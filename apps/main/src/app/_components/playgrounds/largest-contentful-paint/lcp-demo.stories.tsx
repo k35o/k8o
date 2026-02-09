@@ -2,12 +2,14 @@ import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 import { Playground } from '../playground';
 import { LCPDemo } from './lcp-demo';
 
+const playgroundTitle = LCPDemo.name;
+
 const meta: Meta<typeof LCPDemo> = {
   title: 'playgrounds/largest-contentful-paint/LCPDemo',
   component: LCPDemo,
   decorators: [
     (Story) => (
-      <Playground>
+      <Playground title={playgroundTitle}>
         <Story />
       </Playground>
     ),

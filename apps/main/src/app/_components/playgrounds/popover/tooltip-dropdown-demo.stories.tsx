@@ -2,12 +2,14 @@ import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 import { Playground } from '../playground';
 import { TooltipDropdownDemo } from './tooltip-dropdown-demo';
 
+const playgroundTitle = TooltipDropdownDemo.name;
+
 const meta: Meta<typeof TooltipDropdownDemo> = {
   title: 'playgrounds/popover/TooltipDropdownDemo',
   component: TooltipDropdownDemo,
   decorators: [
     (Story) => (
-      <Playground>
+      <Playground title={playgroundTitle}>
         <Story />
       </Playground>
     ),
