@@ -95,6 +95,7 @@ export const ControlPanel: FC = () => {
     <div className="flex flex-col items-center justify-center gap-6">
       <div
         className="relative border-2 border-borderPrimar border-dashed"
+        data-radius-wrapper
         ref={containerRef}
         style={{
           width: containerSize.mobile.width,
@@ -103,7 +104,7 @@ export const ControlPanel: FC = () => {
       >
         <style>{`
           @media (min-width: 640px) {
-            [data-radius-container] {
+            [data-radius-wrapper] {
               width: ${containerSize.desktop.width}px !important;
               height: ${containerSize.desktop.height}px !important;
             }
@@ -111,7 +112,6 @@ export const ControlPanel: FC = () => {
         `}</style>
         <div
           className="absolute size-full bg-primary-fg"
-          data-radius-container
           style={{
             borderRadius,
           }}
