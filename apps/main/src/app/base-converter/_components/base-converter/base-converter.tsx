@@ -1,7 +1,12 @@
 'use client';
 
+import { Card } from '@k8o/arte-odyssey/card';
 import { FormControl } from '@k8o/arte-odyssey/form/form-control';
 import { TextField } from '@k8o/arte-odyssey/form/text-field';
+import { useClipboard } from '@k8o/arte-odyssey/hooks/clipboard';
+import { IconButton } from '@k8o/arte-odyssey/icon-button';
+import { CopyIcon } from '@k8o/arte-odyssey/icons';
+import { useToast } from '@k8o/arte-odyssey/toast';
 import { useCallback, useState } from 'react';
 
 type Base = 2 | 8 | 10 | 16;
@@ -16,6 +21,29 @@ const convertNumber = (
   return Number.parseInt(number, baseFrom).toString(baseTo);
 };
 
+const BASES = [
+  {
+    base: 2 as const,
+    label: '2進数',
+    borderColor: 'border-group-primary',
+  },
+  {
+    base: 8 as const,
+    label: '8進数',
+    borderColor: 'border-group-secondary',
+  },
+  {
+    base: 10 as const,
+    label: '10進数',
+    borderColor: 'border-group-tertiary',
+  },
+  {
+    base: 16 as const,
+    label: '16進数',
+    borderColor: 'border-group-quaternary',
+  },
+];
+
 export const BaseConverter = () => {
   const [invalid, setInvalid] = useState<{
     target: Base;
@@ -25,6 +53,8 @@ export const BaseConverter = () => {
   const [octal, setOctal] = useState('');
   const [decimal, setDecimal] = useState('');
   const [hexadecimal, setHexadecimal] = useState('');
+  const { writeClipboard } = useClipboard();
+  const { onOpen } = useToast();
 
   const handleChange = useCallback((value: string, base: Base) => {
     setInvalid(null);
@@ -91,72 +121,53 @@ export const BaseConverter = () => {
     }
   }, []);
 
+  const handleCopy = (value: string, label: string) => {
+    if (!value) return;
+    void writeClipboard(value).then(() => {
+      onOpen('success', `${label}をコピーしました`);
+    });
+  };
+
+  const values: Record<Base, string> = {
+    2: binary,
+    8: octal,
+    10: decimal,
+    16: hexadecimal,
+  };
+
   return (
-    <>
-      <FormControl
-        errorText={invalid?.message ?? undefined}
-        isInvalid={invalid?.target === 2}
-        label="2進数"
-        renderInput={({ labelId: _, ...props }) => {
-          return (
-            <TextField
-              onChange={(e) => {
-                handleChange(e.target.value, 2);
-              }}
-              value={binary}
-              {...props}
+    <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
+      {BASES.map(({ base, label, borderColor }) => (
+        <Card key={base}>
+          <div className={`border-l-4 px-4 py-3 ${borderColor}`}>
+            <FormControl
+              errorText={invalid?.message ?? undefined}
+              isInvalid={invalid?.target === base}
+              label={label}
+              renderInput={({ labelId: _, ...props }) => (
+                <div className="flex items-center gap-2">
+                  <TextField
+                    onChange={(e) => {
+                      handleChange(e.target.value, base);
+                    }}
+                    value={values[base]}
+                    {...props}
+                  />
+                  <IconButton
+                    bg="base"
+                    label={`${label}をコピー`}
+                    onClick={() => {
+                      handleCopy(values[base], label);
+                    }}
+                  >
+                    <CopyIcon />
+                  </IconButton>
+                </div>
+              )}
             />
-          );
-        }}
-      />
-      <FormControl
-        errorText={invalid?.message ?? undefined}
-        isInvalid={invalid?.target === 8}
-        label="8進数"
-        renderInput={({ labelId: _, ...props }) => {
-          return (
-            <TextField
-              onChange={(e) => {
-                handleChange(e.target.value, 8);
-              }}
-              value={octal}
-              {...props}
-            />
-          );
-        }}
-      />
-      <FormControl
-        errorText={invalid?.message ?? undefined}
-        isInvalid={invalid?.target === 10}
-        label="10進数"
-        renderInput={({ labelId: _, ...props }) => {
-          return (
-            <TextField
-              onChange={(e) => {
-                handleChange(e.target.value, 10);
-              }}
-              value={decimal}
-              {...props}
-            />
-          );
-        }}
-      />
-      <FormControl
-        errorText={invalid?.message ?? undefined}
-        isInvalid={invalid?.target === 16}
-        label="16進数"
-        renderInput={({ labelId: _, ...props }) => {
-          return (
-            <TextField
-              onChange={(e) => {
-                handleChange(e.target.value, 16);
-              }}
-              value={hexadecimal}
-              {...props}
-            />
-          );
-        }}
-      />
-    </>
+          </div>
+        </Card>
+      ))}
+    </div>
   );
 };
