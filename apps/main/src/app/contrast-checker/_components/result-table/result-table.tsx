@@ -86,15 +86,12 @@ export const ResultTable: FC<Props> = ({
   ] as const;
 
   return (
-    <div className="rounded-lg border border-border-base">
-      <div className="flex flex-col gap-4 p-4 sm:hidden">
+    <div className="overflow-hidden rounded-lg border border-border-base">
+      <div className="sm:hidden">
         {rows.map((row) => (
-          <div
-            className="flex flex-col gap-3 rounded-lg border border-border-base bg-bg-base p-4"
-            key={row.label}
-          >
+          <div className="flex flex-col gap-3 p-4" key={row.label}>
             <p
-              className={row.className}
+              className={`rounded-md px-3 py-2 ${row.className}`}
               style={{
                 color: compareColor,
                 backgroundColor: baseColor,
@@ -102,7 +99,7 @@ export const ResultTable: FC<Props> = ({
             >
               {row.label}
             </p>
-            <div className="flex flex-col gap-2">
+            <div className="flex gap-2">
               <StatusBadge isInvalid={row.aa} label="AA" />
               <StatusBadge isInvalid={row.aaa} label="AAA" />
             </div>
@@ -120,7 +117,7 @@ export const ResultTable: FC<Props> = ({
         <tbody>
           {rows.map((row) => (
             <tr
-              className="h-14 border-border-base border-b sm:h-16"
+              className="h-14 border-border-base border-b last:border-b-0 sm:h-16"
               key={row.label}
             >
               <StatusCell isInvalid={row.aa} />
