@@ -49,7 +49,7 @@ export const GlobalLayout: FC<{ children: ReactNode }> = ({ children }) => {
           <footer className="flex items-center justify-center p-4">
             <div className="max-w-5xl">
               <p className="text-fg-mute md:text-lg">
-                ©︎ 2024〜2025 k8o. All Rights Reserved.
+                ©︎ 2024〜2026 k8o. All Rights Reserved.
               </p>
             </div>
           </footer>
