@@ -11,7 +11,7 @@ turbo run build --filter=web
 turbo run test --filter=@acme/api
 ```
 
-## パッケージとその依存元
+## パッケージとその依存先（dependencies）
 
 パッケージと、それが依存するすべてのものをビルド:
 
@@ -19,9 +19,9 @@ turbo run test --filter=@acme/api
 turbo run build --filter=web...
 ```
 
-ユースケース: ターゲットの前にすべての依存元がビルドされていることを確認する。
+ユースケース: ターゲットの前にすべての依存先がビルドされていることを確認する。
 
-## パッケージの依存先
+## パッケージの依存元（dependents）
 
 あるライブラリに依存するすべてのパッケージで実行:
 
@@ -31,7 +31,7 @@ turbo run test --filter=...ui
 
 ユースケース: 共有パッケージを変更した後、コンシューマーをテストする。
 
-## 依存先のみ（ターゲットを除く）
+## 依存元のみ（ターゲットを除く）
 
 uiに依存するパッケージをテストするが、ui自体は除く:
 
@@ -53,7 +53,7 @@ turbo run lint --filter=[HEAD^1]
 turbo run lint --filter=[main...HEAD]
 ```
 
-## 変更 + 依存先（PRビルド）
+## 変更 + 依存元（PRビルド）
 
 変更されたパッケージとそれに依存するパッケージで実行:
 
@@ -105,7 +105,7 @@ turbo run lint --filter=!legacy-app --filter=!deprecated-pkg
 
 ## 複雑な組み合わせ
 
-変更されたappsとその依存先:
+変更されたappsとその依存元:
 
 ```bash
 turbo run build --filter=...[HEAD^1] --filter=./apps/*
@@ -145,7 +145,7 @@ turbo run build test lint --affected
 turbo run deploy --filter=./apps/* --filter=[main...HEAD]
 ```
 
-特定のアプリとその依存元の完全な再ビルド:
+特定のアプリとその依存先（dependencies）の完全な再ビルド:
 
 ```bash
 turbo run build --filter=production-app...

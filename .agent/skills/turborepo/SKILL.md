@@ -120,13 +120,13 @@ JavaScript/TypeScriptモノレポ向けのビルドシステム。Turborepoは�
 
 ```
 変更分だけ実行する？
-├─ 変更パッケージ＋依存先（推奨） → turbo run build --affected
+├─ 変更パッケージ＋依存元（推奨） → turbo run build --affected
 ├─ カスタムベースブランチ → --affected --affected-base=origin/develop
 ├─ 手動git比較 → --filter=...[origin/main]
 └─ すべてのフィルターオプションを確認 → references/filtering/RULE.md
 ```
 
-**`--affected` は変更パッケージのみ実行する主要な方法です。** デフォルトブランチと自動的に比較し、依存先も含めます。
+**`--affected` は変更パッケージのみ実行する主要な方法です。** デフォルトブランチと自動的に比較し、依存元も含めます。
 
 ### 「パッケージをフィルタリングしたい」
 
@@ -135,8 +135,8 @@ JavaScript/TypeScriptモノレポ向けのビルドシステム。Turborepoは�
 ├─ 変更パッケージのみ → --affected（上記参照）
 ├─ パッケージ名で指定 → --filter=web
 ├─ ディレクトリで指定 → --filter=./apps/*
-├─ パッケージ＋依存関係 → --filter=web...
-├─ パッケージ＋依存先 → --filter=...web
+├─ パッケージ＋依存先（dependencies） → --filter=web...
+├─ パッケージ＋依存元（dependents） → --filter=...web
 └─ 複雑な組み合わせ → references/filtering/patterns.md
 ```
 
