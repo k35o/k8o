@@ -1,25 +1,25 @@
-# Dependency Management
+# 依存関係の管理
 
-Best practices for managing dependencies in a Turborepo monorepo.
+Turborepoモノレポにおける依存関係管理のベストプラクティス。
 
-## Core Principle: Install Where Used
+## 基本原則: 使用する場所にインストール
 
-Dependencies belong in the package that uses them, not the root.
+依存関係はルートではなく、使用するパッケージに配置する。
 
 ```bash
-# Good: Install in specific package
+# 良い例: 特定のパッケージにインストール
 pnpm add react --filter=@repo/ui
 pnpm add next --filter=web
 
-# Avoid: Installing in root
-pnpm add react -w  # Only for repo-level tools!
+# 避けるべき: ルートにインストール
+pnpm add react -w  # リポジトリレベルのツールのみ！
 ```
 
-## Benefits of Local Installation
+## ローカルインストールのメリット
 
-### 1. Clarity
+### 1. 明確さ
 
-Each package's `package.json` lists exactly what it needs:
+各パッケージの `package.json` に必要なものが正確にリストされる:
 
 ```json
 // packages/ui/package.json
@@ -31,9 +31,9 @@ Each package's `package.json` lists exactly what it needs:
 }
 ```
 
-### 2. Flexibility
+### 2. 柔軟性
 
-Different packages can use different versions when needed:
+必要に応じて異なるパッケージで異なるバージョンを使用できる:
 
 ```json
 // packages/legacy-ui/package.json
@@ -43,20 +43,20 @@ Different packages can use different versions when needed:
 { "dependencies": { "react": "^18.0.0" } }
 ```
 
-### 3. Better Caching
+### 3. キャッシュの効率化
 
-Installing in root changes workspace lockfile, invalidating all caches.
+ルートにインストールするとワークスペースのロックファイルが変更され、すべてのキャッシュが無効化される。
 
-### 4. Pruning Support
+### 4. プルーニングのサポート
 
-`turbo prune` can remove unused dependencies for Docker images.
+`turbo prune` でDockerイメージ向けに未使用の依存関係を除去できる。
 
-## What Belongs in Root
+## ルートに配置すべきもの
 
-Only repository-level tools:
+リポジトリレベルのツールのみ:
 
 ```json
-// Root package.json
+// ルートのpackage.json
 {
   "devDependencies": {
     "turbo": "latest",
@@ -66,15 +66,15 @@ Only repository-level tools:
 }
 ```
 
-**NOT** application dependencies:
+アプリケーションの依存関係は**含めない**:
 
 - react, next, express
 - lodash, axios, zod
-- Testing libraries (unless truly repo-wide)
+- テストライブラリ（本当にリポジトリ全体で共通でない限り）
 
-## Installing Dependencies
+## 依存関係のインストール
 
-### Single Package
+### 単一パッケージ
 
 ```bash
 # pnpm
@@ -90,7 +90,7 @@ yarn workspace @repo/utils add lodash
 cd packages/utils && bun add lodash
 ```
 
-### Multiple Packages
+### 複数パッケージ
 
 ```bash
 # pnpm
@@ -103,13 +103,13 @@ npm install jest --save-dev --workspace=web --workspace=@repo/ui
 yarn workspaces foreach -R --from '{web,@repo/ui}' add jest --dev
 ```
 
-### Internal Packages
+### 内部パッケージ
 
 ```bash
 # pnpm
 pnpm add @repo/ui --filter=web
 
-# This updates package.json:
+# package.jsonが更新される:
 {
   "dependencies": {
     "@repo/ui": "workspace:*"
@@ -117,34 +117,34 @@ pnpm add @repo/ui --filter=web
 }
 ```
 
-## Keeping Versions in Sync
+## バージョンの同期
 
-### Option 1: Tooling
+### 方法1: ツールの活用
 
 ```bash
-# syncpack - Check and fix version mismatches
+# syncpack - バージョンの不一致を検出・修正
 npx syncpack list-mismatches
 npx syncpack fix-mismatches
 
-# manypkg - Similar functionality
+# manypkg - 同様の機能
 npx @manypkg/cli check
 npx @manypkg/cli fix
 
-# sherif - Rust-based, very fast
+# sherif - Rustベース、非常に高速
 npx sherif
 ```
 
-### Option 2: Package Manager Commands
+### 方法2: パッケージマネージャーのコマンド
 
 ```bash
-# pnpm - Update everywhere
+# pnpm - すべてのパッケージで更新
 pnpm up --recursive typescript@latest
 
-# npm - Update in all workspaces
+# npm - 全ワークスペースで更新
 npm install typescript@latest --workspaces
 ```
 
-### Option 3: pnpm Catalogs (pnpm 9.5+)
+### 方法3: pnpm Catalogs（pnpm 9.5以降）
 
 ```yaml
 # pnpm-workspace.yaml
@@ -158,17 +158,17 @@ catalog:
 ```
 
 ```json
-// Any package.json
+// 任意のpackage.json
 {
   "dependencies": {
-    "react": "catalog:"  // Uses version from catalog
+    "react": "catalog:"  // カタログのバージョンを使用
   }
 }
 ```
 
-## Internal vs External Dependencies
+## 内部依存関係と外部依存関係
 
-### Internal (Workspace)
+### 内部（ワークスペース）
 
 ```json
 // pnpm/bun
@@ -178,19 +178,19 @@ catalog:
 { "@repo/ui": "*" }
 ```
 
-Turborepo understands these relationships and orders builds accordingly.
+Turborepoはこれらの関係性を理解し、適切なビルド順序を決定する。
 
-### External (npm Registry)
+### 外部（npmレジストリ）
 
 ```json
 { "lodash": "^4.17.21" }
 ```
 
-Standard semver versioning from npm.
+npmの標準的なセマンティックバージョニング。
 
-## Peer Dependencies
+## ピア依存関係
 
-For library packages that expect the consumer to provide dependencies:
+コンシューマーに依存関係の提供を期待するライブラリパッケージの場合:
 
 ```json
 // packages/ui/package.json
@@ -200,31 +200,31 @@ For library packages that expect the consumer to provide dependencies:
     "react-dom": "^18.0.0"
   },
   "devDependencies": {
-    "react": "^18.0.0",      // For development/testing
+    "react": "^18.0.0",      // 開発・テスト用
     "react-dom": "^18.0.0"
   }
 }
 ```
 
-## Common Issues
+## よくある問題
 
 ### "Module not found"
 
-1. Check the dependency is installed in the right package
-2. Run `pnpm install` / `npm install` to update lockfile
-3. Check exports are defined in the package
+1. 正しいパッケージに依存関係がインストールされているか確認する
+2. `pnpm install` / `npm install` を実行してロックファイルを更新する
+3. パッケージのexportsが定義されているか確認する
 
-### Version Conflicts
+### バージョンの競合
 
-Packages can use different versions - this is a feature, not a bug. But if you need consistency:
+パッケージごとに異なるバージョンを使用できる。これはバグではなく機能である。ただし、一貫性が必要な場合は:
 
-1. Use tooling (syncpack, manypkg)
-2. Use pnpm catalogs
-3. Create a lint rule
+1. ツールの活用（syncpack, manypkg）
+2. pnpm catalogsの使用
+3. lintルールの作成
 
-### Hoisting Issues
+### ホイスティングの問題
 
-Some tools expect dependencies in specific locations. Use package manager config:
+一部のツールは特定の場所に依存関係があることを期待する。パッケージマネージャーの設定で対応:
 
 ```yaml
 # .npmrc (pnpm)
@@ -232,15 +232,15 @@ public-hoist-pattern[]=*eslint*
 public-hoist-pattern[]=*prettier*
 ```
 
-## Lockfile
+## ロックファイル
 
-**Required** for:
+以下のために**必須**:
 
-- Reproducible builds
-- Turborepo dependency analysis
-- Cache correctness
+- 再現可能なビルド
+- Turborepoの依存関係分析
+- キャッシュの正確性
 
 ```bash
-# Commit your lockfile!
-git add pnpm-lock.yaml  # or package-lock.json, yarn.lock
+# ロックファイルをコミットすること！
+git add pnpm-lock.yaml  # またはpackage-lock.json, yarn.lock
 ```

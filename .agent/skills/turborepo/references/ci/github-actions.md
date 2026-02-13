@@ -1,8 +1,8 @@
 # GitHub Actions
 
-Complete setup guide for Turborepo with GitHub Actions.
+TurborepoとGitHub Actionsの完全なセットアップガイド。
 
-## Basic Workflow Structure
+## 基本的なワークフロー構成
 
 ```yaml
 name: CI
@@ -25,14 +25,14 @@ jobs:
         with:
           node-version: 20
 
-      - name: Install dependencies
+      - name: 依存関係のインストール
         run: npm ci
 
-      - name: Build and Test
+      - name: ビルドとテスト
         run: turbo run build test lint
 ```
 
-## Package Manager Setup
+## パッケージマネージャーのセットアップ
 
 ### pnpm
 
@@ -70,27 +70,27 @@ jobs:
 - run: bun install --frozen-lockfile
 ```
 
-## Remote Cache Setup
+## リモートキャッシュのセットアップ
 
-### 1. Create Vercel Access Token
+### 1. Vercelアクセストークンの作成
 
-1. Go to [Vercel Dashboard](https://vercel.com/account/tokens)
-2. Create a new token with appropriate scope
-3. Copy the token value
+1. [Vercelダッシュボード](https://vercel.com/account/tokens)にアクセス
+2. 適切なスコープで新しいトークンを作成
+3. トークンの値をコピー
 
-### 2. Add Secrets and Variables
+### 2. シークレットと変数の追加
 
-In your GitHub repository settings:
+GitHubリポジトリの設定で:
 
-**Secrets** (Settings > Secrets and variables > Actions > Secrets):
+**シークレット** (Settings > Secrets and variables > Actions > Secrets):
 
-- `TURBO_TOKEN`: Your Vercel access token
+- `TURBO_TOKEN`: Vercelアクセストークン
 
-**Variables** (Settings > Secrets and variables > Actions > Variables):
+**変数** (Settings > Secrets and variables > Actions > Variables):
 
-- `TURBO_TEAM`: Your Vercel team slug
+- `TURBO_TEAM`: Vercelチームのスラッグ
 
-### 3. Add to Workflow
+### 3. ワークフローへの追加
 
 ```yaml
 jobs:
@@ -101,9 +101,9 @@ jobs:
       TURBO_TEAM: ${{ vars.TURBO_TEAM }}
 ```
 
-## Alternative: actions/cache
+## 代替手段: actions/cache
 
-If you can't use remote cache, cache Turborepo's local cache directory:
+リモートキャッシュが使用できない場合、Turborepoのローカルキャッシュディレクトリをキャッシュする:
 
 ```yaml
 - uses: actions/cache@v4
@@ -114,9 +114,9 @@ If you can't use remote cache, cache Turborepo's local cache directory:
       turbo-${{ runner.os }}-
 ```
 
-Note: This is less effective than remote cache since it's per-branch.
+注意: ブランチごとのキャッシュとなるため、リモートキャッシュほど効果的ではない。
 
-## Complete Example
+## 完全な例
 
 ```yaml
 name: CI
@@ -148,15 +148,15 @@ jobs:
           node-version: 20
           cache: 'pnpm'
 
-      - name: Install dependencies
+      - name: 依存関係のインストール
         run: pnpm install --frozen-lockfile
 
-      - name: Build
+      - name: ビルド
         run: turbo run build --affected
 
-      - name: Test
+      - name: テスト
         run: turbo run test --affected
 
-      - name: Lint
+      - name: リント
         run: turbo run lint --affected
 ```

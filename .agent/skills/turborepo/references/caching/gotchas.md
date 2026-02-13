@@ -1,57 +1,57 @@
-# Debugging Cache Issues
+# キャッシュ問題のデバッグ
 
-## Diagnostic Tools
+## 診断ツール
 
 ### `--summarize`
 
-Generates a JSON file with all hash inputs. Compare two runs to find differences.
+すべてのハッシュ入力を含むJSONファイルを生成します。2回の実行結果を比較して差分を見つけます。
 
 ```bash
 turbo build --summarize
-# Creates .turbo/runs/<run-id>.json
+# .turbo/runs/<run-id>.json を生成
 ```
 
-The summary includes:
+サマリーには以下が含まれます:
 
-- Global hash and its inputs
-- Per-task hashes and their inputs
-- Environment variables that affected the hash
+- グローバルハッシュとその入力
+- タスクごとのハッシュとその入力
+- ハッシュに影響した環境変数
 
-**Comparing runs:**
+**実行結果の比較:**
 
 ```bash
-# Run twice, compare the summaries
+# 2回実行して、サマリーを比較する
 diff .turbo/runs/<first-run>.json .turbo/runs/<second-run>.json
 ```
 
 ### `--dry` / `--dry=json`
 
-See what would run without executing anything:
+実際に実行せずに何が実行されるかを確認します:
 
 ```bash
 turbo build --dry
-turbo build --dry=json  # machine-readable output
+turbo build --dry=json  # 機械可読な出力
 ```
 
-Shows cache status for each task without running them.
+タスクを実行せずに各タスクのキャッシュ状態を表示します。
 
 ### `--force`
 
-Skip reading cache, re-execute all tasks:
+キャッシュの読み取りをスキップし、すべてのタスクを再実行します:
 
 ```bash
 turbo build --force
 ```
 
-Useful to verify tasks actually work (not just cached results).
+タスクが実際に動作するか（キャッシュ結果だけでなく）確認するのに便利です。
 
-## Unexpected Cache Misses
+## 予期しないキャッシュミス
 
-**Symptom:** Task runs when you expected a cache hit.
+**症状:** キャッシュヒットを期待していたのにタスクが実行される。
 
-### Environment Variable Changed
+### 環境変数が変更された
 
-Check if an env var in the `env` key changed:
+`env` キーの環境変数が変更されていないか確認します:
 
 ```json
 {
@@ -63,11 +63,11 @@ Check if an env var in the `env` key changed:
 }
 ```
 
-Different `API_URL` between runs = cache miss.
+実行間で `API_URL` が異なる = キャッシュミス。
 
-### .env File Changed
+### .envファイルが変更された
 
-`.env` files aren't tracked by default. Add to `inputs`:
+`.env` ファイルはデフォルトでは追跡されません。`inputs` に追加してください:
 
 ```json
 {
@@ -79,7 +79,7 @@ Different `API_URL` between runs = cache miss.
 }
 ```
 
-Or use `globalDependencies` for repo-wide env files:
+または、リポジトリ全体のenvファイルには `globalDependencies` を使用します:
 
 ```json
 {
@@ -87,32 +87,32 @@ Or use `globalDependencies` for repo-wide env files:
 }
 ```
 
-### Lockfile Changed
+### ロックファイルが変更された
 
-Installing/updating packages changes the global hash.
+パッケージのインストール/更新はグローバルハッシュを変更します。
 
-### Source Files Changed
+### ソースファイルが変更された
 
-Any file in the package (or in `inputs`) triggers a miss.
+パッケージ内（または `inputs` 内）のいずれかのファイルが変更されるとミスが発生します。
 
-### turbo.json Changed
+### turbo.jsonが変更された
 
-Config changes invalidate the global hash.
+設定の変更はグローバルハッシュを無効化します。
 
-## Incorrect Cache Hits
+## 誤ったキャッシュヒット
 
-**Symptom:** Cached output is stale/wrong.
+**症状:** キャッシュされた出力が古い/正しくない。
 
-### Missing Environment Variable
+### 環境変数の記載漏れ
 
-Task uses an env var not listed in `env`:
+タスクが `env` に記載されていない環境変数を使用している:
 
 ```javascript
 // build.js
-const apiUrl = process.env.API_URL;  // not tracked!
+const apiUrl = process.env.API_URL;  // 追跡されていない！
 ```
 
-Fix: add to task config:
+修正: タスク設定に追加する:
 
 ```json
 {
@@ -124,9 +124,9 @@ Fix: add to task config:
 }
 ```
 
-### Missing File in Inputs
+### inputsにファイルが記載されていない
 
-Task reads a file outside default inputs:
+タスクがデフォルトのinputs外のファイルを読み取っている:
 
 ```json
 {
@@ -134,36 +134,36 @@ Task reads a file outside default inputs:
     "build": {
       "inputs": [
         "$TURBO_DEFAULT$",
-        "../../shared-config.json"  // file outside package
+        "../../shared-config.json"  // パッケージ外のファイル
       ]
     }
   }
 }
 ```
 
-## Useful Flags
+## 便利なフラグ
 
 ```bash
-# Only show output for cache misses
+# キャッシュミスの出力のみ表示
 turbo build --output-logs=new-only
 
-# Show output for everything (debugging)
+# すべての出力を表示（デバッグ用）
 turbo build --output-logs=full
 
-# See why tasks are running
+# タスクが実行される理由を確認
 turbo build --verbosity=2
 ```
 
-## Quick Checklist
+## クイックチェックリスト
 
-Cache miss when expected hit:
+ヒットを期待していたのにキャッシュミスが発生した場合:
 
-1. Run with `--summarize`, compare with previous run
-2. Check env vars with `--dry=json`
-3. Look for lockfile/config changes in git
+1. `--summarize` で実行し、前回の実行結果と比較する
+2. `--dry=json` で環境変数を確認する
+3. gitでロックファイル/設定の変更を確認する
 
-Cache hit when expected miss:
+ミスを期待していたのにキャッシュヒットが発生した場合:
 
-1. Verify env var is in `env` array
-2. Verify file is in `inputs` array
-3. Check if file is outside package directory
+1. 環境変数が `env` 配列に含まれているか確認する
+2. ファイルが `inputs` 配列に含まれているか確認する
+3. ファイルがパッケージディレクトリの外にないか確認する

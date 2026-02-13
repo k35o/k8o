@@ -1,42 +1,42 @@
-# Remote Caching
+# リモートキャッシュ
 
-Share cache artifacts across your team and CI pipelines.
+キャッシュアーティファクトをチーム全体やCIパイプラインで共有します。
 
-## Benefits
+## メリット
 
-- Team members get cache hits from each other's work
-- CI gets cache hits from local development (and vice versa)
-- Dramatically faster CI runs after first build
-- No more "works on my machine" rebuilds
+- チームメンバーが互いの作業結果からキャッシュヒットを得られる
+- CIがローカル開発のキャッシュヒットを利用できる（逆も同様）
+- 初回ビルド以降のCIの実行時間が大幅に短縮される
+- 「自分の環境では動く」による再ビルドが不要になる
 
-## Vercel Remote Cache
+## Vercelリモートキャッシュ
 
-Free, zero-config when deploying on Vercel. For local dev and other CI:
+Vercelにデプロイしている場合、無料でゼロコンフィグ。ローカル開発やその他のCIでの設定:
 
-### Local Development Setup
+### ローカル開発のセットアップ
 
 ```bash
-# Authenticate with Vercel
+# Vercelで認証
 npx turbo login
 
-# Link repo to your Vercel team
+# リポジトリをVercelチームにリンク
 npx turbo link
 ```
 
-This creates `.turbo/config.json` with your team info (gitignored by default).
+これにより、チーム情報を含む `.turbo/config.json` が作成されます（デフォルトでgitignore済み）。
 
-### CI Setup
+### CIのセットアップ
 
-Set these environment variables:
+以下の環境変数を設定します:
 
 ```bash
 TURBO_TOKEN=<your-token>
 TURBO_TEAM=<your-team-slug>
 ```
 
-Get your token from Vercel dashboard → Settings → Tokens.
+トークンはVercelダッシュボード → Settings → Tokensから取得します。
 
-**GitHub Actions example:**
+**GitHub Actionsの例:**
 
 ```yaml
 - name: Build
@@ -46,7 +46,7 @@ Get your token from Vercel dashboard → Settings → Tokens.
     TURBO_TEAM: ${{ vars.TURBO_TEAM }}
 ```
 
-## Configuration in turbo.json
+## turbo.jsonでの設定
 
 ```json
 {
@@ -57,21 +57,21 @@ Get your token from Vercel dashboard → Settings → Tokens.
 }
 ```
 
-Options:
+オプション:
 
-- `enabled`: toggle remote cache (default: true when authenticated)
-- `signature`: require artifact signing (default: false)
+- `enabled`: リモートキャッシュの有効/無効を切り替え（デフォルト: 認証済みの場合true）
+- `signature`: アーティファクトの署名を要求（デフォルト: false）
 
-## Artifact Signing
+## アーティファクト署名
 
-Verify cache artifacts haven't been tampered with:
+キャッシュアーティファクトが改ざんされていないことを検証します:
 
 ```bash
-# Set a secret key (use same key across all environments)
+# シークレットキーを設定（すべての環境で同じキーを使用）
 export TURBO_REMOTE_CACHE_SIGNATURE_KEY="your-secret-key"
 ```
 
-Enable in config:
+設定で有効化:
 
 ```json
 {
@@ -81,17 +81,17 @@ Enable in config:
 }
 ```
 
-Signed artifacts can only be restored if the signature matches.
+署名されたアーティファクトは、署名が一致する場合にのみ復元できます。
 
-## Self-Hosted Options
+## セルフホストオプション
 
-Community implementations for running your own cache server:
+独自のキャッシュサーバーを運用するためのコミュニティ実装:
 
-- **turbo-remote-cache** (Node.js) - supports S3, GCS, Azure
-- **turborepo-remote-cache** (Go) - lightweight, S3-compatible
-- **ducktape** (Rust) - high-performance option
+- **turbo-remote-cache** (Node.js) - S3、GCS、Azureをサポート
+- **turborepo-remote-cache** (Go) - 軽量、S3互換
+- **ducktape** (Rust) - 高パフォーマンスオプション
 
-Configure with environment variables:
+環境変数で設定:
 
 ```bash
 TURBO_API=https://your-cache-server.com
@@ -99,29 +99,29 @@ TURBO_TOKEN=your-auth-token
 TURBO_TEAM=your-team
 ```
 
-## Cache Behavior Control
+## キャッシュ動作の制御
 
 ```bash
-# Disable remote cache for a run
-turbo build --remote-cache-read-only  # read but don't write
-turbo build --no-cache                # skip cache entirely
+# この実行でリモートキャッシュを無効化
+turbo build --remote-cache-read-only  # 読み取りのみ、書き込みなし
+turbo build --no-cache                # キャッシュを完全にスキップ
 
-# Environment variable alternative
-TURBO_REMOTE_ONLY=true  # only use remote, skip local
+# 環境変数での代替
+TURBO_REMOTE_ONLY=true  # リモートのみ使用、ローカルをスキップ
 ```
 
-## Debugging Remote Cache
+## リモートキャッシュのデバッグ
 
 ```bash
-# Verbose output shows cache operations
+# 詳細出力でキャッシュ操作を確認
 turbo build --verbosity=2
 
-# Check if remote cache is configured
+# リモートキャッシュが設定されているか確認
 turbo config
 ```
 
-Look for:
+確認すべきポイント:
 
-- "Remote caching enabled" in output
-- Upload/download messages during runs
-- "cache hit, replaying output" with remote cache indicator
+- 出力に「Remote caching enabled」が表示されること
+- 実行中にアップロード/ダウンロードのメッセージが表示されること
+- リモートキャッシュインジケーター付きの「cache hit, replaying output」が表示されること

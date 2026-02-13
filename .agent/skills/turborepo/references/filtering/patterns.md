@@ -1,151 +1,151 @@
-# Common Filter Patterns
+# よく使うフィルターパターン
 
-Practical examples for typical monorepo scenarios.
+典型的なモノレポのシナリオに対する実用的な例。
 
-## Single Package
+## 単一パッケージ
 
-Run task in one package:
+1つのパッケージでタスクを実行:
 
 ```bash
 turbo run build --filter=web
 turbo run test --filter=@acme/api
 ```
 
-## Package with Dependencies
+## パッケージとその依存先（dependencies）
 
-Build a package and everything it depends on:
+パッケージと、それが依存するすべてのものをビルド:
 
 ```bash
 turbo run build --filter=web...
 ```
 
-Useful for: ensuring all dependencies are built before the target.
+ユースケース: ターゲットの前にすべての依存先がビルドされていることを確認する。
 
-## Package Dependents
+## パッケージの依存元（dependents）
 
-Run in all packages that depend on a library:
+あるライブラリに依存するすべてのパッケージで実行:
 
 ```bash
 turbo run test --filter=...ui
 ```
 
-Useful for: testing consumers after changing a shared package.
+ユースケース: 共有パッケージを変更した後、コンシューマーをテストする。
 
-## Dependents Only (Exclude Target)
+## 依存元のみ（ターゲットを除く）
 
-Test packages that depend on ui, but not ui itself:
+uiに依存するパッケージをテストするが、ui自体は除く:
 
 ```bash
 turbo run test --filter=...^ui
 ```
 
-## Changed Packages
+## 変更されたパッケージ
 
-Run only in packages with file changes since last commit:
+最後のコミット以降にファイル変更があるパッケージのみで実行:
 
 ```bash
 turbo run lint --filter=[HEAD^1]
 ```
 
-Since a specific branch point:
+特定のブランチポイント以降:
 
 ```bash
 turbo run lint --filter=[main...HEAD]
 ```
 
-## Changed + Dependents (PR Builds)
+## 変更 + 依存元（PRビルド）
 
-Run in changed packages AND packages that depend on them:
+変更されたパッケージとそれに依存するパッケージで実行:
 
 ```bash
 turbo run build test --filter=...[HEAD^1]
 ```
 
-Or use the shortcut:
+またはショートカットを使用:
 
 ```bash
 turbo run build test --affected
 ```
 
-## Directory-Based
+## ディレクトリベース
 
-Run in all apps:
+すべてのappsで実行:
 
 ```bash
 turbo run build --filter=./apps/*
 ```
 
-Run in specific directories:
+特定のディレクトリで実行:
 
 ```bash
 turbo run build --filter=./apps/web --filter=./apps/api
 ```
 
-## Scope-Based
+## スコープベース
 
-Run in all packages under a scope:
+あるスコープ配下のすべてのパッケージで実行:
 
 ```bash
 turbo run build --filter=@acme/*
 ```
 
-## Exclusions
+## 除外
 
-Run in all apps except admin:
+admin以外のすべてのappsで実行:
 
 ```bash
 turbo run build --filter=./apps/* --filter=!admin
 ```
 
-Run everywhere except specific packages:
+特定のパッケージを除いてすべてで実行:
 
 ```bash
 turbo run lint --filter=!legacy-app --filter=!deprecated-pkg
 ```
 
-## Complex Combinations
+## 複雑な組み合わせ
 
-Apps that changed, plus their dependents:
+変更されたappsとその依存元:
 
 ```bash
 turbo run build --filter=...[HEAD^1] --filter=./apps/*
 ```
 
-All packages except docs, but only if changed:
+docs以外のすべてのパッケージ（変更されたもののみ）:
 
 ```bash
 turbo run build --filter=[main...HEAD] --filter=!docs
 ```
 
-## Debugging Filters
+## フィルターのデバッグ
 
-Use `--dry` to see what would run without executing:
+`--dry`を使用して、実行せずに何が実行されるかを確認:
 
 ```bash
 turbo run build --filter=web... --dry
 ```
 
-Use `--dry=json` for machine-readable output:
+`--dry=json`で機械可読な出力を取得:
 
 ```bash
 turbo run build --filter=...[HEAD^1] --dry=json
 ```
 
-## CI/CD Patterns
+## CI/CDパターン
 
-PR validation (most common):
+PRバリデーション（最も一般的）:
 
 ```bash
 turbo run build test lint --affected
 ```
 
-Deploy only changed apps:
+変更されたappsのみデプロイ:
 
 ```bash
 turbo run deploy --filter=./apps/* --filter=[main...HEAD]
 ```
 
-Full rebuild of specific app and deps:
+特定のアプリとその依存先（dependencies）の完全な再ビルド:
 
 ```bash
 turbo run build --filter=production-app...

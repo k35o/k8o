@@ -1,25 +1,25 @@
-# How Turborepo Caching Works
+# Turborepoキャッシュの仕組み
 
-Turborepo's core principle: **never do the same work twice**.
+Turborepoの基本原則: **同じ作業を二度としない**。
 
-## The Cache Equation
+## キャッシュの方程式
 
 ```
 fingerprint(inputs) → stored outputs
 ```
 
-If inputs haven't changed, restore outputs from cache instead of re-running the task.
+入力が変更されていなければ、タスクを再実行する代わりにキャッシュから出力を復元します。
 
-## What Determines the Cache Key
+## キャッシュキーの決定要因
 
-### Global Hash Inputs
+### グローバルハッシュ入力
 
-These affect ALL tasks in the repo:
+リポジトリ内の**すべてのタスク**に影響するもの:
 
 - `package-lock.json` / `yarn.lock` / `pnpm-lock.yaml`
-- Files listed in `globalDependencies`
-- Environment variables in `globalEnv`
-- `turbo.json` configuration
+- `globalDependencies` に記載されたファイル
+- `globalEnv` の環境変数
+- `turbo.json` の設定
 
 ```json
 {
@@ -28,15 +28,15 @@ These affect ALL tasks in the repo:
 }
 ```
 
-### Task Hash Inputs
+### タスクハッシュ入力
 
-These affect specific tasks:
+特定のタスクに影響するもの:
 
-- All files in the package (unless filtered by `inputs`)
-- `package.json` contents
-- Environment variables in task's `env` key
-- Task configuration (command, outputs, dependencies)
-- Hashes of dependent tasks (`dependsOn`)
+- パッケージ内のすべてのファイル（`inputs` でフィルタリングされている場合を除く）
+- `package.json` の内容
+- タスクの `env` キーの環境変数
+- タスク設定（コマンド、outputs、依存関係）
+- 依存タスクのハッシュ（`dependsOn`）
 
 ```json
 {
@@ -50,10 +50,10 @@ These affect specific tasks:
 }
 ```
 
-## What Gets Cached
+## キャッシュされるもの
 
-1. **File outputs** - files/directories specified in `outputs`
-2. **Task logs** - stdout/stderr for replay on cache hit
+1. **ファイル出力** - `outputs` で指定されたファイル/ディレクトリ
+2. **タスクログ** - キャッシュヒット時に再生するためのstdout/stderr
 
 ```json
 {
@@ -65,43 +65,43 @@ These affect specific tasks:
 }
 ```
 
-## Local Cache Location
+## ローカルキャッシュの場所
 
 ```
 .turbo/cache/
-├── <hash1>.tar.zst    # compressed outputs
+├── <hash1>.tar.zst    # 圧縮された出力
 ├── <hash2>.tar.zst
 └── ...
 ```
 
-Add `.turbo` to `.gitignore`.
+`.turbo` を `.gitignore` に追加してください。
 
-## Cache Restoration
+## キャッシュの復元
 
-On cache hit, Turborepo:
+キャッシュヒット時、Turborepoは以下を行います:
 
-1. Extracts archived outputs to their original locations
-2. Replays the logged stdout/stderr
-3. Reports the task as cached (shows `FULL TURBO` in output)
+1. アーカイブされた出力を元の場所に展開
+2. 記録されたstdout/stderrを再生
+3. タスクをキャッシュ済みとして報告（出力に `FULL TURBO` と表示）
 
-## Example Flow
+## フローの例
 
 ```bash
-# First run - executes build, caches result
+# 初回実行 - ビルドを実行し、結果をキャッシュ
 turbo build
 # → packages/ui: cache miss, executing...
 # → packages/web: cache miss, executing...
 
-# Second run - same inputs, restores from cache
+# 2回目の実行 - 同じ入力なので、キャッシュから復元
 turbo build
 # → packages/ui: cache hit, replaying output
 # → packages/web: cache hit, replaying output
 # → FULL TURBO
 ```
 
-## Key Points
+## 重要なポイント
 
-- Cache is content-addressed (based on input hash, not timestamps)
-- Empty `outputs` array means task runs but nothing is cached
-- Tasks without `outputs` key cache nothing (use `"outputs": []` to be explicit)
-- Cache is invalidated when ANY input changes
+- キャッシュはコンテンツアドレス方式（タイムスタンプではなく入力ハッシュに基づく）
+- 空の `outputs` 配列はタスクが実行されるがキャッシュされないことを意味する
+- `outputs` キーがないタスクは何もキャッシュしない（明示的に `"outputs": []` を使用すること）
+- **いずれかの**入力が変更されるとキャッシュは無効化される

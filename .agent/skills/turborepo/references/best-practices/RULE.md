@@ -1,41 +1,41 @@
-# Monorepo Best Practices
+# モノレポのベストプラクティス
 
-Essential patterns for structuring and maintaining a healthy Turborepo monorepo.
+健全なTurborepoモノレポを構築・維持するための重要なパターン。
 
-## Repository Structure
+## リポジトリ構成
 
-### Standard Layout
+### 標準レイアウト
 
 ```
 my-monorepo/
-├── apps/                    # Application packages (deployable)
+├── apps/                    # アプリケーションパッケージ（デプロイ対象）
 │   ├── web/
 │   ├── docs/
 │   └── api/
-├── packages/                # Library packages (shared code)
+├── packages/                # ライブラリパッケージ（共有コード）
 │   ├── ui/
 │   ├── utils/
-│   └── config-*/           # Shared configs (eslint, typescript, etc.)
-├── package.json            # Root package.json (minimal deps)
-├── turbo.json              # Turborepo configuration
-├── pnpm-workspace.yaml     # (pnpm) or workspaces in package.json
-└── pnpm-lock.yaml          # Lockfile (required)
+│   └── config-*/           # 共有設定（eslint, typescript など）
+├── package.json            # ルートpackage.json（最小限の依存関係）
+├── turbo.json              # Turborepo設定
+├── pnpm-workspace.yaml     # （pnpm）またはpackage.json内のworkspaces
+└── pnpm-lock.yaml          # ロックファイル（必須）
 ```
 
-### Key Principles
+### 基本原則
 
-1. **`apps/` for deployables**: Next.js sites, APIs, CLIs - things that get deployed
-2. **`packages/` for libraries**: Shared code consumed by apps or other packages
-3. **One purpose per package**: Each package should do one thing well
-4. **No nested packages**: Don't put packages inside packages
+1. **`apps/` はデプロイ対象**: Next.jsサイト、API、CLI など、デプロイされるもの
+2. **`packages/` はライブラリ**: アプリや他のパッケージから利用される共有コード
+3. **1パッケージ1目的**: 各パッケージは1つのことをうまくやるべき
+4. **パッケージのネストは禁止**: パッケージの中にパッケージを入れない
 
-## Package Types
+## パッケージの種類
 
-### Application Packages (`apps/`)
+### アプリケーションパッケージ（`apps/`）
 
-- **Deployable**: These are the "endpoints" of your package graph
-- **Not installed by other packages**: Apps shouldn't be dependencies of other packages
-- **No shared code**: If code needs sharing, extract to `packages/`
+- **デプロイ対象**: パッケージグラフの「エンドポイント」
+- **他のパッケージからインストールされない**: アプリは他のパッケージの依存関係にすべきではない
+- **共有コードは含めない**: コードの共有が必要な場合は `packages/` に抽出する
 
 ```json
 // apps/web/package.json
@@ -49,11 +49,11 @@ my-monorepo/
 }
 ```
 
-### Library Packages (`packages/`)
+### ライブラリパッケージ（`packages/`）
 
-- **Shared code**: Utilities, components, configs
-- **Namespaced names**: Use `@repo/` or `@yourorg/` prefix
-- **Clear exports**: Define what the package exposes
+- **共有コード**: ユーティリティ、コンポーネント、設定
+- **名前空間付きの名前**: `@repo/` や `@yourorg/` プレフィックスを使用
+- **明確なエクスポート**: パッケージが公開するものを定義する
 
 ```json
 // packages/ui/package.json
@@ -66,11 +66,11 @@ my-monorepo/
 }
 ```
 
-## Package Compilation Strategies
+## パッケージのコンパイル戦略
 
-### Just-in-Time (Simplest)
+### ジャストインタイム（最もシンプル）
 
-Export TypeScript directly; let the app's bundler compile it.
+TypeScriptを直接エクスポートし、アプリのバンドラーにコンパイルさせる。
 
 ```json
 {
@@ -81,12 +81,12 @@ Export TypeScript directly; let the app's bundler compile it.
 }
 ```
 
-**Pros**: Zero build config, instant changes
-**Cons**: Can't cache builds, requires app bundler support
+**メリット**: ビルド設定不要、変更が即座に反映
+**デメリット**: ビルドキャッシュ不可、アプリのバンドラーサポートが必要
 
-### Compiled (Recommended for Libraries)
+### コンパイル済み（ライブラリ推奨）
 
-Package compiles itself with `tsc` or bundler.
+パッケージ自身が `tsc` やバンドラーでコンパイルする。
 
 ```json
 {
@@ -103,34 +103,34 @@ Package compiles itself with `tsc` or bundler.
 }
 ```
 
-**Pros**: Cacheable by Turborepo, works everywhere
-**Cons**: More configuration
+**メリット**: Turborepoでキャッシュ可能、どこでも動作
+**デメリット**: 設定が増える
 
-## Dependency Management
+## 依存関係の管理
 
-### Install Where Used
+### 使用する場所にインストール
 
-Install dependencies in the package that uses them, not the root.
+依存関係はルートではなく、使用するパッケージにインストールする。
 
 ```bash
-# Good: Install in the package that needs it
+# 良い例: 必要なパッケージにインストール
 pnpm add lodash --filter=@repo/utils
 
-# Avoid: Installing everything at root
-pnpm add lodash -w  # Only for repo-level tools
+# 避けるべき: ルートにすべてインストール
+pnpm add lodash -w  # リポジトリレベルのツールのみ
 ```
 
-### Root Dependencies
+### ルートの依存関係
 
-Only these belong in root `package.json`:
+ルートの `package.json` に入れるべきもの:
 
-- `turbo` - The build system
-- `husky`, `lint-staged` - Git hooks
-- Repository-level tooling
+- `turbo` - ビルドシステム
+- `husky`, `lint-staged` - Gitフック
+- リポジトリレベルのツール
 
-### Internal Dependencies
+### 内部依存関係
 
-Use workspace protocol for internal packages:
+内部パッケージにはworkspaceプロトコルを使用:
 
 ```json
 // pnpm/bun
@@ -140,9 +140,9 @@ Use workspace protocol for internal packages:
 { "@repo/ui": "*" }
 ```
 
-## Exports Best Practices
+## エクスポートのベストプラクティス
 
-### Use `exports` Field (Not `main`)
+### `exports` フィールドを使用（`main` ではなく）
 
 ```json
 {
@@ -154,18 +154,18 @@ Use workspace protocol for internal packages:
 }
 ```
 
-### Avoid Barrel Files
+### バレルファイルを避ける
 
-Don't create `index.ts` files that re-export everything:
+すべてを再エクスポートする `index.ts` ファイルを作成しない:
 
 ```typescript
-// BAD: packages/ui/src/index.ts
+// 悪い例: packages/ui/src/index.ts
 export * from './button';
 export * from './card';
 export * from './modal';
-// ... imports everything even if you need one thing
+// ... 1つだけ必要でもすべてインポートされる
 
-// GOOD: Direct exports in package.json
+// 良い例: package.jsonで直接エクスポート
 {
   "exports": {
     "./button": "./src/button.tsx",
@@ -174,49 +174,49 @@ export * from './modal';
 }
 ```
 
-### Namespace Your Packages
+### パッケージに名前空間を付ける
 
 ```json
-// Good
+// 良い例
 { "name": "@repo/ui" }
 { "name": "@acme/utils" }
 
-// Avoid (conflicts with npm registry)
+// 避けるべき（npmレジストリと競合する）
 { "name": "ui" }
 { "name": "utils" }
 ```
 
-## Common Anti-Patterns
+## よくあるアンチパターン
 
-### Accessing Files Across Package Boundaries
+### パッケージ境界を越えたファイルアクセス
 
 ```typescript
-// BAD: Reaching into another package
+// 悪い例: 別のパッケージの内部に直接アクセス
 import { Button } from '../../packages/ui/src/button';
 
-// GOOD: Install and import properly
+// 良い例: 適切にインストールしてインポート
 import { Button } from '@repo/ui/button';
 ```
 
-### Shared Code in Apps
+### アプリ内の共有コード
 
 ```
-// BAD
+// 悪い例
 apps/
   web/
-    shared/        # This should be a package!
+    shared/        # これはパッケージにすべき！
       utils.ts
 
-// GOOD
+// 良い例
 packages/
-  utils/           # Proper shared package
+  utils/           # 適切な共有パッケージ
     src/utils.ts
 ```
 
-### Too Many Root Dependencies
+### ルートの依存関係が多すぎる
 
 ```json
-// BAD: Root has app dependencies
+// 悪い例: ルートにアプリの依存関係がある
 {
   "dependencies": {
     "react": "^18",
@@ -225,7 +225,7 @@ packages/
   }
 }
 
-// GOOD: Root only has repo tools
+// 良い例: ルートにはリポジトリツールのみ
 {
   "devDependencies": {
     "turbo": "latest",
@@ -234,8 +234,8 @@ packages/
 }
 ```
 
-## See Also
+## 関連項目
 
-- [structure.md](./structure.md) - Detailed repository structure patterns
-- [packages.md](./packages.md) - Creating and managing internal packages
-- [dependencies.md](./dependencies.md) - Dependency management strategies
+- [structure.md](./structure.md) - リポジトリ構成パターンの詳細
+- [packages.md](./packages.md) - 内部パッケージの作成と管理
+- [dependencies.md](./dependencies.md) - 依存関係の管理戦略

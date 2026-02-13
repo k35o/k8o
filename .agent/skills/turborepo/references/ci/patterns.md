@@ -1,49 +1,49 @@
-# CI Optimization Patterns
+# CI最適化パターン
 
-Strategies for efficient CI/CD with Turborepo.
+Turborepoを使った効率的なCI/CDの戦略。
 
-## PR vs Main Branch Builds
+## PRビルドとmainブランチビルドの使い分け
 
-### PR Builds: Only Affected
+### PRビルド: 影響範囲のみ
 
-Test only what changed in the PR:
+PRで変更された部分のみをテスト:
 
 ```yaml
-- name: Test (PR)
+- name: テスト (PR)
   if: github.event_name == 'pull_request'
   run: turbo run build test --affected
 ```
 
-### Main Branch: Full Build
+### mainブランチ: フルビルド
 
-Ensure complete validation on merge:
+マージ時に完全な検証を実施:
 
 ```yaml
-- name: Test (Main)
+- name: テスト (Main)
   if: github.ref == 'refs/heads/main'
   run: turbo run build test
 ```
 
-## Custom Git Ranges with --filter
+## --filter によるカスタムGit範囲指定
 
-For advanced scenarios, use `--filter` with git refs:
+高度なシナリオでは、`--filter` をgit参照と組み合わせて使用:
 
 ```bash
-# Changes since specific commit
+# 特定のコミット以降の変更
 turbo run test --filter="...[abc123]"
 
-# Changes between refs
+# 参照間の変更
 turbo run test --filter="...[main...HEAD]"
 
-# Changes in last 3 commits
+# 直近3コミットの変更
 turbo run test --filter="...[HEAD~3]"
 ```
 
-## Caching Strategies
+## キャッシュ戦略
 
-### Remote Cache (Recommended)
+### リモートキャッシュ（推奨）
 
-Best performance - shared across all CI runs and developers:
+最高のパフォーマンス - すべてのCI実行と開発者間で共有:
 
 ```yaml
 env:
@@ -51,9 +51,9 @@ env:
   TURBO_TEAM: ${{ vars.TURBO_TEAM }}
 ```
 
-### actions/cache Fallback
+### actions/cache によるフォールバック
 
-When remote cache isn't available:
+リモートキャッシュが利用できない場合:
 
 ```yaml
 - uses: actions/cache@v4
@@ -65,15 +65,15 @@ When remote cache isn't available:
       turbo-${{ runner.os }}-
 ```
 
-Limitations:
+制限事項:
 
-- Cache is branch-scoped
-- PRs restore from base branch cache
-- Less efficient than remote cache
+- キャッシュはブランチスコープ
+- PRはベースブランチのキャッシュからリストア
+- リモートキャッシュより効率が低い
 
-## Matrix Builds
+## マトリックスビルド
 
-Test across Node versions:
+複数のNodeバージョンでテスト:
 
 ```yaml
 strategy:
@@ -88,9 +88,9 @@ steps:
   - run: turbo run test
 ```
 
-## Parallelizing Across Jobs
+## ジョブ間の並列化
 
-Split tasks into separate jobs:
+タスクを別々のジョブに分割:
 
 ```yaml
 jobs:
@@ -111,13 +111,13 @@ jobs:
       - run: turbo run build
 ```
 
-### Cache Considerations
+### キャッシュに関する考慮事項
 
-When parallelizing:
+並列化する場合:
 
-- Each job has separate cache writes
-- Remote cache handles this automatically
-- With actions/cache, use unique keys per job to avoid conflicts
+- 各ジョブは個別にキャッシュを書き込む
+- リモートキャッシュはこれを自動的に処理する
+- actions/cacheの場合、競合を避けるためにジョブごとに一意のキーを使用する
 
 ```yaml
 - uses: actions/cache@v4
@@ -126,20 +126,20 @@ When parallelizing:
     key: turbo-${{ runner.os }}-${{ github.job }}-${{ github.sha }}
 ```
 
-## Conditional Tasks
+## 条件付きタスク
 
-Skip expensive tasks on draft PRs:
+ドラフトPRでは高負荷なタスクをスキップ:
 
 ```yaml
-- name: E2E Tests
+- name: E2Eテスト
   if: github.event.pull_request.draft == false
   run: turbo run test:e2e --affected
 ```
 
-Or require label for full test:
+または、フルテストの実行にラベルを要求:
 
 ```yaml
-- name: Full Test Suite
+- name: フルテストスイート
   if: contains(github.event.pull_request.labels.*.name, 'full-test')
   run: turbo run test
 ```

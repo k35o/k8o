@@ -1,13 +1,13 @@
-# Configuration Gotchas
+# 設定でよくあるミス
 
-Common mistakes and how to fix them.
+よくある間違いとその修正方法。
 
-## #1 Root Scripts Not Using `turbo run`
+## #1 ルートスクリプトで `turbo run` を使っていない
 
-Root `package.json` scripts for turbo tasks MUST use `turbo run`, not direct commands.
+ルート `package.json` のturboタスク用スクリプトは、直接コマンドではなく必ず `turbo run` を使用しなければならない。
 
 ```json
-// WRONG - bypasses turbo, no parallelization or caching
+// 間違い - turboをバイパスし、並列化やキャッシュが効かない
 {
   "scripts": {
     "build": "bun build",
@@ -15,7 +15,7 @@ Root `package.json` scripts for turbo tasks MUST use `turbo run`, not direct com
   }
 }
 
-// CORRECT - delegates to turbo
+// 正しい - turboに委譲
 {
   "scripts": {
     "build": "turbo run build",
@@ -24,21 +24,21 @@ Root `package.json` scripts for turbo tasks MUST use `turbo run`, not direct com
 }
 ```
 
-**Why this matters:** Running `bun build` or `npm run build` at root bypasses Turborepo entirely - no parallelization, no caching, no dependency graph awareness.
+**なぜ重要か:** ルートで `bun build` や `npm run build` を実行するとTurborepoが完全にバイパスされ、並列化もキャッシュも依存関係グラフの認識もなくなる。
 
-## #2 Using `&&` to Chain Turbo Tasks
+## #2 `&&` でTurboタスクをチェーンしている
 
-Don't use `&&` to chain tasks that turbo should orchestrate.
+turboがオーケストレーションすべきタスクに `&&` を使ってはいけない。
 
 ```json
-// WRONG - changeset:publish chains turbo task with non-turbo command
+// 間違い - changeset:publishがturboタスクとturbo以外のコマンドをチェーンしている
 {
   "scripts": {
     "changeset:publish": "bun build && changeset publish"
   }
 }
 
-// CORRECT - use turbo run, let turbo handle dependencies
+// 正しい - turbo runを使い、依存関係の処理をturboに任せる
 {
   "scripts": {
     "changeset:publish": "turbo run build && changeset publish"
@@ -46,19 +46,19 @@ Don't use `&&` to chain tasks that turbo should orchestrate.
 }
 ```
 
-If the second command (`changeset publish`) depends on build outputs, the turbo task should run through turbo to get caching and parallelization benefits.
+2番目のコマンド（`changeset publish`）がビルド出力に依存する場合、turboタスクはturbo経由で実行し、キャッシュと並列化の恩恵を受けるべきである。
 
-## #3 Overly Broad globalDependencies
+## #3 globalDependenciesが広すぎる
 
-`globalDependencies` affects hash for ALL tasks in ALL packages. Be specific.
+`globalDependencies` はすべてのパッケージのすべてのタスクのハッシュに影響する。具体的に指定すること。
 
 ```json
-// WRONG - affects all hashes
+// 間違い - すべてのハッシュに影響する
 {
   "globalDependencies": ["**/.env.*local"]
 }
 
-// CORRECT - move to specific tasks that need it
+// 正しい - 必要な特定のタスクに移動する
 {
   "globalDependencies": [".env"],
   "tasks": {
@@ -70,17 +70,17 @@ If the second command (`changeset publish`) depends on build outputs, the turbo 
 }
 ```
 
-**Why this matters:** `**/.env.*local` matches .env files in ALL packages, causing unnecessary cache invalidation. Instead:
+**なぜ重要か:** `**/.env.*local` はすべてのパッケージの.envファイルにマッチし、不要なキャッシュ無効化を引き起こす。代わりに：
 
-- Use `globalDependencies` only for truly global files (root `.env`)
-- Use task-level `inputs` for package-specific .env files with `$TURBO_DEFAULT$` to preserve default behavior
+- `globalDependencies` は本当にグローバルなファイル（ルートの `.env`）にのみ使用する
+- パッケージ固有の.envファイルにはタスクレベルの `inputs` で `$TURBO_DEFAULT$` と組み合わせてデフォルトの動作を維持する
 
-## #4 Repetitive Task Configuration
+## #4 タスク設定の繰り返し
 
-Look for repeated configuration across tasks that can be collapsed.
+タスク間で繰り返される設定を統合できないか探すこと。
 
 ```json
-// WRONG - repetitive env and inputs across tasks
+// 間違い - タスク間でenvとinputsが繰り返されている
 {
   "tasks": {
     "build": {
@@ -94,7 +94,7 @@ Look for repeated configuration across tasks that can be collapsed.
   }
 }
 
-// BETTER - use globalEnv and globalDependencies
+// 改善 - globalEnvとglobalDependenciesを使用
 {
   "globalEnv": ["API_URL", "DATABASE_URL"],
   "globalDependencies": [".env*"],
@@ -105,17 +105,17 @@ Look for repeated configuration across tasks that can be collapsed.
 }
 ```
 
-**When to use global vs task-level:**
+**グローバルとタスクレベルの使い分け：**
 
-- `globalEnv` / `globalDependencies` - affects ALL tasks, use for truly shared config
-- Task-level `env` / `inputs` - use when only specific tasks need it
+- `globalEnv` / `globalDependencies` - すべてのタスクに影響する。本当に共有される設定に使用
+- タスクレベルの `env` / `inputs` - 特定のタスクのみが必要とする場合に使用
 
-## #5 Using `../` to Traverse Out of Package in `inputs`
+## #5 `inputs` でパッケージ外に `../` で遡っている
 
-Don't use relative paths like `../` to reference files outside the package. Use `$TURBO_ROOT$` instead.
+パッケージ外のファイルを参照するために `../` のような相対パスを使わないこと。代わりに `$TURBO_ROOT$` を使用する。
 
 ```json
-// WRONG - traversing out of package
+// 間違い - パッケージ外に遡っている
 {
   "tasks": {
     "build": {
@@ -124,7 +124,7 @@ Don't use relative paths like `../` to reference files outside the package. Use 
   }
 }
 
-// CORRECT - use $TURBO_ROOT$ for repo root
+// 正しい - リポジトリルートには $TURBO_ROOT$ を使用
 {
   "tasks": {
     "build": {
@@ -134,19 +134,19 @@ Don't use relative paths like `../` to reference files outside the package. Use 
 }
 ```
 
-## #6 MOST COMMON MISTAKE: Creating Root Tasks
+## #6 最もよくあるミス: ルートタスクの作成
 
-**DO NOT create Root Tasks. ALWAYS create package tasks.**
+**ルートタスクを作成してはいけない。常にパッケージタスクを作成すること。**
 
-When you need to create a task (build, lint, test, typecheck, etc.):
+タスク（build、lint、test、typecheckなど）を作成する必要がある場合：
 
-1. Add the script to **each relevant package's** `package.json`
-2. Register the task in root `turbo.json`
-3. Root `package.json` only contains `turbo run <task>`
+1. **各関連パッケージの** `package.json` にスクリプトを追加する
+2. ルートの `turbo.json` にタスクを登録する
+3. ルートの `package.json` には `turbo run <task>` のみを記述する
 
 ```json
-// WRONG - DO NOT DO THIS
-// Root package.json with task logic
+// 間違い - これをやってはいけない
+// タスクロジックを持つルートのpackage.json
 {
   "scripts": {
     "build": "cd apps/web && next build && cd ../api && tsc",
@@ -155,7 +155,7 @@ When you need to create a task (build, lint, test, typecheck, etc.):
   }
 }
 
-// CORRECT - DO THIS
+// 正しい - こうする
 // apps/web/package.json
 { "scripts": { "build": "next build", "lint": "eslint .", "test": "vitest" } }
 
@@ -165,10 +165,10 @@ When you need to create a task (build, lint, test, typecheck, etc.):
 // packages/ui/package.json
 { "scripts": { "build": "tsc", "lint": "eslint .", "test": "vitest" } }
 
-// Root package.json - ONLY delegates
+// ルートのpackage.json - 委譲のみ
 { "scripts": { "build": "turbo run build", "lint": "turbo run lint", "test": "turbo run test" } }
 
-// turbo.json - register tasks
+// turbo.json - タスクを登録
 {
   "tasks": {
     "build": { "dependsOn": ["^build"], "outputs": ["dist/**"] },
@@ -178,30 +178,30 @@ When you need to create a task (build, lint, test, typecheck, etc.):
 }
 ```
 
-**Why this matters:**
+**なぜ重要か：**
 
-- Package tasks run in **parallel** across all packages
-- Each package's output is cached **individually**
-- You can **filter** to specific packages: `turbo run test --filter=web`
+- パッケージタスクはすべてのパッケージで**並列**に実行される
+- 各パッケージの出力は**個別に**キャッシュされる
+- 特定のパッケージに**フィルタリング**できる: `turbo run test --filter=web`
 
-Root Tasks (`//#taskname`) defeat all these benefits. Only use them for tasks that truly cannot exist in any package (extremely rare).
+ルートタスク（`//#taskname`）はこれらすべてのメリットを無効にする。どのパッケージにも存在し得ないタスク（極めてまれ）にのみ使用する。
 
-## #7 Tasks That Need Parallel Execution + Cache Invalidation
+## #7 並列実行 + キャッシュ無効化が必要なタスク
 
-Some tasks can run in parallel (don't need built output from dependencies) but must still invalidate cache when dependency source code changes. Using `dependsOn: ["^taskname"]` forces sequential execution. Using no dependencies breaks cache invalidation.
+一部のタスクは並列実行可能（依存パッケージのビルド出力が不要）だが、依存パッケージのソースコード変更時にキャッシュを無効化する必要がある。`dependsOn: ["^taskname"]` を使うと逐次実行が強制される。依存関係なしではキャッシュの無効化が壊れる。
 
-**Use Transit Nodes for these tasks:**
+**これらのタスクにはトランジットノードを使用する：**
 
 ```json
-// WRONG - forces sequential execution (SLOW)
+// 間違い - 逐次実行を強制する（低速）
 "my-task": {
   "dependsOn": ["^my-task"]
 }
 
-// ALSO WRONG - no dependency awareness (INCORRECT CACHING)
+// これも間違い - 依存関係の認識がない（不正なキャッシュ）
 "my-task": {}
 
-// CORRECT - use Transit Nodes for parallel + correct caching
+// 正しい - トランジットノードで並列実行 + 正しいキャッシュを実現
 {
   "tasks": {
     "transit": { "dependsOn": ["^transit"] },
@@ -210,80 +210,80 @@ Some tasks can run in parallel (don't need built output from dependencies) but m
 }
 ```
 
-**Why Transit Nodes work:**
+**トランジットノードが機能する理由：**
 
-- `transit` creates dependency relationships without matching any actual script
-- Tasks that depend on `transit` gain dependency awareness
-- Since `transit` completes instantly (no script), tasks run in parallel
-- Cache correctly invalidates when dependency source code changes
+- `transit` は実際のスクリプトにマッチせずに依存関係を作成する
+- `transit` に依存するタスクは依存関係の認識を得る
+- `transit` は即座に完了する（スクリプトなし）ため、タスクは並列実行される
+- 依存パッケージのソースコード変更時にキャッシュが正しく無効化される
 
-**How to identify tasks that need this pattern:** Look for tasks that read source files from dependencies but don't need their build outputs.
+**このパターンが必要なタスクの見分け方：** 依存パッケージのソースファイルを読むが、ビルド出力は必要としないタスクを探す。
 
-## Missing outputs for File-Producing Tasks
+## ファイルを生成するタスクでoutputsが欠落している
 
-**Before flagging missing `outputs`, check what the task actually produces:**
+**`outputs` の欠落を指摘する前に、タスクが実際に何を生成するか確認すること：**
 
-1. Read the package's script (e.g., `"build": "tsc"`, `"test": "vitest"`)
-2. Determine if it writes files to disk or only outputs to stdout
-3. Only flag if the task produces files that should be cached
+1. パッケージのスクリプトを読む（例：`"build": "tsc"`、`"test": "vitest"`）
+2. ディスクにファイルを書き込むか、標準出力のみかを判断する
+3. キャッシュすべきファイルを生成する場合にのみ指摘する
 
 ```json
-// WRONG - build produces files but they're not cached
+// 間違い - buildがファイルを生成するがキャッシュされない
 "build": {
   "dependsOn": ["^build"]
 }
 
-// CORRECT - outputs are cached
+// 正しい - outputsがキャッシュされる
 "build": {
   "dependsOn": ["^build"],
   "outputs": ["dist/**"]
 }
 ```
 
-No `outputs` key is fine for stdout-only tasks. For file-producing tasks, missing `outputs` means Turbo has nothing to cache.
+標準出力のみのタスクでは `outputs` キーがなくても問題ない。ファイルを生成するタスクで `outputs` がない場合、Turboにはキャッシュするものがない。
 
-## Forgetting ^ in dependsOn
+## dependsOnの ^ を忘れている
 
 ```json
-// WRONG - looks for "build" in SAME package (infinite loop or missing)
+// 間違い - 同じパッケージ内の "build" を探す（無限ループまたは見つからない）
 "build": {
   "dependsOn": ["build"]
 }
 
-// CORRECT - runs dependencies' build first
+// 正しい - 依存パッケージのbuildを先に実行する
 "build": {
   "dependsOn": ["^build"]
 }
 ```
 
-The `^` means "in dependency packages", not "in this package".
+`^` は「依存パッケージ内の」という意味であり、「このパッケージ内の」ではない。
 
-## Missing persistent on Dev Tasks
+## 開発タスクでpersistentが欠落している
 
 ```json
-// WRONG - dependent tasks hang waiting for dev to "finish"
+// 間違い - 依存タスクがdevの「完了」を待ち続けてハングする
 "dev": {
   "cache": false
 }
 
-// CORRECT
+// 正しい
 "dev": {
   "cache": false,
   "persistent": true
 }
 ```
 
-## Package Config Missing extends
+## パッケージ設定でextendsが欠落している
 
 ```json
-// WRONG - packages/web/turbo.json
+// 間違い - packages/web/turbo.json
 {
   "tasks": {
     "build": { "outputs": [".next/**"] }
   }
 }
 
-// CORRECT
+// 正しい
 {
   "extends": ["//"],
   "tasks": {
@@ -292,57 +292,57 @@ The `^` means "in dependency packages", not "in this package".
 }
 ```
 
-Without `"extends": ["//"]`, Package Configurations are invalid.
+`"extends": ["//"]` がないと、パッケージ設定は無効になる。
 
-## Root Tasks Need Special Syntax
+## ルートタスクには特別な構文が必要
 
-To run a task defined only in root `package.json`:
+ルートの `package.json` でのみ定義されたタスクを実行するには：
 
 ```bash
-# WRONG
+# 間違い
 turbo run format
 
-# CORRECT
+# 正しい
 turbo run //#format
 ```
 
-And in dependsOn:
+dependsOnでも同様：
 
 ```json
 "build": {
-  "dependsOn": ["//#codegen"]  // Root package's codegen
+  "dependsOn": ["//#codegen"]  // ルートパッケージのcodegen
 }
 ```
 
-## Overwriting Default Inputs
+## デフォルトのinputsを上書きしている
 
 ```json
-// WRONG - only watches test files, ignores source changes
+// 間違い - テストファイルのみを監視し、ソースの変更を無視する
 "test": {
   "inputs": ["tests/**"]
 }
 
-// CORRECT - extends defaults, adds test files
+// 正しい - デフォルトを拡張し、テストファイルを追加する
 "test": {
   "inputs": ["$TURBO_DEFAULT$", "tests/**"]
 }
 ```
 
-Without `$TURBO_DEFAULT$`, you replace all default file watching.
+`$TURBO_DEFAULT$` がないと、すべてのデフォルトのファイル監視が置き換えられる。
 
-## Caching Tasks with Side Effects
+## 副作用のあるタスクをキャッシュしている
 
 ```json
-// WRONG - deploy might be skipped on cache hit
+// 間違い - キャッシュヒット時にdeployがスキップされる可能性がある
 "deploy": {
   "dependsOn": ["build"]
 }
 
-// CORRECT
+// 正しい
 "deploy": {
   "dependsOn": ["build"],
   "cache": false
 }
 ```
 
-Always disable cache for deploy, publish, or mutation tasks.
+deploy、publish、またはミューテーションタスクでは常にキャッシュを無効にすること。

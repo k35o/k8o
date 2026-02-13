@@ -1,57 +1,57 @@
-# Environment Modes
+# 環境モード
 
-Turborepo supports different modes for handling environment variables during task execution.
+Turborepoはタスク実行時の環境変数の扱いについて、異なるモードをサポートしています。
 
-## Strict Mode (Default)
+## Strictモード（デフォルト）
 
-Only explicitly configured variables are available to tasks.
+明示的に設定された変数のみがタスクで利用可能になります。
 
-**Behavior:**
+**動作:**
 
-- Tasks only see vars listed in `env`, `globalEnv`, `passThroughEnv`, or `globalPassThroughEnv`
-- Unlisted vars are filtered out
-- Tasks fail if they require unlisted variables
+- タスクは`env`、`globalEnv`、`passThroughEnv`、または`globalPassThroughEnv`にリストされた変数のみ参照できる
+- リストにない変数はフィルタリングされる
+- リストにない変数を必要とするタスクは失敗する
 
-**Benefits:**
+**メリット:**
 
-- Guarantees cache correctness
-- Prevents accidental dependencies on system vars
-- Reproducible builds across machines
+- キャッシュの正確性を保証する
+- システム変数への意図しない依存を防ぐ
+- マシン間で再現可能なビルドを実現する
 
 ```bash
-# Explicit (though it's the default)
+# 明示的な指定（デフォルトなので通常は不要）
 turbo run build --env-mode=strict
 ```
 
-## Loose Mode
+## Looseモード
 
-All system environment variables are available to tasks.
+すべてのシステム環境変数がタスクで利用可能になります。
 
 ```bash
 turbo run build --env-mode=loose
 ```
 
-**Behavior:**
+**動作:**
 
-- Every system env var is passed through
-- Only vars in `env`/`globalEnv` affect the hash
-- Other vars are available but NOT hashed
+- すべてのシステム環境変数がパススルーされる
+- `env`/`globalEnv`内の変数のみがハッシュに影響する
+- その他の変数は利用可能だがハッシュには含まれない
 
-**Risks:**
+**リスク:**
 
-- Cache may restore incorrect results if unhashed vars changed
-- "Works on my machine" bugs
-- CI vs local environment mismatches
+- ハッシュに含まれない変数が変更された場合、キャッシュが不正な結果を返す可能性がある
+- 「自分のマシンでは動く」問題
+- CIとローカル環境の不一致
 
-**Use case:** Migrating legacy projects or debugging strict mode issues.
+**ユースケース:** レガシープロジェクトの移行やStrictモードの問題のデバッグ。
 
-## Framework Inference (Automatic)
+## フレームワーク推論（自動）
 
-Turborepo automatically detects frameworks and includes their conventional env vars.
+Turborepoはフレームワークを自動検出し、その慣例的な環境変数を含めます。
 
-### Inferred Variables by Framework
+### フレームワークごとの推論される変数
 
-| Framework        | Pattern             |
+| フレームワーク   | パターン            |
 | ---------------- | ------------------- |
 | Next.js          | `NEXT_PUBLIC_*`     |
 | Vite             | `VITE_*`            |
@@ -66,15 +66,15 @@ Turborepo automatically detects frameworks and includes their conventional env v
 | Sanity           | `SANITY_STUDIO_*`   |
 | Solid            | `VITE_*`            |
 
-### Disabling Framework Inference
+### フレームワーク推論を無効化する
 
-Globally via CLI:
+CLIでグローバルに無効化:
 
 ```bash
 turbo run build --framework-inference=false
 ```
 
-Or exclude specific patterns in config:
+または設定で特定のパターンを除外:
 
 ```json
 {
@@ -86,15 +86,15 @@ Or exclude specific patterns in config:
 }
 ```
 
-### Why Disable?
+### なぜ無効化するのか?
 
-- You want explicit control over all env vars
-- Framework vars shouldn't bust the cache (e.g., analytics IDs)
-- Debugging unexpected cache misses
+- すべての環境変数を明示的に制御したい場合
+- フレームワーク変数でキャッシュを無効化したくない場合（例: アナリティクスID）
+- 予期しないキャッシュミスのデバッグ
 
-## Checking Environment Mode
+## 環境モードの確認
 
-Use `--dry` to see which vars affect each task:
+`--dry`を使用して、各タスクに影響する変数を確認できます:
 
 ```bash
 turbo run build --dry=json | jq '.tasks[].environmentVariables'

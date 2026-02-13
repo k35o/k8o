@@ -1,12 +1,12 @@
-# turbo run Flags Reference
+# turbo run フラグリファレンス
 
-Full docs: https://turborepo.dev/docs/reference/run
+完全なドキュメント: https://turborepo.dev/docs/reference/run
 
-## Package Selection
+## パッケージの選択
 
 ### `--filter` / `-F`
 
-Select specific packages to run tasks in.
+タスクを実行する特定のパッケージを選択する。
 
 ```bash
 turbo build --filter=web
@@ -14,49 +14,49 @@ turbo build -F=@repo/ui -F=@repo/utils
 turbo test --filter=./apps/*
 ```
 
-See `filtering/` for complete syntax (globs, dependencies, git ranges).
+完全な構文（glob、依存関係、gitレンジ）については `filtering/` を参照。
 
-### Task Identifier Syntax (v2.2.4+)
+### タスク識別子構文 (v2.2.4+)
 
-Run specific package tasks directly:
+特定のパッケージタスクを直接実行する：
 
 ```bash
-turbo run web#build              # Build web package
-turbo run web#build docs#lint    # Multiple specific tasks
+turbo run web#build              # webパッケージをビルド
+turbo run web#build docs#lint    # 複数の特定タスク
 ```
 
 ### `--affected`
 
-Run only in packages changed since the base branch.
+ベースブランチから変更があったパッケージでのみ実行する。
 
 ```bash
 turbo build --affected
-turbo test --affected --filter=./apps/*  # combine with filter
+turbo test --affected --filter=./apps/*  # filterと組み合わせ
 ```
 
-**How it works:**
+**動作の仕組み：**
 
-- Default: compares `main...HEAD`
-- In GitHub Actions: auto-detects `GITHUB_BASE_REF`
-- Override base: `TURBO_SCM_BASE=development turbo build --affected`
-- Override head: `TURBO_SCM_HEAD=your-branch turbo build --affected`
+- デフォルト: `main...HEAD` と比較
+- GitHub Actionsでは: `GITHUB_BASE_REF` を自動検出
+- ベースの上書き: `TURBO_SCM_BASE=development turbo build --affected`
+- ヘッドの上書き: `TURBO_SCM_HEAD=your-branch turbo build --affected`
 
-**Requires git history** - shallow clones may fall back to running all tasks.
+**gitの履歴が必要** - シャロークローンではすべてのタスクを実行するフォールバックが発生する場合がある。
 
-## Execution Control
+## 実行制御
 
 ### `--dry` / `--dry=json`
 
-Preview what would run without executing.
+実行せずに何が実行されるかをプレビューする。
 
 ```bash
-turbo build --dry          # human-readable
-turbo build --dry=json     # machine-readable
+turbo build --dry          # 人間が読みやすい形式
+turbo build --dry=json     # 機械が読みやすい形式
 ```
 
 ### `--force`
 
-Ignore all cached artifacts, re-run everything.
+キャッシュされたすべてのアーティファクトを無視し、すべてを再実行する。
 
 ```bash
 turbo build --force
@@ -64,16 +64,16 @@ turbo build --force
 
 ### `--concurrency`
 
-Limit parallel task execution.
+並列タスク実行数を制限する。
 
 ```bash
-turbo build --concurrency=4      # max 4 tasks
-turbo build --concurrency=50%    # 50% of CPU cores
+turbo build --concurrency=4      # 最大4タスク
+turbo build --concurrency=50%    # CPUコアの50%
 ```
 
 ### `--continue`
 
-Keep running other tasks when one fails.
+1つのタスクが失敗しても他のタスクの実行を続ける。
 
 ```bash
 turbo build test --continue
@@ -81,138 +81,138 @@ turbo build test --continue
 
 ### `--only`
 
-Run only the specified task, skip its dependencies.
+指定されたタスクのみを実行し、その依存タスクをスキップする。
 
 ```bash
-turbo build --only  # skip running dependsOn tasks
+turbo build --only  # dependsOnのタスクをスキップ
 ```
 
-### `--parallel` (Discouraged)
+### `--parallel` (非推奨)
 
-Ignores task graph dependencies, runs all tasks simultaneously. **Avoid using this flag**—if tasks need to run in parallel, configure `dependsOn` correctly instead. Using `--parallel` bypasses Turborepo's dependency graph, which can cause race conditions and incorrect builds.
+タスクグラフの依存関係を無視し、すべてのタスクを同時に実行する。**このフラグの使用は避けること**—タスクを並列実行する必要がある場合は、代わりに `dependsOn` を正しく設定すること。`--parallel` を使用するとTurborepoの依存関係グラフがバイパスされ、レースコンディションや不正なビルドが発生する可能性がある。
 
-## Cache Control
+## キャッシュ制御
 
 ### `--cache`
 
-Fine-grained cache behavior control.
+きめ細かなキャッシュ動作の制御。
 
 ```bash
-# Default: read/write both local and remote
+# デフォルト: ローカルとリモートの両方で読み書き
 turbo build --cache=local:rw,remote:rw
 
-# Read-only local, no remote
+# ローカルは読み取り専用、リモートは無効
 turbo build --cache=local:r,remote:
 
-# Disable local, read-only remote
+# ローカルを無効、リモートは読み取り専用
 turbo build --cache=local:,remote:r
 
-# Disable all caching
+# すべてのキャッシュを無効化
 turbo build --cache=local:,remote:
 ```
 
-## Output & Debugging
+## 出力とデバッグ
 
 ### `--graph`
 
-Generate task graph visualization.
+タスクグラフの可視化を生成する。
 
 ```bash
-turbo build --graph                # opens in browser
-turbo build --graph=graph.svg      # SVG file
-turbo build --graph=graph.png      # PNG file
-turbo build --graph=graph.json     # JSON data
-turbo build --graph=graph.mermaid  # Mermaid diagram
+turbo build --graph                # ブラウザで開く
+turbo build --graph=graph.svg      # SVGファイル
+turbo build --graph=graph.png      # PNGファイル
+turbo build --graph=graph.json     # JSONデータ
+turbo build --graph=graph.mermaid  # Mermaidダイアグラム
 ```
 
 ### `--summarize`
 
-Generate JSON run summary for debugging.
+デバッグ用のJSON実行サマリーを生成する。
 
 ```bash
 turbo build --summarize
-# creates .turbo/runs/<run-id>.json
+# .turbo/runs/<run-id>.json を作成
 ```
 
 ### `--output-logs`
 
-Control log output verbosity.
+ログ出力の詳細度を制御する。
 
 ```bash
-turbo build --output-logs=full        # all logs (default)
-turbo build --output-logs=new-only    # only cache misses
-turbo build --output-logs=errors-only # only failures
-turbo build --output-logs=none        # silent
+turbo build --output-logs=full        # すべてのログ（デフォルト）
+turbo build --output-logs=new-only    # キャッシュミスのみ
+turbo build --output-logs=errors-only # 失敗のみ
+turbo build --output-logs=none        # サイレント
 ```
 
 ### `--profile`
 
-Generate Chrome tracing profile for performance analysis.
+パフォーマンス分析用のChromeトレーシングプロファイルを生成する。
 
 ```bash
 turbo build --profile=profile.json
-# open chrome://tracing and load the file
+# chrome://tracing を開いてファイルを読み込む
 ```
 
 ### `--verbosity` / `-v`
 
-Control turbo's own log level.
+turbo自体のログレベルを制御する。
 
 ```bash
-turbo build -v      # verbose
-turbo build -vv     # more verbose
-turbo build -vvv    # maximum verbosity
+turbo build -v      # 詳細
+turbo build -vv     # より詳細
+turbo build -vvv    # 最大詳細度
 ```
 
-## Environment
+## 環境変数
 
 ### `--env-mode`
 
-Control environment variable handling.
+環境変数の扱いを制御する。
 
 ```bash
-turbo build --env-mode=strict  # only declared env vars (default)
-turbo build --env-mode=loose   # include all env vars in hash
+turbo build --env-mode=strict  # 宣言された環境変数のみ（デフォルト）
+turbo build --env-mode=loose   # すべての環境変数をハッシュに含める
 ```
 
 ## UI
 
 ### `--ui`
 
-Select output interface.
+出力インターフェースを選択する。
 
 ```bash
-turbo build --ui=tui     # interactive terminal UI (default in TTY)
-turbo build --ui=stream  # streaming logs (default in CI)
+turbo build --ui=tui     # インタラクティブなターミナルUI（TTYでのデフォルト）
+turbo build --ui=stream  # ストリーミングログ（CIでのデフォルト）
 ```
 
 ---
 
 # turbo-ignore
 
-Full docs: https://turborepo.dev/docs/reference/turbo-ignore
+完全なドキュメント: https://turborepo.dev/docs/reference/turbo-ignore
 
-Skip CI work when nothing relevant changed. Useful for skipping container setup.
+関連する変更がない場合にCIの作業をスキップする。コンテナセットアップのスキップに便利。
 
-## Basic Usage
+## 基本的な使い方
 
 ```bash
-# Check if build is needed for current package (uses Automatic Package Scoping)
+# 現在のパッケージにビルドが必要か確認する（自動パッケージスコーピングを使用）
 npx turbo-ignore
 
-# Check specific package
+# 特定のパッケージを確認
 npx turbo-ignore web
 
-# Check specific task
+# 特定のタスクを確認
 npx turbo-ignore --task=test
 ```
 
-## Exit Codes
+## 終了コード
 
-- `0`: No changes detected - skip CI work
-- `1`: Changes detected - proceed with CI
+- `0`: 変更が検出されなかった - CIの作業をスキップ
+- `1`: 変更が検出された - CIを続行
 
-## CI Integration Example
+## CI統合の例
 
 ```yaml
 # GitHub Actions
@@ -222,49 +222,49 @@ npx turbo-ignore --task=test
   continue-on-error: true
 
 - name: Build
-  if: steps.turbo-ignore.outcome == 'failure'  # changes detected
+  if: steps.turbo-ignore.outcome == 'failure'  # 変更が検出された
   run: pnpm build
 ```
 
-## Comparison Depth
+## 比較の深さ
 
-Default: compares to parent commit (`HEAD^1`).
+デフォルト: 親コミット (`HEAD^1`) と比較。
 
 ```bash
-# Compare to specific commit
+# 特定のコミットと比較
 npx turbo-ignore --fallback=abc123
 
-# Compare to branch
+# ブランチと比較
 npx turbo-ignore --fallback=main
 ```
 
 ---
 
-# Other Commands
+# その他のコマンド
 
 ## turbo boundaries
 
-Check workspace violations (experimental).
+ワークスペース違反をチェックする（実験的）。
 
 ```bash
 turbo boundaries
 ```
 
-See `references/boundaries/` for configuration.
+設定については `references/boundaries/` を参照。
 
 ## turbo watch
 
-Re-run tasks on file changes.
+ファイルの変更時にタスクを再実行する。
 
 ```bash
 turbo watch build test
 ```
 
-See `references/watch/` for details.
+詳細は `references/watch/` を参照。
 
 ## turbo prune
 
-Create sparse checkout for Docker.
+Docker用のスパースチェックアウトを作成する。
 
 ```bash
 turbo prune web --docker
@@ -272,25 +272,25 @@ turbo prune web --docker
 
 ## turbo link / unlink
 
-Connect/disconnect Remote Cache.
+リモートキャッシュの接続/切断。
 
 ```bash
-turbo link    # connect to Vercel Remote Cache
-turbo unlink  # disconnect
+turbo link    # Vercelリモートキャッシュに接続
+turbo unlink  # 切断
 ```
 
 ## turbo login / logout
 
-Authenticate with Remote Cache provider.
+リモートキャッシュプロバイダーとの認証。
 
 ```bash
-turbo login   # authenticate
-turbo logout  # log out
+turbo login   # 認証
+turbo logout  # ログアウト
 ```
 
 ## turbo generate
 
-Scaffold new packages.
+新しいパッケージをスキャフォールドする。
 
 ```bash
 turbo generate

@@ -2,7 +2,7 @@
 
 k8oが作成したすべてのコンテンツを公開するウェブサイトです。
 
-## Quick Start
+## クイックスタート
 
 ```bash
 # 依存関係インストール(Node.js 24.12.0, pnpm 10.25.0)
@@ -20,7 +20,7 @@ pnpm run -F @repo/database migrate
 pnpm run dev
 ```
 
-## Architecture
+## アーキテクチャ
 
 **Turborepo Monorepo**:
 
@@ -29,7 +29,7 @@ pnpm run dev
 - `packages/helpers` - ユーティリティ関数
 - `@k8o/arte-odyssey` - UIコンポーネント([npm](https://www.npmjs.com/package/@k8o/arte-odyssey))
 
-## Documentation
+## ドキュメント
 
 | ドキュメント | 内容 |
 |-------------|------|
@@ -38,7 +38,7 @@ pnpm run dev
 | [ARCHITECTURE.md](./ARCHITECTURE.md) | システム構成・設計思想 |
 | [docs/](./docs/) | API、テスト、デプロイ等の詳細ガイド |
 
-## Commands
+## コマンド
 
 ```bash
 pnpm run dev              # 開発サーバー
@@ -50,7 +50,7 @@ pnpm run -F main storybook # Storybook
 
 詳細は[CLAUDE.md](./CLAUDE.md)を参照。
 
-## Production
+## 本番環境
 
 - **Hosting**: [Vercel](https://vercel.com)
 - **Database**: [Neon](https://neon.tech) (PostgreSQL)

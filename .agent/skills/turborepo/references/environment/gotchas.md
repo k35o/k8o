@@ -1,12 +1,12 @@
-# Environment Variable Gotchas
+# 環境変数のよくある落とし穴
 
-Common mistakes and how to fix them.
+よくある間違いとその修正方法。
 
-## .env Files Must Be in `inputs`
+## .envファイルは`inputs`に含める必要がある
 
-Turbo does NOT read `.env` files. Your framework (Next.js, Vite, etc.) or `dotenv` loads them. But Turbo needs to know when they change.
+Turboは`.env`ファイルを読み込みません。フレームワーク（Next.js、Viteなど）や`dotenv`がそれらを読み込みます。しかしTurboは、それらが変更されたことを知る必要があります。
 
-**Wrong:**
+**間違い:**
 
 ```json
 {
@@ -18,7 +18,7 @@ Turbo does NOT read `.env` files. Your framework (Next.js, Vite, etc.) or `doten
 }
 ```
 
-**Right:**
+**正しい:**
 
 ```json
 {
@@ -31,13 +31,13 @@ Turbo does NOT read `.env` files. Your framework (Next.js, Vite, etc.) or `doten
 }
 ```
 
-## Strict Mode Filters CI Variables
+## Strictモードはci変数をフィルタリングする
 
-In strict mode, CI provider variables (GITHUB_TOKEN, GITLAB_CI, etc.) are filtered unless explicitly listed.
+Strictモードでは、CIプロバイダーの変数（GITHUB_TOKEN、GITLAB_CIなど）は明示的にリストしない限りフィルタリングされます。
 
-**Symptom:** Task fails with "authentication required" or "permission denied" in CI.
+**症状:** CIでタスクが「authentication required」や「permission denied」で失敗する。
 
-**Solution:**
+**解決策:**
 
 ```json
 {
@@ -45,11 +45,11 @@ In strict mode, CI provider variables (GITHUB_TOKEN, GITLAB_CI, etc.) are filter
 }
 ```
 
-## passThroughEnv Doesn't Affect Hash
+## passThroughEnvはハッシュに影響しない
 
-Variables in `passThroughEnv` are available at runtime but changes WON'T trigger rebuilds.
+`passThroughEnv`内の変数はランタイムで利用可能ですが、変更しても再ビルドはトリガーされません。
 
-**Dangerous example:**
+**危険な例:**
 
 ```json
 {
@@ -61,34 +61,34 @@ Variables in `passThroughEnv` are available at runtime but changes WON'T trigger
 }
 ```
 
-If `API_URL` changes from staging to production, Turbo may serve a cached build pointing to the wrong API.
+`API_URL`がステージングから本番に変更された場合、Turboは間違ったAPIを指すキャッシュされたビルドを提供する可能性があります。
 
-**Use passThroughEnv only for:**
+**passThroughEnvは以下の場合のみ使用してください:**
 
-- Auth tokens that don't affect output (SENTRY_AUTH_TOKEN)
-- CI metadata (GITHUB_RUN_ID)
-- Variables consumed after build (deploy credentials)
+- 出力に影響しない認証トークン（SENTRY_AUTH_TOKEN）
+- CIメタデータ（GITHUB_RUN_ID）
+- ビルド後に消費される変数（デプロイ認証情報）
 
-## Runtime-Created Variables Are Invisible
+## ランタイムで作成された変数は見えない
 
-Turbo captures env vars at startup. Variables created during execution aren't seen.
+Turboは起動時に環境変数をキャプチャします。実行中に作成された変数は認識されません。
 
-**Won't work:**
+**動作しない:**
 
 ```bash
-# In package.json scripts
+# package.jsonのscripts内
 "build": "export API_URL=$COMPUTED_VALUE && next build"
 ```
 
-**Solution:** Set vars before invoking turbo:
+**解決策:** turboを呼び出す前に変数を設定する:
 
 ```bash
 API_URL=$COMPUTED_VALUE turbo run build
 ```
 
-## Different .env Files for Different Environments
+## 環境ごとに異なる.envファイル
 
-If you use `.env.development` and `.env.production`, both should be in inputs.
+`.env.development`と`.env.production`を使用している場合、両方をinputsに含める必要があります。
 
 ```json
 {
@@ -108,7 +108,7 @@ If you use `.env.development` and `.env.production`, both should be in inputs.
 }
 ```
 
-## Complete Next.js Example
+## Next.jsの完全な設定例
 
 ```json
 {
@@ -137,9 +137,9 @@ If you use `.env.development` and `.env.production`, both should be in inputs.
 }
 ```
 
-This config:
+この設定は以下を行います:
 
-- Hashes DATABASE*URL and NEXT_PUBLIC*\* vars (except analytics)
-- Passes through SENTRY_AUTH_TOKEN without hashing
-- Includes all .env file variants in the hash
-- Makes CI tokens available globally
+- DATABASE_URLとNEXT_PUBLIC_*変数をハッシュに含める（アナリティクスを除く）
+- SENTRY_AUTH_TOKENをハッシュに含めずにパススルーする
+- すべての.envファイルバリアントをハッシュに含める
+- CIトークンをグローバルに利用可能にする

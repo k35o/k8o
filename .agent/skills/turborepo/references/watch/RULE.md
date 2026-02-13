@@ -1,32 +1,32 @@
 # turbo watch
 
-Full docs: https://turborepo.dev/docs/reference/watch
+完全なドキュメント: https://turborepo.dev/docs/reference/watch
 
-Re-run tasks automatically when code changes. Dependency-aware.
+コードが変更されたときにタスクを自動的に再実行します。依存関係を認識します。
 
 ```bash
 turbo watch [tasks]
 ```
 
-## Basic Usage
+## 基本的な使い方
 
 ```bash
-# Watch and re-run build task when code changes
+# コードが変更されたときにbuildタスクを監視して再実行
 turbo watch build
 
-# Watch multiple tasks
+# 複数のタスクを監視
 turbo watch build test lint
 ```
 
-Tasks re-run in order configured in `turbo.json` when source files change.
+ソースファイルが変更されると、`turbo.json`で設定された順序でタスクが再実行されます。
 
-## With Persistent Tasks
+## 永続タスクとの併用
 
-Persistent tasks (`"persistent": true`) won't exit, so they can't be depended on. They work the same in `turbo watch` as `turbo run`.
+永続タスク（`"persistent": true`）は終了しないため、他のタスクから依存されることができません。`turbo watch`でも`turbo run`と同じ動作をします。
 
-### Dependency-Aware Persistent Tasks
+### 依存関係を認識する永続タスク
 
-If your tool has built-in watching (like `next dev`), use its watcher:
+ツールに組み込みのウォッチ機能がある場合（`next dev`など）、そのウォッチャーを使用します:
 
 ```json
 {
@@ -39,9 +39,9 @@ If your tool has built-in watching (like `next dev`), use its watcher:
 }
 ```
 
-### Non-Dependency-Aware Tools
+### 依存関係を認識しないツール
 
-For tools that don't detect dependency changes, use `interruptible`:
+依存関係の変更を検出しないツールには、`interruptible`を使用します:
 
 ```json
 {
@@ -55,45 +55,45 @@ For tools that don't detect dependency changes, use `interruptible`:
 }
 ```
 
-`turbo watch` will restart interruptible tasks when dependencies change.
+`turbo watch`は依存関係が変更されたときに、中断可能なタスクを再起動します。
 
-## Limitations
+## 制限事項
 
-### Caching
+### キャッシュ
 
-Caching is experimental with watch mode:
+watchモードでのキャッシュは実験的機能です:
 
 ```bash
 turbo watch your-tasks --experimental-write-cache
 ```
 
-### Task Outputs in Source Control
+### ソース管理内のタスク出力
 
-If tasks write files tracked by git, watch mode may loop infinitely. Watch mode uses file hashes to prevent this but it's not foolproof.
+タスクがgitで追跡されているファイルを書き出す場合、watchモードが無限ループする可能性があります。watchモードはこれを防ぐためにファイルハッシュを使用しますが、完全ではありません。
 
-**Recommendation**: Remove task outputs from git.
+**推奨事項**: タスク出力をgitから除外してください。
 
-## vs turbo run
+## turbo runとの比較
 
-| Feature           | `turbo run` | `turbo watch` |
+| 機能              | `turbo run` | `turbo watch` |
 | ----------------- | ----------- | ------------- |
-| Runs once         | Yes         | No            |
-| Re-runs on change | No          | Yes           |
-| Caching           | Full        | Experimental  |
-| Use case          | CI, one-off | Development   |
+| 1回だけ実行       | はい        | いいえ        |
+| 変更時に再実行    | いいえ      | はい          |
+| キャッシュ        | 完全対応    | 実験的        |
+| ユースケース      | CI、単発    | 開発          |
 
-## Common Patterns
+## よく使うパターン
 
-### Development Workflow
+### 開発ワークフロー
 
 ```bash
-# Run dev servers and watch for build changes
+# devサーバーを実行し、ビルドの変更を監視
 turbo watch dev build
 ```
 
-### Type Checking During Development
+### 開発中の型チェック
 
 ```bash
-# Watch and re-run type checks
+# 型チェックを監視して再実行
 turbo watch check-types
 ```

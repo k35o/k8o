@@ -1,21 +1,21 @@
-# Creating Internal Packages
+# 内部パッケージの作成
 
-How to create and structure internal packages in your monorepo.
+モノレポにおける内部パッケージの作成と構成方法。
 
-## Package Creation Checklist
+## パッケージ作成チェックリスト
 
-1. Create directory in `packages/`
-2. Add `package.json` with name and exports
-3. Add source code in `src/`
-4. Add `tsconfig.json` if using TypeScript
-5. Install as dependency in consuming packages
-6. Run package manager install to update lockfile
+1. `packages/` にディレクトリを作成
+2. 名前とexportsを含む `package.json` を追加
+3. `src/` にソースコードを配置
+4. TypeScriptを使用する場合は `tsconfig.json` を追加
+5. 利用するパッケージに依存関係としてインストール
+6. パッケージマネージャーのinstallを実行してロックファイルを更新
 
-## Package Compilation Strategies
+## パッケージのコンパイル戦略
 
-### Just-in-Time (JIT)
+### ジャストインタイム（JIT）
 
-Export TypeScript directly. The consuming app's bundler compiles it.
+TypeScriptを直接エクスポートする。利用側アプリのバンドラーがコンパイルする。
 
 ```json
 // packages/ui/package.json
@@ -32,21 +32,21 @@ Export TypeScript directly. The consuming app's bundler compiles it.
 }
 ```
 
-**When to use:**
+**使用すべき場合:**
 
-- Apps use modern bundlers (Turbopack, webpack, Vite)
-- You want minimal configuration
-- Build times are acceptable without caching
+- アプリがモダンなバンドラー（Turbopack, webpack, Vite）を使用している
+- 最小限の設定にしたい
+- キャッシュなしでもビルド時間が許容範囲内
 
-**Limitations:**
+**制限事項:**
 
-- No Turborepo cache for the package itself
-- Consumer must support TypeScript compilation
-- Can't use TypeScript `paths` (use Node.js subpath imports instead)
+- パッケージ自体のTurborepoキャッシュが使えない
+- コンシューマーがTypeScriptコンパイルをサポートしている必要がある
+- TypeScriptの `paths` は使えない（代わりにNode.jsのサブパスインポートを使用）
 
-### Compiled
+### コンパイル済み
 
-Package handles its own compilation.
+パッケージ自身がコンパイルを行う。
 
 ```json
 // packages/ui/package.json
@@ -78,17 +78,17 @@ Package handles its own compilation.
 }
 ```
 
-**When to use:**
+**使用すべき場合:**
 
-- You want Turborepo to cache builds
-- Package will be used by non-bundler tools
-- You need maximum compatibility
+- Turborepoでビルドをキャッシュしたい
+- バンドラー以外のツールからも利用される
+- 最大限の互換性が必要
 
-**Remember:** Add `dist/**` to turbo.json outputs!
+**注意:** turbo.jsonのoutputsに `dist/**` を追加すること！
 
-## Defining Exports
+## エクスポートの定義
 
-### Multiple Entrypoints
+### 複数のエントリーポイント
 
 ```json
 {
@@ -101,7 +101,7 @@ Package handles its own compilation.
 }
 ```
 
-### Conditional Exports (Compiled)
+### 条件付きエクスポート（コンパイル済み）
 
 ```json
 {
@@ -116,9 +116,9 @@ Package handles its own compilation.
 }
 ```
 
-## Installing Internal Packages
+## 内部パッケージのインストール
 
-### Add to Consuming Package
+### 利用側パッケージに追加
 
 ```json
 // apps/web/package.json
@@ -130,13 +130,13 @@ Package handles its own compilation.
 }
 ```
 
-### Run Install
+### インストールの実行
 
 ```bash
-pnpm install  # Updates lockfile with new dependency
+pnpm install  # 新しい依存関係でロックファイルを更新
 ```
 
-### Import and Use
+### インポートして使用
 
 ```typescript
 // apps/web/src/page.tsx
@@ -147,25 +147,25 @@ export default function Page() {
 }
 ```
 
-## One Purpose Per Package
+## 1パッケージ1目的
 
-### Good Examples
+### 良い例
 
 ```
 packages/
-├── ui/                  # Shared UI components
-├── utils/               # General utilities
-├── auth/                # Authentication logic
-├── database/            # Database client/schemas
-├── eslint-config/       # ESLint configuration
-├── typescript-config/   # TypeScript configuration
-└── api-client/          # Generated API client
+├── ui/                  # 共有UIコンポーネント
+├── utils/               # 汎用ユーティリティ
+├── auth/                # 認証ロジック
+├── database/            # データベースクライアント/スキーマ
+├── eslint-config/       # ESLint設定
+├── typescript-config/   # TypeScript設定
+└── api-client/          # 生成されたAPIクライアント
 ```
 
-### Avoid Mega-Packages
+### 巨大パッケージを避ける
 
 ```
-// BAD: One package for everything
+// 悪い例: すべてを1つのパッケージに
 packages/
 └── shared/
     ├── components/
@@ -174,18 +174,18 @@ packages/
     ├── types/
     └── api/
 
-// GOOD: Separate by purpose
+// 良い例: 目的ごとに分離
 packages/
-├── ui/          # Components
-├── utils/       # Utilities
-├── hooks/       # React hooks
-├── types/       # Shared TypeScript types
-└── api-client/  # API utilities
+├── ui/          # コンポーネント
+├── utils/       # ユーティリティ
+├── hooks/       # Reactフック
+├── types/       # 共有TypeScript型
+└── api-client/  # APIユーティリティ
 ```
 
-## Config Packages
+## 設定パッケージ
 
-### TypeScript Config
+### TypeScript設定
 
 ```json
 // packages/typescript-config/package.json
@@ -199,7 +199,7 @@ packages/
 }
 ```
 
-### ESLint Config
+### ESLint設定
 
 ```json
 // packages/eslint-config/package.json
@@ -216,17 +216,17 @@ packages/
 }
 ```
 
-## Common Mistakes
+## よくあるミス
 
-### Forgetting to Export
+### エクスポートの定義忘れ
 
 ```json
-// BAD: No exports defined
+// 悪い例: exportsが未定義
 {
   "name": "@repo/ui"
 }
 
-// GOOD: Clear exports
+// 良い例: 明確なexports
 {
   "name": "@repo/ui",
   "exports": {
@@ -235,30 +235,30 @@ packages/
 }
 ```
 
-### Wrong Workspace Syntax
+### ワークスペース構文の誤り
 
 ```json
 // pnpm/bun
-{ "@repo/ui": "workspace:*" }  // Correct
+{ "@repo/ui": "workspace:*" }  // 正しい
 
 // npm/yarn
-{ "@repo/ui": "*" }            // Correct
-{ "@repo/ui": "workspace:*" }  // Wrong for npm/yarn!
+{ "@repo/ui": "*" }            // 正しい
+{ "@repo/ui": "workspace:*" }  // npm/yarnでは間違い！
 ```
 
-### Missing from turbo.json Outputs
+### turbo.jsonのoutputsへの追加漏れ
 
 ```json
-// Package builds to dist/, but turbo.json doesn't know
+// パッケージがdist/にビルドするが、turbo.jsonが認識していない
 {
   "tasks": {
     "build": {
-      "outputs": [".next/**"]  // Missing dist/**!
+      "outputs": [".next/**"]  // dist/**が不足！
     }
   }
 }
 
-// Correct
+// 正しい
 {
   "tasks": {
     "build": {
@@ -268,13 +268,13 @@ packages/
 }
 ```
 
-## TypeScript Best Practices
+## TypeScriptのベストプラクティス
 
-### Use Node.js Subpath Imports (Not `paths`)
+### Node.jsサブパスインポートを使用（`paths` ではなく）
 
-TypeScript `compilerOptions.paths` breaks with JIT packages. Use Node.js subpath imports instead (TypeScript 5.4+).
+TypeScriptの `compilerOptions.paths` はJITパッケージで動作しない。代わりにNode.jsサブパスインポートを使用する（TypeScript 5.4以降）。
 
-**JIT Package:**
+**JITパッケージ:**
 
 ```json
 // packages/ui/package.json
@@ -287,10 +287,10 @@ TypeScript `compilerOptions.paths` breaks with JIT packages. Use Node.js subpath
 
 ```typescript
 // packages/ui/button.tsx
-import { MY_STRING } from "#utils.ts";  // Uses .ts extension
+import { MY_STRING } from "#utils.ts";  // .ts拡張子を使用
 ```
 
-**Compiled Package:**
+**コンパイル済みパッケージ:**
 
 ```json
 // packages/ui/package.json
@@ -303,16 +303,16 @@ import { MY_STRING } from "#utils.ts";  // Uses .ts extension
 
 ```typescript
 // packages/ui/button.tsx
-import { MY_STRING } from "#utils.js";  // Uses .js extension
+import { MY_STRING } from "#utils.js";  // .js拡張子を使用
 ```
 
-### Use `tsc` for Internal Packages
+### 内部パッケージには `tsc` を使用
 
-For internal packages, prefer `tsc` over bundlers. Bundlers can mangle code before it reaches your app's bundler, causing hard-to-debug issues.
+内部パッケージには、バンドラーよりも `tsc` を推奨する。バンドラーはアプリのバンドラーに到達する前にコードを変換してしまい、デバッグが困難な問題を引き起こす可能性がある。
 
-### Enable Go-to-Definition
+### 定義元へのジャンプを有効にする
 
-For Compiled Packages, enable declaration maps:
+コンパイル済みパッケージの場合、宣言マップを有効にする:
 
 ```json
 // tsconfig.json
@@ -324,12 +324,12 @@ For Compiled Packages, enable declaration maps:
 }
 ```
 
-This creates `.d.ts` and `.d.ts.map` files for IDE navigation.
+これにより `.d.ts` と `.d.ts.map` ファイルが生成され、IDEでのナビゲーションが可能になる。
 
-### No Root tsconfig.json Needed
+### ルートのtsconfig.jsonは不要
 
-Each package should have its own `tsconfig.json`. A root one causes all tasks to miss cache when changed. Only use root `tsconfig.json` for non-package scripts.
+各パッケージが独自の `tsconfig.json` を持つべきである。ルートに配置すると、変更時にすべてのタスクのキャッシュが無効化される。ルートの `tsconfig.json` はパッケージ外のスクリプトにのみ使用する。
 
-### Avoid TypeScript Project References
+### TypeScriptプロジェクト参照を避ける
 
-They add complexity and another caching layer. Turborepo handles dependencies better.
+複雑さが増し、別のキャッシュレイヤーが追加される。Turborepoの方が依存関係をうまく管理できる。

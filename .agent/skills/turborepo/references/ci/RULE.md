@@ -1,79 +1,79 @@
-# CI/CD with Turborepo
+# TurborepoによるCI/CD
 
-General principles for running Turborepo in continuous integration environments.
+継続的インテグレーション環境でTurborepoを実行するための一般原則。
 
-## Core Principles
+## 基本原則
 
-### Always Use `turbo run` in CI
+### CIでは必ず `turbo run` を使用する
 
-**Never use the `turbo <tasks>` shorthand in CI or scripts.** Always use `turbo run`:
+**CIやスクリプトでは `turbo <tasks>` の省略形を絶対に使わないこと。** 必ず `turbo run` を使用する:
 
 ```bash
-# CORRECT - Always use in CI, package.json, scripts
+# 正しい - CI、package.json、スクリプトでは常にこちらを使用
 turbo run build test lint
 
-# WRONG - Shorthand is only for one-off terminal commands
+# 間違い - 省略形はターミナルでの一回限りのコマンド専用
 turbo build test lint
 ```
 
-The shorthand `turbo <tasks>` is only for one-off invocations typed directly in terminal by humans or agents. Anywhere the command is written into code (CI, package.json, scripts), use `turbo run`.
+省略形 `turbo <tasks>` は、人間やエージェントがターミナルで直接入力する一回限りの実行専用。コマンドがコードに記述される場所（CI、package.json、スクリプト）では、`turbo run` を使用すること。
 
-### Enable Remote Caching
+### リモートキャッシュを有効にする
 
-Remote caching dramatically speeds up CI by sharing cached artifacts across runs.
+リモートキャッシュは、実行間でキャッシュ成果物を共有することでCIを大幅に高速化する。
 
-Required environment variables:
+必要な環境変数:
 
 ```bash
 TURBO_TOKEN=your_vercel_token
 TURBO_TEAM=your_team_slug
 ```
 
-### Use --affected for PR Builds
+### PRビルドでは --affected を使用する
 
-The `--affected` flag only runs tasks for packages changed since the base branch:
+`--affected` フラグは、ベースブランチから変更されたパッケージのタスクのみを実行する:
 
 ```bash
 turbo run build test --affected
 ```
 
-This requires Git history to compute what changed.
+これには変更内容を計算するためのGit履歴が必要。
 
-## Git History Requirements
+## Git履歴の要件
 
-### Fetch Depth
+### フェッチ深度
 
-`--affected` needs access to the merge base. Shallow clones break this.
+`--affected` はマージベースにアクセスする必要がある。浅いクローンではこれが機能しない。
 
 ```yaml
 # GitHub Actions
 - uses: actions/checkout@v4
   with:
-    fetch-depth: 2  # Minimum for --affected
-    # Use 0 for full history if merge base is far
+    fetch-depth: 2  # --affected に必要な最小値
+    # マージベースが遠い場合は 0 で完全な履歴を取得
 ```
 
-### Why Shallow Clones Break --affected
+### 浅いクローンで --affected が機能しない理由
 
-Turborepo compares the current HEAD to the merge base with `main`. If that commit isn't fetched, `--affected` falls back to running everything.
+Turborepoは現在のHEADと `main` とのマージベースを比較する。そのコミットがフェッチされていない場合、`--affected` はすべてを実行するフォールバック動作になる。
 
-For PRs with many commits, consider:
+コミット数が多いPRの場合は以下を検討:
 
 ```yaml
-fetch-depth: 0  # Full history
+fetch-depth: 0  # 完全な履歴
 ```
 
-## Environment Variables Reference
+## 環境変数リファレンス
 
-| Variable            | Purpose                              |
-| ------------------- | ------------------------------------ |
-| `TURBO_TOKEN`       | Vercel access token for remote cache |
-| `TURBO_TEAM`        | Your Vercel team slug                |
-| `TURBO_REMOTE_ONLY` | Skip local cache, use remote only    |
-| `TURBO_LOG_ORDER`   | Set to `grouped` for cleaner CI logs |
+| 変数                | 用途                                     |
+| ------------------- | ---------------------------------------- |
+| `TURBO_TOKEN`       | リモートキャッシュ用のVercelアクセストークン |
+| `TURBO_TEAM`        | Vercelチームのスラッグ                     |
+| `TURBO_REMOTE_ONLY` | ローカルキャッシュをスキップし、リモートのみ使用 |
+| `TURBO_LOG_ORDER`   | `grouped` に設定するとCIログが見やすくなる   |
 
-## See Also
+## 関連ドキュメント
 
-- [github-actions.md](./github-actions.md) - GitHub Actions setup
-- [vercel.md](./vercel.md) - Vercel deployment
-- [patterns.md](./patterns.md) - CI optimization patterns
+- [github-actions.md](./github-actions.md) - GitHub Actionsの設定
+- [vercel.md](./vercel.md) - Vercelデプロイ
+- [patterns.md](./patterns.md) - CI最適化パターン

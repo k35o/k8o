@@ -1,148 +1,148 @@
-# Turborepo Filter Syntax Reference
+# Turborepoフィルター構文リファレンス
 
-## Running Only Changed Packages: `--affected`
+## 変更されたパッケージのみ実行する: `--affected`
 
-**The primary way to run only changed packages is `--affected`:**
+**変更されたパッケージのみを実行する主な方法は`--affected`です:**
 
 ```bash
-# Run build/test/lint only in changed packages and their dependents
+# 変更されたパッケージとその依存元でのみbuild/test/lintを実行
 turbo run build test lint --affected
 ```
 
-This compares your current branch to the default branch (usually `main` or `master`) and runs tasks in:
+これは現在のブランチをデフォルトブランチ（通常`main`または`master`）と比較し、以下でタスクを実行します:
 
-1. Packages with file changes
-2. Packages that depend on changed packages (dependents)
+1. ファイルに変更があるパッケージ
+2. 変更されたパッケージに依存するパッケージ（依存元）
 
-### Why Include Dependents?
+### なぜ依存元を含めるのか?
 
-If you change `@repo/ui`, packages that import `@repo/ui` (like `apps/web`) need to re-run their tasks to verify they still work with the changes.
+`@repo/ui`を変更した場合、`@repo/ui`をインポートしているパッケージ（例: `apps/web`）は、変更後も正しく動作することを確認するためにタスクを再実行する必要があります。
 
-### Customizing --affected
+### --affectedのカスタマイズ
 
 ```bash
-# Use a different base branch
+# 異なるベースブランチを使用
 turbo run build --affected --affected-base=origin/develop
 
-# Use a different head (current state)
+# 異なるhead（現在の状態）を使用
 turbo run build --affected --affected-head=HEAD~5
 ```
 
-### Common CI Pattern
+### 一般的なCIパターン
 
 ```yaml
 # .github/workflows/ci.yml
 - run: turbo run build test lint --affected
 ```
 
-This is the most efficient CI setup - only run tasks for what actually changed.
+これは最も効率的なCIセットアップです - 実際に変更されたもののみタスクを実行します。
 
 ---
 
-## Manual Git Comparison with --filter
+## --filterによる手動Git比較
 
-For more control, use `--filter` with git comparison syntax:
+より細かい制御が必要な場合、`--filter`とgit比較構文を使用します:
 
 ```bash
-# Changed packages + dependents (same as --affected)
+# 変更されたパッケージ + 依存元（--affectedと同じ）
 turbo run build --filter=...[origin/main]
 
-# Only changed packages (no dependents)
+# 変更されたパッケージのみ（依存元なし）
 turbo run build --filter=[origin/main]
 
-# Changed packages + dependencies (packages they import)
+# 変更されたパッケージ + 依存先（このパッケージが依存しているパッケージ）
 turbo run build --filter=[origin/main]...
 
-# Changed since last commit
+# 最後のコミット以降の変更
 turbo run build --filter=...[HEAD^1]
 
-# Changed between two commits
+# 2つのコミット間の変更
 turbo run build --filter=[a1b2c3d...e4f5g6h]
 ```
 
-### Comparison Syntax
+### 比較構文
 
-| Syntax        | Meaning                               |
+| 構文          | 意味                                  |
 | ------------- | ------------------------------------- |
-| `[ref]`       | Packages changed since `ref`          |
-| `...[ref]`    | Changed packages + their dependents   |
-| `[ref]...`    | Changed packages + their dependencies |
-| `...[ref]...` | Dependencies, changed, AND dependents |
+| `[ref]`       | `ref`以降に変更されたパッケージ       |
+| `...[ref]`    | 変更されたパッケージ + その依存元     |
+| `[ref]...`    | 変更されたパッケージ + その依存先     |
+| `...[ref]...` | 依存元、変更されたもの、および依存先  |
 
 ---
 
-## Other Filter Types
+## その他のフィルタータイプ
 
-Filters select which packages to include in a `turbo run` invocation.
+フィルターは`turbo run`の呼び出しに含めるパッケージを選択します。
 
-### Basic Syntax
+### 基本構文
 
 ```bash
 turbo run build --filter=<package-name>
 turbo run build -F <package-name>
 ```
 
-Multiple filters combine as a union (packages matching ANY filter run).
+複数のフィルターは和集合として結合されます（いずれかのフィルターにマッチするパッケージが実行されます）。
 
-### By Package Name
-
-```bash
---filter=web          # exact match
---filter=@acme/*      # scope glob
---filter=*-app        # name glob
-```
-
-### By Directory
+### パッケージ名で指定
 
 ```bash
---filter=./apps/*           # all packages in apps/
---filter=./packages/ui      # specific directory
+--filter=web          # 完全一致
+--filter=@acme/*      # スコープのglob
+--filter=*-app        # 名前のglob
 ```
 
-### By Dependencies/Dependents
+### ディレクトリで指定
 
-| Syntax      | Meaning                                |
+```bash
+--filter=./apps/*           # apps/内のすべてのパッケージ
+--filter=./packages/ui      # 特定のディレクトリ
+```
+
+### 依存元/依存先で指定
+
+| 構文        | 意味                                   |
 | ----------- | -------------------------------------- |
-| `pkg...`    | Package AND all its dependencies       |
-| `...pkg`    | Package AND all its dependents         |
-| `...pkg...` | Dependencies, package, AND dependents  |
-| `^pkg...`   | Only dependencies (exclude pkg itself) |
-| `...^pkg`   | Only dependents (exclude pkg itself)   |
+| `pkg...`    | パッケージとそのすべての依存先         |
+| `...pkg`    | パッケージとそのすべての依存元         |
+| `...pkg...` | 依存先、パッケージ、および依存元       |
+| `^pkg...`   | 依存先のみ（pkg自体を除く）           |
+| `...^pkg`   | 依存元のみ（pkg自体を除く）           |
 
-### Negation
+### 否定
 
-Exclude packages with `!`:
+`!`でパッケージを除外:
 
 ```bash
---filter=!web              # exclude web
---filter=./apps/* --filter=!admin   # apps except admin
+--filter=!web              # webを除外
+--filter=./apps/* --filter=!admin   # admin以外のapps
 ```
 
-### Task Identifiers
+### タスク識別子
 
-Run a specific task in a specific package:
+特定のパッケージで特定のタスクを実行:
 
 ```bash
-turbo run web#build        # only web's build task
-turbo run web#build api#test   # web build + api test
+turbo run web#build        # webのbuildタスクのみ
+turbo run web#build api#test   # webのbuild + apiのtest
 ```
 
-### Combining Filters
+### フィルターの組み合わせ
 
-Multiple `--filter` flags create a union:
+複数の`--filter`フラグは和集合を作成します:
 
 ```bash
-turbo run build --filter=web --filter=api   # runs in both
+turbo run build --filter=web --filter=api   # 両方で実行
 ```
 
 ---
 
-## Quick Reference: Changed Packages
+## クイックリファレンス: 変更されたパッケージ
 
-| Goal                               | Command                                                     |
+| 目的                               | コマンド                                                    |
 | ---------------------------------- | ----------------------------------------------------------- |
-| Changed + dependents (recommended) | `turbo run build --affected`                                |
-| Custom base branch                 | `turbo run build --affected --affected-base=origin/develop` |
-| Only changed (no dependents)       | `turbo run build --filter=[origin/main]`                    |
-| Changed + dependencies             | `turbo run build --filter=[origin/main]...`                 |
-| Since last commit                  | `turbo run build --filter=...[HEAD^1]`                      |
+| 変更 + 依存元（推奨）             | `turbo run build --affected`                                |
+| カスタムベースブランチ             | `turbo run build --affected --affected-base=origin/develop` |
+| 変更のみ（依存元なし）            | `turbo run build --filter=[origin/main]`                    |
+| 変更 + 依存先                     | `turbo run build --filter=[origin/main]...`                 |
+| 最後のコミット以降                | `turbo run build --filter=...[HEAD^1]`                      |
