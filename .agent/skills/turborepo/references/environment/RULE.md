@@ -1,12 +1,12 @@
-# Environment Variables in Turborepo
+# Turborepoの環境変数
 
-Turborepo provides fine-grained control over which environment variables affect task hashing and runtime availability.
+Turborepoは、どの環境変数がタスクのハッシュとランタイムの利用可能性に影響するかを細かく制御できます。
 
-## Configuration Keys
+## 設定キー
 
-### `env` - Task-Specific Variables
+### `env` - タスク固有の変数
 
-Variables that affect a specific task's hash. When these change, only that task rebuilds.
+特定のタスクのハッシュに影響する変数。これらが変更されると、そのタスクのみが再ビルドされます。
 
 ```json
 {
@@ -18,9 +18,9 @@ Variables that affect a specific task's hash. When these change, only that task 
 }
 ```
 
-### `globalEnv` - Variables Affecting All Tasks
+### `globalEnv` - すべてのタスクに影響する変数
 
-Variables that affect EVERY task's hash. When these change, all tasks rebuild.
+すべてのタスクのハッシュに影響する変数。これらが変更されると、全タスクが再ビルドされます。
 
 ```json
 {
@@ -28,9 +28,9 @@ Variables that affect EVERY task's hash. When these change, all tasks rebuild.
 }
 ```
 
-### `passThroughEnv` - Runtime-Only Variables (Not Hashed)
+### `passThroughEnv` - ランタイム専用変数（ハッシュに含まれない）
 
-Variables available at runtime but NOT included in hash. **Use with caution** - changes won't trigger rebuilds.
+ランタイムでは利用可能だが、ハッシュには含まれない変数。**注意して使用してください** - 変更しても再ビルドはトリガーされません。
 
 ```json
 {
@@ -42,9 +42,9 @@ Variables available at runtime but NOT included in hash. **Use with caution** - 
 }
 ```
 
-### `globalPassThroughEnv` - Global Runtime Variables
+### `globalPassThroughEnv` - グローバルランタイム変数
 
-Same as `passThroughEnv` but for all tasks.
+`passThroughEnv`と同じですが、すべてのタスクに適用されます。
 
 ```json
 {
@@ -52,11 +52,11 @@ Same as `passThroughEnv` but for all tasks.
 }
 ```
 
-## Wildcards and Negation
+## ワイルドカードと否定
 
-### Wildcards
+### ワイルドカード
 
-Match multiple variables with `*`:
+`*`で複数の変数にマッチ:
 
 ```json
 {
@@ -64,11 +64,11 @@ Match multiple variables with `*`:
 }
 ```
 
-This matches `MY_API_URL`, `MY_API_KEY`, `FEATURE_FLAG_DARK_MODE`, etc.
+これは`MY_API_URL`、`MY_API_KEY`、`FEATURE_FLAG_DARK_MODE`などにマッチします。
 
-### Negation
+### 否定
 
-Exclude variables (useful with framework inference):
+変数を除外（フレームワーク推論と組み合わせて便利）:
 
 ```json
 {
@@ -76,7 +76,7 @@ Exclude variables (useful with framework inference):
 }
 ```
 
-## Complete Example
+## 完全な設定例
 
 ```json
 {

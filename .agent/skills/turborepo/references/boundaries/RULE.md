@@ -1,27 +1,27 @@
 # Boundaries
 
-**Experimental feature** - See [RFC](https://github.com/vercel/turborepo/discussions/9435)
+**実験的機能** - [RFC](https://github.com/vercel/turborepo/discussions/9435) を参照
 
-Full docs: https://turborepo.dev/docs/reference/boundaries
+完全なドキュメント: https://turborepo.dev/docs/reference/boundaries
 
-Boundaries enforce package isolation by detecting:
+Boundariesは以下を検出することでパッケージの分離を強制します:
 
-1. Imports of files outside the package's directory
-2. Imports of packages not declared in `package.json` dependencies
+1. パッケージのディレクトリ外のファイルのインポート
+2. `package.json` の dependencies に宣言されていないパッケージのインポート
 
-## Usage
+## 使い方
 
 ```bash
 turbo boundaries
 ```
 
-Run this to check for workspace violations across your monorepo.
+モノレポ全体のワークスペース違反をチェックするために実行します。
 
-## Tags
+## タグ
 
-Tags allow you to create rules for which packages can depend on each other.
+タグを使うことで、どのパッケージが互いに依存できるかのルールを作成できます。
 
-### Adding Tags to a Package
+### パッケージにタグを追加する
 
 ```json
 // packages/ui/turbo.json
@@ -30,9 +30,9 @@ Tags allow you to create rules for which packages can depend on each other.
 }
 ```
 
-### Configuring Tag Rules
+### タグルールの設定
 
-Rules go in root `turbo.json`:
+ルールはルートの `turbo.json` に記述します:
 
 ```json
 // turbo.json
@@ -49,11 +49,11 @@ Rules go in root `turbo.json`:
 }
 ```
 
-This prevents `public`-tagged packages from importing `internal`-tagged packages.
+これにより、`public` タグが付いたパッケージが `internal` タグが付いたパッケージをインポートすることを防ぎます。
 
-### Rule Types
+### ルールの種類
 
-**Allow-list approach** (only allow specific tags):
+**許可リスト方式**（特定のタグのみ許可）:
 
 ```json
 {
@@ -69,7 +69,7 @@ This prevents `public`-tagged packages from importing `internal`-tagged packages
 }
 ```
 
-**Deny-list approach** (block specific tags):
+**拒否リスト方式**（特定のタグをブロック）:
 
 ```json
 {
@@ -85,7 +85,7 @@ This prevents `public`-tagged packages from importing `internal`-tagged packages
 }
 ```
 
-**Restrict dependents** (who can import this package):
+**依存元の制限**（このパッケージをインポートできるパッケージを制限）:
 
 ```json
 {
@@ -101,9 +101,9 @@ This prevents `public`-tagged packages from importing `internal`-tagged packages
 }
 ```
 
-### Using Package Names
+### パッケージ名の使用
 
-Package names work in place of tags:
+タグの代わりにパッケージ名を使用できます:
 
 ```json
 {
@@ -119,8 +119,8 @@ Package names work in place of tags:
 }
 ```
 
-## Key Points
+## 重要なポイント
 
-- Rules apply transitively (dependencies of dependencies)
-- Helps enforce architectural boundaries at scale
-- Catches violations before runtime/build errors
+- ルールは推移的に適用されます（依存先の依存先にも適用）
+- 大規模なプロジェクトでアーキテクチャの境界を強制するのに役立ちます
+- ランタイム/ビルドエラーの前に違反を検出できます

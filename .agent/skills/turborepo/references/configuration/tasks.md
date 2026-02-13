@@ -1,36 +1,36 @@
-# Task Configuration Reference
+# タスク設定リファレンス
 
-Full docs: https://turborepo.dev/docs/reference/configuration#tasks
+完全なドキュメント: https://turborepo.dev/docs/reference/configuration#tasks
 
 ## dependsOn
 
-Controls task execution order.
+タスクの実行順序を制御する。
 
 ```json
 {
   "tasks": {
     "build": {
       "dependsOn": [
-        "^build", // Dependencies' build tasks first
-        "codegen", // Same package's codegen task first
-        "shared#build" // Specific package's build task
+        "^build", // 依存パッケージのbuildタスクを先に実行
+        "codegen", // 同一パッケージのcodegenタスクを先に実行
+        "shared#build" // 特定パッケージのbuildタスク
       ]
     }
   }
 }
 ```
 
-| Syntax     | Meaning                              |
-| ---------- | ------------------------------------ |
-| `^task`    | Run `task` in all dependencies first |
-| `task`     | Run `task` in same package first     |
-| `pkg#task` | Run specific package's task first    |
+| 構文       | 意味                                       |
+| ---------- | ------------------------------------------ |
+| `^task`    | すべての依存パッケージで `task` を先に実行 |
+| `task`     | 同一パッケージで `task` を先に実行         |
+| `pkg#task` | 特定パッケージの `task` を先に実行         |
 
-The `^` prefix is crucial - without it, you're referencing the same package.
+`^` プレフィックスは重要 - これがないと同一パッケージを参照していることになる。
 
-### Transit Nodes for Parallel Tasks
+### 並列タスク用のトランジットノード
 
-For tasks like `lint` and `check-types` that can run in parallel but need dependency-aware caching:
+`lint` や `check-types` のように並列実行可能だが依存関係を考慮したキャッシュが必要なタスク向け：
 
 ```json
 {
@@ -42,14 +42,14 @@ For tasks like `lint` and `check-types` that can run in parallel but need depend
 }
 ```
 
-**DO NOT use `dependsOn: ["^lint"]`** - this forces sequential execution.
-**DO NOT use `dependsOn: []`** - this breaks cache invalidation.
+**`dependsOn: ["^lint"]` は使わないこと** - 逐次実行が強制される。
+**`dependsOn: []` も使わないこと** - キャッシュの無効化が壊れる。
 
-The `transit` task creates dependency relationships without running anything (no matching script), so tasks run in parallel with correct caching.
+`transit` タスクは実際のスクリプトにマッチせずに依存関係を作成するため（スクリプトなし）、タスクは正しいキャッシュで並列実行される。
 
 ## outputs
 
-Glob patterns for files to cache. **If omitted, nothing is cached.**
+キャッシュするファイルのglobパターン。**省略するとキャッシュされない。**
 
 ```json
 {
@@ -61,7 +61,7 @@ Glob patterns for files to cache. **If omitted, nothing is cached.**
 }
 ```
 
-**Framework examples:**
+**フレームワーク別の例：**
 
 ```json
 // Next.js
@@ -73,15 +73,15 @@ Glob patterns for files to cache. **If omitted, nothing is cached.**
 // TypeScript (tsc)
 "outputs": ["dist/**", "*.tsbuildinfo"]
 
-// No file outputs (lint, typecheck)
+// ファイル出力なし（lint、typecheck）
 "outputs": []
 ```
 
-Use `!` prefix to exclude patterns from caching.
+`!` プレフィックスでキャッシュからパターンを除外する。
 
 ## inputs
 
-Files considered when calculating task hash. Defaults to all tracked files in package.
+タスクハッシュの計算時に考慮されるファイル。デフォルトはパッケージ内のすべてのトラッキングされたファイル。
 
 ```json
 {
@@ -93,12 +93,12 @@ Files considered when calculating task hash. Defaults to all tracked files in pa
 }
 ```
 
-**Special values:**
+**特殊な値：**
 
-| Value                 | Meaning                                 |
-| --------------------- | --------------------------------------- |
-| `$TURBO_DEFAULT$`     | Include default inputs, then add/remove |
-| `$TURBO_ROOT$/<path>` | Reference files from repo root          |
+| 値                    | 意味                                       |
+| --------------------- | ------------------------------------------ |
+| `$TURBO_DEFAULT$`     | デフォルトのinputsを含め、そこに追加/削除  |
+| `$TURBO_ROOT$/<path>` | リポジトリルートのファイルを参照            |
 
 ```json
 {
@@ -116,7 +116,7 @@ Files considered when calculating task hash. Defaults to all tracked files in pa
 
 ## env
 
-Environment variables to include in task hash.
+タスクハッシュに含める環境変数。
 
 ```json
 {
@@ -124,19 +124,19 @@ Environment variables to include in task hash.
     "build": {
       "env": [
         "API_URL",
-        "NEXT_PUBLIC_*", // Wildcard matching
-        "!DEBUG" // Exclude from hash
+        "NEXT_PUBLIC_*", // ワイルドカードマッチ
+        "!DEBUG" // ハッシュから除外
       ]
     }
   }
 }
 ```
 
-Variables listed here affect cache hits - changing the value invalidates cache.
+ここに記載された変数はキャッシュヒットに影響する - 値が変わるとキャッシュが無効化される。
 
 ## cache
 
-Enable/disable caching for a task. Default: `true`.
+タスクのキャッシュを有効/無効にする。デフォルト: `true`。
 
 ```json
 {
@@ -147,11 +147,11 @@ Enable/disable caching for a task. Default: `true`.
 }
 ```
 
-Disable for: dev servers, deploy commands, tasks with side effects.
+無効にすべきもの: 開発サーバー、デプロイコマンド、副作用のあるタスク。
 
 ## persistent
 
-Mark long-running tasks that don't exit. Default: `false`.
+終了しない長時間実行タスクをマークする。デフォルト: `false`。
 
 ```json
 {
@@ -164,11 +164,11 @@ Mark long-running tasks that don't exit. Default: `false`.
 }
 ```
 
-Required for dev servers - without it, dependent tasks wait forever.
+開発サーバーに必須 - これがないと依存タスクが永久に待ち続ける。
 
 ## interactive
 
-Allow task to receive stdin input. Default: `false`.
+タスクがstdin入力を受け取ることを許可する。デフォルト: `false`。
 
 ```json
 {
@@ -183,13 +183,13 @@ Allow task to receive stdin input. Default: `false`.
 
 ## outputLogs
 
-Control when logs are shown. Options: `full`, `hash-only`, `new-only`, `errors-only`, `none`.
+ログの表示タイミングを制御する。オプション: `full`、`hash-only`、`new-only`、`errors-only`、`none`。
 
 ```json
 {
   "tasks": {
     "build": {
-      "outputLogs": "new-only" // Only show logs on cache miss
+      "outputLogs": "new-only" // キャッシュミス時のみログを表示
     }
   }
 }
@@ -197,7 +197,7 @@ Control when logs are shown. Options: `full`, `hash-only`, `new-only`, `errors-o
 
 ## with
 
-Run tasks alongside this task. For long-running tasks that need runtime dependencies.
+このタスクと一緒にタスクを実行する。ランタイム依存関係が必要な長時間実行タスク向け。
 
 ```json
 {
@@ -211,11 +211,11 @@ Run tasks alongside this task. For long-running tasks that need runtime dependen
 }
 ```
 
-Unlike `dependsOn`, `with` runs tasks concurrently (not sequentially). Use for dev servers that need other services running.
+`dependsOn` と異なり、`with` はタスクを（逐次ではなく）並行して実行する。他のサービスが実行中である必要がある開発サーバーに使用する。
 
 ## interruptible
 
-Allow `turbo watch` to restart the task on changes. Default: `false`.
+`turbo watch` が変更時にタスクを再起動することを許可する。デフォルト: `false`。
 
 ```json
 {
@@ -229,11 +229,11 @@ Allow `turbo watch` to restart the task on changes. Default: `false`.
 }
 ```
 
-Use for dev servers that don't automatically detect dependency changes.
+依存関係の変更を自動検出しない開発サーバーに使用する。
 
 ## description
 
-Human-readable description of the task.
+タスクの人間が読める説明。
 
 ```json
 {
@@ -245,11 +245,11 @@ Human-readable description of the task.
 }
 ```
 
-For documentation only - doesn't affect execution or caching.
+ドキュメント用のみ - 実行やキャッシュには影響しない。
 
 ## passThroughEnv
 
-Environment variables available at runtime but NOT included in cache hash.
+ランタイムで利用可能だがキャッシュハッシュには含まれない環境変数。
 
 ```json
 {
@@ -261,11 +261,11 @@ Environment variables available at runtime but NOT included in cache hash.
 }
 ```
 
-**Warning**: Changes to these vars won't cause cache misses. Use `env` if changes should invalidate cache.
+**警告**: これらの変数の変更はキャッシュミスを引き起こさない。変更時にキャッシュを無効化すべき場合は `env` を使用する。
 
-## extends (Package Configuration only)
+## extends（パッケージ設定のみ）
 
-Control task inheritance in Package Configurations.
+パッケージ設定でのタスク継承を制御する。
 
 ```json
 // packages/ui/turbo.json
@@ -273,13 +273,13 @@ Control task inheritance in Package Configurations.
   "extends": ["//"],
   "tasks": {
     "lint": {
-      "extends": false // Exclude from this package
+      "extends": false // このパッケージから除外
     }
   }
 }
 ```
 
-| Value            | Behavior                                                       |
-| ---------------- | -------------------------------------------------------------- |
-| `true` (default) | Inherit from root turbo.json                                   |
-| `false`          | Exclude task from package, or define fresh without inheritance |
+| 値                 | 動作                                                     |
+| ------------------ | -------------------------------------------------------- |
+| `true`（デフォルト）| ルートのturbo.jsonから継承                               |
+| `false`            | パッケージからタスクを除外、または継承なしで新規に定義   |

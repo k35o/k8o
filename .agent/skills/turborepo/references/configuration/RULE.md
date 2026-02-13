@@ -1,26 +1,26 @@
-# turbo.json Configuration Overview
+# turbo.json 設定の概要
 
-Configuration reference for Turborepo. Full docs: https://turborepo.dev/docs/reference/configuration
+Turborepoの設定リファレンス。完全なドキュメント: https://turborepo.dev/docs/reference/configuration
 
-## File Location
+## ファイルの配置場所
 
-Root `turbo.json` lives at repo root, sibling to root `package.json`:
+ルートの `turbo.json` はリポジトリのルートに配置し、ルートの `package.json` と同階層に置く：
 
 ```
 my-monorepo/
-├── turbo.json        # Root configuration
+├── turbo.json        # ルート設定
 ├── package.json
 └── packages/
     └── web/
-        ├── turbo.json  # Package Configuration (optional)
+        ├── turbo.json  # パッケージ設定（オプション）
         └── package.json
 ```
 
-## Always Prefer Package Tasks Over Root Tasks
+## パッケージタスクを常にルートタスクより優先する
 
-**Always use package tasks. Only use Root Tasks if you cannot succeed with package tasks.**
+**常にパッケージタスクを使用すること。ルートタスクはパッケージタスクで対応できない場合にのみ使用する。**
 
-Package tasks enable parallelization, individual caching, and filtering. Define scripts in each package's `package.json`:
+パッケージタスクは並列化、個別キャッシュ、フィルタリングを可能にする。各パッケージの `package.json` にスクリプトを定義する：
 
 ```json
 // packages/web/package.json
@@ -45,7 +45,7 @@ Package tasks enable parallelization, individual caching, and filtering. Define 
 ```
 
 ```json
-// Root package.json - delegates to turbo
+// ルートの package.json - turboに委譲
 {
   "scripts": {
     "build": "turbo run build",
@@ -56,12 +56,12 @@ Package tasks enable parallelization, individual caching, and filtering. Define 
 }
 ```
 
-When you run `turbo run lint`, Turborepo finds all packages with a `lint` script and runs them **in parallel**.
+`turbo run lint` を実行すると、Turborepoは `lint` スクリプトを持つすべてのパッケージを見つけ、**並列**で実行する。
 
-**Root Tasks are a fallback**, not the default. Only use them for tasks that truly cannot run per-package (e.g., repo-level CI scripts, workspace-wide config generation).
+**ルートタスクはフォールバックであり**、デフォルトではない。パッケージ単位で実行できないタスク（例：リポジトリレベルのCIスクリプト、ワークスペース全体の設定生成）にのみ使用する。
 
 ```json
-// AVOID: Task logic in root defeats parallelization
+// 避けるべき: ルートにタスクロジックを置くと並列化が無効になる
 {
   "scripts": {
     "lint": "eslint apps/web && eslint apps/api && eslint packages/ui"
@@ -69,7 +69,7 @@ When you run `turbo run lint`, Turborepo finds all packages with a `lint` script
 }
 ```
 
-## Basic Structure
+## 基本構造
 
 ```json
 {
@@ -89,23 +89,23 @@ When you run `turbo run lint`, Turborepo finds all packages with a `lint` script
 }
 ```
 
-The `$schema` key enables IDE autocompletion and validation.
+`$schema` キーはIDEの自動補完とバリデーションを有効にする。
 
-## Configuration Sections
+## 設定セクション
 
-**Global options** - Settings affecting all tasks:
+**グローバルオプション** - すべてのタスクに影響する設定：
 
 - `globalEnv`, `globalDependencies`, `globalPassThroughEnv`
 - `cacheDir`, `daemon`, `envMode`, `ui`, `remoteCache`
 
-**Task definitions** - Per-task settings in `tasks` object:
+**タスク定義** - `tasks` オブジェクト内のタスクごとの設定：
 
 - `dependsOn`, `outputs`, `inputs`, `env`
 - `cache`, `persistent`, `interactive`, `outputLogs`
 
-## Package Configurations
+## パッケージ設定
 
-Use `turbo.json` in individual packages to override root settings:
+個別のパッケージ内の `turbo.json` でルート設定を上書きする：
 
 ```json
 // packages/web/turbo.json
@@ -119,18 +119,18 @@ Use `turbo.json` in individual packages to override root settings:
 }
 ```
 
-The `"extends": ["//"]` is required - it references the root configuration.
+`"extends": ["//"]` は必須 - ルート設定を参照する。
 
-**When to use Package Configurations:**
+**パッケージ設定を使うべきケース：**
 
-- Framework-specific outputs (Next.js, Vite, etc.)
-- Package-specific env vars
-- Different caching rules for specific packages
-- Keeping framework config close to the framework code
+- フレームワーク固有の出力（Next.js、Viteなど）
+- パッケージ固有の環境変数
+- 特定パッケージでの異なるキャッシュルール
+- フレームワーク設定をフレームワークコードの近くに置きたい場合
 
-### Extending from Other Packages
+### 他のパッケージからの拡張
 
-You can extend from config packages instead of just root:
+ルートだけでなく設定パッケージからも拡張できる：
 
 ```json
 // packages/web/turbo.json
@@ -139,12 +139,12 @@ You can extend from config packages instead of just root:
 }
 ```
 
-### Adding to Inherited Arrays with `$TURBO_EXTENDS$`
+### `$TURBO_EXTENDS$` による継承配列への追加
 
-By default, array fields in Package Configurations **replace** root values. Use `$TURBO_EXTENDS$` to **append** instead:
+デフォルトでは、パッケージ設定の配列フィールドはルートの値を**置換**する。`$TURBO_EXTENDS$` を使うと代わりに**追加**できる：
 
 ```json
-// Root turbo.json
+// ルートの turbo.json
 {
   "tasks": {
     "build": {
@@ -160,16 +160,16 @@ By default, array fields in Package Configurations **replace** root values. Use 
   "extends": ["//"],
   "tasks": {
     "build": {
-      // Inherits "dist/**" from root, adds ".next/**"
+      // ルートの "dist/**" を継承し、".next/**" を追加
       "outputs": ["$TURBO_EXTENDS$", ".next/**", "!.next/cache/**"]
     }
   }
 }
 ```
 
-Without `$TURBO_EXTENDS$`, outputs would only be `[".next/**", "!.next/cache/**"]`.
+`$TURBO_EXTENDS$` がない場合、outputsは `[".next/**", "!.next/cache/**"]` のみになる。
 
-**Works with:**
+**対応するフィールド：**
 
 - `dependsOn`
 - `env`
@@ -178,9 +178,9 @@ Without `$TURBO_EXTENDS$`, outputs would only be `[".next/**", "!.next/cache/**"
 - `passThroughEnv`
 - `with`
 
-### Excluding Tasks from Packages
+### パッケージからのタスク除外
 
-Use `extends: false` to exclude a task from a package:
+`extends: false` を使ってパッケージからタスクを除外する：
 
 ```json
 // packages/ui/turbo.json
@@ -188,22 +188,22 @@ Use `extends: false` to exclude a task from a package:
   "extends": ["//"],
   "tasks": {
     "e2e": {
-      "extends": false  // UI package doesn't have e2e tests
+      "extends": false  // UIパッケージにはe2eテストがない
     }
   }
 }
 ```
 
-## `turbo.jsonc` for Comments
+## コメント付きの `turbo.jsonc`
 
-Use `turbo.jsonc` extension to add comments with IDE support:
+IDE対応のコメントを追加するには `turbo.jsonc` 拡張子を使用する：
 
 ```jsonc
 // turbo.jsonc
 {
   "tasks": {
     "build": {
-      // Next.js outputs
+      // Next.jsの出力
       "outputs": [".next/**", "!.next/cache/**"]
     }
   }

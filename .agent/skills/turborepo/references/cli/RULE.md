@@ -1,34 +1,34 @@
 # turbo run
 
-The primary command for executing tasks across your monorepo.
+モノレポ全体でタスクを実行するための主要コマンド。
 
-## Basic Usage
+## 基本的な使い方
 
 ```bash
-# Full form (use in CI, package.json, scripts)
+# フル形式（CI、package.json、スクリプトで使用）
 turbo run <tasks>
 
-# Shorthand (only for one-off terminal invocations)
+# 省略形（ターミナルでの一度きりの実行のみ）
 turbo <tasks>
 ```
 
-## When to Use `turbo run` vs `turbo`
+## `turbo run` と `turbo` の使い分け
 
-**Always use `turbo run` when the command is written into code:**
+**コードに記述する場合は必ず `turbo run` を使用：**
 
-- `package.json` scripts
-- CI/CD workflows (GitHub Actions, etc.)
-- Shell scripts
-- Documentation
-- Any static/committed configuration
+- `package.json` のスクリプト
+- CI/CDワークフロー（GitHub Actionsなど）
+- シェルスクリプト
+- ドキュメント
+- 静的/コミット済みの設定ファイル全般
 
-**Only use `turbo` (shorthand) for:**
+**`turbo`（省略形）を使って良いのは：**
 
-- One-off commands typed directly in terminal
-- Ad-hoc invocations by humans or agents
+- ターミナルで直接入力する一度きりのコマンド
+- 人間やエージェントによるアドホックな実行
 
 ```json
-// package.json - ALWAYS use "turbo run"
+// package.json - 必ず "turbo run" を使用
 {
   "scripts": {
     "build": "turbo run build",
@@ -40,34 +40,34 @@ turbo <tasks>
 ```
 
 ```yaml
-# CI workflow - ALWAYS use "turbo run"
+# CIワークフロー - 必ず "turbo run" を使用
 - run: turbo run build --affected
 - run: turbo run test --affected
 ```
 
 ```bash
-# Terminal one-off - shorthand OK
+# ターミナルでの一度きりの実行 - 省略形OK
 turbo build --filter=web
 ```
 
-## Running Tasks
+## タスクの実行
 
-Tasks must be defined in `turbo.json` before running.
+タスクは実行前に `turbo.json` で定義されている必要がある。
 
 ```bash
-# Single task
+# 単一タスク
 turbo build
 
-# Multiple tasks
+# 複数タスク
 turbo run build lint test
 
-# See available tasks (run without arguments)
+# 利用可能なタスクを確認（引数なしで実行）
 turbo run
 ```
 
-## Passing Arguments to Scripts
+## スクリプトへの引数の受け渡し
 
-Use `--` to pass arguments through to the underlying package scripts:
+`--` を使って、基盤となるパッケージスクリプトに引数を渡す：
 
 ```bash
 turbo run build -- --sourcemap
@@ -75,26 +75,26 @@ turbo test -- --watch
 turbo lint -- --fix
 ```
 
-Everything after `--` goes directly to the task's script.
+`--` 以降のすべてがタスクのスクリプトに直接渡される。
 
-## Package Selection
+## パッケージの選択
 
-By default, turbo runs tasks in all packages. Use `--filter` to narrow scope:
+デフォルトでは、turboはすべてのパッケージでタスクを実行する。`--filter` でスコープを絞り込む：
 
 ```bash
 turbo build --filter=web
 turbo test --filter=./apps/*
 ```
 
-See `filtering/` for complete filter syntax.
+完全なフィルター構文については `filtering/` を参照。
 
-## Quick Reference
+## クイックリファレンス
 
-| Goal                | Command                    |
-| ------------------- | -------------------------- |
-| Build everything    | `turbo build`              |
-| Build one package   | `turbo build --filter=web` |
-| Multiple tasks      | `turbo build lint test`    |
-| Pass args to script | `turbo build -- --arg`     |
-| Preview run         | `turbo build --dry`        |
-| Force rebuild       | `turbo build --force`      |
+| 目的                    | コマンド                     |
+| ----------------------- | ---------------------------- |
+| すべてをビルド          | `turbo build`                |
+| 1つのパッケージをビルド | `turbo build --filter=web`   |
+| 複数タスク              | `turbo build lint test`      |
+| スクリプトに引数を渡す  | `turbo build -- --arg`       |
+| 実行のプレビュー        | `turbo build --dry`          |
+| 強制リビルド            | `turbo build --force`        |

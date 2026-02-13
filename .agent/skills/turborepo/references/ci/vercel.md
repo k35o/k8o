@@ -1,102 +1,102 @@
-# Vercel Deployment
+# Vercelデプロイ
 
-Turborepo integrates seamlessly with Vercel for monorepo deployments.
+Turborepoはモノレポのデプロイ時にVercelとシームレスに統合される。
 
-## Remote Cache
+## リモートキャッシュ
 
-Remote caching is **automatically enabled** when deploying to Vercel. No configuration needed - Vercel detects Turborepo and enables caching.
+Vercelへのデプロイ時、リモートキャッシュは**自動的に有効化**される。設定は不要 - VercelがTurborepoを検出し、キャッシュを有効にする。
 
-This means:
+これにより:
 
-- No `TURBO_TOKEN` or `TURBO_TEAM` setup required on Vercel
-- Cache is shared across all deployments
-- Preview and production builds benefit from cache
+- Vercel上での `TURBO_TOKEN` や `TURBO_TEAM` の設定が不要
+- キャッシュはすべてのデプロイ間で共有
+- プレビューと本番ビルドの両方がキャッシュの恩恵を受ける
 
 ## turbo-ignore
 
-Skip unnecessary builds when a package hasn't changed using `turbo-ignore`.
+`turbo-ignore` を使用して、パッケージに変更がない場合に不要なビルドをスキップする。
 
-### Installation
+### インストール
 
 ```bash
 npx turbo-ignore
 ```
 
-Or install globally in your project:
+またはプロジェクトにグローバルインストール:
 
 ```bash
 pnpm add -D turbo-ignore
 ```
 
-### Setup in Vercel
+### Vercelでのセットアップ
 
-1. Go to your project in Vercel Dashboard
-2. Navigate to Settings > Git > Ignored Build Step
-3. Select "Custom" and enter:
+1. Vercelダッシュボードでプロジェクトにアクセス
+2. Settings > Git > Ignored Build Step に移動
+3. 「Custom」を選択して以下を入力:
 
 ```bash
 npx turbo-ignore
 ```
 
-### How It Works
+### 仕組み
 
-`turbo-ignore` checks if the current package (or its dependencies) changed since the last successful deployment:
+`turbo-ignore` は、現在のパッケージ（またはその依存関係）が最後の成功したデプロイ以降に変更されたかどうかを確認する:
 
-1. Compares current commit to last deployed commit
-2. Uses Turborepo's dependency graph
-3. Returns exit code 0 (skip) if no changes
-4. Returns exit code 1 (build) if changes detected
+1. 現在のコミットと最後にデプロイされたコミットを比較
+2. Turborepoの依存関係グラフを使用
+3. 変更がなければ終了コード0（スキップ）を返す
+4. 変更が検出されれば終了コード1（ビルド）を返す
 
-### Options
+### オプション
 
 ```bash
-# Check specific package
+# 特定のパッケージを確認
 npx turbo-ignore web
 
-# Use specific comparison ref
+# 特定の比較参照を使用
 npx turbo-ignore --fallback=HEAD~1
 
-# Verbose output
+# 詳細な出力
 npx turbo-ignore --verbose
 ```
 
-## Environment Variables
+## 環境変数
 
-Set environment variables in Vercel Dashboard:
+Vercelダッシュボードで環境変数を設定:
 
-1. Go to Project Settings > Environment Variables
-2. Add variables for each environment (Production, Preview, Development)
+1. Project Settings > Environment Variables にアクセス
+2. 各環境（Production、Preview、Development）に変数を追加
 
-Common variables:
+一般的な変数:
 
 - `DATABASE_URL`
 - `API_KEY`
-- Package-specific config
+- パッケージ固有の設定
 
-## Monorepo Root Directory
+## モノレポのルートディレクトリ
 
-For monorepos, set the root directory in Vercel:
+モノレポの場合、Vercelでルートディレクトリを設定:
 
 1. Project Settings > General > Root Directory
-2. Set to the package path (e.g., `apps/web`)
+2. パッケージのパスを設定（例: `apps/web`）
 
-Vercel automatically:
+Vercelが自動的に:
 
-- Installs dependencies from monorepo root
-- Runs build from the package directory
-- Detects framework settings
+- モノレポのルートから依存関係をインストール
+- パッケージディレクトリからビルドを実行
+- フレームワーク設定を検出
 
-## Build Command
+## ビルドコマンド
 
-Vercel auto-detects `turbo run build` when `turbo.json` exists at root.
+ルートに `turbo.json` が存在する場合、Vercelは `turbo run build` を自動検出する。
 
-Override if needed:
+必要に応じてオーバーライド:
 
 ```bash
 turbo run build --filter=web
 ```
 
-Or for production-only optimizations:
+または本番環境専用の最適化:
 
 ```bash
 turbo run build --filter=web --env-mode=strict

@@ -1,10 +1,10 @@
-# Global Options Reference
+# グローバルオプションリファレンス
 
-Options that affect all tasks. Full docs: https://turborepo.dev/docs/reference/configuration
+すべてのタスクに影響するオプション。完全なドキュメント: https://turborepo.dev/docs/reference/configuration
 
 ## globalEnv
 
-Environment variables affecting all task hashes.
+すべてのタスクハッシュに影響する環境変数。
 
 ```json
 {
@@ -12,11 +12,11 @@ Environment variables affecting all task hashes.
 }
 ```
 
-Use for variables that should invalidate all caches when changed.
+変更時にすべてのキャッシュを無効化すべき変数に使用する。
 
 ## globalDependencies
 
-Files that affect all task hashes.
+すべてのタスクハッシュに影響するファイル。
 
 ```json
 {
@@ -24,11 +24,11 @@ Files that affect all task hashes.
 }
 ```
 
-Lockfile is included by default. Add shared configs here.
+ロックファイルはデフォルトで含まれる。共有設定ファイルをここに追加する。
 
 ## globalPassThroughEnv
 
-Variables available to tasks but not included in hash.
+タスクで利用可能だがハッシュには含まれない変数。
 
 ```json
 {
@@ -36,11 +36,11 @@ Variables available to tasks but not included in hash.
 }
 ```
 
-Use for credentials that shouldn't affect cache keys.
+キャッシュキーに影響すべきでない認証情報に使用する。
 
 ## cacheDir
 
-Custom cache location. Default: `node_modules/.cache/turbo`.
+カスタムキャッシュの保存場所。デフォルト: `node_modules/.cache/turbo`。
 
 ```json
 {
@@ -50,7 +50,7 @@ Custom cache location. Default: `node_modules/.cache/turbo`.
 
 ## daemon
 
-Background process for faster subsequent runs. Default: `true`.
+後続の実行を高速化するバックグラウンドプロセス。デフォルト: `true`。
 
 ```json
 {
@@ -58,39 +58,39 @@ Background process for faster subsequent runs. Default: `true`.
 }
 ```
 
-Disable in CI or when debugging.
+CIまたはデバッグ時に無効にする。
 
 ## envMode
 
-How unspecified env vars are handled. Default: `"strict"`.
+未指定の環境変数の扱い方。デフォルト: `"strict"`。
 
 ```json
 {
-  "envMode": "strict"  // Only specified vars available
-  // or
-  "envMode": "loose"   // All vars pass through
+  "envMode": "strict"  // 指定された変数のみ利用可能
+  // または
+  "envMode": "loose"   // すべての変数がパススルー
 }
 ```
 
-Strict mode catches missing env declarations.
+Strictモードは環境変数宣言の漏れを検出する。
 
 ## ui
 
-Terminal UI mode. Default: `"stream"`.
+ターミナルUIモード。デフォルト: `"stream"`。
 
 ```json
 {
-  "ui": "tui"     // Interactive terminal UI
-  // or
-  "ui": "stream"  // Traditional streaming logs
+  "ui": "tui"     // インタラクティブなターミナルUI
+  // または
+  "ui": "stream"  // 従来のストリーミングログ
 }
 ```
 
-TUI provides better UX for parallel tasks.
+TUIは並列タスクでより良いUXを提供する。
 
 ## remoteCache
 
-Configure remote caching.
+リモートキャッシュの設定。
 
 ```json
 {
@@ -103,37 +103,37 @@ Configure remote caching.
 }
 ```
 
-| Option          | Default                | Description                                            |
-| --------------- | ---------------------- | ------------------------------------------------------ |
-| `enabled`       | `true`                 | Enable/disable remote caching                          |
-| `signature`     | `false`                | Sign artifacts with `TURBO_REMOTE_CACHE_SIGNATURE_KEY` |
-| `preflight`     | `false`                | Send OPTIONS request before cache requests             |
-| `timeout`       | `30`                   | Timeout in seconds for cache operations                |
-| `uploadTimeout` | `60`                   | Timeout in seconds for uploads                         |
-| `apiUrl`        | `"https://vercel.com"` | Remote cache API endpoint                              |
-| `loginUrl`      | `"https://vercel.com"` | Login endpoint                                         |
-| `teamId`        | -                      | Team ID (must start with `team_`)                      |
-| `teamSlug`      | -                      | Team slug for querystring                              |
+| オプション      | デフォルト             | 説明                                                       |
+| --------------- | ---------------------- | ---------------------------------------------------------- |
+| `enabled`       | `true`                 | リモートキャッシュの有効/無効                               |
+| `signature`     | `false`                | `TURBO_REMOTE_CACHE_SIGNATURE_KEY` でアーティファクトに署名 |
+| `preflight`     | `false`                | キャッシュリクエスト前にOPTIONSリクエストを送信             |
+| `timeout`       | `30`                   | キャッシュ操作のタイムアウト（秒）                         |
+| `uploadTimeout` | `60`                   | アップロードのタイムアウト（秒）                           |
+| `apiUrl`        | `"https://vercel.com"` | リモートキャッシュAPIエンドポイント                         |
+| `loginUrl`      | `"https://vercel.com"` | ログインエンドポイント                                     |
+| `teamId`        | -                      | チームID（`team_` で始まる必要あり）                       |
+| `teamSlug`      | -                      | クエリ文字列用のチームスラッグ                             |
 
-See https://turborepo.dev/docs/core-concepts/remote-caching for setup.
+セットアップについては https://turborepo.dev/docs/core-concepts/remote-caching を参照。
 
 ## concurrency
 
-Default: `"10"`
+デフォルト: `"10"`
 
-Limit parallel task execution.
+並列タスク実行数を制限する。
 
 ```json
 {
-  "concurrency": "4"     // Max 4 tasks at once
-  // or
-  "concurrency": "50%"   // 50% of available CPUs
+  "concurrency": "4"     // 最大4タスクを同時実行
+  // または
+  "concurrency": "50%"   // 利用可能なCPUの50%
 }
 ```
 
 ## futureFlags
 
-Enable experimental features that will become default in future versions.
+将来のバージョンでデフォルトになる実験的機能を有効にする。
 
 ```json
 {
@@ -145,14 +145,14 @@ Enable experimental features that will become default in future versions.
 
 ### `errorsOnlyShowHash`
 
-When using `outputLogs: "errors-only"`, show task hashes on start/completion:
+`outputLogs: "errors-only"` 使用時に、タスクの開始/完了時にハッシュを表示する：
 
-- Cache miss: `cache miss, executing <hash> (only logging errors)`
-- Cache hit: `cache hit, replaying logs (no errors) <hash>`
+- キャッシュミス: `cache miss, executing <hash> (only logging errors)`
+- キャッシュヒット: `cache hit, replaying logs (no errors) <hash>`
 
 ## noUpdateNotifier
 
-Disable update notifications when new turbo versions are available.
+新しいturboバージョンが利用可能な場合の更新通知を無効にする。
 
 ```json
 {
@@ -162,7 +162,7 @@ Disable update notifications when new turbo versions are available.
 
 ## dangerouslyDisablePackageManagerCheck
 
-Bypass the `packageManager` field requirement. Use for incremental migration.
+`packageManager` フィールドの要件チェックをバイパスする。段階的な移行に使用する。
 
 ```json
 {
@@ -170,22 +170,22 @@ Bypass the `packageManager` field requirement. Use for incremental migration.
 }
 ```
 
-**Warning**: Unstable lockfiles can cause unpredictable behavior.
+**警告**: 不安定なロックファイルは予測不能な動作を引き起こす可能性がある。
 
-## Git Worktree Cache Sharing
+## Git Worktreeキャッシュ共有
 
-When working in Git worktrees, Turborepo automatically shares local cache between the main worktree and linked worktrees.
+Gitワークツリーで作業する場合、Turborepoはメインワークツリーとリンクされたワークツリー間でローカルキャッシュを自動的に共有する。
 
-**How it works:**
+**動作の仕組み：**
 
-- Detects worktree configuration
-- Redirects cache to main worktree's `.turbo/cache`
-- Works alongside Remote Cache
+- ワークツリー設定を検出
+- キャッシュをメインワークツリーの `.turbo/cache` にリダイレクト
+- リモートキャッシュと併用可能
 
-**Benefits:**
+**メリット：**
 
-- Cache hits across branches
-- Reduced disk usage
-- Faster branch switching
+- ブランチ間でのキャッシュヒット
+- ディスク使用量の削減
+- ブランチ切り替えの高速化
 
-**Disabled by**: Setting explicit `cacheDir` in turbo.json.
+**無効化する方法**: turbo.jsonで明示的に `cacheDir` を設定する。

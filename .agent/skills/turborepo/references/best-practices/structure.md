@@ -1,10 +1,10 @@
-# Repository Structure
+# リポジトリ構成
 
-Detailed guidance on structuring a Turborepo monorepo.
+Turborepoモノレポの構成に関する詳細なガイダンス。
 
-## Workspace Configuration
+## ワークスペース設定
 
-### pnpm (Recommended)
+### pnpm（推奨）
 
 ```yaml
 # pnpm-workspace.yaml
@@ -22,7 +22,7 @@ packages:
 }
 ```
 
-## Root package.json
+## ルートのpackage.json
 
 ```json
 {
@@ -41,16 +41,16 @@ packages:
 }
 ```
 
-Key points:
+重要なポイント:
 
-- `private: true` - Prevents accidental publishing
-- `packageManager` - Enforces consistent package manager version
-- **Scripts only delegate to `turbo run`** - No actual build logic here!
-- Minimal devDependencies (just turbo and repo tools)
+- `private: true` - 誤った公開を防止
+- `packageManager` - パッケージマネージャーのバージョンを統一
+- **スクリプトは `turbo run` に委譲するだけ** - ここに実際のビルドロジックは書かない！
+- 最小限のdevDependencies（turboとリポジトリツールのみ）
 
-## Always Prefer Package Tasks
+## パッケージタスクを常に優先
 
-**Always use package tasks. Only use Root Tasks if you cannot succeed with package tasks.**
+**常にパッケージタスクを使用する。ルートタスクは、パッケージタスクでは実現できない場合のみ使用する。**
 
 ```json
 // packages/web/package.json
@@ -74,16 +74,16 @@ Key points:
 }
 ```
 
-Package tasks enable Turborepo to:
+パッケージタスクにより、Turborepoは以下が可能になる:
 
-1. **Parallelize** - Run `web#lint` and `api#lint` simultaneously
-2. **Cache individually** - Each package's task output is cached separately
-3. **Filter precisely** - Run `turbo run test --filter=web` for just one package
+1. **並列実行** - `web#lint` と `api#lint` を同時に実行
+2. **個別キャッシュ** - 各パッケージのタスク出力が個別にキャッシュされる
+3. **正確なフィルタリング** - `turbo run test --filter=web` で1つのパッケージのみ実行
 
-**Root Tasks are a fallback** for tasks that truly cannot run per-package:
+**ルートタスクはフォールバック**として、パッケージ単位では本当に実行できないタスクに使用する:
 
 ```json
-// AVOID unless necessary - sequential, not parallelized, can't filter
+// 必要でなければ避ける - 逐次実行、並列化不可、フィルタリング不可
 {
   "scripts": {
     "lint": "eslint apps/web && eslint apps/api && eslint packages/ui"
@@ -91,7 +91,7 @@ Package tasks enable Turborepo to:
 }
 ```
 
-## Root turbo.json
+## ルートのturbo.json
 
 ```json
 {
@@ -113,22 +113,22 @@ Package tasks enable Turborepo to:
 }
 ```
 
-## Directory Organization
+## ディレクトリの整理
 
-### Grouping Packages
+### パッケージのグループ化
 
-You can group packages by adding more workspace paths:
+ワークスペースパスを追加してパッケージをグループ化できる:
 
 ```yaml
 # pnpm-workspace.yaml
 packages:
   - "apps/*"
   - "packages/*"
-  - "packages/config/*"    # Grouped configs
-  - "packages/features/*"  # Feature packages
+  - "packages/config/*"    # 設定をグループ化
+  - "packages/features/*"  # 機能パッケージ
 ```
 
-This allows:
+これにより以下の構成が可能:
 
 ```
 packages/
@@ -143,44 +143,44 @@ packages/
     └── payments/
 ```
 
-### What NOT to Do
+### やってはいけないこと
 
 ```yaml
-# BAD: Nested wildcards cause ambiguous behavior
+# 悪い例: ネストしたワイルドカードは曖昧な動作を引き起こす
 packages:
-  - "packages/**"  # Don't do this!
+  - "packages/**"  # これはやめること！
 ```
 
-## Package Anatomy
+## パッケージの構造
 
-### Minimum Required Files
+### 最低限必要なファイル
 
 ```
 packages/ui/
-├── package.json    # Required: Makes it a package
-├── src/            # Source code
+├── package.json    # 必須: パッケージとして認識される
+├── src/            # ソースコード
 │   └── button.tsx
-└── tsconfig.json   # TypeScript config (if using TS)
+└── tsconfig.json   # TypeScript設定（TSを使用する場合）
 ```
 
-### package.json Requirements
+### package.jsonの要件
 
 ```json
 {
-  "name": "@repo/ui",           // Unique, namespaced name
-  "version": "0.0.0",           // Version (can be 0.0.0 for internal)
-  "private": true,              // Prevents accidental publishing
-  "exports": {                  // Entry points
+  "name": "@repo/ui",           // 一意で名前空間付きの名前
+  "version": "0.0.0",           // バージョン（内部パッケージは0.0.0で可）
+  "private": true,              // 誤った公開を防止
+  "exports": {                  // エントリーポイント
     "./button": "./src/button.tsx"
   }
 }
 ```
 
-## TypeScript Configuration
+## TypeScript設定
 
-### Shared Base Config
+### 共有ベース設定
 
-Create a shared TypeScript config package:
+共有TypeScript設定パッケージを作成する:
 
 ```
 packages/
@@ -205,7 +205,7 @@ packages/
 }
 ```
 
-### Extending in Packages
+### パッケージでの継承
 
 ```json
 // packages/ui/tsconfig.json
@@ -220,13 +220,13 @@ packages/
 }
 ```
 
-### No Root tsconfig.json
+### ルートのtsconfig.jsonは不要
 
-You likely don't need a `tsconfig.json` in the workspace root. Each package should have its own config extending from the shared config package.
+ワークスペースのルートに `tsconfig.json` は通常不要である。各パッケージが共有設定パッケージを継承する独自の設定を持つべきである。
 
-## ESLint Configuration
+## ESLint設定
 
-### Shared Config Package
+### 共有設定パッケージ
 
 ```
 packages/
@@ -249,7 +249,7 @@ packages/
 }
 ```
 
-### Using in Packages
+### パッケージでの使用
 
 ```js
 // apps/web/.eslintrc.js
@@ -258,12 +258,12 @@ module.exports = {
 };
 ```
 
-## Lockfile
+## ロックファイル
 
-A lockfile is **required** for:
+ロックファイルは以下のために**必須**:
 
-- Reproducible builds
-- Turborepo to understand package dependencies
-- Cache correctness
+- 再現可能なビルド
+- Turborepoによるパッケージ依存関係の把握
+- キャッシュの正確性
 
-Without a lockfile, you'll see unpredictable behavior.
+ロックファイルがないと、予期しない動作が発生する。
