@@ -93,7 +93,7 @@
     "type-check": "tsgo --noEmit"
   },
   "dependencies": {
-    "@vercel/functions": "3.4.0",
+    "@vercel/functions": "3.4.1",
     "clsx": "2.1.1",
     "date-fns": "4.1.0",
     "remark": "15.0.1",
