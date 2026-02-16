@@ -121,7 +121,7 @@ const readFileWithCache = (path): string => {
 上記の`readFileWithCache`関数は`path`に存在するファイルを読み込む関数です。
 初回の読み込みは`fs.readFile`を用いて非同期に値を取り出しますが、2回目以降は`cache`に保存された値を返します。
 
-この関数を実行してみると、1度目の読み込みは`Promise<Buffer>`が返されますが、それ以降は`Buffer`を返巣ようになっています。キャッシュしてくれるのは嬉しいですが、取り出した値を利用する視点ではとても不便です。
+この関数を実行してみると、1度目の読み込みは`Promise<Buffer>`が返されますが、それ以降は`Buffer`を返すようになっています。キャッシュしてくれるのは嬉しいですが、取り出した値を利用する視点ではとても不便です。
 
 ```js
 console.log(readFileWithCache('path/to/file')); // Promise {<pending>} or Buffer
