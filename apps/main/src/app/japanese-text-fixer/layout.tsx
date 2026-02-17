@@ -1,5 +1,5 @@
 import { Heading } from '@k8o/arte-odyssey/heading';
-import { CheckSyntaxProvider } from './_state/text';
+import { ProofreadProvider } from './_state/provider';
 
 export const metadata = {
   title: '日本語校正くん',
@@ -28,7 +28,7 @@ export default function Layout({
   return (
     <div className="flex h-full flex-col gap-4">
       <Heading type="h2">日本語校正くん</Heading>
-      <CheckSyntaxProvider>{children}</CheckSyntaxProvider>
+      <ProofreadProvider>{children}</ProofreadProvider>
     </div>
   );
 }

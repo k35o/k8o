@@ -1,14 +1,18 @@
 'use client';
 
-import { CheckedField } from './_components/checked-field';
-import { EditField } from './_components/edit-field';
-import { useStatus } from './_state/text';
+import { CompletePhase } from './_components/complete-phase';
+import { InputPhase } from './_components/input-phase';
+import { ReviewPhase } from './_components/review-phase';
+import { useProofreadState } from './_state/provider';
 
-export default function CheckSyntax() {
-  const status = useStatus();
+export default function JapaneseTextFixer() {
+  const { phase } = useProofreadState();
+
   return (
-    <div className="h-full rounded-md py-10">
-      {status.isExecuted ? <CheckedField /> : <EditField />}
+    <div className="h-full">
+      {phase === 'input' && <InputPhase />}
+      {phase === 'review' && <ReviewPhase />}
+      {phase === 'complete' && <CompletePhase />}
     </div>
   );
 }
