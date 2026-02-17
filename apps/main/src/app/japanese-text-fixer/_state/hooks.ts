@@ -10,6 +10,7 @@ export const useCheckJapaneseSyntax = () => {
 
   return useCallback(
     (text: string) => {
+      // 呼び出し側で空入力を防いでも念のためガードする
       if (text === '') return;
       dispatch({ type: 'START_CHECK' });
       void checkJapaneseSyntax({ text })

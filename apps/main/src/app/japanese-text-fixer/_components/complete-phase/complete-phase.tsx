@@ -19,8 +19,8 @@ export const CompletePhase: FC = () => {
   const { onOpen } = useToast();
   const checkSyntax = useCheckJapaneseSyntax();
 
-  const hasErrors = annotations.length > 0;
-  const displayText = hasErrors ? reviewText : inputText;
+  const hadErrors = annotations.length > 0;
+  const displayText = hadErrors ? reviewText : inputText;
 
   const handleCopy = () => {
     void writeClipboard(displayText)
@@ -39,7 +39,7 @@ export const CompletePhase: FC = () => {
 
   return (
     <div className="flex flex-col gap-6">
-      {hasErrors ? (
+      {hadErrors ? (
         <Alert message="校正が完了しました" status="success" />
       ) : (
         <Alert
@@ -50,7 +50,7 @@ export const CompletePhase: FC = () => {
       <section className="flex flex-col gap-2">
         <div className="flex items-center justify-between">
           <Heading type="h3">
-            {hasErrors ? '修正後のテキスト' : '入力したテキスト'}
+            {hadErrors ? '修正後のテキスト' : '入力したテキスト'}
           </Heading>
           <Button endIcon={<CopyIcon />} onClick={handleCopy} size="sm">
             <span className="sr-only md:not-sr-only">コピー</span>

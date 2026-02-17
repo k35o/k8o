@@ -46,7 +46,7 @@ const buildGroups = (
 
   const errorLines = Array.from(lineMap.keys()).sort((a, b) => a - b);
   const ranges = errorLines.map((lineIndex) => ({
-    start: lineIndex - 1,
+    start: Math.max(0, lineIndex - 1),
     end: lineIndex + 1,
     lineIndex,
   }));
@@ -277,7 +277,7 @@ if (import.meta.vitest) {
       const getLineIndex = (index: number) => getLineIndexFromText(text, index);
       const groups = buildGroups(annotations, getLineIndex);
       expect(groups).toHaveLength(1);
-      expect(groups[0]?.start).toBe(-1);
+      expect(groups[0]?.start).toBe(0);
       expect(groups[0]?.end).toBe(1);
       expect(groups[0]?.items).toHaveLength(1);
     });

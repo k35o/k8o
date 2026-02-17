@@ -4,16 +4,16 @@ type ApiLintMessage = Omit<LintMessage, 'range'> & {
   range: number[];
 };
 
-export const buildAnnotations = (msgs: ApiLintMessage[]): Annotation[] => {
-  const createId = () => {
-    if (typeof crypto !== 'undefined' && 'randomUUID' in crypto) {
-      return crypto.randomUUID();
-    }
-    return `annotation-${Date.now().toString()}-${Math.random()
-      .toString(36)
-      .slice(2)}`;
-  };
+const createId = () => {
+  if (typeof crypto !== 'undefined' && 'randomUUID' in crypto) {
+    return crypto.randomUUID();
+  }
+  return `annotation-${Date.now().toString()}-${Math.random()
+    .toString(36)
+    .slice(2)}`;
+};
 
+export const buildAnnotations = (msgs: ApiLintMessage[]): Annotation[] => {
   return msgs.map((msg, index) => ({
     id: `${createId()}-${index.toString()}`,
     original: {
