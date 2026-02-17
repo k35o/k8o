@@ -18,7 +18,9 @@ ignoredBuiltDependencies:
   - bufferutil
   - core-js
   - core-js-pure
+  - edgedriver
   - esbuild
+  - geckodriver
   - sharp
   - unrs-resolver
 
