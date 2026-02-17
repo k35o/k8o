@@ -9,6 +9,8 @@ catalog:
   vitest: 4.0.18
   vitest-browser-react: 2.0.5
 
+blockExoticSubdeps: true
+
 ignoredBuiltDependencies:
   - '@parcel/watcher'
   - '@prisma/engines'
@@ -18,7 +20,9 @@ ignoredBuiltDependencies:
   - bufferutil
   - core-js
   - core-js-pure
+  - edgedriver
   - esbuild
+  - geckodriver
   - sharp
   - unrs-resolver
 
@@ -30,3 +34,5 @@ minimumReleaseAgeExclude:
 onlyBuiltDependencies:
   - lefthook
   - msw
+
+verifyDepsBeforeRun: install
