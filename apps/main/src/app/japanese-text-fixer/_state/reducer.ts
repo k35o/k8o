@@ -41,9 +41,11 @@ export const reducer = (state: State, action: Action): State => {
       return { ...state, isChecking: false };
 
     case 'SET_REVIEW_TEXT':
+      if (state.phase !== 'review') return state;
       return { ...state, reviewText: action.payload };
 
     case 'COMPLETE_REVIEW':
+      if (state.phase !== 'review') return state;
       return { ...state, phase: 'complete' };
 
     case 'RESET':
@@ -131,12 +133,25 @@ if (import.meta.vitest) {
       expect(state.reviewText).toBe('修正後の文');
     });
 
+    it('SET_REVIEW_TEXT: review以外では更新しない', () => {
+      const state = reducer(initialState, {
+        type: 'SET_REVIEW_TEXT',
+        payload: '修正後の文',
+      });
+      expect(state.reviewText).toBe('');
+    });
+
     it('COMPLETE_REVIEW: 完了フェーズに遷移する', () => {
       const state = reducer(
         { ...initialState, phase: 'review' },
         { type: 'COMPLETE_REVIEW' },
       );
       expect(state.phase).toBe('complete');
+    });
+
+    it('COMPLETE_REVIEW: review以外では遷移しない', () => {
+      const state = reducer(initialState, { type: 'COMPLETE_REVIEW' });
+      expect(state.phase).toBe('input');
     });
 
     it('RESET: 初期状態に戻す', () => {

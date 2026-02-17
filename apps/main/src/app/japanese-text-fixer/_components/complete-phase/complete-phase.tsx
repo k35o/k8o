@@ -23,9 +23,13 @@ export const CompletePhase: FC = () => {
   const displayText = hasErrors ? reviewText : inputText;
 
   const handleCopy = () => {
-    void writeClipboard(displayText).then(() => {
-      onOpen('success', 'クリップボードにコピーしました');
-    });
+    void writeClipboard(displayText)
+      .then(() => {
+        onOpen('success', 'クリップボードにコピーしました');
+      })
+      .catch(() => {
+        onOpen('error', 'コピーに失敗しました');
+      });
   };
 
   const handleRecheck = () => {

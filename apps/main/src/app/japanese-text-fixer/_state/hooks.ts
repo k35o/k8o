@@ -2,12 +2,7 @@ import { useToast } from '@k8o/arte-odyssey/toast';
 import { useCallback } from 'react';
 import { buildAnnotations } from '../_utils/build-annotations';
 import { checkJapaneseSyntax } from '../_utils/japanese-syntax';
-import { useProofreadDispatch, useProofreadState } from './provider';
-
-export const useReviewText = () => {
-  const { reviewText } = useProofreadState();
-  return reviewText;
-};
+import { useProofreadDispatch } from './provider';
 
 export const useCheckJapaneseSyntax = () => {
   const dispatch = useProofreadDispatch();

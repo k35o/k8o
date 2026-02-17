@@ -5,8 +5,17 @@ type ApiLintMessage = Omit<LintMessage, 'range'> & {
 };
 
 export const buildAnnotations = (msgs: ApiLintMessage[]): Annotation[] => {
+  const createId = () => {
+    if (typeof crypto !== 'undefined' && 'randomUUID' in crypto) {
+      return crypto.randomUUID();
+    }
+    return `annotation-${Date.now().toString()}-${Math.random()
+      .toString(36)
+      .slice(2)}`;
+  };
+
   return msgs.map((msg, index) => ({
-    id: `annotation-${index.toString()}`,
+    id: `${createId()}-${index.toString()}`,
     original: {
       ...msg,
       range: [msg.range[0] ?? 0, msg.range[1] ?? 0] as [number, number],
@@ -53,14 +62,11 @@ if (import.meta.vitest) {
       const result = buildAnnotations(msgs);
 
       expect(result).toHaveLength(2);
-      expect(result[0]).toEqual({
-        id: 'annotation-0',
-        original: { ...msgs[0], range: [0, 5] },
-      });
-      expect(result[1]).toEqual({
-        id: 'annotation-1',
-        original: { ...msgs[1], range: [10, 15] },
-      });
+      expect(result[0]?.id).toMatch(/annotation-/);
+      expect(result[1]?.id).toMatch(/annotation-/);
+      expect(result[0]?.id).not.toBe(result[1]?.id);
+      expect(result[0]?.original).toEqual({ ...msgs[0], range: [0, 5] });
+      expect(result[1]?.original).toEqual({ ...msgs[1], range: [10, 15] });
     });
 
     it('空のmsgsから空の配列を返す', () => {
