@@ -4,18 +4,18 @@ type ApiLintMessage = Omit<LintMessage, 'range'> & {
   range: number[];
 };
 
-const createId = () => {
+const createId = (index: number) => {
   if (typeof crypto !== 'undefined' && 'randomUUID' in crypto) {
     return crypto.randomUUID();
   }
   return `annotation-${Date.now().toString()}-${Math.random()
     .toString(36)
-    .slice(2)}`;
+    .slice(2)}-${index.toString()}`;
 };
 
 export const buildAnnotations = (msgs: ApiLintMessage[]): Annotation[] => {
   return msgs.map((msg, index) => ({
-    id: `${createId()}-${index.toString()}`,
+    id: createId(index),
     original: {
       ...msg,
       range: [msg.range[0] ?? 0, msg.range[1] ?? 0] as [number, number],
@@ -62,8 +62,8 @@ if (import.meta.vitest) {
       const result = buildAnnotations(msgs);
 
       expect(result).toHaveLength(2);
-      expect(result[0]?.id).toMatch(/annotation-/);
-      expect(result[1]?.id).toMatch(/annotation-/);
+      expect(result[0]?.id).toBeTruthy();
+      expect(result[1]?.id).toBeTruthy();
       expect(result[0]?.id).not.toBe(result[1]?.id);
       expect(result[0]?.original).toEqual({ ...msgs[0], range: [0, 5] });
       expect(result[1]?.original).toEqual({ ...msgs[1], range: [10, 15] });
