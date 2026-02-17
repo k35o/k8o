@@ -34,3 +34,5 @@ minimumReleaseAgeExclude:
 onlyBuiltDependencies:
   - lefthook
   - msw
+
+verifyDepsBeforeRun: install
