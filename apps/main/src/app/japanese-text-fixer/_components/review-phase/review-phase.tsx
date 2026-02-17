@@ -5,12 +5,10 @@ import { Card } from '@k8o/arte-odyssey/card';
 import { FormControl } from '@k8o/arte-odyssey/form/form-control';
 import { Textarea } from '@k8o/arte-odyssey/form/textarea';
 import { Heading } from '@k8o/arte-odyssey/heading';
-import { useToast } from '@k8o/arte-odyssey/toast';
 import { type FC, useCallback, useId, useMemo } from 'react';
+import { useCheckJapaneseSyntax } from '../../_state/hooks';
 import { useProofreadDispatch, useProofreadState } from '../../_state/provider';
 import type { Annotation } from '../../_state/types';
-import { buildAnnotations } from '../../_utils/build-annotations';
-import { checkJapaneseSyntax } from '../../_utils/japanese-syntax';
 
 type LineItem = {
   lineIndex: number;
@@ -58,6 +56,7 @@ const buildGroups = (
 
   for (const range of ranges) {
     const last = merged.at(-1);
+    // 前後1行を含む範囲同士は、1行ギャップまで同一グループとして扱う
     if (!last || range.start > last.end + 1) {
       merged.push({
         start: range.start,
@@ -163,7 +162,7 @@ export const ReviewPhase: FC = () => {
   const { reviewText, isChecking, annotations } = useProofreadState();
   const dispatch = useProofreadDispatch();
   const headingId = useId();
-  const { onOpen } = useToast();
+  const checkSyntax = useCheckJapaneseSyntax();
 
   const lines = useMemo(() => reviewText.split('\n'), [reviewText]);
 
@@ -189,29 +188,10 @@ export const ReviewPhase: FC = () => {
     [annotations, getLineIndex],
   );
 
-  const handleRecheck = () => {
+  const handleRecheck = useCallback(() => {
     if (reviewText === '') return;
-    dispatch({ type: 'START_CHECK' });
-    void checkJapaneseSyntax({ text: reviewText })
-      .then((res) => {
-        const newAnnotations = buildAnnotations(res.msgs);
-        if (newAnnotations.length === 0) {
-          dispatch({
-            type: 'CHECK_NO_ERRORS',
-            payload: { text: res.text },
-          });
-        } else {
-          dispatch({
-            type: 'CHECK_SUCCESS',
-            payload: { text: res.text, annotations: newAnnotations },
-          });
-        }
-      })
-      .catch(() => {
-        dispatch({ type: 'CHECK_FAILURE' });
-        onOpen('error', '校正に失敗しました。時間をおいて再度お試しください。');
-      });
-  };
+    checkSyntax(reviewText);
+  }, [checkSyntax, reviewText]);
 
   return (
     <div className="flex flex-col gap-6">

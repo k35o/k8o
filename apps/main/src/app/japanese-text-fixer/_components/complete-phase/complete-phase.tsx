@@ -8,9 +8,8 @@ import { useClipboard } from '@k8o/arte-odyssey/hooks/clipboard';
 import { CopyIcon } from '@k8o/arte-odyssey/icons';
 import { useToast } from '@k8o/arte-odyssey/toast';
 import type { FC } from 'react';
+import { useCheckJapaneseSyntax } from '../../_state/hooks';
 import { useProofreadDispatch, useProofreadState } from '../../_state/provider';
-import { buildAnnotations } from '../../_utils/build-annotations';
-import { checkJapaneseSyntax } from '../../_utils/japanese-syntax';
 
 export const CompletePhase: FC = () => {
   const { annotations, reviewText, inputText, isChecking } =
@@ -18,6 +17,7 @@ export const CompletePhase: FC = () => {
   const dispatch = useProofreadDispatch();
   const { writeClipboard } = useClipboard();
   const { onOpen } = useToast();
+  const checkSyntax = useCheckJapaneseSyntax();
 
   const hasErrors = annotations.length > 0;
   const displayText = hasErrors ? reviewText : inputText;
@@ -30,25 +30,7 @@ export const CompletePhase: FC = () => {
 
   const handleRecheck = () => {
     if (displayText === '') return;
-    dispatch({ type: 'START_CHECK' });
-    void checkJapaneseSyntax({ text: displayText })
-      .then((res) => {
-        const newAnnotations = buildAnnotations(res.msgs);
-        if (newAnnotations.length === 0) {
-          dispatch({
-            type: 'CHECK_NO_ERRORS',
-            payload: { text: res.text },
-          });
-        } else {
-          dispatch({
-            type: 'CHECK_SUCCESS',
-            payload: { text: res.text, annotations: newAnnotations },
-          });
-        }
-      })
-      .catch(() => {
-        dispatch({ type: 'CHECK_FAILURE' });
-      });
+    checkSyntax(displayText);
   };
 
   return (
@@ -81,15 +63,13 @@ export const CompletePhase: FC = () => {
       <div className="sticky bottom-4">
         <Card>
           <div className="flex flex-col gap-3 p-3 sm:flex-row sm:justify-between sm:gap-4">
-            {hasErrors && (
-              <Button
-                disabled={isChecking || displayText === ''}
-                onClick={handleRecheck}
-                variant="outlined"
-              >
-                {isChecking ? '校正中...' : 'もう一度校正する'}
-              </Button>
-            )}
+            <Button
+              disabled={isChecking || displayText === ''}
+              onClick={handleRecheck}
+              variant="outlined"
+            >
+              {isChecking ? '校正中...' : 'もう一度校正する'}
+            </Button>
             <Button
               onClick={() => {
                 dispatch({ type: 'RESET' });

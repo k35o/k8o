@@ -4,40 +4,19 @@ import { Button } from '@k8o/arte-odyssey/button';
 import { Card } from '@k8o/arte-odyssey/card';
 import { FormControl } from '@k8o/arte-odyssey/form/form-control';
 import { Textarea } from '@k8o/arte-odyssey/form/textarea';
-import { useToast } from '@k8o/arte-odyssey/toast';
 import type { SubmitEventHandler } from 'react';
+import { useCheckJapaneseSyntax } from '../../_state/hooks';
 import { useProofreadDispatch, useProofreadState } from '../../_state/provider';
-import { buildAnnotations } from '../../_utils/build-annotations';
-import { checkJapaneseSyntax } from '../../_utils/japanese-syntax';
 
 export const InputPhase = () => {
   const { inputText, isChecking } = useProofreadState();
   const dispatch = useProofreadDispatch();
-  const { onOpen } = useToast();
+  const checkSyntax = useCheckJapaneseSyntax();
 
   const handleSubmit: SubmitEventHandler = (e) => {
     e.preventDefault();
     if (inputText === '') return;
-    dispatch({ type: 'START_CHECK' });
-    void checkJapaneseSyntax({ text: inputText })
-      .then((res) => {
-        const annotations = buildAnnotations(res.msgs);
-        if (annotations.length === 0) {
-          dispatch({
-            type: 'CHECK_NO_ERRORS',
-            payload: { text: res.text },
-          });
-        } else {
-          dispatch({
-            type: 'CHECK_SUCCESS',
-            payload: { text: res.text, annotations },
-          });
-        }
-      })
-      .catch(() => {
-        dispatch({ type: 'CHECK_FAILURE' });
-        onOpen('error', '校正に失敗しました。時間をおいて再度お試しください。');
-      });
+    checkSyntax(inputText);
   };
 
   return (

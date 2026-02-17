@@ -11,13 +11,21 @@ import {
 import { initialState, reducer } from './reducer';
 import type { Action, State } from './types';
 
-export const StateContext = createContext<State | undefined>(undefined);
-export const DispatchContext = createContext<Dispatch<Action> | undefined>(
-  undefined,
-);
+const StateContext = createContext<State | undefined>(undefined);
+const DispatchContext = createContext<Dispatch<Action> | undefined>(undefined);
 
-export const ProofreadProvider: FC<PropsWithChildren> = ({ children }) => {
-  const [state, dispatch] = useReducer(reducer, initialState);
+type ProofreadProviderProps = PropsWithChildren<{
+  initialState?: State;
+}>;
+
+export const ProofreadProvider: FC<ProofreadProviderProps> = ({
+  children,
+  initialState: initialStateProp,
+}) => {
+  const [state, dispatch] = useReducer(
+    reducer,
+    initialStateProp ?? initialState,
+  );
 
   return (
     <StateContext value={state}>
