@@ -11,18 +11,22 @@ const meta: Meta<typeof ColorPallet> = {
 export default meta;
 type Story = StoryObj<typeof ColorPallet>;
 
+const PrimaryRender = () => {
+  const [color, setColor] = useState('#000000');
+  return <ColorPallet color={color} label="デモ" setColor={setColor} />;
+};
+
 export const Primary: Story = {
-  render: () => {
-    const [color, setColor] = useState('#000000');
-    return <ColorPallet color={color} label="デモ" setColor={setColor} />;
-  },
+  render: () => <PrimaryRender />,
+};
+
+const DisplaysLabelRender = () => {
+  const [color, setColor] = useState('#000000');
+  return <ColorPallet color={color} label="背景色" setColor={setColor} />;
 };
 
 export const DisplaysLabel: Story = {
-  render: () => {
-    const [color, setColor] = useState('#000000');
-    return <ColorPallet color={color} label="背景色" setColor={setColor} />;
-  },
+  render: () => <DisplaysLabelRender />,
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
 
@@ -31,11 +35,13 @@ export const DisplaysLabel: Story = {
   },
 };
 
+const DisplaysColorValueRender = () => {
+  const [color, setColor] = useState('#ff5733');
+  return <ColorPallet color={color} label="文字色" setColor={setColor} />;
+};
+
 export const DisplaysColorValue: Story = {
-  render: () => {
-    const [color, setColor] = useState('#ff5733');
-    return <ColorPallet color={color} label="文字色" setColor={setColor} />;
-  },
+  render: () => <DisplaysColorValueRender />,
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
 
@@ -44,11 +50,13 @@ export const DisplaysColorValue: Story = {
   },
 };
 
+const HasColorInputRender = () => {
+  const [color, setColor] = useState('#000000');
+  return <ColorPallet color={color} label="色を選択" setColor={setColor} />;
+};
+
 export const HasColorInput: Story = {
-  render: () => {
-    const [color, setColor] = useState('#000000');
-    return <ColorPallet color={color} label="色を選択" setColor={setColor} />;
-  },
+  render: () => <HasColorInputRender />,
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
 
