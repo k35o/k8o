@@ -1,8 +1,7 @@
 export async function getMetadata(href: string) {
   'use cache';
 
-  const proxyUrl = `https://corsproxy.io/?url=${encodeURIComponent(href)}`;
-  const res = await fetch(proxyUrl);
+  const res = await fetch(href);
   const html = (await res.text()).trim();
   const title = /<title>(.*?)<\/title>/i.exec(html)?.[1];
   const ogTitle = /<meta\s+property="og:title"\s+content="(.*?)"/i.exec(
