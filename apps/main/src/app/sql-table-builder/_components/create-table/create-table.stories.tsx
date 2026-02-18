@@ -25,18 +25,8 @@ export const Primary: Story = {
   render: () => <PrimaryRender />,
 };
 
-const InputTableInfoRender = () => {
-  const [table, setTable] = useState<Table>({
-    name: '',
-    alias: '',
-  });
-  return (
-    <CreateTable setTable={setTable} table={table} tableError={undefined} />
-  );
-};
-
 export const InputTableInfo: Story = {
-  render: () => <InputTableInfoRender />,
+  render: () => <PrimaryRender />,
   play: async ({ canvasElement, userEvent }) => {
     const canvas = within(canvasElement);
 

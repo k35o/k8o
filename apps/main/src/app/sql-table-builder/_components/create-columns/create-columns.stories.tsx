@@ -28,7 +28,7 @@ const PrimaryRender = () => {
       columnsError={undefined}
       setColumns={setColumns}
       setRestrictions={() => {
-        console.log();
+        // no-op
       }}
     />
   );
@@ -65,7 +65,7 @@ const WithMultipleColumnsRender = () => {
       columnsError={undefined}
       setColumns={setColumns}
       setRestrictions={() => {
-        console.log();
+        // no-op
       }}
     />
   );
@@ -75,29 +75,8 @@ export const WithMultipleColumns: Story = {
   render: () => <WithMultipleColumnsRender />,
 };
 
-const AddColumnRender = () => {
-  const [columns, setColumns] = useState<Record<string, Column>>({
-    [uuidV4()]: {
-      name: '',
-      alias: '',
-      type: 'uuid',
-      nullable: false,
-    },
-  });
-  return (
-    <CreateColumns
-      columns={columns}
-      columnsError={undefined}
-      setColumns={setColumns}
-      setRestrictions={() => {
-        console.log();
-      }}
-    />
-  );
-};
-
 export const AddColumn: Story = {
-  render: () => <AddColumnRender />,
+  render: () => <PrimaryRender />,
   play: async ({ canvasElement, userEvent }) => {
     const canvas = within(canvasElement);
 
@@ -110,29 +89,8 @@ export const AddColumn: Story = {
   },
 };
 
-const SwitchViewTypeRender = () => {
-  const [columns, setColumns] = useState<Record<string, Column>>({
-    [uuidV4()]: {
-      name: '',
-      alias: '',
-      type: 'uuid',
-      nullable: false,
-    },
-  });
-  return (
-    <CreateColumns
-      columns={columns}
-      columnsError={undefined}
-      setColumns={setColumns}
-      setRestrictions={() => {
-        console.log();
-      }}
-    />
-  );
-};
-
 export const SwitchViewType: Story = {
-  render: () => <SwitchViewTypeRender />,
+  render: () => <PrimaryRender />,
   play: async ({ canvasElement, userEvent }) => {
     const canvas = within(canvasElement);
 
