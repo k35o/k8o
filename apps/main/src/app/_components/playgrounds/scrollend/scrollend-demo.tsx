@@ -34,7 +34,7 @@ export function ScrollendDemo() {
     if (!element) return;
 
     element.tabIndex = 0;
-    element.addEventListener('scroll', handleScroll);
+    element.addEventListener('scroll', handleScroll, { passive: true });
     element.addEventListener('scrollend', handleScrollend);
 
     return () => {
