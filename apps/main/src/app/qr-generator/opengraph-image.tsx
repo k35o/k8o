@@ -1,6 +1,7 @@
 import { loadDefaultJapaneseParser } from 'budoux';
 import { ImageResponse } from 'next/og';
 import { getIconDataUrl } from '@/app/_utils/get-icon-data-url';
+import { getMPlus2Font } from '@/app/_utils/get-m-plus-2-font';
 
 export const alt = 'QRKit';
 export const size = {
@@ -14,6 +15,8 @@ export default async function OpenGraphImage() {
   const title = 'QRKit';
   const words = loadDefaultJapaneseParser().parse(title);
   const iconDataUrl = await getIconDataUrl();
+  const fontText = `${title}k8oK8O`;
+  const [font450] = await Promise.all([getMPlus2Font({ text: fontText })]);
 
   return new ImageResponse(
     <div
@@ -25,6 +28,7 @@ export default async function OpenGraphImage() {
         justifyContent: 'center',
         width: '100%',
         height: '100%',
+        fontFamily: '"M PLUS 2"',
       }}
     >
       <div
@@ -47,7 +51,7 @@ export default async function OpenGraphImage() {
             margin: 64,
             color: 'black',
             fontSize: 60,
-            fontWeight: 'bold',
+            fontWeight: 450,
           }}
         >
           {words.map((word) => (
@@ -74,6 +78,14 @@ export default async function OpenGraphImage() {
     </div>,
     {
       ...size,
+      fonts: [
+        {
+          name: 'M PLUS 2',
+          data: font450,
+          style: 'normal',
+          weight: 400,
+        },
+      ],
     },
   );
 }
