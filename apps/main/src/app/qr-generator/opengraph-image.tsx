@@ -83,7 +83,7 @@ export default async function OpenGraphImage() {
           name: 'M PLUS 2',
           data: font450,
           style: 'normal',
-          weight: 450,
+          weight: 400,
         },
       ],
     },
