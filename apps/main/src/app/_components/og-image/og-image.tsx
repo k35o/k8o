@@ -1,6 +1,7 @@
 import { loadDefaultJapaneseParser } from 'budoux';
 import { ImageResponse } from 'next/og';
 import { getIconDataUrl } from '@/app/_utils/get-icon-data-url';
+import { getMPlus2Font } from '@/app/_utils/get-m-plus-2-font';
 
 type OgImageProps = {
   title: string;
@@ -10,6 +11,8 @@ type OgImageProps = {
 export async function OgImage({ title, category }: OgImageProps) {
   const words = loadDefaultJapaneseParser().parse(title);
   const iconDataUrl = await getIconDataUrl();
+  const fontText = `${title}${category ?? ''}${(category ?? '').toUpperCase()}k8oK8O`;
+  const font450 = await getMPlus2Font({ text: fontText });
 
   return new ImageResponse(
     <div
@@ -21,6 +24,7 @@ export async function OgImage({ title, category }: OgImageProps) {
         width: '100%',
         height: '100%',
         position: 'relative',
+        fontFamily: '"M PLUS 2"',
       }}
     >
       {/* 装飾的なグラデーション円 */}
@@ -76,9 +80,9 @@ export async function OgImage({ title, category }: OgImageProps) {
             margin: 64,
             marginTop: 80,
             marginBottom: 40,
-            color: '#18181b',
+            color: '#0f172a',
             fontSize: 68,
-            fontWeight: 800,
+            fontWeight: 450,
             lineHeight: 1.2,
             letterSpacing: '-0.02em',
           }}
@@ -88,9 +92,7 @@ export async function OgImage({ title, category }: OgImageProps) {
               key={`${word}-${index.toString()}`}
               style={{
                 display: 'block',
-                background: 'linear-gradient(135deg, #18181b 0%, #52525b 100%)',
-                backgroundClip: 'text',
-                color: 'transparent',
+                color: '#0f172a',
               }}
             >
               {word}
@@ -137,9 +139,9 @@ export async function OgImage({ title, category }: OgImageProps) {
               {category && (
                 <span
                   style={{
-                    color: '#52525b',
+                    color: '#334155',
                     fontSize: 32,
-                    fontWeight: 600,
+                    fontWeight: 450,
                     letterSpacing: '0.1em',
                     textTransform: 'uppercase',
                   }}
@@ -151,7 +153,7 @@ export async function OgImage({ title, category }: OgImageProps) {
                 style={{
                   color: '#18181b',
                   fontSize: 48,
-                  fontWeight: 700,
+                  fontWeight: 450,
                 }}
               >
                 k8o
@@ -175,6 +177,14 @@ export async function OgImage({ title, category }: OgImageProps) {
     {
       width: 1200,
       height: 630,
+      fonts: [
+        {
+          name: 'M PLUS 2',
+          data: font450,
+          style: 'normal',
+          weight: 400,
+        },
+      ],
     },
   );
 }
