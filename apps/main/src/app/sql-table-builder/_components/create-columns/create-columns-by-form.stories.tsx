@@ -92,10 +92,11 @@ export const MultipleColumns: Story = {
   render: () => <MultipleColumnsRender />,
 };
 
+const errorColumnId = uuidV4();
+
 const WithErrorsRender = () => {
-  const columnId = uuidV4();
   const [columns] = useState<Record<string, Column>>({
-    [columnId]: createDefaultColumn(),
+    [errorColumnId]: createDefaultColumn(),
   });
 
   const handleChangeColumn = () => () => {
@@ -109,7 +110,7 @@ const WithErrorsRender = () => {
     <CreateColumnsByForm
       columnsEntries={Object.entries(columns)}
       columnsError={{
-        [columnId]: {
+        [errorColumnId]: {
           name: 'カラム名は必須です',
           alias: 'コメントは必須です',
         },
