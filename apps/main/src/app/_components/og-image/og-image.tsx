@@ -12,7 +12,7 @@ export async function OgImage({ title, category }: OgImageProps) {
   const words = loadDefaultJapaneseParser().parse(title);
   const iconDataUrl = await getIconDataUrl();
   const fontText = `${title}${category ?? ''}${(category ?? '').toUpperCase()}k8oK8O`;
-  const [font450] = await Promise.all([getMPlus2Font({ text: fontText })]);
+  const font450 = await getMPlus2Font({ text: fontText });
 
   return new ImageResponse(
     <div
@@ -182,7 +182,7 @@ export async function OgImage({ title, category }: OgImageProps) {
           name: 'M PLUS 2',
           data: font450,
           style: 'normal',
-          weight: 400,
+          weight: 450,
         },
       ],
     },

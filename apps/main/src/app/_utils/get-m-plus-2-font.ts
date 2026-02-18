@@ -14,12 +14,17 @@ async function fetchGoogleFontsCss({
 
   const cssPromise = fetch(
     `https://fonts.googleapis.com/css2?family=M+PLUS+2:wght@450&display=swap&text=${encodeURIComponent(text)}`,
-  ).then(async (response) => {
-    if (!response.ok) {
-      throw new Error(`Failed to fetch Google Fonts CSS: ${response.status}`);
-    }
-    return await response.text();
-  });
+  )
+    .then(async (response) => {
+      if (!response.ok) {
+        throw new Error(`Failed to fetch Google Fonts CSS: ${response.status}`);
+      }
+      return await response.text();
+    })
+    .catch((error: unknown) => {
+      cssCache.delete(cacheKey);
+      throw error;
+    });
 
   cssCache.set(cacheKey, cssPromise);
   return await cssPromise;
@@ -27,7 +32,7 @@ async function fetchGoogleFontsCss({
 
 function extractFontUrl(css: string): string {
   const match =
-    /src:\s*url\(([^)]+)\)\s*format\('(?:woff2|woff|opentype|truetype)'\)/.exec(
+    /src:\s*url\(["']?([^"')]+)["']?\)\s*format\('(?:woff2|woff|opentype|truetype)'\)/.exec(
       css,
     );
 
@@ -57,6 +62,10 @@ export async function getMPlus2Font({
         throw new Error(`Failed to fetch font file: ${response.status}`);
       }
       return await response.arrayBuffer();
+    })
+    .catch((error: unknown) => {
+      fontCache.delete(cacheKey);
+      throw error;
     });
 
   fontCache.set(cacheKey, fontPromise);
