@@ -13,85 +13,70 @@ const meta: Meta<typeof CreateColumns> = {
 export default meta;
 type Story = StoryObj<typeof CreateColumns>;
 
+const PrimaryRender = () => {
+  const [columns, setColumns] = useState<Record<string, Column>>({
+    [uuidV4()]: {
+      name: '',
+      alias: '',
+      type: 'uuid',
+      nullable: false,
+    },
+  });
+  return (
+    <CreateColumns
+      columns={columns}
+      columnsError={undefined}
+      setColumns={setColumns}
+      setRestrictions={() => {
+        // no-op
+      }}
+    />
+  );
+};
+
 export const Primary: Story = {
-  render: () => {
-    const [columns, setColumns] = useState<Record<string, Column>>({
-      [uuidV4()]: {
-        name: '',
-        alias: '',
-        type: 'uuid',
-        nullable: false,
-      },
-    });
-    return (
-      <CreateColumns
-        columns={columns}
-        columnsError={undefined}
-        setColumns={setColumns}
-        setRestrictions={() => {
-          console.log();
-        }}
-      />
-    );
-  },
+  render: () => <PrimaryRender />,
+};
+
+const WithMultipleColumnsRender = () => {
+  const [columns, setColumns] = useState<Record<string, Column>>({
+    [uuidV4()]: {
+      name: 'id',
+      alias: 'ID',
+      type: 'uuid',
+      nullable: false,
+    },
+    [uuidV4()]: {
+      name: 'name',
+      alias: '名前',
+      type: 'text',
+      nullable: false,
+    },
+    [uuidV4()]: {
+      name: 'email',
+      alias: 'メールアドレス',
+      type: 'text',
+      nullable: true,
+    },
+  });
+  return (
+    <CreateColumns
+      columns={columns}
+      columnsError={undefined}
+      setColumns={setColumns}
+      setRestrictions={() => {
+        // no-op
+      }}
+    />
+  );
 };
 
 export const WithMultipleColumns: Story = {
-  render: () => {
-    const [columns, setColumns] = useState<Record<string, Column>>({
-      [uuidV4()]: {
-        name: 'id',
-        alias: 'ID',
-        type: 'uuid',
-        nullable: false,
-      },
-      [uuidV4()]: {
-        name: 'name',
-        alias: '名前',
-        type: 'text',
-        nullable: false,
-      },
-      [uuidV4()]: {
-        name: 'email',
-        alias: 'メールアドレス',
-        type: 'text',
-        nullable: true,
-      },
-    });
-    return (
-      <CreateColumns
-        columns={columns}
-        columnsError={undefined}
-        setColumns={setColumns}
-        setRestrictions={() => {
-          console.log();
-        }}
-      />
-    );
-  },
+  render: () => <WithMultipleColumnsRender />,
 };
 
 export const AddColumn: Story = {
-  render: () => {
-    const [columns, setColumns] = useState<Record<string, Column>>({
-      [uuidV4()]: {
-        name: '',
-        alias: '',
-        type: 'uuid',
-        nullable: false,
-      },
-    });
-    return (
-      <CreateColumns
-        columns={columns}
-        columnsError={undefined}
-        setColumns={setColumns}
-        setRestrictions={() => {
-          console.log();
-        }}
-      />
-    );
-  },
+  render: () => <PrimaryRender />,
   play: async ({ canvasElement, userEvent }) => {
     const canvas = within(canvasElement);
 
@@ -105,26 +90,7 @@ export const AddColumn: Story = {
 };
 
 export const SwitchViewType: Story = {
-  render: () => {
-    const [columns, setColumns] = useState<Record<string, Column>>({
-      [uuidV4()]: {
-        name: '',
-        alias: '',
-        type: 'uuid',
-        nullable: false,
-      },
-    });
-    return (
-      <CreateColumns
-        columns={columns}
-        columnsError={undefined}
-        setColumns={setColumns}
-        setRestrictions={() => {
-          console.log();
-        }}
-      />
-    );
-  },
+  render: () => <PrimaryRender />,
   play: async ({ canvasElement, userEvent }) => {
     const canvas = within(canvasElement);
 

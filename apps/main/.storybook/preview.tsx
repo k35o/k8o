@@ -74,7 +74,7 @@ const preview: Preview = {
   decorators: [
     (Story, { globals, parameters }) => (
       <AppProvider>
-        <Script>
+        <Script id="storybook-body-class">
           {`document.body.classList.add(${cn(
             mPlus2.variable,
             notoSansJp.variable,

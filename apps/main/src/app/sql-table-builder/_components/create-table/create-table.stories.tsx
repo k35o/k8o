@@ -11,28 +11,22 @@ const meta: Meta<typeof CreateTable> = {
 export default meta;
 type Story = StoryObj<typeof CreateTable>;
 
+const PrimaryRender = () => {
+  const [table, setTable] = useState<Table>({
+    name: '',
+    alias: '',
+  });
+  return (
+    <CreateTable setTable={setTable} table={table} tableError={undefined} />
+  );
+};
+
 export const Primary: Story = {
-  render: () => {
-    const [table, setTable] = useState<Table>({
-      name: '',
-      alias: '',
-    });
-    return (
-      <CreateTable setTable={setTable} table={table} tableError={undefined} />
-    );
-  },
+  render: () => <PrimaryRender />,
 };
 
 export const InputTableInfo: Story = {
-  render: () => {
-    const [table, setTable] = useState<Table>({
-      name: '',
-      alias: '',
-    });
-    return (
-      <CreateTable setTable={setTable} table={table} tableError={undefined} />
-    );
-  },
+  render: () => <PrimaryRender />,
   play: async ({ canvasElement, userEvent }) => {
     const canvas = within(canvasElement);
 
@@ -53,21 +47,23 @@ export const InputTableInfo: Story = {
   },
 };
 
+const WithErrorRender = () => {
+  const [table, setTable] = useState<Table>({
+    name: '',
+    alias: '',
+  });
+  return (
+    <CreateTable
+      setTable={setTable}
+      table={table}
+      tableError={{
+        name: 'テーブル名は必須です',
+        alias: 'コメントは必須です',
+      }}
+    />
+  );
+};
+
 export const WithError: Story = {
-  render: () => {
-    const [table, setTable] = useState<Table>({
-      name: '',
-      alias: '',
-    });
-    return (
-      <CreateTable
-        setTable={setTable}
-        table={table}
-        tableError={{
-          name: 'テーブル名は必須です',
-          alias: 'コメントは必須です',
-        }}
-      />
-    );
-  },
+  render: () => <WithErrorRender />,
 };
