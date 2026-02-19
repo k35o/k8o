@@ -5,7 +5,13 @@ import { Card } from '@k8o/arte-odyssey/card';
 import { Tooltip } from '@k8o/arte-odyssey/tooltip';
 import { cn } from '@repo/helpers/cn';
 import { formatDate } from '@repo/helpers/date/format';
-import type { FC } from 'react';
+import {
+  type FC,
+  type KeyboardEvent,
+  useCallback,
+  useRef,
+  useState,
+} from 'react';
 import type {
   ContributionDay,
   ContributionWeek,
@@ -60,17 +66,7 @@ export const Presenter: FC<{
         </div>
 
         {/* グラフ */}
-        <div className="flex justify-center">
-          <div className="inline-flex w-fit gap-0.5">
-            {weeks.map((week, weekIndex) => (
-              <div className="flex flex-col gap-0.5" key={weekIndex}>
-                {week.days.map((day, dayIndex) => (
-                  <ContributionCell day={day} key={dayIndex} />
-                ))}
-              </div>
-            ))}
-          </div>
-        </div>
+        <ContributionGrid weeks={weeks} />
 
         {/* 件数と凡例 */}
         <div className="flex items-center justify-between text-fg-muted text-xs">
@@ -128,9 +124,107 @@ const _getCellStyle = (
 };
 
 /**
+ * 矢印キーで移動可能なContributionグリッド（roving tabindex）
+ */
+const ContributionGrid: FC<{ weeks: ContributionWeek[] }> = ({ weeks }) => {
+  const [focusedWeek, setFocusedWeek] = useState(0);
+  const [focusedDay, setFocusedDay] = useState(0);
+  const cellRefs = useRef<Map<string, HTMLButtonElement>>(new Map());
+
+  const setCellRef = useCallback(
+    (weekIndex: number, dayIndex: number, el: HTMLButtonElement | null) => {
+      const key = `${weekIndex}-${dayIndex}`;
+      if (el) {
+        cellRefs.current.set(key, el);
+      } else {
+        cellRefs.current.delete(key);
+      }
+    },
+    [],
+  );
+
+  const focusCell = useCallback((weekIndex: number, dayIndex: number) => {
+    const cell = cellRefs.current.get(`${weekIndex}-${dayIndex}`);
+    if (cell) {
+      setFocusedWeek(weekIndex);
+      setFocusedDay(dayIndex);
+      cell.focus();
+    }
+  }, []);
+
+  const handleKeyDown = useCallback(
+    (e: KeyboardEvent) => {
+      let nextWeek = focusedWeek;
+      let nextDay = focusedDay;
+
+      switch (e.key) {
+        case 'ArrowRight':
+          nextWeek = focusedWeek + 1;
+          break;
+        case 'ArrowLeft':
+          nextWeek = focusedWeek - 1;
+          break;
+        case 'ArrowDown':
+          nextDay = focusedDay + 1;
+          break;
+        case 'ArrowUp':
+          nextDay = focusedDay - 1;
+          break;
+        default:
+          return;
+      }
+
+      e.preventDefault();
+
+      // 範囲チェック
+      const targetWeek = weeks[nextWeek];
+      if (!targetWeek || nextDay < 0 || nextDay >= targetWeek.days.length) {
+        return;
+      }
+
+      focusCell(nextWeek, nextDay);
+    },
+    [focusedWeek, focusedDay, weeks, focusCell],
+  );
+
+  return (
+    // biome-ignore lint/a11y/useSemanticElements: カスタムグリッドウィジェットのためARIAロールを使用
+    <div
+      aria-label="コントリビューショングラフ"
+      className="flex justify-center"
+      onKeyDown={handleKeyDown}
+      role="grid"
+    >
+      <div className="inline-flex w-fit gap-0.5">
+        {weeks.map((week, weekIndex) => (
+          // biome-ignore lint/a11y/useSemanticElements: カスタムグリッドウィジェットのためARIAロールを使用
+          // biome-ignore lint/a11y/useFocusableInteractive: グリッド行はフォーカス不要、子のgridcellがフォーカスを受け取る
+          <div className="flex flex-col gap-0.5" key={weekIndex} role="row">
+            {week.days.map((day, dayIndex) => (
+              <ContributionCell
+                day={day}
+                isFocusable={
+                  weekIndex === focusedWeek && dayIndex === focusedDay
+                }
+                key={dayIndex}
+                ref={(el) => setCellRef(weekIndex, dayIndex, el)}
+              />
+            ))}
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+};
+
+/**
  * 個別のContribution Cellコンポーネント
  */
-const ContributionCell: FC<{ day: ContributionDay }> = ({ day }) => {
+const ContributionCell: FC<{
+  day: ContributionDay;
+  isFocusable: boolean;
+  ref: (el: HTMLButtonElement | null) => void;
+}> = ({ day, isFocusable, ref }) => {
   const formattedDate = formatDate(new Date(day.date), 'yyyy年M月d日(E)');
   const cellStyle = _getCellStyle(day.level);
 
@@ -138,14 +232,19 @@ const ContributionCell: FC<{ day: ContributionDay }> = ({ day }) => {
     <Tooltip.Root placement="top">
       <Tooltip.Trigger
         renderItem={(props) => (
+          // biome-ignore lint/a11y/useSemanticElements: カスタムグリッドウィジェットのためARIAロールを使用
           <button
             {...props}
             aria-label={`${day.count}件のコミット ${formattedDate}`}
             className={cn(
               'h-4 w-4 rounded-full p-0 transition-all duration-200',
               'hover:scale-110 hover:ring-2 hover:ring-teal-500',
+              'focus-visible:scale-110 focus-visible:ring-2 focus-visible:ring-teal-500',
             )}
+            ref={ref}
+            role="gridcell"
             style={cellStyle}
+            tabIndex={isFocusable ? 0 : -1}
             type="button"
           />
         )}
