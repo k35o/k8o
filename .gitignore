@@ -62,3 +62,8 @@ dist
 local.db
 local.db-shm
 local.db-wal
+
+# portless state
+.portless/
+proxy.log
+routes.json
