@@ -127,8 +127,13 @@ const _getCellStyle = (
  * 矢印キーで移動可能なContributionグリッド（roving tabindex）
  */
 const ContributionGrid: FC<{ weeks: ContributionWeek[] }> = ({ weeks }) => {
-  const [focusedWeek, setFocusedWeek] = useState(0);
-  const [focusedDay, setFocusedDay] = useState(0);
+  const [focusedWeek, setFocusedWeek] = useState(() =>
+    Math.max(0, weeks.length - 1),
+  );
+  const [focusedDay, setFocusedDay] = useState(() => {
+    const lastWeek = weeks.at(-1);
+    return lastWeek ? Math.max(0, lastWeek.days.length - 1) : 0;
+  });
   const cellRefs = useRef<Map<string, HTMLButtonElement>>(new Map());
 
   const setCellRef = useCallback(
@@ -159,30 +164,37 @@ const ContributionGrid: FC<{ weeks: ContributionWeek[] }> = ({ weeks }) => {
 
       switch (e.key) {
         case 'ArrowRight':
+          e.preventDefault();
           nextWeek = focusedWeek + 1;
           break;
         case 'ArrowLeft':
+          e.preventDefault();
           nextWeek = focusedWeek - 1;
           break;
         case 'ArrowDown':
+          e.preventDefault();
           nextDay = focusedDay + 1;
           break;
         case 'ArrowUp':
+          e.preventDefault();
           nextDay = focusedDay - 1;
           break;
         default:
           return;
       }
 
-      e.preventDefault();
-
       // 範囲チェック
       const targetWeek = weeks[nextWeek];
-      if (!targetWeek || nextDay < 0 || nextDay >= targetWeek.days.length) {
+      if (!targetWeek) {
+        return;
+      }
+      // 移動先の週の日数が少ない場合は最終セルにクランプ
+      const clampedDay = Math.min(nextDay, targetWeek.days.length - 1);
+      if (clampedDay < 0) {
         return;
       }
 
-      focusCell(nextWeek, nextDay);
+      focusCell(nextWeek, clampedDay);
     },
     [focusedWeek, focusedDay, weeks, focusCell],
   );
@@ -190,7 +202,9 @@ const ContributionGrid: FC<{ weeks: ContributionWeek[] }> = ({ weeks }) => {
   return (
     // biome-ignore lint/a11y/useSemanticElements: カスタムグリッドウィジェットのためARIAロールを使用
     <div
+      aria-colcount={weeks[0]?.days.length ?? 0}
       aria-label="コントリビューショングラフ"
+      aria-rowcount={weeks.length}
       className="flex justify-center"
       onKeyDown={handleKeyDown}
       role="grid"
@@ -199,7 +213,12 @@ const ContributionGrid: FC<{ weeks: ContributionWeek[] }> = ({ weeks }) => {
         {weeks.map((week, weekIndex) => (
           // biome-ignore lint/a11y/useSemanticElements: カスタムグリッドウィジェットのためARIAロールを使用
           // biome-ignore lint/a11y/useFocusableInteractive: グリッド行はフォーカス不要、子のgridcellがフォーカスを受け取る
-          <div className="flex flex-col gap-0.5" key={weekIndex} role="row">
+          <div
+            aria-rowindex={weekIndex + 1}
+            className="flex flex-col gap-0.5"
+            key={weekIndex}
+            role="row"
+          >
             {week.days.map((day, dayIndex) => (
               <ContributionCell
                 day={day}
