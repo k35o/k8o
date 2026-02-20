@@ -49,7 +49,7 @@ export const Presenter: FC<{
             <span className="text-fg-mute text-xs">
               データの取得に失敗しました。しばらくしてから再度お試しください。
               {process.env.NODE_ENV === 'development' && errorMessage ? (
-                <span className="ml-1 text-[10px]">({errorMessage})</span>
+                <span className="ml-1">({errorMessage})</span>
               ) : null}
             </span>
           ) : null}
@@ -199,39 +199,38 @@ const ContributionGrid: FC<{ weeks: ContributionWeek[] }> = ({ weeks }) => {
     [focusedWeek, focusedDay, weeks, focusCell],
   );
 
+  const maxDays = Math.max(...weeks.map((w) => w.days.length));
+
   return (
-    // biome-ignore lint/a11y/useSemanticElements: カスタムグリッドウィジェットのためARIAロールを使用
-    <div
-      aria-colcount={weeks[0]?.days.length ?? 0}
-      aria-label="コントリビューショングラフ"
-      aria-rowcount={weeks.length}
-      className="flex justify-center"
-      onKeyDown={handleKeyDown}
-      role="grid"
-    >
-      <div className="inline-flex w-fit gap-0.5">
-        {weeks.map((week, weekIndex) => (
-          // biome-ignore lint/a11y/useSemanticElements: カスタムグリッドウィジェットのためARIAロールを使用
-          // biome-ignore lint/a11y/useFocusableInteractive: グリッド行はフォーカス不要、子のgridcellがフォーカスを受け取る
-          <div
-            aria-rowindex={weekIndex + 1}
-            className="flex flex-col gap-0.5"
-            key={weekIndex}
-            role="row"
-          >
-            {week.days.map((day, dayIndex) => (
-              <ContributionCell
-                day={day}
-                isFocusable={
-                  weekIndex === focusedWeek && dayIndex === focusedDay
-                }
-                key={dayIndex}
-                ref={(el) => setCellRef(weekIndex, dayIndex, el)}
-              />
-            ))}
-          </div>
-        ))}
-      </div>
+    <div className="flex justify-center">
+      <table
+        aria-label="コントリビューショングラフ"
+        className="border-collapse"
+      >
+        <tbody>
+          {Array.from({ length: maxDays }, (_, dayIndex) => (
+            <tr key={dayIndex}>
+              {weeks.map((week, weekIndex) => {
+                const day = week.days[dayIndex];
+                return (
+                  <td className="p-px leading-0" key={weekIndex}>
+                    {day ? (
+                      <ContributionCell
+                        day={day}
+                        isFocusable={
+                          weekIndex === focusedWeek && dayIndex === focusedDay
+                        }
+                        onKeyDown={handleKeyDown}
+                        ref={(el) => setCellRef(weekIndex, dayIndex, el)}
+                      />
+                    ) : null}
+                  </td>
+                );
+              })}
+            </tr>
+          ))}
+        </tbody>
+      </table>
     </div>
   );
 };
@@ -242,8 +241,9 @@ const ContributionGrid: FC<{ weeks: ContributionWeek[] }> = ({ weeks }) => {
 const ContributionCell: FC<{
   day: ContributionDay;
   isFocusable: boolean;
+  onKeyDown: (e: KeyboardEvent) => void;
   ref: (el: HTMLButtonElement | null) => void;
-}> = ({ day, isFocusable, ref }) => {
+}> = ({ day, isFocusable, onKeyDown, ref }) => {
   const formattedDate = formatDate(new Date(day.date), 'yyyy年M月d日(E)');
   const cellStyle = _getCellStyle(day.level);
 
@@ -251,7 +251,6 @@ const ContributionCell: FC<{
     <Tooltip.Root placement="top">
       <Tooltip.Trigger
         renderItem={(props) => (
-          // biome-ignore lint/a11y/useSemanticElements: カスタムグリッドウィジェットのためARIAロールを使用
           <button
             {...props}
             aria-label={`${day.count}件のコミット ${formattedDate}`}
@@ -260,8 +259,8 @@ const ContributionCell: FC<{
               'hover:scale-110 hover:ring-2 hover:ring-teal-500',
               'focus-visible:scale-110 focus-visible:ring-2 focus-visible:ring-teal-500',
             )}
+            onKeyDown={onKeyDown}
             ref={ref}
-            role="gridcell"
             style={cellStyle}
             tabIndex={isFocusable ? 0 : -1}
             type="button"
