@@ -2,158 +2,123 @@
 
 import { AlertIcon, IconButton } from '@k8o/arte-odyssey';
 import { Card } from '@k8o/arte-odyssey/card';
-import { Tooltip } from '@k8o/arte-odyssey/tooltip';
-import { cn } from '@repo/helpers/cn';
+import { Tooltip as ArteTooltip } from '@k8o/arte-odyssey/tooltip';
 import { formatDate } from '@repo/helpers/date/format';
 import type { FC } from 'react';
-import type {
-  ContributionDay,
-  ContributionWeek,
-} from '@/services/github/contributions';
+import {
+  Bar,
+  BarChart,
+  CartesianGrid,
+  ResponsiveContainer,
+  Tooltip,
+  XAxis,
+  YAxis,
+} from 'recharts';
+import type { ContributionDay } from '@/services/github/contributions';
 
-/**
- * GitHub Contributionグラフ（プレゼンター）
- */
+type ChartDataItem = {
+  date: string;
+  label: string;
+  count: number;
+};
+
 export const Presenter: FC<{
-  errorMessage?: string;
-  isError?: boolean;
-  weeks: ContributionWeek[];
-}> = ({ errorMessage, isError = false, weeks }) => {
-  const totalContributions = weeks.reduce(
-    (total, week) => total + week.days.reduce((sum, day) => sum + day.count, 0),
-    0,
-  );
+  days: ContributionDay[];
+}> = ({ days }) => {
+  const totalContributions = days.reduce((total, day) => total + day.count, 0);
 
   // 期間を計算（実際の日数に基づいて）
-  const totalDays = weeks.reduce((total, week) => total + week.days.length, 0);
   const period =
-    totalDays >= 365
+    days.length >= 365
       ? '過去1年間'
-      : totalDays >= 60
-        ? `過去${Math.floor(totalDays / 7)}週間`
-        : `過去${totalDays}日間`;
+      : days.length >= 60
+        ? `過去${Math.floor(days.length / 7)}週間`
+        : `過去${days.length}日間`;
+
+  const data: ChartDataItem[] = days.map((day) => ({
+    date: day.date,
+    label: formatDate(new Date(day.date), 'M/d'),
+    count: day.count,
+  }));
 
   return (
     <Card>
       <div className="flex flex-col gap-4 p-6">
-        {/* タイトル */}
         <div className="flex items-center gap-2">
           <h3 className="font-bold text-fg-base text-sm">開発の足あと</h3>
-          {isError ? (
-            <span className="text-fg-mute text-xs">
-              データの取得に失敗しました。しばらくしてから再度お試しください。
-              {process.env.NODE_ENV === 'development' && errorMessage ? (
-                <span className="ml-1 text-[10px]">({errorMessage})</span>
-              ) : null}
-            </span>
-          ) : null}
-          <Tooltip.Root placement="top">
-            <Tooltip.Trigger
+          <ArteTooltip.Root placement="top">
+            <ArteTooltip.Trigger
               renderItem={(props) => (
                 <IconButton {...props} label="このグラフについて" size="sm">
                   <AlertIcon size="sm" status="info" />
                 </IconButton>
               )}
             />
-            <Tooltip.Content>k8oリポジトリへのコミット履歴</Tooltip.Content>
-          </Tooltip.Root>
+            <ArteTooltip.Content>
+              k8oリポジトリへのコミット履歴
+            </ArteTooltip.Content>
+          </ArteTooltip.Root>
         </div>
 
-        {/* グラフ */}
-        <div className="flex justify-center">
-          <div className="inline-flex w-fit gap-0.5">
-            {weeks.map((week, weekIndex) => (
-              <div className="flex flex-col gap-0.5" key={weekIndex}>
-                {week.days.map((day, dayIndex) => (
-                  <ContributionCell day={day} key={dayIndex} />
-                ))}
-              </div>
-            ))}
-          </div>
+        <div className="h-48">
+          <ResponsiveContainer height="100%" width="100%">
+            <BarChart data={data}>
+              <CartesianGrid
+                stroke="var(--border-subtle)"
+                strokeDasharray="3 3"
+                vertical={false}
+              />
+              <XAxis
+                axisLine={false}
+                dataKey="label"
+                tick={{ fill: 'var(--fg-mute)', fontSize: 12 }}
+                tickLine={false}
+              />
+              <YAxis
+                allowDecimals={false}
+                axisLine={false}
+                tick={{ fill: 'var(--fg-mute)', fontSize: 12 }}
+                tickLine={false}
+                width={30}
+              />
+              <Tooltip
+                content={<CustomTooltip />}
+                cursor={{ fill: 'var(--bg-subtle)' }}
+                position={{ y: 0 }}
+              />
+              <Bar
+                activeBar={{ fill: 'var(--teal-700)' }}
+                dataKey="count"
+                fill="var(--teal-600)"
+                radius={[4, 4, 0, 0]}
+              />
+            </BarChart>
+          </ResponsiveContainer>
         </div>
 
-        {/* 件数と凡例 */}
-        <div className="flex items-center justify-between text-fg-muted text-xs">
-          <div>
-            {period}で{totalContributions}件
-          </div>
-          <div className="flex items-center gap-2">
-            <span>-</span>
-            <div className="flex gap-1">
-              {[0, 1, 2, 3, 4].map((level) => (
-                <div
-                  className="h-4 w-4 rounded-full"
-                  key={level}
-                  style={_getCellStyle(level)}
-                />
-              ))}
-            </div>
-            <span>+</span>
-          </div>
+        <div className="text-fg-muted text-xs">
+          {period}で{totalContributions}件
         </div>
       </div>
     </Card>
   );
 };
 
-/**
- * レベルに応じたスタイルを取得（0: 枠線のみ, 1-4: コミット量）
- */
-const _getCellStyle = (
-  level: number,
-): { backgroundColor?: string; border?: string } => {
-  switch (level) {
-    case 0:
-      return { border: '1px solid var(--border-base)' };
-    case 1:
-      return {
-        backgroundColor:
-          'color-mix(in srgb, var(--teal-700) 40%, var(--teal-200))',
-      };
-    case 2:
-      return {
-        backgroundColor:
-          'color-mix(in srgb, var(--teal-700) 60%, var(--teal-300))',
-      };
-    case 3:
-      return {
-        backgroundColor:
-          'color-mix(in srgb, var(--teal-700) 80%, var(--teal-400))',
-      };
-    case 4:
-      return { backgroundColor: 'var(--teal-700)' };
-    default:
-      return { border: '1px solid var(--border-base)' };
+const CustomTooltip: FC<{
+  active?: boolean;
+  payload?: Array<{ payload: ChartDataItem }>;
+}> = ({ active, payload }) => {
+  if (!(active && payload?.[0])) {
+    return null;
   }
-};
 
-/**
- * 個別のContribution Cellコンポーネント
- */
-const ContributionCell: FC<{ day: ContributionDay }> = ({ day }) => {
-  const formattedDate = formatDate(new Date(day.date), 'yyyy年M月d日(E)');
-  const cellStyle = _getCellStyle(day.level);
+  const item = payload[0].payload;
+  const formattedDate = formatDate(new Date(item.date), 'yyyy年M月d日(E)');
 
   return (
-    <Tooltip.Root placement="top">
-      <Tooltip.Trigger
-        renderItem={(props) => (
-          <button
-            {...props}
-            aria-label={`${day.count}件のコミット ${formattedDate}`}
-            className={cn(
-              'h-4 w-4 rounded-full p-0 transition-all duration-200',
-              'hover:scale-110 hover:ring-2 hover:ring-teal-500',
-            )}
-            style={cellStyle}
-            type="button"
-          />
-        )}
-      />
-      <Tooltip.Content>
-        <div className="font-semibold">{day.count}件のコミット</div>
-        <div className="text-fg-inverse-muted text-xs">{formattedDate}</div>
-      </Tooltip.Content>
-    </Tooltip.Root>
+    <div className="rounded-md border border-border-base bg-bg-base px-3 py-2 text-fg-base shadow-sm">
+      <p className="font-semibold text-sm">{item.count}件のコミット</p>
+      <p className="text-fg-mute text-xs">{formattedDate}</p>
+    </div>
   );
 };
