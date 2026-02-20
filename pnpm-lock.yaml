@@ -60,6 +60,9 @@ importers:
       playwright:
         specifier: 1.58.2
         version: 1.58.2
+      portless:
+        specifier: 0.3.0
+        version: 0.3.0
       turbo:
         specifier: 2.8.3
         version: 2.8.3
@@ -4589,6 +4592,12 @@ packages:
   pngjs@7.0.0:
     resolution: {integrity: sha512-LKWqWJRhstyYo9pGvgor/ivk2w94eSjE3RGVuzLGlr3NmD8bf7RcYGze1mNdEHRP6TRP6rMuDHk5t44hnTRyow==}
     engines: {node: '>=14.19.0'}
+
+  portless@0.3.0:
+    resolution: {integrity: sha512-uW+nsbSajf+4aoFtRem6CTevSskozSa7qq5Vro804mPMaTaPYdWfygPak9XuMfx80ehUhxSH/ttzURAK/TnIVQ==}
+    engines: {node: '>=20'}
+    os: [darwin, linux]
+    hasBin: true
 
   postcss@8.4.31:
     resolution: {integrity: sha512-PS08Iboia9mts/2ygV3eLpY5ghnUcfLV/EXTOW1E2qYxJKGGBUtNjN76FYHnMs36RmARn41bC0AZmn+rR0OVpQ==}
@@ -10049,6 +10058,10 @@ snapshots:
       fsevents: 2.3.2
 
   pngjs@7.0.0: {}
+
+  portless@0.3.0:
+    dependencies:
+      chalk: 5.6.2
 
   postcss@8.4.31:
     dependencies:

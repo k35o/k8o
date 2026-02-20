@@ -41,7 +41,7 @@ pnpm run dev
 ## コマンド
 
 ```bash
-pnpm run dev              # 開発サーバー
+pnpm run dev              # 開発サーバー (Turbo並列。mainはportless経由)
 pnpm run build            # ビルド
 pnpm run test             # テスト
 pnpm run check:write      # リント＆フォーマット
