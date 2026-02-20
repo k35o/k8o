@@ -1,4 +1,5 @@
 import { Card } from '@k8o/arte-odyssey/card';
+import { ErrorBoundary } from '@k8o/arte-odyssey/error-boundary';
 import { Heading } from '@k8o/arte-odyssey/heading';
 import { IconLink } from '@k8o/arte-odyssey/icon-link';
 import { GitHubIcon, QiitaIcon, TwitterIcon } from '@k8o/arte-odyssey/icons';
@@ -68,14 +69,22 @@ export default function Home() {
         <div>
           <Heading type="h2">Activity</Heading>
         </div>
-        <div className="grid items-start gap-8 md:grid-cols-2 lg:grid-cols-3">
-          <div className="lg:sticky lg:top-4">
-            <GitHubContributionGraph />
+        <ErrorBoundary
+          fallback={
+            <div className="grid gap-8">
+              <RecentBlogs />
+            </div>
+          }
+        >
+          <div className="grid items-start gap-8 md:grid-cols-2 lg:grid-cols-3">
+            <div className="lg:sticky lg:top-4">
+              <GitHubContributionGraph />
+            </div>
+            <div className="md:col-span-2">
+              <RecentBlogs />
+            </div>
           </div>
-          <div className="md:col-span-2">
-            <RecentBlogs />
-          </div>
-        </div>
+        </ErrorBoundary>
       </div>
       <div className="flex flex-col gap-6">
         <div>
