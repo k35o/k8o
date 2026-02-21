@@ -180,3 +180,33 @@ export async function fetchK8oRepositoryContributions(
 
   return days;
 }
+
+export type Repository = {
+  owner: string;
+  repo: string;
+};
+
+/**
+ * 複数リポジトリのコントリビューションデータを取得して合算（直近2週間）
+ */
+export async function fetchRepositoriesContributions(
+  username: string,
+  repos: Repository[],
+): Promise<ContributionDay[]> {
+  const results = await Promise.all(
+    repos.map(({ owner, repo }) =>
+      fetchK8oRepositoryContributions(username, owner, repo),
+    ),
+  );
+
+  const mergedMap = new Map<string, number>();
+  for (const days of results) {
+    for (const day of days) {
+      mergedMap.set(day.date, (mergedMap.get(day.date) || 0) + day.count);
+    }
+  }
+
+  return Array.from(mergedMap.entries())
+    .sort(([a], [b]) => a.localeCompare(b))
+    .map(([date, count]) => ({ date, count }));
+}
