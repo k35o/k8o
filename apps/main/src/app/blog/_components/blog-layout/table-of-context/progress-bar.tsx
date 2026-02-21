@@ -1,6 +1,5 @@
 import { calculateTocPercentage } from '@repo/helpers/mdx/calculate-toc-percentage';
 import type { HeadingTree } from '@repo/helpers/mdx/types';
-import * as motion from 'motion/react-client';
 import { type FC, useMemo } from 'react';
 import { END_OF_CONTENT_ID } from '../constants';
 
@@ -36,18 +35,16 @@ export const ProgressBar: FC<{
           strokeWidth="3"
         />
         {/* 進捗の円 */}
-        <motion.circle
-          animate={{ strokeDashoffset: offset }}
+        <circle
+          className="transition-[stroke-dashoffset] duration-500 ease-in-out"
           cx="16"
           cy="16"
           fill="none"
-          initial={{ strokeDashoffset: circumference }}
           r={radius}
           stroke="var(--primary-bg)"
           strokeDasharray={circumference}
           strokeDashoffset={offset}
           strokeWidth="3"
-          transition={{ duration: 0.5, ease: 'easeInOut' }}
         />
       </svg>
       <div className="absolute inset-0 flex items-center justify-center text-xs">
