@@ -7,7 +7,6 @@ import {
   PlusIcon,
 } from '@k8o/arte-odyssey/icons';
 import { uuidV4 } from '@repo/helpers/uuid-v4';
-import { AnimatePresence, motion } from 'motion/react';
 import { type FC, useState } from 'react';
 import type { Column } from '../../_types/column';
 import type {
@@ -24,7 +23,6 @@ type Props = {
   restrictionsError: InvalidRestrictions['errors'] | undefined;
 };
 
-// 制約タイプに対応するラベルとスタイル
 const RESTRICTION_CONFIG: Record<
   RestrictionType,
   { label: string; badge: string }
@@ -43,7 +41,6 @@ const RESTRICTION_CONFIG: Record<
   },
 };
 
-// 個別の制約アイテムコンポーネント
 const RestrictionItem: FC<{
   id: string;
   restriction: Restriction;
@@ -66,14 +63,7 @@ const RestrictionItem: FC<{
   const config = RESTRICTION_CONFIG[restriction.type];
 
   return (
-    <motion.div
-      animate={{ opacity: 1, y: 0 }}
-      className="overflow-hidden rounded-lg border border-border-base bg-bg-base"
-      exit={{ opacity: 0, y: -10, height: 0 }}
-      initial={{ opacity: 0, y: -10 }}
-      layout
-      transition={{ duration: 0.2 }}
-    >
+    <div className="overflow-hidden rounded-lg border border-border-base bg-bg-base">
       {/* ヘッダー */}
       <div className="flex w-full items-center justify-between gap-3 px-4 py-3">
         <button
@@ -91,12 +81,9 @@ const RestrictionItem: FC<{
           >
             {config.label}
           </span>
-          <motion.div
-            animate={{ rotate: isOpen ? 0 : -90 }}
-            transition={{ duration: 0.2 }}
-          >
+          <div>
             <ChevronIcon direction="down" />
-          </motion.div>
+          </div>
         </button>
         {canDelete && (
           <IconButton
@@ -112,26 +99,19 @@ const RestrictionItem: FC<{
       </div>
 
       {/* コンテンツ */}
-      <AnimatePresence initial={false}>
-        {isOpen && (
-          <motion.div
-            animate={{ height: 'auto', opacity: 1 }}
-            exit={{ height: 0, opacity: 0 }}
-            initial={{ height: 0, opacity: 0 }}
-            transition={{ duration: 0.2 }}
-          >
-            <div className="overflow-hidden border-border-base border-t px-4 py-4">
-              <CreateRestriction
-                columns={columns}
-                restriction={restriction}
-                restrictionError={restrictionError}
-                setRestriction={setRestriction}
-              />
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-    </motion.div>
+      {isOpen && (
+        <div>
+          <div className="overflow-hidden border-border-base border-t px-4 py-4">
+            <CreateRestriction
+              columns={columns}
+              restriction={restriction}
+              restrictionError={restrictionError}
+              setRestriction={setRestriction}
+            />
+          </div>
+        </div>
+      )}
+    </div>
   );
 };
 
@@ -195,33 +175,27 @@ export const CreateRestrictions: FC<Props> = ({
 
       {/* 制約リスト */}
       <div className="flex flex-col gap-3">
-        <AnimatePresence mode="popLayout">
-          {restrictionsEntries.map(([id, restriction], idx) => {
-            const restrictionError = restrictionsError?.[id];
-            return (
-              <RestrictionItem
-                canDelete
-                columns={columns}
-                id={id}
-                index={idx}
-                key={id}
-                onDelete={() => handleDeleteRestriction(id)}
-                restriction={restriction}
-                restrictionError={restrictionError}
-                setRestriction={handleSetRestriction(id)}
-              />
-            );
-          })}
-        </AnimatePresence>
+        {restrictionsEntries.map(([id, restriction], idx) => {
+          const restrictionError = restrictionsError?.[id];
+          return (
+            <RestrictionItem
+              canDelete
+              columns={columns}
+              id={id}
+              index={idx}
+              key={id}
+              onDelete={() => handleDeleteRestriction(id)}
+              restriction={restriction}
+              restrictionError={restrictionError}
+              setRestriction={handleSetRestriction(id)}
+            />
+          );
+        })}
       </div>
 
       {/* 制約がない場合のプレースホルダー */}
       {restrictionsEntries.length === 0 && (
-        <motion.div
-          animate={{ opacity: 1 }}
-          className="flex flex-col items-center justify-center gap-2 rounded-lg border border-border-base border-dashed py-8"
-          initial={{ opacity: 0 }}
-        >
+        <div className="flex flex-col items-center justify-center gap-2 rounded-lg border border-border-base border-dashed py-8">
           <p className="text-fg-mute text-sm">制約がありません</p>
           <Button
             onClick={handleAddRestriction}
@@ -231,7 +205,7 @@ export const CreateRestrictions: FC<Props> = ({
           >
             制約を追加
           </Button>
-        </motion.div>
+        </div>
       )}
     </div>
   );

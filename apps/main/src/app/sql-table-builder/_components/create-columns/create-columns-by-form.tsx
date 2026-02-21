@@ -4,7 +4,6 @@ import { Select } from '@k8o/arte-odyssey/form/select';
 import { TextField } from '@k8o/arte-odyssey/form/text-field';
 import { IconButton } from '@k8o/arte-odyssey/icon-button';
 import { ChevronIcon, CloseIcon } from '@k8o/arte-odyssey/icons';
-import { AnimatePresence, motion } from 'motion/react';
 import { type FC, useState } from 'react';
 import {
   COLUMN_TYPE_OPTIONS,
@@ -20,7 +19,6 @@ type Props = {
   columnsError: InvalidColumns['errors'] | undefined;
 };
 
-// 個別のカラムアイテムコンポーネント
 const ColumnItem: FC<{
   id: string;
   column: Column;
@@ -41,14 +39,7 @@ const ColumnItem: FC<{
   const [isOpen, setIsOpen] = useState(true);
 
   return (
-    <motion.div
-      animate={{ opacity: 1, y: 0 }}
-      className="overflow-hidden rounded-lg border border-border-base bg-bg-base"
-      exit={{ opacity: 0, y: -10, height: 0 }}
-      initial={{ opacity: 0, y: -10 }}
-      layout
-      transition={{ duration: 0.2 }}
-    >
+    <div className="overflow-hidden rounded-lg border border-border-base bg-bg-base">
       {/* ヘッダー */}
       <div className="flex w-full items-center justify-between gap-3 px-4 py-3">
         <button
@@ -69,12 +60,9 @@ const ColumnItem: FC<{
               )
             </span>
           )}
-          <motion.div
-            animate={{ rotate: isOpen ? 0 : -90 }}
-            transition={{ duration: 0.2 }}
-          >
+          <div>
             <ChevronIcon direction="down" />
-          </motion.div>
+          </div>
         </button>
         {canDelete && (
           <IconButton
@@ -90,130 +78,123 @@ const ColumnItem: FC<{
       </div>
 
       {/* コンテンツ */}
-      <AnimatePresence initial={false}>
-        {isOpen && (
-          <motion.div
-            animate={{ height: 'auto', opacity: 1 }}
-            exit={{ height: 0, opacity: 0 }}
-            initial={{ height: 0, opacity: 0 }}
-            transition={{ duration: 0.2 }}
-          >
-            <div className="border-border-base border-t px-4 py-4">
-              <div className="grid gap-4 sm:grid-cols-2">
+      {isOpen && (
+        <div>
+          <div className="border-border-base border-t px-4 py-4">
+            <div className="grid gap-4 sm:grid-cols-2">
+              <FormControl
+                errorText={columnError?.name}
+                isInvalid={Boolean(columnError?.name)}
+                isRequired
+                label="カラム名"
+                renderInput={({ labelId: _, ...props }) => {
+                  return (
+                    <TextField
+                      onChange={(e) => {
+                        handleChangeColumn(id)({
+                          ...column,
+                          name: e.target.value,
+                        });
+                      }}
+                      placeholder="id"
+                      value={column.name}
+                      {...props}
+                    />
+                  );
+                }}
+              />
+              <FormControl
+                errorText={columnError?.alias}
+                isInvalid={Boolean(columnError?.alias)}
+                isRequired
+                label="コメント"
+                renderInput={({ labelId: _, ...props }) => {
+                  return (
+                    <TextField
+                      onChange={(e) => {
+                        handleChangeColumn(id)({
+                          ...column,
+                          alias: e.target.value,
+                        });
+                      }}
+                      placeholder="ID"
+                      value={column.alias}
+                      {...props}
+                    />
+                  );
+                }}
+              />
+              <FormControl
+                errorText={columnError?.type}
+                isInvalid={Boolean(columnError?.type)}
+                isRequired
+                label="型"
+                renderInput={({ labelId: _, ...props }) => {
+                  return (
+                    <Select
+                      onChange={(e) => {
+                        handleChangeColumn(id)({
+                          ...column,
+                          type: e.target.value as ColumnType,
+                        });
+                      }}
+                      options={COLUMN_TYPE_OPTIONS}
+                      value={column.type}
+                      {...props}
+                    />
+                  );
+                }}
+              />
+              <FormControl
+                errorText={columnError?.default}
+                isInvalid={Boolean(columnError?.default)}
+                label="デフォルト値"
+                renderInput={({ labelId: _, ...props }) => {
+                  return (
+                    <TextField
+                      onChange={(e) => {
+                        handleChangeColumn(id)({
+                          ...column,
+                          default: e.target.value,
+                        });
+                      }}
+                      value={column.default ?? ''}
+                      {...props}
+                    />
+                  );
+                }}
+              />
+              <div className="sm:col-span-2">
                 <FormControl
-                  errorText={columnError?.name}
-                  isInvalid={Boolean(columnError?.name)}
+                  errorText={columnError?.nullable}
+                  isInvalid={Boolean(columnError?.nullable)}
                   isRequired
-                  label="カラム名"
-                  renderInput={({ labelId: _, ...props }) => {
-                    return (
-                      <TextField
-                        onChange={(e) => {
-                          handleChangeColumn(id)({
-                            ...column,
-                            name: e.target.value,
-                          });
-                        }}
-                        placeholder="id"
-                        value={column.name}
-                        {...props}
-                      />
-                    );
-                  }}
+                  label="NULL許容"
+                  labelAs="legend"
+                  renderInput={(props) => (
+                    <Radio
+                      {...props}
+                      name={`nullable-${id}`}
+                      onChange={(e) => {
+                        handleChangeColumn(id)({
+                          ...column,
+                          nullable: e.target.value === '0',
+                        });
+                      }}
+                      options={[
+                        { value: '0', label: '許容する' },
+                        { value: '1', label: '許容しない' },
+                      ]}
+                      value={column.nullable ? '0' : '1'}
+                    />
+                  )}
                 />
-                <FormControl
-                  errorText={columnError?.alias}
-                  isInvalid={Boolean(columnError?.alias)}
-                  isRequired
-                  label="コメント"
-                  renderInput={({ labelId: _, ...props }) => {
-                    return (
-                      <TextField
-                        onChange={(e) => {
-                          handleChangeColumn(id)({
-                            ...column,
-                            alias: e.target.value,
-                          });
-                        }}
-                        placeholder="ID"
-                        value={column.alias}
-                        {...props}
-                      />
-                    );
-                  }}
-                />
-                <FormControl
-                  errorText={columnError?.type}
-                  isInvalid={Boolean(columnError?.type)}
-                  isRequired
-                  label="型"
-                  renderInput={({ labelId: _, ...props }) => {
-                    return (
-                      <Select
-                        onChange={(e) => {
-                          handleChangeColumn(id)({
-                            ...column,
-                            type: e.target.value as ColumnType,
-                          });
-                        }}
-                        options={COLUMN_TYPE_OPTIONS}
-                        value={column.type}
-                        {...props}
-                      />
-                    );
-                  }}
-                />
-                <FormControl
-                  errorText={columnError?.default}
-                  isInvalid={Boolean(columnError?.default)}
-                  label="デフォルト値"
-                  renderInput={({ labelId: _, ...props }) => {
-                    return (
-                      <TextField
-                        onChange={(e) => {
-                          handleChangeColumn(id)({
-                            ...column,
-                            default: e.target.value,
-                          });
-                        }}
-                        value={column.default ?? ''}
-                        {...props}
-                      />
-                    );
-                  }}
-                />
-                <div className="sm:col-span-2">
-                  <FormControl
-                    errorText={columnError?.nullable}
-                    isInvalid={Boolean(columnError?.nullable)}
-                    isRequired
-                    label="NULL許容"
-                    labelAs="legend"
-                    renderInput={(props) => (
-                      <Radio
-                        {...props}
-                        name={`nullable-${id}`}
-                        onChange={(e) => {
-                          handleChangeColumn(id)({
-                            ...column,
-                            nullable: e.target.value === '0',
-                          });
-                        }}
-                        options={[
-                          { value: '0', label: '許容する' },
-                          { value: '1', label: '許容しない' },
-                        ]}
-                        value={column.nullable ? '0' : '1'}
-                      />
-                    )}
-                  />
-                </div>
               </div>
             </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-    </motion.div>
+          </div>
+        </div>
+      )}
+    </div>
   );
 };
 
@@ -225,23 +206,21 @@ export const CreateColumnsByForm: FC<Props> = ({
 }) => {
   return (
     <div className="flex flex-col gap-3">
-      <AnimatePresence mode="popLayout">
-        {columnsEntries.map(([id, column], idx) => {
-          const columnError = columnsError?.[id];
-          return (
-            <ColumnItem
-              canDelete={columnsEntries.length > 1}
-              column={column}
-              columnError={columnError}
-              handleChangeColumn={handleChangeColumn}
-              handleDeleteColumn={handleDeleteColumn}
-              id={id}
-              index={idx}
-              key={id}
-            />
-          );
-        })}
-      </AnimatePresence>
+      {columnsEntries.map(([id, column], idx) => {
+        const columnError = columnsError?.[id];
+        return (
+          <ColumnItem
+            canDelete={columnsEntries.length > 1}
+            column={column}
+            columnError={columnError}
+            handleChangeColumn={handleChangeColumn}
+            handleDeleteColumn={handleDeleteColumn}
+            id={id}
+            index={idx}
+            key={id}
+          />
+        );
+      })}
     </div>
   );
 };
