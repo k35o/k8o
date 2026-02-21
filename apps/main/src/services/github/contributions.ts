@@ -60,7 +60,7 @@ function _getDateRange(): { from: string; to: string } {
 /**
  * k8oリポジトリ専用のコントリビューションデータを取得（直近2週間）
  */
-export async function fetchK8oRepositoryContributions(
+export async function fetchRepositoryCommitContributions(
   username: string,
   owner: string,
   repo: string,
