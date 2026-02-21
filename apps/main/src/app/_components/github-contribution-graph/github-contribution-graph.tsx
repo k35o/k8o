@@ -1,7 +1,7 @@
 import { cacheLife } from 'next/cache';
 import {
   type ContributionDay,
-  fetchK8oRepositoryContributions,
+  fetchRepositoryCommitContributions,
 } from '@/services/github/contributions';
 import { Presenter } from './presenter';
 
@@ -30,8 +30,8 @@ export const GitHubContributionGraph = async () => {
   cacheLife('hours');
 
   const results = await Promise.all([
-    fetchK8oRepositoryContributions(USERNAME, OWNER, 'k8o'),
-    fetchK8oRepositoryContributions(USERNAME, OWNER, 'ArteOdyssey'),
+    fetchRepositoryCommitContributions(USERNAME, OWNER, 'k8o'),
+    fetchRepositoryCommitContributions(USERNAME, OWNER, 'ArteOdyssey'),
   ]);
 
   const days = mergeContributions(results);
