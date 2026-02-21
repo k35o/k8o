@@ -3,14 +3,27 @@
 import { Code } from '@k8o/arte-odyssey/code';
 import { FormControl } from '@k8o/arte-odyssey/form/form-control';
 import { TextField } from '@k8o/arte-odyssey/form/text-field';
-import { useInView } from 'motion/react';
 import { useEffect, useRef, useState } from 'react';
 
 export function SelectionProperties() {
   // Selectionオブジェクトはユニークなので、配列として保持して変更が起きた時に再レンダリングするようにする
   const [selection, setSelection] = useState<[Selection] | null>(null);
   const ref = useRef<HTMLDivElement>(null);
-  const inView = useInView(ref);
+  const [inView, setInView] = useState(false);
+
+  useEffect(() => {
+    const element = ref.current;
+    if (!element) return;
+
+    const observer = new IntersectionObserver(([entry]) => {
+      setInView(entry?.isIntersecting ?? false);
+    });
+    observer.observe(element);
+
+    return () => {
+      observer.disconnect();
+    };
+  }, []);
 
   useEffect(() => {
     const handleChange = () => {
