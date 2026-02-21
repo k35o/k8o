@@ -1,13 +1,8 @@
 'use client';
 
 import { Button } from '@k8o/arte-odyssey/button';
-import { AnimatePresence, motion } from 'motion/react';
 import { useCallback, useEffect, useRef, useState } from 'react';
 
-/**
- * scrollendイベントの発火条件デモ
- * scrollTo()やscroll-snapによる発火を確認できる
- */
 export function ScrollendTriggerDemo() {
   const [scrollendCount, setScrollendCount] = useState(0);
   const [lastTrigger, setLastTrigger] = useState<string | null>(null);
@@ -89,34 +84,16 @@ export function ScrollendTriggerDemo() {
       <div className="flex flex-wrap items-center gap-3">
         <div className="relative flex items-center gap-2 rounded-md bg-bg-mute px-3 py-1.5">
           <span className="text-fg-mute text-sm">scrollend:</span>
-          <AnimatePresence mode="popLayout">
-            <motion.span
-              animate={{ scale: 1 }}
-              className="font-bold text-primary-fg"
-              initial={{ scale: 1.2 }}
-              key={scrollendCount}
-            >
-              {scrollendCount}
-            </motion.span>
-          </AnimatePresence>
+          <span className="font-bold text-primary-fg">{scrollendCount}</span>
           <span className="text-fg-mute text-sm">回</span>
           {showFlash && (
-            <motion.div
-              animate={{ opacity: 0 }}
-              className="absolute inset-0 rounded-md bg-primary-bg"
-              initial={{ opacity: 0.3 }}
-              transition={{ duration: 0.3 }}
-            />
+            <div className="absolute inset-0 rounded-md bg-primary-bg opacity-30" />
           )}
         </div>
         {lastTrigger && (
-          <motion.div
-            animate={{ opacity: 1, x: 0 }}
-            className="rounded-md bg-bg-subtle px-3 py-1.5 text-fg-base text-sm"
-            initial={{ opacity: 0, x: -10 }}
-          >
+          <div className="rounded-md bg-bg-subtle px-3 py-1.5 text-fg-base text-sm">
             {lastTrigger}
-          </motion.div>
+          </div>
         )}
         <Button color="gray" onClick={resetCounts} size="sm" variant="outlined">
           リセット
