@@ -13,11 +13,10 @@ function mergeContributions(results: ContributionDay[][]): ContributionDay[] {
   for (const days of results) {
     for (const day of days) {
       const existing = mergedMap.get(day.date);
-      if (existing) {
-        existing.count += day.count;
-      } else {
-        mergedMap.set(day.date, { ...day });
-      }
+      mergedMap.set(day.date, {
+        ...day,
+        count: (existing?.count ?? 0) + day.count,
+      });
     }
   }
 
