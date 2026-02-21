@@ -9,16 +9,21 @@ const USERNAME = 'k35o';
 const OWNER = 'k35o';
 
 function mergeContributions(results: ContributionDay[][]): ContributionDay[] {
-  const mergedMap = new Map<string, number>();
+  const mergedMap = new Map<string, ContributionDay>();
   for (const days of results) {
     for (const day of days) {
-      mergedMap.set(day.date, (mergedMap.get(day.date) || 0) + day.count);
+      const existing = mergedMap.get(day.date);
+      if (existing) {
+        existing.count += day.count;
+      } else {
+        mergedMap.set(day.date, { ...day });
+      }
     }
   }
 
-  return Array.from(mergedMap.entries())
-    .sort(([a], [b]) => a.localeCompare(b))
-    .map(([date, count]) => ({ date, count }));
+  return Array.from(mergedMap.values()).sort((a, b) =>
+    a.date.localeCompare(b.date),
+  );
 }
 
 export const GitHubContributionGraph = async () => {
