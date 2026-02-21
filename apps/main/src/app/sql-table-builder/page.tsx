@@ -7,7 +7,6 @@ import { IconButton } from '@k8o/arte-odyssey/icon-button';
 import { CopyIcon } from '@k8o/arte-odyssey/icons';
 import { useToast } from '@k8o/arte-odyssey/toast';
 import { uuidV4 } from '@repo/helpers/uuid-v4';
-import { AnimatePresence, motion } from 'motion/react';
 import dynamic from 'next/dynamic';
 import { useRef, useState } from 'react';
 import { LoadingCreateColumns } from './_components/create-columns/loading-create-columns';
@@ -23,7 +22,6 @@ const CreateColumns = dynamic(
   { ssr: false, loading: () => <LoadingCreateColumns /> },
 );
 
-// ステップインジケーターコンポーネント
 const StepIndicator = ({
   step,
   title,
@@ -102,19 +100,9 @@ export default function Page() {
   };
 
   return (
-    <motion.section
-      animate={{ opacity: 1 }}
-      className="grid gap-6 py-4"
-      initial={{ opacity: 0 }}
-      ref={topRef}
-      transition={{ duration: 0.3 }}
-    >
+    <section className="grid gap-6 py-4" ref={topRef}>
       {/* Step 1: テーブル情報 */}
-      <motion.div
-        animate={{ opacity: 1, y: 0 }}
-        initial={{ opacity: 0, y: 20 }}
-        transition={{ duration: 0.4, delay: 0.1 }}
-      >
+      <div>
         <Card>
           <div className="p-4 sm:p-6">
             <div className="mb-4 sm:mb-6">
@@ -132,14 +120,10 @@ export default function Page() {
             </div>
           </div>
         </Card>
-      </motion.div>
+      </div>
 
       {/* Step 2: カラム情報 */}
-      <motion.div
-        animate={{ opacity: 1, y: 0 }}
-        initial={{ opacity: 0, y: 20 }}
-        transition={{ duration: 0.4, delay: 0.2 }}
-      >
+      <div>
         <Card>
           <div className="p-4 sm:p-6">
             <div className="mb-4 sm:mb-6">
@@ -158,14 +142,10 @@ export default function Page() {
             </div>
           </div>
         </Card>
-      </motion.div>
+      </div>
 
       {/* Step 3: 制約 */}
-      <motion.div
-        animate={{ opacity: 1, y: 0 }}
-        initial={{ opacity: 0, y: 20 }}
-        transition={{ duration: 0.4, delay: 0.3 }}
-      >
+      <div>
         <Card>
           <div className="p-4 sm:p-6">
             <div className="mb-4 sm:mb-6">
@@ -184,60 +164,48 @@ export default function Page() {
             </div>
           </div>
         </Card>
-      </motion.div>
+      </div>
 
       {/* 生成ボタン */}
-      <motion.div
-        animate={{ opacity: 1, y: 0 }}
-        className="flex justify-center"
-        initial={{ opacity: 0, y: 20 }}
-        transition={{ duration: 0.4, delay: 0.4 }}
-      >
+      <div className="flex justify-center">
         <Button onClick={handleGenerate} size="lg">
           SQL文を生成
         </Button>
-      </motion.div>
+      </div>
 
       {/* 結果表示 */}
-      <AnimatePresence>
-        {statement && (
-          <motion.div
-            animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{ opacity: 0, y: -10, scale: 0.98 }}
-            initial={{ opacity: 0, y: 20, scale: 0.98 }}
-            transition={{ duration: 0.3 }}
-          >
-            <Card>
-              <div className="p-4 sm:p-6">
-                <div className="mb-4 flex items-center justify-between gap-2">
-                  <div className="flex items-center gap-2 sm:gap-3">
-                    <div className="flex h-6 w-6 items-center justify-center rounded-full bg-bg-success text-fg-success sm:h-8 sm:w-8">
-                      <span className="text-xs sm:text-sm">✓</span>
-                    </div>
-                    <h3 className="font-bold text-base sm:text-lg">
-                      生成されたSQL
-                    </h3>
+      {statement && (
+        <div>
+          <Card>
+            <div className="p-4 sm:p-6">
+              <div className="mb-4 flex items-center justify-between gap-2">
+                <div className="flex items-center gap-2 sm:gap-3">
+                  <div className="flex h-6 w-6 items-center justify-center rounded-full bg-bg-success text-fg-success sm:h-8 sm:w-8">
+                    <span className="text-xs sm:text-sm">✓</span>
                   </div>
-                  <IconButton
-                    label={isCopied ? 'コピー済み' : 'コピー'}
-                    onClick={handleCopy}
-                    size="sm"
-                  >
-                    <CopyIcon />
-                  </IconButton>
+                  <h3 className="font-bold text-base sm:text-lg">
+                    生成されたSQL
+                  </h3>
                 </div>
-                <div className="overflow-x-auto rounded-lg bg-bg-mute">
-                  <pre className="p-3 sm:p-4">
-                    <code className="font-mono text-fg-base text-xs sm:text-sm">
-                      {statement}
-                    </code>
-                  </pre>
-                </div>
+                <IconButton
+                  label={isCopied ? 'コピー済み' : 'コピー'}
+                  onClick={handleCopy}
+                  size="sm"
+                >
+                  <CopyIcon />
+                </IconButton>
               </div>
-            </Card>
-          </motion.div>
-        )}
-      </AnimatePresence>
-    </motion.section>
+              <div className="overflow-x-auto rounded-lg bg-bg-mute">
+                <pre className="p-3 sm:p-4">
+                  <code className="font-mono text-fg-base text-xs sm:text-sm">
+                    {statement}
+                  </code>
+                </pre>
+              </div>
+            </div>
+          </Card>
+        </div>
+      )}
+    </section>
   );
 }

@@ -2,7 +2,6 @@ import { Button } from '@k8o/arte-odyssey/button';
 import { FormControl } from '@k8o/arte-odyssey/form/form-control';
 import { Textarea } from '@k8o/arte-odyssey/form/textarea';
 import { cn } from '@repo/helpers/cn';
-import * as motion from 'motion/react-client';
 import { type FC, useState } from 'react';
 import { FEEDBACK_OPTIONS } from '@/services/feedbacks';
 
@@ -40,7 +39,8 @@ export const FeedbackCard: FC<{
           const Icon = option.icon;
           return (
             <div className="flex items-center justify-center" key={option.id}>
-              <motion.button
+              {/* biome-ignore lint/a11y/useSemanticElements: カスタムスタイルのラジオボタンとして使用 */}
+              <button
                 aria-checked={feedbackId === option.id}
                 className={cn(
                   'flex w-full max-w-28 flex-col items-center justify-center gap-2 rounded-lg bg-primary-bg-subtle p-3 text-primary-fg',
@@ -56,12 +56,10 @@ export const FeedbackCard: FC<{
                 role="radio"
                 type="button"
                 value={option.id}
-                whileHover={{ scale: 1.1 }}
-                whileTap={{ scale: 0.9 }}
               >
                 <Icon />
                 <span className="text-xs sm:text-sm">{option.label}</span>
-              </motion.button>
+              </button>
             </div>
           );
         })}

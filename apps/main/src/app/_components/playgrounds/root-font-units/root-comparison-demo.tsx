@@ -2,7 +2,6 @@
 
 import { FormControl } from '@k8o/arte-odyssey/form/form-control';
 import { NumberField } from '@k8o/arte-odyssey/form/number-field';
-import { motion } from 'motion/react';
 import { useState } from 'react';
 
 export function RootComparisonDemo() {
@@ -34,11 +33,9 @@ export function RootComparisonDemo() {
             <span className="w-16 font-mono text-fg-mute text-xs">1ch</span>
             <div className="flex items-center gap-2">
               <span style={{ lineHeight: 1 }}>0</span>
-              <motion.div
-                animate={{ width: `${fontSize}px` }}
+              <div
                 className="h-2 rounded bg-primary-fg"
-                initial={false}
-                transition={{ type: 'spring', stiffness: 300, damping: 30 }}
+                style={{ width: `${fontSize}px` }}
               />
             </div>
             <span className="font-mono text-fg-mute text-xs">{fontSize}px</span>
