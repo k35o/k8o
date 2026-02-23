@@ -5,13 +5,16 @@ createdAt: 2025-11-08
 updatedAt: 2025-11-08
 ---
 
-import { FormControl } from '@k8o/arte-odyssey/form/form-control';
 import { BaselineStatus } from '@k8o/arte-odyssey/baseline-status';
 import { Playground } from '@/app/_components/playgrounds';
 import {
   WebkitRelativePathDemo,
 } from '@/app/_components/playgrounds/input-file-webkitdirectory';
 import { LinkCard } from '@/app/_components/link-card';
+import {
+  BasicFileInputExamples,
+  WebkitDirectoryInputExample,
+} from './_components/file-input-examples';
 
 # input要素でディレクトリを扱うwebkitdirectory属性
 
@@ -28,32 +31,7 @@ import { LinkCard } from '@/app/_components/link-card';
 <input type="file" multiple />
 ```
 
-<div className="flex flex-col gap-4">
-  <FormControl
-    label="単一ファイル選択"
-    renderInput={({ id, describedbyId }) => (
-      <input
-        type="file"
-        className="max-w-80 cursor-pointer rounded-lg text-center font-bold bg-primary-bg text-fg hover:bg-primary-bg/90 active:bg-primary-bg/80 focus-visible:border-transparent focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-border-info px-4 py-2 text-md"
-        aria-describedby={describedbyId}
-        id={id}
-      />
-    )}
-  />
-
-  <FormControl
-    label="複数ファイル選択"
-    renderInput={({ id, describedbyId }) => (
-      <input
-        type="file"
-        multiple
-        className="max-w-80 cursor-pointer rounded-lg text-center font-bold bg-primary-bg text-fg hover:bg-primary-bg/90 active:bg-primary-bg/80 focus-visible:border-transparent focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-border-info px-4 py-2 text-md"
-        aria-describedby={describedbyId}
-        id={id}
-      />
-    )}
-  />
-</div>
+<BasicFileInputExamples />
 
 この機能に加えて、ディレクトリごと選択させる`webkitdirectory`属性が、Firefox Androidの対応によってBaseline 2025に追加されました。
 
@@ -62,18 +40,7 @@ import { LinkCard } from '@/app/_components/link-card';
 <input type="file" webkitdirectory />
 ```
 
-<FormControl
-  label="ディレクトリ選択"
-  renderInput={({ id, describedbyId }) => (
-    <input
-      type="file"
-      webkitdirectory="true"
-      className="max-w-80 cursor-pointer rounded-lg text-center font-bold bg-primary-bg text-fg hover:bg-primary-bg/90 active:bg-primary-bg/80 focus-visible:border-transparent focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-border-info px-4 py-2 text-md"
-      aria-describedby={describedbyId}
-      id={id}
-    />
-  )}
-/>
+<WebkitDirectoryInputExample />
 
 ## webkitdirectory属性
 `webkitdirectory`属性にはユーザーにディレクトリの選択をさせるときに`true`、ファイルを選択するときは`false`を渡します。
