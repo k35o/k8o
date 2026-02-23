@@ -7,6 +7,10 @@
     "next": {
       "command": "pnpm",
       "args": ["mcp-next"]
+    },
+    "context7": {
+      "command": "pnpm",
+      "args": ["exec", "context7-mcp"]
     }
   }
 }
