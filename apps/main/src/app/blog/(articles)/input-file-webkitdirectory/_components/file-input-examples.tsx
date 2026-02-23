@@ -46,7 +46,7 @@ export const WebkitDirectoryInputExample = () => {
           className={inputClassName}
           id={id}
           type="file"
-          webkitdirectory="true"
+          webkitdirectory
         />
       )}
     />
