@@ -1,7 +1,21 @@
 {
   "$schema": "https://unpkg.com/knip@5/schema.json",
+  "treatConfigHintsAsErrors": true,
   "tags": ["-lintignore"],
   "workspaces": {
-    ".": {}
+    ".": {
+      "ignoreDependencies": ["@upstash/context7-mcp", "agent-browser"]
+    },
+    "apps/main": {
+      "ignoreDependencies": [
+        "@vitest/coverage-v8",
+        "chromatic",
+        "postcss-load-config",
+        "vitest-browser-react"
+      ]
+    },
+    "packages/helpers": {
+      "ignoreDependencies": ["@vitest/coverage-v8"]
+    }
   }
 }
