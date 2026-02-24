@@ -28,7 +28,7 @@ export const parseSafeHsl = (number: number, part: keyof HSL): number => {
   return number;
 };
 
-export const parseSafeAlpha = (number: number): number => {
+const parseSafeAlpha = (number: number): number => {
   if (Number.isNaN(number)) {
     return 1;
   }

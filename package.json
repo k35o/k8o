@@ -25,11 +25,11 @@
     "test:watch": "turbo test:watch",
     "turbo:devtools": "turbo devtools",
     "install-playwright": "playwright install --with-deps",
-    "mcp-next": "next-devtools-mcp"
+    "mcp-next": "next-devtools-mcp",
+    "knip": "knip"
   },
   "dependencies": {
-    "remark-frontmatter": "5.0.0",
-    "server-only": "0.0.1"
+    "remark-frontmatter": "5.0.0"
   },
   "devDependencies": {
     "@biomejs/biome": "2.3.14",
@@ -38,6 +38,7 @@
     "@typescript/native-preview": "7.0.0-dev.20260208.1",
     "@upstash/context7-mcp": "^2.1.1",
     "agent-browser": "0.9.1",
+    "knip": "5.84.1",
     "lefthook": "2.1.0",
     "next-devtools-mcp": "0.3.10",
     "playwright": "1.58.2",

@@ -9,7 +9,7 @@ import { useToast } from '@k8o/arte-odyssey/toast';
 import { cn } from '@repo/helpers/cn';
 import type { FC, KeyboardEvent, MouseEvent, TouchEvent } from 'react';
 import { useMemo } from 'react';
-import { TemplateSelector } from '../template-selector/template-selector';
+import { TemplateSelector } from '../template-selector';
 import { useControlPanel } from './use-control-panel';
 
 // ベースサイズ（px）
