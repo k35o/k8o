@@ -22,7 +22,6 @@ export * from './scrollbar-color';
 export * from './scrollend';
 export * from './spelling-grammar-error';
 export * from './suspense-list';
-export type { PlaygroundSection } from './types';
 export * from './view-transitions';
 
 import { absSignSection } from './abs-sign';

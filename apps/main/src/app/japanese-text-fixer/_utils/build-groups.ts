@@ -5,7 +5,7 @@ export type LineItem = {
   annotation: Annotation;
 };
 
-export type GroupedItem = {
+type GroupedItem = {
   start: number;
   end: number;
   items: LineItem[];

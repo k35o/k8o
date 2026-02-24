@@ -14,7 +14,7 @@ import type {
   Restriction,
   RestrictionType,
 } from '../../_types/restriction';
-import { CreateRestriction } from '../create-restriction/create-restriction';
+import { CreateRestriction } from '../create-restriction';
 
 type Props = {
   columns: Record<string, Column>;

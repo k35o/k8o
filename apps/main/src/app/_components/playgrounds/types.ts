@@ -1,6 +1,6 @@
 import type { FC } from 'react';
 
-export type PlaygroundDemo = {
+type PlaygroundDemo = {
   component: FC;
   title: string;
 };
