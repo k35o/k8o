@@ -29,9 +29,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       url: 'https://k8o.me/contrast-checker',
     },
     {
-      url: 'https://k8o.me/design-system',
-    },
-    {
       url: 'https://k8o.me/japanese-text-fixer',
     },
     {
