@@ -114,7 +114,7 @@ export default function Home() {
           />
           <AppCard
             description="k8o.meで利用しているデザインシステムを紹介します。コンポーネントやデザイントークンを確認できます。"
-            link="/design-system"
+            link="https://arte-odyssey.k8o.me"
             symbol={
               <Image
                 alt=""

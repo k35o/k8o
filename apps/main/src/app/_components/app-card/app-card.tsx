@@ -10,24 +10,41 @@ export const AppCard = ({
   title,
   description,
 }: {
-  link: Route;
+  link: Route | `https://${string}`;
   symbol: ReactNode;
   title: string;
   description: string;
 }) => {
+  const isExternal = typeof link === 'string' && link.startsWith('https://');
+
+  const content = (
+    <div className="flex h-full flex-col items-center gap-4 p-4 group-hover:text-primary-fg">
+      <div className="flex size-24 shrink-0 items-center justify-center rounded-full bg-bg-mute text-emphasize group-hover:bg-primary-bg-mute">
+        {symbol}
+      </div>
+      <div className="flex flex-col items-center gap-1">
+        <Heading type="h3">{title}</Heading>
+        <p className="line-clamp-3 text-fg-mute text-sm">{description}</p>
+      </div>
+    </div>
+  );
+
   return (
     <InteractiveCard>
-      <Link className="group" href={link}>
-        <div className="flex h-full flex-col items-center gap-4 p-4 group-hover:text-primary-fg">
-          <div className="flex size-24 shrink-0 items-center justify-center rounded-full bg-bg-mute text-emphasize group-hover:bg-primary-bg-mute">
-            {symbol}
-          </div>
-          <div className="flex flex-col items-center gap-1">
-            <Heading type="h3">{title}</Heading>
-            <p className="line-clamp-3 text-fg-mute text-sm">{description}</p>
-          </div>
-        </div>
-      </Link>
+      {isExternal ? (
+        <a
+          className="group"
+          href={link}
+          rel="noopener noreferrer"
+          target="_blank"
+        >
+          {content}
+        </a>
+      ) : (
+        <Link className="group" href={link}>
+          {content}
+        </Link>
+      )}
     </InteractiveCard>
   );
 };
