@@ -2,10 +2,10 @@ import { QuizBreadcrumb } from './_components/quiz-breadcrumb';
 
 export const metadata = {
   title: 'Quizzes',
-  description: '色々なジャンルのクイズを出します',
+  description: 'いろいろなジャンルの知識をクイズで試せます。',
   openGraph: {
     title: 'Quizzes',
-    description: '色々なジャンルのクイズを出します',
+    description: 'いろいろなジャンルの知識をクイズで試せます。',
     url: 'https://k8o.me/quizzes',
     siteName: 'k8o',
     locale: 'ja',
@@ -14,7 +14,7 @@ export const metadata = {
   twitter: {
     title: 'Quizzes',
     card: 'summary',
-    description: '色々なジャンルのクイズを出します',
+    description: 'いろいろなジャンルの知識をクイズで試せます。',
   },
 };
 

@@ -2,12 +2,10 @@ import { Heading } from '@k8o/arte-odyssey/heading';
 
 export const metadata = {
   title: 'もじカウント',
-  description:
-    'テキストの文字数を数えます。ひらがな・カタカナ・漢字・アルファベット・記号・絵文字など、文字の種類を問わず数えられます。',
+  description: 'テキストの文字数をリアルタイムに数えます。',
   openGraph: {
     title: 'もじカウント',
-    description:
-      'テキストの文字数を数えます。ひらがな・カタカナ・漢字・アルファベット・記号・絵文字など、文字の種類を問わず数えられます。',
+    description: 'テキストの文字数をリアルタイムに数えます。',
     url: 'https://k8o.me/moji-count',
     siteName: 'k8o',
     locale: 'ja',
@@ -16,8 +14,7 @@ export const metadata = {
   twitter: {
     title: 'もじカウント',
     card: 'summary',
-    description:
-      'テキストの文字数を数えます。ひらがな・カタカナ・漢字・アルファベット・記号・絵文字など、文字の種類を問わず数えられます。',
+    description: 'テキストの文字数をリアルタイムに数えます。',
   },
 };
 

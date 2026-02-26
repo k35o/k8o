@@ -2,10 +2,10 @@ import { Heading } from '@k8o/arte-odyssey/heading';
 
 export const metadata = {
   title: 'テキスト差分チェッカー',
-  description: '2つのテキストを比較して差分を表示します。',
+  description: '2つのテキストを文字単位で比較して差分を表示します。',
   openGraph: {
     title: 'テキスト差分チェッカー',
-    description: '2つのテキストを比較して差分を表示します。',
+    description: '2つのテキストを文字単位で比較して差分を表示します。',
     url: 'https://k8o.me/text-diff',
     siteName: 'k8o',
     locale: 'ja',
@@ -14,7 +14,7 @@ export const metadata = {
   twitter: {
     title: 'テキスト差分チェッカー',
     card: 'summary',
-    description: '2つのテキストを比較して差分を表示します。',
+    description: '2つのテキストを文字単位で比較して差分を表示します。',
   },
 };
 

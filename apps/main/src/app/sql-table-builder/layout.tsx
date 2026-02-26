@@ -3,16 +3,18 @@ import { Suspense } from 'react';
 
 export const metadata = {
   title: 'SQLテーブルメーカー',
-  description: 'データベースのテーブルを作成するSQL文を発行します。',
+  description: 'テーブル名・カラム・制約を入力してCREATE TABLE文を生成します。',
   openGraph: {
     title: 'SQLテーブルメーカー',
-    description: 'データベースのテーブルを作成するSQL文を発行します。',
+    description:
+      'テーブル名・カラム・制約を入力してCREATE TABLE文を生成します。',
     url: 'https://k8o.me/sql-table-builder',
   },
   twitter: {
     title: 'SQLテーブルメーカー',
     card: 'summary',
-    description: 'データベースのテーブルを作成するSQL文を発行します。',
+    description:
+      'テーブル名・カラム・制約を入力してCREATE TABLE文を生成します。',
   },
 };
 
