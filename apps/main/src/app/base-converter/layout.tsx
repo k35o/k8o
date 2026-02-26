@@ -14,7 +14,7 @@ export const metadata = {
   twitter: {
     title: '基数チェンジャー',
     card: 'summary',
-    description: '整数を簡単に異なる進数表現に変換するツールです',
+    description: '2進数・8進数・10進数・16進数を相互に変換します。',
   },
 };
 

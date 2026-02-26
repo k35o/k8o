@@ -57,8 +57,8 @@ export default function Home() {
               </div>
 
               <p className="text-fg-mute text-sm leading-relaxed">
-                WebフロントエンドとTypeScriptに興味があり、特にフロントエンドとデザインの境界に関心があります。
-                現在、デザインを中心に学びながら、別の角度からフロントエンドを探求しています。
+                WebフロントエンドとTypeScriptが好きで、Baselineを追いながらWeb標準の進化を楽しんでいます。
+                デザインシステムの構築を通じて、デザインとフロントエンドの交差点を探っています。
               </p>
             </div>
           </div>
@@ -90,12 +90,12 @@ export default function Home() {
         <div>
           <Heading type="h2">Forge</Heading>
           <p className="text-fg-mute text-sm">
-            ブログ、デザインなど、思考やアイデアを形にする場。発想を練り、磨きながら創造を深めていきます。
+            考えたことや作ったものを形にして公開する場。
           </p>
         </div>
         <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
           <AppCard
-            description="k8oのブログです。ジャンルを問わず、身の回りのことを書きます。"
+            description="Webフロントエンドの話題を中心に、日々のことも書くブログ。"
             link="/blog"
             symbol="📕"
             title="Blog"
@@ -107,7 +107,7 @@ export default function Home() {
             title="Talks"
           />
           <AppCard
-            description="Blogのために作成したサンプルや趣味で作成した試作品を集めました。"
+            description="ブログの記事や興味のある技術を試した試作品を集めた場所。"
             link="/playgrounds"
             symbol="👾"
             title="Playgrounds"
@@ -131,27 +131,27 @@ export default function Home() {
         <div>
           <Heading type="h2">Assist</Heading>
           <p className="text-fg-mute text-sm">
-            制作をサポートするツール群。創作をスムーズに進めるための実用的な機能を提供します。
+            日々の作業や日常で役立つちょっとしたツール群。
           </p>
         </div>
         <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
           <AppCard
-            description="テキストの文字数を数えます。ひらがな・カタカナ・漢字・アルファベット・記号・絵文字など、文字の種類を問わず数えられます。"
+            description="テキストの文字数をリアルタイムに数えます。"
             link="/moji-count"
             symbol="📏"
             title="もじカウント"
           />
           <AppCard
-            description="日本語で書かれた文章の誤字や脱字、文法ミス、表現の改善ポイントをチェックします。"
+            description="日本語の文章を解析し、誤字脱字や文法ミスを指摘します。"
             link="/japanese-text-fixer"
             symbol="🧐"
             title="日本語校正くん"
           />
           <AppCard
-            description="任意のテキストやURLからQRコードを生成できるツールです。"
+            description="テキストやURLからQRコードを生成してダウンロードできます。"
             link="/qr-generator"
             symbol="📱"
-            title="QRKit"
+            title="QRキット"
           />
           <AppCard
             description="2進数・8進数・10進数・16進数を相互に変換します。"
@@ -160,37 +160,37 @@ export default function Home() {
             title="基数チェンジャー"
           />
           <AppCard
-            description="選択した2つの色からコントラスト比を計算します。WCAGが定める基準から色の組み合わせの妥当性を確認できます。"
+            description="2色のコントラスト比を計算し、WCAGの基準で評価します。"
             link="/contrast-checker"
             symbol="⚖️"
             title="コントラストチェッカー"
           />
           <AppCard
-            description="RGBとHEXのように、特定の色の異なる表現を確認します。"
+            description="HEX・RGB・HSLの色表現を相互に変換します。"
             link="/color-converter"
             symbol="🎨"
             title="カラーコード職人"
           />
           <AppCard
-            description="角丸を変化させてお気に入りの図形を探しましょう"
+            description="border-radiusを視覚的に操作してCSSを生成します。"
             link="/radius-maker"
             symbol={<RoundedIcon />}
             title="かどまるラボ"
           />
           <AppCard
-            description="データベースのテーブルを作成するSQL文を発行します。"
+            description="テーブル名・カラム・制約を入力してCREATE TABLE文を生成します。"
             link="/sql-table-builder"
             symbol="🔨"
             title="SQLテーブルメーカー"
           />
           <AppCard
-            description="色々なジャンルのクイズを出します"
+            description="いろいろなジャンルの知識をクイズで試せます。"
             link="/quizzes"
             symbol="💡"
             title="Quizzes"
           />
           <AppCard
-            description="2つのテキストを比較して差分を表示します。"
+            description="2つのテキストを文字単位で比較して差分を表示します。"
             link="/text-diff"
             symbol="🔍"
             title="テキスト差分チェッカー"

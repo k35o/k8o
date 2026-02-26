@@ -12,7 +12,7 @@ import type { Metadata } from 'next';
 export const metadata: Metadata = {
   metadataBase: new URL('https://k8o.me'),
   title: 'k8o',
-  description: 'k8oのトップページ',
+  description: 'k8oの活動や制作物をまとめた個人サイト',
   generator: 'Next.js',
   applicationName: 'k8o',
   referrer: 'origin-when-cross-origin',
@@ -27,7 +27,7 @@ export const metadata: Metadata = {
   },
   openGraph: {
     title: 'k8o',
-    description: 'k8oのトップページ',
+    description: 'k8oの活動や制作物をまとめた個人サイト',
     url: 'https://k8o.me',
     siteName: 'k8o',
     locale: 'ja',
@@ -36,7 +36,7 @@ export const metadata: Metadata = {
   twitter: {
     title: 'k8o',
     card: 'summary',
-    description: 'k8oのトップページ',
+    description: 'k8oの活動や制作物をまとめた個人サイト',
   },
 };
 

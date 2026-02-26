@@ -3,12 +3,10 @@ import { ProofreadProvider } from './_state/provider';
 
 export const metadata = {
   title: '日本語校正くん',
-  description:
-    '日本語で書かれた文章の誤字や脱字、文法ミス、表現の改善ポイントをチェックします。',
+  description: '日本語の文章を解析し、誤字脱字や文法ミスを指摘します。',
   openGraph: {
     title: '日本語校正くん',
-    description:
-      '日本語で書かれた文章の誤字や脱字、文法ミス、表現の改善ポイントをチェックします。',
+    description: '日本語の文章を解析し、誤字脱字や文法ミスを指摘します。',
     url: 'https://k8o.me/japanese-text-fixer',
     siteName: 'k8o',
     locale: 'ja',
@@ -17,8 +15,7 @@ export const metadata = {
   twitter: {
     title: '日本語校正くん',
     card: 'summary',
-    description:
-      '日本語で書かれた文章の誤字や脱字、文法ミス、表現の改善ポイントをチェックします。',
+    description: '日本語の文章を解析し、誤字脱字や文法ミスを指摘します。',
   },
 };
 

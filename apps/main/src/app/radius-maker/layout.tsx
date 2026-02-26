@@ -2,10 +2,10 @@ import { Heading } from '@k8o/arte-odyssey/heading';
 
 export const metadata = {
   title: 'かどまるラボ',
-  description: '角丸を変化させてお気に入りの図形を探しましょう',
+  description: 'border-radiusを視覚的に操作してCSSを生成します。',
   openGraph: {
     title: 'かどまるラボ',
-    description: '角丸を変化させてお気に入りの図形を探しましょう',
+    description: 'border-radiusを視覚的に操作してCSSを生成します。',
     url: 'https://k8o.me/rounded-maker',
     siteName: 'k8o',
     locale: 'ja',
@@ -14,7 +14,7 @@ export const metadata = {
   twitter: {
     title: 'かどまるラボ',
     card: 'summary',
-    description: '角丸を変化させてお気に入りの図形を探しましょう',
+    description: 'border-radiusを視覚的に操作してCSSを生成します。',
   },
 };
 

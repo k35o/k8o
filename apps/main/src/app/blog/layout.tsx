@@ -4,11 +4,10 @@ import { ExternalBlog } from './_components/external-blog';
 
 export const metadata = {
   title: 'Blog',
-  description: 'k8oのブログです。ジャンルを問わず、身の回りのことを書きます。',
+  description: 'Webフロントエンドの話題を中心に、日々のことも書くブログ。',
   openGraph: {
     title: 'Blog',
-    description:
-      'k8oのブログです。ジャンルを問わず、身の回りのことを書きます。',
+    description: 'Webフロントエンドの話題を中心に、日々のことも書くブログ。',
     url: 'https://k8o.me/blog',
     siteName: 'k8o',
     locale: 'ja',
@@ -17,8 +16,7 @@ export const metadata = {
   twitter: {
     title: 'Blog',
     card: 'summary',
-    description:
-      'k8oのブログです。ジャンルを問わず、身の回りのことを書きます。',
+    description: 'Webフロントエンドの話題を中心に、日々のことも書くブログ。',
   },
 };
 

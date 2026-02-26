@@ -2,10 +2,10 @@ import { Heading } from '@k8o/arte-odyssey/heading';
 
 export const metadata = {
   title: 'カラーコード職人',
-  description: 'RGBとHEXのように、特定の色の異なる表現を確認します。',
+  description: 'HEX・RGB・HSLの色表現を相互に変換します。',
   openGraph: {
     title: 'カラーコード職人',
-    description: 'RGBとHEXのように、特定の色の異なる表現を確認します。',
+    description: 'HEX・RGB・HSLの色表現を相互に変換します。',
     url: 'https://k8o.me/color-converter',
     siteName: 'k8o',
     locale: 'ja',
@@ -14,7 +14,7 @@ export const metadata = {
   twitter: {
     title: 'カラーコード職人',
     card: 'summary',
-    description: 'RGBとHEXのように、特定の色の異なる表現を確認します。',
+    description: 'HEX・RGB・HSLの色表現を相互に変換します。',
   },
 };
 
