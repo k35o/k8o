@@ -28,11 +28,13 @@ const assistItems = [
   textDiffMetadata,
 ];
 
-function _formatMetadataSection(metadata: {
-  title?: string | null;
-  description?: string | null;
-}): string {
-  return `### ${metadata.title ?? ''}\n${metadata.description ?? ''}`;
+type MetadataLike = {
+  title?: unknown;
+  description?: unknown;
+};
+
+function _formatMetadataSection(metadata: MetadataLike): string {
+  return `### ${String(metadata.title ?? '')}\n${String(metadata.description ?? '')}`;
 }
 
 async function _generateLlmContent() {
@@ -55,7 +57,7 @@ async function _generateLlmContent() {
 
   // metadata とサブコンテンツを直接紐付け
   const forgeItems: {
-    metadata: { title?: string | null; description?: string | null };
+    metadata: MetadataLike;
     subContent?: string;
   }[] = [
     { metadata: blogMetadata, subContent: blogContent },
