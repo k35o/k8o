@@ -1,13 +1,34 @@
 import { NextResponse } from 'next/server';
-import {
-  assistItems,
-  assistSection,
-  forgeItems,
-  forgeSection,
-  profile,
-} from '@/app/_constants/content';
+import { metadata as baseConverterMetadata } from '@/app/base-converter/layout';
 import { getBlogContents } from '@/app/blog/_api';
+import { metadata as blogMetadata } from '@/app/blog/layout';
+import { metadata as colorConverterMetadata } from '@/app/color-converter/layout';
+import { metadata as contrastCheckerMetadata } from '@/app/contrast-checker/layout';
+import { metadata as japaneseTextFixerMetadata } from '@/app/japanese-text-fixer/layout';
+import { metadata as mojiCountMetadata } from '@/app/moji-count/layout';
+import { metadata as playgroundsMetadata } from '@/app/playgrounds/layout';
+import { metadata as qrGeneratorMetadata } from '@/app/qr-generator/layout';
+import { metadata as quizzesMetadata } from '@/app/quizzes/layout';
+import { metadata as radiusMakerMetadata } from '@/app/radius-maker/layout';
+import { metadata as sqlTableBuilderMetadata } from '@/app/sql-table-builder/layout';
+import { metadata as talksMetadata } from '@/app/talks/layout';
+import { metadata as textDiffMetadata } from '@/app/text-diff/layout';
 import { getTalks } from '@/services/talks/talks';
+
+const forgeItems = [blogMetadata, talksMetadata, playgroundsMetadata];
+
+const assistItems = [
+  mojiCountMetadata,
+  japaneseTextFixerMetadata,
+  qrGeneratorMetadata,
+  baseConverterMetadata,
+  contrastCheckerMetadata,
+  colorConverterMetadata,
+  radiusMakerMetadata,
+  sqlTableBuilderMetadata,
+  quizzesMetadata,
+  textDiffMetadata,
+];
 
 async function _generateLlmContent() {
   'use cache';
@@ -27,16 +48,16 @@ async function _generateLlmContent() {
     .map((talk) => `#### ${talk.title}\n${talk.eventName}（${talk.eventDate}）`)
     .join('\n\n');
 
-  // Blog と Talks はサブアイテムを持つため、個別に組み立てる
+  // Blog と Talks はサブアイテムを動的に取得
   const subItemsMap: Record<string, string> = {
-    '/blog': blogContent,
-    '/talks': talkContent,
+    Blog: blogContent,
+    Talks: talkContent,
   };
 
   const forgeContent = forgeItems
     .map((item) => {
-      const base = `### ${item.title}\n${item.description}`;
-      const subItems = subItemsMap[item.link];
+      const base = `### ${String(item.title)}\n${String(item.description)}`;
+      const subItems = subItemsMap[String(item.title)];
       if (subItems) {
         return `${base}\n\n${subItems}`;
       }
@@ -45,19 +66,23 @@ async function _generateLlmContent() {
     .join('\n\n');
 
   const assistContent = assistItems
-    .map((item) => `### ${item.title}\n${item.description}`)
+    .map((item) => `### ${String(item.title)}\n${String(item.description)}`)
     .join('\n\n');
 
-  return `# ${profile.name}
-${profile.description}
+  return `# k8o
+WebフロントエンドとTypeScriptが好きで、Baselineを追いながらWeb標準の進化を楽しんでいます。
+デザインシステムの構築を通じて、デザインとフロントエンドの交差点を探っています。
 
-## ${forgeSection.title}
-${forgeSection.description}
+## Forge
+考えたことや作ったものを形にして公開する場。
 
 ${forgeContent}
 
-## ${assistSection.title}
-${assistSection.description}
+### ArteOdyssey
+k8o.meで利用しているデザインシステムを紹介します。コンポーネントやデザイントークンを確認できます。
+
+## Assist
+日々の作業や日常で役立つちょっとしたツール群。
 
 ${assistContent}
 `;
