@@ -1,5 +1,6 @@
 import { Heading } from '@k8o/arte-odyssey/heading';
 import { TagIcon } from '@k8o/arte-odyssey/icons';
+import type { Metadata } from 'next';
 import Link from 'next/link';
 
 export const metadata = {
@@ -21,7 +22,7 @@ export const metadata = {
     description:
       'k8oで提供するサービスやブログのタグ一覧をまとめたページです。各タグの関連するコンテンツへのリンクを掲載しています。',
   },
-};
+} satisfies Metadata;
 
 export default function Layout({ children }: LayoutProps<'/tags'>) {
   return (

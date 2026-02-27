@@ -1,4 +1,5 @@
 import { Heading } from '@k8o/arte-odyssey/heading';
+import type { Metadata } from 'next';
 
 export const metadata = {
   title: 'カラーコード職人',
@@ -16,7 +17,7 @@ export const metadata = {
     card: 'summary',
     description: 'HEX・RGB・HSLの色表現を相互に変換します。',
   },
-};
+} satisfies Metadata;
 
 export default function Layout({ children }: LayoutProps<'/color-converter'>) {
   return (

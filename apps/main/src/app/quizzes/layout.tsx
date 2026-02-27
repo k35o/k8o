@@ -1,3 +1,4 @@
+import type { Metadata } from 'next';
 import { QuizBreadcrumb } from './_components/quiz-breadcrumb';
 
 export const metadata = {
@@ -16,7 +17,7 @@ export const metadata = {
     card: 'summary',
     description: 'いろいろなジャンルの知識をクイズで試せます。',
   },
-};
+} satisfies Metadata;
 
 export default function Layout({ children }: LayoutProps<'/quizzes'>) {
   return (

@@ -1,4 +1,5 @@
 import { Heading } from '@k8o/arte-odyssey/heading';
+import type { Metadata } from 'next';
 
 export const metadata = {
   title: 'コントラストチェッカー',
@@ -16,7 +17,7 @@ export const metadata = {
     card: 'summary',
     description: '2色のコントラスト比を計算し、WCAGの基準で評価します。',
   },
-};
+} satisfies Metadata;
 
 export default function Layout({ children }: LayoutProps<'/contrast-checker'>) {
   return (

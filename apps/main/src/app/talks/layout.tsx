@@ -1,4 +1,5 @@
 import { Heading } from '@k8o/arte-odyssey/heading';
+import type { Metadata } from 'next';
 
 export const metadata = {
   title: 'Talks',
@@ -19,7 +20,7 @@ export const metadata = {
     description:
       '過去の登壇内容をまとめたページです。講演のテーマや資料へのリンクを掲載しています。',
   },
-};
+} satisfies Metadata;
 
 export default function Layout({ children }: LayoutProps<'/talks'>) {
   return (

@@ -1,4 +1,5 @@
 import { Heading } from '@k8o/arte-odyssey/heading';
+import type { Metadata } from 'next';
 import { Suspense } from 'react';
 
 export const metadata = {
@@ -16,7 +17,7 @@ export const metadata = {
     description:
       'テーブル名・カラム・制約を入力してCREATE TABLE文を生成します。',
   },
-};
+} satisfies Metadata;
 
 export default function Layout({
   children,

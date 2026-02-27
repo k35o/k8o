@@ -1,4 +1,5 @@
 import { Heading } from '@k8o/arte-odyssey/heading';
+import type { Metadata } from 'next';
 
 export const metadata = {
   title: 'QRキット',
@@ -16,7 +17,7 @@ export const metadata = {
     card: 'summary',
     description: 'テキストやURLからQRコードを生成してダウンロードできます。',
   },
-};
+} satisfies Metadata;
 
 export default function Layout({ children }: LayoutProps<'/qr-generator'>) {
   return (

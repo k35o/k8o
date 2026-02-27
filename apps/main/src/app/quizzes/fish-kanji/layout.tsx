@@ -1,3 +1,5 @@
+import type { Metadata } from 'next';
+
 export const metadata = {
   title: 'うおへんクイズ',
   description: 'うおへんを持つ漢字の問題を出します',
@@ -14,7 +16,7 @@ export const metadata = {
     card: 'summary',
     description: 'うおへんを持つ漢字の問題を出します',
   },
-};
+} satisfies Metadata;
 
 export default function Layout({
   children,
