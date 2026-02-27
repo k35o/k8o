@@ -1,4 +1,5 @@
 import { Heading } from '@k8o/arte-odyssey/heading';
+import type { Metadata } from 'next';
 import { ProofreadProvider } from './_state/provider';
 
 export const metadata = {
@@ -17,7 +18,7 @@ export const metadata = {
     card: 'summary',
     description: '日本語の文章を解析し、誤字脱字や文法ミスを指摘します。',
   },
-};
+} satisfies Metadata;
 
 export default function Layout({
   children,

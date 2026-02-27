@@ -1,4 +1,5 @@
 import { Heading } from '@k8o/arte-odyssey/heading';
+import type { Metadata } from 'next';
 
 export const metadata = {
   title: 'かどまるラボ',
@@ -16,7 +17,7 @@ export const metadata = {
     card: 'summary',
     description: 'border-radiusを視覚的に操作してCSSを生成します。',
   },
-};
+} satisfies Metadata;
 
 export default function Layout({ children }: LayoutProps<'/radius-maker'>) {
   return (

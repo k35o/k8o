@@ -1,4 +1,5 @@
 import { Heading } from '@k8o/arte-odyssey/heading';
+import type { Metadata } from 'next';
 import Link from 'next/link';
 import { ExternalBlog } from './_components/external-blog';
 
@@ -18,7 +19,7 @@ export const metadata = {
     card: 'summary',
     description: 'Webフロントエンドの話題を中心に、日々のことも書くブログ。',
   },
-};
+} satisfies Metadata;
 
 export default function Layout({ children }: LayoutProps<'/blog'>) {
   return (

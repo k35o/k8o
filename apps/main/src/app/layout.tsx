@@ -9,7 +9,7 @@ import { mPlus2, notoSansJp } from './_styles/font';
 import '@/libs/zod';
 import type { Metadata } from 'next';
 
-export const metadata: Metadata = {
+export const metadata = {
   metadataBase: new URL('https://k8o.me'),
   title: 'k8o',
   description: 'k8oの活動や制作物をまとめた個人サイト',
@@ -38,7 +38,7 @@ export const metadata: Metadata = {
     card: 'summary',
     description: 'k8oの活動や制作物をまとめた個人サイト',
   },
-};
+} satisfies Metadata;
 
 export default function RootLayout({ children }: LayoutProps<'/'>) {
   return (

@@ -1,4 +1,5 @@
 import { Heading } from '@k8o/arte-odyssey/heading';
+import type { Metadata } from 'next';
 
 export const metadata = {
   title: 'テキスト差分チェッカー',
@@ -16,7 +17,7 @@ export const metadata = {
     card: 'summary',
     description: '2つのテキストを文字単位で比較して差分を表示します。',
   },
-};
+} satisfies Metadata;
 
 export default function Layout({ children }: LayoutProps<'/text-diff'>) {
   return (

@@ -1,4 +1,5 @@
 import { Heading } from '@k8o/arte-odyssey/heading';
+import type { Metadata } from 'next';
 
 export const metadata = {
   title: '基数チェンジャー',
@@ -16,7 +17,7 @@ export const metadata = {
     card: 'summary',
     description: '2進数・8進数・10進数・16進数を相互に変換します。',
   },
-};
+} satisfies Metadata;
 
 export default function Layout({ children }: LayoutProps<'/base-converter'>) {
   return (

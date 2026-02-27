@@ -1,4 +1,5 @@
 import { Heading } from '@k8o/arte-odyssey/heading';
+import type { Metadata } from 'next';
 
 export const metadata = {
   title: 'もじカウント',
@@ -16,7 +17,7 @@ export const metadata = {
     card: 'summary',
     description: 'テキストの文字数をリアルタイムに数えます。',
   },
-};
+} satisfies Metadata;
 
 export default function Layout({ children }: LayoutProps<'/moji-count'>) {
   return (
