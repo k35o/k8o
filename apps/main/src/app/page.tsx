@@ -5,13 +5,43 @@ import { IconLink } from '@k8o/arte-odyssey/icon-link';
 import { GitHubIcon, QiitaIcon, TwitterIcon } from '@k8o/arte-odyssey/icons';
 import { TextTag } from '@k8o/arte-odyssey/text-tag';
 import Image from 'next/image';
+import type { ReactNode } from 'react';
 import { AppCard } from './_components/app-card';
 import { EmailTooltip } from './_components/email-tooltip';
 import { GitHubContributionGraph } from './_components/github-contribution-graph';
 import { RecentBlogs } from './_components/recent-blogs';
+import {
+  assistItems,
+  assistSection,
+  forgeItems,
+  forgeSection,
+  profile,
+} from './_constants/content';
 import arteodyssey from './_images/arteodyssey.png';
 import k8o from './_images/k8o.jpg';
 import { RoundedIcon } from './radius-maker/_components/rounded-icon';
+
+const forgeSymbols: Record<string, ReactNode> = {
+  '/blog': '📕',
+  '/talks': '🎙️',
+  '/playgrounds': '👾',
+  'https://arte-odyssey.k8o.me': (
+    <Image alt="" className="size-16" loading="eager" src={arteodyssey} />
+  ),
+};
+
+const assistSymbols: Record<string, ReactNode> = {
+  '/moji-count': '📏',
+  '/japanese-text-fixer': '🧐',
+  '/qr-generator': '📱',
+  '/base-converter': '🧬',
+  '/contrast-checker': '⚖️',
+  '/color-converter': '🎨',
+  '/radius-maker': <RoundedIcon />,
+  '/sql-table-builder': '🔨',
+  '/quizzes': '💡',
+  '/text-diff': '🔍',
+};
 
 export default function Home() {
   return (
@@ -29,7 +59,7 @@ export default function Home() {
 
             <div className="flex min-w-0 flex-1 flex-col gap-4">
               <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
-                <Heading type="h3">k8o</Heading>
+                <Heading type="h3">{profile.name}</Heading>
                 <div className="flex flex-wrap items-center gap-2">
                   <EmailTooltip />
                   <IconLink href="https://x.com/k8ome" label="Xのアカウント">
@@ -57,8 +87,7 @@ export default function Home() {
               </div>
 
               <p className="text-fg-mute text-sm leading-relaxed">
-                WebフロントエンドとTypeScriptが好きで、Baselineを追いながらWeb標準の進化を楽しんでいます。
-                デザインシステムの構築を通じて、デザインとフロントエンドの交差点を探っています。
+                {profile.description}
               </p>
             </div>
           </div>
@@ -88,113 +117,36 @@ export default function Home() {
       </div>
       <div className="flex flex-col gap-6">
         <div>
-          <Heading type="h2">Forge</Heading>
-          <p className="text-fg-mute text-sm">
-            考えたことや作ったものを形にして公開する場。
-          </p>
+          <Heading type="h2">{forgeSection.title}</Heading>
+          <p className="text-fg-mute text-sm">{forgeSection.description}</p>
         </div>
         <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
-          <AppCard
-            description="Webフロントエンドの話題を中心に、日々のことも書くブログ。"
-            link="/blog"
-            symbol="📕"
-            title="Blog"
-          />
-          <AppCard
-            description="過去の登壇内容をまとめたページです。講演のテーマや資料へのリンクを掲載しています。"
-            link="/talks"
-            symbol="🎙️"
-            title="Talks"
-          />
-          <AppCard
-            description="ブログの記事や興味のある技術を試した試作品を集めた場所。"
-            link="/playgrounds"
-            symbol="👾"
-            title="Playgrounds"
-          />
-          <AppCard
-            description="k8o.meで利用しているデザインシステムを紹介します。コンポーネントやデザイントークンを確認できます。"
-            link="https://arte-odyssey.k8o.me"
-            symbol={
-              <Image
-                alt=""
-                className="size-16"
-                loading="eager"
-                src={arteodyssey}
-              />
-            }
-            title="ArteOdyssey"
-          />
+          {forgeItems.map((item) => (
+            <AppCard
+              description={item.description}
+              key={item.link}
+              link={item.link}
+              symbol={forgeSymbols[item.link]}
+              title={item.title}
+            />
+          ))}
         </div>
       </div>
       <div className="flex flex-col gap-6">
         <div>
-          <Heading type="h2">Assist</Heading>
-          <p className="text-fg-mute text-sm">
-            日々の作業や日常で役立つちょっとしたツール群。
-          </p>
+          <Heading type="h2">{assistSection.title}</Heading>
+          <p className="text-fg-mute text-sm">{assistSection.description}</p>
         </div>
         <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
-          <AppCard
-            description="テキストの文字数をリアルタイムに数えます。"
-            link="/moji-count"
-            symbol="📏"
-            title="もじカウント"
-          />
-          <AppCard
-            description="日本語の文章を解析し、誤字脱字や文法ミスを指摘します。"
-            link="/japanese-text-fixer"
-            symbol="🧐"
-            title="日本語校正くん"
-          />
-          <AppCard
-            description="テキストやURLからQRコードを生成してダウンロードできます。"
-            link="/qr-generator"
-            symbol="📱"
-            title="QRキット"
-          />
-          <AppCard
-            description="2進数・8進数・10進数・16進数を相互に変換します。"
-            link="/base-converter"
-            symbol="🧬"
-            title="基数チェンジャー"
-          />
-          <AppCard
-            description="2色のコントラスト比を計算し、WCAGの基準で評価します。"
-            link="/contrast-checker"
-            symbol="⚖️"
-            title="コントラストチェッカー"
-          />
-          <AppCard
-            description="HEX・RGB・HSLの色表現を相互に変換します。"
-            link="/color-converter"
-            symbol="🎨"
-            title="カラーコード職人"
-          />
-          <AppCard
-            description="border-radiusを視覚的に操作してCSSを生成します。"
-            link="/radius-maker"
-            symbol={<RoundedIcon />}
-            title="かどまるラボ"
-          />
-          <AppCard
-            description="テーブル名・カラム・制約を入力してCREATE TABLE文を生成します。"
-            link="/sql-table-builder"
-            symbol="🔨"
-            title="SQLテーブルメーカー"
-          />
-          <AppCard
-            description="いろいろなジャンルの知識をクイズで試せます。"
-            link="/quizzes"
-            symbol="💡"
-            title="Quizzes"
-          />
-          <AppCard
-            description="2つのテキストを文字単位で比較して差分を表示します。"
-            link="/text-diff"
-            symbol="🔍"
-            title="テキスト差分チェッカー"
-          />
+          {assistItems.map((item) => (
+            <AppCard
+              description={item.description}
+              key={item.link}
+              link={item.link}
+              symbol={assistSymbols[item.link]}
+              title={item.title}
+            />
+          ))}
         </div>
       </div>
     </div>
