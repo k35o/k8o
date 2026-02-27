@@ -15,8 +15,6 @@ import { metadata as talksMetadata } from '@/app/talks/layout';
 import { metadata as textDiffMetadata } from '@/app/text-diff/layout';
 import { getTalks } from '@/services/talks/talks';
 
-const forgeItems = [blogMetadata, talksMetadata, playgroundsMetadata];
-
 const assistItems = [
   mojiCountMetadata,
   japaneseTextFixerMetadata,
@@ -29,6 +27,13 @@ const assistItems = [
   quizzesMetadata,
   textDiffMetadata,
 ];
+
+function _formatMetadataSection(metadata: {
+  title?: string | null;
+  description?: string | null;
+}): string {
+  return `### ${metadata.title ?? ''}\n${metadata.description ?? ''}`;
+}
 
 async function _generateLlmContent() {
   'use cache';
@@ -48,25 +53,28 @@ async function _generateLlmContent() {
     .map((talk) => `#### ${talk.title}\n${talk.eventName}（${talk.eventDate}）`)
     .join('\n\n');
 
-  // Blog と Talks はサブアイテムを動的に取得
-  const subItemsMap: Record<string, string> = {
-    Blog: blogContent,
-    Talks: talkContent,
-  };
+  // metadata とサブコンテンツを直接紐付け
+  const forgeItems: {
+    metadata: { title?: string | null; description?: string | null };
+    subContent?: string;
+  }[] = [
+    { metadata: blogMetadata, subContent: blogContent },
+    { metadata: talksMetadata, subContent: talkContent },
+    { metadata: playgroundsMetadata },
+  ];
 
   const forgeContent = forgeItems
-    .map((item) => {
-      const base = `### ${String(item.title)}\n${String(item.description)}`;
-      const subItems = subItemsMap[String(item.title)];
-      if (subItems) {
-        return `${base}\n\n${subItems}`;
+    .map(({ metadata, subContent }) => {
+      const base = _formatMetadataSection(metadata);
+      if (subContent) {
+        return `${base}\n\n${subContent}`;
       }
       return base;
     })
     .join('\n\n');
 
   const assistContent = assistItems
-    .map((item) => `### ${String(item.title)}\n${String(item.description)}`)
+    .map((item) => _formatMetadataSection(item))
     .join('\n\n');
 
   return `# k8o
