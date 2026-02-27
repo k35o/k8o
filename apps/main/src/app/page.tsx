@@ -184,12 +184,6 @@ export default function Home() {
             title="SQLテーブルメーカー"
           />
           <AppCard
-            description="いろいろなジャンルの知識をクイズで試せます。"
-            link="/quizzes"
-            symbol="💡"
-            title="Quizzes"
-          />
-          <AppCard
             description="2つのテキストを文字単位で比較して差分を表示します。"
             link="/text-diff"
             symbol="🔍"
