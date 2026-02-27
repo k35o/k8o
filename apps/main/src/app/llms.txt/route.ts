@@ -8,7 +8,6 @@ import { metadata as japaneseTextFixerMetadata } from '@/app/japanese-text-fixer
 import { metadata as mojiCountMetadata } from '@/app/moji-count/layout';
 import { metadata as playgroundsMetadata } from '@/app/playgrounds/layout';
 import { metadata as qrGeneratorMetadata } from '@/app/qr-generator/layout';
-import { metadata as quizzesMetadata } from '@/app/quizzes/layout';
 import { metadata as radiusMakerMetadata } from '@/app/radius-maker/layout';
 import { metadata as sqlTableBuilderMetadata } from '@/app/sql-table-builder/layout';
 import { metadata as talksMetadata } from '@/app/talks/layout';
@@ -24,7 +23,6 @@ const assistItems = [
   colorConverterMetadata,
   radiusMakerMetadata,
   sqlTableBuilderMetadata,
-  quizzesMetadata,
   textDiffMetadata,
 ];
 

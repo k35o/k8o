@@ -35,9 +35,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       url: 'https://k8o.me/moji-count',
     },
     {
-      url: 'https://k8o.me/quizzes',
-    },
-    {
       url: 'https://k8o.me/radius-maker',
     },
     {
