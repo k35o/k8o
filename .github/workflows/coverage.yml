@@ -27,7 +27,6 @@ jobs:
         with:
           name: coverage-report
           path: apps/main/coverage/
-          archive: false
           retention-days: 7
 
       - name: Comment PR with coverage URL
