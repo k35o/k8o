@@ -35,7 +35,7 @@
     "@biomejs/biome": "2.3.14",
     "@ls-lint/ls-lint": "2.3.1",
     "@types/node": "24.10.13",
-    "@typescript/native-preview": "7.0.0-dev.20260220.1",
+    "@typescript/native-preview": "7.0.0-dev.20260221.1",
     "@upstash/context7-mcp": "2.1.1",
     "agent-browser": "0.9.1",
     "knip": "5.84.1",
