@@ -1,5 +1,5 @@
 export const commalize = (num: number) => {
-  // 少数は四捨五入して整数にする
+  // 小数は四捨五入して整数にする
   const roundedNumber = Math.round(num);
   const numberString = roundedNumber.toString();
 
@@ -20,7 +20,7 @@ if (import.meta.vitest) {
     expect(commalize(1000000)).toBe('1,000,000');
   });
 
-  it('少数の場合は四捨五入して整数にする', () => {
+  it('小数の場合は四捨五入して整数にする', () => {
     expect(commalize(1000.5)).toBe('1,001');
   });
 }
