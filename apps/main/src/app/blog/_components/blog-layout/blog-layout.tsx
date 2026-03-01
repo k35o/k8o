@@ -16,7 +16,7 @@ import { getBlogContent, getBlogToc } from '@/app/blog/_api';
 import { END_OF_CONTENT_ID } from './constants';
 import { Feedback } from './feedback';
 import { Recommend } from './recommend';
-import { TableOfContext } from './table-of-context';
+import { TableOfContents } from './table-of-contents';
 import { ViewCounter } from './view-counter';
 
 export const BlogLayout: FC<{
@@ -112,7 +112,7 @@ export const BlogLayout: FC<{
         </div>
       </div>
       <ErrorBoundary fallback={null}>
-        <TableOfContext headingTree={headingTree} />
+        <TableOfContents headingTree={headingTree} />
       </ErrorBoundary>
     </div>
   );

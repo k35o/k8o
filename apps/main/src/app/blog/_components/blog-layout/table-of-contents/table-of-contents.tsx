@@ -30,7 +30,7 @@ const LinkButton: FC<{
   );
 };
 
-export const TableOfContext: FC<{
+export const TableOfContents: FC<{
   headingTree: HeadingTree;
 }> = ({ headingTree }) => {
   const [activeId, setActiveId] = useState<string>('');
