@@ -25,7 +25,7 @@ export const composedRangesSection: PlaygroundSection = {
     },
     {
       component: GetComposedRanges,
-      title: 'Baseline2025で追加されたgetComposedRangesメソッド',
+      title: 'Baseline 2025で追加されたgetComposedRangesメソッド',
     },
   ],
 };
