@@ -1,13 +1,13 @@
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
-import { TableOfContext } from './table-of-context';
+import { TableOfContents } from './table-of-contents';
 
-const meta: Meta<typeof TableOfContext> = {
-  title: 'app/blog/blog-layout/table-of-context',
-  component: TableOfContext,
+const meta: Meta<typeof TableOfContents> = {
+  title: 'app/blog/blog-layout/table-of-contents',
+  component: TableOfContents,
 };
 
 export default meta;
-type Story = StoryObj<typeof TableOfContext>;
+type Story = StoryObj<typeof TableOfContents>;
 
 export const Primary: Story = {
   args: {
