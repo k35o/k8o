@@ -22,7 +22,7 @@ if (!map.has(key)) {
 }
 return map.get(key) ?? INIT_VALUE;
 ```
-`Map`にキーが存在しな場合は新たに初期値をセットして、存在する場合はその値を返す、というパターンです。
+`Map`にキーが存在しない場合は新たに初期値をセットして、存在する場合はその値を返す、というパターンです。
 
 グループ化やカウントなど頻出のパターンですが`has`→`set`→`get`の3ステップが毎回必要で冗長です。
 TypeScriptでは`has`で存在を確認した後でも`get`の返り値が`V | undefined`のままで型が絞り込まれないため、非nullアサーション（`!`）や`??`での対処も必要になります。
@@ -118,7 +118,7 @@ formatters.getOrInsertComputed('en-US', createFormatter);
 
 ## TypeScript 6.0での対応
 
-執筆当時のTypeScriptの最新バージョン5.0では、`getOrInsert`と`getOrInsertComputed`の型が存在しないことに注意してください。
+執筆当時のTypeScriptの最新バージョン5.9では、`getOrInsert`と`getOrInsertComputed`の型が存在しないことに注意してください。
 
 今の所、[TypeScript 6.0](https://devblogs.microsoft.com/typescript/announcing-typescript-6-0-beta/#new-types-for-%22upsert%22-methods-(a.k.a.-getorinsert))で`esnext`ライブラリに型定義が追加される予定です。
 
