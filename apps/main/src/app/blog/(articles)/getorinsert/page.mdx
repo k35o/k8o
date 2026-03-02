@@ -1,0 +1,143 @@
+---
+title: 'MapのgetOrInsert、getOrInsertComputedで冗長なコードを減らす'
+description: 'Baseline 2026で追加されたMap.prototype.getOrInsertとgetOrInsertComputedを紹介します。キーが存在しない場合にデフォルト値を挿入して返す新しいメソッドで、グループ化やカウントなどの定番パターンを簡潔に書けます。'
+createdAt: 2026-03-02
+updatedAt: 2026-03-02
+---
+
+import { BaselineStatus } from '@k8o/arte-odyssey/baseline-status';
+
+# MapのgetOrInsert、getOrInsertComputedで冗長なコードを減らす
+
+<BaselineStatus featureId="getorinsert" />
+
+## はじめに
+
+`Map`を使う際に、以下のようなコードを書いたことはないでしょうか。
+
+```js
+const map = new Map();
+if (!map.has(key)) {
+  map.set(key, INIT_VALUE);
+}
+return map.get(key) ?? INIT_VALUE;
+```
+`Map`にキーが存在しな場合は新たに初期値をセットして、存在する場合はその値を返す、というパターンです。
+
+グループ化やカウントなど頻出のパターンですが`has`→`set`→`get`の3ステップが毎回必要で冗長です。
+TypeScriptでは`has`で存在を確認した後でも`get`の返り値が`V | undefined`のままで型が絞り込まれないため、非nullアサーション（`!`）や`??`での対処も必要になります。
+
+Baseline 2026で追加された`getOrInsert`と`getOrInsertComputed`を使うと、このパターンをすっきり書けるようになります。
+TypeScriptでもv6.0で型定義が追加される予定です（[Announcing TypeScript 6.0 Beta](https://devblogs.microsoft.com/typescript/announcing-typescript-6-0-beta/#new-types-for-%22upsert%22-methods-(a.k.a.-getorinsert))）。
+
+`getOrInsert`と`getOrInsertComputed`は、`Map`の他に`WeakMap`にも同様のメソッドが追加されますが、ここでは説明の便宜上`Map`を例に紹介します。
+
+## getOrInsert
+
+```ts
+const map = new Map<K, V>();
+map.getOrInsert(key: K, defaultValue: V): V
+```
+
+`getOrInsert`は2つの引数を取ります。
+
+- `key`：取得または挿入するキー
+- `defaultValue`：キーが存在しない場合に挿入・返却する値
+
+キーが存在すれば既存の値をそのまま返し、存在しなければ`defaultValue`を`set`してから返します。
+
+```js
+const map1 = new Map();
+console.log(map1.getOrInsert('a', 0)); //  0（挿入して返す）
+console.log(map1.getOrInsert('a', 1)); //  0（既存値を返す）
+
+const map2 = new Map();
+console.log(map2.getOrInsert('a', 1)); //  1（挿入して返す）
+console.log(map2.getOrInsert('a', 0)); //  1（既存値を返す）
+```
+
+冒頭に紹介したコードは以下のように簡潔に記述できます。
+
+```ts
+const map = new Map<string, typeof INIT_VALUE>();
+return map.getOrInsert(key, INIT_VALUE);
+```
+
+ORMでは`findOrCreate`といった名前で同等の操作がよく提供されています。`getOrInsert`はそれと同じ考え方を`Map`にもたらすものです。
+
+## getOrInsertComputed
+
+実は`getOrInsert`には注意点があります。第2引数はメソッドを呼び出した時点で評価されるため、キーが既に存在する場合でもデフォルト値の式が実行されてしまいます。
+
+```js
+//'a'が存在していてもexpensiveCompute()は必ず実行される
+map.getOrInsert('a', expensiveCompute());
+```
+
+デフォルト値の生成コストが高い場合にはこれが問題になります。`getOrInsertComputed`はこの問題を解決するために用意されたメソッドです。
+
+```ts
+const map = new Map<K, V>();
+map.getOrInsertComputed(key: K, callbackFn: (key: K) => V): V
+```
+
+`getOrInsertComputed`の第2引数には値ではなく関数を渡します。
+
+- `key`: 取得または挿入するキー
+- `callbackFn`: キーが存在しない場合のみ呼ばれる関数。`key`を引数として受け取り、挿入する値を返す
+
+キーが存在すれば`callbackFn`は呼ばれません。存在しない場合のみ`callbackFn(key)`を実行し、その返り値を`set`して返します。
+
+```ts
+const map = new Map<string, number>();
+
+const callback = (key: string) => {
+  // コールバックが実際に呼ばれたかどうかをログで確認する（本来は副作用を避けるべき）
+  console.log(`"${key}" のコールバックを実行`);
+  return key.length;
+};
+
+map.getOrInsertComputed('a', callback);
+// ログ: "a" のコールバックを実行（キーが存在しないため呼ばれる）
+
+map.getOrInsertComputed('a', callback);
+// ログなし（キーが既に存在するため呼ばれない）
+```
+
+コールバックの引数にはキーが渡されるため、キーから値を導出するパターンにも適しています。
+
+```js
+// Intl.NumberFormat のインスタンスはコストが高いのでキャッシュしておく
+const formatters = new Map();
+
+const createFormatter = (locale) => new Intl.NumberFormat(locale);
+
+formatters.getOrInsertComputed('ja-JP', createFormatter);
+formatters.getOrInsertComputed('en-US', createFormatter);
+```
+
+## TypeScript 6.0での対応
+
+執筆当時のTypeScriptの最新バージョン5.0では、`getOrInsert`と`getOrInsertComputed`の型が存在しないことに注意してください。
+
+今の所、[TypeScript 6.0](https://devblogs.microsoft.com/typescript/announcing-typescript-6-0-beta/#new-types-for-%22upsert%22-methods-(a.k.a.-getorinsert))で`esnext`ライブラリに型定義が追加される予定です。
+
+```ts
+interface Map<K, V> {
+    getOrInsert(key: K, defaultValue: V): V;
+    getOrInsertComputed(key: K, callback: (key: K) => V): V;
+}
+
+interface WeakMap<K extends WeakKey, V> {
+    getOrInsert(key: K, defaultValue: V): V;
+    getOrInsertComputed(key: K, callback: (key: K) => V): V;
+}
+```
+
+`get`の返り値`V | undefined`に対して、`getOrInsert`と`getOrInsertComputed`は常に`V`を返すことが型レベルで保証されるようになり非常に嬉しいです。
+
+## おわりに
+
+`getOrInsert`と`getOrInsertComputed`は、`Map`で頻出する「なければ初期値を入れてから取得する」パターンを1行で書けるようにするメソッドです。
+
+`getOrInsert`は値を直接渡す即時評価、`getOrInsertComputed`はコールバックによる遅延評価という使い分けを押さえておけば、場面に合わせて適切に選択できます。
