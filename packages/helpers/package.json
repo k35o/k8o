@@ -93,11 +93,11 @@
     "type-check": "tsgo --noEmit"
   },
   "dependencies": {
-    "@vercel/functions": "3.4.1",
+    "@vercel/functions": "3.4.2",
     "clsx": "2.1.1",
     "date-fns": "4.1.0",
     "remark": "15.0.1",
-    "tailwind-merge": "3.4.0",
+    "tailwind-merge": "3.5.0",
     "to-vfile": "8.0.0",
     "vfile-matter": "5.0.1"
   },

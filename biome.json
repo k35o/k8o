@@ -1,5 +1,5 @@
 {
-  "$schema": "https://biomejs.dev/schemas/2.3.14/schema.json",
+  "$schema": "https://biomejs.dev/schemas/2.4.4/schema.json",
   "vcs": {
     "enabled": true,
     "clientKind": "git",
@@ -28,42 +28,36 @@
       "complexity": {
         "noExcessiveNestedTestSuites": "error",
         "noForEach": "error",
+        "noUselessCatchBinding": "error",
         "noUselessStringConcat": "error",
+        "noUselessUndefined": "error",
         "useSimplifiedLogicExpression": "error",
         "useLiteralKeys": "off"
       },
       "correctness": {
         "noNestedComponentDefinitions": "error",
+        "noNextAsyncClientComponent": "error",
         "noReactPropAssignments": "error",
         "useJsonImportAttributes": "error",
         "useUniqueElementIds": "off"
       },
       "nursery": {
-        "noDeprecatedImports": "error",
         "noForIn": "error",
         "noFloatingPromises": "error",
-        "noImportCycles": "error",
         "noMisusedPromises": "error",
         "noMultiStr": "error",
-        "noNextAsyncClientComponent": "error",
         "noParametersOnlyUsedInRecursion": "error",
         "noProto": "error",
-        "noReactForwardRef": "error",
         "noScriptUrl": "error",
         "noSyncScripts": "error",
         "noUndeclaredEnvVars": "error",
         "noUnknownAttribute": "error",
-        "noUnusedExpressions": "error",
-        "noUselessCatchBinding": "error",
-        "noUselessUndefined": "error",
         "useArraySortCompare": "error",
         "useExhaustiveSwitchCases": "error",
         "useFind": "error",
         "useRegexpExec": "error",
         "useSortedClasses": "error",
         "useSpread": "error",
-        "noEmptySource": "error",
-        "noDuplicateDependencies": "error",
         "useRequiredScripts": "error"
       },
       "performance": {
@@ -112,12 +106,18 @@
       },
       "suspicious": {
         "noAlert": "error",
+        "noDeprecatedImports": "error",
+        "noDuplicateDependencies": "error",
         "noDuplicateTestHooks": "error",
         "noEmptyBlockStatements": "error",
+        "noEmptySource": "error",
         "noEvolvingTypes": "error",
         "noExportsInTest": "error",
+        "noImportCycles": "error",
         "noMisplacedAssertion": "error",
+        "noReactForwardRef": "error",
         "noSkippedTests": "error",
+        "noUnusedExpressions": "error",
         "noVar": "error",
         "useAwait": "error",
         "useErrorMessage": "error",
@@ -153,6 +153,7 @@
     "actions": {
       "recommended": true,
       "source": {
+        "noDuplicateClasses": "on",
         "useSortedAttributes": "on",
         "useSortedProperties": "on"
       }
