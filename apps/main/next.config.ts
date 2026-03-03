@@ -16,7 +16,6 @@ const nextConfig: NextConfig = {
     viewTransition: true,
     typedEnv: true,
   },
-  productionBrowserSourceMaps: process.env['ANALYZE'] === 'true',
 };
 
 export default withMdx({
