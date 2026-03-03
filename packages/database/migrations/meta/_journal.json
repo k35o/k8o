@@ -134,6 +134,13 @@
       "when": 1772438190291,
       "tag": "0018_lethal_lilandra",
       "breakpoints": true
+    },
+    {
+      "idx": 19,
+      "version": "6",
+      "when": 1772502246041,
+      "tag": "0019_deep_hedge_knight",
+      "breakpoints": true
     }
   ]
 }
