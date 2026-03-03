@@ -21,7 +21,8 @@
       "dependsOn": ["^transit"]
     },
     "type-check": {
-      "dependsOn": ["transit"]
+      "dependsOn": ["transit"],
+      "outputs": ["tsconfig.tsbuildinfo"]
     },
     "test": {
       "dependsOn": ["transit"]
