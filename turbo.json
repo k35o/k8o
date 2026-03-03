@@ -20,11 +20,14 @@
       "dependsOn": ["^build"],
       "outputs": [".next/**", "!.next/cache/**"]
     },
+    "transit": {
+      "dependsOn": ["^transit"]
+    },
     "type-check": {
-      "dependsOn": ["^type-check"]
+      "dependsOn": ["transit"]
     },
     "test": {
-      "dependsOn": ["^test"]
+      "dependsOn": ["transit"]
     },
     "test:watch": {
       "cache": false,
