@@ -103,9 +103,13 @@ export function useMDXComponents(components: MDXComponents): MDXComponents {
       );
     },
     li: ({ children }) => (
-      <li className="list-inside list-disc text-xs sm:text-md">{children}</li>
+      <li className="list-disc text-xs sm:text-md">{children}</li>
     ),
-    ul: ({ children }) => <ul className="text-xs sm:text-md">{children}</ul>,
+    ul: ({ children }) => (
+      <ul className="my-4 flex flex-col gap-1 pl-5 text-xs sm:text-md">
+        {children}
+      </ul>
+    ),
     blockquote: ({ children }) => (
       <figure className="my-4 rounded-lg bg-bg-mute p-2 pl-3">
         <blockquote className="border-border-base border-l-3 pl-2 text-fg-mute text-sm">
