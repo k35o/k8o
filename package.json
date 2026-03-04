@@ -24,7 +24,7 @@
     "test": "turbo run test",
     "test:watch": "turbo run test:watch",
     "turbo:devtools": "turbo devtools",
-    "install-playwright": "playwright install --with-deps",
+    "install-playwright": "playwright install --with-deps chromium",
     "mcp-next": "next-devtools-mcp",
     "knip": "knip"
   },
