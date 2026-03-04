@@ -12,7 +12,7 @@ jobs:
         with:
           fetch-depth: 0
       - name: Setup pnpm
-        uses: ./.github/actions/setup-pnpm
+        uses: ./.github/actions/setup
       - name: Publish Core to Chromatic
         uses: chromaui/action@5ec258af08deb3e8c36653bd618cb7fe52090031
         with:

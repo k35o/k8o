@@ -1,5 +1,5 @@
-name: Setup pnpm
-description: Setup pnpm
+name: Setup
+description: Setup mise and install dependencies
 
 runs:
   using: 'composite'
