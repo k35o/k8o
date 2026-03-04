@@ -12,6 +12,10 @@
   "github-actions": {
     "managerFilePatterns": ["/^\\.github/actions/[^/]+/action\\.ya?ml$/"]
   },
+  "mise": {
+    "enabled": true,
+    "managerFilePatterns": ["/^mise\\.toml$/"]
+  },
   "packageRules": [
     {
       "matchPackageNames": ["/^next$/", "/^@next/"],

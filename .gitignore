@@ -45,9 +45,6 @@ next-env.d.ts
 build-storybook.log
 storybook-static
 
-# mise
-.mise.toml
-
 ## debug
 schema.sql
 
