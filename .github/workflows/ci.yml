@@ -9,8 +9,8 @@ jobs:
     steps:
       - name: Checkout branch
         uses: actions/checkout@0c366fd6a839edf440554fa01a7085ccba70ac98
-      - name: Setup pnpm
-        uses: ./.github/actions/setup-pnpm
+      - name: Setup
+        uses: ./.github/actions/setup
 
       - name: Run ls-lint
         run: pnpm run ls-lint
@@ -27,8 +27,8 @@ jobs:
     steps:
       - name: Checkout branch
         uses: actions/checkout@0c366fd6a839edf440554fa01a7085ccba70ac98
-      - name: Setup pnpm
-        uses: ./.github/actions/setup-pnpm
+      - name: Setup
+        uses: ./.github/actions/setup
 
       - name: Install Playwright
         run: pnpm run install-playwright
