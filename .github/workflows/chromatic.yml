@@ -11,7 +11,7 @@ jobs:
         uses: actions/checkout@0c366fd6a839edf440554fa01a7085ccba70ac98
         with:
           fetch-depth: 0
-      - name: Setup pnpm
+      - name: Setup
         uses: ./.github/actions/setup
       - name: Publish Core to Chromatic
         uses: chromaui/action@5ec258af08deb3e8c36653bd618cb7fe52090031
