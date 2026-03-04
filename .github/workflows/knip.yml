@@ -27,13 +27,13 @@ jobs:
           exit_code=$?
           set -e
           # exit code 2以上は実行エラーとして失敗させる
-          if [ $exit_code -ge 2 ]; then
-            echo "$output"
-            exit $exit_code
+          if [[ "${exit_code}" -ge 2 ]]; then
+            echo "${output}"
+            exit "${exit_code}"
           fi
-          echo "output<<KNIP_REPORT_EOF" >> "$GITHUB_OUTPUT"
-          echo "$output" >> "$GITHUB_OUTPUT"
-          echo "KNIP_REPORT_EOF" >> "$GITHUB_OUTPUT"
+          echo "output<<KNIP_REPORT_EOF" >> "${GITHUB_OUTPUT}"
+          echo "${output}" >> "${GITHUB_OUTPUT}"
+          echo "KNIP_REPORT_EOF" >> "${GITHUB_OUTPUT}"
 
       - name: Update or create issue
         uses: actions/github-script@60a0d83039c74a4aee543508d2ffcb1c3799cdea
