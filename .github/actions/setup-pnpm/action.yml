@@ -4,14 +4,10 @@ description: Setup pnpm
 runs:
   using: 'composite'
   steps:
-    - name: Setup pnpm
-      uses: pnpm/action-setup@9b5745cdf0a2e8c2620f0746130f809adb911c19
-
-    - name: Setup Node.js
-      uses: actions/setup-node@54045abd5dcd3b0fee9ca02fa24c57545834c9cc
+    - name: Setup mise
+      uses: jdx/mise-action@v2
       with:
-        node-version-file: 'package.json'
-        cache: 'pnpm'
+        cache: true
 
     - name: Install dependencies
       run: pnpm install --frozen-lockfile
