@@ -19,7 +19,7 @@ jobs:
       - name: Setup
         uses: ./.github/actions/setup
       - name: Run knip report
-        uses: k35o/patrol-board@v0.01
+        uses: k35o/patrol-board@v0.0.1
         with:
           script: './scripts/knip-report.sh'
           issue-title: 'Knip 定期レポート'
