@@ -12,7 +12,7 @@ export const getBlogs = async () => {
       },
     },
     where: (blogs, { eq }) => eq(blogs.published, true),
-    limit: 50,
+    limit: 100,
     orderBy(fields, operators) {
       return [operators.desc(fields.createdAt), operators.desc(fields.id)];
     },
