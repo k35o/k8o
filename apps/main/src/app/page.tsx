@@ -113,6 +113,12 @@ export default function Home() {
             title="Playgrounds"
           />
           <AppCard
+            description="公開しているオープンソースプロジェクトをまとめたページです。"
+            link="/oss"
+            symbol="📦"
+            title="OSS"
+          />
+          <AppCard
             description="k8o.meで利用しているデザインシステムを紹介します。コンポーネントやデザイントークンを確認できます。"
             link="https://arte-odyssey.k8o.me"
             symbol={
