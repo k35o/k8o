@@ -27,7 +27,7 @@
   "devDependencies": {
     "@biomejs/biome": "2.4.4",
     "@ls-lint/ls-lint": "2.3.1",
-    "@types/node": "24.10.13",
+    "@types/node": "24.11.0",
     "@typescript/native-preview": "7.0.0-dev.20260227.1",
     "@upstash/context7-mcp": "2.1.1",
     "agent-browser": "0.13.0",
