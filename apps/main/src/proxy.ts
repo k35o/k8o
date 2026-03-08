@@ -7,7 +7,7 @@ const cspHeader = `
     script-src 'self' 'unsafe-inline' https://www.googletagmanager.com https://va.vercel-scripts.com${isDev ? " 'unsafe-eval'" : ''};
     style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net;
     img-src 'self' blob: data:;
-    font-src 'self';
+    font-src 'self' https://cdn.jsdelivr.net;
     worker-src 'self' blob:;
     connect-src 'self' https://www.google-analytics.com https://*.google-analytics.com https://*.analytics.google.com https://va.vercel-scripts.com;
     frame-src 'self' https://codepen.io https://www.googletagmanager.com;
