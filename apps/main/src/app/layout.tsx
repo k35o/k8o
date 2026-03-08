@@ -1,4 +1,5 @@
 import { GlobalLayout } from './_components/global-layout';
+import { TrustedTypesInit } from './_components/trusted-types-init';
 import './_styles/globals.css';
 import { GoogleAnalytics } from '@next/third-parties/google';
 import { cn } from '@repo/helpers/cn';
@@ -51,6 +52,7 @@ export default function RootLayout({ children }: LayoutProps<'/'>) {
           'font-m-plus-2 font-medium text-fg-base tracking-none antialiased',
         )}
       >
+        <TrustedTypesInit />
         <AppProvider>
           <GlobalLayout>{children}</GlobalLayout>
         </AppProvider>

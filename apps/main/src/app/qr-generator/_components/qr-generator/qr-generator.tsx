@@ -24,11 +24,11 @@ export const QrGenerator = () => {
         /<svg([^>]*)>/,
         '<svg$1 class="w-full h-full max-w-full max-h-full">',
       );
-      // Sanitize SVG content to prevent XSS attacks
       return DomPurify.sanitize(styledSvg, {
         USE_PROFILES: { svg: true, svgFilters: true },
         ADD_TAGS: ['svg'],
         ADD_ATTR: ['class', 'viewBox', 'width', 'height'],
+        RETURN_TRUSTED_TYPE: true,
       });
     } catch {
       return null;
@@ -48,7 +48,9 @@ export const QrGenerator = () => {
       return;
     }
 
-    const blob = new Blob([qrCodeSvg], { type: 'image/svg+xml' });
+    const blob = new Blob([qrCodeSvg.toString()], {
+      type: 'image/svg+xml',
+    });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
