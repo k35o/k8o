@@ -1,0 +1,146 @@
+---
+title: 'Trusted TypesでDOM XSSを大幅に軽減する'
+description: 'Trusted Typesは、innerHTMLやeval()などのシンクに対して型付きオブジェクトの使用を強制し、DOM XSSを大幅に軽減するブラウザAPIです。CSPヘッダーによる強制やポリシーの作成を中心に解説します。'
+createdAt: 2026-03-08
+updatedAt: 2026-03-08
+---
+
+import { BaselineStatus } from '@k8o/arte-odyssey/baseline-status';
+
+# Trusted TypesでDOM XSSを大幅に軽減する
+
+<BaselineStatus featureId="trusted-types" />
+
+## はじめに
+
+DOM XSSは、`innerHTML`や`document.write`などのDOM APIに攻撃者が制御可能な文字列が渡されることで発生します。
+
+```js
+// ユーザー入力をそのままinnerHTMLに渡してしまう
+const userInput = '<img src=x onerror="alert(document.cookie)">';
+el.innerHTML = userInput; // XSSが実行される
+```
+
+この種の脆弱性は、コードレビューやLinterで注意を払っても完全には防ぎきれず、プロジェクトが大きくなるほどリスクが高まります。
+
+Baseline 2026に追加されたTrusted Typesは、これらの危険なDOM API（シンク）に対して生の文字列ではなく型付きオブジェクトの使用を強制することで、DOM XSSを大幅に軽減するブラウザAPIです。
+
+## CSPヘッダーによる強制
+
+Trusted Typesは、`Content-Security-Policy`ヘッダーで強制します。
+
+```http
+Content-Security-Policy: trusted-types myPolicy
+```
+
+`trusted-types`ディレクティブは、作成できるポリシー名を制限します。
+この例では`myPolicy`以外の名前で`trustedTypes.createPolicy()`（後述）を呼び出すとエラーになります。
+これにより、サードパーティスクリプトなどが勝手にポリシーを作成することを防げます。
+
+`trusted-types`の宣言では作成を制限するだけで、シンクに生の文字列を渡すことは禁止できません。
+
+禁止するには`require-trusted-types-for 'script'`を追加します。
+
+```http
+Content-Security-Policy: require-trusted-types-for 'script'; trusted-types myPolicy
+```
+
+この設定が有効な状態でシンクに生の文字列を渡すと、`TypeError`がスローされます。
+
+```js
+el.innerHTML = '<b>Hello</b>';
+// TypeError: Failed to set the 'innerHTML' property on 'Element':
+// This document requires 'TrustedHTML' assignment.
+```
+
+段階的に導入する場合は、`Content-Security-Policy-Report-Only`ヘッダーを使って違反をレポートのみにすることもできます。
+
+```http
+Content-Security-Policy-Report-Only: require-trusted-types-for 'script'; trusted-types myPolicy; report-uri /csp-endpoint
+```
+
+## ポリシーの作成
+
+`trustedTypes.createPolicy()`でポリシーを作成します。
+ポリシーはシンクに渡す値の検証やサニタイズを一箇所にまとめる仕組みです。
+
+第1引数にはCSPの`trusted-types`ディレクティブで許可したポリシー名を、第2引数にはコールバック関数を定義します。
+
+```js
+const escapePolicy = trustedTypes.createPolicy('myPolicy', {
+  createHTML: (input) => DOMPurify.sanitize(input),
+});
+```
+
+コールバック関数は用途に応じて3種類あります。
+
+- `createHTML` → `TrustedHTML`を返す。`innerHTML`や`document.write()`などに対応
+- `createScript` → `TrustedScript`を返す。`eval()`や`setTimeout(string, ms)`などに対応
+- `createScriptURL` → `TrustedScriptURL`を返す。`HTMLScriptElement.src`や`new Worker()`などに対応
+
+シンクは`TrustedHTML`・`TrustedScript`・`TrustedScriptURL`のいずれかしか受け付けないため、原則として`TrustedTypePolicy`のインスタンスメソッド経由で作成した値しか渡せません。
+
+```js
+el.innerHTML = escapePolicy.createHTML(userInput);
+// DOMPurifyによりサニタイズされた安全なHTMLが設定される
+```
+
+### デフォルトポリシー
+
+`default`という名前のポリシーは特別な役割を持ちます。
+シンクに生の文字列が渡された際、ブラウザが自動的にデフォルトポリシーのコールバックを呼び出します。
+
+```js
+trustedTypes.createPolicy('default', {
+  createHTML: (input) => DOMPurify.sanitize(input),
+});
+
+// デフォルトポリシーが自動的に適用される
+el.innerHTML = '<b>Hello</b><script>alert(1)</script>';
+// DOMPurifyによりscriptタグが除去される
+```
+
+作成したデフォルトポリシーは`trustedTypes.defaultPolicy`から参照できます。
+
+デフォルトポリシーは既存のコードベースへの移行手段として設計されています。
+変更が難しいサードパーティスクリプトへの対応にも有効ですが、ルールが緩くなりがちでTrusted Typesのメリットが薄まるため、最終的には各シンクで明示的にポリシーを使うようリファクタリングすることが推奨されます。
+
+## ユーティリティ
+
+このほかにも`trustedTypes`から直接扱える便利なプロパティとメソッドが用意されています。
+
+`emptyHTML`はポリシーを経由せずに空のHTMLをシンクに渡すためのプロパティで、`TrustedHTML`を返します。
+`emptyScript`は空の`TrustedScript`を返します。
+
+```js
+el.innerHTML = trustedTypes.emptyHTML;
+scriptEl.text = trustedTypes.emptyScript;
+```
+
+`isHTML()`・`isScript()`・`isScriptURL()`は値が対応するTrusted Typeかどうかを判定します。
+
+```js
+// TrustedTypeかどうかを判定するユーティリティ
+trustedTypes.isHTML(value); // true TrustedHTMLの場合
+trustedTypes.isScript(value); // false TrustedHTMLはScriptではない
+trustedTypes.isScriptURL(value); // true TrustedScriptURLの場合
+```
+
+`getPropertyType()`・`getAttributeType()`は特定の要素のプロパティや属性にどのTrusted Typeが必要かを確認できます。
+
+```js
+// 特定の要素・属性にどの型が必要かを確認
+trustedTypes.getPropertyType('div', 'innerHTML'); // TrustedHTML
+trustedTypes.getPropertyType('script', 'text'); // TrustedScript
+trustedTypes.getAttributeType('script', 'src'); // TrustedScriptURL
+// Trusted Typesが必要ない属性はnullが返る
+trustedTypes.getAttributeType('img', 'src'); // null
+```
+
+## おわりに
+
+Trusted Typesは、シンクに型付きオブジェクトの使用を強制することで、DOM XSSを大幅に軽減するAPIです。
+サニタイズ処理をポリシーに集約できるため、セキュリティレビューの対象をポリシーの実装に絞ることができます。
+
+`Content-Security-Policy-Report-Only`ヘッダーを使えば既存のコードに影響を与えずに違反箇所を可視化できるので、まずはレポートモードから気軽に導入してみましょう。
+ただし、Trusted TypesはCSP全体の防御戦略の一部であり、`script-src`など他のディレクティブと合わせた設計・検証が重要です。
