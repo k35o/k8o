@@ -38,11 +38,7 @@
 }
 
 .arc-large {
-  clip-path: shape(
-    from 50% 15%,
-    arc to 50% 85% of 60px 55px large cw,
-    close
-  );
+  clip-path: shape(from 50% 15%, arc to 50% 85% of 60px 55px large cw, close);
 }
 
 .arc-rotate {
