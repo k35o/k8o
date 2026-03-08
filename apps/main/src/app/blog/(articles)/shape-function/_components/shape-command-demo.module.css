@@ -1,0 +1,69 @@
+.line {
+  clip-path: shape(
+    from 0% 0%,
+    line to 100% 0%,
+    line to 100% 50%,
+    hline to 0%,
+    vline to 100%,
+    line to 100% 100%,
+    close
+  );
+}
+
+.curve {
+  clip-path: shape(
+    from 0% 0%,
+    hline to 100%,
+    vline to calc(100% - 48px),
+    curve to 50% 95% with 75% 95%,
+    curve to 0% calc(100% - 48px) with 40% 95% /
+    25% calc(100% - 48px),
+    close
+  );
+}
+
+.smooth {
+  clip-path: shape(
+    from 0% 50%,
+    curve to 25% 0% with 10% 0%,
+    smooth to 50% 50%,
+    smooth to 75% 0%,
+    smooth to 100% 50%,
+    close
+  );
+}
+
+.arc {
+  clip-path: shape(from 50% 15%, arc to 50% 85% of 60px 55px cw, close);
+}
+
+.arc-large {
+  clip-path: shape(
+    from 50% 15%,
+    arc to 50% 85% of 60px 55px large cw,
+    close
+  );
+}
+
+.arc-rotate {
+  clip-path: shape(
+    from 50% 15%,
+    arc to 50% 85% of 80px 50px cw rotate 45deg,
+    close
+  );
+}
+
+.move {
+  clip-path: shape(
+    from 5% 10%,
+    hline to 45%,
+    vline to 90%,
+    hline to 5%,
+    close,
+    move to 55% 10%,
+    hline to 95%,
+    vline to 90%,
+    hline to 55%,
+    close
+  );
+}

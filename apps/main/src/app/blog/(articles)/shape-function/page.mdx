@@ -1,0 +1,242 @@
+---
+title: 'CSS shape()で柔軟な図形を定義する'
+description: 'CSS shape()関数は、path()では使えなかったパーセンテージやcalc()、CSS変数を活用した図形定義を可能にします。line、curve、smooth、arcなどのshape-commandの使い方とpath()との違いを解説します。'
+createdAt: 2026-03-08
+updatedAt: 2026-03-08
+---
+
+import { BaselineStatus } from '@k8o/arte-odyssey/baseline-status';
+import { Playground, ShapeFunctionDemo } from '@/app/_components/playgrounds';
+import { ShapeCommandDemo } from './_components/shape-command-demo';
+
+# CSS shape()で柔軟な図形を定義する
+
+<BaselineStatus featureId="shape-function" />
+
+## はじめに
+
+CSSで図形を定義する方法として、`circle()`や`polygon()`、`path()`などの`<basic-shape>`関数があります。
+しかし、それぞれに制限がありました。
+
+- `circle()` / `ellipse()`: 円と楕円しか描けない
+- `polygon()`: 直線の辺しか描けず、曲線は表現できない
+- `path()`: SVGのパス構文を使うため単位なしのピクセル値しか指定できず、レスポンシブに対応できない
+
+この記事では`path()`の制限に注目します。
+`path()`はSVGのパス構文を使うため`%`や`calc()`が使えず、要素のサイズに応じて図形を変化させるにはSVGに頼る必要がありました。
+
+```css
+/* path()は固定のピクセル値しか使えない */
+clip-path: path('M 50 0 L 100 100 L 0 100 Z');
+```
+
+`shape()`はこの問題を解決する新しい`<basic-shape>`関数です。
+CSSの単位や関数をフル活用しながら、直線・曲線・円弧を自由に組み合わせた図形を定義できます。
+
+## shape()
+
+`shape()`は主に`clip-path`と`offset-path`プロパティで使用できます。
+
+`clip-path`で使う場合、`shape()`で定義した図形の内側だけが表示され、外側は切り取られます。
+
+```css
+/* shape(<fill-rule>?, from 開始点, <shape-command>, ...) */
+clip-path: shape(from 50% 0%, line to 100% 100%, line to 0% 100%, close);
+```
+
+`<fill-rule>`は`polygon()`や`path()`と同じく指定できます。
+`from`で開始点を指定し、カンマ区切りで描画コマンドを並べます。
+座標は参照ボックス（`clip-path`のデフォルトは`border-box`）の左上隅を原点とし、`<length-percentage>`（`<length>`または`<percentage>`）で指定します。
+
+## shape-command
+
+`<shape-command>`は以下のコマンドで構成されます。
+
+- `<move-command>`: 描画せずに現在位置を移動
+- `<line-command>`: 直線を描画
+- `<horizontal-line-command>`: 水平方向に直線を描画
+- `<vertical-line-command>`: 垂直方向に直線を描画
+- `<curve-command>`: ベジェ曲線を描画
+- `<smooth-command>`: 滑らかに接続する曲線を描画
+- `<arc-command>`: 楕円弧を描画
+- `close`: パスを閉じる
+
+### toとby
+
+`close`を除く各コマンドは、座標の指定方法として`to`（絶対座標）と`by`（相対座標）の2種類を持ちます。
+
+```css
+/* to: 参照ボックスの左上隅からの絶対座標 */
+shape(from 0% 0%, line to 100% 100%)
+
+/* by: 直前のコマンドの終点からの相対座標 */
+shape(from 50px 50px, line by 50px 50px)
+/* 終点は(100px, 100px)になる */
+```
+
+### close
+
+開始点まで直線を描いてパスを閉じるコマンドです。
+
+`close`は座標を取らず、現在位置から`from`で指定した開始点（または直前の`move`の位置）に向かって自動的に直線を引きます。
+
+実例は他のコマンドと合わせて紹介しています。
+
+### line-command / horizontal-line-command / vertical-line-command
+
+直線を描きます。
+`line`は任意の方向に、`hline`は水平方向のみ、`vline`は垂直方向のみ移動します。
+
+```css
+clip-path: shape(
+  from 0% 0%,        /* 左上から開始 */
+  line to 100% 0%,   /* → 右上へ */
+  line to 100% 50%,  /* ↓ 右端の中央へ */
+  hline to 0%,       /* ← 左端へ（水平のみ） */
+  vline to 100%,     /* ↓ 下端へ（垂直のみ） */
+  line to 100% 100%, /* → 右下へ */
+  close              /* 左上に戻って閉じる */
+);
+```
+
+<ShapeCommandDemo type="line" />
+
+
+### move-command
+
+描画せずに現在位置を移動します。
+`close`の後に新しいサブパスを始める場合に使います。
+
+```css
+clip-path: shape(
+  from 5% 10%,     /* 左上から開始 */
+  hline to 45%,    /* → 右上へ */
+  vline to 90%,    /* ↓ 右下へ */
+  hline to 5%,     /* ← 左下へ */
+  close,           /* 左上に戻って閉じる */
+  move to 55% 10%, /* 描画せずに右側へ移動 */
+  hline to 95%,    /* → 右上へ */
+  vline to 90%,    /* ↓ 右下へ */
+  hline to 55%,    /* ← 左下へ */
+  close            /* 左上に戻って閉じる */
+);
+```
+
+<ShapeCommandDemo type="move" />
+
+### curve-command
+
+ベジェ曲線を描きます。
+`with`の後に制御点を指定し、曲線の曲がり具合を決めます。
+制御点が1つなら2次ベジェ、2つ（`/`区切り）なら3次ベジェ曲線になります。
+
+```css
+clip-path: shape(
+  from 0% 0%,                 /* 左上から開始 */
+  hline to 100%,              /* → 右端へ */
+  vline to calc(100% - 48px), /* ↓ 突起の始点へ */
+  /* 2次ベジェ曲線: 右側の突起 */
+  curve to 50% 95% with 75% 95%,
+  /* 3次ベジェ曲線: 左側の突起 */
+  curve to 0% calc(100% - 48px) with 40% 95% / 25% calc(100% - 48px),
+  close                       /* 左上に戻って閉じる */
+);
+```
+
+この例はツールチップのような吹き出し図形です。
+底辺の突起の高さが`48px`固定で、全体の幅と高さは要素に追従します。
+`path()`では実現できなかった、固定値と相対値を混在させたレスポンシブな図形です。
+
+<ShapeCommandDemo type="curve" />
+
+### smooth-command
+
+直前の曲線コマンド（`curve`や`smooth`）の制御点を自動で反転させ、滑らかに接続する曲線を描きます。
+直前が曲線コマンドでない場合は、現在位置を制御点として使います。
+
+```css
+clip-path: shape(
+  from 0% 50%,                 /* 左端の中央から開始 */
+  curve to 25% 0% with 10% 0%, /* 最初の山 */
+  smooth to 50% 50%,           /* 滑らかに谷へ */
+  smooth to 75% 0%,            /* 滑らかに次の山へ */
+  smooth to 100% 50%,          /* 滑らかに右端へ */
+  close
+);
+```
+
+<ShapeCommandDemo type="smooth" />
+
+### arc-command
+
+楕円弧を描きます。
+`of`の後に楕円の半径を指定します。
+1つ目が横方向（rx）、2つ目が縦方向（ry）の半径で、1つだけ指定すると円弧になります。
+
+```css
+clip-path: shape(
+  from 50% 15%,                       /* 上端の中央から開始 */
+  arc to 50% 85% of 60px 55px cw, /* rx=60px, ry=55pxの楕円に沿って時計回りに弧を描く */
+  close
+);
+```
+
+<ShapeCommandDemo type="arc" />
+
+- **半径**（必須）: 1つなら円弧、2つなら楕円弧
+- **`cw` / `ccw`**（デフォルト: `ccw`）: 時計回り / 反時計回り
+- **`large` / `small`**（デフォルト: `small`）: 大きい弧 / 小さい弧
+- **`rotate <angle>`**（デフォルト: `0deg`）: 楕円の回転角度
+
+`large`を指定すると、同じ2点間でも大きい方の弧が選ばれます。
+
+```css
+clip-path: shape(
+  from 50% 15%,
+  arc to 50% 85% of 60px 55px large cw,
+  close
+);
+```
+
+<ShapeCommandDemo type="arc-large" />
+
+`rotate`を指定すると、楕円自体を回転させることができます。
+
+```css
+clip-path: shape(
+  from 50% 15%,
+  arc to 50% 85% of 80px 50px cw rotate 45deg,
+  close
+);
+```
+
+<ShapeCommandDemo type="arc-rotate" />
+
+## path()との比較
+
+`shape()`の最大の利点は、CSSの単位と関数をフルに使えることです。
+
+```css
+.triangle {
+  /* path()では固定のピクセル値しか使えない */
+  clip-path: path('M 0 0 L 200 64 L 0 128 Z');
+
+  /* shape()ならパーセンテージが使える */
+  clip-path: shape(from 0% 0%, line to 100% 50%, line to 0% 100%, close);
+}
+```
+
+`path()`版は座標値が固定なので要素サイズに追従しないですが、`shape()`版は要素の幅と高さに追従します。
+
+<Playground title="path()とshape()の比較">
+  <ShapeFunctionDemo />
+</Playground>
+
+スライダーで幅を変えると、`path()`は固定のピクセル値のため三角形が崩れますが、`shape()`はパーセンテージ指定のため常に三角形を維持します。
+
+## おわりに
+
+`shape()`は、`path()`の表現力とCSSの柔軟性を兼ね備えた関数です。
+`%`や`calc()`、CSS変数が使えるため、要素のサイズに追従する図形をCSSだけで定義できます。
+line、curve、smooth、arcといったコマンドを組み合わせることで、直線から複雑な曲線まで幅広い図形に対応できます。
+`path()`の固定ピクセル値に制約を感じていた場面で、`shape()`が有効な選択肢になります。
