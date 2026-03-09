@@ -3,7 +3,7 @@ packages:
   - packages/*
 
 overrides:
-  katex: 0.16.35
+  katex: '>=0.16.35'
 
 catalog:
   '@vitest/browser-playwright': 4.0.18
