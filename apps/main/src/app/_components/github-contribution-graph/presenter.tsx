@@ -5,15 +5,7 @@ import { Card } from '@k8o/arte-odyssey/card';
 import { Tooltip as ArteTooltip } from '@k8o/arte-odyssey/tooltip';
 import { formatDate } from '@repo/helpers/date/format';
 import type { FC } from 'react';
-import {
-  Bar,
-  BarChart,
-  CartesianGrid,
-  ResponsiveContainer,
-  Tooltip,
-  XAxis,
-  YAxis,
-} from 'recharts';
+import { Bar, BarChart, CartesianGrid, Tooltip, XAxis, YAxis } from 'recharts';
 import type { ContributionDay } from '@/services/github/contributions';
 
 type ChartDataItem = {
@@ -61,39 +53,37 @@ export const Presenter: FC<{
         </div>
 
         <div className="h-48">
-          <ResponsiveContainer height="100%" width="100%">
-            <BarChart data={data}>
-              <CartesianGrid
-                stroke="var(--border-subtle)"
-                strokeDasharray="3 3"
-                vertical={false}
-              />
-              <XAxis
-                axisLine={false}
-                dataKey="label"
-                tick={{ fill: 'var(--fg-mute)', fontSize: 12 }}
-                tickLine={false}
-              />
-              <YAxis
-                allowDecimals={false}
-                axisLine={false}
-                tick={{ fill: 'var(--fg-mute)', fontSize: 12 }}
-                tickLine={false}
-                width={30}
-              />
-              <Tooltip
-                content={<CustomTooltip />}
-                cursor={{ fill: 'var(--bg-subtle)' }}
-                position={{ y: 0 }}
-              />
-              <Bar
-                activeBar={{ fill: 'var(--teal-700)' }}
-                dataKey="count"
-                fill="var(--teal-600)"
-                radius={[4, 4, 0, 0]}
-              />
-            </BarChart>
-          </ResponsiveContainer>
+          <BarChart data={data} height={192} width="100%">
+            <CartesianGrid
+              stroke="var(--border-subtle)"
+              strokeDasharray="3 3"
+              vertical={false}
+            />
+            <XAxis
+              axisLine={false}
+              dataKey="label"
+              tick={{ fill: 'var(--fg-mute)', fontSize: 12 }}
+              tickLine={false}
+            />
+            <YAxis
+              allowDecimals={false}
+              axisLine={false}
+              tick={{ fill: 'var(--fg-mute)', fontSize: 12 }}
+              tickLine={false}
+              width={30}
+            />
+            <Tooltip
+              content={<CustomTooltip />}
+              cursor={{ fill: 'var(--bg-subtle)' }}
+              position={{ y: 0 }}
+            />
+            <Bar
+              activeBar={{ fill: 'var(--teal-700)' }}
+              dataKey="count"
+              fill="var(--teal-600)"
+              radius={[4, 4, 0, 0]}
+            />
+          </BarChart>
         </div>
 
         <div className="text-fg-muted text-xs">
