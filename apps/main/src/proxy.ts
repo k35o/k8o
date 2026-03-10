@@ -10,7 +10,7 @@ const cspHeader = `
     font-src 'self' https://cdn.jsdelivr.net;
     worker-src 'self' blob:;
     connect-src 'self' https://www.google-analytics.com https://*.google-analytics.com https://*.analytics.google.com https://va.vercel-scripts.com https://api.webstatus.dev;
-    frame-src 'self' https://codepen.io https://www.googletagmanager.com;
+    frame-src 'self' https://codepen.io https://www.googletagmanager.com https://vercel.live;
     object-src 'none';
     base-uri 'self';
     form-action 'self';
