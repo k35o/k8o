@@ -4,12 +4,12 @@ const isDev = process.env.NODE_ENV === 'development';
 
 const cspHeader = `
     default-src 'self';
-    script-src 'self' 'unsafe-inline' https://www.googletagmanager.com https://va.vercel-scripts.com${isDev ? " 'unsafe-eval'" : ''};
+    script-src 'self' 'unsafe-inline' https://www.googletagmanager.com https://va.vercel-scripts.com https://vercel.live${isDev ? " 'unsafe-eval'" : ''};
     style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net;
     img-src 'self' blob: data:;
     font-src 'self' https://cdn.jsdelivr.net;
     worker-src 'self' blob:;
-    connect-src 'self' https://www.google-analytics.com https://*.google-analytics.com https://*.analytics.google.com https://va.vercel-scripts.com;
+    connect-src 'self' https://www.google-analytics.com https://*.google-analytics.com https://*.analytics.google.com https://va.vercel-scripts.com https://api.webstatus.dev;
     frame-src 'self' https://codepen.io https://www.googletagmanager.com;
     object-src 'none';
     base-uri 'self';
