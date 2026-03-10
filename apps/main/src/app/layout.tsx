@@ -1,4 +1,5 @@
 import { GlobalLayout } from './_components/global-layout';
+import { TrustedTypesInit } from './_components/trusted-types-init';
 import './_styles/globals.css';
 import { GoogleAnalytics } from '@next/third-parties/google';
 import { cn } from '@repo/helpers/cn';
@@ -44,6 +45,9 @@ export default function RootLayout({ children }: LayoutProps<'/'>) {
   return (
     <html lang="ja" suppressHydrationWarning>
       {process.env['NODE_ENV'] === 'development' && <ReactScan />}
+      <head>
+        <TrustedTypesInit />
+      </head>
       <body
         className={cn(
           mPlus2.variable,

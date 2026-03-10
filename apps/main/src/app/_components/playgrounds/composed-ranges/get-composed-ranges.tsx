@@ -3,6 +3,7 @@
 import { Button } from '@k8o/arte-odyssey/button';
 import { Code } from '@k8o/arte-odyssey/code';
 import { useEffect, useRef, useState } from 'react';
+import { getHTMLPolicy } from '@/app/_utils/trusted-types';
 
 export function GetComposedRanges() {
   const ref = useRef<HTMLParagraphElement>(null);
@@ -16,7 +17,10 @@ export function GetComposedRanges() {
     if (ref.current && !shadow.current) {
       const innerHTML1 = ref.current.innerHTML;
       const shadowRoot1 = ref.current.attachShadow({ mode: 'closed' });
-      shadowRoot1.innerHTML = innerHTML1;
+      const policy = getHTMLPolicy();
+      shadowRoot1.innerHTML = policy
+        ? (policy.createHTML(innerHTML1) as unknown as string)
+        : innerHTML1;
       shadow.current = shadowRoot1;
     }
   }, []);
