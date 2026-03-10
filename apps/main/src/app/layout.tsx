@@ -45,6 +45,9 @@ export default function RootLayout({ children }: LayoutProps<'/'>) {
   return (
     <html lang="ja" suppressHydrationWarning>
       {process.env['NODE_ENV'] === 'development' && <ReactScan />}
+      <head>
+        <TrustedTypesInit />
+      </head>
       <body
         className={cn(
           mPlus2.variable,
@@ -52,7 +55,6 @@ export default function RootLayout({ children }: LayoutProps<'/'>) {
           'font-m-plus-2 font-medium text-fg-base tracking-none antialiased',
         )}
       >
-        <TrustedTypesInit />
         <AppProvider>
           <GlobalLayout>{children}</GlobalLayout>
         </AppProvider>
