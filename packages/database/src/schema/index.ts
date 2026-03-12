@@ -1,3 +1,5 @@
+import { articleSources, articleSourcesRelations } from './article-sources';
+import { articles, articlesRelations } from './articles';
 import { blogComment, blogCommentRelations } from './blog-comment';
 import { blogTag, blogTagRelations } from './blog-tag';
 import { blogViews } from './blog-views';
@@ -28,6 +30,9 @@ export const schema = {
   services,
   serviceTag,
   serviceType,
+  // よんでるもの関連
+  articleSources,
+  articles,
 };
 
 export const relations = {
@@ -45,4 +50,7 @@ export const relations = {
   // アプリ関連
   servicesRelations,
   serviceTagRelations,
+  // よんでるもの関連
+  articleSourcesRelations,
+  articlesRelations,
 };
