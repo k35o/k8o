@@ -9,17 +9,14 @@ function getAbsolutePath(value: string) {
 const config: StorybookConfig = {
   stories: ['../src/**/*.stories.tsx'],
   addons: [
-    getAbsolutePath('@storybook/addon-a11y'),
     getAbsolutePath('@storybook/addon-vitest'),
+    getAbsolutePath('@storybook/addon-a11y'),
     getAbsolutePath('@storybook/addon-docs'),
-    getAbsolutePath('@storybook/addon-mcp'),
-    getAbsolutePath('storybook-addon-mock-date'),
   ],
   framework: getAbsolutePath('@storybook/nextjs-vite'),
   features: {
     experimentalRSC: true,
   },
-  staticDirs: ['./public'],
 };
 
 export default config;

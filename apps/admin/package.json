@@ -1,0 +1,45 @@
+{
+  "name": "admin",
+  "version": "1.0.0",
+  "description": "k8o admin site",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "portless admin next dev --inspect",
+    "build": "next build",
+    "start": "next start",
+    "type-check": "next typegen && tsgo --noEmit",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:ui": "vitest --ui --coverage",
+    "coverage": "vitest run --coverage",
+    "storybook": "storybook dev -p 6007 --no-open",
+    "build-storybook": "storybook build"
+  },
+  "dependencies": {
+    "@k8o/arte-odyssey": "catalog:",
+    "@repo/database": "workspace:*",
+    "@repo/helpers": "workspace:*",
+    "@tailwindcss/postcss": "catalog:",
+    "drizzle-orm": "catalog:",
+    "next": "catalog:",
+    "next-themes": "catalog:",
+    "postcss": "catalog:",
+    "react": "catalog:",
+    "react-dom": "catalog:",
+    "tailwindcss": "catalog:"
+  },
+  "devDependencies": {
+    "@repo/typescript-config": "workspace:*",
+    "@types/react": "catalog:",
+    "@types/react-dom": "catalog:",
+    "@storybook/addon-a11y": "catalog:",
+    "@storybook/addon-docs": "catalog:",
+    "@storybook/addon-vitest": "catalog:",
+    "@storybook/nextjs-vite": "catalog:",
+    "@vitest/browser-playwright": "catalog:",
+    "@vitest/coverage-istanbul": "catalog:",
+    "storybook": "catalog:",
+    "vitest": "catalog:"
+  }
+}

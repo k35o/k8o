@@ -20,7 +20,9 @@ export function PopoverDemo() {
           <p className="text-fg-mute text-sm">Popover API</p>
           <button
             className="rounded-md bg-primary-base px-4 py-2 text-primary-fg"
+            // biome-ignore lint/nursery/noUnknownAttribute: not unknown
             popoverTarget="demo-popover"
+            // biome-ignore lint/nursery/noUnknownAttribute: not unknown
             popoverTargetAction="toggle"
             type="button"
           >

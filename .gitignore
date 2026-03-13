@@ -64,3 +64,5 @@ local.db-wal
 .portless/
 proxy.log
 routes.json
+
+*storybook.log
