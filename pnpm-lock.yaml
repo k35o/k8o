@@ -6,6 +6,30 @@ settings:
 
 catalogs:
   default:
+    '@k8o/arte-odyssey':
+      specifier: 3.0.0
+      version: 3.0.0
+    '@storybook/addon-a11y':
+      specifier: 10.2.13
+      version: 10.2.13
+    '@storybook/addon-docs':
+      specifier: 10.2.13
+      version: 10.2.13
+    '@storybook/addon-vitest':
+      specifier: 10.2.13
+      version: 10.2.13
+    '@storybook/nextjs-vite':
+      specifier: 10.2.13
+      version: 10.2.13
+    '@tailwindcss/postcss':
+      specifier: 4.2.1
+      version: 4.2.1
+    '@types/react':
+      specifier: 19.2.14
+      version: 19.2.14
+    '@types/react-dom':
+      specifier: 19.2.3
+      version: 19.2.3
     '@vitest/browser-playwright':
       specifier: 4.0.18
       version: 4.0.18
@@ -15,6 +39,30 @@ catalogs:
     '@vitest/ui':
       specifier: 4.0.18
       version: 4.0.18
+    drizzle-orm:
+      specifier: 0.45.1
+      version: 0.45.1
+    next:
+      specifier: 16.1.6
+      version: 16.1.6
+    next-themes:
+      specifier: 0.4.6
+      version: 0.4.6
+    postcss:
+      specifier: 8.5.6
+      version: 8.5.6
+    react:
+      specifier: 19.2.4
+      version: 19.2.4
+    react-dom:
+      specifier: 19.2.4
+      version: 19.2.4
+    storybook:
+      specifier: 10.2.13
+      version: 10.2.13
+    tailwindcss:
+      specifier: 4.2.1
+      version: 4.2.1
     vitest:
       specifier: 4.0.18
       version: 4.0.18
@@ -76,7 +124,7 @@ importers:
   apps/admin:
     dependencies:
       '@k8o/arte-odyssey':
-        specifier: 3.0.0
+        specifier: 'catalog:'
         version: 3.0.0(@types/react-dom@19.2.3(@types/react@19.2.14))(@types/react@19.2.14)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)(tailwindcss@4.2.1)(typescript@5.9.3)
       '@repo/database':
         specifier: workspace:*
@@ -85,44 +133,68 @@ importers:
         specifier: workspace:*
         version: link:../../packages/helpers
       '@tailwindcss/postcss':
-        specifier: 4.2.1
+        specifier: 'catalog:'
         version: 4.2.1
       drizzle-orm:
-        specifier: 0.45.1
+        specifier: 'catalog:'
         version: 0.45.1(@libsql/client@0.17.0)
       next:
-        specifier: 16.1.6
+        specifier: 'catalog:'
         version: 16.1.6(@babel/core@7.29.0)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
       next-themes:
-        specifier: 0.4.6
+        specifier: 'catalog:'
         version: 0.4.6(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
       postcss:
-        specifier: 8.5.6
+        specifier: 'catalog:'
         version: 8.5.6
       react:
-        specifier: 19.2.4
+        specifier: 'catalog:'
         version: 19.2.4
       react-dom:
-        specifier: 19.2.4
+        specifier: 'catalog:'
         version: 19.2.4(react@19.2.4)
       tailwindcss:
-        specifier: 4.2.1
+        specifier: 'catalog:'
         version: 4.2.1
     devDependencies:
       '@repo/typescript-config':
         specifier: workspace:*
         version: link:../../packages/typescript-config
+      '@storybook/addon-a11y':
+        specifier: 'catalog:'
+        version: 10.2.13(storybook@10.2.13(@testing-library/dom@10.4.1)(react-dom@19.2.4(react@19.2.4))(react@19.2.4))
+      '@storybook/addon-docs':
+        specifier: 'catalog:'
+        version: 10.2.13(@types/react@19.2.14)(esbuild@0.27.3)(rollup@4.59.0)(storybook@10.2.13(@testing-library/dom@10.4.1)(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(vite@7.3.1(@types/node@24.11.0)(jiti@2.6.1)(lightningcss@1.31.1)(yaml@2.8.2))
+      '@storybook/addon-vitest':
+        specifier: 'catalog:'
+        version: 10.2.13(@vitest/browser-playwright@4.0.18)(@vitest/browser@4.0.18(msw@2.12.10(@types/node@24.11.0)(typescript@5.9.3))(vite@7.3.1(@types/node@24.11.0)(jiti@2.6.1)(lightningcss@1.31.1)(yaml@2.8.2))(vitest@4.0.18))(@vitest/runner@4.0.18)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)(storybook@10.2.13(@testing-library/dom@10.4.1)(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(vitest@4.0.18)
+      '@storybook/nextjs-vite':
+        specifier: 'catalog:'
+        version: 10.2.13(@babel/core@7.29.0)(esbuild@0.27.3)(next@16.1.6(@babel/core@7.29.0)(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(react-dom@19.2.4(react@19.2.4))(react@19.2.4)(rollup@4.59.0)(storybook@10.2.13(@testing-library/dom@10.4.1)(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(typescript@5.9.3)(vite@7.3.1(@types/node@24.11.0)(jiti@2.6.1)(lightningcss@1.31.1)(yaml@2.8.2))
       '@types/react':
-        specifier: 19.2.14
+        specifier: 'catalog:'
         version: 19.2.14
       '@types/react-dom':
-        specifier: 19.2.3
+        specifier: 'catalog:'
         version: 19.2.3(@types/react@19.2.14)
+      '@vitest/browser-playwright':
+        specifier: 'catalog:'
+        version: 4.0.18(msw@2.12.10(@types/node@24.11.0)(typescript@5.9.3))(playwright@1.58.2)(vite@7.3.1(@types/node@24.11.0)(jiti@2.6.1)(lightningcss@1.31.1)(yaml@2.8.2))(vitest@4.0.18)
+      '@vitest/coverage-istanbul':
+        specifier: 'catalog:'
+        version: 4.0.18(vitest@4.0.18)
+      storybook:
+        specifier: 'catalog:'
+        version: 10.2.13(@testing-library/dom@10.4.1)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
+      vitest:
+        specifier: 'catalog:'
+        version: 4.0.18(@types/node@24.11.0)(@vitest/browser-playwright@4.0.18)(@vitest/ui@4.0.18)(jiti@2.6.1)(lightningcss@1.31.1)(msw@2.12.10(@types/node@24.11.0)(typescript@5.9.3))(yaml@2.8.2)
 
   apps/main:
     dependencies:
       '@k8o/arte-odyssey':
-        specifier: 3.0.0
+        specifier: 'catalog:'
         version: 3.0.0(@types/react-dom@19.2.3(@types/react@19.2.14))(@types/react@19.2.14)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)(tailwindcss@4.2.1)(typescript@5.9.3)
       '@mdx-js/loader':
         specifier: 3.1.1
@@ -146,7 +218,7 @@ importers:
         specifier: 4.0.0
         version: 4.0.0
       '@tailwindcss/postcss':
-        specifier: 4.2.1
+        specifier: 'catalog:'
         version: 4.2.1
       '@vercel/analytics':
         specifier: 1.6.1
@@ -161,25 +233,25 @@ importers:
         specifier: 3.3.1
         version: 3.3.1
       drizzle-orm:
-        specifier: 0.45.1
+        specifier: 'catalog:'
         version: 0.45.1(@libsql/client@0.17.0)
       next:
-        specifier: 16.1.6
+        specifier: 'catalog:'
         version: 16.1.6(@babel/core@7.29.0)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
       next-themes:
-        specifier: 0.4.6
+        specifier: 'catalog:'
         version: 0.4.6(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
       octokit:
         specifier: 5.0.5
         version: 5.0.5
       postcss:
-        specifier: 8.5.6
+        specifier: 'catalog:'
         version: 8.5.6
       react:
-        specifier: 19.2.4
+        specifier: 'catalog:'
         version: 19.2.4
       react-dom:
-        specifier: 19.2.4
+        specifier: 'catalog:'
         version: 19.2.4(react@19.2.4)
       recharts:
         specifier: 3.7.0
@@ -197,7 +269,7 @@ importers:
         specifier: ^3.13.0
         version: 3.13.0
       tailwindcss:
-        specifier: 4.2.1
+        specifier: 'catalog:'
         version: 4.2.1
       uqr:
         specifier: 0.1.2
@@ -210,28 +282,28 @@ importers:
         specifier: workspace:*
         version: link:../../packages/typescript-config
       '@storybook/addon-a11y':
-        specifier: 10.2.13
+        specifier: 'catalog:'
         version: 10.2.13(storybook@10.2.13(@testing-library/dom@10.4.1)(react-dom@19.2.4(react@19.2.4))(react@19.2.4))
       '@storybook/addon-docs':
-        specifier: 10.2.13
+        specifier: 'catalog:'
         version: 10.2.13(@types/react@19.2.14)(esbuild@0.27.3)(rollup@4.59.0)(storybook@10.2.13(@testing-library/dom@10.4.1)(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(vite@7.3.1(@types/node@24.11.0)(jiti@2.6.1)(lightningcss@1.31.1)(yaml@2.8.2))
       '@storybook/addon-mcp':
         specifier: 0.3.3
         version: 0.3.3(@storybook/addon-vitest@10.2.13(@vitest/browser-playwright@4.0.18)(@vitest/browser@4.0.18(msw@2.12.10(@types/node@24.11.0)(typescript@5.9.3))(vite@7.3.1(@types/node@24.11.0)(jiti@2.6.1)(lightningcss@1.31.1)(yaml@2.8.2))(vitest@4.0.18))(@vitest/runner@4.0.18)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)(storybook@10.2.13(@testing-library/dom@10.4.1)(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(vitest@4.0.18))(storybook@10.2.13(@testing-library/dom@10.4.1)(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(typescript@5.9.3)
       '@storybook/addon-vitest':
-        specifier: 10.2.13
+        specifier: 'catalog:'
         version: 10.2.13(@vitest/browser-playwright@4.0.18)(@vitest/browser@4.0.18(msw@2.12.10(@types/node@24.11.0)(typescript@5.9.3))(vite@7.3.1(@types/node@24.11.0)(jiti@2.6.1)(lightningcss@1.31.1)(yaml@2.8.2))(vitest@4.0.18))(@vitest/runner@4.0.18)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)(storybook@10.2.13(@testing-library/dom@10.4.1)(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(vitest@4.0.18)
       '@storybook/nextjs-vite':
-        specifier: 10.2.13
+        specifier: 'catalog:'
         version: 10.2.13(@babel/core@7.29.0)(esbuild@0.27.3)(next@16.1.6(@babel/core@7.29.0)(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(react-dom@19.2.4(react@19.2.4))(react@19.2.4)(rollup@4.59.0)(storybook@10.2.13(@testing-library/dom@10.4.1)(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(typescript@5.9.3)(vite@7.3.1(@types/node@24.11.0)(jiti@2.6.1)(lightningcss@1.31.1)(yaml@2.8.2))
       '@types/mdx':
         specifier: 2.0.13
         version: 2.0.13
       '@types/react':
-        specifier: 19.2.14
+        specifier: 'catalog:'
         version: 19.2.14
       '@types/react-dom':
-        specifier: 19.2.3
+        specifier: 'catalog:'
         version: 19.2.3(@types/react@19.2.14)
       '@types/rss':
         specifier: 0.0.32
@@ -258,7 +330,7 @@ importers:
         specifier: 0.5.3
         version: 0.5.3(@types/react@19.2.14)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)(rollup@4.59.0)
       storybook:
-        specifier: 10.2.13
+        specifier: 'catalog:'
         version: 10.2.13(@testing-library/dom@10.4.1)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
       storybook-addon-mock-date:
         specifier: 2.0.0

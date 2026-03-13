@@ -8,24 +8,38 @@
     "dev": "portless admin next dev --inspect",
     "build": "next build",
     "start": "next start",
-    "type-check": "next typegen && tsgo --noEmit"
+    "type-check": "next typegen && tsgo --noEmit",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:ui": "vitest --ui --coverage",
+    "coverage": "vitest run --coverage",
+    "storybook": "storybook dev -p 6007 --no-open",
+    "build-storybook": "storybook build"
   },
   "dependencies": {
-    "@k8o/arte-odyssey": "3.0.0",
+    "@k8o/arte-odyssey": "catalog:",
     "@repo/database": "workspace:*",
     "@repo/helpers": "workspace:*",
-    "@tailwindcss/postcss": "4.2.1",
-    "drizzle-orm": "0.45.1",
-    "next": "16.1.6",
-    "next-themes": "0.4.6",
-    "postcss": "8.5.6",
-    "react": "19.2.4",
-    "react-dom": "19.2.4",
-    "tailwindcss": "4.2.1"
+    "@tailwindcss/postcss": "catalog:",
+    "drizzle-orm": "catalog:",
+    "next": "catalog:",
+    "next-themes": "catalog:",
+    "postcss": "catalog:",
+    "react": "catalog:",
+    "react-dom": "catalog:",
+    "tailwindcss": "catalog:"
   },
   "devDependencies": {
     "@repo/typescript-config": "workspace:*",
-    "@types/react": "19.2.14",
-    "@types/react-dom": "19.2.3"
+    "@types/react": "catalog:",
+    "@types/react-dom": "catalog:",
+    "@storybook/addon-a11y": "catalog:",
+    "@storybook/addon-docs": "catalog:",
+    "@storybook/addon-vitest": "catalog:",
+    "@storybook/nextjs-vite": "catalog:",
+    "@vitest/browser-playwright": "catalog:",
+    "@vitest/coverage-istanbul": "catalog:",
+    "storybook": "catalog:",
+    "vitest": "catalog:"
   }
 }
