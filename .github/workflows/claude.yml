@@ -32,7 +32,7 @@ jobs:
 
       - name: Run Claude Code
         id: claude
-        uses: anthropics/claude-code-action@3428ca8991d4611b464661a70b0725ae459c894d
+        uses: anthropics/claude-code-action@f956510b1afc643e768961656c10f7039534d553
         with:
           additional_permissions: |
             actions: read
