@@ -1,0 +1,10 @@
+{
+  "version": 1,
+  "skills": {
+    "arte-odyssey-usage": {
+      "source": "k35o/ArteOdyssey",
+      "sourceType": "github",
+      "computedHash": "71e808a34402336d18a2926eca6c47e22aeca23174244b92aca29fdef8950273"
+    }
+  }
+}
