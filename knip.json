@@ -21,6 +21,7 @@
     },
     "packages/helpers": {
       "ignoreDependencies": ["@vitest/coverage-v8"]
-    }
+    },
+    "apps/admin": {}
   }
 }

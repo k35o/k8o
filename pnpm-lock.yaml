@@ -73,6 +73,52 @@ importers:
         specifier: 5.9.3
         version: 5.9.3
 
+  apps/admin:
+    dependencies:
+      '@k8o/arte-odyssey':
+        specifier: 3.0.0
+        version: 3.0.0(@types/react-dom@19.2.3(@types/react@19.2.14))(@types/react@19.2.14)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)(tailwindcss@4.2.1)(typescript@5.9.3)
+      '@repo/database':
+        specifier: workspace:*
+        version: link:../../packages/database
+      '@repo/helpers':
+        specifier: workspace:*
+        version: link:../../packages/helpers
+      '@tailwindcss/postcss':
+        specifier: 4.2.1
+        version: 4.2.1
+      drizzle-orm:
+        specifier: 0.45.1
+        version: 0.45.1(@libsql/client@0.17.0)
+      next:
+        specifier: 16.1.6
+        version: 16.1.6(@babel/core@7.29.0)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
+      next-themes:
+        specifier: 0.4.6
+        version: 0.4.6(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
+      postcss:
+        specifier: 8.5.6
+        version: 8.5.6
+      react:
+        specifier: 19.2.4
+        version: 19.2.4
+      react-dom:
+        specifier: 19.2.4
+        version: 19.2.4(react@19.2.4)
+      tailwindcss:
+        specifier: 4.2.1
+        version: 4.2.1
+    devDependencies:
+      '@repo/typescript-config':
+        specifier: workspace:*
+        version: link:../../packages/typescript-config
+      '@types/react':
+        specifier: 19.2.14
+        version: 19.2.14
+      '@types/react-dom':
+        specifier: 19.2.3
+        version: 19.2.3(@types/react@19.2.14)
+
   apps/main:
     dependencies:
       '@k8o/arte-odyssey':
