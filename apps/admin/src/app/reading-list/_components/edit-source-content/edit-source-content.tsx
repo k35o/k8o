@@ -8,16 +8,20 @@ import { updateSource } from '../../_actions/source-actions';
 import { DeleteSourceButton } from '../delete-source-button/delete-source-button';
 import { SourceForm } from '../source-form/source-form';
 
-export const EditSourceContent = async ({ id }: { id: string }) => {
+async function getSource(id: number) {
   'use cache';
+  return await db.query.articleSources.findFirst({
+    where: eq(db._schema.articleSources.id, id),
+  });
+}
+
+export const EditSourceContent = async ({ id }: { id: string }) => {
   const numericId = Number(id);
   if (!Number.isInteger(numericId)) {
     notFound();
   }
 
-  const source = await db.query.articleSources.findFirst({
-    where: eq(db._schema.articleSources.id, numericId),
-  });
+  const source = await getSource(numericId);
 
   if (!source) {
     notFound();
