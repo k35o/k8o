@@ -47,8 +47,7 @@ export const Primary: Story = {
 
     await expect(canvas.getByText('web.dev')).toBeInTheDocument();
     await expect(canvas.getByText('Zenn')).toBeInTheDocument();
-    await expect(canvas.getByText('フィード')).toBeInTheDocument();
-    await expect(canvas.getByText('手動')).toBeInTheDocument();
+    await expect(canvas.getByText('手動登録')).toBeInTheDocument();
   },
 };
 

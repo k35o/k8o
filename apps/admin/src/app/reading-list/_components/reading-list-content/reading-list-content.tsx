@@ -1,5 +1,4 @@
 import { LinkButton } from '@k8o/arte-odyssey/link-button';
-import { Separator } from '@k8o/arte-odyssey/separator';
 import { db } from '@repo/database';
 import { count, desc } from 'drizzle-orm';
 import { StatCard } from '@/app/_components/stat-card/stat-card';
@@ -44,8 +43,6 @@ export const ReadingListContent = async () => {
         <StatCard label="取得済み記事" value={String(articleCount)} />
       </div>
 
-      <Separator />
-
       <section className="flex flex-col gap-4">
         <div className="flex items-center justify-between">
           <h3 className="font-bold text-lg">ソース</h3>
@@ -60,8 +57,6 @@ export const ReadingListContent = async () => {
         </div>
         <SourceList sources={sources} />
       </section>
-
-      <Separator />
 
       <section className="flex flex-col gap-4">
         <h3 className="font-bold text-lg">取得済み記事</h3>
