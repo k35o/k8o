@@ -9,6 +9,7 @@ import { DeleteSourceButton } from '../delete-source-button/delete-source-button
 import { SourceForm } from '../source-form/source-form';
 
 export const EditSourceContent = async ({ id }: { id: string }) => {
+  'use cache';
   const numericId = Number(id);
   if (!Number.isInteger(numericId)) {
     notFound();
