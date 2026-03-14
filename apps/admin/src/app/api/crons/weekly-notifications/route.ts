@@ -46,7 +46,7 @@ async function sendWithRetry(
   throw lastError;
 }
 
-export async function GET(req: NextRequest) {
+export async function GET(req: NextRequest): Promise<NextResponse> {
   if (
     req.headers.get('Authorization') !== `Bearer ${process.env['CRON_SECRET']}`
   ) {

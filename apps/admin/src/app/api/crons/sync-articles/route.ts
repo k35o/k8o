@@ -1,9 +1,8 @@
-import { revalidatePath } from 'next/cache';
 import { type NextRequest, NextResponse } from 'next/server';
 import { sendPushNotification } from '@/services/push-notification/push-notification';
 import { syncArticles } from '@/services/reading-list/sync-articles';
 
-export async function GET(req: NextRequest) {
+export async function GET(req: NextRequest): Promise<NextResponse> {
   if (
     req.headers.get('Authorization') !== `Bearer ${process.env['CRON_SECRET']}`
   ) {
@@ -11,10 +10,6 @@ export async function GET(req: NextRequest) {
   }
 
   const { newArticles, failedSources } = await syncArticles();
-
-  if (newArticles > 0) {
-    revalidatePath('/reading-list');
-  }
 
   const readingListUrl = 'https://www.k8o.me/reading-list';
   try {
