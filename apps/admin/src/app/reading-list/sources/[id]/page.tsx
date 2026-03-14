@@ -1,0 +1,20 @@
+import { Suspense } from 'react';
+import { EditSourceContent } from '../../_components/edit-source-content/edit-source-content';
+
+export default async function EditSourcePage({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}) {
+  const { id } = await params;
+
+  return (
+    <div className="flex flex-col gap-6">
+      <Suspense
+        fallback={<p className="text-fg-mute text-sm">読み込み中...</p>}
+      >
+        <EditSourceContent id={id} />
+      </Suspense>
+    </div>
+  );
+}
