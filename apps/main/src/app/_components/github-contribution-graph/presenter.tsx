@@ -53,7 +53,7 @@ export const Presenter: FC<{
         </div>
 
         <div className="h-48">
-          <BarChart data={data} height={192} width="100%">
+          <BarChart<ChartDataItem> data={data} height={192} width="100%">
             <CartesianGrid
               stroke="var(--border-subtle)"
               strokeDasharray="3 3"
