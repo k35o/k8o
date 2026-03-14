@@ -21,6 +21,16 @@ export default defineConfig({
     projects: [
       {
         extends: true,
+        test: {
+          env: {
+            TZ: 'UTC',
+          },
+          name: { label: 'services test', color: 'cyan' },
+          include: ['src/services/**/*.test.{ts,tsx}'],
+        },
+      },
+      {
+        extends: true,
         plugins: [
           storybookTest({ configDir: path.join(dirname, '.storybook') }),
         ],
