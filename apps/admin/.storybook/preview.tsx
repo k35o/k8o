@@ -3,10 +3,15 @@ import type { Preview } from '@storybook/nextjs-vite';
 import Script from 'next/script';
 import { useTheme } from 'next-themes';
 import { type FC, memo, useEffect } from 'react';
+import { sb } from 'storybook/test';
 import { AppProvider } from '../src/app/_providers/app';
 import { mPlus2, notoSansJp } from '../src/app/_styles/font';
 
 import '../src/app/_styles/globals.css';
+
+sb.mock(import('@repo/database'));
+sb.mock(import('../src/app/reading-list/_actions/article-actions.ts'));
+sb.mock(import('../src/app/reading-list/_actions/source-actions.ts'));
 
 const ApplyThemeByStorybook: FC<{ theme: string }> = memo(({ theme }) => {
   const { theme: currentTheme, setTheme } = useTheme();
