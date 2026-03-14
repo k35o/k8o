@@ -15,10 +15,15 @@ export const DeleteSourceButton = ({
 }) => {
   const [open, setOpen] = useState(false);
   const [isPending, startTransition] = useTransition();
+  const [error, setError] = useState<string>();
 
   const handleDelete = () => {
+    setError(undefined);
     startTransition(async () => {
-      await deleteSource(id);
+      const result = await deleteSource(id);
+      if (result.error) {
+        setError(result.error);
+      }
     });
   };
 
@@ -52,6 +57,7 @@ export const DeleteSourceButton = ({
               <p className="text-sm">
                 「{title}」を削除しますか？この操作は取り消せません。
               </p>
+              {error && <p className="text-fg-danger text-sm">{error}</p>}
               <div className="flex justify-end gap-3">
                 <Button
                   color="gray"

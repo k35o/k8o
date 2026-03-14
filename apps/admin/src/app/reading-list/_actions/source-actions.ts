@@ -16,10 +16,21 @@ export async function createSource(
   const title = formData.get('title') as string;
   const url = formData.get('url') as string;
   const siteUrl = formData.get('siteUrl') as string;
-  const type = formData.get('type') as 'feed' | 'manual';
+  const type = formData.get('type') as string;
 
   if (!(title && url && siteUrl && type)) {
     return { error: '全ての項目を入力してください' };
+  }
+
+  if (type !== 'feed' && type !== 'manual') {
+    return { error: 'タイプはfeedまたはmanualを指定してください' };
+  }
+
+  try {
+    new URL(url);
+    new URL(siteUrl);
+  } catch {
+    return { error: '有効なURLを入力してください' };
   }
 
   try {
@@ -45,10 +56,21 @@ export async function updateSource(
   const title = formData.get('title') as string;
   const url = formData.get('url') as string;
   const siteUrl = formData.get('siteUrl') as string;
-  const type = formData.get('type') as 'feed' | 'manual';
+  const type = formData.get('type') as string;
 
   if (!(title && url && siteUrl && type)) {
     return { error: '全ての項目を入力してください' };
+  }
+
+  if (type !== 'feed' && type !== 'manual') {
+    return { error: 'タイプはfeedまたはmanualを指定してください' };
+  }
+
+  try {
+    new URL(url);
+    new URL(siteUrl);
+  } catch {
+    return { error: '有効なURLを入力してください' };
   }
 
   try {

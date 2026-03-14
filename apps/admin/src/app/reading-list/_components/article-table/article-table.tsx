@@ -19,10 +19,15 @@ type Article = {
 const DeleteCell: FC<{ id: number; title: string }> = ({ id, title }) => {
   const [open, setOpen] = useState(false);
   const [isPending, startTransition] = useTransition();
+  const [error, setError] = useState<string>();
 
   const handleDelete = () => {
+    setError(undefined);
     startTransition(async () => {
-      await deleteArticle(id);
+      const result = await deleteArticle(id);
+      if (result.error) {
+        setError(result.error);
+      }
     });
   };
 
@@ -54,6 +59,7 @@ const DeleteCell: FC<{ id: number; title: string }> = ({ id, title }) => {
           <Dialog.Content>
             <div className="flex flex-col gap-6">
               <p className="text-sm">「{title}」を削除しますか？</p>
+              {error && <p className="text-fg-danger text-sm">{error}</p>}
               <div className="flex justify-end gap-3">
                 <Button
                   color="gray"

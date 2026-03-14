@@ -17,5 +17,6 @@ export async function deleteArticle(id: number): Promise<ActionState> {
   }
 
   revalidatePath('/reading-list');
+  revalidatePath('/');
   return { success: true };
 }

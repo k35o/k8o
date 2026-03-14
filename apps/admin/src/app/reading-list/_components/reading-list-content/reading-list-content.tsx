@@ -1,13 +1,13 @@
 import { LinkButton } from '@k8o/arte-odyssey/link-button';
 import { db } from '@repo/database';
-import { count, desc } from 'drizzle-orm';
+import { desc } from 'drizzle-orm';
 import { StatCard } from '@/app/_components/stat-card/stat-card';
 import { ArticleTable } from '../article-table/article-table';
 import { SourceList } from '../source-list/source-list';
 
 export const ReadingListContent = async () => {
   'use cache';
-  const [sources, articles, articleCount] = await Promise.all([
+  const [sources, articles] = await Promise.all([
     db.query.articleSources.findMany({
       orderBy: (articleSources) => [desc(articleSources.updatedAt)],
     }),
@@ -15,10 +15,6 @@ export const ReadingListContent = async () => {
       with: { articleSource: true },
       orderBy: (articles) => [desc(articles.publishedAt)],
     }),
-    db
-      .select({ value: count() })
-      .from(db._schema.articles)
-      .then((r) => r[0]?.value ?? 0),
   ]);
 
   const feedCount = sources.filter((s) => s.type === 'feed').length;
@@ -40,7 +36,7 @@ export const ReadingListContent = async () => {
           label="フィード"
           value={String(feedCount)}
         />
-        <StatCard label="取得済み記事" value={String(articleCount)} />
+        <StatCard label="取得済み記事" value={String(articles.length)} />
       </div>
 
       <section className="flex flex-col gap-4">
