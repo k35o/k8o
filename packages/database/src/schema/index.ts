@@ -1,5 +1,14 @@
 import { articleSources, articleSourcesRelations } from './article-sources';
 import { articles, articlesRelations } from './articles';
+import {
+  account,
+  accountRelations,
+  session,
+  sessionRelations,
+  user,
+  userRelations,
+  verification,
+} from './auth-schema';
 import { blogComment, blogCommentRelations } from './blog-comment';
 import { blogTag, blogTagRelations } from './blog-tag';
 import { blogViews } from './blog-views';
@@ -14,6 +23,11 @@ import { talkTag, talkTagRelations } from './talk-tag';
 import { talks, talksRelations } from './talks';
 
 export const schema = {
+  // 認証
+  user,
+  session,
+  account,
+  verification,
   // 全体
   feedbacks,
   tags,
@@ -36,6 +50,10 @@ export const schema = {
 };
 
 export const relations = {
+  // 認証
+  userRelations,
+  sessionRelations,
+  accountRelations,
   // 全体
   feedbacksRelations,
   tagsRelations,
