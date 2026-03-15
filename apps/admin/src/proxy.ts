@@ -1,7 +1,13 @@
 import { getSessionCookie } from 'better-auth/cookies';
 import { type NextRequest, NextResponse } from 'next/server';
 
+const isAuthEnabled = process.env['VERCEL_ENV'] !== 'preview';
+
 export function proxy(request: NextRequest) {
+  if (!isAuthEnabled) {
+    return NextResponse.next();
+  }
+
   const { pathname } = request.nextUrl;
 
   if (pathname === '/sign-in') {

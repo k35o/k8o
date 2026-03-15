@@ -4,13 +4,17 @@ import Link from 'next/link';
 import { SignOutButton } from '@/app/_components/sign-out-button';
 import { ToggleTheme } from '@/app/_components/toggle-theme';
 
-export const AdminHeader = async () => {
-  const session = await auth.api.getSession({
-    headers: await headers(),
-  });
+const isAuthEnabled = process.env['VERCEL_ENV'] !== 'preview';
 
-  if (!session) {
-    return null;
+export const AdminHeader = async () => {
+  if (isAuthEnabled) {
+    const session = await auth.api.getSession({
+      headers: await headers(),
+    });
+
+    if (!session) {
+      return null;
+    }
   }
 
   return (
@@ -34,7 +38,7 @@ export const AdminHeader = async () => {
           </nav>
         </div>
         <div className="flex items-center gap-3">
-          <SignOutButton />
+          {isAuthEnabled && <SignOutButton />}
           <ToggleTheme />
         </div>
       </div>
