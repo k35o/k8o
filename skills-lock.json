@@ -5,6 +5,16 @@
       "source": "k35o/ArteOdyssey",
       "sourceType": "github",
       "computedHash": "71e808a34402336d18a2926eca6c47e22aeca23174244b92aca29fdef8950273"
+    },
+    "better-auth-best-practices": {
+      "source": "better-auth/skills",
+      "sourceType": "github",
+      "computedHash": "a4c830509e85557b59339d8d93a4e243e9e59c686e7678854d39230e12c2a6dc"
+    },
+    "better-auth-security-best-practices": {
+      "source": "better-auth/skills",
+      "sourceType": "github",
+      "computedHash": "5717187bba9c22030c7174c74012f01c359f21e2ce87e0eb80e24244d8b8c915"
     }
   }
 }
