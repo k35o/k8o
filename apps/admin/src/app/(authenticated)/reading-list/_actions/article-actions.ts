@@ -3,6 +3,7 @@
 import { db } from '@repo/database';
 import { eq } from 'drizzle-orm';
 import { revalidatePath } from 'next/cache';
+import { verifySession } from '@/libs/verify-session';
 
 type ActionState = {
   error?: string;
@@ -10,6 +11,8 @@ type ActionState = {
 };
 
 export async function deleteArticle(id: number): Promise<ActionState> {
+  await verifySession();
+
   try {
     await db.delete(db._schema.articles).where(eq(db._schema.articles.id, id));
   } catch {

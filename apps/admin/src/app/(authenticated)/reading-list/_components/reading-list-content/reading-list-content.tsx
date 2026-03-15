@@ -1,7 +1,7 @@
 import { LinkButton } from '@k8o/arte-odyssey/link-button';
 import { db } from '@repo/database';
 import { desc } from 'drizzle-orm';
-import { StatCard } from '@/app/_components/stat-card/stat-card';
+import { StatCard } from '@/app/(authenticated)/_components/stat-card/stat-card';
 import { ArticleTable } from '../article-table/article-table';
 import { SourceList } from '../source-list/source-list';
 

@@ -1,9 +1,11 @@
 import { Breadcrumb } from '@k8o/arte-odyssey/breadcrumb';
 import { Card } from '@k8o/arte-odyssey/card';
+import { verifySession } from '@/libs/verify-session';
 import { createSource } from '../../_actions/source-actions';
 import { SourceForm } from '../../_components/source-form/source-form';
 
-export default function NewSourcePage() {
+export default async function NewSourcePage() {
+  await verifySession();
   return (
     <div className="flex flex-col gap-6">
       <Breadcrumb.List>

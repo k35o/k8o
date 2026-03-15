@@ -1,7 +1,6 @@
 import { cn } from '@repo/helpers/cn';
 import type { Metadata } from 'next';
-import { type ReactNode, Suspense } from 'react';
-import { AdminHeader } from './_components/admin-header';
+import type { ReactNode } from 'react';
 import { AppProvider } from './_providers/app';
 import './_styles/globals.css';
 import { mPlus2, notoSansJp } from './_styles/font';
@@ -21,12 +20,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
           'bg-bg-base font-m-plus-2 font-medium text-fg-base antialiased',
         )}
       >
-        <AppProvider>
-          <Suspense>
-            <AdminHeader />
-          </Suspense>
-          <main className="px-6 py-8">{children}</main>
-        </AppProvider>
+        <AppProvider>{children}</AppProvider>
       </body>
     </html>
   );

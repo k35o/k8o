@@ -4,6 +4,7 @@ import { db } from '@repo/database';
 import { eq } from 'drizzle-orm';
 import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
+import { verifySession } from '@/libs/verify-session';
 
 type ActionState = {
   error?: string;
@@ -13,6 +14,8 @@ export async function createSource(
   _prev: ActionState,
   formData: FormData,
 ): Promise<ActionState> {
+  await verifySession();
+
   const title = formData.get('title') as string;
   const url = formData.get('url') as string;
   const siteUrl = formData.get('siteUrl') as string;
@@ -53,6 +56,8 @@ export async function updateSource(
   _prev: ActionState,
   formData: FormData,
 ): Promise<ActionState> {
+  await verifySession();
+
   const title = formData.get('title') as string;
   const url = formData.get('url') as string;
   const siteUrl = formData.get('siteUrl') as string;
@@ -93,6 +98,8 @@ export async function updateSource(
 }
 
 export async function deleteSource(id: number): Promise<ActionState> {
+  await verifySession();
+
   try {
     await db
       .delete(db._schema.articleSources)

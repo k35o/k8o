@@ -1,6 +1,8 @@
+import { verifySession } from '@/libs/verify-session';
 import { DashboardContent } from './_components/dashboard-content/dashboard-content';
 
-export default function Home() {
+export default async function Home() {
+  await verifySession();
   return (
     <div className="flex flex-col gap-8">
       <div>

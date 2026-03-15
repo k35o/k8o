@@ -1,22 +1,8 @@
-import { auth } from '@repo/database';
-import { headers } from 'next/headers';
 import Link from 'next/link';
-import { SignOutButton } from '@/app/_components/sign-out-button';
-import { ToggleTheme } from '@/app/_components/toggle-theme';
+import { SignOutButton } from '@/app/(authenticated)/_components/sign-out-button';
+import { ToggleTheme } from '@/app/(authenticated)/_components/toggle-theme';
 
-const isAuthEnabled = process.env['VERCEL_ENV'] !== 'preview';
-
-export const AdminHeader = async () => {
-  if (isAuthEnabled) {
-    const session = await auth.api.getSession({
-      headers: await headers(),
-    });
-
-    if (!session) {
-      return null;
-    }
-  }
-
+export const AdminHeader = () => {
   return (
     <header className="border-border-base border-b">
       <div className="flex items-center justify-between px-6 py-3">
@@ -38,7 +24,7 @@ export const AdminHeader = async () => {
           </nav>
         </div>
         <div className="flex items-center gap-3">
-          {isAuthEnabled && <SignOutButton />}
+          <SignOutButton />
           <ToggleTheme />
         </div>
       </div>

@@ -1,3 +1,4 @@
+import { verifySession } from '@/libs/verify-session';
 import { EditSourceContent } from '../../_components/edit-source-content/edit-source-content';
 
 export default async function EditSourcePage({
@@ -5,6 +6,7 @@ export default async function EditSourcePage({
 }: {
   params: Promise<{ id: string }>;
 }) {
+  await verifySession();
   const { id } = await params;
 
   return (
