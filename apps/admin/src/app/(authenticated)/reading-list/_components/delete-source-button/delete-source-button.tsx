@@ -1,8 +1,6 @@
 'use client';
 
-import { Button } from '@k8o/arte-odyssey/button';
-import { Dialog } from '@k8o/arte-odyssey/dialog';
-import { Modal } from '@k8o/arte-odyssey/modal';
+import { Button, Dialog, Modal } from '@k8o/arte-odyssey';
 import { useState, useTransition } from 'react';
 import { deleteSource } from '../../_actions/source-actions';
 

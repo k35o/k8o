@@ -1,7 +1,6 @@
 'use client';
 
-import { ArteOdysseyProvider } from '@k8o/arte-odyssey/providers';
-import { ToastProvider } from '@k8o/arte-odyssey/toast';
+import { ArteOdysseyProvider, ToastProvider } from '@k8o/arte-odyssey';
 import { ThemeProvider } from 'next-themes';
 import type { FC, PropsWithChildren } from 'react';
 

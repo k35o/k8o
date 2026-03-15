@@ -1,9 +1,6 @@
 'use client';
 
-import { Anchor } from '@k8o/arte-odyssey/anchor';
-import { Button } from '@k8o/arte-odyssey/button';
-import { Dialog } from '@k8o/arte-odyssey/dialog';
-import { Modal } from '@k8o/arte-odyssey/modal';
+import { Anchor, Button, Dialog, Modal } from '@k8o/arte-odyssey';
 import { formatDate } from '@repo/helpers/date/format';
 import { type FC, useState, useTransition } from 'react';
 import { deleteArticle } from '../../_actions/article-actions';

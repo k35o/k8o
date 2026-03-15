@@ -34,6 +34,14 @@ export default defineConfig({
         plugins: [
           storybookTest({ configDir: path.join(dirname, '.storybook') }),
         ],
+        optimizeDeps: {
+          include: [
+            'next/link',
+            'better-auth/react',
+            '@repo/helpers > date-fns',
+            '@repo/helpers > date-fns/locale',
+          ],
+        },
         test: {
           name: 'storybook',
           browser: {

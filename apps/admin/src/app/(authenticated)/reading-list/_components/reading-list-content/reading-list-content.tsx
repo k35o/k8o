@@ -1,4 +1,4 @@
-import { LinkButton } from '@k8o/arte-odyssey/link-button';
+import { LinkButton } from '@k8o/arte-odyssey';
 import { db } from '@repo/database';
 import { desc } from 'drizzle-orm';
 import { StatCard } from '@/app/(authenticated)/_components/stat-card/stat-card';

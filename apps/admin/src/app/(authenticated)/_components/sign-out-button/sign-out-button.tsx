@@ -1,6 +1,6 @@
 'use client';
 
-import { useToast } from '@k8o/arte-odyssey/toast';
+import { useToast } from '@k8o/arte-odyssey';
 import { useRouter } from 'next/navigation';
 import type { FC } from 'react';
 import { authClient } from '@/libs/auth-client';

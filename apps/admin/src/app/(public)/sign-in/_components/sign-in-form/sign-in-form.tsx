@@ -1,7 +1,6 @@
 'use client';
 
-import { GitHubIcon } from '@k8o/arte-odyssey/icons';
-import { useToast } from '@k8o/arte-odyssey/toast';
+import { GitHubIcon, useToast } from '@k8o/arte-odyssey';
 import type { FC } from 'react';
 import { authClient } from '@/libs/auth-client';
 

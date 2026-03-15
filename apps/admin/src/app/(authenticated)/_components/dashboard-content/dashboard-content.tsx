@@ -1,5 +1,4 @@
-import { Card } from '@k8o/arte-odyssey/card';
-import { Separator } from '@k8o/arte-odyssey/separator';
+import { Card, Separator } from '@k8o/arte-odyssey';
 import { db } from '@repo/database';
 import { count, desc, eq, sum } from 'drizzle-orm';
 import Link from 'next/link';

@@ -1,6 +1,4 @@
-import { Breadcrumb } from '@k8o/arte-odyssey/breadcrumb';
-import { Card } from '@k8o/arte-odyssey/card';
-import { Separator } from '@k8o/arte-odyssey/separator';
+import { Breadcrumb, Card, Separator } from '@k8o/arte-odyssey';
 import { db } from '@repo/database';
 import { eq } from 'drizzle-orm';
 import { notFound } from 'next/navigation';

@@ -1,10 +1,12 @@
 'use client';
 
-import { Alert } from '@k8o/arte-odyssey/alert';
-import { Button } from '@k8o/arte-odyssey/button';
-import { FormControl } from '@k8o/arte-odyssey/form/form-control';
-import { Radio } from '@k8o/arte-odyssey/form/radio';
-import { TextField } from '@k8o/arte-odyssey/form/text-field';
+import {
+  Alert,
+  Button,
+  FormControl,
+  Radio,
+  TextField,
+} from '@k8o/arte-odyssey';
 import { type ChangeEvent, useActionState, useState } from 'react';
 
 type SourceFormProps = {

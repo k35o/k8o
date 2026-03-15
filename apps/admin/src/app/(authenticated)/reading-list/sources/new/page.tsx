@@ -1,5 +1,4 @@
-import { Breadcrumb } from '@k8o/arte-odyssey/breadcrumb';
-import { Card } from '@k8o/arte-odyssey/card';
+import { Breadcrumb, Card } from '@k8o/arte-odyssey';
 import { verifySession } from '@/libs/verify-session';
 import { createSource } from '../../_actions/source-actions';
 import { SourceForm } from '../../_components/source-form/source-form';
