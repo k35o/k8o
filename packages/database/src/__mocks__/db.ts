@@ -16,3 +16,5 @@ export const db = Object.assign(drizzleDb, {
     increment: (column: AnyColumn, value = 1) => sql`${column} + ${value}`,
   },
 });
+
+export const auth = {} as Record<string, unknown>;
