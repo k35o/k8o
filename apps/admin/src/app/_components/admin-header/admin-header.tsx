@@ -1,7 +1,18 @@
+import { auth } from '@repo/database';
+import { headers } from 'next/headers';
 import Link from 'next/link';
+import { SignOutButton } from '@/app/_components/sign-out-button';
 import { ToggleTheme } from '@/app/_components/toggle-theme';
 
-export const AdminHeader = () => {
+export const AdminHeader = async () => {
+  const session = await auth.api.getSession({
+    headers: await headers(),
+  });
+
+  if (!session) {
+    return null;
+  }
+
   return (
     <header className="border-border-base border-b">
       <div className="flex items-center justify-between px-6 py-3">
@@ -22,7 +33,10 @@ export const AdminHeader = () => {
             </Link>
           </nav>
         </div>
-        <ToggleTheme />
+        <div className="flex items-center gap-3">
+          <SignOutButton />
+          <ToggleTheme />
+        </div>
       </div>
     </header>
   );

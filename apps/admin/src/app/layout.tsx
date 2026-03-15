@@ -1,6 +1,6 @@
 import { cn } from '@repo/helpers/cn';
 import type { Metadata } from 'next';
-import type { ReactNode } from 'react';
+import { type ReactNode, Suspense } from 'react';
 import { AdminHeader } from './_components/admin-header';
 import { AppProvider } from './_providers/app';
 import './_styles/globals.css';
@@ -22,7 +22,9 @@ export default function RootLayout({ children }: { children: ReactNode }) {
         )}
       >
         <AppProvider>
-          <AdminHeader />
+          <Suspense>
+            <AdminHeader />
+          </Suspense>
           <main className="px-6 py-8">{children}</main>
         </AppProvider>
       </body>
