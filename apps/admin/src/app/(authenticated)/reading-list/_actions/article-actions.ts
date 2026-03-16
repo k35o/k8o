@@ -4,6 +4,7 @@ import { db } from '@repo/database';
 import { eq } from 'drizzle-orm';
 import { revalidatePath } from 'next/cache';
 import { verifySession } from '@/libs/verify-session';
+import { syncArticles } from '@/services/reading-list/sync-articles';
 
 type ActionState = {
   error?: string;
@@ -22,4 +23,26 @@ export async function deleteArticle(id: number): Promise<ActionState> {
   revalidatePath('/reading-list');
   revalidatePath('/');
   return { success: true };
+}
+
+type SyncActionState = {
+  error?: string;
+  newArticles?: number;
+  failedSources?: string[];
+};
+
+export async function syncArticlesAction(): Promise<SyncActionState> {
+  await verifySession();
+
+  try {
+    const result = await syncArticles();
+    revalidatePath('/reading-list');
+    revalidatePath('/');
+    return {
+      newArticles: result.newArticles,
+      failedSources: result.failedSources,
+    };
+  } catch {
+    return { error: '記事の同期に失敗しました' };
+  }
 }

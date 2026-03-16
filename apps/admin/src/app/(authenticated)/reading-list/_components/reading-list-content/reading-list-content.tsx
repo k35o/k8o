@@ -4,6 +4,7 @@ import { desc } from 'drizzle-orm';
 import { StatCard } from '@/app/(authenticated)/_components/stat-card/stat-card';
 import { ArticleTable } from '../article-table/article-table';
 import { SourceList } from '../source-list/source-list';
+import { SyncButton } from '../sync-button/sync-button';
 
 export const ReadingListContent = async () => {
   'use cache';
@@ -55,7 +56,10 @@ export const ReadingListContent = async () => {
       </section>
 
       <section className="flex flex-col gap-4">
-        <h3 className="font-bold text-lg">取得済み記事</h3>
+        <div className="flex items-center justify-between">
+          <h3 className="font-bold text-lg">取得済み記事</h3>
+          <SyncButton />
+        </div>
         <ArticleTable articles={articleItems} />
       </section>
     </>
