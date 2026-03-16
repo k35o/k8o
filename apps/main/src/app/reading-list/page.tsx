@@ -1,5 +1,5 @@
 import { getArticles } from '@/services/reading-list/reading-list';
-import { ArticleCard } from './_components/article-card';
+import { LinkCard } from '../_components/link-card';
 
 export default async function Page() {
   const articles = await getArticles();
@@ -9,9 +9,9 @@ export default async function Page() {
   }
 
   return (
-    <div className="flex flex-col gap-4">
+    <div className="grid grid-cols-auto-fill-80 gap-3">
       {articles.map((article) => (
-        <ArticleCard key={article.id} {...article} />
+        <LinkCard href={article.url} key={article.id} variant="vertical" />
       ))}
     </div>
   );
