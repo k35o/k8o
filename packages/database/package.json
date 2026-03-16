@@ -6,10 +6,15 @@
   "type": "module",
   "exports": {
     ".": {
-      "types": "./src/index.ts",
+      "types": "./src/db.ts",
       "storybook": "./src/__mocks__/db.ts",
-      "node": "./src/index.ts",
-      "default": "./src/index.ts"
+      "node": "./src/db.ts",
+      "default": "./src/db.ts"
+    },
+    "./auth": {
+      "types": "./src/auth.ts",
+      "node": "./src/auth.ts",
+      "default": "./src/auth.ts"
     }
   },
   "scripts": {

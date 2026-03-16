@@ -1,5 +1,5 @@
 import 'server-only';
-import { auth } from '@repo/database';
+import { auth } from '@repo/database/auth';
 import { headers } from 'next/headers';
 import { redirect } from 'next/navigation';
 
