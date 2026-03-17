@@ -5,7 +5,9 @@ import Parser from 'rss-parser';
 
 const parser = new Parser();
 
-type NewArticle = {
+const THREE_MONTHS_MS = 90 * 24 * 60 * 60 * 1000;
+
+type FeedArticle = {
   articleSourceId: number;
   title: string;
   url: string;
@@ -14,6 +16,7 @@ type NewArticle = {
 
 type SyncResult = {
   newArticles: number;
+  updatedArticles: number;
   failedSources: string[];
 };
 
@@ -22,12 +25,12 @@ export async function syncArticles(): Promise<SyncResult> {
     where: eq(db._schema.articleSources.type, 'feed'),
   });
 
-  const oneWeekAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
+  const threeMonthsAgo = new Date(Date.now() - THREE_MONTHS_MS);
 
   const results = await Promise.allSettled(
     sources.map(async (source) => {
       const feed = await parser.parseURL(source.url);
-      const candidates: NewArticle[] = [];
+      const candidates: FeedArticle[] = [];
 
       for (const item of feed.items) {
         const publishedAt = item.isoDate ?? item.pubDate;
@@ -35,7 +38,7 @@ export async function syncArticles(): Promise<SyncResult> {
           continue;
         }
 
-        if (compareDate(new Date(publishedAt), oneWeekAgo) === 'less') {
+        if (compareDate(new Date(publishedAt), threeMonthsAgo) === 'less') {
           continue;
         }
 
@@ -52,7 +55,7 @@ export async function syncArticles(): Promise<SyncResult> {
   );
 
   const failedSources: string[] = [];
-  const allCandidates: NewArticle[] = [];
+  const allCandidates: FeedArticle[] = [];
 
   for (const [i, result] of results.entries()) {
     const source = sources[i];
@@ -68,20 +71,44 @@ export async function syncArticles(): Promise<SyncResult> {
   }
 
   const existingArticles = await db.query.articles.findMany({
-    columns: { url: true },
+    columns: { url: true, title: true },
   });
-  const existingUrls = new Set(existingArticles.map((a) => a.url));
+  const existingByUrl = new Map(existingArticles.map((a) => [a.url, a.title]));
 
-  const newArticles = allCandidates.filter(
-    (candidate) => !existingUrls.has(candidate.url),
-  );
+  const newArticles: FeedArticle[] = [];
+  const articlesToUpdate: { url: string; title: string }[] = [];
+
+  for (const candidate of allCandidates) {
+    const existingTitle = existingByUrl.get(candidate.url);
+    if (existingTitle === undefined) {
+      newArticles.push(candidate);
+    } else if (existingTitle !== candidate.title) {
+      articlesToUpdate.push({
+        url: candidate.url,
+        title: candidate.title,
+      });
+    }
+  }
 
   if (newArticles.length > 0) {
     await db.insert(db._schema.articles).values(newArticles);
   }
 
+  if (articlesToUpdate.length > 0) {
+    const now = new Date().toISOString();
+    await Promise.all(
+      articlesToUpdate.map((article) =>
+        db
+          .update(db._schema.articles)
+          .set({ title: article.title, updatedAt: now })
+          .where(eq(db._schema.articles.url, article.url)),
+      ),
+    );
+  }
+
   return {
     newArticles: newArticles.length,
+    updatedArticles: articlesToUpdate.length,
     failedSources,
   };
 }

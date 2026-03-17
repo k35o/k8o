@@ -22,10 +22,11 @@ export const SyncButton: FC = () => {
         );
         return;
       }
-      onOpen(
-        'success',
-        `${String(res.newArticles ?? 0)}件の新しい記事を追加しました`,
-      );
+      const parts = [
+        `${String(res.newArticles ?? 0)}件追加`,
+        `${String(res.updatedArticles ?? 0)}件更新`,
+      ];
+      onOpen('success', parts.join('、'));
     });
   };
 

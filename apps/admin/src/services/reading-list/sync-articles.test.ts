@@ -15,9 +15,14 @@ vi.mock('@repo/database', () => ({
     insert: vi.fn().mockReturnValue({
       values: vi.fn(),
     }),
+    update: vi.fn().mockReturnValue({
+      set: vi.fn().mockReturnValue({
+        where: vi.fn(),
+      }),
+    }),
     _schema: {
       articleSources: { type: 'type' },
-      articles: {},
+      articles: { url: 'url' },
     },
   },
 }));
@@ -70,6 +75,7 @@ describe('syncArticles', () => {
       const result = await syncArticles();
 
       expect(result.newArticles).toBe(1);
+      expect(result.updatedArticles).toBe(0);
       expect(result.failedSources).toHaveLength(0);
       expect(db.insert).toHaveBeenCalledWith(db._schema.articles);
     });
@@ -81,6 +87,7 @@ describe('syncArticles', () => {
       const result = await syncArticles();
 
       expect(result.newArticles).toBe(0);
+      expect(result.updatedArticles).toBe(0);
       expect(result.failedSources).toHaveLength(0);
       expect(db.insert).not.toHaveBeenCalled();
     });
@@ -134,10 +141,84 @@ describe('syncArticles', () => {
       expect(result.newArticles).toBe(2);
       expect(mockParseURL).toHaveBeenCalledTimes(2);
     });
+
+    it('既存記事のtitleが変わっていたら更新する', async () => {
+      vi.mocked(db.query.articleSources.findMany).mockResolvedValue([
+        {
+          id: 1,
+          title: 'web.dev',
+          url: 'https://web.dev/feed.xml',
+          siteUrl: 'https://web.dev',
+          type: 'feed' as const,
+          createdAt: '2026-01-01T00:00:00Z',
+          updatedAt: '2026-01-01T00:00:00Z',
+        },
+      ]);
+
+      mockParseURL.mockResolvedValue({
+        items: [
+          {
+            title: '更新されたタイトル',
+            link: 'https://web.dev/blog/existing',
+            isoDate: '2026-03-10T00:00:00Z',
+          },
+        ],
+      });
+
+      vi.mocked(db.query.articles.findMany).mockResolvedValue([
+        {
+          url: 'https://web.dev/blog/existing',
+          title: '古いタイトル',
+        } as never,
+      ]);
+
+      const result = await syncArticles();
+
+      expect(result.newArticles).toBe(0);
+      expect(result.updatedArticles).toBe(1);
+      expect(db.update).toHaveBeenCalledWith(db._schema.articles);
+    });
+
+    it('titleが同じ場合は更新しない', async () => {
+      vi.mocked(db.query.articleSources.findMany).mockResolvedValue([
+        {
+          id: 1,
+          title: 'web.dev',
+          url: 'https://web.dev/feed.xml',
+          siteUrl: 'https://web.dev',
+          type: 'feed' as const,
+          createdAt: '2026-01-01T00:00:00Z',
+          updatedAt: '2026-01-01T00:00:00Z',
+        },
+      ]);
+
+      mockParseURL.mockResolvedValue({
+        items: [
+          {
+            title: '同じタイトル',
+            link: 'https://web.dev/blog/existing',
+            isoDate: '2026-03-10T00:00:00Z',
+          },
+        ],
+      });
+
+      vi.mocked(db.query.articles.findMany).mockResolvedValue([
+        {
+          url: 'https://web.dev/blog/existing',
+          title: '同じタイトル',
+        } as never,
+      ]);
+
+      const result = await syncArticles();
+
+      expect(result.newArticles).toBe(0);
+      expect(result.updatedArticles).toBe(0);
+      expect(db.update).not.toHaveBeenCalled();
+    });
   });
 
   describe('フィルタリング', () => {
-    it('1週間より前の記事はスキップする', async () => {
+    it('3ヶ月より前の記事はスキップする', async () => {
       vi.mocked(db.query.articleSources.findMany).mockResolvedValue([
         {
           id: 1,
@@ -155,7 +236,7 @@ describe('syncArticles', () => {
           {
             title: '古い記事',
             link: 'https://web.dev/blog/old',
-            isoDate: '2026-02-01T00:00:00Z',
+            isoDate: '2025-11-01T00:00:00Z',
           },
           {
             title: '新しい記事',
@@ -243,7 +324,7 @@ describe('syncArticles', () => {
       });
 
       vi.mocked(db.query.articles.findMany).mockResolvedValue([
-        { url: 'https://web.dev/blog/existing' } as never,
+        { url: 'https://web.dev/blog/existing', title: '既存の記事' } as never,
       ]);
 
       const result = await syncArticles();
