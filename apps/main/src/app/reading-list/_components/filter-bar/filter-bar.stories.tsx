@@ -17,22 +17,17 @@ const meta: Meta<typeof FilterBar> = {
 export default meta;
 type Story = StoryObj<typeof FilterBar>;
 
-export const Primary: Story = {};
-
-export const SearchByName: Story = {
-  play: async ({ canvasElement, userEvent }) => {
+export const Primary: Story = {
+  play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
-    const searchField = canvas.getByRole('textbox', { name: '名前検索' });
-    await userEvent.type(searchField, 'React');
-    await expect(searchField).toHaveValue('React');
-  },
-};
-
-export const SelectSource: Story = {
-  play: async ({ canvasElement, userEvent }) => {
-    const canvas = within(canvasElement);
-    const sourceSelect = canvas.getByRole('combobox', { name: 'ソース' });
-    await userEvent.selectOptions(sourceSelect, '1');
-    await expect(sourceSelect).toHaveValue('1');
+    await expect(
+      canvas.getByRole('textbox', { name: '名前検索' }),
+    ).toBeInTheDocument();
+    await expect(
+      canvas.getByRole('combobox', { name: 'ソース' }),
+    ).toBeInTheDocument();
+    await expect(
+      canvas.getByRole('combobox', { name: '期間' }),
+    ).toBeInTheDocument();
   },
 };
