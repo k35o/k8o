@@ -1,0 +1,33 @@
+import type { Meta, StoryObj } from '@storybook/nextjs-vite';
+import { expect, within } from 'storybook/test';
+import { FilterBar } from './filter-bar';
+
+const meta: Meta<typeof FilterBar> = {
+  title: 'app/reading-list/filter-bar',
+  component: FilterBar,
+  args: {
+    sources: [
+      { id: 1, title: 'web.dev' },
+      { id: 2, title: 'Zenn' },
+      { id: 3, title: 'Chrome Developers' },
+    ],
+  },
+};
+
+export default meta;
+type Story = StoryObj<typeof FilterBar>;
+
+export const Primary: Story = {
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    await expect(
+      canvas.getByRole('textbox', { name: '名前検索' }),
+    ).toBeInTheDocument();
+    await expect(
+      canvas.getByRole('combobox', { name: 'ソース' }),
+    ).toBeInTheDocument();
+    await expect(
+      canvas.getByRole('combobox', { name: '期間' }),
+    ).toBeInTheDocument();
+  },
+};

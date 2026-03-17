@@ -169,6 +169,13 @@
       "when": 1773552988893,
       "tag": "0023_funny_star_brand",
       "breakpoints": true
+    },
+    {
+      "idx": 24,
+      "version": "6",
+      "when": 1773755822791,
+      "tag": "0024_light_stryfe",
+      "breakpoints": true
     }
   ]
 }
