@@ -28,6 +28,7 @@ export async function deleteArticle(id: number): Promise<ActionState> {
 type SyncActionState = {
   error?: string;
   newArticles?: number;
+  updatedArticles?: number;
   failedSources?: string[];
 };
 
@@ -40,6 +41,7 @@ export async function syncArticlesAction(): Promise<SyncActionState> {
     revalidatePath('/');
     return {
       newArticles: result.newArticles,
+      updatedArticles: result.updatedArticles,
       failedSources: result.failedSources,
     };
   } catch {
