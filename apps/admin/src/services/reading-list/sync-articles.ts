@@ -5,7 +5,7 @@ import Parser from 'rss-parser';
 
 const parser = new Parser();
 
-const THREE_MONTHS_MS = 90 * 24 * 60 * 60 * 1000;
+const NINETY_DAYS_MS = 90 * 24 * 60 * 60 * 1000;
 
 type FeedArticle = {
   articleSourceId: number;
@@ -25,7 +25,7 @@ export async function syncArticles(): Promise<SyncResult> {
     where: eq(db._schema.articleSources.type, 'feed'),
   });
 
-  const threeMonthsAgo = new Date(Date.now() - THREE_MONTHS_MS);
+  const ninetyDaysAgo = new Date(Date.now() - NINETY_DAYS_MS);
 
   const results = await Promise.allSettled(
     sources.map(async (source) => {
@@ -38,7 +38,7 @@ export async function syncArticles(): Promise<SyncResult> {
           continue;
         }
 
-        if (compareDate(new Date(publishedAt), threeMonthsAgo) === 'less') {
+        if (compareDate(new Date(publishedAt), ninetyDaysAgo) === 'less') {
           continue;
         }
 

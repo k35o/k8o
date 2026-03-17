@@ -16,13 +16,13 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
     if (failedSources.length > 0) {
       await sendPushNotification(
         'フィード取得失敗',
-        `${failedSources.join(', ')} の取得に失敗しました`,
+        `${newArticles}件追加、${updatedArticles}件更新（失敗: ${failedSources.join(', ')}）`,
         readingListUrl,
       );
     } else {
       await sendPushNotification(
         'フィード取得完了',
-        `${newArticles}件の新しい記事、${updatedArticles}件の更新`,
+        `${newArticles}件追加、${updatedArticles}件更新`,
         readingListUrl,
       );
     }

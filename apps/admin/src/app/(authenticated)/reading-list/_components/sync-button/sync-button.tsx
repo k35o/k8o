@@ -18,7 +18,7 @@ export const SyncButton: FC = () => {
       if (res.failedSources && res.failedSources.length > 0) {
         onOpen(
           'warning',
-          `${String(res.newArticles ?? 0)}件追加（失敗: ${res.failedSources.join(', ')}）`,
+          `${String(res.newArticles ?? 0)}件追加、${String(res.updatedArticles ?? 0)}件更新（失敗: ${res.failedSources.join(', ')}）`,
         );
         return;
       }

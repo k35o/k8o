@@ -23,7 +23,8 @@ export const articles = sqliteTable(
       .$defaultFn(() => new Date().toISOString()),
     updatedAt: text('updated_at')
       .notNull()
-      .$defaultFn(() => new Date().toISOString()),
+      .$defaultFn(() => new Date().toISOString())
+      .$onUpdate(() => new Date().toISOString()),
   },
   (table) => [
     uniqueIndex('articles_url_idx').on(table.url),
