@@ -4,8 +4,7 @@ import {
 } from '@/services/reading-list/reading-list';
 import { LinkCard } from '../_components/link-card';
 import { FilterBar } from './_components/filter-bar';
-
-type DateRange = 'today' | 'week' | 'month' | 'all';
+import { type DateRange, isDateRange } from './_utils/constants';
 
 const getDateThreshold = (range: DateRange): Date => {
   const now = new Date();
@@ -21,6 +20,12 @@ const getDateThreshold = (range: DateRange): Date => {
   }
 };
 
+const parseSourceId = (value: string | undefined): number | null => {
+  if (value === undefined) return null;
+  const parsed = Number(value);
+  return Number.isNaN(parsed) ? null : parsed;
+};
+
 export default async function Page({
   searchParams,
 }: {
@@ -33,8 +38,9 @@ export default async function Page({
   ]);
 
   const query = params.q?.toLowerCase() ?? '';
-  const sourceId = params.source ? Number(params.source) : null;
-  const dateRange = (params.date as DateRange) || 'all';
+  const sourceId = parseSourceId(params.source);
+  const dateRange: DateRange =
+    params.date !== undefined && isDateRange(params.date) ? params.date : 'all';
   const dateThreshold = getDateThreshold(dateRange);
 
   const filtered = articles.filter((article) => {

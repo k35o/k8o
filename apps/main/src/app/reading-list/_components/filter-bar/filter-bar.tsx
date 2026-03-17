@@ -5,20 +5,12 @@ import { Select } from '@k8o/arte-odyssey/form/select';
 import { TextField } from '@k8o/arte-odyssey/form/text-field';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { type FC, useCallback, useTransition } from 'react';
+import { DATE_RANGE_OPTIONS, type DateRange } from '../../_utils/constants';
 
 type Source = {
   id: number;
   title: string;
 };
-
-type DateRange = 'today' | 'week' | 'month' | 'all';
-
-const DATE_RANGE_OPTIONS: readonly { value: DateRange; label: string }[] = [
-  { value: 'all', label: 'すべての期間（3ヶ月）' },
-  { value: 'today', label: '今日の記事' },
-  { value: 'week', label: '1週間以内' },
-  { value: 'month', label: '1ヶ月以内' },
-];
 
 type Props = {
   sources: readonly Source[];
@@ -27,7 +19,7 @@ type Props = {
 export const FilterBar: FC<Props> = ({ sources }) => {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const [, startTransition] = useTransition();
+  const [isPending, startTransition] = useTransition();
 
   const currentSource = searchParams.get('source') ?? '';
   const currentQuery = searchParams.get('q') ?? '';
@@ -58,7 +50,10 @@ export const FilterBar: FC<Props> = ({ sources }) => {
   ];
 
   return (
-    <div className="flex flex-col gap-4 sm:flex-row sm:items-end">
+    <fieldset
+      className={`flex flex-col gap-4 sm:flex-row sm:items-end ${isPending ? 'opacity-60' : ''}`}
+      disabled={isPending}
+    >
       <div className="flex-1">
         <FormControl
           label="名前検索"
@@ -108,6 +103,6 @@ export const FilterBar: FC<Props> = ({ sources }) => {
           )}
         />
       </div>
-    </div>
+    </fieldset>
   );
 };
