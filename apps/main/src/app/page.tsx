@@ -119,6 +119,12 @@ export default function Home() {
             title="OSS"
           />
           <AppCard
+            description="普段読んでいる記事をまとめたページ。"
+            link="/reading-list"
+            symbol="📖"
+            title="よんでるもの"
+          />
+          <AppCard
             description="k8o.meで利用しているデザインシステムを紹介します。コンポーネントやデザイントークンを確認できます。"
             link="https://arte-odyssey.k8o.me"
             symbol={
