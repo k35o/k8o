@@ -20,10 +20,12 @@ const getDateThreshold = (range: DateRange): Date => {
   }
 };
 
-const parseSourceId = (value: string | undefined): number | null => {
-  if (value === undefined) return null;
-  const parsed = Number(value);
-  return Number.isNaN(parsed) ? null : parsed;
+const parseSourceIds = (value: string | undefined): number[] => {
+  if (value === undefined) return [];
+  return value
+    .split(',')
+    .map(Number)
+    .filter((n) => !Number.isNaN(n));
 };
 
 export default async function Page({
@@ -38,16 +40,28 @@ export default async function Page({
   ]);
 
   const query = params.q?.toLowerCase() ?? '';
-  const sourceId = parseSourceId(params.source);
+  const sourceIds = parseSourceIds(params.source);
   const dateRange: DateRange =
     params.date !== undefined && isDateRange(params.date) ? params.date : 'all';
   const dateThreshold = getDateThreshold(dateRange);
+
+  // ソースごとの記事数を集計
+  const articleCountBySource = new Map<number, number>();
+  for (const article of articles) {
+    const count = articleCountBySource.get(article.source.id) ?? 0;
+    articleCountBySource.set(article.source.id, count + 1);
+  }
+
+  const sourcesWithCount = sources.map((source) => ({
+    ...source,
+    articleCount: articleCountBySource.get(source.id) ?? 0,
+  }));
 
   const filtered = articles.filter((article) => {
     if (query && !article.title.toLowerCase().includes(query)) {
       return false;
     }
-    if (sourceId !== null && article.source.id !== sourceId) {
+    if (sourceIds.length > 0 && !sourceIds.includes(article.source.id)) {
       return false;
     }
     if (dateRange !== 'all' && new Date(article.publishedAt) < dateThreshold) {
@@ -58,7 +72,7 @@ export default async function Page({
 
   return (
     <div className="flex flex-col gap-6">
-      <FilterBar sources={sources} />
+      <FilterBar resultCount={filtered.length} sources={sourcesWithCount} />
       {filtered.length === 0 ? (
         <p className="text-fg-mute text-sm">条件に一致する記事がありません。</p>
       ) : (

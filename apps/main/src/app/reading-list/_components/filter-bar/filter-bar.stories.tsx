@@ -7,10 +7,13 @@ const meta: Meta<typeof FilterBar> = {
   component: FilterBar,
   args: {
     sources: [
-      { id: 1, title: 'web.dev' },
-      { id: 2, title: 'Zenn' },
-      { id: 3, title: 'Chrome Developers' },
+      { id: 1, title: 'web.dev', articleCount: 24 },
+      { id: 2, title: 'Zenn', articleCount: 15 },
+      { id: 3, title: 'Chrome Developers', articleCount: 8 },
+      { id: 4, title: 'MDN Web Docs', articleCount: 12 },
+      { id: 5, title: 'CSS Tricks', articleCount: 6 },
     ],
+    resultCount: 65,
   },
 };
 
@@ -24,7 +27,7 @@ export const Primary: Story = {
       canvas.getByRole('textbox', { name: '名前検索' }),
     ).toBeInTheDocument();
     await expect(
-      canvas.getByRole('combobox', { name: 'ソース' }),
+      canvas.getByRole('button', { name: 'ソース' }),
     ).toBeInTheDocument();
     await expect(
       canvas.getByRole('combobox', { name: '期間' }),
