@@ -6,7 +6,7 @@ const THREE_MONTHS_MS = 90 * 24 * 60 * 60 * 1000;
 
 export async function getArticles() {
   'use cache';
-  cacheLife('days');
+  cacheLife('hours');
 
   const threeMonthsAgo = new Date(Date.now() - THREE_MONTHS_MS).toISOString();
 
@@ -33,7 +33,7 @@ export async function getArticles() {
 
 export async function getArticleSources() {
   'use cache';
-  cacheLife('days');
+  cacheLife('hours');
   const results = await db.query.articleSources.findMany({
     orderBy: (sources) => [sources.title],
   });
