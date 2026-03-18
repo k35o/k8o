@@ -1,6 +1,6 @@
 'use client';
 
-import { Anchor, Button, Dialog, Modal } from '@k8o/arte-odyssey';
+import { Button, Dialog, Modal } from '@k8o/arte-odyssey';
 import { formatDate } from '@repo/helpers/date/format';
 import { type FC, useState, useTransition } from 'react';
 import { deleteArticle } from '../../_actions/article-actions';
@@ -32,7 +32,9 @@ const DeleteButton: FC<{ id: number; title: string }> = ({ id, title }) => {
     <>
       <Button
         color="gray"
-        onClick={() => {
+        onClick={(e) => {
+          e.preventDefault();
+          e.stopPropagation();
           setOpen(true);
         }}
         size="sm"
@@ -96,23 +98,24 @@ export const ArticleTable: FC<{ articles: Article[] }> = ({ articles }) => {
   return (
     <div className="flex flex-col">
       {articles.map((article) => (
-        <div
-          className="flex items-center gap-3 border-border-base border-b px-4 py-3 text-sm"
+        <a
+          className="flex items-center gap-3 border-border-base border-b px-4 py-3 text-sm transition-colors hover:bg-bg-mute"
+          href={article.url}
           key={article.id}
+          rel="noopener noreferrer"
+          target="_blank"
         >
           <span className="min-w-0 flex-1 truncate font-medium">
-            <Anchor href={article.url} openInNewTab>
-              {article.title}
-            </Anchor>
+            {article.title}
           </span>
-          <span className="shrink-0 text-fg-mute text-xs">
+          <span className="hidden shrink-0 text-fg-mute text-xs sm:block">
             {article.sourceName}
           </span>
-          <span className="w-40 shrink-0 text-right text-fg-mute">
+          <span className="hidden w-40 shrink-0 text-right text-fg-mute sm:block">
             {formatDate(new Date(article.publishedAt))}
           </span>
           <DeleteButton id={article.id} title={article.title} />
-        </div>
+        </a>
       ))}
     </div>
   );

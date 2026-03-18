@@ -38,7 +38,7 @@ export const SourceList: FC<{ sources: Source[] }> = ({ sources }) => {
           <span className="hidden w-48 truncate text-fg-mute sm:block">
             {source.siteUrl}
           </span>
-          <span className="w-40 shrink-0 text-right text-fg-mute">
+          <span className="hidden w-40 shrink-0 text-right text-fg-mute sm:block">
             {formatDate(new Date(source.updatedAt))}
           </span>
         </Link>
