@@ -105,7 +105,7 @@ export const ReadingListContent: FC<Props> = ({ articles, sources, cards }) => {
     query,
     sourceIds,
     sources,
-  } as const;
+  };
 
   return (
     <div className="flex flex-col gap-6 lg:flex-row">

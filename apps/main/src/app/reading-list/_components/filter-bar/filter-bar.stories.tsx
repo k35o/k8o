@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
-import { expect, within } from 'storybook/test';
+import { expect, fn, within } from 'storybook/test';
 import { FilterBar } from './filter-bar';
 
 const meta: Meta<typeof FilterBar> = {
@@ -16,6 +16,9 @@ const meta: Meta<typeof FilterBar> = {
     query: '',
     dateRange: 'all',
     sourceIds: [],
+    onQueryChange: fn(),
+    onDateChange: fn(),
+    onSourceToggle: fn(),
   },
 };
 
