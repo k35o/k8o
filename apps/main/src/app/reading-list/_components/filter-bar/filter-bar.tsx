@@ -73,20 +73,19 @@ export const FilterBar: FC<Props> = ({
       <fieldset className="flex flex-col gap-2">
         <legend className="mb-1 font-bold text-fg-base text-sm">ソース</legend>
         <ul className="flex flex-col gap-1">
-          {sources.map((source) => (
-            <li className="flex items-center justify-between" key={source.id}>
-              <Checkbox
-                label={source.title}
-                onChange={() => {
-                  onSourceToggle(source.id);
-                }}
-                value={selectedSet.has(source.id)}
-              />
-              <span className="shrink-0 text-fg-mute text-xs tabular-nums">
-                {source.articleCount}
-              </span>
-            </li>
-          ))}
+          {sources
+            .filter((source) => source.articleCount > 0)
+            .map((source) => (
+              <li key={source.id}>
+                <Checkbox
+                  label={source.title}
+                  onChange={() => {
+                    onSourceToggle(source.id);
+                  }}
+                  value={selectedSet.has(source.id)}
+                />
+              </li>
+            ))}
         </ul>
       </fieldset>
     </div>
