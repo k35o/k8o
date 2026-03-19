@@ -1,18 +1,17 @@
-export type DateRange = 'today' | 'week' | 'month' | 'all';
-
-export const DATE_RANGE_OPTIONS: readonly {
-  value: DateRange;
-  label: string;
-}[] = [
+const DATE_RANGE_DEFINITIONS = [
   { value: 'all', label: 'すべての期間（3ヶ月）' },
   { value: 'today', label: '今日の記事' },
   { value: 'week', label: '1週間以内' },
   { value: 'month', label: '1ヶ月以内' },
-];
+] as const;
 
-const DATE_RANGE_VALUES = new Set<string>(
-  DATE_RANGE_OPTIONS.map((o) => o.value),
-);
+export type DateRange = (typeof DATE_RANGE_DEFINITIONS)[number]['value'];
+
+export const DATE_RANGE_OPTIONS = DATE_RANGE_DEFINITIONS;
+
+export const DATE_RANGE_VALUES = DATE_RANGE_DEFINITIONS.map((o) => o.value);
+
+const DATE_RANGE_SET = new Set<string>(DATE_RANGE_VALUES);
 
 export const isDateRange = (value: string): value is DateRange =>
-  DATE_RANGE_VALUES.has(value);
+  DATE_RANGE_SET.has(value);
