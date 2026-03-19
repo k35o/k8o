@@ -2,6 +2,8 @@
 
 import { Button } from '@k8o/arte-odyssey/button';
 import { Drawer } from '@k8o/arte-odyssey/drawer';
+import { FormControl } from '@k8o/arte-odyssey/form/form-control';
+import { Select } from '@k8o/arte-odyssey/form/select';
 import { ListIcon } from '@k8o/arte-odyssey/icons';
 import { useQueryStates } from 'nuqs';
 import { type FC, type ReactNode, useCallback, useMemo, useState } from 'react';
@@ -142,20 +144,23 @@ export const ReadingListContent: FC<Props> = ({ articles, sources, cards }) => {
               </Button>
             </div>
           </div>
-          <select
-            aria-label="並び順"
-            className="rounded-md border border-border-base px-3 py-1.5 text-fg-base text-sm"
-            onChange={(e) => {
-              handleSortChange(e.target.value as SortOrder);
-            }}
-            value={sortOrder}
-          >
-            {SORT_OPTIONS.map((option) => (
-              <option key={option.value} value={option.value}>
-                {option.label}
-              </option>
-            ))}
-          </select>
+          <div className="w-32">
+            <FormControl
+              label="並び順"
+              renderInput={({ id, describedbyId, ...rest }) => (
+                <Select
+                  {...rest}
+                  describedbyId={describedbyId}
+                  id={id}
+                  onChange={(e) => {
+                    handleSortChange(e.target.value as SortOrder);
+                  }}
+                  options={SORT_OPTIONS}
+                  value={sortOrder}
+                />
+              )}
+            />
+          </div>
         </div>
         {filteredArticles.length === 0 ? (
           <p className="text-fg-mute text-sm">
