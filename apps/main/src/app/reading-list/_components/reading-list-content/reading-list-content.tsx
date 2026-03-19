@@ -105,11 +105,11 @@ export const ReadingListContent: FC<Props> = ({ articles, sources, cards }) => {
       return true;
     });
 
-    const sorted = [...filtered];
-    if (sortOrder === 'oldest') {
-      sorted.reverse();
-    }
-    return sorted;
+    return [...filtered].sort((a, b) => {
+      const diff =
+        new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime();
+      return sortOrder === 'oldest' ? -diff : diff;
+    });
   }, [articles, query, sourceIds, dateRange, dateThreshold, sortOrder]);
 
   const filterBarProps = {
