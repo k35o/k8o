@@ -10,9 +10,14 @@ export const DATE_RANGE_OPTIONS: readonly {
   { value: 'month', label: '1ヶ月以内' },
 ];
 
-const DATE_RANGE_VALUES = new Set<string>(
-  DATE_RANGE_OPTIONS.map((o) => o.value),
-);
+export const DATE_RANGE_VALUES = [
+  'today',
+  'week',
+  'month',
+  'all',
+] as const satisfies readonly DateRange[];
+
+const DATE_RANGE_SET = new Set<string>(DATE_RANGE_VALUES);
 
 export const isDateRange = (value: string): value is DateRange =>
-  DATE_RANGE_VALUES.has(value);
+  DATE_RANGE_SET.has(value);

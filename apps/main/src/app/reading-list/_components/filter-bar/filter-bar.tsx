@@ -5,7 +5,11 @@ import { FormControl } from '@k8o/arte-odyssey/form/form-control';
 import { Select } from '@k8o/arte-odyssey/form/select';
 import { TextField } from '@k8o/arte-odyssey/form/text-field';
 import type { FC } from 'react';
-import { DATE_RANGE_OPTIONS, type DateRange } from '../../_utils/constants';
+import {
+  DATE_RANGE_OPTIONS,
+  type DateRange,
+  isDateRange,
+} from '../../_utils/constants';
 
 type Source = {
   id: number;
@@ -57,7 +61,9 @@ export const FilterBar: FC<Props> = ({
             describedbyId={describedbyId}
             id={id}
             onChange={(e) => {
-              onDateChange(e.target.value as DateRange);
+              if (isDateRange(e.target.value)) {
+                onDateChange(e.target.value);
+              }
             }}
             options={DATE_RANGE_OPTIONS}
             value={dateRange}

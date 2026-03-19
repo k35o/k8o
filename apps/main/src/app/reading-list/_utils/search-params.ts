@@ -3,20 +3,15 @@ import {
   parseAsArrayOf,
   parseAsInteger,
   parseAsString,
+  parseAsStringLiteral,
 } from 'nuqs/server';
-import type { DateRange } from './constants';
-import { isDateRange } from './constants';
-
-const parseAsDateRange = parseAsString.withDefault('all' as DateRange);
+import { DATE_RANGE_VALUES } from './constants';
 
 export const readingListParsers = {
   q: parseAsString.withDefault(''),
   source: parseAsArrayOf(parseAsInteger).withDefault([]),
-  date: parseAsDateRange,
+  date: parseAsStringLiteral(DATE_RANGE_VALUES).withDefault('all'),
 };
 
 export const readingListParamsCache =
   createSearchParamsCache(readingListParsers);
-
-export const parseDateRange = (value: string): DateRange =>
-  isDateRange(value) ? value : 'all';

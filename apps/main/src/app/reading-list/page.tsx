@@ -29,11 +29,21 @@ export default async function Page() {
     sourceId: article.source.id,
   }));
 
-  return (
-    <ReadingListContent articles={articleMeta} sources={sourcesWithCount}>
-      {articles.map((article) => (
+  const cards = articles.reduce<Record<number, React.ReactNode>>(
+    (acc, article) => {
+      acc[article.id] = (
         <LinkCard href={article.url} key={article.id} variant="vertical" />
-      ))}
-    </ReadingListContent>
+      );
+      return acc;
+    },
+    {},
+  );
+
+  return (
+    <ReadingListContent
+      articles={articleMeta}
+      cards={cards}
+      sources={sourcesWithCount}
+    />
   );
 }

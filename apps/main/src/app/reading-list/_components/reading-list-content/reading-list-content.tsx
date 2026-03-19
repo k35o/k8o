@@ -4,14 +4,7 @@ import { Button } from '@k8o/arte-odyssey/button';
 import { Drawer } from '@k8o/arte-odyssey/drawer';
 import { ListIcon } from '@k8o/arte-odyssey/icons';
 import { useQueryStates } from 'nuqs';
-import {
-  Children,
-  type FC,
-  type ReactNode,
-  useCallback,
-  useMemo,
-  useState,
-} from 'react';
+import { type FC, type ReactNode, useCallback, useMemo, useState } from 'react';
 import type { DateRange } from '../../_utils/constants';
 import { readingListParsers } from '../../_utils/search-params';
 import { FilterBar } from '../filter-bar';
@@ -32,7 +25,7 @@ type Source = {
 type Props = {
   articles: readonly ArticleMeta[];
   sources: readonly Source[];
-  children: ReactNode;
+  cards: Readonly<Record<number, ReactNode>>;
 };
 
 const getDateThreshold = (range: DateRange): Date => {
@@ -49,17 +42,13 @@ const getDateThreshold = (range: DateRange): Date => {
   }
 };
 
-export const ReadingListContent: FC<Props> = ({
-  articles,
-  sources,
-  children,
-}) => {
+export const ReadingListContent: FC<Props> = ({ articles, sources, cards }) => {
   const [params, setParams] = useQueryStates(readingListParsers);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 
   const query = params.q;
   const sourceIds = params.source;
-  const dateRange = params.date as DateRange;
+  const dateRange = params.date;
 
   const handleQueryChange = useCallback(
     (value: string) => {
@@ -108,8 +97,6 @@ export const ReadingListContent: FC<Props> = ({
     return ids;
   }, [articles, lowerQuery, sourceIds, dateRange, dateThreshold]);
 
-  const childArray = Children.toArray(children);
-
   const filterBarProps = {
     dateRange,
     onDateChange: handleDateChange,
@@ -147,8 +134,8 @@ export const ReadingListContent: FC<Props> = ({
           </p>
         ) : (
           <div className="grid grid-cols-auto-fill-80 gap-3">
-            {articles.map((article, index) =>
-              visibleIds.has(article.id) ? childArray[index] : null,
+            {articles.map((article) =>
+              visibleIds.has(article.id) ? cards[article.id] : null,
             )}
           </div>
         )}
