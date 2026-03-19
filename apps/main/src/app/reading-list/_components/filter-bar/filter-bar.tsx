@@ -4,7 +4,7 @@ import { Checkbox } from '@k8o/arte-odyssey/form/checkbox';
 import { FormControl } from '@k8o/arte-odyssey/form/form-control';
 import { Select } from '@k8o/arte-odyssey/form/select';
 import { TextField } from '@k8o/arte-odyssey/form/text-field';
-import type { FC } from 'react';
+import { type FC, useMemo } from 'react';
 import {
   DATE_RANGE_OPTIONS,
   type DateRange,
@@ -36,7 +36,7 @@ export const FilterBar: FC<Props> = ({
   sourceIds,
   onSourceToggle,
 }) => {
-  const selectedSet = new Set(sourceIds);
+  const selectedSet = useMemo(() => new Set(sourceIds), [sourceIds]);
 
   return (
     <div className="flex flex-col gap-6">

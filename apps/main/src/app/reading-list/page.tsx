@@ -29,15 +29,12 @@ export default async function Page() {
     sourceId: article.source.id,
   }));
 
-  const cards = articles.reduce<Record<number, React.ReactNode>>(
-    (acc, article) => {
-      acc[article.id] = (
-        <LinkCard href={article.url} key={article.id} variant="vertical" />
-      );
-      return acc;
-    },
-    {},
-  );
+  const cards: Record<number, React.ReactNode> = {};
+  for (const article of articles) {
+    cards[article.id] = (
+      <LinkCard href={article.url} key={article.id} variant="vertical" />
+    );
+  }
 
   return (
     <ReadingListContent

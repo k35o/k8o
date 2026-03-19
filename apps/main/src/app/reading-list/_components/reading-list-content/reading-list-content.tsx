@@ -75,9 +75,9 @@ export const ReadingListContent: FC<Props> = ({ articles, sources, cards }) => {
   );
 
   const dateThreshold = useMemo(() => getDateThreshold(dateRange), [dateRange]);
-  const lowerQuery = query.toLowerCase();
 
   const visibleIds = useMemo(() => {
+    const lowerQuery = query.toLowerCase();
     const ids = new Set<number>();
     for (const article of articles) {
       if (lowerQuery && !article.title.toLowerCase().includes(lowerQuery)) {
@@ -95,7 +95,16 @@ export const ReadingListContent: FC<Props> = ({ articles, sources, cards }) => {
       ids.add(article.id);
     }
     return ids;
-  }, [articles, lowerQuery, sourceIds, dateRange, dateThreshold]);
+  }, [articles, query, sourceIds, dateRange, dateThreshold]);
+
+  const sourcesWithFilteredCount = useMemo(() => {
+    return sources.map((source) => ({
+      ...source,
+      articleCount: articles.filter(
+        (a) => a.sourceId === source.id && visibleIds.has(a.id),
+      ).length,
+    }));
+  }, [sources, articles, visibleIds]);
 
   const filterBarProps = {
     dateRange,
@@ -104,7 +113,7 @@ export const ReadingListContent: FC<Props> = ({ articles, sources, cards }) => {
     onSourceToggle: handleSourceToggle,
     query,
     sourceIds,
-    sources,
+    sources: sourcesWithFilteredCount,
   };
 
   return (
