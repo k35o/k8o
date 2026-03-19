@@ -13,7 +13,9 @@ const meta: Meta<typeof FilterBar> = {
       { id: 4, title: 'MDN Web Docs', articleCount: 12 },
       { id: 5, title: 'CSS Tricks', articleCount: 6 },
     ],
-    resultCount: 65,
+    query: '',
+    dateRange: 'all',
+    sourceIds: [],
   },
 };
 
@@ -24,11 +26,9 @@ export const Primary: Story = {
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
     await expect(
-      canvas.getByRole('textbox', { name: '名前検索' }),
+      canvas.getByRole('textbox', { name: '検索' }),
     ).toBeInTheDocument();
-    await expect(
-      canvas.getByRole('button', { name: 'ソース' }),
-    ).toBeInTheDocument();
+    await expect(canvas.getByText('ソース')).toBeInTheDocument();
     await expect(
       canvas.getByRole('combobox', { name: '期間' }),
     ).toBeInTheDocument();
