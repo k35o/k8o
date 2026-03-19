@@ -2,10 +2,13 @@
 
 import { Button } from '@k8o/arte-odyssey/button';
 import { Drawer } from '@k8o/arte-odyssey/drawer';
+import { FormControl } from '@k8o/arte-odyssey/form/form-control';
+import { Select } from '@k8o/arte-odyssey/form/select';
 import { ListIcon } from '@k8o/arte-odyssey/icons';
 import { useQueryStates } from 'nuqs';
 import { type FC, type ReactNode, useCallback, useMemo, useState } from 'react';
-import type { DateRange } from '../../_utils/constants';
+import type { DateRange, SortOrder } from '../../_utils/constants';
+import { SORT_OPTIONS } from '../../_utils/constants';
 import { readingListParsers } from '../../_utils/search-params';
 import { FilterBar } from '../filter-bar';
 
@@ -49,6 +52,7 @@ export const ReadingListContent: FC<Props> = ({ articles, sources, cards }) => {
   const query = params.q;
   const sourceIds = params.source;
   const dateRange = params.date;
+  const sortOrder = params.sort;
 
   const handleQueryChange = useCallback(
     (value: string) => {
@@ -74,37 +78,39 @@ export const ReadingListContent: FC<Props> = ({ articles, sources, cards }) => {
     [setParams],
   );
 
+  const handleSortChange = useCallback(
+    (value: SortOrder) => {
+      setParams({ sort: value === 'newest' ? null : value });
+    },
+    [setParams],
+  );
+
   const dateThreshold = useMemo(() => getDateThreshold(dateRange), [dateRange]);
 
-  const visibleIds = useMemo(() => {
+  const filteredArticles = useMemo(() => {
     const lowerQuery = query.toLowerCase();
-    const ids = new Set<number>();
-    for (const article of articles) {
+    const filtered = articles.filter((article) => {
       if (lowerQuery && !article.title.toLowerCase().includes(lowerQuery)) {
-        continue;
+        return false;
       }
       if (sourceIds.length > 0 && !sourceIds.includes(article.sourceId)) {
-        continue;
+        return false;
       }
       if (
         dateRange !== 'all' &&
         new Date(article.publishedAt) < dateThreshold
       ) {
-        continue;
+        return false;
       }
-      ids.add(article.id);
-    }
-    return ids;
-  }, [articles, query, sourceIds, dateRange, dateThreshold]);
+      return true;
+    });
 
-  const sourcesWithFilteredCount = useMemo(() => {
-    return sources.map((source) => ({
-      ...source,
-      articleCount: articles.filter(
-        (a) => a.sourceId === source.id && visibleIds.has(a.id),
-      ).length,
-    }));
-  }, [sources, articles, visibleIds]);
+    return [...filtered].sort((a, b) => {
+      const diff =
+        new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime();
+      return sortOrder === 'oldest' ? -diff : diff;
+    });
+  }, [articles, query, sourceIds, dateRange, dateThreshold, sortOrder]);
 
   const filterBarProps = {
     dateRange,
@@ -113,39 +119,56 @@ export const ReadingListContent: FC<Props> = ({ articles, sources, cards }) => {
     onSourceToggle: handleSourceToggle,
     query,
     sourceIds,
-    sources: sourcesWithFilteredCount,
+    sources,
   };
 
   return (
-    <div className="flex flex-col gap-6 lg:flex-row">
+    <div className="flex flex-col gap-6 rounded-md bg-bg-base p-6 lg:flex-row xl:-mx-36">
       <aside className="hidden w-60 shrink-0 lg:block">
         <FilterBar {...filterBarProps} />
       </aside>
       <div className="flex min-w-0 flex-1 flex-col gap-4">
         <div className="flex items-center justify-between">
-          <p className="text-fg-mute text-sm">{visibleIds.size}件</p>
-          <div className="lg:hidden">
-            <Button
-              onClick={() => {
-                setIsDrawerOpen(true);
-              }}
-              size="sm"
-              startIcon={<ListIcon />}
-              variant="outlined"
-            >
-              フィルター
-            </Button>
+          <div className="flex items-center gap-3">
+            <p className="text-fg-mute text-sm">{filteredArticles.length}件</p>
+            <div className="lg:hidden">
+              <Button
+                onClick={() => {
+                  setIsDrawerOpen(true);
+                }}
+                size="sm"
+                startIcon={<ListIcon />}
+                variant="outlined"
+              >
+                フィルター
+              </Button>
+            </div>
+          </div>
+          <div className="w-32">
+            <FormControl
+              label="並び順"
+              renderInput={({ id, describedbyId, ...rest }) => (
+                <Select
+                  {...rest}
+                  describedbyId={describedbyId}
+                  id={id}
+                  onChange={(e) => {
+                    handleSortChange(e.target.value as SortOrder);
+                  }}
+                  options={SORT_OPTIONS}
+                  value={sortOrder}
+                />
+              )}
+            />
           </div>
         </div>
-        {visibleIds.size === 0 ? (
+        {filteredArticles.length === 0 ? (
           <p className="text-fg-mute text-sm">
             条件に一致する記事がありません。
           </p>
         ) : (
-          <div className="grid grid-cols-auto-fill-80 gap-3">
-            {articles.map((article) =>
-              visibleIds.has(article.id) ? cards[article.id] : null,
-            )}
+          <div className="grid grid-cols-auto-fill-60 gap-3">
+            {filteredArticles.map((article) => cards[article.id])}
           </div>
         )}
       </div>
