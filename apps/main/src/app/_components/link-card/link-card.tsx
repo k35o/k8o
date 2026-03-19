@@ -19,9 +19,10 @@ const Loading: FC<{ href: string; variant: Variant }> = ({ href, variant }) => {
       >
         <div
           className={cn(
-            'h-40 w-full rounded-t-sm bg-bg-mute',
-            variant === 'horizontal' &&
-              'sm:h-auto sm:w-1/3 sm:max-w-56 sm:rounded-t-none sm:rounded-l-sm',
+            'w-full rounded-t-sm bg-bg-mute',
+            variant === 'vertical'
+              ? 'aspect-2/1'
+              : 'h-40 sm:h-auto sm:w-1/3 sm:max-w-56 sm:rounded-t-none sm:rounded-l-sm',
           )}
         />
         <div className="flex flex-1 flex-col gap-3 p-4">

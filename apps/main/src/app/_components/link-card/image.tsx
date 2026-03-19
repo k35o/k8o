@@ -20,7 +20,7 @@ export const MetaImage: FC<{
       className={cn(
         'relative overflow-hidden',
         variant === 'vertical'
-          ? 'h-48 w-full rounded-t-sm'
+          ? 'aspect-2/1 w-full rounded-t-sm'
           : 'h-40 w-full rounded-t-sm sm:h-auto sm:w-1/3 sm:rounded-t-none sm:rounded-l-sm',
       )}
     >
