@@ -59,7 +59,7 @@
     "@types/react-dom": "catalog:",
     "@types/rss": "0.0.32",
     "@vitest/browser-playwright": "catalog:",
-    "@vitest/coverage-istanbul": "catalog:",
+    "@vitest/coverage-v8": "catalog:",
     "@vitest/ui": "catalog:",
     "chromatic": "15.2.0",
     "msw": "2.12.10",

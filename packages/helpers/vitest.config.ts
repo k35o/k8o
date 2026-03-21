@@ -4,7 +4,8 @@ export default defineConfig({
   test: {
     globals: true,
     coverage: {
-      provider: 'istanbul',
+      provider: 'v8',
+      changed: true,
     },
     env: {
       TZ: 'UTC',

@@ -16,7 +16,8 @@ export default defineConfig({
     },
     globals: true,
     coverage: {
-      provider: 'istanbul',
+      provider: 'v8',
+      changed: true,
     },
     projects: [
       {
@@ -51,7 +52,7 @@ export default defineConfig({
             instances: [{ browser: 'chromium' }],
           },
           isolate: false,
-          setupFiles: ['.storybook/vitest.setup.ts'],
+          setupFiles: [],
         },
       },
     ],
