@@ -82,6 +82,7 @@ Drizzle ORM + Turso (libSQL)。Conditional Export Mapsで環境切り替え:
 
 ### React/Next.js
 
+- Next.jsの機能やAPIについては `apps/main/node_modules/next/dist/docs/` のバンドルドキュメントを参照すること
 - Server Componentsがデフォルト、必要な場合のみ `'use client'`
 - 関数コンポーネントのみ: Biome `useReactFunctionComponents` で強制
 - `forwardRef` 禁止: Biome `noReactForwardRef` で強制

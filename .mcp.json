@@ -4,10 +4,6 @@
       "url": "http://localhost:6006/mcp",
       "type": "http"
     },
-    "next": {
-      "command": "pnpm",
-      "args": ["mcp-next"]
-    },
     "context7": {
       "command": "pnpm",
       "args": ["exec", "context7-mcp"]
