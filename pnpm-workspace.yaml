@@ -7,26 +7,26 @@ overrides:
 
 catalog:
   '@k8o/arte-odyssey': 3.0.0
-  '@storybook/addon-a11y': 10.2.16
-  '@storybook/addon-docs': 10.2.16
-  '@storybook/addon-vitest': 10.2.16
-  '@storybook/nextjs-vite': 10.2.16
+  '@storybook/addon-a11y': 10.3.0
+  '@storybook/addon-docs': 10.3.0
+  '@storybook/addon-vitest': 10.3.0
+  '@storybook/nextjs-vite': 10.3.0
   '@tailwindcss/postcss': 4.2.1
   '@types/react': 19.2.14
   '@types/react-dom': 19.2.3
-  '@vitest/browser-playwright': 4.0.18
-  '@vitest/coverage-istanbul': 4.0.18
-  '@vitest/ui': 4.0.18
+  '@vitest/browser-playwright': 4.1.0
+  '@vitest/coverage-istanbul': 4.1.0
+  '@vitest/ui': 4.1.0
   drizzle-orm: 0.45.1
   next: 16.1.6
   next-themes: 0.4.6
   postcss: 8.5.8
   react: 19.2.4
   react-dom: 19.2.4
-  storybook: 10.2.16
+  storybook: 10.3.0
   tailwindcss: 4.2.1
-  vitest: 4.0.18
-  vitest-browser-react: 2.0.5
+  vitest: 4.1.0
+  vitest-browser-react: 2.1.0
 
 blockExoticSubdeps: true
 
@@ -49,6 +49,8 @@ minimumReleaseAge: 4320
 
 minimumReleaseAgeExclude:
   - '@k8o/*'
+  - '@storybook/*'
+  - storybook
 
 onlyBuiltDependencies:
   - lefthook
