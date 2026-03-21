@@ -1,11 +1,13 @@
 'use client';
 
-import { Button } from '@k8o/arte-odyssey/button';
-import { Card } from '@k8o/arte-odyssey/card';
-import { FormControl } from '@k8o/arte-odyssey/form/form-control';
-import { RangeField } from '@k8o/arte-odyssey/form/range-field';
-import { TextField } from '@k8o/arte-odyssey/form/text-field';
-import { AlertIcon } from '@k8o/arte-odyssey/icons';
+import {
+  AlertIcon,
+  Button,
+  Card,
+  FormControl,
+  Slider,
+  TextField,
+} from '@k8o/arte-odyssey';
 import DomPurify from 'dompurify';
 import { type ChangeEvent, useCallback, useMemo, useState } from 'react';
 import { renderSVG } from 'uqr';
@@ -79,12 +81,11 @@ export const QrGenerator = () => {
           <FormControl
             label="サイズ調整"
             renderInput={(props) => (
-              <RangeField
+              <Slider
                 max={500}
                 min={100}
                 onChange={handleSizeChange}
                 step={10}
-                unit="px"
                 value={size}
                 {...props}
               />

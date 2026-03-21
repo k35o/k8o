@@ -1,7 +1,6 @@
 'use client';
 
-import { FormControl } from '@k8o/arte-odyssey/form/form-control';
-import { RangeField } from '@k8o/arte-odyssey/form/range-field';
+import { FormControl, Slider } from '@k8o/arte-odyssey';
 import { useState } from 'react';
 
 export function ShapeFunctionDemo() {
@@ -12,12 +11,11 @@ export function ShapeFunctionDemo() {
       <FormControl
         label="幅"
         renderInput={({ labelId: _, ...props }) => (
-          <RangeField
+          <Slider
             {...props}
             max={100}
             min={30}
             onChange={setWidth}
-            unit="%"
             value={width}
           />
         )}

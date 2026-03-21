@@ -1,8 +1,6 @@
 'use client';
 
-import { Code } from '@k8o/arte-odyssey/code';
-import { FormControl } from '@k8o/arte-odyssey/form/form-control';
-import { RangeField } from '@k8o/arte-odyssey/form/range-field';
+import { Code, FormControl, Slider } from '@k8o/arte-odyssey';
 import { useState } from 'react';
 
 export function CssMathFunctionsDemo() {
@@ -16,12 +14,11 @@ export function CssMathFunctionsDemo() {
           helpText="横方向の位置を調整します"
           label="X値"
           renderInput={({ labelId: _, ...props }) => (
-            <RangeField
+            <Slider
               {...props}
               max={100}
               min={-100}
               onChange={setXValue}
-              unit="px"
               value={xValue}
             />
           )}
@@ -30,12 +27,11 @@ export function CssMathFunctionsDemo() {
           helpText="縦方向の位置を調整します"
           label="Y値"
           renderInput={({ labelId: _, ...props }) => (
-            <RangeField
+            <Slider
               {...props}
               max={100}
               min={-100}
               onChange={setYValue}
-              unit="px"
               value={yValue}
             />
           )}

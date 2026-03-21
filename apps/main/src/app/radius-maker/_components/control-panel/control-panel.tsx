@@ -1,11 +1,13 @@
 'use client';
 
-import { FormControl } from '@k8o/arte-odyssey/form/form-control';
-import { RangeField } from '@k8o/arte-odyssey/form/range-field';
-import { useClipboard } from '@k8o/arte-odyssey/hooks/clipboard';
-import { IconButton } from '@k8o/arte-odyssey/icon-button';
-import { CopyIcon } from '@k8o/arte-odyssey/icons';
-import { useToast } from '@k8o/arte-odyssey/toast';
+import {
+  CopyIcon,
+  FormControl,
+  IconButton,
+  Slider,
+  useClipboard,
+  useToast,
+} from '@k8o/arte-odyssey';
 import { cn } from '@repo/helpers/cn';
 import type { FC, KeyboardEvent, MouseEvent, TouchEvent } from 'react';
 import { useMemo } from 'react';
@@ -283,7 +285,7 @@ export const ControlPanel: FC = () => {
         <FormControl
           label="縦横比"
           renderInput={(props) => (
-            <RangeField
+            <Slider
               {...props}
               max={2}
               min={0.5}
