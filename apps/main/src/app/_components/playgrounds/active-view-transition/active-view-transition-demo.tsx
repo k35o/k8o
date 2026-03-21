@@ -1,7 +1,6 @@
 'use client';
 
-import { ChevronIcon } from '@k8o/arte-odyssey';
-import { Button } from '@k8o/arte-odyssey/button';
+import { Button, ChevronIcon } from '@k8o/arte-odyssey';
 import { cn } from '@repo/helpers/cn';
 import { useState } from 'react';
 

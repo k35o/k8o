@@ -1,7 +1,6 @@
 'use client';
 
-import { TagIcon } from '@k8o/arte-odyssey/icons';
-import { LinkButton } from '@k8o/arte-odyssey/link-button';
+import { LinkButton, TagIcon } from '@k8o/arte-odyssey';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import type { FC } from 'react';

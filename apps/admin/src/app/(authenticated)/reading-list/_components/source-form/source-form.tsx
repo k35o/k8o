@@ -77,7 +77,6 @@ export const SourceForm = ({ action, defaultValues }: SourceFormProps) => {
           <Radio
             isDisabled={isDisabled}
             labelId={labelId}
-            name="type"
             onChange={(e: ChangeEvent<HTMLInputElement>) => {
               setType(e.target.value as 'feed' | 'manual');
             }}

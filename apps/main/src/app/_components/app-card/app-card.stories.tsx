@@ -1,4 +1,4 @@
-import { LinkIcon } from '@k8o/arte-odyssey/icons';
+import { LinkIcon } from '@k8o/arte-odyssey';
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 import { expect, within } from 'storybook/test';
 import { AppCard } from './app-card';

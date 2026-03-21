@@ -1,6 +1,6 @@
 'use client';
 
-import { Alert } from '@k8o/arte-odyssey/alert';
+import { Alert } from '@k8o/arte-odyssey';
 import { calcContrast } from '@repo/helpers/color/calc-contrast';
 import { type FC, useState } from 'react';
 import { ColorPallet } from '../color-pallet';

@@ -1,8 +1,6 @@
 'use client';
 
-import { Button } from '@k8o/arte-odyssey/button';
-import { DropdownMenu } from '@k8o/arte-odyssey/dropdown-menu';
-import { Tooltip } from '@k8o/arte-odyssey/tooltip';
+import { Button, DropdownMenu, Tooltip } from '@k8o/arte-odyssey';
 import type { FC } from 'react';
 
 export const TooltipDropdownDemo: FC = () => {

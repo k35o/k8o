@@ -1,8 +1,10 @@
-import { Checkbox } from '@k8o/arte-odyssey/form/checkbox';
-import { Select } from '@k8o/arte-odyssey/form/select';
-import { TextField } from '@k8o/arte-odyssey/form/text-field';
-import { IconButton } from '@k8o/arte-odyssey/icon-button';
-import { CloseIcon } from '@k8o/arte-odyssey/icons';
+import {
+  Checkbox,
+  CloseIcon,
+  IconButton,
+  Select,
+  TextField,
+} from '@k8o/arte-odyssey';
 import { type FC, useId } from 'react';
 import {
   COLUMN_TYPE_OPTIONS_SHORT,

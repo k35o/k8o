@@ -1,13 +1,15 @@
 'use client';
 
-import { Card } from '@k8o/arte-odyssey/card';
-import { FormControl } from '@k8o/arte-odyssey/form/form-control';
-import { NumberField } from '@k8o/arte-odyssey/form/number-field';
-import { TextField } from '@k8o/arte-odyssey/form/text-field';
-import { useClipboard } from '@k8o/arte-odyssey/hooks/clipboard';
-import { IconButton } from '@k8o/arte-odyssey/icon-button';
-import { CopyIcon } from '@k8o/arte-odyssey/icons';
-import { useToast } from '@k8o/arte-odyssey/toast';
+import {
+  Card,
+  CopyIcon,
+  FormControl,
+  IconButton,
+  NumberField,
+  TextField,
+  useClipboard,
+  useToast,
+} from '@k8o/arte-odyssey';
 import { type ChangeEventHandler, useCallback, useMemo, useState } from 'react';
 import {
   type HSL,

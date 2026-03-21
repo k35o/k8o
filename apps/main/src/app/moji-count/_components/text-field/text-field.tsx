@@ -1,7 +1,6 @@
 'use client';
 
-import { FormControl } from '@k8o/arte-odyssey/form/form-control';
-import { Textarea } from '@k8o/arte-odyssey/form/textarea';
+import { FormControl, Textarea } from '@k8o/arte-odyssey';
 import { useDeferredValue, useState } from 'react';
 import { TextLength } from '../text-length';
 

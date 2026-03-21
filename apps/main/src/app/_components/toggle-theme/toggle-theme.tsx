@@ -1,7 +1,6 @@
 'use client';
 
-import { IconButton } from '@k8o/arte-odyssey/icon-button';
-import { DarkModeIcon, LightModeIcon } from '@k8o/arte-odyssey/icons';
+import { DarkModeIcon, IconButton, LightModeIcon } from '@k8o/arte-odyssey';
 import { useTheme } from 'next-themes';
 import { type FC, useCallback, useMemo } from 'react';
 

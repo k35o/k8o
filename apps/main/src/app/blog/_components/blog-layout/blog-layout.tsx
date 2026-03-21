@@ -1,14 +1,14 @@
-import { ErrorBoundary } from '@k8o/arte-odyssey/error-boundary';
 import {
+  Badge,
+  ErrorBoundary,
+  LinkButton,
   PublishDateIcon,
+  Separator,
   SlideIcon,
   TagIcon,
   UpdateDateIcon,
   ViewIcon,
-} from '@k8o/arte-odyssey/icons';
-import { LinkButton } from '@k8o/arte-odyssey/link-button';
-import { Separator } from '@k8o/arte-odyssey/separator';
-import { TextTag } from '@k8o/arte-odyssey/text-tag';
+} from '@k8o/arte-odyssey';
 import { formatDate } from '@repo/helpers/date/format';
 import Link from 'next/link';
 import { type FC, type ReactNode, Suspense, ViewTransition } from 'react';
@@ -87,7 +87,7 @@ export const BlogLayout: FC<{
                   {blog.tags.map((tag) => {
                     return (
                       <Link href={`/tags/${tag.id.toString()}`} key={tag.id}>
-                        <TextTag clickable key={tag.id} text={tag.name} />
+                        <Badge interactive key={tag.id} text={tag.name} />
                       </Link>
                     );
                   })}

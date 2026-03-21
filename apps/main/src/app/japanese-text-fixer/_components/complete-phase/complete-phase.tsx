@@ -1,12 +1,14 @@
 'use client';
 
-import { Alert } from '@k8o/arte-odyssey/alert';
-import { Button } from '@k8o/arte-odyssey/button';
-import { Card } from '@k8o/arte-odyssey/card';
-import { Heading } from '@k8o/arte-odyssey/heading';
-import { useClipboard } from '@k8o/arte-odyssey/hooks/clipboard';
-import { CopyIcon } from '@k8o/arte-odyssey/icons';
-import { useToast } from '@k8o/arte-odyssey/toast';
+import {
+  Alert,
+  Button,
+  Card,
+  CopyIcon,
+  Heading,
+  useClipboard,
+  useToast,
+} from '@k8o/arte-odyssey';
 import type { FC } from 'react';
 import { useCheckJapaneseSyntax } from '../../_state/hooks';
 import { useProofreadDispatch, useProofreadState } from '../../_state/provider';

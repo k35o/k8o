@@ -1,4 +1,4 @@
-import { Heading } from '@k8o/arte-odyssey/heading';
+import { Heading } from '@k8o/arte-odyssey';
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { ExternalBlog } from './_components/external-blog';

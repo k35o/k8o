@@ -1,6 +1,6 @@
 'use client';
 
-import { Checkbox } from '@k8o/arte-odyssey/form/checkbox';
+import { Checkbox } from '@k8o/arte-odyssey';
 import { useState } from 'react';
 
 /**

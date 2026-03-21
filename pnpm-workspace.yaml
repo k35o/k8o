@@ -6,7 +6,7 @@ overrides:
   katex: '>=0.16.35'
 
 catalog:
-  '@k8o/arte-odyssey': 3.0.0
+  '@k8o/arte-odyssey': 4.0.0
   '@storybook/addon-a11y': 10.3.0
   '@storybook/addon-docs': 10.3.0
   '@storybook/addon-vitest': 10.3.0

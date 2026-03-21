@@ -1,11 +1,11 @@
-import { Button } from '@k8o/arte-odyssey/button';
-import { IconButton } from '@k8o/arte-odyssey/icon-button';
 import {
+  Button,
   ChevronIcon,
   CloseIcon,
+  IconButton,
   LinkIcon,
   PlusIcon,
-} from '@k8o/arte-odyssey/icons';
+} from '@k8o/arte-odyssey';
 import { uuidV4 } from '@repo/helpers/uuid-v4';
 import { type FC, useState } from 'react';
 import type { Column } from '../../_types/column';

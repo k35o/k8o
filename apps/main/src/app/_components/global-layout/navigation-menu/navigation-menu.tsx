@@ -1,10 +1,13 @@
 'use client';
 
-import { useWindowResize } from '@k8o/arte-odyssey';
-import { IconButton } from '@k8o/arte-odyssey/icon-button';
-import { CloseIcon, NavigationMenuIcon } from '@k8o/arte-odyssey/icons';
-import { Modal } from '@k8o/arte-odyssey/modal';
-import { PortalRootProvider } from '@k8o/arte-odyssey/providers';
+import {
+  CloseIcon,
+  IconButton,
+  Modal,
+  NavigationMenuIcon,
+  PortalRootProvider,
+  useWindowResize,
+} from '@k8o/arte-odyssey';
 import { type FC, Suspense, useCallback, useRef, useState } from 'react';
 import { ColorFilters } from '../../color-filters';
 import { ContactToMe } from '../../contact-to-me';

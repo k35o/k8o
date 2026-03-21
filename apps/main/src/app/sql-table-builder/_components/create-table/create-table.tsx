@@ -1,5 +1,4 @@
-import { FormControl } from '@k8o/arte-odyssey/form/form-control';
-import { TextField } from '@k8o/arte-odyssey/form/text-field';
+import { FormControl, TextField } from '@k8o/arte-odyssey';
 import type { ChangeEvent, FC } from 'react';
 import type { InvalidTable, Table } from '../../_types/table';
 

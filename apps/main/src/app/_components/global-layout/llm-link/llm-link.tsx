@@ -1,5 +1,4 @@
-import { IconLink } from '@k8o/arte-odyssey/icon-link';
-import { AIIcon } from '@k8o/arte-odyssey/icons';
+import { AIIcon, IconLink } from '@k8o/arte-odyssey';
 import type { FC } from 'react';
 
 export const LlmLink: FC = () => {

@@ -1,6 +1,4 @@
-import { Anchor } from '@k8o/arte-odyssey/anchor';
-import { Card } from '@k8o/arte-odyssey/card';
-import { Heading } from '@k8o/arte-odyssey/heading';
+import { Anchor, Card, Heading } from '@k8o/arte-odyssey';
 import type { Route } from 'next';
 import Link from 'next/link';
 import { Playground, playgroundSections } from '@/app/_components/playgrounds';

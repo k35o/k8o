@@ -1,9 +1,12 @@
 'use client';
 
-import { Button } from '@k8o/arte-odyssey/button';
-import { FormControl } from '@k8o/arte-odyssey/form/form-control';
-import { Textarea } from '@k8o/arte-odyssey/form/textarea';
-import { BadIcon, GoodIcon } from '@k8o/arte-odyssey/icons';
+import {
+  BadIcon,
+  Button,
+  FormControl,
+  GoodIcon,
+  Textarea,
+} from '@k8o/arte-odyssey';
 import { cn } from '@repo/helpers/cn';
 import {
   type FC,

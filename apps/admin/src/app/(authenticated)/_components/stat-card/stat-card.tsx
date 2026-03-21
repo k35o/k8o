@@ -1,5 +1,4 @@
 import { Card } from '@k8o/arte-odyssey';
-
 export const StatCard = ({
   label,
   value,

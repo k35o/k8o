@@ -1,14 +1,14 @@
-import { Card } from '@k8o/arte-odyssey/card';
-import { IconLink } from '@k8o/arte-odyssey/icon-link';
 import {
+  Badge,
   BlogIcon,
+  Card,
   ExternalLinkIcon,
+  IconLink,
+  LinkButton,
   LocationIcon,
   PublishDateIcon,
   SlideIcon,
-} from '@k8o/arte-odyssey/icons';
-import { LinkButton } from '@k8o/arte-odyssey/link-button';
-import { TextTag } from '@k8o/arte-odyssey/text-tag';
+} from '@k8o/arte-odyssey';
 import { formatDate } from '@repo/helpers/date/format';
 import type { Route } from 'next';
 import Link from 'next/link';
@@ -66,7 +66,7 @@ export const TalkCard: FC<{
         <div className="flex flex-wrap items-center gap-2">
           {tags.map((tag) => (
             <Link href={`/tags/${tag.id.toString()}`} key={tag.id}>
-              <TextTag clickable key={tag.id} size="sm" text={tag.name} />
+              <Badge interactive key={tag.id} size="sm" text={tag.name} />
             </Link>
           ))}
         </div>

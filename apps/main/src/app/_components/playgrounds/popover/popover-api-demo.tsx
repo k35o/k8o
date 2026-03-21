@@ -1,4 +1,4 @@
-import { Button } from '@k8o/arte-odyssey/button';
+import { Button } from '@k8o/arte-odyssey';
 import type { FC } from 'react';
 
 export const PopoverApiDemo: FC = () => {

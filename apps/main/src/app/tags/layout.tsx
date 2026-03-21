@@ -1,5 +1,4 @@
-import { Heading } from '@k8o/arte-odyssey/heading';
-import { TagIcon } from '@k8o/arte-odyssey/icons';
+import { Heading, TagIcon } from '@k8o/arte-odyssey';
 import type { Metadata } from 'next';
 import Link from 'next/link';
 

@@ -7,11 +7,11 @@
 import '@k8o/arte-odyssey/styles.css';
 
 // プロバイダー（アプリルートで1回）
-import { ArteOdysseyProvider } from '@k8o/arte-odyssey/providers';
+import { ArteOdysseyProvider } from '@k8o/arte-odyssey';
 
 // 各コンポーネント（個別インポート）
-import { Button } from '@k8o/arte-odyssey/button';
-import { Card } from '@k8o/arte-odyssey/card';
+import { Button } from '@k8o/arte-odyssey';
+import { Card } from '@k8o/arte-odyssey';
 ```
 
 ## レイアウト・ナビゲーション
@@ -21,7 +21,7 @@ import { Card } from '@k8o/arte-odyssey/card';
 折りたたみ可能なセクション。
 
 ```tsx
-import { Accordion, AccordionItem } from '@k8o/arte-odyssey/accordion';
+import { Accordion, AccordionItem } from '@k8o/arte-odyssey';
 
 <Accordion>
   <AccordionItem title="セクション1">
@@ -35,7 +35,7 @@ import { Accordion, AccordionItem } from '@k8o/arte-odyssey/accordion';
 パンくずリスト。
 
 ```tsx
-import { Breadcrumb, BreadcrumbItem } from '@k8o/arte-odyssey/breadcrumb';
+import { Breadcrumb, BreadcrumbItem } from '@k8o/arte-odyssey';
 
 <Breadcrumb>
   <BreadcrumbItem href="/">ホーム</BreadcrumbItem>
@@ -49,7 +49,7 @@ import { Breadcrumb, BreadcrumbItem } from '@k8o/arte-odyssey/breadcrumb';
 コンテンツをグループ化するカード。
 
 ```tsx
-import { Card, InteractiveCard } from '@k8o/arte-odyssey/card';
+import { Card, InteractiveCard } from '@k8o/arte-odyssey';
 
 // 静的カード
 <Card title="タイトル" variant="primary" width="full" appearance="shadow">
@@ -73,7 +73,7 @@ Props:
 タブ切り替え。
 
 ```tsx
-import { Tabs, TabList, Tab, TabPanel } from '@k8o/arte-odyssey/tabs';
+import { Tabs, TabList, Tab, TabPanel } from '@k8o/arte-odyssey';
 
 <Tabs>
   <TabList>
@@ -90,7 +90,7 @@ import { Tabs, TabList, Tab, TabPanel } from '@k8o/arte-odyssey/tabs';
 区切り線。
 
 ```tsx
-import { Separator } from '@k8o/arte-odyssey/separator';
+import { Separator } from '@k8o/arte-odyssey';
 
 <Separator />
 <Separator color="mute" />
@@ -103,7 +103,7 @@ import { Separator } from '@k8o/arte-odyssey/separator';
 スクロール進捗をプログレスバーで表示。
 
 ```tsx
-import { ScrollLinked } from '@k8o/arte-odyssey/scroll-linked';
+import { ScrollLinked } from '@k8o/arte-odyssey';
 
 <ScrollLinked />
 <ScrollLinked container={containerRef} />
@@ -114,7 +114,7 @@ import { ScrollLinked } from '@k8o/arte-odyssey/scroll-linked';
 ### Button
 
 ```tsx
-import { Button } from '@k8o/arte-odyssey/button';
+import { Button } from '@k8o/arte-odyssey';
 
 <Button
   size="sm" | "md" | "lg"
@@ -134,7 +134,7 @@ import { Button } from '@k8o/arte-odyssey/button';
 アイコンのみのボタン。`bg` prop でスタイルを制御。
 
 ```tsx
-import { IconButton } from '@k8o/arte-odyssey/icon-button';
+import { IconButton } from '@k8o/arte-odyssey';
 
 <IconButton label="閉じる" bg="transparent" size="md">
   <XIcon />
@@ -151,7 +151,7 @@ Props:
 リンクスタイルのボタン。Button と同じ `color` / `variant` props。
 
 ```tsx
-import { LinkButton } from '@k8o/arte-odyssey/link-button';
+import { LinkButton } from '@k8o/arte-odyssey';
 
 <LinkButton href="/page" color="gray" variant="outlined">リンク</LinkButton>
 ```
@@ -161,7 +161,7 @@ import { LinkButton } from '@k8o/arte-odyssey/link-button';
 アイコンのみのリンク。IconButton と同じ `bg` prop。
 
 ```tsx
-import { IconLink } from '@k8o/arte-odyssey/icon-link';
+import { IconLink } from '@k8o/arte-odyssey';
 
 <IconLink href="/home" bg="base" label="ホーム">
   <HomeIcon />
@@ -173,7 +173,7 @@ import { IconLink } from '@k8o/arte-odyssey/icon-link';
 テキストリンク。
 
 ```tsx
-import { Anchor } from '@k8o/arte-odyssey/anchor';
+import { Anchor } from '@k8o/arte-odyssey';
 
 <Anchor href="https://example.com" isExternal>
   外部リンク
@@ -185,7 +185,7 @@ import { Anchor } from '@k8o/arte-odyssey/anchor';
 ### TextField
 
 ```tsx
-import { TextField } from '@k8o/arte-odyssey/text-field';
+import { TextField } from '@k8o/arte-odyssey';
 
 <TextField id="email" defaultValue="" placeholder="example@mail.com" />
 ```
@@ -193,7 +193,7 @@ import { TextField } from '@k8o/arte-odyssey/text-field';
 ### Textarea
 
 ```tsx
-import { Textarea } from '@k8o/arte-odyssey/textarea';
+import { Textarea } from '@k8o/arte-odyssey';
 
 <Textarea label="説明" rows={4} value={value} onChange={onChange} />
 ```
@@ -201,7 +201,7 @@ import { Textarea } from '@k8o/arte-odyssey/textarea';
 ### Checkbox
 
 ```tsx
-import { Checkbox } from '@k8o/arte-odyssey/checkbox';
+import { Checkbox } from '@k8o/arte-odyssey';
 
 <Checkbox checked={checked} onChange={onChange}>同意する</Checkbox>
 ```
@@ -209,18 +209,24 @@ import { Checkbox } from '@k8o/arte-odyssey/checkbox';
 ### Radio
 
 ```tsx
-import { RadioGroup, Radio } from '@k8o/arte-odyssey/radio';
+import { Radio } from '@k8o/arte-odyssey';
 
-<RadioGroup value={value} onChange={onChange}>
-  <Radio value="a">選択肢A</Radio>
-  <Radio value="b">選択肢B</Radio>
-</RadioGroup>
+<Radio
+  labelId="example-radio"
+  name="example"
+  onChange={onChange}
+  options={[
+    { value: 'a', label: '選択肢A' },
+    { value: 'b', label: '選択肢B' },
+  ]}
+  value={value}
+/>
 ```
 
 ### Select
 
 ```tsx
-import { Select } from '@k8o/arte-odyssey/select';
+import { Select } from '@k8o/arte-odyssey';
 
 <Select
   label="選択"
@@ -236,23 +242,23 @@ import { Select } from '@k8o/arte-odyssey/select';
 ### NumberField
 
 ```tsx
-import { NumberField } from '@k8o/arte-odyssey/number-field';
+import { NumberField } from '@k8o/arte-odyssey';
 
 <NumberField label="数量" min={0} max={100} value={value} onChange={onChange} />
 ```
 
-### RangeField
+### Slider
 
 ```tsx
-import { RangeField } from '@k8o/arte-odyssey/range-field';
+import { Slider } from '@k8o/arte-odyssey';
 
-<RangeField label="音量" min={0} max={100} value={value} onChange={onChange} />
+<Slider label="音量" min={0} max={100} value={value} onChange={onChange} />
 ```
 
 ### Autocomplete
 
 ```tsx
-import { Autocomplete } from '@k8o/arte-odyssey/autocomplete';
+import { Autocomplete } from '@k8o/arte-odyssey';
 
 <Autocomplete label="検索" options={options} value={value} onChange={onChange} />
 ```
@@ -262,7 +268,7 @@ import { Autocomplete } from '@k8o/arte-odyssey/autocomplete';
 コンポジットパターンのファイルアップロード。
 
 ```tsx
-import { FileField } from '@k8o/arte-odyssey/file-field';
+import { FileField } from '@k8o/arte-odyssey';
 
 <FileField.Root accept="image/*" multiple maxFiles={5}>
   <FileField.Trigger>ファイルを選択</FileField.Trigger>
@@ -281,7 +287,7 @@ Props (Root):
 フォームフィールドのラッパー（ラベル・エラー表示を統一）。
 
 ```tsx
-import { FormControl } from '@k8o/arte-odyssey/form-control';
+import { FormControl } from '@k8o/arte-odyssey';
 
 <FormControl label="ラベル" error="エラーメッセージ" isRequired>
   <TextField id="name" />
@@ -293,7 +299,7 @@ import { FormControl } from '@k8o/arte-odyssey/form-control';
 ### Alert
 
 ```tsx
-import { Alert } from '@k8o/arte-odyssey/alert';
+import { Alert } from '@k8o/arte-odyssey';
 
 <Alert status="info" | "success" | "warning" | "error">
   メッセージ
@@ -303,7 +309,7 @@ import { Alert } from '@k8o/arte-odyssey/alert';
 ### Toast
 
 ```tsx
-import { useToast } from '@k8o/arte-odyssey/toast';
+import { useToast } from '@k8o/arte-odyssey';
 
 const toast = useToast();
 toast.show({ message: '保存しました', status: 'success' });
@@ -312,7 +318,7 @@ toast.show({ message: '保存しました', status: 'success' });
 ### Progress
 
 ```tsx
-import { Progress } from '@k8o/arte-odyssey/progress';
+import { Progress } from '@k8o/arte-odyssey';
 
 <Progress value={50} max={100} />
 ```
@@ -322,7 +328,7 @@ import { Progress } from '@k8o/arte-odyssey/progress';
 Web API のブラウザサポート状況を表示。
 
 ```tsx
-import { BaselineStatus } from '@k8o/arte-odyssey/baseline-status';
+import { BaselineStatus } from '@k8o/arte-odyssey';
 
 <BaselineStatus featureId="dialog" />
 ```
@@ -332,7 +338,7 @@ import { BaselineStatus } from '@k8o/arte-odyssey/baseline-status';
 ### Dialog
 
 ```tsx
-import { Dialog } from '@k8o/arte-odyssey/dialog';
+import { Dialog } from '@k8o/arte-odyssey';
 
 <Dialog open={open} onClose={onClose} title="確認">
   コンテンツ
@@ -342,7 +348,7 @@ import { Dialog } from '@k8o/arte-odyssey/dialog';
 ### Drawer
 
 ```tsx
-import { Drawer } from '@k8o/arte-odyssey/drawer';
+import { Drawer } from '@k8o/arte-odyssey';
 
 <Drawer open={open} onClose={onClose} position="right">
   コンテンツ
@@ -352,7 +358,7 @@ import { Drawer } from '@k8o/arte-odyssey/drawer';
 ### Modal
 
 ```tsx
-import { Modal } from '@k8o/arte-odyssey/modal';
+import { Modal } from '@k8o/arte-odyssey';
 
 <Modal open={open} onClose={onClose}>
   コンテンツ
@@ -362,7 +368,7 @@ import { Modal } from '@k8o/arte-odyssey/modal';
 ### Popover
 
 ```tsx
-import { Popover } from '@k8o/arte-odyssey/popover';
+import { Popover } from '@k8o/arte-odyssey';
 
 <Popover trigger={<Button>開く</Button>}>
   ポップオーバーコンテンツ
@@ -372,7 +378,7 @@ import { Popover } from '@k8o/arte-odyssey/popover';
 ### Tooltip
 
 ```tsx
-import { Tooltip } from '@k8o/arte-odyssey/tooltip';
+import { Tooltip } from '@k8o/arte-odyssey';
 
 <Tooltip content="ヒント">
   <Button>ホバー</Button>
@@ -382,7 +388,7 @@ import { Tooltip } from '@k8o/arte-odyssey/tooltip';
 ### DropdownMenu
 
 ```tsx
-import { DropdownMenu, DropdownMenuItem } from '@k8o/arte-odyssey/dropdown-menu';
+import { DropdownMenu, DropdownMenuItem } from '@k8o/arte-odyssey';
 
 <DropdownMenu trigger={<Button>メニュー</Button>}>
   <DropdownMenuItem onClick={handleClick}>アイテム1</DropdownMenuItem>
@@ -395,7 +401,7 @@ import { DropdownMenu, DropdownMenuItem } from '@k8o/arte-odyssey/dropdown-menu'
 ### Code
 
 ```tsx
-import { Code } from '@k8o/arte-odyssey/code';
+import { Code } from '@k8o/arte-odyssey';
 
 <Code language="typescript">
   {`const x = 1;`}
@@ -405,23 +411,23 @@ import { Code } from '@k8o/arte-odyssey/code';
 ### Heading
 
 ```tsx
-import { Heading } from '@k8o/arte-odyssey/heading';
+import { Heading } from '@k8o/arte-odyssey';
 
 <Heading level={1}>見出し</Heading>
 ```
 
-### TextTag
+### Badge
 
 ```tsx
-import { TextTag } from '@k8o/arte-odyssey/text-tag';
+import { Badge } from '@k8o/arte-odyssey';
 
-<TextTag>タグ</TextTag>
+<Badge>タグ</Badge>
 ```
 
 ### ListBox
 
 ```tsx
-import { ListBox, ListBoxItem } from '@k8o/arte-odyssey/list-box';
+import { ListBox, ListBoxItem } from '@k8o/arte-odyssey';
 
 <ListBox>
   <ListBoxItem>アイテム1</ListBoxItem>
@@ -434,7 +440,7 @@ import { ListBox, ListBoxItem } from '@k8o/arte-odyssey/list-box';
 ### ErrorBoundary
 
 ```tsx
-import { ErrorBoundary } from '@k8o/arte-odyssey/error-boundary';
+import { ErrorBoundary } from '@k8o/arte-odyssey';
 
 <ErrorBoundary fallback={<div>エラーが発生しました</div>}>
   <App />
@@ -444,7 +450,7 @@ import { ErrorBoundary } from '@k8o/arte-odyssey/error-boundary';
 ### ArteOdysseyProvider
 
 ```tsx
-import { ArteOdysseyProvider } from '@k8o/arte-odyssey/providers';
+import { ArteOdysseyProvider } from '@k8o/arte-odyssey';
 
 <ArteOdysseyProvider>
   <App />

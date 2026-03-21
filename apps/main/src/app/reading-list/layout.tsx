@@ -1,6 +1,4 @@
-import { Heading } from '@k8o/arte-odyssey/heading';
-import { IconLink } from '@k8o/arte-odyssey/icon-link';
-import { RSSIcon } from '@k8o/arte-odyssey/icons';
+import { Heading, IconLink, RSSIcon } from '@k8o/arte-odyssey';
 import type { Metadata } from 'next';
 
 export const metadata = {

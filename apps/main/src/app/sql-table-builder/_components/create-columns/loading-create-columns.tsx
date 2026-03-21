@@ -1,5 +1,4 @@
-import { Button } from '@k8o/arte-odyssey/button';
-import { PlusIcon } from '@k8o/arte-odyssey/icons';
+import { Button, PlusIcon } from '@k8o/arte-odyssey';
 import type { FC } from 'react';
 
 export const LoadingCreateColumns: FC = () => {

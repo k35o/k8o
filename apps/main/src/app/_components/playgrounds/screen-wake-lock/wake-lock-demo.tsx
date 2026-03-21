@@ -1,6 +1,6 @@
 'use client';
 
-import { Button } from '@k8o/arte-odyssey/button';
+import { Button } from '@k8o/arte-odyssey';
 import { type FC, useCallback, useRef, useState } from 'react';
 
 export const WakeLockDemo: FC = () => {

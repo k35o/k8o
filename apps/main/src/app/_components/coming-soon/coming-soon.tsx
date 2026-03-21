@@ -1,4 +1,4 @@
-import { PrepareIcon, UpdateDateIcon } from '@k8o/arte-odyssey/icons';
+import { PrepareIcon, UpdateDateIcon } from '@k8o/arte-odyssey';
 import type { FC, ReactNode } from 'react';
 
 export const ComingSoon: FC<{ description?: ReactNode }> = ({

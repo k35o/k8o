@@ -1,8 +1,11 @@
 'use client';
 
-import { AlertIcon, MixedColorIcon } from '@k8o/arte-odyssey/icons';
-import { ListBox } from '@k8o/arte-odyssey/list-box';
-import { useOpenContext } from '@k8o/arte-odyssey/popover';
+import {
+  AlertIcon,
+  ListBox,
+  MixedColorIcon,
+  useOpenContext,
+} from '@k8o/arte-odyssey';
 import { cn } from '@repo/helpers/cn';
 import Link from 'next/link';
 import {

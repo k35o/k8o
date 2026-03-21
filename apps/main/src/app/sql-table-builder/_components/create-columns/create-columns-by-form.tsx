@@ -1,9 +1,12 @@
-import { FormControl } from '@k8o/arte-odyssey/form/form-control';
-import { Radio } from '@k8o/arte-odyssey/form/radio';
-import { Select } from '@k8o/arte-odyssey/form/select';
-import { TextField } from '@k8o/arte-odyssey/form/text-field';
-import { IconButton } from '@k8o/arte-odyssey/icon-button';
-import { ChevronIcon, CloseIcon } from '@k8o/arte-odyssey/icons';
+import {
+  ChevronIcon,
+  CloseIcon,
+  FormControl,
+  IconButton,
+  Radio,
+  Select,
+  TextField,
+} from '@k8o/arte-odyssey';
 import { type FC, useState } from 'react';
 import {
   COLUMN_TYPE_OPTIONS,
@@ -171,10 +174,10 @@ const ColumnItem: FC<{
                   isRequired
                   label="NULL許容"
                   labelAs="legend"
-                  renderInput={(props) => (
+                  renderInput={({ labelId, isDisabled }) => (
                     <Radio
-                      {...props}
-                      name={`nullable-${id}`}
+                      isDisabled={isDisabled}
+                      labelId={labelId}
                       onChange={(e) => {
                         handleChangeColumn(id)({
                           ...column,

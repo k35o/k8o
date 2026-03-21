@@ -1,8 +1,6 @@
 'use client';
 
-import { Button } from '@k8o/arte-odyssey/button';
-import { FormControl } from '@k8o/arte-odyssey/form/form-control';
-import { Textarea } from '@k8o/arte-odyssey/form/textarea';
+import { Button, FormControl, Textarea } from '@k8o/arte-odyssey';
 import { diffChars } from 'diff';
 import { useDeferredValue, useMemo, useState } from 'react';
 import { DiffOutput } from './diff-output';
