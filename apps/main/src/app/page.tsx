@@ -1,9 +1,13 @@
-import { Card } from '@k8o/arte-odyssey/card';
-import { ErrorBoundary } from '@k8o/arte-odyssey/error-boundary';
-import { Heading } from '@k8o/arte-odyssey/heading';
-import { IconLink } from '@k8o/arte-odyssey/icon-link';
-import { GitHubIcon, QiitaIcon, TwitterIcon } from '@k8o/arte-odyssey/icons';
-import { TextTag } from '@k8o/arte-odyssey/text-tag';
+import {
+  Badge,
+  Card,
+  ErrorBoundary,
+  GitHubIcon,
+  Heading,
+  IconLink,
+  QiitaIcon,
+  TwitterIcon,
+} from '@k8o/arte-odyssey';
 import Image from 'next/image';
 import { AppCard } from './_components/app-card';
 import { EmailTooltip } from './_components/email-tooltip';
@@ -51,9 +55,9 @@ export default function Home() {
               </div>
 
               <div className="flex flex-wrap gap-2">
-                <TextTag size="sm" text="フロントエンド" />
-                <TextTag size="sm" text="TypeScript" />
-                <TextTag size="sm" text="デザイン" />
+                <Badge size="sm" text="フロントエンド" />
+                <Badge size="sm" text="TypeScript" />
+                <Badge size="sm" text="デザイン" />
               </div>
 
               <p className="text-fg-mute text-sm leading-relaxed">

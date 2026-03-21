@@ -1,11 +1,11 @@
-import { InteractiveCard } from '@k8o/arte-odyssey/card';
-import { Heading } from '@k8o/arte-odyssey/heading';
 import {
+  Badge,
+  Heading,
+  InteractiveCard,
   PublishDateIcon,
   TagIcon,
   UpdateDateIcon,
-} from '@k8o/arte-odyssey/icons';
-import { TextTag } from '@k8o/arte-odyssey/text-tag';
+} from '@k8o/arte-odyssey';
 import { formatDate } from '@repo/helpers/date/format';
 import type { Route } from 'next';
 import Link from 'next/link';
@@ -53,7 +53,7 @@ export const BlogCard: FC<BlogCardProps> = ({
                 <div className="flex flex-wrap items-center gap-2">
                   <TagIcon size="sm" />
                   {tags.map((tag) => {
-                    return <TextTag key={tag} size="sm" text={tag} />;
+                    return <Badge key={tag} size="sm" text={tag} />;
                   })}
                 </div>
               </ViewTransition>

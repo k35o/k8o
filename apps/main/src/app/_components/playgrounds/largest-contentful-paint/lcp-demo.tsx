@@ -1,7 +1,6 @@
 'use client';
 
-import { Button } from '@k8o/arte-odyssey/button';
-import { TextTag } from '@k8o/arte-odyssey/text-tag';
+import { Badge, Button } from '@k8o/arte-odyssey';
 import { useCallback, useEffect, useRef, useState } from 'react';
 
 type LCPEntry = {
@@ -176,7 +175,7 @@ export function LCPDemo() {
               >
                 <div className="flex items-center gap-2">
                   <span className="text-fg-mute">{entry.timestamp}</span>
-                  {entry.element && <TextTag size="sm" text={entry.element} />}
+                  {entry.element && <Badge size="sm" text={entry.element} />}
                 </div>
                 <div className="flex items-center gap-3">
                   <span className="text-fg-mute text-xs">

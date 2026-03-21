@@ -1,6 +1,9 @@
-import { ExternalLinkIcon, GitHubIcon } from '@k8o/arte-odyssey/icons';
-import { LinkButton } from '@k8o/arte-odyssey/link-button';
-import { TextTag } from '@k8o/arte-odyssey/text-tag';
+import {
+  Badge,
+  ExternalLinkIcon,
+  GitHubIcon,
+  LinkButton,
+} from '@k8o/arte-odyssey';
 import type { FC } from 'react';
 import type { OssProject } from '@/services/oss/oss';
 
@@ -41,7 +44,7 @@ export const OssCard: FC<OssProject> = ({
         {tags.length > 0 && (
           <div className="flex flex-wrap gap-1.5">
             {tags.map((tag) => (
-              <TextTag key={tag} size="sm" text={tag} />
+              <Badge key={tag} size="sm" text={tag} />
             ))}
           </div>
         )}
