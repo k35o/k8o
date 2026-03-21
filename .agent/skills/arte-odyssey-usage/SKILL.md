@@ -27,7 +27,7 @@ npm install @k8o/arte-odyssey
 import '@k8o/arte-odyssey/styles.css';
 
 // 2. Provider でアプリを囲む
-import { ArteOdysseyProvider } from '@k8o/arte-odyssey/providers';
+import { ArteOdysseyProvider } from '@k8o/arte-odyssey';
 
 function App() {
   return (
@@ -38,8 +38,8 @@ function App() {
 }
 
 // 3. コンポーネントを使う
-import { Button } from '@k8o/arte-odyssey/button';
-import { Card } from '@k8o/arte-odyssey/card';
+import { Button } from '@k8o/arte-odyssey';
+import { Card } from '@k8o/arte-odyssey';
 ```
 
 ### Tailwind CSS の設定
@@ -132,8 +132,8 @@ import { Card } from '@k8o/arte-odyssey/card';
 `color` と `variant` で統一されたスタイル。
 
 ```tsx
-import { Button } from '@k8o/arte-odyssey/button';
-import { LinkButton } from '@k8o/arte-odyssey/link-button';
+import { Button } from '@k8o/arte-odyssey';
+import { LinkButton } from '@k8o/arte-odyssey';
 
 // プライマリアクション
 <Button color="primary" variant="contained">保存する</Button>
@@ -153,8 +153,8 @@ import { LinkButton } from '@k8o/arte-odyssey/link-button';
 `bg` prop でスタイルを制御（`variant` ではない）。
 
 ```tsx
-import { IconButton } from '@k8o/arte-odyssey/icon-button';
-import { IconLink } from '@k8o/arte-odyssey/icon-link';
+import { IconButton } from '@k8o/arte-odyssey';
+import { IconLink } from '@k8o/arte-odyssey';
 
 <IconButton bg="transparent" label="コピー"><CopyIcon /></IconButton>
 <IconButton bg="primary" label="送信"><SendIcon /></IconButton>
@@ -166,7 +166,7 @@ import { IconLink } from '@k8o/arte-odyssey/icon-link';
 `appearance` prop でシャドウかボーダーかを選択。
 
 ```tsx
-import { Card, InteractiveCard } from '@k8o/arte-odyssey/card';
+import { Card, InteractiveCard } from '@k8o/arte-odyssey';
 
 // 静的カード
 <Card title="設定" appearance="bordered">
@@ -182,9 +182,9 @@ import { Card, InteractiveCard } from '@k8o/arte-odyssey/card';
 ### フォーム
 
 ```tsx
-import { TextField } from '@k8o/arte-odyssey/text-field';
-import { Select } from '@k8o/arte-odyssey/select';
-import { FileField } from '@k8o/arte-odyssey/file-field';
+import { TextField } from '@k8o/arte-odyssey';
+import { Select } from '@k8o/arte-odyssey';
+import { FileField } from '@k8o/arte-odyssey';
 
 <TextField id="email" placeholder="example@mail.com" />
 

@@ -79,7 +79,7 @@ className="px-3 py-2"  // 水平に余裕、垂直はコンパクト
 すべてのコンテンツをカードに入れる必要はない。余白と Separator で十分なケースが多い。
 
 ```tsx
-import { Separator } from '@k8o/arte-odyssey/separator';
+import { Separator } from '@k8o/arte-odyssey';
 
 // Good: Separator で区切る
 <div>

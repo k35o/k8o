@@ -52,7 +52,7 @@ className="focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-
 - `FormControl` コンポーネントでラベル・エラー表示を統一
 
 ```tsx
-import { FormControl } from '@k8o/arte-odyssey/form-control';
+import { FormControl } from '@k8o/arte-odyssey';
 
 <FormControl label="メールアドレス" error="入力してください" isRequired>
   <TextField id="email" placeholder="example@mail.com" />
