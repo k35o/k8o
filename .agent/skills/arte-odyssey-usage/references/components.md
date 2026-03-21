@@ -209,12 +209,18 @@ import { Checkbox } from '@k8o/arte-odyssey/checkbox';
 ### Radio
 
 ```tsx
-import { RadioGroup, Radio } from '@k8o/arte-odyssey/radio';
+import { Radio } from '@k8o/arte-odyssey/radio';
 
-<RadioGroup value={value} onChange={onChange}>
-  <Radio value="a">選択肢A</Radio>
-  <Radio value="b">選択肢B</Radio>
-</RadioGroup>
+<Radio
+  labelId="example-radio"
+  name="example"
+  onChange={onChange}
+  options={[
+    { value: 'a', label: '選択肢A' },
+    { value: 'b', label: '選択肢B' },
+  ]}
+  value={value}
+/>
 ```
 
 ### Select
