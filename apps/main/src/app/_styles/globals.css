@@ -17,6 +17,11 @@
   }
 }
 
+/* トップレイヤーに昇格するdialogにも色覚フィルターを適用 */
+dialog {
+  filter: var(--color-filter, none);
+}
+
 @media (prefers-reduced-motion) {
   ::view-transition-group(*),
   ::view-transition-old(*),

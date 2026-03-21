@@ -4,6 +4,7 @@ import {
   AlertIcon,
   ListBox,
   MixedColorIcon,
+  PortalRootProvider,
   useOpenContext,
 } from '@k8o/arte-odyssey';
 import { cn } from '@repo/helpers/cn';
@@ -14,6 +15,8 @@ import {
   type PropsWithChildren,
   use,
   useCallback,
+  useEffect,
+  useRef,
   useState,
 } from 'react';
 import { Transfer } from './transfer';
@@ -47,16 +50,27 @@ const useColorFilter = () => {
 
 export const ColorFilterProvider: FC<PropsWithChildren> = ({ children }) => {
   const [filter, setFilter] = useState<FilterKey>('nomaly');
+  const ref = useRef<HTMLDivElement>(null);
+
+  // トップレイヤー（dialog等）にもフィルターを適用するためCSS custom propertyを設定
+  useEffect(() => {
+    const value = filter === 'nomaly' ? 'none' : `url('#${filter}')`;
+    document.documentElement.style.setProperty('--color-filter', value);
+    return () => {
+      document.documentElement.style.removeProperty('--color-filter');
+    };
+  }, [filter]);
 
   return (
     <ColorFilterContext value={filter}>
       <SetColorFilterContext value={setFilter}>
         <div
+          ref={ref}
           style={{
             filter: filter === 'nomaly' ? undefined : `url('#${filter}')`,
           }}
         >
-          {children}
+          <PortalRootProvider value={ref}>{children}</PortalRootProvider>
         </div>
         <Transfer />
       </SetColorFilterContext>
