@@ -54,11 +54,7 @@ export default defineConfig({
             screenshotFailures: false,
           },
           isolate: false,
-          setupFiles: [
-            fileURLToPath(
-              new URL('./.storybook/vitest.setup.ts', import.meta.url),
-            ),
-          ],
+          setupFiles: [],
           // NOTE: コンポーネントが自動的にclient componentsに解釈されるので、async/awaitコンポーネントは除外する
           // TODO: async/awaitコンポーネントのテストも実行できるようにする
           exclude: [
