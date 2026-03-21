@@ -9,7 +9,7 @@
   "tags": ["-lintignore"],
   "workspaces": {
     ".": {
-      "ignoreDependencies": ["@upstash/context7-mcp", "agent-browser"]
+      "ignoreDependencies": ["@upstash/context7-mcp", "@vercel/next-browser"]
     },
     "apps/main": {
       "ignoreDependencies": [

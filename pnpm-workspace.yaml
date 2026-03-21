@@ -35,7 +35,7 @@ ignoredBuiltDependencies:
   - '@prisma/engines'
   - '@swc/core'
   - '@tailwindcss/oxide'
-  - agent-browser
+  - '@vercel/next-browser'
   - bufferutil
   - core-js
   - core-js-pure
@@ -53,6 +53,7 @@ minimumReleaseAgeExclude:
   - storybook
   - '@next/*'
   - next
+  - '@vercel/next-browser'
 
 onlyBuiltDependencies:
   - lefthook

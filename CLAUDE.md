@@ -104,7 +104,7 @@ Drizzle ORM + Turso (libSQL)。Conditional Export Mapsで環境切り替え:
 
 テスト構造: `describe` で「正常系 / 異常系 / エッジケース」にグループ化。AAAパターン推奨。
 
-ブラウザの挙動確認には `/agent-browser` スキルを使用すること。
+ブラウザの挙動確認には `/next-browser` スキルを使用すること。
 
 ## コミットメッセージ
 
