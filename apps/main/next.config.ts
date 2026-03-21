@@ -15,6 +15,7 @@ const nextConfig: NextConfig = {
   experimental: {
     viewTransition: true,
     typedEnv: true,
+    prefetchInlining: true,
   },
 };
 
