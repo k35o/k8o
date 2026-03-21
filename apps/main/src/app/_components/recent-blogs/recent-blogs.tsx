@@ -1,4 +1,4 @@
-import { Card } from '@k8o/arte-odyssey/card';
+import { Card } from '@k8o/arte-odyssey';
 import { cacheLife } from 'next/cache';
 import { Suspense } from 'react';
 import { getBlogContents } from '@/app/blog/_api';

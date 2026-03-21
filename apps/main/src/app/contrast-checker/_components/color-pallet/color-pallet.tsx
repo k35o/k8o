@@ -1,4 +1,4 @@
-import { FormControl } from '@k8o/arte-odyssey/form/form-control';
+import { FormControl } from '@k8o/arte-odyssey';
 import { cn } from '@repo/helpers/cn';
 import type { ChangeEventHandler, FC } from 'react';
 

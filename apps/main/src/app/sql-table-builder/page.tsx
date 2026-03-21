@@ -1,11 +1,13 @@
 'use client';
 
-import { Button } from '@k8o/arte-odyssey/button';
-import { Card } from '@k8o/arte-odyssey/card';
-import { useClipboard } from '@k8o/arte-odyssey/hooks/clipboard';
-import { IconButton } from '@k8o/arte-odyssey/icon-button';
-import { CopyIcon } from '@k8o/arte-odyssey/icons';
-import { useToast } from '@k8o/arte-odyssey/toast';
+import {
+  Button,
+  Card,
+  CopyIcon,
+  IconButton,
+  useClipboard,
+  useToast,
+} from '@k8o/arte-odyssey';
 import { uuidV4 } from '@repo/helpers/uuid-v4';
 import dynamic from 'next/dynamic';
 import { useRef, useState } from 'react';

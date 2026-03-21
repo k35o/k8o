@@ -1,4 +1,4 @@
-import { useToast } from '@k8o/arte-odyssey/toast';
+import { useToast } from '@k8o/arte-odyssey';
 import { useCallback } from 'react';
 import { buildAnnotations } from '../_utils/build-annotations';
 import { checkJapaneseSyntax } from '../_utils/japanese-syntax';

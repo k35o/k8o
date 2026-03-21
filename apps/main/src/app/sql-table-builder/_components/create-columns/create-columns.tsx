@@ -1,5 +1,4 @@
-import { Button } from '@k8o/arte-odyssey/button';
-import { FormIcon, PlusIcon, TableIcon } from '@k8o/arte-odyssey/icons';
+import { Button, FormIcon, PlusIcon, TableIcon } from '@k8o/arte-odyssey';
 import type { FC } from 'react';
 import { useColumnsType } from '../../_state';
 import type { Column, InvalidColumns } from '../../_types/column';

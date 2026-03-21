@@ -1,8 +1,11 @@
 'use client';
 
-import { AlertIcon, IconButton } from '@k8o/arte-odyssey';
-import { Card } from '@k8o/arte-odyssey/card';
-import { Tooltip as ArteTooltip } from '@k8o/arte-odyssey/tooltip';
+import {
+  AlertIcon,
+  Tooltip as ArteTooltip,
+  Card,
+  IconButton,
+} from '@k8o/arte-odyssey';
 import { formatDate } from '@repo/helpers/date/format';
 import type { FC } from 'react';
 import { Bar, BarChart, CartesianGrid, Tooltip, XAxis, YAxis } from 'recharts';

@@ -1,6 +1,6 @@
 'use client';
 
-import { Button } from '@k8o/arte-odyssey/button';
+import { Button } from '@k8o/arte-odyssey';
 import { useCallback, useEffect, useRef, useState } from 'react';
 
 export function ScrollendTriggerDemo() {

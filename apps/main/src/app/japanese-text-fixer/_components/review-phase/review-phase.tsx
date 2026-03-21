@@ -1,10 +1,12 @@
 'use client';
 
-import { Button } from '@k8o/arte-odyssey/button';
-import { Card } from '@k8o/arte-odyssey/card';
-import { FormControl } from '@k8o/arte-odyssey/form/form-control';
-import { Textarea } from '@k8o/arte-odyssey/form/textarea';
-import { Heading } from '@k8o/arte-odyssey/heading';
+import {
+  Button,
+  Card,
+  FormControl,
+  Heading,
+  Textarea,
+} from '@k8o/arte-odyssey';
 import { type FC, useCallback, useId, useMemo } from 'react';
 import { useCheckJapaneseSyntax } from '../../_state/hooks';
 import { useProofreadDispatch, useProofreadState } from '../../_state/provider';

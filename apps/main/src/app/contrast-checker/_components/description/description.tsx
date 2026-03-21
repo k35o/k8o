@@ -1,4 +1,4 @@
-import { Anchor } from '@k8o/arte-odyssey/anchor';
+import { Anchor } from '@k8o/arte-odyssey';
 import type { FC } from 'react';
 
 export const Description: FC = () => {

@@ -1,6 +1,6 @@
 'use client';
 
-import { Button } from '@k8o/arte-odyssey/button';
+import { Button } from '@k8o/arte-odyssey';
 import Image from 'next/image';
 import { useState } from 'react';
 

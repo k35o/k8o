@@ -1,7 +1,6 @@
 'use client';
 
-import { Button } from '@k8o/arte-odyssey/button';
-import { Code } from '@k8o/arte-odyssey/code';
+import { Button, Code } from '@k8o/arte-odyssey';
 import { useState } from 'react';
 
 /**

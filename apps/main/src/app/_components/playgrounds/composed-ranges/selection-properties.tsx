@@ -1,8 +1,6 @@
 'use client';
 
-import { Code } from '@k8o/arte-odyssey/code';
-import { FormControl } from '@k8o/arte-odyssey/form/form-control';
-import { TextField } from '@k8o/arte-odyssey/form/text-field';
+import { Code, FormControl, TextField } from '@k8o/arte-odyssey';
 import { useEffect, useRef, useState } from 'react';
 
 export function SelectionProperties() {

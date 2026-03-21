@@ -1,6 +1,4 @@
-import { Anchor } from '@k8o/arte-odyssey/anchor';
-import { ErrorBoundary } from '@k8o/arte-odyssey/error-boundary';
-import { ExternalLinkIcon } from '@k8o/arte-odyssey/icons';
+import { Anchor, ErrorBoundary, ExternalLinkIcon } from '@k8o/arte-odyssey';
 import { cn } from '@repo/helpers/cn';
 import { type FC, Suspense } from 'react';
 import { MetaImage } from './image';

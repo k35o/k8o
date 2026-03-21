@@ -1,4 +1,4 @@
-import { Separator } from '@k8o/arte-odyssey/separator';
+import { Separator } from '@k8o/arte-odyssey';
 import type { FC, PropsWithChildren } from 'react';
 
 export const Playground: FC<

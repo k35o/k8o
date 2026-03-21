@@ -1,7 +1,6 @@
 'use client';
 
-import { FormControl } from '@k8o/arte-odyssey/form/form-control';
-import { NumberField } from '@k8o/arte-odyssey/form/number-field';
+import { FormControl, NumberField } from '@k8o/arte-odyssey';
 import { useState } from 'react';
 
 export function RootComparisonDemo() {

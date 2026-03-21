@@ -1,9 +1,6 @@
 'use client';
 
-import { Button } from '@k8o/arte-odyssey/button';
-import { FormControl } from '@k8o/arte-odyssey/form/form-control';
-import { Select } from '@k8o/arte-odyssey/form/select';
-import { useToast } from '@k8o/arte-odyssey/toast';
+import { Button, FormControl, Select, useToast } from '@k8o/arte-odyssey';
 import Image from 'next/image';
 import { type FC, useRef, useState } from 'react';
 import arteodysseyIcon from '@/app/_images/arteodyssey.png';

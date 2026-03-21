@@ -7,7 +7,7 @@ import {
   InformativeIcon,
   InterestingIcon,
   ShallowIcon,
-} from '@k8o/arte-odyssey/icons';
+} from '@k8o/arte-odyssey';
 import type { FC } from 'react';
 import type { FeedbackType } from './types';
 

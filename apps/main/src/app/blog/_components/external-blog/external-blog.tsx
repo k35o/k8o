@@ -1,5 +1,4 @@
-import { IconLink } from '@k8o/arte-odyssey/icon-link';
-import { QiitaIcon, RSSIcon } from '@k8o/arte-odyssey/icons';
+import { IconLink, QiitaIcon, RSSIcon } from '@k8o/arte-odyssey';
 import type { FC } from 'react';
 
 export const ExternalBlog: FC = () => {

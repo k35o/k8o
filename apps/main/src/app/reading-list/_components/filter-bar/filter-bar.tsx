@@ -1,9 +1,6 @@
 'use client';
 
-import { Checkbox } from '@k8o/arte-odyssey/form/checkbox';
-import { FormControl } from '@k8o/arte-odyssey/form/form-control';
-import { Select } from '@k8o/arte-odyssey/form/select';
-import { TextField } from '@k8o/arte-odyssey/form/text-field';
+import { Checkbox, FormControl, Select, TextField } from '@k8o/arte-odyssey';
 import { type FC, useMemo } from 'react';
 import {
   DATE_RANGE_OPTIONS,

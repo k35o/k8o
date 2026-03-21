@@ -1,7 +1,9 @@
-import { Autocomplete } from '@k8o/arte-odyssey/form/autocomplete';
-import { FormControl } from '@k8o/arte-odyssey/form/form-control';
-import { Select } from '@k8o/arte-odyssey/form/select';
-import { TextField } from '@k8o/arte-odyssey/form/text-field';
+import {
+  Autocomplete,
+  FormControl,
+  Select,
+  TextField,
+} from '@k8o/arte-odyssey';
 import type { FC } from 'react';
 import type { Column } from '../../_types/column';
 import type {

@@ -1,7 +1,6 @@
 'use client';
 
 import { Button, FileField, FormControl } from '@k8o/arte-odyssey';
-
 export const WebkitRelativePathDemo = () => {
   return (
     <FormControl

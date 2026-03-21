@@ -1,4 +1,4 @@
-import { Logo } from '@k8o/arte-odyssey/icons';
+import { Logo } from '@k8o/arte-odyssey';
 import Link from 'next/link';
 import { type FC, type ReactNode, Suspense } from 'react';
 import { ColorFilters } from '../color-filters';

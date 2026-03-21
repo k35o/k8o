@@ -1,13 +1,15 @@
 'use client';
 
-import { Anchor } from '@k8o/arte-odyssey/anchor';
-import { Button } from '@k8o/arte-odyssey/button';
-import { Dialog } from '@k8o/arte-odyssey/dialog';
-import { FormControl } from '@k8o/arte-odyssey/form/form-control';
-import { Textarea } from '@k8o/arte-odyssey/form/textarea';
-import { SendIcon } from '@k8o/arte-odyssey/icons';
-import { Modal } from '@k8o/arte-odyssey/modal';
-import { useToast } from '@k8o/arte-odyssey/toast';
+import {
+  Anchor,
+  Button,
+  Dialog,
+  FormControl,
+  Modal,
+  SendIcon,
+  Textarea,
+  useToast,
+} from '@k8o/arte-odyssey';
 import {
   type FC,
   useActionState,

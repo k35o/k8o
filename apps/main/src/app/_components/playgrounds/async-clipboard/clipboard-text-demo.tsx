@@ -1,8 +1,6 @@
 'use client';
 
-import { Button } from '@k8o/arte-odyssey/button';
-import { FormControl } from '@k8o/arte-odyssey/form/form-control';
-import { TextField } from '@k8o/arte-odyssey/form/text-field';
+import { Button, FormControl, TextField } from '@k8o/arte-odyssey';
 import { type FC, useEffect, useState } from 'react';
 
 export const ClipboardTextDemo: FC = () => {

@@ -1,4 +1,4 @@
-import { Anchor } from '@k8o/arte-odyssey/anchor';
+import { Anchor } from '@k8o/arte-odyssey';
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 import { ComingSoon } from './coming-soon';
 
