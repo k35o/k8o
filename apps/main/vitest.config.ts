@@ -10,7 +10,8 @@ export default defineConfig({
     },
     globals: true,
     coverage: {
-      provider: 'istanbul',
+      provider: 'v8',
+      changed: true,
     },
     projects: [
       {
