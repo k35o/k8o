@@ -5,8 +5,6 @@ createdAt: 2023-05-20
 updatedAt: 2026-01-16
 ---
 
-import { Alert } from '@k8o/arte-odyssey/alert';
-
 # Reactコンポーネントでchildrenに対してpropsを渡す
 
 ## はじめに
@@ -14,6 +12,7 @@ import { Alert } from '@k8o/arte-odyssey/alert';
 `children`として任意のコンポーネントを受け取る親コンポーネントから、子コンポーネントにpropsを渡したいことがあります。
 
 ```tsx
+import { Alert } from '@k8o/arte-odyssey';
 import { FC, PropsWithChildren } from 'react';
 
 const ParentComponent: FC<PropsWithChildren> = ({

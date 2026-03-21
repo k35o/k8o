@@ -5,8 +5,6 @@ createdAt: 2026-01-25
 updatedAt: 2026-01-25
 ---
 
-import { BaselineStatus } from '@k8o/arte-odyssey/baseline-status';
-
 # Service WorkerでES Modulesを使う
 
 <BaselineStatus featureId="js-modules-service-workers" />
@@ -43,6 +41,7 @@ navigator.serviceWorker.register('./sw.js', {
 // sw.js
 
 // ES Modulesのimportが使える！
+import { BaselineStatus } from '@k8o/arte-odyssey';
 import { cacheName, precacheFiles } from './cache-config.js';
 import { handleFetch } from './fetch-handler.js';
 

@@ -5,8 +5,6 @@ createdAt: 2026-03-03
 updatedAt: 2026-03-03
 ---
 
-import { BaselineStatus } from '@k8o/arte-odyssey/baseline-status';
-
 # Navigation APIの全体像とSPAルーティングのこれから
 
 <BaselineStatus featureId="navigation" />
@@ -161,6 +159,7 @@ navigation.addEventListener('navigateerror', (event) => {
 
 ```tsx
 // History APIベースのルーター — <Link>がクリックハンドリングを内部で行う
+import { BaselineStatus } from '@k8o/arte-odyssey';
 import { Link } from 'react-router';
 <Link to="/about">About</Link>
 
