@@ -1,4 +1,5 @@
 import {
+  ArteOdyssey,
   Badge,
   Card,
   ErrorBoundary,
@@ -13,7 +14,6 @@ import { AppCard } from './_components/app-card';
 import { EmailTooltip } from './_components/email-tooltip';
 import { GitHubContributionGraph } from './_components/github-contribution-graph';
 import { RecentBlogs } from './_components/recent-blogs';
-import arteodyssey from './_images/arteodyssey.png';
 import k8o from './_images/k8o.jpg';
 import { RoundedIcon } from './radius-maker/_components/rounded-icon';
 
@@ -131,14 +131,7 @@ export default function Home() {
           <AppCard
             description="k8o.meで利用しているデザインシステムを紹介します。コンポーネントやデザイントークンを確認できます。"
             link="https://arte-odyssey.k8o.me"
-            symbol={
-              <Image
-                alt=""
-                className="size-16"
-                loading="eager"
-                src={arteodyssey}
-              />
-            }
+            symbol={<ArteOdyssey size="lg" />}
             title="ArteOdyssey"
           />
         </div>
