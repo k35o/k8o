@@ -3,7 +3,6 @@
 import { Button, FormControl, Select, useToast } from '@k8o/arte-odyssey';
 import Image from 'next/image';
 import { type FC, useRef, useState } from 'react';
-import arteodysseyIcon from '@/app/_images/arteodyssey.png';
 import primaryIcon from '@/app/blog/(articles)/async-clipboard/_images/primary.png';
 import k8oIcon from '@/app/icon.png';
 
@@ -90,7 +89,7 @@ export const ClipboardImageDemo: FC = () => {
           className="rounded-md border border-border-base"
           height={128}
           ref={ref}
-          src={selectedSrc === '1' ? k8oIcon : arteodysseyIcon}
+          src={selectedSrc === '1' ? k8oIcon : primaryIcon}
           unoptimized
           width={128}
         />
