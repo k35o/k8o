@@ -49,11 +49,6 @@ minimumReleaseAge: 4320
 
 minimumReleaseAgeExclude:
   - '@k8o/*'
-  - '@storybook/*'
-  - storybook
-  - '@next/*'
-  - next
-  - '@vercel/next-browser'
 
 onlyBuiltDependencies:
   - lefthook
