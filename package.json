@@ -21,9 +21,6 @@
     "install-playwright": "playwright install --with-deps chromium",
     "knip": "knip"
   },
-  "dependencies": {
-    "remark-frontmatter": "5.0.0"
-  },
   "devDependencies": {
     "@biomejs/biome": "2.4.6",
     "@ls-lint/ls-lint": "2.3.1",

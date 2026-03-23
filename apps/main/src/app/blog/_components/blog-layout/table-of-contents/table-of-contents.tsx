@@ -2,9 +2,9 @@
 
 import { useClickAway } from '@k8o/arte-odyssey';
 import { cn } from '@repo/helpers/cn';
-import type { HeadingTree } from '@repo/helpers/mdx/types';
 import Link from 'next/link';
 import { type FC, useCallback, useEffect, useState } from 'react';
+import type { HeadingTree } from '../../../../../libs/mdx/types';
 import { END_OF_CONTENT_ID } from '../constants';
 import { ProgressBar } from './progress-bar';
 

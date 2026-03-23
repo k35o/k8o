@@ -1,6 +1,6 @@
-import { calculateTocPercentage } from '@repo/helpers/mdx/calculate-toc-percentage';
-import type { HeadingTree } from '@repo/helpers/mdx/types';
 import { type FC, useMemo } from 'react';
+import { calculateTocPercentage } from '../../../../../libs/mdx/calculate-toc-percentage';
+import type { HeadingTree } from '../../../../../libs/mdx/types';
 import { END_OF_CONTENT_ID } from '../constants';
 
 export const ProgressBar: FC<{
