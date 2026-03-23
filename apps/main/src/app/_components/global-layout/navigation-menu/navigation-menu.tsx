@@ -9,7 +9,6 @@ import {
   useWindowResize,
 } from '@k8o/arte-odyssey';
 import { type FC, Suspense, useCallback, useRef, useState } from 'react';
-import { ColorFilters } from '../../color-filters';
 import { ContactToMe } from '../../contact-to-me';
 import { ToggleTheme } from '../../toggle-theme';
 import { LlmLink } from '../llm-link';
@@ -59,7 +58,6 @@ export const NavigationMenu: FC = () => {
             <div className="flex items-center justify-center">
               <div className="flex justify-center gap-4">
                 <LlmLink />
-                <ColorFilters.ListBox placement="top" />
                 <ToggleTheme />
               </div>
             </div>
