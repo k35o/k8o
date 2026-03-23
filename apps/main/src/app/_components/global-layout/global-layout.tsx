@@ -1,7 +1,6 @@
 import { Logo } from '@k8o/arte-odyssey';
 import Link from 'next/link';
 import { type FC, type ReactNode, Suspense } from 'react';
-import { ColorFilters } from '../color-filters';
 import { ContactToMe } from '../contact-to-me';
 import { ToggleTheme } from '../toggle-theme';
 import { Background } from './background';
@@ -32,7 +31,6 @@ export const GlobalLayout: FC<{ children: ReactNode }> = ({ children }) => {
         </div>
         <div className="hidden items-center gap-1 md:flex">
           <LlmLink />
-          <ColorFilters.ListBox />
           <div className="-my-2">
             <ToggleTheme />
           </div>
