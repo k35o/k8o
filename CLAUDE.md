@@ -36,12 +36,13 @@ pnpm run -F @repo/database migrate  # マイグレーション実行
 
 ```
 apps/main/          → Next.jsアプリ（メイン）
+apps/admin/         → 管理サイト（Better Auth + GitHub OAuth）
 packages/database/  → Drizzle ORM + Turso (libSQL)
 packages/helpers/   → 共有ユーティリティ（in-source testing）
 packages/typescript-config/ → 共有TS設定
 ```
 
-パッケージ間依存: `apps/main` → `@repo/database` → `@repo/helpers`
+パッケージ間依存: `apps/main` → `@repo/database`, `@repo/helpers`
 
 ## アーキテクチャ
 
@@ -52,7 +53,7 @@ packages/typescript-config/ → 共有TS設定
   - 各機能ディレクトリ(blog/, color-converter/等)内にも `_api/`, `_components/`, `_utils/` がある（機能専用）
   - `(articles)/` のような括弧はNext.jsルートグループ
 - **services/** - Application層。ビジネスロジック
-- **emails/** - React Emailテンプレート
+- **libs/** - ライブラリ設定（Zod等）
 - **mocks/** - MSWモック定義
 
 ### データベース（packages/database/）
@@ -120,5 +121,5 @@ type: `feat`, `fix`, `docs`, `style`, `refactor`, `test`, `chore`
 
 ## Git Hooks (Lefthook)
 
-- **pre-commit**: `biome check --staged --no-errors-on-unmatched` + `ls-lint`（自動stage-fixed）
-- **pre-push**: `biome check --changed --since=HEAD~1`
+- **pre-commit**: `biome check --write --unsafe {staged_files}` + `ls-lint`（自動stage-fixed）
+- **pre-push**: `biome check {staged_files}`
