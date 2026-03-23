@@ -1,11 +1,6 @@
 {
   "version": 1,
   "skills": {
-    "arte-odyssey-usage": {
-      "source": "k35o/ArteOdyssey",
-      "sourceType": "github",
-      "computedHash": "06110c5c3a2065764b52055688444eca28ec29eb03b79b64418c5eaea7b105da"
-    },
     "better-auth-best-practices": {
       "source": "better-auth/skills",
       "sourceType": "github",

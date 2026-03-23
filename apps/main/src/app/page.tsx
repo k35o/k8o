@@ -131,7 +131,7 @@ export default function Home() {
           <AppCard
             description="k8o.meで利用しているデザインシステムを紹介します。コンポーネントやデザイントークンを確認できます。"
             link="https://arte-odyssey.k8o.me"
-            symbol={<ArteOdyssey size="lg" />}
+            symbol={<ArteOdyssey size="3xl" />}
             title="ArteOdyssey"
           />
         </div>
