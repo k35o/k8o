@@ -7,8 +7,8 @@ settings:
 catalogs:
   default:
     '@k8o/arte-odyssey':
-      specifier: 4.1.0
-      version: 4.1.0
+      specifier: 4.2.0
+      version: 4.2.0
     '@storybook/addon-a11y':
       specifier: 10.3.0
       version: 10.3.0
@@ -118,7 +118,7 @@ importers:
     dependencies:
       '@k8o/arte-odyssey':
         specifier: 'catalog:'
-        version: 4.1.0(@types/react-dom@19.2.3(@types/react@19.2.14))(@types/react@19.2.14)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)(tailwindcss@4.2.1)(typescript@5.9.3)
+        version: 4.2.0(@types/react-dom@19.2.3(@types/react@19.2.14))(@types/react@19.2.14)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)(tailwindcss@4.2.1)(typescript@5.9.3)
       '@repo/database':
         specifier: workspace:*
         version: link:../../packages/database
@@ -197,7 +197,7 @@ importers:
     dependencies:
       '@k8o/arte-odyssey':
         specifier: 'catalog:'
-        version: 4.1.0(@types/react-dom@19.2.3(@types/react@19.2.14))(@types/react@19.2.14)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)(tailwindcss@4.2.1)(typescript@5.9.3)
+        version: 4.2.0(@types/react-dom@19.2.3(@types/react@19.2.14))(@types/react@19.2.14)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)(tailwindcss@4.2.1)(typescript@5.9.3)
       '@mdx-js/loader':
         specifier: 3.1.1
         version: 3.1.1
@@ -1440,8 +1440,8 @@ packages:
   '@jridgewell/trace-mapping@0.3.31':
     resolution: {integrity: sha512-zzNR+SdQSDJzc8joaeP8QQoCQr8NuYx2dIIytl1QeBEZHJ9uW6hebsrYgbz8hJwUQao3TWCMtmfV8Nu1twOLAw==}
 
-  '@k8o/arte-odyssey@4.1.0':
-    resolution: {integrity: sha512-o1uB1g18namKaXIYarjbwFz6SycqgIVMGPRaLiyGuZDiK+Munt77bcJpKF80IBuAVTQLGJckN1Tekb/KacNDWQ==}
+  '@k8o/arte-odyssey@4.2.0':
+    resolution: {integrity: sha512-CnqveKhVxwUgD6PZmTi4hUQcOEyCa/qewJ4IrNG5vSr91d3O9AnVw0yFaDlFBb89DK3pDdb0plNuKGm5BDqYnA==}
     peerDependencies:
       '@types/react': '>=19.0.0'
       '@types/react-dom': '>=19.0.0'
@@ -4808,11 +4808,6 @@ packages:
     peerDependencies:
       react: ^19.2.4
 
-  react-error-boundary@6.1.1:
-    resolution: {integrity: sha512-BrYwPOdXi5mqkk5lw+Uvt0ThHx32rCt3BkukS4X23A2AIWDPSGX6iaWTc0y9TU/mHDA/6qOSGel+B2ERkOvD1w==}
-    peerDependencies:
-      react: ^18.0.0 || ^19.0.0
-
   react-is@16.13.1:
     resolution: {integrity: sha512-24e6ynE2H+OKt4kqsOvNd8kBpV65zoxbA4BVsEOB3ARVWQki/DHzaUoC5KuON/BiccDaCCTZBuOcfZs70kR8bQ==}
 
@@ -6471,7 +6466,7 @@ snapshots:
       '@jridgewell/resolve-uri': 3.1.2
       '@jridgewell/sourcemap-codec': 1.5.5
 
-  '@k8o/arte-odyssey@4.1.0(@types/react-dom@19.2.3(@types/react@19.2.14))(@types/react@19.2.14)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)(tailwindcss@4.2.1)(typescript@5.9.3)':
+  '@k8o/arte-odyssey@4.2.0(@types/react-dom@19.2.3(@types/react@19.2.14))(@types/react@19.2.14)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)(tailwindcss@4.2.1)(typescript@5.9.3)':
     dependencies:
       '@floating-ui/react': 0.27.19(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
       '@types/react': 19.2.14
@@ -6482,7 +6477,6 @@ snapshots:
       motion: 12.36.0(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
       react: 19.2.4
       react-dom: 19.2.4(react@19.2.4)
-      react-error-boundary: 6.1.1(react@19.2.4)
       tailwind-merge: 3.5.0
       tailwindcss: 4.2.1
       typescript: 5.9.3
@@ -10073,10 +10067,6 @@ snapshots:
     dependencies:
       react: 19.2.4
       scheduler: 0.27.0
-
-  react-error-boundary@6.1.1(react@19.2.4):
-    dependencies:
-      react: 19.2.4
 
   react-is@16.13.1: {}
 
