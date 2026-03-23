@@ -8,14 +8,9 @@ description: >-
 
 # next-browser
 
-If `next-browser` is not already on PATH, install `@vercel/next-browser`
-globally with the user's package manager, then `playwright install chromium`.
-
-If `next-browser` is already installed, it may be outdated. Run
-`next-browser --version` and compare against the latest on npm
-(`npm view @vercel/next-browser version`). If the installed version is
-behind, upgrade it (`npm install -g @vercel/next-browser@latest` or the
-equivalent for the user's package manager) before proceeding.
+Always invoke via `pnpm next-browser`. Do NOT install globally or run the
+bare `next-browser` command. All commands in this document assume the
+`pnpm next-browser` prefix.
 
 ---
 
@@ -66,7 +61,7 @@ Launch browser, navigate to URL. With `--cookies-json`, sets auth cookies
 before navigating (domain derived from URL hostname).
 
 ```
-$ next-browser open http://localhost:3024/vercel --cookies-json cookies.json
+$ pnpm next-browser open http://localhost:3024/vercel --cookies-json cookies.json
 opened → http://localhost:3024/vercel (11 cookies for localhost)
 ```
 
@@ -88,7 +83,7 @@ Navigate to a URL with a fresh server render. The browser loads a new
 document — equivalent to typing a URL in the address bar.
 
 ```
-$ next-browser goto http://localhost:3024/vercel/~/deployments
+$ pnpm next-browser goto http://localhost:3024/vercel/~/deployments
 → http://localhost:3024/vercel/~/deployments
 ```
 
@@ -99,7 +94,7 @@ way a user clicks a link in the app. Without a path, shows an interactive
 picker of all links on the current page.
 
 ```
-$ next-browser push /vercel/~/deployments
+$ pnpm next-browser push /vercel/~/deployments
 → http://localhost:3024/vercel/~/deployments
 ```
 
