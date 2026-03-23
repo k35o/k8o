@@ -2,11 +2,11 @@
   "hooks": {
     "PostToolUse": [
       {
-        "matcher": "Write|Edit|MultiEdit",
+        "matcher": "Write|Edit",
         "hooks": [
           {
             "type": "command",
-            "command": "jq -r '.tool_input.file_path | select(endswith(\".ts\") or endswith(\".tsx\"))' | xargs -r pnpm biome check --write --no-errors-on-unmatched --files-ignore-unknown=true --colors=off --unsafe"
+            "command": "jq -r '.tool_input.file_path' | xargs -r pnpm biome check --write --no-errors-on-unmatched --files-ignore-unknown=true --colors=off --unsafe"
           },
           {
             "type": "command",
