@@ -66,6 +66,8 @@ Drizzle ORM + Turso (libSQL)。Conditional Export Mapsで環境切り替え:
 
 ### TailwindCSS：ArteOdysseyカスタムトークンのみ使用
 
+ArteOdysseyのドキュメントは `apps/main/node_modules/@k8o/arte-odyssey/docs/` を参照すること。
+
 ```tsx
 // ✅ Good
 <div className="text-fg-base bg-bg-base">
