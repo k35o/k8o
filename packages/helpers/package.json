@@ -42,23 +42,10 @@
       "types": "./src/is-internal-route.ts",
       "default": "./src/is-internal-route.ts"
     },
-    "./mdx/calculate-toc-percentage": {
-      "types": "./src/mdx/calculate-toc-percentage.ts",
-      "default": "./src/mdx/calculate-toc-percentage.ts"
-    },
     "./mdx/frontmatter": {
       "types": "./src/mdx/frontmatter.ts",
       "node": "./src/mdx/frontmatter.ts",
       "default": "./src/mdx/frontmatter.ts"
-    },
-    "./mdx/toc-tree": {
-      "types": "./src/mdx/toc-tree.ts",
-      "node": "./src/mdx/toc-tree.ts",
-      "default": "./src/mdx/toc-tree.ts"
-    },
-    "./mdx/types": {
-      "types": "./src/mdx/types.ts",
-      "default": "./src/mdx/types.ts"
     },
     "./number/between": {
       "types": "./src/number/between.ts",
@@ -96,14 +83,12 @@
     "@vercel/functions": "3.4.3",
     "clsx": "2.1.1",
     "date-fns": "4.1.0",
-    "remark": "15.0.1",
     "tailwind-merge": "3.5.0",
     "to-vfile": "8.0.0",
     "vfile-matter": "5.0.1"
   },
   "devDependencies": {
     "@repo/typescript-config": "workspace:*",
-    "@types/mdast": "4.0.4",
     "@vitest/coverage-v8": "catalog:",
     "@vitest/ui": "catalog:",
     "vitest": "catalog:"

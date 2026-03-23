@@ -27,6 +27,16 @@ export default defineConfig({
       },
       {
         extends: true,
+        test: {
+          env: {
+            TZ: 'UTC',
+          },
+          name: { label: 'libs test', color: 'green' },
+          include: ['src/libs/**/*.test.{ts,tsx}'],
+        },
+      },
+      {
+        extends: true,
         plugins: [
           storybookTest({
             storybookScript: 'pnpm storybook --ci',

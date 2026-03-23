@@ -1,6 +1,6 @@
 import { db } from '@repo/database';
 import { getFrontmatter } from '@repo/helpers/mdx/frontmatter';
-import { getTocTree } from '@repo/helpers/mdx/toc-tree';
+import { getTocTree } from '../../libs/mdx/toc-tree';
 import { getBlog, getBlogMetadata, getBlogToc } from './blog';
 import { blogPath } from './path';
 
@@ -14,7 +14,7 @@ vi.mock('@repo/database', () => ({
   },
 }));
 vi.mock('@repo/helpers/mdx/frontmatter');
-vi.mock('@repo/helpers/mdx/toc-tree');
+vi.mock('../../libs/mdx/toc-tree');
 vi.mock('./path');
 
 describe('blog service', () => {
