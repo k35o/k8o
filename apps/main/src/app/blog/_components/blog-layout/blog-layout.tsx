@@ -1,6 +1,5 @@
 import {
   Badge,
-  ErrorBoundary,
   LinkButton,
   PublishDateIcon,
   Separator,
@@ -12,6 +11,7 @@ import {
 import { formatDate } from '@repo/helpers/date/format';
 import Link from 'next/link';
 import { type FC, type ReactNode, Suspense, ViewTransition } from 'react';
+import { SilentErrorBoundary } from '@/app/_components/error-boundary';
 import { getBlogContent, getBlogToc } from '@/app/blog/_api';
 import { END_OF_CONTENT_ID } from './constants';
 import { Feedback } from './feedback';
@@ -68,7 +68,7 @@ export const BlogLayout: FC<{
                   </div>
                 </ViewTransition>
               </div>
-              <ErrorBoundary fallback={null}>
+              <SilentErrorBoundary>
                 <Suspense fallback={null}>
                   <div className="flex items-center gap-1">
                     <ViewIcon size="sm" />
@@ -78,7 +78,7 @@ export const BlogLayout: FC<{
                     </span>
                   </div>
                 </Suspense>
-              </ErrorBoundary>
+              </SilentErrorBoundary>
             </div>
             <ViewTransition name={`tags-${slug}`}>
               {blog.tags.length > 0 && (
@@ -101,19 +101,19 @@ export const BlogLayout: FC<{
           {children}
         </article>
         <div id={END_OF_CONTENT_ID}>
-          <ErrorBoundary fallback={null}>
+          <SilentErrorBoundary>
             <section className="w-full rounded-md bg-bg-base/90 px-3 pt-8 pb-14 sm:px-10">
               <Feedback slug={slug} />
             </section>
-          </ErrorBoundary>
-          <ErrorBoundary fallback={null}>
+          </SilentErrorBoundary>
+          <SilentErrorBoundary>
             <Recommend slug={slug} />
-          </ErrorBoundary>
+          </SilentErrorBoundary>
         </div>
       </div>
-      <ErrorBoundary fallback={null}>
+      <SilentErrorBoundary>
         <TableOfContents headingTree={headingTree} />
-      </ErrorBoundary>
+      </SilentErrorBoundary>
     </div>
   );
 };

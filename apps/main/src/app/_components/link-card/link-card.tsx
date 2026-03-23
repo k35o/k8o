@@ -1,6 +1,7 @@
-import { Anchor, ErrorBoundary, ExternalLinkIcon } from '@k8o/arte-odyssey';
+import { Anchor, ExternalLinkIcon } from '@k8o/arte-odyssey';
 import { cn } from '@repo/helpers/cn';
 import { type FC, Suspense } from 'react';
+import { LinkCardErrorBoundary } from './error-boundary';
 import { MetaImage } from './image';
 import { getMetadata } from './metadata';
 
@@ -90,10 +91,10 @@ export const LinkCard: FC<{
   variant?: Variant;
 }> = ({ href, variant = 'horizontal' }) => {
   return (
-    <ErrorBoundary fallback={<Anchor href={href}>{href}</Anchor>}>
+    <LinkCardErrorBoundary href={href}>
       <Suspense fallback={<Loading href={href} variant={variant} />}>
         <Content href={href} variant={variant} />
       </Suspense>
-    </ErrorBoundary>
+    </LinkCardErrorBoundary>
   );
 };

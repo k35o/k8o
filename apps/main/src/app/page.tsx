@@ -2,7 +2,6 @@ import {
   ArteOdyssey,
   Badge,
   Card,
-  ErrorBoundary,
   GitHubIcon,
   Heading,
   IconLink,
@@ -12,6 +11,7 @@ import {
 import Image from 'next/image';
 import { AppCard } from './_components/app-card';
 import { EmailTooltip } from './_components/email-tooltip';
+import { ActivityErrorBoundary } from './_components/error-boundary';
 import { GitHubContributionGraph } from './_components/github-contribution-graph';
 import { RecentBlogs } from './_components/recent-blogs';
 import k8o from './_images/k8o.jpg';
@@ -73,7 +73,7 @@ export default function Home() {
         <div>
           <Heading type="h2">Activity</Heading>
         </div>
-        <ErrorBoundary
+        <ActivityErrorBoundary
           fallback={
             <div className="grid gap-8">
               <RecentBlogs />
@@ -88,7 +88,7 @@ export default function Home() {
               <RecentBlogs />
             </div>
           </div>
-        </ErrorBoundary>
+        </ActivityErrorBoundary>
       </div>
       <div className="flex flex-col gap-6">
         <div>
