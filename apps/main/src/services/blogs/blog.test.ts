@@ -14,7 +14,7 @@ vi.mock('@repo/database', () => ({
   },
 }));
 vi.mock('@repo/helpers/mdx/frontmatter');
-vi.mock('@repo/helpers/mdx/toc-tree');
+vi.mock('../../libs/mdx/toc-tree');
 vi.mock('./path');
 
 describe('blog service', () => {
