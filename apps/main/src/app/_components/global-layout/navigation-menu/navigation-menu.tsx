@@ -12,7 +12,6 @@ import { type FC, Suspense, useCallback, useRef, useState } from 'react';
 import { ContactToMe } from '../../contact-to-me';
 import { ToggleTheme } from '../../toggle-theme';
 import { LlmLink } from '../llm-link';
-import { TagsLink } from '../tags-link';
 
 export const NavigationMenu: FC = () => {
   const ref = useRef<HTMLDialogElement>(null);
@@ -45,9 +44,6 @@ export const NavigationMenu: FC = () => {
             </div>
             <nav className="mt-8">
               <ul className="flex w-full flex-col gap-4 p-4">
-                <li>
-                  <TagsLink onNavigate={onClose} />
-                </li>
                 <li>
                   <Suspense fallback={null}>
                     <ContactToMe fullWidth />

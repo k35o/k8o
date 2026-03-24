@@ -8,7 +8,6 @@ import { Footer } from './footer';
 import { Header } from './header';
 import { LlmLink } from './llm-link';
 import { NavigationMenu } from './navigation-menu';
-import { TagsLink } from './tags-link';
 
 export const GlobalLayout: FC<{ children: ReactNode }> = ({ children }) => {
   return (
@@ -23,7 +22,6 @@ export const GlobalLayout: FC<{ children: ReactNode }> = ({ children }) => {
             </h1>
           </Link>
           <div className="hidden items-center gap-1 md:flex">
-            <TagsLink />
             <Suspense fallback={null}>
               <ContactToMe />
             </Suspense>
