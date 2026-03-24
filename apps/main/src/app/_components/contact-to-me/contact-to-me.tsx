@@ -5,6 +5,7 @@ import {
   Button,
   Dialog,
   FormControl,
+  IconButton,
   Modal,
   SendIcon,
   Textarea,
@@ -19,9 +20,7 @@ import {
 } from 'react';
 import { contact } from '@/app/_api/contact-to-me';
 
-export const ContactToMe: FC<{
-  fullWidth?: boolean;
-}> = ({ fullWidth = false }) => {
+export const ContactToMe: FC = () => {
   const [isOpen, setIsOpen] = useState(false);
 
   const onOpen = useCallback(() => {
@@ -34,21 +33,9 @@ export const ContactToMe: FC<{
 
   return (
     <>
-      {isOpen ? (
-        <p className="flex items-center gap-2 px-4 py-2 text-center font-bold text-fg-info text-md">
-          <SendIcon />
-          お問い合わせ
-        </p>
-      ) : (
-        <Button
-          fullWidth={fullWidth}
-          onClick={onOpen}
-          startIcon={<SendIcon />}
-          variant="skeleton"
-        >
-          お問い合わせ
-        </Button>
-      )}
+      <IconButton label="お問い合わせ" onClick={onOpen}>
+        <SendIcon size="lg" />
+      </IconButton>
       <ContactToMeModal isOpen={isOpen} onClose={onClose} />
     </>
   );
