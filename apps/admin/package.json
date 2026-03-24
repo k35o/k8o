@@ -29,6 +29,7 @@
     "react": "catalog:",
     "react-dom": "catalog:",
     "rss-parser": "3.13.0",
+    "server-only": "0.0.1",
     "tailwindcss": "catalog:"
   },
   "devDependencies": {
