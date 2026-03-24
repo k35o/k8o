@@ -24,7 +24,7 @@ export const External: Story = {
     link: 'https://arte-odyssey.k8o.me',
     title: 'ArteOdyssey',
     description:
-      'k8o.meで利用しているデザインシステムを紹介します。コンポーネントやデザイントークンを確認できます。',
+      'k8o.meのデザインシステム。コンポーネントやトークンを確認できます。',
   },
 };
 

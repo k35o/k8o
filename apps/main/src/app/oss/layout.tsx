@@ -3,10 +3,10 @@ import type { Metadata } from 'next';
 
 export const metadata = {
   title: 'OSS',
-  description: '公開しているオープンソースプロジェクトをまとめたページです。',
+  description: '公開しているオープンソースプロジェクトをまとめています。',
   openGraph: {
     title: 'OSS',
-    description: '公開しているオープンソースプロジェクトをまとめたページです。',
+    description: '公開しているオープンソースプロジェクトをまとめています。',
     url: 'https://k8o.me/oss',
     siteName: 'k8o',
     locale: 'ja',
@@ -15,7 +15,7 @@ export const metadata = {
   twitter: {
     title: 'OSS',
     card: 'summary',
-    description: '公開しているオープンソースプロジェクトをまとめたページです。',
+    description: '公開しているオープンソースプロジェクトをまとめています。',
   },
 } satisfies Metadata;
 
