@@ -12,14 +12,10 @@
       "ignoreDependencies": ["@upstash/context7-mcp", "@vercel/next-browser"]
     },
     "apps/main": {
-      "ignoreDependencies": [
-        "@vitest/coverage-v8",
-        "chromatic",
-        "vitest-browser-react"
-      ]
+      "ignoreDependencies": ["chromatic", "vitest-browser-react"]
     },
     "packages/helpers": {
-      "ignoreDependencies": ["@vitest/coverage-v8"]
+      "ignoreDependencies": []
     },
     "apps/admin": {}
   }
