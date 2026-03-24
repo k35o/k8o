@@ -10,6 +10,9 @@ const nextConfig: NextConfig = {
       exclude: ['error', 'warn'],
     },
   },
+  logging: {
+    browserToTerminal: true,
+  },
   typedRoutes: true,
   cacheComponents: true,
   experimental: {
