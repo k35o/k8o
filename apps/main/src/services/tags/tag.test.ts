@@ -28,16 +28,6 @@ describe('getTag', () => {
           },
         },
       ],
-      serviceTag: [
-        {
-          id: 1,
-          service: {
-            id: 1,
-            name: 'ArteOdyssey',
-            slug: 'design-system',
-          },
-        },
-      ],
       talkTag: [
         {
           id: 1,
@@ -65,13 +55,6 @@ describe('getTag', () => {
           id: 1,
           slug: 'blog1',
           title: 'Blog Title',
-        },
-      ],
-      services: [
-        {
-          id: 1,
-          slug: 'design-system',
-          title: 'ArteOdyssey',
         },
       ],
       talks: [

@@ -19,13 +19,6 @@ export const Primary: Story = {
         title: 'k8o',
       },
     ],
-    services: [
-      {
-        id: 1,
-        slug: 'k8o',
-        title: 'k8o',
-      },
-    ],
     talks: [
       {
         id: 1,

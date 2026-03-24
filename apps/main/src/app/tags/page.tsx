@@ -7,12 +7,12 @@ export default async function Page() {
   return (
     <section className="grid grid-cols-auto-fill-70 justify-items-center gap-4">
       {tags.map((tag) => {
-        if (tag.blogCount + tag.serviceCount + tag.talkCount === 0) {
+        if (tag.blogCount + tag.talkCount === 0) {
           return null;
         }
         return (
           <TagCard
-            count={tag.blogCount + tag.serviceCount + tag.talkCount}
+            count={tag.blogCount + tag.talkCount}
             href={`/tags/${tag.id.toString()}` as Route}
             key={tag.id}
             label="コンテンツを見る"

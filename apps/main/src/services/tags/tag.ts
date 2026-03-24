@@ -9,11 +9,6 @@ export async function getTag(id: number): Promise<{
     slug: string;
     title: string;
   }[];
-  services: {
-    id: number;
-    slug: string;
-    title: string;
-  }[];
   talks: {
     id: number;
     title: string;
@@ -26,11 +21,6 @@ export async function getTag(id: number): Promise<{
       blogTag: {
         with: {
           blog: true,
-        },
-      },
-      serviceTag: {
-        with: {
-          service: true,
         },
       },
       talkTag: {
@@ -62,11 +52,6 @@ export async function getTag(id: number): Promise<{
     id: tag.id,
     name: tag.name,
     blogs,
-    services: tag.serviceTag.map((serviceTag) => ({
-      id: serviceTag.service.id,
-      slug: serviceTag.service.slug,
-      title: serviceTag.service.name,
-    })),
     talks: tag.talkTag.map((talkTag) => ({
       id: talkTag.talk.id,
       title: talkTag.talk.title,
