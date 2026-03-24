@@ -11,16 +11,11 @@ export const TagContent: FC<{
     slug: string;
     title: string;
   }[];
-  services: {
-    id: number;
-    slug: string;
-    title: string;
-  }[];
   talks: {
     id: number;
     title: string;
   }[];
-}> = ({ name, blogs, services, talks }) => {
+}> = ({ name, blogs, talks }) => {
   return (
     <div className="flex flex-col gap-8">
       <div className="flex items-center gap-4 rounded-lg bg-bg-base p-6">
@@ -30,30 +25,12 @@ export const TagContent: FC<{
         <div className="flex flex-col gap-2">
           <Heading type="h3">{name}</Heading>
           <p className="text-fg-mute text-sm">
-            {blogs.length + services.length + talks.length}
+            {blogs.length + talks.length}
             件のコンテンツがあります
           </p>
         </div>
       </div>
       <div className="flex flex-col gap-8">
-        {services.length > 0 && (
-          <div className="flex flex-col gap-4">
-            <Link href="/">
-              <Heading type="h4">サービス</Heading>
-            </Link>
-            <div className="grid grid-cols-auto-fill-70 justify-items-center gap-4">
-              {services.map((service) => (
-                <TagCard
-                  href={`/${service.slug}` as Route}
-                  key={service.id}
-                  label="サービスを利用する"
-                  linkLabel={`「${service.title}」のサービスを利用する`}
-                  title={service.title}
-                />
-              ))}
-            </div>
-          </div>
-        )}
         {blogs.length > 0 && (
           <div className="flex flex-col gap-4">
             <Link href="/blog">

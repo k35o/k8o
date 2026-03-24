@@ -6,7 +6,6 @@ import {
   uniqueIndex,
 } from 'drizzle-orm/sqlite-core';
 import { blogTag } from './blog-tag';
-import { serviceTag } from './service-tag';
 import { talkTag } from './talk-tag';
 
 export const tags = sqliteTable(
@@ -20,6 +19,5 @@ export const tags = sqliteTable(
 
 export const tagsRelations = relations(tags, ({ many }) => ({
   blogTag: many(blogTag),
-  serviceTag: many(serviceTag),
   talkTag: many(talkTag),
 }));

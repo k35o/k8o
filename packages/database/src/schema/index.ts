@@ -15,9 +15,6 @@ import { blogViews } from './blog-views';
 import { blogs, blogsRelations } from './blogs';
 import { comments, commentsRelations } from './comments';
 import { feedbacks, feedbacksRelations } from './feedback';
-import { serviceTag, serviceTagRelations } from './service-tag';
-import { serviceType } from './service-type';
-import { services, servicesRelations } from './services';
 import { tags, tagsRelations } from './tags';
 import { talkTag, talkTagRelations } from './talk-tag';
 import { talks, talksRelations } from './talks';
@@ -40,10 +37,6 @@ export const schema = {
   // Talks関連
   talks,
   talkTag,
-  // アプリ関連
-  services,
-  serviceTag,
-  serviceType,
   // よんでるもの関連
   articleSources,
   articles,
@@ -65,9 +58,6 @@ export const relations = {
   // Talks関連
   talksRelations,
   talkTagRelations,
-  // アプリ関連
-  servicesRelations,
-  serviceTagRelations,
   // よんでるもの関連
   articleSourcesRelations,
   articlesRelations,

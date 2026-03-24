@@ -7,36 +7,24 @@ import { Background } from './background';
 import { Footer } from './footer';
 import { Header } from './header';
 import { LlmLink } from './llm-link';
-import { NavigationMenu } from './navigation-menu';
-import { TagsLink } from './tags-link';
 
 export const GlobalLayout: FC<{ children: ReactNode }> = ({ children }) => {
   return (
     <div className="flex min-h-svh flex-col">
       <Background />
       <Header>
-        <div className="flex items-center gap-3">
-          <Link href="/">
-            <h1>
-              <span className="sr-only">k8o</span>
-              <Logo className="h-10" />
-            </h1>
-          </Link>
-          <div className="hidden items-center gap-1 md:flex">
-            <TagsLink />
-            <Suspense fallback={null}>
-              <ContactToMe />
-            </Suspense>
-          </div>
-        </div>
-        <div className="hidden items-center gap-1 md:flex">
+        <Link href="/">
+          <h1>
+            <span className="sr-only">k8o</span>
+            <Logo className="h-10" />
+          </h1>
+        </Link>
+        <div className="flex items-center gap-1">
+          <Suspense fallback={null}>
+            <ContactToMe />
+          </Suspense>
+          <ToggleTheme />
           <LlmLink />
-          <div className="-my-2">
-            <ToggleTheme />
-          </div>
-        </div>
-        <div className="block md:hidden">
-          <NavigationMenu />
         </div>
       </Header>
       <main className="flex grow justify-center">

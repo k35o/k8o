@@ -27,7 +27,6 @@ describe('getTags', () => {
             },
           },
         ],
-        serviceTag: [],
         talkTag: [
           {
             id: 1,
@@ -46,7 +45,6 @@ describe('getTags', () => {
     expect(tags).toHaveLength(1);
     expect(tags[0]?.name).toBe('tag1');
     expect(tags[0]?.blogCount).toBe(1);
-    expect(tags[0]?.serviceCount).toBe(0);
     expect(tags[0]?.talkCount).toBe(1);
   });
 });

@@ -5,7 +5,6 @@ export async function getTags(page = 1): Promise<
     id: number;
     name: string;
     blogCount: number;
-    serviceCount: number;
     talkCount: number;
   }[]
 > {
@@ -19,11 +18,6 @@ export async function getTags(page = 1): Promise<
       blogTag: {
         with: {
           blog: true,
-        },
-      },
-      serviceTag: {
-        with: {
-          service: true,
         },
       },
       talkTag: {
@@ -40,7 +34,6 @@ export async function getTags(page = 1): Promise<
     id: tag.id,
     name: tag.name,
     blogCount: tag.blogTag.filter((blogTag) => blogTag.blog.published).length,
-    serviceCount: tag.serviceTag.length,
     talkCount: tag.talkTag.length,
   }));
 }
