@@ -3,10 +3,10 @@ import type { Metadata } from 'next';
 
 export const metadata = {
   title: 'よんでるもの',
-  description: '普段読んでいる記事をまとめたページ。',
+  description: '普段読んでいる記事を検索やソースで絞り込みながら探せます。',
   openGraph: {
     title: 'よんでるもの',
-    description: '普段読んでいる記事をまとめたページ。',
+    description: '普段読んでいる記事を検索やソースで絞り込みながら探せます。',
     url: 'https://k8o.me/reading-list',
     siteName: 'k8o',
     locale: 'ja',
@@ -15,7 +15,7 @@ export const metadata = {
   twitter: {
     title: 'よんでるもの',
     card: 'summary',
-    description: '普段読んでいる記事をまとめたページ。',
+    description: '普段読んでいる記事を検索やソースで絞り込みながら探せます。',
   },
 } satisfies Metadata;
 

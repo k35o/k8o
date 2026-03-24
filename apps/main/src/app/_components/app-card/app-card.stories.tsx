@@ -1,4 +1,3 @@
-import { LinkIcon } from '@k8o/arte-odyssey';
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 import { expect, within } from 'storybook/test';
 import { AppCard } from './app-card';
@@ -14,27 +13,24 @@ type Story = StoryObj<typeof AppCard>;
 export const Primary: Story = {
   args: {
     link: '/moji-count',
-    symbol: '📏',
     title: 'もじカウント',
     description:
       'テキストの文字数を数えます。ひらがな・カタカナ・漢字・アルファベット・記号・絵文字など、文字の種類を問わず数えられます。',
   },
 };
 
-export const EmotionIsElement: Story = {
+export const External: Story = {
   args: {
-    link: '/moji-count',
-    symbol: <LinkIcon size="lg" />,
-    title: 'もじカウント',
+    link: 'https://arte-odyssey.k8o.me',
+    title: 'ArteOdyssey',
     description:
-      'テキストの文字数を数えます。ひらがな・カタカナ・漢字・アルファベット・記号・絵文字など、文字の種類を問わず数えられます。',
+      'k8o.meのデザインシステム。コンポーネントやトークンを確認できます。',
   },
 };
 
 export const DisplaysTitle: Story = {
   args: {
     link: '/base-converter',
-    symbol: '🔧',
     title: 'テストアプリ',
     description: 'テスト用の説明文です。',
   },
@@ -51,7 +47,6 @@ export const DisplaysTitle: Story = {
 export const DisplaysDescription: Story = {
   args: {
     link: '/qr-generator',
-    symbol: '📝',
     title: 'アプリ名',
     description: 'これはアプリの説明文です。複数行になる場合もあります。',
   },
@@ -70,7 +65,6 @@ export const DisplaysDescription: Story = {
 export const HasLink: Story = {
   args: {
     link: '/color-converter',
-    symbol: '🎨',
     title: 'カラーコンバーター',
     description: '色を変換します。',
   },
@@ -80,20 +74,5 @@ export const HasLink: Story = {
     // リンクが正しいhrefを持っていることを確認
     const link = canvas.getByRole('link');
     await expect(link).toHaveAttribute('href', '/color-converter');
-  },
-};
-
-export const DisplaysSymbol: Story = {
-  args: {
-    link: '/radius-maker',
-    symbol: '🚀',
-    title: 'ロケットアプリ',
-    description: '説明',
-  },
-  play: async ({ canvasElement }) => {
-    const canvas = within(canvasElement);
-
-    // シンボルが表示されていることを確認
-    await expect(canvas.getByText('🚀')).toBeInTheDocument();
   },
 };

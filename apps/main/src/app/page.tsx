@@ -15,7 +15,6 @@ import { ActivityErrorBoundary } from './_components/error-boundary';
 import { GitHubContributionGraph } from './_components/github-contribution-graph';
 import { RecentBlogs } from './_components/recent-blogs';
 import k8o from './_images/k8o.jpg';
-import { RoundedIcon } from './radius-maker/_components/rounded-icon';
 
 export default function Home() {
   return (
@@ -99,39 +98,34 @@ export default function Home() {
         </div>
         <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
           <AppCard
-            description="Webフロントエンドの話題を中心に、日々のことも書くブログ。"
+            description="Webフロントエンドを中心に、日々のことも書いています。"
             link="/blog"
-            symbol="📕"
             title="Blog"
           />
           <AppCard
-            description="過去の登壇内容をまとめたページです。講演のテーマや資料へのリンクを掲載しています。"
+            description="過去の登壇テーマや資料へのリンクをまとめています。"
             link="/talks"
-            symbol="🎙️"
             title="Talks"
           />
           <AppCard
-            description="ブログの記事や興味のある技術を試した試作品を集めた場所。"
+            description="ブログ記事や興味のある技術の試作品を集めています。"
             link="/playgrounds"
-            symbol="👾"
             title="Playgrounds"
           />
           <AppCard
-            description="公開しているオープンソースプロジェクトをまとめたページです。"
+            description="公開しているオープンソースプロジェクトをまとめています。"
             link="/oss"
-            symbol="📦"
             title="OSS"
           />
           <AppCard
-            description="普段読んでいる記事をまとめたページ。"
+            description="普段読んでいる記事を検索やソースで絞り込みながら探せます。"
             link="/reading-list"
-            symbol="📖"
             title="よんでるもの"
           />
           <AppCard
-            description="k8o.meで利用しているデザインシステムを紹介します。コンポーネントやデザイントークンを確認できます。"
+            accent={<ArteOdyssey size="xl" />}
+            description="k8o.meのデザインシステム。コンポーネントやトークンを確認できます。"
             link="https://arte-odyssey.k8o.me"
-            symbol={<ArteOdyssey size="3xl" />}
             title="ArteOdyssey"
           />
         </div>
@@ -147,55 +141,46 @@ export default function Home() {
           <AppCard
             description="テキストの文字数をリアルタイムに数えます。"
             link="/moji-count"
-            symbol="📏"
             title="もじカウント"
           />
           <AppCard
             description="日本語の文章を解析し、誤字脱字や文法ミスを指摘します。"
             link="/japanese-text-fixer"
-            symbol="🧐"
             title="日本語校正くん"
           />
           <AppCard
             description="テキストやURLからQRコードを生成してダウンロードできます。"
             link="/qr-generator"
-            symbol="📱"
             title="QRキット"
           />
           <AppCard
             description="2進数・8進数・10進数・16進数を相互に変換します。"
             link="/base-converter"
-            symbol="🧬"
             title="基数チェンジャー"
           />
           <AppCard
             description="2色のコントラスト比を計算し、WCAGの基準で評価します。"
             link="/contrast-checker"
-            symbol="⚖️"
             title="コントラストチェッカー"
           />
           <AppCard
             description="HEX・RGB・HSLの色表現を相互に変換します。"
             link="/color-converter"
-            symbol="🎨"
             title="カラーコード職人"
           />
           <AppCard
             description="border-radiusを視覚的に操作してCSSを生成します。"
             link="/radius-maker"
-            symbol={<RoundedIcon />}
             title="かどまるラボ"
           />
           <AppCard
             description="テーブル名・カラム・制約を入力してCREATE TABLE文を生成します。"
             link="/sql-table-builder"
-            symbol="🔨"
             title="SQLテーブルメーカー"
           />
           <AppCard
             description="2つのテキストを文字単位で比較して差分を表示します。"
             link="/text-diff"
-            symbol="🔍"
             title="テキスト差分チェッカー"
           />
         </div>

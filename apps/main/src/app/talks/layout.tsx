@@ -3,12 +3,10 @@ import type { Metadata } from 'next';
 
 export const metadata = {
   title: 'Talks',
-  description:
-    '過去の登壇内容をまとめたページです。講演のテーマや資料へのリンクを掲載しています。',
+  description: '過去の登壇テーマや資料へのリンクをまとめています。',
   openGraph: {
     title: 'Talks',
-    description:
-      '過去の登壇内容をまとめたページです。講演のテーマや資料へのリンクを掲載しています。',
+    description: '過去の登壇テーマや資料へのリンクをまとめています。',
     url: 'https://k8o.me/talks',
     siteName: 'k8o',
     locale: 'ja',
@@ -17,8 +15,7 @@ export const metadata = {
   twitter: {
     title: 'Talks',
     card: 'summary',
-    description:
-      '過去の登壇内容をまとめたページです。講演のテーマや資料へのリンクを掲載しています。',
+    description: '過去の登壇テーマや資料へのリンクをまとめています。',
   },
 } satisfies Metadata;
 
