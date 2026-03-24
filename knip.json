@@ -13,10 +13,6 @@
     },
     "apps/main": {
       "ignoreDependencies": ["chromatic", "vitest-browser-react"]
-    },
-    "packages/helpers": {
-      "ignoreDependencies": []
-    },
-    "apps/admin": {}
+    }
   }
 }
