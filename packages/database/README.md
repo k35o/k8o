@@ -35,7 +35,7 @@ packages/database/
 - `@repo/database/auth`
   - Better Auth 用のエクスポート
 
-詳細は [`package.json`](/Users/kouki_sakano/k8o/packages/database/package.json) を参照してください。
+詳細は [`package.json`](./package.json) を参照してください。
 
 ## 主要コマンド
 
