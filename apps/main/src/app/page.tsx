@@ -98,33 +98,33 @@ export default function Home() {
         </div>
         <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
           <AppCard
-            description="Webフロントエンドの話題を中心に、日々のことも書くブログ。"
+            description="Webフロントエンドを中心に、日々のことも書いています。"
             link="/blog"
             title="Blog"
           />
           <AppCard
-            description="過去の登壇内容をまとめたページです。講演のテーマや資料へのリンクを掲載しています。"
+            description="過去の登壇テーマや資料へのリンクをまとめています。"
             link="/talks"
             title="Talks"
           />
           <AppCard
-            description="ブログの記事や興味のある技術を試した試作品を集めた場所。"
+            description="ブログ記事や興味のある技術の試作品を集めています。"
             link="/playgrounds"
             title="Playgrounds"
           />
           <AppCard
-            description="公開しているオープンソースプロジェクトをまとめたページです。"
+            description="公開しているオープンソースプロジェクトをまとめています。"
             link="/oss"
             title="OSS"
           />
           <AppCard
-            description="普段読んでいる記事をまとめたページ。"
+            description="普段読んでいる記事を検索やソースで絞り込みながら探せます。"
             link="/reading-list"
             title="よんでるもの"
           />
           <AppCard
             accent={<ArteOdyssey size="xl" />}
-            description="k8o.meで利用しているデザインシステムを紹介します。コンポーネントやデザイントークンを確認できます。"
+            description="k8o.meのデザインシステム。コンポーネントやトークンを確認できます。"
             link="https://arte-odyssey.k8o.me"
             title="ArteOdyssey"
           />
