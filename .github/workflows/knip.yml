@@ -15,13 +15,13 @@ jobs:
       issues: write
     steps:
       - name: Checkout branch
-        uses: actions/checkout@0c366fd6a839edf440554fa01a7085ccba70ac98
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
       - name: Setup
         uses: ./.github/actions/setup
       - name: Run knip report
-        uses: k35o/patrol-board@a10b04e920ed2cb25b8bde9569a82994f6f4d681 # v0
+        uses: k35o/patrol-board@a10b04e920ed2cb25b8bde9569a82994f6f4d681 # v0.0.2
         with:
-          script: './scripts/knip-report.sh'
+          script: './.github/scripts/knip-report.sh'
           issue-title: 'Knip 定期レポート'
           issue-label: 'knip-report'
         env:
