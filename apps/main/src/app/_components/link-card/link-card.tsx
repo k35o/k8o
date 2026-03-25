@@ -1,5 +1,6 @@
-import { Anchor, ExternalLinkIcon } from '@k8o/arte-odyssey';
+import { Anchor, ExternalLinkIcon, PublishDateIcon } from '@k8o/arte-odyssey';
 import { cn } from '@repo/helpers/cn';
+import { formatDate } from '@repo/helpers/date/format';
 import { type FC, Suspense } from 'react';
 import { LinkCardErrorBoundary } from './error-boundary';
 import { MetaImage } from './image';
@@ -39,10 +40,11 @@ const Loading: FC<{ href: string; variant: Variant }> = ({ href, variant }) => {
   );
 };
 
-const Content: FC<{ href: string; variant: Variant }> = async ({
-  href,
-  variant,
-}) => {
+const Content: FC<{
+  href: string;
+  variant: Variant;
+  publishedAt?: Date | string | undefined;
+}> = async ({ href, variant, publishedAt }) => {
   const metaData = await getMetadata(href);
 
   if (!(metaData.title || metaData.description || metaData.image)) {
@@ -76,9 +78,17 @@ const Content: FC<{ href: string; variant: Variant }> = async ({
               )}
             </div>
           )}
-          <div className="mt-auto flex items-center gap-1 text-fg-mute">
-            <ExternalLinkIcon size="sm" />
-            <p className="text-xs">{new URL(href).hostname}</p>
+          <div className="mt-auto flex flex-wrap items-center justify-between gap-2 text-fg-mute text-xs">
+            {publishedAt && (
+              <div className="flex items-center gap-1">
+                <PublishDateIcon size="sm" />
+                <span>{formatDate(new Date(publishedAt), 'yyyy年M月d日')}</span>
+              </div>
+            )}
+            <div className="flex items-center gap-1">
+              <ExternalLinkIcon size="sm" />
+              <p>{new URL(href).hostname}</p>
+            </div>
           </div>
         </div>
       </div>
@@ -88,12 +98,13 @@ const Content: FC<{ href: string; variant: Variant }> = async ({
 
 export const LinkCard: FC<{
   href: string;
+  publishedAt?: Date | string | undefined;
   variant?: Variant;
-}> = ({ href, variant = 'horizontal' }) => {
+}> = ({ href, publishedAt, variant = 'horizontal' }) => {
   return (
     <LinkCardErrorBoundary href={href}>
       <Suspense fallback={<Loading href={href} variant={variant} />}>
-        <Content href={href} variant={variant} />
+        <Content href={href} publishedAt={publishedAt} variant={variant} />
       </Suspense>
     </LinkCardErrorBoundary>
   );
