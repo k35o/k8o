@@ -21,7 +21,7 @@ jobs:
       - name: Run knip report
         uses: k35o/patrol-board@a10b04e920ed2cb25b8bde9569a82994f6f4d681 # v0
         with:
-          script: './scripts/knip-report.sh'
+          script: './.github/scripts/knip-report.sh'
           issue-title: 'Knip 定期レポート'
           issue-label: 'knip-report'
         env:
