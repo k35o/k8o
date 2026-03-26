@@ -2,9 +2,6 @@ packages:
   - apps/*
   - packages/*
 
-overrides:
-  katex: '>=0.16.35'
-
 catalog:
   '@k8o/arte-odyssey': 4.2.1
   '@storybook/addon-a11y': 10.3.0
@@ -30,28 +27,17 @@ catalog:
 
 blockExoticSubdeps: true
 
-ignoredBuiltDependencies:
-  - '@parcel/watcher'
-  - '@prisma/engines'
-  - '@swc/core'
-  - '@tailwindcss/oxide'
-  - '@vercel/next-browser'
-  - bufferutil
-  - core-js
-  - core-js-pure
-  - edgedriver
-  - esbuild
-  - geckodriver
-  - sharp
-  - unrs-resolver
+allowBuilds:
+  '@prisma/engines': false
+  '@swc/core': false
+  esbuild: false
+  lefthook: true
+  msw: true
+  sharp: false
 
 minimumReleaseAge: 4320
 
 minimumReleaseAgeExclude:
   - '@k8o/*'
-
-onlyBuiltDependencies:
-  - lefthook
-  - msw
 
 verifyDepsBeforeRun: install
