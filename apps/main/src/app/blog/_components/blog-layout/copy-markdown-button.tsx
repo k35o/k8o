@@ -22,8 +22,8 @@ export const CopyMarkdownButton: FC<{ slug: string }> = ({ slug }) => {
   };
 
   return (
-    <IconButton label="Markdownをコピー" onClick={handleCopy} size="sm">
-      <CopyIcon size="sm" />
+    <IconButton label="Markdownをコピー" onClick={handleCopy} size="md">
+      <CopyIcon size="md" />
     </IconButton>
   );
 };
