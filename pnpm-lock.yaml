@@ -70,9 +70,6 @@ catalogs:
       specifier: 2.1.0
       version: 2.1.0
 
-overrides:
-  katex: '>=0.16.35'
-
 importers:
 
   .:
