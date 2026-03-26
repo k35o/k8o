@@ -1,11 +1,13 @@
 import { Card, Separator } from '@k8o/arte-odyssey';
 import { db } from '@repo/database';
 import { count, desc, eq, sum } from 'drizzle-orm';
+import { cacheLife } from 'next/cache';
 import Link from 'next/link';
 import { StatCard } from '../stat-card/stat-card';
 
 export const DashboardContent = async () => {
   'use cache';
+  cacheLife('minutes');
   const [blogCount, totalViews, articleCount, sourceCount, recentArticles] =
     await Promise.all([
       db

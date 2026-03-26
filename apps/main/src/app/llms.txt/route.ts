@@ -1,3 +1,4 @@
+import { cacheLife } from 'next/cache';
 import { NextResponse } from 'next/server';
 import { metadata as baseConverterMetadata } from '@/app/base-converter/layout';
 import { getBlogContents } from '@/app/blog/_api';
@@ -35,6 +36,7 @@ function _formatMetadataSection(metadata: {
 
 async function _generateLlmContent() {
   'use cache';
+  cacheLife('max');
 
   const [blogs, talks] = await Promise.all([getBlogContents(), getTalks()]);
 

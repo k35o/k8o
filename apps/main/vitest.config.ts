@@ -16,11 +16,20 @@ export default defineConfig({
     projects: [
       {
         extends: true,
+        resolve: {
+          alias: {
+            'server-only': fileURLToPath(
+              new URL('./src/mocks/empty.ts', import.meta.url),
+            ),
+            'next/cache': fileURLToPath(
+              new URL('./src/mocks/next-cache.ts', import.meta.url),
+            ),
+          },
+        },
         test: {
           env: {
             TZ: 'UTC',
           },
-          setupFiles: ['./vitest.setup.ts'],
           name: { label: 'services test', color: 'cyan' },
           include: ['src/services/**/*.test.{ts,tsx}'],
         },

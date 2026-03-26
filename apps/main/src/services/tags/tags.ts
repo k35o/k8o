@@ -1,4 +1,5 @@
 import { db } from '@repo/database';
+import { cacheLife } from 'next/cache';
 
 export async function getTags(page = 1): Promise<
   {
@@ -9,6 +10,7 @@ export async function getTags(page = 1): Promise<
   }[]
 > {
   'use cache';
+  cacheLife('max');
   const tags = await db.query.tags.findMany({
     columns: {
       id: true,

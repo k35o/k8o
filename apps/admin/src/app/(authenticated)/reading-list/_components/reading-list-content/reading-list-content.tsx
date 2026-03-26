@@ -1,6 +1,7 @@
 import { LinkButton } from '@k8o/arte-odyssey';
 import { db } from '@repo/database';
 import { desc } from 'drizzle-orm';
+import { cacheLife } from 'next/cache';
 import { StatCard } from '@/app/(authenticated)/_components/stat-card/stat-card';
 import { ArticleTable } from '../article-table/article-table';
 import { SourceList } from '../source-list/source-list';
@@ -8,6 +9,7 @@ import { SyncButton } from '../sync-button/sync-button';
 
 export const ReadingListContent = async () => {
   'use cache';
+  cacheLife('minutes');
   const [sources, articles] = await Promise.all([
     db.query.articleSources.findMany({
       orderBy: (articleSources) => [desc(articleSources.updatedAt)],

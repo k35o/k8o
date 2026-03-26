@@ -12,6 +12,7 @@ import { getBlogView as _getBlogView } from '@/services/blogs/view';
 
 export async function getBlogContents() {
   'use cache';
+  cacheLife('max');
 
   const blogs = await getBlogs();
   return await Promise.all(
@@ -32,6 +33,7 @@ export async function getBlogContents() {
 
 export async function getBlogContent(slug: string) {
   'use cache';
+  cacheLife('max');
 
   const blog = await getBlog(slug);
   const metadata = await getBlogMetadata(slug);
@@ -50,12 +52,14 @@ export async function getBlogContent(slug: string) {
 
 export async function getBlogToc(slug: string) {
   'use cache';
+  cacheLife('max');
 
   return await _getBlogToc(slug);
 }
 
 export async function getBlogsByTags(slug: string) {
   'use cache';
+  cacheLife('max');
 
   const blog = await getBlogContent(slug);
   return await _getBlogsByTags(
