@@ -32,9 +32,12 @@ export const BlogLayout: FC<{
       <div className="m-auto flex flex-col gap-8 xl:max-w-5xl">
         <article className="rounded-md bg-bg-base/90 px-3 pt-8 pb-14 sm:px-10">
           <div className="flex flex-col gap-3">
-            <ViewTransition name={`title-${slug}`}>
-              <h2 className="font-bold text-xl sm:text-2xl">{blog.title}</h2>
-            </ViewTransition>
+            <div className="flex items-start justify-between gap-2">
+              <ViewTransition name={`title-${slug}`}>
+                <h2 className="font-bold text-xl sm:text-2xl">{blog.title}</h2>
+              </ViewTransition>
+              <CopyMarkdownButton slug={slug} />
+            </div>
             {blog.description && (
               <ViewTransition name={`description-${slug}`}>
                 <div className="rounded-md bg-bg-mute p-4 sm:mt-4">
@@ -44,8 +47,8 @@ export const BlogLayout: FC<{
                 </div>
               </ViewTransition>
             )}
-            <div className="flex items-center justify-end gap-2">
-              {blog.slideUrl && (
+            {blog.slideUrl && (
+              <div className="flex self-end">
                 <LinkButton
                   href={blog.slideUrl}
                   size="sm"
@@ -54,9 +57,8 @@ export const BlogLayout: FC<{
                 >
                   スライドを見る
                 </LinkButton>
-              )}
-              <CopyMarkdownButton slug={slug} />
-            </div>
+              </div>
+            )}
             <div className="flex flex-col items-end gap-1 text-fg-mute text-xs sm:flex-row sm:items-center sm:justify-end sm:gap-2 sm:text-sm">
               <div className="flex flex-wrap items-center justify-end gap-1">
                 <ViewTransition name={`date-${slug}`}>
