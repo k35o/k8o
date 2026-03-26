@@ -5,6 +5,9 @@ import type { NextConfig } from 'next';
 const nextConfig: NextConfig = {
   reactStrictMode: true,
   pageExtensions: ['tsx', 'mdx', 'ts'],
+  rewrites: async () => [
+    { source: '/blog/:slug.md', destination: '/blog/md/:slug' },
+  ],
   compiler: {
     removeConsole: process.env['NODE_ENV'] === 'production' && {
       exclude: ['error', 'warn'],
