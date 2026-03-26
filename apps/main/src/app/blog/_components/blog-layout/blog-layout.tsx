@@ -14,7 +14,7 @@ import { type FC, type ReactNode, Suspense, ViewTransition } from 'react';
 import { SilentErrorBoundary } from '@/app/_components/error-boundary';
 import { getBlogContent, getBlogToc } from '@/app/blog/_api';
 import { END_OF_CONTENT_ID } from './constants';
-import { CopyMarkdownUrlButton } from './copy-markdown-url-button';
+import { CopyMarkdownButton } from './copy-markdown-button';
 import { Feedback } from './feedback';
 import { Recommend } from './recommend';
 import { TableOfContents } from './table-of-contents';
@@ -55,7 +55,7 @@ export const BlogLayout: FC<{
                   スライドを見る
                 </LinkButton>
               )}
-              <CopyMarkdownUrlButton slug={slug} />
+              <CopyMarkdownButton slug={slug} />
             </div>
             <div className="flex flex-col items-end gap-1 text-fg-mute text-xs sm:flex-row sm:items-center sm:justify-end sm:gap-2 sm:text-sm">
               <div className="flex flex-wrap items-center justify-end gap-1">
