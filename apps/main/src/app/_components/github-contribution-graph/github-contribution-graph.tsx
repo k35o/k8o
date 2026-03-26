@@ -27,7 +27,7 @@ function mergeContributions(results: ContributionDay[][]): ContributionDay[] {
 
 export const GitHubContributionGraph = async () => {
   'use cache';
-  cacheLife('hours');
+  cacheLife('minutes');
 
   const results = await Promise.all([
     fetchRepositoryCommitContributions(USERNAME, OWNER, 'k8o'),

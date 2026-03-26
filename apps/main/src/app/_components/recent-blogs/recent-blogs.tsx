@@ -33,7 +33,7 @@ export const RecentBlogs = () => {
 
 const RecentBlogsContent = async () => {
   'use cache';
-  cacheLife('days');
+  cacheLife('max');
 
   const blogs = await getBlogContents();
   const recentBlogs = blogs.slice(0, 3);

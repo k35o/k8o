@@ -1,7 +1,9 @@
 import { db } from '@repo/database';
+import { cacheLife } from 'next/cache';
 
 export async function getTalks() {
   'use cache';
+  cacheLife('max');
   const talks = await db.query.talks.findMany({
     with: {
       blog: true,

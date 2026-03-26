@@ -1,3 +1,5 @@
+import { cacheLife } from 'next/cache';
+
 const decodeHtmlEntities = (text: string): string =>
   text
     .replace(/&amp;/gi, '&')
@@ -10,6 +12,7 @@ const decodeHtmlEntities = (text: string): string =>
 
 export async function getMetadata(href: string) {
   'use cache';
+  cacheLife('days');
 
   const res = await fetch(href);
   const html = (await res.text()).trim();

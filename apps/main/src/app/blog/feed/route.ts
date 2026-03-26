@@ -1,3 +1,4 @@
+import { cacheLife } from 'next/cache';
 import { NextResponse } from 'next/server';
 import RSS from 'rss';
 import { getBlogContents } from '@/app/blog/_api';
@@ -7,6 +8,7 @@ const BLOG_URL = 'https://k8o.me/blog';
 
 async function generateRssFeed() {
   'use cache';
+  cacheLife('max');
 
   const feed = new RSS({
     title: metadata.title,

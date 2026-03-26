@@ -1,3 +1,4 @@
+import { cacheLife } from 'next/cache';
 import { NextResponse } from 'next/server';
 import RSS from 'rss';
 import { getArticles } from '@/services/reading-list/reading-list';
@@ -7,6 +8,7 @@ const READING_LIST_URL = 'https://k8o.me/reading-list';
 
 async function generateRssFeed() {
   'use cache';
+  cacheLife('hours');
 
   const feed = new RSS({
     title: metadata.title,

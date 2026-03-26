@@ -1,4 +1,5 @@
 import { db } from '@repo/database';
+import { cacheLife } from 'next/cache';
 import { getBlogMetadata } from '@/services/blogs/blog';
 
 export async function getTag(id: number): Promise<{
@@ -15,6 +16,7 @@ export async function getTag(id: number): Promise<{
   }[];
 } | null> {
   'use cache';
+  cacheLife('max');
   const tag = await db.query.tags.findFirst({
     where: (tags, { eq }) => eq(tags.id, id),
     with: {
