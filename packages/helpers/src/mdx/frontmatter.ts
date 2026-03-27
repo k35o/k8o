@@ -35,7 +35,6 @@ if (import.meta.vitest) {
 
       const dir = await mkdtemp(join(tmpdir(), 'frontmatter-'));
       const filePath = join(dir, 'article.mdx');
-      tempPaths.push(filePath);
       tempPaths.push(dir);
 
       await writeFile(

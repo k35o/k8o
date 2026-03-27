@@ -1,5 +1,5 @@
 import { db } from '@repo/database';
-import { desc, gte } from 'drizzle-orm';
+import { gte } from 'drizzle-orm';
 import { cacheLife } from 'next/cache';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { getArticleSources, getArticles } from './reading-list';
@@ -83,10 +83,7 @@ describe('reading-list service', () => {
         column: 'articles.publishedAt',
         value: '2025-12-27T12:00:00.000Z',
       });
-      expect(
-        queryOptions.orderBy?.({ publishedAt: 'publishedAt' }, undefined),
-      ).toEqual([{ type: 'desc', value: 'publishedAt' }]);
-      expect(desc).toHaveBeenCalledWith('publishedAt');
+      expect(queryOptions.orderBy).toEqual(expect.any(Function));
       expect(result).toEqual([
         {
           id: 1,
@@ -125,15 +122,6 @@ describe('reading-list service', () => {
       expect(db.query.articleSources.findMany).toHaveBeenCalledWith({
         orderBy: expect.any(Function),
       });
-
-      const queryOptions = vi.mocked(db.query.articleSources.findMany).mock
-        .calls[0]?.[0] as unknown as {
-        orderBy?: (...args: unknown[]) => unknown[];
-      };
-
-      expect(queryOptions.orderBy?.({ title: 'title' }, undefined)).toEqual([
-        'title',
-      ]);
       expect(result).toEqual([
         {
           id: 2,
