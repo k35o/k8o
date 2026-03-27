@@ -23,6 +23,7 @@ export * from './scrollend';
 export * from './shape-function';
 export * from './spelling-grammar-error';
 export * from './suspense-list';
+export * from './text-indent-keywords';
 export * from './view-transitions';
 
 import { absSignSection } from './abs-sign';
@@ -49,6 +50,7 @@ import { scrollendSection } from './scrollend';
 import { shapeFunctionSection } from './shape-function';
 import { spellingGrammarErrorSection } from './spelling-grammar-error';
 import { suspenseListSection } from './suspense-list';
+import { textIndentKeywordsSection } from './text-indent-keywords';
 import type { PlaygroundSection } from './types';
 import { viewTransitionsSection } from './view-transitions';
 
@@ -77,5 +79,6 @@ export const playgroundSections: PlaygroundSection[] = [
   highlightSection,
   shapeFunctionSection,
   spellingGrammarErrorSection,
+  textIndentKeywordsSection,
   viewTransitionsSection,
 ];

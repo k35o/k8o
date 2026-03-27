@@ -1,0 +1,87 @@
+---
+title: 'text-indentのeach-lineとhangingキーワードでインデントを制御する'
+description: 'CSSのtext-indentプロパティにeach-lineとhangingキーワードが追加され、Baseline 2026で主要ブラウザすべてで利用可能になりました。改行後のインデントやぶら下げインデントを標準的な方法で実現できます。'
+createdAt: 2026-03-27
+updatedAt: 2026-03-27
+---
+
+import { BaselineStatus } from '@k8o/arte-odyssey';
+import { TextIndentKeywordsDemo } from '@/app/_components/playgrounds/text-indent-keywords';
+import { Playground } from '@/app/_components/playgrounds';
+
+# text-indentのeach-lineとhangingキーワードでインデントを制御する
+
+## はじめに
+
+`text-indent`プロパティはブロック要素の最初の行にインデントを設定するおなじみのプロパティです。
+しかし、従来は最初の行にしかインデントを適用できず、`<br>`による改行後の行やぶら下げインデントを実現するにはCSSのワークアラウンドが必要でした。
+
+Chrome 146のリリースにより、`each-line`と`hanging`の2つのキーワードが主要ブラウザすべてで利用可能になりBaseline 2026に加わりました。
+これらのキーワードを使うことで、こうしたインデントの制御をシンプルに記述できるようになります。
+
+## text-indentプロパティのおさらい
+
+`text-indent`プロパティは、ブロックコンテナの最初の行の先頭にインデント（字下げ）を追加します。
+
+```css
+p {
+  text-indent: 2em;
+}
+```
+
+この指定では、段落の最初の行だけが2em分インデントされます。
+
+## each-lineキーワード
+
+<BaselineStatus featureId="text-indent-each-line"></BaselineStatus>
+
+`each-line`キーワードを指定すると、最初の行に加えて`<br>`などによる**改行の後の各行**にもインデントが適用されます。
+自動折り返しによる改行には適用されません。
+
+```css
+p {
+  text-indent: 2em each-line;
+}
+```
+
+これにより、`<br>`で区切られた各段落の先頭にインデントが入るようになります。
+
+## hangingキーワード
+
+<BaselineStatus featureId="text-indent-hanging"></BaselineStatus>
+
+`hanging`キーワードはインデントの対象を反転させます。
+通常は最初の行だけがインデントされますが、`hanging`を指定すると**最初の行以外のすべての行**がインデントされます。
+
+```css
+p {
+  text-indent: 2em hanging;
+}
+```
+
+いわゆる「ぶら下げインデント」と呼ばれるレイアウトで、参考文献リストや用語集などで最初の行を目立たせたい場合に活用できます。
+
+## キーワードの組み合わせ
+
+`each-line`と`hanging`は組み合わせて使用できます。
+
+```css
+p {
+  text-indent: 2em hanging each-line;
+}
+```
+
+この場合、最初の行と`<br>`による改行直後の行**以外**のすべての行にインデントが適用されます。
+
+## デモ
+
+<Playground title="text-indent each-line / hangingのデモ">
+  <TextIndentKeywordsDemo />
+</Playground>
+
+## おわりに
+
+`text-indent`の`each-line`と`hanging`キーワードを紹介しました。
+
+従来、ぶら下げインデントを実現するには`padding-left`と`text-indent`の負の値を組み合わせるなどのテクニックが必要でした。
+`hanging`キーワードにより、意図が明確なシンプルな記述で同じレイアウトを実現できるようになりました。
