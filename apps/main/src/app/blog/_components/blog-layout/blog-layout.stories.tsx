@@ -96,7 +96,7 @@ const meta: Meta<typeof BlogLayoutContent> = {
 };
 
 export default meta;
-type Story = StoryObj<typeof BlogLayout>;
+type Story = StoryObj<typeof BlogLayoutContent>;
 
 export const Primary: Story = {
   args: {
