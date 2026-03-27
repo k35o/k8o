@@ -61,6 +61,48 @@ title: test
     });
   });
 
+  it('同じh2配下の複数のh3とh4を正しくぶら下げる', async () => {
+    const filePath = await createMdxFile(`## セクション1
+
+### 小見出し1
+
+#### 詳細1
+
+### 小見出し2
+
+#### 詳細2
+
+## セクション2
+`);
+
+    await expect(getTocTree(filePath)).resolves.toEqual({
+      depth: 0,
+      children: [
+        {
+          depth: 1,
+          text: 'セクション1',
+          children: [
+            {
+              depth: 2,
+              text: '小見出し1',
+              children: [{ depth: 3, text: '詳細1' }],
+            },
+            {
+              depth: 2,
+              text: '小見出し2',
+              children: [{ depth: 3, text: '詳細2' }],
+            },
+          ],
+        },
+        {
+          depth: 1,
+          text: 'セクション2',
+          children: [],
+        },
+      ],
+    });
+  });
+
   it('h2より浅い見出しやテキスト以外の見出しは無視する', async () => {
     const filePath = await createMdxFile(`# h1
 
@@ -80,6 +122,34 @@ title: test
           depth: 1,
           text: '見出し',
           children: [],
+        },
+      ],
+    });
+  });
+
+  it('h5以深の見出しは目次に含めない', async () => {
+    const filePath = await createMdxFile(`## セクション
+
+### 小見出し
+
+#### 詳細
+
+##### 無視される見出し
+`);
+
+    await expect(getTocTree(filePath)).resolves.toEqual({
+      depth: 0,
+      children: [
+        {
+          depth: 1,
+          text: 'セクション',
+          children: [
+            {
+              depth: 2,
+              text: '小見出し',
+              children: [{ depth: 3, text: '詳細' }],
+            },
+          ],
         },
       ],
     });
