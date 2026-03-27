@@ -12,28 +12,20 @@ vi.mock('octokit', () => ({
 }));
 
 describe('fetchRepositoryCommitContributions', () => {
-  const originalGithubToken = process.env['GITHUB_TOKEN'];
-
   beforeEach(() => {
     vi.clearAllMocks();
     vi.useFakeTimers();
     vi.setSystemTime(new Date('2026-03-27T12:00:00.000Z'));
-    process.env['GITHUB_TOKEN'] = 'test-token';
+    vi.stubEnv('GITHUB_TOKEN', 'test-token');
   });
 
   afterEach(() => {
     vi.useRealTimers();
-
-    if (originalGithubToken) {
-      process.env['GITHUB_TOKEN'] = originalGithubToken;
-      return;
-    }
-
-    process.env['GITHUB_TOKEN'] = undefined;
+    vi.unstubAllEnvs();
   });
 
   it('GITHUB_TOKENが未設定の場合はエラーを投げる', async () => {
-    process.env['GITHUB_TOKEN'] = undefined;
+    vi.stubEnv('GITHUB_TOKEN', undefined);
 
     await expect(
       fetchRepositoryCommitContributions('k35o', 'k35o', 'k8o'),
