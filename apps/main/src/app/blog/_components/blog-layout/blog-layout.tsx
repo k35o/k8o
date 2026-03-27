@@ -14,6 +14,7 @@ import { type FC, type ReactNode, Suspense, ViewTransition } from 'react';
 import { SilentErrorBoundary } from '@/app/_components/error-boundary';
 import { getBlogContent, getBlogToc } from '@/app/blog/_api';
 import { END_OF_CONTENT_ID } from './constants';
+import { CopyMarkdownButton } from './copy-markdown-button';
 import { Feedback } from './feedback';
 import { Recommend } from './recommend';
 import { TableOfContents } from './table-of-contents';
@@ -31,9 +32,12 @@ export const BlogLayout: FC<{
       <div className="m-auto flex flex-col gap-8 xl:max-w-5xl">
         <article className="rounded-md bg-bg-base/90 px-3 pt-8 pb-14 sm:px-10">
           <div className="flex flex-col gap-3">
-            <ViewTransition name={`title-${slug}`}>
-              <h2 className="font-bold text-xl sm:text-2xl">{blog.title}</h2>
-            </ViewTransition>
+            <div className="flex items-start justify-between gap-2">
+              <ViewTransition name={`title-${slug}`}>
+                <h2 className="font-bold text-xl sm:text-2xl">{blog.title}</h2>
+              </ViewTransition>
+              <CopyMarkdownButton slug={slug} />
+            </div>
             {blog.description && (
               <ViewTransition name={`description-${slug}`}>
                 <div className="rounded-md bg-bg-mute p-4 sm:mt-4">
