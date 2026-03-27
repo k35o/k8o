@@ -132,6 +132,41 @@ describe('calculateTocPercentage', () => {
       };
       expect(calculateTocPercentage('見出し2-2-1', tree)).toBe(30);
     });
+
+    it('depth3の進捗が小数になる場合は四捨五入される', () => {
+      const tree: HeadingTree = {
+        depth: 0,
+        children: [
+          {
+            depth: 1,
+            text: '見出し1',
+            children: [
+              {
+                depth: 2,
+                text: '見出し1-1',
+                children: [
+                  { depth: 3, text: '見出し1-1-1' },
+                  { depth: 3, text: '見出し1-1-2' },
+                  { depth: 3, text: '見出し1-1-3' },
+                ],
+              },
+            ],
+          },
+          {
+            depth: 1,
+            text: '見出し2',
+            children: [],
+          },
+          {
+            depth: 1,
+            text: '見出し3',
+            children: [],
+          },
+        ],
+      };
+
+      expect(calculateTocPercentage('見出し1-1-2', tree)).toBe(11);
+    });
   });
 
   describe('エッジケース', () => {
@@ -149,6 +184,26 @@ describe('calculateTocPercentage', () => {
         children: [{ depth: 1, text: '見出し1', children: [] }],
       };
       expect(calculateTocPercentage('見出し1', tree)).toBe(0);
+    });
+
+    it('depth2配下が空の見出しはdepth1として扱う', () => {
+      const tree: HeadingTree = {
+        depth: 0,
+        children: [
+          {
+            depth: 1,
+            text: '見出し1',
+            children: [],
+          },
+          {
+            depth: 1,
+            text: '見出し2',
+            children: [],
+          },
+        ],
+      };
+
+      expect(calculateTocPercentage('見出し2', tree)).toBe(50);
     });
   });
 });

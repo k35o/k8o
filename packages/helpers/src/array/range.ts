@@ -7,3 +7,19 @@ function* _range(start: number, end: number): Generator<number> {
     yield i;
   }
 }
+
+if (import.meta.vitest) {
+  describe('range', () => {
+    it('start以上end未満の配列を返す', () => {
+      expect(range(2, 5)).toEqual([2, 3, 4]);
+    });
+
+    it('startとendが同じ場合は空配列を返す', () => {
+      expect(range(3, 3)).toEqual([]);
+    });
+
+    it('startがendより大きい場合は空配列を返す', () => {
+      expect(range(5, 3)).toEqual([]);
+    });
+  });
+}

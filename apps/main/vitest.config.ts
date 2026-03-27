@@ -74,12 +74,6 @@ export default defineConfig({
           },
           isolate: false,
           setupFiles: [],
-          // NOTE: コンポーネントが自動的にclient componentsに解釈されるので、async/awaitコンポーネントは除外する
-          // TODO: async/awaitコンポーネントのテストも実行できるようにする
-          exclude: [
-            '**/blog-layout.stories.tsx',
-            '**/blog-layout/**/recommend.stories.tsx',
-          ],
         },
       },
     ],
