@@ -11,8 +11,11 @@ import Link from 'next/link';
 import type { FC } from 'react';
 import { getBlogsByTags } from '@/app/blog/_api';
 
-export const Recommend: FC<{ slug: string }> = async ({ slug }) => {
-  const blogs = await getBlogsByTags(slug);
+type RecommendProps = {
+  blogs: Awaited<ReturnType<typeof getBlogsByTags>>;
+};
+
+export const RecommendContent: FC<RecommendProps> = ({ blogs }) => {
   if (blogs.length === 0) {
     return null;
   }
@@ -47,4 +50,9 @@ export const Recommend: FC<{ slug: string }> = async ({ slug }) => {
       </div>
     </div>
   );
+};
+
+export const Recommend: FC<{ slug: string }> = async ({ slug }) => {
+  const blogs = await getBlogsByTags(slug);
+  return <RecommendContent blogs={blogs} />;
 };

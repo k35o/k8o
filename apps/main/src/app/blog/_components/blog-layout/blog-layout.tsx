@@ -9,23 +9,43 @@ import {
   ViewIcon,
 } from '@k8o/arte-odyssey';
 import { formatDate } from '@repo/helpers/date/format';
+import { commalize } from '@repo/helpers/number/commalize';
 import Link from 'next/link';
 import { type FC, type ReactNode, Suspense, ViewTransition } from 'react';
 import { SilentErrorBoundary } from '@/app/_components/error-boundary';
-import { getBlogContent, getBlogToc } from '@/app/blog/_api';
+import {
+  getBlogContent,
+  type getBlogsByTags,
+  getBlogToc,
+} from '@/app/blog/_api';
 import { END_OF_CONTENT_ID } from './constants';
 import { CopyMarkdownButton } from './copy-markdown-button';
 import { Feedback } from './feedback';
-import { Recommend } from './recommend';
+import { Recommend, RecommendContent } from './recommend';
 import { TableOfContents } from './table-of-contents';
 import { ViewCounter } from './view-counter';
 
-export const BlogLayout: FC<{
+type BlogLayoutProps = {
   children: ReactNode;
   slug: string;
-}> = async ({ children, slug }) => {
-  const blog = await getBlogContent(slug);
-  const headingTree = await getBlogToc(slug);
+};
+
+type BlogLayoutContentProps = BlogLayoutProps & {
+  blog: Awaited<ReturnType<typeof getBlogContent>>;
+  headingTree: Awaited<ReturnType<typeof getBlogToc>>;
+  recommendedBlogs?: Awaited<ReturnType<typeof getBlogsByTags>>;
+  viewCount?: number;
+};
+
+export const BlogLayoutContent: FC<BlogLayoutContentProps> = ({
+  blog,
+  children,
+  headingTree,
+  recommendedBlogs,
+  slug,
+  viewCount,
+}) => {
+  const shouldUseRecommendedBlogs = recommendedBlogs !== undefined;
 
   return (
     <div className="gap-4 xl:flex xl:has-[>:nth-child(2)]:-mx-36">
@@ -73,15 +93,23 @@ export const BlogLayout: FC<{
                 </ViewTransition>
               </div>
               <SilentErrorBoundary>
-                <Suspense fallback={null}>
+                {viewCount === undefined ? (
+                  <Suspense fallback={null}>
+                    <div className="flex items-center gap-1">
+                      <ViewIcon size="sm" />
+                      <span className="sr-only">閲覧数</span>
+                      <span>
+                        <ViewCounter id={blog.id} /> views
+                      </span>
+                    </div>
+                  </Suspense>
+                ) : (
                   <div className="flex items-center gap-1">
                     <ViewIcon size="sm" />
                     <span className="sr-only">閲覧数</span>
-                    <span>
-                      <ViewCounter id={blog.id} /> views
-                    </span>
+                    <span>{commalize(viewCount)} views</span>
                   </div>
-                </Suspense>
+                )}
               </SilentErrorBoundary>
             </div>
             <ViewTransition name={`tags-${slug}`}>
@@ -111,7 +139,11 @@ export const BlogLayout: FC<{
             </section>
           </SilentErrorBoundary>
           <SilentErrorBoundary>
-            <Recommend slug={slug} />
+            {shouldUseRecommendedBlogs ? (
+              <RecommendContent blogs={recommendedBlogs} />
+            ) : (
+              <Recommend slug={slug} />
+            )}
           </SilentErrorBoundary>
         </div>
       </div>
@@ -119,5 +151,16 @@ export const BlogLayout: FC<{
         <TableOfContents headingTree={headingTree} />
       </SilentErrorBoundary>
     </div>
+  );
+};
+
+export const BlogLayout: FC<BlogLayoutProps> = async ({ children, slug }) => {
+  const blog = await getBlogContent(slug);
+  const headingTree = await getBlogToc(slug);
+
+  return (
+    <BlogLayoutContent blog={blog} headingTree={headingTree} slug={slug}>
+      {children}
+    </BlogLayoutContent>
   );
 };

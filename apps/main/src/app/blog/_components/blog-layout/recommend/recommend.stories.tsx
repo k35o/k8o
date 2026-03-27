@@ -1,13 +1,17 @@
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
-import { mocked } from 'storybook/test';
-import { getBlogsByTags } from '@/app/blog/_api';
-import { Recommend } from './recommend';
+import { RecommendContent } from './recommend';
 
-const meta: Meta<typeof Recommend> = {
+const meta: Meta<typeof RecommendContent> = {
   title: 'app/blog/blog-layout/recommend',
-  component: Recommend,
-  beforeEach: () => {
-    mocked(getBlogsByTags).mockResolvedValue([
+  component: RecommendContent,
+};
+
+export default meta;
+type Story = StoryObj<typeof RecommendContent>;
+
+export const Primary: Story = {
+  args: {
+    blogs: [
       {
         id: 11,
         slug: 'atomics-pause',
@@ -35,15 +39,6 @@ const meta: Meta<typeof Recommend> = {
           'ClipboardItem supports',
         ],
       },
-    ]);
-  },
-};
-
-export default meta;
-type Story = StoryObj<typeof Recommend>;
-
-export const Primary: Story = {
-  args: {
-    slug: 'tanstack-router-introduction',
+    ],
   },
 };
