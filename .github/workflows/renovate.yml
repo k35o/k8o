@@ -16,8 +16,8 @@ jobs:
     if: >-
       github.event_name == 'schedule' ||
       github.event_name == 'workflow_dispatch' ||
-      (github.event_name == 'issues' && contains(github.event.issue.title, 'Dependency Dashboard')) ||
-      (github.event_name == 'pull_request' && contains(github.event.pull_request.labels.*.name, 'renovate'))
+      (github.event_name == 'issues' && contains(github.event.issue.title, 'Dependency Dashboard') && github.event.sender.login == 'k35o') ||
+      (github.event_name == 'pull_request' && github.event.sender.login == 'k35o')
     steps:
       - name: Generate token
         id: generate-token
