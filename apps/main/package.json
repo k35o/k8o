@@ -27,7 +27,7 @@
     "@repo/helpers": "workspace:*",
     "@shikijs/rehype": "4.0.1",
     "@tailwindcss/postcss": "catalog:",
-    "@vercel/analytics": "1.6.1",
+    "@vercel/analytics": "2.0.1",
     "budoux": "0.7.0",
     "diff": "8.0.3",
     "dompurify": "3.3.2",
