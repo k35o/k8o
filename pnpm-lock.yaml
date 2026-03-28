@@ -332,8 +332,8 @@ importers:
         specifier: 'catalog:'
         version: 4.1.1(vitest@4.1.1)
       chromatic:
-        specifier: 15.2.0
-        version: 15.2.0
+        specifier: 16.0.0
+        version: 16.0.0
       msw:
         specifier: 2.12.10
         version: 2.12.10(@types/node@24.12.0)(typescript@5.9.3)
@@ -3073,8 +3073,8 @@ packages:
     resolution: {integrity: sha512-PAJdDJusoxnwm1VwW07VWwUN1sl7smmC3OKggvndJFadxxDRyFJBX/ggnu/KE4kQAB7a3Dp8f/YXC1FlUprWmA==}
     engines: {node: '>= 16'}
 
-  chromatic@15.2.0:
-    resolution: {integrity: sha512-c9tDfE62aiPVPnVab8jQLz+9c9II/CUFZ6T2Kk3hi2hSL+HLkRwX3zjwRYW1z9Shn57R/ORBEpQ3ftufp8EgWA==}
+  chromatic@16.0.0:
+    resolution: {integrity: sha512-O81RVGDXXoreNeG894hjaUx08xep+C/BA6aJNMZkwSjH7Lln8IweZekBpBEoQPNNpjmHyZvcTIwN/aGitdK53Q==}
     hasBin: true
     peerDependencies:
       '@chromatic-com/cypress': ^0.*.* || ^1.0.0
@@ -8140,7 +8140,7 @@ snapshots:
 
   check-error@2.1.3: {}
 
-  chromatic@15.2.0: {}
+  chromatic@16.0.0: {}
 
   cli-boxes@3.0.0: {}
 
