@@ -24,11 +24,11 @@ export const AppCard = ({
   const content = (
     <div className="flex h-full flex-col p-6 text-left">
       <div className="flex items-center gap-3">
-        {accent !== undefined ? (
+        {accent === undefined ? null : (
           <div className="flex size-8 shrink-0 items-center justify-center text-primary-fg">
             {accent}
           </div>
-        ) : null}
+        )}
         <Heading type="h3">{title}</Heading>
       </div>
 

@@ -49,7 +49,7 @@ export const FeedbackCard: FC<{
   };
 
   const focusIndex =
-    feedbackId !== null ? OPTIONS.findIndex((o) => o.id === feedbackId) : 0;
+    feedbackId === null ? 0 : OPTIONS.findIndex((o) => o.id === feedbackId);
 
   if (isSubmitted) {
     return (

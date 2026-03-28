@@ -37,7 +37,7 @@ export function findAllColors(
       }
 
       if (endIndex !== -1) {
-        const content = text.substring(startIndex + 1, endIndex);
+        const content = text.slice(startIndex + 1, endIndex);
         const fullColor = `${funcName.toLowerCase()}(${content})`;
         matches.push({
           color: fullColor,

@@ -158,6 +158,6 @@ export const hexToHsl = (hex: string): HSL => {
     h: Math.round(h < 0 ? h + 360 : h),
     s: Math.round(s * 100),
     l: Math.round(l * 100),
-    ...(a !== undefined ? { a } : {}),
+    ...(a === undefined ? {} : { a }),
   };
 };
