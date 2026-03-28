@@ -33,7 +33,7 @@ export function extractColor(text: string): string | null {
 
     if (endIndex === -1) return null;
 
-    const content = text.substring(startIndex + 1, endIndex);
+    const content = text.slice(startIndex + 1, endIndex);
     return `${funcName.toLowerCase()}(${content})`;
   }
 

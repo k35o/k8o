@@ -4,9 +4,9 @@ import type { FC } from 'react';
 const getOverlayColor = (hex: string): string | undefined => {
   const clean = hex.replace('#', '');
   if (clean.length < 6) return;
-  const r = Number.parseInt(clean.substring(0, 2), 16);
-  const g = Number.parseInt(clean.substring(2, 4), 16);
-  const b = Number.parseInt(clean.substring(4, 6), 16);
+  const r = Number.parseInt(clean.slice(0, 2), 16);
+  const g = Number.parseInt(clean.slice(2, 4), 16);
+  const b = Number.parseInt(clean.slice(4, 6), 16);
   if (Number.isNaN(r) || Number.isNaN(g) || Number.isNaN(b)) return;
   const luminance = (0.299 * r + 0.587 * g + 0.114 * b) / 255;
   return luminance > 0.5 ? '#000000' : '#ffffff';
