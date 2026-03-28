@@ -12,7 +12,7 @@ jobs:
     steps:
       - name: Generate token
         id: generate-token
-        uses: actions/create-github-app-token@df432ceedc7162793a195dd1713ff69aca63ce09 # v1.11.7
+        uses: actions/create-github-app-token@af35edadc00be37caa72ed9f3e6d5f7801bfdf09 # v1.11.7
         with:
           app-id: ${{ secrets.K35O_BOT_APP_ID }}
           private-key: ${{ secrets.K35O_BOT_PRIVATE_KEY }}
