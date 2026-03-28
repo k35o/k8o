@@ -33,6 +33,6 @@
     "playwright": "1.58.2",
     "portless": "0.5.2",
     "turbo": "2.8.14",
-    "typescript": "5.9.3"
+    "typescript": "6.0.2"
   }
 }
