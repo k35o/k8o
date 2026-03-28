@@ -14,8 +14,10 @@ jobs:
   renovate:
     runs-on: ubuntu-latest
     if: >-
-      github.event_name != 'issues' && github.event_name != 'pull_request' ||
-      contains(github.event.*.labels.*.name, 'renovate')
+      github.event_name == 'schedule' ||
+      github.event_name == 'workflow_dispatch' ||
+      (github.event_name == 'issues' && contains(github.event.issue.title, 'Dependency Dashboard')) ||
+      (github.event_name == 'pull_request' && contains(github.event.pull_request.labels.*.name, 'renovate'))
     steps:
       - name: Generate token
         id: generate-token
