@@ -4,10 +4,10 @@ packages:
 
 catalog:
   '@k8o/arte-odyssey': 4.2.1
-  '@storybook/addon-a11y': 10.3.0
-  '@storybook/addon-docs': 10.3.0
-  '@storybook/addon-vitest': 10.3.0
-  '@storybook/nextjs-vite': 10.3.0
+  '@storybook/addon-a11y': 10.3.3
+  '@storybook/addon-docs': 10.3.3
+  '@storybook/addon-vitest': 10.3.3
+  '@storybook/nextjs-vite': 10.3.3
   '@tailwindcss/postcss': 4.2.1
   '@types/react': 19.2.14
   '@types/react-dom': 19.2.3
@@ -20,7 +20,7 @@ catalog:
   postcss: 8.5.8
   react: 19.2.4
   react-dom: 19.2.4
-  storybook: 10.3.0
+  storybook: 10.3.3
   tailwindcss: 4.2.1
   vitest: 4.1.1
   vitest-browser-react: 2.1.0
