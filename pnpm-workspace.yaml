@@ -40,4 +40,6 @@ minimumReleaseAge: 4320
 minimumReleaseAgeExclude:
   - '@k8o/*'
 
+dedupePeers: true
+
 verifyDepsBeforeRun: install
