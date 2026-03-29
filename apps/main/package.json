@@ -39,7 +39,7 @@
     "postcss": "catalog:",
     "react": "catalog:",
     "react-dom": "catalog:",
-    "recharts": "3.8.0",
+    "recharts": "3.8.1",
     "rehype-katex": "7.0.1",
     "remark": "15.0.1",
     "remark-frontmatter": "5.0.0",
