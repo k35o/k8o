@@ -9,6 +9,7 @@ catalog:
   '@storybook/addon-vitest': 10.3.3
   '@storybook/nextjs-vite': 10.3.3
   '@tailwindcss/postcss': 4.2.2
+  babel-plugin-react-compiler: 1.0.0
   '@types/react': 19.2.14
   '@types/react-dom': 19.2.3
   '@vitest/browser-playwright': 4.1.1
