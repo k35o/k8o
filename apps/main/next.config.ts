@@ -4,6 +4,7 @@ import type { NextConfig } from 'next';
 
 const nextConfig: NextConfig = {
   reactStrictMode: true,
+  reactCompiler: true,
   pageExtensions: ['tsx', 'mdx', 'ts'],
   rewrites: async () => [
     { source: '/blog/:slug.md', destination: '/blog/md/:slug' },
