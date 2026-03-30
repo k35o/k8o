@@ -1,16 +1,9 @@
 'use client';
 
-import {
-  Button,
-  Drawer,
-  FormControl,
-  ListIcon,
-  Select,
-} from '@k8o/arte-odyssey';
+import { Button, Drawer, ListIcon } from '@k8o/arte-odyssey';
 import { useQueryStates } from 'nuqs';
 import { type FC, type ReactNode, useCallback, useMemo, useState } from 'react';
 import type { DateRange, SortOrder } from '../../_utils/constants';
-import { SORT_OPTIONS } from '../../_utils/constants';
 import { readingListParsers } from '../../_utils/search-params';
 import { FilterBar } from '../filter-bar';
 
@@ -118,8 +111,10 @@ export const ReadingListContent: FC<Props> = ({ articles, sources, cards }) => {
     dateRange,
     onDateChange: handleDateChange,
     onQueryChange: handleQueryChange,
+    onSortChange: handleSortChange,
     onSourceToggle: handleSourceToggle,
     query,
+    sortOrder,
     sourceIds,
     sources,
   };
@@ -130,38 +125,19 @@ export const ReadingListContent: FC<Props> = ({ articles, sources, cards }) => {
         <FilterBar {...filterBarProps} />
       </aside>
       <div className="flex min-w-0 flex-1 flex-col gap-4">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <p className="text-fg-mute text-sm">{filteredArticles.length}件</p>
-            <div className="lg:hidden">
-              <Button
-                onClick={() => {
-                  setIsDrawerOpen(true);
-                }}
-                size="sm"
-                startIcon={<ListIcon />}
-                variant="outlined"
-              >
-                フィルター
-              </Button>
-            </div>
-          </div>
-          <div className="w-32">
-            <FormControl
-              label="並び順"
-              renderInput={({ id, describedbyId, ...rest }) => (
-                <Select
-                  {...rest}
-                  describedbyId={describedbyId}
-                  id={id}
-                  onChange={(e) => {
-                    handleSortChange(e.target.value as SortOrder);
-                  }}
-                  options={SORT_OPTIONS}
-                  value={sortOrder}
-                />
-              )}
-            />
+        <div className="flex items-center justify-between gap-3">
+          <p className="text-fg-mute text-sm">{filteredArticles.length}件</p>
+          <div className="lg:hidden">
+            <Button
+              onClick={() => {
+                setIsDrawerOpen(true);
+              }}
+              size="sm"
+              startIcon={<ListIcon />}
+              variant="outlined"
+            >
+              表示設定
+            </Button>
           </div>
         </div>
         {filteredArticles.length === 0 ? (
@@ -179,7 +155,7 @@ export const ReadingListContent: FC<Props> = ({ articles, sources, cards }) => {
         onClose={() => {
           setIsDrawerOpen(false);
         }}
-        title="フィルター"
+        title="表示設定"
       >
         <FilterBar {...filterBarProps} />
       </Drawer>

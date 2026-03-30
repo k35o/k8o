@@ -6,6 +6,8 @@ import {
   DATE_RANGE_OPTIONS,
   type DateRange,
   isDateRange,
+  SORT_OPTIONS,
+  type SortOrder,
 } from '../../_utils/constants';
 
 type Source = {
@@ -20,6 +22,8 @@ type Props = {
   onQueryChange: (value: string) => void;
   dateRange: DateRange;
   onDateChange: (value: DateRange) => void;
+  sortOrder: SortOrder;
+  onSortChange: (value: SortOrder) => void;
   sourceIds: number[];
   onSourceToggle: (id: number) => void;
 };
@@ -30,6 +34,8 @@ export const FilterBar: FC<Props> = ({
   onQueryChange,
   dateRange,
   onDateChange,
+  sortOrder,
+  onSortChange,
   sourceIds,
   onSourceToggle,
 }) => {
@@ -64,6 +70,21 @@ export const FilterBar: FC<Props> = ({
             }}
             options={DATE_RANGE_OPTIONS}
             value={dateRange}
+          />
+        )}
+      />
+      <FormControl
+        label="並び順"
+        renderInput={({ id, describedbyId, ...rest }) => (
+          <Select
+            {...rest}
+            describedbyId={describedbyId}
+            id={id}
+            onChange={(e) => {
+              onSortChange(e.target.value as SortOrder);
+            }}
+            options={SORT_OPTIONS}
+            value={sortOrder}
           />
         )}
       />
