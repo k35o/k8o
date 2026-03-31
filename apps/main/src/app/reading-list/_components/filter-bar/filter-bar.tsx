@@ -13,6 +13,7 @@ import {
   DATE_RANGE_OPTIONS,
   type DateRange,
   isDateRange,
+  isSortOrder,
   SORT_OPTIONS,
   type SortOrder,
 } from '../../_utils/constants';
@@ -89,7 +90,9 @@ export const FilterBar: FC<Props> = ({
             describedbyId={describedbyId}
             id={id}
             onChange={(e) => {
-              onSortChange(e.target.value as SortOrder);
+              if (isSortOrder(e.target.value)) {
+                onSortChange(e.target.value);
+              }
             }}
             options={SORT_OPTIONS}
             value={sortOrder}
