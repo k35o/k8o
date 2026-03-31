@@ -15,7 +15,7 @@ export const MetaImage: FC<{
     <div className="relative aspect-video w-full overflow-hidden rounded-t-lg sm:aspect-auto sm:w-48 sm:shrink-0 sm:self-stretch sm:rounded-t-none sm:rounded-l-lg">
       <Image
         alt=""
-        className="object-contain"
+        className="object-cover"
         fill
         onError={() => {
           setIsError(true);

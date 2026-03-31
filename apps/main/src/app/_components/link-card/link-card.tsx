@@ -10,7 +10,7 @@ import { LinkCardErrorBoundary } from './error-boundary';
 import { MetaImage } from './image';
 import { getMetadata } from './metadata';
 
-const Loading: FC<{ href: string }> = ({ href }) => {
+export const LinkCardLoading: FC<{ href: string }> = ({ href }) => {
   return (
     <InteractiveCard>
       <a href={href} rel="noopener noreferrer" target="_blank">
@@ -87,7 +87,7 @@ export const LinkCard: FC<{
 }> = ({ href, publishedAt }) => {
   return (
     <LinkCardErrorBoundary href={href}>
-      <Suspense fallback={<Loading href={href} />}>
+      <Suspense fallback={<LinkCardLoading href={href} />}>
         <Content href={href} publishedAt={publishedAt} />
       </Suspense>
     </LinkCardErrorBoundary>

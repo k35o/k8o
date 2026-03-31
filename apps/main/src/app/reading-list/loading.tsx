@@ -1,3 +1,5 @@
+import { LinkCardLoading } from '../_components/link-card';
+
 export default function Loading() {
   return (
     <div className="grid gap-8 xl:-mx-16 xl:grid-cols-[16rem_minmax(0,1fr)] xl:items-start">
@@ -22,19 +24,7 @@ export default function Loading() {
         </div>
         <div className="flex flex-col gap-4">
           {Array.from({ length: 8 }, (_, i) => (
-            <div
-              className="animate-pulse overflow-hidden rounded-lg bg-bg-base shadow-sm"
-              key={i}
-            >
-              <div className="flex flex-col sm:flex-row">
-                <div className="aspect-video w-full rounded-t-lg bg-bg-mute sm:aspect-auto sm:w-48 sm:shrink-0 sm:self-stretch sm:rounded-t-none sm:rounded-l-lg" />
-                <div className="flex flex-1 flex-col gap-3 p-4">
-                  <div className="h-5 w-3/4 rounded-md bg-bg-mute" />
-                  <div className="h-4 w-full rounded-md bg-bg-mute" />
-                  <div className="mt-auto h-3 w-1/3 rounded-md bg-bg-mute" />
-                </div>
-              </div>
-            </div>
+            <LinkCardLoading href="#" key={i} />
           ))}
         </div>
       </div>
