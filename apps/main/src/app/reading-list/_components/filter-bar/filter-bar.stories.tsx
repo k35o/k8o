@@ -15,9 +15,11 @@ const meta: Meta<typeof FilterBar> = {
     ],
     query: '',
     dateRange: 'all',
+    sortOrder: 'newest',
     sourceIds: [],
     onQueryChange: fn(),
     onDateChange: fn(),
+    onSortChange: fn(),
     onSourceToggle: fn(),
   },
 };
@@ -34,6 +36,9 @@ export const Primary: Story = {
     await expect(canvas.getByText('ソース')).toBeInTheDocument();
     await expect(
       canvas.getByRole('combobox', { name: '期間' }),
+    ).toBeInTheDocument();
+    await expect(
+      canvas.getByRole('combobox', { name: '並び順' }),
     ).toBeInTheDocument();
   },
 };

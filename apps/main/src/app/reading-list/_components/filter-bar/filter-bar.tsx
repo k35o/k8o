@@ -1,11 +1,21 @@
 'use client';
 
-import { Checkbox, FormControl, Select, TextField } from '@k8o/arte-odyssey';
+import {
+  Checkbox,
+  FormControl,
+  Heading,
+  Select,
+  Separator,
+  TextField,
+} from '@k8o/arte-odyssey';
 import { type FC, useMemo } from 'react';
 import {
   DATE_RANGE_OPTIONS,
   type DateRange,
   isDateRange,
+  isSortOrder,
+  SORT_OPTIONS,
+  type SortOrder,
 } from '../../_utils/constants';
 
 type Source = {
@@ -20,6 +30,8 @@ type Props = {
   onQueryChange: (value: string) => void;
   dateRange: DateRange;
   onDateChange: (value: DateRange) => void;
+  sortOrder: SortOrder;
+  onSortChange: (value: SortOrder) => void;
   sourceIds: number[];
   onSourceToggle: (id: number) => void;
 };
@@ -30,13 +42,16 @@ export const FilterBar: FC<Props> = ({
   onQueryChange,
   dateRange,
   onDateChange,
+  sortOrder,
+  onSortChange,
   sourceIds,
   onSourceToggle,
 }) => {
   const selectedSet = useMemo(() => new Set(sourceIds), [sourceIds]);
 
   return (
-    <div className="flex flex-col gap-6">
+    <div className="flex flex-col gap-5">
+      <Heading type="h4">絞り込み</Heading>
       <FormControl
         label="検索"
         renderInput={(props) => (
@@ -67,15 +82,35 @@ export const FilterBar: FC<Props> = ({
           />
         )}
       />
+      <FormControl
+        label="並び順"
+        renderInput={({ id, describedbyId, ...rest }) => (
+          <Select
+            {...rest}
+            describedbyId={describedbyId}
+            id={id}
+            onChange={(e) => {
+              if (isSortOrder(e.target.value)) {
+                onSortChange(e.target.value);
+              }
+            }}
+            options={SORT_OPTIONS}
+            value={sortOrder}
+          />
+        )}
+      />
+      <Separator color="subtle" />
       <fieldset className="flex flex-col gap-2">
-        <legend className="mb-1 font-bold text-fg-base text-sm">ソース</legend>
+        <legend className="mb-1 font-medium text-fg-mute text-xs">
+          ソース
+        </legend>
         <ul className="flex flex-col gap-1">
           {sources
             .filter((source) => source.articleCount > 0)
             .map((source) => (
               <li key={source.id}>
                 <Checkbox
-                  label={source.title}
+                  label={`${source.title} (${source.articleCount})`}
                   onChange={() => {
                     onSourceToggle(source.id);
                   }}

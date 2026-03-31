@@ -1,50 +1,36 @@
-import { Anchor, ExternalLinkIcon, PublishDateIcon } from '@k8o/arte-odyssey';
-import { cn } from '@repo/helpers/cn';
+import {
+  Anchor,
+  ExternalLinkIcon,
+  InteractiveCard,
+  PublishDateIcon,
+} from '@k8o/arte-odyssey';
 import { formatDate } from '@repo/helpers/date/format';
 import { type FC, Suspense } from 'react';
 import { LinkCardErrorBoundary } from './error-boundary';
 import { MetaImage } from './image';
 import { getMetadata } from './metadata';
 
-type Variant = 'horizontal' | 'vertical';
-
-const Loading: FC<{ href: string; variant: Variant }> = ({ href, variant }) => {
+export const LinkCardLoading: FC<{ href: string }> = ({ href }) => {
   return (
-    <a href={href} rel="noopener noreferrer" target="_blank">
-      <div
-        className={cn(
-          'flex animate-pulse flex-col gap-4 rounded-md border border-border-base bg-bg-base/90',
-          variant === 'horizontal' && 'sm:flex-row',
-        )}
-      >
-        <div
-          className={cn(
-            'w-full rounded-t-sm bg-bg-mute',
-            variant === 'vertical'
-              ? 'aspect-2/1'
-              : 'h-40 sm:h-auto sm:w-1/3 sm:max-w-56 sm:rounded-t-none sm:rounded-l-sm',
-          )}
-        />
-        <div className="flex flex-1 flex-col gap-3 p-4">
-          <div className="flex animate-pulse flex-col gap-1">
-            <p className="font-bold text-md md:text-lg">Loading...</p>
-            <p className="text-fg-mute text-xs md:text-sm">Loading...</p>
-          </div>
-          <div className="mt-auto flex items-center gap-1 text-fg-mute">
-            <ExternalLinkIcon size="sm" />
-            <p className="text-xs">{new URL(href).hostname}</p>
+    <InteractiveCard>
+      <a href={href} rel="noopener noreferrer" target="_blank">
+        <div className="flex animate-pulse flex-col overflow-hidden sm:flex-row">
+          <div className="aspect-video w-full rounded-t-lg bg-bg-mute sm:aspect-auto sm:w-48 sm:shrink-0 sm:self-stretch sm:rounded-t-none sm:rounded-l-lg" />
+          <div className="flex flex-1 flex-col gap-3 p-4">
+            <div className="h-5 w-3/4 rounded-md bg-bg-mute" />
+            <div className="h-4 w-full rounded-md bg-bg-mute" />
+            <div className="mt-auto h-3 w-1/3 rounded-md bg-bg-mute" />
           </div>
         </div>
-      </div>
-    </a>
+      </a>
+    </InteractiveCard>
   );
 };
 
 const Content: FC<{
   href: string;
-  variant: Variant;
   publishedAt?: Date | string | undefined;
-}> = async ({ href, variant, publishedAt }) => {
+}> = async ({ href, publishedAt }) => {
   const metaData = await getMetadata(href);
 
   if (!(metaData.title || metaData.description || metaData.image)) {
@@ -52,59 +38,57 @@ const Content: FC<{
   }
 
   return (
-    <a
-      className="block h-full"
-      href={href}
-      rel="noopener noreferrer"
-      target="_blank"
-    >
-      <div
-        className={cn(
-          'flex h-full flex-col rounded-md border border-border-base bg-bg-base/90',
-          variant === 'horizontal' && 'sm:flex-row',
-        )}
+    <InteractiveCard>
+      <a
+        className="group block h-full"
+        href={href}
+        rel="noopener noreferrer"
+        target="_blank"
       >
-        {metaData.image && <MetaImage src={metaData.image} variant={variant} />}
-        <div className="flex flex-1 flex-col gap-3 p-4">
-          {metaData.title && (
-            <div className="flex flex-col gap-1">
-              {metaData.title && (
-                <p className="font-bold text-md md:text-lg">{metaData.title}</p>
-              )}
-              {metaData.description && (
-                <p className="line-clamp-2 text-fg-mute text-xs md:text-sm">
-                  {metaData.description}
+        <div className="flex h-full flex-col overflow-hidden sm:flex-row">
+          {metaData.image && <MetaImage src={metaData.image} />}
+          <div className="flex flex-1 flex-col gap-2 p-4">
+            {metaData.title && (
+              <div className="flex flex-col gap-1 transition-colors duration-200 ease-out group-hover:text-primary-fg">
+                <p className="line-clamp-2 font-bold text-md">
+                  {metaData.title}
                 </p>
-              )}
-            </div>
-          )}
-          <div className="mt-auto flex flex-wrap items-center justify-between gap-2 text-fg-mute text-xs">
-            {publishedAt && (
-              <div className="flex items-center gap-1">
-                <PublishDateIcon size="sm" />
-                <span>{formatDate(new Date(publishedAt), 'yyyy年M月d日')}</span>
+                {metaData.description && (
+                  <p className="line-clamp-2 text-fg-mute text-sm">
+                    {metaData.description}
+                  </p>
+                )}
               </div>
             )}
-            <div className="flex items-center gap-1">
-              <ExternalLinkIcon size="sm" />
-              <p>{new URL(href).hostname}</p>
+            <div className="mt-auto flex flex-wrap items-center justify-between gap-2 text-fg-subtle text-xs">
+              {publishedAt && (
+                <div className="flex items-center gap-1">
+                  <PublishDateIcon size="sm" />
+                  <span>
+                    {formatDate(new Date(publishedAt), 'yyyy年M月d日')}
+                  </span>
+                </div>
+              )}
+              <div className="flex items-center gap-1">
+                <ExternalLinkIcon size="sm" />
+                <p>{new URL(href).hostname}</p>
+              </div>
             </div>
           </div>
         </div>
-      </div>
-    </a>
+      </a>
+    </InteractiveCard>
   );
 };
 
 export const LinkCard: FC<{
   href: string;
   publishedAt?: Date | string | undefined;
-  variant?: Variant;
-}> = ({ href, publishedAt, variant = 'horizontal' }) => {
+}> = ({ href, publishedAt }) => {
   return (
     <LinkCardErrorBoundary href={href}>
-      <Suspense fallback={<Loading href={href} variant={variant} />}>
-        <Content href={href} publishedAt={publishedAt} variant={variant} />
+      <Suspense fallback={<LinkCardLoading href={href} />}>
+        <Content href={href} publishedAt={publishedAt} />
       </Suspense>
     </LinkCardErrorBoundary>
   );

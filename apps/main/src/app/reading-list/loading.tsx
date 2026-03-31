@@ -1,23 +1,30 @@
+import { LinkCardLoading } from '../_components/link-card';
+
 export default function Loading() {
   return (
-    <div className="flex flex-col gap-6 lg:flex-row">
-      <aside className="hidden w-60 shrink-0 animate-pulse lg:flex lg:flex-col lg:gap-4">
-        <div className="h-16 rounded-md bg-bg-mute" />
-        <div className="flex flex-col gap-2">
-          {Array.from({ length: 3 }, (_, i) => (
-            <div className="h-6 rounded-md bg-bg-mute" key={i} />
-          ))}
+    <div className="grid gap-8 xl:-mx-16 xl:grid-cols-[16rem_minmax(0,1fr)] xl:items-start">
+      <aside className="hidden xl:sticky xl:top-6 xl:block">
+        <div className="animate-pulse rounded-lg border border-border-mute p-4">
+          <div className="flex flex-col gap-5">
+            <div className="h-6 w-20 rounded-md bg-bg-mute" />
+            <div className="h-10 rounded-md bg-bg-mute" />
+            <div className="h-10 rounded-md bg-bg-mute" />
+            <div className="h-10 rounded-md bg-bg-mute" />
+            <div className="h-px w-full bg-border-subtle" />
+            {Array.from({ length: 5 }, (_, i) => (
+              <div className="h-5 rounded-md bg-bg-mute" key={i} />
+            ))}
+          </div>
         </div>
-        <div className="h-16 rounded-md bg-bg-mute" />
       </aside>
-      <div className="flex flex-1 flex-col gap-4">
-        <div className="flex items-center justify-between">
-          <div className="h-5 w-12 animate-pulse rounded-md bg-bg-mute" />
-          <div className="h-9 w-24 animate-pulse rounded-md bg-bg-mute lg:hidden" />
+      <div className="flex flex-1 flex-col gap-6">
+        <div className="flex animate-pulse items-center justify-between">
+          <div className="h-4 w-24 rounded-md bg-bg-mute" />
+          <div className="h-9 w-24 rounded-md bg-bg-mute xl:hidden" />
         </div>
-        <div className="grid grid-cols-auto-fill-80 gap-3">
-          {Array.from({ length: 6 }, (_, i) => (
-            <div className="h-64 animate-pulse rounded-md bg-bg-mute" key={i} />
+        <div className="flex flex-col gap-4">
+          {Array.from({ length: 8 }, (_, i) => (
+            <LinkCardLoading href="#" key={i} />
           ))}
         </div>
       </div>
