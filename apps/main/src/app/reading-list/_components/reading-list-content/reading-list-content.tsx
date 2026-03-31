@@ -1,6 +1,12 @@
 'use client';
 
-import { Button, Drawer, ListIcon } from '@k8o/arte-odyssey';
+import {
+  Button,
+  Card,
+  Drawer,
+  ListIcon,
+  SubscribeIcon,
+} from '@k8o/arte-odyssey';
 import { useQueryStates } from 'nuqs';
 import { type FC, type ReactNode, useCallback, useMemo, useState } from 'react';
 import type { DateRange, SortOrder } from '../../_utils/constants';
@@ -120,14 +126,22 @@ export const ReadingListContent: FC<Props> = ({ articles, sources, cards }) => {
   };
 
   return (
-    <div className="flex flex-col gap-6 rounded-md bg-bg-base p-6 lg:flex-row xl:-mx-36">
-      <aside className="hidden w-60 shrink-0 lg:block">
-        <FilterBar {...filterBarProps} />
+    <div className="grid gap-8 xl:-mx-16 xl:grid-cols-[16rem_minmax(0,1fr)] xl:items-start">
+      <aside className="hidden xl:sticky xl:top-6 xl:block">
+        <Card appearance="bordered">
+          <div className="p-4">
+            <FilterBar {...filterBarProps} />
+          </div>
+        </Card>
       </aside>
-      <div className="flex min-w-0 flex-1 flex-col gap-4">
-        <div className="flex items-center justify-between gap-3">
-          <p className="text-fg-mute text-sm">{filteredArticles.length}件</p>
-          <div className="lg:hidden">
+      <div className="flex min-w-0 flex-1 flex-col gap-6">
+        <div className="flex items-center justify-between gap-4">
+          <p className="text-fg-mute text-sm">
+            {filteredArticles.length}件の記事
+            {sourceIds.length > 0 &&
+              ` / ${sourceIds.length}件のソースで絞り込み中`}
+          </p>
+          <div className="shrink-0 xl:hidden">
             <Button
               onClick={() => {
                 setIsDrawerOpen(true);
@@ -136,16 +150,24 @@ export const ReadingListContent: FC<Props> = ({ articles, sources, cards }) => {
               startIcon={<ListIcon />}
               variant="outlined"
             >
-              表示設定
+              絞り込み
             </Button>
           </div>
         </div>
         {filteredArticles.length === 0 ? (
-          <p className="text-fg-mute text-sm">
-            条件に一致する記事がありません。
-          </p>
+          <div className="flex flex-col items-center gap-3 py-16 text-center">
+            <div className="text-fg-subtle">
+              <SubscribeIcon size="lg" />
+            </div>
+            <p className="font-bold text-fg-base text-lg">
+              条件に一致する記事がありません
+            </p>
+            <p className="text-fg-mute text-sm">
+              検索条件やソースの選択を変更してみてください
+            </p>
+          </div>
         ) : (
-          <div className="grid grid-cols-auto-fill-60 gap-3">
+          <div className="flex flex-col gap-4">
             {filteredArticles.map((article) => cards[article.id])}
           </div>
         )}
@@ -155,7 +177,7 @@ export const ReadingListContent: FC<Props> = ({ articles, sources, cards }) => {
         onClose={() => {
           setIsDrawerOpen(false);
         }}
-        title="表示設定"
+        title="絞り込み"
       >
         <FilterBar {...filterBarProps} />
       </Drawer>

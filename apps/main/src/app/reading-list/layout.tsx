@@ -21,9 +21,12 @@ export const metadata = {
 
 export default function Layout({ children }: LayoutProps<'/reading-list'>) {
   return (
-    <div className="flex flex-col gap-6">
+    <div className="flex flex-col gap-8">
       <div className="flex items-center justify-between">
-        <Heading type="h2">よんでるもの</Heading>
+        <div className="flex flex-col gap-1">
+          <Heading type="h2">よんでるもの</Heading>
+          <p className="text-fg-mute text-sm">普段読んでいる記事たち</p>
+        </div>
         <IconLink
           bg="base"
           href="/reading-list/feed"

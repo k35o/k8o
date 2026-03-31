@@ -36,7 +36,6 @@ export default async function Page() {
         href={article.url}
         key={article.id}
         publishedAt={article.publishedAt}
-        variant="vertical"
       />
     );
   }

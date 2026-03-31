@@ -1,36 +1,21 @@
 'use client';
 
-import { cn } from '@repo/helpers/cn';
 import Image from 'next/image';
 import { type FC, useState } from 'react';
 
-type Variant = 'horizontal' | 'vertical';
-
 export const MetaImage: FC<{
   src: string;
-  variant: Variant;
-}> = ({ src, variant }) => {
+}> = ({ src }) => {
   const [isError, setIsError] = useState(false);
   if (isError) {
     return null;
   }
 
   return (
-    <div
-      className={cn(
-        'relative overflow-hidden',
-        variant === 'vertical'
-          ? 'aspect-2/1 w-full rounded-t-sm'
-          : 'h-40 w-full rounded-t-sm sm:h-auto sm:w-1/3 sm:rounded-t-none sm:rounded-l-sm',
-      )}
-    >
+    <div className="relative aspect-video w-full overflow-hidden rounded-t-lg sm:aspect-auto sm:w-48 sm:shrink-0 sm:self-stretch sm:rounded-t-none sm:rounded-l-lg">
       <Image
         alt=""
-        className={cn(
-          variant === 'vertical'
-            ? 'rounded-t-sm object-cover'
-            : 'rounded-l-sm object-contain',
-        )}
+        className="object-contain"
         fill
         onError={() => {
           setIsError(true);

@@ -1,6 +1,13 @@
 'use client';
 
-import { Checkbox, FormControl, Select, TextField } from '@k8o/arte-odyssey';
+import {
+  Checkbox,
+  FormControl,
+  Heading,
+  Select,
+  Separator,
+  TextField,
+} from '@k8o/arte-odyssey';
 import { type FC, useMemo } from 'react';
 import {
   DATE_RANGE_OPTIONS,
@@ -42,7 +49,8 @@ export const FilterBar: FC<Props> = ({
   const selectedSet = useMemo(() => new Set(sourceIds), [sourceIds]);
 
   return (
-    <div className="flex flex-col gap-6">
+    <div className="flex flex-col gap-5">
+      <Heading type="h4">絞り込み</Heading>
       <FormControl
         label="検索"
         renderInput={(props) => (
@@ -88,15 +96,18 @@ export const FilterBar: FC<Props> = ({
           />
         )}
       />
+      <Separator color="subtle" />
       <fieldset className="flex flex-col gap-2">
-        <legend className="mb-1 font-bold text-fg-base text-sm">ソース</legend>
+        <legend className="mb-1 font-medium text-fg-mute text-xs">
+          ソース
+        </legend>
         <ul className="flex flex-col gap-1">
           {sources
             .filter((source) => source.articleCount > 0)
             .map((source) => (
               <li key={source.id}>
                 <Checkbox
-                  label={source.title}
+                  label={`${source.title} (${source.articleCount})`}
                   onChange={() => {
                     onSourceToggle(source.id);
                   }}
