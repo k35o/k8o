@@ -16,7 +16,7 @@ export const MetaImage: FC<{
       <div className="relative aspect-video w-full">
         <Image
           alt=""
-          className="object-center object-contain"
+          className="object-contain object-center"
           fill
           onError={() => {
             setIsError(true);
