@@ -12,17 +12,19 @@ export const MetaImage: FC<{
   }
 
   return (
-    <div className="relative aspect-video w-full overflow-hidden rounded-t-lg sm:w-48 sm:shrink-0 sm:rounded-t-none sm:rounded-l-lg">
-      <Image
-        alt=""
-        className="object-cover"
-        fill
-        onError={() => {
-          setIsError(true);
-        }}
-        src={src}
-        unoptimized
-      />
+    <div className="flex w-full flex-col justify-center overflow-hidden rounded-t-lg bg-bg-subtle sm:w-48 sm:shrink-0 sm:rounded-t-none sm:rounded-l-lg">
+      <div className="relative aspect-video w-full">
+        <Image
+          alt=""
+          className="object-contain object-center"
+          fill
+          onError={() => {
+            setIsError(true);
+          }}
+          src={src}
+          unoptimized
+        />
+      </div>
     </div>
   );
 };
