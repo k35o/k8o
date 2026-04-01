@@ -15,7 +15,9 @@ export const LinkCardLoading: FC<{ href: string }> = ({ href }) => {
     <InteractiveCard>
       <a href={href} rel="noopener noreferrer" target="_blank">
         <div className="flex animate-pulse flex-col overflow-hidden sm:flex-row">
-          <div className="aspect-video w-full rounded-t-lg bg-bg-mute sm:w-48 sm:shrink-0 sm:rounded-t-none sm:rounded-l-lg" />
+          <div className="w-full rounded-t-lg bg-bg-mute sm:w-48 sm:shrink-0 sm:rounded-t-none sm:rounded-l-lg">
+            <div className="aspect-video w-full bg-bg-mute" />
+          </div>
           <div className="flex flex-1 flex-col gap-3 p-4">
             <div className="h-5 w-3/4 rounded-md bg-bg-mute" />
             <div className="h-4 w-full rounded-md bg-bg-mute" />
