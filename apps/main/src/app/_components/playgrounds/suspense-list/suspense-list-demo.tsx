@@ -134,7 +134,7 @@ const DataList: FC<{
       };
 }> = ({ data, useSuspenseList, hasFallback, suspenseListProps: _ }) => {
   const fallback = hasFallback ? (
-    <div className="rounded-md border border-border-mute p-4">Loading...</div>
+    <div className="rounded-xl bg-bg-mute p-4">Loading...</div>
   ) : null;
   if (useSuspenseList) {
     return (

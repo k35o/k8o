@@ -46,7 +46,7 @@ export const DialogRequestCloseDemo: FC = () => {
         </div>
       )}
       <dialog
-        className="m-auto max-h-lg w-5/6 max-w-2xl rounded-lg border-border-mute bg-bg-base shadow-xl backdrop:bg-back-drop dark:border"
+        className="m-auto max-h-lg w-5/6 max-w-2xl rounded-lg bg-bg-base shadow-md backdrop:bg-back-drop"
         ref={ref}
       >
         <form

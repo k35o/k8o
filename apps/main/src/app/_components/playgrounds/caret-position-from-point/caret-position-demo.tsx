@@ -64,7 +64,7 @@ export function CaretPositionDemo() {
 
   if (!isSupported) {
     return (
-      <div className="rounded-lg border border-border-base bg-bg-mute p-3">
+      <div className="rounded-xl bg-bg-mute p-3">
         <p className="text-fg-mute text-sm">
           このブラウザはこのAPIをサポートしていません。
         </p>
@@ -78,7 +78,7 @@ export function CaretPositionDemo() {
       {/* biome-ignore lint/a11y/noNoninteractiveElementInteractions: caretPositionFromPointデモ用のクリックエリア */}
       {/* biome-ignore lint/a11y/useKeyWithClickEvents: caretPositionFromPointはマウス座標を必要とするためキーボードでは使用不可 */}
       <div
-        className="cursor-text select-none rounded-lg border border-border-base bg-bg-base p-3"
+        className="cursor-text select-none rounded-xl bg-bg-base p-3 shadow-sm"
         onClick={handleClick}
       >
         <p className="text-fg-base text-sm leading-relaxed">
@@ -90,7 +90,7 @@ export function CaretPositionDemo() {
       </div>
 
       {caretInfo ? (
-        <div className="rounded-lg border border-border-base bg-bg-base p-3">
+        <div className="rounded-xl bg-bg-base p-3 shadow-sm">
           <div className="mb-3 flex items-baseline justify-between gap-2">
             <h4 className="font-medium text-fg-base text-sm">結果</h4>
             <Button

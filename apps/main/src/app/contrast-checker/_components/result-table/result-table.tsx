@@ -86,7 +86,7 @@ export const ResultTable: FC<Props> = ({
   ] as const;
 
   return (
-    <div className="overflow-hidden rounded-lg border border-border-base">
+    <div className="overflow-hidden rounded-xl border border-border-base bg-bg-base">
       <div className="sm:hidden">
         {rows.map((row) => (
           <div className="flex flex-col gap-3 p-4" key={row.label}>

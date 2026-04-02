@@ -70,7 +70,7 @@ export function ScrollendDemo() {
       </div>
 
       <div
-        className="h-48 overflow-y-scroll rounded-lg border border-border-base bg-bg-mute p-4"
+        className="h-48 overflow-y-scroll rounded-xl bg-bg-mute p-4"
         ref={scrollRef}
       >
         <div className="space-y-4">

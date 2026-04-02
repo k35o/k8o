@@ -3,7 +3,7 @@ import type { FC } from 'react';
 
 export const Description: FC = () => {
   return (
-    <div className="w-full rounded-md border-2 border-border-emphasize p-4">
+    <div className="w-full rounded-xl bg-bg-mute p-4">
       <div className="flex flex-col gap-3">
         <p className="font-bold text-lg md:text-xl">
           <Anchor href="https://www.w3.org/TR/WCAG22/">WCAG 2.2</Anchor>

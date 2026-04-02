@@ -42,7 +42,7 @@ const ColumnItem: FC<{
   const [isOpen, setIsOpen] = useState(true);
 
   return (
-    <div className="overflow-hidden rounded-lg border border-border-base bg-bg-base">
+    <div className="overflow-hidden rounded-xl border border-border-base bg-bg-base">
       {/* ヘッダー */}
       <div className="flex w-full items-center justify-between gap-3 px-4 py-3">
         <button

@@ -18,7 +18,7 @@ export const TagContent: FC<{
 }> = ({ name, blogs, talks }) => {
   return (
     <div className="flex flex-col gap-8">
-      <div className="flex items-center gap-4 rounded-lg bg-bg-base p-6">
+      <div className="flex items-center gap-4 rounded-xl bg-bg-base p-6 shadow-sm">
         <div className="flex size-10 items-center justify-center rounded-full bg-primary-bg text-primary-fg">
           <TagIcon />
         </div>

@@ -21,7 +21,7 @@ export const SignInForm: FC = () => {
 
   return (
     <button
-      className="flex items-center gap-3 rounded-lg bg-fg-base px-6 py-3 font-medium text-bg-base text-sm transition-opacity hover:opacity-80"
+      className="flex items-center gap-3 rounded-full bg-fg-base px-6 py-3 font-medium text-bg-base text-sm transition-opacity hover:opacity-80"
       onClick={handleSignIn}
       type="button"
     >

@@ -20,7 +20,7 @@ export const ColorTip: FC<{ color: string; hex: string }> = ({
 
   return (
     <div
-      className="flex h-36 w-full items-center justify-center rounded-xl border border-border-base bg-bg-mute transition-colors duration-200"
+      className="flex h-36 w-full items-center justify-center rounded-xl bg-bg-mute transition-colors duration-200"
       style={{ backgroundColor: color }}
     >
       <p

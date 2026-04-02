@@ -131,7 +131,7 @@ export function EventTimingDemo() {
 
   if (!isSupported) {
     return (
-      <div className="rounded-lg border border-border-base bg-bg-mute p-4">
+      <div className="rounded-xl bg-bg-mute p-4">
         <p className="text-fg-mute text-sm">
           このブラウザはEvent Timing APIをサポートしていません。
         </p>
@@ -155,7 +155,7 @@ export function EventTimingDemo() {
       </div>
 
       {latestEntry && (
-        <div className="rounded-lg border border-border-base bg-bg-base p-4">
+        <div className="rounded-xl bg-bg-base p-4 shadow-sm">
           <div className="mb-3 flex items-center justify-between">
             <div className="flex items-center gap-2">
               <h4 className="font-medium text-fg-base">最新の計測結果</h4>

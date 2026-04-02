@@ -98,7 +98,7 @@ export const QrGenerator = () => {
         <div className="flex flex-col items-center gap-4 p-5">
           {qrCodeSvg ? (
             <>
-              <div className="flex w-full items-center justify-center overflow-hidden rounded-lg bg-white p-4">
+              <div className="flex w-full items-center justify-center overflow-hidden rounded-xl bg-white p-4">
                 <div
                   className="flex items-center justify-center"
                   dangerouslySetInnerHTML={{ __html: qrCodeSvg }}

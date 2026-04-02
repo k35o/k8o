@@ -128,7 +128,7 @@ export const ReadingListContent: FC<Props> = ({ articles, sources, cards }) => {
   return (
     <div className="grid gap-8 xl:-mx-16 xl:grid-cols-[16rem_minmax(0,1fr)] xl:items-start">
       <aside className="hidden xl:sticky xl:top-6 xl:block">
-        <Card appearance="bordered">
+        <Card appearance="shadow">
           <div className="p-4">
             <FilterBar {...filterBarProps} />
           </div>

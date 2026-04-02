@@ -71,7 +71,7 @@ export function CustomCommandDemo() {
         </button>
       </div>
 
-      <div className="flex items-center justify-center rounded-lg border border-border-base bg-bg-base p-8">
+      <div className="flex items-center justify-center rounded-xl bg-bg-base p-8 shadow-sm">
         <div
           className="h-24 w-24 overflow-hidden rounded-full transition-all duration-300"
           id="demo-image"

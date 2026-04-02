@@ -47,7 +47,7 @@ export const CheckContrast: FC = () => {
       )}
       <section
         aria-label="選択した色の組み合わせのプレビュー"
-        className="flex flex-col items-center justify-center gap-3 rounded-lg border border-border-base p-6 md:p-8"
+        className="flex flex-col items-center justify-center gap-3 rounded-xl p-6 md:p-8"
         style={{ backgroundColor: baseColor }}
       >
         <p

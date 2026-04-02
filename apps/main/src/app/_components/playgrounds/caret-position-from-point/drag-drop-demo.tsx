@@ -65,7 +65,7 @@ export function DragDropDemo() {
 
   if (!isSupported) {
     return (
-      <div className="rounded-lg border border-border-base bg-bg-mute p-3">
+      <div className="rounded-xl bg-bg-mute p-3">
         <p className="text-fg-mute text-sm">
           このブラウザはこのAPIをサポートしていません。
         </p>

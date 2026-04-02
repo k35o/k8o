@@ -7,7 +7,7 @@ export const DetailsAnimationDemo: FC = () => {
     <div className="flex flex-col gap-8">
       <details
         className={cn(
-          'rounded-md border border-border-base p-4',
+          'rounded-xl bg-bg-base p-4 shadow-sm',
           styles['detailsAnimation'],
         )}
       >

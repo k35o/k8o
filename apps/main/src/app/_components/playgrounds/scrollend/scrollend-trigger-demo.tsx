@@ -114,7 +114,7 @@ export function ScrollendTriggerDemo() {
             </div>
           </div>
           <div
-            className="h-40 overflow-y-scroll rounded-lg border border-border-base bg-bg-mute p-3"
+            className="h-40 overflow-y-scroll rounded-xl bg-bg-mute p-3"
             ref={scrollToRef}
           >
             <div className="space-y-2">
@@ -133,7 +133,7 @@ export function ScrollendTriggerDemo() {
         <div className="min-w-0 space-y-2">
           <h4 className="font-bold text-sm">scroll-snap</h4>
           <div
-            className="flex h-40 snap-x snap-mandatory gap-3 overflow-x-scroll rounded-lg border border-border-base bg-bg-mute p-3"
+            className="flex h-40 snap-x snap-mandatory gap-3 overflow-x-scroll rounded-xl bg-bg-mute p-3"
             ref={snapRef}
           >
             {Array.from({ length: 8 }, (_, i) => (

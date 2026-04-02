@@ -15,7 +15,7 @@ export function DialogDemo() {
 
       <dialog
         aria-label="デモダイアログ"
-        className="m-auto rounded-lg border border-border-base bg-bg-base p-6 backdrop:bg-black/50"
+        className="m-auto rounded-lg bg-bg-base p-6 shadow-md backdrop:bg-black/50"
         id="demo-dialog"
       >
         <div className="space-y-4">

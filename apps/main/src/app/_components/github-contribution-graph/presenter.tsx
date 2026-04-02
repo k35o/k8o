@@ -109,7 +109,7 @@ const CustomTooltip: FC<{
   const formattedDate = formatDate(new Date(item.date), 'yyyy年M月d日(E)');
 
   return (
-    <div className="rounded-md border border-border-base bg-bg-base px-3 py-2 text-fg-base shadow-sm">
+    <div className="rounded-xl bg-bg-base px-3 py-2 text-fg-base shadow-md">
       <p className="font-semibold text-sm">{item.count}件のコミット</p>
       <p className="text-fg-mute text-xs">{formattedDate}</p>
     </div>
