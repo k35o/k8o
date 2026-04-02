@@ -1,20 +1,10 @@
 @import "@k8o/arte-odyssey/styles.css";
 
-.app-background {
-  background-color: var(--teal-100);
-  background-image: linear-gradient(
-    62deg,
-    var(--teal-100) 0%,
-    var(--cyan-100) 100%
-  );
-  .dark & {
-    background-color: var(--teal-900);
-    background-image: linear-gradient(
-      62deg,
-      var(--teal-900) 0%,
-      var(--cyan-900) 100%
-    );
-  }
+:root:root {
+  --gray-700: oklch(0.42 0.001 265);
+  --gray-800: oklch(0.3 0.001 265);
+  --gray-900: oklch(0.25 0.0005 265);
+  --gray-950: oklch(0.18 0.0003 265);
 }
 
 @media (prefers-reduced-motion) {
