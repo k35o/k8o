@@ -2,7 +2,7 @@
 
 import { BadIcon, Button, GoodIcon, Textarea } from '@k8o/arte-odyssey';
 import { cn } from '@repo/helpers/cn';
-import { type FC, useState, useTransition } from 'react';
+import { type FC, useId, useState, useTransition } from 'react';
 
 const FEEDBACK_MAP: Record<string, number> = {
   good: 1,
@@ -22,6 +22,8 @@ export const FeedbackCard: FC<{
   title: string;
   onSubmit: (feedback: number | null, comment: string) => Promise<void>;
 }> = ({ title, onSubmit }) => {
+  const textareaId = useId();
+  const errorId = useId();
   const [feedbackValue, setFeedbackValue] = useState('');
   const [comment, setComment] = useState('');
   const [isSubmitted, setIsSubmitted] = useState(false);
@@ -29,9 +31,9 @@ export const FeedbackCard: FC<{
 
   const isInvalidComment = comment.length > 500;
 
-  const handleSubmit = (value: string, commentText: string) => {
+  const handleSubmit = () => {
     startTransition(async () => {
-      await onSubmit(FEEDBACK_MAP[value] ?? null, commentText);
+      await onSubmit(FEEDBACK_MAP[feedbackValue] ?? null, comment);
       setIsSubmitted(true);
     });
   };
@@ -80,8 +82,8 @@ export const FeedbackCard: FC<{
       </div>
       <div className="flex flex-col gap-3">
         <Textarea
-          describedbyId={undefined}
-          id="feedback-comment"
+          describedbyId={isInvalidComment ? errorId : undefined}
+          id={textareaId}
           isDisabled={isPending}
           isInvalid={isInvalidComment}
           isRequired={false}
@@ -91,14 +93,16 @@ export const FeedbackCard: FC<{
           value={comment}
         />
         {isInvalidComment && (
-          <p className="text-fg-error text-xs">500文字以内でご記入ください</p>
+          <p className="text-fg-error text-xs" id={errorId}>
+            500文字以内でご記入ください
+          </p>
         )}
         <div className="flex justify-end">
           <Button
             disabled={
               !(feedbackValue || comment) || isInvalidComment || isPending
             }
-            onClick={() => handleSubmit(feedbackValue, comment)}
+            onClick={handleSubmit}
             size="sm"
           >
             送信
