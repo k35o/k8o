@@ -1,6 +1,6 @@
 import { OgImage } from '@/app/_components/og-image';
 
-export const alt = 'oss';
+export const alt = 'artifacts';
 export const size = {
   width: 1200,
   height: 630,
@@ -9,5 +9,5 @@ export const size = {
 export const contentType = 'image/png';
 
 export default async function OpenGraphImage() {
-  return await OgImage({ title: 'oss' });
+  return await OgImage({ title: 'artifacts' });
 }

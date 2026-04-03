@@ -1,21 +1,35 @@
 import { describe, expect, it } from 'vitest';
-import { getOssProjects } from './oss';
+import { getArtifacts } from './artifacts';
 
-describe('getOssProjects', () => {
-  it('公開しているOSS一覧を返す', () => {
-    const projects = getOssProjects();
+describe('getArtifacts', () => {
+  it('公開している制作物一覧を返す', () => {
+    const projects = getArtifacts();
 
-    expect(projects).toHaveLength(2);
+    expect(projects).toHaveLength(7);
     expect(projects).toEqual(
       expect.arrayContaining([
         expect.objectContaining({
+          name: 'ArteOdyssey',
+          githubUrl: 'https://github.com/k35o/arte-odyssey',
+          websiteUrl: 'https://arte-odyssey.k8o.me/',
+          npmPackageName: null,
+        }),
+        expect.objectContaining({
+          name: 'skills',
+          githubUrl: 'https://github.com/k35o/skills',
+          websiteUrl: null,
+          npmPackageName: null,
+        }),
+        expect.objectContaining({
           name: 'patrol-board',
           githubUrl: 'https://github.com/k35o/patrol-board',
+          websiteUrl: null,
           npmPackageName: null,
         }),
         expect.objectContaining({
           name: 'storybook-addon-mock-date',
           githubUrl: 'https://github.com/k35o/storybook-addon-mock-date',
+          websiteUrl: null,
           npmPackageName: 'storybook-addon-mock-date',
         }),
       ]),

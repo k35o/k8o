@@ -1,5 +1,6 @@
 import { cacheLife } from 'next/cache';
 import { NextResponse } from 'next/server';
+import { metadata as artifactsMetadata } from '@/app/artifacts/layout';
 import { metadata as baseConverterMetadata } from '@/app/base-converter/layout';
 import { getBlogContents } from '@/app/blog/_api';
 import { metadata as blogMetadata } from '@/app/blog/layout';
@@ -61,6 +62,7 @@ async function _generateLlmContent() {
     { metadata: blogMetadata, subContent: blogContent },
     { metadata: talksMetadata, subContent: talkContent },
     { metadata: playgroundsMetadata },
+    { metadata: artifactsMetadata },
   ];
 
   const forgeContent = forgeItems

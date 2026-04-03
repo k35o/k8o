@@ -113,14 +113,14 @@ export default function Home() {
             title="Playgrounds"
           />
           <AppCard
-            description="公開しているオープンソースプロジェクトをまとめています。"
-            link="/oss"
-            title="OSS"
+            description="dotfilesやskills、自作ツールなどの制作物をまとめています。"
+            link="/artifacts"
+            title="Artifacts"
           />
           <AppCard
-            description="普段読んでいる記事を検索やソースで絞り込みながら探せます。"
+            description="気になっている記事を集めて、あとから探せるようにしています。"
             link="/reading-list"
-            title="よんでるもの"
+            title="Readings"
           />
           <AppCard
             accent={<ArteOdyssey size="xl" />}
