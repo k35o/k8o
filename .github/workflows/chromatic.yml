@@ -13,10 +13,17 @@ jobs:
           fetch-depth: 0
       - name: Setup
         uses: ./.github/actions/setup
-      - name: Publish Core to Chromatic
+      - name: Publish Main to Chromatic
         uses: chromaui/action@f191a0224b10e1a38b2091cefb7b7a2337009116 # v16.0.0
         with:
           projectToken: ${{ secrets.CHROMATIC_PROJECT_TOKEN }}
           onlyChanged: true
           skip: 'renovate/**'
           workingDir: apps/main
+      - name: Publish Admin to Chromatic
+        uses: chromaui/action@f191a0224b10e1a38b2091cefb7b7a2337009116 # v16.0.0
+        with:
+          projectToken: ${{ secrets.CHROMATIC_ADMIN_PROJECT_TOKEN }}
+          onlyChanged: true
+          skip: 'renovate/**'
+          workingDir: apps/admin
