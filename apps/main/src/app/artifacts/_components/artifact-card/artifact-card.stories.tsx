@@ -35,7 +35,8 @@ export const WithoutNpm: Story = {
 export const DisplaysName: Story = {
   args: {
     name: 'ArteOdyssey',
-    description: 'k8o.meのデザインシステム。コンポーネントやトークンを管理している。',
+    description:
+      'k8o.meのデザインシステム。コンポーネントやトークンを管理している。',
     githubUrl: 'https://github.com/k35o/arte-odyssey',
     websiteUrl: 'https://arte-odyssey.k8o.me/',
     npmPackageName: null,
@@ -133,7 +134,8 @@ export const NoNpmLink: Story = {
 export const HasWebsiteLink: Story = {
   args: {
     name: 'ArteOdyssey',
-    description: 'k8o.meのデザインシステム。コンポーネントやトークンを管理している。',
+    description:
+      'k8o.meのデザインシステム。コンポーネントやトークンを管理している。',
     githubUrl: 'https://github.com/k35o/arte-odyssey',
     websiteUrl: 'https://arte-odyssey.k8o.me/',
     npmPackageName: null,

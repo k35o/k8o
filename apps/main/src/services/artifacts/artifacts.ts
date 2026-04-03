@@ -20,8 +20,7 @@ export const getArtifacts = (): Artifact[] => {
     },
     {
       name: 'renovate-config',
-      description:
-        'Renovateの設定を共通化するためのconfigリポジトリ。',
+      description: 'Renovateの設定を共通化するためのconfigリポジトリ。',
       githubUrl: 'https://github.com/k35o/renovate-config',
       websiteUrl: null,
       npmPackageName: null,
@@ -37,7 +36,8 @@ export const getArtifacts = (): Artifact[] => {
     },
     {
       name: 'skills',
-      description: 'ClaudeやCodexなどで使う自分用のAIエージェント向けskills集。',
+      description:
+        'ClaudeやCodexなどで使う自分用のAIエージェント向けskills集。',
       githubUrl: 'https://github.com/k35o/skills',
       websiteUrl: null,
       npmPackageName: null,

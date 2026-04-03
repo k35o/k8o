@@ -1,11 +1,11 @@
 import { cacheLife } from 'next/cache';
 import { NextResponse } from 'next/server';
+import { metadata as artifactsMetadata } from '@/app/artifacts/layout';
 import { metadata as baseConverterMetadata } from '@/app/base-converter/layout';
 import { getBlogContents } from '@/app/blog/_api';
 import { metadata as blogMetadata } from '@/app/blog/layout';
 import { metadata as colorConverterMetadata } from '@/app/color-converter/layout';
 import { metadata as contrastCheckerMetadata } from '@/app/contrast-checker/layout';
-import { metadata as artifactsMetadata } from '@/app/artifacts/layout';
 import { metadata as japaneseTextFixerMetadata } from '@/app/japanese-text-fixer/layout';
 import { metadata as mojiCountMetadata } from '@/app/moji-count/layout';
 import { metadata as playgroundsMetadata } from '@/app/playgrounds/layout';
