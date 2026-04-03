@@ -48,8 +48,8 @@ const OperateButton: FC<{
         variable === 'secondary' && 'bg-group-secondary',
         variable === 'quaternary' && 'bg-group-quaternary',
         variable === 'tertiary' && 'bg-group-tertiary',
-        isActive && 'bordertransparent outline-hidden ring-4 ring-fg-mute',
-        'hover:bordertransparent hover:outline-hidden hover:ring-4 hover:ring-fg-mute',
+        isActive && 'border-transparent outline-hidden ring-4 ring-fg-mute',
+        'hover:border-transparent hover:outline-hidden hover:ring-4 hover:ring-fg-mute',
         'focus-visible:border-transparent focus-visible:outline-hidden focus-visible:ring-4 focus-visible:ring-fg-mute',
       )}
       onKeyDown={onKeyDown}

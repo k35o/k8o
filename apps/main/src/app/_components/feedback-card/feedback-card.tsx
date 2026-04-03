@@ -4,10 +4,10 @@ import { BadIcon, Button, GoodIcon, Textarea } from '@k8o/arte-odyssey';
 import { cn } from '@repo/helpers/cn';
 import { type FC, useId, useState, useTransition } from 'react';
 
-const FEEDBACK_MAP: Record<string, number> = {
+const FEEDBACK_MAP = {
   good: 1,
   bad: 2,
-};
+} as const satisfies Record<string, number>;
 
 const pillClass = (key: string, feedbackValue: string): string =>
   cn(
@@ -33,7 +33,11 @@ export const FeedbackCard: FC<{
 
   const handleSubmit = () => {
     startTransition(async () => {
-      await onSubmit(FEEDBACK_MAP[feedbackValue] ?? null, comment);
+      const id =
+        feedbackValue in FEEDBACK_MAP
+          ? FEEDBACK_MAP[feedbackValue as keyof typeof FEEDBACK_MAP]
+          : null;
+      await onSubmit(id, comment);
       setIsSubmitted(true);
     });
   };
@@ -107,6 +111,7 @@ export const FeedbackCard: FC<{
             }
             onClick={handleSubmit}
             size="sm"
+            type="button"
           >
             送信
           </Button>
