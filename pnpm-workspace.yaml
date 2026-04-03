@@ -6,6 +6,7 @@ catalog:
   '@k8o/arte-odyssey': 5.0.3
   '@storybook/addon-a11y': 10.3.3
   '@storybook/addon-docs': 10.3.3
+  '@storybook/addon-mcp': '0.4.2'
   '@storybook/addon-vitest': 10.3.3
   '@storybook/nextjs-vite': 10.3.3
   '@tailwindcss/postcss': 4.2.2

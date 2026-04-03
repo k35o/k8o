@@ -36,6 +36,7 @@
     "@repo/typescript-config": "workspace:*",
     "@storybook/addon-a11y": "catalog:",
     "@storybook/addon-docs": "catalog:",
+    "@storybook/addon-mcp": "catalog:",
     "@storybook/addon-vitest": "catalog:",
     "@storybook/nextjs-vite": "catalog:",
     "@types/react": "catalog:",
