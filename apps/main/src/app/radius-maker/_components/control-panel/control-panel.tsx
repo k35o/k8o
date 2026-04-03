@@ -93,14 +93,13 @@ export const ControlPanel: FC = () => {
     };
   }, [aspectRatio]);
 
-  const handleCopy = () => {
-    void writeClipboard(`border-radius: ${borderRadius}`)
-      .then(() => {
-        onOpen('success', 'クリップボードにコピーしました');
-      })
-      .catch(() => {
-        onOpen('error', 'コピーに失敗しました');
-      });
+  const handleCopy = async () => {
+    try {
+      await writeClipboard(`border-radius: ${borderRadius}`);
+      onOpen('success', 'クリップボードにコピーしました');
+    } catch {
+      onOpen('error', 'コピーに失敗しました');
+    }
   };
 
   return (

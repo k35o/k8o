@@ -9,6 +9,15 @@ const FEEDBACK_MAP: Record<string, number> = {
   bad: 2,
 };
 
+const pillClass = (key: string, feedbackValue: string): string =>
+  cn(
+    'flex items-center gap-1.5 rounded-full px-3 py-1.5 text-sm transition-colors',
+    'disabled:cursor-not-allowed disabled:opacity-50',
+    feedbackValue === key
+      ? 'bg-primary-bg text-primary-fg'
+      : 'bg-bg-mute text-fg-mute hover:bg-bg-emphasize hover:text-fg-base',
+  );
+
 export const FeedbackCard: FC<{
   title: string;
   onSubmit: (feedback: number | null, comment: string) => Promise<void>;
@@ -25,6 +34,10 @@ export const FeedbackCard: FC<{
       await onSubmit(FEEDBACK_MAP[value] ?? null, commentText);
       setIsSubmitted(true);
     });
+  };
+
+  const toggleFeedback = (key: string) => {
+    setFeedbackValue((prev) => (prev === key ? '' : key));
   };
 
   if (isSubmitted) {
@@ -45,15 +58,9 @@ export const FeedbackCard: FC<{
         >
           <button
             aria-pressed={feedbackValue === 'good'}
-            className={cn(
-              'flex items-center gap-1.5 rounded-full px-3 py-1.5 text-sm transition-colors',
-              'disabled:cursor-not-allowed disabled:opacity-50',
-              feedbackValue === 'good'
-                ? 'bg-primary-bg text-primary-fg'
-                : 'bg-bg-mute text-fg-mute hover:bg-bg-emphasize hover:text-fg-base',
-            )}
+            className={pillClass('good', feedbackValue)}
             disabled={isPending}
-            onClick={() => setFeedbackValue('good')}
+            onClick={() => toggleFeedback('good')}
             type="button"
           >
             <GoodIcon size="sm" />
@@ -61,15 +68,9 @@ export const FeedbackCard: FC<{
           </button>
           <button
             aria-pressed={feedbackValue === 'bad'}
-            className={cn(
-              'flex items-center gap-1.5 rounded-full px-3 py-1.5 text-sm transition-colors',
-              'disabled:cursor-not-allowed disabled:opacity-50',
-              feedbackValue === 'bad'
-                ? 'bg-primary-bg text-primary-fg'
-                : 'bg-bg-mute text-fg-mute hover:bg-bg-emphasize hover:text-fg-base',
-            )}
+            className={pillClass('bad', feedbackValue)}
             disabled={isPending}
-            onClick={() => setFeedbackValue('bad')}
+            onClick={() => toggleFeedback('bad')}
             type="button"
           >
             <BadIcon size="sm" />
