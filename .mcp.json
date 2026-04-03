@@ -1,7 +1,11 @@
 {
   "mcpServers": {
-    "storybook-mcp": {
-      "url": "http://localhost:6006/mcp",
+    "main-storybook-mcp": {
+      "url": "https://647acebb9da23d6c605c4afd-vxzpdridni.chromatic.com/mcp",
+      "type": "http"
+    },
+    "admin-storybook-mcp": {
+      "url": "https://69cf8aac658091de44ae8c05-fgnzplhbam.chromatic.com/mcp",
       "type": "http"
     },
     "context7": {
