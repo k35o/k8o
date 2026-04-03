@@ -29,15 +29,16 @@ export const SelectFeedback: Story = {
     title: 'この記事はどうでしたか？',
     onSubmit: fn(() => Promise.resolve()),
   },
-  play: async ({ canvasElement, userEvent, args }) => {
+  play: async ({ canvasElement, userEvent }) => {
     const canvas = within(canvasElement);
 
-    // 「良い」ボタンをクリック
+    // 「良い」ボタンをクリックして選択状態になる
     const goodButton = canvas.getByRole('button', { name: '良い' });
     await userEvent.click(goodButton);
 
-    // リアクションのみで即送信される
-    await expect(args.onSubmit).toHaveBeenCalledWith(1, '');
+    // 送信ボタンが有効になることを確認
+    const submitButton = canvas.getByRole('button', { name: '送信' });
+    await expect(submitButton).not.toBeDisabled();
   },
 };
 
