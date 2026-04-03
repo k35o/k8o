@@ -16,9 +16,9 @@ export const TagCard: FC<{
       <Link
         aria-label={linkLabel}
         className={cn(
-          'flex h-full w-70 flex-col gap-2 rounded-lg border border-transparent p-4',
+          'flex h-full w-70 flex-col gap-2 rounded-xl p-4',
           'group',
-          'hover:border-primary-border hover:bg-primary-bg-mute hover:text-primary-fg',
+          'hover:bg-primary-bg-mute hover:text-primary-fg',
         )}
         href={href}
       >

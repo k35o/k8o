@@ -17,8 +17,8 @@ export const LoadingCreateColumns: FC = () => {
 
       {/* スケルトン */}
       <div className="flex flex-col gap-3">
-        <div className="h-14 animate-pulse rounded-lg border border-border-base bg-bg-mute" />
-        <div className="h-14 animate-pulse rounded-lg border border-border-base bg-bg-mute" />
+        <div className="h-14 animate-pulse rounded-xl border border-border-base bg-bg-mute" />
+        <div className="h-14 animate-pulse rounded-xl border border-border-base bg-bg-mute" />
       </div>
     </div>
   );

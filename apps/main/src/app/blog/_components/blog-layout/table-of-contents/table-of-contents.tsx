@@ -3,7 +3,7 @@
 import { useClickAway } from '@k8o/arte-odyssey';
 import { cn } from '@repo/helpers/cn';
 import Link from 'next/link';
-import { type FC, useCallback, useEffect, useState } from 'react';
+import { type FC, useCallback, useEffect, useRef, useState } from 'react';
 import type { HeadingTree } from '../../../../../libs/mdx/types';
 import { END_OF_CONTENT_ID } from '../constants';
 import { ProgressBar } from './progress-bar';
@@ -17,7 +17,7 @@ const LinkButton: FC<{
   return (
     <Link
       className={cn(
-        'inline-block w-full rounded-md px-4 py-2 transition-colors hover:bg-bg-mute focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-border-info focus-visible:ring-offset-2 sm:text-lg',
+        'inline-block w-full rounded-xl px-4 py-2 transition-colors hover:bg-bg-mute focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-border-info focus-visible:ring-offset-2 sm:text-lg',
         depth === 2 && 'pl-8 text-sm sm:text-md',
         depth === 3 && 'pl-12 text-xs sm:text-sm',
         isActive && 'xl:bg-primary-bg xl:font-bold xl:text-fg-base',
@@ -35,7 +35,8 @@ export const TableOfContents: FC<{
 }> = ({ headingTree }) => {
   const [activeId, setActiveId] = useState<string>('');
 
-  const ref = useClickAway<HTMLDetailsElement>(() => {
+  const ref = useRef<HTMLDetailsElement>(null);
+  useClickAway(ref, () => {
     if (ref.current) {
       ref.current.open = false;
     }
@@ -92,9 +93,9 @@ export const TableOfContents: FC<{
   return (
     <details
       className={cn(
-        'fixed w-80 rounded-md border border-border-mute bg-bg-base shadow-xl',
+        'fixed w-80 rounded-xl bg-bg-base shadow-md',
         'right-4 bottom-4 open:right-0 open:bottom-0 sm:right-16 sm:bottom-8 sm:open:right-16 sm:open:bottom-8',
-        'open:details-content:border-border-mute open:details-content:border-t-2 open:details-content:p-4 open:details-content:pt-0',
+        'open:details-content:border-border-mute open:details-content:border-t open:details-content:p-4 open:details-content:pt-0',
       )}
       ref={ref}
     >

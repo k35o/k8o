@@ -15,8 +15,8 @@ export const OssCard: FC<OssProject> = ({
   tags,
 }) => {
   return (
-    <div className="overflow-hidden rounded-lg border border-border-mute">
-      <div className="flex flex-wrap items-center justify-between gap-x-4 gap-y-2 border-border-mute border-b bg-bg-subtle px-4 py-3">
+    <div className="overflow-hidden rounded-xl shadow-sm">
+      <div className="flex flex-wrap items-center justify-between gap-x-4 gap-y-2 bg-bg-subtle px-4 py-3">
         <h2 className="font-bold text-md md:text-lg">{name}</h2>
         <div className="flex flex-wrap gap-2">
           <LinkButton

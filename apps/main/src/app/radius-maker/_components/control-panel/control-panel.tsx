@@ -1,9 +1,9 @@
 'use client';
 
 import {
+  Button,
   CopyIcon,
   FormControl,
-  IconButton,
   Slider,
   useClipboard,
   useToast,
@@ -43,13 +43,13 @@ const OperateButton: FC<{
   return (
     <button
       className={cn(
-        'absolute size-4 border border-border-base',
+        'absolute size-6 rounded-full border-2 border-border-base sm:size-5',
         variable === 'primary' && 'bg-group-primary',
         variable === 'secondary' && 'bg-group-secondary',
         variable === 'quaternary' && 'bg-group-quaternary',
         variable === 'tertiary' && 'bg-group-tertiary',
-        isActive && 'bordertransparent outline-hidden ring-4 ring-fg-mute',
-        'hover:bordertransparent hover:outline-hidden hover:ring-4 hover:ring-fg-mute',
+        isActive && 'border-transparent outline-hidden ring-4 ring-fg-mute',
+        'hover:border-transparent hover:outline-hidden hover:ring-4 hover:ring-fg-mute',
         'focus-visible:border-transparent focus-visible:outline-hidden focus-visible:ring-4 focus-visible:ring-fg-mute',
       )}
       onKeyDown={onKeyDown}
@@ -93,238 +93,254 @@ export const ControlPanel: FC = () => {
     };
   }, [aspectRatio]);
 
+  const handleCopy = async () => {
+    try {
+      await writeClipboard(`border-radius: ${borderRadius}`);
+      onOpen('success', 'クリップボードにコピーしました');
+    } catch {
+      onOpen('error', 'コピーに失敗しました');
+    }
+  };
+
   return (
-    <div className="flex flex-col items-center justify-center gap-6">
-      <div
-        className="flex items-center justify-center"
-        data-radius-area
-        style={{
-          width: BASE_SIZE + 24,
-          height: BASE_SIZE + 24,
-        }}
-      >
-        <style>{`
-          @media (min-width: 640px) {
-            [data-radius-area] {
-              width: ${(BASE_SIZE_SM + 24).toString()}px !important;
-              height: ${(BASE_SIZE_SM + 24).toString()}px !important;
-            }
-          }
-        `}</style>
-        <div
-          className="relative border-2 border-borderPrimar border-dashed"
-          data-radius-wrapper
-          ref={containerRef}
-          style={{
-            width: containerSize.mobile.width,
-            height: containerSize.mobile.height,
-          }}
-        >
-          <style>{`
-          @media (min-width: 640px) {
-            [data-radius-wrapper] {
-              width: ${containerSize.desktop.width}px !important;
-              height: ${containerSize.desktop.height}px !important;
-            }
-          }
-        `}</style>
+    <div className="flex flex-col gap-8">
+      {/* メインエリア: デスクトップ2カラム */}
+      <div className="flex flex-col gap-8 sm:grid sm:grid-cols-[1fr_16rem] sm:items-start sm:gap-6">
+        {/* テンプレート（モバイルでは先に表示） */}
+        <div className="order-1 sm:order-2">
+          <TemplateSelector currentPosition={position} onSelect={setPosition} />
+          <div className="mt-6">
+            <FormControl
+              label="縦横比"
+              renderInput={(props) => (
+                <Slider
+                  {...props}
+                  max={2}
+                  min={0.5}
+                  onChange={setAspectRatio}
+                  step={0.1}
+                  value={aspectRatio}
+                />
+              )}
+            />
+          </div>
+        </div>
+
+        {/* シェイプエディタ */}
+        <div className="order-2 flex items-center justify-center sm:sticky sm:top-6 sm:order-1">
           <div
-            className="absolute size-full bg-primary-fg"
+            className="flex items-center justify-center"
+            data-radius-area
             style={{
-              borderRadius,
+              width: BASE_SIZE + 24,
+              height: BASE_SIZE + 24,
             }}
-          />
-          <OperateButton
-            isActive={activePosition === 'topLeftX'}
-            label="左上の上側の丸みを調整する(左右キーで操作します)"
-            onKeyDown={(e) => {
-              keyDownHandler(e, 'topLeftX');
-            }}
-            onMouseDown={(e) => {
-              mouseDownHandler(e, 'topLeftX');
-            }}
-            onTouchStart={(e) => {
-              touchStartHandler(e, 'topLeftX');
-            }}
-            position={{
-              top: '-9px',
-              left: `calc(${position.topLeftX.toString()}% - 9px)`,
-            }}
-            variable="primary"
-          />
-          <OperateButton
-            isActive={activePosition === 'topRightX'}
-            label="右上の上側の丸みを調整する(左右キーで操作します)"
-            onKeyDown={(e) => {
-              keyDownHandler(e, 'topRightX');
-            }}
-            onMouseDown={(e) => {
-              mouseDownHandler(e, 'topRightX');
-            }}
-            onTouchStart={(e) => {
-              touchStartHandler(e, 'topRightX');
-            }}
-            position={{
-              top: '-9px',
-              right: `calc(${position.topRightX.toString()}% - 9px)`,
-            }}
-            variable="secondary"
-          />
-          <OperateButton
-            isActive={activePosition === 'topLeftY'}
-            label="左上の左側の丸みを調整する(上下キーで操作します)"
-            onKeyDown={(e) => {
-              keyDownHandler(e, 'topLeftY');
-            }}
-            onMouseDown={(e) => {
-              mouseDownHandler(e, 'topLeftY');
-            }}
-            onTouchStart={(e) => {
-              touchStartHandler(e, 'topLeftY');
-            }}
-            position={{
-              top: `calc(${position.topLeftY.toString()}% - 9px)`,
-              left: '-9px',
-            }}
-            variable="primary"
-          />
-          <OperateButton
-            isActive={activePosition === 'topRightY'}
-            label="右上の右側の丸みを調整する(上下キーで操作します)"
-            onKeyDown={(e) => {
-              keyDownHandler(e, 'topRightY');
-            }}
-            onMouseDown={(e) => {
-              mouseDownHandler(e, 'topRightY');
-            }}
-            onTouchStart={(e) => {
-              touchStartHandler(e, 'topRightY');
-            }}
-            position={{
-              top: `calc(${position.topRightY.toString()}% - 9px)`,
-              right: '-9px',
-            }}
-            variable="secondary"
-          />
-          <OperateButton
-            isActive={activePosition === 'bottomLeftY'}
-            label="左下の左側の丸みを調整する(上下キーで操作します)"
-            onKeyDown={(e) => {
-              keyDownHandler(e, 'bottomLeftY');
-            }}
-            onMouseDown={(e) => {
-              mouseDownHandler(e, 'bottomLeftY');
-            }}
-            onTouchStart={(e) => {
-              touchStartHandler(e, 'bottomLeftY');
-            }}
-            position={{
-              bottom: `calc(${position.bottomLeftY.toString()}% - 9px)`,
-              left: '-9px',
-            }}
-            variable="quaternary"
-          />
-          <OperateButton
-            isActive={activePosition === 'bottomRightY'}
-            label="右下の右側の丸みを調整する(上下キーで操作します)"
-            onKeyDown={(e) => {
-              keyDownHandler(e, 'bottomRightY');
-            }}
-            onMouseDown={(e) => {
-              mouseDownHandler(e, 'bottomRightY');
-            }}
-            onTouchStart={(e) => {
-              touchStartHandler(e, 'bottomRightY');
-            }}
-            position={{
-              bottom: `calc(${position.bottomRightY.toString()}% - 9px)`,
-              right: '-9px',
-            }}
-            variable="tertiary"
-          />
-          <OperateButton
-            isActive={activePosition === 'bottomLeftX'}
-            label="左下の下側の丸みを調整する(左右キーで操作します)"
-            onKeyDown={(e) => {
-              keyDownHandler(e, 'bottomLeftX');
-            }}
-            onMouseDown={(e) => {
-              mouseDownHandler(e, 'bottomLeftX');
-            }}
-            onTouchStart={(e) => {
-              touchStartHandler(e, 'bottomLeftX');
-            }}
-            position={{
-              bottom: '-9px',
-              left: `calc(${position.bottomLeftX.toString()}% - 9px)`,
-            }}
-            variable="quaternary"
-          />
-          <OperateButton
-            isActive={activePosition === 'bottomRightX'}
-            label="右下の下側の丸みを調整する(左右キーで操作します)"
-            onKeyDown={(e) => {
-              keyDownHandler(e, 'bottomRightX');
-            }}
-            onMouseDown={(e) => {
-              mouseDownHandler(e, 'bottomRightX');
-            }}
-            onTouchStart={(e) => {
-              touchStartHandler(e, 'bottomRightX');
-            }}
-            position={{
-              bottom: '-9px',
-              right: `calc(${position.bottomRightX.toString()}% - 9px)`,
-            }}
-            variable="tertiary"
-          />
+          >
+            <style>{`
+              @media (min-width: 640px) {
+                [data-radius-area] {
+                  width: ${(BASE_SIZE_SM + 24).toString()}px !important;
+                  height: ${(BASE_SIZE_SM + 24).toString()}px !important;
+                }
+              }
+            `}</style>
+            <div
+              className="relative border-2 border-primary-border border-dashed"
+              data-radius-wrapper
+              ref={containerRef}
+              style={{
+                width: containerSize.mobile.width,
+                height: containerSize.mobile.height,
+              }}
+            >
+              <style>{`
+                @media (min-width: 640px) {
+                  [data-radius-wrapper] {
+                    width: ${containerSize.desktop.width}px !important;
+                    height: ${containerSize.desktop.height}px !important;
+                  }
+                }
+              `}</style>
+              <div
+                className="absolute size-full bg-primary-fg"
+                style={{
+                  borderRadius,
+                }}
+              />
+              <OperateButton
+                isActive={activePosition === 'topLeftX'}
+                label="左上の上側の丸みを調整する(左右キーで操作します)"
+                onKeyDown={(e) => {
+                  keyDownHandler(e, 'topLeftX');
+                }}
+                onMouseDown={(e) => {
+                  mouseDownHandler(e, 'topLeftX');
+                }}
+                onTouchStart={(e) => {
+                  touchStartHandler(e, 'topLeftX');
+                }}
+                position={{
+                  top: '-12px',
+                  left: `calc(${position.topLeftX.toString()}% - 12px)`,
+                }}
+                variable="primary"
+              />
+              <OperateButton
+                isActive={activePosition === 'topRightX'}
+                label="右上の上側の丸みを調整する(左右キーで操作します)"
+                onKeyDown={(e) => {
+                  keyDownHandler(e, 'topRightX');
+                }}
+                onMouseDown={(e) => {
+                  mouseDownHandler(e, 'topRightX');
+                }}
+                onTouchStart={(e) => {
+                  touchStartHandler(e, 'topRightX');
+                }}
+                position={{
+                  top: '-12px',
+                  right: `calc(${position.topRightX.toString()}% - 12px)`,
+                }}
+                variable="secondary"
+              />
+              <OperateButton
+                isActive={activePosition === 'topLeftY'}
+                label="左上の左側の丸みを調整する(上下キーで操作します)"
+                onKeyDown={(e) => {
+                  keyDownHandler(e, 'topLeftY');
+                }}
+                onMouseDown={(e) => {
+                  mouseDownHandler(e, 'topLeftY');
+                }}
+                onTouchStart={(e) => {
+                  touchStartHandler(e, 'topLeftY');
+                }}
+                position={{
+                  top: `calc(${position.topLeftY.toString()}% - 12px)`,
+                  left: '-12px',
+                }}
+                variable="primary"
+              />
+              <OperateButton
+                isActive={activePosition === 'topRightY'}
+                label="右上の右側の丸みを調整する(上下キーで操作します)"
+                onKeyDown={(e) => {
+                  keyDownHandler(e, 'topRightY');
+                }}
+                onMouseDown={(e) => {
+                  mouseDownHandler(e, 'topRightY');
+                }}
+                onTouchStart={(e) => {
+                  touchStartHandler(e, 'topRightY');
+                }}
+                position={{
+                  top: `calc(${position.topRightY.toString()}% - 12px)`,
+                  right: '-12px',
+                }}
+                variable="secondary"
+              />
+              <OperateButton
+                isActive={activePosition === 'bottomLeftY'}
+                label="左下の左側の丸みを調整する(上下キーで操作します)"
+                onKeyDown={(e) => {
+                  keyDownHandler(e, 'bottomLeftY');
+                }}
+                onMouseDown={(e) => {
+                  mouseDownHandler(e, 'bottomLeftY');
+                }}
+                onTouchStart={(e) => {
+                  touchStartHandler(e, 'bottomLeftY');
+                }}
+                position={{
+                  bottom: `calc(${position.bottomLeftY.toString()}% - 12px)`,
+                  left: '-12px',
+                }}
+                variable="quaternary"
+              />
+              <OperateButton
+                isActive={activePosition === 'bottomRightY'}
+                label="右下の右側の丸みを調整する(上下キーで操作します)"
+                onKeyDown={(e) => {
+                  keyDownHandler(e, 'bottomRightY');
+                }}
+                onMouseDown={(e) => {
+                  mouseDownHandler(e, 'bottomRightY');
+                }}
+                onTouchStart={(e) => {
+                  touchStartHandler(e, 'bottomRightY');
+                }}
+                position={{
+                  bottom: `calc(${position.bottomRightY.toString()}% - 12px)`,
+                  right: '-12px',
+                }}
+                variable="tertiary"
+              />
+              <OperateButton
+                isActive={activePosition === 'bottomLeftX'}
+                label="左下の下側の丸みを調整する(左右キーで操作します)"
+                onKeyDown={(e) => {
+                  keyDownHandler(e, 'bottomLeftX');
+                }}
+                onMouseDown={(e) => {
+                  mouseDownHandler(e, 'bottomLeftX');
+                }}
+                onTouchStart={(e) => {
+                  touchStartHandler(e, 'bottomLeftX');
+                }}
+                position={{
+                  bottom: '-12px',
+                  left: `calc(${position.bottomLeftX.toString()}% - 12px)`,
+                }}
+                variable="quaternary"
+              />
+              <OperateButton
+                isActive={activePosition === 'bottomRightX'}
+                label="右下の下側の丸みを調整する(左右キーで操作します)"
+                onKeyDown={(e) => {
+                  keyDownHandler(e, 'bottomRightX');
+                }}
+                onMouseDown={(e) => {
+                  mouseDownHandler(e, 'bottomRightX');
+                }}
+                onTouchStart={(e) => {
+                  touchStartHandler(e, 'bottomRightX');
+                }}
+                position={{
+                  bottom: '-12px',
+                  right: `calc(${position.bottomRightX.toString()}% - 12px)`,
+                }}
+                variable="tertiary"
+              />
+            </div>
+          </div>
         </div>
       </div>
-      <TemplateSelector currentPosition={position} onSelect={setPosition} />
-      <div className="flex w-full flex-col gap-4">
-        <FormControl
-          label="縦横比"
-          renderInput={(props) => (
-            <Slider
-              {...props}
-              max={2}
-              min={0.5}
-              onChange={setAspectRatio}
-              step={0.1}
-              value={aspectRatio}
-            />
-          )}
-        />
-        <div className="flex flex-col gap-2">
-          <div className="flex items-center justify-between gap-2">
-            <p className="text-fg-mute text-sm">border-radius</p>
-            <IconButton
-              bg="base"
-              label="値をコピーする"
-              onClick={() =>
-                void writeClipboard(`border-radius: ${borderRadius}`).then(
-                  () => {
-                    onOpen('success', 'クリップボードにコピーしました');
-                  },
-                )
-              }
-            >
-              <CopyIcon />
-            </IconButton>
-          </div>
-          <code className="grid grid-cols-[auto_1fr] gap-x-3 gap-y-1 rounded-md bg-bg-mute p-3 font-mono text-fg-base text-sm">
-            <span className="text-fg-mute">水平</span>
-            <span>
-              {position.topLeftX}% {100 - position.topRightX}%{' '}
-              {100 - position.bottomRightX}% {position.bottomLeftX}%
-            </span>
-            <span className="text-fg-mute">垂直</span>
-            <span>
-              {position.topLeftY}% {position.topRightY}%{' '}
-              {100 - position.bottomRightY}% {100 - position.bottomLeftY}%
-            </span>
-          </code>
+
+      {/* CSS出力（全幅） */}
+      <div className="relative rounded-xl border border-border-base bg-bg-base p-4">
+        <div className="absolute top-3 right-3">
+          <Button
+            onClick={handleCopy}
+            size="sm"
+            startIcon={<CopyIcon size="sm" />}
+            variant="outlined"
+          >
+            コピー
+          </Button>
         </div>
+        <p className="mb-2 font-bold text-fg-mute text-xs">border-radius</p>
+        <code className="grid grid-cols-[auto_1fr] gap-x-3 gap-y-1 font-mono text-fg-base text-sm">
+          <span className="text-fg-mute">水平</span>
+          <span>
+            {position.topLeftX}% {100 - position.topRightX}%{' '}
+            {100 - position.bottomRightX}% {position.bottomLeftX}%
+          </span>
+          <span className="text-fg-mute">垂直</span>
+          <span>
+            {position.topLeftY}% {position.topRightY}%{' '}
+            {100 - position.bottomRightY}% {100 - position.bottomLeftY}%
+          </span>
+        </code>
       </div>
     </div>
   );

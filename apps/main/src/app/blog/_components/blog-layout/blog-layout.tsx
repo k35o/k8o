@@ -50,7 +50,7 @@ export const BlogLayoutContent: FC<BlogLayoutContentProps> = ({
   return (
     <div className="gap-4 xl:flex xl:has-[>:nth-child(2)]:-mx-36">
       <div className="m-auto flex flex-col gap-8 xl:max-w-5xl">
-        <article className="rounded-md bg-bg-base/90 px-3 pt-8 pb-14 sm:px-10">
+        <article className="rounded-xl bg-bg-base/90 px-3 pt-8 pb-8 sm:px-10">
           <div className="flex flex-col gap-3">
             <div className="flex items-start justify-between gap-2">
               <ViewTransition name={`title-${slug}`}>
@@ -60,7 +60,7 @@ export const BlogLayoutContent: FC<BlogLayoutContentProps> = ({
             </div>
             {blog.description && (
               <ViewTransition name={`description-${slug}`}>
-                <div className="rounded-md bg-bg-mute p-4 sm:mt-4">
+                <div className="rounded-xl bg-bg-mute p-4 sm:mt-4">
                   <p className="text-fg-base text-sm sm:text-md">
                     {blog.description}
                   </p>
@@ -134,7 +134,7 @@ export const BlogLayoutContent: FC<BlogLayoutContentProps> = ({
         </article>
         <div id={END_OF_CONTENT_ID}>
           <SilentErrorBoundary>
-            <section className="w-full rounded-md bg-bg-base/90 px-3 pt-8 pb-14 sm:px-10">
+            <section className="w-full rounded-xl bg-bg-base/90 px-3 pt-8 pb-8 sm:px-10">
               <Feedback slug={slug} />
             </section>
           </SilentErrorBoundary>

@@ -20,7 +20,7 @@ export function FontFamilyMathDemo() {
         value={useMathFont}
       />
 
-      <div className="space-y-4 rounded-lg border border-border-base bg-bg-base p-6">
+      <div className="space-y-4 rounded-xl bg-bg-base p-6 shadow-sm">
         <div>
           <p className="mb-2 text-fg-mute text-sm">
             ピタゴラスの定理（上付き文字）

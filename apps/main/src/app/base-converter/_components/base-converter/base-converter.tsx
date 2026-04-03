@@ -27,24 +27,20 @@ const BASES = [
   {
     base: 2 as const,
     label: '2進数',
-    borderColor: 'border-group-primary',
   },
   {
     base: 8 as const,
     label: '8進数',
-    borderColor: 'border-group-secondary',
   },
   {
     base: 10 as const,
     label: '10進数',
-    borderColor: 'border-group-tertiary',
   },
   {
     base: 16 as const,
     label: '16進数',
-    borderColor: 'border-group-quaternary',
   },
-];
+] as const;
 
 export const BaseConverter = () => {
   const [invalid, setInvalid] = useState<{
@@ -139,9 +135,9 @@ export const BaseConverter = () => {
 
   return (
     <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
-      {BASES.map(({ base, label, borderColor }) => (
+      {BASES.map(({ base, label }) => (
         <Card key={base}>
-          <div className={`border-l-4 px-4 py-3 ${borderColor}`}>
+          <div className="px-4 py-3">
             <FormControl
               errorText={invalid?.message ?? undefined}
               isInvalid={invalid?.target === base}

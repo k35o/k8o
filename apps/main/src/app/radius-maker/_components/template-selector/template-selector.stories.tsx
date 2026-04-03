@@ -31,7 +31,9 @@ export const Default: Story = {
     const canvas = within(canvasElement);
 
     // テンプレートラベルが表示されている
-    await expect(canvas.getByText('テンプレート')).toBeInTheDocument();
+    await expect(
+      canvas.getByText('テンプレートから始める'),
+    ).toBeInTheDocument();
 
     // すべてのテンプレートボタンが存在する
     await expect(
@@ -135,10 +137,12 @@ export const NoMatchingTemplate: Story = {
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
 
-    // どのテンプレートも選択されていない（ランダムボタンは常にfalse）
-    const buttons = canvas.getAllByRole('button');
+    // どのテンプレートも選択されていない
+    const templateButtons = canvas
+      .getAllByRole('button')
+      .filter((button) => button.hasAttribute('aria-pressed'));
     await Promise.all(
-      buttons.map((button) =>
+      templateButtons.map((button) =>
         expect(button).toHaveAttribute('aria-pressed', 'false'),
       ),
     );

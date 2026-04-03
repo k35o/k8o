@@ -63,7 +63,7 @@ const RestrictionItem: FC<{
   const config = RESTRICTION_CONFIG[restriction.type];
 
   return (
-    <div className="overflow-hidden rounded-lg border border-border-base bg-bg-base">
+    <div className="overflow-hidden rounded-xl border border-border-base bg-bg-base">
       {/* ヘッダー */}
       <div className="flex w-full items-center justify-between gap-3 px-4 py-3">
         <button
@@ -195,7 +195,7 @@ export const CreateRestrictions: FC<Props> = ({
 
       {/* 制約がない場合のプレースホルダー */}
       {restrictionsEntries.length === 0 && (
-        <div className="flex flex-col items-center justify-center gap-2 rounded-lg border border-border-base border-dashed py-8">
+        <div className="flex flex-col items-center justify-center gap-2 rounded-xl bg-bg-mute py-8">
           <p className="text-fg-mute text-sm">制約がありません</p>
           <Button
             onClick={handleAddRestriction}

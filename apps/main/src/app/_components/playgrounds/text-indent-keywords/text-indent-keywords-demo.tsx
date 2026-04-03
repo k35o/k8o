@@ -49,7 +49,7 @@ export function TextIndentKeywordsDemo() {
         />
       </div>
 
-      <div className="rounded-lg border border-border-base bg-bg-base p-6">
+      <div className="rounded-xl bg-bg-base p-6 shadow-sm">
         <p
           style={{
             textIndent,

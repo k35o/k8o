@@ -33,7 +33,7 @@ export function PopoverDemo() {
 
       <div
         aria-label="メニュー"
-        className="inset-auto top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 rounded-lg border border-border-base bg-bg-base p-4 shadow-lg"
+        className="inset-auto top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 rounded-lg bg-bg-base p-4 shadow-md"
         id="demo-popover"
         popover=""
         role="menu"

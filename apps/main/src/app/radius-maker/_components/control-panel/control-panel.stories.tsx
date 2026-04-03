@@ -17,7 +17,7 @@ export const InitialState: Story = {
     const canvas = within(canvasElement);
 
     // コピーボタンが存在することを確認
-    const copyButton = canvas.getByRole('button', { name: '値をコピーする' });
+    const copyButton = canvas.getByRole('button', { name: 'コピー' });
     await expect(copyButton).toBeInTheDocument();
 
     // border-radiusの値が水平/垂直で表示されることを確認

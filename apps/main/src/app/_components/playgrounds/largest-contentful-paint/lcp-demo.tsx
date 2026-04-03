@@ -74,7 +74,7 @@ export function LCPDemo() {
 
   if (!isSupported) {
     return (
-      <div className="rounded-lg border border-border-base bg-bg-mute p-4">
+      <div className="rounded-xl bg-bg-mute p-4">
         <p className="text-fg-mute text-sm">
           このブラウザはLargest Contentful Paint APIをサポートしていません。
         </p>
@@ -97,7 +97,7 @@ export function LCPDemo() {
       </div>
 
       {latestEntry ? (
-        <div className="rounded-lg border border-border-base bg-bg-base p-4">
+        <div className="rounded-xl bg-bg-base p-4 shadow-sm">
           <div className="mb-3 flex items-center justify-between">
             <div className="flex items-center gap-2">
               <h4 className="font-medium text-fg-base">現在のLCP</h4>
@@ -157,7 +157,7 @@ export function LCPDemo() {
           </div>
         </div>
       ) : (
-        <div className="rounded-lg border border-border-base bg-bg-mute p-4">
+        <div className="rounded-xl bg-bg-mute p-4">
           <p className="text-fg-mute text-sm">
             LCPエントリを待機中...ページを再読み込みすると計測されます。
           </p>

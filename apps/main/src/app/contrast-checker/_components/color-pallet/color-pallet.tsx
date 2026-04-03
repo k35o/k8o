@@ -21,7 +21,7 @@ export const ColorPallet: FC<Props> = ({ label, color, setColor }) => {
           <input
             aria-label={label}
             className={cn(
-              'h-24 w-full cursor-pointer rounded-lg border border-border-base p-1',
+              'h-24 w-full cursor-pointer overflow-hidden rounded-xl border border-border-base p-1',
               'focus-visible:border-transparent focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-border-info',
             )}
             id={id}

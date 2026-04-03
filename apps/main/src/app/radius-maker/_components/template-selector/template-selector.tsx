@@ -1,7 +1,7 @@
 'use client';
 
-import { cn } from '@repo/helpers/cn';
-import type { FC } from 'react';
+import { Button, RadioCard } from '@k8o/arte-odyssey';
+import { type ChangeEventHandler, type FC, useCallback, useId } from 'react';
 import type { RadiusPosition } from '../../_types/radius-position';
 import { positionToBorderRadius } from '../../_utils/position-to-border-radius';
 
@@ -119,7 +119,20 @@ const TEMPLATES: RadiusTemplate[] = [
   },
 ];
 
-// ランダムな位置を生成
+const TEMPLATE_OPTIONS = TEMPLATES.map((template) => ({
+  value: template.name,
+  label: template.name,
+  visual: (
+    <div
+      aria-hidden="true"
+      className="size-10 bg-primary-bg"
+      style={{
+        borderRadius: positionToBorderRadius(template.position),
+      }}
+    />
+  ),
+}));
+
 const generateRandomPosition = (): RadiusPosition => {
   return {
     topLeftX: Math.floor(Math.random() * 101),
@@ -139,79 +152,46 @@ type Props = {
 };
 
 export const TemplateSelector: FC<Props> = ({ onSelect, currentPosition }) => {
-  // 現在の位置がテンプレートと一致するかチェック
-  const isMatchingTemplate = (template: RadiusTemplate): boolean => {
-    return Object.keys(template.position).every(
-      (key) =>
-        template.position[key as keyof RadiusPosition] ===
-        currentPosition[key as keyof RadiusPosition],
-    );
-  };
+  const labelId = useId();
+  const selectedValue =
+    TEMPLATES.find((template) =>
+      Object.keys(template.position).every(
+        (key) =>
+          template.position[key as keyof RadiusPosition] ===
+          currentPosition[key as keyof RadiusPosition],
+      ),
+    )?.name ?? '';
+
+  const handleChange: ChangeEventHandler<HTMLInputElement> = useCallback(
+    (e) => {
+      const template = TEMPLATES.find((t) => t.name === e.target.value);
+      if (template) {
+        onSelect(template.position);
+      }
+    },
+    [onSelect],
+  );
 
   return (
     <div className="flex w-full flex-col gap-3">
-      <p className="font-bold text-fg-base text-sm">テンプレート</p>
-      <div className="grid grid-cols-3 gap-1">
-        {TEMPLATES.map((template) => {
-          const isSelected = isMatchingTemplate(template);
-          return (
-            <button
-              aria-pressed={isSelected}
-              className={cn(
-                'group flex flex-col items-center gap-1.5 rounded-lg p-2 transition-all',
-                'hover:bg-bg-mute',
-                'focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-primary-fg',
-                isSelected && 'bg-bg-mute ring-2 ring-primary-fg',
-              )}
-              key={template.name}
-              onClick={() => onSelect(template.position)}
-              type="button"
-            >
-              <div
-                aria-hidden="true"
-                className={cn(
-                  'size-12 border-2 transition-all',
-                  isSelected
-                    ? 'border-primary-fg bg-primary-fg'
-                    : 'border-border-base bg-bg-mute group-hover:border-fg-mute',
-                )}
-                style={{
-                  borderRadius: positionToBorderRadius(template.position),
-                }}
-              />
-              <span
-                className={cn(
-                  'text-xs transition-colors',
-                  isSelected ? 'font-bold text-fg-base' : 'text-fg-mute',
-                )}
-              >
-                {template.name}
-              </span>
-            </button>
-          );
-        })}
-        {/* ランダムボタン */}
-        <button
-          aria-pressed={false}
-          className={cn(
-            'group flex flex-col items-center gap-1.5 rounded-lg p-2 transition-all',
-            'hover:bg-bg-mute',
-            'focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-primary-fg',
-          )}
-          onClick={() => onSelect(generateRandomPosition())}
-          type="button"
-        >
-          <div
-            aria-hidden="true"
-            className="flex size-12 items-center justify-center border-2 border-border-base border-dashed bg-bg-mute text-fg-mute text-xl transition-all group-hover:border-fg-mute"
-          >
-            ?
-          </div>
-          <span className="text-fg-mute text-xs transition-colors">
-            ランダム
-          </span>
-        </button>
-      </div>
+      <p className="font-bold text-fg-base text-sm" id={labelId}>
+        テンプレートから始める
+      </p>
+      <RadioCard
+        isDisabled={false}
+        labelId={labelId}
+        name="radius-template"
+        onChange={handleChange}
+        options={TEMPLATE_OPTIONS}
+        value={selectedValue}
+      />
+      <Button
+        onClick={() => onSelect(generateRandomPosition())}
+        size="sm"
+        variant="outlined"
+      >
+        ランダム
+      </Button>
     </div>
   );
 };

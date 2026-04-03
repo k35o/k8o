@@ -32,15 +32,9 @@ export const SelectFeedback: Story = {
   play: async ({ canvasElement, userEvent }) => {
     const canvas = within(canvasElement);
 
-    // フィードバックオプションを選択
-    const radioButtons = canvas.getAllByRole('radio');
-    const firstRadio = radioButtons[0];
-    if (!firstRadio) throw new Error('Radio button not found');
-
-    await userEvent.click(firstRadio);
-
-    // 選択状態を確認
-    await expect(firstRadio).toHaveAttribute('aria-checked', 'true');
+    // 「良い」ボタンをクリックして選択状態になる
+    const goodButton = canvas.getByRole('button', { name: '良い' });
+    await userEvent.click(goodButton);
 
     // 送信ボタンが有効になることを確認
     const submitButton = canvas.getByRole('button', { name: '送信' });
@@ -56,8 +50,8 @@ export const InputComment: Story = {
   play: async ({ canvasElement, userEvent }) => {
     const canvas = within(canvasElement);
 
-    // コメントを入力
-    const textarea = canvas.getByRole('textbox', { name: 'コメント' });
+    // コメント欄がデフォルトで表示されている
+    const textarea = canvas.getByRole('textbox');
     await userEvent.type(textarea, 'とても参考になりました！');
 
     // 送信ボタンが有効になることを確認
@@ -74,15 +68,12 @@ export const SubmitFeedback: Story = {
   play: async ({ canvasElement, userEvent, args }) => {
     const canvas = within(canvasElement);
 
-    // フィードバックを選択
-    const radioButtons = canvas.getAllByRole('radio');
-    const firstRadio = radioButtons[0];
-    if (!firstRadio) throw new Error('Radio button not found');
-
-    await userEvent.click(firstRadio);
+    // 「良い」ボタンをクリック（コメント欄が開いているので即送信されない）
+    const goodButton = canvas.getByRole('button', { name: '良い' });
+    await userEvent.click(goodButton);
 
     // コメントを入力
-    const textarea = canvas.getByRole('textbox', { name: 'コメント' });
+    const textarea = canvas.getByRole('textbox');
     await userEvent.type(textarea, 'ありがとうございます');
 
     // 送信

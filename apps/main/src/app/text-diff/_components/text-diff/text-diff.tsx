@@ -76,7 +76,7 @@ export const TextDiff = () => {
           </Button>
         </div>
       </div>
-      <div className="min-h-24 rounded-md border border-border-base bg-bg-base p-4">
+      <div className="min-h-24 rounded-xl bg-bg-base p-4 shadow-sm">
         <DiffOutput diff={diff} />
       </div>
     </div>

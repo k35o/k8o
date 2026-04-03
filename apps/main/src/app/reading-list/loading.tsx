@@ -4,7 +4,7 @@ export default function Loading() {
   return (
     <div className="grid gap-8 xl:-mx-16 xl:grid-cols-[16rem_minmax(0,1fr)] xl:items-start">
       <aside className="hidden xl:sticky xl:top-6 xl:block">
-        <div className="animate-pulse rounded-lg border border-border-mute p-4">
+        <div className="animate-pulse rounded-xl bg-bg-base p-4 shadow-sm">
           <div className="flex flex-col gap-5">
             <div className="h-6 w-20 rounded-md bg-bg-mute" />
             <div className="h-10 rounded-md bg-bg-mute" />

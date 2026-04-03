@@ -86,7 +86,7 @@ export const ClipboardImageDemo: FC = () => {
         />
         <Image
           alt={`コピーする画像${selectedSrc}`}
-          className="rounded-md border border-border-base"
+          className="rounded-xl"
           height={128}
           ref={ref}
           src={selectedSrc === '1' ? k8oIcon : primaryIcon}
@@ -105,7 +105,7 @@ export const ClipboardImageDemo: FC = () => {
           </div>
           <Image
             alt="ペーストされた画像"
-            className="rounded-md border border-border-base"
+            className="rounded-xl"
             height={128}
             src={src}
             unoptimized
