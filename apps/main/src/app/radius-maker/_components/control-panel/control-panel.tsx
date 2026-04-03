@@ -145,7 +145,7 @@ export const ControlPanel: FC = () => {
               }
             `}</style>
             <div
-              className="relative border-2 border-borderPrimar border-dashed"
+              className="relative border-2 border-primary-border border-dashed"
               data-radius-wrapper
               ref={containerRef}
               style={{

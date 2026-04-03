@@ -81,6 +81,9 @@ export const FeedbackCard: FC<{
         </fieldset>
       </div>
       <div className="flex flex-col gap-3">
+        <label className="sr-only" htmlFor={textareaId}>
+          コメント
+        </label>
         <Textarea
           describedbyId={isInvalidComment ? errorId : undefined}
           id={textareaId}
