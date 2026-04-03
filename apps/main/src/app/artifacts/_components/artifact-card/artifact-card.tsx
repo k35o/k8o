@@ -5,12 +5,13 @@ import {
   LinkButton,
 } from '@k8o/arte-odyssey';
 import type { FC } from 'react';
-import type { OssProject } from '@/services/oss/oss';
+import type { Artifact } from '@/services/artifacts/artifacts';
 
-export const OssCard: FC<OssProject> = ({
+export const ArtifactCard: FC<Artifact> = ({
   name,
   description,
   githubUrl,
+  websiteUrl,
   npmPackageName,
   tags,
 }) => {
@@ -27,6 +28,16 @@ export const OssCard: FC<OssProject> = ({
           >
             GitHubで見る
           </LinkButton>
+          {websiteUrl && (
+            <LinkButton
+              href={websiteUrl}
+              size="sm"
+              startIcon={<ExternalLinkIcon size="sm" />}
+              variant="outlined"
+            >
+              サイトで見る
+            </LinkButton>
+          )}
           {npmPackageName && (
             <LinkButton
               href={`https://www.npmjs.com/package/${npmPackageName}`}

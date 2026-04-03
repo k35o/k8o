@@ -8,10 +8,6 @@ export default function PlaygroundsPage() {
     <div className="flex flex-col gap-8">
       <div>
         <Heading type="h1">Playgrounds</Heading>
-        <p className="mt-2 text-fg-mute">
-          インタラクティブなWeb技術のデモ集。最新のWeb
-          API、CSS、Reactを用いた機能を実際に体験できます。
-        </p>
       </div>
 
       <div className="space-y-12">
