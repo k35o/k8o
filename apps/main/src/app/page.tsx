@@ -113,7 +113,7 @@ export default function Home() {
             title="Playgrounds"
           />
           <AppCard
-            description="dotfiles や skills、自作ツールなどの制作物をまとめています。"
+            description="dotfilesやskills、自作ツールなどの制作物をまとめています。"
             link="/artifacts"
             title="Artifacts"
           />

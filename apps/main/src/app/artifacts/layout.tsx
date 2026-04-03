@@ -3,10 +3,10 @@ import type { Metadata } from 'next';
 
 export const metadata = {
   title: 'Artifacts',
-  description: 'dotfiles や skills、自作ツールなどの制作物をまとめています。',
+  description: 'dotfilesやskills、自作ツールなどの制作物をまとめています。',
   openGraph: {
     title: 'Artifacts',
-    description: 'dotfiles や skills、自作ツールなどの制作物をまとめています。',
+    description: 'dotfilesやskills、自作ツールなどの制作物をまとめています。',
     url: 'https://k8o.me/artifacts',
     siteName: 'k8o',
     locale: 'ja',
@@ -15,7 +15,7 @@ export const metadata = {
   twitter: {
     title: 'Artifacts',
     card: 'summary',
-    description: 'dotfiles や skills、自作ツールなどの制作物をまとめています。',
+    description: 'dotfilesやskills、自作ツールなどの制作物をまとめています。',
   },
 } satisfies Metadata;
 

@@ -13,7 +13,7 @@ type Story = StoryObj<typeof ArtifactCard>;
 export const Primary: Story = {
   args: {
     name: 'skills',
-    description: 'Claude や Codex などで使う自分用の AI エージェント向け skills 集。',
+    description: 'ClaudeやCodexなどで使う自分用のAIエージェント向けskills集。',
     githubUrl: 'https://github.com/k35o/skills',
     websiteUrl: null,
     npmPackageName: null,
@@ -24,8 +24,7 @@ export const Primary: Story = {
 export const WithoutNpm: Story = {
   args: {
     name: 'dotfiles',
-    description:
-      '日々の開発環境を整えるための dotfiles とセットアップ群。',
+    description: '日々の開発環境を整えるためのdotfilesとセットアップ群。',
     githubUrl: 'https://github.com/k35o/dotfiles',
     websiteUrl: null,
     npmPackageName: null,
@@ -36,8 +35,7 @@ export const WithoutNpm: Story = {
 export const DisplaysName: Story = {
   args: {
     name: 'ArteOdyssey',
-    description:
-      'k8o.me のデザインシステム。コンポーネントやトークンを管理している。',
+    description: 'k8o.meのデザインシステム。コンポーネントやトークンを管理している。',
     githubUrl: 'https://github.com/k35o/arte-odyssey',
     websiteUrl: 'https://arte-odyssey.k8o.me/',
     npmPackageName: null,
@@ -56,7 +54,7 @@ export const DisplaysName: Story = {
 export const DisplaysDescription: Story = {
   args: {
     name: 'better-css-modules',
-    description: 'CSS Modules を扱いやすくするための実験的なツール。',
+    description: 'CSS Modulesを扱いやすくするための実験的なツール。',
     githubUrl: 'https://github.com/k35o/better-css-modules',
     websiteUrl: null,
     npmPackageName: null,
@@ -67,7 +65,7 @@ export const DisplaysDescription: Story = {
 
     // 説明文が表示されていることを確認
     await expect(
-      canvas.getByText('CSS Modules を扱いやすくするための実験的なツール。'),
+      canvas.getByText('CSS Modulesを扱いやすくするための実験的なツール。'),
     ).toBeInTheDocument();
   },
 };
@@ -75,7 +73,7 @@ export const DisplaysDescription: Story = {
 export const DisplaysTags: Story = {
   args: {
     name: 'renovate-config',
-    description: 'Renovate の設定を共通化するための config リポジトリ。',
+    description: 'Renovateの設定を共通化するためのconfigリポジトリ。',
     githubUrl: 'https://github.com/k35o/renovate-config',
     websiteUrl: null,
     npmPackageName: null,
@@ -94,7 +92,7 @@ export const DisplaysTags: Story = {
 export const HasGitHubLink: Story = {
   args: {
     name: 'skills',
-    description: 'Claude や Codex などで使う自分用の AI エージェント向け skills 集。',
+    description: 'ClaudeやCodexなどで使う自分用のAIエージェント向けskills集。',
     githubUrl: 'https://github.com/k35o/skills',
     websiteUrl: null,
     npmPackageName: null,
@@ -116,8 +114,7 @@ export const HasGitHubLink: Story = {
 export const NoNpmLink: Story = {
   args: {
     name: 'dotfiles',
-    description:
-      '日々の開発環境を整えるための dotfiles とセットアップ群。',
+    description: '日々の開発環境を整えるためのdotfilesとセットアップ群。',
     githubUrl: 'https://github.com/k35o/dotfiles',
     websiteUrl: null,
     npmPackageName: null,
@@ -136,8 +133,7 @@ export const NoNpmLink: Story = {
 export const HasWebsiteLink: Story = {
   args: {
     name: 'ArteOdyssey',
-    description:
-      'k8o.me のデザインシステム。コンポーネントやトークンを管理している。',
+    description: 'k8o.meのデザインシステム。コンポーネントやトークンを管理している。',
     githubUrl: 'https://github.com/k35o/arte-odyssey',
     websiteUrl: 'https://arte-odyssey.k8o.me/',
     npmPackageName: null,
