@@ -6,19 +6,22 @@ catalog:
   '@k8o/arte-odyssey': 5.0.3
   '@storybook/addon-a11y': 10.3.3
   '@storybook/addon-docs': 10.3.3
+  '@storybook/addon-mcp': '0.4.2'
   '@storybook/addon-vitest': 10.3.3
   '@storybook/nextjs-vite': 10.3.3
   '@tailwindcss/postcss': 4.2.2
-  babel-plugin-react-compiler: 1.0.0
   '@types/react': 19.2.14
   '@types/react-dom': 19.2.3
   '@vitest/browser-playwright': 4.1.1
   '@vitest/coverage-v8': 4.1.1
   '@vitest/ui': 4.1.1
+  chromatic: 16.0.0
+  babel-plugin-react-compiler: 1.0.0
   drizzle-orm: 0.45.1
   next: 16.2.1
   next-themes: 0.4.6
   postcss: 8.5.8
+  postcss-load-config: 6.0.1
   react: 19.2.4
   react-dom: 19.2.4
   storybook: 10.3.3

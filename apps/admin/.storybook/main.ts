@@ -8,10 +8,17 @@ function getAbsolutePath(value: string) {
 
 const config: StorybookConfig = {
   stories: ['../src/**/*.stories.tsx'],
+  refs: {
+    'arte-odyssey': {
+      title: 'ArteOdyssey',
+      url: 'https://main--687a213c85e2e4589d8db1bb.chromatic.com',
+    },
+  },
   addons: [
     getAbsolutePath('@storybook/addon-vitest'),
     getAbsolutePath('@storybook/addon-a11y'),
     getAbsolutePath('@storybook/addon-docs'),
+    getAbsolutePath('@storybook/addon-mcp'),
   ],
   framework: getAbsolutePath('@storybook/nextjs-vite'),
   features: {

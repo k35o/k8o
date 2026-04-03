@@ -36,6 +36,7 @@
     "@repo/typescript-config": "workspace:*",
     "@storybook/addon-a11y": "catalog:",
     "@storybook/addon-docs": "catalog:",
+    "@storybook/addon-mcp": "catalog:",
     "@storybook/addon-vitest": "catalog:",
     "@storybook/nextjs-vite": "catalog:",
     "@types/react": "catalog:",
@@ -43,7 +44,8 @@
     "@vitest/browser-playwright": "catalog:",
     "@vitest/coverage-v8": "catalog:",
     "babel-plugin-react-compiler": "catalog:",
-    "postcss-load-config": "6.0.1",
+    "chromatic": "catalog:",
+    "postcss-load-config": "catalog:",
     "storybook": "catalog:",
     "vitest": "catalog:"
   }
