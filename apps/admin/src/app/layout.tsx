@@ -17,7 +17,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
         className={cn(
           mPlus2.variable,
           notoSansJp.variable,
-          'bg-bg-base font-m-plus-2 font-medium text-fg-base antialiased',
+          'bg-bg-surface font-m-plus-2 font-medium text-fg-base antialiased',
         )}
       >
         <AppProvider>{children}</AppProvider>
