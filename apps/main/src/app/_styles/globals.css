@@ -1,5 +1,6 @@
 @import "@k8o/arte-odyssey/styles.css";
 
+/* ダークモードの緑味を抑えるため、暗部のchromaを低減しhueをsky寄り(265)に調整 */
 :root:root {
   --gray-700: oklch(0.42 0.001 265);
   --gray-800: oklch(0.3 0.001 265);

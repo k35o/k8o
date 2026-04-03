@@ -1,7 +1,7 @@
 'use client';
 
 import { Button, RadioCard } from '@k8o/arte-odyssey';
-import { type ChangeEventHandler, type FC, useCallback } from 'react';
+import { type ChangeEventHandler, type FC, useCallback, useId } from 'react';
 import type { RadiusPosition } from '../../_types/radius-position';
 import { positionToBorderRadius } from '../../_utils/position-to-border-radius';
 
@@ -152,6 +152,7 @@ type Props = {
 };
 
 export const TemplateSelector: FC<Props> = ({ onSelect, currentPosition }) => {
+  const labelId = useId();
   const selectedValue =
     TEMPLATES.find((template) =>
       Object.keys(template.position).every(
@@ -173,12 +174,12 @@ export const TemplateSelector: FC<Props> = ({ onSelect, currentPosition }) => {
 
   return (
     <div className="flex w-full flex-col gap-3">
-      <p className="font-bold text-fg-base text-sm" id="template-radio">
+      <p className="font-bold text-fg-base text-sm" id={labelId}>
         テンプレートから始める
       </p>
       <RadioCard
         isDisabled={false}
-        labelId="template-radio"
+        labelId={labelId}
         name="radius-template"
         onChange={handleChange}
         options={TEMPLATE_OPTIONS}

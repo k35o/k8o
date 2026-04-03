@@ -16,7 +16,6 @@ export const FeedbackCard: FC<{
   const [feedbackValue, setFeedbackValue] = useState('');
   const [comment, setComment] = useState('');
   const [isSubmitted, setIsSubmitted] = useState(false);
-  const [isCommentOpen, setIsCommentOpen] = useState(true);
   const [isPending, startTransition] = useTransition();
 
   const isInvalidComment = comment.length > 500;
@@ -26,13 +25,6 @@ export const FeedbackCard: FC<{
       await onSubmit(FEEDBACK_MAP[value] ?? null, commentText);
       setIsSubmitted(true);
     });
-  };
-
-  const handleReaction = (value: string) => {
-    setFeedbackValue(value);
-    if (!isCommentOpen) {
-      handleSubmit(value, '');
-    }
   };
 
   if (isSubmitted) {
@@ -47,75 +39,71 @@ export const FeedbackCard: FC<{
     <div className="flex flex-col gap-4">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <p className="text-fg-mute text-sm">{title}</p>
-        <div className="flex items-center gap-2">
+        <fieldset
+          aria-label="フィードバック"
+          className="flex items-center gap-2 border-none p-0"
+        >
           <button
+            aria-pressed={feedbackValue === 'good'}
             className={cn(
               'flex items-center gap-1.5 rounded-full px-3 py-1.5 text-sm transition-colors',
+              'disabled:cursor-not-allowed disabled:opacity-50',
               feedbackValue === 'good'
                 ? 'bg-primary-bg text-primary-fg'
                 : 'bg-bg-mute text-fg-mute hover:bg-bg-emphasize hover:text-fg-base',
             )}
             disabled={isPending}
-            onClick={() => handleReaction('good')}
+            onClick={() => setFeedbackValue('good')}
             type="button"
           >
             <GoodIcon size="sm" />
             良い
           </button>
           <button
+            aria-pressed={feedbackValue === 'bad'}
             className={cn(
               'flex items-center gap-1.5 rounded-full px-3 py-1.5 text-sm transition-colors',
+              'disabled:cursor-not-allowed disabled:opacity-50',
               feedbackValue === 'bad'
                 ? 'bg-primary-bg text-primary-fg'
                 : 'bg-bg-mute text-fg-mute hover:bg-bg-emphasize hover:text-fg-base',
             )}
             disabled={isPending}
-            onClick={() => handleReaction('bad')}
+            onClick={() => setFeedbackValue('bad')}
             type="button"
           >
             <BadIcon size="sm" />
             悪い
           </button>
-          {!isCommentOpen && (
-            <button
-              className="rounded-full px-3 py-1.5 text-fg-mute text-sm transition-colors hover:bg-bg-mute hover:text-fg-base"
-              onClick={() => setIsCommentOpen(true)}
-              type="button"
-            >
-              コメント
-            </button>
-          )}
+        </fieldset>
+      </div>
+      <div className="flex flex-col gap-3">
+        <Textarea
+          describedbyId={undefined}
+          id="feedback-comment"
+          isDisabled={isPending}
+          isInvalid={isInvalidComment}
+          isRequired={false}
+          onChange={(e) => setComment(e.target.value)}
+          placeholder="ひとことあれば…"
+          rows={2}
+          value={comment}
+        />
+        {isInvalidComment && (
+          <p className="text-fg-error text-xs">500文字以内でご記入ください</p>
+        )}
+        <div className="flex justify-end">
+          <Button
+            disabled={
+              !(feedbackValue || comment) || isInvalidComment || isPending
+            }
+            onClick={() => handleSubmit(feedbackValue, comment)}
+            size="sm"
+          >
+            送信
+          </Button>
         </div>
       </div>
-      {isCommentOpen && (
-        <div className="flex flex-col gap-3">
-          <Textarea
-            describedbyId={undefined}
-            id="feedback-comment"
-            isDisabled={isPending}
-            isInvalid={isInvalidComment}
-            isRequired={false}
-            onChange={(e) => setComment(e.target.value)}
-            placeholder="ひとことあれば…"
-            rows={2}
-            value={comment}
-          />
-          {isInvalidComment && (
-            <p className="text-fg-error text-xs">500文字以内でご記入ください</p>
-          )}
-          <div className="flex justify-end">
-            <Button
-              disabled={
-                !(feedbackValue || comment) || isInvalidComment || isPending
-              }
-              onClick={() => handleSubmit(feedbackValue, comment)}
-              size="sm"
-            >
-              送信
-            </Button>
-          </div>
-        </div>
-      )}
     </div>
   );
 };

@@ -94,9 +94,13 @@ export const ControlPanel: FC = () => {
   }, [aspectRatio]);
 
   const handleCopy = () => {
-    void writeClipboard(`border-radius: ${borderRadius}`).then(() => {
-      onOpen('success', 'クリップボードにコピーしました');
-    });
+    void writeClipboard(`border-radius: ${borderRadius}`)
+      .then(() => {
+        onOpen('success', 'クリップボードにコピーしました');
+      })
+      .catch(() => {
+        onOpen('error', 'コピーに失敗しました');
+      });
   };
 
   return (
@@ -178,7 +182,7 @@ export const ControlPanel: FC = () => {
                 }}
                 position={{
                   top: '-12px',
-                  left: `calc(${position.topLeftX.toString()}% - 9px)`,
+                  left: `calc(${position.topLeftX.toString()}% - 12px)`,
                 }}
                 variable="primary"
               />
@@ -196,7 +200,7 @@ export const ControlPanel: FC = () => {
                 }}
                 position={{
                   top: '-12px',
-                  right: `calc(${position.topRightX.toString()}% - 9px)`,
+                  right: `calc(${position.topRightX.toString()}% - 12px)`,
                 }}
                 variable="secondary"
               />
@@ -213,7 +217,7 @@ export const ControlPanel: FC = () => {
                   touchStartHandler(e, 'topLeftY');
                 }}
                 position={{
-                  top: `calc(${position.topLeftY.toString()}% - 9px)`,
+                  top: `calc(${position.topLeftY.toString()}% - 12px)`,
                   left: '-12px',
                 }}
                 variable="primary"
@@ -231,7 +235,7 @@ export const ControlPanel: FC = () => {
                   touchStartHandler(e, 'topRightY');
                 }}
                 position={{
-                  top: `calc(${position.topRightY.toString()}% - 9px)`,
+                  top: `calc(${position.topRightY.toString()}% - 12px)`,
                   right: '-12px',
                 }}
                 variable="secondary"
@@ -249,7 +253,7 @@ export const ControlPanel: FC = () => {
                   touchStartHandler(e, 'bottomLeftY');
                 }}
                 position={{
-                  bottom: `calc(${position.bottomLeftY.toString()}% - 9px)`,
+                  bottom: `calc(${position.bottomLeftY.toString()}% - 12px)`,
                   left: '-12px',
                 }}
                 variable="quaternary"
@@ -267,7 +271,7 @@ export const ControlPanel: FC = () => {
                   touchStartHandler(e, 'bottomRightY');
                 }}
                 position={{
-                  bottom: `calc(${position.bottomRightY.toString()}% - 9px)`,
+                  bottom: `calc(${position.bottomRightY.toString()}% - 12px)`,
                   right: '-12px',
                 }}
                 variable="tertiary"
@@ -286,7 +290,7 @@ export const ControlPanel: FC = () => {
                 }}
                 position={{
                   bottom: '-12px',
-                  left: `calc(${position.bottomLeftX.toString()}% - 9px)`,
+                  left: `calc(${position.bottomLeftX.toString()}% - 12px)`,
                 }}
                 variable="quaternary"
               />
@@ -304,7 +308,7 @@ export const ControlPanel: FC = () => {
                 }}
                 position={{
                   bottom: '-12px',
-                  right: `calc(${position.bottomRightX.toString()}% - 9px)`,
+                  right: `calc(${position.bottomRightX.toString()}% - 12px)`,
                 }}
                 variable="tertiary"
               />
