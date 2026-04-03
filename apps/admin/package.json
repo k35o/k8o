@@ -43,7 +43,8 @@
     "@vitest/browser-playwright": "catalog:",
     "@vitest/coverage-v8": "catalog:",
     "babel-plugin-react-compiler": "catalog:",
-    "postcss-load-config": "6.0.1",
+    "chromatic": "catalog:",
+    "postcss-load-config": "catalog:",
     "storybook": "catalog:",
     "vitest": "catalog:"
   }
