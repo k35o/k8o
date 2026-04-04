@@ -28,7 +28,7 @@
     "@shikijs/rehype": "4.0.2",
     "@tailwindcss/postcss": "catalog:",
     "@vercel/analytics": "2.0.1",
-    "budoux": "0.8.0",
+    "budoux": "0.8.1",
     "diff": "8.0.4",
     "dompurify": "3.3.3",
     "drizzle-orm": "catalog:",

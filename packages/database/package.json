@@ -32,7 +32,7 @@
     "@libsql/client": "0.17.2",
     "@next/env": "16.2.1",
     "better-auth": "1.5.6",
-    "drizzle-orm": "0.45.1"
+    "drizzle-orm": "0.45.2"
   },
   "devDependencies": {
     "@liam-hq/cli": "0.7.24",
