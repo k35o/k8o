@@ -1,6 +1,6 @@
 import { Card, Separator } from '@k8o/arte-odyssey';
 import { db } from '@repo/database';
-import { desc, sql } from 'drizzle-orm';
+import { count, desc } from 'drizzle-orm';
 import { cacheLife } from 'next/cache';
 import { ReportTable } from '../report-table/report-table';
 
@@ -16,7 +16,7 @@ export const ReportsContent = async () => {
     db
       .select({
         type: db._schema.reportingReports.type,
-        count: sql<number>`count(*)`,
+        count: count(),
       })
       .from(db._schema.reportingReports)
       .groupBy(db._schema.reportingReports.type),

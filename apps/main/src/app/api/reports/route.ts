@@ -36,7 +36,14 @@ export async function POST(req: Request): Promise<Response> {
     return new Response(null, { status: 413 });
   }
 
-  const parsed = reportSchema.safeParse(JSON.parse(text));
+  let json: unknown;
+  try {
+    json = JSON.parse(text);
+  } catch {
+    return new Response(null, { status: 400 });
+  }
+
+  const parsed = reportSchema.safeParse(json);
   if (!parsed.success) {
     return new Response(null, { status: 400 });
   }
