@@ -24,6 +24,7 @@ import { Feedback } from './feedback';
 import { Recommend, RecommendContent } from './recommend';
 import { TableOfContents } from './table-of-contents';
 import { ViewCounter } from './view-counter';
+import { ViewReporter } from './view-reporter';
 
 type BlogLayoutProps = {
   children: ReactNode;
@@ -49,6 +50,7 @@ export const BlogLayoutContent: FC<BlogLayoutContentProps> = ({
 
   return (
     <div className="gap-4 xl:flex xl:has-[>:nth-child(2)]:-mx-36">
+      <ViewReporter slug={slug} />
       <div className="m-auto flex flex-col gap-8 xl:max-w-5xl">
         <article className="rounded-xl bg-bg-base/90 px-3 pt-8 pb-8 sm:px-10">
           <div className="flex flex-col gap-3">

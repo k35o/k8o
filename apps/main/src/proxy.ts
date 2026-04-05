@@ -1,4 +1,4 @@
-import { after, type NextRequest, NextResponse } from 'next/server';
+import { type NextRequest, NextResponse } from 'next/server';
 
 const isDev = process.env.NODE_ENV === 'development';
 
@@ -35,24 +35,7 @@ const contentSecurityPolicyHeaderValue = cspHeader
   .replace(/\s{2,}/g, ' ')
   .trim();
 
-export function proxy(request: NextRequest) {
-  // blog
-  if (request.nextUrl.pathname.startsWith('/blog')) {
-    const paths = request.nextUrl.pathname.split('/');
-    const slug = paths[2];
-    if (slug && slug !== 'feed' && paths.length === 3) {
-      after(() => {
-        void fetch(`${request.nextUrl.origin}/api/blog/views`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({ slug }),
-        });
-      });
-    }
-  }
-
+export function proxy(_request: NextRequest) {
   const response = NextResponse.next();
   response.headers.set(
     'Content-Security-Policy',
