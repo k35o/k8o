@@ -1,0 +1,244 @@
+---
+title: 'Readable Byte Streamsでバイナリデータを効率的に読み取る'
+description: 'Readable Byte Streamsは、ReadableStreamのバイトストリーム拡張で、内部キューを経由せずバッファへ直接書き込む経路を提供します。BYOBリーダーによるバッファの持ち込みや、autoAllocateChunkSizeによるデフォルトリーダーとの互換性を解説します。'
+createdAt: 2026-04-05
+updatedAt: 2026-04-05
+---
+
+import { BaselineStatus } from '@k8o/arte-odyssey';
+
+# Readable Byte Streamsでバイナリデータを効率的に読み取る
+
+<BaselineStatus featureId="readable-byte-streams" />
+
+## はじめに
+
+大きなファイルやネットワークからのデータを一度にすべてメモリに載せるのではなく、少しずつ処理したいことがあります。Streams APIの`ReadableStream`はそのための仕組みで、データを小さなかたまり（チャンク）に分けて順番に読み取れます。
+
+```ts
+// fetchのレスポンスもReadableStream
+const response = await fetch('/large-file.bin');
+const reader = response.body.getReader();
+
+while (true) {
+  // チャンクを1つずつ読み取る
+  const { done, value } = await reader.read();
+  if (done) break;
+  // valueはUint8Array（バイナリデータのかたまり）
+  processChunk(value);
+}
+```
+
+`fetch`の例ではブラウザがストリームを作ってくれるので`read()`で読むだけですが、自分でストリームを作ることもできます。`new ReadableStream()`のコンストラクタにデータの供給方法を定義し、`getReader()`で取得したリーダーでデータを読み取ります。この記事ではデータを供給する側を「データソース側」、リーダーで読む側を「読み取り側」と呼びます。
+
+通常の`ReadableStream`ではチャンクは内部キューを経由して読み取り側に届きます。テキストデータであればこれで十分ですが、大きなバイナリデータを扱う場合はキューの経由がオーバーヘッドになることがあります。
+
+Baseline 2026に追加されたReadable Byte Streamsは、条件が揃えば内部キューを経由せず読み取り側のバッファに直接データを書き込む経路を提供します。
+
+## 通常のストリームでバイナリデータを読む
+
+`ReadableStream`を自分で作成してバイナリデータを読む場合を見てみます。以降のコード例では、`source`はファイルやソケットなどのデータソースを表す擬似的なオブジェクトです。
+
+`ReadableStream`のコンストラクタには`pull`関数を渡します。ストリームがデータを必要とするたびにこの関数が呼ばれ、`controller.enqueue`でチャンクをキューに追加します。
+
+```ts
+const stream = new ReadableStream({
+  async pull(controller) {
+    // 1024バイト分のバッファを確保してデータを読み取る
+    const chunk = new Uint8Array(1024);
+    const bytesRead = await source.read(chunk);
+
+    if (bytesRead === 0) {
+      // データの終端に達したらストリームを閉じる
+      controller.close();
+    } else {
+      // 読み取ったバイト数分だけのビューを作ってキューに追加
+      controller.enqueue(new Uint8Array(chunk.buffer, 0, bytesRead));
+    }
+  },
+});
+```
+
+読み取り側では`getReader()`でリーダーを取得し、`read()`を繰り返し呼びます。
+
+```ts
+const reader = stream.getReader();
+
+const chunks: Uint8Array[] = [];
+while (true) {
+  const { done, value } = await reader.read();
+  if (done) break;
+  chunks.push(value);
+}
+
+// すべてのチャンクを1つのバッファに結合
+const totalLength = chunks.reduce((sum, c) => sum + c.byteLength, 0);
+const result = new Uint8Array(totalLength);
+let offset = 0;
+for (const chunk of chunks) {
+  result.set(chunk, offset);
+  offset += chunk.byteLength;
+}
+```
+
+チャンクは内部キューを経由して届くため、最終的に1つのバッファにまとめたい場合は結合のためのコピーが必要です。
+
+## バイトストリームで同じデータを読む
+
+Readable Byte Streamsでは、読み取り側が自分でバッファを用意し、データソースにそのバッファへ直接書き込んでもらえます。この「自分のバッファを持ち込む」仕組みをBYOB（Bring Your Own Buffer）と呼びます。
+
+コンストラクタに`type: 'bytes'`を指定するとバイトストリームになります。`pull`関数で受け取るコントローラーは通常と異なり、`byobRequest`というプロパティを持ちます。これは「読み取り側がこのバッファにデータを書き込んでほしいと要求している」ことを表すオブジェクトです。
+
+```ts
+const stream = new ReadableStream({
+  type: 'bytes',
+
+  async pull(controller) {
+    // controller.byobRequestは読み取り側が渡したバッファへの参照
+    // このバッファに直接データを書き込む
+    const view = controller.byobRequest.view;
+    const bytesRead = await source.read(
+      new Uint8Array(view.buffer, view.byteOffset, view.byteLength),
+    );
+
+    if (bytesRead === 0) {
+      controller.close();
+      // 0バイト書き込んだことを通知してストリームを終了
+      controller.byobRequest.respond(0);
+    } else {
+      // 書き込んだバイト数を通知
+      controller.byobRequest.respond(bytesRead);
+    }
+  },
+});
+```
+
+読み取り側では`getReader({ mode: 'byob' })`でBYOBリーダーを取得します。通常の`read()`と異なり、BYOBリーダーの`read()`には書き込み先のメモリ領域を`Uint8Array`で指定します。データソースはそのメモリ領域に直接データを書き込みます。
+
+以下はデータの総サイズが事前にわかっている場合の例です。1つのバッファを確保し、未使用部分を順番に渡していきます。
+
+```ts
+const reader = stream.getReader({ mode: 'byob' });
+
+// 書き込み先のメモリ領域を確保する
+let buffer = new ArrayBuffer(knownSize);
+let offset = 0;
+
+while (true) {
+  // bufferの未使用部分をUint8Arrayで指定して渡す
+  const view = new Uint8Array(buffer, offset, buffer.byteLength - offset);
+  // read(view)は「viewが指すメモリ領域にデータを書き込んで」という意味
+  const { done, value } = await reader.read(view);
+
+  if (value) {
+    // read()後は渡したviewが使用不可になり、valueから取り戻す
+    buffer = value.buffer;
+    offset += value.byteLength;
+  }
+
+  if (done) break;
+}
+
+const result = new Uint8Array(buffer, 0, offset);
+```
+
+内部キューが空で`byobRequest`が使われた場合、キューを経由せず読み取り側のバッファに直接データが書き込まれます。通常のストリームのようにチャンクを配列に蓄積して結合する処理も不要です。
+
+なお、データの総サイズが事前にわからない場合は、バッファの拡張処理が必要になります。
+
+## ReadableByteStreamController
+
+ここからは、バイトストリームの例に登場したAPIを掘り下げていきます。
+
+バイトストリームの`pull`で受け取るコントローラーは`ReadableByteStreamController`です。先ほどの例では`byobRequest`を使いましたが、読み取り側がBYOBリーダーを使っていない場合や、キューにデータが残っている場合は`byobRequest`が`null`になります。その場合は通常のストリームと同様に`enqueue`でキューにデータを追加します。
+
+`getReader()`で読み取った場合は、データソース側の`pull`で`byobRequest`が`null`になるため、`enqueue`でデータを渡します。
+
+```ts
+// データソース側: byobRequestの有無で分岐
+const stream = new ReadableStream({
+  type: 'bytes',
+
+  async pull(controller: ReadableByteStreamController) {
+    if (controller.byobRequest) {
+      // BYOBリーダーが使われている場合: 直接書き込み
+      const view = controller.byobRequest.view;
+      const bytesRead = await source.read(
+        new Uint8Array(view.buffer, view.byteOffset, view.byteLength),
+      );
+      controller.byobRequest.respond(bytesRead);
+    } else {
+      // 通常のリーダーが使われている場合: キューに追加
+      const chunk = new Uint8Array(1024);
+      const bytesRead = await source.read(chunk);
+      controller.enqueue(new Uint8Array(chunk.buffer, 0, bytesRead));
+    }
+  },
+});
+
+// 読み取り側: 通常のリーダーで読み取る
+// BYOBリーダーとは異なり、バッファを渡す必要がない
+const reader = stream.getReader();
+
+const chunks: Uint8Array[] = [];
+while (true) {
+  const { done, value } = await reader.read();
+  if (done) break;
+  chunks.push(value);
+}
+```
+
+ただし、通常のリーダーを使うとキューを経由するため、バイトストリームの直接書き込みの恩恵は受けられません。
+
+## バッファの所有権
+
+BYOBリーダーの`read(view)`を呼ぶと、渡した`view`は使用不可（detached）になります。これは、データの書き込み中にアプリケーション側が同じメモリ領域を変更してしまうことを防ぐためです。書き込みが完了すると、戻り値の`value`から同じメモリ領域にアクセスできるようになります。
+
+```ts
+const view = new Uint8Array(new ArrayBuffer(1024));
+const { value } = await reader.read(view);
+
+// viewはdetachedなので再利用してはいけない
+// 書き込まれたデータはvalueから読める
+console.log(value[0]);
+```
+
+データソース側でも同様に、`byobRequest.respond()`を呼んだ時点で`byobRequest.view`はdetachedになります。
+
+## autoAllocateChunkSize
+
+バイトストリームの例ではBYOBリーダーを使いましたが、既存のコードが通常の`getReader()`を使っている場合もあります。`autoAllocateChunkSize`を指定すると、通常のリーダーからの読み取り時にストリームが自動でバッファを確保し、データソース側で`byobRequest`を通じた書き込みが利用できるようになります。ただし、キューにデータが残っている場合は通常通り`byobRequest`が`null`になります。
+
+```ts
+const stream = new ReadableStream({
+  type: 'bytes',
+  // 通常のリーダーからの読み取り時に自動で1024バイトのバッファを確保
+  autoAllocateChunkSize: 1024,
+
+  async pull(controller: ReadableByteStreamController) {
+    const view = controller.byobRequest.view;
+    const bytesRead = await source.read(
+      new Uint8Array(view.buffer, view.byteOffset, view.byteLength),
+    );
+
+    if (bytesRead === 0) {
+      controller.close();
+      controller.byobRequest.respond(0);
+    } else {
+      controller.byobRequest.respond(bytesRead);
+    }
+  },
+});
+
+// BYOBリーダーではなく通常のリーダーでも動作する
+const reader = stream.getReader();
+const { value } = await reader.read();
+```
+
+`autoAllocateChunkSize`を指定しない場合、通常のリーダーでは`byobRequest`が常に`null`になります。BYOBリーダーと通常のリーダーの両方をサポートするには、`autoAllocateChunkSize`を指定するか、前述の`ReadableByteStreamController`の例のように`byobRequest`の有無で分岐します。
+
+## おわりに
+
+Readable Byte Streamsは、条件が揃えば内部キューをバイパスして読み取り側のバッファへ直接書き込める仕組みです。BYOBリーダーで読み取り側がバッファの管理を制御でき、`autoAllocateChunkSize`で通常のリーダーとの互換性も保てます。
+
+大きなファイルの読み取りやネットワークストリームの処理など、バイナリデータのコピーコストが問題になる場面で活用できます。

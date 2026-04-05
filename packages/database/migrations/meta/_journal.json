@@ -204,6 +204,13 @@
       "when": 1775372109832,
       "tag": "0028_quiet_blade",
       "breakpoints": true
+    },
+    {
+      "idx": 29,
+      "version": "6",
+      "when": 1775381232586,
+      "tag": "0029_sloppy_iron_lad",
+      "breakpoints": true
     }
   ]
 }
