@@ -15,6 +15,7 @@ import { blogViews } from './blog-views';
 import { blogs, blogsRelations } from './blogs';
 import { comments, commentsRelations } from './comments';
 import { feedbacks, feedbacksRelations } from './feedback';
+import { reportingReports } from './reporting-reports';
 import { tags, tagsRelations } from './tags';
 import { talkTag, talkTagRelations } from './talk-tag';
 import { talks, talksRelations } from './talks';
@@ -29,6 +30,7 @@ export const schema = {
   feedbacks,
   tags,
   comments,
+  reportingReports,
   // ブログ関連
   blogs,
   blogViews,
