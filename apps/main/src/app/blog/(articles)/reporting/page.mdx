@@ -1,0 +1,225 @@
+---
+title: 'Reporting APIでブラウザのレポートを収集する'
+description: 'Reporting APIは、CSP違反や非推奨機能の使用、音声の自動再生ブロックのようなブラウザによる介入など、さまざまな問題のレポートを収集する仕組みです。Reporting-Endpointsヘッダーによるサーバーへの送信と、ReportingObserverによるクライアントサイドでの検知の2つのアプローチを解説します。'
+createdAt: 2026-04-05
+updatedAt: 2026-04-05
+---
+
+import { BaselineStatus } from '@k8o/arte-odyssey';
+
+# Reporting APIでブラウザのレポートを収集する
+
+<BaselineStatus featureId="reporting" />
+
+## はじめに
+
+Webアプリケーションを運用する中で、ユーザーのブラウザで何が起きているかを把握するのは容易ではありません。CSP違反、非推奨APIの使用、ブラウザによる介入など、開発環境では気づきにくい問題が本番環境で発生していることがあります。
+
+Baseline 2026に追加されたReporting APIは、こうしたブラウザが検知する問題をレポートとして収集する仕組みを提供します。ただし、すべてのレポートが全ブラウザで利用できるわけではなく、現時点でBaseline 2026として使えるのはCSP違反レポートのみです。
+
+レポートの収集には2つのアプローチがあります。
+
+- `Reporting-Endpoints`ヘッダー: レポートをサーバーのエンドポイントに自動送信する
+- `ReportingObserver`: JavaScriptでレポートをクライアントサイドで検知する
+
+## レポートの種類
+
+Reporting API自体はレポート収集の仕組みを提供するフレームワークで、レポートの種類は各仕様が個別に定義しています。主なレポートの種類は以下の通りです。
+
+- `csp-violation`: `Content-Security-Policy`に違反するリソースの読み込みやスクリプトの実行
+- `coep`: `Cross-Origin-Embedder-Policy`に違反するリソースの読み込み
+- `coop`: `Cross-Origin-Opener-Policy`に違反するナビゲーション
+- `deprecation`: 非推奨となったAPIの使用
+- `intervention`: ユーザー操作なしの音声再生ブロックなど、ブラウザがセキュリティやUXの理由で操作をブロック
+- `crash`: ページやタブのクラッシュ
+
+このうちBaseline 2026で利用できるのはCSP違反レポートのみです。その他のレポートはブラウザによって対応状況が異なります。
+
+## Reporting-Endpointsヘッダー
+
+`Reporting-Endpoints`はレスポンスヘッダーで、レポートの送信先となるエンドポイントを名前付きで定義します。
+
+```http
+Reporting-Endpoints: default="https://example.com/reports"
+```
+
+複数のエンドポイントを定義することもできます。
+
+```http
+Reporting-Endpoints: csp-endpoint="https://example.com/csp-reports",
+                     coep-endpoint="https://example.com/coep-reports"
+```
+
+エンドポイントのURLはHTTPSである必要があります。HTTP上のエンドポイントは無視されます。
+
+### エンドポイントの指定方法
+
+各セキュリティヘッダーの`report-to`ディレクティブで、`Reporting-Endpoints`で定義した名前を指定します。
+
+```http
+Reporting-Endpoints: csp-endpoint="https://example.com/csp-reports",
+                     coep-endpoint="https://example.com/coep-reports",
+                     coop-endpoint="https://example.com/coop-reports"
+Content-Security-Policy: default-src 'self'; report-to csp-endpoint
+Cross-Origin-Embedder-Policy: require-corp; report-to coep-endpoint
+Cross-Origin-Opener-Policy: same-origin; report-to coop-endpoint
+```
+
+`default`という名前のエンドポイントは特別な役割を持ちます。非推奨機能の使用、ブラウザの介入、クラッシュといった特定のヘッダーに紐づかないレポートは、`default`エンドポイントに自動で送信されます。
+
+```http
+Reporting-Endpoints: default="https://example.com/reports",
+                     csp-endpoint="https://example.com/csp-reports"
+Content-Security-Policy: default-src 'self'; report-to csp-endpoint
+```
+
+この設定では、CSP違反は`csp-endpoint`に、非推奨機能の使用やブラウザの介入は`default`に送信されます。COOPやCOEPなど`report-to`を指定していないヘッダーの違反は、`default`エンドポイントがあっても送信されません。
+
+### レポートの送信形式
+
+ブラウザはレポートをJSON形式でエンドポイントにPOSTします。`Content-Type`は`application/reports+json`で、bodyはレポートの配列です。
+
+```json
+[
+  {
+    "type": "csp-violation",
+    "age": 53531,
+    "url": "https://example.com/page",
+    "user_agent": "Mozilla/5.0 ...",
+    "body": {
+      "blockedURL": "https://evil.com/script.js",
+      "columnNumber": 39,
+      "disposition": "enforce",
+      "documentURL": "https://example.com/page",
+      "effectiveDirective": "script-src-elem",
+      "lineNumber": 121,
+      "originalPolicy": "default-src 'self'; report-to csp-endpoint",
+      "referrer": "https://www.google.com/",
+      "sample": "",
+      "sourceFile": "https://example.com/app.js",
+      "statusCode": 200
+    }
+  }
+]
+```
+
+`age`フィールドはレポート生成からの経過ミリ秒数です。絶対時刻を含めるとブラウザの内部時計のズレからユーザーを特定するフィンガープリントに悪用される恐れがあるため、相対時間が使われています。
+
+レポートの送信は即時ではなく、ブラウザがバッチ処理で行います。送信タイミングはブラウザに委ねられており、配信は保証されません。
+
+### Report-Onlyモード
+
+セキュリティヘッダーには、ポリシーを強制せずにレポートのみ収集するReport-Onlyモードがあります。
+
+```http
+Reporting-Endpoints: csp-endpoint="https://example.com/csp-reports"
+Content-Security-Policy-Report-Only: default-src 'self'; report-to csp-endpoint
+```
+
+Report-Onlyモードで送信されるレポートの`disposition`フィールドは`"reporting"`になります（通常のモードは`"enforce"`になります）。
+
+COEPやCOOPにも同様のReport-Onlyヘッダーがあります。
+
+- `Content-Security-Policy` → `Content-Security-Policy-Report-Only`
+- `Cross-Origin-Embedder-Policy` → `Cross-Origin-Embedder-Policy-Report-Only`
+- `Cross-Origin-Opener-Policy` → `Cross-Origin-Opener-Policy-Report-Only`
+
+新しいポリシーを導入する際は、まずReport-Onlyモードで違反箇所を可視化してから強制モードに切り替えると安全です。
+
+## ReportingObserver
+
+`ReportingObserver`はJavaScript上でレポートを検知するAPIです。サーバーへの送信が不要な場合や、クライアントサイドでレポートに基づいた処理を行いたい場合に便利です。
+
+```js
+const observer = new ReportingObserver((reports) => {
+  for (const report of reports) {
+    console.log(report.type); // "csp-violation"
+    console.log(report.url); // "https://example.com/page"
+    console.log(report.body); // レポートの詳細
+  }
+});
+
+observer.observe();
+```
+
+### コンストラクタ
+
+`ReportingObserver`のコンストラクタは第1引数にコールバック関数、第2引数にオプションを受け取ります。
+
+```js
+new ReportingObserver(callback, options);
+```
+
+コールバック関数にはレポートの配列と`ReportingObserver`インスタンス自身が渡されます。
+
+オプションには`types`と`buffered`を指定できます。
+
+```js
+const observer = new ReportingObserver(
+  (reports, observer) => {
+    // レポートの処理
+  },
+  {
+    // 収集するレポートの種類を絞り込む
+    types: ['csp-violation'],
+    // observe()呼び出し前に生成されたレポートも含める
+    buffered: true,
+  },
+);
+```
+
+`types`を指定しない場合は、すべての種類のレポートが収集されます。`buffered`を`true`にすると、`observe()`の呼び出し前にバッファされたレポートも取得でき、ページ読み込み時に発生したレポートを後から確認できます。
+
+### メソッド
+
+`ReportingObserver`には3つのメソッドがあります。
+
+`observe()`でレポートの収集を開始します。
+
+```js
+observer.observe();
+```
+
+`takeRecords()`で収集済みのレポートを配列として取得し、キューを空にします。
+
+```js
+const records = observer.takeRecords();
+```
+
+`disconnect()`でレポートの収集を停止します。
+
+```js
+observer.disconnect();
+```
+
+### Reportオブジェクト
+
+コールバックに渡されるレポートは以下のプロパティを持ちます。
+
+- `type`: レポートの種類（`"deprecation"`、`"csp-violation"`など）
+- `url`: レポートが生成されたドキュメントのURL
+- `body`: レポートの種類に応じた詳細情報（`ReportBody | null`）
+
+`body`の内容はレポートの種類によって異なります。
+
+CSP違反レポート（`type: "csp-violation"`）の場合は以下のプロパティを持ちます。
+
+```js
+report.body.blockedURL; // ブロックされたリソースのURL
+report.body.disposition; // "enforce" または "reporting"
+report.body.documentURL; // ドキュメントのURL
+report.body.effectiveDirective; // 違反を検出したディレクティブ
+report.body.originalPolicy; // 元のCSPポリシー文字列
+report.body.referrer; // リファラー（不明な場合はnull）
+report.body.sample; // 違反コードの先頭40文字
+report.body.sourceFile; // スクリプトファイルのURL（不明な場合はnull）
+report.body.lineNumber; // 行番号
+report.body.columnNumber; // 列番号
+report.body.statusCode; // HTTPステータスコード
+```
+
+## おわりに
+
+Reporting APIは、ブラウザが検知する問題を体系的に収集する仕組みを提供します。`Reporting-Endpoints`ヘッダーによるサーバーへの自動送信と`ReportingObserver`によるクライアントサイドでの検知を組み合わせることで、CSP違反、非推奨機能の使用、ブラウザの介入といった問題を可視化できます。
+
+まずはReport-Onlyモードで既存のセキュリティポリシーの違反状況を把握するところから始めてみましょう。

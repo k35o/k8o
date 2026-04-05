@@ -2,6 +2,16 @@ import { after, type NextRequest, NextResponse } from 'next/server';
 
 const isDev = process.env.NODE_ENV === 'development';
 
+function getOrigin(): string {
+  if (process.env['PORTLESS_URL']) {
+    return process.env['PORTLESS_URL'].replace(/^http:/, 'https:');
+  }
+  if (process.env['VERCEL_URL']) {
+    return `https://${process.env['VERCEL_URL']}`;
+  }
+  return 'https://k8o.me';
+}
+
 const cspHeader = `
     default-src 'self';
     script-src 'self' 'unsafe-inline' https://www.googletagmanager.com https://va.vercel-scripts.com https://vercel.live${isDev ? " 'unsafe-eval'" : ''};
@@ -17,6 +27,7 @@ const cspHeader = `
     frame-ancestors 'none';
     ${isDev ? '' : "require-trusted-types-for 'script';"}
     trusted-types nextjs nextjs#bundler dompurify k8o goog#html lit-html default;
+    report-to csp-endpoint;
     upgrade-insecure-requests;
 `;
 
@@ -46,6 +57,10 @@ export function proxy(request: NextRequest) {
   response.headers.set(
     'Content-Security-Policy',
     contentSecurityPolicyHeaderValue,
+  );
+  response.headers.set(
+    'Reporting-Endpoints',
+    `csp-endpoint="${getOrigin()}/api/reports"`,
   );
 
   return response;

@@ -11,6 +11,9 @@ pnpm i --frozen-lockfile
 cp apps/main/.env.example apps/main/.env.local
 cp packages/database/.env.example packages/database/.env.local
 
+# ローカルHTTPS用のCA証明書をシステムに登録（初回のみ）
+pnpm portless trust
+
 # マイグレーション & 開発サーバー起動
 pnpm run -F @repo/database migrate
 pnpm run dev
