@@ -1,0 +1,164 @@
+---
+title: 'Iterator.concat()で複数のIterableを1つのIteratorにまとめる'
+description: 'Iterator.concat()は複数のIterableを受け取り、それらの値を順番に返す新しいIteratorを生成する静的メソッドです。ジェネレータ関数やスプレッド構文による配列変換を使わずに、宣言的かつ遅延評価でIterableを結合できます。'
+createdAt: 2026-04-06
+updatedAt: 2026-04-06
+---
+
+import { BaselineStatus } from '@k8o/arte-odyssey';
+import { LinkCard } from '@/app/_components/link-card';
+
+# Iterator.concat()で複数のIterableを1つのIteratorにまとめる
+
+<BaselineStatus featureId="iterator-concat" />
+
+## はじめに
+
+[以前紹介したBaseline 2025に追加されたIterator Helpers](/blog/iterator-methods)では、`Iterator`オブジェクトに対して`map`・`filter`・`take`・`drop`などの操作が可能になりました。
+
+Baseline 2026では、これらに加えて複数のIterableを1つの`Iterator`にまとめる`Iterator.concat()`が利用できるようになりました。
+
+<LinkCard href="https://github.com/tc39/proposal-iterator-sequencing" />
+
+## これまでの方法
+
+複数のIterableの値を順番に処理したい場面はよくあります。これまでは、スプレッド構文で配列に変換してから結合するか、ジェネレータ関数で`yield*`を使う方法がありました。
+
+```js
+// スプレッド構文で配列に変換する方法
+const combined = [...[1, 2, 3], ...[4, 5, 6]];
+// [1, 2, 3, 4, 5, 6]
+```
+
+スプレッド構文は簡潔ですが、すべての値を即座に配列へ展開するため、遅延評価の恩恵を受けられません。
+
+```js
+// ジェネレータ関数を使う方法
+function* concat(...iterables) {
+  for (const iterable of iterables) {
+    yield* iterable;
+  }
+}
+
+const combined = concat([1, 2, 3], [4, 5, 6]);
+```
+
+ジェネレータ関数なら遅延評価は実現できますが、結合のためだけに専用のヘルパー関数を定義する必要があります。
+
+`Iterator.concat()`を使えば、専用関数の定義なしにIterableを宣言的に結合できます。
+
+## Iterator.concat()
+
+`Iterator.concat()`は`Iterator`コンストラクタの静的メソッドで、複数のIterableを受け取り、それらの値を順番に返す新しい`Iterator`オブジェクトを生成します。
+
+```js
+const iter = Iterator.concat([1, 2, 3], [4, 5, 6]);
+console.log(iter.next()); // { value: 1, done: false }
+console.log(iter.next()); // { value: 2, done: false }
+console.log(iter.next()); // { value: 3, done: false }
+console.log(iter.next()); // { value: 4, done: false }
+console.log(iter.next()); // { value: 5, done: false }
+console.log(iter.next()); // { value: 6, done: false }
+console.log(iter.next()); // { value: undefined, done: true }
+```
+
+引数には任意の数のIterableを渡せます。配列だけでなく`Set`や`Map`など、`[Symbol.iterator]`を持つオブジェクトを混在させて渡せます。
+
+```js
+const array = [1, 2];
+const set = new Set([3, 4]);
+const map = new Map([['a', 5], ['b', 6]]);
+
+const iter = Iterator.concat(array, set, map);
+
+for (const value of iter) {
+  console.log(value);
+}
+// 1 2 3 4 ['a', 5] ['b', 6]
+```
+
+`Map`はそのまま渡すと`[key, value]`のペアが返ります。
+
+## 遅延評価
+
+`Iterator.concat()`が返す`Iterator`オブジェクトは遅延評価されます。結合した結果を配列にまとめるのではなく、`next()`が呼ばれたタイミングで値を取り出します。
+
+```js
+function* generateNumbers(label, count) {
+  for (let i = 0; i < count; i++) {
+    console.log(`${label}: ${i}`);
+    yield i;
+  }
+}
+
+const iter = Iterator.concat(
+  generateNumbers('A', 2),
+  generateNumbers('B', 2),
+);
+
+// この時点ではまだ何も評価されていない
+
+console.log(iter.next());
+// A: 0
+// { value: 0, done: false }
+
+console.log(iter.next());
+// A: 1
+// { value: 1, done: false }
+
+console.log(iter.next());
+// B: 0
+// { value: 0, done: false }
+
+console.log(iter.next());
+// B: 1
+// { value: 1, done: false }
+```
+
+1つ目のIterableの値をすべて返し終えてから、2つ目のIterableの値を返し始めていることがわかります。必要になるまで各Iterableの値は評価されません。
+
+なお、先頭に無限Iterableを渡すと後続のIterableには永遠に到達しないため、順序には注意が必要です。
+
+## 引数はIterableであること
+
+`Iterator.concat()`の引数は**Iterable**（`[Symbol.iterator]`を持つオブジェクト）である必要があります。配列、`Set`、`Map`、文字列、ジェネレータオブジェクトなどの組み込みIterableはそのまま渡せます。
+
+`[Symbol.iterator]`を持つオブジェクトであれば渡せますが、`next`メソッドだけを持つ非Iterableなオブジェクトを渡すと`TypeError`になります。
+
+```js
+// [Symbol.iterator]を持つオブジェクトはIterableなので渡せる
+const iterable = {
+  [Symbol.iterator]() {
+    let count = 0;
+    return {
+      next() {
+        if (count < 3) {
+          return { value: count++, done: false };
+        }
+        return { value: undefined, done: true };
+      },
+    };
+  },
+};
+Iterator.concat(iterable); // OK
+
+// nextメソッドだけを持つオブジェクトはIterableではない
+const rawIterator = {
+  count: 0,
+  next() {
+    if (this.count < 3) {
+      return { value: this.count++, done: false };
+    }
+    return { value: undefined, done: true };
+  },
+};
+Iterator.concat(rawIterator); // TypeError
+```
+
+`Iterator.concat()`は呼び出し時にすべての引数に対して`[Symbol.iterator]`メソッドの存在を検証し、反復中に途中終了が起きた場合は現在のイテレータを確実にクローズします。
+
+## 終わりに
+
+`Iterator.concat()`により、複数のIterableを結合するためにジェネレータ関数を自前で用意したり、配列に変換する必要がなくなりました。
+
+[Iterator Helpers](/blog/iterator-methods)の`map`や`filter`と組み合わせれば、複数のデータソースを遅延評価を活かしながら宣言的に処理できます。

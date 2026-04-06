@@ -211,6 +211,13 @@
       "when": 1775381232586,
       "tag": "0029_sloppy_iron_lad",
       "breakpoints": true
+    },
+    {
+      "idx": 30,
+      "version": "6",
+      "when": 1775441217251,
+      "tag": "0030_premium_hobgoblin",
+      "breakpoints": true
     }
   ]
 }
