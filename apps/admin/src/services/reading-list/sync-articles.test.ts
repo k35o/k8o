@@ -44,7 +44,10 @@ describe('syncArticles', () => {
     vi.clearAllMocks();
     vi.useFakeTimers();
     vi.setSystemTime(new Date('2026-03-12T00:00:00Z'));
-    mockFetch.mockResolvedValue({ text: () => Promise.resolve('<xml/>') });
+    mockFetch.mockResolvedValue({
+      ok: true,
+      text: () => Promise.resolve('<xml/>'),
+    });
   });
 
   afterEach(() => {
@@ -400,6 +403,7 @@ describe('syncArticles', () => {
 
       expect(result.newArticles).toBe(1);
       expect(result.failedSources).toEqual(['失敗するソース']);
+      expect(mockParseString).toHaveBeenCalledTimes(1);
     });
   });
 });

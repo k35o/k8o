@@ -7,10 +7,10 @@ const parser = new Parser();
 
 function sanitizeFeedDates(xml: string): string {
   return xml.replace(
-    /<(updated|published)>([^<]+)<\/(updated|published)>/g,
-    (match, tag, value, closeTag) => {
+    /<(updated|published)>([^<]+)<\/\1>/g,
+    (match, tag, value) => {
       if (Number.isNaN(new Date(value).getTime())) {
-        return `<${tag}></${closeTag}>`;
+        return `<${tag}></${tag}>`;
       }
       return match;
     },
@@ -19,6 +19,11 @@ function sanitizeFeedDates(xml: string): string {
 
 async function fetchFeed(url: string): Promise<Parser.Output<Parser.Item>> {
   const response = await fetch(url);
+  if (!response.ok) {
+    throw new Error(
+      `フィード取得失敗: ${response.status} ${response.statusText}`,
+    );
+  }
   const xml = await response.text();
   return parser.parseString(sanitizeFeedDates(xml));
 }
