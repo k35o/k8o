@@ -218,6 +218,13 @@
       "when": 1775441217251,
       "tag": "0030_premium_hobgoblin",
       "breakpoints": true
+    },
+    {
+      "idx": 31,
+      "version": "6",
+      "when": 1775451352570,
+      "tag": "0031_public_diamondback",
+      "breakpoints": true
     }
   ]
 }
