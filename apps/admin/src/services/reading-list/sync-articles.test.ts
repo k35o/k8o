@@ -29,17 +29,22 @@ vi.mock('@repo/database', () => ({
 
 vi.mock('rss-parser', () => {
   const MockParser = vi.fn();
-  MockParser.prototype.parseURL = vi.fn();
+  MockParser.prototype.parseString = vi.fn();
   return { default: MockParser };
 });
 
-const mockParseURL = Parser.prototype.parseURL as ReturnType<typeof vi.fn>;
+const mockParseString = Parser.prototype.parseString as ReturnType<
+  typeof vi.fn
+>;
+const mockFetch = vi.fn() as ReturnType<typeof vi.fn>;
+vi.stubGlobal('fetch', mockFetch);
 
 describe('syncArticles', () => {
   beforeEach(() => {
     vi.clearAllMocks();
     vi.useFakeTimers();
     vi.setSystemTime(new Date('2026-03-12T00:00:00Z'));
+    mockFetch.mockResolvedValue({ text: () => Promise.resolve('<xml/>') });
   });
 
   afterEach(() => {
@@ -60,7 +65,7 @@ describe('syncArticles', () => {
         },
       ]);
 
-      mockParseURL.mockResolvedValue({
+      mockParseString.mockResolvedValue({
         items: [
           {
             title: '新しい記事',
@@ -114,7 +119,7 @@ describe('syncArticles', () => {
         },
       ]);
 
-      mockParseURL
+      mockParseString
         .mockResolvedValueOnce({
           items: [
             {
@@ -139,7 +144,7 @@ describe('syncArticles', () => {
       const result = await syncArticles();
 
       expect(result.newArticles).toBe(2);
-      expect(mockParseURL).toHaveBeenCalledTimes(2);
+      expect(mockParseString).toHaveBeenCalledTimes(2);
     });
 
     it('既存記事のtitleが変わっていたら更新する', async () => {
@@ -155,7 +160,7 @@ describe('syncArticles', () => {
         },
       ]);
 
-      mockParseURL.mockResolvedValue({
+      mockParseString.mockResolvedValue({
         items: [
           {
             title: '更新されたタイトル',
@@ -192,7 +197,7 @@ describe('syncArticles', () => {
         },
       ]);
 
-      mockParseURL.mockResolvedValue({
+      mockParseString.mockResolvedValue({
         items: [
           {
             title: '同じタイトル',
@@ -231,7 +236,7 @@ describe('syncArticles', () => {
         },
       ]);
 
-      mockParseURL.mockResolvedValue({
+      mockParseString.mockResolvedValue({
         items: [
           {
             title: '古い記事',
@@ -266,7 +271,7 @@ describe('syncArticles', () => {
         },
       ]);
 
-      mockParseURL.mockResolvedValue({
+      mockParseString.mockResolvedValue({
         items: [
           { title: 'タイトルのみ', link: undefined, isoDate: undefined },
           {
@@ -308,7 +313,7 @@ describe('syncArticles', () => {
         },
       ]);
 
-      mockParseURL.mockResolvedValue({
+      mockParseString.mockResolvedValue({
         items: [
           {
             title: '既存の記事',
@@ -347,7 +352,7 @@ describe('syncArticles', () => {
         },
       ]);
 
-      mockParseURL.mockRejectedValue(new Error('Network error'));
+      mockFetch.mockRejectedValue(new Error('Network error'));
       vi.mocked(db.query.articles.findMany).mockResolvedValue([]);
 
       const result = await syncArticles();
@@ -378,17 +383,16 @@ describe('syncArticles', () => {
         },
       ]);
 
-      mockParseURL
-        .mockRejectedValueOnce(new Error('Network error'))
-        .mockResolvedValueOnce({
-          items: [
-            {
-              title: '成功した記事',
-              link: 'https://success.example.com/article',
-              isoDate: '2026-03-10T00:00:00Z',
-            },
-          ],
-        });
+      mockFetch.mockRejectedValueOnce(new Error('Network error'));
+      mockParseString.mockResolvedValueOnce({
+        items: [
+          {
+            title: '成功した記事',
+            link: 'https://success.example.com/article',
+            isoDate: '2026-03-10T00:00:00Z',
+          },
+        ],
+      });
 
       vi.mocked(db.query.articles.findMany).mockResolvedValue([]);
 
