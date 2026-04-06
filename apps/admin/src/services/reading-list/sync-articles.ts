@@ -5,6 +5,29 @@ import Parser from 'rss-parser';
 
 const parser = new Parser();
 
+function sanitizeFeedDates(xml: string): string {
+  return xml.replace(
+    /<(updated|published)>([^<]+)<\/\1>/g,
+    (match, tag, value) => {
+      if (Number.isNaN(new Date(value).getTime())) {
+        return `<${tag}></${tag}>`;
+      }
+      return match;
+    },
+  );
+}
+
+async function fetchFeed(url: string): Promise<Parser.Output<Parser.Item>> {
+  const response = await fetch(url);
+  if (!response.ok) {
+    throw new Error(
+      `フィード取得失敗: ${response.status} ${response.statusText}`,
+    );
+  }
+  const xml = await response.text();
+  return parser.parseString(sanitizeFeedDates(xml));
+}
+
 const NINETY_DAYS_MS = 90 * 24 * 60 * 60 * 1000;
 
 type FeedArticle = {
@@ -29,7 +52,7 @@ export async function syncArticles(): Promise<SyncResult> {
 
   const results = await Promise.allSettled(
     sources.map(async (source) => {
-      const feed = await parser.parseURL(source.url);
+      const feed = await fetchFeed(source.url);
       const candidates: FeedArticle[] = [];
 
       for (const item of feed.items) {
