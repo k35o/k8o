@@ -2,7 +2,7 @@
 title: Iteratorに対してmapやfilterのようなヘルパー関数を作用させる
 description: Baseline 2025でIterator Helpersが導入され、Iteratorオブジェクトにmapやfilterなどの便利な操作を作用できるようになりました。これにより、配列への変換が不要になり、コードの可読性向上と遅延評価によるパフォーマンス改善が期待できます。
 createdAt: 2025-04-21
-updatedAt: 2025-11-15
+updatedAt: 2026-04-06
 ---
 
 import { BaselineStatus } from '@k8o/arte-odyssey';
@@ -19,6 +19,8 @@ Baseline 2025にIterator Helpersが追加されました。
 <LinkCard href="https://github.com/tc39/proposal-iterator-helpers" />
 
 具体的には、`Iterator`オブジェクトに対して、`map`・`filter`・`take`・`drop`・`flatMap`・`reduce`・`toArray`・`forEach`・`some`・`every`・`find`という操作と静的メソッド`from`の利用が可能になりました。
+
+さらにBaseline 2026では、複数のIterableを1つのIteratorにまとめる[`Iterator.concat()`](/blog/iterator-concat)も追加されています。
 
 ## Iteratorオブジェクト
 
