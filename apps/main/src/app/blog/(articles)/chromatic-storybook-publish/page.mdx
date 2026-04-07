@@ -1,0 +1,177 @@
+---
+title: ChromaticにStorybookをPublishすることで広がる恩恵
+description: ChromaticにStorybookをPublishすると、静的なホスティングにとどまらず、MCPサーバーとしてAIエージェントにコンポーネント情報を提供したり、Storybook Compositionで別リポジトリのStorybookを統合したりできます。このサイトでの実例を交えて紹介します。
+createdAt: 2026-04-07
+updatedAt: 2026-04-07
+---
+
+import { LinkCard } from '@/app/_components/link-card';
+import { Image } from '@/app/blog/_components/image';
+import compositionSidebar from './_images/composition-sidebar.png';
+
+# ChromaticにStorybookをPublishすることで広がる恩恵
+
+## はじめに
+
+[Chromatic](https://www.chromatic.com/)はStorybookのメンテナーが提供するクラウドサービスで、Storybookの公開やビジュアルテスト、UIレビューなど多くの機能を備えています。
+
+この記事ではその中でもStorybookをChromaticにPublishすることに焦点を当て、公開することで得られる恩恵を紹介します。
+UI TestsやUI Reviewといったテスト・レビュー機能には触れず、Publishそのものがもたらすメリットに絞って解説します。
+
+このサイトでも以前からStorybookをChromaticにPublishしていますが、MCPサーバーやStorybook Compositionといった機能が登場したことで、公開していることの恩恵がさらに広がりました。
+この記事では、[公開しているStorybook](https://main--647acebb9da23d6c605c4afd.chromatic.com)を例に、その恩恵を紹介していきます。
+
+## StorybookをChromaticにPublishする
+
+ChromaticにStorybookをPublishすると、ビルドされたStorybookがChromaticのCDN上にホスティングされます（[Publishの方法はこちら](https://www.chromatic.com/docs/quickstart/)）。CI/CDパイプラインからChromaticのCLIを実行するだけで、ビルドのたびに自動的にStorybookが公開されます。
+
+公開されたStorybookには、ブランチやコミットごとにパーマリンクが生成されます。
+
+- ブランチ: `https://<branch>--<appid>.chromatic.com`
+- コミット: `https://<commithash>--<appid>.chromatic.com`
+
+例えばこのサイトで利用しているデザインシステムのStorybookには[https://main--687a213c85e2e4589d8db1bb.chromatic.com](https://main--687a213c85e2e4589d8db1bb.chromatic.com)で常にアクセスでき、誰でもコンポーネントの最新状態を確認できます。
+
+ChromaticにPublishされたStorybookはデフォルトでプライベートです。Chromaticにサインイン済みのコラボレーターのみがアクセスでき、必要に応じて公開設定に変更することも可能です。なお、Linked projectではリポジトリの公開設定と連動するため、パブリックリポジトリの場合はStorybookも自動的に公開されます。
+
+## MCPサーバーとしての活用
+
+`@storybook/addon-mcp`をStorybookに導入すると、StorybookをMCPサーバーとして利用できるようになります。
+
+<LinkCard href="https://www.chromatic.com/docs/mcp/" appearance="bordered" />
+
+### ローカルでのMCPサーバー
+
+以下のコマンドでアドオンのインストールから標準的なセットアップまで行います。
+
+```bash
+pnpm exec storybook add @storybook/addon-mcp
+```
+
+インストール後、Storybookの開発サーバーを起動すると`http://localhost:6006/mcp`でMCPサーバーにアクセスできるようになります。
+
+### ChromaticにPublishしてリモートMCPサーバーにする
+
+ローカルのMCPサーバーはStorybookの開発サーバーが起動している間しか利用できません。
+また、複数のプロジェクトでStorybookを使っている場合はポートの取り合いが発生し、MCPサーバーのURLが定まらないという問題もありました。
+
+ChromaticにPublishすると、リモートのMCPサーバーとして常時利用可能になります。
+
+通常通りChromaticにビルドをPublishするだけで、リモートMCPサーバーのURLが生成されます。
+公開するStorybookのURLが`https://main--687a213c85e2e4589d8db1bb.chromatic.com`であれば、MCPサーバーのURLは[https://main--687a213c85e2e4589d8db1bb.chromatic.com/mcp](https://main--687a213c85e2e4589d8db1bb.chromatic.com/mcp)です。
+
+```json
+{
+  "mcpServers": {
+    "storybook-mcp": {
+      "url": "https://main--687a213c85e2e4589d8db1bb.chromatic.com/mcp",
+      "type": "http"
+    }
+  }
+}
+```
+
+上記のように利用するエージェントのMCP設定にURLを登録しておけば、ローカルのStorybookを起動していなくてもコンポーネント情報を参照できます。
+
+Storybookの公開設定がPrivateの場合は、`oauth`の設定を追加する必要があります。`clientId`はChromatic共通の値です。
+
+```json
+{
+  "mcpServers": {
+    "storybook-mcp": {
+      "url": "https://main--687a213c85e2e4589d8db1bb.chromatic.com/mcp",
+      "type": "http",
+      "oauth": {
+        "clientId": "cdf3737dff9d485485968e50b63fd8b4"
+      }
+    }
+  }
+}
+```
+
+初回接続時にChromaticの認証が求められ、認証後はコラボレーターとしてMCPサーバーにアクセスできるようになります。
+
+Chromatic以外のホスティング先を利用する場合は、[自分でMCPサーバーを立てる](https://storybook.js.org/docs/ai/mcp/sharing)必要があります。
+`@storybook/mcp`パッケージを使ってデプロイし、インフラの管理やアクセス制御も自前で行わなければなりません。
+ChromaticにPublishするだけでリモートMCPサーバーが手に入るのは大きな利点です。
+
+### リモートMCPサーバーで利用できるツール
+
+Storybook MCPサーバーはDocs、Development、Testingの3つの[ツールセット](https://storybook.js.org/docs/ai/mcp/overview#toolsets)を提供していますが、ChromaticにPublishしたリモートMCPサーバーで利用できるのはDocsツールセットのみです。DevelopmentやTestingはローカルのStorybook開発サーバーでのみ利用できます。
+
+Docsツールセットには以下のツールが含まれます。
+
+- `list-all-documentation`: 利用可能なコンポーネントとドキュメントの一覧を取得する
+- `get-documentation`: 個別のコンポーネントの詳細（Props情報、ストーリー、使用例など）を参照する
+- `get-documentation-for-story`: 特定のストーリーのコードとドキュメントを取得する
+
+`list-all-documentation`で利用可能なコンポーネントを探り、`get-documentation`で詳細を確認し、`get-documentation-for-story`でユースケースを深掘りする、というように段階的にコンテキストを深めていく形で利用します。
+
+ローカルではこれに加えて、ストーリーの書き方ガイドやプレビューを提供するDevelopmentツールセットや、ストーリーのテスト実行とアクセシビリティチェックを行うTestingツールセットも利用できます。これらがリモートMCPサーバーでも使えるようになると嬉しいのですが、現状はローカル限定なのが残念です。
+
+### MCPサーバーから提供する情報の制御
+
+Storybookは[マニフェスト](https://storybook.js.org/docs/ai/manifests)と呼ばれるJSON形式のメタデータを自動生成します。
+CSFファイルの静的分析やコンポーネントのProps型抽出から、コンポーネント名、Props情報、使用例などが含まれたメタデータが作られ、Docsツールセットは主にこれをもとにコンポーネント情報を提供します。
+
+デフォルトではすべてのストーリーがマニフェストに含まれますが、`!manifest`タグを指定することで特定のコンポーネントやストーリーを除外できます。
+
+```tsx
+export default {
+  component: InternalComponent,
+  tags: ['!manifest'],
+} satisfies Meta<typeof InternalComponent>;
+```
+
+教育目的のみのストーリーや非推奨のコンポーネントなど、AIエージェントに認識させる必要がないものを除外することで、不要なコンテキストを減らし、エージェントの性能低下を避けやすくなります。
+
+## Storybook Compositionによる別リポジトリのStorybook統合
+
+Storybook Compositionは、複数のStorybookを1つのStorybookのUIに統合して表示する機能です。
+
+<LinkCard href="https://storybook.js.org/docs/sharing/storybook-composition" appearance="bordered" />
+
+デザインシステムやコンポーネントライブラリが別リポジトリで管理されている場合、そのStorybookをChromaticにPublishしておくと、自分のStorybookから参照して統合表示できます。
+
+`.storybook/main.ts`に`refs`を追加して、外部のStorybookを参照します。このサイトでは、デザインシステムである[ArteOdyssey](https://main--687a213c85e2e4589d8db1bb.chromatic.com/)のStorybookをCompositionで統合しています。実際の設定は以下のようになっています。
+
+```ts
+import type { StorybookConfig } from '@storybook/nextjs-vite';
+
+const config: StorybookConfig = {
+  // ...
+  refs: {
+    'arte-odyssey': {
+      title: 'ArteOdyssey',
+      url: 'https://main--687a213c85e2e4589d8db1bb.chromatic.com',
+    },
+  },
+};
+
+export default config;
+```
+
+Storybookを起動すると、サイドバーにArteOdysseyのコンポーネントが並列表示されます。
+
+<Image
+  src={compositionSidebar}
+  alt="Storybookのサイドバーに自分のプロジェクトのコンポーネントとArteOdysseyのコンポーネントが並列表示されている"
+/>
+
+ローカルのコンポーネントと外部のコンポーネントを同時にブラウズでき、フレームワークが異なっていても問題ありません。
+
+### MCPサーバーとの連携
+
+ローカルのMCPサーバーであれば、Storybook Compositionと組み合わせることもできます。外部のStorybookがマニフェストを生成している場合、`refs`に登録しておくことで、MCPサーバーが外部のコンポーネント情報もまとめて提供します。AIエージェントが`list-all-documentation`を実行すると、自分のプロジェクトのコンポーネントだけでなく、Compositionで統合した外部のコンポーネント情報も取得できます。
+
+ただし、現状ではMCP Compositionはローカルのみ対応しており、ChromaticにPublishしたリモートMCPサーバーでは自身のStorybookのコンポーネント情報のみが提供されます。なお、マニフェストの生成は現状Reactプロジェクトが中心です。
+
+## おわりに
+
+以前からChromaticにStorybookをPublishしていましたが、当初はStorybookを公開すること自体が目的でした。
+
+しかし、MCPサーバーの登場によってAIエージェントにコンポーネント情報を提供できるようになり、Storybook Compositionによって別リポジトリのデザインシステムも統合して扱えるようになりました。Storybookの静的なホスティングにとどまらず、PublishしたStorybookを起点にした動的な機能が使えるようになっているのは嬉しいです。
+
+現状ではDevelopment・TestingツールセットやMCP Compositionなど、ローカルのStorybook開発サーバーでしか利用できない機能もあります。これらがリモートMCPサーバーでも利用できるようになる日が楽しみです。
+
+Chromaticはビジュアルテストやレビュー機能が注目されがちですが、Publishするだけでもこれだけの価値があります。まだ試していない方はぜひ導入を検討してみてください。
