@@ -10,9 +10,14 @@ import { LinkCardErrorBoundary } from './error-boundary';
 import { MetaImage } from './image';
 import { getMetadata } from './metadata';
 
-export const LinkCardLoading: FC<{ href: string }> = ({ href }) => {
+type LinkCardAppearance = 'shadow' | 'bordered';
+
+export const LinkCardLoading: FC<{
+  href: string;
+  appearance?: LinkCardAppearance;
+}> = ({ href, appearance = 'shadow' }) => {
   return (
-    <InteractiveCard>
+    <InteractiveCard appearance={appearance}>
       <a href={href} rel="noopener noreferrer" target="_blank">
         <div className="flex animate-pulse flex-col overflow-hidden sm:flex-row">
           <div className="w-full rounded-t-lg bg-bg-mute sm:w-48 sm:shrink-0 sm:rounded-t-none sm:rounded-l-lg">
@@ -32,7 +37,8 @@ export const LinkCardLoading: FC<{ href: string }> = ({ href }) => {
 const Content: FC<{
   href: string;
   publishedAt?: Date | string | undefined;
-}> = async ({ href, publishedAt }) => {
+  appearance?: LinkCardAppearance;
+}> = async ({ href, publishedAt, appearance = 'shadow' }) => {
   const metaData = await getMetadata(href);
 
   if (!(metaData.title || metaData.description || metaData.image)) {
@@ -40,7 +46,7 @@ const Content: FC<{
   }
 
   return (
-    <InteractiveCard>
+    <InteractiveCard appearance={appearance}>
       <a
         className="group block h-full"
         href={href}
@@ -86,11 +92,18 @@ const Content: FC<{
 export const LinkCard: FC<{
   href: string;
   publishedAt?: Date | string | undefined;
-}> = ({ href, publishedAt }) => {
+  appearance?: LinkCardAppearance;
+}> = ({ href, publishedAt, appearance = 'shadow' }) => {
   return (
     <LinkCardErrorBoundary href={href}>
-      <Suspense fallback={<LinkCardLoading href={href} />}>
-        <Content href={href} publishedAt={publishedAt} />
+      <Suspense
+        fallback={<LinkCardLoading appearance={appearance} href={href} />}
+      >
+        <Content
+          appearance={appearance}
+          href={href}
+          publishedAt={publishedAt}
+        />
       </Suspense>
     </LinkCardErrorBoundary>
   );
