@@ -225,6 +225,13 @@
       "when": 1775451352570,
       "tag": "0031_public_diamondback",
       "breakpoints": true
+    },
+    {
+      "idx": 32,
+      "version": "6",
+      "when": 1775539889783,
+      "tag": "0032_spicy_santa_claus",
+      "breakpoints": true
     }
   ]
 }
