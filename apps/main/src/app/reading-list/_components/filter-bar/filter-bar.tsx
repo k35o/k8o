@@ -104,7 +104,7 @@ export const FilterBar: FC<Props> = ({
         <legend className="mb-1 font-medium text-fg-mute text-xs">
           ソース
         </legend>
-        <ul className="flex flex-col gap-1">
+        <ul className="flex max-h-80 flex-col gap-1 overflow-y-auto overscroll-contain">
           {sources
             .filter((source) => source.articleCount > 0)
             .map((source) => (
