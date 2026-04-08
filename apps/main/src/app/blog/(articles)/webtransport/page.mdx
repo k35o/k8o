@@ -1,0 +1,154 @@
+---
+title: 'WebTransportでHTTP/3上の双方向通信を実現する'
+description: 'WebTransportはHTTP/3（QUIC）上で動作する双方向通信APIです。1本のコネクション上に独立した複数のストリームを開けたり、再送のない軽量なデータグラムを送受信したりと、WebSocketにはない低遅延な通信が実現できます。Baseline 2026で主要ブラウザすべてで利用可能になりました。'
+createdAt: 2026-04-07
+updatedAt: 2026-04-07
+---
+
+import { BaselineStatus } from '@k8o/arte-odyssey';
+
+# WebTransportでHTTP/3上の双方向通信を実現する
+
+<BaselineStatus featureId="webtransport"></BaselineStatus>
+
+## はじめに
+
+ブラウザとサーバーの間でリアルタイムにデータをやり取りしたい場面では、これまで主にWebSocketが使われてきました。
+しかしWebSocketはTCPの上に作られているため、1つのコネクションが順序付きで信頼性のある単一のメッセージ列として扱われ、独立した複数のストリームを持てないといった制約があります。結果として、一部のデータが遅れるとあとの通信までまとめて待たされることがあります。
+
+WebTransportはこれらの問題を解決するために設計された、HTTP/3（QUIC）の上で動く新しい通信APIです。
+Baseline 2026で主要ブラウザすべてで利用可能になりました。
+
+## WebTransportとは
+
+WebTransportはひとことで言うと「ブラウザからHTTP/3の機能を扱えるようにしたAPI」です。HTTP/3はTCPではなくUDP上に作られたQUICというプロトコルを使っており、WebTransportはこのQUICの特徴をそのままWebに持ち込みます。
+
+具体的には以下のような特徴があります。
+
+- 複数ストリーム: 1つのコネクション上に独立したストリームを何本でも開ける
+- 双方向／単方向ストリーム: 用途に応じて選べる
+- データグラム: 順序保証も再送もない、軽量な送受信ができる
+- 常にHTTPS: `crypto.randomUUID()`などと同様、Secure Contextでのみ動作する
+- ネットワーク切り替えに比較的強い: QUICのコネクションマイグレーションにより、Wi-Fiからモバイル回線に切り替わったときもTCPベースよりコネクションを維持しやすい
+
+### WebSocketとの違い
+
+WebSocketと比較すると、WebTransportには次のような違いがあります。
+
+- プロトコル: WebSocketはTCP上で動くのに対し、WebTransportはHTTP/3（QUIC、UDP）上で動く
+- ストリームの本数: WebSocketは順序付き・信頼性のある単一のメッセージ列として扱われ独立したストリームを持てないが、WebTransportは1つのコネクション上に複数本の独立したストリームを開ける
+- Head-of-Line Blocking: WebSocketでは発生するが、WebTransportではストリームごとに独立しているため発生しない
+- 信頼性のない高速送信: WebSocketにはないが、WebTransportはデータグラムで実現できる
+- ネットワーク切り替え: WebSocketはコネクションが切れてしまうが、WebTransportはQUICのコネクションマイグレーションにより維持できる場合がある
+
+とはいえWebSocketを完全に置き換えるものではありません。WebSocketはテキストメッセージをそのまま送受信でき、サーバー側のライブラリやホスティング環境も成熟しているため、チャットや通知のように少量のテキストをやり取りするだけの用途では、今でもWebSocketの方が手軽です。
+
+一方で、低遅延で大量のデータをやり取りするユースケース（ゲーム、ライブ配信、リアルタイムコラボレーションなど）では、WebTransportの複数ストリームやデータグラムが大きな利点になります。
+
+## 使い方
+
+WebTransportはHTTPSが必須で、ポート番号も明示する必要があります。Web Workerからも利用できます。
+
+### コネクションを開く
+
+`WebTransport`コンストラクタにURLを渡し、`ready`プロミスを待つことで接続が確立します。
+
+```ts
+const transport = new WebTransport('https://example.com:4433/chat');
+
+await transport.ready;
+console.log('接続完了');
+
+// 切断時の処理
+transport.closed
+  .then(() => console.log('正常に切断されました'))
+  .catch((err) => console.error('切断時にエラー', err));
+```
+
+切断したいときは`transport.close()`を呼びます。
+
+### データグラムの送受信
+
+データグラムは順序保証も再送もない、もっとも軽量な送受信方法です。
+最悪届かなくても最新の値で上書きすればよい、チャットの入力状態やキャラクターの座標のようなデータの送受信に向いています。
+
+データグラムの読み書きは`transport.datagrams`の`readable`と`writable`を通して行います。これらは標準のStreams APIなので、`getReader()`や`getWriter()`でそのまま扱えます。
+
+```ts
+// 送信
+const writer = transport.datagrams.writable.getWriter();
+await writer.write(new Uint8Array([1, 2, 3]));
+writer.releaseLock();
+
+// 受信
+const reader = transport.datagrams.readable.getReader();
+while (true) {
+  const { value, done } = await reader.read();
+  if (done) break;
+  console.log('受信:', value);
+}
+```
+
+### 単方向ストリーム
+
+ストリームはデータグラムと違い、順序が保証され、欠損した場合は再送されます。
+クライアントから一方向にデータを送るだけでよい場合は単方向ストリームが便利です（Unidirectionalは「単方向の」という意味）。
+
+```ts
+const stream = await transport.createUnidirectionalStream();
+const writer = stream.getWriter();
+await writer.write(new Uint8Array([10, 20, 30]));
+await writer.close();
+```
+
+サーバー側から送られてくる単方向ストリームは`transport.incomingUnidirectionalStreams`から受け取れます。
+
+```ts
+const reader = transport.incomingUnidirectionalStreams.getReader();
+while (true) {
+  const { value: stream, done } = await reader.read();
+  if (done) break;
+  // stream は ReadableStream
+  const streamReader = stream.getReader();
+  // ...読み込み処理
+}
+```
+
+### 双方向ストリーム
+
+リクエスト・レスポンスのように、両方向にデータをやり取りしたいときは双方向ストリームを使います（Bidirectionalは「双方向の」という意味）。
+1つの`WebTransportBidirectionalStream`が`readable`と`writable`の両方を持っています。
+
+送信と受信は独立しているので、次のように並行して動かせます。送信の完了を待たずに受信ループを回せるので、サーバーから届くデータをリアルタイムに処理できます。
+
+```ts
+const stream = await transport.createBidirectionalStream();
+
+// 受信ループを先に起動しておく
+const receiveTask = (async () => {
+  const reader = stream.readable.getReader();
+  while (true) {
+    const { value, done } = await reader.read();
+    if (done) break;
+    console.log('受信:', value);
+  }
+})();
+
+// 受信ループの裏で送信する
+const writer = stream.writable.getWriter();
+await writer.write(new Uint8Array([1, 2, 3]));
+await writer.close();
+
+await receiveTask;
+```
+
+複数のストリームを並行して開けるので、たとえばファイル転送と制御メッセージを別々のストリームで流す、といった設計が自然に書けます。
+
+## おわりに
+
+WebTransportを簡単に紹介しました。
+
+HTTP/3の特徴をそのままWebに持ち込んだAPIで、複数ストリームの並行処理や、データグラムによる軽量な送信、ネットワーク切り替え時にも維持しやすい接続といった、WebSocketでは難しかった通信が実現できます。
+とはいえWebSocketの手軽さや成熟したエコシステムには今も大きな魅力があるので、用途に応じて使い分けるのが現実的です。
+
+Baseline 2026で主要ブラウザすべてで使えるようになったので、ピッタリな状況があればぜひ使ってみてください。
