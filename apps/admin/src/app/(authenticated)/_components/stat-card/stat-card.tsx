@@ -9,7 +9,7 @@ export const StatCard = ({
   description?: string;
 }) => {
   return (
-    <Card variant="secondary">
+    <Card>
       <div className="flex flex-col gap-1 p-4">
         <p className="text-fg-mute text-sm">{label}</p>
         <p className="font-bold text-2xl">{value}</p>

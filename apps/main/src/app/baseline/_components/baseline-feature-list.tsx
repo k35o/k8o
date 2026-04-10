@@ -2,7 +2,6 @@
 
 import {
   Badge,
-  Card,
   Checkbox,
   FormControl,
   Tabs,
@@ -150,80 +149,78 @@ export const BaselineFeatureList: FC<{
     : availableYears[0];
 
   return (
-    <Card appearance="shadow">
-      <div className="flex flex-col gap-6 p-5 sm:p-6">
-        <div className="flex flex-col gap-4">
-          <div className="sm:max-w-64">
-            <FormControl
-              label="検索"
-              renderInput={(props) => (
-                <TextField
-                  {...props}
-                  onChange={(e) => {
-                    setQuery(e.target.value);
-                  }}
-                  placeholder="機能名で検索..."
-                  value={query}
-                />
-              )}
-            />
-          </div>
-          <div className="flex gap-4 text-sm">
-            <Checkbox
-              label="Newly Available"
-              onChange={() =>
-                setVisibility((prev) => ({
-                  ...prev,
-                  newly: !prev.newly,
-                }))
-              }
-              value={visibility.newly}
-            />
-            <Checkbox
-              label="Widely Available"
-              onChange={() =>
-                setVisibility((prev) => ({
-                  ...prev,
-                  widely: !prev.widely,
-                }))
-              }
-              value={visibility.widely}
-            />
-          </div>
+    <section className="flex flex-col gap-6 rounded-xl bg-bg-raised p-5 sm:p-6">
+      <div className="flex flex-col gap-4">
+        <div className="sm:max-w-64">
+          <FormControl
+            label="検索"
+            renderInput={(props) => (
+              <TextField
+                {...props}
+                onChange={(e) => {
+                  setQuery(e.target.value);
+                }}
+                placeholder="機能名で検索..."
+                value={query}
+              />
+            )}
+          />
         </div>
+        <div className="flex gap-4 text-sm">
+          <Checkbox
+            label="Newly Available"
+            onChange={() =>
+              setVisibility((prev) => ({
+                ...prev,
+                newly: !prev.newly,
+              }))
+            }
+            value={visibility.newly}
+          />
+          <Checkbox
+            label="Widely Available"
+            onChange={() =>
+              setVisibility((prev) => ({
+                ...prev,
+                widely: !prev.widely,
+              }))
+            }
+            value={visibility.widely}
+          />
+        </div>
+      </div>
 
-        {defaultYear && (
-          <Tabs.Root
-            defaultSelectedId={defaultYear}
-            ids={availableYears as [string, ...string[]]}
-          >
-            <Tabs.List label="年を選択">
-              {availableYears.map((year) => {
-                const count = filteredCountByYear.get(year) ?? 0;
-                return (
-                  <Tabs.Tab id={year} key={year}>
-                    {year}
-                    <span className="ml-1 text-fg-mute text-xs">{count}</span>
-                  </Tabs.Tab>
-                );
-              })}
-            </Tabs.List>
+      {defaultYear && (
+        <Tabs.Root
+          defaultSelectedId={defaultYear}
+          ids={availableYears as [string, ...string[]]}
+        >
+          <Tabs.List label="年を選択">
             {availableYears.map((year) => {
-              const data = dataByYear.get(year);
+              const count = filteredCountByYear.get(year) ?? 0;
               return (
-                <Tabs.Panel id={year} key={year}>
-                  <FeatureList
-                    blogMap={blogMap}
-                    features={data?.features ?? []}
-                    query={query}
-                    visibility={visibility}
-                  />
-                </Tabs.Panel>
+                <Tabs.Tab id={year} key={year}>
+                  {year}
+                  <span className="ml-1 text-fg-mute text-xs">{count}</span>
+                </Tabs.Tab>
               );
             })}
-          </Tabs.Root>
-        )}
-      </div>
-    </Card>
+          </Tabs.List>
+          {availableYears.map((year) => {
+            const data = dataByYear.get(year);
+            return (
+              <Tabs.Panel id={year} key={year}>
+                <FeatureList
+                  blogMap={blogMap}
+                  features={data?.features ?? []}
+                  query={query}
+                  visibility={visibility}
+                />
+              </Tabs.Panel>
+            );
+          })}
+        </Tabs.Root>
+      )}
+    </section>
   );
 };

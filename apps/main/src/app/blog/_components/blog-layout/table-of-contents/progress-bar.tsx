@@ -31,7 +31,7 @@ export const ProgressBar: FC<{
           cy="16"
           fill="none"
           r={radius}
-          stroke="var(--bg-base)"
+          stroke="var(--bg-raised)"
           strokeWidth="3"
         />
         {/* 進捗の円 */}
