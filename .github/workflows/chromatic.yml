@@ -2,6 +2,9 @@ name: 'Chromatic'
 
 on: push
 
+permissions:
+  contents: read
+
 jobs:
   chromatic-deployment:
     runs-on: ubuntu-latest

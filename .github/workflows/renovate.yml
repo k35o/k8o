@@ -10,6 +10,9 @@ on:
     types: [edited]
   workflow_dispatch:
 
+permissions:
+  contents: read
+
 jobs:
   renovate:
     runs-on: ubuntu-latest
