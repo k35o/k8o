@@ -123,6 +123,11 @@ export default function Home() {
             title="Readings"
           />
           <AppCard
+            description="Web Platform Baselineのステータスを追跡します。"
+            link="/baseline"
+            title="Baseline"
+          />
+          <AppCard
             accent={<ArteOdyssey size="xl" />}
             description="k8o.meのデザインシステム。コンポーネントやトークンを確認できます。"
             link="https://arte-odyssey.k8o.me"
