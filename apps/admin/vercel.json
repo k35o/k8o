@@ -7,6 +7,10 @@
     {
       "path": "/api/crons/sync-articles",
       "schedule": "0 0 * * *"
+    },
+    {
+      "path": "/api/crons/sync-baseline",
+      "schedule": "0 6 * * *"
     }
   ]
 }
