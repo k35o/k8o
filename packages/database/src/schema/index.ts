@@ -9,6 +9,7 @@ import {
   userRelations,
   verification,
 } from './auth-schema';
+import { baselineSnapshots } from './baseline-snapshots';
 import { blogComment, blogCommentRelations } from './blog-comment';
 import { blogTag, blogTagRelations } from './blog-tag';
 import { blogViews } from './blog-views';
@@ -31,6 +32,7 @@ export const schema = {
   tags,
   comments,
   reportingReports,
+  baselineSnapshots,
   // ブログ関連
   blogs,
   blogViews,
