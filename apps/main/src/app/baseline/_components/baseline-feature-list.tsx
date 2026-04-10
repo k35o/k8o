@@ -12,7 +12,8 @@ import { formatDate } from '@repo/helpers/date/format';
 import type { Route } from 'next';
 import Link from 'next/link';
 import { type FC, useMemo, useState } from 'react';
-import type { BaselineFeature, BlogLink } from '../_api';
+import type { BaselineFeature } from '@/services/baseline/baseline';
+import type { BlogLink } from '@/services/baseline/feature-blog-map';
 
 type StatusVisibility = {
   newly: boolean;

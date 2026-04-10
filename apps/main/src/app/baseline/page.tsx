@@ -3,7 +3,7 @@ import { getBaselineFeatures, getFeatureBlogMap } from './_api';
 import { BaselineFeatureList } from './_components';
 
 export default async function BaselinePage() {
-  const [{ features }, blogMap] = await Promise.all([
+  const [features, blogMap] = await Promise.all([
     getBaselineFeatures(),
     getFeatureBlogMap(),
   ]);

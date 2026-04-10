@@ -1,6 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 import { expect, userEvent, within } from 'storybook/test';
-import type { BaselineFeature, BlogLink } from '../_api';
+import type { BaselineFeature } from '@/services/baseline/baseline';
+import type { BlogLink } from '@/services/baseline/feature-blog-map';
 import { BaselineFeatureList } from './baseline-feature-list';
 
 const FEATURES: BaselineFeature[] = [
