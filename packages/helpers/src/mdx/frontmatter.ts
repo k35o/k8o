@@ -6,6 +6,7 @@ type Frontmatter = {
   description: string | null;
   createdAt: Date;
   updatedAt: Date;
+  featureIds?: string[];
 };
 
 export const getFrontmatter = async (path: string): Promise<Frontmatter> => {
