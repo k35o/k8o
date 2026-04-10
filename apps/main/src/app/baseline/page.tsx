@@ -8,9 +8,15 @@ export default async function BaselinePage() {
     getFeatureBlogMap(),
   ]);
 
+  const latestYear = features[0]?.date.slice(0, 4) ?? '2026';
+
   return (
     <div className="flex flex-col gap-6">
-      <BaselineFeatureList blogMap={blogMap} features={features} />
+      <BaselineFeatureList
+        blogMap={blogMap}
+        currentYear={latestYear}
+        features={features}
+      />
       <p className="text-fg-mute text-xs">
         Source:{' '}
         <Anchor href="https://webstatus.dev" openInNewTab>

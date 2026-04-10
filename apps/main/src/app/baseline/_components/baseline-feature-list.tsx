@@ -101,7 +101,8 @@ type YearData = {
 export const BaselineFeatureList: FC<{
   features: BaselineFeature[];
   blogMap: Record<string, BlogLink>;
-}> = ({ features, blogMap }) => {
+  currentYear: string;
+}> = ({ features, blogMap, currentYear }) => {
   const [visibility, setVisibility] = useState<StatusVisibility>({
     newly: true,
     widely: true,
@@ -143,7 +144,6 @@ export const BaselineFeatureList: FC<{
     return counts;
   }, [features, visibility, query]);
 
-  const currentYear = new Date().getFullYear().toString();
   const defaultYear = availableYears.includes(currentYear)
     ? currentYear
     : availableYears[0];

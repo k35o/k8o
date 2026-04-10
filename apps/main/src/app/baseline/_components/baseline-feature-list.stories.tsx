@@ -68,6 +68,7 @@ const meta: Meta<typeof BaselineFeatureList> = {
   args: {
     features: FEATURES,
     blogMap: BLOG_MAP,
+    currentYear: '2026',
   },
 };
 
