@@ -27,6 +27,12 @@ export const AdminHeader = () => {
             >
               レポート
             </Link>
+            <Link
+              className="text-fg-mute text-sm transition-colors hover:text-fg-base"
+              href="/baseline"
+            >
+              Baseline
+            </Link>
           </nav>
         </div>
         <div className="flex items-center gap-3">
