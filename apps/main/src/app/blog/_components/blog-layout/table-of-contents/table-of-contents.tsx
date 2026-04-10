@@ -93,7 +93,7 @@ export const TableOfContents: FC<{
   return (
     <details
       className={cn(
-        'fixed w-80 rounded-xl bg-bg-base shadow-md',
+        'fixed w-80 rounded-xl bg-bg-raised shadow-md',
         'right-4 bottom-4 open:right-0 open:bottom-0 sm:right-16 sm:bottom-8 sm:open:right-16 sm:open:bottom-8',
         'open:details-content:border-border-mute open:details-content:border-t open:details-content:p-4 open:details-content:pt-0',
       )}
