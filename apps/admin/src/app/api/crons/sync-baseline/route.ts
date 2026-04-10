@@ -9,39 +9,49 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
     return NextResponse.json({ ok: false }, { status: 401 });
   }
 
-  const { newFeatures, statusChanges } = await syncBaseline();
+  try {
+    const { newFeatures, statusChanges } = await syncBaseline();
 
-  const hasChanges = newFeatures.length > 0 || statusChanges.length > 0;
+    const hasChanges = newFeatures.length > 0 || statusChanges.length > 0;
 
-  if (hasChanges) {
-    const parts: string[] = [];
-    const newlyCount = newFeatures.filter((f) => f.status === 'newly').length;
-    const widelyCount = newFeatures.filter((f) => f.status === 'widely').length;
+    if (hasChanges) {
+      const parts: string[] = [];
+      const newlyCount = newFeatures.filter((f) => f.status === 'newly').length;
+      const widelyCount = newFeatures.filter(
+        (f) => f.status === 'widely',
+      ).length;
 
-    if (newlyCount > 0) {
-      parts.push(`Newly: ${newlyCount}件`);
-    }
-    if (widelyCount > 0) {
-      parts.push(`Widely: ${widelyCount}件`);
-    }
-    if (statusChanges.length > 0) {
-      parts.push(`ステータス変更: ${statusChanges.length}件`);
+      if (newlyCount > 0) {
+        parts.push(`Newly: ${newlyCount}件`);
+      }
+      if (widelyCount > 0) {
+        parts.push(`Widely: ${widelyCount}件`);
+      }
+      if (statusChanges.length > 0) {
+        parts.push(`ステータス変更: ${statusChanges.length}件`);
+      }
+
+      try {
+        await sendPushNotification(
+          'Baseline更新',
+          parts.join('、'),
+          'https://k8o.me/baseline',
+        );
+      } catch (error) {
+        console.error('プッシュ通知の送信に失敗しました:', error);
+      }
     }
 
-    try {
-      await sendPushNotification(
-        'Baseline更新',
-        parts.join('、'),
-        'https://k8o.me/baseline',
-      );
-    } catch (error) {
-      console.error('プッシュ通知の送信に失敗しました:', error);
-    }
+    return NextResponse.json({
+      ok: true,
+      newFeatures: newFeatures.length,
+      statusChanges: statusChanges.length,
+    });
+  } catch (error) {
+    console.error('Baseline同期に失敗しました:', error);
+    return NextResponse.json(
+      { ok: false, error: 'sync failed' },
+      { status: 500 },
+    );
   }
-
-  return NextResponse.json({
-    ok: true,
-    newFeatures: newFeatures.length,
-    statusChanges: statusChanges.length,
-  });
 }

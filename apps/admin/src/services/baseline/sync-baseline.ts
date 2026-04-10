@@ -34,6 +34,8 @@ type SyncResult = {
   }[];
 };
 
+const MAX_PAGES = 50;
+
 const fetchPage = async (
   status: 'newly' | 'widely',
   pageToken?: string,
@@ -59,11 +61,23 @@ const fetchAllFeatures = async (
   status: 'newly' | 'widely',
   pageToken?: string,
   accumulated: ApiFeature[] = [],
+  currentPage = 1,
 ): Promise<ApiFeature[]> => {
+  if (currentPage > MAX_PAGES) {
+    console.warn(
+      `最大ページ数(${String(MAX_PAGES)})に達しました: status=${status}`,
+    );
+    return accumulated;
+  }
   const page = await fetchPage(status, pageToken);
   const features = [...accumulated, ...page.data];
   if (page.metadata.next_page_token) {
-    return fetchAllFeatures(status, page.metadata.next_page_token, features);
+    return fetchAllFeatures(
+      status,
+      page.metadata.next_page_token,
+      features,
+      currentPage + 1,
+    );
   }
   return features;
 };
@@ -89,7 +103,12 @@ export async function syncBaseline(): Promise<SyncResult> {
     ...widelyFeatures.map(toBaselineFeature),
   ];
 
-  const existingSnapshots = await db.query.baselineSnapshots.findMany();
+  const existingSnapshots = await db
+    .select({
+      featureId: db._schema.baselineSnapshots.featureId,
+      status: db._schema.baselineSnapshots.status,
+    })
+    .from(db._schema.baselineSnapshots);
   const existingByFeatureId = new Map(
     existingSnapshots.map((s) => [s.featureId, s]),
   );
@@ -99,13 +118,13 @@ export async function syncBaseline(): Promise<SyncResult> {
   const toInsert: {
     featureId: string;
     name: string;
-    status: string;
+    status: 'newly' | 'widely';
     date: string;
   }[] = [];
   const toUpdate: {
     featureId: string;
     name: string;
-    status: string;
+    status: 'newly' | 'widely';
     date: string;
   }[] = [];
 
@@ -138,16 +157,18 @@ export async function syncBaseline(): Promise<SyncResult> {
   }
 
   if (toUpdate.length > 0) {
-    await Promise.all(
-      toUpdate.map((item) =>
-        db
-          .update(db._schema.baselineSnapshots)
-          .set({
-            status: item.status,
-            date: item.date,
-            name: item.name,
-          })
-          .where(eq(db._schema.baselineSnapshots.featureId, item.featureId)),
+    await db.transaction(async (tx) =>
+      Promise.all(
+        toUpdate.map((item) =>
+          tx
+            .update(db._schema.baselineSnapshots)
+            .set({
+              status: item.status,
+              date: item.date,
+              name: item.name,
+            })
+            .where(eq(db._schema.baselineSnapshots.featureId, item.featureId)),
+        ),
       ),
     );
   }

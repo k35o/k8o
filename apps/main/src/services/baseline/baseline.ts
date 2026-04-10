@@ -14,7 +14,7 @@ export async function getBaselineFeatures(): Promise<BaselineFeature[]> {
     .map((s) => ({
       featureId: s.featureId,
       name: s.name,
-      status: s.status as 'newly' | 'widely',
+      status: s.status,
       date: s.date,
     }))
     .toSorted((a, b) => b.date.localeCompare(a.date));

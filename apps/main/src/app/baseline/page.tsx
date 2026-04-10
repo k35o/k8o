@@ -8,7 +8,7 @@ export default async function BaselinePage() {
     getFeatureBlogMap(),
   ]);
 
-  const latestYear = features[0]?.date.slice(0, 4) ?? '2026';
+  const latestYear = features[0]?.date.slice(0, 4) ?? '';
 
   return (
     <div className="flex flex-col gap-6">
