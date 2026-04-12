@@ -1,4 +1,5 @@
 {
+  "ignoreCommand": "bash ../../scripts/ignore-build.sh admin",
   "crons": [
     {
       "path": "/api/crons/weekly-notifications",
