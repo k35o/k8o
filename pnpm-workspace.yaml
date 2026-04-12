@@ -22,8 +22,8 @@ catalog:
   next-themes: 0.4.6
   postcss: 8.5.9
   postcss-load-config: 6.0.1
-  react: 19.2.4
-  react-dom: 19.2.4
+  react: 19.2.5
+  react-dom: 19.2.5
   storybook: 10.3.5
   tailwindcss: 4.2.2
   vitest: 4.1.3
