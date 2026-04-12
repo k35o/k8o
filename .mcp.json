@@ -1,16 +1,20 @@
 {
   "mcpServers": {
     "main-storybook-mcp": {
-      "url": "https://main--647acebb9da23d6c605c4afd.chromatic.com/mcp",
-      "type": "http"
+      "type": "http",
+      "url": "https://main--647acebb9da23d6c605c4afd.chromatic.com/mcp"
     },
     "admin-storybook-mcp": {
-      "url": "https://main--69cf8aac658091de44ae8c05.chromatic.com/mcp",
-      "type": "http"
+      "type": "http",
+      "url": "https://main--69cf8aac658091de44ae8c05.chromatic.com/mcp"
     },
     "context7": {
       "command": "pnpm",
       "args": ["exec", "context7-mcp"]
+    },
+    "vercel": {
+      "type": "http",
+      "url": "https://mcp.vercel.com"
     }
   }
 }
