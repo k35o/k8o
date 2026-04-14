@@ -1,14 +1,8 @@
-const MAX_DISTANCE = Math.sqrt(255 ** 2 * 3);
-
 export const generateRandomHex = (): string => {
   const r = Math.floor(Math.random() * 256);
   const g = Math.floor(Math.random() * 256);
   const b = Math.floor(Math.random() * 256);
   return [r, g, b].map((v) => v.toString(16).padStart(2, '0')).join('');
-};
-
-export const isValidHex = (hex: string): boolean => {
-  return /^[0-9a-fA-F]{6}$/.test(hex);
 };
 
 const hexToRgb = (hex: string): { r: number; g: number; b: number } => {
@@ -24,19 +18,6 @@ const colorDistance = (hex1: string, hex2: string): number => {
   return Math.sqrt(
     (c1.r - c2.r) ** 2 + (c1.g - c2.g) ** 2 + (c1.b - c2.b) ** 2,
   );
-};
-
-export const accuracyScore = (guessHex: string, targetHex: string): number => {
-  const distance = colorDistance(guessHex, targetHex);
-  return Math.round((1 - distance / MAX_DISTANCE) * 100);
-};
-
-export const getScoreMessage = (score: number): string => {
-  if (score === 100) return '完璧！';
-  if (score >= 90) return 'すばらしい！';
-  if (score >= 70) return 'いい線いってる！';
-  if (score >= 50) return 'まずまず！';
-  return 'もう少し！';
 };
 
 // 色の明るさを判定してテキストカラーを決定する
