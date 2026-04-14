@@ -1,40 +1,21 @@
 'use client';
 
 import { Badge, Button } from '@k8o/arte-odyssey';
-import { type FC, useCallback, useMemo, useState } from 'react';
-import {
-  generateDistractors,
-  generateRandomHex,
-  getContrastTextColor,
-  shuffleArray,
-} from '../../_utils/color-quiz';
-
-type Phase = 'question' | 'result';
-
-const OPTION_COUNT = 4;
+import type { FC } from 'react';
+import { getContrastTextColor } from '../../_utils/color-quiz';
+import { useColorQuiz } from './use-color-quiz';
 
 export const ColorToHex: FC = () => {
-  const [targetHex, setTargetHex] = useState(() => generateRandomHex());
-  const [selectedHex, setSelectedHex] = useState<string | null>(null);
-  const [phase, setPhase] = useState<Phase>('question');
-
-  const options = useMemo(() => {
-    const distractors = generateDistractors(targetHex, OPTION_COUNT - 1);
-    return shuffleArray([targetHex, ...distractors]);
-  }, [targetHex]);
-
-  const handleSubmit = useCallback(() => {
-    if (selectedHex === null) return;
-    setPhase('result');
-  }, [selectedHex]);
-
-  const handleNext = useCallback(() => {
-    setTargetHex(generateRandomHex());
-    setSelectedHex(null);
-    setPhase('question');
-  }, []);
-
-  const isCorrect = selectedHex === targetHex;
+  const {
+    targetHex,
+    selectedHex,
+    setSelectedHex,
+    phase,
+    options,
+    isCorrect,
+    handleSubmit,
+    handleNext,
+  } = useColorQuiz();
 
   return (
     <div className="flex flex-col gap-6">
@@ -103,6 +84,7 @@ export const ColorToHex: FC = () => {
 
           return (
             <button
+              aria-label={`Hexの選択肢: #${hex}`}
               className={[
                 'relative flex h-14 items-center justify-center rounded-xl border border-border-base font-mono text-sm tracking-wider transition-all',
                 'bg-bg-base',

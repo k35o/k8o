@@ -34,15 +34,13 @@ export const ColorToHexSubmit: Story = {
   play: async ({ canvasElement, userEvent }) => {
     const canvas = within(canvasElement);
 
-    // hex選択肢の最初をクリック
+    // hex選択肢の最初をクリック（aria-labelで特定）
     const panel = canvas.getByRole('tabpanel');
-    const hexButtons = within(panel).getAllByRole('button');
-    const optionButton = hexButtons.find((btn) =>
-      btn.textContent?.startsWith('#'),
-    );
-    if (optionButton) {
-      await userEvent.click(optionButton);
-    }
+    const optionButtons = within(panel).getAllByRole('button', {
+      name: /^Hexの選択肢:/,
+    });
+    await expect(optionButtons.length).toBeGreaterThan(0);
+    await userEvent.click(optionButtons[0] as HTMLElement);
 
     // 回答ボタンが有効になる
     const submitButton = canvas.getByRole('button', {
@@ -90,15 +88,13 @@ export const HexToColorSubmit: Story = {
     });
     await userEvent.click(tab);
 
-    // 色の選択肢をクリック
+    // 色の選択肢をクリック（aria-labelで特定）
     const panel = canvas.getByRole('tabpanel');
-    const colorButtons = within(panel).getAllByRole('button');
-    const optionButton = colorButtons.find(
-      (btn) => !btn.textContent?.includes('回答する'),
-    );
-    if (optionButton) {
-      await userEvent.click(optionButton);
-    }
+    const optionButtons = within(panel).getAllByRole('button', {
+      name: /^色の選択肢:/,
+    });
+    await expect(optionButtons.length).toBeGreaterThan(0);
+    await userEvent.click(optionButtons[0] as HTMLElement);
 
     // 回答する
     const submitButton = canvas.getByRole('button', {

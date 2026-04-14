@@ -6,6 +6,7 @@ import { ColorToHex } from './color-to-hex';
 import { HexToColor } from './hex-to-color';
 
 export const ColorQuiz = () => {
+  // 子コンポーネントがMath.random()で初期値を生成するため、SSRでのhydration mismatchを防ぐ
   const [isMounted, setIsMounted] = useState(false);
 
   useEffect(() => {
