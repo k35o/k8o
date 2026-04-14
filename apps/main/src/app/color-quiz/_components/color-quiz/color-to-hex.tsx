@@ -105,13 +105,12 @@ export const ColorToHex: FC = () => {
             <button
               className={[
                 'relative flex h-14 items-center justify-center rounded-xl border border-border-base font-mono text-sm tracking-wider transition-all',
+                'bg-bg-base',
                 isSelected && phase === 'question'
-                  ? 'bg-primary-bg-subtle ring-2 ring-primary-border'
-                  : 'bg-bg-base',
-                showCorrectBadge
-                  ? 'bg-bg-success ring-2 ring-border-success'
+                  ? 'ring-2 ring-primary-border'
                   : '',
-                showWrongBadge ? 'bg-bg-error ring-2 ring-border-error' : '',
+                showCorrectBadge ? 'ring-2 ring-border-success' : '',
+                showWrongBadge ? 'ring-2 ring-border-error' : '',
                 phase === 'question' ? 'cursor-pointer hover:bg-bg-mute' : '',
               ]
                 .filter(Boolean)
