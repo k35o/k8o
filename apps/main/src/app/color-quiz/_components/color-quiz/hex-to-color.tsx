@@ -57,6 +57,7 @@ export const HexToColor: FC = () => {
 
           return (
             <button
+              aria-label={`色の選択肢: #${hex}`}
               className={[
                 'relative flex h-28 items-center justify-center rounded-xl transition-all',
                 isSelected && phase === 'question'
