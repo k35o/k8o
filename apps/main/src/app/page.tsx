@@ -174,6 +174,11 @@ export default function Home() {
             title="カラーコード職人"
           />
           <AppCard
+            description="色からHexコードを当てたり、Hexコードから色を選ぶクイズです。"
+            link="/color-quiz"
+            title="カラーHexクイズ"
+          />
+          <AppCard
             description="border-radiusを視覚的に操作してCSSを生成します。"
             link="/radius-maker"
             title="かどまるラボ"
