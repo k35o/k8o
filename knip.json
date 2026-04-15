@@ -1,7 +1,6 @@
 {
   "$schema": "https://unpkg.com/knip@5/schema.json",
   "ignore": [
-    ".claude/worktrees/**",
     "apps/main/src/app/_components/coming-soon/index.ts",
     "apps/main/src/app/_components/development-only/development-only.tsx",
     "apps/main/src/app/_components/development-only/index.ts"

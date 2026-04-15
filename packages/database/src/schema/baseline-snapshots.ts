@@ -7,8 +7,8 @@ import {
   uniqueIndex,
 } from 'drizzle-orm/sqlite-core';
 
-export const BASELINE_STATUSES = ['newly', 'widely'] as const;
-export type BaselineStatus = (typeof BASELINE_STATUSES)[number];
+const BASELINE_STATUSES = ['newly', 'widely'] as const;
+type BaselineStatus = (typeof BASELINE_STATUSES)[number];
 
 export const baselineSnapshots = sqliteTable(
   'baseline_snapshots',
