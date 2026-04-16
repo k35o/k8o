@@ -11,13 +11,7 @@ import {
   Textarea,
   useToast,
 } from '@k8o/arte-odyssey';
-import {
-  type FC,
-  useActionState,
-  useCallback,
-  useEffect,
-  useState,
-} from 'react';
+import { type FC, useActionState, useCallback, useState } from 'react';
 import { contact } from '@/app/_api/contact-to-me';
 
 export const ContactToMe: FC = () => {
@@ -45,19 +39,27 @@ const ContactToMeModal: FC<{
   isOpen: boolean;
   onClose: () => void;
 }> = ({ isOpen, onClose }) => {
-  const [state, formAction, pending] = useActionState(contact, {
+  const { onOpen: onToastOpen } = useToast();
+
+  const handleAction = useCallback(
+    async (
+      prevState: Awaited<ReturnType<typeof contact>>,
+      formData: FormData,
+    ) => {
+      const result = await contact(prevState, formData);
+      if (result.success) {
+        onToastOpen('success', 'お問い合わせの送信に成功しました');
+        onClose();
+      }
+      return result;
+    },
+    [onToastOpen, onClose],
+  );
+
+  const [state, formAction, pending] = useActionState(handleAction, {
     success: null,
     defaultValue: '',
   });
-  const { onOpen: onToastOpen } = useToast();
-
-  // TODO: useEffectを用いない方法で実装する
-  useEffect(() => {
-    if (state.success) {
-      onToastOpen('success', 'お問い合わせの送信に成功しました');
-      onClose();
-    }
-  }, [onClose, onToastOpen, state.success]);
 
   return (
     <Modal isOpen={isOpen} onClose={onClose}>
