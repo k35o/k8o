@@ -24,7 +24,7 @@ jobs:
     steps:
       - name: Generate token
         id: generate-token
-        uses: actions/create-github-app-token@f8d387b68d61c58ab83c6c016672934102569859 # v3.0.0
+        uses: actions/create-github-app-token@1b10c78c7865c340bc4f6099eb2f838309f1e8c3 # v3.1.1
         with:
           app-id: ${{ secrets.K35O_BOT_APP_ID }}
           private-key: ${{ secrets.K35O_BOT_PRIVATE_KEY }}
@@ -36,7 +36,7 @@ jobs:
           persist-credentials: false
 
       - name: Run Renovate
-        uses: renovatebot/github-action@b67590ea780158ccd13192c22a3655a5231f869d # v46.1.8
+        uses: renovatebot/github-action@eb932558ad942cccfd8211cf535f17ff183a9f74 # v46.1.9
         with:
           token: ${{ steps.generate-token.outputs.token }}
         env:
