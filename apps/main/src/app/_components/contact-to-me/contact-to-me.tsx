@@ -41,7 +41,7 @@ const ContactToMeModal: FC<{
 }> = ({ isOpen, onClose }) => {
   const { onOpen: onToastOpen } = useToast();
 
-  const [state, formAction, pending] = useActionState(
+  const handleAction = useCallback(
     async (
       prevState: Awaited<ReturnType<typeof contact>>,
       formData: FormData,
@@ -53,11 +53,13 @@ const ContactToMeModal: FC<{
       }
       return result;
     },
-    {
-      success: null,
-      defaultValue: '',
-    },
+    [onToastOpen, onClose],
   );
+
+  const [state, formAction, pending] = useActionState(handleAction, {
+    success: null,
+    defaultValue: '',
+  });
 
   return (
     <Modal isOpen={isOpen} onClose={onClose}>
