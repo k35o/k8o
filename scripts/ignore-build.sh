@@ -15,6 +15,13 @@ if [[ "$VERCEL_GIT_COMMIT_REF" == renovate/* ]]; then
   exit 0
 fi
 
+# mainブランチのproductionビルドではmerge-baseがHEAD自身となりaffectedが空になるため、
+# 前回成功したデプロイのSHAをbaseに設定する
+if [ -n "$VERCEL_GIT_PREVIOUS_SHA" ]; then
+  export TURBO_SCM_BASE="$VERCEL_GIT_PREVIOUS_SHA"
+  echo ">> Using TURBO_SCM_BASE=$VERCEL_GIT_PREVIOUS_SHA"
+fi
+
 # turbo query affectedで対象アプリに影響があるか判定
 AFFECTED=$(pnpm turbo query "query { affectedPackages { items { name } } }")
 echo "$AFFECTED"
