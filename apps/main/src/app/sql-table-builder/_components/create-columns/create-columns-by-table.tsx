@@ -30,7 +30,7 @@ export const CreateColumnsByTable: FC<Props> = ({
 
   return (
     <div className="-mx-6 overflow-x-auto sm:mx-0">
-      <div className="min-w-[800px] px-6 sm:min-w-0 sm:px-0">
+      <div className="min-w-200 px-6 sm:min-w-0 sm:px-0">
         <table className="w-full">
           <thead>
             <tr className="border-border-base border-b bg-bg-mute">
