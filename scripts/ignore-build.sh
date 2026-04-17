@@ -24,7 +24,10 @@ fi
 
 # ビルド判定ロジック自体やVercel設定が変わったときは安全側に倒してビルド実行
 BASE_SHA="${TURBO_SCM_BASE:-origin/main}"
-CHANGED_FILES=$(git diff --name-only "$BASE_SHA" HEAD 2>/dev/null || echo "")
+if ! CHANGED_FILES=$(git diff --name-only "$BASE_SHA" HEAD 2>&1); then
+  echo ">> Proceeding: failed to get changed files ($CHANGED_FILES)"
+  exit 1
+fi
 if echo "$CHANGED_FILES" | grep -qE "^(scripts/ignore-build\.sh|apps/$APP_NAME/vercel\.json|turbo\.json)$"; then
   echo ">> Proceeding: build configuration changed"
   exit 1
