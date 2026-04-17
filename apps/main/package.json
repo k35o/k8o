@@ -30,7 +30,7 @@
     "@vercel/analytics": "2.0.1",
     "budoux": "0.8.1",
     "diff": "8.0.4",
-    "dompurify": "3.3.3",
+    "dompurify": "3.4.0",
     "drizzle-orm": "catalog:",
     "next": "catalog:",
     "next-themes": "catalog:",
