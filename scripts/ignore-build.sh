@@ -22,6 +22,14 @@ if [ -n "$VERCEL_GIT_PREVIOUS_SHA" ]; then
   echo ">> Using TURBO_SCM_BASE=$VERCEL_GIT_PREVIOUS_SHA"
 fi
 
+# ビルド判定ロジック自体やVercel設定が変わったときは安全側に倒してビルド実行
+BASE_SHA="${TURBO_SCM_BASE:-origin/main}"
+CHANGED_FILES=$(git diff --name-only "$BASE_SHA" HEAD 2>/dev/null || echo "")
+if echo "$CHANGED_FILES" | grep -qE "^(scripts/ignore-build\.sh|apps/$APP_NAME/vercel\.json|turbo\.json)$"; then
+  echo ">> Proceeding: build configuration changed"
+  exit 1
+fi
+
 # turbo query affectedで対象アプリに影響があるか判定
 AFFECTED=$(pnpm turbo query "query { affectedPackages { items { name } } }")
 echo "$AFFECTED"
