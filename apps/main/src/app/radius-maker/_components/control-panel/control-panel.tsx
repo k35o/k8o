@@ -16,7 +16,12 @@ import { useControlPanel } from './use-control-panel';
 
 // ベースサイズ（px）
 const BASE_SIZE = 192;
-const BASE_SIZE_SM = 384;
+
+// ビューポート幅640px〜1280pxでモバイル値→2倍に連続スケーリング
+const fluidPx = (mobile: number): string => {
+  const desktop = mobile * 2;
+  return `clamp(${mobile}px, ${((mobile * 100) / 640).toFixed(2)}vw, ${desktop}px)`;
+};
 
 const OperateButton: FC<{
   label: string;
@@ -81,16 +86,10 @@ export const ControlPanel: FC = () => {
 
   // アスペクト比に応じたサイズを計算
   const containerSize = useMemo(() => {
-    const calcSize = (base: number) => {
-      if (aspectRatio >= 1) {
-        return { width: base, height: base / aspectRatio };
-      }
-      return { width: base * aspectRatio, height: base };
-    };
-    return {
-      mobile: calcSize(BASE_SIZE),
-      desktop: calcSize(BASE_SIZE_SM),
-    };
+    if (aspectRatio >= 1) {
+      return { width: BASE_SIZE, height: BASE_SIZE / aspectRatio };
+    }
+    return { width: BASE_SIZE * aspectRatio, height: BASE_SIZE };
   }, [aspectRatio]);
 
   const handleCopy = async () => {
@@ -130,37 +129,19 @@ export const ControlPanel: FC = () => {
         <div className="order-2 flex items-center justify-center sm:sticky sm:top-6 sm:order-1">
           <div
             className="flex items-center justify-center"
-            data-radius-area
             style={{
-              width: BASE_SIZE + 24,
-              height: BASE_SIZE + 24,
+              width: `calc(${fluidPx(BASE_SIZE)} + 24px)`,
+              height: `calc(${fluidPx(BASE_SIZE)} + 24px)`,
             }}
           >
-            <style>{`
-              @media (min-width: 640px) {
-                [data-radius-area] {
-                  width: ${(BASE_SIZE_SM + 24).toString()}px !important;
-                  height: ${(BASE_SIZE_SM + 24).toString()}px !important;
-                }
-              }
-            `}</style>
             <div
               className="relative border-2 border-primary-border border-dashed"
-              data-radius-wrapper
               ref={containerRef}
               style={{
-                width: containerSize.mobile.width,
-                height: containerSize.mobile.height,
+                width: fluidPx(containerSize.width),
+                height: fluidPx(containerSize.height),
               }}
             >
-              <style>{`
-                @media (min-width: 640px) {
-                  [data-radius-wrapper] {
-                    width: ${containerSize.desktop.width}px !important;
-                    height: ${containerSize.desktop.height}px !important;
-                  }
-                }
-              `}</style>
               <div
                 className="absolute size-full bg-primary-fg"
                 style={{
