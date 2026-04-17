@@ -130,8 +130,8 @@ export const ControlPanel: FC = () => {
           <div
             className="flex items-center justify-center"
             style={{
-              width: fluidPx(BASE_SIZE + 24),
-              height: fluidPx(BASE_SIZE + 24),
+              width: `calc(${fluidPx(BASE_SIZE)} + 24px)`,
+              height: `calc(${fluidPx(BASE_SIZE)} + 24px)`,
             }}
           >
             <div
