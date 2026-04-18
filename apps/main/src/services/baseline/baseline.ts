@@ -5,6 +5,7 @@ export type BaselineFeature = {
   name: string;
   status: 'newly' | 'widely';
   date: string;
+  updatedAt: string;
 };
 
 export async function getBaselineFeatures(): Promise<BaselineFeature[]> {
@@ -16,6 +17,7 @@ export async function getBaselineFeatures(): Promise<BaselineFeature[]> {
       name: s.name,
       status: s.status,
       date: s.date,
+      updatedAt: s.updatedAt,
     }))
     .toSorted((a, b) => b.date.localeCompare(a.date));
 }
