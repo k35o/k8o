@@ -128,12 +128,10 @@ export const BaselineFeatureList: FC<{
   const [recentThresholdMs, setRecentThresholdMs] = useState(0);
 
   const toggleRecentOnly = () => {
-    setRecentOnly((prev) => {
-      if (!prev) {
-        setRecentThresholdMs(Date.now() - SEVEN_DAYS_MS);
-      }
-      return !prev;
-    });
+    if (!recentOnly) {
+      setRecentThresholdMs(Date.now() - SEVEN_DAYS_MS);
+    }
+    setRecentOnly((prev) => !prev);
   };
 
   const availableYears = useMemo(() => getAvailableYears(features), [features]);
