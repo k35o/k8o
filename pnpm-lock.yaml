@@ -102,8 +102,8 @@ importers:
         specifier: 2.1.8
         version: 2.1.8
       '@vercel/next-browser':
-        specifier: 0.6.0
-        version: 0.6.0
+        specifier: 0.7.0
+        version: 0.7.0
       knip:
         specifier: 6.4.1
         version: 6.4.1
@@ -2926,8 +2926,8 @@ packages:
       '@aws-sdk/credential-provider-web-identity':
         optional: true
 
-  '@vercel/next-browser@0.6.0':
-    resolution: {integrity: sha512-OX8TJgZ+/zntBDb1N9sEGjwmszBZKEZ6BvP/uKGTX+UVDF4GIM2YGC/JJl8g/tQ3D8r8Uw4sLbdsBJ7O42WQCA==}
+  '@vercel/next-browser@0.7.0':
+    resolution: {integrity: sha512-llVTroGKI8wquVW0mydMSZeuRv64W3AHM/0O89yJkHdpdyUeRKWIBhpjl7Edp3CconhnDE+qOFIjN7jq8WTHAw==}
     engines: {node: '>=20'}
     hasBin: true
 
@@ -8103,7 +8103,7 @@ snapshots:
     dependencies:
       '@vercel/oidc': 3.2.0
 
-  '@vercel/next-browser@0.6.0':
+  '@vercel/next-browser@0.7.0':
     dependencies:
       '@next/playwright': 16.2.0-canary.80
       playwright: 1.59.1

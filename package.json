@@ -27,7 +27,7 @@
     "@types/node": "24.12.2",
     "@typescript/native-preview": "7.0.0-dev.20260414.1",
     "@upstash/context7-mcp": "2.1.8",
-    "@vercel/next-browser": "0.6.0",
+    "@vercel/next-browser": "0.7.0",
     "knip": "6.4.1",
     "lefthook": "2.1.5",
     "playwright": "1.59.1",
