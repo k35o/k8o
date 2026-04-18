@@ -19,6 +19,8 @@ type StatusVisibility = {
   widely: boolean;
 };
 
+const SEVEN_DAYS_MS = 7 * 24 * 60 * 60 * 1000;
+
 const getAvailableYears = (features: BaselineFeature[]): string[] => {
   const years = new Set<string>();
   for (const feature of features) {
@@ -32,7 +34,16 @@ const FeatureList: FC<{
   blogMap: Record<string, BlogLink>;
   visibility: StatusVisibility;
   query: string;
-}> = ({ features, blogMap, visibility, query }) => {
+  recentOnly: boolean;
+  recentThresholdMs: number;
+}> = ({
+  features,
+  blogMap,
+  visibility,
+  query,
+  recentOnly,
+  recentThresholdMs,
+}) => {
   const filtered = useMemo(() => {
     let result = features;
     result = result.filter(
@@ -40,6 +51,11 @@ const FeatureList: FC<{
         (f.status === 'newly' && visibility.newly) ||
         (f.status === 'widely' && visibility.widely),
     );
+    if (recentOnly) {
+      result = result.filter(
+        (f) => new Date(f.updatedAt).getTime() >= recentThresholdMs,
+      );
+    }
     if (query) {
       const lowerQuery = query.toLowerCase();
       result = result.filter(
@@ -49,7 +65,7 @@ const FeatureList: FC<{
       );
     }
     return result;
-  }, [features, visibility, query]);
+  }, [features, visibility, query, recentOnly, recentThresholdMs]);
 
   return (
     <div className="flex flex-col gap-4">
@@ -108,6 +124,17 @@ export const BaselineFeatureList: FC<{
     widely: true,
   });
   const [query, setQuery] = useState('');
+  const [recentOnly, setRecentOnly] = useState(false);
+  const [recentThresholdMs, setRecentThresholdMs] = useState(0);
+
+  const toggleRecentOnly = () => {
+    setRecentOnly((prev) => {
+      if (!prev) {
+        setRecentThresholdMs(Date.now() - SEVEN_DAYS_MS);
+      }
+      return !prev;
+    });
+  };
 
   const availableYears = useMemo(() => getAvailableYears(features), [features]);
 
@@ -132,17 +159,20 @@ export const BaselineFeatureList: FC<{
       const matchesVisibility =
         (feature.status === 'newly' && visibility.newly) ||
         (feature.status === 'widely' && visibility.widely);
+      const matchesRecent =
+        !recentOnly ||
+        new Date(feature.updatedAt).getTime() >= recentThresholdMs;
       const matchesQuery =
         !query ||
         feature.name.toLowerCase().includes(lowerQuery) ||
         feature.featureId.toLowerCase().includes(lowerQuery);
-      if (matchesVisibility && matchesQuery) {
+      if (matchesVisibility && matchesRecent && matchesQuery) {
         const year = feature.date.slice(0, 4);
         counts.set(year, (counts.get(year) ?? 0) + 1);
       }
     }
     return counts;
-  }, [features, visibility, query]);
+  }, [features, visibility, query, recentOnly, recentThresholdMs]);
 
   const defaultYear = availableYears.includes(currentYear)
     ? currentYear
@@ -166,26 +196,33 @@ export const BaselineFeatureList: FC<{
             )}
           />
         </div>
-        <div className="flex gap-4 text-sm">
+        <div className="flex flex-wrap items-center gap-x-8 gap-y-4 text-sm">
+          <div className="flex gap-4">
+            <Checkbox
+              label="Newly Available"
+              onChange={() =>
+                setVisibility((prev) => ({
+                  ...prev,
+                  newly: !prev.newly,
+                }))
+              }
+              value={visibility.newly}
+            />
+            <Checkbox
+              label="Widely Available"
+              onChange={() =>
+                setVisibility((prev) => ({
+                  ...prev,
+                  widely: !prev.widely,
+                }))
+              }
+              value={visibility.widely}
+            />
+          </div>
           <Checkbox
-            label="Newly Available"
-            onChange={() =>
-              setVisibility((prev) => ({
-                ...prev,
-                newly: !prev.newly,
-              }))
-            }
-            value={visibility.newly}
-          />
-          <Checkbox
-            label="Widely Available"
-            onChange={() =>
-              setVisibility((prev) => ({
-                ...prev,
-                widely: !prev.widely,
-              }))
-            }
-            value={visibility.widely}
+            label="直近1週間の更新のみ"
+            onChange={toggleRecentOnly}
+            value={recentOnly}
           />
         </div>
       </div>
@@ -214,6 +251,8 @@ export const BaselineFeatureList: FC<{
                   blogMap={blogMap}
                   features={data?.features ?? []}
                   query={query}
+                  recentOnly={recentOnly}
+                  recentThresholdMs={recentThresholdMs}
                   visibility={visibility}
                 />
               </Tabs.Panel>
