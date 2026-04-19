@@ -8,7 +8,7 @@ set -euo pipefail
 readonly APP_NAME="${1:-}"
 
 log() {
-  echo ">> $*"
+  echo ">> $*" >&2
 }
 
 if [ -z "$APP_NAME" ]; then
