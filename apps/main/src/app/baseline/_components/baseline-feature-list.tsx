@@ -87,9 +87,14 @@ const FeatureList: FC<{
                   text={feature.status === 'newly' ? 'Newly' : 'Widely'}
                   tone={feature.status === 'newly' ? 'info' : 'success'}
                 />
-                <span className="min-w-0 flex-1 text-sm leading-relaxed">
-                  {feature.name}
-                </span>
+                <div className="flex min-w-0 flex-1 flex-col gap-0.5">
+                  <span className="text-sm leading-relaxed">
+                    {feature.name}
+                  </span>
+                  <span className="font-mono text-fg-mute text-xs">
+                    {feature.featureId}
+                  </span>
+                </div>
                 {blog && (
                   <Link
                     className="shrink-0 text-primary-fg text-xs transition-colors duration-150 ease-out hover:underline"
