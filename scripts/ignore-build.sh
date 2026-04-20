@@ -22,6 +22,14 @@ if [[ "${VERCEL_GIT_COMMIT_REF:-}" == renovate/* ]]; then
   exit 0
 fi
 
+# 同一commitの再ビルド（Vercelダッシュボードからの手動Redeployやenv var変更後の再ビルド）は常に実行する
+if [ -n "${VERCEL_GIT_COMMIT_SHA:-}" ] \
+  && [ -n "${VERCEL_GIT_PREVIOUS_SHA:-}" ] \
+  && [ "${VERCEL_GIT_COMMIT_SHA}" = "${VERCEL_GIT_PREVIOUS_SHA}" ]; then
+  log "Proceeding: redeploy of same commit (${VERCEL_GIT_COMMIT_SHA})"
+  exit 1
+fi
+
 # mainブランチのproductionビルドでは merge-base が HEAD 自身となり affected が空になるため、
 # 前回成功したデプロイのSHAを base に使う。preview ビルドでは origin/main との差分を見る
 readonly BASE_SHA="${VERCEL_GIT_PREVIOUS_SHA:-origin/main}"
