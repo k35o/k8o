@@ -20,7 +20,7 @@ catalog:
   drizzle-orm: 0.45.2
   next: 16.2.4
   next-themes: 0.4.6
-  postcss: 8.5.9
+  postcss: 8.5.10
   postcss-load-config: 6.0.1
   react: 19.2.5
   react-dom: 19.2.5

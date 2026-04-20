@@ -27,12 +27,12 @@
     "@types/node": "24.12.2",
     "@typescript/native-preview": "7.0.0-dev.20260414.1",
     "@upstash/context7-mcp": "2.1.8",
-    "@vercel/next-browser": "0.6.0",
+    "@vercel/next-browser": "0.7.1",
     "knip": "6.4.1",
-    "lefthook": "2.1.5",
+    "lefthook": "2.1.6",
     "playwright": "1.59.1",
-    "portless": "0.10.2",
+    "portless": "0.10.3",
     "turbo": "2.9.6",
-    "typescript": "6.0.2"
+    "typescript": "6.0.3"
   }
 }
