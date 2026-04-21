@@ -16,7 +16,7 @@ export async function getMetadata(href: string) {
 
   let html: string;
   try {
-    const res = await fetch(href);
+    const res = await fetch(href, { signal: AbortSignal.timeout(5000) });
     html = (await res.text()).trim();
   } catch {
     return { title: undefined, description: undefined, image: undefined };
