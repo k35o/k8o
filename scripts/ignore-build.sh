@@ -35,6 +35,14 @@ fi
 readonly BASE_SHA="${VERCEL_GIT_PREVIOUS_SHA:-origin/main}"
 log "Using BASE_SHA=$BASE_SHA"
 
+# Vercelのshallow cloneにはbranchのtipしか含まれないため、origin/mainをbaseに使う場合は
+# 明示的にfetchしないと `git diff` や turbo の base 参照解決に失敗する
+if [ "$BASE_SHA" = "origin/main" ]; then
+  if ! git fetch --depth=1 origin main 2>&1; then
+    log "Warning: git fetch origin main failed, may cause fallback to build"
+  fi
+fi
+
 # 変更ファイルが取得できなければ安全側に倒してビルド
 if ! CHANGED_FILES=$(git diff --name-only "$BASE_SHA" HEAD 2>&1); then
   log "Proceeding: failed to get changed files ($CHANGED_FILES)"
