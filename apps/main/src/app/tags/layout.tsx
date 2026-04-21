@@ -1,7 +1,6 @@
 import { Heading, TagIcon } from '@k8o/arte-odyssey';
 import type { Metadata } from 'next';
 import Link from 'next/link';
-import { ContentContainer } from '@/app/_components/content-container';
 
 export const metadata = {
   title: 'Tags',
@@ -26,7 +25,7 @@ export const metadata = {
 
 export default function Layout({ children }: LayoutProps<'/tags'>) {
   return (
-    <ContentContainer>
+    <div className="mx-auto w-full max-w-5xl">
       <div className="flex flex-col gap-6">
         <div className="flex flex-col gap-4">
           <Link href="/tags">
@@ -45,6 +44,6 @@ export default function Layout({ children }: LayoutProps<'/tags'>) {
         </div>
         {children}
       </div>
-    </ContentContainer>
+    </div>
   );
 }

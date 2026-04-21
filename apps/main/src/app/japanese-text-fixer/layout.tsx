@@ -1,6 +1,5 @@
 import { Heading } from '@k8o/arte-odyssey';
 import type { Metadata } from 'next';
-import { ContentContainer } from '@/app/_components/content-container';
 import { ProofreadProvider } from './_state/provider';
 
 export const metadata = {
@@ -25,11 +24,11 @@ export default function Layout({
   children,
 }: LayoutProps<'/japanese-text-fixer'>) {
   return (
-    <ContentContainer>
+    <div className="mx-auto w-full max-w-5xl">
       <div className="flex h-full flex-col gap-4">
         <Heading type="h2">日本語校正くん</Heading>
         <ProofreadProvider>{children}</ProofreadProvider>
       </div>
-    </ContentContainer>
+    </div>
   );
 }
