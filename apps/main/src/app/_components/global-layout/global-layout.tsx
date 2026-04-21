@@ -27,17 +27,15 @@ export const GlobalLayout: FC<{ children: ReactNode }> = ({ children }) => {
           <LlmLink />
         </div>
       </Header>
-      <main className="flex grow justify-center">
-        <div className="w-full max-w-5xl p-4 pt-10">{children}</div>
+      <main className="flex grow justify-center px-4 pt-10 pb-4">
+        {children}
       </main>
       <Suspense
         fallback={
           <footer className="flex items-center justify-center p-4">
-            <div className="max-w-5xl">
-              <p className="text-fg-mute md:text-lg">
-                ©︎ 2024〜2026 k8o. All Rights Reserved.
-              </p>
-            </div>
+            <p className="text-fg-mute md:text-lg">
+              ©︎ 2024〜2026 k8o. All Rights Reserved.
+            </p>
           </footer>
         }
       >

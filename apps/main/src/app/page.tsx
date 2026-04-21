@@ -10,6 +10,7 @@ import {
 } from '@k8o/arte-odyssey';
 import Image from 'next/image';
 import { AppCard } from './_components/app-card';
+import { ContentContainer } from './_components/content-container';
 import { EmailTooltip } from './_components/email-tooltip';
 import { ActivityErrorBoundary } from './_components/error-boundary';
 import { GitHubContributionGraph } from './_components/github-contribution-graph';
@@ -18,7 +19,7 @@ import k8o from './_images/k8o.jpg';
 
 export default function Home() {
   return (
-    <div className="flex flex-col gap-12">
+    <ContentContainer className="flex flex-col gap-12" width="wide">
       <Card>
         <div className="p-6">
           <div className="flex flex-col items-center gap-6 sm:flex-row sm:gap-8">
@@ -195,6 +196,6 @@ export default function Home() {
           />
         </div>
       </div>
-    </div>
+    </ContentContainer>
   );
 }

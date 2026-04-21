@@ -1,6 +1,7 @@
 import { Heading } from '@k8o/arte-odyssey';
 import type { Metadata } from 'next';
 import { Suspense } from 'react';
+import { ContentContainer } from '@/app/_components/content-container';
 
 export const metadata = {
   title: 'SQLテーブルメーカー',
@@ -23,9 +24,11 @@ export default function Layout({
   children,
 }: LayoutProps<'/sql-table-builder'>) {
   return (
-    <div className="flex flex-col gap-4">
-      <Heading type="h2">SQLテーブルメーカー</Heading>
-      <Suspense fallback={null}>{children}</Suspense>
-    </div>
+    <ContentContainer>
+      <div className="flex flex-col gap-4">
+        <Heading type="h2">SQLテーブルメーカー</Heading>
+        <Suspense fallback={null}>{children}</Suspense>
+      </div>
+    </ContentContainer>
   );
 }

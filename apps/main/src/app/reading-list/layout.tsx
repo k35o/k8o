@@ -1,5 +1,6 @@
 import { Heading, IconLink, RSSIcon } from '@k8o/arte-odyssey';
 import type { Metadata } from 'next';
+import { ContentContainer } from '@/app/_components/content-container';
 
 export const metadata = {
   title: 'Readings',
@@ -21,19 +22,21 @@ export const metadata = {
 
 export default function Layout({ children }: LayoutProps<'/reading-list'>) {
   return (
-    <div className="flex flex-col gap-8">
-      <div className="flex items-center justify-between">
-        <Heading type="h2">Readings</Heading>
-        <IconLink
-          bg="base"
-          href="/reading-list/feed"
-          label="RSSフィード"
-          openInNewTab
-        >
-          <RSSIcon />
-        </IconLink>
+    <ContentContainer>
+      <div className="flex flex-col gap-8">
+        <div className="flex items-center justify-between">
+          <Heading type="h2">Readings</Heading>
+          <IconLink
+            bg="base"
+            href="/reading-list/feed"
+            label="RSSフィード"
+            openInNewTab
+          >
+            <RSSIcon />
+          </IconLink>
+        </div>
+        {children}
       </div>
-      {children}
-    </div>
+    </ContentContainer>
   );
 }
