@@ -1,6 +1,7 @@
 import { Heading } from '@k8o/arte-odyssey';
 import type { Metadata } from 'next';
 import Link from 'next/link';
+import { ContentContainer } from '@/app/_components/content-container';
 import { ExternalBlog } from './_components/external-blog';
 
 export const metadata = {
@@ -29,15 +30,17 @@ export default function Layout({ children }: LayoutProps<'/blog'>) {
         href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css"
         rel="stylesheet"
       />
-      <div className="flex flex-col gap-6">
-        <div className="flex items-center justify-between">
-          <Link className="hover:underline" href="/blog">
-            <Heading type="h2">Blog</Heading>
-          </Link>
-          <ExternalBlog />
+      <ContentContainer>
+        <div className="flex flex-col gap-6">
+          <div className="flex items-center justify-between">
+            <Link className="hover:underline" href="/blog">
+              <Heading type="h2">Blog</Heading>
+            </Link>
+            <ExternalBlog />
+          </div>
+          {children}
         </div>
-        {children}
-      </div>
+      </ContentContainer>
     </>
   );
 }

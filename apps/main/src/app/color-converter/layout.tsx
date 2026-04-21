@@ -1,5 +1,6 @@
 import { Heading } from '@k8o/arte-odyssey';
 import type { Metadata } from 'next';
+import { ContentContainer } from '@/app/_components/content-container';
 
 export const metadata = {
   title: 'カラーコード職人',
@@ -21,9 +22,11 @@ export const metadata = {
 
 export default function Layout({ children }: LayoutProps<'/color-converter'>) {
   return (
-    <div className="flex h-full flex-col gap-4">
-      <Heading type="h2">カラーコード職人</Heading>
-      {children}
-    </div>
+    <ContentContainer>
+      <div className="flex h-full flex-col gap-4">
+        <Heading type="h2">カラーコード職人</Heading>
+        {children}
+      </div>
+    </ContentContainer>
   );
 }

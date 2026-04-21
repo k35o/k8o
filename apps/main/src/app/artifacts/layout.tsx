@@ -1,5 +1,6 @@
 import { Heading } from '@k8o/arte-odyssey';
 import type { Metadata } from 'next';
+import { ContentContainer } from '@/app/_components/content-container';
 
 export const metadata = {
   title: 'Artifacts',
@@ -21,9 +22,11 @@ export const metadata = {
 
 export default function Layout({ children }: LayoutProps<'/artifacts'>) {
   return (
-    <div className="flex flex-col gap-6">
-      <Heading type="h2">Artifacts</Heading>
-      {children}
-    </div>
+    <ContentContainer width="wide">
+      <div className="flex flex-col gap-6">
+        <Heading type="h2">Artifacts</Heading>
+        {children}
+      </div>
+    </ContentContainer>
   );
 }

@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import { ContentContainer } from '@/app/_components/content-container';
 
 export const metadata = {
   title: 'Playgrounds',
@@ -18,5 +19,5 @@ export const metadata = {
 export default function PlaygroundsLayout({
   children,
 }: LayoutProps<'/playgrounds'>) {
-  return children;
+  return <ContentContainer>{children}</ContentContainer>;
 }
