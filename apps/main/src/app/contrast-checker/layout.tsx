@@ -1,6 +1,5 @@
 import { Heading } from '@k8o/arte-odyssey';
 import type { Metadata } from 'next';
-import { ContentContainer } from '@/app/_components/content-container';
 
 export const metadata = {
   title: 'コントラストチェッカー',
@@ -22,11 +21,11 @@ export const metadata = {
 
 export default function Layout({ children }: LayoutProps<'/contrast-checker'>) {
   return (
-    <ContentContainer>
+    <div className="mx-auto w-full max-w-5xl">
       <div className="flex h-full flex-col gap-4">
         <Heading type="h2">コントラストチェッカー</Heading>
         {children}
       </div>
-    </ContentContainer>
+    </div>
   );
 }

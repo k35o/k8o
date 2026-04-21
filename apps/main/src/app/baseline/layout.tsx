@@ -1,6 +1,5 @@
 import { Heading } from '@k8o/arte-odyssey';
 import type { Metadata } from 'next';
-import { ContentContainer } from '@/app/_components/content-container';
 import { BaselineHelpDialog } from './_components/baseline-help-dialog';
 
 const description =
@@ -26,7 +25,7 @@ export const metadata = {
 
 export default function Layout({ children }: LayoutProps<'/baseline'>) {
   return (
-    <ContentContainer width="wide">
+    <div className="mx-auto w-full max-w-7xl">
       <div className="flex flex-col gap-6">
         <div className="flex items-center gap-2">
           <Heading type="h2">Baseline</Heading>
@@ -34,6 +33,6 @@ export default function Layout({ children }: LayoutProps<'/baseline'>) {
         </div>
         {children}
       </div>
-    </ContentContainer>
+    </div>
   );
 }

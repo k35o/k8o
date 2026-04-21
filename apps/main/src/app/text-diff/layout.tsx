@@ -1,6 +1,5 @@
 import { Heading } from '@k8o/arte-odyssey';
 import type { Metadata } from 'next';
-import { ContentContainer } from '@/app/_components/content-container';
 
 export const metadata = {
   title: 'テキスト差分チェッカー',
@@ -22,11 +21,11 @@ export const metadata = {
 
 export default function Layout({ children }: LayoutProps<'/text-diff'>) {
   return (
-    <ContentContainer>
+    <div className="mx-auto w-full max-w-5xl">
       <div className="flex h-full flex-col gap-4">
         <Heading type="h2">テキスト差分チェッカー</Heading>
         {children}
       </div>
-    </ContentContainer>
+    </div>
   );
 }
