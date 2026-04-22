@@ -69,5 +69,23 @@ export const getArtifacts = (): Artifact[] => {
       npmPackageName: 'storybook-addon-mock-date',
       tags: ['TypeScript', 'Storybook'],
     },
+    {
+      name: 'storybook-framework-hono-vite',
+      description:
+        'Hono JSXで書いたコンポーネントを@storybook/react-viteと同じ感覚で扱うためのStorybookフレームワーク。',
+      githubUrl: 'https://github.com/k35o/storybook-framework-hono-vite',
+      websiteUrl: null,
+      npmPackageName: 'storybook-framework-hono-vite',
+      tags: ['Storybook', 'Hono', 'Vite'],
+    },
+    {
+      name: 'mdscroll',
+      description:
+        'Markdownをブラウザでプレビューするためのコマンドラインツール。',
+      githubUrl: 'https://github.com/k35o/mdscroll',
+      websiteUrl: null,
+      npmPackageName: 'mdscroll',
+      tags: ['AI Agent', 'Tool'],
+    },
   ];
 };

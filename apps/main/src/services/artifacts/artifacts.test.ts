@@ -5,7 +5,7 @@ describe('getArtifacts', () => {
   it('公開している制作物一覧を返す', () => {
     const projects = getArtifacts();
 
-    expect(projects).toHaveLength(7);
+    expect(projects).toHaveLength(9);
     expect(projects).toEqual(
       expect.arrayContaining([
         expect.objectContaining({
@@ -31,6 +31,18 @@ describe('getArtifacts', () => {
           githubUrl: 'https://github.com/k35o/storybook-addon-mock-date',
           websiteUrl: null,
           npmPackageName: 'storybook-addon-mock-date',
+        }),
+        expect.objectContaining({
+          name: 'storybook-framework-hono-vite',
+          githubUrl: 'https://github.com/k35o/storybook-framework-hono-vite',
+          websiteUrl: null,
+          npmPackageName: 'storybook-framework-hono-vite',
+        }),
+        expect.objectContaining({
+          name: 'mdscroll',
+          githubUrl: 'https://github.com/k35o/mdscroll',
+          websiteUrl: null,
+          npmPackageName: 'mdscroll',
         }),
       ]),
     );
