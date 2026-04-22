@@ -260,6 +260,13 @@
       "when": 1776825894087,
       "tag": "0036_silky_boomerang",
       "breakpoints": true
+    },
+    {
+      "idx": 37,
+      "version": "6",
+      "when": 1776862465252,
+      "tag": "0037_condemned_colossus",
+      "breakpoints": true
     }
   ]
 }

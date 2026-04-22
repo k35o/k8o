@@ -2,12 +2,12 @@
 title: CSS Custom Highlight APIで任意の範囲のテキストをハイライトする
 description: CSS Custom Highlight APIはDOMを変更せずに任意のテキスト範囲をハイライトする機能です。JavaScriptでRangeオブジェクトを定義し、Highlightオブジェクトとして登録後、CSSの::highlight擬似要素でスタイリングして特定の範囲をハイライトします。
 createdAt: 2025-06-29
-updatedAt: 2025-09-15
+updatedAt: 2026-04-22
 featureIds:
   - highlight
 ---
 
-import { Alert, BaselineStatus } from '@k8o/arte-odyssey';
+import { BaselineStatus } from '@k8o/arte-odyssey';
 import { HighlightBasicDemo as Example1 } from '@/app/_components/playgrounds/highlight';
 import { HighlightPriorityDemo as Example2 } from '@/app/_components/playgrounds/highlight';
 import { HighlightSpellingDemo as Example3 } from '@/app/_components/playgrounds/highlight';
@@ -19,12 +19,7 @@ import { Playground } from '@/app/_components/playgrounds';
 
 ## はじめに
 
-<Alert
-  status="warning"
-  message="【訂正】この記事では、Firefox 140のリリースによってCSS Custom Highlight APIがBaseline入りしたと記述していますが、実際にはまだBaseline 2025の対象にはなっていませんでした（MDNではBaseline入りしているように見えます）。"
-/>
-
-Firefox 140のリリースで、`CSS Custom Highlight API`がサポートされました。この新機能により、JavaScriptで定義した任意のテキスト範囲をCSSでスタイリングできるようになります。
+`CSS Custom Highlight API`がBaseline 2026入りし、すべてのモダンブラウザで利用できるようになりました。この機能により、JavaScriptで定義した任意のテキスト範囲をCSSでスタイリングできるようになります。
 
 これは、構文ハイライト・検索結果のハイライト・スペルミスの表示など、多くの用途で活用できるとても便利な機能です。
 
@@ -218,6 +213,6 @@ CSS.highlights
 
 ## おわりに
 
-Firefox 140での`CSS Custom Highlight API`対応により、柔軟で効率的なテキストハイライト機能を実装できるようになりました。
+`CSS Custom Highlight API`のBaseline 2026入りにより、柔軟で効率的なテキストハイライト機能を実装できるようになりました。
 
 DOMを操作するような古典的な手法と比較して、パフォーマンス面でも大きなメリットがあるため利用していきたいです。
