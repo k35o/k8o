@@ -1,13 +1,16 @@
-import { Anchor } from '@k8o/arte-odyssey';
 import type { FC, ReactNode } from 'react';
 import { ActivityErrorBoundary } from '@/app/_components/error-boundary';
+import { type LinkCardAppearance, LinkCardFallback } from './fallback';
 
 export const LinkCardErrorBoundary: FC<{
   href: string;
+  appearance?: LinkCardAppearance;
   children: ReactNode;
-}> = ({ href, children }) => {
+}> = ({ href, appearance = 'shadow', children }) => {
   return (
-    <ActivityErrorBoundary fallback={<Anchor href={href}>{href}</Anchor>}>
+    <ActivityErrorBoundary
+      fallback={<LinkCardFallback appearance={appearance} href={href} />}
+    >
       {children}
     </ActivityErrorBoundary>
   );
