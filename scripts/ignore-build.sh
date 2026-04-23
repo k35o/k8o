@@ -36,10 +36,22 @@ readonly BASE_SHA="${VERCEL_GIT_PREVIOUS_SHA:-origin/main}"
 log "Using BASE_SHA=$BASE_SHA"
 
 # Vercelのshallow cloneにはbranchのtipしか含まれないため、origin/mainをbaseに使う場合は
-# 明示的にfetchしないと `git diff` や turbo の base 参照解決に失敗する
+# 明示的にfetchしないと `git diff` や turbo の base 参照解決に失敗する。
+# Vercelビルド環境では `origin` リモートが未設定のケースがあるため、
+# 既存リモートがなければ環境変数からGitHubのURLを組み立てて直接fetchする。
 if [ "$BASE_SHA" = "origin/main" ]; then
-  if ! git fetch --depth=1 origin main 2>&1; then
-    log "Warning: git fetch origin main failed, may cause fallback to build"
+  if FETCH_URL=$(git remote get-url origin 2>/dev/null); then
+    :
+  elif [ -n "${VERCEL_GIT_REPO_OWNER:-}" ] && [ -n "${VERCEL_GIT_REPO_SLUG:-}" ]; then
+    FETCH_URL="https://github.com/${VERCEL_GIT_REPO_OWNER}/${VERCEL_GIT_REPO_SLUG}.git"
+  else
+    FETCH_URL=""
+  fi
+
+  if [ -z "$FETCH_URL" ]; then
+    log "Warning: could not resolve remote URL for main fetch"
+  elif ! git fetch --depth=1 "$FETCH_URL" main:refs/remotes/origin/main 2>&1; then
+    log "Warning: git fetch $FETCH_URL main failed, may cause fallback to build"
   fi
 fi
 
