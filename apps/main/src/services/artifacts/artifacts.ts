@@ -16,7 +16,7 @@ export const getArtifacts = (): Artifact[] => {
       githubUrl: 'https://github.com/k35o/arte-odyssey',
       websiteUrl: 'https://arte-odyssey.k8o.me/',
       npmPackageName: null,
-      tags: ['Design System', 'TypeScript', 'React'],
+      tags: ['Design System', 'React'],
     },
     {
       name: 'renovate-config',
@@ -24,7 +24,7 @@ export const getArtifacts = (): Artifact[] => {
       githubUrl: 'https://github.com/k35o/renovate-config',
       websiteUrl: null,
       npmPackageName: null,
-      tags: ['Renovate', 'Config', 'Automation'],
+      tags: ['Renovate', 'Config', 'Personal'],
     },
     {
       name: 'dotfiles',
@@ -32,7 +32,7 @@ export const getArtifacts = (): Artifact[] => {
       githubUrl: 'https://github.com/k35o/dotfiles',
       websiteUrl: null,
       npmPackageName: null,
-      tags: ['Shell', 'CLI', 'macOS'],
+      tags: ['Dotfiles', 'Shell', 'Config', 'Personal'],
     },
     {
       name: 'skills',
@@ -41,7 +41,7 @@ export const getArtifacts = (): Artifact[] => {
       githubUrl: 'https://github.com/k35o/skills',
       websiteUrl: null,
       npmPackageName: null,
-      tags: ['AI Agent', 'Skills', 'Automation'],
+      tags: ['AI Agent', 'Skills', 'Config', 'Personal'],
     },
     {
       name: 'better-css-modules',
@@ -49,7 +49,7 @@ export const getArtifacts = (): Artifact[] => {
       githubUrl: 'https://github.com/k35o/better-css-modules',
       websiteUrl: null,
       npmPackageName: '@better-css-modules/core',
-      tags: ['CSS Modules', 'TypeScript', 'Tooling'],
+      tags: ['CSS Modules', 'webpack', 'Vite', 'Turbopack'],
     },
     {
       name: 'patrol-board',
@@ -58,7 +58,7 @@ export const getArtifacts = (): Artifact[] => {
       githubUrl: 'https://github.com/k35o/patrol-board',
       websiteUrl: null,
       npmPackageName: null,
-      tags: ['TypeScript', 'GitHub Actions'],
+      tags: ['GitHub Actions', 'Tool'],
     },
     {
       name: 'storybook-addon-mock-date',
@@ -67,7 +67,25 @@ export const getArtifacts = (): Artifact[] => {
       githubUrl: 'https://github.com/k35o/storybook-addon-mock-date',
       websiteUrl: null,
       npmPackageName: 'storybook-addon-mock-date',
-      tags: ['TypeScript', 'Storybook'],
+      tags: ['Storybook', 'Date'],
+    },
+    {
+      name: 'storybook-framework-hono-vite',
+      description:
+        'Hono JSXで書いたコンポーネントを@storybook/react-viteと同じ感覚で扱うためのStorybookフレームワーク。',
+      githubUrl: 'https://github.com/k35o/storybook-framework-hono-vite',
+      websiteUrl: null,
+      npmPackageName: 'storybook-framework-hono-vite',
+      tags: ['Storybook', 'Hono', 'Vite'],
+    },
+    {
+      name: 'mdscroll',
+      description:
+        'Markdownをブラウザでプレビューするためのコマンドラインツール。',
+      githubUrl: 'https://github.com/k35o/mdscroll',
+      websiteUrl: null,
+      npmPackageName: 'mdscroll',
+      tags: ['AI Agent', 'Tool'],
     },
   ];
 };
