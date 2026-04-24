@@ -1,5 +1,4 @@
 import {
-  Anchor,
   ExternalLinkIcon,
   InteractiveCard,
   PublishDateIcon,
@@ -7,10 +6,9 @@ import {
 import { formatDate } from '@repo/helpers/date/format';
 import { type FC, Suspense } from 'react';
 import { LinkCardErrorBoundary } from './error-boundary';
+import { type LinkCardAppearance, LinkCardFallback } from './fallback';
 import { MetaImage } from './image';
 import { getMetadata } from './metadata';
-
-type LinkCardAppearance = 'shadow' | 'bordered';
 
 export const LinkCardLoading: FC<{
   href: string;
@@ -42,7 +40,7 @@ const Content: FC<{
   const metaData = await getMetadata(href);
 
   if (!(metaData.title || metaData.description || metaData.image)) {
-    return <Anchor href={href}>{href}</Anchor>;
+    return <LinkCardFallback appearance={appearance} href={href} />;
   }
 
   return (
@@ -95,7 +93,7 @@ export const LinkCard: FC<{
   appearance?: LinkCardAppearance;
 }> = ({ href, publishedAt, appearance = 'shadow' }) => {
   return (
-    <LinkCardErrorBoundary href={href}>
+    <LinkCardErrorBoundary appearance={appearance} href={href}>
       <Suspense
         fallback={<LinkCardLoading appearance={appearance} href={href} />}
       >
