@@ -27,7 +27,7 @@ export async function getMetadata(href: string) {
   )?.[1];
   const rawDescription =
     /<meta\s+property="og:description"\s+content="(.*?)"/i.exec(html)?.[1];
-  const image = /<meta\s+property="og:image"\s+content="(.*?)"/i.exec(
+  const rawImage = /<meta\s+property="og:image"\s+content="(.*?)"/i.exec(
     html,
   )?.[1];
 
@@ -39,6 +39,7 @@ export async function getMetadata(href: string) {
   const description = rawDescription
     ? decodeHtmlEntities(rawDescription)
     : undefined;
+  const image = rawImage ? decodeHtmlEntities(rawImage) : undefined;
 
   return { title, description, image };
 }
