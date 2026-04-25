@@ -267,6 +267,13 @@
       "when": 1776862465252,
       "tag": "0037_condemned_colossus",
       "breakpoints": true
+    },
+    {
+      "idx": 38,
+      "version": "6",
+      "when": 1776924816680,
+      "tag": "0038_flippant_sasquatch",
+      "breakpoints": true
     }
   ]
 }
