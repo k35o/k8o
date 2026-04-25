@@ -12,9 +12,9 @@ catalog:
   '@tailwindcss/postcss': 4.2.4
   '@types/react': 19.2.14
   '@types/react-dom': 19.2.3
-  '@vitest/browser-playwright': 4.1.4
-  '@vitest/coverage-v8': 4.1.4
-  '@vitest/ui': 4.1.4
+  '@vitest/browser-playwright': 4.1.5
+  '@vitest/coverage-v8': 4.1.5
+  '@vitest/ui': 4.1.5
   chromatic: 16.5.0
   babel-plugin-react-compiler: 1.0.0
   drizzle-orm: 0.45.2
@@ -26,7 +26,7 @@ catalog:
   react-dom: 19.2.5
   storybook: 10.3.5
   tailwindcss: 4.2.4
-  vitest: 4.1.4
+  vitest: 4.1.5
   vitest-browser-react: 2.2.0
 
 blockExoticSubdeps: true
