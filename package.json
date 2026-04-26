@@ -28,7 +28,7 @@
     "@typescript/native-preview": "7.0.0-dev.20260421.2",
     "@upstash/context7-mcp": "2.1.8",
     "@vercel/next-browser": "0.7.1",
-    "knip": "6.6.0",
+    "knip": "6.6.1",
     "lefthook": "2.1.6",
     "playwright": "1.59.1",
     "portless": "0.10.3",
