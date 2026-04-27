@@ -66,7 +66,7 @@ export const CreateColumnsByTable: FC<Props> = ({
 
               return (
                 <tr
-                  className={`transition-colors ${hasError ? 'bg-bg-error/5' : 'hover:bg-bg-baseHover'}`}
+                  className={`transition-colors ${hasError ? 'bg-bg-error/5' : 'hover:bg-bg-subtle'}`}
                   key={id}
                 >
                   <td className="px-3 py-2.5">

@@ -37,7 +37,7 @@ export function CustomCommandDemo() {
     <div className="space-y-4">
       <div className="flex gap-2">
         <button
-          className="rounded-md bg-primary-base px-4 py-2 text-primary-fg"
+          className="rounded-md bg-primary-bg px-4 py-2 text-primary-fg"
           // @ts-expect-error -- commandfor is not yet in TypeScript types
           // biome-ignore lint/nursery/noUnknownAttribute: Baseline 2025
           command="--zoom-in"
@@ -48,7 +48,7 @@ export function CustomCommandDemo() {
           拡大
         </button>
         <button
-          className="rounded-md bg-primary-base px-4 py-2 text-primary-fg"
+          className="rounded-md bg-primary-bg px-4 py-2 text-primary-fg"
           // @ts-expect-error -- commandfor is not yet in TypeScript types
           // biome-ignore lint/nursery/noUnknownAttribute: Baseline 2025
           command="--zoom-out"

@@ -89,7 +89,7 @@ export const Presenter: FC<{
           </BarChart>
         </div>
 
-        <div className="text-fg-muted text-xs">
+        <div className="text-fg-mute text-xs">
           {period}で{totalContributions}件
         </div>
       </div>

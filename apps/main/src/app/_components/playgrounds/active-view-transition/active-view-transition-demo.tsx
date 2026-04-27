@@ -105,13 +105,13 @@ export function ActiveViewTransitionDemo() {
         <div className="flex items-center gap-2">
           <div
             aria-hidden="true"
-            className="size-3 rounded-full bg-green-500 transition-indicator"
+            className="size-3 rounded-full bg-border-success transition-indicator"
           />
-          <span className="text-fg-muted text-sm">
+          <span className="text-fg-mute text-sm">
             {isTransitioning ? '遷移中...' : '待機中'}
           </span>
         </div>
-        <span className="text-fg-muted text-sm">
+        <span className="text-fg-mute text-sm">
           {currentIndex + 1} / {CARDS.length}
         </span>
       </div>
