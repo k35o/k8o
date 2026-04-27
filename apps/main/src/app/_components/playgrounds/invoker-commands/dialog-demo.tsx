@@ -2,7 +2,7 @@ export function DialogDemo() {
   return (
     <div className="space-y-4">
       <button
-        className="rounded-md bg-primary-base px-4 py-2 text-primary-fg"
+        className="rounded-md bg-primary-bg px-4 py-2 text-primary-fg"
         // @ts-expect-error -- commandfor is not yet in TypeScript types
         // biome-ignore lint/nursery/noUnknownAttribute: Baseline 2025
         command="show-modal"
@@ -15,7 +15,7 @@ export function DialogDemo() {
 
       <dialog
         aria-label="デモダイアログ"
-        className="m-auto rounded-lg bg-bg-base p-6 shadow-md backdrop:bg-black/50"
+        className="m-auto rounded-lg bg-bg-base p-6 shadow-md backdrop:bg-back-drop"
         id="demo-dialog"
       >
         <div className="space-y-4">

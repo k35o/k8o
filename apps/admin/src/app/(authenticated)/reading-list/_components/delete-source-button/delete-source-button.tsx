@@ -55,7 +55,7 @@ export const DeleteSourceButton = ({
               <p className="text-sm">
                 「{title}」を削除しますか？この操作は取り消せません。
               </p>
-              {error && <p className="text-fg-danger text-sm">{error}</p>}
+              {error && <p className="text-fg-error text-sm">{error}</p>}
               <div className="flex justify-end gap-3">
                 <Button
                   color="gray"
