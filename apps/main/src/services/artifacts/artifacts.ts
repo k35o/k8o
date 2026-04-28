@@ -87,5 +87,13 @@ export const getArtifacts = (): Artifact[] => {
       npmPackageName: 'mdscroll',
       tags: ['AI Agent', 'Tool'],
     },
+    {
+      name: 'oxc-config',
+      description: 'oxlintの設定を共通化するためのconfigリポジトリ。',
+      githubUrl: 'https://github.com/k35o/oxc-config',
+      websiteUrl: null,
+      npmPackageName: '@k8o/oxc-config',
+      tags: ['oxlint', 'Config', 'Personal'],
+    },
   ];
 };

@@ -50,7 +50,7 @@ export const Presenter: FC<{
               )}
             />
             <ArteTooltip.Content>
-              k8o・ArteOdysseyリポジトリへのコミット履歴
+              k8o・artifactsリポジトリへのコミット履歴
             </ArteTooltip.Content>
           </ArteTooltip.Root>
         </div>
