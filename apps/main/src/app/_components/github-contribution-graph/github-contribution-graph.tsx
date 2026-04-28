@@ -1,4 +1,5 @@
 import { cacheLife } from 'next/cache';
+import { getArtifacts } from '@/services/artifacts/artifacts';
 import {
   type ContributionDay,
   fetchRepositoryCommitContributions,
@@ -25,14 +26,31 @@ function mergeContributions(results: ContributionDay[][]): ContributionDay[] {
   );
 }
 
+function parseGitHubRepo(
+  githubUrl: string,
+): { owner: string; repo: string } | null {
+  const match = /^https:\/\/github\.com\/([^/]+)\/([^/]+)/.exec(githubUrl);
+  if (!(match?.[1] && match[2])) {
+    return null;
+  }
+  return { owner: match[1], repo: match[2] };
+}
+
 export const GitHubContributionGraph = async () => {
   'use cache';
   cacheLife('minutes');
 
-  const results = await Promise.all([
-    fetchRepositoryCommitContributions(USERNAME, OWNER, 'k8o'),
-    fetchRepositoryCommitContributions(USERNAME, OWNER, 'ArteOdyssey'),
-  ]);
+  const artifactRepos = getArtifacts()
+    .map((artifact) => parseGitHubRepo(artifact.githubUrl))
+    .filter((repo): repo is { owner: string; repo: string } => repo !== null);
+
+  const repos = [{ owner: OWNER, repo: 'k8o' }, ...artifactRepos];
+
+  const results = await Promise.all(
+    repos.map(({ owner, repo }) =>
+      fetchRepositoryCommitContributions(USERNAME, owner, repo),
+    ),
+  );
 
   const days = mergeContributions(results);
 
