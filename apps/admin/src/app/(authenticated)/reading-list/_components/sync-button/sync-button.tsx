@@ -2,7 +2,7 @@
 
 import { Button, useToast } from '@k8o/arte-odyssey';
 import { type FC, useTransition } from 'react';
-import { syncArticlesAction } from '../../_actions/article-actions';
+import { syncArticlesAction } from '@/features/reading-list/interface/article-actions';
 
 export const SyncButton: FC = () => {
   const [isPending, startTransition] = useTransition();

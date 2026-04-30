@@ -1,32 +1,8 @@
 import { cacheLife } from 'next/cache';
 import { NextResponse } from 'next/server';
-import { metadata as artifactsMetadata } from '@/app/artifacts/layout';
-import { metadata as baseConverterMetadata } from '@/app/base-converter/layout';
-import { metadata as blogMetadata } from '@/app/blog/layout';
-import { metadata as colorConverterMetadata } from '@/app/color-converter/layout';
-import { metadata as contrastCheckerMetadata } from '@/app/contrast-checker/layout';
-import { metadata as japaneseTextFixerMetadata } from '@/app/japanese-text-fixer/layout';
-import { metadata as mojiCountMetadata } from '@/app/moji-count/layout';
-import { metadata as playgroundsMetadata } from '@/app/playgrounds/layout';
-import { metadata as qrGeneratorMetadata } from '@/app/qr-generator/layout';
-import { metadata as radiusMakerMetadata } from '@/app/radius-maker/layout';
-import { metadata as sqlTableBuilderMetadata } from '@/app/sql-table-builder/layout';
-import { metadata as talksMetadata } from '@/app/talks/layout';
-import { metadata as textDiffMetadata } from '@/app/text-diff/layout';
 import { getBlogContents } from '@/features/blog/interface/queries';
 import { getTalks } from '@/features/talks/interface/queries';
-
-const assistItems = [
-  mojiCountMetadata,
-  japaneseTextFixerMetadata,
-  qrGeneratorMetadata,
-  baseConverterMetadata,
-  contrastCheckerMetadata,
-  colorConverterMetadata,
-  radiusMakerMetadata,
-  sqlTableBuilderMetadata,
-  textDiffMetadata,
-];
+import { assistPageMetadata, pageMetadata } from '@/shared/site/page-metadata';
 
 function _formatMetadataSection(metadata: {
   title?: string | null;
@@ -54,15 +30,14 @@ async function _generateLlmContent() {
     .map((talk) => `#### ${talk.title}\n${talk.eventName}（${talk.eventDate}）`)
     .join('\n\n');
 
-  // metadata とサブコンテンツを直接紐付け
   const forgeItems: {
     metadata: { title?: string | null; description?: string | null };
     subContent?: string;
   }[] = [
-    { metadata: blogMetadata, subContent: blogContent },
-    { metadata: talksMetadata, subContent: talkContent },
-    { metadata: playgroundsMetadata },
-    { metadata: artifactsMetadata },
+    { metadata: pageMetadata.blog, subContent: blogContent },
+    { metadata: pageMetadata.talks, subContent: talkContent },
+    { metadata: pageMetadata.playgrounds },
+    { metadata: pageMetadata.artifacts },
   ];
 
   const forgeContent = forgeItems
@@ -75,7 +50,7 @@ async function _generateLlmContent() {
     })
     .join('\n\n');
 
-  const assistContent = assistItems
+  const assistContent = assistPageMetadata
     .map((item) => _formatMetadataSection(item))
     .join('\n\n');
 

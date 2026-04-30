@@ -4,7 +4,7 @@ import { db } from '@repo/database';
 import { eq } from 'drizzle-orm';
 import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
-import { verifySession } from '@/libs/verify-session';
+import { verifySession } from '@/shared/auth/verify-session';
 
 type ActionState = {
   error?: string;

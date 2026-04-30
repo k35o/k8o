@@ -1,6 +1,6 @@
 import { type NextRequest, NextResponse } from 'next/server';
-import { syncBaseline } from '@/services/baseline/sync-baseline';
-import { sendPushNotification } from '@/services/push-notification/push-notification';
+import { syncBaseline } from '@/features/baseline/application/sync-baseline';
+import { sendPushNotification } from '@/features/push-notification/infrastructure/push-notification';
 
 export async function GET(req: NextRequest): Promise<NextResponse> {
   if (

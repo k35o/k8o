@@ -10,9 +10,14 @@ export const deleteArticle = (_id: number): Promise<ActionState> => {
 type SyncActionState = {
   error?: string;
   newArticles?: number;
+  updatedArticles?: number;
   failedSources?: string[];
 };
 
 export const syncArticlesAction = (): Promise<SyncActionState> => {
-  return Promise.resolve({ newArticles: 3, failedSources: [] });
+  return Promise.resolve({
+    newArticles: 3,
+    updatedArticles: 0,
+    failedSources: [],
+  });
 };

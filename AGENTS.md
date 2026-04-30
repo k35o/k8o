@@ -42,11 +42,14 @@ packages/helpers/   → 共有ユーティリティ（in-source testing）
 packages/typescript-config/ → 共有TS設定
 ```
 
-パッケージ間依存: `apps/main` → `@repo/database`, `@repo/helpers`
+パッケージ間依存:
+
+- `apps/main` → `@repo/database`, `@repo/helpers`
+- `apps/admin` → `@repo/database`, `@repo/helpers`
 
 ## アーキテクチャ
 
-### レイヤー構成（apps/main/src/）
+### レイヤー構成（apps/main/src/, apps/admin/src/）
 
 - **app/** - Next.js App RouterのルーティングとUI composition
   - `page.tsx`, `layout.tsx`, `route.ts`, `opengraph-image.tsx`, `sitemap.ts` などのNext.js entryを置く
@@ -54,13 +57,14 @@ packages/typescript-config/ → 共有TS設定
   - route localな状態・型・純粋utilityは `app/**/_state`, `app/**/_types`, `app/**/_utils` に置いてよい
   - `_api` は新規作成しない。Next.js entryからは `features/*/interface` を読む
   - `(articles)/` のような括弧はNext.jsルートグループ
+  - `apps/admin` でも `_actions` は新規作成せず、Server Actions は `features/*/interface` に置く
 - **features/** - 機能単位の非UIロジック
   - `features/<feature>/interface/` - Next.jsとの境界。`cacheLife`, `'use server'`, `FormData`, `Request`/`Response`向けのvalidationを置く
   - `features/<feature>/application/` - ユースケース・整形・機能固有の組み立て。小さい読み取り処理はここに置いてよい
   - `features/<feature>/infrastructure/` - DB、外部API、ファイルシステムなど外部接続の詳細。処理が太くなったら application からここへ切り出す
   - UIコンポーネントは置かない。UIは必ず `app/**/_components`
 - **shared/** - `apps/main` 内で横断利用する非UI共通処理
-  - main固有のMDX、OGP、browser API、validation初期化など
+  - app固有の認証、MDX、OGP、browser API、validation初期化、site metadataなど
   - UIコンポーネントや `cn` は置かない
 - **mocks/** - MSWモック定義
 
@@ -74,6 +78,8 @@ features/shared -> packages/helpers
 ```
 
 `packages/helpers` はアプリ非依存の純粋helperを置く。`cn` はclassName文字列を合成するhelperなので `packages/helpers` に残す。
+
+`@repo/database` の import 境界は現時点では規約で運用する。機械的な禁止ルールは、今後 Biome から oxc に置き換えるタイミングで導入する。
 
 ### データベース（packages/database/）
 

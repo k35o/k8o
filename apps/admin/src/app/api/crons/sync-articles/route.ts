@@ -1,6 +1,6 @@
 import { type NextRequest, NextResponse } from 'next/server';
-import { sendPushNotification } from '@/services/push-notification/push-notification';
-import { syncArticles } from '@/services/reading-list/sync-articles';
+import { sendPushNotification } from '@/features/push-notification/infrastructure/push-notification';
+import { syncArticles } from '@/features/reading-list/application/sync-articles';
 
 export async function GET(req: NextRequest): Promise<NextResponse> {
   if (

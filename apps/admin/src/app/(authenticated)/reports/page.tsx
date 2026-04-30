@@ -1,4 +1,4 @@
-import { verifySession } from '@/libs/verify-session';
+import { verifySession } from '@/shared/auth/verify-session';
 import { ReportsContent } from './_components/reports-content/reports-content';
 
 export default async function ReportsPage() {
