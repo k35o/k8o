@@ -81,6 +81,15 @@ features/shared -> packages/helpers
 
 `@repo/database` の import 境界は現時点では規約で運用する。機械的な禁止ルールは、今後 Biome から oxc に置き換えるタイミングで導入する。
 
+### Cache 方針
+
+Next.js の `cacheLife` は `features/*/interface` に置く。`app` のUIコンポーネントや `application` 層には原則として置かない。
+
+- `cacheLife('minutes')` - dashboard、admin の一覧、外部データ同期後に再検証される読み取りなど、短時間で鮮度が必要なもの
+- `cacheLife('max')` - MDX metadata、静的な site metadata、ビルド時に近い安定データ
+
+キャッシュを変更する Server Action / Route Handler は、更新対象の route に `revalidatePath` を明示する。
+
 ### データベース（packages/database/）
 
 Drizzle ORM + Turso (libSQL)。Conditional Export Mapsで環境切り替え:
