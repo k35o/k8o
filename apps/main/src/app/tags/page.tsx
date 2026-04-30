@@ -1,5 +1,5 @@
 import type { Route } from 'next';
-import { getTags } from '@/services/tags/tags';
+import { getTags } from '@/features/tags/interface/queries';
 import { TagCard } from './_components/tag-card';
 
 export default async function Page() {

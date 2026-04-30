@@ -1,28 +1,9 @@
 import { Card, Separator } from '@k8o/arte-odyssey';
-import { db } from '@repo/database';
-import { count, desc } from 'drizzle-orm';
-import { cacheLife } from 'next/cache';
+import { getReportsOverview } from '@/features/reports/interface/queries';
 import { ReportTable } from '../report-table/report-table';
 
 export const ReportsContent = async () => {
-  'use cache';
-  cacheLife('minutes');
-
-  const [reports, typeCounts] = await Promise.all([
-    db.query.reportingReports.findMany({
-      orderBy: (reports) => [desc(reports.createdAt)],
-      limit: 100,
-    }),
-    db
-      .select({
-        type: db._schema.reportingReports.type,
-        count: count(),
-      })
-      .from(db._schema.reportingReports)
-      .groupBy(db._schema.reportingReports.type),
-  ]);
-
-  const totalCount = typeCounts.reduce((sum, t) => sum + t.count, 0);
+  const { reports, typeCounts, totalCount } = await getReportsOverview();
 
   return (
     <div className="flex flex-col gap-10">

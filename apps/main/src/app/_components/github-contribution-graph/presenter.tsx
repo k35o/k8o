@@ -9,7 +9,7 @@ import {
 import { formatDate } from '@repo/helpers/date/format';
 import type { FC } from 'react';
 import { Bar, BarChart, CartesianGrid, Tooltip, XAxis, YAxis } from 'recharts';
-import type { ContributionDay } from '@/services/github/contributions';
+import type { ContributionDay } from '@/features/github/interface/queries';
 
 type ChartDataItem = {
   date: string;

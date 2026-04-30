@@ -4,7 +4,7 @@ import { ArteOdysseyProvider } from '@k8o/arte-odyssey';
 import { ThemeProvider } from 'next-themes';
 import { NuqsAdapter } from 'nuqs/adapters/next/app';
 import type { FC, PropsWithChildren } from 'react';
-import '@/libs/zod';
+import '@/shared/validation/zod';
 
 export const AppProvider: FC<PropsWithChildren> = ({ children }) => {
   return (

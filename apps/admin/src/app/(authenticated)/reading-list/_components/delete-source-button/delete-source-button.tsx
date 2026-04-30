@@ -2,7 +2,7 @@
 
 import { Button, Dialog, Modal } from '@k8o/arte-odyssey';
 import { useState, useTransition } from 'react';
-import { deleteSource } from '../../_actions/source-actions';
+import { deleteSource } from '@/features/reading-list/interface/source-actions';
 
 export const DeleteSourceButton = ({
   id,

@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
-import { getBlogContent } from '@/app/blog/_api';
 import { BlogLayout } from '@/app/blog/_components/blog-layout';
+import { getBlogContent } from '@/features/blog/interface/queries';
 
 const slug = 'js-modules-service-workers';
 

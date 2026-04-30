@@ -1,7 +1,7 @@
 import {
   getArticleSources,
   getArticles,
-} from '@/services/reading-list/reading-list';
+} from '@/features/reading-list/interface/queries';
 import { LinkCard } from '../_components/link-card';
 import { ReadingListContent } from './_components/reading-list-content';
 

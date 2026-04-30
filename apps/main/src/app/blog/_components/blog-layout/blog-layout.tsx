@@ -17,7 +17,7 @@ import {
   getBlogContent,
   type getBlogsByTags,
   getBlogToc,
-} from '@/app/blog/_api';
+} from '@/features/blog/interface/queries';
 import { END_OF_CONTENT_ID } from './constants';
 import { CopyMarkdownButton } from './copy-markdown-button';
 import { Feedback } from './feedback';

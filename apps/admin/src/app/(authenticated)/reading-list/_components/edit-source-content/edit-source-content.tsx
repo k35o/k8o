@@ -1,20 +1,12 @@
 import { Breadcrumb, Card, Separator } from '@k8o/arte-odyssey';
-import { db } from '@repo/database';
-import { eq } from 'drizzle-orm';
 import { notFound } from 'next/navigation';
-import { updateSource } from '../../_actions/source-actions';
+import { getArticleSourceForEdit } from '@/features/reading-list/interface/queries';
+import { updateSource } from '@/features/reading-list/interface/source-actions';
 import { DeleteSourceButton } from '../delete-source-button/delete-source-button';
 import { SourceForm } from '../source-form/source-form';
 
 export const EditSourceContent = async ({ id }: { id: string }) => {
-  const numericId = Number(id);
-  if (!Number.isInteger(numericId)) {
-    notFound();
-  }
-
-  const source = await db.query.articleSources.findFirst({
-    where: eq(db._schema.articleSources.id, numericId),
-  });
+  const source = await getArticleSourceForEdit(id);
 
   if (!source) {
     notFound();

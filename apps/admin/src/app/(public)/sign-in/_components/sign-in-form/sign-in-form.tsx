@@ -2,7 +2,7 @@
 
 import { GitHubIcon, useToast } from '@k8o/arte-odyssey';
 import type { FC } from 'react';
-import { authClient } from '@/libs/auth-client';
+import { authClient } from '@/shared/auth/auth-client';
 
 export const SignInForm: FC = () => {
   const { onOpen } = useToast();

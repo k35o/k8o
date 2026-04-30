@@ -1,4 +1,4 @@
-import { verifySession } from '@/libs/verify-session';
+import { verifySession } from '@/shared/auth/verify-session';
 import { BaselineSnapshotStats } from './_components/baseline-snapshot-stats';
 import { SyncBaselineButton } from './_components/sync-baseline-button';
 

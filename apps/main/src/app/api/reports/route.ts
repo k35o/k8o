@@ -1,5 +1,5 @@
-import { db } from '@repo/database';
 import * as z from 'zod/mini';
+import { createReports } from '@/features/reports/application/report';
 
 const MAX_BODY_SIZE = 64 * 1024; // 64KB
 
@@ -54,11 +54,7 @@ export async function POST(req: Request): Promise<Response> {
     body: report.body,
   }));
 
-  if (values.length === 0) {
-    return new Response(null, { status: 204 });
-  }
-
-  await db.insert(db._schema.reportingReports).values(values);
+  await createReports(values);
 
   return new Response(null, { status: 204 });
 }

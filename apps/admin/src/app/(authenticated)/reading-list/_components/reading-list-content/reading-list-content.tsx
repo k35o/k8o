@@ -1,34 +1,13 @@
 import { LinkButton } from '@k8o/arte-odyssey';
-import { db } from '@repo/database';
-import { desc } from 'drizzle-orm';
-import { cacheLife } from 'next/cache';
 import { StatCard } from '@/app/(authenticated)/_components/stat-card/stat-card';
+import { getReadingListContentData } from '@/features/reading-list/interface/queries';
 import { ArticleTable } from '../article-table/article-table';
 import { SourceList } from '../source-list/source-list';
 import { SyncButton } from '../sync-button/sync-button';
 
 export const ReadingListContent = async () => {
-  'use cache';
-  cacheLife('minutes');
-  const [sources, articles] = await Promise.all([
-    db.query.articleSources.findMany({
-      orderBy: (articleSources) => [desc(articleSources.updatedAt)],
-    }),
-    db.query.articles.findMany({
-      with: { articleSource: true },
-      orderBy: (articles) => [desc(articles.publishedAt)],
-    }),
-  ]);
-
-  const feedCount = sources.filter((s) => s.type === 'feed').length;
-
-  const articleItems = articles.map((a) => ({
-    id: a.id,
-    title: a.title,
-    url: a.url,
-    publishedAt: a.publishedAt,
-    sourceName: a.articleSource.title,
-  }));
+  const { sources, articleItems, feedCount, articleCount } =
+    await getReadingListContentData();
 
   return (
     <>
@@ -39,7 +18,7 @@ export const ReadingListContent = async () => {
           label="フィード"
           value={String(feedCount)}
         />
-        <StatCard label="取得済み記事" value={String(articles.length)} />
+        <StatCard label="取得済み記事" value={String(articleCount)} />
       </div>
 
       <section className="flex flex-col gap-4">
