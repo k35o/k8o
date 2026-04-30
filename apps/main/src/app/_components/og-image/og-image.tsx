@@ -1,7 +1,7 @@
 import { loadDefaultJapaneseParser } from 'budoux';
 import { ImageResponse } from 'next/og';
-import { getIconDataUrl } from '@/app/_utils/get-icon-data-url';
-import { getMPlus2Font } from '@/app/_utils/get-m-plus-2-font';
+import { getIconDataUrl } from '@/shared/og/get-icon-data-url';
+import { getMPlus2Font } from '@/shared/og/get-m-plus-2-font';
 
 type OgImageProps = {
   title: string;

@@ -1,5 +1,5 @@
 import { OgImage } from '@/app/_components/og-image';
-import { getBlogContent } from '@/app/blog/_api';
+import { getBlogContent } from '@/features/blog/interface/queries';
 
 export const alt =
   'Largest Contentful Paint APIで最大コンテンツの描画時間を計測する';

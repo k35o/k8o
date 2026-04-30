@@ -12,7 +12,7 @@ import {
   useToast,
 } from '@k8o/arte-odyssey';
 import { type FC, useActionState, useCallback, useState } from 'react';
-import { contact } from '@/app/_api/contact-to-me';
+import { contact } from '@/features/contact/interface/actions';
 
 export const ContactToMe: FC = () => {
   const [isOpen, setIsOpen] = useState(false);

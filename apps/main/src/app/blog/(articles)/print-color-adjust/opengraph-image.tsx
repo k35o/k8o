@@ -1,5 +1,5 @@
 import { OgImage } from '@/app/_components/og-image';
-import { getBlogContent } from '@/app/blog/_api';
+import { getBlogContent } from '@/features/blog/interface/queries';
 
 export const alt = 'print-color-adjustで印刷時の色調整を制御する';
 export const size = {

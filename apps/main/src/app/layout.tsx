@@ -4,10 +4,10 @@ import './_styles/globals.css';
 import { GoogleAnalytics } from '@next/third-parties/google';
 import { cn } from '@repo/helpers/cn';
 import { Analytics } from '@vercel/analytics/react';
-import { ReactScan } from '@/libs/react-scan';
+import { ReactScan } from '@/shared/browser/react-scan';
 import { AppProvider } from './_providers/app';
 import { mPlus2, notoSansJp } from './_styles/font';
-import '@/libs/zod';
+import '@/shared/validation/zod';
 import type { Metadata } from 'next';
 
 export const metadata = {

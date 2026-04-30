@@ -1,5 +1,8 @@
 import { Anchor } from '@k8o/arte-odyssey';
-import { getBaselineFeatures, getFeatureBlogMap } from './_api';
+import {
+  getBaselineFeatures,
+  getFeatureBlogMap,
+} from '@/features/baseline/interface/queries';
 import { BaselineFeatureList } from './_components';
 
 export default async function BaselinePage() {

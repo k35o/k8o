@@ -28,6 +28,13 @@ pnpm run dev
 - `packages/helpers` - ユーティリティ関数
 - `@k8o/arte-odyssey` - UIコンポーネント ([npm](https://www.npmjs.com/package/@k8o/arte-odyssey))
 
+**apps/main の配置方針**:
+
+- `app/` - App RouterのentryとUI。UIコンポーネントは `app/**/_components`
+- `features/` - blog/tags/talksなど機能単位の非UIロジック
+- `shared/` - mainアプリ内で横断利用する非UI共通処理
+- `packages/helpers` - アプリ非依存の純粋helper。`cn` もここに置く
+
 ## 本番環境
 
 - **Hosting**: [Vercel](https://vercel.com)

@@ -1,5 +1,5 @@
 import { OgImage } from '@/app/_components/og-image';
-import { getBlogContent } from '@/app/blog/_api';
+import { getBlogContent } from '@/features/blog/interface/queries';
 
 export const alt = '文字列に潜む正規表現の構文を置き換えるRegExp.escape';
 export const size = {

@@ -1,5 +1,5 @@
 import { OgImage } from '@/app/_components/og-image';
-import { getBlogContent } from '@/app/blog/_api';
+import { getBlogContent } from '@/features/blog/interface/queries';
 
 export const alt =
   'Shadow DOM境界を跨いだ選択範囲の処理を可能にするgetComposedRanges';

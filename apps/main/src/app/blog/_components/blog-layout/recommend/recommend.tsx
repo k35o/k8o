@@ -9,7 +9,7 @@ import { formatDate } from '@repo/helpers/date/format';
 import type { Route } from 'next';
 import Link from 'next/link';
 import type { FC } from 'react';
-import { getBlogsByTags } from '@/app/blog/_api';
+import { getBlogsByTags } from '@/features/blog/interface/queries';
 
 type RecommendProps = {
   blogs: Awaited<ReturnType<typeof getBlogsByTags>>;

@@ -2,7 +2,6 @@ import { cacheLife } from 'next/cache';
 import { NextResponse } from 'next/server';
 import { metadata as artifactsMetadata } from '@/app/artifacts/layout';
 import { metadata as baseConverterMetadata } from '@/app/base-converter/layout';
-import { getBlogContents } from '@/app/blog/_api';
 import { metadata as blogMetadata } from '@/app/blog/layout';
 import { metadata as colorConverterMetadata } from '@/app/color-converter/layout';
 import { metadata as contrastCheckerMetadata } from '@/app/contrast-checker/layout';
@@ -14,7 +13,8 @@ import { metadata as radiusMakerMetadata } from '@/app/radius-maker/layout';
 import { metadata as sqlTableBuilderMetadata } from '@/app/sql-table-builder/layout';
 import { metadata as talksMetadata } from '@/app/talks/layout';
 import { metadata as textDiffMetadata } from '@/app/text-diff/layout';
-import { getTalks } from '@/services/talks/talks';
+import { getBlogContents } from '@/features/blog/interface/queries';
+import { getTalks } from '@/features/talks/interface/queries';
 
 const assistItems = [
   mojiCountMetadata,

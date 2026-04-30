@@ -1,6 +1,6 @@
 import * as z from 'zod/mini';
-import { getBlogContent } from '@/app/blog/_api';
-import { incrementBlogView } from '@/services/blogs/view';
+import { incrementBlogView } from '@/features/blog/interface/commands';
+import { getBlogContent } from '@/features/blog/interface/queries';
 
 export async function POST(req: Request): Promise<Response> {
   const schema = z.object({

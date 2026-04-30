@@ -1,4 +1,4 @@
-import { getBlogContents } from '@/app/blog/_api';
+import { getBlogContents } from '@/features/blog/interface/queries';
 import { BlogCard } from './_components/blog-card';
 
 export default async function Page() {

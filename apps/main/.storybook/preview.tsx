@@ -13,10 +13,10 @@ import { handlers } from '../src/mocks/handlers';
 import '../src/app/_styles/globals.css';
 
 sb.mock(import('./../src/app/_components/link-card/metadata.ts'));
-sb.mock(import('./../src/app/blog/_api/index.ts'));
+sb.mock(import('./../src/features/blog/interface/queries.ts'));
 sb.mock(import('@repo/database'));
-sb.mock(import('./../src/app/_api/contact-to-me.ts'));
-sb.mock(import('./../src/services/blogs/action.ts'));
+sb.mock(import('./../src/features/contact/interface/actions.ts'));
+sb.mock(import('./../src/features/blog/interface/actions.ts'));
 
 initialize(
   {

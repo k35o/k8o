@@ -1,6 +1,5 @@
 import { notFound } from 'next/navigation';
-import { getTag } from '@/services/tags/tag';
-import { getTags } from '@/services/tags/tags';
+import { getTag, getTags } from '@/features/tags/interface/queries';
 import { TagContent } from '../_components/tag-content';
 
 export async function generateStaticParams() {
