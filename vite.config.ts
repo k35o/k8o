@@ -49,12 +49,6 @@ export default defineConfig({
         },
       },
       {
-        files: ['packages/database/src/schema/**/*.ts'],
-        rules: {
-          'import/no-cycle': 'off',
-        },
-      },
-      {
         files: [
           '**/*.test.ts',
           '**/*.test.tsx',
