@@ -3,7 +3,6 @@ export function DialogDemo() {
     <div className="space-y-4">
       <button
         className="bg-primary-base text-primary-fg rounded-md px-4 py-2"
-        // @ts-expect-error -- commandfor is not yet in TypeScript types
         // Baseline 2025
         command="show-modal"
         // Baseline 2025
@@ -27,7 +26,6 @@ export function DialogDemo() {
           </p>
           <button
             className="bg-bg-mute text-fg-base hover:bg-bg-subtle rounded-md px-4 py-2"
-            // @ts-expect-error -- commandfor is not yet in TypeScript types
             // Baseline 2025
             command="close"
             // Baseline 2025

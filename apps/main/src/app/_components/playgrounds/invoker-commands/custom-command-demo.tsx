@@ -41,7 +41,6 @@ export function CustomCommandDemo() {
       <div className="flex gap-2">
         <button
           className="bg-primary-base text-primary-fg rounded-md px-4 py-2"
-          // @ts-expect-error -- commandfor is not yet in TypeScript types
           // Baseline 2025
           command="--zoom-in"
           // Baseline 2025
@@ -52,7 +51,6 @@ export function CustomCommandDemo() {
         </button>
         <button
           className="bg-primary-base text-primary-fg rounded-md px-4 py-2"
-          // @ts-expect-error -- commandfor is not yet in TypeScript types
           // Baseline 2025
           command="--zoom-out"
           // Baseline 2025
@@ -63,7 +61,6 @@ export function CustomCommandDemo() {
         </button>
         <button
           className="bg-bg-mute text-fg-base hover:bg-bg-subtle rounded-md px-4 py-2"
-          // @ts-expect-error -- commandfor is not yet in TypeScript types
           // Baseline 2025
           command="--reset"
           // Baseline 2025

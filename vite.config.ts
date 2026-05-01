@@ -38,7 +38,10 @@ export default defineConfig({
       'import/max-dependencies': 'off',
       'import/no-cycle': 'off',
       'import/no-unassigned-import': 'off',
-      'react/no-unknown-property': 'off',
+      'react/no-unknown-property': [
+        'error',
+        { ignore: ['command', 'commandfor'] },
+      ],
     },
     overrides: [
       {

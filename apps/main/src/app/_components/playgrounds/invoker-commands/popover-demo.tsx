@@ -6,7 +6,6 @@ export function PopoverDemo() {
           <p className="text-fg-mute text-sm">Invoker Commands API</p>
           <button
             className="bg-primary-base text-primary-fg rounded-md px-4 py-2"
-            // @ts-expect-error -- commandfor is not yet in TypeScript types
             // Baseline 2025
             command="toggle-popover"
             // Baseline 2025

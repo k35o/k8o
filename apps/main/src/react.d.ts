@@ -10,4 +10,10 @@ declare module 'react' {
   interface InputHTMLAttributes<T> {
     webkitdirectory?: boolean;
   }
+
+  // Invoker Commands API は標準化直後の属性のため、React型に拡張を追加する
+  interface ButtonHTMLAttributes<T> {
+    command?: string;
+    commandfor?: string;
+  }
 }
