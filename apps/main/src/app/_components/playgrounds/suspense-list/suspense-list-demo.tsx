@@ -101,7 +101,7 @@ export const SuspenseListDemo: FC = () => {
           )}
         />
       </div>
-      <div className="flex items-center justify-center rounded-md bg-bg-mute p-4">
+      <div className="bg-bg-mute flex items-center justify-center rounded-md p-4">
         <p className="text-fg-mute">
           {useSuspenseList
             ? `<SuspenseList revealOrder="${revealOrder}"${hasTail ? ` tail="${tail}"` : ''}>`
@@ -134,7 +134,7 @@ const DataList: FC<{
       };
 }> = ({ data, useSuspenseList, hasFallback, suspenseListProps: _ }) => {
   const fallback = hasFallback ? (
-    <div className="rounded-xl bg-bg-mute p-4">Loading...</div>
+    <div className="bg-bg-mute rounded-xl p-4">Loading...</div>
   ) : null;
   if (useSuspenseList) {
     return (
@@ -165,7 +165,7 @@ const Data: FC<{
   const { cacheKey, getTime } = data;
   const resolvedTime = use(getTime);
   return (
-    <div className="flex items-center gap-2 rounded-md border border-border-mute p-4">
+    <div className="border-border-mute flex items-center gap-2 rounded-md border p-4">
       <span
         className={cn(
           'size-4 rounded-full',

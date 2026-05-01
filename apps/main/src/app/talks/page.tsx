@@ -1,4 +1,5 @@
 import { getTalks } from '@/features/talks/interface/queries';
+
 import { TalkCard } from './_components/talk-card';
 
 export default async function Page() {

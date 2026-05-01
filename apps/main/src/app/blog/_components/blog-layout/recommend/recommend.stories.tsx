@@ -1,4 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
+
 import { RecommendContent } from './recommend';
 
 const meta: Meta<typeof RecommendContent> = {

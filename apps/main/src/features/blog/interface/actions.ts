@@ -1,7 +1,10 @@
 'use server';
 
+import { configureZod } from '@/shared/validation/zod';
+
 import { submitFeedback } from '../application/submit-feedback';
-import '@/shared/validation/zod';
+
+configureZod();
 
 type Result =
   | {
@@ -17,7 +20,7 @@ export const feedback = async (
   feedbackId: number | null,
   comment: string,
 ): Promise<Result> => {
-  if (!(comment || feedbackId)) {
+  if (comment === '' && feedbackId === null) {
     return {
       success: false,
       message: 'コメントまたはフィードバックIDのいずれかを入力してください',
@@ -31,5 +34,6 @@ export const feedback = async (
     };
   }
 
-  return await submitFeedback(slug, feedbackId, comment);
+  const result = await submitFeedback(slug, feedbackId, comment);
+  return result;
 };

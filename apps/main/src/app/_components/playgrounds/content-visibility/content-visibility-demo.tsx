@@ -15,17 +15,22 @@ export const ContentVisibilityDemo: FC = () => {
             <p className="font-bold">
               <Code>content-visibility: hidden</Code>
             </p>
-            <Button onClick={() => setShowHidden(!showHidden)} size="sm">
+            <Button
+              onClick={() => {
+                setShowHidden(!showHidden);
+              }}
+              size="sm"
+            >
               {showHidden ? 'visible' : 'hidden'}に変更する
             </Button>
           </div>
-          <div className="h-96 rounded-xl bg-bg-base p-4 shadow-sm">
+          <div className="bg-bg-base h-96 rounded-xl p-4 shadow-sm">
             <div
               style={{
                 contentVisibility: showHidden ? 'hidden' : 'visible',
               }}
             >
-              <h3 className="mb-2 font-bold text-md">サンプルコンテンツ</h3>
+              <h3 className="text-md mb-2 font-bold">サンプルコンテンツ</h3>
               <p className="mb-4">
                 このコンテンツは<Code>content-visibility: hidden</Code>
                 によって制御されています。非表示の場合、レンダリング処理が行われず、スクリーンリーダーやブラウザ検索からもアクセスできません。
@@ -41,18 +46,23 @@ export const ContentVisibilityDemo: FC = () => {
             <p className="font-bold">
               <Code>content-visibility: auto</Code>
             </p>
-            <Button onClick={() => setShowAuto(!showAuto)} size="sm">
+            <Button
+              onClick={() => {
+                setShowAuto(!showAuto);
+              }}
+              size="sm"
+            >
               {showAuto ? 'visible' : 'auto'}に変更する
             </Button>
           </div>
-          <div className="h-96 rounded-xl bg-bg-base p-4 shadow-sm">
+          <div className="bg-bg-base h-96 rounded-xl p-4 shadow-sm">
             <div
               style={{
                 contentVisibility: showAuto ? 'auto' : 'visible',
                 // containIntrinsicSize: 'auto calc(var(--spacing) * 96)',
               }}
             >
-              <h3 className="mb-2 font-bold text-md">サンプルコンテンツ</h3>
+              <h3 className="text-md mb-2 font-bold">サンプルコンテンツ</h3>
               <p className="mb-4">
                 このコンテンツは<Code>content-visibility: auto</Code>
                 によって制御されています。ビューポート外の要素のレンダリング処理を必要なタイミングまでスキップできます。

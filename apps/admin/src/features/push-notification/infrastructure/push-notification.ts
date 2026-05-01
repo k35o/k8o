@@ -4,7 +4,7 @@ export async function sendPushNotification(
   url: string,
 ): Promise<void> {
   const apiKey = process.env['K8O_PUSH_API_KEY'];
-  if (!apiKey) {
+  if (apiKey === undefined || apiKey === '') {
     console.warn('K8O_PUSH_API_KEY が設定されていません');
     return;
   }

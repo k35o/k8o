@@ -21,7 +21,7 @@ jobs:
         run: pnpm run ls-lint
 
       - name: Run check
-        run: pnpm biome ci
+        run: pnpm run check
 
       - name: Run type check
         run: pnpm run type-check

@@ -1,12 +1,12 @@
 import { db } from '@repo/database';
 
 export async function getTags(page = 1): Promise<
-  {
+  Array<{
     id: number;
     name: string;
     blogCount: number;
     talkCount: number;
-  }[]
+  }>
 > {
   const tags = await db.query.tags.findMany({
     columns: {

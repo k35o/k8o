@@ -1,4 +1,5 @@
 import { cacheLife } from 'next/cache';
+
 import {
   getArticleSources as _getArticleSources,
   getArticles as _getArticles,
@@ -8,12 +9,14 @@ export async function getArticles() {
   'use cache';
   cacheLife('hours');
 
-  return await _getArticles();
+  const articles = await Promise.resolve(_getArticles());
+  return articles;
 }
 
 export async function getArticleSources() {
   'use cache';
   cacheLife('hours');
 
-  return await _getArticleSources();
+  const articleSources = await Promise.resolve(_getArticleSources());
+  return articleSources;
 }

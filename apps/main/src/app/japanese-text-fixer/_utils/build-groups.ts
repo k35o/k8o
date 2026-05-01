@@ -34,7 +34,7 @@ export const buildGroups = (
     lineMap.set(lineIndex, current);
   }
 
-  const errorLines = Array.from(lineMap.keys()).sort((a, b) => a - b);
+  const errorLines = Array.from(lineMap.keys()).toSorted((a, b) => a - b);
   const ranges = errorLines.map((lineIndex) => ({
     start: Math.max(0, lineIndex - 1),
     end: lineIndex + 1,
@@ -67,7 +67,7 @@ export const buildGroups = (
           annotation,
         })),
       )
-      .sort(
+      .toSorted(
         (a, b) =>
           a.annotation.original.index - b.annotation.original.index ||
           a.annotation.original.column - b.annotation.original.column,

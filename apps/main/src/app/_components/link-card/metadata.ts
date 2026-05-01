@@ -2,13 +2,13 @@ import { cacheLife } from 'next/cache';
 
 const decodeHtmlEntities = (text: string): string =>
   text
-    .replace(/&amp;/gi, '&')
-    .replace(/&lt;/gi, '<')
-    .replace(/&gt;/gi, '>')
-    .replace(/&quot;/gi, '"')
-    .replace(/&#39;/gi, "'")
-    .replace(/&nbsp;/gi, ' ')
-    .replace(/&#(\d+);/g, (_, code) => String.fromCharCode(Number(code)));
+    .replaceAll(/&amp;/gi, '&')
+    .replaceAll(/&lt;/gi, '<')
+    .replaceAll(/&gt;/gi, '>')
+    .replaceAll(/&quot;/gi, '"')
+    .replaceAll(/&#39;/gi, "'")
+    .replaceAll(/&nbsp;/gi, ' ')
+    .replaceAll(/&#(\d+);/g, (_, code) => String.fromCodePoint(Number(code)));
 
 export async function getMetadata(href: string) {
   'use cache';
@@ -31,15 +31,18 @@ export async function getMetadata(href: string) {
     html,
   )?.[1];
 
-  const title = rawTitle
-    ? decodeHtmlEntities(rawTitle)
-    : rawOgTitle
-      ? decodeHtmlEntities(rawOgTitle)
-      : undefined;
-  const description = rawDescription
-    ? decodeHtmlEntities(rawDescription)
-    : undefined;
-  const image = rawImage ? decodeHtmlEntities(rawImage) : undefined;
+  const title =
+    rawTitle === undefined
+      ? rawOgTitle === undefined
+        ? undefined
+        : decodeHtmlEntities(rawOgTitle)
+      : decodeHtmlEntities(rawTitle);
+  const description =
+    rawDescription === undefined
+      ? undefined
+      : decodeHtmlEntities(rawDescription);
+  const image =
+    rawImage === undefined ? undefined : decodeHtmlEntities(rawImage);
 
   return { title, description, image };
 }

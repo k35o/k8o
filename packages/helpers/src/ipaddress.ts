@@ -4,13 +4,13 @@ export const ipAddress = (req: Request | Headers): string | undefined => {
   // Cloudflareを経由するとCF-Connecting-IPヘッダーにユーザーのIPアドレスが入っている
   const headers = 'headers' in req ? req.headers : req;
   const cfConnectingIp = headers.get('CF-Connecting-IP');
-  if (cfConnectingIp) {
+  if (cfConnectingIp !== null) {
     return cfConnectingIp;
   }
 
   const xForwardedFor = headers.get('X-Forwarded-For');
   const xForwardedForIp = xForwardedFor?.split(',')[0];
-  if (xForwardedForIp) {
+  if (xForwardedForIp !== undefined) {
     return xForwardedForIp.trim();
   }
 

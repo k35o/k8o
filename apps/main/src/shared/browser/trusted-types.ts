@@ -1,16 +1,31 @@
 import DOMPurify from 'dompurify';
 
-// @ts-expect-error Trusted Types APIの型定義が未提供
+type TrustedTypePolicy = {
+  createHTML: (input: string) => string;
+};
+
+type TrustedTypes = {
+  createPolicy: (
+    name: string,
+    rules: { createHTML: (input: string) => string },
+  ) => TrustedTypePolicy;
+};
+
 let policy: TrustedTypePolicy | undefined;
 
 export const getHTMLPolicy = (): typeof policy => {
-  if (typeof window === 'undefined' || !window['trustedTypes']) {
-    return;
+  const trustedTypes =
+    typeof window === 'undefined'
+      ? undefined
+      : (window as Window & { trustedTypes?: TrustedTypes }).trustedTypes;
+
+  if (!trustedTypes) {
+    return undefined;
   }
   if (policy) {
     return policy;
   }
-  policy = window['trustedTypes'].createPolicy('k8o', {
+  policy = trustedTypes.createPolicy('k8o', {
     createHTML: (input: string) => DOMPurify.sanitize(input),
   });
   return policy;

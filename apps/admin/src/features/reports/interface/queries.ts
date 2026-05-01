@@ -8,7 +8,7 @@ export const getReportsOverview = async () => {
 
   const [reports, typeCounts] = await Promise.all([
     db.query.reportingReports.findMany({
-      orderBy: (reports) => [desc(reports.createdAt)],
+      orderBy: (reportTable) => [desc(reportTable.createdAt)],
       limit: 100,
     }),
     db

@@ -1,25 +1,21 @@
 const cssCache = new Map<string, Promise<string>>();
 const fontCache = new Map<string, Promise<ArrayBuffer>>();
 
-async function fetchGoogleFontsCss({
-  text,
-}: {
-  text: string;
-}): Promise<string> {
+function fetchGoogleFontsCss({ text }: { text: string }): Promise<string> {
   const cacheKey = text;
   const cachedCss = cssCache.get(cacheKey);
   if (cachedCss) {
-    return await cachedCss;
+    return cachedCss;
   }
 
   const cssPromise = fetch(
     `https://fonts.googleapis.com/css2?family=M+PLUS+2:wght@450&display=swap&text=${encodeURIComponent(text)}`,
   )
-    .then(async (response) => {
+    .then((response) => {
       if (!response.ok) {
         throw new Error(`Failed to fetch Google Fonts CSS: ${response.status}`);
       }
-      return await response.text();
+      return response.text();
     })
     .catch((error: unknown) => {
       cssCache.delete(cacheKey);
@@ -27,7 +23,7 @@ async function fetchGoogleFontsCss({
     });
 
   cssCache.set(cacheKey, cssPromise);
-  return await cssPromise;
+  return cssPromise;
 }
 
 function extractFontUrl(css: string): string {
@@ -36,14 +32,14 @@ function extractFontUrl(css: string): string {
       css,
     );
 
-  if (!match?.[1]) {
+  if (match?.[1] === undefined) {
     throw new Error('Failed to parse font URL from Google Fonts CSS');
   }
 
   return match[1];
 }
 
-export async function getMPlus2Font({
+export function getMPlus2Font({
   text,
 }: {
   text: string;
@@ -51,17 +47,17 @@ export async function getMPlus2Font({
   const cacheKey = text;
   const cachedFont = fontCache.get(cacheKey);
   if (cachedFont) {
-    return await cachedFont;
+    return cachedFont;
   }
 
   const fontPromise = fetchGoogleFontsCss({ text })
     .then(extractFontUrl)
-    .then(async (fontUrl) => {
-      const response = await fetch(fontUrl);
+    .then((fontUrl) => fetch(fontUrl))
+    .then((response) => {
       if (!response.ok) {
         throw new Error(`Failed to fetch font file: ${response.status}`);
       }
-      return await response.arrayBuffer();
+      return response.arrayBuffer();
     })
     .catch((error: unknown) => {
       fontCache.delete(cacheKey);
@@ -69,5 +65,5 @@ export async function getMPlus2Font({
     });
 
   fontCache.set(cacheKey, fontPromise);
-  return await fontPromise;
+  return fontPromise;
 }

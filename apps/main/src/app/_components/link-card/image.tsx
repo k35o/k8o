@@ -12,7 +12,7 @@ export const MetaImage: FC<{
   }
 
   return (
-    <div className="flex w-full flex-col justify-center overflow-hidden rounded-t-xl bg-bg-subtle sm:w-48 sm:shrink-0 sm:rounded-t-none sm:rounded-l-xl">
+    <div className="bg-bg-subtle flex w-full flex-col justify-center overflow-hidden rounded-t-xl sm:w-48 sm:shrink-0 sm:rounded-tl-xl sm:rounded-tr-none sm:rounded-bl-xl">
       <div className="relative aspect-video w-full">
         <Image
           alt=""

@@ -1,5 +1,7 @@
 import { Card, Separator } from '@k8o/arte-odyssey';
+
 import { getReportsOverview } from '@/features/reports/interface/queries';
+
 import { ReportTable } from '../report-table/report-table';
 
 export const ReportsContent = async () => {
@@ -11,14 +13,14 @@ export const ReportsContent = async () => {
         <Card appearance="shadow">
           <div className="flex flex-col gap-2 p-6">
             <p className="text-fg-mute text-sm">総レポート数</p>
-            <p className="font-bold text-3xl">{totalCount}</p>
+            <p className="text-3xl font-bold">{totalCount}</p>
           </div>
         </Card>
         {typeCounts.map((t) => (
           <Card appearance="shadow" key={t.type}>
             <div className="flex flex-col gap-2 p-6">
               <p className="text-fg-mute text-sm">{t.type}</p>
-              <p className="font-bold text-3xl">{t.count}</p>
+              <p className="text-3xl font-bold">{t.count}</p>
             </div>
           </Card>
         ))}
@@ -28,8 +30,8 @@ export const ReportsContent = async () => {
 
       <section className="flex flex-col gap-6">
         <div>
-          <h3 className="font-bold text-lg">最新レポート</h3>
-          <p className="mt-1 text-fg-mute text-sm">直近100件のレポートを表示</p>
+          <h3 className="text-lg font-bold">最新レポート</h3>
+          <p className="text-fg-mute mt-1 text-sm">直近100件のレポートを表示</p>
         </div>
         <Card appearance="shadow">
           <ReportTable reports={reports} />

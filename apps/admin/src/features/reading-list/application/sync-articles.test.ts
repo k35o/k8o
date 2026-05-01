@@ -1,5 +1,6 @@
 import { db } from '@repo/database';
 import Parser from 'rss-parser';
+
 import { syncArticles } from './sync-articles';
 
 vi.mock('@repo/database', () => ({
@@ -28,7 +29,9 @@ vi.mock('@repo/database', () => ({
 }));
 
 vi.mock('rss-parser', () => {
-  const MockParser = vi.fn();
+  const MockParser = vi.fn() as unknown as {
+    prototype: { parseString: ReturnType<typeof vi.fn> };
+  };
   MockParser.prototype.parseString = vi.fn();
   return { default: MockParser };
 });

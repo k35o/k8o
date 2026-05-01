@@ -6,9 +6,9 @@ import Parser from 'rss-parser';
 const parser = new Parser();
 
 function sanitizeFeedDates(xml: string): string {
-  return xml.replace(
+  return xml.replaceAll(
     /<(updated|published)>([^<]+)<\/\1>/g,
-    (match, tag, value) => {
+    (match: string, tag: string, value: string) => {
       if (Number.isNaN(new Date(value).getTime())) {
         return `<${tag}></${tag}>`;
       }
@@ -57,7 +57,11 @@ export async function syncArticles(): Promise<SyncResult> {
 
       for (const item of feed.items) {
         const publishedAt = item.isoDate ?? item.pubDate;
-        if (!(item.link && item.title && publishedAt)) {
+        if (
+          item.link === undefined ||
+          item.title === undefined ||
+          publishedAt === undefined
+        ) {
           continue;
         }
 
@@ -99,7 +103,7 @@ export async function syncArticles(): Promise<SyncResult> {
   const existingByUrl = new Map(existingArticles.map((a) => [a.url, a.title]));
 
   const newArticles: FeedArticle[] = [];
-  const articlesToUpdate: { url: string; title: string }[] = [];
+  const articlesToUpdate: Array<{ url: string; title: string }> = [];
 
   for (const candidate of allCandidates) {
     const existingTitle = existingByUrl.get(candidate.url);

@@ -8,6 +8,7 @@ import {
   Textarea,
 } from '@k8o/arte-odyssey';
 import { type FC, useCallback, useId, useMemo } from 'react';
+
 import { useCheckJapaneseSyntax } from '../../_state/hooks';
 import { useProofreadDispatch, useProofreadState } from '../../_state/provider';
 import type { LineItem } from '../../_utils/build-groups';
@@ -32,11 +33,11 @@ const ErrorList: FC<{ items: LineItem[] }> = ({ items }) => {
           key={`line-${lineIndex.toString()}`}
         >
           <div>
-            <span className="inline-block rounded-sm bg-bg-error px-4 py-1 text-center text-fg-error text-xs">
+            <span className="bg-bg-error text-fg-error inline-block rounded-sm px-4 py-1 text-center text-xs">
               {(lineIndex + 1).toString()}行目
             </span>
           </div>
-          <ul className="flex list-inside list-disc flex-col gap-2 text-fg-base">
+          <ul className="text-fg-base flex list-inside list-disc flex-col gap-2">
             {lineItems.map((item) => (
               <li key={item.annotation.id}>
                 {item.annotation.original.message}
@@ -53,33 +54,31 @@ const EditLines: FC<{
   lines: string[];
   targetLines: number[];
   onChange: (lineIndex: number, value: string) => void;
-}> = ({ lines, targetLines, onChange }) => {
-  return (
-    <div className="flex flex-col gap-3">
-      {targetLines
-        .filter((idx) => idx >= 0 && idx < lines.length)
-        .map((idx) => {
-          const lineNumber = idx + 1;
-          return (
-            <FormControl
-              key={`line-${lineNumber.toString()}`}
-              label={`${lineNumber.toString()}行目`}
-              renderInput={(props) => (
-                <Textarea
-                  {...props}
-                  autoResize
-                  onChange={(e) => {
-                    onChange(idx, e.target.value);
-                  }}
-                  value={lines[idx] ?? ''}
-                />
-              )}
-            />
-          );
-        })}
-    </div>
-  );
-};
+}> = ({ lines, targetLines, onChange }) => (
+  <div className="flex flex-col gap-3">
+    {targetLines
+      .filter((idx) => idx >= 0 && idx < lines.length)
+      .map((idx) => {
+        const lineNumber = idx + 1;
+        return (
+          <FormControl
+            key={`line-${lineNumber.toString()}`}
+            label={`${lineNumber.toString()}行目`}
+            renderInput={(props) => (
+              <Textarea
+                {...props}
+                autoResize
+                onChange={(e) => {
+                  onChange(idx, e.target.value);
+                }}
+                value={lines[idx] ?? ''}
+              />
+            )}
+          />
+        );
+      })}
+  </div>
+);
 
 export const ReviewPhase: FC = () => {
   const { reviewText, isChecking, annotations } = useProofreadState();
@@ -90,9 +89,7 @@ export const ReviewPhase: FC = () => {
   const lines = useMemo(() => reviewText.split('\n'), [reviewText]);
 
   const getLineIndex = useCallback(
-    (index: number) => {
-      return getLineIndexFromText(reviewText, index);
-    },
+    (index: number) => getLineIndexFromText(reviewText, index),
     [reviewText],
   );
 

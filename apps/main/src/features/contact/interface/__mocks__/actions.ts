@@ -13,12 +13,8 @@ type Result =
       defaultValue: string;
     };
 
-export const contact = (
-  _previousState: Result,
-  _: FormData,
-): Promise<Result> => {
-  return Promise.resolve().then(() => ({
+export const contact = (_previousState: Result, _: FormData): Promise<Result> =>
+  Promise.resolve().then(() => ({
     success: true,
     defaultValue: '',
   }));
-};

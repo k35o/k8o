@@ -1,5 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 import { expect, within } from 'storybook/test';
+
 import { TextDiff } from './text-diff';
 
 const meta: Meta<typeof TextDiff> = {

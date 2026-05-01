@@ -1,8 +1,8 @@
 pre-commit:
   commands:
     check:
-      glob: "*.{js,ts,tsx,json}"
-      run: pnpm biome check --write --no-errors-on-unmatched --files-ignore-unknown=true --colors=off --unsafe {staged_files}
+      glob: '*.{js,ts,tsx,json}'
+      run: pnpm vp check --fix --no-error-on-unmatched-pattern {staged_files}
       stage_fixed: true
     ls-lint:
       run: pnpm run ls-lint
@@ -10,6 +10,5 @@ pre-commit:
 pre-push:
   commands:
     check:
-      glob: "*.{js,ts,tsx,json}"
-      run: pnpm biome check --no-errors-on-unmatched --files-ignore-unknown=true --colors=off {staged_files}
-
+      glob: '*.{js,ts,tsx,json}'
+      run: pnpm vp check --no-error-on-unmatched-pattern {staged_files}

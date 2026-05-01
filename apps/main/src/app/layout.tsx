@@ -1,14 +1,16 @@
-import { GlobalLayout } from './_components/global-layout';
-import { TrustedTypesInit } from './_components/trusted-types-init';
-import './_styles/globals.css';
 import { GoogleAnalytics } from '@next/third-parties/google';
 import { cn } from '@repo/helpers/cn';
+
+import './_styles/globals.css';
 import { Analytics } from '@vercel/analytics/react';
+import type { Metadata } from 'next';
+
 import { ReactScan } from '@/shared/browser/react-scan';
+
+import { GlobalLayout } from './_components/global-layout';
+import { TrustedTypesInit } from './_components/trusted-types-init';
 import { AppProvider } from './_providers/app';
 import { mPlus2, notoSansJp } from './_styles/font';
-import '@/shared/validation/zod';
-import type { Metadata } from 'next';
 
 export const metadata = {
   metadataBase: new URL('https://k8o.me'),

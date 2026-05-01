@@ -4,7 +4,7 @@ export const uuidV4 = (): string => {
   if (typeof window !== 'undefined' && isSecureContext) {
     return crypto.randomUUID();
   }
-  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, (c) => {
+  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replaceAll(/[xy]/g, (c) => {
     const randHex = Math.floor(Math.random() * HEX_BASE);
     if (c === 'y') {
       return ((randHex & 0x3) | 0x8).toString(HEX_BASE);

@@ -1,6 +1,6 @@
 import { db } from '@repo/database';
 import { gte } from 'drizzle-orm';
-import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+
 import { getArticleSources, getArticles } from './reading-list';
 
 vi.mock('@repo/database', () => ({
@@ -22,8 +22,12 @@ vi.mock('@repo/database', () => ({
 }));
 
 vi.mock('drizzle-orm', () => ({
-  desc: vi.fn((value) => ({ type: 'desc', value })),
-  gte: vi.fn((column, value) => ({ type: 'gte', column, value })),
+  desc: vi.fn((value: unknown) => ({ type: 'desc', value })),
+  gte: vi.fn((column: unknown, value: unknown) => ({
+    type: 'gte',
+    column,
+    value,
+  })),
 }));
 
 describe('reading-list service', () => {
@@ -113,7 +117,7 @@ describe('reading-list service', () => {
       const result = await getArticleSources();
 
       expect(db.query.articleSources.findMany).toHaveBeenCalledWith({
-        orderBy: expect.any(Function),
+        orderBy: expect.any(Function) as () => unknown,
       });
       expect(result).toEqual([
         {

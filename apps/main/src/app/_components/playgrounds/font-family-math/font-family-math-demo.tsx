@@ -16,13 +16,15 @@ export function FontFamilyMathDemo() {
     <div className="space-y-6">
       <Checkbox
         label="mathフォントを適用する"
-        onChange={(e) => setUseMathFont(e.target.checked)}
+        onChange={(e) => {
+          setUseMathFont(e.target.checked);
+        }}
         value={useMathFont}
       />
 
-      <div className="space-y-4 rounded-xl bg-bg-base p-6 shadow-sm">
+      <div className="bg-bg-base space-y-4 rounded-xl p-6 shadow-sm">
         <div>
-          <p className="mb-2 text-fg-mute text-sm">
+          <p className="text-fg-mute mb-2 text-sm">
             ピタゴラスの定理（上付き文字）
           </p>
           <p className="text-2xl" style={{ fontFamily }}>
@@ -31,7 +33,7 @@ export function FontFamilyMathDemo() {
         </div>
 
         <div>
-          <p className="mb-2 text-fg-mute text-sm">
+          <p className="text-fg-mute mb-2 text-sm">
             等差数列（上付き・下付き文字）
           </p>
           <p className="text-2xl" style={{ fontFamily }}>
@@ -40,7 +42,7 @@ export function FontFamilyMathDemo() {
         </div>
 
         <div>
-          <p className="mb-2 text-fg-mute text-sm">
+          <p className="text-fg-mute mb-2 text-sm">
             数の集合（Blackboard bold）
           </p>
           <p className="text-2xl" style={{ fontFamily }}>
@@ -49,7 +51,7 @@ export function FontFamilyMathDemo() {
         </div>
 
         <div>
-          <p className="mb-2 text-fg-mute text-sm">積分記号</p>
+          <p className="text-fg-mute mb-2 text-sm">積分記号</p>
           <p className="text-2xl" style={{ fontFamily }}>
             ∫₀^∞ e⁻ˣ dx = 1
           </p>

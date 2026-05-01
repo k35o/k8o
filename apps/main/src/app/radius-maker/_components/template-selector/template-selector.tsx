@@ -2,6 +2,7 @@
 
 import { Button, RadioCard } from '@k8o/arte-odyssey';
 import { type ChangeEventHandler, type FC, useCallback, useId } from 'react';
+
 import type { RadiusPosition } from '../../_types/radius-position';
 import { positionToBorderRadius } from '../../_utils/position-to-border-radius';
 
@@ -125,7 +126,7 @@ const TEMPLATE_OPTIONS = TEMPLATES.map((template) => ({
   visual: (
     <div
       aria-hidden="true"
-      className="size-10 bg-primary-bg"
+      className="bg-primary-bg size-10"
       style={{
         borderRadius: positionToBorderRadius(template.position),
       }}
@@ -133,18 +134,16 @@ const TEMPLATE_OPTIONS = TEMPLATES.map((template) => ({
   ),
 }));
 
-const generateRandomPosition = (): RadiusPosition => {
-  return {
-    topLeftX: Math.floor(Math.random() * 101),
-    topLeftY: Math.floor(Math.random() * 101),
-    topRightX: Math.floor(Math.random() * 101),
-    topRightY: Math.floor(Math.random() * 101),
-    bottomLeftX: Math.floor(Math.random() * 101),
-    bottomLeftY: Math.floor(Math.random() * 101),
-    bottomRightX: Math.floor(Math.random() * 101),
-    bottomRightY: Math.floor(Math.random() * 101),
-  };
-};
+const generateRandomPosition = (): RadiusPosition => ({
+  topLeftX: Math.floor(Math.random() * 101),
+  topLeftY: Math.floor(Math.random() * 101),
+  topRightX: Math.floor(Math.random() * 101),
+  topRightY: Math.floor(Math.random() * 101),
+  bottomLeftX: Math.floor(Math.random() * 101),
+  bottomLeftY: Math.floor(Math.random() * 101),
+  bottomRightX: Math.floor(Math.random() * 101),
+  bottomRightY: Math.floor(Math.random() * 101),
+});
 
 type Props = {
   onSelect: (position: RadiusPosition) => void;
@@ -174,7 +173,7 @@ export const TemplateSelector: FC<Props> = ({ onSelect, currentPosition }) => {
 
   return (
     <div className="flex w-full flex-col gap-3">
-      <p className="font-bold text-fg-base text-sm" id={labelId}>
+      <p className="text-fg-base text-sm font-bold" id={labelId}>
         テンプレートから始める
       </p>
       <RadioCard
@@ -186,7 +185,9 @@ export const TemplateSelector: FC<Props> = ({ onSelect, currentPosition }) => {
         value={selectedValue}
       />
       <Button
-        onClick={() => onSelect(generateRandomPosition())}
+        onClick={() => {
+          onSelect(generateRandomPosition());
+        }}
         size="sm"
         variant="outlined"
       >

@@ -10,34 +10,32 @@ export const TagCard: FC<{
   count?: number;
   label: string;
   linkLabel: string;
-}> = ({ title, href, count, label, linkLabel }) => {
-  return (
-    <InteractiveCard width="fit">
-      <Link
-        aria-label={linkLabel}
-        className={cn(
-          'flex h-full w-70 flex-col gap-2 rounded-xl p-4',
-          'group',
-          'hover:bg-primary-bg-mute hover:text-primary-fg',
-        )}
-        href={href}
-      >
-        <div className="flex w-full basis-full items-center justify-between">
-          <span className="font-bold text-lg">{title}</span>
-          {count && (
-            <span className="min-w-8 rounded-full bg-primary-bg px-2 py-1 text-center text-primary-fg">
-              {count}
-            </span>
-          )}
-        </div>
-        <Separator />
-        <div className="flex items-center justify-between gap-2">
-          <span className="text-sm">{label}</span>
-          <span className="hidden group-hover:block">
-            <ChevronIcon direction="right" size="sm" />
+}> = ({ title, href, count, label, linkLabel }) => (
+  <InteractiveCard width="fit">
+    <Link
+      aria-label={linkLabel}
+      className={cn(
+        'flex h-full w-70 flex-col gap-2 rounded-xl p-4',
+        'group',
+        'hover:bg-primary-bg-mute hover:text-primary-fg',
+      )}
+      href={href}
+    >
+      <div className="flex w-full basis-full items-center justify-between">
+        <span className="text-lg font-bold">{title}</span>
+        {count !== undefined && (
+          <span className="bg-primary-bg text-primary-fg min-w-8 rounded-full px-2 py-1 text-center">
+            {count}
           </span>
-        </div>
-      </Link>
-    </InteractiveCard>
-  );
-};
+        )}
+      </div>
+      <Separator />
+      <div className="flex items-center justify-between gap-2">
+        <span className="text-sm">{label}</span>
+        <span className="hidden group-hover:block">
+          <ChevronIcon direction="right" size="sm" />
+        </span>
+      </div>
+    </Link>
+  </InteractiveCard>
+);

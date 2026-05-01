@@ -1,4 +1,5 @@
 import { verifySession } from '@/shared/auth/verify-session';
+
 import { ReportsContent } from './_components/reports-content/reports-content';
 
 export default async function ReportsPage() {
@@ -6,8 +7,8 @@ export default async function ReportsPage() {
   return (
     <div className="flex flex-col gap-10">
       <div>
-        <h2 className="font-bold text-2xl">レポート</h2>
-        <p className="mt-2 text-fg-mute text-sm">
+        <h2 className="text-2xl font-bold">レポート</h2>
+        <p className="text-fg-mute mt-2 text-sm">
           Reporting APIから収集したブラウザレポート
         </p>
       </div>

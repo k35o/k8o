@@ -1,5 +1,7 @@
 import { cacheLife } from 'next/cache';
+
 import { getArtifacts } from '@/features/artifacts/interface/queries';
+
 import { fetchRepositoryCommitContributions } from '../infrastructure/contributions';
 
 export type ContributionDay = Awaited<
@@ -13,7 +15,7 @@ function parseGitHubRepo(
   githubUrl: string,
 ): { owner: string; repo: string } | null {
   const match = /^https:\/\/github\.com\/([^/]+)\/([^/]+)/.exec(githubUrl);
-  if (!(match?.[1] && match[2])) {
+  if (match?.[1] === undefined || match[2] === undefined) {
     return null;
   }
   return { owner: match[1], repo: match[2] };
@@ -31,7 +33,7 @@ function mergeContributions(results: ContributionDay[][]): ContributionDay[] {
     }
   }
 
-  return Array.from(mergedMap.values()).sort((a, b) =>
+  return Array.from(mergedMap.values()).toSorted((a, b) =>
     a.date.localeCompare(b.date),
   );
 }

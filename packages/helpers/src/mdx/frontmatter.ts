@@ -32,10 +32,10 @@ if (import.meta.vitest) {
     it('MDXファイルのfrontmatterを取得できる', async () => {
       const { mkdtemp, writeFile } = await import('node:fs/promises');
       const { tmpdir } = await import('node:os');
-      const { join } = await import('node:path');
+      const path = await import('node:path');
 
-      const dir = await mkdtemp(join(tmpdir(), 'frontmatter-'));
-      const filePath = join(dir, 'article.mdx');
+      const dir = await mkdtemp(path.join(tmpdir(), 'frontmatter-'));
+      const filePath = path.join(dir, 'article.mdx');
       tempPaths.push(dir);
 
       await writeFile(

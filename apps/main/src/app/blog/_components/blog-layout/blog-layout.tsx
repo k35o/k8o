@@ -1,3 +1,5 @@
+/* oxlint-disable import/max-dependencies -- 記事ページのレイアウトを構成する route 専用コンポーネントを集約するため */
+
 import {
   Badge,
   LinkButton,
@@ -12,12 +14,14 @@ import { formatDate } from '@repo/helpers/date/format';
 import { commalize } from '@repo/helpers/number/commalize';
 import Link from 'next/link';
 import { type FC, type ReactNode, Suspense, ViewTransition } from 'react';
+
 import { SilentErrorBoundary } from '@/app/_components/error-boundary';
 import {
   getBlogContent,
   type getBlogsByTags,
   getBlogToc,
 } from '@/features/blog/interface/queries';
+
 import { END_OF_CONTENT_ID } from './constants';
 import { CopyMarkdownButton } from './copy-markdown-button';
 import { Feedback } from './feedback';
@@ -52,24 +56,24 @@ export const BlogLayoutContent: FC<BlogLayoutContentProps> = ({
     <div className="gap-4 xl:flex">
       <ViewReporter slug={slug} />
       <div className="m-auto flex flex-col gap-8 xl:max-w-5xl">
-        <article className="rounded-xl bg-bg-base/90 px-3 pt-8 pb-8 sm:px-10">
+        <article className="bg-bg-base/90 rounded-xl px-3 py-8 sm:px-10">
           <div className="flex flex-col gap-3">
             <div className="flex items-start justify-between gap-2">
               <ViewTransition name={`title-${slug}`}>
-                <h2 className="font-bold text-xl sm:text-2xl">{blog.title}</h2>
+                <h2 className="text-xl font-bold sm:text-2xl">{blog.title}</h2>
               </ViewTransition>
               <CopyMarkdownButton slug={slug} />
             </div>
-            {blog.description && (
+            {blog.description !== null && (
               <ViewTransition name={`description-${slug}`}>
-                <div className="rounded-xl bg-bg-mute p-4 sm:mt-4">
-                  <p className="text-fg-base text-sm sm:text-md">
+                <div className="bg-bg-mute rounded-xl p-4 sm:mt-4">
+                  <p className="text-fg-base sm:text-md text-sm">
                     {blog.description}
                   </p>
                 </div>
               </ViewTransition>
             )}
-            {blog.slideUrl && (
+            {blog.slideUrl !== undefined && (
               <div className="flex self-end">
                 <LinkButton
                   href={blog.slideUrl}
@@ -81,7 +85,7 @@ export const BlogLayoutContent: FC<BlogLayoutContentProps> = ({
                 </LinkButton>
               </div>
             )}
-            <div className="flex flex-col items-end gap-1 text-fg-mute text-xs sm:flex-row sm:items-center sm:justify-end sm:gap-2 sm:text-sm">
+            <div className="text-fg-mute flex flex-col items-end gap-1 text-xs sm:flex-row sm:items-center sm:justify-end sm:gap-2 sm:text-sm">
               <div className="flex flex-wrap items-center justify-end gap-1">
                 <ViewTransition name={`date-${slug}`}>
                   <div className="flex items-center gap-1">
@@ -118,13 +122,11 @@ export const BlogLayoutContent: FC<BlogLayoutContentProps> = ({
               {blog.tags.length > 0 && (
                 <div className="mb-4 flex flex-wrap items-center gap-2">
                   <TagIcon size="sm" />
-                  {blog.tags.map((tag) => {
-                    return (
-                      <Link href={`/tags/${tag.id.toString()}`} key={tag.id}>
-                        <Badge interactive key={tag.id} text={tag.name} />
-                      </Link>
-                    );
-                  })}
+                  {blog.tags.map((tag) => (
+                    <Link href={`/tags/${tag.id.toString()}`} key={tag.id}>
+                      <Badge interactive key={tag.id} text={tag.name} />
+                    </Link>
+                  ))}
                 </div>
               )}
             </ViewTransition>
@@ -136,7 +138,7 @@ export const BlogLayoutContent: FC<BlogLayoutContentProps> = ({
         </article>
         <div id={END_OF_CONTENT_ID}>
           <SilentErrorBoundary>
-            <section className="w-full rounded-xl bg-bg-base/90 px-3 pt-8 pb-8 sm:px-10">
+            <section className="bg-bg-base/90 w-full rounded-xl px-3 py-8 sm:px-10">
               <Feedback slug={slug} />
             </section>
           </SilentErrorBoundary>

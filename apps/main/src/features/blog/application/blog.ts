@@ -1,11 +1,13 @@
 import { db } from '@repo/database';
 import { getFrontmatter } from '@repo/helpers/mdx/frontmatter';
+
 import { getTocTree } from '@/shared/mdx/toc-tree';
+
 import { blogPath } from './path';
 
 export const getBlog = async (slug: string) => {
   const blog = await db.query.blogs.findFirst({
-    where: (blog, { eq }) => eq(blog.slug, slug),
+    where: (blogFields, { eq }) => eq(blogFields.slug, slug),
     with: {
       blogTag: {
         with: {
@@ -31,7 +33,6 @@ export const getBlog = async (slug: string) => {
   };
 };
 
-export const getBlogMetadata = async (slug: string) =>
-  getFrontmatter(blogPath(slug));
+export const getBlogMetadata = (slug: string) => getFrontmatter(blogPath(slug));
 
-export const getBlogToc = async (slug: string) => getTocTree(blogPath(slug));
+export const getBlogToc = (slug: string) => getTocTree(blogPath(slug));

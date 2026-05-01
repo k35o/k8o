@@ -1,5 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 import { expect, within } from 'storybook/test';
+
 import { CheckContrast } from './check-contrast';
 
 const meta: Meta<typeof CheckContrast> = {

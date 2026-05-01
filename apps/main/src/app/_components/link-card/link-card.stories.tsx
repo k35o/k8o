@@ -1,5 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 import { mocked } from 'storybook/test';
+
 import { LinkCard } from './link-card';
 import { getMetadata } from './metadata';
 

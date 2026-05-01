@@ -1,6 +1,8 @@
 import { LinkButton } from '@k8o/arte-odyssey';
+
 import { StatCard } from '@/app/(authenticated)/_components/stat-card/stat-card';
 import { getReadingListContentData } from '@/features/reading-list/interface/queries';
+
 import { ArticleTable } from '../article-table/article-table';
 import { SourceList } from '../source-list/source-list';
 import { SyncButton } from '../sync-button/sync-button';
@@ -23,7 +25,7 @@ export const ReadingListContent = async () => {
 
       <section className="flex flex-col gap-4">
         <div className="flex items-center justify-between">
-          <h3 className="font-bold text-lg">ソース</h3>
+          <h3 className="text-lg font-bold">ソース</h3>
           <LinkButton
             color="primary"
             href="/reading-list/sources/new"
@@ -38,7 +40,7 @@ export const ReadingListContent = async () => {
 
       <section className="flex flex-col gap-4">
         <div className="flex items-center justify-between">
-          <h3 className="font-bold text-lg">取得済み記事</h3>
+          <h3 className="text-lg font-bold">取得済み記事</h3>
           <SyncButton />
         </div>
         <ArticleTable articles={articleItems} />

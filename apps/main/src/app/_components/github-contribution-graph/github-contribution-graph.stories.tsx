@@ -1,5 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 import { expect, within } from 'storybook/test';
+
 import { Presenter } from './presenter';
 
 const meta: Meta<typeof Presenter> = {
@@ -74,7 +75,7 @@ function generateMockContributions(highActivity = false, empty = false) {
     const count = Math.floor(Math.random() * maxContributions);
 
     const dateString = date.toISOString().split('T')[0];
-    if (dateString) {
+    if (dateString !== undefined) {
       days.push({ date: dateString, count });
     }
   }

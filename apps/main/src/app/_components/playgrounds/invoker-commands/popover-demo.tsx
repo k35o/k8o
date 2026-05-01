@@ -1,3 +1,5 @@
+/* oxlint-disable react/no-unknown-property -- Baseline 2025 の Invoker Commands API 属性をデモするため */
+
 export function PopoverDemo() {
   return (
     <div className="space-y-4">
@@ -5,11 +7,9 @@ export function PopoverDemo() {
         <div className="space-y-2">
           <p className="text-fg-mute text-sm">Invoker Commands API</p>
           <button
-            className="rounded-md bg-primary-bg px-4 py-2 text-primary-fg"
-            // @ts-expect-error -- commandfor is not yet in TypeScript types
-            // biome-ignore lint/nursery/noUnknownAttribute: Baseline 2025
+            className="bg-primary-bg text-primary-fg rounded-md px-4 py-2"
             command="toggle-popover"
-            // biome-ignore lint/nursery/noUnknownAttribute: Baseline 2025
+            // Baseline 2025
             commandfor="demo-popover"
             type="button"
           >
@@ -19,10 +19,9 @@ export function PopoverDemo() {
         <div className="space-y-2">
           <p className="text-fg-mute text-sm">Popover API</p>
           <button
-            className="rounded-md bg-primary-bg px-4 py-2 text-primary-fg"
-            // biome-ignore lint/nursery/noUnknownAttribute: not unknown
+            className="bg-primary-bg text-primary-fg rounded-md px-4 py-2"
             popoverTarget="demo-popover"
-            // biome-ignore lint/nursery/noUnknownAttribute: not unknown
+            // not unknown
             popoverTargetAction="toggle"
             type="button"
           >
@@ -33,7 +32,7 @@ export function PopoverDemo() {
 
       <div
         aria-label="メニュー"
-        className="inset-auto top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 rounded-lg bg-bg-base p-4 shadow-md"
+        className="bg-bg-base inset-auto top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 rounded-lg p-4 shadow-md"
         id="demo-popover"
         popover=""
         role="menu"

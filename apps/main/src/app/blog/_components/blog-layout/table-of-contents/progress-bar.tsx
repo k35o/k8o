@@ -1,6 +1,8 @@
 import { type FC, useMemo } from 'react';
+
 import { calculateTocPercentage } from '@/shared/mdx/calculate-toc-percentage';
 import type { HeadingTree } from '@/shared/mdx/types';
+
 import { END_OF_CONTENT_ID } from '../constants';
 
 export const ProgressBar: FC<{
@@ -19,10 +21,10 @@ export const ProgressBar: FC<{
   const offset = circumference * (1 - currentPercentage / 100);
 
   return (
-    <div className="relative h-8 w-8 shrink-0">
+    <div className="relative size-8 shrink-0">
       <svg
         aria-hidden="true"
-        className="h-full w-full -rotate-90"
+        className="size-full -rotate-90"
         viewBox="0 0 32 32"
       >
         {/* 背景の円 */}

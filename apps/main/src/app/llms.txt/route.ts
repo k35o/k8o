@@ -1,5 +1,6 @@
 import { cacheLife } from 'next/cache';
 import { NextResponse } from 'next/server';
+
 import { getBlogContents } from '@/features/blog/interface/queries';
 import { getTalks } from '@/features/talks/interface/queries';
 import { assistPageMetadata, pageMetadata } from '@/shared/site/page-metadata';
@@ -19,7 +20,7 @@ async function _generateLlmContent() {
 
   const blogContent = blogs
     .map((blog) => {
-      if (!blog.description) {
+      if (blog.description === null) {
         return `#### ${blog.title}`;
       }
       return `#### ${blog.title}\n${blog.description}`;
@@ -30,10 +31,10 @@ async function _generateLlmContent() {
     .map((talk) => `#### ${talk.title}\n${talk.eventName}（${talk.eventDate}）`)
     .join('\n\n');
 
-  const forgeItems: {
+  const forgeItems: Array<{
     metadata: { title?: string | null; description?: string | null };
     subContent?: string;
-  }[] = [
+  }> = [
     { metadata: pageMetadata.blog, subContent: blogContent },
     { metadata: pageMetadata.talks, subContent: talkContent },
     { metadata: pageMetadata.playgrounds },
@@ -43,7 +44,7 @@ async function _generateLlmContent() {
   const forgeContent = forgeItems
     .map(({ metadata, subContent }) => {
       const base = _formatMetadataSection(metadata);
-      if (subContent) {
+      if (subContent !== undefined) {
         return `${base}\n\n${subContent}`;
       }
       return base;

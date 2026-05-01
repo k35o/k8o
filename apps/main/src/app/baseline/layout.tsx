@@ -1,5 +1,6 @@
 import { Heading } from '@k8o/arte-odyssey';
 import type { Metadata } from 'next';
+
 import { BaselineHelpDialog } from './_components/baseline-help-dialog';
 
 const description =

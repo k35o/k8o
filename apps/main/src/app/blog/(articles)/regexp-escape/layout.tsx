@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+
 import { BlogLayout } from '@/app/blog/_components/blog-layout';
 import { getBlogContent } from '@/features/blog/interface/queries';
 

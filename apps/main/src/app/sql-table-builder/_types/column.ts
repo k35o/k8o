@@ -24,7 +24,7 @@ export const COLUMN_TYPE_OPTIONS = [
   { value: 'timetz', label: '時刻(タイムゾーン付き)' },
   { value: 'timestamp', label: '日時' },
   { value: 'timestamptz', label: '日時(タイムゾーン付き)' },
-] as const satisfies { value: ColumnType; label: string }[];
+] as const satisfies Array<{ value: ColumnType; label: string }>;
 
 // テーブル用（省略ラベル）
 export const COLUMN_TYPE_OPTIONS_SHORT = [
@@ -39,7 +39,7 @@ export const COLUMN_TYPE_OPTIONS_SHORT = [
   { value: 'timetz', label: '時刻(TZ)' },
   { value: 'timestamp', label: '日時' },
   { value: 'timestamptz', label: '日時(TZ)' },
-] as const satisfies { value: ColumnType; label: string }[];
+] as const satisfies Array<{ value: ColumnType; label: string }>;
 
 export type Column = {
   name: string;

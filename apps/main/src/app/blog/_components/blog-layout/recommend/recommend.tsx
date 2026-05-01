@@ -9,6 +9,7 @@ import { formatDate } from '@repo/helpers/date/format';
 import type { Route } from 'next';
 import Link from 'next/link';
 import type { FC } from 'react';
+
 import { getBlogsByTags } from '@/features/blog/interface/queries';
 
 type RecommendProps = {
@@ -23,7 +24,7 @@ export const RecommendContent: FC<RecommendProps> = ({ blogs }) => {
   return (
     <div className="flex flex-col gap-8">
       <Heading type="h3">関連記事</Heading>
-      <div className="grid grid-cols-auto-fit-80 gap-4">
+      <div className="grid-cols-auto-fit-80 grid gap-4">
         {blogs.map((blog) => (
           <InteractiveCard key={blog.id}>
             <Link href={`/blog/${blog.slug}` as Route}>
@@ -32,11 +33,11 @@ export const RecommendContent: FC<RecommendProps> = ({ blogs }) => {
                 <div className="flex flex-col flex-wrap gap-2">
                   <div className="flex flex-wrap items-center gap-1">
                     <TagIcon size="sm" />
-                    {blog.tags.map((tag) => {
-                      return <Badge key={tag} size="sm" text={tag} />;
-                    })}
+                    {blog.tags.map((tag) => (
+                      <Badge key={tag} size="sm" text={tag} />
+                    ))}
                   </div>
-                  <div className="ml-auto flex items-center gap-1 text-fg-mute text-xs">
+                  <div className="text-fg-mute ml-auto flex items-center gap-1 text-xs">
                     <PublishDateIcon size="sm" />
                     <span>
                       公開: {formatDate(blog.createdAt, 'yyyy年M月d日')}

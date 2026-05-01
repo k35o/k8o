@@ -2,6 +2,7 @@
 
 import { Button, Dialog, Modal } from '@k8o/arte-odyssey';
 import { useState, useTransition } from 'react';
+
 import { deleteSource } from '@/features/reading-list/interface/source-actions';
 
 export const DeleteSourceButton = ({
@@ -19,7 +20,7 @@ export const DeleteSourceButton = ({
     setError(undefined);
     startTransition(async () => {
       const result = await deleteSource(id);
-      if (result.error) {
+      if (result.error !== undefined) {
         setError(result.error);
       }
     });
@@ -55,7 +56,9 @@ export const DeleteSourceButton = ({
               <p className="text-sm">
                 「{title}」を削除しますか？この操作は取り消せません。
               </p>
-              {error && <p className="text-fg-error text-sm">{error}</p>}
+              {error !== undefined && (
+                <p className="text-fg-error text-sm">{error}</p>
+              )}
               <div className="flex justify-end gap-3">
                 <Button
                   color="gray"

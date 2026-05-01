@@ -10,6 +10,7 @@ import {
   useToast,
 } from '@k8o/arte-odyssey';
 import type { FC } from 'react';
+
 import { useCheckJapaneseSyntax } from '../../_state/hooks';
 import { useProofreadDispatch, useProofreadState } from '../../_state/provider';
 
@@ -28,6 +29,7 @@ export const CompletePhase: FC = () => {
     void writeClipboard(displayText)
       .then(() => {
         onOpen('success', 'クリップボードにコピーしました');
+        return undefined;
       })
       .catch(() => {
         onOpen('error', 'コピーに失敗しました');
@@ -60,7 +62,7 @@ export const CompletePhase: FC = () => {
         </div>
         <Card>
           <div className="p-4">
-            <p className="whitespace-pre-wrap text-wrap break-all">
+            <p className="text-wrap break-all whitespace-pre-wrap">
               {displayText}
             </p>
           </div>

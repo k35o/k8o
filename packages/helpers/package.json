@@ -1,8 +1,8 @@
 {
   "name": "@repo/helpers",
   "version": "1.0.0",
-  "description": "Helper functions for k8o project",
   "private": true,
+  "description": "Helper functions for k8o project",
   "type": "module",
   "exports": {
     "./array/range": {

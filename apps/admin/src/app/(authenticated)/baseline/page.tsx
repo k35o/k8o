@@ -1,4 +1,5 @@
 import { verifySession } from '@/shared/auth/verify-session';
+
 import { BaselineSnapshotStats } from './_components/baseline-snapshot-stats';
 import { SyncBaselineButton } from './_components/sync-baseline-button';
 
@@ -8,8 +9,8 @@ export default async function BaselinePage() {
     <div className="flex flex-col gap-8">
       <div className="flex items-center justify-between">
         <div>
-          <h2 className="font-bold text-2xl">Baseline</h2>
-          <p className="mt-2 text-fg-mute text-sm">
+          <h2 className="text-2xl font-bold">Baseline</h2>
+          <p className="text-fg-mute mt-2 text-sm">
             Baselineスナップショットの管理
           </p>
         </div>

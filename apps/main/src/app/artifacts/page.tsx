@@ -1,4 +1,5 @@
 import { getArtifacts } from '@/features/artifacts/interface/queries';
+
 import { ArtifactCard } from './_components/artifact-card';
 
 export default function Page() {

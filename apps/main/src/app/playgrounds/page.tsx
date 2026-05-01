@@ -1,6 +1,7 @@
 import { Anchor, Card, Heading } from '@k8o/arte-odyssey';
 import type { Route } from 'next';
 import Link from 'next/link';
+
 import { Playground, playgroundSections } from '@/app/_components/playgrounds';
 
 export default function PlaygroundsPage() {
@@ -18,7 +19,7 @@ export default function PlaygroundsPage() {
                 <div className="mb-3 flex items-start justify-between gap-4">
                   <Heading type="h2">{section.title}</Heading>
                 </div>
-                <p className="mb-3 text-fg-mute">{section.description}</p>
+                <p className="text-fg-mute mb-3">{section.description}</p>
                 {section.type === 'blog' && (
                   <Anchor
                     href={`/blog/${section.slug}` as Route}

@@ -3,6 +3,7 @@
 import { Alert } from '@k8o/arte-odyssey';
 import { calcContrast } from '@repo/helpers/color/calc-contrast';
 import { type FC, useState } from 'react';
+
 import { ColorPallet } from '../color-pallet';
 import { ResultTable } from '../result-table';
 
@@ -20,11 +21,15 @@ export const CheckContrast: FC = () => {
   } as const;
 
   // 大文字（≥18pt or ≥14pt bold）の基準
-  const isInvalidAaLargeText = contrast < WCAG_THRESHOLDS.AA_LARGE_TEXT; // AA: 3:1以上
-  const isInvalidAaaLargeText = contrast < WCAG_THRESHOLDS.AAA_LARGE_TEXT; // AAA: 4.5:1以上
+  // AA: 3:1以上
+  const isInvalidAaLargeText = contrast < WCAG_THRESHOLDS.AA_LARGE_TEXT;
+  // AAA: 4.5:1以上
+  const isInvalidAaaLargeText = contrast < WCAG_THRESHOLDS.AAA_LARGE_TEXT;
   // 小文字（通常テキスト）の基準
-  const isInvalidAaNormalText = contrast < WCAG_THRESHOLDS.AA_NORMAL_TEXT; // AA: 4.5:1以上
-  const isInvalidAaaNormalText = contrast < WCAG_THRESHOLDS.AAA_NORMAL_TEXT; // AAA: 7:1以上
+  // AA: 4.5:1以上
+  const isInvalidAaNormalText = contrast < WCAG_THRESHOLDS.AA_NORMAL_TEXT;
+  // AAA: 7:1以上
+  const isInvalidAaaNormalText = contrast < WCAG_THRESHOLDS.AAA_NORMAL_TEXT;
 
   return (
     <div className="flex flex-col gap-8">
@@ -36,7 +41,7 @@ export const CheckContrast: FC = () => {
           setColor={setCompareColor}
         />
       </div>
-      <p className="text-center font-medium text-sm sm:text-base">
+      <p className="text-center text-sm font-medium sm:text-base">
         コントラスト比 {contrast.toFixed(2)}:1
       </p>
       {contrast < WCAG_THRESHOLDS.LOW_VISIBILITY_WARNING && (
@@ -51,7 +56,7 @@ export const CheckContrast: FC = () => {
         style={{ backgroundColor: baseColor }}
       >
         <p
-          className="font-bold text-xl md:text-3xl"
+          className="text-xl font-bold md:text-3xl"
           style={{ color: compareColor }}
         >
           テキストのプレビュー

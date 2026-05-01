@@ -1,5 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 import { expect, within } from 'storybook/test';
+
 import { TextLength } from './text-length';
 
 const meta: Meta<typeof TextLength> = {

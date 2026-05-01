@@ -27,7 +27,9 @@ export function TextIndentKeywordsDemo() {
           renderInput={({ labelId: _, ...props }) => (
             <Select
               {...props}
-              onChange={(e) => setIndentValue(e.target.value)}
+              onChange={(e) => {
+                setIndentValue(e.target.value);
+              }}
               options={[
                 { value: '1em', label: '1em' },
                 { value: '2em', label: '2em' },
@@ -39,17 +41,21 @@ export function TextIndentKeywordsDemo() {
         />
         <Checkbox
           label="each-line"
-          onChange={(e) => setUseEachLine(e.target.checked)}
+          onChange={(e) => {
+            setUseEachLine(e.target.checked);
+          }}
           value={useEachLine}
         />
         <Checkbox
           label="hanging"
-          onChange={(e) => setUseHanging(e.target.checked)}
+          onChange={(e) => {
+            setUseHanging(e.target.checked);
+          }}
           value={useHanging}
         />
       </div>
 
-      <div className="rounded-xl bg-bg-base p-6 shadow-sm">
+      <div className="bg-bg-base rounded-xl p-6 shadow-sm">
         <p
           style={{
             textIndent,

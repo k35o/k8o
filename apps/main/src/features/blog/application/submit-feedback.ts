@@ -17,7 +17,7 @@ export const submitFeedback = async (
   const blog = await db.query.blogs.findFirst({
     where: (blogs, { eq }) => eq(blogs.slug, slug),
   });
-  if (!blog) {
+  if (blog === undefined) {
     return {
       success: false,
       message: '指定されたブログが見つかりません',

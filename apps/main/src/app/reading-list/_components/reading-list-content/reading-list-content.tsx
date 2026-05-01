@@ -9,6 +9,7 @@ import {
 } from '@k8o/arte-odyssey';
 import { useQueryStates } from 'nuqs';
 import { type FC, type ReactNode, useCallback, useMemo, useState } from 'react';
+
 import type { DateRange, SortOrder } from '../../_utils/constants';
 import { readingListParsers } from '../../_utils/search-params';
 import { FilterBar } from '../filter-bar';
@@ -43,6 +44,8 @@ const getDateThreshold = (range: DateRange): Date => {
       return new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
     case 'all':
       return new Date(0);
+    default:
+      return new Date(0);
   }
 };
 
@@ -57,7 +60,7 @@ export const ReadingListContent: FC<Props> = ({ articles, sources, cards }) => {
 
   const handleQueryChange = useCallback(
     (value: string) => {
-      setParams({ q: value || null });
+      void setParams({ q: value || null });
     },
     [setParams],
   );
@@ -67,21 +70,21 @@ export const ReadingListContent: FC<Props> = ({ articles, sources, cards }) => {
       const next = sourceIds.includes(id)
         ? sourceIds.filter((sid) => sid !== id)
         : [...sourceIds, id];
-      setParams({ source: next.length > 0 ? next : null });
+      void setParams({ source: next.length > 0 ? next : null });
     },
     [sourceIds, setParams],
   );
 
   const handleDateChange = useCallback(
     (value: DateRange) => {
-      setParams({ date: value === 'all' ? null : value });
+      void setParams({ date: value === 'all' ? null : value });
     },
     [setParams],
   );
 
   const handleSortChange = useCallback(
     (value: SortOrder) => {
-      setParams({ sort: value === 'newest' ? null : value });
+      void setParams({ sort: value === 'newest' ? null : value });
     },
     [setParams],
   );
@@ -106,7 +109,7 @@ export const ReadingListContent: FC<Props> = ({ articles, sources, cards }) => {
       return true;
     });
 
-    return [...filtered].sort((a, b) => {
+    return [...filtered].toSorted((a, b) => {
       const diff =
         new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime();
       return sortOrder === 'oldest' ? -diff : diff;
@@ -159,7 +162,7 @@ export const ReadingListContent: FC<Props> = ({ articles, sources, cards }) => {
             <div className="text-fg-subtle">
               <SubscribeIcon size="lg" />
             </div>
-            <p className="font-bold text-fg-base text-lg">
+            <p className="text-fg-base text-lg font-bold">
               条件に一致する記事がありません
             </p>
             <p className="text-fg-mute text-sm">

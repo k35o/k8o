@@ -1,7 +1,9 @@
 import * as z from 'zod/mini';
+
 import { createReports } from '@/features/reports/application/report';
 
-const MAX_BODY_SIZE = 64 * 1024; // 64KB
+// 64KB
+const MAX_BODY_SIZE = 64 * 1024;
 
 const ALLOWED_ORIGINS =
   process.env['VERCEL_ENV'] === 'production'
@@ -19,15 +21,15 @@ const reportSchema = z.array(
 );
 
 export async function POST(req: Request): Promise<Response> {
-  if (ALLOWED_ORIGINS) {
+  if (ALLOWED_ORIGINS !== null) {
     const origin = req.headers.get('origin');
-    if (!(origin && ALLOWED_ORIGINS.has(origin))) {
+    if (origin === null || !ALLOWED_ORIGINS.has(origin)) {
       return new Response(null, { status: 403 });
     }
   }
 
   const contentLength = req.headers.get('content-length');
-  if (contentLength && Number(contentLength) > MAX_BODY_SIZE) {
+  if (contentLength !== null && Number(contentLength) > MAX_BODY_SIZE) {
     return new Response(null, { status: 413 });
   }
 

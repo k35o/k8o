@@ -11,6 +11,7 @@ import { formatDate } from '@repo/helpers/date/format';
 import type { Route } from 'next';
 import Link from 'next/link';
 import { type FC, useMemo, useState } from 'react';
+
 import type {
   BaselineFeature,
   BlogLink,
@@ -72,11 +73,11 @@ const FeatureList: FC<{
   return (
     <div className="flex flex-col gap-4">
       {filtered.length === 0 ? (
-        <p className="py-12 text-center text-fg-mute text-sm">
+        <p className="text-fg-mute py-12 text-center text-sm">
           該当する機能が見つかりません
         </p>
       ) : (
-        <ul className="divide-y divide-border-base">
+        <ul className="divide-border-base divide-y">
           {filtered.map((feature) => {
             const blog = blogMap[feature.featureId];
             return (
@@ -93,19 +94,19 @@ const FeatureList: FC<{
                   <span className="text-sm leading-relaxed">
                     {feature.name}
                   </span>
-                  <span className="font-mono text-fg-mute text-xs">
+                  <span className="text-fg-mute font-mono text-xs">
                     {feature.featureId}
                   </span>
                 </div>
                 {blog && (
                   <Link
-                    className="shrink-0 text-primary-fg text-xs transition-colors duration-150 ease-out hover:underline"
+                    className="text-primary-fg shrink-0 text-xs transition-colors duration-150 ease-out hover:underline"
                     href={`/blog/${blog.slug}` as Route}
                   >
                     Blog
                   </Link>
                 )}
-                <span className="hidden shrink-0 text-fg-mute text-xs sm:block">
+                <span className="text-fg-mute hidden shrink-0 text-xs sm:block">
                   {formatDate(new Date(feature.date), 'yyyy/MM/dd')}
                 </span>
               </li>
@@ -184,7 +185,7 @@ export const BaselineFeatureList: FC<{
     : availableYears[0];
 
   return (
-    <section className="flex flex-col gap-6 rounded-xl bg-bg-raised p-5 sm:p-6">
+    <section className="bg-bg-raised flex flex-col gap-6 rounded-xl p-5 sm:p-6">
       <div className="flex flex-col gap-4">
         <div className="sm:max-w-64">
           <FormControl
@@ -205,22 +206,22 @@ export const BaselineFeatureList: FC<{
           <div className="flex gap-4">
             <Checkbox
               label="Newly Available"
-              onChange={() =>
+              onChange={() => {
                 setVisibility((prev) => ({
                   ...prev,
                   newly: !prev.newly,
-                }))
-              }
+                }));
+              }}
               value={visibility.newly}
             />
             <Checkbox
               label="Widely Available"
-              onChange={() =>
+              onChange={() => {
                 setVisibility((prev) => ({
                   ...prev,
                   widely: !prev.widely,
-                }))
-              }
+                }));
+              }}
               value={visibility.widely}
             />
           </div>
@@ -232,7 +233,7 @@ export const BaselineFeatureList: FC<{
         </div>
       </div>
 
-      {defaultYear && (
+      {defaultYear !== undefined && (
         <Tabs.Root
           defaultSelectedId={defaultYear}
           ids={availableYears as [string, ...string[]]}
@@ -243,7 +244,7 @@ export const BaselineFeatureList: FC<{
               return (
                 <Tabs.Tab id={year} key={year}>
                   {year}
-                  <span className="ml-1 text-fg-mute text-xs">{count}</span>
+                  <span className="text-fg-mute ml-1 text-xs">{count}</span>
                 </Tabs.Tab>
               );
             })}

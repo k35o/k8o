@@ -4,14 +4,15 @@ import { ArteOdysseyProvider } from '@k8o/arte-odyssey';
 import { ThemeProvider } from 'next-themes';
 import { NuqsAdapter } from 'nuqs/adapters/next/app';
 import type { FC, PropsWithChildren } from 'react';
-import '@/shared/validation/zod';
 
-export const AppProvider: FC<PropsWithChildren> = ({ children }) => {
-  return (
-    <ThemeProvider attribute="class">
-      <NuqsAdapter>
-        <ArteOdysseyProvider>{children}</ArteOdysseyProvider>
-      </NuqsAdapter>
-    </ThemeProvider>
-  );
-};
+import { configureZod } from '@/shared/validation/zod';
+
+configureZod();
+
+export const AppProvider: FC<PropsWithChildren> = ({ children }) => (
+  <ThemeProvider attribute="class">
+    <NuqsAdapter>
+      <ArteOdysseyProvider>{children}</ArteOdysseyProvider>
+    </NuqsAdapter>
+  </ThemeProvider>
+);

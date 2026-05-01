@@ -1,6 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 import { useState } from 'react';
 import { expect, within } from 'storybook/test';
+
 import { ColorPallet } from './color-pallet';
 
 const meta: Meta<typeof ColorPallet> = {

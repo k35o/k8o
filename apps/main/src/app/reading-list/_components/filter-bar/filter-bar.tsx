@@ -9,6 +9,7 @@ import {
   TextField,
 } from '@k8o/arte-odyssey';
 import { type FC, useMemo } from 'react';
+
 import {
   DATE_RANGE_OPTIONS,
   type DateRange,
@@ -101,7 +102,7 @@ export const FilterBar: FC<Props> = ({
       />
       <Separator color="subtle" />
       <fieldset className="flex flex-col gap-2">
-        <legend className="mb-1 font-medium text-fg-mute text-xs">
+        <legend className="text-fg-mute mb-1 text-xs font-medium">
           ソース
         </legend>
         <ul className="flex max-h-80 flex-col gap-1 overflow-y-auto overscroll-contain">

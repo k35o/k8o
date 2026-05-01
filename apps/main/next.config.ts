@@ -6,9 +6,10 @@ const nextConfig: NextConfig = {
   reactStrictMode: true,
   reactCompiler: true,
   pageExtensions: ['tsx', 'mdx', 'ts'],
-  rewrites: async () => [
-    { source: '/blog/:slug.md', destination: '/blog/md/:slug' },
-  ],
+  rewrites: () =>
+    Promise.resolve([
+      { source: '/blog/:slug.md', destination: '/blog/md/:slug' },
+    ]),
   compiler: {
     removeConsole: process.env['NODE_ENV'] === 'production' && {
       exclude: ['error', 'warn'],

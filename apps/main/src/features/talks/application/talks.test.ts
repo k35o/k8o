@@ -1,4 +1,5 @@
 import { db } from '@repo/database';
+
 import { getTalks } from './talks';
 
 vi.mock('@repo/database', () => ({

@@ -1,4 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
+
 import { BlogLayoutContent } from './blog-layout';
 
 const blog = {
@@ -105,6 +106,6 @@ export const Primary: Story = {
     headingTree,
     recommendedBlogs,
     slug: 'tanstack-router-introduction',
-    viewCount: 74931,
+    viewCount: 74_931,
   },
 };

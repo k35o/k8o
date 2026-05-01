@@ -1,6 +1,5 @@
-export const between = (value: number, min: number, max: number): number => {
-  return Math.min(Math.max(value, min), max);
-};
+export const between = (value: number, min: number, max: number): number =>
+  Math.min(Math.max(value, min), max);
 
 if (import.meta.vitest) {
   describe('between', () => {

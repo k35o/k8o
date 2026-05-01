@@ -28,10 +28,10 @@ type BaselineFeature = {
 
 type SyncResult = {
   newFeatures: BaselineFeature[];
-  statusChanges: {
+  statusChanges: Array<{
     feature: BaselineFeature;
     previousStatus: string;
-  }[];
+  }>;
 };
 
 const MAX_PAGES = 50;
@@ -44,7 +44,7 @@ const fetchPage = async (
     q: `baseline_status:${status}`,
     page_size: '100',
   });
-  if (pageToken) {
+  if (pageToken !== undefined) {
     params.set('page_token', pageToken);
   }
 
@@ -71,7 +71,7 @@ const fetchAllFeatures = async (
   }
   const page = await fetchPage(status, pageToken);
   const features = [...accumulated, ...page.data];
-  if (page.metadata.next_page_token) {
+  if (page.metadata.next_page_token !== undefined) {
     return fetchAllFeatures(
       status,
       page.metadata.next_page_token,
@@ -87,7 +87,8 @@ const toBaselineFeature = (feature: ApiFeature): BaselineFeature => ({
   name: feature.name,
   status: feature.baseline.status,
   date:
-    feature.baseline.status === 'widely' && feature.baseline.high_date
+    feature.baseline.status === 'widely' &&
+    feature.baseline.high_date !== undefined
       ? feature.baseline.high_date
       : feature.baseline.low_date,
 });
@@ -99,8 +100,8 @@ export async function syncBaseline(): Promise<SyncResult> {
   ]);
 
   const allFeatures = [
-    ...newlyFeatures.map(toBaselineFeature),
-    ...widelyFeatures.map(toBaselineFeature),
+    ...newlyFeatures.map((feature) => toBaselineFeature(feature)),
+    ...widelyFeatures.map((feature) => toBaselineFeature(feature)),
   ];
 
   const existingSnapshots = await db
@@ -115,18 +116,18 @@ export async function syncBaseline(): Promise<SyncResult> {
 
   const newFeatures: BaselineFeature[] = [];
   const statusChanges: SyncResult['statusChanges'] = [];
-  const toInsert: {
+  const toInsert: Array<{
     featureId: string;
     name: string;
     status: 'newly' | 'widely';
     date: string;
-  }[] = [];
-  const toUpdate: {
+  }> = [];
+  const toUpdate: Array<{
     featureId: string;
     name: string;
     status: 'newly' | 'widely';
     date: string;
-  }[] = [];
+  }> = [];
 
   for (const feature of allFeatures) {
     const existing = existingByFeatureId.get(feature.featureId);
@@ -157,7 +158,7 @@ export async function syncBaseline(): Promise<SyncResult> {
   }
 
   if (toUpdate.length > 0) {
-    await db.transaction(async (tx) =>
+    await db.transaction((tx) =>
       Promise.all(
         toUpdate.map((item) =>
           tx

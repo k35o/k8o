@@ -1,4 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
+
 import { SourceForm } from './source-form';
 
 const meta: Meta<typeof SourceForm> = {
@@ -9,7 +10,7 @@ const meta: Meta<typeof SourceForm> = {
 export default meta;
 type Story = StoryObj<typeof SourceForm>;
 
-const noopAction = async () => ({});
+const noopAction = () => Promise.resolve({});
 
 export const New: Story = {
   args: {

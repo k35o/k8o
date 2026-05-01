@@ -9,25 +9,32 @@ export const DialogRequestCloseDemo: FC = () => {
   const [logs, setLogs] = useState<string[]>([]);
 
   useEffect(() => {
-    if (!ref.current) return;
+    const dialog = ref.current;
+    if (!dialog) return undefined;
 
     const handleClose = () => {
-      setLogs((logs) => ['ダイアログが閉じられました', ...logs]);
+      setLogs((previousLogs) => [
+        'ダイアログが閉じられました',
+        ...previousLogs,
+      ]);
       setState('');
     };
     const handleCancel = (e: Event) => {
-      setLogs((logs) => ['ダイアログがキャンセルされました', ...logs]);
+      setLogs((previousLogs) => [
+        'ダイアログがキャンセルされました',
+        ...previousLogs,
+      ]);
       if (state !== '') {
         e.preventDefault();
       }
     };
 
-    ref.current.addEventListener('close', handleClose);
-    ref.current.addEventListener('cancel', handleCancel);
+    dialog.addEventListener('close', handleClose);
+    dialog.addEventListener('cancel', handleCancel);
 
     return () => {
-      ref.current?.removeEventListener('close', handleClose);
-      ref.current?.removeEventListener('cancel', handleCancel);
+      dialog.removeEventListener('close', handleClose);
+      dialog.removeEventListener('cancel', handleCancel);
     };
   }, [state]);
 
@@ -35,7 +42,7 @@ export const DialogRequestCloseDemo: FC = () => {
     <div className="flex flex-col gap-4 p-4">
       <Button onClick={() => ref.current?.showModal()}>ダイアログを開く</Button>
       {logs.length > 0 && (
-        <div className="max-h-40 overflow-y-scroll border border-border-base">
+        <div className="border-border-base max-h-40 overflow-y-scroll border">
           <ul className="list-disc p-2 pl-6">
             {logs.map((log, index) => (
               <li className="text-fg-mute" key={log + index.toString()}>
@@ -46,7 +53,7 @@ export const DialogRequestCloseDemo: FC = () => {
         </div>
       )}
       <dialog
-        className="m-auto max-h-lg w-5/6 max-w-2xl rounded-lg bg-bg-base shadow-md backdrop:bg-back-drop"
+        className="max-h-lg bg-bg-base backdrop:bg-back-drop m-auto w-5/6 max-w-2xl rounded-lg shadow-md"
         ref={ref}
       >
         <form
@@ -58,17 +65,15 @@ export const DialogRequestCloseDemo: FC = () => {
         >
           <FormControl
             label="名前"
-            renderInput={({ labelId: _, ...props }) => {
-              return (
-                <TextField
-                  {...props}
-                  onChange={(e) => {
-                    setState(e.target.value);
-                  }}
-                  value={state}
-                />
-              );
-            }}
+            renderInput={({ labelId: _, ...props }) => (
+              <TextField
+                {...props}
+                onChange={(e) => {
+                  setState(e.target.value);
+                }}
+                value={state}
+              />
+            )}
           />
           <div className="flex gap-4">
             <Button

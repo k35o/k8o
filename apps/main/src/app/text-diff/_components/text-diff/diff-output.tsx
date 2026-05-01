@@ -28,7 +28,7 @@ export const DiffOutput: FC<DiffOutputProps> = ({ diff }) => {
   }
 
   return (
-    <div className="whitespace-pre-wrap break-all font-mono text-sm">
+    <div className="font-mono text-sm break-all whitespace-pre-wrap">
       {diff.map((part, index) => {
         if (part.added) {
           return (

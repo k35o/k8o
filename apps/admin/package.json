@@ -1,8 +1,8 @@
 {
   "name": "admin",
   "version": "1.0.0",
-  "description": "k8o admin site",
   "private": true,
+  "description": "k8o admin site",
   "type": "module",
   "scripts": {
     "dev": "portless admin next dev --inspect",

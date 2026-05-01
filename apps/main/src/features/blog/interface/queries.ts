@@ -1,4 +1,5 @@
 import { cacheLife } from 'next/cache';
+
 import {
   getBlogToc as _getBlogToc,
   getBlog,
@@ -15,7 +16,7 @@ export async function getBlogContents() {
   cacheLife('max');
 
   const blogs = await getBlogs();
-  return await Promise.all(
+  return Promise.all(
     blogs.map(async (blog) => {
       const metadata = await getBlogMetadata(blog.slug);
       return {
@@ -54,7 +55,8 @@ export async function getBlogToc(slug: string) {
   'use cache';
   cacheLife('max');
 
-  return await _getBlogToc(slug);
+  const toc = await Promise.resolve(_getBlogToc(slug));
+  return toc;
 }
 
 export async function getBlogsByTags(slug: string) {
@@ -62,7 +64,7 @@ export async function getBlogsByTags(slug: string) {
   cacheLife('max');
 
   const blog = await getBlogContent(slug);
-  return await _getBlogsByTags(
+  return _getBlogsByTags(
     slug,
     blog.tags.map((tag) => tag.id),
   );
@@ -72,5 +74,6 @@ export async function getBlogView(id: number) {
   'use cache';
   cacheLife('minutes');
 
-  return await _getBlogView(id);
+  const view = await Promise.resolve(_getBlogView(id));
+  return view;
 }

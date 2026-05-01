@@ -2,6 +2,7 @@
 
 import { Button, useToast } from '@k8o/arte-odyssey';
 import { type FC, useTransition } from 'react';
+
 import { syncBaselineAction } from '@/features/baseline/interface/actions';
 
 export const SyncBaselineButton: FC = () => {
@@ -11,7 +12,7 @@ export const SyncBaselineButton: FC = () => {
   const handleSync = () => {
     startTransition(async () => {
       const res = await syncBaselineAction();
-      if (res.error) {
+      if (res.error !== undefined) {
         onOpen('error', res.error);
         return;
       }

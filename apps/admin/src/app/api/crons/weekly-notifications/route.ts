@@ -1,4 +1,5 @@
 import { type NextRequest, NextResponse } from 'next/server';
+
 import { sendWeeklyCommentNotifications } from '@/features/comments/application/send-weekly-notifications';
 
 const getErrorStatus = (
@@ -7,6 +8,8 @@ const getErrorStatus = (
   switch (code) {
     case 'DATABASE_ERROR':
     case 'PUSH_NOTIFICATION_ERROR':
+      return 500;
+    default:
       return 500;
   }
 };

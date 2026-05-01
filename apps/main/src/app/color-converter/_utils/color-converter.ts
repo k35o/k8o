@@ -132,7 +132,6 @@ export const hexToHsl = (hex: string): HSL => {
   const min = Math.min(red, green, blue);
 
   let h = 0;
-  let s = 0;
   const l = (max + min) / 2;
   const delta = max - min;
 
@@ -140,7 +139,7 @@ export const hexToHsl = (hex: string): HSL => {
     return { h: 0, s: 0, l };
   }
 
-  s = l >= 0.5 ? delta / (2 - (max + min)) : delta / (max + min);
+  const s = l >= 0.5 ? delta / (2 - (max + min)) : delta / (max + min);
 
   switch (max) {
     case red:

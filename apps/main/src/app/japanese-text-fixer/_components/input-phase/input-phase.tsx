@@ -2,6 +2,7 @@
 
 import { Button, Card, FormControl, Textarea } from '@k8o/arte-odyssey';
 import type { SubmitEventHandler } from 'react';
+
 import { useCheckJapaneseSyntax } from '../../_state/hooks';
 import { useProofreadDispatch, useProofreadState } from '../../_state/provider';
 
@@ -39,7 +40,7 @@ export const InputPhase = () => {
               )}
             />
           </div>
-          <p className="text-right text-fg-mute text-sm">
+          <p className="text-fg-mute text-right text-sm">
             {inputText.length}文字
           </p>
         </div>

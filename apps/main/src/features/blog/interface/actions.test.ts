@@ -1,4 +1,5 @@
 import { db } from '@repo/database';
+
 import { feedback } from './actions';
 
 vi.mock('@repo/database', () => ({
@@ -28,7 +29,9 @@ vi.mock('@repo/database', () => ({
     },
   },
 }));
-vi.mock('@/shared/validation/zod', () => ({}));
+vi.mock('@/shared/validation/zod', () => ({
+  configureZod: vi.fn(),
+}));
 
 describe('feedback', () => {
   beforeEach(() => {

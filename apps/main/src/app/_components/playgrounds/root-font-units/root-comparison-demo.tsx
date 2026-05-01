@@ -21,39 +21,39 @@ export function RootComparisonDemo() {
               value={fontSize}
               {...props}
             />
-            <span className="shrink-0 text-fg-mute text-sm">px</span>
+            <span className="text-fg-mute shrink-0 text-sm">px</span>
           </div>
         )}
       />
 
-      <div className="flex flex-col gap-6 rounded-lg border border-border-base p-6">
+      <div className="border-border-base flex flex-col gap-6 rounded-lg border p-6">
         <div style={{ fontSize: `${fontSize}px` }}>
           <div className="flex items-center gap-4">
-            <span className="w-16 font-mono text-fg-mute text-xs">1ch</span>
+            <span className="text-fg-mute w-16 font-mono text-xs">1ch</span>
             <div className="flex items-center gap-2">
               <span style={{ lineHeight: 1 }}>0</span>
               <div
-                className="h-2 rounded bg-primary-fg"
+                className="bg-primary-fg h-2 rounded"
                 style={{ width: `${fontSize}px` }}
               />
             </div>
-            <span className="font-mono text-fg-mute text-xs">{fontSize}px</span>
+            <span className="text-fg-mute font-mono text-xs">{fontSize}px</span>
           </div>
         </div>
 
-        <div className="h-px bg-border-base" />
+        <div className="bg-border-base h-px" />
 
         <div>
           <div className="flex items-center gap-4">
-            <span className="w-16 font-mono text-fg-mute text-xs">1rch</span>
+            <span className="text-fg-mute w-16 font-mono text-xs">1rch</span>
             <div className="flex items-center gap-2">
               <span style={{ lineHeight: 1 }}>0</span>
               <div
-                className="h-2 rounded bg-secondary-fg"
+                className="bg-secondary-fg h-2 rounded"
                 style={{ width: '1rch' }}
               />
             </div>
-            <span className="font-mono text-fg-mute text-xs">16px</span>
+            <span className="text-fg-mute font-mono text-xs">16px</span>
           </div>
         </div>
       </div>

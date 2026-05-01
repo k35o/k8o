@@ -1,3 +1,35 @@
+// 対応する括弧の内容を見つけるヘルパー関数
+function extractFunctionContent(
+  source: string,
+  funcName: string,
+): string | null {
+  const funcPattern = new RegExp(`${funcName}\\s*\\(`, 'i');
+  const match = source.match(funcPattern);
+  if (!match) return null;
+
+  // 開き括弧の位置
+  const startIndex = (match.index ?? 0) + match[0].length - 1;
+  let depth = 0;
+  let endIndex = -1;
+
+  for (let i = startIndex; i < source.length; i++) {
+    if (source[i] === '(') {
+      depth++;
+    } else if (source[i] === ')') {
+      depth--;
+      if (depth === 0) {
+        endIndex = i;
+        break;
+      }
+    }
+  }
+
+  if (endIndex === -1) return null;
+
+  const content = source.slice(startIndex + 1, endIndex);
+  return `${funcName.toLowerCase()}(${content})`;
+}
+
 /**
  * テキスト文字列から最初に見つかった色の値を抽出します。
  * HSL、RGB、RGBA、HSLA、HEX、名前付き色をサポートします。
@@ -6,58 +38,27 @@
  * @returns 最初に見つかった色の値、または色が検出されなかった場合はnull
  */
 export function extractColor(text: string): string | null {
-  // 対応する括弧の内容を見つけるヘルパー関数
-  function extractFunctionContent(
-    text: string,
-    funcName: string,
-  ): string | null {
-    const funcPattern = new RegExp(`${funcName}\\s*\\(`, 'i');
-    const match = text.match(funcPattern);
-    if (!match) return null;
-
-    const startIndex = (match.index ?? 0) + match[0].length - 1; // 開き括弧の位置
-    let depth = 0;
-    let endIndex = -1;
-
-    for (let i = startIndex; i < text.length; i++) {
-      if (text[i] === '(') {
-        depth++;
-      } else if (text[i] === ')') {
-        depth--;
-        if (depth === 0) {
-          endIndex = i;
-          break;
-        }
-      }
-    }
-
-    if (endIndex === -1) return null;
-
-    const content = text.slice(startIndex + 1, endIndex);
-    return `${funcName.toLowerCase()}(${content})`;
-  }
-
   // HSLパターン: hsl(h, s%, l%) ネストした括弧をサポート
   const hslMatch = extractFunctionContent(text, 'hsl');
-  if (hslMatch) {
+  if (hslMatch !== null) {
     return hslMatch;
   }
 
   // RGBパターン: rgb(r, g, b) ネストした括弧をサポート
   const rgbMatch = extractFunctionContent(text, 'rgb');
-  if (rgbMatch) {
+  if (rgbMatch !== null) {
     return rgbMatch;
   }
 
   // RGBAパターン: rgba(r, g, b, a) ネストした括弧をサポート
   const rgbaMatch = extractFunctionContent(text, 'rgba');
-  if (rgbaMatch) {
+  if (rgbaMatch !== null) {
     return rgbaMatch;
   }
 
   // HSLAパターン: hsla(h, s%, l%, a) ネストした括弧をサポート
   const hslaMatch = extractFunctionContent(text, 'hsla');
-  if (hslaMatch) {
+  if (hslaMatch !== null) {
     return hslaMatch;
   }
 

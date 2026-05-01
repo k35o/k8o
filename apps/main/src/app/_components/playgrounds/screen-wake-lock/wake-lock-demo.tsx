@@ -8,12 +8,13 @@ export const WakeLockDemo: FC = () => {
   const wakeLock = useRef<WakeLockSentinel | null>(null);
 
   const handleClick = useCallback(async () => {
-    if (navigator.wakeLock) {
+    if ('wakeLock' in navigator) {
       if (wakeLock.current) {
         wakeLock.current
           .release()
           .then(() => {
             wakeLock.current = null;
+            return undefined;
           })
           .catch((error: unknown) => {
             console.error('ロックの解除に失敗しました', error);

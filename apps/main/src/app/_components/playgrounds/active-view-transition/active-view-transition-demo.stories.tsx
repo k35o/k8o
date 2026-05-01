@@ -1,4 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
+
 import { Playground } from '../playground';
 import { ActiveViewTransitionDemo } from './active-view-transition-demo';
 

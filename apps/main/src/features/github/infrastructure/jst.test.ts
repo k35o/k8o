@@ -1,4 +1,3 @@
-import { describe, expect, it } from 'vitest';
 import { getJstUtcEnd, getJstUtcStart } from './jst';
 
 describe('GitHub contributions JST helpers', () => {

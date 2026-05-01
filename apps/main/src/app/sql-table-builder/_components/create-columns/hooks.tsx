@@ -1,5 +1,6 @@
 import { uuidV4 } from '@repo/helpers/uuid-v4';
 import { useCallback } from 'react';
+
 import type { Column } from '../../_types/column';
 import type { Restriction } from '../../_types/restriction';
 
@@ -47,8 +48,8 @@ export const useCreateColumns = (
       if (columnsEntries.length <= 1) {
         return;
       }
-      setRestrictions((restrictions) => {
-        return Object.fromEntries<Restriction>(
+      setRestrictions((restrictions) =>
+        Object.fromEntries<Restriction>(
           Object.entries(restrictions).map(([restrictionId, restriction]) => {
             if (restriction.type === 'foreign') {
               const firstColumn = Object.keys(columns)[0] ?? '';
@@ -73,8 +74,8 @@ export const useCreateColumns = (
               },
             ];
           }),
-        );
-      });
+        ),
+      );
       setColumns(
         Object.fromEntries(
           columnsEntries.filter(([columnId]) => columnId !== id),

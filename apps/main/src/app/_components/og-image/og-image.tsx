@@ -1,5 +1,6 @@
 import { loadDefaultJapaneseParser } from 'budoux';
 import { ImageResponse } from 'next/og';
+
 import { getIconDataUrl } from '@/shared/og/get-icon-data-url';
 import { getMPlus2Font } from '@/shared/og/get-m-plus-2-font';
 
@@ -10,7 +11,7 @@ type OgImageProps = {
 
 export async function OgImage({ title, category }: OgImageProps) {
   const words = loadDefaultJapaneseParser().parse(title);
-  const iconDataUrl = await getIconDataUrl();
+  const iconDataUrl = getIconDataUrl();
   const fontText = `${title}${category ?? ''}${(category ?? '').toUpperCase()}k8oK8O`;
   const font450 = await getMPlus2Font({ text: fontText });
 
@@ -117,7 +118,7 @@ export async function OgImage({ title, category }: OgImageProps) {
               gap: 24,
             }}
           >
-            {/** biome-ignore lint/performance/noImgElement: ogなので */}
+            {/* ogなので */}
             <img
               alt="アイコン"
               height={96}
@@ -136,7 +137,7 @@ export async function OgImage({ title, category }: OgImageProps) {
                 gap: 4,
               }}
             >
-              {category && (
+              {category !== undefined && (
                 <span
                   style={{
                     color: '#334155',

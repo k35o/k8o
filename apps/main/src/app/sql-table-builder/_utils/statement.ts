@@ -1,4 +1,5 @@
 import * as z from 'zod/mini';
+
 import type { Column, InvalidColumns } from '../_types/column';
 import type { InvalidRestrictions, Restriction } from '../_types/restriction';
 import type { InvalidTable, Table } from '../_types/table';
@@ -102,13 +103,11 @@ export const makeStatement = (
                   if (typeof id !== 'string' || typeof name !== 'string') {
                     return errors;
                   }
-                  return {
-                    ...errors,
-                    [id]: {
-                      ...errors[id],
-                      [name]: issue.message,
-                    },
+                  errors[id] = {
+                    ...errors[id],
+                    [name]: issue.message,
                   };
+                  return errors;
                 },
                 {},
               ),
@@ -131,24 +130,20 @@ export const makeStatement = (
                     if (typeof reference !== 'string') {
                       return errors;
                     }
-                    return {
-                      ...errors,
-                      [id]: {
-                        ...errors[id],
-                        reference: {
-                          ...errors[id]?.reference,
-                          [reference]: issue.message,
-                        },
+                    errors[id] = {
+                      ...errors[id],
+                      reference: {
+                        ...errors[id]?.reference,
+                        [reference]: issue.message,
                       },
                     };
+                    return errors;
                   }
-                  return {
-                    ...errors,
-                    [id]: {
-                      ...errors[id],
-                      [type]: issue.message,
-                    },
+                  errors[id] = {
+                    ...errors[id],
+                    [type]: issue.message,
                   };
+                  return errors;
                 },
                 {},
               ),
@@ -161,7 +156,8 @@ export const makeStatement = (
     isSuccessful: true,
     statement: `CREATE TABLE ${table.name} (\n${Object.values(columns)
       .map((column) => {
-        const defaultQuery = column.default ? ` DEFAULT ${column.default}` : '';
+        const defaultQuery =
+          column.default === undefined ? '' : ` DEFAULT ${column.default}`;
         if (['timestamp', 'timestamptz'].includes(column.type)) {
           return `  ${column.name} timestamp ${column.nullable ? 'NULL' : 'NOT NULL'} ${column.type === 'timestamptz' ? 'WITH TIME ZONE' : 'WITHOUT TIME ZONE'}${defaultQuery}`;
         }
@@ -179,10 +175,10 @@ export const makeStatement = (
         if (restriction.type === 'primary') {
           const columnNames = restriction.columns.reduce((acc, column) => {
             const columnName = columns[column]?.name;
-            if (!columnName) {
+            if (columnName === undefined) {
               return acc;
             }
-            if (!acc) {
+            if (acc === '') {
               return columnName;
             }
             return `${acc}, ${columnName}`;
@@ -192,10 +188,10 @@ export const makeStatement = (
         if (restriction.type === 'unique') {
           const columnNames = restriction.columns.reduce((acc, column) => {
             const columnName = columns[column]?.name;
-            if (!columnName) {
+            if (columnName === undefined) {
               return acc;
             }
-            if (!acc) {
+            if (acc === '') {
               return columnName;
             }
             return `${acc}, ${columnName}`;
@@ -203,7 +199,7 @@ export const makeStatement = (
           return `  UNIQUE (${columnNames}),`;
         }
         const columnName = columns[restriction.column]?.name;
-        if (!columnName) {
+        if (columnName === undefined) {
           return '';
         }
         return `  FOREIGN KEY (${columnName}) REFERENCES ${restriction.reference.table}(${restriction.reference.column}),`;
@@ -213,9 +209,10 @@ export const makeStatement = (
       )}\n);\n\nCOMMENT ON TABLE ${table.name} IS '${table.alias}';\n${Object.values(
       columns,
     )
-      .map((column) => {
-        return `COMMENT ON COLUMN ${table.name}.${column.name} IS '${column.alias}';`;
-      })
+      .map(
+        (column) =>
+          `COMMENT ON COLUMN ${table.name}.${column.name} IS '${column.alias}';`,
+      )
       .join('\n')}`,
   };
 };

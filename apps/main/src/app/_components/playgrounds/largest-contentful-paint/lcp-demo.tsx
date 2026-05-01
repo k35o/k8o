@@ -27,12 +27,12 @@ export function LCPDemo() {
   useEffect(() => {
     if (
       typeof PerformanceObserver === 'undefined' ||
-      !PerformanceObserver.supportedEntryTypes?.includes(
+      !PerformanceObserver.supportedEntryTypes.includes(
         'largest-contentful-paint',
       )
     ) {
       setIsSupported(false);
-      return;
+      return undefined;
     }
 
     const observer = new PerformanceObserver((list) => {
@@ -74,7 +74,7 @@ export function LCPDemo() {
 
   if (!isSupported) {
     return (
-      <div className="rounded-xl bg-bg-mute p-4">
+      <div className="bg-bg-mute rounded-xl p-4">
         <p className="text-fg-mute text-sm">
           このブラウザはLargest Contentful Paint APIをサポートしていません。
         </p>
@@ -92,17 +92,23 @@ export function LCPDemo() {
         </Button>
         <span className="text-fg-mute text-sm">
           検出回数:{' '}
-          <span className="font-medium text-fg-base">{entries.length}</span>
+          <span className="text-fg-base font-medium">{entries.length}</span>
         </span>
       </div>
 
-      {latestEntry ? (
-        <div className="rounded-xl bg-bg-base p-4 shadow-sm">
+      {latestEntry === undefined ? (
+        <div className="bg-bg-mute rounded-xl p-4">
+          <p className="text-fg-mute text-sm">
+            LCPエントリを待機中...ページを再読み込みすると計測されます。
+          </p>
+        </div>
+      ) : (
+        <div className="bg-bg-base rounded-xl p-4 shadow-sm">
           <div className="mb-3 flex items-center justify-between">
             <div className="flex items-center gap-2">
-              <h4 className="font-medium text-fg-base">現在のLCP</h4>
-              {latestEntry.element && (
-                <code className="rounded bg-bg-mute px-1.5 py-0.5 text-xs">
+              <h4 className="text-fg-base font-medium">現在のLCP</h4>
+              {latestEntry.element !== null && (
+                <code className="bg-bg-mute rounded px-1.5 py-0.5 text-xs">
                   {latestEntry.element}
                 </code>
               )}
@@ -113,7 +119,7 @@ export function LCPDemo() {
           </div>
           <div className="mb-4">
             <div className="mb-1 flex items-baseline gap-2">
-              <span className="font-bold text-2xl text-primary-fg">
+              <span className="text-primary-fg text-2xl font-bold">
                 {latestEntry.startTime.toFixed(0)}
               </span>
               <span className="text-fg-mute text-sm">ms (startTime)</span>
@@ -122,26 +128,26 @@ export function LCPDemo() {
           <div className="space-y-2 text-sm">
             <div className="flex justify-between">
               <span className="text-fg-mute">renderTime</span>
-              <span className="font-medium text-fg-base">
+              <span className="text-fg-base font-medium">
                 {latestEntry.renderTime.toFixed(1)}ms
               </span>
             </div>
             <div className="flex justify-between">
               <span className="text-fg-mute">loadTime</span>
-              <span className="font-medium text-fg-base">
+              <span className="text-fg-base font-medium">
                 {latestEntry.loadTime.toFixed(1)}ms
               </span>
             </div>
             <div className="flex justify-between">
               <span className="text-fg-mute">size</span>
-              <span className="font-medium text-fg-base">
+              <span className="text-fg-base font-medium">
                 {latestEntry.size.toLocaleString()}px²
               </span>
             </div>
             {latestEntry.url && (
               <div className="flex justify-between gap-2">
-                <span className="shrink-0 text-fg-mute">url</span>
-                <span className="truncate font-medium text-fg-base text-xs">
+                <span className="text-fg-mute shrink-0">url</span>
+                <span className="text-fg-base truncate text-xs font-medium">
                   {latestEntry.url}
                 </span>
               </div>
@@ -149,39 +155,35 @@ export function LCPDemo() {
             {latestEntry.elementId && (
               <div className="flex justify-between">
                 <span className="text-fg-mute">id</span>
-                <span className="font-medium text-fg-base">
+                <span className="text-fg-base font-medium">
                   {latestEntry.elementId}
                 </span>
               </div>
             )}
           </div>
         </div>
-      ) : (
-        <div className="rounded-xl bg-bg-mute p-4">
-          <p className="text-fg-mute text-sm">
-            LCPエントリを待機中...ページを再読み込みすると計測されます。
-          </p>
-        </div>
       )}
 
       {entries.length > 1 && (
         <div className="space-y-2">
-          <h4 className="font-medium text-fg-mute text-sm">LCP候補の履歴</h4>
+          <h4 className="text-fg-mute text-sm font-medium">LCP候補の履歴</h4>
           <div className="space-y-1">
             {entries.slice(1).map((entry) => (
               <div
-                className="flex items-center justify-between rounded-md bg-bg-mute px-3 py-2 text-sm"
+                className="bg-bg-mute flex items-center justify-between rounded-md px-3 py-2 text-sm"
                 key={entry.id}
               >
                 <div className="flex items-center gap-2">
                   <span className="text-fg-mute">{entry.timestamp}</span>
-                  {entry.element && <Badge size="sm" text={entry.element} />}
+                  {entry.element !== null && (
+                    <Badge size="sm" text={entry.element} />
+                  )}
                 </div>
                 <div className="flex items-center gap-3">
                   <span className="text-fg-mute text-xs">
                     {entry.size.toLocaleString()}px²
                   </span>
-                  <span className="font-medium text-fg-base">
+                  <span className="text-fg-base font-medium">
                     {entry.startTime.toFixed(0)}ms
                   </span>
                 </div>

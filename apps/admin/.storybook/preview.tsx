@@ -1,9 +1,10 @@
 import { cn } from '@repo/helpers/cn';
 import type { Preview } from '@storybook/nextjs-vite';
-import Script from 'next/script';
 import { useTheme } from 'next-themes';
+import Script from 'next/script';
 import { type FC, memo, useEffect } from 'react';
 import { sb } from 'storybook/test';
+
 import { AppProvider } from '../src/app/_providers/app';
 import { mPlus2, notoSansJp } from '../src/app/_styles/font';
 
@@ -13,17 +14,19 @@ sb.mock(import('@repo/database'));
 sb.mock(import('../src/features/reading-list/interface/article-actions.ts'));
 sb.mock(import('../src/features/reading-list/interface/source-actions.ts'));
 
-const ApplyThemeByStorybook: FC<{ theme: string }> = memo(({ theme }) => {
-  const { theme: currentTheme, setTheme } = useTheme();
+const ApplyThemeByStorybook: FC<{ theme: string }> = memo(
+  function ApplyThemeByStorybook({ theme }) {
+    const { theme: currentTheme, setTheme } = useTheme();
 
-  useEffect(() => {
-    if (currentTheme !== theme) {
-      setTheme(theme === 'dark' ? 'dark' : 'light');
-    }
-  }, [theme, currentTheme, setTheme]);
+    useEffect(() => {
+      if (currentTheme !== theme) {
+        setTheme(theme === 'dark' ? 'dark' : 'light');
+      }
+    }, [theme, currentTheme, setTheme]);
 
-  return null;
-});
+    return null;
+  },
+);
 
 const preview: Preview = {
   globalTypes: {
@@ -51,32 +54,28 @@ const preview: Preview = {
     },
   },
   decorators: [
-    (Story, { globals, parameters }) => (
-      <AppProvider>
-        <Script id="storybook-body-class">
-          {`document.body.classList.add(${cn(
-            mPlus2.variable,
-            notoSansJp.variable,
-            'text-fg-base font-medium font-m-plus-2',
-          )
-            .split(' ')
-            .map((c) => `'${c}'`)
-            .join(', ')})`}
-        </Script>
-        <div className="min-h-svh bg-bg-base p-6">
-          <Story />
-        </div>
-        <ApplyThemeByStorybook
-          theme={
-            (parameters.theme
-              ? parameters.theme
-              : globals.theme
-                ? globals.theme
-                : 'light') as string
-          }
-        />
-      </AppProvider>
-    ),
+    function WithAppProvider(Story, { globals, parameters }) {
+      return (
+        <AppProvider>
+          <Script id="storybook-body-class">
+            {`document.body.classList.add(${cn(
+              mPlus2.variable,
+              notoSansJp.variable,
+              'text-fg-base font-medium font-m-plus-2',
+            )
+              .split(' ')
+              .map((c) => `'${c}'`)
+              .join(', ')})`}
+          </Script>
+          <div className="bg-bg-base min-h-svh p-6">
+            <Story />
+          </div>
+          <ApplyThemeByStorybook
+            theme={(parameters.theme ?? globals.theme ?? 'light') as string}
+          />
+        </AppProvider>
+      );
+    },
   ],
 };
 

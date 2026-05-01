@@ -4,6 +4,7 @@ import { db } from '@repo/database';
 import { eq } from 'drizzle-orm';
 import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
+
 import { verifySession } from '@/shared/auth/verify-session';
 
 type ActionState = {
@@ -29,10 +30,7 @@ export async function createSource(
     return { error: 'タイプはfeedまたはmanualを指定してください' };
   }
 
-  try {
-    new URL(url);
-    new URL(siteUrl);
-  } catch {
+  if (!URL.canParse(url) || !URL.canParse(siteUrl)) {
     return { error: '有効なURLを入力してください' };
   }
 
@@ -48,7 +46,7 @@ export async function createSource(
   }
 
   revalidatePath('/reading-list');
-  redirect('/reading-list');
+  return redirect('/reading-list');
 }
 
 export async function updateSource(
@@ -71,10 +69,7 @@ export async function updateSource(
     return { error: 'タイプはfeedまたはmanualを指定してください' };
   }
 
-  try {
-    new URL(url);
-    new URL(siteUrl);
-  } catch {
+  if (!URL.canParse(url) || !URL.canParse(siteUrl)) {
     return { error: '有効なURLを入力してください' };
   }
 
@@ -94,7 +89,7 @@ export async function updateSource(
   }
 
   revalidatePath('/reading-list');
-  redirect('/reading-list');
+  return redirect('/reading-list');
 }
 
 export async function deleteSource(id: number): Promise<ActionState> {
@@ -109,5 +104,5 @@ export async function deleteSource(id: number): Promise<ActionState> {
   }
 
   revalidatePath('/reading-list');
-  redirect('/reading-list');
+  return redirect('/reading-list');
 }

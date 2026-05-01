@@ -1,7 +1,7 @@
 {
   "name": "@repo/typescript-config",
   "version": "1.0.0",
-  "description": "TypeScript configuration for k8o project",
   "private": true,
+  "description": "TypeScript configuration for k8o project",
   "type": "module"
 }

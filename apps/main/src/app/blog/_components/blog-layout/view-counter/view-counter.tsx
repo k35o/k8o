@@ -1,5 +1,6 @@
 import { commalize } from '@repo/helpers/number/commalize';
 import type { FC } from 'react';
+
 import { getBlogView } from '@/features/blog/interface/queries';
 
 export const ViewCounter: FC<{ id: number }> = async ({ id }) => {

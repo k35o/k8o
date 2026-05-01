@@ -31,7 +31,7 @@ export function ScrollendDemo() {
 
   useEffect(() => {
     const element = scrollRef.current;
-    if (!element) return;
+    if (!element) return undefined;
 
     element.tabIndex = 0;
     element.addEventListener('scroll', handleScroll, { passive: true });
@@ -48,20 +48,20 @@ export function ScrollendDemo() {
       <div className="flex flex-wrap items-center gap-4">
         <div className="flex items-center gap-2">
           <span className="text-fg-mute text-sm">scroll発火:</span>
-          <span className="font-bold text-fg-info">{scrollCount}回</span>
+          <span className="text-fg-info font-bold">{scrollCount}回</span>
         </div>
         <div className="flex items-center gap-2">
           <span className="text-fg-mute text-sm">scrollend発火:</span>
-          <span className="font-bold text-primary-fg">{scrollendCount}回</span>
+          <span className="text-primary-fg font-bold">{scrollendCount}回</span>
         </div>
-        {lastScrollendTime && (
+        {lastScrollendTime !== null && (
           <div className="flex items-center gap-2">
             <span className="text-fg-mute text-sm">最終発火:</span>
             <span className="text-sm">{lastScrollendTime}</span>
           </div>
         )}
         <button
-          className="ml-auto rounded-md bg-bg-mute px-3 py-1 text-sm hover:bg-bg-subtle"
+          className="bg-bg-mute hover:bg-bg-subtle ml-auto rounded-md px-3 py-1 text-sm"
           onClick={resetCounts}
           type="button"
         >
@@ -70,12 +70,12 @@ export function ScrollendDemo() {
       </div>
 
       <div
-        className="h-48 overflow-y-scroll rounded-xl bg-bg-mute p-4"
+        className="bg-bg-mute h-48 overflow-y-scroll rounded-xl p-4"
         ref={scrollRef}
       >
         <div className="space-y-4">
           {Array.from({ length: 20 }, (_, i) => (
-            <div className="rounded-md bg-bg-base p-3 shadow-sm" key={i}>
+            <div className="bg-bg-base rounded-md p-3 shadow-sm" key={i}>
               <p className="text-fg-base">アイテム {i + 1}</p>
               <p className="text-fg-mute text-sm">
                 スクロールしてscrollendイベントの発火を確認してください

@@ -8,13 +8,14 @@ export type ClaimedComment = {
 export const claimUnsentComments = async (
   claimedAt: string,
 ): Promise<ClaimedComment[]> => {
-  return await db.transaction((tx) => {
-    return tx
+  const comments = await db.transaction((tx) =>
+    tx
       .update(db._schema.comments)
       .set({ sentAt: claimedAt })
       .where(isNull(db._schema.comments.sentAt))
-      .returning({ id: db._schema.comments.id });
-  });
+      .returning({ id: db._schema.comments.id }),
+  );
+  return comments;
 };
 
 export const releaseClaimedComments = async (

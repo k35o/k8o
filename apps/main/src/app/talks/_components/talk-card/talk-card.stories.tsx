@@ -1,5 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 import { expect, within } from 'storybook/test';
+
 import { TalkCard } from './talk-card';
 
 const meta: Meta<typeof TalkCard> = {

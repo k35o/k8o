@@ -1,4 +1,3 @@
-import { describe, expect, it } from 'vitest';
 import { getArtifacts } from './artifacts';
 
 describe('getArtifacts', () => {
@@ -56,10 +55,12 @@ describe('getArtifacts', () => {
     for (const project of projects) {
       expect(project).toEqual(
         expect.objectContaining({
-          name: expect.any(String),
-          description: expect.any(String),
-          githubUrl: expect.stringMatching(/^https:\/\/github\.com\//),
-          tags: expect.any(Array),
+          name: expect.any(String) as string,
+          description: expect.any(String) as string,
+          githubUrl: expect.stringMatching(
+            /^https:\/\/github\.com\//,
+          ) as string,
+          tags: expect.any(Array) as string[],
         }),
       );
     }

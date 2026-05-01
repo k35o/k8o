@@ -1,8 +1,12 @@
 'use server';
 
 import * as z from 'zod/mini';
+
+import { configureZod } from '@/shared/validation/zod';
+
 import { submitContact } from '../application/submit-contact';
-import '@/shared/validation/zod';
+
+configureZod();
 
 const contactSchema = z.object({
   message: z.string().check(z.minLength(1), z.maxLength(255)),
@@ -41,5 +45,6 @@ export const contact = async (
     };
   }
 
-  return await submitContact(validatedFields.data.message);
+  const result = await submitContact(validatedFields.data.message);
+  return result;
 };

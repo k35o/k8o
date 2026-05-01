@@ -1,7 +1,9 @@
 import { cacheLife } from 'next/cache';
 import { NextResponse } from 'next/server';
 import RSS from 'rss';
+
 import { getArticles } from '@/features/reading-list/interface/queries';
+
 import { metadata } from '../layout';
 
 const READING_LIST_URL = 'https://k8o.me/reading-list';

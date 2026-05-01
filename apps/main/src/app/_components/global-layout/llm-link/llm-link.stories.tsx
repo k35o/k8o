@@ -1,4 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
+
 import { LlmLink } from './llm-link';
 
 const meta: Meta<typeof LlmLink> = {

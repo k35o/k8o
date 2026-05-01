@@ -2,6 +2,7 @@
 
 import { Badge, Button } from '@k8o/arte-odyssey';
 import type { FC } from 'react';
+
 import { getContrastTextColor } from '../../_utils/color-quiz';
 import { useColorQuiz } from './use-color-quiz';
 
@@ -20,11 +21,11 @@ export const HexToColor: FC = () => {
   return (
     <div className="flex flex-col gap-6">
       <div className="text-center">
-        <p className="font-bold font-mono text-3xl tracking-widest">
+        <p className="font-mono text-3xl font-bold tracking-widest">
           #{targetHex}
         </p>
         {phase === 'result' && (
-          <p className="mt-2 font-bold text-lg">
+          <p className="mt-2 text-lg font-bold">
             {isCorrect ? '正解！' : '不正解...'}
           </p>
         )}
@@ -52,13 +53,15 @@ export const HexToColor: FC = () => {
                 .join(' ')}
               disabled={phase === 'result'}
               key={hex}
-              onClick={() => setSelectedHex(hex)}
+              onClick={() => {
+                setSelectedHex(hex);
+              }}
               style={{ backgroundColor: `#${hex}` }}
               type="button"
             >
               {phase === 'result' && (
                 <p
-                  className="font-bold text-sm tracking-wider"
+                  className="text-sm font-bold tracking-wider"
                   style={{
                     color: getContrastTextColor(hex),
                   }}

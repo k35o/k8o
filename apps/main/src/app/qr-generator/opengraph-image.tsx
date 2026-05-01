@@ -1,5 +1,6 @@
 import { loadDefaultJapaneseParser } from 'budoux';
 import { ImageResponse } from 'next/og';
+
 import { getIconDataUrl } from '@/shared/og/get-icon-data-url';
 import { getMPlus2Font } from '@/shared/og/get-m-plus-2-font';
 
@@ -14,7 +15,7 @@ export const contentType = 'image/png';
 export default async function OpenGraphImage() {
   const title = 'QRKit';
   const words = loadDefaultJapaneseParser().parse(title);
-  const iconDataUrl = await getIconDataUrl();
+  const iconDataUrl = getIconDataUrl();
   const fontText = `${title}k8oK8O`;
   const font450 = await getMPlus2Font({ text: fontText });
 
@@ -60,7 +61,7 @@ export default async function OpenGraphImage() {
             </span>
           ))}
         </div>
-        {/** biome-ignore lint/performance/noImgElement: ogのため */}
+        {/* ogのため */}
         <img
           alt="アイコン"
           height={128}

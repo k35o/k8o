@@ -1,12 +1,8 @@
 import { format } from 'date-fns';
 import { ja } from 'date-fns/locale';
 
-export const formatDate = (
-  date: Date,
-  formatStr = 'yyyy年M月d日(E)',
-): string => {
-  return format(date, formatStr, { locale: ja });
-};
+export const formatDate = (date: Date, formatStr = 'yyyy年M月d日(E)'): string =>
+  format(date, formatStr, { locale: ja });
 
 if (import.meta.vitest) {
   it('日付をデフォルト設定でフォーマットする', () => {

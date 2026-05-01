@@ -11,7 +11,7 @@ export function SelectionProperties() {
 
   useEffect(() => {
     const element = ref.current;
-    if (!element) return;
+    if (!element) return undefined;
 
     const observer = new IntersectionObserver(([entry]) => {
       setInView(entry?.isIntersecting ?? false);
@@ -28,8 +28,8 @@ export function SelectionProperties() {
       if (!inView) {
         return;
       }
-      const selection = window.getSelection();
-      setSelection(selection ? [selection] : null);
+      const currentSelection = window.getSelection();
+      setSelection(currentSelection ? [currentSelection] : null);
     };
 
     document.addEventListener('selectionchange', handleChange);

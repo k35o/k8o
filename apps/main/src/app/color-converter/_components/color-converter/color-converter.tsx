@@ -11,6 +11,7 @@ import {
   useToast,
 } from '@k8o/arte-odyssey';
 import { type ChangeEventHandler, useCallback, useMemo, useState } from 'react';
+
 import {
   type HSL,
   hexToHsl,
@@ -112,6 +113,7 @@ export const ColorConverter = () => {
   const handleCopy = (value: string, label: string) => {
     void writeClipboard(value).then(() => {
       onOpen('success', `${label}をコピーしました`);
+      return undefined;
     });
   };
 
@@ -134,27 +136,21 @@ export const ColorConverter = () => {
         <div className="p-5">
           <FormControl
             label="hex"
-            renderInput={({ labelId: _, ...props }) => {
-              return (
-                <div className="flex w-full items-center gap-2">
-                  <span className="text-fg-mute">#</span>
-                  <TextField
-                    onChange={handleChangeHex}
-                    value={hex}
-                    {...props}
-                  />
-                  <IconButton
-                    bg="base"
-                    label="HEXをコピー"
-                    onClick={() => {
-                      handleCopy(`#${hex}`, 'HEX');
-                    }}
-                  >
-                    <CopyIcon />
-                  </IconButton>
-                </div>
-              );
-            }}
+            renderInput={({ labelId: _, ...props }) => (
+              <div className="flex w-full items-center gap-2">
+                <span className="text-fg-mute">#</span>
+                <TextField onChange={handleChangeHex} value={hex} {...props} />
+                <IconButton
+                  bg="base"
+                  label="HEXをコピー"
+                  onClick={() => {
+                    handleCopy(`#${hex}`, 'HEX');
+                  }}
+                >
+                  <CopyIcon />
+                </IconButton>
+              </div>
+            )}
           />
         </div>
       </Card>
@@ -173,7 +169,7 @@ export const ColorConverter = () => {
                         rgb(
                       </span>
                       <label
-                        className="not-sr-only font-bold text-sm sm:sr-only"
+                        className="not-sr-only text-sm font-bold sm:sr-only"
                         htmlFor={id}
                       >
                         Red
@@ -191,7 +187,7 @@ export const ColorConverter = () => {
                       />
                       <span className="sr-only shrink-0 sm:not-sr-only">,</span>
                       <label
-                        className="not-sr-only font-bold text-sm sm:sr-only"
+                        className="not-sr-only text-sm font-bold sm:sr-only"
                         htmlFor={`${id}-rgb-green`}
                       >
                         Green
@@ -208,7 +204,7 @@ export const ColorConverter = () => {
                       />
                       <span className="sr-only shrink-0 sm:not-sr-only">,</span>
                       <label
-                        className="not-sr-only font-bold text-sm sm:sr-only"
+                        className="not-sr-only text-sm font-bold sm:sr-only"
                         htmlFor={`${id}-rgb-blue`}
                       >
                         Blue
@@ -225,7 +221,7 @@ export const ColorConverter = () => {
                       />
                       <span className="sr-only shrink-0 sm:not-sr-only">/</span>
                       <label
-                        className="not-sr-only font-bold text-sm sm:sr-only"
+                        className="not-sr-only text-sm font-bold sm:sr-only"
                         htmlFor={`${id}-rgb-alpha`}
                       >
                         Alpha
@@ -275,7 +271,7 @@ export const ColorConverter = () => {
                         hsl(
                       </span>
                       <label
-                        className="not-sr-only font-bold text-sm sm:sr-only"
+                        className="not-sr-only text-sm font-bold sm:sr-only"
                         htmlFor={id}
                       >
                         Hue
@@ -293,7 +289,7 @@ export const ColorConverter = () => {
                       />
                       <span className="sr-only shrink-0 sm:not-sr-only">,</span>
                       <label
-                        className="not-sr-only font-bold text-sm sm:sr-only"
+                        className="not-sr-only text-sm font-bold sm:sr-only"
                         htmlFor={`${id}-hsl-saturation`}
                       >
                         Saturation
@@ -310,7 +306,7 @@ export const ColorConverter = () => {
                       />
                       <span className="sr-only shrink-0 sm:not-sr-only">,</span>
                       <label
-                        className="not-sr-only font-bold text-sm sm:sr-only"
+                        className="not-sr-only text-sm font-bold sm:sr-only"
                         htmlFor={`${id}-hsl-lightness`}
                       >
                         Lightness
@@ -327,7 +323,7 @@ export const ColorConverter = () => {
                       />
                       <span className="sr-only shrink-0 sm:not-sr-only">/</span>
                       <label
-                        className="not-sr-only font-bold text-sm sm:sr-only"
+                        className="not-sr-only text-sm font-bold sm:sr-only"
                         htmlFor={`${id}-hsl-alpha`}
                       >
                         Alpha

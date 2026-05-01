@@ -1,3 +1,5 @@
+/* oxlint-disable import/max-dependencies -- Playground一覧の単一レジストリとして各デモを集約するため */
+
 export * from './abs-sign';
 export * from './active-view-transition';
 export * from './async-clipboard';

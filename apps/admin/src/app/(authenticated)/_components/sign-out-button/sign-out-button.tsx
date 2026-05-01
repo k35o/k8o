@@ -3,6 +3,7 @@
 import { useToast } from '@k8o/arte-odyssey';
 import { useRouter } from 'next/navigation';
 import type { FC } from 'react';
+
 import { authClient } from '@/shared/auth/auth-client';
 
 export const SignOutButton: FC = () => {
@@ -10,7 +11,7 @@ export const SignOutButton: FC = () => {
   const { onOpen } = useToast();
 
   const handleSignOut = () => {
-    authClient.signOut({
+    void authClient.signOut({
       fetchOptions: {
         onSuccess: () => {
           router.push('/sign-in');
@@ -25,7 +26,7 @@ export const SignOutButton: FC = () => {
 
   return (
     <button
-      className="text-fg-mute text-sm transition-colors hover:text-fg-base"
+      className="text-fg-mute hover:text-fg-base text-sm transition-colors"
       onClick={handleSignOut}
       type="button"
     >

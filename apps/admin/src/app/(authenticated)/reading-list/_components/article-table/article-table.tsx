@@ -3,6 +3,7 @@
 import { Button, Dialog, Modal } from '@k8o/arte-odyssey';
 import { formatDate } from '@repo/helpers/date/format';
 import { type FC, useState, useTransition } from 'react';
+
 import { deleteArticle } from '@/features/reading-list/interface/article-actions';
 
 type Article = {
@@ -22,7 +23,7 @@ const DeleteButton: FC<{ id: number; title: string }> = ({ id, title }) => {
     setError(undefined);
     startTransition(async () => {
       const result = await deleteArticle(id);
-      if (result.error) {
+      if (result.error !== undefined) {
         setError(result.error);
       }
     });
@@ -58,7 +59,9 @@ const DeleteButton: FC<{ id: number; title: string }> = ({ id, title }) => {
           <Dialog.Content>
             <div className="flex flex-col gap-6">
               <p className="text-sm">「{title}」を削除しますか？</p>
-              {error && <p className="text-fg-error text-sm">{error}</p>}
+              {error !== undefined && (
+                <p className="text-fg-error text-sm">{error}</p>
+              )}
               <div className="flex justify-end gap-3">
                 <Button
                   color="gray"
@@ -89,7 +92,7 @@ const DeleteButton: FC<{ id: number; title: string }> = ({ id, title }) => {
 export const ArticleTable: FC<{ articles: Article[] }> = ({ articles }) => {
   if (articles.length === 0) {
     return (
-      <p className="py-12 text-center text-fg-mute text-sm">
+      <p className="text-fg-mute py-12 text-center text-sm">
         取得済みの記事はありません
       </p>
     );
@@ -99,7 +102,7 @@ export const ArticleTable: FC<{ articles: Article[] }> = ({ articles }) => {
     <div className="flex flex-col">
       {articles.map((article) => (
         <a
-          className="flex items-center gap-3 border-border-base border-b px-4 py-3 text-sm transition-colors hover:bg-bg-mute"
+          className="border-border-base hover:bg-bg-mute flex items-center gap-3 border-b px-4 py-3 text-sm transition-colors"
           href={article.url}
           key={article.id}
           rel="noopener noreferrer"
@@ -108,10 +111,10 @@ export const ArticleTable: FC<{ articles: Article[] }> = ({ articles }) => {
           <span className="min-w-0 flex-1 truncate font-medium">
             {article.title}
           </span>
-          <span className="hidden shrink-0 text-fg-mute text-xs sm:block">
+          <span className="text-fg-mute hidden shrink-0 text-xs sm:block">
             {article.sourceName}
           </span>
-          <span className="hidden w-40 shrink-0 text-right text-fg-mute sm:block">
+          <span className="text-fg-mute hidden w-40 shrink-0 text-right sm:block">
             {formatDate(new Date(article.publishedAt))}
           </span>
           <DeleteButton id={article.id} title={article.title} />

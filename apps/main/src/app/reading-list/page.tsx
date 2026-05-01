@@ -2,6 +2,7 @@ import {
   getArticleSources,
   getArticles,
 } from '@/features/reading-list/interface/queries';
+
 import { LinkCard } from '../_components/link-card';
 import { ReadingListContent } from './_components/reading-list-content';
 
@@ -17,10 +18,13 @@ export default async function Page() {
     articleCountBySource.set(article.source.id, count + 1);
   }
 
-  const sourcesWithCount = sources.map((source) => ({
-    ...source,
-    articleCount: articleCountBySource.get(source.id) ?? 0,
-  }));
+  const sourcesWithCount = [];
+  for (const source of sources) {
+    sourcesWithCount.push({
+      ...source,
+      articleCount: articleCountBySource.get(source.id) ?? 0,
+    });
+  }
 
   const articleMeta = articles.map((article) => ({
     id: article.id,

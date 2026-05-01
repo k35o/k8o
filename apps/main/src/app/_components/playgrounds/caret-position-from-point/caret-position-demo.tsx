@@ -64,7 +64,7 @@ export function CaretPositionDemo() {
 
   if (!isSupported) {
     return (
-      <div className="rounded-xl bg-bg-mute p-3">
+      <div className="bg-bg-mute rounded-xl p-3">
         <p className="text-fg-mute text-sm">
           このブラウザはこのAPIをサポートしていません。
         </p>
@@ -74,25 +74,25 @@ export function CaretPositionDemo() {
 
   return (
     <div className="space-y-3">
-      {/* biome-ignore lint/a11y/noStaticElementInteractions: caretPositionFromPointデモ用のクリックエリア */}
-      {/* biome-ignore lint/a11y/noNoninteractiveElementInteractions: caretPositionFromPointデモ用のクリックエリア */}
-      {/* biome-ignore lint/a11y/useKeyWithClickEvents: caretPositionFromPointはマウス座標を必要とするためキーボードでは使用不可 */}
+      {/* caretPositionFromPointデモ用のクリックエリア */}
+      {/* caretPositionFromPointデモ用のクリックエリア */}
+      {/* caretPositionFromPointはマウス座標を必要とするためキーボードでは使用不可 */}
       <div
-        className="cursor-text select-none rounded-xl bg-bg-base p-3 shadow-sm"
+        className="bg-bg-base cursor-text rounded-xl p-3 shadow-sm select-none"
         onClick={handleClick}
       >
         <p className="text-fg-base text-sm leading-relaxed">
           吾輩は猫である。名前はまだ無い。どこで生れたかとんと見当がつかぬ。何でも薄暗いじめじめした所でニャーニャー泣いていた事だけは記憶している。
         </p>
-        <p className="mt-2 text-fg-mute text-xs">
+        <p className="text-fg-mute mt-2 text-xs">
           ↑ テキストの好きな位置をクリック
         </p>
       </div>
 
       {caretInfo ? (
-        <div className="rounded-xl bg-bg-base p-3 shadow-sm">
+        <div className="bg-bg-base rounded-xl p-3 shadow-sm">
           <div className="mb-3 flex items-baseline justify-between gap-2">
-            <h4 className="font-medium text-fg-base text-sm">結果</h4>
+            <h4 className="text-fg-base text-sm font-medium">結果</h4>
             <Button
               color="gray"
               onClick={handleReset}
@@ -106,38 +106,38 @@ export function CaretPositionDemo() {
           <dl className="space-y-1.5 text-xs">
             <div className="flex flex-wrap items-baseline gap-x-2">
               <dt className="text-fg-mute">offset</dt>
-              <dd className="font-medium text-fg-base text-sm">
+              <dd className="text-fg-base text-sm font-medium">
                 {caretInfo.offset}
               </dd>
             </div>
             <div className="flex flex-wrap items-baseline gap-x-2">
               <dt className="text-fg-mute">nodeType</dt>
-              <dd className="font-medium text-fg-base">
+              <dd className="text-fg-base font-medium">
                 {caretInfo.offsetNodeType}
               </dd>
             </div>
             <div className="flex flex-wrap items-baseline gap-x-2">
               <dt className="text-fg-mute">nodeName</dt>
-              <dd className="font-medium text-fg-base">
+              <dd className="text-fg-base font-medium">
                 {caretInfo.offsetNodeName}
               </dd>
             </div>
             {caretInfo.rectX !== null && (
               <div className="flex flex-wrap items-baseline gap-x-2">
                 <dt className="text-fg-mute">rect</dt>
-                <dd className="font-medium text-fg-base">
+                <dd className="text-fg-base font-medium">
                   ({caretInfo.rectX.toFixed(0)}, {caretInfo.rectY?.toFixed(0)})
                 </dd>
               </div>
             )}
           </dl>
 
-          {caretInfo.offsetNodeText && (
-            <div className="mt-3 border-border-base border-t pt-3">
-              <p className="mb-1 text-fg-mute text-xs">テキスト内の位置:</p>
-              <p className="overflow-x-auto rounded bg-bg-mute p-2 font-mono text-fg-base text-xs leading-relaxed">
+          {caretInfo.offsetNodeText !== null && (
+            <div className="border-border-base mt-3 border-t pt-3">
+              <p className="text-fg-mute mb-1 text-xs">テキスト内の位置:</p>
+              <p className="bg-bg-mute text-fg-base overflow-x-auto rounded p-2 font-mono text-xs leading-relaxed">
                 {caretInfo.offsetNodeText.slice(0, caretInfo.offset)}
-                <span className="bg-primary-bg px-0.5 text-primary-fg">|</span>
+                <span className="bg-primary-bg text-primary-fg px-0.5">|</span>
                 {caretInfo.offsetNodeText.slice(caretInfo.offset)}
               </p>
             </div>

@@ -1,4 +1,5 @@
 import { getRepositoryCommitContributions } from '@/features/github/interface/queries';
+
 import { Presenter } from './presenter';
 
 export const GitHubContributionGraph = async () => {

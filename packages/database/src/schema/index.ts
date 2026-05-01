@@ -1,3 +1,5 @@
+/* oxlint-disable import/max-dependencies -- Drizzle schema の export map と relations を一箇所に集約するため */
+
 import { articleSources, articleSourcesRelations } from './article-sources';
 import { articles, articlesRelations } from './articles';
 import {

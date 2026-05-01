@@ -8,6 +8,6 @@ export const size = {
 
 export const contentType = 'image/png';
 
-export default async function OpenGraphImage() {
-  return await OgImage({ title: 'コントラストチェッカー' });
+export default function OpenGraphImage() {
+  return OgImage({ title: 'コントラストチェッカー' });
 }

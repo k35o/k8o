@@ -1,18 +1,19 @@
 import { db } from '@repo/database';
+
 import { getBlogMetadata } from '@/features/blog/application/blog';
 
 export async function getTag(id: number): Promise<{
   id: number;
   name: string;
-  blogs: {
+  blogs: Array<{
     id: number;
     slug: string;
     title: string;
-  }[];
-  talks: {
+  }>;
+  talks: Array<{
     id: number;
     title: string;
-  }[];
+  }>;
 } | null> {
   const tag = await db.query.tags.findFirst({
     where: (tags, { eq }) => eq(tags.id, id),

@@ -1,4 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
+
 import { GlobalLayout } from './global-layout';
 
 const meta: Meta<typeof GlobalLayout> = {

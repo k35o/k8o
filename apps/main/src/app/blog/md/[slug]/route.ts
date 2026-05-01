@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server';
+
 import { getMarkdown } from '@/features/blog/interface/markdown';
 
 export async function GET(

@@ -1,5 +1,6 @@
 import { Heading } from '@k8o/arte-odyssey';
 import type { Metadata } from 'next';
+
 import { ProofreadProvider } from './_state/provider';
 
 export const metadata = {

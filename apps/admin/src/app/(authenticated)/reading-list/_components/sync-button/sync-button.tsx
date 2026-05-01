@@ -2,6 +2,7 @@
 
 import { Button, useToast } from '@k8o/arte-odyssey';
 import { type FC, useTransition } from 'react';
+
 import { syncArticlesAction } from '@/features/reading-list/interface/article-actions';
 
 export const SyncButton: FC = () => {
@@ -11,11 +12,11 @@ export const SyncButton: FC = () => {
   const handleSync = () => {
     startTransition(async () => {
       const res = await syncArticlesAction();
-      if (res.error) {
+      if (res.error !== undefined) {
         onOpen('error', res.error);
         return;
       }
-      if (res.failedSources && res.failedSources.length > 0) {
+      if (res.failedSources !== undefined && res.failedSources.length > 0) {
         onOpen(
           'warning',
           `${String(res.newArticles ?? 0)}件追加、${String(res.updatedArticles ?? 0)}件更新（失敗: ${res.failedSources.join(', ')}）`,

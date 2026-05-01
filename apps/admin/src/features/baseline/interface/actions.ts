@@ -1,6 +1,7 @@
 'use server';
 
 import { revalidatePath } from 'next/cache';
+
 import { syncBaseline } from '@/features/baseline/application/sync-baseline';
 import { verifySession } from '@/shared/auth/verify-session';
 

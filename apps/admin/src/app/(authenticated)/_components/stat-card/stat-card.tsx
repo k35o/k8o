@@ -7,14 +7,14 @@ export const StatCard = ({
   label: string;
   value: string;
   description?: string;
-}) => {
-  return (
-    <Card>
-      <div className="flex flex-col gap-1 p-4">
-        <p className="text-fg-mute text-sm">{label}</p>
-        <p className="font-bold text-2xl">{value}</p>
-        {description && <p className="text-fg-mute text-xs">{description}</p>}
-      </div>
-    </Card>
-  );
-};
+}) => (
+  <Card>
+    <div className="flex flex-col gap-1 p-4">
+      <p className="text-fg-mute text-sm">{label}</p>
+      <p className="text-2xl font-bold">{value}</p>
+      {description !== undefined && (
+        <p className="text-fg-mute text-xs">{description}</p>
+      )}
+    </div>
+  </Card>
+);

@@ -1,4 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
+
 import { Background } from './background';
 
 const meta: Meta<typeof Background> = {

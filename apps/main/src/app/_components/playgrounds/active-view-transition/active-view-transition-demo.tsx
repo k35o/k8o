@@ -36,8 +36,9 @@ export function ActiveViewTransitionDemo() {
       });
 
       setIsTransitioning(true);
-      transition.finished.then(() => {
+      void transition.finished.then(() => {
         setIsTransitioning(false);
+        return undefined;
       });
     } else {
       setCurrentIndex(newIndex);
@@ -105,7 +106,7 @@ export function ActiveViewTransitionDemo() {
         <div className="flex items-center gap-2">
           <div
             aria-hidden="true"
-            className="size-3 rounded-full bg-border-success transition-indicator"
+            className="bg-border-success transition-indicator size-3 rounded-full"
           />
           <span className="text-fg-mute text-sm">
             {isTransitioning ? '遷移中...' : '待機中'}
@@ -125,14 +126,18 @@ export function ActiveViewTransitionDemo() {
 
       <div className="flex justify-center gap-4">
         <Button
-          onClick={() => navigate('backwards')}
+          onClick={() => {
+            navigate('backwards');
+          }}
           startIcon={<ChevronIcon direction="left" />}
         >
           戻る
         </Button>
         <Button
           endIcon={<ChevronIcon direction="right" />}
-          onClick={() => navigate('forwards')}
+          onClick={() => {
+            navigate('forwards');
+          }}
         >
           進む
         </Button>

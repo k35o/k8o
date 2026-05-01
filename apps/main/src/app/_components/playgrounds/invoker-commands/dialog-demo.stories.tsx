@@ -1,4 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
+
 import { DialogDemo } from './dialog-demo';
 
 const meta: Meta<typeof DialogDemo> = {

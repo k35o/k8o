@@ -11,6 +11,7 @@ import {
 import { cn } from '@repo/helpers/cn';
 import type { FC, KeyboardEvent, MouseEvent, TouchEvent } from 'react';
 import { useMemo } from 'react';
+
 import { TemplateSelector } from '../template-selector';
 import { useControlPanel } from './use-control-panel';
 
@@ -44,29 +45,27 @@ const OperateButton: FC<{
   onTouchStart,
   onKeyDown,
   isActive,
-}) => {
-  return (
-    <button
-      className={cn(
-        'absolute size-6 rounded-full border-2 border-border-base sm:size-5',
-        variable === 'primary' && 'bg-group-primary',
-        variable === 'secondary' && 'bg-group-secondary',
-        variable === 'quaternary' && 'bg-group-quaternary',
-        variable === 'tertiary' && 'bg-group-tertiary',
-        isActive && 'border-transparent outline-hidden ring-4 ring-fg-mute',
-        'hover:border-transparent hover:outline-hidden hover:ring-4 hover:ring-fg-mute',
-        'focus-visible:border-transparent focus-visible:outline-hidden focus-visible:ring-4 focus-visible:ring-fg-mute',
-      )}
-      onKeyDown={onKeyDown}
-      onMouseDown={onMouseDown}
-      onTouchStart={onTouchStart}
-      style={position}
-      type="button"
-    >
-      <span className="sr-only">{label}</span>
-    </button>
-  );
-};
+}) => (
+  <button
+    className={cn(
+      'absolute size-6 rounded-full border-2 border-border-base sm:size-5',
+      variable === 'primary' && 'bg-group-primary',
+      variable === 'secondary' && 'bg-group-secondary',
+      variable === 'quaternary' && 'bg-group-quaternary',
+      variable === 'tertiary' && 'bg-group-tertiary',
+      isActive && 'border-transparent outline-hidden ring-4 ring-fg-mute',
+      'hover:border-transparent hover:outline-hidden hover:ring-4 hover:ring-fg-mute',
+      'focus-visible:border-transparent focus-visible:outline-hidden focus-visible:ring-4 focus-visible:ring-fg-mute',
+    )}
+    onKeyDown={onKeyDown}
+    onMouseDown={onMouseDown}
+    onTouchStart={onTouchStart}
+    style={position}
+    type="button"
+  >
+    <span className="sr-only">{label}</span>
+  </button>
+);
 
 export const ControlPanel: FC = () => {
   const {
@@ -135,7 +134,7 @@ export const ControlPanel: FC = () => {
             }}
           >
             <div
-              className="relative border-2 border-primary-border border-dashed"
+              className="border-primary-border relative border-2 border-dashed"
               ref={containerRef}
               style={{
                 width: fluidPx(containerSize.width),
@@ -143,7 +142,7 @@ export const ControlPanel: FC = () => {
               }}
             >
               <div
-                className="absolute size-full bg-primary-fg"
+                className="bg-primary-fg absolute size-full"
                 style={{
                   borderRadius,
                 }}
@@ -298,10 +297,12 @@ export const ControlPanel: FC = () => {
       </div>
 
       {/* CSS出力（全幅） */}
-      <div className="relative rounded-xl border border-border-base bg-bg-base p-4">
+      <div className="border-border-base bg-bg-base relative rounded-xl border p-4">
         <div className="absolute top-3 right-3">
           <Button
-            onClick={handleCopy}
+            onClick={() => {
+              void handleCopy();
+            }}
             size="sm"
             startIcon={<CopyIcon size="sm" />}
             variant="outlined"
@@ -309,8 +310,8 @@ export const ControlPanel: FC = () => {
             コピー
           </Button>
         </div>
-        <p className="mb-2 font-bold text-fg-mute text-xs">border-radius</p>
-        <code className="grid grid-cols-[auto_1fr] gap-x-3 gap-y-1 font-mono text-fg-base text-sm">
+        <p className="text-fg-mute mb-2 text-xs font-bold">border-radius</p>
+        <code className="text-fg-base grid grid-cols-[auto_1fr] gap-x-3 gap-y-1 font-mono text-sm">
           <span className="text-fg-mute">水平</span>
           <span>
             {position.topLeftX}% {100 - position.topRightX}%{' '}

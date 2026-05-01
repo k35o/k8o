@@ -12,7 +12,7 @@ export const getReadingListContentData = async () => {
     }),
     db.query.articles.findMany({
       with: { articleSource: true },
-      orderBy: (articles) => [desc(articles.publishedAt)],
+      orderBy: (articleTable) => [desc(articleTable.publishedAt)],
     }),
   ]);
 
@@ -36,7 +36,8 @@ export const getArticleSourceForEdit = async (id: string) => {
     return null;
   }
 
-  return await db.query.articleSources.findFirst({
+  const source = await db.query.articleSources.findFirst({
     where: eq(db._schema.articleSources.id, numericId),
   });
+  return source;
 };

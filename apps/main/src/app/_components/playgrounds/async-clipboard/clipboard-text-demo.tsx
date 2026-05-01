@@ -13,8 +13,8 @@ export const ClipboardTextDemo: FC = () => {
   };
 
   const pasteText = async () => {
-    const text = await navigator.clipboard.readText();
-    setText((prev) => prev + text);
+    const pastedText = await navigator.clipboard.readText();
+    setText((prev) => prev + pastedText);
   };
 
   useEffect(() => {
@@ -30,9 +30,10 @@ export const ClipboardTextDemo: FC = () => {
     void readPermission
       .then((permission) => {
         setReadPermissions(permission.state);
-        permission.onchange = () => {
+        permission.addEventListener('change', () => {
           setReadPermissions(permission.state);
-        };
+        });
+        return undefined;
       })
       .catch(() => {
         console.warn(
@@ -43,9 +44,10 @@ export const ClipboardTextDemo: FC = () => {
     void writePermission
       .then((permission) => {
         setWritePermissions(permission.state);
-        permission.onchange = () => {
+        permission.addEventListener('change', () => {
           setWritePermissions(permission.state);
-        };
+        });
+        return undefined;
       })
       .catch(() => {
         console.warn(

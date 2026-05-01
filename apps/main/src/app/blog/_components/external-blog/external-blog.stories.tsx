@@ -1,4 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
+
 import { ExternalBlog } from './external-blog';
 
 const meta: Meta<typeof ExternalBlog> = {

@@ -9,6 +9,7 @@ import {
 import { formatDate } from '@repo/helpers/date/format';
 import type { FC } from 'react';
 import { Bar, BarChart, CartesianGrid, Tooltip, XAxis, YAxis } from 'recharts';
+
 import type { ContributionDay } from '@/features/github/interface/queries';
 
 type ChartDataItem = {
@@ -40,7 +41,7 @@ export const Presenter: FC<{
     <Card>
       <div className="flex flex-col gap-4 p-6">
         <div className="flex items-center gap-2">
-          <h3 className="font-bold text-fg-base text-sm">開発の足あと</h3>
+          <h3 className="text-fg-base text-sm font-bold">開発の足あと</h3>
           <ArteTooltip.Root placement="top">
             <ArteTooltip.Trigger
               renderItem={(props) => (
@@ -101,7 +102,7 @@ const CustomTooltip: FC<{
   active?: boolean;
   payload?: Array<{ payload: ChartDataItem }>;
 }> = ({ active, payload }) => {
-  if (!(active && payload?.[0])) {
+  if (active !== true || payload?.[0] === undefined) {
     return null;
   }
 
@@ -109,8 +110,8 @@ const CustomTooltip: FC<{
   const formattedDate = formatDate(new Date(item.date), 'yyyy年M月d日(E)');
 
   return (
-    <div className="rounded-xl bg-bg-base px-3 py-2 text-fg-base shadow-md">
-      <p className="font-semibold text-sm">{item.count}件のコミット</p>
+    <div className="bg-bg-base text-fg-base rounded-xl px-3 py-2 shadow-md">
+      <p className="text-sm font-semibold">{item.count}件のコミット</p>
       <p className="text-fg-mute text-xs">{formattedDate}</p>
     </div>
   );
