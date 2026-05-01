@@ -1,6 +1,7 @@
 import { db } from '@repo/database';
 import { count } from 'drizzle-orm';
 import { cacheLife } from 'next/cache';
+
 import { StatCard } from '@/app/(authenticated)/_components/stat-card/stat-card';
 
 export const BaselineSnapshotStats = async () => {

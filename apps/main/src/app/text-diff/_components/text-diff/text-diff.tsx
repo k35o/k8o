@@ -3,6 +3,7 @@
 import { Button, FormControl, Textarea } from '@k8o/arte-odyssey';
 import { diffChars } from 'diff';
 import { useDeferredValue, useMemo, useState } from 'react';
+
 import { DiffOutput } from './diff-output';
 
 type ResultPosition = 'top' | 'bottom';
@@ -33,7 +34,9 @@ export const TextDiff = () => {
           <Textarea
             {...props}
             autoResize
-            onChange={(e) => setBeforeText(e.target.value)}
+            onChange={(e) => {
+              setBeforeText(e.target.value);
+            }}
             placeholder="変更前のテキストを入力"
             value={beforeText}
           />
@@ -45,7 +48,9 @@ export const TextDiff = () => {
           <Textarea
             {...props}
             autoResize
-            onChange={(e) => setAfterText(e.target.value)}
+            onChange={(e) => {
+              setAfterText(e.target.value);
+            }}
             placeholder="変更後のテキストを入力"
             value={afterText}
           />
@@ -58,17 +63,21 @@ export const TextDiff = () => {
   const resultArea = (
     <div className="flex flex-col gap-2">
       <div className="flex items-center justify-between">
-        <p className="font-bold text-fg-base">差分結果</p>
+        <p className="text-fg-base font-bold">差分結果</p>
         <div className="flex gap-1">
           <Button
-            onClick={() => setResultPosition('top')}
+            onClick={() => {
+              setResultPosition('top');
+            }}
             size="sm"
             variant={resultPosition === 'top' ? 'contained' : 'outlined'}
           >
             上に表示
           </Button>
           <Button
-            onClick={() => setResultPosition('bottom')}
+            onClick={() => {
+              setResultPosition('bottom');
+            }}
             size="sm"
             variant={resultPosition === 'bottom' ? 'contained' : 'outlined'}
           >
@@ -76,7 +85,7 @@ export const TextDiff = () => {
           </Button>
         </div>
       </div>
-      <div className="min-h-24 rounded-xl bg-bg-base p-4 shadow-sm">
+      <div className="bg-bg-base min-h-24 rounded-xl p-4 shadow-sm">
         <DiffOutput diff={diff} />
       </div>
     </div>

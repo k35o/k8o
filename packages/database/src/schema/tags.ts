@@ -5,6 +5,7 @@ import {
   text,
   uniqueIndex,
 } from 'drizzle-orm/sqlite-core';
+
 import { blogTag } from './blog-tag';
 import { talkTag } from './talk-tag';
 

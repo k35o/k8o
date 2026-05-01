@@ -16,8 +16,7 @@
     hline to 100%,
     vline to calc(100% - 48px),
     curve to 50% 95% with 75% 95%,
-    curve to 0% calc(100% - 48px) with 40% 95% /
-    25% calc(100% - 48px),
+    curve to 0% calc(100% - 48px) with 40% 95% / 25% calc(100% - 48px),
     close
   );
 }

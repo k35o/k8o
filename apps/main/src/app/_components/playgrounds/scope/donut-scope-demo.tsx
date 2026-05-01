@@ -17,7 +17,9 @@ export function DonutScopeDemo() {
         <h3 className="font-bold">ドーナツスコープ</h3>
         <Button
           color={showDonutScope ? 'primary' : 'gray'}
-          onClick={() => setShowDonutScope(!showDonutScope)}
+          onClick={() => {
+            setShowDonutScope(!showDonutScope);
+          }}
           size="sm"
         >
           @scope: {showDonutScope ? 'ON' : 'OFF'}
@@ -42,7 +44,7 @@ export function DonutScopeDemo() {
         `}
       </style>
 
-      <div className="demo-article space-y-4 rounded-lg bg-bg-mute p-4">
+      <div className="demo-article bg-bg-mute space-y-4 rounded-lg p-4">
         <p className="text-fg-mute text-sm">
           .article内の画像（スタイル適用対象）
         </p>
@@ -63,7 +65,7 @@ export function DonutScopeDemo() {
           />
         </div>
 
-        <div className="demo-nested-content rounded-md bg-bg-subtle p-4">
+        <div className="demo-nested-content bg-bg-subtle rounded-md p-4">
           <p className="text-fg-mute text-sm">
             .nested-content内の画像（除外される）
           </p>
@@ -86,7 +88,7 @@ export function DonutScopeDemo() {
         </div>
       </div>
 
-      <pre className="overflow-x-auto rounded-lg bg-bg-mute px-2 py-1 text-fg-mute text-xs sm:p-4 sm:text-md">
+      <pre className="bg-bg-mute text-fg-mute sm:text-md overflow-x-auto rounded-lg px-2 py-1 text-xs sm:p-4">
         <code>
           {showDonutScope
             ? `@scope (.article) to (.nested-content) {

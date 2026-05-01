@@ -30,9 +30,9 @@ export const ClipboardTextDemo: FC = () => {
     void readPermission
       .then((permission) => {
         setReadPermissions(permission.state);
-        permission.onchange = () => {
+        permission.addEventListener('change', () => {
           setReadPermissions(permission.state);
-        };
+        });
       })
       .catch(() => {
         console.warn(
@@ -43,9 +43,9 @@ export const ClipboardTextDemo: FC = () => {
     void writePermission
       .then((permission) => {
         setWritePermissions(permission.state);
-        permission.onchange = () => {
+        permission.addEventListener('change', () => {
           setWritePermissions(permission.state);
-        };
+        });
       })
       .catch(() => {
         console.warn(

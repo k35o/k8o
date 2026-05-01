@@ -1,5 +1,6 @@
 import { Button, FormIcon, PlusIcon, TableIcon } from '@k8o/arte-odyssey';
 import type { FC } from 'react';
+
 import { useColumnsType } from '../../_state';
 import type { Column, InvalidColumns } from '../../_types/column';
 import type { Restriction } from '../../_types/restriction';

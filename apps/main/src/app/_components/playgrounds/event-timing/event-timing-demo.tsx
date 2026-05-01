@@ -131,7 +131,7 @@ export function EventTimingDemo() {
 
   if (!isSupported) {
     return (
-      <div className="rounded-xl bg-bg-mute p-4">
+      <div className="bg-bg-mute rounded-xl p-4">
         <p className="text-fg-mute text-sm">
           このブラウザはEvent Timing APIをサポートしていません。
         </p>
@@ -150,15 +150,15 @@ export function EventTimingDemo() {
         </Button>
         <span className="text-fg-mute text-sm">
           計測回数:{' '}
-          <span className="font-medium text-fg-base">{entries.length}</span>
+          <span className="text-fg-base font-medium">{entries.length}</span>
         </span>
       </div>
 
       {latestEntry && (
-        <div className="rounded-xl bg-bg-base p-4 shadow-sm">
+        <div className="bg-bg-base rounded-xl p-4 shadow-sm">
           <div className="mb-3 flex items-center justify-between">
             <div className="flex items-center gap-2">
-              <h4 className="font-medium text-fg-base">最新の計測結果</h4>
+              <h4 className="text-fg-base font-medium">最新の計測結果</h4>
               <Code>{latestEntry.name}</Code>
             </div>
             <span className="text-fg-mute text-xs">
@@ -167,7 +167,7 @@ export function EventTimingDemo() {
           </div>
           <div className="mb-4">
             <div className="mb-1 flex items-baseline gap-2">
-              <span className="font-bold text-2xl text-primary-fg">
+              <span className="text-primary-fg text-2xl font-bold">
                 {latestEntry.duration.toFixed(0)}
               </span>
               <span className="text-fg-mute text-sm">ms (duration)</span>
@@ -198,11 +198,11 @@ export function EventTimingDemo() {
 
       {entries.length > 1 && (
         <div className="space-y-2">
-          <h4 className="font-medium text-fg-mute text-sm">履歴</h4>
+          <h4 className="text-fg-mute text-sm font-medium">履歴</h4>
           <div className="space-y-1">
             {entries.slice(1).map((entry) => (
               <div
-                className="flex items-center justify-between rounded-md bg-bg-mute px-3 py-2 text-sm"
+                className="bg-bg-mute flex items-center justify-between rounded-md px-3 py-2 text-sm"
                 key={entry.id}
               >
                 <div className="flex items-center gap-2">
@@ -219,7 +219,7 @@ export function EventTimingDemo() {
                   <span className="text-fg-mute text-xs">
                     描画: {entry.presentationDelay.toFixed(1)}ms
                   </span>
-                  <span className="font-medium text-fg-base">
+                  <span className="text-fg-base font-medium">
                     {entry.duration.toFixed(0)}ms
                   </span>
                 </div>
@@ -253,14 +253,14 @@ function TimingBar({
 
   return (
     <div className="flex items-center gap-3">
-      <span className="w-16 shrink-0 text-fg-mute text-xs">{label}</span>
-      <div className="relative h-4 flex-1 overflow-hidden rounded-full bg-bg-mute">
+      <span className="text-fg-mute w-16 shrink-0 text-xs">{label}</span>
+      <div className="bg-bg-mute relative h-4 flex-1 overflow-hidden rounded-full">
         <div
           className={`absolute inset-y-0 left-0 rounded-full ${color} transition-all duration-300`}
           style={{ width: `${percentage}%` }}
         />
       </div>
-      <span className="w-16 shrink-0 text-right font-medium text-fg-base text-xs">
+      <span className="text-fg-base w-16 shrink-0 text-right text-xs font-medium">
         {value.toFixed(1)}ms
       </span>
     </div>

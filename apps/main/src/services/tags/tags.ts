@@ -2,12 +2,12 @@ import { db } from '@repo/database';
 import { cacheLife } from 'next/cache';
 
 export async function getTags(page = 1): Promise<
-  {
+  Array<{
     id: number;
     name: string;
     blogCount: number;
     talkCount: number;
-  }[]
+  }>
 > {
   'use cache';
   cacheLife('max');

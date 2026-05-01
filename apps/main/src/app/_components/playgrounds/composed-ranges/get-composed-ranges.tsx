@@ -2,6 +2,7 @@
 
 import { Button, Code } from '@k8o/arte-odyssey';
 import { useEffect, useRef, useState } from 'react';
+
 import { getHTMLPolicy } from '@/app/_utils/trusted-types';
 
 export function GetComposedRanges() {

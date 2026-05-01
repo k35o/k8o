@@ -3,6 +3,7 @@
 import { useToast } from '@k8o/arte-odyssey';
 import { useRouter } from 'next/navigation';
 import type { FC } from 'react';
+
 import { authClient } from '@/libs/auth-client';
 
 export const SignOutButton: FC = () => {
@@ -25,7 +26,7 @@ export const SignOutButton: FC = () => {
 
   return (
     <button
-      className="text-fg-mute text-sm transition-colors hover:text-fg-base"
+      className="text-fg-mute hover:text-fg-base text-sm transition-colors"
       onClick={handleSignOut}
       type="button"
     >

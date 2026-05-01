@@ -1,5 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 import { expect, fn, within } from 'storybook/test';
+
 import { FilterBar } from './filter-bar';
 
 const meta: Meta<typeof FilterBar> = {

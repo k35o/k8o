@@ -8,6 +8,7 @@ import {
   useRef,
   useState,
 } from 'react';
+
 import type { RadiusPosition } from '../../_types/radius-position';
 import { positionToBorderRadius } from '../../_utils/position-to-border-radius';
 
@@ -28,9 +29,10 @@ export const useControlPanel = () => {
   const [activePosition, setActivePosition] = useState<Position | null>(null);
   const [aspectRatio, setAspectRatio] = useState(1); // 0.5〜2.0（横幅/縦幅）
 
-  const borderRadius = useMemo(() => {
-    return positionToBorderRadius(position);
-  }, [position]);
+  const borderRadius = useMemo(
+    () => positionToBorderRadius(position),
+    [position],
+  );
 
   const mouseDownHandler = useCallback(
     (
@@ -150,55 +152,47 @@ export const useControlPanel = () => {
       if (e.key === 'ArrowRight' || e.key === 'ArrowLeft') {
         e.preventDefault();
         if (position.endsWith('LeftX')) {
-          setPosition((prev) => {
-            return {
-              ...prev,
-              [position]: between(
-                prev[position] + (e.key === 'ArrowRight' ? 1 : -1),
-                0,
-                100,
-              ),
-            };
-          });
+          setPosition((prev) => ({
+            ...prev,
+            [position]: between(
+              prev[position] + (e.key === 'ArrowRight' ? 1 : -1),
+              0,
+              100,
+            ),
+          }));
         }
         if (position.endsWith('RightX')) {
-          setPosition((prev) => {
-            return {
-              ...prev,
-              [position]: between(
-                prev[position] + (e.key === 'ArrowLeft' ? 1 : -1),
-                0,
-                100,
-              ),
-            };
-          });
+          setPosition((prev) => ({
+            ...prev,
+            [position]: between(
+              prev[position] + (e.key === 'ArrowLeft' ? 1 : -1),
+              0,
+              100,
+            ),
+          }));
         }
       }
       if (e.key === 'ArrowUp' || e.key === 'ArrowDown') {
         e.preventDefault();
         if (position.startsWith('top') && position.endsWith('Y')) {
-          setPosition((prev) => {
-            return {
-              ...prev,
-              [position]: between(
-                prev[position] + (e.key === 'ArrowDown' ? 1 : -1),
-                0,
-                100,
-              ),
-            };
-          });
+          setPosition((prev) => ({
+            ...prev,
+            [position]: between(
+              prev[position] + (e.key === 'ArrowDown' ? 1 : -1),
+              0,
+              100,
+            ),
+          }));
         }
         if (position.startsWith('bottom') && position.endsWith('Y')) {
-          setPosition((prev) => {
-            return {
-              ...prev,
-              [position]: between(
-                prev[position] + (e.key === 'ArrowUp' ? 1 : -1),
-                0,
-                100,
-              ),
-            };
-          });
+          setPosition((prev) => ({
+            ...prev,
+            [position]: between(
+              prev[position] + (e.key === 'ArrowUp' ? 1 : -1),
+              0,
+              100,
+            ),
+          }));
         }
       }
     },

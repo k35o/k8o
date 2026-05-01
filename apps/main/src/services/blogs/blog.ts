@@ -1,5 +1,6 @@
 import { db } from '@repo/database';
 import { getFrontmatter } from '@repo/helpers/mdx/frontmatter';
+
 import { getTocTree } from '../../libs/mdx/toc-tree';
 import { blogPath } from './path';
 

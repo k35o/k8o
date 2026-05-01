@@ -38,13 +38,13 @@ export function CssMathFunctionsDemo() {
         />
       </div>
       <div className="flex flex-col items-center gap-4">
-        <div className="relative aspect-square w-full max-w-80 overflow-hidden border border-border-base">
+        <div className="border-border-base relative aspect-square w-full max-w-80 overflow-hidden border">
           {/* 中心線 */}
-          <div className="absolute top-0 left-1/2 h-full w-px bg-fg-subtle" />
-          <div className="absolute top-1/2 left-0 h-px w-full bg-fg-subtle" />
+          <div className="bg-fg-subtle absolute top-0 left-1/2 h-full w-px" />
+          <div className="bg-fg-subtle absolute top-1/2 left-0 h-px w-full" />
           {/* 移動する要素 */}
           <div
-            className="absolute z-10 h-6 w-6 rounded-full transition-all duration-300 ease-out"
+            className="absolute z-10 size-6 rounded-full transition-all duration-300 ease-out"
             style={{
               '--x': xValue.toString(),
               '--y': yValue.toString(),
@@ -59,7 +59,7 @@ export function CssMathFunctionsDemo() {
           />
 
           {/* 座標表示 */}
-          <div className="absolute top-2 left-2 text-fg-mute text-xs">
+          <div className="text-fg-mute absolute top-2 left-2 text-xs">
             <p>
               座標: ({xValue}, {yValue})
             </p>
@@ -76,7 +76,7 @@ export function CssMathFunctionsDemo() {
             </p>
           </div>
         </div>
-        <div className="flex flex-col items-start gap-2 text-fg-mute text-xs md:text-sm">
+        <div className="text-fg-mute flex flex-col items-start gap-2 text-xs md:text-sm">
           <p>
             ※<Code>abs</Code>
             を用いて、座標の絶対値の和が大きいほど要素のサイズを大きくしています。透明度も同じようにしています。

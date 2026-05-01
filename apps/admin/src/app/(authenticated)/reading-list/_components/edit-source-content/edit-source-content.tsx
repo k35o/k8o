@@ -2,6 +2,7 @@ import { Breadcrumb, Card, Separator } from '@k8o/arte-odyssey';
 import { db } from '@repo/database';
 import { eq } from 'drizzle-orm';
 import { notFound } from 'next/navigation';
+
 import { updateSource } from '../../_actions/source-actions';
 import { DeleteSourceButton } from '../delete-source-button/delete-source-button';
 import { SourceForm } from '../source-form/source-form';
@@ -32,7 +33,7 @@ export const EditSourceContent = async ({ id }: { id: string }) => {
         <Breadcrumb.Item>{source.title}</Breadcrumb.Item>
       </Breadcrumb.List>
       <div className="flex items-center justify-between">
-        <h2 className="font-bold text-2xl">{source.title}</h2>
+        <h2 className="text-2xl font-bold">{source.title}</h2>
         <DeleteSourceButton id={source.id} title={source.title} />
       </div>
       <Card>
@@ -41,7 +42,7 @@ export const EditSourceContent = async ({ id }: { id: string }) => {
         </div>
       </Card>
       <Separator />
-      <div className="flex flex-col gap-2 text-fg-mute text-xs">
+      <div className="text-fg-mute flex flex-col gap-2 text-xs">
         <p>作成日: {source.createdAt}</p>
         <p>更新日: {source.updatedAt}</p>
       </div>

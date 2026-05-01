@@ -105,7 +105,7 @@ export function ActiveViewTransitionDemo() {
         <div className="flex items-center gap-2">
           <div
             aria-hidden="true"
-            className="size-3 rounded-full bg-green-500 transition-indicator"
+            className="transition-indicator size-3 rounded-full bg-green-500"
           />
           <span className="text-fg-muted text-sm">
             {isTransitioning ? '遷移中...' : '待機中'}
@@ -125,14 +125,18 @@ export function ActiveViewTransitionDemo() {
 
       <div className="flex justify-center gap-4">
         <Button
-          onClick={() => navigate('backwards')}
+          onClick={() => {
+            navigate('backwards');
+          }}
           startIcon={<ChevronIcon direction="left" />}
         >
           戻る
         </Button>
         <Button
           endIcon={<ChevronIcon direction="right" />}
-          onClick={() => navigate('forwards')}
+          onClick={() => {
+            navigate('forwards');
+          }}
         >
           進む
         </Button>

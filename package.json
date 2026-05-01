@@ -3,15 +3,11 @@
   "version": "0.1.0",
   "private": true,
   "type": "module",
-  "engines": {
-    "node": ">=24.14.1"
-  },
-  "packageManager": "pnpm@10.33.1",
   "scripts": {
     "dev": "portless proxy start --https && turbo run dev",
     "build": "turbo run build",
-    "check": "biome check",
-    "check:write": "biome check --write --unsafe",
+    "check": "vp check",
+    "check:write": "vp check --fix",
     "ls-lint": "ls-lint",
     "type-check": "turbo run type-check",
     "test": "turbo run test",
@@ -22,17 +18,24 @@
     "knip": "knip"
   },
   "devDependencies": {
-    "@biomejs/biome": "2.4.12",
+    "@k8o/oxc-config": "^0.1.2",
     "@ls-lint/ls-lint": "2.3.1",
+    "@oxlint/plugins": "^1.62.0",
     "@types/node": "24.12.2",
     "@typescript/native-preview": "7.0.0-dev.20260422.1",
     "@upstash/context7-mcp": "2.1.8",
     "@vercel/next-browser": "0.7.1",
     "knip": "6.6.1",
     "lefthook": "2.1.6",
+    "oxlint-tailwindcss": "^0.6.3",
     "playwright": "1.59.1",
     "portless": "0.10.3",
     "turbo": "2.9.6",
-    "typescript": "6.0.3"
-  }
+    "typescript": "6.0.3",
+    "vite-plus": "^0.1.19"
+  },
+  "engines": {
+    "node": ">=24.14.1"
+  },
+  "packageManager": "pnpm@10.33.1"
 }

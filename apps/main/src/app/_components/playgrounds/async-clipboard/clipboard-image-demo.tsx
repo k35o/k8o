@@ -3,6 +3,7 @@
 import { Button, FormControl, Select, useToast } from '@k8o/arte-odyssey';
 import Image from 'next/image';
 import { type FC, useRef, useState } from 'react';
+
 import primaryIcon from '@/app/blog/(articles)/async-clipboard/_images/primary.png';
 import k8oIcon from '@/app/icon.png';
 
@@ -99,7 +100,7 @@ export const ClipboardImageDemo: FC = () => {
         <div className="flex w-full flex-col items-center gap-4">
           <div className="flex w-full flex-col gap-2">
             <p className="self-start font-bold">ペーストされた画像</p>
-            <p className="self-end text-fg-mute text-sm">
+            <p className="text-fg-mute self-end text-sm">
               権限があれば、外部でコピーした画像も貼り付けられます
             </p>
           </div>

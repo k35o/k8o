@@ -8,6 +8,7 @@ import {
 } from '@k8o/arte-odyssey';
 import { uuidV4 } from '@repo/helpers/uuid-v4';
 import { type FC, useState } from 'react';
+
 import type { Column } from '../../_types/column';
 import type {
   InvalidRestrictions,
@@ -63,21 +64,23 @@ const RestrictionItem: FC<{
   const config = RESTRICTION_CONFIG[restriction.type];
 
   return (
-    <div className="overflow-hidden rounded-xl border border-border-base bg-bg-base">
+    <div className="border-border-base bg-bg-base overflow-hidden rounded-xl border">
       {/* ヘッダー */}
       <div className="flex w-full items-center justify-between gap-3 px-4 py-3">
         <button
           aria-expanded={isOpen}
           className="flex flex-1 items-center gap-3 text-left transition-colors hover:opacity-80"
-          onClick={() => setIsOpen(!isOpen)}
+          onClick={() => {
+            setIsOpen(!isOpen);
+          }}
           type="button"
         >
-          <span className="flex h-6 w-6 items-center justify-center rounded bg-bg-mute font-mono text-fg-mute text-xs">
+          <span className="bg-bg-mute text-fg-mute flex size-6 items-center justify-center rounded font-mono text-xs">
             {index + 1}
           </span>
           {restriction.type === 'foreign' && <LinkIcon />}
           <span
-            className={`rounded px-2 py-0.5 font-medium text-xs ${config.badge}`}
+            className={`rounded px-2 py-0.5 text-xs font-medium ${config.badge}`}
           >
             {config.label}
           </span>
@@ -101,7 +104,7 @@ const RestrictionItem: FC<{
       {/* コンテンツ */}
       {isOpen && (
         <div>
-          <div className="overflow-hidden border-border-base border-t px-4 py-4">
+          <div className="border-border-base overflow-hidden border-t px-4 py-4">
             <CreateRestriction
               columns={columns}
               restriction={restriction}
@@ -184,7 +187,9 @@ export const CreateRestrictions: FC<Props> = ({
               id={id}
               index={idx}
               key={id}
-              onDelete={() => handleDeleteRestriction(id)}
+              onDelete={() => {
+                handleDeleteRestriction(id);
+              }}
               restriction={restriction}
               restrictionError={restrictionError}
               setRestriction={handleSetRestriction(id)}
@@ -195,7 +200,7 @@ export const CreateRestrictions: FC<Props> = ({
 
       {/* 制約がない場合のプレースホルダー */}
       {restrictionsEntries.length === 0 && (
-        <div className="flex flex-col items-center justify-center gap-2 rounded-xl bg-bg-mute py-8">
+        <div className="bg-bg-mute flex flex-col items-center justify-center gap-2 rounded-xl py-8">
           <p className="text-fg-mute text-sm">制約がありません</p>
           <Button
             onClick={handleAddRestriction}

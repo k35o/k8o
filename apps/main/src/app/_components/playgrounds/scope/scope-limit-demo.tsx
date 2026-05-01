@@ -17,7 +17,9 @@ export function ScopeLimitDemo() {
         <h3 className="font-bold">:scopeを使ったスコープリミット</h3>
         <Button
           color={useScopeSelector ? 'primary' : 'gray'}
-          onClick={() => setUseScopeSelector(!useScopeSelector)}
+          onClick={() => {
+            setUseScopeSelector(!useScopeSelector);
+          }}
           size="sm"
         >
           {useScopeSelector ? ':scope >' : '通常'}
@@ -44,7 +46,7 @@ export function ScopeLimitDemo() {
         `}
       </style>
 
-      <div className="demo-article-limit space-y-4 rounded-lg bg-bg-mute p-4">
+      <div className="demo-article-limit bg-bg-mute space-y-4 rounded-lg p-4">
         <p className="text-fg-mute text-sm">.article（スコープルート）</p>
         <div className="flex gap-4">
           <Image
@@ -56,7 +58,7 @@ export function ScopeLimitDemo() {
           />
         </div>
 
-        <div className="demo-nested-limit rounded-md bg-bg-subtle p-4">
+        <div className="demo-nested-limit bg-bg-subtle rounded-md p-4">
           <p className="text-fg-mute text-sm">
             .nested-content（直接の子 → 常に除外）
           </p>
@@ -71,9 +73,9 @@ export function ScopeLimitDemo() {
           </div>
         </div>
 
-        <div className="rounded-md bg-bg-subtle p-4">
+        <div className="bg-bg-subtle rounded-md p-4">
           <p className="text-fg-mute text-sm">ラッパー要素</p>
-          <div className="demo-nested-limit mt-2 rounded-md bg-bg-mute p-4">
+          <div className="demo-nested-limit bg-bg-mute mt-2 rounded-md p-4">
             <p className="text-fg-mute text-sm">
               .nested-content（孫要素 → :scope &gt;の時は適用される）
             </p>
@@ -90,7 +92,7 @@ export function ScopeLimitDemo() {
         </div>
       </div>
 
-      <pre className="overflow-x-auto rounded-lg bg-bg-mute px-2 py-1 text-fg-mute text-xs sm:p-4 sm:text-md">
+      <pre className="bg-bg-mute text-fg-mute sm:text-md overflow-x-auto rounded-lg px-2 py-1 text-xs sm:p-4">
         <code>
           {useScopeSelector
             ? `@scope (.article) to (:scope > .nested-content) {

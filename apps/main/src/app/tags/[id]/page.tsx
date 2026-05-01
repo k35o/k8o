@@ -1,6 +1,8 @@
 import { notFound } from 'next/navigation';
+
 import { getTag } from '@/services/tags/tag';
 import { getTags } from '@/services/tags/tags';
+
 import { TagContent } from '../_components/tag-content';
 
 export async function generateStaticParams() {
@@ -12,7 +14,7 @@ export async function generateStaticParams() {
 }
 
 export default async function Page({ params }: PageProps<'/tags/[id]'>) {
-  const id = (await params).id;
+  const { id } = await params;
   const tag = await getTag(Number(id));
 
   if (!tag) {

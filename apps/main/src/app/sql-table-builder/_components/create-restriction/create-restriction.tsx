@@ -5,6 +5,7 @@ import {
   TextField,
 } from '@k8o/arte-odyssey';
 import type { FC } from 'react';
+
 import type { Column } from '../../_types/column';
 import type {
   InvalidRestrictions,
@@ -16,7 +17,7 @@ const TYPE_OPTIONS = [
   { value: 'primary', label: 'PRIMARY KEY' },
   { value: 'unique', label: 'UNIQUE' },
   { value: 'foreign', label: 'FOREIGN KEY' },
-] as const satisfies { value: RestrictionType; label: string }[];
+] as const satisfies Array<{ value: RestrictionType; label: string }>;
 
 type Props = {
   columns: Record<string, Column>;
@@ -46,32 +47,30 @@ export const CreateRestriction: FC<Props> = ({
         isInvalid={Boolean(restrictionError?.type)}
         isRequired
         label="種類"
-        renderInput={({ labelId: _, ...props }) => {
-          return (
-            <Select
-              onChange={(e) => {
-                const type = e.target.value;
-                if (type === 'primary') {
-                  setRestriction({ type, columns: [] });
-                } else if (type === 'unique') {
-                  setRestriction({ type, columns: [] });
-                } else if (type === 'foreign') {
-                  setRestriction({
-                    type,
-                    column: columnOptions[0]?.value ?? '',
-                    reference: {
-                      table: '',
-                      column: '',
-                    },
-                  });
-                }
-              }}
-              options={TYPE_OPTIONS}
-              value={restriction.type}
-              {...props}
-            />
-          );
-        }}
+        renderInput={({ labelId: _, ...props }) => (
+          <Select
+            onChange={(e) => {
+              const type = e.target.value;
+              if (type === 'primary') {
+                setRestriction({ type, columns: [] });
+              } else if (type === 'unique') {
+                setRestriction({ type, columns: [] });
+              } else if (type === 'foreign') {
+                setRestriction({
+                  type,
+                  column: columnOptions[0]?.value ?? '',
+                  reference: {
+                    table: '',
+                    column: '',
+                  },
+                });
+              }
+            }}
+            options={TYPE_OPTIONS}
+            value={restriction.type}
+            {...props}
+          />
+        )}
       />
 
       {/* PRIMARY KEY / UNIQUE の場合 */}
@@ -105,69 +104,63 @@ export const CreateRestriction: FC<Props> = ({
             isInvalid={Boolean(restrictionError?.column)}
             isRequired
             label="参照元カラム"
-            renderInput={({ labelId: _, ...props }) => {
-              return (
-                <Select
-                  onChange={(e) => {
-                    setRestriction({
-                      ...restriction,
-                      column: e.target.value,
-                    });
-                  }}
-                  options={columnOptions}
-                  value={restriction.column}
-                  {...props}
-                />
-              );
-            }}
+            renderInput={({ labelId: _, ...props }) => (
+              <Select
+                onChange={(e) => {
+                  setRestriction({
+                    ...restriction,
+                    column: e.target.value,
+                  });
+                }}
+                options={columnOptions}
+                value={restriction.column}
+                {...props}
+              />
+            )}
           />
           <FormControl
             errorText={restrictionError?.reference?.table}
             isInvalid={Boolean(restrictionError?.reference?.table)}
             isRequired
             label="参照先テーブル"
-            renderInput={({ labelId: _, ...props }) => {
-              return (
-                <TextField
-                  {...props}
-                  onChange={(e) => {
-                    setRestriction({
-                      ...restriction,
-                      reference: {
-                        ...restriction.reference,
-                        table: e.target.value,
-                      },
-                    });
-                  }}
-                  placeholder="users"
-                  value={restriction.reference.table}
-                />
-              );
-            }}
+            renderInput={({ labelId: _, ...props }) => (
+              <TextField
+                {...props}
+                onChange={(e) => {
+                  setRestriction({
+                    ...restriction,
+                    reference: {
+                      ...restriction.reference,
+                      table: e.target.value,
+                    },
+                  });
+                }}
+                placeholder="users"
+                value={restriction.reference.table}
+              />
+            )}
           />
           <FormControl
             errorText={restrictionError?.reference?.column}
             isInvalid={Boolean(restrictionError?.reference?.column)}
             isRequired
             label="参照先カラム"
-            renderInput={({ labelId: _, ...props }) => {
-              return (
-                <TextField
-                  {...props}
-                  onChange={(e) => {
-                    setRestriction({
-                      ...restriction,
-                      reference: {
-                        ...restriction.reference,
-                        column: e.target.value,
-                      },
-                    });
-                  }}
-                  placeholder="id"
-                  value={restriction.reference.column}
-                />
-              );
-            }}
+            renderInput={({ labelId: _, ...props }) => (
+              <TextField
+                {...props}
+                onChange={(e) => {
+                  setRestriction({
+                    ...restriction,
+                    reference: {
+                      ...restriction.reference,
+                      column: e.target.value,
+                    },
+                  });
+                }}
+                placeholder="id"
+                value={restriction.reference.column}
+              />
+            )}
           />
         </>
       )}

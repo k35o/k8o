@@ -1,5 +1,6 @@
 import { join } from 'node:path';
 import { cwd } from 'node:process';
+
 import { blogPath } from './path';
 
 vi.mock('path');

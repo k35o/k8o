@@ -1,4 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
+
 import { DiffOutput } from './diff-output';
 
 const meta: Meta<typeof DiffOutput> = {

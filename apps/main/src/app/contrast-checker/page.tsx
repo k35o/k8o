@@ -3,7 +3,7 @@ import { Description } from './_components/description';
 
 export default function Page() {
   return (
-    <section className="grid h-full gap-6 rounded-xl bg-bg-base p-10">
+    <section className="bg-bg-base grid h-full gap-6 rounded-xl p-10">
       <CheckContrast />
       <Description />
     </section>

@@ -17,12 +17,12 @@ type StatusCellProps = {
 const StatusCell: FC<StatusCellProps> = ({ isInvalid }) => (
   <td className="px-2 py-2 sm:py-3">
     {isInvalid ? (
-      <div className="flex items-center justify-center gap-1 text-fg-error">
+      <div className="text-fg-error flex items-center justify-center gap-1">
         <AlertIcon size="sm" status="error" />
         <span className="font-bold">NG</span>
       </div>
     ) : (
-      <div className="flex items-center justify-center gap-1 text-fg-success">
+      <div className="text-fg-success flex items-center justify-center gap-1">
         <AlertIcon size="sm" status="success" />
         <span className="font-bold">OK</span>
       </div>
@@ -34,17 +34,17 @@ const StatusBadge: FC<StatusCellProps & { label: string }> = ({
   isInvalid,
   label,
 }) => (
-  <div className="flex items-center justify-between gap-3 rounded-md bg-bg-mute px-3 py-2">
+  <div className="bg-bg-mute flex items-center justify-between gap-3 rounded-md px-3 py-2">
     <span className="text-sm">{label}</span>
     {isInvalid ? (
-      <div className="flex items-center gap-1 text-fg-error">
+      <div className="text-fg-error flex items-center gap-1">
         <AlertIcon size="sm" status="error" />
-        <span className="font-bold text-sm">NG</span>
+        <span className="text-sm font-bold">NG</span>
       </div>
     ) : (
-      <div className="flex items-center gap-1 text-fg-success">
+      <div className="text-fg-success flex items-center gap-1">
         <AlertIcon size="sm" status="success" />
-        <span className="font-bold text-sm">OK</span>
+        <span className="text-sm font-bold">OK</span>
       </div>
     )}
   </div>
@@ -86,7 +86,7 @@ export const ResultTable: FC<Props> = ({
   ] as const;
 
   return (
-    <div className="overflow-hidden rounded-xl border border-border-base bg-bg-base">
+    <div className="border-border-base bg-bg-base overflow-hidden rounded-xl border">
       <div className="sm:hidden">
         {rows.map((row) => (
           <div className="flex flex-col gap-3 p-4" key={row.label}>
@@ -108,7 +108,7 @@ export const ResultTable: FC<Props> = ({
       </div>
       <table className="hidden w-full sm:table">
         <thead>
-          <tr className="border-border-base border-b bg-bg-mute font-medium text-xs sm:text-sm md:text-md">
+          <tr className="border-border-base bg-bg-mute md:text-md border-b text-xs font-medium sm:text-sm">
             <th className="px-3 py-2 sm:px-4 sm:py-3">AA</th>
             <th className="px-3 py-2 sm:px-4 sm:py-3">AAA</th>
             <th className="px-3 py-2 text-left sm:px-4 sm:py-3">テキスト</th>
@@ -117,7 +117,7 @@ export const ResultTable: FC<Props> = ({
         <tbody>
           {rows.map((row) => (
             <tr
-              className="h-14 border-border-base border-b last:border-b-0 sm:h-16"
+              className="border-border-base h-14 border-b last:border-b-0 sm:h-16"
               key={row.label}
             >
               <StatusCell isInvalid={row.aa} />

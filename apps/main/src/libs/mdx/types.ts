@@ -1,15 +1,15 @@
 export type HeadingTree = {
   depth: 0;
-  children: {
+  children: Array<{
     depth: 1;
     text: string;
-    children: {
+    children: Array<{
       depth: 2;
       text: string;
-      children: {
+      children: Array<{
         depth: 3;
         text: string;
-      }[];
-    }[];
-  }[];
+      }>;
+    }>;
+  }>;
 };

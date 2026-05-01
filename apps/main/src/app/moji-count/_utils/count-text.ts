@@ -1,5 +1,4 @@
-export const isSegmenter =
-  typeof window === 'undefined' || window.Intl.Segmenter === undefined;
+export const isSegmenter = window?.Intl.Segmenter === undefined;
 
 export const countGraphemeLength = (text: string): number => {
   // Intl.Segmenterを実装していないブラウザでは、ユニコードのコードポイント単位で数える

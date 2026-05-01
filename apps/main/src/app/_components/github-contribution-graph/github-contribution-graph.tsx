@@ -1,8 +1,10 @@
 import { cacheLife } from 'next/cache';
+
 import {
   type ContributionDay,
   fetchRepositoryCommitContributions,
 } from '@/services/github/contributions';
+
 import { Presenter } from './presenter';
 
 const USERNAME = 'k35o';
@@ -20,7 +22,7 @@ function mergeContributions(results: ContributionDay[][]): ContributionDay[] {
     }
   }
 
-  return Array.from(mergedMap.values()).sort((a, b) =>
+  return Array.from(mergedMap.values()).toSorted((a, b) =>
     a.date.localeCompare(b.date),
   );
 }

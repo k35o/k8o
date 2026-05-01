@@ -1,10 +1,11 @@
 import { cn } from '@repo/helpers/cn';
 import type { Preview } from '@storybook/nextjs-vite';
 import { initialize, mswLoader } from 'msw-storybook-addon';
-import Script from 'next/script';
 import { useTheme } from 'next-themes';
+import Script from 'next/script';
 import { type FC, memo, useEffect } from 'react';
 import { sb } from 'storybook/test';
+
 import { Background } from '../src/app/_components/global-layout/background/background';
 import { AppProvider } from '../src/app/_providers/app';
 import { mPlus2, notoSansJp } from '../src/app/_styles/font';
@@ -89,13 +90,7 @@ const preview: Preview = {
           <Story />
         </div>
         <ApplayThemeByStorybook
-          theme={
-            (parameters.theme
-              ? parameters.theme
-              : globals.theme
-                ? globals.theme
-                : 'light') as string
-          }
+          theme={(parameters.theme ?? globals.theme ?? 'light') as string}
         />
       </AppProvider>
     ),

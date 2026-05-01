@@ -2,6 +2,7 @@
 
 import { Badge, Button } from '@k8o/arte-odyssey';
 import type { FC } from 'react';
+
 import { getContrastTextColor } from '../../_utils/color-quiz';
 import { useColorQuiz } from './use-color-quiz';
 
@@ -25,7 +26,7 @@ export const ColorToHex: FC = () => {
       >
         {phase === 'result' && (
           <p
-            className="font-bold text-lg tracking-wider"
+            className="text-lg font-bold tracking-wider"
             style={{ color: getContrastTextColor(targetHex) }}
           >
             #{targetHex}
@@ -34,19 +35,19 @@ export const ColorToHex: FC = () => {
       </div>
       {phase === 'result' && (
         <div className="text-center">
-          <p className="font-bold text-lg">
+          <p className="text-lg font-bold">
             {isCorrect ? '正解！' : '不正解...'}
           </p>
           {selectedHex !== null && !isCorrect && (
             <div className="mt-4 grid grid-cols-2 gap-4">
               <div className="flex flex-col gap-2">
-                <p className="text-center text-fg-mute text-sm">あなたの回答</p>
+                <p className="text-fg-mute text-center text-sm">あなたの回答</p>
                 <div
                   className="flex h-24 items-center justify-center rounded-xl"
                   style={{ backgroundColor: `#${selectedHex}` }}
                 >
                   <p
-                    className="font-bold text-sm tracking-wider"
+                    className="text-sm font-bold tracking-wider"
                     style={{
                       color: getContrastTextColor(selectedHex),
                     }}
@@ -56,13 +57,13 @@ export const ColorToHex: FC = () => {
                 </div>
               </div>
               <div className="flex flex-col gap-2">
-                <p className="text-center text-fg-mute text-sm">正解</p>
+                <p className="text-fg-mute text-center text-sm">正解</p>
                 <div
                   className="flex h-24 items-center justify-center rounded-xl"
                   style={{ backgroundColor: `#${targetHex}` }}
                 >
                   <p
-                    className="font-bold text-sm tracking-wider"
+                    className="text-sm font-bold tracking-wider"
                     style={{
                       color: getContrastTextColor(targetHex),
                     }}
@@ -99,7 +100,9 @@ export const ColorToHex: FC = () => {
                 .join(' ')}
               disabled={phase === 'result'}
               key={hex}
-              onClick={() => setSelectedHex(hex)}
+              onClick={() => {
+                setSelectedHex(hex);
+              }}
               type="button"
             >
               #{hex}

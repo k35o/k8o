@@ -1,7 +1,9 @@
 import { Card } from '@k8o/arte-odyssey';
 import { cacheLife } from 'next/cache';
 import { Suspense } from 'react';
+
 import { getBlogContents } from '@/app/blog/_api';
+
 import { BlogCard } from './blog-card';
 
 const Skeleton = () => (
@@ -10,10 +12,10 @@ const Skeleton = () => (
       <Card key={i}>
         <div className="flex flex-col gap-4 p-4">
           <div className="flex flex-col gap-2">
-            <div className="h-6 w-3/4 animate-pulse rounded bg-bg-mute" />
-            <div className="h-4 w-full animate-pulse rounded bg-bg-mute" />
+            <div className="bg-bg-mute h-6 w-3/4 animate-pulse rounded" />
+            <div className="bg-bg-mute h-4 w-full animate-pulse rounded" />
           </div>
-          <div className="h-4 w-24 animate-pulse rounded bg-bg-mute" />
+          <div className="bg-bg-mute h-4 w-24 animate-pulse rounded" />
         </div>
       </Card>
     ))}
@@ -23,13 +25,11 @@ const Skeleton = () => (
 /**
  * 最近のブログ記事コンポーネント（Server Component）
  */
-export const RecentBlogs = () => {
-  return (
-    <Suspense fallback={<Skeleton />}>
-      <RecentBlogsContent />
-    </Suspense>
-  );
-};
+export const RecentBlogs = () => (
+  <Suspense fallback={<Skeleton />}>
+    <RecentBlogsContent />
+  </Suspense>
+);
 
 const RecentBlogsContent = async () => {
   'use cache';

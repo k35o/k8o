@@ -3,6 +3,7 @@ import { db } from '@repo/database';
 import { count, desc, eq, sum } from 'drizzle-orm';
 import { cacheLife } from 'next/cache';
 import Link from 'next/link';
+
 import { StatCard } from '../stat-card/stat-card';
 
 export const DashboardContent = async () => {
@@ -50,9 +51,9 @@ export const DashboardContent = async () => {
 
       <section className="flex flex-col gap-4">
         <div className="flex items-center justify-between">
-          <h3 className="font-bold text-lg">最近の取得記事</h3>
+          <h3 className="text-lg font-bold">最近の取得記事</h3>
           <Link
-            className="text-fg-mute text-sm transition-colors hover:text-fg-base"
+            className="text-fg-mute hover:text-fg-base text-sm transition-colors"
             href="/reading-list"
           >
             すべて見る
@@ -62,7 +63,7 @@ export const DashboardContent = async () => {
           <p className="text-fg-mute text-sm">取得済みの記事はありません</p>
         ) : (
           <Card>
-            <ul className="divide-y divide-border-base">
+            <ul className="divide-border-base divide-y">
               {recentArticles.map((article) => (
                 <li className="px-4 py-3" key={article.id}>
                   <div className="flex items-baseline justify-between gap-4">
@@ -74,7 +75,7 @@ export const DashboardContent = async () => {
                     >
                       {article.title}
                     </a>
-                    <span className="shrink-0 text-fg-mute text-xs">
+                    <span className="text-fg-mute shrink-0 text-xs">
                       {article.articleSource.title}
                     </span>
                   </div>

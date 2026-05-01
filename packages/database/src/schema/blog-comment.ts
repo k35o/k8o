@@ -1,5 +1,6 @@
 import { relations } from 'drizzle-orm';
 import { index, integer, sqliteTable } from 'drizzle-orm/sqlite-core';
+
 import { blogs } from './blogs';
 import { comments } from './comments';
 

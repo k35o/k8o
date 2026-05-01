@@ -16,7 +16,9 @@ export function ScopeProximityDemo() {
         <h3 className="font-bold">スコープの近接性</h3>
         <Button
           color={showProximity ? 'primary' : 'gray'}
-          onClick={() => setShowProximity(!showProximity)}
+          onClick={() => {
+            setShowProximity(!showProximity);
+          }}
           size="sm"
         >
           @scope: {showProximity ? 'ON' : 'OFF'}
@@ -55,11 +57,11 @@ export function ScopeProximityDemo() {
         `}
       </style>
 
-      <div className="demo-info-box rounded-lg border border-border-base p-4">
+      <div className="demo-info-box border-border-base rounded-lg border p-4">
         <p className="demo-message rounded p-2">情報メッセージ</p>
-        <div className="demo-warning-box mt-4 rounded-lg border border-border-base p-4">
+        <div className="demo-warning-box border-border-base mt-4 rounded-lg border p-4">
           <p className="demo-message rounded p-2">警告メッセージ</p>
-          <div className="demo-info-box mt-4 rounded-lg border border-border-base p-4">
+          <div className="demo-info-box border-border-base mt-4 rounded-lg border p-4">
             <p className="demo-message rounded p-2">
               ネストされた情報メッセージ（@scopeがONなら近接性で決定）
             </p>
@@ -80,7 +82,7 @@ export function ScopeProximityDemo() {
         </li>
       </ul>
 
-      <pre className="overflow-x-auto rounded-lg bg-bg-mute px-2 py-1 text-fg-mute text-xs sm:p-4 sm:text-md">
+      <pre className="bg-bg-mute text-fg-mute sm:text-md overflow-x-auto rounded-lg px-2 py-1 text-xs sm:p-4">
         <code>
           {showProximity
             ? `@scope (.info-box) {

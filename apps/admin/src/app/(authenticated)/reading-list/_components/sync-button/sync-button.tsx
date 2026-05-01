@@ -2,6 +2,7 @@
 
 import { Button, useToast } from '@k8o/arte-odyssey';
 import { type FC, useTransition } from 'react';
+
 import { syncArticlesAction } from '../../_actions/article-actions';
 
 export const SyncButton: FC = () => {

@@ -32,7 +32,7 @@ const cspHeader = `
 `;
 
 const contentSecurityPolicyHeaderValue = cspHeader
-  .replace(/\s{2,}/g, ' ')
+  .replaceAll(/\s{2,}/g, ' ')
   .trim();
 
 export function proxy(_request: NextRequest) {

@@ -1,4 +1,5 @@
 import { integer, sqliteTable } from 'drizzle-orm/sqlite-core';
+
 import { blogs } from './blogs';
 
 // PRIMARY KEYはすでにインデックスとして機能するため、追加インデックスは不要

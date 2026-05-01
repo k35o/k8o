@@ -1,6 +1,7 @@
 import { LinkButton } from '@k8o/arte-odyssey';
 import Image from 'next/image';
 import Link from 'next/link';
+
 import notFoundImage from './_images/404.png';
 
 export default function NotFound() {

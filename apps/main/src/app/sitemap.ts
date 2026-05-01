@@ -1,14 +1,13 @@
 import type { MetadataRoute } from 'next';
+
 import { getBlogContents } from '@/app/blog/_api';
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const blogs = await getBlogContents();
 
-  const blogMap = blogs.map((blog) => {
-    return {
-      url: `https://k8o.me/blog/${blog.slug}`,
-    } satisfies MetadataRoute.Sitemap[number];
-  });
+  const blogMap = blogs.map((blog) => ({
+    url: `https://k8o.me/blog/${blog.slug}`,
+  }));
 
   return [
     {

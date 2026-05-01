@@ -10,7 +10,7 @@ export function getJstDateBase(date: Date): Date {
 }
 
 export function formatDateString(date: Date): string {
-  return date.toISOString().split('T')[0] || '';
+  return date.toISOString().split('T')[0] ?? '';
 }
 
 export function getJstUtcStart(dateString: string): string {

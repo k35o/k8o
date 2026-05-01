@@ -22,9 +22,8 @@ type Item = {
   color: (typeof COLORS)[number];
 };
 
-const getRandomColor = (): (typeof COLORS)[number] => {
-  return COLORS[Math.floor(Math.random() * COLORS.length)] ?? COLORS[0];
-};
+const getRandomColor = (): (typeof COLORS)[number] =>
+  COLORS[Math.floor(Math.random() * COLORS.length)] ?? COLORS[0];
 
 const INIT_ITEMS = [
   { id: 1, text: 'アイテム 1', color: COLORS[0] },
@@ -50,7 +49,7 @@ export function ViewTransitionBasicDemo() {
   // アイテムをシャッフル
   const shuffleItems = () => {
     const updateDOM = () => {
-      setItems((prev) => [...prev].sort(() => Math.random() - 0.5));
+      setItems((prev) => [...prev].toSorted(() => Math.random() - 0.5));
     };
 
     withViewTransition(updateDOM);
@@ -109,7 +108,9 @@ export function ViewTransitionBasicDemo() {
         <Button onClick={addItem}>アイテムを追加</Button>
         <Button
           color={isViewTransitionEnabled ? 'primary' : 'gray'}
-          onClick={() => setIsViewTransitionEnabled(!isViewTransitionEnabled)}
+          onClick={() => {
+            setIsViewTransitionEnabled(!isViewTransitionEnabled);
+          }}
         >
           View Transition: {isViewTransitionEnabled ? 'ON' : 'OFF'}
         </Button>
@@ -142,7 +143,9 @@ export function ViewTransitionBasicDemo() {
             >
               <span className="font-bold">{item.text}</span>
               <Button
-                onClick={() => removeItem(item.id)}
+                onClick={() => {
+                  removeItem(item.id);
+                }}
                 size="sm"
                 variant="skeleton"
               >
@@ -175,7 +178,7 @@ export function ViewTransitionBasicDemo() {
           color: '#A9B2C3',
         }}
       >
-        <code className="text-xs sm:text-md">
+        <code className="sm:text-md text-xs">
           {`::view-transition-group(.item) {
   border-radius: var(--radius-md);
 }

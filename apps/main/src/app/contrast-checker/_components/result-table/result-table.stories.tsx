@@ -1,4 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
+
 import { ResultTable } from './result-table';
 
 const meta: Meta<typeof ResultTable> = {

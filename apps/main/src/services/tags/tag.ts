@@ -1,19 +1,20 @@
 import { db } from '@repo/database';
 import { cacheLife } from 'next/cache';
+
 import { getBlogMetadata } from '@/services/blogs/blog';
 
 export async function getTag(id: number): Promise<{
   id: number;
   name: string;
-  blogs: {
+  blogs: Array<{
     id: number;
     slug: string;
     title: string;
-  }[];
-  talks: {
+  }>;
+  talks: Array<{
     id: number;
     title: string;
-  }[];
+  }>;
 } | null> {
   'use cache';
   cacheLife('max');

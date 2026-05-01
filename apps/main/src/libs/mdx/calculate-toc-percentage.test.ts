@@ -1,4 +1,3 @@
-import { describe, expect, it } from 'vitest';
 import { calculateTocPercentage } from './calculate-toc-percentage';
 import type { HeadingTree } from './types';
 

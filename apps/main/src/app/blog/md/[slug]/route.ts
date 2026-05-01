@@ -1,6 +1,8 @@
 import { readFile } from 'node:fs/promises';
+
 import { cacheLife } from 'next/cache';
 import { NextResponse } from 'next/server';
+
 import { blogPath } from '@/services/blogs/path';
 
 const FRONTMATTER_RE = /^---\n[\s\S]*?\n---\n*/;

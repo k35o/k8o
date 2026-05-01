@@ -1,4 +1,5 @@
 import { getTalks } from '@/services/talks/talks';
+
 import { TalkCard } from './_components/talk-card';
 
 export default async function Page() {

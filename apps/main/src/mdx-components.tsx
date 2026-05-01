@@ -59,58 +59,53 @@ export function useMDXComponents(components: MDXComponents): MDXComponents {
     h3: ({ children }) => <LinkHeading type="h4">{children}</LinkHeading>,
     h4: ({ children }) => <LinkHeading type="h5">{children}</LinkHeading>,
     h5: ({ children }) => <LinkHeading type="h6">{children}</LinkHeading>,
-    a: ({ href, children }: PropsWithChildren<{ href: string }>) => (
-      <>
-        {href ? (
-          isInternalRoute<Route>(href) ? (
-            <Anchor
-              href={href}
-              renderAnchor={(props) => <Link {...props} href={href} />}
-            >
-              {children}
-            </Anchor>
-          ) : (
-            <Anchor href={href}>{children}</Anchor>
-          )
+    a: ({ href, children }: PropsWithChildren<{ href: string }>) =>
+      href ? (
+        isInternalRoute(href) ? (
+          <Anchor
+            href={href}
+            renderAnchor={(props) => <Link {...props} href={href as Route} />}
+          >
+            {children}
+          </Anchor>
         ) : (
-          <p>{children}</p>
-        )}
-      </>
-    ),
+          <Anchor href={href}>{children}</Anchor>
+        )
+      ) : (
+        <p>{children}</p>
+      ),
     p: ({ children }) => (
-      <p className="my-2 text-xs leading-normal sm:text-md">{children}</p>
+      <p className="sm:text-md my-2 text-xs leading-normal">{children}</p>
     ),
     code: ({ children, ...props }) => {
       if (typeof children === 'string') {
         return <Code>{children}</Code>;
       }
       return (
-        <code {...props} className="text-xs sm:text-md">
+        <code {...props} className="sm:text-md text-xs">
           {children}
         </code>
       );
     },
-    pre: ({ children, ...rest }) => {
-      return (
-        <pre
-          {...rest}
-          className="my-4 overflow-x-auto rounded-lg px-2 py-1 sm:p-4"
-        >
-          {children}
-        </pre>
-      );
-    },
+    pre: ({ children, ...rest }) => (
+      <pre
+        {...rest}
+        className="my-4 overflow-x-auto rounded-lg px-2 py-1 sm:p-4"
+      >
+        {children}
+      </pre>
+    ),
     li: ({ children }) => (
-      <li className="list-disc text-xs sm:text-md">{children}</li>
+      <li className="sm:text-md list-disc text-xs">{children}</li>
     ),
     ul: ({ children }) => (
-      <ul className="my-4 flex flex-col gap-1 pl-5 text-xs sm:text-md">
+      <ul className="sm:text-md my-4 flex flex-col gap-1 pl-5 text-xs">
         {children}
       </ul>
     ),
     blockquote: ({ children }) => (
-      <figure className="my-4 rounded-lg bg-bg-mute p-2 pl-3">
-        <blockquote className="border-border-base border-l-3 pl-2 text-fg-mute text-sm">
+      <figure className="bg-bg-mute my-4 rounded-lg p-2 pl-3">
+        <blockquote className="border-border-base text-fg-mute border-l-3 pl-2 text-sm">
           {children}
         </blockquote>
       </figure>

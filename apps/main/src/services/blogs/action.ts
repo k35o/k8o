@@ -1,6 +1,7 @@
 'use server';
 
 import { db } from '@repo/database';
+
 import '@/libs/zod';
 
 type Result =

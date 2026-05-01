@@ -20,11 +20,11 @@ export const ColorTip: FC<{ color: string; hex: string }> = ({
 
   return (
     <div
-      className="flex h-36 w-full items-center justify-center rounded-xl bg-bg-mute transition-colors duration-200"
+      className="bg-bg-mute flex h-36 w-full items-center justify-center rounded-xl transition-colors duration-200"
       style={{ backgroundColor: color }}
     >
       <p
-        className="select-all font-bold text-2xl tracking-wider"
+        className="text-2xl font-bold tracking-wider select-all"
         style={overlayColor ? { color: overlayColor } : undefined}
       >
         #{hex}

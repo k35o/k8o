@@ -1,9 +1,10 @@
 import { cn } from '@repo/helpers/cn';
 import type { Preview } from '@storybook/nextjs-vite';
-import Script from 'next/script';
 import { useTheme } from 'next-themes';
+import Script from 'next/script';
 import { type FC, memo, useEffect } from 'react';
 import { sb } from 'storybook/test';
+
 import { AppProvider } from '../src/app/_providers/app';
 import { mPlus2, notoSansJp } from '../src/app/_styles/font';
 
@@ -67,17 +68,11 @@ const preview: Preview = {
             .map((c) => `'${c}'`)
             .join(', ')})`}
         </Script>
-        <div className="min-h-svh bg-bg-base p-6">
+        <div className="bg-bg-base min-h-svh p-6">
           <Story />
         </div>
         <ApplyThemeByStorybook
-          theme={
-            (parameters.theme
-              ? parameters.theme
-              : globals.theme
-                ? globals.theme
-                : 'light') as string
-          }
+          theme={(parameters.theme ?? globals.theme ?? 'light') as string}
         />
       </AppProvider>
     ),

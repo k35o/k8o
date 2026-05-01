@@ -1,4 +1,5 @@
 import { cacheLife } from 'next/cache';
+
 import { getBaselineFeatures as _getBaselineFeatures } from '@/services/baseline/baseline';
 import { getFeatureBlogMap as _getFeatureBlogMap } from '@/services/baseline/feature-blog-map';
 
@@ -6,12 +7,12 @@ export async function getBaselineFeatures() {
   'use cache';
   cacheLife('minutes');
 
-  return await _getBaselineFeatures();
+  return _getBaselineFeatures();
 }
 
 export async function getFeatureBlogMap() {
   'use cache';
   cacheLife('max');
 
-  return await _getFeatureBlogMap();
+  return _getFeatureBlogMap();
 }

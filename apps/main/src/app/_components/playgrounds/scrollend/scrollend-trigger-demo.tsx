@@ -18,7 +18,9 @@ export function ScrollendTriggerDemo() {
     if (flashTimeoutRef.current) {
       clearTimeout(flashTimeoutRef.current);
     }
-    flashTimeoutRef.current = setTimeout(() => setShowFlash(false), 300);
+    flashTimeoutRef.current = setTimeout(() => {
+      setShowFlash(false);
+    }, 300);
   }, []);
 
   const handleScrollendSnap = useCallback(() => {
@@ -28,16 +30,19 @@ export function ScrollendTriggerDemo() {
     if (flashTimeoutRef.current) {
       clearTimeout(flashTimeoutRef.current);
     }
-    flashTimeoutRef.current = setTimeout(() => setShowFlash(false), 300);
+    flashTimeoutRef.current = setTimeout(() => {
+      setShowFlash(false);
+    }, 300);
   }, []);
 
-  useEffect(() => {
-    return () => {
+  useEffect(
+    () => () => {
       if (flashTimeoutRef.current) {
         clearTimeout(flashTimeoutRef.current);
       }
-    };
-  }, []);
+    },
+    [],
+  );
 
   useEffect(() => {
     const element = scrollToRef.current;
@@ -82,16 +87,16 @@ export function ScrollendTriggerDemo() {
   return (
     <div className="space-y-4 overflow-hidden">
       <div className="flex flex-wrap items-center gap-3">
-        <div className="relative flex items-center gap-2 rounded-md bg-bg-mute px-3 py-1.5">
+        <div className="bg-bg-mute relative flex items-center gap-2 rounded-md px-3 py-1.5">
           <span className="text-fg-mute text-sm">scrollend:</span>
-          <span className="font-bold text-primary-fg">{scrollendCount}</span>
+          <span className="text-primary-fg font-bold">{scrollendCount}</span>
           <span className="text-fg-mute text-sm">回</span>
           {showFlash && (
-            <div className="absolute inset-0 rounded-md bg-primary-bg opacity-30" />
+            <div className="bg-primary-bg absolute inset-0 rounded-md opacity-30" />
           )}
         </div>
         {lastTrigger && (
-          <div className="rounded-md bg-bg-subtle px-3 py-1.5 text-fg-base text-sm">
+          <div className="bg-bg-subtle text-fg-base rounded-md px-3 py-1.5 text-sm">
             {lastTrigger}
           </div>
         )}
@@ -103,7 +108,7 @@ export function ScrollendTriggerDemo() {
       <div className="grid gap-4 sm:grid-cols-2">
         <div className="min-w-0 space-y-2">
           <div className="flex items-center justify-between">
-            <h4 className="font-bold text-sm">scrollTo() API</h4>
+            <h4 className="text-sm font-bold">scrollTo() API</h4>
             <div className="flex gap-1">
               <Button color="primary" onClick={scrollToTop} size="sm">
                 先頭へ
@@ -114,13 +119,13 @@ export function ScrollendTriggerDemo() {
             </div>
           </div>
           <div
-            className="h-40 overflow-y-scroll rounded-xl bg-bg-mute p-3"
+            className="bg-bg-mute h-40 overflow-y-scroll rounded-xl p-3"
             ref={scrollToRef}
           >
             <div className="space-y-2">
               {Array.from({ length: 10 }, (_, i) => (
                 <div
-                  className="rounded-md bg-bg-base px-3 py-2 text-fg-base text-sm shadow-sm"
+                  className="bg-bg-base text-fg-base rounded-md px-3 py-2 text-sm shadow-sm"
                   key={i}
                 >
                   アイテム {i + 1}
@@ -131,17 +136,17 @@ export function ScrollendTriggerDemo() {
         </div>
 
         <div className="min-w-0 space-y-2">
-          <h4 className="font-bold text-sm">scroll-snap</h4>
+          <h4 className="text-sm font-bold">scroll-snap</h4>
           <div
-            className="flex h-40 snap-x snap-mandatory gap-3 overflow-x-scroll rounded-xl bg-bg-mute p-3"
+            className="bg-bg-mute flex h-40 snap-x snap-mandatory gap-3 overflow-x-scroll rounded-xl p-3"
             ref={snapRef}
           >
             {Array.from({ length: 8 }, (_, i) => (
               <div
-                className="flex w-28 shrink-0 snap-center flex-col items-center justify-center gap-2 rounded-lg bg-bg-base p-4 shadow-sm"
+                className="bg-bg-base flex w-28 shrink-0 snap-center flex-col items-center justify-center gap-2 rounded-lg p-4 shadow-sm"
                 key={i}
               >
-                <span className="font-bold text-2xl text-primary-fg">
+                <span className="text-primary-fg text-2xl font-bold">
                   {i + 1}
                 </span>
                 <span className="text-fg-mute text-xs">スナップ</span>

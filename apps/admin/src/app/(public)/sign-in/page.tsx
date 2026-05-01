@@ -4,11 +4,11 @@ export default function SignInPage() {
   return (
     <div className="flex min-h-[60vh] flex-col items-center justify-center gap-6">
       <div className="text-center">
-        <h1 className="font-bold font-noto-sans-jp text-2xl">k8o Admin</h1>
-        <p className="mt-2 text-fg-mute text-sm">
+        <h1 className="font-noto-sans-jp text-2xl font-bold">k8o Admin</h1>
+        <p className="text-fg-mute mt-2 text-sm">
           管理画面へのアクセスにはログインが必要です
         </p>
-        <p className="mt-1 text-fg-mute text-xs">
+        <p className="text-fg-mute mt-1 text-xs">
           許可されたユーザーのみログインできます
         </p>
       </div>

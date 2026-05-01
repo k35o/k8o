@@ -1,7 +1,9 @@
 import { cn } from '@repo/helpers/cn';
 import type { Metadata } from 'next';
 import type { ReactNode } from 'react';
+
 import { AppProvider } from './_providers/app';
+
 import './_styles/globals.css';
 import { mPlus2, notoSansJp } from './_styles/font';
 

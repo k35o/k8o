@@ -12,6 +12,7 @@ import {
   useToast,
 } from '@k8o/arte-odyssey';
 import { type FC, useActionState, useCallback, useState } from 'react';
+
 import { contact } from '@/app/_api/contact-to-me';
 
 export const ContactToMe: FC = () => {
@@ -79,7 +80,7 @@ const ContactToMeModal: FC<{
                   id={id}
                   isDisabled={isDisabled}
                   isInvalid={isInvalid}
-                  isRequired={true}
+                  isRequired
                   name="message"
                   rows={5}
                 />

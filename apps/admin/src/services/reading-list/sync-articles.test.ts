@@ -1,5 +1,6 @@
 import { db } from '@repo/database';
 import Parser from 'rss-parser';
+
 import { syncArticles } from './sync-articles';
 
 vi.mock('@repo/database', () => ({

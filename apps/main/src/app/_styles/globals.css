@@ -1,10 +1,10 @@
-@import "@k8o/arte-odyssey/styles.css";
+@import '@k8o/arte-odyssey/styles.css';
 
 @media (prefers-reduced-motion) {
   ::view-transition-group(*),
   ::view-transition-old(*),
   ::view-transition-new(*) {
-    /* biome-ignore lint/complexity/noImportantStyles: ユーザーの設定を強制するため */
+    /* ユーザーの設定を強制するため */
     animation: none !important;
   }
 }

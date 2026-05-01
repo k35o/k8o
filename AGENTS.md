@@ -14,8 +14,8 @@ pnpm run dev
 
 # ビルド・品質チェック
 pnpm run build                # 全パッケージビルド
-pnpm run check                # Biome lint/format チェック
-pnpm run check:write          # Biome lint/format 自動修正
+pnpm run check                # Vite+ / OXC lint・format チェック
+pnpm run check:write          # Vite+ / OXC lint・format 自動修正
 pnpm run type-check           # TypeScript型チェック
 pnpm run ls-lint              # ファイル名規約チェック
 
@@ -78,17 +78,17 @@ ArteOdysseyのドキュメントは `apps/main/node_modules/@k8o/arte-odyssey/do
 
 ### TypeScript
 
-- `type` を使う（`interface` は使わない）: Biome `useConsistentTypeDefinitions` で強制
-- `enum` 禁止: Biome `noEnum` で強制
+- `type` を使う（`interface` は使わない。module augmentation の `.d.ts` は例外）: OXC `typescript/consistent-type-definitions` で強制
+- `enum` 禁止: OXC `typescript/no-enum` / `oxc/no-const-enum` で強制
 - `any` 禁止、戻り値型は明示
-- `forEach` 禁止（`for...of` を使う）: Biome `noForEach` で強制
+- `forEach` 禁止（`for...of` を使う）
 
 ### React/Next.js
 
 - Next.jsの機能やAPIについては `apps/main/node_modules/next/dist/docs/` のバンドルドキュメントを参照すること
 - Server Componentsがデフォルト、必要な場合のみ `'use client'`
-- 関数コンポーネントのみ: Biome `useReactFunctionComponents` で強制
-- `forwardRef` 禁止: Biome `noReactForwardRef` で強制
+- 関数コンポーネントのみ
+- `forwardRef` 禁止
 
 ### UIコンポーネント作業時のStorybook MCP利用
 
@@ -137,5 +137,5 @@ type: `feat`, `fix`, `docs`, `style`, `refactor`, `test`, `chore`
 
 ## Git Hooks (Lefthook)
 
-- **pre-commit**: `biome check --write --unsafe {staged_files}` + `ls-lint`（自動stage-fixed）
-- **pre-push**: `biome check {staged_files}`
+- **pre-commit**: `vp check --fix {staged_files}` + `ls-lint`（自動stage-fixed）
+- **pre-push**: `vp check {staged_files}`

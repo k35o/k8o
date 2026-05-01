@@ -52,7 +52,7 @@ export function DragDropDemo() {
 
     if (caretPosition && caretPosition.offsetNode.nodeType === Node.TEXT_NODE) {
       const textContent = caretPosition.offsetNode.textContent ?? '';
-      const offset = caretPosition.offset;
+      const { offset } = caretPosition;
       const before = textContent.slice(0, offset);
       const after = textContent.slice(offset);
       setText(before + droppedText + after);
@@ -65,7 +65,7 @@ export function DragDropDemo() {
 
   if (!isSupported) {
     return (
-      <div className="rounded-xl bg-bg-mute p-3">
+      <div className="bg-bg-mute rounded-xl p-3">
         <p className="text-fg-mute text-sm">
           このブラウザはこのAPIをサポートしていません。
         </p>
@@ -77,13 +77,15 @@ export function DragDropDemo() {
     <div className="space-y-3">
       <div className="flex flex-wrap gap-2">
         {DRAGGABLE_WORDS.map((word) => (
-          // biome-ignore lint/a11y/noNoninteractiveElementInteractions: ドラッグ可能な要素のデモ
-          // biome-ignore lint/a11y/noStaticElementInteractions: ドラッグ可能な要素のデモ
+          // ドラッグ可能な要素のデモ
+          // ドラッグ可能な要素のデモ
           <span
-            className="cursor-grab rounded bg-primary-bg px-2 py-1 text-primary-fg text-sm active:cursor-grabbing"
+            className="bg-primary-bg text-primary-fg cursor-grab rounded px-2 py-1 text-sm active:cursor-grabbing"
             draggable
             key={word}
-            onDragStart={(e) => handleDragStart(e, word)}
+            onDragStart={(e) => {
+              handleDragStart(e, word);
+            }}
           >
             {word}
           </span>
@@ -93,8 +95,8 @@ export function DragDropDemo() {
         </Button>
       </div>
 
-      {/* biome-ignore lint/a11y/useSemanticElements: ドラッグ&ドロップのデモ用ドロップターゲット */}
-      {/* biome-ignore lint/a11y/noNoninteractiveElementInteractions: ドラッグ&ドロップのデモ用ドロップターゲット */}
+      {/* ドラッグ&ドロップのデモ用ドロップターゲット */}
+      {/* ドラッグ&ドロップのデモ用ドロップターゲット */}
       <div
         aria-label="テキスト挿入エリア"
         className={`rounded-lg border p-3 transition-colors ${
@@ -110,7 +112,7 @@ export function DragDropDemo() {
         <p className="text-fg-base text-sm leading-relaxed" ref={textRef}>
           {text}
         </p>
-        <p className="mt-2 text-fg-mute text-xs">
+        <p className="text-fg-mute mt-2 text-xs">
           ↑ 上のワードをドラッグしてここにドロップ
         </p>
       </div>

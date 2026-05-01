@@ -25,19 +25,19 @@ export const AppCard = ({
     <div className="flex h-full flex-col p-6 text-left">
       <div className="flex items-center gap-3">
         {accent === undefined ? null : (
-          <div className="flex size-8 shrink-0 items-center justify-center text-primary-fg">
+          <div className="text-primary-fg flex size-8 shrink-0 items-center justify-center">
             {accent}
           </div>
         )}
         <Heading type="h3">{title}</Heading>
       </div>
 
-      <p className="mt-3 line-clamp-3 flex-1 text-fg-mute text-sm leading-relaxed">
+      <p className="text-fg-mute mt-3 line-clamp-3 flex-1 text-sm leading-relaxed">
         {description}
       </p>
 
       <div className="mt-5 flex items-center justify-end">
-        <span className="flex items-center text-fg-subtle transition-all duration-150 ease-out group-hover:translate-x-0.5 group-hover:text-primary-fg">
+        <span className="text-fg-subtle group-hover:text-primary-fg flex items-center transition-all duration-150 ease-out group-hover:translate-x-0.5">
           {isExternal ? (
             <ExternalLinkIcon size="sm" />
           ) : (

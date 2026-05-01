@@ -1,6 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 import { useState } from 'react';
 import { expect, within } from 'storybook/test';
+
 import type { Table } from '../../_types/table';
 import { CreateTable } from './create-table';
 

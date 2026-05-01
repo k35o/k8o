@@ -1,5 +1,6 @@
 import { FormControl, TextField } from '@k8o/arte-odyssey';
 import type { ChangeEvent, FC } from 'react';
+
 import type { InvalidTable, Table } from '../../_types/table';
 
 type Props = {
@@ -24,32 +25,28 @@ export const CreateTable: FC<Props> = ({ table, setTable, tableError }) => {
         isInvalid={Boolean(tableError?.name)}
         isRequired
         label="テーブル名"
-        renderInput={({ labelId: _, ...props }) => {
-          return (
-            <TextField
-              onChange={handleChangeTableName}
-              placeholder="users"
-              value={table.name}
-              {...props}
-            />
-          );
-        }}
+        renderInput={({ labelId: _, ...props }) => (
+          <TextField
+            onChange={handleChangeTableName}
+            placeholder="users"
+            value={table.name}
+            {...props}
+          />
+        )}
       />
       <FormControl
         errorText={tableError?.alias}
         isInvalid={Boolean(tableError?.alias)}
         isRequired
         label="コメント"
-        renderInput={({ labelId: _, ...props }) => {
-          return (
-            <TextField
-              onChange={handleChangeTableAlias}
-              placeholder="ユーザーテーブル"
-              value={table.alias}
-              {...props}
-            />
-          );
-        }}
+        renderInput={({ labelId: _, ...props }) => (
+          <TextField
+            onChange={handleChangeTableAlias}
+            placeholder="ユーザーテーブル"
+            value={table.alias}
+            {...props}
+          />
+        )}
       />
     </div>
   );

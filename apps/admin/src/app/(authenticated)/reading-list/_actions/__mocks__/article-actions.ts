@@ -3,9 +3,8 @@ type ActionState = {
   success?: boolean;
 };
 
-export const deleteArticle = (_id: number): Promise<ActionState> => {
-  return Promise.resolve({ success: true });
-};
+export const deleteArticle = (_id: number): Promise<ActionState> =>
+  Promise.resolve({ success: true });
 
 type SyncActionState = {
   error?: string;
@@ -13,6 +12,5 @@ type SyncActionState = {
   failedSources?: string[];
 };
 
-export const syncArticlesAction = (): Promise<SyncActionState> => {
-  return Promise.resolve({ newArticles: 3, failedSources: [] });
-};
+export const syncArticlesAction = (): Promise<SyncActionState> =>
+  Promise.resolve({ newArticles: 3, failedSources: [] });

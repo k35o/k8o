@@ -6,6 +6,7 @@ import {
   text,
   uniqueIndex,
 } from 'drizzle-orm/sqlite-core';
+
 import { articleSources } from './article-sources';
 
 export const articles = sqliteTable(

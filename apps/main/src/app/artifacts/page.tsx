@@ -1,4 +1,5 @@
 import { getArtifacts } from '@/services/artifacts/artifacts';
+
 import { ArtifactCard } from './_components/artifact-card';
 
 export default function Page() {

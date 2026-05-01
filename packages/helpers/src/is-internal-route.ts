@@ -1,4 +1,4 @@
-export const isInternalRoute = <T extends string>(href: string): href is T =>
+export const isInternalRoute = (href: string): href is `/${string}` =>
   !href.startsWith('http');
 
 if (import.meta.vitest) {

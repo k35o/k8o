@@ -48,7 +48,7 @@ export const FeedbackCard: FC<{
 
   if (isSubmitted) {
     return (
-      <p className="py-4 text-center text-fg-mute text-sm">
+      <p className="text-fg-mute py-4 text-center text-sm">
         フィードバックありがとうございます！
       </p>
     );
@@ -66,7 +66,9 @@ export const FeedbackCard: FC<{
             aria-pressed={feedbackValue === 'good'}
             className={pillClass('good', feedbackValue)}
             disabled={isPending}
-            onClick={() => toggleFeedback('good')}
+            onClick={() => {
+              toggleFeedback('good');
+            }}
             type="button"
           >
             <GoodIcon size="sm" />
@@ -76,7 +78,9 @@ export const FeedbackCard: FC<{
             aria-pressed={feedbackValue === 'bad'}
             className={pillClass('bad', feedbackValue)}
             disabled={isPending}
-            onClick={() => toggleFeedback('bad')}
+            onClick={() => {
+              toggleFeedback('bad');
+            }}
             type="button"
           >
             <BadIcon size="sm" />
@@ -94,7 +98,9 @@ export const FeedbackCard: FC<{
           isDisabled={isPending}
           isInvalid={isInvalidComment}
           isRequired={false}
-          onChange={(e) => setComment(e.target.value)}
+          onChange={(e) => {
+            setComment(e.target.value);
+          }}
           placeholder="ひとことあれば…"
           rows={2}
           value={comment}

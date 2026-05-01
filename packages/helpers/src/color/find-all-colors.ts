@@ -7,16 +7,16 @@
  */
 export function findAllColors(
   text: string,
-): { color: string; start: number; end: number }[] {
-  const results: { color: string; start: number; end: number }[] = [];
+): Array<{ color: string; start: number; end: number }> {
+  const results: Array<{ color: string; start: number; end: number }> = [];
 
   // 対応する括弧の内容を見つけるヘルパー関数
   function extractFunctionContent(
     text: string,
     funcName: string,
-  ): { color: string; start: number; end: number }[] {
+  ): Array<{ color: string; start: number; end: number }> {
     const funcPattern = new RegExp(`${funcName}\\s*\\(`, 'gi');
-    const matches: { color: string; start: number; end: number }[] = [];
+    const matches: Array<{ color: string; start: number; end: number }> = [];
     let match = funcPattern.exec(text);
 
     while (match !== null) {
@@ -125,11 +125,11 @@ export function findAllColors(
 
   // 位置でソートし、重複を除去
   results.sort((a, b) => a.start - b.start);
-  const filteredResults: {
+  const filteredResults: Array<{
     color: string;
     start: number;
     end: number;
-  }[] = [];
+  }> = [];
 
   for (const result of results) {
     const hasOverlap = filteredResults.some(

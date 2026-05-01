@@ -8,7 +8,7 @@ type Request = {
 
 type Response = {
   text: string;
-  msgs: {
+  msgs: Array<{
     type: 'lint';
     ruleId: string;
     message: string;
@@ -27,7 +27,7 @@ type Response = {
       };
     };
     severity: number;
-  }[];
+  }>;
 };
 
 export const checkJapaneseSyntax = async (

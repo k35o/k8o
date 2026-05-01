@@ -26,9 +26,11 @@ export function ScrollbarColorDemo() {
             つまみ（thumb）:
           </label>
           <input
-            className="h-8 w-16 cursor-pointer rounded border border-border-base"
+            className="border-border-base h-8 w-16 cursor-pointer rounded border"
             id="thumb-color"
-            onChange={(e) => setThumbColor(e.target.value)}
+            onChange={(e) => {
+              setThumbColor(e.target.value);
+            }}
             type="color"
             value={thumbColor}
           />
@@ -39,9 +41,11 @@ export function ScrollbarColorDemo() {
             トラック（track）:
           </label>
           <input
-            className="h-8 w-16 cursor-pointer rounded border border-border-base"
+            className="border-border-base h-8 w-16 cursor-pointer rounded border"
             id="track-color"
-            onChange={(e) => setTrackColor(e.target.value)}
+            onChange={(e) => {
+              setTrackColor(e.target.value);
+            }}
             type="color"
             value={trackColor}
           />
@@ -50,7 +54,7 @@ export function ScrollbarColorDemo() {
       </div>
 
       <div
-        className="h-48 overflow-y-scroll rounded-lg border border-border-base bg-bg-mute p-4"
+        className="border-border-base bg-bg-mute h-48 overflow-y-scroll rounded-lg border p-4"
         ref={scrollRef}
         style={{
           scrollbarColor: `${thumbColor} ${trackColor}`,
@@ -58,7 +62,7 @@ export function ScrollbarColorDemo() {
       >
         <div className="space-y-4">
           {Array.from({ length: 20 }, (_, i) => (
-            <div className="rounded-md bg-bg-base p-3 shadow-sm" key={i}>
+            <div className="bg-bg-base rounded-md p-3 shadow-sm" key={i}>
               <p className="text-fg-base">アイテム {i + 1}</p>
               <p className="text-fg-mute text-sm">
                 スクロールバーの色が変わっていることを確認してください
@@ -68,7 +72,7 @@ export function ScrollbarColorDemo() {
         </div>
       </div>
 
-      <div className="rounded-md bg-bg-subtle p-3">
+      <div className="bg-bg-subtle rounded-md p-3">
         <p className="font-mono text-sm">
           scrollbar-color: {thumbColor} {trackColor}&#x3B;
         </p>

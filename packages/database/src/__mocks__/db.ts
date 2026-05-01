@@ -1,5 +1,6 @@
 import { type AnyColumn, sql } from 'drizzle-orm';
 import { drizzle } from 'drizzle-orm/neon-serverless';
+
 import { relations, schema } from '../schema';
 
 const drizzleDb = drizzle.mock({

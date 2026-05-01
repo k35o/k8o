@@ -2,11 +2,11 @@ export function DialogDemo() {
   return (
     <div className="space-y-4">
       <button
-        className="rounded-md bg-primary-base px-4 py-2 text-primary-fg"
+        className="bg-primary-base text-primary-fg rounded-md px-4 py-2"
         // @ts-expect-error -- commandfor is not yet in TypeScript types
-        // biome-ignore lint/nursery/noUnknownAttribute: Baseline 2025
+        // Baseline 2025
         command="show-modal"
-        // biome-ignore lint/nursery/noUnknownAttribute: Baseline 2025
+        // Baseline 2025
         commandfor="demo-dialog"
         type="button"
       >
@@ -15,7 +15,7 @@ export function DialogDemo() {
 
       <dialog
         aria-label="デモダイアログ"
-        className="m-auto rounded-lg bg-bg-base p-6 shadow-md backdrop:bg-black/50"
+        className="bg-bg-base m-auto rounded-lg p-6 shadow-md backdrop:bg-black/50"
         id="demo-dialog"
       >
         <div className="space-y-4">
@@ -26,11 +26,11 @@ export function DialogDemo() {
             JavaScriptを使わず、HTML属性だけで操作しています。
           </p>
           <button
-            className="rounded-md bg-bg-mute px-4 py-2 text-fg-base hover:bg-bg-subtle"
+            className="bg-bg-mute text-fg-base hover:bg-bg-subtle rounded-md px-4 py-2"
             // @ts-expect-error -- commandfor is not yet in TypeScript types
-            // biome-ignore lint/nursery/noUnknownAttribute: Baseline 2025
+            // Baseline 2025
             command="close"
-            // biome-ignore lint/nursery/noUnknownAttribute: Baseline 2025
+            // Baseline 2025
             commandfor="demo-dialog"
             type="button"
           >

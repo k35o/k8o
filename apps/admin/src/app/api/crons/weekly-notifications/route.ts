@@ -1,6 +1,7 @@
 import { db } from '@repo/database';
 import { and, eq, inArray, isNull } from 'drizzle-orm';
 import { type NextRequest, NextResponse } from 'next/server';
+
 import { sendPushNotification } from '@/services/push-notification/push-notification';
 
 type UnsentComment = {
@@ -11,7 +12,10 @@ const MAX_RETRY_ATTEMPTS = 3;
 const INITIAL_BACKOFF_MS = 1000;
 const BACKOFF_MULTIPLIER = 2;
 
-const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
+const sleep = (ms: number) =>
+  new Promise((resolve) => {
+    setTimeout(resolve, ms);
+  });
 
 async function sendWithRetry(
   title: string,
@@ -22,7 +26,7 @@ async function sendWithRetry(
 
   for (let attempt = 1; attempt <= MAX_RETRY_ATTEMPTS; attempt++) {
     try {
-      // biome-ignore lint/performance/noAwaitInLoops: リトライロジックのため順次実行が必要
+      // リトライロジックのため順次実行が必要
       await sendPushNotification(title, body, url);
       return;
     } catch (error) {
@@ -43,7 +47,7 @@ async function sendWithRetry(
     }
   }
 
-  throw lastError;
+  throw lastError ?? new Error('k8o-push API呼び出しに失敗しました');
 }
 
 export async function GET(req: NextRequest): Promise<NextResponse> {
@@ -57,13 +61,13 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
 
   let claimed: UnsentComment[];
   try {
-    claimed = await db.transaction((tx) => {
-      return tx
+    claimed = await db.transaction((tx) =>
+      tx
         .update(db._schema.comments)
         .set({ sentAt: claimedAt })
         .where(isNull(db._schema.comments.sentAt))
-        .returning({ id: db._schema.comments.id });
-    });
+        .returning({ id: db._schema.comments.id }),
+    );
   } catch (error) {
     console.error('未送信コメントの取得に失敗しました:', error);
     return NextResponse.json(

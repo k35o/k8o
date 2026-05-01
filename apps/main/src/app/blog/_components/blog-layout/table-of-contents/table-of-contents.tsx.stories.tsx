@@ -1,4 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
+
 import { TableOfContents } from './table-of-contents';
 
 const meta: Meta<typeof TableOfContents> = {

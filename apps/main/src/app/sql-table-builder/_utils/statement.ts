@@ -1,4 +1,5 @@
 import * as z from 'zod/mini';
+
 import type { Column, InvalidColumns } from '../_types/column';
 import type { InvalidRestrictions, Restriction } from '../_types/restriction';
 import type { InvalidTable, Table } from '../_types/table';
@@ -213,9 +214,10 @@ export const makeStatement = (
       )}\n);\n\nCOMMENT ON TABLE ${table.name} IS '${table.alias}';\n${Object.values(
       columns,
     )
-      .map((column) => {
-        return `COMMENT ON COLUMN ${table.name}.${column.name} IS '${column.alias}';`;
-      })
+      .map(
+        (column) =>
+          `COMMENT ON COLUMN ${table.name}.${column.name} IS '${column.alias}';`,
+      )
       .join('\n')}`,
   };
 };

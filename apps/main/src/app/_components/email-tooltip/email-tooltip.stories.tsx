@@ -1,4 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
+
 import { EmailTooltip } from './email-tooltip';
 
 const meta: Meta<typeof EmailTooltip> = {

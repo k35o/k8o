@@ -6,6 +6,7 @@ import {
   TextField,
 } from '@k8o/arte-odyssey';
 import { type FC, useId } from 'react';
+
 import {
   COLUMN_TYPE_OPTIONS_SHORT,
   type Column,
@@ -16,7 +17,7 @@ import {
 type Props = {
   handleChangeColumn: (id: string) => (column: Column) => void;
   handleDeleteColumn: (id: string) => () => void;
-  columnsEntries: [string, Column][];
+  columnsEntries: Array<[string, Column]>;
   columnsError: InvalidColumns['errors'] | undefined;
 };
 
@@ -33,23 +34,23 @@ export const CreateColumnsByTable: FC<Props> = ({
       <div className="min-w-200 px-6 sm:min-w-0 sm:px-0">
         <table className="w-full">
           <thead>
-            <tr className="border-border-base border-b bg-bg-mute">
-              <th className="w-10 text-nowrap px-3 py-2.5 text-left font-medium text-fg-mute text-sm">
+            <tr className="border-border-base bg-bg-mute border-b">
+              <th className="text-fg-mute w-10 px-3 py-2.5 text-left text-sm font-medium text-nowrap">
                 #
               </th>
-              <th className="text-nowrap px-3 py-2.5 text-left font-medium text-fg-mute text-sm">
+              <th className="text-fg-mute px-3 py-2.5 text-left text-sm font-medium text-nowrap">
                 カラム名
               </th>
-              <th className="text-nowrap px-3 py-2.5 text-left font-medium text-fg-mute text-sm">
+              <th className="text-fg-mute px-3 py-2.5 text-left text-sm font-medium text-nowrap">
                 コメント
               </th>
-              <th className="text-nowrap px-3 py-2.5 text-left font-medium text-fg-mute text-sm">
+              <th className="text-fg-mute px-3 py-2.5 text-left text-sm font-medium text-nowrap">
                 型
               </th>
-              <th className="text-nowrap px-3 py-2.5 text-center font-medium text-fg-mute text-sm">
+              <th className="text-fg-mute px-3 py-2.5 text-center text-sm font-medium text-nowrap">
                 NULL
               </th>
-              <th className="text-nowrap px-3 py-2.5 text-left font-medium text-fg-mute text-sm">
+              <th className="text-fg-mute px-3 py-2.5 text-left text-sm font-medium text-nowrap">
                 デフォルト値
               </th>
               <th className="w-12 px-3 py-2.5">
@@ -57,7 +58,7 @@ export const CreateColumnsByTable: FC<Props> = ({
               </th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-border-base">
+          <tbody className="divide-border-base divide-y">
             {columnsEntries.map(([id, column], idx) => {
               const columnError = columnsError?.[id];
               const hasError = columnError
@@ -70,7 +71,7 @@ export const CreateColumnsByTable: FC<Props> = ({
                   key={id}
                 >
                   <td className="px-3 py-2.5">
-                    <span className="flex h-6 w-6 items-center justify-center rounded bg-bg-mute font-mono text-fg-mute text-xs">
+                    <span className="bg-bg-mute text-fg-mute flex size-6 items-center justify-center rounded font-mono text-xs">
                       {idx + 1}
                     </span>
                   </td>
@@ -90,7 +91,7 @@ export const CreateColumnsByTable: FC<Props> = ({
                       id={`column-name_${idx.toString()}-${formId}`}
                       isDisabled={false}
                       isInvalid={Boolean(columnError?.name)}
-                      isRequired={true}
+                      isRequired
                       onChange={(e) => {
                         handleChangeColumn(id)({
                           ...column,
@@ -102,7 +103,7 @@ export const CreateColumnsByTable: FC<Props> = ({
                     />
                     {columnError?.name && (
                       <p
-                        className="mt-1 text-fg-error text-xs"
+                        className="text-fg-error mt-1 text-xs"
                         id={`column-name_${idx.toString()}-${formId}-feedback`}
                       >
                         {columnError.name}
@@ -125,7 +126,7 @@ export const CreateColumnsByTable: FC<Props> = ({
                       id={`column-alias_${idx.toString()}-${formId}`}
                       isDisabled={false}
                       isInvalid={Boolean(columnError?.alias)}
-                      isRequired={true}
+                      isRequired
                       onChange={(e) => {
                         handleChangeColumn(id)({
                           ...column,
@@ -137,7 +138,7 @@ export const CreateColumnsByTable: FC<Props> = ({
                     />
                     {columnError?.alias && (
                       <p
-                        className="mt-1 text-fg-error text-xs"
+                        className="text-fg-error mt-1 text-xs"
                         id={`column-alias-${idx.toString()}-${formId}-feedback`}
                       >
                         {columnError.alias}
@@ -160,7 +161,7 @@ export const CreateColumnsByTable: FC<Props> = ({
                       id={`column-type_${idx.toString()}-${formId}`}
                       isDisabled={false}
                       isInvalid={Boolean(columnError?.type)}
-                      isRequired={true}
+                      isRequired
                       onChange={(e) => {
                         handleChangeColumn(id)({
                           ...column,
@@ -172,7 +173,7 @@ export const CreateColumnsByTable: FC<Props> = ({
                     />
                     {columnError?.type && (
                       <p
-                        className="mt-1 text-fg-error text-xs"
+                        className="text-fg-error mt-1 text-xs"
                         id={`column-type_${idx.toString()}-${formId}-feedback`}
                       >
                         {columnError.type}
@@ -191,7 +192,7 @@ export const CreateColumnsByTable: FC<Props> = ({
                       value={column.nullable}
                     />
                     {columnError?.nullable && (
-                      <p className="mt-1 text-fg-error text-xs">
+                      <p className="text-fg-error mt-1 text-xs">
                         {columnError.nullable}
                       </p>
                     )}
@@ -223,7 +224,7 @@ export const CreateColumnsByTable: FC<Props> = ({
                     />
                     {columnError?.default && (
                       <p
-                        className="mt-1 text-fg-error text-xs"
+                        className="text-fg-error mt-1 text-xs"
                         id={`default_${idx.toString()}-${formId}-feedback`}
                       >
                         {columnError.default}

@@ -1,5 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 import { expect, within } from 'storybook/test';
+
 import { ControlPanel } from './control-panel';
 
 const meta: Meta<typeof ControlPanel> = {

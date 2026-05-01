@@ -2,9 +2,7 @@ type Rgb = [number, number, number];
 
 const validHexColorRegex = /^#[0-9A-Fa-f]{6}$/;
 
-const isValidHexColor = (hex: string): boolean => {
-  return validHexColorRegex.test(hex);
-};
+const isValidHexColor = (hex: string): boolean => validHexColorRegex.test(hex);
 
 const convertHexToRgb = (hex: string): Rgb => {
   if (!isValidHexColor(hex)) {
@@ -24,9 +22,12 @@ const calcLuminance = (rgbColor: Rgb) => {
   const rsrgb = r8 / 255;
   const gsrgb = g8 / 255;
   const bsrgb = b8 / 255;
-  const r = rsrgb <= 0.04045 ? rsrgb / 12.92 : ((rsrgb + 0.055) / 1.055) ** 2.4;
-  const g = gsrgb <= 0.04045 ? gsrgb / 12.92 : ((gsrgb + 0.055) / 1.055) ** 2.4;
-  const b = bsrgb <= 0.04045 ? bsrgb / 12.92 : ((bsrgb + 0.055) / 1.055) ** 2.4;
+  const r =
+    rsrgb <= 0.040_45 ? rsrgb / 12.92 : ((rsrgb + 0.055) / 1.055) ** 2.4;
+  const g =
+    gsrgb <= 0.040_45 ? gsrgb / 12.92 : ((gsrgb + 0.055) / 1.055) ** 2.4;
+  const b =
+    bsrgb <= 0.040_45 ? bsrgb / 12.92 : ((bsrgb + 0.055) / 1.055) ** 2.4;
   return 0.2126 * r + 0.7152 * g + 0.0722 * b;
 };
 

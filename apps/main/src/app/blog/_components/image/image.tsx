@@ -6,9 +6,9 @@ type Props = {
   alt: string;
 };
 
-export const Image: FC<Props> = (props) => {
-  return <NextImage className="py-2" {...props} />;
-};
+export const Image: FC<Props> = (props) => (
+  <NextImage className="py-2" {...props} />
+);
 
 export const FloatImage: FC<ComponentProps<typeof Image>> = (props) => (
   <div className="float-right">

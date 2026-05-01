@@ -5,6 +5,7 @@ import {
   sqliteTable,
   uniqueIndex,
 } from 'drizzle-orm/sqlite-core';
+
 import { tags } from './tags';
 import { talks } from './talks';
 

@@ -9,6 +9,7 @@ import {
   TwitterIcon,
 } from '@k8o/arte-odyssey';
 import Image from 'next/image';
+
 import { AppCard } from './_components/app-card';
 import { EmailTooltip } from './_components/email-tooltip';
 import { ActivityErrorBoundary } from './_components/error-boundary';

@@ -9,5 +9,5 @@ export const size = {
 export const contentType = 'image/png';
 
 export default async function OpenGraphImage() {
-  return await OgImage({ title: 'テキスト差分チェッカー' });
+  return OgImage({ title: 'テキスト差分チェッカー' });
 }

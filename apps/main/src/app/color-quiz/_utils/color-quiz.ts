@@ -15,9 +15,7 @@ const hexToRgb = (hex: string): { r: number; g: number; b: number } => {
 const colorDistance = (hex1: string, hex2: string): number => {
   const c1 = hexToRgb(hex1);
   const c2 = hexToRgb(hex2);
-  return Math.sqrt(
-    (c1.r - c2.r) ** 2 + (c1.g - c2.g) ** 2 + (c1.b - c2.b) ** 2,
-  );
+  return Math.hypot(c1.r - c2.r, c1.g - c2.g, c1.b - c2.b);
 };
 
 // 色の明るさを判定してテキストカラーを決定する
@@ -27,9 +25,8 @@ const getOverlayColor = (hex: string): string => {
   return luminance > 0.5 ? '#000000' : '#ffffff';
 };
 
-export const getContrastTextColor = (hex: string): string => {
-  return getOverlayColor(hex);
-};
+export const getContrastTextColor = (hex: string): string =>
+  getOverlayColor(hex);
 
 const MIN_DISTANCE_FROM_CORRECT = 40;
 const MIN_DISTANCE_BETWEEN_OPTIONS = 25;

@@ -23,13 +23,13 @@ export function ShapeFunctionDemo() {
 
       <div className="flex flex-col gap-6 sm:flex-row sm:gap-8">
         <div className="flex-1 space-y-2">
-          <p className="font-bold text-fg-base text-sm">path()</p>
+          <p className="text-fg-base text-sm font-bold">path()</p>
           <div
-            className="overflow-hidden rounded-md bg-bg-mute"
+            className="bg-bg-mute overflow-hidden rounded-md"
             style={{ width: `${width}%` }}
           >
             <div
-              className="h-32 bg-linear-to-br from-group-secondary to-group-quaternary"
+              className="from-group-secondary to-group-quaternary h-32 bg-linear-to-br"
               style={{
                 clipPath: "path('M 0 0 L 200 64 L 0 128 Z')",
               }}
@@ -41,13 +41,13 @@ export function ShapeFunctionDemo() {
         </div>
 
         <div className="flex-1 space-y-2">
-          <p className="font-bold text-fg-base text-sm">shape()</p>
+          <p className="text-fg-base text-sm font-bold">shape()</p>
           <div
-            className="overflow-hidden rounded-md bg-bg-mute"
+            className="bg-bg-mute overflow-hidden rounded-md"
             style={{ width: `${width}%` }}
           >
             <div
-              className="h-32 bg-linear-to-br from-group-secondary to-group-quaternary"
+              className="from-group-secondary to-group-quaternary h-32 bg-linear-to-br"
               style={{
                 clipPath:
                   'shape(from 0% 0%, line to 100% 50%, line to 0% 100%, close)',

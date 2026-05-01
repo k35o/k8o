@@ -1,4 +1,5 @@
 import { Octokit } from 'octokit';
+
 import {
   formatDateString,
   getJstDateBase,
@@ -138,7 +139,7 @@ export async function fetchRepositoryCommitContributions(
               return { done: true, value: undefined };
             }
 
-            const pageInfo = repoContributions.contributions.pageInfo;
+            const { pageInfo } = repoContributions.contributions;
             if (pageInfo.hasNextPage && pageInfo.endCursor) {
               cursor = pageInfo.endCursor;
             } else {
@@ -157,7 +158,7 @@ export async function fetchRepositoryCommitContributions(
       if (date) {
         contributionMap.set(
           date,
-          (contributionMap.get(date) || 0) + contribution.commitCount,
+          (contributionMap.get(date) ?? 0) + contribution.commitCount,
         );
       }
     }
@@ -173,7 +174,7 @@ export async function fetchRepositoryCommitContributions(
 
     if (!dateStr) continue;
 
-    const count = contributionMap.get(dateStr) || 0;
+    const count = contributionMap.get(dateStr) ?? 0;
 
     days.push({ date: dateStr, count });
   }

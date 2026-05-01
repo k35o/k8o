@@ -9,6 +9,7 @@ import {
 } from '@k8o/arte-odyssey';
 import { useQueryStates } from 'nuqs';
 import { type FC, type ReactNode, useCallback, useMemo, useState } from 'react';
+
 import type { DateRange, SortOrder } from '../../_utils/constants';
 import { readingListParsers } from '../../_utils/search-params';
 import { FilterBar } from '../filter-bar';
@@ -106,7 +107,7 @@ export const ReadingListContent: FC<Props> = ({ articles, sources, cards }) => {
       return true;
     });
 
-    return [...filtered].sort((a, b) => {
+    return [...filtered].toSorted((a, b) => {
       const diff =
         new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime();
       return sortOrder === 'oldest' ? -diff : diff;
@@ -159,7 +160,7 @@ export const ReadingListContent: FC<Props> = ({ articles, sources, cards }) => {
             <div className="text-fg-subtle">
               <SubscribeIcon size="lg" />
             </div>
-            <p className="font-bold text-fg-base text-lg">
+            <p className="text-fg-base text-lg font-bold">
               条件に一致する記事がありません
             </p>
             <p className="text-fg-mute text-sm">

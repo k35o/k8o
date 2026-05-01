@@ -57,9 +57,9 @@ export const QrGenerator = () => {
     const a = document.createElement('a');
     a.href = url;
     a.download = 'qrcode.svg';
-    document.body.appendChild(a);
+    document.body.append(a);
     a.click();
-    document.body.removeChild(a);
+    a.remove();
     URL.revokeObjectURL(url);
   }, [qrCodeSvg]);
 
@@ -115,12 +115,12 @@ export const QrGenerator = () => {
               </Button>
             </>
           ) : text.trim() ? (
-            <div className="flex items-center gap-2 rounded-lg bg-bg-error px-4 py-3 text-fg-error">
+            <div className="bg-bg-error text-fg-error flex items-center gap-2 rounded-lg px-4 py-3">
               <AlertIcon size="sm" status="error" />
               <p>QRコードの生成に失敗しました</p>
             </div>
           ) : (
-            <p className="py-8 text-center text-fg-mute">
+            <p className="text-fg-mute py-8 text-center">
               QRコードを生成するにはテキストを入力してください
             </p>
           )}

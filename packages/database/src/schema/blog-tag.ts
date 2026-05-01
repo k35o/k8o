@@ -5,6 +5,7 @@ import {
   sqliteTable,
   uniqueIndex,
 } from 'drizzle-orm/sqlite-core';
+
 import { blogs } from './blogs';
 import { tags } from './tags';
 

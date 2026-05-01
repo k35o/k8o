@@ -13,15 +13,14 @@ const createId = (index: number) => {
     .slice(2)}-${index.toString()}`;
 };
 
-export const buildAnnotations = (msgs: ApiLintMessage[]): Annotation[] => {
-  return msgs.map((msg, index) => ({
+export const buildAnnotations = (msgs: ApiLintMessage[]): Annotation[] =>
+  msgs.map((msg, index) => ({
     id: createId(index),
     original: {
       ...msg,
       range: [msg.range[0] ?? 0, msg.range[1] ?? 0] as [number, number],
     },
   }));
-};
 
 if (import.meta.vitest) {
   const { describe, it, expect } = import.meta.vitest;

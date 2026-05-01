@@ -6,7 +6,7 @@ export function UnitComparisonDemo() {
   return (
     <div className="space-y-8">
       <div>
-        <p className="mb-2 font-bold text-fg-base text-sm">
+        <p className="text-fg-base mb-2 text-sm font-bold">
           幅を測る単位（rch, ric）
         </p>
 
@@ -14,31 +14,31 @@ export function UnitComparisonDemo() {
           <div className="flex flex-col items-start gap-1">
             <span style={{ fontSize: `${SCALE}rem`, lineHeight: 1 }}>水</span>
             <div
-              className="rounded bg-primary-fg"
+              className="bg-primary-fg rounded"
               style={{
                 width: `${SCALE}ric`,
                 height: '8px',
               }}
             />
-            <span className="font-mono text-fg-mute text-xs">1ric</span>
+            <span className="text-fg-mute font-mono text-xs">1ric</span>
           </div>
 
           <div className="flex flex-col items-start gap-1">
             <span style={{ fontSize: `${SCALE}rem`, lineHeight: 1 }}>0</span>
             <div
-              className="rounded bg-primary-fg"
+              className="bg-primary-fg rounded"
               style={{
                 width: `${SCALE}rch`,
                 height: '8px',
               }}
             />
-            <span className="font-mono text-fg-mute text-xs">1rch</span>
+            <span className="text-fg-mute font-mono text-xs">1rch</span>
           </div>
         </div>
       </div>
 
       <div>
-        <p className="mb-2 font-bold text-fg-base text-sm">
+        <p className="text-fg-base mb-2 text-sm font-bold">
           高さを測る単位（rcap, rex）
         </p>
 
@@ -46,14 +46,14 @@ export function UnitComparisonDemo() {
           <div className="flex items-baseline gap-0.5">
             <span style={{ fontSize: `${SCALE}rem`, lineHeight: 1 }}>H</span>
             <div
-              className="rounded bg-primary-fg"
+              className="bg-primary-fg rounded"
               style={{
                 width: '8px',
                 height: `${SCALE}rcap`,
               }}
             />
             <span
-              className="font-mono text-fg-mute text-xs"
+              className="text-fg-mute font-mono text-xs"
               style={{ writingMode: 'vertical-rl' }}
             >
               1rcap
@@ -63,14 +63,14 @@ export function UnitComparisonDemo() {
           <div className="flex items-baseline gap-0.5">
             <span style={{ fontSize: `${SCALE}rem`, lineHeight: 1 }}>x</span>
             <div
-              className="rounded bg-primary-fg"
+              className="bg-primary-fg rounded"
               style={{
                 width: '8px',
                 height: `${SCALE}rex`,
               }}
             />
             <span
-              className="font-mono text-fg-mute text-xs"
+              className="text-fg-mute font-mono text-xs"
               style={{ writingMode: 'vertical-rl' }}
             >
               1rex

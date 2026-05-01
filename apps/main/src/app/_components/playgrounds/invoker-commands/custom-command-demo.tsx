@@ -2,6 +2,7 @@
 
 import Image from 'next/image';
 import { useEffect, useRef } from 'react';
+
 import k8oIcon from '@/app/_images/k8o.jpg';
 
 export function CustomCommandDemo() {
@@ -14,7 +15,7 @@ export function CustomCommandDemo() {
 
     const handleCommand = (event: Event) => {
       const commandEvent = event as Event & { command?: string };
-      const command = commandEvent.command;
+      const { command } = commandEvent;
       if (!command) return;
 
       if (command === '--zoom-in') {
@@ -30,40 +31,42 @@ export function CustomCommandDemo() {
     };
 
     image.addEventListener('command', handleCommand);
-    return () => image.removeEventListener('command', handleCommand);
+    return () => {
+      image.removeEventListener('command', handleCommand);
+    };
   }, []);
 
   return (
     <div className="space-y-4">
       <div className="flex gap-2">
         <button
-          className="rounded-md bg-primary-base px-4 py-2 text-primary-fg"
+          className="bg-primary-base text-primary-fg rounded-md px-4 py-2"
           // @ts-expect-error -- commandfor is not yet in TypeScript types
-          // biome-ignore lint/nursery/noUnknownAttribute: Baseline 2025
+          // Baseline 2025
           command="--zoom-in"
-          // biome-ignore lint/nursery/noUnknownAttribute: Baseline 2025
+          // Baseline 2025
           commandfor="demo-image"
           type="button"
         >
           拡大
         </button>
         <button
-          className="rounded-md bg-primary-base px-4 py-2 text-primary-fg"
+          className="bg-primary-base text-primary-fg rounded-md px-4 py-2"
           // @ts-expect-error -- commandfor is not yet in TypeScript types
-          // biome-ignore lint/nursery/noUnknownAttribute: Baseline 2025
+          // Baseline 2025
           command="--zoom-out"
-          // biome-ignore lint/nursery/noUnknownAttribute: Baseline 2025
+          // Baseline 2025
           commandfor="demo-image"
           type="button"
         >
           縮小
         </button>
         <button
-          className="rounded-md bg-bg-mute px-4 py-2 text-fg-base hover:bg-bg-subtle"
+          className="bg-bg-mute text-fg-base hover:bg-bg-subtle rounded-md px-4 py-2"
           // @ts-expect-error -- commandfor is not yet in TypeScript types
-          // biome-ignore lint/nursery/noUnknownAttribute: Baseline 2025
+          // Baseline 2025
           command="--reset"
-          // biome-ignore lint/nursery/noUnknownAttribute: Baseline 2025
+          // Baseline 2025
           commandfor="demo-image"
           type="button"
         >
@@ -71,25 +74,21 @@ export function CustomCommandDemo() {
         </button>
       </div>
 
-      <div className="flex items-center justify-center rounded-xl bg-bg-base p-8 shadow-sm">
+      <div className="bg-bg-base flex items-center justify-center rounded-xl p-8 shadow-sm">
         <div
-          className="h-24 w-24 overflow-hidden rounded-full transition-all duration-300"
+          className="size-24 overflow-hidden rounded-full transition-all duration-300"
           id="demo-image"
           ref={imageRef}
         >
-          <Image
-            alt="k8o"
-            className="h-full w-full object-cover"
-            src={k8oIcon}
-          />
+          <Image alt="k8o" className="size-full object-cover" src={k8oIcon} />
         </div>
       </div>
 
       <p className="text-fg-mute text-sm">
         カスタムコマンド（
-        <code className="rounded bg-bg-subtle px-1">--zoom-in</code>、
-        <code className="rounded bg-bg-subtle px-1">--zoom-out</code>、
-        <code className="rounded bg-bg-subtle px-1">--reset</code>
+        <code className="bg-bg-subtle rounded px-1">--zoom-in</code>、
+        <code className="bg-bg-subtle rounded px-1">--zoom-out</code>、
+        <code className="bg-bg-subtle rounded px-1">--reset</code>
         ）で操作しています。
       </p>
     </div>

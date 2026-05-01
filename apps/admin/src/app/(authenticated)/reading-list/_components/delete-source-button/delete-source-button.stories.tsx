@@ -1,4 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
+
 import { DeleteSourceButton } from './delete-source-button';
 
 const meta: Meta<typeof DeleteSourceButton> = {

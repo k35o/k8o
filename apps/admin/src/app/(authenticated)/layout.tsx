@@ -1,4 +1,5 @@
 import type { ReactNode } from 'react';
+
 import { AdminHeader } from '@/app/(authenticated)/_components/admin-header';
 
 export default function AuthenticatedLayout({

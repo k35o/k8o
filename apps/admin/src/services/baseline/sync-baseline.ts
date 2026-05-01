@@ -28,10 +28,10 @@ type BaselineFeature = {
 
 type SyncResult = {
   newFeatures: BaselineFeature[];
-  statusChanges: {
+  statusChanges: Array<{
     feature: BaselineFeature;
     previousStatus: string;
-  }[];
+  }>;
 };
 
 const MAX_PAGES = 50;
@@ -115,18 +115,18 @@ export async function syncBaseline(): Promise<SyncResult> {
 
   const newFeatures: BaselineFeature[] = [];
   const statusChanges: SyncResult['statusChanges'] = [];
-  const toInsert: {
+  const toInsert: Array<{
     featureId: string;
     name: string;
     status: 'newly' | 'widely';
     date: string;
-  }[] = [];
-  const toUpdate: {
+  }> = [];
+  const toUpdate: Array<{
     featureId: string;
     name: string;
     status: 'newly' | 'widely';
     date: string;
-  }[] = [];
+  }> = [];
 
   for (const feature of allFeatures) {
     const existing = existingByFeatureId.get(feature.featureId);

@@ -9,7 +9,7 @@ async function fetchGoogleFontsCss({
   const cacheKey = text;
   const cachedCss = cssCache.get(cacheKey);
   if (cachedCss) {
-    return await cachedCss;
+    return cachedCss;
   }
 
   const cssPromise = fetch(
@@ -19,7 +19,7 @@ async function fetchGoogleFontsCss({
       if (!response.ok) {
         throw new Error(`Failed to fetch Google Fonts CSS: ${response.status}`);
       }
-      return await response.text();
+      return response.text();
     })
     .catch((error: unknown) => {
       cssCache.delete(cacheKey);
@@ -27,7 +27,7 @@ async function fetchGoogleFontsCss({
     });
 
   cssCache.set(cacheKey, cssPromise);
-  return await cssPromise;
+  return cssPromise;
 }
 
 function extractFontUrl(css: string): string {
@@ -51,7 +51,7 @@ export async function getMPlus2Font({
   const cacheKey = text;
   const cachedFont = fontCache.get(cacheKey);
   if (cachedFont) {
-    return await cachedFont;
+    return cachedFont;
   }
 
   const fontPromise = fetchGoogleFontsCss({ text })
@@ -61,7 +61,7 @@ export async function getMPlus2Font({
       if (!response.ok) {
         throw new Error(`Failed to fetch font file: ${response.status}`);
       }
-      return await response.arrayBuffer();
+      return response.arrayBuffer();
     })
     .catch((error: unknown) => {
       fontCache.delete(cacheKey);
@@ -69,5 +69,5 @@ export async function getMPlus2Font({
     });
 
   fontCache.set(cacheKey, fontPromise);
-  return await fontPromise;
+  return fontPromise;
 }

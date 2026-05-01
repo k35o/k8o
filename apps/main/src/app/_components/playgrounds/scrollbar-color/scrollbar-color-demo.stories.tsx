@@ -1,4 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
+
 import { Playground } from '../playground';
 import { ScrollbarColorDemo } from './scrollbar-color-demo';
 

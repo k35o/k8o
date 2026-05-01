@@ -1,5 +1,6 @@
 import { cacheLife } from 'next/cache';
 import { NextResponse } from 'next/server';
+
 import { metadata as artifactsMetadata } from '@/app/artifacts/layout';
 import { metadata as baseConverterMetadata } from '@/app/base-converter/layout';
 import { getBlogContents } from '@/app/blog/_api';
@@ -55,10 +56,10 @@ async function _generateLlmContent() {
     .join('\n\n');
 
   // metadata とサブコンテンツを直接紐付け
-  const forgeItems: {
+  const forgeItems: Array<{
     metadata: { title?: string | null; description?: string | null };
     subContent?: string;
-  }[] = [
+  }> = [
     { metadata: blogMetadata, subContent: blogContent },
     { metadata: talksMetadata, subContent: talkContent },
     { metadata: playgroundsMetadata },

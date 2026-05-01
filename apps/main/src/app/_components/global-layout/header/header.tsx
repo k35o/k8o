@@ -12,7 +12,7 @@ export const Header: FC<{ children: ReactNode }> = ({ children }) => {
         scrollDirection.y === 'down' ? '-translate-y-full' : 'translate-y-0'
       }`}
     >
-      <div className="flex w-full max-w-5xl items-center justify-between rounded-full bg-bg-base/60 px-8 py-2 shadow-md backdrop-blur-md">
+      <div className="bg-bg-base/60 flex w-full max-w-5xl items-center justify-between rounded-full px-8 py-2 shadow-md backdrop-blur-md">
         {children}
       </div>
     </header>

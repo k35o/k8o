@@ -1,5 +1,6 @@
 import { db } from '@repo/database';
 import { getFrontmatter } from '@repo/helpers/mdx/frontmatter';
+
 import { blogPath } from './path';
 
 export const getBlogs = async () => {
@@ -56,14 +57,14 @@ export const getBlogsByTags = async (slug: string, tagIds: number[]) => {
 
   return Promise.all(
     blogs
-      .sort((a, b) => {
-        const aBlogTagIds = a.blogTag.map((blogTag) => blogTag.tag.id);
-        const bBlogTagIds = b.blogTag.map((blogTag) => blogTag.tag.id);
+      .toSorted((a, b) => {
+        const aBlogTagIds = new Set(a.blogTag.map((blogTag) => blogTag.tag.id));
+        const bBlogTagIds = new Set(b.blogTag.map((blogTag) => blogTag.tag.id));
         const aTagCount = tagIds.filter((tagId) =>
-          aBlogTagIds.includes(tagId),
+          aBlogTagIds.has(tagId),
         ).length;
         const bTagCount = tagIds.filter((tagId) =>
-          bBlogTagIds.includes(tagId),
+          bBlogTagIds.has(tagId),
         ).length;
         return bTagCount - aTagCount;
       })

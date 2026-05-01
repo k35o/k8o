@@ -1,7 +1,9 @@
 import { readFile } from 'node:fs/promises';
+
 import type { Root } from 'mdast';
 import { remark } from 'remark';
 import remarkFrontmatter from 'remark-frontmatter';
+
 import type { HeadingTree } from './types';
 
 export const getTocTree = async (path: string) => {
