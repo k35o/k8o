@@ -39,10 +39,6 @@ export default defineConfig({
         'error',
         { allow: ['**/*.css', '@/libs/zod', 'react', 'server-only'] },
       ],
-      'react/no-unknown-property': [
-        'error',
-        { ignore: ['command', 'commandfor'] },
-      ],
     },
     overrides: [
       {
