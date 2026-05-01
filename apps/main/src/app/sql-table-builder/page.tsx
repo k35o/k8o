@@ -1,6 +1,6 @@
 'use client';
 
-/* eslint-disable import/max-dependencies -- SQL table builder 画面のフォーム部品を page entry で組み立てるため */
+/* oxlint-disable import/max-dependencies -- SQL table builder 画面のフォーム部品を page entry で組み立てるため */
 
 import {
   Button,

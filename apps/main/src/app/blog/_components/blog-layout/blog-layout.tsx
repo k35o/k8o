@@ -1,4 +1,4 @@
-/* eslint-disable import/max-dependencies -- 記事ページのレイアウトを構成する route 専用コンポーネントを集約するため */
+/* oxlint-disable import/max-dependencies -- 記事ページのレイアウトを構成する route 専用コンポーネントを集約するため */
 
 import {
   Badge,

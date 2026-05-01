@@ -1,4 +1,4 @@
-/* eslint-disable react/no-unknown-property -- Baseline 2025 の Invoker Commands API 属性をデモするため */
+/* oxlint-disable react/no-unknown-property -- Baseline 2025 の Invoker Commands API 属性をデモするため */
 
 export function DialogDemo() {
   return (
