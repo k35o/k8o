@@ -87,13 +87,13 @@ importers:
   .:
     devDependencies:
       '@k8o/oxc-config':
-        specifier: ^0.1.2
+        specifier: 0.1.2
         version: 0.1.2(oxfmt@0.45.0)(oxlint-tailwindcss@0.6.3(@oxlint/plugins@1.62.0))(oxlint@1.60.0(oxlint-tsgolint@0.21.1))
       '@ls-lint/ls-lint':
         specifier: 2.3.1
         version: 2.3.1
       '@oxlint/plugins':
-        specifier: ^1.62.0
+        specifier: 1.62.0
         version: 1.62.0
       '@types/node':
         specifier: 24.12.2
@@ -114,7 +114,7 @@ importers:
         specifier: 2.1.6
         version: 2.1.6
       oxlint-tailwindcss:
-        specifier: ^0.6.3
+        specifier: 0.6.3
         version: 0.6.3(@oxlint/plugins@1.62.0)
       playwright:
         specifier: 1.59.1
@@ -129,7 +129,7 @@ importers:
         specifier: 6.0.3
         version: 6.0.3
       vite-plus:
-        specifier: ^0.1.19
+        specifier: 0.1.19
         version: 0.1.19(@opentelemetry/api@1.9.0)(@types/node@24.12.2)(esbuild@0.27.3)(jiti@2.6.1)(tsx@4.21.0)(typescript@6.0.3)(vite@7.3.1(@types/node@24.12.2)(jiti@2.6.1)(lightningcss@1.32.0)(tsx@4.21.0)(yaml@2.8.2))(yaml@2.8.2)
 
   apps/admin:
@@ -6145,6 +6145,7 @@ packages:
 
   uuid@9.0.1:
     resolution: {integrity: sha512-b+1eJOlsR9K8HJpow9Ok3fiWOWSIcIzXodvv0rQjVoOVNpWMpxf1wZNpt4y9h10odCNrqnYp1OBzRktckBe3sA==}
+    deprecated: uuid@10 and below is no longer supported.  For ESM codebases, update to uuid@latest.  For CommonJS codebases, use uuid@11 (but be aware this version will likely be deprecated in 2028).
     hasBin: true
 
   valibot@1.1.0:
