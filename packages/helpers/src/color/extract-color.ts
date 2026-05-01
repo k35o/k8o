@@ -7,7 +7,8 @@ function extractFunctionContent(
   const match = source.match(funcPattern);
   if (!match) return null;
 
-  const startIndex = (match.index ?? 0) + match[0].length - 1; // 開き括弧の位置
+  // 開き括弧の位置
+  const startIndex = (match.index ?? 0) + match[0].length - 1;
   let depth = 0;
   let endIndex = -1;
 

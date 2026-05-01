@@ -18,6 +18,7 @@ export const CopyMarkdownButton: FC<{ slug: string }> = ({ slug }) => {
       .then((text) => writeClipboard(text))
       .then(() => {
         onOpen('success', 'Markdownをコピーしました');
+        return undefined;
       });
   };
 

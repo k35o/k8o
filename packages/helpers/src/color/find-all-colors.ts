@@ -8,7 +8,8 @@ function extractFunctionContent(
   let match = funcPattern.exec(source);
 
   while (match !== null) {
-    const startIndex = match.index + match[0].length - 1; // 開き括弧の位置
+    // 開き括弧の位置
+    const startIndex = match.index + match[0].length - 1;
     let depth = 0;
     let endIndex = -1;
 

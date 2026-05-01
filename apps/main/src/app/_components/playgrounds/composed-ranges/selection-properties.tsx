@@ -11,7 +11,7 @@ export function SelectionProperties() {
 
   useEffect(() => {
     const element = ref.current;
-    if (!element) return;
+    if (!element) return undefined;
 
     const observer = new IntersectionObserver(([entry]) => {
       setInView(entry?.isIntersecting ?? false);

@@ -46,7 +46,7 @@ export function ScrollendTriggerDemo() {
 
   useEffect(() => {
     const element = scrollToRef.current;
-    if (!element) return;
+    if (!element) return undefined;
 
     element.tabIndex = 0;
     element.addEventListener('scrollend', handleScrollendScrollTo);
@@ -58,7 +58,7 @@ export function ScrollendTriggerDemo() {
 
   useEffect(() => {
     const element = snapRef.current;
-    if (!element) return;
+    if (!element) return undefined;
 
     element.tabIndex = 0;
     element.addEventListener('scrollend', handleScrollendSnap);

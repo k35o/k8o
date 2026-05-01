@@ -123,6 +123,7 @@ export const BaseConverter = () => {
     if (!value) return;
     void writeClipboard(value).then(() => {
       onOpen('success', `${label}をコピーしました`);
+      return undefined;
     });
   };
 

@@ -33,6 +33,7 @@ export const ClipboardTextDemo: FC = () => {
         permission.addEventListener('change', () => {
           setReadPermissions(permission.state);
         });
+        return undefined;
       })
       .catch(() => {
         console.warn(
@@ -46,6 +47,7 @@ export const ClipboardTextDemo: FC = () => {
         permission.addEventListener('change', () => {
           setWritePermissions(permission.state);
         });
+        return undefined;
       })
       .catch(() => {
         console.warn(

@@ -300,7 +300,9 @@ export const ControlPanel: FC = () => {
       <div className="border-border-base bg-bg-base relative rounded-xl border p-4">
         <div className="absolute top-3 right-3">
           <Button
-            onClick={handleCopy}
+            onClick={() => {
+              void handleCopy();
+            }}
             size="sm"
             startIcon={<CopyIcon size="sm" />}
             variant="outlined"

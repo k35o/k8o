@@ -36,8 +36,9 @@ export function ActiveViewTransitionDemo() {
       });
 
       setIsTransitioning(true);
-      transition.finished.then(() => {
+      void transition.finished.then(() => {
         setIsTransitioning(false);
+        return undefined;
       });
     } else {
       setCurrentIndex(newIndex);

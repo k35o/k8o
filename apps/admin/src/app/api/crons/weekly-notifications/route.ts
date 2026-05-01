@@ -27,6 +27,7 @@ async function sendWithRetry(
   for (let attempt = 1; attempt <= MAX_RETRY_ATTEMPTS; attempt++) {
     try {
       // リトライロジックのため順次実行が必要
+      // eslint-disable-next-line no-await-in-loop -- リトライ間の状態を保つため順次実行する
       await sendPushNotification(title, body, url);
       return;
     } catch (error) {
@@ -42,6 +43,7 @@ async function sendWithRetry(
           `k8o-push API呼び出し失敗 (試行 ${attempt}/${MAX_RETRY_ATTEMPTS})。${backoffMs}ms後にリトライします。`,
           lastError.message,
         );
+        // eslint-disable-next-line no-await-in-loop -- 指数バックオフは前回の失敗後に待機する
         await sleep(backoffMs);
       }
     }

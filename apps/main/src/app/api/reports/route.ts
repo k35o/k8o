@@ -1,7 +1,8 @@
 import { db } from '@repo/database';
 import * as z from 'zod/mini';
 
-const MAX_BODY_SIZE = 64 * 1024; // 64KB
+// 64KB
+const MAX_BODY_SIZE = 64 * 1024;
 
 const ALLOWED_ORIGINS =
   process.env['VERCEL_ENV'] === 'production'

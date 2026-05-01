@@ -9,7 +9,7 @@ export const SignInForm: FC = () => {
   const { onOpen } = useToast();
 
   const handleSignIn = () => {
-    authClient.signIn.social({
+    void authClient.signIn.social({
       provider: 'github',
       callbackURL: '/',
       fetchOptions: {

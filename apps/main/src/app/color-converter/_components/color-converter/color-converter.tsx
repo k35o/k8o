@@ -113,6 +113,7 @@ export const ColorConverter = () => {
   const handleCopy = (value: string, label: string) => {
     void writeClipboard(value).then(() => {
       onOpen('success', `${label}をコピーしました`);
+      return undefined;
     });
   };
 

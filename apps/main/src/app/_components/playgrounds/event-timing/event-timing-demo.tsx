@@ -30,10 +30,10 @@ export function EventTimingDemo() {
   useEffect(() => {
     if (
       typeof PerformanceObserver === 'undefined' ||
-      !PerformanceObserver.supportedEntryTypes?.includes('event')
+      !PerformanceObserver.supportedEntryTypes.includes('event')
     ) {
       setIsSupported(false);
-      return;
+      return undefined;
     }
 
     const interactionMap = new Map<
@@ -48,7 +48,7 @@ export function EventTimingDemo() {
           entry as unknown as PerformanceEventTimingWithInteractionId;
 
         // interactionIdがないイベントはスキップ
-        if (!eventEntry.interactionId) continue;
+        if (eventEntry.interactionId === 0) continue;
 
         const existing = interactionMap.get(eventEntry.interactionId);
 
@@ -68,7 +68,7 @@ export function EventTimingDemo() {
           timeoutIds.delete(timeoutId);
 
           const finalEntry = interactionMap.get(eventEntry.interactionId);
-          if (!finalEntry) return;
+          if (!finalEntry) return undefined;
 
           interactionMap.delete(eventEntry.interactionId);
 
@@ -95,6 +95,7 @@ export function EventTimingDemo() {
               ...prev,
             ].slice(0, 5),
           );
+          return undefined;
         }, 100);
         timeoutIds.add(timeoutId);
       }

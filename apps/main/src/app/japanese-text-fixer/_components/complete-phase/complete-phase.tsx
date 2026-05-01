@@ -29,6 +29,7 @@ export const CompletePhase: FC = () => {
     void writeClipboard(displayText)
       .then(() => {
         onOpen('success', 'クリップボードにコピーしました');
+        return undefined;
       })
       .catch(() => {
         onOpen('error', 'コピーに失敗しました');

@@ -1,7 +1,11 @@
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
-import { expect, fn, within } from 'storybook/test';
+import { expect, within } from 'storybook/test';
 
 import { FilterBar } from './filter-bar';
+
+const noop = () => {
+  // no-op
+};
 
 const meta: Meta<typeof FilterBar> = {
   title: 'app/reading-list/filter-bar',
@@ -18,10 +22,10 @@ const meta: Meta<typeof FilterBar> = {
     dateRange: 'all',
     sortOrder: 'newest',
     sourceIds: [],
-    onQueryChange: fn(),
-    onDateChange: fn(),
-    onSortChange: fn(),
-    onSourceToggle: fn(),
+    onQueryChange: noop,
+    onDateChange: noop,
+    onSortChange: noop,
+    onSourceToggle: noop,
   },
 };
 

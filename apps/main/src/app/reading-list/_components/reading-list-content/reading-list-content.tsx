@@ -44,6 +44,8 @@ const getDateThreshold = (range: DateRange): Date => {
       return new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
     case 'all':
       return new Date(0);
+    default:
+      return new Date(0);
   }
 };
 
@@ -58,7 +60,7 @@ export const ReadingListContent: FC<Props> = ({ articles, sources, cards }) => {
 
   const handleQueryChange = useCallback(
     (value: string) => {
-      setParams({ q: value || null });
+      void setParams({ q: value || null });
     },
     [setParams],
   );
@@ -68,21 +70,21 @@ export const ReadingListContent: FC<Props> = ({ articles, sources, cards }) => {
       const next = sourceIds.includes(id)
         ? sourceIds.filter((sid) => sid !== id)
         : [...sourceIds, id];
-      setParams({ source: next.length > 0 ? next : null });
+      void setParams({ source: next.length > 0 ? next : null });
     },
     [sourceIds, setParams],
   );
 
   const handleDateChange = useCallback(
     (value: DateRange) => {
-      setParams({ date: value === 'all' ? null : value });
+      void setParams({ date: value === 'all' ? null : value });
     },
     [setParams],
   );
 
   const handleSortChange = useCallback(
     (value: SortOrder) => {
-      setParams({ sort: value === 'newest' ? null : value });
+      void setParams({ sort: value === 'newest' ? null : value });
     },
     [setParams],
   );

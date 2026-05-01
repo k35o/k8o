@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
-import { expect, fn, within } from 'storybook/test';
+import { expect, within } from 'storybook/test';
 
 import { TemplateSelector } from './template-selector';
 
@@ -11,6 +11,10 @@ const meta: Meta<typeof TemplateSelector> = {
 export default meta;
 
 type Story = StoryObj<typeof TemplateSelector>;
+
+const noop = () => {
+  // no-op
+};
 
 const defaultPosition = {
   topLeftX: 0,
@@ -25,7 +29,7 @@ const defaultPosition = {
 
 export const Default: Story = {
   args: {
-    onSelect: fn(),
+    onSelect: noop,
     currentPosition: defaultPosition,
   },
   play: async ({ canvasElement }) => {
@@ -73,7 +77,7 @@ export const Default: Story = {
 
 export const CircleSelected: Story = {
   args: {
-    onSelect: fn(),
+    onSelect: noop,
     currentPosition: {
       topLeftX: 50,
       topLeftY: 50,
@@ -100,7 +104,7 @@ export const CircleSelected: Story = {
 
 export const DropSelected: Story = {
   args: {
-    onSelect: fn(),
+    onSelect: noop,
     currentPosition: {
       topLeftX: 50,
       topLeftY: 50,
@@ -123,7 +127,7 @@ export const DropSelected: Story = {
 
 export const NoMatchingTemplate: Story = {
   args: {
-    onSelect: fn(),
+    onSelect: noop,
     currentPosition: {
       topLeftX: 10,
       topLeftY: 15,

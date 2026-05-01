@@ -11,7 +11,7 @@ export const SignOutButton: FC = () => {
   const { onOpen } = useToast();
 
   const handleSignOut = () => {
-    authClient.signOut({
+    void authClient.signOut({
       fetchOptions: {
         onSuccess: () => {
           router.push('/sign-in');

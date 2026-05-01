@@ -23,8 +23,12 @@ vi.mock('@repo/database', () => ({
 }));
 
 vi.mock('drizzle-orm', () => ({
-  desc: vi.fn((value) => ({ type: 'desc', value })),
-  gte: vi.fn((column, value) => ({ type: 'gte', column, value })),
+  desc: vi.fn((value: unknown) => ({ type: 'desc', value })),
+  gte: vi.fn((column: unknown, value: unknown) => ({
+    type: 'gte',
+    column,
+    value,
+  })),
 }));
 
 vi.mock('next/cache', () => ({
@@ -120,7 +124,7 @@ describe('reading-list service', () => {
 
       expect(cacheLife).toHaveBeenCalledWith('hours');
       expect(db.query.articleSources.findMany).toHaveBeenCalledWith({
-        orderBy: expect.any(Function),
+        orderBy: expect.any(Function) as () => unknown,
       });
       expect(result).toEqual([
         {

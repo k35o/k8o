@@ -10,7 +10,7 @@ export const DialogRequestCloseDemo: FC = () => {
 
   useEffect(() => {
     const dialog = ref.current;
-    if (!dialog) return;
+    if (!dialog) return undefined;
 
     const handleClose = () => {
       setLogs((previousLogs) => [

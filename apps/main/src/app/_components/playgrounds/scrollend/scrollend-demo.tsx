@@ -31,7 +31,7 @@ export function ScrollendDemo() {
 
   useEffect(() => {
     const element = scrollRef.current;
-    if (!element) return;
+    if (!element) return undefined;
 
     element.tabIndex = 0;
     element.addEventListener('scroll', handleScroll, { passive: true });

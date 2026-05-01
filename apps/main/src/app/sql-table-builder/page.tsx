@@ -194,7 +194,9 @@ export default function Page() {
                 </div>
                 <IconButton
                   label={isCopied ? 'コピー済み' : 'コピー'}
-                  onClick={handleCopy}
+                  onClick={() => {
+                    void handleCopy();
+                  }}
                   size="sm"
                 >
                   <CopyIcon />

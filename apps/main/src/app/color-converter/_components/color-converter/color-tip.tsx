@@ -3,11 +3,13 @@ import type { FC } from 'react';
 // 色の明るさを判定してテキストカラーを決定する
 const getOverlayColor = (hex: string): string | undefined => {
   const clean = hex.replace('#', '');
-  if (clean.length < 6) return;
+  if (clean.length < 6) return undefined;
   const r = Number.parseInt(clean.slice(0, 2), 16);
   const g = Number.parseInt(clean.slice(2, 4), 16);
   const b = Number.parseInt(clean.slice(4, 6), 16);
-  if (Number.isNaN(r) || Number.isNaN(g) || Number.isNaN(b)) return;
+  if (Number.isNaN(r) || Number.isNaN(g) || Number.isNaN(b)) {
+    return undefined;
+  }
   const luminance = (0.299 * r + 0.587 * g + 0.114 * b) / 255;
   return luminance > 0.5 ? '#000000' : '#ffffff';
 };

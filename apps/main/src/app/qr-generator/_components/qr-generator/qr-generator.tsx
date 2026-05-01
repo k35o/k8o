@@ -30,7 +30,6 @@ export const QrGenerator = () => {
         USE_PROFILES: { svg: true, svgFilters: true },
         ADD_TAGS: ['svg'],
         ADD_ATTR: ['class', 'viewBox', 'width', 'height'],
-        RETURN_TRUSTED_TYPE: true,
       });
     } catch {
       return null;
@@ -50,7 +49,7 @@ export const QrGenerator = () => {
       return;
     }
 
-    const blob = new Blob([qrCodeSvg.toString()], {
+    const blob = new Blob([qrCodeSvg], {
       type: 'image/svg+xml',
     });
     const url = URL.createObjectURL(blob);

@@ -46,7 +46,7 @@ export async function createSource(
   }
 
   revalidatePath('/reading-list');
-  redirect('/reading-list');
+  return redirect('/reading-list');
 }
 
 export async function updateSource(
@@ -89,7 +89,7 @@ export async function updateSource(
   }
 
   revalidatePath('/reading-list');
-  redirect('/reading-list');
+  return redirect('/reading-list');
 }
 
 export async function deleteSource(id: number): Promise<ActionState> {
@@ -104,5 +104,5 @@ export async function deleteSource(id: number): Promise<ActionState> {
   }
 
   revalidatePath('/reading-list');
-  redirect('/reading-list');
+  return redirect('/reading-list');
 }

@@ -8,7 +8,7 @@ const parser = new Parser();
 function sanitizeFeedDates(xml: string): string {
   return xml.replaceAll(
     /<(updated|published)>([^<]+)<\/\1>/g,
-    (match, tag, value) => {
+    (match: string, tag: string, value: string) => {
       if (Number.isNaN(new Date(value).getTime())) {
         return `<${tag}></${tag}>`;
       }

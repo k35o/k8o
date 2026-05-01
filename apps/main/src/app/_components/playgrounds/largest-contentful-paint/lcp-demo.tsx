@@ -27,12 +27,12 @@ export function LCPDemo() {
   useEffect(() => {
     if (
       typeof PerformanceObserver === 'undefined' ||
-      !PerformanceObserver.supportedEntryTypes?.includes(
+      !PerformanceObserver.supportedEntryTypes.includes(
         'largest-contentful-paint',
       )
     ) {
       setIsSupported(false);
-      return;
+      return undefined;
     }
 
     const observer = new PerformanceObserver((list) => {

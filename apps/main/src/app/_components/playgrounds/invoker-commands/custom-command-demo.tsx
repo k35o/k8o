@@ -11,7 +11,7 @@ export function CustomCommandDemo() {
 
   useEffect(() => {
     const image = imageRef.current;
-    if (!image) return;
+    if (!image) return undefined;
 
     const handleCommand = (event: Event) => {
       const commandEvent = event as Event & { command?: string };

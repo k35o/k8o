@@ -27,7 +27,8 @@ export const useControlPanel = () => {
     bottomRightY: 36,
   });
   const [activePosition, setActivePosition] = useState<Position | null>(null);
-  const [aspectRatio, setAspectRatio] = useState(1); // 0.5〜2.0（横幅/縦幅）
+  // 0.5〜2.0（横幅/縦幅）
+  const [aspectRatio, setAspectRatio] = useState(1);
 
   const borderRadius = useMemo(
     () => positionToBorderRadius(position),

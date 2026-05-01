@@ -28,6 +28,7 @@ export const useCheckJapaneseSyntax = () => {
               payload: { text: res.text, annotations },
             });
           }
+          return undefined;
         })
         .catch(() => {
           dispatch({ type: 'CHECK_FAILURE' });
