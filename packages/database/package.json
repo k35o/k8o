@@ -29,9 +29,9 @@
     "preview:erd": "pnpm run build:erd && pnpm dlx http-server dist"
   },
   "dependencies": {
-    "@libsql/client": "0.17.2",
+    "@libsql/client": "0.17.3",
     "@next/env": "16.2.4",
-    "better-auth": "1.6.7",
+    "better-auth": "1.6.9",
     "drizzle-orm": "0.45.2"
   },
   "devDependencies": {
