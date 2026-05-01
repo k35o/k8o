@@ -37,7 +37,10 @@ export default defineConfig({
       // 既存コードの意図を変える修正が大量に必要なルールは、初回移行では段階導入にする。
       'import/max-dependencies': 'off',
       'import/no-cycle': 'off',
-      'import/no-unassigned-import': 'off',
+      'import/no-unassigned-import': [
+        'error',
+        { allow: ['**/*.css', '@/libs/zod', 'react', 'server-only'] },
+      ],
       'react/no-unknown-property': [
         'error',
         { ignore: ['command', 'commandfor'] },
