@@ -44,7 +44,7 @@ const fetchPage = async (
     q: `baseline_status:${status}`,
     page_size: '100',
   });
-  if (pageToken) {
+  if (pageToken !== undefined) {
     params.set('page_token', pageToken);
   }
 
@@ -71,7 +71,7 @@ const fetchAllFeatures = async (
   }
   const page = await fetchPage(status, pageToken);
   const features = [...accumulated, ...page.data];
-  if (page.metadata.next_page_token) {
+  if (page.metadata.next_page_token !== undefined) {
     return fetchAllFeatures(
       status,
       page.metadata.next_page_token,
@@ -87,7 +87,8 @@ const toBaselineFeature = (feature: ApiFeature): BaselineFeature => ({
   name: feature.name,
   status: feature.baseline.status,
   date:
-    feature.baseline.status === 'widely' && feature.baseline.high_date
+    feature.baseline.status === 'widely' &&
+    feature.baseline.high_date !== undefined
       ? feature.baseline.high_date
       : feature.baseline.low_date,
 });

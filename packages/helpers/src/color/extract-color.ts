@@ -40,25 +40,25 @@ function extractFunctionContent(
 export function extractColor(text: string): string | null {
   // HSLパターン: hsl(h, s%, l%) ネストした括弧をサポート
   const hslMatch = extractFunctionContent(text, 'hsl');
-  if (hslMatch) {
+  if (hslMatch !== null) {
     return hslMatch;
   }
 
   // RGBパターン: rgb(r, g, b) ネストした括弧をサポート
   const rgbMatch = extractFunctionContent(text, 'rgb');
-  if (rgbMatch) {
+  if (rgbMatch !== null) {
     return rgbMatch;
   }
 
   // RGBAパターン: rgba(r, g, b, a) ネストした括弧をサポート
   const rgbaMatch = extractFunctionContent(text, 'rgba');
-  if (rgbaMatch) {
+  if (rgbaMatch !== null) {
     return rgbaMatch;
   }
 
   // HSLAパターン: hsla(h, s%, l%, a) ネストした括弧をサポート
   const hslaMatch = extractFunctionContent(text, 'hsla');
-  if (hslaMatch) {
+  if (hslaMatch !== null) {
     return hslaMatch;
   }
 

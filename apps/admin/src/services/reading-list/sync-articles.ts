@@ -57,7 +57,11 @@ export async function syncArticles(): Promise<SyncResult> {
 
       for (const item of feed.items) {
         const publishedAt = item.isoDate ?? item.pubDate;
-        if (!(item.link && item.title && publishedAt)) {
+        if (
+          item.link === undefined ||
+          item.title === undefined ||
+          publishedAt === undefined
+        ) {
           continue;
         }
 

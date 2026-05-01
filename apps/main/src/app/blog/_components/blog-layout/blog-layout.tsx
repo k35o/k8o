@@ -62,7 +62,7 @@ export const BlogLayoutContent: FC<BlogLayoutContentProps> = ({
               </ViewTransition>
               <CopyMarkdownButton slug={slug} />
             </div>
-            {blog.description && (
+            {blog.description !== null && (
               <ViewTransition name={`description-${slug}`}>
                 <div className="bg-bg-mute rounded-xl p-4 sm:mt-4">
                   <p className="text-fg-base sm:text-md text-sm">
@@ -71,7 +71,7 @@ export const BlogLayoutContent: FC<BlogLayoutContentProps> = ({
                 </div>
               </ViewTransition>
             )}
-            {blog.slideUrl && (
+            {blog.slideUrl !== undefined && (
               <div className="flex self-end">
                 <LinkButton
                   href={blog.slideUrl}

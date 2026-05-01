@@ -18,7 +18,7 @@ export const feedback = async (
   feedbackId: number | null,
   comment: string,
 ): Promise<Result> => {
-  if (!(comment || feedbackId)) {
+  if (comment === '' && feedbackId === null) {
     return {
       success: false,
       message: 'コメントまたはフィードバックIDのいずれかを入力してください',
@@ -35,7 +35,7 @@ export const feedback = async (
   const blog = await db.query.blogs.findFirst({
     where: (blogs, { eq }) => eq(blogs.slug, slug),
   });
-  if (!blog) {
+  if (blog === undefined) {
     return {
       success: false,
       message: '指定されたブログが見つかりません',

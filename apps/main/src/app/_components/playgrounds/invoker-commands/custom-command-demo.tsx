@@ -16,7 +16,7 @@ export function CustomCommandDemo() {
     const handleCommand = (event: Event) => {
       const commandEvent = event as Event & { command?: string };
       const { command } = commandEvent;
-      if (!command) return;
+      if (command === undefined || command === '') return;
 
       if (command === '--zoom-in') {
         scaleRef.current = Math.min(scaleRef.current + 0.25, 2);

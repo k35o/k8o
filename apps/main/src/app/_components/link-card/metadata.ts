@@ -31,15 +31,18 @@ export async function getMetadata(href: string) {
     html,
   )?.[1];
 
-  const title = rawTitle
-    ? decodeHtmlEntities(rawTitle)
-    : rawOgTitle
-      ? decodeHtmlEntities(rawOgTitle)
-      : undefined;
-  const description = rawDescription
-    ? decodeHtmlEntities(rawDescription)
-    : undefined;
-  const image = rawImage ? decodeHtmlEntities(rawImage) : undefined;
+  const title =
+    rawTitle === undefined
+      ? rawOgTitle === undefined
+        ? undefined
+        : decodeHtmlEntities(rawOgTitle)
+      : decodeHtmlEntities(rawTitle);
+  const description =
+    rawDescription === undefined
+      ? undefined
+      : decodeHtmlEntities(rawDescription);
+  const image =
+    rawImage === undefined ? undefined : decodeHtmlEntities(rawImage);
 
   return { title, description, image };
 }

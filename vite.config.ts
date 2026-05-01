@@ -39,7 +39,6 @@ export default defineConfig({
       'import/no-cycle': 'off',
       'import/no-unassigned-import': 'off',
       'react/no-unknown-property': 'off',
-      'typescript/strict-boolean-expressions': 'off',
       'typescript/unbound-method': 'off',
     },
     overrides: [

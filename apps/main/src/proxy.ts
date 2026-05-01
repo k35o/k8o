@@ -3,11 +3,13 @@ import { type NextRequest, NextResponse } from 'next/server';
 const isDev = process.env.NODE_ENV === 'development';
 
 function getOrigin(): string {
-  if (process.env['PORTLESS_URL']) {
-    return process.env['PORTLESS_URL'].replace(/^http:/, 'https:');
+  const portlessUrl = process.env['PORTLESS_URL'];
+  if (portlessUrl !== undefined && portlessUrl !== '') {
+    return portlessUrl.replace(/^http:/, 'https:');
   }
-  if (process.env['VERCEL_URL']) {
-    return `https://${process.env['VERCEL_URL']}`;
+  const vercelUrl = process.env['VERCEL_URL'];
+  if (vercelUrl !== undefined && vercelUrl !== '') {
+    return `https://${vercelUrl}`;
   }
   return 'https://k8o.me';
 }

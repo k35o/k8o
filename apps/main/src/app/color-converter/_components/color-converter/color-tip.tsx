@@ -27,7 +27,7 @@ export const ColorTip: FC<{ color: string; hex: string }> = ({
     >
       <p
         className="text-2xl font-bold tracking-wider select-all"
-        style={overlayColor ? { color: overlayColor } : undefined}
+        style={overlayColor === undefined ? undefined : { color: overlayColor }}
       >
         #{hex}
       </p>

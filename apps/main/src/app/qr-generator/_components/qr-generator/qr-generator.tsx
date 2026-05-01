@@ -45,7 +45,7 @@ export const QrGenerator = () => {
   }, []);
 
   const handleDownload = useCallback(() => {
-    if (!qrCodeSvg) {
+    if (qrCodeSvg === null) {
       return;
     }
 
@@ -95,7 +95,18 @@ export const QrGenerator = () => {
 
       <Card>
         <div className="flex flex-col items-center gap-4 p-5">
-          {qrCodeSvg ? (
+          {qrCodeSvg === null ? (
+            text.trim() === '' ? (
+              <p className="text-fg-mute py-8 text-center">
+                QRコードを生成するにはテキストを入力してください
+              </p>
+            ) : (
+              <div className="bg-bg-error text-fg-error flex items-center gap-2 rounded-lg px-4 py-3">
+                <AlertIcon size="sm" status="error" />
+                <p>QRコードの生成に失敗しました</p>
+              </div>
+            )
+          ) : (
             <>
               <div className="flex w-full items-center justify-center overflow-hidden rounded-xl bg-white p-4">
                 <div
@@ -113,15 +124,6 @@ export const QrGenerator = () => {
                 SVGをダウンロード
               </Button>
             </>
-          ) : text.trim() ? (
-            <div className="bg-bg-error text-fg-error flex items-center gap-2 rounded-lg px-4 py-3">
-              <AlertIcon size="sm" status="error" />
-              <p>QRコードの生成に失敗しました</p>
-            </div>
-          ) : (
-            <p className="text-fg-mute py-8 text-center">
-              QRコードを生成するにはテキストを入力してください
-            </p>
           )}
         </div>
       </Card>

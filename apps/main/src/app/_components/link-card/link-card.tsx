@@ -38,7 +38,11 @@ const Content: FC<{
 }> = async ({ href, publishedAt, appearance = 'shadow' }) => {
   const metaData = await getMetadata(href);
 
-  if (!(metaData.title || metaData.description || metaData.image)) {
+  if (
+    metaData.title === undefined &&
+    metaData.description === undefined &&
+    metaData.image === undefined
+  ) {
     return <LinkCardFallback appearance={appearance} href={href} />;
   }
 
@@ -51,14 +55,14 @@ const Content: FC<{
         target="_blank"
       >
         <div className="flex h-full flex-col overflow-hidden sm:flex-row">
-          {metaData.image && <MetaImage src={metaData.image} />}
+          {metaData.image !== undefined && <MetaImage src={metaData.image} />}
           <div className="flex flex-1 flex-col gap-2 p-4">
-            {metaData.title && (
+            {metaData.title !== undefined && (
               <div className="group-hover:text-primary-fg flex flex-col gap-1 transition-colors duration-200 ease-out">
                 <p className="text-md line-clamp-2 font-bold">
                   {metaData.title}
                 </p>
-                {metaData.description && (
+                {metaData.description !== undefined && (
                   <p className="text-fg-mute line-clamp-2 text-sm">
                     {metaData.description}
                   </p>
@@ -66,7 +70,7 @@ const Content: FC<{
               </div>
             )}
             <div className="text-fg-subtle mt-auto flex flex-wrap items-center justify-between gap-2 text-xs">
-              {publishedAt && (
+              {publishedAt !== undefined && (
                 <div className="flex items-center gap-1">
                   <PublishDateIcon size="sm" />
                   <span>

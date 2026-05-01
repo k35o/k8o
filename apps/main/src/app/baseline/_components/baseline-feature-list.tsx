@@ -231,7 +231,7 @@ export const BaselineFeatureList: FC<{
         </div>
       </div>
 
-      {defaultYear && (
+      {defaultYear !== undefined && (
         <Tabs.Root
           defaultSelectedId={defaultYear}
           ids={availableYears as [string, ...string[]]}

@@ -32,7 +32,7 @@ function extractFontUrl(css: string): string {
       css,
     );
 
-  if (!match?.[1]) {
+  if (match?.[1] === undefined) {
     throw new Error('Failed to parse font URL from Google Fonts CSS');
   }
 

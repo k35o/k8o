@@ -84,9 +84,9 @@ export const CreateColumnsByTable: FC<Props> = ({
                     </label>
                     <TextField
                       describedbyId={
-                        columnError?.name
-                          ? `column-name_${idx.toString()}-${formId}-feedback`
-                          : undefined
+                        columnError?.name === undefined
+                          ? undefined
+                          : `column-name_${idx.toString()}-${formId}-feedback`
                       }
                       id={`column-name_${idx.toString()}-${formId}`}
                       isDisabled={false}
@@ -101,7 +101,7 @@ export const CreateColumnsByTable: FC<Props> = ({
                       placeholder="id"
                       value={column.name}
                     />
-                    {columnError?.name && (
+                    {columnError?.name !== undefined && (
                       <p
                         className="text-fg-error mt-1 text-xs"
                         id={`column-name_${idx.toString()}-${formId}-feedback`}
@@ -119,9 +119,9 @@ export const CreateColumnsByTable: FC<Props> = ({
                     </label>
                     <TextField
                       describedbyId={
-                        columnError?.alias
-                          ? `column-alias-${idx.toString()}-${formId}-feedback`
-                          : undefined
+                        columnError?.alias === undefined
+                          ? undefined
+                          : `column-alias-${idx.toString()}-${formId}-feedback`
                       }
                       id={`column-alias_${idx.toString()}-${formId}`}
                       isDisabled={false}
@@ -136,7 +136,7 @@ export const CreateColumnsByTable: FC<Props> = ({
                       placeholder="ID"
                       value={column.alias}
                     />
-                    {columnError?.alias && (
+                    {columnError?.alias !== undefined && (
                       <p
                         className="text-fg-error mt-1 text-xs"
                         id={`column-alias-${idx.toString()}-${formId}-feedback`}
@@ -154,9 +154,9 @@ export const CreateColumnsByTable: FC<Props> = ({
                     </label>
                     <Select
                       describedbyId={
-                        columnError?.type
-                          ? `column-type_${idx.toString()}-${formId}-feedback`
-                          : undefined
+                        columnError?.type === undefined
+                          ? undefined
+                          : `column-type_${idx.toString()}-${formId}-feedback`
                       }
                       id={`column-type_${idx.toString()}-${formId}`}
                       isDisabled={false}
@@ -171,7 +171,7 @@ export const CreateColumnsByTable: FC<Props> = ({
                       options={COLUMN_TYPE_OPTIONS_SHORT}
                       value={column.type}
                     />
-                    {columnError?.type && (
+                    {columnError?.type !== undefined && (
                       <p
                         className="text-fg-error mt-1 text-xs"
                         id={`column-type_${idx.toString()}-${formId}-feedback`}
@@ -191,7 +191,7 @@ export const CreateColumnsByTable: FC<Props> = ({
                       }}
                       value={column.nullable}
                     />
-                    {columnError?.nullable && (
+                    {columnError?.nullable !== undefined && (
                       <p className="text-fg-error mt-1 text-xs">
                         {columnError.nullable}
                       </p>
@@ -206,9 +206,9 @@ export const CreateColumnsByTable: FC<Props> = ({
                     </label>
                     <TextField
                       describedbyId={
-                        columnError?.default
-                          ? `default_${idx.toString()}-${formId}-feedback`
-                          : undefined
+                        columnError?.default === undefined
+                          ? undefined
+                          : `default_${idx.toString()}-${formId}-feedback`
                       }
                       id={`default_${idx.toString()}-${formId}`}
                       isDisabled={false}
@@ -222,7 +222,7 @@ export const CreateColumnsByTable: FC<Props> = ({
                       }}
                       value={column.default ?? ''}
                     />
-                    {columnError?.default && (
+                    {columnError?.default !== undefined && (
                       <p
                         className="text-fg-error mt-1 text-xs"
                         id={`default_${idx.toString()}-${formId}-feedback`}

@@ -61,12 +61,12 @@ export const ClipboardImageDemo: FC = () => {
 
     // 最初に見つかったPNG画像を使用
     const firstResult = results[0];
-    if (firstResult) {
-      setSrc(firstResult);
-      onOpen('success', 'クリップボードにPNG画像を貼り付けました。');
-    } else {
+    if (firstResult === undefined) {
       onOpen('error', 'PNG画像が見つかりませんでした。');
+      return;
     }
+    setSrc(firstResult);
+    onOpen('success', 'クリップボードにPNG画像を貼り付けました。');
   };
 
   return (

@@ -96,12 +96,18 @@ export function LCPDemo() {
         </span>
       </div>
 
-      {latestEntry ? (
+      {latestEntry === undefined ? (
+        <div className="bg-bg-mute rounded-xl p-4">
+          <p className="text-fg-mute text-sm">
+            LCPエントリを待機中...ページを再読み込みすると計測されます。
+          </p>
+        </div>
+      ) : (
         <div className="bg-bg-base rounded-xl p-4 shadow-sm">
           <div className="mb-3 flex items-center justify-between">
             <div className="flex items-center gap-2">
               <h4 className="text-fg-base font-medium">現在のLCP</h4>
-              {latestEntry.element && (
+              {latestEntry.element !== null && (
                 <code className="bg-bg-mute rounded px-1.5 py-0.5 text-xs">
                   {latestEntry.element}
                 </code>
@@ -156,12 +162,6 @@ export function LCPDemo() {
             )}
           </div>
         </div>
-      ) : (
-        <div className="bg-bg-mute rounded-xl p-4">
-          <p className="text-fg-mute text-sm">
-            LCPエントリを待機中...ページを再読み込みすると計測されます。
-          </p>
-        </div>
       )}
 
       {entries.length > 1 && (
@@ -175,7 +175,9 @@ export function LCPDemo() {
               >
                 <div className="flex items-center gap-2">
                   <span className="text-fg-mute">{entry.timestamp}</span>
-                  {entry.element && <Badge size="sm" text={entry.element} />}
+                  {entry.element !== null && (
+                    <Badge size="sm" text={entry.element} />
+                  )}
                 </div>
                 <div className="flex items-center gap-3">
                   <span className="text-fg-mute text-xs">

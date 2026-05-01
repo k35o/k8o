@@ -23,7 +23,7 @@ const DeleteButton: FC<{ id: number; title: string }> = ({ id, title }) => {
     setError(undefined);
     startTransition(async () => {
       const result = await deleteArticle(id);
-      if (result.error) {
+      if (result.error !== undefined) {
         setError(result.error);
       }
     });
@@ -59,7 +59,9 @@ const DeleteButton: FC<{ id: number; title: string }> = ({ id, title }) => {
           <Dialog.Content>
             <div className="flex flex-col gap-6">
               <p className="text-sm">「{title}」を削除しますか？</p>
-              {error && <p className="text-fg-danger text-sm">{error}</p>}
+              {error !== undefined && (
+                <p className="text-fg-danger text-sm">{error}</p>
+              )}
               <div className="flex justify-end gap-3">
                 <Button
                   color="gray"

@@ -102,7 +102,7 @@ const CustomTooltip: FC<{
   active?: boolean;
   payload?: Array<{ payload: ChartDataItem }>;
 }> = ({ active, payload }) => {
-  if (!(active && payload?.[0])) {
+  if (active !== true || payload?.[0] === undefined) {
     return null;
   }
 

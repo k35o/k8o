@@ -8,7 +8,7 @@ const authToken = process.env['TURSO_AUTH_TOKEN'];
 
 const client = createClient({
   url: process.env['TURSO_DATABASE_URL'] ?? '',
-  ...(authToken && { authToken }),
+  ...(authToken !== undefined && authToken !== '' ? { authToken } : {}),
 });
 
 const drizzleDb = drizzle(client, {

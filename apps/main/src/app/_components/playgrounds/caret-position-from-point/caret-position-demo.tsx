@@ -132,7 +132,7 @@ export function CaretPositionDemo() {
             )}
           </dl>
 
-          {caretInfo.offsetNodeText && (
+          {caretInfo.offsetNodeText !== null && (
             <div className="border-border-base mt-3 border-t pt-3">
               <p className="text-fg-mute mb-1 text-xs">テキスト内の位置:</p>
               <p className="bg-bg-mute text-fg-base overflow-x-auto rounded p-2 font-mono text-xs leading-relaxed">

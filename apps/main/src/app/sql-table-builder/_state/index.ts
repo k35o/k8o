@@ -5,7 +5,8 @@ const key = 'sqlStatement.columns.form.type';
 export const useColumnsType = () => {
   const [columnsType, setColumnsType] = useState<'table' | 'form'>(() => {
     const savedValue = localStorage.getItem(key);
-    const parsedValue = savedValue ? (JSON.parse(savedValue) as string) : null;
+    const parsedValue =
+      savedValue === null ? null : (JSON.parse(savedValue) as string);
     if (parsedValue === 'table' || parsedValue === 'form') {
       return parsedValue;
     }

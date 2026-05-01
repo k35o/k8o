@@ -156,7 +156,8 @@ export const makeStatement = (
     isSuccessful: true,
     statement: `CREATE TABLE ${table.name} (\n${Object.values(columns)
       .map((column) => {
-        const defaultQuery = column.default ? ` DEFAULT ${column.default}` : '';
+        const defaultQuery =
+          column.default === undefined ? '' : ` DEFAULT ${column.default}`;
         if (['timestamp', 'timestamptz'].includes(column.type)) {
           return `  ${column.name} timestamp ${column.nullable ? 'NULL' : 'NOT NULL'} ${column.type === 'timestamptz' ? 'WITH TIME ZONE' : 'WITHOUT TIME ZONE'}${defaultQuery}`;
         }
@@ -174,10 +175,10 @@ export const makeStatement = (
         if (restriction.type === 'primary') {
           const columnNames = restriction.columns.reduce((acc, column) => {
             const columnName = columns[column]?.name;
-            if (!columnName) {
+            if (columnName === undefined) {
               return acc;
             }
-            if (!acc) {
+            if (acc === '') {
               return columnName;
             }
             return `${acc}, ${columnName}`;
@@ -187,10 +188,10 @@ export const makeStatement = (
         if (restriction.type === 'unique') {
           const columnNames = restriction.columns.reduce((acc, column) => {
             const columnName = columns[column]?.name;
-            if (!columnName) {
+            if (columnName === undefined) {
               return acc;
             }
-            if (!acc) {
+            if (acc === '') {
               return columnName;
             }
             return `${acc}, ${columnName}`;
@@ -198,7 +199,7 @@ export const makeStatement = (
           return `  UNIQUE (${columnNames}),`;
         }
         const columnName = columns[restriction.column]?.name;
-        if (!columnName) {
+        if (columnName === undefined) {
           return '';
         }
         return `  FOREIGN KEY (${columnName}) REFERENCES ${restriction.reference.table}(${restriction.reference.column}),`;

@@ -33,7 +33,9 @@ export const SourceForm = ({ action, defaultValues }: SourceFormProps) => {
 
   return (
     <form action={formAction} className="flex flex-col gap-6">
-      {state.error && <Alert message={state.error} status="error" />}
+      {state.error !== undefined && (
+        <Alert message={state.error} status="error" />
+      )}
       <FormControl
         isRequired
         label="タイトル"

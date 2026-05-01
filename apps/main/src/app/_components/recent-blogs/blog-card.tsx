@@ -32,7 +32,7 @@ export const BlogCard: FC<BlogCardProps> = ({
           <Heading lineClamp={2} type="h3">
             {title}
           </Heading>
-          {description && (
+          {description !== null && (
             <p className="text-fg-mute line-clamp-2 text-sm">{description}</p>
           )}
         </div>

@@ -43,7 +43,7 @@ export const ArtifactCard: FC<Artifact> = ({
         >
           GitHubで見る
         </LinkButton>
-        {websiteUrl && (
+        {websiteUrl !== null && (
           <LinkButton
             href={websiteUrl}
             size="sm"
@@ -53,7 +53,7 @@ export const ArtifactCard: FC<Artifact> = ({
             サイトで見る
           </LinkButton>
         )}
-        {npmPackageName && (
+        {npmPackageName !== null && (
           <LinkButton
             href={`https://www.npmjs.com/package/${npmPackageName}`}
             size="sm"

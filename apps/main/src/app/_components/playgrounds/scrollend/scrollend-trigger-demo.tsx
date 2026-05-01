@@ -91,11 +91,11 @@ export function ScrollendTriggerDemo() {
           <span className="text-fg-mute text-sm">scrollend:</span>
           <span className="text-primary-fg font-bold">{scrollendCount}</span>
           <span className="text-fg-mute text-sm">回</span>
-          {showFlash && (
+          {showFlash ? (
             <div className="bg-primary-bg absolute inset-0 rounded-md opacity-30" />
-          )}
+          ) : null}
         </div>
-        {lastTrigger && (
+        {lastTrigger !== null && (
           <div className="bg-bg-subtle text-fg-base rounded-md px-3 py-1.5 text-sm">
             {lastTrigger}
           </div>

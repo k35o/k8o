@@ -48,7 +48,7 @@ const ContactToMeModal: FC<{
       formData: FormData,
     ) => {
       const result = await contact(prevState, formData);
-      if (result.success) {
+      if (result.success === true) {
         onToastOpen('success', 'お問い合わせの送信に成功しました');
         onClose();
       }

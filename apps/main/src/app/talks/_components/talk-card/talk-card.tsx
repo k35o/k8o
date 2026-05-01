@@ -55,7 +55,7 @@ export const TalkCard: FC<{
           <PublishDateIcon size="sm" />
           <span>{formatDate(new Date(eventDate))}</span>
         </div>
-        {eventLocation && (
+        {eventLocation !== null && (
           <div className="text-fg-mute md:text-md flex items-center gap-1 text-sm">
             <LocationIcon size="sm" />
             <span>{eventLocation}</span>

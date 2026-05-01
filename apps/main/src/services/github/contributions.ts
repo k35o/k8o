@@ -68,7 +68,7 @@ export async function fetchRepositoryCommitContributions(
 ): Promise<ContributionDay[]> {
   const token = process.env['GITHUB_TOKEN'];
 
-  if (!token) {
+  if (token === undefined || token === '') {
     throw new Error('GITHUB_TOKEN is not configured');
   }
 
@@ -134,13 +134,13 @@ export async function fetchRepositoryCommitContributions(
                   r.repository.name === repo,
               );
 
-            if (!repoContributions) {
+            if (repoContributions === undefined) {
               done = true;
               return { done: true, value: undefined };
             }
 
             const { pageInfo } = repoContributions.contributions;
-            if (pageInfo.hasNextPage && pageInfo.endCursor) {
+            if (pageInfo.hasNextPage && pageInfo.endCursor !== null) {
               cursor = pageInfo.endCursor;
             } else {
               done = true;
@@ -155,7 +155,7 @@ export async function fetchRepositoryCommitContributions(
   for await (const repoContributions of createRepoContributionsIterator()) {
     for (const contribution of repoContributions.contributions.nodes) {
       const date = contribution.occurredAt.split('T')[0];
-      if (date) {
+      if (date !== undefined) {
         contributionMap.set(
           date,
           (contributionMap.get(date) ?? 0) + contribution.commitCount,
@@ -172,7 +172,7 @@ export async function fetchRepositoryCommitContributions(
     date.setUTCDate(fromDate.getUTCDate() + i);
     const dateStr = date.toISOString().split('T')[0];
 
-    if (!dateStr) continue;
+    if (dateStr === undefined) continue;
 
     const count = contributionMap.get(dateStr) ?? 0;
 

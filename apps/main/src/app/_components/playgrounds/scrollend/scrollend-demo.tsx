@@ -54,7 +54,7 @@ export function ScrollendDemo() {
           <span className="text-fg-mute text-sm">scrollend発火:</span>
           <span className="text-primary-fg font-bold">{scrollendCount}回</span>
         </div>
-        {lastScrollendTime && (
+        {lastScrollendTime !== null && (
           <div className="flex items-center gap-2">
             <span className="text-fg-mute text-sm">最終発火:</span>
             <span className="text-sm">{lastScrollendTime}</span>

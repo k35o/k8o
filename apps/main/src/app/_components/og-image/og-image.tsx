@@ -137,7 +137,7 @@ export async function OgImage({ title, category }: OgImageProps) {
                 gap: 4,
               }}
             >
-              {category && (
+              {category !== undefined && (
                 <span
                   style={{
                     color: '#334155',

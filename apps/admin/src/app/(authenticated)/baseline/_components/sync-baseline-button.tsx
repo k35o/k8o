@@ -12,7 +12,7 @@ export const SyncBaselineButton: FC = () => {
   const handleSync = () => {
     startTransition(async () => {
       const res = await syncBaselineAction();
-      if (res.error) {
+      if (res.error !== undefined) {
         onOpen('error', res.error);
         return;
       }

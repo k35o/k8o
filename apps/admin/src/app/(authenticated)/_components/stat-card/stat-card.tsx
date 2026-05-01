@@ -12,7 +12,9 @@ export const StatCard = ({
     <div className="flex flex-col gap-1 p-4">
       <p className="text-fg-mute text-sm">{label}</p>
       <p className="text-2xl font-bold">{value}</p>
-      {description && <p className="text-fg-mute text-xs">{description}</p>}
+      {description !== undefined && (
+        <p className="text-fg-mute text-xs">{description}</p>
+      )}
     </div>
   </Card>
 );

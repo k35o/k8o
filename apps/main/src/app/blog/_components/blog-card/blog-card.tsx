@@ -38,7 +38,7 @@ export const BlogCard: FC<BlogCardProps> = ({
               {title}
             </Heading>
           </ViewTransition>
-          {description && (
+          {description !== null && (
             <ViewTransition name={`description-${slug}`}>
               <p className="text-fg-mute line-clamp-3 text-sm">{description}</p>
             </ViewTransition>

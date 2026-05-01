@@ -31,7 +31,7 @@ export function getJstUtcEnd(dateString: string): string {
 function parseDateString(dateString: string): [number, number, number] {
   const [year, month, day] = dateString.split('-');
 
-  if (!(year && month && day)) {
+  if (year === undefined || month === undefined || day === undefined) {
     throw new Error(`Invalid date string: ${dateString}`);
   }
 

@@ -75,7 +75,7 @@ function generateMockContributions(highActivity = false, empty = false) {
     const count = Math.floor(Math.random() * maxContributions);
 
     const dateString = date.toISOString().split('T')[0];
-    if (dateString) {
+    if (dateString !== undefined) {
       days.push({ date: dateString, count });
     }
   }

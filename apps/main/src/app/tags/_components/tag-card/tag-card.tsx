@@ -23,7 +23,7 @@ export const TagCard: FC<{
     >
       <div className="flex w-full basis-full items-center justify-between">
         <span className="text-lg font-bold">{title}</span>
-        {count && (
+        {count !== undefined && (
           <span className="bg-primary-bg text-primary-fg min-w-8 rounded-full px-2 py-1 text-center">
             {count}
           </span>

@@ -15,7 +15,7 @@ export function proxy(request: NextRequest) {
   }
 
   const sessionCookie = getSessionCookie(request);
-  if (!sessionCookie) {
+  if (sessionCookie === null) {
     return NextResponse.redirect(new URL('/sign-in', request.url));
   }
 
