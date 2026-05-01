@@ -39,7 +39,6 @@ export default defineConfig({
       'import/no-cycle': 'off',
       'import/no-unassigned-import': 'off',
       'react/no-unknown-property': 'off',
-      'typescript/unbound-method': 'off',
     },
     overrides: [
       {
@@ -59,7 +58,10 @@ export default defineConfig({
           '**/*.stories.tsx',
         ],
         plugins: [...(test.plugins ?? [])],
-        rules: test.rules ?? {},
+        rules: {
+          ...test.rules,
+          'typescript/unbound-method': 'off',
+        },
       },
     ],
   },
