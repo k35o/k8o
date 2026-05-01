@@ -12,8 +12,12 @@ export async function generateStaticParams() {
   }));
 }
 
-export default async function Page({ params }: PageProps<'/tags/[id]'>) {
-  const { id }: { id: string } = await params;
+type PageProperties = {
+  params: Promise<{ id: string }>;
+};
+
+export default async function Page({ params }: PageProperties) {
+  const { id } = await params;
   const tag = await getTag(Number(id));
 
   if (!tag) {
