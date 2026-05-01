@@ -71,7 +71,7 @@ export const BaseConverter = () => {
             target: 2,
             message: '2進数は0または1で入力してください',
           });
-          return;
+          break;
         }
         setOctal(convertNumber(value, 2, 8));
         setDecimal(convertNumber(value, 2, 10));
@@ -84,7 +84,7 @@ export const BaseConverter = () => {
             target: 8,
             message: '8進数は0から7で入力してください',
           });
-          return;
+          break;
         }
         setBinary(convertNumber(value, 8, 2));
         setDecimal(convertNumber(value, 8, 10));
@@ -97,7 +97,7 @@ export const BaseConverter = () => {
             target: 10,
             message: '10進数は0から9で入力してください',
           });
-          return;
+          break;
         }
         setBinary(convertNumber(value, 10, 2));
         setOctal(convertNumber(value, 10, 8));
@@ -110,7 +110,7 @@ export const BaseConverter = () => {
             target: 16,
             message: '16進数は0から9またはaからfで入力してください',
           });
-          return;
+          break;
         }
         setBinary(convertNumber(value, 16, 2));
         setOctal(convertNumber(value, 16, 8));

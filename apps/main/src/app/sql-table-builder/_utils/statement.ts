@@ -103,13 +103,11 @@ export const makeStatement = (
                   if (typeof id !== 'string' || typeof name !== 'string') {
                     return errors;
                   }
-                  return {
-                    ...errors,
-                    [id]: {
-                      ...errors[id],
-                      [name]: issue.message,
-                    },
+                  errors[id] = {
+                    ...errors[id],
+                    [name]: issue.message,
                   };
+                  return errors;
                 },
                 {},
               ),
@@ -132,24 +130,20 @@ export const makeStatement = (
                     if (typeof reference !== 'string') {
                       return errors;
                     }
-                    return {
-                      ...errors,
-                      [id]: {
-                        ...errors[id],
-                        reference: {
-                          ...errors[id]?.reference,
-                          [reference]: issue.message,
-                        },
+                    errors[id] = {
+                      ...errors[id],
+                      reference: {
+                        ...errors[id]?.reference,
+                        [reference]: issue.message,
                       },
                     };
+                    return errors;
                   }
-                  return {
-                    ...errors,
-                    [id]: {
-                      ...errors[id],
-                      [type]: issue.message,
-                    },
+                  errors[id] = {
+                    ...errors[id],
+                    [type]: issue.message,
                   };
+                  return errors;
                 },
                 {},
               ),

@@ -27,17 +27,19 @@ initialize(
   handlers,
 );
 
-const ApplayThemeByStorybook: FC<{ theme: string }> = memo(({ theme }) => {
-  const { theme: currentTheme, setTheme } = useTheme();
+const ApplyThemeByStorybook: FC<{ theme: string }> = memo(
+  function ApplyThemeByStorybook({ theme }) {
+    const { theme: currentTheme, setTheme } = useTheme();
 
-  useEffect(() => {
-    if (currentTheme !== theme) {
-      setTheme(theme === 'dark' ? 'dark' : 'light');
-    }
-  }, [theme, currentTheme, setTheme]);
+    useEffect(() => {
+      if (currentTheme !== theme) {
+        setTheme(theme === 'dark' ? 'dark' : 'light');
+      }
+    }, [theme, currentTheme, setTheme]);
 
-  return null;
-});
+    return null;
+  },
+);
 
 const preview: Preview = {
   globalTypes: {
@@ -73,27 +75,29 @@ const preview: Preview = {
     },
   },
   decorators: [
-    (Story, { globals, parameters }) => (
-      <AppProvider>
-        <Script id="storybook-body-class">
-          {`document.body.classList.add(${cn(
-            mPlus2.variable,
-            notoSansJp.variable,
-            'text-fg-base font-medium font-m-plus-2',
-          )
-            .split(' ')
-            .map((c) => `'${c}'`)
-            .join(', ')})`}
-        </Script>
-        <div className="min-h-svh p-6">
-          <Background />
-          <Story />
-        </div>
-        <ApplayThemeByStorybook
-          theme={(parameters.theme ?? globals.theme ?? 'light') as string}
-        />
-      </AppProvider>
-    ),
+    function WithAppProvider(Story, { globals, parameters }) {
+      return (
+        <AppProvider>
+          <Script id="storybook-body-class">
+            {`document.body.classList.add(${cn(
+              mPlus2.variable,
+              notoSansJp.variable,
+              'text-fg-base font-medium font-m-plus-2',
+            )
+              .split(' ')
+              .map((c) => `'${c}'`)
+              .join(', ')})`}
+          </Script>
+          <div className="min-h-svh p-6">
+            <Background />
+            <Story />
+          </div>
+          <ApplyThemeByStorybook
+            theme={(parameters.theme ?? globals.theme ?? 'light') as string}
+          />
+        </AppProvider>
+      );
+    },
   ],
 };
 

@@ -8,7 +8,10 @@ const isInvalidCharacter = (value: string): boolean =>
 
 // 数値になり得ない文字を削除する
 const sanitize = (value: string): string =>
-  value.split('').filter(isInvalidCharacter).join('');
+  value
+    .split('')
+    .filter((character) => isInvalidCharacter(character))
+    .join('');
 
 // 数値を綺麗に変換する
 const parse = (value: string | number): number =>

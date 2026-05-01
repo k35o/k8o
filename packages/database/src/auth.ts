@@ -27,7 +27,7 @@ export const auth = betterAuth({
           if (!allowedEmails.has(user.email)) {
             return false;
           }
-          return;
+          return undefined;
         },
       },
     },

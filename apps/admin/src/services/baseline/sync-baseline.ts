@@ -99,8 +99,8 @@ export async function syncBaseline(): Promise<SyncResult> {
   ]);
 
   const allFeatures = [
-    ...newlyFeatures.map(toBaselineFeature),
-    ...widelyFeatures.map(toBaselineFeature),
+    ...newlyFeatures.map((feature) => toBaselineFeature(feature)),
+    ...widelyFeatures.map((feature) => toBaselineFeature(feature)),
   ];
 
   const existingSnapshots = await db
