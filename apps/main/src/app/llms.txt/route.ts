@@ -1,3 +1,5 @@
+/* eslint-disable import/max-dependencies -- llms.txt に掲載する各 route metadata を集約するため */
+
 import { cacheLife } from 'next/cache';
 import { NextResponse } from 'next/server';
 
