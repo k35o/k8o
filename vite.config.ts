@@ -36,7 +36,6 @@ export default defineConfig({
     rules: {
       // 既存コードの意図を変える修正が大量に必要なルールは、初回移行では段階導入にする。
       'import/max-dependencies': ['error', { max: 20 }],
-      'import/no-cycle': 'off',
       'import/no-unassigned-import': [
         'error',
         { allow: ['**/*.css', '@/libs/zod', 'react', 'server-only'] },
@@ -58,6 +57,12 @@ export default defineConfig({
         files: ['apps/main/src/app/_components/playgrounds/index.ts'],
         rules: {
           'import/max-dependencies': ['error', { max: 30 }],
+        },
+      },
+      {
+        files: ['packages/database/src/schema/**/*.ts'],
+        rules: {
+          'import/no-cycle': 'off',
         },
       },
       {
