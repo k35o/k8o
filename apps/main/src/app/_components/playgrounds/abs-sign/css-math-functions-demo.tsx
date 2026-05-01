@@ -95,8 +95,8 @@ export function CssMathFunctionsDemo() {
             <br />
             座標の点の色:{' '}
             <Code>
-              background-color: 'hsl(calc(sign(var(--x) + var(--y)) * 80 + 200),
-              70%, 50%)'
+              background-color: &apos;hsl(calc(sign(var(--x) + var(--y)) * 80 +
+              200), 70%, 50%)&apos;
             </Code>
           </p>
         </div>
