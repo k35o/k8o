@@ -23,11 +23,11 @@ export const auth = betterAuth({
     user: {
       create: {
         // Better Authの型がPromiseを要求
-        before: async (user) => {
+        before: (user) => {
           if (!allowedEmails.has(user.email)) {
-            return false;
+            return Promise.resolve(false);
           }
-          return undefined;
+          return Promise.resolve(undefined);
         },
       },
     },

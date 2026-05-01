@@ -1,3 +1,44 @@
+// 対応する括弧の内容を見つけるヘルパー関数
+function extractFunctionContent(
+  source: string,
+  funcName: string,
+): Array<{ color: string; start: number; end: number }> {
+  const funcPattern = new RegExp(`${funcName}\\s*\\(`, 'gi');
+  const matches: Array<{ color: string; start: number; end: number }> = [];
+  let match = funcPattern.exec(source);
+
+  while (match !== null) {
+    const startIndex = match.index + match[0].length - 1; // 開き括弧の位置
+    let depth = 0;
+    let endIndex = -1;
+
+    for (let i = startIndex; i < source.length; i++) {
+      if (source[i] === '(') {
+        depth++;
+      } else if (source[i] === ')') {
+        depth--;
+        if (depth === 0) {
+          endIndex = i;
+          break;
+        }
+      }
+    }
+
+    if (endIndex !== -1) {
+      const content = source.slice(startIndex + 1, endIndex);
+      const fullColor = `${funcName.toLowerCase()}(${content})`;
+      matches.push({
+        color: fullColor,
+        start: match.index,
+        end: endIndex + 1,
+      });
+    }
+    match = funcPattern.exec(source);
+  }
+
+  return matches;
+}
+
 /**
  * テキスト文字列内のすべての色の値とその位置を見つけます。
  * HSL、RGB、RGBA、HSLA、HEX、名前付き色をサポートします。
@@ -9,47 +50,6 @@ export function findAllColors(
   text: string,
 ): Array<{ color: string; start: number; end: number }> {
   const results: Array<{ color: string; start: number; end: number }> = [];
-
-  // 対応する括弧の内容を見つけるヘルパー関数
-  function extractFunctionContent(
-    text: string,
-    funcName: string,
-  ): Array<{ color: string; start: number; end: number }> {
-    const funcPattern = new RegExp(`${funcName}\\s*\\(`, 'gi');
-    const matches: Array<{ color: string; start: number; end: number }> = [];
-    let match = funcPattern.exec(text);
-
-    while (match !== null) {
-      const startIndex = match.index + match[0].length - 1; // 開き括弧の位置
-      let depth = 0;
-      let endIndex = -1;
-
-      for (let i = startIndex; i < text.length; i++) {
-        if (text[i] === '(') {
-          depth++;
-        } else if (text[i] === ')') {
-          depth--;
-          if (depth === 0) {
-            endIndex = i;
-            break;
-          }
-        }
-      }
-
-      if (endIndex !== -1) {
-        const content = text.slice(startIndex + 1, endIndex);
-        const fullColor = `${funcName.toLowerCase()}(${content})`;
-        matches.push({
-          color: fullColor,
-          start: match.index,
-          end: endIndex + 1,
-        });
-      }
-      match = funcPattern.exec(text);
-    }
-
-    return matches;
-  }
 
   // すべての色関数呼び出しを見つける
   const colorFunctions = ['hsl', 'rgb', 'rgba', 'hsla'];

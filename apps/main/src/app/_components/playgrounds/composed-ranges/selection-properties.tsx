@@ -28,8 +28,8 @@ export function SelectionProperties() {
       if (!inView) {
         return;
       }
-      const selection = window.getSelection();
-      setSelection(selection ? [selection] : null);
+      const currentSelection = window.getSelection();
+      setSelection(currentSelection ? [currentSelection] : null);
     };
 
     document.addEventListener('selectionchange', handleChange);

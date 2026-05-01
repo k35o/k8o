@@ -4,7 +4,7 @@ import { getFrontmatter } from '@repo/helpers/mdx/frontmatter';
 import { blogPath } from './path';
 
 export const getBlogs = async () => {
-  const blogs = await db.query.blogs.findMany({
+  const blogRows = await db.query.blogs.findMany({
     with: {
       blogTag: {
         with: {
@@ -12,14 +12,14 @@ export const getBlogs = async () => {
         },
       },
     },
-    where: (blogs, { eq }) => eq(blogs.published, true),
+    where: (blogFields, { eq }) => eq(blogFields.published, true),
     limit: 100,
     orderBy(fields, operators) {
       return [operators.desc(fields.createdAt), operators.desc(fields.id)];
     },
   });
 
-  return blogs.map((blog) => ({
+  return blogRows.map((blog) => ({
     id: blog.id,
     slug: blog.slug,
     tags: blog.blogTag.map((blogTag) => blogTag.tag.name),
@@ -36,11 +36,11 @@ export const getBlogsByTags = async (slug: string, tagIds: number[]) => {
     })
   ).map((blogTag) => blogTag.blogId);
 
-  const blogs = await db.query.blogs.findMany({
-    where: (blogs, { not, eq, inArray, and }) =>
+  const blogRows = await db.query.blogs.findMany({
+    where: (blogFields, { not, eq, inArray, and }) =>
       and(
         not(eq(db._schema.blogs.slug, slug)),
-        inArray(blogs.id, blogIds),
+        inArray(blogFields.id, blogIds),
         eq(db._schema.blogs.published, true),
       ),
     with: {
@@ -56,7 +56,7 @@ export const getBlogsByTags = async (slug: string, tagIds: number[]) => {
   });
 
   return Promise.all(
-    blogs
+    blogRows
       .toSorted((a, b) => {
         const aBlogTagIds = new Set(a.blogTag.map((blogTag) => blogTag.tag.id));
         const bBlogTagIds = new Set(b.blogTag.map((blogTag) => blogTag.tag.id));

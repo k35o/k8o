@@ -13,11 +13,17 @@ export const DialogRequestCloseDemo: FC = () => {
     if (!dialog) return;
 
     const handleClose = () => {
-      setLogs((logs) => ['ダイアログが閉じられました', ...logs]);
+      setLogs((previousLogs) => [
+        'ダイアログが閉じられました',
+        ...previousLogs,
+      ]);
       setState('');
     };
     const handleCancel = (e: Event) => {
-      setLogs((logs) => ['ダイアログがキャンセルされました', ...logs]);
+      setLogs((previousLogs) => [
+        'ダイアログがキャンセルされました',
+        ...previousLogs,
+      ]);
       if (state !== '') {
         e.preventDefault();
       }

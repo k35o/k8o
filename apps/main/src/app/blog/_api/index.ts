@@ -51,7 +51,7 @@ export async function getBlogContent(slug: string) {
   };
 }
 
-export async function getBlogToc(slug: string) {
+export function getBlogToc(slug: string) {
   'use cache';
   cacheLife('max');
 
@@ -69,7 +69,7 @@ export async function getBlogsByTags(slug: string) {
   );
 }
 
-export async function getBlogView(id: number) {
+export function getBlogView(id: number) {
   'use cache';
   cacheLife('minutes');
 

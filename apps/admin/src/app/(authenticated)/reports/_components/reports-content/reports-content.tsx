@@ -11,7 +11,7 @@ export const ReportsContent = async () => {
 
   const [reports, typeCounts] = await Promise.all([
     db.query.reportingReports.findMany({
-      orderBy: (reports) => [desc(reports.createdAt)],
+      orderBy: (reportFields) => [desc(reportFields.createdAt)],
       limit: 100,
     }),
     db

@@ -10,7 +10,7 @@ const meta: Meta<typeof SourceForm> = {
 export default meta;
 type Story = StoryObj<typeof SourceForm>;
 
-const noopAction = async () => ({});
+const noopAction = () => Promise.resolve({});
 
 export const New: Story = {
   args: {

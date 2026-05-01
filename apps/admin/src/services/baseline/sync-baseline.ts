@@ -157,7 +157,7 @@ export async function syncBaseline(): Promise<SyncResult> {
   }
 
   if (toUpdate.length > 0) {
-    await db.transaction(async (tx) =>
+    await db.transaction((tx) =>
       Promise.all(
         toUpdate.map((item) =>
           tx

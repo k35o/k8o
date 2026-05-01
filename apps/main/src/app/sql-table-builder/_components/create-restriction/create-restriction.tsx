@@ -84,8 +84,8 @@ export const CreateRestriction: FC<Props> = ({
             renderInput={({ labelId: _, ...props }) => (
               <Autocomplete
                 {...props}
-                onChange={(columns) => {
-                  setRestriction({ ...restriction, columns });
+                onChange={(selectedColumns) => {
+                  setRestriction({ ...restriction, columns: selectedColumns });
                 }}
                 options={columnOptions}
                 value={restriction.columns}

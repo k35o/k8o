@@ -8,6 +8,6 @@ export const size = {
 
 export const contentType = 'image/png';
 
-export default async function Image() {
+export default function Image() {
   return OgImage({ title: 'Playgrounds' });
 }

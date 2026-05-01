@@ -1,6 +1,6 @@
 import { uuidV4 } from '@repo/helpers/uuid-v4';
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
-import { useState } from 'react';
+import { type Dispatch, type SetStateAction, useState } from 'react';
 
 import type { Column } from '../../_types/column';
 import { CreateColumnsByTable } from './create-columns-by-table';
@@ -21,28 +21,38 @@ const createDefaultColumn = (): Column => ({
   nullable: false,
 });
 
-const PrimaryRender = () => {
-  const [columns, setColumns] = useState<Record<string, Column>>({
-    [uuidV4()]: createDefaultColumn(),
-  });
-
-  const handleChangeColumn = (id: string) => (column: Column) => {
+const createChangeColumnHandler =
+  (setColumns: Dispatch<SetStateAction<Record<string, Column>>>) =>
+  (id: string) =>
+  (column: Column) => {
     setColumns((prev) => ({ ...prev, [id]: column }));
   };
 
-  const handleDeleteColumn = (id: string) => () => {
+const createDeleteColumnHandler =
+  (setColumns: Dispatch<SetStateAction<Record<string, Column>>>) =>
+  (id: string) =>
+  () => {
     setColumns((prev) => {
       const { [id]: _, ...rest } = prev;
       return rest;
     });
   };
 
+const noopColumnChangeHandler = () => () => {
+  // no-op for error display story
+};
+
+const PrimaryRender = () => {
+  const [columns, setColumns] = useState<Record<string, Column>>({
+    [uuidV4()]: createDefaultColumn(),
+  });
+
   return (
     <CreateColumnsByTable
       columnsEntries={Object.entries(columns)}
       columnsError={undefined}
-      handleChangeColumn={handleChangeColumn}
-      handleDeleteColumn={handleDeleteColumn}
+      handleChangeColumn={createChangeColumnHandler(setColumns)}
+      handleDeleteColumn={createDeleteColumnHandler(setColumns)}
     />
   );
 };
@@ -74,23 +84,12 @@ const MultipleColumnsRender = () => {
     },
   });
 
-  const handleChangeColumn = (id: string) => (column: Column) => {
-    setColumns((prev) => ({ ...prev, [id]: column }));
-  };
-
-  const handleDeleteColumn = (id: string) => () => {
-    setColumns((prev) => {
-      const { [id]: _, ...rest } = prev;
-      return rest;
-    });
-  };
-
   return (
     <CreateColumnsByTable
       columnsEntries={Object.entries(columns)}
       columnsError={undefined}
-      handleChangeColumn={handleChangeColumn}
-      handleDeleteColumn={handleDeleteColumn}
+      handleChangeColumn={createChangeColumnHandler(setColumns)}
+      handleDeleteColumn={createDeleteColumnHandler(setColumns)}
     />
   );
 };
@@ -106,13 +105,6 @@ const WithErrorsRender = () => {
     [errorColumnId]: createDefaultColumn(),
   });
 
-  const handleChangeColumn = () => () => {
-    // no-op for error display story
-  };
-  const handleDeleteColumn = () => () => {
-    // no-op for error display story
-  };
-
   return (
     <CreateColumnsByTable
       columnsEntries={Object.entries(columns)}
@@ -122,8 +114,8 @@ const WithErrorsRender = () => {
           alias: 'コメントは必須です',
         },
       }}
-      handleChangeColumn={handleChangeColumn}
-      handleDeleteColumn={handleDeleteColumn}
+      handleChangeColumn={noopColumnChangeHandler}
+      handleDeleteColumn={noopColumnChangeHandler}
     />
   );
 };

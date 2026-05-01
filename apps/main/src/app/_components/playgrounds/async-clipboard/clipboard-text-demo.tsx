@@ -13,8 +13,8 @@ export const ClipboardTextDemo: FC = () => {
   };
 
   const pasteText = async () => {
-    const text = await navigator.clipboard.readText();
-    setText((prev) => prev + text);
+    const pastedText = await navigator.clipboard.readText();
+    setText((prev) => prev + pastedText);
   };
 
   useEffect(() => {

@@ -28,11 +28,11 @@ export const ClipboardImageDemo: FC = () => {
       if (!ctx) return;
       ctx.drawImage(ref.current, 0, 0);
       const blob = await new Promise<Blob>((resolve) => {
-        canvas.toBlob((blob) => {
-          if (!blob) {
+        canvas.toBlob((createdBlob) => {
+          if (!createdBlob) {
             throw new Error('Blobが取得できませんでした');
           }
-          resolve(blob);
+          resolve(createdBlob);
         });
       });
       const file = new File([blob], 'k8o.png', { type: 'image/png' });

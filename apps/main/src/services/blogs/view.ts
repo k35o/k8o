@@ -1,14 +1,14 @@
 import { db } from '@repo/database';
 import { eq } from 'drizzle-orm';
 
-export const getBlogView = async (id: number): Promise<number> =>
+export const getBlogView = (id: number): Promise<number> =>
   db.query.blogViews
     .findFirst({
-      where: (blogViews, { eq }) => eq(blogViews.blogId, id),
+      where: (blogViews, { eq: equals }) => equals(blogViews.blogId, id),
     })
     .then((res) => res?.views ?? 0);
 
-export const incrementBlogView = async (id: number) =>
+export const incrementBlogView = (id: number) =>
   db
     .update(db._schema.blogViews)
     .set({

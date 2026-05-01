@@ -37,7 +37,7 @@ export const useControlPanel = () => {
   const mouseDownHandler = useCallback(
     (
       e: ReactMouseEvent,
-      position:
+      targetPosition:
         | 'topLeftX'
         | 'topLeftY'
         | 'topRightX'
@@ -48,8 +48,8 @@ export const useControlPanel = () => {
         | 'bottomLeftY',
     ) => {
       e.preventDefault();
-      setActivePosition(position);
-      const mouseUpHandler = (e: MouseEvent) => {
+      setActivePosition(targetPosition);
+      const mouseUpHandler = (event: MouseEvent) => {
         setPosition((prev) => {
           if (!containerRef.current) {
             return prev;
@@ -57,18 +57,19 @@ export const useControlPanel = () => {
           const rect = containerRef.current.getBoundingClientRect();
           const newValue = Math.floor(
             between(
-              position.endsWith('X')
-                ? ((e.clientX - rect.left) / rect.width) * 100
-                : ((e.clientY - rect.top) / rect.height) * 100,
+              targetPosition.endsWith('X')
+                ? ((event.clientX - rect.left) / rect.width) * 100
+                : ((event.clientY - rect.top) / rect.height) * 100,
               0,
               100,
             ),
           );
           return {
             ...prev,
-            [position]:
-              (position.startsWith('top') && position.endsWith('Y')) ||
-              (position.includes('Left') && position.endsWith('X'))
+            [targetPosition]:
+              (targetPosition.startsWith('top') &&
+                targetPosition.endsWith('Y')) ||
+              (targetPosition.includes('Left') && targetPosition.endsWith('X'))
                 ? newValue
                 : 100 - newValue,
           };
@@ -86,7 +87,7 @@ export const useControlPanel = () => {
   const touchStartHandler = useCallback(
     (
       e: ReactTouchEvent,
-      position:
+      targetPosition:
         | 'topLeftX'
         | 'topLeftY'
         | 'topRightX'
@@ -97,18 +98,18 @@ export const useControlPanel = () => {
         | 'bottomLeftY',
     ) => {
       e.preventDefault();
-      setActivePosition(position);
-      const touchMoveHandler = (e: TouchEvent) => {
-        e.preventDefault();
+      setActivePosition(targetPosition);
+      const touchMoveHandler = (event: TouchEvent) => {
+        event.preventDefault();
         setPosition((prev) => {
-          const changedTouches = e.changedTouches[0];
+          const changedTouches = event.changedTouches[0];
           if (!(containerRef.current && changedTouches)) {
             return prev;
           }
           const rect = containerRef.current.getBoundingClientRect();
           const newValue = Math.floor(
             between(
-              position.endsWith('X')
+              targetPosition.endsWith('X')
                 ? ((changedTouches.clientX - rect.left) / rect.width) * 100
                 : ((changedTouches.clientY - rect.top) / rect.height) * 100,
               0,
@@ -117,9 +118,10 @@ export const useControlPanel = () => {
           );
           return {
             ...prev,
-            [position]:
-              (position.startsWith('top') && position.endsWith('Y')) ||
-              (position.includes('Left') && position.endsWith('X'))
+            [targetPosition]:
+              (targetPosition.startsWith('top') &&
+                targetPosition.endsWith('Y')) ||
+              (targetPosition.includes('Left') && targetPosition.endsWith('X'))
                 ? newValue
                 : 100 - newValue,
           };
@@ -139,7 +141,7 @@ export const useControlPanel = () => {
   const keyDownHandler = useCallback(
     (
       e: ReactKeyboardEvent,
-      position:
+      targetPosition:
         | 'topLeftX'
         | 'topLeftY'
         | 'topRightX'
@@ -151,21 +153,21 @@ export const useControlPanel = () => {
     ) => {
       if (e.key === 'ArrowRight' || e.key === 'ArrowLeft') {
         e.preventDefault();
-        if (position.endsWith('LeftX')) {
+        if (targetPosition.endsWith('LeftX')) {
           setPosition((prev) => ({
             ...prev,
-            [position]: between(
-              prev[position] + (e.key === 'ArrowRight' ? 1 : -1),
+            [targetPosition]: between(
+              prev[targetPosition] + (e.key === 'ArrowRight' ? 1 : -1),
               0,
               100,
             ),
           }));
         }
-        if (position.endsWith('RightX')) {
+        if (targetPosition.endsWith('RightX')) {
           setPosition((prev) => ({
             ...prev,
-            [position]: between(
-              prev[position] + (e.key === 'ArrowLeft' ? 1 : -1),
+            [targetPosition]: between(
+              prev[targetPosition] + (e.key === 'ArrowLeft' ? 1 : -1),
               0,
               100,
             ),
@@ -174,21 +176,24 @@ export const useControlPanel = () => {
       }
       if (e.key === 'ArrowUp' || e.key === 'ArrowDown') {
         e.preventDefault();
-        if (position.startsWith('top') && position.endsWith('Y')) {
+        if (targetPosition.startsWith('top') && targetPosition.endsWith('Y')) {
           setPosition((prev) => ({
             ...prev,
-            [position]: between(
-              prev[position] + (e.key === 'ArrowDown' ? 1 : -1),
+            [targetPosition]: between(
+              prev[targetPosition] + (e.key === 'ArrowDown' ? 1 : -1),
               0,
               100,
             ),
           }));
         }
-        if (position.startsWith('bottom') && position.endsWith('Y')) {
+        if (
+          targetPosition.startsWith('bottom') &&
+          targetPosition.endsWith('Y')
+        ) {
           setPosition((prev) => ({
             ...prev,
-            [position]: between(
-              prev[position] + (e.key === 'ArrowUp' ? 1 : -1),
+            [targetPosition]: between(
+              prev[targetPosition] + (e.key === 'ArrowUp' ? 1 : -1),
               0,
               100,
             ),

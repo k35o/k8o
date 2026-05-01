@@ -18,7 +18,7 @@ export const ReadingListContent = async () => {
     }),
     db.query.articles.findMany({
       with: { articleSource: true },
-      orderBy: (articles) => [desc(articles.publishedAt)],
+      orderBy: (articleFields) => [desc(articleFields.publishedAt)],
     }),
   ]);
 

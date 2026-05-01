@@ -1,11 +1,7 @@
 const cssCache = new Map<string, Promise<string>>();
 const fontCache = new Map<string, Promise<ArrayBuffer>>();
 
-async function fetchGoogleFontsCss({
-  text,
-}: {
-  text: string;
-}): Promise<string> {
+function fetchGoogleFontsCss({ text }: { text: string }): Promise<string> {
   const cacheKey = text;
   const cachedCss = cssCache.get(cacheKey);
   if (cachedCss) {
@@ -15,7 +11,7 @@ async function fetchGoogleFontsCss({
   const cssPromise = fetch(
     `https://fonts.googleapis.com/css2?family=M+PLUS+2:wght@450&display=swap&text=${encodeURIComponent(text)}`,
   )
-    .then(async (response) => {
+    .then((response) => {
       if (!response.ok) {
         throw new Error(`Failed to fetch Google Fonts CSS: ${response.status}`);
       }
@@ -43,7 +39,7 @@ function extractFontUrl(css: string): string {
   return match[1];
 }
 
-export async function getMPlus2Font({
+export function getMPlus2Font({
   text,
 }: {
   text: string;
@@ -56,8 +52,8 @@ export async function getMPlus2Font({
 
   const fontPromise = fetchGoogleFontsCss({ text })
     .then(extractFontUrl)
-    .then(async (fontUrl) => {
-      const response = await fetch(fontUrl);
+    .then((fontUrl) => fetch(fontUrl))
+    .then((response) => {
       if (!response.ok) {
         throw new Error(`Failed to fetch font file: ${response.status}`);
       }
