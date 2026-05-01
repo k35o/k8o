@@ -10,7 +10,7 @@ type DiffOutputProps = {
 export const DiffOutput: FC<DiffOutputProps> = ({ diff }) => {
   if (diff.length === 0) {
     return (
-      <p className="text-fg-muted">
+      <p className="text-fg-mute">
         テキストを入力すると、差分がここに表示されます
       </p>
     );
@@ -24,7 +24,7 @@ export const DiffOutput: FC<DiffOutputProps> = ({ diff }) => {
     !firstDiff.added &&
     !firstDiff.removed
   ) {
-    return <p className="text-fg-muted">差分はありません</p>;
+    return <p className="text-fg-mute">差分はありません</p>;
   }
 
   return (

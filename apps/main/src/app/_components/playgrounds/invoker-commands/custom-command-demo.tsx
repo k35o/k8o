@@ -42,8 +42,7 @@ export function CustomCommandDemo() {
     <div className="space-y-4">
       <div className="flex gap-2">
         <button
-          className="bg-primary-base text-primary-fg rounded-md px-4 py-2"
-          // Baseline 2025
+          className="bg-primary-bg text-primary-fg rounded-md px-4 py-2"
           command="--zoom-in"
           // Baseline 2025
           commandfor="demo-image"
@@ -52,8 +51,7 @@ export function CustomCommandDemo() {
           拡大
         </button>
         <button
-          className="bg-primary-base text-primary-fg rounded-md px-4 py-2"
-          // Baseline 2025
+          className="bg-primary-bg text-primary-fg rounded-md px-4 py-2"
           command="--zoom-out"
           // Baseline 2025
           commandfor="demo-image"

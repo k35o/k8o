@@ -1,5 +1,5 @@
 import { OgImage } from '@/app/_components/og-image';
-import { getBlogContent } from '@/app/blog/_api';
+import { getBlogContent } from '@/features/blog/interface/queries';
 
 export const alt = '関数の同期・非同期を気にせず処理するPromise.tryとは';
 export const size = {

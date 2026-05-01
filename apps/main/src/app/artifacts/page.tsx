@@ -1,4 +1,4 @@
-import { getArtifacts } from '@/services/artifacts/artifacts';
+import { getArtifacts } from '@/features/artifacts/interface/queries';
 
 import { ArtifactCard } from './_components/artifact-card';
 

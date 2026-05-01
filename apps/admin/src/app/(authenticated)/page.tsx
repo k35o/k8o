@@ -1,4 +1,4 @@
-import { verifySession } from '@/libs/verify-session';
+import { verifySession } from '@/shared/auth/verify-session';
 
 import { DashboardContent } from './_components/dashboard-content/dashboard-content';
 

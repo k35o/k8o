@@ -4,7 +4,7 @@ import { Button, Dialog, Modal } from '@k8o/arte-odyssey';
 import { formatDate } from '@repo/helpers/date/format';
 import { type FC, useState, useTransition } from 'react';
 
-import { deleteArticle } from '../../_actions/article-actions';
+import { deleteArticle } from '@/features/reading-list/interface/article-actions';
 
 type Article = {
   id: number;
@@ -60,7 +60,7 @@ const DeleteButton: FC<{ id: number; title: string }> = ({ id, title }) => {
             <div className="flex flex-col gap-6">
               <p className="text-sm">「{title}」を削除しますか？</p>
               {error !== undefined && (
-                <p className="text-fg-danger text-sm">{error}</p>
+                <p className="text-fg-error text-sm">{error}</p>
               )}
               <div className="flex justify-end gap-3">
                 <Button

@@ -3,7 +3,7 @@
 import { FormControl } from '@k8o/arte-odyssey';
 
 const inputClassName =
-  'max-w-80 cursor-pointer rounded-full text-center font-bold bg-primary-bg text-fg hover:bg-primary-bg/90 active:bg-primary-bg/80 focus-visible:border-transparent focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-border-info px-4 py-2 text-md';
+  'max-w-80 cursor-pointer rounded-full text-center font-bold bg-primary-bg text-primary-fg hover:bg-primary-bg/90 active:bg-primary-bg/80 focus-visible:border-transparent focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-border-info px-4 py-2 text-md';
 
 export const BasicFileInputExamples = () => (
   <div className="flex flex-col gap-4">

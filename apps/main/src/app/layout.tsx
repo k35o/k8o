@@ -5,13 +5,11 @@ import './_styles/globals.css';
 import { Analytics } from '@vercel/analytics/react';
 import type { Metadata } from 'next';
 
-import { ReactScan } from '@/libs/react-scan';
+import { ReactScan } from '@/shared/browser/react-scan';
 
 import { GlobalLayout } from './_components/global-layout';
 import { TrustedTypesInit } from './_components/trusted-types-init';
 import { AppProvider } from './_providers/app';
-
-import '@/libs/zod';
 import { mPlus2, notoSansJp } from './_styles/font';
 
 export const metadata = {

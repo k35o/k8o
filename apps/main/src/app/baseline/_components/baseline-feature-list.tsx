@@ -12,8 +12,10 @@ import type { Route } from 'next';
 import Link from 'next/link';
 import { type FC, useMemo, useState } from 'react';
 
-import type { BaselineFeature } from '@/services/baseline/baseline';
-import type { BlogLink } from '@/services/baseline/feature-blog-map';
+import type {
+  BaselineFeature,
+  BlogLink,
+} from '@/features/baseline/interface/queries';
 
 type StatusVisibility = {
   newly: boolean;

@@ -3,7 +3,7 @@
 import { Button, Dialog, Modal } from '@k8o/arte-odyssey';
 import { useState, useTransition } from 'react';
 
-import { deleteSource } from '../../_actions/source-actions';
+import { deleteSource } from '@/features/reading-list/interface/source-actions';
 
 export const DeleteSourceButton = ({
   id,
@@ -57,7 +57,7 @@ export const DeleteSourceButton = ({
                 「{title}」を削除しますか？この操作は取り消せません。
               </p>
               {error !== undefined && (
-                <p className="text-fg-danger text-sm">{error}</p>
+                <p className="text-fg-error text-sm">{error}</p>
               )}
               <div className="flex justify-end gap-3">
                 <Button

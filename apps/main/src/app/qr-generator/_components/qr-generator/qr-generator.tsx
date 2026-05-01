@@ -108,7 +108,10 @@ export const QrGenerator = () => {
             )
           ) : (
             <>
-              <div className="flex w-full items-center justify-center overflow-hidden rounded-xl bg-white p-4">
+              <div
+                className="flex w-full items-center justify-center overflow-hidden rounded-xl p-4"
+                style={{ backgroundColor: 'var(--white)' }}
+              >
                 <div
                   className="flex items-center justify-center"
                   dangerouslySetInnerHTML={{ __html: qrCodeSvg }}

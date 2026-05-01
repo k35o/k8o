@@ -2,7 +2,7 @@ import { cacheLife } from 'next/cache';
 import { NextResponse } from 'next/server';
 import RSS from 'rss';
 
-import { getArticles } from '@/services/reading-list/reading-list';
+import { getArticles } from '@/features/reading-list/interface/queries';
 
 import { metadata } from '../layout';
 

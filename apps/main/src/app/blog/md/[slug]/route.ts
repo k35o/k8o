@@ -1,19 +1,6 @@
-import { readFile } from 'node:fs/promises';
-
-import { cacheLife } from 'next/cache';
 import { NextResponse } from 'next/server';
 
-import { blogPath } from '@/services/blogs/path';
-
-const FRONTMATTER_RE = /^---\n[\s\S]*?\n---\n*/;
-
-async function getMarkdown(slug: string) {
-  'use cache';
-  cacheLife('max');
-
-  const content = await readFile(blogPath(slug), 'utf-8');
-  return content.replace(FRONTMATTER_RE, '');
-}
+import { getMarkdown } from '@/features/blog/interface/markdown';
 
 export async function GET(
   _request: Request,

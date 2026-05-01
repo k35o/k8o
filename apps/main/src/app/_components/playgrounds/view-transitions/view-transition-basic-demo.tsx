@@ -131,7 +131,7 @@ export function ViewTransitionBasicDemo() {
             resolvedTheme === 'dark' ? item.color.dark : item.color.light;
           return (
             <li
-              className="flex items-center justify-between rounded-md p-4 text-white opacity-80"
+              className="flex items-center justify-between rounded-md p-4 opacity-80"
               key={item.id}
               style={{
                 viewTransitionName: isViewTransitionEnabled
@@ -139,6 +139,7 @@ export function ViewTransitionBasicDemo() {
                   : 'none',
                 viewTransitionClass: 'item',
                 backgroundColor: bgColor,
+                color: 'var(--white)',
               }}
             >
               <span className="font-bold">{item.text}</span>

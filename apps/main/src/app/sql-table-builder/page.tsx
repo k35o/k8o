@@ -39,7 +39,7 @@ const StepIndicator = ({
   <div className="flex items-center gap-2 sm:gap-3">
     <div
       className={`flex size-6 items-center justify-center rounded-full text-xs font-bold transition-colors sm:h-8 sm:w-8 sm:text-sm ${
-        isActive ? 'bg-bg-primary text-fg-onFill' : 'bg-bg-mute text-fg-mute'
+        isActive ? 'bg-primary-bg text-primary-fg' : 'bg-bg-mute text-fg-mute'
       }`}
     >
       {step}

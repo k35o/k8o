@@ -11,12 +11,8 @@ import { mPlus2, notoSansJp } from '../src/app/_styles/font';
 import '../src/app/_styles/globals.css';
 
 sb.mock(import('@repo/database'));
-sb.mock(
-  import('../src/app/(authenticated)/reading-list/_actions/article-actions.ts'),
-);
-sb.mock(
-  import('../src/app/(authenticated)/reading-list/_actions/source-actions.ts'),
-);
+sb.mock(import('../src/features/reading-list/interface/article-actions.ts'));
+sb.mock(import('../src/features/reading-list/interface/source-actions.ts'));
 
 const ApplyThemeByStorybook: FC<{ theme: string }> = memo(
   function ApplyThemeByStorybook({ theme }) {

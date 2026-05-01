@@ -3,7 +3,7 @@
 import { Button, Code } from '@k8o/arte-odyssey';
 import { useEffect, useRef, useState } from 'react';
 
-import { getHTMLPolicy } from '@/app/_utils/trusted-types';
+import { getHTMLPolicy } from '@/shared/browser/trusted-types';
 
 export function GetComposedRanges() {
   const ref = useRef<HTMLParagraphElement>(null);

@@ -1,4 +1,4 @@
-import { verifySession } from '@/libs/verify-session';
+import { verifySession } from '@/shared/auth/verify-session';
 
 import { EditSourceContent } from '../../_components/edit-source-content/edit-source-content';
 

@@ -4,8 +4,7 @@ export function DialogDemo() {
   return (
     <div className="space-y-4">
       <button
-        className="bg-primary-base text-primary-fg rounded-md px-4 py-2"
-        // Baseline 2025
+        className="bg-primary-bg text-primary-fg rounded-md px-4 py-2"
         command="show-modal"
         // Baseline 2025
         commandfor="demo-dialog"
@@ -16,7 +15,7 @@ export function DialogDemo() {
 
       <dialog
         aria-label="デモダイアログ"
-        className="bg-bg-base m-auto rounded-lg p-6 shadow-md backdrop:bg-black/50"
+        className="bg-bg-base backdrop:bg-back-drop m-auto rounded-lg p-6 shadow-md"
         id="demo-dialog"
       >
         <div className="space-y-4">

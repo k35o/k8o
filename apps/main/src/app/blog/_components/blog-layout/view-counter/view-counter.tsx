@@ -1,7 +1,7 @@
 import { commalize } from '@repo/helpers/number/commalize';
 import type { FC } from 'react';
 
-import { getBlogView } from '@/app/blog/_api';
+import { getBlogView } from '@/features/blog/interface/queries';
 
 export const ViewCounter: FC<{ id: number }> = async ({ id }) => {
   const views = await getBlogView(id);

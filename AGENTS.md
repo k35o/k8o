@@ -21,9 +21,9 @@ pnpm run ls-lint              # ファイル名規約チェック
 
 # テスト
 pnpm run test                                           # 全テスト実行
-pnpm run test -- --project="services test"              # サービステストのみ
+pnpm run test -- --project="features test"              # feature系テストのみ
 pnpm run test -- --project=storybook                    # Storybookテストのみ
-pnpm run test -- apps/main/src/services/blogs/blog.test.ts  # 単一ファイル
+pnpm run test -- apps/main/src/features/blog/application/blog.test.ts  # 単一ファイル
 
 # Storybook
 pnpm run -F main storybook    # Storybook起動 (port 6006)
@@ -42,19 +42,53 @@ packages/helpers/   → 共有ユーティリティ（in-source testing）
 packages/typescript-config/ → 共有TS設定
 ```
 
-パッケージ間依存: `apps/main` → `@repo/database`, `@repo/helpers`
+パッケージ間依存:
+
+- `apps/main` → `@repo/database`, `@repo/helpers`
+- `apps/admin` → `@repo/database`, `@repo/helpers`
 
 ## アーキテクチャ
 
-### レイヤー構成（apps/main/src/）
+### レイヤー構成（apps/main/src/, apps/admin/src/）
 
-- **app/** - Presentation層。Next.js App Router、ページ・レイアウト・コンポーネント
-  - `_api/`, `_components/`, `_utils/` はアプリ共通（`_` prefix = Next.jsルーティング対象外）
-  - 各機能ディレクトリ(blog/, color-converter/等)内にも `_api/`, `_components/`, `_utils/` がある（機能専用）
+- **app/** - Next.js App RouterのルーティングとUI composition
+  - `page.tsx`, `layout.tsx`, `route.ts`, `opengraph-image.tsx`, `sitemap.ts` などのNext.js entryを置く
+  - UIコンポーネントは `app/**/_components` に置く。route専用ならroute配下、複数routeで使うなら `app/_components`
+  - route localな状態・型・純粋utilityは `app/**/_state`, `app/**/_types`, `app/**/_utils` に置いてよい
+  - `_api` は新規作成しない。Next.js entryからは `features/*/interface` を読む
   - `(articles)/` のような括弧はNext.jsルートグループ
-- **services/** - Application層。ビジネスロジック
-- **libs/** - ライブラリ設定（Zod等）
+  - `apps/admin` でも `_actions` は新規作成せず、Server Actions は `features/*/interface` に置く
+- **features/** - 機能単位の非UIロジック
+  - `features/<feature>/interface/` - Next.jsとの境界。`cacheLife`, `'use server'`, `FormData`, `Request`/`Response`向けのvalidationを置く
+  - `features/<feature>/application/` - ユースケース・整形・機能固有の組み立て。小さい読み取り処理はここに置いてよい
+  - `features/<feature>/infrastructure/` - DB、外部API、ファイルシステムなど外部接続の詳細。処理が太くなったら application からここへ切り出す
+  - UIコンポーネントは置かない。UIは必ず `app/**/_components`
+- **shared/** - `apps/main` 内で横断利用する非UI共通処理
+  - app固有の認証、MDX、OGP、browser API、validation初期化、site metadataなど
+  - UIコンポーネントや `cn` は置かない
 - **mocks/** - MSWモック定義
+
+依存方向:
+
+```txt
+app -> features/*/interface -> features/*/application
+features/*/application -> features/*/infrastructure
+app -> app/**/_components
+features/shared -> packages/helpers
+```
+
+`packages/helpers` はアプリ非依存の純粋helperを置く。`cn` はclassName文字列を合成するhelperなので `packages/helpers` に残す。
+
+`@repo/database` の import 境界は現時点では規約で運用する。機械的な禁止ルールは、今後 Biome から oxc に置き換えるタイミングで導入する。
+
+### Cache 方針
+
+Next.js の `cacheLife` は `features/*/interface` に置く。`app` のUIコンポーネントや `application` 層には原則として置かない。
+
+- `cacheLife('minutes')` - dashboard、admin の一覧、外部データ同期後に再検証される読み取りなど、短時間で鮮度が必要なもの
+- `cacheLife('max')` - MDX metadata、静的な site metadata、ビルド時に近い安定データ
+
+キャッシュを変更する Server Action / Route Handler は、更新対象の route に `revalidatePath` を明示する。
 
 ### データベース（packages/database/）
 
@@ -118,7 +152,8 @@ ArteOdysseyのドキュメントは `apps/main/node_modules/@k8o/arte-odyssey/do
 |------|------|------|
 | Helpers | In-source testing (`if (import.meta.vitest)`) | `packages/helpers/src/**/*.ts` |
 | Components | Storybook stories + play関数 | `apps/main/src/app/**/*.stories.tsx` |
-| Services | Vitest unit tests | `apps/main/src/services/**/*.test.ts` |
+| Features | Vitest unit tests | `apps/main/src/features/**/*.test.ts` |
+| Shared | Vitest unit tests | `apps/main/src/shared/**/*.test.ts` |
 
 テスト構造: `describe` で「正常系 / 異常系 / エッジケース」にグループ化。AAAパターン推奨。
 

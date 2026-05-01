@@ -10,7 +10,7 @@ import { formatDate } from '@repo/helpers/date/format';
 import type { FC } from 'react';
 import { Bar, BarChart, CartesianGrid, Tooltip, XAxis, YAxis } from 'recharts';
 
-import type { ContributionDay } from '@/services/github/contributions';
+import type { ContributionDay } from '@/features/github/interface/queries';
 
 type ChartDataItem = {
   date: string;
@@ -51,7 +51,7 @@ export const Presenter: FC<{
               )}
             />
             <ArteTooltip.Content>
-              k8o・ArteOdysseyリポジトリへのコミット履歴
+              k8o・artifactsリポジトリへのコミット履歴
             </ArteTooltip.Content>
           </ArteTooltip.Root>
         </div>
@@ -90,7 +90,7 @@ export const Presenter: FC<{
           </BarChart>
         </div>
 
-        <div className="text-fg-muted text-xs">
+        <div className="text-fg-mute text-xs">
           {period}で{totalContributions}件
         </div>
       </div>

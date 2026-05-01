@@ -5,7 +5,8 @@ import { cn } from '@repo/helpers/cn';
 import Link from 'next/link';
 import { type FC, useCallback, useEffect, useRef, useState } from 'react';
 
-import type { HeadingTree } from '../../../../../libs/mdx/types';
+import type { HeadingTree } from '@/shared/mdx/types';
+
 import { END_OF_CONTENT_ID } from '../constants';
 import { ProgressBar } from './progress-bar';
 

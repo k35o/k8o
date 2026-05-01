@@ -1,8 +1,8 @@
 import { Breadcrumb, Card } from '@k8o/arte-odyssey';
 
-import { verifySession } from '@/libs/verify-session';
+import { createSource } from '@/features/reading-list/interface/source-actions';
+import { verifySession } from '@/shared/auth/verify-session';
 
-import { createSource } from '../../_actions/source-actions';
 import { SourceForm } from '../../_components/source-form/source-form';
 
 export default async function NewSourcePage() {

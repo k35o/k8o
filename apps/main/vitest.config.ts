@@ -31,8 +31,8 @@ export default defineConfig({
           env: {
             TZ: 'UTC',
           },
-          name: { label: 'services test', color: 'cyan' },
-          include: ['src/services/**/*.test.{ts,tsx}'],
+          name: { label: 'features test', color: 'cyan' },
+          include: ['src/features/**/*.test.{ts,tsx}'],
         },
       },
       {
@@ -41,8 +41,8 @@ export default defineConfig({
           env: {
             TZ: 'UTC',
           },
-          name: { label: 'libs test', color: 'green' },
-          include: ['src/libs/**/*.test.{ts,tsx}'],
+          name: { label: 'shared test', color: 'green' },
+          include: ['src/shared/**/*.test.{ts,tsx}'],
         },
       },
       {

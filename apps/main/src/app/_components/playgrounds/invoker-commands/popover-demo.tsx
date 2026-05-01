@@ -7,8 +7,7 @@ export function PopoverDemo() {
         <div className="space-y-2">
           <p className="text-fg-mute text-sm">Invoker Commands API</p>
           <button
-            className="bg-primary-base text-primary-fg rounded-md px-4 py-2"
-            // Baseline 2025
+            className="bg-primary-bg text-primary-fg rounded-md px-4 py-2"
             command="toggle-popover"
             // Baseline 2025
             commandfor="demo-popover"
@@ -20,8 +19,7 @@ export function PopoverDemo() {
         <div className="space-y-2">
           <p className="text-fg-mute text-sm">Popover API</p>
           <button
-            className="bg-primary-base text-primary-fg rounded-md px-4 py-2"
-            // not unknown
+            className="bg-primary-bg text-primary-fg rounded-md px-4 py-2"
             popoverTarget="demo-popover"
             // not unknown
             popoverTargetAction="toggle"

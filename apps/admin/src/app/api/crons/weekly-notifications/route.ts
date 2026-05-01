@@ -1,56 +1,18 @@
-import { db } from '@repo/database';
-import { and, eq, inArray, isNull } from 'drizzle-orm';
 import { type NextRequest, NextResponse } from 'next/server';
 
-import { sendPushNotification } from '@/services/push-notification/push-notification';
+import { sendWeeklyCommentNotifications } from '@/features/comments/application/send-weekly-notifications';
 
-type UnsentComment = {
-  id: number;
-};
-
-const MAX_RETRY_ATTEMPTS = 3;
-const INITIAL_BACKOFF_MS = 1000;
-const BACKOFF_MULTIPLIER = 2;
-
-const sleep = (ms: number) =>
-  new Promise((resolve) => {
-    setTimeout(resolve, ms);
-  });
-
-async function sendWithRetry(
-  title: string,
-  body: string,
-  url: string,
-): Promise<void> {
-  let lastError: Error | null = null;
-
-  for (let attempt = 1; attempt <= MAX_RETRY_ATTEMPTS; attempt++) {
-    try {
-      // リトライロジックのため順次実行が必要
-      // oxlint-disable-next-line no-await-in-loop -- リトライ間の状態を保つため順次実行する
-      await sendPushNotification(title, body, url);
-      return;
-    } catch (error) {
-      lastError =
-        error instanceof Error
-          ? error
-          : new Error('k8o-push API呼び出し中に不明なエラーが発生しました');
-
-      if (attempt < MAX_RETRY_ATTEMPTS) {
-        const backoffMs =
-          INITIAL_BACKOFF_MS * BACKOFF_MULTIPLIER ** (attempt - 1);
-        console.warn(
-          `k8o-push API呼び出し失敗 (試行 ${attempt}/${MAX_RETRY_ATTEMPTS})。${backoffMs}ms後にリトライします。`,
-          lastError.message,
-        );
-        // oxlint-disable-next-line no-await-in-loop -- 指数バックオフは前回の失敗後に待機する
-        await sleep(backoffMs);
-      }
-    }
+const getErrorStatus = (
+  code: 'DATABASE_ERROR' | 'PUSH_NOTIFICATION_ERROR',
+): number => {
+  switch (code) {
+    case 'DATABASE_ERROR':
+    case 'PUSH_NOTIFICATION_ERROR':
+      return 500;
+    default:
+      return 500;
   }
-
-  throw lastError ?? new Error('k8o-push API呼び出しに失敗しました');
-}
+};
 
 export async function GET(req: NextRequest): Promise<NextResponse> {
   if (
@@ -59,66 +21,11 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
     return NextResponse.json({ ok: false }, { status: 401 });
   }
 
-  const claimedAt = new Date().toISOString();
-
-  let claimed: UnsentComment[];
-  try {
-    claimed = await db.transaction((tx) =>
-      tx
-        .update(db._schema.comments)
-        .set({ sentAt: claimedAt })
-        .where(isNull(db._schema.comments.sentAt))
-        .returning({ id: db._schema.comments.id }),
-    );
-  } catch (error) {
-    console.error('未送信コメントの取得に失敗しました:', error);
+  const result = await sendWeeklyCommentNotifications();
+  if (!result.ok) {
     return NextResponse.json(
-      { ok: false, error: 'データベース操作に失敗しました' },
-      { status: 500 },
-    );
-  }
-
-  const notifications: UnsentComment[] = claimed;
-
-  if (notifications.length === 0) {
-    return NextResponse.json({ ok: true });
-  }
-
-  try {
-    await sendWithRetry(
-      `週次レポート (${notifications.length}件)`,
-      `お問い合わせが${notifications.length}件あります`,
-      'https://www.k8o.me',
-    );
-  } catch (error) {
-    console.error(
-      `k8o-push API呼び出しが${MAX_RETRY_ATTEMPTS}回失敗しました:`,
-      error,
-    );
-    try {
-      await db
-        .update(db._schema.comments)
-        .set({ sentAt: null })
-        .where(
-          and(
-            inArray(
-              db._schema.comments.id,
-              notifications.map((n) => n.id),
-            ),
-            eq(db._schema.comments.sentAt, claimedAt),
-          ),
-        )
-        .execute();
-    } catch (revertError) {
-      console.error('sentAtフィールドの復帰に失敗しました:', {
-        error: revertError,
-        claimedAt,
-        affectedIds: notifications.map((n) => n.id),
-      });
-    }
-    return NextResponse.json(
-      { ok: false, error: 'プッシュ通知の送信に失敗しました' },
-      { status: 500 },
+      { ok: false, error: result.error.message },
+      { status: getErrorStatus(result.error.code) },
     );
   }
 

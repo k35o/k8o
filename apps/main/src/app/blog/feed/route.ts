@@ -2,7 +2,7 @@ import { cacheLife } from 'next/cache';
 import { NextResponse } from 'next/server';
 import RSS from 'rss';
 
-import { getBlogContents } from '@/app/blog/_api';
+import { getBlogContents } from '@/features/blog/interface/queries';
 
 import { metadata } from '../layout';
 
