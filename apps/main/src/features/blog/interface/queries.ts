@@ -51,11 +51,12 @@ export async function getBlogContent(slug: string) {
   };
 }
 
-export function getBlogToc(slug: string) {
+export async function getBlogToc(slug: string) {
   'use cache';
   cacheLife('max');
 
-  return _getBlogToc(slug);
+  const toc = await Promise.resolve(_getBlogToc(slug));
+  return toc;
 }
 
 export async function getBlogsByTags(slug: string) {
@@ -69,9 +70,10 @@ export async function getBlogsByTags(slug: string) {
   );
 }
 
-export function getBlogView(id: number) {
+export async function getBlogView(id: number) {
   'use cache';
   cacheLife('minutes');
 
-  return _getBlogView(id);
+  const view = await Promise.resolve(_getBlogView(id));
+  return view;
 }
