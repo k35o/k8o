@@ -22,7 +22,7 @@
     "@ls-lint/ls-lint": "2.3.1",
     "@oxlint/plugins": "1.62.0",
     "@types/node": "24.12.2",
-    "@typescript/native-preview": "7.0.0-dev.20260428.1",
+    "@typescript/native-preview": "7.0.0-dev.20260429.1",
     "@upstash/context7-mcp": "2.2.2",
     "@vercel/next-browser": "0.7.1",
     "knip": "6.7.0",
