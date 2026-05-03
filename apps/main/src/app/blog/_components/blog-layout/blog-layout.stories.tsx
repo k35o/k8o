@@ -23,8 +23,8 @@ const blog = {
   slideUrl: '',
   description:
     'Reactのルーティングには主にNextjs等のフレームワークやReact Routeが利用されます。この記事では新たなルーティング手法の選択肢としてTanStack Routerを紹介します。TanStack Routerでは最初に挙げた選択肢の使い心地を踏襲しつつ、ルーティングやサーチパラメータの型安全性や他にない便利な機能を提供します。',
-  createdAt: new Date('2023/05/01'),
-  updatedAt: new Date('2023/07/13'),
+  createdAt: '2023-05-01T00:00:00.000Z',
+  updatedAt: '2023-07-13T00:00:00.000Z',
 };
 
 const headingTree = {
@@ -59,21 +59,21 @@ const recommendedBlogs = [
     id: 11,
     slug: 'atomics-pause',
     title: 'Atomicsで共有メモリ上のデータを安全に取り扱う',
-    createdAt: new Date('2025-04-13 02:50:57+00'),
+    createdAt: '2025-04-13T02:50:57.000Z',
     tags: ['JavaScript', 'Baseline 2025', 'Atomics', 'Atomics.pause'],
   },
   {
     id: 9,
     slug: 'screen-wake-lock',
     title: '画面のスリープを防ぐScreen Wake Lock API',
-    createdAt: new Date('2025-04-04 13:43:04.13969+00'),
+    createdAt: '2025-04-04T13:43:04.139Z',
     tags: ['JavaScript', 'Baseline 2025', 'Screen Wake Lock'],
   },
   {
     id: 10,
     slug: 'async-clipboard',
     title: '任意のデータをコピー&ペーストするClipboard API',
-    createdAt: new Date('2025-04-06 10:02:57.807659+00'),
+    createdAt: '2025-04-06T10:02:57.807Z',
     tags: [
       'JavaScript',
       'Baseline 2025',

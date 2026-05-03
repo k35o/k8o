@@ -18,8 +18,8 @@ export const Primary: Story = {
     title: 'Reactの新しいルーティングライブラリ、TanStackRouterを学ぶ',
     description:
       'Reactのルーティングには主にNextjs等のフレームワークやReact Routeが利用されます。この記事では新たなルーティング手法の選択肢としてTanStack Routerを紹介します。TanStack Routerでは最初に挙げた選択肢の使い心地を踏襲しつつ、ルーティングやサーチパラメータの型安全性や他にない便利な機能を提供します。',
-    createdAt: new Date('2023/05/01'),
-    updatedAt: new Date('2023/07/13'),
+    createdAt: '2023-05-01T00:00:00.000Z',
+    updatedAt: '2023-07-13T00:00:00.000Z',
   },
 };
 
@@ -29,8 +29,8 @@ export const DisplaysTitle: Story = {
     tags: ['React'],
     title: 'テスト記事のタイトル',
     description: 'テスト説明文',
-    createdAt: new Date('2024/01/15'),
-    updatedAt: new Date('2024/02/20'),
+    createdAt: '2024-01-15T00:00:00.000Z',
+    updatedAt: '2024-02-20T00:00:00.000Z',
   },
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
@@ -48,8 +48,8 @@ export const DisplaysTags: Story = {
     tags: ['React', 'TypeScript', 'Next.js'],
     title: 'テスト記事',
     description: null,
-    createdAt: new Date('2024/01/15'),
-    updatedAt: new Date('2024/02/20'),
+    createdAt: '2024-01-15T00:00:00.000Z',
+    updatedAt: '2024-02-20T00:00:00.000Z',
   },
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
@@ -67,8 +67,8 @@ export const DisplaysDates: Story = {
     tags: [],
     title: 'テスト記事',
     description: null,
-    createdAt: new Date('2024/01/15'),
-    updatedAt: new Date('2024/02/20'),
+    createdAt: '2024-01-15T00:00:00.000Z',
+    updatedAt: '2024-02-20T00:00:00.000Z',
   },
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
@@ -85,8 +85,8 @@ export const HasLinkToBlog: Story = {
     tags: ['React'],
     title: 'ブログ記事リンクテスト',
     description: null,
-    createdAt: new Date('2024/01/15'),
-    updatedAt: new Date('2024/02/20'),
+    createdAt: '2024-01-15T00:00:00.000Z',
+    updatedAt: '2024-02-20T00:00:00.000Z',
   },
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);

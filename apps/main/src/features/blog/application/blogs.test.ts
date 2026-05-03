@@ -135,8 +135,8 @@ describe('blogs service', () => {
       const mockMetadata = {
         title: 'Test Blog',
         description: 'Test Description',
-        createdAt: new Date('2023-01-01'),
-        updatedAt: new Date('2023-01-01'),
+        createdAt: '2023-01-01T00:00:00.000Z',
+        updatedAt: '2023-01-01T00:00:00.000Z',
       };
 
       vi.mocked(db.query.blogTag.findMany).mockResolvedValue(mockBlogTags);
@@ -202,8 +202,8 @@ describe('blogs service', () => {
       const mockMetadata = {
         title: 'Test Blog',
         description: 'Test Description',
-        createdAt: new Date('2023-01-01'),
-        updatedAt: new Date('2023-01-01'),
+        createdAt: '2023-01-01T00:00:00.000Z',
+        updatedAt: '2023-01-01T00:00:00.000Z',
       };
 
       vi.mocked(db.query.blogTag.findMany).mockResolvedValue(mockBlogTags);
@@ -241,8 +241,8 @@ describe('blogs service', () => {
       const mockMetadata = {
         title: 'Test Blog',
         description: 'Test Description',
-        createdAt: new Date('2023-01-01'),
-        updatedAt: new Date('2023-01-01'),
+        createdAt: '2023-01-01T00:00:00.000Z',
+        updatedAt: '2023-01-01T00:00:00.000Z',
       };
 
       vi.mocked(db.query.blogTag.findMany).mockResolvedValue(mockBlogTags);

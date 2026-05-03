@@ -18,7 +18,7 @@ export const Primary: Story = {
     description:
       'これはサンプル記事の説明文です。記事の概要を簡潔に説明します。',
     tags: ['React', 'TypeScript'],
-    createdAt: new Date('2024/01/15'),
+    createdAt: '2024-01-15T00:00:00.000Z',
   },
 };
 
@@ -28,7 +28,7 @@ export const DisplaysTitle: Story = {
     title: 'テスト記事のタイトル',
     description: 'テスト説明文',
     tags: ['React'],
-    createdAt: new Date('2024/01/15'),
+    createdAt: '2024-01-15T00:00:00.000Z',
   },
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
@@ -45,7 +45,7 @@ export const DisplaysTags: Story = {
     title: 'テスト記事',
     description: null,
     tags: ['React', 'TypeScript', 'Next.js'],
-    createdAt: new Date('2024/01/15'),
+    createdAt: '2024-01-15T00:00:00.000Z',
   },
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
@@ -62,7 +62,7 @@ export const DisplaysDate: Story = {
     title: 'テスト記事',
     description: null,
     tags: [],
-    createdAt: new Date('2024/01/15'),
+    createdAt: '2024-01-15T00:00:00.000Z',
   },
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
@@ -77,7 +77,7 @@ export const HasLinkToBlog: Story = {
     title: 'ブログ記事リンクテスト',
     description: null,
     tags: ['React'],
-    createdAt: new Date('2024/01/15'),
+    createdAt: '2024-01-15T00:00:00.000Z',
   },
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
@@ -93,7 +93,7 @@ export const WithoutDescription: Story = {
     title: '説明なしの記事',
     description: null,
     tags: ['TypeScript'],
-    createdAt: new Date('2024/02/20'),
+    createdAt: '2024-02-20T00:00:00.000Z',
   },
 };
 
@@ -103,6 +103,6 @@ export const WithoutTags: Story = {
     title: 'タグなしの記事',
     description: '説明文あり',
     tags: [],
-    createdAt: new Date('2024/02/20'),
+    createdAt: '2024-02-20T00:00:00.000Z',
   },
 };

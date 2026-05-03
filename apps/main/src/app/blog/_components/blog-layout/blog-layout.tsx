@@ -90,11 +90,11 @@ export const BlogLayoutContent: FC<BlogLayoutContentProps> = ({
                 <ViewTransition name={`date-${slug}`}>
                   <div className="flex items-center gap-1">
                     <PublishDateIcon size="sm" />
-                    <span>公開: {formatDate(blog.createdAt)}</span>
+                    <span>公開: {formatDate(new Date(blog.createdAt))}</span>
                   </div>
                   <div className="flex items-center gap-1">
                     <UpdateDateIcon size="sm" />
-                    <span>更新: {formatDate(blog.updatedAt)}</span>
+                    <span>更新: {formatDate(new Date(blog.updatedAt))}</span>
                   </div>
                 </ViewTransition>
               </div>
