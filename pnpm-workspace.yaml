@@ -3,7 +3,7 @@ packages:
   - packages/*
 
 catalog:
-  '@k8o/arte-odyssey': 6.0.1
+  '@k8o/arte-odyssey': 7.0.1
   '@storybook/addon-a11y': 10.3.6
   '@storybook/addon-docs': 10.3.6
   '@storybook/addon-mcp': '0.6.0'
