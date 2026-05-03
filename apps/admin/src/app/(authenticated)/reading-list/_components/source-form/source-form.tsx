@@ -27,6 +27,11 @@ const TYPE_OPTIONS = [
   { value: 'manual', label: '手動' },
 ] as const;
 
+type SourceType = (typeof TYPE_OPTIONS)[number]['value'];
+
+const isSourceType = (value: string): value is SourceType =>
+  value === 'feed' || value === 'manual';
+
 export const SourceForm = ({ action, defaultValues }: SourceFormProps) => {
   const [state, formAction, isPending] = useActionState(action, {});
   const [type, setType] = useState(defaultValues?.type ?? 'feed');
@@ -81,7 +86,9 @@ export const SourceForm = ({ action, defaultValues }: SourceFormProps) => {
             labelId={labelId}
             name="type"
             onChange={(e: ChangeEvent<HTMLInputElement>) => {
-              setType(e.target.value as 'feed' | 'manual');
+              if (isSourceType(e.target.value)) {
+                setType(e.target.value);
+              }
             }}
             options={TYPE_OPTIONS}
             value={type}

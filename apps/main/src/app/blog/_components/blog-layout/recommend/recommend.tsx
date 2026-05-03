@@ -40,7 +40,8 @@ export const RecommendContent: FC<RecommendProps> = ({ blogs }) => {
                   <div className="text-fg-mute ml-auto flex items-center gap-1 text-xs">
                     <PublishDateIcon size="sm" />
                     <span>
-                      公開: {formatDate(blog.createdAt, 'yyyy年M月d日')}
+                      公開:{' '}
+                      {formatDate(new Date(blog.createdAt), 'yyyy年M月d日')}
                     </span>
                   </div>
                 </div>

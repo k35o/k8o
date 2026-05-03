@@ -26,6 +26,9 @@ export const COLUMN_TYPE_OPTIONS = [
   { value: 'timestamptz', label: '日時(タイムゾーン付き)' },
 ] as const satisfies Array<{ value: ColumnType; label: string }>;
 
+export const isColumnType = (value: string): value is ColumnType =>
+  COLUMN_TYPE_OPTIONS.some((option) => option.value === value);
+
 // テーブル用（省略ラベル）
 export const COLUMN_TYPE_OPTIONS_SHORT = [
   { value: 'uuid', label: 'uuid' },

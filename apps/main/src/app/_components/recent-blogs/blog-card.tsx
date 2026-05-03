@@ -15,7 +15,7 @@ type BlogCardProps = {
   title: string;
   description: string | null;
   tags: string[];
-  createdAt: Date;
+  createdAt: string;
 };
 
 export const BlogCard: FC<BlogCardProps> = ({
@@ -47,7 +47,7 @@ export const BlogCard: FC<BlogCardProps> = ({
           )}
           <div className="text-fg-mute ml-auto flex items-center gap-1 text-xs">
             <PublishDateIcon size="sm" />
-            <span>{formatDate(createdAt, 'yyyy年M月d日')}</span>
+            <span>{formatDate(new Date(createdAt), 'yyyy年M月d日')}</span>
           </div>
         </div>
       </div>

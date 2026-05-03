@@ -4,15 +4,40 @@ import { matter } from 'vfile-matter';
 type Frontmatter = {
   title: string;
   description: string | null;
-  createdAt: Date;
-  updatedAt: Date;
+  createdAt: string;
+  updatedAt: string;
   featureIds?: string[];
 };
 
 export const getFrontmatter = async (path: string): Promise<Frontmatter> => {
   const file = await read(path);
   matter(file);
-  return file.data['matter'] as Frontmatter;
+  const data = file.data['matter'];
+  if (!isFrontmatter(data)) {
+    throw new Error(`Invalid frontmatter in ${path}`);
+  }
+  return data;
+};
+
+const isDateString = (value: unknown): value is string =>
+  typeof value === 'string' && !Number.isNaN(Date.parse(value));
+
+const isFrontmatter = (value: unknown): value is Frontmatter => {
+  if (typeof value !== 'object' || value === null) return false;
+  if (!('title' in value) || typeof value.title !== 'string') return false;
+  if (
+    !('description' in value) ||
+    (value.description !== null && typeof value.description !== 'string')
+  )
+    return false;
+  if (!('createdAt' in value) || !isDateString(value.createdAt)) return false;
+  if (!('updatedAt' in value) || !isDateString(value.updatedAt)) return false;
+  if ('featureIds' in value && value.featureIds !== undefined) {
+    if (!Array.isArray(value.featureIds)) return false;
+    if (!value.featureIds.every((id: unknown) => typeof id === 'string'))
+      return false;
+  }
+  return true;
 };
 
 if (import.meta.vitest) {
@@ -57,6 +82,22 @@ updatedAt: 2026-03-02T00:00:00.000Z
       expect(result.description).toBe('説明文');
       expect(result.createdAt).toBe('2026-03-01T00:00:00.000Z');
       expect(result.updatedAt).toBe('2026-03-02T00:00:00.000Z');
+    });
+
+    it('frontmatter が無効な場合はエラーを投げる', async () => {
+      const { mkdtemp, writeFile } = await import('node:fs/promises');
+      const { tmpdir } = await import('node:os');
+      const path = await import('node:path');
+
+      const dir = await mkdtemp(path.join(tmpdir(), 'frontmatter-'));
+      const filePath = path.join(dir, 'article.mdx');
+      tempPaths.push(dir);
+
+      await writeFile(filePath, `---\ntitle: タイトルのみ\n---\n本文\n`);
+
+      await expect(getFrontmatter(filePath)).rejects.toThrow(
+        'Invalid frontmatter',
+      );
     });
   });
 }

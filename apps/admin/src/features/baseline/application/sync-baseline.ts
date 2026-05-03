@@ -54,7 +54,54 @@ const fetchPage = async (
   if (!res.ok) {
     throw new Error(`API error: ${res.status}`);
   }
-  return res.json() as Promise<ApiResponse>;
+  const json: unknown = await res.json();
+  if (!isApiResponse(json)) {
+    const preview = JSON.stringify(json).slice(0, 200);
+    throw new Error(`Invalid webstatus API response shape: ${preview}`);
+  }
+  return json;
+};
+
+const isApiFeature = (value: unknown): value is ApiFeature => {
+  if (typeof value !== 'object' || value === null) return false;
+  if (!('feature_id' in value) || typeof value.feature_id !== 'string')
+    return false;
+  if (!('name' in value) || typeof value.name !== 'string') return false;
+  if (!('baseline' in value)) return false;
+  const { baseline } = value;
+  if (typeof baseline !== 'object' || baseline === null) return false;
+  if (
+    !('status' in baseline) ||
+    (baseline.status !== 'newly' && baseline.status !== 'widely')
+  )
+    return false;
+  if (!('low_date' in baseline) || typeof baseline.low_date !== 'string')
+    return false;
+  if (
+    'high_date' in baseline &&
+    baseline.high_date !== undefined &&
+    typeof baseline.high_date !== 'string'
+  )
+    return false;
+  return true;
+};
+
+const isApiResponse = (value: unknown): value is ApiResponse => {
+  if (typeof value !== 'object' || value === null) return false;
+  if (!('data' in value) || !Array.isArray(value.data)) return false;
+  if (!value.data.every(isApiFeature)) return false;
+  if (!('metadata' in value)) return false;
+  const { metadata } = value;
+  if (typeof metadata !== 'object' || metadata === null) return false;
+  if (!('total' in metadata) || typeof metadata.total !== 'number')
+    return false;
+  if (
+    'next_page_token' in metadata &&
+    metadata.next_page_token !== undefined &&
+    typeof metadata.next_page_token !== 'string'
+  )
+    return false;
+  return true;
 };
 
 const fetchAllFeatures = async (

@@ -17,8 +17,8 @@ type BlogCardProps = {
   tags: string[];
   title: string;
   description: string | null;
-  createdAt: Date;
-  updatedAt: Date;
+  createdAt: string;
+  updatedAt: string;
 };
 
 export const BlogCard: FC<BlogCardProps> = ({
@@ -59,11 +59,15 @@ export const BlogCard: FC<BlogCardProps> = ({
             <ViewTransition name={`date-${slug}`}>
               <div className="flex items-center gap-1">
                 <PublishDateIcon size="sm" />
-                <span>公開: {formatDate(createdAt, 'yyyy年M月d日')}</span>
+                <span>
+                  公開: {formatDate(new Date(createdAt), 'yyyy年M月d日')}
+                </span>
               </div>
               <div className="flex items-center gap-1">
                 <UpdateDateIcon size="sm" />
-                <span>更新: {formatDate(updatedAt, 'yyyy年M月d日')}</span>
+                <span>
+                  更新: {formatDate(new Date(updatedAt), 'yyyy年M月d日')}
+                </span>
               </div>
             </ViewTransition>
           </div>

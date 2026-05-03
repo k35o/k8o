@@ -16,7 +16,7 @@ export async function generateMetadata(): Promise<Metadata> {
       title: blog.title,
       description: blog.description ?? undefined,
       url: `https://k8o.me/blog/${slug}`,
-      publishedTime: blog.createdAt.toString(),
+      publishedTime: blog.createdAt,
       authors: ['k8o'],
       siteName: 'k8o',
       locale: 'ja',

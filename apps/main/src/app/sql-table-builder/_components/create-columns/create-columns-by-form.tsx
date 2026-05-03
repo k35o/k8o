@@ -12,8 +12,8 @@ import { type FC, useState } from 'react';
 import {
   COLUMN_TYPE_OPTIONS,
   type Column,
-  type ColumnType,
   type InvalidColumns,
+  isColumnType,
 } from '../../_types/column';
 
 type Props = {
@@ -134,9 +134,10 @@ const ColumnItem: FC<{
                 renderInput={({ labelId: _, ...props }) => (
                   <Select
                     onChange={(e) => {
+                      if (!isColumnType(e.target.value)) return;
                       handleChangeColumn(id)({
                         ...column,
-                        type: e.target.value as ColumnType,
+                        type: e.target.value,
                       });
                     }}
                     options={COLUMN_TYPE_OPTIONS}

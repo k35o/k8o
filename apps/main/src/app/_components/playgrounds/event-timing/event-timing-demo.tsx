@@ -3,10 +3,9 @@
 import { Button, Code } from '@k8o/arte-odyssey';
 import { useCallback, useEffect, useRef, useState } from 'react';
 
-// TypeScriptの型定義にinteractionIdが含まれていないため拡張
-type PerformanceEventTimingWithInteractionId = PerformanceEventTiming & {
-  interactionId: number;
-};
+const isPerformanceEventTiming = (
+  entry: PerformanceEntry,
+): entry is PerformanceEventTiming => entry.entryType === 'event';
 
 type EventTimingEntry = {
   id: number;
@@ -36,16 +35,13 @@ export function EventTimingDemo() {
       return undefined;
     }
 
-    const interactionMap = new Map<
-      number,
-      PerformanceEventTimingWithInteractionId
-    >();
+    const interactionMap = new Map<number, PerformanceEventTiming>();
     const timeoutIds = new Set<ReturnType<typeof setTimeout>>();
 
     const observer = new PerformanceObserver((list) => {
       for (const entry of list.getEntries()) {
-        const eventEntry =
-          entry as unknown as PerformanceEventTimingWithInteractionId;
+        if (!isPerformanceEventTiming(entry)) continue;
+        const eventEntry = entry;
 
         // interactionIdがないイベントはスキップ
         if (eventEntry.interactionId === 0) continue;
@@ -101,12 +97,12 @@ export function EventTimingDemo() {
       }
     });
 
-    // durationThresholdはEvent Timing APIの標準オプションだがTypeScriptの型定義に含まれていない
     observer.observe({
       type: 'event',
       buffered: false,
+      // @ts-expect-error durationThreshold は PerformanceObserverInit に未収録（追加されたら削除）
       durationThreshold: 16,
-    } as PerformanceObserverInit & { durationThreshold?: number });
+    });
 
     return () => {
       observer.disconnect();
