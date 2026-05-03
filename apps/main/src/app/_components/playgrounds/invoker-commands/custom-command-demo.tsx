@@ -16,6 +16,7 @@ export function CustomCommandDemo() {
     if (!image) return undefined;
 
     const handleCommand = (event: Event) => {
+      if (typeof CommandEvent === 'undefined') return;
       if (!(event instanceof CommandEvent)) return;
       const { command } = event;
       if (command === '') return;

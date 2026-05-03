@@ -56,7 +56,8 @@ const fetchPage = async (
   }
   const json: unknown = await res.json();
   if (!isApiResponse(json)) {
-    throw new Error('Invalid webstatus API response shape');
+    const preview = JSON.stringify(json).slice(0, 200);
+    throw new Error(`Invalid webstatus API response shape: ${preview}`);
   }
   return json;
 };

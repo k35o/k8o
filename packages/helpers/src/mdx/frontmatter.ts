@@ -19,6 +19,9 @@ export const getFrontmatter = async (path: string): Promise<Frontmatter> => {
   return data;
 };
 
+const isDateString = (value: unknown): value is string =>
+  typeof value === 'string' && !Number.isNaN(Date.parse(value));
+
 const isFrontmatter = (value: unknown): value is Frontmatter => {
   if (typeof value !== 'object' || value === null) return false;
   if (!('title' in value) || typeof value.title !== 'string') return false;
@@ -27,10 +30,8 @@ const isFrontmatter = (value: unknown): value is Frontmatter => {
     (value.description !== null && typeof value.description !== 'string')
   )
     return false;
-  if (!('createdAt' in value) || typeof value.createdAt !== 'string')
-    return false;
-  if (!('updatedAt' in value) || typeof value.updatedAt !== 'string')
-    return false;
+  if (!('createdAt' in value) || !isDateString(value.createdAt)) return false;
+  if (!('updatedAt' in value) || !isDateString(value.updatedAt)) return false;
   if ('featureIds' in value && value.featureIds !== undefined) {
     if (!Array.isArray(value.featureIds)) return false;
     if (!value.featureIds.every((id: unknown) => typeof id === 'string'))
