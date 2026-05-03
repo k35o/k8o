@@ -1,4 +1,4 @@
-/* eslint-disable import/max-dependencies -- Storybook全体の provider・mock・MSW 設定を集約するため */
+/* oxlint-disable import/max-dependencies -- Storybook全体の provider・mock・MSW 設定を集約するため */
 
 import { cn } from '@repo/helpers/cn';
 import type { Preview } from '@storybook/nextjs-vite';
