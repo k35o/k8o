@@ -7,46 +7,29 @@ import {
   getJstUtcStart,
 } from './jst';
 
-export type ContributionDay = {
+type ContributionDay = {
   date: string;
   count: number;
 };
 
 const CONTRIBUTION_DAYS = 14;
 const LAST_DAY_INDEX = CONTRIBUTION_DAYS - 1;
-const GITHUB_CONTRIBUTION_PAGE_SIZE = 100;
 
-type ContributionResponse = {
+type ContributionCalendarResponse = {
   user: {
     contributionsCollection: {
-      commitContributionsByRepository: Array<{
-        repository: {
-          owner: {
-            login: string;
-          };
-          name: string;
-        };
-        contributions: {
-          pageInfo: {
-            hasNextPage: boolean;
-            endCursor: string | null;
-          };
-          nodes: Array<{
-            occurredAt: string;
-            commitCount: number;
+      contributionCalendar: {
+        weeks: Array<{
+          contributionDays: Array<{
+            date: string;
+            contributionCount: number;
           }>;
-        };
-      }>;
+        }>;
+      };
     };
   };
 };
 
-type RepositoryContributions =
-  ContributionResponse['user']['contributionsCollection']['commitContributionsByRepository'][number];
-
-/**
- * 直近の期間の日付範囲を計算
- */
 function _getDateRange(): { from: string; to: string } {
   const now = new Date();
   const toDate = getJstDateBase(now);
@@ -59,12 +42,10 @@ function _getDateRange(): { from: string; to: string } {
 }
 
 /**
- * k8oリポジトリ専用のコントリビューションデータを取得（直近2週間）
+ * ユーザーのコントリビューション（commit / PR / issue / review）を直近2週間分取得
  */
-export async function fetchRepositoryCommitContributions(
+export async function fetchUserContributions(
   username: string,
-  owner: string,
-  repo: string,
 ): Promise<ContributionDay[]> {
   const token = process.env['GITHUB_TOKEN'];
 
@@ -77,24 +58,14 @@ export async function fetchRepositoryCommitContributions(
   const { from, to } = _getDateRange();
 
   const query = `
-    query($userName:String!, $from:DateTime!, $to:DateTime!, $after:String, $pageSize:Int!) {
+    query($userName:String!, $from:DateTime!, $to:DateTime!) {
       user(login: $userName) {
         contributionsCollection(from: $from, to: $to) {
-          commitContributionsByRepository(maxRepositories: 100) {
-            repository {
-              owner {
-                login
-              }
-              name
-            }
-            contributions(first: $pageSize, after: $after) {
-              pageInfo {
-                hasNextPage
-                endCursor
-              }
-              nodes {
-                occurredAt
-                commitCount
+          contributionCalendar {
+            weeks {
+              contributionDays {
+                date
+                contributionCount
               }
             }
           }
@@ -103,64 +74,17 @@ export async function fetchRepositoryCommitContributions(
     }
   `;
 
+  const response: ContributionCalendarResponse = await octokit.graphql(query, {
+    userName: username,
+    from: getJstUtcStart(from),
+    to: getJstUtcEnd(to),
+  });
+
   const contributionMap = new Map<string, number>();
-  const createRepoContributionsIterator =
-    (): AsyncIterable<RepositoryContributions> => {
-      let cursor: string | null = null;
-      let done = false;
-
-      return {
-        [Symbol.asyncIterator]: () => ({
-          next: async () => {
-            if (done) {
-              return { done: true, value: undefined };
-            }
-
-            const response: ContributionResponse = await octokit.graphql(
-              query,
-              {
-                userName: username,
-                from: getJstUtcStart(from),
-                to: getJstUtcEnd(to),
-                after: cursor,
-                pageSize: GITHUB_CONTRIBUTION_PAGE_SIZE,
-              },
-            );
-
-            const repoContributions =
-              response.user.contributionsCollection.commitContributionsByRepository.find(
-                (r) =>
-                  r.repository.owner.login === owner &&
-                  r.repository.name === repo,
-              );
-
-            if (repoContributions === undefined) {
-              done = true;
-              return { done: true, value: undefined };
-            }
-
-            const { pageInfo } = repoContributions.contributions;
-            if (pageInfo.hasNextPage && pageInfo.endCursor !== null) {
-              cursor = pageInfo.endCursor;
-            } else {
-              done = true;
-            }
-
-            return { done: false, value: repoContributions };
-          },
-        }),
-      };
-    };
-
-  for await (const repoContributions of createRepoContributionsIterator()) {
-    for (const contribution of repoContributions.contributions.nodes) {
-      const date = contribution.occurredAt.split('T')[0];
-      if (date !== undefined) {
-        contributionMap.set(
-          date,
-          (contributionMap.get(date) ?? 0) + contribution.commitCount,
-        );
-      }
+  for (const week of response.user.contributionsCollection.contributionCalendar
+    .weeks) {
+    for (const day of week.contributionDays) {
+      contributionMap.set(day.date, day.contributionCount);
     }
   }
 

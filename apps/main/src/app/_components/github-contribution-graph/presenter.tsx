@@ -51,7 +51,7 @@ export const Presenter: FC<{
               )}
             />
             <ArteTooltip.Content>
-              k8o・artifactsリポジトリへのコミット履歴
+              GitHub上のコントリビューション履歴（commit / PR / issue / review）
             </ArteTooltip.Content>
           </ArteTooltip.Root>
         </div>
@@ -111,7 +111,9 @@ const CustomTooltip: FC<{
 
   return (
     <div className="bg-bg-base text-fg-base rounded-xl px-3 py-2 shadow-md">
-      <p className="text-sm font-semibold">{item.count}件のコミット</p>
+      <p className="text-sm font-semibold">
+        {item.count}件のコントリビューション
+      </p>
       <p className="text-fg-mute text-xs">{formattedDate}</p>
     </div>
   );
