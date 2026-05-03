@@ -7,8 +7,8 @@ settings:
 catalogs:
   default:
     '@k8o/arte-odyssey':
-      specifier: 6.0.1
-      version: 6.0.1
+      specifier: 7.0.1
+      version: 7.0.1
     '@storybook/addon-a11y':
       specifier: 10.3.6
       version: 10.3.6
@@ -136,7 +136,7 @@ importers:
     dependencies:
       '@k8o/arte-odyssey':
         specifier: 'catalog:'
-        version: 6.0.1(@types/react-dom@19.2.3(@types/react@19.2.14))(@types/react@19.2.14)(react-dom@19.2.5(react@19.2.5))(react@19.2.5)(tailwindcss@4.2.4)(typescript@6.0.3)
+        version: 7.0.1(@types/react-dom@19.2.3(@types/react@19.2.14))(@types/react@19.2.14)(react-dom@19.2.5(react@19.2.5))(react@19.2.5)(tailwindcss@4.2.4)(typescript@6.0.3)
       '@repo/database':
         specifier: workspace:*
         version: link:../../packages/database
@@ -227,7 +227,7 @@ importers:
     dependencies:
       '@k8o/arte-odyssey':
         specifier: 'catalog:'
-        version: 6.0.1(@types/react-dom@19.2.3(@types/react@19.2.14))(@types/react@19.2.14)(react-dom@19.2.5(react@19.2.5))(react@19.2.5)(tailwindcss@4.2.4)(typescript@6.0.3)
+        version: 7.0.1(@types/react-dom@19.2.3(@types/react@19.2.14))(@types/react@19.2.14)(react-dom@19.2.5(react@19.2.5))(react@19.2.5)(tailwindcss@4.2.4)(typescript@6.0.3)
       '@mdx-js/loader':
         specifier: 3.1.1
         version: 3.1.1
@@ -1465,8 +1465,8 @@ packages:
   '@jridgewell/trace-mapping@0.3.31':
     resolution: {integrity: sha512-zzNR+SdQSDJzc8joaeP8QQoCQr8NuYx2dIIytl1QeBEZHJ9uW6hebsrYgbz8hJwUQao3TWCMtmfV8Nu1twOLAw==}
 
-  '@k8o/arte-odyssey@6.0.1':
-    resolution: {integrity: sha512-uIyb5H4z4qzQWa4VUTcHzaLmwcrPnwpL4M6bWafM1LrhdZUshGrxeednQRCfAD6KNKoF/D12ZKQPIuISed3btg==}
+  '@k8o/arte-odyssey@7.0.1':
+    resolution: {integrity: sha512-SzHxcEahM+N0BECP732KMVxcCVkwc45kvFVqa9ZlaCKj1iWqPjCHTskcqPaoYh5MCOMa6gescEAfmMLB34ph0Q==}
     peerDependencies:
       '@types/react': '>=19.0.0'
       '@types/react-dom': '>=19.0.0'
@@ -4900,8 +4900,8 @@ packages:
   lru-cache@5.1.1:
     resolution: {integrity: sha512-KpNARQA3Iwv+jTA0utUVVbrh+Jlrr1Fv0e56GGzAFOXN7dk/FviaDW8LHmK52DlcH4WP2n6gI8vN1aesBFgo9w==}
 
-  lucide-react@1.7.0:
-    resolution: {integrity: sha512-yI7BeItCLZJTXikmK4KNUGCKoGzSvbKlfCvw44bU4fXAL6v3gYS4uHD1jzsLkfwODYwI6Drw5Tu9Z5ulDe0TSg==}
+  lucide-react@1.9.0:
+    resolution: {integrity: sha512-6qVAmbgCjcJz7sAGSPSSJ++RAwjlK2XCbRrZKv63Ciko1KT8jX0//CXxgI3jg2HlJu8tADqdYlNDebmYjeoruA==}
     peerDependencies:
       react: ^16.5.1 || ^17.0.0 || ^18.0.0 || ^19.0.0
 
@@ -7150,14 +7150,14 @@ snapshots:
       '@jridgewell/resolve-uri': 3.1.2
       '@jridgewell/sourcemap-codec': 1.5.5
 
-  '@k8o/arte-odyssey@6.0.1(@types/react-dom@19.2.3(@types/react@19.2.14))(@types/react@19.2.14)(react-dom@19.2.5(react@19.2.5))(react@19.2.5)(tailwindcss@4.2.4)(typescript@6.0.3)':
+  '@k8o/arte-odyssey@7.0.1(@types/react-dom@19.2.3(@types/react@19.2.14))(@types/react@19.2.14)(react-dom@19.2.5(react@19.2.5))(react@19.2.5)(tailwindcss@4.2.4)(typescript@6.0.3)':
     dependencies:
       '@floating-ui/react': 0.27.19(react-dom@19.2.5(react@19.2.5))(react@19.2.5)
       '@types/react': 19.2.14
       '@types/react-dom': 19.2.3(@types/react@19.2.14)
       baseline-status: 1.1.1
       clsx: 2.1.1
-      lucide-react: 1.7.0(react@19.2.5)
+      lucide-react: 1.9.0(react@19.2.5)
       motion: 12.38.0(react-dom@19.2.5(react@19.2.5))(react@19.2.5)
       react: 19.2.5
       react-dom: 19.2.5(react@19.2.5)
@@ -10290,7 +10290,7 @@ snapshots:
     dependencies:
       yallist: 3.1.1
 
-  lucide-react@1.7.0(react@19.2.5):
+  lucide-react@1.9.0(react@19.2.5):
     dependencies:
       react: 19.2.5
 
