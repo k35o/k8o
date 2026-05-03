@@ -15,7 +15,7 @@ catalog:
   '@vitest/browser-playwright': 4.1.5
   '@vitest/coverage-v8': 4.1.5
   '@vitest/ui': 4.1.5
-  chromatic: 16.6.1
+  chromatic: 16.6.3
   babel-plugin-react-compiler: 1.0.0
   drizzle-orm: 0.45.2
   next: 16.2.4
