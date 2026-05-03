@@ -3,6 +3,11 @@
 import { Badge, Button } from '@k8o/arte-odyssey';
 import { useCallback, useEffect, useRef, useState } from 'react';
 
+const isLargestContentfulPaint = (
+  entry: PerformanceEntry,
+): entry is LargestContentfulPaint =>
+  entry.entryType === 'largest-contentful-paint';
+
 type LCPEntry = {
   id: number;
   startTime: number;
@@ -37,7 +42,8 @@ export function LCPDemo() {
 
     const observer = new PerformanceObserver((list) => {
       for (const entry of list.getEntries()) {
-        const lcpEntry = entry as LargestContentfulPaint;
+        if (!isLargestContentfulPaint(entry)) continue;
+        const lcpEntry = entry;
 
         entryIdRef.current += 1;
 

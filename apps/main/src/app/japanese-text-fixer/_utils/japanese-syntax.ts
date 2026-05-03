@@ -1,34 +1,34 @@
 'use server';
 
+import * as z from 'zod/mini';
+
 const JAPANESE_SYNTAX_CHECK_API = 'https://japanese-syntax-checker.k8o.me/api';
 
 type Request = {
   text: string;
 };
 
-type Response = {
-  text: string;
-  msgs: Array<{
-    type: 'lint';
-    ruleId: string;
-    message: string;
-    index: number;
-    line: number;
-    column: number;
-    range: number[];
-    loc: {
-      start: {
-        line: number;
-        column: number;
-      };
-      end: {
-        line: number;
-        column: number;
-      };
-    };
-    severity: number;
-  }>;
-};
+const responseSchema = z.object({
+  text: z.string(),
+  msgs: z.array(
+    z.object({
+      type: z.literal('lint'),
+      ruleId: z.string(),
+      message: z.string(),
+      index: z.number(),
+      line: z.number(),
+      column: z.number(),
+      range: z.array(z.number()),
+      loc: z.object({
+        start: z.object({ line: z.number(), column: z.number() }),
+        end: z.object({ line: z.number(), column: z.number() }),
+      }),
+      severity: z.number(),
+    }),
+  ),
+});
+
+type Response = z.infer<typeof responseSchema>;
 
 export const checkJapaneseSyntax = async (
   request: Request,
@@ -44,5 +44,5 @@ export const checkJapaneseSyntax = async (
     console.error(res);
     throw new Error('Network response was not ok');
   }
-  return res.json() as Promise<Response>;
+  return responseSchema.parse(await res.json());
 };

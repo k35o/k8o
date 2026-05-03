@@ -19,7 +19,7 @@ export function GetComposedRanges() {
       const shadowRoot1 = ref.current.attachShadow({ mode: 'closed' });
       const policy = getHTMLPolicy();
       shadowRoot1.innerHTML = policy
-        ? (policy.createHTML(innerHTML1) as unknown as string)
+        ? policy.createHTML(innerHTML1)
         : innerHTML1;
       shadow.current = shadowRoot1;
     }

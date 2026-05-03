@@ -10,8 +10,8 @@ import { type FC, useId } from 'react';
 import {
   COLUMN_TYPE_OPTIONS_SHORT,
   type Column,
-  type ColumnType,
   type InvalidColumns,
+  isColumnType,
 } from '../../_types/column';
 
 type Props = {
@@ -163,9 +163,10 @@ export const CreateColumnsByTable: FC<Props> = ({
                       isInvalid={Boolean(columnError?.type)}
                       isRequired
                       onChange={(e) => {
+                        if (!isColumnType(e.target.value)) return;
                         handleChangeColumn(id)({
                           ...column,
-                          type: e.target.value as ColumnType,
+                          type: e.target.value,
                         });
                       }}
                       options={COLUMN_TYPE_OPTIONS_SHORT}

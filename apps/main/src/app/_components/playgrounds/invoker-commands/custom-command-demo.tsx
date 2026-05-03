@@ -16,9 +16,9 @@ export function CustomCommandDemo() {
     if (!image) return undefined;
 
     const handleCommand = (event: Event) => {
-      const commandEvent = event as Event & { command?: string };
-      const { command } = commandEvent;
-      if (command === undefined || command === '') return;
+      if (!(event instanceof CommandEvent)) return;
+      const { command } = event;
+      if (command === '') return;
 
       if (command === '--zoom-in') {
         scaleRef.current = Math.min(scaleRef.current + 0.25, 2);

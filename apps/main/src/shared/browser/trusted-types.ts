@@ -11,13 +11,19 @@ type TrustedTypes = {
   ) => TrustedTypePolicy;
 };
 
+declare global {
+  // TS lib.dom が Trusted Types API を取り込んだら削除
+  // oxlint-disable-next-line typescript/consistent-type-definitions -- module augmentation には interface が必要
+  interface Window {
+    trustedTypes?: TrustedTypes;
+  }
+}
+
 let policy: TrustedTypePolicy | undefined;
 
 export const getHTMLPolicy = (): typeof policy => {
   const trustedTypes =
-    typeof window === 'undefined'
-      ? undefined
-      : (window as Window & { trustedTypes?: TrustedTypes }).trustedTypes;
+    typeof window === 'undefined' ? undefined : window.trustedTypes;
 
   if (!trustedTypes) {
     return undefined;
