@@ -1,0 +1,85 @@
+---
+title: 'contrast-color()で背景色に応じた読みやすい文字色を自動で割り当てる'
+description: 'contrast-color()は背景色に対してコントラストの高い色（黒または白）を返すCSS関数です。Baseline 2026に到達し、テーマカラーやユーザー入力で背景色が動的に変わる場面でも、文字色をCSS側で導出して読みやすさを担保できます。'
+createdAt: 2026-05-03
+updatedAt: 2026-05-03
+featureIds:
+  - contrast-color
+---
+
+import { BaselineStatus } from '@k8o/arte-odyssey';
+import { ContrastColorDemo } from '@/app/_components/playgrounds/contrast-color';
+import { Playground } from '@/app/_components/playgrounds';
+import { LinkCard } from '@/app/_components/link-card';
+
+# contrast-color()で背景色に応じた読みやすい文字色を自動で割り当てる
+
+<BaselineStatus featureId="contrast-color"></BaselineStatus>
+
+## はじめに
+
+ボタンの背景色やテーマカラーをユーザーが選べる場面では、背景色に対して文字色が読みづらくなることがあります。
+これまでは背景色ごとにコントラスト比の高い文字色を選定し、背景色とペアにしてデザイントークンや CSS カスタムプロパティで持ち回る必要がありました。
+
+`contrast-color()`は、与えた色に対してコントラストが高い色（黒または白）を返す CSS 関数です。
+Safari 26、Firefox 146、Chrome 147 と一通り揃い、Baseline 2026 に到達しました。背景色さえ決めれば、ペアの文字色を毎回用意せずに済むようになります。
+
+## 文法
+
+引数に背景色相当の`<color>`値を 1 つ渡すだけです。返り値は`white`か`black`のいずれかで、背景色とのコントラストが高い方が選ばれます。両者のコントラストが等しい場合は`white`になります。
+
+```css
+.button {
+  background-color: lightblue;
+  color: contrast-color(lightblue);
+}
+```
+
+CSS カスタムプロパティと組み合わせると、背景色と文字色の対応関係を一箇所で管理できます。
+
+```css
+.button {
+  --button-bg: #2563eb;
+  background-color: var(--button-bg);
+  color: contrast-color(var(--button-bg));
+}
+```
+
+<Playground title="contrast-color()のデモ">
+  <ContrastColorDemo />
+</Playground>
+
+## 中間トーンの背景色は注意が必要
+
+候補が黒と白しかないため、`contrast-color()`が返せるコントラスト比には上限があります。[色のコントラスト比](/blog/color-contrast)の記事で紹介した WCAG 2.1 の式に当てはめると、背景色 $X$ の相対輝度 $L$ ($0 \leqq L \leqq 1$) について、黒・白それぞれとのコントラスト比 $C_b$、$C_w$ は次のようになります。
+
+```math
+C_b = \frac{L + 0.05}{0.05}, \quad C_w = \frac{1.05}{L + 0.05}
+```
+
+両者の積を取ると $L + 0.05$ が打ち消し合い、$L$ に依存しない定数になります。
+
+```math
+C_b \cdot C_w = \frac{1.05}{0.05} = 21
+```
+
+積が固定値なので、相加相乗平均の不等式より、$C_b$ と $C_w$ の大きい方は常に $\sqrt{21}$ 以上になります。
+
+```math
+\max(C_b, C_w) \geqq \sqrt{C_b \cdot C_w} = \sqrt{21} \approx 4.58
+```
+
+等号成立は $C_b = C_w$ のとき、すなわち $L \approx 0.179$ のときです。`contrast-color()`の返り値は最悪ケースでも 4.58:1 を確保しますが、これ以上の比は引き出せません。
+
+たとえば`#2277d3`では黒で 4.65:1、白で 4.52:1 となり、WCAG AA（4.5:1）をぎりぎり満たす程度です。上限が約 4.58:1 なので、AAA の 7:1 は中間トーンの背景色全般で達成できません。
+`contrast-color()`によってある程度安定した文字色を確保する手段があるとはいえ、読みやすさのマージンを取るには背景色そのものを明るい側か暗い側のどちらかに振った設計にしておく方が確実です。もっとも、これは`contrast-color()`に限った話ではなく、文字と背景の関係全般に当てはまる設計指針です。
+
+<LinkCard href="https://drafts.csswg.org/css-color-5/#contrast-color" />
+
+## おわりに
+
+`contrast-color()`を紹介しました。背景色から文字色を導出する処理を CSS 側に閉じ込められるので、テーマカラーやユーザー設定で背景色が変わるコンポーネントを書くときに役立ちます。
+
+なお、今回紹介したのは黒・白の二択しか返さない最小版です。CSS Color Module Level 6 では、複数の候補色と目標コントラスト比を引数に取れる発展版も議論されています。実装されれば、ブランドカラーの候補から条件を満たす色を選ばせるような使い方も視野に入ってきます。
+
+<LinkCard href="https://drafts.csswg.org/css-color-6/#funcdef-contrast-color" />

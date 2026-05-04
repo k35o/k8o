@@ -6,6 +6,7 @@ export * from './async-clipboard';
 export * from './caret-position-from-point';
 export * from './composed-ranges';
 export * from './content-visibility';
+export * from './contrast-color';
 export * from './details-content';
 export * from './event-timing';
 export * from './font-family-math';
@@ -34,6 +35,7 @@ import { asyncClipboardSection } from './async-clipboard';
 import { caretPositionFromPointSection } from './caret-position-from-point';
 import { composedRangesSection } from './composed-ranges';
 import { contentVisibilitySection } from './content-visibility';
+import { contrastColorSection } from './contrast-color';
 import { detailsContentSection } from './details-content';
 import { eventTimingSection } from './event-timing';
 import { fontFamilyMathSection } from './font-family-math';
@@ -62,6 +64,7 @@ export const playgroundSections: PlaygroundSection[] = [
   caretPositionFromPointSection,
   composedRangesSection,
   contentVisibilitySection,
+  contrastColorSection,
   detailsContentSection,
   eventTimingSection,
   fontFamilyMathSection,

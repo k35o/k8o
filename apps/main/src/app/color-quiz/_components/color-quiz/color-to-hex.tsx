@@ -3,7 +3,6 @@
 import { Badge, Button } from '@k8o/arte-odyssey';
 import type { FC } from 'react';
 
-import { getContrastTextColor } from '../../_utils/color-quiz';
 import { useColorQuiz } from './use-color-quiz';
 
 export const ColorToHex: FC = () => {
@@ -27,7 +26,7 @@ export const ColorToHex: FC = () => {
         {phase === 'result' && (
           <p
             className="text-lg font-bold tracking-wider"
-            style={{ color: getContrastTextColor(targetHex) }}
+            style={{ color: `contrast-color(#${targetHex})` }}
           >
             #{targetHex}
           </p>
@@ -49,7 +48,7 @@ export const ColorToHex: FC = () => {
                   <p
                     className="text-sm font-bold tracking-wider"
                     style={{
-                      color: getContrastTextColor(selectedHex),
+                      color: `contrast-color(#${selectedHex})`,
                     }}
                   >
                     #{selectedHex}
@@ -65,7 +64,7 @@ export const ColorToHex: FC = () => {
                   <p
                     className="text-sm font-bold tracking-wider"
                     style={{
-                      color: getContrastTextColor(targetHex),
+                      color: `contrast-color(#${targetHex})`,
                     }}
                   >
                     #{targetHex}

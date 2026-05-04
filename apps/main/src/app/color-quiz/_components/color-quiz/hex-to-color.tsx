@@ -3,7 +3,6 @@
 import { Badge, Button } from '@k8o/arte-odyssey';
 import type { FC } from 'react';
 
-import { getContrastTextColor } from '../../_utils/color-quiz';
 import { useColorQuiz } from './use-color-quiz';
 
 export const HexToColor: FC = () => {
@@ -63,7 +62,7 @@ export const HexToColor: FC = () => {
                 <p
                   className="text-sm font-bold tracking-wider"
                   style={{
-                    color: getContrastTextColor(hex),
+                    color: `contrast-color(#${hex})`,
                   }}
                 >
                   #{hex}
