@@ -1,11 +1,12 @@
 'use client';
 
-import { AIIcon, IconButton } from '@k8o/arte-odyssey';
+import { IconButton, RSSIcon } from '@k8o/arte-odyssey';
 import type { FC } from 'react';
 
-export const LlmLink: FC = () => (
+export const RssLink: FC = () => (
   <IconButton
-    label="LLMS"
+    bg="base"
+    label="RSSフィード"
     renderItem={({
       className,
       children,
@@ -15,7 +16,7 @@ export const LlmLink: FC = () => (
       <a
         aria-label={ariaLabel}
         className={className}
-        href="/llms.txt"
+        href="/reading-list/feed"
         rel="noopener noreferrer"
         target="_blank"
         {...triggerProps}
@@ -24,6 +25,6 @@ export const LlmLink: FC = () => (
       </a>
     )}
   >
-    <AIIcon size="lg" />
+    <RSSIcon />
   </IconButton>
 );

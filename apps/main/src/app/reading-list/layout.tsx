@@ -1,5 +1,7 @@
-import { Heading, IconButton, RSSIcon } from '@k8o/arte-odyssey';
+import { Heading } from '@k8o/arte-odyssey';
 import type { Metadata } from 'next';
+
+import { RssLink } from './_components/rss-link';
 
 export const metadata = {
   title: 'Readings',
@@ -25,29 +27,7 @@ export default function Layout({ children }: LayoutProps<'/reading-list'>) {
       <div className="flex flex-col gap-8">
         <div className="flex items-center justify-between">
           <Heading type="h2">Readings</Heading>
-          <IconButton
-            bg="base"
-            label="RSSフィード"
-            renderItem={({
-              className,
-              children: iconChildren,
-              'aria-label': ariaLabel,
-              triggerProps,
-            }) => (
-              <a
-                aria-label={ariaLabel}
-                className={className}
-                href="/reading-list/feed"
-                rel="noopener noreferrer"
-                target="_blank"
-                {...triggerProps}
-              >
-                {iconChildren}
-              </a>
-            )}
-          >
-            <RSSIcon />
-          </IconButton>
+          <RssLink />
         </div>
         {children}
       </div>

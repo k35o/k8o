@@ -1,9 +1,7 @@
-import { Button } from '@k8o/arte-odyssey';
-import Link from 'next/link';
-
 import { StatCard } from '@/app/(authenticated)/_components/stat-card/stat-card';
 import { getReadingListContentData } from '@/features/reading-list/interface/queries';
 
+import { AddSourceLink } from '../add-source-link';
 import { ArticleTable } from '../article-table/article-table';
 import { SourceList } from '../source-list/source-list';
 import { SyncButton } from '../sync-button/sync-button';
@@ -27,18 +25,7 @@ export const ReadingListContent = async () => {
       <section className="flex flex-col gap-4">
         <div className="flex items-center justify-between">
           <h3 className="text-lg font-bold">ソース</h3>
-          <Button
-            color="primary"
-            renderItem={({ className, children }) => (
-              <Link className={className} href="/reading-list/sources/new">
-                {children}
-              </Link>
-            )}
-            size="sm"
-            variant="contained"
-          >
-            追加
-          </Button>
+          <AddSourceLink />
         </div>
         <SourceList sources={sources} />
       </section>

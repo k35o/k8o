@@ -1,3 +1,5 @@
+'use client';
+
 import { Button } from '@k8o/arte-odyssey';
 import Image from 'next/image';
 import Link from 'next/link';
