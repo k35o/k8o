@@ -9,9 +9,9 @@ export const BasicFileInputExamples = () => (
   <div className="flex flex-col gap-4">
     <FormControl
       label="単一ファイル選択"
-      renderInput={({ id, describedbyId }) => (
+      renderInput={({ id, 'aria-describedby': ariaDescribedby }) => (
         <input
-          aria-describedby={describedbyId}
+          aria-describedby={ariaDescribedby}
           className={inputClassName}
           id={id}
           type="file"
@@ -21,9 +21,9 @@ export const BasicFileInputExamples = () => (
 
     <FormControl
       label="複数ファイル選択"
-      renderInput={({ id, describedbyId }) => (
+      renderInput={({ id, 'aria-describedby': ariaDescribedby }) => (
         <input
-          aria-describedby={describedbyId}
+          aria-describedby={ariaDescribedby}
           className={inputClassName}
           id={id}
           multiple
@@ -37,9 +37,9 @@ export const BasicFileInputExamples = () => (
 export const WebkitDirectoryInputExample = () => (
   <FormControl
     label="ディレクトリ選択"
-    renderInput={({ id, describedbyId }) => (
+    renderInput={({ id, 'aria-describedby': ariaDescribedby }) => (
       <input
-        aria-describedby={describedbyId}
+        aria-describedby={ariaDescribedby}
         className={inputClassName}
         id={id}
         type="file"

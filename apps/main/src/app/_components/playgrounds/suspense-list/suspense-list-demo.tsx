@@ -67,7 +67,7 @@ export const SuspenseListDemo: FC = () => {
         />
         <FormControl
           label="revealOrder"
-          renderInput={({ labelId: _, ...props }) => (
+          renderInput={({ 'aria-labelledby': _, ...props }) => (
             <Select
               {...props}
               onChange={(e) => {
@@ -85,7 +85,7 @@ export const SuspenseListDemo: FC = () => {
         />
         <FormControl
           label="tail"
-          renderInput={({ labelId: _, ...props }) => (
+          renderInput={({ 'aria-labelledby': _, ...props }) => (
             <Select
               {...props}
               onChange={(e) => {

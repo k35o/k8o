@@ -44,10 +44,10 @@ export const CreateRestriction: FC<Props> = ({
     <div className="grid min-w-0 gap-4 sm:grid-cols-2">
       <FormControl
         errorText={restrictionError?.type}
-        isInvalid={Boolean(restrictionError?.type)}
-        isRequired
+        invalid={Boolean(restrictionError?.type)}
+        required
         label="種類"
-        renderInput={({ labelId: _, ...props }) => (
+        renderInput={({ 'aria-labelledby': _, ...props }) => (
           <Select
             onChange={(e) => {
               const type = e.target.value;
@@ -78,10 +78,10 @@ export const CreateRestriction: FC<Props> = ({
         <div className="min-w-0">
           <FormControl
             errorText={restrictionError?.columns}
-            isInvalid={Boolean(restrictionError?.columns)}
-            isRequired
+            invalid={Boolean(restrictionError?.columns)}
+            required
             label="対象カラム"
-            renderInput={({ labelId: _, ...props }) => (
+            renderInput={({ 'aria-labelledby': _, ...props }) => (
               <Autocomplete
                 {...props}
                 onChange={(selectedColumns) => {
@@ -100,11 +100,11 @@ export const CreateRestriction: FC<Props> = ({
         <>
           <FormControl
             errorText={restrictionError?.column}
-            isDisabled={columnOptions.length === 0}
-            isInvalid={Boolean(restrictionError?.column)}
-            isRequired
+            disabled={columnOptions.length === 0}
+            invalid={Boolean(restrictionError?.column)}
+            required
             label="参照元カラム"
-            renderInput={({ labelId: _, ...props }) => (
+            renderInput={({ 'aria-labelledby': _, ...props }) => (
               <Select
                 onChange={(e) => {
                   setRestriction({
@@ -120,10 +120,10 @@ export const CreateRestriction: FC<Props> = ({
           />
           <FormControl
             errorText={restrictionError?.reference?.table}
-            isInvalid={Boolean(restrictionError?.reference?.table)}
-            isRequired
+            invalid={Boolean(restrictionError?.reference?.table)}
+            required
             label="参照先テーブル"
-            renderInput={({ labelId: _, ...props }) => (
+            renderInput={({ 'aria-labelledby': _, ...props }) => (
               <TextField
                 {...props}
                 onChange={(e) => {
@@ -142,10 +142,10 @@ export const CreateRestriction: FC<Props> = ({
           />
           <FormControl
             errorText={restrictionError?.reference?.column}
-            isInvalid={Boolean(restrictionError?.reference?.column)}
-            isRequired
+            invalid={Boolean(restrictionError?.reference?.column)}
+            required
             label="参照先カラム"
-            renderInput={({ labelId: _, ...props }) => (
+            renderInput={({ 'aria-labelledby': _, ...props }) => (
               <TextField
                 {...props}
                 onChange={(e) => {

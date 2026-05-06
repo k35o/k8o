@@ -12,7 +12,7 @@ export function ContrastColorDemo() {
     <div className="flex flex-col gap-6">
       <FormControl
         label="背景色"
-        renderInput={({ labelId: _, ...props }) => (
+        renderInput={({ 'aria-labelledby': _, ...props }) => (
           <div className="flex items-center gap-3">
             <label
               className="border-border-base relative size-10 shrink-0 cursor-pointer overflow-hidden rounded-full border-2"

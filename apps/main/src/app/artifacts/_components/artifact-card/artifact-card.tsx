@@ -1,9 +1,9 @@
 import {
   Badge,
+  Button,
   ExternalLinkIcon,
   GitHubIcon,
   Heading,
-  LinkButton,
 } from '@k8o/arte-odyssey';
 import type { FC } from 'react';
 
@@ -35,33 +35,60 @@ export const ArtifactCard: FC<Artifact> = ({
       )}
 
       <div className="flex flex-wrap gap-2">
-        <LinkButton
-          href={githubUrl}
+        <Button
+          renderItem={({ className, children }) => (
+            <a
+              className={className}
+              href={githubUrl}
+              rel="noopener noreferrer"
+              target="_blank"
+            >
+              {children}
+            </a>
+          )}
           size="sm"
           startIcon={<GitHubIcon size="sm" />}
           variant="outlined"
         >
           GitHubで見る
-        </LinkButton>
+        </Button>
         {websiteUrl !== null && (
-          <LinkButton
-            href={websiteUrl}
+          <Button
+            renderItem={({ className, children }) => (
+              <a
+                className={className}
+                href={websiteUrl}
+                rel="noopener noreferrer"
+                target="_blank"
+              >
+                {children}
+              </a>
+            )}
             size="sm"
             startIcon={<ExternalLinkIcon size="sm" />}
             variant="outlined"
           >
             サイトで見る
-          </LinkButton>
+          </Button>
         )}
         {npmPackageName !== null && (
-          <LinkButton
-            href={`https://www.npmjs.com/package/${npmPackageName}`}
+          <Button
+            renderItem={({ className, children }) => (
+              <a
+                className={className}
+                href={`https://www.npmjs.com/package/${npmPackageName}`}
+                rel="noopener noreferrer"
+                target="_blank"
+              >
+                {children}
+              </a>
+            )}
             size="sm"
             startIcon={<ExternalLinkIcon size="sm" />}
             variant="outlined"
           >
             npmで見る
-          </LinkButton>
+          </Button>
         )}
       </div>
     </div>

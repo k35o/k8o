@@ -64,7 +64,11 @@ export function useMDXComponents(components: MDXComponents): MDXComponents {
         isInternalRoute(href) ? (
           <Anchor
             href={href}
-            renderAnchor={(props) => <Link {...props} href={href as Route} />}
+            renderAnchor={({ className, children: anchorChildren }) => (
+              <Link className={className} href={href as Route}>
+                {anchorChildren}
+              </Link>
+            )}
           >
             {children}
           </Anchor>

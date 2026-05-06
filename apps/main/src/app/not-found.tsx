@@ -1,4 +1,4 @@
-import { LinkButton } from '@k8o/arte-odyssey';
+import { Button } from '@k8o/arte-odyssey';
 import Image from 'next/image';
 import Link from 'next/link';
 
@@ -8,13 +8,16 @@ export default function NotFound() {
   return (
     <div className="flex h-full flex-col items-center justify-center">
       <Image alt="404 Not Found" src={notFoundImage} />
-      <LinkButton
-        href="/"
-        renderAnchor={(props) => <Link {...props} />}
+      <Button
+        renderItem={({ className, children }) => (
+          <Link className={className} href="/">
+            {children}
+          </Link>
+        )}
         size="lg"
       >
         トップへ戻る
-      </LinkButton>
+      </Button>
     </div>
   );
 }

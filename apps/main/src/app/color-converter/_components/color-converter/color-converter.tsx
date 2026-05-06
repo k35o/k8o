@@ -136,7 +136,7 @@ export const ColorConverter = () => {
         <div className="p-5">
           <FormControl
             label="hex"
-            renderInput={({ labelId: _, ...props }) => (
+            renderInput={({ 'aria-labelledby': _, ...props }) => (
               <div className="flex w-full items-center gap-2">
                 <span className="text-fg-mute">#</span>
                 <TextField onChange={handleChangeHex} value={hex} {...props} />
@@ -162,7 +162,12 @@ export const ColorConverter = () => {
                 label="rgb"
                 labelAs="legend"
                 renderInput={(props) => {
-                  const { id, describedbyId, labelId: _, ...rest } = props;
+                  const {
+                    id,
+                    'aria-describedby': ariaDescribedby,
+                    'aria-labelledby': _,
+                    ...rest
+                  } = props;
                   return (
                     <div className="flex flex-wrap items-center gap-2 sm:flex-nowrap">
                       <span className="sr-only shrink-0 sm:not-sr-only">
@@ -175,7 +180,7 @@ export const ColorConverter = () => {
                         Red
                       </label>
                       <NumberField
-                        describedbyId={describedbyId}
+                        aria-describedby={ariaDescribedby}
                         id={id}
                         max={255}
                         min={0}
@@ -264,7 +269,12 @@ export const ColorConverter = () => {
                 label="hsl"
                 labelAs="legend"
                 renderInput={(props) => {
-                  const { id, describedbyId, labelId: _, ...rest } = props;
+                  const {
+                    id,
+                    'aria-describedby': ariaDescribedby,
+                    'aria-labelledby': _,
+                    ...rest
+                  } = props;
                   return (
                     <div className="flex flex-wrap items-center gap-2 sm:flex-nowrap">
                       <span className="sr-only shrink-0 sm:not-sr-only">
@@ -277,7 +287,7 @@ export const ColorConverter = () => {
                         Hue
                       </label>
                       <NumberField
-                        describedbyId={describedbyId}
+                        aria-describedby={ariaDescribedby}
                         id={id}
                         max={360}
                         min={0}

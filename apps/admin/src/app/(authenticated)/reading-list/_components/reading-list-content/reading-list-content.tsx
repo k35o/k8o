@@ -1,4 +1,5 @@
-import { LinkButton } from '@k8o/arte-odyssey';
+import { Button } from '@k8o/arte-odyssey';
+import Link from 'next/link';
 
 import { StatCard } from '@/app/(authenticated)/_components/stat-card/stat-card';
 import { getReadingListContentData } from '@/features/reading-list/interface/queries';
@@ -26,14 +27,18 @@ export const ReadingListContent = async () => {
       <section className="flex flex-col gap-4">
         <div className="flex items-center justify-between">
           <h3 className="text-lg font-bold">ソース</h3>
-          <LinkButton
+          <Button
             color="primary"
-            href="/reading-list/sources/new"
+            renderItem={({ className, children }) => (
+              <Link className={className} href="/reading-list/sources/new">
+                {children}
+              </Link>
+            )}
             size="sm"
             variant="contained"
           >
             追加
-          </LinkButton>
+          </Button>
         </div>
         <SourceList sources={sources} />
       </section>

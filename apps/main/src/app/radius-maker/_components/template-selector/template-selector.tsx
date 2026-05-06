@@ -177,8 +177,7 @@ export const TemplateSelector: FC<Props> = ({ onSelect, currentPosition }) => {
         テンプレートから始める
       </p>
       <RadioCard
-        isDisabled={false}
-        labelId={labelId}
+        aria-labelledby={labelId}
         name="radius-template"
         onChange={handleChange}
         options={TEMPLATE_OPTIONS}

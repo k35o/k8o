@@ -22,10 +22,9 @@ export const CreateTable: FC<Props> = ({ table, setTable, tableError }) => {
     <div className="grid gap-4 sm:grid-cols-2">
       <FormControl
         errorText={tableError?.name}
-        isInvalid={Boolean(tableError?.name)}
-        isRequired
+        invalid={Boolean(tableError?.name)}
         label="テーブル名"
-        renderInput={({ labelId: _, ...props }) => (
+        renderInput={({ 'aria-labelledby': _, ...props }) => (
           <TextField
             onChange={handleChangeTableName}
             placeholder="users"
@@ -33,13 +32,13 @@ export const CreateTable: FC<Props> = ({ table, setTable, tableError }) => {
             {...props}
           />
         )}
+        required
       />
       <FormControl
         errorText={tableError?.alias}
-        isInvalid={Boolean(tableError?.alias)}
-        isRequired
+        invalid={Boolean(tableError?.alias)}
         label="コメント"
-        renderInput={({ labelId: _, ...props }) => (
+        renderInput={({ 'aria-labelledby': _, ...props }) => (
           <TextField
             onChange={handleChangeTableAlias}
             placeholder="ユーザーテーブル"
@@ -47,6 +46,7 @@ export const CreateTable: FC<Props> = ({ table, setTable, tableError }) => {
             {...props}
           />
         )}
+        required
       />
     </div>
   );

@@ -1,8 +1,27 @@
-import { AIIcon, IconLink } from '@k8o/arte-odyssey';
+import { AIIcon, IconButton } from '@k8o/arte-odyssey';
 import type { FC } from 'react';
 
 export const LlmLink: FC = () => (
-  <IconLink href="/llms.txt" label="LLMS" openInNewTab>
+  <IconButton
+    label="LLMS"
+    renderItem={({
+      className,
+      children,
+      'aria-label': ariaLabel,
+      triggerProps,
+    }) => (
+      <a
+        aria-label={ariaLabel}
+        className={className}
+        href="/llms.txt"
+        rel="noopener noreferrer"
+        target="_blank"
+        {...triggerProps}
+      >
+        {children}
+      </a>
+    )}
+  >
     <AIIcon size="lg" />
-  </IconLink>
+  </IconButton>
 );

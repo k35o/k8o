@@ -4,7 +4,7 @@ import {
   Card,
   GitHubIcon,
   Heading,
-  IconLink,
+  IconButton,
   QiitaIcon,
   TwitterIcon,
 } from '@k8o/arte-odyssey';
@@ -37,21 +37,72 @@ export default function Home() {
                   <Heading type="h3">k8o</Heading>
                   <div className="flex flex-wrap items-center gap-2">
                     <EmailTooltip />
-                    <IconLink href="https://x.com/k8ome" label="Xのアカウント">
+                    <IconButton
+                      label="Xのアカウント"
+                      renderItem={({
+                        className,
+                        children,
+                        'aria-label': ariaLabel,
+                        triggerProps,
+                      }) => (
+                        <a
+                          aria-label={ariaLabel}
+                          className={className}
+                          href="https://x.com/k8ome"
+                          rel="noopener noreferrer"
+                          target="_blank"
+                          {...triggerProps}
+                        >
+                          {children}
+                        </a>
+                      )}
+                    >
                       <TwitterIcon />
-                    </IconLink>
-                    <IconLink
-                      href="https://github.com/k35o"
+                    </IconButton>
+                    <IconButton
                       label="GitHubのアカウント"
+                      renderItem={({
+                        className,
+                        children,
+                        'aria-label': ariaLabel,
+                        triggerProps,
+                      }) => (
+                        <a
+                          aria-label={ariaLabel}
+                          className={className}
+                          href="https://github.com/k35o"
+                          rel="noopener noreferrer"
+                          target="_blank"
+                          {...triggerProps}
+                        >
+                          {children}
+                        </a>
+                      )}
                     >
                       <GitHubIcon />
-                    </IconLink>
-                    <IconLink
-                      href="https://qiita.com/k8o"
+                    </IconButton>
+                    <IconButton
                       label="Qiitaのアカウント"
+                      renderItem={({
+                        className,
+                        children,
+                        'aria-label': ariaLabel,
+                        triggerProps,
+                      }) => (
+                        <a
+                          aria-label={ariaLabel}
+                          className={className}
+                          href="https://qiita.com/k8o"
+                          rel="noopener noreferrer"
+                          target="_blank"
+                          {...triggerProps}
+                        >
+                          {children}
+                        </a>
+                      )}
                     >
                       <QiitaIcon />
-                    </IconLink>
+                    </IconButton>
                   </div>
                 </div>
 

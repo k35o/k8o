@@ -2,7 +2,7 @@
 
 import {
   Badge,
-  LinkButton,
+  Button,
   PublishDateIcon,
   Separator,
   SlideIcon,
@@ -75,14 +75,23 @@ export const BlogLayoutContent: FC<BlogLayoutContentProps> = ({
             )}
             {blog.slideUrl !== undefined && (
               <div className="flex self-end">
-                <LinkButton
-                  href={blog.slideUrl}
+                <Button
+                  renderItem={({ className, children: buttonChildren }) => (
+                    <a
+                      className={className}
+                      href={blog.slideUrl}
+                      rel="noopener noreferrer"
+                      target="_blank"
+                    >
+                      {buttonChildren}
+                    </a>
+                  )}
                   size="sm"
                   startIcon={<SlideIcon size="sm" />}
                   variant="outlined"
                 >
                   スライドを見る
-                </LinkButton>
+                </Button>
               </div>
             )}
             <div className="text-fg-mute flex flex-col items-end gap-1 text-xs sm:flex-row sm:items-center sm:justify-end sm:gap-2 sm:text-sm">

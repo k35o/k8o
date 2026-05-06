@@ -14,15 +14,15 @@ export const TextField = () => {
       <div className="h-full *:h-full">
         <FormControl
           label="カウントしたい文字列"
-          renderInput={({ labelId: _, ...props }) => (
+          renderInput={({ 'aria-labelledby': _, ...props }) => (
             <Textarea
               {...props}
               fullHeight
-              isRequired
               onChange={(e) => {
                 setText(e.target.value);
               }}
               placeholder="ここに文字列を入力してください"
+              required
               value={text}
             />
           )}
