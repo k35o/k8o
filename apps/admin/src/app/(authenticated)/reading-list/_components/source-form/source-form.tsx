@@ -42,9 +42,9 @@ export const SourceForm = ({ action, defaultValues }: SourceFormProps) => {
         <Alert message={state.error} status="error" />
       )}
       <FormControl
-        isRequired
         label="タイトル"
-        renderInput={({ labelId: _, ...props }) => (
+        required
+        renderInput={({ 'aria-labelledby': _, ...props }) => (
           <TextField
             defaultValue={defaultValues?.title ?? ''}
             name="title"
@@ -54,9 +54,9 @@ export const SourceForm = ({ action, defaultValues }: SourceFormProps) => {
         )}
       />
       <FormControl
-        isRequired
         label="フィードURL"
-        renderInput={({ labelId: _, ...props }) => (
+        required
+        renderInput={({ 'aria-labelledby': _, ...props }) => (
           <TextField
             defaultValue={defaultValues?.url ?? ''}
             name="url"
@@ -66,9 +66,9 @@ export const SourceForm = ({ action, defaultValues }: SourceFormProps) => {
         )}
       />
       <FormControl
-        isRequired
         label="サイトURL"
-        renderInput={({ labelId: _, ...props }) => (
+        required
+        renderInput={({ 'aria-labelledby': _, ...props }) => (
           <TextField
             defaultValue={defaultValues?.siteUrl ?? ''}
             name="siteUrl"
@@ -78,12 +78,12 @@ export const SourceForm = ({ action, defaultValues }: SourceFormProps) => {
         )}
       />
       <FormControl
-        isRequired
         label="タイプ"
-        renderInput={({ labelId, isDisabled }) => (
+        required
+        renderInput={({ 'aria-labelledby': ariaLabelledby, disabled }) => (
           <Radio
-            isDisabled={isDisabled}
-            labelId={labelId}
+            aria-labelledby={ariaLabelledby}
+            disabled={disabled}
             name="type"
             onChange={(e: ChangeEvent<HTMLInputElement>) => {
               if (isSourceType(e.target.value)) {

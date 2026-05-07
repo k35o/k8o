@@ -10,7 +10,7 @@ export function ShapeFunctionDemo() {
     <div className="space-y-6">
       <FormControl
         label="幅"
-        renderInput={({ labelId: _, ...props }) => (
+        renderInput={({ 'aria-labelledby': _, ...props }) => (
           <Slider
             {...props}
             max={100}

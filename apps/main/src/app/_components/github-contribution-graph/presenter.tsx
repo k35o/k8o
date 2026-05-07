@@ -45,7 +45,12 @@ export const Presenter: FC<{
           <ArteTooltip.Root placement="top">
             <ArteTooltip.Trigger
               renderItem={(props) => (
-                <IconButton {...props} label="このグラフについて" size="sm">
+                <IconButton
+                  {...props}
+                  label="このグラフについて"
+                  size="sm"
+                  tooltipDisabled
+                >
                   <AlertIcon size="sm" status="info" />
                 </IconButton>
               )}

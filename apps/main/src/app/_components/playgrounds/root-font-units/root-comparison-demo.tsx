@@ -11,7 +11,7 @@ export function RootComparisonDemo() {
       <FormControl
         helpText="8px〜48pxの範囲で変更できます"
         label="font-size"
-        renderInput={({ labelId: _, ...props }) => (
+        renderInput={({ 'aria-labelledby': _, ...props }) => (
           <div className="flex items-center gap-3">
             <NumberField
               max={48}

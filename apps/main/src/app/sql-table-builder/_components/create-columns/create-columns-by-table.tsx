@@ -83,15 +83,15 @@ export const CreateColumnsByTable: FC<Props> = ({
                       カラム名
                     </label>
                     <TextField
-                      describedbyId={
+                      aria-describedby={
                         columnError?.name === undefined
                           ? undefined
                           : `column-name_${idx.toString()}-${formId}-feedback`
                       }
                       id={`column-name_${idx.toString()}-${formId}`}
-                      isDisabled={false}
-                      isInvalid={Boolean(columnError?.name)}
-                      isRequired
+                      disabled={false}
+                      invalid={Boolean(columnError?.name)}
+                      required
                       onChange={(e) => {
                         handleChangeColumn(id)({
                           ...column,
@@ -118,15 +118,15 @@ export const CreateColumnsByTable: FC<Props> = ({
                       コメント
                     </label>
                     <TextField
-                      describedbyId={
+                      aria-describedby={
                         columnError?.alias === undefined
                           ? undefined
                           : `column-alias-${idx.toString()}-${formId}-feedback`
                       }
                       id={`column-alias_${idx.toString()}-${formId}`}
-                      isDisabled={false}
-                      isInvalid={Boolean(columnError?.alias)}
-                      isRequired
+                      disabled={false}
+                      invalid={Boolean(columnError?.alias)}
+                      required
                       onChange={(e) => {
                         handleChangeColumn(id)({
                           ...column,
@@ -153,15 +153,15 @@ export const CreateColumnsByTable: FC<Props> = ({
                       型
                     </label>
                     <Select
-                      describedbyId={
+                      aria-describedby={
                         columnError?.type === undefined
                           ? undefined
                           : `column-type_${idx.toString()}-${formId}-feedback`
                       }
                       id={`column-type_${idx.toString()}-${formId}`}
-                      isDisabled={false}
-                      isInvalid={Boolean(columnError?.type)}
-                      isRequired
+                      disabled={false}
+                      invalid={Boolean(columnError?.type)}
+                      required
                       onChange={(e) => {
                         if (!isColumnType(e.target.value)) return;
                         handleChangeColumn(id)({
@@ -206,15 +206,15 @@ export const CreateColumnsByTable: FC<Props> = ({
                       デフォルト値
                     </label>
                     <TextField
-                      describedbyId={
+                      aria-describedby={
                         columnError?.default === undefined
                           ? undefined
                           : `default_${idx.toString()}-${formId}-feedback`
                       }
                       id={`default_${idx.toString()}-${formId}`}
-                      isDisabled={false}
-                      isInvalid={Boolean(columnError?.default)}
-                      isRequired={false}
+                      disabled={false}
+                      invalid={Boolean(columnError?.default)}
+                      required={false}
                       onChange={(e) => {
                         handleChangeColumn(id)({
                           ...column,

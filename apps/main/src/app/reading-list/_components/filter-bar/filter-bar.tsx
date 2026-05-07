@@ -68,11 +68,9 @@ export const FilterBar: FC<Props> = ({
       />
       <FormControl
         label="期間"
-        renderInput={({ id, describedbyId, ...rest }) => (
+        renderInput={({ 'aria-labelledby': _, ...props }) => (
           <Select
-            {...rest}
-            describedbyId={describedbyId}
-            id={id}
+            {...props}
             onChange={(e) => {
               if (isDateRange(e.target.value)) {
                 onDateChange(e.target.value);
@@ -85,11 +83,9 @@ export const FilterBar: FC<Props> = ({
       />
       <FormControl
         label="並び順"
-        renderInput={({ id, describedbyId, ...rest }) => (
+        renderInput={({ 'aria-labelledby': _, ...props }) => (
           <Select
-            {...rest}
-            describedbyId={describedbyId}
-            id={id}
+            {...props}
             onChange={(e) => {
               if (isSortOrder(e.target.value)) {
                 onSortChange(e.target.value);

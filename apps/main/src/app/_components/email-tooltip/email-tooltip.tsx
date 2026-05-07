@@ -7,7 +7,7 @@ export const EmailTooltip: FC = () => (
   <Tooltip.Root placement="top">
     <Tooltip.Trigger
       renderItem={(props) => (
-        <IconButton {...props} label="メールアドレスを確認">
+        <IconButton {...props} label="メールアドレスを確認" tooltipDisabled>
           <MailIcon />
         </IconButton>
       )}

@@ -30,7 +30,7 @@ export const TextDiff = () => {
     <div className="grid gap-4 md:grid-cols-2">
       <FormControl
         label="変更前"
-        renderInput={({ labelId: _, ...props }) => (
+        renderInput={({ 'aria-labelledby': _, ...props }) => (
           <Textarea
             {...props}
             autoResize
@@ -44,7 +44,7 @@ export const TextDiff = () => {
       />
       <FormControl
         label="変更後"
-        renderInput={({ labelId: _, ...props }) => (
+        renderInput={({ 'aria-labelledby': _, ...props }) => (
           <Textarea
             {...props}
             autoResize

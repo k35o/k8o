@@ -1,12 +1,60 @@
 'use client';
 
-import { IconButton, QiitaIcon, RSSIcon } from '@k8o/arte-odyssey';
+import {
+  GitHubIcon,
+  IconButton,
+  QiitaIcon,
+  TwitterIcon,
+} from '@k8o/arte-odyssey';
 import type { FC } from 'react';
 
-export const ExternalBlog: FC = () => (
-  <div className="flex gap-4">
+export const SocialIcons: FC = () => (
+  <>
     <IconButton
-      bg="base"
+      label="Xのアカウント"
+      renderItem={({
+        className,
+        children,
+        'aria-label': ariaLabel,
+        triggerProps,
+      }) => (
+        <a
+          aria-label={ariaLabel}
+          className={className}
+          href="https://x.com/k8ome"
+          rel="noopener noreferrer"
+          target="_blank"
+          {...triggerProps}
+        >
+          {children}
+        </a>
+      )}
+    >
+      <TwitterIcon />
+    </IconButton>
+    <IconButton
+      label="GitHubのアカウント"
+      renderItem={({
+        className,
+        children,
+        'aria-label': ariaLabel,
+        triggerProps,
+      }) => (
+        <a
+          aria-label={ariaLabel}
+          className={className}
+          href="https://github.com/k35o"
+          rel="noopener noreferrer"
+          target="_blank"
+          {...triggerProps}
+        >
+          {children}
+        </a>
+      )}
+    >
+      <GitHubIcon />
+    </IconButton>
+    <IconButton
       label="Qiitaのアカウント"
       renderItem={({
         className,
@@ -28,28 +76,5 @@ export const ExternalBlog: FC = () => (
     >
       <QiitaIcon />
     </IconButton>
-    <IconButton
-      bg="base"
-      label="RSSフィード"
-      renderItem={({
-        className,
-        children,
-        'aria-label': ariaLabel,
-        triggerProps,
-      }) => (
-        <a
-          aria-label={ariaLabel}
-          className={className}
-          href="/blog/feed"
-          rel="noopener noreferrer"
-          target="_blank"
-          {...triggerProps}
-        >
-          {children}
-        </a>
-      )}
-    >
-      <RSSIcon />
-    </IconButton>
-  </div>
+  </>
 );

@@ -1,5 +1,7 @@
-import { Heading, IconLink, RSSIcon } from '@k8o/arte-odyssey';
+import { Heading } from '@k8o/arte-odyssey';
 import type { Metadata } from 'next';
+
+import { RssLink } from './_components/rss-link';
 
 export const metadata = {
   title: 'Readings',
@@ -25,14 +27,7 @@ export default function Layout({ children }: LayoutProps<'/reading-list'>) {
       <div className="flex flex-col gap-8">
         <div className="flex items-center justify-between">
           <Heading type="h2">Readings</Heading>
-          <IconLink
-            bg="base"
-            href="/reading-list/feed"
-            label="RSSフィード"
-            openInNewTab
-          >
-            <RSSIcon />
-          </IconLink>
+          <RssLink />
         </div>
         {children}
       </div>

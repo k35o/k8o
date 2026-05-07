@@ -1,13 +1,4 @@
-import {
-  ArteOdyssey,
-  Badge,
-  Card,
-  GitHubIcon,
-  Heading,
-  IconLink,
-  QiitaIcon,
-  TwitterIcon,
-} from '@k8o/arte-odyssey';
+import { ArteOdyssey, Badge, Card, Heading } from '@k8o/arte-odyssey';
 import Image from 'next/image';
 
 import { AppCard } from './_components/app-card';
@@ -15,6 +6,7 @@ import { EmailTooltip } from './_components/email-tooltip';
 import { ActivityErrorBoundary } from './_components/error-boundary';
 import { GitHubContributionGraph } from './_components/github-contribution-graph';
 import { RecentBlogs } from './_components/recent-blogs';
+import { SocialIcons } from './_components/social-icons';
 import k8o from './_images/k8o.jpg';
 
 export default function Home() {
@@ -37,21 +29,7 @@ export default function Home() {
                   <Heading type="h3">k8o</Heading>
                   <div className="flex flex-wrap items-center gap-2">
                     <EmailTooltip />
-                    <IconLink href="https://x.com/k8ome" label="Xのアカウント">
-                      <TwitterIcon />
-                    </IconLink>
-                    <IconLink
-                      href="https://github.com/k35o"
-                      label="GitHubのアカウント"
-                    >
-                      <GitHubIcon />
-                    </IconLink>
-                    <IconLink
-                      href="https://qiita.com/k8o"
-                      label="Qiitaのアカウント"
-                    >
-                      <QiitaIcon />
-                    </IconLink>
+                    <SocialIcons />
                   </div>
                 </div>
 

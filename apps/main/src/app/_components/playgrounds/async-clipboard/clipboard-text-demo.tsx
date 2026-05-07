@@ -67,11 +67,11 @@ export const ClipboardTextDemo: FC = () => {
         </p>
       </div>
       <FormControl
-        isDisabled={false}
-        isInvalid={false}
-        isRequired={false}
+        disabled={false}
+        invalid={false}
+        required={false}
         label="テキスト"
-        renderInput={({ labelId: _, ...props }) => (
+        renderInput={({ 'aria-labelledby': _, ...props }) => (
           <TextField
             onChange={(e) => {
               setText(e.currentTarget.value);

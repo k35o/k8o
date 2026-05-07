@@ -23,7 +23,11 @@ export default function PlaygroundsPage() {
                 {section.type === 'blog' && (
                   <Anchor
                     href={`/blog/${section.slug}` as Route}
-                    renderAnchor={(props) => <Link {...props} />}
+                    renderAnchor={({ className, href, children }) => (
+                      <Link className={className} href={href}>
+                        {children}
+                      </Link>
+                    )}
                   >
                     ブログを読む
                   </Anchor>

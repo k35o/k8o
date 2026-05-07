@@ -68,7 +68,7 @@ export const QrGenerator = () => {
         <div className="flex flex-col gap-4 p-5">
           <FormControl
             label="テキスト"
-            renderInput={({ labelId: _, ...props }) => (
+            renderInput={({ 'aria-labelledby': _, ...props }) => (
               <TextField
                 onChange={handleTextChange}
                 placeholder="QRコードにしたいテキストやURLを入力してください"

@@ -93,11 +93,10 @@ export const FeedbackCard: FC<{
           コメント
         </label>
         <Textarea
-          describedbyId={isInvalidComment ? errorId : undefined}
+          aria-describedby={isInvalidComment ? errorId : undefined}
+          disabled={isPending}
           id={textareaId}
-          isDisabled={isPending}
-          isInvalid={isInvalidComment}
-          isRequired={false}
+          invalid={isInvalidComment}
           onChange={(e) => {
             setComment(e.target.value);
           }}

@@ -141,9 +141,9 @@ export const BaseConverter = () => {
           <div className="px-4 py-3">
             <FormControl
               errorText={invalid?.message ?? undefined}
-              isInvalid={invalid?.target === base}
+              invalid={invalid?.target === base}
               label={label}
-              renderInput={({ labelId: _, ...props }) => (
+              renderInput={({ 'aria-labelledby': _, ...props }) => (
                 <div className="flex items-center gap-2">
                   <TextField
                     onChange={(e) => {

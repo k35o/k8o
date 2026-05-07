@@ -90,10 +90,10 @@ const ColumnItem: FC<{
             <div className="grid gap-4 sm:grid-cols-2">
               <FormControl
                 errorText={columnError?.name}
-                isInvalid={Boolean(columnError?.name)}
-                isRequired
+                invalid={Boolean(columnError?.name)}
+                required
                 label="カラム名"
-                renderInput={({ labelId: _, ...props }) => (
+                renderInput={({ 'aria-labelledby': _, ...props }) => (
                   <TextField
                     onChange={(e) => {
                       handleChangeColumn(id)({
@@ -109,10 +109,10 @@ const ColumnItem: FC<{
               />
               <FormControl
                 errorText={columnError?.alias}
-                isInvalid={Boolean(columnError?.alias)}
-                isRequired
+                invalid={Boolean(columnError?.alias)}
+                required
                 label="コメント"
-                renderInput={({ labelId: _, ...props }) => (
+                renderInput={({ 'aria-labelledby': _, ...props }) => (
                   <TextField
                     onChange={(e) => {
                       handleChangeColumn(id)({
@@ -128,10 +128,10 @@ const ColumnItem: FC<{
               />
               <FormControl
                 errorText={columnError?.type}
-                isInvalid={Boolean(columnError?.type)}
-                isRequired
+                invalid={Boolean(columnError?.type)}
+                required
                 label="型"
-                renderInput={({ labelId: _, ...props }) => (
+                renderInput={({ 'aria-labelledby': _, ...props }) => (
                   <Select
                     onChange={(e) => {
                       if (!isColumnType(e.target.value)) return;
@@ -148,9 +148,9 @@ const ColumnItem: FC<{
               />
               <FormControl
                 errorText={columnError?.default}
-                isInvalid={Boolean(columnError?.default)}
+                invalid={Boolean(columnError?.default)}
                 label="デフォルト値"
-                renderInput={({ labelId: _, ...props }) => (
+                renderInput={({ 'aria-labelledby': _, ...props }) => (
                   <TextField
                     onChange={(e) => {
                       handleChangeColumn(id)({
@@ -166,14 +166,17 @@ const ColumnItem: FC<{
               <div className="sm:col-span-2">
                 <FormControl
                   errorText={columnError?.nullable}
-                  isInvalid={Boolean(columnError?.nullable)}
-                  isRequired
+                  invalid={Boolean(columnError?.nullable)}
+                  required
                   label="NULL許容"
                   labelAs="legend"
-                  renderInput={({ labelId, isDisabled }) => (
+                  renderInput={({
+                    'aria-labelledby': ariaLabelledby,
+                    disabled,
+                  }) => (
                     <Radio
-                      isDisabled={isDisabled}
-                      labelId={labelId}
+                      aria-labelledby={ariaLabelledby}
+                      disabled={disabled}
                       onChange={(e) => {
                         handleChangeColumn(id)({
                           ...column,

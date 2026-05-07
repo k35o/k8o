@@ -1,10 +1,12 @@
+'use client';
+
 import {
   Badge,
   BlogIcon,
+  Button,
   Card,
   ExternalLinkIcon,
-  IconLink,
-  LinkButton,
+  IconButton,
   LocationIcon,
   PublishDateIcon,
   SlideIcon,
@@ -44,9 +46,28 @@ export const TalkCard: FC<{
       <div className="flex flex-col gap-2">
         <h2 className="flex items-center gap-2 text-lg font-bold md:text-2xl">
           {title}
-          <IconLink href={eventUrl} label="イベントのリンク">
+          <IconButton
+            label="イベントのリンク"
+            renderItem={({
+              className,
+              children,
+              'aria-label': ariaLabel,
+              triggerProps,
+            }) => (
+              <a
+                aria-label={ariaLabel}
+                className={className}
+                href={eventUrl}
+                rel="noopener noreferrer"
+                target="_blank"
+                {...triggerProps}
+              >
+                {children}
+              </a>
+            )}
+          >
             <ExternalLinkIcon />
-          </IconLink>
+          </IconButton>
         </h2>
         <p className="text-fg-mute text-md md:text-lg">{eventName}</p>
       </div>
@@ -70,22 +91,34 @@ export const TalkCard: FC<{
         ))}
       </div>
       <div className="flex flex-wrap gap-4">
-        <LinkButton
-          href={slideUrl}
+        <Button
+          renderItem={({ className, children }) => (
+            <a
+              className={className}
+              href={slideUrl}
+              rel="noopener noreferrer"
+              target="_blank"
+            >
+              {children}
+            </a>
+          )}
           size="sm"
           startIcon={<SlideIcon size="sm" />}
           variant="outlined"
         >
           スライドを見る
-        </LinkButton>
-        <LinkButton
-          href={`/blog/${blog.slug}` as Route}
-          renderAnchor={(props) => <Link {...props} />}
+        </Button>
+        <Button
+          renderItem={({ className, children }) => (
+            <Link className={className} href={`/blog/${blog.slug}` as Route}>
+              {children}
+            </Link>
+          )}
           size="sm"
           startIcon={<BlogIcon size="sm" />}
         >
           ブログで解説を読む
-        </LinkButton>
+        </Button>
       </div>
     </div>
   </Card>

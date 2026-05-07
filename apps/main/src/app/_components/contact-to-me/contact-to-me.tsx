@@ -71,17 +71,22 @@ const ContactToMeModal: FC<{
             <FormControl
               errorText={state.success === false ? state.message : undefined}
               helpText="255文字以内で入力してください"
-              isInvalid={state.success === false}
+              invalid={state.success === false}
               label="不具合やご要望をご記入ください"
-              renderInput={({ id, describedbyId, isDisabled, isInvalid }) => (
+              renderInput={({
+                id,
+                'aria-describedby': ariaDescribedby,
+                disabled,
+                invalid,
+              }) => (
                 <Textarea
+                  aria-describedby={ariaDescribedby}
                   defaultValue={state.defaultValue}
-                  describedbyId={describedbyId}
+                  disabled={disabled}
                   id={id}
-                  isDisabled={isDisabled}
-                  isInvalid={isInvalid}
-                  isRequired
+                  invalid={invalid}
                   name="message"
+                  required
                   rows={5}
                 />
               )}

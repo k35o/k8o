@@ -2,10 +2,8 @@
 
 import {
   Badge,
-  LinkButton,
   PublishDateIcon,
   Separator,
-  SlideIcon,
   TagIcon,
   UpdateDateIcon,
   ViewIcon,
@@ -26,6 +24,7 @@ import { END_OF_CONTENT_ID } from './constants';
 import { CopyMarkdownButton } from './copy-markdown-button';
 import { Feedback } from './feedback';
 import { Recommend, RecommendContent } from './recommend';
+import { SlideLinkButton } from './slide-link-button';
 import { TableOfContents } from './table-of-contents';
 import { ViewCounter } from './view-counter';
 import { ViewReporter } from './view-reporter';
@@ -75,14 +74,7 @@ export const BlogLayoutContent: FC<BlogLayoutContentProps> = ({
             )}
             {blog.slideUrl !== undefined && (
               <div className="flex self-end">
-                <LinkButton
-                  href={blog.slideUrl}
-                  size="sm"
-                  startIcon={<SlideIcon size="sm" />}
-                  variant="outlined"
-                >
-                  スライドを見る
-                </LinkButton>
+                <SlideLinkButton href={blog.slideUrl} />
               </div>
             )}
             <div className="text-fg-mute flex flex-col items-end gap-1 text-xs sm:flex-row sm:items-center sm:justify-end sm:gap-2 sm:text-sm">
