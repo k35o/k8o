@@ -10,5 +10,5 @@ runs:
         cache: true
 
     - name: Install dependencies
-      run: pnpm install --frozen-lockfile
+      run: pnpm ci
       shell: bash
