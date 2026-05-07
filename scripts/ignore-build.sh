@@ -61,9 +61,9 @@ if ! CHANGED_FILES=$(git diff --name-only "$BASE_SHA" HEAD 2>&1); then
   exit 1
 fi
 
-# ビルド判定ロジック自体や Vercel 設定が変わったら安全側に倒してビルド
-if echo "$CHANGED_FILES" | grep -qE "^(scripts/ignore-build\.sh|apps/$APP_NAME/vercel\.json|turbo\.json)$"; then
-  log "Proceeding: build configuration changed"
+# ビルド判定ロジック自体や Vercel 設定、ルート依存に関わるファイルが変わったら安全側に倒してビルド
+if echo "$CHANGED_FILES" | grep -qE "^(scripts/ignore-build\.sh|apps/$APP_NAME/vercel\.json|turbo\.json|mise\.toml|package\.json|pnpm-workspace\.yaml|pnpm-lock\.yaml)$"; then
+  log "Proceeding: build configuration or root deps changed"
   exit 1
 fi
 
