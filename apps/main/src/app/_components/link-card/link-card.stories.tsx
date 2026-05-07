@@ -79,3 +79,12 @@ export const NoImage: Story = {
     });
   },
 };
+
+export const FetchFailure: Story = {
+  args: {
+    href: 'https://example.com',
+  },
+  beforeEach: () => {
+    mocked(getMetadata).mockRejectedValue(new Error('fetch failed'));
+  },
+};

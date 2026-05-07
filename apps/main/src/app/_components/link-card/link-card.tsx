@@ -36,7 +36,12 @@ const Content: FC<{
   publishedAt?: Date | string | undefined;
   appearance?: LinkCardAppearance;
 }> = async ({ href, publishedAt, appearance = 'shadow' }) => {
-  const metaData = await getMetadata(href);
+  let metaData;
+  try {
+    metaData = await getMetadata(href);
+  } catch {
+    return <LinkCardFallback appearance={appearance} href={href} />;
+  }
 
   if (
     metaData.title === undefined &&
