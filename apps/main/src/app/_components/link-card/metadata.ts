@@ -14,13 +14,8 @@ export async function getMetadata(href: string) {
   'use cache';
   cacheLife('days');
 
-  let html: string;
-  try {
-    const res = await fetch(href, { signal: AbortSignal.timeout(5000) });
-    html = (await res.text()).trim();
-  } catch {
-    return { title: undefined, description: undefined, image: undefined };
-  }
+  const res = await fetch(href, { signal: AbortSignal.timeout(5000) });
+  const html = (await res.text()).trim();
   const rawTitle = /<title>(.*?)<\/title>/i.exec(html)?.[1];
   const rawOgTitle = /<meta\s+property="og:title"\s+content="(.*?)"/i.exec(
     html,
