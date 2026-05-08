@@ -2,6 +2,16 @@ packages:
   - apps/*
   - packages/*
 
+allowBuilds:
+  '@prisma/engines': false
+  '@swc/core': false
+  esbuild: false
+  lefthook: true
+  msw: true
+  sharp: false
+
+blockExoticSubdeps: true
+
 catalog:
   '@k8o/arte-odyssey': 8.0.1
   '@storybook/addon-a11y': 10.3.6
@@ -15,8 +25,8 @@ catalog:
   '@vitest/browser-playwright': 4.1.5
   '@vitest/coverage-v8': 4.1.5
   '@vitest/ui': 4.1.5
-  chromatic: 16.6.3
   babel-plugin-react-compiler: 1.0.0
+  chromatic: 16.6.3
   drizzle-orm: 0.45.2
   next: 16.2.6
   next-themes: 0.4.6
@@ -28,16 +38,6 @@ catalog:
   tailwindcss: 4.2.4
   vitest: 4.1.5
   vitest-browser-react: 2.2.0
-
-blockExoticSubdeps: true
-
-allowBuilds:
-  '@prisma/engines': false
-  '@swc/core': false
-  esbuild: false
-  lefthook: true
-  msw: true
-  sharp: false
 
 minimumReleaseAge: 10080
 
@@ -62,12 +62,6 @@ minimumReleaseAgeExclude:
   - '@typescript/native-preview-linux-x64@7.0.0-dev.20260502.1'
   - '@typescript/native-preview-win32-arm64@7.0.0-dev.20260502.1'
   - '@typescript/native-preview-win32-x64@7.0.0-dev.20260502.1'
-  - '@turbo/darwin-64@2.9.7'
-  - '@turbo/darwin-arm64@2.9.7'
-  - '@turbo/linux-64@2.9.7'
-  - '@turbo/linux-arm64@2.9.7'
-  - '@turbo/windows-64@2.9.7'
-  - '@turbo/windows-arm64@2.9.7'
   - 'react@19.2.6'
   - 'react-dom@19.2.6'
 
