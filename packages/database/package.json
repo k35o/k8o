@@ -30,7 +30,7 @@
   },
   "dependencies": {
     "@libsql/client": "0.17.3",
-    "@next/env": "16.2.4",
+    "@next/env": "16.2.6",
     "better-auth": "1.6.9",
     "drizzle-orm": "0.45.2"
   },
