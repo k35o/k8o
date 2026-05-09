@@ -2,13 +2,13 @@ import { cacheLife } from 'next/cache';
 
 const decodeHtmlEntities = (text: string): string =>
   text
-    .replaceAll(/&amp;/gi, '&')
     .replaceAll(/&lt;/gi, '<')
     .replaceAll(/&gt;/gi, '>')
     .replaceAll(/&quot;/gi, '"')
     .replaceAll(/&#39;/gi, "'")
     .replaceAll(/&nbsp;/gi, ' ')
-    .replaceAll(/&#(\d+);/g, (_, code) => String.fromCodePoint(Number(code)));
+    .replaceAll(/&#(\d+);/g, (_, code) => String.fromCodePoint(Number(code)))
+    .replaceAll(/&amp;/gi, '&');
 
 export async function getMetadata(href: string) {
   'use cache';
