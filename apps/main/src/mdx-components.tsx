@@ -36,11 +36,16 @@ const LinkHeading: FC<
           <span
             className={cn(
               'absolute top-1 box-content text-fg-mute opacity-0 transition-opacity duration-500 sm:group-hover:opacity-100',
-              type === 'h2' && 'top-1.5 -left-7 pr-2',
-              type === 'h3' && '-left-7 pr-2',
-              type === 'h4' && 'top-2 -left-5 pr-2',
-              type === 'h5' && 'top-1.5 -left-5 pr-2',
-              type === 'h6' && '-left-5 pr-2',
+              type === 'h2' &&
+                'top-1.5 -inset-s-7 pe-2 vertical:-top-7 vertical:right-auto vertical:left-1.5 vertical:pe-0',
+              type === 'h3' &&
+                '-inset-s-7 pe-2 vertical:-top-7 vertical:right-auto vertical:left-1.5 vertical:pe-0',
+              type === 'h4' &&
+                'top-2 -inset-s-5 pe-2 vertical:-top-5 vertical:right-auto vertical:left-1.5 vertical:pe-0',
+              type === 'h5' &&
+                'top-1.5 -inset-s-5 pe-2 vertical:-top-5 vertical:right-auto vertical:left-1.5 vertical:pe-0',
+              type === 'h6' &&
+                '-inset-s-5 pe-2 vertical:-top-5 vertical:right-auto vertical:left-1.5 vertical:pe-0',
             )}
           >
             <LinkIcon size={['h2', 'h3'].includes(type) ? 'md' : 'sm'} />
@@ -79,7 +84,9 @@ export function useMDXComponents(components: MDXComponents): MDXComponents {
         <p>{children}</p>
       ),
     p: ({ children }) => (
-      <p className="sm:text-md my-2 text-xs leading-normal">{children}</p>
+      <p className="sm:text-md vertical:indent-em my-2 text-xs leading-normal">
+        {children}
+      </p>
     ),
     code: ({ children, ...props }) => {
       if (typeof children === 'string') {
@@ -94,7 +101,7 @@ export function useMDXComponents(components: MDXComponents): MDXComponents {
     pre: ({ children, ...rest }) => (
       <pre
         {...rest}
-        className="my-4 overflow-x-auto rounded-lg px-2 py-1 sm:p-4"
+        className="writing-h vertical:box-border vertical:h-max vertical:max-h-full vertical:max-w-blog-pre vertical:mx-4 vertical:overflow-auto vertical:not:my-4 overflow-x-auto rounded-lg px-2 py-1 sm:p-4"
       >
         {children}
       </pre>
@@ -103,13 +110,13 @@ export function useMDXComponents(components: MDXComponents): MDXComponents {
       <li className="sm:text-md list-disc text-xs">{children}</li>
     ),
     ul: ({ children }) => (
-      <ul className="sm:text-md my-4 flex flex-col gap-1 pl-5 text-xs">
+      <ul className="sm:text-md my-4 flex flex-col gap-1 ps-5 text-xs">
         {children}
       </ul>
     ),
     blockquote: ({ children }) => (
-      <figure className="bg-bg-mute my-4 rounded-lg p-2 pl-3">
-        <blockquote className="border-border-base text-fg-mute border-l-3 pl-2 text-sm">
+      <figure className="bg-bg-mute my-4 rounded-lg p-2 ps-3">
+        <blockquote className="border-border-base text-fg-mute border-s-3 ps-2 text-sm">
           {children}
         </blockquote>
       </figure>
