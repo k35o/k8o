@@ -30,24 +30,22 @@ export const DiffOutput: FC<DiffOutputProps> = ({ diff }) => {
   return (
     <div className="font-mono text-sm break-all whitespace-pre-wrap">
       {diff.map((part, index) => {
+        const key = `${part.added ? 'a' : part.removed ? 'r' : 'n'}-${index}-${part.value.length}`;
         if (part.added) {
           return (
-            <span className="bg-bg-success text-fg-success" key={index}>
+            <span className="bg-bg-success text-fg-success" key={key}>
               {part.value}
             </span>
           );
         }
         if (part.removed) {
           return (
-            <span
-              className="bg-bg-error text-fg-error line-through"
-              key={index}
-            >
+            <span className="bg-bg-error text-fg-error line-through" key={key}>
               {part.value}
             </span>
           );
         }
-        return <span key={index}>{part.value}</span>;
+        return <span key={key}>{part.value}</span>;
       })}
     </div>
   );

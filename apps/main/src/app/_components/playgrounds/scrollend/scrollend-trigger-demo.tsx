@@ -1,6 +1,7 @@
 'use client';
 
 import { Button } from '@k8o/arte-odyssey';
+import { range } from '@repo/helpers/array/range';
 import { useCallback, useEffect, useRef, useState } from 'react';
 
 export function ScrollendTriggerDemo() {
@@ -123,12 +124,12 @@ export function ScrollendTriggerDemo() {
             ref={scrollToRef}
           >
             <div className="space-y-2">
-              {Array.from({ length: 10 }, (_, i) => (
+              {range(0, 10).map((n) => (
                 <div
                   className="bg-bg-base text-fg-base rounded-md px-3 py-2 text-sm shadow-sm"
-                  key={i}
+                  key={`scroll-to-item-${n}`}
                 >
-                  アイテム {i + 1}
+                  アイテム {n + 1}
                 </div>
               ))}
             </div>
@@ -141,13 +142,13 @@ export function ScrollendTriggerDemo() {
             className="bg-bg-mute flex h-40 snap-x snap-mandatory gap-3 overflow-x-scroll rounded-xl p-3"
             ref={snapRef}
           >
-            {Array.from({ length: 8 }, (_, i) => (
+            {range(0, 8).map((n) => (
               <div
                 className="bg-bg-base flex w-28 shrink-0 snap-center flex-col items-center justify-center gap-2 rounded-lg p-4 shadow-sm"
-                key={i}
+                key={`snap-item-${n}`}
               >
                 <span className="text-primary-fg text-2xl font-bold">
-                  {i + 1}
+                  {n + 1}
                 </span>
                 <span className="text-fg-mute text-xs">スナップ</span>
               </div>

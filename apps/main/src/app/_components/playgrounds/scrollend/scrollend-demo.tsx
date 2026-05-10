@@ -1,5 +1,6 @@
 'use client';
 
+import { range } from '@repo/helpers/array/range';
 import { useCallback, useEffect, useRef, useState } from 'react';
 
 /**
@@ -74,9 +75,12 @@ export function ScrollendDemo() {
         ref={scrollRef}
       >
         <div className="space-y-4">
-          {Array.from({ length: 20 }, (_, i) => (
-            <div className="bg-bg-base rounded-md p-3 shadow-sm" key={i}>
-              <p className="text-fg-base">アイテム {i + 1}</p>
+          {range(0, 20).map((n) => (
+            <div
+              className="bg-bg-base rounded-md p-3 shadow-sm"
+              key={`scrollend-item-${n}`}
+            >
+              <p className="text-fg-base">アイテム {n + 1}</p>
               <p className="text-fg-mute text-sm">
                 スクロールしてscrollendイベントの発火を確認してください
               </p>
