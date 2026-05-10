@@ -7,6 +7,7 @@ type Frontmatter = {
   createdAt: string;
   updatedAt: string;
   featureIds?: string[];
+  preferVertical?: boolean;
 };
 
 export const getFrontmatter = async (path: string): Promise<Frontmatter> => {
@@ -37,6 +38,12 @@ const isFrontmatter = (value: unknown): value is Frontmatter => {
     if (!value.featureIds.every((id: unknown) => typeof id === 'string'))
       return false;
   }
+  if (
+    'preferVertical' in value &&
+    value.preferVertical !== undefined &&
+    typeof value.preferVertical !== 'boolean'
+  )
+    return false;
   return true;
 };
 
