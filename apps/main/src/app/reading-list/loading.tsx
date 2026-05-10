@@ -1,3 +1,5 @@
+import { range } from '@repo/helpers/array/range';
+
 import { LinkCardLoading } from '../_components/link-card';
 
 export default function Loading() {
@@ -11,8 +13,11 @@ export default function Loading() {
             <div className="bg-bg-mute h-10 rounded-md" />
             <div className="bg-bg-mute h-10 rounded-md" />
             <div className="bg-border-subtle h-px w-full" />
-            {Array.from({ length: 5 }, (_, i) => (
-              <div className="bg-bg-mute h-5 rounded-md" key={i} />
+            {range(0, 5).map((n) => (
+              <div
+                className="bg-bg-mute h-5 rounded-md"
+                key={`tag-skeleton-${n}`}
+              />
             ))}
           </div>
         </div>
@@ -23,8 +28,8 @@ export default function Loading() {
           <div className="bg-bg-mute h-9 w-24 rounded-md xl:hidden" />
         </div>
         <div className="flex flex-col gap-4">
-          {Array.from({ length: 8 }, (_, i) => (
-            <LinkCardLoading href="#" key={i} />
+          {range(0, 8).map((n) => (
+            <LinkCardLoading href="#" key={`link-card-skeleton-${n}`} />
           ))}
         </div>
       </div>

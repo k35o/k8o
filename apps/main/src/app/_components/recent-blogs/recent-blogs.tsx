@@ -1,4 +1,5 @@
 import { Card } from '@k8o/arte-odyssey';
+import { range } from '@repo/helpers/array/range';
 import { cacheLife } from 'next/cache';
 import { Suspense } from 'react';
 
@@ -8,8 +9,8 @@ import { BlogCard } from './blog-card';
 
 const Skeleton = () => (
   <div className="flex flex-col gap-4">
-    {[1, 2, 3].map((i) => (
-      <Card key={i}>
+    {range(0, 3).map((n) => (
+      <Card key={`recent-blog-skeleton-${n}`}>
         <div className="flex flex-col gap-4 p-4">
           <div className="flex flex-col gap-2">
             <div className="bg-bg-mute h-6 w-3/4 animate-pulse rounded" />

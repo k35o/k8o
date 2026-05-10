@@ -1,5 +1,6 @@
 'use client';
 
+import { range } from '@repo/helpers/array/range';
 import { useEffect, useRef, useState } from 'react';
 
 /**
@@ -61,9 +62,12 @@ export function ScrollbarColorDemo() {
         }}
       >
         <div className="space-y-4">
-          {Array.from({ length: 20 }, (_, i) => (
-            <div className="bg-bg-base rounded-md p-3 shadow-sm" key={i}>
-              <p className="text-fg-base">アイテム {i + 1}</p>
+          {range(0, 20).map((n) => (
+            <div
+              className="bg-bg-base rounded-md p-3 shadow-sm"
+              key={`scrollbar-item-${n}`}
+            >
+              <p className="text-fg-base">アイテム {n + 1}</p>
               <p className="text-fg-mute text-sm">
                 スクロールバーの色が変わっていることを確認してください
               </p>

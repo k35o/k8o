@@ -21,6 +21,7 @@ export const MetaImage: FC<{
           onError={() => {
             setIsError(true);
           }}
+          sizes="(min-width: 640px) 192px, 100vw"
           src={src}
           unoptimized
         />
