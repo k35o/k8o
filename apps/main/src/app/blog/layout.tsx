@@ -2,6 +2,10 @@ import { Heading } from '@k8o/arte-odyssey';
 import type { Metadata } from 'next';
 import Link from 'next/link';
 
+import {
+  WritingModeProvider,
+  WritingModeSwitcher,
+} from './_components/blog-layout/writing-mode';
 import { ExternalBlog } from './_components/external-blog';
 
 export const metadata = {
@@ -30,17 +34,22 @@ export default function Layout({ children }: LayoutProps<'/blog'>) {
         href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css"
         rel="stylesheet"
       />
-      <div className="mx-auto w-full max-w-5xl">
-        <div className="flex flex-col gap-6">
-          <div className="flex items-center justify-between">
-            <Link className="hover:underline" href="/blog">
-              <Heading type="h2">Blog</Heading>
-            </Link>
-            <ExternalBlog />
+      <WritingModeProvider defaultMode="horizontal">
+        <div className="mx-auto w-full max-w-5xl">
+          <div className="flex flex-col gap-6">
+            <div className="flex items-center justify-between">
+              <Link className="hover:underline" href="/blog">
+                <Heading type="h2">Blog</Heading>
+              </Link>
+              <div className="flex items-center gap-4">
+                <WritingModeSwitcher />
+                <ExternalBlog />
+              </div>
+            </div>
+            {children}
           </div>
-          {children}
         </div>
-      </div>
+      </WritingModeProvider>
     </>
   );
 }
