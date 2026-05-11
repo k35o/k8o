@@ -1,6 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 
 import { BlogLayoutContent } from './blog-layout';
+import { WritingModeProvider } from './writing-mode';
 
 const blog = {
   id: 1,
@@ -90,9 +91,11 @@ const meta: Meta<typeof BlogLayoutContent> = {
   component: BlogLayoutContent,
   decorators: [
     (Story) => (
-      <div className="ml-24 max-w-5xl">
-        <Story />
-      </div>
+      <WritingModeProvider>
+        <div className="ml-24 max-w-5xl">
+          <Story />
+        </div>
+      </WritingModeProvider>
     ),
   ],
 };
