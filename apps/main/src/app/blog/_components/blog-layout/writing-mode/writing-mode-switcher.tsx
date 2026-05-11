@@ -15,7 +15,13 @@ export const WritingModeSwitcher: FC = () => {
   const label = isVertical ? '横書きに切り替える' : '縦書きに切り替える';
 
   return (
-    <IconButton bg="base" label={label} onAction={toggle} size="md">
+    <IconButton
+      aria-pressed={isVertical}
+      bg="base"
+      label={label}
+      onAction={toggle}
+      size="md"
+    >
       {isVertical ? (
         <HorizontalWritingIcon size="md" />
       ) : (
