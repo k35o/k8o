@@ -48,7 +48,6 @@ export async function getBlogContent(slug: string) {
     description: metadata.description,
     createdAt: metadata.createdAt,
     updatedAt: metadata.updatedAt,
-    preferVertical: metadata.preferVertical ?? false,
   };
 }
 

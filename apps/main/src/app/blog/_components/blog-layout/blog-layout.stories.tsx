@@ -26,7 +26,6 @@ const blog = {
     'Reactのルーティングには主にNextjs等のフレームワークやReact Routeが利用されます。この記事では新たなルーティング手法の選択肢としてTanStack Routerを紹介します。TanStack Routerでは最初に挙げた選択肢の使い心地を踏襲しつつ、ルーティングやサーチパラメータの型安全性や他にない便利な機能を提供します。',
   createdAt: '2023-05-01T00:00:00.000Z',
   updatedAt: '2023-07-13T00:00:00.000Z',
-  preferVertical: false,
 };
 
 const headingTree = {
