@@ -12,7 +12,8 @@ import { useWritingMode } from './writing-mode-context';
 export const WritingModeSwitcher: FC = () => {
   const { mode, toggle } = useWritingMode();
   const isVertical = mode === 'vertical';
-  const label = isVertical ? '横書きに切り替える' : '縦書きに切り替える';
+  // aria-pressed と組み合わせるため状態記述のラベルにする (APG toggle button パターン)
+  const label = isVertical ? '縦書きモード' : '横書きモード';
 
   return (
     <IconButton
