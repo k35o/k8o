@@ -1,8 +1,8 @@
 'use client';
 
 import {
-  IconButton,
   HorizontalWritingIcon,
+  IconButton,
   VerticalWritingIcon,
 } from '@k8o/arte-odyssey';
 import type { FC } from 'react';

@@ -1,11 +1,9 @@
 'use client';
 
-import { createSafeContext, useLocalStorage } from '@k8o/arte-odyssey';
-import { type FC, type ReactNode, useCallback, useMemo } from 'react';
+import { createSafeContext } from '@k8o/arte-odyssey';
+import { type FC, type ReactNode, useCallback, useMemo, useState } from 'react';
 
-export type WritingMode = 'horizontal' | 'vertical';
-
-const STORAGE_KEY = 'blog-writing-mode';
+import type { WritingMode } from './writing-mode-params';
 
 type WritingModeContextValue = {
   mode: WritingMode;
@@ -13,25 +11,21 @@ type WritingModeContextValue = {
   toggle: () => void;
 };
 
-const [WritingModeContext, useWritingMode] =
+const [WritingModeContextProvider, useWritingMode] =
   createSafeContext<WritingModeContextValue>(
     'useWritingMode must be used within a WritingModeProvider',
   );
 
 export { useWritingMode };
 
-export const WritingModeProvider: FC<{
-  children: ReactNode;
-  defaultMode: WritingMode;
-}> = ({ children, defaultMode }) => {
-  const [mode, setMode] = useLocalStorage<WritingMode>(
-    STORAGE_KEY,
-    defaultMode,
-  );
+export const WritingModeProvider: FC<{ children: ReactNode }> = ({
+  children,
+}) => {
+  const [mode, setMode] = useState<WritingMode>('horizontal');
 
   const toggle = useCallback(() => {
-    setMode(mode === 'horizontal' ? 'vertical' : 'horizontal');
-  }, [mode, setMode]);
+    setMode((prev) => (prev === 'horizontal' ? 'vertical' : 'horizontal'));
+  }, []);
 
   const value = useMemo(
     () => ({ mode, setMode, toggle }),
@@ -39,8 +33,8 @@ export const WritingModeProvider: FC<{
   );
 
   return (
-    <WritingModeContext.Provider value={value}>
+    <WritingModeContextProvider value={value}>
       {children}
-    </WritingModeContext.Provider>
+    </WritingModeContextProvider>
   );
 };

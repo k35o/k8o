@@ -34,7 +34,7 @@ export default function Layout({ children }: LayoutProps<'/blog'>) {
         href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css"
         rel="stylesheet"
       />
-      <WritingModeProvider defaultMode="horizontal">
+      <WritingModeProvider>
         <div className="mx-auto w-full max-w-5xl">
           <div className="flex flex-col gap-6">
             <div className="flex items-center justify-between">
