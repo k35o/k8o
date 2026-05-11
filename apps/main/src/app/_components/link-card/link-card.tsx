@@ -72,11 +72,11 @@ const Content: FC<{
             <div className="flex flex-1 flex-col gap-2 p-4">
               {metaData.title !== undefined && (
                 <div className="group-hover:text-primary-fg flex flex-col gap-1 transition-colors duration-200 ease-out">
-                  <p className="text-md line-clamp-2 font-bold">
+                  <p className="text-md vertical:block vertical:max-block-[8em] vertical:overflow-hidden line-clamp-2 font-bold">
                     {metaData.title}
                   </p>
                   {metaData.description !== undefined && (
-                    <p className="text-fg-mute line-clamp-2 text-sm">
+                    <p className="text-fg-mute vertical:block vertical:max-block-[8em] vertical:overflow-hidden line-clamp-2 text-sm">
                       {metaData.description}
                     </p>
                   )}
