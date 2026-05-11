@@ -1,6 +1,8 @@
 @import '@k8o/arte-odyssey/styles.css';
 
-@custom-variant vertical (&:where(.writing-v, .writing-v *));
+@custom-variant vertical (
+  &:where(.writing-v, .writing-v *):not(.writing-h, .writing-h *)
+);
 
 @utility writing-h {
   writing-mode: horizontal-tb;
