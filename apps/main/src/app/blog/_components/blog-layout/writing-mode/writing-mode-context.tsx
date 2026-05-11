@@ -7,7 +7,6 @@ import type { WritingMode } from './writing-mode-params';
 
 type WritingModeContextValue = {
   mode: WritingMode;
-  setMode: (mode: WritingMode) => void;
   toggle: () => void;
 };
 
@@ -27,10 +26,7 @@ export const WritingModeProvider: FC<{ children: ReactNode }> = ({
     setMode((prev) => (prev === 'horizontal' ? 'vertical' : 'horizontal'));
   }, []);
 
-  const value = useMemo(
-    () => ({ mode, setMode, toggle }),
-    [mode, setMode, toggle],
-  );
+  const value = useMemo(() => ({ mode, toggle }), [mode, toggle]);
 
   return (
     <WritingModeContextProvider value={value}>
