@@ -78,6 +78,10 @@
   max-width: min(32rem, 100vw - 2rem);
 }
 
+@utility max-w-blog-image {
+  max-width: min(32rem, 100vw - 2rem);
+}
+
 @utility max-w-blog-playground {
   max-width: min(40rem, 100vw - 2rem);
 }

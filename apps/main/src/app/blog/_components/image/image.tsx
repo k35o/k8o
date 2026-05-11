@@ -7,7 +7,12 @@ type Props = {
 };
 
 export const Image: FC<Props> = (props) => (
-  <NextImage className="py-2" {...props} />
+  <div className="vertical:flex vertical:max-w-blog-image vertical:justify-center mx-auto py-2">
+    <NextImage
+      className="vertical:writing-h vertical:h-auto vertical:w-full"
+      {...props}
+    />
+  </div>
 );
 
 export const FloatImage: FC<ComponentProps<typeof Image>> = (props) => (
