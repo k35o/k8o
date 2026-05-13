@@ -7,7 +7,7 @@ type Props = {
 };
 
 export const Image: FC<Props> = (props) => (
-  <div className="vertical:flex vertical:max-w-blog-image vertical:justify-center mx-auto py-2">
+  <div className="vertical:flex vertical:max-w-container-lg vertical:justify-center mx-auto py-2">
     <NextImage
       className="vertical:writing-h vertical:h-auto vertical:w-full"
       {...props}
