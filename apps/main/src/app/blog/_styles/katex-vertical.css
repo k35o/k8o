@@ -1,3 +1,5 @@
+@reference '@k8o/arte-odyssey/styles.css';
+
 @variant vertical {
   :where(.katex-display, .katex-display *) {
     writing-mode: horizontal-tb;
