@@ -11,7 +11,7 @@ import {
 import { formatDate } from '@repo/helpers/date/format';
 import { commalize } from '@repo/helpers/number/commalize';
 import Link from 'next/link';
-import { type FC, type ReactNode, Suspense, ViewTransition } from 'react';
+import { type FC, type ReactNode, Suspense } from 'react';
 
 import { SilentErrorBoundary } from '@/app/_components/error-boundary';
 import {
@@ -60,23 +60,17 @@ export const BlogLayoutContent: FC<BlogLayoutContentProps> = ({
           <article className="bg-bg-base/90 vertical:bg-transparent vertical:rounded-none rounded-xl px-3 py-8 sm:px-10">
             <div className="flex flex-col gap-3">
               <div className="flex items-start justify-between gap-2">
-                <ViewTransition name={`title-${slug}`}>
-                  <h2 className="text-xl font-bold sm:text-2xl">
-                    {blog.title}
-                  </h2>
-                </ViewTransition>
+                <h2 className="text-xl font-bold sm:text-2xl">{blog.title}</h2>
                 <div className="flex items-center gap-1">
                   <CopyMarkdownButton slug={slug} />
                 </div>
               </div>
               {blog.description !== null && (
-                <ViewTransition name={`description-${slug}`}>
-                  <div className="bg-bg-mute rounded-xl p-4 sm:mt-4">
-                    <p className="text-fg-base sm:text-md text-sm">
-                      {blog.description}
-                    </p>
-                  </div>
-                </ViewTransition>
+                <div className="bg-bg-mute rounded-xl p-4 sm:mt-4">
+                  <p className="text-fg-base sm:text-md text-sm">
+                    {blog.description}
+                  </p>
+                </div>
               )}
               {blog.slideUrl !== undefined && (
                 <div className="flex self-end">
@@ -85,16 +79,14 @@ export const BlogLayoutContent: FC<BlogLayoutContentProps> = ({
               )}
               <div className="text-fg-mute flex flex-col items-end gap-1 text-xs sm:flex-row sm:items-center sm:justify-end sm:gap-2 sm:text-sm">
                 <div className="flex flex-wrap items-center justify-end gap-1">
-                  <ViewTransition name={`date-${slug}`}>
-                    <div className="flex items-center gap-1">
-                      <PublishDateIcon size="sm" />
-                      <span>公開: {formatDate(new Date(blog.createdAt))}</span>
-                    </div>
-                    <div className="flex items-center gap-1">
-                      <UpdateDateIcon size="sm" />
-                      <span>更新: {formatDate(new Date(blog.updatedAt))}</span>
-                    </div>
-                  </ViewTransition>
+                  <div className="flex items-center gap-1">
+                    <PublishDateIcon size="sm" />
+                    <span>公開: {formatDate(new Date(blog.createdAt))}</span>
+                  </div>
+                  <div className="flex items-center gap-1">
+                    <UpdateDateIcon size="sm" />
+                    <span>更新: {formatDate(new Date(blog.updatedAt))}</span>
+                  </div>
                 </div>
                 <SilentErrorBoundary>
                   {viewCount === undefined ? (
@@ -116,18 +108,16 @@ export const BlogLayoutContent: FC<BlogLayoutContentProps> = ({
                   )}
                 </SilentErrorBoundary>
               </div>
-              <ViewTransition name={`tags-${slug}`}>
-                {blog.tags.length > 0 && (
-                  <div className="mb-4 flex flex-wrap items-center gap-2">
-                    <TagIcon size="sm" />
-                    {blog.tags.map((tag) => (
-                      <Link href={`/tags/${tag.id.toString()}`} key={tag.id}>
-                        <Badge interactive key={tag.id} text={tag.name} />
-                      </Link>
-                    ))}
-                  </div>
-                )}
-              </ViewTransition>
+              {blog.tags.length > 0 && (
+                <div className="mb-4 flex flex-wrap items-center gap-2">
+                  <TagIcon size="sm" />
+                  {blog.tags.map((tag) => (
+                    <Link href={`/tags/${tag.id.toString()}`} key={tag.id}>
+                      <Badge interactive key={tag.id} text={tag.name} />
+                    </Link>
+                  ))}
+                </div>
+              )}
             </div>
             <div className="m-2 sm:mt-4">
               <Separator />
