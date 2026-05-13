@@ -6,7 +6,7 @@ export const Playground: FC<
     title: string;
   }>
 > = ({ title, children }) => (
-  <section className="vertical:max-w-container-2xl vertical:max-h-blog-widget vertical:overflow-auto my-8 sm:my-10">
+  <section className="vertical:max-w-container-2xl vertical:max-h-app-content vertical:overflow-auto my-8 sm:my-10">
     <div className="writing-h border-border-mute bg-bg-base rounded-xl border p-7 sm:p-10">
       <div className="flex flex-col gap-6 sm:gap-8">
         <header className="flex flex-col gap-2 sm:gap-3">

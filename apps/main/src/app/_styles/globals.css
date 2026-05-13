@@ -1,10 +1,12 @@
 @import '@k8o/arte-odyssey/styles.css';
 
+/* 2rem は main の `px-4` × 2 ぶん */
 @utility max-w-container-* {
   max-width: min(--value(--container-*), 100svw - 2rem);
 }
 
-@utility max-h-blog-widget {
+/* 10rem は sticky Header (5.5rem) + Footer (4rem) + 余裕 (4px) */
+@utility max-h-app-content {
   max-height: calc(100svh - 10rem);
 }
 
