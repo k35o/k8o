@@ -101,7 +101,7 @@ export function useMDXComponents(components: MDXComponents): MDXComponents {
     pre: ({ children, ...rest }) => (
       <pre
         {...rest}
-        className="writing-h vertical:box-border vertical:mx-4 vertical:my-0 vertical:h-max vertical:max-h-full vertical:max-w-blog-pre vertical:overflow-auto my-4 overflow-x-auto rounded-lg px-2 py-1 sm:p-4"
+        className="writing-h vertical:box-border vertical:mx-4 vertical:my-0 vertical:h-max vertical:max-h-full vertical:max-w-container-lg vertical:overflow-auto my-4 overflow-x-auto rounded-lg px-2 py-1 sm:p-4"
       >
         {children}
       </pre>

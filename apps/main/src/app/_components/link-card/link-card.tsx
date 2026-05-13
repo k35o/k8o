@@ -15,7 +15,7 @@ export const LinkCardLoading: FC<{
   href: string;
   appearance?: LinkCardAppearance;
 }> = ({ href, appearance = 'shadow' }) => (
-  <div className="vertical:max-w-blog-card">
+  <div className="vertical:max-w-container-md">
     <InteractiveCard appearance={appearance}>
       <a
         className="block"
@@ -59,7 +59,7 @@ const Content: FC<{
   }
 
   return (
-    <div className="vertical:max-w-blog-card">
+    <div className="vertical:max-w-container-md">
       <InteractiveCard appearance={appearance}>
         <a
           className="group block h-full"
