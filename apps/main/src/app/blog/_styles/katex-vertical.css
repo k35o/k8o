@@ -1,0 +1,53 @@
+@variant vertical {
+  :where(.katex-display, .katex-display *) {
+    writing-mode: horizontal-tb;
+    text-orientation: initial;
+    direction: ltr;
+  }
+
+  .katex-display {
+    max-inline-size: 100%;
+    margin-block: auto;
+    overflow: auto;
+  }
+
+  .katex:has(:is(.mfrac, .sqrt)),
+  .katex:has(:is(.mfrac, .sqrt)) * {
+    writing-mode: horizontal-tb;
+    text-orientation: initial;
+    direction: ltr;
+  }
+
+  .katex:has(:is(.mfrac, .sqrt)) {
+    display: inline-block;
+    vertical-align: middle;
+  }
+
+  .katex:not(.katex-display):not(:has(:is(.mfrac, .sqrt))) .msupsub {
+    display: inline-block;
+    font-size: 0.7em;
+    line-height: 1;
+    vertical-align: baseline;
+  }
+
+  .katex:not(.katex-display):not(:has(:is(.mfrac, .sqrt)))
+    .msupsub
+    :is(.vlist-t, .vlist-r, .vlist) {
+    display: contents;
+    height: auto !important;
+  }
+
+  .katex:not(.katex-display):not(:has(:is(.mfrac, .sqrt)))
+    .msupsub
+    .vlist
+    > span {
+    position: static !important;
+    margin: 0 !important;
+  }
+
+  .katex:not(.katex-display):not(:has(:is(.mfrac, .sqrt)))
+    .msupsub
+    :is(.pstrut, .vlist-s) {
+    display: none;
+  }
+}

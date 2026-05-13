@@ -1,81 +1,5 @@
 @import '@k8o/arte-odyssey/styles.css';
 
-@custom-variant vertical (
-  &:where(.writing-v, .writing-v *):not(.writing-h, .writing-h *)
-);
-
-@utility writing-h {
-  writing-mode: horizontal-tb;
-}
-
-@utility writing-v {
-  writing-mode: vertical-rl;
-  text-orientation: mixed;
-  text-underline-position: under left;
-  line-break: strict;
-  word-break: normal;
-
-  :where(.katex-display, .katex-display *) {
-    writing-mode: horizontal-tb;
-    text-orientation: initial;
-    direction: ltr;
-  }
-
-  .katex-display {
-    max-inline-size: 100%;
-    overflow: auto;
-  }
-}
-
-.writing-v .katex-display {
-  margin-block: auto;
-}
-
-.writing-v .katex:has(:is(.mfrac, .sqrt)),
-.writing-v .katex:has(:is(.mfrac, .sqrt)) * {
-  writing-mode: horizontal-tb;
-  text-orientation: initial;
-  direction: ltr;
-}
-
-.writing-v .katex:has(:is(.mfrac, .sqrt)) {
-  display: inline-block;
-  vertical-align: middle;
-}
-
-.writing-v .katex:not(.katex-display):not(:has(:is(.mfrac, .sqrt))) .msupsub {
-  display: inline-block;
-  font-size: 0.7em;
-  line-height: 1;
-  vertical-align: baseline;
-}
-
-.writing-v
-  .katex:not(.katex-display):not(:has(:is(.mfrac, .sqrt)))
-  .msupsub
-  :is(.vlist-t, .vlist-r, .vlist) {
-  display: contents;
-  height: auto !important;
-}
-
-.writing-v
-  .katex:not(.katex-display):not(:has(:is(.mfrac, .sqrt)))
-  .msupsub
-  .vlist
-  > span {
-  position: static !important;
-  margin: 0 !important;
-}
-
-.writing-v
-  .katex:not(.katex-display):not(:has(:is(.mfrac, .sqrt)))
-  .msupsub
-  :is(.pstrut, .vlist-s) {
-  display: none;
-}
-
-/* 縦書き時、widget が viewport を超えないようにする上限値。
-   min() の第 2 引数は小画面で 2rem の余白を残しながらフィットさせるため。 */
 @utility max-w-blog-pre {
   max-width: min(32rem, 100vw - 2rem);
 }
@@ -104,7 +28,6 @@
   ::view-transition-group(*),
   ::view-transition-old(*),
   ::view-transition-new(*) {
-    /* ユーザーの設定を強制するため */
     animation: none !important;
   }
 }

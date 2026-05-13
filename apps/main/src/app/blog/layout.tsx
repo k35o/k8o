@@ -8,6 +8,8 @@ import {
 } from './_components/blog-layout/writing-mode';
 import { ExternalBlog } from './_components/external-blog';
 
+import './_styles/katex-vertical.css';
+
 export const metadata = {
   title: 'Blog',
   description: 'Webフロントエンドを中心に、日々のことも書いています。',
