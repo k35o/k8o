@@ -1,0 +1,29 @@
+{
+  "name": "@repo/code-highlight",
+  "version": "1.0.0",
+  "private": true,
+  "description": "MDXのコードブロックにシンタックスハイライトと注釈を付けるrehypeプラグイン (Shikiラッパー)",
+  "type": "module",
+  "exports": {
+    ".": {
+      "types": "./src/index.ts",
+      "default": "./src/index.ts"
+    },
+    "./styles.css": "./styles/annotate.css"
+  },
+  "scripts": {
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "type-check": "tsgo --noEmit"
+  },
+  "dependencies": {
+    "@shikijs/rehype": "4.0.2"
+  },
+  "devDependencies": {
+    "@repo/typescript-config": "workspace:*",
+    "@shikijs/types": "4.0.2",
+    "@types/hast": "3.0.4",
+    "shiki": "4.0.2",
+    "vitest": "catalog:"
+  }
+}
