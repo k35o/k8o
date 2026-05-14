@@ -1,5 +1,4 @@
 import withMdx from '@next/mdx';
-import type { RehypeShikiOptions } from '@shikijs/rehype';
 import type { NextConfig } from 'next';
 
 const nextConfig: NextConfig = {
@@ -30,9 +29,6 @@ const nextConfig: NextConfig = {
 export default withMdx({
   options: {
     remarkPlugins: ['remark-math', 'remark-frontmatter'],
-    rehypePlugins: [
-      'rehype-katex',
-      ['@shikijs/rehype', { theme: 'plastic' } satisfies RehypeShikiOptions],
-    ],
+    rehypePlugins: ['rehype-katex', '@repo/code-highlight'],
   },
 })(nextConfig);
