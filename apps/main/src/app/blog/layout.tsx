@@ -7,6 +7,7 @@ import {
   WritingModeSwitcher,
 } from './_components/blog-layout/writing-mode';
 import { ExternalBlog } from './_components/external-blog';
+import { ScrollToTopOnPathChange } from './_components/scroll-to-top-on-path-change';
 
 import './_styles/katex-vertical.css';
 
@@ -36,6 +37,7 @@ export default function Layout({ children }: LayoutProps<'/blog'>) {
         href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css"
         rel="stylesheet"
       />
+      <ScrollToTopOnPathChange />
       <WritingModeProvider>
         <div className="mx-auto w-full max-w-5xl">
           <div className="flex flex-col gap-6">
