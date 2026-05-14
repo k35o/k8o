@@ -17,7 +17,7 @@ const createCalloutLine = (text: string, indent: number): Element => ({
   properties: {
     class: 'line code-annotate-callout-line',
     ...(indent > 0
-      ? { style: `padding-inline-start: calc(2.5em + ${indent}ch);` }
+      ? { style: `padding-inline-start: calc(1.2em + ${indent}ch);` }
       : {}),
   },
   children: [

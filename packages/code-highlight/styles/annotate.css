@@ -4,7 +4,7 @@
     /* 全行の左に注釈表示用の gutter を確保し、コード本体のインデントを揃える */
     .line {
       position: relative;
-      padding-inline-start: 2.5em;
+      padding-inline-start: 1.2em;
     }
 
     .code-annotate-highlight,
@@ -29,7 +29,7 @@
     .code-annotate-add::before {
       content: '＋';
       position: absolute;
-      inset-inline-start: 0.9em;
+      inset-inline-start: 0.4em;
       color: rgb(120 220 130);
       font-weight: 700;
     }
@@ -42,7 +42,7 @@
     .code-annotate-remove::before {
       content: '－';
       position: absolute;
-      inset-inline-start: 0.9em;
+      inset-inline-start: 0.4em;
       color: rgb(245 110 110);
       font-weight: 700;
     }
