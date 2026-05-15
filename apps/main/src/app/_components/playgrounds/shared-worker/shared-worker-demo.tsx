@@ -1,7 +1,7 @@
 'use client';
 
 import { Button, Code } from '@k8o/arte-odyssey';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 // publicに置いた静的Worker script。全タブで同じURLになるためSharedWorkerが共有される
 const WORKER_URL = '/playgrounds/shared-worker.worker.js';
@@ -21,7 +21,7 @@ export function SharedWorkerDemo() {
   const [startedAt, setStartedAt] = useState<number | null>(null);
   const [count, setCount] = useState(0);
   const [connections, setConnections] = useState(0);
-  const [port, setPort] = useState<MessagePort | null>(null);
+  const port = useRef<MessagePort | null>(null);
 
   useEffect(() => {
     if (typeof SharedWorker === 'undefined') {
@@ -50,7 +50,7 @@ export function SharedWorkerDemo() {
     });
     worker.port.start();
 
-    setPort(worker.port);
+    port.current = worker.port;
 
     // useEffectのcleanupはページ遷移・リロードでは発火しないため、
     // pagehideイベントでもdisconnectを送ってWorker側のports Setから外す
@@ -67,12 +67,12 @@ export function SharedWorkerDemo() {
       // oxlint-disable-next-line require-post-message-target-origin -- MessagePort.postMessageはtargetOrigin非対応
       worker.port.postMessage({ type: 'disconnect' });
       worker.port.close();
-      setPort(null);
+      port.current = null;
     };
   }, []);
 
   const handleIncrement = () => {
-    port?.postMessage({ type: 'increment' });
+    port.current?.postMessage({ type: 'increment' });
   };
 
   if (!supported) {
