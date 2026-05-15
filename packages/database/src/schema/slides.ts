@@ -8,21 +8,21 @@ import {
   uniqueIndex,
 } from 'drizzle-orm/sqlite-core';
 
-import { blogTag } from './blog-tag';
 import { slideTag } from './slide-tag';
-import { talkTag } from './talk-tag';
 
-export const tags = sqliteTable(
-  'tags',
+export const slides = sqliteTable(
+  'slides',
   {
     id: integer('id').primaryKey({ autoIncrement: true }),
-    name: text('name').notNull(),
+    slug: text('slug').notNull(),
+    published: integer('published', { mode: 'boolean' }).notNull(),
+    createdAt: text('created_at')
+      .notNull()
+      .$defaultFn(() => new Date().toISOString()),
   },
-  (table) => [uniqueIndex('tags_name_idx').on(table.name)],
+  (table) => [uniqueIndex('slides_slug_idx').on(table.slug)],
 );
 
-export const tagsRelations = relations(tags, ({ many }) => ({
-  blogTag: many(blogTag),
-  talkTag: many(talkTag),
+export const slidesRelations = relations(slides, ({ many }) => ({
   slideTag: many(slideTag),
 }));
