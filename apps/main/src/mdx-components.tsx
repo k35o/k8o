@@ -106,13 +106,16 @@ export function useMDXComponents(components: MDXComponents): MDXComponents {
         {children}
       </pre>
     ),
-    li: ({ children }) => (
-      <li className="sm:text-md list-disc text-xs">{children}</li>
-    ),
+    li: ({ children }) => <li className="sm:text-md text-xs">{children}</li>,
     ul: ({ children }) => (
-      <ul className="sm:text-md my-4 flex flex-col gap-1 ps-5 text-xs">
+      <ul className="sm:text-md my-4 flex list-disc flex-col gap-1 ps-5 text-xs">
         {children}
       </ul>
+    ),
+    ol: ({ children }) => (
+      <ol className="sm:text-md my-4 flex list-decimal flex-col gap-1 ps-5 text-xs">
+        {children}
+      </ol>
     ),
     blockquote: ({ children }) => (
       <figure className="bg-bg-mute my-4 rounded-lg p-2 ps-3">
