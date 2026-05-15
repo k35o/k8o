@@ -1,0 +1,87 @@
+@layer components {
+  /* shiki plastic 暗背景前提の固定トーン。テキスト色（白〜パステル）を潰さない alpha に抑えつつ、左バーで強調する。 */
+  @scope (.code-annotate-block) {
+    /* 全行の左に注釈表示用の gutter を確保し、コード本体のインデントを揃える */
+    .line {
+      position: relative;
+      padding-inline-start: 1.2em;
+    }
+
+    .code-annotate-highlight,
+    .code-annotate-add,
+    .code-annotate-remove,
+    .code-annotate-has-callout,
+    .code-annotate-callout-line {
+      display: inline-block;
+      inline-size: 100%;
+    }
+
+    .code-annotate-highlight {
+      background-color: rgb(245 200 80 / 0.16);
+      box-shadow: inset 6px 0 0 rgb(245 200 80);
+    }
+
+    .code-annotate-add {
+      background-color: rgb(120 220 130 / 0.16);
+      box-shadow: inset 6px 0 0 rgb(120 220 130);
+    }
+
+    .code-annotate-add::before {
+      content: '＋';
+      position: absolute;
+      inset-inline-start: 0.4em;
+      color: rgb(120 220 130);
+      font-weight: 700;
+    }
+
+    .code-annotate-remove {
+      background-color: rgb(245 110 110 / 0.16);
+      box-shadow: inset 6px 0 0 rgb(245 110 110);
+    }
+
+    .code-annotate-remove::before {
+      content: '－';
+      position: absolute;
+      inset-inline-start: 0.4em;
+      color: rgb(245 110 110);
+      font-weight: 700;
+    }
+
+    /* 同じ行に他の注釈 (highlight/add/remove) と重なった場合は cascade order で
+       callout が後勝ちで上書きする。両方を視覚化するユースケースは想定していない。 */
+    .code-annotate-has-callout {
+      background-color: rgb(120 180 245 / 0.3);
+      box-shadow: inset 6px 0 0 rgb(120 180 245);
+    }
+
+    /* コールアウトは対象行の直下、コード先頭の真下に配置し、上向き▲で対象行を指す */
+    .code-annotate-callout-line {
+      padding-block: 0.6em 0.3em;
+      font-size: 0.9em;
+    }
+
+    .code-annotate-callout-text {
+      position: relative;
+      display: inline-block;
+      padding: 0.5em 1em;
+      border-radius: 0.5em;
+      background-color: rgb(80 140 220);
+      box-shadow: 0 4px 12px rgb(0 0 0 / 0.35);
+      color: rgb(255 255 255);
+      font-weight: 500;
+      line-height: 1.4;
+    }
+
+    .code-annotate-callout-text::before {
+      content: '';
+      position: absolute;
+      inset-block-start: -0.45em;
+      inset-inline-start: 1em;
+      inline-size: 0;
+      block-size: 0;
+      border-inline-start: 0.5em solid transparent;
+      border-inline-end: 0.5em solid transparent;
+      border-block-end: 0.5em solid rgb(80 140 220);
+    }
+  }
+}
