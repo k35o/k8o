@@ -43,26 +43,5 @@ minimumReleaseAge: 10080
 
 minimumReleaseAgeExclude:
   - '@k8o/*'
-  - 'next@16.2.6'
-  - '@next/env@16.2.6'
-  - '@next/mdx@16.2.6'
-  - '@next/third-parties@16.2.6'
-  - '@next/swc-darwin-arm64@16.2.6'
-  - '@next/swc-darwin-x64@16.2.6'
-  - '@next/swc-linux-arm64-gnu@16.2.6'
-  - '@next/swc-linux-arm64-musl@16.2.6'
-  - '@next/swc-linux-x64-gnu@16.2.6'
-  - '@next/swc-linux-x64-musl@16.2.6'
-  - '@next/swc-win32-arm64-msvc@16.2.6'
-  - '@next/swc-win32-x64-msvc@16.2.6'
-  - '@typescript/native-preview-darwin-arm64@7.0.0-dev.20260502.1'
-  - '@typescript/native-preview-darwin-x64@7.0.0-dev.20260502.1'
-  - '@typescript/native-preview-linux-arm@7.0.0-dev.20260502.1'
-  - '@typescript/native-preview-linux-arm64@7.0.0-dev.20260502.1'
-  - '@typescript/native-preview-linux-x64@7.0.0-dev.20260502.1'
-  - '@typescript/native-preview-win32-arm64@7.0.0-dev.20260502.1'
-  - '@typescript/native-preview-win32-x64@7.0.0-dev.20260502.1'
-  - 'react@19.2.6'
-  - 'react-dom@19.2.6'
 
 verifyDepsBeforeRun: install
