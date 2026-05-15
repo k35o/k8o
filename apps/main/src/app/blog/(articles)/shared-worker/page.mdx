@@ -1,0 +1,210 @@
+---
+title: 'SharedWorkerでブラウジングコンテキスト間にWorkerを共有する'
+description: 'SharedWorkerは、同一オリジンの複数のタブやiframeから接続できるWorkerです。タブ間で永続接続や状態を共有でき、type: moduleでES Modulesも使えるようになりました。Baseline 2026で全モダンブラウザでサポートされたSharedWorkerの基本と使い分けを解説します。'
+createdAt: 2026-05-15
+updatedAt: 2026-05-15
+featureIds:
+  - shared-workers
+  - js-modules-shared-workers
+---
+
+import { BaselineStatus } from '@k8o/arte-odyssey';
+import { Playground, SharedWorkerDemo } from '@/app/_components/playgrounds';
+
+# SharedWorkerでブラウジングコンテキスト間にWorkerを共有する
+
+<BaselineStatus featureId="shared-workers" />
+
+## はじめに
+
+通常の`Worker`（Dedicated Worker）はそれを生成したドキュメント1つにだけ紐づき、別のタブやiframeから直接アクセスすることはできません。同じオリジンの複数の画面から同じバックグラウンド処理を使い回したい場合、それぞれの画面でWorkerを起動し直すか、`BroadcastChannel`などで橋渡しする必要がありました。
+
+Baseline 2026に追加されたSharedWorkerは、1つのWorkerインスタンスを同一オリジンの複数のブラウジングコンテキストから共有できる仕組みです。デスクトップ向けブラウザは早くから対応していましたが、Chrome for Androidが長らく未実装で、Chrome 148で揃って2026年5月にBaseline 2026入りしました。
+
+## SharedWorkerの基本
+
+SharedWorkerはページ側とWorker側のコードがペアで動きます。
+
+ページ側では`new SharedWorker(url)`でWorkerに接続し、返ってきた`worker.port`の`MessagePort`を経由してWorkerと通信します。`MessagePort`はデフォルトでメッセージを受け取らない設計で、受信を始めるためのきっかけが必要です。`onmessage`プロパティに代入する場合は自動でポートが開始されます。
+
+```js
+// page.js
+const worker = new SharedWorker('./worker.js');
+
+worker.port.onmessage = (event) => {
+  console.log('count:', event.data);
+};
+worker.port.postMessage({ type: 'increment' });
+```
+
+`addEventListener('message', ...)`でリスナーを登録する場合は自動開始されないので、`worker.port.start()`を明示的に呼ぶ必要があります。
+
+```js
+// page.js
+const worker = new SharedWorker('./worker.js');
+
+worker.port.addEventListener('message', (event) => {
+  console.log('count:', event.data);
+});
+// [!hl]
+worker.port.start();
+worker.port.postMessage({ type: 'increment' });
+```
+
+Worker側は`SharedWorkerGlobalScope`の`connect`イベントで、各接続から渡される`MessagePort`を受け取ります。
+
+```js
+// worker.js
+let count = 0;
+const ports = new Set();
+
+self.addEventListener('connect', (event) => {
+  // [!callout: 各接続専用のMessagePort]
+  const port = event.ports[0];
+  ports.add(port);
+
+  port.addEventListener('message', (msg) => {
+    if (msg.data.type === 'increment') {
+      count += 1;
+      for (const p of ports) {
+        p.postMessage(count);
+      }
+    }
+  });
+
+  port.start();
+});
+```
+
+`connect`イベントは新しいブラウジングコンテキストが接続するたびに発火します。`event.ports[0]`がそのコンテキスト専用のポートで、これを通じて双方向にメッセージをやり取りします。すべてのポートを集めておけば、いずれかのページで起きた変化を全タブにブロードキャストすることもできます。
+
+`event.ports`は仕様で「要素1個の凍結配列」と決まっているので、`event.ports[1]`以降は常に`undefined`です。接続後に追加のチャネルが必要になったら、`port.postMessage(data, [extraPort])`のように第2引数のtransferリストで`MessagePort`を送り、受け取り側の`message`イベントの`event.ports`から取り出します。`MessageChannel`で作った2本のポートのうち片方をWorkerに渡せば、独立した通信レーンを後付けで張れます。
+
+## 同一性とインスタンス共有
+
+SharedWorkerはURLと`name`の組み合わせで同一性が判定されます。同じURL（と同じ`name`）で複数回`new SharedWorker(...)`しても、起動済みのWorkerが再利用され、`connect`イベントが既存のWorkerに対して新しいポートを通知するだけです。
+
+```js
+const a = new SharedWorker('./worker.js');
+const b = new SharedWorker('./worker.js'); // 同じWorkerインスタンスに接続
+```
+
+別の`name`を渡すと、同じスクリプトから独立したインスタンスを起動できます。
+
+```js
+const realtime = new SharedWorker('./worker.js', { name: 'realtime' });
+const analytics = new SharedWorker('./worker.js', { name: 'analytics' });
+```
+
+ライフタイムは、いずれかの接続が生きている限り維持されます。すべての接続元ドキュメントが閉じられるとWorkerも終了します。
+
+スクリプトのトップレベルコードは、SharedWorkerが起動するときに一度だけ実行されます。以降は同じURL・`name`で`new SharedWorker(...)`しても再実行されず、`connect`イベントだけが追加で発火して新しい`MessagePort`が渡されます。先ほどの`worker.js`の`let count = 0;`や`const ports = new Set();`が1回だけ評価される一方で、`connect`ハンドラが接続のたびに走るのはこのためです。タブをまたいだ状態をWorker側のグローバルに置けるのが、SharedWorkerの旨味でもあります。
+
+## タブ間で同期するカウンタを作ってみる
+
+ここまでの動きを実際に試せるPlaygroundを置いておきます。
+
+<Playground title="タブ間カウンタ">
+  <SharedWorkerDemo />
+</Playground>
+
+このPlaygroundのWorker側コードは次の通りです。
+
+```js
+// /playgrounds/shared-worker.worker.js
+// [!hl]
+const STARTED_AT = Date.now();
+let count = 0;
+const ports = new Set();
+
+const broadcast = (message) => {
+  for (const p of ports) {
+    p.postMessage(message);
+  }
+};
+
+self.addEventListener('connect', (event) => {
+  const port = event.ports[0];
+  ports.add(port);
+
+  port.postMessage({
+    type: 'init',
+    startedAt: STARTED_AT,
+    count,
+    connections: ports.size,
+  });
+  broadcast({ type: 'connections', connections: ports.size });
+
+  port.addEventListener('message', (msg) => {
+    if (msg.data?.type === 'increment') {
+      count += 1;
+      broadcast({ type: 'count', count });
+      return;
+    }
+    if (msg.data?.type === 'disconnect') {
+      ports.delete(port);
+      broadcast({ type: 'connections', connections: ports.size });
+    }
+  });
+
+  port.start();
+});
+```
+
+ハイライトした`STARTED_AT`はWorkerが起動した瞬間のタイムスタンプで、トップレベルが一度しか実行されないことを目視で確認するために置いています。タブを追加で開いても同じ時刻が両タブに表示されるので、`let count = 0`や`ports`のSetがタブごとには初期化されないことが見て取れます。
+
+## ES Modulesとして読み込む
+
+<BaselineStatus featureId="js-modules-shared-workers" />
+
+Baseline 2026では`type: 'module'`オプションも揃い、SharedWorkerをES Modulesとして実行できるようになりました。
+
+```js
+// page.js
+// [!hl]
+const worker = new SharedWorker('./worker.js', { type: 'module' });
+```
+
+Worker側では`import`文がそのまま使えるため、メインスレッドと同じモジュールをWorkerから読み込んでロジックを共有できます。
+
+```js
+// worker.js
+// [!hl]
+import { calculate } from './shared-logic.js';
+
+self.addEventListener('connect', (event) => {
+  const port = event.ports[0];
+  port.addEventListener('message', (msg) => {
+    port.postMessage(calculate(msg.data));
+  });
+  port.start();
+});
+```
+
+モジュールWorkerにはいくつか挙動の違いがあります。
+
+- `importScripts()`はモジュールWorker内で呼び出すと失敗する。代わりに`import`を使う
+- スクリプトは自動的にStrict modeで実行される
+- トップレベルのvar / function宣言はモジュールスコープに閉じ、Worker全体のグローバルを汚染しない
+- `credentials`オプション（`'omit'` / `'same-origin'` / `'include'`）が有効になり、モジュールのフェッチに使う認証情報を制御できる
+
+なお、起動中のSharedWorkerに対して異なる`type`や`credentials`で`new SharedWorker(...)`しようとするとエラーになります。`classic`モードと`module`モードを同居させたいときは、別の`name`を指定して別インスタンスとして扱います。
+
+`type: 'module'`の挙動はService Workerの場合とほぼ同じです。Service Worker側の解説は[Service WorkerでES Modulesを使う](/blog/js-modules-service-workers)を参照してください。
+
+## 使いどころ
+
+SharedWorkerが効くのは、同一オリジンの複数の画面が同じバックエンド処理を共有したい場面です。
+
+- WebSocketなどの永続接続をタブごとに張らずWorker側で1本にまとめる
+- リアルタイム更新やプッシュ通知の受信ポイントを集約し、開いている全タブへ配信する
+- 重い計算やキャッシュをタブ間で共有して、二重実行を避ける
+- ログイン状態やフィーチャーフラグなど、タブをまたいだ状態の単一の窓口を作る
+
+逆に、ページの裏でちょっとした処理を回したいだけならDedicated Workerで十分です。SharedWorkerは1つの状態を複数のタブが共有することで初めて効果が出るので、共有する価値のあるリソースがあるかを最初に確認するとよいでしょう。
+
+## おわりに
+
+SharedWorkerはタブ間で1つのWorkerを共有できる仕組みで、ようやくBaseline 2026で全モダンブラウザに揃いました。同じタイミングで`type: 'module'`もサポートされたので、メインスレッドと同じES ModulesをWorkerからも読み込めて、コード共有のしやすさが一段引き上がっています。
+
+タブをまたいで共有したいリソースがある場面では、`BroadcastChannel`との組み合わせも検討しつつ、SharedWorkerを引き出しに加えてみてください。
