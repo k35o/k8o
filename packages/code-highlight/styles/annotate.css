@@ -47,6 +47,8 @@
       font-weight: 700;
     }
 
+    /* 同じ行に他の注釈 (highlight/add/remove) と重なった場合は cascade order で
+       callout が後勝ちで上書きする。両方を視覚化するユースケースは想定していない。 */
     .code-annotate-has-callout {
       background-color: rgb(120 180 245 / 0.3);
       box-shadow: inset 6px 0 0 rgb(120 180 245);
