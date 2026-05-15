@@ -19,6 +19,8 @@ import { blogs, blogsRelations } from './blogs';
 import { comments, commentsRelations } from './comments';
 import { feedbacks, feedbacksRelations } from './feedback';
 import { reportingReports } from './reporting-reports';
+import { slideTag, slideTagRelations } from './slide-tag';
+import { slides, slidesRelations } from './slides';
 import { tags, tagsRelations } from './tags';
 import { talkTag, talkTagRelations } from './talk-tag';
 import { talks, talksRelations } from './talks';
@@ -43,6 +45,9 @@ export const schema = {
   // Talks関連
   talks,
   talkTag,
+  // Slides関連
+  slides,
+  slideTag,
   // よんでるもの関連
   articleSources,
   articles,
@@ -64,6 +69,9 @@ export const relations = {
   // Talks関連
   talksRelations,
   talkTagRelations,
+  // Slides関連
+  slidesRelations,
+  slideTagRelations,
   // よんでるもの関連
   articleSourcesRelations,
   articlesRelations,
