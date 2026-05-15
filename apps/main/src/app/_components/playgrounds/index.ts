@@ -24,6 +24,7 @@ export * from './screen-wake-lock';
 export * from './scrollbar-color';
 export * from './scrollend';
 export * from './shape-function';
+export * from './shared-worker';
 export * from './spelling-grammar-error';
 export * from './suspense-list';
 export * from './text-indent-keywords';
@@ -52,6 +53,7 @@ import { screenWakeLockSection } from './screen-wake-lock';
 import { scrollbarColorSection } from './scrollbar-color';
 import { scrollendSection } from './scrollend';
 import { shapeFunctionSection } from './shape-function';
+import { sharedWorkerSection } from './shared-worker';
 import { spellingGrammarErrorSection } from './spelling-grammar-error';
 import { suspenseListSection } from './suspense-list';
 import { textIndentKeywordsSection } from './text-indent-keywords';
@@ -79,6 +81,7 @@ export const playgroundSections: PlaygroundSection[] = [
   screenWakeLockSection,
   scrollbarColorSection,
   scrollendSection,
+  sharedWorkerSection,
   suspenseListSection,
   absSignSection,
   highlightSection,
