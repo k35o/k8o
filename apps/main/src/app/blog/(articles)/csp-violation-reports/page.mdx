@@ -42,7 +42,7 @@ JavaScriptからCSP違反を検知するには、`securitypolicyviolation`イベ
 
 ```js
 document.addEventListener('securitypolicyviolation', (event) => {
-  console.log(event.violatedDirective); // "script-src-elem"
+  console.log(event.effectiveDirective); // "script-src-elem"
   console.log(event.blockedURI); // "https://evil.com/script.js"
   console.log(event.originalPolicy); // "default-src 'self'; ..."
 });
