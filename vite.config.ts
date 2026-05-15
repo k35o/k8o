@@ -5,6 +5,7 @@ const ignorePatterns = [
   '.agents/**',
   '**/mockServiceWorker.js',
   '**/migrations/meta/**',
+  '**/public/**',
   '**/*.md',
   '**/*.mdx',
   '.claude/worktrees/**',
