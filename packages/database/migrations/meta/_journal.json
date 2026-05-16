@@ -309,6 +309,13 @@
       "when": 1778849374750,
       "tag": "0043_careless_archangel",
       "breakpoints": true
+    },
+    {
+      "idx": 44,
+      "version": "6",
+      "when": 1778892328781,
+      "tag": "0044_lush_white_queen",
+      "breakpoints": true
     }
   ]
 }
