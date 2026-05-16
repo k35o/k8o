@@ -1,0 +1,65 @@
+---
+title: 'text-decoration-skip-ink: allでunderlineをすべてのグリフの周りで途切れさせる'
+description: 'text-decoration-skip-ink: allは、underlineやoverlineがグリフを横切る箇所を必ず途切れさせるCSSの値です。CJKに対しては線を途切れさせない実装が多いautoとの挙動の差を、Baseline 2026で揃った3つ目の値allと合わせて見ていきます。'
+createdAt: 2026-05-16
+updatedAt: 2026-05-16
+featureIds:
+  - text-decoration-skip-ink-all
+---
+
+import { BaselineStatus } from '@k8o/arte-odyssey';
+import {
+  Playground,
+  TextDecorationSkipInkDemo,
+} from '@/app/_components/playgrounds';
+
+# text-decoration-skip-ink: allでunderlineをすべてのグリフの周りで途切れさせる
+
+<BaselineStatus featureId="text-decoration-skip-ink-all" />
+
+## はじめに
+
+underlineやoverlineは文字の上下を横切るときに、ディセンダのある`g`や`p`、`y`のような文字とぶつかってしまうことがあります。underlineを引いただけだとそうした文字のループの底に線が突き刺さって読みにくくなるので、ブラウザは標準でグリフのインクと交差する箇所では線を途切れさせてくれます。
+
+その制御を担うのが`text-decoration-skip-ink`プロパティです。これまでは`auto`と`none`の2つの値で、ブラウザに任せるか一切途切れさせないかを選べました。Baseline 2026では`all`という3つ目の値が揃いました。
+
+## プロパティの基本と3つの値
+
+`text-decoration-skip-ink`はunderlineやoverlineをグリフのインク（実際にレンダリングされる字の形）と交差させるかどうかを制御します。値は3つあります。
+
+- `auto`（既定値） - ブラウザの判断でグリフを避けるかどうかを決める。ラテン文字のディセンダは通常避けるが、CJK文字には適用しないユーザーエージェントが多い
+- `none` - 途切れさせない。常に1本の線として描画する
+- `all` - すべてのグリフのインクと交差する箇所で必ず途切れさせる
+
+`auto`では仕様上ブラウザに裁量があり、どこを避けてどこを避けないかは実装次第です。`all`を指定すると裁量を排除して、グリフがあれば必ず線を切る挙動になります。
+
+## auto と all の挙動の差
+
+ラテン文字のunderlineは`auto`でも実用上ほとんどのブラウザがディセンダを避けてくれるので、`auto`と`all`の差は目に見えません。差が出るのは主にCJKテキストのunderlineです。
+
+[仕様](https://drafts.csswg.org/css-text-decor-4/#text-decoration-skip-ink-property)上、`auto`は
+
+> UAs may interrupt underlines and overlines where the line would cross glyph ink
+
+とUAに裁量を与えているだけです。CJKに対しては多くのUAが線を途切れさせない実装になっており、結果として日本語の文章にunderlineを引くと、漢字の下端や`ぐ`、`ゆ`のような字に線が突き刺さった見た目になりがちです。
+
+`all`は
+
+> UAs must interrupt underlines and overlines where the line would cross glyph ink
+
+と義務になります（`may`と`must`の部分が異なります）。CJK文字でもラテン文字と同じようにunderlineがグリフを避けて途切れるようになり、グリフごとに線が刻まれるような見え方に変わります。`auto`の連続したunderlineを前提に組んだデザインに後付けで入れると、印象が大きく変わる点には注意してください。
+
+```css
+p {
+  text-decoration: underline;
+  text-decoration-skip-ink: all;
+}
+```
+
+<Playground title="skip-ink値の比較">
+  <TextDecorationSkipInkDemo />
+</Playground>
+
+## おわりに
+
+`text-decoration-skip-ink: all`はChromiumに長く欠けていた値がようやく揃ったというだけのもので、CJK混じりのunderlineが必ず読みやすくなるとは限りません。グリフの周りで線が大きく途切れることで、かえって途切れが目立って違和感が出る場面もあります。`auto`の挙動が物足りない箇所だけを狙って、実際の文章で見栄えを確認しながら使うかどうか決めるのがよさそうです。

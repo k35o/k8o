@@ -27,6 +27,7 @@ export * from './shape-function';
 export * from './shared-worker';
 export * from './spelling-grammar-error';
 export * from './suspense-list';
+export * from './text-decoration-skip-ink-all';
 export * from './text-indent-keywords';
 export * from './view-transitions';
 
@@ -56,6 +57,7 @@ import { shapeFunctionSection } from './shape-function';
 import { sharedWorkerSection } from './shared-worker';
 import { spellingGrammarErrorSection } from './spelling-grammar-error';
 import { suspenseListSection } from './suspense-list';
+import { textDecorationSkipInkAllSection } from './text-decoration-skip-ink-all';
 import { textIndentKeywordsSection } from './text-indent-keywords';
 import type { PlaygroundSection } from './types';
 import { viewTransitionsSection } from './view-transitions';
@@ -87,6 +89,7 @@ export const playgroundSections: PlaygroundSection[] = [
   highlightSection,
   shapeFunctionSection,
   spellingGrammarErrorSection,
+  textDecorationSkipInkAllSection,
   textIndentKeywordsSection,
   viewTransitionsSection,
 ];
