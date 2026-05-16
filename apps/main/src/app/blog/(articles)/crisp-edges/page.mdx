@@ -1,0 +1,65 @@
+---
+title: 'image-rendering: crisp-edgesでドット絵を拡大しても滲ませない'
+description: 'image-rendering: crisp-edgesは、画像を拡大表示するときに最近傍法など色を補間しないアルゴリズムを使うCSS値です。Baseline 2026でChromiumも対応し、ドット絵やQRコード、図版を拡大しても境界がぼやけずに表示できます。'
+createdAt: 2026-05-16
+updatedAt: 2026-05-16
+featureIds:
+  - crisp-edges
+---
+
+import { BaselineStatus } from '@k8o/arte-odyssey';
+import { CrispEdgesDemo, Playground } from '@/app/_components/playgrounds';
+
+# image-rendering: crisp-edgesでドット絵を拡大しても滲ませない
+
+<BaselineStatus featureId="crisp-edges" />
+
+## はじめに
+
+ブラウザは画像を本来のサイズより大きく表示するとき、デフォルトでは色を補間（interpolation）して滑らかに見せようとします。写真ならこれで自然に拡大されますが、ドット絵やピクセルアート、QRコード、ピクセル単位で意味を持つ図版だと、ぼやけて元の絵柄が壊れてしまいます。
+
+`image-rendering`プロパティはこの拡大時のアルゴリズムを切り替える指定で、`crisp-edges`は色を補間せず境界をはっきり保つ値です。Firefox / Safariは早くから対応していましたが、Chromiumが長く未実装で、`pixelated`を代用する場面が多くありました。Baseline 2026でChrome 148が対応し、3ブラウザで`crisp-edges`が揃いました。
+
+## image-renderingの値
+
+`image-rendering`は`<img>`、`<canvas>`、`background-image`などラスタ画像をスケールして描画するすべての要素に適用できます。Baseline 2026時点の主な値は以下です。
+
+- `auto`（既定値） - UAに任せる。多くのブラウザは双線形補間など滑らかな拡大を選ぶ
+- `smooth` - 色を補間して滑らかに見せる。auto相当の挙動を明示したいときに使う
+- `crisp-edges` - 色の補間やぼかしを避け、境界とコントラストを保つ。最近傍法（nearest neighbor）または同等のアルゴリズムが使われる
+- `pixelated` - 整数倍までは最近傍法で拡大し、端数分だけ補間する
+
+`crisp-edges`と`pixelated`はどちらも拡大時にピクセル境界をはっきり残す値ですが、[仕様](https://drafts.csswg.org/css-images-3/#valdef-image-rendering-crisp-edges)で求められるアルゴリズムが少し違います。
+
+- `crisp-edges`は色を混ぜず境界をぼかさないアルゴリズムを使うとだけ規定されていて、具体的な手法はUAに任されている
+- `pixelated`はまず最近傍法で次に大きい整数倍まで拡大し、そのあと補間で目的サイズに仕上げる
+
+実装上の見た目はほとんど同じですが、画像のサイズが整数倍ぴったりでないときに`pixelated`の方が境界がやや滑らかになる場面があります。
+
+## 使い方
+
+ドット絵風の小さな画像を`<img>`で拡大表示する例です。
+
+```css
+img.pixel-art {
+  image-rendering: crisp-edges;
+  width: 256px; /* 元画像が16x16でも、最近傍法で滲まずに拡大される */
+}
+```
+
+`background-image`で背景に貼り付ける場合も同じプロパティが効きます。
+
+```css
+.tile {
+  background-image: url('/sprites.png');
+  image-rendering: crisp-edges;
+}
+```
+
+<Playground title="image-rendering値の比較">
+  <CrispEdgesDemo />
+</Playground>
+
+## おわりに
+
+`crisp-edges`はChromiumに長く欠けていた値で、これまではほぼ同じ役目の`pixelated`で代替していた人が多いと思います。Baseline 2026で揃ったので、仕様の意図に近い`crisp-edges`をそのまま指定する選択肢が取れるようになりました。
