@@ -7,6 +7,7 @@ export * from './caret-position-from-point';
 export * from './composed-ranges';
 export * from './content-visibility';
 export * from './contrast-color';
+export * from './crisp-edges';
 export * from './details-content';
 export * from './event-timing';
 export * from './font-family-math';
@@ -38,6 +39,7 @@ import { caretPositionFromPointSection } from './caret-position-from-point';
 import { composedRangesSection } from './composed-ranges';
 import { contentVisibilitySection } from './content-visibility';
 import { contrastColorSection } from './contrast-color';
+import { crispEdgesSection } from './crisp-edges';
 import { detailsContentSection } from './details-content';
 import { eventTimingSection } from './event-timing';
 import { fontFamilyMathSection } from './font-family-math';
@@ -69,6 +71,7 @@ export const playgroundSections: PlaygroundSection[] = [
   composedRangesSection,
   contentVisibilitySection,
   contrastColorSection,
+  crispEdgesSection,
   detailsContentSection,
   eventTimingSection,
   fontFamilyMathSection,
