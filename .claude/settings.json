@@ -1,16 +1,28 @@
 {
+  "$schema": "https://json.schemastore.org/claude-code-settings.json",
+  "permissions": {
+    "deny": [
+      "Bash(pnpm publish:*)",
+      "Bash(turso db destroy:*)",
+      "Bash(turso db delete:*)",
+      "Bash(turso db rotate:*)",
+      "Bash(vercel --prod:*)",
+      "Bash(vercel deploy --prod:*)",
+      "Bash(vercel rm:*)",
+      "Bash(vercel remove:*)",
+      "Bash(vercel project rm:*)",
+      "Bash(drizzle-kit drop:*)",
+      "Bash(chromatic:*)",
+      "Bash(pnpm exec chromatic:*)"
+    ]
+  },
   "hooks": {
-    "PostToolUse": [
+    "Stop": [
       {
-        "matcher": "Write|Edit",
         "hooks": [
           {
             "type": "command",
-            "command": "jq -r '.tool_input.file_path' | xargs -r pnpm biome check --write --no-errors-on-unmatched --files-ignore-unknown=true --colors=off --unsafe"
-          },
-          {
-            "type": "command",
-            "command": "pnpm ls-lint"
+            "command": "[ -z \"$(git status --porcelain 2>/dev/null)\" ] && exit 0; pnpm run check && pnpm run type-check && pnpm run test && pnpm run ls-lint"
           }
         ]
       }
