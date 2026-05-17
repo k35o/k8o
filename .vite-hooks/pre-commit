@@ -1,3 +1,4 @@
 #!/bin/sh
+set -e
 vp staged
 pnpm run ls-lint
