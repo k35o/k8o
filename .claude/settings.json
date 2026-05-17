@@ -13,10 +13,22 @@
       "Bash(vercel project rm:*)",
       "Bash(drizzle-kit drop:*)",
       "Bash(chromatic:*)",
-      "Bash(pnpm exec chromatic:*)"
+      "Bash(pnpm exec chromatic:*)",
+      "Read(**/.next/**)",
+      "Read(**/.turbo/**)"
     ]
   },
   "hooks": {
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "b=$(git symbolic-ref --short HEAD 2>/dev/null); { [ \"$b\" = \"main\" ] || [ -z \"$b\" ]; } && exit 0; echo \"=== Commits on $b (not in main) ===\"; git log main..HEAD --oneline 2>/dev/null | head -20; echo; echo \"=== Files changed vs main ===\"; git diff main...HEAD --stat 2>/dev/null | tail -20"
+          }
+        ]
+      }
+    ],
     "Stop": [
       {
         "hooks": [
