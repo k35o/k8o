@@ -40,7 +40,7 @@ features/shared -> packages/helpers
 
 Next.js の `cacheLife` は `features/*/interface` に置く。`app` のUIコンポーネントや `application` 層には原則として置かない。
 
-- `cacheLife('minutes')` - dashboard、admin の一覧、外部データ同期後に再検証される読み取りなど、短時間で鮮度が必要なもの
+- `cacheLife('minutes')` - 外部データ同期後に再検証される読み取りなど、短時間で鮮度が必要な一覧系
 - `cacheLife('max')` - MDX metadata、静的な site metadata、ビルド時に近い安定データ
 
 キャッシュを変更する Server Action / Route Handler は、更新対象の route に `revalidatePath` を明示する。
