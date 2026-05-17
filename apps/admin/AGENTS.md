@@ -35,7 +35,17 @@ ArteOdysseyのドキュメントは `apps/admin/node_modules/@k8o/arte-odyssey/d
 
 ## UIコンポーネント作業時のStorybook MCP利用
 
-apps/admin のStorybookは **`admin-storybook-mcp`** を使うこと。利用ルールは apps/main と同じ（`list-all-documentation` → `get-documentation` → 推測せず確認、Storyの新規作成・更新前に `get-storybook-story-instructions`、作業後に `run-story-tests`）。
+apps/admin のStorybookは **`admin-storybook-mcp`** を使うこと。
+
+- UIコンポーネントを扱う作業では、回答や実装に入る前に必ず `admin-storybook-mcp` を使い、Storybook上のコンポーネント情報とドキュメントを確認すること
+- **重要: コンポーネントのpropsを推測で使わないこと。** デザインシステムのコンポーネントでpropsを1つでも使う前に、`shadow` のような一般的に見える名前であっても、MCPツールでそのpropsが実際に定義されているか確認すること
+- まず `list-all-documentation` を実行して、利用可能なコンポーネント一覧を取得すること
+- 次に対象コンポーネントに対して `get-documentation` を実行し、利用可能なprops、説明、サンプルを確認すること
+- 明示的にドキュメント化されているprops、またはサンプルStory内で使用されているpropsだけを使うこと
+- propsがドキュメントに存在しない場合、命名規則や他ライブラリの慣習から推測して使ってはいけない。その場合はユーザーに確認すること
+- Storyの新規作成や更新を行う前に、必ず `get-storybook-story-instructions` を実行して最新の作成ルールと推奨事項を確認すること
+- 作業後は `run-story-tests` を実行して検証すること
+- Story名と実際のprops名が一致しない場合があるため、Story名だけで判断せず、必ずドキュメントまたはサンプル実装でpropsを確認すること
 
 ## 認証
 
