@@ -93,7 +93,10 @@ type: `feat`, `fix`, `docs`, `style`, `refactor`, `test`, `chore`
 - `main` - 本番 (Vercelデプロイ)
 - `feature/*`, `fix/*`, `refactor/*`
 
-## Git Hooks (Lefthook)
+## Git Hooks (vite-plus)
 
-- **pre-commit**: `vp check --fix {staged_files}` + `ls-lint`（自動stage-fixed）
-- **pre-push**: `vp check {staged_files}`
+vite-plus (vp) 内蔵の hook 機構を使う。`vp config` が `.vite-hooks/_` にディスパッチャを生成し、`core.hooksPath` をそこに切り替える（pnpm install 時に自動実行）。
+
+- **pre-commit** (`.vite-hooks/pre-commit`): `vp staged` + `pnpm run ls-lint`
+  - `vp staged` は `vite.config.ts` の `staged` ブロックを参照し、対象ファイルに対して `vp check --fix` を実行（fixed は自動 stage）
+- **pre-push** (`.vite-hooks/pre-push`): `vp check`
