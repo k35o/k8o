@@ -401,6 +401,9 @@ importers:
       '@types/hast':
         specifier: 3.0.4
         version: 3.0.4
+      '@vitest/coverage-v8':
+        specifier: 'catalog:'
+        version: 4.1.5(@vitest/browser@4.1.5)(vitest@4.1.5)
       shiki:
         specifier: 4.0.2
         version: 4.0.2
