@@ -1,5 +1,5 @@
 {
-  "$schema": "https://unpkg.com/knip@5/schema.json",
+  "$schema": "https://unpkg.com/knip/schema.json",
   "ignore": [
     "apps/main/src/app/_components/coming-soon/index.ts",
     "apps/main/src/app/_components/development-only/development-only.tsx",
