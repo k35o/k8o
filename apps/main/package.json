@@ -71,7 +71,7 @@
     "postcss-load-config": "catalog:",
     "react-scan": "0.5.6",
     "storybook": "catalog:",
-    "storybook-addon-mock-date": "2.0.0",
+    "storybook-addon-mock-date": "3.0.1",
     "vitest": "catalog:",
     "vitest-browser-react": "catalog:"
   },
