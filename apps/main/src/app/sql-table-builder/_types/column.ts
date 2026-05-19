@@ -1,4 +1,4 @@
-export type ColumnType =
+type ColumnType =
   | 'uuid'
   | 'serial'
   | 'integer'

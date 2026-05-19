@@ -18,7 +18,7 @@ export type Annotation = {
   original: LintMessage;
 };
 
-export type Phase = 'input' | 'review' | 'complete';
+type Phase = 'input' | 'review' | 'complete';
 
 export type State = {
   phase: Phase;

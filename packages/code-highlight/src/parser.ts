@@ -4,7 +4,7 @@ export type Annotation =
   | { type: 'remove' }
   | { type: 'callout'; text: string };
 
-export type ParseResult = {
+type ParseResult = {
   code: string;
   annotations: Annotation[][];
 };
