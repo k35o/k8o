@@ -1,0 +1,20 @@
+.ul,
+.ol {
+  font-size: 2cqi;
+  line-height: 1.6;
+  padding-inline-start: 4cqi;
+  margin: 0 0 1.2cqi;
+}
+
+.ul {
+  list-style-type: disc;
+}
+
+.ol {
+  list-style-type: decimal;
+}
+
+.li {
+  font-size: 2cqi;
+  margin: 0.25em 0;
+}

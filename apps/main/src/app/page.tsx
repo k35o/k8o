@@ -88,6 +88,11 @@ export default function Home() {
               title="Talks"
             />
             <AppCard
+              description="登壇や発表で使ったスライドをアプリ内で見られます。"
+              link="/slides"
+              title="Slides"
+            />
+            <AppCard
               description="ブログ記事や興味のある技術の試作品を集めています。"
               link="/playgrounds"
               title="Playgrounds"

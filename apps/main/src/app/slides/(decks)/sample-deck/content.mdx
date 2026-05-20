@@ -1,0 +1,86 @@
+---
+title: サンプルスライド
+description: スライド機能の動作確認用デッキ。
+createdAt: 2026-05-15
+updatedAt: 2026-05-15
+---
+
+import {
+  Cover,
+  Image,
+  Notes,
+  SlideDeckShell,
+} from '@/app/slides/_components/slide-mdx';
+import k8oImage from '@/app/_images/k8o.jpg';
+
+<SlideDeckShell slug="sample-deck" title="サンプルスライド">
+
+<Cover>
+
+# k8o のスライド機能
+
+## サンプルプレゼンテーション
+
+2026年5月 / k8o
+
+</Cover>
+
+---
+
+## スライド機能のご紹介
+
+k8o.meに追加されたスライド機能のサンプルデッキです。
+
+<Notes>
+これは1枚目のノート。発表者モードでのみ表示される。
+</Notes>
+
+---
+
+## 操作
+
+- 矢印キー: 前後のスライドへ移動
+- スペース: 次のスライドへ
+- Home / End: 最初 / 最後へ
+
+<Notes>
+操作説明スライド。キーボード操作中心。
+</Notes>
+
+---
+
+## コードハイライト
+
+```ts
+const greet = (name: string): string => `Hello, ${name}!`;
+
+console.log(greet('k8o'));
+```
+
+`rehype` の `@repo/code-highlight` が効くので、ブログと同じ見た目でシンタックスハイライトされる。
+
+---
+
+## 発表者モード
+
+右上の「発表者モード」リンクから別タブで開ける。`BroadcastChannel`で観覧側と同期する。
+
+---
+
+## 画像の埋め込み
+
+<Image src={k8oImage} alt="k8oのアイコン" caption="ローカルの静的インポート画像を埋め込み" />
+
+`import` した `StaticImageData` を `<Image src={...} />` に渡せば、Next.js `Image` 経由で最適化される。
+
+---
+
+## おわり
+
+ご清聴ありがとうございました。
+
+<Notes>
+クロージング。質疑への誘導など。
+</Notes>
+
+</SlideDeckShell>

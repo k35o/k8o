@@ -1,0 +1,50 @@
+import {
+  Children,
+  isValidElement,
+  type ReactElement,
+  type ReactNode,
+} from 'react';
+
+import { NOTES_ROLE } from './notes-marker';
+
+export type Slide = {
+  content: ReactNode[];
+  notes: ReactNode[];
+};
+
+const isHrElement = (node: ReactNode): boolean =>
+  isValidElement(node) && node.type === 'hr';
+
+const isNotesElement = (
+  node: ReactNode,
+): node is ReactElement<{ children: ReactNode }> => {
+  if (!isValidElement(node)) return false;
+  const { type } = node;
+  if (typeof type !== 'function') return false;
+  return (type as { $$slideRole?: string }).$$slideRole === NOTES_ROLE;
+};
+
+/**
+ * MDX が描画した children (h2, p, hr, Notes 等) を `---` (hr) で分割し、
+ * Notes は本編から外して各スライドの notes に集める。
+ */
+export const splitSlides = (children: ReactNode): Slide[] => {
+  const slides: Slide[] = [{ content: [], notes: [] }];
+  for (const child of Children.toArray(children)) {
+    const current = slides.at(-1);
+    if (current === undefined) continue;
+
+    if (isHrElement(child)) {
+      slides.push({ content: [], notes: [] });
+      continue;
+    }
+
+    if (isNotesElement(child)) {
+      current.notes.push(child.props.children);
+      continue;
+    }
+
+    current.content.push(child);
+  }
+  return slides;
+};
