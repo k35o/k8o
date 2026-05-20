@@ -6,7 +6,7 @@ type LlmMetadata = {
 export const pageMetadata = {
   artifacts: {
     title: 'Artifacts',
-    description: 'dotfilesやskills、自作ツールなどの制作物をまとめています。',
+    description: 'dotfilesや自作ツールなどの制作物をまとめています。',
   },
   baseConverter: {
     title: '基数チェンジャー',
