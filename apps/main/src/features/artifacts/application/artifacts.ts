@@ -34,14 +34,6 @@ export const getArtifacts = (): Artifact[] => [
     tags: ['Dotfiles', 'Shell', 'Config', 'Personal'],
   },
   {
-    name: 'skills',
-    description: 'ClaudeやCodexなどで使う自分用のAIエージェント向けskills集。',
-    githubUrl: 'https://github.com/k35o/skills',
-    websiteUrl: null,
-    npmPackageName: null,
-    tags: ['AI Agent', 'Skills', 'Config', 'Personal'],
-  },
-  {
     name: 'better-css-modules',
     description: 'CSS Modulesを扱いやすくするための実験的なツール。',
     githubUrl: 'https://github.com/k35o/better-css-modules',
