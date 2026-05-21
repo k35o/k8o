@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useRef } from 'react';
+import { useCallback, useEffect, useRef } from 'react';
 
 type ChannelMessage = { type: 'sync'; index: number };
 
@@ -50,11 +50,11 @@ export const useBroadcastListener = ({
     };
   }, [channelName]);
 
-  return (index: number) => {
+  return useCallback((index: number) => {
     const channel = channelRef.current;
     if (channel === null) return;
     // BroadcastChannel.postMessage は targetOrigin を取らない
     // oxlint-disable-next-line unicorn/require-post-message-target-origin
     channel.postMessage({ type: 'sync', index } satisfies ChannelMessage);
-  };
+  }, []);
 };

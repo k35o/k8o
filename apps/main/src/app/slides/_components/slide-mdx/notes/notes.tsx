@@ -1,6 +1,6 @@
 import type { FC, ReactNode } from 'react';
 
-export const NOTES_ROLE = 'slide-notes' as const;
+import { NOTES_ROLE } from '@/features/slides/application/notes-marker';
 
 /**
  * 発表者ノート用マーカー。常に null を返し、本編 DOM には出力されない。
