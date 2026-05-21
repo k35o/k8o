@@ -27,13 +27,14 @@ export const DeckViewer: FC<{
   const [isPresenting, setIsPresenting] = useState(false);
   const isMaximized = isFullscreen || isPresenting;
   const [sessionId] = useState<string>(() => {
-    if (
-      typeof crypto !== 'undefined' &&
-      typeof crypto.randomUUID === 'function'
-    ) {
-      return crypto.randomUUID();
-    }
-    return '';
+    if (typeof window === 'undefined') return '';
+    if (typeof crypto.randomUUID !== 'function') return '';
+    const storageKey = `slide-session:${slug}`;
+    const stored = window.sessionStorage.getItem(storageKey);
+    if (stored !== null) return stored;
+    const generated = crypto.randomUUID();
+    window.sessionStorage.setItem(storageKey, generated);
+    return generated;
   });
   useBroadcastViewerHeartbeat({ slug, sessionId });
   const current = slides[index] ?? slides[0];
