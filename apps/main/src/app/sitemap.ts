@@ -1,12 +1,17 @@
 import type { MetadataRoute } from 'next';
 
 import { getBlogContents } from '@/features/blog/interface/queries';
+import { getSlideContents } from '@/features/slides/interface/queries';
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const blogs = await getBlogContents();
+  const slides = await getSlideContents();
 
   const blogMap = blogs.map((blog) => ({
     url: `https://k8o.me/blog/${blog.slug}`,
+  }));
+  const slideMap = slides.map((slide) => ({
+    url: `https://k8o.me/slides/${slide.slug}`,
   }));
 
   return [
@@ -18,6 +23,11 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       changeFrequency: 'weekly',
     },
     ...blogMap,
+    {
+      url: 'https://k8o.me/slides',
+      changeFrequency: 'weekly',
+    },
+    ...slideMap,
     {
       url: 'https://k8o.me/base-converter',
     },

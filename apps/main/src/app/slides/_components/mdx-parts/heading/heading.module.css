@@ -1,0 +1,34 @@
+.h1 {
+  font-size: 5.5cqi;
+  font-weight: 700;
+  margin: 0 0 2cqi;
+  line-height: 1.1;
+  color: var(--color-fg-base);
+}
+
+.h2 {
+  font-size: 4cqi;
+  margin: 0 0 1.5cqi;
+  padding-bottom: 0.5cqi;
+  border-bottom-width: 0.2cqi;
+  border-bottom-style: solid;
+  line-height: 1.2;
+  font-weight: 700;
+}
+
+.h3 {
+  font-size: 3.2cqi;
+  margin: 0 0 1.2cqi;
+  padding-bottom: 0.4cqi;
+  border-bottom-width: 0.15cqi;
+  border-bottom-style: solid;
+  line-height: 1.2;
+  font-weight: 700;
+}
+
+.h4 {
+  font-size: 2.6cqi;
+  margin: 0 0 0.8cqi;
+  line-height: 1.3;
+  font-weight: 700;
+}

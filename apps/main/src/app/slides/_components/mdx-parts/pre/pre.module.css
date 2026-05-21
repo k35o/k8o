@@ -1,0 +1,9 @@
+.pre {
+  font-size: 1.6cqi;
+  margin: 0 0 1.2cqi;
+  padding: 1.2cqi 1.6cqi;
+  border-radius: 0.5cqi;
+  overflow: auto;
+  max-width: 100%;
+  background-color: var(--color-bg-subtle);
+}

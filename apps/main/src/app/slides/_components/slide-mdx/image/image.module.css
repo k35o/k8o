@@ -1,0 +1,23 @@
+.figure {
+  margin: 0 0 1cqi;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5cqi;
+}
+
+.img {
+  display: block;
+  max-width: 50%;
+  max-height: 35cqh;
+  width: auto;
+  height: auto;
+  object-fit: contain;
+}
+
+.caption {
+  font-size: 1.6cqi;
+  line-height: 1.4;
+  color: var(--color-fg-mute);
+  text-align: center;
+}
