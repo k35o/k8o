@@ -28,7 +28,7 @@ async function generateRssFeed() {
       description: slide.description ?? '',
       url: `${SLIDES_URL}/${slide.slug}`,
       date: slide.updatedAt,
-      categories: slide.tags.map((tag) => tag),
+      categories: slide.tags,
     });
   }
 
