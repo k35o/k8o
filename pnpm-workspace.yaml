@@ -43,5 +43,7 @@ minimumReleaseAge: 10080
 
 minimumReleaseAgeExclude:
   - '@k8o/*'
+  # Renovate security update: turbo@2.9.14
+  - turbo@2.9.14
 
 verifyDepsBeforeRun: install
