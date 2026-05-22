@@ -99,8 +99,8 @@ importers:
         specifier: 24.12.4
         version: 24.12.4
       '@typescript/native-preview':
-        specifier: 7.0.0-dev.20260510.1
-        version: 7.0.0-dev.20260510.1
+        specifier: 7.0.0-dev.20260515.1
+        version: 7.0.0-dev.20260515.1
       '@upstash/context7-mcp':
         specifier: 2.2.3
         version: 2.2.3
@@ -484,11 +484,6 @@ packages:
   '@alloc/quick-lru@5.2.0':
     resolution: {integrity: sha512-UrcABB+4bUrFABwbluTIBErXwvbsU/V7TZWfmbgJfbkwiBuziS9gxdODUyuiecfdGQ85jglMW6juS3+z5TsKLw==}
     engines: {node: '>=10'}
-
-  '@antfu/ni@30.1.0':
-    resolution: {integrity: sha512-3VuAbPjgY52rQNn4wABaXMhBU2Oq91uy6L8nX49eJ35OLI68CyckGU+HZxcaHix4ymuGM2nFL1D6sLpgODK5xw==}
-    engines: {node: '>=20.19.0'}
-    hasBin: true
 
   '@babel/code-frame@7.29.0':
     resolution: {integrity: sha512-9NhCeYjq9+3uxgdtp20LSiJXJvN0FeCtNGpJxuMFZ1Kv3cWUNb6DOhJwUvcVCzKGR66cw4njwM6hrJLqgOwbcw==}
@@ -2581,8 +2576,8 @@ packages:
   '@prisma/schema-files-loader@6.8.2':
     resolution: {integrity: sha512-JRXJ08xfA1cP30kgP15AMCOKZchy2ss2oN6nSHxN745euh2tijpzvW4yCD4Q/1ZtnDkfKae45Tcpx0Ytab7RPA==}
 
-  '@react-grab/cli@0.1.33':
-    resolution: {integrity: sha512-UOc3PwN11Osw0NzaxRLK8trP4X+5iW1Dst3gvHRCafe3wXHyadzHYH8H1hdkcXdlIx3gsoD9ASJ+G/JH+A/jqA==}
+  '@react-grab/cli@0.1.34':
+    resolution: {integrity: sha512-L2eAxN46Vq2Ss3nDegrH7wQVMeWH03ahawp+OdzUtQWqL3cq6Bt149q9XhY3cWc9fJsxuWjLfCn+3T9uApIlBA==}
     hasBin: true
 
   '@reduxjs/toolkit@2.11.2':
@@ -3304,50 +3299,50 @@ packages:
   '@types/ws@8.18.1':
     resolution: {integrity: sha512-ThVF6DCVhA8kUGy+aazFQ4kXQ7E1Ty7A3ypFOe0IcJV8O/M511G99AW24irKrW56Wt44yG9+ij8FaqoBGkuBXg==}
 
-  '@typescript/native-preview-darwin-arm64@7.0.0-dev.20260510.1':
-    resolution: {integrity: sha512-YpG99bf/Va1aLGP8SUQy1ClUvi4c6uTFrEQ0B5KzZb9TsOwH1RIrc/2n8UO3IAuilvwEA0EU4q8fEO3otVP2Sw==}
+  '@typescript/native-preview-darwin-arm64@7.0.0-dev.20260515.1':
+    resolution: {integrity: sha512-CSvyLkNV0k4Ro0B6nzNdDXFrRD8aa6sDvXSGla2FTmBio+JLKqNuJXq1ppyj42j9pAwdUhDZV/PNdjeHRCBjWQ==}
     engines: {node: '>=16.20.0'}
     cpu: [arm64]
     os: [darwin]
 
-  '@typescript/native-preview-darwin-x64@7.0.0-dev.20260510.1':
-    resolution: {integrity: sha512-NUwhwHpQn7aSX2GGBuY2bjec+hFnIz2DAna4ksVneexVE20h2U0MFzBvWrqH2C0PzPxVvGOMg4fGCvhTs93nlw==}
+  '@typescript/native-preview-darwin-x64@7.0.0-dev.20260515.1':
+    resolution: {integrity: sha512-QTmm0dpF6CC3hrfudAyVcIvbr1tlBTZ7aGQHIs4PYmi+tnTi2R8jy6gDBCJWlDBSXqjPWlQZrdiOxRBCSlShSA==}
     engines: {node: '>=16.20.0'}
     cpu: [x64]
     os: [darwin]
 
-  '@typescript/native-preview-linux-arm64@7.0.0-dev.20260510.1':
-    resolution: {integrity: sha512-T7Zuy6h0sU+38w+N3A+YgW0XVqxIMjeHyu+945rJkiP9zk52Mwp663t1ndyeAE/N2zV+q0SWQmHNuFSXl99wJw==}
+  '@typescript/native-preview-linux-arm64@7.0.0-dev.20260515.1':
+    resolution: {integrity: sha512-bH/CYrtXURXr3YwqJmlKblQ858wuJ0Qw2VSMvlsWwYZpb8eOd07T2bl1Ba6QxGBuL6EotcDQFd2OYJIj0uvM7A==}
     engines: {node: '>=16.20.0'}
     cpu: [arm64]
     os: [linux]
 
-  '@typescript/native-preview-linux-arm@7.0.0-dev.20260510.1':
-    resolution: {integrity: sha512-UE+PIWWg7vvszSU0gS9rzgIIHCWexz3hMZDHpHRSLAleAvULCNI3EzwTRFOA4BHyQ8eReD1KZ8e76BuStEPspw==}
+  '@typescript/native-preview-linux-arm@7.0.0-dev.20260515.1':
+    resolution: {integrity: sha512-0b+Sxh8JUNMqvw06wfIoh45+G68/ikCW+aRqHGipU2uc9M9dWUKvI3zDyzP1rF6FOJ7xMKMbTbi5b2IvcRqh8g==}
     engines: {node: '>=16.20.0'}
     cpu: [arm]
     os: [linux]
 
-  '@typescript/native-preview-linux-x64@7.0.0-dev.20260510.1':
-    resolution: {integrity: sha512-gJu4q4YREvjR2Lx1jUaCd/bRbTuyKf2r3rJ4tReuHyAvNse23HdGI0a9w4Z3wUbvRznxYt640IIItWsr/f3LEQ==}
+  '@typescript/native-preview-linux-x64@7.0.0-dev.20260515.1':
+    resolution: {integrity: sha512-eXgYE6pmkCiEEX7T43TYeF24uiY8+h9mbi9YSvnCoRp4BLgn9b7uJagh4ctSGCNxUy3QSDeoznkWfSVlrvJ5pA==}
     engines: {node: '>=16.20.0'}
     cpu: [x64]
     os: [linux]
 
-  '@typescript/native-preview-win32-arm64@7.0.0-dev.20260510.1':
-    resolution: {integrity: sha512-00DtjrtkdAHOU/soYr8ncrjUvIsple8nvb29ZUATnLraNnzUgv5AS3yMve/pG/N7rVLlKy2FrXlVyVW7WAx29w==}
+  '@typescript/native-preview-win32-arm64@7.0.0-dev.20260515.1':
+    resolution: {integrity: sha512-K1YJimcOr3/lFTJyOChT1GnRdfvoHtIvG/qcwHhHpeCBzpGfG7u2aH9MkBgsXqNJHAXHLnQRuON2uYgU8wWDzw==}
     engines: {node: '>=16.20.0'}
     cpu: [arm64]
     os: [win32]
 
-  '@typescript/native-preview-win32-x64@7.0.0-dev.20260510.1':
-    resolution: {integrity: sha512-27UeujQTEPFxhfkZL7aHnA1TlNol3nwDVFp5d6jFoP14yTXMe47kBnAJLEU2ta3REZE5PzLCs7HLV8H4VdxGgA==}
+  '@typescript/native-preview-win32-x64@7.0.0-dev.20260515.1':
+    resolution: {integrity: sha512-1cGEWLao/d2+Q3yMvtnDES85sM9HuI6J6PBmrcjwXzsQxnjXJkujStdp+LB6JZfY+VSDi+cpaCZmrKU6sYUfkg==}
     engines: {node: '>=16.20.0'}
     cpu: [x64]
     os: [win32]
 
-  '@typescript/native-preview@7.0.0-dev.20260510.1':
-    resolution: {integrity: sha512-05U6/Im+vmqGrFAVrHSeuoXBCwShhbiA+93VpSwEBYP4LMWk2JW9q87MydamL5g6ISEjIVlwQ4Dx35CauPAwpA==}
+  '@typescript/native-preview@7.0.0-dev.20260515.1':
+    resolution: {integrity: sha512-dWhzJGb9iJfCDsjz/LzPkbMj5XDbFWyZmDyTixcmQPgX5zFOPZ+sAdlCpTZFGEJhA7OqXG+lZyajbJfjYvQorA==}
     engines: {node: '>=16.20.0'}
     hasBin: true
 
@@ -3815,6 +3810,11 @@ packages:
 
   bippy@0.5.39:
     resolution: {integrity: sha512-8hE8rKSl8JWyeaY+JjpnmceWAZPpLEyzOZQpWXM5Rc7861c5WotMJHy2aRZKZrGA8nMpvLNF01t4yQQ+HcZG3w==}
+    peerDependencies:
+      react: '>=17.0.1'
+
+  bippy@0.5.40:
+    resolution: {integrity: sha512-3QPSDG5tgd7FCIkcKsUqmbGdlHxBxP7II5drXPNp1I0rpA9+4+/VjQOigDTbzeqTi6Xkaf1Dq7x4E8vbOuwOkA==}
     peerDependencies:
       react: '>=17.0.1'
 
@@ -4534,9 +4534,6 @@ packages:
 
   function-bind@1.1.2:
     resolution: {integrity: sha512-7XHNxH7qX9xG5mIwxkhumTox/MIRNcOgDrxWsMt2pAr23WHp6MrRlN7FBSFpCpr+oVO0F744iUgR82nJMfG2SA==}
-
-  fzf@0.5.2:
-    resolution: {integrity: sha512-Tt4kuxLXFKHy8KT40zwsUPUkg1CrsgY25FxA2U/j/0WgEDCk3ddc/zLTCCcbSHX9FcKtLuVaDGtGE/STWC+j3Q==}
 
   gaxios@6.7.1:
     resolution: {integrity: sha512-LDODD4TMYx7XXdpwxAVRAIAuB0bzv0s+ywFonY46k126qzQHT9ygyoa9tncmOiQmmDrik65UYsEkv3lbfqQ3yQ==}
@@ -5633,8 +5630,8 @@ packages:
     peerDependencies:
       react: ^19.2.6
 
-  react-grab@0.1.33:
-    resolution: {integrity: sha512-ER919JMsE4TTrb2CpEivqsIjNMSycD4HtS8v7mS3pq67U7WL1K3+C8m9AYOwW4dpuYh+EanC2eJBmfuczHJZ0A==}
+  react-grab@0.1.34:
+    resolution: {integrity: sha512-jtdOdv0kb90oqL+pMszSh9DOLgVRaX4ZE6XN4GkDEpNNUqveQfZT014+EeJraljpqQfuWKW+96NrrRqUD93D2g==}
     hasBin: true
     peerDependencies:
       react: '>=17.0.0'
@@ -6571,13 +6568,6 @@ snapshots:
       is-fullwidth-code-point: 4.0.0
 
   '@alloc/quick-lru@5.2.0': {}
-
-  '@antfu/ni@30.1.0':
-    dependencies:
-      fzf: 0.5.2
-      package-manager-detector: 1.6.0
-      tinyexec: 1.1.2
-      tinyglobby: 0.2.16
 
   '@babel/code-frame@7.29.0':
     dependencies:
@@ -8131,16 +8121,17 @@ snapshots:
       '@prisma/prisma-schema-wasm': 6.8.0-43.2060c79ba17c6bb9f5823312b6f6b7f4a845738e
       fs-extra: 11.3.0
 
-  '@react-grab/cli@0.1.33':
+  '@react-grab/cli@0.1.34':
     dependencies:
-      '@antfu/ni': 30.1.0
       commander: 14.0.3
       ignore: 7.0.5
       jsonc-parser: 3.3.1
       ora: 9.4.0
+      package-manager-detector: 1.6.0
       picocolors: 1.1.1
       prompts: 2.4.2
       smol-toml: 1.6.1
+      tinyexec: 1.1.2
 
   '@reduxjs/toolkit@2.11.2(react-redux@9.2.0(@types/react@19.2.14)(react@19.2.6)(redux@5.0.1))(react@19.2.6)':
     dependencies:
@@ -8841,36 +8832,36 @@ snapshots:
     dependencies:
       '@types/node': 24.12.2
 
-  '@typescript/native-preview-darwin-arm64@7.0.0-dev.20260510.1':
+  '@typescript/native-preview-darwin-arm64@7.0.0-dev.20260515.1':
     optional: true
 
-  '@typescript/native-preview-darwin-x64@7.0.0-dev.20260510.1':
+  '@typescript/native-preview-darwin-x64@7.0.0-dev.20260515.1':
     optional: true
 
-  '@typescript/native-preview-linux-arm64@7.0.0-dev.20260510.1':
+  '@typescript/native-preview-linux-arm64@7.0.0-dev.20260515.1':
     optional: true
 
-  '@typescript/native-preview-linux-arm@7.0.0-dev.20260510.1':
+  '@typescript/native-preview-linux-arm@7.0.0-dev.20260515.1':
     optional: true
 
-  '@typescript/native-preview-linux-x64@7.0.0-dev.20260510.1':
+  '@typescript/native-preview-linux-x64@7.0.0-dev.20260515.1':
     optional: true
 
-  '@typescript/native-preview-win32-arm64@7.0.0-dev.20260510.1':
+  '@typescript/native-preview-win32-arm64@7.0.0-dev.20260515.1':
     optional: true
 
-  '@typescript/native-preview-win32-x64@7.0.0-dev.20260510.1':
+  '@typescript/native-preview-win32-x64@7.0.0-dev.20260515.1':
     optional: true
 
-  '@typescript/native-preview@7.0.0-dev.20260510.1':
+  '@typescript/native-preview@7.0.0-dev.20260515.1':
     optionalDependencies:
-      '@typescript/native-preview-darwin-arm64': 7.0.0-dev.20260510.1
-      '@typescript/native-preview-darwin-x64': 7.0.0-dev.20260510.1
-      '@typescript/native-preview-linux-arm': 7.0.0-dev.20260510.1
-      '@typescript/native-preview-linux-arm64': 7.0.0-dev.20260510.1
-      '@typescript/native-preview-linux-x64': 7.0.0-dev.20260510.1
-      '@typescript/native-preview-win32-arm64': 7.0.0-dev.20260510.1
-      '@typescript/native-preview-win32-x64': 7.0.0-dev.20260510.1
+      '@typescript/native-preview-darwin-arm64': 7.0.0-dev.20260515.1
+      '@typescript/native-preview-darwin-x64': 7.0.0-dev.20260515.1
+      '@typescript/native-preview-linux-arm': 7.0.0-dev.20260515.1
+      '@typescript/native-preview-linux-arm64': 7.0.0-dev.20260515.1
+      '@typescript/native-preview-linux-x64': 7.0.0-dev.20260515.1
+      '@typescript/native-preview-win32-arm64': 7.0.0-dev.20260515.1
+      '@typescript/native-preview-win32-x64': 7.0.0-dev.20260515.1
 
   '@ungap/structured-clone@1.3.0': {}
 
@@ -9276,6 +9267,10 @@ snapshots:
   bignumber.js@9.3.1: {}
 
   bippy@0.5.39(react@19.2.6):
+    dependencies:
+      react: 19.2.6
+
+  bippy@0.5.40(react@19.2.6):
     dependencies:
       react: 19.2.6
 
@@ -9943,8 +9938,6 @@ snapshots:
     optional: true
 
   function-bind@1.1.2: {}
-
-  fzf@0.5.2: {}
 
   gaxios@6.7.1:
     dependencies:
@@ -11457,10 +11450,10 @@ snapshots:
       react: 19.2.6
       scheduler: 0.27.0
 
-  react-grab@0.1.33(react@19.2.6):
+  react-grab@0.1.34(react@19.2.6):
     dependencies:
-      '@react-grab/cli': 0.1.33
-      bippy: 0.5.39(react@19.2.6)
+      '@react-grab/cli': 0.1.34
+      bippy: 0.5.40(react@19.2.6)
     optionalDependencies:
       react: 19.2.6
 
@@ -11495,7 +11488,7 @@ snapshots:
       prompts: 2.4.2
       react: 19.2.6
       react-dom: 19.2.6(react@19.2.6)
-      react-grab: 0.1.33(react@19.2.6)
+      react-grab: 0.1.34(react@19.2.6)
     optionalDependencies:
       esbuild: 0.27.7
       unplugin: 2.1.0
