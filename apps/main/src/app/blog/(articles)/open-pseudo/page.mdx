@@ -1,0 +1,72 @@
+---
+title: ':open疑似クラスで開いている要素をまとめてスタイリングする'
+description: ':openはdialog、details、select、ピッカー付きのinputといった開閉できる要素が開いている間にマッチするCSS疑似クラスです。Baseline 2026で揃ったので、dialog[open]やdetails[open]といった要素別の属性セレクタを横断して一本化できます。'
+createdAt: 2026-05-23
+updatedAt: 2026-05-23
+featureIds:
+  - open-pseudo
+---
+
+import { BaselineStatus } from '@k8o/arte-odyssey';
+import { OpenPseudoDemo, Playground } from '@/app/_components/playgrounds';
+
+# :open疑似クラスで開いている要素をまとめてスタイリングする
+
+<BaselineStatus featureId="open-pseudo" />
+
+## はじめに
+
+HTMLには開閉できる要素が複数あります。`<dialog>`、`<details>`、`<select>`、ピッカーUIを持つ`<input>`などです。これまでは開いているときに当てるCSSはそれぞれ別のセレクタが必要でした。
+
+- `<dialog>` → `dialog[open]`
+- `<details>` → `details[open]`
+- `<select>` → 専用セレクタなし
+- `<input type="color">`などのピッカー → 専用セレクタなし
+
+Baseline 2026で揃った`:open`疑似クラスは、これらをまとめて表せるセレクタです。なお、`popover`属性を持つ要素は別系統で`:popover-open`が用意されており、`:open`の対象には含まれません。
+
+## マッチする要素
+
+`:open`は現在開いている状態の要素にマッチします。仕様上、対象になるのは以下です。
+
+- `<dialog>` - `open`属性が付いているとき
+- `<details>` - `open`属性が付いているとき
+- `<select>` - ピッカー（ドロップダウン）が開いているとき
+- `<input>`のうちピッカーUIを持つ型（`color`、`date`、`file`など） - ピッカーが開いているとき
+
+`popover`属性を持つ要素は`:open`ではなく`:popover-open`で扱います。
+
+## 使い方
+
+開いた瞬間だけ枠線を強調したい、開いているトリガーボタンとそろえて色を変えたい、といったケースで一本のセレクタで書けます。
+
+```css
+:open {
+  /* [!hl] */
+  outline: 2px solid var(--color-accent);
+  outline-offset: 4px;
+}
+```
+
+要素を絞りたいときは普通のセレクタと組み合わせます。
+
+```css
+/* dialogとdetailsが開いているとき */
+dialog:open,
+details:open {
+  border-color: var(--color-accent);
+}
+
+/* selectのピッカーが開いているとき */
+select:open {
+  box-shadow: 0 10px 30px rgb(0 0 0 / 0.2);
+}
+```
+
+<Playground title=":openで開いている要素を一括スタイリング">
+  <OpenPseudoDemo />
+</Playground>
+
+## おわりに
+
+`:open`の本当の価値は`<select>`やピッカー付き`<input>`（`color`、`date`、`file`など）にスタイリングできることにあります。`<dialog>`や`<details>`は元から属性セレクタで取れていたので`:open`はそれを横断的にまとめる書き方でしかないですが、これらネイティブピッカーの開閉に追従するCSSはこれまで書きようがなく、`:open`が唯一無二の手段として加わった形です。Baseline 2026で主要ブラウザに揃ったことで、ネイティブUIに踏み込んだスタイリングが現実的に書けるようになりました。

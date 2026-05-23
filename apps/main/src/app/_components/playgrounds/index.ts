@@ -3,6 +3,7 @@
 export * from './abs-sign';
 export * from './active-view-transition';
 export * from './async-clipboard';
+export * from './baseline-shift';
 export * from './caret-position-from-point';
 export * from './composed-ranges';
 export * from './content-visibility';
@@ -24,17 +25,20 @@ export * from './scope';
 export * from './screen-wake-lock';
 export * from './scrollbar-color';
 export * from './scrollend';
+export * from './open-pseudo';
 export * from './shape-function';
 export * from './shared-worker';
 export * from './spelling-grammar-error';
 export * from './suspense-list';
 export * from './text-decoration-skip-ink-all';
 export * from './text-indent-keywords';
+export * from './toggleevent-source';
 export * from './view-transitions';
 
 import { absSignSection } from './abs-sign';
 import { activeViewTransitionSection } from './active-view-transition';
 import { asyncClipboardSection } from './async-clipboard';
+import { baselineShiftSection } from './baseline-shift';
 import { caretPositionFromPointSection } from './caret-position-from-point';
 import { composedRangesSection } from './composed-ranges';
 import { contentVisibilitySection } from './content-visibility';
@@ -47,6 +51,7 @@ import { highlightSection } from './highlight';
 import { inputFileWebkitdirectorySection } from './input-file-webkitdirectory';
 import { invokerCommandsSection } from './invoker-commands';
 import { lcpSection } from './largest-contentful-paint';
+import { openPseudoSection } from './open-pseudo';
 import { popoverSection } from './popover';
 import { printColorAdjustSection } from './print-color-adjust';
 import { requestCloseSection } from './requestclose';
@@ -61,12 +66,14 @@ import { spellingGrammarErrorSection } from './spelling-grammar-error';
 import { suspenseListSection } from './suspense-list';
 import { textDecorationSkipInkAllSection } from './text-decoration-skip-ink-all';
 import { textIndentKeywordsSection } from './text-indent-keywords';
+import { toggleEventSourceSection } from './toggleevent-source';
 import type { PlaygroundSection } from './types';
 import { viewTransitionsSection } from './view-transitions';
 
 export const playgroundSections: PlaygroundSection[] = [
   activeViewTransitionSection,
   asyncClipboardSection,
+  baselineShiftSection,
   caretPositionFromPointSection,
   composedRangesSection,
   contentVisibilitySection,
@@ -78,6 +85,7 @@ export const playgroundSections: PlaygroundSection[] = [
   inputFileWebkitdirectorySection,
   invokerCommandsSection,
   lcpSection,
+  openPseudoSection,
   popoverSection,
   requestCloseSection,
   printColorAdjustSection,
@@ -94,5 +102,6 @@ export const playgroundSections: PlaygroundSection[] = [
   spellingGrammarErrorSection,
   textDecorationSkipInkAllSection,
   textIndentKeywordsSection,
+  toggleEventSourceSection,
   viewTransitionsSection,
 ];

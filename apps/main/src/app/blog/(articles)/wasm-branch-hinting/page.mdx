@@ -1,0 +1,116 @@
+---
+title: WebAssemblyのBranch Hintingで分岐予測を助ける
+description: Branch HintingはWebAssemblyのbr_ifやifの分岐に対してどちらに進みやすいかをメタデータとしてカスタムセクションに埋め込み、エンジンの最適化を助ける仕組みです。Baseline 2026で揃ったので、ホットパスのチューニングに使える選択肢になりました。
+createdAt: 2026-05-23
+updatedAt: 2026-05-23
+featureIds:
+  - wasm-branch-hinting
+---
+
+import { BaselineStatus } from '@k8o/arte-odyssey';
+
+# WebAssemblyのBranch Hintingで分岐予測を助ける
+
+<BaselineStatus featureId="wasm-branch-hinting" />
+
+## はじめに
+
+CPUは分岐命令に出会うと、次にどちらの命令を実行するかを予測しながらパイプラインを先に進めます。予測が外れるとパイプラインを捨ててやり直すのでコストが大きく、ホットパスでは分岐の偏りに合わせて生成コードを並べておくと体感に効きます。「ほとんど通らないエラーパス」と「ほぼ毎回通る正常パス」が分かっているなら、コンパイラやJITに伝えることでホットパスを直線的に配置したり、低頻度側を別領域へ追い出したりといった最適化に繋げられます。
+
+C++などでは`[[likely]]` / `[[unlikely]]`属性のように、分岐先のステートメントに直接ヒントを付ける構文が用意されています。
+
+```cpp
+if (cache.contains(key)) [[likely]] {
+  return cache.get(key);
+} else [[unlikely]] {
+  return load_from_disk(key);
+}
+```
+
+ネイティブのコンパイラはこのヒントを使って条件ジャンプの並べ替えやホット・コールドのコード配置を決めますが、WebAssemblyにはそのヒントを運ぶ手段が長くありませんでした。Baseline 2026で揃ったBranch Hintingは、分岐命令にメタデータとしてlikely / unlikelyを載せる仕組みです。
+
+## どんな仕組みか
+
+WebAssemblyで条件分岐を担う代表的な命令は`br_if`と`if`です。
+
+- `br_if $label` - スタックの先頭の値が0以外なら`$label`へジャンプし、0ならそのまま次の命令へ進む。ジャンプ先はラベルがどの構造に付いているかで変わり、`block ... end`のラベルは末尾にバインドされるのでブロックの外へ抜け、`loop ... end`のラベルは先頭にバインドされるのでループの頭へ戻る（次のイテレーションに入る）
+- `if ... else ... end` - スタックの先頭の値で`then`側か`else`側のブロックを実行する。普通の`if文`に近い
+
+Branch Hintingは新しい命令ではなく、この`br_if`と`if`にカスタムセクションのメタデータを紐付けて、条件が真になりやすいかどうかをエンジンに伝える仕組みです。バイナリには`metadata.code.branch_hint`という名前のカスタムセクションが追加され、`0x00`は条件が真になりにくい（unlikely）、`0x01`は条件が真になりやすい（likely）という意味のバイト値で表します。実際には1分岐あたり、対象命令のバイトオフセット・ヒントの長さ・ヒント値の3つをまとめた1レコードとして記録されます。
+
+エンジン側はこれを最適化のヒントとして使えます。具体的にはJITが生成するコードで条件ジャンプの並び順を変えたり、likely側を直前に置いてキャッシュヒットを狙ったりといった調整が期待できます。あくまでヒントなので、これによって動作は変わりません。
+
+## テキスト形式での書き方
+
+WebAssemblyのバイナリはそのままだと読み書きしにくいので、デバッグや学習用にはWAT（WebAssembly Text Format、`.wat`）というテキスト表記が用意されています。`(func ...)`や`(loop ...)`のように括弧で命令や構造を入れ子にして書き、`wat2wasm`などで`.wasm`バイナリに変換します。以下のコード例もWATです。
+
+### スタックマシンの基本
+
+WebAssemblyはスタックマシン形式の言語で、命令は引数を式の中に書くのではなく、暗黙のスタックに値を積み下ろしして渡します。たとえば`1 + 2`は次のように書きます。
+
+```wasm
+i32.const 1   ;; スタックに 1 を積む
+i32.const 2   ;; スタックに 2 を積む（[1, 2]）
+i32.add       ;; 2つpopして合計をpush（[3]）
+```
+
+`i32.const`が値をpushし、`i32.add`がそれを消費して結果をpushする、というリズムです。このあと出てくる他の命令も同じ仕組みで動くので、新しく出てくる命令はコード中の`;;`コメントで補足していきます。
+
+### Branch Hintingのアノテーション
+
+WATでは`(@metadata.code.branch_hint ...)`というカスタムアノテーションでヒントを書きます。アノテーションは直後の命令に対するヒントとして解釈されるので、対象の`br_if`や`if`の直前に置きます。値は`"\01"`がlikely、`"\00"`がunlikelyです。
+
+次の例はカウンタをインクリメントしながらループを回す関数です。説明用の断片で、`(module ...)`では包んでいません。
+
+```wasm
+(func $hot_loop (param $n i32)
+  (local $i i32)
+  loop $cont
+    ;; ローカル変数 $i の値を積む
+    local.get $i
+    i32.const 1
+    i32.add
+    ;; スタックトップを $i に代入してそのまま残す
+    local.tee $i
+    local.get $n
+    ;; 2つpopして $i < $n の結果を積む
+    i32.lt_s
+    // [!hl]
+    // [!callout: ほとんどの回で br_if は取られる。落ちるのは $i が $n に追いついた最後の1回だけなので likely]
+    (@metadata.code.branch_hint "\01")
+    ;; スタックトップが非0なら $cont へジャンプ
+    br_if $cont
+  end
+)
+```
+
+`if`にも同様にアノテーションを置けます。次の例はnullチェックです。こちらも断片で、`$throw_null_pointer_error`の宣言は省略しています。
+
+```wasm
+(func $maybe_throw (param $ptr i32)
+  local.get $ptr
+  ;; 0なら1、非0なら0を積む（ここまでで実質 $ptr == 0 が乗る）
+  i32.eqz
+  // [!hl]
+  // [!callout: $ptr は普段ほぼ null ではないので、if の then 側に入るのはまれ → unlikely]
+  (@metadata.code.branch_hint "\00")
+  ;; スタックトップが非0なら then 側を実行
+  if
+    call $throw_null_pointer_error
+  end
+)
+```
+
+## ツール側の対応
+
+WAT手書きで使うことはそう多くないので、実用上はツールチェイン側の対応が前提になります。
+
+- wabt - `wat2wasm`に`--enable-annotations`を付けると、アノテーション付きWATをバイナリに変換できます
+- Binaryen - `wasm-opt`はフラグなしでbranch hintingを読み書きします。フィーチャーフラグでのガードはなく、各種最適化パスも一緒にヒントを保持・伝搬します。`--instrument-branch-hints`でヒントの的中率を測るための計装パスも用意されています
+- LLVM/Emscripten - C++の`[[likely]]` / `[[unlikely]]`などのヒント表現がwasm出力時にBranch Hintingに変換される流れが整いつつあります
+
+JavaScriptから直接特定の分岐をlikelyに指定するような注入の用途は少なく、コンパイラやランタイムが自動で埋め込んだヒントを実行エンジンが拾ってくれる、という使い方が中心になります。
+
+## おわりに
+
+Branch HintingはWebAssemblyのバイナリにそっと添えるメタデータで、この分岐はほぼこちらに進むとエンジンに伝えるだけのシンプルな仕組みです。Baseline 2026で主要ブラウザが揃ったことで、コンパイラがwasmを出すときに当たり前のヒントとして埋め込める段階になりました。アプリ側で明示的に意識する場面は少ないですが、PGOやプロファイリングと組み合わせると体感に効く一手として覚えておくと役立ちます。
