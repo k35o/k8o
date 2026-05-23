@@ -330,6 +330,13 @@
       "when": 1779173540389,
       "tag": "0046_giant_mephisto",
       "breakpoints": true
+    },
+    {
+      "idx": 47,
+      "version": "6",
+      "when": 1779174317722,
+      "tag": "0047_uneven_zzzax",
+      "breakpoints": true
     }
   ]
 }

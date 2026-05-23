@@ -3,6 +3,7 @@
 export * from './abs-sign';
 export * from './active-view-transition';
 export * from './async-clipboard';
+export * from './baseline-shift';
 export * from './caret-position-from-point';
 export * from './composed-ranges';
 export * from './content-visibility';
@@ -35,6 +36,7 @@ export * from './view-transitions';
 import { absSignSection } from './abs-sign';
 import { activeViewTransitionSection } from './active-view-transition';
 import { asyncClipboardSection } from './async-clipboard';
+import { baselineShiftSection } from './baseline-shift';
 import { caretPositionFromPointSection } from './caret-position-from-point';
 import { composedRangesSection } from './composed-ranges';
 import { contentVisibilitySection } from './content-visibility';
@@ -67,6 +69,7 @@ import { viewTransitionsSection } from './view-transitions';
 export const playgroundSections: PlaygroundSection[] = [
   activeViewTransitionSection,
   asyncClipboardSection,
+  baselineShiftSection,
   caretPositionFromPointSection,
   composedRangesSection,
   contentVisibilitySection,
