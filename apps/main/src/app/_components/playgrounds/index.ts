@@ -31,6 +31,7 @@ export * from './spelling-grammar-error';
 export * from './suspense-list';
 export * from './text-decoration-skip-ink-all';
 export * from './text-indent-keywords';
+export * from './toggleevent-source';
 export * from './view-transitions';
 
 import { absSignSection } from './abs-sign';
@@ -63,6 +64,7 @@ import { spellingGrammarErrorSection } from './spelling-grammar-error';
 import { suspenseListSection } from './suspense-list';
 import { textDecorationSkipInkAllSection } from './text-decoration-skip-ink-all';
 import { textIndentKeywordsSection } from './text-indent-keywords';
+import { toggleEventSourceSection } from './toggleevent-source';
 import type { PlaygroundSection } from './types';
 import { viewTransitionsSection } from './view-transitions';
 
@@ -97,5 +99,6 @@ export const playgroundSections: PlaygroundSection[] = [
   spellingGrammarErrorSection,
   textDecorationSkipInkAllSection,
   textIndentKeywordsSection,
+  toggleEventSourceSection,
   viewTransitionsSection,
 ];
