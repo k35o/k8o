@@ -25,6 +25,7 @@ export * from './scope';
 export * from './screen-wake-lock';
 export * from './scrollbar-color';
 export * from './scrollend';
+export * from './open-pseudo';
 export * from './shape-function';
 export * from './shared-worker';
 export * from './spelling-grammar-error';
@@ -50,6 +51,7 @@ import { highlightSection } from './highlight';
 import { inputFileWebkitdirectorySection } from './input-file-webkitdirectory';
 import { invokerCommandsSection } from './invoker-commands';
 import { lcpSection } from './largest-contentful-paint';
+import { openPseudoSection } from './open-pseudo';
 import { popoverSection } from './popover';
 import { printColorAdjustSection } from './print-color-adjust';
 import { requestCloseSection } from './requestclose';
@@ -83,6 +85,7 @@ export const playgroundSections: PlaygroundSection[] = [
   inputFileWebkitdirectorySection,
   invokerCommandsSection,
   lcpSection,
+  openPseudoSection,
   popoverSection,
   requestCloseSection,
   printColorAdjustSection,

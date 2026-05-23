@@ -344,6 +344,13 @@
       "when": 1779174329657,
       "tag": "0048_wooden_starbolt",
       "breakpoints": true
+    },
+    {
+      "idx": 49,
+      "version": "6",
+      "when": 1779174330690,
+      "tag": "0049_sparkling_randall_flagg",
+      "breakpoints": true
     }
   ]
 }
