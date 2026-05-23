@@ -83,6 +83,7 @@ export function OpenPseudoDemo() {
       <section className="open-demo-section flex flex-col gap-2 rounded-lg p-3 transition-colors">
         <h4 className="text-fg-base font-bold">select</h4>
         <select
+          aria-label="select :open デモ用の選択肢"
           className="open-demo-target bg-bg-base rounded-md p-2"
           defaultValue="1"
         >
@@ -98,6 +99,7 @@ export function OpenPseudoDemo() {
       <section className="open-demo-section flex flex-col gap-2 rounded-lg p-3 transition-colors">
         <h4 className="text-fg-base font-bold">input (color)</h4>
         <input
+          aria-label="input :open デモ用のカラーピッカー"
           className="open-demo-target bg-bg-base h-12 w-24 rounded-md p-1"
           defaultValue="#3b82f6"
           type="color"
