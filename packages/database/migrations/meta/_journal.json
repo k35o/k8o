@@ -323,6 +323,13 @@
       "when": 1778908531903,
       "tag": "0045_wild_supernaut",
       "breakpoints": true
+    },
+    {
+      "idx": 46,
+      "version": "6",
+      "when": 1779173540389,
+      "tag": "0046_giant_mephisto",
+      "breakpoints": true
     }
   ]
 }
