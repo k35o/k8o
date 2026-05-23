@@ -8,20 +8,14 @@ type ClipboardPermissionName = 'clipboard-read' | 'clipboard-write';
 const subscribePermission = (
   name: ClipboardPermissionName,
   onChange: (state: PermissionState) => void,
-): (() => void) => {
-  let status: PermissionStatus | null = null;
-  let cancelled = false;
-  const handleChange = () => {
-    if (status) onChange(status.state);
-  };
-
+): void => {
   navigator.permissions
     .query({ name: name as PermissionName })
     .then((permission) => {
-      if (cancelled) return undefined;
-      status = permission;
       onChange(permission.state);
-      permission.addEventListener('change', handleChange);
+      permission.addEventListener('change', () => {
+        onChange(permission.state);
+      });
       return undefined;
     })
     .catch(() => {
@@ -29,11 +23,6 @@ const subscribePermission = (
         'ClipboardについてのPermission APIをサポートしていないブラウザです。',
       );
     });
-
-  return () => {
-    cancelled = true;
-    status?.removeEventListener('change', handleChange);
-  };
 };
 
 export const ClipboardTextDemo: FC = () => {
@@ -42,18 +31,8 @@ export const ClipboardTextDemo: FC = () => {
   const [writePermissions, setWritePermissions] = useState<PermissionState>();
 
   useEffect(() => {
-    const unsubscribeRead = subscribePermission(
-      'clipboard-read',
-      setReadPermissions,
-    );
-    const unsubscribeWrite = subscribePermission(
-      'clipboard-write',
-      setWritePermissions,
-    );
-    return () => {
-      unsubscribeRead();
-      unsubscribeWrite();
-    };
+    subscribePermission('clipboard-read', setReadPermissions);
+    subscribePermission('clipboard-write', setWritePermissions);
   }, []);
 
   return (
