@@ -126,6 +126,7 @@ export function ToggleEventSourceDemo() {
               <p className="text-fg-mute text-xs">{member.role}</p>
             </div>
             <Button
+              aria-label={`${member.name}の詳細`}
               data-member-id={member.id}
               onClick={(e) => {
                 openWithSource(e.currentTarget);

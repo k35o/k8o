@@ -57,8 +57,9 @@ export function OpenPseudoDemo() {
           </span>
         </div>
         {/* dialog 自身へのクリック = backdrop クリック扱いで閉じる。ESC キーは dialog 標準で閉じるのでキーボード代替は不要。 */}
-        {/* eslint-disable-next-line jsx-a11y/click-events-have-key-events */}
+        {/* oxlint-disable-next-line jsx-a11y/click-events-have-key-events */}
         <dialog
+          aria-label=":open デモ用ダイアログ"
           className="open-demo-target bg-bg-base inset-0 m-auto size-fit rounded-md p-4"
           onClick={(e) => {
             if (e.target === e.currentTarget) {
