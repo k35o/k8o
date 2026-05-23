@@ -7,7 +7,7 @@ export async function getBaselineFeatures() {
   'use cache';
   cacheLife('minutes');
 
-  const features = await Promise.resolve(_getBaselineFeatures());
+  const features = await _getBaselineFeatures();
   return features;
 }
 
@@ -15,7 +15,7 @@ export async function getFeatureBlogMap() {
   'use cache';
   cacheLife('max');
 
-  const featureBlogMap = await Promise.resolve(_getFeatureBlogMap());
+  const featureBlogMap = await _getFeatureBlogMap();
   return featureBlogMap;
 }
 

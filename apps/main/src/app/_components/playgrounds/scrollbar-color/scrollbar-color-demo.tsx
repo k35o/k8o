@@ -3,10 +3,6 @@
 import { range } from '@repo/helpers/array/range';
 import { useEffect, useRef, useState } from 'react';
 
-/**
- * scrollbar-colorプロパティのデモ
- * スクロールバーの色をカスタマイズできることを確認できる
- */
 export function ScrollbarColorDemo() {
   const [thumbColor, setThumbColor] = useState('#6366f1');
   const [trackColor, setTrackColor] = useState('#e2e8f0');
@@ -14,9 +10,7 @@ export function ScrollbarColorDemo() {
 
   useEffect(() => {
     const element = scrollRef.current;
-    if (!element) return;
-
-    element.tabIndex = 0;
+    if (element) element.tabIndex = 0;
   }, []);
 
   return (

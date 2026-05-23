@@ -55,7 +55,7 @@ export async function getBlogToc(slug: string) {
   'use cache';
   cacheLife('max');
 
-  const toc = await Promise.resolve(_getBlogToc(slug));
+  const toc = await _getBlogToc(slug);
   return toc;
 }
 
@@ -74,6 +74,6 @@ export async function getBlogView(id: number) {
   'use cache';
   cacheLife('minutes');
 
-  const view = await Promise.resolve(_getBlogView(id));
+  const view = await _getBlogView(id);
   return view;
 }

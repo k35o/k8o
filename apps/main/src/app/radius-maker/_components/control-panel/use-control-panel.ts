@@ -14,6 +14,36 @@ import { positionToBorderRadius } from '../../_utils/position-to-border-radius';
 
 type Position = keyof RadiusPosition;
 
+// その軸での「正方向」（数値が大きいほど右下に動くか）が反転している頂点を判定する。
+// top-Y と (Left & X) は素直に正方向、それ以外は 100 - value で反転する。
+const isPositiveAxis = (target: Position): boolean =>
+  (target.startsWith('top') && target.endsWith('Y')) ||
+  (target.includes('Left') && target.endsWith('X'));
+
+const computeValueFromPoint = (
+  rect: DOMRect,
+  target: Position,
+  clientX: number,
+  clientY: number,
+): number => {
+  const ratio = target.endsWith('X')
+    ? (clientX - rect.left) / rect.width
+    : (clientY - rect.top) / rect.height;
+  const raw = Math.floor(between(ratio * 100, 0, 100));
+  return isPositiveAxis(target) ? raw : 100 - raw;
+};
+
+const computeArrowDelta = (target: Position, key: string): number | null => {
+  if (target.endsWith('X')) {
+    if (key !== 'ArrowRight' && key !== 'ArrowLeft') return null;
+    const direction = key === 'ArrowRight' ? 1 : -1;
+    return target.endsWith('LeftX') ? direction : -direction;
+  }
+  if (key !== 'ArrowUp' && key !== 'ArrowDown') return null;
+  const direction = key === 'ArrowDown' ? 1 : -1;
+  return target.startsWith('top') ? direction : -direction;
+};
+
 export const useControlPanel = () => {
   const containerRef = useRef<HTMLDivElement>(null);
   const [position, setPosition] = useState<RadiusPosition>({
@@ -27,7 +57,6 @@ export const useControlPanel = () => {
     bottomRightY: 36,
   });
   const [activePosition, setActivePosition] = useState<Position | null>(null);
-  // 0.5〜2.0（横幅/縦幅）
   const [aspectRatio, setAspectRatio] = useState(1);
 
   const borderRadius = useMemo(
@@ -36,171 +65,68 @@ export const useControlPanel = () => {
   );
 
   const mouseDownHandler = useCallback(
-    (
-      e: ReactMouseEvent,
-      targetPosition:
-        | 'topLeftX'
-        | 'topLeftY'
-        | 'topRightX'
-        | 'topRightY'
-        | 'bottomRightX'
-        | 'bottomRightY'
-        | 'bottomLeftX'
-        | 'bottomLeftY',
-    ) => {
+    (e: ReactMouseEvent, target: Position) => {
       e.preventDefault();
-      setActivePosition(targetPosition);
-      const mouseUpHandler = (event: MouseEvent) => {
-        setPosition((prev) => {
-          if (!containerRef.current) {
-            return prev;
-          }
-          const rect = containerRef.current.getBoundingClientRect();
-          const newValue = Math.floor(
-            between(
-              targetPosition.endsWith('X')
-                ? ((event.clientX - rect.left) / rect.width) * 100
-                : ((event.clientY - rect.top) / rect.height) * 100,
-              0,
-              100,
-            ),
-          );
-          return {
-            ...prev,
-            [targetPosition]:
-              (targetPosition.startsWith('top') &&
-                targetPosition.endsWith('Y')) ||
-              (targetPosition.includes('Left') && targetPosition.endsWith('X'))
-                ? newValue
-                : 100 - newValue,
-          };
-        });
+      setActivePosition(target);
+      const handleMove = (event: MouseEvent) => {
+        const rect = containerRef.current?.getBoundingClientRect();
+        if (!rect) return;
+        const nextValue = computeValueFromPoint(
+          rect,
+          target,
+          event.clientX,
+          event.clientY,
+        );
+        setPosition((prev) => ({ ...prev, [target]: nextValue }));
       };
-      window.addEventListener('mouseup', () => {
+      const handleUp = () => {
         setActivePosition(null);
-        window.removeEventListener('mousemove', mouseUpHandler);
-      });
-      window.addEventListener('mousemove', mouseUpHandler);
+        window.removeEventListener('mousemove', handleMove);
+        window.removeEventListener('mouseup', handleUp);
+      };
+      window.addEventListener('mousemove', handleMove);
+      window.addEventListener('mouseup', handleUp);
     },
     [],
   );
 
   const touchStartHandler = useCallback(
-    (
-      e: ReactTouchEvent,
-      targetPosition:
-        | 'topLeftX'
-        | 'topLeftY'
-        | 'topRightX'
-        | 'topRightY'
-        | 'bottomRightX'
-        | 'bottomRightY'
-        | 'bottomLeftX'
-        | 'bottomLeftY',
-    ) => {
+    (e: ReactTouchEvent, target: Position) => {
       e.preventDefault();
-      setActivePosition(targetPosition);
-      const touchMoveHandler = (event: TouchEvent) => {
+      setActivePosition(target);
+      const handleMove = (event: TouchEvent) => {
         event.preventDefault();
-        setPosition((prev) => {
-          const changedTouches = event.changedTouches[0];
-          if (!(containerRef.current && changedTouches)) {
-            return prev;
-          }
-          const rect = containerRef.current.getBoundingClientRect();
-          const newValue = Math.floor(
-            between(
-              targetPosition.endsWith('X')
-                ? ((changedTouches.clientX - rect.left) / rect.width) * 100
-                : ((changedTouches.clientY - rect.top) / rect.height) * 100,
-              0,
-              100,
-            ),
-          );
-          return {
-            ...prev,
-            [targetPosition]:
-              (targetPosition.startsWith('top') &&
-                targetPosition.endsWith('Y')) ||
-              (targetPosition.includes('Left') && targetPosition.endsWith('X'))
-                ? newValue
-                : 100 - newValue,
-          };
-        });
+        const touch = event.changedTouches[0];
+        const rect = containerRef.current?.getBoundingClientRect();
+        if (!rect || !touch) return;
+        const nextValue = computeValueFromPoint(
+          rect,
+          target,
+          touch.clientX,
+          touch.clientY,
+        );
+        setPosition((prev) => ({ ...prev, [target]: nextValue }));
       };
-      window.addEventListener('touchend', () => {
+      const handleEnd = () => {
         setActivePosition(null);
-        window.removeEventListener('touchmove', touchMoveHandler);
-      });
-      window.addEventListener('touchmove', touchMoveHandler, {
-        passive: false,
-      });
+        window.removeEventListener('touchmove', handleMove);
+        window.removeEventListener('touchend', handleEnd);
+      };
+      window.addEventListener('touchmove', handleMove, { passive: false });
+      window.addEventListener('touchend', handleEnd);
     },
     [],
   );
 
   const keyDownHandler = useCallback(
-    (
-      e: ReactKeyboardEvent,
-      targetPosition:
-        | 'topLeftX'
-        | 'topLeftY'
-        | 'topRightX'
-        | 'topRightY'
-        | 'bottomRightX'
-        | 'bottomRightY'
-        | 'bottomLeftX'
-        | 'bottomLeftY',
-    ) => {
-      if (e.key === 'ArrowRight' || e.key === 'ArrowLeft') {
-        e.preventDefault();
-        if (targetPosition.endsWith('LeftX')) {
-          setPosition((prev) => ({
-            ...prev,
-            [targetPosition]: between(
-              prev[targetPosition] + (e.key === 'ArrowRight' ? 1 : -1),
-              0,
-              100,
-            ),
-          }));
-        }
-        if (targetPosition.endsWith('RightX')) {
-          setPosition((prev) => ({
-            ...prev,
-            [targetPosition]: between(
-              prev[targetPosition] + (e.key === 'ArrowLeft' ? 1 : -1),
-              0,
-              100,
-            ),
-          }));
-        }
-      }
-      if (e.key === 'ArrowUp' || e.key === 'ArrowDown') {
-        e.preventDefault();
-        if (targetPosition.startsWith('top') && targetPosition.endsWith('Y')) {
-          setPosition((prev) => ({
-            ...prev,
-            [targetPosition]: between(
-              prev[targetPosition] + (e.key === 'ArrowDown' ? 1 : -1),
-              0,
-              100,
-            ),
-          }));
-        }
-        if (
-          targetPosition.startsWith('bottom') &&
-          targetPosition.endsWith('Y')
-        ) {
-          setPosition((prev) => ({
-            ...prev,
-            [targetPosition]: between(
-              prev[targetPosition] + (e.key === 'ArrowUp' ? 1 : -1),
-              0,
-              100,
-            ),
-          }));
-        }
-      }
+    (e: ReactKeyboardEvent, target: Position) => {
+      const delta = computeArrowDelta(target, e.key);
+      if (delta === null) return;
+      e.preventDefault();
+      setPosition((prev) => ({
+        ...prev,
+        [target]: between(prev[target] + delta, 0, 100),
+      }));
     },
     [],
   );
