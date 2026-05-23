@@ -1,12 +1,8 @@
 'use client';
 
 import { range } from '@repo/helpers/array/range';
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
-/**
- * scrollendイベントのデモ
- * スクロール可能なコンテナでscrollendイベントの発火を確認できる
- */
 export function ScrollendDemo() {
   const [scrollCount, setScrollCount] = useState(0);
   const [scrollendCount, setScrollendCount] = useState(0);
@@ -15,34 +11,20 @@ export function ScrollendDemo() {
   );
   const scrollRef = useRef<HTMLDivElement>(null);
 
-  const handleScroll = useCallback(() => {
-    setScrollCount((prev) => prev + 1);
-  }, []);
-
-  const handleScrollend = useCallback(() => {
-    setScrollendCount((prev) => prev + 1);
-    setLastScrollendTime(new Date().toLocaleTimeString('ja-JP'));
-  }, []);
-
-  const resetCounts = useCallback(() => {
-    setScrollCount(0);
-    setScrollendCount(0);
-    setLastScrollendTime(null);
-  }, []);
-
   useEffect(() => {
     const element = scrollRef.current;
     if (!element) return undefined;
 
     element.tabIndex = 0;
-    element.addEventListener('scroll', handleScroll, { passive: true });
+    const handleScrollend = () => {
+      setScrollendCount((prev) => prev + 1);
+      setLastScrollendTime(new Date().toLocaleTimeString('ja-JP'));
+    };
     element.addEventListener('scrollend', handleScrollend);
-
     return () => {
-      element.removeEventListener('scroll', handleScroll);
       element.removeEventListener('scrollend', handleScrollend);
     };
-  }, [handleScroll, handleScrollend]);
+  }, []);
 
   return (
     <div className="space-y-4">
@@ -63,7 +45,11 @@ export function ScrollendDemo() {
         )}
         <button
           className="bg-bg-mute hover:bg-bg-subtle ml-auto rounded-md px-3 py-1 text-sm"
-          onClick={resetCounts}
+          onClick={() => {
+            setScrollCount(0);
+            setScrollendCount(0);
+            setLastScrollendTime(null);
+          }}
           type="button"
         >
           リセット
@@ -72,6 +58,9 @@ export function ScrollendDemo() {
 
       <div
         className="bg-bg-mute h-48 overflow-y-scroll rounded-xl p-4"
+        onScroll={() => {
+          setScrollCount((prev) => prev + 1);
+        }}
         ref={scrollRef}
       >
         <div className="space-y-4">

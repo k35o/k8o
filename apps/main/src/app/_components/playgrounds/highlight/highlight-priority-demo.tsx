@@ -3,34 +3,36 @@
 import { type FC, useEffect, useRef } from 'react';
 
 const text = 'Imagination is more important than knowledge';
+const HIGHLIGHT_NAMES = [
+  'highlight-example2-1',
+  'highlight-example2-2',
+  'highlight-example2-3',
+] as const;
 
 export const HighlightPriorityDemo: FC = () => {
   const ref = useRef<HTMLParagraphElement>(null);
 
   useEffect(() => {
-    if (!ref.current?.firstChild) return;
-    const textNode = ref.current.firstChild;
+    const textNode = ref.current?.firstChild;
+    if (!textNode) return undefined;
 
-    const range1 = new Range();
-    range1.setStart(textNode, 0);
-    range1.setEnd(textNode, 11);
-    const highlight1 = new Highlight(range1);
-    highlight1.priority = 1;
+    const createHighlight = (priority?: number): Highlight => {
+      const range = new Range();
+      range.setStart(textNode, 0);
+      range.setEnd(textNode, 11);
+      const highlight = new Highlight(range);
+      if (priority !== undefined) highlight.priority = priority;
+      return highlight;
+    };
 
-    const range2 = new Range();
-    range2.setStart(textNode, 0);
-    range2.setEnd(textNode, 11);
-    const highlight2 = new Highlight(range2);
-    highlight2.priority = 1;
-
-    const range3 = new Range();
-    range3.setStart(textNode, 0);
-    range3.setEnd(textNode, 11);
-    const highlight3 = new Highlight(range3);
-
-    CSS.highlights.set('highlight-example2-1', highlight1);
-    CSS.highlights.set('highlight-example2-2', highlight2);
-    CSS.highlights.set('highlight-example2-3', highlight3);
+    CSS.highlights.set(HIGHLIGHT_NAMES[0], createHighlight(1));
+    CSS.highlights.set(HIGHLIGHT_NAMES[1], createHighlight(1));
+    CSS.highlights.set(HIGHLIGHT_NAMES[2], createHighlight());
+    return () => {
+      for (const name of HIGHLIGHT_NAMES) {
+        CSS.highlights.delete(name);
+      }
+    };
   }, []);
 
   return (
@@ -38,15 +40,15 @@ export const HighlightPriorityDemo: FC = () => {
       <p ref={ref}>{text}</p>
       <style>
         {`
-          ::highlight(highlight-example2-1) {
+          ::highlight(${HIGHLIGHT_NAMES[0]}) {
             background-color: var(--color-bg-info);
             color: var(--color-fg-info);
           }
-          ::highlight(highlight-example2-2) {
+          ::highlight(${HIGHLIGHT_NAMES[1]}) {
             background-color: var(--color-bg-warning);
             color: var(--color-fg-warning);
           }
-          ::highlight(highlight-example2-3) {
+          ::highlight(${HIGHLIGHT_NAMES[2]}) {
             background-color: var(--color-bg-error);
             color: var(--color-fg-error);
           }

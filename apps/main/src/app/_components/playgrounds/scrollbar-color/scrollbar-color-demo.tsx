@@ -1,23 +1,11 @@
 'use client';
 
 import { range } from '@repo/helpers/array/range';
-import { useEffect, useRef, useState } from 'react';
+import { useState } from 'react';
 
-/**
- * scrollbar-colorプロパティのデモ
- * スクロールバーの色をカスタマイズできることを確認できる
- */
 export function ScrollbarColorDemo() {
   const [thumbColor, setThumbColor] = useState('#6366f1');
   const [trackColor, setTrackColor] = useState('#e2e8f0');
-  const scrollRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    const element = scrollRef.current;
-    if (!element) return;
-
-    element.tabIndex = 0;
-  }, []);
 
   return (
     <div className="space-y-4">
@@ -56,10 +44,10 @@ export function ScrollbarColorDemo() {
 
       <div
         className="border-border-base bg-bg-mute h-48 overflow-y-scroll rounded-lg border p-4"
-        ref={scrollRef}
         style={{
           scrollbarColor: `${thumbColor} ${trackColor}`,
         }}
+        tabIndex={0}
       >
         <div className="space-y-4">
           {range(0, 20).map((n) => (

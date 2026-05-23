@@ -3,11 +3,13 @@
 import { Code, FormControl, TextField } from '@k8o/arte-odyssey';
 import { useEffect, useRef, useState } from 'react';
 
+// Selection はシングルトンで参照が変わらないため、配列で wrap して変更を検知する。
+type SelectionSnapshot = [Selection] | null;
+
 export function SelectionProperties() {
-  // Selectionオブジェクトはユニークなので、配列として保持して変更が起きた時に再レンダリングするようにする
-  const [selection, setSelection] = useState<[Selection] | null>(null);
   const ref = useRef<HTMLDivElement>(null);
   const [inView, setInView] = useState(false);
+  const [selection, setSelection] = useState<SelectionSnapshot>(null);
 
   useEffect(() => {
     const element = ref.current;
@@ -17,26 +19,24 @@ export function SelectionProperties() {
       setInView(entry?.isIntersecting ?? false);
     });
     observer.observe(element);
-
     return () => {
       observer.disconnect();
     };
   }, []);
 
   useEffect(() => {
-    const handleChange = () => {
-      if (!inView) {
-        return;
-      }
-      const currentSelection = window.getSelection();
-      setSelection(currentSelection ? [currentSelection] : null);
+    if (!inView) return undefined;
+    const handler = () => {
+      const current = window.getSelection();
+      setSelection(current ? [current] : null);
     };
-
-    document.addEventListener('selectionchange', handleChange);
+    document.addEventListener('selectionchange', handler);
     return () => {
-      document.removeEventListener('selectionchange', handleChange);
+      document.removeEventListener('selectionchange', handler);
     };
   }, [inView]);
+
+  const current = selection?.[0];
 
   return (
     <div className="flex flex-col gap-4" ref={ref}>
@@ -54,7 +54,7 @@ export function SelectionProperties() {
         <p className="font-bold">
           選択中のテキスト（<Code>selection.toString()</Code>）
         </p>
-        <p>{selection ? selection[0].toString() : ''}</p>
+        <p>{current ? current.toString() : ''}</p>
       </div>
       <div>
         <p className="font-bold">選択要素の開始位置の要素</p>
@@ -63,8 +63,8 @@ export function SelectionProperties() {
           <Code>selection.anchorOffset</Code>）
         </p>
         <p>
-          {selection
-            ? `${selection[0].anchorNode?.textContent}, ${selection[0].anchorOffset}`
+          {current
+            ? `${current.anchorNode?.textContent}, ${current.anchorOffset}`
             : ''}
         </p>
       </div>
@@ -75,8 +75,8 @@ export function SelectionProperties() {
           <Code>selection.focusOffset</Code>）
         </p>
         <p>
-          {selection
-            ? `${selection[0].focusNode?.textContent}, ${selection[0].focusOffset}`
+          {current
+            ? `${current.focusNode?.textContent}, ${current.focusOffset}`
             : ''}
         </p>
       </div>
@@ -84,7 +84,7 @@ export function SelectionProperties() {
         <p className="font-bold">
           選択の種類（<Code>selection.type</Code>）
         </p>
-        <p>{selection ? selection[0].type : ''}</p>
+        <p>{current ? current.type : ''}</p>
       </div>
     </div>
   );

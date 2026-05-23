@@ -3,57 +3,36 @@
 import { Button, FormControl, TextField } from '@k8o/arte-odyssey';
 import { type FC, useEffect, useState } from 'react';
 
+type ClipboardPermissionName = 'clipboard-read' | 'clipboard-write';
+
+const subscribePermission = (
+  name: ClipboardPermissionName,
+  onChange: (state: PermissionState) => void,
+): void => {
+  navigator.permissions
+    .query({ name: name as PermissionName })
+    .then((permission) => {
+      onChange(permission.state);
+      permission.addEventListener('change', () => {
+        onChange(permission.state);
+      });
+      return undefined;
+    })
+    .catch(() => {
+      console.warn(
+        'ClipboardについてのPermission APIをサポートしていないブラウザです。',
+      );
+    });
+};
+
 export const ClipboardTextDemo: FC = () => {
-  const [text, setText] = useState<string>('');
+  const [text, setText] = useState('');
   const [readPermissions, setReadPermissions] = useState<PermissionState>();
   const [writePermissions, setWritePermissions] = useState<PermissionState>();
 
-  const copyText = async () => {
-    await navigator.clipboard.writeText(text);
-  };
-
-  const pasteText = async () => {
-    const pastedText = await navigator.clipboard.readText();
-    setText((prev) => prev + pastedText);
-  };
-
   useEffect(() => {
-    const readPermission = navigator.permissions.query({
-      // @ts-expect-error -- PermissionNameにclipboard-readがない
-      name: 'clipboard-read',
-    });
-    const writePermission = navigator.permissions.query({
-      // @ts-expect-error -- PermissionNameにclipboard-writeがない
-      name: 'clipboard-write',
-    });
-
-    void readPermission
-      .then((permission) => {
-        setReadPermissions(permission.state);
-        permission.addEventListener('change', () => {
-          setReadPermissions(permission.state);
-        });
-        return undefined;
-      })
-      .catch(() => {
-        console.warn(
-          'ClipboardについてのPermission APIをサポートしていないブラウザです。',
-        );
-      });
-
-    void writePermission
-      .then((permission) => {
-        setWritePermissions(permission.state);
-        permission.addEventListener('change', () => {
-          setWritePermissions(permission.state);
-        });
-        return undefined;
-      })
-      .catch(() => {
-        console.warn(
-          'ClipboardについてのPermission APIをサポートしていないブラウザです。',
-        );
-      });
+    subscribePermission('clipboard-read', setReadPermissions);
+    subscribePermission('clipboard-write', setWritePermissions);
   }, []);
 
   return (
@@ -82,8 +61,21 @@ export const ClipboardTextDemo: FC = () => {
         )}
       />
       <div className="flex flex-wrap gap-4">
-        <Button onClick={() => void copyText()}>クリップボードにコピー</Button>
-        <Button onClick={() => void pasteText()}>
+        <Button
+          onClick={() => {
+            void navigator.clipboard.writeText(text);
+          }}
+        >
+          クリップボードにコピー
+        </Button>
+        <Button
+          onClick={() => {
+            void navigator.clipboard.readText().then((pasted) => {
+              setText((prev) => prev + pasted);
+              return undefined;
+            });
+          }}
+        >
           クリップボードからペースト
         </Button>
       </div>

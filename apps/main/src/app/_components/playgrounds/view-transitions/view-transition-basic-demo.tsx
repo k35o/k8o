@@ -46,41 +46,31 @@ export function ViewTransitionBasicDemo() {
     }
   };
 
-  // アイテムをシャッフル
   const shuffleItems = () => {
-    const updateDOM = () => {
+    withViewTransition(() => {
       setItems((prev) => [...prev].toSorted(() => Math.random() - 0.5));
-    };
-
-    withViewTransition(updateDOM);
+    });
   };
 
-  // アイテムを追加
   const addItem = () => {
-    const updateDOM = () => {
+    withViewTransition(() => {
       const newId = count + 1;
-      const randomColor = getRandomColor();
       setItems((prev) => [
         ...prev,
         {
           id: newId,
           text: `アイテム ${newId}`,
-          color: randomColor,
+          color: getRandomColor(),
         },
       ]);
       setCount(newId);
-    };
-
-    withViewTransition(updateDOM);
+    });
   };
 
-  // アイテムを削除
   const removeItem = (id: number) => {
-    const updateDOM = () => {
+    withViewTransition(() => {
       setItems((prev) => prev.filter((item) => item.id !== id));
-    };
-
-    withViewTransition(updateDOM);
+    });
   };
 
   return (

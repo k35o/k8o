@@ -23,7 +23,6 @@ export const Presenter: FC<{
 }> = ({ days }) => {
   const totalContributions = days.reduce((total, day) => total + day.count, 0);
 
-  // 期間を計算（実際の日数に基づいて）
   const period =
     days.length >= 365
       ? '過去1年間'

@@ -3,13 +3,14 @@
 import { type FC, useEffect, useRef } from 'react';
 
 const text = '食べれる';
+const HIGHLIGHT_NAME = 'highlight-example3';
 
 export const HighlightSpellingDemo: FC = () => {
   const ref = useRef<HTMLParagraphElement>(null);
 
   useEffect(() => {
-    if (!ref.current?.firstChild) return;
-    const textNode = ref.current.firstChild;
+    const textNode = ref.current?.firstChild;
+    if (!textNode) return undefined;
 
     const range = new Range();
     range.setStart(textNode, 2);
@@ -17,15 +18,17 @@ export const HighlightSpellingDemo: FC = () => {
 
     const highlight = new Highlight(range);
     highlight.type = 'spelling-error';
-
-    CSS.highlights.set('highlight-example3', highlight);
+    CSS.highlights.set(HIGHLIGHT_NAME, highlight);
+    return () => {
+      CSS.highlights.delete(HIGHLIGHT_NAME);
+    };
   }, []);
 
   return (
     <>
       <p ref={ref}>{text}</p>
       <style>
-        {`::highlight(highlight-example3) {
+        {`::highlight(${HIGHLIGHT_NAME}) {
             background-color: var(--color-bg-error);
             color: var(--color-fg-error);
           }`}

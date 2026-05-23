@@ -9,7 +9,7 @@ export async function getArticles() {
   'use cache';
   cacheLife('hours');
 
-  const articles = await Promise.resolve(_getArticles());
+  const articles = await _getArticles();
   return articles;
 }
 
@@ -17,6 +17,6 @@ export async function getArticleSources() {
   'use cache';
   cacheLife('hours');
 
-  const articleSources = await Promise.resolve(_getArticleSources());
+  const articleSources = await _getArticleSources();
   return articleSources;
 }

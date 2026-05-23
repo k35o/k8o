@@ -2,95 +2,81 @@
 
 import { Button } from '@k8o/arte-odyssey';
 import { range } from '@repo/helpers/array/range';
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
-export function ScrollendTriggerDemo() {
-  const [scrollendCount, setScrollendCount] = useState(0);
+const FLASH_DURATION_MS = 300;
+
+const useScrollendCounter = () => {
+  const [count, setCount] = useState(0);
   const [lastTrigger, setLastTrigger] = useState<string | null>(null);
   const [showFlash, setShowFlash] = useState(false);
-  const scrollToRef = useRef<HTMLDivElement>(null);
-  const snapRef = useRef<HTMLDivElement>(null);
   const flashTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-
-  const handleScrollendScrollTo = useCallback(() => {
-    setScrollendCount((prev) => prev + 1);
-    setLastTrigger('scrollTo()');
-    setShowFlash(true);
-    if (flashTimeoutRef.current) {
-      clearTimeout(flashTimeoutRef.current);
-    }
-    flashTimeoutRef.current = setTimeout(() => {
-      setShowFlash(false);
-    }, 300);
-  }, []);
-
-  const handleScrollendSnap = useCallback(() => {
-    setScrollendCount((prev) => prev + 1);
-    setLastTrigger('scroll-snap');
-    setShowFlash(true);
-    if (flashTimeoutRef.current) {
-      clearTimeout(flashTimeoutRef.current);
-    }
-    flashTimeoutRef.current = setTimeout(() => {
-      setShowFlash(false);
-    }, 300);
-  }, []);
 
   useEffect(
     () => () => {
-      if (flashTimeoutRef.current) {
-        clearTimeout(flashTimeoutRef.current);
-      }
+      if (flashTimeoutRef.current) clearTimeout(flashTimeoutRef.current);
     },
     [],
   );
 
-  useEffect(() => {
-    const element = scrollToRef.current;
-    if (!element) return undefined;
+  const trigger = (label: string) => {
+    setCount((prev) => prev + 1);
+    setLastTrigger(label);
+    setShowFlash(true);
+    if (flashTimeoutRef.current) clearTimeout(flashTimeoutRef.current);
+    flashTimeoutRef.current = setTimeout(() => {
+      setShowFlash(false);
+    }, FLASH_DURATION_MS);
+  };
 
-    element.tabIndex = 0;
-    element.addEventListener('scrollend', handleScrollendScrollTo);
-
-    return () => {
-      element.removeEventListener('scrollend', handleScrollendScrollTo);
-    };
-  }, [handleScrollendScrollTo]);
-
-  useEffect(() => {
-    const element = snapRef.current;
-    if (!element) return undefined;
-
-    element.tabIndex = 0;
-    element.addEventListener('scrollend', handleScrollendSnap);
-
-    return () => {
-      element.removeEventListener('scrollend', handleScrollendSnap);
-    };
-  }, [handleScrollendSnap]);
-
-  const scrollToTop = useCallback(() => {
-    scrollToRef.current?.scrollTo({ top: 0, behavior: 'smooth' });
-  }, []);
-
-  const scrollToBottom = useCallback(() => {
-    scrollToRef.current?.scrollTo({
-      top: scrollToRef.current.scrollHeight,
-      behavior: 'smooth',
-    });
-  }, []);
-
-  const resetCounts = useCallback(() => {
-    setScrollendCount(0);
+  const reset = () => {
+    setCount(0);
     setLastTrigger(null);
-  }, []);
+  };
+
+  return { count, lastTrigger, showFlash, trigger, reset };
+};
+
+const useScrollendListener = (
+  ref: React.RefObject<HTMLElement | null>,
+  onScrollend: () => void,
+) => {
+  const handlerRef = useRef(onScrollend);
+  handlerRef.current = onScrollend;
+
+  useEffect(() => {
+    const element = ref.current;
+    if (!element) return undefined;
+    element.tabIndex = 0;
+    const handler = () => {
+      handlerRef.current();
+    };
+    element.addEventListener('scrollend', handler);
+    return () => {
+      element.removeEventListener('scrollend', handler);
+    };
+  }, [ref]);
+};
+
+export function ScrollendTriggerDemo() {
+  const { count, lastTrigger, showFlash, trigger, reset } =
+    useScrollendCounter();
+  const scrollToRef = useRef<HTMLDivElement>(null);
+  const snapRef = useRef<HTMLDivElement>(null);
+
+  useScrollendListener(scrollToRef, () => {
+    trigger('scrollTo()');
+  });
+  useScrollendListener(snapRef, () => {
+    trigger('scroll-snap');
+  });
 
   return (
     <div className="space-y-4 overflow-hidden">
       <div className="flex flex-wrap items-center gap-3">
         <div className="bg-bg-mute relative flex items-center gap-2 rounded-md px-3 py-1.5">
           <span className="text-fg-mute text-sm">scrollend:</span>
-          <span className="text-primary-fg font-bold">{scrollendCount}</span>
+          <span className="text-primary-fg font-bold">{count}</span>
           <span className="text-fg-mute text-sm">回</span>
           {showFlash ? (
             <div className="bg-primary-bg absolute inset-0 rounded-md opacity-30" />
@@ -101,7 +87,7 @@ export function ScrollendTriggerDemo() {
             {lastTrigger}
           </div>
         )}
-        <Button color="gray" onClick={resetCounts} size="sm" variant="outlined">
+        <Button color="gray" onClick={reset} size="sm" variant="outlined">
           リセット
         </Button>
       </div>
@@ -111,10 +97,25 @@ export function ScrollendTriggerDemo() {
           <div className="flex items-center justify-between">
             <h4 className="text-sm font-bold">scrollTo() API</h4>
             <div className="flex gap-1">
-              <Button color="primary" onClick={scrollToTop} size="sm">
+              <Button
+                color="primary"
+                onClick={() => {
+                  scrollToRef.current?.scrollTo({ top: 0, behavior: 'smooth' });
+                }}
+                size="sm"
+              >
                 先頭へ
               </Button>
-              <Button color="primary" onClick={scrollToBottom} size="sm">
+              <Button
+                color="primary"
+                onClick={() => {
+                  scrollToRef.current?.scrollTo({
+                    top: scrollToRef.current.scrollHeight,
+                    behavior: 'smooth',
+                  });
+                }}
+                size="sm"
+              >
                 末尾へ
               </Button>
             </div>

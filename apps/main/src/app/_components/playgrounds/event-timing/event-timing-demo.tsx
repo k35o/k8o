@@ -42,24 +42,18 @@ export function EventTimingDemo() {
       for (const entry of list.getEntries()) {
         if (!isPerformanceEventTiming(entry)) continue;
         const eventEntry = entry;
-
-        // interactionIdがないイベントはスキップ
         if (eventEntry.interactionId === 0) continue;
 
         const existing = interactionMap.get(eventEntry.interactionId);
-
-        // 同一インタラクションの中で最大のdurationを持つエントリを記録
         if (existing) {
           if (eventEntry.duration > existing.duration) {
             interactionMap.set(eventEntry.interactionId, eventEntry);
           }
           continue;
         }
-
-        // 新しいインタラクションを記録
         interactionMap.set(eventEntry.interactionId, eventEntry);
 
-        // 少し待ってから結果を追加（同一インタラクションの全イベントを待つ）
+        // 同一 interactionId のイベントが順次到着するので、少し待って最大 duration を確定させる
         const timeoutId = setTimeout(() => {
           timeoutIds.delete(timeoutId);
 

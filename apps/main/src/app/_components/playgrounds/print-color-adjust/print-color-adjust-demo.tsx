@@ -6,9 +6,12 @@ import { type FC, useEffect, useState } from 'react';
 export const PrintColorAdjustDemo: FC = () => {
   const [isExact, setIsExact] = useState(false);
 
-  const handleClick = () => {
-    setIsExact(!isExact);
-    document.body.style.printColorAdjust = isExact ? 'economy' : 'exact';
+  const toggle = () => {
+    setIsExact((prev) => {
+      const next = !prev;
+      document.body.style.printColorAdjust = next ? 'exact' : 'economy';
+      return next;
+    });
   };
 
   useEffect(
@@ -29,7 +32,7 @@ export const PrintColorAdjustDemo: FC = () => {
       <p className="text-fg-mute self-center text-xs md:text-sm">
         現在の設定: {isExact ? '正確（exact）' : 'ブラウザにお任せ（economy）'}
       </p>
-      <Button onClick={handleClick}>
+      <Button onClick={toggle}>
         {isExact ? 'ブラウザにお任せする' : '正確にする'}
       </Button>
     </div>

@@ -43,14 +43,12 @@ const RESTRICTION_CONFIG: Record<
 };
 
 const RestrictionItem: FC<{
-  id: string;
   restriction: Restriction;
   index: number;
   restrictionError: InvalidRestrictions['errors'][string] | undefined;
   columns: Record<string, Column>;
   setRestriction: (restriction: Restriction) => void;
   onDelete: () => void;
-  canDelete: boolean;
 }> = ({
   restriction,
   index,
@@ -58,14 +56,12 @@ const RestrictionItem: FC<{
   columns,
   setRestriction,
   onDelete,
-  canDelete,
 }) => {
   const [isOpen, setIsOpen] = useState(true);
   const config = RESTRICTION_CONFIG[restriction.type];
 
   return (
     <div className="border-border-base bg-bg-base overflow-hidden rounded-xl border">
-      {/* ヘッダー */}
       <div className="flex w-full items-center justify-between gap-3 px-4 py-3">
         <button
           aria-expanded={isOpen}
@@ -88,30 +84,19 @@ const RestrictionItem: FC<{
             <ChevronIcon direction="down" />
           </div>
         </button>
-        {canDelete && (
-          <IconButton
-            label="削除"
-            onClick={() => {
-              onDelete();
-            }}
-            size="sm"
-          >
-            <CloseIcon />
-          </IconButton>
-        )}
+        <IconButton label="削除" onClick={onDelete} size="sm">
+          <CloseIcon />
+        </IconButton>
       </div>
 
-      {/* コンテンツ */}
       {isOpen && (
-        <div>
-          <div className="border-border-base overflow-hidden border-t px-4 py-4">
-            <CreateRestriction
-              columns={columns}
-              restriction={restriction}
-              restrictionError={restrictionError}
-              setRestriction={setRestriction}
-            />
-          </div>
+        <div className="border-border-base overflow-hidden border-t px-4 py-4">
+          <CreateRestriction
+            columns={columns}
+            restriction={restriction}
+            restrictionError={restrictionError}
+            setRestriction={setRestriction}
+          />
         </div>
       )}
     </div>
@@ -129,10 +114,7 @@ export const CreateRestrictions: FC<Props> = ({
   const handleAddRestriction = () => {
     setRestrictions({
       ...restrictions,
-      [uuidV4()]: {
-        type: 'primary',
-        columns: [],
-      },
+      [uuidV4()]: { type: 'primary', columns: [] },
     });
   };
 
@@ -147,19 +129,16 @@ export const CreateRestrictions: FC<Props> = ({
   const handleSetRestriction = (idToUpdate: string) => (value: Restriction) => {
     setRestrictions(
       Object.fromEntries(
-        restrictionsEntries.map(([id, restriction]) => {
-          if (id === idToUpdate) {
-            return [id, value];
-          }
-          return [id, restriction];
-        }),
+        restrictionsEntries.map(([id, restriction]) => [
+          id,
+          id === idToUpdate ? value : restriction,
+        ]),
       ),
     );
   };
 
   return (
     <div className="flex flex-col gap-4">
-      {/* ツールバー */}
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div className="flex items-center gap-2">
           <Button
@@ -176,29 +155,22 @@ export const CreateRestrictions: FC<Props> = ({
         </div>
       </div>
 
-      {/* 制約リスト */}
       <div className="flex flex-col gap-3">
-        {restrictionsEntries.map(([id, restriction], idx) => {
-          const restrictionError = restrictionsError?.[id];
-          return (
-            <RestrictionItem
-              canDelete
-              columns={columns}
-              id={id}
-              index={idx}
-              key={id}
-              onDelete={() => {
-                handleDeleteRestriction(id);
-              }}
-              restriction={restriction}
-              restrictionError={restrictionError}
-              setRestriction={handleSetRestriction(id)}
-            />
-          );
-        })}
+        {restrictionsEntries.map(([id, restriction], idx) => (
+          <RestrictionItem
+            columns={columns}
+            index={idx}
+            key={id}
+            onDelete={() => {
+              handleDeleteRestriction(id);
+            }}
+            restriction={restriction}
+            restrictionError={restrictionsError?.[id]}
+            setRestriction={handleSetRestriction(id)}
+          />
+        ))}
       </div>
 
-      {/* 制約がない場合のプレースホルダー */}
       {restrictionsEntries.length === 0 && (
         <div className="bg-bg-mute flex flex-col items-center justify-center gap-2 rounded-xl py-8">
           <p className="text-fg-mute text-sm">制約がありません</p>

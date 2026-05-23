@@ -19,18 +19,14 @@ export const ScrollToTopOnPathChange = () => {
   }, []);
 
   useEffect(() => {
-    if (prevPathname.current === null) {
-      prevPathname.current = pathname;
-      return;
-    }
-    if (prevPathname.current === pathname) return;
+    const prev = prevPathname.current;
     prevPathname.current = pathname;
 
-    if (isPopState.current) {
-      isPopState.current = false;
-      return;
-    }
+    if (prev === null || prev === pathname) return;
 
+    const popState = isPopState.current;
+    isPopState.current = false;
+    if (popState) return;
     if (window.location.hash) return;
 
     window.scrollTo(0, 0);

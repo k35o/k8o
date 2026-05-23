@@ -8,39 +8,41 @@ export const DialogRequestCloseDemo: FC = () => {
   const [state, setState] = useState('');
   const [logs, setLogs] = useState<string[]>([]);
 
+  const stateRef = useRef(state);
+  stateRef.current = state;
+
   useEffect(() => {
     const dialog = ref.current;
     if (!dialog) return undefined;
 
     const handleClose = () => {
-      setLogs((previousLogs) => [
-        'ダイアログが閉じられました',
-        ...previousLogs,
-      ]);
+      setLogs((prev) => ['ダイアログが閉じられました', ...prev]);
       setState('');
     };
     const handleCancel = (e: Event) => {
-      setLogs((previousLogs) => [
-        'ダイアログがキャンセルされました',
-        ...previousLogs,
-      ]);
-      if (state !== '') {
+      setLogs((prev) => ['ダイアログがキャンセルされました', ...prev]);
+      if (stateRef.current !== '') {
         e.preventDefault();
       }
     };
 
     dialog.addEventListener('close', handleClose);
     dialog.addEventListener('cancel', handleCancel);
-
     return () => {
       dialog.removeEventListener('close', handleClose);
       dialog.removeEventListener('cancel', handleCancel);
     };
-  }, [state]);
+  }, []);
 
   return (
     <div className="flex flex-col gap-4 p-4">
-      <Button onClick={() => ref.current?.showModal()}>ダイアログを開く</Button>
+      <Button
+        onClick={() => {
+          ref.current?.showModal();
+        }}
+      >
+        ダイアログを開く
+      </Button>
       {logs.length > 0 && (
         <div className="border-border-base max-h-40 overflow-y-scroll border">
           <ul className="list-disc p-2 pl-6">

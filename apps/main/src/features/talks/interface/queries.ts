@@ -6,6 +6,6 @@ export async function getTalks() {
   'use cache';
   cacheLife('max');
 
-  const talks = await Promise.resolve(_getTalks());
+  const talks = await _getTalks();
   return talks;
 }

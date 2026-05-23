@@ -9,115 +9,63 @@ import {
   useClipboard,
   useToast,
 } from '@k8o/arte-odyssey';
-import { useCallback, useState } from 'react';
+import { useState } from 'react';
 
 type Base = 2 | 8 | 10 | 16;
 
-const convertNumber = (
-  number: string,
-  baseFrom: Base,
-  baseTo: Base,
-): string => {
-  if (baseFrom === baseTo) return number;
+const BASES = [
+  { base: 2, label: '2進数' },
+  { base: 8, label: '8進数' },
+  { base: 10, label: '10進数' },
+  { base: 16, label: '16進数' },
+] as const satisfies Array<{ base: Base; label: string }>;
 
-  return Number.parseInt(number, baseFrom).toString(baseTo);
+const VALIDATORS: Record<Base, RegExp> = {
+  2: /^[01]+$/,
+  8: /^[0-7]+$/,
+  10: /^\d+$/,
+  16: /^[0-9a-fA-F]+$/,
 };
 
-const BASES = [
-  {
-    base: 2 as const,
-    label: '2進数',
-  },
-  {
-    base: 8 as const,
-    label: '8進数',
-  },
-  {
-    base: 10 as const,
-    label: '10進数',
-  },
-  {
-    base: 16 as const,
-    label: '16進数',
-  },
-] as const;
+const ERROR_MESSAGES: Record<Base, string> = {
+  2: '2進数は0または1で入力してください',
+  8: '8進数は0から7で入力してください',
+  10: '10進数は0から9で入力してください',
+  16: '16進数は0から9またはaからfで入力してください',
+};
+
+const EMPTY_VALUES: Record<Base, string> = { 2: '', 8: '', 10: '', 16: '' };
+
+const convertFrom = (value: string, base: Base): Record<Base, string> => ({
+  2: base === 2 ? value : Number.parseInt(value, base).toString(2),
+  8: base === 8 ? value : Number.parseInt(value, base).toString(8),
+  10: base === 10 ? value : Number.parseInt(value, base).toString(10),
+  16: base === 16 ? value : Number.parseInt(value, base).toString(16),
+});
 
 export const BaseConverter = () => {
+  const [values, setValues] = useState<Record<Base, string>>(EMPTY_VALUES);
   const [invalid, setInvalid] = useState<{
     target: Base;
     message: string;
   } | null>(null);
-  const [binary, setBinary] = useState('');
-  const [octal, setOctal] = useState('');
-  const [decimal, setDecimal] = useState('');
-  const [hexadecimal, setHexadecimal] = useState('');
   const { writeClipboard } = useClipboard();
   const { onOpen } = useToast();
 
-  const handleChange = useCallback((value: string, base: Base) => {
-    setInvalid(null);
+  const handleChange = (value: string, base: Base) => {
     if (value === '') {
-      setBinary('');
-      setOctal('');
-      setDecimal('');
-      setHexadecimal('');
+      setValues(EMPTY_VALUES);
+      setInvalid(null);
       return;
     }
-    switch (base) {
-      case 2:
-        setBinary(value);
-        if (!/^[01]+$/.test(value)) {
-          setInvalid({
-            target: 2,
-            message: '2進数は0または1で入力してください',
-          });
-          break;
-        }
-        setOctal(convertNumber(value, 2, 8));
-        setDecimal(convertNumber(value, 2, 10));
-        setHexadecimal(convertNumber(value, 2, 16));
-        break;
-      case 8:
-        setOctal(value);
-        if (!/^[0-7]+$/.test(value)) {
-          setInvalid({
-            target: 8,
-            message: '8進数は0から7で入力してください',
-          });
-          break;
-        }
-        setBinary(convertNumber(value, 8, 2));
-        setDecimal(convertNumber(value, 8, 10));
-        setHexadecimal(convertNumber(value, 8, 16));
-        break;
-      case 10:
-        setDecimal(value);
-        if (!/^\d+$/.test(value)) {
-          setInvalid({
-            target: 10,
-            message: '10進数は0から9で入力してください',
-          });
-          break;
-        }
-        setBinary(convertNumber(value, 10, 2));
-        setOctal(convertNumber(value, 10, 8));
-        setHexadecimal(convertNumber(value, 10, 16));
-        break;
-      case 16:
-        setHexadecimal(value);
-        if (!/^[0-9a-fA-F]+$/.test(value)) {
-          setInvalid({
-            target: 16,
-            message: '16進数は0から9またはaからfで入力してください',
-          });
-          break;
-        }
-        setBinary(convertNumber(value, 16, 2));
-        setOctal(convertNumber(value, 16, 8));
-        setDecimal(convertNumber(value, 16, 10));
-        break;
+    if (!VALIDATORS[base].test(value)) {
+      setValues((prev) => ({ ...prev, [base]: value }));
+      setInvalid({ target: base, message: ERROR_MESSAGES[base] });
+      return;
     }
-  }, []);
+    setValues(convertFrom(value, base));
+    setInvalid(null);
+  };
 
   const handleCopy = (value: string, label: string) => {
     if (!value) return;
@@ -125,13 +73,6 @@ export const BaseConverter = () => {
       onOpen('success', `${label}をコピーしました`);
       return undefined;
     });
-  };
-
-  const values: Record<Base, string> = {
-    2: binary,
-    8: octal,
-    10: decimal,
-    16: hexadecimal,
   };
 
   return (
