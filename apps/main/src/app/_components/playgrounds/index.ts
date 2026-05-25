@@ -6,6 +6,7 @@ export * from './async-clipboard';
 export * from './baseline-shift';
 export * from './caret-position-from-point';
 export * from './composed-ranges';
+export * from './container-style-queries';
 export * from './content-visibility';
 export * from './contrast-color';
 export * from './crisp-edges';
@@ -41,6 +42,7 @@ import { asyncClipboardSection } from './async-clipboard';
 import { baselineShiftSection } from './baseline-shift';
 import { caretPositionFromPointSection } from './caret-position-from-point';
 import { composedRangesSection } from './composed-ranges';
+import { containerStyleQueriesSection } from './container-style-queries';
 import { contentVisibilitySection } from './content-visibility';
 import { contrastColorSection } from './contrast-color';
 import { crispEdgesSection } from './crisp-edges';
@@ -76,6 +78,7 @@ export const playgroundSections: PlaygroundSection[] = [
   baselineShiftSection,
   caretPositionFromPointSection,
   composedRangesSection,
+  containerStyleQueriesSection,
   contentVisibilitySection,
   contrastColorSection,
   crispEdgesSection,
