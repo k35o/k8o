@@ -1,8 +1,11 @@
 import { cacheLife } from 'next/cache';
 
-import { getComments as _getComments } from '@/features/comments/application/get-comments';
+import {
+  type CommentItem,
+  getComments as _getComments,
+} from '@/features/comments/application/get-comments';
 
-export const getComments = async () => {
+export const getComments = async (): Promise<CommentItem[]> => {
   'use cache';
   cacheLife('minutes');
 
