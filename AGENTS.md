@@ -93,6 +93,12 @@ type: `feat`, `fix`, `docs`, `style`, `refactor`, `test`, `chore`
 - `main` - 本番 (Vercelデプロイ)
 - `feature/*`, `fix/*`, `refactor/*`
 
+## PR レビュー対応
+
+- bot（k8o-bot など自動レビュアー）の inline コメントには **返信しない**。返信するとさらに自動レビューが走り、ノイズが増える
+- bot レビューへの対応は、修正コミットを push するだけで完結させる（コメントスレッドの解決は人間が判断する）
+- 人間レビュアーへの reply は通常通り行ってよい
+
 ## Git Hooks (vite-plus)
 
 vite-plus (vp) 内蔵の hook 機構を使う。`vp config` が `.vite-hooks/_` にディスパッチャを生成し、`core.hooksPath` をそこに切り替える（pnpm install 時に自動実行）。
