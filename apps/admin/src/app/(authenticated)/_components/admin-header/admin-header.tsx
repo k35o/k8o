@@ -23,6 +23,12 @@ export const AdminHeader = () => (
           </Link>
           <Link
             className="text-fg-mute hover:text-fg-base text-sm transition-colors"
+            href="/comments"
+          >
+            お問い合わせ
+          </Link>
+          <Link
+            className="text-fg-mute hover:text-fg-base text-sm transition-colors"
             href="/reports"
           >
             レポート
