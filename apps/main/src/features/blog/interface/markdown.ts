@@ -4,7 +4,7 @@ import { cacheLife } from 'next/cache';
 
 import { blogPath } from '../application/path';
 
-const FRONTMATTER_RE = /^---\n[\s\S]*?\n---\n*/;
+const FRONTMATTER_RE = /^---\n[\s\S]*?\n---\n*/u;
 
 export async function getMarkdown(slug: string) {
   'use cache';

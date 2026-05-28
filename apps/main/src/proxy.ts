@@ -5,7 +5,7 @@ const isDev = process.env.NODE_ENV === 'development';
 function getOrigin(): string {
   const portlessUrl = process.env['PORTLESS_URL'];
   if (portlessUrl !== undefined && portlessUrl !== '') {
-    return portlessUrl.replace(/^http:/, 'https:');
+    return portlessUrl.replace(/^http:/u, 'https:');
   }
   const vercelUrl = process.env['VERCEL_URL'];
   if (vercelUrl !== undefined && vercelUrl !== '') {
@@ -34,7 +34,7 @@ const cspHeader = `
 `;
 
 const contentSecurityPolicyHeaderValue = cspHeader
-  .replaceAll(/\s{2,}/g, ' ')
+  .replaceAll(/\s{2,}/gu, ' ')
   .trim();
 
 export function proxy(_request: NextRequest) {

@@ -52,7 +52,7 @@ describe('getArtifacts', () => {
           name: expect.any(String) as string,
           description: expect.any(String) as string,
           githubUrl: expect.stringMatching(
-            /^https:\/\/github\.com\//,
+            /^https:\/\/github\.com\//u,
           ) as string,
           tags: expect.any(Array) as string[],
         }),

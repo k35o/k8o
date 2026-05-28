@@ -1,6 +1,6 @@
 import { toPrecision } from './to-precision';
 
-const FLOATING_POINT_REGEX = /^[Ee0-9+\-.]$/;
+const FLOATING_POINT_REGEX = /^[Ee0-9+\-.]$/u;
 
 // 文字が数値になり得ないことを確認する
 const isInvalidCharacter = (value: string): boolean =>
@@ -15,7 +15,7 @@ const sanitize = (value: string): string =>
 
 // 数値を綺麗に変換する
 const parse = (value: string | number): number =>
-  Number.parseFloat(value.toString().replaceAll(/[^\w.-]+/g, ''));
+  Number.parseFloat(value.toString().replaceAll(/[^\w.-]+/gu, ''));
 
 // 小数点以下の桁数を取得する
 const countDecimalPlaces = (value: number): number => {

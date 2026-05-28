@@ -1,6 +1,6 @@
 type Rgb = [number, number, number];
 
-const validHexColorRegex = /^#[0-9A-Fa-f]{6}$/;
+const validHexColorRegex = /^#[0-9A-Fa-f]{6}$/u;
 
 const isValidHexColor = (hex: string): boolean => validHexColorRegex.test(hex);
 

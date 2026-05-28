@@ -49,7 +49,7 @@ export const WithQRCode: Story = {
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
     await expect(
-      canvas.getByRole('img', { name: /QRコード/ }),
+      canvas.getByRole('img', { name: /QRコード/u }),
     ).toBeInTheDocument();
   },
 };

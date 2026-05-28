@@ -2,7 +2,7 @@
 
 import { useSyncExternalStore } from 'react';
 
-const HASH_INDEX_RE = /^#(\d+)$/;
+const HASH_INDEX_RE = /^#(\d+)$/u;
 
 const subscribe = (callback: () => void): (() => void) => {
   window.addEventListener('hashchange', callback);

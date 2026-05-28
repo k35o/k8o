@@ -40,6 +40,9 @@ export default defineConfig({
         'error',
         { allow: ['**/*.css', '@/libs/zod', 'react', 'server-only'] },
       ],
+      // `_schema` / `_utils` などのアンダースコア接頭辞は @repo/database の
+      // 内部API（直接アクセス非推奨）を表す規約として使っているため許可する。
+      'no-underscore-dangle': 'off',
     },
     overrides: [
       {
@@ -62,6 +65,8 @@ export default defineConfig({
         rules: {
           ...test.rules,
           'typescript/unbound-method': 'off',
+          // vi.fn() を型パラメータなしで使う書き方を許容する。
+          'vitest/require-mock-type-parameters': 'off',
         },
       },
     ],

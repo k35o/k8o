@@ -32,7 +32,7 @@ const createCalloutLine = (text: string, indent: number): Element => ({
 
 const hasLineClass = (node: Element): boolean => {
   const raw = node.properties['class'];
-  if (typeof raw === 'string') return raw.split(/\s+/).includes('line');
+  if (typeof raw === 'string') return raw.split(/\s+/u).includes('line');
   if (Array.isArray(raw)) return raw.map(String).includes('line');
   return false;
 };
@@ -43,7 +43,7 @@ export const annotateTransformer = (): ShikiTransformer => ({
     const { code: stripped, annotations } = parseAnnotations(code);
     const indents = stripped
       .split('\n')
-      .map((line) => /^\s*/.exec(line)?.[0].length ?? 0);
+      .map((line) => /^\s*/u.exec(line)?.[0].length ?? 0);
     (this.meta as AnnotateMeta).codeAnnotate = {
       annotations,
       callouts: new Map(),

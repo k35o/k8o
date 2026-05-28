@@ -45,13 +45,13 @@ export const EnglishTextDiff: Story = {
 
     // 差分が表示されることを確認
     // getAllByTextで複数マッチを許容（テキストエリアと差分表示の両方にマッチするため）
-    const helloElements = await canvas.findAllByText(/Hello/);
+    const helloElements = await canvas.findAllByText(/Hello/u);
     await expect(helloElements.length).toBeGreaterThanOrEqual(1);
 
-    const worldElements = await canvas.findAllByText(/World/);
+    const worldElements = await canvas.findAllByText(/World/u);
     await expect(worldElements.length).toBeGreaterThanOrEqual(1);
 
-    const japanElements = await canvas.findAllByText(/Japan/);
+    const japanElements = await canvas.findAllByText(/Japan/u);
     await expect(japanElements.length).toBeGreaterThanOrEqual(1);
   },
 };

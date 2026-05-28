@@ -17,14 +17,14 @@
     "type-check": "tsgo --noEmit"
   },
   "dependencies": {
-    "@shikijs/rehype": "4.0.2"
+    "@shikijs/rehype": "4.1.0"
   },
   "devDependencies": {
     "@repo/typescript-config": "workspace:*",
-    "@shikijs/types": "4.0.2",
+    "@shikijs/types": "4.1.0",
     "@types/hast": "3.0.4",
     "@vitest/coverage-v8": "catalog:",
-    "shiki": "4.0.2",
+    "shiki": "4.1.0",
     "vitest": "catalog:"
   }
 }

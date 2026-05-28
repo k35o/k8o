@@ -46,7 +46,7 @@ export const DisplaysTitle: Story = {
 
     // タイトルが表示されていることを確認
     await expect(
-      canvas.getByRole('heading', { name: /React 19の新機能について/ }),
+      canvas.getByRole('heading', { name: /React 19の新機能について/u }),
     ).toBeInTheDocument();
   },
 };

@@ -35,7 +35,7 @@ export const DisplaysTotalContributions: Story = {
   },
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
-    await expect(canvas.getByText(/件/)).toBeInTheDocument();
+    await expect(canvas.getByText(/件/u)).toBeInTheDocument();
   },
 };
 

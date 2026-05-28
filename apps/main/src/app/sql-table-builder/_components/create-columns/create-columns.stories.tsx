@@ -98,7 +98,7 @@ export const SwitchViewType: Story = {
     // 初期状態のボタンを探す（テキストを含むボタン）
     // デスクトップビューポートでのみ表示されるボタン
     const switchButton = await canvas.findByRole('button', {
-      name: /形式$/,
+      name: /形式$/u,
     });
     await expect(switchButton).toBeInTheDocument();
 
@@ -107,7 +107,7 @@ export const SwitchViewType: Story = {
 
     // ボタンが引き続き存在することを確認
     await expect(
-      await canvas.findByRole('button', { name: /形式$/ }),
+      await canvas.findByRole('button', { name: /形式$/u }),
     ).toBeInTheDocument();
   },
 };

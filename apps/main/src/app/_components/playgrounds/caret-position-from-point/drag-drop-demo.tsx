@@ -97,7 +97,7 @@ export function DragDropDemo() {
 
       {/* ドラッグ&ドロップのデモ用ドロップターゲット */}
       {/* ドラッグ&ドロップのデモ用ドロップターゲット */}
-      <div
+      <section
         aria-label="テキスト挿入エリア"
         className={`rounded-lg border p-3 transition-colors ${
           isDragOver
@@ -107,7 +107,6 @@ export function DragDropDemo() {
         onDragLeave={handleDragLeave}
         onDragOver={handleDragOver}
         onDrop={handleDrop}
-        role="region"
       >
         <p className="text-fg-base text-sm leading-relaxed" ref={textRef}>
           {text}
@@ -115,7 +114,7 @@ export function DragDropDemo() {
         <p className="text-fg-mute mt-2 text-xs">
           ↑ 上のワードをドラッグしてここにドロップ
         </p>
-      </div>
+      </section>
     </div>
   );
 }
