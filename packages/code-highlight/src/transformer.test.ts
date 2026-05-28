@@ -40,7 +40,7 @@ const classListOf = (node: Element | undefined): string[] => {
   if (!node) return [];
   const raw = node.properties['class'];
   if (Array.isArray(raw)) return raw.map(String);
-  if (typeof raw === 'string') return raw.split(/\s+/).filter(Boolean);
+  if (typeof raw === 'string') return raw.split(/\s+/u).filter(Boolean);
   return [];
 };
 

@@ -38,7 +38,7 @@ export const ColorToHexSubmit: Story = {
     // hex選択肢の最初をクリック（aria-labelで特定）
     const panel = canvas.getByRole('tabpanel');
     const optionButtons = within(panel).getAllByRole('button', {
-      name: /^Hexの選択肢:/,
+      name: /^Hexの選択肢:/u,
     });
     await expect(optionButtons.length).toBeGreaterThan(0);
     await userEvent.click(optionButtons[0] as HTMLElement);
@@ -92,7 +92,7 @@ export const HexToColorSubmit: Story = {
     // 色の選択肢をクリック（aria-labelで特定）
     const panel = canvas.getByRole('tabpanel');
     const optionButtons = within(panel).getAllByRole('button', {
-      name: /^色の選択肢:/,
+      name: /^色の選択肢:/u,
     });
     await expect(optionButtons.length).toBeGreaterThan(0);
     await userEvent.click(optionButtons[0] as HTMLElement);

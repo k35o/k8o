@@ -10,11 +10,11 @@ type ParseResult = {
 };
 
 const COMMENT_PATTERNS: readonly RegExp[] = [
-  /^\s*\/\/\s*\[!([^\]]+)\]\s*$/,
-  /^\s*#\s*\[!([^\]]+)\]\s*$/,
-  /^\s*--\s*\[!([^\]]+)\]\s*$/,
-  /^\s*<!--\s*\[!([^\]]+)\]\s*-->\s*$/,
-  /^\s*\/\*\s*\[!([^\]]+)\]\s*\*\/\s*$/,
+  /^\s*\/\/\s*\[!([^\]]+)\]\s*$/u,
+  /^\s*#\s*\[!([^\]]+)\]\s*$/u,
+  /^\s*--\s*\[!([^\]]+)\]\s*$/u,
+  /^\s*<!--\s*\[!([^\]]+)\]\s*-->\s*$/u,
+  /^\s*\/\*\s*\[!([^\]]+)\]\s*\*\/\s*$/u,
 ];
 
 const parseDirective = (raw: string): Annotation | null => {
@@ -25,7 +25,7 @@ const parseDirective = (raw: string): Annotation | null => {
   if (directive === '+') return { type: 'add' };
   if (directive === '-') return { type: 'remove' };
 
-  const callout = /^callout:\s*(.+)$/.exec(directive);
+  const callout = /^callout:\s*(.+)$/u.exec(directive);
   if (callout) {
     const text = callout[1]?.trim();
     if (text !== undefined && text.length > 0) {

@@ -2,13 +2,13 @@ import { cacheLife } from 'next/cache';
 
 const decodeHtmlEntities = (text: string): string =>
   text
-    .replaceAll(/&lt;/gi, '<')
-    .replaceAll(/&gt;/gi, '>')
-    .replaceAll(/&quot;/gi, '"')
-    .replaceAll(/&#39;/gi, "'")
-    .replaceAll(/&nbsp;/gi, ' ')
-    .replaceAll(/&#(\d+);/g, (_, code) => String.fromCodePoint(Number(code)))
-    .replaceAll(/&amp;/gi, '&');
+    .replaceAll(/&lt;/giu, '<')
+    .replaceAll(/&gt;/giu, '>')
+    .replaceAll(/&quot;/giu, '"')
+    .replaceAll(/&#39;/giu, "'")
+    .replaceAll(/&nbsp;/giu, ' ')
+    .replaceAll(/&#(\d+);/gu, (_, code) => String.fromCodePoint(Number(code)))
+    .replaceAll(/&amp;/giu, '&');
 
 export async function getMetadata(href: string) {
   'use cache';
@@ -21,13 +21,13 @@ export async function getMetadata(href: string) {
   } catch {
     return { title: undefined, description: undefined, image: undefined };
   }
-  const rawTitle = /<title>(.*?)<\/title>/i.exec(html)?.[1];
-  const rawOgTitle = /<meta\s+property="og:title"\s+content="(.*?)"/i.exec(
+  const rawTitle = /<title>(.*?)<\/title>/iu.exec(html)?.[1];
+  const rawOgTitle = /<meta\s+property="og:title"\s+content="(.*?)"/iu.exec(
     html,
   )?.[1];
   const rawDescription =
-    /<meta\s+property="og:description"\s+content="(.*?)"/i.exec(html)?.[1];
-  const rawImage = /<meta\s+property="og:image"\s+content="(.*?)"/i.exec(
+    /<meta\s+property="og:description"\s+content="(.*?)"/iu.exec(html)?.[1];
+  const rawImage = /<meta\s+property="og:image"\s+content="(.*?)"/iu.exec(
     html,
   )?.[1];
 

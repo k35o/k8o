@@ -3,7 +3,7 @@
 import { FormControl, TextField } from '@k8o/arte-odyssey';
 import { useState } from 'react';
 
-const isHexColor = (value: string) => /^#[0-9a-fA-F]{6}$/.test(value);
+const isHexColor = (value: string) => /^#[0-9a-fA-F]{6}$/u.test(value);
 
 export function ContrastColorDemo() {
   const [backgroundColor, setBackgroundColor] = useState('#2563eb');

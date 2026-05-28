@@ -24,7 +24,7 @@ export const Default: Story = {
   },
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
-    const svg = canvas.getByRole('img', { name: /QRコード/ });
+    const svg = canvas.getByRole('img', { name: /QRコード/u });
     await expect(svg).toBeInTheDocument();
   },
 };

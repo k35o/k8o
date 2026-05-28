@@ -23,7 +23,7 @@ export const QrGenerator = () => {
       const svg = renderSVG(text);
       // Remove any existing width/height attributes and add responsive classes
       const styledSvg = svg.replace(
-        /<svg([^>]*)>/,
+        /<svg([^>]*)>/u,
         '<svg$1 class="w-full h-full max-w-full max-h-full">',
       );
       return DomPurify.sanitize(styledSvg, {

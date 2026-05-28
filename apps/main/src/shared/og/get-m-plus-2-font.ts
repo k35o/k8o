@@ -28,7 +28,7 @@ function fetchGoogleFontsCss({ text }: { text: string }): Promise<string> {
 
 function extractFontUrl(css: string): string {
   const match =
-    /src:\s*url\(["']?([^"')]+)["']?\)\s*format\('(?:woff2|woff|opentype|truetype)'\)/.exec(
+    /src:\s*url\(["']?([^"')]+)["']?\)\s*format\('(?:woff2|woff|opentype|truetype)'\)/u.exec(
       css,
     );
 

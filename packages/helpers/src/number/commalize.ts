@@ -4,7 +4,7 @@ export const commalize = (num: number) => {
   const numberString = roundedNumber.toString();
 
   // 3桁ごとにカンマを挿入
-  return numberString.replaceAll(/\B(?=(\d{3})+(?!\d))/g, ',');
+  return numberString.replaceAll(/\B(?=(\d{3})+(?!\d))/gu, ',');
 };
 
 if (import.meta.vitest) {

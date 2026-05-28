@@ -3,7 +3,7 @@ function extractFunctionContent(
   source: string,
   funcName: string,
 ): string | null {
-  const funcPattern = new RegExp(`${funcName}\\s*\\(`, 'i');
+  const funcPattern = new RegExp(`${funcName}\\s*\\(`, 'iu');
   const match = source.match(funcPattern);
   if (!match) return null;
 
@@ -63,7 +63,7 @@ export function extractColor(text: string): string | null {
   }
 
   // HEXパターン: #rgb または #rrggbb（単語境界または文字列の終端が必要）
-  const hexPattern = /#([0-9a-fA-F]{3}|[0-9a-fA-F]{6})(?=\s|;|,|$|\)|]|})/;
+  const hexPattern = /#([0-9a-fA-F]{3}|[0-9a-fA-F]{6})(?=\s|;|,|$|\)|\]|\})/u;
   const hexMatch = hexPattern.exec(text);
   if (hexMatch) {
     return hexMatch[0];

@@ -21,10 +21,10 @@ const BASES = [
 ] as const satisfies Array<{ base: Base; label: string }>;
 
 const VALIDATORS: Record<Base, RegExp> = {
-  2: /^[01]+$/,
-  8: /^[0-7]+$/,
-  10: /^\d+$/,
-  16: /^[0-9a-fA-F]+$/,
+  2: /^[01]+$/u,
+  8: /^[0-7]+$/u,
+  10: /^\d+$/u,
+  16: /^[0-9a-fA-F]+$/u,
 };
 
 const ERROR_MESSAGES: Record<Base, string> = {

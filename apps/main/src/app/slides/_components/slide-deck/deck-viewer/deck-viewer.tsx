@@ -54,11 +54,10 @@ export const DeckViewer: FC<{
   }, [isPresenting]);
 
   return (
-    <div
+    <section
       aria-label={title}
       aria-roledescription="slide deck"
       className="bg-bg-mute text-fg-base fixed inset-0 z-50 flex flex-col"
-      role="region"
     >
       {!isMaximized && (
         <header className="flex items-center justify-between gap-4 px-4 py-2">
@@ -140,6 +139,6 @@ export const DeckViewer: FC<{
           />
         </footer>
       )}
-    </div>
+    </section>
   );
 };

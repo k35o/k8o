@@ -25,7 +25,7 @@ export const InitialState: Story = {
     await expect(canvas.getByText('水平')).toBeInTheDocument();
     await expect(canvas.getByText('垂直')).toBeInTheDocument();
     // 水平と垂直の値（各4つのパーセント値）が2行あることを確認
-    const percentageRows = canvas.getAllByText(/\d+%\s+\d+%\s+\d+%\s+\d+%/);
+    const percentageRows = canvas.getAllByText(/\d+%\s+\d+%\s+\d+%\s+\d+%/u);
     await expect(percentageRows).toHaveLength(2);
   },
 };

@@ -3,7 +3,7 @@ function extractFunctionContent(
   source: string,
   funcName: string,
 ): Array<{ color: string; start: number; end: number }> {
-  const funcPattern = new RegExp(`${funcName}\\s*\\(`, 'gi');
+  const funcPattern = new RegExp(`${funcName}\\s*\\(`, 'giu');
   const matches: Array<{ color: string; start: number; end: number }> = [];
   let match = funcPattern.exec(source);
 
@@ -60,7 +60,7 @@ export function findAllColors(
   }
 
   // HEX色を見つける
-  const hexPattern = /#([0-9a-fA-F]{3}|[0-9a-fA-F]{6})(?=\s|;|,|$|\)|]|})/g;
+  const hexPattern = /#([0-9a-fA-F]{3}|[0-9a-fA-F]{6})(?=\s|;|,|$|\)|\]|\})/gu;
   let hexMatch = hexPattern.exec(text);
   while (hexMatch !== null) {
     results.push({
@@ -111,7 +111,10 @@ export function findAllColors(
           ? (lowerText[index + color.length] ?? ' ')
           : ' ';
 
-      if (/\s|;|,|:/.test(beforeChar) && /\s|;|,|$|\)|]|}/.test(afterChar)) {
+      if (
+        /\s|;|,|:/u.test(beforeChar) &&
+        /\s|;|,|$|\)|\]|\}/u.test(afterChar)
+      ) {
         results.push({
           color,
           start: index,

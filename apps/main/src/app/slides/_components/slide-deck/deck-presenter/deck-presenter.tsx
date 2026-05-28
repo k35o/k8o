@@ -29,10 +29,9 @@ export const DeckPresenter: FC<{
   useClosePresenterOnViewerStop({ slug, sessionId });
 
   return (
-    <div
+    <section
       aria-label={`${title} - 発表者モード`}
       className="bg-bg-mute text-fg-base fixed inset-0 z-50 flex flex-col gap-2 p-4"
-      role="region"
     >
       <header className="flex items-center justify-between gap-4">
         <p className="text-fg-base truncate text-sm font-bold">
@@ -105,6 +104,6 @@ export const DeckPresenter: FC<{
           onAction={next}
         />
       </footer>
-    </div>
+    </section>
   );
 };
