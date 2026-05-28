@@ -102,8 +102,8 @@ importers:
         specifier: 7.0.0-dev.20260519.1
         version: 7.0.0-dev.20260519.1
       '@upstash/context7-mcp':
-        specifier: 2.2.5
-        version: 2.2.5
+        specifier: 2.3.0
+        version: 2.3.0
       '@vercel/next-browser':
         specifier: 0.7.1
         version: 0.7.1
@@ -3354,8 +3354,8 @@ packages:
     resolution: {integrity: sha512-WmoN8qaIAo7WTYWbAZuG8PYEhn5fkz7dZrqTBZ7dtt//lL2Gwms1IcnQ5yHqjDfX8Ft5j4YzDM23f87zBfDe9g==}
     deprecated: Potential CWE-502 - Update to 1.3.1 or higher
 
-  '@upstash/context7-mcp@2.2.5':
-    resolution: {integrity: sha512-0TdLOtFmgu5oHu3xlkAoVuNYKsleh9+mjgu7gFfQcHCmaESaEoQOsKZ/hMvTybEz/D1S65vbkKZ2QoucknH4nw==}
+  '@upstash/context7-mcp@2.3.0':
+    resolution: {integrity: sha512-RhSCftWWlMEPDmIApAawszSlbM9GuFwA0vL6vjZPYtrGzHdD8OuV2Q/z6iHQvdFg0fgw1/S9437hFT37deqNQg==}
     hasBin: true
 
   '@valibot/to-json-schema@1.5.0':
@@ -6708,7 +6708,7 @@ snapshots:
       jose: 6.2.0
       kysely: 0.28.17
       nanostores: 1.1.1
-      zod: 4.4.2
+      zod: 4.4.3
 
   '@better-auth/drizzle-adapter@1.6.11(@better-auth/core@1.6.11(@better-auth/utils@0.4.0)(@better-fetch/fetch@1.1.21)(better-call@1.3.5(zod@4.4.2))(jose@6.2.0)(kysely@0.28.17)(nanostores@1.1.1))(@better-auth/utils@0.4.0)(drizzle-orm@0.45.2(@libsql/client@0.17.3)(kysely@0.28.17))':
     dependencies:
@@ -7480,7 +7480,7 @@ snapshots:
       '@types/react': 19.2.15
       react: 19.2.6
 
-  '@modelcontextprotocol/sdk@1.27.1(zod@4.4.2)':
+  '@modelcontextprotocol/sdk@1.27.1(zod@4.4.3)':
     dependencies:
       '@hono/node-server': 1.19.14(hono@4.12.16)
       ajv: 8.18.0
@@ -7497,8 +7497,8 @@ snapshots:
       json-schema-typed: 8.0.2
       pkce-challenge: 5.0.1
       raw-body: 3.0.2
-      zod: 4.4.2
-      zod-to-json-schema: 3.25.1(zod@4.4.2)
+      zod: 4.4.3
+      zod-to-json-schema: 3.25.1(zod@4.4.3)
     transitivePeerDependencies:
       - supports-color
 
@@ -8866,15 +8866,15 @@ snapshots:
 
   '@ungap/structured-clone@1.3.0': {}
 
-  '@upstash/context7-mcp@2.2.5':
+  '@upstash/context7-mcp@2.3.0':
     dependencies:
-      '@modelcontextprotocol/sdk': 1.27.1(zod@4.4.2)
+      '@modelcontextprotocol/sdk': 1.27.1(zod@4.4.3)
       '@types/express': 5.0.6
       commander: 14.0.3
       express: 5.2.1
       jose: 6.2.0
       undici: 6.25.0
-      zod: 4.4.2
+      zod: 4.4.3
     transitivePeerDependencies:
       - '@cfworker/json-schema'
       - supports-color
@@ -12347,7 +12347,7 @@ snapshots:
       esbuild: 0.27.7
       fdir: 6.5.0(picomatch@4.0.4)
       picomatch: 4.0.4
-      postcss: 8.5.13
+      postcss: 8.5.15
       rollup: 4.60.2
       tinyglobby: 0.2.16
     optionalDependencies:
@@ -12484,9 +12484,9 @@ snapshots:
 
   yoga-layout@3.2.1: {}
 
-  zod-to-json-schema@3.25.1(zod@4.4.2):
+  zod-to-json-schema@3.25.1(zod@4.4.3):
     dependencies:
-      zod: 4.4.2
+      zod: 4.4.3
 
   zod@4.4.2: {}
 
