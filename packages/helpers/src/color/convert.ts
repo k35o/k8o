@@ -16,8 +16,11 @@ export const parseSafeHsl = (number: number, part: keyof HSL): number => {
   if (Number.isNaN(number)) {
     return 100;
   }
-  if (part === 'h' && (number < 0 || number > 360)) {
-    return 360;
+  if (part === 'h') {
+    if (number < 0 || number > 360) {
+      return 360;
+    }
+    return number;
   }
   if (part === 'a') {
     return parseSafeAlpha(number);
@@ -190,10 +193,10 @@ if (import.meta.vitest) {
       expect(parseSafeHsl(-1, 'h')).toBe(360);
     });
 
-    // 既知の挙動: hの上限チェックは>360のみで、その後の汎用clampにより
-    // 101〜360のhは100に丸められてしまう（抽出前からの挙動を保持）
-    it('hが101〜360の場合は100に丸められる（既存挙動）', () => {
-      expect(parseSafeHsl(180, 'h')).toBe(100);
+    it('hが0〜360の範囲内はそのまま返す', () => {
+      expect(parseSafeHsl(180, 'h')).toBe(180);
+      expect(parseSafeHsl(0, 'h')).toBe(0);
+      expect(parseSafeHsl(360, 'h')).toBe(360);
     });
 
     it('s/lは0〜100を超えると100に丸める', () => {
