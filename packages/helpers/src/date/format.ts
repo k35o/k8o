@@ -1,4 +1,3 @@
-// 日本語ロケール固定の日付フォーマッタ。標準のDate APIのみで実装し、外部依存を持たない。
 const WEEKDAYS = ['日', '月', '火', '水', '木', '金', '土'] as const;
 
 const pad2 = (n: number): string => String(n).padStart(2, '0');
