@@ -17,14 +17,6 @@
       "types": "./src/color/calc-contrast.ts",
       "default": "./src/color/calc-contrast.ts"
     },
-    "./color/extract-color": {
-      "types": "./src/color/extract-color.ts",
-      "default": "./src/color/extract-color.ts"
-    },
-    "./color/find-all-colors": {
-      "types": "./src/color/find-all-colors.ts",
-      "default": "./src/color/find-all-colors.ts"
-    },
     "./date/compare": {
       "types": "./src/date/compare.ts",
       "default": "./src/date/compare.ts"
@@ -32,11 +24,6 @@
     "./date/format": {
       "types": "./src/date/format.ts",
       "default": "./src/date/format.ts"
-    },
-    "./ipaddress": {
-      "types": "./src/ipaddress.ts",
-      "node": "./src/ipaddress.ts",
-      "default": "./src/ipaddress.ts"
     },
     "./is-internal-route": {
       "types": "./src/is-internal-route.ts",
@@ -51,17 +38,9 @@
       "types": "./src/number/between.ts",
       "default": "./src/number/between.ts"
     },
-    "./number/cast": {
-      "types": "./src/number/cast.ts",
-      "default": "./src/number/cast.ts"
-    },
     "./number/commalize": {
       "types": "./src/number/commalize.ts",
       "default": "./src/number/commalize.ts"
-    },
-    "./number/to-precision": {
-      "types": "./src/number/to-precision.ts",
-      "default": "./src/number/to-precision.ts"
     },
     "./sleep": {
       "types": "./src/sleep.ts",
@@ -80,7 +59,6 @@
     "type-check": "tsgo --noEmit"
   },
   "dependencies": {
-    "@vercel/functions": "3.6.0",
     "clsx": "2.1.1",
     "date-fns": "4.3.0",
     "tailwind-merge": "3.6.0",
