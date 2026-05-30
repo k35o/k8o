@@ -1,9 +1,9 @@
+import { shuffle } from '@repo/helpers/array/shuffle';
 import { useCallback, useMemo, useState } from 'react';
 
 import {
   generateDistractors,
   generateRandomHex,
-  shuffleArray,
 } from '../../_utils/color-quiz';
 
 type Phase = 'question' | 'result';
@@ -17,7 +17,7 @@ export const useColorQuiz = () => {
 
   const options = useMemo(() => {
     const distractors = generateDistractors(targetHex, OPTION_COUNT - 1);
-    return shuffleArray([targetHex, ...distractors]);
+    return shuffle([targetHex, ...distractors]);
   }, [targetHex]);
 
   const handleSubmit = useCallback(() => {
