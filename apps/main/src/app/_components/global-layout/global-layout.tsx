@@ -8,6 +8,7 @@ import { Background } from './background';
 import { Footer } from './footer';
 import { Header } from './header';
 import { LlmLink } from './llm-link';
+import { NotificationsLink } from './notifications-link';
 
 export const GlobalLayout: FC<{ children: ReactNode }> = ({ children }) => (
   <div className="flex min-h-svh flex-col">
@@ -23,6 +24,7 @@ export const GlobalLayout: FC<{ children: ReactNode }> = ({ children }) => (
         <Suspense fallback={null}>
           <ContactToMe />
         </Suspense>
+        <NotificationsLink />
         <ToggleTheme />
         <LlmLink />
       </div>
