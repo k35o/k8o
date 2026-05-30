@@ -1,7 +1,13 @@
 'use client';
 
 import { Alert, Button, Card, SubscribeIcon } from '@k8o/arte-odyssey';
-import { type FC, useCallback, useEffect, useState } from 'react';
+import {
+  type FC,
+  useCallback,
+  useEffect,
+  useState,
+  useSyncExternalStore,
+} from 'react';
 
 import {
   subscribePushAction,
@@ -11,6 +17,9 @@ import {
 type Props = {
   vapidPublicKey: string;
 };
+
+// プッシュ通知対応は変化しないため、購読(変更通知)は不要。
+const subscribeNoop = (): (() => void) => () => undefined;
 
 const urlBase64ToUint8Array = (
   base64String: string,
@@ -24,32 +33,45 @@ const urlBase64ToUint8Array = (
 };
 
 export const PushSubscribe: FC<Props> = ({ vapidPublicKey }) => {
-  const [isSupported, setIsSupported] = useState(true);
+  // 機能対応は navigator/window 依存で SSR では判定できないため、
+  // useSyncExternalStore でクライアント確定値を読む(サーバーは鍵有無で代替)。
+  const isSupported = useSyncExternalStore(
+    subscribeNoop,
+    () =>
+      'serviceWorker' in navigator &&
+      'PushManager' in window &&
+      vapidPublicKey !== '',
+    () => vapidPublicKey !== '',
+  );
+
   const [isSubscribed, setIsSubscribed] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
+  // 外部システム(PushManager)から現在の購読状態を同期する。
+  // getSubscription() は非同期で useSyncExternalStore では読めないため Effect を使う。
   useEffect(() => {
-    if (
-      !('serviceWorker' in navigator) ||
-      !('PushManager' in window) ||
-      vapidPublicKey === ''
-    ) {
-      setIsSupported(false);
-      return;
+    let ignore = false;
+
+    if (isSupported) {
+      const syncSubscription = async () => {
+        try {
+          const registration = await navigator.serviceWorker.ready;
+          const subscription = await registration.pushManager.getSubscription();
+          if (!ignore) {
+            setIsSubscribed(subscription !== null);
+          }
+        } catch (e) {
+          console.error('購読状態の取得に失敗しました:', e);
+        }
+      };
+      void syncSubscription();
     }
 
-    const checkSubscription = async () => {
-      try {
-        const registration = await navigator.serviceWorker.ready;
-        const subscription = await registration.pushManager.getSubscription();
-        setIsSubscribed(subscription !== null);
-      } catch (e) {
-        console.error('購読状態の取得に失敗しました:', e);
-      }
+    return () => {
+      ignore = true;
     };
-    void checkSubscription();
-  }, [vapidPublicKey]);
+  }, [isSupported]);
 
   const subscribe = useCallback(async () => {
     setIsLoading(true);
