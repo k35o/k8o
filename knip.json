@@ -11,7 +11,7 @@
   "workspaces": {
     ".": {
       "entry": ["vite.config.ts"],
-      "ignoreDependencies": ["@upstash/context7-mcp", "@vercel/next-browser"]
+      "ignoreDependencies": ["@vercel/next-browser"]
     },
     "apps/main": {
       "ignoreDependencies": ["chromatic", "vitest-browser-react"]
