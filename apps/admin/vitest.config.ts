@@ -35,12 +35,7 @@ export default defineConfig({
           storybookTest({ configDir: path.join(dirname, '.storybook') }),
         ],
         optimizeDeps: {
-          include: [
-            'next/link',
-            'better-auth/react',
-            '@repo/helpers > date-fns',
-            '@repo/helpers > date-fns/locale',
-          ],
+          include: ['next/link', 'better-auth/react'],
         },
         test: {
           name: 'storybook',
