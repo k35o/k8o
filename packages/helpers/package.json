@@ -82,7 +82,6 @@
   "dependencies": {
     "@vercel/functions": "3.6.0",
     "clsx": "2.1.1",
-    "date-fns": "4.3.0",
     "tailwind-merge": "3.6.0",
     "to-vfile": "8.0.0",
     "vfile-matter": "5.0.1"
