@@ -45,19 +45,16 @@ export async function sendWebPush(
 ): Promise<Response> {
   const payloadBytes = utf8(payload);
 
-  // ECDHキーペアを生成
   const keyResult = await crypto.subtle.generateKey(
     { name: 'ECDH', namedCurve: 'P-256' },
     true,
     ['deriveBits'],
   );
-
   if (!isCryptoKeyPair(keyResult)) {
     throw new Error('Expected CryptoKeyPair');
   }
   const localKeyPair = keyResult;
 
-  // クライアントの公開鍵をインポート
   const clientPublicKeyBytes = base64UrlDecode(subscription.keys.p256dh);
   const clientPublicKey = await crypto.subtle.importKey(
     'raw',
@@ -67,49 +64,37 @@ export async function sendWebPush(
     [],
   );
 
-  // 共有シークレットを導出
   const sharedSecret = await crypto.subtle.deriveBits(
     { name: 'ECDH', public: clientPublicKey },
     localKeyPair.privateKey,
     256,
   );
 
-  // ローカル公開鍵をエクスポート
   const localPublicKeyExport = await crypto.subtle.exportKey(
     'raw',
     localKeyPair.publicKey,
   );
-
   if (!(localPublicKeyExport instanceof ArrayBuffer)) {
     throw new Error('Expected ArrayBuffer');
   }
-  const localPublicKeyBytes = localPublicKeyExport;
+  const localPublicKey = new Uint8Array(localPublicKeyExport);
 
-  // auth secretをデコード
   const authSecret = base64UrlDecode(subscription.keys.auth);
 
-  // 暗号化キーとnonceを導出
   const { contentEncryptionKey, nonce, salt } = await deriveEncryptionKeys(
     sharedSecret,
     authSecret,
-    new Uint8Array(localPublicKeyBytes),
+    localPublicKey,
     clientPublicKeyBytes,
   );
 
-  // ペイロードを暗号化
   const encrypted = await encryptPayload(
     payloadBytes,
     contentEncryptionKey,
     nonce,
   );
+  const body = buildEncryptedBody(localPublicKey, { encrypted, salt });
 
-  // 最終的な暗号化ボディを構築
-  const body = buildEncryptedBody(new Uint8Array(localPublicKeyBytes), {
-    encrypted,
-    salt,
-  });
-
-  // VAPIDヘッダーを生成
   const vapidHeaders = await generateVapidHeaders(
     subscription.endpoint,
     vapid.vapidSubject,
@@ -117,7 +102,6 @@ export async function sendWebPush(
     vapid.vapidPrivateKey,
   );
 
-  // Push通知を送信
   // redirect: 'manual' でリダイレクト追従を無効化し、allowlist 済みホスト以外へ
   // 到達しないようにする(Push サービスの open redirect 等への多層防御)。
   const response = await fetch(subscription.endpoint, {
@@ -161,7 +145,6 @@ async function deriveEncryptionKeys(
 
   const ikm = await hkdf(authSecret, new Uint8Array(sharedSecret), info, 32);
 
-  // PRK for content encryption
   const keyInfo = utf8('Content-Encoding: aes128gcm\0');
   const nonceInfo = utf8('Content-Encoding: nonce\0');
 
@@ -240,7 +223,6 @@ async function generateVapidHeaders(
   const payloadB64 = base64UrlEncode(JSON.stringify(payload));
   const unsignedToken = `${headerB64}.${payloadB64}`;
 
-  // VAPID秘密鍵をインポート（JWK形式で）
   const privateKeyBytes = base64UrlDecode(privateKey);
   const publicKeyBytes = base64UrlDecode(publicKey);
 
@@ -260,7 +242,6 @@ async function generateVapidHeaders(
     ['sign'],
   );
 
-  // JWTに署名
   const signature = await crypto.subtle.sign(
     { name: 'ECDSA', hash: 'SHA-256' },
     cryptoKey,
@@ -276,7 +257,6 @@ async function generateVapidHeaders(
   };
 }
 
-// HKDF implementation
 async function hkdf(
   salt: Uint8Array<ArrayBuffer>,
   ikm: Uint8Array<ArrayBuffer>,
@@ -309,7 +289,6 @@ async function hkdf(
   return okm.slice(0, length);
 }
 
-// Utility functions
 function base64UrlDecode(str: string): Uint8Array<ArrayBuffer> {
   const base64 = str.replaceAll('-', '+').replaceAll('_', '/');
   const padding = '='.repeat((4 - (base64.length % 4)) % 4);

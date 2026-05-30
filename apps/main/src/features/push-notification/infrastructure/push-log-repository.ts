@@ -13,8 +13,8 @@ export type PublicPushLog = {
   sentAt: string;
 };
 
-export const findPushLogs = async (limit = 50): Promise<PublicPushLog[]> => {
-  const rows = await db.query.pushLogs.findMany({
+export const findPushLogs = (limit: number): Promise<PublicPushLog[]> =>
+  db.query.pushLogs.findMany({
     columns: {
       id: true,
       kind: true,
@@ -26,6 +26,3 @@ export const findPushLogs = async (limit = 50): Promise<PublicPushLog[]> => {
     orderBy: (logs) => [desc(logs.sentAt)],
     limit,
   });
-
-  return rows;
-};

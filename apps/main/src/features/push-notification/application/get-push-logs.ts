@@ -1,8 +1,6 @@
-import {
-  findPushLogs,
-  type PublicPushLog,
-} from '../infrastructure/push-log-repository';
+import { findPushLogs } from '../infrastructure/push-log-repository';
 
-export type PushLogView = PublicPushLog;
+// 通知履歴ページに表示する最大件数
+const HISTORY_LIMIT = 50;
 
-export const getPushLogs = (): Promise<PushLogView[]> => findPushLogs(50);
+export const getPushLogs = () => findPushLogs(HISTORY_LIMIT);
