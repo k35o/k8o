@@ -13,19 +13,27 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
   const { newArticles, updatedArticles, failedSources } = await syncArticles();
 
   const readingListUrl = 'https://www.k8o.me/reading-list';
+  const today = new Date().toISOString().slice(0, 10);
+  const dedupeKey = `readings:${today}:${newArticles}:${updatedArticles}:${failedSources.length}`;
   try {
     if (failedSources.length > 0) {
-      await sendPushNotification(
-        'フィード取得失敗',
-        `${newArticles}件追加、${updatedArticles}件更新（失敗: ${failedSources.join(', ')}）`,
-        readingListUrl,
-      );
+      // 失敗したソース名は内部情報のため公開通知には含めず、admin ログにのみ残す
+      console.warn('フィード取得に失敗したソース:', failedSources);
+      await sendPushNotification({
+        kind: 'readings_updated',
+        title: 'フィード取得失敗',
+        body: `${newArticles}件追加、${updatedArticles}件更新（${failedSources.length}件のソースで失敗）`,
+        url: readingListUrl,
+        dedupeKey,
+      });
     } else {
-      await sendPushNotification(
-        'フィード取得完了',
-        `${newArticles}件追加、${updatedArticles}件更新`,
-        readingListUrl,
-      );
+      await sendPushNotification({
+        kind: 'readings_updated',
+        title: 'フィード取得完了',
+        body: `${newArticles}件追加、${updatedArticles}件更新`,
+        url: readingListUrl,
+        dedupeKey,
+      });
     }
   } catch (error) {
     console.error('プッシュ通知の送信に失敗しました:', error);

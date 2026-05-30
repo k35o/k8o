@@ -33,11 +33,14 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
       }
 
       try {
-        await sendPushNotification(
-          'Baseline更新',
-          parts.join('、'),
-          'https://k8o.me/baseline',
-        );
+        const today = new Date().toISOString().slice(0, 10);
+        await sendPushNotification({
+          kind: 'baseline_updated',
+          title: 'Baseline更新',
+          body: parts.join('、'),
+          url: 'https://k8o.me/baseline',
+          dedupeKey: `baseline:${today}:${newFeatures.length}:${statusChanges.length}`,
+        });
       } catch (error) {
         console.error('プッシュ通知の送信に失敗しました:', error);
       }
