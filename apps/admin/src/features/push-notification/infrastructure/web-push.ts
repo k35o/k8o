@@ -118,6 +118,8 @@ export async function sendWebPush(
   );
 
   // Push通知を送信
+  // redirect: 'manual' でリダイレクト追従を無効化し、allowlist 済みホスト以外へ
+  // 到達しないようにする(Push サービスの open redirect 等への多層防御)。
   const response = await fetch(subscription.endpoint, {
     method: 'POST',
     headers: {
@@ -127,6 +129,7 @@ export async function sendWebPush(
       ...vapidHeaders,
     },
     body,
+    redirect: 'manual',
   });
 
   if (!response.ok) {

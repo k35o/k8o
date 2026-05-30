@@ -4,8 +4,11 @@ import { syncBaseline } from '@/features/baseline/application/sync-baseline';
 import { sendPushNotification } from '@/features/push-notification/infrastructure/push-notification';
 
 export async function GET(req: NextRequest): Promise<NextResponse> {
+  const cronSecret = process.env['CRON_SECRET'];
   if (
-    req.headers.get('Authorization') !== `Bearer ${process.env['CRON_SECRET']}`
+    cronSecret === undefined ||
+    cronSecret === '' ||
+    req.headers.get('Authorization') !== `Bearer ${cronSecret}`
   ) {
     return NextResponse.json({ ok: false }, { status: 401 });
   }
