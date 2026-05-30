@@ -20,7 +20,7 @@ export const formatDate = (
 
   // 長いトークンを先に評価する（MM→M, dd→d, HH, mm, yyyy）
   return formatStr.replaceAll(
-    /yyyy|MM|dd|HH|mm|M|d|E/g,
+    /yyyy|MM|dd|HH|mm|M|d|E/gu,
     (token) => replacements[token] ?? token,
   );
 };
