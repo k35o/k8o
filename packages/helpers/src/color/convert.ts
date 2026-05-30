@@ -227,6 +227,12 @@ if (import.meta.vitest) {
     it('RGBをhexに変換する', () => {
       expect(rgbToHex({ r: 255, g: 255, b: 255 })).toBe('ffffff');
     });
+
+    // 既知の挙動: toString(16)にpadStartがないため、成分が16未満だと
+    // 1文字になりhex文字列が壊れる（本来は'0f0000'が期待値。抽出前からの挙動を保持）
+    it('成分が16未満だとゼロパディングされない（既存バグ）', () => {
+      expect(rgbToHex({ r: 15, g: 0, b: 0 })).toBe('f00');
+    });
   });
 
   describe('hexToHsl', () => {
