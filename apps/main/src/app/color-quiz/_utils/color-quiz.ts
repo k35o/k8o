@@ -1,15 +1,10 @@
+import { hexToRgb } from '@repo/helpers/color/convert';
+
 export const generateRandomHex = (): string => {
   const r = Math.floor(Math.random() * 256);
   const g = Math.floor(Math.random() * 256);
   const b = Math.floor(Math.random() * 256);
   return [r, g, b].map((v) => v.toString(16).padStart(2, '0')).join('');
-};
-
-const hexToRgb = (hex: string): { r: number; g: number; b: number } => {
-  const r = Number.parseInt(hex.slice(0, 2), 16);
-  const g = Number.parseInt(hex.slice(2, 4), 16);
-  const b = Number.parseInt(hex.slice(4, 6), 16);
-  return { r, g, b };
 };
 
 const colorDistance = (hex1: string, hex2: string): number => {
@@ -73,15 +68,4 @@ export const generateDistractors = (
   }
 
   return distractors;
-};
-
-export const shuffleArray = <T>(array: T[]): T[] => {
-  const shuffled = [...array];
-  for (let i = shuffled.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    const temp = shuffled[i];
-    shuffled[i] = shuffled[j] as T;
-    shuffled[j] = temp as T;
-  }
-  return shuffled;
 };

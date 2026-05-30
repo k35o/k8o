@@ -10,8 +10,6 @@ import {
   useClipboard,
   useToast,
 } from '@k8o/arte-odyssey';
-import { type ChangeEventHandler, useCallback, useMemo, useState } from 'react';
-
 import {
   type HSL,
   hexToHsl,
@@ -21,7 +19,9 @@ import {
   parseSafeRgb,
   type RGB,
   rgbToHex,
-} from '../../_utils/color-converter';
+} from '@repo/helpers/color/convert';
+import { type ChangeEventHandler, useCallback, useMemo, useState } from 'react';
+
 import { ColorTip } from './color-tip';
 
 type BaseColor =
