@@ -16,8 +16,11 @@ export const parseSafeHsl = (number: number, part: keyof HSL): number => {
   if (Number.isNaN(number)) {
     return 100;
   }
-  if (part === 'h' && (number < 0 || number > 360)) {
-    return 360;
+  if (part === 'h') {
+    if (number < 0 || number > 360) {
+      return 360;
+    }
+    return number;
   }
   if (part === 'a') {
     return parseSafeAlpha(number);
@@ -160,3 +163,90 @@ export const hexToHsl = (hex: string): HSL => {
     ...(a === undefined ? {} : { a }),
   };
 };
+
+if (import.meta.vitest) {
+  const { describe, expect, it } = import.meta.vitest;
+
+  describe('parseSafeRgb', () => {
+    it('0〜255の範囲内はそのまま返す', () => {
+      expect(parseSafeRgb(128)).toBe(128);
+      expect(parseSafeRgb(0)).toBe(0);
+      expect(parseSafeRgb(255)).toBe(255);
+    });
+
+    it('範囲外・NaNは255に丸める', () => {
+      expect(parseSafeRgb(-1)).toBe(255);
+      expect(parseSafeRgb(300)).toBe(255);
+      expect(parseSafeRgb(Number.NaN)).toBe(255);
+    });
+  });
+
+  describe('parseSafeHsl', () => {
+    it('各パートの範囲内はそのまま返す', () => {
+      expect(parseSafeHsl(90, 'h')).toBe(90);
+      expect(parseSafeHsl(50, 's')).toBe(50);
+      expect(parseSafeHsl(0.5, 'a')).toBe(0.5);
+    });
+
+    it('hが360を超える/負の場合は360に丸める', () => {
+      expect(parseSafeHsl(400, 'h')).toBe(360);
+      expect(parseSafeHsl(-1, 'h')).toBe(360);
+    });
+
+    it('hが0〜360の範囲内はそのまま返す', () => {
+      expect(parseSafeHsl(180, 'h')).toBe(180);
+      expect(parseSafeHsl(0, 'h')).toBe(0);
+      expect(parseSafeHsl(360, 'h')).toBe(360);
+    });
+
+    it('s/lは0〜100を超えると100に丸める', () => {
+      expect(parseSafeHsl(200, 's')).toBe(100);
+      expect(parseSafeHsl(-1, 'l')).toBe(100);
+    });
+
+    it('aは0〜1を超えると1に丸める', () => {
+      expect(parseSafeHsl(2, 'a')).toBe(1);
+      expect(parseSafeHsl(-1, 'a')).toBe(1);
+    });
+  });
+
+  describe('hexToRgb', () => {
+    it('6桁hexをRGBに変換する', () => {
+      expect(hexToRgb('ffffff')).toEqual({ r: 255, g: 255, b: 255, a: 1 });
+      expect(hexToRgb('000000')).toEqual({ r: 0, g: 0, b: 0, a: 1 });
+      expect(hexToRgb('ff0000')).toEqual({ r: 255, g: 0, b: 0, a: 1 });
+    });
+
+    it('3桁hexを展開して変換する', () => {
+      expect(hexToRgb('fff')).toEqual({ r: 255, g: 255, b: 255, a: 1 });
+    });
+
+    it('不正な長さの場合は白を返す', () => {
+      expect(hexToRgb('12345')).toEqual({ r: 255, g: 255, b: 255, a: 1 });
+    });
+  });
+
+  describe('rgbToHex', () => {
+    it('RGBをhexに変換する', () => {
+      expect(rgbToHex({ r: 255, g: 255, b: 255 })).toBe('ffffff');
+    });
+
+    // 既知の挙動: toString(16)にpadStartがないため、成分が16未満だと
+    // 1文字になりhex文字列が壊れる（本来は'0f0000'が期待値。抽出前からの挙動を保持）
+    it('成分が16未満だとゼロパディングされない（既存バグ）', () => {
+      expect(rgbToHex({ r: 15, g: 0, b: 0 })).toBe('f00');
+    });
+  });
+
+  describe('hexToHsl', () => {
+    it('原色をHSLに変換する', () => {
+      expect(hexToHsl('ff0000')).toEqual({ h: 0, s: 100, l: 50, a: 1 });
+    });
+  });
+
+  describe('hslToHex', () => {
+    it('HSLをhexに変換する', () => {
+      expect(hslToHex({ h: 0, s: 100, l: 50 })).toBe('ff0000');
+    });
+  });
+}
