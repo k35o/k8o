@@ -26,7 +26,7 @@
     "@typescript/native-preview": "7.0.0-dev.20260521.1",
     "@upstash/context7-mcp": "2.3.0",
     "@vercel/next-browser": "0.7.1",
-    "knip": "6.14.1",
+    "knip": "6.14.2",
     "oxlint-tailwindcss": "0.8.0",
     "playwright": "1.60.0",
     "portless": "0.13.0",
