@@ -50,6 +50,10 @@
       "types": "./src/number/commalize.ts",
       "default": "./src/number/commalize.ts"
     },
+    "./push-endpoint": {
+      "types": "./src/push-endpoint/is-allowed-push-endpoint.ts",
+      "default": "./src/push-endpoint/is-allowed-push-endpoint.ts"
+    },
     "./sleep": {
       "types": "./src/sleep.ts",
       "default": "./src/sleep.ts"

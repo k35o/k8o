@@ -9,6 +9,7 @@ import type { Metadata } from 'next';
 import { ReactScan } from '@/shared/browser/react-scan';
 
 import { GlobalLayout } from './_components/global-layout';
+import { ServiceWorkerRegister } from './_components/service-worker-register';
 import { TrustedTypesInit } from './_components/trusted-types-init';
 import { AppProvider } from './_providers/app';
 import { mPlus2, notoSansJp } from './_styles/font';
@@ -42,6 +43,10 @@ export const metadata = {
     card: 'summary',
     description: 'k8oの活動や制作物をまとめた個人サイト',
   },
+  appleWebApp: {
+    capable: true,
+    title: 'k8o',
+  },
 } satisfies Metadata;
 
 export default function RootLayout({ children }: LayoutProps<'/'>) {
@@ -61,6 +66,7 @@ export default function RootLayout({ children }: LayoutProps<'/'>) {
         <AppProvider>
           <GlobalLayout>{children}</GlobalLayout>
         </AppProvider>
+        <ServiceWorkerRegister />
         <Analytics />
         <GoogleAnalytics
           gaId={process.env['NEXT_PUBLIC_GOOGLE_ANALYTICS_ID'] ?? ''}

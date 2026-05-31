@@ -4,8 +4,11 @@ import { syncBaseline } from '@/features/baseline/application/sync-baseline';
 import { sendPushNotification } from '@/features/push-notification/infrastructure/push-notification';
 
 export async function GET(req: NextRequest): Promise<NextResponse> {
+  const cronSecret = process.env['CRON_SECRET'];
   if (
-    req.headers.get('Authorization') !== `Bearer ${process.env['CRON_SECRET']}`
+    cronSecret === undefined ||
+    cronSecret === '' ||
+    req.headers.get('Authorization') !== `Bearer ${cronSecret}`
   ) {
     return NextResponse.json({ ok: false }, { status: 401 });
   }
@@ -33,11 +36,15 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
       }
 
       try {
-        await sendPushNotification(
-          'Baseline更新',
-          parts.join('、'),
-          'https://k8o.me/baseline',
-        );
+        // 同日のリトライで件数が変わっても重複通知しないよう、dedupe は日付のみで行う
+        const today = new Date().toISOString().slice(0, 10);
+        await sendPushNotification({
+          kind: 'baseline_updated',
+          title: 'Baseline更新',
+          body: parts.join('、'),
+          url: 'https://k8o.me/baseline',
+          dedupeKey: `baseline:${today}`,
+        });
       } catch (error) {
         console.error('プッシュ通知の送信に失敗しました:', error);
       }

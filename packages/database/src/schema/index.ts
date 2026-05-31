@@ -18,6 +18,8 @@ import { blogViews } from './blog-views';
 import { blogs, blogsRelations } from './blogs';
 import { comments, commentsRelations } from './comments';
 import { feedbacks, feedbacksRelations } from './feedback';
+import { pushLogs } from './push-logs';
+import { pushSubscriptions } from './push-subscriptions';
 import { reportingReports } from './reporting-reports';
 import { slideTag, slideTagRelations } from './slide-tag';
 import { slides, slidesRelations } from './slides';
@@ -37,6 +39,9 @@ export const schema = {
   comments,
   reportingReports,
   baselineSnapshots,
+  // Push通知関連
+  pushSubscriptions,
+  pushLogs,
   // ブログ関連
   blogs,
   blogViews,

@@ -2,10 +2,6 @@
   "ignoreCommand": "bash ../../scripts/ignore-build.sh admin",
   "crons": [
     {
-      "path": "/api/crons/weekly-notifications",
-      "schedule": "0 1 * * 6"
-    },
-    {
       "path": "/api/crons/sync-articles",
       "schedule": "0 0 * * *"
     },
