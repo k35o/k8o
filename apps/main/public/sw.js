@@ -1,8 +1,20 @@
 // Web Push 通知を受け取るための Service Worker。
 // push イベントで通知を表示し、クリックで対象 URL を開く。
 
+// 不正な JSON ペイロードでも通知を黙ってドロップしないようフォールバックする
+const parsePushData = (event) => {
+  if (!event.data) {
+    return {};
+  }
+  try {
+    return event.data.json();
+  } catch {
+    return {};
+  }
+};
+
 self.addEventListener('push', (event) => {
-  const data = event.data?.json() ?? {};
+  const data = parsePushData(event);
   const title = data.title ?? 'k8o';
   const options = {
     body: data.body ?? '',
