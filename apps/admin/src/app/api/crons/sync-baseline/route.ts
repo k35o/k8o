@@ -36,13 +36,14 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
       }
 
       try {
+        // 同日のリトライで件数が変わっても重複通知しないよう、dedupe は日付のみで行う
         const today = new Date().toISOString().slice(0, 10);
         await sendPushNotification({
           kind: 'baseline_updated',
           title: 'Baseline更新',
           body: parts.join('、'),
           url: 'https://k8o.me/baseline',
-          dedupeKey: `baseline:${today}:${newFeatures.length}:${statusChanges.length}`,
+          dedupeKey: `baseline:${today}`,
         });
       } catch (error) {
         console.error('プッシュ通知の送信に失敗しました:', error);

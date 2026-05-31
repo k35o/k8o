@@ -16,8 +16,9 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
   const { newArticles, updatedArticles, failedSources } = await syncArticles();
 
   const readingListUrl = 'https://www.k8o.me/reading-list';
+  // 同日のリトライで結果カウントが変わっても重複通知しないよう、dedupe は日付のみで行う
   const today = new Date().toISOString().slice(0, 10);
-  const dedupeKey = `readings:${today}:${newArticles}:${updatedArticles}:${failedSources.length}`;
+  const dedupeKey = `readings:${today}`;
   try {
     if (failedSources.length > 0) {
       // 失敗したソース名は内部情報のため公開通知には含めず、admin ログにのみ残す
