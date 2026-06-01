@@ -1,5 +1,6 @@
 import { fileURLToPath } from 'node:url';
 
+import { jsxAutomaticPlugin } from '@repo/vitest-config/jsx-automatic';
 import { storybookTest } from '@storybook/addon-vitest/vitest-plugin';
 import { playwright } from '@vitest/browser-playwright';
 import { defineConfig } from 'vitest/config';
@@ -17,6 +18,7 @@ export default defineConfig({
     projects: [
       {
         extends: true,
+        plugins: [jsxAutomaticPlugin],
         resolve: {
           alias: {
             'server-only': fileURLToPath(
@@ -37,6 +39,7 @@ export default defineConfig({
       },
       {
         extends: true,
+        plugins: [jsxAutomaticPlugin],
         test: {
           env: {
             TZ: 'UTC',
