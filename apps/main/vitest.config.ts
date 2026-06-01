@@ -1,16 +1,9 @@
 import { fileURLToPath } from 'node:url';
 
+import { jsxAutomaticPlugin } from '@repo/vitest-config/jsx-automatic';
 import { storybookTest } from '@storybook/addon-vitest/vitest-plugin';
 import { playwright } from '@vitest/browser-playwright';
-import { type Plugin, defineConfig } from 'vitest/config';
-
-const jsxAutomaticPlugin: Plugin = {
-  name: 'vitest-jsx-automatic',
-  config: () => ({
-    esbuild: { jsx: 'automatic' },
-    oxc: { jsx: { runtime: 'automatic' } },
-  }),
-};
+import { defineConfig } from 'vitest/config';
 
 export default defineConfig({
   test: {

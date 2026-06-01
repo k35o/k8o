@@ -1,0 +1,20 @@
+{
+  "name": "@repo/vitest-config",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Shared Vitest configuration for k8o project",
+  "type": "module",
+  "exports": {
+    "./jsx-automatic": {
+      "types": "./src/jsx-automatic.ts",
+      "default": "./src/jsx-automatic.ts"
+    }
+  },
+  "scripts": {
+    "type-check": "tsgo --noEmit"
+  },
+  "devDependencies": {
+    "@repo/typescript-config": "workspace:*",
+    "vitest": "catalog:"
+  }
+}
