@@ -2,7 +2,15 @@ import { fileURLToPath } from 'node:url';
 
 import { storybookTest } from '@storybook/addon-vitest/vitest-plugin';
 import { playwright } from '@vitest/browser-playwright';
-import { defineConfig } from 'vitest/config';
+import { type Plugin, defineConfig } from 'vitest/config';
+
+const jsxAutomaticPlugin: Plugin = {
+  name: 'vitest-jsx-automatic',
+  config: () => ({
+    esbuild: { jsx: 'automatic' },
+    oxc: { jsx: { runtime: 'automatic' } },
+  }),
+};
 
 export default defineConfig({
   test: {
@@ -17,6 +25,7 @@ export default defineConfig({
     projects: [
       {
         extends: true,
+        plugins: [jsxAutomaticPlugin],
         resolve: {
           alias: {
             'server-only': fileURLToPath(
@@ -37,6 +46,7 @@ export default defineConfig({
       },
       {
         extends: true,
+        plugins: [jsxAutomaticPlugin],
         test: {
           env: {
             TZ: 'UTC',
