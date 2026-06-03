@@ -26,6 +26,7 @@ export const SyncButton: FC = () => {
       const parts = [
         `${String(res.newArticles ?? 0)}件追加`,
         `${String(res.updatedArticles ?? 0)}件更新`,
+        `${String(res.enrichedArticles ?? 0)}件OGP補完`,
       ];
       onOpen('success', parts.join('、'));
     });

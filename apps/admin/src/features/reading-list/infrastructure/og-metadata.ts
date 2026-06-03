@@ -1,0 +1,39 @@
+import { type OgMetadata, parseOgMetadata } from '@repo/helpers/og/og-metadata';
+
+const TIMEOUT_MS = 5000;
+
+const EMPTY_METADATA: OgMetadata = {
+  title: undefined,
+  description: undefined,
+  imageUrl: undefined,
+};
+
+// 記事 URL を取得して OGP を抽出する。UA を付与しないと弾くサイトがあるため明示する。
+// 取得・解析に失敗しても例外は投げず全 undefined を返す
+export const fetchOgMetadata = async (url: string): Promise<OgMetadata> => {
+  let response: Response;
+  try {
+    response = await fetch(url, {
+      signal: AbortSignal.timeout(TIMEOUT_MS),
+      headers: {
+        'user-agent': 'Mozilla/5.0 (compatible; k8o-bot/1.0; +https://k8o.me)',
+        accept: 'text/html,application/xhtml+xml',
+      },
+    });
+  } catch {
+    return EMPTY_METADATA;
+  }
+
+  if (!response.ok) {
+    return EMPTY_METADATA;
+  }
+
+  let html: string;
+  try {
+    html = (await response.text()).trim();
+  } catch {
+    return EMPTY_METADATA;
+  }
+
+  return parseOgMetadata(html, response.url === '' ? url : response.url);
+};

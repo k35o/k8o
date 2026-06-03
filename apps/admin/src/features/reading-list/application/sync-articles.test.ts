@@ -1,7 +1,12 @@
 import { db } from '@repo/database';
 import Parser from 'rss-parser';
 
+import { fetchOgMetadata } from '../infrastructure/og-metadata';
 import { syncArticles } from './sync-articles';
+
+vi.mock('../infrastructure/og-metadata', () => ({
+  fetchOgMetadata: vi.fn(),
+}));
 
 vi.mock('@repo/database', () => ({
   db: {
@@ -51,6 +56,11 @@ describe('syncArticles', () => {
       ok: true,
       text: () => Promise.resolve('<xml/>'),
     });
+    vi.mocked(fetchOgMetadata).mockResolvedValue({
+      title: undefined,
+      description: undefined,
+      imageUrl: undefined,
+    });
   });
 
   afterEach(() => {
@@ -89,6 +99,92 @@ describe('syncArticles', () => {
       expect(result.updatedArticles).toBe(0);
       expect(result.failedSources).toHaveLength(0);
       expect(db.insert).toHaveBeenCalledWith(db._schema.articles);
+    });
+
+    it('新規記事に取得した OGP（画像・説明）を保存する', async () => {
+      vi.mocked(db.query.articleSources.findMany).mockResolvedValue([
+        {
+          id: 1,
+          title: 'web.dev',
+          url: 'https://web.dev/feed.xml',
+          siteUrl: 'https://web.dev',
+          type: 'feed' as const,
+          createdAt: '2026-01-01T00:00:00Z',
+          updatedAt: '2026-01-01T00:00:00Z',
+        },
+      ]);
+
+      mockParseString.mockResolvedValue({
+        items: [
+          {
+            title: '新しい記事',
+            link: 'https://web.dev/blog/new-article',
+            isoDate: '2026-03-10T00:00:00Z',
+          },
+        ],
+      });
+
+      vi.mocked(db.query.articles.findMany).mockResolvedValue([]);
+      vi.mocked(fetchOgMetadata).mockResolvedValue({
+        title: 'OGタイトル',
+        description: 'OGの説明',
+        imageUrl: 'https://web.dev/og.png',
+      });
+
+      const valuesMock = vi.fn();
+      vi.mocked(db.insert).mockReturnValue({ values: valuesMock } as never);
+
+      await syncArticles();
+
+      expect(fetchOgMetadata).toHaveBeenCalledWith(
+        'https://web.dev/blog/new-article',
+      );
+      expect(valuesMock).toHaveBeenCalledWith([
+        expect.objectContaining({
+          url: 'https://web.dev/blog/new-article',
+          imageUrl: 'https://web.dev/og.png',
+          description: 'OGの説明',
+        }),
+      ]);
+    });
+
+    it('OGP が取得できなかった新規記事は imageUrl/description を null で保存する', async () => {
+      vi.mocked(db.query.articleSources.findMany).mockResolvedValue([
+        {
+          id: 1,
+          title: 'web.dev',
+          url: 'https://web.dev/feed.xml',
+          siteUrl: 'https://web.dev',
+          type: 'feed' as const,
+          createdAt: '2026-01-01T00:00:00Z',
+          updatedAt: '2026-01-01T00:00:00Z',
+        },
+      ]);
+
+      mockParseString.mockResolvedValue({
+        items: [
+          {
+            title: '新しい記事',
+            link: 'https://web.dev/blog/new-article',
+            isoDate: '2026-03-10T00:00:00Z',
+          },
+        ],
+      });
+
+      vi.mocked(db.query.articles.findMany).mockResolvedValue([]);
+
+      const valuesMock = vi.fn();
+      vi.mocked(db.insert).mockReturnValue({ values: valuesMock } as never);
+
+      await syncArticles();
+
+      expect(valuesMock).toHaveBeenCalledWith([
+        expect.objectContaining({
+          url: 'https://web.dev/blog/new-article',
+          imageUrl: null,
+          description: null,
+        }),
+      ]);
     });
 
     it('ソースがない場合は何も追加しない', async () => {

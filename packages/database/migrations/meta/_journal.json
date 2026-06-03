@@ -365,6 +365,13 @@
       "when": 1780122488896,
       "tag": "0051_jittery_sinister_six",
       "breakpoints": true
+    },
+    {
+      "idx": 52,
+      "version": "6",
+      "when": 1780453972950,
+      "tag": "0052_whole_scarecrow",
+      "breakpoints": true
     }
   ]
 }

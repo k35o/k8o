@@ -3,7 +3,7 @@ import {
   getArticles,
 } from '@/features/reading-list/interface/queries';
 
-import { LinkCard } from '../_components/link-card';
+import { ReadingCard } from './_components/reading-card';
 import { ReadingListContent } from './_components/reading-list-content';
 
 export default async function Page() {
@@ -36,10 +36,15 @@ export default async function Page() {
   const cards: Record<number, React.ReactNode> = {};
   for (const article of articles) {
     cards[article.id] = (
-      <LinkCard
-        href={article.url}
+      <ReadingCard
+        description={article.description}
+        imageUrl={article.imageUrl}
         key={article.id}
         publishedAt={article.publishedAt}
+        sourceTitle={article.source.title}
+        summary={article.summary}
+        title={article.title}
+        url={article.url}
       />
     );
   }

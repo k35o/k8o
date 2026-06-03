@@ -9,6 +9,10 @@
       "types": "./src/array/range.ts",
       "default": "./src/array/range.ts"
     },
+    "./array/map-with-concurrency": {
+      "types": "./src/array/map-with-concurrency.ts",
+      "default": "./src/array/map-with-concurrency.ts"
+    },
     "./array/shuffle": {
       "types": "./src/array/shuffle.ts",
       "default": "./src/array/shuffle.ts"
@@ -49,6 +53,10 @@
     "./number/commalize": {
       "types": "./src/number/commalize.ts",
       "default": "./src/number/commalize.ts"
+    },
+    "./og/og-metadata": {
+      "types": "./src/og/og-metadata.ts",
+      "default": "./src/og/og-metadata.ts"
     },
     "./push-endpoint": {
       "types": "./src/push-endpoint/is-allowed-push-endpoint.ts",
