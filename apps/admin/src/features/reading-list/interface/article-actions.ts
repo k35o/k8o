@@ -4,6 +4,7 @@ import { db } from '@repo/database';
 import { eq } from 'drizzle-orm';
 import { revalidatePath } from 'next/cache';
 
+import { enrichArticleMetadata } from '@/features/reading-list/application/enrich-articles';
 import { syncArticles } from '@/features/reading-list/application/sync-articles';
 import { verifySession } from '@/shared/auth/verify-session';
 
@@ -30,6 +31,7 @@ type SyncActionState = {
   error?: string;
   newArticles?: number;
   updatedArticles?: number;
+  enrichedArticles?: number;
   failedSources?: string[];
 };
 
@@ -38,11 +40,14 @@ export async function syncArticlesAction(): Promise<SyncActionState> {
 
   try {
     const result = await syncArticles();
+    // 既存記事のうち OGP 未取得のものを補完する
+    const { enrichedArticles } = await enrichArticleMetadata();
     revalidatePath('/reading-list');
     revalidatePath('/');
     return {
       newArticles: result.newArticles,
       updatedArticles: result.updatedArticles,
+      enrichedArticles,
       failedSources: result.failedSources,
     };
   } catch {

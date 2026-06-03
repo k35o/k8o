@@ -1,6 +1,7 @@
 import { type NextRequest, NextResponse } from 'next/server';
 
 import { sendPushNotification } from '@/features/push-notification/infrastructure/push-notification';
+import { enrichArticleMetadata } from '@/features/reading-list/application/enrich-articles';
 import { syncArticles } from '@/features/reading-list/application/sync-articles';
 
 export async function GET(req: NextRequest): Promise<NextResponse> {
@@ -14,6 +15,8 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
   }
 
   const { newArticles, updatedArticles, failedSources } = await syncArticles();
+  // 既存記事のうち OGP 未取得のものを補完する（取得失敗は次回に再試行）
+  const { enrichedArticles } = await enrichArticleMetadata();
 
   const readingListUrl = 'https://www.k8o.me/reading-list';
   // 同日のリトライで結果カウントが変わっても重複通知しないよう、dedupe は日付のみで行う
@@ -47,6 +50,7 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
     ok: failedSources.length === 0,
     newArticles,
     updatedArticles,
+    enrichedArticles,
     failedSources,
   });
 }

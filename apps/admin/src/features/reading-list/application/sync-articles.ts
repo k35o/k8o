@@ -1,9 +1,15 @@
 import { db } from '@repo/database';
+import { mapWithConcurrency } from '@repo/helpers/array/map-with-concurrency';
 import { compareDate } from '@repo/helpers/date/compare';
 import { eq } from 'drizzle-orm';
 import Parser from 'rss-parser';
 
+import { fetchOgMetadata } from '../infrastructure/og-metadata';
+
 const parser = new Parser();
+
+// OGP 取得時の同時リクエスト数。外部サイトへの過負荷を避けるため絞る
+const OG_CONCURRENCY = 5;
 
 function sanitizeFeedDates(xml: string): string {
   return xml.replaceAll(
@@ -118,7 +124,21 @@ export async function syncArticles(): Promise<SyncResult> {
   }
 
   if (newArticles.length > 0) {
-    await db.insert(db._schema.articles).values(newArticles);
+    // 取り込み時に OGP（画像・説明）を取得して保存する。
+    // 表示側でレンダー毎に外部 fetch せず、安定して画像を出すため。
+    const newArticleRows = await mapWithConcurrency(
+      newArticles,
+      OG_CONCURRENCY,
+      async (article) => {
+        const og = await fetchOgMetadata(article.url);
+        return {
+          ...article,
+          imageUrl: og.image ?? null,
+          description: og.description ?? null,
+        };
+      },
+    );
+    await db.insert(db._schema.articles).values(newArticleRows);
   }
 
   if (articlesToUpdate.length > 0) {
