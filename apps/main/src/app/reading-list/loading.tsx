@@ -1,6 +1,6 @@
 import { range } from '@repo/helpers/array/range';
 
-import { LinkCardLoading } from '../_components/link-card';
+import { ReadingCardSkeleton } from './_components/reading-card';
 
 export default function Loading() {
   return (
@@ -29,7 +29,7 @@ export default function Loading() {
         </div>
         <div className="flex flex-col gap-4">
           {range(0, 8).map((n) => (
-            <LinkCardLoading href="#" key={`link-card-skeleton-${n}`} />
+            <ReadingCardSkeleton key={`reading-card-skeleton-${n}`} />
           ))}
         </div>
       </div>

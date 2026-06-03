@@ -19,6 +19,9 @@ export async function getArticles() {
     title: article.title,
     url: article.url,
     publishedAt: article.publishedAt,
+    imageUrl: article.imageUrl,
+    description: article.description,
+    summary: article.summary,
     source: {
       id: article.articleSource.id,
       title: article.articleSource.title,

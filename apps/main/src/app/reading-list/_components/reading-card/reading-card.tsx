@@ -1,0 +1,75 @@
+import {
+  ExternalLinkIcon,
+  InteractiveCard,
+  PublishDateIcon,
+} from '@k8o/arte-odyssey';
+import { formatDate } from '@repo/helpers/date/format';
+import type { FC } from 'react';
+
+import { ReadingCardImage } from './image';
+
+export type ReadingCardProps = {
+  url: string;
+  title: string;
+  publishedAt: string;
+  imageUrl: string | null;
+  description: string | null;
+  summary: string | null;
+  sourceTitle: string;
+};
+
+// よんでいるもの一覧の記事カード。
+// OGP 画像・説明・要約は取り込み時に DB へ保存済みのため、表示時に外部 fetch しない。
+export const ReadingCard: FC<ReadingCardProps> = ({
+  url,
+  title,
+  publishedAt,
+  imageUrl,
+  description,
+  summary,
+  sourceTitle,
+}) => {
+  // 要約があれば優先し、無ければ OGP の説明文にフォールバックする
+  const body = summary ?? description ?? undefined;
+
+  return (
+    <div className="vertical:max-w-container-md">
+      <InteractiveCard appearance="shadow">
+        <a
+          className="group block h-full"
+          href={url}
+          rel="noopener noreferrer"
+          target="_blank"
+        >
+          <div className="vertical:flex-row flex h-full flex-col overflow-hidden sm:flex-row">
+            {imageUrl !== null && <ReadingCardImage src={imageUrl} />}
+            <div className="flex flex-1 flex-col gap-2 p-4">
+              <div className="group-hover:text-primary-fg flex flex-col gap-1 transition-colors duration-200 ease-out">
+                <p className="text-md vertical:block vertical:max-block-[8em] vertical:overflow-hidden line-clamp-2 font-bold">
+                  {title}
+                </p>
+                {body !== undefined && (
+                  <p className="text-fg-mute vertical:block vertical:max-block-[8em] vertical:overflow-hidden line-clamp-2 text-sm">
+                    {body}
+                  </p>
+                )}
+              </div>
+              <div className="text-fg-subtle mt-auto flex flex-wrap items-center justify-between gap-2 text-xs">
+                <div className="flex items-center gap-1">
+                  <PublishDateIcon size="sm" />
+                  <span>
+                    {formatDate(new Date(publishedAt), 'yyyy年M月d日')}
+                  </span>
+                </div>
+                <div className="flex items-center gap-1">
+                  <ExternalLinkIcon size="sm" />
+                  <p>{sourceTitle}</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </a>
+      </InteractiveCard>
+    </div>
+  );
+};

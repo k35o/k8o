@@ -1,48 +1,40 @@
+import { type OgMetadata, parseOgMetadata } from '@repo/helpers/og/og-metadata';
 import { cacheLife } from 'next/cache';
 
-const decodeHtmlEntities = (text: string): string =>
-  text
-    .replaceAll(/&lt;/giu, '<')
-    .replaceAll(/&gt;/giu, '>')
-    .replaceAll(/&quot;/giu, '"')
-    .replaceAll(/&#39;/giu, "'")
-    .replaceAll(/&nbsp;/giu, ' ')
-    .replaceAll(/&#(\d+);/gu, (_, code) => String.fromCodePoint(Number(code)))
-    .replaceAll(/&amp;/giu, '&');
+const EMPTY_METADATA: OgMetadata = {
+  title: undefined,
+  description: undefined,
+  image: undefined,
+};
 
-export async function getMetadata(href: string) {
+export async function getMetadata(href: string): Promise<OgMetadata> {
   'use cache';
   cacheLife('days');
 
+  let response: Response;
+  try {
+    response = await fetch(href, {
+      signal: AbortSignal.timeout(5000),
+      // 一部サイトは User-Agent の無いリクエストを弾くため UA を明示する
+      headers: {
+        'user-agent': 'Mozilla/5.0 (compatible; k8o-bot/1.0; +https://k8o.me)',
+        accept: 'text/html,application/xhtml+xml',
+      },
+    });
+  } catch {
+    return EMPTY_METADATA;
+  }
+
+  if (!response.ok) {
+    return EMPTY_METADATA;
+  }
+
   let html: string;
   try {
-    const res = await fetch(href, { signal: AbortSignal.timeout(5000) });
-    html = (await res.text()).trim();
+    html = (await response.text()).trim();
   } catch {
-    return { title: undefined, description: undefined, image: undefined };
+    return EMPTY_METADATA;
   }
-  const rawTitle = /<title>(.*?)<\/title>/iu.exec(html)?.[1];
-  const rawOgTitle = /<meta\s+property="og:title"\s+content="(.*?)"/iu.exec(
-    html,
-  )?.[1];
-  const rawDescription =
-    /<meta\s+property="og:description"\s+content="(.*?)"/iu.exec(html)?.[1];
-  const rawImage = /<meta\s+property="og:image"\s+content="(.*?)"/iu.exec(
-    html,
-  )?.[1];
 
-  const title =
-    rawTitle === undefined
-      ? rawOgTitle === undefined
-        ? undefined
-        : decodeHtmlEntities(rawOgTitle)
-      : decodeHtmlEntities(rawTitle);
-  const description =
-    rawDescription === undefined
-      ? undefined
-      : decodeHtmlEntities(rawDescription);
-  const image =
-    rawImage === undefined ? undefined : decodeHtmlEntities(rawImage);
-
-  return { title, description, image };
+  return parseOgMetadata(html, response.url === '' ? href : response.url);
 }

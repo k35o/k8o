@@ -25,7 +25,7 @@ async function generateRssFeed() {
   for (const article of articles) {
     feed.item({
       title: article.title,
-      description: '',
+      description: article.summary ?? article.description ?? '',
       url: article.url,
       date: article.publishedAt,
       categories: [article.source.title],
