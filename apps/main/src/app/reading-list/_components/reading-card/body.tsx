@@ -38,7 +38,8 @@ export const ReadingCardBody: FC<{
         </p>
       )}
       {summary === null && (
-        <div className="flex items-center gap-2">
+        // カードを覆う overlay リンクより前面に出して、ボタンを独立操作可能にする
+        <div className="relative z-10 flex items-center gap-2">
           <Button
             color="gray"
             disabled={isPending}
@@ -53,7 +54,9 @@ export const ReadingCardBody: FC<{
             {isPending ? '要約中…' : 'AIで要約'}
           </Button>
           {error !== undefined && (
-            <span className="text-fg-error text-xs">{error}</span>
+            <span className="text-fg-error text-xs" role="alert">
+              {error}
+            </span>
           )}
         </div>
       )}
