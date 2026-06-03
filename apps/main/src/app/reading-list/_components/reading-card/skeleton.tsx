@@ -1,7 +1,6 @@
 import { InteractiveCard } from '@k8o/arte-odyssey';
 import type { FC } from 'react';
 
-// ReadingCard のローディングスケルトン。一覧取得中の loading.tsx で使う。
 export const ReadingCardSkeleton: FC = () => (
   <div className="vertical:max-w-container-md">
     <InteractiveCard appearance="shadow">

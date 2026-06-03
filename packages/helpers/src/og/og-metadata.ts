@@ -20,11 +20,9 @@ const decodeHtmlEntities = (text: string): string =>
     // &amp; は二重デコードを避けるため最後に処理する
     .replaceAll(/&amp;/giu, '&');
 
-// 1つの <meta> タグから属性を順不同・クォート種別非依存で読み取る
 const parseAttributes = (tag: string): Map<string, string> => {
   const attributes = new Map<string, string>();
-  // 属性名・前後空白は定数上限で量指定する。`=` を伴わない長い `-`/`_` 連続入力で
-  // 貪欲マッチが多項式バックトラック（ReDoS）を起こすのを防ぐため。現実の属性では十分な長さ。
+  // 量指定子の上限は ReDoS（多項式バックトラック）対策。現実の属性名には十分な長さ
   for (const match of tag.matchAll(
     /([\w:-]{1,100})\s{0,16}=\s{0,16}(?:"([^"]*)"|'([^']*)'|([^\s"'>]+))/giu,
   )) {
@@ -37,8 +35,7 @@ const parseAttributes = (tag: string): Map<string, string> => {
   return attributes;
 };
 
-// HTML 内の <meta> を走査し、property / name をキーに content を集める。
-// 同一キーは最初に出現したものを優先する。
+// 同一キーは最初に出現したものを優先する
 const collectMetaContents = (html: string): Map<string, string> => {
   const contents = new Map<string, string>();
   for (const tagMatch of html.matchAll(/<meta\b[^>]*>/giu)) {
@@ -54,13 +51,8 @@ const collectMetaContents = (html: string): Map<string, string> => {
   return contents;
 };
 
-/**
- * HTML 文字列から OGP / Twitter Card / 標準メタ情報を抽出する純粋関数。
- *
- * - 属性の並び順・シングル/ダブルクォートの違いに依存しない
- * - og:* が無ければ twitter:* や <title> / description にフォールバックする
- * - baseUrl を渡すと相対パスの og:image を絶対 URL に解決する
- */
+// og:* が無ければ twitter:*・<title> にフォールバックし、
+// baseUrl があれば相対 og:image を絶対 URL に解決する
 export const parseOgMetadata = (html: string, baseUrl?: string): OgMetadata => {
   const metas = collectMetaContents(html);
 
@@ -188,7 +180,7 @@ if (import.meta.vitest) {
       });
 
       it('= を伴わない長い記号列でも高速に処理できる（ReDoS 対策）', () => {
-        const html = `<meta ${'-'.repeat(50000)}>`;
+        const html = `<meta ${'-'.repeat(50_000)}>`;
         expect(parseOgMetadata(html)).toEqual({
           title: undefined,
           description: undefined,

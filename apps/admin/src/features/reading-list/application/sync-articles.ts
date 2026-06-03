@@ -124,8 +124,7 @@ export async function syncArticles(): Promise<SyncResult> {
   }
 
   if (newArticles.length > 0) {
-    // 取り込み時に OGP（画像・説明）を取得して保存する。
-    // 表示側でレンダー毎に外部 fetch せず、安定して画像を出すため。
+    // 取り込み時に OGP を取得して保存し、表示時の外部 fetch を不要にする
     const newArticleRows = await mapWithConcurrency(
       newArticles,
       OG_CONCURRENCY,

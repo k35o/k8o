@@ -3,8 +3,7 @@
 import Image from 'next/image';
 import { type FC, useState } from 'react';
 
-// 保存済みの OGP 画像 URL を表示する。読み込みに失敗してもコンテナ（画像領域）は
-// 残し、レイアウトシフト（CLS）を避ける。失敗時は subtle 背景のプレースホルダになる。
+// 読み込み失敗時もコンテナ（画像領域）は残し、レイアウトシフト（CLS）を避ける
 export const ReadingCardImage: FC<{
   src: string;
 }> = ({ src }) => {

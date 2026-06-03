@@ -8,12 +8,8 @@ const EMPTY_METADATA: OgMetadata = {
   image: undefined,
 };
 
-/**
- * 記事 URL を取得して OGP / メタ情報を抽出する。
- *
- * 一部サイトは User-Agent の無いリクエストを弾くため UA を明示する。
- * 取得・解析に失敗しても例外は投げず、全フィールド undefined を返す。
- */
+// 記事 URL を取得して OGP を抽出する。UA を付与しないと弾くサイトがあるため明示する。
+// 取得・解析に失敗しても例外は投げず全 undefined を返す
 export const fetchOgMetadata = async (url: string): Promise<OgMetadata> => {
   let response: Response;
   try {
@@ -39,6 +35,5 @@ export const fetchOgMetadata = async (url: string): Promise<OgMetadata> => {
     return EMPTY_METADATA;
   }
 
-  // リダイレクト後の最終 URL を相対画像 URL の解決基準にする
   return parseOgMetadata(html, response.url === '' ? url : response.url);
 };

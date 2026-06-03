@@ -1,9 +1,4 @@
-/**
- * 配列の各要素に非同期処理を適用する。同時実行数を `concurrency` 以下に制限し、
- * 結果は入力と同じ順序で返す（ワーカープール方式）。
- *
- * 外部 API への並列リクエストなど、無制限の並列実行を避けたい場面で使う。
- */
+// 同時実行数を concurrency 以下に制限しつつ、入力順で結果を返す（ワーカープール方式）
 export const mapWithConcurrency = async <T, R>(
   items: readonly T[],
   concurrency: number,

@@ -18,8 +18,6 @@ export type ReadingCardProps = {
   sourceTitle: string;
 };
 
-// よんでいるもの一覧の記事カード。
-// OGP 画像・説明・要約は取り込み時に DB へ保存済みのため、表示時に外部 fetch しない。
 export const ReadingCard: FC<ReadingCardProps> = ({
   url,
   title,
@@ -29,7 +27,7 @@ export const ReadingCard: FC<ReadingCardProps> = ({
   summary,
   sourceTitle,
 }) => {
-  // 要約があれば優先し、無ければ OGP の説明文にフォールバックする
+  // 要約優先、無ければ説明文にフォールバック
   const body = summary ?? description ?? undefined;
 
   return (

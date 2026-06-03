@@ -6,19 +6,14 @@ import { fetchOgMetadata } from '../infrastructure/og-metadata';
 
 const NINETY_DAYS_MS = 90 * 24 * 60 * 60 * 1000;
 const OG_CONCURRENCY = 5;
-// 1回の実行でバックフィルする最大件数。初回など対象が多いときに
-// 大量の外部リクエストを一度に発生させないため上限を設ける
+// 1回の実行でバックフィルする最大件数（初回などで大量リクエストを避ける）
 const BACKFILL_LIMIT = 50;
 
 type EnrichResult = {
   enrichedArticles: number;
 };
 
-/**
- * OGP 未取得（画像・説明ともに null）の既存記事を対象に、
- * 外部サイトから OGP を取得して保存する。表示対象である 90 日以内の記事に限定し、
- * 1回あたり BACKFILL_LIMIT 件まで処理する（次回以降の実行で残りを順次補完する）。
- */
+// OGP 未取得（画像・説明とも null）の 90 日以内の記事を 1 回 BACKFILL_LIMIT 件まで補完する
 export async function enrichArticleMetadata(): Promise<EnrichResult> {
   const ninetyDaysAgo = new Date(Date.now() - NINETY_DAYS_MS).toISOString();
 
