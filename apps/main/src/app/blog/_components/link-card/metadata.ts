@@ -4,7 +4,7 @@ import { cacheLife } from 'next/cache';
 const EMPTY_METADATA: OgMetadata = {
   title: undefined,
   description: undefined,
-  image: undefined,
+  imageUrl: undefined,
 };
 
 export async function getMetadata(href: string): Promise<OgMetadata> {

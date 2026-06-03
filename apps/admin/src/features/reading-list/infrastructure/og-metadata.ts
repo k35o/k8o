@@ -5,7 +5,7 @@ const TIMEOUT_MS = 5000;
 const EMPTY_METADATA: OgMetadata = {
   title: undefined,
   description: undefined,
-  image: undefined,
+  imageUrl: undefined,
 };
 
 // 記事 URL を取得して OGP を抽出する。UA を付与しないと弾くサイトがあるため明示する。

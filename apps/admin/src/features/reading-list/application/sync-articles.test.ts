@@ -59,7 +59,7 @@ describe('syncArticles', () => {
     vi.mocked(fetchOgMetadata).mockResolvedValue({
       title: undefined,
       description: undefined,
-      image: undefined,
+      imageUrl: undefined,
     });
   });
 
@@ -128,7 +128,7 @@ describe('syncArticles', () => {
       vi.mocked(fetchOgMetadata).mockResolvedValue({
         title: 'OGタイトル',
         description: 'OGの説明',
-        image: 'https://web.dev/og.png',
+        imageUrl: 'https://web.dev/og.png',
       });
 
       const valuesMock = vi.fn();

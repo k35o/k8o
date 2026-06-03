@@ -132,7 +132,7 @@ export async function syncArticles(): Promise<SyncResult> {
         const og = await fetchOgMetadata(article.url);
         return {
           ...article,
-          imageUrl: og.image ?? null,
+          imageUrl: og.imageUrl ?? null,
           description: og.description ?? null,
         };
       },

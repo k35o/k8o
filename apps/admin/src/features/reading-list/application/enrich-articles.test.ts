@@ -47,7 +47,7 @@ describe('enrichArticleMetadata', () => {
       vi.mocked(fetchOgMetadata).mockResolvedValue({
         title: 'タイトル',
         description: '説明',
-        image: 'https://example.com/og.png',
+        imageUrl: 'https://example.com/og.png',
       });
 
       const setMock = vi.fn().mockReturnValue({ where: vi.fn() });
@@ -70,7 +70,7 @@ describe('enrichArticleMetadata', () => {
       vi.mocked(fetchOgMetadata).mockResolvedValue({
         title: undefined,
         description: undefined,
-        image: 'https://example.com/og.png',
+        imageUrl: 'https://example.com/og.png',
       });
 
       const setMock = vi.fn().mockReturnValue({ where: vi.fn() });
@@ -104,7 +104,7 @@ describe('enrichArticleMetadata', () => {
       vi.mocked(fetchOgMetadata).mockResolvedValue({
         title: undefined,
         description: undefined,
-        image: undefined,
+        imageUrl: undefined,
       });
 
       const result = await enrichArticleMetadata();

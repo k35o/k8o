@@ -37,13 +37,13 @@ export async function enrichArticleMetadata(): Promise<EnrichResult> {
     async (article): Promise<boolean> => {
       const og = await fetchOgMetadata(article.url);
       // 取得できなかった記事は更新せず、次回以降の実行で再試行する
-      if (og.image === undefined && og.description === undefined) {
+      if (og.imageUrl === undefined && og.description === undefined) {
         return false;
       }
       await db
         .update(db._schema.articles)
         .set({
-          imageUrl: og.image ?? null,
+          imageUrl: og.imageUrl ?? null,
           description: og.description ?? null,
         })
         .where(eq(db._schema.articles.id, article.id));

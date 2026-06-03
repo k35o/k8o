@@ -53,7 +53,7 @@ const Content: FC<{
   if (
     metaData.title === undefined &&
     metaData.description === undefined &&
-    metaData.image === undefined
+    metaData.imageUrl === undefined
   ) {
     return <LinkCardFallback appearance={appearance} href={href} />;
   }
@@ -68,7 +68,9 @@ const Content: FC<{
           target="_blank"
         >
           <div className="vertical:flex-row flex h-full flex-col overflow-hidden sm:flex-row">
-            {metaData.image !== undefined && <MetaImage src={metaData.image} />}
+            {metaData.imageUrl !== undefined && (
+              <MetaImage src={metaData.imageUrl} />
+            )}
             <div className="flex flex-1 flex-col gap-2 p-4">
               {metaData.title !== undefined && (
                 <div className="group-hover:text-primary-fg flex flex-col gap-1 transition-colors duration-200 ease-out">

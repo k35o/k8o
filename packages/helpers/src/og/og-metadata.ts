@@ -1,7 +1,7 @@
 export type OgMetadata = {
   title: string | undefined;
   description: string | undefined;
-  image: string | undefined;
+  imageUrl: string | undefined;
 };
 
 // 範囲外のコードポイントは String.fromCodePoint が RangeError を投げるため、
@@ -92,22 +92,22 @@ export const parseOgMetadata = (html: string, baseUrl?: string): OgMetadata => {
     'description',
   );
 
-  let image = pick(
+  let imageUrl = pick(
     'og:image',
     'og:image:url',
     'og:image:secure_url',
     'twitter:image',
     'twitter:image:src',
   );
-  if (image !== undefined && baseUrl !== undefined) {
+  if (imageUrl !== undefined && baseUrl !== undefined) {
     try {
-      image = new URL(image, baseUrl).toString();
+      imageUrl = new URL(imageUrl, baseUrl).toString();
     } catch {
       // 解決できない画像 URL はそのまま返す
     }
   }
 
-  return { title, description, image };
+  return { title, description, imageUrl };
 };
 
 if (import.meta.vitest) {
@@ -122,14 +122,16 @@ if (import.meta.vitest) {
         expect(parseOgMetadata(html)).toEqual({
           title: '記事タイトル',
           description: '記事の説明',
-          image: 'https://example.com/og.png',
+          imageUrl: 'https://example.com/og.png',
         });
       });
 
       it('属性の並び順が content 先でも抽出できる', () => {
         const html =
           '<meta content="https://example.com/og.png" property="og:image">';
-        expect(parseOgMetadata(html).image).toBe('https://example.com/og.png');
+        expect(parseOgMetadata(html).imageUrl).toBe(
+          'https://example.com/og.png',
+        );
       });
 
       it('シングルクォートの属性でも抽出できる', () => {
@@ -165,13 +167,13 @@ if (import.meta.vitest) {
       it('baseUrl を渡すと相対 og:image を絶対 URL に解決する', () => {
         const html = '<meta property="og:image" content="/images/og.png">';
         expect(
-          parseOgMetadata(html, 'https://example.com/blog/post').image,
+          parseOgMetadata(html, 'https://example.com/blog/post').imageUrl,
         ).toBe('https://example.com/images/og.png');
       });
 
       it('baseUrl が無ければ相対パスのまま返す', () => {
         const html = '<meta property="og:image" content="/images/og.png">';
-        expect(parseOgMetadata(html).image).toBe('/images/og.png');
+        expect(parseOgMetadata(html).imageUrl).toBe('/images/og.png');
       });
     });
 
@@ -180,7 +182,7 @@ if (import.meta.vitest) {
         expect(parseOgMetadata('<html><body>no meta</body></html>')).toEqual({
           title: undefined,
           description: undefined,
-          image: undefined,
+          imageUrl: undefined,
         });
       });
 
@@ -194,7 +196,7 @@ if (import.meta.vitest) {
         expect(parseOgMetadata(html)).toEqual({
           title: undefined,
           description: undefined,
-          image: undefined,
+          imageUrl: undefined,
         });
       });
 
