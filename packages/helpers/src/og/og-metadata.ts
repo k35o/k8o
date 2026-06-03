@@ -4,6 +4,16 @@ export type OgMetadata = {
   image: string | undefined;
 };
 
+// 範囲外のコードポイントは String.fromCodePoint が RangeError を投げるため、
+// 失敗時は元の文字列を返す（不正な実体参照で解析全体を止めない）
+const codePointToString = (value: number, fallback: string): string => {
+  try {
+    return String.fromCodePoint(value);
+  } catch {
+    return fallback;
+  }
+};
+
 const decodeHtmlEntities = (text: string): string =>
   text
     .replaceAll(/&lt;/giu, '<')
@@ -11,11 +21,11 @@ const decodeHtmlEntities = (text: string): string =>
     .replaceAll(/&quot;/giu, '"')
     .replaceAll(/&apos;/giu, "'")
     .replaceAll(/&nbsp;/giu, ' ')
-    .replaceAll(/&#x([0-9a-f]+);/giu, (_, code: string) =>
-      String.fromCodePoint(Number.parseInt(code, 16)),
+    .replaceAll(/&#x([0-9a-f]+);/giu, (match: string, code: string) =>
+      codePointToString(Number.parseInt(code, 16), match),
     )
-    .replaceAll(/&#(\d+);/gu, (_, code: string) =>
-      String.fromCodePoint(Number(code)),
+    .replaceAll(/&#(\d+);/gu, (match: string, code: string) =>
+      codePointToString(Number(code), match),
     )
     // &amp; は二重デコードを避けるため最後に処理する
     .replaceAll(/&amp;/giu, '&');
@@ -186,6 +196,12 @@ if (import.meta.vitest) {
           description: undefined,
           image: undefined,
         });
+      });
+
+      it('範囲外の数値実体参照でも例外を投げず元の文字列を返す', () => {
+        const html =
+          '<meta property="og:title" content="壊れた &#9999999999; 実体">';
+        expect(parseOgMetadata(html).title).toBe('壊れた &#9999999999; 実体');
       });
     });
   });
