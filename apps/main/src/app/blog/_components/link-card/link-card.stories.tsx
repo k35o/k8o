@@ -5,7 +5,7 @@ import { LinkCard } from './link-card';
 import { getMetadata } from './metadata';
 
 const meta: Meta<typeof LinkCard> = {
-  title: 'app/globals/link-card',
+  title: 'app/blog/link-card',
   component: LinkCard,
   beforeEach: () => {
     mocked(getMetadata).mockResolvedValue({
