@@ -9,9 +9,10 @@ const SUMMARY_MODEL = process.env['SUMMARY_MODEL'] ?? 'openai/gpt-4o-mini';
 // script/style 等を除去 → タグ除去 → 空白圧縮 → 長すぎる入力は切り詰め。
 const extractText = (html: string): string =>
   html
-    .replaceAll(/<script\b[^>]*>[\s\S]*?<\/script>/giu, ' ')
-    .replaceAll(/<style\b[^>]*>[\s\S]*?<\/style>/giu, ' ')
-    .replaceAll(/<noscript\b[^>]*>[\s\S]*?<\/noscript>/giu, ' ')
+    // 終了タグは空白入り（</script >）にも対応させる（CodeQL bad-tag-filter 対策）
+    .replaceAll(/<script\b[^>]*>[\s\S]*?<\/script[^>]*>/giu, ' ')
+    .replaceAll(/<style\b[^>]*>[\s\S]*?<\/style[^>]*>/giu, ' ')
+    .replaceAll(/<noscript\b[^>]*>[\s\S]*?<\/noscript[^>]*>/giu, ' ')
     .replaceAll(/<[^>]+>/gu, ' ')
     .replaceAll(/\s+/gu, ' ')
     .trim()
