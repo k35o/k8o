@@ -28,23 +28,30 @@ const fetchArticleText = async (url: string): Promise<string | null> => {
         accept: 'text/html,application/xhtml+xml',
       },
     });
-  } catch {
+  } catch (error) {
+    console.error(`要約: 記事の取得に失敗しました (${url})`, error);
     return null;
   }
 
   if (!response.ok) {
+    console.error(`要約: 記事取得が ${response.status} を返しました (${url})`);
     return null;
   }
 
   let html: string;
   try {
     html = await response.text();
-  } catch {
+  } catch (error) {
+    console.error(`要約: 本文の読み取りに失敗しました (${url})`, error);
     return null;
   }
 
   const text = extractText(html);
-  return text === '' ? null : text;
+  if (text === '') {
+    console.error(`要約: 本文を抽出できませんでした (${url})`);
+    return null;
+  }
+  return text;
 };
 
 /**
@@ -66,7 +73,9 @@ export const summarizeArticle = async (url: string): Promise<string | null> => {
     });
     const trimmed = summary.trim();
     return trimmed === '' ? null : trimmed;
-  } catch {
+  } catch (error) {
+    // AI Gateway のキー未設定・モデル不可・レート超過などはここに出る
+    console.error(`要約: 生成に失敗しました (${url})`, error);
     return null;
   }
 };
