@@ -23,8 +23,10 @@ const decodeHtmlEntities = (text: string): string =>
 // 1つの <meta> タグから属性を順不同・クォート種別非依存で読み取る
 const parseAttributes = (tag: string): Map<string, string> => {
   const attributes = new Map<string, string>();
+  // 属性名・前後空白は定数上限で量指定する。`=` を伴わない長い `-`/`_` 連続入力で
+  // 貪欲マッチが多項式バックトラック（ReDoS）を起こすのを防ぐため。現実の属性では十分な長さ。
   for (const match of tag.matchAll(
-    /([\w:-]+)\s*=\s*(?:"([^"]*)"|'([^']*)'|([^\s"'>]+))/giu,
+    /([\w:-]{1,100})\s{0,16}=\s{0,16}(?:"([^"]*)"|'([^']*)'|([^\s"'>]+))/giu,
   )) {
     const name = match[1]?.toLowerCase();
     const value = match[2] ?? match[3] ?? match[4] ?? '';
@@ -183,6 +185,15 @@ if (import.meta.vitest) {
       it('content が空文字のメタは無視する', () => {
         const html = '<meta property="og:title" content="">';
         expect(parseOgMetadata(html).title).toBeUndefined();
+      });
+
+      it('= を伴わない長い記号列でも高速に処理できる（ReDoS 対策）', () => {
+        const html = `<meta ${'-'.repeat(50000)}>`;
+        expect(parseOgMetadata(html)).toEqual({
+          title: undefined,
+          description: undefined,
+          image: undefined,
+        });
       });
     });
   });
