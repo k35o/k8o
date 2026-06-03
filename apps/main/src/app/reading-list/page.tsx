@@ -37,6 +37,7 @@ export default async function Page() {
   for (const article of articles) {
     cards[article.id] = (
       <ReadingCard
+        articleId={article.id}
         description={article.description}
         imageUrl={article.imageUrl}
         key={article.id}

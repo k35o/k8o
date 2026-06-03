@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
-import { expect, within } from 'storybook/test';
+import { expect, userEvent, within } from 'storybook/test';
 
 import { ReadingCard } from './reading-card';
 
@@ -7,6 +7,7 @@ const meta: Meta<typeof ReadingCard> = {
   title: 'app/reading-list/reading-card',
   component: ReadingCard,
   args: {
+    articleId: 1,
     url: 'https://example.com/article',
     title: 'Reactの新しいルーティングライブラリ、TanStackRouterを学ぶ',
     publishedAt: '2026-05-20T00:00:00Z',
@@ -43,10 +44,30 @@ export const WithSummary: Story = {
   },
 };
 
-// 要約未登録だが OGP の説明文がある記事。説明文にフォールバックする。
+// 要約未登録だが OGP の説明文がある記事。説明文にフォールバックし、「AIで要約」ボタンを出す。
 export const WithDescription: Story = {
   args: {
     summary: null,
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    await expect(
+      canvas.getByRole('button', { name: 'AIで要約' }),
+    ).toBeInTheDocument();
+  },
+};
+
+// 「AIで要約」ボタンを押すと生成され、その場で要約が表示される（アクションはモック）。
+export const GenerateSummary: Story = {
+  args: {
+    summary: null,
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    await userEvent.click(canvas.getByRole('button', { name: 'AIで要約' }));
+    await expect(
+      await canvas.findByText('モック要約：この記事の要点を1〜2文で表します。'),
+    ).toBeInTheDocument();
   },
 };
 
