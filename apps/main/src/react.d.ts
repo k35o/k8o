@@ -1,3 +1,4 @@
+/// <reference types="react/experimental" />
 import 'react';
 
 declare module 'react' {
