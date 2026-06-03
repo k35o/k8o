@@ -5,17 +5,14 @@ export const mapWithConcurrency = async <T, R>(
   fn: (item: T, index: number) => Promise<R>,
 ): Promise<R[]> => {
   const results = Array.from<R>({ length: items.length });
-  let cursor = 0;
+  // 全ワーカーで 1 つの iterator を共有し、各 .next() で重複なく要素を取り出す。
+  // undefined 要素もそのまま処理対象にする（添字アクセスのスキップを避ける）
+  const iterator = items.entries();
 
   const worker = async (): Promise<void> => {
-    while (cursor < items.length) {
-      const index = cursor;
-      cursor += 1;
-      const item = items[index];
-      if (item !== undefined) {
-        // oxlint-disable-next-line eslint/no-await-in-loop -- ワーカープールでは各ワーカーが逐次 await することで同時実行数を制限する
-        results[index] = await fn(item, index);
-      }
+    for (const [index, item] of iterator) {
+      // oxlint-disable-next-line eslint/no-await-in-loop -- ワーカープールでは各ワーカーが逐次 await することで同時実行数を制限する
+      results[index] = await fn(item, index);
     }
   };
 
@@ -77,6 +74,20 @@ if (import.meta.vitest) {
           Promise.resolve(n + 1),
         );
         expect(result).toEqual([2, 3]);
+      });
+
+      it('undefined 要素もスキップせず index に対応して処理する', async () => {
+        const seen: number[] = [];
+        const result = await mapWithConcurrency(
+          [1, undefined, 3],
+          2,
+          (value, index) => {
+            seen.push(index);
+            return Promise.resolve(value);
+          },
+        );
+        expect(result).toEqual([1, undefined, 3]);
+        expect(seen.toSorted((a, b) => a - b)).toEqual([0, 1, 2]);
       });
     });
   });
