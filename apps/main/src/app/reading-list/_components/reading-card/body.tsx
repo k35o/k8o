@@ -33,7 +33,10 @@ export const ReadingCardBody: FC<{
   return (
     <>
       {body !== undefined && (
-        <p className="text-fg-mute vertical:block vertical:max-block-[8em] vertical:overflow-hidden line-clamp-2 text-sm">
+        <p
+          aria-live="polite"
+          className="text-fg-mute vertical:block vertical:max-block-[8em] vertical:overflow-hidden line-clamp-2 text-sm"
+        >
           {body}
         </p>
       )}
