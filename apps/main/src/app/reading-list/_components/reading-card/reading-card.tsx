@@ -33,19 +33,20 @@ export const ReadingCard: FC<ReadingCardProps> = ({
   <div className="vertical:max-w-container-md">
     <InteractiveCard appearance="shadow">
       <div className="group vertical:flex-row relative isolate flex h-full flex-col overflow-hidden sm:flex-row">
-        {/* カード全体を覆うリンク。要約ボタンは前面(z-10)に出して独立操作できるようにする */}
-        <a
-          aria-label={title}
-          className="absolute inset-0"
-          href={url}
-          rel="noopener noreferrer"
-          target="_blank"
-        />
         {imageUrl !== null && <ReadingCardImage src={imageUrl} />}
         <div className="flex flex-1 flex-col gap-2 p-4">
           <div className="group-hover:text-primary-fg flex flex-col gap-1 transition-colors duration-200 ease-out">
             <p className="text-md vertical:block vertical:max-block-[8em] vertical:overflow-hidden line-clamp-2 font-bold">
-              {title}
+              {/* タイトルをリンク化し ::after でカード全体を当たり判定にする
+                  （空 anchor + aria-label によるタイトルの二重読みを回避） */}
+              <a
+                className="after:absolute after:inset-0"
+                href={url}
+                rel="noopener noreferrer"
+                target="_blank"
+              >
+                {title}
+              </a>
             </p>
             <ReadingCardBody
               articleId={articleId}
