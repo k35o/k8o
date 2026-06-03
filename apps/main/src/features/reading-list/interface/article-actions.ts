@@ -14,7 +14,8 @@ type ActionResult = {
 export async function generateArticleSummary(
   id: number,
 ): Promise<ActionResult> {
-  if (!Number.isInteger(id)) {
+  // 記事 ID は正の整数（autoincrement）。負値や 0 もここで弾く
+  if (!Number.isInteger(id) || id <= 0) {
     return { error: '不正なIDです' };
   }
 
