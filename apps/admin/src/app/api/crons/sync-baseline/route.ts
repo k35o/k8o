@@ -2,14 +2,10 @@ import { type NextRequest, NextResponse } from 'next/server';
 
 import { syncBaseline } from '@/features/baseline/application/sync-baseline';
 import { sendPushNotification } from '@/features/push-notification/infrastructure/push-notification';
+import { isAuthorizedCronRequest } from '@/shared/auth/verify-cron-request';
 
 export async function GET(req: NextRequest): Promise<NextResponse> {
-  const cronSecret = process.env['CRON_SECRET'];
-  if (
-    cronSecret === undefined ||
-    cronSecret === '' ||
-    req.headers.get('Authorization') !== `Bearer ${cronSecret}`
-  ) {
+  if (!isAuthorizedCronRequest(req)) {
     return NextResponse.json({ ok: false }, { status: 401 });
   }
 
