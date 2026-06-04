@@ -1,9 +1,7 @@
 {
   "$schema": "https://unpkg.com/knip/schema.json",
   "ignore": [
-    "apps/main/src/app/_components/coming-soon/index.ts",
-    "apps/main/src/app/_components/development-only/development-only.tsx",
-    "apps/main/src/app/_components/development-only/index.ts",
+    "apps/main/public/sw.js",
     "apps/main/public/playgrounds/shared-worker.worker.js"
   ],
   "treatConfigHintsAsErrors": true,

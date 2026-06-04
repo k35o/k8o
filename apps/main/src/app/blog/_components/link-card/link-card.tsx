@@ -11,7 +11,7 @@ import { type LinkCardAppearance, LinkCardFallback } from './fallback';
 import { MetaImage } from './image';
 import { getMetadata } from './metadata';
 
-export const LinkCardLoading: FC<{
+const LinkCardLoading: FC<{
   href: string;
   appearance?: LinkCardAppearance;
 }> = ({ href, appearance = 'shadow' }) => (
