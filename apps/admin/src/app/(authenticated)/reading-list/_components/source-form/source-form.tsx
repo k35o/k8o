@@ -9,11 +9,10 @@ import {
 } from '@k8o/arte-odyssey';
 import { type ChangeEvent, useActionState, useState } from 'react';
 
+import type { ActionState } from '@/shared/actions/action-state';
+
 type SourceFormProps = {
-  action: (
-    prev: { error?: string },
-    formData: FormData,
-  ) => Promise<{ error?: string }>;
+  action: (prev: ActionState, formData: FormData) => Promise<ActionState>;
   defaultValues?: {
     title: string;
     url: string;

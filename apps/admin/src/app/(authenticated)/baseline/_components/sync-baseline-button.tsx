@@ -1,26 +1,27 @@
 'use client';
 
 import { Button, useToast } from '@k8o/arte-odyssey';
-import { type FC, useTransition } from 'react';
+import type { FC } from 'react';
 
 import { syncBaselineAction } from '@/features/baseline/interface/actions';
+import { useAsyncAction } from '@/shared/hooks/use-async-action';
 
 export const SyncBaselineButton: FC = () => {
-  const [isPending, startTransition] = useTransition();
+  const { isPending, run } = useAsyncAction();
   const { onOpen } = useToast();
 
   const handleSync = () => {
-    startTransition(async () => {
-      const res = await syncBaselineAction();
-      if (res.error !== undefined) {
-        onOpen('error', res.error);
-        return;
-      }
-      const parts = [
-        `新規: ${String(res.newFeatures ?? 0)}件`,
-        `ステータス変更: ${String(res.statusChanges ?? 0)}件`,
-      ];
-      onOpen('success', parts.join('、'));
+    run(syncBaselineAction, {
+      onError: (message) => {
+        onOpen('error', message);
+      },
+      onSuccess: (res) => {
+        const parts = [
+          `新規: ${String(res.newFeatures ?? 0)}件`,
+          `ステータス変更: ${String(res.statusChanges ?? 0)}件`,
+        ];
+        onOpen('success', parts.join('、'));
+      },
     });
   };
 

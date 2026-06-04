@@ -15,6 +15,10 @@
       "types": "./src/auth.ts",
       "node": "./src/auth.ts",
       "default": "./src/auth.ts"
+    },
+    "./schema": {
+      "types": "./src/schema/public.ts",
+      "default": "./src/schema/public.ts"
     }
   },
   "scripts": {
@@ -30,12 +34,12 @@
   },
   "dependencies": {
     "@libsql/client": "0.17.3",
-    "@next/env": "16.2.6",
     "better-auth": "1.6.11",
-    "drizzle-orm": "0.45.2"
+    "drizzle-orm": "catalog:"
   },
   "devDependencies": {
     "@liam-hq/cli": "0.7.24",
+    "@next/env": "16.2.6",
     "@repo/typescript-config": "workspace:*",
     "drizzle-kit": "0.31.10"
   }

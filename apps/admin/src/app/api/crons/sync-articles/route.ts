@@ -3,14 +3,10 @@ import { type NextRequest, NextResponse } from 'next/server';
 import { sendPushNotification } from '@/features/push-notification/infrastructure/push-notification';
 import { enrichArticleMetadata } from '@/features/reading-list/application/enrich-articles';
 import { syncArticles } from '@/features/reading-list/application/sync-articles';
+import { isAuthorizedCronRequest } from '@/shared/auth/verify-cron-request';
 
 export async function GET(req: NextRequest): Promise<NextResponse> {
-  const cronSecret = process.env['CRON_SECRET'];
-  if (
-    cronSecret === undefined ||
-    cronSecret === '' ||
-    req.headers.get('Authorization') !== `Bearer ${cronSecret}`
-  ) {
+  if (!isAuthorizedCronRequest(req)) {
     return NextResponse.json({ ok: false }, { status: 401 });
   }
 

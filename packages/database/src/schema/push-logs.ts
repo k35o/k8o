@@ -8,8 +8,10 @@ import {
   uniqueIndex,
 } from 'drizzle-orm/sqlite-core';
 
+// プッシュ通知の業務イベント種別。値は使われず型のみ共有されるため、
+// 公開するのは型 PushLogKind のみ（SSoT）とし、定義元の配列は非公開にする。
 const PUSH_LOG_KINDS = ['readings_updated', 'baseline_updated'] as const;
-type PushLogKind = (typeof PUSH_LOG_KINDS)[number];
+export type PushLogKind = (typeof PUSH_LOG_KINDS)[number];
 
 export const pushLogs = sqliteTable(
   'push_logs',

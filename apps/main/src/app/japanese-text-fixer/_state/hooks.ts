@@ -1,8 +1,9 @@
 import { useToast } from '@k8o/arte-odyssey';
 import { useCallback } from 'react';
 
+import { checkJapaneseSyntax } from '@/features/japanese-text/interface/actions';
+
 import { buildAnnotations } from '../_utils/build-annotations';
-import { checkJapaneseSyntax } from '../_utils/japanese-syntax';
 import { useProofreadDispatch } from './provider';
 
 export const useCheckJapaneseSyntax = () => {

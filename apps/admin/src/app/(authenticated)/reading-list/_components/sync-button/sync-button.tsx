@@ -1,34 +1,35 @@
 'use client';
 
 import { Button, useToast } from '@k8o/arte-odyssey';
-import { type FC, useTransition } from 'react';
+import type { FC } from 'react';
 
 import { syncArticlesAction } from '@/features/reading-list/interface/article-actions';
+import { useAsyncAction } from '@/shared/hooks/use-async-action';
 
 export const SyncButton: FC = () => {
-  const [isPending, startTransition] = useTransition();
+  const { isPending, run } = useAsyncAction();
   const { onOpen } = useToast();
 
   const handleSync = () => {
-    startTransition(async () => {
-      const res = await syncArticlesAction();
-      if (res.error !== undefined) {
-        onOpen('error', res.error);
-        return;
-      }
-      if (res.failedSources !== undefined && res.failedSources.length > 0) {
-        onOpen(
-          'warning',
-          `${String(res.newArticles ?? 0)}件追加、${String(res.updatedArticles ?? 0)}件更新（失敗: ${res.failedSources.join(', ')}）`,
-        );
-        return;
-      }
-      const parts = [
-        `${String(res.newArticles ?? 0)}件追加`,
-        `${String(res.updatedArticles ?? 0)}件更新`,
-        `${String(res.enrichedArticles ?? 0)}件OGP補完`,
-      ];
-      onOpen('success', parts.join('、'));
+    run(syncArticlesAction, {
+      onError: (message) => {
+        onOpen('error', message);
+      },
+      onSuccess: (res) => {
+        if (res.failedSources !== undefined && res.failedSources.length > 0) {
+          onOpen(
+            'warning',
+            `${String(res.newArticles ?? 0)}件追加、${String(res.updatedArticles ?? 0)}件更新（失敗: ${res.failedSources.join(', ')}）`,
+          );
+          return;
+        }
+        const parts = [
+          `${String(res.newArticles ?? 0)}件追加`,
+          `${String(res.updatedArticles ?? 0)}件更新`,
+          `${String(res.enrichedArticles ?? 0)}件OGP補完`,
+        ];
+        onOpen('success', parts.join('、'));
+      },
     });
   };
 

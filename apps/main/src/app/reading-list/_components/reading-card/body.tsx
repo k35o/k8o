@@ -1,9 +1,10 @@
 'use client';
 
 import { Button } from '@k8o/arte-odyssey';
-import { type FC, useState, useTransition } from 'react';
+import { type FC, useState } from 'react';
 
 import { generateArticleSummary } from '@/features/reading-list/interface/article-actions';
+import { useAsyncAction } from '@/shared/hooks/use-async-action';
 
 // 本文（要約優先・無ければ説明文）と「AIで要約」ボタンを表示する。
 // 要約が無い記事だけボタンを出し、押すと生成→その場で表示に反映する。
@@ -13,20 +14,17 @@ export const ReadingCardBody: FC<{
   initialSummary: string | null;
 }> = ({ articleId, description, initialSummary }) => {
   const [summary, setSummary] = useState(initialSummary);
-  const [isPending, startTransition] = useTransition();
-  const [error, setError] = useState<string>();
+  const { isPending, error, run } = useAsyncAction();
 
   const body = summary ?? description ?? undefined;
 
   const handleGenerate = () => {
-    setError(undefined);
-    startTransition(async () => {
-      const result = await generateArticleSummary(articleId);
-      if (result.error !== undefined) {
-        setError(result.error);
-      } else if (result.summary !== undefined) {
-        setSummary(result.summary);
-      }
+    run(() => generateArticleSummary(articleId), {
+      onSuccess: (result) => {
+        if (result.summary !== undefined) {
+          setSummary(result.summary);
+        }
+      },
     });
   };
 

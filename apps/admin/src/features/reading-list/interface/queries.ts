@@ -1,33 +1,16 @@
-import { db } from '@repo/database';
-import { desc, eq } from 'drizzle-orm';
 import { cacheLife } from 'next/cache';
+
+import {
+  findArticleSourceById,
+  findReadingListContent,
+} from '../infrastructure/reading-list-repository';
 
 export const getReadingListContentData = async () => {
   'use cache';
   cacheLife('minutes');
 
-  const [sources, articles] = await Promise.all([
-    db.query.articleSources.findMany({
-      orderBy: (articleSources) => [desc(articleSources.updatedAt)],
-    }),
-    db.query.articles.findMany({
-      with: { articleSource: true },
-      orderBy: (articleTable) => [desc(articleTable.publishedAt)],
-    }),
-  ]);
-
-  return {
-    sources,
-    articleItems: articles.map((article) => ({
-      id: article.id,
-      title: article.title,
-      url: article.url,
-      publishedAt: article.publishedAt,
-      sourceName: article.articleSource.title,
-    })),
-    feedCount: sources.filter((source) => source.type === 'feed').length,
-    articleCount: articles.length,
-  };
+  const content = await findReadingListContent();
+  return content;
 };
 
 export const getArticleSourceForEdit = async (id: string) => {
@@ -36,8 +19,6 @@ export const getArticleSourceForEdit = async (id: string) => {
     return null;
   }
 
-  const source = await db.query.articleSources.findFirst({
-    where: eq(db._schema.articleSources.id, numericId),
-  });
+  const source = await findArticleSourceById(numericId);
   return source;
 };

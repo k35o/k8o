@@ -1,6 +1,4 @@
-type ActionState = {
-  error?: string;
-};
+import type { ActionState } from '@/shared/actions/action-state';
 
 export const createSource = (
   _prev: ActionState,

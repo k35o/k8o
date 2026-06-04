@@ -1,13 +1,9 @@
-type ActionState = {
-  error?: string;
-  success?: boolean;
-};
+import type { ActionState } from '@/shared/actions/action-state';
 
 export const deleteArticle = (_id: number): Promise<ActionState> =>
   Promise.resolve({ success: true });
 
-type SyncActionState = {
-  error?: string;
+type SyncActionState = ActionState & {
   newArticles?: number;
   updatedArticles?: number;
   enrichedArticles?: number;
