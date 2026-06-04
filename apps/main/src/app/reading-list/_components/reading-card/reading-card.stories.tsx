@@ -71,6 +71,28 @@ export const GenerateSummary: Story = {
   },
 };
 
+// 本文が長い記事。2行で省略し、「続きを読む」で全文展開／「閉じる」で再び折りたたむ。
+export const ExpandableBody: Story = {
+  args: {
+    summary:
+      '型安全なルーティングを提供するTanStack Routerの入門記事。ファイルベースルーティング、検索パラメータの型付け、データローダー、コード分割、認証ガードまで、実プロジェクトで必要になる要素を一通り順を追って解説しており、Next.jsやReact Routerからの移行も具体例つきで触れられている。',
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+
+    const expand = await canvas.findByRole('button', { name: '続きを読む' });
+    await userEvent.click(expand);
+
+    const collapse = await canvas.findByRole('button', { name: '閉じる' });
+    await expect(collapse).toBeInTheDocument();
+
+    await userEvent.click(collapse);
+    await expect(
+      await canvas.findByRole('button', { name: '続きを読む' }),
+    ).toBeInTheDocument();
+  },
+};
+
 // OGP 画像が取得できなかった記事。テキストのみで成立させる。
 export const NoImage: Story = {
   args: {
