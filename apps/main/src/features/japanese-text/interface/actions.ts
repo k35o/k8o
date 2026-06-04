@@ -4,10 +4,6 @@ import * as z from 'zod/mini';
 
 const JAPANESE_SYNTAX_CHECK_API = 'https://japanese-syntax-checker.k8o.me/api';
 
-type Request = {
-  text: string;
-};
-
 const responseSchema = z.object({
   text: z.string(),
   msgs: z.array(
@@ -28,21 +24,22 @@ const responseSchema = z.object({
   ),
 });
 
-type Response = z.infer<typeof responseSchema>;
+type SyntaxCheckResult = z.infer<typeof responseSchema>;
 
-export const checkJapaneseSyntax = async (
-  request: Request,
-): Promise<Response> => {
+export const checkJapaneseSyntax = async (request: {
+  text: string;
+}): Promise<SyntaxCheckResult> => {
   const res = await fetch(JAPANESE_SYNTAX_CHECK_API, {
     method: 'POST',
-    body: JSON.stringify(request),
+    body: JSON.stringify({ text: request.text }),
     headers: {
       'Content-Type': 'application/json',
     },
   });
   if (!res.ok) {
-    console.error(res);
-    throw new Error('Network response was not ok');
+    throw new Error(
+      `日本語構文チェックAPIが異常応答を返しました (status: ${res.status})`,
+    );
   }
   return responseSchema.parse(await res.json());
 };
