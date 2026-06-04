@@ -2,9 +2,10 @@
 
 import { Button, Dialog, Modal } from '@k8o/arte-odyssey';
 import { formatDate } from '@repo/helpers/date/format';
-import { type FC, useState, useTransition } from 'react';
+import { type FC, useState } from 'react';
 
 import { deleteArticle } from '@/features/reading-list/interface/article-actions';
+import { useAsyncAction } from '@/shared/hooks/use-async-action';
 
 type Article = {
   id: number;
@@ -16,17 +17,10 @@ type Article = {
 
 const DeleteButton: FC<{ id: number; title: string }> = ({ id, title }) => {
   const [open, setOpen] = useState(false);
-  const [isPending, startTransition] = useTransition();
-  const [error, setError] = useState<string>();
+  const { isPending, error, run } = useAsyncAction();
 
   const handleDelete = () => {
-    setError(undefined);
-    startTransition(async () => {
-      const result = await deleteArticle(id);
-      if (result.error !== undefined) {
-        setError(result.error);
-      }
-    });
+    run(() => deleteArticle(id));
   };
 
   return (
