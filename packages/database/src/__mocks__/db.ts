@@ -4,6 +4,10 @@ import { drizzle } from 'drizzle-orm/neon-serverless';
 import { relations, schema } from '../schema';
 
 // 本物の db.ts と公開 API を揃える
+export {
+  ARTICLE_SOURCE_TYPES,
+  type ArticleSourceType,
+} from '../schema/article-sources';
 export { PUSH_LOG_KINDS, type PushLogKind } from '../schema/push-logs';
 
 const drizzleDb = drizzle.mock({

@@ -11,6 +11,7 @@ import {
   insertArticleSource,
   updateArticleSource,
 } from '../infrastructure/reading-list-repository';
+import { parseSourceFormData } from './source-form-validation';
 
 export async function createSource(
   _prev: ActionState,
@@ -18,25 +19,13 @@ export async function createSource(
 ): Promise<ActionState> {
   await verifySession();
 
-  const title = formData.get('title') as string;
-  const url = formData.get('url') as string;
-  const siteUrl = formData.get('siteUrl') as string;
-  const type = formData.get('type') as string;
-
-  if (!(title && url && siteUrl && type)) {
-    return { error: '全ての項目を入力してください' };
-  }
-
-  if (type !== 'feed' && type !== 'manual') {
-    return { error: 'タイプはfeedまたはmanualを指定してください' };
-  }
-
-  if (!URL.canParse(url) || !URL.canParse(siteUrl)) {
-    return { error: '有効なURLを入力してください' };
+  const parsed = parseSourceFormData(formData);
+  if (!parsed.ok) {
+    return { error: parsed.error };
   }
 
   try {
-    await insertArticleSource({ title, url, siteUrl, type });
+    await insertArticleSource(parsed.data);
   } catch {
     return { error: 'ソースの作成に失敗しました' };
   }
@@ -52,25 +41,13 @@ export async function updateSource(
 ): Promise<ActionState> {
   await verifySession();
 
-  const title = formData.get('title') as string;
-  const url = formData.get('url') as string;
-  const siteUrl = formData.get('siteUrl') as string;
-  const type = formData.get('type') as string;
-
-  if (!(title && url && siteUrl && type)) {
-    return { error: '全ての項目を入力してください' };
-  }
-
-  if (type !== 'feed' && type !== 'manual') {
-    return { error: 'タイプはfeedまたはmanualを指定してください' };
-  }
-
-  if (!URL.canParse(url) || !URL.canParse(siteUrl)) {
-    return { error: '有効なURLを入力してください' };
+  const parsed = parseSourceFormData(formData);
+  if (!parsed.ok) {
+    return { error: parsed.error };
   }
 
   try {
-    await updateArticleSource(id, { title, url, siteUrl, type });
+    await updateArticleSource(id, parsed.data);
   } catch {
     return { error: 'ソースの更新に失敗しました' };
   }

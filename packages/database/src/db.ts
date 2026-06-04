@@ -5,6 +5,10 @@ import { relations, schema } from './schema';
 import { increment } from './utils';
 
 // スキーマ由来のドメイン型をパッケージの公開 API として再エクスポートする
+export {
+  ARTICLE_SOURCE_TYPES,
+  type ArticleSourceType,
+} from './schema/article-sources';
 export { PUSH_LOG_KINDS, type PushLogKind } from './schema/push-logs';
 
 const authToken = process.env['TURSO_AUTH_TOKEN'];

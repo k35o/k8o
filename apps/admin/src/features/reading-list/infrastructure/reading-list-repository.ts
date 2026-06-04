@@ -1,5 +1,12 @@
-import { db } from '@repo/database';
+import {
+  ARTICLE_SOURCE_TYPES,
+  type ArticleSourceType,
+  db,
+} from '@repo/database';
 import { desc, eq } from 'drizzle-orm';
+
+// interface 層は @repo/database を直接参照しないため、ドメイン定義をここで中継する
+export { ARTICLE_SOURCE_TYPES, type ArticleSourceType };
 
 export const findReadingListContent = async () => {
   const [sources, articles] = await Promise.all([
@@ -35,11 +42,11 @@ export const deleteArticleById = async (id: number): Promise<void> => {
   await db.delete(db._schema.articles).where(eq(db._schema.articles.id, id));
 };
 
-type ArticleSourceInput = {
+export type ArticleSourceInput = {
   title: string;
   url: string;
   siteUrl: string;
-  type: 'feed' | 'manual';
+  type: ArticleSourceType;
 };
 
 export const insertArticleSource = async (

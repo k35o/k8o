@@ -10,6 +10,10 @@ import {
 
 import { articles } from './articles';
 
+// 記事ソースの種別。アプリ側もこの定義を SSoT として参照する。
+export const ARTICLE_SOURCE_TYPES = ['feed', 'manual'] as const;
+export type ArticleSourceType = (typeof ARTICLE_SOURCE_TYPES)[number];
+
 export const articleSources = sqliteTable(
   'article_sources',
   {
@@ -17,7 +21,7 @@ export const articleSources = sqliteTable(
     title: text('title').notNull(),
     url: text('url').notNull(),
     siteUrl: text('site_url').notNull(),
-    type: text('type', { enum: ['feed', 'manual'] }).notNull(),
+    type: text('type', { enum: ARTICLE_SOURCE_TYPES }).notNull(),
     createdAt: text('created_at')
       .notNull()
       .$defaultFn(() => new Date().toISOString()),
