@@ -31,14 +31,14 @@ export const contact = async (
   _previousState: Result,
   formData: FormData,
 ): Promise<Result> => {
-  const validatedFields = contactSchema.safeParse({
-    message: formData.get('message'),
-  });
+  const message = formData.get('message');
+  const messageText = typeof message === 'string' ? message : '';
+  const validatedFields = contactSchema.safeParse({ message: messageText });
 
   if (!validatedFields.success) {
     return {
       success: false,
-      defaultValue: formData.get('message') as string,
+      defaultValue: messageText,
       message:
         validatedFields.error.issues[0]?.message ??
         'お問い合わせ内容が不正です',
