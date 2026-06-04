@@ -18,8 +18,7 @@ const CLAMP_CLASS =
   'vertical:block vertical:max-block-[8em] vertical:overflow-hidden line-clamp-2';
 
 // 本文がクランプで切り詰められているか（＝展開の余地があるか）を監視する。
-// 展開中は計測しない。クランプ解除で scrollHeight === clientHeight になり
-// 「閉じる」トグルが消えてしまうのを防ぐため、直近の判定を保持する。
+// 展開後は「続きを読む」を出さないので計測も不要。enabled=false で止める。
 const useIsClamped = (
   enabled: boolean,
   body: string | undefined,
@@ -49,7 +48,7 @@ const useIsClamped = (
 
 // 本文（要約優先・無ければ説明文）と「AIで要約」ボタンを表示する。
 // 要約が無い記事だけボタンを出し、押すと生成→その場で表示に反映する。
-// 本文が2行を超える場合は「続きを読む」で全文展開できる。
+// 本文が2行を超える場合は「続きを読む」で全文展開する（展開後はボタンを消す一方向）。
 export const ReadingCardBody: FC<{
   articleId: number;
   description: string | null;
@@ -85,20 +84,19 @@ export const ReadingCardBody: FC<{
           >
             {body}
           </p>
-          {(isClamped || expanded) && (
+          {!expanded && isClamped && (
             // カードを覆う overlay リンクより前面に出して、独立操作可能にする
             <button
               aria-controls={bodyId}
-              aria-expanded={expanded}
               className="text-fg-mute hover:text-fg-base relative z-10 cursor-pointer self-start text-xs underline underline-offset-2"
               onClick={(e) => {
                 e.preventDefault();
                 e.stopPropagation();
-                setExpanded((prev) => !prev);
+                setExpanded(true);
               }}
               type="button"
             >
-              {expanded ? '閉じる' : '続きを読む'}
+              続きを読む
             </button>
           )}
         </>

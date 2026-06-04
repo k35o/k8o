@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
-import { expect, userEvent, within } from 'storybook/test';
+import { expect, userEvent, waitFor, within } from 'storybook/test';
 
 import { ReadingCard } from './reading-card';
 
@@ -71,7 +71,7 @@ export const GenerateSummary: Story = {
   },
 };
 
-// 本文が長い記事。2行で省略し、「続きを読む」で全文展開／「閉じる」で再び折りたたむ。
+// 本文が長い記事。2行で省略し、「続きを読む」で全文展開する（展開後はボタンが消える）。
 export const ExpandableBody: Story = {
   args: {
     summary:
@@ -83,13 +83,12 @@ export const ExpandableBody: Story = {
     const expand = await canvas.findByRole('button', { name: '続きを読む' });
     await userEvent.click(expand);
 
-    const collapse = await canvas.findByRole('button', { name: '閉じる' });
-    await expect(collapse).toBeInTheDocument();
-
-    await userEvent.click(collapse);
-    await expect(
-      await canvas.findByRole('button', { name: '続きを読む' }),
-    ).toBeInTheDocument();
+    // 展開後は一方向。ボタンが消え、畳むためのコントロールは出さない。
+    await waitFor(() => {
+      expect(
+        canvas.queryByRole('button', { name: '続きを読む' }),
+      ).not.toBeInTheDocument();
+    });
   },
 };
 
