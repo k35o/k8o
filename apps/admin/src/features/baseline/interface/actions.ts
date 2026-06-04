@@ -3,10 +3,10 @@
 import { revalidatePath } from 'next/cache';
 
 import { syncBaseline } from '@/features/baseline/application/sync-baseline';
+import type { ActionState } from '@/shared/actions/action-state';
 import { verifySession } from '@/shared/auth/verify-session';
 
-type SyncActionState = {
-  error?: string;
+type SyncActionState = ActionState & {
   newFeatures?: number;
   statusChanges?: number;
 };

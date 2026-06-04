@@ -3,6 +3,7 @@
 import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
 
+import type { ActionState } from '@/shared/actions/action-state';
 import { verifySession } from '@/shared/auth/verify-session';
 
 import {
@@ -10,10 +11,6 @@ import {
   insertArticleSource,
   updateArticleSource,
 } from '../infrastructure/reading-list-repository';
-
-type ActionState = {
-  error?: string;
-};
 
 export async function createSource(
   _prev: ActionState,

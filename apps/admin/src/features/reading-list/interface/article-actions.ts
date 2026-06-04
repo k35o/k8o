@@ -4,14 +4,10 @@ import { revalidatePath } from 'next/cache';
 
 import { enrichArticleMetadata } from '@/features/reading-list/application/enrich-articles';
 import { syncArticles } from '@/features/reading-list/application/sync-articles';
+import type { ActionState } from '@/shared/actions/action-state';
 import { verifySession } from '@/shared/auth/verify-session';
 
 import { deleteArticleById } from '../infrastructure/reading-list-repository';
-
-type ActionState = {
-  error?: string;
-  success?: boolean;
-};
 
 export async function deleteArticle(id: number): Promise<ActionState> {
   await verifySession();
@@ -27,8 +23,7 @@ export async function deleteArticle(id: number): Promise<ActionState> {
   return { success: true };
 }
 
-type SyncActionState = {
-  error?: string;
+type SyncActionState = ActionState & {
   newArticles?: number;
   updatedArticles?: number;
   enrichedArticles?: number;
