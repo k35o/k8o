@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
-import { expect, userEvent, within } from 'storybook/test';
+import { expect, userEvent, waitFor, within } from 'storybook/test';
 
 import { ReadingCard } from './reading-card';
 
@@ -68,6 +68,27 @@ export const GenerateSummary: Story = {
     await expect(
       await canvas.findByText('モック要約：この記事の要点を1〜2文で表します。'),
     ).toBeInTheDocument();
+  },
+};
+
+// 本文が長い記事。2行で省略し、「続きを読む」で全文展開する（展開後はボタンが消える）。
+export const ExpandableBody: Story = {
+  args: {
+    summary:
+      '型安全なルーティングを提供するTanStack Routerの入門記事。ファイルベースルーティング、検索パラメータの型付け、データローダー、コード分割、認証ガードまで、実プロジェクトで必要になる要素を一通り順を追って解説しており、Next.jsやReact Routerからの移行も具体例つきで触れられている。',
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+
+    const expand = await canvas.findByRole('button', { name: '続きを読む' });
+    await userEvent.click(expand);
+
+    // 展開後は一方向。ボタンが消え、畳むためのコントロールは出さない。
+    await waitFor(() => {
+      expect(
+        canvas.queryByRole('button', { name: '続きを読む' }),
+      ).not.toBeInTheDocument();
+    });
   },
 };
 
