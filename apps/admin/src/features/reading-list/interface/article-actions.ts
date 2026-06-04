@@ -1,12 +1,12 @@
 'use server';
 
-import { db } from '@repo/database';
-import { eq } from 'drizzle-orm';
 import { revalidatePath } from 'next/cache';
 
 import { enrichArticleMetadata } from '@/features/reading-list/application/enrich-articles';
 import { syncArticles } from '@/features/reading-list/application/sync-articles';
 import { verifySession } from '@/shared/auth/verify-session';
+
+import { deleteArticleById } from '../infrastructure/reading-list-repository';
 
 type ActionState = {
   error?: string;
@@ -17,7 +17,7 @@ export async function deleteArticle(id: number): Promise<ActionState> {
   await verifySession();
 
   try {
-    await db.delete(db._schema.articles).where(eq(db._schema.articles.id, id));
+    await deleteArticleById(id);
   } catch {
     return { error: '削除に失敗しました' };
   }
