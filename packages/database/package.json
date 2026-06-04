@@ -15,6 +15,10 @@
       "types": "./src/auth.ts",
       "node": "./src/auth.ts",
       "default": "./src/auth.ts"
+    },
+    "./schema": {
+      "types": "./src/schema/public.ts",
+      "default": "./src/schema/public.ts"
     }
   },
   "scripts": {

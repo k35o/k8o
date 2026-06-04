@@ -1,4 +1,5 @@
-import { db, type PushLogKind } from '@repo/database';
+import { db } from '@repo/database';
+import type { PushLogKind } from '@repo/database/schema';
 import { desc } from 'drizzle-orm';
 
 // 公開する通知履歴。送信結果(succeeded/failed)は購読者数の露出につながるため含めない。

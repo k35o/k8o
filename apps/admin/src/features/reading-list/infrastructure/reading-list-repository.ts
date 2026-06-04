@@ -1,8 +1,8 @@
+import { db } from '@repo/database';
 import {
   ARTICLE_SOURCE_TYPES,
   type ArticleSourceType,
-  db,
-} from '@repo/database';
+} from '@repo/database/schema';
 import { desc, eq } from 'drizzle-orm';
 
 // interface 層は @repo/database を直接参照しないため、ドメイン定義をここで中継する

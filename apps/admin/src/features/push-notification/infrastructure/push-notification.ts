@@ -1,4 +1,5 @@
-import { db, type PushLogKind } from '@repo/database';
+import { db } from '@repo/database';
+import type { PushLogKind } from '@repo/database/schema';
 import { isAllowedPushEndpoint } from '@repo/helpers/push-endpoint';
 import { eq, inArray } from 'drizzle-orm';
 
