@@ -8,8 +8,9 @@ import {
   uniqueIndex,
 } from 'drizzle-orm/sqlite-core';
 
-const PUSH_LOG_KINDS = ['readings_updated', 'baseline_updated'] as const;
-type PushLogKind = (typeof PUSH_LOG_KINDS)[number];
+// プッシュ通知の業務イベント種別。アプリ側もこの定義を SSoT として参照する。
+export const PUSH_LOG_KINDS = ['readings_updated', 'baseline_updated'] as const;
+export type PushLogKind = (typeof PUSH_LOG_KINDS)[number];
 
 export const pushLogs = sqliteTable(
   'push_logs',

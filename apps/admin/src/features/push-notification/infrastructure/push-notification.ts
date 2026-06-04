@@ -1,10 +1,8 @@
-import { db } from '@repo/database';
+import { db, type PushLogKind } from '@repo/database';
 import { isAllowedPushEndpoint } from '@repo/helpers/push-endpoint';
 import { eq, inArray } from 'drizzle-orm';
 
 import { sendWebPush, WebPushError } from './web-push';
-
-type PushLogKind = 'readings_updated' | 'baseline_updated';
 
 type SendPushNotificationParams = {
   kind: PushLogKind;

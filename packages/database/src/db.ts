@@ -4,6 +4,9 @@ import { drizzle } from 'drizzle-orm/libsql/http';
 import { relations, schema } from './schema';
 import { increment } from './utils';
 
+// スキーマ由来のドメイン型をパッケージの公開 API として再エクスポートする
+export { PUSH_LOG_KINDS, type PushLogKind } from './schema/push-logs';
+
 const authToken = process.env['TURSO_AUTH_TOKEN'];
 
 const client = createClient({
