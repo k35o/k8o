@@ -1,15 +1,11 @@
-import { Breadcrumb, Card, Heading } from '@k8o/arte-odyssey';
+import { Breadcrumb, Heading } from '@k8o/arte-odyssey';
+import { Suspense } from 'react';
 
-import { createTalk } from '@/features/talks/interface/actions';
-import { getBlogOptions } from '@/features/talks/interface/queries';
-import { verifySession } from '@/shared/auth/verify-session';
+import { ContentFallback } from '@/app/(authenticated)/_components';
 
-import { TalkForm } from '../_components/talk-form';
+import { NewTalkContent } from '../_components/new-talk-content/new-talk-content';
 
-export default async function NewTalkPage() {
-  await verifySession();
-  const blogs = await getBlogOptions();
-
+export default function NewTalkPage() {
   return (
     <div className="flex flex-col gap-6">
       <Breadcrumb.List>
@@ -20,11 +16,9 @@ export default async function NewTalkPage() {
         <Breadcrumb.Item>トークを追加</Breadcrumb.Item>
       </Breadcrumb.List>
       <Heading type="h1">トークを追加</Heading>
-      <Card appearance="shadow">
-        <div className="p-8">
-          <TalkForm action={createTalk} blogs={blogs} />
-        </div>
-      </Card>
+      <Suspense fallback={<ContentFallback />}>
+        <NewTalkContent />
+      </Suspense>
     </div>
   );
 }

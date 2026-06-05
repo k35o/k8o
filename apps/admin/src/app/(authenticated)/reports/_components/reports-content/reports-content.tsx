@@ -11,21 +11,29 @@ import {
   getReports,
   getReportTypeCounts,
 } from '@/features/reports/interface/queries';
-import { getTotalPages } from '@/shared/search-params';
+import { verifySession } from '@/shared/auth/verify-session';
+import {
+  firstParam,
+  getTotalPages,
+  parsePageParam,
+} from '@/shared/search-params';
 
 import { ReportTable } from '../report-table/report-table';
 
 const PAGE_SIZE = 20;
 
 export const ReportsContent = async ({
-  type,
-  q,
-  page,
+  searchParams,
 }: {
-  type: string;
-  q: string;
-  page: number;
+  searchParams: Promise<Record<string, string | string[] | undefined>>;
 }) => {
+  await verifySession();
+
+  const sp = await searchParams;
+  const type = firstParam(sp['type']) ?? '';
+  const q = firstParam(sp['q']) ?? '';
+  const page = parsePageParam(firstParam(sp['page']));
+
   const [{ typeCounts, totalCount }, { items, total }] = await Promise.all([
     getReportTypeCounts(),
     getReports({ type, q, page, pageSize: PAGE_SIZE }),

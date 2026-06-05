@@ -8,10 +8,13 @@ import {
 } from '@/app/(authenticated)/_components';
 import { getTopViewedBlogs } from '@/features/blog/interface/queries';
 import { getDashboardSummary } from '@/features/dashboard/interface/queries';
+import { verifySession } from '@/shared/auth/verify-session';
 
 const BLOG_BASE_URL = 'https://k8o.me/blog';
 
 export const DashboardContent = async () => {
+  await verifySession();
+
   const [
     { blogCount, totalViews, articleCount, sourceCount, recentArticles },
     topBlogs,

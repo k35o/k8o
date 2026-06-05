@@ -1,28 +1,23 @@
-import { PageHeader } from '@/app/(authenticated)/_components';
-import { verifySession } from '@/shared/auth/verify-session';
-import { firstParam, parsePageParam } from '@/shared/search-params';
+import { Suspense } from 'react';
+
+import { ContentFallback, PageHeader } from '@/app/(authenticated)/_components';
 
 import { ReportsContent } from './_components/reports-content/reports-content';
 
-export default async function ReportsPage({
+export default function ReportsPage({
   searchParams,
 }: {
   searchParams: Promise<Record<string, string | string[] | undefined>>;
 }) {
-  await verifySession();
-
-  const sp = await searchParams;
-  const type = firstParam(sp['type']) ?? '';
-  const q = firstParam(sp['q']) ?? '';
-  const page = parsePageParam(firstParam(sp['page']));
-
   return (
     <div className="flex flex-col gap-10">
       <PageHeader
         description="Reporting APIから収集したブラウザレポート"
         title="レポート"
       />
-      <ReportsContent page={page} q={q} type={type} />
+      <Suspense fallback={<ContentFallback />}>
+        <ReportsContent searchParams={searchParams} />
+      </Suspense>
     </div>
   );
 }

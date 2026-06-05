@@ -1,15 +1,11 @@
-import { Breadcrumb, Card, Heading } from '@k8o/arte-odyssey';
+import { Breadcrumb, Heading } from '@k8o/arte-odyssey';
+import { Suspense } from 'react';
 
-import { createArticle } from '@/features/reading-list/interface/article-actions';
-import { getReadingListContentData } from '@/features/reading-list/interface/queries';
-import { verifySession } from '@/shared/auth/verify-session';
+import { ContentFallback } from '@/app/(authenticated)/_components';
 
-import { ArticleForm } from '../../_components/article-form/article-form';
+import { NewArticleContent } from '../../_components/new-article-content/new-article-content';
 
-export default async function NewArticlePage() {
-  await verifySession();
-  const { sources } = await getReadingListContentData();
-
+export default function NewArticlePage() {
   return (
     <div className="flex flex-col gap-6">
       <Breadcrumb.List>
@@ -20,14 +16,9 @@ export default async function NewArticlePage() {
         <Breadcrumb.Item>記事を追加</Breadcrumb.Item>
       </Breadcrumb.List>
       <Heading type="h1">記事を追加</Heading>
-      <Card appearance="shadow">
-        <div className="p-8">
-          <ArticleForm
-            action={createArticle}
-            sources={sources.map((s) => ({ id: s.id, title: s.title }))}
-          />
-        </div>
-      </Card>
+      <Suspense fallback={<ContentFallback />}>
+        <NewArticleContent />
+      </Suspense>
     </div>
   );
 }

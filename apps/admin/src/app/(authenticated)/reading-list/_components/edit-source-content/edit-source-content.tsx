@@ -3,11 +3,18 @@ import { notFound } from 'next/navigation';
 
 import { getArticleSourceForEdit } from '@/features/reading-list/interface/queries';
 import { updateSource } from '@/features/reading-list/interface/source-actions';
+import { verifySession } from '@/shared/auth/verify-session';
 
 import { DeleteSourceButton } from '../delete-source-button/delete-source-button';
 import { SourceForm } from '../source-form/source-form';
 
-export const EditSourceContent = async ({ id }: { id: string }) => {
+export const EditSourceContent = async ({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}) => {
+  await verifySession();
+  const { id } = await params;
   const source = await getArticleSourceForEdit(id);
 
   if (!source) {
