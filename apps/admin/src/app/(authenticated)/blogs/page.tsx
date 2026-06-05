@@ -10,7 +10,11 @@ import {
   getBlogs,
 } from '@/features/blog/interface/queries';
 import { verifySession } from '@/shared/auth/verify-session';
-import { getTotalPages, parsePageParam } from '@/shared/search-params';
+import {
+  firstParam,
+  getTotalPages,
+  parsePageParam,
+} from '@/shared/search-params';
 
 import { BlogTable } from './_components/blog-table';
 
@@ -32,9 +36,6 @@ const parseStatus = (value: string | undefined): BlogStatus =>
 
 const parseSort = (value: string | undefined): BlogSort =>
   value === 'views' ? 'views' : 'recent';
-
-const firstParam = (value: string | string[] | undefined): string | undefined =>
-  typeof value === 'string' ? value : undefined;
 
 export default async function BlogsPage({
   searchParams,

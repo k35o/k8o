@@ -1,8 +1,27 @@
 import {
   buildSearchString,
+  firstParam,
   getTotalPages,
   parsePageParam,
 } from './search-params';
+
+describe('firstParam', () => {
+  describe('正常系', () => {
+    it('文字列はそのまま返す', () => {
+      expect(firstParam('a')).toBe('a');
+    });
+  });
+
+  describe('エッジケース', () => {
+    it('配列は undefined', () => {
+      expect(firstParam(['a', 'b'])).toBeUndefined();
+    });
+
+    it('未指定は undefined', () => {
+      expect(firstParam(undefined)).toBeUndefined();
+    });
+  });
+});
 
 describe('buildSearchString', () => {
   describe('正常系', () => {

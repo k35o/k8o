@@ -22,6 +22,14 @@ export const buildSearchString = (
 };
 
 /**
+ * searchParams の値(string | string[] | undefined)から単一の文字列を取り出す。
+ * 配列(同名パラメータ複数)や未指定は undefined。
+ */
+export const firstParam = (
+  value: string | string[] | undefined,
+): string | undefined => (typeof value === 'string' ? value : undefined);
+
+/**
  * page パラメータを 1 以上の整数に正規化する。不正値は 1。
  */
 export const parsePageParam = (value: string | null | undefined): number => {

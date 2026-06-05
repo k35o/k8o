@@ -30,11 +30,18 @@ export async function sendManualPushAction(
     return { error: 'タイトルと本文は必須です' };
   }
 
+  // url は空 or 不正な形式ならデフォルトにフォールバックする
+  const trimmedUrl = input.url.trim();
+  const url =
+    trimmedUrl === '' || !URL.canParse(trimmedUrl)
+      ? 'https://k8o.me'
+      : trimmedUrl;
+
   try {
     const { succeeded, failed } = await sendManualPush({
       title: input.title,
       body: input.body,
-      url: input.url.trim() === '' ? 'https://k8o.me' : input.url,
+      url,
     });
     revalidatePath('/notifications');
     return { success: true, succeeded, failed };

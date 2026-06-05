@@ -37,6 +37,12 @@ export const SearchField: FC<Props> = ({
     [],
   );
 
+  // ブラウザの戻る/進む等で URL が外部から変わったら入力値を同期する。
+  // 自分のデバウンス更新では URL 値 === value となり no-op になる。
+  useEffect(() => {
+    setValue(searchParams.get(paramKey) ?? '');
+  }, [searchParams, paramKey]);
+
   const handleChange = (e: ChangeEvent<HTMLInputElement>): void => {
     const next = e.target.value;
     setValue(next);

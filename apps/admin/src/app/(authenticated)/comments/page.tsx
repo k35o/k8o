@@ -12,14 +12,15 @@ import {
   getCommentStats,
 } from '@/features/comments/interface/queries';
 import { verifySession } from '@/shared/auth/verify-session';
-import { getTotalPages, parsePageParam } from '@/shared/search-params';
+import {
+  firstParam,
+  getTotalPages,
+  parsePageParam,
+} from '@/shared/search-params';
 
 import { CommentList } from './_components/comment-list';
 
 const PAGE_SIZE = 20;
-
-const firstParam = (value: string | string[] | undefined): string | undefined =>
-  typeof value === 'string' ? value : undefined;
 
 export default async function CommentsPage({
   searchParams,

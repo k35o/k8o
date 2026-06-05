@@ -1,11 +1,8 @@
 import { PageHeader } from '@/app/(authenticated)/_components';
 import { verifySession } from '@/shared/auth/verify-session';
-import { parsePageParam } from '@/shared/search-params';
+import { firstParam, parsePageParam } from '@/shared/search-params';
 
 import { ReadingListContent } from './_components/reading-list-content/reading-list-content';
-
-const firstParam = (value: string | string[] | undefined): string | undefined =>
-  typeof value === 'string' ? value : undefined;
 
 export default async function ReadingListPage({
   searchParams,

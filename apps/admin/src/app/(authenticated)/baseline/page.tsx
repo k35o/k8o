@@ -10,7 +10,11 @@ import {
   getBaselineSnapshots,
 } from '@/features/baseline/interface/queries';
 import { verifySession } from '@/shared/auth/verify-session';
-import { getTotalPages, parsePageParam } from '@/shared/search-params';
+import {
+  firstParam,
+  getTotalPages,
+  parsePageParam,
+} from '@/shared/search-params';
 
 import { BaselineSnapshotList } from './_components/baseline-snapshot-list';
 import { BaselineSnapshotStats } from './_components/baseline-snapshot-stats';
@@ -26,9 +30,6 @@ const STATUS_OPTIONS = [
 
 const parseStatus = (value: string | undefined): BaselineStatus | 'all' =>
   value === 'newly' || value === 'widely' ? value : 'all';
-
-const firstParam = (value: string | string[] | undefined): string | undefined =>
-  typeof value === 'string' ? value : undefined;
 
 export default async function BaselinePage({
   searchParams,

@@ -12,15 +12,16 @@ import {
   getPushOverview,
 } from '@/features/push-notification/interface/queries';
 import { verifySession } from '@/shared/auth/verify-session';
-import { getTotalPages, parsePageParam } from '@/shared/search-params';
+import {
+  firstParam,
+  getTotalPages,
+  parsePageParam,
+} from '@/shared/search-params';
 
 import { PushLogTable } from './_components/push-log-table';
 import { PushSendForm } from './_components/push-send-form';
 
 const PAGE_SIZE = 20;
-
-const firstParam = (value: string | string[] | undefined): string | undefined =>
-  typeof value === 'string' ? value : undefined;
 
 export default async function NotificationsPage({
   searchParams,
