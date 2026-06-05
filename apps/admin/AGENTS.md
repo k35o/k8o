@@ -49,6 +49,6 @@ apps/admin のStorybookは **`admin-storybook-mcp`** を使うこと。
 
 ## 認証
 
-Better Auth + GitHub OAuth。ローカル開発URL は `http://admin.localhost:1355/`。
+Better Auth + GitHub OAuth。ローカル開発URL は `https://admin.k8o.localhost/`。
 
 設定や運用上の注意は Better Auth のスキル（`better-auth-best-practices` / `better-auth-security-best-practices`）を参照すること。

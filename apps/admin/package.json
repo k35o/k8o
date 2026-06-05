@@ -5,7 +5,7 @@
   "description": "k8o admin site",
   "type": "module",
   "scripts": {
-    "dev": "portless admin next dev --inspect",
+    "dev": "portless admin.k8o next dev --inspect",
     "build": "next build",
     "start": "next start",
     "type-check": "next typegen && tsgo --noEmit",
