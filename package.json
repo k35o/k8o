@@ -23,7 +23,7 @@
     "@ls-lint/ls-lint": "2.3.1",
     "@oxlint/plugins": "1.66.0",
     "@types/node": "24.12.4",
-    "@typescript/native-preview": "7.0.0-dev.20260525.1",
+    "@typescript/native-preview": "7.0.0-dev.20260527.2",
     "@vercel/next-browser": "0.7.1",
     "knip": "6.14.2",
     "oxlint-tailwindcss": "0.8.0",
