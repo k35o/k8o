@@ -1,7 +1,7 @@
 import { getSessionCookie } from 'better-auth/cookies';
 import { type NextRequest, NextResponse } from 'next/server';
 
-const isAuthEnabled = process.env['VERCEL_ENV'] !== 'preview';
+import { isAuthEnabled } from './shared/auth/auth-enabled';
 
 export function proxy(request: NextRequest) {
   if (!isAuthEnabled) {
