@@ -6,12 +6,20 @@ import {
   LogoIcon,
   NavigationMenuIcon,
 } from '@k8o/arte-odyssey';
-import { type FC, useState } from 'react';
+import { type FC, Suspense, useState } from 'react';
 
 import { SignOutButton } from '@/app/(authenticated)/_components/sign-out-button';
 import { ToggleTheme } from '@/app/(authenticated)/_components/toggle-theme';
 
-import { SidebarNav } from './sidebar-nav';
+import { SidebarNav, SidebarNavList } from './sidebar-nav';
+
+// usePathname は cacheComponents 下では動的データのため、Suspense 境界で包む。
+// 静的シェルではアクティブ表示なし(pathname=null)のリストをフォールバックとして描画する。
+const NavWithSuspense: FC<{ onNavigate?: () => void }> = ({ onNavigate }) => (
+  <Suspense fallback={<SidebarNavList pathname={null} />}>
+    <SidebarNav {...(onNavigate === undefined ? {} : { onNavigate })} />
+  </Suspense>
+);
 
 const Brand: FC = () => (
   <div className="flex items-center gap-2">
@@ -46,7 +54,7 @@ export const AdminSidebar: FC = () => {
         <div className="border-border-mute border-b px-5 py-4">
           <Brand />
         </div>
-        <SidebarNav />
+        <NavWithSuspense />
         <SidebarFooter />
       </aside>
 
@@ -67,7 +75,7 @@ export const AdminSidebar: FC = () => {
       {/* モバイル: ドロワー */}
       <Drawer isOpen={isOpen} onClose={close} side="left" title={<Brand />}>
         <div className="flex h-full flex-col">
-          <SidebarNav onNavigate={close} />
+          <NavWithSuspense onNavigate={close} />
           <SidebarFooter />
         </div>
       </Drawer>

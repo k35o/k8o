@@ -14,9 +14,15 @@ const isActive = (pathname: string, href: string): boolean =>
     ? pathname === '/'
     : pathname === href || pathname.startsWith(`${href}/`);
 
-export const SidebarNav: FC<{ onNavigate?: () => void }> = ({ onNavigate }) => {
-  const pathname = usePathname();
-
+/**
+ * ナビの描画本体。pathname を props で受け取る純粋なリスト。
+ * cacheComponents 下では usePathname が動的データなので、
+ * 静的フォールバック（pathname=null）としても使えるよう分離している。
+ */
+export const SidebarNavList: FC<{
+  pathname: string | null;
+  onNavigate?: () => void;
+}> = ({ pathname, onNavigate }) => {
   const handleNavigate = (): void => {
     onNavigate?.();
   };
@@ -32,7 +38,7 @@ export const SidebarNav: FC<{ onNavigate?: () => void }> = ({ onNavigate }) => {
           )}
           {group.items.map((item) => {
             const Icon = item.icon;
-            const active = isActive(pathname, item.href);
+            const active = pathname !== null && isActive(pathname, item.href);
             return (
               <Link
                 aria-current={active ? 'page' : undefined}
@@ -54,5 +60,16 @@ export const SidebarNav: FC<{ onNavigate?: () => void }> = ({ onNavigate }) => {
         </div>
       ))}
     </nav>
+  );
+};
+
+export const SidebarNav: FC<{ onNavigate?: () => void }> = ({ onNavigate }) => {
+  const pathname = usePathname();
+
+  return (
+    <SidebarNavList
+      {...(onNavigate === undefined ? {} : { onNavigate })}
+      pathname={pathname}
+    />
   );
 };
