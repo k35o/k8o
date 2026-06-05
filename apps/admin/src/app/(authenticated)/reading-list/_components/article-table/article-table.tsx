@@ -1,10 +1,15 @@
 'use client';
 
-import { Button, Dialog, Modal } from '@k8o/arte-odyssey';
+import { Button, Card, Dialog, Modal, useToast } from '@k8o/arte-odyssey';
 import { formatDate } from '@repo/helpers/date/format';
+import Link from 'next/link';
 import { type FC, useState } from 'react';
 
-import { deleteArticle } from '@/features/reading-list/interface/article-actions';
+import { EmptyState } from '@/app/(authenticated)/_components';
+import {
+  deleteArticle,
+  refetchArticleMetadata,
+} from '@/features/reading-list/interface/article-actions';
 import { useAsyncAction } from '@/shared/hooks/use-async-action';
 
 type Article = {
@@ -15,11 +20,39 @@ type Article = {
   sourceName: string;
 };
 
+const RefetchButton: FC<{ id: number }> = ({ id }) => {
+  const { isPending, run } = useAsyncAction();
+  const { onOpen } = useToast();
+
+  const handleRefetch = (): void => {
+    run(() => refetchArticleMetadata(id), {
+      onError: (message) => {
+        onOpen('error', message);
+      },
+      onSuccess: () => {
+        onOpen('success', 'OGP を再取得しました');
+      },
+    });
+  };
+
+  return (
+    <Button
+      color="gray"
+      disabled={isPending}
+      onClick={handleRefetch}
+      size="sm"
+      variant="skeleton"
+    >
+      {isPending ? '取得中...' : 'OGP再取得'}
+    </Button>
+  );
+};
+
 const DeleteButton: FC<{ id: number; title: string }> = ({ id, title }) => {
   const [open, setOpen] = useState(false);
   const { isPending, error, run } = useAsyncAction();
 
-  const handleDelete = () => {
+  const handleDelete = (): void => {
     run(() => deleteArticle(id));
   };
 
@@ -27,9 +60,7 @@ const DeleteButton: FC<{ id: number; title: string }> = ({ id, title }) => {
     <>
       <Button
         color="gray"
-        onClick={(e) => {
-          e.preventDefault();
-          e.stopPropagation();
+        onClick={() => {
           setOpen(true);
         }}
         size="sm"
@@ -85,35 +116,51 @@ const DeleteButton: FC<{ id: number; title: string }> = ({ id, title }) => {
 
 export const ArticleTable: FC<{ articles: Article[] }> = ({ articles }) => {
   if (articles.length === 0) {
-    return (
-      <p className="text-fg-mute py-12 text-center text-sm">
-        取得済みの記事はありません
-      </p>
-    );
+    return <EmptyState message="取得済みの記事はありません" />;
   }
 
   return (
-    <div className="flex flex-col">
+    <Card appearance="shadow">
       {articles.map((article) => (
-        <a
-          className="border-border-base hover:bg-bg-mute flex items-center gap-3 border-b px-4 py-3 text-sm transition-colors"
-          href={article.url}
+        <div
+          className="border-border-mute flex items-center gap-3 border-b px-5 py-4 text-sm last:border-b-0"
           key={article.id}
-          rel="noopener noreferrer"
-          target="_blank"
         >
-          <span className="min-w-0 flex-1 truncate font-medium">
+          <a
+            className="min-w-0 flex-1 truncate font-medium hover:underline"
+            href={article.url}
+            rel="noopener noreferrer"
+            target="_blank"
+          >
             {article.title}
-          </span>
+          </a>
           <span className="text-fg-mute hidden shrink-0 text-xs sm:block">
             {article.sourceName}
           </span>
-          <span className="text-fg-mute hidden w-40 shrink-0 text-right sm:block">
+          <span className="text-fg-mute hidden w-28 shrink-0 text-right text-xs sm:block">
             {formatDate(new Date(article.publishedAt))}
           </span>
-          <DeleteButton id={article.id} title={article.title} />
-        </a>
+          <div className="flex shrink-0 items-center gap-1">
+            <Button
+              color="gray"
+              renderItem={({ className, children }) => (
+                <Link
+                  className={className}
+                  href={`/reading-list/articles/${String(article.id)}`}
+                >
+                  {children}
+                </Link>
+              )}
+              size="sm"
+              variant="skeleton"
+            >
+              編集
+            </Button>
+            <RefetchButton id={article.id} />
+            <DeleteButton id={article.id} title={article.title} />
+          </div>
+        </div>
       ))}
-    </div>
+    </Card>
   );
 };

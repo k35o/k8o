@@ -1,4 +1,4 @@
-import { Breadcrumb, Card, Separator } from '@k8o/arte-odyssey';
+import { Breadcrumb, Card, Heading, Separator } from '@k8o/arte-odyssey';
 import { notFound } from 'next/navigation';
 
 import { getArticleSourceForEdit } from '@/features/reading-list/interface/queries';
@@ -25,16 +25,16 @@ export const EditSourceContent = async ({ id }: { id: string }) => {
         <Breadcrumb.Separator />
         <Breadcrumb.Item>{source.title}</Breadcrumb.Item>
       </Breadcrumb.List>
-      <div className="flex items-center justify-between">
-        <h2 className="text-2xl font-bold">{source.title}</h2>
+      <div className="flex items-center justify-between gap-4">
+        <Heading type="h1">{source.title}</Heading>
         <DeleteSourceButton id={source.id} title={source.title} />
       </div>
-      <Card>
-        <div className="p-6">
+      <Card appearance="shadow">
+        <div className="p-8">
           <SourceForm action={action} defaultValues={source} />
         </div>
       </Card>
-      <Separator />
+      <Separator color="mute" />
       <div className="text-fg-mute flex flex-col gap-2 text-xs">
         <p>作成日: {source.createdAt}</p>
         <p>更新日: {source.updatedAt}</p>

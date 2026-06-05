@@ -1,41 +1,80 @@
-import { StatCard } from '@/app/(authenticated)/_components/stat-card/stat-card';
-import { getReadingListContentData } from '@/features/reading-list/interface/queries';
+import { ListIcon, NewsIcon, RSSIcon } from '@k8o/arte-odyssey';
 
+import {
+  ListPagination,
+  SearchField,
+  SectionHeader,
+  StatCard,
+} from '@/app/(authenticated)/_components';
+import {
+  getArticles,
+  getReadingListContentData,
+} from '@/features/reading-list/interface/queries';
+import { getTotalPages } from '@/shared/search-params';
+
+import { AddArticleLink } from '../add-article-link';
 import { AddSourceLink } from '../add-source-link';
 import { ArticleTable } from '../article-table/article-table';
 import { SourceList } from '../source-list/source-list';
 import { SyncButton } from '../sync-button/sync-button';
 
-export const ReadingListContent = async () => {
-  const { sources, articleItems, feedCount, articleCount } =
-    await getReadingListContentData();
+const PAGE_SIZE = 20;
+
+export const ReadingListContent = async ({
+  q,
+  page,
+}: {
+  q: string;
+  page: number;
+}) => {
+  const [{ sources, feedCount, articleCount }, { items, total }] =
+    await Promise.all([
+      getReadingListContentData(),
+      getArticles({ q, page, pageSize: PAGE_SIZE }),
+    ]);
+  const totalPages = getTotalPages(total, PAGE_SIZE);
 
   return (
     <>
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
-        <StatCard label="ソース" value={String(sources.length)} />
+      <div className="grid grid-cols-1 gap-6 sm:grid-cols-3">
+        <StatCard
+          icon={<ListIcon size="md" />}
+          label="ソース"
+          value={String(sources.length)}
+        />
         <StatCard
           description="自動取得"
+          icon={<RSSIcon size="md" />}
           label="フィード"
           value={String(feedCount)}
         />
-        <StatCard label="取得済み記事" value={String(articleCount)} />
+        <StatCard
+          icon={<NewsIcon size="md" />}
+          label="取得済み記事"
+          value={String(articleCount)}
+        />
       </div>
 
       <section className="flex flex-col gap-4">
-        <div className="flex items-center justify-between">
-          <h3 className="text-lg font-bold">ソース</h3>
-          <AddSourceLink />
-        </div>
+        <SectionHeader action={<AddSourceLink />} title="ソース" />
         <SourceList sources={sources} />
       </section>
 
       <section className="flex flex-col gap-4">
-        <div className="flex items-center justify-between">
-          <h3 className="text-lg font-bold">取得済み記事</h3>
-          <SyncButton />
+        <SectionHeader
+          action={
+            <div className="flex items-center gap-2">
+              <AddArticleLink />
+              <SyncButton />
+            </div>
+          }
+          title="取得済み記事"
+        />
+        <SearchField placeholder="タイトルで検索" />
+        <ArticleTable articles={items} />
+        <div className="flex justify-center">
+          <ListPagination currentPage={page} totalPages={totalPages} />
         </div>
-        <ArticleTable articles={articleItems} />
       </section>
     </>
   );
