@@ -1,12 +1,11 @@
-import { Breadcrumb, Card, Heading } from '@k8o/arte-odyssey';
+import { Breadcrumb, Heading } from '@k8o/arte-odyssey';
+import { Suspense } from 'react';
 
-import { createSource } from '@/features/reading-list/interface/source-actions';
-import { verifySession } from '@/shared/auth/verify-session';
+import { ContentFallback } from '@/app/(authenticated)/_components';
 
-import { SourceForm } from '../../_components/source-form/source-form';
+import { NewSourceContent } from '../../_components/new-source-content/new-source-content';
 
-export default async function NewSourcePage() {
-  await verifySession();
+export default function NewSourcePage() {
   return (
     <div className="flex flex-col gap-6">
       <Breadcrumb.List>
@@ -17,11 +16,9 @@ export default async function NewSourcePage() {
         <Breadcrumb.Item>ソースを追加</Breadcrumb.Item>
       </Breadcrumb.List>
       <Heading type="h1">ソースを追加</Heading>
-      <Card appearance="shadow">
-        <div className="p-8">
-          <SourceForm action={createSource} />
-        </div>
-      </Card>
+      <Suspense fallback={<ContentFallback />}>
+        <NewSourceContent />
+      </Suspense>
     </div>
   );
 }

@@ -1,27 +1,15 @@
-import { Breadcrumb, Card, Heading } from '@k8o/arte-odyssey';
-import { notFound } from 'next/navigation';
+import { Breadcrumb, Heading } from '@k8o/arte-odyssey';
+import { Suspense } from 'react';
 
-import { updateArticle } from '@/features/reading-list/interface/article-actions';
-import { getArticleForEdit } from '@/features/reading-list/interface/queries';
-import { verifySession } from '@/shared/auth/verify-session';
+import { ContentFallback } from '@/app/(authenticated)/_components';
 
-import { ArticleForm } from '../../_components/article-form/article-form';
+import { EditArticleContent } from '../../_components/edit-article-content/edit-article-content';
 
-export default async function EditArticlePage({
+export default function EditArticlePage({
   params,
 }: {
   params: Promise<{ id: string }>;
 }) {
-  await verifySession();
-  const { id } = await params;
-  const article = await getArticleForEdit(id);
-
-  if (!article) {
-    notFound();
-  }
-
-  const action = updateArticle.bind(null, article.id);
-
   return (
     <div className="flex flex-col gap-6">
       <Breadcrumb.List>
@@ -32,19 +20,9 @@ export default async function EditArticlePage({
         <Breadcrumb.Item>記事を編集</Breadcrumb.Item>
       </Breadcrumb.List>
       <Heading type="h1">記事を編集</Heading>
-      <Card appearance="shadow">
-        <div className="p-8">
-          <ArticleForm
-            action={action}
-            defaultValues={{
-              title: article.title,
-              url: article.url,
-              publishedAt: article.publishedAt,
-              description: article.description,
-            }}
-          />
-        </div>
-      </Card>
+      <Suspense fallback={<ContentFallback />}>
+        <EditArticleContent params={params} />
+      </Suspense>
     </div>
   );
 }

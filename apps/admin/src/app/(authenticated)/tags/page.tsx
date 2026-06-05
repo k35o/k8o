@@ -1,14 +1,15 @@
-import { PageHeader, SectionHeader } from '@/app/(authenticated)/_components';
-import { getTags } from '@/features/tags/interface/queries';
-import { verifySession } from '@/shared/auth/verify-session';
+import { Suspense } from 'react';
+
+import {
+  ContentFallback,
+  PageHeader,
+  SectionHeader,
+} from '@/app/(authenticated)/_components';
 
 import { TagAddForm } from './_components/tag-add-form';
-import { TagList } from './_components/tag-list';
+import { TagsContent } from './_components/tags-content/tags-content';
 
-export default async function TagsPage() {
-  await verifySession();
-  const tags = await getTags();
-
+export default function TagsPage() {
   return (
     <div className="flex flex-col gap-10">
       <PageHeader
@@ -19,10 +20,9 @@ export default async function TagsPage() {
         <SectionHeader title="タグを追加" />
         <TagAddForm />
       </section>
-      <section className="flex flex-col gap-4">
-        <SectionHeader title={`一覧（${String(tags.length)}）`} />
-        <TagList tags={tags} />
-      </section>
+      <Suspense fallback={<ContentFallback />}>
+        <TagsContent />
+      </Suspense>
     </div>
   );
 }

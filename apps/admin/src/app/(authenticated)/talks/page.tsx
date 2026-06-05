@@ -1,14 +1,11 @@
-import { PageHeader } from '@/app/(authenticated)/_components';
-import { getTalks } from '@/features/talks/interface/queries';
-import { verifySession } from '@/shared/auth/verify-session';
+import { Suspense } from 'react';
+
+import { ContentFallback, PageHeader } from '@/app/(authenticated)/_components';
 
 import { AddTalkLink } from './_components/add-talk-link';
-import { TalkList } from './_components/talk-list';
+import { TalksContent } from './_components/talks-content/talks-content';
 
-export default async function TalksPage() {
-  await verifySession();
-  const talks = await getTalks();
-
+export default function TalksPage() {
   return (
     <div className="flex flex-col gap-10">
       <PageHeader
@@ -16,7 +13,9 @@ export default async function TalksPage() {
         description="登壇・スライドのイベント情報を管理します"
         title="トーク"
       />
-      <TalkList talks={talks} />
+      <Suspense fallback={<ContentFallback />}>
+        <TalksContent />
+      </Suspense>
     </div>
   );
 }

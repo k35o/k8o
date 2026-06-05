@@ -10,7 +10,12 @@ import {
   getArticles,
   getReadingListContentData,
 } from '@/features/reading-list/interface/queries';
-import { getTotalPages } from '@/shared/search-params';
+import { verifySession } from '@/shared/auth/verify-session';
+import {
+  firstParam,
+  getTotalPages,
+  parsePageParam,
+} from '@/shared/search-params';
 
 import { AddArticleLink } from '../add-article-link';
 import { AddSourceLink } from '../add-source-link';
@@ -21,12 +26,16 @@ import { SyncButton } from '../sync-button/sync-button';
 const PAGE_SIZE = 20;
 
 export const ReadingListContent = async ({
-  q,
-  page,
+  searchParams,
 }: {
-  q: string;
-  page: number;
+  searchParams: Promise<Record<string, string | string[] | undefined>>;
 }) => {
+  await verifySession();
+
+  const sp = await searchParams;
+  const q = firstParam(sp['q']) ?? '';
+  const page = parsePageParam(firstParam(sp['page']));
+
   const [{ sources, feedCount, articleCount }, { items, total }] =
     await Promise.all([
       getReadingListContentData(),
