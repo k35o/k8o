@@ -26,7 +26,7 @@ export const SignOutButton: FC = () => {
 
   return (
     <button
-      className="text-fg-mute hover:text-fg-base text-sm transition-colors"
+      className="text-fg-mute hover:bg-bg-mute hover:text-fg-base flex w-full items-center gap-3 rounded-lg px-3 py-2 text-left text-sm transition-colors"
       onClick={handleSignOut}
       type="button"
     >

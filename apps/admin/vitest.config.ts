@@ -28,7 +28,10 @@ export default defineConfig({
             TZ: 'UTC',
           },
           name: { label: 'features test', color: 'cyan' },
-          include: ['src/features/**/*.test.{ts,tsx}'],
+          include: [
+            'src/features/**/*.test.{ts,tsx}',
+            'src/shared/**/*.test.{ts,tsx}',
+          ],
         },
       },
       {
