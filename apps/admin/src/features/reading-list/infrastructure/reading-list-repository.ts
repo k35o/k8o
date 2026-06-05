@@ -10,28 +10,20 @@ import { fetchOgMetadata } from './og-metadata';
 // interface 層は @repo/database を直接参照しないため、ドメイン定義をここで中継する
 export { ARTICLE_SOURCE_TYPES, type ArticleSourceType };
 
+// ソース一覧と件数(統計カード用)を返す。記事一覧本体は検索/ページング対応の
+// findArticles を使うため、ここでは件数だけを数える。
 export const findReadingListContent = async () => {
-  const [sources, articles] = await Promise.all([
+  const [sources, articleCountRow] = await Promise.all([
     db.query.articleSources.findMany({
       orderBy: (articleSources) => [desc(articleSources.updatedAt)],
     }),
-    db.query.articles.findMany({
-      with: { articleSource: true },
-      orderBy: (articleTable) => [desc(articleTable.publishedAt)],
-    }),
+    db.select({ value: count() }).from(db._schema.articles),
   ]);
 
   return {
     sources,
-    articleItems: articles.map((article) => ({
-      id: article.id,
-      title: article.title,
-      url: article.url,
-      publishedAt: article.publishedAt,
-      sourceName: article.articleSource.title,
-    })),
     feedCount: sources.filter((source) => source.type === 'feed').length,
-    articleCount: articles.length,
+    articleCount: articleCountRow[0]?.value ?? 0,
   };
 };
 

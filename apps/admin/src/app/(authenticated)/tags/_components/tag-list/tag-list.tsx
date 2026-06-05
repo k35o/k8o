@@ -47,6 +47,12 @@ const TagRow: FC<{ tag: TagWithUsage }> = ({ tag }) => {
     });
   };
 
+  // キャンセル/閉じる時は編集中の値を元のタグ名へ戻す
+  const closeRename = (): void => {
+    setRenameOpen(false);
+    setName(tag.name);
+  };
+
   return (
     <div className="border-border-mute flex items-center gap-3 border-b px-5 py-4 text-sm last:border-b-0">
       <span className="min-w-0 flex-1 truncate font-medium">{tag.name}</span>
@@ -81,19 +87,9 @@ const TagRow: FC<{ tag: TagWithUsage }> = ({ tag }) => {
         削除
       </Button>
 
-      <Modal
-        isOpen={renameOpen}
-        onClose={() => {
-          setRenameOpen(false);
-        }}
-      >
+      <Modal isOpen={renameOpen} onClose={closeRename}>
         <Dialog.Root>
-          <Dialog.Header
-            onClose={() => {
-              setRenameOpen(false);
-            }}
-            title="タグ名の変更"
-          />
+          <Dialog.Header onClose={closeRename} title="タグ名の変更" />
           <Dialog.Content>
             <div className="flex flex-col gap-6">
               <TextField
@@ -105,13 +101,7 @@ const TagRow: FC<{ tag: TagWithUsage }> = ({ tag }) => {
                 value={name}
               />
               <div className="flex justify-end gap-3">
-                <Button
-                  color="gray"
-                  onClick={() => {
-                    setRenameOpen(false);
-                  }}
-                  variant="outlined"
-                >
+                <Button color="gray" onClick={closeRename} variant="outlined">
                   キャンセル
                 </Button>
                 <Button
