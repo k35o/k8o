@@ -1,27 +1,67 @@
 import { db } from '@repo/database';
-import { desc, eq, inArray } from 'drizzle-orm';
+import {
+  count,
+  countDistinct,
+  desc,
+  eq,
+  inArray,
+  like,
+  type SQL,
+} from 'drizzle-orm';
 
 export type CommentRecord = {
   id: number;
   message: string | null;
   createdAt: string;
-  sentAt: string | null;
   feedbackName: string | null;
   blogSlug: string | null;
 };
 
+export type FindCommentsParams = {
+  q?: string;
+  page?: number;
+  pageSize?: number;
+};
+
+export type FindCommentsResult = {
+  items: CommentRecord[];
+  total: number;
+};
+
+export type CommentStats = {
+  total: number;
+  blogLinked: number;
+  unlinked: number;
+};
+
+const buildCommentWhere = (q: string | undefined): SQL | undefined =>
+  q !== undefined && q !== ''
+    ? like(db._schema.comments.message, `%${q}%`)
+    : undefined;
+
 /**
- * 第三者から届いた問い合わせ・フィードバック一覧を取得する。
+ * 第三者から届いた問い合わせ・フィードバック一覧を、本文検索・ページング付きで取得する。
  * blog_comment.commentId に unique 制約が無く 1:N の可能性があるため、
  * 一覧本体と blog 紐付けを別クエリで取得して JS でマージする。
  */
-export const findComments = async (limit = 200): Promise<CommentRecord[]> => {
+export const findComments = async ({
+  q,
+  page = 1,
+  pageSize = 20,
+}: FindCommentsParams = {}): Promise<FindCommentsResult> => {
+  const where = buildCommentWhere(q);
+
+  const totalRow = await db
+    .select({ value: count() })
+    .from(db._schema.comments)
+    .where(where);
+  const total = totalRow[0]?.value ?? 0;
+
   const commentRows = await db
     .select({
       id: db._schema.comments.id,
       message: db._schema.comments.message,
       createdAt: db._schema.comments.createdAt,
-      sentAt: db._schema.comments.sentAt,
       feedbackName: db._schema.feedbacks.name,
     })
     .from(db._schema.comments)
@@ -29,11 +69,13 @@ export const findComments = async (limit = 200): Promise<CommentRecord[]> => {
       db._schema.feedbacks,
       eq(db._schema.comments.feedbackId, db._schema.feedbacks.id),
     )
+    .where(where)
     .orderBy(desc(db._schema.comments.createdAt))
-    .limit(limit);
+    .limit(pageSize)
+    .offset((page - 1) * pageSize);
 
   if (commentRows.length === 0) {
-    return [];
+    return { items: [], total };
   }
 
   const commentIds = commentRows.map((row) => row.id);
@@ -56,12 +98,46 @@ export const findComments = async (limit = 200): Promise<CommentRecord[]> => {
     }
   }
 
-  return commentRows.map((row) => ({
+  const items = commentRows.map((row) => ({
     id: row.id,
     message: row.message,
     createdAt: row.createdAt,
-    sentAt: row.sentAt,
     feedbackName: row.feedbackName,
     blogSlug: slugByCommentId.get(row.id) ?? null,
   }));
+
+  return { items, total };
+};
+
+/**
+ * 統計カード用の集計。検索条件に依存しない全体の件数を返す。
+ */
+export const findCommentStats = async (): Promise<CommentStats> => {
+  const [total, blogLinked] = await Promise.all([
+    db
+      .select({ value: count() })
+      .from(db._schema.comments)
+      .then((r) => r[0]?.value ?? 0),
+    db
+      .select({ value: countDistinct(db._schema.blogComment.commentId) })
+      .from(db._schema.blogComment)
+      .then((r) => r[0]?.value ?? 0),
+  ]);
+
+  return {
+    total,
+    blogLinked,
+    unlinked: total - blogLinked,
+  };
+};
+
+/**
+ * コメントを削除する。blog_comment は commentId にカスケード設定が無いため、
+ * 先に紐付け行を削除してから本体を削除する。
+ */
+export const deleteCommentById = async (id: number): Promise<void> => {
+  await db
+    .delete(db._schema.blogComment)
+    .where(eq(db._schema.blogComment.commentId, id));
+  await db.delete(db._schema.comments).where(eq(db._schema.comments.id, id));
 };

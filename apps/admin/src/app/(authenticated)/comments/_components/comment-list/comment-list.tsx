@@ -1,32 +1,30 @@
+import { Badge } from '@k8o/arte-odyssey';
 import { formatDate } from '@repo/helpers/date/format';
 import type { FC } from 'react';
 
+import { EmptyState } from '@/app/(authenticated)/_components';
 import type { CommentItem } from '@/features/comments/interface/queries';
+
+import { CommentActions } from '../comment-actions';
 
 const BLOG_BASE_URL = 'https://k8o.me/blog';
 
 export const CommentList: FC<{ items: CommentItem[] }> = ({ items }) => {
   if (items.length === 0) {
-    return (
-      <p className="text-fg-mute py-12 text-center text-sm">
-        まだお問い合わせはありません。
-      </p>
-    );
+    return <EmptyState message="条件に一致するお問い合わせはありません" />;
   }
 
   return (
     <ol className="flex flex-col gap-3">
       {items.map((item) => (
         <li
-          className="border-border-base bg-bg-base flex flex-col gap-3 rounded-xl border p-5"
+          className="border-border-mute bg-bg-base flex flex-col gap-3 rounded-2xl border p-5 shadow-sm"
           key={item.id}
         >
           <div className="flex flex-wrap items-center justify-between gap-2">
             <div className="flex flex-wrap items-center gap-2 text-xs">
               {item.feedbackName !== null && (
-                <span className="bg-bg-mute text-fg-base rounded-full px-2 py-0.5 font-medium">
-                  {item.feedbackName}
-                </span>
+                <Badge size="sm" text={item.feedbackName} tone="neutral" />
               )}
               {item.blogSlug !== null && (
                 <a
@@ -39,29 +37,25 @@ export const CommentList: FC<{ items: CommentItem[] }> = ({ items }) => {
                 </a>
               )}
               {item.blogSlug === null && (
-                <span className="text-fg-subtle text-xs">未紐づけ</span>
+                <span className="text-fg-mute text-xs">未紐づけ</span>
               )}
             </div>
-            <div className="text-fg-subtle flex items-center gap-3 text-xs">
-              <time dateTime={item.createdAt}>
-                {formatDate(new Date(item.createdAt), 'yyyy年M月d日 HH:mm')}
-              </time>
-              <span>
-                {item.sentAt === null ? (
-                  <span className="text-fg-warning">未通知</span>
-                ) : (
-                  '通知済み'
-                )}
-              </span>
-            </div>
+            <time className="text-fg-mute text-xs" dateTime={item.createdAt}>
+              {formatDate(new Date(item.createdAt), 'yyyy年M月d日 HH:mm')}
+            </time>
           </div>
+
           {item.message !== null && item.message !== '' ? (
             <p className="text-fg-base text-sm leading-relaxed whitespace-pre-wrap">
               {item.message}
             </p>
           ) : (
-            <p className="text-fg-subtle text-sm italic">本文なし</p>
+            <p className="text-fg-mute text-sm italic">本文なし</p>
           )}
+
+          <div className="border-border-mute flex justify-end border-t pt-3">
+            <CommentActions id={item.id} />
+          </div>
         </li>
       ))}
     </ol>

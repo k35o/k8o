@@ -180,50 +180,49 @@ pnpm run -F @repo/database generate:custom
 
 ### SQLの記述
 
+> **重要: id を手で振らない。** タグは `name`、ブログは `slug`（どちらも UNIQUE）で引く。
+> これにより admin で作成・編集したタグと **id が衝突せず**、再適用しても安全（冪等）になる。
+> 埋めるのは **slug・日付・タグ名** だけ。`{next_id}` のような採番作業は不要。
+
 生成されたSQLファイルに以下を記述：
 
 ```sql
--- 新しいタグが必要な場合
-INSERT INTO tags (id, name) VALUES ({next_id}, 'タグ名');--> statement-breakpoint
+-- タグ: id は書かない。既存（admin 作成分も含む）なら何もしない
+INSERT INTO tags (name) VALUES ('タグ名') ON CONFLICT (name) DO NOTHING;--> statement-breakpoint
 
--- ブログレコード
-INSERT INTO blogs (id, slug, published, created_at)
-VALUES ({next_id}, '{slug}', 1, '{date}T00:00:00.000Z');--> statement-breakpoint
+-- ブログ: slug が一意なので id は書かない
+INSERT INTO blogs (slug, published, created_at)
+VALUES ('{slug}', 1, '{date}T00:00:00.000Z') ON CONFLICT (slug) DO NOTHING;--> statement-breakpoint
 
--- ビューカウント初期化
-INSERT INTO blog_views (blog_id, views) VALUES ({blog_id}, 0);--> statement-breakpoint
+-- ビューカウント初期化（ブログは slug で引く）
+INSERT INTO blog_views (blog_id, views)
+VALUES ((SELECT id FROM blogs WHERE slug = '{slug}'), 0)
+ON CONFLICT (blog_id) DO NOTHING;--> statement-breakpoint
 
--- タグ紐付け
-INSERT INTO blog_tag (blog_id, tag_id) VALUES ({blog_id}, {tag_id});
+-- タグ紐付け（ブログは slug、タグは name で引く。タグの数だけ繰り返す）
+INSERT INTO blog_tag (blog_id, tag_id) VALUES (
+  (SELECT id FROM blogs WHERE slug = '{slug}'),
+  (SELECT id FROM tags WHERE name = 'タグ名')
+) ON CONFLICT DO NOTHING;
 ```
 
-### タグの確認と追加
+> **注意**: 紐付けで参照するタグ名は、既存の **正確な name** と一致させること（`(SELECT id FROM tags WHERE name = ...)` が該当なしだと migration が落ちる）。
+> admin でタグをリネームした場合は、以降の migration では新しい name を使う。
+> スライド/トークを migration で投入する場合も、同様に id を書かず slug / name で引く。
 
-#### 既存タグの検索
+### タグ名の確認
+
+id は採番しないので、必要なのは **既存タグの正確な name** を知ることだけ（表記ゆれ防止）。
 
 ```bash
-# 全タグを検索
-grep "INSERT INTO tags" packages/database/migrations/*.sql
-
-# 特定のタグ名で検索（例：CSS関連）
-grep "INSERT INTO tags" packages/database/migrations/*.sql | grep -i "css"
+# 既存タグ名の一覧（旧形式 (id, name) も新形式 (name) も拾う）
+grep -rhoE "INSERT INTO tags [^;]*'[^']+'" packages/database/migrations/*.sql \
+  | grep -oE "'[^']+'" | sort -u
 ```
 
-#### 次のタグIDを取得
-
-```bash
-grep "INSERT INTO tags" packages/database/migrations/*.sql | \
-  grep -oE 'VALUES \([0-9]+' | grep -oE '[0-9]+' | sort -n | tail -1
-```
-
-結果に+1した値が次のタグID。
-
-#### 次のブログIDを取得
-
-```bash
-grep "INSERT INTO blogs" packages/database/migrations/*.sql | \
-  grep -oE 'VALUES \([0-9]+' | grep -oE '[0-9]+' | sort -n | tail -1
-```
+- 既存タグはそのままの name で紐付ける（新規 INSERT は不要、`ON CONFLICT` で安全だが書かなくてよい）。
+- 新規タグは `INSERT INTO tags (name) VALUES ('新タグ') ON CONFLICT (name) DO NOTHING;` を足すだけ。
+- admin のタグ画面（`/tags`）でも既存タグ名・使用数を確認できる。
 
 ## チェックリスト
 

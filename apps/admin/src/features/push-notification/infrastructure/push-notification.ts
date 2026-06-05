@@ -138,3 +138,44 @@ export async function sendPushNotification({
     .set({ succeeded, failed })
     .where(eq(db._schema.pushLogs.id, logId));
 }
+
+export type ManualPushResult = {
+  succeeded: number;
+  failed: number;
+};
+
+type ManualPushParams = {
+  title: string;
+  body: string;
+  url: string;
+};
+
+/**
+ * 管理画面からの手動送信。cron の業務イベントとは異なり push_logs には記録しない
+ * （kind の CHECK 制約に手動用の値が無く、スキーマ変更を避けるため）。
+ * 全購読者へ即時配信し、無効になった購読は削除する。
+ */
+export async function sendManualPush({
+  title,
+  body,
+  url,
+}: ManualPushParams): Promise<ManualPushResult> {
+  const vapid = readVapidConfig();
+  if (vapid === null) {
+    throw new Error('VAPID 環境変数が設定されていません');
+  }
+
+  const payload = JSON.stringify({ title, body, url });
+  const { succeeded, failed, goneEndpoints } = await deliverToSubscriptions(
+    payload,
+    vapid,
+  );
+
+  if (goneEndpoints.length > 0) {
+    await db
+      .delete(db._schema.pushSubscriptions)
+      .where(inArray(db._schema.pushSubscriptions.endpoint, goneEndpoints));
+  }
+
+  return { succeeded, failed };
+}

@@ -1,3 +1,4 @@
+import { ViewIcon } from '@k8o/arte-odyssey';
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 import { expect, within } from 'storybook/test';
 
@@ -23,6 +24,14 @@ export const WithDescription: Story = {
     label: '総閲覧数',
     value: '12,345',
     description: '先月比 +10%',
+  },
+};
+
+export const WithIcon: Story = {
+  args: {
+    label: '総閲覧数',
+    value: '12,345',
+    icon: <ViewIcon size="md" />,
   },
 };
 

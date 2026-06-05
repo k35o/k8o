@@ -13,6 +13,12 @@ import '../src/app/_styles/globals.css';
 sb.mock(import('@repo/database'));
 sb.mock(import('../src/features/reading-list/interface/article-actions.ts'));
 sb.mock(import('../src/features/reading-list/interface/source-actions.ts'));
+sb.mock(import('../src/features/comments/interface/actions.ts'));
+sb.mock(import('../src/features/blog/interface/actions.ts'));
+sb.mock(import('../src/features/push-notification/interface/actions.ts'));
+sb.mock(import('../src/features/tags/interface/actions.ts'));
+sb.mock(import('../src/features/slides/interface/actions.ts'));
+sb.mock(import('../src/features/talks/interface/actions.ts'));
 
 const ApplyThemeByStorybook: FC<{ theme: string }> = memo(
   function ApplyThemeByStorybook({ theme }) {

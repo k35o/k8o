@@ -1,4 +1,4 @@
-import { Breadcrumb, Card } from '@k8o/arte-odyssey';
+import { Breadcrumb, Card, Heading } from '@k8o/arte-odyssey';
 
 import { createSource } from '@/features/reading-list/interface/source-actions';
 import { verifySession } from '@/shared/auth/verify-session';
@@ -16,9 +16,9 @@ export default async function NewSourcePage() {
         <Breadcrumb.Separator />
         <Breadcrumb.Item>ソースを追加</Breadcrumb.Item>
       </Breadcrumb.List>
-      <h2 className="text-2xl font-bold">ソースを追加</h2>
-      <Card>
-        <div className="p-6">
+      <Heading type="h1">ソースを追加</Heading>
+      <Card appearance="shadow">
+        <div className="p-8">
           <SourceForm action={createSource} />
         </div>
       </Card>

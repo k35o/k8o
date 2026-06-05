@@ -1,4 +1,6 @@
-import { StatCard } from '@/app/(authenticated)/_components/stat-card/stat-card';
+import { ShieldCheckIcon, SparklesIcon, TableIcon } from '@k8o/arte-odyssey';
+
+import { StatCard } from '@/app/(authenticated)/_components/stat-card';
 import { getBaselineSnapshotStats } from '@/features/baseline/interface/queries';
 
 export const BaselineSnapshotStats = async () => {
@@ -6,9 +8,21 @@ export const BaselineSnapshotStats = async () => {
 
   return (
     <section className="grid grid-cols-1 gap-6 sm:grid-cols-3">
-      <StatCard label="Newly Available" value={String(newlyCount)} />
-      <StatCard label="Widely Available" value={String(widelyCount)} />
-      <StatCard label="合計" value={String(total)} />
+      <StatCard
+        icon={<SparklesIcon size="md" />}
+        label="Newly Available"
+        value={String(newlyCount)}
+      />
+      <StatCard
+        icon={<ShieldCheckIcon size="md" />}
+        label="Widely Available"
+        value={String(widelyCount)}
+      />
+      <StatCard
+        icon={<TableIcon size="md" />}
+        label="合計"
+        value={String(total)}
+      />
     </section>
   );
 };
