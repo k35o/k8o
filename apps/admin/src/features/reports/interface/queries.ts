@@ -1,11 +1,35 @@
 import { cacheLife } from 'next/cache';
 
-import { fetchReportsOverview } from '../infrastructure/report-repository';
+import {
+  type FindReportsParams,
+  type FindReportsResult,
+  findReports,
+  findReportTypeCounts,
+  type ReportTypeCount,
+} from '../infrastructure/report-repository';
 
-export const getReportsOverview = async () => {
+export const getReportTypeCounts = async (): Promise<{
+  typeCounts: ReportTypeCount[];
+  totalCount: number;
+}> => {
   'use cache';
   cacheLife('minutes');
 
-  const overview = await fetchReportsOverview();
-  return overview;
+  const result = await findReportTypeCounts();
+  return result;
 };
+
+export const getReports = async (
+  params: FindReportsParams,
+): Promise<FindReportsResult> => {
+  'use cache';
+  cacheLife('minutes');
+
+  const result = await findReports(params);
+  return result;
+};
+
+export type {
+  ReportRecord,
+  ReportTypeCount,
+} from '../infrastructure/report-repository';

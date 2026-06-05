@@ -1,41 +1,74 @@
-import { Card, Separator } from '@k8o/arte-odyssey';
+import { TableIcon } from '@k8o/arte-odyssey';
 
-import { getReportsOverview } from '@/features/reports/interface/queries';
+import {
+  FilterSelect,
+  ListPagination,
+  SearchField,
+  SectionHeader,
+  StatCard,
+} from '@/app/(authenticated)/_components';
+import {
+  getReports,
+  getReportTypeCounts,
+} from '@/features/reports/interface/queries';
+import { getTotalPages } from '@/shared/search-params';
 
 import { ReportTable } from '../report-table/report-table';
 
-export const ReportsContent = async () => {
-  const { reports, typeCounts, totalCount } = await getReportsOverview();
+const PAGE_SIZE = 20;
+
+export const ReportsContent = async ({
+  type,
+  q,
+  page,
+}: {
+  type: string;
+  q: string;
+  page: number;
+}) => {
+  const [{ typeCounts, totalCount }, { items, total }] = await Promise.all([
+    getReportTypeCounts(),
+    getReports({ type, q, page, pageSize: PAGE_SIZE }),
+  ]);
+  const totalPages = getTotalPages(total, PAGE_SIZE);
+
+  const typeOptions = [
+    { value: '', label: 'すべての種別' },
+    ...typeCounts.map((t) => ({
+      value: t.type,
+      label: `${t.type} (${String(t.count)})`,
+    })),
+  ];
 
   return (
     <div className="flex flex-col gap-10">
       <section className="grid grid-cols-1 gap-6 sm:grid-cols-3">
-        <Card appearance="shadow">
-          <div className="flex flex-col gap-2 p-6">
-            <p className="text-fg-mute text-sm">総レポート数</p>
-            <p className="text-3xl font-bold">{totalCount}</p>
-          </div>
-        </Card>
+        <StatCard
+          icon={<TableIcon size="md" />}
+          label="総レポート数"
+          value={String(totalCount)}
+        />
         {typeCounts.map((t) => (
-          <Card appearance="shadow" key={t.type}>
-            <div className="flex flex-col gap-2 p-6">
-              <p className="text-fg-mute text-sm">{t.type}</p>
-              <p className="text-3xl font-bold">{t.count}</p>
-            </div>
-          </Card>
+          <StatCard key={t.type} label={t.type} value={String(t.count)} />
         ))}
       </section>
 
-      <Separator />
-
-      <section className="flex flex-col gap-6">
-        <div>
-          <h3 className="text-lg font-bold">最新レポート</h3>
-          <p className="text-fg-mute mt-1 text-sm">直近100件のレポートを表示</p>
+      <section className="flex flex-col gap-4">
+        <SectionHeader title="レポート一覧" />
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
+          <SearchField placeholder="URL で検索" />
+          <div className="sm:w-56">
+            <FilterSelect
+              label="種別で絞り込み"
+              options={typeOptions}
+              paramKey="type"
+            />
+          </div>
         </div>
-        <Card appearance="shadow">
-          <ReportTable reports={reports} />
-        </Card>
+        <ReportTable reports={items} />
+        <div className="flex justify-center">
+          <ListPagination currentPage={page} totalPages={totalPages} />
+        </div>
       </section>
     </div>
   );
