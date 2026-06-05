@@ -1,16 +1,33 @@
 import { cacheLife } from 'next/cache';
 
 import {
-  type CommentItem,
+  type CommentStats,
+  type FindCommentsParams,
+  type FindCommentsResult,
   getComments as _getComments,
+  getCommentStats as _getCommentStats,
 } from '@/features/comments/application/get-comments';
 
-export const getComments = async (): Promise<CommentItem[]> => {
+export const getComments = async (
+  params: FindCommentsParams,
+): Promise<FindCommentsResult> => {
   'use cache';
   cacheLife('minutes');
 
-  const items = await _getComments();
-  return items;
+  const result = await _getComments(params);
+  return result;
 };
 
-export type { CommentItem } from '@/features/comments/application/get-comments';
+export const getCommentStats = async (): Promise<CommentStats> => {
+  'use cache';
+  cacheLife('minutes');
+
+  const stats = await _getCommentStats();
+  return stats;
+};
+
+export type {
+  CommentItem,
+  CommentStats,
+  FindCommentsParams,
+} from '@/features/comments/application/get-comments';
