@@ -49,6 +49,12 @@ apps/admin のStorybookは **`admin-storybook-mcp`** を使うこと。
 
 ## 認証
 
-Better Auth + GitHub OAuth。ローカル開発URL は `http://admin.localhost:1355/`。
+Better Auth + GitHub OAuth。ローカル開発URL は `https://admin.k8o.localhost/`。
+
+認証の有効/無効は `src/shared/auth/auth-enabled.ts` の `isAuthEnabled` に集約し、`proxy.ts`（middleware）と `verify-session.ts` の両方が参照する。
+
+- Vercel preview は認証OFF
+- ローカル開発で `LOCAL_AUTH_BYPASS=true`（`.env.local`）を設定するとログインを省略できる。`NODE_ENV=development` のときだけ評価するため、本番では無視され bypass は起こらない
+- 実際にローカルでGitHubログインを検証したいときは `LOCAL_AUTH_BYPASS` を外す（その場合は GitHub OAuth アプリのコールバックを `https://admin.k8o.localhost/api/auth/callback/github` に設定）
 
 設定や運用上の注意は Better Auth のスキル（`better-auth-best-practices` / `better-auth-security-best-practices`）を参照すること。

@@ -4,6 +4,9 @@ import type { NextConfig } from 'next';
 const nextConfig: NextConfig = {
   reactStrictMode: true,
   reactCompiler: true,
+  // portless の worktree サブドメイン（<branch>.main.k8o.localhost）からの
+  // dev リクエストを許可する。dev のみ有効で本番では無視される。
+  allowedDevOrigins: ['main.k8o.localhost', '*.main.k8o.localhost'],
   pageExtensions: ['tsx', 'mdx', 'ts'],
   rewrites: () =>
     Promise.resolve([

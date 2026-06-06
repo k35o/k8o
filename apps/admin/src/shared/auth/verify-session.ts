@@ -3,7 +3,7 @@ import { auth } from '@repo/database/auth';
 import { headers } from 'next/headers';
 import { redirect } from 'next/navigation';
 
-const isAuthEnabled = process.env['VERCEL_ENV'] !== 'preview';
+import { isAuthEnabled } from './auth-enabled';
 
 export const verifySession = async (): Promise<void> => {
   if (!isAuthEnabled) {

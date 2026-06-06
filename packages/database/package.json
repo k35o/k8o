@@ -22,7 +22,9 @@
     }
   },
   "scripts": {
-    "dev": "portless database sh -c 'turso dev --db-file local.db --port ${PORT:-8787}'",
+    "dev": "node scripts/local-db.ts serve",
+    "db:serve": "node scripts/local-db.ts serve",
+    "db:status": "node scripts/local-db.ts status",
     "type-check": "tsgo --noEmit",
     "generate": "drizzle-kit generate",
     "generate:custom": "drizzle-kit generate --custom",
