@@ -28,7 +28,7 @@
     "@repo/helpers": "workspace:*",
     "@tailwindcss/postcss": "catalog:",
     "@vercel/analytics": "2.0.1",
-    "ai": "^6.0.191",
+    "ai": "6.0.191",
     "budoux": "0.8.4",
     "diff": "9.0.0",
     "dompurify": "3.4.5",
