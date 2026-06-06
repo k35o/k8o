@@ -88,12 +88,14 @@ const serve = async (): Promise<void> => {
     process.exit(1);
   }
 
+  // alias は --force で冪等。port 使用中（既存 DB を再利用）でも proxy 再起動
+  // などで未登録になり得るため、起動可否に関わらず先に登録しておく。
+  registerAlias();
+
   if (await isPortInUse(PORT)) {
     log(`ポート ${PORT} は使用中。既存の DB を再利用します。`);
     return;
   }
-
-  registerAlias();
 
   log(`turso 起動: ${DB_FILE} (port ${PORT}) — 停止は Ctrl-C`);
   const child = spawn(
