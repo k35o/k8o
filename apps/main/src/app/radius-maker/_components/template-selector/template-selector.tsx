@@ -1,7 +1,7 @@
 'use client';
 
 import { Button, RadioCard } from '@k8o/arte-odyssey';
-import { type ChangeEventHandler, type FC, useCallback, useId } from 'react';
+import { type FC, useCallback, useId } from 'react';
 
 import type { RadiusPosition } from '../../_types/radius-position';
 import { positionToBorderRadius } from '../../_utils/position-to-border-radius';
@@ -161,9 +161,9 @@ export const TemplateSelector: FC<Props> = ({ onSelect, currentPosition }) => {
       ),
     )?.name ?? '';
 
-  const handleChange: ChangeEventHandler<HTMLInputElement> = useCallback(
-    (e) => {
-      const template = TEMPLATES.find((t) => t.name === e.target.value);
+  const handleChange = useCallback(
+    (value: string) => {
+      const template = TEMPLATES.find((t) => t.name === value);
       if (template) {
         onSelect(template.position);
       }
@@ -188,7 +188,7 @@ export const TemplateSelector: FC<Props> = ({ onSelect, currentPosition }) => {
           onSelect(generateRandomPosition());
         }}
         size="sm"
-        variant="outlined"
+        variant="outline"
       >
         ランダム
       </Button>

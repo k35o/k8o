@@ -93,7 +93,7 @@ const DeleteButton: FC<{ id: number; title: string }> = ({ id, title }) => {
                   onClick={() => {
                     setOpen(false);
                   }}
-                  variant="outlined"
+                  variant="outline"
                 >
                   キャンセル
                 </Button>
@@ -101,7 +101,7 @@ const DeleteButton: FC<{ id: number; title: string }> = ({ id, title }) => {
                   color="primary"
                   disabled={isPending}
                   onClick={handleDelete}
-                  variant="contained"
+                  variant="solid"
                 >
                   {isPending ? '削除中...' : '削除する'}
                 </Button>

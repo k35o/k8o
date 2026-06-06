@@ -18,7 +18,7 @@ export const WritingModeSwitcher: FC = () => {
   return (
     <IconButton
       aria-pressed={isVertical}
-      bg="base"
+      color="base"
       label={label}
       onAction={toggle}
       size="md"

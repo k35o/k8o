@@ -62,7 +62,7 @@ export const AdminSidebar: FC = () => {
       <div className="bg-bg-base border-border-mute flex items-center justify-between border-b px-4 py-3 md:hidden">
         <Brand />
         <IconButton
-          bg="transparent"
+          color="transparent"
           label="メニューを開く"
           onClick={() => {
             setIsOpen(true);

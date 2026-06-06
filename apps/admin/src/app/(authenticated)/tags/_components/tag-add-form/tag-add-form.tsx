@@ -11,7 +11,7 @@ export const TagAddForm: FC = () => {
   return (
     <form action={formAction} className="flex flex-col gap-3">
       {state.error !== undefined && (
-        <Alert message={state.error} status="error" />
+        <Alert message={state.error} tone="error" />
       )}
       <div className="flex items-center gap-3">
         <TextField
@@ -25,7 +25,7 @@ export const TagAddForm: FC = () => {
             color="primary"
             disabled={isPending}
             type="submit"
-            variant="contained"
+            variant="solid"
           >
             {isPending ? '追加中...' : '追加'}
           </Button>

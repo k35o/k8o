@@ -5,7 +5,7 @@ import type { FC } from 'react';
 
 export const RssLink: FC = () => (
   <IconButton
-    bg="base"
+    color="base"
     label="RSSフィード"
     renderItem={({
       className,

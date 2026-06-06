@@ -13,7 +13,7 @@ export const AddArticleLink: FC = () => (
       </Link>
     )}
     size="sm"
-    variant="outlined"
+    variant="outline"
   >
     記事を追加
   </Button>

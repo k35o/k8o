@@ -47,7 +47,7 @@ export const CheckContrast: FC = () => {
       {contrast < WCAG_THRESHOLDS.LOW_VISIBILITY_WARNING && (
         <Alert
           message="コントラスト比が非常に低いため、テキストが見えにくい場合があります"
-          status="warning"
+          tone="warning"
         />
       )}
       <section

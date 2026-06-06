@@ -7,7 +7,7 @@ import {
   Radio,
   TextField,
 } from '@k8o/arte-odyssey';
-import { type ChangeEvent, useActionState, useState } from 'react';
+import { useActionState, useState } from 'react';
 
 import type { ActionState } from '@/shared/actions/action-state';
 
@@ -38,7 +38,7 @@ export const SourceForm = ({ action, defaultValues }: SourceFormProps) => {
   return (
     <form action={formAction} className="flex flex-col gap-6">
       {state.error !== undefined && (
-        <Alert message={state.error} status="error" />
+        <Alert message={state.error} tone="error" />
       )}
       <FormControl
         label="タイトル"
@@ -84,9 +84,9 @@ export const SourceForm = ({ action, defaultValues }: SourceFormProps) => {
             aria-labelledby={ariaLabelledby}
             disabled={disabled}
             name="type"
-            onChange={(e: ChangeEvent<HTMLInputElement>) => {
-              if (isSourceType(e.target.value)) {
-                setType(e.target.value);
+            onChange={(value) => {
+              if (isSourceType(value)) {
+                setType(value);
               }
             }}
             options={TYPE_OPTIONS}
@@ -99,7 +99,7 @@ export const SourceForm = ({ action, defaultValues }: SourceFormProps) => {
           color="primary"
           disabled={isPending}
           type="submit"
-          variant="contained"
+          variant="solid"
         >
           {isPending ? '保存中...' : '保存'}
         </Button>

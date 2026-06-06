@@ -43,7 +43,7 @@ export const ArticleForm: FC<ArticleFormProps> = ({
   return (
     <form action={formAction} className="flex flex-col gap-6">
       {state.error !== undefined && (
-        <Alert message={state.error} status="error" />
+        <Alert message={state.error} tone="error" />
       )}
       {sources !== undefined && (
         <FormControl
@@ -111,7 +111,7 @@ export const ArticleForm: FC<ArticleFormProps> = ({
           color="primary"
           disabled={isPending}
           type="submit"
-          variant="contained"
+          variant="solid"
         >
           {isPending ? '保存中...' : '保存'}
         </Button>

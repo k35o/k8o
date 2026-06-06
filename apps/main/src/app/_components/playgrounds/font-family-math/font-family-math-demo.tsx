@@ -16,8 +16,8 @@ export function FontFamilyMathDemo() {
     <div className="space-y-6">
       <Checkbox
         label="mathフォントを適用する"
-        onChange={(e) => {
-          setUseMathFont(e.target.checked);
+        onChange={(checked) => {
+          setUseMathFont(checked);
         }}
         value={useMathFont}
       />

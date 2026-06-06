@@ -31,7 +31,7 @@ export const SyncBaselineButton: FC = () => {
       disabled={isPending}
       onClick={handleSync}
       size="sm"
-      variant="outlined"
+      variant="outline"
     >
       {isPending ? '同期中...' : 'Baselineを同期'}
     </Button>

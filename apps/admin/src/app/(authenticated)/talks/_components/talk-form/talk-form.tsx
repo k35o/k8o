@@ -41,7 +41,7 @@ export const TalkForm: FC<TalkFormProps> = ({
   return (
     <form action={formAction} className="flex flex-col gap-6">
       {state.error !== undefined && (
-        <Alert message={state.error} status="error" />
+        <Alert message={state.error} tone="error" />
       )}
       <FormControl
         label="タイトル"
@@ -133,7 +133,7 @@ export const TalkForm: FC<TalkFormProps> = ({
           color="primary"
           disabled={isPending}
           type="submit"
-          variant="contained"
+          variant="solid"
         >
           {isPending ? '保存中...' : '保存'}
         </Button>

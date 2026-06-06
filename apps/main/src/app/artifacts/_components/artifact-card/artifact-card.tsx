@@ -50,7 +50,7 @@ export const ArtifactCard: FC<Artifact> = ({
           )}
           size="sm"
           startIcon={<GitHubIcon size="sm" />}
-          variant="outlined"
+          variant="outline"
         >
           GitHubで見る
         </Button>
@@ -68,7 +68,7 @@ export const ArtifactCard: FC<Artifact> = ({
             )}
             size="sm"
             startIcon={<ExternalLinkIcon size="sm" />}
-            variant="outlined"
+            variant="outline"
           >
             サイトで見る
           </Button>
@@ -87,7 +87,7 @@ export const ArtifactCard: FC<Artifact> = ({
             )}
             size="sm"
             startIcon={<ExternalLinkIcon size="sm" />}
-            variant="outlined"
+            variant="outline"
           >
             npmで見る
           </Button>

@@ -7,8 +7,8 @@ settings:
 catalogs:
   default:
     '@k8o/arte-odyssey':
-      specifier: 9.1.0
-      version: 9.1.0
+      specifier: 10.0.0
+      version: 10.0.0
     '@storybook/addon-a11y':
       specifier: 10.4.1
       version: 10.4.1
@@ -133,7 +133,7 @@ importers:
     dependencies:
       '@k8o/arte-odyssey':
         specifier: 'catalog:'
-        version: 9.1.0(@types/react-dom@19.2.3(@types/react@19.2.15))(@types/react@19.2.15)(react-dom@19.2.6(react@19.2.6))(react@19.2.6)(tailwindcss@4.3.0)(typescript@6.0.3)
+        version: 10.0.0(@types/react-dom@19.2.3(@types/react@19.2.15))(@types/react@19.2.15)(react-dom@19.2.6(react@19.2.6))(react@19.2.6)(tailwindcss@4.3.0)(typescript@6.0.3)(zod@4.4.3)
       '@repo/database':
         specifier: workspace:*
         version: link:../../packages/database
@@ -227,7 +227,7 @@ importers:
     dependencies:
       '@k8o/arte-odyssey':
         specifier: 'catalog:'
-        version: 9.1.0(@types/react-dom@19.2.3(@types/react@19.2.15))(@types/react@19.2.15)(react-dom@19.2.6(react@19.2.6))(react@19.2.6)(tailwindcss@4.3.0)(typescript@6.0.3)
+        version: 10.0.0(@types/react-dom@19.2.3(@types/react@19.2.15))(@types/react@19.2.15)(react-dom@19.2.6(react@19.2.6))(react@19.2.6)(tailwindcss@4.3.0)(typescript@6.0.3)(zod@4.4.3)
       '@mdx-js/loader':
         specifier: 3.1.1
         version: 3.1.1
@@ -1668,15 +1668,28 @@ packages:
   '@jridgewell/trace-mapping@0.3.31':
     resolution: {integrity: sha512-zzNR+SdQSDJzc8joaeP8QQoCQr8NuYx2dIIytl1QeBEZHJ9uW6hebsrYgbz8hJwUQao3TWCMtmfV8Nu1twOLAw==}
 
-  '@k8o/arte-odyssey@9.1.0':
-    resolution: {integrity: sha512-4APf/r+FMljyb3fQgYob+lAtBrxyMTaC/Z3E1GrczpjSzfG8U3ZDoqQ62WHl/DYRAZKXz+QCF1QcJbcbo8GlhA==}
+  '@k8o/arte-odyssey@10.0.0':
+    resolution: {integrity: sha512-8jb4ab3IBcCcGOrWGHM1+XbxTbXa8MWBJ4Ks+c331cG7XmosyD61hK9r0A3GujJgSrKQJWlxgB9mTcqavyObcA==}
     peerDependencies:
+      '@json-render/core': '>=0.19.0'
+      '@json-render/react': '>=0.19.0'
+      '@openuidev/react-lang': '>=0.2.6'
       '@types/react': '>=19.0.0'
       '@types/react-dom': '>=19.0.0'
       react: '>=19.0.0'
       react-dom: '>=19.0.0'
       tailwindcss: '>=4.0.0'
-      typescript: '>=5.9.0'
+      typescript: '>=6.0.0'
+      zod: '>=4.4.0'
+    peerDependenciesMeta:
+      '@json-render/core':
+        optional: true
+      '@json-render/react':
+        optional: true
+      '@openuidev/react-lang':
+        optional: true
+      zod:
+        optional: true
 
   '@k8o/oxc-config@0.1.2':
     resolution: {integrity: sha512-AsrHdwWPLI9UUCF4j+8UANLLDWHHRtLaIrGkC+KbW4cAIzb+ag30nAVzWKViVB7+tgKp7Du96iWfmApTSDC5fQ==}
@@ -4999,8 +5012,8 @@ packages:
   lru-cache@5.1.1:
     resolution: {integrity: sha512-KpNARQA3Iwv+jTA0utUVVbrh+Jlrr1Fv0e56GGzAFOXN7dk/FviaDW8LHmK52DlcH4WP2n6gI8vN1aesBFgo9w==}
 
-  lucide-react@1.14.0:
-    resolution: {integrity: sha512-+1mdWcfSJVUsaTIjN9zoezmUhfXo5l0vP7ekBMPo3jcS/aIkxHnXqAPsByszMZx/Y8oQBRJxJx5xg+RH3urzxA==}
+  lucide-react@1.17.0:
+    resolution: {integrity: sha512-9FA9evdox/JQL5PT57fdA1x/yg8T7knJ98+zjTL3UfKza6pflQUUh3XtaQIHKvnsJw1lmsEyHVlt5jchYxOQ5w==}
     peerDependencies:
       react: ^16.5.1 || ^17.0.0 || ^18.0.0 || ^19.0.0
 
@@ -5185,8 +5198,8 @@ packages:
   motion-utils@12.39.0:
     resolution: {integrity: sha512-8nadJAJjTtqRkmRF36FoJTrywK9nnFmnPwnSMyxaOCU7GDjN9RTMJIxx9De8ErM+vpPhMccr/6fo5WciyQLnMQ==}
 
-  motion@12.38.0:
-    resolution: {integrity: sha512-uYfXzeHlgThchzwz5Te47dlv5JOUC7OB4rjJ/7XTUgtBZD8CchMN8qEJ4ZVsUmTyYA44zjV0fBwsiktRuFnn+w==}
+  motion@12.40.0:
+    resolution: {integrity: sha512-yjrHUrBFW6kQvjJwRsoiPSAhC5tRwRqNGJWmiJ4CrGnbKp0V88AdzkhBmDoqIsIPfarOe0Uddd37Xq43/gIocA==}
     peerDependencies:
       '@emotion/is-prop-valid': '*'
       react: ^18.0.0 || ^19.0.0
@@ -5905,9 +5918,6 @@ packages:
   tagged-tag@1.0.0:
     resolution: {integrity: sha512-yEFYrVhod+hdNyx7g5Bnkkb0G6si8HJurOoOEgC8B/O0uXLHlaey/65KRv6cuWBNhBgHKAROVpc7QyYqE5gFng==}
     engines: {node: '>=20'}
-
-  tailwind-merge@3.5.0:
-    resolution: {integrity: sha512-I8K9wewnVDkL1NTGoqWmVEIlUcB9gFriAEkXkfCjX5ib8ezGxtR3xD7iZIxrfArjEsH7F1CHD4RFUtxefdqV/A==}
 
   tailwind-merge@3.6.0:
     resolution: {integrity: sha512-uxL7qAVQriqRQPAyK3pj66VqskWqoZ37PW94jwOTwNfq/z9oyu1V+eqrZqtR2+fCiXdYOZe/Modt8GtvqNzu+w==}
@@ -7210,20 +7220,22 @@ snapshots:
       '@jridgewell/resolve-uri': 3.1.2
       '@jridgewell/sourcemap-codec': 1.5.5
 
-  '@k8o/arte-odyssey@9.1.0(@types/react-dom@19.2.3(@types/react@19.2.15))(@types/react@19.2.15)(react-dom@19.2.6(react@19.2.6))(react@19.2.6)(tailwindcss@4.3.0)(typescript@6.0.3)':
+  '@k8o/arte-odyssey@10.0.0(@types/react-dom@19.2.3(@types/react@19.2.15))(@types/react@19.2.15)(react-dom@19.2.6(react@19.2.6))(react@19.2.6)(tailwindcss@4.3.0)(typescript@6.0.3)(zod@4.4.3)':
     dependencies:
       '@floating-ui/react': 0.27.19(react-dom@19.2.6(react@19.2.6))(react@19.2.6)
       '@types/react': 19.2.15
       '@types/react-dom': 19.2.3(@types/react@19.2.15)
       baseline-status: 1.1.1
       clsx: 2.1.1
-      lucide-react: 1.14.0(react@19.2.6)
-      motion: 12.38.0(react-dom@19.2.6(react@19.2.6))(react@19.2.6)
+      lucide-react: 1.17.0(react@19.2.6)
+      motion: 12.40.0(react-dom@19.2.6(react@19.2.6))(react@19.2.6)
       react: 19.2.6
       react-dom: 19.2.6(react@19.2.6)
-      tailwind-merge: 3.5.0
+      tailwind-merge: 3.6.0
       tailwindcss: 4.3.0
       typescript: 6.0.3
+    optionalDependencies:
+      zod: 4.4.3
     transitivePeerDependencies:
       - '@emotion/is-prop-valid'
 
@@ -10160,7 +10172,7 @@ snapshots:
     dependencies:
       yallist: 3.1.1
 
-  lucide-react@1.14.0(react@19.2.6):
+  lucide-react@1.17.0(react@19.2.6):
     dependencies:
       react: 19.2.6
 
@@ -10555,7 +10567,7 @@ snapshots:
 
   motion-utils@12.39.0: {}
 
-  motion@12.38.0(react-dom@19.2.6(react@19.2.6))(react@19.2.6):
+  motion@12.40.0(react-dom@19.2.6(react@19.2.6))(react@19.2.6):
     dependencies:
       framer-motion: 12.40.0(react-dom@19.2.6(react@19.2.6))(react@19.2.6)
       tslib: 2.8.1
@@ -11511,8 +11523,6 @@ snapshots:
   tabbable@6.4.0: {}
 
   tagged-tag@1.0.0: {}
-
-  tailwind-merge@3.5.0: {}
 
   tailwind-merge@3.6.0: {}
 

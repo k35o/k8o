@@ -177,10 +177,10 @@ const ColumnItem: FC<{
                     <Radio
                       aria-labelledby={ariaLabelledby}
                       disabled={disabled}
-                      onChange={(e) => {
+                      onChange={(value) => {
                         handleChangeColumn(id)({
                           ...column,
-                          nullable: e.target.value === '0',
+                          nullable: value === '0',
                         });
                       }}
                       options={[

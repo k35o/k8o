@@ -151,7 +151,7 @@ export const ReadingListContent: FC<Props> = ({ articles, sources, cards }) => {
               }}
               size="sm"
               startIcon={<ListIcon />}
-              variant="outlined"
+              variant="outline"
             >
               絞り込み
             </Button>

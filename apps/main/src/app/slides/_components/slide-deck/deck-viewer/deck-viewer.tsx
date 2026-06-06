@@ -63,7 +63,7 @@ export const DeckViewer: FC<{
         <header className="flex items-center justify-between gap-4 px-4 py-2">
           <div className="flex items-center gap-2">
             <IconButton
-              bg="transparent"
+              color="transparent"
               label="Slides一覧へ戻る"
               renderItem={({
                 className,
@@ -118,7 +118,7 @@ export const DeckViewer: FC<{
         <div className="pointer-events-none absolute top-2 right-2 z-10">
           <div className="pointer-events-auto">
             <IconButton
-              bg="base"
+              color="base"
               label="発表者モードを終了"
               onClick={() => {
                 setIsPresenting(false);

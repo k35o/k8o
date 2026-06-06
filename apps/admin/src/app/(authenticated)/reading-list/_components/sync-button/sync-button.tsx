@@ -39,7 +39,7 @@ export const SyncButton: FC = () => {
       disabled={isPending}
       onClick={handleSync}
       size="sm"
-      variant="outlined"
+      variant="outline"
     >
       {isPending ? '同期中...' : '記事を同期'}
     </Button>

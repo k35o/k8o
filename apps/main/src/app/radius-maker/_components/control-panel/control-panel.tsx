@@ -233,7 +233,7 @@ export const ControlPanel: FC = () => {
             }}
             size="sm"
             startIcon={<CopyIcon size="sm" />}
-            variant="outlined"
+            variant="outline"
           >
             コピー
           </Button>

@@ -13,7 +13,7 @@ export const AddTalkLink: FC = () => (
       </Link>
     )}
     size="sm"
-    variant="contained"
+    variant="solid"
   >
     トークを追加
   </Button>

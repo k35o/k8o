@@ -97,7 +97,7 @@ export function CaretPositionDemo() {
               color="gray"
               onClick={handleReset}
               size="sm"
-              variant="outlined"
+              variant="outline"
             >
               リセット
             </Button>

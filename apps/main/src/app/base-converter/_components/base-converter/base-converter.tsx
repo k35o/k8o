@@ -94,7 +94,7 @@ export const BaseConverter = () => {
                     {...props}
                   />
                   <IconButton
-                    bg="base"
+                    color="base"
                     label={`${label}をコピー`}
                     onClick={() => {
                       handleCopy(values[base], label);

@@ -90,7 +90,7 @@ export function DragDropDemo() {
             {word}
           </span>
         ))}
-        <Button color="gray" onClick={handleReset} size="sm" variant="outlined">
+        <Button color="gray" onClick={handleReset} size="sm" variant="outline">
           リセット
         </Button>
       </div>

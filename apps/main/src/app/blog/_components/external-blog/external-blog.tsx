@@ -6,7 +6,7 @@ import type { FC } from 'react';
 export const ExternalBlog: FC = () => (
   <div className="flex gap-4">
     <IconButton
-      bg="base"
+      color="base"
       label="Qiitaのアカウント"
       renderItem={({
         className,
@@ -29,7 +29,7 @@ export const ExternalBlog: FC = () => (
       <QiitaIcon />
     </IconButton>
     <IconButton
-      bg="base"
+      color="base"
       label="RSSフィード"
       renderItem={({
         className,

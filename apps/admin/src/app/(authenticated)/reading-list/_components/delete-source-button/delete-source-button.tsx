@@ -28,7 +28,7 @@ export const DeleteSourceButton = ({
           setOpen(true);
         }}
         size="sm"
-        variant="outlined"
+        variant="outline"
       >
         削除
       </Button>
@@ -59,7 +59,7 @@ export const DeleteSourceButton = ({
                   onClick={() => {
                     setOpen(false);
                   }}
-                  variant="outlined"
+                  variant="outline"
                 >
                   キャンセル
                 </Button>
@@ -67,7 +67,7 @@ export const DeleteSourceButton = ({
                   color="primary"
                   disabled={isPending}
                   onClick={handleDelete}
-                  variant="contained"
+                  variant="solid"
                 >
                   {isPending ? '削除中...' : '削除する'}
                 </Button>

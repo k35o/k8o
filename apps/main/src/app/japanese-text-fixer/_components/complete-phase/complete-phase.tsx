@@ -44,12 +44,9 @@ export const CompletePhase: FC = () => {
   return (
     <div className="flex flex-col gap-6">
       {hadErrors ? (
-        <Alert message="校正が完了しました" status="success" />
+        <Alert message="校正が完了しました" tone="success" />
       ) : (
-        <Alert
-          message="テキストに問題は見つかりませんでした"
-          status="success"
-        />
+        <Alert message="テキストに問題は見つかりませんでした" tone="success" />
       )}
       <section className="flex flex-col gap-2">
         <div className="flex items-center justify-between">
@@ -74,7 +71,7 @@ export const CompletePhase: FC = () => {
             <Button
               disabled={isChecking || displayText === ''}
               onClick={handleRecheck}
-              variant="outlined"
+              variant="outline"
             >
               {isChecking ? '校正中...' : 'もう一度校正する'}
             </Button>
@@ -82,7 +79,7 @@ export const CompletePhase: FC = () => {
               onClick={() => {
                 dispatch({ type: 'RESET' });
               }}
-              variant="outlined"
+              variant="outline"
             >
               新しいテキストを校正する
             </Button>

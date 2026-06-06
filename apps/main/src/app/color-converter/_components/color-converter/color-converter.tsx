@@ -141,7 +141,7 @@ export const ColorConverter = () => {
                 <span className="text-fg-mute">#</span>
                 <TextField onChange={handleChangeHex} value={hex} {...props} />
                 <IconButton
-                  bg="base"
+                  color="base"
                   label="HEXをコピー"
                   onClick={() => {
                     handleCopy(`#${hex}`, 'HEX');
@@ -250,7 +250,7 @@ export const ColorConverter = () => {
               />
             </div>
             <IconButton
-              bg="base"
+              color="base"
               label="RGBをコピー"
               onClick={() => {
                 handleCopy(rgbCopyValue, 'RGB');
@@ -357,7 +357,7 @@ export const ColorConverter = () => {
               />
             </div>
             <IconButton
-              bg="base"
+              color="base"
               label="HSLをコピー"
               onClick={() => {
                 handleCopy(hslCopyValue, 'HSL');
