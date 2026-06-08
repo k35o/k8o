@@ -74,7 +74,14 @@ export function CrispEdgesDemo() {
         )}
       />
 
-      <canvas className="hidden" height={16} ref={canvasRef} width={16} />
+      {/* ドット絵生成用のオフスクリーン canvas。表示しないため支援技術からは隠す */}
+      <canvas
+        aria-hidden="true"
+        className="hidden"
+        height={16}
+        ref={canvasRef}
+        width={16}
+      />
 
       <div className="bg-bg-base flex justify-center rounded-xl p-6 shadow-sm">
         {imageSrc !== null && (

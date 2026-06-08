@@ -18,6 +18,7 @@ const LinkCardLoading: FC<{
   <div className="vertical:max-w-container-md">
     <InteractiveCard appearance={appearance}>
       <a
+        aria-label={`${href}（読み込み中）`}
         className="block"
         href={href}
         rel="noopener noreferrer"
