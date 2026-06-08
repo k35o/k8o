@@ -21,10 +21,8 @@ export const AppCard = ({
 }) => {
   const isExternal = typeof link === 'string' && link.startsWith('https://');
 
-  // v10 で Card だけ dark モード用の subtle border が追加され InteractiveCard は据え置きのため、
-  // 上流(arte-odyssey)で揃うまで Card と同じ枠をカード本体側で補う暫定対応
   const content = (
-    <div className="dark:border-border-subtle flex h-full flex-col rounded-xl border border-transparent p-6 text-left">
+    <div className="flex h-full flex-col p-6 text-left">
       <div className="flex items-center gap-3">
         {accent === undefined ? null : (
           <div className="text-primary-fg flex size-8 shrink-0 items-center justify-center">
