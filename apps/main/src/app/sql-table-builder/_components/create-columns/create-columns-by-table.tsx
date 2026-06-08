@@ -184,10 +184,10 @@ export const CreateColumnsByTable: FC<Props> = ({
                   <td className="px-3 py-2.5 text-center">
                     <Checkbox
                       label="NULL許容"
-                      onChange={(e) => {
+                      onChange={(checked) => {
                         handleChangeColumn(id)({
                           ...column,
-                          nullable: e.target.checked,
+                          nullable: checked,
                         });
                       }}
                       value={column.nullable}

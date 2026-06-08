@@ -1,7 +1,7 @@
 'use client';
 
 import { Badge, Card, Switch, useToast } from '@k8o/arte-odyssey';
-import { type ChangeEvent, type FC, useState } from 'react';
+import { type FC, useState } from 'react';
 
 import { EmptyState } from '@/app/(authenticated)/_components';
 import { setBlogPublished } from '@/features/blog/interface/actions';
@@ -15,8 +15,8 @@ const BlogRow: FC<{ blog: BlogRecord }> = ({ blog }) => {
   const { isPending, run } = useAsyncAction();
   const { onOpen } = useToast();
 
-  const handleToggle = (e: ChangeEvent<HTMLInputElement>): void => {
-    const next = e.target.checked;
+  const handleToggle = (checked: boolean): void => {
+    const next = checked;
     setPublished(next);
     run(() => setBlogPublished(blog.id, next), {
       onError: (message) => {

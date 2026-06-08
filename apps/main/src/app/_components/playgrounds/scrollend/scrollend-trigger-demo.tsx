@@ -87,7 +87,7 @@ export function ScrollendTriggerDemo() {
             {lastTrigger}
           </div>
         )}
-        <Button color="gray" onClick={reset} size="sm" variant="outlined">
+        <Button color="gray" onClick={reset} size="sm" variant="outline">
           リセット
         </Button>
       </div>

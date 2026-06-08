@@ -46,22 +46,22 @@ export const SuspenseListDemo: FC = () => {
     <div className="flex flex-col gap-6">
       <Alert
         message="React v19.2、Nextjs v16で利用ができなくなったため、現在こちらの機能は利用できません。"
-        status="info"
+        tone="info"
       />
       <div className="flex flex-col gap-4">
         <Checkbox
           label="SuspenseListを利用する"
-          onChange={(e) => {
+          onChange={(checked) => {
             resetData();
-            setUseSuspenseList(e.target.checked);
+            setUseSuspenseList(checked);
           }}
           value={useSuspenseList}
         />
         <Checkbox
           label="フォルバックUIを表示する"
-          onChange={(e) => {
+          onChange={(checked) => {
             resetData();
-            setHasFallback(e.target.checked);
+            setHasFallback(checked);
           }}
           value={hasFallback}
         />

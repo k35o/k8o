@@ -6,7 +6,7 @@ export const LoadingCreateColumns: FC = () => (
     {/* ツールバー */}
     <div className="flex flex-wrap items-center justify-between gap-3">
       <div className="flex items-center gap-2">
-        <Button size="sm" startIcon={<PlusIcon />} variant="outlined">
+        <Button size="sm" startIcon={<PlusIcon />} variant="outline">
           カラムを追加
         </Button>
         <span className="text-fg-mute text-sm">0個のカラム</span>

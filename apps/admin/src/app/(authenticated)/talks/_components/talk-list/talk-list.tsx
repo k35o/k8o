@@ -107,7 +107,7 @@ const TalkRow: FC<{ talk: TalkRecord }> = ({ talk }) => {
                   onClick={() => {
                     setOpen(false);
                   }}
-                  variant="outlined"
+                  variant="outline"
                 >
                   キャンセル
                 </Button>
@@ -115,7 +115,7 @@ const TalkRow: FC<{ talk: TalkRecord }> = ({ talk }) => {
                   color="primary"
                   disabled={isPending}
                   onClick={handleDelete}
-                  variant="contained"
+                  variant="solid"
                 >
                   {isPending ? '削除中...' : '削除する'}
                 </Button>

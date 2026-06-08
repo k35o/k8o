@@ -8,7 +8,7 @@ export const WebkitRelativePathDemo = () => (
       <FileField.Root webkitDirectory {...props}>
         <FileField.Trigger
           renderItem={({ disabled, onClick }) => (
-            <Button disabled={disabled} onClick={onClick} variant="outlined">
+            <Button disabled={disabled} onClick={onClick} variant="outline">
               ファイルを選択
             </Button>
           )}

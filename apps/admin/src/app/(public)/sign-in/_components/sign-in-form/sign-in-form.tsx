@@ -26,7 +26,7 @@ export const SignInForm: FC = () => {
       fullWidth
       onClick={handleSignIn}
       startIcon={<GitHubIcon size="md" />}
-      variant="contained"
+      variant="solid"
     >
       GitHubでログイン
     </Button>

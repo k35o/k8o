@@ -17,7 +17,7 @@ export const SlideLinkButton: FC<{ href: string }> = ({ href }) => (
     )}
     size="sm"
     startIcon={<SlideIcon size="sm" />}
-    variant="outlined"
+    variant="outline"
   >
     スライドを見る
   </Button>

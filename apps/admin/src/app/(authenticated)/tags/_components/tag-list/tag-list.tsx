@@ -101,14 +101,14 @@ const TagRow: FC<{ tag: TagWithUsage }> = ({ tag }) => {
                 value={name}
               />
               <div className="flex justify-end gap-3">
-                <Button color="gray" onClick={closeRename} variant="outlined">
+                <Button color="gray" onClick={closeRename} variant="outline">
                   キャンセル
                 </Button>
                 <Button
                   color="primary"
                   disabled={isPending}
                   onClick={handleRename}
-                  variant="contained"
+                  variant="solid"
                 >
                   {isPending ? '保存中...' : '保存'}
                 </Button>
@@ -140,7 +140,7 @@ const TagRow: FC<{ tag: TagWithUsage }> = ({ tag }) => {
                   onClick={() => {
                     setDeleteOpen(false);
                   }}
-                  variant="outlined"
+                  variant="outline"
                 >
                   キャンセル
                 </Button>
@@ -148,7 +148,7 @@ const TagRow: FC<{ tag: TagWithUsage }> = ({ tag }) => {
                   color="primary"
                   disabled={isPending}
                   onClick={handleDelete}
-                  variant="contained"
+                  variant="solid"
                 >
                   {isPending ? '削除中...' : '削除する'}
                 </Button>

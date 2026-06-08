@@ -70,7 +70,7 @@ export const TextDiff = () => {
               setResultPosition('top');
             }}
             size="sm"
-            variant={resultPosition === 'top' ? 'contained' : 'outlined'}
+            variant={resultPosition === 'top' ? 'solid' : 'outline'}
           >
             上に表示
           </Button>
@@ -79,7 +79,7 @@ export const TextDiff = () => {
               setResultPosition('bottom');
             }}
             size="sm"
-            variant={resultPosition === 'bottom' ? 'contained' : 'outlined'}
+            variant={resultPosition === 'bottom' ? 'solid' : 'outline'}
           >
             下に表示
           </Button>

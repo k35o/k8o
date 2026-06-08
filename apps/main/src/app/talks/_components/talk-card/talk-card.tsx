@@ -104,7 +104,7 @@ export const TalkCard: FC<{
           )}
           size="sm"
           startIcon={<SlideIcon size="sm" />}
-          variant="outlined"
+          variant="outline"
         >
           スライドを見る
         </Button>

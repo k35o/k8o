@@ -145,7 +145,7 @@ export const CreateRestrictions: FC<Props> = ({
             onClick={handleAddRestriction}
             size="sm"
             startIcon={<PlusIcon />}
-            variant="outlined"
+            variant="outline"
           >
             制約を追加
           </Button>
@@ -178,7 +178,7 @@ export const CreateRestrictions: FC<Props> = ({
             onClick={handleAddRestriction}
             size="sm"
             startIcon={<PlusIcon />}
-            variant="outlined"
+            variant="outline"
           >
             制約を追加
           </Button>

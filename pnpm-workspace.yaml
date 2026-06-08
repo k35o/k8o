@@ -13,7 +13,7 @@ allowBuilds:
 blockExoticSubdeps: true
 
 catalog:
-  '@k8o/arte-odyssey': 9.1.0
+  '@k8o/arte-odyssey': 10.0.1
   '@storybook/addon-a11y': 10.4.1
   '@storybook/addon-docs': 10.4.1
   '@storybook/addon-mcp': '0.6.0'

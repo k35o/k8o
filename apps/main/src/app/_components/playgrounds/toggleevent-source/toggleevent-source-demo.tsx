@@ -165,7 +165,7 @@ export function ToggleEventSourceDemo() {
             popoverTarget={POPOVER_ID}
             popoverTargetAction="hide"
             size="sm"
-            variant="outlined"
+            variant="outline"
           >
             閉じる
           </Button>

@@ -63,7 +63,7 @@ export const CommentActions: FC<Props> = ({ id }) => {
                   onClick={() => {
                     setOpen(false);
                   }}
-                  variant="outlined"
+                  variant="outline"
                 >
                   キャンセル
                 </Button>
@@ -71,7 +71,7 @@ export const CommentActions: FC<Props> = ({ id }) => {
                   color="primary"
                   disabled={isPending}
                   onClick={handleDelete}
-                  variant="contained"
+                  variant="solid"
                 >
                   {isPending ? '削除中...' : '削除する'}
                 </Button>

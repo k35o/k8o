@@ -123,7 +123,7 @@ export const QrGenerator = () => {
                   }}
                 />
               </div>
-              <Button onClick={handleDownload} variant="contained">
+              <Button onClick={handleDownload} variant="solid">
                 SVGをダウンロード
               </Button>
             </>

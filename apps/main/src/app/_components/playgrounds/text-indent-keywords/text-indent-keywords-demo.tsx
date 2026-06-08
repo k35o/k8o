@@ -41,15 +41,15 @@ export function TextIndentKeywordsDemo() {
         />
         <Checkbox
           label="each-line"
-          onChange={(e) => {
-            setUseEachLine(e.target.checked);
+          onChange={(checked) => {
+            setUseEachLine(checked);
           }}
           value={useEachLine}
         />
         <Checkbox
           label="hanging"
-          onChange={(e) => {
-            setUseHanging(e.target.checked);
+          onChange={(checked) => {
+            setUseHanging(checked);
           }}
           value={useHanging}
         />

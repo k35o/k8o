@@ -93,7 +93,7 @@ export function LCPDemo() {
   return (
     <div className="space-y-4">
       <div className="flex flex-wrap items-center gap-3">
-        <Button color="gray" onClick={handleReset} size="sm" variant="outlined">
+        <Button color="gray" onClick={handleReset} size="sm" variant="outline">
           リセット
         </Button>
         <span className="text-fg-mute text-sm">

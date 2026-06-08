@@ -13,7 +13,7 @@ export const AddSourceLink: FC = () => (
       </Link>
     )}
     size="sm"
-    variant="contained"
+    variant="solid"
   >
     追加
   </Button>

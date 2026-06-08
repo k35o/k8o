@@ -71,10 +71,9 @@ export function ContainerStyleQueriesDemo() {
         <Radio
           aria-labelledby={labelId}
           name={`csq-theme-${labelId}`}
-          onChange={(event) => {
-            const next = event.target.value;
-            if (isTheme(next)) {
-              setTheme(next);
+          onChange={(value) => {
+            if (isTheme(value)) {
+              setTheme(value);
             }
           }}
           options={themeOptions}

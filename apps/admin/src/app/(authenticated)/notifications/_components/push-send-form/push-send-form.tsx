@@ -88,7 +88,7 @@ export const PushSendForm: FC = () => {
             onClick={() => {
               setOpen(true);
             }}
-            variant="contained"
+            variant="solid"
           >
             送信する
           </Button>
@@ -118,7 +118,7 @@ export const PushSendForm: FC = () => {
                   onClick={() => {
                     setOpen(false);
                   }}
-                  variant="outlined"
+                  variant="outline"
                 >
                   キャンセル
                 </Button>
@@ -126,7 +126,7 @@ export const PushSendForm: FC = () => {
                   color="primary"
                   disabled={isPending}
                   onClick={handleSend}
-                  variant="contained"
+                  variant="solid"
                 >
                   {isPending ? '送信中...' : '送信する'}
                 </Button>

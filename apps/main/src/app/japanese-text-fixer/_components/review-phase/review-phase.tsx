@@ -151,7 +151,7 @@ export const ReviewPhase: FC = () => {
             <Button
               disabled={isChecking || reviewText === ''}
               onClick={handleRecheck}
-              variant="outlined"
+              variant="outline"
             >
               {isChecking ? '校正中...' : 'もう一度校正する'}
             </Button>

@@ -24,7 +24,7 @@ export const TooltipDropdownDemo: FC = () => (
       <div className="flex flex-col items-center gap-2">
         <p className="text-lg font-bold md:text-xl">Dropdown Menu</p>
         <DropdownMenu.Root>
-          <DropdownMenu.Trigger text="Options" variant="outlined" />
+          <DropdownMenu.Trigger text="Options" variant="outline" />
           <DropdownMenu.Content>
             <DropdownMenu.Item
               label="Item 1"

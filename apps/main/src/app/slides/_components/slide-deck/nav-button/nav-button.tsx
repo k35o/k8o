@@ -11,7 +11,7 @@ type Props = {
 
 export const NavButton: FC<Props> = ({ direction, disabled, onAction }) => (
   <IconButton
-    bg="transparent"
+    color="transparent"
     label={direction === 'prev' ? '前のスライド' : '次のスライド'}
     onAction={onAction}
     renderItem={({

@@ -41,7 +41,7 @@ export const CreateColumns: FC<Props> = ({
             onClick={handleAddColumn}
             size="sm"
             startIcon={<PlusIcon />}
-            variant="outlined"
+            variant="outline"
           >
             カラムを追加
           </Button>
@@ -57,7 +57,7 @@ export const CreateColumns: FC<Props> = ({
             }}
             size="sm"
             startIcon={showTable ? <FormIcon /> : <TableIcon />}
-            variant="outlined"
+            variant="outline"
           >
             {showTable ? 'フォーム' : 'テーブル'}形式
           </Button>

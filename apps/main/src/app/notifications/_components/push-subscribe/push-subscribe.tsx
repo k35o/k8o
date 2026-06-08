@@ -140,18 +140,18 @@ export const PushSubscribe: FC<Props> = ({ vapidPublicKey }) => {
         </p>
         {!isSupported && (
           <Alert
-            status="warning"
+            tone="warning"
             message="このブラウザはプッシュ通知に対応していません。iOSではホーム画面に追加したアプリから開いてください。"
           />
         )}
-        {error !== null && <Alert status="error" message={error} />}
-        {isSubscribed && <Alert status="success" message="通知を購読中です" />}
+        {error !== null && <Alert tone="error" message={error} />}
+        {isSubscribed && <Alert tone="success" message="通知を購読中です" />}
         {isSupported && (
           <div>
             {isSubscribed ? (
               <Button
                 color="gray"
-                variant="outlined"
+                variant="outline"
                 disabled={isLoading}
                 onClick={() => void unsubscribe()}
                 startIcon={<SubscribeIcon />}
@@ -161,7 +161,7 @@ export const PushSubscribe: FC<Props> = ({ vapidPublicKey }) => {
             ) : (
               <Button
                 color="primary"
-                variant="contained"
+                variant="solid"
                 disabled={isLoading}
                 onClick={() => void subscribe()}
                 startIcon={<SubscribeIcon />}

@@ -82,7 +82,7 @@ export const DialogRequestCloseDemo: FC = () => {
               onClick={() => {
                 ref.current?.requestClose();
               }}
-              variant="outlined"
+              variant="outline"
             >
               閉じる
             </Button>
