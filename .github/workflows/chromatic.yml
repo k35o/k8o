@@ -18,14 +18,14 @@ jobs:
       - name: Setup
         uses: ./.github/actions/setup
       - name: Publish Main to Chromatic
-        uses: chromaui/action@7aca53e7aa87489020a97f633c1e7e82c12e5973 # v17.0.0
+        uses: chromaui/action@8ad69a40dea06755a3c6db290f300a39e011433b # v17.1.0
         with:
           projectToken: ${{ secrets.CHROMATIC_PROJECT_TOKEN }}
           onlyChanged: true
           skip: 'renovate/**'
           workingDir: apps/main
       - name: Publish Admin to Chromatic
-        uses: chromaui/action@7aca53e7aa87489020a97f633c1e7e82c12e5973 # v17.0.0
+        uses: chromaui/action@8ad69a40dea06755a3c6db290f300a39e011433b # v17.1.0
         with:
           projectToken: ${{ secrets.CHROMATIC_ADMIN_PROJECT_TOKEN }}
           onlyChanged: true
