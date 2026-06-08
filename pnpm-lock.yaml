@@ -91,7 +91,7 @@ importers:
     devDependencies:
       '@k8o/oxc-config':
         specifier: 0.1.2
-        version: 0.1.2(oxfmt@0.48.0)(oxlint-tailwindcss@0.8.0(@oxlint/plugins@1.66.0))(oxlint@1.63.0(oxlint-tsgolint@0.22.1))
+        version: 0.1.2(oxfmt@0.48.0)(oxlint-tailwindcss@1.1.0(@oxlint/plugins@1.66.0))(oxlint@1.63.0(oxlint-tsgolint@0.22.1))
       '@ls-lint/ls-lint':
         specifier: 2.3.1
         version: 2.3.1
@@ -111,8 +111,8 @@ importers:
         specifier: 6.14.2
         version: 6.14.2(@emnapi/core@1.10.0)(@emnapi/runtime@1.10.0)
       oxlint-tailwindcss:
-        specifier: 0.8.0
-        version: 0.8.0(@oxlint/plugins@1.66.0)
+        specifier: 1.1.0
+        version: 1.1.0(@oxlint/plugins@1.66.0)
       playwright:
         specifier: 1.60.0
         version: 1.60.0
@@ -5378,8 +5378,8 @@ packages:
     engines: {node: ^20.19.0 || >=22.12.0}
     hasBin: true
 
-  oxlint-tailwindcss@0.8.0:
-    resolution: {integrity: sha512-vfWnQ9S3AZXb9oqQPxilz9UlUcFvuKKJh7mT7vHw0lyHQVpKPOx117oS5y1/FuSAGSJAZa1gUeXCFNF8Ax28jA==}
+  oxlint-tailwindcss@1.1.0:
+    resolution: {integrity: sha512-ZsHZY+YS7gndEl4HVULh83nFjg3wNtNLxrn4n/lG/ZXcQcOvkt1ejhXIeX8bOru4bj5jRxi5sgJZzT63EX0RlQ==}
     engines: {node: '>=20'}
     peerDependencies:
       '@oxlint/plugins': '>=1.43.0'
@@ -7248,11 +7248,11 @@ snapshots:
     transitivePeerDependencies:
       - '@emotion/is-prop-valid'
 
-  '@k8o/oxc-config@0.1.2(oxfmt@0.48.0)(oxlint-tailwindcss@0.8.0(@oxlint/plugins@1.66.0))(oxlint@1.63.0(oxlint-tsgolint@0.22.1))':
+  '@k8o/oxc-config@0.1.2(oxfmt@0.48.0)(oxlint-tailwindcss@1.1.0(@oxlint/plugins@1.66.0))(oxlint@1.63.0(oxlint-tsgolint@0.22.1))':
     optionalDependencies:
       oxfmt: 0.48.0
       oxlint: 1.63.0(oxlint-tsgolint@0.22.1)
-      oxlint-tailwindcss: 0.8.0(@oxlint/plugins@1.66.0)
+      oxlint-tailwindcss: 1.1.0(@oxlint/plugins@1.66.0)
 
   '@liam-hq/cli@0.7.24(@types/node@24.12.4)(@types/react@19.2.15)(typescript@6.0.3)':
     dependencies:
@@ -10869,7 +10869,7 @@ snapshots:
       '@oxfmt/binding-win32-ia32-msvc': 0.48.0
       '@oxfmt/binding-win32-x64-msvc': 0.48.0
 
-  oxlint-tailwindcss@0.8.0(@oxlint/plugins@1.66.0):
+  oxlint-tailwindcss@1.1.0(@oxlint/plugins@1.66.0):
     dependencies:
       '@oxlint/plugins': 1.66.0
       '@tailwindcss/node': 4.3.0

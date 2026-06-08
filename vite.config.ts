@@ -31,7 +31,25 @@ export default defineConfig({
         version: '19.2.5',
       },
       tailwindcss: {
-        entryPoint: ['apps/main/src/app/_styles/globals.css'],
+        // oxlint-tailwindcss v1 から、対象ファイルと CSS エントリーポイントの
+        // 対応を glob で明示する形式に変更された（先勝ちで評価される）。
+        entryPoint: [
+          {
+            files: 'apps/main/**',
+            use: 'apps/main/src/app/_styles/globals.css',
+          },
+          {
+            files: 'apps/admin/**',
+            use: 'apps/admin/src/app/_styles/globals.css',
+          },
+          // packages 配下など app に属さない共有コード（cn.ts のテスト内
+          // class 文字列など）向けのフォールバック。先勝ちのため各 app の
+          // マッピングが優先される。
+          {
+            files: '**',
+            use: 'apps/main/src/app/_styles/globals.css',
+          },
+        ],
       },
     },
     rules: {
