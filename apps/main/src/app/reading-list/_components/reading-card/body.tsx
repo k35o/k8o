@@ -84,23 +84,24 @@ export const ReadingCardBody: FC<{
           >
             {body}
           </p>
-          {!expanded && isClamped && (
-            // カードを覆う overlay リンクより前面に出して、独立操作可能にする
-            <button
-              aria-controls={bodyId}
-              // 展開後はボタン自体を消すため常に collapsed。disclosure として属性は明示する
-              aria-expanded={false}
-              className="text-fg-mute hover:text-fg-base relative z-10 cursor-pointer self-start text-xs underline underline-offset-2"
-              onClick={(e) => {
-                e.preventDefault();
-                e.stopPropagation();
-                setExpanded(true);
-              }}
-              type="button"
-            >
-              続きを読む
-            </button>
-          )}
+          {!expanded &&
+            isClamped && (
+              // カードを覆う overlay リンクより前面に出して、独立操作可能にする
+              <button
+                aria-controls={bodyId}
+                // 展開後はボタン自体を消すため常に collapsed。disclosure として属性は明示する
+                aria-expanded={false}
+                className="text-fg-mute hover:text-fg-base relative z-10 cursor-pointer self-start text-xs underline underline-offset-2"
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  setExpanded(true);
+                }}
+                type="button"
+              >
+                続きを読む
+              </button>
+            )}
         </>
       )}
       {summary === null && (

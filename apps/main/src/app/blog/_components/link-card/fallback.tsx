@@ -10,6 +10,7 @@ export const LinkCardFallback: FC<{
   <div className="vertical:max-w-container-md">
     <InteractiveCard appearance={appearance}>
       <a
+        aria-label={href}
         className="group block h-full"
         href={href}
         rel="noopener noreferrer"

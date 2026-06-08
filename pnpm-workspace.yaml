@@ -7,6 +7,7 @@ allowBuilds:
   '@swc/core': false
   esbuild: false
   lefthook: true
+  msgpackr-extract: false
   msw: true
   sharp: false
 
@@ -26,7 +27,7 @@ catalog:
   '@vitest/coverage-v8': 4.1.7
   '@vitest/ui': 4.1.7
   babel-plugin-react-compiler: 1.0.0
-  chromatic: 17.0.0
+  chromatic: 17.0.1
   drizzle-orm: 0.45.2
   next: 16.2.6
   next-themes: 0.4.6

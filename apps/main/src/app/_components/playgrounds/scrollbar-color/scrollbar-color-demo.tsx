@@ -11,10 +11,15 @@ export function ScrollbarColorDemo() {
     <div className="space-y-4">
       <div className="flex flex-wrap gap-4">
         <div className="flex items-center gap-2">
-          <label className="text-fg-mute text-sm" htmlFor="thumb-color">
+          <label
+            className="text-fg-mute text-sm"
+            htmlFor="thumb-color"
+            id="thumb-color-label"
+          >
             つまみ（thumb）:
           </label>
           <input
+            aria-labelledby="thumb-color-label"
             className="border-border-base h-8 w-16 cursor-pointer rounded border"
             id="thumb-color"
             onChange={(e) => {
@@ -26,10 +31,15 @@ export function ScrollbarColorDemo() {
           <span className="font-mono text-sm">{thumbColor}</span>
         </div>
         <div className="flex items-center gap-2">
-          <label className="text-fg-mute text-sm" htmlFor="track-color">
+          <label
+            className="text-fg-mute text-sm"
+            htmlFor="track-color"
+            id="track-color-label"
+          >
             トラック（track）:
           </label>
           <input
+            aria-labelledby="track-color-label"
             className="border-border-base h-8 w-16 cursor-pointer rounded border"
             id="track-color"
             onChange={(e) => {
