@@ -40,6 +40,9 @@ export default function Home() {
         <div className="flex flex-col gap-6">
           <div>
             <Heading type="h2">Activity</Heading>
+            <p className="text-fg-mute text-sm">
+              最近の発信と、GitHubでの活動の記録。
+            </p>
           </div>
           <ActivityErrorBoundary
             fallback={
