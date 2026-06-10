@@ -1,4 +1,4 @@
-import { ArteOdyssey, Badge, Card, Heading } from '@k8o/arte-odyssey';
+import { ArteOdyssey, Heading, Separator } from '@k8o/arte-odyssey';
 import Image from 'next/image';
 
 import { AppCard } from './_components/app-card';
@@ -13,40 +13,29 @@ export default function Home() {
   return (
     <div className="mx-auto w-full max-w-5xl">
       <div className="flex flex-col gap-12">
-        <Card>
-          <div className="p-6">
-            <div className="flex flex-col items-center gap-6 sm:flex-row sm:gap-8">
-              <Image
-                alt="k8oのアイコン"
-                className="size-24 rounded-md sm:size-32"
-                height={128}
-                src={k8o}
-                width={128}
-              />
-
-              <div className="flex min-w-0 flex-1 flex-col gap-4">
-                <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
-                  <Heading type="h3">k8o</Heading>
-                  <div className="flex flex-wrap items-center gap-2">
-                    <EmailTooltip />
-                    <SocialIcons />
-                  </div>
-                </div>
-
-                <div className="flex flex-wrap gap-2">
-                  <Badge size="sm" text="フロントエンド" />
-                  <Badge size="sm" text="TypeScript" />
-                  <Badge size="sm" text="デザイン" />
-                </div>
-
-                <p className="text-fg-mute text-sm leading-relaxed">
-                  WebフロントエンドとTypeScriptが好きで、Baselineを追いながらWeb標準の進化を楽しんでいます。
-                  デザインシステムの構築を通じて、デザインとフロントエンドの交差点を探っています。
-                </p>
-              </div>
+        <header className="grid grid-cols-[auto_1fr] items-center gap-x-4 gap-y-5 pt-2 lg:gap-x-10">
+          <Image
+            alt="k8oのアイコン"
+            className="size-16 rounded-full lg:row-span-2 lg:size-32"
+            height={128}
+            src={k8o}
+            width={128}
+          />
+          <div className="flex flex-col gap-3">
+            <Heading type="h1">k8o</Heading>
+            <div className="flex flex-wrap items-center gap-2">
+              <SocialIcons />
+              <EmailTooltip />
             </div>
           </div>
-        </Card>
+
+          <p className="text-fg-mute col-span-2 leading-relaxed lg:col-span-1 lg:col-start-2">
+            Webフロントエンドを軸足に、最近はBaselineに追加された機能の深掘りをブログに残しています。
+            デザインとの境界にも興味があり、デザインシステムArteOdysseyを育てています。
+          </p>
+        </header>
+
+        <Separator color="subtle" />
 
         <div className="flex flex-col gap-6">
           <div>
