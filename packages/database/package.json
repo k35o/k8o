@@ -41,7 +41,7 @@
   },
   "devDependencies": {
     "@liam-hq/cli": "0.7.24",
-    "@next/env": "16.2.6",
+    "@next/env": "16.2.7",
     "@repo/typescript-config": "workspace:*",
     "drizzle-kit": "0.31.10"
   }
