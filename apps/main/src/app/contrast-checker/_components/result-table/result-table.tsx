@@ -15,7 +15,7 @@ type StatusCellProps = {
 };
 
 const StatusCell: FC<StatusCellProps> = ({ isInvalid }) => (
-  <td className="px-2 py-2 sm:py-3">
+  <td className="p-2 sm:py-3">
     {isInvalid ? (
       <div className="text-fg-error flex items-center justify-center gap-1">
         <AlertIcon size="sm" status="error" />

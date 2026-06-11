@@ -1,7 +1,7 @@
 import {
   Badge,
   Heading,
-  InteractiveCard,
+  Card,
   PublishDateIcon,
   TagIcon,
   UpdateDateIcon,
@@ -28,7 +28,7 @@ export const SlideCard: FC<SlideCardProps> = ({
   createdAt,
   updatedAt,
 }) => (
-  <InteractiveCard>
+  <Card interactive>
     <Link className="group block h-full" href={`/slides/${slug}` as Route}>
       <div className="flex h-full flex-col justify-between gap-4 p-4">
         <div className="group-hover:text-primary-fg flex flex-col gap-1">
@@ -65,5 +65,5 @@ export const SlideCard: FC<SlideCardProps> = ({
         </div>
       </div>
     </Link>
-  </InteractiveCard>
+  </Card>
 );

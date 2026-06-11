@@ -86,7 +86,7 @@ const ColumnItem: FC<{
       {/* コンテンツ */}
       {isOpen && (
         <div>
-          <div className="border-border-base border-t px-4 py-4">
+          <div className="border-border-base border-t p-4">
             <div className="grid gap-4 sm:grid-cols-2">
               <FormControl
                 errorText={columnError?.name}

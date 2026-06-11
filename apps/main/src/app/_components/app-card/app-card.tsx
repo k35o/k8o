@@ -2,7 +2,7 @@ import {
   ChevronIcon,
   ExternalLinkIcon,
   Heading,
-  InteractiveCard,
+  Card,
 } from '@k8o/arte-odyssey';
 import type { Route } from 'next';
 import Link from 'next/link';
@@ -49,7 +49,7 @@ export const AppCard = ({
   );
 
   return (
-    <InteractiveCard>
+    <Card interactive>
       {isExternal ? (
         <a
           className="group"
@@ -64,6 +64,6 @@ export const AppCard = ({
           {content}
         </Link>
       )}
-    </InteractiveCard>
+    </Card>
   );
 };

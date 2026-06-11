@@ -1,4 +1,4 @@
-import { ExternalLinkIcon, InteractiveCard } from '@k8o/arte-odyssey';
+import { ExternalLinkIcon, Card } from '@k8o/arte-odyssey';
 import type { FC } from 'react';
 
 export type LinkCardAppearance = 'shadow' | 'bordered';
@@ -8,7 +8,7 @@ export const LinkCardFallback: FC<{
   appearance?: LinkCardAppearance;
 }> = ({ href, appearance = 'shadow' }) => (
   <div className="vertical:max-w-container-md">
-    <InteractiveCard appearance={appearance}>
+    <Card interactive appearance={appearance}>
       <a
         aria-label={href}
         className="group block h-full"
@@ -26,6 +26,6 @@ export const LinkCardFallback: FC<{
           </div>
         </div>
       </a>
-    </InteractiveCard>
+    </Card>
   </div>
 );

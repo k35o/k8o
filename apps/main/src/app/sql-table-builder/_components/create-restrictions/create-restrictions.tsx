@@ -90,7 +90,7 @@ const RestrictionItem: FC<{
       </div>
 
       {isOpen && (
-        <div className="border-border-base overflow-hidden border-t px-4 py-4">
+        <div className="border-border-base overflow-hidden border-t p-4">
           <CreateRestriction
             columns={columns}
             restriction={restriction}

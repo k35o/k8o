@@ -1,8 +1,4 @@
-import {
-  ExternalLinkIcon,
-  InteractiveCard,
-  PublishDateIcon,
-} from '@k8o/arte-odyssey';
+import { ExternalLinkIcon, Card, PublishDateIcon } from '@k8o/arte-odyssey';
 import { formatDate } from '@repo/helpers/date/format';
 import { type FC, Suspense } from 'react';
 
@@ -16,7 +12,7 @@ const LinkCardLoading: FC<{
   appearance?: LinkCardAppearance;
 }> = ({ href, appearance = 'shadow' }) => (
   <div className="vertical:max-w-container-md">
-    <InteractiveCard appearance={appearance}>
+    <Card interactive appearance={appearance}>
       <a
         aria-label={`${href}（読み込み中）`}
         className="block"
@@ -35,7 +31,7 @@ const LinkCardLoading: FC<{
           </div>
         </div>
       </a>
-    </InteractiveCard>
+    </Card>
   </div>
 );
 
@@ -61,7 +57,7 @@ const Content: FC<{
 
   return (
     <div className="vertical:max-w-container-md">
-      <InteractiveCard appearance={appearance}>
+      <Card interactive appearance={appearance}>
         <a
           className="group block h-full"
           href={href}
@@ -102,7 +98,7 @@ const Content: FC<{
             </div>
           </div>
         </a>
-      </InteractiveCard>
+      </Card>
     </div>
   );
 };
