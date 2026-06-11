@@ -1,4 +1,4 @@
-import { ChevronIcon, InteractiveCard, Separator } from '@k8o/arte-odyssey';
+import { ChevronIcon, Card, Separator } from '@k8o/arte-odyssey';
 import { cn } from '@repo/helpers/cn';
 import type { Route } from 'next';
 import Link from 'next/link';
@@ -11,7 +11,7 @@ export const TagCard: FC<{
   label: string;
   linkLabel: string;
 }> = ({ title, href, count, label, linkLabel }) => (
-  <InteractiveCard width="fit">
+  <Card interactive width="fit">
     <Link
       aria-label={linkLabel}
       className={cn(
@@ -37,5 +37,5 @@ export const TagCard: FC<{
         </span>
       </div>
     </Link>
-  </InteractiveCard>
+  </Card>
 );

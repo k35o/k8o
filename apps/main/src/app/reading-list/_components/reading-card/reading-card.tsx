@@ -1,8 +1,4 @@
-import {
-  ExternalLinkIcon,
-  InteractiveCard,
-  PublishDateIcon,
-} from '@k8o/arte-odyssey';
+import { ExternalLinkIcon, Card, PublishDateIcon } from '@k8o/arte-odyssey';
 import { formatDate } from '@repo/helpers/date/format';
 import type { FC } from 'react';
 
@@ -31,7 +27,7 @@ export const ReadingCard: FC<ReadingCardProps> = ({
   sourceTitle,
 }) => (
   <div className="vertical:max-w-container-md">
-    <InteractiveCard appearance="shadow">
+    <Card interactive appearance="shadow">
       <div className="group vertical:flex-row relative isolate flex h-full flex-col overflow-hidden sm:flex-row">
         {imageUrl !== null && <ReadingCardImage src={imageUrl} />}
         <div className="flex flex-1 flex-col gap-2 p-4">
@@ -66,6 +62,6 @@ export const ReadingCard: FC<ReadingCardProps> = ({
           </div>
         </div>
       </div>
-    </InteractiveCard>
+    </Card>
   </div>
 );

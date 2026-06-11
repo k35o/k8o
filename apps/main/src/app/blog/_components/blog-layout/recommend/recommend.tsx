@@ -1,7 +1,7 @@
 import {
   Badge,
   Heading,
-  InteractiveCard,
+  Card,
   PublishDateIcon,
   TagIcon,
 } from '@k8o/arte-odyssey';
@@ -26,7 +26,7 @@ export const RecommendContent: FC<RecommendProps> = ({ blogs }) => {
       <Heading type="h3">関連記事</Heading>
       <div className="grid-cols-auto-fit-80 grid gap-4">
         {blogs.map((blog) => (
-          <InteractiveCard key={blog.id}>
+          <Card interactive key={blog.id}>
             <Link href={`/blog/${blog.slug}` as Route}>
               <div className="flex flex-col gap-4 p-4">
                 <Heading type="h4">{blog.title}</Heading>
@@ -47,7 +47,7 @@ export const RecommendContent: FC<RecommendProps> = ({ blogs }) => {
                 </div>
               </div>
             </Link>
-          </InteractiveCard>
+          </Card>
         ))}
       </div>
     </div>

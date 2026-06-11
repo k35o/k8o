@@ -1,7 +1,7 @@
 import {
   Badge,
   Heading,
-  InteractiveCard,
+  Card,
   PublishDateIcon,
   TagIcon,
 } from '@k8o/arte-odyssey';
@@ -25,7 +25,7 @@ export const BlogCard: FC<BlogCardProps> = ({
   tags,
   createdAt,
 }) => (
-  <InteractiveCard>
+  <Card interactive>
     <Link className="group block h-full" href={`/blog/${slug}` as Route}>
       <div className="flex h-full flex-col justify-between gap-4 p-4">
         <div className="group-hover:text-primary-fg flex flex-col gap-1">
@@ -52,5 +52,5 @@ export const BlogCard: FC<BlogCardProps> = ({
         </div>
       </div>
     </Link>
-  </InteractiveCard>
+  </Card>
 );

@@ -1,9 +1,9 @@
-import { InteractiveCard } from '@k8o/arte-odyssey';
+import { Card } from '@k8o/arte-odyssey';
 import type { FC } from 'react';
 
 export const ReadingCardSkeleton: FC = () => (
   <div className="vertical:max-w-container-md">
-    <InteractiveCard appearance="shadow">
+    <Card interactive appearance="shadow">
       <div className="vertical:flex-row flex animate-pulse flex-col overflow-hidden sm:flex-row">
         <div className="bg-bg-mute vertical:w-48 vertical:shrink-0 vertical:rounded-s-xl vertical:rounded-e-none w-full rounded-t-xl sm:w-48 sm:shrink-0 sm:rounded-s-xl sm:rounded-e-none">
           <div className="bg-bg-mute aspect-video w-full" />
@@ -14,6 +14,6 @@ export const ReadingCardSkeleton: FC = () => (
           <div className="bg-bg-mute mt-auto h-3 w-1/3 rounded-md" />
         </div>
       </div>
-    </InteractiveCard>
+    </Card>
   </div>
 );
