@@ -38,7 +38,7 @@ const StepIndicator = ({
 }) => (
   <div className="flex items-center gap-2 sm:gap-3">
     <div
-      className={`flex size-6 items-center justify-center rounded-full text-xs font-bold transition-colors sm:h-8 sm:w-8 sm:text-sm ${
+      className={`flex size-6 items-center justify-center rounded-full text-xs font-bold transition-colors sm:size-8 sm:text-sm ${
         isActive ? 'bg-primary-bg text-primary-fg' : 'bg-bg-mute text-fg-mute'
       }`}
     >
@@ -187,7 +187,7 @@ export default function Page() {
             <div className="p-4 sm:p-6">
               <div className="mb-4 flex items-center justify-between gap-2">
                 <div className="flex items-center gap-2 sm:gap-3">
-                  <div className="bg-bg-success text-fg-success flex size-6 items-center justify-center rounded-full sm:h-8 sm:w-8">
+                  <div className="bg-bg-success text-fg-success flex size-6 items-center justify-center rounded-full sm:size-8">
                     <span className="text-xs sm:text-sm">✓</span>
                   </div>
                   <h3 className="text-base font-bold sm:text-lg">
