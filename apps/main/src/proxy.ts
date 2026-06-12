@@ -28,7 +28,7 @@ const cspHeader = `
     form-action 'self';
     frame-ancestors 'none';
     ${isDev ? '' : "require-trusted-types-for 'script';"}
-    trusted-types nextjs nextjs#bundler dompurify k8o goog#html lit-html default;
+    trusted-types nextjs nextjs#bundler goog#html lit-html default;
     report-to csp-endpoint;
     upgrade-insecure-requests;
 `;

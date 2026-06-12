@@ -126,16 +126,6 @@ export default function Home() {
               title="もじカウント"
             />
             <AppCard
-              description="テキストやURLからQRコードを生成してダウンロードできます。"
-              link="/qr-generator"
-              title="QRキット"
-            />
-            <AppCard
-              description="2進数・8進数・10進数・16進数を相互に変換します。"
-              link="/base-converter"
-              title="基数チェンジャー"
-            />
-            <AppCard
               description="2色のコントラスト比を計算し、WCAGの基準で評価します。"
               link="/contrast-checker"
               title="コントラストチェッカー"
@@ -154,11 +144,6 @@ export default function Home() {
               description="border-radiusを視覚的に操作してCSSを生成します。"
               link="/radius-maker"
               title="かどまるラボ"
-            />
-            <AppCard
-              description="2つのテキストを文字単位で比較して差分を表示します。"
-              link="/text-diff"
-              title="テキスト差分チェッカー"
             />
           </div>
         </div>
