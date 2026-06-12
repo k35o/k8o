@@ -2,7 +2,8 @@ export type Annotation =
   | { type: 'highlight' }
   | { type: 'add' }
   | { type: 'remove' }
-  | { type: 'callout'; text: string };
+  | { type: 'callout'; text: string }
+  | { type: 'og' };
 
 type ParseResult = {
   code: string;
@@ -24,6 +25,8 @@ const parseDirective = (raw: string): Annotation | null => {
   }
   if (directive === '+') return { type: 'add' };
   if (directive === '-') return { type: 'remove' };
+  // og: OGP画像に使う代表コードブロックの印。表示には影響しない
+  if (directive === 'og') return { type: 'og' };
 
   const callout = /^callout:\s*(.+)$/u.exec(directive);
   if (callout) {

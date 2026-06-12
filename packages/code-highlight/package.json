@@ -9,6 +9,14 @@
       "types": "./src/index.ts",
       "default": "./src/index.ts"
     },
+    "./parser": {
+      "types": "./src/parser.ts",
+      "default": "./src/parser.ts"
+    },
+    "./tokenize": {
+      "types": "./src/tokenize.ts",
+      "default": "./src/tokenize.ts"
+    },
     "./styles.css": "./styles/annotate.css"
   },
   "scripts": {
@@ -17,14 +25,14 @@
     "type-check": "tsgo --noEmit"
   },
   "dependencies": {
-    "@shikijs/rehype": "4.1.0"
+    "@shikijs/rehype": "4.1.0",
+    "shiki": "4.1.0"
   },
   "devDependencies": {
     "@repo/typescript-config": "workspace:*",
     "@shikijs/types": "4.1.0",
     "@types/hast": "3.0.4",
     "@vitest/coverage-v8": "catalog:",
-    "shiki": "4.1.0",
     "vitest": "catalog:"
   }
 }
