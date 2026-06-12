@@ -22,7 +22,7 @@
     "@repo/database": "workspace:*",
     "@repo/helpers": "workspace:*",
     "@tailwindcss/postcss": "catalog:",
-    "better-auth": "1.6.13",
+    "better-auth": "1.6.14",
     "drizzle-orm": "catalog:",
     "next": "catalog:",
     "next-themes": "catalog:",

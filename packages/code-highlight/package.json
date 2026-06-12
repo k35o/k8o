@@ -25,12 +25,12 @@
     "type-check": "tsgo --noEmit"
   },
   "dependencies": {
-    "@shikijs/rehype": "4.1.0",
-    "shiki": "4.1.0"
+    "@shikijs/rehype": "4.2.0",
+    "shiki": "4.2.0"
   },
   "devDependencies": {
     "@repo/typescript-config": "workspace:*",
-    "@shikijs/types": "4.1.0",
+    "@shikijs/types": "4.2.0",
     "@types/hast": "3.0.4",
     "@vitest/coverage-v8": "catalog:",
     "vitest": "catalog:"
