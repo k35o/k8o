@@ -51,6 +51,17 @@ export default defineConfig({
       },
       {
         extends: true,
+        plugins: [jsxAutomaticPlugin],
+        test: {
+          env: {
+            TZ: 'UTC',
+          },
+          name: { label: 'app test', color: 'yellow' },
+          include: ['src/app/**/*.test.{ts,tsx}'],
+        },
+      },
+      {
+        extends: true,
         plugins: [
           storybookTest({
             storybookScript: 'pnpm storybook --ci',
