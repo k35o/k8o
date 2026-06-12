@@ -64,6 +64,9 @@ WebフロントエンドとTypeScriptが好きで、Baselineを追いながらWe
 
 ${forgeContent}
 
+### fluida
+絵の具を流して模様を描く、フルイドアートのお絵かきWebアプリです。
+
 ### ArteOdyssey
 k8o.meのデザインシステム。コンポーネントやトークンを確認できます。
 

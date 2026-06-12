@@ -32,22 +32,25 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       url: 'https://k8o.me/base-converter',
     },
     {
+      url: 'https://k8o.me/baseline',
+    },
+    {
       url: 'https://k8o.me/color-converter',
     },
     {
       url: 'https://k8o.me/contrast-checker',
     },
     {
-      url: 'https://k8o.me/japanese-text-fixer',
+      url: 'https://k8o.me/moji-count',
     },
     {
-      url: 'https://k8o.me/moji-count',
+      url: 'https://k8o.me/qr-generator',
     },
     {
       url: 'https://k8o.me/radius-maker',
     },
     {
-      url: 'https://k8o.me/sql-table-builder',
+      url: 'https://k8o.me/text-diff',
     },
   ] satisfies MetadataRoute.Sitemap;
 }
