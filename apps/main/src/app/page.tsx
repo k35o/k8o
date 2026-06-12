@@ -5,6 +5,7 @@ import { AppCard } from './_components/app-card';
 import { EmailTooltip } from './_components/email-tooltip';
 import { ActivityErrorBoundary } from './_components/error-boundary';
 import { GitHubContributionGraph } from './_components/github-contribution-graph';
+import { HomeJsonLd } from './_components/json-ld';
 import { RecentBlogs } from './_components/recent-blogs';
 import { SocialIcons } from './_components/social-icons';
 import k8o from './_images/k8o.jpg';
@@ -12,6 +13,7 @@ import k8o from './_images/k8o.jpg';
 export default function Home() {
   return (
     <div className="mx-auto w-full max-w-5xl">
+      <HomeJsonLd />
       <div className="flex flex-col gap-12">
         <header className="grid grid-cols-[auto_1fr] items-center gap-x-4 gap-y-5 pt-2 lg:gap-x-10">
           <Image

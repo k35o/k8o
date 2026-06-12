@@ -14,11 +14,13 @@ import Link from 'next/link';
 import { type FC, type ReactNode, Suspense } from 'react';
 
 import { SilentErrorBoundary } from '@/app/_components/error-boundary';
+import { JsonLd } from '@/app/_components/json-ld';
 import {
   getBlogContent,
   type getBlogsByTags,
   getBlogToc,
 } from '@/features/blog/interface/queries';
+import { blogPostingJsonLd } from '@/shared/site/json-ld';
 
 import { END_OF_CONTENT_ID } from './constants';
 import { CopyMarkdownButton } from './copy-markdown-button';
@@ -152,8 +154,11 @@ export const BlogLayout: FC<BlogLayoutProps> = async ({ children, slug }) => {
   const headingTree = await getBlogToc(slug);
 
   return (
-    <BlogLayoutContent blog={blog} headingTree={headingTree} slug={slug}>
-      {children}
-    </BlogLayoutContent>
+    <>
+      <JsonLd data={blogPostingJsonLd(blog)} />
+      <BlogLayoutContent blog={blog} headingTree={headingTree} slug={slug}>
+        {children}
+      </BlogLayoutContent>
+    </>
   );
 };
