@@ -2,7 +2,7 @@
 
 import { BlogIcon, TextField } from '@k8o/arte-odyssey';
 import { useQueryStates } from 'nuqs';
-import { type FC, useCallback, useMemo } from 'react';
+import { type FC, useMemo } from 'react';
 
 import { filterBlogs } from '../../_utils/filter-blogs';
 import { groupBlogsByYear } from '../../_utils/group-blogs-by-year';
@@ -17,13 +17,6 @@ type Props = {
 export const BlogListContent: FC<Props> = ({ blogs }) => {
   const [params, setParams] = useQueryStates(blogListParsers);
   const query = params.q;
-
-  const handleQueryChange = useCallback(
-    (value: string) => {
-      void setParams({ q: value || null });
-    },
-    [setParams],
-  );
 
   const yearGroups = useMemo(
     () => groupBlogsByYear(filterBlogs(blogs, query)),
@@ -42,13 +35,15 @@ export const BlogListContent: FC<Props> = ({ blogs }) => {
           <TextField
             aria-label="記事を検索"
             onChange={(e) => {
-              handleQueryChange(e.target.value);
+              void setParams({ q: e.target.value || null });
             }}
             placeholder="タイトル・説明・タグで検索..."
             value={query}
           />
         </div>
-        <p className="text-fg-mute shrink-0 text-sm">{filteredCount}件の記事</p>
+        <p aria-live="polite" className="text-fg-mute shrink-0 text-sm">
+          {filteredCount}件の記事
+        </p>
       </div>
       {filteredCount === 0 ? (
         <div className="flex flex-col items-center gap-3 py-16 text-center">
