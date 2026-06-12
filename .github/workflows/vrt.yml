@@ -1,0 +1,119 @@
+name: vrt
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+
+concurrency:
+  group: vrt-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+  pull-requests: write
+  actions: read
+
+jobs:
+  vrt:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Checkout branch
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          persist-credentials: false
+
+      - name: Setup
+        uses: ./.github/actions/setup
+
+      - name: Install Playwright
+        run: pnpm run install-playwright
+
+      - name: Capture story screenshots (main)
+        run: pnpm -F main run test:vrt
+
+      - name: Capture story screenshots (admin)
+        run: pnpm -F admin run test:vrt
+
+      # main: 撮影結果を次回のPR比較用ベースラインとして保存する
+      - name: Upload baseline (main)
+        if: github.event_name == 'push'
+        uses: actions/upload-artifact@330a01c490aca151604b8cf639adc76d48f6c5d4 # v5.0.0
+        with:
+          name: vrt-baseline-main
+          path: apps/main/.vrt/actual
+          retention-days: 30
+
+      - name: Upload baseline (admin)
+        if: github.event_name == 'push'
+        uses: actions/upload-artifact@330a01c490aca151604b8cf639adc76d48f6c5d4 # v5.0.0
+        with:
+          name: vrt-baseline-admin
+          path: apps/admin/.vrt/actual
+          retention-days: 30
+
+      # PR: mainの最新ベースラインを取得する（無いアプリは比較をスキップ）
+      - name: Download baselines from main
+        if: github.event_name == 'pull_request'
+        id: baseline
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPO: ${{ github.repository }}
+        run: |
+          run_id=$(gh api "repos/$REPO/actions/workflows/vrt.yml/runs?branch=main&status=success&per_page=1" --jq '.workflow_runs[0].id // empty')
+          for app in main admin; do
+            if [ -n "$run_id" ] && gh run download "$run_id" --name "vrt-baseline-$app" --dir "apps/$app/.vrt/expected" --repo "$REPO"; then
+              echo "found_$app=true" >> "$GITHUB_OUTPUT"
+            else
+              echo "found_$app=false" >> "$GITHUB_OUTPUT"
+            fi
+          done
+
+      - name: Compare against baseline (main)
+        if: github.event_name == 'pull_request' && steps.baseline.outputs.found_main == 'true'
+        id: compare-main
+        continue-on-error: true
+        working-directory: apps/main
+        run: pnpm exec svrt compare
+
+      - name: Compare against baseline (admin)
+        if: github.event_name == 'pull_request' && steps.baseline.outputs.found_admin == 'true'
+        id: compare-admin
+        continue-on-error: true
+        working-directory: apps/admin
+        run: pnpm exec svrt compare
+
+      - name: Upload report
+        if: github.event_name == 'pull_request'
+        uses: actions/upload-artifact@330a01c490aca151604b8cf639adc76d48f6c5d4 # v5.0.0
+        with:
+          name: vrt-report
+          path: |
+            apps/main/.vrt
+            apps/admin/.vrt
+          retention-days: 14
+
+      - name: Comment summary on PR
+        if: github.event_name == 'pull_request'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPO: ${{ github.repository }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          node .github/scripts/vrt-comment.mjs main=apps/main/.vrt/report.json admin=apps/admin/.vrt/report.json > comment.md
+          marker='<!-- vrt-report -->'
+          comment_id=$(gh api "repos/$REPO/issues/$PR_NUMBER/comments" --paginate --jq ".[] | select(.body | startswith(\"$marker\")) | .id" | head -n1)
+          if [ -n "$comment_id" ]; then
+            gh api --method PATCH "repos/$REPO/issues/comments/$comment_id" -F body=@comment.md > /dev/null
+          else
+            gh api "repos/$REPO/issues/$PR_NUMBER/comments" -F body=@comment.md > /dev/null
+          fi
+
+      - name: Fail when differences exist
+        if: github.event_name == 'pull_request' && (steps.compare-main.outcome == 'failure' || steps.compare-admin.outcome == 'failure')
+        run: |
+          echo '視覚的な差分があります。PRコメントとvrt-report artifactを確認してください。'
+          exit 1
