@@ -30,7 +30,7 @@ if (reports.length === 0) {
   const failed = reports.some((entry) => entry.report.summary.failed);
   lines.push(
     failed
-      ? '⚠️ **視覚的な差分があります。** 内容を確認し、意図した変更ならそのままマージしてください（マージ後のmain実行が新しいベースラインになります）。'
+      ? '⚠️ **視覚的な差分があります。** @k35o 内容を確認し、意図した変更ならそのままマージしてください（マージ後のmain実行が新しいベースラインになります）。'
       : '✅ **差分はありません。**',
     '',
     '| | passed | changed | added | deleted | report |',
@@ -68,6 +68,9 @@ if (reports.length === 0) {
   }
 }
 if (missing.length > 0 && reports.length > 0) {
-  lines.push('', `（${missing.map((t) => t.label).join(', ')}: ベースライン未作成のため比較をスキップ）`);
+  lines.push(
+    '',
+    `（${missing.map((t) => t.label).join(', ')}: ベースライン未作成のため比較をスキップ）`,
+  );
 }
 console.log(lines.join('\n'));
