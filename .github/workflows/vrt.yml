@@ -133,11 +133,13 @@ jobs:
           node .github/scripts/vrt-comment.mjs "main=apps/main/.vrt/report.json=$main_url" "admin=apps/admin/.vrt/report.json=$admin_url" > comment.md
           marker='<!-- vrt-report -->'
           comment_id=$(gh api "repos/$REPO/issues/$PR_NUMBER/comments" --paginate --jq ".[] | select(.body | startswith(\"$marker\")) | .id" | head -n1)
-          # 編集では通知が飛ばないため、旧コメントを消して新規投稿する
+          # sticky comment: 既存があれば編集（PATCH）し、無ければ新規投稿する。
+          # push のたびに新規コメントが増えるのを防ぐ（通知は飛ばなくなる）
           if [ -n "$comment_id" ]; then
-            gh api --method DELETE "repos/$REPO/issues/comments/$comment_id"
+            gh api --method PATCH "repos/$REPO/issues/comments/$comment_id" -F body=@comment.md > /dev/null
+          else
+            gh api "repos/$REPO/issues/$PR_NUMBER/comments" -F body=@comment.md > /dev/null
           fi
-          gh api "repos/$REPO/issues/$PR_NUMBER/comments" -F body=@comment.md > /dev/null
 
       - name: Fail when differences exist
         if: github.event_name == 'pull_request' && (steps.compare-main.outcome == 'failure' || steps.compare-admin.outcome == 'failure')
