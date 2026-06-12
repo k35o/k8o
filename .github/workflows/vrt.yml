@@ -141,8 +141,9 @@ jobs:
             gh api "repos/$REPO/issues/$PR_NUMBER/comments" -F body=@comment.md > /dev/null
           fi
 
-      - name: Fail when differences exist
+      # 差分があっても CI は落とさず、warning 注釈で可視化するだけにする。
+      # 意図した変更かの判断は人間が PR コメント（sticky）と report を見て行う。
+      - name: Warn when differences exist
         if: github.event_name == 'pull_request' && (steps.compare-main.outcome == 'failure' || steps.compare-admin.outcome == 'failure')
         run: |
-          echo '視覚的な差分があります。PRコメントとvrt-report artifactを確認してください。'
-          exit 1
+          echo '::warning::視覚的な差分があります。PRコメントとvrt-report artifactを確認してください。'
