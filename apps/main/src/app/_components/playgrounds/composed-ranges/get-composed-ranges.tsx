@@ -3,8 +3,6 @@
 import { Button, Code } from '@k8o/arte-odyssey';
 import { useEffect, useRef, useState } from 'react';
 
-import { getHTMLPolicy } from '@/shared/browser/trusted-types';
-
 export function GetComposedRanges() {
   const ref = useRef<HTMLParagraphElement>(null);
   const shadow = useRef<ShadowRoot | null>(null);
@@ -15,12 +13,14 @@ export function GetComposedRanges() {
 
   useEffect(() => {
     if (ref.current && !shadow.current) {
-      const innerHTML1 = ref.current.innerHTML;
+      // 文字列→HTML パース(innerHTML)を避け、ノードを clone して shadow root へ
+      // 移す。XSS 経路にも Trusted Types の createHTML にも依存せず span 構造を保てる。
+      const fragment = document.createDocumentFragment();
+      for (const child of ref.current.childNodes) {
+        fragment.append(child.cloneNode(true));
+      }
       const shadowRoot1 = ref.current.attachShadow({ mode: 'closed' });
-      const policy = getHTMLPolicy();
-      shadowRoot1.innerHTML = policy
-        ? policy.createHTML(innerHTML1)
-        : innerHTML1;
+      shadowRoot1.append(fragment);
       shadow.current = shadowRoot1;
     }
   }, []);

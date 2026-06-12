@@ -29,9 +29,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     },
     ...slideMap,
     {
-      url: 'https://k8o.me/base-converter',
-    },
-    {
       url: 'https://k8o.me/baseline',
     },
     {
@@ -44,13 +41,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       url: 'https://k8o.me/moji-count',
     },
     {
-      url: 'https://k8o.me/qr-generator',
-    },
-    {
       url: 'https://k8o.me/radius-maker',
-    },
-    {
-      url: 'https://k8o.me/text-diff',
     },
   ] satisfies MetadataRoute.Sitemap;
 }

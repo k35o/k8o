@@ -31,7 +31,7 @@ export const External: Story = {
 
 export const DisplaysTitle: Story = {
   args: {
-    link: '/base-converter',
+    link: '/moji-count',
     title: 'テストアプリ',
     description: 'テスト用の説明文です。',
   },
@@ -47,7 +47,7 @@ export const DisplaysTitle: Story = {
 
 export const DisplaysDescription: Story = {
   args: {
-    link: '/qr-generator',
+    link: '/radius-maker',
     title: 'アプリ名',
     description: 'これはアプリの説明文です。複数行になる場合もあります。',
   },
