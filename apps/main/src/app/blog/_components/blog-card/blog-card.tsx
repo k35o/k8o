@@ -32,7 +32,7 @@ export const BlogCard: FC<BlogCardProps> = ({
     <Link className="group block h-full" href={`/blog/${slug}` as Route}>
       <div className="flex h-full flex-col justify-between gap-4 p-4">
         <div className="group-hover:text-primary-fg flex flex-col gap-1">
-          <Heading lineClamp={3} type="h3">
+          <Heading lineClamp={3} type="h4">
             {title}
           </Heading>
           {description !== null && (

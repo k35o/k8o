@@ -1,14 +1,18 @@
+import { Suspense } from 'react';
+
 import { getBlogContents } from '@/features/blog/interface/queries';
 
-import { BlogCard } from './_components/blog-card';
+import {
+  BlogListContent,
+  BlogListSkeleton,
+} from './_components/blog-list-content';
 
 export default async function Page() {
   const blogs = await getBlogContents();
+
   return (
-    <div className="relative flex flex-col gap-4">
-      {blogs.map((blog) => (
-        <BlogCard key={blog.id} {...blog} />
-      ))}
-    </div>
+    <Suspense fallback={<BlogListSkeleton />}>
+      <BlogListContent blogs={blogs} />
+    </Suspense>
   );
 }
