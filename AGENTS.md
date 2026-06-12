@@ -25,6 +25,12 @@ pnpm run test -- --project="features test"              # feature系テストの
 pnpm run test -- --project=storybook                    # Storybookテストのみ
 pnpm run test -- apps/main/src/features/blog/application/blog.test.ts  # 単一ファイル
 
+# Visual Regression Testing (storybook-addon-vrt)
+pnpm -F main run test:vrt        # Storyごとのスクリーンショット撮影（adminも同様）
+pnpm -F main exec svrt compare   # ベースラインと比較してレポート生成
+pnpm -F main exec svrt approve   # 変更を新しいベースラインとして承認
+# CIではmainのベースラインと比較し、PRコメントに差分要約とレポートのリンクを表示する
+
 # Storybook
 pnpm run -F main storybook    # Storybook起動 (port 6006)
 
