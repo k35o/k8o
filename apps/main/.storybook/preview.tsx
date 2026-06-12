@@ -59,7 +59,18 @@ const preview: Preview = {
       },
     },
   },
-  loaders: [mswLoader],
+  loaders: [
+    mswLoader,
+    // Noto Sans JPはfont-display: optionalのため、初回ペイントまでに
+    // ロードが間に合わないとそのページではフォールバック表示に固定され、
+    // VRTのスクリーンショットが二値的に揺れる。Story描画前に登録済み
+    // フォントをすべてロードして折り返し位置を決定的にする
+    async () => {
+      await Promise.all(
+        [...document.fonts].map((font) => font.load().catch(() => undefined)),
+      );
+    },
+  ],
   parameters: {
     backgrounds: { disabled: true },
     layout: 'fullscreen',

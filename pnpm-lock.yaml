@@ -72,6 +72,9 @@ catalogs:
     storybook:
       specifier: 10.4.2
       version: 10.4.2
+    storybook-addon-vrt:
+      specifier: 0.1.0
+      version: 0.1.0
     tailwindcss:
       specifier: 4.3.0
       version: 4.3.0
@@ -219,6 +222,9 @@ importers:
       storybook:
         specifier: 'catalog:'
         version: 10.4.2(@testing-library/dom@10.4.1)(@types/react@19.2.15)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)(vite-plus@0.1.23(@opentelemetry/api@1.9.1)(@types/node@24.12.4)(@vitest/coverage-v8@4.1.8)(@vitest/ui@4.1.8)(esbuild@0.28.0)(jiti@2.7.0)(tsx@4.22.3)(typescript@6.0.3)(vite@8.0.14(@types/node@24.12.4)(esbuild@0.28.0)(jiti@2.7.0)(tsx@4.22.3)(yaml@2.9.0))(yaml@2.9.0))
+      storybook-addon-vrt:
+        specifier: 'catalog:'
+        version: 0.1.0(vite@8.0.14(@types/node@24.12.4)(esbuild@0.28.0)(jiti@2.7.0)(tsx@4.22.3)(yaml@2.9.0))(vitest@4.1.8)
       vitest:
         specifier: 'catalog:'
         version: 4.1.8(@opentelemetry/api@1.9.1)(@types/node@24.12.4)(@vitest/browser-playwright@4.1.8)(@vitest/coverage-v8@4.1.8)(@vitest/ui@4.1.8)(msw@2.14.6(@types/node@24.12.4)(typescript@6.0.3))(vite@8.0.14(@types/node@24.12.4)(esbuild@0.28.0)(jiti@2.7.0)(tsx@4.22.3)(yaml@2.9.0))
@@ -388,6 +394,9 @@ importers:
       storybook-addon-mock-date:
         specifier: 3.0.2
         version: 3.0.2(storybook@10.4.2(@testing-library/dom@10.4.1)(@types/react@19.2.15)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)(vite-plus@0.1.23(@opentelemetry/api@1.9.1)(@types/node@24.12.4)(@vitest/coverage-v8@4.1.8)(@vitest/ui@4.1.8)(esbuild@0.28.0)(jiti@2.7.0)(tsx@4.22.3)(typescript@6.0.3)(vite@8.0.14(@types/node@24.12.4)(esbuild@0.28.0)(jiti@2.7.0)(tsx@4.22.3)(yaml@2.9.0))(yaml@2.9.0)))
+      storybook-addon-vrt:
+        specifier: 'catalog:'
+        version: 0.1.0(vite@8.0.14(@types/node@24.12.4)(esbuild@0.28.0)(jiti@2.7.0)(tsx@4.22.3)(yaml@2.9.0))(vitest@4.1.8)
       vitest:
         specifier: 'catalog:'
         version: 4.1.8(@opentelemetry/api@1.9.1)(@types/node@24.12.4)(@vitest/browser-playwright@4.1.8)(@vitest/coverage-v8@4.1.8)(@vitest/ui@4.1.8)(msw@2.14.6(@types/node@24.12.4)(typescript@6.0.3))(vite@8.0.14(@types/node@24.12.4)(esbuild@0.28.0)(jiti@2.7.0)(tsx@4.22.3)(yaml@2.9.0))
@@ -4333,6 +4342,10 @@ packages:
     resolution: {integrity: sha512-tjwM5exMg6BGRI+kNmTntNsvdZS1X8BFYS6tnJ2hdH0kVxM6/eVZ2xy+FqStSWvYmtfFMDLIxurorHwDKfDz5Q==}
     engines: {node: '>=18'}
 
+  cac@7.0.0:
+    resolution: {integrity: sha512-tixWYgm5ZoOD+3g6UTea91eow5z6AAHaho3g0V9CNSNb45gM8SmflpAc+GRd1InC4AqN/07Unrgp56Y94N9hJQ==}
+    engines: {node: '>=20.19.0'}
+
   caniuse-lite@1.0.30001793:
     resolution: {integrity: sha512-iwSsYWaCOoh26cV8NwNRViHlrfUvYsHDfRVcbtmw0Kg6PJIZZXwMkj1442FYLBGkeUf1juAsU3DTfxW579mrPA==}
 
@@ -4588,8 +4601,8 @@ packages:
     resolution: {integrity: sha512-0je+qPKHEMohvfRTCEo3CrPG6cAzAYgmzKyxRiYSSDkS6eGJdyVJm7WaYA5ECaAD9wLB2T4EEeymA5aFVcYXCA==}
     engines: {node: '>=6'}
 
-  deslop-js@0.0.14:
-    resolution: {integrity: sha512-FY0rNK+mdTozXwNmcJAt5tD9hVOkXEX5ac+Mg77KJvnnsoAh3qIUW64PMnofutjeYz7g1vENMbOcrBmD1v4FlA==}
+  deslop-js@0.0.19:
+    resolution: {integrity: sha512-gLEwJ26XSRNN5r7x/AI8Zi0Fs6uJe/junYM+jQaaVRjfagUUAerPD90fZlwjRnK0Lpb9jRzqaM9BvmHXUHkGxA==}
 
   detect-libc@2.0.2:
     resolution: {integrity: sha512-UX6sGumvvqSaXgdKGUsgZWqcUyIXZ/vZTrlRT/iobiKhGL0zL4d3osHj3uqllWJK+i+sixDS/3COVEOFbupFyw==}
@@ -5993,8 +6006,8 @@ packages:
       vite-plus:
         optional: true
 
-  oxlint-plugin-react-doctor@0.2.16:
-    resolution: {integrity: sha512-Ul1UxcYfjBnt+HjgNaMnkvMJjyewS6rkSZl3LiD1g/QqSll1jiynYH/ZoNpUaGHp1pDQ/xLvCcXNQvqopN0tHA==}
+  oxlint-plugin-react-doctor@0.4.0:
+    resolution: {integrity: sha512-iC+iV296B41pghbPEmR1oklwjTo8v9LlTVG1LTHed3ZkeuljH3Kq+SKeHB1YXvLuq9MARr+n4WDmN5r7bHtJfg==}
     engines: {node: ^20.19.0 || >=22.12.0}
 
   oxlint-tailwindcss@1.1.0:
@@ -6176,8 +6189,8 @@ packages:
     resolution: {integrity: sha512-aEZ9qP+/M+58x2qgfSFEWH1BxLyHe5+qkLNJOZQb5iGS017jpbRnoKhNRrXPeA6RfBrZO5wZrT9DMC1UqE1f1w==}
     engines: {node: ^20.9.0 || >=22}
 
-  react-doctor@0.2.16:
-    resolution: {integrity: sha512-o108QscqM/TlC1QmKgDORf/P53PeZ69nZbRsvy53rXkKvWdKZC1Y0u1JRPmThbTh6v+QpMispBwEnFHhlpZQ7w==}
+  react-doctor@0.4.0:
+    resolution: {integrity: sha512-BWum4WfKZ9Sdv4zTlzRoog4fYEIBEWZXHnq8GaCL42XMLmoldATdix/i3xZSHD3+SqpMrUVGcuzerOL9R9P+bw==}
     engines: {node: ^20.19.0 || >=22.12.0}
     hasBin: true
 
@@ -6506,6 +6519,19 @@ packages:
     engines: {node: '>=22.0.0'}
     peerDependencies:
       storybook: ^10.0.0
+
+  storybook-addon-vrt@0.1.0:
+    resolution: {integrity: sha512-JQjhstfTVoMwVHABMbD7zq4DHH1H/h1Yb5Lll8UCJBbLlXVYbfHQlRxoFYjMRtNS5uyMKNY0OiwI9S6f1GEmUw==}
+    engines: {node: '>=22.12.0'}
+    hasBin: true
+    peerDependencies:
+      vite: ^6.0.0 || ^7.0.0 || ^8.0.0
+      vitest: ^4.0.0
+    peerDependenciesMeta:
+      vite:
+        optional: true
+      vitest:
+        optional: true
 
   storybook@10.4.2:
     resolution: {integrity: sha512-5Ax5vbHxFgMBGGhQDm75Rrumm/HZC4ICFhMcJaM0UlqnC/4FKj/IaZtImZFupknyiiyUEcWHPQFA2kX3/VSv1A==}
@@ -7030,6 +7056,26 @@ packages:
         optional: true
       jsdom:
         optional: true
+
+  vscode-jsonrpc@8.2.0:
+    resolution: {integrity: sha512-C+r0eKJUIfiDIfwJhria30+TYWPtuHJXHtI7J0YlOmKAo7ogxP20T0zxB7HZQIFhIyvoBPwWskjxrvAtfjyZfA==}
+    engines: {node: '>=14.0.0'}
+
+  vscode-languageserver-protocol@3.17.5:
+    resolution: {integrity: sha512-mb1bvRJN8SVznADSGWM9u/b07H7Ecg0I3OgXDuLdn307rl/J3A9YD6/eYOssqhecL27hK1IPZAsaqh00i/Jljg==}
+
+  vscode-languageserver-textdocument@1.0.12:
+    resolution: {integrity: sha512-cxWNPesCnQCcMPeenjKKsOCKQZ/L6Tv19DTRIGuLWe32lyzWhihGVJ/rcckZXJxfdKCFvRLS3fpBIsV/ZGX4zA==}
+
+  vscode-languageserver-types@3.17.5:
+    resolution: {integrity: sha512-Ld1VelNuX9pdF39h2Hgaeb5hEZM2Z3jUrrMgWQAu82jMtZp7p3vJT3BzToKtZI7NgQssZje5o0zryOrhQvzQAg==}
+
+  vscode-languageserver@9.0.1:
+    resolution: {integrity: sha512-woByF3PDpkHFUreUa7Hos7+pUWdeWMXRd26+ZX2A8cFx6v/JPTtd4/uN0/jB6XQHYaOlHbio03NTHCqrgG5n7g==}
+    hasBin: true
+
+  vscode-uri@3.1.0:
+    resolution: {integrity: sha512-/BpdSx+yCQGnCvecbyXdxHDkuk55/G3xwnC0GqY4gmQ3j+A+g8kzzgB4Nk/SINjqn6+waqw3EgbVF2QKExkRxQ==}
 
   walk-up-path@4.0.0:
     resolution: {integrity: sha512-3hu+tD8YzSLGuFYtPRb48vdhKMi0KQV5sn+uWr8+7dMEq/2G/dtLrdDinkLjqq5TIbIBjYJ4Ax/n3YiaW7QM8A==}
@@ -10308,6 +10354,8 @@ snapshots:
     dependencies:
       run-applescript: 7.1.0
 
+  cac@7.0.0: {}
+
   caniuse-lite@1.0.30001793: {}
 
   ccount@2.0.1: {}
@@ -10509,7 +10557,7 @@ snapshots:
 
   dequal@2.0.3: {}
 
-  deslop-js@0.0.14:
+  deslop-js@0.0.19:
     dependencies:
       '@oxc-project/types': 0.132.0
       fast-glob: 3.3.3
@@ -12401,7 +12449,7 @@ snapshots:
       vite-plus: 0.1.23(@opentelemetry/api@1.9.1)(@types/node@24.12.4)(@vitest/coverage-v8@4.1.8)(@vitest/ui@4.1.8)(esbuild@0.28.0)(jiti@2.7.0)(tsx@4.22.3)(typescript@6.0.3)(vite@8.0.14(@types/node@24.12.4)(esbuild@0.28.0)(jiti@2.7.0)(tsx@4.22.3)(yaml@2.9.0))(yaml@2.9.0)
     optional: true
 
-  oxlint-plugin-react-doctor@0.2.16:
+  oxlint-plugin-react-doctor@0.4.0:
     dependencies:
       '@typescript-eslint/types': 8.60.0
       eslint-scope: 9.1.2
@@ -12611,7 +12659,7 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  react-doctor@0.2.16(eslint@10.4.1(jiti@2.7.0))(oxlint-tsgolint@0.23.0)(vite-plus@0.1.23(@opentelemetry/api@1.9.1)(@types/node@24.12.4)(@vitest/coverage-v8@4.1.8)(@vitest/ui@4.1.8)(esbuild@0.28.0)(jiti@2.7.0)(tsx@4.22.3)(typescript@6.0.3)(vite@8.0.14(@types/node@24.12.4)(esbuild@0.28.0)(jiti@2.7.0)(tsx@4.22.3)(yaml@2.9.0))(yaml@2.9.0)):
+  react-doctor@0.4.0(eslint@10.4.1(jiti@2.7.0))(oxlint-tsgolint@0.23.0)(vite-plus@0.1.23(@opentelemetry/api@1.9.1)(@types/node@24.12.4)(@vitest/coverage-v8@4.1.8)(@vitest/ui@4.1.8)(esbuild@0.28.0)(jiti@2.7.0)(tsx@4.22.3)(typescript@6.0.3)(vite@8.0.14(@types/node@24.12.4)(esbuild@0.28.0)(jiti@2.7.0)(tsx@4.22.3)(yaml@2.9.0))(yaml@2.9.0)):
     dependencies:
       '@babel/code-frame': 7.29.7
       '@effect/platform-node-shared': 4.0.0-beta.70(effect@4.0.0-beta.70)
@@ -12619,15 +12667,18 @@ snapshots:
       agent-install: 0.0.5
       conf: 15.1.0
       confbox: 0.2.4
-      deslop-js: 0.0.14
+      deslop-js: 0.0.19
       effect: 4.0.0-beta.70
       eslint-plugin-react-hooks: 7.1.1(eslint@10.4.1(jiti@2.7.0))
       jiti: 2.7.0
       magicast: 0.5.3
       oxlint: 1.67.0(oxlint-tsgolint@0.23.0)(vite-plus@0.1.23(@opentelemetry/api@1.9.1)(@types/node@24.12.4)(@vitest/coverage-v8@4.1.8)(@vitest/ui@4.1.8)(esbuild@0.28.0)(jiti@2.7.0)(tsx@4.22.3)(typescript@6.0.3)(vite@8.0.14(@types/node@24.12.4)(esbuild@0.28.0)(jiti@2.7.0)(tsx@4.22.3)(yaml@2.9.0))(yaml@2.9.0))
-      oxlint-plugin-react-doctor: 0.2.16
+      oxlint-plugin-react-doctor: 0.4.0
       prompts: 2.4.2
       typescript: 6.0.3
+      vscode-languageserver: 9.0.1
+      vscode-languageserver-textdocument: 1.0.12
+      vscode-uri: 3.1.0
     transitivePeerDependencies:
       - '@opentelemetry/exporter-trace-otlp-http'
       - bufferutil
@@ -12690,7 +12741,7 @@ snapshots:
       preact: 10.29.2
       prompts: 2.4.2
       react: 19.2.7
-      react-doctor: 0.2.16(eslint@10.4.1(jiti@2.7.0))(oxlint-tsgolint@0.23.0)(vite-plus@0.1.23(@opentelemetry/api@1.9.1)(@types/node@24.12.4)(@vitest/coverage-v8@4.1.8)(@vitest/ui@4.1.8)(esbuild@0.28.0)(jiti@2.7.0)(tsx@4.22.3)(typescript@6.0.3)(vite@8.0.14(@types/node@24.12.4)(esbuild@0.28.0)(jiti@2.7.0)(tsx@4.22.3)(yaml@2.9.0))(yaml@2.9.0))
+      react-doctor: 0.4.0(eslint@10.4.1(jiti@2.7.0))(oxlint-tsgolint@0.23.0)(vite-plus@0.1.23(@opentelemetry/api@1.9.1)(@types/node@24.12.4)(@vitest/coverage-v8@4.1.8)(@vitest/ui@4.1.8)(esbuild@0.28.0)(jiti@2.7.0)(tsx@4.22.3)(typescript@6.0.3)(vite@8.0.14(@types/node@24.12.4)(esbuild@0.28.0)(jiti@2.7.0)(tsx@4.22.3)(yaml@2.9.0))(yaml@2.9.0))
       react-dom: 19.2.7(react@19.2.7)
       react-grab: 0.1.44(react@19.2.7)
     optionalDependencies:
@@ -13072,6 +13123,15 @@ snapshots:
     dependencies:
       '@sinonjs/fake-timers': 15.3.2
       storybook: 10.4.2(@testing-library/dom@10.4.1)(@types/react@19.2.15)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)(vite-plus@0.1.23(@opentelemetry/api@1.9.1)(@types/node@24.12.4)(@vitest/coverage-v8@4.1.8)(@vitest/ui@4.1.8)(esbuild@0.28.0)(jiti@2.7.0)(tsx@4.22.3)(typescript@6.0.3)(vite@8.0.14(@types/node@24.12.4)(esbuild@0.28.0)(jiti@2.7.0)(tsx@4.22.3)(yaml@2.9.0))(yaml@2.9.0))
+
+  storybook-addon-vrt@0.1.0(vite@8.0.14(@types/node@24.12.4)(esbuild@0.28.0)(jiti@2.7.0)(tsx@4.22.3)(yaml@2.9.0))(vitest@4.1.8):
+    dependencies:
+      cac: 7.0.0
+      pixelmatch: 7.2.0
+      pngjs: 7.0.0
+    optionalDependencies:
+      vite: 8.0.14(@types/node@24.12.4)(esbuild@0.28.0)(jiti@2.7.0)(tsx@4.22.3)(yaml@2.9.0)
+      vitest: 4.1.8(@opentelemetry/api@1.9.1)(@types/node@24.12.4)(@vitest/browser-playwright@4.1.8)(@vitest/coverage-v8@4.1.8)(@vitest/ui@4.1.8)(msw@2.14.6(@types/node@24.12.4)(typescript@6.0.3))(vite@8.0.14(@types/node@24.12.4)(esbuild@0.28.0)(jiti@2.7.0)(tsx@4.22.3)(yaml@2.9.0))
 
   storybook@10.4.2(@testing-library/dom@10.4.1)(@types/react@19.2.15)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)(vite-plus@0.1.23(@opentelemetry/api@1.9.1)(@types/node@24.12.4)(@vitest/coverage-v8@4.1.8)(@vitest/ui@4.1.8)(esbuild@0.28.0)(jiti@2.7.0)(tsx@4.22.3)(typescript@6.0.3)(vite@8.0.14(@types/node@24.12.4)(esbuild@0.28.0)(jiti@2.7.0)(tsx@4.22.3)(yaml@2.9.0))(yaml@2.9.0)):
     dependencies:
@@ -13675,6 +13735,23 @@ snapshots:
       '@vitest/ui': 4.1.8(vitest@4.1.8)
     transitivePeerDependencies:
       - msw
+
+  vscode-jsonrpc@8.2.0: {}
+
+  vscode-languageserver-protocol@3.17.5:
+    dependencies:
+      vscode-jsonrpc: 8.2.0
+      vscode-languageserver-types: 3.17.5
+
+  vscode-languageserver-textdocument@1.0.12: {}
+
+  vscode-languageserver-types@3.17.5: {}
+
+  vscode-languageserver@9.0.1:
+    dependencies:
+      vscode-languageserver-protocol: 3.17.5
+
+  vscode-uri@3.1.0: {}
 
   walk-up-path@4.0.0: {}
 
