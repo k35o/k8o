@@ -1,5 +1,8 @@
 import { OgImage } from '@/app/_components/og-image';
-import { getBlogContent } from '@/features/blog/interface/queries';
+import {
+  getBlogContent,
+  getBlogOgCode,
+} from '@/features/blog/interface/queries';
 
 export const alt =
   'OIDCを利用したnpmパッケージの公開が可能になったので、Changeset×GitHub Actionsで試してみる';
@@ -11,10 +14,14 @@ export const size = {
 export const contentType = 'image/png';
 
 export default async function Image() {
-  const blog = await getBlogContent('npm-trusted-publishing-for-npm-packages');
+  const [blog, ogCode] = await Promise.all([
+    getBlogContent('npm-trusted-publishing-for-npm-packages'),
+    getBlogOgCode('npm-trusted-publishing-for-npm-packages'),
+  ]);
 
   return OgImage({
     category: 'Blog',
     title: blog.title,
+    code: ogCode ?? undefined,
   });
 }

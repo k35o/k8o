@@ -1,5 +1,8 @@
 import { OgImage } from '@/app/_components/og-image';
-import { getBlogContent } from '@/features/blog/interface/queries';
+import {
+  getBlogContent,
+  getBlogOgCode,
+} from '@/features/blog/interface/queries';
 
 export const alt = 'Uint8Arrayとbase64、Hex（16進数）の相互変換';
 export const size = {
@@ -10,10 +13,14 @@ export const size = {
 export const contentType = 'image/png';
 
 export default async function Image() {
-  const blog = await getBlogContent('uint8array-base64-hex');
+  const [blog, ogCode] = await Promise.all([
+    getBlogContent('uint8array-base64-hex'),
+    getBlogOgCode('uint8array-base64-hex'),
+  ]);
 
   return OgImage({
     category: 'Blog',
     title: blog.title,
+    code: ogCode ?? undefined,
   });
 }

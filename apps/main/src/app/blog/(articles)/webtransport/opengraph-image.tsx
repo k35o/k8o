@@ -1,5 +1,8 @@
 import { OgImage } from '@/app/_components/og-image';
-import { getBlogContent } from '@/features/blog/interface/queries';
+import {
+  getBlogContent,
+  getBlogOgCode,
+} from '@/features/blog/interface/queries';
 
 export const alt = 'WebTransportでHTTP/3上の双方向通信を実現する';
 export const size = {
@@ -10,10 +13,14 @@ export const size = {
 export const contentType = 'image/png';
 
 export default async function Image() {
-  const blog = await getBlogContent('webtransport');
+  const [blog, ogCode] = await Promise.all([
+    getBlogContent('webtransport'),
+    getBlogOgCode('webtransport'),
+  ]);
 
   return OgImage({
     category: 'Blog',
     title: blog.title,
+    code: ogCode ?? undefined,
   });
 }

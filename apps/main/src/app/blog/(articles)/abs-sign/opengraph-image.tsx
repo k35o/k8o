@@ -1,5 +1,8 @@
 import { OgImage } from '@/app/_components/og-image';
-import { getBlogContent } from '@/features/blog/interface/queries';
+import {
+  getBlogContent,
+  getBlogOgCode,
+} from '@/features/blog/interface/queries';
 
 export const alt =
   'CSSのabs()とsign()関数で数値の符号を使ったスタイリングを行う';
@@ -11,10 +14,14 @@ export const size = {
 export const contentType = 'image/png';
 
 export default async function Image() {
-  const blog = await getBlogContent('abs-sign');
+  const [blog, ogCode] = await Promise.all([
+    getBlogContent('abs-sign'),
+    getBlogOgCode('abs-sign'),
+  ]);
 
   return OgImage({
     category: 'Blog',
     title: blog.title,
+    code: ogCode ?? undefined,
   });
 }

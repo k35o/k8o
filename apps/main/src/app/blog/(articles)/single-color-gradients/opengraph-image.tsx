@@ -1,5 +1,8 @@
 import { OgImage } from '@/app/_components/og-image';
-import { getBlogContent } from '@/features/blog/interface/queries';
+import {
+  getBlogContent,
+  getBlogOgCode,
+} from '@/features/blog/interface/queries';
 
 export const alt = 'CSS グラデーションの新仕様：単色カラーストップの導入';
 export const size = {
@@ -10,10 +13,14 @@ export const size = {
 export const contentType = 'image/png';
 
 export default async function Image() {
-  const blog = await getBlogContent('single-color-gradients');
+  const [blog, ogCode] = await Promise.all([
+    getBlogContent('single-color-gradients'),
+    getBlogOgCode('single-color-gradients'),
+  ]);
 
   return OgImage({
     category: 'Blog',
     title: blog.title,
+    code: ogCode ?? undefined,
   });
 }
