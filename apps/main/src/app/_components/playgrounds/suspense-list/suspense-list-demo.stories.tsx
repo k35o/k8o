@@ -8,6 +8,8 @@ const playgroundTitle = SuspenseListDemo.name;
 const meta: Meta<typeof SuspenseListDemo> = {
   title: 'playgrounds/suspense-list/SuspenseListDemo',
   component: SuspenseListDemo,
+  // デモのsleep（最長2000ms）が全て解決した決定的な最終状態を撮影する
+  parameters: { vrt: { delay: 2500 } },
   decorators: [
     (Story) => (
       <Playground title={playgroundTitle}>

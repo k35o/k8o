@@ -66,3 +66,6 @@ proxy.log
 routes.json
 
 *storybook.log
+
+# Visual regression testing
+.vrt/

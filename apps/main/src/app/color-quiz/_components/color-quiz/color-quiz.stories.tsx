@@ -6,6 +6,8 @@ import { ColorQuiz } from './color-quiz';
 const meta: Meta<typeof ColorQuiz> = {
   title: 'app/color-quiz/color-quiz',
   component: ColorQuiz,
+  // コンポーネント自体がMath.random()で出題色を生成するため、VRTの対象外にする
+  parameters: { vrt: { skip: true } },
 };
 
 export default meta;

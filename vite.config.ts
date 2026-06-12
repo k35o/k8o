@@ -9,6 +9,8 @@ const ignorePatterns = [
   '**/*.md',
   '**/*.mdx',
   '.claude/worktrees/**',
+  // CI用スクリプト。tsconfig外の .mjs のため型情報前提のルールが誤検知する
+  '.github/scripts/**',
 ];
 
 export default defineConfig({

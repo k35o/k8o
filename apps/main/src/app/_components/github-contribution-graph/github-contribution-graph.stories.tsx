@@ -72,7 +72,8 @@ function generateMockContributions(highActivity = false, empty = false) {
         : isWeekend
           ? 5
           : 15;
-    const count = Math.floor(Math.random() * maxContributions);
+    // VRTのためStoryのデータは決定的に生成する（乱数を使わない）
+    const count = (i * 7) % (maxContributions + 1);
 
     const dateString = date.toISOString().split('T')[0];
     if (dateString !== undefined) {

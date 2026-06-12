@@ -3,6 +3,7 @@ import { fileURLToPath } from 'node:url';
 import { jsxAutomaticPlugin } from '@repo/vitest-config/jsx-automatic';
 import { storybookTest } from '@storybook/addon-vitest/vitest-plugin';
 import { playwright } from '@vitest/browser-playwright';
+import { vrt } from 'storybook-addon-vrt/vitest-plugin';
 import { defineConfig } from 'vitest/config';
 
 export default defineConfig({
@@ -55,6 +56,7 @@ export default defineConfig({
             storybookScript: 'pnpm storybook --ci',
             configDir: fileURLToPath(new URL('./.storybook', import.meta.url)),
           }),
+          vrt(),
         ],
         publicDir: fileURLToPath(
           new URL('./.storybook/public', import.meta.url),

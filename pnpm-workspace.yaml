@@ -10,6 +10,8 @@ allowBuilds:
   msgpackr-extract: false
   msw: true
   sharp: false
+  # wranglerの依存。pages deployはAPIアップロードのみでworkerd実行は不要
+  workerd: false
 
 blockExoticSubdeps: true
 
@@ -36,8 +38,10 @@ catalog:
   react: 19.2.7
   react-dom: 19.2.7
   storybook: 10.4.2
+  storybook-addon-vrt: 0.1.0
   tailwindcss: 4.3.0
   vitest: 4.1.8
+  wrangler: 4.97.0
   vitest-browser-react: 2.2.0
 
 minimumReleaseAge: 10080
@@ -46,6 +50,7 @@ minimumReleaseAgeExclude:
   - '@k8o/*'
   # Renovate security update: turbo@2.9.14
   - turbo@2.9.14
+  - storybook-addon-vrt
 
 verifyDepsBeforeRun: install
 

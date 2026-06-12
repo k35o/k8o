@@ -10,6 +10,7 @@
     "start": "next start",
     "type-check": "next typegen && tsgo --noEmit",
     "test": "vitest run",
+    "test:vrt": "VRT=1 vitest run --project=storybook",
     "test:watch": "vitest",
     "test:ui": "vitest --ui --coverage",
     "coverage": "vitest run --coverage",
@@ -48,6 +49,7 @@
     "chromatic": "catalog:",
     "postcss-load-config": "catalog:",
     "storybook": "catalog:",
+    "storybook-addon-vrt": "catalog:",
     "vitest": "catalog:"
   }
 }

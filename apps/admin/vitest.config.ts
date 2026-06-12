@@ -4,6 +4,7 @@ import { fileURLToPath } from 'node:url';
 import { jsxAutomaticPlugin } from '@repo/vitest-config/jsx-automatic';
 import { storybookTest } from '@storybook/addon-vitest/vitest-plugin';
 import { playwright } from '@vitest/browser-playwright';
+import { vrt } from 'storybook-addon-vrt/vitest-plugin';
 import { defineConfig } from 'vitest/config';
 
 const dirname =
@@ -38,6 +39,7 @@ export default defineConfig({
         extends: true,
         plugins: [
           storybookTest({ configDir: path.join(dirname, '.storybook') }),
+          vrt(),
         ],
         optimizeDeps: {
           include: ['next/link', 'better-auth/react'],

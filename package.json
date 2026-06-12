@@ -31,7 +31,8 @@
     "portless": "0.13.1",
     "turbo": "2.9.16",
     "typescript": "6.0.3",
-    "vite-plus": "0.1.23"
+    "vite-plus": "0.1.23",
+    "wrangler": "catalog:"
   },
   "engines": {
     "node": ">=24.14.1"
