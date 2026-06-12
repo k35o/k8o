@@ -95,15 +95,19 @@ jobs:
             apps/admin/.vrt
           retention-days: 14
 
-      # トークン未登録の間はスキップされ、artifactのみのフォールバックになる
       - name: Publish report to Cloudflare Pages
-        if: github.event_name == 'pull_request' && secrets.CLOUDFLARE_API_TOKEN != ''
+        if: github.event_name == 'pull_request'
         id: pages
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           CLOUDFLARE_ACCOUNT_ID: 31074c2d041f3ceb8a5bb3fc51dd3bfa
           PR_NUMBER: ${{ github.event.pull_request.number }}
         run: |
+          # トークン未登録の間はスキップし、artifactのみのフォールバックになる
+          if [ -z "$CLOUDFLARE_API_TOKEN" ]; then
+            echo 'CLOUDFLARE_API_TOKEN が未登録のためPagesへの公開をスキップ'
+            exit 0
+          fi
           mkdir -p vrt-site
           cp -r apps/main/.vrt vrt-site/main
           cp -r apps/admin/.vrt vrt-site/admin
