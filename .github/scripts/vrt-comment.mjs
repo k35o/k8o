@@ -1,12 +1,17 @@
 #!/usr/bin/env node
 // VRTのreport.jsonからPRコメント本文(Markdown)を生成して標準出力に書く。
-// 使い方: node vrt-comment.mjs <label>=<report.jsonのパス> ...
+// 使い方: node vrt-comment.mjs <label>=<report.jsonのパス>[=<公開レポートURL>] ...
 import { existsSync, readFileSync } from 'node:fs';
 
 const runUrl = process.env.RUN_URL ?? '';
 const targets = process.argv.slice(2).map((arg) => {
-  const eq = arg.indexOf('=');
-  return { label: arg.slice(0, eq), path: arg.slice(eq + 1) };
+  const first = arg.indexOf('=');
+  const second = arg.indexOf('=', first + 1);
+  return {
+    label: arg.slice(0, first),
+    path: second === -1 ? arg.slice(first + 1) : arg.slice(first + 1, second),
+    url: second === -1 ? '' : arg.slice(second + 1),
+  };
 });
 
 const MAX_ITEMS = 30;
@@ -28,13 +33,14 @@ if (reports.length === 0) {
       ? '⚠️ **視覚的な差分があります。** 内容を確認し、意図した変更ならそのままマージしてください（マージ後のmain実行が新しいベースラインになります）。'
       : '✅ **差分はありません。**',
     '',
-    '| | passed | changed | added | deleted |',
-    '| --- | ---: | ---: | ---: | ---: |',
+    '| | passed | changed | added | deleted | report |',
+    '| --- | ---: | ---: | ---: | ---: | --- |',
   );
-  for (const { label, report } of reports) {
+  for (const { label, url, report } of reports) {
     const s = report.summary;
+    const link = url === '' ? '—' : `[開く](${url})`;
     lines.push(
-      `| ${label} | ${s.passed} | ${s.changed} | ${s.added} | ${s.deleted} |`,
+      `| ${label} | ${s.passed} | ${s.changed} | ${s.added} | ${s.deleted} | ${link} |`,
     );
   }
   for (const { label, report } of reports) {
@@ -54,15 +60,14 @@ if (reports.length === 0) {
       }
     }
   }
-  lines.push(
-    '',
-    `📦 差分画像つきレポート: [Actions run](${runUrl}) の \`vrt-report\` artifactをダウンロードし、\`report.html\` をブラウザで開く`,
-  );
+  if (reports.some((entry) => entry.url === '')) {
+    lines.push(
+      '',
+      `📦 差分画像つきレポート: [Actions run](${runUrl}) の \`vrt-report\` artifactをダウンロードし、\`report.html\` をブラウザで開く`,
+    );
+  }
 }
 if (missing.length > 0 && reports.length > 0) {
-  lines.push(
-    '',
-    `（${missing.map((t) => t.label).join(', ')}: ベースライン未作成のため比較をスキップ）`,
-  );
+  lines.push('', `（${missing.map((t) => t.label).join(', ')}: ベースライン未作成のため比較をスキップ）`);
 }
 console.log(lines.join('\n'));

@@ -95,6 +95,22 @@ jobs:
             apps/admin/.vrt
           retention-days: 14
 
+      # トークン未登録の間はスキップされ、artifactのみのフォールバックになる
+      - name: Publish report to Cloudflare Pages
+        if: github.event_name == 'pull_request' && secrets.CLOUDFLARE_API_TOKEN != ''
+        id: pages
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: 31074c2d041f3ceb8a5bb3fc51dd3bfa
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+        run: |
+          mkdir -p vrt-site
+          cp -r apps/main/.vrt vrt-site/main
+          cp -r apps/admin/.vrt vrt-site/admin
+          npx -y wrangler@4 pages project create k8o-vrt --production-branch=main 2>/dev/null || true
+          npx -y wrangler@4 pages deploy vrt-site --project-name=k8o-vrt --branch="pr-$PR_NUMBER" --commit-dirty=true
+          echo "base=https://pr-$PR_NUMBER.k8o-vrt.pages.dev" >> "$GITHUB_OUTPUT"
+
       - name: Comment summary on PR
         if: github.event_name == 'pull_request'
         env:
@@ -102,8 +118,15 @@ jobs:
           REPO: ${{ github.repository }}
           PR_NUMBER: ${{ github.event.pull_request.number }}
           RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+          PAGES_BASE: ${{ steps.pages.outputs.base }}
         run: |
-          node .github/scripts/vrt-comment.mjs main=apps/main/.vrt/report.json admin=apps/admin/.vrt/report.json > comment.md
+          main_url=''
+          admin_url=''
+          if [ -n "$PAGES_BASE" ]; then
+            main_url="$PAGES_BASE/main/report.html"
+            admin_url="$PAGES_BASE/admin/report.html"
+          fi
+          node .github/scripts/vrt-comment.mjs "main=apps/main/.vrt/report.json=$main_url" "admin=apps/admin/.vrt/report.json=$admin_url" > comment.md
           marker='<!-- vrt-report -->'
           comment_id=$(gh api "repos/$REPO/issues/$PR_NUMBER/comments" --paginate --jq ".[] | select(.body | startswith(\"$marker\")) | .id" | head -n1)
           if [ -n "$comment_id" ]; then
