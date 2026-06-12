@@ -133,6 +133,7 @@ COEPやCOOPにも同様のReport-Onlyヘッダーがあります。
 `ReportingObserver`はJavaScript上でレポートを検知するAPIです。サーバーへの送信が不要な場合や、クライアントサイドでレポートに基づいた処理を行いたい場合に便利です。
 
 ```js
+// [!og]
 const observer = new ReportingObserver((reports) => {
   for (const report of reports) {
     console.log(report.type); // "csp-violation"

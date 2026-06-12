@@ -67,6 +67,7 @@ const caretPosition = document.caretPositionFromPoint(x, y, {
 クリックした位置のキャレット情報を取得する例です。
 
 ```ts
+// [!og]
 document.addEventListener('click', (event) => {
   const caretPosition = document.caretPositionFromPoint(
     event.clientX,

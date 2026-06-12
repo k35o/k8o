@@ -49,6 +49,7 @@ map.getOrInsert(key: K, defaultValue: V): V
 キーが存在すれば既存の値をそのまま返し、存在しなければ`defaultValue`を`set`してから返します。
 
 ```js
+// [!og]
 const map1 = new Map();
 console.log(map1.getOrInsert('a', 0)); //  0（挿入して返す）
 console.log(map1.getOrInsert('a', 1)); //  0（既存値を返す）

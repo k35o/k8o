@@ -147,6 +147,7 @@ console.log(mappedIter.next()); // { value: undefined, done: true }
 本来`map`中の副作用は避けるべきですが、遅延評価をわかりやすくするために`console.log`を入れると、評価されるタイミングがわかります。
 
 ```js
+// [!og]
 const counterIter = Iterator.from(counter);
 const mappedIter = counterIter.map((x) => {
   console.log(x);

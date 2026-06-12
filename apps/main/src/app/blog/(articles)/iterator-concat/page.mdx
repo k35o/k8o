@@ -67,6 +67,7 @@ console.log(iter.next()); // { value: undefined, done: true }
 引数には任意の数のIterableを渡せます。配列だけでなく`Set`や`Map`など、`[Symbol.iterator]`を持つオブジェクトを混在させて渡せます。
 
 ```js
+// [!og]
 const array = [1, 2];
 const set = new Set([3, 4]);
 const map = new Map([['a', 5], ['b', 6]]);

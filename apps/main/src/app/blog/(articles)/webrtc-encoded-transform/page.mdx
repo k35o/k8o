@@ -52,6 +52,7 @@ videoSender.transform = new RTCRtpScriptTransform(worker);
 
 まずは、メインスレッド側のコードです。
 ```ts
+// [!og]
 async function setupSecureVideoCall() {
   const pc = new RTCPeerConnection();
   const stream = await navigator.mediaDevices.getUserMedia({

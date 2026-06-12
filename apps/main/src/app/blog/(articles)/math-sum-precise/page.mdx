@@ -50,6 +50,7 @@ console.log(Math.sumPrecise([1, 2, 3])); // 6
 引数は配列に限らず、`Set`やジェネレータなど`[Symbol.iterator]`を持つオブジェクトであれば渡せます。
 
 ```js
+// [!og]
 function* range(start, end) {
   for (let i = start; i < end; i++) {
     yield i;

@@ -99,6 +99,7 @@ navigation.addEventListener('navigate', (event) => {
 これらのプロパティを使えば、SPAとしてインターセプトすべきナビゲーションを判別できます。
 
 ```js
+// [!og]
 navigation.addEventListener('navigate', (event) => {
   // インターセプト不要なナビゲーションをスキップ
   if (!event.canIntercept) return;

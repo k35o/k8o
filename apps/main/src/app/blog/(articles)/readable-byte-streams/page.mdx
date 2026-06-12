@@ -205,6 +205,7 @@ while (true) {
 BYOBリーダーの`read(view)`を呼ぶと、渡した`view`は使用不可（detached）になります。これは、データの書き込み中にアプリケーション側が同じメモリ領域を変更してしまうことを防ぐためです。書き込みが完了すると、戻り値の`value`から同じメモリ領域にアクセスできるようになります。
 
 ```ts
+// [!og]
 const view = new Uint8Array(new ArrayBuffer(1024));
 const { value } = await reader.read(view);
 

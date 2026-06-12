@@ -93,6 +93,7 @@ el.innerHTML = escapePolicy.createHTML(userInput);
 シンクに生の文字列が渡された際、ブラウザが自動的にデフォルトポリシーのコールバックを呼び出します。
 
 ```js
+// [!og]
 trustedTypes.createPolicy('default', {
   createHTML: (input) => DOMPurify.sanitize(input),
 });
