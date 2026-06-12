@@ -95,9 +95,9 @@ export default function Home() {
               title="Readings"
             />
             <AppCard
-              description="Web Platform Baselineのステータスを追跡します。"
-              link="/baseline"
-              title="Baseline"
+              description="絵の具を流して模様を描く、フルイドアートのお絵かきWebアプリです。"
+              link="https://fluida.k8o.me"
+              title="fluida"
             />
             <AppCard
               accent={<ArteOdyssey size="xl" />}
@@ -116,14 +116,14 @@ export default function Home() {
           </div>
           <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
             <AppCard
+              description="Web Platform Baselineのステータスを追跡します。"
+              link="/baseline"
+              title="Baseline"
+            />
+            <AppCard
               description="テキストの文字数をリアルタイムに数えます。"
               link="/moji-count"
               title="もじカウント"
-            />
-            <AppCard
-              description="日本語の文章を解析し、誤字脱字や文法ミスを指摘します。"
-              link="/japanese-text-fixer"
-              title="日本語校正くん"
             />
             <AppCard
               description="テキストやURLからQRコードを生成してダウンロードできます。"
@@ -154,11 +154,6 @@ export default function Home() {
               description="border-radiusを視覚的に操作してCSSを生成します。"
               link="/radius-maker"
               title="かどまるラボ"
-            />
-            <AppCard
-              description="テーブル名・カラム・制約を入力してCREATE TABLE文を生成します。"
-              link="/sql-table-builder"
-              title="SQLテーブルメーカー"
             />
             <AppCard
               description="2つのテキストを文字単位で比較して差分を表示します。"
