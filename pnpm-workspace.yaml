@@ -10,7 +10,8 @@ allowBuilds:
   msgpackr-extract: false
   msw: true
   sharp: false
-  workerd: set this to true or false
+  # wranglerの依存。pages deployはAPIアップロードのみでworkerd実行は不要
+  workerd: false
 
 blockExoticSubdeps: true
 
