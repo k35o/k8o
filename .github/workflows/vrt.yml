@@ -107,8 +107,8 @@ jobs:
           mkdir -p vrt-site
           cp -r apps/main/.vrt vrt-site/main
           cp -r apps/admin/.vrt vrt-site/admin
-          npx -y wrangler@4 pages project create k8o-vrt --production-branch=main 2>/dev/null || true
-          npx -y wrangler@4 pages deploy vrt-site --project-name=k8o-vrt --branch="pr-$PR_NUMBER" --commit-dirty=true
+          pnpm exec wrangler pages project create k8o-vrt --production-branch=main 2>/dev/null || true
+          pnpm exec wrangler pages deploy vrt-site --project-name=k8o-vrt --branch="pr-$PR_NUMBER" --commit-dirty=true
           echo "base=https://pr-$PR_NUMBER.k8o-vrt.pages.dev" >> "$GITHUB_OUTPUT"
 
       - name: Comment summary on PR

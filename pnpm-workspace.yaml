@@ -10,6 +10,7 @@ allowBuilds:
   msgpackr-extract: false
   msw: true
   sharp: false
+  workerd: set this to true or false
 
 blockExoticSubdeps: true
 
@@ -39,6 +40,7 @@ catalog:
   storybook-addon-vrt: 0.1.0
   tailwindcss: 4.3.0
   vitest: 4.1.8
+  wrangler: 4.97.0
   vitest-browser-react: 2.2.0
 
 minimumReleaseAge: 10080
