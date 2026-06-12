@@ -73,6 +73,8 @@ export const annotateTransformer = (): ShikiTransformer => ({
           this.addClassToHast(node, 'code-annotate-has-callout');
           calloutsForLine.push(annotation.text);
           break;
+        case 'og':
+          break;
       }
     }
     if (calloutsForLine.length > 0) {

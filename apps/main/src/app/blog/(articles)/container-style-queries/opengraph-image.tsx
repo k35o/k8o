@@ -1,5 +1,8 @@
 import { OgImage } from '@/app/_components/og-image';
-import { getBlogContent } from '@/features/blog/interface/queries';
+import {
+  getBlogContent,
+  getBlogOgCode,
+} from '@/features/blog/interface/queries';
 
 export const alt =
   'Container style queriesでカスタムプロパティの値からスタイルを切り替える';
@@ -11,10 +14,14 @@ export const size = {
 export const contentType = 'image/png';
 
 export default async function Image() {
-  const blog = await getBlogContent('container-style-queries');
+  const [blog, ogCode] = await Promise.all([
+    getBlogContent('container-style-queries'),
+    getBlogOgCode('container-style-queries'),
+  ]);
 
   return OgImage({
     category: 'Blog',
     title: blog.title,
+    code: ogCode ?? undefined,
   });
 }

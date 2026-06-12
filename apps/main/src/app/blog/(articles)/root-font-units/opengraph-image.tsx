@@ -1,5 +1,8 @@
 import { OgImage } from '@/app/_components/og-image';
-import { getBlogContent } from '@/features/blog/interface/queries';
+import {
+  getBlogContent,
+  getBlogOgCode,
+} from '@/features/blog/interface/queries';
 
 export const alt =
   'rcap, rch, rex, ric単位でルート要素に基づいたサイズを指定する';
@@ -11,10 +14,14 @@ export const size = {
 export const contentType = 'image/png';
 
 export default async function Image() {
-  const blog = await getBlogContent('root-font-units');
+  const [blog, ogCode] = await Promise.all([
+    getBlogContent('root-font-units'),
+    getBlogOgCode('root-font-units'),
+  ]);
 
   return OgImage({
     category: 'Blog',
     title: blog.title,
+    code: ogCode ?? undefined,
   });
 }

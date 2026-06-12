@@ -90,6 +90,14 @@ describe('parseAnnotations', () => {
 
       expect(result.annotations).toEqual([[{ type: 'highlight' }]]);
     });
+
+    it('// [!og] をOGP用マーカーとして扱い、ディレクティブ行はコードから削除する', () => {
+      const input = ['// [!og]', 'const x = 1;'].join('\n');
+      const result = parseAnnotations(input);
+
+      expect(result.code).toBe('const x = 1;');
+      expect(result.annotations).toEqual([[{ type: 'og' }]]);
+    });
   });
 
   describe('異常系', () => {

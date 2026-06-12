@@ -4,12 +4,28 @@ import { ImageResponse } from 'next/og';
 import { getIconDataUrl } from '@/shared/og/get-icon-data-url';
 import { getMPlus2Font } from '@/shared/og/get-m-plus-2-font';
 
+import { OgCodeImage } from './og-code-image';
+
 type OgImageProps = {
   title: string;
-  category?: string;
+  category?: string | undefined;
+  code?:
+    | {
+        lang: string;
+        code: string;
+      }
+    | undefined;
 };
 
-export async function OgImage({ title, category }: OgImageProps) {
+export function OgImage({ title, category, code }: OgImageProps) {
+  // 代表コードがあるときはコードパネル付きレイアウトで描画する
+  if (code) {
+    return OgCodeImage({ title, code });
+  }
+  return OgTextImage({ title, category });
+}
+
+async function OgTextImage({ title, category }: Omit<OgImageProps, 'code'>) {
   const words = loadDefaultJapaneseParser().parse(title);
   const iconDataUrl = getIconDataUrl();
   const fontText = `${title}${category ?? ''}${(category ?? '').toUpperCase()}k8oK8O`;

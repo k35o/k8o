@@ -9,6 +9,7 @@ import {
   getBlogsByTags as _getBlogsByTags,
   getBlogs,
 } from '@/features/blog/application/blogs';
+import { getBlogOgCode as _getBlogOgCode } from '@/features/blog/application/og-code';
 import { getBlogView as _getBlogView } from '@/features/blog/application/view';
 
 export async function getBlogContents() {
@@ -49,6 +50,14 @@ export async function getBlogContent(slug: string) {
     createdAt: metadata.createdAt,
     updatedAt: metadata.updatedAt,
   };
+}
+
+export async function getBlogOgCode(slug: string) {
+  'use cache';
+  cacheLife('max');
+
+  const ogCode = await _getBlogOgCode(slug);
+  return ogCode;
 }
 
 export async function getBlogToc(slug: string) {
