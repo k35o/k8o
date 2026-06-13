@@ -74,7 +74,11 @@ const preview: Preview = {
   parameters: {
     backgrounds: { disabled: true },
     layout: 'fullscreen',
-    mockingDate: new Date(2023, 0, 2, 12, 34, 56),
+    // mockingDate はグローバルに設定しない。全Storyで Date を凍結すると、
+    // time依存のkey生成などでエラーを出すStoryの描画が壊れ、VRTの
+    // スクリーンショット撮影がスキップされる（capture はエラーを持つtaskを
+    // 撮影しない）。render時の現在日時に依存するStoryでのみ、個別に
+    // parameters.mockingDate を指定すること
     nextjs: {
       appDirectory: true,
     },
