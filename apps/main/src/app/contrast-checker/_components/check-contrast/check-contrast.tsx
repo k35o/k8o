@@ -1,9 +1,11 @@
 'use client';
 
-import { Alert } from '@k8o/arte-odyssey';
+import { Alert, Heading } from '@k8o/arte-odyssey';
+import { calcApca } from '@repo/helpers/color/calc-apca';
 import { calcContrast } from '@repo/helpers/color/calc-contrast';
 import { type FC, useState } from 'react';
 
+import { ApcaResultTable } from '../apca-result-table';
 import { ColorPallet } from '../color-pallet';
 import { ResultTable } from '../result-table';
 
@@ -11,6 +13,7 @@ export const CheckContrast: FC = () => {
   const [baseColor, setBaseColor] = useState('#000000');
   const [compareColor, setCompareColor] = useState('#ffffff');
   const contrast = calcContrast(baseColor, compareColor);
+  const apcaLc = calcApca(compareColor, baseColor);
 
   const WCAG_THRESHOLDS = {
     AA_LARGE_TEXT: 3,
@@ -41,9 +44,14 @@ export const CheckContrast: FC = () => {
           setColor={setCompareColor}
         />
       </div>
-      <p className="text-center text-sm font-medium sm:text-base">
-        コントラスト比 {contrast.toFixed(2)}:1
-      </p>
+      <div className="flex flex-col items-center justify-center gap-1 sm:flex-row sm:gap-6">
+        <p className="text-center text-sm font-medium sm:text-base">
+          コントラスト比 {contrast.toFixed(2)}:1
+        </p>
+        <p className="text-center text-sm font-medium sm:text-base">
+          APCA Lc {apcaLc.toFixed(1)}
+        </p>
+      </div>
       {contrast < WCAG_THRESHOLDS.LOW_VISIBILITY_WARNING && (
         <Alert
           message="コントラスト比が非常に低いため、テキストが見えにくい場合があります"
@@ -65,14 +73,21 @@ export const CheckContrast: FC = () => {
           この文字と背景色の組み合わせを確認できます
         </p>
       </section>
-      <ResultTable
-        baseColor={baseColor}
-        compareColor={compareColor}
-        isInvalidAaaLargeText={isInvalidAaaLargeText}
-        isInvalidAaaNormalText={isInvalidAaaNormalText}
-        isInvalidAaLargeText={isInvalidAaLargeText}
-        isInvalidAaNormalText={isInvalidAaNormalText}
-      />
+      <section className="flex flex-col gap-3">
+        <Heading type="h3">WCAG 2.2による判定</Heading>
+        <ResultTable
+          baseColor={baseColor}
+          compareColor={compareColor}
+          isInvalidAaaLargeText={isInvalidAaaLargeText}
+          isInvalidAaaNormalText={isInvalidAaaNormalText}
+          isInvalidAaLargeText={isInvalidAaLargeText}
+          isInvalidAaNormalText={isInvalidAaNormalText}
+        />
+      </section>
+      <section className="flex flex-col gap-3">
+        <Heading type="h3">APCAによる判定</Heading>
+        <ApcaResultTable lc={apcaLc} />
+      </section>
     </div>
   );
 };
