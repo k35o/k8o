@@ -12,7 +12,6 @@ import { Background } from '../src/app/_components/global-layout/background/back
 import { AppProvider } from '../src/app/_providers/app';
 import { mPlus2, notoSansJp } from '../src/app/_styles/font';
 import { handlers } from '../src/mocks/handlers';
-import { MOCKING_DATE } from '../src/mocks/mocking-date';
 
 import '../src/app/_styles/globals.css';
 
@@ -75,7 +74,11 @@ const preview: Preview = {
   parameters: {
     backgrounds: { disabled: true },
     layout: 'fullscreen',
-    mockingDate: MOCKING_DATE,
+    // mockingDate はグローバルに設定しない。全Storyで Date を凍結すると、
+    // time依存のkey生成などでエラーを出すStoryの描画が壊れ、VRTの
+    // スクリーンショット撮影がスキップされる（capture はエラーを持つtaskを
+    // 撮影しない）。render時の現在日時に依存するStoryでのみ、個別に
+    // parameters.mockingDate を指定すること
     nextjs: {
       appDirectory: true,
     },

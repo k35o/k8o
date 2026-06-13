@@ -2,8 +2,6 @@ import { formatDate } from '@repo/helpers/date/format';
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 import { expect, within } from 'storybook/test';
 
-import { MOCKING_DATE } from '@/mocks/mocking-date';
-
 import { Presenter } from './presenter';
 
 const meta: Meta<typeof Presenter> = {
@@ -56,11 +54,9 @@ export const Empty: Story = {
 
 function generateMockContributions(highActivity = false, empty = false) {
   const days: Array<{ date: string; count: number }> = [];
-  // args はモジュール評価時に実行され、render時にinstallされる mockingDate の
-  // fake clock が効かない。共有定数 MOCKING_DATE を基準に固定して決定化する
-  const today = new Date(MOCKING_DATE);
-  const startDate = new Date(today);
-  startDate.setDate(today.getDate() - 13);
+  // args はモジュール評価時に実行され mockingDate の fake clock が効かないため、
+  // preview.tsx の mockingDate(2023-01-02) に合わせた固定基準日を使う
+  const startDate = new Date(2022, 11, 20);
 
   for (let i = 0; i <= 13; i++) {
     const date = new Date(startDate);

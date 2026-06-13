@@ -5,13 +5,10 @@ import type {
   BaselineFeature,
   BlogLink,
 } from '@/features/baseline/interface/queries';
-import { MOCKING_DATE } from '@/mocks/mocking-date';
 
 import { BaselineFeatureList } from './baseline-feature-list';
 
-// 「直近1週間の更新のみ」フィルタはrender時の現在時刻（モック済み）と
-// 比較されるため、updatedAtもモック基準時刻から相対生成する
-const now = MOCKING_DATE.getTime();
+const now = Date.now();
 const toIso = (offsetMs: number): string =>
   new Date(now - offsetMs).toISOString();
 const DAY_MS = 24 * 60 * 60 * 1000;
