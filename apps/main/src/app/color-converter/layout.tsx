@@ -3,10 +3,12 @@ import type { Metadata } from 'next';
 
 export const metadata = {
   title: 'カラーコード職人',
-  description: 'HEX・RGB・HSLの色表現を相互に変換します。',
+  description:
+    'HEX・RGB・HSL・HWB・OKLCH・OKLAB・LCH・LABを相互に変換します。どの形式でも貼り付けでき、スライダーで微調整できます。',
   openGraph: {
     title: 'カラーコード職人',
-    description: 'HEX・RGB・HSLの色表現を相互に変換します。',
+    description:
+      'HEX・RGB・HSL・HWB・OKLCH・OKLAB・LCH・LABを相互に変換します。どの形式でも貼り付けでき、スライダーで微調整できます。',
     url: 'https://k8o.me/color-converter',
     siteName: 'k8o',
     locale: 'ja',
@@ -15,7 +17,8 @@ export const metadata = {
   twitter: {
     title: 'カラーコード職人',
     card: 'summary',
-    description: 'HEX・RGB・HSLの色表現を相互に変換します。',
+    description:
+      'HEX・RGB・HSL・HWB・OKLCH・OKLAB・LCH・LABを相互に変換します。どの形式でも貼り付けでき、スライダーで微調整できます。',
   },
 } satisfies Metadata;
 
