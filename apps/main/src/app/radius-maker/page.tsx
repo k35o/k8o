@@ -1,9 +1,13 @@
-import { ControlPanel } from './_components/control-panel';
+import { Suspense } from 'react';
+
+import { RadiusMaker } from './_components/radius-maker';
 
 export default function Page() {
   return (
-    <section className="grid h-full gap-6 py-10">
-      <ControlPanel />
+    <section className="py-10">
+      <Suspense>
+        <RadiusMaker />
+      </Suspense>
     </section>
   );
 }

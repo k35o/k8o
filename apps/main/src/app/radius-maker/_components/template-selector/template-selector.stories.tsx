@@ -1,6 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
-import { expect, within } from 'storybook/test';
+import { expect, fn, within } from 'storybook/test';
 
+import { BLOB_CORNERS, RADIUS_PRESETS } from '../../_utils/presets';
 import { TemplateSelector } from './template-selector';
 
 const meta: Meta<typeof TemplateSelector> = {
@@ -9,147 +10,59 @@ const meta: Meta<typeof TemplateSelector> = {
 };
 
 export default meta;
-
 type Story = StoryObj<typeof TemplateSelector>;
 
-const noop = () => {
-  // no-op
-};
-
-const defaultPosition = {
-  topLeftX: 0,
-  topLeftY: 0,
-  topRightX: 0,
-  topRightY: 0,
-  bottomLeftX: 0,
-  bottomLeftY: 0,
-  bottomRightX: 0,
-  bottomRightY: 0,
-};
-
-export const Default: Story = {
+export const Primary: Story = {
   args: {
-    onSelect: noop,
-    currentPosition: defaultPosition,
+    corners: BLOB_CORNERS,
+    onSelect: fn(() => {}),
   },
-  play: async ({ canvasElement }) => {
+};
+
+export const SelectPreset: Story = {
+  args: {
+    corners: BLOB_CORNERS,
+    onSelect: fn(() => {}),
+  },
+  play: async ({ args, canvasElement, userEvent }) => {
     const canvas = within(canvasElement);
 
-    // テンプレートラベルが表示されている
-    await expect(
-      canvas.getByText('テンプレートから始める'),
-    ).toBeInTheDocument();
-
-    // すべてのテンプレートボタンが存在する
-    await expect(
-      canvas.getByRole('button', { name: '正方形' }),
-    ).toBeInTheDocument();
-    await expect(
-      canvas.getByRole('button', { name: '角丸' }),
-    ).toBeInTheDocument();
-    await expect(
-      canvas.getByRole('button', { name: '円' }),
-    ).toBeInTheDocument();
-    await expect(
-      canvas.getByRole('button', { name: '横長' }),
-    ).toBeInTheDocument();
-    await expect(
-      canvas.getByRole('button', { name: '縦長' }),
-    ).toBeInTheDocument();
-    await expect(
-      canvas.getByRole('button', { name: '上丸' }),
-    ).toBeInTheDocument();
-    await expect(
-      canvas.getByRole('button', { name: '左丸' }),
-    ).toBeInTheDocument();
-    await expect(
-      canvas.getByRole('button', { name: 'しずく' }),
-    ).toBeInTheDocument();
-    await expect(
-      canvas.getByRole('button', { name: 'ランダム' }),
-    ).toBeInTheDocument();
-
-    // 正方形が選択状態
-    const squareButton = canvas.getByRole('button', { name: '正方形' });
-    await expect(squareButton).toHaveAttribute('aria-pressed', 'true');
-  },
-};
-
-export const CircleSelected: Story = {
-  args: {
-    onSelect: noop,
-    currentPosition: {
-      topLeftX: 50,
-      topLeftY: 50,
-      topRightX: 50,
-      topRightY: 50,
-      bottomLeftX: 50,
-      bottomLeftY: 50,
-      bottomRightX: 50,
-      bottomRightY: 50,
-    },
-  },
-  play: async ({ canvasElement }) => {
-    const canvas = within(canvasElement);
-
-    // 円が選択状態
-    const circleButton = canvas.getByRole('button', { name: '円' });
-    await expect(circleButton).toHaveAttribute('aria-pressed', 'true');
-
-    // 正方形は非選択
-    const squareButton = canvas.getByRole('button', { name: '正方形' });
-    await expect(squareButton).toHaveAttribute('aria-pressed', 'false');
-  },
-};
-
-export const DropSelected: Story = {
-  args: {
-    onSelect: noop,
-    currentPosition: {
-      topLeftX: 50,
-      topLeftY: 50,
-      topRightX: 50,
-      topRightY: 50,
-      bottomLeftX: 0,
-      bottomLeftY: 0,
-      bottomRightX: 50,
-      bottomRightY: 50,
-    },
-  },
-  play: async ({ canvasElement }) => {
-    const canvas = within(canvasElement);
-
-    // しずくが選択状態
-    const dropButton = canvas.getByRole('button', { name: 'しずく' });
-    await expect(dropButton).toHaveAttribute('aria-pressed', 'true');
-  },
-};
-
-export const NoMatchingTemplate: Story = {
-  args: {
-    onSelect: noop,
-    currentPosition: {
-      topLeftX: 10,
-      topLeftY: 15,
-      topRightX: 20,
-      topRightY: 25,
-      bottomLeftX: 30,
-      bottomLeftY: 35,
-      bottomRightX: 40,
-      bottomRightY: 45,
-    },
-  },
-  play: async ({ canvasElement }) => {
-    const canvas = within(canvasElement);
-
-    // どのテンプレートも選択されていない
-    const templateButtons = canvas
-      .getAllByRole('button')
-      .filter((button) => button.hasAttribute('aria-pressed'));
+    // すべてのプリセットが選択肢として表示される
     await Promise.all(
-      templateButtons.map((button) =>
-        expect(button).toHaveAttribute('aria-pressed', 'false'),
+      RADIUS_PRESETS.map((preset) =>
+        expect(
+          canvas.getByRole('button', { name: preset.name }),
+        ).toBeInTheDocument(),
       ),
     );
+
+    // 現在の値と一致するプリセットが選択されている
+    await expect(
+      canvas.getByRole('button', { name: 'ブロブ' }),
+    ).toHaveAttribute('aria-pressed', 'true');
+
+    // プリセットを選ぶとその形状が通知される
+    await userEvent.click(canvas.getByRole('button', { name: '円' }));
+    await expect(args.onSelect).toHaveBeenLastCalledWith({
+      topLeft: { x: 50, y: 50 },
+      topRight: { x: 50, y: 50 },
+      bottomRight: { x: 50, y: 50 },
+      bottomLeft: { x: 50, y: 50 },
+    });
+  },
+};
+
+export const RandomBlob: Story = {
+  args: {
+    corners: BLOB_CORNERS,
+    onSelect: fn(() => {}),
+  },
+  play: async ({ args, canvasElement, userEvent }) => {
+    const canvas = within(canvasElement);
+
+    // ランダム生成ボタンで新しい形状が通知される
+    // (生成される値の不変条件はrandom-blob.tsのテストで担保している)
+    await userEvent.click(canvas.getByRole('button', { name: 'ランダム' }));
+    await expect(args.onSelect).toHaveBeenCalledTimes(1);
   },
 };
