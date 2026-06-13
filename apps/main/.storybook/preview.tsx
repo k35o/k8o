@@ -12,6 +12,7 @@ import { Background } from '../src/app/_components/global-layout/background/back
 import { AppProvider } from '../src/app/_providers/app';
 import { mPlus2, notoSansJp } from '../src/app/_styles/font';
 import { handlers } from '../src/mocks/handlers';
+import { MOCKING_DATE } from '../src/mocks/mocking-date';
 
 import '../src/app/_styles/globals.css';
 
@@ -74,7 +75,7 @@ const preview: Preview = {
   parameters: {
     backgrounds: { disabled: true },
     layout: 'fullscreen',
-    mockingDate: new Date(2023, 0, 2, 12, 34, 56),
+    mockingDate: MOCKING_DATE,
     nextjs: {
       appDirectory: true,
     },

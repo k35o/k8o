@@ -1,6 +1,8 @@
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 import { expect, within } from 'storybook/test';
 
+import { MOCKING_DATE } from '@/mocks/mocking-date';
+
 import { Presenter } from './presenter';
 
 const meta: Meta<typeof Presenter> = {
@@ -53,7 +55,8 @@ export const Empty: Story = {
 
 function generateMockContributions(highActivity = false, empty = false) {
   const days: Array<{ date: string; count: number }> = [];
-  const today = new Date();
+  // VRTで日付ラベルが実行日に依存しないよう、モック基準時刻に固定する
+  const today = new Date(MOCKING_DATE);
   const startDate = new Date(today);
   startDate.setDate(today.getDate() - 13);
 

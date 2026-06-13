@@ -20,7 +20,9 @@ const config: StorybookConfig = {
     getAbsolutePath('@storybook/addon-vitest'),
     getAbsolutePath('@storybook/addon-docs'),
     getAbsolutePath('@storybook/addon-mcp'),
-    getAbsolutePath('storybook-addon-mock-date'),
+    // exports map のみ公開（ルートに preview.js シムがない）ため、
+    // 絶対パス指定では解決できずスキップされる。ベア名で指定する
+    'storybook-addon-mock-date',
   ],
   framework: getAbsolutePath('@storybook/nextjs-vite'),
   features: {
