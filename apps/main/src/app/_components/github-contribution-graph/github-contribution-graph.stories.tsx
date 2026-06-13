@@ -54,8 +54,8 @@ export const Empty: Story = {
 
 function generateMockContributions(highActivity = false, empty = false) {
   const days: Array<{ date: string; count: number }> = [];
-  // args はモジュール評価時に実行され mockingDate の fake clock が効かないため、
-  // preview.tsx の mockingDate(2023-01-02) に合わせた固定基準日を使う
+  // args はモジュール評価時に実行され mockingDate decorator では固定できないため、
+  // 実行日に依存しない固定基準日から14日分（2022-12-20〜2023-01-02）を生成する
   const startDate = new Date(2022, 11, 20);
 
   for (let i = 0; i <= 13; i++) {
