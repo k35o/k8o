@@ -8,9 +8,11 @@
 
 `packages/database/migrations/` に custom migration を追加 (`drizzle-kit generate:custom`)。`slides` テーブルに 1 行 insert する。
 
+`id` は手で振らず、自然キー (`slug`) で `ON CONFLICT DO NOTHING` を使う (admin が autoincrement で採番した行と衝突させないため。詳細は `packages/database/AGENTS.md`)。
+
 ```sql
-INSERT INTO slides (id, slug, published, created_at)
-VALUES (2, 'my-talk', 1, '2026-05-15T00:00:00.000Z');
+INSERT INTO slides (slug, published, created_at)
+  VALUES ('my-talk', 1, '2026-05-15T00:00:00.000Z') ON CONFLICT (slug) DO NOTHING;
 ```
 
 ### 2. ルートディレクトリを作成

@@ -39,4 +39,4 @@ INSERT INTO blog_tag (blog_id, tag_id) VALUES (
 
 `@repo/database` を直接 import するのは `apps/*/src/features/*/infrastructure/` を基本とする。`app/` や `features/*/interface` から直接読まない。
 
-現時点ではこの境界は規約運用。今後 Biome から oxc に置き換える際に機械的なルールを導入予定。
+現時点ではこの境界は規約運用。今後 oxc のカスタムルールとして機械的なルールを導入予定。
