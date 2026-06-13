@@ -28,6 +28,7 @@ SharedWorkerはページ側とWorker側のコードがペアで動きます。
 ページ側では`new SharedWorker(url)`でWorkerに接続し、返ってきた`worker.port`の`MessagePort`を経由してWorkerと通信します。`MessagePort`はデフォルトでメッセージを受け取らない設計で、受信を始めるためのきっかけが必要です。`onmessage`プロパティに代入する場合は自動でポートが開始されます。
 
 ```js
+// [!og]
 // page.js
 const worker = new SharedWorker('./worker.js');
 

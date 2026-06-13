@@ -96,6 +96,7 @@ const uint8Array = Uint8Array.fromBase64(base64); // Uint8Array([72, 101, 108, 1
 第1引数にはbase64エンコードされた文字列を指定します。第2引数にはオプションで、`alphabet`と`lastChunkHandling`を指定できます。
 
 ```ts
+// [!og]
 const base64 = "SGVsbG8=";
 const uint8Array = Uint8Array.fromBase64(base64, {
   alphabet: "base64url",

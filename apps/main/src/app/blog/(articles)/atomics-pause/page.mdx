@@ -134,6 +134,7 @@ console.log(Atomics.load(int32, 0)); // 1
 `notify`は指定したインデックスの値で待機しているスレッドに対して通知を送信します。
 
 ```js
+// [!og]
 // 0番目の値を1にする
 Atomics.store(int32, 0, 1);
 // 0番目の値で待機中のwaitに通知する

@@ -124,6 +124,7 @@ while (true) {
 送信と受信は独立しているので、次のように並行して動かせます。送信の完了を待たずに受信ループを回せるので、サーバーから届くデータをリアルタイムに処理できます。
 
 ```ts
+// [!og]
 const stream = await transport.createBidirectionalStream();
 
 // 受信ループを先に起動しておく

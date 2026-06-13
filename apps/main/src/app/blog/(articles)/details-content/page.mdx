@@ -58,6 +58,7 @@ import detailsSlot from './_images/details-slot.png';
 上記の例は`details`の子要素（`summary`要素を除いたもの）に対してスタイルを適用した場合（前者）と、`::details-content`擬似要素に対してスタイルを適用した場合（後者）の違いを示しています。
 
 ```css
+/* [!og] */
 /* 前者 */
 details > :not(summary) {
   border: 2px solid var(--color-primary-border);

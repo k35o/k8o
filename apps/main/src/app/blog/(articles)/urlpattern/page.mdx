@@ -50,6 +50,7 @@ const pattern1 = new URLPattern("https://k8o.me/blog/:id");
 ```
 オブジェクトの場合は、`protocol`、`username`、`password`、`hostname`、`port`、`pathname`、`search`、`hash`、`baseURL`の各プロパティにパターンを指定します。
 ```ts
+// [!og]
 const pattern2 = new URLPattern({
   protocol: "https",
   hostname: "k8o.me",

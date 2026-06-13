@@ -50,6 +50,7 @@ underlineやoverlineは文字の上下を横切るときに、ディセンダの
 と義務になります（`may`と`must`の部分が異なります）。CJK文字でもラテン文字と同じようにunderlineがグリフを避けて途切れるようになり、グリフごとに線が刻まれるような見え方に変わります。`auto`の連続したunderlineを前提に組んだデザインに後付けで入れると、印象が大きく変わる点には注意してください。
 
 ```css
+/* [!og] */
 p {
   text-decoration: underline;
   text-decoration-skip-ink: all;

@@ -74,6 +74,7 @@ Promise.try(asyncFn).catch(console.log); // async
 `Promise.try`を使用する際に関数へ引数を渡す方法として、直接第2引数以降に渡す方法と、新たに関数を作成して渡す方法の2つがあります。
 
 ```js
+// [!og]
 const fn = (arg1, arg2) => {
   return arg1 + arg2;
 };
