@@ -1,5 +1,4 @@
-const cssCache = new Map<string, Promise<string>>();
-const fontCache = new Map<string, Promise<ArrayBuffer>>();
+import { cacheLife } from 'next/cache';
 
 type GoogleFontParams = {
   family: string;
@@ -12,28 +11,6 @@ function buildCssUrl({ family, weight, text }: GoogleFontParams): string {
   // 同じグリフ集合でキャッシュが効くよう、文字を重複排除・ソートしてサブセット化する
   const subset = [...new Set(text)].toSorted().join('');
   return `https://fonts.googleapis.com/css2?family=${familyParam}&display=swap&text=${encodeURIComponent(subset)}`;
-}
-
-function fetchGoogleFontsCss(url: string): Promise<string> {
-  const cachedCss = cssCache.get(url);
-  if (cachedCss) {
-    return cachedCss;
-  }
-
-  const cssPromise = fetch(url)
-    .then((response) => {
-      if (!response.ok) {
-        throw new Error(`Failed to fetch Google Fonts CSS: ${response.status}`);
-      }
-      return response.text();
-    })
-    .catch((error: unknown) => {
-      cssCache.delete(url);
-      throw error;
-    });
-
-  cssCache.set(url, cssPromise);
-  return cssPromise;
 }
 
 function extractFontUrl(css: string): string {
@@ -49,27 +26,24 @@ function extractFontUrl(css: string): string {
   return match[1];
 }
 
-export function getGoogleFont(params: GoogleFontParams): Promise<ArrayBuffer> {
-  const cacheKey = buildCssUrl(params);
-  const cachedFont = fontCache.get(cacheKey);
-  if (cachedFont) {
-    return cachedFont;
+// cacheComponents 下では未キャッシュの fetch を static prerender で行うと、
+// プリレンダー完了時に未解決の promise が HANGING_PROMISE_REJECTION で弾かれる。
+// 'use cache' でフォント取得をキャッシュ境界に閉じ込め、ビルドを決定的にする。
+export async function getGoogleFont(
+  params: GoogleFontParams,
+): Promise<ArrayBuffer> {
+  'use cache';
+  cacheLife('max');
+
+  const cssResponse = await fetch(buildCssUrl(params));
+  if (!cssResponse.ok) {
+    throw new Error(`Failed to fetch Google Fonts CSS: ${cssResponse.status}`);
   }
 
-  const fontPromise = fetchGoogleFontsCss(cacheKey)
-    .then(extractFontUrl)
-    .then((fontUrl) => fetch(fontUrl))
-    .then((response) => {
-      if (!response.ok) {
-        throw new Error(`Failed to fetch font file: ${response.status}`);
-      }
-      return response.arrayBuffer();
-    })
-    .catch((error: unknown) => {
-      fontCache.delete(cacheKey);
-      throw error;
-    });
+  const fontResponse = await fetch(extractFontUrl(await cssResponse.text()));
+  if (!fontResponse.ok) {
+    throw new Error(`Failed to fetch font file: ${fontResponse.status}`);
+  }
 
-  fontCache.set(cacheKey, fontPromise);
-  return fontPromise;
+  return fontResponse.arrayBuffer();
 }
