@@ -1,3 +1,4 @@
+import { formatDate } from '@repo/helpers/date/format';
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 import { expect, within } from 'storybook/test';
 
@@ -53,9 +54,9 @@ export const Empty: Story = {
 
 function generateMockContributions(highActivity = false, empty = false) {
   const days: Array<{ date: string; count: number }> = [];
-  const today = new Date();
-  const startDate = new Date(today);
-  startDate.setDate(today.getDate() - 13);
+  // args はモジュール評価時に実行され mockingDate の fake clock が効かないため、
+  // preview.tsx の mockingDate(2023-01-02) に合わせた固定基準日を使う
+  const startDate = new Date(2022, 11, 20);
 
   for (let i = 0; i <= 13; i++) {
     const date = new Date(startDate);
@@ -75,10 +76,7 @@ function generateMockContributions(highActivity = false, empty = false) {
     // VRTのためStoryのデータは決定的に生成する（乱数を使わない）
     const count = (i * 7) % (maxContributions + 1);
 
-    const dateString = date.toISOString().split('T')[0];
-    if (dateString !== undefined) {
-      days.push({ date: dateString, count });
-    }
+    days.push({ date: formatDate(date, 'yyyy-MM-dd'), count });
   }
 
   return days;
