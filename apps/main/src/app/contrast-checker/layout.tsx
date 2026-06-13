@@ -3,10 +3,12 @@ import type { Metadata } from 'next';
 
 export const metadata = {
   title: 'コントラストチェッカー',
-  description: '2色のコントラスト比を計算し、WCAGの基準で評価します。',
+  description:
+    '2色のコントラスト比とAPCAのLc値を計算し、WCAGの基準で評価します。',
   openGraph: {
     title: 'コントラストチェッカー',
-    description: '2色のコントラスト比を計算し、WCAGの基準で評価します。',
+    description:
+      '2色のコントラスト比とAPCAのLc値を計算し、WCAGの基準で評価します。',
     url: 'https://k8o.me/contrast-checker',
     siteName: 'k8o',
     locale: 'ja',
@@ -15,7 +17,8 @@ export const metadata = {
   twitter: {
     title: 'コントラストチェッカー',
     card: 'summary',
-    description: '2色のコントラスト比を計算し、WCAGの基準で評価します。',
+    description:
+      '2色のコントラスト比とAPCAのLc値を計算し、WCAGの基準で評価します。',
   },
 } satisfies Metadata;
 

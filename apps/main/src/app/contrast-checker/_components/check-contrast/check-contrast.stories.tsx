@@ -21,6 +21,9 @@ export const InitialContrast: Story = {
     await expect(
       canvas.getByText('コントラスト比 21.00:1'),
     ).toBeInTheDocument();
+
+    // 初期状態（黒背景に白文字）のAPCA Lc値は-107.9
+    await expect(canvas.getByText('APCA Lc -107.9')).toBeInTheDocument();
   },
 };
 

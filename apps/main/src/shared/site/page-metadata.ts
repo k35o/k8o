@@ -22,7 +22,8 @@ export const pageMetadata = {
   },
   contrastChecker: {
     title: 'コントラストチェッカー',
-    description: '2色のコントラスト比を計算し、WCAGの基準で評価します。',
+    description:
+      '2色のコントラスト比とAPCAのLc値を計算し、WCAGの基準で評価します。',
   },
   mojiCount: {
     title: 'もじカウント',

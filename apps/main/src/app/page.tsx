@@ -128,7 +128,7 @@ export default function Home() {
               title="もじカウント"
             />
             <AppCard
-              description="2色のコントラスト比を計算し、WCAGの基準で評価します。"
+              description="2色のコントラスト比とAPCAのLc値を計算し、WCAGの基準で評価します。"
               link="/contrast-checker"
               title="コントラストチェッカー"
             />
