@@ -6,7 +6,6 @@ allowBuilds:
   '@prisma/engines': false
   '@swc/core': false
   esbuild: false
-  lefthook: true
   msgpackr-extract: false
   msw: true
   sharp: false

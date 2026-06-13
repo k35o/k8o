@@ -46,6 +46,7 @@ apps/admin/         → 管理サイト（Better Auth）          → apps/admin
 packages/database/  → Drizzle ORM + Turso (libSQL)       → packages/database/AGENTS.md
 packages/helpers/   → 共有ユーティリティ                  → packages/helpers/AGENTS.md
 packages/typescript-config/ → 共有TS設定
+packages/vitest-config/     → 共有Vitest設定
 packages/code-highlight/    → コードハイライト
 ```
 
@@ -53,10 +54,10 @@ packages/code-highlight/    → コードハイライト
 
 パッケージ間依存:
 
-- `apps/main` → `@repo/database`, `@repo/helpers`
+- `apps/main` → `@repo/database`, `@repo/helpers`, `@repo/code-highlight`
 - `apps/admin` → `@repo/database`, `@repo/helpers`
 
-`@repo/database` の import 境界は現時点では規約で運用する。機械的な禁止ルールは、今後 Biome から oxc に置き換えるタイミングで導入する。
+`@repo/database` の import 境界は現時点では規約で運用する。機械的な禁止ルールは、今後 oxc のカスタムルールとして導入する。
 
 ## 共通コーディング規約
 
