@@ -1,197 +1,76 @@
 'use client';
 
-import { Button, RadioCard } from '@k8o/arte-odyssey';
-import { type FC, useCallback, useId } from 'react';
+import { SparklesIcon } from '@k8o/arte-odyssey';
+import { cn } from '@repo/helpers/cn';
+import type { FC } from 'react';
 
-import type { RadiusPosition } from '../../_types/radius-position';
-import { positionToBorderRadius } from '../../_utils/position-to-border-radius';
+import type { RadiusCorners } from '../../_types/corner-radius';
+import { RADIUS_PRESETS } from '../../_utils/presets';
+import { cornersEqual, toBorderRadiusValue } from '../../_utils/radius-css';
+import { generateBlobCorners } from '../../_utils/random-blob';
 
-// テンプレート定義
-type RadiusTemplate = {
-  name: string;
-  position: RadiusPosition;
-};
-
-// 用意するテンプレート
-const TEMPLATES: RadiusTemplate[] = [
-  {
-    name: '正方形',
-    position: {
-      topLeftX: 0,
-      topLeftY: 0,
-      topRightX: 0,
-      topRightY: 0,
-      bottomLeftX: 0,
-      bottomLeftY: 0,
-      bottomRightX: 0,
-      bottomRightY: 0,
-    },
-  },
-  {
-    name: '角丸',
-    position: {
-      topLeftX: 10,
-      topLeftY: 10,
-      topRightX: 10,
-      topRightY: 10,
-      bottomLeftX: 10,
-      bottomLeftY: 10,
-      bottomRightX: 10,
-      bottomRightY: 10,
-    },
-  },
-  {
-    name: '円',
-    position: {
-      topLeftX: 50,
-      topLeftY: 50,
-      topRightX: 50,
-      topRightY: 50,
-      bottomLeftX: 50,
-      bottomLeftY: 50,
-      bottomRightX: 50,
-      bottomRightY: 50,
-    },
-  },
-  {
-    name: '横長',
-    position: {
-      topLeftX: 50,
-      topLeftY: 30,
-      topRightX: 50,
-      topRightY: 30,
-      bottomLeftX: 50,
-      bottomLeftY: 30,
-      bottomRightX: 50,
-      bottomRightY: 30,
-    },
-  },
-  {
-    name: '縦長',
-    position: {
-      topLeftX: 30,
-      topLeftY: 50,
-      topRightX: 30,
-      topRightY: 50,
-      bottomLeftX: 30,
-      bottomLeftY: 50,
-      bottomRightX: 30,
-      bottomRightY: 50,
-    },
-  },
-  {
-    name: '上丸',
-    position: {
-      topLeftX: 50,
-      topLeftY: 50,
-      topRightX: 50,
-      topRightY: 50,
-      bottomLeftX: 0,
-      bottomLeftY: 0,
-      bottomRightX: 0,
-      bottomRightY: 0,
-    },
-  },
-  {
-    name: '左丸',
-    position: {
-      topLeftX: 50,
-      topLeftY: 50,
-      topRightX: 0,
-      topRightY: 0,
-      bottomLeftX: 50,
-      bottomLeftY: 50,
-      bottomRightX: 0,
-      bottomRightY: 0,
-    },
-  },
-  {
-    name: 'しずく',
-    position: {
-      topLeftX: 50,
-      topLeftY: 50,
-      topRightX: 50,
-      topRightY: 50,
-      bottomLeftX: 0,
-      bottomLeftY: 0,
-      bottomRightX: 50,
-      bottomRightY: 50,
-    },
-  },
-];
-
-const TEMPLATE_OPTIONS = TEMPLATES.map((template) => ({
-  value: template.name,
-  label: template.name,
-  visual: (
-    <div
-      aria-hidden="true"
-      className="bg-primary-bg size-10"
-      style={{
-        borderRadius: positionToBorderRadius(template.position),
-      }}
-    />
-  ),
-}));
-
-const generateRandomPosition = (): RadiusPosition => ({
-  topLeftX: Math.floor(Math.random() * 101),
-  topLeftY: Math.floor(Math.random() * 101),
-  topRightX: Math.floor(Math.random() * 101),
-  topRightY: Math.floor(Math.random() * 101),
-  bottomLeftX: Math.floor(Math.random() * 101),
-  bottomLeftY: Math.floor(Math.random() * 101),
-  bottomRightX: Math.floor(Math.random() * 101),
-  bottomRightY: Math.floor(Math.random() * 101),
-});
-
-type Props = {
-  onSelect: (position: RadiusPosition) => void;
-  currentPosition: RadiusPosition;
-};
-
-export const TemplateSelector: FC<Props> = ({ onSelect, currentPosition }) => {
-  const labelId = useId();
-  const selectedValue =
-    TEMPLATES.find((template) =>
-      Object.keys(template.position).every(
-        (key) =>
-          template.position[key as keyof RadiusPosition] ===
-          currentPosition[key as keyof RadiusPosition],
-      ),
-    )?.name ?? '';
-
-  const handleChange = useCallback(
-    (value: string) => {
-      const template = TEMPLATES.find((t) => t.name === value);
-      if (template) {
-        onSelect(template.position);
-      }
-    },
-    [onSelect],
+const chipClass = (selected: boolean): string =>
+  cn(
+    'flex min-w-18 flex-col items-center gap-1.5 rounded-xl border px-3 pt-3 pb-2',
+    'transition-colors duration-150 ease-out',
+    'focus-visible:ring-border-info focus-visible:ring-2 focus-visible:outline-hidden',
+    selected
+      ? 'border-primary-border bg-primary-bg-subtle'
+      : 'border-border-mute bg-bg-base hover:bg-bg-subtle',
   );
 
+type Props = {
+  corners: RadiusCorners;
+  onSelect: (corners: RadiusCorners) => void;
+};
+
+export const TemplateSelector: FC<Props> = ({ corners, onSelect }) => {
+  const selectedName =
+    RADIUS_PRESETS.find((preset) => cornersEqual(preset.corners, corners))
+      ?.name ?? '';
+
   return (
-    <div className="flex w-full flex-col gap-3">
-      <p className="text-fg-base text-sm font-bold" id={labelId}>
+    <fieldset className="w-full">
+      <legend className="text-fg-base mb-3 text-sm font-bold">
         テンプレートから始める
-      </p>
-      <RadioCard
-        aria-labelledby={labelId}
-        name="radius-template"
-        onChange={handleChange}
-        options={TEMPLATE_OPTIONS}
-        value={selectedValue}
-      />
-      <Button
-        onClick={() => {
-          onSelect(generateRandomPosition());
-        }}
-        size="sm"
-        variant="outline"
-      >
-        ランダム
-      </Button>
-    </div>
+      </legend>
+      <div className="flex flex-wrap gap-2">
+        {RADIUS_PRESETS.map((preset) => (
+          <button
+            aria-pressed={selectedName === preset.name}
+            className={chipClass(selectedName === preset.name)}
+            key={preset.name}
+            onClick={() => {
+              onSelect(preset.corners);
+            }}
+            type="button"
+          >
+            <span
+              aria-hidden="true"
+              className="bg-primary-bg size-10"
+              style={{ borderRadius: toBorderRadiusValue(preset.corners) }}
+            />
+            <span className="text-fg-base text-xs font-medium">
+              {preset.name}
+            </span>
+          </button>
+        ))}
+        <button
+          className={cn(chipClass(false), 'border-dashed')}
+          onClick={() => {
+            onSelect(generateBlobCorners());
+          }}
+          type="button"
+        >
+          <span
+            aria-hidden="true"
+            className="text-fg-mute flex size-10 items-center justify-center"
+          >
+            <SparklesIcon />
+          </span>
+          <span className="text-fg-base text-xs font-medium">ランダム</span>
+        </button>
+      </div>
+    </fieldset>
   );
 };
