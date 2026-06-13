@@ -43,11 +43,13 @@ const parseSafeAlpha = (number: number): number => {
 
 export const rgbToHex = (rgb: RGB): string => {
   const { r, g, b, a } = rgb;
-  return `${parseSafeRgb(r).toString(16)}${parseSafeRgb(g).toString(
-    16,
-  )}${parseSafeRgb(b).toString(16)}${
+  const toHexByte = (value: number): string =>
+    Math.round(parseSafeRgb(value)).toString(16).padStart(2, '0');
+  return `${toHexByte(r)}${toHexByte(g)}${toHexByte(b)}${
     a !== undefined && a < 1
-      ? Math.round(parseSafeAlpha(a) * 255).toString(16)
+      ? Math.round(parseSafeAlpha(a) * 255)
+          .toString(16)
+          .padStart(2, '0')
       : ''
   }`;
 };
@@ -231,10 +233,17 @@ if (import.meta.vitest) {
       expect(rgbToHex({ r: 255, g: 255, b: 255 })).toBe('ffffff');
     });
 
-    // 既知の挙動: toString(16)にpadStartがないため、成分が16未満だと
-    // 1文字になりhex文字列が壊れる（本来は'0f0000'が期待値。抽出前からの挙動を保持）
-    it('成分が16未満だとゼロパディングされない（既存バグ）', () => {
-      expect(rgbToHex({ r: 15, g: 0, b: 0 })).toBe('f00');
+    it('成分が16未満でもゼロパディングされる', () => {
+      expect(rgbToHex({ r: 15, g: 0, b: 0 })).toBe('0f0000');
+    });
+
+    it('alphaが1未満のときは8桁になる', () => {
+      expect(rgbToHex({ r: 255, g: 0, b: 0, a: 0.5 })).toBe('ff000080');
+    });
+
+    it('非整数成分は四捨五入する', () => {
+      expect(rgbToHex({ r: 15.4, g: 0, b: 0 })).toBe('0f0000');
+      expect(rgbToHex({ r: 15.5, g: 0, b: 0 })).toBe('100000');
     });
   });
 

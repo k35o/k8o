@@ -18,7 +18,7 @@ export const pageMetadata = {
   },
   colorConverter: {
     title: 'カラーコード職人',
-    description: 'HEX・RGB・HSLの色表現を相互に変換します。',
+    description: 'HEX・RGB・HSL・OKLCHなどCSSの色形式を相互に変換します。',
   },
   contrastChecker: {
     title: 'コントラストチェッカー',

@@ -133,7 +133,7 @@ export default function Home() {
               title="コントラストチェッカー"
             />
             <AppCard
-              description="HEX・RGB・HSLの色表現を相互に変換します。"
+              description="HEX・RGB・HSL・OKLCHなどCSSの色形式を相互に変換します。"
               link="/color-converter"
               title="カラーコード職人"
             />

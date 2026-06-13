@@ -33,6 +33,26 @@
       "types": "./src/color/convert.ts",
       "default": "./src/color/convert.ts"
     },
+    "./color/spaces": {
+      "types": "./src/color/spaces.ts",
+      "default": "./src/color/spaces.ts"
+    },
+    "./color/gamut": {
+      "types": "./src/color/gamut.ts",
+      "default": "./src/color/gamut.ts"
+    },
+    "./color/parse": {
+      "types": "./src/color/parse.ts",
+      "default": "./src/color/parse.ts"
+    },
+    "./color/format": {
+      "types": "./src/color/format.ts",
+      "default": "./src/color/format.ts"
+    },
+    "./color/named-colors": {
+      "types": "./src/color/named-colors.ts",
+      "default": "./src/color/named-colors.ts"
+    },
     "./date/compare": {
       "types": "./src/date/compare.ts",
       "default": "./src/date/compare.ts"
