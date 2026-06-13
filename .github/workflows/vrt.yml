@@ -40,7 +40,7 @@ jobs:
       # main: 撮影結果を次回のPR比較用ベースラインとして保存する
       - name: Upload baseline (main)
         if: github.event_name == 'push'
-        uses: actions/upload-artifact@330a01c490aca151604b8cf639adc76d48f6c5d4 # v5.0.0
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: vrt-baseline-main
           path: apps/main/.vrt/actual
@@ -48,7 +48,7 @@ jobs:
 
       - name: Upload baseline (admin)
         if: github.event_name == 'push'
-        uses: actions/upload-artifact@330a01c490aca151604b8cf639adc76d48f6c5d4 # v5.0.0
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: vrt-baseline-admin
           path: apps/admin/.vrt/actual
@@ -87,7 +87,7 @@ jobs:
 
       - name: Upload report
         if: github.event_name == 'pull_request'
-        uses: actions/upload-artifact@330a01c490aca151604b8cf639adc76d48f6c5d4 # v5.0.0
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: vrt-report
           path: |

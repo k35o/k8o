@@ -21,6 +21,10 @@
       "types": "./src/cn.ts",
       "default": "./src/cn.ts"
     },
+    "./color/calc-apca": {
+      "types": "./src/color/calc-apca.ts",
+      "default": "./src/color/calc-apca.ts"
+    },
     "./color/calc-contrast": {
       "types": "./src/color/calc-contrast.ts",
       "default": "./src/color/calc-contrast.ts"

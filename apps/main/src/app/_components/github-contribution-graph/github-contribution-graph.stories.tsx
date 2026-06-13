@@ -1,3 +1,4 @@
+import { formatDate } from '@repo/helpers/date/format';
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 import { expect, within } from 'storybook/test';
 
@@ -55,7 +56,8 @@ export const Empty: Story = {
 
 function generateMockContributions(highActivity = false, empty = false) {
   const days: Array<{ date: string; count: number }> = [];
-  // VRTで日付ラベルが実行日に依存しないよう、モック基準時刻に固定する
+  // args はモジュール評価時に実行され、render時にinstallされる mockingDate の
+  // fake clock が効かない。共有定数 MOCKING_DATE を基準に固定して決定化する
   const today = new Date(MOCKING_DATE);
   const startDate = new Date(today);
   startDate.setDate(today.getDate() - 13);
@@ -78,10 +80,7 @@ function generateMockContributions(highActivity = false, empty = false) {
     // VRTのためStoryのデータは決定的に生成する（乱数を使わない）
     const count = (i * 7) % (maxContributions + 1);
 
-    const dateString = date.toISOString().split('T')[0];
-    if (dateString !== undefined) {
-      days.push({ date: dateString, count });
-    }
+    days.push({ date: formatDate(date, 'yyyy-MM-dd'), count });
   }
 
   return days;
