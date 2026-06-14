@@ -5,6 +5,7 @@ import {
   SendIcon,
   ShieldCheckIcon,
   SlideIcon,
+  SparklesIcon,
   TableIcon,
   TagIcon,
   ViewIcon,
@@ -46,6 +47,12 @@ export const NAV_GROUPS: NavGroup[] = [
   {
     label: '読み物',
     items: [{ href: '/reading-list', label: 'よんでいるもの', icon: RSSIcon }],
+  },
+  {
+    label: 'ツール',
+    items: [
+      { href: '/ui-builder', label: 'AI UIビルダー', icon: SparklesIcon },
+    ],
   },
   {
     label: '運用',
