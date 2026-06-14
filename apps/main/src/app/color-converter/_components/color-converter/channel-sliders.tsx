@@ -4,6 +4,7 @@ import { NumberField, Slider, Tabs } from '@k8o/arte-odyssey';
 import { toSrgbGamut } from '@repo/helpers/color/gamut';
 import {
   type Color,
+  type Oklch,
   clamp,
   colorToHsl,
   colorToOklch,
@@ -12,12 +13,17 @@ import {
   oklchToColor,
   rgb255ToColor,
 } from '@repo/helpers/color/spaces';
-import { type FC, useId } from 'react';
+import { type FC, useId, useState } from 'react';
 
 type Props = {
   color: Color;
   onColorChange: (color: Color) => void;
 };
+
+// 編集中の OKLCH 値が、自分でガモットマッピングして生成した色と
+// 一致しているか（= 外部から色が変わっていないか）を RGB で判定する。
+const isSameRgb = (a: Color, b: Color): boolean =>
+  a.r === b.r && a.g === b.g && a.b === b.b;
 
 type Channel = {
   label: string;
@@ -83,7 +89,24 @@ const ChannelGroup: FC<{ channels: Channel[] }> = ({ channels }) => (
 export const ChannelSliders: FC<Props> = ({ color, onColorChange }) => {
   const rgb = colorToRgb255(color);
   const hsl = colorToHsl(color);
-  const oklch = colorToOklch(color);
+
+  // OKLCH はガモットマッピングで C/H が縮むため、RGB から逆算すると
+  // L だけ動かしたつもりでも C/H が勝手に変わってしまう。ユーザーが
+  // 入力した OKLCH の意図値を編集中だけ保持し、外部から色が変わった
+  // ときのみ RGB から再計算する。
+  const [oklchEdit, setOklchEdit] = useState<{
+    oklch: Oklch;
+    color: Color;
+  } | null>(null);
+  const oklch =
+    oklchEdit && isSameRgb(oklchEdit.color, color)
+      ? oklchEdit.oklch
+      : colorToOklch(color);
+  const changeOklch = (next: Oklch): void => {
+    const mapped = toSrgbGamut(oklchToColor(next, color.alpha));
+    setOklchEdit({ oklch: next, color: mapped });
+    onColorChange(mapped);
+  };
 
   const alphaChannel: Channel = {
     label: 'A',
@@ -180,7 +203,7 @@ export const ChannelSliders: FC<Props> = ({ color, onColorChange }) => {
       precision: 3,
       value: oklch.l,
       onChange: (l) => {
-        onColorChange(toSrgbGamut(oklchToColor({ ...oklch, l }, color.alpha)));
+        changeOklch({ ...oklch, l });
       },
     },
     {
@@ -191,7 +214,7 @@ export const ChannelSliders: FC<Props> = ({ color, onColorChange }) => {
       precision: 3,
       value: oklch.c,
       onChange: (c) => {
-        onColorChange(toSrgbGamut(oklchToColor({ ...oklch, c }, color.alpha)));
+        changeOklch({ ...oklch, c });
       },
     },
     {
@@ -202,7 +225,7 @@ export const ChannelSliders: FC<Props> = ({ color, onColorChange }) => {
       precision: 1,
       value: oklch.h,
       onChange: (h) => {
-        onColorChange(toSrgbGamut(oklchToColor({ ...oklch, h }, color.alpha)));
+        changeOklch({ ...oklch, h });
       },
     },
     alphaChannel,
