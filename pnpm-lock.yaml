@@ -7,8 +7,8 @@ settings:
 catalogs:
   default:
     '@k8o/arte-odyssey':
-      specifier: 10.1.2
-      version: 10.1.2
+      specifier: 10.2.0
+      version: 10.2.0
     '@storybook/addon-a11y':
       specifier: 10.4.2
       version: 10.4.2
@@ -142,7 +142,7 @@ importers:
     dependencies:
       '@k8o/arte-odyssey':
         specifier: 'catalog:'
-        version: 10.1.2(@types/react-dom@19.2.3(@types/react@19.2.17))(@types/react@19.2.17)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)(tailwindcss@4.3.0)(typescript@6.0.3)(zod@4.4.3)
+        version: 10.2.0(@types/react-dom@19.2.3(@types/react@19.2.17))(@types/react@19.2.17)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)(tailwindcss@4.3.0)(typescript@6.0.3)(zod@4.4.3)
       '@repo/database':
         specifier: workspace:*
         version: link:../../packages/database
@@ -239,7 +239,7 @@ importers:
     dependencies:
       '@k8o/arte-odyssey':
         specifier: 'catalog:'
-        version: 10.1.2(@types/react-dom@19.2.3(@types/react@19.2.17))(@types/react@19.2.17)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)(tailwindcss@4.3.0)(typescript@6.0.3)(zod@4.4.3)
+        version: 10.2.0(@types/react-dom@19.2.3(@types/react@19.2.17))(@types/react@19.2.17)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)(tailwindcss@4.3.0)(typescript@6.0.3)(zod@4.4.3)
       '@mdx-js/loader':
         specifier: 3.1.1
         version: 3.1.1
@@ -1942,8 +1942,8 @@ packages:
   '@jridgewell/trace-mapping@0.3.9':
     resolution: {integrity: sha512-3Belt6tdc8bPgAtbcmdtNJlirVoTmEb5e2gC94PnkwEW9jI6CAHUeoG85tjWP5WquqfavoMtMwiG4P926ZKKuQ==}
 
-  '@k8o/arte-odyssey@10.1.2':
-    resolution: {integrity: sha512-iy9UsjNGV/yUKTz5HsUgKLJFsvG5adFuI5Hktv7gfUBlR+ek9HWEaIhz9o5mXgnvp8FWXZTBwG8V1M94S/G9gA==}
+  '@k8o/arte-odyssey@10.2.0':
+    resolution: {integrity: sha512-4zZL/9h2IxEYuXBm6OfA5GSh3E3poeu6KbH8CgUafMzMd11YjqMUzMCUfGpFS2jQYAlpT9HmzS76csJ0tCOO/A==}
     peerDependencies:
       '@json-render/core': '>=0.19.0'
       '@json-render/react': '>=0.19.0'
@@ -8388,7 +8388,7 @@ snapshots:
       '@jridgewell/resolve-uri': 3.1.2
       '@jridgewell/sourcemap-codec': 1.5.5
 
-  '@k8o/arte-odyssey@10.1.2(@types/react-dom@19.2.3(@types/react@19.2.17))(@types/react@19.2.17)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)(tailwindcss@4.3.0)(typescript@6.0.3)(zod@4.4.3)':
+  '@k8o/arte-odyssey@10.2.0(@types/react-dom@19.2.3(@types/react@19.2.17))(@types/react@19.2.17)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)(tailwindcss@4.3.0)(typescript@6.0.3)(zod@4.4.3)':
     dependencies:
       '@floating-ui/react': 0.27.19(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
       '@types/react': 19.2.17

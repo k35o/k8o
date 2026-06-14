@@ -3,14 +3,7 @@ import { NextResponse } from 'next/server';
 
 import { getBlogContents } from '@/features/blog/interface/queries';
 import { getTalks } from '@/features/talks/interface/queries';
-import { assistPageMetadata, pageMetadata } from '@/shared/site/page-metadata';
-
-function _formatMetadataSection(metadata: {
-  title?: string | null;
-  description?: string | null;
-}): string {
-  return `### ${metadata.title ?? ''}\n${metadata.description ?? ''}`;
-}
+import { siteEntries } from '@/shared/site/site-entries';
 
 async function _generateLlmContent() {
   'use cache';
@@ -31,49 +24,26 @@ async function _generateLlmContent() {
     .map((talk) => `#### ${talk.title}\n${talk.eventName}（${talk.eventDate}）`)
     .join('\n\n');
 
-  const forgeItems: Array<{
-    metadata: { title?: string | null; description?: string | null };
-    subContent?: string;
-  }> = [
-    { metadata: pageMetadata.blog, subContent: blogContent },
-    { metadata: pageMetadata.talks, subContent: talkContent },
-    { metadata: pageMetadata.playgrounds },
-    { metadata: pageMetadata.artifacts },
-  ];
+  // リンク先ごとに動的に差し込む追記コンテンツ。
+  const dynamicContent = new Map<string, string>([
+    ['/blog', blogContent],
+    ['/talks', talkContent],
+  ]);
 
-  const forgeContent = forgeItems
-    .map(({ metadata, subContent }) => {
-      const base = _formatMetadataSection(metadata);
-      if (subContent !== undefined) {
-        return `${base}\n\n${subContent}`;
-      }
-      return base;
+  const entriesContent = siteEntries
+    .map((entry) => {
+      const base = `### ${entry.title}\n${entry.description}`;
+      const sub = dynamicContent.get(entry.link);
+      return sub === undefined ? base : `${base}\n\n${sub}`;
     })
-    .join('\n\n');
-
-  const assistContent = assistPageMetadata
-    .map((item) => _formatMetadataSection(item))
     .join('\n\n');
 
   return `# k8o
 WebフロントエンドとTypeScriptが好きで、Baselineを追いながらWeb標準の進化を楽しんでいます。
 デザインシステムの構築を通じて、デザインとフロントエンドの交差点を探っています。
 
-## Forge
-考えたことや作ったものを形にして公開する場。
-
-${forgeContent}
-
-### fluida
-絵の具を流して模様を描く、フルイドアートのお絵かきWebアプリです。
-
-### ArteOdyssey
-k8o.meのデザインシステム。コンポーネントやトークンを確認できます。
-
-## Assist
-日々の作業や日常で役立つちょっとしたツール群。
-
-${assistContent}
+## ページ一覧
+${entriesContent}
 `;
 }
 

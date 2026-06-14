@@ -2,46 +2,44 @@ import type { MetadataRoute } from 'next';
 
 import { getBlogContents } from '@/features/blog/interface/queries';
 import { getSlideContents } from '@/features/slides/interface/queries';
+import { siteEntries } from '@/shared/site/site-entries';
+
+const BASE_URL = 'https://k8o.me';
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const blogs = await getBlogContents();
   const slides = await getSlideContents();
 
   const blogMap = blogs.map((blog) => ({
-    url: `https://k8o.me/blog/${blog.slug}`,
+    url: `${BASE_URL}/blog/${blog.slug}`,
   }));
   const slideMap = slides.map((slide) => ({
-    url: `https://k8o.me/slides/${slide.slug}`,
+    url: `${BASE_URL}/slides/${slide.slug}`,
   }));
+
+  // siteEntries の内部ページ。/blog は changeFrequency を別途指定するため除外。
+  const entryMap = siteEntries
+    .filter(
+      (entry) => !entry.link.startsWith('https://') && entry.link !== '/blog',
+    )
+    .map((entry) => ({
+      url: `${BASE_URL}${entry.link}`,
+    }));
 
   return [
     {
-      url: 'https://k8o.me',
+      url: BASE_URL,
     },
     {
-      url: 'https://k8o.me/blog',
+      url: `${BASE_URL}/blog`,
       changeFrequency: 'weekly',
     },
     ...blogMap,
     {
-      url: 'https://k8o.me/slides',
+      url: `${BASE_URL}/slides`,
       changeFrequency: 'weekly',
     },
     ...slideMap,
-    {
-      url: 'https://k8o.me/baseline',
-    },
-    {
-      url: 'https://k8o.me/color-converter',
-    },
-    {
-      url: 'https://k8o.me/contrast-checker',
-    },
-    {
-      url: 'https://k8o.me/moji-count',
-    },
-    {
-      url: 'https://k8o.me/radius-maker',
-    },
+    ...entryMap,
   ] satisfies MetadataRoute.Sitemap;
 }
