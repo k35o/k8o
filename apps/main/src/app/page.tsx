@@ -1,12 +1,12 @@
-import { ArteOdyssey, Heading, Separator } from '@k8o/arte-odyssey';
+import { Heading, Separator } from '@k8o/arte-odyssey';
 import Image from 'next/image';
 
-import { AppCard } from './_components/app-card';
 import { EmailTooltip } from './_components/email-tooltip';
 import { ActivityErrorBoundary } from './_components/error-boundary';
 import { GitHubContributionGraph } from './_components/github-contribution-graph';
 import { HomeJsonLd } from './_components/json-ld';
 import { RecentBlogs } from './_components/recent-blogs';
+import { SiteEntrySection } from './_components/site-entry-section';
 import { SocialIcons } from './_components/social-icons';
 import k8o from './_images/k8o.jpg';
 
@@ -63,92 +63,9 @@ export default function Home() {
             </div>
           </ActivityErrorBoundary>
         </div>
-        <div className="flex flex-col gap-6">
-          <div>
-            <Heading type="h2">Forge</Heading>
-            <p className="text-fg-mute text-sm">
-              考えたことや作ったものを形にして公開する場。
-            </p>
-          </div>
-          <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
-            <AppCard
-              description="Webフロントエンドを中心に、日々のことも書いています。"
-              link="/blog"
-              title="Blog"
-            />
-            <AppCard
-              description="過去の登壇テーマや資料へのリンクをまとめています。"
-              link="/talks"
-              title="Talks"
-            />
-            <AppCard
-              description="ブログ記事や興味のある技術の試作品を集めています。"
-              link="/playgrounds"
-              title="Playgrounds"
-            />
-            <AppCard
-              description="dotfilesやskills、自作ツールなどの制作物をまとめています。"
-              link="/artifacts"
-              title="Artifacts"
-            />
-            <AppCard
-              description="気になっている記事を集めて、あとから探せるようにしています。"
-              link="/reading-list"
-              title="Readings"
-            />
-            <AppCard
-              description="絵の具を流して模様を描く、フルイドアートのお絵かきWebアプリです。"
-              link="https://fluida.k8o.me"
-              title="fluida"
-            />
-            <AppCard
-              accent={<ArteOdyssey size="xl" />}
-              description="k8o.meのデザインシステム。コンポーネントやトークンを確認できます。"
-              link="https://arte-odyssey.k8o.me"
-              title="ArteOdyssey"
-            />
-          </div>
-        </div>
-        <div className="flex flex-col gap-6">
-          <div>
-            <Heading type="h2">Assist</Heading>
-            <p className="text-fg-mute text-sm">
-              日々の作業や日常で役立つちょっとしたツール群。
-            </p>
-          </div>
-          <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
-            <AppCard
-              description="Web Platform Baselineのステータスを追跡します。"
-              link="/baseline"
-              title="Baseline"
-            />
-            <AppCard
-              description="テキストの文字数をリアルタイムに数えます。"
-              link="/moji-count"
-              title="もじカウント"
-            />
-            <AppCard
-              description="2色のコントラスト比とAPCAのLc値を計算し、WCAGの基準で評価します。"
-              link="/contrast-checker"
-              title="コントラストチェッカー"
-            />
-            <AppCard
-              description="HEX・RGB・HSL・OKLCHなどCSSの色形式を相互に変換します。"
-              link="/color-converter"
-              title="カラーコード職人"
-            />
-            <AppCard
-              description="色からHexコードを当てたり、Hexコードから色を選ぶクイズです。"
-              link="/color-quiz"
-              title="カラーHexクイズ"
-            />
-            <AppCard
-              description="border-radiusを視覚的に操作してCSSを生成します。"
-              link="/radius-maker"
-              title="かどまるラボ"
-            />
-          </div>
-        </div>
+
+        <SiteEntrySection kind="reading" />
+        <SiteEntrySection kind="tool" />
       </div>
     </div>
   );
