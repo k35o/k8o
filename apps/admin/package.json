@@ -18,10 +18,13 @@
     "build-storybook": "storybook build"
   },
   "dependencies": {
+    "@json-render/core": "0.19.0",
+    "@json-render/react": "0.19.0",
     "@k8o/arte-odyssey": "catalog:",
     "@repo/database": "workspace:*",
     "@repo/helpers": "workspace:*",
     "@tailwindcss/postcss": "catalog:",
+    "ai": "6.0.197",
     "better-auth": "1.6.14",
     "drizzle-orm": "catalog:",
     "next": "catalog:",
