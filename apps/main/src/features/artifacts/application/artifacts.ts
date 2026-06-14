@@ -69,13 +69,13 @@ export const getArtifacts = (): Artifact[] => [
     tags: ['Storybook', 'Hono', 'Vite'],
   },
   {
-    name: 'mdscroll',
+    name: 'storybook-addon-vrt',
     description:
-      'Markdownをブラウザでプレビューするためのコマンドラインツール。',
-    githubUrl: 'https://github.com/k35o/mdscroll',
+      'Storybookのストーリーごとにスクリーンショットを撮り、ビジュアルリグレッションテストを行うアドオン。',
+    githubUrl: 'https://github.com/k35o/storybook-addon-vrt',
     websiteUrl: null,
-    npmPackageName: 'mdscroll',
-    tags: ['AI Agent', 'Tool'],
+    npmPackageName: 'storybook-addon-vrt',
+    tags: ['Storybook', 'VRT'],
   },
   {
     name: 'oxc-config',

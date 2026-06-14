@@ -38,10 +38,10 @@ describe('getArtifacts', () => {
           npmPackageName: 'storybook-framework-hono-vite',
         }),
         expect.objectContaining({
-          name: 'mdscroll',
-          githubUrl: 'https://github.com/k35o/mdscroll',
+          name: 'storybook-addon-vrt',
+          githubUrl: 'https://github.com/k35o/storybook-addon-vrt',
           websiteUrl: null,
-          npmPackageName: 'mdscroll',
+          npmPackageName: 'storybook-addon-vrt',
         }),
       ]),
     );
