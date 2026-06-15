@@ -32,7 +32,7 @@
     "studio": "drizzle-kit studio",
     "export:schema": "drizzle-kit export > ./schema.sql",
     "build:erd": "liam erd build --input './src/schema/*.ts' --format drizzle",
-    "preview:erd": "pnpm run build:erd && pnpm dlx http-server dist"
+    "preview:erd": "pnpm run build:erd && pnpm exec http-server dist"
   },
   "dependencies": {
     "@libsql/client": "0.17.3",
@@ -43,6 +43,7 @@
     "@liam-hq/cli": "0.7.24",
     "@next/env": "16.2.7",
     "@repo/typescript-config": "workspace:*",
-    "drizzle-kit": "0.31.10"
+    "drizzle-kit": "0.31.10",
+    "http-server": "14.1.1"
   }
 }
