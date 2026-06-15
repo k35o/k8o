@@ -85,4 +85,13 @@ export const getArtifacts = (): Artifact[] => [
     npmPackageName: '@k8o/oxc-config',
     tags: ['oxlint', 'Config', 'Personal'],
   },
+  {
+    name: '@k8o/create',
+    description:
+      'vp create @k8oで、k8oの規約一式が入ったリポジトリの雛形を生成するプロジェクトジェネレーター。',
+    githubUrl: 'https://github.com/k35o/templates',
+    websiteUrl: null,
+    npmPackageName: '@k8o/create',
+    tags: ['Vite+', 'Generator', 'Tool'],
+  },
 ];
