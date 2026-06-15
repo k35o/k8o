@@ -7,11 +7,8 @@ import { count, desc, eq, like } from 'drizzle-orm';
 
 import { fetchOgMetadata } from './og-metadata';
 
-// interface 層は @repo/database を直接参照しないため、ドメイン定義をここで中継する
 export { ARTICLE_SOURCE_TYPES, type ArticleSourceType };
 
-// ソース一覧と件数(統計カード用)を返す。記事一覧本体は検索/ページング対応の
-// findArticles を使うため、ここでは件数だけを数える。
 export const findReadingListContent = async () => {
   const [sources, articleCountRow] = await Promise.all([
     db.query.articleSources.findMany({
@@ -124,10 +121,6 @@ export const updateArticleById = async (
     .where(eq(db._schema.articles.id, id));
 };
 
-/**
- * 記事 URL から OGP を取り直し、画像・説明を更新する。
- * 記事が無ければ false。
- */
 export const refetchArticleOg = async (id: number): Promise<boolean> => {
   const article = await db.query.articles.findFirst({
     where: eq(db._schema.articles.id, id),

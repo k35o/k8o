@@ -45,7 +45,6 @@ export function CustomCommandDemo() {
         <button
           className="bg-primary-bg text-primary-fg rounded-md px-4 py-2"
           command="--zoom-in"
-          // Baseline 2025
           commandfor="demo-image"
           type="button"
         >
@@ -54,7 +53,6 @@ export function CustomCommandDemo() {
         <button
           className="bg-primary-bg text-primary-fg rounded-md px-4 py-2"
           command="--zoom-out"
-          // Baseline 2025
           commandfor="demo-image"
           type="button"
         >
@@ -62,9 +60,7 @@ export function CustomCommandDemo() {
         </button>
         <button
           className="bg-bg-mute text-fg-base hover:bg-bg-subtle rounded-md px-4 py-2"
-          // Baseline 2025
           command="--reset"
-          // Baseline 2025
           commandfor="demo-image"
           type="button"
         >

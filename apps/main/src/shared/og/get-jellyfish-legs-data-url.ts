@@ -1,12 +1,5 @@
-/**
- * OGP画像用のクラゲの足(細いライン+ドット)SVGをdata URLで返す。
- * パスデータは app/_components/global-layout/background のものと同じ。
- * OGは常にライトテーマなので色は固定。
- */
-
 type Dot = { cx: number; cy: number; r: number };
 
-// 左上の足（多め・大きめ）。viewBox 0 0 240 240。
 const LEG_PATHS_TOP_LEFT = [
   'M 6 -16 C 36 36, 18 86, 70 116 C 104 135, 92 182, 138 196',
   'M -16 26 C 40 44, 72 78, 72 124 C 72 158, 104 176, 116 208',
@@ -23,8 +16,6 @@ const DOTS_TOP_LEFT: Dot[] = [
   { cx: 60, cy: 182, r: 1.6 },
 ];
 
-// サイトの右下の足をベースに、内側に短い1本を足した3本構成。
-// OGでは下辺用に上下反転して使う。
 const LEG_PATHS_BOTTOM = [
   'M -10 12 C 52 32, 30 92, 80 126 C 112 148, 98 198, 134 216',
   'M -6 52 C 32 72, 50 112, 46 152 C 43 186, 62 202, 82 216',
@@ -39,7 +30,6 @@ const DOTS_BOTTOM: Dot[] = [
   { cx: 52, cy: 196, r: 1.6 },
 ];
 
-// site側の oklch(0.6 0.09 195 / 0.5) 相当
 const LEG_COLOR = '#38929e';
 const LEG_OPACITY = 0.5;
 

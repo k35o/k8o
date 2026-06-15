@@ -14,15 +14,7 @@ const isChannelMessage = (data: unknown): data is ChannelMessage => {
   );
 };
 
-/**
- * BroadcastChannel を購読し、受信時に `onReceive` を呼ぶ。
- * 戻り値の `broadcast` 関数で送信する (event handler から呼ぶ想定)。
- *
- * 外部システム (BroadcastChannel) の購読は useEffect の正当な用途。
- * 送信は event handler に任せて、state→送信の useEffect は持たない。
- *
- * 受信ペイロードは信頼境界の外なので shape を validation する。
- */
+// 受信ペイロードは信頼境界の外なので shape を validation する。
 export const useBroadcastListener = ({
   channelName,
   onReceive,

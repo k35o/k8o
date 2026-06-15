@@ -17,8 +17,6 @@ const convertHexToRgb = (hex: string): Rgb => {
   return [r, g, b];
 };
 
-// APCA-W3 0.0.98G-4g の定数
-// https://github.com/Myndex/apca-w3
 const SA98G = {
   mainTrc: 2.4,
   sRco: 0.212_672_9,
@@ -49,15 +47,9 @@ const calcScreenLuminance = (rgbColor: Rgb): number => {
   );
 };
 
-// 黒に近い輝度を知覚に合わせて持ち上げるソフトクランプ
 const clampBlackLevel = (y: number): number =>
   y > SA98G.blkThrs ? y : y + (SA98G.blkThrs - y) ** SA98G.blkClmp;
 
-/**
- * APCA（Accessible Perceptual Contrast Algorithm）のLc値を計算する。
- * 正の値は明るい背景に暗い文字、負の値は暗い背景に明るい文字を表す。
- * 基準との比較には絶対値を使う。
- */
 export const calcApca = (
   textColor: string,
   backgroundColor: string,
@@ -74,13 +66,11 @@ export const calcApca = (
   }
 
   if (bgY > textY) {
-    // 明るい背景に暗い文字（正のLc）
     const sapc =
       (bgY ** SA98G.normBg - textY ** SA98G.normText) * SA98G.scaleBoW;
     return sapc < SA98G.loClip ? 0 : (sapc - SA98G.loBoWOffset) * 100;
   }
 
-  // 暗い背景に明るい文字（負のLc）
   const sapc = (bgY ** SA98G.revBg - textY ** SA98G.revText) * SA98G.scaleWoB;
   return sapc > -SA98G.loClip ? 0 : (sapc + SA98G.loWoBOffset) * 100;
 };
@@ -90,7 +80,6 @@ if (import.meta.vitest) {
 
   describe('calcApca', () => {
     describe('正常な入力の場合', () => {
-      // 期待値はapca-w3 0.0.98G-4gのリファレンス値
       it('明るい背景に暗い文字の場合は正のLc値を返すべき', () => {
         expect(calcApca('#888888', '#ffffff')).toBeCloseTo(
           63.056_469_930_209_42,
@@ -138,7 +127,6 @@ if (import.meta.vitest) {
           -7.526_878_460_278_154,
           10,
         );
-        // loClip未満はスケーリング前に0へ丸められる
         expect(calcApca('#fefefe', '#ffffff')).toBe(0);
       });
     });

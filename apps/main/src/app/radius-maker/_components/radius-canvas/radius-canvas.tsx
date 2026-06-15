@@ -61,7 +61,6 @@ const handlePositionStyle = (
   };
 };
 
-// 矢印キーの画面上の向きを値の増減に変換する。対応しないキーはnull
 const arrowKeyToDelta = (
   key: string,
   corner: Corner,

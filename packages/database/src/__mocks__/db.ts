@@ -10,7 +10,6 @@ const drizzleDb = drizzle.mock({
   },
 });
 
-// db オブジェクトを拡張して、schema と utils も含める
 export const db = Object.assign(drizzleDb, {
   _schema: schema,
   _utils: {

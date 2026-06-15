@@ -1,4 +1,3 @@
-// Reporting API のレポートと同じ形式で /api/reports に送る
 const MAX_STACK_LENGTH = 4096;
 
 type ClientError = Error & { digest?: string };

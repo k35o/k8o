@@ -8,7 +8,6 @@ type ParseResult =
   | { ok: true; data: ArticleSourceInput }
   | { ok: false; error: string };
 
-// FormData の値は string | File | null。文字列以外は空文字に正規化する。
 const getStringField = (formData: FormData, key: string): string => {
   const value = formData.get(key);
   return typeof value === 'string' ? value : '';
@@ -17,7 +16,6 @@ const getStringField = (formData: FormData, key: string): string => {
 const isArticleSourceType = (value: string): value is ArticleSourceType =>
   (ARTICLE_SOURCE_TYPES as readonly string[]).includes(value);
 
-// createSource / updateSource が共有するソース入力の検証ロジック。
 export const parseSourceFormData = (formData: FormData): ParseResult => {
   const title = getStringField(formData, 'title');
   const url = getStringField(formData, 'url');

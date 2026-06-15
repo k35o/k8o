@@ -1,10 +1,3 @@
-// sRGB ガマット判定とガマットマッピング。
-//
-// oklch/lab など sRGB の外の色を入力できるため、表示・hex化のために
-// sRGB 内へ写像する。CSS Color 4 の Gamut Mapping アルゴリズム
-// (https://www.w3.org/TR/css-color-4/#gamut-mapping) に沿って、
-// OKLCh の chroma を二分探索で縮小しつつクリップする。
-
 import {
   type Color,
   clamp,
@@ -30,7 +23,6 @@ const clip = (color: Color): Color => ({
   alpha: color.alpha,
 });
 
-// OKLab 空間でのユークリッド距離（知覚的な色差の近似）。
 const deltaEOK = (a: Color, b: Color): number => {
   const oklabA = colorToOklab(a);
   const oklabB = colorToOklab(b);
@@ -53,7 +45,6 @@ export const toSrgbGamut = (color: Color): Color => {
     return { r: 0, g: 0, b: 0, alpha: color.alpha };
   }
 
-  // just-noticeable-difference
   const jnd = 0.02;
   const searchEpsilon = 1e-4;
   let min = 0;
@@ -109,12 +100,10 @@ if (import.meta.vitest) {
     });
 
     it('sRGB外の鮮やかなoklchをsRGB内へ写像する', () => {
-      // oklch(0.7 0.4 30) は sRGB の外。
       const outOfGamut = oklchToColor({ l: 0.7, c: 0.4, h: 30 }, 1);
       expect(isInGamut(outOfGamut)).toBe(false);
       const mapped = toSrgbGamut(outOfGamut);
       expect(isInGamut(mapped)).toBe(true);
-      // alpha は保持。
       expect(mapped.alpha).toBe(1);
     });
   });

@@ -1,7 +1,3 @@
-// CSS 名前付き色（<named-color>）→ 6桁 hex（# なし、小文字）のマップ。
-// `teal` などをそのまま貼り付けてパースできるようにするためのデータ。
-// `transparent` は alpha=0 の特殊値なので parse 側で個別に扱う。
-
 export const NAMED_COLORS: Record<string, string> = {
   aliceblue: 'f0f8ff',
   antiquewhite: 'faebd7',

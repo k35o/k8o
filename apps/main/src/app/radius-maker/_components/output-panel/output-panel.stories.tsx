@@ -32,10 +32,8 @@ export const Simplified: Story = {
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
 
-    // 全角が同じ値なら1値に簡約したCSSを表示する
     await expect(canvas.getByText('border-radius: 50%;')).toBeInTheDocument();
 
-    // コピー操作のボタンが揃っている
     await expect(
       canvas.getByRole('button', { name: 'CSSをコピー' }),
     ).toBeInTheDocument();
@@ -51,7 +49,6 @@ export const WithCornerShape: Story = {
     shape: 'squircle',
   },
   play: async ({ canvasElement }) => {
-    // corner-shapeがroundでないときは2行のCSSになる
     const code = canvasElement.querySelector('code');
     await expect(code?.textContent).toBe(
       'border-radius: 30% 70% 70% 30% / 30% 30% 70% 70%;\ncorner-shape: squircle;',

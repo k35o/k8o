@@ -24,10 +24,6 @@ const isNotesElement = (
   return (type as { $$slideRole?: string }).$$slideRole === NOTES_ROLE;
 };
 
-/**
- * MDX が描画した children (h2, p, hr, Notes 等) を `---` (hr) で分割し、
- * Notes は本編から外して各スライドの notes に集める。
- */
 export const splitSlides = (children: ReactNode): Slide[] => {
   const slides: Slide[] = [{ content: [], notes: [] }];
   for (const child of Children.toArray(children)) {

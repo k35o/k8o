@@ -8,10 +8,6 @@ type Result = {
   error?: string;
 };
 
-/**
- * 記事の要約を生成して保存する。
- * 冪等：既に summary があれば生成せずそのまま返す（1記事につき生成は最大1回）。
- */
 export async function generateAndSaveSummary(id: number): Promise<Result> {
   const article = await db.query.articles.findFirst({
     columns: { id: true, url: true, summary: true },

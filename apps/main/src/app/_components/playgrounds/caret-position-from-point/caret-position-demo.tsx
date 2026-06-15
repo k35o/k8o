@@ -14,10 +14,6 @@ type CaretInfo = {
   clickY: number;
 };
 
-/**
- * document.caretPositionFromPointのデモ
- * テキストをクリックするとキャレット位置の情報を表示する
- */
 export function CaretPositionDemo() {
   const [caretInfo, setCaretInfo] = useState<CaretInfo | null>(null);
   const [isSupported, setIsSupported] = useState(true);
@@ -74,8 +70,6 @@ export function CaretPositionDemo() {
 
   return (
     <div className="space-y-3">
-      {/* caretPositionFromPointデモ用のクリックエリア */}
-      {/* caretPositionFromPointデモ用のクリックエリア */}
       {/* caretPositionFromPointはマウス座標を必要とするためキーボードでは使用不可 */}
       <div
         className="bg-bg-base cursor-text rounded-xl p-3 shadow-sm select-none"

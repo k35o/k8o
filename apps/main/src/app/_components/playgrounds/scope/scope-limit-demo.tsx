@@ -4,10 +4,6 @@ import { Button } from '@k8o/arte-odyssey';
 import Image from 'next/image';
 import { useState } from 'react';
 
-/**
- * :scopeを使ったスコープリミットのデモ
- * スコープルートの直接の子のみをリミットとして扱う
- */
 export function ScopeLimitDemo() {
   const [useScopeSelector, setUseScopeSelector] = useState(true);
 

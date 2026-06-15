@@ -18,7 +18,6 @@ export const PREVIEW_SIZE = {
 const isRadiusValue = (value: number): boolean =>
   Number.isInteger(value) && value >= 0 && value <= 100;
 
-// 8値を「左上x,左上y,右上x,右上y,右下x,右下y,左下x,左下y」のカンマ区切りで表す
 const parseCorners = (query: string): RadiusCorners | null => {
   const values = query.split(',').map(Number);
   if (values.length !== 8 || !values.every((value) => isRadiusValue(value))) {

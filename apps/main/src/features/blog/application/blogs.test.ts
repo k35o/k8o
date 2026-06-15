@@ -213,7 +213,6 @@ describe('blogs service', () => {
 
       const result = await getBlogsByTags('current-blog', [1, 2]);
 
-      // blog-2が先に来る（2つのタグがマッチ）
       expect(result[0]?.id).toBe(2);
       expect(result[1]?.id).toBe(1);
     });

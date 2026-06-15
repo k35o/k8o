@@ -1,30 +1,11 @@
-// 色空間変換の中核。
-//
-// 正準表現(canonical)は sRGB ガンマ済み float + alpha:
-//   Color = { r, g, b, alpha }（すべて 0..1）
-//
-// 各色空間との相互変換を提供する。OKLab / Lab の行列は CSS Color 4 仕様の
-// 変換コード(https://www.w3.org/TR/css-color-4/#color-conversion-code)に基づく。
-// Lab / LCH は D50 白色点、OKLab / OKLCH は D65 白色点を用いる。
-//
-// 自前実装のため、ファイル末尾の in-source テストで参照値・往復を検証している。
-
 export type Color = { r: number; g: number; b: number; alpha: number };
 
-// 各色空間のチャンネル値（alpha は Color 側で保持する）。単位は CSS 表記に合わせる。
-// Rgb255: r/g/b は 0..255
 export type Rgb255 = { r: number; g: number; b: number };
-// Hsl: h は 0..360、s/l は 0..100
 export type Hsl = { h: number; s: number; l: number };
-// Hwb: h は 0..360、w/b は 0..100
 export type Hwb = { h: number; w: number; b: number };
-// Lab: l は 0..100
 export type Lab = { l: number; a: number; b: number };
-// Lch: l は 0..100、h は 0..360
 export type Lch = { l: number; c: number; h: number };
-// Oklab: l は 0..1
 export type Oklab = { l: number; a: number; b: number };
-// Oklch: l は 0..1、h は 0..360
 export type Oklch = { l: number; c: number; h: number };
 
 type Vec3 = [number, number, number];
@@ -40,8 +21,6 @@ const clamp = (value: number, min: number, max: number): number =>
   Math.min(Math.max(value, min), max);
 
 const normalizeHue = (hue: number): number => ((hue % 360) + 360) % 360;
-
-// --- sRGB <-> linear-light sRGB ---------------------------------------------
 
 const toLinear = (channel: number): number => {
   const sign = channel < 0 ? -1 : 1;
@@ -59,8 +38,6 @@ const toGamma = (channel: number): number => {
     : sign * (1.055 * abs ** (1 / 2.4) - 0.055);
 };
 
-// --- linear sRGB <-> XYZ(D65) -----------------------------------------------
-
 const LINEAR_RGB_TO_XYZ: Mat3 = [
   [0.412_390_799_265_959_34, 0.357_584_339_383_878, 0.180_480_788_401_834_3],
   [0.212_639_005_871_510_27, 0.715_168_678_767_756, 0.072_192_315_360_733_71],
@@ -75,8 +52,6 @@ const XYZ_TO_LINEAR_RGB: Mat3 = [
     1.056_971_514_242_878_6,
   ],
 ];
-
-// --- XYZ(D65) <-> XYZ(D50)（Bradford 色順応）--------------------------------
 
 const D65_TO_D50: Mat3 = [
   [
@@ -105,8 +80,6 @@ const D50_TO_D65: Mat3 = [
   ],
 ];
 
-// --- XYZ(D65) <-> OKLab ------------------------------------------------------
-
 const XYZ_TO_LMS: Mat3 = [
   [0.819_022_437_996_703, 0.361_906_260_052_890_4, -0.128_873_781_520_987_9],
   [0.032_983_653_932_388_5, 0.929_286_861_586_343_4, 0.036_144_666_350_642_4],
@@ -131,20 +104,13 @@ const LMS_TO_XYZ: Mat3 = [
   [-0.076_372_936_674_660_1, -0.421_493_332_402_243_2, 1.586_924_019_836_781_6],
 ];
 
-// --- CIE Lab 用の定数 --------------------------------------------------------
-
-// D50 参照白色点（CSS Color 4）。
 const D50_WHITE: Vec3 = [
   0.3457 / 0.3585,
   1.0,
   (1.0 - 0.3457 - 0.3585) / 0.3585,
 ];
-// 6^3 / 29^3
 const LAB_EPSILON = 216 / 24_389;
-// 29^3 / 3^3
 const LAB_KAPPA = 24_389 / 27;
-
-// --- Color <-> XYZ -----------------------------------------------------------
 
 const colorToXyzD65 = (color: Color): Vec3 =>
   multiply(LINEAR_RGB_TO_XYZ, [
@@ -157,8 +123,6 @@ const xyzD65ToColor = (xyz: Vec3, alpha: number): Color => {
   const [r, g, b] = multiply(XYZ_TO_LINEAR_RGB, xyz);
   return { r: toGamma(r), g: toGamma(g), b: toGamma(b), alpha };
 };
-
-// --- Color <-> OKLab / OKLCH -------------------------------------------------
 
 export const colorToOklab = (color: Color): Oklab => {
   const lms = multiply(XYZ_TO_LMS, colorToXyzD65(color));
@@ -195,8 +159,6 @@ export const oklchToColor = (oklch: Oklch, alpha: number): Color => {
     alpha,
   );
 };
-
-// --- Color <-> Lab / LCH（D50）----------------------------------------------
 
 export const colorToLab = (color: Color): Lab => {
   const xyzD50 = multiply(D65_TO_D50, colorToXyzD65(color));
@@ -242,8 +204,6 @@ export const lchToColor = (lch: Lch, alpha: number): Color => {
   );
 };
 
-// --- Color <-> HSL -----------------------------------------------------------
-
 export const colorToHsl = (color: Color): Hsl => {
   const { r, g, b } = color;
   const max = Math.max(r, g, b);
@@ -279,8 +239,6 @@ export const hslToColor = (hsl: Hsl, alpha: number): Color => {
   return { r: channel(0), g: channel(8), b: channel(4), alpha };
 };
 
-// --- Color <-> HWB -----------------------------------------------------------
-
 export const colorToHwb = (color: Color): Hwb => {
   const { h } = colorToHsl(color);
   const white = Math.min(color.r, color.g, color.b);
@@ -300,8 +258,6 @@ export const hwbToColor = (hwb: Hwb, alpha: number): Color => {
     channel * (1 - white - black) + white;
   return { r: apply(base.r), g: apply(base.g), b: apply(base.b), alpha };
 };
-
-// --- Color <-> RGB(0..255) ---------------------------------------------------
 
 export const colorToRgb255 = (color: Color): Rgb255 => ({
   r: clamp(color.r, 0, 1) * 255,
@@ -326,7 +282,6 @@ if (import.meta.vitest) {
   const BLACK: Color = { r: 0, g: 0, b: 0, alpha: 1 };
   const TEAL: Color = { r: 94 / 255, g: 234 / 255, b: 212 / 255, alpha: 1 };
 
-  // 許容誤差付きの比較ヘルパー。
   const near = (actual: number, expected: number, tolerance = 1e-3): void => {
     expect(Math.abs(actual - expected)).toBeLessThanOrEqual(tolerance);
   };

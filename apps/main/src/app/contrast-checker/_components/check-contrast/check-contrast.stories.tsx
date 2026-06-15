@@ -17,12 +17,10 @@ export const InitialContrast: Story = {
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
 
-    // 初期状態（黒と白）のコントラスト比は21:1
     await expect(
       canvas.getByText('コントラスト比 21.00:1'),
     ).toBeInTheDocument();
 
-    // 初期状態（黒背景に白文字）のAPCA Lc値は-107.9
     await expect(canvas.getByText('APCA Lc -107.9')).toBeInTheDocument();
   },
 };
@@ -31,11 +29,9 @@ export const ColorInputs: Story = {
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
 
-    // 背景色と文字色のラベルが存在することを確認
     await expect(canvas.getByText('背景色')).toBeInTheDocument();
     await expect(canvas.getByText('文字色')).toBeInTheDocument();
 
-    // カラーピッカーが存在することを確認
     const colorInputs = canvasElement.querySelectorAll('input[type="color"]');
     await expect(colorInputs.length).toBe(2);
   },

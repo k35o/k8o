@@ -8,7 +8,6 @@ type SubscriptionInput = {
   endpointHost: string;
 };
 
-// 購読を登録する。endpoint は unique なので、再購読時は何もしない（insert-only）。
 // 既存の p256dh/auth を上書きしないことで、endpoint を知る第三者による改ざんを防ぐ。
 export const insertSubscription = async (
   input: SubscriptionInput,

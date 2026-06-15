@@ -4,7 +4,6 @@ import styles from './background.module.css';
 
 type Dot = { cx: number; cy: number; r: number };
 
-// 左上の足（多め・大きめ）。viewBox 0 0 240 240。
 const legPathsTopLeft = [
   'M 6 -16 C 36 36, 18 86, 70 116 C 104 135, 92 182, 138 196',
   'M -16 26 C 40 44, 72 78, 72 124 C 72 158, 104 176, 116 208',
@@ -21,7 +20,6 @@ const dotsTopLeft: Dot[] = [
   { cx: 60, cy: 182, r: 1.6 },
 ];
 
-// 右下の足（左上とは別カーブ・少なめ）。左右で非対称にする。
 const legPathsBottomRight = [
   'M -10 12 C 52 32, 30 92, 80 126 C 112 148, 98 198, 134 216',
   'M -6 52 C 32 72, 50 112, 46 152 C 43 186, 62 202, 82 216',

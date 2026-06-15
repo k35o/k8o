@@ -13,9 +13,6 @@ type Props = {
   options: ReadonlyArray<{ value: string; label: string }>;
 };
 
-/**
- * URL パラメータを切り替える絞り込みセレクト。変更時に page を 1 に戻す。
- */
 export const FilterSelect: FC<Props> = ({ paramKey, label, options }) => {
   const router = useRouter();
   const pathname = usePathname();

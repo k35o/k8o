@@ -88,7 +88,6 @@ describe('fetchUserContributions', () => {
                 ],
               },
               {
-                // 期間外の日付は無視される
                 contributionDays: [
                   { date: '2026-03-28', contributionCount: 99 },
                 ],

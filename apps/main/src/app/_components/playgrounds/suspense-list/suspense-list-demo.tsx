@@ -138,7 +138,6 @@ const DataList: FC<{
   ) : null;
   if (useSuspenseList) {
     return (
-      // Nextjs,React側でSuspenseListが復活したらここに追加する
       <>
         {data.map(({ cacheKey, getTime }) => (
           <Suspense fallback={fallback} key={cacheKey}>

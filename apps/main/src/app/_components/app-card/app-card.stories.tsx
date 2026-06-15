@@ -38,7 +38,6 @@ export const DisplaysTitle: Story = {
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
 
-    // タイトルが表示されていることを確認
     await expect(
       canvas.getByRole('heading', { name: 'テストアプリ' }),
     ).toBeInTheDocument();
@@ -54,7 +53,6 @@ export const DisplaysDescription: Story = {
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
 
-    // 説明文が表示されていることを確認
     await expect(
       canvas.getByText(
         'これはアプリの説明文です。複数行になる場合もあります。',
@@ -72,7 +70,6 @@ export const HasLink: Story = {
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
 
-    // リンクが正しいhrefを持っていることを確認
     const link = canvas.getByRole('link');
     await expect(link).toHaveAttribute('href', '/color-converter');
   },

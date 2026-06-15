@@ -106,9 +106,7 @@ export const updateTalkById = async (
     .where(eq(db._schema.talks.id, id));
 };
 
-/**
- * トークを削除する。talk_tag は talkId にカスケード設定が無いため先に削除する。
- */
+// talk_tag は talkId にカスケード設定が無いため先に削除する。
 export const deleteTalkById = async (id: number): Promise<void> => {
   await db.delete(db._schema.talkTag).where(eq(db._schema.talkTag.talkId, id));
   await db.delete(db._schema.talks).where(eq(db._schema.talks.id, id));

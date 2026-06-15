@@ -8,8 +8,7 @@ const EMPTY_METADATA: OgMetadata = {
   imageUrl: undefined,
 };
 
-// 記事 URL を取得して OGP を抽出する。UA を付与しないと弾くサイトがあるため明示する。
-// 取得・解析に失敗しても例外は投げず全 undefined を返す
+// UA を付与しないと弾くサイトがあるため明示する。
 export const fetchOgMetadata = async (url: string): Promise<OgMetadata> => {
   let response: Response;
   try {

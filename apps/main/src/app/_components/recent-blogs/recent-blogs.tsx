@@ -23,9 +23,6 @@ const Skeleton = () => (
   </div>
 );
 
-/**
- * 最近のブログ記事コンポーネント（Server Component）
- */
 export const RecentBlogs = () => (
   <Suspense fallback={<Skeleton />}>
     <RecentBlogsContent />

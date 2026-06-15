@@ -3,10 +3,6 @@
 import { Button, Code } from '@k8o/arte-odyssey';
 import { useState } from 'react';
 
-/**
- * スコープの近接性のデモ
- * DOM距離による優先順位の決定（情報/警告ボックスの例）
- */
 export function ScopeProximityDemo() {
   const [showProximity, setShowProximity] = useState(true);
 

@@ -12,8 +12,6 @@ type Props = {
   shape: CornerShape;
 };
 
-// 作った角丸を実際のUIパーツに当てはめて見え方を確認する。
-// %指定のborder-radiusは要素の縦横比で見え方が変わるため、固定サイズの実例で示す
 export const UiPreview: FC<Props> = ({ corners, shape }) => {
   const radiusStyle: CSSProperties = {
     borderRadius: toBorderRadiusValue(corners),

@@ -10,7 +10,6 @@ import {
 
 import { articles } from './articles';
 
-// 記事ソースの種別。アプリ側もこの定義を SSoT として参照する。
 export const ARTICLE_SOURCE_TYPES = ['feed', 'manual'] as const;
 export type ArticleSourceType = (typeof ARTICLE_SOURCE_TYPES)[number];
 

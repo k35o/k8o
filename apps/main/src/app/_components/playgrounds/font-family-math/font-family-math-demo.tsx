@@ -3,10 +3,6 @@
 import { Checkbox } from '@k8o/arte-odyssey';
 import { useState } from 'react';
 
-/**
- * font-family: mathプロパティのデモ
- * 通常のフォントとmathフォントの違いを比較できる
- */
 export function FontFamilyMathDemo() {
   const [useMathFont, setUseMathFont] = useState(true);
 

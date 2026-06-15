@@ -12,15 +12,6 @@ const NEXT_KEYS = new Set([
 const PREV_KEYS = new Set(['ArrowLeft', 'ArrowUp', 'PageUp']);
 const FULLSCREEN_KEYS = new Set(['f', 'F']);
 
-/**
- * キーボード操作 (前後 / 先頭末尾 / フルスクリーン) を 1 つのリスナで捌く。
- * - 矢印・PageUp/Down・Space で前後移動
- * - Home/End で先頭/末尾
- * - F/f で fullscreen toggle
- * - 入力フィールドにフォーカスがある時は無効
- *
- * ハンドラ参照は ref で常に最新を見るので deps は空配列。
- */
 export const useKeyboardNav = ({
   onNext,
   onPrev,

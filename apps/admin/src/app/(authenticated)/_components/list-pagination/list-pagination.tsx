@@ -12,10 +12,6 @@ type Props = {
   currentPage: number;
 };
 
-/**
- * URL の page パラメータを更新するページネーション。
- * 1 ページ目は page を URL から省く。1 ページ以下なら描画しない。
- */
 export const ListPagination: FC<Props> = ({ totalPages, currentPage }) => {
   const router = useRouter();
   const pathname = usePathname();

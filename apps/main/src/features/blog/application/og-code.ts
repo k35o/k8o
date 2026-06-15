@@ -11,10 +11,6 @@ export type BlogOgCode = {
   code: string;
 };
 
-/**
- * 記事内で `[!og]` ディレクティブが付いたコードブロックをOGP画像用に抽出する。
- * マーカー行を含む注釈行はすべて取り除いたコードを返す。見つからなければnull。
- */
 export const getBlogOgCode = async (
   slug: string,
 ): Promise<BlogOgCode | null> => {

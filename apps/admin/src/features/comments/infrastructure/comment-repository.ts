@@ -39,11 +39,8 @@ const buildCommentWhere = (q: string | undefined): SQL | undefined =>
     ? like(db._schema.comments.message, `%${q}%`)
     : undefined;
 
-/**
- * 第三者から届いた問い合わせ・フィードバック一覧を、本文検索・ページング付きで取得する。
- * blog_comment.commentId に unique 制約が無く 1:N の可能性があるため、
- * 一覧本体と blog 紐付けを別クエリで取得して JS でマージする。
- */
+// blog_comment.commentId に unique 制約が無く 1:N の可能性があるため、
+// 一覧本体と blog 紐付けを別クエリで取得して JS でマージする。
 export const findComments = async ({
   q,
   page = 1,
@@ -109,9 +106,6 @@ export const findComments = async ({
   return { items, total };
 };
 
-/**
- * 統計カード用の集計。検索条件に依存しない全体の件数を返す。
- */
 export const findCommentStats = async (): Promise<CommentStats> => {
   const [total, blogLinked] = await Promise.all([
     db
@@ -131,10 +125,8 @@ export const findCommentStats = async (): Promise<CommentStats> => {
   };
 };
 
-/**
- * コメントを削除する。blog_comment は commentId にカスケード設定が無いため、
- * 先に紐付け行を削除してから本体を削除する。
- */
+// blog_comment は commentId にカスケード設定が無いため、
+// 先に紐付け行を削除してから本体を削除する。
 export const deleteCommentById = async (id: number): Promise<void> => {
   await db
     .delete(db._schema.blogComment)

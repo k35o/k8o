@@ -1,9 +1,7 @@
 export const commalize = (num: number) => {
-  // 小数は四捨五入して整数にする
   const roundedNumber = Math.round(num);
   const numberString = roundedNumber.toString();
 
-  // 3桁ごとにカンマを挿入
   return numberString.replaceAll(/\B(?=(\d{3})+(?!\d))/gu, ',');
 };
 

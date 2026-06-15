@@ -7,11 +7,6 @@ import { P } from './paragraph';
 import { Pre } from './pre';
 import { Strong } from './strong';
 
-/**
- * MDX が h1/h2/p/ul... 等のタグを描画する際に当てるコンポーネントマップ。
- * page.tsx で `<Content components={slideMDXComponents} />` として渡す。
- * MDX writer が直接 import して使う想定ではない。
- */
 export const slideMDXComponents: MDXComponents = {
   h1: H1,
   h2: H2,

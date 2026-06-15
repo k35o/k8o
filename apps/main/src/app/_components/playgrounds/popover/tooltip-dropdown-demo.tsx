@@ -29,21 +29,18 @@ export const TooltipDropdownDemo: FC = () => (
             <DropdownMenu.Item
               label="Item 1"
               onClick={() => {
-                // demoなので
                 alert('Item 1 clicked');
               }}
             />
             <DropdownMenu.Item
               label="Item 2"
               onClick={() => {
-                // demoなので
                 alert('Item 2 clicked');
               }}
             />
             <DropdownMenu.Item
               label="Item 3"
               onClick={() => {
-                // demoなので
                 alert('Item 3 clicked');
               }}
             />

@@ -10,7 +10,6 @@ import {
   radiusMakerUrlKeys,
 } from '../../_utils/search-params';
 
-// 角の丸み(8値)・角の形状・プレビューサイズをURLクエリで管理し、状態を共有可能にする
 export const useRadiusState = () => {
   const [{ corners, width, height, shape }, setState] = useQueryStates(
     radiusMakerParsers,

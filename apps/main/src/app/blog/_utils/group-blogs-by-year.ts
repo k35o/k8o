@@ -5,13 +5,9 @@ export type BlogYearGroup = {
   blogs: BlogSummary[];
 };
 
-// 一覧を createdAt の年で見出し付きにグルーピングする。
-// - 年は降順に並べる
-// - グループ内は入力順を保持する（入力が createdAt 降順なので再ソートは不要）
-// - フィルタ後の配列を渡す前提のため、空の年グループは生成されない
-// - 年は UTC 基準（getUTCFullYear）で判定する。createdAt は UTC で保存されており、
-//   ローカルタイムゾーン依存の getFullYear だと年境界（例: 2025-01-01T00:00:00Z）で
-//   閲覧者のタイムゾーンによりグループがずれるため
+// 年は UTC 基準（getUTCFullYear）で判定する。createdAt は UTC で保存されており、
+// ローカルタイムゾーン依存の getFullYear だと年境界（例: 2025-01-01T00:00:00Z）で
+// 閲覧者のタイムゾーンによりグループがずれるため
 export const groupBlogsByYear = (
   blogs: readonly BlogSummary[],
 ): BlogYearGroup[] => {

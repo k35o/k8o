@@ -21,11 +21,8 @@ export const articles = sqliteTable(
     title: text('title').notNull(),
     url: text('url').notNull(),
     publishedAt: text('published_at').notNull(),
-    // OGP から取得した画像 URL（取り込み時に保存。未取得なら null）
     imageUrl: text('image_url'),
-    // OGP / meta から取得した説明文（未取得なら null）
     description: text('description'),
-    // 手動で付与する要約（未設定なら null）
     summary: text('summary'),
     createdAt: text('created_at')
       .notNull()

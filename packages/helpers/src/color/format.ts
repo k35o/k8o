@@ -1,7 +1,3 @@
-// 正準 Color を各 CSS 色形式の文字列へ整形する。
-// alpha は 1 未満のときだけ付与する。rgb/hsl は馴染みのあるレガシー構文、
-// hwb/lab/lch/oklab/oklch は仕様どおりのスペース構文で出力する。
-
 import {
   type Color,
   clamp,
@@ -14,7 +10,6 @@ import {
   colorToRgb255,
 } from './spaces';
 
-// 指定桁で丸めつつ末尾ゼロを落とす（-0 も 0 に正規化）。
 const round = (value: number, digits: number): number => {
   const rounded = Number(value.toFixed(digits));
   return Object.is(rounded, -0) ? 0 : rounded;
@@ -104,7 +99,6 @@ export type ColorFormatKey =
   | 'lch'
   | 'lab';
 
-// 対応表で使う「形式名 → 値」の一覧。表示順もこの順。
 export const formatAll = (
   color: Color,
 ): Array<{ key: ColorFormatKey; label: string; value: string }> => [

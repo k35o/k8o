@@ -1,9 +1,7 @@
 import type { Route } from 'next';
 
-// 「使う」もの（ツール）か「読む・眺める」もの（読みもの）かの種類。
 export type SiteEntryKind = 'tool' | 'reading';
 
-// カードに表示するアイコンの種類。実体（コンポーネント）への対応は UI 層で持つ。
 export type SiteEntryIcon =
   | 'baseline'
   | 'colorConverter'
@@ -26,7 +24,6 @@ export type SiteEntry = {
   icon: SiteEntryIcon;
 };
 
-// 種類ごとのセクション見出し。
 export const KIND_SECTION: Record<
   SiteEntryKind,
   { title: string; description: string }
@@ -41,8 +38,6 @@ export const KIND_SECTION: Record<
   },
 };
 
-// 並び順は種類から導出する（読みもの → ツール）。
-// そのため下の記述順が意味を持つのは「種類内の並び」だけ。
 const KIND_ORDER: Record<SiteEntryKind, number> = {
   reading: 0,
   tool: 1,
@@ -137,7 +132,6 @@ const entries: readonly SiteEntry[] = [
   },
 ];
 
-// 種類順に整列。種類内は記述順を保つ（安定ソート）。
 export const siteEntries: readonly SiteEntry[] = [...entries].toSorted(
   (a, b) => KIND_ORDER[a.kind] - KIND_ORDER[b.kind],
 );

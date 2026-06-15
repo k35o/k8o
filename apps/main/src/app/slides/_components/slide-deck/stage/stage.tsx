@@ -6,10 +6,6 @@ import { SlideQRCode } from '../slide-qr-code';
 
 import styles from './stage.module.css';
 
-/**
- * `flush`: true の時は角丸 / 影 を外し、ステージが viewport edge に張り付いた時の
- * 浮いて見える違和感を消す (フルスクリーン表示用)。
- */
 export const Stage: FC<{
   children: ReactNode;
   qrUrl?: string;

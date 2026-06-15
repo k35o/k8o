@@ -18,7 +18,6 @@ export const Primary: Story = {
     shape: 'round',
   },
   play: async ({ canvasElement }) => {
-    // 4種類のUI実例が表示される
     const captions = [...canvasElement.querySelectorAll('figcaption')].map(
       (el) => el.textContent,
     );

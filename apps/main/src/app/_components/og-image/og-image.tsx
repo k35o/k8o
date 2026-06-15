@@ -18,7 +18,6 @@ type OgImageProps = {
 };
 
 export function OgImage({ title, category, code }: OgImageProps) {
-  // 代表コードがあるときはコードパネル付きレイアウトで描画する
   if (code) {
     return OgCodeImage({ title, code });
   }
@@ -44,7 +43,6 @@ async function OgTextImage({ title, category }: Omit<OgImageProps, 'code'>) {
         fontFamily: '"M PLUS 2"',
       }}
     >
-      {/* 装飾的なグラデーション円 */}
       <div
         style={{
           position: 'absolute',
@@ -134,7 +132,6 @@ async function OgTextImage({ title, category }: Omit<OgImageProps, 'code'>) {
               gap: 24,
             }}
           >
-            {/* ogなので */}
             <img
               alt="アイコン"
               height={96}

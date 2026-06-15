@@ -11,8 +11,6 @@ type Props = {
   onColorChange: (color: Color) => void;
 };
 
-// あらゆる CSS 色形式を貼り付け・入力できる統一入力。
-// 妥当な色のときだけ親へ反映し、未完成・不正な入力では直前の有効色を保つ。
 export const SmartInput: FC<Props> = ({ color, onColorChange }) => {
   const [draft, setDraft] = useState(() => formatHex(color));
   const [prevColor, setPrevColor] = useState(color);

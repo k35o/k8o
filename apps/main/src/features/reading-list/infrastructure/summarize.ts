@@ -2,11 +2,8 @@ import { generateText } from 'ai';
 
 const FETCH_TIMEOUT_MS = 8000;
 const MAX_INPUT_CHARS = 8000;
-// 安価モデルを既定にし、env で差し替え可能にする（AI Gateway の creator/model 形式）
 const SUMMARY_MODEL = process.env['SUMMARY_MODEL'] ?? 'openai/gpt-4o-mini';
 
-// HTML から要約に使う本文テキストをざっくり抽出する。
-// script/style 等を除去 → タグ除去 → 空白圧縮 → 長すぎる入力は切り詰め。
 const extractText = (html: string): string =>
   html
     // 終了タグは空白入り（</script >）にも対応させる（CodeQL bad-tag-filter 対策）
@@ -54,10 +51,6 @@ const fetchArticleText = async (url: string): Promise<string | null> => {
   return text;
 };
 
-/**
- * 記事 URL を取得 → 本文抽出 → AI Gateway で日本語要約を生成する。
- * 取得・生成のいずれかに失敗したら null を返す（例外は投げない）。
- */
 export const summarizeArticle = async (url: string): Promise<string | null> => {
   const text = await fetchArticleText(url);
   if (text === null) {
@@ -78,7 +71,6 @@ export const summarizeArticle = async (url: string): Promise<string | null> => {
     const trimmed = summary.trim();
     return trimmed === '' ? null : trimmed;
   } catch (error) {
-    // AI Gateway のキー未設定・モデル不可・レート超過などはここに出る
     console.error(`要約: 生成に失敗しました (${url})`, error);
     return null;
   }

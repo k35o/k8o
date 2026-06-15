@@ -1,19 +1,12 @@
-// Web Push の購読 endpoint を検証する。
-// 匿名で登録された endpoint へ後段（admin の送信処理）が fetch するため、
-// 内部URLなどを登録される SSRF を防ぐ目的で https + Push サービスホスト allowlist に限定する。
-// allowlist によりプライベートIP / localhost / link-local / IPリテラルは構造的に排除される。
-
-// endpoint URL の長さ上限（Push サービスの endpoint は十分この範囲に収まる）
+// SSRF 防止のため https + Push サービスホスト allowlist に限定する。
 const MAX_ENDPOINT_LENGTH = 2048;
 
-// 完全一致で許可するホスト（Chrome/Edge の FCM、Firefox の Mozilla autopush）
 const ALLOWED_HOSTS: ReadonlySet<string> = new Set([
   'fcm.googleapis.com',
   'updates.push.services.mozilla.com',
 ]);
 
-// サフィックス一致で許可するホスト（サブドメイン境界のため先頭ドット必須）
-// .push.apple.com は Safari/iOS、.notify.windows.com は Windows(WNS)
+// サブドメイン境界を守るため先頭ドット必須
 const ALLOWED_HOST_SUFFIXES: readonly string[] = [
   '.push.apple.com',
   '.notify.windows.com',
@@ -40,7 +33,6 @@ export const isAllowedPushEndpoint = (endpoint: string): boolean => {
     return false;
   }
 
-  // 標準の https ポート以外を拒否する
   if (url.port !== '' && url.port !== '443') {
     return false;
   }

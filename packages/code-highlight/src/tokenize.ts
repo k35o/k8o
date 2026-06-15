@@ -9,10 +9,6 @@ export type HighlightedCode = {
 const FALLBACK_FG = '#a9b2c3';
 const FALLBACK_BG = '#21252b';
 
-/**
- * コードをrehypeプラグインと同じテーマ(plastic)でトークン化する。
- * OGP画像のようにHTMLを介さずトークンを直接描画したい場面で使う。
- */
 export const highlightCode = async (
   code: string,
   lang: string,

@@ -39,10 +39,8 @@ export function CssMathFunctionsDemo() {
       </div>
       <div className="flex flex-col items-center gap-4">
         <div className="border-border-base relative aspect-square w-full max-w-80 overflow-hidden border">
-          {/* 中心線 */}
           <div className="bg-fg-subtle absolute top-0 left-1/2 h-full w-px" />
           <div className="bg-fg-subtle absolute top-1/2 left-0 h-px w-full" />
-          {/* 移動する要素 */}
           <div
             className="absolute z-10 size-6 rounded-full transition-all duration-300 ease-out"
             style={{
@@ -58,7 +56,6 @@ export function CssMathFunctionsDemo() {
             }}
           />
 
-          {/* 座標表示 */}
           <div className="text-fg-mute absolute top-2 left-2 text-xs">
             <p>
               座標: ({xValue}, {yValue})

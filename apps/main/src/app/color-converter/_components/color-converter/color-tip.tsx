@@ -2,7 +2,6 @@ import { formatHex } from '@repo/helpers/color/format';
 import type { Color } from '@repo/helpers/color/spaces';
 import type { FC } from 'react';
 
-// 透明度を可視化するチェッカーボード。
 const CHECKERBOARD = {
   backgroundImage:
     'repeating-conic-gradient(rgb(128 128 128 / 0.25) 0% 25%, transparent 0% 50%)',

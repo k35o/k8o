@@ -2,7 +2,6 @@ import * as z from 'zod/mini';
 
 import { createReports } from '@/features/reports/application/report';
 
-// 64KB
 const MAX_BODY_SIZE = 64 * 1024;
 
 const ALLOWED_ORIGINS =

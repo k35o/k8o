@@ -27,11 +27,9 @@ export const InputValue: Story = {
   play: async ({ args, canvasElement, userEvent }) => {
     const canvas = within(canvasElement);
 
-    // 4つの角×2方向の8フィールドがある
     const fields = canvas.getAllByRole('spinbutton');
     await expect(fields).toHaveLength(8);
 
-    // 値を入力して確定すると変更が通知される
     const firstField = fields[0];
     if (!firstField) {
       throw new Error('数値入力フィールドが見つかりません');

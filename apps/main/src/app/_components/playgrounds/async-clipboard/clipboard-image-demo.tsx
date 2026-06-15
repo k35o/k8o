@@ -47,7 +47,6 @@ export const ClipboardImageDemo: FC = () => {
   const pasteText = async () => {
     const items = await navigator.clipboard.read();
 
-    // 全てのアイテムとタイプの組み合わせを並列で処理
     const results = await Promise.all(
       items.flatMap((item) =>
         item.types
@@ -59,7 +58,6 @@ export const ClipboardImageDemo: FC = () => {
       ),
     );
 
-    // 最初に見つかったPNG画像を使用
     const firstResult = results[0];
     if (firstResult === undefined) {
       onOpen('error', 'PNG画像が見つかりませんでした。');

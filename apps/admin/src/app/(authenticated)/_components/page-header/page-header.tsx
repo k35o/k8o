@@ -7,9 +7,6 @@ type Props = {
   action?: ReactNode;
 };
 
-/**
- * 各ページ先頭の見出し領域。タイトル(h1)・補足文・右側のアクションを統一する。
- */
 export const PageHeader: FC<Props> = ({ title, description, action }) => (
   <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
     <div className="flex flex-col gap-2">

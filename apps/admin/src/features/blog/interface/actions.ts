@@ -7,10 +7,6 @@ import { verifySession } from '@/shared/auth/verify-session';
 
 import { updateBlogPublished } from '../infrastructure/blog-repository';
 
-/**
- * 記事の公開/下書きを切り替える。main サイトの公開状態に直結するため、
- * 関連ページのキャッシュを再検証する。
- */
 export async function setBlogPublished(
   id: number,
   published: boolean,

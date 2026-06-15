@@ -17,11 +17,9 @@ export const InitialState: Story = {
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
 
-    // 統一入力は初期色 #5eead4 を hex で表示する。
     const input = canvas.getByRole('textbox', { name: 'カラーコード' });
     await expect(input).toHaveValue('#5eead4');
 
-    // 既定タブ(RGB)が初期色の各成分を表示する。
     await expect(canvas.getByRole('spinbutton', { name: 'R' })).toHaveValue(
       '94',
     );
@@ -34,7 +32,6 @@ export const InitialState: Story = {
   },
 };
 
-// 課題2: rgb() を丸ごと貼り付けできる。
 export const PasteRgb: Story = {
   play: async ({ canvasElement, userEvent }) => {
     const canvas = within(canvasElement);
@@ -49,12 +46,10 @@ export const PasteRgb: Story = {
     await expect(canvas.getByRole('spinbutton', { name: 'G' })).toHaveValue(
       '0',
     );
-    // 対応表（RGB行）だけが rgb(...) 文字列を持つ。
     await expect(canvas.getByText('rgb(255, 0, 0)')).toBeInTheDocument();
   },
 };
 
-// 課題2/3: モダンCSSの oklch() も貼り付け・変換できる。
 export const PasteOklch: Story = {
   play: async ({ canvasElement, userEvent }) => {
     const canvas = within(canvasElement);
@@ -63,7 +58,6 @@ export const PasteOklch: Story = {
     await userEvent.clear(input);
     await userEvent.type(input, 'oklch(62.8% 0.2577 29.23)');
 
-    // エラーにならず、赤系（R が高い）へ変換される。
     await expect(
       canvas.queryByText('認識できない色形式です'),
     ).not.toBeInTheDocument();
@@ -72,7 +66,6 @@ export const PasteOklch: Story = {
   },
 };
 
-// 課題1: 入力途中の不正値でプレビューが白へ飛ばない（直前の有効色を保つ）。
 export const IncompleteInputKeepsColor: Story = {
   play: async ({ canvasElement, userEvent }) => {
     const canvas = within(canvasElement);
@@ -84,7 +77,6 @@ export const IncompleteInputKeepsColor: Story = {
       '0',
     );
 
-    // 未完成な hex を入力するとエラー表示になるが、色は赤のまま（白=255,255,255 に飛ばない）。
     await userEvent.clear(input);
     await userEvent.type(input, '#ff');
     await expect(
@@ -99,7 +91,6 @@ export const IncompleteInputKeepsColor: Story = {
   },
 };
 
-// 課題2/4: 数値フィールドでの微調整が対応表へ反映される。
 export const EditChannel: Story = {
   play: async ({ canvasElement, userEvent }) => {
     const canvas = within(canvasElement);
@@ -107,10 +98,8 @@ export const EditChannel: Story = {
     const blue = canvas.getByRole('spinbutton', { name: 'B' });
     await userEvent.clear(blue);
     await userEvent.type(blue, '0');
-    // NumberField は blur 時に値を確定する。
     await userEvent.tab();
 
-    // #5eead4 の B を 0 にすると rgb(94, 234, 0) になる。
     await expect(canvas.getByText('rgb(94, 234, 0)')).toBeInTheDocument();
   },
 };

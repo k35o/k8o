@@ -20,10 +20,6 @@ type LCPEntry = {
   timestamp: string;
 };
 
-/**
- * Largest Contentful Paint APIのデモ
- * ページ内のLCP要素の情報を表示する
- */
 export function LCPDemo() {
   const [entries, setEntries] = useState<LCPEntry[]>([]);
   const [isSupported, setIsSupported] = useState(true);

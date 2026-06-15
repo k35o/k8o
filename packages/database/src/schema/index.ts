@@ -28,56 +28,43 @@ import { talkTag, talkTagRelations } from './talk-tag';
 import { talks, talksRelations } from './talks';
 
 export const schema = {
-  // 認証
   user,
   session,
   account,
   verification,
-  // 全体
   feedbacks,
   tags,
   comments,
   reportingReports,
   baselineSnapshots,
-  // Push通知関連
   pushSubscriptions,
   pushLogs,
-  // ブログ関連
   blogs,
   blogViews,
   blogTag,
   blogComment,
-  // Talks関連
   talks,
   talkTag,
-  // Slides関連
   slides,
   slideTag,
-  // よんでるもの関連
   articleSources,
   articles,
 };
 
 export const relations = {
-  // 認証
   userRelations,
   sessionRelations,
   accountRelations,
-  // 全体
   feedbacksRelations,
   tagsRelations,
   commentsRelations,
-  // ブログ関連
   blogsRelations,
   blogTagRelations,
   blogCommentRelations,
-  // Talks関連
   talksRelations,
   talkTagRelations,
-  // Slides関連
   slidesRelations,
   slideTagRelations,
-  // よんでるもの関連
   articleSourcesRelations,
   articlesRelations,
 };

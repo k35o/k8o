@@ -59,7 +59,6 @@ export const ContentVisibilityDemo: FC = () => {
             <div
               style={{
                 contentVisibility: showAuto ? 'auto' : 'visible',
-                // containIntrinsicSize: 'auto calc(var(--spacing) * 96)',
               }}
             >
               <h3 className="text-md mb-2 font-bold">サンプルコンテンツ</h3>

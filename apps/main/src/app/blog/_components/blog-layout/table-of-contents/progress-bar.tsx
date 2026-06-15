@@ -15,7 +15,6 @@ export const ProgressBar: FC<{
     }
     return calculateTocPercentage(activeId, headingTree);
   }, [activeId, headingTree]);
-  // SVG円形プログレスバーの計算
   const radius = 14;
   const circumference = 2 * Math.PI * radius;
   const offset = circumference * (1 - currentPercentage / 100);
@@ -27,7 +26,6 @@ export const ProgressBar: FC<{
         className="size-full -rotate-90"
         viewBox="0 0 32 32"
       >
-        {/* 背景の円 */}
         <circle
           cx="16"
           cy="16"
@@ -36,7 +34,6 @@ export const ProgressBar: FC<{
           stroke="var(--bg-raised)"
           strokeWidth="3"
         />
-        {/* 進捗の円 */}
         <circle
           className="transition-[stroke-dashoffset] duration-500 ease-in-out"
           cx="16"

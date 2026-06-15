@@ -47,7 +47,6 @@ const TagRow: FC<{ tag: TagWithUsage }> = ({ tag }) => {
     });
   };
 
-  // キャンセル/閉じる時は編集中の値を元のタグ名へ戻す
   const closeRename = (): void => {
     setRenameOpen(false);
     setName(tag.name);

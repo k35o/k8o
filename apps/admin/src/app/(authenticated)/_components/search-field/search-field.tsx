@@ -14,10 +14,6 @@ type Props = {
 
 const DEBOUNCE_MS = 300;
 
-/**
- * URL の検索パラメータ(既定 `q`)をデバウンス付きで更新する検索ボックス。
- * 入力のたびに page を 1 に戻す。
- */
 export const SearchField: FC<Props> = ({
   paramKey = 'q',
   placeholder = '検索',

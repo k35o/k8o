@@ -45,7 +45,6 @@ const parseAttributes = (tag: string): Map<string, string> => {
   return attributes;
 };
 
-// 同一キーは最初に出現したものを優先する
 const collectMetaContents = (html: string): Map<string, string> => {
   const contents = new Map<string, string>();
   for (const tagMatch of html.matchAll(/<meta\b[^>]*>/giu)) {
@@ -61,8 +60,6 @@ const collectMetaContents = (html: string): Map<string, string> => {
   return contents;
 };
 
-// og:* が無ければ twitter:*・<title> にフォールバックし、
-// baseUrl があれば相対 og:image を絶対 URL に解決する
 export const parseOgMetadata = (html: string, baseUrl?: string): OgMetadata => {
   const metas = collectMetaContents(html);
 

@@ -41,9 +41,6 @@ function _getDateRange(): { from: string; to: string } {
   };
 }
 
-/**
- * ユーザーのコントリビューション（commit / PR / issue / review）を直近2週間分取得
- */
 export async function fetchUserContributions(
   username: string,
 ): Promise<ContributionDay[]> {

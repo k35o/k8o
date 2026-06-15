@@ -20,10 +20,8 @@ export const InputText: Story = {
       name: 'カウントしたい文字列',
     });
 
-    // テキストを入力
     await userEvent.type(textarea, 'こんにちは');
 
-    // 文字数が表示されることを確認
     await expect(canvas.getByText('5')).toBeInTheDocument();
   },
 };
@@ -35,10 +33,8 @@ export const InputLongText: Story = {
       name: 'カウントしたい文字列',
     });
 
-    // 長いテキストを入力
     await userEvent.type(textarea, 'これは長いテキストのテストです。');
 
-    // 文字数が表示されることを確認
     await expect(canvas.getByText('16')).toBeInTheDocument();
   },
 };

@@ -4,10 +4,6 @@ import { Button } from '@k8o/arte-odyssey';
 import Image from 'next/image';
 import { useState } from 'react';
 
-/**
- * ドーナツスコープのデモ
- * スコープルートとスコープリミットを使って特定範囲内のみスタイル適用
- */
 export function DonutScopeDemo() {
   const [showDonutScope, setShowDonutScope] = useState(true);
 
