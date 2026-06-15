@@ -3,10 +3,8 @@
 import { Button, Code } from '@k8o/arte-odyssey';
 import { useEffect, useRef, useState } from 'react';
 
-// Baseline 2026で追加された source プロパティをTypeScriptの型に拡張
 type ToggleEventWithSource = ToggleEvent & { source?: Element | null };
 
-// showPopover が source オプションを受けるシグネチャの型補完
 type ShowPopoverOptions = { source?: Element };
 
 type Member = {
@@ -159,7 +157,6 @@ export function ToggleEventSourceDemo() {
         <p className="text-fg-mute mt-1 text-xs">{active.role}</p>
         <p className="text-fg-base mt-2 text-sm">{active.bio}</p>
         <div className="mt-3 flex justify-end">
-          {/* popovertarget の hide ボタンで閉じると、閉じる方向のtoggleでこのボタンが source になる */}
           <Button
             data-member-id="close"
             popoverTarget={POPOVER_ID}

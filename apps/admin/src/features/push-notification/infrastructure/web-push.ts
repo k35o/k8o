@@ -1,7 +1,3 @@
-// Web Push プロトコルの自前実装（Web Crypto API ベース、依存ゼロ）。
-// k8o-push の Cloudflare Worker 実装を移植したもの。Vercel の Node ランタイムでも動作する。
-// ECDH 鍵交換 → HKDF 鍵導出 → AES-GCM ペイロード暗号化 → VAPID ES256 JWT 署名。
-
 type Subscription = {
   endpoint: string;
   keys: {
@@ -16,8 +12,6 @@ type VapidOptions = {
   vapidSubject: string;
 };
 
-// 送信失敗時に HTTP ステータスを保持するエラー。
-// 410 Gone / 404 Not Found の購読削除判定を文字列マッチに頼らず行うために使う。
 export class WebPushError extends Error {
   readonly status: number;
 
@@ -32,8 +26,6 @@ function isCryptoKeyPair(key: CryptoKey | CryptoKeyPair): key is CryptoKeyPair {
   return 'privateKey' in key && 'publicKey' in key;
 }
 
-// TextEncoder の出力を ArrayBuffer 由来の Uint8Array に正規化する。
-// Web Crypto / fetch の BufferSource は ArrayBuffer 由来であることを要求するため。
 function utf8(str: string): Uint8Array<ArrayBuffer> {
   return new Uint8Array(new TextEncoder().encode(str));
 }
@@ -136,7 +128,6 @@ async function deriveEncryptionKeys(
   nonce: Uint8Array<ArrayBuffer>;
   salt: Uint8Array<ArrayBuffer>;
 }> {
-  // IKM = HKDF(auth_secret, ecdh_secret, "WebPush: info" || 0x00 || client_public || server_public, 32)
   const info = concatBytes(
     utf8('WebPush: info\0'),
     clientPublicKey,
@@ -173,7 +164,6 @@ async function encryptPayload(
   key: CryptoKey,
   nonce: Uint8Array<ArrayBuffer>,
 ): Promise<Uint8Array<ArrayBuffer>> {
-  // パディング: 1バイトのデリミタ + ペイロード
   const paddedPayload = concatBytes(payload, new Uint8Array([2]));
 
   const encrypted = await crypto.subtle.encrypt(
@@ -192,11 +182,9 @@ function buildEncryptedBody(
     salt,
   }: { encrypted: Uint8Array<ArrayBuffer>; salt: Uint8Array<ArrayBuffer> },
 ): Uint8Array<ArrayBuffer> {
-  // aes128gcm header: salt (16) + rs (4) + idlen (1) + keyid (65)
   const rs = new Uint8Array(4);
   new DataView(rs.buffer).setUint32(0, 4096, false);
 
-  // P-256公開鍵は65バイト
   const idlen = new Uint8Array([65]);
 
   return concatBytes(salt, rs, idlen, localPublicKey, encrypted);
@@ -212,7 +200,6 @@ async function generateVapidHeaders(
   const audience = `${url.protocol}//${url.host}`;
 
   const header = { typ: 'JWT', alg: 'ES256' };
-  // exp は 12 時間後（12 * 60 * 60 秒）
   const payload = {
     aud: audience,
     exp: Math.floor(Date.now() / 1000) + 12 * 60 * 60,

@@ -24,7 +24,6 @@ async function _generateLlmContent() {
     .map((talk) => `#### ${talk.title}\n${talk.eventName}（${talk.eventDate}）`)
     .join('\n\n');
 
-  // リンク先ごとに動的に差し込む追記コンテンツ。
   const dynamicContent = new Map<string, string>([
     ['/blog', blogContent],
     ['/talks', talkContent],

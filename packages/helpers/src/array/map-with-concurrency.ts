@@ -1,12 +1,9 @@
-// 同時実行数を concurrency 以下に制限しつつ、入力順で結果を返す（ワーカープール方式）
 export const mapWithConcurrency = async <T, R>(
   items: readonly T[],
   concurrency: number,
   fn: (item: T, index: number) => Promise<R>,
 ): Promise<R[]> => {
   const results = Array.from<R>({ length: items.length });
-  // 全ワーカーで 1 つの iterator を共有し、各 .next() で重複なく要素を取り出す。
-  // undefined 要素もそのまま処理対象にする（添字アクセスのスキップを避ける）
   const iterator = items.entries();
 
   const worker = async (): Promise<void> => {

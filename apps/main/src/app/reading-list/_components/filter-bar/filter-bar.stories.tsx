@@ -3,9 +3,7 @@ import { expect, within } from 'storybook/test';
 
 import { FilterBar } from './filter-bar';
 
-const noop = () => {
-  // no-op
-};
+const noop = () => {};
 
 const meta: Meta<typeof FilterBar> = {
   title: 'app/reading-list/filter-bar',

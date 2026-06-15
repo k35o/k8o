@@ -6,9 +6,6 @@ type Props = {
   action?: ReactNode;
 };
 
-/**
- * セクションの見出し(h2)と右側アクションをまとめる。
- */
 export const SectionHeader: FC<Props> = ({ title, action }) => (
   <div className="flex items-center justify-between gap-4">
     <Heading type="h2">{title}</Heading>

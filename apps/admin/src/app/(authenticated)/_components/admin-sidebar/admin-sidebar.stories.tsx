@@ -24,7 +24,6 @@ export const HighlightsActiveRoute: Story = {
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
 
-    // 現在地のナビ項目に aria-current="page" が付くことを確認する
     const link = canvas.getAllByText('お問い合わせ')[0]?.closest('a') ?? null;
     await expect(link).toHaveAttribute('aria-current', 'page');
   },

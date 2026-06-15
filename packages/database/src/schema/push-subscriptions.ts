@@ -12,7 +12,6 @@ export const pushSubscriptions = sqliteTable(
     endpoint: text('endpoint').notNull(),
     p256dh: text('p256dh').notNull(),
     auth: text('auth').notNull(),
-    // allowlist 検証済みの endpoint ホスト（運用・集計用）
     endpointHost: text('endpoint_host').notNull(),
     createdAt: text('created_at')
       .notNull()

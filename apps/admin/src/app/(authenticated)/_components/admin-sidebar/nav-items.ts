@@ -22,13 +22,10 @@ export type NavItem = {
 };
 
 export type NavGroup = {
-  // null の場合は見出しなし（概要グループ）
   label: string | null;
   items: NavItem[];
 };
 
-// サイドバーのナビゲーション定義。グループごとに小見出しを付ける。
-// 新しい管理セクションを追加するときは該当グループに項目を足す。
 export const NAV_GROUPS: NavGroup[] = [
   {
     label: null,

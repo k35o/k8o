@@ -6,7 +6,6 @@ export function DialogDemo() {
       <button
         className="bg-primary-bg text-primary-fg rounded-md px-4 py-2"
         command="show-modal"
-        // Baseline 2025
         commandfor="demo-dialog"
         type="button"
       >
@@ -27,9 +26,7 @@ export function DialogDemo() {
           </p>
           <button
             className="bg-bg-mute text-fg-base hover:bg-bg-subtle rounded-md px-4 py-2"
-            // Baseline 2025
             command="close"
-            // Baseline 2025
             commandfor="demo-dialog"
             type="button"
           >

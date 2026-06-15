@@ -8,7 +8,6 @@ import { fetchOgMetadata } from '../infrastructure/og-metadata';
 
 const parser = new Parser();
 
-// OGP 取得時の同時リクエスト数。外部サイトへの過負荷を避けるため絞る
 const OG_CONCURRENCY = 5;
 
 function sanitizeFeedDates(xml: string): string {
@@ -124,7 +123,6 @@ export async function syncArticles(): Promise<SyncResult> {
   }
 
   if (newArticles.length > 0) {
-    // 取り込み時に OGP を取得して保存し、表示時の外部 fetch を不要にする
     const newArticleRows = await mapWithConcurrency(
       newArticles,
       OG_CONCURRENCY,

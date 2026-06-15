@@ -3,7 +3,6 @@
 import { Button, Code } from '@k8o/arte-odyssey';
 import { useEffect, useRef, useState } from 'react';
 
-// publicに置いた静的Worker script。全タブで同じURLになるためSharedWorkerが共有される
 const WORKER_URL = '/playgrounds/shared-worker.worker.js';
 
 type WorkerMessage =

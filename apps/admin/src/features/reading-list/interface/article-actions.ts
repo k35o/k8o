@@ -105,7 +105,6 @@ export async function syncArticlesAction(): Promise<SyncActionState> {
 
   try {
     const result = await syncArticles();
-    // 既存記事のうち OGP 未取得のものを補完する
     const { enrichedArticles } = await enrichArticleMetadata();
     revalidatePath('/reading-list');
     revalidatePath('/');

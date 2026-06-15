@@ -1,6 +1,3 @@
-// Web Push 通知を受け取るための Service Worker。
-// push イベントで通知を表示し、クリックで対象 URL を開く。
-
 // 不正な JSON ペイロードでも通知を黙ってドロップしないようフォールバックする
 const parsePushData = (event) => {
   if (!event.data) {

@@ -11,7 +11,6 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
   }
 
   const { newArticles, updatedArticles, failedSources } = await syncArticles();
-  // 既存記事のうち OGP 未取得のものを補完する（取得失敗は次回に再試行）
   const { enrichedArticles } = await enrichArticleMetadata();
 
   const readingListUrl = 'https://www.k8o.me/reading-list';

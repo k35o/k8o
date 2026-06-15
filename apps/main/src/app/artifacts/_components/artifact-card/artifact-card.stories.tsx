@@ -46,7 +46,6 @@ export const DisplaysName: Story = {
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
 
-    // リポジトリ名が表示されていることを確認
     await expect(
       canvas.getByRole('heading', { name: 'ArteOdyssey' }),
     ).toBeInTheDocument();
@@ -65,7 +64,6 @@ export const DisplaysDescription: Story = {
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
 
-    // 説明文が表示されていることを確認
     await expect(
       canvas.getByText('CSS Modulesを扱いやすくするための実験的なツール。'),
     ).toBeInTheDocument();
@@ -84,7 +82,6 @@ export const DisplaysTags: Story = {
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
 
-    // タグが表示されていることを確認
     await expect(canvas.getByText('Renovate')).toBeInTheDocument();
     await expect(canvas.getByText('Config')).toBeInTheDocument();
     await expect(canvas.getByText('Automation')).toBeInTheDocument();
@@ -103,7 +100,6 @@ export const HasGitHubLink: Story = {
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
 
-    // GitHubリンクが存在することを確認
     const githubLink = canvas.getByRole('link', { name: 'GitHubで見る' });
     await expect(githubLink).toBeInTheDocument();
     await expect(githubLink).toHaveAttribute(
@@ -125,7 +121,6 @@ export const NoNpmLink: Story = {
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
 
-    // npmリンクが存在しないことを確認
     await expect(
       canvas.queryByRole('link', { name: 'npmで見る' }),
     ).not.toBeInTheDocument();
@@ -145,7 +140,6 @@ export const HasWebsiteLink: Story = {
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
 
-    // 公開サイトへのリンクが存在することを確認
     const websiteLink = canvas.getByRole('link', { name: 'サイトで見る' });
     await expect(websiteLink).toBeInTheDocument();
     await expect(websiteLink).toHaveAttribute(

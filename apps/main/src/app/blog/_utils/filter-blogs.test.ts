@@ -49,7 +49,6 @@ describe('filterBlogs', () => {
     });
 
     it('タイトル・タグのいずれかに一致する全件を返すべき', () => {
-      // id1 はタイトルとタグ、id3 はタグ "React" に一致する
       const result = filterBlogs(blogs, 'react');
       expect(result.map((b) => b.id)).toEqual([1, 3]);
     });
@@ -72,7 +71,6 @@ describe('filterBlogs', () => {
     });
 
     it('全角英数のクエリを正規化してヒットさせるべき（Ｒｅａｃｔ → React）', () => {
-      // 半角 "react" と同じく id1（タイトル・タグ）と id3（タグ）にヒットする
       const result = filterBlogs(blogs, 'Ｒｅａｃｔ');
       expect(result.map((b) => b.id)).toEqual([1, 3]);
     });

@@ -11,7 +11,6 @@ import {
   CORNER_LABELS,
 } from '../../_utils/corner-meta';
 
-// 画面上の配置(左上・右上・左下・右下)に合わせた表示順
 const DISPLAY_ORDER: Corner[] = [
   'topLeft',
   'topRight',

@@ -21,16 +21,12 @@ const PANEL_HEADER_HEIGHT = 42;
 const CODE_PADDING_X = 24;
 const CODE_PADDING_Y = 20;
 const CODE_LINE_HEIGHT = 1.5;
-// JetBrains Monoの字送りは0.6em固定
 const CODE_CHAR_WIDTH = 0.6;
 
-// 左カラム幅: カード内幅1020 - gap36 - パネル470 - 左padding16
 const TITLE_AREA_WIDTH = 498;
 const TITLE_MAX_HEIGHT = 320;
 const TITLE_LINE_HEIGHT = 1.35;
 
-// 全角=1, 半角=0.55として概算し、BudouXの塊単位折り返しの空きを見込んで30%の余裕を持たせる。
-// 推定4行以内に収まる最大サイズを選ぶ
 const calcTitleFontSize = (title: string): number => {
   let units = 0;
   for (const char of title) {
@@ -93,7 +89,6 @@ export async function OgCodeImage({ title, code }: OgCodeImageProps) {
         fontFamily: '"M PLUS 2"',
       }}
     >
-      {/* 装飾的なグラデーション円 */}
       <div
         style={{
           position: 'absolute',
@@ -137,8 +132,6 @@ export async function OgCodeImage({ title, code }: OgCodeImageProps) {
           opacity: 0.98,
         }}
       >
-        {/* クラゲの足: サイト背景と同じ装飾をカードの左下に流す */}
-        {/* ogなので */}
         <img
           alt=""
           height={230}
@@ -146,7 +139,6 @@ export async function OgCodeImage({ title, code }: OgCodeImageProps) {
           style={{ position: 'absolute', bottom: 0, left: 0 }}
           width={230}
         />
-        {/* 左カラム: タイトルとブランド */}
         {/* flexBasis 0 + minWidth 0 がないとタイトルのmax-content幅でパネルが押し出される */}
         <div
           style={{
@@ -193,7 +185,6 @@ export async function OgCodeImage({ title, code }: OgCodeImageProps) {
               gap: 20,
             }}
           >
-            {/* ogなので */}
             <img
               alt="アイコン"
               height={72}
@@ -216,7 +207,6 @@ export async function OgCodeImage({ title, code }: OgCodeImageProps) {
             </span>
           </div>
         </div>
-        {/* 右カラム: エディタ風コードパネル */}
         <div
           style={{
             display: 'flex',

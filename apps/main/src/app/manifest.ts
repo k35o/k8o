@@ -1,6 +1,5 @@
 import type { MetadataRoute } from 'next';
 
-// PWA マニフェスト。/manifest.webmanifest として配信され、<link rel="manifest"> は自動注入される。
 // display: 'standalone' は iOS で Web Push を受け取るための必須条件（ホーム追加でインストールしたPWAのみ受信可）。
 export default function manifest(): MetadataRoute.Manifest {
   return {

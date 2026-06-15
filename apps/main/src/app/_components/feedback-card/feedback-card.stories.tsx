@@ -33,11 +33,9 @@ export const SelectFeedback: Story = {
   play: async ({ canvasElement, userEvent }) => {
     const canvas = within(canvasElement);
 
-    // 「良い」ボタンをクリックして選択状態になる
     const goodButton = canvas.getByRole('button', { name: '良い' });
     await userEvent.click(goodButton);
 
-    // 送信ボタンが有効になることを確認
     const submitButton = canvas.getByRole('button', { name: '送信' });
     await expect(submitButton).not.toBeDisabled();
   },
@@ -51,11 +49,9 @@ export const InputComment: Story = {
   play: async ({ canvasElement, userEvent }) => {
     const canvas = within(canvasElement);
 
-    // コメント欄がデフォルトで表示されている
     const textarea = canvas.getByRole('textbox');
     await userEvent.type(textarea, 'とても参考になりました！');
 
-    // 送信ボタンが有効になることを確認
     const submitButton = canvas.getByRole('button', { name: '送信' });
     await expect(submitButton).not.toBeDisabled();
   },
@@ -69,19 +65,15 @@ export const SubmitFeedback: Story = {
   play: async ({ canvasElement, userEvent, args }) => {
     const canvas = within(canvasElement);
 
-    // 「良い」ボタンをクリック（コメント欄が開いているので即送信されない）
     const goodButton = canvas.getByRole('button', { name: '良い' });
     await userEvent.click(goodButton);
 
-    // コメントを入力
     const textarea = canvas.getByRole('textbox');
     await userEvent.type(textarea, 'ありがとうございます');
 
-    // 送信
     const submitButton = canvas.getByRole('button', { name: '送信' });
     await userEvent.click(submitButton);
 
-    // onSubmitが呼ばれたことを確認
     await expect(args.onSubmit).toHaveBeenCalled();
   },
 };

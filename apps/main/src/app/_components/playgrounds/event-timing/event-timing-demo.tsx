@@ -17,10 +17,6 @@ type EventTimingEntry = {
   timestamp: string;
 };
 
-/**
- * Event Timing APIのデモ
- * ボタンクリック時のイベントタイミングを計測・表示する
- */
 export function EventTimingDemo() {
   const [entries, setEntries] = useState<EventTimingEntry[]>([]);
   const [isSupported, setIsSupported] = useState(true);
@@ -114,7 +110,6 @@ export function EventTimingDemo() {
 
   const handleClick = useCallback(() => {
     const start = performance.now();
-    // 約50msの処理をシミュレート
     while (performance.now() - start < 50) {
       // 意図的に重い処理
     }

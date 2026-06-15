@@ -31,7 +31,6 @@ export const DisplaysLabel: Story = {
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
 
-    // ラベルが表示されていることを確認
     await expect(canvas.getByText('背景色')).toBeInTheDocument();
   },
 };
@@ -46,7 +45,6 @@ export const DisplaysColorValue: Story = {
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
 
-    // 色の値が表示されていることを確認
     await expect(canvas.getByText('#ff5733')).toBeInTheDocument();
   },
 };
@@ -61,7 +59,6 @@ export const HasColorInput: Story = {
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
 
-    // カラーピッカーが存在することを確認
     const colorInput = canvas.getByLabelText('色を選択');
     await expect(colorInput).toBeInTheDocument();
     await expect(colorInput).toHaveAttribute('type', 'color');

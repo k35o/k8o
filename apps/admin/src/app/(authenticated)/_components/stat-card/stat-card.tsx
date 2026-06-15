@@ -8,10 +8,6 @@ type Props = {
   icon?: ReactNode;
 };
 
-/**
- * ダッシュボード等で使う統計カード。
- * アイコンは右上に Teal のチップで添え、数値は等幅で揃える。
- */
 export const StatCard: FC<Props> = ({ label, value, description, icon }) => (
   <Card appearance="shadow">
     <div className="flex items-start justify-between gap-3 p-6">

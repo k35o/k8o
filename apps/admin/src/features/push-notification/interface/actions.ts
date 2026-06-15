@@ -18,9 +18,6 @@ type ManualPushInput = {
   url: string;
 };
 
-/**
- * 管理画面からの手動プッシュ送信。全購読者へ即時配信する。
- */
 export async function sendManualPushAction(
   input: ManualPushInput,
 ): Promise<ManualPushActionState> {
@@ -30,7 +27,6 @@ export async function sendManualPushAction(
     return { error: 'タイトルと本文は必須です' };
   }
 
-  // url は空 or 不正な形式ならデフォルトにフォールバックする
   const trimmedUrl = input.url.trim();
   const url =
     trimmedUrl === '' || !URL.canParse(trimmedUrl)

@@ -49,7 +49,6 @@ export const AdminSidebar: FC = () => {
 
   return (
     <>
-      {/* デスクトップ: 左固定サイドバー */}
       <aside className="bg-bg-base border-border-mute hidden w-64 shrink-0 flex-col border-r md:sticky md:top-0 md:flex md:h-dvh">
         <div className="border-border-mute border-b px-5 py-4">
           <Brand />
@@ -58,7 +57,6 @@ export const AdminSidebar: FC = () => {
         <SidebarFooter />
       </aside>
 
-      {/* モバイル: 上部バー */}
       <div className="bg-bg-base border-border-mute flex items-center justify-between border-b px-4 py-3 md:hidden">
         <Brand />
         <IconButton
@@ -72,7 +70,6 @@ export const AdminSidebar: FC = () => {
         </IconButton>
       </div>
 
-      {/* モバイル: ドロワー */}
       <Drawer isOpen={isOpen} onClose={close} side="left" title={<Brand />}>
         <div className="flex h-full flex-col">
           <NavWithSuspense onNavigate={close} />

@@ -33,7 +33,6 @@ export const Handles: Story = {
   play: async ({ args, canvasElement, userEvent }) => {
     const canvas = within(canvasElement);
 
-    // 4つの角×2方向の8ハンドルがあり、現在値を公開している
     const sliders = canvas.getAllByRole('slider');
     await expect(sliders).toHaveLength(8);
     const topLeftX = canvas.getByRole('slider', {
@@ -41,7 +40,6 @@ export const Handles: Story = {
     });
     await expect(topLeftX).toHaveAttribute('aria-valuenow', '30');
 
-    // 矢印キーの操作が値の変更として通知される
     topLeftX.focus();
     await userEvent.keyboard('{ArrowRight}');
     await expect(args.onChangeValue).toHaveBeenLastCalledWith(
@@ -50,7 +48,6 @@ export const Handles: Story = {
       31,
     );
 
-    // 右上の水平ハンドルは画面の向きと値の向きが逆になる
     const topRightX = canvas.getByRole('slider', {
       name: '右上の水平方向の丸み',
     });

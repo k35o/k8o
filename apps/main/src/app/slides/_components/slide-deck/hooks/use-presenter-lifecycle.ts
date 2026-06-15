@@ -15,11 +15,6 @@ const isHeartbeatMessage = (data: unknown): data is HeartbeatMessage => {
   return (data as { type?: unknown }).type === 'viewer-alive';
 };
 
-/**
- * Viewer から定期的に heartbeat を broadcast する。
- * sessionId 単位でペアを分離し、複数 deck 同時起動でも干渉しない。
- * reload 中は数百ミリ秒だけ heartbeat が止まるが、タイムアウト猶予内で復帰すれば presenter は閉じない。
- */
 export const useBroadcastViewerHeartbeat = ({
   slug,
   sessionId,
@@ -45,11 +40,6 @@ export const useBroadcastViewerHeartbeat = ({
   }, [slug, sessionId]);
 };
 
-/**
- * Presenter で viewer の heartbeat 切断を検知して自身を閉じる。
- * 直近 heartbeat から HEARTBEAT_TIMEOUT_MS 経過したら window.close()。
- * window.open 起源の tab でのみ close が許可される。
- */
 export const useClosePresenterOnViewerStop = ({
   slug,
   sessionId,

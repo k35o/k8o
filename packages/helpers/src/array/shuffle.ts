@@ -1,4 +1,3 @@
-// Fisher-Yatesアルゴリズムで配列をシャッフルした新しい配列を返す（元配列は破壊しない）
 export const shuffle = <T>(array: T[]): T[] => {
   const shuffled = [...array];
   for (let i = shuffled.length - 1; i > 0; i--) {

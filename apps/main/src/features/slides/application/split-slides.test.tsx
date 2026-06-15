@@ -6,7 +6,6 @@ import { splitSlides } from './split-slides';
 // vitest の JSX classic transform 用に React を scope に置く
 void React;
 
-// テスト用 Notes: NOTES_ROLE マーカーを持つ関数コンポーネント
 type NotesComponent = FC<{ children: ReactNode }> & {
   $$slideRole: typeof NOTES_ROLE;
 };

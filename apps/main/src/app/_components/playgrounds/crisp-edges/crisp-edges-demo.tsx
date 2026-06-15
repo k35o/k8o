@@ -5,7 +5,6 @@ import { useEffect, useRef, useState } from 'react';
 
 type ImageRendering = 'auto' | 'smooth' | 'crisp-edges' | 'pixelated';
 
-// 16x16のドット絵パターン (1: 主色 / 2: アクセント色 / 0: 透過)
 const PATTERN: ReadonlyArray<readonly number[]> = [
   [0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0],
   [0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0],
@@ -74,7 +73,6 @@ export function CrispEdgesDemo() {
         )}
       />
 
-      {/* ドット絵生成用のオフスクリーン canvas。表示しないため支援技術からは隠す */}
       <canvas
         aria-hidden="true"
         className="hidden"

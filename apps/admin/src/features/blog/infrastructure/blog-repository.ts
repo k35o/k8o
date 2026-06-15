@@ -52,11 +52,6 @@ const buildBlogWhere = (
   return and(...conditions);
 };
 
-/**
- * ブログ記事(DB に持つのは slug / published のみ)に、閲覧数・コメント数・
- * タグを結合して一覧で返す。タイトル/本文は apps/main の MDX 側にあるため
- * 扱わない。
- */
 export const findBlogs = async ({
   q,
   status = 'all',
@@ -72,7 +67,6 @@ export const findBlogs = async ({
     .where(where);
   const total = totalRow[0]?.value ?? 0;
 
-  // 閲覧数順は blog_views を結合して並べ替える(SQLite は DESC で NULL を末尾に置く)。
   const orderBy =
     sort === 'views'
       ? desc(db._schema.blogViews.views)
@@ -139,9 +133,6 @@ export const findBlogs = async ({
   return { items, total };
 };
 
-/**
- * 閲覧数の多い順に上位記事を返す(ダッシュボードの「人気記事」用)。
- */
 export const findTopViewedBlogs = async (limit = 5): Promise<TopBlog[]> => {
   const rows = await db
     .select({
@@ -164,9 +155,6 @@ export const findTopViewedBlogs = async (limit = 5): Promise<TopBlog[]> => {
   }));
 };
 
-/**
- * 公開状態を更新する。main サイトの記事公開可否に直接影響する。
- */
 export const updateBlogPublished = async (
   id: number,
   published: boolean,

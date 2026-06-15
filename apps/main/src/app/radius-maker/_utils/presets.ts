@@ -12,7 +12,6 @@ const uniform = (value: CornerRadius): RadiusCorners => ({
   bottomLeft: value,
 });
 
-// 初期表示にも使う有機的なブロブ形状
 export const BLOB_CORNERS: RadiusCorners = {
   topLeft: { x: 30, y: 30 },
   topRight: { x: 70, y: 30 },

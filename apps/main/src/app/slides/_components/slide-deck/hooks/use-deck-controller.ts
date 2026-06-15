@@ -10,14 +10,6 @@ import { useKeyboardNav } from './use-keyboard-nav';
 
 const clamp = (value: number, max: number) => Math.max(0, Math.min(value, max));
 
-/**
- * スライドデッキの現在位置とナビゲーション操作を提供する。
- *
- * index の単一情報源は URL ハッシュ (useHashIndex)。state→hash の同期 useEffect は持たず、
- * 操作 handler 内で writeHashIndex と broadcast を呼ぶ。
- * useEffect を直接書くのは BroadcastChannel と keydown listener、
- * useLayoutEffect は useIsHydrated のみ。hash / fullscreen は useSyncExternalStore で購読。
- */
 export const useDeckController = ({
   total,
   channelName,

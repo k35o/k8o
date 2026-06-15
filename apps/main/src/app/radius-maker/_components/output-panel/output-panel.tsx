@@ -18,7 +18,6 @@ type Props = {
   shape: CornerShape;
 };
 
-// キャンバス直下に置く、生成CSSの表示とコピー操作のバー
 export const OutputPanel: FC<Props> = ({ corners, shape }) => {
   const { writeClipboard } = useClipboard();
   const { onOpen } = useToast();

@@ -8,17 +8,11 @@ import type { FC } from 'react';
 
 import { NAV_GROUPS } from './nav-items';
 
-// トップ('/')は完全一致、それ以外は前方一致で現在地を判定する。
 const isActive = (pathname: string, href: string): boolean =>
   href === '/'
     ? pathname === '/'
     : pathname === href || pathname.startsWith(`${href}/`);
 
-/**
- * ナビの描画本体。pathname を props で受け取る純粋なリスト。
- * cacheComponents 下では usePathname が動的データなので、
- * 静的フォールバック（pathname=null）としても使えるよう分離している。
- */
 export const SidebarNavList: FC<{
   pathname: string | null;
   onNavigate?: () => void;

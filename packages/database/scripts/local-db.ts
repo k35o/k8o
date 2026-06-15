@@ -1,15 +1,3 @@
-// ローカル開発用 turso(libSQL) を起動するスクリプト。
-//
-// pnpm dev から呼ばれ、DB が動いていなければ起動・動いていれば再利用する。
-// db.k8o.localhost を固定ルート化し、全 worktree が main checkout の
-// 同じ local.db を共有する。
-//
-// 使い方:
-//   node scripts/local-db.ts serve    # alias 登録 + turso をフォアグラウンド起動（起動済みなら何もしない）
-//   node scripts/local-db.ts status   # 稼働状況の確認
-//
-// 停止は serve を実行しているプロセスに Ctrl-C / SIGTERM。
-
 import { spawn, spawnSync } from 'node:child_process';
 import { existsSync } from 'node:fs';
 import { connect } from 'node:net';

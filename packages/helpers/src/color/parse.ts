@@ -1,12 +1,3 @@
-// 任意の CSS 色文字列を正準 Color へパースする。
-//
-// 統一スマート入力の心臓部。無効・未完成な入力では null を返すことで、
-// 「入力途中でプレビューが暴れる」課題を解決する（呼び出し側は null の間
-// 直前の有効な色を保持できる）。
-//
-// 対応: hex / rgb() / rgba() / hsl() / hsla() / hwb() /
-//       lab() / lch() / oklab() / oklch() / 名前付き色 / transparent
-
 import { toSrgbGamut } from './gamut';
 import { NAMED_COLORS } from './named-colors';
 import {
@@ -25,7 +16,6 @@ type Num = { value: number; percent: boolean };
 
 const NUMBER = '[+-]?(?:\\d+\\.?\\d*|\\.\\d+)(?:e[+-]?\\d+)?';
 
-// 3要素ちょうどであることを検証してタプルに固める。
 const triple = (parts: string[]): [string, string, string] | null => {
   const [a, b, c] = parts;
   if (
@@ -39,7 +29,6 @@ const triple = (parts: string[]): [string, string, string] | null => {
   return [a, b, c];
 };
 
-// 数値トークン（任意で末尾 %、`none` は 0 扱い）。
 const parseNum = (token: string): Num | null => {
   if (token === 'none') {
     return { value: 0, percent: false };
@@ -57,7 +46,6 @@ const parseNum = (token: string): Num | null => {
   return { value, percent: match?.[2] === '%' };
 };
 
-// 角度トークン（deg/grad/rad/turn、`none` は 0）。
 const parseHue = (token: string): number | null => {
   if (token === 'none') {
     return 0;
@@ -96,9 +84,6 @@ const parseAlpha = (token: string | null): number | null => {
   return clamp(num.percent ? num.value / 100 : num.value, 0, 1);
 };
 
-// `func(a b c / d)`（modern）/ `func(a, b, c, d)`（legacy）の引数を分解する。
-// CSS構文に厳密に従い、空要素・カンマとスペースの混在・spaceでのalpha省略などの
-// 不正入力は null を返す（誤って有効判定して値が飛ぶのを防ぐ）。
 const splitArgs = (
   body: string,
 ): { parts: string[]; alpha: string | null } | null => {
@@ -113,7 +98,6 @@ const splitArgs = (
     }
     main = head.trim();
     alpha = tail.trim();
-    // alpha は単一トークン。空・空白・カンマ混じりは不正。
     if (alpha === '' || /[\s,]/u.test(alpha)) {
       return null;
     }
@@ -124,19 +108,16 @@ const splitArgs = (
   }
 
   if (main.includes(',')) {
-    // legacy comma 構文: 厳密にカンマ区切り。各要素は空でも空白混じりでもない。
     const parts = main.split(',').map((token) => token.trim());
     if (parts.some((token) => token === '' || /\s/u.test(token))) {
       return null;
     }
-    // `rgba(r, g, b, a)` は 4 番目が alpha。
     if (alpha === null && parts.length === 4) {
       alpha = parts.pop() ?? null;
     }
     return { parts, alpha };
   }
 
-  // modern space 構文: 空白区切り。alpha は `/` 経由のみ。
   const parts = main.split(/\s+/u).filter(Boolean);
   return { parts, alpha };
 };
@@ -166,7 +147,6 @@ const parseHex = (input: string): Color | null => {
   return rgb255ToColor({ r, g, b }, alpha);
 };
 
-// rgb()/rgba(): 数値は 0..255、% は 0..100% → 0..255。
 const parseRgbFn = (parts: string[], alpha: number): Color | null => {
   const tokens = triple(parts);
   if (tokens === null) {
@@ -188,7 +168,6 @@ const parseRgbFn = (parts: string[], alpha: number): Color | null => {
   return rgb255ToColor({ r, g, b }, alpha);
 };
 
-// hue + percent×2 を取る関数（hsl/hwb）の共通パーサ。
 const parseHuePercentPercent = (
   parts: string[],
 ): { h: number; x: number; y: number } | null => {
@@ -205,8 +184,6 @@ const parseHuePercentPercent = (
   return { h, x: x.value, y: y.value };
 };
 
-// L + 2成分 + hue系の汎用パーサ（lab/lch/oklab/oklch）。
-// percentScale: L が % のときの満点値、abScale: a/b/C が % のときの満点値。
 const parseLabLike = (
   parts: string[],
   options: {
@@ -234,7 +211,6 @@ const parseLabLike = (
     : second.value;
 
   if (options.polar) {
-    // lch/oklch: 3番目は hue。
     const h = parseHue(tokens[2]);
     if (h === null) {
       return null;
@@ -363,7 +339,6 @@ export const parseColor = (input: string): Color | null => {
   if (color === null) {
     return null;
   }
-  // 正準は sRGB。sRGB 外（鮮やかな oklch 等）はガマット内へ写像する。
   return toSrgbGamut(color);
 };
 
@@ -463,9 +438,7 @@ if (import.meta.vitest) {
     it('カンマ/スペースの不正な混在・空要素・alpha省略は null', () => {
       expect(parseColor('rgb(255,,0,0)')).toBeNull();
       expect(parseColor('rgb(255, 0 0)')).toBeNull();
-      // space構文で / なしの4値はalphaにできない。
       expect(parseColor('rgb(255 0 0 0.5)')).toBeNull();
-      // alpha部に余分なトークン。
       expect(parseColor('rgb(0 0 0 / 0.5 0.2)')).toBeNull();
     });
 

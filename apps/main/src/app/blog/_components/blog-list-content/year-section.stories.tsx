@@ -38,12 +38,10 @@ export const Primary: Story = {
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
 
-    // 年見出しが h3 として表示される
     await expect(
       canvas.getByRole('heading', { level: 3, name: '2024年' }),
     ).toBeInTheDocument();
 
-    // 配下の記事タイトルが表示される
     await expect(canvas.getByText('最初の記事')).toBeInTheDocument();
     await expect(canvas.getByText('2番目の記事')).toBeInTheDocument();
   },

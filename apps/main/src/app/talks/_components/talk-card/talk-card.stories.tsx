@@ -44,7 +44,6 @@ export const DisplaysTitle: Story = {
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
 
-    // タイトルが表示されていることを確認
     await expect(
       canvas.getByRole('heading', { name: /React 19の新機能について/u }),
     ).toBeInTheDocument();
@@ -65,10 +64,8 @@ export const DisplaysEventInfo: Story = {
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
 
-    // イベント名が表示されていることを確認
     await expect(canvas.getByText('Tech Conference 2024')).toBeInTheDocument();
 
-    // 場所が表示されていることを確認
     await expect(canvas.getByText('大阪')).toBeInTheDocument();
   },
 };
@@ -91,7 +88,6 @@ export const DisplaysTags: Story = {
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
 
-    // タグが表示されていることを確認
     await expect(canvas.getByText('React')).toBeInTheDocument();
     await expect(canvas.getByText('TypeScript')).toBeInTheDocument();
     await expect(canvas.getByText('Next.js')).toBeInTheDocument();
@@ -112,7 +108,6 @@ export const HasSlideLink: Story = {
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
 
-    // スライドリンクが存在することを確認
     const slideLink = canvas.getByRole('link', { name: 'スライドを見る' });
     await expect(slideLink).toBeInTheDocument();
     await expect(slideLink).toHaveAttribute(
@@ -136,7 +131,6 @@ export const HasBlogLink: Story = {
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
 
-    // ブログリンクが存在することを確認
     const blogLink = canvas.getByRole('link', { name: 'ブログで解説を読む' });
     await expect(blogLink).toBeInTheDocument();
     await expect(blogLink).toHaveAttribute('href', '/blog/my-blog-post');

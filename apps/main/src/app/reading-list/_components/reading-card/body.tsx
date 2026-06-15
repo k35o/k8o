@@ -13,12 +13,9 @@ import {
 import { generateArticleSummary } from '@/features/reading-list/interface/article-actions';
 import { useAsyncAction } from '@/shared/hooks/use-async-action';
 
-// 折りたたみ時のクランプ（横書きは2行、縦書きは block 方向 8em で省略）
 const CLAMP_CLASS =
   'vertical:block vertical:max-block-[8em] vertical:overflow-hidden line-clamp-2';
 
-// 本文がクランプで切り詰められているか（＝展開の余地があるか）を監視する。
-// 展開後は「続きを読む」を出さないので計測も不要。enabled=false で止める。
 const useIsClamped = (
   enabled: boolean,
   body: string | undefined,
@@ -35,7 +32,6 @@ const useIsClamped = (
       setIsClamped(el.scrollHeight > el.clientHeight);
     };
     measure();
-    // 折り返し行数は要素幅に依存するため、リサイズに追従して再計測する
     const observer = new ResizeObserver(measure);
     observer.observe(el);
     return () => {
@@ -46,9 +42,6 @@ const useIsClamped = (
   return [ref, isClamped];
 };
 
-// 本文（要約優先・無ければ説明文）と「AIで要約」ボタンを表示する。
-// 要約が無い記事だけボタンを出し、押すと生成→その場で表示に反映する。
-// 本文が2行を超える場合は「続きを読む」で全文展開する（展開後はボタンを消す一方向）。
 export const ReadingCardBody: FC<{
   articleId: number;
   description: string | null;

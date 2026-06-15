@@ -10,7 +10,6 @@ type SendPushNotificationParams = {
   title: string;
   body: string;
   url: string;
-  // cron 再実行などによる二重通知を防ぐためのキー
   dedupeKey: string;
 };
 
@@ -150,11 +149,8 @@ type ManualPushParams = {
   url: string;
 };
 
-/**
- * 管理画面からの手動送信。cron の業務イベントとは異なり push_logs には記録しない
- * （kind の CHECK 制約に手動用の値が無く、スキーマ変更を避けるため）。
- * 全購読者へ即時配信し、無効になった購読は削除する。
- */
+// cron の業務イベントとは異なり push_logs には記録しない
+// （kind の CHECK 制約に手動用の値が無く、スキーマ変更を避けるため）。
 export async function sendManualPush({
   title,
   body,

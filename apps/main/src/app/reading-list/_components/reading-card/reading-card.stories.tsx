@@ -22,7 +22,6 @@ const meta: Meta<typeof ReadingCard> = {
 export default meta;
 type Story = StoryObj<typeof ReadingCard>;
 
-// 要約が登録済みの記事。説明文より要約を優先して表示する。
 export const WithSummary: Story = {
   args: {
     summary: '型安全なルーティングを提供するTanStack Routerの入門記事。',
@@ -44,7 +43,6 @@ export const WithSummary: Story = {
   },
 };
 
-// 要約未登録だが OGP の説明文がある記事。説明文にフォールバックし、「AIで要約」ボタンを出す。
 export const WithDescription: Story = {
   args: {
     summary: null,
@@ -57,7 +55,6 @@ export const WithDescription: Story = {
   },
 };
 
-// 「AIで要約」ボタンを押すと生成され、その場で要約が表示される（アクションはモック）。
 export const GenerateSummary: Story = {
   args: {
     summary: null,
@@ -71,7 +68,6 @@ export const GenerateSummary: Story = {
   },
 };
 
-// 本文が長い記事。2行で省略し、「続きを読む」で全文展開する（展開後はボタンが消える）。
 export const ExpandableBody: Story = {
   args: {
     summary:
@@ -83,7 +79,6 @@ export const ExpandableBody: Story = {
     const expand = await canvas.findByRole('button', { name: '続きを読む' });
     await userEvent.click(expand);
 
-    // 展開後は一方向。ボタンが消え、畳むためのコントロールは出さない。
     await waitFor(() => {
       expect(
         canvas.queryByRole('button', { name: '続きを読む' }),
@@ -92,14 +87,12 @@ export const ExpandableBody: Story = {
   },
 };
 
-// OGP 画像が取得できなかった記事。テキストのみで成立させる。
 export const NoImage: Story = {
   args: {
     imageUrl: null,
   },
 };
 
-// 要約も説明文も無い記事。タイトルとメタ情報のみ表示する。
 export const TitleOnly: Story = {
   args: {
     imageUrl: null,

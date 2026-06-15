@@ -23,15 +23,9 @@ export const CheckContrast: FC = () => {
     LOW_VISIBILITY_WARNING: 2,
   } as const;
 
-  // 大文字（≥18pt or ≥14pt bold）の基準
-  // AA: 3:1以上
   const isInvalidAaLargeText = contrast < WCAG_THRESHOLDS.AA_LARGE_TEXT;
-  // AAA: 4.5:1以上
   const isInvalidAaaLargeText = contrast < WCAG_THRESHOLDS.AAA_LARGE_TEXT;
-  // 小文字（通常テキスト）の基準
-  // AA: 4.5:1以上
   const isInvalidAaNormalText = contrast < WCAG_THRESHOLDS.AA_NORMAL_TEXT;
-  // AAA: 7:1以上
   const isInvalidAaaNormalText = contrast < WCAG_THRESHOLDS.AAA_NORMAL_TEXT;
 
   return (

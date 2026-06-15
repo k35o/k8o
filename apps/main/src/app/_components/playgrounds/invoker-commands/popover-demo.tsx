@@ -9,7 +9,6 @@ export function PopoverDemo() {
           <button
             className="bg-primary-bg text-primary-fg rounded-md px-4 py-2"
             command="toggle-popover"
-            // Baseline 2025
             commandfor="demo-popover"
             type="button"
           >
@@ -21,7 +20,6 @@ export function PopoverDemo() {
           <button
             className="bg-primary-bg text-primary-fg rounded-md px-4 py-2"
             popoverTarget="demo-popover"
-            // not unknown
             popoverTargetAction="toggle"
             type="button"
           >

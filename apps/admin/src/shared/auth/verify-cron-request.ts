@@ -6,7 +6,6 @@ import { createHash, timingSafeEqual } from 'node:crypto';
 const sha256 = (value: string): Buffer =>
   createHash('sha256').update(value).digest();
 
-// cron 実行を認可するための Authorization ヘッダ検証。
 // `CRON_SECRET` 未設定時は常に不許可とし、比較はタイミング攻撃を避けるため
 // crypto.timingSafeEqual で定数時間比較する。
 export const isAuthorizedCronRequest = (req: Request): boolean => {

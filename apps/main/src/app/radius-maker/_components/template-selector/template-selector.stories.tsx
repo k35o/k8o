@@ -27,7 +27,6 @@ export const SelectPreset: Story = {
   play: async ({ args, canvasElement, userEvent }) => {
     const canvas = within(canvasElement);
 
-    // すべてのプリセットが選択肢として表示される
     await Promise.all(
       RADIUS_PRESETS.map((preset) =>
         expect(
@@ -36,12 +35,10 @@ export const SelectPreset: Story = {
       ),
     );
 
-    // 現在の値と一致するプリセットが選択されている
     await expect(
       canvas.getByRole('button', { name: 'ブロブ' }),
     ).toHaveAttribute('aria-pressed', 'true');
 
-    // プリセットを選ぶとその形状が通知される
     await userEvent.click(canvas.getByRole('button', { name: '円' }));
     await expect(args.onSelect).toHaveBeenLastCalledWith({
       topLeft: { x: 50, y: 50 },
@@ -60,8 +57,7 @@ export const RandomBlob: Story = {
   play: async ({ args, canvasElement, userEvent }) => {
     const canvas = within(canvasElement);
 
-    // ランダム生成ボタンで新しい形状が通知される
-    // (生成される値の不変条件はrandom-blob.tsのテストで担保している)
+    // 生成される値の不変条件はrandom-blob.tsのテストで担保している
     await userEvent.click(canvas.getByRole('button', { name: 'ランダム' }));
     await expect(args.onSelect).toHaveBeenCalledTimes(1);
   },

@@ -6,9 +6,6 @@ import { useCallback, useRef, useState } from 'react';
 const INITIAL_TEXT = '吾輩は猫である。名前はまだ無い。';
 const DRAGGABLE_WORDS = ['素敵な', '可愛い', '立派な'];
 
-/**
- * ドラッグ&ドロップでテキスト挿入するデモ
- */
 export function DragDropDemo() {
   const [text, setText] = useState(INITIAL_TEXT);
   const [isDragOver, setIsDragOver] = useState(false);
@@ -77,8 +74,6 @@ export function DragDropDemo() {
     <div className="space-y-3">
       <div className="flex flex-wrap gap-2">
         {DRAGGABLE_WORDS.map((word) => (
-          // ドラッグ可能な要素のデモ
-          // ドラッグ可能な要素のデモ
           <span
             className="bg-primary-bg text-primary-fg cursor-grab rounded px-2 py-1 text-sm active:cursor-grabbing"
             draggable
@@ -95,8 +90,6 @@ export function DragDropDemo() {
         </Button>
       </div>
 
-      {/* ドラッグ&ドロップのデモ用ドロップターゲット */}
-      {/* ドラッグ&ドロップのデモ用ドロップターゲット */}
       <section
         aria-label="テキスト挿入エリア"
         className={`rounded-lg border p-3 transition-colors ${

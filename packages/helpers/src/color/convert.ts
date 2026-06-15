@@ -104,7 +104,6 @@ export const hexToRgb = (hex: string): RGB => {
   return { r: 255, g: 255, b: 255, a: 1 };
 };
 
-// ref: https://www.jameslmilner.com/posts/converting-rgb-hex-hsl-colors/
 export const hslToHex = (hsl: HSL): string => {
   const h = parseSafeHsl(hsl.h, 'h');
   const s = parseSafeHsl(hsl.s, 's');
@@ -126,7 +125,6 @@ export const hslToHex = (hsl: HSL): string => {
   return `${f(0)}${f(8)}${f(4)}${hexA}`;
 };
 
-// ref: https://www.jameslmilner.com/posts/converting-rgb-hex-hsl-colors/
 export const hexToHsl = (hex: string): HSL => {
   const { r, g, b, a } = hexToRgb(hex);
   const red = r / 255;
