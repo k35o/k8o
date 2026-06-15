@@ -4,7 +4,7 @@ describe('getArtifacts', () => {
   it('公開している制作物一覧を返す', () => {
     const projects = getArtifacts();
 
-    expect(projects).toHaveLength(9);
+    expect(projects).toHaveLength(10);
     expect(projects).toEqual(
       expect.arrayContaining([
         expect.objectContaining({
