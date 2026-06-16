@@ -3,6 +3,7 @@ export { ConfirmDialog } from './confirm-dialog';
 export { ContentFallback } from './content-fallback';
 export { EmptyState } from './empty-state';
 export { FilterSelect } from './filter-select';
+export { LabeledTextField } from './labeled-text-field';
 export { ListPagination } from './list-pagination';
 export { PageHeader } from './page-header';
 export { PublishToggle } from './publish-toggle';

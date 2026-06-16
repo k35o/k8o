@@ -5,11 +5,11 @@ import {
   Button,
   FormControl,
   Select,
-  TextField,
   Textarea,
 } from '@k8o/arte-odyssey';
 import { type FC, useActionState } from 'react';
 
+import { LabeledTextField } from '@/app/(authenticated)/_components';
 import type { ActionState } from '@/shared/actions/action-state';
 
 type SourceOption = { id: number; title: string };
@@ -59,41 +59,26 @@ export const ArticleForm: FC<ArticleFormProps> = ({
           )}
         />
       )}
-      <FormControl
+      <LabeledTextField
+        defaultValue={defaultValues?.title ?? ''}
         label="タイトル"
+        name="title"
+        placeholder="記事タイトル"
         required
-        renderInput={({ 'aria-labelledby': _, ...props }) => (
-          <TextField
-            {...props}
-            defaultValue={defaultValues?.title ?? ''}
-            name="title"
-            placeholder="記事タイトル"
-          />
-        )}
       />
-      <FormControl
+      <LabeledTextField
+        defaultValue={defaultValues?.url ?? ''}
         label="URL"
+        name="url"
+        placeholder="https://example.com/article"
         required
-        renderInput={({ 'aria-labelledby': _, ...props }) => (
-          <TextField
-            {...props}
-            defaultValue={defaultValues?.url ?? ''}
-            name="url"
-            placeholder="https://example.com/article"
-          />
-        )}
       />
-      <FormControl
+      <LabeledTextField
+        defaultValue={defaultValues?.publishedAt ?? ''}
         label="公開日 (YYYY-MM-DD)"
+        name="publishedAt"
+        placeholder="2025-06-01"
         required
-        renderInput={({ 'aria-labelledby': _, ...props }) => (
-          <TextField
-            {...props}
-            defaultValue={defaultValues?.publishedAt ?? ''}
-            name="publishedAt"
-            placeholder="2025-06-01"
-          />
-        )}
       />
       <FormControl
         label="説明"

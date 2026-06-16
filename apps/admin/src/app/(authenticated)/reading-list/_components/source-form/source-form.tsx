@@ -1,14 +1,9 @@
 'use client';
 
-import {
-  Alert,
-  Button,
-  FormControl,
-  Radio,
-  TextField,
-} from '@k8o/arte-odyssey';
+import { Alert, Button, FormControl, Radio } from '@k8o/arte-odyssey';
 import { useActionState, useState } from 'react';
 
+import { LabeledTextField } from '@/app/(authenticated)/_components';
 import type { ActionState } from '@/shared/actions/action-state';
 
 type SourceFormProps = {
@@ -40,41 +35,26 @@ export const SourceForm = ({ action, defaultValues }: SourceFormProps) => {
       {state.error !== undefined && (
         <Alert message={state.error} tone="error" />
       )}
-      <FormControl
+      <LabeledTextField
+        defaultValue={defaultValues?.title ?? ''}
         label="タイトル"
+        name="title"
+        placeholder="例: Zenn"
         required
-        renderInput={({ 'aria-labelledby': _, ...props }) => (
-          <TextField
-            defaultValue={defaultValues?.title ?? ''}
-            name="title"
-            placeholder="例: Zenn"
-            {...props}
-          />
-        )}
       />
-      <FormControl
+      <LabeledTextField
+        defaultValue={defaultValues?.url ?? ''}
         label="フィードURL"
+        name="url"
+        placeholder="例: https://zenn.dev/feed"
         required
-        renderInput={({ 'aria-labelledby': _, ...props }) => (
-          <TextField
-            defaultValue={defaultValues?.url ?? ''}
-            name="url"
-            placeholder="例: https://zenn.dev/feed"
-            {...props}
-          />
-        )}
       />
-      <FormControl
+      <LabeledTextField
+        defaultValue={defaultValues?.siteUrl ?? ''}
         label="サイトURL"
+        name="siteUrl"
+        placeholder="例: https://zenn.dev"
         required
-        renderInput={({ 'aria-labelledby': _, ...props }) => (
-          <TextField
-            defaultValue={defaultValues?.siteUrl ?? ''}
-            name="siteUrl"
-            placeholder="例: https://zenn.dev"
-            {...props}
-          />
-        )}
       />
       <FormControl
         label="タイプ"
