@@ -36,12 +36,12 @@
   },
   "dependencies": {
     "@libsql/client": "0.17.3",
-    "better-auth": "1.6.14",
+    "better-auth": "catalog:",
     "drizzle-orm": "catalog:"
   },
   "devDependencies": {
     "@liam-hq/cli": "0.7.24",
-    "@next/env": "16.2.7",
+    "@next/env": "catalog:",
     "@repo/typescript-config": "workspace:*",
     "drizzle-kit": "0.31.10",
     "http-server": "14.1.1"
