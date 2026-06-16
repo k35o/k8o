@@ -1,8 +1,8 @@
 import { cacheLife } from 'next/cache';
 import { NextResponse } from 'next/server';
-import RSS from 'rss';
 
 import { getBlogContents } from '@/features/blog/interface/queries';
+import { buildRssFeed } from '@/shared/feed/build-rss';
 
 import { metadata } from '../layout';
 
@@ -12,27 +12,21 @@ async function generateRssFeed() {
   'use cache';
   cacheLife('max');
 
-  const feed = new RSS({
-    title: metadata.title,
-    description: metadata.description,
-    feed_url: `${BLOG_URL}/feed.xml`,
-    site_url: BLOG_URL,
-    language: 'ja',
-  });
-
   const blogs = await getBlogContents();
 
-  for (const blog of blogs) {
-    feed.item({
+  return buildRssFeed({
+    title: metadata.title,
+    description: metadata.description,
+    feedUrl: `${BLOG_URL}/feed`,
+    siteUrl: BLOG_URL,
+    items: blogs.map((blog) => ({
       title: blog.title,
       description: blog.description ?? '',
       url: `${BLOG_URL}/${blog.slug}`,
       date: blog.updatedAt,
-      categories: blog.tags.map((tag) => tag),
-    });
-  }
-
-  return feed.xml();
+      categories: blog.tags,
+    })),
+  });
 }
 
 export async function GET() {

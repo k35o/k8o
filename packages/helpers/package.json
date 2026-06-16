@@ -57,9 +57,21 @@
       "types": "./src/date/compare.ts",
       "default": "./src/date/compare.ts"
     },
+    "./date/duration": {
+      "types": "./src/date/duration.ts",
+      "default": "./src/date/duration.ts"
+    },
     "./date/format": {
       "types": "./src/date/format.ts",
       "default": "./src/date/format.ts"
+    },
+    "./date/is-ymd-date": {
+      "types": "./src/date/is-ymd-date.ts",
+      "default": "./src/date/is-ymd-date.ts"
+    },
+    "./form/get-string-field": {
+      "types": "./src/form/get-string-field.ts",
+      "default": "./src/form/get-string-field.ts"
     },
     "./is-internal-route": {
       "types": "./src/is-internal-route.ts",
@@ -78,6 +90,10 @@
       "types": "./src/number/commalize.ts",
       "default": "./src/number/commalize.ts"
     },
+    "./og/fetch-og-metadata": {
+      "types": "./src/og/fetch-og-metadata.ts",
+      "default": "./src/og/fetch-og-metadata.ts"
+    },
     "./og/og-metadata": {
       "types": "./src/og/og-metadata.ts",
       "default": "./src/og/og-metadata.ts"
@@ -93,6 +109,14 @@
     "./uuid-v4": {
       "types": "./src/uuid-v4.ts",
       "default": "./src/uuid-v4.ts"
+    },
+    "./url/is-public-https-url": {
+      "types": "./src/url/is-public-https-url.ts",
+      "default": "./src/url/is-public-https-url.ts"
+    },
+    "./url/safe-fetch": {
+      "types": "./src/url/safe-fetch.ts",
+      "default": "./src/url/safe-fetch.ts"
     }
   },
   "scripts": {

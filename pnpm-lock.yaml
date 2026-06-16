@@ -9,6 +9,15 @@ catalogs:
     '@k8o/arte-odyssey':
       specifier: 10.2.0
       version: 10.2.0
+    '@next/env':
+      specifier: 16.2.7
+      version: 16.2.7
+    '@next/mdx':
+      specifier: 16.2.7
+      version: 16.2.7
+    '@next/third-parties':
+      specifier: 16.2.7
+      version: 16.2.7
     '@storybook/addon-a11y':
       specifier: 10.4.2
       version: 10.4.2
@@ -45,6 +54,9 @@ catalogs:
     babel-plugin-react-compiler:
       specifier: 1.0.0
       version: 1.0.0
+    better-auth:
+      specifier: 1.6.14
+      version: 1.6.14
     chromatic:
       specifier: 17.3.0
       version: 17.3.0
@@ -81,9 +93,6 @@ catalogs:
     vitest:
       specifier: 4.1.8
       version: 4.1.8
-    vitest-browser-react:
-      specifier: 2.2.0
-      version: 2.2.0
     wrangler:
       specifier: 4.98.0
       version: 4.98.0
@@ -149,11 +158,14 @@ importers:
       '@repo/helpers':
         specifier: workspace:*
         version: link:../../packages/helpers
+      '@repo/react-hooks':
+        specifier: workspace:*
+        version: link:../../packages/react-hooks
       '@tailwindcss/postcss':
         specifier: 'catalog:'
         version: 4.3.0
       better-auth:
-        specifier: 1.6.14
+        specifier: 'catalog:'
         version: 1.6.14(@opentelemetry/api@1.9.1)(drizzle-kit@0.31.10)(drizzle-orm@0.45.2(@libsql/client@0.17.3)(@opentelemetry/api@1.9.1)(kysely@0.28.17))(next@16.2.7(@opentelemetry/api@1.9.1)(babel-plugin-react-compiler@1.0.0)(react-dom@19.2.7(react@19.2.7))(react@19.2.7))(react-dom@19.2.7(react@19.2.7))(react@19.2.7)(vitest@4.1.8)
       drizzle-orm:
         specifier: 'catalog:'
@@ -216,6 +228,9 @@ importers:
       '@vitest/coverage-v8':
         specifier: 'catalog:'
         version: 4.1.8(@vitest/browser@4.1.8)(vitest@4.1.8)
+      '@vitest/ui':
+        specifier: 'catalog:'
+        version: 4.1.8(vitest@4.1.8)
       babel-plugin-react-compiler:
         specifier: 'catalog:'
         version: 1.0.0
@@ -247,10 +262,10 @@ importers:
         specifier: 3.1.1
         version: 3.1.1(@types/react@19.2.17)(react@19.2.7)
       '@next/mdx':
-        specifier: 16.2.7
+        specifier: 'catalog:'
         version: 16.2.7(@mdx-js/loader@3.1.1)(@mdx-js/react@3.1.1(@types/react@19.2.17)(react@19.2.7))
       '@next/third-parties':
-        specifier: 16.2.7
+        specifier: 'catalog:'
         version: 16.2.7(next@16.2.7(@babel/core@7.29.7)(@opentelemetry/api@1.9.1)(babel-plugin-react-compiler@1.0.0)(react-dom@19.2.7(react@19.2.7))(react@19.2.7))(react@19.2.7)
       '@repo/code-highlight':
         specifier: workspace:*
@@ -261,6 +276,9 @@ importers:
       '@repo/helpers':
         specifier: workspace:*
         version: link:../../packages/helpers
+      '@repo/react-hooks':
+        specifier: workspace:*
+        version: link:../../packages/react-hooks
       '@tailwindcss/postcss':
         specifier: 'catalog:'
         version: 4.3.0
@@ -400,9 +418,6 @@ importers:
       vitest:
         specifier: 'catalog:'
         version: 4.1.8(@opentelemetry/api@1.9.1)(@types/node@24.13.1)(@vitest/browser-playwright@4.1.8)(@vitest/coverage-v8@4.1.8)(@vitest/ui@4.1.8)(msw@2.14.6(@types/node@24.13.1)(typescript@6.0.3))(vite@8.0.14(@types/node@24.13.1)(esbuild@0.28.0)(jiti@2.7.0)(tsx@4.22.3)(yaml@2.9.0))
-      vitest-browser-react:
-        specifier: 'catalog:'
-        version: 2.2.0(@types/react-dom@19.2.3(@types/react@19.2.17))(@types/react@19.2.17)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)(vitest@4.1.8)
 
   packages/code-highlight:
     dependencies:
@@ -435,7 +450,7 @@ importers:
         specifier: 0.17.3
         version: 0.17.3
       better-auth:
-        specifier: 1.6.14
+        specifier: 'catalog:'
         version: 1.6.14(@opentelemetry/api@1.9.1)(drizzle-kit@0.31.10)(drizzle-orm@0.45.2(@libsql/client@0.17.3)(@opentelemetry/api@1.9.1)(kysely@0.28.17))(next@16.2.7(@opentelemetry/api@1.9.1)(babel-plugin-react-compiler@1.0.0)(react-dom@19.2.7(react@19.1.1))(react@19.1.1))(react-dom@19.2.7(react@19.1.1))(react@19.1.1)(vitest@4.1.8)
       drizzle-orm:
         specifier: 'catalog:'
@@ -445,7 +460,7 @@ importers:
         specifier: 0.7.24
         version: 0.7.24(@types/node@24.13.1)(@types/react@19.2.17)(typescript@6.0.3)
       '@next/env':
-        specifier: 16.2.7
+        specifier: 'catalog:'
         version: 16.2.7
       '@repo/typescript-config':
         specifier: workspace:*
@@ -484,6 +499,18 @@ importers:
       vitest:
         specifier: 'catalog:'
         version: 4.1.8(@opentelemetry/api@1.9.1)(@types/node@24.13.1)(@vitest/browser-playwright@4.1.8)(@vitest/coverage-v8@4.1.8)(@vitest/ui@4.1.8)(msw@2.14.6(@types/node@24.13.1)(typescript@6.0.3))(vite@8.0.14(@types/node@24.13.1)(esbuild@0.28.0)(jiti@2.7.0)(tsx@4.22.3)(yaml@2.9.0))
+
+  packages/react-hooks:
+    devDependencies:
+      '@repo/typescript-config':
+        specifier: workspace:*
+        version: link:../typescript-config
+      '@types/react':
+        specifier: 'catalog:'
+        version: 19.2.17
+      react:
+        specifier: 'catalog:'
+        version: 19.2.7
 
   packages/typescript-config: {}
 
@@ -7300,20 +7327,6 @@ packages:
       yaml:
         optional: true
 
-  vitest-browser-react@2.2.0:
-    resolution: {integrity: sha512-oY3KM6305kwJMa6nHo92vVtkOsih7mjEf12dLKuphaF+9ywWPEc+qanIBd394SZ6m5LadVEaG6dicvvizOzmjA==}
-    peerDependencies:
-      '@types/react': ^18.0.0 || ^19.0.0
-      '@types/react-dom': ^18.0.0 || ^19.0.0
-      react: ^18.0.0 || ^19.0.0
-      react-dom: ^18.0.0 || ^19.0.0
-      vitest: ^4.0.0
-    peerDependenciesMeta:
-      '@types/react':
-        optional: true
-      '@types/react-dom':
-        optional: true
-
   vitest@4.1.8:
     resolution: {integrity: sha512-flY6ScbCIt9HThs+C5HS7jvGOB560DJtk/Z15IQROTA6zEy49Nh8T/dofWTQL+n3vswqn87sbJNiuqw1SDp5Ig==}
     engines: {node: ^20.0.0 || ^22.0.0 || >=24.0.0}
@@ -14070,15 +14083,6 @@ snapshots:
       jiti: 2.7.0
       tsx: 4.22.3
       yaml: 2.9.0
-
-  vitest-browser-react@2.2.0(@types/react-dom@19.2.3(@types/react@19.2.17))(@types/react@19.2.17)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)(vitest@4.1.8):
-    dependencies:
-      react: 19.2.7
-      react-dom: 19.2.7(react@19.2.7)
-      vitest: 4.1.8(@opentelemetry/api@1.9.1)(@types/node@24.13.1)(@vitest/browser-playwright@4.1.8)(@vitest/coverage-v8@4.1.8)(@vitest/ui@4.1.8)(msw@2.14.6(@types/node@24.13.1)(typescript@6.0.3))(vite@8.0.14(@types/node@24.13.1)(esbuild@0.28.0)(jiti@2.7.0)(tsx@4.22.3)(yaml@2.9.0))
-    optionalDependencies:
-      '@types/react': 19.2.17
-      '@types/react-dom': 19.2.3(@types/react@19.2.17)
 
   vitest@4.1.8(@opentelemetry/api@1.9.1)(@types/node@24.13.1)(@vitest/browser-playwright@4.1.8)(@vitest/coverage-v8@4.1.8)(@vitest/ui@4.1.8)(msw@2.14.6(@types/node@24.13.1)(typescript@6.0.3))(vite@8.0.14(@types/node@24.13.1)(esbuild@0.28.0)(jiti@2.7.0)(tsx@4.22.3)(yaml@2.9.0)):
     dependencies:

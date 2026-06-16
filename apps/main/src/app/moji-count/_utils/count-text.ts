@@ -1,8 +1,8 @@
-export const isSegmenter = !Reflect.has(globalThis.Intl, 'Segmenter');
+export const hasSegmenter = Reflect.has(globalThis.Intl, 'Segmenter');
 
-const segmenter = isSegmenter
-  ? null
-  : new Intl.Segmenter('ja', { granularity: 'grapheme' });
+const segmenter = hasSegmenter
+  ? new Intl.Segmenter('ja', { granularity: 'grapheme' })
+  : null;
 
 export const countGraphemeLength = (text: string): number => {
   if (segmenter === null) {

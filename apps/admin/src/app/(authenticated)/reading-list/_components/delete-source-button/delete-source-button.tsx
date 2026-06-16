@@ -1,10 +1,10 @@
 'use client';
 
 import { Button, Dialog, Modal } from '@k8o/arte-odyssey';
+import { useAsyncAction } from '@repo/react-hooks/use-async-action';
 import { useState } from 'react';
 
 import { deleteSource } from '@/features/reading-list/interface/source-actions';
-import { useAsyncAction } from '@/shared/hooks/use-async-action';
 
 export const DeleteSourceButton = ({
   id,

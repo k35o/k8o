@@ -1,6 +1,7 @@
 'use client';
 
 import { Button } from '@k8o/arte-odyssey';
+import { useAsyncAction } from '@repo/react-hooks/use-async-action';
 import {
   type FC,
   type RefObject,
@@ -11,7 +12,6 @@ import {
 } from 'react';
 
 import { generateArticleSummary } from '@/features/reading-list/interface/article-actions';
-import { useAsyncAction } from '@/shared/hooks/use-async-action';
 
 const CLAMP_CLASS =
   'vertical:block vertical:max-block-[8em] vertical:overflow-hidden line-clamp-2';

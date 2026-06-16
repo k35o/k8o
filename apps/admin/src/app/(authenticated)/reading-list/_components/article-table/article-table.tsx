@@ -2,6 +2,7 @@
 
 import { Button, Card, Dialog, Modal, useToast } from '@k8o/arte-odyssey';
 import { formatDate } from '@repo/helpers/date/format';
+import { useAsyncAction } from '@repo/react-hooks/use-async-action';
 import Link from 'next/link';
 import { type FC, useState } from 'react';
 
@@ -10,7 +11,6 @@ import {
   deleteArticle,
   refetchArticleMetadata,
 } from '@/features/reading-list/interface/article-actions';
-import { useAsyncAction } from '@/shared/hooks/use-async-action';
 
 type Article = {
   id: number;

@@ -1,16 +1,15 @@
 import { db } from '@repo/database';
+import { NINETY_DAYS_MS } from '@repo/helpers/date/duration';
 import { desc, gte } from 'drizzle-orm';
 
-const THREE_MONTHS_MS = 90 * 24 * 60 * 60 * 1000;
-
 export async function getArticles() {
-  const threeMonthsAgo = new Date(Date.now() - THREE_MONTHS_MS).toISOString();
+  const ninetyDaysAgo = new Date(Date.now() - NINETY_DAYS_MS).toISOString();
 
   const results = await db.query.articles.findMany({
     with: {
       articleSource: true,
     },
-    where: gte(db._schema.articles.publishedAt, threeMonthsAgo),
+    where: gte(db._schema.articles.publishedAt, ninetyDaysAgo),
     orderBy: (articles) => [desc(articles.publishedAt)],
   });
 

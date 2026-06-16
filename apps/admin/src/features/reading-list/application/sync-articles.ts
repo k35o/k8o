@@ -1,6 +1,8 @@
 import { db } from '@repo/database';
 import { mapWithConcurrency } from '@repo/helpers/array/map-with-concurrency';
 import { compareDate } from '@repo/helpers/date/compare';
+import { NINETY_DAYS_MS } from '@repo/helpers/date/duration';
+import { safeFetch } from '@repo/helpers/url/safe-fetch';
 import { eq } from 'drizzle-orm';
 import Parser from 'rss-parser';
 
@@ -23,7 +25,8 @@ function sanitizeFeedDates(xml: string): string {
 }
 
 async function fetchFeed(url: string): Promise<Parser.Output<Parser.Item>> {
-  const response = await fetch(url);
+  // SSRF 対策: 公開 https URL のみ許可し、リダイレクト先も都度検証する
+  const response = await safeFetch(url);
   if (!response.ok) {
     throw new Error(
       `フィード取得失敗: ${response.status} ${response.statusText}`,
@@ -32,8 +35,6 @@ async function fetchFeed(url: string): Promise<Parser.Output<Parser.Item>> {
   const xml = await response.text();
   return parser.parseString(sanitizeFeedDates(xml));
 }
-
-const NINETY_DAYS_MS = 90 * 24 * 60 * 60 * 1000;
 
 type FeedArticle = {
   articleSourceId: number;

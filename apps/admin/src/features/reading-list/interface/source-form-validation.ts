@@ -1,3 +1,5 @@
+import { getStringField } from '@repo/helpers/form/get-string-field';
+
 import {
   ARTICLE_SOURCE_TYPES,
   type ArticleSourceInput,
@@ -7,11 +9,6 @@ import {
 type ParseResult =
   | { ok: true; data: ArticleSourceInput }
   | { ok: false; error: string };
-
-const getStringField = (formData: FormData, key: string): string => {
-  const value = formData.get(key);
-  return typeof value === 'string' ? value : '';
-};
 
 const isArticleSourceType = (value: string): value is ArticleSourceType =>
   (ARTICLE_SOURCE_TYPES as readonly string[]).includes(value);

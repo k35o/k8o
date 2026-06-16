@@ -9,13 +9,13 @@ import {
   Textarea,
   useToast,
 } from '@k8o/arte-odyssey';
+import { useAsyncAction } from '@repo/react-hooks/use-async-action';
 import { type ChangeEvent, type FC, useState } from 'react';
 
 import {
   type ManualPushActionState,
   sendManualPushAction,
 } from '@/features/push-notification/interface/actions';
-import { useAsyncAction } from '@/shared/hooks/use-async-action';
 
 export const PushSendForm: FC = () => {
   const [title, setTitle] = useState('');

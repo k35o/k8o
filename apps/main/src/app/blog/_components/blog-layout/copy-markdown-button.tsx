@@ -12,18 +12,28 @@ export const CopyMarkdownButton: FC<{ slug: string }> = ({ slug }) => {
   const { writeClipboard } = useClipboard();
   const { onOpen } = useToast();
 
-  const handleCopy = () => {
-    void fetch(`/blog/${slug}.md`)
-      .then((res) => res.text())
-      .then((text) => writeClipboard(text))
-      .then(() => {
-        onOpen('success', 'Markdownをコピーしました');
-        return undefined;
-      });
+  const handleCopy = async () => {
+    try {
+      const res = await fetch(`/blog/${slug}.md`);
+      if (!res.ok) {
+        throw new Error(`Failed to fetch markdown: ${res.status}`);
+      }
+      const text = await res.text();
+      await writeClipboard(text);
+      onOpen('success', 'Markdownをコピーしました');
+    } catch {
+      onOpen('error', 'Markdownのコピーに失敗しました');
+    }
   };
 
   return (
-    <IconButton label="Markdownをコピー" onClick={handleCopy} size="md">
+    <IconButton
+      label="Markdownをコピー"
+      onClick={() => {
+        void handleCopy();
+      }}
+      size="md"
+    >
       <CopyIcon size="md" />
     </IconButton>
   );

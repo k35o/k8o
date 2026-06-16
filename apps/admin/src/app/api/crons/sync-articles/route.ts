@@ -1,6 +1,6 @@
 import { type NextRequest, NextResponse } from 'next/server';
 
-import { sendPushNotification } from '@/features/push-notification/infrastructure/push-notification';
+import { sendPushNotification } from '@/features/push-notification/interface/commands';
 import { enrichArticleMetadata } from '@/features/reading-list/application/enrich-articles';
 import { syncArticles } from '@/features/reading-list/application/sync-articles';
 import { isAuthorizedCronRequest } from '@/shared/auth/verify-cron-request';

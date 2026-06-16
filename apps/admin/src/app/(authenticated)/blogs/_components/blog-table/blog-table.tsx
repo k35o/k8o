@@ -1,12 +1,12 @@
 'use client';
 
 import { Badge, Card, Switch, useToast } from '@k8o/arte-odyssey';
+import { useAsyncAction } from '@repo/react-hooks/use-async-action';
 import { type FC, useState } from 'react';
 
 import { EmptyState } from '@/app/(authenticated)/_components';
 import { setBlogPublished } from '@/features/blog/interface/actions';
 import type { BlogRecord } from '@/features/blog/interface/queries';
-import { useAsyncAction } from '@/shared/hooks/use-async-action';
 
 const BLOG_BASE_URL = 'https://k8o.me/blog';
 

@@ -30,7 +30,7 @@ export default defineConfig({
         rootDir: ['apps/main', 'apps/admin'],
       },
       react: {
-        version: '19.2.5',
+        version: '19.2.7',
       },
       tailwindcss: {
         // oxlint-tailwindcss v1 から、対象ファイルと CSS エントリーポイントの

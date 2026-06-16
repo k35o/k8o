@@ -1,8 +1,8 @@
 import { cacheLife } from 'next/cache';
 import { NextResponse } from 'next/server';
-import RSS from 'rss';
 
 import { getArticles } from '@/features/reading-list/interface/queries';
+import { buildRssFeed } from '@/shared/feed/build-rss';
 
 import { metadata } from '../layout';
 
@@ -12,27 +12,21 @@ async function generateRssFeed() {
   'use cache';
   cacheLife('hours');
 
-  const feed = new RSS({
-    title: metadata.title,
-    description: metadata.description,
-    feed_url: `${READING_LIST_URL}/feed.xml`,
-    site_url: READING_LIST_URL,
-    language: 'ja',
-  });
-
   const articles = await getArticles();
 
-  for (const article of articles) {
-    feed.item({
+  return buildRssFeed({
+    title: metadata.title,
+    description: metadata.description,
+    feedUrl: `${READING_LIST_URL}/feed`,
+    siteUrl: READING_LIST_URL,
+    items: articles.map((article) => ({
       title: article.title,
       description: article.summary ?? article.description ?? '',
       url: article.url,
       date: article.publishedAt,
       categories: [article.source.title],
-    });
-  }
-
-  return feed.xml();
+    })),
+  });
 }
 
 export async function GET() {

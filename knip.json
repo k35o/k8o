@@ -12,7 +12,7 @@
       "ignoreDependencies": ["@vercel/next-browser"]
     },
     "apps/main": {
-      "ignoreDependencies": ["chromatic", "vitest-browser-react"]
+      "ignoreDependencies": ["chromatic"]
     },
     "apps/admin": {
       "ignoreDependencies": ["chromatic"]

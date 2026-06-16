@@ -1,6 +1,6 @@
 import * as z from 'zod/mini';
 
-import { createReports } from '@/features/reports/application/report';
+import { createReports } from '@/features/reports/interface/commands';
 
 const MAX_BODY_SIZE = 64 * 1024;
 
