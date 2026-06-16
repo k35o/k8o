@@ -5,6 +5,7 @@ import * as z from 'zod/mini';
 
 import { configureZod } from '@/shared/validation/zod';
 
+import { isValidPushKeys } from '../application/push-keys';
 import { subscribePush, unsubscribePush } from '../application/subscribe';
 
 configureZod();
@@ -50,16 +51,8 @@ export const subscribePushAction = async (
     };
   }
 
-  // 鍵の形式検証: p256dh は非圧縮 P-256 公開鍵(先頭 0x04 + 65 bytes)、
-  // auth は 16 bytes(RFC 8291)。不正な鍵を永続保存しないよう登録時に弾く。
-  const p256dhBytes = Buffer.from(validated.data.keys.p256dh, 'base64url');
-  const authBytes = Buffer.from(validated.data.keys.auth, 'base64url');
-  if (
-    p256dhBytes.length !== 65 ||
-    p256dhBytes[0] !== 0x04 ||
-    authBytes.length < 16 ||
-    authBytes.length > 32
-  ) {
+  // 鍵の形式検証。不正な鍵を永続保存しないよう登録時に弾く。
+  if (!isValidPushKeys(validated.data.keys.p256dh, validated.data.keys.auth)) {
     return { success: false, message: '購読鍵の形式が不正です' };
   }
 
