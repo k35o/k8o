@@ -54,6 +54,7 @@ describe('syncArticles', () => {
     vi.setSystemTime(new Date('2026-03-12T00:00:00Z'));
     mockFetch.mockResolvedValue({
       ok: true,
+      status: 200,
       text: () => Promise.resolve('<xml/>'),
     });
     vi.mocked(fetchOgMetadata).mockResolvedValue({

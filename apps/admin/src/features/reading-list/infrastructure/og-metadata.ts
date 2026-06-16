@@ -1,4 +1,5 @@
 import { type OgMetadata, parseOgMetadata } from '@repo/helpers/og/og-metadata';
+import { safeFetch } from '@repo/helpers/url/safe-fetch';
 
 const TIMEOUT_MS = 5000;
 
@@ -12,7 +13,8 @@ const EMPTY_METADATA: OgMetadata = {
 export const fetchOgMetadata = async (url: string): Promise<OgMetadata> => {
   let response: Response;
   try {
-    response = await fetch(url, {
+    // SSRF 対策: 公開 https URL のみ許可し、リダイレクト先も都度検証する
+    response = await safeFetch(url, {
       signal: AbortSignal.timeout(TIMEOUT_MS),
       headers: {
         'user-agent': 'Mozilla/5.0 (compatible; k8o-bot/1.0; +https://k8o.me)',

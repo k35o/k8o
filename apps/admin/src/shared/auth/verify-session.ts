@@ -1,5 +1,5 @@
 import 'server-only';
-import { auth } from '@repo/database/auth';
+import { auth, isAllowedEmail } from '@repo/database/auth';
 import { headers } from 'next/headers';
 import { redirect } from 'next/navigation';
 
@@ -15,6 +15,12 @@ export const verifySession = async (): Promise<void> => {
   });
 
   if (!session) {
+    redirect('/sign-in');
+  }
+
+  // 許可リストはサインアップ時のみ評価され、既存セッションは ALLOWED_EMAILS から
+  // 外しても生き続ける（失効ギャップ）。検証のたびに再評価して締め出す。
+  if (!isAllowedEmail(session.user.email)) {
     redirect('/sign-in');
   }
 };

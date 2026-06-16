@@ -1,3 +1,4 @@
+import { safeFetch } from '@repo/helpers/url/safe-fetch';
 import { generateText } from 'ai';
 
 const FETCH_TIMEOUT_MS = 8000;
@@ -18,7 +19,8 @@ const extractText = (html: string): string =>
 const fetchArticleText = async (url: string): Promise<string | null> => {
   let response: Response;
   try {
-    response = await fetch(url, {
+    // SSRF 対策: 公開 https URL のみ許可し、リダイレクト先も都度検証する
+    response = await safeFetch(url, {
       signal: AbortSignal.timeout(FETCH_TIMEOUT_MS),
       headers: {
         'user-agent': 'Mozilla/5.0 (compatible; k8o-bot/1.0; +https://k8o.me)',

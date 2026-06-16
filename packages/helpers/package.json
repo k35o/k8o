@@ -93,6 +93,14 @@
     "./uuid-v4": {
       "types": "./src/uuid-v4.ts",
       "default": "./src/uuid-v4.ts"
+    },
+    "./url/is-public-https-url": {
+      "types": "./src/url/is-public-https-url.ts",
+      "default": "./src/url/is-public-https-url.ts"
+    },
+    "./url/safe-fetch": {
+      "types": "./src/url/safe-fetch.ts",
+      "default": "./src/url/safe-fetch.ts"
     }
   },
   "scripts": {
