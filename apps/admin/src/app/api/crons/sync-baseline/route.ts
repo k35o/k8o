@@ -1,7 +1,7 @@
 import { type NextRequest, NextResponse } from 'next/server';
 
 import { syncBaseline } from '@/features/baseline/application/sync-baseline';
-import { sendPushNotification } from '@/features/push-notification/infrastructure/push-notification';
+import { sendPushNotification } from '@/features/push-notification/interface/commands';
 import { isAuthorizedCronRequest } from '@/shared/auth/verify-cron-request';
 
 export async function GET(req: NextRequest): Promise<NextResponse> {
