@@ -1,12 +1,16 @@
 'use client';
 
-import { Button, Card, Dialog, Modal, useToast } from '@k8o/arte-odyssey';
+import { Button, Card, useToast } from '@k8o/arte-odyssey';
 import { formatDate } from '@repo/helpers/date/format';
 import { useAsyncAction } from '@repo/react-hooks/use-async-action';
-import Link from 'next/link';
+import type { Route } from 'next';
 import { type FC, useState } from 'react';
 
-import { EmptyState } from '@/app/(authenticated)/_components';
+import {
+  ButtonLink,
+  ConfirmDialog,
+  EmptyState,
+} from '@/app/(authenticated)/_components';
 import {
   deleteArticle,
   refetchArticleMetadata,
@@ -68,48 +72,22 @@ const DeleteButton: FC<{ id: number; title: string }> = ({ id, title }) => {
       >
         削除
       </Button>
-      <Modal
+      <ConfirmDialog
+        confirmLabel="削除する"
         isOpen={open}
+        isPending={isPending}
         onClose={() => {
           setOpen(false);
         }}
+        onConfirm={handleDelete}
+        pendingLabel="削除中..."
+        title="取得済み記事の削除"
       >
-        <Dialog.Root>
-          <Dialog.Header
-            onClose={() => {
-              setOpen(false);
-            }}
-            title="取得済み記事の削除"
-          />
-          <Dialog.Content>
-            <div className="flex flex-col gap-6">
-              <p className="text-sm">「{title}」を削除しますか？</p>
-              {error !== undefined && (
-                <p className="text-fg-error text-sm">{error}</p>
-              )}
-              <div className="flex justify-end gap-3">
-                <Button
-                  color="gray"
-                  onClick={() => {
-                    setOpen(false);
-                  }}
-                  variant="outline"
-                >
-                  キャンセル
-                </Button>
-                <Button
-                  color="primary"
-                  disabled={isPending}
-                  onClick={handleDelete}
-                  variant="solid"
-                >
-                  {isPending ? '削除中...' : '削除する'}
-                </Button>
-              </div>
-            </div>
-          </Dialog.Content>
-        </Dialog.Root>
-      </Modal>
+        <p className="text-sm">「{title}」を削除しますか？</p>
+        {error !== undefined && (
+          <p className="text-fg-error text-sm">{error}</p>
+        )}
+      </ConfirmDialog>
     </>
   );
 };
@@ -141,21 +119,14 @@ export const ArticleTable: FC<{ articles: Article[] }> = ({ articles }) => {
             {formatDate(new Date(article.publishedAt))}
           </span>
           <div className="flex shrink-0 items-center gap-1">
-            <Button
+            <ButtonLink
               color="gray"
-              renderItem={({ className, children }) => (
-                <Link
-                  className={className}
-                  href={`/reading-list/articles/${String(article.id)}`}
-                >
-                  {children}
-                </Link>
-              )}
+              href={`/reading-list/articles/${String(article.id)}` as Route}
               size="sm"
               variant="skeleton"
             >
               編集
-            </Button>
+            </ButtonLink>
             <RefetchButton id={article.id} />
             <DeleteButton id={article.id} title={article.title} />
           </div>

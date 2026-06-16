@@ -1,14 +1,9 @@
 'use client';
 
-import {
-  Alert,
-  Button,
-  FormControl,
-  Select,
-  TextField,
-} from '@k8o/arte-odyssey';
+import { Alert, Button, FormControl, Select } from '@k8o/arte-odyssey';
 import { type FC, useActionState } from 'react';
 
+import { LabeledTextField } from '@/app/(authenticated)/_components';
 import type { BlogOption } from '@/features/talks/interface/queries';
 import type { ActionState } from '@/shared/actions/action-state';
 
@@ -43,76 +38,46 @@ export const TalkForm: FC<TalkFormProps> = ({
       {state.error !== undefined && (
         <Alert message={state.error} tone="error" />
       )}
-      <FormControl
+      <LabeledTextField
+        defaultValue={defaultValues?.title ?? ''}
         label="タイトル"
+        name="title"
+        placeholder="登壇タイトル"
         required
-        renderInput={({ 'aria-labelledby': _, ...props }) => (
-          <TextField
-            {...props}
-            defaultValue={defaultValues?.title ?? ''}
-            name="title"
-            placeholder="登壇タイトル"
-          />
-        )}
       />
-      <FormControl
+      <LabeledTextField
+        defaultValue={defaultValues?.eventName ?? ''}
         label="イベント名"
+        name="eventName"
+        placeholder="例: Kyoto.js"
         required
-        renderInput={({ 'aria-labelledby': _, ...props }) => (
-          <TextField
-            {...props}
-            defaultValue={defaultValues?.eventName ?? ''}
-            name="eventName"
-            placeholder="例: Kyoto.js"
-          />
-        )}
       />
-      <FormControl
+      <LabeledTextField
+        defaultValue={defaultValues?.eventDate ?? ''}
         label="開催日 (YYYY-MM-DD)"
+        name="eventDate"
+        placeholder="2025-06-01"
         required
-        renderInput={({ 'aria-labelledby': _, ...props }) => (
-          <TextField
-            {...props}
-            defaultValue={defaultValues?.eventDate ?? ''}
-            name="eventDate"
-            placeholder="2025-06-01"
-          />
-        )}
       />
-      <FormControl
+      <LabeledTextField
+        defaultValue={defaultValues?.eventLocation ?? ''}
         label="開催地"
-        renderInput={({ 'aria-labelledby': _, ...props }) => (
-          <TextField
-            {...props}
-            defaultValue={defaultValues?.eventLocation ?? ''}
-            name="eventLocation"
-            placeholder="例: 京都 / オンライン"
-          />
-        )}
+        name="eventLocation"
+        placeholder="例: 京都 / オンライン"
       />
-      <FormControl
+      <LabeledTextField
+        defaultValue={defaultValues?.eventUrl ?? ''}
         label="イベントURL"
+        name="eventUrl"
+        placeholder="https://example.com/event"
         required
-        renderInput={({ 'aria-labelledby': _, ...props }) => (
-          <TextField
-            {...props}
-            defaultValue={defaultValues?.eventUrl ?? ''}
-            name="eventUrl"
-            placeholder="https://example.com/event"
-          />
-        )}
       />
-      <FormControl
+      <LabeledTextField
+        defaultValue={defaultValues?.slideUrl ?? ''}
         label="スライドURL"
+        name="slideUrl"
+        placeholder="https://example.com/slides"
         required
-        renderInput={({ 'aria-labelledby': _, ...props }) => (
-          <TextField
-            {...props}
-            defaultValue={defaultValues?.slideUrl ?? ''}
-            name="slideUrl"
-            placeholder="https://example.com/slides"
-          />
-        )}
       />
       <FormControl
         label="紐づけるブログ"

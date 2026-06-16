@@ -1,18 +1,10 @@
 'use client';
 
-import {
-  Badge,
-  Button,
-  Card,
-  Dialog,
-  Modal,
-  TextField,
-  useToast,
-} from '@k8o/arte-odyssey';
+import { Badge, Button, Card, TextField, useToast } from '@k8o/arte-odyssey';
 import { useAsyncAction } from '@repo/react-hooks/use-async-action';
 import { type ChangeEvent, type FC, useState } from 'react';
 
-import { EmptyState } from '@/app/(authenticated)/_components';
+import { ConfirmDialog, EmptyState } from '@/app/(authenticated)/_components';
 import { deleteTag, renameTag } from '@/features/tags/interface/actions';
 import type { TagWithUsage } from '@/features/tags/interface/queries';
 
@@ -86,76 +78,38 @@ const TagRow: FC<{ tag: TagWithUsage }> = ({ tag }) => {
         削除
       </Button>
 
-      <Modal isOpen={renameOpen} onClose={closeRename}>
-        <Dialog.Root>
-          <Dialog.Header onClose={closeRename} title="タグ名の変更" />
-          <Dialog.Content>
-            <div className="flex flex-col gap-6">
-              <TextField
-                aria-label="新しいタグ名"
-                onChange={(e: ChangeEvent<HTMLInputElement>) => {
-                  setName(e.target.value);
-                }}
-                size={28}
-                value={name}
-              />
-              <div className="flex justify-end gap-3">
-                <Button color="gray" onClick={closeRename} variant="outline">
-                  キャンセル
-                </Button>
-                <Button
-                  color="primary"
-                  disabled={isPending}
-                  onClick={handleRename}
-                  variant="solid"
-                >
-                  {isPending ? '保存中...' : '保存'}
-                </Button>
-              </div>
-            </div>
-          </Dialog.Content>
-        </Dialog.Root>
-      </Modal>
+      <ConfirmDialog
+        confirmLabel="保存"
+        isOpen={renameOpen}
+        isPending={isPending}
+        onClose={closeRename}
+        onConfirm={handleRename}
+        pendingLabel="保存中..."
+        title="タグ名の変更"
+      >
+        <TextField
+          aria-label="新しいタグ名"
+          onChange={(e: ChangeEvent<HTMLInputElement>) => {
+            setName(e.target.value);
+          }}
+          size={28}
+          value={name}
+        />
+      </ConfirmDialog>
 
-      <Modal
+      <ConfirmDialog
+        confirmLabel="削除する"
         isOpen={deleteOpen}
+        isPending={isPending}
         onClose={() => {
           setDeleteOpen(false);
         }}
+        onConfirm={handleDelete}
+        pendingLabel="削除中..."
+        title="タグの削除"
       >
-        <Dialog.Root>
-          <Dialog.Header
-            onClose={() => {
-              setDeleteOpen(false);
-            }}
-            title="タグの削除"
-          />
-          <Dialog.Content>
-            <div className="flex flex-col gap-6">
-              <p className="text-sm">「{tag.name}」を削除しますか？</p>
-              <div className="flex justify-end gap-3">
-                <Button
-                  color="gray"
-                  onClick={() => {
-                    setDeleteOpen(false);
-                  }}
-                  variant="outline"
-                >
-                  キャンセル
-                </Button>
-                <Button
-                  color="primary"
-                  disabled={isPending}
-                  onClick={handleDelete}
-                  variant="solid"
-                >
-                  {isPending ? '削除中...' : '削除する'}
-                </Button>
-              </div>
-            </div>
-          </Dialog.Content>
-        </Dialog.Root>
-      </Modal>
+        <p className="text-sm">「{tag.name}」を削除しますか？</p>
+      </ConfirmDialog>
     </div>
   );
 };

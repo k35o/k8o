@@ -1,20 +1,16 @@
 'use client';
 
-import { Button } from '@k8o/arte-odyssey';
-import Link from 'next/link';
 import type { FC } from 'react';
 
+import { ButtonLink } from '@/app/(authenticated)/_components';
+
 export const AddSourceLink: FC = () => (
-  <Button
+  <ButtonLink
     color="primary"
-    renderItem={({ className, children }) => (
-      <Link className={className} href="/reading-list/sources/new">
-        {children}
-      </Link>
-    )}
+    href="/reading-list/sources/new"
     size="sm"
     variant="solid"
   >
     追加
-  </Button>
+  </ButtonLink>
 );

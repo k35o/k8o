@@ -1,20 +1,16 @@
 'use client';
 
-import { Button } from '@k8o/arte-odyssey';
-import Link from 'next/link';
 import type { FC } from 'react';
 
+import { ButtonLink } from '@/app/(authenticated)/_components';
+
 export const AddArticleLink: FC = () => (
-  <Button
+  <ButtonLink
     color="gray"
-    renderItem={({ className, children }) => (
-      <Link className={className} href="/reading-list/articles/new">
-        {children}
-      </Link>
-    )}
+    href="/reading-list/articles/new"
     size="sm"
     variant="outline"
   >
     記事を追加
-  </Button>
+  </ButtonLink>
 );
