@@ -1,3 +1,6 @@
+import { isYmdDate } from '@repo/helpers/date/is-ymd-date';
+import { getStringField } from '@repo/helpers/form/get-string-field';
+
 import type {
   ArticleInput,
   ArticleUpdateInput,
@@ -10,15 +13,6 @@ type CreateResult =
 type UpdateResult =
   | { ok: true; data: ArticleUpdateInput }
   | { ok: false; error: string };
-
-// publishedAt は orderBy(desc(publishedAt)) で並べ替えに使うため、
-// テキストで日付順に揃うよう YYYY-MM-DD 形式に限定する。
-const DATE_PATTERN = /^\d{4}-\d{2}-\d{2}$/u;
-
-const getStringField = (formData: FormData, key: string): string => {
-  const value = formData.get(key);
-  return typeof value === 'string' ? value : '';
-};
 
 export const parseArticleCreateFormData = (
   formData: FormData,
@@ -35,7 +29,7 @@ export const parseArticleCreateFormData = (
   if (!(title && url && publishedAt)) {
     return { ok: false, error: 'タイトル・URL・公開日は必須です' };
   }
-  if (!DATE_PATTERN.test(publishedAt)) {
+  if (!isYmdDate(publishedAt)) {
     return { ok: false, error: '公開日は YYYY-MM-DD 形式で入力してください' };
   }
   if (!URL.canParse(url)) {
@@ -65,7 +59,7 @@ export const parseArticleUpdateFormData = (
   if (!(title && url && publishedAt)) {
     return { ok: false, error: 'タイトル・URL・公開日は必須です' };
   }
-  if (!DATE_PATTERN.test(publishedAt)) {
+  if (!isYmdDate(publishedAt)) {
     return { ok: false, error: '公開日は YYYY-MM-DD 形式で入力してください' };
   }
   if (!URL.canParse(url)) {
