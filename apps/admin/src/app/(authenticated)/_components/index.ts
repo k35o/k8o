@@ -5,6 +5,7 @@ export { EmptyState } from './empty-state';
 export { FilterSelect } from './filter-select';
 export { ListPagination } from './list-pagination';
 export { PageHeader } from './page-header';
+export { PublishToggle } from './publish-toggle';
 export { SearchField } from './search-field';
 export { SectionHeader } from './section-header';
 export { StatCard } from './stat-card';
