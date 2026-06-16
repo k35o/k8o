@@ -15,7 +15,7 @@ async function generateRssFeed() {
   const feed = new RSS({
     title: metadata.title,
     description: metadata.description,
-    feed_url: `${READING_LIST_URL}/feed.xml`,
+    feed_url: `${READING_LIST_URL}/feed`,
     site_url: READING_LIST_URL,
     language: 'ja',
   });

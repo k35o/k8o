@@ -15,7 +15,7 @@ async function generateRssFeed() {
   const feed = new RSS({
     title: metadata.title,
     description: metadata.description,
-    feed_url: `${BLOG_URL}/feed.xml`,
+    feed_url: `${BLOG_URL}/feed`,
     site_url: BLOG_URL,
     language: 'ja',
   });
@@ -28,7 +28,7 @@ async function generateRssFeed() {
       description: blog.description ?? '',
       url: `${BLOG_URL}/${blog.slug}`,
       date: blog.updatedAt,
-      categories: blog.tags.map((tag) => tag),
+      categories: blog.tags,
     });
   }
 

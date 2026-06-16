@@ -75,7 +75,7 @@ export const hexToRgb = (hex: string): RGB => {
       r: parseSafeRgb(r),
       g: parseSafeRgb(g),
       b: parseSafeRgb(b),
-      a: Math.round((parseSafeRgb(a) * 100) / 255) / 1,
+      a: Math.round((parseSafeRgb(a) * 100) / 255) / 100,
     };
   }
   if (hex.length === 6) {
@@ -219,6 +219,16 @@ if (import.meta.vitest) {
 
     it('3桁hexを展開して変換する', () => {
       expect(hexToRgb('fff')).toEqual({ r: 255, g: 255, b: 255, a: 1 });
+    });
+
+    it('4桁hexのalphaを0〜1に正規化する', () => {
+      expect(hexToRgb('ffff')).toEqual({ r: 255, g: 255, b: 255, a: 1 });
+      expect(hexToRgb('f000')).toEqual({ r: 255, g: 0, b: 0, a: 0 });
+    });
+
+    it('8桁hexのalphaを0〜1に正規化する', () => {
+      expect(hexToRgb('ff0000ff')).toEqual({ r: 255, g: 0, b: 0, a: 1 });
+      expect(hexToRgb('ff000000')).toEqual({ r: 255, g: 0, b: 0, a: 0 });
     });
 
     it('不正な長さの場合は白を返す', () => {
