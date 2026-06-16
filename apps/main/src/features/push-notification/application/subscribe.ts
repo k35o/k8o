@@ -15,6 +15,13 @@ export const subscribePush = async (input: SubscribeInput): Promise<void> => {
   await insertSubscription({ ...input, endpointHost });
 };
 
-export const unsubscribePush = async (endpoint: string): Promise<void> => {
-  await deleteSubscription(endpoint);
+type UnsubscribeInput = {
+  endpoint: string;
+  auth: string;
+};
+
+export const unsubscribePush = async (
+  input: UnsubscribeInput,
+): Promise<void> => {
+  await deleteSubscription(input.endpoint, input.auth);
 };

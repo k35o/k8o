@@ -117,7 +117,10 @@ export const PushSubscribe: FC<Props> = ({ vapidPublicKey }) => {
       if (subscription !== null) {
         // subscribe と対称に、サーバー側の削除成功を確認してから
         // ブラウザ側の購読解除と UI 更新を行う。
-        const result = await unsubscribePushAction(subscription.endpoint);
+        const result = await unsubscribePushAction({
+          endpoint: subscription.endpoint,
+          auth: subscription.toJSON().keys?.['auth'] ?? '',
+        });
         if (!result.success) {
           throw new Error(result.message);
         }

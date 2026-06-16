@@ -21,9 +21,10 @@ const subscriptionSchema = z.object({
   }),
 });
 
-const endpointSchema = z
-  .string()
-  .check(z.minLength(1), z.maxLength(MAX_ENDPOINT_LENGTH));
+const unsubscribeSchema = z.object({
+  endpoint: z.string().check(z.minLength(1), z.maxLength(MAX_ENDPOINT_LENGTH)),
+  auth: z.string().check(z.minLength(1), z.maxLength(MAX_KEY_LENGTH)),
+});
 
 type SubscriptionPayload = {
   endpoint: string;
@@ -31,6 +32,11 @@ type SubscriptionPayload = {
     p256dh: string;
     auth: string;
   };
+};
+
+type UnsubscribePayload = {
+  endpoint: string;
+  auth: string;
 };
 
 type ActionResult = { success: true } | { success: false; message: string };
@@ -69,9 +75,10 @@ export const subscribePushAction = async (
 };
 
 export const unsubscribePushAction = async (
-  endpoint: string,
+  payload: UnsubscribePayload,
 ): Promise<ActionResult> => {
-  const validated = endpointSchema.safeParse(endpoint);
+  // endpoint だけでなく auth(共有秘密)も検証し、削除時に所有者確認する（IDOR 対策）
+  const validated = unsubscribeSchema.safeParse(payload);
   if (!validated.success) {
     return { success: false, message: 'エンドポイントが不正です' };
   }
