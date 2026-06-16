@@ -1,8 +1,8 @@
 import { cacheLife } from 'next/cache';
 import { NextResponse } from 'next/server';
-import RSS from 'rss';
 
 import { getSlideContents } from '@/features/slides/interface/queries';
+import { buildRssFeed } from '@/shared/feed/build-rss';
 
 import { metadata } from '../layout';
 
@@ -12,27 +12,21 @@ async function generateRssFeed() {
   'use cache';
   cacheLife('max');
 
-  const feed = new RSS({
-    title: metadata.title,
-    description: metadata.description,
-    feed_url: `${SLIDES_URL}/feed`,
-    site_url: SLIDES_URL,
-    language: 'ja',
-  });
-
   const slides = await getSlideContents();
 
-  for (const slide of slides) {
-    feed.item({
+  return buildRssFeed({
+    title: metadata.title,
+    description: metadata.description,
+    feedUrl: `${SLIDES_URL}/feed`,
+    siteUrl: SLIDES_URL,
+    items: slides.map((slide) => ({
       title: slide.title,
       description: slide.description ?? '',
       url: `${SLIDES_URL}/${slide.slug}`,
       date: slide.updatedAt,
       categories: slide.tags,
-    });
-  }
-
-  return feed.xml();
+    })),
+  });
 }
 
 export async function GET() {

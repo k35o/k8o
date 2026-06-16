@@ -21,6 +21,7 @@
     "@k8o/arte-odyssey": "catalog:",
     "@repo/database": "workspace:*",
     "@repo/helpers": "workspace:*",
+    "@repo/react-hooks": "workspace:*",
     "@tailwindcss/postcss": "catalog:",
     "better-auth": "catalog:",
     "drizzle-orm": "catalog:",

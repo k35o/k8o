@@ -27,6 +27,7 @@
     "@repo/code-highlight": "workspace:*",
     "@repo/database": "workspace:*",
     "@repo/helpers": "workspace:*",
+    "@repo/react-hooks": "workspace:*",
     "@tailwindcss/postcss": "catalog:",
     "@vercel/analytics": "2.0.1",
     "ai": "6.0.197",

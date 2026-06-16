@@ -1,0 +1,24 @@
+{
+  "name": "@repo/react-hooks",
+  "version": "1.0.0",
+  "private": true,
+  "description": "React hooks shared across k8o apps",
+  "type": "module",
+  "exports": {
+    "./use-async-action": {
+      "types": "./src/use-async-action.ts",
+      "default": "./src/use-async-action.ts"
+    }
+  },
+  "scripts": {
+    "type-check": "tsgo --noEmit"
+  },
+  "devDependencies": {
+    "@repo/typescript-config": "workspace:*",
+    "@types/react": "catalog:",
+    "react": "catalog:"
+  },
+  "peerDependencies": {
+    "react": "catalog:"
+  }
+}

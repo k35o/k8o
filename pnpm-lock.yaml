@@ -158,6 +158,9 @@ importers:
       '@repo/helpers':
         specifier: workspace:*
         version: link:../../packages/helpers
+      '@repo/react-hooks':
+        specifier: workspace:*
+        version: link:../../packages/react-hooks
       '@tailwindcss/postcss':
         specifier: 'catalog:'
         version: 4.3.0
@@ -273,6 +276,9 @@ importers:
       '@repo/helpers':
         specifier: workspace:*
         version: link:../../packages/helpers
+      '@repo/react-hooks':
+        specifier: workspace:*
+        version: link:../../packages/react-hooks
       '@tailwindcss/postcss':
         specifier: 'catalog:'
         version: 4.3.0
@@ -493,6 +499,18 @@ importers:
       vitest:
         specifier: 'catalog:'
         version: 4.1.8(@opentelemetry/api@1.9.1)(@types/node@24.13.1)(@vitest/browser-playwright@4.1.8)(@vitest/coverage-v8@4.1.8)(@vitest/ui@4.1.8)(msw@2.14.6(@types/node@24.13.1)(typescript@6.0.3))(vite@8.0.14(@types/node@24.13.1)(esbuild@0.28.0)(jiti@2.7.0)(tsx@4.22.3)(yaml@2.9.0))
+
+  packages/react-hooks:
+    devDependencies:
+      '@repo/typescript-config':
+        specifier: workspace:*
+        version: link:../typescript-config
+      '@types/react':
+        specifier: 'catalog:'
+        version: 19.2.17
+      react:
+        specifier: 'catalog:'
+        version: 19.2.7
 
   packages/typescript-config: {}
 

@@ -1,10 +1,10 @@
 'use client';
 
 import { Button, Dialog, Modal, useToast } from '@k8o/arte-odyssey';
+import { useAsyncAction } from '@repo/react-hooks/use-async-action';
 import { type FC, useState } from 'react';
 
 import { deleteComment } from '@/features/comments/interface/actions';
-import { useAsyncAction } from '@/shared/hooks/use-async-action';
 
 type Props = {
   id: number;

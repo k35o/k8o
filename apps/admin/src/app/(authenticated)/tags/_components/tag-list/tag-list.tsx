@@ -9,12 +9,12 @@ import {
   TextField,
   useToast,
 } from '@k8o/arte-odyssey';
+import { useAsyncAction } from '@repo/react-hooks/use-async-action';
 import { type ChangeEvent, type FC, useState } from 'react';
 
 import { EmptyState } from '@/app/(authenticated)/_components';
 import { deleteTag, renameTag } from '@/features/tags/interface/actions';
 import type { TagWithUsage } from '@/features/tags/interface/queries';
-import { useAsyncAction } from '@/shared/hooks/use-async-action';
 
 const TagRow: FC<{ tag: TagWithUsage }> = ({ tag }) => {
   const [renameOpen, setRenameOpen] = useState(false);

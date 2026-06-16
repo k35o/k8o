@@ -57,6 +57,10 @@
       "types": "./src/date/compare.ts",
       "default": "./src/date/compare.ts"
     },
+    "./date/duration": {
+      "types": "./src/date/duration.ts",
+      "default": "./src/date/duration.ts"
+    },
     "./date/format": {
       "types": "./src/date/format.ts",
       "default": "./src/date/format.ts"
@@ -77,6 +81,10 @@
     "./number/commalize": {
       "types": "./src/number/commalize.ts",
       "default": "./src/number/commalize.ts"
+    },
+    "./og/fetch-og-metadata": {
+      "types": "./src/og/fetch-og-metadata.ts",
+      "default": "./src/og/fetch-og-metadata.ts"
     },
     "./og/og-metadata": {
       "types": "./src/og/og-metadata.ts",

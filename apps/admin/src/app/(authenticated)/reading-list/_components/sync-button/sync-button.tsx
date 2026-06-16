@@ -1,10 +1,10 @@
 'use client';
 
 import { Button, useToast } from '@k8o/arte-odyssey';
+import { useAsyncAction } from '@repo/react-hooks/use-async-action';
 import type { FC } from 'react';
 
 import { syncArticlesAction } from '@/features/reading-list/interface/article-actions';
-import { useAsyncAction } from '@/shared/hooks/use-async-action';
 
 export const SyncButton: FC = () => {
   const { isPending, run } = useAsyncAction();

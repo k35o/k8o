@@ -1,10 +1,10 @@
 import { db } from '@repo/database';
 import { mapWithConcurrency } from '@repo/helpers/array/map-with-concurrency';
+import { NINETY_DAYS_MS } from '@repo/helpers/date/duration';
 import { and, eq, gte, isNull } from 'drizzle-orm';
 
 import { fetchOgMetadata } from '../infrastructure/og-metadata';
 
-const NINETY_DAYS_MS = 90 * 24 * 60 * 60 * 1000;
 const OG_CONCURRENCY = 5;
 const BACKFILL_LIMIT = 50;
 

@@ -1,12 +1,12 @@
 'use client';
 
 import { Badge, Card, Switch, useToast } from '@k8o/arte-odyssey';
+import { useAsyncAction } from '@repo/react-hooks/use-async-action';
 import { type FC, useState } from 'react';
 
 import { EmptyState } from '@/app/(authenticated)/_components';
 import { setSlidePublished } from '@/features/slides/interface/actions';
 import type { SlideRecord } from '@/features/slides/interface/queries';
-import { useAsyncAction } from '@/shared/hooks/use-async-action';
 
 const SLIDE_BASE_URL = 'https://k8o.me/slides';
 

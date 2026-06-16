@@ -9,13 +9,13 @@ import {
   useToast,
 } from '@k8o/arte-odyssey';
 import { formatDate } from '@repo/helpers/date/format';
+import { useAsyncAction } from '@repo/react-hooks/use-async-action';
 import Link from 'next/link';
 import { type FC, useState } from 'react';
 
 import { EmptyState } from '@/app/(authenticated)/_components';
 import { deleteTalk } from '@/features/talks/interface/actions';
 import type { TalkRecord } from '@/features/talks/interface/queries';
-import { useAsyncAction } from '@/shared/hooks/use-async-action';
 
 const TalkRow: FC<{ talk: TalkRecord }> = ({ talk }) => {
   const [open, setOpen] = useState(false);
