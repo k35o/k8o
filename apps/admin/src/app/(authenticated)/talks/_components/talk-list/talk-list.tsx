@@ -3,10 +3,14 @@
 import { Badge, Button, Card, useToast } from '@k8o/arte-odyssey';
 import { formatDate } from '@repo/helpers/date/format';
 import { useAsyncAction } from '@repo/react-hooks/use-async-action';
-import Link from 'next/link';
+import type { Route } from 'next';
 import { type FC, useState } from 'react';
 
-import { ConfirmDialog, EmptyState } from '@/app/(authenticated)/_components';
+import {
+  ButtonLink,
+  ConfirmDialog,
+  EmptyState,
+} from '@/app/(authenticated)/_components';
 import { deleteTalk } from '@/features/talks/interface/actions';
 import type { TalkRecord } from '@/features/talks/interface/queries';
 
@@ -39,18 +43,14 @@ const TalkRow: FC<{ talk: TalkRecord }> = ({ talk }) => {
           {talk.title}
         </a>
         <div className="flex shrink-0 items-center gap-1">
-          <Button
+          <ButtonLink
             color="gray"
-            renderItem={({ className, children }) => (
-              <Link className={className} href={`/talks/${String(talk.id)}`}>
-                {children}
-              </Link>
-            )}
+            href={`/talks/${String(talk.id)}` as Route}
             size="sm"
             variant="skeleton"
           >
             編集
-          </Button>
+          </ButtonLink>
           <Button
             color="gray"
             onClick={() => {

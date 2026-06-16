@@ -3,10 +3,14 @@
 import { Button, Card, useToast } from '@k8o/arte-odyssey';
 import { formatDate } from '@repo/helpers/date/format';
 import { useAsyncAction } from '@repo/react-hooks/use-async-action';
-import Link from 'next/link';
+import type { Route } from 'next';
 import { type FC, useState } from 'react';
 
-import { ConfirmDialog, EmptyState } from '@/app/(authenticated)/_components';
+import {
+  ButtonLink,
+  ConfirmDialog,
+  EmptyState,
+} from '@/app/(authenticated)/_components';
 import {
   deleteArticle,
   refetchArticleMetadata,
@@ -115,21 +119,14 @@ export const ArticleTable: FC<{ articles: Article[] }> = ({ articles }) => {
             {formatDate(new Date(article.publishedAt))}
           </span>
           <div className="flex shrink-0 items-center gap-1">
-            <Button
+            <ButtonLink
               color="gray"
-              renderItem={({ className, children }) => (
-                <Link
-                  className={className}
-                  href={`/reading-list/articles/${String(article.id)}`}
-                >
-                  {children}
-                </Link>
-              )}
+              href={`/reading-list/articles/${String(article.id)}` as Route}
               size="sm"
               variant="skeleton"
             >
               編集
-            </Button>
+            </ButtonLink>
             <RefetchButton id={article.id} />
             <DeleteButton id={article.id} title={article.title} />
           </div>
