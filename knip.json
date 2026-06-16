@@ -6,6 +6,7 @@
   ],
   "treatConfigHintsAsErrors": true,
   "tags": ["-lintignore"],
+  "ignoreBinaries": ["mise", "which"],
   "workspaces": {
     ".": {
       "entry": ["vite.config.ts"],

@@ -21,10 +21,7 @@ export const comments = sqliteTable(
       .$defaultFn(() => new Date().toISOString())
       .$onUpdate(() => new Date().toISOString()),
   },
-  (table) => [
-    index('comments_id_idx').on(table.id),
-    index('comments_feedback_id_idx').on(table.feedbackId),
-  ],
+  (table) => [index('comments_feedback_id_idx').on(table.feedbackId)],
 );
 
 export const commentsRelations = relations(comments, ({ one }) => ({

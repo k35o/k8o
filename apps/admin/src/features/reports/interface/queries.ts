@@ -29,7 +29,4 @@ export const getReports = async (
   return result;
 };
 
-export type {
-  ReportRecord,
-  ReportTypeCount,
-} from '../infrastructure/report-repository';
+export type { ReportTypeCount } from '../infrastructure/report-repository';

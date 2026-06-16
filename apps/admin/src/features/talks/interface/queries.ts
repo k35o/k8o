@@ -34,8 +34,4 @@ export const getTalkForEdit = async (id: string) => {
   return talk;
 };
 
-export type {
-  BlogOption,
-  TalkInput,
-  TalkRecord,
-} from '../infrastructure/talk-repository';
+export type { BlogOption, TalkRecord } from '../infrastructure/talk-repository';

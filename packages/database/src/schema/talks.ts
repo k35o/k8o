@@ -20,10 +20,7 @@ export const talks = sqliteTable(
       .notNull()
       .references(() => blogs.id),
   },
-  (table) => [
-    index('talks_id_idx').on(table.id),
-    index('talks_blog_id_idx').on(table.blogId),
-  ],
+  (table) => [index('talks_blog_id_idx').on(table.blogId)],
 );
 
 export const talksRelations = relations(talks, ({ many, one }) => ({

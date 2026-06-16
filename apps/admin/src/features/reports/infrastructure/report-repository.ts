@@ -1,7 +1,7 @@
 import { db } from '@repo/database';
 import { and, count, desc, eq, like, type SQL } from 'drizzle-orm';
 
-export type ReportRecord = {
+type ReportRecord = {
   id: number;
   type: string;
   url: string;

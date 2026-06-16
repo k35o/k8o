@@ -27,7 +27,6 @@ export const getPushLogs = async (
 };
 
 export type {
-  HostCount,
   PushLogRecord,
   PushOverview,
 } from '../infrastructure/push-repository';
