@@ -1,3 +1,4 @@
+export { ConfirmDialog } from './confirm-dialog';
 export { ContentFallback } from './content-fallback';
 export { EmptyState } from './empty-state';
 export { FilterSelect } from './filter-select';

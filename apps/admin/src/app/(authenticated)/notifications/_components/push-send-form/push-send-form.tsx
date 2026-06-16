@@ -1,17 +1,10 @@
 'use client';
 
-import {
-  Button,
-  Card,
-  Dialog,
-  Modal,
-  TextField,
-  Textarea,
-  useToast,
-} from '@k8o/arte-odyssey';
+import { Button, Card, TextField, Textarea, useToast } from '@k8o/arte-odyssey';
 import { useAsyncAction } from '@repo/react-hooks/use-async-action';
 import { type ChangeEvent, type FC, useState } from 'react';
 
+import { ConfirmDialog } from '@/app/(authenticated)/_components';
 import {
   type ManualPushActionState,
   sendManualPushAction,
@@ -94,47 +87,21 @@ export const PushSendForm: FC = () => {
           </Button>
         </div>
       </div>
-      <Modal
+      <ConfirmDialog
+        confirmLabel="送信する"
         isOpen={open}
+        isPending={isPending}
         onClose={() => {
           setOpen(false);
         }}
+        onConfirm={handleSend}
+        pendingLabel="送信中..."
+        title="プッシュ通知の送信"
       >
-        <Dialog.Root>
-          <Dialog.Header
-            onClose={() => {
-              setOpen(false);
-            }}
-            title="プッシュ通知の送信"
-          />
-          <Dialog.Content>
-            <div className="flex flex-col gap-6">
-              <p className="text-sm">
-                全購読者へ「{title}」を送信します。よろしいですか？
-              </p>
-              <div className="flex justify-end gap-3">
-                <Button
-                  color="gray"
-                  onClick={() => {
-                    setOpen(false);
-                  }}
-                  variant="outline"
-                >
-                  キャンセル
-                </Button>
-                <Button
-                  color="primary"
-                  disabled={isPending}
-                  onClick={handleSend}
-                  variant="solid"
-                >
-                  {isPending ? '送信中...' : '送信する'}
-                </Button>
-              </div>
-            </div>
-          </Dialog.Content>
-        </Dialog.Root>
-      </Modal>
+        <p className="text-sm">
+          全購読者へ「{title}」を送信します。よろしいですか？
+        </p>
+      </ConfirmDialog>
     </Card>
   );
 };

@@ -1,19 +1,12 @@
 'use client';
 
-import {
-  Badge,
-  Button,
-  Card,
-  Dialog,
-  Modal,
-  useToast,
-} from '@k8o/arte-odyssey';
+import { Badge, Button, Card, useToast } from '@k8o/arte-odyssey';
 import { formatDate } from '@repo/helpers/date/format';
 import { useAsyncAction } from '@repo/react-hooks/use-async-action';
 import Link from 'next/link';
 import { type FC, useState } from 'react';
 
-import { EmptyState } from '@/app/(authenticated)/_components';
+import { ConfirmDialog, EmptyState } from '@/app/(authenticated)/_components';
 import { deleteTalk } from '@/features/talks/interface/actions';
 import type { TalkRecord } from '@/features/talks/interface/queries';
 
@@ -85,45 +78,19 @@ const TalkRow: FC<{ talk: TalkRecord }> = ({ talk }) => {
         </div>
       )}
 
-      <Modal
+      <ConfirmDialog
+        confirmLabel="削除する"
         isOpen={open}
+        isPending={isPending}
         onClose={() => {
           setOpen(false);
         }}
+        onConfirm={handleDelete}
+        pendingLabel="削除中..."
+        title="トークの削除"
       >
-        <Dialog.Root>
-          <Dialog.Header
-            onClose={() => {
-              setOpen(false);
-            }}
-            title="トークの削除"
-          />
-          <Dialog.Content>
-            <div className="flex flex-col gap-6">
-              <p className="text-sm">「{talk.title}」を削除しますか？</p>
-              <div className="flex justify-end gap-3">
-                <Button
-                  color="gray"
-                  onClick={() => {
-                    setOpen(false);
-                  }}
-                  variant="outline"
-                >
-                  キャンセル
-                </Button>
-                <Button
-                  color="primary"
-                  disabled={isPending}
-                  onClick={handleDelete}
-                  variant="solid"
-                >
-                  {isPending ? '削除中...' : '削除する'}
-                </Button>
-              </div>
-            </div>
-          </Dialog.Content>
-        </Dialog.Root>
-      </Modal>
+        <p className="text-sm">「{talk.title}」を削除しますか？</p>
+      </ConfirmDialog>
     </div>
   );
 };
