@@ -1,4 +1,4 @@
-import { Octokit } from 'octokit';
+import { graphql } from '@octokit/graphql';
 
 import {
   formatDateString,
@@ -50,8 +50,6 @@ export async function fetchUserContributions(
     throw new Error('GITHUB_TOKEN is not configured');
   }
 
-  const octokit = new Octokit({ auth: token });
-
   const { from, to } = _getDateRange();
 
   const query = `
@@ -71,10 +69,13 @@ export async function fetchUserContributions(
     }
   `;
 
-  const response: ContributionCalendarResponse = await octokit.graphql(query, {
+  const response = await graphql<ContributionCalendarResponse>(query, {
     userName: username,
     from: getJstUtcStart(from),
     to: getJstUtcEnd(to),
+    headers: {
+      authorization: `token ${token}`,
+    },
   });
 
   const contributionMap = new Map<string, number>();

@@ -1,13 +1,9 @@
 import { fetchUserContributions } from './contributions';
 
-const graphqlMock = vi.fn();
+const { graphqlMock } = vi.hoisted(() => ({ graphqlMock: vi.fn() }));
 
-vi.mock('octokit', () => ({
-  Octokit: vi.fn(function MockOctokit() {
-    return {
-      graphql: graphqlMock,
-    };
-  }),
+vi.mock('@octokit/graphql', () => ({
+  graphql: graphqlMock,
 }));
 
 describe('fetchUserContributions', () => {
