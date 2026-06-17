@@ -33,7 +33,7 @@ export const deleteArticleById = async (id: number): Promise<void> => {
   await db.delete(db._schema.articles).where(eq(db._schema.articles.id, id));
 };
 
-export type ArticleListItem = {
+type ArticleListItem = {
   id: number;
   title: string;
   url: string;

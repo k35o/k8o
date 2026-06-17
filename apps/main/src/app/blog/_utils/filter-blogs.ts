@@ -1,6 +1,6 @@
 import type { BlogSummary } from './types';
 
-export const normalizeForSearch = (text: string): string =>
+const normalizeForSearch = (text: string): string =>
   text.normalize('NFKC').toLowerCase();
 
 export const filterBlogs = (

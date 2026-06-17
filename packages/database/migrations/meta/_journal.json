@@ -372,6 +372,13 @@
       "when": 1780453972950,
       "tag": "0052_whole_scarecrow",
       "breakpoints": true
+    },
+    {
+      "idx": 53,
+      "version": "6",
+      "when": 1781612648881,
+      "tag": "0053_drop_redundant_pk_indexes",
+      "breakpoints": true
     }
   ]
 }
