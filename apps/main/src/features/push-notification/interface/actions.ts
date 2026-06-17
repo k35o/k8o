@@ -51,7 +51,6 @@ export const subscribePushAction = async (
     };
   }
 
-  // 鍵の形式検証。不正な鍵を永続保存しないよう登録時に弾く。
   if (!isValidPushKeys(validated.data.keys.p256dh, validated.data.keys.auth)) {
     return { success: false, message: '購読鍵の形式が不正です' };
   }
