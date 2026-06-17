@@ -54,6 +54,7 @@ minimumReleaseAgeExclude:
   - turbo@2.9.14
   - storybook-addon-vrt
   - storybook-addon-mock-date
+  - vite-plus-inspector
 
 verifyDepsBeforeRun: install
 

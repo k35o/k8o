@@ -10,6 +10,7 @@
     "check": "vp check",
     "check:write": "vp check --fix",
     "ls-lint": "ls-lint",
+    "inspect": "vp-inspect",
     "type-check": "turbo run type-check",
     "test": "turbo run test",
     "test:watch": "turbo run test:watch",
@@ -32,6 +33,7 @@
     "turbo": "2.9.16",
     "typescript": "6.0.3",
     "vite-plus": "0.1.24",
+    "vite-plus-inspector": "0.1.0",
     "wrangler": "catalog:"
   },
   "engines": {
