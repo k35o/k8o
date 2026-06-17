@@ -4,17 +4,17 @@ describe('getArtifacts', () => {
   it('公開している制作物一覧を返す', () => {
     const projects = getArtifacts();
 
-    expect(projects).toHaveLength(10);
+    expect(projects).toHaveLength(11);
     expect(projects).toEqual(
       expect.arrayContaining([
         expect.objectContaining({
-          name: 'ArteOdyssey',
+          name: '@k8o/arte-odyssey',
           githubUrl: 'https://github.com/k35o/arte-odyssey',
           websiteUrl: 'https://arte-odyssey.k8o.me/',
-          npmPackageName: null,
+          npmPackageName: '@k8o/arte-odyssey',
         }),
         expect.objectContaining({
-          name: 'oxc-config',
+          name: '@k8o/oxc-config',
           githubUrl: 'https://github.com/k35o/oxc-config',
           websiteUrl: null,
           npmPackageName: '@k8o/oxc-config',

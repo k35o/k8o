@@ -9,12 +9,12 @@ export type Artifact = {
 
 export const getArtifacts = (): Artifact[] => [
   {
-    name: 'ArteOdyssey',
+    name: '@k8o/arte-odyssey',
     description:
       'k8o.meのデザインシステム。コンポーネントやトークンを管理している。',
     githubUrl: 'https://github.com/k35o/arte-odyssey',
     websiteUrl: 'https://arte-odyssey.k8o.me/',
-    npmPackageName: null,
+    npmPackageName: '@k8o/arte-odyssey',
     tags: ['Design System', 'React'],
   },
   {
@@ -78,7 +78,7 @@ export const getArtifacts = (): Artifact[] => [
     tags: ['Storybook', 'VRT'],
   },
   {
-    name: 'oxc-config',
+    name: '@k8o/oxc-config',
     description: 'oxlintの設定を共通化するためのconfigリポジトリ。',
     githubUrl: 'https://github.com/k35o/oxc-config',
     websiteUrl: null,
@@ -93,5 +93,14 @@ export const getArtifacts = (): Artifact[] => [
     websiteUrl: null,
     npmPackageName: '@k8o/create',
     tags: ['Vite+', 'Generator', 'Tool'],
+  },
+  {
+    name: 'vite-plus-inspector',
+    description:
+      'vite-plusの設定をブラウザで可視化するinspector。oxlintのルールの重大度や適用状況を確認できる。',
+    githubUrl: 'https://github.com/k35o/vite-plus-inspector',
+    websiteUrl: null,
+    npmPackageName: 'vite-plus-inspector',
+    tags: ['Vite+', 'oxlint', 'Tool'],
   },
 ];
