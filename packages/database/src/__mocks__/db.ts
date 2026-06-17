@@ -1,5 +1,5 @@
 import { type AnyColumn, sql } from 'drizzle-orm';
-import { drizzle } from 'drizzle-orm/neon-serverless';
+import { drizzle } from 'drizzle-orm/libsql';
 
 import { relations, schema } from '../schema';
 
