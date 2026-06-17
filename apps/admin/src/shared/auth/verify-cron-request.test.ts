@@ -20,7 +20,14 @@ describe('isAuthorizedCronRequest', () => {
   });
 
   describe('異常系', () => {
-    it('CRON_SECRET 未設定なら常に不許可', () => {
+    it('CRON_SECRET が未設定なら常に不許可', () => {
+      vi.stubEnv('CRON_SECRET', undefined);
+      expect(isAuthorizedCronRequest(makeRequest('Bearer anything'))).toBe(
+        false,
+      );
+    });
+
+    it('CRON_SECRET が空文字なら常に不許可', () => {
       vi.stubEnv('CRON_SECRET', '');
       expect(isAuthorizedCronRequest(makeRequest('Bearer anything'))).toBe(
         false,
