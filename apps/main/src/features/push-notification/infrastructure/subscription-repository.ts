@@ -18,8 +18,7 @@ export const insertSubscription = async (
     .onConflictDoNothing({ target: db._schema.pushSubscriptions.endpoint });
 };
 
-// endpoint だけでなく auth(共有秘密)の一致も条件にし、endpoint を知るだけの
-// 第三者による購読解除（IDOR / 通知停止DoS）を防ぐ。
+// IDOR対策: endpoint を知るだけでは消せないよう auth(共有秘密)の一致も必須にする。
 export const deleteSubscription = async (
   endpoint: string,
   auth: string,

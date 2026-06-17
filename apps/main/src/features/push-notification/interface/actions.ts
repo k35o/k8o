@@ -77,7 +77,6 @@ export const subscribePushAction = async (
 export const unsubscribePushAction = async (
   payload: UnsubscribePayload,
 ): Promise<ActionResult> => {
-  // endpoint だけでなく auth(共有秘密)も検証し、削除時に所有者確認する（IDOR 対策）
   const validated = unsubscribeSchema.safeParse(payload);
   if (!validated.success) {
     return { success: false, message: 'エンドポイントが不正です' };
