@@ -21,9 +21,10 @@ const subscriptionSchema = z.object({
   }),
 });
 
-const endpointSchema = z
-  .string()
-  .check(z.minLength(1), z.maxLength(MAX_ENDPOINT_LENGTH));
+const unsubscribeSchema = z.object({
+  endpoint: z.string().check(z.minLength(1), z.maxLength(MAX_ENDPOINT_LENGTH)),
+  auth: z.string().check(z.minLength(1), z.maxLength(MAX_KEY_LENGTH)),
+});
 
 type SubscriptionPayload = {
   endpoint: string;
@@ -31,6 +32,11 @@ type SubscriptionPayload = {
     p256dh: string;
     auth: string;
   };
+};
+
+type UnsubscribePayload = {
+  endpoint: string;
+  auth: string;
 };
 
 type ActionResult = { success: true } | { success: false; message: string };
@@ -51,7 +57,6 @@ export const subscribePushAction = async (
     };
   }
 
-  // 鍵の形式検証。不正な鍵を永続保存しないよう登録時に弾く。
   if (!isValidPushKeys(validated.data.keys.p256dh, validated.data.keys.auth)) {
     return { success: false, message: '購読鍵の形式が不正です' };
   }
@@ -70,9 +75,9 @@ export const subscribePushAction = async (
 };
 
 export const unsubscribePushAction = async (
-  endpoint: string,
+  payload: UnsubscribePayload,
 ): Promise<ActionResult> => {
-  const validated = endpointSchema.safeParse(endpoint);
+  const validated = unsubscribeSchema.safeParse(payload);
   if (!validated.success) {
     return { success: false, message: 'エンドポイントが不正です' };
   }

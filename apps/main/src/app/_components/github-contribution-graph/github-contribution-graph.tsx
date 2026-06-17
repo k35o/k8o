@@ -5,8 +5,6 @@ import { getUserContributions } from '@/features/github/interface/queries';
 
 import { Presenter } from './presenter';
 
-// Presenter のカード構造（ヘッダ / h-48 のチャート / フッタ）に合わせた骨組み。
-// 取得が遅い GitHub API を待つ間にページ全体の描画をブロックしないための fallback。
 const Skeleton = () => (
   <Card>
     <div className="flex flex-col gap-4 p-6">

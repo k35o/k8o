@@ -1,5 +1,5 @@
 import { db } from '@repo/database';
-import { eq } from 'drizzle-orm';
+import { and, eq } from 'drizzle-orm';
 
 type SubscriptionInput = {
   endpoint: string;
@@ -18,8 +18,17 @@ export const insertSubscription = async (
     .onConflictDoNothing({ target: db._schema.pushSubscriptions.endpoint });
 };
 
-export const deleteSubscription = async (endpoint: string): Promise<void> => {
+// IDOR対策: endpoint を知るだけでは消せないよう auth(共有秘密)の一致も必須にする。
+export const deleteSubscription = async (
+  endpoint: string,
+  auth: string,
+): Promise<void> => {
   await db
     .delete(db._schema.pushSubscriptions)
-    .where(eq(db._schema.pushSubscriptions.endpoint, endpoint));
+    .where(
+      and(
+        eq(db._schema.pushSubscriptions.endpoint, endpoint),
+        eq(db._schema.pushSubscriptions.auth, auth),
+      ),
+    );
 };
