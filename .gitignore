@@ -48,9 +48,6 @@ storybook-static
 ## debug
 schema.sql
 
-# liam-erd
-dist
-
 # claude
 .claude/settings.local.json
 .plan/

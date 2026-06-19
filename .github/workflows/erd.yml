@@ -1,47 +1,91 @@
-name: Publish ERD
+name: ERD
+
+# スキーマ変更時に README の ER 図の再生成漏れを検知し、漏れていれば PR にコメントする。
 on:
-  push:
-    branches: 'main'
+  pull_request:
+    paths:
+      - 'packages/database/src/schema/**'
+      - 'packages/database/scripts/**'
+      - 'packages/database/README.md'
+      - '.github/workflows/erd.yml'
 
 permissions: {}
 
-concurrency:
-  group: deploy-erd
-  cancel-in-progress: true
-
 jobs:
-  build:
+  drift:
     runs-on: ubuntu-latest
+    # fork PR は secrets（k8o-bot のトークン）を取得できず app-token が失敗するため除外する。
+    if: ${{ github.event.pull_request.head.repo.fork != true }}
     permissions:
       contents: read
+      pull-requests: write
     steps:
+      - name: Generate k8o-bot token
+        id: app-token
+        uses: actions/create-github-app-token@bcd2ba49218906704ab6c1aa796996da409d3eb1 # v3.2.0
+        with:
+          client-id: ${{ secrets.K35O_BOT_CLIENT_ID }}
+          private-key: ${{ secrets.K35O_BOT_PRIVATE_KEY }}
+
       - name: Checkout branch
         uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
         with:
           persist-credentials: false
+
       - name: Setup
         uses: ./.github/actions/setup
 
-      - name: Export schema.sql
-        run: pnpm -F database run export:schema
-
-      - name: Generate ER Diagrams
+      - name: Regenerate ER Diagram
         run: pnpm -F database run build:erd
 
-      - name: Upload ER Diagrams
-        id: erd
-        uses: actions/upload-pages-artifact@fc324d3547104276b827a68afc52ff2a11cc49c9 # v5.0.0
-        with:
-          path: packages/database/dist/
-          retention-days: 1
+      - name: Detect drift
+        id: drift
+        run: |
+          if git diff --quiet -- packages/database/README.md; then
+            echo "stale=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "stale=true" >> "$GITHUB_OUTPUT"
+            echo "::group::README diff"
+            git --no-pager diff -- packages/database/README.md
+            echo "::endgroup::"
+          fi
 
-  deploy:
-    runs-on: ubuntu-latest
-    needs: build
-    permissions:
-      pages: write
-      id-token: write
-    steps:
-      - name: Deploy to GitHub Pages
-        id: erd
-        uses: actions/deploy-pages@cd2ce8fcbc39b97be8ca5fce6e763baed58fa128 # v5.0.0
+      - name: Post update request
+        if: steps.drift.outputs.stale == 'true'
+        env:
+          GH_TOKEN: ${{ steps.app-token.outputs.token }}
+          REPO: ${{ github.repository }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+        run: |
+          marker='<!-- erd-drift -->'
+          comment_id=$(gh api "repos/$REPO/issues/$PR_NUMBER/comments" --paginate \
+            --jq ".[] | select(.body | startswith(\"$marker\")) | .id" | head -n1)
+          if [ -n "$comment_id" ]; then
+            gh api --method PATCH "repos/$REPO/issues/comments/$comment_id" \
+              -F body=@.github/erd-drift-comment.md > /dev/null
+          else
+            gh api "repos/$REPO/issues/$PR_NUMBER/comments" \
+              -F body=@.github/erd-drift-comment.md > /dev/null
+          fi
+
+      - name: Resolve update request
+        if: steps.drift.outputs.stale == 'false'
+        env:
+          GH_TOKEN: ${{ steps.app-token.outputs.token }}
+          REPO: ${{ github.repository }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+        run: |
+          marker='<!-- erd-drift -->'
+          comment_id=$(gh api "repos/$REPO/issues/$PR_NUMBER/comments" --paginate \
+            --jq ".[] | select(.body | startswith(\"$marker\")) | .id" | head -n1)
+          if [ -n "$comment_id" ]; then
+            printf '%s\n## ✅ ER 図は最新です\n' "$marker" \
+              | gh api --method PATCH "repos/$REPO/issues/comments/$comment_id" \
+                -F body=@- > /dev/null
+          fi
+
+      - name: Fail if stale
+        if: steps.drift.outputs.stale == 'true'
+        run: |
+          echo "::error::README の ER 図がスキーマと一致していません。pnpm -F database run build:erd を実行して commit してください。"
+          exit 1
