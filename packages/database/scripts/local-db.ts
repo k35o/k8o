@@ -115,7 +115,8 @@ const status = async (): Promise<void> => {
 };
 
 const main = async (): Promise<void> => {
-  switch (process.argv[2]) {
+  const command = process.argv[2] ?? '';
+  switch (command) {
     case 'serve':
       await serve();
       break;
