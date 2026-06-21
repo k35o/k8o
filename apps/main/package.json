@@ -73,6 +73,7 @@
     "postcss-load-config": "catalog:",
     "react-scan": "0.5.7",
     "storybook": "catalog:",
+    "storybook-addon-determinism": "catalog:",
     "storybook-addon-mock-date": "3.0.3",
     "storybook-addon-vrt": "catalog:",
     "vitest": "catalog:"

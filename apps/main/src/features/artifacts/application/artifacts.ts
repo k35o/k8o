@@ -78,6 +78,15 @@ export const getArtifacts = (): Artifact[] => [
     tags: ['Storybook', 'VRT'],
   },
   {
+    name: 'storybook-addon-determinism',
+    description:
+      'StorybookのストーリーでMath.randomやcryptoをシードし、スナップショットやVRTを決定的にするアドオン。',
+    githubUrl: 'https://github.com/k35o/storybook-addon-determinism',
+    websiteUrl: null,
+    npmPackageName: 'storybook-addon-determinism',
+    tags: ['Storybook', 'Determinism', 'VRT'],
+  },
+  {
     name: '@k8o/oxc-config',
     description: 'oxlintの設定を共通化するためのconfigリポジトリ。',
     githubUrl: 'https://github.com/k35o/oxc-config',

@@ -51,6 +51,7 @@
     "chromatic": "catalog:",
     "postcss-load-config": "catalog:",
     "storybook": "catalog:",
+    "storybook-addon-determinism": "catalog:",
     "storybook-addon-vrt": "catalog:",
     "vitest": "catalog:"
   }

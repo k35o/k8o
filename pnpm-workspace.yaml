@@ -41,6 +41,7 @@ catalog:
   react: 19.2.7
   react-dom: 19.2.7
   storybook: 10.4.2
+  storybook-addon-determinism: 0.1.1
   storybook-addon-vrt: 0.1.0
   tailwindcss: 4.3.0
   vitest: 4.1.8
@@ -54,6 +55,7 @@ minimumReleaseAgeExclude:
   - turbo@2.9.14
   - storybook-addon-vrt
   - storybook-addon-mock-date
+  - storybook-addon-determinism
   - vite-plus-inspector
 
 verifyDepsBeforeRun: install

@@ -52,6 +52,9 @@ const preview: Preview = {
   parameters: {
     backgrounds: { disabled: true },
     layout: 'fullscreen',
+    // Math.random/crypto をシードして VRT を決定的にする。mockingDate と違い
+    // 例外を投げないため、全Storyでグローバルに有効化して問題ない
+    determinism: true,
     nextjs: {
       appDirectory: true,
     },
