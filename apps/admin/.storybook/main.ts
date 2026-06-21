@@ -20,6 +20,7 @@ const config: StorybookConfig = {
     getAbsolutePath('@storybook/addon-a11y'),
     getAbsolutePath('@storybook/addon-docs'),
     getAbsolutePath('@storybook/addon-mcp'),
+    getAbsolutePath('storybook-addon-determinism'),
   ],
   framework: getAbsolutePath('@storybook/nextjs-vite'),
   features: {

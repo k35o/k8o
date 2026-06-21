@@ -21,6 +21,7 @@ const config: StorybookConfig = {
     getAbsolutePath('@storybook/addon-docs'),
     getAbsolutePath('@storybook/addon-mcp'),
     getAbsolutePath('storybook-addon-mock-date'),
+    getAbsolutePath('storybook-addon-determinism'),
   ],
   framework: getAbsolutePath('@storybook/nextjs-vite'),
   features: {

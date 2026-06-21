@@ -74,6 +74,9 @@ const preview: Preview = {
   parameters: {
     backgrounds: { disabled: true },
     layout: 'fullscreen',
+    // Math.random/crypto をシードして VRT を決定的にする。mockingDate と違い
+    // 例外を投げないため、全Storyでグローバルに有効化して問題ない
+    determinism: true,
     // mockingDate はグローバルに設定しない。全Storyで Date を凍結すると、
     // time依存のkey生成などでエラーを出すStoryの描画が壊れ、VRTの
     // スクリーンショット撮影がスキップされる（capture はエラーを持つtaskを
