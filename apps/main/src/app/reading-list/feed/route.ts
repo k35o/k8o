@@ -21,7 +21,12 @@ async function generateRssFeed() {
     siteUrl: READING_LIST_URL,
     items: articles.map((article) => ({
       title: article.title,
-      description: article.summary ?? article.description ?? '',
+      // summary は本人ではなく AI が生成した紹介文のため、購読者にも分かるよう明示する。
+      // 元記事の description にフォールバックする場合は印を付けない
+      description:
+        article.summary === null
+          ? (article.description ?? '')
+          : `【AI要約】${article.summary}`,
       url: article.url,
       date: article.publishedAt,
       categories: [article.source.title],
