@@ -8,74 +8,34 @@ export type Artifact = {
 };
 
 export const getArtifacts = (): Artifact[] => [
+  // デザインシステム
   {
     name: '@k8o/arte-odyssey',
     description:
-      'k8o.meのデザインシステム。コンポーネントやトークンを管理している。',
+      'k8oのデザインシステム。Reactコンポーネントとデザイントークンに加え、LLM駆動でUIを生成するアダプタを備える。',
     githubUrl: 'https://github.com/k35o/arte-odyssey',
     websiteUrl: 'https://arte-odyssey.k8o.me/',
     npmPackageName: '@k8o/arte-odyssey',
-    tags: ['Design System', 'React'],
+    tags: ['Design System', 'React', 'Generative UI'],
   },
-  {
-    name: 'renovate-config',
-    description: 'Renovateの設定を共通化するためのconfigリポジトリ。',
-    githubUrl: 'https://github.com/k35o/renovate-config',
-    websiteUrl: null,
-    npmPackageName: null,
-    tags: ['Renovate', 'Config', 'Personal'],
-  },
-  {
-    name: 'dotfiles',
-    description: '日々の開発環境を整えるためのdotfilesとセットアップ群。',
-    githubUrl: 'https://github.com/k35o/dotfiles',
-    websiteUrl: null,
-    npmPackageName: null,
-    tags: ['Dotfiles', 'Shell', 'Config', 'Personal'],
-  },
-  {
-    name: 'better-css-modules',
-    description: 'CSS Modulesを扱いやすくするための実験的なツール。',
-    githubUrl: 'https://github.com/k35o/better-css-modules',
-    websiteUrl: null,
-    npmPackageName: '@better-css-modules/core',
-    tags: ['CSS Modules', 'webpack', 'Vite', 'Turbopack'],
-  },
-  {
-    name: 'patrol-board',
-    description:
-      'スクリプトを定期実行し、結果をGitHub Issueにダッシュボードとして表示するGitHub Action。',
-    githubUrl: 'https://github.com/k35o/patrol-board',
-    websiteUrl: null,
-    npmPackageName: null,
-    tags: ['GitHub Actions', 'Tool'],
-  },
+  // Storybook 系
   {
     name: 'storybook-addon-mock-date',
     description:
-      'Storybookのストーリーで日付や時刻をモックするためのアドオン。',
+      'Storybookのストーリー単位でDateやタイマーをモックし、時刻に依存するコンポーネントを決定的に表示するアドオン。',
     githubUrl: 'https://github.com/k35o/storybook-addon-mock-date',
     websiteUrl: null,
     npmPackageName: 'storybook-addon-mock-date',
-    tags: ['Storybook', 'Date'],
-  },
-  {
-    name: 'storybook-framework-hono-vite',
-    description:
-      'Hono JSXで書いたコンポーネントを@storybook/react-viteと同じ感覚で扱うためのStorybookフレームワーク。',
-    githubUrl: 'https://github.com/k35o/storybook-framework-hono-vite',
-    websiteUrl: null,
-    npmPackageName: 'storybook-framework-hono-vite',
-    tags: ['Storybook', 'Hono', 'Vite'],
+    tags: ['Storybook', 'Date', 'Mock'],
   },
   {
     name: 'storybook-addon-vrt',
     description:
-      'Storybookのストーリーごとにスクリーンショットを撮り、ビジュアルリグレッションテストを行うアドオン。',
+      'Vitestのブラウザモード上でStorybookのストーリーごとにスクリーンショットを撮り、ビジュアルリグレッションテストを行うツール。',
     githubUrl: 'https://github.com/k35o/storybook-addon-vrt',
     websiteUrl: null,
     npmPackageName: 'storybook-addon-vrt',
-    tags: ['Storybook', 'VRT'],
+    tags: ['Storybook', 'Vitest', 'VRT'],
   },
   {
     name: 'storybook-addon-determinism',
@@ -87,13 +47,15 @@ export const getArtifacts = (): Artifact[] => [
     tags: ['Storybook', 'Determinism', 'VRT'],
   },
   {
-    name: '@k8o/oxc-config',
-    description: 'oxlintの設定を共通化するためのconfigリポジトリ。',
-    githubUrl: 'https://github.com/k35o/oxc-config',
+    name: 'storybook-framework-hono-vite',
+    description:
+      'Hono JSXで書いたコンポーネントを@storybook/react-viteと同じ感覚で扱うためのStorybookフレームワーク。',
+    githubUrl: 'https://github.com/k35o/storybook-framework-hono-vite',
     websiteUrl: null,
-    npmPackageName: '@k8o/oxc-config',
-    tags: ['oxlint', 'Config', 'Personal'],
+    npmPackageName: 'storybook-framework-hono-vite',
+    tags: ['Storybook', 'Hono', 'Vite'],
   },
+  // Vite+ / ビルドツール 系
   {
     name: '@k8o/create',
     description:
@@ -110,6 +72,52 @@ export const getArtifacts = (): Artifact[] => [
     githubUrl: 'https://github.com/k35o/vite-plus-inspector',
     websiteUrl: null,
     npmPackageName: 'vite-plus-inspector',
-    tags: ['Vite+', 'oxlint', 'Tool'],
+    tags: ['Vite+', 'oxlint', 'CLI'],
+  },
+  {
+    name: 'better-css-modules',
+    description:
+      'CSS Modulesから型定義を自動生成し、未使用クラスを検出して開発体験を高めるツールキット。',
+    githubUrl: 'https://github.com/k35o/better-css-modules',
+    websiteUrl: null,
+    npmPackageName: '@better-css-modules/core',
+    tags: ['CSS Modules', 'TypeScript', 'Vite', 'webpack'],
+  },
+  // 共通設定 / Personal
+  {
+    name: '@k8o/oxc-config',
+    description:
+      'oxlintとoxfmtの共有設定パッケージ。TypeScriptやReact、Next.jsなど用途別のプリセットを提供する。',
+    githubUrl: 'https://github.com/k35o/oxc-config',
+    websiteUrl: null,
+    npmPackageName: '@k8o/oxc-config',
+    tags: ['oxlint', 'oxfmt', 'Config'],
+  },
+  {
+    name: 'renovate-config',
+    description: 'Renovateの設定を共通化するためのconfigリポジトリ。',
+    githubUrl: 'https://github.com/k35o/renovate-config',
+    websiteUrl: null,
+    npmPackageName: null,
+    tags: ['Renovate', 'Config', 'Personal'],
+  },
+  {
+    name: 'dotfiles',
+    description:
+      'chezmoiで管理する開発環境の設定一式。zshやmise、ターミナル周りの設定をまとめている。',
+    githubUrl: 'https://github.com/k35o/dotfiles',
+    websiteUrl: null,
+    npmPackageName: null,
+    tags: ['Dotfiles', 'chezmoi', 'Shell', 'Personal'],
+  },
+  // 自動化 / GitHub Actions
+  {
+    name: 'patrol-board',
+    description:
+      'スクリプトを定期実行し、結果をGitHub Issueにダッシュボードとして表示するGitHub Action。',
+    githubUrl: 'https://github.com/k35o/patrol-board',
+    websiteUrl: null,
+    npmPackageName: null,
+    tags: ['GitHub Actions', 'Automation'],
   },
 ];
