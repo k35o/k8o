@@ -4,7 +4,7 @@ describe('getArtifacts', () => {
   it('公開している制作物一覧を返す', () => {
     const projects = getArtifacts();
 
-    expect(projects).toHaveLength(11);
+    expect(projects).toHaveLength(12);
     expect(projects).toEqual(
       expect.arrayContaining([
         expect.objectContaining({
@@ -42,6 +42,12 @@ describe('getArtifacts', () => {
           githubUrl: 'https://github.com/k35o/storybook-addon-vrt',
           websiteUrl: null,
           npmPackageName: 'storybook-addon-vrt',
+        }),
+        expect.objectContaining({
+          name: 'storybook-addon-determinism',
+          githubUrl: 'https://github.com/k35o/storybook-addon-determinism',
+          websiteUrl: null,
+          npmPackageName: 'storybook-addon-determinism',
         }),
       ]),
     );
