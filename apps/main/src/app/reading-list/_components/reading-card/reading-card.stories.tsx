@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
-import { expect, userEvent, waitFor, within } from 'storybook/test';
+import { expect, within } from 'storybook/test';
 
 import { ReadingCard } from './reading-card';
 
@@ -24,79 +24,44 @@ type Story = StoryObj<typeof ReadingCard>;
 
 export const WithSummary: Story = {
   args: {
-    summary: '型安全なルーティングを提供するTanStack Routerの入門記事。',
+    summary:
+      '型安全なルーティングを提供するTanStack Routerの入門記事。ファイルベースルーティング、検索パラメータの型付け、データローダー、コード分割、認証ガードまで、実プロジェクトで必要になる要素を一通り順を追って解説している。Next.jsやReact Routerからの移行も具体例つきで触れられている。',
   },
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
 
+    // AI 生成であることを示すラベルが表示される
+    await expect(canvas.getByText('AI要約')).toBeInTheDocument();
+    // 要約は省略されず全文表示される
     await expect(
       canvas.getByText(
-        'Reactの新しいルーティングライブラリ、TanStackRouterを学ぶ',
-      ),
-    ).toBeInTheDocument();
-    await expect(
-      canvas.getByText(
-        '型安全なルーティングを提供するTanStack Routerの入門記事。',
+        /型安全なルーティングを提供するTanStack Routerの入門記事。/u,
       ),
     ).toBeInTheDocument();
     await expect(canvas.getByText('Zenn')).toBeInTheDocument();
   },
 };
 
-export const WithDescription: Story = {
+export const AutoGenerateOnView: Story = {
   args: {
     summary: null,
   },
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
+
+    // 未要約の記事はビューポート進入で自動生成され、要約とラベルが差し込まれる
+    // （article-actions はモックされ、固定のモック要約を返す）
+    await expect(await canvas.findByText('AI要約')).toBeInTheDocument();
     await expect(
-      canvas.getByRole('button', { name: 'AIで要約' }),
+      await canvas.findByText(/モック要約：型安全なルーティングを提供する/u),
     ).toBeInTheDocument();
-  },
-};
-
-export const GenerateSummary: Story = {
-  args: {
-    summary: null,
-  },
-  play: async ({ canvasElement }) => {
-    const canvas = within(canvasElement);
-    await userEvent.click(canvas.getByRole('button', { name: 'AIで要約' }));
-    await expect(
-      await canvas.findByText('モック要約：この記事の要点を1〜2文で表します。'),
-    ).toBeInTheDocument();
-  },
-};
-
-export const ExpandableBody: Story = {
-  args: {
-    summary:
-      '型安全なルーティングを提供するTanStack Routerの入門記事。ファイルベースルーティング、検索パラメータの型付け、データローダー、コード分割、認証ガードまで、実プロジェクトで必要になる要素を一通り順を追って解説しており、Next.jsやReact Routerからの移行も具体例つきで触れられている。',
-  },
-  play: async ({ canvasElement }) => {
-    const canvas = within(canvasElement);
-
-    const expand = await canvas.findByRole('button', { name: '続きを読む' });
-    await userEvent.click(expand);
-
-    await waitFor(() => {
-      expect(
-        canvas.queryByRole('button', { name: '続きを読む' }),
-      ).not.toBeInTheDocument();
-    });
   },
 };
 
 export const NoImage: Story = {
   args: {
     imageUrl: null,
-  },
-};
-
-export const TitleOnly: Story = {
-  args: {
-    imageUrl: null,
-    description: null,
-    summary: null,
+    summary:
+      '型安全なルーティングを提供するTanStack Routerの入門記事。実プロジェクトで必要になる要素を一通り解説している。',
   },
 };

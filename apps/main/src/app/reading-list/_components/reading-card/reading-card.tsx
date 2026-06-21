@@ -47,7 +47,7 @@ export const ReadingCard: FC<ReadingCardProps> = ({
             <ReadingCardBody
               articleId={articleId}
               description={description}
-              initialSummary={summary}
+              summary={summary}
             />
           </div>
           <div className="text-fg-subtle mt-auto flex flex-wrap items-center justify-between gap-2 text-xs">
