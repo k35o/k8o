@@ -14,6 +14,7 @@ import {
 import { baselineSnapshots } from './baseline-snapshots';
 import { blogComment, blogCommentRelations } from './blog-comment';
 import { blogTag, blogTagRelations } from './blog-tag';
+import { blogViewDailies } from './blog-view-dailies';
 import { blogViews } from './blog-views';
 import { blogs, blogsRelations } from './blogs';
 import { comments, commentsRelations } from './comments';
@@ -41,6 +42,7 @@ export const schema = {
   pushLogs,
   blogs,
   blogViews,
+  blogViewDailies,
   blogTag,
   blogComment,
   talks,
