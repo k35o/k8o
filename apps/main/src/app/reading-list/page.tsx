@@ -44,6 +44,7 @@ export default async function Page() {
         publishedAt={article.publishedAt}
         sourceTitle={article.source.title}
         summary={article.summary}
+        summaryGaveUp={article.summaryGaveUp}
         title={article.title}
         url={article.url}
       />

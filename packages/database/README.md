@@ -93,6 +93,7 @@ erDiagram
     text image_url
     text description
     text summary
+    integer summary_attempts
     text created_at
     text updated_at
   }

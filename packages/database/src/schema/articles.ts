@@ -24,6 +24,8 @@ export const articles = sqliteTable(
     imageUrl: text('image_url'),
     description: text('description'),
     summary: text('summary'),
+    // 要約生成に失敗した回数。上限まで失敗した記事は以降あきらめ、説明文のまま確定表示する
+    summaryAttempts: integer('summary_attempts').notNull().default(0),
     createdAt: text('created_at')
       .notNull()
       .$defaultFn(() => new Date().toISOString()),
