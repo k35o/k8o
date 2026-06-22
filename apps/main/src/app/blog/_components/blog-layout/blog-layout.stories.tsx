@@ -109,6 +109,6 @@ export const Primary: Story = {
     headingTree,
     recommendedBlogs,
     slug: 'tanstack-router-introduction',
-    viewCount: 74_931,
+    readingTime: 5,
   },
 };
