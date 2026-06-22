@@ -2,6 +2,12 @@
 // 実行時の DB クライアントを巻き込まずに型・定数だけを共有するため、`.`(db.ts) ではなく
 // このサブパス(@repo/database/schema)から公開する。
 export {
+  AI_APPS,
+  AI_VISIBILITIES,
+  type AiApp,
+  type AiVisibility,
+} from './ai-projects';
+export {
   ARTICLE_SOURCE_TYPES,
   type ArticleSourceType,
 } from './article-sources';
