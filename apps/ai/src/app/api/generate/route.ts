@@ -1,0 +1,57 @@
+import { convertToModelMessages, streamText, type UIMessage } from 'ai';
+import * as z from 'zod/mini';
+
+import { buildSystemPrompt } from '@/features/generation/application/build-system-prompt';
+import { getFuguModel } from '@/features/generation/infrastructure/fugu-provider';
+import { requireAllowedSession } from '@/shared/auth/require-allowed-session';
+
+const bodySchema = z.object({
+  id: z.optional(z.string()),
+  messages: z.array(z.unknown()),
+  model: z.optional(z.enum(['fugu', 'fugu-ultra'])),
+  currentFile: z.optional(z.nullable(z.string())),
+  buildErrors: z.optional(z.nullable(z.string())),
+});
+
+export async function POST(req: Request): Promise<Response> {
+  // 課金が発生する境界なので、まず認証ゲート（未許可は 401）。middleware は /api を守らない。
+  const session = await requireAllowedSession(req.headers);
+  if (session === null) {
+    return new Response(null, { status: 401 });
+  }
+
+  // TODO(Sprint 4): ここで userId 単位のレート制限を入れ、暴走時のコストを抑える。
+
+  let body: unknown;
+  try {
+    body = await req.json();
+  } catch {
+    return new Response(null, { status: 400 });
+  }
+
+  const parsed = bodySchema.safeParse(body);
+  if (!parsed.success) {
+    return new Response(null, { status: 400 });
+  }
+
+  const { messages, model, currentFile, buildErrors } = parsed.data;
+  const modelMessages = await convertToModelMessages(messages as UIMessage[]);
+
+  const result = streamText({
+    model: getFuguModel(model ?? 'fugu'),
+    system: buildSystemPrompt({ currentFile, buildErrors }),
+    messages: modelMessages,
+    temperature: 0.4,
+    maxOutputTokens: 8000,
+    maxRetries: 2,
+    abortSignal: req.signal,
+    onError: ({ error }) => {
+      console.error('Fugu 生成エラー', error);
+    },
+  });
+
+  return result.toUIMessageStreamResponse({
+    onError: (error) =>
+      error instanceof Error ? error.message : '生成中にエラーが発生しました',
+  });
+}
