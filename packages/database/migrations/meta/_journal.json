@@ -379,6 +379,13 @@
       "when": 1781612648881,
       "tag": "0053_drop_redundant_pk_indexes",
       "breakpoints": true
+    },
+    {
+      "idx": 54,
+      "version": "6",
+      "when": 1782131164513,
+      "tag": "0054_careless_quasar",
+      "breakpoints": true
     }
   ]
 }
