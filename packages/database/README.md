@@ -93,6 +93,7 @@ erDiagram
     text image_url
     text description
     text summary
+    integer summary_attempts
     text created_at
     text updated_at
   }
@@ -112,6 +113,11 @@ erDiagram
   blog_tag {
     integer blog_id FK
     integer tag_id FK
+  }
+  blog_view_dailies {
+    integer blog_id PK,FK
+    text date PK
+    integer views
   }
   blog_views {
     integer blog_id PK,FK
@@ -220,6 +226,7 @@ erDiagram
   article_sources ||--o{ articles : "article_source_id"
   blogs ||--o{ blog_comment : "blog_id"
   blogs ||--o{ blog_tag : "blog_id"
+  blogs ||--o{ blog_view_dailies : "blog_id"
   blogs ||--o{ blog_views : "blog_id"
   blogs ||--o{ talks : "blog_id"
   comments ||--o{ blog_comment : "comment_id"

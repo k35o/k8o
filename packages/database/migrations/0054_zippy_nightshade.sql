@@ -1,0 +1,1 @@
+ALTER TABLE `articles` ADD `summary_attempts` integer DEFAULT 0 NOT NULL;

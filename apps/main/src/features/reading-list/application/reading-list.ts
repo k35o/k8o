@@ -2,6 +2,8 @@ import { db } from '@repo/database';
 import { NINETY_DAYS_MS } from '@repo/helpers/date/duration';
 import { desc, gte } from 'drizzle-orm';
 
+import { MAX_SUMMARY_ATTEMPTS } from './summary-policy';
+
 export async function getArticles() {
   const ninetyDaysAgo = new Date(Date.now() - NINETY_DAYS_MS).toISOString();
 
@@ -21,6 +23,8 @@ export async function getArticles() {
     imageUrl: article.imageUrl,
     description: article.description,
     summary: article.summary,
+    // 上限まで失敗した記事は再生成を試みず、説明文のまま確定表示する
+    summaryGaveUp: article.summaryAttempts >= MAX_SUMMARY_ATTEMPTS,
     source: {
       id: article.articleSource.id,
       title: article.articleSource.title,

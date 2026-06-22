@@ -10,7 +10,9 @@ import {
   getBlogs,
 } from '@/features/blog/application/blogs';
 import { getBlogOgCode as _getBlogOgCode } from '@/features/blog/application/og-code';
-import { getBlogView as _getBlogView } from '@/features/blog/application/view';
+import { estimateReadingTimeMinutes } from '@/features/blog/application/reading-time';
+
+import { getMarkdown } from './markdown';
 
 export async function getBlogContents() {
   'use cache';
@@ -79,10 +81,10 @@ export async function getBlogsByTags(slug: string) {
   );
 }
 
-export async function getBlogView(id: number) {
+export async function getBlogReadingTime(slug: string): Promise<number> {
   'use cache';
-  cacheLife('minutes');
+  cacheLife('max');
 
-  const view = await _getBlogView(id);
-  return view;
+  const markdown = await getMarkdown(slug);
+  return estimateReadingTimeMinutes(markdown);
 }
