@@ -11,6 +11,8 @@ const ignorePatterns = [
   '.claude/worktrees/**',
   // CI用スクリプト。tsconfig外の .mjs のため型情報前提のルールが誤検知する
   '.github/scripts/**',
+  // プレビュー用の独立テンプレート（独自の依存・規約。生成コードを流し込むため lint 対象外）
+  'apps/ai/sandbox-template/**',
 ];
 
 export default defineConfig({
@@ -27,7 +29,7 @@ export default defineConfig({
     },
     settings: {
       next: {
-        rootDir: ['apps/main', 'apps/admin'],
+        rootDir: ['apps/main', 'apps/admin', 'apps/ai'],
       },
       react: {
         version: '19.2.7',
@@ -43,6 +45,10 @@ export default defineConfig({
           {
             files: 'apps/admin/**',
             use: 'apps/admin/src/app/_styles/globals.css',
+          },
+          {
+            files: 'apps/ai/**',
+            use: 'apps/ai/src/app/_styles/globals.css',
           },
           // packages 配下など app に属さない共有コード（cn.ts のテスト内
           // class 文字列など）向けのフォールバック。先勝ちのため各 app の
