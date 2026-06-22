@@ -1,0 +1,5 @@
+# 公開共有の本物ビルド出力（実行時生成・配信専用）
+/.ai-shared/
+
+# sandbox-template のビルド成果物
+/sandbox-template/dist/

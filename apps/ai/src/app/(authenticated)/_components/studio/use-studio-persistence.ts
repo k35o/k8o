@@ -20,6 +20,7 @@ export type StudioPersistence = {
   save: (content: { code: string; meta: GenerationMeta }) => Promise<void>;
   load: (projectId: number) => Promise<LoadedProject | null>;
   reset: () => void;
+  refresh: () => Promise<void>;
 };
 
 // 履歴の保存/一覧/読込を担う。現在の projectId / version は ref で持ち、useChat の
@@ -82,5 +83,5 @@ export const useStudioPersistence = (): StudioPersistence => {
     setCurrent(null, null, null);
   }, [setCurrent]);
 
-  return { projects, projectId, projectTitle, save, load, reset };
+  return { projects, projectId, projectTitle, save, load, reset, refresh };
 };

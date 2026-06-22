@@ -1,7 +1,7 @@
 import 'server-only';
 import { randomUUID } from 'node:crypto';
 
-import type { AiApp } from '@repo/database/schema';
+import type { AiApp, AiVisibility } from '@repo/database/schema';
 
 import type { GenerationMeta } from '@/features/generation/application/parse-generation';
 
@@ -12,6 +12,8 @@ import {
   projectOwnedBy,
   selectProjects,
   selectProjectWithLatestVersion,
+  selectPublicProjectBySlug,
+  updateProjectVisibility,
 } from '../infrastructure/project-repository';
 
 // ui-studio の版に保存する content の形（アプリ非依存の JSON ペイロードのうち ui-studio 用）。
@@ -27,6 +29,14 @@ export type LoadedProject = {
   code: string;
   meta: GenerationMeta;
   versionId: number;
+};
+
+export type PublicProject = {
+  id: number;
+  title: string;
+  slug: string;
+  code: string;
+  meta: GenerationMeta;
 };
 
 export type { ProjectListItem };
@@ -138,5 +148,48 @@ export const getProject = async (input: {
     code: content.code,
     meta: content.meta,
     versionId: row.versionId,
+  };
+};
+
+// 可視性/公開版を更新する。所有者でなければ false。
+export const setVisibility = async (input: {
+  userId: string;
+  projectId: number;
+  visibility: AiVisibility;
+  publishedVersionId: number | null;
+}): Promise<boolean> => {
+  const owned = await projectOwnedBy({
+    projectId: input.projectId,
+    userId: input.userId,
+  });
+  if (!owned) {
+    return false;
+  }
+  await updateProjectVisibility({
+    projectId: input.projectId,
+    visibility: input.visibility,
+    publishedVersionId: input.publishedVersionId,
+  });
+  return true;
+};
+
+// 公開プロジェクトを slug で取得（認証なし・公開ページ用）。非公開や壊れた content は null。
+export const getPublicProjectBySlug = async (
+  slug: string,
+): Promise<PublicProject | null> => {
+  const row = await selectPublicProjectBySlug(slug);
+  if (row === null) {
+    return null;
+  }
+  const content = parseContent(row.content);
+  if (content === null) {
+    return null;
+  }
+  return {
+    id: row.id,
+    title: row.title,
+    slug: row.slug,
+    code: content.code,
+    meta: content.meta,
   };
 };

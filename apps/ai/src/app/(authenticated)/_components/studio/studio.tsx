@@ -31,6 +31,7 @@ import {
 import { CodePanel, CopyCodeButton } from './code-panel';
 import { PreviewFrame } from './preview-frame';
 import { ProjectHistory } from './project-history';
+import { ShareControl } from './share-control';
 import { useStudioPersistence } from './use-studio-persistence';
 
 type PanelView = 'preview' | 'code';
@@ -117,6 +118,10 @@ export const Studio = () => {
     : state.currentFile;
   const codeTitle = state.versions.at(-1)?.meta.title;
   const hasResult = state.currentFile !== null;
+  const currentProject =
+    persistence.projects.find(
+      (project) => project.id === persistence.projectId,
+    ) ?? null;
 
   const handleGenerate = async (): Promise<void> => {
     const text = input.trim();
@@ -197,6 +202,14 @@ export const Studio = () => {
               {persistence.projectTitle}
             </span>
           )}
+          <ShareControl
+            isPublic={currentProject?.visibility === 'public'}
+            onChanged={() => {
+              void persistence.refresh();
+            }}
+            projectId={persistence.projectId}
+            slug={currentProject?.slug ?? null}
+          />
           <Button
             color="gray"
             onClick={() => {

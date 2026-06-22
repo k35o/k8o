@@ -24,6 +24,13 @@ export type ProjectWithVersion = {
   content: unknown;
 };
 
+export type PublicProjectRow = {
+  id: number;
+  title: string;
+  slug: string;
+  content: unknown;
+};
+
 // プロジェクト新規作成＋最初の版を入れる。libsql(http) は対話トランザクション非対応のため
 // 逐次 insert で組む（既存の submit-feedback と同じ方針）。失敗時に孤児プロジェクトが
 // 残りうるが、本人専用ツールの履歴用途では許容する。
@@ -112,6 +119,56 @@ export const selectProjects = async (input: {
     .orderBy(desc(projects.updatedAt))
     .limit(100);
   return rows;
+};
+
+// 可視性と公開版IDを更新する（所有者チェックは呼び出し側で済ませる前提）。
+export const updateProjectVisibility = async (input: {
+  projectId: number;
+  visibility: AiVisibility;
+  publishedVersionId: number | null;
+}): Promise<void> => {
+  await db
+    .update(projects)
+    .set({
+      visibility: input.visibility,
+      publishedVersionId: input.publishedVersionId,
+      updatedAt: new Date().toISOString(),
+    })
+    .where(eq(projects.id, input.projectId));
+};
+
+// 公開(public)かつ公開版が設定されたプロジェクトを slug で引く。公開ページ用（認証なし）。
+export const selectPublicProjectBySlug = async (
+  slug: string,
+): Promise<PublicProjectRow | null> => {
+  const [project] = await db
+    .select({
+      id: projects.id,
+      title: projects.title,
+      slug: projects.slug,
+      visibility: projects.visibility,
+      publishedVersionId: projects.publishedVersionId,
+    })
+    .from(projects)
+    .where(eq(projects.slug, slug))
+    .limit(1);
+  if (project?.visibility !== 'public' || project.publishedVersionId === null) {
+    return null;
+  }
+  const [version] = await db
+    .select({ content: versions.content })
+    .from(versions)
+    .where(eq(versions.id, project.publishedVersionId))
+    .limit(1);
+  if (version === undefined) {
+    return null;
+  }
+  return {
+    id: project.id,
+    title: project.title,
+    slug: project.slug,
+    content: version.content,
+  };
 };
 
 // プロジェクト＋最新版（所有者チェック込み）。見つからなければ null。
