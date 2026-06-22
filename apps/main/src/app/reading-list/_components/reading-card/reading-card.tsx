@@ -13,6 +13,7 @@ export type ReadingCardProps = {
   imageUrl: string | null;
   description: string | null;
   summary: string | null;
+  summaryGaveUp: boolean;
   sourceTitle: string;
 };
 
@@ -24,6 +25,7 @@ export const ReadingCard: FC<ReadingCardProps> = ({
   imageUrl,
   description,
   summary,
+  summaryGaveUp,
   sourceTitle,
 }) => (
   <div className="vertical:max-w-container-md">
@@ -48,6 +50,7 @@ export const ReadingCard: FC<ReadingCardProps> = ({
               articleId={articleId}
               description={description}
               summary={summary}
+              summaryGaveUp={summaryGaveUp}
             />
           </div>
           <div className="text-fg-subtle mt-auto flex flex-wrap items-center justify-between gap-2 text-xs">

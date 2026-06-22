@@ -8,6 +8,7 @@ vi.mock('@repo/database', () => ({
     _schema: {
       articles: {
         publishedAt: 'articles.publishedAt',
+        summaryAttempts: 'articles.summary_attempts',
       },
     },
     query: {
@@ -50,6 +51,7 @@ describe('reading-list service', () => {
           url: 'https://example.com/articles/1',
           publishedAt: '2026-03-20T00:00:00.000Z',
           articleSourceId: 10,
+          summaryAttempts: 0,
           createdAt: '2026-03-20T00:00:00.000Z',
           updatedAt: '2026-03-20T00:00:00.000Z',
           articleSource: {
@@ -88,6 +90,7 @@ describe('reading-list service', () => {
           title: '記事タイトル',
           url: 'https://example.com/articles/1',
           publishedAt: '2026-03-20T00:00:00.000Z',
+          summaryGaveUp: false,
           source: {
             id: 10,
             title: 'Zenn',

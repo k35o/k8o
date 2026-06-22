@@ -2,6 +2,9 @@ import { safeFetch } from '@repo/helpers/url/safe-fetch';
 import { generateText } from 'ai';
 
 const FETCH_TIMEOUT_MS = 8000;
+// LLM 生成のタイムアウト。指定が無いとゲートウェイのハング時に「生成中…」が
+// 決着しなくなるため、上限を設けて必ず失敗（null）に倒す
+const GENERATE_TIMEOUT_MS = 20_000;
 const MAX_INPUT_CHARS = 8000;
 const SUMMARY_MODEL = process.env['SUMMARY_MODEL'] ?? 'openai/gpt-4o-mini';
 
@@ -62,6 +65,7 @@ export const summarizeArticle = async (url: string): Promise<string | null> => {
   try {
     const { text: summary } = await generateText({
       model: SUMMARY_MODEL,
+      abortSignal: AbortSignal.timeout(GENERATE_TIMEOUT_MS),
       maxOutputTokens: 800,
       temperature: 0.3,
       // 指示(system)と外部本文(user)を分離。本文中の指示に従わせない

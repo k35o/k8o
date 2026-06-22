@@ -21,6 +21,11 @@ export async function generateArticleSummary(
 
   const result = await generateAndSaveSummary(id);
   if (result.error !== undefined) {
+    // 上限到達であきらめた記事は、一覧を再検証して「説明文で確定」状態に切り替える
+    // （以降は生成を試みず「生成中…」を繰り返さない）。失敗継続中は再検証しない
+    if (result.gaveUp === true) {
+      revalidatePath('/reading-list');
+    }
     return { error: result.error };
   }
 

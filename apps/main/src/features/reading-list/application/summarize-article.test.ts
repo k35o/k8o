@@ -2,11 +2,19 @@ import { db } from '@repo/database';
 
 import { summarizeArticle } from '../infrastructure/summarize';
 import { generateAndSaveSummary } from './summarize-article';
+import { MAX_SUMMARY_ATTEMPTS } from './summary-policy';
 
 vi.mock('@repo/database', () => ({
   db: {
     _schema: {
-      articles: { id: 'articles.id' },
+      articles: {
+        id: 'articles.id',
+        summaryAttempts: 'articles.summary_attempts',
+      },
+    },
+    _utils: {
+      // 実体は SQL 断片だが、テストでは呼び出し検証用のセンチネルに置き換える
+      increment: vi.fn((column: unknown) => ({ __increment: column })),
     },
     query: {
       articles: {
@@ -37,6 +45,7 @@ describe('generateAndSaveSummary', () => {
         id: 1,
         url: 'https://example.com/a',
         summary: '既存の要約',
+        summaryAttempts: 0,
       } as never);
 
       const result = await generateAndSaveSummary(1);
@@ -54,6 +63,7 @@ describe('generateAndSaveSummary', () => {
         id: 1,
         url: 'https://example.com/a',
         summary: null,
+        summaryAttempts: 0,
       } as never);
       vi.mocked(summarizeArticle).mockResolvedValue('生成した要約');
 
@@ -81,17 +91,57 @@ describe('generateAndSaveSummary', () => {
       expect(db.update).not.toHaveBeenCalled();
     });
 
-    it('要約生成に失敗したら保存せずエラーを返す（次回再試行できる）', async () => {
+    it('要約生成に失敗したら失敗回数を加算し、まだ上限未満なら gaveUp は立てない', async () => {
       vi.mocked(db.query.articles.findFirst).mockResolvedValue({
         id: 1,
         url: 'https://example.com/a',
         summary: null,
+        summaryAttempts: 0,
+      } as never);
+      vi.mocked(summarizeArticle).mockResolvedValue(null);
+
+      const setMock = vi.fn().mockReturnValue({ where: vi.fn() });
+      vi.mocked(db.update).mockReturnValue({ set: setMock } as never);
+
+      const result = await generateAndSaveSummary(1);
+
+      // 失敗を永続化して無限リトライを防ぐ（summary_attempts を +1）
+      expect(setMock).toHaveBeenCalledWith({
+        summaryAttempts: { __increment: 'articles.summary_attempts' },
+      });
+      expect(result.error).toBeDefined();
+      expect(result.gaveUp).toBe(false);
+    });
+
+    it('失敗で上限に達したら gaveUp を立てる', async () => {
+      vi.mocked(db.query.articles.findFirst).mockResolvedValue({
+        id: 1,
+        url: 'https://example.com/a',
+        summary: null,
+        summaryAttempts: MAX_SUMMARY_ATTEMPTS - 1,
       } as never);
       vi.mocked(summarizeArticle).mockResolvedValue(null);
 
       const result = await generateAndSaveSummary(1);
 
-      expect(result.error).toBeDefined();
+      expect(db.update).toHaveBeenCalledOnce();
+      expect(result.gaveUp).toBe(true);
+    });
+  });
+
+  describe('エッジケース', () => {
+    it('既に上限まで失敗している記事は生成も更新もせず諦める', async () => {
+      vi.mocked(db.query.articles.findFirst).mockResolvedValue({
+        id: 1,
+        url: 'https://example.com/a',
+        summary: null,
+        summaryAttempts: MAX_SUMMARY_ATTEMPTS,
+      } as never);
+
+      const result = await generateAndSaveSummary(1);
+
+      expect(result).toEqual({ summary: null, gaveUp: true });
+      expect(summarizeArticle).not.toHaveBeenCalled();
       expect(db.update).not.toHaveBeenCalled();
     });
   });
