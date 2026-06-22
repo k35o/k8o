@@ -203,6 +203,12 @@ export const Studio = () => {
             </span>
           )}
           <ShareControl
+            hasDraft={
+              currentProject?.visibility === 'public' &&
+              currentProject.publishedVersionId !== null &&
+              persistence.currentVersionId !== null &&
+              currentProject.publishedVersionId !== persistence.currentVersionId
+            }
             isPublic={currentProject?.visibility === 'public'}
             onChanged={() => {
               void persistence.refresh();

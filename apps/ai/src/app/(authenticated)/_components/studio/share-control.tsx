@@ -12,6 +12,8 @@ type ShareControlProps = {
   projectId: number | null;
   slug: string | null;
   isPublic: boolean;
+  // 公開中だが作業版が公開版より進んでいる（再公開で反映できる）。
+  hasDraft: boolean;
   onChanged: () => void;
 };
 
@@ -20,6 +22,7 @@ export const ShareControl: FC<ShareControlProps> = ({
   projectId,
   slug,
   isPublic,
+  hasDraft,
   onChanged,
 }) => {
   const [busy, setBusy] = useState(false);
@@ -38,27 +41,38 @@ export const ShareControl: FC<ShareControlProps> = ({
 
   const handlePublish = async (): Promise<void> => {
     setBusy(true);
-    const res = await publishProjectAction(projectId);
-    setBusy(false);
-    if (res === null) {
+    try {
+      const res = await publishProjectAction(projectId);
+      if (res === null) {
+        onOpen('error', '公開に失敗しました');
+        return;
+      }
+      onChanged();
+      await copyLink(res.slug);
+      onOpen('success', '公開しました。リンクをコピーしました');
+    } catch {
+      // ビルド失敗（生成コードのビルドエラー等）でも busy を確実に解除する。
       onOpen('error', '公開に失敗しました');
-      return;
+    } finally {
+      setBusy(false);
     }
-    onChanged();
-    await copyLink(res.slug);
-    onOpen('success', '公開しました。リンクをコピーしました');
   };
 
   const handleUnpublish = async (): Promise<void> => {
     setBusy(true);
-    const ok = await unpublishProjectAction(projectId);
-    setBusy(false);
-    if (!ok) {
+    try {
+      const ok = await unpublishProjectAction(projectId);
+      if (!ok) {
+        onOpen('error', '非公開化に失敗しました');
+        return;
+      }
+      onChanged();
+      onOpen('success', '非公開にしました');
+    } catch {
       onOpen('error', '非公開化に失敗しました');
-      return;
+    } finally {
+      setBusy(false);
     }
-    onChanged();
-    onOpen('success', '非公開にしました');
   };
 
   const handleCopy = async (): Promise<void> => {
@@ -72,6 +86,20 @@ export const ShareControl: FC<ShareControlProps> = ({
   if (isPublic) {
     return (
       <div className="flex items-center gap-2">
+        {hasDraft ? (
+          <span className="text-fg-mute hidden text-xs sm:inline">
+            未公開の変更あり
+          </span>
+        ) : null}
+        <Button
+          color={hasDraft ? 'primary' : 'gray'}
+          disabled={busy}
+          onAction={handlePublish}
+          size="sm"
+          variant="skeleton"
+        >
+          {busy ? '更新中…' : '更新'}
+        </Button>
         <Button color="gray" onAction={handleCopy} size="sm" variant="skeleton">
           リンク
         </Button>

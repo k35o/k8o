@@ -11,6 +11,7 @@ const projects: ProjectListItem[] = [
     title: 'お問い合わせフォーム',
     slug: 'abc123',
     visibility: 'private',
+    publishedVersionId: null,
     updatedAt: '2026-06-22T09:30:00.000Z',
   },
   {
@@ -18,6 +19,7 @@ const projects: ProjectListItem[] = [
     title: '料金プランの3カラム',
     slug: 'def456',
     visibility: 'public',
+    publishedVersionId: 7,
     updatedAt: '2026-06-21T18:05:00.000Z',
   },
 ];

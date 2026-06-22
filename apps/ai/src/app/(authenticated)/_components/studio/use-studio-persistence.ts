@@ -17,6 +17,7 @@ export type StudioPersistence = {
   projects: ProjectListItem[];
   projectId: number | null;
   projectTitle: string | null;
+  currentVersionId: number | null;
   save: (content: { code: string; meta: GenerationMeta }) => Promise<void>;
   load: (projectId: number) => Promise<LoadedProject | null>;
   reset: () => void;
@@ -29,6 +30,7 @@ export const useStudioPersistence = (): StudioPersistence => {
   const [projects, setProjects] = useState<ProjectListItem[]>([]);
   const [projectId, setProjectId] = useState<number | null>(null);
   const [projectTitle, setProjectTitle] = useState<string | null>(null);
+  const [currentVersionId, setCurrentVersionId] = useState<number | null>(null);
   const projectIdRef = useRef<number | null>(null);
   const versionIdRef = useRef<number | null>(null);
 
@@ -38,6 +40,7 @@ export const useStudioPersistence = (): StudioPersistence => {
       versionIdRef.current = versionId;
       setProjectId(id);
       setProjectTitle(title);
+      setCurrentVersionId(versionId);
     },
     [],
   );
@@ -83,5 +86,14 @@ export const useStudioPersistence = (): StudioPersistence => {
     setCurrent(null, null, null);
   }, [setCurrent]);
 
-  return { projects, projectId, projectTitle, save, load, reset, refresh };
+  return {
+    projects,
+    projectId,
+    projectTitle,
+    currentVersionId,
+    save,
+    load,
+    reset,
+    refresh,
+  };
 };
