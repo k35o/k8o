@@ -6,17 +6,16 @@ import {
   Separator,
   TagIcon,
   UpdateDateIcon,
-  ViewIcon,
 } from '@k8o/arte-odyssey';
 import { formatDate } from '@repo/helpers/date/format';
-import { commalize } from '@repo/helpers/number/commalize';
 import Link from 'next/link';
-import { type FC, type ReactNode, Suspense } from 'react';
+import type { FC, ReactNode } from 'react';
 
 import { SilentErrorBoundary } from '@/app/_components/error-boundary';
 import { JsonLd } from '@/app/_components/json-ld';
 import {
   getBlogContent,
+  getBlogReadingTime,
   type getBlogsByTags,
   getBlogToc,
 } from '@/features/blog/interface/queries';
@@ -28,7 +27,6 @@ import { Feedback } from './feedback';
 import { Recommend, RecommendContent } from './recommend';
 import { SlideLinkButton } from './slide-link-button';
 import { TableOfContents } from './table-of-contents';
-import { ViewCounter } from './view-counter';
 import { ViewReporter } from './view-reporter';
 import { WritingModeContent } from './writing-mode';
 
@@ -41,16 +39,16 @@ type BlogLayoutContentProps = BlogLayoutProps & {
   blog: Awaited<ReturnType<typeof getBlogContent>>;
   headingTree: Awaited<ReturnType<typeof getBlogToc>>;
   recommendedBlogs?: Awaited<ReturnType<typeof getBlogsByTags>>;
-  viewCount?: number;
+  readingTime: number;
 };
 
 export const BlogLayoutContent: FC<BlogLayoutContentProps> = ({
   blog,
   children,
   headingTree,
+  readingTime,
   recommendedBlogs,
   slug,
-  viewCount,
 }) => {
   const shouldUseRecommendedBlogs = recommendedBlogs !== undefined;
 
@@ -90,25 +88,9 @@ export const BlogLayoutContent: FC<BlogLayoutContentProps> = ({
                     <span>更新: {formatDate(new Date(blog.updatedAt))}</span>
                   </div>
                 </div>
-                <SilentErrorBoundary>
-                  {viewCount === undefined ? (
-                    <Suspense fallback={null}>
-                      <div className="flex items-center gap-1">
-                        <ViewIcon size="sm" />
-                        <span className="sr-only">閲覧数</span>
-                        <span>
-                          <ViewCounter id={blog.id} /> views
-                        </span>
-                      </div>
-                    </Suspense>
-                  ) : (
-                    <div className="flex items-center gap-1">
-                      <ViewIcon size="sm" />
-                      <span className="sr-only">閲覧数</span>
-                      <span>{commalize(viewCount)} views</span>
-                    </div>
-                  )}
-                </SilentErrorBoundary>
+                <div className="flex items-center gap-1">
+                  <span>約{readingTime}分で読めます</span>
+                </div>
               </div>
               {blog.tags.length > 0 && (
                 <div className="mb-4 flex flex-wrap items-center gap-2">
@@ -152,11 +134,17 @@ export const BlogLayoutContent: FC<BlogLayoutContentProps> = ({
 export const BlogLayout: FC<BlogLayoutProps> = async ({ children, slug }) => {
   const blog = await getBlogContent(slug);
   const headingTree = await getBlogToc(slug);
+  const readingTime = await getBlogReadingTime(slug);
 
   return (
     <>
       <JsonLd data={blogPostingJsonLd(blog)} />
-      <BlogLayoutContent blog={blog} headingTree={headingTree} slug={slug}>
+      <BlogLayoutContent
+        blog={blog}
+        headingTree={headingTree}
+        readingTime={readingTime}
+        slug={slug}
+      >
         {children}
       </BlogLayoutContent>
     </>
