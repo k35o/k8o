@@ -26,6 +26,14 @@ export type GenerationAction =
       meta: GenerationMeta;
       createdAt: number;
     }
+  | {
+      type: 'load-project';
+      id: string;
+      code: string;
+      meta: GenerationMeta;
+      createdAt: number;
+    }
+  | { type: 'reset' }
   | { type: 'restore-version'; versionId: string }
   | { type: 'undo' }
   | { type: 'build-failed'; errors: string }
@@ -63,6 +71,25 @@ export const generationReducer = (
         buildErrors: null,
       };
     }
+    case 'load-project': {
+      // 履歴から復元: 当該版を起点にストアを置き換える（セッション内 undo はここから始まる）。
+      const version: FileVersion = {
+        id: action.id,
+        code: action.code,
+        meta: action.meta,
+        createdAt: action.createdAt,
+        parentId: null,
+      };
+      return {
+        ...initialGenerationState,
+        selectedModel: state.selectedModel,
+        versions: [version],
+        activeVersionId: version.id,
+        currentFile: version.code,
+      };
+    }
+    case 'reset':
+      return { ...initialGenerationState, selectedModel: state.selectedModel };
     case 'restore-version': {
       const target = state.versions.find(
         (version) => version.id === action.versionId,

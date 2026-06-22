@@ -71,6 +71,46 @@ describe('generationReducer', () => {
       expect(undone.activeVersionId).toBe('v1');
       expect(undone.currentFile).toBe('C1');
     });
+
+    it('load-project は当該版を起点にストアを置き換える', () => {
+      const s1 = generationReducer(initialGenerationState, {
+        type: 'generation-finished',
+        id: 'v1',
+        code: 'C1',
+        meta,
+        createdAt: 1,
+      });
+      const loaded = generationReducer(s1, {
+        type: 'load-project',
+        id: 'db-42',
+        code: 'LOADED',
+        meta,
+        createdAt: 9,
+      });
+      expect(loaded.versions).toHaveLength(1);
+      expect(loaded.versions[0]?.id).toBe('db-42');
+      expect(loaded.activeVersionId).toBe('db-42');
+      expect(loaded.currentFile).toBe('LOADED');
+      expect(loaded.buildErrors).toBeNull();
+    });
+
+    it('reset は選択モデルを保ちつつ初期状態へ戻す', () => {
+      const s1 = generationReducer(
+        { ...initialGenerationState, selectedModel: 'fugu-ultra' },
+        {
+          type: 'generation-finished',
+          id: 'v1',
+          code: 'C1',
+          meta,
+          createdAt: 1,
+        },
+      );
+      const reset = generationReducer(s1, { type: 'reset' });
+      expect(reset.versions).toHaveLength(0);
+      expect(reset.currentFile).toBeNull();
+      expect(reset.activeVersionId).toBeNull();
+      expect(reset.selectedModel).toBe('fugu-ultra');
+    });
   });
 
   describe('異常系', () => {

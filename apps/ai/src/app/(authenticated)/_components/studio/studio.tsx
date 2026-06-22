@@ -1,5 +1,8 @@
 'use client';
 
+/* oxlint-disable import/max-dependencies -- Studio はチャット/生成/プレビュー/履歴を束ねる統合点。
+   プレビュー列(PreviewPane)やフックへの更なる分解は別タスクの余地として許容する。 */
+
 import { useChat } from '@ai-sdk/react';
 import { Button, FormControl, Heading, Textarea } from '@k8o/arte-odyssey';
 import { DefaultChatTransport } from 'ai';
@@ -27,6 +30,8 @@ import {
 
 import { CodePanel, CopyCodeButton } from './code-panel';
 import { PreviewFrame } from './preview-frame';
+import { ProjectHistory } from './project-history';
+import { useStudioPersistence } from './use-studio-persistence';
 
 type PanelView = 'preview' | 'code';
 
@@ -40,11 +45,13 @@ export const Studio = () => {
   const [previewNonce, setPreviewNonce] = useState(0);
   const [view, setView] = useState<PanelView>('preview');
   const [applyError, setApplyError] = useState<string | null>(null);
+  const [historyOpen, setHistoryOpen] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const frameRef = useRef<HTMLDivElement>(null);
   const { resolvedTheme } = useTheme();
+  const persistence = useStudioPersistence();
 
-  const { messages, sendMessage, status, error } = useChat({
+  const { messages, sendMessage, status, error, setMessages } = useChat({
     transport: new DefaultChatTransport({ api: '/api/generate' }),
     onFinish: ({ message }) => {
       const parsed = parseGeneration(messageText(message));
@@ -56,6 +63,8 @@ export const Studio = () => {
           meta: parsed.meta,
           createdAt: Date.now(),
         });
+        // 履歴に永続化（projectId が無ければ新規プロジェクト＋初版を作る）。
+        void persistence.save({ code: parsed.code, meta: parsed.meta });
         // プレビューに反映（テンプレへ書き込み→iframe を貼り直して最新を表示）。
         void (async () => {
           if (parsed.code === null) {
@@ -142,14 +151,84 @@ export const Studio = () => {
     }
   };
 
+  const handleNewProject = (): void => {
+    persistence.reset();
+    dispatch({ type: 'reset' });
+    setMessages([]);
+    setApplyError(null);
+    setHistoryOpen(false);
+    setView('preview');
+  };
+
+  const handleSelectProject = async (id: number): Promise<void> => {
+    setHistoryOpen(false);
+    const project = await persistence.load(id);
+    if (project === null) {
+      return;
+    }
+    dispatch({
+      type: 'load-project',
+      id: `db-${project.versionId.toString()}`,
+      code: project.code,
+      meta: project.meta,
+      createdAt: Date.now(),
+    });
+    setMessages([]);
+    setApplyError(null);
+    const res = await applyPreviewCode(project.code);
+    if (res.ok) {
+      setPreviewNonce((nonce) => nonce + 1);
+      setView('preview');
+    }
+  };
+
   return (
     <div className="flex flex-col gap-6">
-      <div className="flex flex-col gap-1">
-        <Heading type="h1">k8o AI Studio</Heading>
-        <p className="text-fg-mute text-sm leading-relaxed">
-          作りたい画面を伝えると、arte-odyssey で UI を生成します。
-        </p>
+      <div className="flex items-start justify-between gap-4">
+        <div className="flex flex-col gap-1">
+          <Heading type="h1">k8o AI Studio</Heading>
+          <p className="text-fg-mute text-sm leading-relaxed">
+            作りたい画面を伝えると、arte-odyssey で UI を生成します。
+          </p>
+        </div>
+        <div className="flex shrink-0 items-center gap-2">
+          {persistence.projectTitle === null ? null : (
+            <span className="text-fg-mute hidden max-w-40 truncate text-sm md:inline">
+              {persistence.projectTitle}
+            </span>
+          )}
+          <Button
+            color="gray"
+            onClick={() => {
+              setHistoryOpen(true);
+            }}
+            size="sm"
+            variant="skeleton"
+          >
+            履歴
+          </Button>
+          <Button
+            color="primary"
+            onClick={handleNewProject}
+            size="sm"
+            variant="skeleton"
+          >
+            新規
+          </Button>
+        </div>
       </div>
+
+      <ProjectHistory
+        currentProjectId={persistence.projectId}
+        isOpen={historyOpen}
+        onClose={() => {
+          setHistoryOpen(false);
+        }}
+        onSelect={(id) => {
+          void handleSelectProject(id);
+        }}
+        projects={persistence.projects}
+      />
 
       <div className="grid gap-6 lg:h-[calc(100svh-14rem)] lg:grid-cols-[360px_1fr] lg:grid-rows-1">
         {/* チャット */}
