@@ -340,236 +340,244 @@ export const Studio = () => {
         projects={persistence.projects}
       />
 
-      {/* 小画面用タブ: 2ペインを並べられないのでチャット/プレビュー/コードを1つずつ表示。
-          lg では2ペイン（チャット ＋ プレビュー/コード）を並べるので不要。 */}
-      <div className="flex gap-2 lg:hidden">
-        <Button
-          color="primary"
-          onClick={() => {
-            setMobileTab('chat');
-          }}
-          size="sm"
-          variant={mobileTab === 'chat' ? 'solid' : 'skeleton'}
-        >
-          チャット
-        </Button>
-        <Button
-          color="primary"
-          onClick={() => {
-            setMobileTab('preview');
-            setView('preview');
-          }}
-          size="sm"
-          variant={mobileTab === 'preview' ? 'solid' : 'skeleton'}
-        >
-          プレビュー
-        </Button>
-        <Button
-          color="primary"
-          onClick={() => {
-            setMobileTab('code');
-            setView('code');
-          }}
-          size="sm"
-          variant={mobileTab === 'code' ? 'solid' : 'skeleton'}
-        >
-          コード
-        </Button>
-      </div>
-
-      <div className="grid gap-6 lg:min-h-0 lg:flex-1 lg:grid-cols-[440px_minmax(0,1fr)] lg:grid-rows-1">
-        {/* チャット（lg では常時表示、小画面では mobileTab==='chat' のときのみ） */}
-        <div
-          className={`bg-bg-base border-border-mute h-136 min-w-0 flex-col rounded-2xl border shadow-sm lg:flex lg:h-full ${
-            mobileTab === 'chat' ? 'flex' : 'hidden'
-          }`}
-        >
-          <div className="flex-1 overflow-y-auto p-6">
-            {messages.length === 0 ? (
-              <div className="flex h-full flex-col items-center justify-center gap-2 px-4 text-center">
-                <p className="text-fg-base text-sm font-bold">
-                  {emptyStateTitle}
-                </p>
-                <p className="text-fg-mute text-sm leading-relaxed">
-                  {emptyStateHint}
-                </p>
-              </div>
-            ) : (
-              <div className="flex flex-col gap-5">
-                {messages.map((message) => {
-                  const text = messageText(message);
-                  if (message.role === 'user') {
-                    return (
-                      <div className="flex justify-end" key={message.id}>
-                        <p className="bg-primary-bg-subtle text-fg-base max-w-[85%] rounded-2xl px-4 py-2.5 text-sm leading-relaxed">
-                          {text}
-                        </p>
-                      </div>
-                    );
-                  }
-                  const description = parseGeneration(text).meta?.description;
-                  const working = isBusy && message.id === lastAssistant?.id;
-                  return (
-                    <div className="flex flex-col gap-1.5" key={message.id}>
-                      <span className="text-fg-mute text-xs font-bold">AI</span>
-                      {working ? (
-                        <p className="text-fg-mute text-sm leading-relaxed motion-safe:animate-pulse">
-                          {generatingStatus}
-                        </p>
-                      ) : (
-                        <p className="text-fg-base text-sm leading-relaxed">
-                          {description ?? 'コードを更新しました'}
-                        </p>
-                      )}
-                    </div>
-                  );
-                })}
-                {status === 'submitted' ? (
-                  <div className="flex flex-col gap-1.5">
-                    <span className="text-fg-mute text-xs font-bold">AI</span>
-                    <p className="text-fg-mute text-sm leading-relaxed motion-safe:animate-pulse">
-                      {generatingStatus}
-                    </p>
-                  </div>
-                ) : null}
-                <div ref={messagesEndRef} />
-              </div>
-            )}
-          </div>
-
-          <div className="border-border-mute flex flex-col gap-2 border-t p-4">
-            <Textarea
-              aria-label="作りたいもの"
-              disabled={isBusy}
-              onChange={(event) => {
-                setInput(event.target.value);
-              }}
-              onKeyDown={handleKeyDown}
-              placeholder="作りたい画面を入力（例: お問い合わせフォームのカード）"
-              rows={3}
-              value={input}
-            />
-            <div className="flex items-center justify-between gap-2">
-              <div className="flex items-center gap-2">
-                <span className="text-fg-mute text-xs">モデル</span>
-                <Button
-                  color="gray"
-                  disabled={isBusy}
-                  onClick={() => {
-                    dispatch({ type: 'select-model', model: 'fugu' });
-                  }}
-                  size="sm"
-                  variant={
-                    state.selectedModel === 'fugu' ? 'solid' : 'skeleton'
-                  }
-                >
-                  fugu
-                </Button>
-                <Button
-                  color="gray"
-                  disabled={isBusy}
-                  onClick={() => {
-                    dispatch({ type: 'select-model', model: 'fugu-ultra' });
-                  }}
-                  size="sm"
-                  variant={
-                    state.selectedModel === 'fugu-ultra' ? 'solid' : 'skeleton'
-                  }
-                >
-                  ultra
-                </Button>
-              </div>
-              <Button
-                color="primary"
-                disabled={isBusy || input.trim() === ''}
-                onAction={handleGenerate}
-                size="sm"
-                variant="solid"
-              >
-                生成する
-              </Button>
-            </div>
-            {applyError === null ? (
-              error === undefined ? (
-                <span className="text-fg-mute text-xs">
-                  ⌘/Ctrl + Enter で送信
-                </span>
-              ) : (
-                <span className="text-fg-error text-xs">
-                  エラーが発生しました。再試行してください。
-                </span>
-              )
-            ) : (
-              <span className="text-fg-error text-xs leading-relaxed">
-                {applyError} 「直して」と送ると修正します。
-              </span>
-            )}
-          </div>
+      {/* タブと枠を近づけるため、タブとグリッドを gap の詰まった入れ物にまとめる
+          （lg:contents で lg ではこの入れ物を消し、従来どおりグリッドを直接並べる）。 */}
+      <div className="flex flex-col gap-3 lg:contents">
+        {/* 小画面用タブ: 2ペインを並べられないのでチャット/プレビュー/コードを1つずつ表示。
+            lg では2ペイン（チャット ＋ プレビュー/コード）を並べるので不要。 */}
+        <div className="flex gap-2 lg:hidden">
+          <Button
+            color="primary"
+            onClick={() => {
+              setMobileTab('chat');
+            }}
+            size="sm"
+            variant={mobileTab === 'chat' ? 'solid' : 'skeleton'}
+          >
+            チャット
+          </Button>
+          <Button
+            color="primary"
+            onClick={() => {
+              setMobileTab('preview');
+              setView('preview');
+            }}
+            size="sm"
+            variant={mobileTab === 'preview' ? 'solid' : 'skeleton'}
+          >
+            プレビュー
+          </Button>
+          <Button
+            color="primary"
+            onClick={() => {
+              setMobileTab('code');
+              setView('code');
+            }}
+            size="sm"
+            variant={mobileTab === 'code' ? 'solid' : 'skeleton'}
+          >
+            コード
+          </Button>
         </div>
 
-        {/* プレビュー / コード（lg では常時表示、小画面では mobileTab!=='chat' のとき） */}
-        <div
-          className={`h-136 min-w-0 flex-col gap-3 lg:flex lg:h-full ${
-            mobileTab === 'chat' ? 'hidden' : 'flex'
-          }`}
-        >
-          <div className="flex items-center gap-2">
-            {/* プレビュー/コードの切替は lg のみ（小画面では上部タブが担うので隠す）。 */}
-            <div className="hidden gap-2 lg:flex">
-              <Button
-                color="primary"
-                onClick={() => {
-                  setView('preview');
-                }}
-                size="sm"
-                variant={view === 'preview' ? 'solid' : 'skeleton'}
-              >
-                プレビュー
-              </Button>
-              <Button
-                color="primary"
-                onClick={() => {
-                  setView('code');
-                }}
-                size="sm"
-                variant={view === 'code' ? 'solid' : 'skeleton'}
-              >
-                コード
-              </Button>
-            </div>
-            <div className="ml-auto flex items-center gap-3">
-              <CopyCodeButton code={hasResult ? displayedCode : null} />
-              <Button
-                color="gray"
-                disabled={!hasResult}
-                onClick={handleFullscreen}
-                size="sm"
-                variant="outline"
-              >
-                全画面
-              </Button>
-            </div>
-          </div>
-
+        <div className="grid gap-6 lg:min-h-0 lg:flex-1 lg:grid-cols-[440px_minmax(0,1fr)] lg:grid-rows-1">
+          {/* チャット（lg では常時表示、小画面では mobileTab==='chat' のときのみ） */}
           <div
-            className="bg-bg-base border-border-mute min-h-0 flex-1 overflow-hidden rounded-2xl border shadow-sm"
-            ref={frameRef}
+            className={`bg-bg-base border-border-mute h-136 min-w-0 flex-col rounded-2xl border shadow-sm lg:flex lg:h-full ${
+              mobileTab === 'chat' ? 'flex' : 'hidden'
+            }`}
           >
-            <div className={view === 'preview' ? 'h-full' : 'hidden'}>
-              {previewUrl !== null && hasResult ? (
-                <PreviewFrame
-                  key={previewNonce}
-                  theme={resolvedTheme}
-                  url={previewUrl}
-                />
+            <div className="flex-1 overflow-y-auto p-6">
+              {messages.length === 0 ? (
+                <div className="flex h-full flex-col items-center justify-center gap-2 px-4 text-center">
+                  <p className="text-fg-base text-sm font-bold">
+                    {emptyStateTitle}
+                  </p>
+                  <p className="text-fg-mute text-sm leading-relaxed">
+                    {emptyStateHint}
+                  </p>
+                </div>
               ) : (
-                <div className="text-fg-mute flex h-full items-center justify-center p-6 text-center text-sm leading-relaxed">
-                  生成すると、ここにライブプレビューが表示されます
+                <div className="flex flex-col gap-5">
+                  {messages.map((message) => {
+                    const text = messageText(message);
+                    if (message.role === 'user') {
+                      return (
+                        <div className="flex justify-end" key={message.id}>
+                          <p className="bg-primary-bg-subtle text-fg-base max-w-[85%] rounded-2xl px-4 py-2.5 text-sm leading-relaxed">
+                            {text}
+                          </p>
+                        </div>
+                      );
+                    }
+                    const description = parseGeneration(text).meta?.description;
+                    const working = isBusy && message.id === lastAssistant?.id;
+                    return (
+                      <div className="flex flex-col gap-1.5" key={message.id}>
+                        <span className="text-fg-mute text-xs font-bold">
+                          AI
+                        </span>
+                        {working ? (
+                          <p className="text-fg-mute text-sm leading-relaxed motion-safe:animate-pulse">
+                            {generatingStatus}
+                          </p>
+                        ) : (
+                          <p className="text-fg-base text-sm leading-relaxed">
+                            {description ?? 'コードを更新しました'}
+                          </p>
+                        )}
+                      </div>
+                    );
+                  })}
+                  {status === 'submitted' ? (
+                    <div className="flex flex-col gap-1.5">
+                      <span className="text-fg-mute text-xs font-bold">AI</span>
+                      <p className="text-fg-mute text-sm leading-relaxed motion-safe:animate-pulse">
+                        {generatingStatus}
+                      </p>
+                    </div>
+                  ) : null}
+                  <div ref={messagesEndRef} />
                 </div>
               )}
             </div>
-            <div className={view === 'code' ? 'h-full' : 'hidden'}>
-              <CodePanel code={displayedCode} isStreaming={isBusy} />
+
+            <div className="border-border-mute flex flex-col gap-2 border-t p-4">
+              <Textarea
+                aria-label="作りたいもの"
+                disabled={isBusy}
+                onChange={(event) => {
+                  setInput(event.target.value);
+                }}
+                onKeyDown={handleKeyDown}
+                placeholder="作りたい画面を入力（例: お問い合わせフォームのカード）"
+                rows={3}
+                value={input}
+              />
+              <div className="flex items-center justify-between gap-2">
+                <div className="flex items-center gap-2">
+                  <span className="text-fg-mute text-xs">モデル</span>
+                  <Button
+                    color="gray"
+                    disabled={isBusy}
+                    onClick={() => {
+                      dispatch({ type: 'select-model', model: 'fugu' });
+                    }}
+                    size="sm"
+                    variant={
+                      state.selectedModel === 'fugu' ? 'solid' : 'skeleton'
+                    }
+                  >
+                    fugu
+                  </Button>
+                  <Button
+                    color="gray"
+                    disabled={isBusy}
+                    onClick={() => {
+                      dispatch({ type: 'select-model', model: 'fugu-ultra' });
+                    }}
+                    size="sm"
+                    variant={
+                      state.selectedModel === 'fugu-ultra'
+                        ? 'solid'
+                        : 'skeleton'
+                    }
+                  >
+                    ultra
+                  </Button>
+                </div>
+                <Button
+                  color="primary"
+                  disabled={isBusy || input.trim() === ''}
+                  onAction={handleGenerate}
+                  size="sm"
+                  variant="solid"
+                >
+                  生成する
+                </Button>
+              </div>
+              {applyError === null ? (
+                error === undefined ? (
+                  <span className="text-fg-mute text-xs">
+                    ⌘/Ctrl + Enter で送信
+                  </span>
+                ) : (
+                  <span className="text-fg-error text-xs">
+                    エラーが発生しました。再試行してください。
+                  </span>
+                )
+              ) : (
+                <span className="text-fg-error text-xs leading-relaxed">
+                  {applyError} 「直して」と送ると修正します。
+                </span>
+              )}
+            </div>
+          </div>
+
+          {/* プレビュー / コード（lg では常時表示、小画面では mobileTab!=='chat' のとき） */}
+          <div
+            className={`h-136 min-w-0 flex-col gap-3 lg:flex lg:h-full ${
+              mobileTab === 'chat' ? 'hidden' : 'flex'
+            }`}
+          >
+            <div className="hidden items-center gap-2 lg:flex">
+              {/* プレビュー/コード切替・copy・全画面は lg のみ（小画面はタブと枠を近づけるため隠す）。 */}
+              <div className="flex gap-2">
+                <Button
+                  color="primary"
+                  onClick={() => {
+                    setView('preview');
+                  }}
+                  size="sm"
+                  variant={view === 'preview' ? 'solid' : 'skeleton'}
+                >
+                  プレビュー
+                </Button>
+                <Button
+                  color="primary"
+                  onClick={() => {
+                    setView('code');
+                  }}
+                  size="sm"
+                  variant={view === 'code' ? 'solid' : 'skeleton'}
+                >
+                  コード
+                </Button>
+              </div>
+              <div className="ml-auto flex items-center gap-3">
+                <CopyCodeButton code={hasResult ? displayedCode : null} />
+                <Button
+                  color="gray"
+                  disabled={!hasResult}
+                  onClick={handleFullscreen}
+                  size="sm"
+                  variant="outline"
+                >
+                  全画面
+                </Button>
+              </div>
+            </div>
+
+            <div
+              className="bg-bg-base border-border-mute min-h-0 flex-1 overflow-hidden rounded-2xl border shadow-sm"
+              ref={frameRef}
+            >
+              <div className={view === 'preview' ? 'h-full' : 'hidden'}>
+                {previewUrl !== null && hasResult ? (
+                  <PreviewFrame
+                    key={previewNonce}
+                    theme={resolvedTheme}
+                    url={previewUrl}
+                  />
+                ) : (
+                  <div className="text-fg-mute flex h-full items-center justify-center p-6 text-center text-sm leading-relaxed">
+                    生成すると、ここにライブプレビューが表示されます
+                  </div>
+                )}
+              </div>
+              <div className={view === 'code' ? 'h-full' : 'hidden'}>
+                <CodePanel code={displayedCode} isStreaming={isBusy} />
+              </div>
             </div>
           </div>
         </div>
