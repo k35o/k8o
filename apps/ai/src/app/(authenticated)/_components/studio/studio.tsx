@@ -118,6 +118,14 @@ export const Studio = () => {
     ? (streamingCode ?? state.currentFile)
     : state.currentFile;
   const hasResult = state.currentFile !== null;
+  // 履歴から読み込んだ直後はチャットが空になるため、空状態でも「何を編集中か」を示す
+  // （汎用プロンプトのままだと新規開始のように見えてトークが消えたと感じる）。
+  const emptyStateTitle = hasResult
+    ? `「${state.versions.at(-1)?.meta.title ?? 'プロジェクト'}」を編集中`
+    : 'UI を生成しましょう';
+  const emptyStateHint = hasResult
+    ? '続けて指示すると、このUIを更新します。例:「色を温かいトーンに」「余白を広げて」'
+    : '例: 「お問い合わせフォームのカード」「料金プランの3カラム」';
   const currentProject =
     persistence.projects.find(
       (project) => project.id === persistence.projectId,
@@ -281,17 +289,17 @@ export const Studio = () => {
         projects={persistence.projects}
       />
 
-      <div className="grid gap-6 lg:min-h-0 lg:flex-1 lg:grid-cols-[360px_1fr] lg:grid-rows-1">
+      <div className="grid gap-6 lg:min-h-0 lg:flex-1 lg:grid-cols-[440px_minmax(0,1fr)] lg:grid-rows-1">
         {/* チャット */}
-        <div className="bg-bg-base border-border-mute flex h-136 flex-col rounded-2xl border shadow-sm lg:h-full">
+        <div className="bg-bg-base border-border-mute flex h-136 min-w-0 flex-col rounded-2xl border shadow-sm lg:h-full">
           <div className="flex-1 overflow-y-auto p-6">
             {messages.length === 0 ? (
               <div className="flex h-full flex-col items-center justify-center gap-2 px-4 text-center">
                 <p className="text-fg-base text-sm font-bold">
-                  UI を生成しましょう
+                  {emptyStateTitle}
                 </p>
                 <p className="text-fg-mute text-sm leading-relaxed">
-                  例: 「お問い合わせフォームのカード」「料金プランの3カラム」
+                  {emptyStateHint}
                 </p>
               </div>
             ) : (
@@ -396,7 +404,7 @@ export const Studio = () => {
         </div>
 
         {/* プレビュー / コード */}
-        <div className="flex h-136 flex-col gap-3 lg:h-full">
+        <div className="flex h-136 min-w-0 flex-col gap-3 lg:h-full">
           <div className="flex items-center justify-between">
             <div className="flex gap-2">
               <Button
