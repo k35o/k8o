@@ -4,7 +4,7 @@
    プレビュー列(PreviewPane)やフックへの更なる分解は別タスクの余地として許容する。 */
 
 import { useChat } from '@ai-sdk/react';
-import { Button, FormControl, Heading, Textarea } from '@k8o/arte-odyssey';
+import { Button, Heading, Textarea } from '@k8o/arte-odyssey';
 import { DefaultChatTransport } from 'ai';
 import { useTheme } from 'next-themes';
 import {
@@ -331,75 +331,73 @@ export const Studio = () => {
             )}
           </div>
 
-          <div className="border-border-mute flex flex-col gap-3 border-t p-4">
-            <FormControl
+          <div className="border-border-mute flex flex-col gap-2 border-t p-4">
+            <Textarea
+              aria-label="作りたいもの"
               disabled={isBusy}
-              label="作りたいもの"
-              renderInput={(props) => (
-                <Textarea
-                  {...props}
-                  onChange={(event) => {
-                    setInput(event.target.value);
-                  }}
-                  onKeyDown={handleKeyDown}
-                  placeholder="お問い合わせフォームのカードを作って"
-                  rows={3}
-                  value={input}
-                />
-              )}
+              onChange={(event) => {
+                setInput(event.target.value);
+              }}
+              onKeyDown={handleKeyDown}
+              placeholder="作りたい画面を入力（例: お問い合わせフォームのカード）"
+              rows={3}
+              value={input}
             />
-            <div className="flex items-center gap-2">
-              <span className="text-fg-mute text-xs">モデル</span>
-              <Button
-                color="gray"
-                disabled={isBusy}
-                onClick={() => {
-                  dispatch({ type: 'select-model', model: 'fugu' });
-                }}
-                size="sm"
-                variant={state.selectedModel === 'fugu' ? 'solid' : 'skeleton'}
-              >
-                fugu
-              </Button>
-              <Button
-                color="gray"
-                disabled={isBusy}
-                onClick={() => {
-                  dispatch({ type: 'select-model', model: 'fugu-ultra' });
-                }}
-                size="sm"
-                variant={
-                  state.selectedModel === 'fugu-ultra' ? 'solid' : 'skeleton'
-                }
-              >
-                ultra
-              </Button>
-            </div>
-            <div className="flex items-center justify-between gap-3">
-              {applyError === null ? (
-                error === undefined ? (
-                  <span className="text-fg-mute text-xs">
-                    ⌘/Ctrl + Enter で送信
-                  </span>
-                ) : (
-                  <span className="text-fg-error text-xs">
-                    エラーが発生しました。再試行してください。
-                  </span>
-                )
-              ) : (
-                <span className="text-fg-error text-xs leading-relaxed">
-                  {applyError} 「直して」と送ると修正します。
-                </span>
-              )}
+            <div className="flex items-center justify-between gap-2">
+              <div className="flex items-center gap-2">
+                <span className="text-fg-mute text-xs">モデル</span>
+                <Button
+                  color="gray"
+                  disabled={isBusy}
+                  onClick={() => {
+                    dispatch({ type: 'select-model', model: 'fugu' });
+                  }}
+                  size="sm"
+                  variant={
+                    state.selectedModel === 'fugu' ? 'solid' : 'skeleton'
+                  }
+                >
+                  fugu
+                </Button>
+                <Button
+                  color="gray"
+                  disabled={isBusy}
+                  onClick={() => {
+                    dispatch({ type: 'select-model', model: 'fugu-ultra' });
+                  }}
+                  size="sm"
+                  variant={
+                    state.selectedModel === 'fugu-ultra' ? 'solid' : 'skeleton'
+                  }
+                >
+                  ultra
+                </Button>
+              </div>
               <Button
                 color="primary"
                 disabled={isBusy || input.trim() === ''}
                 onAction={handleGenerate}
+                size="sm"
                 variant="solid"
               >
                 生成する
               </Button>
             </div>
+            {applyError === null ? (
+              error === undefined ? (
+                <span className="text-fg-mute text-xs">
+                  ⌘/Ctrl + Enter で送信
+                </span>
+              ) : (
+                <span className="text-fg-error text-xs">
+                  エラーが発生しました。再試行してください。
+                </span>
+              )
+            ) : (
+              <span className="text-fg-error text-xs leading-relaxed">
+                {applyError} 「直して」と送ると修正します。
+              </span>
+            )}
           </div>
         </div>
 
