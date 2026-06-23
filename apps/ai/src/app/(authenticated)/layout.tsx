@@ -10,10 +10,10 @@ export default async function AuthenticatedLayout({
   await verifySession();
 
   return (
-    <div className="bg-bg-surface flex min-h-dvh flex-col lg:h-dvh">
-      <main className="mx-auto flex w-full max-w-400 flex-1 flex-col p-6 md:px-10 lg:min-h-0">
-        {children}
-      </main>
+    // 全画面ツール。カードで囲まず、ビューポートいっぱいに作業領域を取る
+    // （中央寄せ・最大幅・余白を付けない＝フルブリード）。
+    <div className="bg-bg-surface flex h-dvh flex-col">
+      <main className="flex min-h-0 w-full flex-1 flex-col">{children}</main>
     </div>
   );
 }
