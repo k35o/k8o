@@ -5,7 +5,7 @@
 
 import { useChat } from '@ai-sdk/react';
 import { Button, Heading, Textarea } from '@k8o/arte-odyssey';
-import { DefaultChatTransport } from 'ai';
+import { DefaultChatTransport, type UIMessage } from 'ai';
 import { useTheme } from 'next-themes';
 import {
   type KeyboardEvent,
@@ -50,6 +50,8 @@ export const Studio = () => {
   const [historyOpen, setHistoryOpen] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const frameRef = useRef<HTMLDivElement>(null);
+  // 直近に送った指示。onFinish（一度きりのクロージャ）から版に保存し、会話復元に使う。
+  const lastPromptRef = useRef('');
   const { resolvedTheme } = useTheme();
   const persistence = useStudioPersistence();
 
@@ -66,7 +68,12 @@ export const Studio = () => {
           createdAt: Date.now(),
         });
         // 履歴に永続化（projectId が無ければ新規プロジェクト＋初版を作る）。
-        void persistence.save({ code: parsed.code, meta: parsed.meta });
+        // prompt も版に残し、履歴から読み込んだときに会話を復元できるようにする。
+        void persistence.save({
+          code: parsed.code,
+          meta: parsed.meta,
+          prompt: lastPromptRef.current,
+        });
         // プレビューに反映（テンプレへ書き込み→iframe を貼り直して最新を表示）。
         void (async () => {
           if (parsed.code === null) {
@@ -147,6 +154,7 @@ export const Studio = () => {
     }
     setInput('');
     setApplyError(null);
+    lastPromptRef.current = text;
     await sendMessage(
       { text },
       {
@@ -195,7 +203,33 @@ export const Studio = () => {
       meta: project.meta,
       createdAt: Date.now(),
     });
-    setMessages([]);
+    // 会話を復元する（履歴を切り替えてもトークが消えないように）。各版を
+    // [user(指示) → assistant(meta JSON)] に展開。assistant は json フェンスにすることで
+    // 既存の描画ロジック（parseGeneration の description 抽出）でそのまま説明文が出る。
+    const restored: UIMessage[] = project.conversation.flatMap(
+      (turn, index): UIMessage[] => {
+        const turnMessages: UIMessage[] = [];
+        if (turn.prompt !== null && turn.prompt !== '') {
+          turnMessages.push({
+            id: `h-u-${index.toString()}`,
+            role: 'user',
+            parts: [{ type: 'text', text: turn.prompt }],
+          });
+        }
+        turnMessages.push({
+          id: `h-a-${index.toString()}`,
+          role: 'assistant',
+          parts: [
+            {
+              type: 'text',
+              text: `\`\`\`json\n${JSON.stringify(turn.meta)}\n\`\`\``,
+            },
+          ],
+        });
+        return turnMessages;
+      },
+    );
+    setMessages(restored);
     setApplyError(null);
     const res = await applyPreviewCode(project.code);
     if (res.ok) {

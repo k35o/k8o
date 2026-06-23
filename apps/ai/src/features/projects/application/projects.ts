@@ -12,6 +12,7 @@ import {
   projectOwnedBy,
   selectIsSlugPublic,
   selectProjects,
+  selectProjectVersions,
   selectProjectWithLatestVersion,
   selectPublicProjectBySlug,
   updateProjectVisibility,
@@ -20,6 +21,14 @@ import {
 // ui-studio の版に保存する content の形（アプリ非依存の JSON ペイロードのうち ui-studio 用）。
 export type UiStudioContent = {
   code: string;
+  meta: GenerationMeta;
+  // この版を生成したユーザーの指示（会話の復元用）。初版/フォークでは無いことがある。
+  prompt?: string;
+};
+
+// 会話の1ターン（ある版を生成したユーザー指示と、その結果の meta）。
+export type ConversationTurn = {
+  prompt: string | null;
   meta: GenerationMeta;
 };
 
@@ -30,6 +39,8 @@ export type LoadedProject = {
   code: string;
   meta: GenerationMeta;
   versionId: number;
+  // 古い順の全ターン（履歴から読み込んだときにチャットを復元するため）。
+  conversation: ConversationTurn[];
 };
 
 export type PublicProject = {
@@ -66,7 +77,7 @@ const parseContent = (value: unknown): UiStudioContent | null => {
   if (typeof value !== 'object' || value === null) {
     return null;
   }
-  const { code, meta } = value as Record<string, unknown>;
+  const { code, meta, prompt } = value as Record<string, unknown>;
   if (typeof code !== 'string') {
     return null;
   }
@@ -82,6 +93,7 @@ const parseContent = (value: unknown): UiStudioContent | null => {
       usedComponents: toStringArray(metaRecord['usedComponents']),
       changes: toStringArray(metaRecord['changes']),
     },
+    ...(typeof prompt === 'string' ? { prompt } : {}),
   };
 };
 
@@ -166,6 +178,16 @@ export const getProject = async (input: {
   if (content === null) {
     return null;
   }
+  // 所有者は selectProjectWithLatestVersion で確認済み。全版を会話ターンに展開する。
+  const versionRows = await selectProjectVersions({
+    projectId: input.projectId,
+  });
+  const conversation = versionRows.flatMap((version): ConversationTurn[] => {
+    const parsed = parseContent(version.content);
+    return parsed === null
+      ? []
+      : [{ prompt: parsed.prompt ?? null, meta: parsed.meta }];
+  });
   return {
     id: row.id,
     title: row.title,
@@ -173,6 +195,7 @@ export const getProject = async (input: {
     code: content.code,
     meta: content.meta,
     versionId: row.versionId,
+    conversation,
   };
 };
 

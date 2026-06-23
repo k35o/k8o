@@ -20,6 +20,7 @@ export const saveGenerationAction = async (input: {
   parentVersionId: number | null;
   code: string;
   meta: GenerationMeta;
+  prompt: string;
 }): Promise<{ projectId: number; versionId: number; title: string } | null> => {
   const session = await requireAllowedSession(await headers());
   if (session === null) {
@@ -29,7 +30,7 @@ export const saveGenerationAction = async (input: {
     userId: session.userId,
     projectId: input.projectId,
     parentVersionId: input.parentVersionId,
-    content: { code: input.code, meta: input.meta },
+    content: { code: input.code, meta: input.meta, prompt: input.prompt },
   });
 };
 

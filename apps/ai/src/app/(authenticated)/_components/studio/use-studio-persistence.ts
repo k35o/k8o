@@ -19,7 +19,11 @@ export type StudioPersistence = {
   projectId: number | null;
   projectTitle: string | null;
   currentVersionId: number | null;
-  save: (content: { code: string; meta: GenerationMeta }) => Promise<void>;
+  save: (content: {
+    code: string;
+    meta: GenerationMeta;
+    prompt: string;
+  }) => Promise<void>;
   load: (projectId: number) => Promise<LoadedProject | null>;
   fork: (sourceProjectId: number) => Promise<number | null>;
   reset: () => void;
@@ -56,12 +60,13 @@ export const useStudioPersistence = (): StudioPersistence => {
   }, [refresh]);
 
   const save = useCallback(
-    async (content: { code: string; meta: GenerationMeta }) => {
+    async (content: { code: string; meta: GenerationMeta; prompt: string }) => {
       const res = await saveGenerationAction({
         projectId: projectIdRef.current,
         parentVersionId: versionIdRef.current,
         code: content.code,
         meta: content.meta,
+        prompt: content.prompt,
       });
       if (res === null) {
         return;

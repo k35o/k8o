@@ -229,3 +229,15 @@ export const selectProjectWithLatestVersion = async (input: {
     content: version.content,
   };
 };
+
+export type ProjectVersionRow = { id: number; content: unknown };
+
+// プロジェクトの全版を古い順に返す（会話の復元用）。所有者チェックは呼び出し側で済ませる前提。
+export const selectProjectVersions = (input: {
+  projectId: number;
+}): Promise<ProjectVersionRow[]> =>
+  db
+    .select({ id: versions.id, content: versions.content })
+    .from(versions)
+    .where(eq(versions.projectId, input.projectId))
+    .orderBy(versions.id);
