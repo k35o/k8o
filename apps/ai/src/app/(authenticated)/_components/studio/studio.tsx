@@ -285,41 +285,6 @@ export const Studio = () => {
         </div>
       </div>
 
-      {/* 現在のプロジェクトのツールバー: 操作対象を明示し、そのプロジェクトに対する
-          操作（共有・フォーク）をグローバル操作と分けてまとめる。未保存時は出さない。 */}
-      {persistence.projectId === null ? null : (
-        <div className="flex flex-wrap items-center justify-between gap-x-3 gap-y-2">
-          <span className="text-fg-base min-w-0 truncate text-sm font-bold">
-            {persistence.projectTitle ?? '無題'}
-          </span>
-          <div className="flex shrink-0 items-center gap-2">
-            <ShareControl
-              hasDraft={
-                currentProject?.visibility === 'public' &&
-                currentProject.publishedVersionId !== null &&
-                persistence.currentVersionId !== null &&
-                currentProject.publishedVersionId !==
-                  persistence.currentVersionId
-              }
-              isPublic={currentProject?.visibility === 'public'}
-              onChanged={() => {
-                void persistence.refresh();
-              }}
-              projectId={persistence.projectId}
-              slug={currentProject?.slug ?? null}
-            />
-            <Button
-              color="gray"
-              onAction={handleFork}
-              size="sm"
-              variant="outline"
-            >
-              フォーク
-            </Button>
-          </div>
-        </div>
-      )}
-
       <ProjectHistory
         currentProjectId={persistence.projectId}
         isOpen={historyOpen}
@@ -375,10 +340,18 @@ export const Studio = () => {
         <div className="grid gap-6 lg:min-h-0 lg:flex-1 lg:grid-cols-[440px_minmax(0,1fr)] lg:grid-rows-1">
           {/* チャット（lg では常時表示、小画面では mobileTab==='chat' のときのみ） */}
           <div
-            className={`bg-bg-base h-136 min-w-0 flex-col rounded-2xl shadow-sm lg:flex lg:h-full ${
+            className={`bg-bg-base border-border-mute h-136 min-w-0 flex-col rounded-2xl border shadow-sm lg:flex lg:h-full ${
               mobileTab === 'chat' ? 'flex' : 'hidden'
             }`}
           >
+            {/* 現在のプロジェクト名をチャットの一番上に出す（読込時の文脈）。 */}
+            {persistence.projectId === null ? null : (
+              <div className="border-border-mute flex items-center border-b px-4 py-2">
+                <span className="text-fg-base truncate text-sm font-bold">
+                  {persistence.projectTitle ?? '無題'}
+                </span>
+              </div>
+            )}
             <div className="flex-1 overflow-y-auto p-6">
               {messages.length === 0 ? (
                 <div className="flex h-full flex-col items-center justify-center gap-2 px-4 text-center">
@@ -508,13 +481,17 @@ export const Studio = () => {
 
           {/* プレビュー / コード（lg では常時表示、小画面では mobileTab!=='chat' のとき） */}
           <div
-            className={`bg-bg-base h-136 min-w-0 flex-col overflow-hidden rounded-2xl shadow-sm lg:flex lg:h-full ${
+            className={`bg-bg-base border-border-mute h-136 min-w-0 flex-col overflow-hidden rounded-2xl border shadow-sm lg:flex lg:h-full ${
               mobileTab === 'chat' ? 'hidden' : 'flex'
             }`}
           >
-            <div className="border-border-mute hidden items-center gap-2 border-b px-4 py-2 lg:flex">
-              {/* プレビュー/コード切替・copy・全画面は lg のみ（小画面はタブと枠を近づけるため隠す）。 */}
-              <div className="flex gap-2">
+            <div
+              className={`border-border-mute items-center gap-2 border-b px-4 py-2 lg:flex ${
+                persistence.projectId === null ? 'hidden' : 'flex'
+              }`}
+            >
+              {/* タブ切替・copy・全画面は lg のみ（小画面は上部タブが担う）。公開/フォークは常時。 */}
+              <div className="hidden gap-2 lg:flex">
                 <Button
                   color="primary"
                   onClick={() => {
@@ -536,17 +513,46 @@ export const Studio = () => {
                   コード
                 </Button>
               </div>
-              <div className="ml-auto flex items-center gap-3">
-                <CopyCodeButton code={hasResult ? displayedCode : null} />
-                <Button
-                  color="gray"
-                  disabled={!hasResult}
-                  onClick={handleFullscreen}
-                  size="sm"
-                  variant="outline"
-                >
-                  全画面
-                </Button>
+              <div className="ml-auto flex items-center gap-2">
+                {persistence.projectId === null ? null : (
+                  <>
+                    <ShareControl
+                      hasDraft={
+                        currentProject?.visibility === 'public' &&
+                        currentProject.publishedVersionId !== null &&
+                        persistence.currentVersionId !== null &&
+                        currentProject.publishedVersionId !==
+                          persistence.currentVersionId
+                      }
+                      isPublic={currentProject?.visibility === 'public'}
+                      onChanged={() => {
+                        void persistence.refresh();
+                      }}
+                      projectId={persistence.projectId}
+                      slug={currentProject?.slug ?? null}
+                    />
+                    <Button
+                      color="gray"
+                      onAction={handleFork}
+                      size="sm"
+                      variant="outline"
+                    >
+                      フォーク
+                    </Button>
+                  </>
+                )}
+                <div className="hidden items-center gap-3 lg:flex">
+                  <CopyCodeButton code={hasResult ? displayedCode : null} />
+                  <Button
+                    color="gray"
+                    disabled={!hasResult}
+                    onClick={handleFullscreen}
+                    size="sm"
+                    variant="outline"
+                  >
+                    全画面
+                  </Button>
+                </div>
               </div>
             </div>
 

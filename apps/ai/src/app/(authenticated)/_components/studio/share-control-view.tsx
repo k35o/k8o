@@ -1,4 +1,4 @@
-import { Button } from '@k8o/arte-odyssey';
+import { Badge, Button } from '@k8o/arte-odyssey';
 import type { FC } from 'react';
 
 type ShareControlViewProps = {
@@ -11,8 +11,8 @@ type ShareControlViewProps = {
   onUnpublish: () => void;
 };
 
-// 共有操作の presentational 部分（IO は ShareControl コンテナが持つ）。公開状態で
-// ボタン構成が変わる。主操作は solid、副操作は outline で affordance を出す。
+// 共有操作の presentational 部分（IO は ShareControl コンテナが持つ）。先頭に現在の公開状態
+// バッジ（公開中/非公開）を出して状態を明示し、続けて操作ボタンを置く。
 export const ShareControlView: FC<ShareControlViewProps> = ({
   isPublic,
   hasDraft,
@@ -23,20 +23,24 @@ export const ShareControlView: FC<ShareControlViewProps> = ({
 }) => {
   if (!isPublic) {
     return (
-      <Button
-        color="primary"
-        disabled={busy}
-        onAction={onPublish}
-        size="sm"
-        variant="solid"
-      >
-        {busy ? '公開中…' : '公開'}
-      </Button>
+      <div className="flex items-center gap-2">
+        <Badge size="sm" text="非公開" tone="neutral" variant="outline" />
+        <Button
+          color="primary"
+          disabled={busy}
+          onAction={onPublish}
+          size="sm"
+          variant="solid"
+        >
+          {busy ? '公開中…' : '公開'}
+        </Button>
+      </div>
     );
   }
 
   return (
     <div className="flex items-center gap-2">
+      <Badge size="sm" text="公開中" tone="success" variant="solid" />
       {hasDraft ? (
         <span className="text-fg-mute hidden text-xs sm:inline">
           未公開の変更あり
