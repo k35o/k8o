@@ -187,6 +187,16 @@ export const Studio = () => {
     }
   };
 
+  const handleFork = async (): Promise<void> => {
+    if (persistence.projectId === null) {
+      return;
+    }
+    const newId = await persistence.fork(persistence.projectId);
+    if (newId !== null) {
+      await handleSelectProject(newId);
+    }
+  };
+
   return (
     <div className="flex flex-col gap-6">
       <div className="flex items-start justify-between gap-4">
@@ -216,6 +226,16 @@ export const Studio = () => {
             projectId={persistence.projectId}
             slug={currentProject?.slug ?? null}
           />
+          {persistence.projectId === null ? null : (
+            <Button
+              color="gray"
+              onAction={handleFork}
+              size="sm"
+              variant="skeleton"
+            >
+              フォーク
+            </Button>
+          )}
           <Button
             color="gray"
             onClick={() => {
@@ -308,6 +328,33 @@ export const Studio = () => {
                 />
               )}
             />
+            <div className="flex items-center gap-2">
+              <span className="text-fg-mute text-xs">モデル</span>
+              <Button
+                color="gray"
+                disabled={isBusy}
+                onClick={() => {
+                  dispatch({ type: 'select-model', model: 'fugu' });
+                }}
+                size="sm"
+                variant={state.selectedModel === 'fugu' ? 'solid' : 'skeleton'}
+              >
+                fugu
+              </Button>
+              <Button
+                color="gray"
+                disabled={isBusy}
+                onClick={() => {
+                  dispatch({ type: 'select-model', model: 'fugu-ultra' });
+                }}
+                size="sm"
+                variant={
+                  state.selectedModel === 'fugu-ultra' ? 'solid' : 'skeleton'
+                }
+              >
+                ultra
+              </Button>
+            </div>
             <div className="flex items-center justify-between gap-3">
               {applyError === null ? (
                 error === undefined ? (

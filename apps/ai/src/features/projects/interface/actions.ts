@@ -6,6 +6,7 @@ import type { GenerationMeta } from '@/features/generation/application/parse-gen
 import { requireAllowedSession } from '@/shared/auth/require-allowed-session';
 
 import {
+  forkProject,
   getProject,
   getProjectsForUser,
   type LoadedProject,
@@ -48,4 +49,15 @@ export const loadProjectAction = async (
     return null;
   }
   return getProject({ userId: session.userId, projectId });
+};
+
+// 現在のプロジェクトを複製して新しいフォークを作る。新しい projectId を返す。
+export const forkProjectAction = async (
+  sourceProjectId: number,
+): Promise<{ projectId: number } | null> => {
+  const session = await requireAllowedSession(await headers());
+  if (session === null) {
+    return null;
+  }
+  return forkProject({ userId: session.userId, sourceProjectId });
 };

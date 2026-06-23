@@ -127,6 +127,30 @@ export const getProjectsForUser = (
   userId: string,
 ): Promise<ProjectListItem[]> => selectProjects({ userId, app: UI_STUDIO });
 
+// 既存プロジェクトの最新版を複製して新しいプロジェクト（forkOf 付き・private）を作る。
+// 元を壊さずに派生を試すための分岐。元が見つからない（非所有）なら null。
+export const forkProject = async (input: {
+  userId: string;
+  sourceProjectId: number;
+}): Promise<{ projectId: number } | null> => {
+  const source = await getProject({
+    userId: input.userId,
+    projectId: input.sourceProjectId,
+  });
+  if (source === null) {
+    return null;
+  }
+  const { projectId } = await insertProjectWithVersion({
+    userId: input.userId,
+    app: UI_STUDIO,
+    title: `${source.title}（フォーク）`,
+    slug: generateSlug(),
+    content: { code: source.code, meta: source.meta },
+    forkOf: input.sourceProjectId,
+  });
+  return { projectId };
+};
+
 export const getProject = async (input: {
   userId: string;
   projectId: number;

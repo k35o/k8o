@@ -41,6 +41,7 @@ export const insertProjectWithVersion = async (input: {
   title: string;
   slug: string;
   content: unknown;
+  forkOf?: number | null;
 }): Promise<{ projectId: number; versionId: number }> => {
   const [project] = await db
     .insert(projects)
@@ -49,6 +50,7 @@ export const insertProjectWithVersion = async (input: {
       userId: input.userId,
       title: input.title,
       slug: input.slug,
+      forkOf: input.forkOf ?? null,
     })
     .returning({ id: projects.id });
   if (project === undefined) {

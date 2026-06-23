@@ -8,6 +8,7 @@ import type {
   ProjectListItem,
 } from '@/features/projects/application/projects';
 import {
+  forkProjectAction,
   listProjectsAction,
   loadProjectAction,
   saveGenerationAction,
@@ -20,6 +21,7 @@ export type StudioPersistence = {
   currentVersionId: number | null;
   save: (content: { code: string; meta: GenerationMeta }) => Promise<void>;
   load: (projectId: number) => Promise<LoadedProject | null>;
+  fork: (sourceProjectId: number) => Promise<number | null>;
   reset: () => void;
   refresh: () => Promise<void>;
 };
@@ -82,6 +84,18 @@ export const useStudioPersistence = (): StudioPersistence => {
     [setCurrent],
   );
 
+  const fork = useCallback(
+    async (sourceProjectId: number): Promise<number | null> => {
+      const res = await forkProjectAction(sourceProjectId);
+      if (res === null) {
+        return null;
+      }
+      await refresh();
+      return res.projectId;
+    },
+    [refresh],
+  );
+
   const reset = useCallback(() => {
     setCurrent(null, null, null);
   }, [setCurrent]);
@@ -93,6 +107,7 @@ export const useStudioPersistence = (): StudioPersistence => {
     currentVersionId,
     save,
     load,
+    fork,
     reset,
     refresh,
   };
