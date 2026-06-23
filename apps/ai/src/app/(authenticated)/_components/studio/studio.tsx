@@ -117,7 +117,6 @@ export const Studio = () => {
   const displayedCode = isBusy
     ? (streamingCode ?? state.currentFile)
     : state.currentFile;
-  const codeTitle = state.versions.at(-1)?.meta.title;
   const hasResult = state.currentFile !== null;
   const currentProject =
     persistence.projects.find(
@@ -422,11 +421,6 @@ export const Studio = () => {
               </Button>
             </div>
             <div className="flex items-center gap-3">
-              {codeTitle === undefined ? null : (
-                <span className="text-fg-mute hidden text-sm sm:inline">
-                  {codeTitle}
-                </span>
-              )}
               <CopyCodeButton code={hasResult ? displayedCode : null} />
               <Button
                 color="gray"
