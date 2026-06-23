@@ -1,4 +1,4 @@
-import { Badge, Button } from '@k8o/arte-odyssey';
+import { DropdownMenu, SendIcon } from '@k8o/arte-odyssey';
 import type { FC } from 'react';
 
 type ShareControlViewProps = {
@@ -11,8 +11,8 @@ type ShareControlViewProps = {
   onUnpublish: () => void;
 };
 
-// 共有操作の presentational 部分（IO は ShareControl コンテナが持つ）。先頭に現在の公開状態
-// バッジ（公開中/非公開）を出して状態を明示し、続けて操作ボタンを置く。
+// 共有操作の presentational 部分（IO は ShareControl コンテナが持つ）。共有アイコン1つに
+// まとめ、開いたメニューで公開状態を切り替える（公開する/非公開にする）＋リンクコピー/再公開。
 export const ShareControlView: FC<ShareControlViewProps> = ({
   isPublic,
   hasDraft,
@@ -21,52 +21,37 @@ export const ShareControlView: FC<ShareControlViewProps> = ({
   onCopy,
   onUnpublish,
 }) => {
-  if (!isPublic) {
-    return (
-      <div className="flex items-center gap-2">
-        <Badge size="sm" text="非公開" tone="neutral" variant="outline" />
-        <Button
-          color="primary"
-          disabled={busy}
-          onAction={onPublish}
-          size="sm"
-          variant="solid"
-        >
-          {busy ? '公開中…' : '公開'}
-        </Button>
-      </div>
-    );
-  }
+  const items: Array<{ label: string; onClick: () => void }> = isPublic
+    ? [
+        ...(hasDraft
+          ? [
+              {
+                label: busy ? '更新中…' : '変更を反映（再公開）',
+                onClick: onPublish,
+              },
+            ]
+          : []),
+        { label: 'リンクをコピー', onClick: onCopy },
+        { label: '非公開にする', onClick: onUnpublish },
+      ]
+    : [{ label: busy ? '公開中…' : '公開する', onClick: onPublish }];
 
   return (
-    <div className="flex items-center gap-2">
-      <Badge size="sm" text="公開中" tone="success" variant="solid" />
-      {hasDraft ? (
-        <span className="text-fg-mute hidden text-xs sm:inline">
-          未公開の変更あり
-        </span>
-      ) : null}
-      <Button
-        color={hasDraft ? 'primary' : 'gray'}
-        disabled={busy}
-        onAction={onPublish}
-        size="sm"
-        variant={hasDraft ? 'solid' : 'outline'}
-      >
-        {busy ? '更新中…' : '更新'}
-      </Button>
-      <Button color="gray" onAction={onCopy} size="sm" variant="outline">
-        リンク
-      </Button>
-      <Button
-        color="gray"
-        disabled={busy}
-        onAction={onUnpublish}
-        size="sm"
-        variant="outline"
-      >
-        非公開
-      </Button>
-    </div>
+    <DropdownMenu.Root placement="bottom-end">
+      <DropdownMenu.IconTrigger
+        icon={<SendIcon />}
+        label={isPublic ? '共有（公開中）' : '共有（非公開）'}
+      />
+      <DropdownMenu.Content>
+        {items.map((item, index) => (
+          <DropdownMenu.Item
+            index={index}
+            key={item.label}
+            label={item.label}
+            onClick={item.onClick}
+          />
+        ))}
+      </DropdownMenu.Content>
+    </DropdownMenu.Root>
   );
 };

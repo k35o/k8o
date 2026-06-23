@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
-import { expect, fn, userEvent, within } from 'storybook/test';
+import { expect, fn, screen, userEvent, within } from 'storybook/test';
 
 import { ShareControlView } from './share-control-view';
 
@@ -17,42 +17,37 @@ export default meta;
 
 type Story = StoryObj<typeof meta>;
 
-// 非公開: 主操作の「公開」ボタンだけ。クリックで onPublish が呼ばれる。
+// 非公開: 共有メニューに「公開する」だけ。クリックで onPublish。
 export const Private: Story = {
   args: { isPublic: false, hasDraft: false },
   play: async ({ args, canvasElement }) => {
     const canvas = within(canvasElement);
-    const publish = canvas.getByRole('button', { name: '公開' });
-    await expect(publish).toBeInTheDocument();
-    await userEvent.click(publish);
+    await userEvent.click(canvas.getByRole('button', { name: /共有/u }));
+    await userEvent.click(await screen.findByText('公開する'));
     await expect(args.onPublish).toHaveBeenCalled();
   },
 };
 
-// 公開中・差分なし: 更新 / リンク / 非公開 の3ボタン。
+// 公開中・差分なし: リンクをコピー / 非公開にする。非公開にするで onUnpublish。
 export const PublicNoDraft: Story = {
   args: { isPublic: true, hasDraft: false },
   play: async ({ args, canvasElement }) => {
     const canvas = within(canvasElement);
-    await expect(
-      canvas.getByRole('button', { name: '更新' }),
-    ).toBeInTheDocument();
-    await expect(
-      canvas.getByRole('button', { name: 'リンク' }),
-    ).toBeInTheDocument();
-    await userEvent.click(canvas.getByRole('button', { name: '非公開' }));
+    await userEvent.click(canvas.getByRole('button', { name: /共有/u }));
+    await expect(await screen.findByText('リンクをコピー')).toBeInTheDocument();
+    await userEvent.click(screen.getByText('非公開にする'));
     await expect(args.onUnpublish).toHaveBeenCalled();
   },
 };
 
-// 公開中・未公開の変更あり: 「未公開の変更あり」表示 + 更新ボタン。
+// 公開中・未公開の変更あり: 「変更を反映（再公開）」が出る。
 export const PublicWithDraft: Story = {
   args: { isPublic: true, hasDraft: true },
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
-    await expect(canvas.getByText('未公開の変更あり')).toBeInTheDocument();
+    await userEvent.click(canvas.getByRole('button', { name: /共有/u }));
     await expect(
-      canvas.getByRole('button', { name: '更新' }),
+      await screen.findByText('変更を反映（再公開）'),
     ).toBeInTheDocument();
   },
 };
