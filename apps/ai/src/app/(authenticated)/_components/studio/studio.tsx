@@ -281,8 +281,9 @@ export const Studio = () => {
           作業領域を最大化する。小画面では flex-wrap でタイトル行と操作行の2段に折り返す。 */}
       <div className="border-border-mute flex flex-wrap items-center gap-x-4 gap-y-2 border-b px-4 py-2">
         {/* 左: ブランド ＋ プロジェクト名（全タブで常時可視）。小画面では basis-full で
-              1行を専有し、操作群を次行へ送ってタイトルが潰れないようにする。 */}
-        <div className="flex min-w-0 basis-full items-center gap-2 lg:grow lg:basis-0">
+              1行を専有しタイトルが潰れないようにする。lg ではボディのチャット列幅(440px)に
+              固定し、続く プレビュー/コード切替 がプレビュー列の上（仕切り際）に来るようにする。 */}
+        <div className="flex min-w-0 basis-full items-center gap-2 lg:w-110 lg:shrink-0 lg:grow-0 lg:basis-auto">
           <span className="text-fg-base shrink-0 text-sm font-bold">
             k8o AI Studio
           </span>
@@ -320,8 +321,9 @@ export const Studio = () => {
             コード
           </Button>
         </div>
-        {/* 操作群。共有/フォークは projectId gated。コピー/全画面は lg のみ。 */}
-        <div className="flex shrink-0 items-center gap-2">
+        {/* 操作群（共有/フォーク/コピー/全画面/履歴/新規/テーマ）。lg では ml-auto で右端へ寄せ、
+            プレビュー/コード切替と視覚的に分離する。共有/フォークは projectId gated。コピー/全画面は lg のみ。 */}
+        <div className="flex shrink-0 items-center gap-2 lg:ml-auto">
           {persistence.projectId === null ? null : (
             <>
               <ShareControl
