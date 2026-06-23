@@ -96,11 +96,11 @@ export const ShareControl: FC<ShareControlProps> = ({
           disabled={busy}
           onAction={handlePublish}
           size="sm"
-          variant="skeleton"
+          variant={hasDraft ? 'solid' : 'outline'}
         >
           {busy ? '更新中…' : '更新'}
         </Button>
-        <Button color="gray" onAction={handleCopy} size="sm" variant="skeleton">
+        <Button color="gray" onAction={handleCopy} size="sm" variant="outline">
           リンク
         </Button>
         <Button
@@ -108,7 +108,7 @@ export const ShareControl: FC<ShareControlProps> = ({
           disabled={busy}
           onAction={handleUnpublish}
           size="sm"
-          variant="skeleton"
+          variant="outline"
         >
           非公開
         </Button>
@@ -122,7 +122,7 @@ export const ShareControl: FC<ShareControlProps> = ({
       disabled={busy}
       onAction={handlePublish}
       size="sm"
-      variant="skeleton"
+      variant="solid"
     >
       {busy ? '公開中…' : '公開'}
     </Button>

@@ -28,6 +28,7 @@ import {
   startPreviewSession,
 } from '@/features/preview/interface/actions';
 
+import { ToggleTheme } from '../toggle-theme';
 import { CodePanel, CopyCodeButton } from './code-panel';
 import { PreviewFrame } from './preview-frame';
 import { ProjectHistory } from './project-history';
@@ -198,7 +199,9 @@ export const Studio = () => {
   };
 
   return (
-    <div className="flex flex-col gap-6">
+    <div className="flex flex-col gap-6 lg:min-h-0 lg:flex-1">
+      {/* アプリヘッダー: 識別と、現在のプロジェクトに依らないグローバル操作
+          （履歴=過去プロジェクトへのナビ / 新規=新規作成）だけを置く。 */}
       <div className="flex items-start justify-between gap-4">
         <div className="flex flex-col gap-1">
           <Heading type="h1">k8o AI Studio</Heading>
@@ -207,42 +210,13 @@ export const Studio = () => {
           </p>
         </div>
         <div className="flex shrink-0 items-center gap-2">
-          {persistence.projectTitle === null ? null : (
-            <span className="text-fg-mute hidden max-w-40 truncate text-sm md:inline">
-              {persistence.projectTitle}
-            </span>
-          )}
-          <ShareControl
-            hasDraft={
-              currentProject?.visibility === 'public' &&
-              currentProject.publishedVersionId !== null &&
-              persistence.currentVersionId !== null &&
-              currentProject.publishedVersionId !== persistence.currentVersionId
-            }
-            isPublic={currentProject?.visibility === 'public'}
-            onChanged={() => {
-              void persistence.refresh();
-            }}
-            projectId={persistence.projectId}
-            slug={currentProject?.slug ?? null}
-          />
-          {persistence.projectId === null ? null : (
-            <Button
-              color="gray"
-              onAction={handleFork}
-              size="sm"
-              variant="skeleton"
-            >
-              フォーク
-            </Button>
-          )}
           <Button
             color="gray"
             onClick={() => {
               setHistoryOpen(true);
             }}
             size="sm"
-            variant="skeleton"
+            variant="outline"
           >
             履歴
           </Button>
@@ -250,12 +224,51 @@ export const Studio = () => {
             color="primary"
             onClick={handleNewProject}
             size="sm"
-            variant="skeleton"
+            variant="outline"
           >
             新規
           </Button>
+          <ToggleTheme />
         </div>
       </div>
+
+      {/* 現在のプロジェクトのツールバー: 操作対象を明示し、そのプロジェクトに対する
+          操作（共有・フォーク）をグローバル操作と分けてまとめる。未保存時は出さない。 */}
+      {persistence.projectId === null ? null : (
+        <div className="bg-bg-base border-border-mute flex flex-wrap items-center justify-between gap-3 rounded-xl border px-4 py-2.5 shadow-sm">
+          <div className="flex min-w-0 flex-col">
+            <span className="text-fg-mute text-xs">現在のプロジェクト</span>
+            <span className="text-fg-base truncate text-sm font-bold">
+              {persistence.projectTitle ?? '無題'}
+            </span>
+          </div>
+          <div className="flex shrink-0 items-center gap-2">
+            <ShareControl
+              hasDraft={
+                currentProject?.visibility === 'public' &&
+                currentProject.publishedVersionId !== null &&
+                persistence.currentVersionId !== null &&
+                currentProject.publishedVersionId !==
+                  persistence.currentVersionId
+              }
+              isPublic={currentProject?.visibility === 'public'}
+              onChanged={() => {
+                void persistence.refresh();
+              }}
+              projectId={persistence.projectId}
+              slug={currentProject?.slug ?? null}
+            />
+            <Button
+              color="gray"
+              onAction={handleFork}
+              size="sm"
+              variant="outline"
+            >
+              フォーク
+            </Button>
+          </div>
+        </div>
+      )}
 
       <ProjectHistory
         currentProjectId={persistence.projectId}
@@ -269,7 +282,7 @@ export const Studio = () => {
         projects={persistence.projects}
       />
 
-      <div className="grid gap-6 lg:h-[calc(100svh-14rem)] lg:grid-cols-[360px_1fr] lg:grid-rows-1">
+      <div className="grid gap-6 lg:min-h-0 lg:flex-1 lg:grid-cols-[360px_1fr] lg:grid-rows-1">
         {/* チャット */}
         <div className="bg-bg-base border-border-mute flex h-136 flex-col rounded-2xl border shadow-sm lg:h-full">
           <div className="flex-1 overflow-y-auto p-6">
@@ -420,7 +433,7 @@ export const Studio = () => {
                 disabled={!hasResult}
                 onClick={handleFullscreen}
                 size="sm"
-                variant="skeleton"
+                variant="outline"
               >
                 全画面
               </Button>
