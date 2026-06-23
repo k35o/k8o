@@ -530,22 +530,25 @@ export const Studio = () => {
                   ultra
                 </Button>
               </div>
-              <Button
-                color="primary"
-                disabled={isBusy || input.trim() === ''}
-                onAction={handleGenerate}
-                size="sm"
-                variant="solid"
-              >
-                生成する
-              </Button>
-            </div>
-            {applyError === null ? (
-              error === undefined ? (
-                <span className="text-fg-mute text-xs">
-                  ⌘/Ctrl + Enter で送信
+              <div className="flex items-center gap-2">
+                {/* 送信ショートカットは専用行を持たず、ボタン横に控えめに添える（lg のみ）。 */}
+                <span className="text-fg-mute hidden text-xs lg:inline">
+                  ⌘/Ctrl+Enter
                 </span>
-              ) : (
+                <Button
+                  color="primary"
+                  disabled={isBusy || input.trim() === ''}
+                  onAction={handleGenerate}
+                  size="sm"
+                  variant="solid"
+                >
+                  生成する
+                </Button>
+              </div>
+            </div>
+            {/* エラー時のみ行を出す（通常はヒント行を持たず、入力エリアを省スペースに）。 */}
+            {applyError === null ? (
+              error === undefined ? null : (
                 <span className="text-fg-error text-xs">
                   エラーが発生しました。再試行してください。
                 </span>
