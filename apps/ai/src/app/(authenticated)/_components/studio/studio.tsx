@@ -288,7 +288,7 @@ export const Studio = () => {
       {/* 現在のプロジェクトのツールバー: 操作対象を明示し、そのプロジェクトに対する
           操作（共有・フォーク）をグローバル操作と分けてまとめる。未保存時は出さない。 */}
       {persistence.projectId === null ? null : (
-        <div className="bg-bg-base border-border-mute flex flex-wrap items-center justify-between gap-x-3 gap-y-2 rounded-xl border px-4 py-2 shadow-sm">
+        <div className="flex flex-wrap items-center justify-between gap-x-3 gap-y-2">
           <span className="text-fg-base min-w-0 truncate text-sm font-bold">
             {persistence.projectTitle ?? '無題'}
           </span>
@@ -375,7 +375,7 @@ export const Studio = () => {
         <div className="grid gap-6 lg:min-h-0 lg:flex-1 lg:grid-cols-[440px_minmax(0,1fr)] lg:grid-rows-1">
           {/* チャット（lg では常時表示、小画面では mobileTab==='chat' のときのみ） */}
           <div
-            className={`bg-bg-base border-border-mute h-136 min-w-0 flex-col rounded-2xl border shadow-sm lg:flex lg:h-full ${
+            className={`bg-bg-base h-136 min-w-0 flex-col rounded-2xl shadow-sm lg:flex lg:h-full ${
               mobileTab === 'chat' ? 'flex' : 'hidden'
             }`}
           >
@@ -508,11 +508,11 @@ export const Studio = () => {
 
           {/* プレビュー / コード（lg では常時表示、小画面では mobileTab!=='chat' のとき） */}
           <div
-            className={`h-136 min-w-0 flex-col gap-3 lg:flex lg:h-full ${
+            className={`bg-bg-base h-136 min-w-0 flex-col overflow-hidden rounded-2xl shadow-sm lg:flex lg:h-full ${
               mobileTab === 'chat' ? 'hidden' : 'flex'
             }`}
           >
-            <div className="hidden items-center gap-2 lg:flex">
+            <div className="border-border-mute hidden items-center gap-2 border-b px-4 py-2 lg:flex">
               {/* プレビュー/コード切替・copy・全画面は lg のみ（小画面はタブと枠を近づけるため隠す）。 */}
               <div className="flex gap-2">
                 <Button
@@ -550,10 +550,7 @@ export const Studio = () => {
               </div>
             </div>
 
-            <div
-              className="bg-bg-base border-border-mute min-h-0 flex-1 overflow-hidden rounded-2xl border shadow-sm"
-              ref={frameRef}
-            >
+            <div className="min-h-0 flex-1 overflow-hidden" ref={frameRef}>
               <div className={view === 'preview' ? 'h-full' : 'hidden'}>
                 {previewUrl !== null && hasResult ? (
                   <PreviewFrame
