@@ -46,6 +46,10 @@ export const Studio = () => {
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [previewNonce, setPreviewNonce] = useState(0);
   const [view, setView] = useState<PanelView>('preview');
+  // 小画面では2ペインを並べられないので、チャット/プレビュー/コードをタブで1つずつ表示する。
+  const [mobileTab, setMobileTab] = useState<'chat' | 'preview' | 'code'>(
+    'chat',
+  );
   const [applyError, setApplyError] = useState<string | null>(null);
   const [historyOpen, setHistoryOpen] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
@@ -84,6 +88,7 @@ export const Studio = () => {
             setApplyError(null);
             setPreviewNonce((nonce) => nonce + 1);
             setView('preview');
+            setMobileTab('preview');
             return;
           }
           // 不正 import 等で反映できなかった。エラーを次ターンの system に流して自動修復を促し、
@@ -92,6 +97,7 @@ export const Studio = () => {
             setApplyError(res.error);
             dispatch({ type: 'build-failed', errors: res.error });
             setView('code');
+            setMobileTab('code');
           }
         })();
       }
@@ -188,6 +194,7 @@ export const Studio = () => {
     setApplyError(null);
     setHistoryOpen(false);
     setView('preview');
+    setMobileTab('chat');
   };
 
   const handleSelectProject = async (id: number): Promise<void> => {
@@ -235,6 +242,7 @@ export const Studio = () => {
     if (res.ok) {
       setPreviewNonce((nonce) => nonce + 1);
       setView('preview');
+      setMobileTab('preview');
     }
   };
 
@@ -332,9 +340,50 @@ export const Studio = () => {
         projects={persistence.projects}
       />
 
+      {/* 小画面用タブ: 2ペインを並べられないのでチャット/プレビュー/コードを1つずつ表示。
+          lg では2ペイン（チャット ＋ プレビュー/コード）を並べるので不要。 */}
+      <div className="flex gap-2 lg:hidden">
+        <Button
+          color="primary"
+          onClick={() => {
+            setMobileTab('chat');
+          }}
+          size="sm"
+          variant={mobileTab === 'chat' ? 'solid' : 'skeleton'}
+        >
+          チャット
+        </Button>
+        <Button
+          color="primary"
+          onClick={() => {
+            setMobileTab('preview');
+            setView('preview');
+          }}
+          size="sm"
+          variant={mobileTab === 'preview' ? 'solid' : 'skeleton'}
+        >
+          プレビュー
+        </Button>
+        <Button
+          color="primary"
+          onClick={() => {
+            setMobileTab('code');
+            setView('code');
+          }}
+          size="sm"
+          variant={mobileTab === 'code' ? 'solid' : 'skeleton'}
+        >
+          コード
+        </Button>
+      </div>
+
       <div className="grid gap-6 lg:min-h-0 lg:flex-1 lg:grid-cols-[440px_minmax(0,1fr)] lg:grid-rows-1">
-        {/* チャット */}
-        <div className="bg-bg-base border-border-mute flex h-136 min-w-0 flex-col rounded-2xl border shadow-sm lg:h-full">
+        {/* チャット（lg では常時表示、小画面では mobileTab==='chat' のときのみ） */}
+        <div
+          className={`bg-bg-base border-border-mute h-136 min-w-0 flex-col rounded-2xl border shadow-sm lg:flex lg:h-full ${
+            mobileTab === 'chat' ? 'flex' : 'hidden'
+          }`}
+        >
           <div className="flex-1 overflow-y-auto p-6">
             {messages.length === 0 ? (
               <div className="flex h-full flex-col items-center justify-center gap-2 px-4 text-center">
@@ -458,10 +507,15 @@ export const Studio = () => {
           </div>
         </div>
 
-        {/* プレビュー / コード */}
-        <div className="flex h-136 min-w-0 flex-col gap-3 lg:h-full">
-          <div className="flex items-center justify-between">
-            <div className="flex gap-2">
+        {/* プレビュー / コード（lg では常時表示、小画面では mobileTab!=='chat' のとき） */}
+        <div
+          className={`h-136 min-w-0 flex-col gap-3 lg:flex lg:h-full ${
+            mobileTab === 'chat' ? 'hidden' : 'flex'
+          }`}
+        >
+          <div className="flex items-center gap-2">
+            {/* プレビュー/コードの切替は lg のみ（小画面では上部タブが担うので隠す）。 */}
+            <div className="hidden gap-2 lg:flex">
               <Button
                 color="primary"
                 onClick={() => {
@@ -483,7 +537,7 @@ export const Studio = () => {
                 コード
               </Button>
             </div>
-            <div className="flex items-center gap-3">
+            <div className="ml-auto flex items-center gap-3">
               <CopyCodeButton code={hasResult ? displayedCode : null} />
               <Button
                 color="gray"
