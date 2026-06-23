@@ -114,6 +114,15 @@ export const Studio = () => {
     lastAssistant === undefined
       ? null
       : parseGeneration(messageText(lastAssistant)).code;
+  const streamingLines =
+    streamingCode === null ? 0 : streamingCode.split('\n').length;
+  const lineSuffix =
+    streamingLines > 0 ? `（${streamingLines.toString()} 行）` : '';
+  // 生成中に「何をしているか」を段階表示する（送信直後=考え中 / ストリーミング中=生成中+行数）。
+  const generatingStatus =
+    status === 'submitted'
+      ? '考えています…'
+      : `UI を生成しています…${lineSuffix}`;
   const displayedCode = isBusy
     ? (streamingCode ?? state.currentFile)
     : state.currentFile;
@@ -316,16 +325,30 @@ export const Studio = () => {
                     );
                   }
                   const description = parseGeneration(text).meta?.description;
+                  const working = isBusy && message.id === lastAssistant?.id;
                   return (
                     <div className="flex flex-col gap-1.5" key={message.id}>
                       <span className="text-fg-mute text-xs font-bold">AI</span>
-                      <p className="text-fg-base text-sm leading-relaxed">
-                        {description ??
-                          (isBusy ? '生成中…' : 'コードを更新しました')}
-                      </p>
+                      {working ? (
+                        <p className="text-fg-mute text-sm leading-relaxed motion-safe:animate-pulse">
+                          {generatingStatus}
+                        </p>
+                      ) : (
+                        <p className="text-fg-base text-sm leading-relaxed">
+                          {description ?? 'コードを更新しました'}
+                        </p>
+                      )}
                     </div>
                   );
                 })}
+                {status === 'submitted' ? (
+                  <div className="flex flex-col gap-1.5">
+                    <span className="text-fg-mute text-xs font-bold">AI</span>
+                    <p className="text-fg-mute text-sm leading-relaxed motion-safe:animate-pulse">
+                      {generatingStatus}
+                    </p>
+                  </div>
+                ) : null}
                 <div ref={messagesEndRef} />
               </div>
             )}
