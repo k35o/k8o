@@ -257,16 +257,11 @@ export const Studio = () => {
   };
 
   return (
-    <div className="flex flex-col gap-6 lg:min-h-0 lg:flex-1">
+    <div className="flex flex-col gap-4 lg:min-h-0 lg:flex-1">
       {/* アプリヘッダー: 識別と、現在のプロジェクトに依らないグローバル操作
           （履歴=過去プロジェクトへのナビ / 新規=新規作成）だけを置く。 */}
-      <div className="flex items-start justify-between gap-4">
-        <div className="flex flex-col gap-1">
-          <Heading type="h1">k8o AI Studio</Heading>
-          <p className="text-fg-mute text-sm leading-relaxed">
-            作りたい画面を伝えると、arte-odyssey で UI を生成します。
-          </p>
-        </div>
+      <div className="flex items-center justify-between gap-4">
+        <Heading type="h2">k8o AI Studio</Heading>
         <div className="flex shrink-0 items-center gap-2">
           <Button
             color="gray"
@@ -293,13 +288,10 @@ export const Studio = () => {
       {/* 現在のプロジェクトのツールバー: 操作対象を明示し、そのプロジェクトに対する
           操作（共有・フォーク）をグローバル操作と分けてまとめる。未保存時は出さない。 */}
       {persistence.projectId === null ? null : (
-        <div className="bg-bg-base border-border-mute flex flex-wrap items-center justify-between gap-3 rounded-xl border px-4 py-2.5 shadow-sm">
-          <div className="flex min-w-0 flex-col">
-            <span className="text-fg-mute text-xs">現在のプロジェクト</span>
-            <span className="text-fg-base truncate text-sm font-bold">
-              {persistence.projectTitle ?? '無題'}
-            </span>
-          </div>
+        <div className="bg-bg-base border-border-mute flex flex-wrap items-center justify-between gap-x-3 gap-y-2 rounded-xl border px-4 py-2 shadow-sm">
+          <span className="text-fg-base min-w-0 truncate text-sm font-bold">
+            {persistence.projectTitle ?? '無題'}
+          </span>
           <div className="flex shrink-0 items-center gap-2">
             <ShareControl
               hasDraft={
