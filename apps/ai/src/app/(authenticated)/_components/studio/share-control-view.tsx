@@ -1,4 +1,10 @@
-import { DropdownMenu, LockIcon, LockOpenIcon } from '@k8o/arte-odyssey';
+import {
+  DropdownMenu,
+  IconButton,
+  LockIcon,
+  LockOpenIcon,
+  Popover,
+} from '@k8o/arte-odyssey';
 import type { FC } from 'react';
 
 type ShareControlViewProps = {
@@ -39,9 +45,20 @@ export const ShareControlView: FC<ShareControlViewProps> = ({
 
   return (
     <DropdownMenu.Root placement="bottom-end">
-      <DropdownMenu.IconTrigger
-        icon={isPublic ? <LockOpenIcon /> : <LockIcon />}
-        label={isPublic ? '共有（公開中）' : '共有（非公開）'}
+      {/* IconTrigger は size 固定（md）で他のアイコンと揃わないため、その実装
+          （Popover.Trigger + IconButton）を size="sm" で自前展開する。 */}
+      <Popover.Trigger
+        renderItem={(props) => (
+          <IconButton
+            color="base"
+            label={isPublic ? '共有（公開中）' : '共有（非公開）'}
+            size="sm"
+            tooltipDisabled
+            {...props}
+          >
+            {isPublic ? <LockOpenIcon size="sm" /> : <LockIcon size="sm" />}
+          </IconButton>
+        )}
       />
       <DropdownMenu.Content>
         {items.map((item, index) => (
