@@ -1,4 +1,4 @@
-import { DropdownMenu, SendIcon } from '@k8o/arte-odyssey';
+import { DropdownMenu, LockIcon, LockOpenIcon } from '@k8o/arte-odyssey';
 import type { FC } from 'react';
 
 type ShareControlViewProps = {
@@ -11,8 +11,9 @@ type ShareControlViewProps = {
   onUnpublish: () => void;
 };
 
-// 共有操作の presentational 部分（IO は ShareControl コンテナが持つ）。共有アイコン1つに
-// まとめ、開いたメニューで公開状態を切り替える（公開する/非公開にする）＋リンクコピー/再公開。
+// 共有操作の presentational 部分（IO は ShareControl コンテナが持つ）。状態を鍵アイコンで
+// 示し（🔒=非公開 / 🔓=公開）、押すとメニューで公開状態を切り替える（公開する/非公開にする）
+// ＋リンクコピー/再公開。
 export const ShareControlView: FC<ShareControlViewProps> = ({
   isPublic,
   hasDraft,
@@ -39,7 +40,7 @@ export const ShareControlView: FC<ShareControlViewProps> = ({
   return (
     <DropdownMenu.Root placement="bottom-end">
       <DropdownMenu.IconTrigger
-        icon={<SendIcon />}
+        icon={isPublic ? <LockOpenIcon /> : <LockIcon />}
         label={isPublic ? '共有（公開中）' : '共有（非公開）'}
       />
       <DropdownMenu.Content>

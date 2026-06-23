@@ -4,7 +4,14 @@
    プレビュー列(PreviewPane)やフックへの更なる分解は別タスクの余地として許容する。 */
 
 import { useChat } from '@ai-sdk/react';
-import { Button, Heading, Textarea } from '@k8o/arte-odyssey';
+import {
+  Button,
+  ForkIcon,
+  FullscreenIcon,
+  Heading,
+  IconButton,
+  Textarea,
+} from '@k8o/arte-odyssey';
 import { DefaultChatTransport, type UIMessage } from 'ai';
 import { useTheme } from 'next-themes';
 import {
@@ -531,27 +538,27 @@ export const Studio = () => {
                       projectId={persistence.projectId}
                       slug={currentProject?.slug ?? null}
                     />
-                    <Button
-                      color="gray"
+                    <IconButton
+                      color="base"
+                      label="フォーク"
                       onAction={handleFork}
                       size="sm"
-                      variant="outline"
                     >
-                      フォーク
-                    </Button>
+                      <ForkIcon size="sm" />
+                    </IconButton>
                   </>
                 )}
                 <div className="hidden items-center gap-3 lg:flex">
                   <CopyCodeButton code={hasResult ? displayedCode : null} />
-                  <Button
-                    color="gray"
+                  <IconButton
+                    color="base"
                     disabled={!hasResult}
+                    label="全画面"
                     onClick={handleFullscreen}
                     size="sm"
-                    variant="outline"
                   >
-                    全画面
-                  </Button>
+                    <FullscreenIcon size="sm" />
+                  </IconButton>
                 </div>
               </div>
             </div>
