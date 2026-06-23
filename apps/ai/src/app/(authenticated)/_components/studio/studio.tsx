@@ -304,12 +304,93 @@ export const Studio = () => {
         projects={persistence.projects}
       />
 
-      {/* タブと枠を近づけるため、タブとグリッドを gap の詰まった入れ物にまとめる
-          （lg:contents で lg ではこの入れ物を消し、従来どおりグリッドを直接並べる）。 */}
-      <div className="flex flex-col gap-3 lg:contents">
-        {/* 小画面用タブ: 2ペインを並べられないのでチャット/プレビュー/コードを1つずつ表示。
-            lg では2ペイン（チャット ＋ プレビュー/コード）を並べるので不要。 */}
-        <div className="flex gap-2 lg:hidden">
+      {/* 統合カード: チャット＋プレビュー/コードを1つの器にまとめる。外枠は1枚だけで、
+          内部は仕切り線（チャットペインの右辺）で分割し、カードの入れ子を避ける。 */}
+      <div className="bg-bg-base border-border-mute flex h-136 min-w-0 flex-col overflow-hidden rounded-2xl border shadow-sm lg:h-full lg:min-h-0 lg:flex-1">
+        {/* 共通ヘッダー: プロジェクト名（全タブで常時可視）＋ プレビュー/コード切替(lg)
+            ＋ 共有/フォーク/コピー/全画面。小画面でもタイトルがチャット以外で見える。 */}
+        <div className="border-border-mute flex items-center gap-3 border-b px-4 py-2">
+          <div className="flex min-w-0 flex-1 items-center">
+            {persistence.projectId === null ? (
+              <span className="text-fg-mute truncate text-sm font-medium">
+                新しいプロジェクト
+              </span>
+            ) : (
+              <span className="text-fg-base truncate text-sm font-bold">
+                {persistence.projectTitle ?? '無題'}
+              </span>
+            )}
+          </div>
+          {/* プレビュー/コード切替は lg のみ（小画面は下のタブ行が担う）。 */}
+          <div className="hidden gap-2 lg:flex">
+            <Button
+              color="primary"
+              onClick={() => {
+                setView('preview');
+              }}
+              size="sm"
+              variant={view === 'preview' ? 'solid' : 'skeleton'}
+            >
+              プレビュー
+            </Button>
+            <Button
+              color="primary"
+              onClick={() => {
+                setView('code');
+              }}
+              size="sm"
+              variant={view === 'code' ? 'solid' : 'skeleton'}
+            >
+              コード
+            </Button>
+          </div>
+          {/* 操作群。共有/フォークは projectId gated。コピー/全画面は lg のみ。 */}
+          <div className="flex shrink-0 items-center gap-2">
+            {persistence.projectId === null ? null : (
+              <>
+                <ShareControl
+                  hasDraft={
+                    currentProject?.visibility === 'public' &&
+                    currentProject.publishedVersionId !== null &&
+                    persistence.currentVersionId !== null &&
+                    currentProject.publishedVersionId !==
+                      persistence.currentVersionId
+                  }
+                  isPublic={currentProject?.visibility === 'public'}
+                  onChanged={() => {
+                    void persistence.refresh();
+                  }}
+                  projectId={persistence.projectId}
+                  slug={currentProject?.slug ?? null}
+                />
+                <IconButton
+                  color="base"
+                  label="フォーク"
+                  onAction={handleFork}
+                  size="sm"
+                >
+                  <ForkIcon size="sm" />
+                </IconButton>
+              </>
+            )}
+            <div className="hidden items-center gap-3 lg:flex">
+              <CopyCodeButton code={hasResult ? displayedCode : null} />
+              <IconButton
+                color="base"
+                disabled={!hasResult}
+                label="全画面"
+                onClick={handleFullscreen}
+                size="sm"
+              >
+                <FullscreenIcon size="sm" />
+              </IconButton>
+            </div>
+          </div>
+        </div>
+
+        {/* 小画面タブ [チャット|プレビュー|コード]。本体の直上に置き、枠の近くで切り替える。
+            lg では上の view タブが担うので隠す。 */}
+        <div className="flex gap-2 px-4 py-2 lg:hidden">
           <Button
             color="primary"
             onClick={() => {
@@ -344,21 +425,16 @@ export const Studio = () => {
           </Button>
         </div>
 
-        <div className="grid gap-6 lg:min-h-0 lg:flex-1 lg:grid-cols-[440px_minmax(0,1fr)] lg:grid-rows-1">
-          {/* チャット（lg では常時表示、小画面では mobileTab==='chat' のときのみ） */}
+        {/* ボディ: 2ペイングリッド（チャット ｜ プレビュー/コード）。仕切りはチャットペインの
+            右辺(lg:border-r)1本のみ。gap は付けず面を連続させる。grid-rows-1 で単一ペインも
+            本体高さを満たす（小画面でメッセージがスクロールするように）。 */}
+        <div className="grid min-h-0 flex-1 grid-rows-1 lg:grid-cols-[440px_minmax(0,1fr)]">
+          {/* チャットペイン（lg は常時＋右辺に仕切り、小画面は mobileTab==='chat' のみ）。 */}
           <div
-            className={`bg-bg-base border-border-mute h-136 min-w-0 flex-col rounded-2xl border shadow-sm lg:flex lg:h-full ${
+            className={`border-border-mute min-h-0 min-w-0 flex-col lg:flex lg:border-r ${
               mobileTab === 'chat' ? 'flex' : 'hidden'
             }`}
           >
-            {/* 現在のプロジェクト名をチャットの一番上に出す（読込時の文脈）。 */}
-            {persistence.projectId === null ? null : (
-              <div className="border-border-mute flex items-center border-b px-4 py-2">
-                <span className="text-fg-base truncate text-sm font-bold">
-                  {persistence.projectTitle ?? '無題'}
-                </span>
-              </div>
-            )}
             <div className="flex-1 overflow-y-auto p-6">
               {messages.length === 0 ? (
                 <div className="flex h-full flex-col items-center justify-center gap-2 px-4 text-center">
@@ -486,83 +562,13 @@ export const Studio = () => {
             </div>
           </div>
 
-          {/* プレビュー / コード（lg では常時表示、小画面では mobileTab!=='chat' のとき） */}
+          {/* プレビュー/コードペイン（lg は常時、小画面は mobileTab!=='chat'）。
+              操作群は共通ヘッダーへ移したので、ここは表示領域のみ。 */}
           <div
-            className={`bg-bg-base border-border-mute h-136 min-w-0 flex-col overflow-hidden rounded-2xl border shadow-sm lg:flex lg:h-full ${
+            className={`min-h-0 min-w-0 flex-col overflow-hidden lg:flex ${
               mobileTab === 'chat' ? 'hidden' : 'flex'
             }`}
           >
-            <div
-              className={`border-border-mute items-center gap-2 border-b px-4 py-2 lg:flex ${
-                persistence.projectId === null ? 'hidden' : 'flex'
-              }`}
-            >
-              {/* タブ切替・copy・全画面は lg のみ（小画面は上部タブが担う）。公開/フォークは常時。 */}
-              <div className="hidden gap-2 lg:flex">
-                <Button
-                  color="primary"
-                  onClick={() => {
-                    setView('preview');
-                  }}
-                  size="sm"
-                  variant={view === 'preview' ? 'solid' : 'skeleton'}
-                >
-                  プレビュー
-                </Button>
-                <Button
-                  color="primary"
-                  onClick={() => {
-                    setView('code');
-                  }}
-                  size="sm"
-                  variant={view === 'code' ? 'solid' : 'skeleton'}
-                >
-                  コード
-                </Button>
-              </div>
-              <div className="ml-auto flex items-center gap-2">
-                {persistence.projectId === null ? null : (
-                  <>
-                    <ShareControl
-                      hasDraft={
-                        currentProject?.visibility === 'public' &&
-                        currentProject.publishedVersionId !== null &&
-                        persistence.currentVersionId !== null &&
-                        currentProject.publishedVersionId !==
-                          persistence.currentVersionId
-                      }
-                      isPublic={currentProject?.visibility === 'public'}
-                      onChanged={() => {
-                        void persistence.refresh();
-                      }}
-                      projectId={persistence.projectId}
-                      slug={currentProject?.slug ?? null}
-                    />
-                    <IconButton
-                      color="base"
-                      label="フォーク"
-                      onAction={handleFork}
-                      size="sm"
-                    >
-                      <ForkIcon size="sm" />
-                    </IconButton>
-                  </>
-                )}
-                <div className="hidden items-center gap-3 lg:flex">
-                  <CopyCodeButton code={hasResult ? displayedCode : null} />
-                  <IconButton
-                    color="base"
-                    disabled={!hasResult}
-                    label="全画面"
-                    onClick={handleFullscreen}
-                    size="sm"
-                  >
-                    <FullscreenIcon size="sm" />
-                  </IconButton>
-                </div>
-              </div>
-            </div>
-
             <div className="min-h-0 flex-1 overflow-hidden" ref={frameRef}>
               <div className={view === 'preview' ? 'h-full' : 'hidden'}>
                 {previewUrl !== null && hasResult ? (
