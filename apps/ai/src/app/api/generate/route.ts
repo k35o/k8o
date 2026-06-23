@@ -2,7 +2,16 @@ import { convertToModelMessages, streamText, type UIMessage } from 'ai';
 import * as z from 'zod/mini';
 
 import { buildSystemPrompt } from '@/features/generation/application/build-system-prompt';
+import {
+  generationLimit,
+  isOverLimit,
+  windowStartIso,
+} from '@/features/generation/application/rate-limit';
 import { getFuguModel } from '@/features/generation/infrastructure/fugu-provider';
+import {
+  countRecentGenerations,
+  insertGenerationUsage,
+} from '@/features/generation/infrastructure/usage-repository';
 import { requireAllowedSession } from '@/shared/auth/require-allowed-session';
 
 const bodySchema = z.object({
@@ -20,7 +29,14 @@ export async function POST(req: Request): Promise<Response> {
     return new Response(null, { status: 401 });
   }
 
-  // TODO(Sprint 4): ここで userId 単位のレート制限を入れ、暴走時のコストを抑える。
+  // userId 単位のレート制限（スライディング1時間ウィンドウ）。暴走時のコストを抑える。
+  const recent = await countRecentGenerations({
+    userId: session.userId,
+    sinceIso: windowStartIso(Date.now()),
+  });
+  if (isOverLimit(recent, generationLimit())) {
+    return new Response('Rate limit exceeded', { status: 429 });
+  }
 
   let body: unknown;
   try {
@@ -47,6 +63,14 @@ export async function POST(req: Request): Promise<Response> {
     abortSignal: req.signal,
     onError: ({ error }) => {
       console.error('Fugu 生成エラー', error);
+    },
+    onFinish: ({ usage }) => {
+      // 利用量を記録（レート制限のカウントとコスト把握の基盤）。
+      void insertGenerationUsage({
+        userId: session.userId,
+        inputTokens: usage.inputTokens ?? null,
+        outputTokens: usage.outputTokens ?? null,
+      });
     },
   });
 

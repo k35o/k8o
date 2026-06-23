@@ -7,6 +7,9 @@ const fugu = createOpenAICompatible({
   name: 'fugu',
   baseURL: process.env['SAKANA_BASE_URL'] ?? 'https://api.sakana.ai/v1',
   apiKey: process.env['SAKANA_API_KEY'] ?? '',
+  // ストリーミング応答に usage を含めさせる（stream_options.include_usage）。
+  // 利用量ログ(ai_usages)で実トークン数を記録するため。
+  includeUsage: true,
 });
 
 export type FuguModelId = 'fugu' | 'fugu-ultra';
