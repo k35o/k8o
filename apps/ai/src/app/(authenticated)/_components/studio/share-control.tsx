@@ -1,12 +1,14 @@
 'use client';
 
-import { Button, useClipboard, useToast } from '@k8o/arte-odyssey';
+import { useClipboard, useToast } from '@k8o/arte-odyssey';
 import { type FC, useState } from 'react';
 
 import {
   publishProjectAction,
   unpublishProjectAction,
 } from '@/features/share/interface/actions';
+
+import { ShareControlView } from './share-control-view';
 
 type ShareControlProps = {
   projectId: number | null;
@@ -18,6 +20,7 @@ type ShareControlProps = {
 };
 
 // 公開/非公開と共有リンクのコピー。公開は publish 時に本物ビルドが走るため数秒かかる。
+// 描画は ShareControlView に委ね、ここは IO（server action / clipboard / toast）を担う。
 export const ShareControl: FC<ShareControlProps> = ({
   projectId,
   slug,
@@ -83,48 +86,20 @@ export const ShareControl: FC<ShareControlProps> = ({
     onOpen('success', 'リンクをコピーしました');
   };
 
-  if (isPublic) {
-    return (
-      <div className="flex items-center gap-2">
-        {hasDraft ? (
-          <span className="text-fg-mute hidden text-xs sm:inline">
-            未公開の変更あり
-          </span>
-        ) : null}
-        <Button
-          color={hasDraft ? 'primary' : 'gray'}
-          disabled={busy}
-          onAction={handlePublish}
-          size="sm"
-          variant={hasDraft ? 'solid' : 'outline'}
-        >
-          {busy ? '更新中…' : '更新'}
-        </Button>
-        <Button color="gray" onAction={handleCopy} size="sm" variant="outline">
-          リンク
-        </Button>
-        <Button
-          color="gray"
-          disabled={busy}
-          onAction={handleUnpublish}
-          size="sm"
-          variant="outline"
-        >
-          非公開
-        </Button>
-      </div>
-    );
-  }
-
   return (
-    <Button
-      color="primary"
-      disabled={busy}
-      onAction={handlePublish}
-      size="sm"
-      variant="solid"
-    >
-      {busy ? '公開中…' : '公開'}
-    </Button>
+    <ShareControlView
+      busy={busy}
+      hasDraft={hasDraft}
+      isPublic={isPublic}
+      onCopy={() => {
+        void handleCopy();
+      }}
+      onPublish={() => {
+        void handlePublish();
+      }}
+      onUnpublish={() => {
+        void handleUnpublish();
+      }}
+    />
   );
 };
