@@ -1,5 +1,7 @@
 'use client';
 
+/* oxlint-disable react/iframe-missing-sandbox -- Sandbox 配信は別オリジン(*.vercel.run)。allow-same-origin は vite の動作に要るが、ホストとは別オリジンのため親ページへの脱出は起きない */
+
 import { useTheme } from 'next-themes';
 import { useEffect, useRef, useState } from 'react';
 
@@ -68,16 +70,13 @@ const ShareFrame = ({ url, title }: ShareFrameProps) => {
     );
   }, [resolvedTheme]);
 
-  // Sandbox 配信は別オリジン(*.vercel.run)で vite の動作に allow-same-origin が要る（親とは
-  // 別オリジンのため脱出は起きない）。disk 配信(同一オリジン)は allow-scripts のみで完全隔離。
-  const sandbox = url.startsWith('http')
-    ? 'allow-scripts allow-same-origin'
-    : 'allow-scripts';
   return (
+    // Sandbox 配信は別オリジン(*.vercel.run)で vite の動作に allow-same-origin が要る
+    // （親とは別オリジンのため iframe からの脱出は起きない）。
     <iframe
       className="size-full border-0"
       ref={ref}
-      sandbox={sandbox}
+      sandbox="allow-scripts allow-same-origin"
       src={initialSrc}
       title={title}
     />
