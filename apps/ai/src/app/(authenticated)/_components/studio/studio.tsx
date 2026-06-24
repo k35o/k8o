@@ -13,6 +13,7 @@ import {
 } from '@k8o/arte-odyssey';
 import { DefaultChatTransport, type UIMessage } from 'ai';
 import { useTheme } from 'next-themes';
+import { useRouter, useSearchParams } from 'next/navigation';
 import {
   type KeyboardEvent,
   useEffect,
@@ -64,6 +65,15 @@ export const Studio = () => {
   const lastPromptRef = useRef('');
   const { resolvedTheme } = useTheme();
   const persistence = useStudioPersistence();
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  // URL の ?project=<id> を初回レンダーで一度だけ拾い、リロード/ブックマークから復元する。
+  const bootProjectIdRef = useRef<number | null | undefined>(undefined);
+  if (bootProjectIdRef.current === undefined) {
+    const raw = searchParams.get('project');
+    const id = raw === null ? Number.NaN : Number(raw);
+    bootProjectIdRef.current = Number.isInteger(id) && id > 0 ? id : null;
+  }
 
   const { messages, sendMessage, status, error, setMessages, stop } = useChat({
     transport: new DefaultChatTransport({ api: '/api/generate' }),
@@ -203,6 +213,7 @@ export const Studio = () => {
     setHistoryOpen(false);
     setView('preview');
     setMobileTab('chat');
+    router.replace('/');
   };
 
   const handleSelectProject = async (id: number): Promise<void> => {
@@ -264,6 +275,32 @@ export const Studio = () => {
       await handleSelectProject(newId);
     }
   };
+
+  // 初回マウント時、URL に ?project=<id> があればそのプロジェクトを復元する。
+  // 初回レンダーの loader を ref に固定し依存を安定させ、Strict Mode の二重実行でも
+  // bootedRef で1回だけロードする。
+  const bootLoadRef = useRef(handleSelectProject);
+  const bootedRef = useRef(false);
+  useEffect(() => {
+    if (bootedRef.current) {
+      return;
+    }
+    bootedRef.current = true;
+    const bootId = bootProjectIdRef.current;
+    if (bootId !== null && bootId !== undefined) {
+      void bootLoadRef.current(bootId);
+    }
+  }, []);
+
+  // 選択中プロジェクトを URL(?project=<id>) に反映する。projectId が null のとき
+  // （初期 / boot 中 / 新規）は書き換えない。boot の ?project を握り潰さず、実行回数ではなく
+  // 値で判定するため Strict Mode の二重実行でも安全。新規化での「/」戻しは handleNewProject で行う。
+  useEffect(() => {
+    if (persistence.projectId === null) {
+      return;
+    }
+    router.replace(`/?project=${persistence.projectId.toString()}`);
+  }, [persistence.projectId, router]);
 
   return (
     <div className="flex min-h-0 flex-1 flex-col">

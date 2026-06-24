@@ -19,6 +19,13 @@ const PORT = 5173;
 const TIMEOUT_MS = 5 * 60 * 1000;
 const READY_TRIES = 40;
 
+// snapshot 由来の短いタグ。sandbox 名に付けることで、snapshot が変わると名前も変わり、
+// 旧 snapshot で作った sandbox を get で再利用しなくなる（= テンプレ更新が即プレビューに反映）。
+const SNAPSHOT_TAG = SNAPSHOT_ID.replaceAll(/[^a-z0-9]/giu, '')
+  .slice(-12)
+  .toLowerCase();
+const named = (name: string): string => `${name}-${SNAPSHOT_TAG}`;
+
 // デプロイ内は OIDC（VERCEL_OIDC_TOKEN）が自動で効くため creds 不要。ローカルでは
 // VERCEL_TOKEN を明示渡し（team/project は公開ID）。
 const creds = ():
@@ -48,13 +55,16 @@ const getOrCreate = async (name: string): Promise<Sandbox> => {
       'AI_TEMPLATE_SNAPSHOT_ID が未設定です（snapshot を bake してください）',
     );
   }
-  const existing = await Sandbox.get({ name, ...creds() }).catch(() => null);
+  const fullName = named(name);
+  const existing = await Sandbox.get({ name: fullName, ...creds() }).catch(
+    () => null,
+  );
   if (existing !== null) {
     return existing;
   }
   // snapshot ソース指定時は runtime を渡さない（snapshot から継承）。
   return Sandbox.create({
-    name,
+    name: fullName,
     source: { type: 'snapshot', snapshotId: SNAPSHOT_ID },
     ports: [PORT],
     resources: { vcpus: 1 },
@@ -116,7 +126,9 @@ export const writeSandboxPreview = async (
 
 // 名前付きサンドボックスを停止する（非公開化時の後始末。ベストエフォート）。
 export const stopSandboxPreview = async (name: string): Promise<void> => {
-  const sandbox = await Sandbox.get({ name, ...creds() }).catch(() => null);
+  const sandbox = await Sandbox.get({ name: named(name), ...creds() }).catch(
+    () => null,
+  );
   if (sandbox !== null) {
     await sandbox.stop().catch(() => undefined);
   }
