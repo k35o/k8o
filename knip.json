@@ -17,6 +17,9 @@
     },
     "apps/admin": {
       "ignoreDependencies": ["chromatic"]
+    },
+    "apps/ai": {
+      "ignoreDependencies": ["chromatic"]
     }
   }
 }

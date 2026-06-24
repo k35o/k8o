@@ -1,0 +1,20 @@
+@import 'tailwindcss';
+@import '@k8o/arte-odyssey/styles.css';
+
+/* 生成コードが使う任意ユーティリティクラスを Tailwind に走査させる（arte-odyssey 自身の
+   クラスは styles.css に precompile 済み。@source はあくまで生成コード用）。 */
+@source './generated/**/*.{tsx,ts}';
+
+:root {
+  --font-noto-sans-jp: 'Noto Sans JP', system-ui, sans-serif;
+  --font-m-plus-2: 'M PLUS 2', system-ui, sans-serif;
+}
+
+/* 色クラスを持たない要素（Heading 等）がブラウザ既定の黒を継承しないよう、
+   body にセマンティックトークンのベース色を当てる。.dark で自動追従する。 */
+body {
+  margin: 0;
+  font-family: var(--font-m-plus-2);
+  color: var(--color-fg-base);
+  background-color: var(--color-bg-surface);
+}

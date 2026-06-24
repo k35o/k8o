@@ -1,5 +1,11 @@
 /* oxlint-disable import/max-dependencies -- Drizzle schema の export map と relations を一箇所に集約するため */
 
+import {
+  aiProjectVersions,
+  aiProjectVersionsRelations,
+} from './ai-project-versions';
+import { aiProjects, aiProjectsRelations } from './ai-projects';
+import { aiUsages, aiUsagesRelations } from './ai-usages';
 import { articleSources, articleSourcesRelations } from './article-sources';
 import { articles, articlesRelations } from './articles';
 import {
@@ -51,6 +57,9 @@ export const schema = {
   slideTag,
   articleSources,
   articles,
+  aiProjects,
+  aiProjectVersions,
+  aiUsages,
 };
 
 export const relations = {
@@ -69,4 +78,7 @@ export const relations = {
   slideTagRelations,
   articleSourcesRelations,
   articlesRelations,
+  aiProjectsRelations,
+  aiProjectVersionsRelations,
+  aiUsagesRelations,
 };

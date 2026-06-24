@@ -17,6 +17,10 @@
       "types": "./src/tokenize.ts",
       "default": "./src/tokenize.ts"
     },
+    "./theme": {
+      "types": "./src/theme.ts",
+      "default": "./src/theme.ts"
+    },
     "./styles.css": "./styles/annotate.css"
   },
   "scripts": {

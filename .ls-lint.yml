@@ -1,3 +1,6 @@
+ignore:
+  - apps/ai/sandbox-template
+
 ls:
   src:
     .dir: kebab-case | regex:^_*[a-z-\[\]\(\)@.]* | regex:^__test__$
