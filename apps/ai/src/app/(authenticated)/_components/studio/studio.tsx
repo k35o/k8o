@@ -21,6 +21,7 @@ import {
   useState,
 } from 'react';
 
+import { ThemedPreviewIframe } from '@/app/_components/preview-iframe';
 import { ToggleTheme } from '@/app/_components/toggle-theme';
 import {
   generationReducer,
@@ -37,7 +38,6 @@ import {
 
 import { CodePanel } from './code-panel';
 import { CopyCodeButton } from './copy-code-button';
-import { PreviewFrame } from './preview-frame';
 import { ProjectHistory } from './project-history';
 import { ShareControl } from './share-control';
 import { useStudioPersistence } from './use-studio-persistence';
@@ -551,9 +551,10 @@ export const Studio = () => {
           <div className="min-h-0 flex-1 overflow-hidden" ref={frameRef}>
             <div className={view === 'preview' ? 'h-full' : 'hidden'}>
               {previewUrl !== null && hasResult ? (
-                <PreviewFrame
+                <ThemedPreviewIframe
                   key={previewNonce}
                   theme={resolvedTheme}
+                  title="preview"
                   url={previewUrl}
                 />
               ) : (

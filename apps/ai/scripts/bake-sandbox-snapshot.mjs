@@ -3,17 +3,20 @@
 // （env の手編集は不要。テンプレ変更時の焼き忘れは template-snapshot.test.ts が検知）。
 // 認証は VERCEL_TOKEN（fnox exec で注入）＋ team/project ID 明示渡し。
 // 使い方: fnox exec -- node apps/ai/scripts/bake-sandbox-snapshot.mjs
-import { readdir, readFile, writeFile } from 'node:fs/promises';
+import { readFile, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 
 import { Sandbox } from '@vercel/sandbox';
 
-import { computeTemplateHash } from '../src/features/preview/infrastructure/template-hash.ts';
-
-const TEAM_ID = 'team_K1poAqb11IhJpOHw17Z5qhvC';
-const PROJECT_ID = 'prj_Iz1SHi1C6rgwFz2YngTzeiRdsFE8';
-const WORKDIR = '/vercel/sandbox';
-const SKIP_DIRS = new Set(['node_modules', 'dist', '.vite', '.git']);
+import {
+  SANDBOX_PROJECT_ID,
+  SANDBOX_TEAM_ID,
+  SANDBOX_WORKDIR,
+} from '../src/features/preview/infrastructure/sandbox-config.ts';
+import {
+  collectTemplateFiles,
+  computeTemplateHash,
+} from '../src/features/preview/infrastructure/template-hash.ts';
 
 const token = process.env.VERCEL_TOKEN;
 if (!token) {
@@ -29,21 +32,7 @@ const pointerPath = path.resolve(
   'src/features/preview/infrastructure/template-snapshot.ts',
 );
 
-const collect = async (dir) => {
-  const ents = await readdir(dir, { withFileTypes: true });
-  const lists = await Promise.all(
-    ents.map(async (e) => {
-      const abs = path.join(dir, e.name);
-      if (e.isDirectory()) {
-        return SKIP_DIRS.has(e.name) ? [] : collect(abs);
-      }
-      return e.isFile() ? [abs] : [];
-    }),
-  );
-  return lists.flat();
-};
-
-const absFiles = await collect(templateDir);
+const absFiles = await collectTemplateFiles(templateDir);
 const files = await Promise.all(
   absFiles.map(async (abs) => ({
     path: path.relative(templateDir, abs).split(path.sep).join('/'),
@@ -56,8 +45,8 @@ for (const f of files) console.log(`  ${f.path}`);
 console.log('creating sandbox...');
 const sandbox = await Sandbox.create({
   token,
-  teamId: TEAM_ID,
-  projectId: PROJECT_ID,
+  teamId: SANDBOX_TEAM_ID,
+  projectId: SANDBOX_PROJECT_ID,
   runtime: 'node24',
   timeout: 10 * 60 * 1000,
 });
@@ -67,7 +56,7 @@ try {
   const ci = await sandbox.runCommand({
     cmd: 'npm',
     args: ['ci'],
-    cwd: WORKDIR,
+    cwd: SANDBOX_WORKDIR,
     timeoutMs: 8 * 60 * 1000,
   });
   console.log(`npm ci exit=${ci.exitCode}`);

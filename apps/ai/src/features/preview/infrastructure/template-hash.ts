@@ -3,10 +3,11 @@ import { readdir, readFile } from 'node:fs/promises';
 import path from 'node:path';
 
 // snapshot を焼く元（sandbox-template）の bake 対象に含めるべきでないもの。
-// bake-sandbox-snapshot.mjs の収集ロジックと揃える。
 const SKIP_DIRS = new Set(['node_modules', 'dist', '.vite', '.git']);
 
-const collect = async (dir: string): Promise<string[]> => {
+// sandbox-template 配下のファイルの絶対パスを再帰収集する（SKIP_DIRS を除外）。
+// bake スクリプトと computeTemplateHash が同じ走査を使うための単一実装。
+export const collectTemplateFiles = async (dir: string): Promise<string[]> => {
   const entries = await readdir(dir, { withFileTypes: true });
   const files: string[] = [];
   const subdirs: string[] = [];
@@ -20,7 +21,9 @@ const collect = async (dir: string): Promise<string[]> => {
       files.push(abs);
     }
   }
-  const nested = await Promise.all(subdirs.map((sub) => collect(sub)));
+  const nested = await Promise.all(
+    subdirs.map((sub) => collectTemplateFiles(sub)),
+  );
   return [...files, ...nested.flat()];
 };
 
@@ -30,7 +33,7 @@ const collect = async (dir: string): Promise<string[]> => {
 export const computeTemplateHash = async (
   templateDir: string,
 ): Promise<string> => {
-  const absFiles = await collect(templateDir);
+  const absFiles = await collectTemplateFiles(templateDir);
   const entries = await Promise.all(
     absFiles.map(async (abs) => ({
       rel: path.relative(templateDir, abs).split(path.sep).join('/'),
