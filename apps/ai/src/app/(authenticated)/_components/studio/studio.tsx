@@ -140,6 +140,9 @@ export const Studio = () => {
   const lastAssistant = messages.findLast(
     (message) => message.role === 'assistant',
   );
+  // 生成中表示は「会話の最後のメッセージ」だけに付ける。submitted 中はまだ assistant が
+  // 増えていない（最後は user メッセージ）ので、直前ターンの回答が「考え中」に化けない。
+  const lastMessageId = messages.at(-1)?.id;
   const streamingCode =
     lastAssistant === undefined
       ? null
@@ -480,7 +483,7 @@ export const Studio = () => {
                     );
                   }
                   const description = parseGeneration(text).meta?.description;
-                  const working = isBusy && message.id === lastAssistant?.id;
+                  const working = isBusy && message.id === lastMessageId;
                   return (
                     <div className="flex flex-col gap-1.5" key={message.id}>
                       <span className="text-fg-mute text-xs font-bold">AI</span>
