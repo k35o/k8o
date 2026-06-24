@@ -19,8 +19,7 @@ type ShareControlProps = {
   onChanged: () => void;
 };
 
-// 公開/非公開と共有リンクのコピー。公開は publish 時に本物ビルドが走るため数秒かかる。
-// 描画は ShareControlView に委ね、ここは IO（server action / clipboard / toast）を担う。
+// 公開は publish 時に本物ビルドが走るため数秒かかる。
 export const ShareControl: FC<ShareControlProps> = ({
   projectId,
   slug,
@@ -54,7 +53,6 @@ export const ShareControl: FC<ShareControlProps> = ({
       await copyLink(res.slug);
       onOpen('success', '公開しました。リンクをコピーしました');
     } catch {
-      // ビルド失敗（生成コードのビルドエラー等）でも busy を確実に解除する。
       onOpen('error', '公開に失敗しました');
     } finally {
       setBusy(false);

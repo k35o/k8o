@@ -21,7 +21,6 @@ export type PublicShare = {
   entryUrl: string;
 };
 
-// 公開する: 最新版を本物ビルドし、可視性を public にして公開版IDを記録する。
 export const publishProject = async (input: {
   userId: string;
   projectId: number;
@@ -49,7 +48,6 @@ export const publishProject = async (input: {
   };
 };
 
-// 非公開に戻す: 可視性を private にし、公開バンドルを削除する。
 export const unpublishProject = async (input: {
   userId: string;
   projectId: number;
@@ -70,18 +68,18 @@ export const unpublishProject = async (input: {
   if (!ok) {
     return false;
   }
-  // DB を private にした時点で配信は止まる（アセットルートが可視性で権威付け）。バンドル削除は
-  // ベストエフォート（失敗しても孤児が残るだけで配信はされない）。
+  // DB を private にした時点で配信は止まる。バンドル削除は失敗しても孤児が残るだけなので
+  // ベストエフォート。
   try {
     await shareProvider.remove(project.slug);
   } catch {
-    // 孤児バンドルは GC 対象。配信は private で止まっているので無視する。
+    // 孤児バンドルは GC 対象。
   }
   return true;
 };
 
-// アセット配信（認証なし）。ディスク存在ではなく DB の現在の可視性で権威付けする。
-// 非公開化の部分失敗等で孤児バンドルが残っても、private なら配信しない（fail-closed）。
+// アセット配信（認証なし）。ディスク存在ではなく DB の現在の可視性で権威付けする
+// （孤児バンドルが残っても private なら配信しない: fail-closed）。
 export const readPublicAsset = async (
   slug: string,
   segments: readonly string[],
@@ -92,7 +90,6 @@ export const readPublicAsset = async (
   return readSharedAsset(slug, segments);
 };
 
-// 公開ページ用（認証なし）。slug から公開プロジェクトと配信ベースURLを返す。
 export const getPublicShare = async (
   slug: string,
 ): Promise<PublicShare | null> => {

@@ -14,7 +14,6 @@ import {
   saveGeneration,
 } from '../application/projects';
 
-// 生成結果を履歴として保存する。未許可は null（クライアントは保存失敗として無視）。
 export const saveGenerationAction = async (input: {
   projectId: number | null;
   parentVersionId: number | null;
@@ -52,7 +51,6 @@ export const loadProjectAction = async (
   return getProject({ userId: session.userId, projectId });
 };
 
-// 現在のプロジェクトを複製して新しいフォークを作る。新しい projectId を返す。
 export const forkProjectAction = async (
   sourceProjectId: number,
 ): Promise<{ projectId: number } | null> => {

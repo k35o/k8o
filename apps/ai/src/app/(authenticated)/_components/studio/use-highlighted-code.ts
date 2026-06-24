@@ -5,9 +5,8 @@ import { useEffect, useRef, useState } from 'react';
 
 import { highlightTsx } from '@/features/highlight/interface/actions';
 
-// コードが確定したら（ストリーミング中は除く）サーバアクションでハイライトを取得する。
-// import type なので shiki 本体はクライアントバンドルに載らない（型は消える）。
-// ストリーミング中は1トークン毎に往復させず、確定後に一度だけハイライトする。
+// コード確定後に一度だけサーバアクションでハイライトを取得する（ストリーミング中は往復させない）。
+// import type なので shiki 本体はクライアントバンドルに載らない。
 export const useHighlightedCode = (
   code: string | null,
   isStreaming: boolean,
@@ -23,7 +22,6 @@ export const useHighlightedCode = (
     if (code === null || isStreaming) {
       return;
     }
-    // 既に同じコードをハイライト済みなら再取得しない。
     if (state?.code === code) {
       return;
     }
@@ -37,6 +35,6 @@ export const useHighlightedCode = (
     })();
   }, [code, isStreaming, state]);
 
-  // 現在のコードに対応するハイライトのみ返す（不一致＝取得中はプレーン表示にさせる）。
+  // 不一致（＝取得中）はプレーン表示にさせる。
   return state?.code === code ? state.data : null;
 };

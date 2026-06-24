@@ -30,8 +30,7 @@ export type StudioPersistence = {
   refresh: () => Promise<void>;
 };
 
-// 履歴の保存/一覧/読込を担う。現在の projectId / version は ref で持ち、useChat の
-// onFinish のような一度きりのクロージャから最新値を参照できるようにする（stale 回避）。
+// projectId / version は ref で持ち、useChat の onFinish のような一度きりのクロージャから最新値を参照する（stale 回避）。
 export const useStudioPersistence = (): StudioPersistence => {
   const [projects, setProjects] = useState<ProjectListItem[]>([]);
   const [projectId, setProjectId] = useState<number | null>(null);

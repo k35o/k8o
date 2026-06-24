@@ -52,7 +52,7 @@ export const Studio = () => {
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [previewNonce, setPreviewNonce] = useState(0);
   const [view, setView] = useState<PanelView>('preview');
-  // 小画面では2ペインを並べられないので、チャット/プレビュー/コードをタブで1つずつ表示する。
+  // 小画面では2ペインを並べられないので、タブで1つずつ表示する。
   const [mobileTab, setMobileTab] = useState<'chat' | 'preview' | 'code'>(
     'chat',
   );
@@ -60,7 +60,7 @@ export const Studio = () => {
   const [historyOpen, setHistoryOpen] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const frameRef = useRef<HTMLDivElement>(null);
-  // 直近に送った指示。onFinish（一度きりのクロージャ）から版に保存し、会話復元に使う。
+  // 直近の指示。onFinish（一度きりのクロージャ）から版に保存して会話復元に使う。
   const lastPromptRef = useRef('');
   const { resolvedTheme } = useTheme();
   const persistence = useStudioPersistence();
@@ -77,14 +77,12 @@ export const Studio = () => {
           meta: parsed.meta,
           createdAt: Date.now(),
         });
-        // 履歴に永続化（projectId が無ければ新規プロジェクト＋初版を作る）。
         // prompt も版に残し、履歴から読み込んだときに会話を復元できるようにする。
         void persistence.save({
           code: parsed.code,
           meta: parsed.meta,
           prompt: lastPromptRef.current,
         });
-        // プレビューに反映（テンプレへ書き込み→iframe を貼り直して最新を表示）。
         void (async () => {
           if (parsed.code === null) {
             return;
@@ -97,8 +95,7 @@ export const Studio = () => {
             setMobileTab('preview');
             return;
           }
-          // 不正 import 等で反映できなかった。エラーを次ターンの system に流して自動修復を促し、
-          // ユーザーにも提示する（プレビューは前回の正常版のまま＝白画面にしない）。
+          // エラーを次ターンの system に流して自動修復を促す（プレビューは前回の正常版のまま＝白画面にしない）。
           if (res.error !== undefined) {
             setApplyError(res.error);
             dispatch({ type: 'build-failed', errors: res.error });
@@ -137,7 +134,6 @@ export const Studio = () => {
     streamingCode === null ? 0 : streamingCode.split('\n').length;
   const lineSuffix =
     streamingLines > 0 ? `（${streamingLines.toString()} 行）` : '';
-  // 生成中に「何をしているか」を段階表示する（送信直後=考え中 / ストリーミング中=生成中+行数）。
   const generatingStatus =
     status === 'submitted'
       ? '考えています…'
@@ -146,8 +142,7 @@ export const Studio = () => {
     ? (streamingCode ?? state.currentFile)
     : state.currentFile;
   const hasResult = state.currentFile !== null;
-  // 履歴から読み込んだ直後はチャットが空になるため、空状態でも「何を編集中か」を示す
-  // （汎用プロンプトのままだと新規開始のように見えてトークが消えたと感じる）。
+  // 履歴から読み込んだ直後はチャットが空になるため、空状態でも「何を編集中か」を示す。
   const emptyStateTitle = hasResult
     ? `「${state.versions.at(-1)?.meta.title ?? 'プロジェクト'}」を編集中`
     : 'UI を生成しましょう';
@@ -216,9 +211,8 @@ export const Studio = () => {
       meta: project.meta,
       createdAt: Date.now(),
     });
-    // 会話を復元する（履歴を切り替えてもトークが消えないように）。各版を
-    // [user(指示) → assistant(meta JSON)] に展開。assistant は json フェンスにすることで
-    // 既存の描画ロジック（parseGeneration の description 抽出）でそのまま説明文が出る。
+    // 履歴を切り替えてもトークが消えないよう会話を復元する。各版を [user(指示) → assistant(meta JSON)] に展開し、
+    // assistant は json フェンスにすることで既存の描画ロジック（parseGeneration の description 抽出）で説明文が出る。
     const restored: UIMessage[] = project.conversation.flatMap(
       (turn, index): UIMessage[] => {
         const turnMessages: UIMessage[] = [];
@@ -276,13 +270,7 @@ export const Studio = () => {
         projects={persistence.projects}
       />
 
-      {/* トップバー（全幅フラット）: ブランド/プロジェクト名 ＋ プレビュー/コード切替(lg)
-          ＋ 共有/フォーク/コピー(lg)/全画面(lg) ＋ 履歴/新規/テーマ。カードで囲まず全画面化し、
-          作業領域を最大化する。小画面では flex-wrap でタイトル行と操作行の2段に折り返す。 */}
       <div className="border-border-mute flex flex-wrap items-center gap-x-4 gap-y-2 border-b px-4 py-2">
-        {/* 左: ブランド ＋ プロジェクト名（全タブで常時可視）。小画面では basis-full で
-              1行を専有しタイトルが潰れないようにする。lg ではボディのチャット列幅(440px)に
-              固定し、続く プレビュー/コード切替 がプレビュー列の上（仕切り際）に来るようにする。 */}
         <div className="flex min-w-0 basis-full items-center gap-2 lg:w-110 lg:shrink-0 lg:grow-0 lg:basis-auto">
           <span className="text-fg-base shrink-0 text-sm font-bold">
             k8o AI Studio
@@ -298,7 +286,6 @@ export const Studio = () => {
             </span>
           )}
         </div>
-        {/* プレビュー/コード切替は lg のみ（小画面は下のタブ行が担う）。 */}
         <div className="hidden gap-2 lg:flex">
           <Button
             color="primary"
@@ -321,8 +308,6 @@ export const Studio = () => {
             コード
           </Button>
         </div>
-        {/* 操作群（共有/フォーク/コピー/全画面/履歴/新規/テーマ）。lg では ml-auto で右端へ寄せ、
-            プレビュー/コード切替と視覚的に分離する。共有/フォークは projectId gated。コピー/全画面は lg のみ。 */}
         <div className="flex shrink-0 items-center gap-2 lg:ml-auto">
           {persistence.projectId === null ? null : (
             <>
@@ -363,8 +348,6 @@ export const Studio = () => {
               <FullscreenIcon size="sm" />
             </IconButton>
           </div>
-          {/* グローバル操作（プロジェクトに依らない）: 履歴=過去プロジェクトへのナビ /
-                新規=新規作成 / テーマ切替。lg では区切り線で上の操作群と分ける。 */}
           <div className="border-border-mute mx-1 hidden h-5 border-l lg:block" />
           <Button
             color="gray"
@@ -388,8 +371,6 @@ export const Studio = () => {
         </div>
       </div>
 
-      {/* 小画面タブ [チャット|プレビュー|コード]。本体の直上に置き、枠の近くで切り替える。
-            lg では上の view タブが担うので隠す。 */}
       <div className="flex gap-2 px-4 py-2 lg:hidden">
         <Button
           color="primary"
@@ -425,11 +406,8 @@ export const Studio = () => {
         </Button>
       </div>
 
-      {/* ボディ: 2ペイングリッド（チャット ｜ プレビュー/コード）。仕切りはチャットペインの
-            右辺(lg:border-r)1本のみ。gap は付けず面を連続させる。grid-rows-1 で単一ペインも
-            本体高さを満たす（小画面でメッセージがスクロールするように）。 */}
+      {/* grid-rows-1 で単一ペインも本体高さを満たす（小画面でメッセージがスクロールするように）。 */}
       <div className="grid min-h-0 flex-1 grid-rows-1 lg:grid-cols-[440px_minmax(0,1fr)]">
-        {/* チャットペイン（lg は常時＋右辺に仕切り、小画面は mobileTab==='chat' のみ）。 */}
         <div
           className={`border-border-mute min-h-0 min-w-0 flex-col lg:flex lg:border-r ${
             mobileTab === 'chat' ? 'flex' : 'hidden'
@@ -531,7 +509,6 @@ export const Studio = () => {
                 </Button>
               </div>
               <div className="flex items-center gap-2">
-                {/* 送信ショートカットは専用行を持たず、ボタン横に控えめに添える（lg のみ）。 */}
                 <span className="text-fg-mute hidden text-xs lg:inline">
                   ⌘/Ctrl+Enter
                 </span>
@@ -546,7 +523,6 @@ export const Studio = () => {
                 </Button>
               </div>
             </div>
-            {/* エラー時のみ行を出す（通常はヒント行を持たず、入力エリアを省スペースに）。 */}
             {applyError === null ? (
               error === undefined ? null : (
                 <span className="text-fg-error text-xs">
@@ -561,8 +537,6 @@ export const Studio = () => {
           </div>
         </div>
 
-        {/* プレビュー/コードペイン（lg は常時、小画面は mobileTab!=='chat'）。
-              操作群は共通ヘッダーへ移したので、ここは表示領域のみ。 */}
         <div
           className={`min-h-0 min-w-0 flex-col overflow-hidden lg:flex ${
             mobileTab === 'chat' ? 'hidden' : 'flex'

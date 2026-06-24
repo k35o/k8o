@@ -17,9 +17,6 @@ type ShareControlViewProps = {
   onUnpublish: () => void;
 };
 
-// 共有操作の presentational 部分（IO は ShareControl コンテナが持つ）。状態を鍵アイコンで
-// 示し（🔒=非公開 / 🔓=公開）、押すとメニューで公開状態を切り替える（公開する/非公開にする）
-// ＋リンクコピー/再公開。
 export const ShareControlView: FC<ShareControlViewProps> = ({
   isPublic,
   hasDraft,
@@ -45,8 +42,7 @@ export const ShareControlView: FC<ShareControlViewProps> = ({
 
   return (
     <DropdownMenu.Root placement="bottom-end">
-      {/* IconTrigger は size 固定（md）で他のアイコンと揃わないため、その実装
-          （Popover.Trigger + IconButton）を size="sm" で自前展開する。 */}
+      {/* IconTrigger は size 固定（md）で他と揃わないため、Popover.Trigger + IconButton を size="sm" で自前展開する。 */}
       <Popover.Trigger
         renderItem={(props) => (
           <IconButton

@@ -5,8 +5,7 @@ import { index, integer, sqliteTable, text } from 'drizzle-orm/sqlite-core';
 
 import { aiProjects } from './ai-projects';
 
-// プロジェクトの「版」。履歴・undo・分岐の単位。content はアプリ非依存の JSON ペイロード
-// （ui-studio は { code: string, meta: {...} }、別の AI 機能は別の形を入れてよい）。
+// content はアプリ非依存の JSON ペイロード（ui-studio は { code, meta }、他アプリは別の形でよい）。
 export const aiProjectVersions = sqliteTable(
   'ai_project_versions',
   {

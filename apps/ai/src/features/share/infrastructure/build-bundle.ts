@@ -12,15 +12,10 @@ import {
 import { tmpdir } from 'node:os';
 import path from 'node:path';
 
-// sandbox-template を隔離した一時ディレクトリにコピーして生成コードを差し込み、vite build で
-// 自己完結の静的バンドルを作る。出力はディスクに残さず Buffer 配列で返すため、配置先
-// （ローカルディスク / 本番の Vercel Blob）を sink 側で選べる。実行時 eval は使わず、
-// ビルド時にエラーも捕捉できる。本番のライブプレビュー/共有はこの build を共通利用する。
-
 const TEMPLATE_DIR = path.resolve(process.cwd(), 'sandbox-template');
 
 export type BundleFile = {
-  // バンドル内の相対パス（'index.html' / 'assets/index-xxxx.js' 等。区切りは常に '/'）。
+  // バンドル内の相対パス。区切りは常に '/'。
   path: string;
   body: Buffer;
   contentType: string;
@@ -58,7 +53,6 @@ const runViteBuild = (cwd: string, outDir: string): Promise<void> =>
         resolve();
         return;
       }
-      // 失敗原因（生成コードのビルドエラー等）をサーバログに残す。
       reject(
         new Error(
           `vite build failed (exit ${code ?? 'null'}): ${stderr.slice(-2000)}`,
@@ -67,7 +61,6 @@ const runViteBuild = (cwd: string, outDir: string): Promise<void> =>
     });
   });
 
-// ビルド出力ディレクトリを再帰走査して全ファイルを Buffer で読み込む。
 const collectBuildOutput = async (outDir: string): Promise<BundleFile[]> => {
   const entries = await readdir(outDir, {
     recursive: true,
@@ -88,8 +81,6 @@ const collectBuildOutput = async (outDir: string): Promise<BundleFile[]> => {
   );
 };
 
-// 生成コードを sandbox-template に差し込んで vite build し、出力を Buffer 配列で返す。
-// ディスク永続化はしない（配置は sink の責務）。
 export const buildBundle = async (code: string): Promise<BundleFile[]> => {
   const buildDir = await mkdtemp(path.join(tmpdir(), 'k8o-build-'));
   const outDir = await mkdtemp(path.join(tmpdir(), 'k8o-out-'));
@@ -106,7 +97,7 @@ export const buildBundle = async (code: string): Promise<BundleFile[]> => {
         );
       },
     });
-    // node_modules はテンプレートのものを symlink で共有（コピーは重い）。
+    // node_modules はコピーが重いのでテンプレートのものを symlink で共有。
     await symlink(
       path.join(TEMPLATE_DIR, 'node_modules'),
       path.join(buildDir, 'node_modules'),

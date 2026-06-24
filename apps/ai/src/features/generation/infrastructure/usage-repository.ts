@@ -22,7 +22,6 @@ export const insertGenerationUsage = async (input: {
   });
 };
 
-// 指定時刻以降の当該ユーザーの生成回数（スライディングウィンドウのカウント）。
 export const countRecentGenerations = async (input: {
   userId: string;
   sinceIso: string;

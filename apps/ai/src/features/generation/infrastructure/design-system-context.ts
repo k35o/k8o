@@ -1,11 +1,7 @@
 import { meta, tokens } from '@k8o/arte-odyssey/tokens';
 
-// arte-odyssey のセマンティックトークンから「生成コードで使ってよいクラスの語彙」を
-// 自動生成する。arte-odyssey 更新で色やスケールが増減してもここが追従するため、
-// プロンプトと実体がズレてハルシネーション（存在しないクラス生成）を誘発しない。
-// 標準 Tailwind カラー（bg-red-500 等）は語彙に含めない＝モデルに使わせない。
-
-// tokens.theme.<namespace> はトークン名をキーに持つオブジェクト。キー名がクラスの語幹になる。
+// arte-odyssey のトークンから「生成コードで使ってよいクラスの語彙」を自動生成し、プロンプトと実体のズレ（存在しないクラスのハルシネーション）を防ぐ。標準 Tailwind カラーは語彙に含めない＝使わせない。
+// tokens.theme.<namespace> はトークン名をキーに持つオブジェクトで、キー名がクラスの語幹になる。
 const colorRefs: readonly string[] = Object.keys(tokens.theme.color);
 const radiusRefs: readonly string[] = Object.keys(tokens.theme.radius);
 const textRefs: readonly string[] = Object.keys(tokens.theme.text);
@@ -50,9 +46,7 @@ export const fontFamilyClasses: readonly string[] = fontRefs.map(
 
 export const fontVariables: readonly string[] = meta.unresolved;
 
-// arte-odyssey の主要コンポーネント（barrel export より, v10.2.0 で抽出）。
-// 色トークンと違いコンポーネント構成の変化は稀なため、ここは arte-odyssey の
-// major 更新時に手動 refresh する運用とする。
+// arte-odyssey の主要コンポーネント（barrel export より v10.2.0 で抽出）。major 更新時に手動 refresh。
 export const componentAllowlist: readonly string[] = [
   'Accordion',
   'Alert',
@@ -101,10 +95,7 @@ export const componentAllowlist: readonly string[] = [
   'Tooltip',
 ];
 
-// arte-odyssey が実際に export するアイコン名（barrel より抽出, v10.2.0）。
-// モデルは <名前>Icon という命名「パターン」を渡すと BellIcon / HomeIcon のような
-// 他ライブラリ由来の存在しない名前を平気で生成し import が壊れる。実在名のみを語彙として渡し、
-// それ以外は「存在しない」と明示することで幻覚 import を封じる。major 更新時に手動 refresh。
+// arte-odyssey が実際に export するアイコン名（barrel より v10.2.0 で抽出）。実在名のみを語彙として渡し、他ライブラリ由来の名前（BellIcon 等）を幻覚 import するのを封じる。major 更新時に手動 refresh。
 export const iconAllowlist: readonly string[] = [
   'AIIcon',
   'AccessibilityIcon',
@@ -164,10 +155,7 @@ export const iconAllowlist: readonly string[] = [
   'ViewOffIcon',
 ];
 
-// 各コンポーネントの実 prop を arte-odyssey の .d.mts から抽出して要約した API リファレンス。
-// モデルは「名前」は知っていても prop の形（children か prop か、列挙値）を取り違え、
-// renderInput 不在や存在しない variant で runtime エラー→白画面を起こす。実 API を明示して防ぐ。
-// arte-odyssey の major 更新時に手動 refresh（抽出元: dist/components/**/<name>.d.mts）。
+// 実 prop を arte-odyssey の .d.mts から抽出・要約した API リファレンス。prop の取り違え（renderInput 不在・存在しない variant）による runtime エラー→白画面を防ぐ。major 更新時に手動 refresh（抽出元: dist/components/**/<name>.d.mts）。
 export const componentApiReference: string = [
   '- Heading: <Heading type="h1"|"h2"|..|"h6">テキスト</Heading>',
   '- Card: <Card appearance="shadow"|"bordered">…</Card>（内側パディングは持たない。<div className="p-8"> で包む）',
@@ -191,8 +179,7 @@ export const componentApiReference: string = [
   '- Dialog / Drawer / Modal / Popover / DropdownMenu / Tabs / Accordion / Breadcrumb / Pagination / Table は複合コンポーネント（トリガ/サブ要素を組み合わせる）。API に自信が無ければ使わず、素の <div> + トークンで組む。',
 ].join('\n');
 
-// プロンプトでは前面に出さないが import 自体は正当な export（Provider/フック/ユーティリティ）。
-// 検証で誤って弾かないよう known セットに含める。
+// プロンプトには出さないが import 自体は正当な export。検証で誤って弾かないよう known セットに含める。
 const utilityExports: readonly string[] = [
   'ArteOdyssey',
   'ArteOdysseyProvider',
@@ -243,9 +230,7 @@ const knownArteExports: ReadonlySet<string> = new Set([
 const ARTE_IMPORT_RE =
   /import\s+(?:type\s+)?\{([^}]*)\}\s*from\s*['"]@k8o\/arte-odyssey['"]/gu;
 
-// 生成コードが '@k8o/arte-odyssey' から存在しない名前を import していないか検証し、
-// 未知の import 名を返す（空なら健全）。これを書き込み前に弾くことで、存在しない
-// アイコン import による Vite のモジュール崩壊（プレビュー白画面）を未然に防ぐ。
+// '@k8o/arte-odyssey' から存在しない名前を import していないか検証し未知名を返す（空なら健全）。書き込み前に弾き、存在しない import による Vite のモジュール崩壊（プレビュー白画面）を防ぐ。
 export const findUnknownArteImports = (code: string): readonly string[] => {
   const unknown = new Set<string>();
   for (const match of code.matchAll(ARTE_IMPORT_RE)) {

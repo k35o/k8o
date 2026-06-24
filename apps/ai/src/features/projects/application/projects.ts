@@ -18,15 +18,13 @@ import {
   updateProjectVisibility,
 } from '../infrastructure/project-repository';
 
-// ui-studio の版に保存する content の形（アプリ非依存の JSON ペイロードのうち ui-studio 用）。
 export type UiStudioContent = {
   code: string;
   meta: GenerationMeta;
-  // この版を生成したユーザーの指示（会話の復元用）。初版/フォークでは無いことがある。
+  // 初版/フォークでは prompt が無いことがある。
   prompt?: string;
 };
 
-// 会話の1ターン（ある版を生成したユーザー指示と、その結果の meta）。
 export type ConversationTurn = {
   prompt: string | null;
   meta: GenerationMeta;
@@ -39,7 +37,7 @@ export type LoadedProject = {
   code: string;
   meta: GenerationMeta;
   versionId: number;
-  // 古い順の全ターン（履歴から読み込んだときにチャットを復元するため）。
+  // 古い順の全ターン（チャット復元用）。
   conversation: ConversationTurn[];
 };
 
@@ -55,7 +53,7 @@ export type { ProjectListItem };
 
 const UI_STUDIO: AiApp = 'ui-studio';
 
-// 公開リンク用の一意 slug。/s/[slug] で使う。衝突確率は無視できる程度に小さい。
+// 公開リンク用の一意 slug（/s/[slug]）。衝突確率は無視できる程度に小さい。
 const generateSlug = (): string =>
   randomUUID().replaceAll('-', '').slice(0, 12);
 
@@ -64,7 +62,6 @@ const deriveTitle = (title: string): string => {
   return trimmed === '' ? '無題の UI' : trimmed;
 };
 
-// version.content(JSON, unknown)を ui-studio の content として検証する。壊れていれば null。
 const toStringArray = (value: unknown): string[] =>
   Array.isArray(value)
     ? value.filter((item): item is string => typeof item === 'string')
@@ -97,7 +94,7 @@ const parseContent = (value: unknown): UiStudioContent | null => {
   };
 };
 
-// 生成結果を保存する。projectId が null なら新規プロジェクト＋初版、そうでなければ版を追記。
+// projectId が null なら新規プロジェクト＋初版、そうでなければ版を追記。
 export const saveGeneration = async (input: {
   userId: string;
   projectId: number | null;
@@ -139,8 +136,7 @@ export const getProjectsForUser = (
   userId: string,
 ): Promise<ProjectListItem[]> => selectProjects({ userId, app: UI_STUDIO });
 
-// 既存プロジェクトの最新版を複製して新しいプロジェクト（forkOf 付き・private）を作る。
-// 元を壊さずに派生を試すための分岐。元が見つからない（非所有）なら null。
+// 最新版を複製して新プロジェクト（forkOf 付き・private）を作る。非所有なら null。
 export const forkProject = async (input: {
   userId: string;
   sourceProjectId: number;
@@ -178,7 +174,7 @@ export const getProject = async (input: {
   if (content === null) {
     return null;
   }
-  // 所有者は selectProjectWithLatestVersion で確認済み。全版を会話ターンに展開する。
+  // 所有者は selectProjectWithLatestVersion で確認済み。
   const versionRows = await selectProjectVersions({
     projectId: input.projectId,
   });
@@ -199,7 +195,7 @@ export const getProject = async (input: {
   };
 };
 
-// 可視性/公開版を更新する。所有者でなければ false。
+// 所有者でなければ false。
 export const setVisibility = async (input: {
   userId: string;
   projectId: number;
@@ -221,11 +217,11 @@ export const setVisibility = async (input: {
   return true;
 };
 
-// slug が現在公開中かを判定（アセット配信の権威付け用・認証なし）。
+// 認証なし。アセット配信の権威付け用。
 export const isSlugPublic = (slug: string): Promise<boolean> =>
   selectIsSlugPublic(slug);
 
-// 公開プロジェクトを slug で取得（認証なし・公開ページ用）。非公開や壊れた content は null。
+// 認証なし・公開ページ用。非公開や壊れた content は null。
 export const getPublicProjectBySlug = async (
   slug: string,
 ): Promise<PublicProject | null> => {

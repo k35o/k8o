@@ -65,7 +65,7 @@ export async function POST(req: Request): Promise<Response> {
       console.error('Fugu 生成エラー', error);
     },
     onFinish: ({ usage }) => {
-      // 利用量を記録（レート制限のカウントとコスト把握の基盤）。
+      // レート制限のカウント源なので利用量を記録する。
       void insertGenerationUsage({
         userId: session.userId,
         inputTokens: usage.inputTokens ?? null,

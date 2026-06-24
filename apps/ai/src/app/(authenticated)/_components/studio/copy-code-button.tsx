@@ -12,8 +12,7 @@ type CopyCodeButtonProps = {
   code: string | null;
 };
 
-// 生成コードを持ち帰るための導線。コピー対象はハイライト済みの DOM ではなく生の code 文字列
-// （span 分割や空行の \n テキストノードの影響を受けないようにする）。
+// コピー対象はハイライト済み DOM ではなく生の code 文字列（span 分割や空行の \n の影響を避ける）。
 export const CopyCodeButton: FC<CopyCodeButtonProps> = ({ code }) => {
   const { writeClipboard } = useClipboard();
   const { onOpen } = useToast();

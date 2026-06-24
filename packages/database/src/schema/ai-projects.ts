@@ -12,15 +12,14 @@ import {
 import { aiProjectVersions } from './ai-project-versions';
 import { user } from './auth-schema';
 
-// ai.k8o.me の AI アプリ群で共有する識別子。新しい AI 機能を足すたびにここへ追加する。
+// AI アプリ群で共有する識別子。新しい AI 機能を足すたびにここへ追加する。
 export const AI_APPS = ['ui-studio'] as const;
 export type AiApp = (typeof AI_APPS)[number];
 
 export const AI_VISIBILITIES = ['private', 'public'] as const;
 export type AiVisibility = (typeof AI_VISIBILITIES)[number];
 
-// AI アプリの「プロジェクト」。app 判別子で複数アプリが同じ基盤に相乗りする。
-// 共有(slug/visibility/publicSnapshot)・フォーク系譜(forkOf) を共通仕様として持つ。
+// app 判別子で複数の AI アプリが同じテーブルに相乗りする。
 export const aiProjects = sqliteTable(
   'ai_projects',
   {
@@ -39,7 +38,7 @@ export const aiProjects = sqliteTable(
     forkOf: integer('fork_of'),
     // 公開中の version ID（論理参照）。
     publishedVersionId: integer('published_version_id'),
-    // 公開時に一度だけレンダリングした静的 HTML。/s/[slug] はこれを配信する（毎回サンドボックスを叩かない）。
+    // 公開時に一度だけレンダリングした静的 HTML。/s/[slug] はこれを配信し、毎回サンドボックスを叩かない。
     publicSnapshot: text('public_snapshot'),
     createdAt: text('created_at')
       .notNull()

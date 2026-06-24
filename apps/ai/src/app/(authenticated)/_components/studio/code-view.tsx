@@ -7,8 +7,6 @@ type CodeViewProps = {
   highlighted: HighlightedCode | null;
 };
 
-// 単一フレーム内に置くコード表示。枠/見出しは親(Studio)が持つので、ここは中身だけ。
-// shiki のトークンを React として描画する（色は token.color のインラインスタイル）。
 export const CodeView: FC<CodeViewProps> = ({ code, highlighted }) => {
   if (code === null) {
     return (
@@ -18,7 +16,7 @@ export const CodeView: FC<CodeViewProps> = ({ code, highlighted }) => {
     );
   }
 
-  // ストリーミング中やハイライト取得前はプレーン表示（暗色面は維持してチラつきを防ぐ）。
+  // ハイライト取得前は暗色面を維持してプレーン表示（チラつき防止）。
   if (highlighted === null) {
     return (
       <pre

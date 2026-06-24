@@ -11,12 +11,11 @@ import path from 'node:path';
 
 import { type BundleFile, contentTypeFor } from './build-bundle';
 
-// slug は generateSlug() の 12桁hex のみ許可。配信ルートは未認証で叩けるため、ここで
-// 形式を厳格化して path traversal（slug 自体に '..' 等、Blob key 構築）を入口で封じる。
+// 配信ルートは未認証で叩けるため、slug を 12桁hex に厳格化して path traversal を入口で封じる。
 const SLUG_RE = /^[0-9a-f]{12}$/u;
 export const isValidSlug = (slug: string): boolean => SLUG_RE.test(slug);
 
-// ビルド済みバンドルの配置/配信/削除の抽象。配置先はローカルディスク or 本番の Vercel Blob。
+// ビルド済みバンドルの配置/配信/削除の抽象。
 export type BundleSink = {
   put: (slug: string, files: readonly BundleFile[]) => Promise<void>;
   get: (
@@ -26,8 +25,8 @@ export type BundleSink = {
   remove: (slug: string) => Promise<void>;
 };
 
-// ローカル開発: .ai-shared/<slug>/ にディスク配置。staging→rename で原子的に差し替える
-// （再 publish のビルド失敗で配信中のバンドルが壊れないようにする。同一FSなので rename は atomic）。
+// staging→rename で原子的に差し替える（再 publish のビルド失敗で配信中のバンドルを壊さない。
+// 同一FSなので rename は atomic）。
 const SHARED_ROOT = path.resolve(process.cwd(), '.ai-shared');
 
 const localDiskSink: BundleSink = {
@@ -81,6 +80,5 @@ const localDiskSink: BundleSink = {
   },
 };
 
-// 配置先の選択点。本番（Vercel Blob, 要 BLOB_READ_WRITE_TOKEN）の sink は次段で
-// blob-sink を足してここで分岐する。現状は常にローカルディスク。
+// TODO(本番): Vercel Blob 用の sink を足してここで分岐する。現状は常にローカルディスク。
 export const getBundleSink = (): BundleSink => localDiskSink;

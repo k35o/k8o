@@ -4,7 +4,6 @@ import {
   writeLocalPreview,
 } from '../infrastructure/local-preview';
 
-// プレビュー基盤の抽象。ensure=セッションのプレビューURLを用意、apply=生成コードを反映。
 export type PreviewProvider = {
   ensure: () => Promise<string>;
   apply: (code: string) => Promise<void>;

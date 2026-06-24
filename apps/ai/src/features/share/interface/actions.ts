@@ -10,7 +10,6 @@ import {
   unpublishProject,
 } from '../application/share';
 
-// 公開: 本物ビルド＋可視性更新（オーナーのみ）。未許可は null。
 export const publishProjectAction = async (
   projectId: number,
 ): Promise<PublishedShare | null> => {

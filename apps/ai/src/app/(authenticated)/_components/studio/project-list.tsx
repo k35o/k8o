@@ -15,7 +15,6 @@ const formatDate = (iso: string): string => {
   return `${pad(date.getMonth() + 1)}/${pad(date.getDate())} ${pad(date.getHours())}:${pad(date.getMinutes())}`;
 };
 
-// 履歴の一覧（presentational）。Drawer 等の器は呼び出し側が持つ。
 export const ProjectList: FC<ProjectListProps> = ({
   projects,
   currentProjectId,

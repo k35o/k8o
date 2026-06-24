@@ -7,8 +7,7 @@ type PreviewFrameProps = {
   theme?: string | undefined;
 };
 
-// プレビュー iframe。最新を表示し直すときは親で key を変えて再マウントする。
-// theme はアプリのテーマを渡し、プレビュー側で .dark を切り替える。
+// 最新を表示し直すときは親で key を変えて再マウントする。
 export const PreviewFrame: FC<PreviewFrameProps> = ({ url, theme }) => (
   <iframe
     className="size-full border-0"

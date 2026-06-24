@@ -3,10 +3,7 @@ import { spawn } from 'node:child_process';
 import { mkdir, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 
-// ローカル開発用プレビュー: sandbox-template の Vite dev server を手元で動かし、
-// 生成コードを generated/Preview.tsx に書き込む。HMR/再読込でプレビューが更新される。
-// 本番では同じ provider インターフェースを Vercel Sandbox 実装に差し替える。
-
+// ローカル開発用プレビュー: sandbox-template の Vite dev server を手元で動かし、HMR で更新する。
 const PORT = 5199;
 const PREVIEW_URL =
   process.env['AI_LOCAL_PREVIEW_URL'] ?? `http://localhost:${PORT}`;
@@ -38,7 +35,6 @@ const spawnServer = (): void => {
     return;
   }
   spawned = true;
-  // ベストエフォートで Vite を起動（既に動いていれば isAlive で再利用される）。
   const child = spawn(
     'npm',
     ['--prefix', TEMPLATE_DIR, 'run', 'dev', '--', '--port', String(PORT)],

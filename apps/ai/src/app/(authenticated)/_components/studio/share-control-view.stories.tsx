@@ -17,7 +17,6 @@ export default meta;
 
 type Story = StoryObj<typeof meta>;
 
-// 非公開: 共有メニューに「公開する」だけ。クリックで onPublish。
 export const Private: Story = {
   args: { isPublic: false, hasDraft: false },
   play: async ({ args, canvasElement }) => {
@@ -28,7 +27,6 @@ export const Private: Story = {
   },
 };
 
-// 公開中・差分なし: リンクをコピー / 非公開にする。非公開にするで onUnpublish。
 export const PublicNoDraft: Story = {
   args: { isPublic: true, hasDraft: false },
   play: async ({ args, canvasElement }) => {
@@ -40,7 +38,6 @@ export const PublicNoDraft: Story = {
   },
 };
 
-// 公開中・未公開の変更あり: 「変更を反映（再公開）」が出る。
 export const PublicWithDraft: Story = {
   args: { isPublic: true, hasDraft: true },
   play: async ({ canvasElement }) => {

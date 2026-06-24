@@ -13,7 +13,7 @@ export default meta;
 
 type Story = StoryObj<typeof meta>;
 
-// ハイライト済みトークンの最小フィクスチャ（shiki を呼ばずに描画経路を検証する）。
+// shiki を呼ばずに描画経路を検証するための最小フィクスチャ。
 const highlightedFixture: HighlightedCode = {
   bg: CODE_SURFACE.bg,
   fg: CODE_SURFACE.fg,
@@ -58,7 +58,7 @@ export const Highlighted: Story = {
   },
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
-    // トークンごとに span 分割されるため、キーワード片で存在を確認する。
+    // トークンごとに span 分割されるため、キーワード片で確認する。
     await expect(canvas.getByText('const')).toBeInTheDocument();
   },
 };

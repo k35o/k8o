@@ -48,8 +48,7 @@ export const initialGenerationState: GenerationState = {
   selectedModel: 'fugu',
 };
 
-// 純粋な reducer（id / createdAt は呼び出し側から渡し、決定的・テスタブルに保つ）。
-// 履歴は append-only。undo/restore は active を切り替えるだけで履歴を破壊しない。
+// id / createdAt は呼び出し側から渡し決定的に保つ。履歴は append-only で、undo/restore は active を切り替えるだけ。
 export const generationReducer = (
   state: GenerationState,
   action: GenerationAction,
@@ -72,7 +71,7 @@ export const generationReducer = (
       };
     }
     case 'load-project': {
-      // 履歴から復元: 当該版を起点にストアを置き換える（セッション内 undo はここから始まる）。
+      // 当該版を起点にストアを置き換える（セッション内 undo はここが先頭になる）。
       const version: FileVersion = {
         id: action.id,
         code: action.code,

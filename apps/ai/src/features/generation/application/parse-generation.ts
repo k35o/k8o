@@ -36,12 +36,12 @@ const toMeta = (value: unknown): GenerationMeta | null => {
   };
 };
 
-// ストリーミング中・完了後の双方で使う。本文は raw TSX フェンス、meta は末尾 JSON フェンス。
+// ストリーミング中・完了後の双方で使う。本文は TSX フェンス、meta は末尾 JSON フェンス。
 export const parseGeneration = (raw: string): ParsedGeneration => {
   const codeMatch = TSX_FENCE.exec(raw);
   let code: string | null = codeMatch?.[1]?.trim() ?? null;
 
-  // 開きフェンスはあるが閉じフェンス未到達（ストリーミング途中）→ 途中までをプレビュー用に拾う
+  // 開きフェンスのみで閉じ未到達（ストリーミング途中）→ 途中までをプレビュー用に拾う
   if (code === null) {
     const open = raw.indexOf(TSX_OPEN);
     if (open !== -1) {
@@ -63,7 +63,6 @@ export const parseGeneration = (raw: string): ParsedGeneration => {
   return { code, meta, isComplete: codeMatch !== null && meta !== null };
 };
 
-// UIMessage の text パートを連結してアシスタント応答の本文を取り出す。
 export const messageText = (message: UIMessage): string => {
   let text = '';
   for (const part of message.parts) {

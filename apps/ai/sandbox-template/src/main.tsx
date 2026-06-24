@@ -10,8 +10,7 @@ if (new URLSearchParams(window.location.search).get('theme') === 'dark') {
   document.documentElement.classList.add('dark');
 }
 
-// 生成コードが描画時に例外を投げても白画面にせず、原因を読める形で出す。
-// （存在しない import は親側で書き込み前に弾くが、prop 不整合などの runtime 例外はここで受ける）
+// 生成コードの runtime 例外（prop 不整合など）を白画面にせず原因を表示する。
 type BoundaryState = { message: string | null };
 
 class PreviewErrorBoundary extends Component<

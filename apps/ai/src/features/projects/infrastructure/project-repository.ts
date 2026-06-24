@@ -32,9 +32,8 @@ export type PublicProjectRow = {
   content: unknown;
 };
 
-// プロジェクト新規作成＋最初の版を入れる。libsql(http) は対話トランザクション非対応のため
-// 逐次 insert で組む（既存の submit-feedback と同じ方針）。失敗時に孤児プロジェクトが
-// 残りうるが、本人専用ツールの履歴用途では許容する。
+// libsql(http) は対話トランザクション非対応のため逐次 insert で組む。
+// 失敗時に孤児プロジェクトが残りうるが、本人専用ツールの履歴用途では許容する。
 export const insertProjectWithVersion = async (input: {
   userId: string;
   app: AiApp;
@@ -66,7 +65,7 @@ export const insertProjectWithVersion = async (input: {
   return { projectId: project.id, versionId: version.id };
 };
 
-// 既存プロジェクトに版を追記し、履歴の並び替え用に updatedAt を更新する。
+// 版を追記し、履歴の並び替え用に updatedAt を更新する。
 export const insertVersion = async (input: {
   projectId: number;
   parentId: number | null;
@@ -90,7 +89,6 @@ export const insertVersion = async (input: {
   return { versionId: version.id };
 };
 
-// 指定プロジェクトが当該ユーザーのものか（追記前の所有チェック）。
 export const projectOwnedBy = async (input: {
   projectId: number;
   userId: string;
@@ -125,7 +123,7 @@ export const selectProjects = async (input: {
   return rows;
 };
 
-// 可視性と公開版IDを更新する（所有者チェックは呼び出し側で済ませる前提）。
+// 所有者チェックは呼び出し側で済ませる前提。
 export const updateProjectVisibility = async (input: {
   projectId: number;
   visibility: AiVisibility;
@@ -141,7 +139,7 @@ export const updateProjectVisibility = async (input: {
     .where(eq(projects.id, input.projectId));
 };
 
-// slug が「現在公開中（public かつ公開版あり）」かを軽量に判定する。アセット配信の権威付け用。
+// slug が「public かつ公開版あり」かを判定。アセット配信の権威付け用。
 export const selectIsSlugPublic = async (slug: string): Promise<boolean> => {
   const [row] = await db
     .select({ id: projects.id })
@@ -157,7 +155,7 @@ export const selectIsSlugPublic = async (slug: string): Promise<boolean> => {
   return row !== undefined;
 };
 
-// 公開(public)かつ公開版が設定されたプロジェクトを slug で引く。公開ページ用（認証なし）。
+// 公開ページ用（認証なし）。public かつ公開版が設定されたプロジェクトのみ返す。
 export const selectPublicProjectBySlug = async (
   slug: string,
 ): Promise<PublicProjectRow | null> => {
@@ -191,7 +189,7 @@ export const selectPublicProjectBySlug = async (
   };
 };
 
-// プロジェクト＋最新版（所有者チェック込み）。見つからなければ null。
+// 所有者チェック込み。見つからなければ null。
 export const selectProjectWithLatestVersion = async (input: {
   projectId: number;
   userId: string;
@@ -232,7 +230,7 @@ export const selectProjectWithLatestVersion = async (input: {
 
 export type ProjectVersionRow = { id: number; content: unknown };
 
-// プロジェクトの全版を古い順に返す（会話の復元用）。所有者チェックは呼び出し側で済ませる前提。
+// 全版を古い順に返す。所有者チェックは呼び出し側で済ませる前提。
 export const selectProjectVersions = (input: {
   projectId: number;
 }): Promise<ProjectVersionRow[]> =>

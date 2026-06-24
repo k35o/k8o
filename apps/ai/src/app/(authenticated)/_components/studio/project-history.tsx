@@ -13,7 +13,6 @@ type ProjectHistoryProps = {
   onSelect: (projectId: number) => void;
 };
 
-// 履歴のスライドオーバー。一覧描画は ProjectList に委ねる。
 export const ProjectHistory: FC<ProjectHistoryProps> = ({
   isOpen,
   onClose,

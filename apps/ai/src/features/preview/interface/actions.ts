@@ -26,8 +26,7 @@ export const applyPreviewCode = async (
   if (session === null) {
     return { ok: false };
   }
-  // 存在しない import（幻覚アイコン等）を書き込むと Vite のモジュールが壊れ、
-  // 以後プレビューが白画面のまま復帰しない。書き込み前に弾き、エラーを self-heal に回す。
+  // 存在しない import を書き込むと Vite が壊れプレビューが白画面のまま復帰しないため、書き込み前に弾く。
   const unknown = findUnknownArteImports(code);
   if (unknown.length > 0) {
     return {

@@ -21,8 +21,7 @@ const list = (items: readonly string[]): string => items.join(', ');
 const hasText = (value?: string | null): value is string =>
   typeof value === 'string' && value.trim() !== '';
 
-// セマンティックトークン辞書とコンポーネント許可リストは design-system-context が
-// arte-odyssey から自動生成する（単一ソース）。禁止列挙より「使うべきものの提示」を主軸にする。
+// トークン辞書とコンポーネント許可リストは design-system-context が arte-odyssey から自動生成する（単一ソース）。
 const BASE_PROMPT = [
   'あなたは k8o のデザインシステム「arte-odyssey」に精通した UI エンジニアです。',
   'ユーザーの要望から、単一ファイルの React コンポーネント（TSX）を生成します。',
