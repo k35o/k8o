@@ -148,7 +148,7 @@ export const Studio = () => {
   const hasResult = state.currentFile !== null;
   // 履歴から読み込んだ直後はチャットが空になるため、空状態でも「何を編集中か」を示す。
   const emptyStateTitle = hasResult
-    ? `「${state.versions.at(-1)?.meta.title ?? 'プロジェクト'}」を編集中`
+    ? `「${state.lastMeta?.title ?? 'プロジェクト'}」を編集中`
     : 'UI を生成しましょう';
   const emptyStateHint = hasResult
     ? '続けて指示すると、このUIを更新します。例:「色を温かいトーンに」「余白を広げて」'

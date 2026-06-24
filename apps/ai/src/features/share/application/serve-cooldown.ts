@@ -10,15 +10,19 @@ type CacheEntry = { url: string; expiresAt: number };
 const urlCache = new Map<string, CacheEntry>();
 const inFlight = new Map<string, Promise<string | null>>();
 
-// serve は最大でも slug ごとに COOLDOWN_MS に1回しか呼ばれない。now は決定的テスト用。
+// serve は最大でも slug ごとに COOLDOWN_MS に1回しか呼ばれない。clock は決定的テスト用の時刻源。
 export const resolveServeWithCooldown = (
   slug: string,
   serve: () => Promise<string | null>,
-  now: number = Date.now(),
+  clock: () => number = () => Date.now(),
 ): Promise<string | null> => {
   const cached = urlCache.get(slug);
-  if (cached !== undefined && cached.expiresAt > now) {
-    return Promise.resolve(cached.url);
+  if (cached !== undefined) {
+    if (cached.expiresAt > clock()) {
+      return Promise.resolve(cached.url);
+    }
+    // 期限切れは溜め込まず明示的に掃除する（未認証経路なので Map を肥大させない）。
+    urlCache.delete(slug);
   }
 
   // 配信中（cold start を含む）の同一 slug リクエストは1本にまとめる（thundering herd 防止）。
@@ -31,9 +35,15 @@ export const resolveServeWithCooldown = (
     try {
       const url = await serve();
       if (url !== null) {
-        urlCache.set(slug, { url, expiresAt: now + COOLDOWN_MS });
+        // TTL は serve "完了" 時刻から測る。呼び出し時刻基準だと cold start が数十秒かかった
+        // 場合にキャッシュした瞬間に失効し、肝心の cold start 抑制が効かなくなる。
+        urlCache.set(slug, { url, expiresAt: clock() + COOLDOWN_MS });
       }
       return url;
+    } catch {
+      // serve 失敗（Sandbox.create 等の reject）は null に正規化する。キャッシュせず次回再試行。
+      // ここで握らないと公開ページの spinner が固まる（呼び出し側 client は例外を捕捉しない）。
+      return null;
     } finally {
       inFlight.delete(slug);
     }

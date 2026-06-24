@@ -10,29 +10,30 @@ const meta: GenerationMeta = {
 
 describe('generationReducer', () => {
   describe('正常系', () => {
-    it('generation-finished で版を追加し currentFile を更新する', () => {
+    it('generation-finished で lastMeta と currentFile を更新する', () => {
       const next = generationReducer(initialGenerationState, {
         type: 'generation-finished',
         code: 'CODE1',
         meta,
       });
-      expect(next.versions).toHaveLength(1);
+      expect(next.lastMeta).toBe(meta);
       expect(next.currentFile).toBe('CODE1');
       expect(next.buildErrors).toBeNull();
     });
 
-    it('generation-finished は履歴に append する', () => {
+    it('generation-finished は最新の meta/code で上書きする', () => {
       const s1 = generationReducer(initialGenerationState, {
         type: 'generation-finished',
         code: 'C1',
         meta,
       });
+      const meta2: GenerationMeta = { ...meta, title: 't2' };
       const s2 = generationReducer(s1, {
         type: 'generation-finished',
         code: 'C2',
-        meta,
+        meta: meta2,
       });
-      expect(s2.versions).toHaveLength(2);
+      expect(s2.lastMeta).toBe(meta2);
       expect(s2.currentFile).toBe('C2');
     });
 
@@ -47,7 +48,7 @@ describe('generationReducer', () => {
         code: 'LOADED',
         meta,
       });
-      expect(loaded.versions).toHaveLength(1);
+      expect(loaded.lastMeta).toBe(meta);
       expect(loaded.currentFile).toBe('LOADED');
       expect(loaded.buildErrors).toBeNull();
     });
@@ -58,7 +59,7 @@ describe('generationReducer', () => {
         { type: 'generation-finished', code: 'C1', meta },
       );
       const reset = generationReducer(s1, { type: 'reset' });
-      expect(reset.versions).toHaveLength(0);
+      expect(reset.lastMeta).toBeNull();
       expect(reset.currentFile).toBeNull();
       expect(reset.selectedModel).toBe('fugu-ultra');
     });

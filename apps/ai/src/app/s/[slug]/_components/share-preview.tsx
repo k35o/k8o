@@ -19,12 +19,17 @@ export const SharePreview = ({ slug, title }: SharePreviewProps) => {
 
   useEffect(() => {
     void (async () => {
-      const res = await resolveShareEntryAction(slug);
-      if (res === null) {
+      try {
+        const res = await resolveShareEntryAction(slug);
+        if (res === null) {
+          setFailed(true);
+          return;
+        }
+        setUrl(res.url);
+      } catch {
+        // server action が想定外に reject しても spinner で固まらせない。
         setFailed(true);
-        return;
       }
-      setUrl(res.url);
     })();
   }, [slug]);
 

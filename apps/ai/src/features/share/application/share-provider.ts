@@ -2,7 +2,7 @@ import 'server-only';
 import {
   serveSandboxPreview,
   stopSandboxPreview,
-} from '@/features/preview/infrastructure/sandbox-preview';
+} from '@/features/preview/application/sandbox-runtime';
 
 // 公開バンドルのビルド/配信基盤の抽象。
 export type ShareProvider = {

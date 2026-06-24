@@ -1,15 +1,10 @@
 import type { GenerationModel } from './models';
 import type { GenerationMeta } from './parse-generation';
 
-export type FileVersion = {
-  code: string;
-  meta: GenerationMeta;
-};
-
 export type GenerationState = {
   currentFile: string | null;
-  // セッション内の生成履歴（append-only）。今は空状態のタイトル表示に使う。
-  versions: FileVersion[];
+  // 直近生成の meta（空状態でのタイトル表示に使う）。履歴/undo は持たない。
+  lastMeta: GenerationMeta | null;
   buildErrors: string | null;
   selectedModel: GenerationModel;
 };
@@ -23,7 +18,7 @@ export type GenerationAction =
 
 export const initialGenerationState: GenerationState = {
   currentFile: null,
-  versions: [],
+  lastMeta: null,
   buildErrors: null,
   selectedModel: 'fugu',
 };
@@ -36,7 +31,7 @@ export const generationReducer = (
     case 'generation-finished':
       return {
         ...state,
-        versions: [...state.versions, { code: action.code, meta: action.meta }],
+        lastMeta: action.meta,
         currentFile: action.code,
         buildErrors: null,
       };
@@ -45,7 +40,7 @@ export const generationReducer = (
       return {
         ...initialGenerationState,
         selectedModel: state.selectedModel,
-        versions: [{ code: action.code, meta: action.meta }],
+        lastMeta: action.meta,
         currentFile: action.code,
       };
     case 'reset':

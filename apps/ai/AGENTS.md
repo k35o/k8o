@@ -13,7 +13,7 @@ apps/admin / apps/main と同じ `app / features / shared` 構成。
   - `share/` - 公開共有（公開/Sandbox 配信/非公開化）
   - `projects/` - プロジェクト・版の永続化（@repo/database）
   - `highlight/` - 生成コードの shiki ハイライト
-  - Vercel Sandbox の起動/配信は `preview/infrastructure/sandbox-preview.ts` に集約し、share もそれを利用する
+  - Vercel Sandbox の起動/配信は `preview/infrastructure/sandbox-preview.ts` に集約し、share は `preview/application/sandbox-runtime.ts`（公開境界）経由で利用する
 - **shared/** - 横断利用の非UI共通処理（auth ゲートなど）。UIや `cn` は置かない
 
 Server Actions（`'use server'`）は `features/*/interface` に置く。`_actions` は新規作成しない。
