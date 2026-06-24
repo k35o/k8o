@@ -1,10 +1,14 @@
-// sandbox-template を Vercel Sandbox に焼いて snapshot を作る（一度きり / テンプレ・arte-odyssey 更新時に再実行）。
+// sandbox-template を Vercel Sandbox に焼いて snapshot を作る（テンプレ・arte-odyssey 更新時に再実行）。
+// snapshot ID と内容ハッシュは template-snapshot.ts に書き出してコミット管理する
+// （env の手編集は不要。テンプレ変更時の焼き忘れは template-snapshot.test.ts が検知）。
 // 認証は VERCEL_TOKEN（fnox exec で注入）＋ team/project ID 明示渡し。
 // 使い方: fnox exec -- node apps/ai/scripts/bake-sandbox-snapshot.mjs
-import { readdir, readFile } from 'node:fs/promises';
+import { readdir, readFile, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 
 import { Sandbox } from '@vercel/sandbox';
+
+import { computeTemplateHash } from '../src/features/preview/infrastructure/template-hash.ts';
 
 const TEAM_ID = 'team_K1poAqb11IhJpOHw17Z5qhvC';
 const PROJECT_ID = 'prj_Iz1SHi1C6rgwFz2YngTzeiRdsFE8';
@@ -19,6 +23,11 @@ if (!token) {
 
 const here = import.meta.dirname;
 const templateDir = path.resolve(here, '..', 'sandbox-template');
+const pointerPath = path.resolve(
+  here,
+  '..',
+  'src/features/preview/infrastructure/template-snapshot.ts',
+);
 
 const collect = async (dir) => {
   const ents = await readdir(dir, { withFileTypes: true });
@@ -69,6 +78,21 @@ try {
   console.log('snapshotting...');
   const snap = await sandbox.snapshot({ expiration: 0 });
   console.log(`\n==== AI_TEMPLATE_SNAPSHOT_ID=${snap.snapshotId} ====\n`);
+
+  // 焼いた snapshot ID と、焼いた時点のテンプレ内容ハッシュをコミット管理ファイルに書き出す。
+  // これによりデプロイは「コミットされたテンプレ ↔ 対応 snapshot」で常に一致する。
+  const templateHash = await computeTemplateHash(templateDir);
+  const pointer = `// このファイルは bake-sandbox-snapshot.mjs が自動生成する。手で編集しない。
+// templateHash は sandbox-template の内容指紋。テンプレ変更時は再bakeで更新される
+// （未更新だと template-snapshot.test.ts が落ちる）。snapshotId は焼いた snapshot の ID。
+export const templateSnapshot = {
+  templateHash:
+    '${templateHash}',
+  snapshotId: '${snap.snapshotId}',
+} as const;
+`;
+  await writeFile(pointerPath, pointer, 'utf8');
+  console.log(`wrote ${path.relative(process.cwd(), pointerPath)}`);
 } finally {
   await sandbox.stop().catch(() => undefined);
   console.log('sandbox stopped.');

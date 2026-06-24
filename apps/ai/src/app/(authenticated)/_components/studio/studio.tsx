@@ -21,6 +21,7 @@ import {
   useState,
 } from 'react';
 
+import { ToggleTheme } from '@/app/_components/toggle-theme';
 import {
   generationReducer,
   initialGenerationState,
@@ -34,7 +35,6 @@ import {
   startPreviewSession,
 } from '@/features/preview/interface/actions';
 
-import { ToggleTheme } from '../toggle-theme';
 import { CodePanel, CopyCodeButton } from './code-panel';
 import { PreviewFrame } from './preview-frame';
 import { ProjectHistory } from './project-history';
@@ -65,9 +65,14 @@ export const Studio = () => {
   const { resolvedTheme } = useTheme();
   const persistence = useStudioPersistence();
 
-  const { messages, sendMessage, status, error, setMessages } = useChat({
+  const { messages, sendMessage, status, error, setMessages, stop } = useChat({
     transport: new DefaultChatTransport({ api: '/api/generate' }),
-    onFinish: ({ message }) => {
+    onFinish: ({ message, isAbort }) => {
+      // 生成中に別プロジェクトへ切り替えた等で中断された場合は、切替先へ結果を
+      // 適用/保存しないよう即座に抜ける（生成中表示の漏れや誤保存を防ぐ）。
+      if (isAbort) {
+        return;
+      }
       const parsed = parseGeneration(messageText(message));
       if (parsed.code !== null && parsed.meta !== null) {
         dispatch({
@@ -189,6 +194,8 @@ export const Studio = () => {
   };
 
   const handleNewProject = (): void => {
+    // 生成中なら中断してから切り替える（生成中表示が新プロジェクトに残るのを防ぐ）。
+    void stop();
     persistence.reset();
     dispatch({ type: 'reset' });
     setMessages([]);
@@ -199,6 +206,8 @@ export const Studio = () => {
   };
 
   const handleSelectProject = async (id: number): Promise<void> => {
+    // 生成中なら中断してから切り替える（生成中表示が切替先に漏れるのを防ぐ）。
+    void stop();
     setHistoryOpen(false);
     const project = await persistence.load(id);
     if (project === null) {

@@ -10,12 +10,8 @@ export function proxy(request: NextRequest) {
 
   const { pathname } = request.nextUrl;
 
-  // 公開共有ページと、そのビルド済みアセット配信は非ログインでも見られる（認証を通さない）。
-  if (
-    pathname === '/sign-in' ||
-    pathname.startsWith('/s/') ||
-    pathname.startsWith('/s-assets/')
-  ) {
+  // 公開共有ページは非ログインでも見られる（認証を通さない）。
+  if (pathname === '/sign-in' || pathname.startsWith('/s/')) {
     return NextResponse.next();
   }
 

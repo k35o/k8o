@@ -1,6 +1,9 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+/* oxlint-disable react/iframe-missing-sandbox -- Sandbox 配信は別オリジン(*.vercel.run)。allow-same-origin は vite の動作に要るが、ホストとは別オリジンのため親ページへの脱出は起きない */
+
+import { useTheme } from 'next-themes';
+import { useEffect, useRef, useState } from 'react';
 
 import { resolveShareEntryAction } from '@/features/share/interface/actions';
 
@@ -39,16 +42,42 @@ export const SharePreview = ({ slug, title }: SharePreviewProps) => {
       </div>
     );
   }
-  // Sandbox 配信は別オリジン(*.vercel.run)で vite の動作に allow-same-origin が要る（親とは
-  // 別オリジンのため脱出は起きない）。disk 配信(同一オリジン)は allow-scripts のみで完全隔離。
-  const sandbox = url.startsWith('http')
-    ? 'allow-scripts allow-same-origin'
-    : 'allow-scripts';
+  return <ShareFrame title={title} url={url} />;
+};
+
+type ShareFrameProps = {
+  url: string;
+  title: string;
+};
+
+// 共有プレビューを閲覧者のテーマに追従させる。初期テーマは src(?theme) に載せて初回
+// ペイントから正しい配色にし、以降の切替は postMessage で反映する（src を変えると iframe が
+// リロードされ白フラッシュするため）。
+const ShareFrame = ({ url, title }: ShareFrameProps) => {
+  const { resolvedTheme } = useTheme();
+  const ref = useRef<HTMLIFrameElement>(null);
+  const [initialSrc] = useState(() =>
+    resolvedTheme === 'dark' ? `${url}?theme=dark` : url,
+  );
+
+  useEffect(() => {
+    ref.current?.contentWindow?.postMessage(
+      {
+        type: 'k8o-preview-theme',
+        theme: resolvedTheme === 'dark' ? 'dark' : 'light',
+      },
+      '*',
+    );
+  }, [resolvedTheme]);
+
   return (
+    // Sandbox 配信は別オリジン(*.vercel.run)で vite の動作に allow-same-origin が要る
+    // （親とは別オリジンのため iframe からの脱出は起きない）。
     <iframe
       className="size-full border-0"
-      sandbox={sandbox}
-      src={url}
+      ref={ref}
+      sandbox="allow-scripts allow-same-origin"
+      src={initialSrc}
       title={title}
     />
   );

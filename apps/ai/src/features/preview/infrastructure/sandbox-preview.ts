@@ -1,12 +1,17 @@
 import 'server-only';
 import { Sandbox } from '@vercel/sandbox';
 
+import { templateSnapshot } from './template-snapshot';
+
 // 本番プレビュー: 焼いた snapshot から名前付き microVM を起こして vite dev を立て、その
 // *.vercel.run ドメインを iframe に出す。デプロイ内では OIDC で自動認証。ローカル検証時は
 // VERCEL_TOKEN があれば明示認証する（無ければ OIDC を使う＝デプロイ）。コスト抑制のため
 // 1 vCPU・短い idle timeout で、用が済めば自動停止（停止中は課金されない）。
 
-const SNAPSHOT_ID = process.env['AI_TEMPLATE_SNAPSHOT_ID'] ?? '';
+// snapshot ID は template-snapshot.ts（bake が自動生成・コミット管理）を正とする。
+// env はローカルでの一時上書き用。これでテンプレ↔snapshot の対応がデプロイと常に一致する。
+const SNAPSHOT_ID =
+  process.env['AI_TEMPLATE_SNAPSHOT_ID'] ?? templateSnapshot.snapshotId;
 const TEAM_ID = 'team_K1poAqb11IhJpOHw17Z5qhvC';
 const PROJECT_ID = 'prj_Iz1SHi1C6rgwFz2YngTzeiRdsFE8';
 const WORKDIR = '/vercel/sandbox';
@@ -14,15 +19,7 @@ const PORT = 5173;
 const TIMEOUT_MS = 5 * 60 * 1000;
 const READY_TRIES = 40;
 
-export const isSandboxConfigured = (): boolean => SNAPSHOT_ID !== '';
-
-// 本番（Vercel）、またはローカルで AI_PREVIEW_SANDBOX=true のとき Sandbox を使う。
-export const isSandboxMode = (): boolean =>
-  isSandboxConfigured() &&
-  (process.env['VERCEL_ENV'] !== undefined ||
-    process.env['AI_PREVIEW_SANDBOX'] === 'true');
-
-// デプロイ内は OIDC（VERCEL_OIDC_TOKEN）が自動で効くため creds 不要。ローカル検証では
+// デプロイ内は OIDC（VERCEL_OIDC_TOKEN）が自動で効くため creds 不要。ローカルでは
 // VERCEL_TOKEN を明示渡し（team/project は公開ID）。
 const creds = ():
   | { token: string; teamId: string; projectId: string }

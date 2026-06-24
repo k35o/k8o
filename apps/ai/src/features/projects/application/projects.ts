@@ -10,7 +10,6 @@ import {
   insertVersion,
   type ProjectListItem,
   projectOwnedBy,
-  selectIsSlugPublic,
   selectProjects,
   selectProjectVersions,
   selectProjectWithLatestVersion,
@@ -216,10 +215,6 @@ export const setVisibility = async (input: {
   });
   return true;
 };
-
-// 認証なし。アセット配信の権威付け用。
-export const isSlugPublic = (slug: string): Promise<boolean> =>
-  selectIsSlugPublic(slug);
 
 // 認証なし・公開ページ用。非公開や壊れた content は null。
 export const getPublicProjectBySlug = async (

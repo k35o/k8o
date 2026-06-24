@@ -2,11 +2,9 @@ import 'server-only';
 import {
   getProject,
   getPublicProjectBySlug,
-  isSlugPublic,
   setVisibility,
 } from '@/features/projects/application/projects';
 
-import { readSharedAsset } from '../infrastructure/local-build';
 import { shareProvider } from './share-provider';
 
 export type PublishedShare = {
@@ -73,18 +71,6 @@ export const unpublishProject = async (input: {
     // 孤児バンドルは GC 対象。
   }
   return true;
-};
-
-// アセット配信（認証なし）。ディスク存在ではなく DB の現在の可視性で権威付けする
-// （孤児バンドルが残っても private なら配信しない: fail-closed）。
-export const readPublicAsset = async (
-  slug: string,
-  segments: readonly string[],
-): Promise<{ body: Buffer; contentType: string } | null> => {
-  if (!(await isSlugPublic(slug))) {
-    return null;
-  }
-  return readSharedAsset(slug, segments);
 };
 
 export const getPublicShare = async (
