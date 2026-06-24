@@ -1,12 +1,17 @@
 import 'server-only';
 import { Sandbox } from '@vercel/sandbox';
 
+import { templateSnapshot } from './template-snapshot';
+
 // 本番プレビュー: 焼いた snapshot から名前付き microVM を起こして vite dev を立て、その
 // *.vercel.run ドメインを iframe に出す。デプロイ内では OIDC で自動認証。ローカル検証時は
 // VERCEL_TOKEN があれば明示認証する（無ければ OIDC を使う＝デプロイ）。コスト抑制のため
 // 1 vCPU・短い idle timeout で、用が済めば自動停止（停止中は課金されない）。
 
-const SNAPSHOT_ID = process.env['AI_TEMPLATE_SNAPSHOT_ID'] ?? '';
+// snapshot ID は template-snapshot.ts（bake が自動生成・コミット管理）を正とする。
+// env はローカルでの一時上書き用。これでテンプレ↔snapshot の対応がデプロイと常に一致する。
+const SNAPSHOT_ID =
+  process.env['AI_TEMPLATE_SNAPSHOT_ID'] ?? templateSnapshot.snapshotId;
 const TEAM_ID = 'team_K1poAqb11IhJpOHw17Z5qhvC';
 const PROJECT_ID = 'prj_Iz1SHi1C6rgwFz2YngTzeiRdsFE8';
 const WORKDIR = '/vercel/sandbox';
