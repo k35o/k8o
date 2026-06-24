@@ -55,6 +55,13 @@ if [ "$BASE_SHA" = "origin/main" ]; then
   fi
 fi
 
+# 前回成功デプロイが無い（新規プロジェクトの初回など）と BASE が origin/main = HEAD 自身に
+# 解決し、差分が常に空になって永久に skip してしまう。判定不能なので安全側に倒してビルドする。
+if [ "$(git rev-parse --verify "$BASE_SHA" 2>/dev/null)" = "$(git rev-parse --verify HEAD 2>/dev/null)" ]; then
+  log "Proceeding: BASE_SHA resolves to HEAD (no previous deploy / first build)"
+  exit 1
+fi
+
 # 変更ファイルが取得できなければ安全側に倒してビルド
 if ! CHANGED_FILES=$(git diff --name-only "$BASE_SHA" HEAD 2>&1); then
   log "Proceeding: failed to get changed files ($CHANGED_FILES)"
