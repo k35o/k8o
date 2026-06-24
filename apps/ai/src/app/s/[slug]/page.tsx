@@ -6,6 +6,10 @@ import { getPublicShareForRoute } from '@/features/share/interface/queries';
 
 import { SharePreview } from './_components/share-preview';
 
+// 共有プレビューの配信解決（Sandbox 起動を伴うことがある）が cold start で数十秒かかる
+// ことがあるため、server action のタイムアウトを延ばす。
+export const maxDuration = 120;
+
 type SharePageProps = {
   params: Promise<{ slug: string }>;
 };
