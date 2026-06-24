@@ -1,8 +1,15 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
+import { Suspense } from 'react';
 
 import { getPublicShareForRoute } from '@/features/share/interface/queries';
+
+import { SharePreview } from './_components/share-preview';
+
+// 共有プレビューの配信解決（Sandbox 起動を伴うことがある）が cold start で数十秒かかる
+// ことがあるため、server action のタイムアウトを延ばす。
+export const maxDuration = 120;
 
 type SharePageProps = {
   params: Promise<{ slug: string }>;
@@ -23,13 +30,13 @@ export const generateMetadata = async ({
 };
 
 // 公開共有ページ（認証なし）。スリムなヘッダ＋隔離した iframe で本物ビルドを描画する。
-export default async function SharePage({ params }: SharePageProps) {
+// DB アクセス（公開状態の確認）は uncached なため Cache Components 下では Suspense 配下に置く。
+const ShareContent = async ({ params }: SharePageProps) => {
   const { slug } = await params;
   const share = await getPublicShareForRoute(slug);
   if (share === null) {
     notFound();
   }
-
   return (
     <div className="bg-bg-surface flex h-dvh flex-col">
       <header className="border-border-mute flex items-center justify-between gap-4 border-b px-6 py-3">
@@ -47,14 +54,16 @@ export default async function SharePage({ params }: SharePageProps) {
         </Link>
       </header>
       <div className="min-h-0 flex-1">
-        {/* allow-same-origin は付けない＝不透明オリジンで親に触れない完全隔離。アセットは CORS 配信。 */}
-        <iframe
-          className="size-full border-0"
-          sandbox="allow-scripts"
-          src={share.entryUrl}
-          title={share.title}
-        />
+        <SharePreview slug={slug} title={share.title} />
       </div>
     </div>
+  );
+};
+
+export default function SharePage({ params }: SharePageProps) {
+  return (
+    <Suspense fallback={<div className="bg-bg-surface h-dvh" />}>
+      <ShareContent params={params} />
+    </Suspense>
   );
 }

@@ -8,5 +8,7 @@ export default defineConfig({
   plugins: [react(), tailwindcss()],
   server: {
     host: true,
+    // Vercel Sandbox の *.vercel.run ドメイン経由で開けるよう host チェックを無効化する。
+    allowedHosts: true,
   },
 });

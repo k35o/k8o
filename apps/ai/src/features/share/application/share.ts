@@ -11,14 +11,12 @@ import { shareProvider } from './share-provider';
 
 export type PublishedShare = {
   slug: string;
-  entryUrl: string;
 };
 
 export type PublicShare = {
   title: string;
   slug: string;
   code: string;
-  entryUrl: string;
 };
 
 export const publishProject = async (input: {
@@ -44,7 +42,6 @@ export const publishProject = async (input: {
   }
   return {
     slug: project.slug,
-    entryUrl: shareProvider.entryUrl(project.slug),
   };
 };
 
@@ -101,6 +98,17 @@ export const getPublicShare = async (
     title: project.title,
     slug: project.slug,
     code: project.code,
-    entryUrl: shareProvider.entryUrl(project.slug),
   };
+};
+
+// 閲覧時に iframe へ出す配信 URL を解決する（Sandbox モードでは Sandbox を起こして配信）。
+export const resolveShareEntry = async (
+  slug: string,
+): Promise<{ url: string } | null> => {
+  const share = await getPublicShare(slug);
+  if (share === null) {
+    return null;
+  }
+  const url = await shareProvider.serve(slug, share.code);
+  return { url };
 };

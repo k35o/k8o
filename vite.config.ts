@@ -13,6 +13,8 @@ const ignorePatterns = [
   '.github/scripts/**',
   // プレビュー用の独立テンプレート（独自の依存・規約。生成コードを流し込むため lint 対象外）
   'apps/ai/sandbox-template/**',
+  // bake 等の一度きり CLI。tsconfig外の .mjs のため型情報前提のルールが誤検知する
+  'apps/ai/scripts/**',
 ];
 
 export default defineConfig({
