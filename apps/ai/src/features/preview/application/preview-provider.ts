@@ -5,7 +5,7 @@ import {
 } from '../infrastructure/local-preview';
 import {
   ensureSandboxPreview,
-  isSandboxConfigured,
+  isSandboxMode,
   writeSandboxPreview,
 } from '../infrastructure/sandbox-preview';
 
@@ -26,12 +26,8 @@ const sandboxProvider: PreviewProvider = {
   apply: (code) => writeSandboxPreview(PREVIEW_NAME, code),
 };
 
-// 本番（Vercel）なら Sandbox。ローカルでも AI_PREVIEW_SANDBOX=true で Sandbox に繋いで
-// 検証できる（VERCEL_TOKEN で認証）。どちらも未設定なら手元の Vite dev。
-const useSandbox =
-  isSandboxConfigured() &&
-  (process.env['VERCEL_ENV'] !== undefined ||
-    process.env['AI_PREVIEW_SANDBOX'] === 'true');
-export const previewProvider: PreviewProvider = useSandbox
+// Sandbox モード（本番、またはローカルで AI_PREVIEW_SANDBOX=true）なら Sandbox、
+// それ以外は手元の Vite dev。
+export const previewProvider: PreviewProvider = isSandboxMode()
   ? sandboxProvider
   : localProvider;

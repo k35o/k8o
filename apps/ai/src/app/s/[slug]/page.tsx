@@ -4,6 +4,8 @@ import { notFound } from 'next/navigation';
 
 import { getPublicShareForRoute } from '@/features/share/interface/queries';
 
+import { SharePreview } from './_components/share-preview';
+
 type SharePageProps = {
   params: Promise<{ slug: string }>;
 };
@@ -47,13 +49,7 @@ export default async function SharePage({ params }: SharePageProps) {
         </Link>
       </header>
       <div className="min-h-0 flex-1">
-        {/* allow-same-origin は付けない＝不透明オリジンで親に触れない完全隔離。アセットは CORS 配信。 */}
-        <iframe
-          className="size-full border-0"
-          sandbox="allow-scripts"
-          src={share.entryUrl}
-          title={share.title}
-        />
+        <SharePreview slug={slug} title={share.title} />
       </div>
     </div>
   );

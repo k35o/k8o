@@ -16,6 +16,12 @@ const READY_TRIES = 40;
 
 export const isSandboxConfigured = (): boolean => SNAPSHOT_ID !== '';
 
+// 本番（Vercel）、またはローカルで AI_PREVIEW_SANDBOX=true のとき Sandbox を使う。
+export const isSandboxMode = (): boolean =>
+  isSandboxConfigured() &&
+  (process.env['VERCEL_ENV'] !== undefined ||
+    process.env['AI_PREVIEW_SANDBOX'] === 'true');
+
 // デプロイ内は OIDC（VERCEL_OIDC_TOKEN）が自動で効くため creds 不要。ローカル検証では
 // VERCEL_TOKEN を明示渡し（team/project は公開ID）。
 const creds = ():
@@ -91,14 +97,30 @@ export const ensureSandboxPreview = async (name: string): Promise<string> => {
   return ensureServing(sandbox);
 };
 
+// 名前付きサンドボックスにコードを書き込み、配信が立っていることを確保して URL を返す。
+export const serveSandboxPreview = async (
+  name: string,
+  code: string,
+): Promise<string> => {
+  const sandbox = await getOrCreate(name);
+  await sandbox.writeFiles([
+    { path: 'src/generated/Preview.tsx', content: code },
+  ]);
+  return ensureServing(sandbox);
+};
+
 // 生成コードを書き込む（HMR で反映）。停止していれば起こして配信を確保する。
 export const writeSandboxPreview = async (
   name: string,
   code: string,
 ): Promise<void> => {
-  const sandbox = await getOrCreate(name);
-  await sandbox.writeFiles([
-    { path: 'src/generated/Preview.tsx', content: code },
-  ]);
-  await ensureServing(sandbox);
+  await serveSandboxPreview(name, code);
+};
+
+// 名前付きサンドボックスを停止する（非公開化時の後始末。ベストエフォート）。
+export const stopSandboxPreview = async (name: string): Promise<void> => {
+  const sandbox = await Sandbox.get({ name, ...creds() }).catch(() => null);
+  if (sandbox !== null) {
+    await sandbox.stop().catch(() => undefined);
+  }
 };
