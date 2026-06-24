@@ -13,6 +13,7 @@ import {
 } from '@k8o/arte-odyssey';
 import { DefaultChatTransport, type UIMessage } from 'ai';
 import { useTheme } from 'next-themes';
+import { useRouter, useSearchParams } from 'next/navigation';
 import {
   type KeyboardEvent,
   useEffect,
@@ -64,6 +65,16 @@ export const Studio = () => {
   const lastPromptRef = useRef('');
   const { resolvedTheme } = useTheme();
   const persistence = useStudioPersistence();
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  // URL の ?project=<id> を初回レンダーで一度だけ拾い、リロード/ブックマークから復元する。
+  const bootProjectIdRef = useRef<number | null | undefined>(undefined);
+  if (bootProjectIdRef.current === undefined) {
+    const raw = searchParams.get('project');
+    const id = raw === null ? Number.NaN : Number(raw);
+    bootProjectIdRef.current = Number.isInteger(id) && id > 0 ? id : null;
+  }
+  const urlSyncedRef = useRef(false);
 
   const { messages, sendMessage, status, error, setMessages, stop } = useChat({
     transport: new DefaultChatTransport({ api: '/api/generate' }),
@@ -264,6 +275,30 @@ export const Studio = () => {
       await handleSelectProject(newId);
     }
   };
+
+  // 初回マウント時、URL に ?project=<id> があればそのプロジェクトを復元する（一度きり）。
+  // 初回レンダーの loader を ref に固定し、effect の依存を安定させる（マウント時のみ実行）。
+  const bootLoadRef = useRef(handleSelectProject);
+  useEffect(() => {
+    const bootId = bootProjectIdRef.current;
+    if (bootId !== null && bootId !== undefined) {
+      void bootLoadRef.current(bootId);
+    }
+  }, []);
+
+  // 現在のプロジェクトを URL に反映する（初期状態は /、選択中は ?project=<id>）。
+  // 初回は URL からの復元を優先し、ここでは書き換えない。
+  useEffect(() => {
+    if (!urlSyncedRef.current) {
+      urlSyncedRef.current = true;
+      return;
+    }
+    router.replace(
+      persistence.projectId === null
+        ? '/'
+        : `/?project=${persistence.projectId.toString()}`,
+    );
+  }, [persistence.projectId, router]);
 
   return (
     <div className="flex min-h-0 flex-1 flex-col">
