@@ -1,0 +1,104 @@
+import 'server-only';
+import { Sandbox } from '@vercel/sandbox';
+
+// 本番プレビュー: 焼いた snapshot から名前付き microVM を起こして vite dev を立て、その
+// *.vercel.run ドメインを iframe に出す。デプロイ内では OIDC で自動認証。ローカル検証時は
+// VERCEL_TOKEN があれば明示認証する（無ければ OIDC を使う＝デプロイ）。コスト抑制のため
+// 1 vCPU・短い idle timeout で、用が済めば自動停止（停止中は課金されない）。
+
+const SNAPSHOT_ID = process.env['AI_TEMPLATE_SNAPSHOT_ID'] ?? '';
+const TEAM_ID = 'team_K1poAqb11IhJpOHw17Z5qhvC';
+const PROJECT_ID = 'prj_Iz1SHi1C6rgwFz2YngTzeiRdsFE8';
+const WORKDIR = '/vercel/sandbox';
+const PORT = 5173;
+const TIMEOUT_MS = 5 * 60 * 1000;
+const READY_TRIES = 40;
+
+export const isSandboxConfigured = (): boolean => SNAPSHOT_ID !== '';
+
+// デプロイ内は OIDC（VERCEL_OIDC_TOKEN）が自動で効くため creds 不要。ローカル検証では
+// VERCEL_TOKEN を明示渡し（team/project は公開ID）。
+const creds = ():
+  | { token: string; teamId: string; projectId: string }
+  | object => {
+  // VERCEL_TOKEN の有無（存在チェック）。秘密の比較ではない。
+  const token = process.env['VERCEL_TOKEN'];
+  if (token === undefined || token.length === 0) {
+    return {};
+  }
+  return { token, teamId: TEAM_ID, projectId: PROJECT_ID };
+};
+
+const isServing = async (url: string): Promise<boolean> => {
+  try {
+    const res = await fetch(url, { signal: AbortSignal.timeout(2500) });
+    return res.ok;
+  } catch {
+    return false;
+  }
+};
+
+// 名前付きサンドボックスを get（あれば再開）するか、無ければ snapshot から作る。
+const getOrCreate = async (name: string): Promise<Sandbox> => {
+  if (SNAPSHOT_ID === '') {
+    throw new Error(
+      'AI_TEMPLATE_SNAPSHOT_ID が未設定です（snapshot を bake してください）',
+    );
+  }
+  const existing = await Sandbox.get({ name, ...creds() }).catch(() => null);
+  if (existing !== null) {
+    return existing;
+  }
+  // snapshot ソース指定時は runtime を渡さない（snapshot から継承）。
+  return Sandbox.create({
+    name,
+    source: { type: 'snapshot', snapshotId: SNAPSHOT_ID },
+    ports: [PORT],
+    resources: { vcpus: 1 },
+    timeout: TIMEOUT_MS,
+    ...creds(),
+  });
+};
+
+// vite dev が応答していなければ起動し、応答するまで待ってから domain を返す。
+const ensureServing = async (sandbox: Sandbox): Promise<string> => {
+  const url = sandbox.domain(PORT);
+  if (await isServing(url)) {
+    return url;
+  }
+  await sandbox.runCommand({
+    cmd: 'npm',
+    args: ['run', 'dev', '--', '--port', String(PORT), '--host'],
+    cwd: WORKDIR,
+    detached: true,
+  });
+  for (let i = 0; i < READY_TRIES; i += 1) {
+    // eslint-disable-next-line no-await-in-loop -- 起動待ちのポーリング
+    if (await isServing(url)) {
+      return url;
+    }
+    // eslint-disable-next-line no-await-in-loop -- 起動待ちのポーリング
+    await new Promise((resolve) => {
+      setTimeout(resolve, 1000);
+    });
+  }
+  return url;
+};
+
+// プレビュー用サンドボックスを用意して配信URLを返す（コード未指定。apply で差し替える）。
+export const ensureSandboxPreview = async (name: string): Promise<string> => {
+  const sandbox = await getOrCreate(name);
+  return ensureServing(sandbox);
+};
+
+// 生成コードを書き込む（HMR で反映）。停止していれば起こして配信を確保する。
+export const writeSandboxPreview = async (
+  name: string,
+  code: string,
+): Promise<void> => {
+  const sandbox = await getOrCreate(name);
+  await sandbox.writeFiles([
+    { path: 'src/generated/Preview.tsx', content: code },
+  ]);
+  await ensureServing(sandbox);
+};
