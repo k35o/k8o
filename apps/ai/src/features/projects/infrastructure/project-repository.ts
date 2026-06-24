@@ -1,7 +1,7 @@
 import 'server-only';
 import { db } from '@repo/database';
 import type { AiApp, AiVisibility } from '@repo/database/schema';
-import { and, desc, eq, isNotNull } from 'drizzle-orm';
+import { and, desc, eq } from 'drizzle-orm';
 
 // DB アクセスはこの層に閉じる（features/*/infrastructure 以外から @repo/database を読まない）。
 const projects = db._schema.aiProjects;
@@ -137,22 +137,6 @@ export const updateProjectVisibility = async (input: {
       updatedAt: new Date().toISOString(),
     })
     .where(eq(projects.id, input.projectId));
-};
-
-// slug が「public かつ公開版あり」かを判定。アセット配信の権威付け用。
-export const selectIsSlugPublic = async (slug: string): Promise<boolean> => {
-  const [row] = await db
-    .select({ id: projects.id })
-    .from(projects)
-    .where(
-      and(
-        eq(projects.slug, slug),
-        eq(projects.visibility, 'public'),
-        isNotNull(projects.publishedVersionId),
-      ),
-    )
-    .limit(1);
-  return row !== undefined;
 };
 
 // 公開ページ用（認証なし）。public かつ公開版が設定されたプロジェクトのみ返す。

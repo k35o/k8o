@@ -14,15 +14,7 @@ const PORT = 5173;
 const TIMEOUT_MS = 5 * 60 * 1000;
 const READY_TRIES = 40;
 
-export const isSandboxConfigured = (): boolean => SNAPSHOT_ID !== '';
-
-// 本番（Vercel）、またはローカルで AI_PREVIEW_SANDBOX=true のとき Sandbox を使う。
-export const isSandboxMode = (): boolean =>
-  isSandboxConfigured() &&
-  (process.env['VERCEL_ENV'] !== undefined ||
-    process.env['AI_PREVIEW_SANDBOX'] === 'true');
-
-// デプロイ内は OIDC（VERCEL_OIDC_TOKEN）が自動で効くため creds 不要。ローカル検証では
+// デプロイ内は OIDC（VERCEL_OIDC_TOKEN）が自動で効くため creds 不要。ローカルでは
 // VERCEL_TOKEN を明示渡し（team/project は公開ID）。
 const creds = ():
   | { token: string; teamId: string; projectId: string }
