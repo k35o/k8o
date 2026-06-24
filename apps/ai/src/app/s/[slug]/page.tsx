@@ -3,6 +3,7 @@ import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { Suspense } from 'react';
 
+import { ToggleTheme } from '@/app/_components/toggle-theme';
 import { getPublicShareForRoute } from '@/features/share/interface/queries';
 
 import { SharePreview } from './_components/share-preview';
@@ -46,12 +47,15 @@ const ShareContent = async ({ params }: SharePageProps) => {
           </span>
           <span className="text-fg-mute text-xs">k8o AI Studio で作成</span>
         </div>
-        <Link
-          className="text-fg-base shrink-0 text-sm font-medium hover:underline"
-          href="/"
-        >
-          k8o AI Studio
-        </Link>
+        <div className="flex shrink-0 items-center gap-3">
+          <ToggleTheme />
+          <Link
+            className="text-fg-base text-sm font-medium hover:underline"
+            href="/"
+          >
+            k8o AI Studio
+          </Link>
+        </div>
       </header>
       <div className="min-h-0 flex-1">
         <SharePreview slug={slug} title={share.title} />

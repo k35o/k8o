@@ -4,6 +4,29 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>preview</title>
+    <!-- テーマは arte-odyssey の .dark クラスで切り替わる。トークンを定義する CSS は
+         JS バンドル経由で読み込まれるため、それより前の初回ペイントでは body が白くなり
+         ダーク時に白フラッシュする。これを防ぐため、ここで色を先回りで決める。 -->
+    <style>
+      :root {
+        color-scheme: light;
+      }
+      :root.dark {
+        color-scheme: dark;
+      }
+      /* arte-odyssey の bg-surface が読み込まれる前は color-scheme に追従する system 色
+         (Canvas) で代替し、初回ペイントから配色がテーマに沿うようにする。 */
+      html,
+      body {
+        background-color: var(--color-bg-surface, Canvas);
+      }
+    </style>
+    <script>
+      // 親(Studio/共有ページ)から渡る ?theme=dark を初回ペイント前に反映する。
+      if (new URLSearchParams(location.search).get('theme') === 'dark') {
+        document.documentElement.classList.add('dark');
+      }
+    </script>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link

@@ -5,10 +5,22 @@ import { createRoot } from 'react-dom/client';
 import './index.css';
 import Preview from './generated/Preview';
 
-// 親(Studio)から ?theme=dark で渡されたテーマを反映する（arte-odyssey は .dark で切替）。
-if (new URLSearchParams(window.location.search).get('theme') === 'dark') {
-  document.documentElement.classList.add('dark');
-}
+// 初期テーマは index.html の head スクリプトが初回ペイント前に反映する。
+// 以降の切替は親からの postMessage で受け、iframe を再読込せず反映する（白フラッシュ回避）。
+window.addEventListener('message', (event) => {
+  const data: unknown = event.data;
+  if (
+    typeof data === 'object' &&
+    data !== null &&
+    'type' in data &&
+    data.type === 'k8o-preview-theme'
+  ) {
+    document.documentElement.classList.toggle(
+      'dark',
+      'theme' in data && data.theme === 'dark',
+    );
+  }
+});
 
 // 生成コードの runtime 例外（prop 不整合など）を白画面にせず原因を表示する。
 type BoundaryState = { message: string | null };
