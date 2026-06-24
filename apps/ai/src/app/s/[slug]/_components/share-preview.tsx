@@ -1,10 +1,9 @@
 'use client';
 
-/* oxlint-disable react/iframe-missing-sandbox -- Sandbox 配信は別オリジン(*.vercel.run)。allow-same-origin は vite の動作に要るが、ホストとは別オリジンのため親ページへの脱出は起きない */
-
 import { useTheme } from 'next-themes';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 
+import { ThemedPreviewIframe } from '@/app/_components/preview-iframe';
 import { resolveShareEntryAction } from '@/features/share/interface/actions';
 
 type SharePreviewProps = {
@@ -14,17 +13,23 @@ type SharePreviewProps = {
 
 // 公開ページのプレビュー。配信URL（Sandbox 起動を伴うことがある）を解決してから iframe を出す。
 export const SharePreview = ({ slug, title }: SharePreviewProps) => {
+  const { resolvedTheme } = useTheme();
   const [url, setUrl] = useState<string | null>(null);
   const [failed, setFailed] = useState(false);
 
   useEffect(() => {
     void (async () => {
-      const res = await resolveShareEntryAction(slug);
-      if (res === null) {
+      try {
+        const res = await resolveShareEntryAction(slug);
+        if (res === null) {
+          setFailed(true);
+          return;
+        }
+        setUrl(res.url);
+      } catch {
+        // server action が想定外に reject しても spinner で固まらせない。
         setFailed(true);
-        return;
       }
-      setUrl(res.url);
     })();
   }, [slug]);
 
@@ -42,43 +47,5 @@ export const SharePreview = ({ slug, title }: SharePreviewProps) => {
       </div>
     );
   }
-  return <ShareFrame title={title} url={url} />;
-};
-
-type ShareFrameProps = {
-  url: string;
-  title: string;
-};
-
-// 共有プレビューを閲覧者のテーマに追従させる。初期テーマは src(?theme) に載せて初回
-// ペイントから正しい配色にし、以降の切替は postMessage で反映する（src を変えると iframe が
-// リロードされ白フラッシュするため）。
-const ShareFrame = ({ url, title }: ShareFrameProps) => {
-  const { resolvedTheme } = useTheme();
-  const ref = useRef<HTMLIFrameElement>(null);
-  const [initialSrc] = useState(() =>
-    resolvedTheme === 'dark' ? `${url}?theme=dark` : url,
-  );
-
-  useEffect(() => {
-    ref.current?.contentWindow?.postMessage(
-      {
-        type: 'k8o-preview-theme',
-        theme: resolvedTheme === 'dark' ? 'dark' : 'light',
-      },
-      '*',
-    );
-  }, [resolvedTheme]);
-
-  return (
-    // Sandbox 配信は別オリジン(*.vercel.run)で vite の動作に allow-same-origin が要る
-    // （親とは別オリジンのため iframe からの脱出は起きない）。
-    <iframe
-      className="size-full border-0"
-      ref={ref}
-      sandbox="allow-scripts allow-same-origin"
-      src={initialSrc}
-      title={title}
-    />
-  );
+  return <ThemedPreviewIframe theme={resolvedTheme} title={title} url={url} />;
 };

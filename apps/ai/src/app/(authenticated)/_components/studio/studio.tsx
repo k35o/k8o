@@ -22,6 +22,7 @@ import {
   useState,
 } from 'react';
 
+import { ThemedPreviewIframe } from '@/app/_components/preview-iframe';
 import { ToggleTheme } from '@/app/_components/toggle-theme';
 import {
   generationReducer,
@@ -36,8 +37,8 @@ import {
   startPreviewSession,
 } from '@/features/preview/interface/actions';
 
-import { CodePanel, CopyCodeButton } from './code-panel';
-import { PreviewFrame } from './preview-frame';
+import { CodePanel } from './code-panel';
+import { CopyCodeButton } from './copy-code-button';
 import { ProjectHistory } from './project-history';
 import { ShareControl } from './share-control';
 import { useStudioPersistence } from './use-studio-persistence';
@@ -87,10 +88,8 @@ export const Studio = () => {
       if (parsed.code !== null && parsed.meta !== null) {
         dispatch({
           type: 'generation-finished',
-          id: message.id,
           code: parsed.code,
           meta: parsed.meta,
-          createdAt: Date.now(),
         });
         // prompt も版に残し、履歴から読み込んだときに会話を復元できるようにする。
         void persistence.save({
@@ -159,7 +158,7 @@ export const Studio = () => {
   const hasResult = state.currentFile !== null;
   // 履歴から読み込んだ直後はチャットが空になるため、空状態でも「何を編集中か」を示す。
   const emptyStateTitle = hasResult
-    ? `「${state.versions.at(-1)?.meta.title ?? 'プロジェクト'}」を編集中`
+    ? `「${state.lastMeta?.title ?? 'プロジェクト'}」を編集中`
     : 'UI を生成しましょう';
   const emptyStateHint = hasResult
     ? '続けて指示すると、このUIを更新します。例:「色を温かいトーンに」「余白を広げて」'
@@ -226,10 +225,8 @@ export const Studio = () => {
     }
     dispatch({
       type: 'load-project',
-      id: `db-${project.versionId.toString()}`,
       code: project.code,
       meta: project.meta,
-      createdAt: Date.now(),
     });
     // 履歴を切り替えてもトークが消えないよう会話を復元する。各版を [user(指示) → assistant(meta JSON)] に展開し、
     // assistant は json フェンスにすることで既存の描画ロジック（parseGeneration の description 抽出）で説明文が出る。
@@ -591,9 +588,10 @@ export const Studio = () => {
           <div className="min-h-0 flex-1 overflow-hidden" ref={frameRef}>
             <div className={view === 'preview' ? 'h-full' : 'hidden'}>
               {previewUrl !== null && hasResult ? (
-                <PreviewFrame
+                <ThemedPreviewIframe
                   key={previewNonce}
                   theme={resolvedTheme}
+                  title="preview"
                   url={previewUrl}
                 />
               ) : (

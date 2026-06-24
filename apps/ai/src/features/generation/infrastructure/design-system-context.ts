@@ -1,4 +1,4 @@
-import { meta, tokens } from '@k8o/arte-odyssey/tokens';
+import { tokens } from '@k8o/arte-odyssey/tokens';
 
 // arte-odyssey のトークンから「生成コードで使ってよいクラスの語彙」を自動生成し、プロンプトと実体のズレ（存在しないクラスのハルシネーション）を防ぐ。標準 Tailwind カラーは語彙に含めない＝使わせない。
 // tokens.theme.<namespace> はトークン名をキーに持つオブジェクトで、キー名がクラスの語幹になる。
@@ -43,8 +43,6 @@ export const fontWeightClasses: readonly string[] = fontWeightRefs.map(
 export const fontFamilyClasses: readonly string[] = fontRefs.map(
   (font) => `font-${font}`,
 );
-
-export const fontVariables: readonly string[] = meta.unresolved;
 
 // arte-odyssey の主要コンポーネント（barrel export より v10.2.0 で抽出）。major 更新時に手動 refresh。
 export const componentAllowlist: readonly string[] = [

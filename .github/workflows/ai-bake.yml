@@ -1,0 +1,75 @@
+name: AI Sandbox Bake
+
+# sandbox-template を変更した PR で snapshot が古ければ、CI が焼き直して
+# template-snapshot.ts（snapshotId + 内容ハッシュ）を k8o-bot がコミットする。
+# これで「テンプレ更新のたびに手動 bake」が不要になる。
+on:
+  pull_request:
+    paths:
+      - 'apps/ai/sandbox-template/**'
+
+permissions: {}
+
+jobs:
+  bake:
+    # fork PR は secrets（bot/VERCEL トークン）を取得できないため除外する。
+    if: ${{ github.event.pull_request.head.repo.fork != true }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: read
+    steps:
+      - name: Generate k8o-bot token
+        id: app-token
+        uses: actions/create-github-app-token@bcd2ba49218906704ab6c1aa796996da409d3eb1 # v3.2.0
+        with:
+          client-id: ${{ secrets.K35O_BOT_CLIENT_ID }}
+          private-key: ${{ secrets.K35O_BOT_PRIVATE_KEY }}
+
+      - name: Checkout PR branch
+        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
+        with:
+          token: ${{ steps.app-token.outputs.token }}
+          ref: ${{ github.event.pull_request.head.ref }}
+          persist-credentials: false
+
+      - name: Setup
+        uses: ./.github/actions/setup
+
+      # テンプレ内容ハッシュが template-snapshot.ts と一致するか（= 再 bake が要るか）を判定する。
+      # bot のコミットで再発火しても、ここで stale=false になり Sandbox を起こさず終了する（課金もループも防ぐ）。
+      - name: Check snapshot drift
+        id: drift
+        run: |
+          if pnpm -F ai exec vitest run --project="features test" src/features/preview/infrastructure/template-snapshot.test.ts; then
+            echo "stale=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "stale=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Re-bake snapshot
+        if: steps.drift.outputs.stale == 'true'
+        env:
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+        run: node apps/ai/scripts/bake-sandbox-snapshot.mjs
+
+      - name: Commit updated snapshot
+        if: steps.drift.outputs.stale == 'true'
+        env:
+          GH_TOKEN: ${{ steps.app-token.outputs.token }}
+          APP_SLUG: ${{ steps.app-token.outputs.app-slug }}
+          BRANCH: ${{ github.event.pull_request.head.ref }}
+          REPO: ${{ github.repository }}
+          POINTER: apps/ai/src/features/preview/infrastructure/template-snapshot.ts
+        run: |
+          if git diff --quiet -- "$POINTER"; then
+            echo "snapshot は最新（差分なし）。コミットしません。"
+            exit 0
+          fi
+          bot_user="${APP_SLUG}[bot]"
+          bot_id=$(gh api "/users/${bot_user}" --jq .id)
+          git config user.name "$bot_user"
+          git config user.email "${bot_id}+${bot_user}@users.noreply.github.com"
+          git add "$POINTER"
+          git commit -m "chore(ai): re-bake sandbox snapshot"
+          git push "https://x-access-token:${GH_TOKEN}@github.com/${REPO}.git" "HEAD:${BRANCH}"

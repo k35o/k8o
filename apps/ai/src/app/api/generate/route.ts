@@ -2,6 +2,7 @@ import { convertToModelMessages, streamText, type UIMessage } from 'ai';
 import * as z from 'zod/mini';
 
 import { buildSystemPrompt } from '@/features/generation/application/build-system-prompt';
+import { GENERATION_MODELS } from '@/features/generation/application/models';
 import {
   generationLimit,
   isOverLimit,
@@ -17,7 +18,7 @@ import { requireAllowedSession } from '@/shared/auth/require-allowed-session';
 const bodySchema = z.object({
   id: z.optional(z.string()),
   messages: z.array(z.unknown()),
-  model: z.optional(z.enum(['fugu', 'fugu-ultra'])),
+  model: z.optional(z.enum(GENERATION_MODELS)),
   currentFile: z.optional(z.nullable(z.string())),
   buildErrors: z.optional(z.nullable(z.string())),
 });
@@ -51,7 +52,14 @@ export async function POST(req: Request): Promise<Response> {
   }
 
   const { messages, model, currentFile, buildErrors } = parsed.data;
-  const modelMessages = await convertToModelMessages(messages as UIMessage[]);
+
+  // messages の要素形状は z.unknown のまま。壊れた parts/role を SDK 内部例外（500）にせず 400 で弾く。
+  let modelMessages: Awaited<ReturnType<typeof convertToModelMessages>>;
+  try {
+    modelMessages = await convertToModelMessages(messages as UIMessage[]);
+  } catch {
+    return new Response(null, { status: 400 });
+  }
 
   const result = streamText({
     model: getFuguModel(model ?? 'fugu'),
