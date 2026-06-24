@@ -39,6 +39,7 @@ import {
 
 import { CodePanel } from './code-panel';
 import { CopyCodeButton } from './copy-code-button';
+import { PreviewLoading } from './preview-loading';
 import { ProjectHistory } from './project-history';
 import { ShareControl } from './share-control';
 import { useStudioPersistence } from './use-studio-persistence';
@@ -53,6 +54,10 @@ export const Studio = () => {
   );
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [previewNonce, setPreviewNonce] = useState(0);
+  // プレビューへの反映〜iframe 読み込み完了までを覆うローディング。完了は iframe の onLoad で外す。
+  const [previewLoading, setPreviewLoading] = useState(false);
+  // 環境（Sandbox）の用意に失敗したとき。スピナーが回り続けないよう案内に切り替える。
+  const [previewFailed, setPreviewFailed] = useState(false);
   const [view, setView] = useState<PanelView>('preview');
   // 小画面では2ペインを並べられないので、タブで1つずつ表示する。
   const [mobileTab, setMobileTab] = useState<'chat' | 'preview' | 'code'>(
@@ -101,6 +106,8 @@ export const Studio = () => {
           if (parsed.code === null) {
             return;
           }
+          // 反映〜iframe 読み込み完了までローディングを出す（プレビュー表示が遅れても状態が分かるように）。
+          setPreviewLoading(true);
           const res = await applyPreviewCode(parsed.code);
           if (res.ok) {
             setApplyError(null);
@@ -109,6 +116,8 @@ export const Studio = () => {
             setMobileTab('preview');
             return;
           }
+          // 反映に失敗したら iframe は再読込されず onLoad も来ないので、ローディングはここで外す。
+          setPreviewLoading(false);
           // エラーを次ターンの system に流して自動修復を促す（プレビューは前回の正常版のまま＝白画面にしない）。
           if (res.error !== undefined) {
             setApplyError(res.error);
@@ -123,12 +132,18 @@ export const Studio = () => {
 
   const isBusy = status === 'submitted' || status === 'streaming';
 
-  // 起動時にプレビューセッション（ローカルVite）を用意する。
+  // 起動時にプレビューセッション（Sandbox）を用意する。失敗時は無限スピナーにせず案内を出す。
   useEffect(() => {
     void (async () => {
-      const res = await startPreviewSession();
-      if (res !== null) {
-        setPreviewUrl(res.url);
+      try {
+        const res = await startPreviewSession();
+        if (res === null) {
+          setPreviewFailed(true);
+        } else {
+          setPreviewUrl(res.url);
+        }
+      } catch {
+        setPreviewFailed(true);
       }
     })();
   }, []);
@@ -178,6 +193,9 @@ export const Studio = () => {
     }
     setInput('');
     setApplyError(null);
+    // 生成中はコードが組み上がる様子を実況する（完了後に onFinish がプレビューへ戻す）。
+    // モバイルはチャットの「考えています…」を残したいので mobileTab は切り替えない。
+    setView('code');
     lastPromptRef.current = text;
     await sendMessage(
       { text },
@@ -258,11 +276,15 @@ export const Studio = () => {
     );
     setMessages(restored);
     setApplyError(null);
+    setPreviewLoading(true);
     const res = await applyPreviewCode(project.code);
     if (res.ok) {
       setPreviewNonce((nonce) => nonce + 1);
       setView('preview');
       setMobileTab('preview');
+    } else {
+      // 反映失敗時は iframe が再読込されない＝onLoad が来ないので、ここで外す。
+      setPreviewLoading(false);
     }
   };
 
@@ -589,14 +611,29 @@ export const Studio = () => {
           }`}
         >
           <div className="min-h-0 flex-1 overflow-hidden" ref={frameRef}>
-            <div className={view === 'preview' ? 'h-full' : 'hidden'}>
-              {previewUrl !== null && hasResult ? (
-                <ThemedPreviewIframe
-                  key={previewNonce}
-                  theme={resolvedTheme}
-                  title="preview"
-                  url={previewUrl}
-                />
+            <div className={view === 'preview' ? 'relative h-full' : 'hidden'}>
+              {previewFailed ? (
+                <div className="text-fg-mute flex h-full items-center justify-center p-6 text-center text-sm leading-relaxed">
+                  プレビュー環境を準備できませんでした。ページを再読み込みしてください。
+                </div>
+              ) : previewUrl === null ? (
+                // サンドボックスの起動待ち（cold start）。ここが遅いことが多いので明示する。
+                <PreviewLoading message="プレビュー環境を準備しています…" />
+              ) : hasResult ? (
+                <>
+                  <ThemedPreviewIframe
+                    key={previewNonce}
+                    onLoad={() => {
+                      setPreviewLoading(false);
+                    }}
+                    theme={resolvedTheme}
+                    title="preview"
+                    url={previewUrl}
+                  />
+                  {previewLoading ? (
+                    <PreviewLoading message="プレビューを反映しています…" />
+                  ) : null}
+                </>
               ) : (
                 <div className="text-fg-mute flex h-full items-center justify-center p-6 text-center text-sm leading-relaxed">
                   生成すると、ここにライブプレビューが表示されます

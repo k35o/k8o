@@ -8,6 +8,8 @@ type ThemedPreviewIframeProps = {
   url: string;
   theme?: string | undefined;
   title: string;
+  // 読み込み完了の通知（呼び出し側のローディング表示解除に使う）。
+  onLoad?: (() => void) | undefined;
 };
 
 // 生成プレビューの iframe。初期テーマは src(?theme) に載せて初回ペイントから正しい配色にし、
@@ -17,6 +19,7 @@ export const ThemedPreviewIframe: FC<ThemedPreviewIframeProps> = ({
   url,
   theme,
   title,
+  onLoad,
 }) => {
   const ref = useRef<HTMLIFrameElement>(null);
   // url は Sandbox の絶対URL。クエリは URL で安全に組み立て、postMessage の宛先も同オリジンに絞る。
@@ -38,6 +41,7 @@ export const ThemedPreviewIframe: FC<ThemedPreviewIframeProps> = ({
   return (
     <iframe
       className="size-full border-0"
+      onLoad={onLoad}
       ref={ref}
       sandbox="allow-scripts allow-same-origin"
       src={initialSrc}
