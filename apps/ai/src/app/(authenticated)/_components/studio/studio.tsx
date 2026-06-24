@@ -74,7 +74,6 @@ export const Studio = () => {
     const id = raw === null ? Number.NaN : Number(raw);
     bootProjectIdRef.current = Number.isInteger(id) && id > 0 ? id : null;
   }
-  const urlSyncedRef = useRef(false);
 
   const { messages, sendMessage, status, error, setMessages, stop } = useChat({
     transport: new DefaultChatTransport({ api: '/api/generate' }),
@@ -214,6 +213,7 @@ export const Studio = () => {
     setHistoryOpen(false);
     setView('preview');
     setMobileTab('chat');
+    router.replace('/');
   };
 
   const handleSelectProject = async (id: number): Promise<void> => {
@@ -276,28 +276,30 @@ export const Studio = () => {
     }
   };
 
-  // 初回マウント時、URL に ?project=<id> があればそのプロジェクトを復元する（一度きり）。
-  // 初回レンダーの loader を ref に固定し、effect の依存を安定させる（マウント時のみ実行）。
+  // 初回マウント時、URL に ?project=<id> があればそのプロジェクトを復元する。
+  // 初回レンダーの loader を ref に固定し依存を安定させ、Strict Mode の二重実行でも
+  // bootedRef で1回だけロードする。
   const bootLoadRef = useRef(handleSelectProject);
+  const bootedRef = useRef(false);
   useEffect(() => {
+    if (bootedRef.current) {
+      return;
+    }
+    bootedRef.current = true;
     const bootId = bootProjectIdRef.current;
     if (bootId !== null && bootId !== undefined) {
       void bootLoadRef.current(bootId);
     }
   }, []);
 
-  // 現在のプロジェクトを URL に反映する（初期状態は /、選択中は ?project=<id>）。
-  // 初回は URL からの復元を優先し、ここでは書き換えない。
+  // 選択中プロジェクトを URL(?project=<id>) に反映する。projectId が null のとき
+  // （初期 / boot 中 / 新規）は書き換えない。boot の ?project を握り潰さず、実行回数ではなく
+  // 値で判定するため Strict Mode の二重実行でも安全。新規化での「/」戻しは handleNewProject で行う。
   useEffect(() => {
-    if (!urlSyncedRef.current) {
-      urlSyncedRef.current = true;
+    if (persistence.projectId === null) {
       return;
     }
-    router.replace(
-      persistence.projectId === null
-        ? '/'
-        : `/?project=${persistence.projectId.toString()}`,
-    );
+    router.replace(`/?project=${persistence.projectId.toString()}`);
   }, [persistence.projectId, router]);
 
   return (
