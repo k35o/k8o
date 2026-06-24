@@ -99,7 +99,7 @@ export const saveGeneration = async (input: {
   projectId: number | null;
   parentVersionId: number | null;
   content: UiStudioContent;
-}): Promise<{ projectId: number; versionId: number; title: string }> => {
+}): Promise<{ projectId: number; versionId: number; title: string } | null> => {
   if (input.projectId === null) {
     const title = deriveTitle(input.content.meta.title);
     const { projectId, versionId } = await insertProjectWithVersion({
@@ -112,12 +112,14 @@ export const saveGeneration = async (input: {
     return { projectId, versionId, title };
   }
 
+  // 非所有/不存在は他の action（forkProject/setVisibility 等）と同様に null を返す
+  // （saveGenerationAction → use-studio-persistence は null をハンドル済み）。
   const owned = await projectOwnedBy({
     projectId: input.projectId,
     userId: input.userId,
   });
   if (!owned) {
-    throw new Error('project not found');
+    return null;
   }
   const { versionId } = await insertVersion({
     projectId: input.projectId,

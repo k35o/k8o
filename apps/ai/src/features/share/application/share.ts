@@ -5,6 +5,7 @@ import {
   setVisibility,
 } from '@/features/projects/application/projects';
 
+import { resolveServeWithCooldown } from './serve-cooldown';
 import { shareProvider } from './share-provider';
 
 export type PublishedShare = {
@@ -87,7 +88,9 @@ export const getPublicShare = async (
   };
 };
 
-// 閲覧時に iframe へ出す配信 URL を解決する（Sandbox モードでは Sandbox を起こして配信）。
+// 閲覧時に iframe へ出す配信 URL を解決する（Sandbox を起こして配信）。
+// 未認証の公開経路なので、slug 単位の single-flight + 短期クールダウンで匿名トラフィックによる
+// Sandbox cold start の濫発を抑える。
 export const resolveShareEntry = async (
   slug: string,
 ): Promise<{ url: string } | null> => {
@@ -95,6 +98,11 @@ export const resolveShareEntry = async (
   if (share === null) {
     return null;
   }
-  const url = await shareProvider.serve(slug, share.code);
+  const url = await resolveServeWithCooldown(slug, () =>
+    shareProvider.serve(slug, share.code),
+  );
+  if (url === null) {
+    return null;
+  }
   return { url };
 };

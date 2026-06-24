@@ -5,8 +5,6 @@ import type { FC } from 'react';
 import { CodeView } from './code-view';
 import { useHighlightedCode } from './use-highlighted-code';
 
-export { CopyCodeButton } from './copy-code-button';
-
 type CodePanelProps = {
   code: string | null;
   isStreaming: boolean;

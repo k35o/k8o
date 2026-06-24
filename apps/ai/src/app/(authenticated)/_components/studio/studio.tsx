@@ -35,7 +35,8 @@ import {
   startPreviewSession,
 } from '@/features/preview/interface/actions';
 
-import { CodePanel, CopyCodeButton } from './code-panel';
+import { CodePanel } from './code-panel';
+import { CopyCodeButton } from './copy-code-button';
 import { PreviewFrame } from './preview-frame';
 import { ProjectHistory } from './project-history';
 import { ShareControl } from './share-control';
@@ -77,10 +78,8 @@ export const Studio = () => {
       if (parsed.code !== null && parsed.meta !== null) {
         dispatch({
           type: 'generation-finished',
-          id: message.id,
           code: parsed.code,
           meta: parsed.meta,
-          createdAt: Date.now(),
         });
         // prompt も版に残し、履歴から読み込んだときに会話を復元できるようにする。
         void persistence.save({
@@ -215,10 +214,8 @@ export const Studio = () => {
     }
     dispatch({
       type: 'load-project',
-      id: `db-${project.versionId.toString()}`,
       code: project.code,
       meta: project.meta,
-      createdAt: Date.now(),
     });
     // 履歴を切り替えてもトークが消えないよう会話を復元する。各版を [user(指示) → assistant(meta JSON)] に展開し、
     // assistant は json フェンスにすることで既存の描画ロジック（parseGeneration の description 抽出）で説明文が出る。

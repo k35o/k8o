@@ -1,122 +1,57 @@
+import type { GenerationModel } from './models';
 import type { GenerationMeta } from './parse-generation';
 
-export type GenerationModel = 'fugu' | 'fugu-ultra';
-
 export type FileVersion = {
-  id: string;
   code: string;
   meta: GenerationMeta;
-  createdAt: number;
-  parentId: string | null;
 };
 
 export type GenerationState = {
   currentFile: string | null;
+  // セッション内の生成履歴（append-only）。今は空状態のタイトル表示に使う。
   versions: FileVersion[];
-  activeVersionId: string | null;
   buildErrors: string | null;
   selectedModel: GenerationModel;
 };
 
 export type GenerationAction =
-  | {
-      type: 'generation-finished';
-      id: string;
-      code: string;
-      meta: GenerationMeta;
-      createdAt: number;
-    }
-  | {
-      type: 'load-project';
-      id: string;
-      code: string;
-      meta: GenerationMeta;
-      createdAt: number;
-    }
+  | { type: 'generation-finished'; code: string; meta: GenerationMeta }
+  | { type: 'load-project'; code: string; meta: GenerationMeta }
   | { type: 'reset' }
-  | { type: 'restore-version'; versionId: string }
-  | { type: 'undo' }
   | { type: 'build-failed'; errors: string }
-  | { type: 'build-succeeded' }
   | { type: 'select-model'; model: GenerationModel };
 
 export const initialGenerationState: GenerationState = {
   currentFile: null,
   versions: [],
-  activeVersionId: null,
   buildErrors: null,
   selectedModel: 'fugu',
 };
 
-// id / createdAt は呼び出し側から渡し決定的に保つ。履歴は append-only で、undo/restore は active を切り替えるだけ。
 export const generationReducer = (
   state: GenerationState,
   action: GenerationAction,
 ): GenerationState => {
   switch (action.type) {
-    case 'generation-finished': {
-      const version: FileVersion = {
-        id: action.id,
-        code: action.code,
-        meta: action.meta,
-        createdAt: action.createdAt,
-        parentId: state.activeVersionId,
-      };
+    case 'generation-finished':
       return {
         ...state,
-        versions: [...state.versions, version],
-        activeVersionId: version.id,
-        currentFile: version.code,
+        versions: [...state.versions, { code: action.code, meta: action.meta }],
+        currentFile: action.code,
         buildErrors: null,
       };
-    }
-    case 'load-project': {
-      // 当該版を起点にストアを置き換える（セッション内 undo はここが先頭になる）。
-      const version: FileVersion = {
-        id: action.id,
-        code: action.code,
-        meta: action.meta,
-        createdAt: action.createdAt,
-        parentId: null,
-      };
+    case 'load-project':
+      // 当該版を起点にストアを置き換える。
       return {
         ...initialGenerationState,
         selectedModel: state.selectedModel,
-        versions: [version],
-        activeVersionId: version.id,
-        currentFile: version.code,
+        versions: [{ code: action.code, meta: action.meta }],
+        currentFile: action.code,
       };
-    }
     case 'reset':
       return { ...initialGenerationState, selectedModel: state.selectedModel };
-    case 'restore-version': {
-      const target = state.versions.find(
-        (version) => version.id === action.versionId,
-      );
-      if (target === undefined) {
-        return state;
-      }
-      return { ...state, activeVersionId: target.id, currentFile: target.code };
-    }
-    case 'undo': {
-      const active = state.versions.find(
-        (version) => version.id === state.activeVersionId,
-      );
-      // active が無い（履歴外）か親が無い（先頭版）なら何もしない。
-      const parentId = active?.parentId ?? null;
-      if (parentId === null) {
-        return state;
-      }
-      const parent = state.versions.find((version) => version.id === parentId);
-      if (parent === undefined) {
-        return state;
-      }
-      return { ...state, activeVersionId: parent.id, currentFile: parent.code };
-    }
     case 'build-failed':
       return { ...state, buildErrors: action.errors };
-    case 'build-succeeded':
-      return { ...state, buildErrors: null };
     case 'select-model':
       return { ...state, selectedModel: action.model };
     default:

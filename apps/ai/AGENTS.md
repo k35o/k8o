@@ -8,9 +8,13 @@ apps/admin / apps/main と同じ `app / features / shared` 構成。
 
 - **app/** - Next.js App Router の entry と UI composition。UIは `app/**/_components`
 - **features/** - 非UIロジック。`interface / application / infrastructure` の3層
-  - `generation/` - Sakana Fugu（OpenAI互換, AI SDK v6）による TSX 生成
-  - `sandbox/` - Vercel Sandbox での本物ビルド & プレビュー
-- **shared/** - 横断利用の非UI共通処理（auth ゲート、レート制限など）。UIや `cn` は置かない
+  - `generation/` - Sakana Fugu（OpenAI互換, AI SDK v6）による TSX 生成（レート制限もここ）
+  - `preview/` - 編集中のライブプレビュー（ローカルも本番も Vercel Sandbox に一本化）
+  - `share/` - 公開共有（公開/Sandbox 配信/非公開化）
+  - `projects/` - プロジェクト・版の永続化（@repo/database）
+  - `highlight/` - 生成コードの shiki ハイライト
+  - Vercel Sandbox の起動/配信は `preview/infrastructure/sandbox-preview.ts` に集約し、share もそれを利用する
+- **shared/** - 横断利用の非UI共通処理（auth ゲートなど）。UIや `cn` は置かない
 
 Server Actions（`'use server'`）は `features/*/interface` に置く。`_actions` は新規作成しない。
 
