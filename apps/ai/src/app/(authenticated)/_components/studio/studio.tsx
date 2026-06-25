@@ -73,6 +73,11 @@ export const Studio = () => {
   );
   const [applyError, setApplyError] = useState<string | null>(null);
   const [historyOpen, setHistoryOpen] = useState(false);
+  // 履歴/フォーク選択の読込中。Sandbox 書込待ちで反映まで時間がかかるため、押した直後に
+  // 「読み込み中」を見せて無反応に見えるのを防ぐ。タイトルは既知のリスト項目から先行表示する。
+  const [pendingSelect, setPendingSelect] = useState<{ title: string } | null>(
+    null,
+  );
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const frameRef = useRef<HTMLDivElement>(null);
   // 直近の指示。onFinish（一度きりのクロージャ）から版に保存して会話復元に使う。
@@ -286,6 +291,7 @@ export const Studio = () => {
     setMessages([]);
     setApplyError(null);
     setHistoryOpen(false);
+    setPendingSelect(null);
     setView('preview');
     setMobileTab('chat');
     router.replace('/');
@@ -295,52 +301,63 @@ export const Studio = () => {
     // 生成中なら中断してから切り替える（生成中表示が切替先に漏れるのを防ぐ）。
     void stop();
     setHistoryOpen(false);
-    // 読込（DB）と反映（Sandbox）を1サーバー往復にまとめ、往復・認証を半減する。
-    const result = await loadProjectAndApplyAction(id);
-    if (result === null) {
-      return;
-    }
-    const { project, applied } = result;
-    persistence.markLoaded(project);
-    dispatch({
-      type: 'load-project',
-      code: project.code,
-      meta: project.meta,
-    });
-    // 履歴を切り替えてもトークが消えないよう会話を復元する。各版を [user(指示) → assistant(meta JSON)] に展開し、
-    // assistant は json フェンスにすることで既存の描画ロジック（parseGeneration の description 抽出）で説明文が出る。
-    const restored: UIMessage[] = project.conversation.flatMap(
-      (turn, index): UIMessage[] => {
-        const turnMessages: UIMessage[] = [];
-        if (turn.prompt !== null && turn.prompt !== '') {
+    // クリック直後に読込中を見せる（反映＝Sandbox 書込待ちで遅いため、何も変化せず無反応に
+    // 見えるのを防ぐ）。タイトルは既知のリスト項目から先行表示し、プレビューへ即切り替える。
+    const known = persistence.projects.find((project) => project.id === id);
+    setPendingSelect({ title: known?.title ?? '読み込み中…' });
+    setView('preview');
+    setMobileTab('preview');
+    try {
+      // 読込（DB）と反映（Sandbox）を1サーバー往復にまとめ、往復・認証を半減する。
+      const result = await loadProjectAndApplyAction(id);
+      if (result === null) {
+        return;
+      }
+      const { project, applied } = result;
+      persistence.markLoaded(project);
+      dispatch({
+        type: 'load-project',
+        code: project.code,
+        meta: project.meta,
+      });
+      // 履歴を切り替えてもトークが消えないよう会話を復元する。各版を [user(指示) → assistant(meta JSON)] に展開し、
+      // assistant は json フェンスにすることで既存の描画ロジック（parseGeneration の description 抽出）で説明文が出る。
+      const restored: UIMessage[] = project.conversation.flatMap(
+        (turn, index): UIMessage[] => {
+          const turnMessages: UIMessage[] = [];
+          if (turn.prompt !== null && turn.prompt !== '') {
+            turnMessages.push({
+              id: `h-u-${index.toString()}`,
+              role: 'user',
+              parts: [{ type: 'text', text: turn.prompt }],
+            });
+          }
           turnMessages.push({
-            id: `h-u-${index.toString()}`,
-            role: 'user',
-            parts: [{ type: 'text', text: turn.prompt }],
+            id: `h-a-${index.toString()}`,
+            role: 'assistant',
+            parts: [
+              {
+                type: 'text',
+                text: `\`\`\`json\n${JSON.stringify(turn.meta)}\n\`\`\``,
+              },
+            ],
           });
-        }
-        turnMessages.push({
-          id: `h-a-${index.toString()}`,
-          role: 'assistant',
-          parts: [
-            {
-              type: 'text',
-              text: `\`\`\`json\n${JSON.stringify(turn.meta)}\n\`\`\``,
-            },
-          ],
-        });
-        return turnMessages;
-      },
-    );
-    setMessages(restored);
-    setApplyError(null);
-    if (applied.ok) {
-      // 反映済み。HMR の差分反映を待ち、来なければリロードへフォールバックする。
-      reflectPreview();
-      setView('preview');
-      setMobileTab('preview');
+          return turnMessages;
+        },
+      );
+      setMessages(restored);
+      setApplyError(null);
+      if (applied.ok) {
+        // 反映済み。HMR の差分反映を待ち、来なければリロードへフォールバックする。
+        reflectPreview();
+        setView('preview');
+        setMobileTab('preview');
+      }
+      // 反映失敗（保存済みコードでは稀）時はプレビューを前版のまま据え置く。
+    } finally {
+      // 読込が終わったら（成功/失敗/非所有いずれも）読込中表示を必ず外す。
+      setPendingSelect(null);
     }
-    // 反映失敗（保存済みコードでは稀）時はプレビューを前版のまま据え置く。
   };
 
   const handleFork = async (): Promise<void> => {
@@ -399,13 +416,20 @@ export const Studio = () => {
             k8o AI Studio
           </span>
           <span className="text-fg-mute shrink-0 text-sm">/</span>
-          {persistence.projectId === null ? (
-            <span className="text-fg-mute truncate text-sm">
-              新しいプロジェクト
-            </span>
+          {pendingSelect === null ? (
+            persistence.projectId === null ? (
+              <span className="text-fg-mute truncate text-sm">
+                新しいプロジェクト
+              </span>
+            ) : (
+              <span className="text-fg-base truncate text-sm font-medium">
+                {persistence.projectTitle ?? '無題'}
+              </span>
+            )
           ) : (
+            // 読込中は選んだプロジェクト名を先行表示し、クリックが効いたことを示す。
             <span className="text-fg-base truncate text-sm font-medium">
-              {persistence.projectTitle ?? '無題'}
+              {pendingSelect.title}
             </span>
           )}
         </div>
@@ -698,6 +722,13 @@ export const Studio = () => {
                   <StreamPreview code={streamingCode} />
                 </div>
               ) : null}
+              {/* 履歴/フォーク選択の読込中オーバーレイ。空状態でも確実に出すため最前面(z-30)に重ね、
+                  反映が始まると下の PreviewLoading(z-10) → iframe へと途切れず引き継ぐ。 */}
+              {pendingSelect === null ? null : (
+                <div className="absolute inset-0 z-30">
+                  <PreviewLoading message="プロジェクトを読み込んでいます…" />
+                </div>
+              )}
             </div>
             <div className={view === 'code' ? 'h-full' : 'hidden'}>
               <CodePanel code={displayedCode} isStreaming={isBusy} />

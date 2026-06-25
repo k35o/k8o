@@ -70,6 +70,24 @@ export default function Preview() {
   );
 }`;
 
+// 文字列連結式（`'…' + x + '…'`）を含むサンプル。連結式は単一リテラルではないため
+// 値として描かず、生のコード片が画面に漏れないことを確認する。
+const SAMPLE_CONCAT = `import { Card, Heading } from '@k8o/arte-odyssey';
+
+export default function Preview() {
+  const name = 'k8o';
+  return (
+    <div className="bg-bg-surface p-8">
+      <Card appearance="shadow">
+        <div className="flex flex-col gap-4 p-8">
+          <Heading type="h2">ようこそ</Heading>
+          <p className="text-fg-mute text-sm leading-relaxed">{'こんにちは、' + name + ' さん'}</p>
+        </div>
+      </Card>
+    </div>
+  );
+}`;
+
 const meta = {
   component: StreamPreview,
 } satisfies Meta<typeof StreamPreview>;
@@ -133,6 +151,20 @@ export const MapGridStreaming: Story = {
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
     await expect(canvas.getAllByRole('status').length).toBeGreaterThan(0);
+  },
+};
+
+// 文字列連結式は値として描かず、生のコード片（`' + name + '`）が画面に漏れない。
+// 連結式を含む <p> は空になるが、周囲の本文（見出し）は通常どおり描ける。
+export const ConcatExpression: Story = {
+  args: { code: SAMPLE_CONCAT },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    await expect(canvas.getByText('ようこそ')).toBeInTheDocument();
+    // 生のコード片がそのままテキストとして出ていないこと（漏れの回帰防止）。
+    await expect(canvasElement.textContent).not.toContain('+ name');
+    await expect(canvasElement.textContent).not.toContain("' +");
+    await expect(canvasElement.textContent).not.toContain('こんにちは、');
   },
 };
 

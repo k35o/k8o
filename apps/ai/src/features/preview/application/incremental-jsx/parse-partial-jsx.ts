@@ -1,4 +1,4 @@
-import { buildScope } from './js-literal';
+import { buildScope, parseJsLiteral } from './js-literal';
 import type { JsxAttr, JsxNode, JsxProp } from './types';
 
 // ストリーミング途中の TSX 文字列を寛容にパースし、受信済みの部分だけを軽量 AST にする。
@@ -136,22 +136,24 @@ export const parsePartialJsx = (
     if (inner === '') {
       return { kind: 'unsupported', raw: innerRaw };
     }
-    const head = inner[0] ?? '';
-    const tail = inner.at(-1) ?? '';
-    if ((head === '"' || head === "'") && tail === head && inner.length >= 2) {
-      return { kind: 'string', value: inner.slice(1, -1) };
-    }
-    if (head === '`' && tail === '`' && !inner.includes('${')) {
-      return { kind: 'string', value: inner.slice(1, -1) };
-    }
-    if (/^-?\d+(?:\.\d+)?$/u.test(inner)) {
-      return { kind: 'literal', value: Number(inner) };
-    }
-    if (inner === 'true' || inner === 'false') {
-      return { kind: 'literal', value: inner === 'true' };
-    }
-    if (inner === 'null' || inner === 'undefined') {
-      return { kind: 'literal', value: null };
+    // 「単一の完全なリテラル」だけを値として採用する。先頭と末尾がクォートでも、
+    // `'前半' + x + '後半'` のような連結式は literal ではない。リテラルが inner 全体を
+    // 消費したときのみ採用し、そうでなければ式として後段（スコープ解決/JSX）に委ねる。
+    // これで連結式の中身がそのままテキストとして漏れるのを防ぐ。
+    const literal = parseJsLiteral(inner, 0);
+    if (literal !== null && literal.end === inner.length) {
+      const { value } = literal;
+      if (typeof value === 'string') {
+        return { kind: 'string', value };
+      }
+      if (typeof value === 'number' || typeof value === 'boolean') {
+        return { kind: 'literal', value };
+      }
+      if (value === null) {
+        return { kind: 'literal', value: null };
+      }
+      // 配列/オブジェクトリテラルは子・属性値として素直に描けないため非対応に倒す。
+      return { kind: 'unsupported', raw: innerRaw };
     }
     // スコープ解決（`{item.name}` 等）。map 展開時にループ変数が入っている。
     if (IDENT_PATH.test(inner)) {
@@ -170,7 +172,7 @@ export const parsePartialJsx = (
         return { kind: 'unsupported', raw: innerRaw };
       }
     }
-    if (head === '<') {
+    if (inner[0] === '<') {
       // ネスト JSX（startIcon={<SparklesIcon />} 等）。スコープを引き継ぐ。
       const nested = parsePartialJsx(inner, scope);
       for (const node of nested) {

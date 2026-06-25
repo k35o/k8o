@@ -175,6 +175,27 @@ describe('parsePartialJsx', () => {
       expect(fragment.name).toBe('');
       expect(firstElement(fragment.children).name).toBe('span');
     });
+
+    it('連結式は単一リテラルでないので中身をテキストに漏らさない', () => {
+      // Arrange: 先頭と末尾がクォートでも `'a' + 'b'` は文字列リテラルではない。
+      const source = "<p>{'前半 ' + x + ' 後半'}</p>";
+
+      // Act
+      const p = firstElement(parsePartialJsx(source));
+
+      // Assert: コード片（"前半 ' + x + ' 後半"）がそのまま描かれない。
+      expect(p.children).toEqual([]);
+    });
+
+    it('単一の文字列/数値リテラルはそのまま値として扱う', () => {
+      // Arrange
+      const str = firstElement(parsePartialJsx("<p>{'こんにちは'}</p>"));
+      const num = firstElement(parsePartialJsx('<p>{42}</p>'));
+
+      // Assert
+      expect(str.children).toEqual([{ type: 'text', value: 'こんにちは' }]);
+      expect(num.children).toEqual([{ type: 'text', value: '42' }]);
+    });
   });
 });
 
