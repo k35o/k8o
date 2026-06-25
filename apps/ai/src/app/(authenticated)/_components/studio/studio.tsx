@@ -39,6 +39,7 @@ import {
 } from '@/features/preview/interface/actions';
 import { loadProjectAndApplyAction } from '@/features/projects/interface/actions';
 
+import { StreamPreview } from '../stream-preview';
 import { ChatMessage } from './chat-message';
 import { CodePanel } from './code-panel';
 import { CopyCodeButton } from './copy-code-button';
@@ -238,9 +239,10 @@ export const Studio = () => {
     setApplyError(null);
     // 直前の反映待ちタイマーが生成中にリロードを起こさないよう始末する。
     clearReloadFallback();
-    // 生成中はコードが組み上がる様子を実況する（完了後に onFinish がプレビューへ戻す）。
-    // モバイルはチャットの「考えています…」を残したいので mobileTab は切り替えない。
-    setView('code');
+    // 生成中は途中コードを先行プレビュー（StreamPreview）で逐次描画して見せる。完了で
+    // onFinish が実コンパイル版（iframe）へ切り替える。モバイルはチャットの「考えています…」を
+    // 残したいので mobileTab は切り替えない。
+    setView('preview');
     lastPromptRef.current = text;
     await sendMessage(
       { text },
@@ -682,6 +684,15 @@ export const Studio = () => {
                   生成すると、ここにライブプレビューが表示されます
                 </div>
               )}
+              {/* 生成中〜反映確定までは、途中コードをホスト側で逐次描画した先行プレビューを
+                  iframe の上に重ねる。Sandbox の cold start や HMR 反映を待たずに構造が見え、
+                  反映が確定（previewLoading=false かつ生成完了）すると外れて実 iframe が出る。
+                  iframe は下で読み込み継続するため onLoad/HMR 通知の経路は壊さない。 */}
+              {streamingCode !== null && (isBusy || previewLoading) ? (
+                <div className="bg-bg-base absolute inset-0 overflow-auto">
+                  <StreamPreview code={streamingCode} />
+                </div>
+              ) : null}
             </div>
             <div className={view === 'code' ? 'h-full' : 'hidden'}>
               <CodePanel code={displayedCode} isStreaming={isBusy} />
