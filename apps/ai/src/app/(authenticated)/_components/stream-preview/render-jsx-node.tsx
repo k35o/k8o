@@ -51,7 +51,11 @@ const HOST_TAGS = new Set([
   'code',
 ]);
 
-const RESERVED = new Set(['key', 'ref']);
+// key/ref は React 予約。style は生成コードでは使わせない方針（文字列 style は React が throw）。
+const RESERVED = new Set(['key', 'ref', 'style']);
+
+// 子を取らない void 要素。children を渡すと React が throw するため分けて生成する。
+const VOID_TAGS = new Set(['img', 'br', 'hr', 'input']);
 
 const resolveAttrValue = (prop: JsxProp, key: string): unknown => {
   switch (prop.value.kind) {
@@ -118,6 +122,9 @@ function renderElement(el: JsxElement, key: string): ReactNode {
   // ホスト要素（小文字始まり）
   if (first === first.toLowerCase()) {
     const tag = HOST_TAGS.has(el.name) ? el.name : 'div';
+    if (VOID_TAGS.has(tag)) {
+      return createElement(tag, { ...props, key });
+    }
     return createElement(tag, { ...props, key }, childArg);
   }
 
