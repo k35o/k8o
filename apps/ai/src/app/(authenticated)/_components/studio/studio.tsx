@@ -37,6 +37,7 @@ import {
   startPreviewSession,
 } from '@/features/preview/interface/actions';
 
+import { ChatMessage } from './chat-message';
 import { CodePanel } from './code-panel';
 import { CopyCodeButton } from './copy-code-button';
 import { PreviewLoading } from './preview-loading';
@@ -148,9 +149,11 @@ export const Studio = () => {
     })();
   }, []);
 
+  // 末尾追従は「メッセージ追加」「生成状態の変化」の節目だけにする。messages 全体を依存に
+  // すると生成中は毎トークン smooth スクロールが連打されてもたつくため、件数と status で間引く。
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-  }, [messages]);
+  }, [messages.length, status]);
 
   const lastAssistant = messages.findLast(
     (message) => message.role === 'assistant',
@@ -494,32 +497,25 @@ export const Studio = () => {
             ) : (
               <div className="flex flex-col gap-5">
                 {messages.map((message) => {
-                  const text = messageText(message);
-                  if (message.role === 'user') {
+                  // 生成中の最後の assistant だけは実況（毎トークン変化）を出す。これ以外の
+                  // 確定メッセージは memo 済みの ChatMessage に委ね、履歴の再パースを避ける。
+                  const working =
+                    isBusy &&
+                    message.id === lastMessageId &&
+                    message.role === 'assistant';
+                  if (working) {
                     return (
-                      <div className="flex justify-end" key={message.id}>
-                        <p className="bg-primary-bg-subtle text-fg-base max-w-[85%] rounded-2xl px-4 py-2.5 text-sm leading-relaxed">
-                          {text}
+                      <div className="flex flex-col gap-1.5" key={message.id}>
+                        <span className="text-fg-mute text-xs font-bold">
+                          AI
+                        </span>
+                        <p className="text-fg-mute text-sm leading-relaxed motion-safe:animate-pulse">
+                          {generatingStatus}
                         </p>
                       </div>
                     );
                   }
-                  const description = parseGeneration(text).meta?.description;
-                  const working = isBusy && message.id === lastMessageId;
-                  return (
-                    <div className="flex flex-col gap-1.5" key={message.id}>
-                      <span className="text-fg-mute text-xs font-bold">AI</span>
-                      {working ? (
-                        <p className="text-fg-mute text-sm leading-relaxed motion-safe:animate-pulse">
-                          {generatingStatus}
-                        </p>
-                      ) : (
-                        <p className="text-fg-base text-sm leading-relaxed">
-                          {description ?? 'コードを更新しました'}
-                        </p>
-                      )}
-                    </div>
-                  );
+                  return <ChatMessage key={message.id} message={message} />;
                 })}
                 {status === 'submitted' ? (
                   <div className="flex flex-col gap-1.5">
