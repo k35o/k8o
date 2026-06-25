@@ -80,7 +80,7 @@ export const parseJsLiteral = (
       // BigInt サフィックス。
       pos += 1;
     }
-    const raw = src.slice(s, pos).replaceAll(/_/gu, '').replace(/n$/u, '');
+    const raw = src.slice(s, pos).replaceAll('_', '').replace(/n$/u, '');
     const num = Number(raw);
     return Number.isNaN(num) ? null : { value: num };
   };
