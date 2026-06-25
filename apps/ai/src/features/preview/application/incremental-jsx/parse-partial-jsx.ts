@@ -1,11 +1,48 @@
+import { buildScope } from './js-literal';
 import type { JsxAttr, JsxNode, JsxProp } from './types';
 
 // ストリーミング途中の TSX 文字列を寛容にパースし、受信済みの部分だけを軽量 AST にする。
 // Vite/esbuild に途中コードを食わせる方式と違い、コンパイルを介さないので未完入力でも壊れない。
 // 未受信の先端（開いたままの最深要素）には 1 つだけ pending ノードを差す（single frontier）。
+//
+// scope は `const X = [...]` 由来のデータと、`.map()` 展開時のループ変数を保持する。
+// これにより `{item.name}` の解決と、配列データからのカード複製（逐次表示）ができる。
 
 const isNameStart = (c: string): boolean => /[A-Za-z]/u.test(c);
 const isNameChar = (c: string): boolean => /[A-Za-z0-9]/u.test(c);
+const isIdentStart = (c: string): boolean => /[A-Za-z_$]/u.test(c);
+const isIdentChar = (c: string): boolean => /[\w$]/u.test(c);
+
+// `item` / `item.field.sub` のような純粋なドット参照のみ受け付ける。
+const IDENT_PATH = /^[A-Za-z_$][\w$]*(?:\.[A-Za-z_$][\w$]*)*$/u;
+
+// 1 回の map 展開で生成する要素数の上限（巨大配列でのクラッシュ/フリーズ防止）。
+const MAX_MAP_ITEMS = 500;
+
+// スコープから式パスを解決する。各段で hasOwn を確認し、継承プロパティ（toString 等）や
+// 存在しないフィールドは found:false にして「データに無い値」を描かない。
+const resolvePath = (
+  expr: string,
+  scope: Record<string, unknown>,
+): { found: boolean; value: unknown } => {
+  const parts = expr.split('.');
+  const head = parts[0];
+  if (head === undefined || !Object.hasOwn(scope, head)) {
+    return { found: false, value: undefined };
+  }
+  let current: unknown = scope[head];
+  for (const key of parts.slice(1)) {
+    if (
+      current === null ||
+      typeof current !== 'object' ||
+      !Object.hasOwn(current, key)
+    ) {
+      return { found: false, value: undefined };
+    }
+    current = (current as Record<string, unknown>)[key];
+  }
+  return { found: true, value: current };
+};
 
 // TSX 全文から `return` 直後の JSX 本体を切り出す。まだ JSX に到達していなければ空文字。
 export const extractJsxBody = (tsx: string): string => {
@@ -20,7 +57,10 @@ export const extractJsxBody = (tsx: string): string => {
   return tsx.slice(lt);
 };
 
-export const parsePartialJsx = (source: string): readonly JsxNode[] => {
+export const parsePartialJsx = (
+  source: string,
+  scope: Record<string, unknown> = {},
+): readonly JsxNode[] => {
   const len = source.length;
   let pos = 0;
   // 最深の未完点に pending を 1 つだけ置くためのフラグ。立ったら以降の兄弟・末尾は読まない。
@@ -32,6 +72,17 @@ export const parsePartialJsx = (source: string): readonly JsxNode[] => {
     while (pos < len && /\s/u.test(at(pos))) {
       pos += 1;
     }
+  };
+
+  const readIdent = (): string => {
+    if (pos >= len || !isIdentStart(at(pos))) {
+      return '';
+    }
+    const start = pos;
+    while (pos < len && isIdentChar(at(pos))) {
+      pos += 1;
+    }
+    return source.slice(start, pos);
   };
 
   // 文字列リテラルを末尾の同種クォートまで読み飛ばす。EOF なら false。
@@ -79,7 +130,7 @@ export const parsePartialJsx = (source: string): readonly JsxNode[] => {
     return null;
   };
 
-  // `{...}` の内側を分類する。リテラル・ネスト JSX 以外は unsupported。
+  // `{...}` の内側を分類する。リテラル・スコープ解決・ネスト JSX 以外は unsupported。
   const classifyExpression = (innerRaw: string): JsxAttr => {
     const inner = innerRaw.trim();
     if (inner === '') {
@@ -102,9 +153,26 @@ export const parsePartialJsx = (source: string): readonly JsxNode[] => {
     if (inner === 'null' || inner === 'undefined') {
       return { kind: 'literal', value: null };
     }
+    // スコープ解決（`{item.name}` 等）。map 展開時にループ変数が入っている。
+    if (IDENT_PATH.test(inner)) {
+      const resolved = resolvePath(inner, scope);
+      if (resolved.found) {
+        const { value } = resolved;
+        if (typeof value === 'string') {
+          return { kind: 'string', value };
+        }
+        if (typeof value === 'number' || typeof value === 'boolean') {
+          return { kind: 'literal', value };
+        }
+        if (value === null || value === undefined) {
+          return { kind: 'literal', value: null };
+        }
+        return { kind: 'unsupported', raw: innerRaw };
+      }
+    }
     if (head === '<') {
-      // ネスト JSX（startIcon={<SparklesIcon />} 等）。
-      const nested = parsePartialJsx(inner);
+      // ネスト JSX（startIcon={<SparklesIcon />} 等）。スコープを引き継ぐ。
+      const nested = parsePartialJsx(inner, scope);
       for (const node of nested) {
         if (node.type === 'element') {
           return { kind: 'element', value: node };
@@ -184,6 +252,29 @@ export const parsePartialJsx = (source: string): readonly JsxNode[] => {
     }
   };
 
+  // map 式の `{` に対応する `}` まで（テンプレ後の `))` も含めて）寛容に消費する。
+  const consumeMapTail = (): void => {
+    let depth = 1;
+    while (pos < len) {
+      const c = at(pos);
+      if (c === '"' || c === "'" || c === '`') {
+        skipString(c);
+        continue;
+      }
+      if (c === '{') {
+        depth += 1;
+      } else if (c === '}') {
+        depth -= 1;
+        pos += 1;
+        if (depth === 0) {
+          return;
+        }
+        continue;
+      }
+      pos += 1;
+    }
+  };
+
   // `<` 始まりの要素を読む。開始タグが途中で切れたら null（= 先端）。
   const parseElement = (): JsxNode | null => {
     // 先頭の `<` を消費する。
@@ -245,6 +336,113 @@ export const parsePartialJsx = (source: string): readonly JsxNode[] => {
     }
   };
 
+  // `{配列.map((item, i) => ( <JSX> ))}` を検出して配列要素ぶん複製する。
+  // map でなければ pos を戻して null（呼び出し側が通常の式として処理する）。
+  const parseMap = (): JsxNode[] | null => {
+    const save = pos;
+    // 先頭の `{` を消費する。
+    pos += 1;
+    skipWs();
+    // 配列パス（`items` / `g.items` 等）と末尾の `.map` を読む。
+    let path = readIdent();
+    while (path !== '' && at(pos) === '.' && isIdentStart(at(pos + 1))) {
+      pos += 1;
+      path += `.${readIdent()}`;
+    }
+    const segments = path.split('.');
+    if (segments.length < 2 || segments.at(-1) !== 'map') {
+      pos = save;
+      return null;
+    }
+    const arrPath = segments.slice(0, -1).join('.');
+    skipWs();
+    if (at(pos) !== '(') {
+      pos = save;
+      return null;
+    }
+    pos += 1;
+    skipWs();
+    // コールバックの引数（(item) / (item, i) / item）。
+    const params: string[] = [];
+    if (at(pos) === '(') {
+      pos += 1;
+      for (;;) {
+        skipWs();
+        const param = readIdent();
+        if (param !== '') {
+          params.push(param);
+        }
+        skipWs();
+        if (at(pos) === ',') {
+          pos += 1;
+          continue;
+        }
+        if (at(pos) === ')') {
+          pos += 1;
+          break;
+        }
+        // 分割代入など想定外 → 通常式に委ねる。
+        pos = save;
+        return null;
+      }
+    } else {
+      const param = readIdent();
+      if (param === '') {
+        pos = save;
+        return null;
+      }
+      params.push(param);
+    }
+    skipWs();
+    if (at(pos) !== '=' || at(pos + 1) !== '>') {
+      pos = save;
+      return null;
+    }
+    pos += 2;
+    skipWs();
+    if (at(pos) === '(') {
+      pos += 1;
+      skipWs();
+    }
+    if (at(pos) !== '<') {
+      // テンプレートが要素で始まらない（ブロック本体・三項等）→ 通常式に委ねる。
+      pos = save;
+      return null;
+    }
+    // テンプレート（単一の根要素）の文字列を切り出す。未完なら truncated が立つ。
+    const tplStart = pos;
+    const tplEl = parseElement();
+    const templateStr = source.slice(tplStart, pos);
+    consumeMapTail();
+
+    const resolved = resolvePath(arrPath, scope);
+    if (!resolved.found || !Array.isArray(resolved.value)) {
+      // 配列を解決できない（外部データ・props 等）→ 描かない。消費だけ済ませる。
+      return [];
+    }
+    if (tplEl === null) {
+      // テンプレートが根要素を形成する前に切れた → 複製せず単一 pending（先端）。
+      truncated = true;
+      return [{ type: 'pending' }];
+    }
+    const items = resolved.value.slice(0, MAX_MAP_ITEMS);
+    const nodes: JsxNode[] = [];
+    for (const [index, item] of items.entries()) {
+      const itemScope: Record<string, unknown> = { ...scope };
+      if (params[0] !== undefined) {
+        itemScope[params[0]] = item;
+      }
+      if (params[1] !== undefined) {
+        itemScope[params[1]] = index;
+      }
+      // spread を避けて逐次 push（巨大配列でのスタック超過防止）。
+      for (const node of parsePartialJsx(templateStr, itemScope)) {
+        nodes.push(node);
+      }
+    }
+    return nodes;
+  };
+
   // 子要素の式 `{...}`。truncated を表す 'pending'、描かない場合は null。
   const parseExpressionChild = (): JsxNode | 'pending' | null => {
     const inner = readBracedInner();
@@ -299,6 +497,18 @@ export const parsePartialJsx = (source: string): readonly JsxNode[] => {
         continue;
       }
       if (c === '{') {
+        // まず map 展開を試し、map でなければ通常の式として処理する。
+        const mapNodes = parseMap();
+        if (mapNodes !== null) {
+          // spread を避けて逐次 push（巨大配列でのスタック超過防止）。
+          for (const node of mapNodes) {
+            children.push(node);
+          }
+          if (truncated) {
+            return children;
+          }
+          continue;
+        }
         const node = parseExpressionChild();
         if (node === 'pending') {
           children.push({ type: 'pending' });
@@ -321,6 +531,6 @@ export const parsePartialJsx = (source: string): readonly JsxNode[] => {
   return parseChildren();
 };
 
-// TSX 全文を受け取り、JSX 本体を抽出してパースする薄いラッパ。
+// TSX 全文を受け取り、データスコープを作って JSX 本体をパースする薄いラッパ。
 export const parseStreamingTsx = (tsx: string): readonly JsxNode[] =>
-  parsePartialJsx(extractJsxBody(tsx));
+  parsePartialJsx(extractJsxBody(tsx), buildScope(tsx));

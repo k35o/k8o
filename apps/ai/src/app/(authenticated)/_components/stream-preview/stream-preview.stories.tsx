@@ -39,6 +39,37 @@ export default function Preview() {
   );
 }`;
 
+// インラインデータ + .map() で複製するグリッド（実際の生成でよく出るパターン）。
+const SAMPLE_GRID = `import { Grid, Card, Avatar, Heading, Badge, IconButton, GitHubIcon, MailIcon } from '@k8o/arte-odyssey';
+
+const members = [
+  { name: '田中 太郎', role: 'フロントエンド', initials: 'TT' },
+  { name: '佐藤 花子', role: 'UIデザイナー', initials: 'SH' },
+  { name: '鈴木 一郎', role: 'バックエンド', initials: 'SI' },
+];
+
+export default function Preview() {
+  return (
+    <div className="bg-bg-surface p-8">
+      <Grid cols={3} gap="md">
+        {members.map((m) => (
+          <Card appearance="shadow">
+            <div className="flex flex-col items-center gap-3 p-6">
+              <Avatar fallback={m.initials} size="lg" />
+              <Heading type="h3">{m.name}</Heading>
+              <Badge text={m.role} tone="info" />
+              <div className="flex gap-2">
+                <IconButton label="GitHub" color="base" size="sm"><GitHubIcon size="sm" /></IconButton>
+                <IconButton label="メール" color="base" size="sm"><MailIcon size="sm" /></IconButton>
+              </div>
+            </div>
+          </Card>
+        ))}
+      </Grid>
+    </div>
+  );
+}`;
+
 const meta = {
   component: StreamPreview,
 } satisfies Meta<typeof StreamPreview>;
@@ -83,6 +114,25 @@ export const UnsupportedSubset: Story = {
     const canvas = within(canvasElement);
     await expect(canvas.getByText('送信')).toBeInTheDocument();
     await expect(canvas.getByText('<Tabs>')).toBeInTheDocument();
+  },
+};
+
+// .map() でデータ配列からカードを複製（完成形）。3枚が並ぶ。
+export const MapGridComplete: Story = {
+  args: { code: SAMPLE_GRID },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    await expect(canvas.getByText('田中 太郎')).toBeInTheDocument();
+    await expect(canvas.getByText('鈴木 一郎')).toBeInTheDocument();
+  },
+};
+
+// .map() のテンプレートが途中。データ件数ぶんの部分カードが並び、先端にスケルトン。
+export const MapGridStreaming: Story = {
+  args: { code: SAMPLE_GRID.slice(0, Math.floor(SAMPLE_GRID.length * 0.78)) },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    await expect(canvas.getAllByRole('status').length).toBeGreaterThan(0);
   },
 };
 

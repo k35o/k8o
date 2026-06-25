@@ -1,4 +1,8 @@
-import { extractJsxBody, parsePartialJsx } from './parse-partial-jsx';
+import {
+  extractJsxBody,
+  parsePartialJsx,
+  parseStreamingTsx,
+} from './parse-partial-jsx';
 import type { JsxElement, JsxNode } from './types';
 
 const firstElement = (nodes: readonly JsxNode[]): JsxElement => {
@@ -9,6 +13,18 @@ const firstElement = (nodes: readonly JsxNode[]): JsxElement => {
   }
   throw new Error('element ノードが見つかりません');
 };
+
+// 要素配下のテキストを連結して取り出す（map 展開の解決結果を検証する用）。
+const textOf = (node: JsxNode): string => {
+  if (node.type === 'element') {
+    return node.children.map(textOf).join('');
+  }
+  return node.type === 'text' ? node.value : '';
+};
+
+// ノードの種別ラベル（要素なら名前、それ以外は type）。テスト内で条件分岐を書かないための補助。
+const labelOf = (node: JsxNode): string =>
+  node.type === 'element' ? node.name : node.type;
 
 describe('parsePartialJsx', () => {
   describe('正常系', () => {
@@ -185,6 +201,159 @@ describe('extractJsxBody', () => {
 
       // Act & Assert
       expect(extractJsxBody(tsx)).toBe('');
+    });
+  });
+});
+
+describe('map 展開とスコープ解決', () => {
+  describe('正常系', () => {
+    it('配列データから要素を複製し {item.field} を解決する', () => {
+      // Arrange
+      const scope = { items: [{ label: 'A' }, { label: 'B' }] };
+
+      // Act
+      const ul = firstElement(
+        parsePartialJsx(
+          '<ul>{items.map((it) => <li>{it.label}</li>)}</ul>',
+          scope,
+        ),
+      );
+
+      // Assert
+      expect(ul.children).toHaveLength(2);
+      expect(ul.children.map(textOf)).toEqual(['A', 'B']);
+    });
+
+    it('index 引数を解決する', () => {
+      // Arrange
+      const scope = { items: ['a', 'b', 'c'] };
+
+      // Act
+      const ul = firstElement(
+        parsePartialJsx('<ul>{items.map((it, i) => <li>{i}</li>)}</ul>', scope),
+      );
+
+      // Assert
+      expect(ul.children.map(textOf)).toEqual(['0', '1', '2']);
+    });
+
+    it('TSX 全文（const データ + return）を展開する', () => {
+      // Arrange
+      const tsx = [
+        "import { Heading } from '@k8o/arte-odyssey';",
+        "const members = [{ name: '田中' }, { name: '佐藤' }];",
+        'export default function Preview() {',
+        '  return (',
+        '    <div>{members.map((m) => <span>{m.name}</span>)}</div>',
+        '  );',
+        '}',
+      ].join('\n');
+
+      // Act
+      const div = firstElement(parseStreamingTsx(tsx));
+
+      // Assert
+      expect(div.children.map(textOf)).toEqual(['田中', '佐藤']);
+    });
+  });
+
+  describe('異常系（ストリーミング途中）', () => {
+    it('テンプレートが未完なら配列ぶんの部分要素を出す', () => {
+      // Arrange
+      const scope = { items: [{ x: 1 }, { x: 2 }] };
+
+      // Act
+      const div = firstElement(
+        parsePartialJsx('<div>{items.map((it) => <Card><Avatar', scope),
+      );
+
+      // Assert: 2 枚の Card がそれぞれ pending を抱えて並ぶ
+      expect(div.children.map(labelOf)).toEqual(['Card', 'Card']);
+      expect(div.children.map(textOf)).toEqual(['', '']);
+    });
+  });
+
+  describe('エッジケース', () => {
+    it('配列を解決できない map は描かない', () => {
+      // Arrange & Act
+      const ul = firstElement(
+        parsePartialJsx('<ul>{items.map((it) => <li>{it}</li>)}</ul>', {}),
+      );
+
+      // Assert
+      expect(ul.children).toEqual([]);
+    });
+
+    it('ネストした map（arr.field.map）を解決する', () => {
+      // Arrange
+      const scope = {
+        groups: [
+          { title: 'A', items: ['a1', 'a2'] },
+          { title: 'B', items: ['b1'] },
+        ],
+      };
+      const source =
+        '<div>{groups.map((g) => (<section><h2>{g.title}</h2><ul>{g.items.map((it) => (<li>{it}</li>))}</ul></section>))}</div>';
+
+      // Act
+      const div = firstElement(parsePartialJsx(source, scope));
+
+      // Assert: A(a1,a2) と B(b1) が入れ子で展開される
+      expect(textOf(div)).toBe('Aa1a2Bb1');
+    });
+
+    it('複製数は上限で打ち切る（巨大配列保護）', () => {
+      // Arrange
+      const items = Array.from({ length: 600 }, (_, i) => String(i));
+
+      // Act
+      const ul = firstElement(
+        parsePartialJsx('<ul>{items.map((it) => <i>{it}</i>)}</ul>', { items }),
+      );
+
+      // Assert
+      expect(ul.children).toHaveLength(500);
+    });
+  });
+
+  describe('セキュリティ・堅牢性', () => {
+    it('存在しないフィールドは prop/子に出さない', () => {
+      // Arrange & Act
+      const span = firstElement(
+        parsePartialJsx('<span>{it.missing}</span>', { it: { name: 'x' } }),
+      );
+
+      // Assert
+      expect(span.children).toEqual([]);
+    });
+
+    it('__proto__ で汚染されたデータ越境値を描かない', () => {
+      // Arrange: 1件目は __proto__ 経由で name を偽装、2件目は実データ
+      const tsx = [
+        'const items = [{ __proto__: { name: "PWNED" } }, { name: "real" }];',
+        'export default function Preview() {',
+        '  return <div>{items.map((it) => <span>{it.name}</span>)}</div>;',
+        '}',
+      ].join('\n');
+
+      // Act
+      const div = firstElement(parseStreamingTsx(tsx));
+
+      // Assert: PWNED は出ず、実データのみ
+      expect(textOf(div)).toBe('real');
+    });
+
+    it('テンプレートが要素を形成する前に切れたら pending は 1 つだけ', () => {
+      // Arrange
+      const scope = { items: [{}, {}, {}] };
+
+      // Act
+      const div = firstElement(
+        parsePartialJsx('<div>{items.map((it) => <', scope),
+      );
+
+      // Assert
+      expect(div.children).toEqual([{ type: 'pending' }]);
     });
   });
 });
