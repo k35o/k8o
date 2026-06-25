@@ -218,6 +218,11 @@ export const Studio = () => {
     ? (streamingCode ?? state.currentFile)
     : state.currentFile;
   const hasResult = state.currentFile !== null;
+  // 生成中〜反映確定までは先行プレビュー（island）を最前面に出す。空の間はスピナー、構造が
+  // 届いたらスケルトン→逐次描画へ。これが出ている間は反映スピナー(PreviewLoading)を抑制し、
+  // 「島→いきなり円→完成」のチラつきを防ぐ。
+  const showStreamPreview =
+    isBusy || (previewLoading && streamingCode !== null);
   // 履歴から読み込んだ直後はチャットが空になるため、空状態でも「何を編集中か」を示す。
   const emptyStateTitle = hasResult
     ? `「${state.lastMeta?.title ?? 'プロジェクト'}」を編集中`
@@ -675,7 +680,7 @@ export const Studio = () => {
                     title="preview"
                     url={previewUrl}
                   />
-                  {previewLoading ? (
+                  {previewLoading && !showStreamPreview ? (
                     <PreviewLoading message="プレビューを反映しています…" />
                   ) : null}
                 </>
@@ -685,11 +690,11 @@ export const Studio = () => {
                 </div>
               )}
               {/* 生成中〜反映確定までは、途中コードをホスト側で逐次描画した先行プレビューを
-                  iframe の上に重ねる。Sandbox の cold start や HMR 反映を待たずに構造が見え、
-                  反映が確定（previewLoading=false かつ生成完了）すると外れて実 iframe が出る。
-                  iframe は下で読み込み継続するため onLoad/HMR 通知の経路は壊さない。 */}
-              {streamingCode !== null && (isBusy || previewLoading) ? (
-                <div className="bg-bg-base absolute inset-0 overflow-auto">
+                  iframe（と PreviewLoading の z-10）の上（z-20）に重ねる。Sandbox の cold start や
+                  HMR 反映を待たずに構造が見え、反映が確定（previewLoading=false かつ生成完了）すると
+                  外れて実 iframe が出る。iframe は下で読み込み継続するため通知経路は壊さない。 */}
+              {showStreamPreview ? (
+                <div className="bg-bg-base absolute inset-0 z-20 overflow-auto">
                   <StreamPreview code={streamingCode} />
                 </div>
               ) : null}

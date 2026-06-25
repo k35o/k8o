@@ -9,6 +9,7 @@ import type {
 import { resolveComponent } from './component-registry';
 import { PendingMark } from './pending-mark';
 import { SafeNode } from './safe-node';
+import { StreamLoading } from './stream-loading';
 import { UnknownChip } from './unknown-chip';
 
 // 生成コードが使う素の HTML 要素。未知タグはコンテナ（div）に寄せて安全側に倒す。
@@ -164,8 +165,9 @@ export const renderRoot = (nodes: readonly JsxNode[]): ReactNode => {
       rendered.push(el);
     }
   }
+  // まだ何も描けない（return 未到達など）＝空っぽフェーズはスケルトンではなくスピナー。
   if (rendered.length === 0) {
-    return <PendingMark />;
+    return <StreamLoading />;
   }
   return rendered;
 };

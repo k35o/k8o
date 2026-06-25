@@ -86,7 +86,7 @@ export const UnsupportedSubset: Story = {
   },
 };
 
-// 生成開始直後（return 未到達）。何も壊さず先端スケルトンだけ出す。
+// 生成開始直後（return 未到達＝まだ構造なし）。スケルトンではなくスピナーを出す。
 export const Empty: Story = {
   args: {
     code: "import { Card } from '@k8o/arte-odyssey';\n\nexport default function Preview() {",
