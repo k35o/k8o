@@ -3,6 +3,10 @@
 import { headers } from 'next/headers';
 
 import type { GenerationMeta } from '@/features/generation/application/parse-generation';
+import {
+  type ApplyPreviewResult,
+  applyStudioPreviewCode,
+} from '@/features/preview/application/sandbox-runtime';
 import { requireAllowedSession } from '@/shared/auth/require-allowed-session';
 
 import {
@@ -49,6 +53,24 @@ export const loadProjectAction = async (
     return null;
   }
   return getProject({ userId: session.userId, projectId });
+};
+
+// プロジェクト読込（DB）とプレビュー反映（Sandbox）を1往復・1回の認証にまとめる。
+// 切り替えで load→apply を別々に呼ぶと、ブラウザ↔サーバー往復とセッション照会が2回ずつ
+// 走って遅いため、ここで一括する。非所有/不存在は null。
+export const loadProjectAndApplyAction = async (
+  projectId: number,
+): Promise<{ project: LoadedProject; applied: ApplyPreviewResult } | null> => {
+  const session = await requireAllowedSession(await headers());
+  if (session === null) {
+    return null;
+  }
+  const project = await getProject({ userId: session.userId, projectId });
+  if (project === null) {
+    return null;
+  }
+  const applied = await applyStudioPreviewCode(project.code);
+  return { project, applied };
 };
 
 export const forkProjectAction = async (

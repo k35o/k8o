@@ -16,6 +16,7 @@ import { useTheme } from 'next-themes';
 import { useRouter, useSearchParams } from 'next/navigation';
 import {
   type KeyboardEvent,
+  useCallback,
   useEffect,
   useReducer,
   useRef,
@@ -36,7 +37,9 @@ import {
   applyPreviewCode,
   startPreviewSession,
 } from '@/features/preview/interface/actions';
+import { loadProjectAndApplyAction } from '@/features/projects/interface/actions';
 
+import { ChatMessage } from './chat-message';
 import { CodePanel } from './code-panel';
 import { CopyCodeButton } from './copy-code-button';
 import { PreviewLoading } from './preview-loading';
@@ -45,6 +48,10 @@ import { ShareControl } from './share-control';
 import { useStudioPersistence } from './use-studio-persistence';
 
 type PanelView = 'preview' | 'code';
+
+// HMR でプレビューが差し替わるのを待つ猶予。これを過ぎても iframe から反映通知が来なければ
+// 強制リロードへフォールバックする（websocket が張れず HMR が効かない環境向けの保険）。
+const PREVIEW_HMR_FALLBACK_MS = 2000;
 
 export const Studio = () => {
   const [input, setInput] = useState('');
@@ -69,6 +76,29 @@ export const Studio = () => {
   const frameRef = useRef<HTMLDivElement>(null);
   // 直近の指示。onFinish（一度きりのクロージャ）から版に保存して会話復元に使う。
   const lastPromptRef = useRef('');
+  // HMR 反映待ちのフォールバック用タイマー。反映通知が来れば張り替えず解除する。
+  const reloadFallbackRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const clearReloadFallback = useCallback((): void => {
+    if (reloadFallbackRef.current !== null) {
+      clearTimeout(reloadFallbackRef.current);
+      reloadFallbackRef.current = null;
+    }
+  }, []);
+  // コード反映後の表示更新。まず HMR の差分反映（iframe からの updated 通知）を待ち、猶予内に
+  // 来なければ iframe を貼り替えて強制リロードする。前者なら白フラッシュなしで即時に切り替わる。
+  const reflectPreview = useCallback((): void => {
+    setPreviewLoading(true);
+    clearReloadFallback();
+    reloadFallbackRef.current = setTimeout(() => {
+      reloadFallbackRef.current = null;
+      setPreviewNonce((nonce) => nonce + 1);
+    }, PREVIEW_HMR_FALLBACK_MS);
+  }, [clearReloadFallback]);
+  // iframe（プレビュー）から HMR 反映通知が来たとき。安定参照にして iframe 側の購読を毎レンダー張り替えない。
+  const handlePreviewUpdated = useCallback((): void => {
+    clearReloadFallback();
+    setPreviewLoading(false);
+  }, [clearReloadFallback]);
   const { resolvedTheme } = useTheme();
   const persistence = useStudioPersistence();
   const router = useRouter();
@@ -111,12 +141,13 @@ export const Studio = () => {
           const res = await applyPreviewCode(parsed.code);
           if (res.ok) {
             setApplyError(null);
-            setPreviewNonce((nonce) => nonce + 1);
+            reflectPreview();
             setView('preview');
             setMobileTab('preview');
             return;
           }
-          // 反映に失敗したら iframe は再読込されず onLoad も来ないので、ローディングはここで外す。
+          // 反映に失敗したら HMR もリロードも起きないので、ローディングはここで外す。
+          clearReloadFallback();
           setPreviewLoading(false);
           // エラーを次ターンの system に流して自動修復を促す（プレビューは前回の正常版のまま＝白画面にしない）。
           if (res.error !== undefined) {
@@ -148,9 +179,21 @@ export const Studio = () => {
     })();
   }, []);
 
+  // アンマウント時に HMR フォールバックのタイマーを始末する。
+  useEffect(
+    () => () => {
+      if (reloadFallbackRef.current !== null) {
+        clearTimeout(reloadFallbackRef.current);
+      }
+    },
+    [],
+  );
+
+  // 末尾追従は「メッセージ追加」「生成状態の変化」の節目だけにする。messages 全体を依存に
+  // すると生成中は毎トークン smooth スクロールが連打されてもたつくため、件数と status で間引く。
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-  }, [messages]);
+  }, [messages.length, status]);
 
   const lastAssistant = messages.findLast(
     (message) => message.role === 'assistant',
@@ -193,6 +236,8 @@ export const Studio = () => {
     }
     setInput('');
     setApplyError(null);
+    // 直前の反映待ちタイマーが生成中にリロードを起こさないよう始末する。
+    clearReloadFallback();
     // 生成中はコードが組み上がる様子を実況する（完了後に onFinish がプレビューへ戻す）。
     // モバイルはチャットの「考えています…」を残したいので mobileTab は切り替えない。
     setView('code');
@@ -226,6 +271,9 @@ export const Studio = () => {
   const handleNewProject = (): void => {
     // 生成中なら中断してから切り替える（生成中表示が新プロジェクトに残るのを防ぐ）。
     void stop();
+    // 直前の反映待ちタイマーが新プロジェクトでリロードを起こさないよう始末する。
+    clearReloadFallback();
+    setPreviewLoading(false);
     persistence.reset();
     dispatch({ type: 'reset' });
     setMessages([]);
@@ -240,10 +288,13 @@ export const Studio = () => {
     // 生成中なら中断してから切り替える（生成中表示が切替先に漏れるのを防ぐ）。
     void stop();
     setHistoryOpen(false);
-    const project = await persistence.load(id);
-    if (project === null) {
+    // 読込（DB）と反映（Sandbox）を1サーバー往復にまとめ、往復・認証を半減する。
+    const result = await loadProjectAndApplyAction(id);
+    if (result === null) {
       return;
     }
+    const { project, applied } = result;
+    persistence.markLoaded(project);
     dispatch({
       type: 'load-project',
       code: project.code,
@@ -276,16 +327,13 @@ export const Studio = () => {
     );
     setMessages(restored);
     setApplyError(null);
-    setPreviewLoading(true);
-    const res = await applyPreviewCode(project.code);
-    if (res.ok) {
-      setPreviewNonce((nonce) => nonce + 1);
+    if (applied.ok) {
+      // 反映済み。HMR の差分反映を待ち、来なければリロードへフォールバックする。
+      reflectPreview();
       setView('preview');
       setMobileTab('preview');
-    } else {
-      // 反映失敗時は iframe が再読込されない＝onLoad が来ないので、ここで外す。
-      setPreviewLoading(false);
     }
+    // 反映失敗（保存済みコードでは稀）時はプレビューを前版のまま据え置く。
   };
 
   const handleFork = async (): Promise<void> => {
@@ -494,32 +542,25 @@ export const Studio = () => {
             ) : (
               <div className="flex flex-col gap-5">
                 {messages.map((message) => {
-                  const text = messageText(message);
-                  if (message.role === 'user') {
+                  // 生成中の最後の assistant だけは実況（毎トークン変化）を出す。これ以外の
+                  // 確定メッセージは memo 済みの ChatMessage に委ね、履歴の再パースを避ける。
+                  const working =
+                    isBusy &&
+                    message.id === lastMessageId &&
+                    message.role === 'assistant';
+                  if (working) {
                     return (
-                      <div className="flex justify-end" key={message.id}>
-                        <p className="bg-primary-bg-subtle text-fg-base max-w-[85%] rounded-2xl px-4 py-2.5 text-sm leading-relaxed">
-                          {text}
+                      <div className="flex flex-col gap-1.5" key={message.id}>
+                        <span className="text-fg-mute text-xs font-bold">
+                          AI
+                        </span>
+                        <p className="text-fg-mute text-sm leading-relaxed motion-safe:animate-pulse">
+                          {generatingStatus}
                         </p>
                       </div>
                     );
                   }
-                  const description = parseGeneration(text).meta?.description;
-                  const working = isBusy && message.id === lastMessageId;
-                  return (
-                    <div className="flex flex-col gap-1.5" key={message.id}>
-                      <span className="text-fg-mute text-xs font-bold">AI</span>
-                      {working ? (
-                        <p className="text-fg-mute text-sm leading-relaxed motion-safe:animate-pulse">
-                          {generatingStatus}
-                        </p>
-                      ) : (
-                        <p className="text-fg-base text-sm leading-relaxed">
-                          {description ?? 'コードを更新しました'}
-                        </p>
-                      )}
-                    </div>
-                  );
+                  return <ChatMessage key={message.id} message={message} />;
                 })}
                 {status === 'submitted' ? (
                   <div className="flex flex-col gap-1.5">
@@ -624,8 +665,10 @@ export const Studio = () => {
                   <ThemedPreviewIframe
                     key={previewNonce}
                     onLoad={() => {
+                      clearReloadFallback();
                       setPreviewLoading(false);
                     }}
+                    onUpdated={handlePreviewUpdated}
                     theme={resolvedTheme}
                     title="preview"
                     url={previewUrl}

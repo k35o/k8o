@@ -10,7 +10,6 @@ import type {
 import {
   forkProjectAction,
   listProjectsAction,
-  loadProjectAction,
   saveGenerationAction,
 } from '@/features/projects/interface/actions';
 
@@ -24,7 +23,8 @@ export type StudioPersistence = {
     meta: GenerationMeta;
     prompt: string;
   }) => Promise<void>;
-  load: (projectId: number) => Promise<LoadedProject | null>;
+  // 既に読み込み済みのプロジェクトを現在の選択として確定する（再フェッチしない）。
+  markLoaded: (project: LoadedProject) => void;
   fork: (sourceProjectId: number) => Promise<number | null>;
   reset: () => void;
   refresh: () => Promise<void>;
@@ -76,14 +76,9 @@ export const useStudioPersistence = (): StudioPersistence => {
     [refresh, setCurrent],
   );
 
-  const load = useCallback(
-    async (id: number): Promise<LoadedProject | null> => {
-      const project = await loadProjectAction(id);
-      if (project === null) {
-        return null;
-      }
+  const markLoaded = useCallback(
+    (project: LoadedProject): void => {
       setCurrent(project.id, project.versionId, project.title);
-      return project;
     },
     [setCurrent],
   );
@@ -110,7 +105,7 @@ export const useStudioPersistence = (): StudioPersistence => {
     projectTitle,
     currentVersionId,
     save,
-    load,
+    markLoaded,
     fork,
     reset,
     refresh,

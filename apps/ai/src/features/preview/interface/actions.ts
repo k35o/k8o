@@ -2,9 +2,9 @@
 
 import { headers } from 'next/headers';
 
-import { findUnknownArteImports } from '@/features/generation/infrastructure/design-system-context';
 import { requireAllowedSession } from '@/shared/auth/require-allowed-session';
 
+import { applyStudioPreviewCode } from '../application/apply-preview';
 import { previewProvider } from '../application/preview-provider';
 
 // プレビューも課金/環境に関わる操作なので、オーナーゲートを通す。
@@ -26,14 +26,5 @@ export const applyPreviewCode = async (
   if (session === null) {
     return { ok: false };
   }
-  // 存在しない import を書き込むと Vite が壊れプレビューが白画面のまま復帰しないため、書き込み前に弾く。
-  const unknown = findUnknownArteImports(code);
-  if (unknown.length > 0) {
-    return {
-      ok: false,
-      error: `'@k8o/arte-odyssey' に存在しない import: ${unknown.join(', ')}。これらは実在しないため使用できません。`,
-    };
-  }
-  await previewProvider.apply(code);
-  return { ok: true };
+  return applyStudioPreviewCode(code);
 };

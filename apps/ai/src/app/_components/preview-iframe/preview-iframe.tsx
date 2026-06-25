@@ -10,6 +10,8 @@ type ThemedPreviewIframeProps = {
   title: string;
   // 読み込み完了の通知（呼び出し側のローディング表示解除に使う）。
   onLoad?: (() => void) | undefined;
+  // HMR でプレビューが差し替わったときの通知（iframe を再読込せずローディングを解除するため）。
+  onUpdated?: (() => void) | undefined;
 };
 
 // 生成プレビューの iframe。初期テーマは src(?theme) に載せて初回ペイントから正しい配色にし、
@@ -20,6 +22,7 @@ export const ThemedPreviewIframe: FC<ThemedPreviewIframeProps> = ({
   theme,
   title,
   onLoad,
+  onUpdated,
 }) => {
   const ref = useRef<HTMLIFrameElement>(null);
   // url は Sandbox の絶対URL。クエリは URL で安全に組み立て、postMessage の宛先も同オリジンに絞る。
@@ -37,6 +40,31 @@ export const ThemedPreviewIframe: FC<ThemedPreviewIframeProps> = ({
       origin,
     );
   }, [theme, origin]);
+
+  // プレビュー(Sandbox)からの「HMR で差し替わった」通知を受ける。送信元オリジンを検証する。
+  useEffect(() => {
+    if (onUpdated === undefined) {
+      return undefined;
+    }
+    const handler = (event: MessageEvent<unknown>): void => {
+      if (event.origin !== origin) {
+        return;
+      }
+      const { data } = event;
+      if (
+        typeof data === 'object' &&
+        data !== null &&
+        'type' in data &&
+        data.type === 'k8o-preview-updated'
+      ) {
+        onUpdated();
+      }
+    };
+    window.addEventListener('message', handler);
+    return () => {
+      window.removeEventListener('message', handler);
+    };
+  }, [onUpdated, origin]);
 
   return (
     <iframe
