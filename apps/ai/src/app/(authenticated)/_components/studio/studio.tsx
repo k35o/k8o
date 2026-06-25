@@ -36,6 +36,7 @@ import {
   applyPreviewCode,
   startPreviewSession,
 } from '@/features/preview/interface/actions';
+import { loadProjectAndApplyAction } from '@/features/projects/interface/actions';
 
 import { ChatMessage } from './chat-message';
 import { CodePanel } from './code-panel';
@@ -243,10 +244,13 @@ export const Studio = () => {
     // 生成中なら中断してから切り替える（生成中表示が切替先に漏れるのを防ぐ）。
     void stop();
     setHistoryOpen(false);
-    const project = await persistence.load(id);
-    if (project === null) {
+    // 読込（DB）と反映（Sandbox）を1サーバー往復にまとめ、往復・認証を半減する。
+    const result = await loadProjectAndApplyAction(id);
+    if (result === null) {
       return;
     }
+    const { project, applied } = result;
+    persistence.markLoaded(project);
     dispatch({
       type: 'load-project',
       code: project.code,
@@ -279,16 +283,14 @@ export const Studio = () => {
     );
     setMessages(restored);
     setApplyError(null);
-    setPreviewLoading(true);
-    const res = await applyPreviewCode(project.code);
-    if (res.ok) {
+    if (applied.ok) {
+      // 反映済み。iframe を貼り替え、onLoad までローディングを出す。
+      setPreviewLoading(true);
       setPreviewNonce((nonce) => nonce + 1);
       setView('preview');
       setMobileTab('preview');
-    } else {
-      // 反映失敗時は iframe が再読込されない＝onLoad が来ないので、ここで外す。
-      setPreviewLoading(false);
     }
+    // 反映失敗（保存済みコードでは稀）時はプレビューを前版のまま据え置く。
   };
 
   const handleFork = async (): Promise<void> => {

@@ -50,7 +50,20 @@ const isServing = async (url: string): Promise<boolean> => {
   }
 };
 
+// warm インスタンス内で Sandbox ハンドルと「配信確認済み」時刻を fullName 単位でキャッシュし、
+// apply のたびに走る Sandbox.get / isServing の往復を省く（studio / share で別キー）。
+// 停止・失効時は操作失敗で破棄して取り直すため、staleness は writeFiles の retry が吸収する。
+const handleCache = new Map<string, Sandbox>();
+const servingConfirmedAt = new Map<string, number>();
+const SERVING_TTL_MS = 30 * 1000;
+
+const dropCache = (fullName: string): void => {
+  handleCache.delete(fullName);
+  servingConfirmedAt.delete(fullName);
+};
+
 // 名前付きサンドボックスを get（あれば再開）するか、無ければ snapshot から作る。
+// ハンドルはキャッシュして、連続 apply での Sandbox.get 往復を避ける。
 const getOrCreate = async (name: string): Promise<Sandbox> => {
   if (SNAPSHOT_ID === '') {
     throw new Error(
@@ -58,27 +71,42 @@ const getOrCreate = async (name: string): Promise<Sandbox> => {
     );
   }
   const fullName = named(name);
+  const cached = handleCache.get(fullName);
+  if (cached !== undefined) {
+    return cached;
+  }
   const existing = await Sandbox.get({ name: fullName, ...creds() }).catch(
     () => null,
   );
-  if (existing !== null) {
-    return existing;
-  }
   // snapshot ソース指定時は runtime を渡さない（snapshot から継承）。
-  return Sandbox.create({
-    name: fullName,
-    source: { type: 'snapshot', snapshotId: SNAPSHOT_ID },
-    ports: [PORT],
-    resources: { vcpus: 1 },
-    timeout: TIMEOUT_MS,
-    ...creds(),
-  });
+  const sandbox =
+    existing ??
+    (await Sandbox.create({
+      name: fullName,
+      source: { type: 'snapshot', snapshotId: SNAPSHOT_ID },
+      ports: [PORT],
+      resources: { vcpus: 1 },
+      timeout: TIMEOUT_MS,
+      ...creds(),
+    }));
+  handleCache.set(fullName, sandbox);
+  return sandbox;
 };
 
 // vite dev が応答していなければ起動し、応答するまで待ってから domain を返す。
-const ensureServing = async (sandbox: Sandbox): Promise<string> => {
+// trustCache=true かつ直近で配信確認済みなら、apply ごとの確認 fetch を省く。
+const ensureServing = async (
+  sandbox: Sandbox,
+  fullName: string,
+  trustCache: boolean,
+): Promise<string> => {
   const url = sandbox.domain(PORT);
+  const confirmedAt = servingConfirmedAt.get(fullName) ?? 0;
+  if (trustCache && Date.now() - confirmedAt < SERVING_TTL_MS) {
+    return url;
+  }
   if (await isServing(url)) {
+    servingConfirmedAt.set(fullName, Date.now());
     return url;
   }
   await sandbox.runCommand({
@@ -90,6 +118,7 @@ const ensureServing = async (sandbox: Sandbox): Promise<string> => {
   for (let i = 0; i < READY_TRIES; i += 1) {
     // eslint-disable-next-line no-await-in-loop -- 起動待ちのポーリング
     if (await isServing(url)) {
+      servingConfirmedAt.set(fullName, Date.now());
       return url;
     }
     // eslint-disable-next-line no-await-in-loop -- 起動待ちのポーリング
@@ -101,9 +130,10 @@ const ensureServing = async (sandbox: Sandbox): Promise<string> => {
 };
 
 // プレビュー用サンドボックスを用意して配信URLを返す（コード未指定。apply で差し替える）。
+// cold start の確認なのでキャッシュは信頼しない。
 export const ensureSandboxPreview = async (name: string): Promise<string> => {
   const sandbox = await getOrCreate(name);
-  return ensureServing(sandbox);
+  return ensureServing(sandbox, named(name), false);
 };
 
 // 名前付きサンドボックスにコードを書き込み、配信が立っていることを確保して URL を返す。
@@ -111,11 +141,18 @@ export const serveSandboxPreview = async (
   name: string,
   code: string,
 ): Promise<string> => {
-  const sandbox = await getOrCreate(name);
-  await sandbox.writeFiles([
-    { path: 'src/generated/Preview.tsx', content: code },
-  ]);
-  return ensureServing(sandbox);
+  const fullName = named(name);
+  const files = [{ path: 'src/generated/Preview.tsx', content: code }];
+  let sandbox = await getOrCreate(name);
+  try {
+    await sandbox.writeFiles(files);
+  } catch {
+    // キャッシュした handle が失効していた場合は取り直して一度だけ再試行する。
+    dropCache(fullName);
+    sandbox = await getOrCreate(name);
+    await sandbox.writeFiles(files);
+  }
+  return ensureServing(sandbox, fullName, true);
 };
 
 // 生成コードを書き込む（HMR で反映）。停止していれば起こして配信を確保する。
@@ -128,10 +165,12 @@ export const writeSandboxPreview = async (
 
 // 名前付きサンドボックスを停止する（非公開化時の後始末。ベストエフォート）。
 export const stopSandboxPreview = async (name: string): Promise<void> => {
-  const sandbox = await Sandbox.get({ name: named(name), ...creds() }).catch(
+  const fullName = named(name);
+  const sandbox = await Sandbox.get({ name: fullName, ...creds() }).catch(
     () => null,
   );
   if (sandbox !== null) {
     await sandbox.stop().catch(() => undefined);
   }
+  dropCache(fullName);
 };
