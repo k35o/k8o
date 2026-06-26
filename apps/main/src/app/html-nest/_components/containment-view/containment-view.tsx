@@ -36,7 +36,6 @@ export const ContainmentView: FC<ContainmentViewProps> = ({
 
   return (
     <div className="flex flex-col gap-4">
-      {/* 選択中の要素（アクセント付きの焦点カード）。 */}
       <div className="border-primary-border bg-primary-bg-subtle rounded-xl border p-4 sm:p-5">
         <div className="mb-1.5 flex items-center justify-between gap-2">
           <p className="text-primary-fg text-xs font-medium">選択中の要素</p>
@@ -85,7 +84,6 @@ export const ContainmentView: FC<ContainmentViewProps> = ({
         </div>
       </div>
 
-      {/* 子要素 / 親要素をタブで切り替える。 */}
       <div className="border-border-base bg-bg-base flex flex-col gap-4 rounded-xl border p-4 sm:p-5">
         <Tabs.Root defaultSelectedId="child" ids={TAB_IDS}>
           <Tabs.List label="子要素か親要素かを切り替え">
