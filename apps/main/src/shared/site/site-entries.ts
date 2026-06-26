@@ -9,6 +9,7 @@ export type SiteEntryIcon =
   | 'colorQuiz'
   | 'radiusMaker'
   | 'mojiCount'
+  | 'htmlNest'
   | 'fluida'
   | 'blog'
   | 'talks'
@@ -86,6 +87,14 @@ const entries: readonly SiteEntry[] = [
     description: 'テキストの文字数をリアルタイムに数えます。',
     kind: 'tool',
     icon: 'mojiCount',
+  },
+  {
+    title: 'HTMLいれ子マップ',
+    link: '/html-nest',
+    description:
+      'HTMLタグを選ぶと、親に置ける要素と中に入れられる子要素が浮かび上がります。',
+    kind: 'tool',
+    icon: 'htmlNest',
   },
   {
     title: 'fluida',
