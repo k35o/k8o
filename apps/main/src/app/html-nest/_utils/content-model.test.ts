@@ -226,6 +226,13 @@ describe('describeAllowedContent / 許可内容の要約', () => {
     expect(describeAllowedContent(el('div'))).toBe('Flow content');
   });
 
+  it('具体要素とカテゴリの両方を持つ要素は両方を併記する', () => {
+    // details: elements ['summary'] かつ categories ['flow']
+    const result = describeAllowedContent(el('details'));
+    expect(result).toContain('<summary>');
+    expect(result).toContain('Flow content');
+  });
+
   it('空要素は子を持てない旨を返す', () => {
     expect(describeAllowedContent(el('img'))).toBe(
       '空要素なので子を持てません',

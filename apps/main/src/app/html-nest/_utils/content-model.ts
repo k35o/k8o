@@ -212,13 +212,11 @@ export const describeAllowedContent = (element: HtmlElementInfo): string => {
   if (cm.kind === 'transparent') {
     return '親の content model に従う（透過）';
   }
-  if (cm.elements.length > 0) {
-    return cm.elements.map((tag) => `<${tag}>`).join(' / ');
-  }
-  if (cm.categories.length > 0) {
-    return cm.categories
-      .map((category) => CONTENT_CATEGORY_LABEL[category])
-      .join(' / ');
-  }
-  return '—';
+  // 具体要素とカテゴリの両方を受け入れる要素（details / fieldset / figure など）は、
+  // 片方だけだと「置けるのは: <summary>」のように flow content が欠落するため併記する。
+  const parts = [
+    ...cm.elements.map((tag) => `<${tag}>`),
+    ...cm.categories.map((category) => CONTENT_CATEGORY_LABEL[category]),
+  ];
+  return parts.length > 0 ? parts.join(' / ') : '—';
 };
