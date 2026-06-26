@@ -1,5 +1,6 @@
 import {
   BlogIcon,
+  CodeXmlIcon,
   ColorContrastIcon,
   ColorInfoIcon,
   FlaskIcon,
@@ -31,6 +32,7 @@ const ICON: Record<SiteEntryIcon, ReactNode> = {
   colorQuiz: <MixedColorIcon size="md" />,
   radiusMaker: <SquircleIcon size="md" />,
   mojiCount: <HorizontalWritingIcon size="md" />,
+  htmlNest: <CodeXmlIcon size="md" />,
   fluida: <PaletteIcon size="md" />,
   blog: <BlogIcon size="md" />,
   talks: <SlideIcon size="md" />,
