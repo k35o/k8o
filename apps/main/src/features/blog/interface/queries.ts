@@ -22,6 +22,7 @@ export async function getBlogContents() {
   return Promise.all(
     blogs.map(async (blog) => {
       const metadata = await getBlogMetadata(blog.slug);
+      const markdown = await getMarkdown(blog.slug);
       return {
         id: blog.id,
         slug: blog.slug,
@@ -30,6 +31,7 @@ export async function getBlogContents() {
         description: metadata.description,
         createdAt: metadata.createdAt,
         updatedAt: metadata.updatedAt,
+        readingTime: estimateReadingTimeMinutes(markdown),
       };
     }),
   );
