@@ -1,12 +1,26 @@
 'use client';
 
 import { Badge, Button } from '@k8o/arte-odyssey';
-import { useCallback, useEffect, useRef, useState } from 'react';
+import {
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+  useSyncExternalStore,
+} from 'react';
 
 const isLargestContentfulPaint = (
   entry: PerformanceEntry,
 ): entry is LargestContentfulPaint =>
   entry.entryType === 'largest-contentful-paint';
+
+// 機能対応は環境依存で SSR では判定できないため、useSyncExternalStore で
+// クライアント確定値を読む（サーバーは対応ありと仮定して初期描画を維持）。
+const subscribeNoop = (): (() => void) => () => undefined;
+const getSupportedSnapshot = (): boolean =>
+  typeof PerformanceObserver !== 'undefined' &&
+  PerformanceObserver.supportedEntryTypes.includes('largest-contentful-paint');
+const getServerSnapshot = (): boolean => true;
 
 type LCPEntry = {
   id: number;
@@ -22,19 +36,15 @@ type LCPEntry = {
 
 export function LCPDemo() {
   const [entries, setEntries] = useState<LCPEntry[]>([]);
-  const [isSupported, setIsSupported] = useState(true);
+  const isSupported = useSyncExternalStore(
+    subscribeNoop,
+    getSupportedSnapshot,
+    getServerSnapshot,
+  );
   const entryIdRef = useRef(0);
 
   useEffect(() => {
-    if (
-      typeof PerformanceObserver === 'undefined' ||
-      !PerformanceObserver.supportedEntryTypes.includes(
-        'largest-contentful-paint',
-      )
-    ) {
-      setIsSupported(false);
-      return undefined;
-    }
+    if (!isSupported) return undefined;
 
     const observer = new PerformanceObserver((list) => {
       for (const entry of list.getEntries()) {
@@ -67,7 +77,7 @@ export function LCPDemo() {
     return () => {
       observer.disconnect();
     };
-  }, []);
+  }, [isSupported]);
 
   const handleReset = useCallback(() => {
     setEntries([]);

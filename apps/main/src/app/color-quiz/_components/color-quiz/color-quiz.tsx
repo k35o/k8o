@@ -1,18 +1,21 @@
 'use client';
 
 import { Tabs } from '@k8o/arte-odyssey';
-import { useEffect, useState } from 'react';
+import { useSyncExternalStore } from 'react';
 
 import { ColorToHex } from './color-to-hex';
 import { HexToColor } from './hex-to-color';
 
-export const ColorQuiz = () => {
-  // 子コンポーネントがMath.random()で初期値を生成するため、SSRでのhydration mismatchを防ぐ
-  const [isMounted, setIsMounted] = useState(false);
+const subscribeNoop = (): (() => void) => () => undefined;
 
-  useEffect(() => {
-    setIsMounted(true);
-  }, []);
+export const ColorQuiz = () => {
+  // 子コンポーネントがMath.random()で初期値を生成するため、SSRでのhydration mismatchを防ぐ。
+  // サーバーは false、クライアントのマウント後は true を返す。
+  const isMounted = useSyncExternalStore(
+    subscribeNoop,
+    () => true,
+    () => false,
+  );
 
   return (
     <Tabs.Root

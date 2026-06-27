@@ -42,7 +42,9 @@ const useScrollendListener = (
   onScrollend: () => void,
 ) => {
   const handlerRef = useRef(onScrollend);
-  handlerRef.current = onScrollend;
+  useEffect(() => {
+    handlerRef.current = onScrollend;
+  });
 
   useEffect(() => {
     const element = ref.current;

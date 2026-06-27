@@ -90,7 +90,9 @@ export function DragDropDemo() {
         </Button>
       </div>
 
-      <section
+      {/* caretPositionFromPoint はマウス座標前提で、ドロップはキーボード操作不可。
+          region ロールを持つ section だとイベントハンドラがエラーになるため div を使う */}
+      <div
         aria-label="テキスト挿入エリア"
         className={`rounded-lg border p-3 transition-colors ${
           isDragOver
@@ -107,7 +109,7 @@ export function DragDropDemo() {
         <p className="text-fg-mute mt-2 text-xs">
           ↑ 上のワードをドラッグしてここにドロップ
         </p>
-      </section>
+      </div>
     </div>
   );
 }

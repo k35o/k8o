@@ -32,13 +32,15 @@ export const useKeyboardNav = ({
     onLast,
     onToggleFullscreen,
   });
-  handlersRef.current = {
-    onNext,
-    onPrev,
-    onFirst,
-    onLast,
-    onToggleFullscreen,
-  };
+  useEffect(() => {
+    handlersRef.current = {
+      onNext,
+      onPrev,
+      onFirst,
+      onLast,
+      onToggleFullscreen,
+    };
+  });
 
   useEffect(() => {
     const handler = (event: KeyboardEvent) => {
