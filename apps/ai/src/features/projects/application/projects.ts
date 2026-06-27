@@ -24,7 +24,7 @@ export type UiStudioContent = {
   prompt?: string;
 };
 
-export type ConversationTurn = {
+type ConversationTurn = {
   prompt: string | null;
   meta: GenerationMeta;
 };

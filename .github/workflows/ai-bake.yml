@@ -41,7 +41,7 @@ jobs:
       - name: Check snapshot drift
         id: drift
         run: |
-          if pnpm -F ai exec vitest run --project="features test" src/features/preview/infrastructure/template-snapshot.test.ts; then
+          if pnpm -F @repo/ai exec vitest run --project="features test" src/features/preview/infrastructure/template-snapshot.test.ts; then
             echo "stale=false" >> "$GITHUB_OUTPUT"
           else
             echo "stale=true" >> "$GITHUB_OUTPUT"
