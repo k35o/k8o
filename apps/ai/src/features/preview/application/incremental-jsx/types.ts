@@ -25,9 +25,9 @@ export type JsxElement = {
   readonly children: readonly JsxNode[];
 };
 
-export type JsxText = { readonly type: 'text'; readonly value: string };
+type JsxText = { readonly type: 'text'; readonly value: string };
 
 // 未受信の先端。描画側でスケルトンに置き換える。
-export type JsxPending = { readonly type: 'pending' };
+type JsxPending = { readonly type: 'pending' };
 
 export type JsxNode = JsxElement | JsxText | JsxPending;
