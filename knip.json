@@ -2,7 +2,8 @@
   "$schema": "https://unpkg.com/knip/schema.json",
   "ignore": [
     "apps/main/public/sw.js",
-    "apps/main/public/playgrounds/shared-worker.worker.js"
+    "apps/main/public/playgrounds/shared-worker.worker.js",
+    "apps/ai/sandbox-template/**"
   ],
   "treatConfigHintsAsErrors": true,
   "tags": ["-lintignore"],
