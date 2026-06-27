@@ -24,7 +24,9 @@ export const useBroadcastListener = ({
 }): ((index: number) => void) => {
   const channelRef = useRef<BroadcastChannel | null>(null);
   const onReceiveRef = useRef(onReceive);
-  onReceiveRef.current = onReceive;
+  useEffect(() => {
+    onReceiveRef.current = onReceive;
+  });
 
   useEffect(() => {
     if (typeof BroadcastChannel === 'undefined') return undefined;

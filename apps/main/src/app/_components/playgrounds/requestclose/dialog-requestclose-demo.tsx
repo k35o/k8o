@@ -9,7 +9,9 @@ export const DialogRequestCloseDemo: FC = () => {
   const [logs, setLogs] = useState<string[]>([]);
 
   const stateRef = useRef(state);
-  stateRef.current = state;
+  useEffect(() => {
+    stateRef.current = state;
+  });
 
   useEffect(() => {
     const dialog = ref.current;

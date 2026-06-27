@@ -114,8 +114,10 @@ export const annotateTransformer = (): ShikiTransformer => ({
           }
           const indent = state.indents[lineIdx] ?? 0;
           for (const text of texts) {
-            result.push(createCalloutLine(text, indent));
-            result.push({ type: 'text', value: '\n' });
+            result.push(createCalloutLine(text, indent), {
+              type: 'text',
+              value: '\n',
+            });
           }
         }
         lineIdx += 1;

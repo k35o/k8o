@@ -1,9 +1,15 @@
 'use client';
 
 import { Button, Code } from '@k8o/arte-odyssey';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, useSyncExternalStore } from 'react';
 
 const WORKER_URL = '/playgrounds/shared-worker.worker.js';
+
+// 機能対応は環境依存で SSR では判定できないため、useSyncExternalStore で
+// クライアント確定値を読む（サーバーは対応ありと仮定して初期描画を維持）。
+const subscribeNoop = (): (() => void) => () => undefined;
+const getSupportedSnapshot = (): boolean => typeof SharedWorker !== 'undefined';
+const getServerSnapshot = (): boolean => true;
 
 type WorkerMessage =
   | { type: 'init'; startedAt: number; count: number; connections: number }
@@ -16,17 +22,18 @@ const formatTime = (ms: number): string => {
 };
 
 export function SharedWorkerDemo() {
-  const [supported, setSupported] = useState(true);
+  const supported = useSyncExternalStore(
+    subscribeNoop,
+    getSupportedSnapshot,
+    getServerSnapshot,
+  );
   const [startedAt, setStartedAt] = useState<number | null>(null);
   const [count, setCount] = useState(0);
   const [connections, setConnections] = useState(0);
   const port = useRef<MessagePort | null>(null);
 
   useEffect(() => {
-    if (typeof SharedWorker === 'undefined') {
-      setSupported(false);
-      return undefined;
-    }
+    if (!supported) return undefined;
 
     const worker = new SharedWorker(WORKER_URL, {
       name: 'k8o-shared-worker-demo',
@@ -68,7 +75,7 @@ export function SharedWorkerDemo() {
       worker.port.close();
       port.current = null;
     };
-  }, []);
+  }, [supported]);
 
   const handleIncrement = () => {
     port.current?.postMessage({ type: 'increment' });

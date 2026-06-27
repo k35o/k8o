@@ -21,7 +21,9 @@ export const SearchField: FC<Props> = ({
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
-  const [value, setValue] = useState(searchParams.get(paramKey) ?? '');
+  const urlValue = searchParams.get(paramKey) ?? '';
+  const [value, setValue] = useState(urlValue);
+  const [prevUrlValue, setPrevUrlValue] = useState(urlValue);
   const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(
@@ -34,10 +36,11 @@ export const SearchField: FC<Props> = ({
   );
 
   // ブラウザの戻る/進む等で URL が外部から変わったら入力値を同期する。
-  // 自分のデバウンス更新では URL 値 === value となり no-op になる。
-  useEffect(() => {
-    setValue(searchParams.get(paramKey) ?? '');
-  }, [searchParams, paramKey]);
+  // 自分のデバウンス更新では URL 値 === value となり setValue は no-op になる。
+  if (urlValue !== prevUrlValue) {
+    setPrevUrlValue(urlValue);
+    setValue(urlValue);
+  }
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>): void => {
     const next = e.target.value;
