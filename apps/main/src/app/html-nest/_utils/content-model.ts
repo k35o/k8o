@@ -115,7 +115,7 @@ export const canContain = (
 };
 
 // 選択要素から見た候補要素の関係種別。
-export type RelationKind = 'self' | 'both' | 'parent' | 'child' | 'none';
+type RelationKind = 'self' | 'both' | 'parent' | 'child' | 'none';
 
 export type Relation = {
   kind: RelationKind;

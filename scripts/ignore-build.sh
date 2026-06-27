@@ -1,11 +1,15 @@
 #!/bin/bash
 # Vercel Ignored Build Step
-# 使い方: bash scripts/ignore-build.sh <app-name>
+# 使い方: bash scripts/ignore-build.sh <app-name> [pkg-name]
+#   app-name: ディレクトリ名（apps/<app-name>）
+#   pkg-name: turbo affected で判定するパッケージ名（省略時は app-name）
+#             ディレクトリ名とパッケージ名が異なる場合に指定する（例: ai → @repo/ai）
 # exit 0 = ビルドスキップ, exit 1 = ビルド実行
 
 set -euo pipefail
 
 readonly APP_NAME="${1:-}"
+readonly PKG_NAME="${2:-${1:-}}"
 
 log() {
   echo ">> $*" >&2
@@ -83,7 +87,7 @@ if ! AFFECTED=$(pnpm turbo query affected --packages --base "$BASE_SHA"); then
 fi
 echo "$AFFECTED"
 
-if echo "$AFFECTED" | grep -q "\"name\": \"$APP_NAME\""; then
+if echo "$AFFECTED" | grep -q "\"name\": \"$PKG_NAME\""; then
   log "Proceeding: $APP_NAME is affected"
   exit 1
 fi

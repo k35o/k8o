@@ -45,16 +45,6 @@ export const listProjectsAction = async (): Promise<ProjectListItem[]> => {
   return getProjectsForUser(session.userId);
 };
 
-export const loadProjectAction = async (
-  projectId: number,
-): Promise<LoadedProject | null> => {
-  const session = await requireAllowedSession(await headers());
-  if (session === null) {
-    return null;
-  }
-  return getProject({ userId: session.userId, projectId });
-};
-
 // プロジェクト読込（DB）とプレビュー反映（Sandbox）を1往復・1回の認証にまとめる。
 // 切り替えで load→apply を別々に呼ぶと、ブラウザ↔サーバー往復とセッション照会が2回ずつ
 // 走って遅いため、ここで一括する。非所有/不存在は null。
