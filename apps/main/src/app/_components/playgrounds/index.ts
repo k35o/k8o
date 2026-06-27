@@ -12,6 +12,7 @@ export * from './contrast-color';
 export * from './crisp-edges';
 export * from './details-content';
 export * from './event-timing';
+export * from './field-sizing';
 export * from './font-family-math';
 export * from './highlight';
 export * from './input-file-webkitdirectory';
@@ -48,6 +49,7 @@ import { contrastColorSection } from './contrast-color';
 import { crispEdgesSection } from './crisp-edges';
 import { detailsContentSection } from './details-content';
 import { eventTimingSection } from './event-timing';
+import { fieldSizingSection } from './field-sizing';
 import { fontFamilyMathSection } from './font-family-math';
 import { highlightSection } from './highlight';
 import { inputFileWebkitdirectorySection } from './input-file-webkitdirectory';
@@ -84,6 +86,7 @@ export const playgroundSections: PlaygroundSection[] = [
   crispEdgesSection,
   detailsContentSection,
   eventTimingSection,
+  fieldSizingSection,
   fontFamilyMathSection,
   inputFileWebkitdirectorySection,
   invokerCommandsSection,
