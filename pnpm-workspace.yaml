@@ -7,9 +7,8 @@ allowBuilds:
   '@swc/core': false
   esbuild: false
   msgpackr-extract: false
-  msw: true
+  msw: false
   sharp: false
-  # wranglerの依存。pages deployはAPIアップロードのみでworkerd実行は不要
   workerd: false
 
 blockExoticSubdeps: true
@@ -51,12 +50,6 @@ minimumReleaseAge: 10080
 
 minimumReleaseAgeExclude:
   - '@k8o/*'
-  # Renovate security update: turbo@2.9.14
-  - turbo@2.9.14
-  - storybook-addon-vrt
-  - storybook-addon-mock-date
-  - storybook-addon-determinism
-  - vite-plus-inspector
 
 verifyDepsBeforeRun: install
 
