@@ -26,10 +26,11 @@ describe('estimateReadingTimeMinutes', () => {
   });
 
   describe('エッジケース', () => {
-    it('コードブロックは読了時間に含めない', () => {
-      const text = ['```ts', 'const x = 1;'.repeat(500), '```'].join('\n');
+    it('コードブロックはコード用のレートで算入する', () => {
+      // コード内 約1000文字 / 300cpm ≈ 3.3 → 4分
+      const text = ['```ts', 'a'.repeat(1000), '```'].join('\n');
 
-      expect(estimateReadingTimeMinutes(text)).toBe(1);
+      expect(estimateReadingTimeMinutes(text)).toBe(4);
     });
 
     it('リンクはテキストのみカウントしURLは除外する', () => {
