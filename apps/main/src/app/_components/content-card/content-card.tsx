@@ -20,6 +20,7 @@ type ContentCardProps = {
   description: string | null;
   createdAt: string;
   updatedAt: string;
+  readingTime?: number;
 };
 
 // blog / slides の一覧カード共通の表示。差分は href プレフィックスと Heading の見出しレベル。
@@ -32,6 +33,7 @@ export const ContentCard: FC<ContentCardProps> = ({
   description,
   createdAt,
   updatedAt,
+  readingTime,
 }) => (
   <Card interactive>
     <Link
@@ -56,18 +58,23 @@ export const ContentCard: FC<ContentCardProps> = ({
               ))}
             </div>
           )}
-          <div className="text-fg-mute ml-auto flex items-center gap-4 text-xs">
-            <div className="flex items-center gap-1">
-              <PublishDateIcon size="sm" />
-              <span>
-                公開: {formatDate(new Date(createdAt), 'yyyy年M月d日')}
-              </span>
-            </div>
-            <div className="flex items-center gap-1">
-              <UpdateDateIcon size="sm" />
-              <span>
-                更新: {formatDate(new Date(updatedAt), 'yyyy年M月d日')}
-              </span>
+          <div className="text-fg-mute ml-auto flex flex-col items-end gap-1 text-xs">
+            {readingTime !== undefined && (
+              <span>約{readingTime}分で読めます</span>
+            )}
+            <div className="flex items-center gap-4">
+              <div className="flex items-center gap-1">
+                <PublishDateIcon size="sm" />
+                <span>
+                  公開: {formatDate(new Date(createdAt), 'yyyy年M月d日')}
+                </span>
+              </div>
+              <div className="flex items-center gap-1">
+                <UpdateDateIcon size="sm" />
+                <span>
+                  更新: {formatDate(new Date(updatedAt), 'yyyy年M月d日')}
+                </span>
+              </div>
             </div>
           </div>
         </div>

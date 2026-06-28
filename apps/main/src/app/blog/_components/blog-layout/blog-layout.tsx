@@ -77,7 +77,10 @@ export const BlogLayoutContent: FC<BlogLayoutContentProps> = ({
                   <SlideLinkButton href={blog.slideUrl} />
                 </div>
               )}
-              <div className="text-fg-mute flex flex-col items-end gap-1 text-xs sm:flex-row sm:items-center sm:justify-end sm:gap-2 sm:text-sm">
+              <div className="text-fg-mute flex flex-col items-end gap-1 text-xs sm:text-sm">
+                <div className="flex items-center gap-1">
+                  <span>約{readingTime}分で読めます</span>
+                </div>
                 <div className="flex flex-wrap items-center justify-end gap-1">
                   <div className="flex items-center gap-1">
                     <PublishDateIcon size="sm" />
@@ -87,9 +90,6 @@ export const BlogLayoutContent: FC<BlogLayoutContentProps> = ({
                     <UpdateDateIcon size="sm" />
                     <span>更新: {formatDate(new Date(blog.updatedAt))}</span>
                   </div>
-                </div>
-                <div className="flex items-center gap-1">
-                  <span>約{readingTime}分で読めます</span>
                 </div>
               </div>
               {blog.tags.length > 0 && (

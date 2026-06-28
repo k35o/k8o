@@ -9,6 +9,7 @@ type BlogCardProps = {
   description: string | null;
   createdAt: string;
   updatedAt: string;
+  readingTime?: number;
 };
 
 export const BlogCard: FC<BlogCardProps> = (props) => (

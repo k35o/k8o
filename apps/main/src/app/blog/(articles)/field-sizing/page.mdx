@@ -1,0 +1,89 @@
+---
+title: 'field-sizingでフォームコントロールを内容に合わせて伸縮させる'
+description: 'field-sizingはinputやtextarea、selectといったフォームコントロールのサイズを入力内容にフィットさせるCSSプロパティです。Baseline 2026で主要ブラウザに揃い、JavaScriptで高さを自動調整する処理をCSSだけで置き換えられるようになりました。'
+createdAt: 2026-06-27
+updatedAt: 2026-06-27
+featureIds:
+  - field-sizing
+---
+
+import { BaselineStatus } from '@k8o/arte-odyssey';
+import { FieldSizingDemo, Playground } from '@/app/_components/playgrounds';
+
+# field-sizingでフォームコントロールを内容に合わせて伸縮させる
+
+<BaselineStatus featureId="field-sizing" />
+
+## はじめに
+
+`input`や`textarea`は、入力内容の量に関わらず最初に決めた幅や高さのまま表示されます。テキストエリアを入力に合わせて伸ばしたいときは、`scrollHeight`を読んで`height`を書き換えるようなJavaScriptをよく書いてきました。
+
+`field-sizing`プロパティを使うと、こうしたフォームコントロールのサイズを入力内容にフィットさせる挙動をCSSだけで指定できます。Chromeでは先行して使えていましたが、Safari 26.2とFirefox 152が対応したことでBaseline 2026に加わりました。
+
+## field-sizingの値
+
+`field-sizing`が取る値は`fixed`と`content`の2つです。
+
+```css
+input {
+  /* [!callout: 既定値。最初に決まったサイズで固定される] */
+  field-sizing: fixed;
+}
+
+input {
+  /* [!callout: 入力内容に合わせてサイズが変わる] */
+  field-sizing: content;
+}
+```
+
+`fixed`が既定値で、これは従来どおりの挙動です。`content`を指定すると、コントロールが内容を包み込むように縮み、テキストが増えると広がります。
+
+## 対象となる要素
+
+`field-sizing`が効くのは、内容に関わらず既定の推奨サイズを持つ要素です。HTMLでは次のフォームコントロールが対象です。
+
+- `text`・`email`・`search`・`tel`・`url`・`password`・`number`といった、テキストを直接入力する`input`
+- `file`の`input`（選択したファイル名に合わせて幅が変わる）
+- `textarea`
+- `select`
+
+`textarea`は単一行のテキスト入力に近い挙動になり、幅の制約に達すると今度は高さ方向に行が増え、高さの制約にも達するとスクロールバーが出ます。`select`はドロップダウンなら選択中の選択肢の幅にフィットし、`multiple`属性付きのリストボックスならスクロールせずに全選択肢が見える高さになります。
+
+## min/maxと組み合わせる
+
+`field-sizing: content`だけを指定すると、`input`は最小でテキストカーソルの幅まで縮みます。実用上は`min-width`や`max-width`を添えて、伸び縮みの範囲を決めておくのが扱いやすいです。
+
+```css
+/* [!og] */
+input {
+  field-sizing: content;
+  min-width: 8rem;
+  max-width: 20rem;
+}
+```
+
+範囲を制限する用途には`min-width`や`max-width`が向いています。一方で`width`や`height`を固定値で指定すると、サイズがその値に固定され、`field-sizing: content`は効かなくなります。`placeholder`を指定した`input`は、フォーカス前はプレースホルダー全体が見える幅で描画され、入力を始めると`min-width`まで縮みます。
+
+固定値の`width`以外に、レイアウト側でコントロールが幅いっぱいに引き伸ばされる場合も、内容に合わせて縮みません。たとえば`flex-direction: column`のFlexアイテムやGridアイテムは、既定でコンテナの幅まで広がります。引き伸ばしを止めれば`field-sizing: content`が効きます。コントロール側で指定するなら、`align-self`（Flex）や`justify-self`（Grid）を`start`にするといった方法があります。
+
+## 属性との関係
+
+`field-sizing: content`を指定すると、サイズに関わる一部の属性は意味を持たなくなります。`input`の`size`、`textarea`の`rows`・`cols`はいずれも既定の推奨サイズを決める属性なので、サイズが内容に追従する`content`では効きません。
+
+伸びる上限を内容側から決めたいときは`maxlength`が使えます。文字数の上限に達するとコントロールはそれ以上大きくなりません。
+
+```html
+<input type="tel" maxlength="15" />
+```
+
+## デモ
+
+`field-sizing`を`content`と`fixed`に切り替えながら、各コントロールに入力してサイズの変化を確かめられます。テキストエリアは行を増やすと高さが伸び、セレクトボックスは選んだ選択肢に幅が合います。
+
+<Playground title="field-sizing: contentの挙動">
+  <FieldSizingDemo />
+</Playground>
+
+## おわりに
+
+`field-sizing: content`は、フォームコントロールのサイズを入力内容に追従させるためのCSSプロパティです。Baseline 2026で主要ブラウザに揃ったので、テキストエリアの高さをJavaScriptで調整していた処理を、`field-sizing`と`min-width`・`max-width`の組み合わせに置き換えていけます。

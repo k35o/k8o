@@ -6,4 +6,5 @@ export type BlogSummary = {
   description: string | null;
   createdAt: string;
   updatedAt: string;
+  readingTime?: number;
 };
