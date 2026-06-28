@@ -1,8 +1,9 @@
 'use client';
 
+import { Spinner } from '@k8o/arte-odyssey';
 import { cn } from '@repo/helpers/cn';
 import type { Route } from 'next';
-import Link from 'next/link';
+import Link, { useLinkStatus } from 'next/link';
 import { usePathname } from 'next/navigation';
 import type { FC } from 'react';
 
@@ -12,6 +13,24 @@ const isActive = (pathname: string, href: string): boolean =>
   href === '/'
     ? pathname === '/'
     : pathname === href || pathname.startsWith(`${href}/`);
+
+type NavIcon = (typeof NAV_GROUPS)[number]['items'][number]['icon'];
+
+// useLinkStatus は <Link> の子孫でのみ機能する。Link 内に置き、遷移中の保留状態を取得して
+// クリックしたリンクだけにスピナーを出す（どのメニューを押したかが即わかる）。
+const NavItemContent: FC<{ Icon: NavIcon; label: string }> = ({
+  Icon,
+  label,
+}) => {
+  const { pending } = useLinkStatus();
+  return (
+    <>
+      <Icon size="sm" />
+      <span className="flex-1 truncate">{label}</span>
+      {pending ? <Spinner label="読み込み中" size="sm" /> : null}
+    </>
+  );
+};
 
 export const SidebarNavList: FC<{
   pathname: string | null;
@@ -31,7 +50,6 @@ export const SidebarNavList: FC<{
             </p>
           )}
           {group.items.map((item) => {
-            const Icon = item.icon;
             const active = pathname !== null && isActive(pathname, item.href);
             return (
               <Link
@@ -46,8 +64,7 @@ export const SidebarNavList: FC<{
                 key={item.href}
                 onClick={handleNavigate}
               >
-                <Icon size="sm" />
-                {item.label}
+                <NavItemContent Icon={item.icon} label={item.label} />
               </Link>
             );
           })}
