@@ -4,6 +4,7 @@ import {
   LockIcon,
   LockOpenIcon,
   Popover,
+  Spinner,
 } from '@k8o/arte-odyssey';
 import type { FC } from 'react';
 
@@ -52,7 +53,13 @@ export const ShareControlView: FC<ShareControlViewProps> = ({
             tooltipDisabled
             {...props}
           >
-            {isPublic ? <LockOpenIcon size="sm" /> : <LockIcon size="sm" />}
+            {busy ? (
+              <Spinner label="処理中" size="sm" />
+            ) : isPublic ? (
+              <LockOpenIcon size="sm" />
+            ) : (
+              <LockIcon size="sm" />
+            )}
           </IconButton>
         )}
       />

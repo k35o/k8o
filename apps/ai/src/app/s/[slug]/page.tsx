@@ -1,3 +1,4 @@
+import { Spinner } from '@k8o/arte-odyssey';
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
@@ -66,7 +67,13 @@ const ShareContent = async ({ params }: SharePageProps) => {
 
 export default function SharePage({ params }: SharePageProps) {
   return (
-    <Suspense fallback={<div className="bg-bg-surface h-dvh" />}>
+    <Suspense
+      fallback={
+        <div className="bg-bg-surface flex h-dvh items-center justify-center">
+          <Spinner label="読み込み中" size="lg" />
+        </div>
+      }
+    >
       <ShareContent params={params} />
     </Suspense>
   );
