@@ -9,7 +9,7 @@ import { useEffect } from 'react';
 
 import { reportClientError } from '@/shared/browser/report-client-error';
 
-import { mPlus2, notoSansJp } from './_styles/font';
+import { mPlus2 } from './_styles/font';
 
 // root layout ごと失敗した場合のフォールバックなので、Provider に依存しない最小構成にする
 export default function GlobalError({
@@ -28,7 +28,6 @@ export default function GlobalError({
       <body
         className={cn(
           mPlus2.variable,
-          notoSansJp.variable,
           'bg-bg-surface font-m-plus-2 font-medium text-fg-base tracking-none antialiased',
         )}
       >

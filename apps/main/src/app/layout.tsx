@@ -12,7 +12,7 @@ import { GlobalLayout } from './_components/global-layout';
 import { ServiceWorkerRegister } from './_components/service-worker-register';
 import { TrustedTypesInit } from './_components/trusted-types-init';
 import { AppProvider } from './_providers/app';
-import { mPlus2, notoSansJp } from './_styles/font';
+import { mPlus2 } from './_styles/font';
 
 export const metadata = {
   metadataBase: new URL('https://k8o.me'),
@@ -59,7 +59,6 @@ export default function RootLayout({ children }: LayoutProps<'/'>) {
       <body
         className={cn(
           mPlus2.variable,
-          notoSansJp.variable,
           'bg-bg-surface font-m-plus-2 font-medium text-fg-base tracking-none antialiased',
         )}
       >
