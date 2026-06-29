@@ -84,7 +84,7 @@ export function useMDXComponents(components: MDXComponents): MDXComponents {
         <p>{children}</p>
       ),
     p: ({ children }) => (
-      <p className="sm:text-md vertical:indent-em my-2 text-xs leading-normal">
+      <p className="sm:text-md vertical:indent-em my-2 text-sm leading-relaxed">
         {children}
       </p>
     ),
@@ -93,7 +93,7 @@ export function useMDXComponents(components: MDXComponents): MDXComponents {
         return <Code>{children}</Code>;
       }
       return (
-        <code {...props} className="sm:text-md text-xs">
+        <code {...props} className="sm:text-md text-sm">
           {children}
         </code>
       );
@@ -106,14 +106,16 @@ export function useMDXComponents(components: MDXComponents): MDXComponents {
         {children}
       </pre>
     ),
-    li: ({ children }) => <li className="sm:text-md text-xs">{children}</li>,
+    li: ({ children }) => (
+      <li className="sm:text-md text-sm leading-relaxed">{children}</li>
+    ),
     ul: ({ children }) => (
-      <ul className="sm:text-md my-4 flex list-disc flex-col gap-1 ps-5 text-xs">
+      <ul className="sm:text-md my-4 flex list-disc flex-col gap-1 ps-5 text-sm">
         {children}
       </ul>
     ),
     ol: ({ children }) => (
-      <ol className="sm:text-md my-4 flex list-decimal flex-col gap-1 ps-5 text-xs">
+      <ol className="sm:text-md my-4 flex list-decimal flex-col gap-1 ps-5 text-sm">
         {children}
       </ol>
     ),
