@@ -13,15 +13,24 @@ async function _generateLlmContent() {
 
   const blogContent = blogs
     .map((blog) => {
-      if (blog.description === null) {
-        return `#### ${blog.title}`;
-      }
-      return `#### ${blog.title}\n${blog.description}`;
+      const url = `https://k8o.me/blog/${blog.slug}`;
+      const date = new Date(blog.createdAt).toISOString().slice(0, 10);
+      const tags = blog.tags.length > 0 ? ` [${blog.tags.join(', ')}]` : '';
+      const head =
+        blog.description === null
+          ? `#### ${blog.title}`
+          : `#### ${blog.title}\n${blog.description}`;
+      return `${head}\n${url} (${date})${tags}`;
     })
     .join('\n\n');
 
   const talkContent = talks
-    .map((talk) => `#### ${talk.title}\n${talk.eventName}（${talk.eventDate}）`)
+    .map((talk) => {
+      const links = talk.slideUrl
+        ? `${talk.eventUrl}\n${talk.slideUrl}`
+        : talk.eventUrl;
+      return `#### ${talk.title}\n${talk.eventName}（${talk.eventDate}）\n${links}`;
+    })
     .join('\n\n');
 
   const dynamicContent = new Map<string, string>([
