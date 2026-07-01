@@ -82,6 +82,10 @@ export const annotateTransformer = (): ShikiTransformer => ({
     }
   },
   pre(node): Element {
+    const { lang } = this.options;
+    if (lang !== '' && lang !== 'text' && lang !== 'plaintext') {
+      node.properties['data-lang'] = lang;
+    }
     return {
       type: 'element',
       tagName: 'div',

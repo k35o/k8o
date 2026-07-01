@@ -83,5 +83,60 @@
       border-inline-end: 0.5em solid transparent;
       border-block-end: 0.5em solid rgb(80 140 220);
     }
+
+    /* コードブロックは常に暗背景（shiki plastic）なので、ツールバーは
+       テーマトークンではなく固定の淡色にしてコントラストを担保する */
+    :scope {
+      position: relative;
+    }
+
+    .code-annotate-toolbar {
+      position: absolute;
+      inset-block-start: 0.5rem;
+      inset-inline-end: 0.5rem;
+      z-index: 1;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      opacity: 0.55;
+      transition: opacity 0.15s ease;
+    }
+
+    :scope:hover .code-annotate-toolbar,
+    :scope:focus-within .code-annotate-toolbar {
+      opacity: 1;
+    }
+
+    .code-annotate-lang {
+      font-size: 0.75rem;
+      line-height: 1;
+      color: rgb(169 178 195);
+      text-transform: lowercase;
+      user-select: none;
+    }
+
+    .code-annotate-copy {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0.35rem;
+      border-radius: 0.4rem;
+      color: rgb(169 178 195);
+      background-color: rgb(255 255 255 / 0.08);
+      cursor: pointer;
+      transition:
+        color 0.15s ease,
+        background-color 0.15s ease;
+    }
+
+    .code-annotate-copy:hover {
+      color: rgb(255 255 255);
+      background-color: rgb(255 255 255 / 0.16);
+    }
+
+    .code-annotate-copy:focus-visible {
+      outline: 2px solid rgb(120 180 245);
+      outline-offset: 2px;
+    }
   }
 }
