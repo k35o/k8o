@@ -1,8 +1,4 @@
-import { OgImage } from '@/app/_components/og-image';
-import {
-  getBlogContent,
-  getBlogOgCode,
-} from '@/features/blog/interface/queries';
+import { renderBlogOgImage } from '@/app/blog/_components/blog-og-image';
 
 export const alt =
   'Web上のさまざまな表現同士の遷移を簡単にアニメーション化するView Transition API';
@@ -13,15 +9,6 @@ export const size = {
 
 export const contentType = 'image/png';
 
-export default async function Image() {
-  const [blog, ogCode] = await Promise.all([
-    getBlogContent('view-transitions'),
-    getBlogOgCode('view-transitions'),
-  ]);
-
-  return OgImage({
-    category: 'Blog',
-    title: blog.title,
-    code: ogCode ?? undefined,
-  });
+export default function Image() {
+  return renderBlogOgImage('view-transitions');
 }
