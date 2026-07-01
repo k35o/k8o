@@ -1,0 +1,1 @@
+ALTER TABLE `baseline_snapshots` ADD `browser_implementations` text;
