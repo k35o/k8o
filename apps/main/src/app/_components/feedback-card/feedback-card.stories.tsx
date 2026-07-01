@@ -21,14 +21,14 @@ type Story = StoryObj<typeof FeedbackCard>;
 export const Primary: Story = {
   args: {
     title: 'この記事はどうでしたか？',
-    onSubmit: fn(),
+    onSubmit: fn(() => Promise.resolve(true)),
   },
 };
 
 export const SelectFeedback: Story = {
   args: {
     title: 'この記事はどうでしたか？',
-    onSubmit: fn(() => Promise.resolve()),
+    onSubmit: fn(() => Promise.resolve(true)),
   },
   play: async ({ canvasElement, userEvent }) => {
     const canvas = within(canvasElement);
@@ -44,7 +44,7 @@ export const SelectFeedback: Story = {
 export const InputComment: Story = {
   args: {
     title: 'この記事はどうでしたか？',
-    onSubmit: fn(() => Promise.resolve()),
+    onSubmit: fn(() => Promise.resolve(true)),
   },
   play: async ({ canvasElement, userEvent }) => {
     const canvas = within(canvasElement);
@@ -60,7 +60,7 @@ export const InputComment: Story = {
 export const SubmitFeedback: Story = {
   args: {
     title: 'この記事はどうでしたか？',
-    onSubmit: fn(() => Promise.resolve()),
+    onSubmit: fn(() => Promise.resolve(true)),
   },
   play: async ({ canvasElement, userEvent, args }) => {
     const canvas = within(canvasElement);
@@ -75,5 +75,27 @@ export const SubmitFeedback: Story = {
     await userEvent.click(submitButton);
 
     await expect(args.onSubmit).toHaveBeenCalled();
+    await expect(
+      await canvas.findByText('フィードバックありがとうございます！'),
+    ).toBeInTheDocument();
+  },
+};
+
+export const SubmitFailureKeepsForm: Story = {
+  args: {
+    title: 'この記事はどうでしたか？',
+    onSubmit: fn(() => Promise.resolve(false)),
+  },
+  play: async ({ canvasElement, userEvent, args }) => {
+    const canvas = within(canvasElement);
+
+    await userEvent.click(canvas.getByRole('button', { name: '良い' }));
+    await userEvent.click(canvas.getByRole('button', { name: '送信' }));
+
+    await expect(args.onSubmit).toHaveBeenCalled();
+    // 送信失敗時はフォームを維持し、再送できるようにする
+    await expect(
+      await canvas.findByRole('button', { name: '送信' }),
+    ).toBeInTheDocument();
   },
 };

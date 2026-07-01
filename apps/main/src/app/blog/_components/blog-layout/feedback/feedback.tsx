@@ -19,6 +19,7 @@ export const Feedback: FC<{
         } else {
           onOpen('error', result.message);
         }
+        return result.success;
       }}
       title="この記事はどうでしたか？"
     />
