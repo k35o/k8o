@@ -1,10 +1,6 @@
 import { db } from '@repo/database';
+import type { BrowserImplementations } from '@repo/database/schema';
 import { eq } from 'drizzle-orm';
-
-type BrowserImplementations = Record<
-  string,
-  { version?: string; status?: string; date?: string }
->;
 
 type ApiFeature = {
   feature_id: string;
@@ -161,6 +157,19 @@ type SnapshotRow = {
   browserImplementations: BrowserImplementations | undefined;
 };
 
+// browser_implementations の差分検知はキー順に依存しないよう正規化して比較する。
+// DB 由来(JSON.parse)と webstatus API レスポンスでキー順が異なり得るため。
+const stableStringify = (value: unknown): string =>
+  JSON.stringify(value, (_key, v: unknown) =>
+    v !== null && typeof v === 'object' && !Array.isArray(v)
+      ? Object.fromEntries(
+          Object.entries(v as Record<string, unknown>).toSorted(([a], [b]) =>
+            a.localeCompare(b),
+          ),
+        )
+      : v,
+  );
+
 export async function syncBaseline(): Promise<SyncResult> {
   const [newlyFeatures, widelyFeatures] = await Promise.all([
     fetchAllFeatures('newly'),
@@ -201,8 +210,8 @@ export async function syncBaseline(): Promise<SyncResult> {
     const statusChanged = existing.status !== feature.status;
     // browser_implementations は status 変化が無くても更新され得るため差分で検知する。
     const implementationsChanged =
-      JSON.stringify(existing.browserImplementations ?? null) !==
-      JSON.stringify(row.browserImplementations ?? null);
+      stableStringify(existing.browserImplementations ?? null) !==
+      stableStringify(row.browserImplementations ?? null);
     if (statusChanged) {
       statusChanges.push({ feature, previousStatus: existing.status });
     }
