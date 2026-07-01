@@ -1,5 +1,4 @@
 import { GoogleAnalytics } from '@next/third-parties/google';
-import { cn } from '@repo/helpers/cn';
 
 import './_styles/globals.css';
 import '@repo/code-highlight/styles.css';
@@ -60,10 +59,7 @@ export default async function RootLayout({ children }: LayoutProps<'/'>) {
         <TrustedTypesInit />
       </head>
       <body
-        className={cn(
-          mPlus2.variable,
-          'bg-bg-surface font-m-plus-2 font-medium text-fg-base tracking-none antialiased',
-        )}
+        className={`${mPlus2.variable} bg-bg-surface font-m-plus-2 text-fg-base tracking-none font-medium antialiased`}
       >
         <AppProvider>
           <GlobalLayout minVersions={minVersions}>{children}</GlobalLayout>
