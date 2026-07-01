@@ -1,9 +1,16 @@
 'use client';
 
-import { TextField } from '@k8o/arte-odyssey';
+import { Spinner, TextField } from '@k8o/arte-odyssey';
 import type { Route } from 'next';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
-import { type ChangeEvent, type FC, useEffect, useRef, useState } from 'react';
+import {
+  type ChangeEvent,
+  type FC,
+  useEffect,
+  useRef,
+  useState,
+  useTransition,
+} from 'react';
 
 import { buildSearchString } from '@/shared/search-params';
 
@@ -21,6 +28,7 @@ export const SearchField: FC<Props> = ({
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
+  const [isPending, startTransition] = useTransition();
   const urlValue = searchParams.get(paramKey) ?? '';
   const [value, setValue] = useState(urlValue);
   const [prevUrlValue, setPrevUrlValue] = useState(urlValue);
@@ -53,19 +61,27 @@ export const SearchField: FC<Props> = ({
         [paramKey]: next,
         page: null,
       });
-      router.push(`${pathname}${qs}` as Route);
+      // transition でラップして、再フェッチ中も入力欄とフォーカスを保ったまま現在の一覧を
+      // 維持する（Suspense fallback への点滅を防ぐ）。入力は妨げず、横にスピナーで状態を示す。
+      startTransition(() => {
+        router.push(`${pathname}${qs}` as Route);
+      });
     }, DEBOUNCE_MS);
   };
 
   return (
-    <TextField
-      aria-label={placeholder}
-      onChange={handleChange}
-      placeholder={placeholder}
-      // ArteOdyssey の TextField は幅ユーティリティを持たないため、
-      // size 属性で実用的な横幅を確保する。
-      size={32}
-      value={value}
-    />
+    <div className="flex items-center gap-2">
+      <TextField
+        aria-busy={isPending}
+        aria-label={placeholder}
+        onChange={handleChange}
+        placeholder={placeholder}
+        // ArteOdyssey の TextField は幅ユーティリティを持たないため、
+        // size 属性で実用的な横幅を確保する。
+        size={32}
+        value={value}
+      />
+      {isPending ? <Spinner label="検索中" size="sm" /> : null}
+    </div>
   );
 };

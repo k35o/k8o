@@ -2,7 +2,7 @@ import { Suspense } from 'react';
 
 import { verifySession } from '@/shared/auth/verify-session';
 
-import { Studio } from './_components/studio';
+import { Studio, StudioSkeleton } from './_components/studio';
 
 // Sandbox プレビューの cold start（起動～配信確保）に数十秒かかることがあるため、
 // preview 系 server action がタイムアウトしないよう関数の上限を延ばす。
@@ -17,7 +17,7 @@ const AuthenticatedStudio = async () => {
 
 export default function Page() {
   return (
-    <Suspense fallback={null}>
+    <Suspense fallback={<StudioSkeleton />}>
       <AuthenticatedStudio />
     </Suspense>
   );

@@ -10,7 +10,7 @@ import { sb } from 'storybook/test';
 
 import { Background } from '../src/app/_components/global-layout/background/background';
 import { AppProvider } from '../src/app/_providers/app';
-import { mPlus2, notoSansJp } from '../src/app/_styles/font';
+import { mPlus2 } from '../src/app/_styles/font';
 import { handlers } from '../src/mocks/handlers';
 
 import '../src/app/_styles/globals.css';
@@ -61,10 +61,10 @@ const preview: Preview = {
   },
   loaders: [
     mswLoader,
-    // Noto Sans JPはfont-display: optionalのため、初回ペイントまでに
-    // ロードが間に合わないとそのページではフォールバック表示に固定され、
-    // VRTのスクリーンショットが二値的に揺れる。Story描画前に登録済み
-    // フォントをすべてロードして折り返し位置を決定的にする
+    // M PLUS 2はfont-display: swapのため、初回ペイントまでにロードが
+    // 間に合わないとフォールバック表示になり、VRTのスクリーンショットが
+    // 揺れる。Story描画前に登録済みフォントをすべてロードして折り返し
+    // 位置を決定的にする
     async () => {
       await Promise.all(
         [...document.fonts].map((font) => font.load().catch(() => undefined)),
@@ -102,7 +102,6 @@ const preview: Preview = {
           <Script id="storybook-body-class">
             {`document.body.classList.add(${cn(
               mPlus2.variable,
-              notoSansJp.variable,
               'text-fg-base font-medium font-m-plus-2',
             )
               .split(' ')

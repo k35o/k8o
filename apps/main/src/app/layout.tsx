@@ -1,4 +1,5 @@
 import { GoogleAnalytics } from '@next/third-parties/google';
+import { cn } from '@repo/helpers/cn';
 
 import './_styles/globals.css';
 import '@repo/code-highlight/styles.css';
@@ -12,7 +13,7 @@ import { GlobalLayout } from './_components/global-layout';
 import { ServiceWorkerRegister } from './_components/service-worker-register';
 import { TrustedTypesInit } from './_components/trusted-types-init';
 import { AppProvider } from './_providers/app';
-import { mPlus2, notoSansJp } from './_styles/font';
+import { mPlus2 } from './_styles/font';
 
 export const metadata = {
   metadataBase: new URL('https://k8o.me'),
@@ -59,7 +60,10 @@ export default async function RootLayout({ children }: LayoutProps<'/'>) {
         <TrustedTypesInit />
       </head>
       <body
-        className={`${mPlus2.variable} ${notoSansJp.variable} bg-bg-surface font-m-plus-2 text-fg-base tracking-none font-medium antialiased`}
+        className={cn(
+          mPlus2.variable,
+          'bg-bg-surface font-m-plus-2 font-medium text-fg-base tracking-none antialiased',
+        )}
       >
         <AppProvider>
           <GlobalLayout minVersions={minVersions}>{children}</GlobalLayout>
