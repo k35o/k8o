@@ -17,6 +17,14 @@
       "types": "./src/array/shuffle.ts",
       "default": "./src/array/shuffle.ts"
     },
+    "./browser/detect-browser": {
+      "types": "./src/browser/detect-browser.ts",
+      "default": "./src/browser/detect-browser.ts"
+    },
+    "./browser/baseline-support": {
+      "types": "./src/browser/baseline-support.ts",
+      "default": "./src/browser/baseline-support.ts"
+    },
     "./cn": {
       "types": "./src/cn.ts",
       "default": "./src/cn.ts"
