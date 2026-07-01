@@ -11,3 +11,18 @@ export default meta;
 type Story = StoryObj<typeof GlobalLayout>;
 
 export const Primary: Story = {};
+
+// 古いブラウザ判定時: 最上部に常時バナー、ヘッダーに警告マークが出る。
+export const OutdatedBrowser: Story = {
+  args: {
+    minVersions: {
+      chrome: '9999',
+      chrome_android: '9999',
+      edge: '9999',
+      firefox: '9999',
+      firefox_android: '9999',
+      safari: '9999',
+      safari_ios: '9999',
+    },
+  },
+};
