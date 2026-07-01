@@ -1,5 +1,7 @@
 import { db } from '@repo/database';
 import type { BrowserImplementations } from '@repo/database/schema';
+import { computeMinVersions } from '@repo/helpers/browser/baseline-support';
+import { CORE_BROWSERS } from '@repo/helpers/browser/detect-browser';
 import { eq } from 'drizzle-orm';
 
 type ApiFeature = {
@@ -242,5 +244,45 @@ export async function syncBaseline(): Promise<SyncResult> {
     );
   }
 
+  await syncBrowserSupport(allFeatures);
+
   return { newFeatures, statusChanges };
+}
+
+// アプリが動作保証する各ブラウザの最低版を、全 Baseline 機能から算出して upsert する。
+// フロアは公開サイトの警告と admin 表示が参照する。
+async function syncBrowserSupport(features: ApiFeature[]): Promise<void> {
+  const minVersions = computeMinVersions(
+    features
+      .map((f) => f.browser_implementations)
+      .filter((impl): impl is BrowserImplementations => impl !== undefined),
+  );
+
+  // 算出できたブラウザだけを書き込む。webstatus の一時的な異常応答(空データ等)で
+  // minVersions が空になったとき、既存フロアを null で潰さないようスキップする。
+  const now = new Date().toISOString();
+  const rows = CORE_BROWSERS.filter(
+    (browser) => minVersions[browser] !== undefined,
+  ).map((browser) => ({
+    browser,
+    version: minVersions[browser] ?? null,
+    updatedAt: now,
+  }));
+  if (rows.length === 0) {
+    return;
+  }
+
+  await db.transaction((tx) =>
+    Promise.all(
+      rows.map((row) =>
+        tx
+          .insert(db._schema.browserSupport)
+          .values(row)
+          .onConflictDoUpdate({
+            target: db._schema.browserSupport.browser,
+            set: { version: row.version, updatedAt: row.updatedAt },
+          }),
+      ),
+    ),
+  );
 }

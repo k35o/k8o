@@ -17,6 +17,7 @@ import {
 
 import { BaselineSnapshotList } from '../baseline-snapshot-list';
 import { BaselineSnapshotStats } from '../baseline-snapshot-stats';
+import { BrowserSupportCard } from '../browser-support-card';
 
 const PAGE_SIZE = 20;
 
@@ -52,6 +53,8 @@ export const BaselineContent = async ({
   return (
     <>
       <BaselineSnapshotStats />
+
+      <BrowserSupportCard />
 
       <section className="flex flex-col gap-4">
         <SectionHeader title="スナップショット一覧" />

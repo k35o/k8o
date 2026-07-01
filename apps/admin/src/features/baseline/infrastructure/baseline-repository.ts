@@ -79,3 +79,22 @@ export const findBaselineSnapshots = async ({
 
   return { items, total };
 };
+
+export type BrowserSupportRecord = {
+  browser: string;
+  version: string | null;
+  updatedAt: string;
+};
+
+export const fetchBrowserSupport = async (): Promise<
+  BrowserSupportRecord[]
+> => {
+  const rows = await db
+    .select({
+      browser: db._schema.browserSupport.browser,
+      version: db._schema.browserSupport.version,
+      updatedAt: db._schema.browserSupport.updatedAt,
+    })
+    .from(db._schema.browserSupport);
+  return rows;
+};
