@@ -1,11 +1,11 @@
 import { GoogleAnalytics } from '@next/third-parties/google';
-import { cn } from '@repo/helpers/cn';
 
 import './_styles/globals.css';
 import '@repo/code-highlight/styles.css';
 import { Analytics } from '@vercel/analytics/react';
 import type { Metadata } from 'next';
 
+import { getBaselineMinVersions } from '@/features/baseline/interface/queries';
 import { ReactScan } from '@/shared/browser/react-scan';
 
 import { GlobalLayout } from './_components/global-layout';
@@ -49,7 +49,9 @@ export const metadata = {
   },
 } satisfies Metadata;
 
-export default function RootLayout({ children }: LayoutProps<'/'>) {
+export default async function RootLayout({ children }: LayoutProps<'/'>) {
+  const minVersions = await getBaselineMinVersions();
+
   return (
     <html lang="ja" suppressHydrationWarning>
       {process.env['NODE_ENV'] === 'development' && <ReactScan />}
@@ -57,13 +59,10 @@ export default function RootLayout({ children }: LayoutProps<'/'>) {
         <TrustedTypesInit />
       </head>
       <body
-        className={cn(
-          mPlus2.variable,
-          'bg-bg-surface font-m-plus-2 font-medium text-fg-base tracking-none antialiased',
-        )}
+        className={`${mPlus2.variable} bg-bg-surface font-m-plus-2 text-fg-base tracking-none font-medium antialiased`}
       >
         <AppProvider>
-          <GlobalLayout>{children}</GlobalLayout>
+          <GlobalLayout minVersions={minVersions}>{children}</GlobalLayout>
         </AppProvider>
         <ServiceWorkerRegister />
         <Analytics />

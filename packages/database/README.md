@@ -132,6 +132,7 @@ erDiagram
     text name
     text status
     text date
+    text browser_implementations
     text created_at
     text updated_at
   }
