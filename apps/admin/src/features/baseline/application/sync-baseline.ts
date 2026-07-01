@@ -1,6 +1,11 @@
 import { db } from '@repo/database';
 import { eq } from 'drizzle-orm';
 
+type BrowserImplementations = Record<
+  string,
+  { version?: string; status?: string; date?: string }
+>;
+
 type ApiFeature = {
   feature_id: string;
   name: string;
@@ -9,6 +14,7 @@ type ApiFeature = {
     low_date: string;
     high_date?: string;
   };
+  browser_implementations?: BrowserImplementations;
 };
 
 type ApiResponse = {
@@ -83,6 +89,13 @@ const isApiFeature = (value: unknown): value is ApiFeature => {
     typeof baseline.high_date !== 'string'
   )
     return false;
+  if (
+    'browser_implementations' in value &&
+    value.browser_implementations !== undefined &&
+    (typeof value.browser_implementations !== 'object' ||
+      value.browser_implementations === null)
+  )
+    return false;
   return true;
 };
 
@@ -140,21 +153,28 @@ const toBaselineFeature = (feature: ApiFeature): BaselineFeature => ({
       : feature.baseline.low_date,
 });
 
+type SnapshotRow = {
+  featureId: string;
+  name: string;
+  status: 'newly' | 'widely';
+  date: string;
+  browserImplementations: BrowserImplementations | undefined;
+};
+
 export async function syncBaseline(): Promise<SyncResult> {
   const [newlyFeatures, widelyFeatures] = await Promise.all([
     fetchAllFeatures('newly'),
     fetchAllFeatures('widely'),
   ]);
 
-  const allFeatures = [
-    ...newlyFeatures.map((feature) => toBaselineFeature(feature)),
-    ...widelyFeatures.map((feature) => toBaselineFeature(feature)),
-  ];
+  const allFeatures = [...newlyFeatures, ...widelyFeatures];
 
   const existingSnapshots = await db
     .select({
       featureId: db._schema.baselineSnapshots.featureId,
       status: db._schema.baselineSnapshots.status,
+      browserImplementations:
+        db._schema.baselineSnapshots.browserImplementations,
     })
     .from(db._schema.baselineSnapshots);
   const existingByFeatureId = new Map(
@@ -163,40 +183,31 @@ export async function syncBaseline(): Promise<SyncResult> {
 
   const newFeatures: BaselineFeature[] = [];
   const statusChanges: SyncResult['statusChanges'] = [];
-  const toInsert: Array<{
-    featureId: string;
-    name: string;
-    status: 'newly' | 'widely';
-    date: string;
-  }> = [];
-  const toUpdate: Array<{
-    featureId: string;
-    name: string;
-    status: 'newly' | 'widely';
-    date: string;
-  }> = [];
+  const toInsert: SnapshotRow[] = [];
+  const toUpdate: SnapshotRow[] = [];
 
-  for (const feature of allFeatures) {
+  for (const apiFeature of allFeatures) {
+    const feature = toBaselineFeature(apiFeature);
+    const row: SnapshotRow = {
+      ...feature,
+      browserImplementations: apiFeature.browser_implementations,
+    };
     const existing = existingByFeatureId.get(feature.featureId);
     if (!existing) {
       newFeatures.push(feature);
-      toInsert.push({
-        featureId: feature.featureId,
-        name: feature.name,
-        status: feature.status,
-        date: feature.date,
-      });
-    } else if (existing.status !== feature.status) {
-      statusChanges.push({
-        feature,
-        previousStatus: existing.status,
-      });
-      toUpdate.push({
-        featureId: feature.featureId,
-        name: feature.name,
-        status: feature.status,
-        date: feature.date,
-      });
+      toInsert.push(row);
+      continue;
+    }
+    const statusChanged = existing.status !== feature.status;
+    // browser_implementations は status 変化が無くても更新され得るため差分で検知する。
+    const implementationsChanged =
+      JSON.stringify(existing.browserImplementations ?? null) !==
+      JSON.stringify(row.browserImplementations ?? null);
+    if (statusChanged) {
+      statusChanges.push({ feature, previousStatus: existing.status });
+    }
+    if (statusChanged || implementationsChanged) {
+      toUpdate.push(row);
     }
   }
 
@@ -214,6 +225,7 @@ export async function syncBaseline(): Promise<SyncResult> {
               status: item.status,
               date: item.date,
               name: item.name,
+              browserImplementations: item.browserImplementations,
             })
             .where(eq(db._schema.baselineSnapshots.featureId, item.featureId)),
         ),
