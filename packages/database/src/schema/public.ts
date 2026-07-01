@@ -11,4 +11,5 @@ export {
   ARTICLE_SOURCE_TYPES,
   type ArticleSourceType,
 } from './article-sources';
+export type { BrowserImplementations } from './baseline-snapshots';
 export type { PushLogKind } from './push-logs';

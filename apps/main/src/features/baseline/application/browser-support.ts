@@ -1,12 +1,10 @@
-import 'server-only';
-import { db } from '@repo/database';
 import { compareVersions } from '@repo/helpers/browser/baseline-support';
 import type {
   BaselineBrowser,
   BaselineMinVersions,
 } from '@repo/helpers/browser/detect-browser';
-import { inArray } from 'drizzle-orm';
 
+import { findBrowserImplementationsByFeatureIds } from '../infrastructure/baseline-snapshot-repository';
 import { getFeatureBlogMap } from './feature-blog-map';
 
 const CORE_BROWSERS: BaselineBrowser[] = [
@@ -29,19 +27,11 @@ export async function getBaselineMinVersions(): Promise<BaselineMinVersions> {
     return {};
   }
 
-  const rows = await db
-    .select({
-      browserImplementations:
-        db._schema.baselineSnapshots.browserImplementations,
-    })
-    .from(db._schema.baselineSnapshots)
-    .where(inArray(db._schema.baselineSnapshots.featureId, featureIds));
+  const implementations =
+    await findBrowserImplementationsByFeatureIds(featureIds);
 
   const minVersions: BaselineMinVersions = {};
-  for (const { browserImplementations } of rows) {
-    if (!browserImplementations) {
-      continue;
-    }
+  for (const browserImplementations of implementations) {
     for (const browser of CORE_BROWSERS) {
       const impl = browserImplementations[browser];
       if (
