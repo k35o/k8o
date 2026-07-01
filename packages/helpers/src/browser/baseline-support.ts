@@ -1,4 +1,15 @@
-import type { BaselineMinVersions, DetectedBrowser } from './detect-browser';
+import {
+  CORE_BROWSERS,
+  type BaselineMinVersions,
+  type DetectedBrowser,
+} from './detect-browser';
+
+// webstatus.dev 由来の browser_implementations と同じ構造。DB 型に依存しないよう
+// helpers 内で再定義し、この層をアプリ非依存に保つ。
+export type BrowserImplementationMap = Record<
+  string,
+  { version?: string; status?: string; date?: string }
+>;
 
 const NUMERIC_SEGMENT = /^\d+$/u;
 
@@ -38,6 +49,31 @@ export const isBrowserOutdated = (
     return false;
   }
   return compareVersions(detected.version, min) < 0;
+};
+
+// 与えられた機能群(browser_implementations の配列)について、コアブラウザごとに
+// status==='available' な version の最大値を取る。= その機能群がすべて動く最低版。
+export const computeMinVersions = (
+  implementations: readonly BrowserImplementationMap[],
+): BaselineMinVersions => {
+  const minVersions: BaselineMinVersions = {};
+  for (const impls of implementations) {
+    for (const browser of CORE_BROWSERS) {
+      const impl = impls[browser];
+      if (
+        impl?.status !== 'available' ||
+        impl.version === undefined ||
+        impl.version === ''
+      ) {
+        continue;
+      }
+      const current = minVersions[browser];
+      if (current === undefined || compareVersions(impl.version, current) > 0) {
+        minVersions[browser] = impl.version;
+      }
+    }
+  }
+  return minVersions;
 };
 
 if (import.meta.vitest) {
@@ -115,6 +151,60 @@ if (import.meta.vitest) {
             minVersions,
           ),
         ).toBe(false);
+      });
+    });
+  });
+
+  describe('computeMinVersions', () => {
+    describe('正常系', () => {
+      it('機能ごとに各ブラウザの対応版の最大値を取る', () => {
+        const result = computeMinVersions([
+          {
+            chrome: { status: 'available', version: '120' },
+            safari: { status: 'available', version: '17.2' },
+          },
+          {
+            chrome: { status: 'available', version: '143' },
+            safari: { status: 'available', version: '17.0' },
+          },
+        ]);
+        expect(result).toEqual({ chrome: '143', safari: '17.2' });
+      });
+    });
+
+    describe('異常系・エッジケース', () => {
+      it('status が available でない実装は無視する', () => {
+        const result = computeMinVersions([
+          {
+            chrome: { status: 'unavailable', version: '150' },
+            firefox: { status: 'available', version: '146' },
+          },
+        ]);
+        expect(result).toEqual({ firefox: '146' });
+      });
+
+      it('version が無い/空の実装は無視する', () => {
+        const result = computeMinVersions([
+          {
+            chrome: { status: 'available' },
+            edge: { status: 'available', version: '' },
+          },
+        ]);
+        expect(result).toEqual({});
+      });
+
+      it('コア7ブラウザ以外のキーは対象外とする', () => {
+        const result = computeMinVersions([
+          {
+            opera: { status: 'available', version: '106' },
+            chrome: { status: 'available', version: '120' },
+          },
+        ]);
+        expect(result).toEqual({ chrome: '120' });
+      });
+
+      it('空配列なら空を返す', () => {
+        expect(computeMinVersions([])).toEqual({});
       });
     });
   });
