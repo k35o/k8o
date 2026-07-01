@@ -1,20 +1,11 @@
 import { Dialog, Modal } from '@k8o/arte-odyssey';
-import type {
-  BaselineBrowser,
-  BaselineMinVersions,
-  DetectedBrowser,
+import {
+  BROWSER_LABELS,
+  type BaselineBrowser,
+  type BaselineMinVersions,
+  type DetectedBrowser,
 } from '@repo/helpers/browser/detect-browser';
 import type { FC } from 'react';
-
-const BROWSER_LABELS: Record<BaselineBrowser, string> = {
-  chrome: 'Chrome',
-  chrome_android: 'Chrome (Android)',
-  edge: 'Edge',
-  firefox: 'Firefox',
-  firefox_android: 'Firefox (Android)',
-  safari: 'Safari',
-  safari_ios: 'Safari (iOS)',
-};
 
 // モバイル版はデスクトップと同じバージョンになるため、一覧はデスクトップのみ表示する。
 const BROWSER_ORDER: BaselineBrowser[] = [

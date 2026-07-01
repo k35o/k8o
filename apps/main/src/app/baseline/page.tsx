@@ -1,9 +1,7 @@
 import { Anchor } from '@k8o/arte-odyssey';
 
-import {
-  getBaselineFeatures,
-  getFeatureBlogMap,
-} from '@/features/baseline/interface/queries';
+import { getBaselineFeatures } from '@/features/baseline/interface/queries';
+import { getFeatureBlogMap } from '@/features/blog/interface/queries';
 
 import { BaselineFeatureList } from './_components';
 

@@ -14,6 +14,28 @@ export type DetectedBrowser = {
   version: string;
 };
 
+// Baseline のコア7ブラウザ。警告判定とサポート最低版の算出で共通の対象集合とする。
+export const CORE_BROWSERS: readonly BaselineBrowser[] = [
+  'chrome',
+  'chrome_android',
+  'edge',
+  'firefox',
+  'firefox_android',
+  'safari',
+  'safari_ios',
+];
+
+// ブラウザキー→表示名。main の警告モーダルと admin の一覧で共通利用する。
+export const BROWSER_LABELS: Record<BaselineBrowser, string> = {
+  chrome: 'Chrome',
+  chrome_android: 'Chrome (Android)',
+  edge: 'Edge',
+  firefox: 'Firefox',
+  firefox_android: 'Firefox (Android)',
+  safari: 'Safari',
+  safari_ios: 'Safari (iOS)',
+};
+
 // SamsungBrowser/Opera など Chromium/Gecko 派生ブラウザは Baseline のコア7ブラウザに
 // 含まれないため、誤検出を避けて警告対象から外す。
 const DOWNSTREAM_PATTERN =

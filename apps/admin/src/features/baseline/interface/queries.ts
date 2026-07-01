@@ -4,6 +4,7 @@ import {
   type FindBaselineSnapshotsParams,
   type FindBaselineSnapshotsResult,
   fetchBaselineSnapshotStats,
+  fetchBrowserSupport,
   findBaselineSnapshots,
 } from '../infrastructure/baseline-repository';
 
@@ -25,7 +26,16 @@ export const getBaselineSnapshots = async (
   return result;
 };
 
+export const getBrowserSupport = async () => {
+  'use cache';
+  cacheLife('minutes');
+
+  const support = await fetchBrowserSupport();
+  return support;
+};
+
 export type {
   BaselineSnapshotRecord,
   BaselineStatus,
+  BrowserSupportRecord,
 } from '../infrastructure/baseline-repository';

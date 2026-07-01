@@ -9,6 +9,7 @@ import {
   getBlogsByTags as _getBlogsByTags,
   getBlogs,
 } from '@/features/blog/application/blogs';
+import { getFeatureBlogMap as _getFeatureBlogMap } from '@/features/blog/application/feature-blog-map';
 import { getBlogOgCode as _getBlogOgCode } from '@/features/blog/application/og-code';
 import { estimateReadingTimeMinutes } from '@/features/blog/application/reading-time';
 
@@ -92,3 +93,13 @@ export async function getBlogReadingTime(slug: string): Promise<number> {
   const markdown = await getMarkdown(slug);
   return estimateReadingTimeMinutes(markdown);
 }
+
+export async function getFeatureBlogMap() {
+  'use cache';
+  cacheLife('max');
+
+  const featureBlogMap = await _getFeatureBlogMap();
+  return featureBlogMap;
+}
+
+export type { BlogLink } from '@/features/blog/application/feature-blog-map';

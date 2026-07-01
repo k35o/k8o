@@ -159,6 +159,11 @@ erDiagram
     integer published
     text created_at
   }
+  browser_support {
+    text browser PK
+    text version
+    text updated_at
+  }
   comments {
     integer id PK
     text message
