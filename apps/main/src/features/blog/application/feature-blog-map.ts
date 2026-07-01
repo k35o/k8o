@@ -1,5 +1,5 @@
-import { getBlogMetadata } from '@/features/blog/application/blog';
-import { getBlogs } from '@/features/blog/application/blogs';
+import { getBlogMetadata } from './blog';
+import { getBlogs } from './blogs';
 
 export type BlogLink = {
   slug: string;
