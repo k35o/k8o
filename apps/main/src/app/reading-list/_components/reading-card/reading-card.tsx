@@ -5,6 +5,15 @@ import type { FC } from 'react';
 import { ReadingCardBody } from './body';
 import { ReadingCardImage } from './image';
 
+// 多層防御: DB に不正なスキームの URL が混入しても javascript: 等をリンク化しない
+const isHttpUrl = (value: string): boolean => {
+  if (!URL.canParse(value)) {
+    return false;
+  }
+  const { protocol } = new URL(value);
+  return protocol === 'https:' || protocol === 'http:';
+};
+
 export type ReadingCardProps = {
   articleId: number;
   url: string;
@@ -37,14 +46,18 @@ export const ReadingCard: FC<ReadingCardProps> = ({
             <p className="text-md vertical:block vertical:max-block-[8em] vertical:overflow-hidden line-clamp-2 font-bold">
               {/* タイトルをリンク化し ::after でカード全体を当たり判定にする
                   （空 anchor + aria-label によるタイトルの二重読みを回避） */}
-              <a
-                className="after:absolute after:inset-0"
-                href={url}
-                rel="noopener noreferrer"
-                target="_blank"
-              >
-                {title}
-              </a>
+              {isHttpUrl(url) ? (
+                <a
+                  className="after:absolute after:inset-0"
+                  href={url}
+                  rel="noopener noreferrer"
+                  target="_blank"
+                >
+                  {title}
+                </a>
+              ) : (
+                title
+              )}
             </p>
             <ReadingCardBody
               articleId={articleId}
