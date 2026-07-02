@@ -6,6 +6,10 @@ import {
   type ArticleSourceType,
 } from '../infrastructure/reading-list-repository';
 
+// フィード取得(safeFetch)と公開ページでの描画の両方で https 前提のため、入力時点で限定する
+const isHttpsUrl = (value: string): boolean =>
+  URL.canParse(value) && new URL(value).protocol === 'https:';
+
 type ParseResult =
   | { ok: true; data: ArticleSourceInput }
   | { ok: false; error: string };
@@ -27,8 +31,8 @@ export const parseSourceFormData = (formData: FormData): ParseResult => {
     return { ok: false, error: 'タイプはfeedまたはmanualを指定してください' };
   }
 
-  if (!URL.canParse(url) || !URL.canParse(siteUrl)) {
-    return { ok: false, error: '有効なURLを入力してください' };
+  if (!(isHttpsUrl(url) && isHttpsUrl(siteUrl))) {
+    return { ok: false, error: '有効なURL(https)を入力してください' };
   }
 
   return { ok: true, data: { title, url, siteUrl, type } };

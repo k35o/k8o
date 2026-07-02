@@ -6,6 +6,10 @@ import type {
   ArticleUpdateInput,
 } from '../infrastructure/reading-list-repository';
 
+// 公開ページで href として描画されるため、javascript: 等を拒否して https に限定する
+const isHttpsUrl = (value: string): boolean =>
+  URL.canParse(value) && new URL(value).protocol === 'https:';
+
 type CreateResult =
   | { ok: true; data: ArticleInput }
   | { ok: false; error: string };
@@ -32,8 +36,8 @@ export const parseArticleCreateFormData = (
   if (!isYmdDate(publishedAt)) {
     return { ok: false, error: '公開日は YYYY-MM-DD 形式で入力してください' };
   }
-  if (!URL.canParse(url)) {
-    return { ok: false, error: '有効なURLを入力してください' };
+  if (!isHttpsUrl(url)) {
+    return { ok: false, error: '有効なURL(https)を入力してください' };
   }
 
   return {
@@ -62,8 +66,8 @@ export const parseArticleUpdateFormData = (
   if (!isYmdDate(publishedAt)) {
     return { ok: false, error: '公開日は YYYY-MM-DD 形式で入力してください' };
   }
-  if (!URL.canParse(url)) {
-    return { ok: false, error: '有効なURLを入力してください' };
+  if (!isHttpsUrl(url)) {
+    return { ok: false, error: '有効なURL(https)を入力してください' };
   }
 
   return {
