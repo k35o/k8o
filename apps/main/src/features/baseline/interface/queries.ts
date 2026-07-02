@@ -20,4 +20,3 @@ export async function getBaselineMinVersions() {
 }
 
 export type { BaselineFeature } from '@/features/baseline/application/baseline';
-export type { BaselineMinVersions } from '@repo/helpers/browser/detect-browser';

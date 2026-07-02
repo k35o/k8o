@@ -37,5 +37,4 @@ export const getBrowserSupport = async () => {
 export type {
   BaselineSnapshotRecord,
   BaselineStatus,
-  BrowserSupportRecord,
 } from '../infrastructure/baseline-repository';
