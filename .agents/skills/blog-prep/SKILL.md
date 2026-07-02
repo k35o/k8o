@@ -111,6 +111,17 @@ export default function Layout({ children }: LayoutProps<'/blog/my-article'>) {
 }
 ```
 
+#### 数式（KaTeX）を使う記事の場合
+
+数式の変換（remark-math + rehype-katex）は `next.config.ts` で全記事に効いているため、本文では `$...$`・`$$...$$`・` ```math ` フェンスがそのまま使える。ただし **KaTeX の CSS はグローバルには読み込まれない**（数式を使わない記事に配信しないため）。数式を使う記事は `layout.tsx` の先頭に以下の 2 行を追加する:
+
+```typescript
+import 'katex/dist/katex.min.css';
+import '@/app/blog/_styles/katex-vertical.css';
+```
+
+忘れると `.katex-mathml` が隠れず**数式が二重表示に崩れる**。既存の例: `apps/main/src/app/blog/(articles)/font-family-math/layout.tsx`。
+
 ### 3. opengraph-image.tsx
 
 ```typescript
@@ -238,6 +249,7 @@ grep -rhoE "INSERT INTO tags [^;]*'[^']+'" packages/database/migrations/*.sql \
 
 - [ ] `page.mdx` 雛形作成
 - [ ] `layout.tsx` 作成
+- [ ] 数式（`$`・`$$`・` ```math `）を使う場合: `layout.tsx` に KaTeX CSS を import
 - [ ] `opengraph-image.tsx` 作成
 - [ ] Playgroundコンポーネント作成（必要な場合）
 - [ ] Storybookストーリー作成（必要な場合）
