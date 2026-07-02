@@ -9,8 +9,8 @@ type ActionResult = {
   error?: string;
 };
 
-// 公開ページから呼ばれる。認証は無いが、冪等（summary 済みは再生成しない）なので
-// 1記事あたりの生成コストは最大1回に抑えられる。
+// 公開ページから呼ばれる。認証は無いが、生成前に DB で試行回数を予約するため、
+// 並列リクエストでも1記事あたりの生成は MAX_SUMMARY_ATTEMPTS 回が上限になる。
 export async function generateArticleSummary(
   id: number,
 ): Promise<ActionResult> {
