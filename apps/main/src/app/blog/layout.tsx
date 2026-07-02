@@ -14,6 +14,11 @@ import './_styles/katex-vertical.css';
 export const metadata = {
   title: 'Blog',
   description: 'Webフロントエンドを中心に、日々のことも書いています。',
+  alternates: {
+    types: {
+      'application/rss+xml': 'https://k8o.me/blog/feed',
+    },
+  },
   openGraph: {
     title: 'Blog',
     description: 'Webフロントエンドを中心に、日々のことも書いています。',

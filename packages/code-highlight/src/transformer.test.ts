@@ -36,6 +36,14 @@ const lineElements = (tree: Root): Element[] => {
   );
 };
 
+const preElement = (tree: Root): Element | undefined => {
+  const wrapper = tree.children.find(
+    (child): child is Element =>
+      child.type === 'element' && child.tagName === 'div',
+  );
+  return wrapper && findElement(wrapper.children, 'pre');
+};
+
 const classListOf = (node: Element | undefined): string[] => {
   if (!node) return [];
   const raw = node.properties['class'];
@@ -99,6 +107,12 @@ describe('annotateTransformer', () => {
       const lines = lineElements(tree);
 
       expect(classListOf(lines[1])).not.toContain('code-annotate-highlight');
+    });
+
+    it('pre 要素に言語を data-lang として付与する', async () => {
+      const tree = await toHast('const x = 1;');
+
+      expect(preElement(tree)?.properties['data-lang']).toBe('js');
     });
   });
 

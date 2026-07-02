@@ -23,7 +23,9 @@ async function generateRssFeed() {
       title: blog.title,
       description: blog.description ?? '',
       url: `${BLOG_URL}/${blog.slug}`,
-      date: blog.updatedAt,
+      guid: `${BLOG_URL}/${blog.slug}`,
+      // pubDate は公開日にする。更新のたびに新着として再浮上させない
+      date: blog.createdAt,
       categories: blog.tags,
     })),
   });
