@@ -10,6 +10,10 @@ import { mPlus2, notoSansJp } from './_styles/font';
 export const metadata = {
   title: 'k8o Admin',
   description: 'k8o 管理サイト',
+  robots: {
+    index: false,
+    follow: false,
+  },
 } satisfies Metadata;
 
 export default function RootLayout({ children }: { children: ReactNode }) {

@@ -51,6 +51,7 @@ export const metadata = {
 
 export default async function RootLayout({ children }: LayoutProps<'/'>) {
   const minVersions = await getBaselineMinVersions();
+  const gaId = process.env['NEXT_PUBLIC_GOOGLE_ANALYTICS_ID'];
 
   return (
     <html lang="ja" suppressHydrationWarning>
@@ -66,9 +67,7 @@ export default async function RootLayout({ children }: LayoutProps<'/'>) {
         </AppProvider>
         <ServiceWorkerRegister />
         <Analytics />
-        <GoogleAnalytics
-          gaId={process.env['NEXT_PUBLIC_GOOGLE_ANALYTICS_ID'] ?? ''}
-        />
+        {gaId !== undefined && gaId !== '' && <GoogleAnalytics gaId={gaId} />}
       </body>
     </html>
   );
