@@ -1,20 +1,31 @@
 #!/bin/bash
 
+set -euo pipefail
+
 filter_pnpm_noise() {
-  grep -v '^ *>' | grep -v 'ELIFECYCLE'
+  grep -v '^ *>' | grep -v 'ELIFECYCLE' || true
 }
 
+stdout_file=$(mktemp)
+stderr_file=$(mktemp)
+trap 'rm -f "${stdout_file}" "${stderr_file}"' EXIT
+
+# reporterは指定順に実行される。symbols(default)はconfiguration hintsをstderrに、
+# markdownはレポート本文をstdoutに出すため、1回の実行で両方を取得できる。
+# stdout上のsymbols出力とmarkdown出力は "# Knip report" 行を境に分割する
 set +e
-markdown_output=$(pnpm knip --reporter markdown 2>&1 | filter_pnpm_noise)
-default_output=$(pnpm knip 2>&1 | filter_pnpm_noise)
+pnpm knip --reporter symbols --reporter markdown >"${stdout_file}" 2>"${stderr_file}"
 exit_code=$?
 set -e
 
 # exit code 2以上は実行エラーとして失敗させる
 if [[ "${exit_code}" -ge 2 ]]; then
-  echo "${default_output}"
+  filter_pnpm_noise <"${stdout_file}"
+  filter_pnpm_noise <"${stderr_file}"
   exit "${exit_code}"
 fi
+
+markdown_output=$(sed -n '/^# Knip report$/,$p' "${stdout_file}" | filter_pnpm_noise)
 
 # markdown reporterの出力が "# Knip report" のみなら問題なし
 stripped=$(echo "${markdown_output}" | sed '/^$/d' | sed 's/^[[:space:]]*//')
@@ -24,8 +35,8 @@ else
   has_issues=true
 fi
 
-# config-hintsの抽出
-config_hints=$(echo "${default_output}" | sed -n '/^Configuration hints/,/^$/p')
+# config-hintsの抽出（symbols reporterがstderrに出力する）
+config_hints=$(sed -n '/^Configuration hints/,/^$/p' "${stderr_file}")
 if [[ -n "${config_hints}" ]]; then
   has_config_hints=true
 else

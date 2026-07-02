@@ -6,96 +6,6 @@ settings:
 
 catalogs:
   default:
-    '@k8o/arte-odyssey':
-      specifier: 10.6.1
-      version: 10.6.1
-    '@next/env':
-      specifier: 16.2.9
-      version: 16.2.9
-    '@next/mdx':
-      specifier: 16.2.9
-      version: 16.2.9
-    '@next/third-parties':
-      specifier: 16.2.9
-      version: 16.2.9
-    '@storybook/addon-a11y':
-      specifier: 10.4.6
-      version: 10.4.6
-    '@storybook/addon-docs':
-      specifier: 10.4.6
-      version: 10.4.6
-    '@storybook/addon-mcp':
-      specifier: 0.6.0
-      version: 0.6.0
-    '@storybook/addon-vitest':
-      specifier: 10.4.6
-      version: 10.4.6
-    '@storybook/nextjs-vite':
-      specifier: 10.4.6
-      version: 10.4.6
-    '@tailwindcss/postcss':
-      specifier: 4.3.1
-      version: 4.3.1
-    '@types/react':
-      specifier: 19.2.17
-      version: 19.2.17
-    '@types/react-dom':
-      specifier: 19.2.3
-      version: 19.2.3
-    '@vitest/browser-playwright':
-      specifier: 4.1.9
-      version: 4.1.9
-    '@vitest/coverage-v8':
-      specifier: 4.1.9
-      version: 4.1.9
-    '@vitest/ui':
-      specifier: 4.1.9
-      version: 4.1.9
-    babel-plugin-react-compiler:
-      specifier: 1.0.0
-      version: 1.0.0
-    better-auth:
-      specifier: 1.6.20
-      version: 1.6.20
-    chromatic:
-      specifier: 17.5.0
-      version: 17.5.0
-    drizzle-orm:
-      specifier: 0.45.2
-      version: 0.45.2
-    next:
-      specifier: 16.2.9
-      version: 16.2.9
-    next-themes:
-      specifier: 0.4.6
-      version: 0.4.6
-    postcss:
-      specifier: 8.5.15
-      version: 8.5.15
-    postcss-load-config:
-      specifier: 6.0.1
-      version: 6.0.1
-    react:
-      specifier: 19.2.7
-      version: 19.2.7
-    react-dom:
-      specifier: 19.2.7
-      version: 19.2.7
-    storybook:
-      specifier: 10.4.6
-      version: 10.4.6
-    storybook-addon-determinism:
-      specifier: 0.1.1
-      version: 0.1.1
-    storybook-addon-vrt:
-      specifier: 0.1.0
-      version: 0.1.0
-    tailwindcss:
-      specifier: 4.3.1
-      version: 4.3.1
-    vitest:
-      specifier: 4.1.9
-      version: 4.1.9
     wrangler:
       specifier: 4.103.0
       version: 4.103.0
@@ -113,9 +23,6 @@ importers:
       '@ls-lint/ls-lint':
         specifier: 2.3.1
         version: 2.3.1
-      '@oxlint/plugins':
-        specifier: 1.70.0
-        version: 1.70.0
       '@types/node':
         specifier: 24.13.2
         version: 24.13.2
@@ -3102,10 +3009,6 @@ packages:
 
   '@oxlint/plugins@1.68.0':
     resolution: {integrity: sha512-titLmukUt/h8ho7Svlf0xSBjoy2ccZKrXjpXpZCj+v6V4CJccC2KyP45BLSCMx8YIpifMyiDyUptM4+5sruKbQ==}
-    engines: {node: ^12.22.0 || ^14.17.0 || >=16.0.0}
-
-  '@oxlint/plugins@1.70.0':
-    resolution: {integrity: sha512-Ut6i0mPdferb+8YJFPaVAg95Fcqduk6fL3PlA4CX58OaPJOi8vvTAcm6iO40Krd5FFMWP+hAhIxlYEhvgvYA6w==}
     engines: {node: ^12.22.0 || ^14.17.0 || >=16.0.0}
 
   '@polka/url@1.0.0-next.29':
@@ -8639,8 +8542,6 @@ snapshots:
     optional: true
 
   '@oxlint/plugins@1.68.0': {}
-
-  '@oxlint/plugins@1.70.0': {}
 
   '@polka/url@1.0.0-next.29': {}
 
