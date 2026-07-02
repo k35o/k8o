@@ -1,6 +1,6 @@
 import { formatDate } from '@repo/helpers/date/format';
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
-import { expect, within } from 'storybook/test';
+import { expect, userEvent, waitFor, within } from 'storybook/test';
 
 import { Presenter } from './presenter';
 
@@ -15,6 +15,14 @@ type Story = StoryObj<typeof Presenter>;
 export const Primary: Story = {
   args: {
     days: generateMockContributions(),
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const items = canvas.getAllByRole('listitem');
+    await expect(items).toHaveLength(14);
+    await expect(items[0]).toHaveAccessibleName(
+      '2022年12月20日(火): 0件のコントリビューション',
+    );
   },
 };
 
@@ -36,7 +44,29 @@ export const DisplaysTotalContributions: Story = {
   },
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
-    await expect(canvas.getByText(/件/u)).toBeInTheDocument();
+    await expect(canvas.getByText(/過去14日間で\d+件/u)).toBeInTheDocument();
+  },
+};
+
+// CSS :hover はテストのsynthetic eventでは発火しないため、同じ表示機構をfocusで検証する
+export const ShowsTooltipOnKeyboardFocus: Story = {
+  args: {
+    days: generateMockContributions(),
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const items = canvas.getAllByRole('listitem');
+    const firstItem = items[0];
+    if (firstItem === undefined) throw new Error('bar not found');
+    // 先頭のフォーカス対象はグラフ説明のIconButtonなので2回タブを送る
+    await userEvent.tab();
+    await userEvent.tab();
+    await expect(firstItem).toHaveFocus();
+    await waitFor(async () => {
+      await expect(
+        within(firstItem).getByText('0件のコントリビューション'),
+      ).toBeVisible();
+    });
   },
 };
 
@@ -49,6 +79,16 @@ export const HighActivity: Story = {
 export const Empty: Story = {
   args: {
     days: generateMockContributions(false, true),
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    await expect(canvas.getByText('過去14日間で0件')).toBeInTheDocument();
+    const items = canvas.getAllByRole('listitem');
+    await Promise.all(
+      items.map((item) =>
+        expect(item).toHaveAccessibleName(/0件のコントリビューション$/u),
+      ),
+    );
   },
 };
 
