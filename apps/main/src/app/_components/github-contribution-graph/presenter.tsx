@@ -29,7 +29,7 @@ export const Presenter: FC<{
         : `過去${days.length}日間`;
 
   const maxCount = Math.max(0, ...days.map((day) => day.count));
-  const scaleMax = Math.max(2, Math.ceil(maxCount / 2) * 2);
+  const scaleMax = Math.max(4, Math.ceil(maxCount / 4) * 4);
 
   return (
     <Card>
@@ -47,17 +47,25 @@ export const Presenter: FC<{
             <span className="absolute top-0 right-0 -translate-y-1/2">
               {scaleMax}
             </span>
+            <span className="absolute top-1/4 right-0 -translate-y-1/2">
+              {(scaleMax / 4) * 3}
+            </span>
             <span className="absolute top-1/2 right-0 -translate-y-1/2">
               {scaleMax / 2}
+            </span>
+            <span className="absolute top-3/4 right-0 -translate-y-1/2">
+              {scaleMax / 4}
             </span>
             <span className="absolute right-0 bottom-0 translate-y-1/2">0</span>
           </div>
 
           <div className="relative col-start-2 row-start-1">
             <div aria-hidden="true">
-              <div className="border-border-mute absolute inset-x-0 top-0 border-t border-dashed" />
-              <div className="border-border-mute absolute inset-x-0 top-1/2 border-t border-dashed" />
-              <div className="border-border-mute absolute inset-x-0 bottom-0 border-t border-dashed" />
+              <div className="border-border-subtle absolute inset-x-0 top-0 border-t border-dashed" />
+              <div className="border-border-subtle absolute inset-x-0 top-1/4 border-t border-dashed" />
+              <div className="border-border-subtle absolute inset-x-0 top-1/2 border-t border-dashed" />
+              <div className="border-border-subtle absolute inset-x-0 top-3/4 border-t border-dashed" />
+              <div className="border-border-subtle absolute inset-x-0 bottom-0 border-t border-dashed" />
             </div>
             <ul
               aria-label={`日別のコントリビューション数（${period}）`}
@@ -68,7 +76,7 @@ export const Presenter: FC<{
                 return (
                   <li
                     aria-label={`${label}: ${day.count}件のコントリビューション`}
-                    className="group focus-visible:ring-border-info relative flex flex-1 items-end rounded-sm px-0.5 focus-visible:ring-2 focus-visible:outline-hidden"
+                    className="group focus-visible:ring-border-info relative flex flex-1 items-end rounded-sm px-1.5 focus-visible:ring-2 focus-visible:outline-hidden"
                     key={day.date}
                     tabIndex={0}
                   >
@@ -76,9 +84,10 @@ export const Presenter: FC<{
                       aria-hidden="true"
                       className="bg-bg-subtle absolute inset-0 rounded-sm opacity-0 transition-opacity duration-150 ease-out group-hover:opacity-100 group-focus:opacity-100"
                     />
+                    {/* セマンティックトークンにチャートの塗りに合う濃さがないため、置き換え前の recharts 実装と同じ teal スケールを直接使う */}
                     <div
                       aria-hidden="true"
-                      className="bg-primary-bg-emphasize relative w-full rounded-t"
+                      className="relative w-full rounded-t bg-(--teal-600) transition-colors duration-150 ease-out group-hover:bg-(--teal-700) group-focus:bg-(--teal-700)"
                       style={{ height: `${(day.count / scaleMax) * 100}%` }}
                     />
                     <div
@@ -103,17 +112,21 @@ export const Presenter: FC<{
             aria-hidden="true"
             className="relative col-start-2 row-start-2 h-4"
           >
-            {days.map((day, index) =>
-              (days.length - 1 - index) % 2 === 0 ? (
-                <span
-                  className="text-fg-mute absolute top-0 -translate-x-1/2 text-xs whitespace-nowrap"
-                  key={day.date}
-                  style={{ left: `${((index + 0.5) / days.length) * 100}%` }}
-                >
-                  {formatDate(new Date(day.date), 'M/d')}
-                </span>
-              ) : null,
-            )}
+            {days.map((day, index) => (
+              <span
+                className={cn(
+                  'text-fg-mute absolute top-0 -translate-x-1/2 text-xs whitespace-nowrap',
+                  // 狭い画面ではラベルが重なるため、最新日を基準に1日おきの表示へ間引く
+                  (days.length - 1 - index) % 2 === 0
+                    ? undefined
+                    : 'hidden sm:block',
+                )}
+                key={day.date}
+                style={{ left: `${((index + 0.5) / days.length) * 100}%` }}
+              >
+                {formatDate(new Date(day.date), 'M/d')}
+              </span>
+            ))}
           </div>
         </div>
 
