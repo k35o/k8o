@@ -28,6 +28,8 @@ export async function revalidateMainCache(): Promise<void> {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({ tag: DB_CONTENT_CACHE_TAG }),
+      // main が無応答でも Server Action を Vercel 関数タイムアウトまで待たせない
+      signal: AbortSignal.timeout(5000),
     });
     if (!res.ok) {
       console.error(`mainの再検証に失敗しました: ${res.status}`);
