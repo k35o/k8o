@@ -2,6 +2,11 @@ name: ci
 
 on: push
 
+# 同一ブランチへの連続pushでは古い実行をキャンセルする（mainは全コミットの結果を残す）
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
+
 permissions:
   contents: read
 
@@ -16,6 +21,15 @@ jobs:
           persist-credentials: false
       - name: Setup
         uses: ./.github/actions/setup
+
+      - name: Cache turbo
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: .turbo
+          key: ${{ runner.os }}-turbo-${{ github.job }}-${{ github.ref_name }}-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.os }}-turbo-${{ github.job }}-${{ github.ref_name }}-
+            ${{ runner.os }}-turbo-${{ github.job }}-
 
       - name: Run ls-lint
         run: pnpm run ls-lint
@@ -36,6 +50,15 @@ jobs:
           persist-credentials: false
       - name: Setup
         uses: ./.github/actions/setup
+
+      - name: Cache turbo
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: .turbo
+          key: ${{ runner.os }}-turbo-${{ github.job }}-${{ github.ref_name }}-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.os }}-turbo-${{ github.job }}-${{ github.ref_name }}-
+            ${{ runner.os }}-turbo-${{ github.job }}-
 
       - name: Install Playwright
         run: pnpm run install-playwright

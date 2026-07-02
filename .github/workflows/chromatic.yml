@@ -2,6 +2,11 @@ name: 'Chromatic'
 
 on: push
 
+# 同一ブランチへの連続pushでは古い実行をキャンセルする（mainは全コミットの結果を残す）
+concurrency:
+  group: chromatic-${{ github.ref }}
+  cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
+
 permissions:
   contents: read
 
