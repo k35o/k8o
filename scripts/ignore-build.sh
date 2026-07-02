@@ -20,12 +20,6 @@ if [ -z "$APP_NAME" ]; then
   exit 1
 fi
 
-# renovateブランチはpreviewビルドをスキップ
-if [[ "${VERCEL_GIT_COMMIT_REF:-}" == renovate/* ]]; then
-  log "Skipping: Renovate branch (${VERCEL_GIT_COMMIT_REF})"
-  exit 0
-fi
-
 # 同一commitの再ビルド（Vercelダッシュボードからの手動Redeployやenv var変更後の再ビルド）は常に実行する
 if [ -n "${VERCEL_GIT_COMMIT_SHA:-}" ] \
   && [ -n "${VERCEL_GIT_PREVIOUS_SHA:-}" ] \
