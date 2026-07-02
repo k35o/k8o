@@ -84,27 +84,21 @@
       border-block-end: 0.5em solid rgb(80 140 220);
     }
 
-    /* コードブロックは常に暗背景（shiki plastic）なので、ツールバーは
-       テーマトークンではなく固定の淡色にしてコントラストを担保する */
+    /* コードブロックは常に暗背景（shiki plastic #21252b）。ツールバーはコードに
+       重ならないようコード上部のヘッダー行として流し込み、色はテーマトークンでは
+       なく背景に合わせた固定の淡色にする */
     :scope {
-      position: relative;
+      margin-block: 1rem;
     }
 
     .code-annotate-toolbar {
-      position: absolute;
-      inset-block-start: 0.5rem;
-      inset-inline-end: 0.5rem;
-      z-index: 1;
       display: flex;
       align-items: center;
       gap: 0.5rem;
-      opacity: 0.55;
-      transition: opacity 0.15s ease;
-    }
-
-    :scope:hover .code-annotate-toolbar,
-    :scope:focus-within .code-annotate-toolbar {
-      opacity: 1;
+      padding: 0.3rem 0.65rem;
+      background-color: #21252b;
+      border-start-start-radius: 0.5rem;
+      border-start-end-radius: 0.5rem;
     }
 
     .code-annotate-lang {
@@ -116,13 +110,13 @@
     }
 
     .code-annotate-copy {
+      margin-inline-start: auto;
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      padding: 0.35rem;
+      padding: 0.3rem;
       border-radius: 0.4rem;
       color: rgb(169 178 195);
-      background-color: rgb(255 255 255 / 0.08);
       cursor: pointer;
       transition:
         color 0.15s ease,
@@ -131,7 +125,7 @@
 
     .code-annotate-copy:hover {
       color: rgb(255 255 255);
-      background-color: rgb(255 255 255 / 0.16);
+      background-color: rgb(255 255 255 / 0.12);
     }
 
     .code-annotate-copy:focus-visible {

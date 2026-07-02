@@ -52,7 +52,7 @@ export const CodeBlock: FC<Props> = ({
       </div>
       <pre
         {...rest}
-        className="writing-h vertical:box-border vertical:mx-4 vertical:my-0 vertical:h-max vertical:max-h-full vertical:max-w-container-lg vertical:overflow-auto my-4 overflow-x-auto rounded-lg py-1 sm:py-4"
+        className="writing-h vertical:box-border vertical:mx-4 vertical:h-max vertical:max-h-full vertical:max-w-container-lg vertical:overflow-auto my-0 overflow-x-auto rounded-t-none rounded-b-lg py-1 sm:py-4"
         ref={preRef}
       >
         {children}
