@@ -98,7 +98,7 @@
       display: flex;
       align-items: center;
       gap: 0.5rem;
-      padding: 0.3rem 0.65rem;
+      padding: 0.35rem 1rem;
       background-color: #21252b;
       border-start-start-radius: 0.5rem;
       border-start-end-radius: 0.5rem;
@@ -135,5 +135,11 @@
       outline: 2px solid rgb(120 180 245);
       outline-offset: 2px;
     }
+  }
+
+  /* 縦書き記事(.writing-v)内では横書きの島が block 軸(水平)に並ぶため、
+     物理的な左右マージンで隣接ブロックとの間隔を確保する */
+  .writing-v .code-annotate-block {
+    margin-inline: 1rem;
   }
 }
