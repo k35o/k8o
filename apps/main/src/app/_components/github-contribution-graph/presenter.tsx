@@ -39,7 +39,7 @@ export const Presenter: FC<{
           <InfoTooltip />
         </div>
 
-        <div className="grid h-48 grid-cols-[auto_1fr] grid-rows-[1fr_auto] gap-x-2 gap-y-1">
+        <div className="@container grid h-48 grid-cols-[auto_1fr] grid-rows-[1fr_auto] gap-x-2 gap-y-1">
           <div
             aria-hidden="true"
             className="text-fg-mute relative col-start-1 row-start-1 min-w-4 text-xs"
@@ -69,14 +69,14 @@ export const Presenter: FC<{
             </div>
             <ul
               aria-label={`日別のコントリビューション数（${period}）`}
-              className="relative flex h-full"
+              className="relative flex h-full gap-[1.5%]"
             >
               {days.map((day, index) => {
                 const label = formatDate(new Date(day.date), 'yyyy年M月d日(E)');
                 return (
                   <li
                     aria-label={`${label}: ${day.count}件のコントリビューション`}
-                    className="group focus-visible:ring-border-info relative flex flex-1 items-end rounded-sm px-1.5 focus-visible:ring-2 focus-visible:outline-hidden"
+                    className="group focus-visible:ring-border-info relative flex flex-1 items-end rounded-sm focus-visible:ring-2 focus-visible:outline-hidden"
                     key={day.date}
                     tabIndex={0}
                   >
@@ -93,7 +93,7 @@ export const Presenter: FC<{
                     <div
                       aria-hidden="true"
                       className={cn(
-                        'bg-bg-base text-fg-base pointer-events-none absolute top-0 z-10 w-max rounded-xl px-3 py-2 opacity-0 shadow-md transition-opacity duration-150 ease-out group-hover:opacity-100 group-focus:opacity-100',
+                        'bg-bg-base text-fg-base pointer-events-none absolute bottom-full z-10 mb-1 w-max rounded-xl px-3 py-2 opacity-0 shadow-md transition-opacity duration-150 ease-out group-hover:opacity-100 group-focus:opacity-100',
                         tooltipPositionClass(index, days.length),
                       )}
                     >
@@ -116,10 +116,10 @@ export const Presenter: FC<{
               <span
                 className={cn(
                   'text-fg-mute absolute top-0 -translate-x-1/2 text-xs whitespace-nowrap',
-                  // 狭い画面ではラベルが重なるため、最新日を基準に1日おきの表示へ間引く
+                  // グラフが狭いとラベルが重なるため、コンテナ幅を基準に最新日から1日おきの表示へ間引く
                   (days.length - 1 - index) % 2 === 0
                     ? undefined
-                    : 'hidden sm:block',
+                    : 'hidden @xl:block',
                 )}
                 key={day.date}
                 style={{ left: `${((index + 0.5) / days.length) * 100}%` }}

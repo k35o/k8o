@@ -92,6 +92,25 @@ export const Empty: Story = {
   },
 };
 
+// モバイルやグリッド内などグラフのコンテナが狭いケース（日付ラベルが1日おきに間引かれる）
+export const Narrow: Story = {
+  args: {
+    days: generateMockContributions(),
+  },
+  decorators: [
+    (Story) => (
+      <div className="max-w-90">
+        <Story />
+      </div>
+    ),
+  ],
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const items = canvas.getAllByRole('listitem');
+    await expect(items).toHaveLength(14);
+  },
+};
+
 function generateMockContributions(highActivity = false, empty = false) {
   const days: Array<{ date: string; count: number }> = [];
   // args はモジュール評価時に実行され mockingDate decorator では固定できないため、
