@@ -5,10 +5,7 @@ import type {
   ArticleInput,
   ArticleUpdateInput,
 } from '../infrastructure/reading-list-repository';
-
-// 公開ページで href として描画されるため、javascript: 等を拒否して https に限定する
-const isHttpsUrl = (value: string): boolean =>
-  URL.canParse(value) && new URL(value).protocol === 'https:';
+import { isHttpsUrl } from './url-validation';
 
 type CreateResult =
   | { ok: true; data: ArticleInput }

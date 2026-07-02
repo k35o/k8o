@@ -5,10 +5,7 @@ import {
   type ArticleSourceInput,
   type ArticleSourceType,
 } from '../infrastructure/reading-list-repository';
-
-// フィード取得(safeFetch)と公開ページでの描画の両方で https 前提のため、入力時点で限定する
-const isHttpsUrl = (value: string): boolean =>
-  URL.canParse(value) && new URL(value).protocol === 'https:';
+import { isHttpsUrl } from './url-validation';
 
 type ParseResult =
   | { ok: true; data: ArticleSourceInput }
