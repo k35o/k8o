@@ -17,9 +17,9 @@ function getOrigin(): string {
 const cspHeader = `
     default-src 'self';
     script-src 'self' 'unsafe-inline' https://www.googletagmanager.com https://va.vercel-scripts.com https://vercel.live${isDev ? " 'unsafe-eval'" : ''};
-    style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net;
+    style-src 'self' 'unsafe-inline';
     img-src 'self' https: blob: data:;
-    font-src 'self' https://cdn.jsdelivr.net;
+    font-src 'self';
     worker-src 'self' blob:;
     connect-src 'self' https://www.google-analytics.com https://*.google-analytics.com https://*.analytics.google.com https://va.vercel-scripts.com https://api.webstatus.dev;
     frame-src 'self' https://codepen.io https://www.googletagmanager.com https://vercel.live;

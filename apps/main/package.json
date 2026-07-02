@@ -34,6 +34,7 @@
     "ai": "6.0.208",
     "budoux": "0.8.4",
     "drizzle-orm": "catalog:",
+    "katex": "0.16.47",
     "next": "catalog:",
     "next-themes": "catalog:",
     "nuqs": "2.8.9",
