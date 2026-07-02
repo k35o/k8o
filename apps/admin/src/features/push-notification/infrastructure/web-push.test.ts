@@ -128,6 +128,9 @@ const hkdfDerive = async (
   );
 };
 
+// RFC 8188: 最終レコード末尾に置くパディングデリミタ
+const RECORD_PADDING_DELIMITER = 2;
+
 // RFC 8291 の受信側手順で aes128gcm ボディを復号する
 const decryptBody = async (
   body: Uint8Array<ArrayBuffer>,
@@ -186,7 +189,12 @@ const decryptBody = async (
     ),
   );
 
-  expect(padded.at(-1)).toBe(2);
+  const delimiter = padded.at(-1);
+  if (delimiter !== RECORD_PADDING_DELIMITER) {
+    throw new Error(
+      `復号結果の末尾が RFC 8188 のパディングデリミタ(${RECORD_PADDING_DELIMITER})ではありません: ${String(delimiter)}`,
+    );
+  }
   return new TextDecoder().decode(padded.slice(0, -1));
 };
 
