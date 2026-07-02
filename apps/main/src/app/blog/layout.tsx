@@ -27,6 +27,11 @@ export const metadata = {
     card: 'summary',
     description: 'Webフロントエンドを中心に、日々のことも書いています。',
   },
+  alternates: {
+    types: {
+      'application/rss+xml': 'https://k8o.me/blog/feed',
+    },
+  },
 } satisfies Metadata;
 
 export default function Layout({ children }: LayoutProps<'/blog'>) {
