@@ -74,8 +74,9 @@ updatedAt: 2025-01-10
 
 ```typescript
 import type { Metadata } from 'next';
-import { getBlogContent } from '@/app/blog/_api';
+
 import { BlogLayout } from '@/app/blog/_components/blog-layout';
+import { getBlogContent } from '@/features/blog/interface/queries';
 
 const slug = 'my-article'; // 実際のスラグに置き換える
 
@@ -90,7 +91,7 @@ export async function generateMetadata(): Promise<Metadata> {
       title: blog.title,
       description: blog.description ?? undefined,
       url: `https://k8o.me/blog/${slug}`,
-      publishedTime: blog.createdAt.toString(),
+      publishedTime: blog.createdAt,
       authors: ['k8o'],
       siteName: 'k8o',
       locale: 'ja',
@@ -104,9 +105,8 @@ export async function generateMetadata(): Promise<Metadata> {
   };
 }
 
-export default function Layout({
-  children,
-}: LayoutProps<'/blog/my-article'>) { // 実際のスラグに置き換える
+// 実際のスラグに置き換える
+export default function Layout({ children }: LayoutProps<'/blog/my-article'>) {
   return <BlogLayout slug={slug}>{children}</BlogLayout>;
 }
 ```
@@ -115,7 +115,10 @@ export default function Layout({
 
 ```typescript
 import { OgImage } from '@/app/_components/og-image';
-import { getBlogContent } from '@/app/blog/_api';
+import {
+  getBlogContent,
+  getBlogOgCode,
+} from '@/features/blog/interface/queries';
 
 export const alt = '記事タイトル';
 export const size = {
@@ -126,11 +129,16 @@ export const size = {
 export const contentType = 'image/png';
 
 export default async function Image() {
-  const blog = await getBlogContent('{slug}');
+  // 実際のスラグに置き換える
+  const [blog, ogCode] = await Promise.all([
+    getBlogContent('my-article'),
+    getBlogOgCode('my-article'),
+  ]);
 
-  return await OgImage({
+  return OgImage({
     category: 'Blog',
     title: blog.title,
+    code: ogCode ?? undefined,
   });
 }
 ```

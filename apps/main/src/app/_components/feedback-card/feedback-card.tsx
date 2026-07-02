@@ -20,7 +20,7 @@ const pillClass = (key: string, feedbackValue: string): string =>
 
 export const FeedbackCard: FC<{
   title: string;
-  onSubmit: (feedback: number | null, comment: string) => Promise<void>;
+  onSubmit: (feedback: number | null, comment: string) => Promise<boolean>;
 }> = ({ title, onSubmit }) => {
   const textareaId = useId();
   const errorId = useId();
@@ -37,8 +37,10 @@ export const FeedbackCard: FC<{
         feedbackValue in FEEDBACK_MAP
           ? FEEDBACK_MAP[feedbackValue as keyof typeof FEEDBACK_MAP]
           : null;
-      await onSubmit(id, comment);
-      setIsSubmitted(true);
+      const isSuccess = await onSubmit(id, comment);
+      if (isSuccess) {
+        setIsSubmitted(true);
+      }
     });
   };
 

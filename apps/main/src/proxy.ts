@@ -30,7 +30,11 @@ const cspHeader = `
     ${isDev ? '' : "require-trusted-types-for 'script';"}
     trusted-types nextjs nextjs#bundler goog#html lit-html default;
     report-to csp-endpoint;
-    upgrade-insecure-requests;
+    ${
+      // Safari/WebKit は localhost の http でも https に強制アップグレードするため、
+      // dev では付けない（Chromium は localhost を例外扱いするので気づきにくい）
+      isDev ? '' : 'upgrade-insecure-requests;'
+    }
 `;
 
 const contentSecurityPolicyHeaderValue = cspHeader
