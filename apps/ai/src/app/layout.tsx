@@ -10,6 +10,10 @@ import { mPlus2, notoSansJp } from './_styles/font';
 export const metadata = {
   title: 'k8o AI',
   description: 'k8o の AI ツール',
+  robots: {
+    index: false,
+    follow: false,
+  },
 } satisfies Metadata;
 
 export default function RootLayout({ children }: { children: ReactNode }) {
