@@ -4,6 +4,7 @@ import { revalidatePath } from 'next/cache';
 
 import type { ActionState } from '@/shared/actions/action-state';
 import { verifySession } from '@/shared/auth/verify-session';
+import { revalidateMainCache } from '@/shared/cache/revalidate-main';
 
 import {
   countTagUsage,
@@ -34,6 +35,7 @@ export async function createTag(
     return { error: 'タグの作成に失敗しました（重複の可能性があります）' };
   }
 
+  await revalidateMainCache();
   revalidatePath('/tags');
   return { success: true };
 }
@@ -54,6 +56,7 @@ export async function renameTag(
     return { error: 'タグ名の更新に失敗しました（重複の可能性があります）' };
   }
 
+  await revalidateMainCache();
   revalidatePath('/tags');
   return { success: true };
 }
@@ -72,6 +75,7 @@ export async function deleteTag(id: number): Promise<ActionState> {
     return { error: 'タグの削除に失敗しました' };
   }
 
+  await revalidateMainCache();
   revalidatePath('/tags');
   return { success: true };
 }
