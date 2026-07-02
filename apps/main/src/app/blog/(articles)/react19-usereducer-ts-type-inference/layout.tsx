@@ -3,6 +3,9 @@ import type { Metadata } from 'next';
 import { BlogLayout } from '@/app/blog/_components/blog-layout';
 import { getBlogContent } from '@/features/blog/interface/queries';
 
+import 'katex/dist/katex.min.css';
+import '@/app/blog/_styles/katex-vertical.css';
+
 const slug = 'react19-usereducer-ts-type-inference';
 
 export async function generateMetadata(): Promise<Metadata> {
