@@ -2,6 +2,7 @@ import { db } from '@repo/database';
 import { mapWithConcurrency } from '@repo/helpers/array/map-with-concurrency';
 import { compareDate } from '@repo/helpers/date/compare';
 import { NINETY_DAYS_MS } from '@repo/helpers/date/duration';
+import { isPublicHttpsUrl } from '@repo/helpers/url/is-public-https-url';
 import { safeFetch } from '@repo/helpers/url/safe-fetch';
 import { eq } from 'drizzle-orm';
 import Parser from 'rss-parser';
@@ -62,16 +63,28 @@ export async function syncArticles(): Promise<SyncResult> {
       const candidates: FeedArticle[] = [];
 
       for (const item of feed.items) {
-        const publishedAt = item.isoDate ?? item.pubDate;
+        const rawPublishedAt = item.isoDate ?? item.pubDate;
         if (
           item.link === undefined ||
           item.title === undefined ||
-          publishedAt === undefined
+          rawPublishedAt === undefined
         ) {
           continue;
         }
 
-        if (compareDate(new Date(publishedAt), ninetyDaysAgo) === 'less') {
+        // stored XSS 対策: フィード由来の URL は公開 https URL のみ保存する
+        if (!isPublicHttpsUrl(item.link)) {
+          continue;
+        }
+
+        // rss-parser はパース不能な pubDate のとき isoDate を設定しないため、
+        // 生文字列が TEXT カラムに混ざらないよう検証して ISO 8601 に正規化する
+        const publishedDate = new Date(rawPublishedAt);
+        if (Number.isNaN(publishedDate.getTime())) {
+          continue;
+        }
+
+        if (compareDate(publishedDate, ninetyDaysAgo) === 'less') {
           continue;
         }
 
@@ -79,7 +92,7 @@ export async function syncArticles(): Promise<SyncResult> {
           articleSourceId: source.id,
           title: item.title,
           url: item.link,
-          publishedAt,
+          publishedAt: publishedDate.toISOString(),
         });
       }
 

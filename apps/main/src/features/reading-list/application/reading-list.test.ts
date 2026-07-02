@@ -2,6 +2,7 @@ import { db } from '@repo/database';
 import { gte } from 'drizzle-orm';
 
 import { getArticleSources, getArticles } from './reading-list';
+import { MAX_SUMMARY_ATTEMPTS } from './summary-policy';
 
 vi.mock('@repo/database', () => ({
   db: {
@@ -98,6 +99,47 @@ describe('reading-list service', () => {
           },
         },
       ]);
+    });
+
+    it('summary が無いまま試行上限に達した記事だけを gaveUp にする', async () => {
+      const baseArticle = {
+        title: '記事タイトル',
+        url: 'https://example.com/articles/1',
+        publishedAt: '2026-03-20T00:00:00.000Z',
+        articleSourceId: 10,
+        createdAt: '2026-03-20T00:00:00.000Z',
+        updatedAt: '2026-03-20T00:00:00.000Z',
+        articleSource: {
+          id: 10,
+          title: 'Zenn',
+          siteUrl: 'https://zenn.dev',
+        },
+      };
+      vi.mocked(db.query.articles.findMany).mockResolvedValue([
+        {
+          ...baseArticle,
+          id: 1,
+          summary: null,
+          summaryAttempts: MAX_SUMMARY_ATTEMPTS,
+        },
+        // 予約 increment のため成功した記事でも上限に達しうるが、gaveUp にはしない
+        {
+          ...baseArticle,
+          id: 2,
+          summary: '生成済みの要約',
+          summaryAttempts: MAX_SUMMARY_ATTEMPTS,
+        },
+        {
+          ...baseArticle,
+          id: 3,
+          summary: null,
+          summaryAttempts: MAX_SUMMARY_ATTEMPTS - 1,
+        },
+      ] as unknown as Awaited<ReturnType<typeof db.query.articles.findMany>>);
+
+      const result = await getArticles();
+
+      expect(result.map((a) => a.summaryGaveUp)).toEqual([true, false, false]);
     });
   });
 
