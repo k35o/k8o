@@ -403,6 +403,141 @@ describe('syncArticles', () => {
       expect(result.newArticles).toBe(1);
     });
 
+    it('pubDate がパース不能な記事はスキップする', async () => {
+      vi.mocked(db.query.articleSources.findMany).mockResolvedValue([
+        {
+          id: 1,
+          title: 'web.dev',
+          url: 'https://web.dev/feed.xml',
+          siteUrl: 'https://web.dev',
+          type: 'feed' as const,
+          createdAt: '2026-01-01T00:00:00Z',
+          updatedAt: '2026-01-01T00:00:00Z',
+        },
+      ]);
+
+      mockParseString.mockResolvedValue({
+        items: [
+          {
+            title: 'パース不能な日付',
+            link: 'https://web.dev/blog/bad-date',
+            isoDate: undefined,
+            pubDate: 'not a parsable date',
+          },
+          {
+            // sanitizeFeedDates が不正な Atom 日付を空文字化した場合の経路
+            title: '空文字の日付',
+            link: 'https://web.dev/blog/empty-date',
+            isoDate: undefined,
+            pubDate: '',
+          },
+          {
+            title: '正常な記事',
+            link: 'https://web.dev/blog/ok',
+            isoDate: '2026-03-10T00:00:00Z',
+          },
+        ],
+      });
+
+      vi.mocked(db.query.articles.findMany).mockResolvedValue([]);
+
+      const valuesMock = vi.fn();
+      vi.mocked(db.insert).mockReturnValue({ values: valuesMock } as never);
+
+      const result = await syncArticles();
+
+      expect(result.newArticles).toBe(1);
+      expect(valuesMock).toHaveBeenCalledWith([
+        expect.objectContaining({ url: 'https://web.dev/blog/ok' }),
+      ]);
+    });
+
+    it('非 ISO 形式の pubDate は ISO 8601 に正規化して保存する', async () => {
+      vi.mocked(db.query.articleSources.findMany).mockResolvedValue([
+        {
+          id: 1,
+          title: 'web.dev',
+          url: 'https://web.dev/feed.xml',
+          siteUrl: 'https://web.dev',
+          type: 'feed' as const,
+          createdAt: '2026-01-01T00:00:00Z',
+          updatedAt: '2026-01-01T00:00:00Z',
+        },
+      ]);
+
+      mockParseString.mockResolvedValue({
+        items: [
+          {
+            title: 'RFC 2822 日付の記事',
+            link: 'https://web.dev/blog/rfc2822',
+            isoDate: undefined,
+            pubDate: 'Tue, 10 Mar 2026 09:30:00 GMT',
+          },
+        ],
+      });
+
+      vi.mocked(db.query.articles.findMany).mockResolvedValue([]);
+
+      const valuesMock = vi.fn();
+      vi.mocked(db.insert).mockReturnValue({ values: valuesMock } as never);
+
+      const result = await syncArticles();
+
+      expect(result.newArticles).toBe(1);
+      expect(valuesMock).toHaveBeenCalledWith([
+        expect.objectContaining({
+          url: 'https://web.dev/blog/rfc2822',
+          publishedAt: '2026-03-10T09:30:00.000Z',
+        }),
+      ]);
+    });
+
+    it('https 以外のスキームの link はスキップして保存しない', async () => {
+      vi.mocked(db.query.articleSources.findMany).mockResolvedValue([
+        {
+          id: 1,
+          title: 'web.dev',
+          url: 'https://web.dev/feed.xml',
+          siteUrl: 'https://web.dev',
+          type: 'feed' as const,
+          createdAt: '2026-01-01T00:00:00Z',
+          updatedAt: '2026-01-01T00:00:00Z',
+        },
+      ]);
+
+      mockParseString.mockResolvedValue({
+        items: [
+          {
+            title: 'XSS を狙う記事',
+            link: 'javascript:alert(1)',
+            isoDate: '2026-03-10T00:00:00Z',
+          },
+          {
+            title: 'http の記事',
+            link: 'http://web.dev/blog/http-only',
+            isoDate: '2026-03-10T00:00:00Z',
+          },
+          {
+            title: '正常な記事',
+            link: 'https://web.dev/blog/safe',
+            isoDate: '2026-03-10T00:00:00Z',
+          },
+        ],
+      });
+
+      vi.mocked(db.query.articles.findMany).mockResolvedValue([]);
+
+      const valuesMock = vi.fn();
+      vi.mocked(db.insert).mockReturnValue({ values: valuesMock } as never);
+
+      const result = await syncArticles();
+
+      expect(result.newArticles).toBe(1);
+      expect(valuesMock).toHaveBeenCalledWith([
+        expect.objectContaining({ url: 'https://web.dev/blog/safe' }),
+      ]);
+    });
+
     it('既にDBに存在するURLの記事は追加しない', async () => {
       vi.mocked(db.query.articleSources.findMany).mockResolvedValue([
         {
