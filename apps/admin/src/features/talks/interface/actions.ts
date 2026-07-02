@@ -5,6 +5,7 @@ import { redirect } from 'next/navigation';
 
 import type { ActionState } from '@/shared/actions/action-state';
 import { verifySession } from '@/shared/auth/verify-session';
+import { revalidateMainCache } from '@/shared/cache/revalidate-main';
 
 import {
   deleteTalkById,
@@ -30,6 +31,7 @@ export async function createTalk(
     return { error: 'トークの作成に失敗しました' };
   }
 
+  await revalidateMainCache();
   revalidatePath('/talks');
   return redirect('/talks');
 }
@@ -52,6 +54,7 @@ export async function updateTalk(
     return { error: 'トークの更新に失敗しました' };
   }
 
+  await revalidateMainCache();
   revalidatePath('/talks');
   return redirect('/talks');
 }
@@ -65,6 +68,7 @@ export async function deleteTalk(id: number): Promise<ActionState> {
     return { error: 'トークの削除に失敗しました' };
   }
 
+  await revalidateMainCache();
   revalidatePath('/talks');
   return { success: true };
 }
