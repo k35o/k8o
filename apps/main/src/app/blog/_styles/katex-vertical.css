@@ -1,5 +1,17 @@
 @reference '@k8o/arte-odyssey/styles.css';
 
+/* 縦書きで、インラインコード（横倒しのラン）の直後の文字だけが約5px右に
+   ずれて描画される（Chromium の縦書きにおける後続ランの基線ずれ）。
+   コードをアトミックなインラインにするとランが分離され、後続テキストが
+   行本来の基線に戻る */
+.writing-v :not(pre) > code {
+  display: inline-block;
+  /* inline-block 自身の行ボックスで列（行）が太らないよう詰める */
+  line-height: 1;
+  /* 段落の字下げ(indent-em)を継承してピル先頭に空白が入るのを防ぐ */
+  text-indent: 0;
+}
+
 @variant vertical {
   :where(.katex-display, .katex-display *) {
     writing-mode: horizontal-tb;
