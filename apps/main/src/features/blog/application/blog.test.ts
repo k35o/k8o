@@ -3,7 +3,12 @@ import { getFrontmatter } from '@repo/helpers/mdx/frontmatter';
 
 import { getTocTree } from '@/shared/mdx/toc-tree';
 
-import { getBlog, getBlogMetadata, getBlogToc } from './blog';
+import {
+  findPublishedBlogId,
+  getBlog,
+  getBlogMetadata,
+  getBlogToc,
+} from './blog';
 import { blogPath } from './path';
 
 vi.mock('@repo/database', () => ({
@@ -96,6 +101,29 @@ describe('blog service', () => {
       await expect(getBlog('non-existent-slug')).rejects.toThrow(
         'Blog not found: non-existent-slug',
       );
+    });
+  });
+
+  describe('findPublishedBlogId', () => {
+    it('公開済みブログのIDを返す', async () => {
+      vi.mocked(db.query.blogs.findFirst).mockResolvedValue({
+        id: 1,
+        slug: 'test-slug',
+        published: true,
+        createdAt: new Date().toISOString(),
+      });
+
+      const result = await findPublishedBlogId('test-slug');
+
+      expect(result).toBe(1);
+    });
+
+    it('ブログが存在しない場合はnullを返す', async () => {
+      vi.mocked(db.query.blogs.findFirst).mockResolvedValue(undefined);
+
+      const result = await findPublishedBlogId('non-existent-slug');
+
+      expect(result).toBeNull();
     });
   });
 

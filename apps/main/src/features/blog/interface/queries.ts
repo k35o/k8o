@@ -1,6 +1,7 @@
 import { cacheLife } from 'next/cache';
 
 import {
+  findPublishedBlogId as _findPublishedBlogId,
   getBlogToc as _getBlogToc,
   getBlog,
   getBlogMetadata,
@@ -57,6 +58,10 @@ export async function getBlogContent(slug: string) {
     createdAt: metadata.createdAt,
     updatedAt: metadata.updatedAt,
   };
+}
+
+export function findPublishedBlogId(slug: string): Promise<number | null> {
+  return _findPublishedBlogId(slug);
 }
 
 export async function getBlogOgCode(slug: string) {
