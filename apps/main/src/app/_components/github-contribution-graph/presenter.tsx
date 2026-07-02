@@ -87,7 +87,7 @@ export const Presenter: FC<{
                     {/* セマンティックトークンにチャートの塗りに合う濃さがないため、置き換え前の recharts 実装と同じ teal スケールを直接使う */}
                     <div
                       aria-hidden="true"
-                      className="relative w-full rounded-t bg-(--teal-600) transition-colors duration-150 ease-out group-hover:bg-(--teal-700) group-focus:bg-(--teal-700)"
+                      className="relative w-full rounded-t-lg bg-(--teal-600) transition-colors duration-150 ease-out group-hover:bg-(--teal-700) group-focus:bg-(--teal-700)"
                       style={{ height: `${(day.count / scaleMax) * 100}%` }}
                     />
                     <div
