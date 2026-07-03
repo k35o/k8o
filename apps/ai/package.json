@@ -18,15 +18,15 @@
     "build-storybook": "storybook build"
   },
   "dependencies": {
-    "@ai-sdk/openai-compatible": "2.0.51",
-    "@ai-sdk/react": "3.0.210",
+    "@ai-sdk/openai-compatible": "2.0.52",
+    "@ai-sdk/react": "3.0.213",
     "@k8o/arte-odyssey": "catalog:",
     "@repo/code-highlight": "workspace:*",
     "@repo/database": "workspace:*",
     "@repo/helpers": "workspace:*",
     "@tailwindcss/postcss": "catalog:",
     "@vercel/sandbox": "2.2.1",
-    "ai": "6.0.208",
+    "ai": "6.0.211",
     "better-auth": "catalog:",
     "drizzle-orm": "catalog:",
     "next": "catalog:",
