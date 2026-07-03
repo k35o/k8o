@@ -10,7 +10,7 @@ import {
 import { useQueryStates } from 'nuqs';
 import { type FC, type ReactNode, useCallback, useMemo, useState } from 'react';
 
-import type { DateRange, SortOrder } from '../../_utils/constants';
+import type { SortOrder } from '../../_utils/constants';
 import { readingListParsers } from '../../_utils/search-params';
 import { FilterBar } from '../filter-bar';
 
@@ -33,29 +33,12 @@ type Props = {
   cards: Readonly<Record<number, ReactNode>>;
 };
 
-const getDateThreshold = (range: DateRange): Date => {
-  const now = new Date();
-  switch (range) {
-    case 'today':
-      return new Date(now.getFullYear(), now.getMonth(), now.getDate());
-    case 'week':
-      return new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
-    case 'month':
-      return new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
-    case 'all':
-      return new Date(0);
-    default:
-      return new Date(0);
-  }
-};
-
 export const ReadingListContent: FC<Props> = ({ articles, sources, cards }) => {
   const [params, setParams] = useQueryStates(readingListParsers);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 
   const query = params.q;
   const sourceIds = params.source;
-  const dateRange = params.date;
   const sortOrder = params.sort;
 
   const handleQueryChange = useCallback(
@@ -65,19 +48,9 @@ export const ReadingListContent: FC<Props> = ({ articles, sources, cards }) => {
     [setParams],
   );
 
-  const handleSourceToggle = useCallback(
-    (id: number) => {
-      const next = sourceIds.includes(id)
-        ? sourceIds.filter((sid) => sid !== id)
-        : [...sourceIds, id];
-      void setParams({ source: next.length > 0 ? next : null });
-    },
-    [sourceIds, setParams],
-  );
-
-  const handleDateChange = useCallback(
-    (value: DateRange) => {
-      void setParams({ date: value === 'all' ? null : value });
+  const handleSourceChange = useCallback(
+    (ids: number[]) => {
+      void setParams({ source: ids.length > 0 ? ids : null });
     },
     [setParams],
   );
@@ -89,8 +62,6 @@ export const ReadingListContent: FC<Props> = ({ articles, sources, cards }) => {
     [setParams],
   );
 
-  const dateThreshold = useMemo(() => getDateThreshold(dateRange), [dateRange]);
-
   const filteredArticles = useMemo(() => {
     const lowerQuery = query.toLowerCase();
     const filtered = articles.filter((article) => {
@@ -98,12 +69,6 @@ export const ReadingListContent: FC<Props> = ({ articles, sources, cards }) => {
         return false;
       }
       if (sourceIds.length > 0 && !sourceIds.includes(article.sourceId)) {
-        return false;
-      }
-      if (
-        dateRange !== 'all' &&
-        new Date(article.publishedAt) < dateThreshold
-      ) {
         return false;
       }
       return true;
@@ -114,14 +79,12 @@ export const ReadingListContent: FC<Props> = ({ articles, sources, cards }) => {
         new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime();
       return sortOrder === 'oldest' ? -diff : diff;
     });
-  }, [articles, query, sourceIds, dateRange, dateThreshold, sortOrder]);
+  }, [articles, query, sourceIds, sortOrder]);
 
   const filterBarProps = {
-    dateRange,
-    onDateChange: handleDateChange,
     onQueryChange: handleQueryChange,
     onSortChange: handleSortChange,
-    onSourceToggle: handleSourceToggle,
+    onSourceChange: handleSourceChange,
     query,
     sortOrder,
     sourceIds,
