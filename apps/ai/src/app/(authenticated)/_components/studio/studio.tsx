@@ -9,19 +9,11 @@ import {
   ForkIcon,
   FullscreenIcon,
   IconButton,
-  Textarea,
 } from '@k8o/arte-odyssey';
 import { DefaultChatTransport, type UIMessage } from 'ai';
 import { useTheme } from 'next-themes';
 import { useRouter, useSearchParams } from 'next/navigation';
-import {
-  type KeyboardEvent,
-  useCallback,
-  useEffect,
-  useReducer,
-  useRef,
-  useState,
-} from 'react';
+import { useCallback, useEffect, useReducer, useRef, useState } from 'react';
 
 import { ThemedPreviewIframe } from '@/app/_components/preview-iframe';
 import { ToggleTheme } from '@/app/_components/toggle-theme';
@@ -40,7 +32,7 @@ import {
 import { loadProjectAndApplyAction } from '@/features/projects/interface/actions';
 
 import { StreamPreview } from '../stream-preview';
-import { ChatMessage } from './chat-message';
+import { ChatPanel } from './chat-panel';
 import { CodePanel } from './code-panel';
 import { CopyCodeButton } from './copy-code-button';
 import { PreviewLoading } from './preview-loading';
@@ -78,7 +70,6 @@ export const Studio = () => {
   const [pendingSelect, setPendingSelect] = useState<{ title: string } | null>(
     null,
   );
-  const messagesEndRef = useRef<HTMLDivElement>(null);
   const frameRef = useRef<HTMLDivElement>(null);
   // 直近の指示。onFinish（一度きりのクロージャ）から版に保存して会話復元に使う。
   const lastPromptRef = useRef('');
@@ -195,18 +186,9 @@ export const Studio = () => {
     [],
   );
 
-  // 末尾追従は「メッセージ追加」「生成状態の変化」の節目だけにする。messages 全体を依存に
-  // すると生成中は毎トークン smooth スクロールが連打されてもたつくため、件数と status で間引く。
-  useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-  }, [messages.length, status]);
-
   const lastAssistant = messages.findLast(
     (message) => message.role === 'assistant',
   );
-  // 生成中表示は「会話の最後のメッセージ」だけに付ける。submitted 中はまだ assistant が
-  // 増えていない（最後は user メッセージ）ので、直前ターンの回答が「考え中」に化けない。
-  const lastMessageId = messages.at(-1)?.id;
   const streamingCode =
     lastAssistant === undefined
       ? null
@@ -235,13 +217,18 @@ export const Studio = () => {
   const emptyStateHint = hasResult
     ? '続けて指示すると、このUIを更新します。例:「色を温かいトーンに」「余白を広げて」'
     : '例: 「お問い合わせフォームのカード」「料金プランの3カラム」';
+  let chatErrorText: string | null = null;
+  if (applyError !== null) {
+    chatErrorText = `${applyError} 「直して」と送ると修正します。`;
+  } else if (error !== undefined) {
+    chatErrorText = 'エラーが発生しました。再試行してください。';
+  }
   const currentProject =
     persistence.projects.find(
       (project) => project.id === persistence.projectId,
     ) ?? null;
 
-  const handleGenerate = async (): Promise<void> => {
-    const text = input.trim();
+  const handleGenerate = async (text: string): Promise<void> => {
     if (text === '' || isBusy) {
       return;
     }
@@ -264,13 +251,6 @@ export const Studio = () => {
         },
       },
     );
-  };
-
-  const handleKeyDown = (event: KeyboardEvent<HTMLTextAreaElement>): void => {
-    if (event.key === 'Enter' && (event.metaKey || event.ctrlKey)) {
-      event.preventDefault();
-      void handleGenerate();
-    }
   };
 
   const handleFullscreen = (): void => {
@@ -560,121 +540,26 @@ export const Studio = () => {
             mobileTab === 'chat' ? 'flex' : 'hidden'
           }`}
         >
-          <div className="flex-1 overflow-y-auto p-6">
-            {messages.length === 0 ? (
-              <div className="flex h-full flex-col items-center justify-center gap-2 px-4 text-center">
-                <p className="text-fg-base text-sm font-bold">
-                  {emptyStateTitle}
-                </p>
-                <p className="text-fg-mute text-sm leading-relaxed">
-                  {emptyStateHint}
-                </p>
-              </div>
-            ) : (
-              <div className="flex flex-col gap-5">
-                {messages.map((message) => {
-                  // 生成中の最後の assistant だけは実況（毎トークン変化）を出す。これ以外の
-                  // 確定メッセージは memo 済みの ChatMessage に委ね、履歴の再パースを避ける。
-                  const working =
-                    isBusy &&
-                    message.id === lastMessageId &&
-                    message.role === 'assistant';
-                  if (working) {
-                    return (
-                      <div className="flex flex-col gap-1.5" key={message.id}>
-                        <span className="text-fg-mute text-xs font-bold">
-                          AI
-                        </span>
-                        <p className="text-fg-mute text-sm leading-relaxed motion-safe:animate-pulse">
-                          {generatingStatus}
-                        </p>
-                      </div>
-                    );
-                  }
-                  return <ChatMessage key={message.id} message={message} />;
-                })}
-                {status === 'submitted' ? (
-                  <div className="flex flex-col gap-1.5">
-                    <span className="text-fg-mute text-xs font-bold">AI</span>
-                    <p className="text-fg-mute text-sm leading-relaxed motion-safe:animate-pulse">
-                      {generatingStatus}
-                    </p>
-                  </div>
-                ) : null}
-                <div ref={messagesEndRef} />
-              </div>
-            )}
-          </div>
-
-          <div className="border-border-mute flex flex-col gap-2 border-t p-4">
-            <Textarea
-              aria-label="作りたいもの"
-              disabled={isBusy}
-              onChange={(event) => {
-                setInput(event.target.value);
-              }}
-              onKeyDown={handleKeyDown}
-              placeholder="作りたい画面を入力（例: お問い合わせフォームのカード）"
-              rows={3}
-              value={input}
-            />
-            <div className="flex items-center justify-between gap-2">
-              <div className="flex items-center gap-2">
-                <span className="text-fg-mute text-xs">モデル</span>
-                <Button
-                  color="gray"
-                  disabled={isBusy}
-                  onClick={() => {
-                    dispatch({ type: 'select-model', model: 'fugu' });
-                  }}
-                  size="sm"
-                  variant={
-                    state.selectedModel === 'fugu' ? 'solid' : 'skeleton'
-                  }
-                >
-                  fugu
-                </Button>
-                <Button
-                  color="gray"
-                  disabled={isBusy}
-                  onClick={() => {
-                    dispatch({ type: 'select-model', model: 'fugu-ultra' });
-                  }}
-                  size="sm"
-                  variant={
-                    state.selectedModel === 'fugu-ultra' ? 'solid' : 'skeleton'
-                  }
-                >
-                  ultra
-                </Button>
-              </div>
-              <div className="flex items-center gap-2">
-                <span className="text-fg-mute hidden text-xs lg:inline">
-                  ⌘/Ctrl+Enter
-                </span>
-                <Button
-                  color="primary"
-                  disabled={isBusy || input.trim() === ''}
-                  onAction={handleGenerate}
-                  size="sm"
-                  variant="solid"
-                >
-                  生成する
-                </Button>
-              </div>
-            </div>
-            {applyError === null ? (
-              error === undefined ? null : (
-                <span className="text-fg-error text-xs">
-                  エラーが発生しました。再試行してください。
-                </span>
-              )
-            ) : (
-              <span className="text-fg-error text-xs leading-relaxed">
-                {applyError} 「直して」と送ると修正します。
-              </span>
-            )}
-          </div>
+          <ChatPanel
+            emptyStateHint={emptyStateHint}
+            emptyStateTitle={emptyStateTitle}
+            errorText={chatErrorText}
+            generatingStatus={generatingStatus}
+            input={input}
+            messages={messages}
+            onInputChange={setInput}
+            onSelectModel={(model) => {
+              dispatch({ type: 'select-model', model });
+            }}
+            onStop={() => {
+              void stop();
+            }}
+            onSubmit={(text) => {
+              void handleGenerate(text);
+            }}
+            selectedModel={state.selectedModel}
+            status={status}
+          />
         </div>
 
         <div
