@@ -14,7 +14,7 @@ allowBuilds:
 blockExoticSubdeps: true
 
 catalog:
-  '@k8o/arte-odyssey': 10.6.1
+  '@k8o/arte-odyssey': 10.7.0
   '@next/env': 16.2.9
   '@next/mdx': 16.2.9
   '@next/third-parties': 16.2.9
