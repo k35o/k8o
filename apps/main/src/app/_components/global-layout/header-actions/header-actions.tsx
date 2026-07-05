@@ -2,7 +2,6 @@ import { type FC, Suspense } from 'react';
 
 import { ContactToMe } from '../../contact-to-me';
 import { ToggleTheme } from '../../toggle-theme';
-import { LlmLink } from '../llm-link';
 import { NotificationsLink } from '../notifications-link';
 
 export const HeaderActions: FC = () => (
@@ -12,6 +11,5 @@ export const HeaderActions: FC = () => (
     </Suspense>
     <NotificationsLink />
     <ToggleTheme />
-    <LlmLink />
   </div>
 );
