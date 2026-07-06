@@ -54,7 +54,7 @@ const FeatureList: FC<{
     );
     if (recentOnly) {
       result = result.filter(
-        (f) => new Date(f.updatedAt).getTime() >= recentThresholdMs,
+        (f) => new Date(f.date).getTime() >= recentThresholdMs,
       );
     }
     if (query) {
@@ -164,8 +164,7 @@ export const BaselineFeatureList: FC<{
         (feature.status === 'newly' && visibility.newly) ||
         (feature.status === 'widely' && visibility.widely);
       const matchesRecent =
-        !recentOnly ||
-        new Date(feature.updatedAt).getTime() >= recentThresholdMs;
+        !recentOnly || new Date(feature.date).getTime() >= recentThresholdMs;
       const matchesQuery =
         !query ||
         feature.name.toLowerCase().includes(lowerQuery) ||

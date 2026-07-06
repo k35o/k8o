@@ -7,59 +7,52 @@ import type { BlogLink } from '@/features/blog/interface/queries';
 import { BaselineFeatureList } from './baseline-feature-list';
 
 const now = Date.now();
-const toIso = (offsetMs: number): string =>
-  new Date(now - offsetMs).toISOString();
 const DAY_MS = 24 * 60 * 60 * 1000;
+const toDate = (offsetMs: number): string =>
+  new Date(now - offsetMs).toISOString().slice(0, 10);
 
 const FEATURES: BaselineFeature[] = [
   {
     featureId: 'popover',
     name: 'Popover API',
     status: 'widely',
-    date: '2026-01-27',
-    updatedAt: toIso(2 * DAY_MS),
+    date: toDate(2 * DAY_MS),
   },
   {
     featureId: 'view-transitions',
     name: 'View transitions',
     status: 'widely',
-    date: '2026-01-14',
-    updatedAt: toIso(30 * DAY_MS),
+    date: toDate(10 * DAY_MS),
   },
   {
     featureId: 'font-family-math',
     name: 'Math font family',
     status: 'newly',
-    date: '2026-03-24',
-    updatedAt: toIso(3 * DAY_MS),
+    date: toDate(3 * DAY_MS),
   },
   {
     featureId: 'iterator-concat',
     name: 'Iterator.concat()',
     status: 'newly',
-    date: '2026-03-24',
-    updatedAt: toIso(30 * DAY_MS),
+    date: toDate(10 * DAY_MS),
   },
   {
     featureId: 'scope',
     name: '@scope',
     status: 'widely',
     date: '2025-09-27',
-    updatedAt: toIso(60 * DAY_MS),
   },
   {
     featureId: 'promise-try',
     name: 'Promise.try()',
     status: 'newly',
     date: '2025-07-02',
-    updatedAt: toIso(90 * DAY_MS),
   },
   {
     featureId: 'highlight',
     name: 'Custom highlight',
     status: 'newly',
     date: '2025-03-12',
-    updatedAt: toIso(180 * DAY_MS),
   },
 ];
 
