@@ -5,6 +5,7 @@ import type {
   ArticleInput,
   ArticleUpdateInput,
 } from '../infrastructure/reading-list-repository';
+import { isHttpsUrl } from './url-validation';
 
 type CreateResult =
   | { ok: true; data: ArticleInput }
@@ -32,8 +33,8 @@ export const parseArticleCreateFormData = (
   if (!isYmdDate(publishedAt)) {
     return { ok: false, error: '公開日は YYYY-MM-DD 形式で入力してください' };
   }
-  if (!URL.canParse(url)) {
-    return { ok: false, error: '有効なURLを入力してください' };
+  if (!isHttpsUrl(url)) {
+    return { ok: false, error: '有効なURL(https)を入力してください' };
   }
 
   return {
@@ -62,8 +63,8 @@ export const parseArticleUpdateFormData = (
   if (!isYmdDate(publishedAt)) {
     return { ok: false, error: '公開日は YYYY-MM-DD 形式で入力してください' };
   }
-  if (!URL.canParse(url)) {
-    return { ok: false, error: '有効なURLを入力してください' };
+  if (!isHttpsUrl(url)) {
+    return { ok: false, error: '有効なURL(https)を入力してください' };
   }
 
   return {

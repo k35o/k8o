@@ -23,7 +23,8 @@ async function generateRssFeed() {
       title: slide.title,
       description: slide.description ?? '',
       url: `${SLIDES_URL}/${slide.slug}`,
-      date: slide.updatedAt,
+      guid: `${SLIDES_URL}/${slide.slug}`,
+      date: slide.createdAt,
       categories: slide.tags,
     })),
   });

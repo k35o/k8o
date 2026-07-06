@@ -19,6 +19,11 @@ export const metadata = {
     card: 'summary',
     description: '気になっている記事を集めて、あとから探せるようにしています。',
   },
+  alternates: {
+    types: {
+      'application/rss+xml': 'https://k8o.me/reading-list/feed',
+    },
+  },
 } satisfies Metadata;
 
 export default function Layout({ children }: LayoutProps<'/reading-list'>) {

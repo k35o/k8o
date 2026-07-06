@@ -1,7 +1,7 @@
 import * as z from 'zod/mini';
 
 import { incrementBlogView } from '@/features/blog/interface/commands';
-import { getBlogContent } from '@/features/blog/interface/queries';
+import { findPublishedBlogId } from '@/features/blog/interface/queries';
 
 const schema = z.object({
   slug: z.string().check(z.minLength(1), z.maxLength(200)),
@@ -20,8 +20,12 @@ export async function POST(req: Request): Promise<Response> {
     return new Response(null, { status: 400 });
   }
 
-  const blog = await getBlogContent(parsed.data.slug);
-  await incrementBlogView(blog.id);
+  const blogId = await findPublishedBlogId(parsed.data.slug);
+  if (blogId === null) {
+    return new Response(null, { status: 404 });
+  }
+
+  await incrementBlogView(blogId);
 
   return new Response(null, { status: 204 });
 }

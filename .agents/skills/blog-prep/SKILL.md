@@ -74,8 +74,9 @@ updatedAt: 2025-01-10
 
 ```typescript
 import type { Metadata } from 'next';
-import { getBlogContent } from '@/app/blog/_api';
+
 import { BlogLayout } from '@/app/blog/_components/blog-layout';
+import { getBlogContent } from '@/features/blog/interface/queries';
 
 const slug = 'my-article'; // 実際のスラグに置き換える
 
@@ -90,7 +91,7 @@ export async function generateMetadata(): Promise<Metadata> {
       title: blog.title,
       description: blog.description ?? undefined,
       url: `https://k8o.me/blog/${slug}`,
-      publishedTime: blog.createdAt.toString(),
+      publishedTime: blog.createdAt,
       authors: ['k8o'],
       siteName: 'k8o',
       locale: 'ja',
@@ -104,18 +105,31 @@ export async function generateMetadata(): Promise<Metadata> {
   };
 }
 
-export default function Layout({
-  children,
-}: LayoutProps<'/blog/my-article'>) { // 実際のスラグに置き換える
+// 実際のスラグに置き換える
+export default function Layout({ children }: LayoutProps<'/blog/my-article'>) {
   return <BlogLayout slug={slug}>{children}</BlogLayout>;
 }
 ```
+
+#### 数式（KaTeX）を使う記事の場合
+
+数式の変換（remark-math + rehype-katex）は `next.config.ts` で全記事に効いているため、本文では `$...$`・`$$...$$`・` ```math ` フェンスがそのまま使える。ただし **KaTeX の CSS はグローバルには読み込まれない**（数式を使わない記事に配信しないため）。数式を使う記事は `layout.tsx` の先頭に以下の 2 行を追加する:
+
+```typescript
+import 'katex/dist/katex.min.css';
+import '@/app/blog/_styles/katex-vertical.css';
+```
+
+忘れると `.katex-mathml` が隠れず**数式が二重表示に崩れる**。既存の例: `apps/main/src/app/blog/(articles)/font-family-math/layout.tsx`。
 
 ### 3. opengraph-image.tsx
 
 ```typescript
 import { OgImage } from '@/app/_components/og-image';
-import { getBlogContent } from '@/app/blog/_api';
+import {
+  getBlogContent,
+  getBlogOgCode,
+} from '@/features/blog/interface/queries';
 
 export const alt = '記事タイトル';
 export const size = {
@@ -126,11 +140,16 @@ export const size = {
 export const contentType = 'image/png';
 
 export default async function Image() {
-  const blog = await getBlogContent('{slug}');
+  // 実際のスラグに置き換える
+  const [blog, ogCode] = await Promise.all([
+    getBlogContent('my-article'),
+    getBlogOgCode('my-article'),
+  ]);
 
-  return await OgImage({
+  return OgImage({
     category: 'Blog',
     title: blog.title,
+    code: ogCode ?? undefined,
   });
 }
 ```
@@ -230,6 +249,7 @@ grep -rhoE "INSERT INTO tags [^;]*'[^']+'" packages/database/migrations/*.sql \
 
 - [ ] `page.mdx` 雛形作成
 - [ ] `layout.tsx` 作成
+- [ ] 数式（`$`・`$$`・` ```math `）を使う場合: `layout.tsx` に KaTeX CSS を import
 - [ ] `opengraph-image.tsx` 作成
 - [ ] Playgroundコンポーネント作成（必要な場合）
 - [ ] Storybookストーリー作成（必要な場合）

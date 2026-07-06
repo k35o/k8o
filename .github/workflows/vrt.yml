@@ -10,6 +10,10 @@ concurrency:
   group: vrt-${{ github.ref }}
   cancel-in-progress: true
 
+# VRT対象アプリ（pnpm workspaceのfilter名）。アプリを追加したらここに足す
+env:
+  VRT_APPS: main admin ai
+
 permissions:
   contents: read
   pull-requests: write
@@ -31,72 +35,84 @@ jobs:
       - name: Install Playwright
         run: pnpm run install-playwright
 
-      - name: Capture story screenshots (main)
-        run: pnpm -F main run test:vrt
-
-      - name: Capture story screenshots (admin)
-        run: pnpm -F admin run test:vrt
+      - name: Capture story screenshots
+        run: |
+          for app in $VRT_APPS; do
+            pnpm -F "$app" run test:vrt
+          done
 
       # main: 撮影結果を次回のPR比較用ベースラインとして保存する
-      - name: Upload baseline (main)
+      # （.vrt は隠しディレクトリで artifact の glob から漏れるため、非隠しディレクトリへ集める）
+      - name: Collect baselines
         if: github.event_name == 'push'
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
-        with:
-          name: vrt-baseline-main
-          path: apps/main/.vrt/actual
-          retention-days: 30
+        run: |
+          for app in $VRT_APPS; do
+            mkdir -p "vrt-baseline/$app"
+            cp -r "apps/$app/.vrt/actual" "vrt-baseline/$app/actual"
+          done
 
-      - name: Upload baseline (admin)
+      - name: Upload baseline
         if: github.event_name == 'push'
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
-          name: vrt-baseline-admin
-          path: apps/admin/.vrt/actual
+          name: vrt-baseline
+          path: vrt-baseline
           retention-days: 30
 
       # PR: mainの最新ベースラインを取得する（無いアプリは比較をスキップ）
       - name: Download baselines from main
         if: github.event_name == 'pull_request'
-        id: baseline
         env:
           GH_TOKEN: ${{ github.token }}
           REPO: ${{ github.repository }}
         run: |
           run_id=$(gh api "repos/$REPO/actions/workflows/vrt.yml/runs?branch=main&status=success&per_page=1" --jq '.workflow_runs[0].id // empty')
-          for app in main admin; do
-            if [ -n "$run_id" ] && gh run download "$run_id" --name "vrt-baseline-$app" --dir "apps/$app/.vrt/expected" --repo "$REPO"; then
-              echo "found_$app=true" >> "$GITHUB_OUTPUT"
+          downloaded=false
+          if [ -n "$run_id" ] && gh run download "$run_id" --name vrt-baseline --dir vrt-baseline --repo "$REPO"; then
+            downloaded=true
+          fi
+          for app in $VRT_APPS; do
+            if [ "$downloaded" = true ] && [ -d "vrt-baseline/$app/actual" ]; then
+              mkdir -p "apps/$app/.vrt"
+              cp -r "vrt-baseline/$app/actual" "apps/$app/.vrt/expected"
             else
-              echo "found_$app=false" >> "$GITHUB_OUTPUT"
+              echo "baseline not found: $app"
             fi
           done
 
-      - name: Compare against baseline (main)
-        if: github.event_name == 'pull_request' && steps.baseline.outputs.found_main == 'true'
-        id: compare-main
-        continue-on-error: true
-        working-directory: apps/main
-        run: pnpm exec svrt compare
+      - name: Compare against baselines
+        if: github.event_name == 'pull_request'
+        id: compare
+        run: |
+          failed=false
+          for app in $VRT_APPS; do
+            if [ ! -d "apps/$app/.vrt/expected" ]; then
+              echo "skip compare: $app (baseline not found)"
+              continue
+            fi
+            pnpm -F "$app" exec svrt compare || failed=true
+          done
+          echo "failed=$failed" >> "$GITHUB_OUTPUT"
 
-      - name: Compare against baseline (admin)
-        if: github.event_name == 'pull_request' && steps.baseline.outputs.found_admin == 'true'
-        id: compare-admin
-        continue-on-error: true
-        working-directory: apps/admin
-        run: pnpm exec svrt compare
+      - name: Collect reports
+        if: github.event_name == 'pull_request'
+        run: |
+          mkdir -p vrt-site
+          for app in $VRT_APPS; do
+            cp -r "apps/$app/.vrt" "vrt-site/$app"
+          done
 
       - name: Upload report
         if: github.event_name == 'pull_request'
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: vrt-report
-          path: |
-            apps/main/.vrt
-            apps/admin/.vrt
+          path: vrt-site
           retention-days: 14
 
+      # fork PR は secrets（Cloudflareトークン）を取得できないため除外する
       - name: Publish report to Cloudflare Pages
-        if: github.event_name == 'pull_request'
+        if: github.event_name == 'pull_request' && github.event.pull_request.head.repo.fork != true
         id: pages
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
@@ -108,15 +124,13 @@ jobs:
             echo 'CLOUDFLARE_API_TOKEN が未登録のためPagesへの公開をスキップ'
             exit 0
           fi
-          mkdir -p vrt-site
-          cp -r apps/main/.vrt vrt-site/main
-          cp -r apps/admin/.vrt vrt-site/admin
           pnpm exec wrangler pages project create k8o-vrt --production-branch=main 2>/dev/null || true
           pnpm exec wrangler pages deploy vrt-site --project-name=k8o-vrt --branch="pr-$PR_NUMBER" --commit-dirty=true
           echo "base=https://pr-$PR_NUMBER.k8o-vrt.pages.dev" >> "$GITHUB_OUTPUT"
 
+      # fork PR は GITHUB_TOKEN が read-only でコメント投稿に失敗するため除外する
       - name: Comment summary on PR
-        if: github.event_name == 'pull_request'
+        if: github.event_name == 'pull_request' && github.event.pull_request.head.repo.fork != true
         env:
           GH_TOKEN: ${{ github.token }}
           REPO: ${{ github.repository }}
@@ -124,13 +138,15 @@ jobs:
           RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
           PAGES_BASE: ${{ steps.pages.outputs.base }}
         run: |
-          main_url=''
-          admin_url=''
-          if [ -n "$PAGES_BASE" ]; then
-            main_url="$PAGES_BASE/main/report.html"
-            admin_url="$PAGES_BASE/admin/report.html"
-          fi
-          node .github/scripts/vrt-comment.mjs "main=apps/main/.vrt/report.json=$main_url" "admin=apps/admin/.vrt/report.json=$admin_url" > comment.md
+          args=()
+          for app in $VRT_APPS; do
+            url=''
+            if [ -n "$PAGES_BASE" ]; then
+              url="$PAGES_BASE/$app/report.html"
+            fi
+            args+=("$app=apps/$app/.vrt/report.json=$url")
+          done
+          node .github/scripts/vrt-comment.mjs "${args[@]}" > comment.md
           marker='<!-- vrt-report -->'
           comment_id=$(gh api "repos/$REPO/issues/$PR_NUMBER/comments" --paginate --jq ".[] | select(.body | startswith(\"$marker\")) | .id" | head -n1)
           # sticky comment: 既存があれば編集（PATCH）し、無ければ新規投稿する。
@@ -144,6 +160,6 @@ jobs:
       # 差分があっても CI は落とさず、warning 注釈で可視化するだけにする。
       # 意図した変更かの判断は人間が PR コメント（sticky）と report を見て行う。
       - name: Warn when differences exist
-        if: github.event_name == 'pull_request' && (steps.compare-main.outcome == 'failure' || steps.compare-admin.outcome == 'failure')
+        if: github.event_name == 'pull_request' && steps.compare.outputs.failed == 'true'
         run: |
           echo '::warning::視覚的な差分があります。PRコメントとvrt-report artifactを確認してください。'

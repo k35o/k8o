@@ -9,11 +9,16 @@ import {
 import { ExternalBlog } from './_components/external-blog';
 import { ScrollToTopOnPathChange } from './_components/scroll-to-top-on-path-change';
 
-import './_styles/katex-vertical.css';
+import './_styles/vertical-inline-code.css';
 
 export const metadata = {
   title: 'Blog',
   description: 'Webフロントエンドを中心に、日々のことも書いています。',
+  alternates: {
+    types: {
+      'application/rss+xml': 'https://k8o.me/blog/feed',
+    },
+  },
   openGraph: {
     title: 'Blog',
     description: 'Webフロントエンドを中心に、日々のことも書いています。',
@@ -32,10 +37,6 @@ export const metadata = {
 export default function Layout({ children }: LayoutProps<'/blog'>) {
   return (
     <>
-      <link
-        href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css"
-        rel="stylesheet"
-      />
       <ScrollToTopOnPathChange />
       <WritingModeProvider>
         <div className="mx-auto w-full max-w-5xl">

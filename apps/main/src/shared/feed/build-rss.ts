@@ -4,6 +4,8 @@ type FeedItem = {
   title: string;
   description: string;
   url: string;
+  // URL 変更に強い安定した一意 ID。未指定なら rss ライブラリが url にフォールバックする
+  guid?: string;
   date: string | Date;
   categories: readonly string[];
 };
@@ -31,6 +33,7 @@ export const buildRssFeed = (options: BuildRssFeedOptions): string => {
       title: item.title,
       description: item.description,
       url: item.url,
+      guid: item.guid ?? item.url,
       date: item.date,
       categories: [...item.categories],
     });

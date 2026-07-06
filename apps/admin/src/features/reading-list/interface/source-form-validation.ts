@@ -5,6 +5,7 @@ import {
   type ArticleSourceInput,
   type ArticleSourceType,
 } from '../infrastructure/reading-list-repository';
+import { isHttpsUrl } from './url-validation';
 
 type ParseResult =
   | { ok: true; data: ArticleSourceInput }
@@ -27,8 +28,8 @@ export const parseSourceFormData = (formData: FormData): ParseResult => {
     return { ok: false, error: 'タイプはfeedまたはmanualを指定してください' };
   }
 
-  if (!URL.canParse(url) || !URL.canParse(siteUrl)) {
-    return { ok: false, error: '有効なURLを入力してください' };
+  if (!(isHttpsUrl(url) && isHttpsUrl(siteUrl))) {
+    return { ok: false, error: '有効なURL(https)を入力してください' };
   }
 
   return { ok: true, data: { title, url, siteUrl, type } };

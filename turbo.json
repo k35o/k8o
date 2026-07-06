@@ -1,7 +1,13 @@
 {
   "$schema": "https://turborepo.com/schema.json",
   "globalEnv": ["NODE_ENV", "PORTLESS_URL", "VERCEL_ENV"],
-  "globalPassThroughEnv": ["CRON_SECRET", "GITHUB_TOKEN", "K8O_PUSH_API_KEY"],
+  "globalPassThroughEnv": [
+    "CRON_SECRET",
+    "GITHUB_TOKEN",
+    "K8O_PUSH_API_KEY",
+    "MAIN_REVALIDATE_URL",
+    "REVALIDATE_SECRET"
+  ],
   "tasks": {
     "dev": {
       "cache": false,

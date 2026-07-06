@@ -1,6 +1,7 @@
-import { cacheLife } from 'next/cache';
+import { cacheLife, cacheTag } from 'next/cache';
 
 import {
+  findPublishedBlogId as _findPublishedBlogId,
   getBlogToc as _getBlogToc,
   getBlog,
   getBlogMetadata,
@@ -12,12 +13,14 @@ import {
 import { getFeatureBlogMap as _getFeatureBlogMap } from '@/features/blog/application/feature-blog-map';
 import { getBlogOgCode as _getBlogOgCode } from '@/features/blog/application/og-code';
 import { estimateReadingTimeMinutes } from '@/features/blog/application/reading-time';
+import { DB_CONTENT_CACHE_TAG } from '@/shared/cache/cache-tags';
 
 import { getMarkdown } from './markdown';
 
 export async function getBlogContents() {
   'use cache';
   cacheLife('max');
+  cacheTag(DB_CONTENT_CACHE_TAG);
 
   const blogs = await getBlogs();
   return Promise.all(
@@ -43,6 +46,7 @@ export async function getBlogContents() {
 export async function getBlogContent(slug: string) {
   'use cache';
   cacheLife('max');
+  cacheTag(DB_CONTENT_CACHE_TAG);
 
   const blog = await getBlog(slug);
   const metadata = await getBlogMetadata(slug);
@@ -57,6 +61,10 @@ export async function getBlogContent(slug: string) {
     createdAt: metadata.createdAt,
     updatedAt: metadata.updatedAt,
   };
+}
+
+export function findPublishedBlogId(slug: string): Promise<number | null> {
+  return _findPublishedBlogId(slug);
 }
 
 export async function getBlogOgCode(slug: string) {
@@ -78,6 +86,7 @@ export async function getBlogToc(slug: string) {
 export async function getBlogsByTags(slug: string) {
   'use cache';
   cacheLife('max');
+  cacheTag(DB_CONTENT_CACHE_TAG);
 
   const blog = await getBlogContent(slug);
   return _getBlogsByTags(
@@ -97,6 +106,7 @@ export async function getBlogReadingTime(slug: string): Promise<number> {
 export async function getFeatureBlogMap() {
   'use cache';
   cacheLife('max');
+  cacheTag(DB_CONTENT_CACHE_TAG);
 
   const featureBlogMap = await _getFeatureBlogMap();
   return featureBlogMap;

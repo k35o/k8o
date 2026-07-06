@@ -1,8 +1,4 @@
-import { OgImage } from '@/app/_components/og-image';
-import {
-  getBlogContent,
-  getBlogOgCode,
-} from '@/features/blog/interface/queries';
+import { renderBlogOgImage } from '@/app/blog/_components/blog-og-image';
 
 export const alt = 'React19で変化したuseReducerの型から学ぶTypeScriptの型推論';
 export const size = {
@@ -12,15 +8,6 @@ export const size = {
 
 export const contentType = 'image/png';
 
-export default async function Image() {
-  const [blog, ogCode] = await Promise.all([
-    getBlogContent('react19-usereducer-ts-type-inference'),
-    getBlogOgCode('react19-usereducer-ts-type-inference'),
-  ]);
-
-  return OgImage({
-    category: 'Blog',
-    title: blog.title,
-    code: ogCode ?? undefined,
-  });
+export default function Image() {
+  return renderBlogOgImage('react19-usereducer-ts-type-inference');
 }

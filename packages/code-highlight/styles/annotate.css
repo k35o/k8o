@@ -83,5 +83,63 @@
       border-inline-end: 0.5em solid transparent;
       border-block-end: 0.5em solid rgb(80 140 220);
     }
+
+    /* コードブロックは常に暗背景（shiki plastic #21252b）。ツールバーはコードに
+       重ならないようコード上部のヘッダー行として流し込み、色はテーマトークンでは
+       なく背景に合わせた固定の淡色にする */
+    :scope {
+      /* 縦書き記事内でもコードブロックは横書きの島として扱い、
+         ヘッダー行とコードが縦に積まれるようにする */
+      writing-mode: horizontal-tb;
+      margin-block: 1rem;
+    }
+
+    .code-annotate-toolbar {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.35rem 1rem;
+      background-color: #21252b;
+      border-start-start-radius: 0.5rem;
+      border-start-end-radius: 0.5rem;
+    }
+
+    .code-annotate-lang {
+      font-size: 0.75rem;
+      line-height: 1;
+      color: rgb(169 178 195);
+      text-transform: lowercase;
+      user-select: none;
+    }
+
+    .code-annotate-copy {
+      margin-inline-start: auto;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0.3rem;
+      border-radius: 0.4rem;
+      color: rgb(169 178 195);
+      cursor: pointer;
+      transition:
+        color 0.15s ease,
+        background-color 0.15s ease;
+    }
+
+    .code-annotate-copy:hover {
+      color: rgb(255 255 255);
+      background-color: rgb(255 255 255 / 0.12);
+    }
+
+    .code-annotate-copy:focus-visible {
+      outline: 2px solid rgb(120 180 245);
+      outline-offset: 2px;
+    }
+  }
+
+  /* 縦書き記事(.writing-v)内では横書きの島が block 軸(水平)に並ぶため、
+     物理的な左右マージンで隣接ブロックとの間隔を確保する */
+  .writing-v .code-annotate-block {
+    margin-inline: 1rem;
   }
 }

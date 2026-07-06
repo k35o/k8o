@@ -1,12 +1,16 @@
 import { Anchor } from '@k8o/arte-odyssey';
+import { Suspense } from 'react';
 
 import { getBaselineFeatures } from '@/features/baseline/interface/queries';
 import { getFeatureBlogMap } from '@/features/blog/interface/queries';
 
-import { BaselineFeatureList } from './_components';
+import {
+  BaselineFeatureList,
+  BaselineFeatureListSkeleton,
+} from './_components';
 
 export default async function BaselinePage() {
-  const [features, blogMap] = await Promise.all([
+  const [{ features, nowMs }, blogMap] = await Promise.all([
     getBaselineFeatures(),
     getFeatureBlogMap(),
   ]);
@@ -15,11 +19,16 @@ export default async function BaselinePage() {
 
   return (
     <div className="flex flex-col gap-6">
-      <BaselineFeatureList
-        blogMap={blogMap}
-        currentYear={latestYear}
-        features={features}
-      />
+      {/* nuqs が searchParams（動的データ）を読むため、静的プリレンダリング時は
+          Suspense 境界が必要。境界内はリクエスト時にレンダリングされる。 */}
+      <Suspense fallback={<BaselineFeatureListSkeleton />}>
+        <BaselineFeatureList
+          blogMap={blogMap}
+          currentYear={latestYear}
+          features={features}
+          nowMs={nowMs}
+        />
+      </Suspense>
       <p className="text-fg-mute text-xs">
         Source:{' '}
         <Anchor href="https://webstatus.dev" openInNewTab>

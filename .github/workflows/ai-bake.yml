@@ -8,6 +8,11 @@ on:
     paths:
       - 'apps/ai/sandbox-template/**'
 
+# renovate の force-push などで同一ブランチに再bakeが多重起動しないよう直列化する（最新のみ実行）。
+concurrency:
+  group: ai-bake-${{ github.ref }}
+  cancel-in-progress: true
+
 permissions: {}
 
 jobs:

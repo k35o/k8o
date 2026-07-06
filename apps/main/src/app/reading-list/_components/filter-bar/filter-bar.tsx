@@ -1,19 +1,16 @@
 'use client';
 
 import {
-  Checkbox,
+  Autocomplete,
   FormControl,
   Heading,
   Select,
   Separator,
   TextField,
 } from '@k8o/arte-odyssey';
-import { type FC, useMemo } from 'react';
+import type { FC } from 'react';
 
 import {
-  DATE_RANGE_OPTIONS,
-  type DateRange,
-  isDateRange,
   isSortOrder,
   SORT_OPTIONS,
   type SortOrder,
@@ -29,26 +26,29 @@ type Props = {
   sources: readonly Source[];
   query: string;
   onQueryChange: (value: string) => void;
-  dateRange: DateRange;
-  onDateChange: (value: DateRange) => void;
   sortOrder: SortOrder;
   onSortChange: (value: SortOrder) => void;
   sourceIds: number[];
-  onSourceToggle: (id: number) => void;
+  onSourceChange: (ids: number[]) => void;
 };
 
 export const FilterBar: FC<Props> = ({
   sources,
   query,
   onQueryChange,
-  dateRange,
-  onDateChange,
   sortOrder,
   onSortChange,
   sourceIds,
-  onSourceToggle,
+  onSourceChange,
 }) => {
-  const selectedSet = useMemo(() => new Set(sourceIds), [sourceIds]);
+  const sourceOptions = sources
+    .filter(
+      (source) => source.articleCount > 0 || sourceIds.includes(source.id),
+    )
+    .map((source) => ({
+      value: String(source.id),
+      label: `${source.title} (${source.articleCount})`,
+    }));
 
   return (
     <div className="flex flex-col gap-5">
@@ -63,21 +63,6 @@ export const FilterBar: FC<Props> = ({
             }}
             placeholder="記事を検索..."
             value={query}
-          />
-        )}
-      />
-      <FormControl
-        label="期間"
-        renderInput={({ 'aria-labelledby': _, ...props }) => (
-          <Select
-            {...props}
-            onChange={(e) => {
-              if (isDateRange(e.target.value)) {
-                onDateChange(e.target.value);
-              }
-            }}
-            options={DATE_RANGE_OPTIONS}
-            value={dateRange}
           />
         )}
       />
@@ -97,26 +82,20 @@ export const FilterBar: FC<Props> = ({
         )}
       />
       <Separator color="subtle" />
-      <fieldset className="flex flex-col gap-2">
-        <legend className="text-fg-mute mb-1 text-xs font-medium">
-          ソース
-        </legend>
-        <ul className="flex max-h-80 flex-col gap-1 overflow-y-auto overscroll-contain">
-          {sources
-            .filter((source) => source.articleCount > 0)
-            .map((source) => (
-              <li key={source.id}>
-                <Checkbox
-                  label={`${source.title} (${source.articleCount})`}
-                  onChange={() => {
-                    onSourceToggle(source.id);
-                  }}
-                  value={selectedSet.has(source.id)}
-                />
-              </li>
-            ))}
-        </ul>
-      </fieldset>
+      <FormControl
+        helpText="複数のソースを選択できます"
+        label="ソース"
+        renderInput={(props) => (
+          <Autocomplete
+            {...props}
+            onChange={(values) => {
+              onSourceChange(values.map(Number));
+            }}
+            options={sourceOptions}
+            value={sourceIds.map(String)}
+          />
+        )}
+      />
     </div>
   );
 };

@@ -140,7 +140,7 @@ const fetchAllFeatures = async (
   return features;
 };
 
-const toBaselineFeature = (feature: ApiFeature): BaselineFeature => ({
+export const toBaselineFeature = (feature: ApiFeature): BaselineFeature => ({
   featureId: feature.feature_id,
   name: feature.name,
   status: feature.baseline.status,
@@ -161,7 +161,7 @@ type SnapshotRow = {
 
 // browser_implementations の差分検知はキー順に依存しないよう正規化して比較する。
 // DB 由来(JSON.parse)と webstatus API レスポンスでキー順が異なり得るため。
-const stableStringify = (value: unknown): string =>
+export const stableStringify = (value: unknown): string =>
   JSON.stringify(value, (_key, v: unknown) =>
     v !== null && typeof v === 'object' && !Array.isArray(v)
       ? Object.fromEntries(
