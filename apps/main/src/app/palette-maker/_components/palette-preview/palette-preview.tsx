@@ -44,11 +44,10 @@ export const PalettePreview: FC<Props> = ({ swatches }) => {
           </div>
         ))}
       </div>
-      {hasClamped ? (
-        <p className="text-fg-mute text-xs">
-          ＊はsRGB色域に収めるため彩度を自動調整した段です
-        </p>
-      ) : null}
+      {/* 表示/非表示でレイアウトが動かないよう、行の高さは常に確保する */}
+      <p className={`text-fg-mute text-xs ${hasClamped ? '' : 'invisible'}`}>
+        ＊はsRGB色域に収めるため彩度を自動調整した段です
+      </p>
     </div>
   );
 };

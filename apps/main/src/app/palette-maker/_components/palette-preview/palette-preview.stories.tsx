@@ -21,8 +21,8 @@ export const Primary: Story = {
     await expect(canvas.getByText('50')).toBeInTheDocument();
     await expect(canvas.getByText('950')).toBeInTheDocument();
     await expect(
-      canvas.queryByText('＊はsRGB色域に収めるため彩度を自動調整した段です'),
-    ).not.toBeInTheDocument();
+      canvas.getByText('＊はsRGB色域に収めるため彩度を自動調整した段です'),
+    ).not.toBeVisible();
   },
 };
 
@@ -34,7 +34,7 @@ export const WithClamped: Story = {
     const canvas = within(canvasElement);
     await expect(
       canvas.getByText('＊はsRGB色域に収めるため彩度を自動調整した段です'),
-    ).toBeInTheDocument();
+    ).toBeVisible();
   },
 };
 
