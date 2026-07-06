@@ -8,6 +8,7 @@ export type SiteEntryIcon =
   | 'contrastChecker'
   | 'colorQuiz'
   | 'radiusMaker'
+  | 'paletteMaker'
   | 'mojiCount'
   | 'htmlNest'
   | 'fluida'
@@ -80,6 +81,14 @@ const entries: readonly SiteEntry[] = [
     description: 'border-radiusを視覚的に操作してCSSを生成します。',
     kind: 'tool',
     icon: 'radiusMaker',
+  },
+  {
+    title: 'いろばしご',
+    link: '/palette-maker',
+    description:
+      'OKLCHの明度スケールで11段階のカラーパレットを生成し、コントラストを検証します。',
+    kind: 'tool',
+    icon: 'paletteMaker',
   },
   {
     title: 'もじカウント',
