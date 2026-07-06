@@ -6,10 +6,11 @@ export const HUE = {
   default: 250,
 } as const;
 
+// 初期表示でガマットクランプ（＊表示）が出ないよう、h=250で全段sRGB内に収まる値にする
 export const PEAK_CHROMA = {
   min: 0,
   max: 0.4,
-  default: 0.15,
+  default: 0.12,
 } as const;
 
 export const DEFAULT_TOKEN_NAME = 'primary';
