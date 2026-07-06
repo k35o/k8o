@@ -1,4 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
+import { NuqsTestingAdapter } from 'nuqs/adapters/testing';
 import { expect, userEvent, within } from 'storybook/test';
 
 import type { BaselineFeature } from '@/features/baseline/interface/queries';
@@ -76,8 +77,16 @@ const meta: Meta<typeof BaselineFeatureList> = {
   args: {
     features: FEATURES,
     blogMap: BLOG_MAP,
-    currentYear: '2026',
+    currentYear: toDate(0).slice(0, 4),
+    nowMs: now,
   },
+  decorators: [
+    (Story) => (
+      <NuqsTestingAdapter>
+        <Story />
+      </NuqsTestingAdapter>
+    ),
+  ],
 };
 
 export default meta;
