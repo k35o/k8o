@@ -24,6 +24,12 @@ if (!token) {
   process.exit(1);
 }
 
+// 焼いた snapshot の有効期限（最終使用からの寿命）。無期限(0)にすると再bakeのたびに
+// 旧 snapshot が消えず蓄積するため、期限を設けて自然失効させる。アクティブな snapshot は
+// runtime が起動のたびに last-used を更新するので失効しない。旧 snapshot はマージ後に
+// 参照されなくなった時点から期限切れで自動削除される（renovate の再bake頻度＜本 window）。
+const SNAPSHOT_EXPIRATION_MS = 90 * 24 * 60 * 60 * 1000;
+
 const here = import.meta.dirname;
 const templateDir = path.resolve(here, '..', 'sandbox-template');
 const pointerPath = path.resolve(
@@ -65,7 +71,7 @@ try {
     throw new Error('npm ci failed');
   }
   console.log('snapshotting...');
-  const snap = await sandbox.snapshot({ expiration: 0 });
+  const snap = await sandbox.snapshot({ expiration: SNAPSHOT_EXPIRATION_MS });
   console.log(`\n==== AI_TEMPLATE_SNAPSHOT_ID=${snap.snapshotId} ====\n`);
 
   // 焼いた snapshot ID と、焼いた時点のテンプレ内容ハッシュをコミット管理ファイルに書き出す。
