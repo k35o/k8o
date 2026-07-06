@@ -7,7 +7,6 @@ import { useEffect, useState, type FC } from 'react';
 
 import type { Slide } from '@/features/slides/application/split-slides';
 
-import { DeckPrint } from '../deck-print';
 import { useDeckController } from '../hooks/use-deck-controller';
 import { useBroadcastViewerHeartbeat } from '../hooks/use-presenter-lifecycle';
 import { NavButton } from '../nav-button';
@@ -149,7 +148,6 @@ export const DeckViewer: FC<{
           />
         </footer>
       )}
-      <DeckPrint slides={slides} />
     </section>
   );
 };
