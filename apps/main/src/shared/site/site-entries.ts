@@ -34,7 +34,7 @@ export const KIND_SECTION: Record<
     description: '日々の作業や遊びに使う、ちょっとした道具。',
   },
   reading: {
-    title: 'Reading',
+    title: 'Explore',
     description: '読んだり眺めたりする、書きもの・集めもの。',
   },
 };

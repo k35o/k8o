@@ -30,13 +30,13 @@ export const Tools: Story = {
   },
 };
 
-export const Reading: Story = {
+export const Explore: Story = {
   args: { kind: 'reading' },
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
 
     await expect(
-      canvas.getByRole('heading', { name: 'Reading' }),
+      canvas.getByRole('heading', { name: 'Explore' }),
     ).toBeInTheDocument();
     const readingCount = siteEntries.filter(
       (entry) => entry.kind === 'reading',
