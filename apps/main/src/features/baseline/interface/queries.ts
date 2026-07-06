@@ -8,7 +8,10 @@ export async function getBaselineFeatures() {
   cacheLife('minutes');
 
   const features = await _getBaselineFeatures();
-  return features;
+  // 「直近1週間」フィルタの基準時刻。component render では Date.now() を呼べない
+  // （React Compiler の purity ルール / 静的プリレンダリングの現在時刻制約）ため、
+  // キャッシュ境界内で解決して features と一緒に返す。鮮度は cacheLife('minutes') 相当。
+  return { features, nowMs: Date.now() };
 }
 
 export async function getBaselineMinVersions() {

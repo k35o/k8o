@@ -10,10 +10,13 @@ import {
 import { formatDate } from '@repo/helpers/date/format';
 import type { Route } from 'next';
 import Link from 'next/link';
-import { type FC, useMemo, useState } from 'react';
+import { useQueryStates } from 'nuqs';
+import { type FC, useMemo } from 'react';
 
 import type { BaselineFeature } from '@/features/baseline/interface/queries';
 import type { BlogLink } from '@/features/blog/interface/queries';
+
+import { baselineListParsers } from '../_utils/search-params';
 
 type StatusVisibility = {
   newly: boolean;
@@ -54,7 +57,7 @@ const FeatureList: FC<{
     );
     if (recentOnly) {
       result = result.filter(
-        (f) => new Date(f.updatedAt).getTime() >= recentThresholdMs,
+        (f) => new Date(f.date).getTime() >= recentThresholdMs,
       );
     }
     if (query) {
@@ -124,21 +127,15 @@ export const BaselineFeatureList: FC<{
   features: BaselineFeature[];
   blogMap: Record<string, BlogLink>;
   currentYear: string;
-}> = ({ features, blogMap, currentYear }) => {
-  const [visibility, setVisibility] = useState<StatusVisibility>({
-    newly: true,
-    widely: true,
-  });
-  const [query, setQuery] = useState('');
-  const [recentOnly, setRecentOnly] = useState(false);
-  const [recentThresholdMs, setRecentThresholdMs] = useState(0);
-
-  const toggleRecentOnly = () => {
-    if (!recentOnly) {
-      setRecentThresholdMs(Date.now() - SEVEN_DAYS_MS);
-    }
-    setRecentOnly((prev) => !prev);
-  };
+  nowMs: number;
+}> = ({ features, blogMap, currentYear, nowMs }) => {
+  const [params, setParams] = useQueryStates(baselineListParsers);
+  const { q: query, newly, widely, recent: recentOnly } = params;
+  const visibility = useMemo<StatusVisibility>(
+    () => ({ newly, widely }),
+    [newly, widely],
+  );
+  const recentThresholdMs = nowMs - SEVEN_DAYS_MS;
 
   const availableYears = useMemo(() => getAvailableYears(features), [features]);
 
@@ -164,8 +161,7 @@ export const BaselineFeatureList: FC<{
         (feature.status === 'newly' && visibility.newly) ||
         (feature.status === 'widely' && visibility.widely);
       const matchesRecent =
-        !recentOnly ||
-        new Date(feature.updatedAt).getTime() >= recentThresholdMs;
+        !recentOnly || new Date(feature.date).getTime() >= recentThresholdMs;
       const matchesQuery =
         !query ||
         feature.name.toLowerCase().includes(lowerQuery) ||
@@ -192,7 +188,7 @@ export const BaselineFeatureList: FC<{
               <TextField
                 {...props}
                 onChange={(e) => {
-                  setQuery(e.target.value);
+                  void setParams({ q: e.target.value || null });
                 }}
                 placeholder="機能名で検索..."
                 value={query}
@@ -205,27 +201,23 @@ export const BaselineFeatureList: FC<{
             <Checkbox
               label="Newly Available"
               onChange={() => {
-                setVisibility((prev) => ({
-                  ...prev,
-                  newly: !prev.newly,
-                }));
+                void setParams({ newly: !newly });
               }}
-              value={visibility.newly}
+              value={newly}
             />
             <Checkbox
               label="Widely Available"
               onChange={() => {
-                setVisibility((prev) => ({
-                  ...prev,
-                  widely: !prev.widely,
-                }));
+                void setParams({ widely: !widely });
               }}
-              value={visibility.widely}
+              value={widely}
             />
           </div>
           <Checkbox
             label="直近1週間の更新のみ"
-            onChange={toggleRecentOnly}
+            onChange={() => {
+              void setParams({ recent: !recentOnly });
+            }}
             value={recentOnly}
           />
         </div>
@@ -233,8 +225,15 @@ export const BaselineFeatureList: FC<{
 
       {defaultYear !== undefined && (
         <Tabs.Root
-          defaultSelectedId={defaultYear}
           ids={availableYears as [string, ...string[]]}
+          onChange={(id) => {
+            void setParams({ year: id === defaultYear ? null : id });
+          }}
+          selectedId={
+            params.year !== null && availableYears.includes(params.year)
+              ? params.year
+              : defaultYear
+          }
         >
           <Tabs.List label="年を選択">
             {availableYears.map((year) => {
