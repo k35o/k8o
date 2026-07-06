@@ -18,7 +18,7 @@
     "build-storybook": "storybook build"
   },
   "dependencies": {
-    "@ai-sdk/openai-compatible": "2.0.53",
+    "@ai-sdk/openai-compatible": "3.0.1",
     "@ai-sdk/react": "4.0.5",
     "@k8o/arte-odyssey": "catalog:",
     "@repo/code-highlight": "workspace:*",
