@@ -87,9 +87,20 @@ export const Default: Story = {
 };
 
 export const Empty: Story = {
+  args: {
+    messages: [],
+    emptyStateTitle: 'UI を生成しましょう',
+    emptyStateHint:
+      '例: 「お問い合わせフォームのカード」「料金プランの3カラム」',
+    suggestions: [
+      'お問い合わせフォームのカード',
+      '料金プランの3カラム',
+      'ヒーローセクション',
+    ],
+  },
   render: (args) => (
     <Frame>
-      <ChatPanel {...args} messages={[]} />
+      <ChatPanel {...args} />
     </Frame>
   ),
 };

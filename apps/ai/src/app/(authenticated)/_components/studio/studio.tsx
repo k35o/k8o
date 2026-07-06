@@ -223,6 +223,14 @@ export const Studio = () => {
   } else if (error !== undefined) {
     chatErrorText = 'エラーが発生しました。再試行してください。';
   }
+  // 初回（まだ結果がない）ときだけ、最初の一手を促すサジェストを出す。
+  const promptSuggestions = hasResult
+    ? []
+    : [
+        'お問い合わせフォームのカード',
+        '料金プランの3カラム',
+        'ヒーローセクション',
+      ];
   const currentProject =
     persistence.projects.find(
       (project) => project.id === persistence.projectId,
@@ -559,6 +567,7 @@ export const Studio = () => {
             }}
             selectedModel={state.selectedModel}
             status={status}
+            suggestions={promptSuggestions}
           />
         </div>
 

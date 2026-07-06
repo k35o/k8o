@@ -6,6 +6,7 @@ import {
   Conversation,
   Message,
   PromptInput,
+  Suggestion,
 } from '@k8o/arte-odyssey/ai';
 import type { UIMessage } from 'ai';
 import { type FC, memo, type ReactNode } from 'react';
@@ -16,6 +17,8 @@ import {
 } from '@/features/generation/application/parse-generation';
 
 type Model = 'fugu' | 'fugu-ultra';
+
+const NO_SUGGESTIONS: string[] = [];
 
 const AssistantRow: FC<{ children: ReactNode }> = ({ children }) => (
   <Message.Root from="assistant">
@@ -45,6 +48,7 @@ type Props = {
   generatingStatus: string;
   emptyStateTitle: string;
   emptyStateHint: string;
+  suggestions?: string[];
   errorText: string | null;
   selectedModel: Model;
   onInputChange: (value: string) => void;
@@ -60,6 +64,7 @@ export const ChatPanel: FC<Props> = ({
   generatingStatus,
   emptyStateTitle,
   emptyStateHint,
+  suggestions = NO_SUGGESTIONS,
   errorText,
   selectedModel,
   onInputChange,
@@ -74,11 +79,30 @@ export const ChatPanel: FC<Props> = ({
     <div className="flex min-h-0 flex-1 flex-col">
       <div className="min-h-0 flex-1">
         {messages.length === 0 ? (
-          <div className="flex h-full flex-col items-center justify-center gap-2 px-6 text-center">
-            <p className="text-fg-base text-sm font-bold">{emptyStateTitle}</p>
-            <p className="text-fg-mute text-sm leading-relaxed">
-              {emptyStateHint}
-            </p>
+          <div className="flex h-full flex-col items-center justify-center gap-4 px-6 text-center">
+            <div className="flex flex-col gap-2">
+              <p className="text-fg-base text-sm font-bold">
+                {emptyStateTitle}
+              </p>
+              <p className="text-fg-mute text-sm leading-relaxed">
+                {emptyStateHint}
+              </p>
+            </div>
+            {suggestions.length > 0 ? (
+              <div className="flex justify-center">
+                <Suggestion.List label="例">
+                  {suggestions.map((suggestion) => (
+                    <Suggestion.Item
+                      key={suggestion}
+                      onSelect={onSubmit}
+                      value={suggestion}
+                    >
+                      {suggestion}
+                    </Suggestion.Item>
+                  ))}
+                </Suggestion.List>
+              </div>
+            ) : null}
           </div>
         ) : (
           <Conversation.Root>
