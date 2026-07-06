@@ -1,0 +1,37 @@
+.root {
+  display: none;
+}
+
+@media print {
+  /* スライドを 16:9 のページとして出力する */
+  @page {
+    size: 1280px 720px;
+    margin: 0;
+  }
+
+  /* 印刷ルートが存在するときだけ、それ以外のサイト要素（ヘッダー等）を隠す。
+     :has() ガードにより、スライドを離脱した後の印刷では通常の印刷に戻る。 */
+  :global(body:has([data-slide-print]) > *:not([data-slide-print])) {
+    display: none !important;
+  }
+
+  .root {
+    display: block;
+    /* スライドの配色（背景・シンタックスハイライト等）をそのまま印刷に引き継ぐ。
+       Chrome/Edge/Opera は v136 未満だと無印プロパティ未対応なので -webkit- も併記する。 */
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  .page {
+    width: 1280px;
+    height: 720px;
+    overflow: hidden;
+    break-after: page;
+    break-inside: avoid;
+  }
+
+  .page:last-child {
+    break-after: auto;
+  }
+}

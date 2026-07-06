@@ -103,6 +103,15 @@ export const DeckViewer: FC<{
             >
               発表者モード
             </button>
+            <button
+              className="text-fg-mute hover:text-primary-fg cursor-pointer text-sm underline"
+              onClick={() => {
+                window.print();
+              }}
+              type="button"
+            >
+              PDF出力
+            </button>
           </div>
         </header>
       )}
