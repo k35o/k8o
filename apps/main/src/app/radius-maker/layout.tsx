@@ -7,7 +7,7 @@ export const metadata = {
   openGraph: {
     title: 'かどまるラボ',
     description: 'border-radiusを視覚的に操作してCSSを生成します。',
-    url: 'https://k8o.me/rounded-maker',
+    url: 'https://k8o.me/radius-maker',
     siteName: 'k8o',
     locale: 'ja',
     type: 'website',
