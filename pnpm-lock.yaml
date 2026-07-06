@@ -7,8 +7,8 @@ settings:
 catalogs:
   default:
     '@k8o/arte-odyssey':
-      specifier: 10.6.3
-      version: 10.6.3
+      specifier: 10.7.0
+      version: 10.7.0
     '@next/env':
       specifier: 16.2.9
       version: 16.2.9
@@ -154,7 +154,7 @@ importers:
     dependencies:
       '@k8o/arte-odyssey':
         specifier: 'catalog:'
-        version: 10.6.3(@types/react-dom@19.2.3(@types/react@19.2.17))(@types/react@19.2.17)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)(tailwindcss@4.3.1)(typescript@6.0.3)(zod@4.4.3)
+        version: 10.7.0(@types/react-dom@19.2.3(@types/react@19.2.17))(@types/react@19.2.17)(ai@7.0.4(zod@4.4.3))(react-dom@19.2.7(react@19.2.7))(react@19.2.7)(tailwindcss@4.3.1)(typescript@6.0.3)(zod@4.4.3)
       '@repo/database':
         specifier: workspace:*
         version: link:../../packages/database
@@ -266,7 +266,7 @@ importers:
         version: 4.0.5(react@19.2.7)(zod@4.4.3)
       '@k8o/arte-odyssey':
         specifier: 'catalog:'
-        version: 10.6.3(@types/react-dom@19.2.3(@types/react@19.2.17))(@types/react@19.2.17)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)(tailwindcss@4.3.1)(typescript@6.0.3)(zod@4.4.3)
+        version: 10.7.0(@types/react-dom@19.2.3(@types/react@19.2.17))(@types/react@19.2.17)(ai@7.0.4(zod@4.4.3))(react-dom@19.2.7(react@19.2.7))(react@19.2.7)(tailwindcss@4.3.1)(typescript@6.0.3)(zod@4.4.3)
       '@repo/code-highlight':
         specifier: workspace:*
         version: link:../../packages/code-highlight
@@ -378,7 +378,7 @@ importers:
     dependencies:
       '@k8o/arte-odyssey':
         specifier: 'catalog:'
-        version: 10.6.3(@types/react-dom@19.2.3(@types/react@19.2.17))(@types/react@19.2.17)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)(tailwindcss@4.3.1)(typescript@6.0.3)(zod@4.4.3)
+        version: 10.7.0(@types/react-dom@19.2.3(@types/react@19.2.17))(@types/react@19.2.17)(ai@7.0.4(zod@4.4.3))(react-dom@19.2.7(react@19.2.7))(react@19.2.7)(tailwindcss@4.3.1)(typescript@6.0.3)(zod@4.4.3)
       '@mdx-js/loader':
         specifier: 3.1.1
         version: 3.1.1
@@ -1658,8 +1658,8 @@ packages:
   '@jridgewell/trace-mapping@0.3.9':
     resolution: {integrity: sha512-3Belt6tdc8bPgAtbcmdtNJlirVoTmEb5e2gC94PnkwEW9jI6CAHUeoG85tjWP5WquqfavoMtMwiG4P926ZKKuQ==}
 
-  '@k8o/arte-odyssey@10.6.3':
-    resolution: {integrity: sha512-QqdHZ4vX2jsgRviKOz+SVgHGXsmzYK2gLxDGg96MEGZeCR/mWV+vumvU7XYlD0In0XVFOtYZFtyEgT/tpca36g==}
+  '@k8o/arte-odyssey@10.7.0':
+    resolution: {integrity: sha512-yVRPxXXAOKzpF2B0T+pWsPFADXmDeHmWNd6ScMlw/F8jwhW+s/oWdDIOXxi7EX4OatsLkvXv7d2yduRcI5S38A==}
     peerDependencies:
       '@json-render/core': '>=0.19.0'
       '@json-render/react': '>=0.19.0'
@@ -1667,8 +1667,10 @@ packages:
       '@openuidev/react-lang': '>=0.2.6'
       '@types/react': '>=19.0.0'
       '@types/react-dom': '>=19.0.0'
+      ai: '>=5.0.0'
       react: '>=19.0.0'
       react-dom: '>=19.0.0'
+      streamdown: '>=2.0.0'
       tailwindcss: '>=4.0.0'
       typescript: '>=6.0.0'
       zod: '>=4.4.0'
@@ -1680,6 +1682,10 @@ packages:
       '@openuidev/lang-core':
         optional: true
       '@openuidev/react-lang':
+        optional: true
+      ai:
+        optional: true
+      streamdown:
         optional: true
       zod:
         optional: true
@@ -7953,7 +7959,7 @@ snapshots:
       '@jridgewell/resolve-uri': 3.1.2
       '@jridgewell/sourcemap-codec': 1.5.5
 
-  '@k8o/arte-odyssey@10.6.3(@types/react-dom@19.2.3(@types/react@19.2.17))(@types/react@19.2.17)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)(tailwindcss@4.3.1)(typescript@6.0.3)(zod@4.4.3)':
+  '@k8o/arte-odyssey@10.7.0(@types/react-dom@19.2.3(@types/react@19.2.17))(@types/react@19.2.17)(ai@7.0.4(zod@4.4.3))(react-dom@19.2.7(react@19.2.7))(react@19.2.7)(tailwindcss@4.3.1)(typescript@6.0.3)(zod@4.4.3)':
     dependencies:
       '@types/react': 19.2.17
       '@types/react-dom': 19.2.3(@types/react@19.2.17)
@@ -7967,6 +7973,7 @@ snapshots:
       tailwindcss: 4.3.1
       typescript: 6.0.3
     optionalDependencies:
+      ai: 7.0.4(zod@4.4.3)
       zod: 4.4.3
     transitivePeerDependencies:
       - '@emotion/is-prop-valid'
