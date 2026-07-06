@@ -19,7 +19,7 @@
   },
   "dependencies": {
     "@ai-sdk/openai-compatible": "2.0.53",
-    "@ai-sdk/react": "3.0.215",
+    "@ai-sdk/react": "4.0.5",
     "@k8o/arte-odyssey": "catalog:",
     "@repo/code-highlight": "workspace:*",
     "@repo/database": "workspace:*",
