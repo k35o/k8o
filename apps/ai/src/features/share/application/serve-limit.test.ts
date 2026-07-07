@@ -140,13 +140,15 @@ describe('gatedServe', () => {
     });
 
     it('記録が失敗しても配信は止めず URL を返す', async () => {
-      const { deps, servedCount } = makeDeps({
+      const { deps, servedCount, recordedCount } = makeDeps({
         count: 0,
         recordThrows: true,
       });
       const url = await gatedServe(deps);
       expect(url).toBe('https://served.example');
       expect(servedCount()).toBe(1);
+      // best-effort: record を試みた（呼んでから例外を投げた）ことまで確認する。
+      expect(recordedCount()).toBe(1);
     });
   });
 
