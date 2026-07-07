@@ -3,6 +3,7 @@ import {
   CodeXmlIcon,
   ColorContrastIcon,
   ColorInfoIcon,
+  ColorScaleIcon,
   FlaskIcon,
   Heading,
   HorizontalWritingIcon,
@@ -12,7 +13,6 @@ import {
   PaletteIcon,
   ShieldCheckIcon,
   SlideIcon,
-  SparklesIcon,
   SquircleIcon,
 } from '@k8o/arte-odyssey';
 import type { ReactNode } from 'react';
@@ -32,7 +32,7 @@ const ICON: Record<SiteEntryIcon, ReactNode> = {
   contrastChecker: <ColorContrastIcon size="md" />,
   colorQuiz: <MixedColorIcon size="md" />,
   radiusMaker: <SquircleIcon size="md" />,
-  paletteMaker: <SparklesIcon size="md" />,
+  paletteMaker: <ColorScaleIcon size="md" />,
   mojiCount: <HorizontalWritingIcon size="md" />,
   htmlNest: <CodeXmlIcon size="md" />,
   fluida: <PaletteIcon size="md" />,
