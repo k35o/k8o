@@ -16,6 +16,7 @@
     "build": {
       "dependsOn": ["^build"],
       "env": [
+        "AI_SHARE_SERVE_LIMIT_PER_HOUR",
         "AI_TEMPLATE_SNAPSHOT_ID",
         "ALLOWED_EMAILS",
         "BETTER_AUTH_SECRET",

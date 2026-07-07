@@ -5,7 +5,12 @@ import {
   setVisibility,
 } from '@/features/projects/application/projects';
 
+import {
+  countRecentServes,
+  recordServe,
+} from '../infrastructure/serve-usage-repository';
 import { resolveServeWithCooldown } from './serve-cooldown';
+import { gatedServe, shareServeLimit } from './serve-limit';
 import { shareProvider } from './share-provider';
 
 export type PublishedShare = {
@@ -89,8 +94,10 @@ export const getPublicShare = async (
 };
 
 // 閲覧時に iframe へ出す配信 URL を解決する（Sandbox を起こして配信）。
-// 未認証の公開経路なので、slug 単位の single-flight + 短期クールダウンで匿名トラフィックによる
-// Sandbox cold start の濫発を抑える。
+// 未認証の公開経路なので二層で抑制する: (1) プロセス内 single-flight + 短期クールダウンで warm 中の
+// 重複を吸収し、(2) 通過したものは DB のグローバル上限（クロスインスタンス）で cold start/起動の
+// 絶対数を縛る。gatedServe を resolveServeWithCooldown に渡すことで、DB 評価・記録は「実際に
+// serve する」呼び出しでのみ走る（warm な cache/in-flight ヒットはカウントしない）。
 export const resolveShareEntry = async (
   slug: string,
 ): Promise<{ url: string } | null> => {
@@ -99,7 +106,14 @@ export const resolveShareEntry = async (
     return null;
   }
   const url = await resolveServeWithCooldown(slug, () =>
-    shareProvider.serve(slug, share.code),
+    gatedServe({
+      slug,
+      now: Date.now(),
+      limit: shareServeLimit(),
+      countRecentServes,
+      serve: () => shareProvider.serve(slug, share.code),
+      recordServe,
+    }),
   );
   if (url === null) {
     return null;
