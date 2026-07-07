@@ -55,6 +55,20 @@ export const PasteBaseColor: Story = {
   },
 };
 
+export const PasteAchromaticBaseColor: Story = {
+  play: async ({ canvasElement, userEvent }) => {
+    const canvas = within(canvasElement);
+    const hue = canvas.getByRole('spinbutton', { name: '色相 (H)' });
+    const hueBefore = hue.getAttribute('aria-valuenow');
+    const input = canvas.getByRole('textbox', { name: '基準色から取り込む' });
+    await userEvent.type(input, 'white');
+    const chroma = canvas.getByRole('spinbutton', { name: 'ピーク彩度 (C)' });
+    await expect(chroma).toHaveAttribute('aria-valuenow', '0');
+    // 無彩色の取り込みでは色相を動かさない
+    await expect(hue.getAttribute('aria-valuenow')).toBe(hueBefore);
+  },
+};
+
 export const RenameToken: Story = {
   play: async ({ canvasElement, userEvent }) => {
     const canvas = within(canvasElement);

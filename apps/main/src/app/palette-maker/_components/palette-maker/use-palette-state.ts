@@ -53,9 +53,17 @@ export const usePaletteState = () => {
   const setBaseColor = useCallback(
     (color: Color) => {
       const { c, h } = colorToOklch(color);
+      const nextChroma = between(
+        roundTo(c, 3),
+        PEAK_CHROMA.min,
+        PEAK_CHROMA.max,
+      );
+      // 無彩色は hue が不定（colorToOklch は 0 に丸める）なので、色相は現状維持する
       void setState({
-        hue: between(roundTo(h, 1), HUE.min, HUE.max),
-        chroma: between(roundTo(c, 3), PEAK_CHROMA.min, PEAK_CHROMA.max),
+        ...(nextChroma > 0 && {
+          hue: between(roundTo(h, 1), HUE.min, HUE.max),
+        }),
+        chroma: nextChroma,
       });
     },
     [setState],
