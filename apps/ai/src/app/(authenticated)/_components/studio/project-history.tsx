@@ -10,6 +10,7 @@ type ProjectHistoryProps = {
   onClose: () => void;
   projects: ProjectListItem[];
   currentProjectId: number | null;
+  emptyText?: string;
   onSelect: (projectId: number) => void;
 };
 
@@ -18,11 +19,13 @@ export const ProjectHistory: FC<ProjectHistoryProps> = ({
   onClose,
   projects,
   currentProjectId,
+  emptyText,
   onSelect,
 }) => (
   <Drawer isOpen={isOpen} onClose={onClose} side="left" title="履歴">
     <ProjectList
       currentProjectId={currentProjectId}
+      emptyText={emptyText}
       onSelect={onSelect}
       projects={projects}
     />

@@ -1,0 +1,111 @@
+'use client';
+
+import { useMemo, useState, type FC } from 'react';
+
+import {
+  DeckSlideView,
+  NavButton,
+  ProgressBar,
+  Stage,
+  useKeyboardNav,
+} from '@/app/_components/slide-deck';
+import { parseDeck } from '@/features/slides/application/parse-deck';
+
+type DeckPreviewProps = {
+  source: string | null;
+  isStreaming: boolean;
+};
+
+export const DeckPreview: FC<DeckPreviewProps> = ({ source, isStreaming }) => {
+  const slides = useMemo(() => parseDeck(source ?? ''), [source]);
+  const total = slides.length;
+  const [index, setIndex] = useState(0);
+
+  // 生成完了の瞬間に表紙へ戻す（生成中は末尾のスライドへ自動追従しているため）。
+  const [prevStreaming, setPrevStreaming] = useState(isStreaming);
+  if (prevStreaming !== isStreaming) {
+    setPrevStreaming(isStreaming);
+    if (!isStreaming) {
+      setIndex(0);
+    }
+  }
+
+  const safeIndex = total === 0 ? 0 : Math.min(index, total - 1);
+  // 生成中は書き込まれている最中のスライド（末尾）を見せて進捗が分かるようにする。
+  const displayIndex = isStreaming && total > 0 ? total - 1 : safeIndex;
+
+  const goTo = (target: number): void => {
+    if (total === 0 || isStreaming) {
+      return;
+    }
+    setIndex(Math.min(Math.max(target, 0), total - 1));
+  };
+
+  useKeyboardNav({
+    onNext: () => {
+      goTo(displayIndex + 1);
+    },
+    onPrev: () => {
+      goTo(displayIndex - 1);
+    },
+    onFirst: () => {
+      goTo(0);
+    },
+    onLast: () => {
+      goTo(total - 1);
+    },
+  });
+
+  if (total === 0) {
+    return (
+      <div className="text-fg-mute flex h-full items-center justify-center p-6 text-center text-sm leading-relaxed">
+        {isStreaming
+          ? 'スライドを生成しています…'
+          : '生成すると、ここにスライドのプレビューが表示されます'}
+      </div>
+    );
+  }
+
+  const current = slides[displayIndex] ?? slides[0];
+
+  return (
+    <div className="flex h-full min-h-0 flex-col">
+      <ProgressBar current={displayIndex} total={total} />
+      <div className="min-h-0 flex-1 px-4 pt-2">
+        <Stage key={displayIndex}>
+          {current === undefined ? null : <DeckSlideView slide={current} />}
+        </Stage>
+      </div>
+      {current !== undefined && current.notes.length > 0 ? (
+        <div className="px-4 pt-2">
+          <div className="border-border-mute text-fg-mute max-h-24 overflow-auto rounded-lg border px-3 py-2 text-xs leading-relaxed whitespace-pre-wrap">
+            <span className="text-fg-base font-bold">ノート: </span>
+            {current.notes.join('\n')}
+          </div>
+        </div>
+      ) : null}
+      <div className="flex items-center justify-between gap-2 px-4 py-2">
+        <NavButton
+          direction="prev"
+          disabled={isStreaming || displayIndex === 0}
+          onAction={() => {
+            goTo(displayIndex - 1);
+          }}
+        />
+        <p
+          aria-live="polite"
+          className="text-fg-mute text-sm font-medium tabular-nums"
+        >
+          <span className="text-primary-fg">{displayIndex + 1}</span> / {total}
+        </p>
+        <NavButton
+          direction="next"
+          disabled={isStreaming || displayIndex === total - 1}
+          onAction={() => {
+            goTo(displayIndex + 1);
+          }}
+        />
+      </div>
+    </div>
+  );
+};

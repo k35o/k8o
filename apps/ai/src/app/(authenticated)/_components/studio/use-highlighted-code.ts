@@ -3,13 +3,17 @@
 import type { HighlightedCode } from '@repo/code-highlight/tokenize';
 import { useEffect, useRef, useState } from 'react';
 
-import { highlightTsx } from '@/features/highlight/interface/actions';
+import {
+  type HighlightLang,
+  highlightGenerated,
+} from '@/features/highlight/interface/actions';
 
 // コード確定後に一度だけサーバアクションでハイライトを取得する（ストリーミング中は往復させない）。
 // import type なので shiki 本体はクライアントバンドルに載らない。
 export const useHighlightedCode = (
   code: string | null,
   isStreaming: boolean,
+  lang: HighlightLang = 'tsx',
 ): HighlightedCode | null => {
   const [state, setState] = useState<{
     code: string;
@@ -28,12 +32,12 @@ export const useHighlightedCode = (
     const requestId = requestRef.current + 1;
     requestRef.current = requestId;
     void (async () => {
-      const data = await highlightTsx(code);
+      const data = await highlightGenerated(code, lang);
       if (data !== null && requestRef.current === requestId) {
         setState({ code, data });
       }
     })();
-  }, [code, isStreaming, state]);
+  }, [code, isStreaming, state, lang]);
 
   // 不一致（＝取得中）はプレーン表示にさせる。
   return state?.code === code ? state.data : null;

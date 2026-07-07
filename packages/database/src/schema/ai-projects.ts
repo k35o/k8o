@@ -13,7 +13,7 @@ import { aiProjectVersions } from './ai-project-versions';
 import { user } from './auth-schema';
 
 // AI アプリ群で共有する識別子。新しい AI 機能を足すたびにここへ追加する。
-export const AI_APPS = ['ui-studio'] as const;
+export const AI_APPS = ['ui-studio', 'slides'] as const;
 export type AiApp = (typeof AI_APPS)[number];
 
 export const AI_VISIBILITIES = ['private', 'public'] as const;

@@ -1,0 +1,26 @@
+.frame {
+  container-type: size;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.box {
+  width: min(100cqw, calc(100cqh * 16 / 9));
+  aspect-ratio: 16 / 9;
+  container-type: size;
+}
+
+.content {
+  padding: 5cqi 6cqi;
+  font-size: 2.5cqi;
+  line-height: 1.6;
+  gap: 2cqi;
+}
+
+.watermark {
+  inset: auto -10cqw -25cqh auto;
+  width: 70cqw;
+  opacity: 0.04;
+  transform: rotate(-12deg);
+}

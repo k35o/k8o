@@ -1,0 +1,79 @@
+.h1 {
+  font-size: 5.5cqi;
+  font-weight: 700;
+  margin: 0 0 2cqi;
+  line-height: 1.1;
+  color: var(--color-fg-base);
+}
+
+.h2 {
+  font-size: 4cqi;
+  margin: 0 0 1.5cqi;
+  padding-bottom: 0.5cqi;
+  border-bottom-width: 0.2cqi;
+  border-bottom-style: solid;
+  line-height: 1.2;
+  font-weight: 700;
+}
+
+.h3 {
+  font-size: 3.2cqi;
+  margin: 0 0 1.2cqi;
+  padding-bottom: 0.4cqi;
+  border-bottom-width: 0.15cqi;
+  border-bottom-style: solid;
+  line-height: 1.2;
+  font-weight: 700;
+}
+
+.h4 {
+  font-size: 2.6cqi;
+  margin: 0 0 0.8cqi;
+  line-height: 1.3;
+  font-weight: 700;
+}
+
+.p {
+  font-size: 2cqi;
+  line-height: 1.6;
+  margin: 0 0 1.2cqi;
+}
+
+.ul,
+.ol {
+  font-size: 2cqi;
+  line-height: 1.6;
+  padding-inline-start: 4cqi;
+  margin: 0 0 1.2cqi;
+}
+
+.ul {
+  list-style-type: disc;
+}
+
+.ol {
+  list-style-type: decimal;
+}
+
+.li {
+  font-size: 2cqi;
+  margin: 0.25em 0;
+}
+
+.pre {
+  font-size: 1.6cqi;
+  margin: 0 0 1.2cqi;
+  padding: 1.2cqi 1.6cqi;
+  border-radius: 0.5cqi;
+  overflow: auto;
+  max-width: 100%;
+  background-color: var(--color-bg-subtle);
+}
+
+.blockquote {
+  font-size: 2.2cqi;
+  border-inline-start-style: solid;
+  border-inline-start-width: 0.3cqi;
+  padding-inline-start: 1.5cqi;
+  margin: 0 0 1.5cqi;
+}
