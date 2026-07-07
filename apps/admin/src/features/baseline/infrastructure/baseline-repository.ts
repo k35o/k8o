@@ -73,7 +73,12 @@ export const findBaselineSnapshots = async ({
     })
     .from(db._schema.baselineSnapshots)
     .where(where)
-    .orderBy(desc(db._schema.baselineSnapshots.date))
+    // date は YYYY-MM-DD で重複が多いため、一意な id を tiebreaker に足して
+    // ページ境界での行の重複・欠落を防ぐ。
+    .orderBy(
+      desc(db._schema.baselineSnapshots.date),
+      desc(db._schema.baselineSnapshots.id),
+    )
     .limit(pageSize)
     .offset((page - 1) * pageSize);
 

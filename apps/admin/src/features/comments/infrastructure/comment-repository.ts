@@ -67,7 +67,8 @@ export const findComments = async ({
       eq(db._schema.comments.feedbackId, db._schema.feedbacks.id),
     )
     .where(where)
-    .orderBy(desc(db._schema.comments.createdAt))
+    // created_at が同値でもページ境界で行が重複・欠落しないよう一意な id を tiebreaker に足す
+    .orderBy(desc(db._schema.comments.createdAt), desc(db._schema.comments.id))
     .limit(pageSize)
     .offset((page - 1) * pageSize);
 
@@ -125,11 +126,13 @@ export const findCommentStats = async (): Promise<CommentStats> => {
   };
 };
 
-// blog_comment は commentId にカスケード設定が無いため、
-// 先に紐付け行を削除してから本体を削除する。
+// blog_comment は commentId にカスケード設定が無いため、先に紐付け行を削除してから
+// 本体を削除する。途中失敗で紐付けだけ消える不整合を避けるため transaction で囲う。
 export const deleteCommentById = async (id: number): Promise<void> => {
-  await db
-    .delete(db._schema.blogComment)
-    .where(eq(db._schema.blogComment.commentId, id));
-  await db.delete(db._schema.comments).where(eq(db._schema.comments.id, id));
+  await db.transaction(async (tx) => {
+    await tx
+      .delete(db._schema.blogComment)
+      .where(eq(db._schema.blogComment.commentId, id));
+    await tx.delete(db._schema.comments).where(eq(db._schema.comments.id, id));
+  });
 };

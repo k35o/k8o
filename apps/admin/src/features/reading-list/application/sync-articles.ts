@@ -122,11 +122,18 @@ export async function syncArticles(): Promise<SyncResult> {
   const existingByUrl = new Map(existingArticles.map((a) => [a.url, a.title]));
 
   const newArticles: FeedArticle[] = [];
+  const seenNewUrls = new Set<string>();
   const articlesToUpdate: Array<{ url: string; title: string }> = [];
 
   for (const candidate of allCandidates) {
     const existingTitle = existingByUrl.get(candidate.url);
     if (existingTitle === undefined) {
+      // 複数フィードが同一 URL を配信する/同一フィードに同じ link が複数回現れると、
+      // articles_url_idx(unique) 違反で INSERT 全体が失敗するため、この同期内で重複排除する
+      if (seenNewUrls.has(candidate.url)) {
+        continue;
+      }
+      seenNewUrls.add(candidate.url);
       newArticles.push(candidate);
     } else if (existingTitle !== candidate.title) {
       articlesToUpdate.push({
@@ -149,7 +156,11 @@ export async function syncArticles(): Promise<SyncResult> {
         };
       },
     );
-    await db.insert(db._schema.articles).values(newArticleRows);
+    // cron と手動同期の並走で同一 URL が同時に入り得るため、unique 違反を握って冪等にする
+    await db
+      .insert(db._schema.articles)
+      .values(newArticleRows)
+      .onConflictDoNothing({ target: db._schema.articles.url });
   }
 
   if (articlesToUpdate.length > 0) {

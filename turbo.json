@@ -16,6 +16,7 @@
     "build": {
       "dependsOn": ["^build"],
       "env": [
+        "AI_GENERATE_LIMIT_PER_HOUR",
         "AI_TEMPLATE_SNAPSHOT_ID",
         "ALLOWED_EMAILS",
         "BETTER_AUTH_SECRET",
@@ -24,8 +25,13 @@
         "GITHUB_CLIENT_SECRET",
         "NEXT_PUBLIC_GOOGLE_ANALYTICS_ID",
         "SAKANA_API_KEY",
+        "SAKANA_BASE_URL",
+        "SUMMARY_MODEL",
         "TURSO_AUTH_TOKEN",
-        "TURSO_DATABASE_URL"
+        "TURSO_DATABASE_URL",
+        "VAPID_PRIVATE_KEY",
+        "VAPID_PUBLIC_KEY",
+        "VAPID_SUBJECT"
       ],
       "inputs": ["$TURBO_DEFAULT$", ".env", ".env.*"],
       "outputs": [".next/**", "!.next/cache/**"]

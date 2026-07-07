@@ -2,8 +2,8 @@ import { db } from '@repo/database';
 
 import { feedback } from './actions';
 
-vi.mock('@repo/database', () => ({
-  db: {
+vi.mock('@repo/database', () => {
+  const mockDb = {
     query: {
       blogs: {
         findFirst: vi.fn(),
@@ -21,14 +21,18 @@ vi.mock('@repo/database', () => ({
         }),
       }),
     }),
+    // submitFeedback は transaction で囲う。tx として db 自身を渡し、既存の
+    // db.insert モック・アサーションをそのまま活かす。
+    transaction: vi.fn((cb: (tx: typeof mockDb) => unknown) => cb(mockDb)),
     _schema: {
       comments: {
         id: 'comments.id',
       },
       blogComment: {},
     },
-  },
-}));
+  };
+  return { db: mockDb };
+});
 vi.mock('@/shared/validation/zod', () => ({
   configureZod: vi.fn(),
 }));

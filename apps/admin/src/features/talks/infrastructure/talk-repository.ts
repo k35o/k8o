@@ -106,8 +106,13 @@ export const updateTalkById = async (
     .where(eq(db._schema.talks.id, id));
 };
 
-// talk_tag は talkId にカスケード設定が無いため先に削除する。
+// talk_tag は talkId にカスケード設定が無いため先に削除する。途中失敗でタグ紐付けだけ
+// 消える不整合を避けるため transaction で囲う。
 export const deleteTalkById = async (id: number): Promise<void> => {
-  await db.delete(db._schema.talkTag).where(eq(db._schema.talkTag.talkId, id));
-  await db.delete(db._schema.talks).where(eq(db._schema.talks.id, id));
+  await db.transaction(async (tx) => {
+    await tx
+      .delete(db._schema.talkTag)
+      .where(eq(db._schema.talkTag.talkId, id));
+    await tx.delete(db._schema.talks).where(eq(db._schema.talks.id, id));
+  });
 };

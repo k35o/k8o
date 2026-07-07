@@ -1,6 +1,6 @@
 import { db } from '@repo/database';
 
-export async function getTags(page = 1): Promise<
+export async function getTags(): Promise<
   Array<{
     id: number;
     name: string;
@@ -25,8 +25,7 @@ export async function getTags(page = 1): Promise<
         },
       },
     },
-    limit: 100,
-    offset: (page - 1) * 100,
+    orderBy: (fields, { asc }) => asc(fields.name),
   });
 
   return tags.map((tag) => ({

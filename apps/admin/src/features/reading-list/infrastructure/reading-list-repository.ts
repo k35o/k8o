@@ -164,7 +164,17 @@ export const updateArticleSource = async (
 };
 
 export const deleteArticleSourceById = async (id: number): Promise<void> => {
-  await db
-    .delete(db._schema.articleSources)
-    .where(eq(db._schema.articleSources.id, id));
+  // articles.article_source_id は onDelete 未指定(NO ACTION)。子記事を残したままソースを
+  // 消すと FK 制約で失敗し（FK 非強制環境では孤児記事が残る）。子記事 → ソースの順で同一
+  // transaction で消す（配列順に実行され、削除時点で参照が無くなり FK を満たす）。
+  await db.transaction((tx) =>
+    Promise.all([
+      tx
+        .delete(db._schema.articles)
+        .where(eq(db._schema.articles.articleSourceId, id)),
+      tx
+        .delete(db._schema.articleSources)
+        .where(eq(db._schema.articleSources.id, id)),
+    ]),
+  );
 };

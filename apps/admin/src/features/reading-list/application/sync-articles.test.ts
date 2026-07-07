@@ -19,7 +19,9 @@ vi.mock('@repo/database', () => ({
       },
     },
     insert: vi.fn().mockReturnValue({
-      values: vi.fn(),
+      values: vi.fn().mockReturnValue({
+        onConflictDoNothing: vi.fn(),
+      }),
     }),
     update: vi.fn().mockReturnValue({
       set: vi.fn().mockReturnValue({
@@ -132,7 +134,9 @@ describe('syncArticles', () => {
         imageUrl: 'https://web.dev/og.png',
       });
 
-      const valuesMock = vi.fn();
+      const valuesMock = vi
+        .fn()
+        .mockReturnValue({ onConflictDoNothing: vi.fn() });
       vi.mocked(db.insert).mockReturnValue({ values: valuesMock } as never);
 
       await syncArticles();
@@ -174,7 +178,9 @@ describe('syncArticles', () => {
 
       vi.mocked(db.query.articles.findMany).mockResolvedValue([]);
 
-      const valuesMock = vi.fn();
+      const valuesMock = vi
+        .fn()
+        .mockReturnValue({ onConflictDoNothing: vi.fn() });
       vi.mocked(db.insert).mockReturnValue({ values: valuesMock } as never);
 
       await syncArticles();
@@ -441,7 +447,9 @@ describe('syncArticles', () => {
 
       vi.mocked(db.query.articles.findMany).mockResolvedValue([]);
 
-      const valuesMock = vi.fn();
+      const valuesMock = vi
+        .fn()
+        .mockReturnValue({ onConflictDoNothing: vi.fn() });
       vi.mocked(db.insert).mockReturnValue({ values: valuesMock } as never);
 
       const result = await syncArticles();
@@ -478,7 +486,9 @@ describe('syncArticles', () => {
 
       vi.mocked(db.query.articles.findMany).mockResolvedValue([]);
 
-      const valuesMock = vi.fn();
+      const valuesMock = vi
+        .fn()
+        .mockReturnValue({ onConflictDoNothing: vi.fn() });
       vi.mocked(db.insert).mockReturnValue({ values: valuesMock } as never);
 
       const result = await syncArticles();
@@ -527,7 +537,9 @@ describe('syncArticles', () => {
 
       vi.mocked(db.query.articles.findMany).mockResolvedValue([]);
 
-      const valuesMock = vi.fn();
+      const valuesMock = vi
+        .fn()
+        .mockReturnValue({ onConflictDoNothing: vi.fn() });
       vi.mocked(db.insert).mockReturnValue({ values: valuesMock } as never);
 
       const result = await syncArticles();
@@ -536,6 +548,52 @@ describe('syncArticles', () => {
       expect(valuesMock).toHaveBeenCalledWith([
         expect.objectContaining({ url: 'https://web.dev/blog/safe' }),
       ]);
+    });
+
+    it('同一同期内で重複する URL は1件だけ追加する', async () => {
+      vi.mocked(db.query.articleSources.findMany).mockResolvedValue([
+        {
+          id: 1,
+          title: 'web.dev',
+          url: 'https://web.dev/feed.xml',
+          siteUrl: 'https://web.dev',
+          type: 'feed' as const,
+          createdAt: '2026-01-01T00:00:00Z',
+          updatedAt: '2026-01-01T00:00:00Z',
+        },
+      ]);
+
+      mockParseString.mockResolvedValue({
+        items: [
+          {
+            title: '記事',
+            link: 'https://web.dev/blog/dup',
+            isoDate: '2026-03-10T00:00:00Z',
+          },
+          {
+            title: '記事（重複配信）',
+            link: 'https://web.dev/blog/dup',
+            isoDate: '2026-03-11T00:00:00Z',
+          },
+        ],
+      });
+
+      vi.mocked(db.query.articles.findMany).mockResolvedValue([]);
+
+      const onConflictMock = vi.fn();
+      const valuesMock = vi
+        .fn()
+        .mockReturnValue({ onConflictDoNothing: onConflictMock });
+      vi.mocked(db.insert).mockReturnValue({ values: valuesMock } as never);
+
+      const result = await syncArticles();
+
+      expect(result.newArticles).toBe(1);
+      expect(valuesMock).toHaveBeenCalledWith([
+        expect.objectContaining({ url: 'https://web.dev/blog/dup' }),
+      ]);
+      // unique 違反を握って冪等にするため onConflictDoNothing を必ず通す
+      expect(onConflictMock).toHaveBeenCalled();
     });
 
     it('既にDBに存在するURLの記事は追加しない', async () => {
