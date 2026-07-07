@@ -12,24 +12,9 @@ type Props = {
 export const NavButton: FC<Props> = ({ direction, disabled, onAction }) => (
   <IconButton
     color="transparent"
+    disabled={disabled}
     label={direction === 'prev' ? '前のスライド' : '次のスライド'}
     onAction={onAction}
-    renderItem={({
-      className,
-      children,
-      'aria-label': ariaLabel,
-      triggerProps,
-    }) => (
-      <button
-        aria-label={ariaLabel}
-        className={className}
-        disabled={disabled}
-        type="button"
-        {...triggerProps}
-      >
-        {children}
-      </button>
-    )}
   >
     <ChevronIcon direction={direction === 'prev' ? 'left' : 'right'} />
   </IconButton>
