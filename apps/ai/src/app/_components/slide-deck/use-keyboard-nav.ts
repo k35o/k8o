@@ -11,8 +11,10 @@ const NEXT_KEYS = new Set([
 ]);
 const PREV_KEYS = new Set(['ArrowLeft', 'ArrowUp', 'PageUp']);
 
-// apps/main の slides の useKeyboardNav を移植したもの（フルスクリーンキーは省略。
-// チャット入力等にフォーカスがある間は反応しない）。
+// apps/main の slides の useKeyboardNav を移植したもの（フルスクリーンキーは省略）。
+// デッキ専用ページと違いスタジオには多数の操作要素があるため、フォーカス可能な要素
+// （ボタン・リンク・スクロール可能なノート欄など）にフォーカスがある間は反応せず、
+// Space によるボタン起動や矢印キーでのスクロールといった既定動作に譲る。
 export const useKeyboardNav = ({
   onNext,
   onPrev,
@@ -36,6 +38,10 @@ export const useKeyboardNav = ({
       if (target instanceof HTMLElement) {
         const tag = target.tagName;
         if (tag === 'INPUT' || tag === 'TEXTAREA' || target.isContentEditable) {
+          return;
+        }
+        // ボタン等の tabIndex >= 0 な要素（body 以外）にフォーカスがある間は奪わない。
+        if (target !== document.body && target.tabIndex >= 0) {
           return;
         }
       }

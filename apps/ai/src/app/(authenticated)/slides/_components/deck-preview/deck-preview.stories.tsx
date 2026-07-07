@@ -99,6 +99,32 @@ export const WithNotes: Story = {
   },
 };
 
+export const KeyboardNav: Story = {
+  args: {
+    source: SAMPLE_DECK,
+    isStreaming: false,
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    // フォーカスが body にある間は矢印キーでスライドが進む。
+    await userEvent.keyboard('{ArrowRight}');
+    await expect(
+      await canvas.findByRole('heading', {
+        level: 2,
+        name: 'スライド機能のご紹介',
+      }),
+    ).toBeInTheDocument();
+    // ノート欄（フォーカス可能なスクロール領域）にフォーカスがある間は、
+    // デッキ操作にキーを奪わず既定動作（スクロール）に譲る。
+    const notes = canvas.getByRole('region', { name: '発表者ノート' });
+    notes.focus();
+    await userEvent.keyboard('{ArrowRight}');
+    await expect(
+      canvas.getByRole('heading', { level: 2, name: 'スライド機能のご紹介' }),
+    ).toBeInTheDocument();
+  },
+};
+
 export const Streaming: Story = {
   args: {
     // 生成中の途中経過（末尾のスライドが書きかけ）。
