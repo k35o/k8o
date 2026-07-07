@@ -78,10 +78,18 @@ export const DeckPreview: FC<DeckPreviewProps> = ({ source, isStreaming }) => {
       </div>
       {current !== undefined && current.notes.length > 0 ? (
         <div className="px-4 pt-2">
-          <div className="border-border-mute text-fg-mute max-h-24 overflow-auto rounded-lg border px-3 py-2 text-xs leading-relaxed whitespace-pre-wrap">
+          {/* max-h を超えたときキーボードでスクロールできるよう tabIndex でフォーカス可能にする
+              （スクロール領域の既知の例外なので a11y ルールを範囲抑制する）。 */}
+          {/* oxlint-disable jsx-a11y/no-noninteractive-tabindex */}
+          <section
+            aria-label="発表者ノート"
+            className="border-border-mute text-fg-mute max-h-24 overflow-auto rounded-lg border px-3 py-2 text-xs leading-relaxed whitespace-pre-wrap"
+            tabIndex={0}
+          >
             <span className="text-fg-base font-bold">ノート: </span>
             {current.notes.join('\n')}
-          </div>
+          </section>
+          {/* oxlint-enable jsx-a11y/no-noninteractive-tabindex */}
         </div>
       ) : null}
       <div className="flex items-center justify-between gap-2 px-4 py-2">

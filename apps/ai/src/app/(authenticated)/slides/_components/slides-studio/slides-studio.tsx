@@ -12,7 +12,7 @@ import {
 } from '@k8o/arte-odyssey';
 import { DefaultChatTransport, type UIMessage } from 'ai';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { useEffect, useReducer, useRef, useState } from 'react';
+import { useEffect, useMemo, useReducer, useRef, useState } from 'react';
 
 import { ToggleTheme } from '@/app/_components/toggle-theme';
 import {
@@ -107,8 +107,10 @@ export const SlidesStudio = () => {
     lastAssistant === undefined
       ? null
       : parseSlidesGeneration(messageText(lastAssistant)).source;
-  const streamingSlides =
-    streamingSource === null ? 0 : parseDeck(streamingSource).length;
+  const streamingSlides = useMemo(
+    () => (streamingSource === null ? 0 : parseDeck(streamingSource).length),
+    [streamingSource],
+  );
   const slideSuffix =
     streamingSlides > 0 ? `（${streamingSlides.toString()} 枚目）` : '';
   const generatingStatus =
