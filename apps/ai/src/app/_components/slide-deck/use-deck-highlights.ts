@@ -29,10 +29,17 @@ export const useDeckHighlights = (
     useState<ReadonlyMap<string, HighlightedCode>>(EMPTY);
   // 取得中・失敗したブロックを何度も再取得しないための試行済みキー。
   const attemptedRef = useRef(new Set<string>());
+  // 直近の取得関数。テーマ切替などで注入関数が変わったら配色が変わるため取り直す。
+  const lastHighlightRef = useRef(highlight);
 
   useEffect(() => {
     if (isStreaming || highlight === null) {
       return;
+    }
+    if (lastHighlightRef.current !== highlight) {
+      lastHighlightRef.current = highlight;
+      attemptedRef.current = new Set();
+      setHighlights(EMPTY);
     }
     const missing = slides
       .flatMap((slide) => extractCodeBlocks(slide.source))

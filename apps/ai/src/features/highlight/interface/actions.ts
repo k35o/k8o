@@ -41,6 +41,7 @@ const HIGHLIGHT_LANGS = new Set([
 export const highlightGenerated = async (
   code: string,
   lang: string,
+  theme: 'light' | 'dark' = 'dark',
 ): Promise<HighlightedCode | null> => {
   // オーナー専用ツールに合わせ濫用防止のため action もゲートする。
   const session = await requireAllowedSession(await headers());
@@ -51,5 +52,10 @@ export const highlightGenerated = async (
   if (code.length > MAX_CODE_LENGTH) {
     return null;
   }
-  return highlightCode(code, HIGHLIGHT_LANGS.has(lang) ? lang : 'text');
+  return highlightCode(
+    code,
+    HIGHLIGHT_LANGS.has(lang) ? lang : 'text',
+    // 引数はクライアントから改竄できるため、'light' 以外はすべて既定の暗色にする。
+    theme === 'light' ? 'one-light' : 'plastic',
+  );
 };

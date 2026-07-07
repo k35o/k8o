@@ -11,9 +11,11 @@ import {
   IconButton,
 } from '@k8o/arte-odyssey';
 import { DefaultChatTransport, type UIMessage } from 'ai';
+import { useTheme } from 'next-themes';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useEffect, useMemo, useReducer, useRef, useState } from 'react';
 
+import type { HighlightFn } from '@/app/_components/highlighted-code';
 import { DeckHighlightContext } from '@/app/_components/slide-deck';
 import { ToggleTheme } from '@/app/_components/toggle-theme';
 import {
@@ -61,6 +63,16 @@ export const SlidesStudio = () => {
   // 直近の指示。onFinish（一度きりのクロージャ）から版に保存して会話復元に使う。
   const lastPromptRef = useRef('');
   const persistence = useSlidesPersistence();
+  const { resolvedTheme } = useTheme();
+  // コードブロックのハイライトはアプリのテーマに合わせる（light は one-light、dark は plastic）。
+  // テーマ解決前（SSR直後）は null にして、無駄な取得と取り直しを避ける。
+  const deckHighlight = useMemo<HighlightFn | null>(() => {
+    if (resolvedTheme !== 'light' && resolvedTheme !== 'dark') {
+      return null;
+    }
+    const theme = resolvedTheme;
+    return (code, lang) => highlightGenerated(code, lang, theme);
+  }, [resolvedTheme]);
   const router = useRouter();
   const searchParams = useSearchParams();
   // URL の ?project=<id> を初回レンダーで一度だけ拾い、リロード/ブックマークから復元する。
@@ -471,7 +483,7 @@ export const SlidesStudio = () => {
             >
               {/* コードブロックのハイライト（server action）はここで注入する。
                   UI 側で直接 import すると Storybook が DB まで辿ってしまうため。 */}
-              <DeckHighlightContext.Provider value={highlightGenerated}>
+              <DeckHighlightContext.Provider value={deckHighlight}>
                 <DeckPreview
                   isStreaming={isBusy}
                   key={persistence.projectId ?? 'new'}
