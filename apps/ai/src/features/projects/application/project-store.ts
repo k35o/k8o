@@ -135,25 +135,30 @@ export const createProjectStore = <TContent extends ProjectContent>(config: {
   };
 
   // 最新版を複製して新プロジェクト（forkOf 付き・private）を作る。非所有なら null。
+  // 必要なのは最新版のコンテンツだけなので、getProject と違い全版（会話履歴）は読まない。
   const forkProject = async (input: {
     userId: string;
     sourceProjectId: number;
   }): Promise<{ projectId: number } | null> => {
-    const source = await getProject({
-      userId: input.userId,
+    const row = await selectProjectWithLatestVersion({
       projectId: input.sourceProjectId,
+      userId: input.userId,
     });
-    if (source === null) {
+    if (row === null) {
+      return null;
+    }
+    const content = config.parseContent(row.content);
+    if (content === null) {
       return null;
     }
     // フォークは指示（prompt）から生まれた版ではないので prompt は引き継がない。
-    const { prompt: _prompt, ...content } = source.content;
+    const { prompt: _prompt, ...forkContent } = content;
     const { projectId } = await insertProjectWithVersion({
       userId: input.userId,
       app: config.app,
-      title: `${source.title}（フォーク）`,
+      title: `${row.title}（フォーク）`,
       slug: generateSlug(),
-      content,
+      content: forkContent,
       forkOf: input.sourceProjectId,
     });
     return { projectId };
