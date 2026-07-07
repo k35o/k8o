@@ -85,12 +85,16 @@ export const WithNotes: Story = {
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
     await userEvent.click(canvas.getByRole('button', { name: '次のスライド' }));
+    // IconButton の onAction は transition 内で非同期に反映されるため、リトライする find 系で待つ。
     await expect(
-      canvas.getByRole('heading', { level: 2, name: 'スライド機能のご紹介' }),
+      await canvas.findByRole('heading', {
+        level: 2,
+        name: 'スライド機能のご紹介',
+      }),
     ).toBeInTheDocument();
     // Notes は本文には出ず、ノート欄に出る。
     await expect(
-      canvas.getByText(/ここは発表者向けのメモ。/u),
+      await canvas.findByText(/ここは発表者向けのメモ。/u),
     ).toBeInTheDocument();
   },
 };
