@@ -16,7 +16,12 @@ jobs:
   pavo:
     # Skip on PRs from forks: secrets are not exposed to fork workflows so the App
     # token step would fail anyway, and we don't want a permanent red Actions run.
-    if: ${{ github.event.pull_request.head.repo.fork != true }}
+    # review_comment はリポジトリの誰でも投稿できるため、コメント起点の実行は owner に限定する
+    # （write 権限 bot トークン + Claude トークンを持つため、第三者コメントでの起動を防ぐ）。
+    if: >-
+      ${{ github.event.pull_request.head.repo.fork != true &&
+          (github.event_name != 'pull_request_review_comment' ||
+           github.event.sender.login == github.repository_owner) }}
     runs-on: ubuntu-latest
     timeout-minutes: 10
     permissions:

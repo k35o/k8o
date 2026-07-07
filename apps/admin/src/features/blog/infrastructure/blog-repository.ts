@@ -86,7 +86,9 @@ export const findBlogs = async ({
       eq(db._schema.blogViews.blogId, db._schema.blogs.id),
     )
     .where(where)
-    .orderBy(orderBy)
+    // created_at / views は seed で重複するため、一意な id を tiebreaker に足して
+    // ページ境界での行の重複・欠落を防ぐ。
+    .orderBy(orderBy, desc(db._schema.blogs.id))
     .limit(pageSize)
     .offset((page - 1) * pageSize);
 

@@ -41,7 +41,7 @@ describe('getTags', () => {
     ]);
     vi.mocked(db.query.tags.findMany).mockImplementation(mockMany);
 
-    const tags = await getTags(1);
+    const tags = await getTags();
 
     expect(tags).toHaveLength(1);
     expect(tags[0]?.name).toBe('tag1');
