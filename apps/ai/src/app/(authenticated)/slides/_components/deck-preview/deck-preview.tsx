@@ -1,13 +1,16 @@
 'use client';
 
-import { useMemo, useState, type FC } from 'react';
+import { useContext, useMemo, useState, type FC } from 'react';
 
 import {
+  DeckHighlightContext,
+  DeckHighlightsContext,
   DeckPrint,
   DeckSlideView,
   NavButton,
   ProgressBar,
   Stage,
+  useDeckHighlights,
   useKeyboardNav,
 } from '@/app/_components/slide-deck';
 import { parseDeck } from '@/features/slides/application/parse-deck';
@@ -21,6 +24,9 @@ export const DeckPreview: FC<DeckPreviewProps> = ({ source, isStreaming }) => {
   const slides = useMemo(() => parseDeck(source ?? ''), [source]);
   const total = slides.length;
   const [index, setIndex] = useState(0);
+  // コードブロックのハイライトをデッキ単位で一括取得する（関数はスタジオから注入）。
+  const highlightFn = useContext(DeckHighlightContext);
+  const highlights = useDeckHighlights(slides, isStreaming, highlightFn);
 
   // 生成完了の瞬間に表紙へ戻す（生成中は末尾のスライドへ自動追従しているため）。
   const [prevStreaming, setPrevStreaming] = useState(isStreaming);
@@ -74,59 +80,63 @@ export const DeckPreview: FC<DeckPreviewProps> = ({ source, isStreaming }) => {
   const currentNotes = current?.notes ?? [];
 
   return (
-    <div className="flex h-full min-h-0 flex-col">
-      <ProgressBar current={displayIndex} total={total} />
-      <div className="min-h-0 flex-1 px-4 pt-2">
-        <Stage key={displayIndex}>
-          {current === undefined ? null : <DeckSlideView slide={current} />}
-        </Stage>
-      </div>
-      {deckHasNotes ? (
-        <div className="px-4 pt-2">
-          {/* max-h を超えたときキーボードでスクロールできるよう tabIndex でフォーカス可能にする
-              （スクロール領域の既知の例外なので a11y ルールを範囲抑制する）。 */}
-          {/* oxlint-disable jsx-a11y/no-noninteractive-tabindex */}
-          <section
-            aria-label="発表者ノート"
-            className="border-border-mute text-fg-mute h-24 overflow-auto rounded-lg border px-3 py-2 text-xs leading-relaxed whitespace-pre-wrap"
-            tabIndex={0}
-          >
-            {currentNotes.length > 0 ? (
-              <>
-                <span className="text-fg-base font-bold">ノート: </span>
-                {currentNotes.join('\n')}
-              </>
-            ) : (
-              'このスライドにノートはありません'
-            )}
-          </section>
-          {/* oxlint-enable jsx-a11y/no-noninteractive-tabindex */}
+    // 取得済みハイライトを配下の全スライド（DeckPrint 含む）へ配る。
+    <DeckHighlightsContext.Provider value={highlights}>
+      <div className="flex h-full min-h-0 flex-col">
+        <ProgressBar current={displayIndex} total={total} />
+        <div className="min-h-0 flex-1 px-4 pt-2">
+          <Stage key={displayIndex}>
+            {current === undefined ? null : <DeckSlideView slide={current} />}
+          </Stage>
         </div>
-      ) : null}
-      <div className="flex items-center justify-between gap-2 px-4 py-2">
-        <NavButton
-          direction="prev"
-          disabled={isStreaming || displayIndex === 0}
-          onAction={() => {
-            goTo(displayIndex - 1);
-          }}
-        />
-        <p
-          aria-live="polite"
-          className="text-fg-mute text-sm font-medium tabular-nums"
-        >
-          <span className="text-primary-fg">{displayIndex + 1}</span> / {total}
-        </p>
-        <NavButton
-          direction="next"
-          disabled={isStreaming || displayIndex === total - 1}
-          onAction={() => {
-            goTo(displayIndex + 1);
-          }}
-        />
+        {deckHasNotes ? (
+          <div className="px-4 pt-2">
+            {/* max-h を超えたときキーボードでスクロールできるよう tabIndex でフォーカス可能にする
+              （スクロール領域の既知の例外なので a11y ルールを範囲抑制する）。 */}
+            {/* oxlint-disable jsx-a11y/no-noninteractive-tabindex */}
+            <section
+              aria-label="発表者ノート"
+              className="border-border-mute text-fg-mute h-24 overflow-auto rounded-lg border px-3 py-2 text-xs leading-relaxed whitespace-pre-wrap"
+              tabIndex={0}
+            >
+              {currentNotes.length > 0 ? (
+                <>
+                  <span className="text-fg-base font-bold">ノート: </span>
+                  {currentNotes.join('\n')}
+                </>
+              ) : (
+                'このスライドにノートはありません'
+              )}
+            </section>
+            {/* oxlint-enable jsx-a11y/no-noninteractive-tabindex */}
+          </div>
+        ) : null}
+        <div className="flex items-center justify-between gap-2 px-4 py-2">
+          <NavButton
+            direction="prev"
+            disabled={isStreaming || displayIndex === 0}
+            onAction={() => {
+              goTo(displayIndex - 1);
+            }}
+          />
+          <p
+            aria-live="polite"
+            className="text-fg-mute text-sm font-medium tabular-nums"
+          >
+            <span className="text-primary-fg">{displayIndex + 1}</span> /{' '}
+            {total}
+          </p>
+          <NavButton
+            direction="next"
+            disabled={isStreaming || displayIndex === total - 1}
+            onAction={() => {
+              goTo(displayIndex + 1);
+            }}
+          />
+        </div>
+        {/* 印刷/PDF出力用の全スライド描画（画面では非表示） */}
+        <DeckPrint slides={slides} />
       </div>
-      {/* 印刷/PDF出力用の全スライド描画（画面では非表示） */}
-      <DeckPrint slides={slides} />
-    </div>
+    </DeckHighlightsContext.Provider>
   );
 };

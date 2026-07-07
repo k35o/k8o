@@ -61,7 +61,9 @@
 }
 
 .pre {
-  font-size: 1.6cqi;
+  /* main は 1.6cqi だが、16:9 に収まる行数を稼ぐため少し詰める */
+  font-size: 1.5cqi;
+  line-height: 1.5;
   margin: 0 0 1.2cqi;
   padding: 1.2cqi 1.6cqi;
   border-radius: 0.5cqi;

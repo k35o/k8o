@@ -5,6 +5,11 @@ export type DeckSlide = {
   isCover: boolean;
 };
 
+export type DeckCodeBlock = {
+  code: string;
+  lang: string;
+};
+
 const SEPARATOR = /^---\s*$/u;
 const FENCE_OPEN = /^(`{3,})/u;
 const NOTES_BLOCK = /<Notes>([\s\S]*?)<\/Notes>/gu;
@@ -39,6 +44,40 @@ const splitBySeparator = (source: string): string[] => {
   }
   chunks.push(current.join('\n'));
   return chunks;
+};
+
+// スライドの Markdown ソースからコードブロックを列挙する（ハイライトの事前取得用）。
+// splitBySeparator と同じフェンス規則（開きと同じ長さ以上のバッククォート行で閉じる）。
+export const extractCodeBlocks = (source: string): DeckCodeBlock[] => {
+  const blocks: DeckCodeBlock[] = [];
+  let fence: number | null = null;
+  let lang = '';
+  let lines: string[] = [];
+  for (const line of source.split('\n')) {
+    const fenceMatch = FENCE_OPEN.exec(line.trimStart());
+    if (fenceMatch?.[1] !== undefined) {
+      const { length } = fenceMatch[1];
+      if (fence === null) {
+        fence = length;
+        lang = line.trim().slice(length).trim();
+        lines = [];
+        continue;
+      }
+      if (length >= fence && line.trim() === '`'.repeat(length)) {
+        blocks.push({
+          code: lines.join('\n'),
+          lang: lang === '' ? 'text' : lang,
+        });
+        fence = null;
+        continue;
+      }
+    }
+    if (fence !== null) {
+      lines.push(line);
+    }
+  }
+  // 閉じフェンス未到達（ストリーミング途中）のブロックは確定していないため含めない。
+  return blocks;
 };
 
 const parseSlide = (chunk: string): DeckSlide => {

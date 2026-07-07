@@ -1,5 +1,5 @@
 import { cn } from '@repo/helpers/cn';
-import type { FC, ReactNode } from 'react';
+import type { CSSProperties, FC, ReactNode } from 'react';
 
 import styles from './md-parts.module.css';
 
@@ -47,8 +47,14 @@ export const Strong: FC<Props> = ({ children }) => (
   <strong className="text-primary-fg font-bold">{children}</strong>
 );
 
-export const Pre: FC<Props> = ({ children }) => (
-  <pre className={styles['pre']}>{children}</pre>
+// style はハイライト済みコードの配色（背景・文字色）の上書き用。
+export const Pre: FC<Props & { style?: CSSProperties | undefined }> = ({
+  children,
+  style,
+}) => (
+  <pre className={styles['pre']} style={style}>
+    {children}
+  </pre>
 );
 
 export const Blockquote: FC<Props> = ({ children }) => (

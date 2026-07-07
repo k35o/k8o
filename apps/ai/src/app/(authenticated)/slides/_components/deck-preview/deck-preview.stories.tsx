@@ -1,5 +1,8 @@
+import type { HighlightedCode } from '@repo/code-highlight/tokenize';
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
-import { expect, userEvent, within } from 'storybook/test';
+import { expect, userEvent, waitFor, within } from 'storybook/test';
+
+import { DeckHighlightContext } from '@/app/_components/slide-deck';
 
 import { DeckPreview } from './deck-preview';
 
@@ -130,6 +133,52 @@ export const KeyboardNav: Story = {
     await expect(
       canvas.getByRole('heading', { level: 2, name: 'スライド機能のご紹介' }),
     ).toBeInTheDocument();
+  },
+};
+
+// server action の代わりに使うフェイクのハイライト関数（1行=1トークンで色を付ける）。
+const fakeHighlight = (code: string): Promise<HighlightedCode | null> =>
+  Promise.resolve({
+    tokens: code.split('\n').map((line, index) => [
+      // a11y アドオンのコントラスト検査を満たす明るい色にする。
+      { content: line, offset: index, color: '#e6edf3' },
+    ]),
+    fg: '#abb2bf',
+    bg: '#282c34',
+  });
+
+export const Highlighted: Story = {
+  args: {
+    source: SAMPLE_DECK,
+    isStreaming: false,
+  },
+  // ハイライト関数はスタジオが注入する構造なので、ストーリーでも同じ形で注入する。
+  decorators: [
+    (Story) => (
+      <DeckHighlightContext.Provider value={fakeHighlight}>
+        <Story />
+      </DeckHighlightContext.Provider>
+    ),
+  ],
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    await userEvent.click(canvas.getByRole('button', { name: '次のスライド' }));
+    await userEvent.click(canvas.getByRole('button', { name: '次のスライド' }));
+    await expect(
+      await canvas.findByRole('heading', { level: 2, name: 'コードの見た目' }),
+    ).toBeInTheDocument();
+    // デッキ単位で取得したハイライトがコードブロックに適用される（キー照合を含む検証）。
+    await waitFor(() => {
+      const token = canvasElement.querySelector('pre code span');
+      expect(token).not.toBeNull();
+      expect(token).toHaveStyle({ color: '#e6edf3' });
+    });
+    // 印刷用ポータル（DeckPrint）にも同じハイライトが行き渡る。
+    await waitFor(() => {
+      expect(
+        document.body.querySelector('[data-slide-print] pre code span'),
+      ).not.toBeNull();
+    });
   },
 };
 

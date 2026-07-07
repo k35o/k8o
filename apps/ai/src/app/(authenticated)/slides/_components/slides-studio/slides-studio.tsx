@@ -14,6 +14,7 @@ import { DefaultChatTransport, type UIMessage } from 'ai';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useEffect, useMemo, useReducer, useRef, useState } from 'react';
 
+import { DeckHighlightContext } from '@/app/_components/slide-deck';
 import { ToggleTheme } from '@/app/_components/toggle-theme';
 import {
   generationReducer,
@@ -21,6 +22,7 @@ import {
 } from '@/features/generation/application/generation-store';
 import { messageText } from '@/features/generation/application/parse-generation';
 import { parseSlidesGeneration } from '@/features/generation/application/parse-slides-generation';
+import { highlightGenerated } from '@/features/highlight/interface/actions';
 import { loadSlidesProjectAction } from '@/features/projects/interface/actions';
 import { parseDeck } from '@/features/slides/application/parse-deck';
 
@@ -467,11 +469,15 @@ export const SlidesStudio = () => {
                 view === 'preview' ? 'bg-bg-surface relative h-full' : 'hidden'
               }
             >
-              <DeckPreview
-                isStreaming={isBusy}
-                key={persistence.projectId ?? 'new'}
-                source={deckSource}
-              />
+              {/* コードブロックのハイライト（server action）はここで注入する。
+                  UI 側で直接 import すると Storybook が DB まで辿ってしまうため。 */}
+              <DeckHighlightContext.Provider value={highlightGenerated}>
+                <DeckPreview
+                  isStreaming={isBusy}
+                  key={persistence.projectId ?? 'new'}
+                  source={deckSource}
+                />
+              </DeckHighlightContext.Provider>
               {/* 履歴/フォーク選択の読込中オーバーレイ。 */}
               {pendingSelect === null ? null : (
                 <PreviewLoading message="スライドを読み込んでいます…" />

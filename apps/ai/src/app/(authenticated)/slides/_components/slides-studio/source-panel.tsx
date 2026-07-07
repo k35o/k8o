@@ -2,8 +2,10 @@
 
 import type { FC } from 'react';
 
+import { useHighlightedCode } from '@/app/_components/highlighted-code';
+import { highlightGenerated } from '@/features/highlight/interface/actions';
+
 import { CodeView } from '../../../_components/studio/code-view';
-import { useHighlightedCode } from '../../../_components/studio/use-highlighted-code';
 
 type SourcePanelProps = {
   source: string | null;
@@ -11,7 +13,12 @@ type SourcePanelProps = {
 };
 
 export const SourcePanel: FC<SourcePanelProps> = ({ source, isStreaming }) => {
-  const highlighted = useHighlightedCode(source, isStreaming, 'markdown');
+  const highlighted = useHighlightedCode(
+    source,
+    isStreaming,
+    'markdown',
+    highlightGenerated,
+  );
   return (
     <CodeView
       code={source}

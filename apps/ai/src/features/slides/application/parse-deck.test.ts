@@ -1,4 +1,4 @@
-import { parseDeck } from './parse-deck';
+import { extractCodeBlocks, parseDeck } from './parse-deck';
 
 describe('parseDeck', () => {
   describe('正常系', () => {
@@ -87,6 +87,38 @@ describe('parseDeck', () => {
     it('数式の不等号（a < b）を末尾タグとして誤って捨てない', () => {
       const deck = parseDeck('## 見出し\na < b');
       expect(deck[0]?.source).toBe('## 見出し\na < b');
+    });
+  });
+});
+
+describe('extractCodeBlocks', () => {
+  describe('正常系', () => {
+    it('言語付きコードブロックを列挙できる', () => {
+      const blocks = extractCodeBlocks(
+        ['## 見出し', '```ts', 'const a = 1;', '```', '本文'].join('\n'),
+      );
+      expect(blocks).toEqual([{ code: 'const a = 1;', lang: 'ts' }]);
+    });
+
+    it('複数ブロックを順番どおりに返し、言語なしは text にする', () => {
+      const blocks = extractCodeBlocks(
+        ['```js', 'x', '```', '間', '```', 'plain', '```'].join('\n'),
+      );
+      expect(blocks).toEqual([
+        { code: 'x', lang: 'js' },
+        { code: 'plain', lang: 'text' },
+      ]);
+    });
+  });
+
+  describe('エッジケース', () => {
+    it('コードブロックが無ければ空配列を返す', () => {
+      expect(extractCodeBlocks('## 見出し\n本文')).toEqual([]);
+    });
+
+    it('閉じフェンス未到達（ストリーミング途中）のブロックは含めない', () => {
+      const blocks = extractCodeBlocks(['```ts', 'const a ='].join('\n'));
+      expect(blocks).toEqual([]);
     });
   });
 });
