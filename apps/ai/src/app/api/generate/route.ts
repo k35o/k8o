@@ -1,4 +1,10 @@
-import { convertToModelMessages, streamText, type UIMessage } from 'ai';
+import {
+  convertToModelMessages,
+  createUIMessageStreamResponse,
+  streamText,
+  toUIMessageStream,
+  type UIMessage,
+} from 'ai';
 import * as z from 'zod/mini';
 
 import { buildSystemPrompt } from '@/features/generation/application/build-system-prompt';
@@ -82,8 +88,11 @@ export async function POST(req: Request): Promise<Response> {
     },
   });
 
-  return result.toUIMessageStreamResponse({
-    onError: (error) =>
-      error instanceof Error ? error.message : '生成中にエラーが発生しました',
+  return createUIMessageStreamResponse({
+    stream: toUIMessageStream({
+      stream: result.stream,
+      onError: (error) =>
+        error instanceof Error ? error.message : '生成中にエラーが発生しました',
+    }),
   });
 }
