@@ -74,6 +74,14 @@ export const Cover: Story = {
     ).toBeInTheDocument();
     await expect(canvas.getByText('1')).toBeInTheDocument();
     await expect(canvas.getByText('/ 3')).toBeInTheDocument();
+    // ノートの無いスライドでもノート欄は固定表示され、レイアウトシフトが起きない。
+    await expect(
+      canvas.getByText('このスライドにノートはありません'),
+    ).toBeInTheDocument();
+    // 印刷/PDF出力用に全スライドが body 直下へ描画されている（画面では非表示）。
+    const printRoot = document.body.querySelector('[data-slide-print]');
+    await expect(printRoot).not.toBeNull();
+    await expect(printRoot?.children.length).toBe(3);
   },
 };
 

@@ -343,6 +343,18 @@ export const SlidesStudio = () => {
             </IconButton>
           )}
           <div className="hidden items-center gap-3 lg:flex">
+            <Button
+              color="gray"
+              disabled={!hasResult}
+              onClick={() => {
+                // DeckPreview が @media print 用に全スライドを描画済み（DeckPrint）。
+                window.print();
+              }}
+              size="sm"
+              variant="outline"
+            >
+              PDF出力
+            </Button>
             <CopyCodeButton code={hasResult ? displayedSource : null} />
             <IconButton
               color="base"
