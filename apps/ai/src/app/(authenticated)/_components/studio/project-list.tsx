@@ -5,6 +5,7 @@ import type { ProjectListItem } from '@/features/projects/application/projects';
 type ProjectListProps = {
   projects: ProjectListItem[];
   currentProjectId: number | null;
+  emptyText?: string | undefined;
   onSelect: (projectId: number) => void;
 };
 
@@ -18,13 +19,12 @@ const formatDate = (iso: string): string => {
 export const ProjectList: FC<ProjectListProps> = ({
   projects,
   currentProjectId,
+  emptyText = 'まだ保存された UI はありません。生成すると自動で履歴に残ります。',
   onSelect,
 }) => {
   if (projects.length === 0) {
     return (
-      <p className="text-fg-mute p-4 text-sm leading-relaxed">
-        まだ保存された UI はありません。生成すると自動で履歴に残ります。
-      </p>
+      <p className="text-fg-mute p-4 text-sm leading-relaxed">{emptyText}</p>
     );
   }
 

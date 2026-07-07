@@ -1,11 +1,8 @@
 import type { UIMessage } from 'ai';
 
-export type GenerationMeta = {
-  title: string;
-  description: string;
-  usedComponents: string[];
-  changes: string[];
-};
+import { type GenerationMeta, toMeta } from './parse-meta';
+
+export type { GenerationMeta };
 
 export type ParsedGeneration = {
   code: string | null;
@@ -16,25 +13,6 @@ export type ParsedGeneration = {
 const TSX_FENCE = /```(?:tsx|jsx|typescript|ts)?\n([\s\S]*?)```/u;
 const META_FENCE = /```json\n([\s\S]*?)```/u;
 const TSX_OPEN = '```tsx';
-
-const toStringArray = (value: unknown): string[] =>
-  Array.isArray(value)
-    ? value.filter((item): item is string => typeof item === 'string')
-    : [];
-
-const toMeta = (value: unknown): GenerationMeta | null => {
-  if (typeof value !== 'object' || value === null) {
-    return null;
-  }
-  const record = value as Record<string, unknown>;
-  return {
-    title: typeof record['title'] === 'string' ? record['title'] : '',
-    description:
-      typeof record['description'] === 'string' ? record['description'] : '',
-    usedComponents: toStringArray(record['usedComponents']),
-    changes: toStringArray(record['changes']),
-  };
-};
 
 // ストリーミング中・完了後の双方で使う。本文は TSX フェンス、meta は末尾 JSON フェンス。
 export const parseGeneration = (raw: string): ParsedGeneration => {

@@ -32,6 +32,7 @@ import {
 import { loadProjectAndApplyAction } from '@/features/projects/interface/actions';
 
 import { StreamPreview } from '../stream-preview';
+import { ToolNav } from '../tool-nav';
 import { ChatPanel } from './chat-panel';
 import { CodePanel } from './code-panel';
 import { CopyCodeButton } from './copy-code-button';
@@ -403,6 +404,7 @@ export const Studio = () => {
           <span className="text-fg-base shrink-0 text-sm font-bold">
             k8o AI Studio
           </span>
+          <ToolNav current="/" />
           <span className="text-fg-mute shrink-0 text-sm">/</span>
           {pendingSelect === null ? (
             persistence.projectId === null ? (

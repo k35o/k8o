@@ -10,17 +10,21 @@ export type HighlightedCode = {
   bg: string;
 };
 
+// plastic（暗色）が既定。one-light はアプリのライトテーマに合わせる用。
+export type HighlightTheme = 'plastic' | 'one-light';
+
 const FALLBACK_FG = CODE_SURFACE.fg;
 const FALLBACK_BG = CODE_SURFACE.bg;
 
 export const highlightCode = async (
   code: string,
   lang: string,
+  theme: HighlightTheme = 'plastic',
 ): Promise<HighlightedCode> => {
   const result = await codeToTokens(code, {
     lang: lang as BundledLanguage,
-    theme: 'plastic',
-  }).catch(() => codeToTokens(code, { lang: 'text', theme: 'plastic' }));
+    theme,
+  }).catch(() => codeToTokens(code, { lang: 'text', theme }));
 
   return {
     tokens: result.tokens,

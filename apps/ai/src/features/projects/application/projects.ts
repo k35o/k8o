@@ -1,32 +1,24 @@
 import 'server-only';
-import { randomUUID } from 'node:crypto';
-
-import type { AiApp, AiVisibility } from '@repo/database/schema';
-
-import type { GenerationMeta } from '@/features/generation/application/parse-generation';
+import type { AiVisibility } from '@repo/database/schema';
 
 import {
-  insertProjectWithVersion,
-  insertVersion,
+  type GenerationMeta,
+  toMeta,
+} from '@/features/generation/application/parse-meta';
+
+import {
   type ProjectListItem,
   projectOwnedBy,
-  selectProjects,
-  selectProjectVersions,
-  selectProjectWithLatestVersion,
   selectPublicProjectBySlug,
   updateProjectVisibility,
 } from '../infrastructure/project-repository';
+import { type ConversationTurn, createProjectStore } from './project-store';
 
 export type UiStudioContent = {
   code: string;
   meta: GenerationMeta;
   // 初版/フォークでは prompt が無いことがある。
   prompt?: string;
-};
-
-type ConversationTurn = {
-  prompt: string | null;
-  meta: GenerationMeta;
 };
 
 export type LoadedProject = {
@@ -50,25 +42,6 @@ export type PublicProject = {
 
 export type { ProjectListItem };
 
-const UI_STUDIO: AiApp = 'ui-studio';
-
-// 公開リンク用の一意 slug（/s/[slug]）。衝突確率は無視できる程度に小さい。
-const generateSlug = (): string =>
-  randomUUID().replaceAll('-', '').slice(0, 12);
-
-const deriveTitle = (title: string): string => {
-  const trimmed = title.trim();
-  return trimmed === '' ? '無題の UI' : trimmed;
-};
-
-const toStringArray = (value: unknown): string[] =>
-  Array.isArray(value)
-    ? value.filter((item): item is string => typeof item === 'string')
-    : [];
-
-const toStringOr = (value: unknown, fallback: string): string =>
-  typeof value === 'string' ? value : fallback;
-
 const parseContent = (value: unknown): UiStudioContent | null => {
   if (typeof value !== 'object' || value === null) {
     return null;
@@ -77,122 +50,58 @@ const parseContent = (value: unknown): UiStudioContent | null => {
   if (typeof code !== 'string') {
     return null;
   }
-  if (typeof meta !== 'object' || meta === null) {
+  const parsedMeta = toMeta(meta);
+  if (parsedMeta === null) {
     return null;
   }
-  const metaRecord = meta as Record<string, unknown>;
   return {
     code,
-    meta: {
-      title: toStringOr(metaRecord['title'], ''),
-      description: toStringOr(metaRecord['description'], ''),
-      usedComponents: toStringArray(metaRecord['usedComponents']),
-      changes: toStringArray(metaRecord['changes']),
-    },
+    meta: parsedMeta,
     ...(typeof prompt === 'string' ? { prompt } : {}),
   };
 };
 
+const store = createProjectStore<UiStudioContent>({
+  app: 'ui-studio',
+  fallbackTitle: '無題の UI',
+  parseContent,
+});
+
 // projectId が null なら新規プロジェクト＋初版、そうでなければ版を追記。
-export const saveGeneration = async (input: {
+export const saveGeneration = (input: {
   userId: string;
   projectId: number | null;
   parentVersionId: number | null;
   content: UiStudioContent;
-}): Promise<{ projectId: number; versionId: number; title: string } | null> => {
-  if (input.projectId === null) {
-    const title = deriveTitle(input.content.meta.title);
-    const { projectId, versionId } = await insertProjectWithVersion({
-      userId: input.userId,
-      app: UI_STUDIO,
-      title,
-      slug: generateSlug(),
-      content: input.content,
-    });
-    return { projectId, versionId, title };
-  }
-
-  // 非所有/不存在は他の action（forkProject/setVisibility 等）と同様に null を返す
-  // （saveGenerationAction → use-studio-persistence は null をハンドル済み）。
-  const owned = await projectOwnedBy({
-    projectId: input.projectId,
-    userId: input.userId,
-  });
-  if (!owned) {
-    return null;
-  }
-  const { versionId } = await insertVersion({
-    projectId: input.projectId,
-    parentId: input.parentVersionId,
-    content: input.content,
-  });
-  return {
-    projectId: input.projectId,
-    versionId,
-    title: deriveTitle(input.content.meta.title),
-  };
-};
+}): Promise<{ projectId: number; versionId: number; title: string } | null> =>
+  store.saveGeneration(input);
 
 export const getProjectsForUser = (
   userId: string,
-): Promise<ProjectListItem[]> => selectProjects({ userId, app: UI_STUDIO });
+): Promise<ProjectListItem[]> => store.getProjectsForUser(userId);
 
 // 最新版を複製して新プロジェクト（forkOf 付き・private）を作る。非所有なら null。
-export const forkProject = async (input: {
+export const forkProject = (input: {
   userId: string;
   sourceProjectId: number;
-}): Promise<{ projectId: number } | null> => {
-  const source = await getProject({
-    userId: input.userId,
-    projectId: input.sourceProjectId,
-  });
-  if (source === null) {
-    return null;
-  }
-  const { projectId } = await insertProjectWithVersion({
-    userId: input.userId,
-    app: UI_STUDIO,
-    title: `${source.title}（フォーク）`,
-    slug: generateSlug(),
-    content: { code: source.code, meta: source.meta },
-    forkOf: input.sourceProjectId,
-  });
-  return { projectId };
-};
+}): Promise<{ projectId: number } | null> => store.forkProject(input);
 
 export const getProject = async (input: {
   userId: string;
   projectId: number;
 }): Promise<LoadedProject | null> => {
-  const row = await selectProjectWithLatestVersion({
-    projectId: input.projectId,
-    userId: input.userId,
-  });
-  if (row === null) {
+  const record = await store.getProject(input);
+  if (record === null) {
     return null;
   }
-  const content = parseContent(row.content);
-  if (content === null) {
-    return null;
-  }
-  // 所有者は selectProjectWithLatestVersion で確認済み。
-  const versionRows = await selectProjectVersions({
-    projectId: input.projectId,
-  });
-  const conversation = versionRows.flatMap((version): ConversationTurn[] => {
-    const parsed = parseContent(version.content);
-    return parsed === null
-      ? []
-      : [{ prompt: parsed.prompt ?? null, meta: parsed.meta }];
-  });
   return {
-    id: row.id,
-    title: row.title,
-    slug: row.slug,
-    code: content.code,
-    meta: content.meta,
-    versionId: row.versionId,
-    conversation,
+    id: record.id,
+    title: record.title,
+    slug: record.slug,
+    code: record.content.code,
+    meta: record.content.meta,
+    versionId: record.versionId,
+    conversation: record.conversation,
   };
 };
 

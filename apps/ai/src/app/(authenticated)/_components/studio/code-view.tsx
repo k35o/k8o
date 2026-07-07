@@ -5,13 +5,18 @@ import { Fragment, type FC } from 'react';
 type CodeViewProps = {
   code: string | null;
   highlighted: HighlightedCode | null;
+  emptyText?: string | undefined;
 };
 
-export const CodeView: FC<CodeViewProps> = ({ code, highlighted }) => {
+export const CodeView: FC<CodeViewProps> = ({
+  code,
+  highlighted,
+  emptyText = 'ここに生成された TSX が表示されます',
+}) => {
   if (code === null) {
     return (
       <div className="text-fg-mute flex h-full items-center justify-center p-6 text-center text-sm leading-relaxed">
-        ここに生成された TSX が表示されます
+        {emptyText}
       </div>
     );
   }

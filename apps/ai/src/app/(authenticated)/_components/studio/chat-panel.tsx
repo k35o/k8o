@@ -27,16 +27,28 @@ const AssistantRow: FC<{ children: ReactNode }> = ({ children }) => (
   </Message.Root>
 );
 
+// 生成テキストから吹き出しに出す説明文を取り出す。スタジオ（UI / スライド）ごとに
+// 出力フォーマットが違うため差し替え可能にする（モジュールレベルの定数を渡すこと）。
+export type DescribeMessage = (text: string) => string | null;
+
+const describeUiMessage: DescribeMessage = (text) =>
+  parseGeneration(text).meta?.description ?? null;
+
 // 確定済み assistant メッセージ。履歴はストリーミング中に毎トークン再パースされないよう memo する。
 const AssistantDescription = memo(
-  ({ message }: { message: UIMessage }) => {
-    const description =
-      parseGeneration(messageText(message)).meta?.description ??
-      'コードを更新しました';
+  ({
+    message,
+    describe,
+  }: {
+    message: UIMessage;
+    describe: DescribeMessage;
+  }) => {
+    const description = describe(messageText(message)) ?? '内容を更新しました';
     return <Message.Content>{description}</Message.Content>;
   },
   (prev, next) =>
     prev.message.id === next.message.id &&
+    prev.describe === next.describe &&
     messageText(prev.message) === messageText(next.message),
 );
 AssistantDescription.displayName = 'AssistantDescription';
@@ -51,6 +63,8 @@ type Props = {
   suggestions?: string[];
   errorText: string | null;
   selectedModel: Model;
+  inputPlaceholder?: string;
+  describeMessage?: DescribeMessage;
   onInputChange: (value: string) => void;
   onSubmit: (text: string) => void;
   onStop: () => void;
@@ -67,6 +81,8 @@ export const ChatPanel: FC<Props> = ({
   suggestions = NO_SUGGESTIONS,
   errorText,
   selectedModel,
+  inputPlaceholder = '作りたい画面を入力（例: お問い合わせフォームのカード）',
+  describeMessage = describeUiMessage,
   onInputChange,
   onSubmit,
   onStop,
@@ -123,7 +139,10 @@ export const ChatPanel: FC<Props> = ({
                         {generatingStatus}
                       </Message.Content>
                     ) : (
-                      <AssistantDescription message={message} />
+                      <AssistantDescription
+                        describe={describeMessage}
+                        message={message}
+                      />
                     )}
                   </AssistantRow>
                 );
@@ -149,7 +168,7 @@ export const ChatPanel: FC<Props> = ({
           status={status}
           value={input}
         >
-          <PromptInput.Textarea placeholder="作りたい画面を入力（例: お問い合わせフォームのカード）" />
+          <PromptInput.Textarea placeholder={inputPlaceholder} />
           <PromptInput.Submit sendLabel="生成する" stopLabel="停止" />
         </PromptInput.Root>
         <div className="flex items-center gap-2">

@@ -7,8 +7,10 @@ import {
 } from 'ai';
 import * as z from 'zod/mini';
 
+import { buildSlidesSystemPrompt } from '@/features/generation/application/build-slides-system-prompt';
 import { buildSystemPrompt } from '@/features/generation/application/build-system-prompt';
 import { GENERATION_MODELS } from '@/features/generation/application/models';
+import { GENERATION_MODES } from '@/features/generation/application/modes';
 import {
   generationLimit,
   isOverLimit,
@@ -25,6 +27,7 @@ const bodySchema = z.object({
   id: z.optional(z.string()),
   messages: z.array(z.unknown()),
   model: z.optional(z.enum(GENERATION_MODELS)),
+  mode: z.optional(z.enum(GENERATION_MODES)),
   currentFile: z.optional(z.nullable(z.string())),
   buildErrors: z.optional(z.nullable(z.string())),
 });
@@ -34,15 +37,6 @@ export async function POST(req: Request): Promise<Response> {
   const session = await requireAllowedSession(req.headers);
   if (session === null) {
     return new Response(null, { status: 401 });
-  }
-
-  // userId 単位のレート制限（スライディング1時間ウィンドウ）。暴走時のコストを抑える。
-  const recent = await countRecentGenerations({
-    userId: session.userId,
-    sinceIso: windowStartIso(Date.now()),
-  });
-  if (isOverLimit(recent, generationLimit())) {
-    return new Response('Rate limit exceeded', { status: 429 });
   }
 
   let body: unknown;
@@ -57,7 +51,18 @@ export async function POST(req: Request): Promise<Response> {
     return new Response(null, { status: 400 });
   }
 
-  const { messages, model, currentFile, buildErrors } = parsed.data;
+  const { messages, model, mode, currentFile, buildErrors } = parsed.data;
+  const app = mode === 'slides' ? ('slides' as const) : ('ui-studio' as const);
+
+  // userId 単位のレート制限（スライディング1時間ウィンドウ）。暴走時のコストを抑える。
+  const recent = await countRecentGenerations({
+    app,
+    userId: session.userId,
+    sinceIso: windowStartIso(Date.now()),
+  });
+  if (isOverLimit(recent, generationLimit())) {
+    return new Response('Rate limit exceeded', { status: 429 });
+  }
 
   // messages の要素形状は z.unknown のまま。壊れた parts/role を SDK 内部例外（500）にせず 400 で弾く。
   let modelMessages: Awaited<ReturnType<typeof convertToModelMessages>>;
@@ -69,7 +74,10 @@ export async function POST(req: Request): Promise<Response> {
 
   const result = streamText({
     model: getFuguModel(model ?? 'fugu'),
-    system: buildSystemPrompt({ currentFile, buildErrors }),
+    system:
+      mode === 'slides'
+        ? buildSlidesSystemPrompt({ currentSource: currentFile })
+        : buildSystemPrompt({ currentFile, buildErrors }),
     messages: modelMessages,
     temperature: 0.4,
     maxOutputTokens: 8000,
@@ -81,6 +89,7 @@ export async function POST(req: Request): Promise<Response> {
     onFinish: ({ usage }) => {
       // レート制限のカウント源なので利用量を記録する。
       void insertGenerationUsage({
+        app,
         userId: session.userId,
         inputTokens: usage.inputTokens ?? null,
         outputTokens: usage.outputTokens ?? null,

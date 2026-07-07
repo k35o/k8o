@@ -34,6 +34,7 @@
     "postcss": "catalog:",
     "react": "catalog:",
     "react-dom": "catalog:",
+    "react-markdown": "10.1.0",
     "server-only": "0.0.1",
     "tailwindcss": "catalog:",
     "zod": "4.4.3"

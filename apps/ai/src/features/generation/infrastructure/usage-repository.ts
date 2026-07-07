@@ -5,16 +5,16 @@ import { and, count, eq, gte } from 'drizzle-orm';
 
 // 生成1回ごとの利用ログ（ai_usages）。レート制限とコスト把握の基盤。
 const usages = db._schema.aiUsages;
-const APP: AiApp = 'ui-studio';
 const GENERATION_KIND = 'generation';
 
 export const insertGenerationUsage = async (input: {
+  app: AiApp;
   userId: string;
   inputTokens: number | null;
   outputTokens: number | null;
 }): Promise<void> => {
   await db.insert(usages).values({
-    app: APP,
+    app: input.app,
     userId: input.userId,
     kind: GENERATION_KIND,
     inputTokens: input.inputTokens,
@@ -22,7 +22,9 @@ export const insertGenerationUsage = async (input: {
   });
 };
 
+// レート制限はアプリ（app）ごとに独立して数える。
 export const countRecentGenerations = async (input: {
+  app: AiApp;
   userId: string;
   sinceIso: string;
 }): Promise<number> => {
@@ -32,7 +34,7 @@ export const countRecentGenerations = async (input: {
     .where(
       and(
         eq(usages.userId, input.userId),
-        eq(usages.app, APP),
+        eq(usages.app, input.app),
         eq(usages.kind, GENERATION_KIND),
         gte(usages.createdAt, input.sinceIso),
       ),
