@@ -10,7 +10,7 @@ import { resolveComponent } from './component-registry';
 import { PendingMark } from './pending-mark';
 import { SafeNode } from './safe-node';
 import { StreamLoading } from './stream-loading';
-import { UnknownChip } from './unknown-chip';
+import { UnknownPlaceholder } from './unknown-placeholder';
 
 // 生成コードが使う素の HTML 要素。未知タグはコンテナ（div）に寄せて安全側に倒す。
 const HOST_TAGS = new Set([
@@ -132,9 +132,9 @@ function renderElement(el: JsxElement, key: string): ReactNode {
   const Component = resolveComponent(el.name);
   if (Component === null) {
     return (
-      <UnknownChip key={key} name={el.name}>
+      <UnknownPlaceholder key={key} name={el.name}>
         {childArg}
-      </UnknownChip>
+      </UnknownPlaceholder>
     );
   }
   return (

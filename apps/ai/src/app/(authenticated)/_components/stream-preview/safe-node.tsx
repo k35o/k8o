@@ -2,7 +2,7 @@
 
 import { Component, type ReactNode } from 'react';
 
-import { UnknownChip } from './unknown-chip';
+import { UnknownPlaceholder } from './unknown-placeholder';
 
 type Props = { name: string; children: ReactNode };
 type State = { failed: boolean };
@@ -18,7 +18,7 @@ export class SafeNode extends Component<Props, State> {
 
   override render(): ReactNode {
     if (this.state.failed) {
-      return <UnknownChip name={this.props.name} />;
+      return <UnknownPlaceholder name={this.props.name} />;
     }
     return this.props.children;
   }

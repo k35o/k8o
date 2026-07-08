@@ -39,9 +39,9 @@ type AnyComponent = ComponentType<Record<string, unknown>>;
 const asAny = (component: ComponentType<never>): AnyComponent =>
   component as unknown as AnyComponent;
 
-// PoC の登録対象は「宣言的に確実に描けるサブセット」のみ。
+// 登録対象は「宣言的に確実に描けるサブセット」のみ。
 // 複合コンポーネント（Dialog / Tabs / FormControl 等）は未登録のままにして、
-// UnknownChip として可視化し、どこまで素直に流せるかを測る。
+// 匿名プレースホルダ（UnknownPlaceholder）に差し替えて描く。
 const registry: Record<string, AnyComponent> = {
   Alert: asAny(Alert),
   Anchor: asAny(Anchor),
@@ -58,7 +58,7 @@ const registry: Record<string, AnyComponent> = {
   Skeleton: asAny(Skeleton),
   Spinner: asAny(Spinner),
   Stack: asAny(Stack),
-  // よく使われるアイコンの代表セット。未登録アイコンは UnknownChip になる。
+  // よく使われるアイコンの代表セット。未登録アイコンはアイコンサイズのプレースホルダになる。
   AIIcon: asAny(AIIcon),
   AlertIcon: asAny(AlertIcon),
   CheckIcon: asAny(CheckIcon),
