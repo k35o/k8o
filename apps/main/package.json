@@ -45,6 +45,7 @@
     "remark": "15.0.1",
     "remark-frontmatter": "5.0.0",
     "remark-math": "6.0.0",
+    "remark-mdx": "3.1.1",
     "rss": "1.2.2",
     "server-only": "0.0.1",
     "tailwindcss": "catalog:",
