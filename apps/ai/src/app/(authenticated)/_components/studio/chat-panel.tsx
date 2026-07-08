@@ -29,7 +29,7 @@ const AssistantRow: FC<{ children: ReactNode }> = ({ children }) => (
 
 // 生成テキストから吹き出しに出す説明文を取り出す。スタジオ（UI / スライド）ごとに
 // 出力フォーマットが違うため差し替え可能にする（モジュールレベルの定数を渡すこと）。
-export type DescribeMessage = (text: string) => string | null;
+type DescribeMessage = (text: string) => string | null;
 
 const describeUiMessage: DescribeMessage = (text) =>
   parseGeneration(text).meta?.description ?? null;
