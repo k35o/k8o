@@ -7,9 +7,17 @@ const nextConfig: NextConfig = {
   allowedDevOrigins: ['main.k8o.localhost', '*.main.k8o.localhost'],
   pageExtensions: ['tsx', 'mdx', 'ts'],
   rewrites: () =>
-    Promise.resolve([
-      { source: '/blog/:slug.md', destination: '/blog/md/:slug' },
-    ]),
+    Promise.resolve({
+      // 記事ページ (/blog/:slug) より先に評価させるため beforeFiles に置く
+      beforeFiles: [
+        { source: '/blog/:slug.md', destination: '/blog/md/:slug' },
+        {
+          source: '/blog/:slug((?!feed$|md$)[a-z0-9-]+)',
+          destination: '/blog/md/:slug',
+          has: [{ type: 'header', key: 'accept', value: '.*text/markdown.*' }],
+        },
+      ],
+    }),
   compiler: {
     removeConsole: process.env['NODE_ENV'] === 'production' && {
       exclude: ['error', 'warn'],
