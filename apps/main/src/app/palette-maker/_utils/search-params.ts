@@ -13,7 +13,7 @@ export const PEAK_CHROMA = {
   default: 0.12,
 } as const;
 
-export const DEFAULT_TOKEN_NAME = 'primary';
+const DEFAULT_TOKEN_NAME = 'primary';
 
 const TOKEN_NAME_MAX_LENGTH = 32;
 const TOKEN_NAME_PATTERN = /^[a-z][a-z0-9]*(?:-[a-z0-9]+)*$/u;

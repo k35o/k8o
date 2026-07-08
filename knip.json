@@ -10,7 +10,6 @@
   "ignoreBinaries": ["mise", "which"],
   "workspaces": {
     ".": {
-      "entry": ["vite.config.ts"],
       "ignoreDependencies": ["@vercel/next-browser"]
     },
     "apps/main": {

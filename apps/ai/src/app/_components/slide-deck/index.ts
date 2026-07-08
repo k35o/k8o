@@ -1,4 +1,3 @@
-export { Cover } from './cover';
 export { DeckPrint } from './deck-print';
 export {
   DeckHighlightsContext,
