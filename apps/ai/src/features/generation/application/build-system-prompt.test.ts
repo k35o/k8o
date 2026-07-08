@@ -12,9 +12,11 @@ describe('buildSystemPrompt', () => {
       expect(prompt).toContain('```json');
     });
 
-    it('currentFile を渡すと再生成セクションと本文を含む', () => {
+    it('currentFile を渡すと編集セクション（差分編集の形式）と本文を含む', () => {
       const prompt = buildSystemPrompt({ currentFile: 'const X = 1;' });
-      expect(prompt).toContain('全文を再生成');
+      expect(prompt).toContain('現在のファイル');
+      expect(prompt).toContain('```edits');
+      expect(prompt).toContain('<<<<<<< SEARCH');
       expect(prompt).toContain('const X = 1;');
     });
 
@@ -28,7 +30,7 @@ describe('buildSystemPrompt', () => {
   describe('エッジケース', () => {
     it('引数なし・空白だけのときは条件セクションを含まない', () => {
       const prompt = buildSystemPrompt({ currentFile: '   ', buildErrors: '' });
-      expect(prompt).not.toContain('全文を再生成');
+      expect(prompt).not.toContain('```edits');
       expect(prompt).not.toContain('原因を修正した');
     });
   });
