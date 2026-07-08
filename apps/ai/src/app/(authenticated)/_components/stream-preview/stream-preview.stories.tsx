@@ -24,8 +24,8 @@ export default function Preview() {
   );
 }`;
 
-// サブセット外（Tabs / .map / FormControl の renderInput）を含むサンプル。
-const SAMPLE_HARD = `import { Tabs, FormControl, TextField, Button } from '@k8o/arte-odyssey';
+// サブセット外（Tabs / .map / FormControl の renderInput / 未登録アイコン）を含むサンプル。
+const SAMPLE_HARD = `import { Tabs, FormControl, TextField, Button, IconButton, PaletteIcon } from '@k8o/arte-odyssey';
 
 export default function Preview() {
   const items = ['A', 'B'];
@@ -34,6 +34,7 @@ export default function Preview() {
       <Tabs>...</Tabs>
       <ul className="flex flex-col gap-2">{items.map((i) => <li key={i}>{i}</li>)}</ul>
       <FormControl label="お名前" renderInput={(props) => <TextField {...props} />} />
+      <IconButton label="パレット" color="base" size="sm"><PaletteIcon /></IconButton>
       <Button color="primary" variant="solid">送信</Button>
     </div>
   );
@@ -125,13 +126,22 @@ export const StreamingLate: Story = {
   },
 };
 
-// サブセット外がどこに出るかを可視化（UnknownChip）。Button は素直に描ける。
+// サブセット外はコンポーネント名を画面に出さず、匿名プレースホルダとして描く。
+// 子を持つもの（Tabs）は子を透過描画し、葉（FormControl / 未登録アイコン）は無地ブロックになる。
 export const UnsupportedSubset: Story = {
   args: { code: SAMPLE_HARD },
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
     await expect(canvas.getByText('送信')).toBeInTheDocument();
-    await expect(canvas.getByText('<Tabs>')).toBeInTheDocument();
+    // コンポーネント名が生テキストとして画面に漏れない（回帰防止）。
+    await expect(canvasElement.textContent).not.toContain('<Tabs>');
+    await expect(canvasElement.textContent).not.toContain('FormControl');
+    await expect(canvasElement.textContent).not.toContain('PaletteIcon');
+    // 葉のサブセット外はプレースホルダとして場所だけ確保される。
+    await expect(
+      canvasElement.querySelectorAll('[data-testid="unknown-placeholder"]')
+        .length,
+    ).toBeGreaterThan(0);
   },
 };
 
