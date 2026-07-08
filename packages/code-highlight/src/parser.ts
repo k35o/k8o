@@ -27,7 +27,8 @@ const parseDirective = (raw: string): Annotation | null => {
   if (directive === '-') return { type: 'remove' };
   if (directive === 'og') return { type: 'og' };
 
-  const callout = /^callout:\s*(.+)$/u.exec(directive);
+  // \s* の直後を \S で始めて境界を一意にする (CodeQL: js/polynomial-redos)
+  const callout = /^callout:\s*(\S.*)$/u.exec(directive);
   if (callout) {
     const text = callout[1]?.trim();
     if (text !== undefined && text.length > 0) {
@@ -48,10 +49,6 @@ const matchDirectiveLine = (line: string): Annotation | null => {
   return null;
 };
 
-// \s は [^\]] に含まれるため \s* を挟むと曖昧になり、バックトラックが
-// 多項式時間になる (CodeQL: js/polynomial-redos)。マッチ範囲は同一。
-const CALLOUT_DIRECTIVE_RE = /\[!callout:[^\]]+\]/u;
-
 // markdown配信などレンダリングを伴わない出力向けに、注釈ディレクティブ行を除去する。
 // コールアウトは本文が読者向けの説明なので、コメント記法を保ったまま本文だけ残す。
 export const stripAnnotationComments = (code: string): string => {
@@ -63,7 +60,13 @@ export const stripAnnotationComments = (code: string): string => {
       continue;
     }
     if (directive.type === 'callout') {
-      outLines.push(line.replace(CALLOUT_DIRECTIVE_RE, () => directive.text));
+      // matchDirectiveLine を通った行は [! と閉じ ] を必ず1組含むので、
+      // 正規表現を使わず位置で置換する (CodeQL: js/polynomial-redos 回避)
+      const start = line.indexOf('[!');
+      const end = line.indexOf(']', start);
+      outLines.push(
+        `${line.slice(0, start)}${directive.text}${line.slice(end + 1)}`,
+      );
     }
   }
   return outLines.join('\n');
