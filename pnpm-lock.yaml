@@ -119,9 +119,6 @@ importers:
       '@typescript/native-preview':
         specifier: 7.0.0-dev.20260629.1
         version: 7.0.0-dev.20260629.1
-      '@vercel/next-browser':
-        specifier: 0.7.1
-        version: 0.7.1
       knip:
         specifier: 6.23.0
         version: 6.23.0
@@ -1824,14 +1821,6 @@ packages:
       '@mdx-js/loader':
         optional: true
       '@mdx-js/react':
-        optional: true
-
-  '@next/playwright@16.2.0-canary.80':
-    resolution: {integrity: sha512-dU0ArRa86on/ntA/r5YkWaJr6hJ8Dq3AbWvSWETlBTinXMk5gKZH04jUYMzYXK0kyAQQKWg/hcEjDwGTkOnSqw==}
-    peerDependencies:
-      '@playwright/test': '>=1.0.0'
-    peerDependenciesMeta:
-      '@playwright/test':
         optional: true
 
   '@next/swc-darwin-arm64@16.2.9':
@@ -4072,11 +4061,6 @@ packages:
         optional: true
       vue-router:
         optional: true
-
-  '@vercel/next-browser@0.7.1':
-    resolution: {integrity: sha512-gnCZvBKflr4ItxdRpk4D6SHGj6tjzHaOw4OSsyFBgxpL4d5Ua5dDTDaz6R2KzRBo5WaQlQTMSVSSHC5SViwAIw==}
-    engines: {node: '>=20'}
-    hasBin: true
 
   '@vercel/oidc@3.2.0':
     resolution: {integrity: sha512-UycprH3T6n3jH0k44NHMa7pnFHGu/N05MjojYr+Mc6I7obkoLIJujSWwin1pCvdy/eOxrI/l3uDLQsmcrOb4ug==}
@@ -8152,8 +8136,6 @@ snapshots:
       '@mdx-js/loader': 3.1.1
       '@mdx-js/react': 3.1.1(@types/react@19.2.17)(react@19.2.7)
 
-  '@next/playwright@16.2.0-canary.80': {}
-
   '@next/swc-darwin-arm64@16.2.9':
     optional: true
 
@@ -9612,14 +9594,6 @@ snapshots:
     optionalDependencies:
       next: 16.2.9(@babel/core@7.29.7)(@opentelemetry/api@1.9.1)(babel-plugin-react-compiler@1.0.0)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
       react: 19.2.7
-
-  '@vercel/next-browser@0.7.1':
-    dependencies:
-      '@next/playwright': 16.2.0-canary.80
-      playwright: 1.61.1
-      source-map-js: 1.2.1
-    transitivePeerDependencies:
-      - '@playwright/test'
 
   '@vercel/oidc@3.2.0': {}
 
