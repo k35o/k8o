@@ -12,6 +12,11 @@ const nextConfig: NextConfig = {
       beforeFiles: [
         { source: '/blog/:slug.md', destination: '/blog/md/:slug' },
         {
+          // HTML 側の /blog/:slug に Vary: Accept は付けられない (App Router
+          // ページの Vary は Next が自前管理しており、headers() や proxy で
+          // 付けてもレンダリング時に上書きされる)。Vercel ではこの rewrite が
+          // キャッシュ参照前のルーティング層で解決され、markdown 側レスポンス
+          // には Vary: Accept が付くため、キャッシュ汚染は起きない
           source: '/blog/:slug((?!feed$|md$)[a-z0-9-]+)',
           destination: '/blog/md/:slug',
           has: [{ type: 'header', key: 'accept', value: '.*text/markdown.*' }],
