@@ -9,9 +9,6 @@
   "tags": ["-lintignore"],
   "ignoreBinaries": ["mise", "which"],
   "workspaces": {
-    ".": {
-      "ignoreDependencies": ["@vercel/next-browser"]
-    },
     "apps/main": {
       "ignoreDependencies": ["chromatic"]
     },
