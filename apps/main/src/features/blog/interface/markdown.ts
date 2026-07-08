@@ -2,9 +2,8 @@ import { readFile } from 'node:fs/promises';
 
 import { cacheLife } from 'next/cache';
 
+import { mdxToMarkdown } from '../application/markdown';
 import { blogPath } from '../application/path';
-
-const FRONTMATTER_RE = /^---\n[\s\S]*?\n---\n*/u;
 
 // パストラバーサル対策: slug をファイルパスに渡す前に厳格に検証する。
 // %2F デコードで `../` 脱出を許さないよう、英小文字・数字・ハイフンのみ許可。
@@ -19,5 +18,5 @@ export async function getMarkdown(slug: string) {
   }
 
   const content = await readFile(blogPath(slug), 'utf-8');
-  return content.replace(FRONTMATTER_RE, '');
+  return mdxToMarkdown(content, slug);
 }

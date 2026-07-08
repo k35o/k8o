@@ -1,4 +1,4 @@
-import { parseAnnotations } from './parser.ts';
+import { parseAnnotations, stripAnnotationComments } from './parser.ts';
 
 describe('parseAnnotations', () => {
   describe('正常系', () => {
@@ -147,6 +147,62 @@ describe('parseAnnotations', () => {
 
       expect(result.code).toBe('    const x = 1;');
       expect(result.annotations).toEqual([[{ type: 'highlight' }]]);
+    });
+  });
+});
+
+describe('stripAnnotationComments', () => {
+  describe('正常系', () => {
+    it('hl / og などの表示指示ディレクティブ行を削除する', () => {
+      const input = ['// [!hl]', 'const x = 1;', '/* [!og] */', 'x + 1;'].join(
+        '\n',
+      );
+
+      expect(stripAnnotationComments(input)).toBe(
+        ['const x = 1;', 'x + 1;'].join('\n'),
+      );
+    });
+
+    it('コールアウトはコメント記法を保ったまま本文だけ残す', () => {
+      const input = ['  // [!callout: ここがポイント]', '  const x = 1;'].join(
+        '\n',
+      );
+
+      expect(stripAnnotationComments(input)).toBe(
+        ['  // ここがポイント', '  const x = 1;'].join('\n'),
+      );
+    });
+
+    it('HTMLコメントのコールアウトもコメント記法を保つ', () => {
+      const input = ['<!-- [!callout: 補足] -->', '<div></div>'].join('\n');
+
+      expect(stripAnnotationComments(input)).toBe(
+        ['<!-- 補足 -->', '<div></div>'].join('\n'),
+      );
+    });
+  });
+
+  describe('エッジケース', () => {
+    it('通常のコメントや未知のディレクティブには触れない', () => {
+      const input = ['// 通常のコメント', '// [!unknown]', 'const x = 1;'].join(
+        '\n',
+      );
+
+      expect(stripAnnotationComments(input)).toBe(input);
+    });
+
+    it('$ を含むコールアウト本文をそのまま残す', () => {
+      const input = ['// [!callout: $i が $n に追いつく]', 'const x = 1;'].join(
+        '\n',
+      );
+
+      expect(stripAnnotationComments(input)).toBe(
+        ['// $i が $n に追いつく', 'const x = 1;'].join('\n'),
+      );
+    });
+
+    it('空文字列を渡しても落ちない', () => {
+      expect(stripAnnotationComments('')).toBe('');
     });
   });
 });

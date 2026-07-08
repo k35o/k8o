@@ -457,6 +457,9 @@ importers:
       remark-math:
         specifier: 6.0.0
         version: 6.0.0
+      remark-mdx:
+        specifier: 3.1.1
+        version: 3.1.1
       rss:
         specifier: 1.2.2
         version: 1.2.2

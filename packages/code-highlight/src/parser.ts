@@ -48,6 +48,25 @@ const matchDirectiveLine = (line: string): Annotation | null => {
   return null;
 };
 
+const CALLOUT_DIRECTIVE_RE = /\[!callout:\s*[^\]]+\]/u;
+
+// markdown配信などレンダリングを伴わない出力向けに、注釈ディレクティブ行を除去する。
+// コールアウトは本文が読者向けの説明なので、コメント記法を保ったまま本文だけ残す。
+export const stripAnnotationComments = (code: string): string => {
+  const outLines: string[] = [];
+  for (const line of code.split('\n')) {
+    const directive = matchDirectiveLine(line);
+    if (directive === null) {
+      outLines.push(line);
+      continue;
+    }
+    if (directive.type === 'callout') {
+      outLines.push(line.replace(CALLOUT_DIRECTIVE_RE, () => directive.text));
+    }
+  }
+  return outLines.join('\n');
+};
+
 export const parseAnnotations = (code: string): ParseResult => {
   const lines = code.split('\n');
   const outLines: string[] = [];
