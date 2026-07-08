@@ -21,10 +21,8 @@ import {
   generationReducer,
   initialGenerationState,
 } from '@/features/generation/application/generation-store';
-import {
-  messageText,
-  parseGeneration,
-} from '@/features/generation/application/parse-generation';
+import { messageText } from '@/features/generation/application/parse-generation';
+import { resolveGeneration } from '@/features/generation/application/resolve-generation';
 import {
   applyPreviewCode,
   startPreviewSession,
@@ -74,6 +72,10 @@ export const Studio = () => {
   const frameRef = useRef<HTMLDivElement>(null);
   // 直近の指示。onFinish（一度きりのクロージャ）から版に保存して会話復元に使う。
   const lastPromptRef = useRef('');
+  // 差分編集（```edits）の適用土台。生成開始時点の currentFile に固定し、ストリーミング描画と
+  // onFinish の双方から同じ土台へ適用する（適用後の currentFile を土台にすると二重適用が起きるため）。
+  // レンダー中に読むので ref ではなく state に持つ。
+  const [editBase, setEditBase] = useState<string | null>(null);
   // HMR 反映待ちのフォールバック用タイマー。反映通知が来れば張り替えず解除する。
   const reloadFallbackRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const clearReloadFallback = useCallback((): void => {
@@ -117,7 +119,16 @@ export const Studio = () => {
       if (isAbort) {
         return;
       }
-      const parsed = parseGeneration(messageText(message));
+      const parsed = resolveGeneration(messageText(message), editBase);
+      // 差分編集の適用失敗はビルドエラーと同じ自己修復ループへ流す（プレビューは前回の
+      // 正常版のまま、次ターンの system で全文再生成を促す）。
+      if (parsed.kind === 'edits' && parsed.editError !== null) {
+        setApplyError('変更の適用に失敗しました。');
+        dispatch({ type: 'build-failed', errors: parsed.editError });
+        setView('code');
+        setMobileTab('code');
+        return;
+      }
       if (parsed.code !== null && parsed.meta !== null) {
         dispatch({
           type: 'generation-finished',
@@ -190,18 +201,21 @@ export const Studio = () => {
   const lastAssistant = messages.findLast(
     (message) => message.role === 'assistant',
   );
-  const streamingCode =
+  const resolved =
     lastAssistant === undefined
       ? null
-      : parseGeneration(messageText(lastAssistant)).code;
+      : resolveGeneration(messageText(lastAssistant), editBase);
+  const streamingCode = resolved?.code ?? null;
   const streamingLines =
     streamingCode === null ? 0 : streamingCode.split('\n').length;
   const lineSuffix =
     streamingLines > 0 ? `（${streamingLines.toString()} 行）` : '';
-  const generatingStatus =
-    status === 'submitted'
-      ? '考えています…'
-      : `UI を生成しています…${lineSuffix}`;
+  let generatingStatus = `UI を生成しています…${lineSuffix}`;
+  if (status === 'submitted') {
+    generatingStatus = '考えています…';
+  } else if (resolved?.kind === 'edits') {
+    generatingStatus = `変更を適用しています…（${resolved.appliedEdits.toString()}箇所）`;
+  }
   const displayedCode = isBusy
     ? (streamingCode ?? state.currentFile)
     : state.currentFile;
@@ -250,6 +264,7 @@ export const Studio = () => {
     // 残したいので mobileTab は切り替えない。
     setView('preview');
     lastPromptRef.current = text;
+    setEditBase(state.currentFile);
     await sendMessage(
       { text },
       {
