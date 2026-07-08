@@ -48,7 +48,9 @@ const matchDirectiveLine = (line: string): Annotation | null => {
   return null;
 };
 
-const CALLOUT_DIRECTIVE_RE = /\[!callout:\s*[^\]]+\]/u;
+// \s は [^\]] に含まれるため \s* を挟むと曖昧になり、バックトラックが
+// 多項式時間になる (CodeQL: js/polynomial-redos)。マッチ範囲は同一。
+const CALLOUT_DIRECTIVE_RE = /\[!callout:[^\]]+\]/u;
 
 // markdown配信などレンダリングを伴わない出力向けに、注釈ディレクティブ行を除去する。
 // コールアウトは本文が読者向けの説明なので、コメント記法を保ったまま本文だけ残す。
