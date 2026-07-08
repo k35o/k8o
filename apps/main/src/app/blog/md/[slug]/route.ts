@@ -13,6 +13,9 @@ export async function GET(
     return new NextResponse(markdown, {
       headers: {
         'Content-Type': 'text/markdown; charset=utf-8',
+        // /blog/:slug は Accept で HTML と markdown を出し分けるため、
+        // 共有キャッシュが Accept をキーに含むよう明示する
+        Vary: 'Accept',
       },
     });
   } catch {
