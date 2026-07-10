@@ -31,7 +31,7 @@ catalog:
   '@vitest/ui': 4.1.9
   babel-plugin-react-compiler: 1.0.0
   better-auth: 1.6.22
-  chromatic: 17.7.2
+  chromatic: 18.0.1
   drizzle-orm: 0.45.2
   next: 16.2.9
   next-themes: 0.4.6
