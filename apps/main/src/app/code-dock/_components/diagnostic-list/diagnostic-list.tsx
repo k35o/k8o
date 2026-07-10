@@ -45,27 +45,28 @@ const RuleCode: FC<{ diagnostic: LintDiagnostic }> = ({ diagnostic }) => {
   );
 };
 
-const DiagnosticItem: FC<{ diagnostic: LintDiagnostic }> = ({ diagnostic }) => (
-  <li className="border-border-mute flex flex-col gap-1 rounded-xl border p-4">
-    <div className="flex flex-wrap items-center gap-2">
-      <Badge
-        size="sm"
-        text={diagnostic.severity}
-        tone={severityTone(diagnostic.severity)}
-      />
-      {position(diagnostic) === null ? null : (
-        <span className="text-fg-mute font-mono text-sm">
-          {position(diagnostic)}
-        </span>
+const DiagnosticItem: FC<{ diagnostic: LintDiagnostic }> = ({ diagnostic }) => {
+  const pos = position(diagnostic);
+  return (
+    <li className="border-border-mute flex flex-col gap-1 rounded-xl border p-4">
+      <div className="flex flex-wrap items-center gap-2">
+        <Badge
+          size="sm"
+          text={diagnostic.severity}
+          tone={severityTone(diagnostic.severity)}
+        />
+        {pos === null ? null : (
+          <span className="text-fg-mute font-mono text-sm">{pos}</span>
+        )}
+        <RuleCode diagnostic={diagnostic} />
+      </div>
+      <p className="text-sm">{diagnostic.message}</p>
+      {diagnostic.help === null ? null : (
+        <p className="text-fg-mute text-sm">{diagnostic.help}</p>
       )}
-      <RuleCode diagnostic={diagnostic} />
-    </div>
-    <p className="text-sm">{diagnostic.message}</p>
-    {diagnostic.help === null ? null : (
-      <p className="text-fg-mute text-sm">{diagnostic.help}</p>
-    )}
-  </li>
-);
+    </li>
+  );
+};
 
 const diagnosticKey = (diagnostic: LintDiagnostic, index: number): string =>
   [
