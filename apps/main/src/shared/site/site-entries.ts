@@ -11,6 +11,7 @@ export type SiteEntryIcon =
   | 'paletteMaker'
   | 'mojiCount'
   | 'htmlNest'
+  | 'codeDock'
   | 'fluida'
   | 'blog'
   | 'talks'
@@ -104,6 +105,14 @@ const entries: readonly SiteEntry[] = [
       'HTMLタグを選ぶと、親に置ける要素と中に入れられる子要素が浮かび上がります。',
     kind: 'tool',
     icon: 'htmlNest',
+  },
+  {
+    title: 'コードドック',
+    link: '/code-dock',
+    description:
+      'JavaScript/TypeScriptのコードをoxlintで検査し、oxfmtで整形します。',
+    kind: 'tool',
+    icon: 'codeDock',
   },
   {
     title: 'fluida',

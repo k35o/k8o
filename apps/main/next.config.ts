@@ -28,6 +28,18 @@ const nextConfig: NextConfig = {
       exclude: ['error', 'warn'],
     },
   },
+  // oxlint/oxfmt は NAPI ネイティブバイナリのためバンドルせず node_modules から読む
+  serverExternalPackages: ['oxlint', 'oxfmt'],
+  outputFileTracingIncludes: {
+    // oxlint は子プロセス起動のみで静的 import されないため、トレースに乗らない
+    // バイナリ (プラットフォーム別 binding) を明示的に含める
+    '/code-dock': [
+      '**/node_modules/oxlint/**',
+      '**/node_modules/@oxlint/binding-*/**',
+      '**/node_modules/oxfmt/**',
+      '**/node_modules/@oxfmt/binding-*/**',
+    ],
+  },
   logging: {
     browserToTerminal: true,
   },
