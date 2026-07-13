@@ -11,11 +11,14 @@ export const TextField = () => {
   const deferredText = useDeferredValue(text);
 
   // タイピング中は入力の都度カウントが変わるため、読み上げはデバウンスして
-  // 入力が落ち着いてから最新の文字数だけをスクリーンリーダーに通知する
+  // 入力が落ち着いてから最新の文字数だけをスクリーンリーダーに通知する。
+  // 未入力時は読み上げない（初期マウントで「0文字」が鳴るのを避ける）
   const [announcement, setAnnouncement] = useState('');
   useEffect(() => {
     const id = setTimeout(() => {
-      setAnnouncement(`${countGraphemeLength(text).toString()}文字`);
+      if (text !== '') {
+        setAnnouncement(`${countGraphemeLength(text).toString()}文字`);
+      }
     }, 500);
     return () => {
       clearTimeout(id);
