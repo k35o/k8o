@@ -17,6 +17,7 @@ const LinkButton: FC<{
   onNavigate: (id: string) => void;
 }> = ({ depth, text, isActive, onNavigate }) => (
   <Link
+    aria-current={isActive ? 'location' : undefined}
     className={cn(
       'inline-block w-full rounded-xl px-4 py-2 transition-colors hover:bg-bg-mute focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-border-info focus-visible:ring-offset-2 sm:text-lg',
       depth === 2 && 'pl-8 text-sm sm:text-md',
@@ -125,17 +126,19 @@ export const TableOfContents: FC<{
         <ProgressBar activeId={activeId} headingTree={headingTree} />
         <span className="truncate">{summaryText}</span>
       </summary>
-      <ul className="text-fg-base flex max-h-[75vh] flex-col overflow-y-scroll p-2">
-        {headingTree.children.map((node) => (
-          <TocItem
-            activeId={activeId}
-            depth={1}
-            key={node.text}
-            node={node}
-            onNavigate={setActiveId}
-          />
-        ))}
-      </ul>
+      <nav aria-label="もくじ">
+        <ul className="text-fg-base flex max-h-[75vh] flex-col overflow-y-scroll p-2">
+          {headingTree.children.map((node) => (
+            <TocItem
+              activeId={activeId}
+              depth={1}
+              key={node.text}
+              node={node}
+              onNavigate={setActiveId}
+            />
+          ))}
+        </ul>
+      </nav>
     </details>
   );
 };

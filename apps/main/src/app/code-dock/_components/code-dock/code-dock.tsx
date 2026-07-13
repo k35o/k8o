@@ -16,6 +16,10 @@ import { useTheme } from 'next-themes';
 import { useEffect, useRef, useState } from 'react';
 import type { FC } from 'react';
 
+import {
+  DEFAULT_SAMPLE_CODE,
+  DEFAULT_SAMPLE_LANGUAGE,
+} from '@/features/code-dock/interface/default-sample';
 import { isLintLanguage } from '@/features/code-dock/interface/types';
 import type {
   FormatCodeResult,
@@ -40,6 +44,9 @@ export type FormatAction = (
 type Props = {
   lintAction: LintAction;
   formatAction: FormatAction;
+  // page.tsx がサーバー側でキャッシュした初期サンプルの診断結果。渡された場合は
+  // マウント時の再検査を省略する（未指定＝Storybook 等では従来どおり検査する）
+  initialDiagnostics?: LintDiagnostic[] | null;
 };
 
 const LANGUAGE_OPTIONS = [
@@ -49,24 +56,25 @@ const LANGUAGE_OPTIONS = [
   { label: 'JS', value: 'js' },
 ] as const;
 
-const DEFAULT_CODE = [
-  'const greeting = "Hello, k8o!"',
-  '',
-  'export const App = () => {',
-  '  console.log(greeting)',
-  '  return <p>{greeting}</p>',
-  '}',
-  '',
-].join('\n');
-
 const LINT_DEBOUNCE_MS = 600;
 
-export const CodeDock: FC<Props> = ({ lintAction, formatAction }) => {
-  const [code, setCode] = useState(DEFAULT_CODE);
-  const [language, setLanguage] = useState<LintLanguage>('tsx');
-  const [diagnostics, setDiagnostics] = useState<LintDiagnostic[] | null>(null);
+export const CodeDock: FC<Props> = ({
+  lintAction,
+  formatAction,
+  initialDiagnostics,
+}) => {
+  const [code, setCode] = useState(DEFAULT_SAMPLE_CODE);
+  const [language, setLanguage] = useState<LintLanguage>(
+    DEFAULT_SAMPLE_LANGUAGE,
+  );
+  const [diagnostics, setDiagnostics] = useState<LintDiagnostic[] | null>(
+    initialDiagnostics ?? null,
+  );
   const [lintError, setLintError] = useState<string | null>(null);
   const [isLinting, dispatchLint] = useDebouncedTransition(LINT_DEBOUNCE_MS);
+  // 初期サンプルの診断結果を props で受け取っている場合、マウント直後の再検査は
+  // 不要なので最初の effect を 1 度だけスキップする
+  const shouldSkipInitialLint = useRef(Array.isArray(initialDiagnostics));
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const { resolvedTheme } = useTheme();
   // コードのハイライトはアプリのテーマに合わせる (light は one-light、それ以外は
@@ -88,6 +96,10 @@ export const CodeDock: FC<Props> = ({ lintAction, formatAction }) => {
 
   // 入力・言語変更・整形の反映のたびに、デバウンスして自動で検査する
   useEffect(() => {
+    if (shouldSkipInitialLint.current) {
+      shouldSkipInitialLint.current = false;
+      return;
+    }
     dispatchLint(async (signal) => {
       if (code === '') {
         setDiagnostics(null);

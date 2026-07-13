@@ -75,9 +75,15 @@ export const ApcaResultTable: FC<Props> = ({ lc }) => {
       <table className="hidden w-full sm:table">
         <thead>
           <tr className="border-border-base bg-bg-mute md:text-md border-b text-xs font-medium sm:text-sm">
-            <th className="px-3 py-2 sm:px-4 sm:py-3">判定</th>
-            <th className="px-3 py-2 sm:px-4 sm:py-3">基準</th>
-            <th className="px-3 py-2 text-left sm:px-4 sm:py-3">用途</th>
+            <th className="px-3 py-2 sm:px-4 sm:py-3" scope="col">
+              判定
+            </th>
+            <th className="px-3 py-2 sm:px-4 sm:py-3" scope="col">
+              基準
+            </th>
+            <th className="px-3 py-2 text-left sm:px-4 sm:py-3" scope="col">
+              用途
+            </th>
           </tr>
         </thead>
         <tbody>

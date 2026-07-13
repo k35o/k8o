@@ -3,7 +3,7 @@
 import { Alert, Heading } from '@k8o/arte-odyssey';
 import { calcApca } from '@repo/helpers/color/calc-apca';
 import { calcContrast } from '@repo/helpers/color/calc-contrast';
-import { type FC, useState } from 'react';
+import { type FC, useEffect, useState } from 'react';
 
 import { ApcaResultTable } from '../apca-result-table';
 import { ColorPallet } from '../color-pallet';
@@ -28,8 +28,23 @@ export const CheckContrast: FC = () => {
   const isInvalidAaNormalText = contrast < WCAG_THRESHOLDS.AA_NORMAL_TEXT;
   const isInvalidAaaNormalText = contrast < WCAG_THRESHOLDS.AAA_NORMAL_TEXT;
 
+  // カラーピッカーのドラッグ中は change が連続発火するため、読み上げは
+  // デバウンスして最新の結果だけをスクリーンリーダーに通知する
+  const [announcement, setAnnouncement] = useState('');
+  useEffect(() => {
+    const id = setTimeout(() => {
+      setAnnouncement(
+        `コントラスト比 ${contrast.toFixed(2)}対1、APCA Lc ${apcaLc.toFixed(1)}`,
+      );
+    }, 500);
+    return () => {
+      clearTimeout(id);
+    };
+  }, [contrast, apcaLc]);
+
   return (
     <div className="flex flex-col gap-8">
+      <output className="sr-only">{announcement}</output>
       <div className="grid grid-cols-2 gap-4">
         <ColorPallet color={baseColor} label="背景色" setColor={setBaseColor} />
         <ColorPallet

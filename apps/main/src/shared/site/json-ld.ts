@@ -76,6 +76,46 @@ export function blogPostingJsonLd(blog: BlogPostingInput): JsonLdObject {
   };
 }
 
+type BreadcrumbItem = {
+  name: string;
+  url: string;
+};
+
+function breadcrumbList(items: readonly BreadcrumbItem[]): JsonLdObject {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: items.map((item, index) => ({
+      '@type': 'ListItem',
+      position: index + 1,
+      name: item.name,
+      item: item.url,
+    })),
+  };
+}
+
+export function blogBreadcrumbJsonLd(blog: {
+  slug: string;
+  title: string;
+}): JsonLdObject {
+  return breadcrumbList([
+    { name: 'ホーム', url: SITE_URL },
+    { name: 'Blog', url: `${SITE_URL}/blog` },
+    { name: blog.title, url: `${SITE_URL}/blog/${blog.slug}` },
+  ]);
+}
+
+export function tagBreadcrumbJsonLd(tag: {
+  id: number;
+  name: string;
+}): JsonLdObject {
+  return breadcrumbList([
+    { name: 'ホーム', url: SITE_URL },
+    { name: 'Tags', url: `${SITE_URL}/tags` },
+    { name: tag.name, url: `${SITE_URL}/tags/${tag.id.toString()}` },
+  ]);
+}
+
 type TalkEventInput = {
   title: string;
   eventName: string;

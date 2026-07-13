@@ -16,7 +16,10 @@ import { mPlus2 } from './_styles/font';
 
 export const metadata = {
   metadataBase: new URL('https://k8o.me'),
-  title: 'k8o',
+  title: {
+    default: 'k8o',
+    template: '%s | k8o',
+  },
   description: 'k8oの活動や制作物をまとめた個人サイト',
   generator: 'Next.js',
   applicationName: 'k8o',

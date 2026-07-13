@@ -50,6 +50,8 @@ async function _generateLlmContent() {
 WebフロントエンドとTypeScriptが好きで、Baselineを追いながらWeb標準の進化を楽しんでいます。
 デザインシステムの構築を通じて、デザインとフロントエンドの交差点を探っています。
 
+各ブログ記事は URL の末尾に \`.md\` を付けると Markdown 形式で取得できます（例: https://k8o.me/blog/example.md）。
+
 ## ページ一覧
 ${entriesContent}
 `;

@@ -1,7 +1,9 @@
 import {
+  blogBreadcrumbJsonLd,
   blogPostingJsonLd,
   personJsonLd,
   serializeJsonLd,
+  tagBreadcrumbJsonLd,
   talkEventsJsonLd,
   websiteJsonLd,
 } from './json-ld';
@@ -95,6 +97,70 @@ describe('blogPostingJsonLd', () => {
     it('タグが空の場合はkeywordsを出力に含めないべき', () => {
       const jsonLd = blogPostingJsonLd({ ...blog, tags: [] });
       expect(serializeJsonLd(jsonLd)).not.toContain('keywords');
+    });
+  });
+});
+
+describe('blogBreadcrumbJsonLd', () => {
+  describe('正常系', () => {
+    it('ホーム > Blog > 記事タイトルの階層を持つBreadcrumbListを返すべき', () => {
+      expect(
+        blogBreadcrumbJsonLd({ slug: 'sample-post', title: 'サンプル記事' }),
+      ).toMatchObject({
+        '@context': 'https://schema.org',
+        '@type': 'BreadcrumbList',
+        itemListElement: [
+          {
+            '@type': 'ListItem',
+            position: 1,
+            name: 'ホーム',
+            item: 'https://k8o.me',
+          },
+          {
+            '@type': 'ListItem',
+            position: 2,
+            name: 'Blog',
+            item: 'https://k8o.me/blog',
+          },
+          {
+            '@type': 'ListItem',
+            position: 3,
+            name: 'サンプル記事',
+            item: 'https://k8o.me/blog/sample-post',
+          },
+        ],
+      });
+    });
+  });
+});
+
+describe('tagBreadcrumbJsonLd', () => {
+  describe('正常系', () => {
+    it('ホーム > Tags > タグ名の階層を持つBreadcrumbListを返すべき', () => {
+      expect(tagBreadcrumbJsonLd({ id: 42, name: 'CSS' })).toMatchObject({
+        '@context': 'https://schema.org',
+        '@type': 'BreadcrumbList',
+        itemListElement: [
+          {
+            '@type': 'ListItem',
+            position: 1,
+            name: 'ホーム',
+            item: 'https://k8o.me',
+          },
+          {
+            '@type': 'ListItem',
+            position: 2,
+            name: 'Tags',
+            item: 'https://k8o.me/tags',
+          },
+          {
+            '@type': 'ListItem',
+            position: 3,
+            name: 'CSS',
+            item: 'https://k8o.me/tags/42',
+          },
+        ],
+      });
     });
   });
 });

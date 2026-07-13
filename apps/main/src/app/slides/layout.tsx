@@ -5,6 +5,11 @@ import Link from 'next/link';
 export const metadata = {
   title: 'Slides',
   description: '登壇や発表で使ったスライドをまとめています。',
+  alternates: {
+    types: {
+      'application/rss+xml': 'https://k8o.me/slides/feed',
+    },
+  },
   openGraph: {
     title: 'Slides',
     description: '登壇や発表で使ったスライドをまとめています。',
