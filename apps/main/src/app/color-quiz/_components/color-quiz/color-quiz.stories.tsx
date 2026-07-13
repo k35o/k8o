@@ -36,9 +36,10 @@ export const ColorToHexSubmit: Story = {
     const canvas = within(canvasElement);
 
     const panel = canvas.getByRole('tabpanel');
-    const optionButtons = within(panel).getAllByRole('button', {
-      name: /^Hexの選択肢:/u,
+    const group = within(panel).getByRole('radiogroup', {
+      name: 'Hexの選択肢',
     });
+    const optionButtons = within(group).getAllByRole('radio');
     await expect(optionButtons.length).toBeGreaterThan(0);
     await userEvent.click(optionButtons[0] as HTMLElement);
 
@@ -52,6 +53,66 @@ export const ColorToHexSubmit: Story = {
     await expect(
       canvas.getByRole('button', { name: '次の問題へ' }),
     ).toBeInTheDocument();
+  },
+};
+
+// 選択肢が radiogroup として矢印キーで選択移動できる（selection follows focus）
+export const KeyboardSelectsOption: Story = {
+  play: async ({ canvasElement, userEvent }) => {
+    const canvas = within(canvasElement);
+    const panel = canvas.getByRole('tabpanel');
+    const group = within(panel).getByRole('radiogroup');
+    const radios = within(group).getAllByRole('radio');
+    const last = radios.length - 1;
+
+    // 未選択時は先頭だけがタブ移動先（roving tabindex）
+    await expect(radios[0]).toHaveAttribute('tabindex', '0');
+    await expect(radios[1]).toHaveAttribute('tabindex', '-1');
+
+    // 矢印キーで選択が focus に追従して移動し、tabindex も移る
+    (radios[0] as HTMLElement).focus();
+    await userEvent.keyboard('{ArrowRight}');
+    await expect(radios[1]).toHaveAttribute('aria-checked', 'true');
+    await expect(radios[1]).toHaveFocus();
+    await expect(radios[1]).toHaveAttribute('tabindex', '0');
+    await expect(radios[0]).toHaveAttribute('tabindex', '-1');
+
+    // 先頭での ArrowLeft は末尾へ折り返す
+    (radios[0] as HTMLElement).focus();
+    await userEvent.keyboard('{ArrowLeft}');
+    await expect(radios[last]).toHaveAttribute('aria-checked', 'true');
+    await expect(radios[last]).toHaveFocus();
+
+    // Home / End で先頭・末尾へ移動する
+    await userEvent.keyboard('{Home}');
+    await expect(radios[0]).toHaveAttribute('aria-checked', 'true');
+    await userEvent.keyboard('{End}');
+    await expect(radios[last]).toHaveAttribute('aria-checked', 'true');
+
+    await expect(
+      canvas.getByRole('button', { name: '回答する' }),
+    ).toBeEnabled();
+  },
+};
+
+// 「次の問題へ」で回答ボタンが disabled 化してもフォーカスが body に落ちず、
+// 新しい問題の先頭選択肢へ移る
+export const FocusMovesToFirstOptionOnNext: Story = {
+  play: async ({ canvasElement, userEvent }) => {
+    const canvas = within(canvasElement);
+    const radios = within(
+      within(canvas.getByRole('tabpanel')).getByRole('radiogroup'),
+    ).getAllByRole('radio');
+
+    await userEvent.click(radios[0] as HTMLElement);
+    await userEvent.click(canvas.getByRole('button', { name: '回答する' }));
+    await userEvent.click(canvas.getByRole('button', { name: '次の問題へ' }));
+
+    // 問題が変わり選択肢は作り直されるため、フォーカスは新しい先頭 radio にある
+    const nextRadios = within(
+      within(canvas.getByRole('tabpanel')).getByRole('radiogroup'),
+    ).getAllByRole('radio');
+    await expect(nextRadios[0]).toHaveFocus();
   },
 };
 
@@ -83,9 +144,10 @@ export const HexToColorSubmit: Story = {
     await userEvent.click(tab);
 
     const panel = canvas.getByRole('tabpanel');
-    const optionButtons = within(panel).getAllByRole('button', {
-      name: /^色の選択肢:/u,
+    const group = within(panel).getByRole('radiogroup', {
+      name: '色の選択肢',
     });
+    const optionButtons = within(group).getAllByRole('radio');
     await expect(optionButtons.length).toBeGreaterThan(0);
     await userEvent.click(optionButtons[0] as HTMLElement);
 

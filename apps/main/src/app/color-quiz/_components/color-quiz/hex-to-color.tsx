@@ -4,6 +4,7 @@ import { Badge, Button } from '@k8o/arte-odyssey';
 import type { FC } from 'react';
 
 import { useColorQuiz } from './use-color-quiz';
+import { useQuizRadioGroup } from './use-quiz-radio-group';
 
 export const HexToColor: FC = () => {
   const {
@@ -16,6 +17,11 @@ export const HexToColor: FC = () => {
     handleSubmit,
     handleNext,
   } = useColorQuiz();
+  const { getRadioProps, focusFirstOptionAfter } = useQuizRadioGroup({
+    options,
+    selectedHex,
+    onSelect: setSelectedHex,
+  });
 
   return (
     <div className="flex flex-col gap-6">
@@ -35,17 +41,29 @@ export const HexToColor: FC = () => {
           </p>
         )}
       </div>
-      <div className="grid grid-cols-2 gap-4">
-        {options.map((hex) => {
+      <div
+        aria-label="色の選択肢"
+        className="grid grid-cols-2 gap-4"
+        role="radiogroup"
+      >
+        {options.map((hex, index) => {
           const isSelected = selectedHex === hex;
           const isAnswer = hex === targetHex;
           const showCorrectBadge = phase === 'result' && isAnswer;
           const showWrongBadge = phase === 'result' && isSelected && !isAnswer;
+          // result 時は各選択肢の正誤も読み上げに含める（視覚バッジの内容は
+          // 親の aria-label に上書きされ SR に届かないため）
+          const optionLabel = showCorrectBadge
+            ? `#${hex}（正解）`
+            : showWrongBadge
+              ? `#${hex}（あなたの回答・不正解）`
+              : `#${hex}`;
 
           return (
             <button
-              aria-label={`色の選択肢: #${hex}`}
-              aria-pressed={isSelected}
+              key={hex}
+              {...getRadioProps(hex, index)}
+              aria-label={optionLabel}
               className={[
                 'relative flex h-28 items-center justify-center rounded-xl transition-all',
                 isSelected && phase === 'question'
@@ -58,7 +76,6 @@ export const HexToColor: FC = () => {
                 .filter(Boolean)
                 .join(' ')}
               disabled={phase === 'result'}
-              key={hex}
               onClick={() => {
                 setSelectedHex(hex);
               }}
@@ -99,7 +116,13 @@ export const HexToColor: FC = () => {
           回答する
         </Button>
       ) : (
-        <Button fullWidth onClick={handleNext} size="lg">
+        <Button
+          fullWidth
+          onClick={() => {
+            focusFirstOptionAfter(handleNext);
+          }}
+          size="lg"
+        >
           次の問題へ
         </Button>
       )}
