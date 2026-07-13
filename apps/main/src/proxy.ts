@@ -2,18 +2,6 @@ import { type NextRequest, NextResponse } from 'next/server';
 
 const isDev = process.env.NODE_ENV === 'development';
 
-function getOrigin(): string {
-  const portlessUrl = process.env['PORTLESS_URL'];
-  if (portlessUrl !== undefined && portlessUrl !== '') {
-    return portlessUrl.replace(/^http:/u, 'https:');
-  }
-  const vercelUrl = process.env['VERCEL_URL'];
-  if (vercelUrl !== undefined && vercelUrl !== '') {
-    return `https://${vercelUrl}`;
-  }
-  return 'https://k8o.me';
-}
-
 const cspHeader = `
     default-src 'self';
     script-src 'self' 'unsafe-inline' https://www.googletagmanager.com https://va.vercel-scripts.com https://vercel.live${isDev ? " 'unsafe-eval'" : ''};
@@ -41,15 +29,23 @@ const contentSecurityPolicyHeaderValue = cspHeader
   .replaceAll(/\s{2,}/gu, ' ')
   .trim();
 
-export function proxy(_request: NextRequest) {
+export function proxy(request: NextRequest) {
   const response = NextResponse.next();
   response.headers.set(
     'Content-Security-Policy',
     contentSecurityPolicyHeaderValue,
   );
+  // 配信オリジンそのものを report 先にする。VERCEL_URL などデプロイ固有 URL は
+  // Vercel の Deployment Protection で SSO にリダイレクトされ、ブラウザからの
+  // CSP 違反レポート POST が届かず全損するため使わない
   response.headers.set(
     'Reporting-Endpoints',
-    `csp-endpoint="${getOrigin()}/api/reports"`,
+    `csp-endpoint="${request.nextUrl.origin}/api/reports"`,
+  );
+  response.headers.set('X-Content-Type-Options', 'nosniff');
+  response.headers.set(
+    'Permissions-Policy',
+    'camera=(), microphone=(), geolocation=(), browsing-topics=()',
   );
 
   return response;
