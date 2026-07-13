@@ -15,7 +15,7 @@ async function generateRssFeed() {
   const articles = await getArticles();
 
   return buildRssFeed({
-    title: metadata.title,
+    title: `k8o ${metadata.title}`,
     description: metadata.description,
     feedUrl: `${READING_LIST_URL}/feed`,
     siteUrl: READING_LIST_URL,
@@ -39,7 +39,7 @@ export async function GET() {
 
   return new NextResponse(xml, {
     headers: {
-      'Content-Type': 'application/xml',
+      'Content-Type': 'application/rss+xml; charset=utf-8',
     },
   });
 }
