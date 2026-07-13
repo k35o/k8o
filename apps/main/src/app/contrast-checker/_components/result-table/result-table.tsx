@@ -109,9 +109,15 @@ export const ResultTable: FC<Props> = ({
       <table className="hidden w-full sm:table">
         <thead>
           <tr className="border-border-base bg-bg-mute md:text-md border-b text-xs font-medium sm:text-sm">
-            <th className="px-3 py-2 sm:px-4 sm:py-3">AA</th>
-            <th className="px-3 py-2 sm:px-4 sm:py-3">AAA</th>
-            <th className="px-3 py-2 text-left sm:px-4 sm:py-3">テキスト</th>
+            <th className="px-3 py-2 sm:px-4 sm:py-3" scope="col">
+              AA
+            </th>
+            <th className="px-3 py-2 sm:px-4 sm:py-3" scope="col">
+              AAA
+            </th>
+            <th className="px-3 py-2 text-left sm:px-4 sm:py-3" scope="col">
+              テキスト
+            </th>
           </tr>
         </thead>
         <tbody>

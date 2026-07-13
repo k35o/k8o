@@ -19,6 +19,12 @@ export const ColorToHex: FC = () => {
 
   return (
     <div className="flex flex-col gap-6">
+      {/* 正誤と正解の hex をスクリーンリーダーに通知する永続ライブリージョン */}
+      <output className="sr-only">
+        {phase === 'result'
+          ? `${isCorrect ? '正解' : '不正解'}。正解は #${targetHex} です`
+          : ''}
+      </output>
       <div
         className="flex h-48 w-full items-center justify-center rounded-xl"
         style={{ backgroundColor: `#${targetHex}` }}
@@ -85,6 +91,7 @@ export const ColorToHex: FC = () => {
           return (
             <button
               aria-label={`Hexの選択肢: #${hex}`}
+              aria-pressed={isSelected}
               className={[
                 'relative flex h-14 items-center justify-center rounded-xl border border-border-base font-mono text-sm tracking-wider transition-all',
                 'bg-bg-base',

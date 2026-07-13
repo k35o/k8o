@@ -1,16 +1,30 @@
 'use client';
 
 import { FormControl, Textarea } from '@k8o/arte-odyssey';
-import { useDeferredValue, useState } from 'react';
+import { useDeferredValue, useEffect, useState } from 'react';
 
+import { countGraphemeLength } from '../../_utils/count-text';
 import { TextLength } from '../text-length';
 
 export const TextField = () => {
   const [text, setText] = useState('');
   const deferredText = useDeferredValue(text);
 
+  // タイピング中は入力の都度カウントが変わるため、読み上げはデバウンスして
+  // 入力が落ち着いてから最新の文字数だけをスクリーンリーダーに通知する
+  const [announcement, setAnnouncement] = useState('');
+  useEffect(() => {
+    const id = setTimeout(() => {
+      setAnnouncement(`${countGraphemeLength(text).toString()}文字`);
+    }, 500);
+    return () => {
+      clearTimeout(id);
+    };
+  }, [text]);
+
   return (
     <div className="flex grow flex-col gap-2">
+      <output className="sr-only">{announcement}</output>
       <div className="h-full *:h-full">
         <FormControl
           label="カウントしたい文字列"

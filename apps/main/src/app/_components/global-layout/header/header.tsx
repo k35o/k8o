@@ -8,7 +8,9 @@ export const Header: FC<{ children: ReactNode }> = ({ children }) => {
 
   return (
     <header
-      className={`sticky top-0 z-50 flex items-center justify-center p-4 transition-transform duration-300 ${
+      // focus-within: キーボードでヘッダー内コントロールへ移動したら常に表示する
+      // (WCAG 2.4.11)。motion-reduce: 動きの抑制設定を尊重する
+      className={`sticky top-0 z-50 flex items-center justify-center p-4 transition-transform duration-300 focus-within:translate-y-0 motion-reduce:transition-none ${
         scrollDirection.y === 'down' ? '-translate-y-full' : 'translate-y-0'
       }`}
     >

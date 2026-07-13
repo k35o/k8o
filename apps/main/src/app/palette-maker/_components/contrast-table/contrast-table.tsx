@@ -1,3 +1,4 @@
+import { AlertIcon } from '@k8o/arte-odyssey';
 import type { FC } from 'react';
 
 import type { PaletteSwatch } from '../../_types/palette';
@@ -15,30 +16,39 @@ type ContrastValueProps = {
   apca: number;
 };
 
-const ContrastValue: FC<ContrastValueProps> = ({ hex, text, ratio, apca }) => (
-  <div className="flex items-center gap-2">
-    <span
-      aria-hidden="true"
-      className="flex size-8 shrink-0 items-center justify-center rounded-md text-sm font-bold"
-      style={{
-        backgroundColor: hex,
-        color: text === 'white' ? '#ffffff' : '#000000',
-      }}
-    >
-      Aa
-    </span>
-    <div className="flex flex-col">
+const ContrastValue: FC<ContrastValueProps> = ({ hex, text, ratio, apca }) => {
+  const isPass = ratio >= AA_NORMAL_TEXT;
+
+  return (
+    <div className="flex items-center gap-2">
       <span
-        className={`text-sm font-bold ${
-          ratio >= AA_NORMAL_TEXT ? 'text-fg-success' : 'text-fg-error'
-        }`}
+        aria-hidden="true"
+        className="flex size-8 shrink-0 items-center justify-center rounded-md text-sm font-bold"
+        style={{
+          backgroundColor: hex,
+          color: text === 'white' ? '#ffffff' : '#000000',
+        }}
       >
-        {ratio.toFixed(2)}
+        Aa
       </span>
-      <span className="text-fg-mute text-xs">Lc {apca.toFixed(1)}</span>
+      <div className="flex flex-col">
+        {/* 合否を色だけに頼らず、アイコン(形)と読み上げテキストでも伝える */}
+        <span
+          className={`flex items-center gap-1 text-sm font-bold ${
+            isPass ? 'text-fg-success' : 'text-fg-error'
+          }`}
+        >
+          <AlertIcon size="sm" status={isPass ? 'success' : 'error'} />
+          {ratio.toFixed(2)}
+          <span className="sr-only">
+            {isPass ? '（AA合格）' : '（AA不合格）'}
+          </span>
+        </span>
+        <span className="text-fg-mute text-xs">Lc {apca.toFixed(1)}</span>
+      </div>
     </div>
-  </div>
-);
+  );
+};
 
 export const ContrastTable: FC<Props> = ({ swatches }) => (
   <div className="flex flex-col gap-2">
@@ -86,11 +96,21 @@ export const ContrastTable: FC<Props> = ({ swatches }) => (
       <table className="hidden w-full sm:table">
         <thead>
           <tr className="border-border-base bg-bg-mute border-b text-left text-sm font-medium">
-            <th className="px-4 py-3">段</th>
-            <th className="px-4 py-3">色</th>
-            <th className="px-4 py-3">OKLCH</th>
-            <th className="px-4 py-3">白文字</th>
-            <th className="px-4 py-3">黒文字</th>
+            <th className="px-4 py-3" scope="col">
+              段
+            </th>
+            <th className="px-4 py-3" scope="col">
+              色
+            </th>
+            <th className="px-4 py-3" scope="col">
+              OKLCH
+            </th>
+            <th className="px-4 py-3" scope="col">
+              白文字
+            </th>
+            <th className="px-4 py-3" scope="col">
+              黒文字
+            </th>
           </tr>
         </thead>
         <tbody>
@@ -135,7 +155,7 @@ export const ContrastTable: FC<Props> = ({ swatches }) => (
       </table>
     </div>
     <p className="text-fg-mute text-xs">
-      WCAG比は4.5以上（通常テキストのAA基準）を合格として色分けしています
+      WCAG比は4.5以上（通常テキストのAA基準）を合格とし、色とアイコンで示しています
     </p>
   </div>
 );
