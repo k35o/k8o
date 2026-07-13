@@ -1,7 +1,9 @@
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 
+import { JsonLd } from '@/app/_components/json-ld';
 import { getTag, getTags } from '@/features/tags/interface/queries';
+import { tagBreadcrumbJsonLd } from '@/shared/site/json-ld';
 
 import { TagContent } from '../_components/tag-content';
 
@@ -56,5 +58,10 @@ export default async function Page({ params }: PageProperties) {
     notFound();
   }
 
-  return <TagContent {...tag} />;
+  return (
+    <>
+      <JsonLd data={tagBreadcrumbJsonLd(tag)} />
+      <TagContent {...tag} />
+    </>
+  );
 }

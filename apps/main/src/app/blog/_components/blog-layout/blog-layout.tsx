@@ -19,7 +19,7 @@ import {
   type getBlogsByTags,
   getBlogToc,
 } from '@/features/blog/interface/queries';
-import { blogPostingJsonLd } from '@/shared/site/json-ld';
+import { blogBreadcrumbJsonLd, blogPostingJsonLd } from '@/shared/site/json-ld';
 
 import { END_OF_CONTENT_ID } from './constants';
 import { CopyMarkdownButton } from './copy-markdown-button';
@@ -132,13 +132,18 @@ export const BlogLayoutContent: FC<BlogLayoutContentProps> = ({
 };
 
 export const BlogLayout: FC<BlogLayoutProps> = async ({ children, slug }) => {
-  const blog = await getBlogContent(slug);
-  const headingTree = await getBlogToc(slug);
-  const readingTime = await getBlogReadingTime(slug);
+  // 3つは相互依存のない独立した 'use cache' クエリなので、キャッシュミス時の
+  // 動的レンダーやビルド時プリレンダーで直列に待たないよう並列化する
+  const [blog, headingTree, readingTime] = await Promise.all([
+    getBlogContent(slug),
+    getBlogToc(slug),
+    getBlogReadingTime(slug),
+  ]);
 
   return (
     <>
       <JsonLd data={blogPostingJsonLd(blog)} />
+      <JsonLd data={blogBreadcrumbJsonLd(blog)} />
       <BlogLayoutContent
         blog={blog}
         headingTree={headingTree}
