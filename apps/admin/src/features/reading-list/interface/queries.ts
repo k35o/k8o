@@ -3,10 +3,10 @@ import { cacheLife } from 'next/cache';
 import {
   findArticleForEdit,
   findArticles,
-  type FindArticlesResult,
   findArticleSourceById,
   findReadingListContent,
 } from '../infrastructure/reading-list-repository';
+import type { FindArticlesResult } from '../infrastructure/reading-list-repository';
 
 export const getReadingListContentData = async () => {
   'use cache';

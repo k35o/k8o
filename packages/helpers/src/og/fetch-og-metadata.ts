@@ -1,5 +1,6 @@
 import { safeFetch } from '../url/safe-fetch';
-import { type OgMetadata, parseOgMetadata } from './og-metadata';
+import { parseOgMetadata } from './og-metadata';
+import type { OgMetadata } from './og-metadata';
 
 const TIMEOUT_MS = 5000;
 

@@ -2,13 +2,12 @@
 
 import { Button, Card, TextField, Textarea, useToast } from '@k8o/arte-odyssey';
 import { useAsyncAction } from '@repo/react-hooks/use-async-action';
-import { type ChangeEvent, type FC, useState } from 'react';
+import { useState } from 'react';
+import type { ChangeEvent, FC } from 'react';
 
 import { ConfirmDialog } from '@/app/(authenticated)/_components';
-import {
-  type ManualPushActionState,
-  sendManualPushAction,
-} from '@/features/push-notification/interface/actions';
+import { sendManualPushAction } from '@/features/push-notification/interface/actions';
+import type { ManualPushActionState } from '@/features/push-notification/interface/actions';
 
 export const PushSendForm: FC = () => {
   const [title, setTitle] = useState('');

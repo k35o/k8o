@@ -2,7 +2,8 @@ import type { FC, ReactNode } from 'react';
 
 import { ActivityErrorBoundary } from '@/app/_components/error-boundary';
 
-import { type LinkCardAppearance, LinkCardFallback } from './fallback';
+import { LinkCardFallback } from './fallback';
+import type { LinkCardAppearance } from './fallback';
 
 export const LinkCardErrorBoundary: FC<{
   href: string;

@@ -24,7 +24,7 @@ export const StudioSkeleton: FC = () => (
       <div className="border-border-mute hidden min-h-0 flex-col gap-5 border-r p-6 lg:flex">
         {range(0, 4).map((n) => (
           <div className="flex flex-col gap-2" key={`studio-msg-skeleton-${n}`}>
-            <div className="bg-bg-mute h-3 w-10 rounded motion-safe:animate-pulse" />
+            <div className="bg-bg-mute h-3 w-10 rounded-sm motion-safe:animate-pulse" />
             <div className="bg-bg-mute h-16 w-full rounded-lg motion-safe:animate-pulse" />
           </div>
         ))}

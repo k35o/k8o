@@ -5,7 +5,7 @@ describe('getArtifacts', () => {
     const projects = getArtifacts();
 
     expect(projects).toHaveLength(12);
-    expect(projects).toEqual(
+    expect(projects).toStrictEqual(
       expect.arrayContaining([
         expect.objectContaining({
           name: '@k8o/arte-odyssey',
@@ -53,7 +53,7 @@ describe('getArtifacts', () => {
     );
 
     for (const project of projects) {
-      expect(project).toEqual(
+      expect(project).toStrictEqual(
         expect.objectContaining({
           name: expect.any(String) as string,
           description: expect.any(String) as string,

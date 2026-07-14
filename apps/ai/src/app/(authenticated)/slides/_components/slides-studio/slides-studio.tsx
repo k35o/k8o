@@ -1,8 +1,5 @@
 'use client';
 
-/* oxlint-disable import/max-dependencies -- SlidesStudio はチャット/生成/プレビュー/履歴を束ねる統合点。
-   Studio（ui-studio）と同じ構造で、Sandbox が無いぶん薄い。 */
-
 import { useChat } from '@ai-sdk/react';
 import {
   Button,
@@ -10,7 +7,8 @@ import {
   FullscreenIcon,
   IconButton,
 } from '@k8o/arte-odyssey';
-import { DefaultChatTransport, type UIMessage } from 'ai';
+import { DefaultChatTransport } from 'ai';
+import type { UIMessage } from 'ai';
 import { useTheme } from 'next-themes';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useEffect, useMemo, useReducer, useRef, useState } from 'react';

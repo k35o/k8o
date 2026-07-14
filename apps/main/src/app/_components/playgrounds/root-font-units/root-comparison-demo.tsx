@@ -33,7 +33,7 @@ export function RootComparisonDemo() {
             <div className="flex items-center gap-2">
               <span style={{ lineHeight: 1 }}>0</span>
               <div
-                className="bg-primary-fg h-2 rounded"
+                className="bg-primary-fg h-2 rounded-sm"
                 style={{ width: `${fontSize}px` }}
               />
             </div>
@@ -49,7 +49,7 @@ export function RootComparisonDemo() {
             <div className="flex items-center gap-2">
               <span style={{ lineHeight: 1 }}>0</span>
               <div
-                className="bg-secondary-fg h-2 rounded"
+                className="bg-secondary-fg h-2 rounded-sm"
                 style={{ width: '1rch' }}
               />
             </div>

@@ -2,7 +2,8 @@
 
 import { Badge, Button, Card, TextField, useToast } from '@k8o/arte-odyssey';
 import { useAsyncAction } from '@repo/react-hooks/use-async-action';
-import { type ChangeEvent, type FC, useState } from 'react';
+import { useState } from 'react';
+import type { ChangeEvent, FC } from 'react';
 
 import { ConfirmDialog, EmptyState } from '@/app/(authenticated)/_components';
 import { deleteTag, renameTag } from '@/features/tags/interface/actions';

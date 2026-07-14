@@ -1,7 +1,8 @@
 'use client';
 
 import { Alert, Button, FormControl, Select } from '@k8o/arte-odyssey';
-import { type FC, useActionState } from 'react';
+import { useActionState } from 'react';
+import type { FC } from 'react';
 
 import { LabeledTextField } from '@/app/(authenticated)/_components';
 import type { BlogOption } from '@/features/talks/interface/queries';

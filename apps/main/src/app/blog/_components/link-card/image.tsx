@@ -1,7 +1,8 @@
 'use client';
 
 import Image from 'next/image';
-import { type FC, useState } from 'react';
+import { useState } from 'react';
+import type { FC } from 'react';
 
 export const MetaImage: FC<{
   src: string;

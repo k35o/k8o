@@ -4,10 +4,8 @@ import type { HighlightedCode } from '@repo/code-highlight/tokenize';
 import { createContext, useEffect, useRef, useState } from 'react';
 
 import type { HighlightFn } from '@/app/_components/highlighted-code';
-import {
-  type DeckSlide,
-  extractCodeBlocks,
-} from '@/features/slides/application/parse-deck';
+import { extractCodeBlocks } from '@/features/slides/application/parse-deck';
+import type { DeckSlide } from '@/features/slides/application/parse-deck';
 
 import { highlightKey } from './deck-slide-view/deck-slide-view';
 

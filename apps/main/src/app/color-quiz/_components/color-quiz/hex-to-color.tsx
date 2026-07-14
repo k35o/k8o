@@ -32,7 +32,7 @@ export const HexToColor: FC = () => {
           : ''}
       </output>
       <div className="text-center">
-        <p className="font-mono text-3xl font-bold tracking-widest">
+        <p className="font-mono text-3xl font-bold tracking-normal">
           #{targetHex}
         </p>
         {phase === 'result' && (
@@ -84,7 +84,7 @@ export const HexToColor: FC = () => {
             >
               {phase === 'result' && (
                 <p
-                  className="text-sm font-bold tracking-wider"
+                  className="text-sm font-bold tracking-normal"
                   style={{
                     color: `contrast-color(#${hex})`,
                   }}

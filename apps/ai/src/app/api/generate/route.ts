@@ -3,8 +3,8 @@ import {
   createUIMessageStreamResponse,
   streamText,
   toUIMessageStream,
-  type UIMessage,
 } from 'ai';
+import type { UIMessage } from 'ai';
 import * as z from 'zod/mini';
 
 import { buildSlidesSystemPrompt } from '@/features/generation/application/build-slides-system-prompt';

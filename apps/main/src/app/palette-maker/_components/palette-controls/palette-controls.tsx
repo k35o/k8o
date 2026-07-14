@@ -2,7 +2,8 @@
 
 import { FormControl, NumberField, Slider, TextField } from '@k8o/arte-odyssey';
 import type { Color } from '@repo/helpers/color/spaces';
-import { type ChangeEventHandler, type FC, useId, useState } from 'react';
+import { useId, useState } from 'react';
+import type { ChangeEventHandler, FC } from 'react';
 
 import { HUE, PEAK_CHROMA, isTokenName } from '../../_utils/search-params';
 import { BaseColorInput } from './base-color-input';

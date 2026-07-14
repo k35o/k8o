@@ -15,7 +15,7 @@ describe('lintSource', () => {
     it('問題のないコードでは空配列を返す', async () => {
       const diagnostics = await lintSource('export const answer = 42;\n', 'ts');
 
-      expect(diagnostics).toEqual([]);
+      expect(diagnostics).toStrictEqual([]);
     });
 
     it('tsxではJSXを解釈できる', async () => {
@@ -24,7 +24,7 @@ describe('lintSource', () => {
         'tsx',
       );
 
-      expect(diagnostics).toEqual([]);
+      expect(diagnostics).toStrictEqual([]);
     });
 
     it('no-consoleはwarningとして返る', async () => {
@@ -61,7 +61,7 @@ describe('lintSource', () => {
     it('空文字はno-empty-fileの診断になる', async () => {
       const diagnostics = await lintSource('', 'ts');
 
-      expect(diagnostics.map((d) => d.code)).toEqual([
+      expect(diagnostics.map((d) => d.code)).toStrictEqual([
         'unicorn(no-empty-file)',
       ]);
     });

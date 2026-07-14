@@ -11,7 +11,8 @@ import { formatDate } from '@repo/helpers/date/format';
 import type { Route } from 'next';
 import Link from 'next/link';
 import { useQueryStates } from 'nuqs';
-import { type FC, useMemo } from 'react';
+import { useMemo } from 'react';
+import type { FC } from 'react';
 
 import type { BaselineFeature } from '@/features/baseline/interface/queries';
 import type { BlogLink } from '@/features/blog/interface/queries';

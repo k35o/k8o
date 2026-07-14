@@ -1,5 +1,4 @@
 import {
-  type Color,
   clamp,
   colorToHsl,
   colorToHwb,
@@ -9,6 +8,7 @@ import {
   colorToOklch,
   colorToRgb255,
 } from './spaces';
+import type { Color } from './spaces';
 
 const round = (value: number, digits: number): number => {
   const rounded = Number(value.toFixed(digits));

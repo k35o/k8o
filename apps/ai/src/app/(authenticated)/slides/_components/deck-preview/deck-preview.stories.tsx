@@ -30,6 +30,7 @@ const SAMPLE_DECK = [
   '## コードの見た目',
   '',
   '```ts',
+  // oxlint-disable-next-line eslint/no-template-curly-in-string -- Markdown コードブロックの表示例で、テンプレートリテラルは意図的な文字列
   'const greet = (name: string): string => `Hello, ${name}!`;',
   '```',
   '',

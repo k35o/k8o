@@ -3,7 +3,8 @@
 import { Alert, useDisclosure, useSessionStorage } from '@k8o/arte-odyssey';
 import { isBrowserOutdated } from '@repo/helpers/browser/baseline-support';
 import type { BaselineMinVersions } from '@repo/helpers/browser/detect-browser';
-import { type FC, type ReactNode, useCallback } from 'react';
+import { useCallback } from 'react';
+import type { FC, ReactNode } from 'react';
 
 import { BaselineNoticeModal } from './baseline-notice-modal';
 import { BROWSER_BASELINE_MESSAGE } from './messages';

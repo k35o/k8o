@@ -1,12 +1,11 @@
 import { cacheLife } from 'next/cache';
 
 import {
-  type BlogOption,
   findBlogOptions,
   findTalkForEdit,
   findTalks,
-  type TalkRecord,
 } from '../infrastructure/talk-repository';
+import type { BlogOption, TalkRecord } from '../infrastructure/talk-repository';
 
 export const getTalks = async (): Promise<TalkRecord[]> => {
   'use cache';

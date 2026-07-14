@@ -24,7 +24,7 @@ describe('parseSlidesGeneration', () => {
       const result = parseSlidesGeneration(raw);
       expect(result.source).toBe(DECK);
       expect(result.meta?.title).toBe('デッキ');
-      expect(result.meta?.changes).toEqual(['表紙を追加']);
+      expect(result.meta?.changes).toStrictEqual(['表紙を追加']);
       expect(result.isComplete).toBe(true);
     });
 
@@ -97,7 +97,11 @@ describe('parseSlidesGeneration', () => {
   describe('エッジケース', () => {
     it('フェンスが無いテキストは source も meta も null', () => {
       const result = parseSlidesGeneration('こんにちは');
-      expect(result).toEqual({ source: null, meta: null, isComplete: false });
+      expect(result).toStrictEqual({
+        source: null,
+        meta: null,
+        isComplete: false,
+      });
     });
 
     it('開きフェンス直後で入力が終わっていても落ちない', () => {

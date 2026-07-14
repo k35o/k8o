@@ -8,7 +8,8 @@ import {
   SubscribeIcon,
 } from '@k8o/arte-odyssey';
 import { useQueryStates } from 'nuqs';
-import { type FC, type ReactNode, useCallback, useMemo, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
+import type { FC, ReactNode } from 'react';
 
 import type { SortOrder } from '../../_utils/constants';
 import { readingListParsers } from '../../_utils/search-params';

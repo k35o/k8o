@@ -64,7 +64,7 @@ describe('blogs service', () => {
 
       const result = await getBlogs();
 
-      expect(result).toEqual([
+      expect(result).toStrictEqual([
         {
           id: 1,
           slug: 'blog-1',
@@ -83,7 +83,7 @@ describe('blogs service', () => {
 
       const result = await getBlogs();
 
-      expect(result).toEqual([]);
+      expect(result).toStrictEqual([]);
     });
   });
 
@@ -147,7 +147,7 @@ describe('blogs service', () => {
       const result = await getBlogsByTags('blog-1', [1, 2]);
 
       expect(result).toHaveLength(2);
-      expect(result[0]).toEqual({
+      expect(result[0]).toStrictEqual({
         id: 2,
         slug: 'blog-2',
         title: 'Test Blog',
@@ -260,7 +260,7 @@ describe('blogs service', () => {
 
       const result = await getBlogsByTags('current-blog', [1]);
 
-      expect(result).toEqual([]);
+      expect(result).toStrictEqual([]);
     });
   });
 });

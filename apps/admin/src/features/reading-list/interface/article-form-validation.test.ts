@@ -43,7 +43,7 @@ describe('parseArticleCreateFormData', () => {
     it('全項目が正しければ data を返す', () => {
       const result = parseArticleCreateFormData(buildCreateFormData());
 
-      expect(result).toEqual({
+      expect(result).toStrictEqual({
         ok: true,
         data: {
           articleSourceId: 1,
@@ -68,7 +68,7 @@ describe('parseArticleCreateFormData', () => {
         buildCreateFormData({ articleSourceId: value }),
       );
 
-      expect(result).toEqual({
+      expect(result).toStrictEqual({
         ok: false,
         error: 'ソースを選択してください',
       });
@@ -81,7 +81,7 @@ describe('parseArticleCreateFormData', () => {
           buildCreateFormData({ [key]: '' }),
         );
 
-        expect(result).toEqual({
+        expect(result).toStrictEqual({
           ok: false,
           error: 'タイトル・URL・公開日は必須です',
         });
@@ -93,7 +93,7 @@ describe('parseArticleCreateFormData', () => {
         buildCreateFormData({ publishedAt: '2026/03/10' }),
       );
 
-      expect(result).toEqual({
+      expect(result).toStrictEqual({
         ok: false,
         error: '公開日は YYYY-MM-DD 形式で入力してください',
       });
@@ -108,7 +108,7 @@ describe('parseArticleCreateFormData', () => {
         buildCreateFormData({ url: value }),
       );
 
-      expect(result).toEqual({
+      expect(result).toStrictEqual({
         ok: false,
         error: '有効なURL(https)を入力してください',
       });
@@ -121,7 +121,7 @@ describe('parseArticleCreateFormData', () => {
         buildCreateFormData({ description: '' }),
       );
 
-      expect(result).toEqual({
+      expect(result).toStrictEqual({
         ok: true,
         data: {
           articleSourceId: 1,
@@ -140,7 +140,7 @@ describe('parseArticleUpdateFormData', () => {
     it('全項目が正しければ data を返す', () => {
       const result = parseArticleUpdateFormData(buildUpdateFormData());
 
-      expect(result).toEqual({
+      expect(result).toStrictEqual({
         ok: true,
         data: {
           title: '記事タイトル',
@@ -160,7 +160,7 @@ describe('parseArticleUpdateFormData', () => {
           buildUpdateFormData({ [key]: '' }),
         );
 
-        expect(result).toEqual({
+        expect(result).toStrictEqual({
           ok: false,
           error: 'タイトル・URL・公開日は必須です',
         });
@@ -172,7 +172,7 @@ describe('parseArticleUpdateFormData', () => {
         buildUpdateFormData({ publishedAt: '10 Mar 2026' }),
       );
 
-      expect(result).toEqual({
+      expect(result).toStrictEqual({
         ok: false,
         error: '公開日は YYYY-MM-DD 形式で入力してください',
       });
@@ -187,7 +187,7 @@ describe('parseArticleUpdateFormData', () => {
         buildUpdateFormData({ url: value }),
       );
 
-      expect(result).toEqual({
+      expect(result).toStrictEqual({
         ok: false,
         error: '有効なURL(https)を入力してください',
       });
@@ -200,7 +200,7 @@ describe('parseArticleUpdateFormData', () => {
         buildUpdateFormData({ description: '' }),
       );
 
-      expect(result).toEqual({
+      expect(result).toStrictEqual({
         ok: true,
         data: {
           title: '記事タイトル',

@@ -1,7 +1,7 @@
-import {
-  CORE_BROWSERS,
-  type BaselineBrowser,
-  type BaselineMinVersions,
+import { CORE_BROWSERS } from '@repo/helpers/browser/detect-browser';
+import type {
+  BaselineBrowser,
+  BaselineMinVersions,
 } from '@repo/helpers/browser/detect-browser';
 
 import { fetchBrowserSupport } from '../infrastructure/browser-support-repository';

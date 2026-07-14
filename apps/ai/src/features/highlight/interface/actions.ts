@@ -1,9 +1,7 @@
 'use server';
 
-import {
-  type HighlightedCode,
-  highlightCode,
-} from '@repo/code-highlight/tokenize';
+import { highlightCode } from '@repo/code-highlight/tokenize';
+import type { HighlightedCode } from '@repo/code-highlight/tokenize';
 import { headers } from 'next/headers';
 
 import { requireAllowedSession } from '@/shared/auth/require-allowed-session';

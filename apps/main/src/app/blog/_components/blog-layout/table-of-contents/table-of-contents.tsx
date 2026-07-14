@@ -3,7 +3,8 @@
 import { useClickAway } from '@k8o/arte-odyssey';
 import { cn } from '@repo/helpers/cn';
 import Link from 'next/link';
-import { type FC, useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
+import type { FC } from 'react';
 
 import type { HeadingTree } from '@/shared/mdx/types';
 

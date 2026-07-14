@@ -78,19 +78,22 @@ describe('reading-list service', () => {
         with?: { articleSource: true };
       };
 
-      expect(queryOptions.with).toEqual({ articleSource: true });
-      expect(queryOptions.where).toEqual({
+      expect(queryOptions.with).toStrictEqual({ articleSource: true });
+      expect(queryOptions.where).toStrictEqual({
         type: 'gte',
         column: 'articles.publishedAt',
         value: '2025-12-27T12:00:00.000Z',
       });
-      expect(queryOptions.orderBy).toEqual(expect.any(Function));
-      expect(result).toEqual([
+      expect(queryOptions.orderBy).toStrictEqual(expect.any(Function));
+      expect(result).toStrictEqual([
         {
           id: 1,
           title: '記事タイトル',
           url: 'https://example.com/articles/1',
           publishedAt: '2026-03-20T00:00:00.000Z',
+          description: undefined,
+          imageUrl: undefined,
+          summary: undefined,
           summaryGaveUp: false,
           source: {
             id: 10,
@@ -139,7 +142,11 @@ describe('reading-list service', () => {
 
       const result = await getArticles();
 
-      expect(result.map((a) => a.summaryGaveUp)).toEqual([true, false, false]);
+      expect(result.map((a) => a.summaryGaveUp)).toStrictEqual([
+        true,
+        false,
+        false,
+      ]);
     });
   });
 
@@ -164,7 +171,7 @@ describe('reading-list service', () => {
       expect(db.query.articleSources.findMany).toHaveBeenCalledWith({
         orderBy: expect.any(Function) as () => unknown,
       });
-      expect(result).toEqual([
+      expect(result).toStrictEqual([
         {
           id: 2,
           title: 'Qiita',

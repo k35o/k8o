@@ -1,12 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 import type { UIMessage } from 'ai';
-import {
-  type ComponentProps,
-  type FC,
-  type ReactNode,
-  useRef,
-  useState,
-} from 'react';
+import { useRef, useState } from 'react';
+import type { ComponentProps, FC, ReactNode } from 'react';
 
 import { ChatPanel } from './chat-panel';
 

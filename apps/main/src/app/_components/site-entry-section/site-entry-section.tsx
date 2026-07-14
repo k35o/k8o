@@ -18,12 +18,8 @@ import {
 } from '@k8o/arte-odyssey';
 import type { ReactNode } from 'react';
 
-import {
-  KIND_SECTION,
-  siteEntries,
-  type SiteEntryIcon,
-  type SiteEntryKind,
-} from '@/shared/site/site-entries';
+import { KIND_SECTION, siteEntries } from '@/shared/site/site-entries';
+import type { SiteEntryIcon, SiteEntryKind } from '@/shared/site/site-entries';
 
 import { AppCard } from '../app-card';
 

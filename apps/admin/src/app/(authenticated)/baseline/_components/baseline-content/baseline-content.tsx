@@ -4,10 +4,8 @@ import {
   SearchField,
   SectionHeader,
 } from '@/app/(authenticated)/_components';
-import {
-  type BaselineStatus,
-  getBaselineSnapshots,
-} from '@/features/baseline/interface/queries';
+import { getBaselineSnapshots } from '@/features/baseline/interface/queries';
+import type { BaselineStatus } from '@/features/baseline/interface/queries';
 import { verifySession } from '@/shared/auth/verify-session';
 import {
   firstParam,

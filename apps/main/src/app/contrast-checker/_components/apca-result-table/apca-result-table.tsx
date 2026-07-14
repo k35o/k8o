@@ -99,7 +99,7 @@ export const ApcaResultTable: FC<Props> = ({ lc }) => {
                 Lc {level.threshold}以上
               </td>
               <td className="px-3 py-2 sm:px-4 sm:py-3">
-                <p className="text-sm md:text-base">{level.usage}</p>
+                <p className="md:text-md text-sm">{level.usage}</p>
                 <p className="text-fg-mute text-xs md:text-sm">
                   {level.example}
                 </p>

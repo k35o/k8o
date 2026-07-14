@@ -27,7 +27,9 @@ describe('serializeJsonLd', () => {
     it('script要素を閉じうる < をエスケープするべき', () => {
       const serialized = serializeJsonLd({ name: '</script><script>' });
       expect(serialized).not.toContain('<');
-      expect(JSON.parse(serialized)).toEqual({ name: '</script><script>' });
+      expect(JSON.parse(serialized)).toStrictEqual({
+        name: '</script><script>',
+      });
     });
   });
 });

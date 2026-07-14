@@ -1,6 +1,7 @@
 import { CODE_SURFACE } from '@repo/code-highlight/theme';
 import type { HighlightedCode } from '@repo/code-highlight/tokenize';
-import { Fragment, type FC } from 'react';
+import { Fragment } from 'react';
+import type { FC } from 'react';
 
 type CodeViewProps = {
   code: string | null;

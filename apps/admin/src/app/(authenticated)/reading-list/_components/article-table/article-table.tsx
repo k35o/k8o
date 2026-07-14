@@ -4,7 +4,8 @@ import { Button, Card, useToast } from '@k8o/arte-odyssey';
 import { formatDate } from '@repo/helpers/date/format';
 import { useAsyncAction } from '@repo/react-hooks/use-async-action';
 import type { Route } from 'next';
-import { type FC, useState } from 'react';
+import { useState } from 'react';
+import type { FC } from 'react';
 
 import {
   ButtonLink,

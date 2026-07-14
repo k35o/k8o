@@ -140,7 +140,9 @@ describe('canContain / 入れ子関係の解決', () => {
   describe('正常系（典型的な入れ子）', () => {
     it('liはul・ol・menuの中に置けるが、div・pの中には置けない', () => {
       const parents = parentTagsOf('li');
-      expect(parents).toEqual(expect.arrayContaining(['ul', 'ol', 'menu']));
+      expect(parents).toStrictEqual(
+        expect.arrayContaining(['ul', 'ol', 'menu']),
+      );
       expect(parents).not.toContain('div');
       expect(parents).not.toContain('p');
     });
@@ -153,21 +155,25 @@ describe('canContain / 入れ子関係の解決', () => {
     });
 
     it('trはtable系の中に置け、td/thを子に持つ', () => {
-      expect(parentTagsOf('tr')).toEqual(
+      expect(parentTagsOf('tr')).toStrictEqual(
         expect.arrayContaining(['table', 'thead', 'tbody', 'tfoot']),
       );
-      expect(childTagsOf('tr')).toEqual(expect.arrayContaining(['td', 'th']));
+      expect(childTagsOf('tr')).toStrictEqual(
+        expect.arrayContaining(['td', 'th']),
+      );
     });
 
     it('optionはselect・datalist・optgroupの中に置ける', () => {
-      expect(parentTagsOf('option')).toEqual(
+      expect(parentTagsOf('option')).toStrictEqual(
         expect.arrayContaining(['select', 'datalist', 'optgroup']),
       );
     });
 
     it('pはspanなどフレージングを子に持つが、divは子にできない', () => {
       const children = childTagsOf('p');
-      expect(children).toEqual(expect.arrayContaining(['span', 'a', 'strong']));
+      expect(children).toStrictEqual(
+        expect.arrayContaining(['span', 'a', 'strong']),
+      );
       expect(children).not.toContain('div');
     });
 

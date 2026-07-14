@@ -20,7 +20,7 @@ export function ScrollbarColorDemo() {
           </label>
           <input
             aria-labelledby="thumb-color-label"
-            className="border-border-base h-8 w-16 cursor-pointer rounded border"
+            className="border-border-base h-8 w-16 cursor-pointer rounded-sm border"
             id="thumb-color"
             onChange={(e) => {
               setThumbColor(e.target.value);
@@ -40,7 +40,7 @@ export function ScrollbarColorDemo() {
           </label>
           <input
             aria-labelledby="track-color-label"
-            className="border-border-base h-8 w-16 cursor-pointer rounded border"
+            className="border-border-base h-8 w-16 cursor-pointer rounded-sm border"
             id="track-color"
             onChange={(e) => {
               setTrackColor(e.target.value);

@@ -1,7 +1,8 @@
 'use client';
 
 import { Alert, Button, TextField } from '@k8o/arte-odyssey';
-import { type FC, useActionState } from 'react';
+import { useActionState } from 'react';
+import type { FC } from 'react';
 
 import { createTag } from '@/features/tags/interface/actions';
 

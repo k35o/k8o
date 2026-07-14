@@ -129,7 +129,7 @@ export function CaretPositionDemo() {
           {caretInfo.offsetNodeText !== null && (
             <div className="border-border-base mt-3 border-t pt-3">
               <p className="text-fg-mute mb-1 text-xs">テキスト内の位置:</p>
-              <p className="bg-bg-mute text-fg-base overflow-x-auto rounded p-2 font-mono text-xs leading-relaxed">
+              <p className="bg-bg-mute text-fg-base overflow-x-auto rounded-sm p-2 font-mono text-xs leading-relaxed">
                 {caretInfo.offsetNodeText.slice(0, caretInfo.offset)}
                 <span className="bg-primary-bg text-primary-fg px-0.5">|</span>
                 {caretInfo.offsetNodeText.slice(caretInfo.offset)}

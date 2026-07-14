@@ -1,6 +1,7 @@
 'use client';
 
-import { type FC, memo } from 'react';
+import { memo } from 'react';
+import type { FC } from 'react';
 
 import { countGraphemeLength } from '../../_utils/count-text';
 

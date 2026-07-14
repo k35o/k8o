@@ -1,11 +1,10 @@
 import 'server-only';
-import {
-  type GenerationMeta,
-  toMeta,
-} from '@/features/generation/application/parse-meta';
+import { toMeta } from '@/features/generation/application/parse-meta';
+import type { GenerationMeta } from '@/features/generation/application/parse-meta';
 
 import type { ProjectListItem } from '../infrastructure/project-repository';
-import { type ConversationTurn, createProjectStore } from './project-store';
+import { createProjectStore } from './project-store';
+import type { ConversationTurn } from './project-store';
 
 export type SlidesContent = {
   // デッキ全体の Markdown ソース。

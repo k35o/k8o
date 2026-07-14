@@ -1,4 +1,5 @@
-import { type ReactNode, Fragment, createElement } from 'react';
+import { Fragment, createElement } from 'react';
+import type { ReactNode } from 'react';
 
 import type {
   JsxElement,

@@ -97,7 +97,7 @@ export const Presenter: FC<{
                         tooltipPositionClass(index, days.length),
                       )}
                     >
-                      <p className="text-sm font-semibold">
+                      <p className="text-sm font-bold">
                         {day.count}件のコントリビューション
                       </p>
                       <p className="text-fg-mute text-xs">{label}</p>

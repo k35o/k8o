@@ -1,11 +1,13 @@
 'use client';
 
+/* oxlint-disable eslint/no-alert -- Popover/DropdownMenu の挙動を示すデモで、クリック結果を alert で表現している */
+
 import { Button, DropdownMenu, Tooltip } from '@k8o/arte-odyssey';
 import type { FC } from 'react';
 
 export const TooltipDropdownDemo: FC = () => (
   <div className="flex flex-col gap-4">
-    <div className="itesm-center flex flex-wrap justify-around gap-4">
+    <div className="flex flex-wrap items-center justify-around gap-4">
       <div className="flex flex-col items-center gap-2">
         <p className="text-lg font-bold md:text-xl">Tooltip</p>
         <Tooltip.Root placement="bottom">

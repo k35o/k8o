@@ -1,4 +1,5 @@
-import { type NextRequest, NextResponse } from 'next/server';
+import { NextResponse } from 'next/server';
+import type { NextRequest } from 'next/server';
 
 import { syncBaseline } from '@/features/baseline/application/sync-baseline';
 import { sendPushNotification } from '@/features/push-notification/interface/commands';

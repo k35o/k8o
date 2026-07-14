@@ -3,8 +3,6 @@
 import { NumberField, Slider, Tabs } from '@k8o/arte-odyssey';
 import { toSrgbGamut } from '@repo/helpers/color/gamut';
 import {
-  type Color,
-  type Oklch,
   clamp,
   colorToHsl,
   colorToOklch,
@@ -13,7 +11,9 @@ import {
   oklchToColor,
   rgb255ToColor,
 } from '@repo/helpers/color/spaces';
-import { type FC, useId, useState } from 'react';
+import type { Color, Oklch } from '@repo/helpers/color/spaces';
+import { useId, useState } from 'react';
+import type { FC } from 'react';
 
 type Props = {
   color: Color;

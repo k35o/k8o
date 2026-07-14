@@ -5,46 +5,45 @@ describe('buildOxlintrc', () => {
     it('extendsチェーン (base→typescript→react→nextjs) の4層がマージされる', () => {
       const rc = buildOxlintrc();
 
-      expect(rc.plugins).toEqual([
-        'eslint',
-        'oxc',
+      expect(rc.plugins).toStrictEqual([
         'unicorn',
         'import',
         'promise',
         'typescript',
         'react',
         'jsx-a11y',
-        'react-perf',
         'nextjs',
       ]);
       expect(rc.categories?.correctness).toBe('error');
       expect(rc.categories?.style).toBe('off');
       // 各層を代表するルールが1つのrulesに揃っていること
-      expect(rc.rules?.eqeqeq).toEqual(['error', 'always']);
-      expect(rc.rules?.['typescript/consistent-type-definitions']).toEqual([
-        'error',
-        'type',
-      ]);
-      expect(rc.rules?.['react/rules-of-hooks']).toBe('error');
+      expect(rc.rules?.['no-var']).toBe('error');
+      expect(
+        rc.rules?.['typescript/consistent-type-definitions'],
+      ).toStrictEqual(['error', 'type']);
+      expect(rc.rules?.['react/self-closing-comp']).toBe('error');
       expect(rc.rules?.['nextjs/no-img-element']).toBe('warn');
     });
 
     it('vite.config.tsと同じ上書きが反映される', () => {
       const rc = buildOxlintrc();
 
-      expect(rc.rules?.['import/no-unassigned-import']).toEqual([
+      expect(rc.rules?.['import/no-unassigned-import']).toStrictEqual([
         'error',
         { allow: ['**/*.css', '@/libs/zod', 'react', 'server-only'] },
       ]);
       expect(rc.rules?.['no-underscore-dangle']).toBe('off');
-      expect(rc.options).toEqual({ reportUnusedDisableDirectives: 'error' });
-      expect(rc.settings?.react).toEqual({ version: '19.2.7' });
+      expect(rc.options).toStrictEqual({
+        reportUnusedDisableDirectives: 'error',
+      });
+      expect(rc.settings?.react).toStrictEqual({ version: '19.2.7' });
     });
 
     it('JSONへそのまま直列化できる', () => {
       const rc = buildOxlintrc();
 
-      expect(JSON.parse(JSON.stringify(rc))).toEqual(rc);
+      // oxlint-disable-next-line unicorn/prefer-structured-clone -- JSON 直列化の round-trip を検証するのが目的で structuredClone では代替できない
+      expect(JSON.parse(JSON.stringify(rc))).toStrictEqual(rc);
     });
   });
 
@@ -64,7 +63,7 @@ describe('buildOxlintrc', () => {
       const tailwindRules = Object.keys(rules).filter((rule) =>
         rule.startsWith('tailwindcss/'),
       );
-      expect(tailwindRules).toEqual([]);
+      expect(tailwindRules).toStrictEqual([]);
     });
   });
 });

@@ -2,14 +2,15 @@
 
 import { AssistantIcon, Avatar, Button } from '@k8o/arte-odyssey';
 import {
-  type ChatStatus,
   Conversation,
   Message,
   PromptInput,
   Suggestion,
 } from '@k8o/arte-odyssey/ai';
+import type { ChatStatus } from '@k8o/arte-odyssey/ai';
 import type { UIMessage } from 'ai';
-import { type FC, memo, type ReactNode } from 'react';
+import { memo } from 'react';
+import type { FC, ReactNode } from 'react';
 
 import {
   messageText,

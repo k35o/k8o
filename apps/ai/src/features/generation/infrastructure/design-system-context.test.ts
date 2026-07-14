@@ -31,19 +31,19 @@ describe('design-system-context', () => {
       it('実在する import のみなら空配列を返す', () => {
         const code = `import { Card, Heading, MailIcon } from '@k8o/arte-odyssey';
 export default function Preview() { return <Card><Heading type="h2">x</Heading></Card>; }`;
-        expect(findUnknownArteImports(code)).toEqual([]);
+        expect(findUnknownArteImports(code)).toStrictEqual([]);
       });
 
       it('`as` エイリアスは実体名で検証する', () => {
         const code = `import { Card as Panel } from '@k8o/arte-odyssey';`;
-        expect(findUnknownArteImports(code)).toEqual([]);
+        expect(findUnknownArteImports(code)).toStrictEqual([]);
       });
     });
 
     describe('異常系', () => {
       it('存在しないアイコン名を検出する', () => {
         const code = `import { Card, BellIcon, ActivityIcon } from '@k8o/arte-odyssey';`;
-        expect(findUnknownArteImports(code)).toEqual([
+        expect(findUnknownArteImports(code)).toStrictEqual([
           'BellIcon',
           'ActivityIcon',
         ]);
@@ -54,7 +54,7 @@ export default function Preview() { return <Card><Heading type="h2">x</Heading><
   Card,
   HomeIcon,
 } from '@k8o/arte-odyssey';`;
-        expect(findUnknownArteImports(code)).toEqual(['HomeIcon']);
+        expect(findUnknownArteImports(code)).toStrictEqual(['HomeIcon']);
       });
     });
 
@@ -62,12 +62,12 @@ export default function Preview() { return <Card><Heading type="h2">x</Heading><
       it('arte-odyssey 以外の import は無視する', () => {
         const code = `import { useState } from 'react';
 import { Card } from '@k8o/arte-odyssey';`;
-        expect(findUnknownArteImports(code)).toEqual([]);
+        expect(findUnknownArteImports(code)).toStrictEqual([]);
       });
 
       it('サブパス import は対象外（barrel のみ検証）', () => {
         const code = `import { tokens } from '@k8o/arte-odyssey/tokens';`;
-        expect(findUnknownArteImports(code)).toEqual([]);
+        expect(findUnknownArteImports(code)).toStrictEqual([]);
       });
     });
   });

@@ -75,7 +75,7 @@ export function DragDropDemo() {
       <div className="flex flex-wrap gap-2">
         {DRAGGABLE_WORDS.map((word) => (
           <span
-            className="bg-primary-bg text-primary-fg cursor-grab rounded px-2 py-1 text-sm active:cursor-grabbing"
+            className="bg-primary-bg text-primary-fg cursor-grab rounded-sm px-2 py-1 text-sm active:cursor-grabbing"
             draggable
             key={word}
             onDragStart={(e) => {

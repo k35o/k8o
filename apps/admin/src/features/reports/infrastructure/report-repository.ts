@@ -1,5 +1,6 @@
 import { db } from '@repo/database';
-import { and, count, desc, eq, like, type SQL } from 'drizzle-orm';
+import { and, count, desc, eq, like } from 'drizzle-orm';
+import type { SQL } from 'drizzle-orm';
 
 type ReportRecord = {
   id: number;

@@ -1,6 +1,7 @@
 'use client';
 
-import { type FC, useMemo } from 'react';
+import { useMemo } from 'react';
+import type { FC } from 'react';
 
 import { parseStreamingTsx } from '@/features/preview/application/incremental-jsx/parse-partial-jsx';
 

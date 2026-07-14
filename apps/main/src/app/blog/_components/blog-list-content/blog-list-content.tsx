@@ -2,7 +2,8 @@
 
 import { BlogIcon, TextField } from '@k8o/arte-odyssey';
 import { useQueryStates } from 'nuqs';
-import { type FC, useMemo } from 'react';
+import { useMemo } from 'react';
+import type { FC } from 'react';
 
 import { filterBlogs } from '../../_utils/filter-blogs';
 import { groupBlogsByYear } from '../../_utils/group-blogs-by-year';

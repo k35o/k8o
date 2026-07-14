@@ -1,5 +1,6 @@
 import { db } from '@repo/database';
-import { and, count, desc, eq, inArray, like, type SQL } from 'drizzle-orm';
+import { and, count, desc, eq, inArray, like } from 'drizzle-orm';
+import type { SQL } from 'drizzle-orm';
 
 export type BlogStatus = 'all' | 'published' | 'draft';
 export type BlogSort = 'recent' | 'views';

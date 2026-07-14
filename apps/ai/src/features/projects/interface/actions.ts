@@ -3,27 +3,24 @@
 import { headers } from 'next/headers';
 
 import type { GenerationMeta } from '@/features/generation/application/parse-generation';
-import {
-  type ApplyPreviewResult,
-  applyStudioPreviewCode,
-} from '@/features/preview/application/sandbox-runtime';
+import { applyStudioPreviewCode } from '@/features/preview/application/sandbox-runtime';
+import type { ApplyPreviewResult } from '@/features/preview/application/sandbox-runtime';
 import { requireAllowedSession } from '@/shared/auth/require-allowed-session';
 
 import {
   forkProject,
   getProject,
   getProjectsForUser,
-  type LoadedProject,
-  type ProjectListItem,
   saveGeneration,
 } from '../application/projects';
+import type { LoadedProject, ProjectListItem } from '../application/projects';
 import {
   forkSlidesProject,
   getSlidesProject,
   getSlidesProjectsForUser,
-  type LoadedSlidesProject,
   saveSlidesGeneration,
 } from '../application/slides-projects';
+import type { LoadedSlidesProject } from '../application/slides-projects';
 
 export const saveGenerationAction = async (input: {
   projectId: number | null;

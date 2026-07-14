@@ -1,6 +1,7 @@
 'use client';
 
-import { useContext, useMemo, useState, type FC } from 'react';
+import { useContext, useMemo, useState } from 'react';
+import type { FC } from 'react';
 
 import {
   DeckHighlightContext,

@@ -1,14 +1,20 @@
 import {
-  type CommentRecord,
-  type CommentStats,
-  type FindCommentsParams,
-  type FindCommentsResult,
   findComments,
   findCommentStats,
 } from '../infrastructure/comment-repository';
+import type {
+  CommentRecord,
+  CommentStats,
+  FindCommentsParams,
+  FindCommentsResult,
+} from '../infrastructure/comment-repository';
 
 export type CommentItem = CommentRecord;
-export type { CommentStats, FindCommentsParams, FindCommentsResult };
+export type {
+  CommentStats,
+  FindCommentsParams,
+  FindCommentsResult,
+} from '../infrastructure/comment-repository';
 
 export const getComments = (
   params: FindCommentsParams,

@@ -54,7 +54,7 @@ describe('generateAndSaveSummary', () => {
 
       const result = await generateAndSaveSummary(1);
 
-      expect(result).toEqual({ summary: '既存の要約' });
+      expect(result).toStrictEqual({ summary: '既存の要約' });
       // 既に要約があるので外部生成も更新も行わない（コスト天井の担保）
       expect(summarizeArticle).not.toHaveBeenCalled();
       expect(db.update).not.toHaveBeenCalled();
@@ -81,7 +81,7 @@ describe('generateAndSaveSummary', () => {
         summaryAttempts: { __increment: 'articles.summary_attempts' },
       });
       expect(setMock).toHaveBeenNthCalledWith(2, { summary: '生成した要約' });
-      expect(result).toEqual({ summary: '生成した要約' });
+      expect(result).toStrictEqual({ summary: '生成した要約' });
     });
   });
 
@@ -101,7 +101,7 @@ describe('generateAndSaveSummary', () => {
       const result = await generateAndSaveSummary(1);
 
       expect(summarizeArticle).not.toHaveBeenCalled();
-      expect(result).toEqual({ summary: '並列で生成された要約' });
+      expect(result).toStrictEqual({ summary: '並列で生成された要約' });
     });
 
     it('予約の変更行数が 0 で summary も無ければ gaveUp を返す', async () => {
@@ -119,15 +119,13 @@ describe('generateAndSaveSummary', () => {
       const result = await generateAndSaveSummary(1);
 
       expect(summarizeArticle).not.toHaveBeenCalled();
-      expect(result).toEqual({ summary: null, gaveUp: true });
+      expect(result).toStrictEqual({ summary: null, gaveUp: true });
     });
   });
 
   describe('異常系', () => {
     it('記事が見つからなければエラーを返し、生成・更新しない', async () => {
-      vi.mocked(db.query.articles.findFirst).mockResolvedValue(
-        undefined as never,
-      );
+      vi.mocked(db.query.articles.findFirst).mockResolvedValue(undefined);
 
       const result = await generateAndSaveSummary(999);
 
@@ -185,7 +183,7 @@ describe('generateAndSaveSummary', () => {
 
       const result = await generateAndSaveSummary(1);
 
-      expect(result).toEqual({ summary: null, gaveUp: true });
+      expect(result).toStrictEqual({ summary: null, gaveUp: true });
       expect(summarizeArticle).not.toHaveBeenCalled();
       expect(db.update).not.toHaveBeenCalled();
     });

@@ -2,7 +2,8 @@ import { cn } from '@repo/helpers/cn';
 import type { Preview } from '@storybook/nextjs-vite';
 import { useTheme } from 'next-themes';
 import Script from 'next/script';
-import { type FC, memo, useEffect } from 'react';
+import { memo, useEffect } from 'react';
+import type { FC } from 'react';
 import { sb } from 'storybook/test';
 
 import { AppProvider } from '../src/app/_providers/app';

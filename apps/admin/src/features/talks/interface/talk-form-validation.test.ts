@@ -25,7 +25,7 @@ describe('parseTalkFormData', () => {
     it('全項目が正しければ TalkInput を返す', () => {
       const result = parseTalkFormData(buildFormData());
 
-      expect(result).toEqual({
+      expect(result).toStrictEqual({
         ok: true,
         data: {
           title: 'React のトーク',
@@ -59,7 +59,7 @@ describe('parseTalkFormData', () => {
     ])('必須項目 %s が空ならエラーを返す', (field) => {
       const result = parseTalkFormData(buildFormData({ [field]: '' }));
 
-      expect(result).toEqual({
+      expect(result).toStrictEqual({
         ok: false,
         error: 'タイトル・イベント名・日付・イベントURL・スライドURLは必須です',
       });
@@ -68,7 +68,7 @@ describe('parseTalkFormData', () => {
     it('フィールドが未設定でも必須エラーを返す', () => {
       const result = parseTalkFormData(new FormData());
 
-      expect(result).toEqual({
+      expect(result).toStrictEqual({
         ok: false,
         error: 'タイトル・イベント名・日付・イベントURL・スライドURLは必須です',
       });
@@ -79,7 +79,7 @@ describe('parseTalkFormData', () => {
         buildFormData({ eventDate: '2026/07/01' }),
       );
 
-      expect(result).toEqual({
+      expect(result).toStrictEqual({
         ok: false,
         error: '開催日は YYYY-MM-DD 形式で入力してください',
       });
@@ -90,7 +90,7 @@ describe('parseTalkFormData', () => {
       (blogId) => {
         const result = parseTalkFormData(buildFormData({ blogId }));
 
-        expect(result).toEqual({
+        expect(result).toStrictEqual({
           ok: false,
           error: '紐づけるブログを選択してください',
         });
@@ -102,7 +102,7 @@ describe('parseTalkFormData', () => {
         buildFormData({ eventUrl: 'not-a-url' }),
       );
 
-      expect(result).toEqual({
+      expect(result).toStrictEqual({
         ok: false,
         error: '有効なURLを入力してください',
       });
@@ -113,7 +113,7 @@ describe('parseTalkFormData', () => {
         buildFormData({ slideUrl: 'example.com/slide' }),
       );
 
-      expect(result).toEqual({
+      expect(result).toStrictEqual({
         ok: false,
         error: '有効なURLを入力してください',
       });

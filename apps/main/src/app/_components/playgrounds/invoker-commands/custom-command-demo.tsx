@@ -80,9 +80,9 @@ export function CustomCommandDemo() {
 
       <p className="text-fg-mute text-sm">
         カスタムコマンド（
-        <code className="bg-bg-subtle rounded px-1">--zoom-in</code>、
-        <code className="bg-bg-subtle rounded px-1">--zoom-out</code>、
-        <code className="bg-bg-subtle rounded px-1">--reset</code>
+        <code className="bg-bg-subtle rounded-sm px-1">--zoom-in</code>、
+        <code className="bg-bg-subtle rounded-sm px-1">--zoom-out</code>、
+        <code className="bg-bg-subtle rounded-sm px-1">--reset</code>
         ）で操作しています。
       </p>
     </div>

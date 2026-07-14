@@ -1,8 +1,5 @@
-import {
-  CORE_BROWSERS,
-  type BaselineMinVersions,
-  type DetectedBrowser,
-} from './detect-browser';
+import { CORE_BROWSERS } from './detect-browser';
+import type { BaselineMinVersions, DetectedBrowser } from './detect-browser';
 
 // webstatus.dev 由来の browser_implementations と同じ構造。DB 型に依存しないよう
 // helpers 内で再定義し、この層をアプリ非依存に保つ。
