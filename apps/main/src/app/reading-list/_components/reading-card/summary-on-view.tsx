@@ -2,7 +2,8 @@
 
 import { Badge } from '@k8o/arte-odyssey';
 import { useAsyncAction } from '@repo/react-hooks/use-async-action';
-import { type FC, useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
+import type { FC } from 'react';
 
 import { generateArticleSummary } from '@/features/reading-list/interface/article-actions';
 

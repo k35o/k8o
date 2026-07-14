@@ -4,7 +4,8 @@ import { FormControl, TextField } from '@k8o/arte-odyssey';
 import { formatHex } from '@repo/helpers/color/format';
 import { parseColor } from '@repo/helpers/color/parse';
 import type { Color } from '@repo/helpers/color/spaces';
-import { type ChangeEventHandler, type FC, useState } from 'react';
+import { useState } from 'react';
+import type { ChangeEventHandler, FC } from 'react';
 
 type Props = {
   color: Color;

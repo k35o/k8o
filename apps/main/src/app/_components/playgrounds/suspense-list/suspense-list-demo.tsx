@@ -3,15 +3,8 @@
 import { Alert, Checkbox, FormControl, Select } from '@k8o/arte-odyssey';
 import { cn } from '@repo/helpers/cn';
 import { sleep } from '@repo/helpers/sleep';
-import {
-  type FC,
-  Suspense,
-  type SuspenseListProps,
-  type SuspenseListTailMode,
-  use,
-  useCallback,
-  useState,
-} from 'react';
+import { Suspense, use, useCallback, useState } from 'react';
+import type { FC, SuspenseListProps, SuspenseListTailMode } from 'react';
 
 type Data = {
   cacheKey: 'key1' | 'key2' | 'key3' | 'key4';

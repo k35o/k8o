@@ -2,7 +2,8 @@
 
 import { Switch, useToast } from '@k8o/arte-odyssey';
 import { useAsyncAction } from '@repo/react-hooks/use-async-action';
-import { type FC, useState } from 'react';
+import { useState } from 'react';
+import type { FC } from 'react';
 
 import type { ActionState } from '@/shared/actions/action-state';
 

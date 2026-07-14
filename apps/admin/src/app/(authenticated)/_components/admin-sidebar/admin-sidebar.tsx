@@ -6,7 +6,8 @@ import {
   LogoIcon,
   NavigationMenuIcon,
 } from '@k8o/arte-odyssey';
-import { type FC, Suspense, useState } from 'react';
+import { Suspense, useState } from 'react';
+import type { FC } from 'react';
 
 import { SignOutButton } from '@/app/(authenticated)/_components/sign-out-button';
 import { ToggleTheme } from '@/app/(authenticated)/_components/toggle-theme';

@@ -1,5 +1,6 @@
 import type { FC } from 'react';
-import { encode, type QrCodeGenerateResult } from 'uqr';
+import { encode } from 'uqr';
+import type { QrCodeGenerateResult } from 'uqr';
 
 // 同じ URL の QR は重複生成しない (key={index} で Stage が remount される時の再計算抑止)
 const qrCache = new Map<string, QrCodeGenerateResult>();

@@ -8,12 +8,12 @@ import type { GenerationMeta } from '@/features/generation/application/parse-met
 import {
   insertProjectWithVersion,
   insertVersion,
-  type ProjectListItem,
   projectOwnedBy,
   selectProjects,
   selectProjectVersions,
   selectProjectWithLatestVersion,
 } from '../infrastructure/project-repository';
+import type { ProjectListItem } from '../infrastructure/project-repository';
 
 // 版の content に共通で入る形。アプリごとの本体（code / source など）はこれに足す。
 export type ProjectContent = {

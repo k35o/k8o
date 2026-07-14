@@ -1,7 +1,8 @@
 'use client';
 
 import { Button, FormControl, TextField } from '@k8o/arte-odyssey';
-import { type FC, useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
+import type { FC } from 'react';
 
 export const DialogRequestCloseDemo: FC = () => {
   const ref = useRef<HTMLDialogElement>(null);

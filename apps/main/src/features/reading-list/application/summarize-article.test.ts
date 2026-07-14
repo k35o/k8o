@@ -125,9 +125,7 @@ describe('generateAndSaveSummary', () => {
 
   describe('異常系', () => {
     it('記事が見つからなければエラーを返し、生成・更新しない', async () => {
-      vi.mocked(db.query.articles.findFirst).mockResolvedValue(
-        undefined as never,
-      );
+      vi.mocked(db.query.articles.findFirst).mockResolvedValue(undefined);
 
       const result = await generateAndSaveSummary(999);
 

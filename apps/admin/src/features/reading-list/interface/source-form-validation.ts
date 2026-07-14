@@ -1,9 +1,9 @@
 import { getStringField } from '@repo/helpers/form/get-string-field';
 
-import {
-  ARTICLE_SOURCE_TYPES,
-  type ArticleSourceInput,
-  type ArticleSourceType,
+import { ARTICLE_SOURCE_TYPES } from '../infrastructure/reading-list-repository';
+import type {
+  ArticleSourceInput,
+  ArticleSourceType,
 } from '../infrastructure/reading-list-repository';
 import { isHttpsUrl } from './url-validation';
 

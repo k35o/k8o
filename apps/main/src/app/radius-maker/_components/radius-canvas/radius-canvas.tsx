@@ -3,14 +3,8 @@
 
 import { cn } from '@repo/helpers/cn';
 import { between } from '@repo/helpers/number/between';
-import {
-  type CSSProperties,
-  type FC,
-  type KeyboardEvent,
-  type PointerEvent,
-  useRef,
-  useState,
-} from 'react';
+import { useRef, useState } from 'react';
+import type { CSSProperties, FC, KeyboardEvent, PointerEvent } from 'react';
 
 import type { Axis, Corner, RadiusCorners } from '../../_types/corner-radius';
 import type { CornerShape } from '../../_types/corner-shape';

@@ -1,6 +1,7 @@
 'use client';
 
-import { type FC, useEffect, useRef } from 'react';
+import { useEffect, useRef } from 'react';
+import type { FC } from 'react';
 
 const text = 'Imagination is more important than knowledge';
 const HIGHLIGHT_NAMES = [

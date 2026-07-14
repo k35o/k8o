@@ -5,7 +5,8 @@ import type { Preview } from '@storybook/nextjs-vite';
 import { initialize, mswLoader } from 'msw-storybook-addon';
 import { useTheme } from 'next-themes';
 import Script from 'next/script';
-import { type FC, memo, useEffect } from 'react';
+import { memo, useEffect } from 'react';
+import type { FC } from 'react';
 import { sb } from 'storybook/test';
 
 import { Background } from '../src/app/_components/global-layout/background/background';

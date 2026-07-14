@@ -1,7 +1,6 @@
 import { toSrgbGamut } from './gamut';
 import { NAMED_COLORS } from './named-colors';
 import {
-  type Color,
   clamp,
   hslToColor,
   hwbToColor,
@@ -11,6 +10,7 @@ import {
   oklchToColor,
   rgb255ToColor,
 } from './spaces';
+import type { Color } from './spaces';
 
 type Num = { value: number; percent: boolean };
 

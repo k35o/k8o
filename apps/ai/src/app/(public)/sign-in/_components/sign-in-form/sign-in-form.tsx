@@ -1,7 +1,8 @@
 'use client';
 
 import { Button, GitHubIcon, Spinner, useToast } from '@k8o/arte-odyssey';
-import { type FC, useState } from 'react';
+import { useState } from 'react';
+import type { FC } from 'react';
 
 import { authClient } from '@/shared/auth/auth-client';
 

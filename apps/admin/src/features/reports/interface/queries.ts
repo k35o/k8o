@@ -1,11 +1,13 @@
 import { cacheLife } from 'next/cache';
 
 import {
-  type FindReportsParams,
-  type FindReportsResult,
   findReports,
   findReportTypeCounts,
-  type ReportTypeCount,
+} from '../infrastructure/report-repository';
+import type {
+  FindReportsParams,
+  FindReportsResult,
+  ReportTypeCount,
 } from '../infrastructure/report-repository';
 
 export const getReportTypeCounts = async (): Promise<{

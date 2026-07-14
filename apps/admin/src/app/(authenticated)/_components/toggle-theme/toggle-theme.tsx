@@ -2,7 +2,8 @@
 
 import { DarkModeIcon, IconButton, LightModeIcon } from '@k8o/arte-odyssey';
 import { useTheme } from 'next-themes';
-import { type FC, useCallback, useMemo } from 'react';
+import { useCallback, useMemo } from 'react';
+import type { FC } from 'react';
 
 export const ToggleTheme: FC = () => {
   const { theme, setTheme, systemTheme } = useTheme();

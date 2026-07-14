@@ -1,10 +1,12 @@
 import {
-  type CommentRecord,
-  type CommentStats,
-  type FindCommentsParams,
-  type FindCommentsResult,
   findComments,
   findCommentStats,
+} from '../infrastructure/comment-repository';
+import type {
+  CommentRecord,
+  CommentStats,
+  FindCommentsParams,
+  FindCommentsResult,
 } from '../infrastructure/comment-repository';
 
 export type CommentItem = CommentRecord;

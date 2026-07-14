@@ -3,11 +3,8 @@ import {
   ListPagination,
   SearchField,
 } from '@/app/(authenticated)/_components';
-import {
-  type BlogSort,
-  type BlogStatus,
-  getBlogs,
-} from '@/features/blog/interface/queries';
+import { getBlogs } from '@/features/blog/interface/queries';
+import type { BlogSort, BlogStatus } from '@/features/blog/interface/queries';
 import { verifySession } from '@/shared/auth/verify-session';
 import {
   firstParam,

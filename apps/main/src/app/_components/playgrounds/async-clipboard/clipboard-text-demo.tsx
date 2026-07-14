@@ -1,7 +1,8 @@
 'use client';
 
 import { Button, FormControl, TextField } from '@k8o/arte-odyssey';
-import { type FC, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
+import type { FC } from 'react';
 
 type ClipboardPermissionName = 'clipboard-read' | 'clipboard-write';
 

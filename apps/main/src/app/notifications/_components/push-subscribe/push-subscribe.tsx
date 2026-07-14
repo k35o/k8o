@@ -1,13 +1,8 @@
 'use client';
 
 import { Alert, Button, Card, SubscribeIcon } from '@k8o/arte-odyssey';
-import {
-  type FC,
-  useCallback,
-  useEffect,
-  useState,
-  useSyncExternalStore,
-} from 'react';
+import { useCallback, useEffect, useState, useSyncExternalStore } from 'react';
+import type { FC } from 'react';
 
 import {
   subscribePushAction,

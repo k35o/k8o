@@ -1,4 +1,5 @@
-import NextImage, { type StaticImageData } from 'next/image';
+import NextImage from 'next/image';
+import type { StaticImageData } from 'next/image';
 import type { FC } from 'react';
 
 import styles from './image.module.css';

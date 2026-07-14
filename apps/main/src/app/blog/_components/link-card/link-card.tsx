@@ -1,9 +1,11 @@
 import { ExternalLinkIcon, Card, PublishDateIcon } from '@k8o/arte-odyssey';
 import { formatDate } from '@repo/helpers/date/format';
-import { type FC, Suspense } from 'react';
+import { Suspense } from 'react';
+import type { FC } from 'react';
 
 import { LinkCardErrorBoundary } from './error-boundary';
-import { type LinkCardAppearance, LinkCardFallback } from './fallback';
+import { LinkCardFallback } from './fallback';
+import type { LinkCardAppearance } from './fallback';
 import { MetaImage } from './image';
 import { getMetadata } from './metadata';
 

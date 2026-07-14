@@ -1,11 +1,13 @@
 import { cacheLife } from 'next/cache';
 
 import {
-  type CommentStats,
-  type FindCommentsParams,
-  type FindCommentsResult,
   getComments as _getComments,
   getCommentStats as _getCommentStats,
+} from '@/features/comments/application/get-comments';
+import type {
+  CommentStats,
+  FindCommentsParams,
+  FindCommentsResult,
 } from '@/features/comments/application/get-comments';
 
 export const getComments = async (

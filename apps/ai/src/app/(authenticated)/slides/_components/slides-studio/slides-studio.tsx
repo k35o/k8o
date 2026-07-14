@@ -10,7 +10,8 @@ import {
   FullscreenIcon,
   IconButton,
 } from '@k8o/arte-odyssey';
-import { DefaultChatTransport, type UIMessage } from 'ai';
+import { DefaultChatTransport } from 'ai';
+import type { UIMessage } from 'ai';
 import { useTheme } from 'next-themes';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useEffect, useMemo, useReducer, useRef, useState } from 'react';

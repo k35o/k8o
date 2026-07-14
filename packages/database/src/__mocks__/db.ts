@@ -1,4 +1,5 @@
-import { type AnyColumn, sql } from 'drizzle-orm';
+import { sql } from 'drizzle-orm';
+import type { AnyColumn } from 'drizzle-orm';
 import { drizzle } from 'drizzle-orm/libsql';
 
 import { relations, schema } from '../schema';

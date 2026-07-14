@@ -1,6 +1,7 @@
 'use client';
 
-import { useState, type FC } from 'react';
+import { useState } from 'react';
+import type { FC } from 'react';
 
 import type { Slide } from '@/features/slides/application/split-slides';
 

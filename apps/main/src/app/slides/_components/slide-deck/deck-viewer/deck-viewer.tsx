@@ -3,7 +3,8 @@
 import { CloseIcon, IconButton } from '@k8o/arte-odyssey';
 import { cn } from '@repo/helpers/cn';
 import Link from 'next/link';
-import { useEffect, useState, type FC } from 'react';
+import { useEffect, useState } from 'react';
+import type { FC } from 'react';
 
 import type { Slide } from '@/features/slides/application/split-slides';
 

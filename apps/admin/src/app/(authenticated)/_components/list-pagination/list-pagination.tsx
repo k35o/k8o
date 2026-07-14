@@ -3,7 +3,8 @@
 import { Pagination } from '@k8o/arte-odyssey';
 import type { Route } from 'next';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
-import { type FC, useTransition } from 'react';
+import { useTransition } from 'react';
+import type { FC } from 'react';
 
 import { buildSearchString } from '@/shared/search-params';
 

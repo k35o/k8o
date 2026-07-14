@@ -1,6 +1,7 @@
 'use client';
 
-import { Component, type ReactNode } from 'react';
+import { Component } from 'react';
+import type { ReactNode } from 'react';
 
 import { UnknownPlaceholder } from './unknown-placeholder';
 

@@ -1,7 +1,8 @@
 'use client';
 
 import { Card, Heading } from '@k8o/arte-odyssey';
-import { type FC, useMemo } from 'react';
+import { useMemo } from 'react';
+import type { FC } from 'react';
 
 import { generatePalette } from '../../_utils/palette';
 import { ContrastTable } from '../contrast-table';

@@ -1,10 +1,5 @@
-import {
-  type Color,
-  clamp,
-  colorToOklab,
-  colorToOklch,
-  oklchToColor,
-} from './spaces';
+import { clamp, colorToOklab, colorToOklch, oklchToColor } from './spaces';
+import type { Color } from './spaces';
 
 const GAMUT_EPSILON = 1e-4;
 

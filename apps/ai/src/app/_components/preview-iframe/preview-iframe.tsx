@@ -2,7 +2,8 @@
 
 /* oxlint-disable react/iframe-missing-sandbox -- 別オリジン(本番は *.vercel.run)のプレビュー。allow-same-origin は vite の動作に要るが、ホストとは別オリジンのため親ページへの脱出は起きない。この安全性は「配信が別オリジン」という前提に依存するので、同一オリジン配信へ変える場合は sandbox 属性を見直すこと */
 
-import { type FC, useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
+import type { FC } from 'react';
 
 type ThemedPreviewIframeProps = {
   url: string;

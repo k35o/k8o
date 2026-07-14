@@ -1,6 +1,7 @@
 'use client';
 
-import { type FC, useEffect } from 'react';
+import { useEffect } from 'react';
+import type { FC } from 'react';
 
 // Web Push を受け取るために Service Worker (/sw.js) をサイト全体で登録する。
 export const ServiceWorkerRegister: FC = () => {

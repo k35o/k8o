@@ -19,9 +19,9 @@ const convertHexToRgb = (hex: string): Rgb => {
 
 const SA98G = {
   mainTrc: 2.4,
-  sRco: 0.212_672_9,
-  sGco: 0.715_152_2,
-  sBco: 0.072_175,
+  sRco: 0.2126729,
+  sGco: 0.7151522,
+  sBco: 0.072175,
   normBg: 0.56,
   normText: 0.57,
   revText: 0.62,
@@ -82,30 +82,30 @@ if (import.meta.vitest) {
     describe('正常な入力の場合', () => {
       it('明るい背景に暗い文字の場合は正のLc値を返すべき', () => {
         expect(calcApca('#888888', '#ffffff')).toBeCloseTo(
-          63.056_469_930_209_42,
+          63.05646993020942,
           10,
         );
         expect(calcApca('#000000', '#aaaaaa')).toBeCloseTo(
-          58.146_262_578_561_33,
+          58.14626257856133,
           10,
         );
         expect(calcApca('#112233', '#ddeeff')).toBeCloseTo(
-          91.668_308_114_816_31,
+          91.66830811481631,
           10,
         );
       });
 
       it('暗い背景に明るい文字の場合は負のLc値を返すべき', () => {
         expect(calcApca('#ffffff', '#888888')).toBeCloseTo(
-          -68.541_464_366_449_62,
+          -68.54146436644962,
           10,
         );
         expect(calcApca('#aaaaaa', '#000000')).toBeCloseTo(
-          -56.241_133_368_397_42,
+          -56.24113336839742,
           10,
         );
         expect(calcApca('#ddeeff', '#112233')).toBeCloseTo(
-          -93.067_700_494_842_75,
+          -93.06770049484275,
           10,
         );
       });
@@ -120,11 +120,11 @@ if (import.meta.vitest) {
     describe('エッジケース', () => {
       it('コントラストが非常に低い場合は0にクリップされるべき', () => {
         expect(calcApca('#112233', '#444444')).toBeCloseTo(
-          8.323_261_369_573_93,
+          8.32326136957393,
           10,
         );
         expect(calcApca('#444444', '#112233')).toBeCloseTo(
-          -7.526_878_460_278_154,
+          -7.526878460278154,
           10,
         );
         expect(calcApca('#fefefe', '#ffffff')).toBe(0);

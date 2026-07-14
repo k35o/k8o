@@ -3,7 +3,8 @@
 import { Alert, Heading } from '@k8o/arte-odyssey';
 import { calcApca } from '@repo/helpers/color/calc-apca';
 import { calcContrast } from '@repo/helpers/color/calc-contrast';
-import { type FC, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
+import type { FC } from 'react';
 
 import { ApcaResultTable } from '../apca-result-table';
 import { ColorPallet } from '../color-pallet';

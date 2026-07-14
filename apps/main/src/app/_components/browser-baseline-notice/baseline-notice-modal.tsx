@@ -1,9 +1,9 @@
 import { Dialog, Modal } from '@k8o/arte-odyssey';
-import {
-  BROWSER_LABELS,
-  type BaselineBrowser,
-  type BaselineMinVersions,
-  type DetectedBrowser,
+import { BROWSER_LABELS } from '@repo/helpers/browser/detect-browser';
+import type {
+  BaselineBrowser,
+  BaselineMinVersions,
+  DetectedBrowser,
 } from '@repo/helpers/browser/detect-browser';
 import type { FC } from 'react';
 

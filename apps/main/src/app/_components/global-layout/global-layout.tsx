@@ -1,7 +1,8 @@
 import { Logo } from '@k8o/arte-odyssey';
 import type { BaselineMinVersions } from '@repo/helpers/browser/detect-browser';
 import Link from 'next/link';
-import { type FC, type ReactNode, Suspense } from 'react';
+import { Suspense } from 'react';
+import type { FC, ReactNode } from 'react';
 
 import { BrowserBaselineNotice } from '../browser-baseline-notice';
 import { Background } from './background';

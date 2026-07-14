@@ -2,7 +2,8 @@
 
 import { NumberField } from '@k8o/arte-odyssey';
 import { cn } from '@repo/helpers/cn';
-import { type FC, useId } from 'react';
+import { useId } from 'react';
+import type { FC } from 'react';
 
 import type { Axis, Corner, RadiusCorners } from '../../_types/corner-radius';
 import {

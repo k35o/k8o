@@ -1,7 +1,8 @@
 'use client';
 
 import { createSafeContext } from '@k8o/arte-odyssey';
-import { type FC, type ReactNode, useCallback, useMemo, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
+import type { FC, ReactNode } from 'react';
 
 import type { WritingMode } from './writing-mode-params';
 

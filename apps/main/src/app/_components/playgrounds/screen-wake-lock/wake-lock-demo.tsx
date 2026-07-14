@@ -1,7 +1,8 @@
 'use client';
 
 import { Button } from '@k8o/arte-odyssey';
-import { type FC, useCallback, useRef, useState } from 'react';
+import { useCallback, useRef, useState } from 'react';
+import type { FC } from 'react';
 
 export const WakeLockDemo: FC = () => {
   const [isLocked, setIsLocked] = useState(false);
