@@ -21,7 +21,7 @@ export const ColorTip: FC<{ color: Color }> = ({ color }) => {
         style={{ backgroundColor: css }}
       >
         <p
-          className="font-mono text-2xl font-bold tracking-wider select-all"
+          className="font-mono text-2xl font-bold tracking-normal select-all"
           style={{ color: `contrast-color(${opaque})` }}
         >
           {css}

@@ -13,10 +13,10 @@ const Skeleton = () => (
       <Card key={`recent-blog-skeleton-${n}`}>
         <div className="flex flex-col gap-4 p-4">
           <div className="flex flex-col gap-2">
-            <div className="bg-bg-mute h-6 w-3/4 animate-pulse rounded" />
-            <div className="bg-bg-mute h-4 w-full animate-pulse rounded" />
+            <div className="bg-bg-mute h-6 w-3/4 animate-pulse rounded-sm" />
+            <div className="bg-bg-mute h-4 w-full animate-pulse rounded-sm" />
           </div>
-          <div className="bg-bg-mute h-4 w-24 animate-pulse rounded" />
+          <div className="bg-bg-mute h-4 w-24 animate-pulse rounded-sm" />
         </div>
       </Card>
     ))}

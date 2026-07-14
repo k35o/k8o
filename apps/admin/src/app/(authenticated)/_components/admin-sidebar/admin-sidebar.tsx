@@ -25,7 +25,7 @@ const NavWithSuspense: FC<{ onNavigate?: () => void }> = ({ onNavigate }) => (
 const Brand: FC = () => (
   <div className="flex items-center gap-2">
     <LogoIcon size="md" />
-    <span className="font-noto-sans-jp text-lg font-bold tracking-tight">
+    <span className="font-noto-sans-jp tracking-none text-lg font-bold">
       k8o
     </span>
     <span className="text-fg-mute text-xs">Admin</span>

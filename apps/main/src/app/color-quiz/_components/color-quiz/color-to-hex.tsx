@@ -37,7 +37,7 @@ export const ColorToHex: FC = () => {
       >
         {phase === 'result' && (
           <p
-            className="text-lg font-bold tracking-wider"
+            className="text-lg font-bold tracking-normal"
             style={{ color: `contrast-color(#${targetHex})` }}
           >
             #{targetHex}
@@ -58,7 +58,7 @@ export const ColorToHex: FC = () => {
                   style={{ backgroundColor: `#${selectedHex}` }}
                 >
                   <p
-                    className="text-sm font-bold tracking-wider"
+                    className="text-sm font-bold tracking-normal"
                     style={{
                       color: `contrast-color(#${selectedHex})`,
                     }}
@@ -74,7 +74,7 @@ export const ColorToHex: FC = () => {
                   style={{ backgroundColor: `#${targetHex}` }}
                 >
                   <p
-                    className="text-sm font-bold tracking-wider"
+                    className="text-sm font-bold tracking-normal"
                     style={{
                       color: `contrast-color(#${targetHex})`,
                     }}
@@ -111,7 +111,7 @@ export const ColorToHex: FC = () => {
               {...getRadioProps(hex, index)}
               aria-label={optionLabel}
               className={[
-                'relative flex h-14 items-center justify-center rounded-xl border border-border-base font-mono text-sm tracking-wider transition-all',
+                'relative flex h-14 items-center justify-center rounded-xl border border-border-base font-mono text-sm tracking-normal transition-all',
                 'bg-bg-base',
                 isSelected && phase === 'question'
                   ? 'ring-2 ring-primary-border'

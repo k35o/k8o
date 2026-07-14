@@ -71,10 +71,10 @@ export default defineConfig({
       // `_schema` / `_utils` などのアンダースコア接頭辞は @repo/database の
       // 内部API（直接アクセス非推奨）を表す規約として使っているため許可する。
       'no-underscore-dangle': 'off',
-      // ArteOdyssey の restricted theme に無いクラス(font-mono/rounded/text-base 等)を
-      // 正しく検出するが、実問題の修正は設計判断(代替トークン)を要し件数も多い。
-      // 大量の警告出力で vite-plus が CI の stdout で panic するため一旦 off にし、
-      // クラスの棚卸しは別タスクで対応する。
+      // 実在しない no-op クラス(text-base/rounded/tracking 等)は修正済み。残るのは
+      // font-mono(31件, next/font 絡みで別途対応)と、custom utility(grid-cols-auto-fill-*)
+      // や CSS module / inline style のクラスを弾く誤検知。この2つが片付くまでは off にする
+      // (大量警告で vite-plus が CI の stdout で panic するのを避けるため)。
       'tailwindcss/no-unknown-classes': 'off',
     },
     overrides: [

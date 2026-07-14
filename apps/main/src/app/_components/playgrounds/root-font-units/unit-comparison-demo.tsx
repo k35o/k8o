@@ -14,7 +14,7 @@ export function UnitComparisonDemo() {
           <div className="flex flex-col items-start gap-1">
             <span style={{ fontSize: `${SCALE}rem`, lineHeight: 1 }}>水</span>
             <div
-              className="bg-primary-fg rounded"
+              className="bg-primary-fg rounded-sm"
               style={{
                 width: `${SCALE}ric`,
                 height: '8px',
@@ -26,7 +26,7 @@ export function UnitComparisonDemo() {
           <div className="flex flex-col items-start gap-1">
             <span style={{ fontSize: `${SCALE}rem`, lineHeight: 1 }}>0</span>
             <div
-              className="bg-primary-fg rounded"
+              className="bg-primary-fg rounded-sm"
               style={{
                 width: `${SCALE}rch`,
                 height: '8px',
@@ -46,7 +46,7 @@ export function UnitComparisonDemo() {
           <div className="flex items-baseline gap-0.5">
             <span style={{ fontSize: `${SCALE}rem`, lineHeight: 1 }}>H</span>
             <div
-              className="bg-primary-fg rounded"
+              className="bg-primary-fg rounded-sm"
               style={{
                 width: '8px',
                 height: `${SCALE}rcap`,
@@ -63,7 +63,7 @@ export function UnitComparisonDemo() {
           <div className="flex items-baseline gap-0.5">
             <span style={{ fontSize: `${SCALE}rem`, lineHeight: 1 }}>x</span>
             <div
-              className="bg-primary-fg rounded"
+              className="bg-primary-fg rounded-sm"
               style={{
                 width: '8px',
                 height: `${SCALE}rex`,

@@ -8,9 +8,9 @@ import { Presenter } from './presenter';
 const Skeleton = () => (
   <Card>
     <div className="flex flex-col gap-4 p-6">
-      <div className="bg-bg-mute h-5 w-32 animate-pulse rounded" />
-      <div className="bg-bg-mute h-48 animate-pulse rounded" />
-      <div className="bg-bg-mute h-4 w-24 animate-pulse rounded" />
+      <div className="bg-bg-mute h-5 w-32 animate-pulse rounded-sm" />
+      <div className="bg-bg-mute h-48 animate-pulse rounded-sm" />
+      <div className="bg-bg-mute h-4 w-24 animate-pulse rounded-sm" />
     </div>
   </Card>
 );
