@@ -1,5 +1,4 @@
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
-import { NuqsTestingAdapter } from 'nuqs/adapters/testing';
 import { expect, within } from 'storybook/test';
 
 import { RadiusMaker } from './radius-maker';
@@ -7,13 +6,6 @@ import { RadiusMaker } from './radius-maker';
 const meta: Meta<typeof RadiusMaker> = {
   title: 'app/radius-maker/radius-maker',
   component: RadiusMaker,
-  decorators: [
-    (Story) => (
-      <NuqsTestingAdapter>
-        <Story />
-      </NuqsTestingAdapter>
-    ),
-  ],
 };
 
 export default meta;

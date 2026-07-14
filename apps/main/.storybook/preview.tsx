@@ -5,6 +5,7 @@ import type { Preview } from '@storybook/nextjs-vite';
 import { initialize, mswLoader } from 'msw-storybook-addon';
 import { useTheme } from 'next-themes';
 import Script from 'next/script';
+import { NuqsTestingAdapter } from 'nuqs/adapters/testing';
 import { type FC, memo, useEffect } from 'react';
 import { sb } from 'storybook/test';
 
@@ -110,7 +111,13 @@ const preview: Preview = {
           </Script>
           <div className="min-h-svh p-6">
             <Background />
-            <Story />
+            {/* nuqs で URL に状態を持つ Story は、AppProvider の本物の NuqsAdapter
+                （window.location 共有）だと VRT の全Story並列実行で状態が Story 間へ
+                漏れる。本物より内側に隔離用 Adapter を挟み、Story ごとに URL 状態を
+                独立させる。determinism と同じく nuqs 非利用の Story では消費されない no-op */}
+            <NuqsTestingAdapter>
+              <Story />
+            </NuqsTestingAdapter>
           </div>
           <ApplyThemeByStorybook
             theme={(parameters.theme ?? globals.theme ?? 'light') as string}
