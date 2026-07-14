@@ -34,6 +34,13 @@ jobs:
       - name: Run ls-lint
         run: pnpm run ls-lint
 
+      # oxlint の type-aware ルール(typescript/no-unnecessary-type-assertion 等)は
+      # Next.js が生成する Route 型に依存する。check は type-check より先に走るため、
+      # 先に各アプリの型を生成しておかないと Route を string とみなし `as Route` を
+      # 不要と誤検出する。
+      - name: Generate Next.js route types
+        run: pnpm --filter "./apps/*" exec next typegen
+
       - name: Run check
         run: pnpm run check
 
