@@ -111,10 +111,7 @@ const preview: Preview = {
           </Script>
           <div className="min-h-svh p-6">
             <Background />
-            {/* nuqs で URL に状態を持つ Story は、AppProvider の本物の NuqsAdapter
-                （window.location 共有）だと VRT の全Story並列実行で状態が Story 間へ
-                漏れる。本物より内側に隔離用 Adapter を挟み、Story ごとに URL 状態を
-                独立させる。determinism と同じく nuqs 非利用の Story では消費されない no-op */}
+            {/* 本物の NuqsAdapter より内側に挟み、VRT 並列実行での Story 間 URL 状態リークを防ぐ */}
             <NuqsTestingAdapter>
               <Story />
             </NuqsTestingAdapter>
