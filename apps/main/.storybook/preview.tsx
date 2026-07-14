@@ -3,6 +3,7 @@ import type { Preview } from '@storybook/nextjs-vite';
 import { initialize, mswLoader } from 'msw-storybook-addon';
 import { useTheme } from 'next-themes';
 import Script from 'next/script';
+import { NuqsTestingAdapter } from 'nuqs/adapters/testing';
 import { memo, useEffect } from 'react';
 import type { FC } from 'react';
 import { sb } from 'storybook/test';
@@ -109,7 +110,10 @@ const preview: Preview = {
           </Script>
           <div className="min-h-svh p-6">
             <Background />
-            <Story />
+            {/* 本物の NuqsAdapter より内側に挟み、VRT 並列実行での Story 間 URL 状態リークを防ぐ */}
+            <NuqsTestingAdapter>
+              <Story />
+            </NuqsTestingAdapter>
           </div>
           <ApplyThemeByStorybook
             theme={(parameters.theme ?? globals.theme ?? 'light') as string}
