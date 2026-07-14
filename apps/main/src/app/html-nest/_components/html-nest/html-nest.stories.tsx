@@ -1,4 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
+import { NuqsTestingAdapter } from 'nuqs/adapters/testing';
 import { expect, within } from 'storybook/test';
 
 import { HtmlNest } from './html-nest';
@@ -6,6 +7,13 @@ import { HtmlNest } from './html-nest';
 const meta: Meta<typeof HtmlNest> = {
   title: 'app/html-nest/html-nest',
   component: HtmlNest,
+  decorators: [
+    (Story) => (
+      <NuqsTestingAdapter>
+        <Story />
+      </NuqsTestingAdapter>
+    ),
+  ],
 };
 
 export default meta;

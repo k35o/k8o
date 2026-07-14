@@ -1,4 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
+import { NuqsTestingAdapter } from 'nuqs/adapters/testing';
 import { expect, within } from 'storybook/test';
 
 import { PALETTE_STEPS } from '../../_types/palette';
@@ -7,6 +8,13 @@ import { PaletteMaker } from './palette-maker';
 const meta: Meta<typeof PaletteMaker> = {
   title: 'app/palette-maker/palette-maker',
   component: PaletteMaker,
+  decorators: [
+    (Story) => (
+      <NuqsTestingAdapter>
+        <Story />
+      </NuqsTestingAdapter>
+    ),
+  ],
 };
 
 export default meta;
