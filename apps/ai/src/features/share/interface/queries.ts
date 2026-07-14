@@ -6,4 +6,4 @@ export const getPublicShareForRoute = (
   slug: string,
 ): Promise<PublicShare | null> => getPublicShare(slug);
 
-export type { PublicShare };
+export type { PublicShare } from '../application/share';

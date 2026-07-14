@@ -23,6 +23,7 @@ export const DeckPresenter: FC<{
   });
   const current = slides[index] ?? slides[0];
   const nextSlide = slides[index + 1];
+  // oxlint-disable-next-line react/hook-use-state -- 初期化時に一度だけ算出する安定値で setter は不要
   const [sessionId] = useState<string>(() => {
     if (typeof window === 'undefined') return '';
     return new URLSearchParams(window.location.search).get('session') ?? '';

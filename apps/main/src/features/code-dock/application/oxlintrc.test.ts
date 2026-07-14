@@ -6,26 +6,23 @@ describe('buildOxlintrc', () => {
       const rc = buildOxlintrc();
 
       expect(rc.plugins).toEqual([
-        'eslint',
-        'oxc',
         'unicorn',
         'import',
         'promise',
         'typescript',
         'react',
         'jsx-a11y',
-        'react-perf',
         'nextjs',
       ]);
       expect(rc.categories?.correctness).toBe('error');
       expect(rc.categories?.style).toBe('off');
       // 各層を代表するルールが1つのrulesに揃っていること
-      expect(rc.rules?.eqeqeq).toEqual(['error', 'always']);
+      expect(rc.rules?.['no-var']).toBe('error');
       expect(rc.rules?.['typescript/consistent-type-definitions']).toEqual([
         'error',
         'type',
       ]);
-      expect(rc.rules?.['react/rules-of-hooks']).toBe('error');
+      expect(rc.rules?.['react/self-closing-comp']).toBe('error');
       expect(rc.rules?.['nextjs/no-img-element']).toBe('warn');
     });
 
@@ -44,6 +41,7 @@ describe('buildOxlintrc', () => {
     it('JSONへそのまま直列化できる', () => {
       const rc = buildOxlintrc();
 
+      // oxlint-disable-next-line unicorn/prefer-structured-clone -- JSON 直列化の round-trip を検証するのが目的で structuredClone では代替できない
       expect(JSON.parse(JSON.stringify(rc))).toEqual(rc);
     });
   });

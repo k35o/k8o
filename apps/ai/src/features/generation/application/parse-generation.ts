@@ -3,7 +3,7 @@ import type { UIMessage } from 'ai';
 import { toMeta } from './parse-meta';
 import type { GenerationMeta } from './parse-meta';
 
-export type { GenerationMeta };
+export type { GenerationMeta } from './parse-meta';
 
 export type ParsedGeneration = {
   code: string | null;

@@ -1,11 +1,13 @@
 import { db } from '@repo/database';
-import { ARTICLE_SOURCE_TYPES } from '@repo/database/schema';
 import type { ArticleSourceType } from '@repo/database/schema';
 import { count, desc, eq, like } from 'drizzle-orm';
 
 import { fetchOgMetadata } from './og-metadata';
 
-export { ARTICLE_SOURCE_TYPES, type ArticleSourceType };
+export {
+  ARTICLE_SOURCE_TYPES,
+  type ArticleSourceType,
+} from '@repo/database/schema';
 
 export const findReadingListContent = async () => {
   const [sources, articleCountRow] = await Promise.all([

@@ -70,6 +70,7 @@ describe('parseJsLiteral', () => {
 
     it('テンプレートリテラルの補間は null', () => {
       // Arrange & Act & Assert
+      // oxlint-disable-next-line eslint/no-template-curly-in-string -- テンプレートリテラルを含む入力のパースを検証するテストデータ
       expect(parseJsLiteral('[`${x}`]', 0)).toBeNull();
     });
 

@@ -4,10 +4,10 @@ export {
   H2,
   H3,
   H4,
-  LI,
-  OL,
+  Li,
+  Ol,
   P,
   Pre,
   Strong,
-  UL,
+  Ul,
 } from './md-parts';

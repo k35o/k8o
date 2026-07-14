@@ -10,7 +10,11 @@ import type {
 } from '../infrastructure/comment-repository';
 
 export type CommentItem = CommentRecord;
-export type { CommentStats, FindCommentsParams, FindCommentsResult };
+export type {
+  CommentStats,
+  FindCommentsParams,
+  FindCommentsResult,
+} from '../infrastructure/comment-repository';
 
 export const getComments = (
   params: FindCommentsParams,

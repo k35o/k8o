@@ -27,6 +27,7 @@ export const ThemedPreviewIframe: FC<ThemedPreviewIframeProps> = ({
 }) => {
   const ref = useRef<HTMLIFrameElement>(null);
   // url は Sandbox の絶対URL。クエリは URL で安全に組み立て、postMessage の宛先も同オリジンに絞る。
+  // oxlint-disable-next-line react/hook-use-state -- 初期化時に一度だけ算出する安定値で setter は不要
   const [{ initialSrc, origin }] = useState(() => {
     const parsed = new URL(url);
     if (theme === 'dark') {

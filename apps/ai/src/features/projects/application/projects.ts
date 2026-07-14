@@ -39,7 +39,7 @@ export type PublicProject = {
   meta: GenerationMeta;
 };
 
-export type { ProjectListItem };
+export type { ProjectListItem } from '../infrastructure/project-repository';
 
 const parseContent = (value: unknown): UiStudioContent | null => {
   if (typeof value !== 'object' || value === null) {

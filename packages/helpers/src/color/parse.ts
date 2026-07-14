@@ -38,7 +38,7 @@ const parseNum = (token: string): Num | null => {
   if (raw === undefined) {
     return null;
   }
-  const value = Number.parseFloat(raw);
+  const value = Number(raw);
   // `1e999` のような巨大指数は Infinity になるため弾く（NaN色の流出を防ぐ）。
   if (!Number.isFinite(value)) {
     return null;
@@ -57,7 +57,7 @@ const parseHue = (token: string): number | null => {
   if (raw === undefined) {
     return null;
   }
-  const value = Number.parseFloat(raw);
+  const value = Number(raw);
   if (!Number.isFinite(value)) {
     return null;
   }
