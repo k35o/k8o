@@ -1,5 +1,4 @@
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
-import { NuqsTestingAdapter } from 'nuqs/adapters/testing';
 import { expect, userEvent, within } from 'storybook/test';
 
 import type { BaselineFeature } from '@/features/baseline/interface/queries';
@@ -7,7 +6,9 @@ import type { BlogLink } from '@/features/blog/interface/queries';
 
 import { BaselineFeatureList } from './baseline-feature-list';
 
-const now = Date.now();
+// VRTを決定的にするため実行日時ではなく固定基準日を使う。args はモジュール評価時に
+// 走り mockingDate では固定できず、BaselineFeatureList は nowMs で時刻を注入されるため
+const now = new Date('2026-07-01T00:00:00Z').getTime();
 const DAY_MS = 24 * 60 * 60 * 1000;
 const toDate = (offsetMs: number): string =>
   new Date(now - offsetMs).toISOString().slice(0, 10);
@@ -80,13 +81,6 @@ const meta: Meta<typeof BaselineFeatureList> = {
     currentYear: toDate(0).slice(0, 4),
     nowMs: now,
   },
-  decorators: [
-    (Story) => (
-      <NuqsTestingAdapter>
-        <Story />
-      </NuqsTestingAdapter>
-    ),
-  ],
 };
 
 export default meta;

@@ -1,5 +1,4 @@
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
-import { NuqsTestingAdapter } from 'nuqs/adapters/testing';
 import { expect, within } from 'storybook/test';
 
 import { PALETTE_STEPS } from '../../_types/palette';
@@ -8,16 +7,6 @@ import { PaletteMaker } from './palette-maker';
 const meta: Meta<typeof PaletteMaker> = {
   title: 'app/palette-maker/palette-maker',
   component: PaletteMaker,
-  // usePaletteState は nuqs で URL に状態を持つ。プレビュー共通の NuqsAdapter は
-  // 実際の window.location を共有するため、VRT の全Story並列実行で PasteBaseColor
-  // の色相が PasteAchromaticBaseColor に漏れる。Storyごとに隔離された Adapter で包む
-  decorators: [
-    (Story) => (
-      <NuqsTestingAdapter>
-        <Story />
-      </NuqsTestingAdapter>
-    ),
-  ],
 };
 
 export default meta;
