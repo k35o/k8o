@@ -42,7 +42,7 @@ describe('slide service', () => {
 
       const result = await getSlide('test-slug');
 
-      expect(result).toEqual({
+      expect(result).toStrictEqual({
         id: 1,
         slug: 'test-slug',
         tags: [

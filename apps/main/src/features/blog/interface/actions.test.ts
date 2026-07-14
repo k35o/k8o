@@ -45,7 +45,7 @@ describe('feedback', () => {
   it('コメントもフィードバックIDも指定されていない場合はエラーを返す', async () => {
     const result = await feedback('test-slug', null, '');
 
-    expect(result).toEqual({
+    expect(result).toStrictEqual({
       success: false,
       message: 'コメントまたはフィードバックIDのいずれかを入力してください',
     });
@@ -55,7 +55,7 @@ describe('feedback', () => {
     const longComment = 'a'.repeat(501);
     const result = await feedback('test-slug', 1, longComment);
 
-    expect(result).toEqual({
+    expect(result).toStrictEqual({
       success: false,
       message: 'コメントは500文字以内で入力してください',
     });
@@ -66,7 +66,7 @@ describe('feedback', () => {
 
     const result = await feedback('non-existent-slug', 1, 'test comment');
 
-    expect(result).toEqual({
+    expect(result).toStrictEqual({
       success: false,
       message: '指定されたブログが見つかりません',
     });
@@ -90,7 +90,7 @@ describe('feedback', () => {
 
     const result = await feedback('test-slug', 1, 'test comment');
 
-    expect(result).toEqual({
+    expect(result).toStrictEqual({
       success: true,
     });
     expect(db.insert).toHaveBeenCalledWith(db._schema.comments);
@@ -115,7 +115,7 @@ describe('feedback', () => {
 
     const result = await feedback('test-slug', null, 'test comment');
 
-    expect(result).toEqual({
+    expect(result).toStrictEqual({
       success: true,
     });
   });

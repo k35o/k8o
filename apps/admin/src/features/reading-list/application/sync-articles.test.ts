@@ -654,7 +654,7 @@ describe('syncArticles', () => {
       const result = await syncArticles();
 
       expect(result.newArticles).toBe(0);
-      expect(result.failedSources).toEqual(['web.dev']);
+      expect(result.failedSources).toStrictEqual(['web.dev']);
     });
 
     it('一部のソースが失敗しても他のソースは処理を続ける', async () => {
@@ -695,7 +695,7 @@ describe('syncArticles', () => {
       const result = await syncArticles();
 
       expect(result.newArticles).toBe(1);
-      expect(result.failedSources).toEqual(['失敗するソース']);
+      expect(result.failedSources).toStrictEqual(['失敗するソース']);
       expect(mockParseString).toHaveBeenCalledTimes(1);
     });
   });

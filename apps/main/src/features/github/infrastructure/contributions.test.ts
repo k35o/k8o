@@ -38,7 +38,7 @@ describe('fetchUserContributions', () => {
       },
     });
 
-    await expect(fetchUserContributions('k35o')).resolves.toEqual([
+    await expect(fetchUserContributions('k35o')).resolves.toStrictEqual([
       { date: '2026-03-14', count: 0 },
       { date: '2026-03-15', count: 0 },
       { date: '2026-03-16', count: 0 },
@@ -97,7 +97,7 @@ describe('fetchUserContributions', () => {
     const result = await fetchUserContributions('k35o');
 
     expect(graphqlMock).toHaveBeenCalledTimes(1);
-    expect(result).toEqual([
+    expect(result).toStrictEqual([
       { date: '2026-03-14', count: 0 },
       { date: '2026-03-15', count: 2 },
       { date: '2026-03-16', count: 0 },

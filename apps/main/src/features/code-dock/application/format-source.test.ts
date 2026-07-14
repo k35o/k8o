@@ -6,7 +6,7 @@ describe('formatSource', () => {
     it('ダブルクォートをシングルクォートへ整形する', async () => {
       const result = await formatSource('const a = "b"\n', 'ts');
 
-      expect(result).toEqual({ code: "const a = 'b';\n", ok: true });
+      expect(result).toStrictEqual({ code: "const a = 'b';\n", ok: true });
     });
 
     it('import宣言をモジュール名でソートする', async () => {
@@ -20,7 +20,7 @@ describe('formatSource', () => {
         'ts',
       );
 
-      expect(result).toEqual({
+      expect(result).toStrictEqual({
         code: [
           "import { a } from 'alpha';",
           "import { z } from 'zebra';",
@@ -37,7 +37,7 @@ describe('formatSource', () => {
         'tsx',
       );
 
-      expect(result).toEqual({
+      expect(result).toStrictEqual({
         code: 'export const App = () => <output>ok</output>;\n',
         ok: true,
       });

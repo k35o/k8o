@@ -61,7 +61,7 @@ describe('blog service', () => {
 
       const result = await getBlog('test-slug');
 
-      expect(result).toEqual({
+      expect(result).toStrictEqual({
         id: 1,
         slug: 'test-slug',
         tags: [

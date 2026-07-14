@@ -16,7 +16,7 @@ describe('parseEdits', () => {
       // Assert
       expect(result.isOpen).toBe(true);
       expect(result.isComplete).toBe(true);
-      expect(result.blocks).toEqual([
+      expect(result.blocks).toStrictEqual([
         { search: 'const a = 1;', replace: 'const a = 2;' },
       ]);
     });
@@ -24,7 +24,7 @@ describe('parseEdits', () => {
     it('複数ブロックを順番どおり抽出できる', () => {
       const raw = fence([block('a', 'b'), block('c', 'd')].join('\n'));
       const result = parseEdits(raw);
-      expect(result.blocks).toEqual([
+      expect(result.blocks).toStrictEqual([
         { search: 'a', replace: 'b' },
         { search: 'c', replace: 'd' },
       ]);
@@ -33,7 +33,7 @@ describe('parseEdits', () => {
     it('複数行の SEARCH/REPLACE を改行を保ったまま抽出できる', () => {
       const raw = fence(block('line1\nline2', 'new1\nnew2\nnew3'));
       const result = parseEdits(raw);
-      expect(result.blocks).toEqual([
+      expect(result.blocks).toStrictEqual([
         { search: 'line1\nline2', replace: 'new1\nnew2\nnew3' },
       ]);
     });
@@ -43,7 +43,7 @@ describe('parseEdits', () => {
         ['<<<<<<< SEARCH', 'gone', '=======', '>>>>>>> REPLACE'].join('\n'),
       );
       const result = parseEdits(raw);
-      expect(result.blocks).toEqual([{ search: 'gone', replace: '' }]);
+      expect(result.blocks).toStrictEqual([{ search: 'gone', replace: '' }]);
     });
   });
 
@@ -51,7 +51,7 @@ describe('parseEdits', () => {
     it('edits フェンスが無ければ isOpen=false', () => {
       const result = parseEdits('```tsx\nconst a = 1;\n```');
       expect(result.isOpen).toBe(false);
-      expect(result.blocks).toEqual([]);
+      expect(result.blocks).toStrictEqual([]);
     });
   });
 
@@ -64,7 +64,7 @@ describe('parseEdits', () => {
       const result = parseEdits(raw);
       expect(result.isOpen).toBe(true);
       expect(result.isComplete).toBe(false);
-      expect(result.blocks).toEqual([{ search: 'a', replace: 'b' }]);
+      expect(result.blocks).toStrictEqual([{ search: 'a', replace: 'b' }]);
     });
 
     it('マーカー行の前後空白を許容する', () => {
@@ -74,7 +74,7 @@ describe('parseEdits', () => {
         ),
       );
       const result = parseEdits(raw);
-      expect(result.blocks).toEqual([{ search: 'a', replace: 'b' }]);
+      expect(result.blocks).toStrictEqual([{ search: 'a', replace: 'b' }]);
     });
 
     it('後続の json フェンスは edits の本文に含めない', () => {
@@ -86,7 +86,7 @@ describe('parseEdits', () => {
       ].join('\n');
       const result = parseEdits(raw);
       expect(result.isComplete).toBe(true);
-      expect(result.blocks).toEqual([{ search: 'a', replace: 'b' }]);
+      expect(result.blocks).toStrictEqual([{ search: 'a', replace: 'b' }]);
     });
   });
 });
@@ -98,7 +98,7 @@ describe('applyEdits', () => {
         { search: 'const a = 1;', replace: 'const a = 9;' },
       ]);
       expect(result.code).toBe('const a = 9;\nconst b = 2;');
-      expect(result.failed).toEqual([]);
+      expect(result.failed).toStrictEqual([]);
     });
 
     it('複数ブロックを上から順に適用する', () => {
@@ -107,13 +107,13 @@ describe('applyEdits', () => {
         { search: 'c', replace: 'z' },
       ]);
       expect(result.code).toBe('x\nb\nz');
-      expect(result.failed).toEqual([]);
+      expect(result.failed).toStrictEqual([]);
     });
 
     it('REPLACE が空文字なら該当行を削除する（行フォールバック時）', () => {
       const result = applyEdits('a\nb \nc', [{ search: 'b', replace: '' }]);
       expect(result.code).toBe('a\nc');
-      expect(result.failed).toEqual([]);
+      expect(result.failed).toStrictEqual([]);
     });
   });
 
@@ -124,13 +124,13 @@ describe('applyEdits', () => {
         { search: 'b', replace: 'y' },
       ]);
       expect(result.code).toBe('a\ny');
-      expect(result.failed).toEqual([1]);
+      expect(result.failed).toStrictEqual([1]);
     });
 
     it('SEARCH が空のブロックは失敗として扱う', () => {
       const result = applyEdits('a', [{ search: '', replace: 'x' }]);
       expect(result.code).toBe('a');
-      expect(result.failed).toEqual([1]);
+      expect(result.failed).toStrictEqual([1]);
     });
   });
 
@@ -146,7 +146,7 @@ describe('applyEdits', () => {
         { search: 'const a = 1;', replace: 'const a = 9;' },
       ]);
       expect(result.code).toBe('const a = 9;\nconst b = 2;');
-      expect(result.failed).toEqual([]);
+      expect(result.failed).toStrictEqual([]);
     });
 
     it('前のブロックの適用結果に対して次のブロックが一致できる', () => {

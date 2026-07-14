@@ -38,7 +38,7 @@ title: test
 ## まとめ
 `);
 
-    await expect(getTocTree(filePath)).resolves.toEqual({
+    await expect(getTocTree(filePath)).resolves.toStrictEqual({
       depth: 0,
       children: [
         {
@@ -75,7 +75,7 @@ title: test
 ## セクション2
 `);
 
-    await expect(getTocTree(filePath)).resolves.toEqual({
+    await expect(getTocTree(filePath)).resolves.toStrictEqual({
       depth: 0,
       children: [
         {
@@ -115,7 +115,7 @@ title: test
 #### 孤立したh4
 `);
 
-    await expect(getTocTree(filePath)).resolves.toEqual({
+    await expect(getTocTree(filePath)).resolves.toStrictEqual({
       depth: 0,
       children: [
         {
@@ -137,7 +137,7 @@ title: test
 ##### 無視される見出し
 `);
 
-    await expect(getTocTree(filePath)).resolves.toEqual({
+    await expect(getTocTree(filePath)).resolves.toStrictEqual({
       depth: 0,
       children: [
         {

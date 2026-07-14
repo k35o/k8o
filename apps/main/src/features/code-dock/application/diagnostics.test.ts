@@ -24,7 +24,7 @@ describe('toLintDiagnostics', () => {
         ],
       };
 
-      expect(toLintDiagnostics(raw)).toEqual([
+      expect(toLintDiagnostics(raw)).toStrictEqual([
         {
           code: 'eslint(no-var)',
           column: 5,
@@ -48,7 +48,7 @@ describe('toLintDiagnostics', () => {
 
       expect(
         toLintDiagnostics(raw).map(({ column, line }) => [line, column]),
-      ).toEqual([
+      ).toStrictEqual([
         [2, 2],
         [2, 9],
         [10, 1],
@@ -75,7 +75,10 @@ describe('toLintDiagnostics', () => {
         ],
       };
 
-      expect(toLintDiagnostics(raw).map(({ line }) => line)).toEqual([1, null]);
+      expect(toLintDiagnostics(raw).map(({ line }) => line)).toStrictEqual([
+        1,
+        null,
+      ]);
     });
 
     it('code/url/help/labelsがフィールドごと欠けていてもnullに正規化する', () => {
@@ -90,7 +93,7 @@ describe('toLintDiagnostics', () => {
         ],
       };
 
-      expect(toLintDiagnostics(raw)).toEqual([
+      expect(toLintDiagnostics(raw)).toStrictEqual([
         {
           code: null,
           column: null,

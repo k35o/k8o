@@ -10,7 +10,9 @@ describe('parseJsLiteral', () => {
       const result = parseJsLiteral(src, 0);
 
       // Assert
-      expect(result?.value).toEqual([{ name: '田中', age: 20, admin: true }]);
+      expect(result?.value).toStrictEqual([
+        { name: '田中', age: 20, admin: true },
+      ]);
     });
 
     it('末尾カンマとネストを許容する', () => {
@@ -21,7 +23,7 @@ describe('parseJsLiteral', () => {
       const result = parseJsLiteral(src, 0);
 
       // Assert
-      expect(result?.value).toEqual({ tags: ['a', 'b'], meta: { n: 1 } });
+      expect(result?.value).toStrictEqual({ tags: ['a', 'b'], meta: { n: 1 } });
     });
 
     it('null / false を解決する', () => {
@@ -29,7 +31,7 @@ describe('parseJsLiteral', () => {
       const result = parseJsLiteral('[null, false]', 0);
 
       // Assert
-      expect(result?.value).toEqual([null, false]);
+      expect(result?.value).toStrictEqual([null, false]);
     });
 
     it('指数・16進・桁区切りの数値を解決する', () => {
@@ -37,7 +39,7 @@ describe('parseJsLiteral', () => {
       const result = parseJsLiteral('[1e3, 0x10, 1_000, -2.5]', 0);
 
       // Assert
-      expect(result?.value).toEqual([1000, 16, 1000, -2.5]);
+      expect(result?.value).toStrictEqual([1000, 16, 1000, -2.5]);
     });
   });
 
@@ -50,7 +52,7 @@ describe('parseJsLiteral', () => {
       const result = parseJsLiteral(src, 0);
 
       // Assert
-      expect(result?.value).toEqual([{ name: 'real' }]);
+      expect(result?.value).toStrictEqual([{ name: 'real' }]);
     });
 
     it('深すぎるネストは throw せず null を返す', () => {
@@ -91,7 +93,7 @@ describe('buildScope', () => {
       const scope = buildScope(tsx);
 
       // Assert
-      expect(scope['members']).toEqual([{ name: 'A' }]);
+      expect(scope['members']).toStrictEqual([{ name: 'A' }]);
     });
   });
 
@@ -106,7 +108,7 @@ describe('buildScope', () => {
       // Assert
       expect('n' in scope).toBe(false);
       expect('data' in scope).toBe(false);
-      expect(scope['items']).toEqual([1]);
+      expect(scope['items']).toStrictEqual([1]);
     });
 
     it('同名 const は最初の宣言を優先する', () => {
@@ -117,7 +119,7 @@ describe('buildScope', () => {
       const scope = buildScope(tsx);
 
       // Assert
-      expect(scope['x']).toEqual([1]);
+      expect(scope['x']).toStrictEqual([1]);
     });
 
     it('const __proto__ はスコープを汚染しない', () => {
@@ -129,7 +131,7 @@ describe('buildScope', () => {
 
       // Assert
       expect(Object.hasOwn(scope, '__proto__')).toBe(false);
-      expect(scope['items']).toEqual([1]);
+      expect(scope['items']).toStrictEqual([1]);
     });
   });
 });

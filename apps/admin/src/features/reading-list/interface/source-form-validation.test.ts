@@ -23,7 +23,7 @@ describe('parseSourceFormData', () => {
     it('全項目が正しければ data を返す', () => {
       const result = parseSourceFormData(buildFormData());
 
-      expect(result).toEqual({
+      expect(result).toStrictEqual({
         ok: true,
         data: {
           title: 'web.dev',
@@ -37,7 +37,7 @@ describe('parseSourceFormData', () => {
     it('type は manual も受け付ける', () => {
       const result = parseSourceFormData(buildFormData({ type: 'manual' }));
 
-      expect(result).toEqual({
+      expect(result).toStrictEqual({
         ok: true,
         data: {
           title: 'web.dev',
@@ -55,7 +55,7 @@ describe('parseSourceFormData', () => {
       (key) => {
         const result = parseSourceFormData(buildFormData({ [key]: '' }));
 
-        expect(result).toEqual({
+        expect(result).toStrictEqual({
           ok: false,
           error: '全ての項目を入力してください',
         });
@@ -65,7 +65,7 @@ describe('parseSourceFormData', () => {
     it('type が feed / manual 以外ならエラーを返す', () => {
       const result = parseSourceFormData(buildFormData({ type: 'rss' }));
 
-      expect(result).toEqual({
+      expect(result).toStrictEqual({
         ok: false,
         error: 'タイプはfeedまたはmanualを指定してください',
       });
@@ -78,7 +78,7 @@ describe('parseSourceFormData', () => {
     ])('url が https でない(%s)ならエラーを返す', (_label, value) => {
       const result = parseSourceFormData(buildFormData({ url: value }));
 
-      expect(result).toEqual({
+      expect(result).toStrictEqual({
         ok: false,
         error: '有効なURL(https)を入力してください',
       });
@@ -91,7 +91,7 @@ describe('parseSourceFormData', () => {
     ])('siteUrl が https でない(%s)ならエラーを返す', (_label, value) => {
       const result = parseSourceFormData(buildFormData({ siteUrl: value }));
 
-      expect(result).toEqual({
+      expect(result).toStrictEqual({
         ok: false,
         error: '有効なURL(https)を入力してください',
       });

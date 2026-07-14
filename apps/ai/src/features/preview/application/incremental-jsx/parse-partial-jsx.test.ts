@@ -37,10 +37,10 @@ describe('parsePartialJsx', () => {
 
       // Assert
       expect(el.name).toBe('div');
-      expect(el.props).toEqual([
+      expect(el.props).toStrictEqual([
         { name: 'className', value: { kind: 'string', value: 'box' } },
       ]);
-      expect(el.children).toEqual([{ type: 'text', value: 'Hello' }]);
+      expect(el.children).toStrictEqual([{ type: 'text', value: 'Hello' }]);
     });
 
     it('コンポーネントのネストと文字列属性をパースする', () => {
@@ -55,10 +55,12 @@ describe('parsePartialJsx', () => {
       // Assert
       expect(card.name).toBe('Card');
       expect(heading.name).toBe('Heading');
-      expect(heading.props).toEqual([
+      expect(heading.props).toStrictEqual([
         { name: 'type', value: { kind: 'string', value: 'h2' } },
       ]);
-      expect(heading.children).toEqual([{ type: 'text', value: 'Title' }]);
+      expect(heading.children).toStrictEqual([
+        { type: 'text', value: 'Title' },
+      ]);
     });
 
     it('自己終了タグと数値リテラル属性をパースする', () => {
@@ -69,8 +71,8 @@ describe('parsePartialJsx', () => {
       const el = firstElement(parsePartialJsx(source));
 
       // Assert
-      expect(el.children).toEqual([]);
-      expect(el.props).toEqual([
+      expect(el.children).toStrictEqual([]);
+      expect(el.props).toStrictEqual([
         { name: 'cols', value: { kind: 'literal', value: 2 } },
         { name: 'gap', value: { kind: 'string', value: 'md' } },
       ]);
@@ -84,7 +86,7 @@ describe('parsePartialJsx', () => {
       const el = firstElement(parsePartialJsx(source));
 
       // Assert
-      expect(el.props).toEqual([
+      expect(el.props).toStrictEqual([
         {
           name: 'startIcon',
           value: {
@@ -108,7 +110,7 @@ describe('parsePartialJsx', () => {
       const el = firstElement(parsePartialJsx(source));
 
       // Assert
-      expect(el.props).toEqual([
+      expect(el.props).toStrictEqual([
         { name: 'disabled', value: { kind: 'boolean' } },
       ]);
     });
@@ -123,7 +125,7 @@ describe('parsePartialJsx', () => {
       const div = firstElement(parsePartialJsx(source));
 
       // Assert
-      expect(div.children).toEqual([{ type: 'pending' }]);
+      expect(div.children).toStrictEqual([{ type: 'pending' }]);
     });
 
     it('子テキストの途中で切れたら末尾に pending を足す', () => {
@@ -134,7 +136,7 @@ describe('parsePartialJsx', () => {
       const div = firstElement(parsePartialJsx(source));
 
       // Assert
-      expect(div.children).toEqual([
+      expect(div.children).toStrictEqual([
         { type: 'text', value: 'Hello' },
         { type: 'pending' },
       ]);
@@ -148,7 +150,7 @@ describe('parsePartialJsx', () => {
       const nodes = parsePartialJsx(source);
 
       // Assert
-      expect(nodes).toEqual([{ type: 'pending' }]);
+      expect(nodes).toStrictEqual([{ type: 'pending' }]);
     });
   });
 
@@ -161,7 +163,7 @@ describe('parsePartialJsx', () => {
       const ul = firstElement(parsePartialJsx(source));
 
       // Assert
-      expect(ul.children).toEqual([]);
+      expect(ul.children).toStrictEqual([]);
     });
 
     it('フラグメントを名前なし要素としてパースする', () => {
@@ -184,7 +186,7 @@ describe('parsePartialJsx', () => {
       const p = firstElement(parsePartialJsx(source));
 
       // Assert: コード片（"前半 ' + x + ' 後半"）がそのまま描かれない。
-      expect(p.children).toEqual([]);
+      expect(p.children).toStrictEqual([]);
     });
 
     it('単一の文字列/数値リテラルはそのまま値として扱う', () => {
@@ -193,8 +195,10 @@ describe('parsePartialJsx', () => {
       const num = firstElement(parsePartialJsx('<p>{42}</p>'));
 
       // Assert
-      expect(str.children).toEqual([{ type: 'text', value: 'こんにちは' }]);
-      expect(num.children).toEqual([{ type: 'text', value: '42' }]);
+      expect(str.children).toStrictEqual([
+        { type: 'text', value: 'こんにちは' },
+      ]);
+      expect(num.children).toStrictEqual([{ type: 'text', value: '42' }]);
     });
   });
 });
@@ -242,7 +246,7 @@ describe('map 展開とスコープ解決', () => {
 
       // Assert
       expect(ul.children).toHaveLength(2);
-      expect(ul.children.map(textOf)).toEqual(['A', 'B']);
+      expect(ul.children.map(textOf)).toStrictEqual(['A', 'B']);
     });
 
     it('index 引数を解決する', () => {
@@ -255,7 +259,7 @@ describe('map 展開とスコープ解決', () => {
       );
 
       // Assert
-      expect(ul.children.map(textOf)).toEqual(['0', '1', '2']);
+      expect(ul.children.map(textOf)).toStrictEqual(['0', '1', '2']);
     });
 
     it('TSX 全文（const データ + return）を展開する', () => {
@@ -274,7 +278,7 @@ describe('map 展開とスコープ解決', () => {
       const div = firstElement(parseStreamingTsx(tsx));
 
       // Assert
-      expect(div.children.map(textOf)).toEqual(['田中', '佐藤']);
+      expect(div.children.map(textOf)).toStrictEqual(['田中', '佐藤']);
     });
   });
 
@@ -289,8 +293,8 @@ describe('map 展開とスコープ解決', () => {
       );
 
       // Assert: 2 枚の Card がそれぞれ pending を抱えて並ぶ
-      expect(div.children.map(labelOf)).toEqual(['Card', 'Card']);
-      expect(div.children.map(textOf)).toEqual(['', '']);
+      expect(div.children.map(labelOf)).toStrictEqual(['Card', 'Card']);
+      expect(div.children.map(textOf)).toStrictEqual(['', '']);
     });
   });
 
@@ -302,7 +306,7 @@ describe('map 展開とスコープ解決', () => {
       );
 
       // Assert
-      expect(ul.children).toEqual([]);
+      expect(ul.children).toStrictEqual([]);
     });
 
     it('ネストした map（arr.field.map）を解決する', () => {
@@ -345,7 +349,7 @@ describe('map 展開とスコープ解決', () => {
       );
 
       // Assert
-      expect(span.children).toEqual([]);
+      expect(span.children).toStrictEqual([]);
     });
 
     it('__proto__ で汚染されたデータ越境値を描かない', () => {
@@ -374,7 +378,7 @@ describe('map 展開とスコープ解決', () => {
       );
 
       // Assert
-      expect(div.children).toEqual([{ type: 'pending' }]);
+      expect(div.children).toStrictEqual([{ type: 'pending' }]);
     });
   });
 });

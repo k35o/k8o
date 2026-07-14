@@ -4,7 +4,7 @@ const { parse, serialize } = radiusMakerParsers.corners;
 
 describe('cornersParser', () => {
   it('カンマ区切りの8値をRadiusCornersに変換する', () => {
-    expect(parse('10,20,30,40,50,60,70,80')).toEqual({
+    expect(parse('10,20,30,40,50,60,70,80')).toStrictEqual({
       topLeft: { x: 10, y: 20 },
       topRight: { x: 30, y: 40 },
       bottomRight: { x: 50, y: 60 },
@@ -33,6 +33,6 @@ describe('cornersParser', () => {
       bottomLeft: { x: 70, y: 80 },
     };
     expect(serialize(corners)).toBe(query);
-    expect(parse(query)).toEqual(corners);
+    expect(parse(query)).toStrictEqual(corners);
   });
 });

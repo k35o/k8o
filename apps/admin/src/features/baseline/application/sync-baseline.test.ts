@@ -130,7 +130,7 @@ describe('syncBaseline', () => {
 
       const result = await syncBaseline();
 
-      expect(result.newFeatures).toEqual([
+      expect(result.newFeatures).toStrictEqual([
         {
           featureId: 'grid',
           name: 'Grid',
@@ -138,7 +138,7 @@ describe('syncBaseline', () => {
           date: '2024-01-01',
         },
       ]);
-      expect(result.statusChanges).toEqual([]);
+      expect(result.statusChanges).toStrictEqual([]);
       expect(insertValuesMock).toHaveBeenCalledWith([
         expect.objectContaining({
           featureId: 'grid',
@@ -173,8 +173,8 @@ describe('syncBaseline', () => {
 
       const result = await syncBaseline();
 
-      expect(result.newFeatures).toEqual([]);
-      expect(result.statusChanges).toEqual([
+      expect(result.newFeatures).toStrictEqual([]);
+      expect(result.statusChanges).toStrictEqual([
         {
           feature: {
             featureId: 'grid',
@@ -218,8 +218,8 @@ describe('syncBaseline', () => {
 
       const result = await syncBaseline();
 
-      expect(result.newFeatures).toEqual([]);
-      expect(result.statusChanges).toEqual([]);
+      expect(result.newFeatures).toStrictEqual([]);
+      expect(result.statusChanges).toStrictEqual([]);
       expect(db.insert).not.toHaveBeenCalled();
       expect(tx.update).not.toHaveBeenCalled();
     });
@@ -248,7 +248,7 @@ describe('syncBaseline', () => {
 
       const result = await syncBaseline();
 
-      expect(result.statusChanges).toEqual([]);
+      expect(result.statusChanges).toStrictEqual([]);
       expect(tx.update).toHaveBeenCalledWith(db._schema.baselineSnapshots);
       expect(txUpdateSetMock).toHaveBeenCalledWith(
         expect.objectContaining({
@@ -391,7 +391,10 @@ describe('syncBaseline', () => {
       const result = await syncBaseline();
 
       expect(mockFetch).toHaveBeenCalledTimes(3);
-      expect(result.newFeatures.map((f) => f.featureId)).toEqual(['a', 'b']);
+      expect(result.newFeatures.map((f) => f.featureId)).toStrictEqual([
+        'a',
+        'b',
+      ]);
     });
 
     it('next_page_token が尽きなくても MAX_PAGES で打ち切る', async () => {
@@ -405,7 +408,7 @@ describe('syncBaseline', () => {
       expect(warnSpy).toHaveBeenCalledWith(
         expect.stringContaining('最大ページ数(50)に達しました'),
       );
-      expect(result.newFeatures).toEqual([]);
+      expect(result.newFeatures).toStrictEqual([]);
 
       warnSpy.mockRestore();
     });
@@ -425,7 +428,7 @@ describe('toBaselineFeature', () => {
         },
       });
 
-      expect(feature).toEqual({
+      expect(feature).toStrictEqual({
         featureId: 'grid',
         name: 'Grid',
         status: 'widely',

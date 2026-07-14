@@ -40,7 +40,7 @@ describe('slides service', () => {
 
       const result = await getSlides();
 
-      expect(result).toEqual([
+      expect(result).toStrictEqual([
         { id: 1, slug: 'slide-1', tags: ['TypeScript', 'CSS'] },
         { id: 2, slug: 'slide-2', tags: [] },
       ]);
@@ -51,7 +51,7 @@ describe('slides service', () => {
 
       const result = await getSlides();
 
-      expect(result).toEqual([]);
+      expect(result).toStrictEqual([]);
     });
   });
 });

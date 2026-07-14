@@ -97,15 +97,10 @@ export default defineConfig({
         plugins: [...(test.plugins ?? [])],
         rules: {
           ...test.rules,
-          'typescript/unbound-method': 'off',
           // vi.fn() を型パラメータなしで使う書き方を許容する。
           'vitest/require-mock-type-parameters': 'off',
           // URL バリデーションのテストで javascript: スキームを不正入力として渡すため許可する。
           'no-script-url': 'off',
-          // 0.2.0 で新規追加された警告。207件の toEqual→toStrictEqual 一括置換は
-          // 本PRのスコープ外(staged hook 経由で漸進移行する想定)。大量出力で
-          // vite-plus が CI の stdout で panic するため一旦 off にする。
-          'vitest/prefer-strict-equal': 'off',
         },
       },
     ],

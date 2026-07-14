@@ -260,7 +260,7 @@ describe('sendManualPush', () => {
         url: 'https://k8o.me',
       });
 
-      expect(result).toEqual({ succeeded: 1, failed: 1 });
+      expect(result).toStrictEqual({ succeeded: 1, failed: 1 });
       expect(db.insert).not.toHaveBeenCalled();
       expect(db.update).not.toHaveBeenCalled();
     });
@@ -277,7 +277,7 @@ describe('sendManualPush', () => {
         url: 'https://k8o.me',
       });
 
-      expect(result).toEqual({ succeeded: 0, failed: 1 });
+      expect(result).toStrictEqual({ succeeded: 0, failed: 1 });
       expect(deleteWhereMock).toHaveBeenCalledWith({
         column: db._schema.pushSubscriptions.endpoint,
         values: [FCM_ENDPOINT],

@@ -51,7 +51,7 @@ describe('splitSlides', () => {
       const slides = splitSlides(children);
       expect(slides).toHaveLength(1);
       expect(slides[0]?.content).toHaveLength(2);
-      expect(slides[0]?.notes).toEqual(['メモ1', 'メモ2']);
+      expect(slides[0]?.notes).toStrictEqual(['メモ1', 'メモ2']);
     });
 
     it('Notes は所属するスライドにだけ振り分けられる', () => {
@@ -63,8 +63,8 @@ describe('splitSlides', () => {
         <TestNotes key="n2">2のメモ</TestNotes>,
       ];
       const slides = splitSlides(children);
-      expect(slides[0]?.notes).toEqual(['1のメモ']);
-      expect(slides[1]?.notes).toEqual(['2のメモ']);
+      expect(slides[0]?.notes).toStrictEqual(['1のメモ']);
+      expect(slides[1]?.notes).toStrictEqual(['2のメモ']);
     });
   });
 

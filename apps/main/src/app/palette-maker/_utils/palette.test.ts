@@ -8,7 +8,9 @@ describe('generatePalette', () => {
   describe('正常系', () => {
     it('11段階を50から950の順で返す', () => {
       const swatches = generatePalette(250, 0.15);
-      expect(swatches.map((swatch) => swatch.step)).toEqual([...PALETTE_STEPS]);
+      expect(swatches.map((swatch) => swatch.step)).toStrictEqual([
+        ...PALETTE_STEPS,
+      ]);
     });
 
     it('各段の明度がラダーと一致する', () => {
@@ -97,7 +99,7 @@ describe('generatePalette', () => {
     it('色相0と360は同じパレットになる', () => {
       const zero = generatePalette(0, 0.15).map((swatch) => swatch.hex);
       const full = generatePalette(360, 0.15).map((swatch) => swatch.hex);
-      expect(full).toEqual(zero);
+      expect(full).toStrictEqual(zero);
     });
 
     it('toSrgbGamutの結果と表示hexが常に一致する', () => {

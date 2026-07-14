@@ -49,7 +49,7 @@ describe('getTag', () => {
 
     const tag = await getTag(1);
 
-    expect(tag).toEqual({
+    expect(tag).toStrictEqual({
       id: 1,
       name: 'tag1',
       blogs: [
