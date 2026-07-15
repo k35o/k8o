@@ -7,6 +7,7 @@ import { enrichArticleMetadata } from '@/features/reading-list/application/enric
 import { syncArticles } from '@/features/reading-list/application/sync-articles';
 import type { ActionState } from '@/shared/actions/action-state';
 import { verifySession } from '@/shared/auth/verify-session';
+import { revalidateMainCache } from '@/shared/cache/revalidate-main';
 
 import {
   deleteArticleById,
@@ -28,6 +29,7 @@ export async function deleteArticle(id: number): Promise<ActionState> {
     return { error: '削除に失敗しました' };
   }
 
+  await revalidateMainCache();
   revalidatePath('/reading-list');
   revalidatePath('/');
   return { success: true };
@@ -50,6 +52,7 @@ export async function createArticle(
     return { error: '記事の作成に失敗しました（URL が重複している可能性）' };
   }
 
+  await revalidateMainCache();
   revalidatePath('/reading-list');
   revalidatePath('/');
   return redirect('/reading-list');
@@ -73,6 +76,7 @@ export async function updateArticle(
     return { error: '記事の更新に失敗しました' };
   }
 
+  await revalidateMainCache();
   revalidatePath('/reading-list');
   return redirect('/reading-list');
 }
@@ -89,6 +93,7 @@ export async function refetchArticleMetadata(id: number): Promise<ActionState> {
     return { error: 'OGP の再取得に失敗しました' };
   }
 
+  await revalidateMainCache();
   revalidatePath('/reading-list');
   return { success: true };
 }
@@ -106,6 +111,7 @@ export async function syncArticlesAction(): Promise<SyncActionState> {
   try {
     const result = await syncArticles();
     const { enrichedArticles } = await enrichArticleMetadata();
+    await revalidateMainCache();
     revalidatePath('/reading-list');
     revalidatePath('/');
     return {

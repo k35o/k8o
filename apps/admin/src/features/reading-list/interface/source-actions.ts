@@ -5,6 +5,7 @@ import { redirect } from 'next/navigation';
 
 import type { ActionState } from '@/shared/actions/action-state';
 import { verifySession } from '@/shared/auth/verify-session';
+import { revalidateMainCache } from '@/shared/cache/revalidate-main';
 
 import {
   deleteArticleSourceById,
@@ -30,6 +31,7 @@ export async function createSource(
     return { error: 'ソースの作成に失敗しました' };
   }
 
+  await revalidateMainCache();
   revalidatePath('/reading-list');
   return redirect('/reading-list');
 }
@@ -52,6 +54,7 @@ export async function updateSource(
     return { error: 'ソースの更新に失敗しました' };
   }
 
+  await revalidateMainCache();
   revalidatePath('/reading-list');
   return redirect('/reading-list');
 }
@@ -65,6 +68,7 @@ export async function deleteSource(id: number): Promise<ActionState> {
     return { error: 'ソースの削除に失敗しました' };
   }
 
+  await revalidateMainCache();
   revalidatePath('/reading-list');
   return redirect('/reading-list');
 }
