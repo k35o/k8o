@@ -5,6 +5,7 @@ import { sendPushNotification } from '@/features/push-notification/interface/com
 import { enrichArticleMetadata } from '@/features/reading-list/application/enrich-articles';
 import { syncArticles } from '@/features/reading-list/application/sync-articles';
 import { isAuthorizedCronRequest } from '@/shared/auth/verify-cron-request';
+import { revalidateMainCache } from '@/shared/cache/revalidate-main';
 
 export async function GET(req: NextRequest): Promise<NextResponse> {
   if (!isAuthorizedCronRequest(req)) {
@@ -13,6 +14,10 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
 
   const { newArticles, updatedArticles, failedSources } = await syncArticles();
   const { enrichedArticles } = await enrichArticleMetadata();
+
+  // main の reading-list 一覧は db-content タグ付きキャッシュ（cacheLife('hours')）の
+  // ため、同期のたびに再検証して最大1時間の古い表示を防ぐ
+  await revalidateMainCache();
 
   const readingListUrl = 'https://www.k8o.me/reading-list';
   // 同日のリトライで結果カウントが変わっても重複通知しないよう、dedupe は日付のみで行う
