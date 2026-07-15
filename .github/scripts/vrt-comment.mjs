@@ -33,18 +33,18 @@ if (reports.length === 0) {
       ? '⚠️ **視覚的な差分があります。** @k35o 内容を確認し、意図した変更ならそのままマージしてください（マージ後のmain実行が新しいベースラインになります）。'
       : '✅ **差分はありません。**',
     '',
-    '| | passed | changed | added | deleted | report |',
-    '| --- | ---: | ---: | ---: | ---: | --- |',
+    '| | passed | changed | added | removed | skipped | report |',
+    '| --- | ---: | ---: | ---: | ---: | ---: | --- |',
   );
   for (const { label, url, report } of reports) {
     const s = report.summary;
     const link = url === '' ? '—' : `[開く](${url})`;
     lines.push(
-      `| ${label} | ${s.passed} | ${s.changed} | ${s.added} | ${s.deleted} | ${link} |`,
+      `| ${label} | ${s.passed} | ${s.changed} | ${s.added} | ${s.removed} | ${s.skipped} | ${link} |`,
     );
   }
   for (const { label, report } of reports) {
-    for (const status of ['changed', 'added', 'deleted']) {
+    for (const status of ['changed', 'added', 'removed']) {
       const items = report.items.filter((item) => item.status === status);
       if (items.length === 0) continue;
       lines.push('', `### ${label}: ${status}`);
