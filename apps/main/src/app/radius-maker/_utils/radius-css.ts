@@ -1,4 +1,5 @@
-import { CORNERS, type RadiusCorners } from '../_types/corner-radius';
+import { CORNERS } from '../_types/corner-radius';
+import type { RadiusCorners } from '../_types/corner-radius';
 import type { CornerShape } from '../_types/corner-shape';
 
 const simplifyValues = (

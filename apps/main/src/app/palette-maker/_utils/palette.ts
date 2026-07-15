@@ -4,11 +4,8 @@ import { formatHex, formatOklch } from '@repo/helpers/color/format';
 import { isInGamut, toSrgbGamut } from '@repo/helpers/color/gamut';
 import { colorToOklch, oklchToColor } from '@repo/helpers/color/spaces';
 
-import {
-  PALETTE_STEPS,
-  type PaletteStep,
-  type PaletteSwatch,
-} from '../_types/palette';
+import { PALETTE_STEPS } from '../_types/palette';
+import type { PaletteStep, PaletteSwatch } from '../_types/palette';
 
 // ArteOdyssey の tokens.css と同じ、全色相共通の明度ラダー
 export const LIGHTNESS_LADDER: Record<PaletteStep, number> = {

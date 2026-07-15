@@ -1,7 +1,8 @@
 'use client';
 
 import { CopyIcon, useClipboard, useToast } from '@k8o/arte-odyssey';
-import { type ComponentProps, type FC, useRef } from 'react';
+import { useRef } from 'react';
+import type { ComponentProps, FC } from 'react';
 
 type Props = ComponentProps<'pre'> & { 'data-lang'?: string };
 

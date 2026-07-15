@@ -3,7 +3,8 @@
 import { Alert, Heading } from '@k8o/arte-odyssey';
 import { calcApca } from '@repo/helpers/color/calc-apca';
 import { calcContrast } from '@repo/helpers/color/calc-contrast';
-import { type FC, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
+import type { FC } from 'react';
 
 import { ApcaResultTable } from '../apca-result-table';
 import { ColorPallet } from '../color-pallet';
@@ -54,10 +55,10 @@ export const CheckContrast: FC = () => {
         />
       </div>
       <div className="flex flex-col items-center justify-center gap-1 sm:flex-row sm:gap-6">
-        <p className="text-center text-sm font-medium sm:text-base">
+        <p className="sm:text-md text-center text-sm font-medium">
           コントラスト比 {contrast.toFixed(2)}:1
         </p>
-        <p className="text-center text-sm font-medium sm:text-base">
+        <p className="sm:text-md text-center text-sm font-medium">
           APCA Lc {apcaLc.toFixed(1)}
         </p>
       </div>
@@ -78,7 +79,7 @@ export const CheckContrast: FC = () => {
         >
           テキストのプレビュー
         </p>
-        <p className="text-xs md:text-base" style={{ color: compareColor }}>
+        <p className="md:text-md text-xs" style={{ color: compareColor }}>
           この文字と背景色の組み合わせを確認できます
         </p>
       </section>

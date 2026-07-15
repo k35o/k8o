@@ -1,11 +1,13 @@
 import { cacheLife } from 'next/cache';
 
 import {
-  type FindBlogsParams,
-  type FindBlogsResult,
   findBlogs,
   findTopViewedBlogs,
-  type TopBlog,
+} from '../infrastructure/blog-repository';
+import type {
+  FindBlogsParams,
+  FindBlogsResult,
+  TopBlog,
 } from '../infrastructure/blog-repository';
 
 export const getBlogs = async (

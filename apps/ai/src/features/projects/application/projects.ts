@@ -1,18 +1,17 @@
 import 'server-only';
 import type { AiVisibility } from '@repo/database/schema';
 
-import {
-  type GenerationMeta,
-  toMeta,
-} from '@/features/generation/application/parse-meta';
+import { toMeta } from '@/features/generation/application/parse-meta';
+import type { GenerationMeta } from '@/features/generation/application/parse-meta';
 
 import {
-  type ProjectListItem,
   projectOwnedBy,
   selectPublicProjectBySlug,
   updateProjectVisibility,
 } from '../infrastructure/project-repository';
-import { type ConversationTurn, createProjectStore } from './project-store';
+import type { ProjectListItem } from '../infrastructure/project-repository';
+import { createProjectStore } from './project-store';
+import type { ConversationTurn } from './project-store';
 
 export type UiStudioContent = {
   code: string;
@@ -40,7 +39,7 @@ export type PublicProject = {
   meta: GenerationMeta;
 };
 
-export type { ProjectListItem };
+export type { ProjectListItem } from '../infrastructure/project-repository';
 
 const parseContent = (value: unknown): UiStudioContent | null => {
   if (typeof value !== 'object' || value === null) {

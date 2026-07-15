@@ -1,5 +1,3 @@
-/* oxlint-disable import/max-dependencies -- 記事ページのレイアウトを構成する route 専用コンポーネントを集約するため */
-
 import {
   Badge,
   PublishDateIcon,
@@ -16,9 +14,9 @@ import { JsonLd } from '@/app/_components/json-ld';
 import {
   getBlogContent,
   getBlogReadingTime,
-  type getBlogsByTags,
   getBlogToc,
 } from '@/features/blog/interface/queries';
+import type { getBlogsByTags } from '@/features/blog/interface/queries';
 import { blogBreadcrumbJsonLd, blogPostingJsonLd } from '@/shared/site/json-ld';
 
 import { END_OF_CONTENT_ID } from './constants';

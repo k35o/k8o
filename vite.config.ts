@@ -71,6 +71,11 @@ export default defineConfig({
       // `_schema` / `_utils` などのアンダースコア接頭辞は @repo/database の
       // 内部API（直接アクセス非推奨）を表す規約として使っているため許可する。
       'no-underscore-dangle': 'off',
+      // 実在しない no-op クラス(text-base/rounded/tracking 等)は修正済み。残るのは
+      // font-mono(31件, next/font 絡みで別途対応)と、custom utility(grid-cols-auto-fill-*)
+      // や CSS module / inline style のクラスを弾く誤検知。この2つが片付くまでは off にする
+      // (大量警告で vite-plus が CI の stdout で panic するのを避けるため)。
+      'tailwindcss/no-unknown-classes': 'off',
     },
     overrides: [
       {
@@ -92,9 +97,10 @@ export default defineConfig({
         plugins: [...(test.plugins ?? [])],
         rules: {
           ...test.rules,
-          'typescript/unbound-method': 'off',
           // vi.fn() を型パラメータなしで使う書き方を許容する。
           'vitest/require-mock-type-parameters': 'off',
+          // URL バリデーションのテストで javascript: スキームを不正入力として渡すため許可する。
+          'no-script-url': 'off',
         },
       },
     ],

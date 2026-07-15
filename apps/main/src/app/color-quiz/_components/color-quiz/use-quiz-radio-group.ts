@@ -1,4 +1,5 @@
-import { type KeyboardEvent, useCallback, useRef } from 'react';
+import { useCallback, useRef } from 'react';
+import type { KeyboardEvent } from 'react';
 import { flushSync } from 'react-dom';
 
 type Params = {

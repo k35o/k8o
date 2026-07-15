@@ -14,7 +14,7 @@ const subscribe = (callback: () => void): (() => void) => {
 const getSnapshot = (): number => {
   const match = HASH_INDEX_RE.exec(window.location.hash);
   if (match === null) return 0;
-  const value = Number.parseInt(match[1] ?? '', 10);
+  const value = Number(match[1] ?? '');
   return Number.isInteger(value) ? Math.max(0, value - 1) : 0;
 };
 

@@ -6,10 +6,10 @@ import { requireAllowedSession } from '@/shared/auth/require-allowed-session';
 
 import {
   publishProject,
-  type PublishedShare,
   resolveShareEntry,
   unpublishProject,
 } from '../application/share';
+import type { PublishedShare } from '../application/share';
 
 // 公開ページ（/s/[slug]）の iframe 配信 URL を解決する。公開コンテンツなので認証なし。
 export const resolveShareEntryAction = async (

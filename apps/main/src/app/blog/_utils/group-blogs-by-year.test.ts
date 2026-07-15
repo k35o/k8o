@@ -20,7 +20,7 @@ describe('groupBlogsByYear', () => {
         createBlog(3, '2023-12-01T00:00:00.000Z'),
       ];
       const result = groupBlogsByYear(blogs);
-      expect(result.map((g) => g.year)).toEqual([2025, 2024, 2023]);
+      expect(result.map((g) => g.year)).toStrictEqual([2025, 2024, 2023]);
     });
 
     it('同一年のグループ内では入力順を保持するべき', () => {
@@ -31,13 +31,13 @@ describe('groupBlogsByYear', () => {
       ];
       const result = groupBlogsByYear(blogs);
       expect(result).toHaveLength(1);
-      expect(result[0]?.blogs.map((b) => b.id)).toEqual([1, 2, 3]);
+      expect(result[0]?.blogs.map((b) => b.id)).toStrictEqual([1, 2, 3]);
     });
   });
 
   describe('エッジケース', () => {
     it('空配列のときは空配列を返すべき', () => {
-      expect(groupBlogsByYear([])).toEqual([]);
+      expect(groupBlogsByYear([])).toStrictEqual([]);
     });
 
     it('単一年のみのときは 1 グループを返すべき', () => {
@@ -56,9 +56,9 @@ describe('groupBlogsByYear', () => {
         createBlog(2, '2024-12-31T00:00:00.000Z'),
       ];
       const result = groupBlogsByYear(blogs);
-      expect(result.map((g) => g.year)).toEqual([2025, 2024]);
-      expect(result[0]?.blogs.map((b) => b.id)).toEqual([1]);
-      expect(result[1]?.blogs.map((b) => b.id)).toEqual([2]);
+      expect(result.map((g) => g.year)).toStrictEqual([2025, 2024]);
+      expect(result[0]?.blogs.map((b) => b.id)).toStrictEqual([1]);
+      expect(result[1]?.blogs.map((b) => b.id)).toStrictEqual([2]);
     });
   });
 });

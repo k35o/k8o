@@ -31,15 +31,15 @@ export const P: FC<Props> = ({ children }) => (
   <p className={styles['p']}>{children}</p>
 );
 
-export const UL: FC<Props> = ({ children }) => (
+export const Ul: FC<Props> = ({ children }) => (
   <ul className={styles['ul']}>{children}</ul>
 );
 
-export const OL: FC<Props> = ({ children }) => (
+export const Ol: FC<Props> = ({ children }) => (
   <ol className={styles['ol']}>{children}</ol>
 );
 
-export const LI: FC<Props> = ({ children }) => (
+export const Li: FC<Props> = ({ children }) => (
   <li className={cn(styles['li'], 'marker:text-primary-border')}>{children}</li>
 );
 

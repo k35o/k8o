@@ -3,14 +3,8 @@
 import { Spinner, TextField } from '@k8o/arte-odyssey';
 import type { Route } from 'next';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
-import {
-  type ChangeEvent,
-  type FC,
-  useEffect,
-  useRef,
-  useState,
-  useTransition,
-} from 'react';
+import { useEffect, useRef, useState, useTransition } from 'react';
+import type { ChangeEvent, FC } from 'react';
 
 import { buildSearchString } from '@/shared/search-params';
 

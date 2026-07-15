@@ -45,39 +45,39 @@ describe('filterBlogs', () => {
 
     it('タイトルに部分一致するクエリで絞り込めるべき（大文字小文字を無視）', () => {
       const result = filterBlogs(blogs, 'grid');
-      expect(result.map((b) => b.id)).toEqual([2]);
+      expect(result.map((b) => b.id)).toStrictEqual([2]);
     });
 
     it('タイトル・タグのいずれかに一致する全件を返すべき', () => {
       const result = filterBlogs(blogs, 'react');
-      expect(result.map((b) => b.id)).toEqual([1, 3]);
+      expect(result.map((b) => b.id)).toStrictEqual([1, 3]);
     });
 
     it('description に一致するクエリで絞り込めるべき', () => {
       const result = filterBlogs(blogs, 'usestate');
-      expect(result.map((b) => b.id)).toEqual([1]);
+      expect(result.map((b) => b.id)).toStrictEqual([1]);
     });
 
     it('タグ名へのクエリで絞り込めるべき', () => {
       const result = filterBlogs(blogs, 'typescript');
-      expect(result.map((b) => b.id)).toEqual([1]);
+      expect(result.map((b) => b.id)).toStrictEqual([1]);
     });
   });
 
   describe('エッジケース', () => {
     it('description が null の記事でもエラーにならず除外判定されるべき', () => {
       const result = filterBlogs(blogs, 'grid');
-      expect(result.map((b) => b.id)).toEqual([2]);
+      expect(result.map((b) => b.id)).toStrictEqual([2]);
     });
 
     it('全角英数のクエリを正規化してヒットさせるべき（Ｒｅａｃｔ → React）', () => {
       const result = filterBlogs(blogs, 'Ｒｅａｃｔ');
-      expect(result.map((b) => b.id)).toEqual([1, 3]);
+      expect(result.map((b) => b.id)).toStrictEqual([1, 3]);
     });
 
     it('複数トークンは AND で評価し、全角スペース区切りも吸収するべき', () => {
       const result = filterBlogs(blogs, 'react　hooks');
-      expect(result.map((b) => b.id)).toEqual([1]);
+      expect(result.map((b) => b.id)).toStrictEqual([1]);
     });
 
     it('空白のみのクエリは条件なしとして扱うべき', () => {
@@ -95,8 +95,8 @@ describe('filterBlogs', () => {
     it('入力配列を破壊せず、結果は入力順を保持するべき', () => {
       const input = [...blogs];
       const result = filterBlogs(input, 'react');
-      expect(input).toEqual(blogs);
-      expect(result.map((b) => b.id)).toEqual([1, 3]);
+      expect(input).toStrictEqual(blogs);
+      expect(result.map((b) => b.id)).toStrictEqual([1, 3]);
     });
   });
 });

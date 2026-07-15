@@ -9,11 +9,8 @@ import {
 } from '@k8o/arte-odyssey';
 import type { FC } from 'react';
 
-import {
-  CORNER_SHAPE_LABELS,
-  CORNER_SHAPES,
-  type CornerShape,
-} from '../../_types/corner-shape';
+import { CORNER_SHAPE_LABELS, CORNER_SHAPES } from '../../_types/corner-shape';
+import type { CornerShape } from '../../_types/corner-shape';
 import { PREVIEW_SIZE } from '../../_utils/search-params';
 import { CornerInputs } from '../corner-inputs';
 import { OutputPanel } from '../output-panel';

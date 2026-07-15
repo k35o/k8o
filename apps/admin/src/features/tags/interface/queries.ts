@@ -1,9 +1,7 @@
 import { cacheLife } from 'next/cache';
 
-import {
-  findTagsWithUsage,
-  type TagWithUsage,
-} from '../infrastructure/tag-repository';
+import { findTagsWithUsage } from '../infrastructure/tag-repository';
+import type { TagWithUsage } from '../infrastructure/tag-repository';
 
 export const getTags = async (): Promise<TagWithUsage[]> => {
   'use cache';

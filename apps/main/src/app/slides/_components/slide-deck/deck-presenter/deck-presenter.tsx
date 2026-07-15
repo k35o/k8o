@@ -1,6 +1,7 @@
 'use client';
 
-import { useState, type FC } from 'react';
+import { useState } from 'react';
+import type { FC } from 'react';
 
 import type { Slide } from '@/features/slides/application/split-slides';
 
@@ -22,6 +23,7 @@ export const DeckPresenter: FC<{
   });
   const current = slides[index] ?? slides[0];
   const nextSlide = slides[index + 1];
+  // oxlint-disable-next-line react/hook-use-state -- 初期化時に一度だけ算出する安定値で setter は不要
   const [sessionId] = useState<string>(() => {
     if (typeof window === 'undefined') return '';
     return new URLSearchParams(window.location.search).get('session') ?? '';
@@ -50,7 +52,7 @@ export const DeckPresenter: FC<{
           aria-label="現在のスライド"
           className="flex min-h-0 min-w-0 flex-col gap-1 lg:row-span-2"
         >
-          <p className="text-primary-fg text-xs font-medium tracking-wide uppercase">
+          <p className="text-primary-fg text-xs font-medium tracking-normal uppercase">
             Now
           </p>
           <div className="min-h-0 min-w-0 flex-1 overflow-hidden">
@@ -63,7 +65,7 @@ export const DeckPresenter: FC<{
           aria-label="次のスライド"
           className="flex min-h-0 min-w-0 flex-col gap-1"
         >
-          <p className="text-fg-mute text-xs font-medium tracking-wide uppercase">
+          <p className="text-fg-mute text-xs font-medium tracking-normal uppercase">
             Next
           </p>
           <div className="min-h-0 min-w-0 flex-1 overflow-hidden">
@@ -82,7 +84,7 @@ export const DeckPresenter: FC<{
           aria-label="発表者ノート"
           className="bg-bg-base flex min-h-0 min-w-0 flex-col gap-2 overflow-auto rounded-lg p-4"
         >
-          <p className="text-secondary-fg text-xs font-medium tracking-wide uppercase">
+          <p className="text-secondary-fg text-xs font-medium tracking-normal uppercase">
             Notes
           </p>
           <div className="text-fg-base text-sm leading-relaxed">

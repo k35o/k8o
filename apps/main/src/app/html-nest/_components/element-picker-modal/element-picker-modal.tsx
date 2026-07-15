@@ -8,7 +8,8 @@ import {
   Modal,
   TextField,
 } from '@k8o/arte-odyssey';
-import { type FC, useCallback, useState } from 'react';
+import { useCallback, useState } from 'react';
+import type { FC } from 'react';
 
 import { HTML_ELEMENTS } from '../../_data/elements';
 import type { RelatedElement } from '../../_utils/content-model';

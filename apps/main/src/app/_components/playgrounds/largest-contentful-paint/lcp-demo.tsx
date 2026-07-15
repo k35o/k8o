@@ -120,7 +120,7 @@ export function LCPDemo() {
             <div className="flex items-center gap-2">
               <h4 className="text-fg-base font-medium">現在のLCP</h4>
               {latestEntry.element !== null && (
-                <code className="bg-bg-mute rounded px-1.5 py-0.5 text-xs">
+                <code className="bg-bg-mute rounded-sm px-1.5 py-0.5 text-xs">
                   {latestEntry.element}
                 </code>
               )}

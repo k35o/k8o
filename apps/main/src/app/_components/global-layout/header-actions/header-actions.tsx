@@ -1,4 +1,5 @@
-import { type FC, Suspense } from 'react';
+import { Suspense } from 'react';
+import type { FC } from 'react';
 
 import { ContactToMe } from '../../contact-to-me';
 import { ToggleTheme } from '../../toggle-theme';

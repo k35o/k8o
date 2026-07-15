@@ -1,6 +1,7 @@
 'use client';
 
-import { type FC, useEffect, useRef } from 'react';
+import { useEffect, useRef } from 'react';
+import type { FC } from 'react';
 
 const text = '知らざるを知らずとなす、これ知るなり';
 const HIGHLIGHT_NAME = 'highlight-example1';

@@ -2,7 +2,8 @@
 
 import { BadIcon, Button, GoodIcon, Textarea } from '@k8o/arte-odyssey';
 import { cn } from '@repo/helpers/cn';
-import { type FC, useId, useState, useTransition } from 'react';
+import { useId, useState, useTransition } from 'react';
+import type { FC } from 'react';
 
 const FEEDBACK_MAP = {
   good: 1,

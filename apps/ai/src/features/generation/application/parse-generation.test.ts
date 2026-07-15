@@ -16,7 +16,7 @@ describe('parseGeneration', () => {
       const result = parseGeneration(raw);
       // Assert
       expect(result.code).toContain('export default function Preview()');
-      expect(result.meta).toEqual({
+      expect(result.meta).toStrictEqual({
         title: 't',
         description: 'd',
         usedComponents: ['Card'],

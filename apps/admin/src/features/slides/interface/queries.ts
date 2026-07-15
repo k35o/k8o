@@ -1,9 +1,7 @@
 import { cacheLife } from 'next/cache';
 
-import {
-  findSlides,
-  type SlideRecord,
-} from '../infrastructure/slide-repository';
+import { findSlides } from '../infrastructure/slide-repository';
+import type { SlideRecord } from '../infrastructure/slide-repository';
 
 export const getSlides = async (): Promise<SlideRecord[]> => {
   'use cache';

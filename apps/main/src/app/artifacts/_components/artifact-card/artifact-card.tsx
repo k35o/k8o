@@ -22,7 +22,7 @@ export const ArtifactCard: FC<Artifact> = ({
   <article className="border-border-mute bg-bg-base flex h-full flex-col gap-5 rounded-xl border p-5 shadow-sm transition-colors md:p-6">
     <div className="flex flex-col gap-2">
       <Heading type="h3">{name}</Heading>
-      <p className="text-fg-mute text-sm leading-relaxed md:text-base">
+      <p className="text-fg-mute md:text-md text-sm leading-relaxed">
         {description}
       </p>
     </div>

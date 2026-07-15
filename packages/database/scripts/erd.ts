@@ -4,7 +4,8 @@
 import { readFileSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 
-import { getTableConfig, type SQLiteTable } from 'drizzle-orm/sqlite-core';
+import { getTableConfig } from 'drizzle-orm/sqlite-core';
+import type { SQLiteTable } from 'drizzle-orm/sqlite-core';
 
 import { schema } from '../src/schema/index';
 

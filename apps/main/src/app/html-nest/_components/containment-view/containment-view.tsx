@@ -1,5 +1,6 @@
 import { Anchor, Badge, Code, Separator, Tabs } from '@k8o/arte-odyssey';
-import { type FC, useMemo } from 'react';
+import { useMemo } from 'react';
+import type { FC } from 'react';
 
 import {
   CONTENT_CATEGORY_LABEL,

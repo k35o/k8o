@@ -98,7 +98,7 @@ export function SharedWorkerDemo() {
       <div className="bg-bg-base rounded-xl p-6 shadow-sm">
         <p className="text-fg-mute text-xs">共有カウンタ</p>
         <div className="mt-2 flex items-baseline gap-4">
-          <span className="text-primary-fg text-5xl font-bold tabular-nums">
+          <span className="text-primary-fg text-emphasize font-bold tabular-nums">
             {count}
           </span>
           <Button onClick={handleIncrement} size="sm" type="button">

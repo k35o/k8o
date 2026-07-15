@@ -1,4 +1,5 @@
-import { type GenerationMeta, toMeta } from './parse-meta';
+import { toMeta } from './parse-meta';
+import type { GenerationMeta } from './parse-meta';
 
 export type ParsedSlidesGeneration = {
   source: string | null;

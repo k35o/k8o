@@ -24,7 +24,7 @@ describe('parseDeck', () => {
       const deck = parseDeck(
         ['## 見出し', '本文', '<Notes>', '発表者メモ', '</Notes>'].join('\n'),
       );
-      expect(deck[0]?.notes).toEqual(['発表者メモ']);
+      expect(deck[0]?.notes).toStrictEqual(['発表者メモ']);
       expect(deck[0]?.source).toBe('## 見出し\n本文');
     });
 
@@ -52,7 +52,7 @@ describe('parseDeck', () => {
         ['## 見出し', '本文', '<Notes>', '途中のメモ'].join('\n'),
       );
       expect(deck[0]?.source).toBe('## 見出し\n本文');
-      expect(deck[0]?.notes).toEqual(['途中のメモ']);
+      expect(deck[0]?.notes).toStrictEqual(['途中のメモ']);
     });
 
     it('ストリーミング途中の未閉 Cover は表紙として描画できる', () => {
@@ -69,8 +69,8 @@ describe('parseDeck', () => {
 
   describe('エッジケース', () => {
     it('空文字・空白のみは空配列を返す', () => {
-      expect(parseDeck('')).toEqual([]);
-      expect(parseDeck('  \n  ')).toEqual([]);
+      expect(parseDeck('')).toStrictEqual([]);
+      expect(parseDeck('  \n  ')).toStrictEqual([]);
     });
 
     it('末尾が --- で終わる（次スライドが未着）とき空スライドを作らない', () => {
@@ -97,14 +97,14 @@ describe('extractCodeBlocks', () => {
       const blocks = extractCodeBlocks(
         ['## 見出し', '```ts', 'const a = 1;', '```', '本文'].join('\n'),
       );
-      expect(blocks).toEqual([{ code: 'const a = 1;', lang: 'ts' }]);
+      expect(blocks).toStrictEqual([{ code: 'const a = 1;', lang: 'ts' }]);
     });
 
     it('複数ブロックを順番どおりに返し、言語なしは text にする', () => {
       const blocks = extractCodeBlocks(
         ['```js', 'x', '```', '間', '```', 'plain', '```'].join('\n'),
       );
-      expect(blocks).toEqual([
+      expect(blocks).toStrictEqual([
         { code: 'x', lang: 'js' },
         { code: 'plain', lang: 'text' },
       ]);
@@ -113,12 +113,12 @@ describe('extractCodeBlocks', () => {
 
   describe('エッジケース', () => {
     it('コードブロックが無ければ空配列を返す', () => {
-      expect(extractCodeBlocks('## 見出し\n本文')).toEqual([]);
+      expect(extractCodeBlocks('## 見出し\n本文')).toStrictEqual([]);
     });
 
     it('閉じフェンス未到達（ストリーミング途中）のブロックは含めない', () => {
       const blocks = extractCodeBlocks(['```ts', 'const a ='].join('\n'));
-      expect(blocks).toEqual([]);
+      expect(blocks).toStrictEqual([]);
     });
   });
 });

@@ -55,9 +55,7 @@ export const useSlidesPersistence = (): SlidesPersistence => {
 
   useEffect(() => {
     // マウント時に一覧を取得する。refresh の setState は await 後に走るため
-    // 同期的な cascading render は起きないが、react-compiler は refresh の
-    // 同期呼び出しを検出するため、この行に限り許可する。
-    // oxlint-disable-next-line react/react-compiler
+    // 同期的な cascading render は起きない。
     void refresh();
   }, [refresh]);
 

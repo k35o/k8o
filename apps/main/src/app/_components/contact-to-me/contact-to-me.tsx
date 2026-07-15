@@ -11,7 +11,8 @@ import {
   Textarea,
   useToast,
 } from '@k8o/arte-odyssey';
-import { type FC, useActionState, useCallback, useState } from 'react';
+import { useActionState, useCallback, useState } from 'react';
+import type { FC } from 'react';
 
 import { contact } from '@/features/contact/interface/actions';
 

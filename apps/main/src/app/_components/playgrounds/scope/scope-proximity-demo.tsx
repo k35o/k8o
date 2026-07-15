@@ -54,11 +54,11 @@ export function ScopeProximityDemo() {
       </style>
 
       <div className="demo-info-box border-border-base rounded-lg border p-4">
-        <p className="demo-message rounded p-2">情報メッセージ</p>
+        <p className="demo-message rounded-sm p-2">情報メッセージ</p>
         <div className="demo-warning-box border-border-base mt-4 rounded-lg border p-4">
-          <p className="demo-message rounded p-2">警告メッセージ</p>
+          <p className="demo-message rounded-sm p-2">警告メッセージ</p>
           <div className="demo-info-box border-border-base mt-4 rounded-lg border p-4">
-            <p className="demo-message rounded p-2">
+            <p className="demo-message rounded-sm p-2">
               ネストされた情報メッセージ（@scopeがONなら近接性で決定）
             </p>
           </div>

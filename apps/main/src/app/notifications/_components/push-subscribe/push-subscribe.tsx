@@ -1,13 +1,8 @@
 'use client';
 
 import { Alert, Button, Card, SubscribeIcon } from '@k8o/arte-odyssey';
-import {
-  type FC,
-  useCallback,
-  useEffect,
-  useState,
-  useSyncExternalStore,
-} from 'react';
+import { useCallback, useEffect, useState, useSyncExternalStore } from 'react';
+import type { FC } from 'react';
 
 import {
   subscribePushAction,
@@ -32,10 +27,6 @@ const urlBase64ToUint8Array = (
   return Uint8Array.from(rawData, (c) => c.codePointAt(0) ?? 0);
 };
 
-// react-compiler の解析がこのコンポーネントで内部 invariant エラー
-// (Expected optional value to resolve to call or member expression) を投げるため、
-// ルールを無効化する。コード自体は正常で、修正されたら解除する。
-// oxlint-disable-next-line react/react-compiler
 export const PushSubscribe: FC<Props> = ({ vapidPublicKey }) => {
   // 機能対応は navigator/window 依存で SSR では判定できないため、
   // useSyncExternalStore でクライアント確定値を読む(サーバーは鍵有無で代替)。

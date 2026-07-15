@@ -2,7 +2,8 @@
 
 import { Button, FormControl, Select, useToast } from '@k8o/arte-odyssey';
 import Image from 'next/image';
-import { type FC, useRef, useState } from 'react';
+import { useRef, useState } from 'react';
+import type { FC } from 'react';
 
 import primaryIcon from '@/app/blog/(articles)/async-clipboard/_images/primary.png';
 import k8oIcon from '@/app/icon.png';

@@ -7,7 +7,7 @@ describe('parseAnnotations', () => {
       const result = parseAnnotations(input);
 
       expect(result.code).toBe('const x = 1;');
-      expect(result.annotations).toEqual([[{ type: 'highlight' }]]);
+      expect(result.annotations).toStrictEqual([[{ type: 'highlight' }]]);
     });
 
     it('# [!hl] のようなハッシュコメントも認識する', () => {
@@ -15,7 +15,7 @@ describe('parseAnnotations', () => {
       const result = parseAnnotations(input);
 
       expect(result.code).toBe('x = 1');
-      expect(result.annotations).toEqual([[{ type: 'highlight' }]]);
+      expect(result.annotations).toStrictEqual([[{ type: 'highlight' }]]);
     });
 
     it('<!-- [!hl] --> のようなHTMLコメントも認識する', () => {
@@ -23,7 +23,7 @@ describe('parseAnnotations', () => {
       const result = parseAnnotations(input);
 
       expect(result.code).toBe('<div></div>');
-      expect(result.annotations).toEqual([[{ type: 'highlight' }]]);
+      expect(result.annotations).toStrictEqual([[{ type: 'highlight' }]]);
     });
 
     it('/* [!hl] */ のようなブロックコメントも認識する', () => {
@@ -31,7 +31,7 @@ describe('parseAnnotations', () => {
       const result = parseAnnotations(input);
 
       expect(result.code).toBe('.foo { color: red; }');
-      expect(result.annotations).toEqual([[{ type: 'highlight' }]]);
+      expect(result.annotations).toStrictEqual([[{ type: 'highlight' }]]);
     });
 
     it('-- [!hl] のようなSQL/Luaコメントも認識する', () => {
@@ -39,7 +39,7 @@ describe('parseAnnotations', () => {
       const result = parseAnnotations(input);
 
       expect(result.code).toBe('SELECT * FROM users;');
-      expect(result.annotations).toEqual([[{ type: 'highlight' }]]);
+      expect(result.annotations).toStrictEqual([[{ type: 'highlight' }]]);
     });
 
     it('// [!callout: テキスト] をコールアウト指示として扱う', () => {
@@ -49,7 +49,7 @@ describe('parseAnnotations', () => {
       const result = parseAnnotations(input);
 
       expect(result.code).toBe('const x = 1;');
-      expect(result.annotations).toEqual([
+      expect(result.annotations).toStrictEqual([
         [{ type: 'callout', text: 'ここがポイント' }],
       ]);
     });
@@ -66,7 +66,7 @@ describe('parseAnnotations', () => {
       expect(result.code).toBe(
         ['const added = 1;', 'const removed = 2;'].join('\n'),
       );
-      expect(result.annotations).toEqual([
+      expect(result.annotations).toStrictEqual([
         [{ type: 'add' }],
         [{ type: 'remove' }],
       ]);
@@ -79,7 +79,7 @@ describe('parseAnnotations', () => {
       const result = parseAnnotations(input);
 
       expect(result.code).toBe('const x = 1;');
-      expect(result.annotations).toEqual([
+      expect(result.annotations).toStrictEqual([
         [{ type: 'highlight' }, { type: 'callout', text: '重要' }],
       ]);
     });
@@ -88,7 +88,7 @@ describe('parseAnnotations', () => {
       const input = ['// [!highlight]', 'const x = 1;'].join('\n');
       const result = parseAnnotations(input);
 
-      expect(result.annotations).toEqual([[{ type: 'highlight' }]]);
+      expect(result.annotations).toStrictEqual([[{ type: 'highlight' }]]);
     });
 
     it('// [!og] をOGP用マーカーとして扱い、ディレクティブ行はコードから削除する', () => {
@@ -96,7 +96,7 @@ describe('parseAnnotations', () => {
       const result = parseAnnotations(input);
 
       expect(result.code).toBe('const x = 1;');
-      expect(result.annotations).toEqual([[{ type: 'og' }]]);
+      expect(result.annotations).toStrictEqual([[{ type: 'og' }]]);
     });
   });
 
@@ -106,7 +106,7 @@ describe('parseAnnotations', () => {
       const result = parseAnnotations(input);
 
       expect(result.code).toBe(input);
-      expect(result.annotations).toEqual([[], []]);
+      expect(result.annotations).toStrictEqual([[], []]);
     });
 
     it('コールアウト本文が空のときはディレクティブとして認識しない', () => {
@@ -114,7 +114,7 @@ describe('parseAnnotations', () => {
       const result = parseAnnotations(input);
 
       expect(result.code).toBe(input);
-      expect(result.annotations).toEqual([[], []]);
+      expect(result.annotations).toStrictEqual([[], []]);
     });
   });
 
@@ -124,13 +124,13 @@ describe('parseAnnotations', () => {
       const result = parseAnnotations(input);
 
       expect(result.code).toBe('const x = 1;');
-      expect(result.annotations).toEqual([[]]);
+      expect(result.annotations).toStrictEqual([[]]);
     });
 
     it('空文字列を渡しても落ちない', () => {
       const result = parseAnnotations('');
       expect(result.code).toBe('');
-      expect(result.annotations).toEqual([[]]);
+      expect(result.annotations).toStrictEqual([[]]);
     });
 
     it('コードに含まれる通常コメントには触れない', () => {
@@ -138,7 +138,7 @@ describe('parseAnnotations', () => {
       const result = parseAnnotations(input);
 
       expect(result.code).toBe(input);
-      expect(result.annotations).toEqual([[], []]);
+      expect(result.annotations).toStrictEqual([[], []]);
     });
 
     it('インデントされたディレクティブも認識する', () => {
@@ -146,7 +146,7 @@ describe('parseAnnotations', () => {
       const result = parseAnnotations(input);
 
       expect(result.code).toBe('    const x = 1;');
-      expect(result.annotations).toEqual([[{ type: 'highlight' }]]);
+      expect(result.annotations).toStrictEqual([[{ type: 'highlight' }]]);
     });
   });
 });

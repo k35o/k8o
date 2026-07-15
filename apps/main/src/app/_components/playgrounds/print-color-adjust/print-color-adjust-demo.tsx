@@ -1,7 +1,8 @@
 'use client';
 
 import { Button } from '@k8o/arte-odyssey';
-import { type FC, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
+import type { FC } from 'react';
 
 export const PrintColorAdjustDemo: FC = () => {
   const [isExact, setIsExact] = useState(false);

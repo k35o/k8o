@@ -3,7 +3,8 @@
 import { CloseIcon, IconButton } from '@k8o/arte-odyssey';
 import { cn } from '@repo/helpers/cn';
 import Link from 'next/link';
-import { useEffect, useState, type FC } from 'react';
+import { useEffect, useState } from 'react';
+import type { FC } from 'react';
 
 import type { Slide } from '@/features/slides/application/split-slides';
 
@@ -26,6 +27,7 @@ export const DeckViewer: FC<{
   });
   const [isPresenting, setIsPresenting] = useState(false);
   const isMaximized = isFullscreen || isPresenting;
+  // oxlint-disable-next-line react/hook-use-state -- 初期化時に一度だけ算出する安定値で setter は不要
   const [sessionId] = useState<string>(() => {
     if (typeof window === 'undefined') return '';
     if (typeof crypto.randomUUID !== 'function') return '';

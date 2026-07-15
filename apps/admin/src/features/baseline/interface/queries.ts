@@ -1,11 +1,13 @@
 import { cacheLife } from 'next/cache';
 
 import {
-  type FindBaselineSnapshotsParams,
-  type FindBaselineSnapshotsResult,
   fetchBaselineSnapshotStats,
   fetchBrowserSupport,
   findBaselineSnapshots,
+} from '../infrastructure/baseline-repository';
+import type {
+  FindBaselineSnapshotsParams,
+  FindBaselineSnapshotsResult,
 } from '../infrastructure/baseline-repository';
 
 export const getBaselineSnapshotStats = async () => {

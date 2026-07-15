@@ -10,11 +10,8 @@ import {
 } from '@k8o/arte-odyssey';
 import type { FC } from 'react';
 
-import {
-  isSortOrder,
-  SORT_OPTIONS,
-  type SortOrder,
-} from '../../_utils/constants';
+import { isSortOrder, SORT_OPTIONS } from '../../_utils/constants';
+import type { SortOrder } from '../../_utils/constants';
 
 type Source = {
   id: number;

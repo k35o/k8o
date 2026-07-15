@@ -251,26 +251,26 @@ const capturedRequest = (): CapturedRequest => {
 describe('base64UrlDecode', () => {
   describe('正常系', () => {
     it('base64url 文字列をバイト列に復号する', () => {
-      expect(base64UrlDecode('AQID')).toEqual(Uint8Array.from([1, 2, 3]));
+      expect(base64UrlDecode('AQID')).toStrictEqual(Uint8Array.from([1, 2, 3]));
     });
 
     it('URL セーフ文字(-/_)を + と / として扱う', () => {
-      expect(base64UrlDecode('-_8')).toEqual(Uint8Array.from([251, 255]));
+      expect(base64UrlDecode('-_8')).toStrictEqual(Uint8Array.from([251, 255]));
     });
 
     it('パディング無しの文字列を復号する', () => {
-      expect(base64UrlDecode('YQ')).toEqual(Uint8Array.from([97]));
+      expect(base64UrlDecode('YQ')).toStrictEqual(Uint8Array.from([97]));
     });
   });
 
   describe('エッジケース', () => {
     it('空文字列は空のバイト列になる', () => {
-      expect(base64UrlDecode('')).toEqual(new Uint8Array(0));
+      expect(base64UrlDecode('')).toStrictEqual(new Uint8Array(0));
     });
 
     it('encode したバイト列を decode すると元に戻る', () => {
       const bytes = Uint8Array.from([0, 1, 62, 63, 127, 128, 254, 255]);
-      expect(base64UrlDecode(base64UrlEncodeBytes(bytes))).toEqual(bytes);
+      expect(base64UrlDecode(base64UrlEncodeBytes(bytes))).toStrictEqual(bytes);
     });
   });
 });
@@ -302,13 +302,13 @@ describe('buildEncryptedBody', () => {
       const body = buildEncryptedBody(publicKey, { encrypted, salt });
 
       expect(body).toHaveLength(16 + 4 + 1 + 65 + 3);
-      expect(body.slice(0, 16)).toEqual(salt);
+      expect(body.slice(0, 16)).toStrictEqual(salt);
       // rs は 4096 のビッグエンディアン
-      expect(body.slice(16, 20)).toEqual(Uint8Array.from([0, 0, 16, 0]));
+      expect(body.slice(16, 20)).toStrictEqual(Uint8Array.from([0, 0, 16, 0]));
       // idlen は P-256 公開鍵長の 65
       expect(body[20]).toBe(65);
-      expect(body.slice(21, 86)).toEqual(publicKey);
-      expect(body.slice(86)).toEqual(encrypted);
+      expect(body.slice(21, 86)).toStrictEqual(publicKey);
+      expect(body.slice(86)).toStrictEqual(encrypted);
     });
   });
 });
@@ -379,7 +379,7 @@ describe('sendWebPush', () => {
       expect(headers['Content-Encoding']).toBe('aes128gcm');
       expect(headers['TTL']).toBe('86400');
       // RFC 8188 ヘッダ: rs=4096(BE) と idlen=65
-      expect(body.slice(16, 20)).toEqual(Uint8Array.from([0, 0, 16, 0]));
+      expect(body.slice(16, 20)).toStrictEqual(Uint8Array.from([0, 0, 16, 0]));
       expect(body[20]).toBe(65);
     });
 
@@ -410,7 +410,7 @@ describe('sendWebPush', () => {
       const header: unknown = JSON.parse(
         new TextDecoder().decode(fromB64Url(headerB64)),
       );
-      expect(header).toEqual({ typ: 'JWT', alg: 'ES256' });
+      expect(header).toStrictEqual({ typ: 'JWT', alg: 'ES256' });
 
       const claims = JSON.parse(
         new TextDecoder().decode(fromB64Url(payloadB64)),

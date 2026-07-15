@@ -1,7 +1,8 @@
 import type { ShikiTransformer } from '@shikijs/types';
 import type { Element, ElementContent } from 'hast';
 
-import { type Annotation, parseAnnotations } from './parser.ts';
+import { parseAnnotations } from './parser.ts';
+import type { Annotation } from './parser.ts';
 
 type AnnotateMeta = {
   codeAnnotate?: {

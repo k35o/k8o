@@ -1,4 +1,5 @@
-import { type Color, colorToOklch } from '@repo/helpers/color/spaces';
+import { colorToOklch } from '@repo/helpers/color/spaces';
+import type { Color } from '@repo/helpers/color/spaces';
 import { between } from '@repo/helpers/number/between';
 import { throttle, useQueryStates } from 'nuqs';
 import { useCallback } from 'react';

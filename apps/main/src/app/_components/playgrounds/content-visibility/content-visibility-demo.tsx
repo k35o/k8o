@@ -1,7 +1,8 @@
 'use client';
 
 import { Button, Code } from '@k8o/arte-odyssey';
-import { type FC, useState } from 'react';
+import { useState } from 'react';
+import type { FC } from 'react';
 
 export const ContentVisibilityDemo: FC = () => {
   const [showHidden, setShowHidden] = useState(true);

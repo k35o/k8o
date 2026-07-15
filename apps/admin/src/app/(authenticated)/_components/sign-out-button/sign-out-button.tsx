@@ -2,7 +2,8 @@
 
 import { Spinner, useToast } from '@k8o/arte-odyssey';
 import { useRouter } from 'next/navigation';
-import { type FC, useState } from 'react';
+import { useState } from 'react';
+import type { FC } from 'react';
 
 import { authClient } from '@/shared/auth/auth-client';
 

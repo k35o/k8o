@@ -1,7 +1,8 @@
 'use client';
 
 import Image from 'next/image';
-import { type FC, useState } from 'react';
+import { useState } from 'react';
+import type { FC } from 'react';
 
 // 読み込み失敗時もコンテナ（画像領域）は残し、レイアウトシフト（CLS）を避ける
 export const ReadingCardImage: FC<{
