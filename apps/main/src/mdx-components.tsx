@@ -4,9 +4,27 @@ import { isInternalRoute } from '@repo/helpers/is-internal-route';
 import type { MDXComponents } from 'mdx/types';
 import type { Route } from 'next';
 import Link from 'next/link';
-import type { FC, PropsWithChildren } from 'react';
+import { isValidElement } from 'react';
+import type { FC, PropsWithChildren, ReactNode } from 'react';
 
 import { CodeBlock } from '@/app/_components/code-block';
+
+// インラインコード等を含む見出しからidに使う全文を取り出す。
+// shared/mdx/toc-tree.ts の phrasingText と同じ結果になる必要がある
+const isReactNodeArray = (value: ReactNode): value is readonly ReactNode[] =>
+  Array.isArray(value);
+
+const extractText = (children: ReactNode): string => {
+  if (typeof children === 'string') return children;
+  if (typeof children === 'number') return children.toString();
+  if (isReactNodeArray(children)) {
+    return children.map((child) => extractText(child)).join('');
+  }
+  if (isValidElement<PropsWithChildren>(children)) {
+    return extractText(children.props.children);
+  }
+  return '';
+};
 
 const LinkHeading: FC<
   PropsWithChildren<{
@@ -15,7 +33,8 @@ const LinkHeading: FC<
 > = ({ type, children }) => {
   const Comp = type;
 
-  const isStringChildren = typeof children === 'string';
+  const text = extractText(children);
+  const hasText = text !== '';
 
   return (
     <Comp
@@ -27,12 +46,12 @@ const LinkHeading: FC<
         type === 'h5' && 'text-md sm:text-lg',
         type === 'h6' && 'text-sm sm:text-md',
       )}
-      id={isStringChildren ? children : undefined}
+      id={hasText ? text : undefined}
     >
-      {isStringChildren && (
+      {hasText && (
         <a
           className="relative"
-          href={`#${encodeURIComponent(children)}`}
+          href={`#${encodeURIComponent(text)}`}
           tabIndex={-1}
         >
           <span

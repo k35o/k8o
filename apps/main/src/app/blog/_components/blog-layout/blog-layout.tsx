@@ -24,7 +24,7 @@ import { CopyMarkdownButton } from './copy-markdown-button';
 import { Feedback } from './feedback';
 import { Recommend, RecommendContent } from './recommend';
 import { SlideLinkButton } from './slide-link-button';
-import { TableOfContents } from './table-of-contents';
+import { TableOfContents, TableOfContentsSideRail } from './table-of-contents';
 import { ViewReporter } from './view-reporter';
 import { WritingModeContent } from './writing-mode';
 
@@ -122,6 +122,12 @@ export const BlogLayoutContent: FC<BlogLayoutContentProps> = ({
           </SilentErrorBoundary>
         </div>
       </div>
+      <SilentErrorBoundary>
+        <TableOfContentsSideRail
+          className="hidden xl:block"
+          headingTree={headingTree}
+        />
+      </SilentErrorBoundary>
       <SilentErrorBoundary>
         <TableOfContents headingTree={headingTree} />
       </SilentErrorBoundary>
