@@ -10,7 +10,6 @@ export const getSlides = async () => {
       },
     },
     where: (slideFields, { eq }) => eq(slideFields.published, true),
-    limit: 100,
     orderBy(fields, operators) {
       return [operators.desc(fields.createdAt), operators.desc(fields.id)];
     },
