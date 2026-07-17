@@ -22,6 +22,7 @@ export const ProgressBar: FC<{
 
   return (
     <div className="relative size-8 shrink-0">
+      <span className="sr-only">読了率 {currentPercentage}%</span>
       <svg
         aria-hidden="true"
         className="size-full -rotate-90"
@@ -47,7 +48,10 @@ export const ProgressBar: FC<{
           strokeWidth="3"
         />
       </svg>
-      <div className="absolute inset-0 flex items-center justify-center text-xs">
+      <div
+        aria-hidden="true"
+        className="absolute inset-0 flex items-center justify-center text-xs"
+      >
         {currentPercentage}
       </div>
     </div>
