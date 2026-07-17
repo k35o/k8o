@@ -5,6 +5,11 @@ import { GlobalLayout } from './global-layout';
 const meta: Meta<typeof GlobalLayout> = {
   title: 'app/globals/global-layout',
   component: GlobalLayout,
+  // VRTはisolate:falseでページを共有するため、他のストーリーで閉じた
+  // ブラウザ通知のdismissedフラグが残るとOutdatedBrowserのバナーが消える
+  beforeEach: () => {
+    sessionStorage.removeItem('k8o:browser-baseline-notice-dismissed');
+  },
 };
 
 export default meta;
