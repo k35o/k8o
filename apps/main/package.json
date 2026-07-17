@@ -19,7 +19,7 @@
     "build-storybook": "storybook build"
   },
   "dependencies": {
-    "@ai-sdk/openai-compatible": "3.0.5",
+    "@ai-sdk/openai-compatible": "3.0.7",
     "@k8o/arte-odyssey": "catalog:",
     "@k8o/oxc-config": "0.2.0",
     "@mdx-js/loader": "3.1.1",
@@ -33,15 +33,15 @@
     "@repo/react-hooks": "workspace:*",
     "@tailwindcss/postcss": "catalog:",
     "@vercel/analytics": "2.0.1",
-    "ai": "7.0.15",
+    "ai": "7.0.22",
     "budoux": "0.8.4",
     "drizzle-orm": "catalog:",
     "katex": "0.17.0",
     "next": "catalog:",
     "next-themes": "catalog:",
     "nuqs": "2.9.0",
-    "oxfmt": "0.57.0",
-    "oxlint": "1.72.0",
+    "oxfmt": "0.58.0",
+    "oxlint": "1.73.0",
     "postcss": "catalog:",
     "react": "catalog:",
     "react-dom": "catalog:",
@@ -74,7 +74,7 @@
     "@vitest/ui": "catalog:",
     "babel-plugin-react-compiler": "catalog:",
     "chromatic": "catalog:",
-    "msw": "2.14.6",
+    "msw": "2.15.0",
     "msw-storybook-addon": "2.0.7",
     "postcss-load-config": "catalog:",
     "react-scan": "0.5.7",
@@ -85,7 +85,7 @@
     "vitest": "catalog:"
   },
   "optionalDependencies": {
-    "@oxlint/binding-linux-x64-gnu": "1.72.0"
+    "@oxlint/binding-linux-x64-gnu": "1.73.0"
   },
   "msw": {
     "workerDirectory": [

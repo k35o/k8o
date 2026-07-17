@@ -35,7 +35,7 @@
   "devDependencies": {
     "@repo/typescript-config": "workspace:*",
     "@shikijs/types": "4.3.1",
-    "@types/hast": "3.0.4",
+    "@types/hast": "3.0.5",
     "@vitest/coverage-v8": "catalog:",
     "vitest": "catalog:"
   }
