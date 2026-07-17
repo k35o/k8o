@@ -1,4 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
+import { expect } from 'storybook/test';
 
 import { GlobalLayout } from './global-layout';
 
@@ -30,5 +31,15 @@ export const OutdatedBrowser: Story = {
       safari: '9999',
       safari_ios: '9999',
     },
+  },
+  // テストは同一ページで実行されるため、browser-baseline-notice の Dismiss 実行後だと
+  // 閉じた状態が sessionStorage に残ってバナーが出なくなる。毎回クリアして状態を揃える
+  beforeEach: () => {
+    sessionStorage.removeItem('k8o:browser-baseline-notice-dismissed');
+  },
+  // バナーはクライアント側のブラウザ判定後に描画されるため、表示を待ってから
+  // VRT のスクリーンショットが撮影されるようにする
+  play: async ({ canvas }) => {
+    await expect(await canvas.findByRole('alert')).toBeInTheDocument();
   },
 };
