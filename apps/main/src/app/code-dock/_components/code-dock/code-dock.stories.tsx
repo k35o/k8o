@@ -45,6 +45,22 @@ const meta: Meta<typeof CodeDock> = {
 export default meta;
 type Story = StoryObj<typeof CodeDock>;
 
+// 初期サンプルの自動検査はデバウンス(600ms)後に走るため、検査結果の表示まで待つ。
+// 待たずに play を終えるとスピナー+プレースホルダーの状態で VRT が撮影されて
+// flaky になる
+const waitForInitialLintResult = async (
+  canvas: ReturnType<typeof within>,
+): Promise<void> => {
+  await waitFor(
+    () => {
+      expect(
+        canvas.getByText('Unexpected console statement.'),
+      ).toBeInTheDocument();
+    },
+    { timeout: 5000 },
+  );
+};
+
 // 正常系: 初期サンプルがデバウンス後に自動で検査される
 export const Primary: Story = {
   play: async ({ canvasElement }) => {
@@ -52,14 +68,7 @@ export const Primary: Story = {
     await expect(
       canvas.getByRole('textbox', { name: 'コード' }),
     ).toBeInTheDocument();
-    await waitFor(
-      () => {
-        expect(
-          canvas.getByText('Unexpected console statement.'),
-        ).toBeInTheDocument();
-      },
-      { timeout: 5000 },
-    );
+    await waitForInitialLintResult(canvas);
   },
 };
 
@@ -71,6 +80,7 @@ export const Copy: Story = {
     await expect(button).toBeEnabled();
     await userEvent.click(button);
     await expect(button).toBeInTheDocument();
+    await waitForInitialLintResult(canvas);
   },
 };
 
@@ -113,6 +123,7 @@ export const FormatFailed: Story = {
         canvas.getByText('整形できませんでした: Unexpected token'),
       ).toBeInTheDocument();
     });
+    await waitForInitialLintResult(canvas);
   },
 };
 
@@ -125,5 +136,6 @@ export const SwitchLanguage: Story = {
     await userEvent.selectOptions(select, 'ts');
 
     await expect(select).toHaveValue('ts');
+    await waitForInitialLintResult(canvas);
   },
 };
