@@ -3,13 +3,14 @@
 import { useClickAway } from '@k8o/arte-odyssey';
 import { cn } from '@repo/helpers/cn';
 import Link from 'next/link';
-import { useEffect, useRef, useState } from 'react';
+import { useRef } from 'react';
 import type { FC } from 'react';
 
 import type { HeadingTree } from '@/shared/mdx/types';
 
 import { END_OF_CONTENT_ID } from '../constants';
 import { ProgressBar } from './progress-bar';
+import { useActiveHeading } from './use-active-heading';
 
 const LinkButton: FC<{
   depth: number;
@@ -38,6 +39,13 @@ type TocNode = {
   text: string;
   children?: readonly TocNode[];
 };
+
+const hasHeading = (nodes: readonly TocNode[], id: string): boolean =>
+  nodes.some(
+    (node) =>
+      node.text === id ||
+      (node.children !== undefined && hasHeading(node.children, id)),
+  );
 
 const TocItem: FC<{
   node: TocNode;
@@ -71,7 +79,7 @@ const TocItem: FC<{
 export const TableOfContents: FC<{
   headingTree: HeadingTree;
 }> = ({ headingTree }) => {
-  const [activeId, setActiveId] = useState('');
+  const [activeId, setActiveId] = useActiveHeading();
 
   const ref = useRef<HTMLDetailsElement>(null);
   useClickAway(ref, () => {
@@ -80,35 +88,15 @@ export const TableOfContents: FC<{
     }
   });
 
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        const intersecting = entries.filter((entry) => entry.isIntersecting);
-        if (intersecting.length === 0) return;
-        const topEntry = intersecting.reduce((prev, current) =>
-          prev.boundingClientRect.top < current.boundingClientRect.top
-            ? prev
-            : current,
-        );
-        setActiveId(topEntry.target.id);
-      },
-      { rootMargin: '-80px 0px -80% 0px' },
-    );
-
-    const headings = document.querySelectorAll('h2[id], h3[id], h4[id]');
-    for (const heading of headings) observer.observe(heading);
-    const eocElement = document.querySelector(`#${END_OF_CONTENT_ID}`);
-    if (eocElement) observer.observe(eocElement);
-
-    return () => {
-      observer.disconnect();
-    };
-  }, []);
-
   if (headingTree.children.length === 0) return null;
 
+  // 記事間の遷移直後は共有ストアに前の記事の見出しが残ることがあるため、
+  // 今の記事の目次に無いidは現在地として扱わない
+  const isKnownId =
+    activeId === END_OF_CONTENT_ID ||
+    hasHeading(headingTree.children, activeId);
   const summaryText =
-    activeId === ''
+    activeId === '' || !isKnownId
       ? 'もくじ'
       : activeId === END_OF_CONTENT_ID
         ? 'さいごまで よみました'
@@ -117,7 +105,7 @@ export const TableOfContents: FC<{
   return (
     <details
       className={cn(
-        'fixed w-80 rounded-xl bg-bg-raised shadow-md',
+        'fixed w-80 rounded-xl bg-bg-raised shadow-md xl:hidden',
         'right-4 bottom-4 open:right-0 open:bottom-0 sm:right-16 sm:bottom-8 open:sm:right-16 open:sm:bottom-8',
         'open:details-content:border-border-mute open:details-content:border-t open:details-content:p-4 open:details-content:pt-0',
       )}
