@@ -2,44 +2,22 @@ name: Pavo
 
 on:
   pull_request:
-    types: [opened, synchronize, reopened]
+    types: [opened, synchronize, reopened, ready_for_review]
   pull_request_review_comment:
     types: [created]
-
-# Same-PR pushes cancel earlier in-flight reviews so only the latest commit is reviewed.
-# event_name in the group keeps review and reply jobs from cancelling each other.
-concurrency:
-  group: pavo-${{ github.event_name }}-${{ github.event.pull_request.number }}
-  cancel-in-progress: true
+  issue_comment:
+    types: [created]
 
 jobs:
   pavo:
-    # Skip on PRs from forks: secrets are not exposed to fork workflows so the App
-    # token step would fail anyway, and we don't want a permanent red Actions run.
-    # review_comment はリポジトリの誰でも投稿できるため、コメント起点の実行は owner に限定する
-    # （write 権限 bot トークン + Claude トークンを持つため、第三者コメントでの起動を防ぐ）。
-    if: >-
-      ${{ github.event.pull_request.head.repo.fork != true &&
-          (github.event_name != 'pull_request_review_comment' ||
-           github.event.sender.login == github.repository_owner) }}
-    runs-on: ubuntu-latest
-    timeout-minutes: 10
-    permissions:
-      contents: read
-      pull-requests: write
-    steps:
-      - id: app-token
-        uses: actions/create-github-app-token@bcd2ba49218906704ab6c1aa796996da409d3eb1 # v3.2.0
-        with:
-          client-id: ${{ secrets.K35O_BOT_CLIENT_ID }}
-          private-key: ${{ secrets.K35O_BOT_PRIVATE_KEY }}
-
-      - uses: k35o/pavo@23335aeafea2005c3be7088e0e02410f8788ab38 # main
-        with:
-          github_token: ${{ steps.app-token.outputs.token }}
-          app_slug: ${{ steps.app-token.outputs.app-slug }}
-          claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
-          instructions: default,nextjs
-          extra_prompt: |
-            Next.js App Router + oxlint のモノレポです。
-            apps/main / apps/admin の 2 アプリ + packages/ 配下の共有パッケージで構成。
+    # /pavo コマンド以外の通常コメントで runner を起こさないための事前フィルタ。
+    # コメント・返信起点の実行は reusable workflow 側の gate が
+    # author_association (OWNER/MEMBER/COLLABORATOR) で制限する。
+    if: ${{ github.event_name != 'issue_comment' || startsWith(github.event.comment.body, '/pavo') }}
+    uses: k35o/pavo/.github/workflows/review.yml@main
+    with:
+      instructions: default,nextjs,typescript
+      extra_prompt: |
+        Next.js App Router + oxlint のモノレポです。
+        apps/main / apps/admin の 2 アプリ + packages/ 配下の共有パッケージで構成。
+    secrets: inherit
