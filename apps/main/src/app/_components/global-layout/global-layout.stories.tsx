@@ -5,9 +5,10 @@ import { GlobalLayout } from './global-layout';
 const meta: Meta<typeof GlobalLayout> = {
   title: 'app/globals/global-layout',
   component: GlobalLayout,
-  // VRTはisolate:falseでページを共有するため、他のストーリーで閉じた
-  // ブラウザ通知のdismissedフラグが残るとOutdatedBrowserのバナーが消える
   beforeEach: () => {
+    // browser-baseline-notice の Dismiss Story が同一セッションの sessionStorage に
+    // dismissed を残すと OutdatedBrowser のバナーが消えて VRT が不安定になるため、
+    // Story 実行前に必ずクリアする。
     sessionStorage.removeItem('k8o:browser-baseline-notice-dismissed');
   },
 };

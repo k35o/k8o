@@ -85,6 +85,27 @@ describe('blogs service', () => {
 
       expect(result).toStrictEqual([]);
     });
+
+    it('公開記事が100件を超えても全件取得する', async () => {
+      // RSS・サイトマップ・llms.txt が getBlogContents 経由でこの結果を全件前提で
+      // 使うため、クエリに件数上限を設けないことを保証する
+      const mockBlogs = Array.from({ length: 150 }, (_, i) => ({
+        id: i + 1,
+        slug: `blog-${(i + 1).toString()}`,
+        published: true,
+        createdAt: new Date().toISOString(),
+        blogTag: [],
+      }));
+
+      vi.mocked(db.query.blogs.findMany).mockResolvedValue(mockBlogs);
+
+      const result = await getBlogs();
+
+      expect(result).toHaveLength(150);
+      expect(db.query.blogs.findMany).toHaveBeenCalledWith(
+        expect.not.objectContaining({ limit: expect.anything() }),
+      );
+    });
   });
 
   describe('getBlogsByTags', () => {
