@@ -103,14 +103,12 @@ title: test
     });
   });
 
-  it('h2より浅い見出しやテキスト以外の見出しは無視する', async () => {
+  it('h2より浅い見出しや親のない見出しは無視する', async () => {
     const filePath = await createMdxFile(`# h1
 
 ### 孤立したh3
 
 ## 見出し
-
-### **strong**
 
 #### 孤立したh4
 `);
@@ -122,6 +120,30 @@ title: test
           depth: 1,
           text: '見出し',
           children: [],
+        },
+      ],
+    });
+  });
+
+  it('インラインコードや強調を含む見出しは全文を連結して採用する', async () => {
+    const filePath = await createMdxFile(`## \`source\`に何が入るか
+
+### 方式1: \`renderToString\`で**HTML文字列**を返す
+`);
+
+    await expect(getTocTree(filePath)).resolves.toStrictEqual({
+      depth: 0,
+      children: [
+        {
+          depth: 1,
+          text: 'sourceに何が入るか',
+          children: [
+            {
+              depth: 2,
+              text: '方式1: renderToStringでHTML文字列を返す',
+              children: [],
+            },
+          ],
         },
       ],
     });
