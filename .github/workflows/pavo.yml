@@ -1,0 +1,19 @@
+name: Pavo
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, ready_for_review]
+  pull_request_review_comment:
+    types: [created]
+  issue_comment:
+    types: [created]
+
+jobs:
+  pavo:
+    if: ${{ github.event_name != 'issue_comment' || startsWith(github.event.comment.body, '/pavo') }}
+    uses: k35o/pavo/.github/workflows/review.yml@main
+    with:
+      instructions: default,nextjs,typescript
+      extra_prompt: |
+        Next.js App Router + oxlint のモノレポ。apps/main / apps/admin + packages/。
+    secrets: inherit
