@@ -9,8 +9,7 @@ featureIds:
 ---
 
 import { BaselineStatus } from '@k8o/arte-odyssey';
-import { ViewTransitionBasicDemo } from '@/app/_components/playgrounds/view-transitions';
-import { Playground } from '@/app/_components/playgrounds';
+import { PlaygroundEmbed } from '@/app/_components/playgrounds';
 
 # view-transitions
 
@@ -268,9 +267,7 @@ transition.finished.then(() => {
 ## 例
 `startViewTransition`を使ったDOMの更新アニメーションの例です。
 
-<Playground title="View Transition基本デモ">
-  <ViewTransitionBasicDemo />
-</Playground>
+<PlaygroundEmbed demo="View Transition基本デモ" sectionId="view-transitions" />
 
 各擬似要素がどのような役割でどのようにスタイルが適用されているがなんとなくわかると思います。
 

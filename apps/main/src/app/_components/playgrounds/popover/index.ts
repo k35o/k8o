@@ -10,13 +10,21 @@ export const popoverSection: PlaygroundSection = {
   title: 'Popover API',
   description:
     'JavaScriptなしでツールチップやドロップダウンメニューを実装できるAPIです。',
+  category: 'html',
   type: 'blog',
   slug: 'popover',
   demos: [
-    { component: PopoverApiDemo, title: '基本的なポップオーバー' },
+    {
+      component: PopoverApiDemo,
+      title: '基本的なポップオーバー',
+      description:
+        'toggle・show・hideの3つのpopovertargetactionの違いを試せます。ESCキーや外側クリックでも閉じられます。',
+    },
     {
       component: TooltipDropdownDemo,
       title: 'ツールチップ・ドロップダウン',
+      description:
+        'Popover APIを使わない従来型のツールチップとドロップダウンメニューの実装例です。',
     },
   ],
 };

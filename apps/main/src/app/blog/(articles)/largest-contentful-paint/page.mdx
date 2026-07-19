@@ -8,7 +8,7 @@ featureIds:
 ---
 
 import { BaselineStatus } from '@k8o/arte-odyssey';
-import { LCPDemo, Playground } from '@/app/_components/playgrounds';
+import { PlaygroundEmbed } from '@/app/_components/playgrounds';
 
 # Largest Contentful Paint APIで最大コンテンツの描画時間を計測する
 
@@ -99,9 +99,7 @@ const observer = new PerformanceObserver((list) => {
 observer.observe({ type: 'largest-contentful-paint', buffered: true });
 ```
 
-<Playground title="LCP計測デモ">
-  <LCPDemo />
-</Playground>
+<PlaygroundEmbed demo="LCP計測" sectionId="largest-contentful-paint" />
 
 ### 複数のEntry
 

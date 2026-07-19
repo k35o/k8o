@@ -46,6 +46,11 @@ export function LCPDemo() {
   useEffect(() => {
     if (!isSupported) return undefined;
 
+    // buffered: true は observe のたびに過去エントリを再配信するため、
+    // 再マウント時の重複を避けて一覧を作り直す。
+    entryIdRef.current = 0;
+    setEntries([]);
+
     const observer = new PerformanceObserver((list) => {
       for (const entry of list.getEntries()) {
         if (!isLargestContentfulPaint(entry)) continue;

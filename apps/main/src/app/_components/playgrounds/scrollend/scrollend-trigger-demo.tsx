@@ -32,6 +32,11 @@ const useScrollendCounter = () => {
   const reset = () => {
     setCount(0);
     setLastTrigger(null);
+    setShowFlash(false);
+    if (flashTimeoutRef.current) {
+      clearTimeout(flashTimeoutRef.current);
+      flashTimeoutRef.current = null;
+    }
   };
 
   return { count, lastTrigger, showFlash, trigger, reset };
@@ -49,7 +54,6 @@ const useScrollendListener = (
   useEffect(() => {
     const element = ref.current;
     if (!element) return undefined;
-    element.tabIndex = 0;
     const handler = () => {
       handlerRef.current();
     };
@@ -63,8 +67,8 @@ const useScrollendListener = (
 export function ScrollendTriggerDemo() {
   const { count, lastTrigger, showFlash, trigger, reset } =
     useScrollendCounter();
-  const scrollToRef = useRef<HTMLDivElement>(null);
-  const snapRef = useRef<HTMLDivElement>(null);
+  const scrollToRef = useRef<HTMLElement>(null);
+  const snapRef = useRef<HTMLElement>(null);
 
   useScrollendListener(scrollToRef, () => {
     trigger('scrollTo()');
@@ -122,9 +126,11 @@ export function ScrollendTriggerDemo() {
               </Button>
             </div>
           </div>
-          <div
+          <section
+            aria-label="scrollTo()でスクロールする領域"
             className="bg-bg-mute h-40 overflow-y-scroll rounded-xl p-3"
             ref={scrollToRef}
+            tabIndex={0}
           >
             <div className="space-y-2">
               {range(0, 10).map((n) => (
@@ -136,14 +142,16 @@ export function ScrollendTriggerDemo() {
                 </div>
               ))}
             </div>
-          </div>
+          </section>
         </div>
 
         <div className="min-w-0 space-y-2">
           <h4 className="text-sm font-bold">scroll-snap</h4>
-          <div
+          <section
+            aria-label="scroll-snapで横スクロールする領域"
             className="bg-bg-mute flex h-40 snap-x snap-mandatory gap-3 overflow-x-scroll rounded-xl p-3"
             ref={snapRef}
+            tabIndex={0}
           >
             {range(0, 8).map((n) => (
               <div
@@ -156,7 +164,7 @@ export function ScrollendTriggerDemo() {
                 <span className="text-fg-mute text-xs">スナップ</span>
               </div>
             ))}
-          </div>
+          </section>
           <p className="text-fg-mute text-xs">
             横にスクロールするとスナップします
           </p>

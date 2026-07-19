@@ -3,6 +3,7 @@
 import { Button, ChevronIcon } from '@k8o/arte-odyssey';
 import { cn } from '@repo/helpers/cn';
 import { useState } from 'react';
+import { flushSync } from 'react-dom';
 
 type CardCount = (typeof CARDS)[number]['id'];
 
@@ -27,10 +28,19 @@ export function ActiveViewTransitionDemo() {
         : (currentIndex - 1 + CARDS.length) % CARDS.length
     ) as CardCount;
 
-    if ('startViewTransition' in document) {
+    // メソッドの存在だけではtypes付きオブジェクト引数に非対応なLevel 1実装
+    // （Chrome 111-124等）を除外できないため、同時に実装された疑似クラスの
+    // 対応可否で判定する
+    if (
+      'startViewTransition' in document &&
+      CSS.supports('selector(:active-view-transition-type(forwards))')
+    ) {
       const transition = document.startViewTransition({
         update: () => {
-          setCurrentIndex(newIndex);
+          // update完了時点のDOMがスナップショットされるため同期的にフラッシュする
+          flushSync(() => {
+            setCurrentIndex(newIndex);
+          });
         },
         types: [direction],
       });
@@ -108,9 +118,9 @@ export function ActiveViewTransitionDemo() {
             aria-hidden="true"
             className="bg-border-success transition-indicator size-3 rounded-full"
           />
-          <span className="text-fg-mute text-sm">
+          <output className="text-fg-mute text-sm">
             {isTransitioning ? '遷移中...' : '待機中'}
-          </span>
+          </output>
         </div>
         <span className="text-fg-mute text-sm">
           {currentIndex + 1} / {CARDS.length}

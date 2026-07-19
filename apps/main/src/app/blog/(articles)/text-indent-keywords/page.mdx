@@ -9,8 +9,7 @@ featureIds:
 ---
 
 import { BaselineStatus } from '@k8o/arte-odyssey';
-import { TextIndentKeywordsDemo } from '@/app/_components/playgrounds/text-indent-keywords';
-import { Playground } from '@/app/_components/playgrounds';
+import { PlaygroundEmbed } from '@/app/_components/playgrounds';
 
 # text-indentのeach-lineとhangingキーワードでインデントを制御する
 
@@ -79,9 +78,10 @@ p {
 
 ## デモ
 
-<Playground title="text-indent each-line / hangingのデモ">
-  <TextIndentKeywordsDemo />
-</Playground>
+<PlaygroundEmbed
+  demo="text-indent each-line / hanging"
+  sectionId="text-indent-keywords"
+/>
 
 ## おわりに
 

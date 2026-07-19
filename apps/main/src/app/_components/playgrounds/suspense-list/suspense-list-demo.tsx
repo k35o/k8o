@@ -51,7 +51,7 @@ export const SuspenseListDemo: FC = () => {
           value={useSuspenseList}
         />
         <Checkbox
-          label="フォルバックUIを表示する"
+          label="フォールバックUIを表示する"
           onChange={(checked) => {
             resetData();
             setHasFallback(checked);

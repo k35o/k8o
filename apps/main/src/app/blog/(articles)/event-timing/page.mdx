@@ -8,7 +8,7 @@ featureIds:
 ---
 
 import { BaselineStatus } from '@k8o/arte-odyssey';
-import { EventTimingDemo, Playground } from '@/app/_components/playgrounds';
+import { PlaygroundEmbed } from '@/app/_components/playgrounds';
 
 # Performance Event Timing APIで操作の待ち時間を計測する
 
@@ -146,9 +146,7 @@ for (const entry of interactionMap.values()) {
 }
 ```
 
-<Playground title="Event Timingの計測デモ">
-  <EventTimingDemo />
-</Playground>
+<PlaygroundEmbed demo="イベントタイミング計測" sectionId="event-timing" />
 
 ## INP
 

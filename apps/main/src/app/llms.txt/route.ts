@@ -1,6 +1,7 @@
 import { cacheLife } from 'next/cache';
 import { NextResponse } from 'next/server';
 
+import { playgroundSections } from '@/app/_components/playgrounds';
 import { getBlogContents } from '@/features/blog/interface/queries';
 import { getTalks } from '@/features/talks/interface/queries';
 import { siteEntries } from '@/shared/site/site-entries';
@@ -33,9 +34,17 @@ async function _generateLlmContent() {
     })
     .join('\n\n');
 
+  const playgroundContent = playgroundSections
+    .map((section) => {
+      const url = `https://k8o.me/playgrounds/${section.id}`;
+      return `#### ${section.title}\n${section.description}\n${url}`;
+    })
+    .join('\n\n');
+
   const dynamicContent = new Map<string, string>([
     ['/blog', blogContent],
     ['/talks', talkContent],
+    ['/playgrounds', playgroundContent],
   ]);
 
   const entriesContent = siteEntries

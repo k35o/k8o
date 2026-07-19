@@ -8,7 +8,7 @@ featureIds:
 ---
 
 import { BaselineStatus } from '@k8o/arte-odyssey';
-import { OpenPseudoDemo, Playground } from '@/app/_components/playgrounds';
+import { PlaygroundEmbed } from '@/app/_components/playgrounds';
 
 # :open疑似クラスで開いている要素をまとめてスタイリングする
 
@@ -64,9 +64,10 @@ select:open {
 }
 ```
 
-<Playground title=":openで開いている要素を一括スタイリング">
-  <OpenPseudoDemo />
-</Playground>
+<PlaygroundEmbed
+  demo=":openで開いている要素を一括スタイリング"
+  sectionId="open-pseudo"
+/>
 
 ## おわりに
 

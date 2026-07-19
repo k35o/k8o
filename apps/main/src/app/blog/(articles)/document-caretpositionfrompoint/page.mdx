@@ -8,7 +8,7 @@ featureIds:
 ---
 
 import { BaselineStatus } from '@k8o/arte-odyssey';
-import { CaretPositionDemo, DragDropDemo, Playground } from '@/app/_components/playgrounds';
+import { PlaygroundEmbed } from '@/app/_components/playgrounds';
 
 # document.caretPositionFromPointで座標からキャレット位置を取得する
 
@@ -86,9 +86,7 @@ document.addEventListener('click', (event) => {
 });
 ```
 
-<Playground title="キャレット位置の取得">
-  <CaretPositionDemo />
-</Playground>
+<PlaygroundEmbed demo="キャレット位置取得" sectionId="caret-position-from-point" />
 
 ### ドラッグ&ドロップでのテキスト挿入
 
@@ -118,9 +116,7 @@ dropZone.addEventListener('drop', (event) => {
 });
 ```
 
-<Playground title="ドラッグ&ドロップの挿入">
-  <DragDropDemo />
-</Playground>
+<PlaygroundEmbed demo="ドラッグ&ドロップ" sectionId="caret-position-from-point" />
 
 ## おわりに
 

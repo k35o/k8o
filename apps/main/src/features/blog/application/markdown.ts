@@ -63,6 +63,20 @@ export const mdxToMarkdown = (source: string, slug: string): string => {
       replace(range, `> ${label}はWeb版で試せます: <${articleUrl}>`);
       return;
     }
+    if (name === 'PlaygroundEmbed') {
+      const sectionId = getStringAttribute(node, 'sectionId');
+      const demo = getStringAttribute(node, 'demo');
+      const url =
+        sectionId === undefined
+          ? articleUrl
+          : `${SITE_URL}/playgrounds/${sectionId}`;
+      const label =
+        demo === undefined
+          ? 'インタラクティブデモ'
+          : `インタラクティブデモ「${demo}」`;
+      replace(range, `> ${label}はWeb版で試せます: <${url}>`);
+      return;
+    }
     if (name === 'LinkCard') {
       const href = getStringAttribute(node, 'href');
       if (href === undefined) {

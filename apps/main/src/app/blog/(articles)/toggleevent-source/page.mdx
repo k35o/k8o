@@ -8,10 +8,7 @@ featureIds:
 ---
 
 import { BaselineStatus } from '@k8o/arte-odyssey';
-import {
-  Playground,
-  ToggleEventSourceDemo,
-} from '@/app/_components/playgrounds';
+import { PlaygroundEmbed } from '@/app/_components/playgrounds';
 
 # ToggleEvent.sourceでポップオーバーを開いた要素を特定する
 
@@ -49,9 +46,10 @@ Popover APIや`<details>`、`<dialog>`では、開閉のたびに`beforetoggle` 
 
 メンバー一覧の「詳細」ボタンを押すと、共通のポップオーバーが押されたメンバーの情報に切り替わって表示されます。
 
-<Playground title="event.sourceで発火元のボタンを取得">
-  <ToggleEventSourceDemo />
-</Playground>
+<PlaygroundEmbed
+  demo="event.sourceで発火元のボタンを取得"
+  sectionId="toggleevent-source"
+/>
 
 このUIは、ボタン側に`popovertarget`属性で共通ポップオーバーを指定し、`data-member-id`でどのメンバーかを持たせる構成です。開く操作はブラウザに任せられるので、HTMLは次のように書けます。
 

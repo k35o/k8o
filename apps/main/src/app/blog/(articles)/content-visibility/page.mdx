@@ -9,8 +9,7 @@ featureIds:
 
 import { BaselineStatus } from '@k8o/arte-odyssey';
 import { LinkCard } from '@/app/blog/_components/link-card';
-import { ContentVisibilityDemo } from '@/app/_components/playgrounds/content-visibility';
-import { Playground } from '@/app/_components/playgrounds';
+import { PlaygroundEmbed } from '@/app/_components/playgrounds';
 
 # 要素のレイアウトとレンダリングを必要なタイミングまでスキップさせるCSSのcontent-visibilityプロパティ
 
@@ -35,9 +34,7 @@ Safari26のリリースから、Baseline 2025に`content-visibility`プロパテ
 
 そして非表示の間も`hidden`とは異なり、アクセシビリティツリーに表示されるのでスクリーンリーダーからの検出は行われます。また、ブラウザからの検索も問題なく行われます。
 
-<Playground title="content-visibilityのhiddenとautoの比較">
-  <ContentVisibilityDemo />
-</Playground>
+<PlaygroundEmbed demo="hiddenとautoの違い" sectionId="content-visibility" />
 
 上記のデモでは、`hidden`と`auto`の違いを実際に確認できます。
 ブラウザの検索機能や開発者ツールでアクセシビリティツリーを確認してみると、`auto`の方だけ検索できることがわかります。

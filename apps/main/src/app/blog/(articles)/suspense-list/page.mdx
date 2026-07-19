@@ -7,8 +7,7 @@ updatedAt: 2025-06-21 19:30:00.000000+09
 
 import { Alert } from '@k8o/arte-odyssey';
 import { LinkCard } from '@/app/blog/_components/link-card';
-import { SuspenseListDemo as Example1 } from '@/app/_components/playgrounds/suspense-list';
-import { Playground } from '@/app/_components/playgrounds';
+import { PlaygroundEmbed } from '@/app/_components/playgrounds';
 
 # 複数のSuspenseの表示を制御するSuspenseList
 
@@ -162,9 +161,10 @@ import { Playground } from '@/app/_components/playgrounds';
 
 実験的機能なので触った事ない人がほとんどだと思います。以下のPlaygroundで`SuspenseList`の世界を実際に体験してください。
 
-<Playground title="SuspenseListのさまざまな利用例">
-  <Example1 />
-</Playground>
+<PlaygroundEmbed
+  demo="SuspenseListによる読み込み制御"
+  sectionId="suspense-list"
+/>
 
 PlaygroundはReactの製品版の最新バージョンで動いています。
 

@@ -57,6 +57,23 @@ describe('mdxToMarkdown', () => {
       );
     });
 
+    it('PlaygroundEmbedをPlaygroundページへの案内に置き換える', () => {
+      const source =
+        '<PlaygroundEmbed demo="基本デモ" sectionId="view-transitions" />\n';
+
+      expect(mdxToMarkdown(source, 'sample')).toBe(
+        '> インタラクティブデモ「基本デモ」はWeb版で試せます: <https://k8o.me/playgrounds/view-transitions>\n',
+      );
+    });
+
+    it('demoのないPlaygroundEmbedも案内に置き換える', () => {
+      const source = '<PlaygroundEmbed sectionId="popover" />\n';
+
+      expect(mdxToMarkdown(source, 'sample')).toBe(
+        '> インタラクティブデモはWeb版で試せます: <https://k8o.me/playgrounds/popover>\n',
+      );
+    });
+
     it('Imageをalt文の注記に置き換える', () => {
       const source = [
         "import monitor from './monitor.png';",

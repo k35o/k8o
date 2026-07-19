@@ -11,7 +11,7 @@ featureIds:
 ---
 
 import { BaselineStatus } from '@k8o/arte-odyssey';
-import { Playground, UnitComparisonDemo, RootComparisonDemo } from '@/app/_components/playgrounds';
+import { PlaygroundEmbed } from '@/app/_components/playgrounds';
 
 # rcap, rch, rex, ric単位でルート要素に基づいたサイズを指定する
 
@@ -41,9 +41,7 @@ CSSにはフォントに基づいた相対単位があります。`em`や`ex`、
 
 これらの単位は、常にルート要素のフォント設定に基づいて計算されます。どこで使用しても同じ値になるため、ページ全体で一貫したサイズ指定が可能です。
 
-<Playground title="rのあるなしによる動作の比較">
-  <RootComparisonDemo />
-</Playground>
+<PlaygroundEmbed demo="通常版とルート版の違い" sectionId="root-font-units" />
 
 ### rcap
 
@@ -101,9 +99,7 @@ CSSにはフォントに基づいた相対単位があります。`em`や`ex`、
 
 ### 単位の比較
 
-<Playground title="rcap, rch, rex, ricとそれの元となる文字の比較">
-  <UnitComparisonDemo />
-</Playground>
+<PlaygroundEmbed demo="単位の比較" sectionId="root-font-units" />
 
 ## おわりに
 

@@ -8,8 +8,7 @@ featureIds:
 ---
 
 import { BaselineStatus } from '@k8o/arte-odyssey';
-import { SelectionProperties as Example1, SelectionMethods as Example2, GetComposedRanges as Example3 } from '@/app/_components/playgrounds/composed-ranges';
-import { Playground } from '@/app/_components/playgrounds';
+import { PlaygroundEmbed } from '@/app/_components/playgrounds';
 
 # Shadow DOM境界を跨いだ選択範囲の処理を可能にするgetComposedRanges
 
@@ -32,9 +31,7 @@ const selection = window.getSelection();
 const text = selection.toString();
 ```
 
-<Playground title="Selectionオブジェクトのプロパティの紹介">
-  <Example1 />
-</Playground>
+<PlaygroundEmbed demo="Selectionオブジェクトのプロパティ" sectionId="composed-ranges" />
 
 上記の例では、`Selection`オブジェクトが持つ選択中の文字列の表示と、いくつかのプロパティを紹介しています。
 
@@ -51,9 +48,7 @@ document.addEventListener('selectionchange', () => {
 
 続いて、`Selection`オブジェクトが持つメソッドの紹介です。
 
-<Playground title="Selectionオブジェクトのメソッドの紹介">
-  <Example2 />
-</Playground>
+<PlaygroundEmbed demo="Selectionオブジェクトのメソッド" sectionId="composed-ranges" />
 
 `addRange`は`Range`オブジェクトを引数に取り、選択範囲に対象を追加します。
 Firefoxでは`Range`オブジェクトを連続して引数に渡すことで、複数の選択をサポートしています。
@@ -101,9 +96,7 @@ const ranges = getComposedRanges({ shadowRoots: [shadowRoot1, shadowRoot2] });
 渡した`ShadowRoot`オブジェクトに含まれる要素であれば、Shadow DOM内の要素であっても選択範囲として検出されます。
 選択範囲にオプションで指定していない`ShadowRoot`オブジェクトが持つ要素が含まれる場合は、そのShadow DOMのホスト要素が返されます。
 
-<Playground title="getComposedRangesメソッドの紹介">
-  <Example3 />
-</Playground>
+<PlaygroundEmbed demo="Baseline 2025で追加されたgetComposedRangesメソッド" sectionId="composed-ranges" />
 
 この例では、サンプルテキスト全体に`attachShadow({ mode: 'closed' })`しています。
 

@@ -86,7 +86,8 @@ export function SelectionMethods() {
         <Button
           onClick={() => {
             const selection = window.getSelection();
-            if (selection && textRef.current) {
+            // extend() は選択範囲が空だと InvalidStateError を投げるため rangeCount を確認する
+            if (selection && textRef.current && selection.rangeCount > 0) {
               selection.extend(textRef.current);
             }
           }}

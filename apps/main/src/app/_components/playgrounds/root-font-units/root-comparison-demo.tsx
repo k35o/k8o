@@ -34,10 +34,12 @@ export function RootComparisonDemo() {
               <span style={{ lineHeight: 1 }}>0</span>
               <div
                 className="bg-primary-fg h-2 rounded-sm"
-                style={{ width: `${fontSize}px` }}
+                style={{ width: '1ch' }}
               />
             </div>
-            <span className="text-fg-mute font-mono text-xs">{fontSize}px</span>
+            <span className="text-fg-mute font-mono text-xs">
+              基準: {fontSize}px
+            </span>
           </div>
         </div>
 
@@ -53,7 +55,7 @@ export function RootComparisonDemo() {
                 style={{ width: '1rch' }}
               />
             </div>
-            <span className="text-fg-mute font-mono text-xs">16px</span>
+            <span className="text-fg-mute font-mono text-xs">基準: 16px</span>
           </div>
         </div>
       </div>

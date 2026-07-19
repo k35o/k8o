@@ -8,11 +8,9 @@ export const PrintColorAdjustDemo: FC = () => {
   const [isExact, setIsExact] = useState(false);
 
   const toggle = () => {
-    setIsExact((prev) => {
-      const next = !prev;
-      document.body.style.printColorAdjust = next ? 'exact' : 'economy';
-      return next;
-    });
+    const next = !isExact;
+    document.body.style.printColorAdjust = next ? 'exact' : 'economy';
+    setIsExact(next);
   };
 
   useEffect(
