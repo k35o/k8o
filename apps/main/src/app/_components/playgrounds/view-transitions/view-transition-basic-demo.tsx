@@ -3,6 +3,7 @@
 import { Button, Code } from '@k8o/arte-odyssey';
 import { useTheme } from 'next-themes';
 import { useState } from 'react';
+import { flushSync } from 'react-dom';
 
 const COLORS = [
   { light: 'var(--red-200)', dark: 'var(--red-800)' },
@@ -40,7 +41,10 @@ export function ViewTransitionBasicDemo() {
 
   const withViewTransition = (updateDOM: () => void) => {
     if (isViewTransitionEnabled && 'startViewTransition' in document) {
-      document.startViewTransition(updateDOM);
+      // 新スナップショット撮影前に再レンダーを完了させる必要があるため同期フラッシュする
+      document.startViewTransition(() => {
+        flushSync(updateDOM);
+      });
     } else {
       updateDOM();
     }
@@ -48,7 +52,13 @@ export function ViewTransitionBasicDemo() {
 
   const shuffleItems = () => {
     withViewTransition(() => {
-      setItems((prev) => [...prev].toSorted(() => Math.random() - 0.5));
+      // ランダム比較関数のtoSortedは偏るため、乱数キーを付けてからソートする
+      setItems((prev) =>
+        prev
+          .map((item) => ({ item, key: Math.random() }))
+          .toSorted((a, b) => a.key - b.key)
+          .map(({ item }) => item),
+      );
     });
   };
 

@@ -29,11 +29,9 @@ export function PopoverDemo() {
       </div>
 
       <div
-        aria-label="メニュー"
         className="bg-bg-base inset-auto top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 rounded-lg p-4 shadow-md"
         id="demo-popover"
         popover=""
-        role="menu"
       >
         <p className="text-fg-base">Popoverの内容</p>
         <p className="text-fg-mute text-sm">

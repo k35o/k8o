@@ -120,7 +120,8 @@ export function GetComposedRanges() {
         onClick={() => {
           const selection = window.getSelection();
           if (selection && shadow.current && selection.rangeCount > 0) {
-            const range1 = selection.getRangeAt(0);
+            // getRangeAt の Range はライブでその後の選択変更に追従するため、表示用に clone する
+            const range1 = selection.getRangeAt(0).cloneRange();
             const range2 = selection.getComposedRanges({
               shadowRoots: [shadow.current],
             })[0];

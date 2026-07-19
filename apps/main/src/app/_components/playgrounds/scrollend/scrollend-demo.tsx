@@ -9,13 +9,12 @@ export function ScrollendDemo() {
   const [lastScrollendTime, setLastScrollendTime] = useState<string | null>(
     null,
   );
-  const scrollRef = useRef<HTMLDivElement>(null);
+  const scrollRef = useRef<HTMLElement>(null);
 
   useEffect(() => {
     const element = scrollRef.current;
     if (!element) return undefined;
 
-    element.tabIndex = 0;
     const handleScrollend = () => {
       setScrollendCount((prev) => prev + 1);
       setLastScrollendTime(new Date().toLocaleTimeString('ja-JP'));
@@ -56,12 +55,14 @@ export function ScrollendDemo() {
         </button>
       </div>
 
-      <div
+      <section
+        aria-label="scrollendイベントを確認するスクロール領域"
         className="bg-bg-mute h-48 overflow-y-scroll rounded-xl p-4"
         onScroll={() => {
           setScrollCount((prev) => prev + 1);
         }}
         ref={scrollRef}
+        tabIndex={0}
       >
         <div className="space-y-4">
           {range(0, 20).map((n) => (
@@ -76,7 +77,7 @@ export function ScrollendDemo() {
             </div>
           ))}
         </div>
-      </div>
+      </section>
 
       <p className="text-fg-mute text-sm">
         上のエリアをスクロールすると、scroll

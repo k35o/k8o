@@ -28,10 +28,12 @@ export const ClipboardImageDemo: FC = () => {
       const ctx = canvas.getContext('2d');
       if (!ctx) return;
       ctx.drawImage(ref.current, 0, 0);
-      const blob = await new Promise<Blob>((resolve) => {
+      const blob = await new Promise<Blob>((resolve, reject) => {
         canvas.toBlob((createdBlob) => {
+          // toBlobのコールバックは非同期に呼ばれるため、throwしてもrejectにならず永久にpendingする
           if (!createdBlob) {
-            throw new Error('Blobが取得できませんでした');
+            reject(new Error('Blobが取得できませんでした'));
+            return;
           }
           resolve(createdBlob);
         });
@@ -46,26 +48,30 @@ export const ClipboardImageDemo: FC = () => {
   };
 
   const pasteText = async () => {
-    const items = await navigator.clipboard.read();
+    try {
+      const items = await navigator.clipboard.read();
 
-    const results = await Promise.all(
-      items.flatMap((item) =>
-        item.types
-          .filter((type) => type === 'image/png')
-          .map(async (type) => {
-            const blob = await item.getType(type);
-            return URL.createObjectURL(blob);
-          }),
-      ),
-    );
+      const blobs = await Promise.all(
+        items.flatMap((item) =>
+          item.types
+            .filter((type) => type === 'image/png')
+            .map((type) => item.getType(type)),
+        ),
+      );
 
-    const firstResult = results[0];
-    if (firstResult === undefined) {
-      onOpen('error', 'PNG画像が見つかりませんでした。');
-      return;
+      const firstBlob = blobs[0];
+      if (firstBlob === undefined) {
+        onOpen('error', 'PNG画像が見つかりませんでした。');
+        return;
+      }
+      if (src.startsWith('blob:')) {
+        URL.revokeObjectURL(src);
+      }
+      setSrc(URL.createObjectURL(firstBlob));
+      onOpen('success', 'クリップボードにPNG画像を貼り付けました。');
+    } catch {
+      onOpen('error', 'クリップボードからPNG画像を読み取れませんでした。');
     }
-    setSrc(firstResult);
-    onOpen('success', 'クリップボードにPNG画像を貼り付けました。');
   };
 
   return (

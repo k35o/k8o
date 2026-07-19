@@ -10,6 +10,9 @@ export const HighlightBasicDemo: FC = () => {
   const ref = useRef<HTMLParagraphElement>(null);
 
   useEffect(() => {
+    if (!('highlights' in CSS) || typeof Highlight === 'undefined') {
+      return undefined;
+    }
     const textNode = ref.current?.firstChild;
     if (!textNode) return undefined;
 

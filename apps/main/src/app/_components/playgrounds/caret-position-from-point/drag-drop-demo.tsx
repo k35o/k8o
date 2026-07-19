@@ -26,7 +26,14 @@ export function DragDropDemo() {
     setIsDragOver(true);
   }, []);
 
-  const handleDragLeave = useCallback(() => {
+  const handleDragLeave = useCallback((event: React.DragEvent) => {
+    // dragleave は子要素へ移った際にも発火するため、領域外へ出たときだけ解除する
+    if (
+      event.relatedTarget instanceof Node &&
+      event.currentTarget.contains(event.relatedTarget)
+    ) {
+      return;
+    }
     setIsDragOver(false);
   }, []);
 
@@ -47,7 +54,12 @@ export function DragDropDemo() {
       event.clientY,
     );
 
-    if (caretPosition && caretPosition.offsetNode.nodeType === Node.TEXT_NODE) {
+    // ヒント文など本文以外のテキストノードへのドロップで text が置き換わるのを防ぐ
+    if (
+      caretPosition &&
+      caretPosition.offsetNode.nodeType === Node.TEXT_NODE &&
+      textRef.current?.contains(caretPosition.offsetNode) === true
+    ) {
       const textContent = caretPosition.offsetNode.textContent ?? '';
       const { offset } = caretPosition;
       const before = textContent.slice(0, offset);

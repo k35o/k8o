@@ -7,7 +7,8 @@ import type { FC } from 'react';
 export const DialogRequestCloseDemo: FC = () => {
   const ref = useRef<HTMLDialogElement>(null);
   const [state, setState] = useState('');
-  const [logs, setLogs] = useState<string[]>([]);
+  const [logs, setLogs] = useState<Array<{ id: number; message: string }>>([]);
+  const logIdRef = useRef(0);
 
   const stateRef = useRef(state);
   useEffect(() => {
@@ -19,11 +20,19 @@ export const DialogRequestCloseDemo: FC = () => {
     if (!dialog) return undefined;
 
     const handleClose = () => {
-      setLogs((prev) => ['ダイアログが閉じられました', ...prev]);
+      const id = logIdRef.current++;
+      setLogs((prev) => [
+        { id, message: 'ダイアログが閉じられました' },
+        ...prev,
+      ]);
       setState('');
     };
     const handleCancel = (e: Event) => {
-      setLogs((prev) => ['ダイアログがキャンセルされました', ...prev]);
+      const id = logIdRef.current++;
+      setLogs((prev) => [
+        { id, message: 'ダイアログがキャンセルされました' },
+        ...prev,
+      ]);
       if (stateRef.current !== '') {
         e.preventDefault();
       }
@@ -49,9 +58,9 @@ export const DialogRequestCloseDemo: FC = () => {
       {logs.length > 0 && (
         <div className="border-border-base max-h-40 overflow-y-scroll border">
           <ul className="list-disc p-2 pl-6">
-            {logs.map((log, index) => (
-              <li className="text-fg-mute" key={log + index.toString()}>
-                {log}
+            {logs.map((log) => (
+              <li className="text-fg-mute" key={log.id}>
+                {log.message}
               </li>
             ))}
           </ul>

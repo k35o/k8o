@@ -9,14 +9,20 @@ type ClipboardPermissionName = 'clipboard-read' | 'clipboard-write';
 const subscribePermission = (
   name: ClipboardPermissionName,
   onChange: (state: PermissionState) => void,
+  signal: AbortSignal,
 ): void => {
   navigator.permissions
     .query({ name: name as PermissionName })
     .then((permission) => {
+      if (signal.aborted) return undefined;
       onChange(permission.state);
-      permission.addEventListener('change', () => {
-        onChange(permission.state);
-      });
+      permission.addEventListener(
+        'change',
+        () => {
+          onChange(permission.state);
+        },
+        { signal },
+      );
       return undefined;
     })
     .catch(() => {
@@ -32,8 +38,20 @@ export const ClipboardTextDemo: FC = () => {
   const [writePermissions, setWritePermissions] = useState<PermissionState>();
 
   useEffect(() => {
-    subscribePermission('clipboard-read', setReadPermissions);
-    subscribePermission('clipboard-write', setWritePermissions);
+    const controller = new AbortController();
+    subscribePermission(
+      'clipboard-read',
+      setReadPermissions,
+      controller.signal,
+    );
+    subscribePermission(
+      'clipboard-write',
+      setWritePermissions,
+      controller.signal,
+    );
+    return () => {
+      controller.abort();
+    };
   }, []);
 
   return (
