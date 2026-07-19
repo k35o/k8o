@@ -8,7 +8,7 @@ featureIds:
 ---
 
 import { BaselineStatus } from '@k8o/arte-odyssey';
-import { Playground, ShapeFunctionDemo } from '@/app/_components/playgrounds';
+import { PlaygroundEmbed } from '@/app/_components/playgrounds';
 import { ShapeCommandDemo } from './_components/shape-command-demo';
 
 # CSS shape()で柔軟な図形を定義する
@@ -230,9 +230,7 @@ clip-path: shape(
 
 `path()`版は座標値が固定なので要素サイズに追従しないですが、`shape()`版は要素の幅と高さに追従します。
 
-<Playground title="path()とshape()の比較">
-  <ShapeFunctionDemo />
-</Playground>
+<PlaygroundEmbed demo="path()とshape()の比較" sectionId="shape-function" />
 
 スライダーで幅を変えると、`path()`は固定のピクセル値のため三角形が崩れますが、`shape()`はパーセンテージ指定のため常に三角形を維持します。
 

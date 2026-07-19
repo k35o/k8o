@@ -1,5 +1,6 @@
 import type { MetadataRoute } from 'next';
 
+import { playgroundSections } from '@/app/_components/playgrounds';
 import { getBlogContents } from '@/features/blog/interface/queries';
 import { getSlideContents } from '@/features/slides/interface/queries';
 import { getTags } from '@/features/tags/interface/queries';
@@ -35,6 +36,9 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const tagMap = tags.map((tag) => ({
     url: `${BASE_URL}/tags/${tag.id.toString()}`,
   }));
+  const playgroundMap = playgroundSections.map((section) => ({
+    url: `${BASE_URL}/playgrounds/${section.id}`,
+  }));
 
   // siteEntries の内部ページ。/blog は changeFrequency を別途指定するため除外。
   const entryMap = siteEntries
@@ -66,6 +70,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       url: `${BASE_URL}/tags`,
     },
     ...tagMap,
+    ...playgroundMap,
     ...entryMap,
   ] satisfies MetadataRoute.Sitemap;
 }

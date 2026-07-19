@@ -8,10 +8,7 @@ featureIds:
 ---
 
 import { BaselineStatus } from '@k8o/arte-odyssey';
-import { HighlightBasicDemo as Example1 } from '@/app/_components/playgrounds/highlight';
-import { HighlightPriorityDemo as Example2 } from '@/app/_components/playgrounds/highlight';
-import { HighlightSpellingDemo as Example3 } from '@/app/_components/playgrounds/highlight';
-import { Playground } from '@/app/_components/playgrounds';
+import { PlaygroundEmbed } from '@/app/_components/playgrounds';
 
 # CSS Custom Highlight APIで任意の範囲のテキストをハイライトする
 
@@ -76,9 +73,7 @@ CSS.highlights.set('my-highlight', highlight);
 
 これで完了です。指定したテキスト範囲がハイライトされ、スタイルが適用されます。
 
-<Playground title="12文字以降をハイライトした例">
-  <Example1 />
-</Playground>
+<PlaygroundEmbed demo="基本的なハイライト" sectionId="highlight" />
 
 ## APIへの理解を深める
 
@@ -148,9 +143,7 @@ console.log(defaultPriorityHighlight.priority); // 0
 
 `priority`のデフォルトは0です。上記の例では、`highPriorityHighlight`が最も優先され、次に`lowPriorityHighlight`、最後に`defaultPriorityHighlight`が適用されます。
 
-<Playground title="優先度の異なるハイライトの例">
-  <Example2 />
-</Playground>
+<PlaygroundEmbed demo="優先度ベースハイライト" sectionId="highlight" />
 
 上記の例では、`Imagination`の部分に3つのハイライトを定義しています。一つは優先度1で青色、もう一つは優先度1で黄色、最後は優先度0で赤色です。
 
@@ -171,9 +164,7 @@ spellErrorHighlight.type = 'spelling-error';
 
 `highlight`には特別な意味がありません。`spelling-error`はスペルミス、`grammar-error`は文法エラーを意味します。
 
-<Playground title="grammar-errorでハイライトした例">
-  <Example3 />
-</Playground>
+<PlaygroundEmbed demo="スペリング・文法エラーハイライト" sectionId="highlight" />
 
 ### HighlightRegistry
 

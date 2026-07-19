@@ -8,8 +8,7 @@ featureIds:
 ---
 
 import { BaselineStatus } from '@k8o/arte-odyssey';
-import { ScrollendDemo, ScrollendTriggerDemo } from '@/app/_components/playgrounds/scrollend';
-import { Playground } from '@/app/_components/playgrounds';
+import { PlaygroundEmbed } from '@/app/_components/playgrounds';
 
 # scrollendイベントでスクロール終了を検知する
 
@@ -60,9 +59,7 @@ element.addEventListener('scrollend', () => {
 
 タイムアウト値を気にする必要がなく、シンプルに記述できます。
 
-<Playground title="scrollendイベントの基本">
-  <ScrollendDemo />
-</Playground>
+<PlaygroundEmbed demo="scrollendイベント" sectionId="scrollend" />
 
 ### 発火条件
 
@@ -70,9 +67,7 @@ element.addEventListener('scrollend', () => {
 
 一方で、スクロール位置が変化しなかった場合は発火しません。
 
-<Playground title="発火条件のデモ">
-  <ScrollendTriggerDemo />
-</Playground>
+<PlaygroundEmbed demo="発火条件" sectionId="scrollend" />
 
 ## おわりに
 

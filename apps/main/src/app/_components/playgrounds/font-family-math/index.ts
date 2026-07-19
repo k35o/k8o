@@ -8,12 +8,15 @@ export const fontFamilyMathSection: PlaygroundSection = {
   title: 'font-family: math',
   description:
     '数学的表現に特化したgeneric font familyで、数式を適切に表示します。',
+  category: 'css',
   type: 'blog',
   slug: 'font-family-math',
   demos: [
     {
       component: FontFamilyMathDemo,
       title: 'font-family: mathプロパティ',
+      description:
+        'チェックボックスでmathとsans-serifを切り替え、上付き文字や集合記号などの字形の違いを見比べられます。',
     },
   ],
 };

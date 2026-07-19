@@ -8,8 +8,7 @@ featureIds:
 ---
 
 import { BaselineStatus } from '@k8o/arte-odyssey';
-import { DialogRequestCloseDemo as Example1 } from '@/app/_components/playgrounds/requestclose';
-import { Playground } from '@/app/_components/playgrounds';
+import { PlaygroundEmbed } from '@/app/_components/playgrounds';
 
 # \<dialog\>要素を制御された状態で閉じるrequestClose
 
@@ -39,9 +38,10 @@ Firefox 139で`HTMLDialogElement`の`requestClose`メソッドが実装され、
 
 下の例は、ダイアログ内のフォームに入力中のテキストがあれば、「閉じる」ボタンや`Escape`キーでダイアログを閉じれないように実装しています。
 
-<Playground title="requestCloseの例">
-  <Example1 />
-</Playground>
+<PlaygroundEmbed
+  demo="ダイアログの閉じる動作検知"
+  sectionId="requestclose"
+/>
 
 `Escape`キーを押した時も同じように動作するはずですが、テキストがある状態で`Escape`キーを2回押下するとダイアログが閉じてしまいました（Chrome 141）。
 

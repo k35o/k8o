@@ -8,10 +8,7 @@ featureIds:
 ---
 
 import { BaselineStatus } from '@k8o/arte-odyssey';
-import { Playground } from '@/app/_components/playgrounds';
-import {
-  WebkitRelativePathDemo,
-} from '@/app/_components/playgrounds/input-file-webkitdirectory';
+import { PlaygroundEmbed } from '@/app/_components/playgrounds';
 import { LinkCard } from '@/app/blog/_components/link-card';
 import {
   BasicFileInputExamples,
@@ -84,9 +81,7 @@ for (const file of files ?? []) {
 
 下記の例では渡したディレクトリに含まれるファイルの`webkitRelativePath`プロパティを表示しています。
 
-<Playground title="webkitRelativePathの例">
-  <WebkitRelativePathDemo />
-</Playground>
+<PlaygroundEmbed demo="webkitRelativePathの例" sectionId="input-file-webkitdirectory" />
 
 `input`要素が持つ複数のファイルを扱う別の方法として`webkitEntries`プロパティがありますが、このプロパティはいくつかのブラウザで`webkitdirectory`属性と併用できないようなので注意してください。
 

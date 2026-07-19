@@ -9,8 +9,7 @@ featureIds:
 
 import { BaselineStatus } from '@k8o/arte-odyssey';
 import { LinkCard } from '@/app/blog/_components/link-card';
-import { WakeLockDemo as Example1 } from '@/app/_components/playgrounds/screen-wake-lock';
-import { Playground } from '@/app/_components/playgrounds';
+import { PlaygroundEmbed } from '@/app/_components/playgrounds';
 import { Image } from '@/app/blog/_components/image';
 import monitor from './_images/monitor.png';
 
@@ -27,9 +26,7 @@ Screen Wake Lock APIは、デバイスの画面がスリープ状態に入るの
 
 Screen Wake Lock APIを使用してスリープのロックを要求するボタンを用意しました。
 
-<Playground title="Screen Wake Lock API">
-  <Example1 />
-</Playground>
+<PlaygroundEmbed demo="スクリーンスリープ防止" sectionId="screen-wake-lock" />
 
 「スリープ機能をロックする」ボタンを押して、ロックを獲得すると「スリープ機能のロックを解除する」ボタンに切り替わります。
 

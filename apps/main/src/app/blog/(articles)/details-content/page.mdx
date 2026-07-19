@@ -8,11 +8,7 @@ featureIds:
 ---
 
 import { BaselineStatus } from '@k8o/arte-odyssey';
-import {
-  DetailsAnimationDemo as Example2,
-  DetailsContentDemo as Example1,
-} from '@/app/_components/playgrounds/details-content';
-import { Playground } from '@/app/_components/playgrounds';
+import { Playground, PlaygroundEmbed } from '@/app/_components/playgrounds';
 import { Image } from '@/app/blog/_components/image';
 import detailsSlot from './_images/details-slot.png';
 
@@ -51,9 +47,7 @@ import detailsSlot from './_images/details-slot.png';
 
 `::details-content`擬似要素は、この`slot`要素に対してスタイルを付与できます。
 
-<Playground title="details-contentの適用範囲">
-  <Example1 />
-</Playground>
+<PlaygroundEmbed demo="スタイリング例" sectionId="details-content" />
 
 上記の例は`details`の子要素（`summary`要素を除いたもの）に対してスタイルを適用した場合（前者）と、`::details-content`擬似要素に対してスタイルを適用した場合（後者）の違いを示しています。
 
@@ -88,9 +82,7 @@ details[open]::details-content {
 `details`要素が持つ`[open]`という状態は、即座に変化するため、アニメーションを適用するのは困難でした。
 しかし、`::details-content`擬似要素は`slot`要素に対するスタイルなので、`[open]`に引っ張られずにそれ自身の大きさ等をトリガーにアニメーションを適用できます。
 
-<Playground title="アニメーション付きdetails要素の例">
-  <Example2 />
-</Playground>
+<PlaygroundEmbed demo="アニメーション実装パターン" sectionId="details-content" />
 
 ```css
 details::details-content {

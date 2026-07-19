@@ -1,52 +1,38 @@
-import { Anchor, Card, Heading } from '@k8o/arte-odyssey';
-import type { Route } from 'next';
-import Link from 'next/link';
+import { Heading } from '@k8o/arte-odyssey';
+import { Suspense } from 'react';
 
-import { Playground, playgroundSections } from '@/app/_components/playgrounds';
+import { playgroundSections } from '@/app/_components/playgrounds';
+
+import {
+  PlaygroundsListContent,
+  PlaygroundsListSkeleton,
+} from './_components/playgrounds-list-content';
+import type { PlaygroundSummary } from './_utils/types';
+
+const playgroundSummaries: PlaygroundSummary[] = playgroundSections
+  .map((section) => ({
+    id: section.id,
+    title: section.title,
+    description: section.description,
+    category: section.category,
+    demoCount: section.demos.length,
+    demoTexts: section.demos.flatMap((demo) => [demo.title, demo.description]),
+    hasBlog: section.type === 'blog',
+  }))
+  .toSorted((a, b) => a.title.localeCompare(b.title, 'ja'));
 
 export default function PlaygroundsPage() {
   return (
     <div className="flex flex-col gap-8">
-      <div>
+      <div className="flex flex-col gap-3">
         <Heading type="h1">Playgrounds</Heading>
+        <p className="text-fg-mute leading-relaxed">
+          ブログ記事や興味のある技術の試作品を集めています。気になるものを選ぶと、実際に動かせるデモページが開きます。
+        </p>
       </div>
-
-      <div className="space-y-12">
-        {playgroundSections.map((section) => (
-          <Card key={section.id}>
-            <div className="p-6">
-              <div className="mb-6">
-                <div className="mb-3 flex items-start justify-between gap-4">
-                  <Heading type="h2">{section.title}</Heading>
-                </div>
-                <p className="text-fg-mute mb-3">{section.description}</p>
-                {section.type === 'blog' && (
-                  <Anchor
-                    href={`/blog/${section.slug}` as Route}
-                    renderAnchor={({ className, href, children }) => (
-                      <Link className={className} href={href}>
-                        {children}
-                      </Link>
-                    )}
-                  >
-                    ブログを読む
-                  </Anchor>
-                )}
-              </div>
-              <div className="space-y-6">
-                {section.demos.map((demo) => {
-                  const DemoComponent = demo.component;
-                  return (
-                    <Playground key={demo.title} title={demo.title}>
-                      <DemoComponent />
-                    </Playground>
-                  );
-                })}
-              </div>
-            </div>
-          </Card>
-        ))}
-      </div>
+      <Suspense fallback={<PlaygroundsListSkeleton />}>
+        <PlaygroundsListContent playgrounds={playgroundSummaries} />
+      </Suspense>
     </div>
   );
 }

@@ -8,10 +8,7 @@ featureIds:
 ---
 
 import { BaselineStatus } from '@k8o/arte-odyssey';
-import {
-  Playground,
-  TextDecorationSkipInkDemo,
-} from '@/app/_components/playgrounds';
+import { PlaygroundEmbed } from '@/app/_components/playgrounds';
 
 # text-decoration-skip-ink: allでunderlineをすべてのグリフの周りで途切れさせる
 
@@ -57,9 +54,10 @@ p {
 }
 ```
 
-<Playground title="skip-ink値の比較">
-  <TextDecorationSkipInkDemo />
-</Playground>
+<PlaygroundEmbed
+  demo="skip-ink値の比較"
+  sectionId="text-decoration-skip-ink-all"
+/>
 
 ## おわりに
 

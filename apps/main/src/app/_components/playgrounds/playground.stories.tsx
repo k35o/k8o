@@ -36,3 +36,12 @@ export const Primary: Story = {
     children: <Counter />,
   },
 };
+
+export const WithDescription: Story = {
+  args: {
+    title: 'Counterのサンプル',
+    description:
+      'ボタンを押すとカウントが1ずつ増えます。デモの説明文はタイトルの下に表示されます。',
+    children: <Counter />,
+  },
+};

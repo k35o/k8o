@@ -8,8 +8,7 @@ featureIds:
 ---
 
 import { BaselineStatus } from '@k8o/arte-odyssey';
-import { ActiveViewTransitionDemo } from '@/app/_components/playgrounds/active-view-transition';
-import { Playground } from '@/app/_components/playgrounds';
+import { PlaygroundEmbed } from '@/app/_components/playgrounds';
 
 # :active-view-transition-type()で遷移タイプごとに異なるアニメーションを適用する
 
@@ -104,9 +103,10 @@ html:active-view-transition-type(backwards) {
 
 「進む」「戻る」ボタンでアニメーションの方向が変わるデモです。
 
-<Playground title="タイプ別アニメーション">
-  <ActiveViewTransitionDemo />
-</Playground>
+<PlaygroundEmbed
+  demo="タイプ別アニメーション"
+  sectionId="active-view-transition"
+/>
 
 このデモでは以下のことを確認できます。
 

@@ -8,7 +8,7 @@ featureIds:
 ---
 
 import { BaselineStatus } from '@k8o/arte-odyssey';
-import { FieldSizingDemo, Playground } from '@/app/_components/playgrounds';
+import { PlaygroundEmbed } from '@/app/_components/playgrounds';
 
 # field-sizingでフォームコントロールを内容に合わせて伸縮させる
 
@@ -80,9 +80,7 @@ input {
 
 `field-sizing`を`content`と`fixed`に切り替えながら、各コントロールに入力してサイズの変化を確かめられます。テキストエリアは行を増やすと高さが伸び、セレクトボックスは選んだ選択肢に幅が合います。
 
-<Playground title="field-sizing: contentの挙動">
-  <FieldSizingDemo />
-</Playground>
+<PlaygroundEmbed demo="field-sizing: contentの挙動" sectionId="field-sizing" />
 
 ## おわりに
 

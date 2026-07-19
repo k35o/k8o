@@ -8,8 +8,7 @@ featureIds:
 ---
 
 import { Alert, BaselineStatus } from '@k8o/arte-odyssey';
-import { SpellingGrammarErrorDemo as Example1 } from '@/app/_components/playgrounds/spelling-grammar-error';
-import { Playground } from '@/app/_components/playgrounds';
+import { PlaygroundEmbed } from '@/app/_components/playgrounds';
 
 # スペルミス・文法エラーに対してスタイルを設定する::spelling-errorと::grammar-error
 
@@ -64,9 +63,10 @@ import { Playground } from '@/app/_components/playgrounds';
 
 ここで検出されたエラーが`::spelling-error`と`::grammar-error`の擬似要素でスタイリングされます。
 
-<Playground title="スペルミス・文法エラーのスタイル設定例">
-  <Example1 />
-</Playground>
+<PlaygroundEmbed
+  demo="スペル・文法エラースタイリング"
+  sectionId="spelling-grammar-error"
+/>
 
 そのままでは`spellcheck`属性の確認が行われず、見た目の変化がないことがあります。その場合は、テキストの一部を編集して再確認させることで、エラーが表示されるようになると思います。
 

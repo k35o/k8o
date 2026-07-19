@@ -9,7 +9,7 @@ featureIds:
 ---
 
 import { BaselineStatus } from '@k8o/arte-odyssey';
-import { Playground, SharedWorkerDemo } from '@/app/_components/playgrounds';
+import { PlaygroundEmbed } from '@/app/_components/playgrounds';
 
 # SharedWorkerでブラウジングコンテキスト間にWorkerを共有する
 
@@ -105,9 +105,7 @@ const analytics = new SharedWorker('./worker.js', { name: 'analytics' });
 
 ここまでの動きを実際に試せるPlaygroundを置いておきます。
 
-<Playground title="タブ間カウンタ">
-  <SharedWorkerDemo />
-</Playground>
+<PlaygroundEmbed demo="タブ間カウンタ" sectionId="shared-worker" />
 
 このPlaygroundのWorker側コードは次の通りです。
 
