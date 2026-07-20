@@ -1,8 +1,6 @@
 import type { PlaygroundSection } from '../types';
 import { WakeLockDemo } from './wake-lock-demo';
 
-export { WakeLockDemo } from './wake-lock-demo';
-
 export const screenWakeLockSection: PlaygroundSection = {
   id: 'screen-wake-lock',
   title: 'Screen Wake Lock API',

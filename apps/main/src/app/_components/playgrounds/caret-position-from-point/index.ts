@@ -2,9 +2,6 @@ import type { PlaygroundSection } from '../types';
 import { CaretPositionDemo } from './caret-position-demo';
 import { DragDropDemo } from './drag-drop-demo';
 
-export { CaretPositionDemo } from './caret-position-demo';
-export { DragDropDemo } from './drag-drop-demo';
-
 export const caretPositionFromPointSection: PlaygroundSection = {
   id: 'caret-position-from-point',
   title: 'CaretPositionFromPoint',

@@ -1,8 +1,6 @@
 import type { PlaygroundSection } from '../types';
 import { TextIndentKeywordsDemo } from './text-indent-keywords-demo';
 
-export { TextIndentKeywordsDemo } from './text-indent-keywords-demo';
-
 export const textIndentKeywordsSection: PlaygroundSection = {
   id: 'text-indent-keywords',
   title: 'text-indent: each-line / hanging',

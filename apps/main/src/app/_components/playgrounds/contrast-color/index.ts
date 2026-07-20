@@ -1,8 +1,6 @@
 import type { PlaygroundSection } from '../types';
 import { ContrastColorDemo } from './contrast-color-demo';
 
-export { ContrastColorDemo } from './contrast-color-demo';
-
 export const contrastColorSection: PlaygroundSection = {
   id: 'contrast-color',
   title: 'contrast-color',

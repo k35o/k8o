@@ -1,8 +1,6 @@
 import type { PlaygroundSection } from '../types';
 import { CrispEdgesDemo } from './crisp-edges-demo';
 
-export { CrispEdgesDemo } from './crisp-edges-demo';
-
 export const crispEdgesSection: PlaygroundSection = {
   id: 'crisp-edges',
   title: 'image-rendering: crisp-edges',

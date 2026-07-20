@@ -3,10 +3,6 @@ import { DonutScopeDemo } from './donut-scope-demo';
 import { ScopeLimitDemo } from './scope-limit-demo';
 import { ScopeProximityDemo } from './scope-proximity-demo';
 
-export { DonutScopeDemo } from './donut-scope-demo';
-export { ScopeLimitDemo } from './scope-limit-demo';
-export { ScopeProximityDemo } from './scope-proximity-demo';
-
 export const scopeSection: PlaygroundSection = {
   id: 'scope',
   title: '@scope',

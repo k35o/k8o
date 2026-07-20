@@ -3,10 +3,6 @@ import { GetComposedRanges } from './get-composed-ranges';
 import { SelectionMethods } from './selection-methods';
 import { SelectionProperties } from './selection-properties';
 
-export { GetComposedRanges } from './get-composed-ranges';
-export { SelectionMethods } from './selection-methods';
-export { SelectionProperties } from './selection-properties';
-
 export const composedRangesSection: PlaygroundSection = {
   id: 'composed-ranges',
   title: 'Selectionオブジェクト',

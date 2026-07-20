@@ -1,8 +1,6 @@
 import type { PlaygroundSection } from '../types';
 import { ActiveViewTransitionDemo } from './active-view-transition-demo';
 
-export { ActiveViewTransitionDemo } from './active-view-transition-demo';
-
 export const activeViewTransitionSection: PlaygroundSection = {
   id: 'active-view-transition',
   title: ':active-view-transition-type()疑似クラス',

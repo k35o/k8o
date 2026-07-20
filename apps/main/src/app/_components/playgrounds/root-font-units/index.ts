@@ -2,9 +2,6 @@ import type { PlaygroundSection } from '../types';
 import { RootComparisonDemo } from './root-comparison-demo';
 import { UnitComparisonDemo } from './unit-comparison-demo';
 
-export { RootComparisonDemo } from './root-comparison-demo';
-export { UnitComparisonDemo } from './unit-comparison-demo';
-
 export const rootFontUnitsSection: PlaygroundSection = {
   id: 'root-font-units',
   title: 'rcap, rch, rex, ric',
