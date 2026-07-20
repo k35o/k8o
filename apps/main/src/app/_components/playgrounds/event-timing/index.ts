@@ -1,8 +1,6 @@
 import type { PlaygroundSection } from '../types';
 import { EventTimingDemo } from './event-timing-demo';
 
-export { EventTimingDemo } from './event-timing-demo';
-
 export const eventTimingSection: PlaygroundSection = {
   id: 'event-timing',
   title: 'Event Timing',

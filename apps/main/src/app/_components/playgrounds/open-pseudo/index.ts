@@ -1,8 +1,6 @@
 import type { PlaygroundSection } from '../types';
 import { OpenPseudoDemo } from './open-pseudo-demo';
 
-export { OpenPseudoDemo } from './open-pseudo-demo';
-
 export const openPseudoSection: PlaygroundSection = {
   id: 'open-pseudo',
   title: ':open',

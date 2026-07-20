@@ -1,8 +1,6 @@
 import type { PlaygroundSection } from '../types';
 import { ShapeFunctionDemo } from './shape-function-demo';
 
-export { ShapeFunctionDemo } from './shape-function-demo';
-
 export const shapeFunctionSection: PlaygroundSection = {
   id: 'shape-function',
   title: 'shape()',

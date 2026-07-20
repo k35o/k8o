@@ -1,8 +1,6 @@
 import type { PlaygroundSection } from '../types';
 import { FontFamilyMathDemo } from './font-family-math-demo';
 
-export { FontFamilyMathDemo } from './font-family-math-demo';
-
 export const fontFamilyMathSection: PlaygroundSection = {
   id: 'font-family-math',
   title: 'font-family: math',

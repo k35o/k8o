@@ -1,8 +1,6 @@
 import type { PlaygroundSection } from '../types';
 import { BaselineShiftDemo } from './baseline-shift-demo';
 
-export { BaselineShiftDemo } from './baseline-shift-demo';
-
 export const baselineShiftSection: PlaygroundSection = {
   id: 'baseline-shift',
   title: 'baseline-shift',

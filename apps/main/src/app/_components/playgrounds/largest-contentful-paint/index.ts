@@ -1,8 +1,6 @@
 import type { PlaygroundSection } from '../types';
 import { LCPDemo } from './lcp-demo';
 
-export { LCPDemo } from './lcp-demo';
-
 export const lcpSection: PlaygroundSection = {
   id: 'largest-contentful-paint',
   title: 'Largest Contentful Paint',
