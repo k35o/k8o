@@ -20,7 +20,7 @@
     "knip": "knip"
   },
   "devDependencies": {
-    "@k8o/oxc-config": "0.2.0",
+    "@k8o/oxc-config": "catalog:",
     "@ls-lint/ls-lint": "2.3.1",
     "@types/node": "24.13.3",
     "@typescript/native-preview": "7.0.0-dev.20260707.2",
