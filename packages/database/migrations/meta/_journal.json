@@ -435,6 +435,13 @@
       "when": 1784083106218,
       "tag": "0061_absent_maestro",
       "breakpoints": true
+    },
+    {
+      "idx": 62,
+      "version": "6",
+      "when": 1784523558894,
+      "tag": "0062_gray_rumiko_fujikawa",
+      "breakpoints": true
     }
   ]
 }

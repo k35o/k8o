@@ -12,7 +12,7 @@ blockExoticSubdeps: true
 
 catalog:
   '@ai-sdk/openai-compatible': 3.0.7
-  '@k8o/arte-odyssey': 10.8.0
+  '@k8o/arte-odyssey': 11.0.0
   '@k8o/oxc-config': 0.2.0
   '@next/env': 16.2.10
   '@next/mdx': 16.2.10
@@ -44,6 +44,7 @@ catalog:
   storybook-addon-vrt: 0.2.0
   tailwindcss: 4.3.2
   vitest: 4.1.10
+  web-features: 3.32.0
   wrangler: 4.110.0
   zod: 4.4.3
 

@@ -2,7 +2,6 @@ import { cacheLife } from 'next/cache';
 
 import {
   fetchBaselineSnapshotStats,
-  fetchBrowserSupport,
   findBaselineSnapshots,
 } from '../infrastructure/baseline-repository';
 import type {
@@ -26,14 +25,6 @@ export const getBaselineSnapshots = async (
 
   const result = await findBaselineSnapshots(params);
   return result;
-};
-
-export const getBrowserSupport = async () => {
-  'use cache';
-  cacheLife('minutes');
-
-  const support = await fetchBrowserSupport();
-  return support;
 };
 
 export type {

@@ -13,7 +13,7 @@ export const BaselineHelpDialog: FC = () => {
   return (
     <>
       <IconButton
-        label="Baselineについて"
+        label="ステータスについて"
         onClick={() => {
           setIsOpen(true);
         }}
@@ -23,12 +23,21 @@ export const BaselineHelpDialog: FC = () => {
       </IconButton>
       <Modal isOpen={isOpen} onClose={onClose}>
         <Dialog.Root>
-          <Dialog.Header onClose={onClose} title="Baselineとは" />
+          <Dialog.Header onClose={onClose} title="ステータスについて" />
           <Dialog.Content>
             <div className="flex flex-col gap-6">
               <p className="text-sm leading-relaxed">
-                Baselineは、対象ブラウザ間で動作するWebプラットフォーム機能の互換性情報を提供します。機能がBaselineに含まれていれば、ブラウザ互換性を信頼できます。
+                Baselineは、対象ブラウザ間で動作するWebプラットフォーム機能の互換性情報を提供します。機能がBaselineに含まれていれば、ブラウザ互換性を信頼できます。このページでは、Baselineに到達した機能に加えて、まだ一部ブラウザのみ対応の新しい機能（先取り）も表示します。
               </p>
+              <div className="flex flex-col gap-2">
+                <div className="flex items-center gap-2">
+                  <Badge size="sm" text="Widely" tone="success" />
+                  <span className="text-sm font-bold">Widely Available</span>
+                </div>
+                <p className="text-fg-mute text-sm leading-relaxed">
+                  十分に定着し、多くのデバイスとブラウザで動作する機能です。少なくとも2年半（30ヶ月）以上ブラウザ間で利用可能な状態が続いています。日付はWidely到達日を表します。
+                </p>
+              </div>
               <div className="flex flex-col gap-2">
                 <div className="flex items-center gap-2">
                   <Badge size="sm" text="Newly" tone="info" />
@@ -40,11 +49,13 @@ export const BaselineHelpDialog: FC = () => {
               </div>
               <div className="flex flex-col gap-2">
                 <div className="flex items-center gap-2">
-                  <Badge size="sm" text="Widely" tone="success" />
-                  <span className="text-sm font-bold">Widely Available</span>
+                  <Badge size="sm" text="Limited" tone="warning" />
+                  <span className="text-sm font-bold">
+                    Limited availability（先取り）
+                  </span>
                 </div>
                 <p className="text-fg-mute text-sm leading-relaxed">
-                  十分に定着し、多くのデバイスとブラウザで動作する機能です。少なくとも2年半（30ヶ月）以上ブラウザ間で利用可能な状態が続いています。日付はWidely到達日を表します。
+                  まだ一部のブラウザだけが対応している、Baseline到達前の新しい機能です。全ブラウザが揃うのを待たず、直近1年でブラウザが対応したものを先取りで表示します。日付は最後にブラウザが対応した日を表します。
                 </p>
               </div>
               <div className="flex flex-col gap-2">

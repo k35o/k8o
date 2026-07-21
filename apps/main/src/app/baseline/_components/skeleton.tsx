@@ -16,11 +16,12 @@ export const BaselineFeatureListSkeleton: FC = () => (
       <div className="bg-bg-mute h-8 w-48 animate-pulse rounded-md" />
       <ul className="flex flex-col gap-2.5">
         {ROW_KEYS.map((key) => (
-          <li className="flex items-center gap-4 px-1 py-2.5" key={key}>
+          <li className="flex items-start gap-4 px-1 py-3" key={key}>
             <div className="bg-bg-mute h-5 w-14 animate-pulse rounded-full" />
             <div className="flex min-w-0 flex-1 flex-col gap-1">
               <div className="bg-bg-mute h-4 w-1/2 animate-pulse rounded-md" />
               <div className="bg-bg-mute h-3 w-1/3 animate-pulse rounded-md" />
+              <div className="bg-bg-mute mt-0.5 h-3 w-2/3 animate-pulse rounded-md" />
             </div>
           </li>
         ))}

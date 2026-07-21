@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 import { expect, userEvent, within } from 'storybook/test';
 
-import type { BaselineFeature } from '@/features/baseline/interface/queries';
+import type { PlatformFeature } from '@/features/baseline/interface/queries';
 import type { BlogLink } from '@/features/blog/interface/queries';
 
 import { BaselineFeatureList } from './baseline-feature-list';
@@ -13,48 +13,81 @@ const DAY_MS = 24 * 60 * 60 * 1000;
 const toDate = (offsetMs: number): string =>
   new Date(now - offsetMs).toISOString().slice(0, 10);
 
-const FEATURES: BaselineFeature[] = [
+const allBrowsers = (version: string): PlatformFeature['support'] =>
+  (
+    [
+      'chrome',
+      'chrome_android',
+      'edge',
+      'firefox',
+      'firefox_android',
+      'safari',
+      'safari_ios',
+    ] as const
+  ).map((browser) => ({ browser, version, date: '2024-01-01' }));
+
+const chromeOnly: PlatformFeature['support'] = [
+  { browser: 'chrome', version: '150', date: '2026-06-30' },
+  { browser: 'chrome_android', version: '150', date: '2026-06-30' },
+  { browser: 'edge', version: '150', date: '2026-06-30' },
+];
+
+const FEATURES: PlatformFeature[] = [
   {
     featureId: 'popover',
     name: 'Popover API',
     status: 'widely',
-    date: toDate(2 * DAY_MS),
+    baselineDate: toDate(2 * DAY_MS),
+    resolvedDate: toDate(2 * DAY_MS),
+    support: allBrowsers('114'),
   },
   {
     featureId: 'view-transitions',
     name: 'View transitions',
     status: 'widely',
-    date: toDate(10 * DAY_MS),
+    baselineDate: toDate(10 * DAY_MS),
+    resolvedDate: toDate(10 * DAY_MS),
+    support: allBrowsers('111'),
   },
   {
     featureId: 'font-family-math',
     name: 'Math font family',
     status: 'newly',
-    date: toDate(3 * DAY_MS),
+    baselineDate: toDate(3 * DAY_MS),
+    resolvedDate: toDate(3 * DAY_MS),
+    support: allBrowsers('133'),
   },
   {
     featureId: 'iterator-concat',
     name: 'Iterator.concat()',
     status: 'newly',
-    date: toDate(10 * DAY_MS),
+    baselineDate: toDate(10 * DAY_MS),
+    resolvedDate: toDate(10 * DAY_MS),
+    support: allBrowsers('146'),
+  },
+  {
+    featureId: 'text-fit',
+    name: 'text-fit',
+    status: 'limited',
+    baselineDate: null,
+    resolvedDate: toDate(DAY_MS),
+    support: chromeOnly,
   },
   {
     featureId: 'scope',
     name: '@scope',
     status: 'widely',
-    date: '2025-09-27',
+    baselineDate: '2025-09-27',
+    resolvedDate: '2025-09-27',
+    support: allBrowsers('118'),
   },
   {
     featureId: 'promise-try',
     name: 'Promise.try()',
     status: 'newly',
-    date: '2025-07-02',
-  },
-  {
-    featureId: 'highlight',
-    name: 'Custom highlight',
-    status: 'newly',
-    date: '2025-03-12',
+    baselineDate: '2025-07-02',
+    resolvedDate: '2025-07-02',
+    support: allBrowsers('134'),
   },
 ];
 
@@ -65,11 +98,7 @@ const BLOG_MAP: Record<string, BlogLink> = {
     title: 'font-family: mathの紹介',
   },
   scope: { slug: 'scope', title: '@scopeの使い方' },
-  'promise-try': {
-    slug: 'promise-try',
-    title: 'Promise.try()が来た',
-  },
-  highlight: { slug: 'highlight', title: 'Custom Highlightの紹介' },
+  'promise-try': { slug: 'promise-try', title: 'Promise.try()が来た' },
 };
 
 const meta: Meta<typeof BaselineFeatureList> = {
@@ -93,14 +122,24 @@ export const Primary: Story = {
       canvas.getByRole('textbox', { name: '検索' }),
     ).toBeInTheDocument();
     await expect(
-      canvas.getByRole('checkbox', { name: 'Newly Available' }),
+      canvas.getByRole('checkbox', { name: 'Widely' }),
     ).toBeChecked();
+    await expect(canvas.getByRole('checkbox', { name: 'Newly' })).toBeChecked();
     await expect(
-      canvas.getByRole('checkbox', { name: 'Widely Available' }),
+      canvas.getByRole('checkbox', { name: 'Limited（先取り）' }),
     ).toBeChecked();
     await expect(
       canvas.getByRole('tablist', { name: '年を選択' }),
     ).toBeInTheDocument();
+  },
+};
+
+export const ShowsBrowserSupport: Story = {
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    // Limited の text-fit は Chrome 対応・Safari 未対応が並ぶ。
+    await expect(canvas.getAllByText('text-fit').length).toBeGreaterThan(0);
+    await expect(canvas.getAllByText('Safari').length).toBeGreaterThan(0);
   },
 };
 
@@ -114,27 +153,15 @@ export const FilterBySearch: Story = {
   },
 };
 
-export const FilterByNewlyOnly: Story = {
+export const FilterOutLimited: Story = {
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
-    const widelyCheckbox = canvas.getByRole('checkbox', {
-      name: 'Widely Available',
-    });
-    await userEvent.click(widelyCheckbox);
-    await expect(canvas.queryByText('Popover API')).toBeNull();
-    await expect(canvas.getByText('Math font family')).toBeInTheDocument();
-  },
-};
-
-export const FilterByWidelyOnly: Story = {
-  play: async ({ canvasElement }) => {
-    const canvas = within(canvasElement);
-    const newlyCheckbox = canvas.getByRole('checkbox', {
-      name: 'Newly Available',
-    });
-    await userEvent.click(newlyCheckbox);
+    // 先取り(Limited)を外すと text-fit が消え、Baseline 済は残る。
+    await userEvent.click(
+      canvas.getByRole('checkbox', { name: 'Limited（先取り）' }),
+    );
+    await expect(canvas.queryByText('text-fit')).toBeNull();
     await expect(canvas.getByText('Popover API')).toBeInTheDocument();
-    await expect(canvas.queryByText('Math font family')).toBeNull();
   },
 };
 
@@ -160,13 +187,11 @@ export const EmptyResult: Story = {
 export const FilterByRecentOnly: Story = {
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
-    const recentCheckbox = canvas.getByRole('checkbox', {
-      name: '直近1週間の更新のみ',
-    });
-    await userEvent.click(recentCheckbox);
+    await userEvent.click(
+      canvas.getByRole('checkbox', { name: '直近1週間の更新のみ' }),
+    );
     await expect(canvas.getByText('Popover API')).toBeInTheDocument();
-    await expect(canvas.getByText('Math font family')).toBeInTheDocument();
+    await expect(canvas.getAllByText('text-fit').length).toBeGreaterThan(0);
     await expect(canvas.queryByText('View transitions')).toBeNull();
-    await expect(canvas.queryByText('Iterator.concat()')).toBeNull();
   },
 };

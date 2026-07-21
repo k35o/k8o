@@ -1,13 +1,10 @@
 'use client';
 
-import {
-  BaselineStatus,
-  Card,
-  FormControl,
-  NumberField,
-  Select,
-} from '@k8o/arte-odyssey';
+import { Card, FormControl, NumberField, Select } from '@k8o/arte-odyssey';
 import type { FC } from 'react';
+
+import { BaselineStatusView } from '@/app/_components/baseline-status/baseline-status-view';
+import type { PlatformFeature } from '@/features/baseline/interface/queries';
 
 import { CORNER_SHAPE_LABELS, CORNER_SHAPES } from '../../_types/corner-shape';
 import type { CornerShape } from '../../_types/corner-shape';
@@ -27,7 +24,9 @@ const SHAPE_OPTIONS = CORNER_SHAPES.map((shape) => ({
 const isCornerShape = (value: string): value is CornerShape =>
   (CORNER_SHAPES as readonly string[]).includes(value);
 
-export const RadiusMaker: FC = () => {
+export const RadiusMaker: FC<{
+  cornerShapeStatus: PlatformFeature | null;
+}> = ({ cornerShapeStatus }) => {
   const {
     corners,
     width,
@@ -94,7 +93,9 @@ export const RadiusMaker: FC = () => {
               )}
             />
           </div>
-          {shape !== 'round' && <BaselineStatus featureId="corner-shape" />}
+          {shape !== 'round' && (
+            <BaselineStatusView feature={cornerShapeStatus} />
+          )}
         </div>
       </Card>
       <div className="grid gap-6 sm:grid-cols-2 sm:items-start">
