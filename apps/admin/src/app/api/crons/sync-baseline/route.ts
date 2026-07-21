@@ -4,7 +4,6 @@ import type { NextRequest } from 'next/server';
 import { syncBaseline } from '@/features/baseline/application/sync-baseline';
 import { sendPushNotification } from '@/features/push-notification/interface/commands';
 import { isAuthorizedCronRequest } from '@/shared/auth/verify-cron-request';
-import { revalidateMainCache } from '@/shared/cache/revalidate-main';
 
 export async function GET(req: NextRequest): Promise<NextResponse> {
   if (!isAuthorizedCronRequest(req)) {
@@ -13,10 +12,6 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
 
   try {
     const { newFeatures, statusChanges } = await syncBaseline();
-
-    // browser_support(min versions) は main の RootLayout が db-content タグ経由で
-    // 参照するため、同期後に再検証してフロアの鮮度を保つ
-    await revalidateMainCache();
 
     const hasChanges = newFeatures.length > 0 || statusChanges.length > 0;
 

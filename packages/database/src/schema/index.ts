@@ -22,7 +22,6 @@ import { blogTag, blogTagRelations } from './blog-tag';
 import { blogViewDailies } from './blog-view-dailies';
 import { blogViews } from './blog-views';
 import { blogs, blogsRelations } from './blogs';
-import { browserSupport } from './browser-support';
 import { comments, commentsRelations } from './comments';
 import { feedbacks, feedbacksRelations } from './feedback';
 import { pushLogs } from './push-logs';
@@ -44,7 +43,6 @@ export const schema = {
   comments,
   reportingReports,
   baselineSnapshots,
-  browserSupport,
   pushSubscriptions,
   pushLogs,
   blogs,

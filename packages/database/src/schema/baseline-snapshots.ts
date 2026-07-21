@@ -10,13 +10,8 @@ import {
 const BASELINE_STATUSES = ['newly', 'widely'] as const;
 type BaselineStatus = (typeof BASELINE_STATUSES)[number];
 
-// webstatus.dev の browser_implementations（機能ごとのブラウザ別対応状況）。
-// キーは chrome / chrome_android / edge / firefox / firefox_android / safari / safari_ios など。
-export type BrowserImplementations = Record<
-  string,
-  { version?: string; status?: string; date?: string }
->;
-
+// 「前回 push 済みの baseline 状態」を保持する差分の基準。表示は main が web-features を
+// 直接読むため、ここは push 通知の差分検知に必要な最小限（feature_id / name / status / date）だけを持つ。
 export const baselineSnapshots = sqliteTable(
   'baseline_snapshots',
   {
@@ -25,9 +20,6 @@ export const baselineSnapshots = sqliteTable(
     name: text('name').notNull(),
     status: text('status').$type<BaselineStatus>().notNull(),
     date: text('date').notNull(),
-    browserImplementations: text('browser_implementations', {
-      mode: 'json',
-    }).$type<BrowserImplementations>(),
     createdAt: text('created_at')
       .notNull()
       .$defaultFn(() => new Date().toISOString()),
