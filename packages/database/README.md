@@ -138,7 +138,6 @@ erDiagram
     text name
     text status
     text date
-    text browser_implementations
     text created_at
     text updated_at
   }
@@ -164,11 +163,6 @@ erDiagram
     text slug UK
     integer published
     text created_at
-  }
-  browser_support {
-    text browser PK
-    text version
-    text updated_at
   }
   comments {
     integer id PK
