@@ -134,7 +134,7 @@ export const PushSubscribe: FC<Props> = ({ vapidPublicKey }) => {
     <Card width="full" appearance="bordered">
       <div className="flex flex-col gap-4 p-6">
         <p className="text-fg-base text-sm">
-          ReadingsとBaselineの更新をプッシュ通知で受け取れます。
+          ReadingsとBrowser Supportの更新をプッシュ通知で受け取れます。
         </p>
         {!isSupported && (
           <Alert

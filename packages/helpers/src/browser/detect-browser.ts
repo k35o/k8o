@@ -1,4 +1,4 @@
-export type BaselineBrowser =
+export type CoreBrowser =
   | 'chrome'
   | 'chrome_android'
   | 'edge'
@@ -7,15 +7,15 @@ export type BaselineBrowser =
   | 'safari'
   | 'safari_ios';
 
-export type BaselineMinVersions = Partial<Record<BaselineBrowser, string>>;
+export type BrowserMinVersions = Partial<Record<CoreBrowser, string>>;
 
 export type DetectedBrowser = {
-  browser: BaselineBrowser;
+  browser: CoreBrowser;
   version: string;
 };
 
-// Baseline のコア7ブラウザ。警告判定とサポート最低版の算出で共通の対象集合とする。
-export const CORE_BROWSERS: readonly BaselineBrowser[] = [
+// 対応状況の集計対象とするコア7ブラウザ。警告判定とサポート最低版の算出で共通の対象集合とする。
+export const CORE_BROWSERS: readonly CoreBrowser[] = [
   'chrome',
   'chrome_android',
   'edge',
@@ -26,7 +26,7 @@ export const CORE_BROWSERS: readonly BaselineBrowser[] = [
 ];
 
 // ブラウザキー→表示名。main の警告モーダルと admin の一覧で共通利用する。
-export const BROWSER_LABELS: Record<BaselineBrowser, string> = {
+export const BROWSER_LABELS: Record<CoreBrowser, string> = {
   chrome: 'Chrome',
   chrome_android: 'Chrome (Android)',
   edge: 'Edge',
@@ -36,7 +36,7 @@ export const BROWSER_LABELS: Record<BaselineBrowser, string> = {
   safari_ios: 'Safari (iOS)',
 };
 
-// SamsungBrowser/Opera など Chromium/Gecko 派生ブラウザは Baseline のコア7ブラウザに
+// SamsungBrowser/Opera など Chromium/Gecko 派生ブラウザはコア7ブラウザに
 // 含まれないため、誤検出を避けて警告対象から外す。
 const DOWNSTREAM_PATTERN =
   /SamsungBrowser|OPR\/|OPT\/|EdgA\/|UCBrowser|YaBrowser|Whale|QQBrowser|MiuiBrowser|HuaweiBrowser|Vivaldi|DuckDuckGo|Sleipnir|Silk/u;

@@ -16,12 +16,12 @@ import {
   userRelations,
   verification,
 } from './auth-schema';
-import { baselineSnapshots } from './baseline-snapshots';
 import { blogComment, blogCommentRelations } from './blog-comment';
 import { blogTag, blogTagRelations } from './blog-tag';
 import { blogViewDailies } from './blog-view-dailies';
 import { blogViews } from './blog-views';
 import { blogs, blogsRelations } from './blogs';
+import { browserSupportSnapshots } from './browser-support-snapshots';
 import { comments, commentsRelations } from './comments';
 import { feedbacks, feedbacksRelations } from './feedback';
 import { pushLogs } from './push-logs';
@@ -42,7 +42,7 @@ export const schema = {
   tags,
   comments,
   reportingReports,
-  baselineSnapshots,
+  browserSupportSnapshots,
   pushSubscriptions,
   pushLogs,
   blogs,

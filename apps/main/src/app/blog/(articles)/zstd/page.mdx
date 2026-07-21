@@ -59,7 +59,7 @@ Content-Encoding: br
 
 ### ブラウザでの利用
 
-<BaselineStatus featureId="zstd" />
+<BrowserSupportStatus featureId="zstd" />
 
 Baseline 2026に加わったことで、主要なブラウザで`zstd`が利用できるようになりました。
 対応したブラウザでは、`Accept-Encoding`ヘッダーに`zstd`が自動的に追加されます。
@@ -80,7 +80,7 @@ Content-Encoding: zstd
 
 ### 圧縮辞書転送
 
-<BaselineStatus featureId="compression-dictionary-transport" />
+<BrowserSupportStatus featureId="compression-dictionary-transport" />
 
 `zstd`はさらに、圧縮辞書を用いた圧縮辞書転送（[RFC 9842](https://www.rfc-editor.org/rfc/rfc9842)）にも対応しています。
 通常の圧縮はレスポンス内の冗長性を検出して圧縮しますが、圧縮辞書転送ではあらかじめ用意した辞書を参照することで、さらに効率的な圧縮が可能です。

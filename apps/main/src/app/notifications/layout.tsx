@@ -2,7 +2,7 @@ import { Heading } from '@k8o/arte-odyssey';
 import type { Metadata } from 'next';
 
 const description =
-  'ReadingsとBaselineの更新をプッシュ通知で受け取れます。受け取った通知の履歴も確認できます。';
+  'ReadingsとBrowser Supportの更新をプッシュ通知で受け取れます。受け取った通知の履歴も確認できます。';
 
 export const metadata = {
   title: '通知',

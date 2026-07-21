@@ -8,7 +8,7 @@ import {
   uniqueIndex,
 } from 'drizzle-orm/sqlite-core';
 
-const PUSH_LOG_KINDS = ['readings_updated', 'baseline_updated'] as const;
+const PUSH_LOG_KINDS = ['readings_updated', 'browser_support_updated'] as const;
 export type PushLogKind = (typeof PUSH_LOG_KINDS)[number];
 
 export const pushLogs = sqliteTable(
@@ -32,7 +32,7 @@ export const pushLogs = sqliteTable(
     index('push_logs_sent_at_idx').on(table.sentAt),
     check(
       'push_logs_kind_check',
-      sql`${table.kind} IN ('readings_updated', 'baseline_updated')`,
+      sql`${table.kind} IN ('readings_updated', 'browser_support_updated')`,
     ),
   ],
 );

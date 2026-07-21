@@ -132,15 +132,6 @@ erDiagram
     text created_at
     text updated_at
   }
-  baseline_snapshots {
-    integer id PK
-    text feature_id UK
-    text name
-    text status
-    text date
-    text created_at
-    text updated_at
-  }
   blog_comment {
     integer blog_id FK
     integer comment_id FK
@@ -163,6 +154,15 @@ erDiagram
     text slug UK
     integer published
     text created_at
+  }
+  browser_support_snapshots {
+    integer id PK
+    text feature_id UK
+    text name
+    text status
+    text date
+    text created_at
+    text updated_at
   }
   comments {
     integer id PK

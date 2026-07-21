@@ -5,7 +5,7 @@ import '@repo/code-highlight/styles.css';
 import { Analytics } from '@vercel/analytics/react';
 import type { Metadata } from 'next';
 
-import { getBaselineMinVersions } from '@/features/baseline/interface/queries';
+import { getBrowserMinVersions } from '@/features/browser-support/interface/queries';
 import { ReactScan } from '@/shared/browser/react-scan';
 
 import { GlobalLayout } from './_components/global-layout';
@@ -53,7 +53,7 @@ export const metadata = {
 } satisfies Metadata;
 
 export default async function RootLayout({ children }: LayoutProps<'/'>) {
-  const minVersions = await getBaselineMinVersions();
+  const minVersions = await getBrowserMinVersions();
   const gaId = process.env['NEXT_PUBLIC_GOOGLE_ANALYTICS_ID'];
 
   return (

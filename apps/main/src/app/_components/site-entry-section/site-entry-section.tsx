@@ -24,7 +24,7 @@ import type { SiteEntryIcon, SiteEntryKind } from '@/shared/site/site-entries';
 import { AppCard } from '../app-card';
 
 const ICON: Record<SiteEntryIcon, ReactNode> = {
-  baseline: <ShieldCheckIcon size="md" />,
+  browserSupport: <ShieldCheckIcon size="md" />,
   colorConverter: <ColorInfoIcon size="md" />,
   contrastChecker: <ColorContrastIcon size="md" />,
   colorQuiz: <MixedColorIcon size="md" />,

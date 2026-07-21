@@ -32,7 +32,7 @@ export default function Home() {
           </div>
 
           <p className="text-fg-mute col-span-2 leading-relaxed lg:col-span-1 lg:col-start-2">
-            Webフロントエンドを軸足に、最近はBaselineに追加された機能の深掘りをブログに残しています。
+            Webフロントエンドを軸足に、最近は新しくブラウザで使えるようになった機能の深掘りをブログに残しています。
             デザインとの境界にも興味があり、デザインシステムArteOdysseyを育てています。
           </p>
         </header>

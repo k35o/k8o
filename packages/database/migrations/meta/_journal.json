@@ -442,6 +442,13 @@
       "when": 1784523558894,
       "tag": "0062_gray_rumiko_fujikawa",
       "breakpoints": true
+    },
+    {
+      "idx": 63,
+      "version": "6",
+      "when": 1784609958894,
+      "tag": "0063_rename_baseline_to_browser_support",
+      "breakpoints": true
     }
   ]
 }
