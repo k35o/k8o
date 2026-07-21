@@ -14,28 +14,57 @@ import { useQueryStates } from 'nuqs';
 import { useMemo } from 'react';
 import type { FC } from 'react';
 
-import type { BaselineFeature } from '@/features/baseline/interface/queries';
+import { toBrowserFamilies } from '@/app/_components/baseline-status/browser-families';
+import type {
+  PlatformFeature,
+  PlatformStatus,
+} from '@/features/baseline/interface/queries';
 import type { BlogLink } from '@/features/blog/interface/queries';
 
 import { baselineListParsers } from '../_utils/search-params';
 
-type StatusVisibility = {
-  newly: boolean;
-  widely: boolean;
+type StatusVisibility = Record<PlatformStatus, boolean>;
+
+const STATUS_META: Record<
+  PlatformStatus,
+  { label: string; tone: 'success' | 'info' | 'warning' }
+> = {
+  widely: { label: 'Widely', tone: 'success' },
+  newly: { label: 'Newly', tone: 'info' },
+  limited: { label: 'Limited', tone: 'warning' },
 };
 
 const SEVEN_DAYS_MS = 7 * 24 * 60 * 60 * 1000;
 
-const getAvailableYears = (features: BaselineFeature[]): string[] => {
+const getAvailableYears = (features: PlatformFeature[]): string[] => {
   const years = new Set<string>();
   for (const feature of features) {
-    years.add(feature.date.slice(0, 4));
+    years.add(feature.resolvedDate.slice(0, 4));
   }
   return [...years].toSorted((a, b) => b.localeCompare(a));
 };
 
+const BrowserSupport: FC<{ feature: PlatformFeature }> = ({ feature }) => (
+  <ul className="mt-0.5 flex flex-wrap gap-x-3 gap-y-0.5">
+    {toBrowserFamilies(feature.support).map((family) => (
+      <li className="flex items-center gap-1 text-xs" key={family.label}>
+        <span className="text-fg-mute">{family.label}</span>
+        <span
+          className={
+            family.supported
+              ? 'text-fg-success font-mono'
+              : 'text-fg-mute font-mono'
+          }
+        >
+          {family.supported ? (family.version ?? '対応') : '—'}
+        </span>
+      </li>
+    ))}
+  </ul>
+);
+
 const FeatureList: FC<{
-  features: BaselineFeature[];
+  features: PlatformFeature[];
   blogMap: Record<string, BlogLink>;
   visibility: StatusVisibility;
   query: string;
@@ -50,15 +79,10 @@ const FeatureList: FC<{
   recentThresholdMs,
 }) => {
   const filtered = useMemo(() => {
-    let result = features;
-    result = result.filter(
-      (f) =>
-        (f.status === 'newly' && visibility.newly) ||
-        (f.status === 'widely' && visibility.widely),
-    );
+    let result = features.filter((f) => visibility[f.status]);
     if (recentOnly) {
       result = result.filter(
-        (f) => new Date(f.date).getTime() >= recentThresholdMs,
+        (f) => new Date(f.resolvedDate).getTime() >= recentThresholdMs,
       );
     }
     if (query) {
@@ -72,83 +96,75 @@ const FeatureList: FC<{
     return result;
   }, [features, visibility, query, recentOnly, recentThresholdMs]);
 
+  if (filtered.length === 0) {
+    return (
+      <p className="text-fg-mute py-12 text-center text-sm">
+        該当する機能が見つかりません
+      </p>
+    );
+  }
+
   return (
-    <div className="flex flex-col gap-4">
-      {filtered.length === 0 ? (
-        <p className="text-fg-mute py-12 text-center text-sm">
-          該当する機能が見つかりません
-        </p>
-      ) : (
-        <ul className="divide-border-base divide-y">
-          {filtered.map((feature) => {
-            const blog = blogMap[feature.featureId];
-            return (
-              <li
-                className="flex items-center gap-4 px-1 py-2.5"
-                key={feature.featureId}
+    <ul className="divide-border-base divide-y">
+      {filtered.map((feature) => {
+        const blog = blogMap[feature.featureId];
+        const meta = STATUS_META[feature.status];
+        return (
+          <li
+            className="flex items-start gap-3 px-1 py-3 sm:gap-4"
+            key={feature.featureId}
+          >
+            <Badge size="sm" text={meta.label} tone={meta.tone} />
+            <div className="flex min-w-0 flex-1 flex-col gap-0.5">
+              <span className="text-sm leading-relaxed">{feature.name}</span>
+              <span className="text-fg-mute font-mono text-xs">
+                {feature.featureId}
+              </span>
+              <BrowserSupport feature={feature} />
+            </div>
+            {blog && (
+              <Link
+                className="text-primary-fg shrink-0 text-xs transition-colors duration-150 ease-out hover:underline"
+                href={`/blog/${blog.slug}` as Route}
               >
-                <Badge
-                  size="sm"
-                  text={feature.status === 'newly' ? 'Newly' : 'Widely'}
-                  tone={feature.status === 'newly' ? 'info' : 'success'}
-                />
-                <div className="flex min-w-0 flex-1 flex-col gap-0.5">
-                  <span className="text-sm leading-relaxed">
-                    {feature.name}
-                  </span>
-                  <span className="text-fg-mute font-mono text-xs">
-                    {feature.featureId}
-                  </span>
-                </div>
-                {blog && (
-                  <Link
-                    className="text-primary-fg shrink-0 text-xs transition-colors duration-150 ease-out hover:underline"
-                    href={`/blog/${blog.slug}` as Route}
-                  >
-                    Blog
-                  </Link>
-                )}
-                <span className="text-fg-mute hidden shrink-0 text-xs sm:block">
-                  {formatDate(new Date(feature.date), 'yyyy/MM/dd')}
-                </span>
-              </li>
-            );
-          })}
-        </ul>
-      )}
-    </div>
+                Blog
+              </Link>
+            )}
+            <span className="text-fg-mute hidden shrink-0 text-xs sm:block">
+              {formatDate(new Date(feature.resolvedDate), 'yyyy/MM/dd')}
+            </span>
+          </li>
+        );
+      })}
+    </ul>
   );
 };
 
-type YearData = {
-  features: BaselineFeature[];
-};
-
 export const BaselineFeatureList: FC<{
-  features: BaselineFeature[];
+  features: PlatformFeature[];
   blogMap: Record<string, BlogLink>;
   currentYear: string;
   nowMs: number;
 }> = ({ features, blogMap, currentYear, nowMs }) => {
   const [params, setParams] = useQueryStates(baselineListParsers);
-  const { q: query, newly, widely, recent: recentOnly } = params;
+  const { q: query, newly, widely, limited, recent: recentOnly } = params;
   const visibility = useMemo<StatusVisibility>(
-    () => ({ newly, widely }),
-    [newly, widely],
+    () => ({ newly, widely, limited }),
+    [newly, widely, limited],
   );
   const recentThresholdMs = nowMs - SEVEN_DAYS_MS;
 
   const availableYears = useMemo(() => getAvailableYears(features), [features]);
 
   const dataByYear = useMemo(() => {
-    const map = new Map<string, YearData>();
+    const map = new Map<string, PlatformFeature[]>();
     for (const feature of features) {
-      const year = feature.date.slice(0, 4);
+      const year = feature.resolvedDate.slice(0, 4);
       const entry = map.get(year);
       if (entry) {
-        entry.features.push(feature);
+        entry.push(feature);
       } else {
-        map.set(year, { features: [feature] });
+        map.set(year, [feature]);
       }
     }
     return map;
@@ -158,17 +174,16 @@ export const BaselineFeatureList: FC<{
     const counts = new Map<string, number>();
     const lowerQuery = query.toLowerCase();
     for (const feature of features) {
-      const matchesVisibility =
-        (feature.status === 'newly' && visibility.newly) ||
-        (feature.status === 'widely' && visibility.widely);
+      const matchesVisibility = visibility[feature.status];
       const matchesRecent =
-        !recentOnly || new Date(feature.date).getTime() >= recentThresholdMs;
+        !recentOnly ||
+        new Date(feature.resolvedDate).getTime() >= recentThresholdMs;
       const matchesQuery =
         !query ||
         feature.name.toLowerCase().includes(lowerQuery) ||
         feature.featureId.toLowerCase().includes(lowerQuery);
       if (matchesVisibility && matchesRecent && matchesQuery) {
-        const year = feature.date.slice(0, 4);
+        const year = feature.resolvedDate.slice(0, 4);
         counts.set(year, (counts.get(year) ?? 0) + 1);
       }
     }
@@ -198,20 +213,27 @@ export const BaselineFeatureList: FC<{
           />
         </div>
         <div className="flex flex-wrap items-center gap-x-8 gap-y-4 text-sm">
-          <div className="flex gap-4">
+          <div className="flex flex-wrap gap-4">
             <Checkbox
-              label="Newly Available"
+              label="Widely"
+              onChange={() => {
+                void setParams({ widely: !widely });
+              }}
+              value={widely}
+            />
+            <Checkbox
+              label="Newly"
               onChange={() => {
                 void setParams({ newly: !newly });
               }}
               value={newly}
             />
             <Checkbox
-              label="Widely Available"
+              label="Limited（先取り）"
               onChange={() => {
-                void setParams({ widely: !widely });
+                void setParams({ limited: !limited });
               }}
-              value={widely}
+              value={limited}
             />
           </div>
           <Checkbox
@@ -247,21 +269,18 @@ export const BaselineFeatureList: FC<{
               );
             })}
           </Tabs.List>
-          {availableYears.map((year) => {
-            const data = dataByYear.get(year);
-            return (
-              <Tabs.Panel id={year} key={year}>
-                <FeatureList
-                  blogMap={blogMap}
-                  features={data?.features ?? []}
-                  query={query}
-                  recentOnly={recentOnly}
-                  recentThresholdMs={recentThresholdMs}
-                  visibility={visibility}
-                />
-              </Tabs.Panel>
-            );
-          })}
+          {availableYears.map((year) => (
+            <Tabs.Panel id={year} key={year}>
+              <FeatureList
+                blogMap={blogMap}
+                features={dataByYear.get(year) ?? []}
+                query={query}
+                recentOnly={recentOnly}
+                recentThresholdMs={recentThresholdMs}
+                visibility={visibility}
+              />
+            </Tabs.Panel>
+          ))}
         </Tabs.Root>
       )}
     </section>

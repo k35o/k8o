@@ -6,6 +6,20 @@ import { RadiusMaker } from './radius-maker';
 const meta: Meta<typeof RadiusMaker> = {
   title: 'app/radius-maker/radius-maker',
   component: RadiusMaker,
+  args: {
+    cornerShapeStatus: {
+      featureId: 'corner-shape',
+      name: 'corner-shape',
+      status: 'limited',
+      baselineDate: null,
+      resolvedDate: '2025-08-05',
+      support: [
+        { browser: 'chrome', version: '139', date: '2025-08-05' },
+        { browser: 'chrome_android', version: '139', date: '2025-08-05' },
+        { browser: 'edge', version: '139', date: '2025-08-05' },
+      ],
+    },
+  },
 };
 
 export default meta;

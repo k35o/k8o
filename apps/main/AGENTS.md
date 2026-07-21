@@ -45,7 +45,9 @@ Next.js の `cacheLife` は `features/*/interface` に置く。`app` のUIコン
 
 キャッシュを変更する Server Action / Route Handler は、更新対象の route に `revalidatePath` を明示する。
 
-admin の Server Action や cron から更新されうる DB 由来のキャッシュ（talks / tags / blogs / slides の一覧・詳細、baseline のブラウザ対応バージョン、reading-list の記事・ソース一覧）には `cacheTag('db-content')`（`@/shared/cache/cache-tags`）を付与する。admin は書き込み・同期の成功後に `/api/revalidate`（`REVALIDATE_SECRET` で認可）を叩いてこのタグを再検証する。
+admin の Server Action や cron から更新されうる DB 由来のキャッシュ（talks / tags / blogs / slides の一覧・詳細、reading-list の記事・ソース一覧）には `cacheTag('db-content')`（`@/shared/cache/cache-tags`）を付与する。admin は書き込み・同期の成功後に `/api/revalidate`（`REVALIDATE_SECRET` で認可）を叩いてこのタグを再検証する。
+
+baseline（機能一覧・ブラウザ対応バージョン）は `web-features` パッケージをビルド時に読むため DB 非依存で、`db-content` タグは付けない（デプロイ単位でのみ更新される）。
 
 ## TailwindCSS：ArteOdysseyカスタムトークンのみ使用
 

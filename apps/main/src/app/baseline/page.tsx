@@ -1,7 +1,7 @@
 import { Anchor } from '@k8o/arte-odyssey';
 import { Suspense } from 'react';
 
-import { getBaselineFeatures } from '@/features/baseline/interface/queries';
+import { getPlatformFeatures } from '@/features/baseline/interface/queries';
 import { getFeatureBlogMap } from '@/features/blog/interface/queries';
 
 import {
@@ -11,11 +11,11 @@ import {
 
 export default async function BaselinePage() {
   const [{ features, nowMs }, blogMap] = await Promise.all([
-    getBaselineFeatures(),
+    getPlatformFeatures(),
     getFeatureBlogMap(),
   ]);
 
-  const latestYear = features[0]?.date.slice(0, 4) ?? '';
+  const latestYear = features[0]?.resolvedDate.slice(0, 4) ?? '';
 
   return (
     <div className="flex flex-col gap-6">
@@ -31,8 +31,11 @@ export default async function BaselinePage() {
       </Suspense>
       <p className="text-fg-mute text-xs">
         Source:{' '}
-        <Anchor href="https://webstatus.dev" openInNewTab>
-          Web Platform Status
+        <Anchor
+          href="https://github.com/web-platform-dx/web-features"
+          openInNewTab
+        >
+          web-features
         </Anchor>
       </p>
     </div>

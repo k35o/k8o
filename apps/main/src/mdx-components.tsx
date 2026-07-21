@@ -7,6 +7,7 @@ import Link from 'next/link';
 import { isValidElement } from 'react';
 import type { FC, PropsWithChildren, ReactNode } from 'react';
 
+import { BaselineStatus } from '@/app/_components/baseline-status/baseline-status';
 import { CodeBlock } from '@/app/_components/code-block';
 
 // インラインコード等を含む見出しからidに使う全文を取り出す。
@@ -80,6 +81,7 @@ const LinkHeading: FC<
 
 export function useMDXComponents(components: MDXComponents): MDXComponents {
   return {
+    BaselineStatus,
     h1: () => null,
     h2: ({ children }) => <LinkHeading type="h3">{children}</LinkHeading>,
     h3: ({ children }) => <LinkHeading type="h4">{children}</LinkHeading>,
