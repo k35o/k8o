@@ -1,8 +1,6 @@
 import type { PlaygroundSection } from '../types';
 import { CssMathFunctionsDemo } from './css-math-functions-demo';
 
-export { CssMathFunctionsDemo } from './css-math-functions-demo';
-
 export const absSignSection: PlaygroundSection = {
   id: 'abs-sign',
   title: 'CSS abs()とsign()関数',

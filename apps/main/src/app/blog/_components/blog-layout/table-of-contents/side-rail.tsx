@@ -20,17 +20,16 @@ type TocNode = {
 const RailItem: FC<{
   node: TocNode;
   depth: number;
-  index?: number;
   activeId: string;
   onNavigate: (id: string) => void;
-}> = ({ node, depth, index, activeId, onNavigate }) => {
+}> = ({ node, depth, activeId, onNavigate }) => {
   const isActive = activeId === node.text;
   return (
     <li className={cn(depth === 1 && '[&:not(:first-child)]:mt-1')}>
       <Link
         aria-current={isActive ? 'location' : undefined}
         className={cn(
-          'flex items-baseline gap-2 rounded-r-lg py-1.5 pr-2 leading-relaxed transition-colors duration-150 ease-out',
+          'block rounded-r-lg py-1.5 pr-2 leading-relaxed transition-colors duration-150 ease-out',
           'focus-visible:ring-border-info focus-visible:outline-none focus-visible:ring-2',
           depth === 1 && 'pl-5 text-sm',
           depth === 2 && 'pl-11 text-xs',
@@ -44,17 +43,7 @@ const RailItem: FC<{
           onNavigate(node.text);
         }}
       >
-        {index !== undefined && (
-          <span
-            className={cn(
-              'shrink-0 text-xs font-normal tabular-nums transition-colors duration-150 ease-out',
-              isActive ? 'text-primary-fg font-bold' : 'text-fg-mute',
-            )}
-          >
-            {String(index + 1).padStart(2, '0')}
-          </span>
-        )}
-        <span>{node.text}</span>
+        {node.text}
       </Link>
       {node.children && node.children.length > 0 && (
         <ul>
@@ -178,11 +167,10 @@ export const TableOfContentsSideRail: FC<{
             />
           )}
           <ul className="flex flex-col">
-            {headingTree.children.map((node, index) => (
+            {headingTree.children.map((node) => (
               <RailItem
                 activeId={activeId}
                 depth={1}
-                index={index}
                 key={node.text}
                 node={node}
                 onNavigate={setActiveId}

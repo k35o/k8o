@@ -1,8 +1,6 @@
 import type { PlaygroundSection } from '../types';
 import { ViewTransitionBasicDemo } from './view-transition-basic-demo';
 
-export { ViewTransitionBasicDemo } from './view-transition-basic-demo';
-
 export const viewTransitionsSection: PlaygroundSection = {
   id: 'view-transitions',
   title: 'View Transition API',

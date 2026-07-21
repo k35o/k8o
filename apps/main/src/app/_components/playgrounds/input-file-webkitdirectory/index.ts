@@ -1,8 +1,6 @@
 import type { PlaygroundSection } from '../types';
 import { WebkitRelativePathDemo } from './webkit-relative-path-demo';
 
-export { WebkitRelativePathDemo } from './webkit-relative-path-demo';
-
 export const inputFileWebkitdirectorySection: PlaygroundSection = {
   id: 'input-file-webkitdirectory',
   title: 'input要素のwebkitdirectory属性',

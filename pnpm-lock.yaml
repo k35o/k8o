@@ -6,9 +6,15 @@ settings:
 
 catalogs:
   default:
+    '@ai-sdk/openai-compatible':
+      specifier: 3.0.7
+      version: 3.0.7
     '@k8o/arte-odyssey':
       specifier: 11.0.0
       version: 11.0.0
+    '@k8o/oxc-config':
+      specifier: 0.2.0
+      version: 0.2.0
     '@next/env':
       specifier: 16.2.10
       version: 16.2.10
@@ -51,6 +57,9 @@ catalogs:
     '@vitest/ui':
       specifier: 4.1.10
       version: 4.1.10
+    ai:
+      specifier: 7.0.22
+      version: 7.0.22
     babel-plugin-react-compiler:
       specifier: 1.0.0
       version: 1.0.0
@@ -96,19 +105,22 @@ catalogs:
     vitest:
       specifier: 4.1.10
       version: 4.1.10
+    web-features:
+      specifier: 3.32.0
+      version: 3.32.0
     wrangler:
       specifier: 4.110.0
       version: 4.110.0
-
-overrides:
-  vite-plugin-storybook-nextjs: 3.3.0
+    zod:
+      specifier: 4.4.3
+      version: 4.4.3
 
 importers:
 
   .:
     devDependencies:
       '@k8o/oxc-config':
-        specifier: 0.2.0
+        specifier: 'catalog:'
         version: 0.2.0(bb3458ff492cd1a7675d634248174ebc)
       '@ls-lint/ls-lint':
         specifier: 2.3.1
@@ -195,7 +207,7 @@ importers:
         specifier: 'catalog:'
         version: 4.3.2
       web-features:
-        specifier: 3.32.0
+        specifier: 'catalog:'
         version: 3.32.0
     devDependencies:
       '@repo/typescript-config':
@@ -259,7 +271,7 @@ importers:
   apps/ai:
     dependencies:
       '@ai-sdk/openai-compatible':
-        specifier: 3.0.7
+        specifier: 'catalog:'
         version: 3.0.7(zod@4.4.3)
       '@ai-sdk/react':
         specifier: 4.0.23
@@ -283,7 +295,7 @@ importers:
         specifier: 2.5.0
         version: 2.5.0
       ai:
-        specifier: 7.0.22
+        specifier: 'catalog:'
         version: 7.0.22(zod@4.4.3)
       better-auth:
         specifier: 'catalog:'
@@ -316,7 +328,7 @@ importers:
         specifier: 'catalog:'
         version: 4.3.2
       zod:
-        specifier: 4.4.3
+        specifier: 'catalog:'
         version: 4.4.3
     devDependencies:
       '@repo/typescript-config':
@@ -380,13 +392,13 @@ importers:
   apps/main:
     dependencies:
       '@ai-sdk/openai-compatible':
-        specifier: 3.0.7
+        specifier: 'catalog:'
         version: 3.0.7(zod@4.4.3)
       '@k8o/arte-odyssey':
         specifier: 'catalog:'
         version: 11.0.0(@types/react-dom@19.2.3(@types/react@19.2.17))(@types/react@19.2.17)(ai@7.0.22(zod@4.4.3))(react-dom@19.2.7(react@19.2.7))(react@19.2.7)(tailwindcss@4.3.2)(typescript@6.0.3)(zod@4.4.3)
       '@k8o/oxc-config':
-        specifier: 0.2.0
+        specifier: 'catalog:'
         version: 0.2.0(oxfmt@0.58.0(vite-plus@0.2.4(@opentelemetry/api@1.9.1)(@types/node@24.13.3)(@vitest/browser-playwright@4.1.10)(@vitest/coverage-v8@4.1.10)(@vitest/ui@4.1.10)(esbuild@0.28.1)(jiti@2.7.0)(msw@2.15.0(@types/node@24.13.3)(typescript@6.0.3))(tsx@4.22.3)(typescript@6.0.3)(vite@8.0.14(@types/node@24.13.3)(esbuild@0.28.1)(jiti@2.7.0)(tsx@4.22.3)(yaml@2.9.0))(yaml@2.9.0)))(oxlint-tailwindcss@1.3.5)(oxlint-tsgolint@0.24.0)(oxlint@1.73.0(oxlint-tsgolint@0.24.0)(vite-plus@0.2.4(@opentelemetry/api@1.9.1)(@types/node@24.13.3)(@vitest/browser-playwright@4.1.10)(@vitest/coverage-v8@4.1.10)(@vitest/ui@4.1.10)(esbuild@0.28.1)(jiti@2.7.0)(msw@2.15.0(@types/node@24.13.3)(typescript@6.0.3))(tsx@4.22.3)(typescript@6.0.3)(vite@8.0.14(@types/node@24.13.3)(esbuild@0.28.1)(jiti@2.7.0)(tsx@4.22.3)(yaml@2.9.0))(yaml@2.9.0)))
       '@mdx-js/loader':
         specifier: 3.1.1
@@ -422,7 +434,7 @@ importers:
         specifier: 2.0.1
         version: 2.0.1(next@16.2.10(@babel/core@7.29.7)(@opentelemetry/api@1.9.1)(babel-plugin-react-compiler@1.0.0)(react-dom@19.2.7(react@19.2.7))(react@19.2.7))(react@19.2.7)
       ai:
-        specifier: 7.0.22
+        specifier: 'catalog:'
         version: 7.0.22(zod@4.4.3)
       budoux:
         specifier: 0.8.4
@@ -485,10 +497,10 @@ importers:
         specifier: 0.1.3
         version: 0.1.3
       web-features:
-        specifier: 3.32.0
+        specifier: 'catalog:'
         version: 3.32.0
       zod:
-        specifier: 4.4.3
+        specifier: 'catalog:'
         version: 4.4.3
     devDependencies:
       '@repo/typescript-config':
@@ -6102,6 +6114,10 @@ packages:
     resolution: {integrity: sha512-PS08Iboia9mts/2ygV3eLpY5ghnUcfLV/EXTOW1E2qYxJKGGBUtNjN76FYHnMs36RmARn41bC0AZmn+rR0OVpQ==}
     engines: {node: ^10 || ^12 || >=14}
 
+  postcss@8.5.16:
+    resolution: {integrity: sha512-vuwillviilfKZsg0VGj5R/YwwcHx4SLsIOI/7K6mQkWx+l5cUHTjj5g0AasTBcyXsbfTgrwsUNmVUb5xVwyPwg==}
+    engines: {node: ^10 || ^12 || >=14}
+
   postcss@8.5.17:
     resolution: {integrity: sha512-J7EF+8X+CzRPaJPOv9Ck2wNWJvGnnl3PcNPAdGg6GTLjyVpyQ0yATMSXRFRV01BviT/9Gwuc3rjEyJbDJG9a4w==}
     engines: {node: ^10 || ^12 || >=14}
@@ -9625,7 +9641,7 @@ snapshots:
       '@oxc-project/runtime': 0.138.0
       '@oxc-project/types': 0.138.0
       lightningcss: 1.32.0
-      postcss: 8.5.17
+      postcss: 8.5.16
     optionalDependencies:
       '@types/node': 24.13.3
       esbuild: 0.28.1
@@ -9641,7 +9657,7 @@ snapshots:
       '@oxc-project/runtime': 0.138.0
       '@oxc-project/types': 0.138.0
       lightningcss: 1.32.0
-      postcss: 8.5.17
+      postcss: 8.5.16
     optionalDependencies:
       '@types/node': 24.13.3
       esbuild: 0.28.1
@@ -11958,6 +11974,12 @@ snapshots:
       yaml: 2.9.0
 
   postcss@8.4.31:
+    dependencies:
+      nanoid: 3.3.12
+      picocolors: 1.1.1
+      source-map-js: 1.2.1
+
+  postcss@8.5.16:
     dependencies:
       nanoid: 3.3.12
       picocolors: 1.1.1

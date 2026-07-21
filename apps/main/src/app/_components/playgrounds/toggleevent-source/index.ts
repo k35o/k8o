@@ -1,8 +1,6 @@
 import type { PlaygroundSection } from '../types';
 import { ToggleEventSourceDemo } from './toggleevent-source-demo';
 
-export { ToggleEventSourceDemo } from './toggleevent-source-demo';
-
 export const toggleEventSourceSection: PlaygroundSection = {
   id: 'toggleevent-source',
   title: 'ToggleEvent.source',

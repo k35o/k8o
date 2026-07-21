@@ -1,8 +1,6 @@
 import type { PlaygroundSection } from '../types';
 import { SpellingGrammarErrorDemo } from './spelling-grammar-error-demo';
 
-export { SpellingGrammarErrorDemo } from './spelling-grammar-error-demo';
-
 export const spellingGrammarErrorSection: PlaygroundSection = {
   id: 'spelling-grammar-error',
   title: 'CSS spelling-error & grammar-error',

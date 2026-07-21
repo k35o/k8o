@@ -1,8 +1,6 @@
 import type { PlaygroundSection } from '../types';
 import { ContentVisibilityDemo } from './content-visibility-demo';
 
-export { ContentVisibilityDemo } from './content-visibility-demo';
-
 export const contentVisibilitySection: PlaygroundSection = {
   id: 'content-visibility',
   title: 'content-visibility',

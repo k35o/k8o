@@ -1,8 +1,6 @@
 import type { PlaygroundSection } from '../types';
 import { SharedWorkerDemo } from './shared-worker-demo';
 
-export { SharedWorkerDemo } from './shared-worker-demo';
-
 export const sharedWorkerSection: PlaygroundSection = {
   id: 'shared-worker',
   title: 'SharedWorker',

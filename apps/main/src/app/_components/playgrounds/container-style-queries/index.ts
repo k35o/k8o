@@ -1,8 +1,6 @@
 import type { PlaygroundSection } from '../types';
 import { ContainerStyleQueriesDemo } from './container-style-queries-demo';
 
-export { ContainerStyleQueriesDemo } from './container-style-queries-demo';
-
 export const containerStyleQueriesSection: PlaygroundSection = {
   id: 'container-style-queries',
   title: 'Container style queries',

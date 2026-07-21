@@ -1,8 +1,6 @@
 import type { PlaygroundSection } from '../types';
 import { FieldSizingDemo } from './field-sizing-demo';
 
-export { FieldSizingDemo } from './field-sizing-demo';
-
 export const fieldSizingSection: PlaygroundSection = {
   id: 'field-sizing',
   title: 'field-sizing',

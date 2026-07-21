@@ -2,9 +2,6 @@ import type { PlaygroundSection } from '../types';
 import { ScrollendDemo } from './scrollend-demo';
 import { ScrollendTriggerDemo } from './scrollend-trigger-demo';
 
-export { ScrollendDemo } from './scrollend-demo';
-export { ScrollendTriggerDemo } from './scrollend-trigger-demo';
-
 export const scrollendSection: PlaygroundSection = {
   id: 'scrollend',
   title: 'scrollend',
