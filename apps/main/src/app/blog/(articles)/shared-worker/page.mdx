@@ -12,7 +12,7 @@ import { PlaygroundEmbed } from '@/app/_components/playgrounds';
 
 # SharedWorkerでブラウジングコンテキスト間にWorkerを共有する
 
-<BaselineStatus featureId="shared-workers" />
+<BrowserSupportStatus featureId="shared-workers" />
 
 ## はじめに
 
@@ -153,7 +153,7 @@ self.addEventListener('connect', (event) => {
 
 ## ES Modulesとして読み込む
 
-<BaselineStatus featureId="js-modules-shared-workers" />
+<BrowserSupportStatus featureId="js-modules-shared-workers" />
 
 Baseline 2026では`type: 'module'`オプションも揃い、SharedWorkerをES Modulesとして実行できるようになりました。
 

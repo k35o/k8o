@@ -50,7 +50,11 @@ export const NAV_GROUPS: NavGroup[] = [
       { href: '/comments', label: 'お問い合わせ', icon: MailIcon },
       { href: '/notifications', label: '通知', icon: SendIcon },
       { href: '/reports', label: 'レポート', icon: TableIcon },
-      { href: '/baseline', label: 'Baseline', icon: ShieldCheckIcon },
+      {
+        href: '/browser-support',
+        label: 'Browser Support',
+        icon: ShieldCheckIcon,
+      },
     ],
   },
 ];

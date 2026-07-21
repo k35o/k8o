@@ -23,6 +23,15 @@ const nextConfig: NextConfig = {
         },
       ],
     }),
+  redirects: () =>
+    Promise.resolve([
+      // 旧 /baseline は /browser-support へ恒久リダイレクト（既存リンク・ブックマーク互換）
+      {
+        source: '/baseline',
+        destination: '/browser-support',
+        permanent: true,
+      },
+    ]),
   compiler: {
     removeConsole: process.env['NODE_ENV'] === 'production' && {
       exclude: ['error', 'warn'],

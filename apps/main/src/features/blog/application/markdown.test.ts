@@ -8,7 +8,7 @@ describe('mdxToMarkdown', () => {
         'title: タイトル',
         '---',
         '',
-        "import { BaselineStatus } from '@k8o/arte-odyssey';",
+        "import { BrowserSupportStatus } from '@k8o/arte-odyssey';",
         "import { Playground } from '@/app/_components/playgrounds';",
         '',
         '# 見出し',
@@ -86,11 +86,11 @@ describe('mdxToMarkdown', () => {
       );
     });
 
-    it('BaselineStatusを削除して前後の空行を詰める', () => {
+    it('BrowserSupportStatusを削除して前後の空行を詰める', () => {
       const source = [
         '# 見出し',
         '',
-        '<BaselineStatus featureId="feature"></BaselineStatus>',
+        '<BrowserSupportStatus featureId="feature"></BrowserSupportStatus>',
         '',
         '本文です。',
       ].join('\n');

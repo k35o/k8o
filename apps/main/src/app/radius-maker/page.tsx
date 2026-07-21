@@ -1,6 +1,6 @@
 import { Suspense } from 'react';
 
-import { getFeatureStatus } from '@/features/baseline/interface/queries';
+import { getFeatureStatus } from '@/features/browser-support/interface/queries';
 
 import { RadiusMaker } from './_components/radius-maker';
 

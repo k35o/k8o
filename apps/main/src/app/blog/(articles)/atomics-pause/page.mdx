@@ -13,7 +13,7 @@ featureIds:
 
 ## Atomics
 
-<BaselineStatus featureId="shared-memory"></BaselineStatus>
+<BrowserSupportStatus featureId="shared-memory"></BrowserSupportStatus>
 
 `Atomics`は複数のスレッド間で同じデータを安全に読み書きするための仕組みです。
 
@@ -148,7 +148,7 @@ console.log(agent); // 1
 
 ## Atomics.pause
 
-<BaselineStatus featureId="atomics-pause"></BaselineStatus>
+<BrowserSupportStatus featureId="atomics-pause"></BrowserSupportStatus>
 
 `Atomics.pause`はBaseline 2025で追加された、マイクロウェイト（非常に短い待機）を実現するための新しい静的メソッドです。
 このメソッドは、スピンロック、ビジーウェイトのループ内で使用され、CPUに対してスピン中であるというヒントを与え、リソースの消費を最適化します。

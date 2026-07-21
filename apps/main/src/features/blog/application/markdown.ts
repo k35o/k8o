@@ -92,7 +92,7 @@ export const mdxToMarkdown = (source: string, slug: string): string => {
       replace(range, alt === undefined ? '' : `（画像: ${alt}）`);
       return;
     }
-    if (name === 'BaselineStatus') {
+    if (name === 'BrowserSupportStatus') {
       replace(range, '');
       return;
     }

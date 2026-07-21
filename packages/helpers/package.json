@@ -21,9 +21,9 @@
       "types": "./src/browser/detect-browser.ts",
       "default": "./src/browser/detect-browser.ts"
     },
-    "./browser/baseline-support": {
-      "types": "./src/browser/baseline-support.ts",
-      "default": "./src/browser/baseline-support.ts"
+    "./browser/browser-support": {
+      "types": "./src/browser/browser-support.ts",
+      "default": "./src/browser/browser-support.ts"
     },
     "./cn": {
       "types": "./src/cn.ts",

@@ -7,7 +7,7 @@ type PushLog = Awaited<ReturnType<typeof getPushLogs>>[number];
 
 const KIND_LABEL: Record<PushLog['kind'], string> = {
   readings_updated: 'Readings',
-  baseline_updated: 'Baseline',
+  browser_support_updated: 'Browser Support',
 };
 
 export const NotificationHistory = async () => {

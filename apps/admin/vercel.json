@@ -6,7 +6,7 @@
       "schedule": "0 0 * * *"
     },
     {
-      "path": "/api/crons/sync-baseline",
+      "path": "/api/crons/sync-browser-support",
       "schedule": "0 6 * * *"
     }
   ]

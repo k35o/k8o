@@ -1,24 +1,24 @@
 import { Logo } from '@k8o/arte-odyssey';
-import type { BaselineMinVersions } from '@repo/helpers/browser/detect-browser';
+import type { BrowserMinVersions } from '@repo/helpers/browser/detect-browser';
 import Link from 'next/link';
 import { Suspense } from 'react';
 import type { FC, ReactNode } from 'react';
 
-import { BrowserBaselineNotice } from '../browser-baseline-notice';
+import { BrowserSupportNotice } from '../browser-support-notice';
 import { Background } from './background';
 import { Footer } from './footer';
 import { Header } from './header';
 import { HeaderActions } from './header-actions';
 
-const EMPTY_MIN_VERSIONS: BaselineMinVersions = {};
+const EMPTY_MIN_VERSIONS: BrowserMinVersions = {};
 
 export const GlobalLayout: FC<{
   children: ReactNode;
-  minVersions?: BaselineMinVersions;
+  minVersions?: BrowserMinVersions;
 }> = ({ children, minVersions = EMPTY_MIN_VERSIONS }) => (
   <div className="flex min-h-svh flex-col">
     <Background />
-    <BrowserBaselineNotice minVersions={minVersions} />
+    <BrowserSupportNotice minVersions={minVersions} />
     <Header>
       <Link href="/">
         <h1>

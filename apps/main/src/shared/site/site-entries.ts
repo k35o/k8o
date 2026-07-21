@@ -3,7 +3,7 @@ import type { Route } from 'next';
 export type SiteEntryKind = 'tool' | 'reading';
 
 export type SiteEntryIcon =
-  | 'baseline'
+  | 'browserSupport'
   | 'colorConverter'
   | 'contrastChecker'
   | 'colorQuiz'
@@ -48,11 +48,11 @@ const KIND_ORDER: Record<SiteEntryKind, number> = {
 
 const entries: readonly SiteEntry[] = [
   {
-    title: 'Baseline',
-    link: '/baseline',
-    description: 'Web Platform Baselineのステータスを追跡します。',
+    title: 'Browser Support',
+    link: '/browser-support',
+    description: 'Webプラットフォーム機能のブラウザ対応状況を追跡します。',
     kind: 'tool',
-    icon: 'baseline',
+    icon: 'browserSupport',
   },
   {
     title: 'カラーコード職人',
