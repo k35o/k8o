@@ -1,6 +1,7 @@
 'use client';
 
 import { CopyIcon, useClipboard, useToast } from '@k8o/arte-odyssey';
+import { cn } from '@repo/helpers/cn';
 import { useRef } from 'react';
 import type { ComponentProps, FC } from 'react';
 
@@ -8,6 +9,7 @@ type Props = ComponentProps<'pre'> & { 'data-lang'?: string };
 
 export const CodeBlock: FC<Props> = ({
   children,
+  className,
   'data-lang': lang,
   ...rest
 }) => {
@@ -53,7 +55,10 @@ export const CodeBlock: FC<Props> = ({
       </div>
       <pre
         {...rest}
-        className="writing-h vertical:box-border vertical:mx-4 vertical:h-max vertical:max-h-full vertical:max-w-container-lg vertical:overflow-auto my-0 overflow-x-auto rounded-t-none rounded-b-lg px-4 py-1 sm:py-4"
+        className={cn(
+          'writing-h vertical:box-border vertical:mx-4 vertical:h-max vertical:max-h-full vertical:max-w-container-lg vertical:overflow-auto my-0 overflow-x-auto rounded-t-none rounded-b-lg px-4 py-1 sm:py-4',
+          className,
+        )}
         ref={preRef}
       >
         {children}

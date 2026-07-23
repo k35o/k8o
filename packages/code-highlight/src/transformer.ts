@@ -87,10 +87,20 @@ export const annotateTransformer = (): ShikiTransformer => ({
     if (lang !== '' && lang !== 'text' && lang !== 'plaintext') {
       node.properties['data-lang'] = lang;
     }
+    // og は目印だけで描画に影響しないため、gutter の要否には数えない
+    const state = (this.meta as AnnotateMeta).codeAnnotate;
+    const hasVisibleAnnotation =
+      state?.annotations.some(
+        (line) =>
+          line?.some((annotation) => annotation.type !== 'og') === true,
+      ) === true;
     return {
       type: 'element',
       tagName: 'div',
-      properties: { class: 'code-annotate-block' },
+      properties: {
+        class: 'code-annotate-block',
+        ...(hasVisibleAnnotation ? { 'data-annotated': '' } : {}),
+      },
       children: [node],
     };
   },
