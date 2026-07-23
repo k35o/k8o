@@ -53,7 +53,7 @@ export const BlogLayoutContent: FC<BlogLayoutContentProps> = ({
   return (
     <div className="gap-4 xl:flex">
       <ViewReporter slug={slug} />
-      <div className="m-auto flex flex-1 flex-col gap-8 xl:max-w-5xl">
+      <div className="m-auto flex min-w-0 flex-1 flex-col gap-8 xl:max-w-5xl">
         <WritingModeContent>
           <article className="bg-bg-base/90 vertical:bg-transparent vertical:rounded-none rounded-xl px-3 py-8 sm:px-10">
             <div className="flex flex-col gap-3">
