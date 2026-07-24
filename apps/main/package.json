@@ -36,12 +36,12 @@
     "ai": "catalog:",
     "budoux": "0.8.4",
     "drizzle-orm": "catalog:",
-    "katex": "0.17.0",
+    "katex": "0.18.0",
     "next": "catalog:",
     "next-themes": "catalog:",
     "nuqs": "2.9.0",
-    "oxfmt": "0.58.0",
-    "oxlint": "1.73.0",
+    "oxfmt": "0.59.0",
+    "oxlint": "1.74.0",
     "postcss": "catalog:",
     "react": "catalog:",
     "react-dom": "catalog:",
@@ -86,7 +86,7 @@
     "vitest": "catalog:"
   },
   "optionalDependencies": {
-    "@oxlint/binding-linux-x64-gnu": "1.73.0"
+    "@oxlint/binding-linux-x64-gnu": "1.74.0"
   },
   "msw": {
     "workerDirectory": [
