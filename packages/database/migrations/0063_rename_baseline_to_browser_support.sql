@@ -15,7 +15,6 @@ DROP TABLE `baseline_snapshots`;--> statement-breakpoint
 ALTER TABLE `__new_browser_support_snapshots` RENAME TO `browser_support_snapshots`;--> statement-breakpoint
 PRAGMA foreign_keys=ON;--> statement-breakpoint
 CREATE UNIQUE INDEX `browser_support_snapshots_feature_id_idx` ON `browser_support_snapshots` (`feature_id`);--> statement-breakpoint
-UPDATE `push_logs` SET `kind` = 'browser_support_updated' WHERE `kind` = 'baseline_updated';--> statement-breakpoint
 PRAGMA foreign_keys=OFF;--> statement-breakpoint
 CREATE TABLE `__new_push_logs` (
 	`id` integer PRIMARY KEY AUTOINCREMENT NOT NULL,
@@ -30,7 +29,7 @@ CREATE TABLE `__new_push_logs` (
 	CONSTRAINT "push_logs_kind_check" CHECK("__new_push_logs"."kind" IN ('readings_updated', 'browser_support_updated'))
 );
 --> statement-breakpoint
-INSERT INTO `__new_push_logs`("id", "kind", "title", "body", "url", "dedupe_key", "succeeded", "failed", "sent_at") SELECT "id", "kind", "title", "body", "url", "dedupe_key", "succeeded", "failed", "sent_at" FROM `push_logs`;--> statement-breakpoint
+INSERT INTO `__new_push_logs`("id", "kind", "title", "body", "url", "dedupe_key", "succeeded", "failed", "sent_at") SELECT "id", CASE WHEN "kind" = 'baseline_updated' THEN 'browser_support_updated' ELSE "kind" END, "title", "body", "url", "dedupe_key", "succeeded", "failed", "sent_at" FROM `push_logs`;--> statement-breakpoint
 DROP TABLE `push_logs`;--> statement-breakpoint
 ALTER TABLE `__new_push_logs` RENAME TO `push_logs`;--> statement-breakpoint
 PRAGMA foreign_keys=ON;--> statement-breakpoint
