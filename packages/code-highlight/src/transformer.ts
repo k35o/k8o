@@ -90,7 +90,7 @@ export const annotateTransformer = (): ShikiTransformer => ({
     // og は目印だけで描画に影響しないため、gutter の要否には数えない
     const state = (this.meta as AnnotateMeta).codeAnnotate;
     const hasVisibleAnnotation = (state?.annotations ?? []).some((line) =>
-      line?.some((annotation) => annotation.type !== 'og'),
+      line.some((annotation) => annotation.type !== 'og'),
     );
     return {
       type: 'element',
