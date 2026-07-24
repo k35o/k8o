@@ -11,7 +11,7 @@ allowBuilds:
 blockExoticSubdeps: true
 
 catalog:
-  '@ai-sdk/openai-compatible': 3.0.7
+  '@ai-sdk/openai-compatible': 3.0.12
   '@k8o/arte-odyssey': 11.0.0
   '@k8o/oxc-config': 0.2.0
   '@next/env': 16.2.10
@@ -22,30 +22,30 @@ catalog:
   '@storybook/addon-mcp': '0.7.0'
   '@storybook/addon-vitest': 10.5.2
   '@storybook/nextjs-vite': 10.5.2
-  '@tailwindcss/postcss': 4.3.2
+  '@tailwindcss/postcss': 4.3.3
   '@types/react': 19.2.17
   '@types/react-dom': 19.2.3
   '@vitest/browser-playwright': 4.1.10
   '@vitest/coverage-v8': 4.1.10
   '@vitest/ui': 4.1.10
-  ai: 7.0.22
+  ai: 7.0.31
   babel-plugin-react-compiler: 1.0.0
   better-auth: 1.6.23
   chromatic: 18.0.1
   drizzle-orm: 0.45.2
   next: 16.2.10
   next-themes: 0.4.6
-  postcss: 8.5.17
+  postcss: 8.5.19
   postcss-load-config: 6.0.1
   react: 19.2.7
   react-dom: 19.2.7
   storybook: 10.5.2
   storybook-addon-determinism: 0.1.1
   storybook-addon-vrt: 0.2.0
-  tailwindcss: 4.3.2
+  tailwindcss: 4.3.3
   vitest: 4.1.10
-  web-features: 3.32.0
-  wrangler: 4.110.0
+  web-features: 3.34.0
+  wrangler: 4.112.0
   zod: 4.4.3
 
 minimumReleaseAge: 10080
