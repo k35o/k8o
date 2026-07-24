@@ -5,12 +5,16 @@ import { cn } from '@repo/helpers/cn';
 import { useRef } from 'react';
 import type { ComponentProps, FC } from 'react';
 
-type Props = ComponentProps<'pre'> & { 'data-lang'?: string };
+type Props = ComponentProps<'pre'> & {
+  'data-lang'?: string;
+  'data-filename'?: string;
+};
 
 export const CodeBlock: FC<Props> = ({
   children,
   className,
   'data-lang': lang,
+  'data-filename': filename,
   ...rest
 }) => {
   const preRef = useRef<HTMLPreElement>(null);
@@ -39,8 +43,12 @@ export const CodeBlock: FC<Props> = ({
   return (
     <>
       <div className="code-annotate-toolbar">
-        {lang !== undefined && (
-          <span className="code-annotate-lang">{lang}</span>
+        {filename === undefined ? (
+          lang !== undefined && (
+            <span className="code-annotate-lang">{lang}</span>
+          )
+        ) : (
+          <span className="code-annotate-filename">{filename}</span>
         )}
         <button
           aria-label="コードをコピー"

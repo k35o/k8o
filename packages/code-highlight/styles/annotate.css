@@ -97,12 +97,14 @@
       margin-block: 1rem;
     }
 
+    /* 背景をコード面（one-light #fafafa）より一段グレーに落とし、線を引かずに
+       ヘッダー帯とコード本体の段差を作る */
     .code-annotate-toolbar {
       display: flex;
       align-items: center;
       gap: 0.5rem;
       padding: 0.35rem 1rem;
-      background-color: #fafafa;
+      background-color: #edeef0;
       border-start-start-radius: 0.5rem;
       border-start-end-radius: 0.5rem;
     }
@@ -113,6 +115,14 @@
       color: rgb(105 108 119);
       text-transform: lowercase;
       user-select: none;
+    }
+
+    /* ファイル名はコードの識別子なので、言語ラベルより主張を強め、等幅で見せる */
+    .code-annotate-filename {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      font-size: 0.8rem;
+      line-height: 1;
+      color: rgb(56 58 66);
     }
 
     .code-annotate-copy {
@@ -176,12 +186,17 @@
     box-shadow: inset 6px 0 0 rgb(120 180 245);
   }
 
+  /* コード面（plastic #21252b）より一段明るくして、ヘッダー帯を浮かせる */
   .dark .code-annotate-block .code-annotate-toolbar {
-    background-color: #21252b;
+    background-color: #2c313b;
   }
 
   .dark .code-annotate-block .code-annotate-lang {
     color: rgb(169 178 195);
+  }
+
+  .dark .code-annotate-block .code-annotate-filename {
+    color: rgb(220 223 228);
   }
 
   .dark .code-annotate-block .code-annotate-copy {
