@@ -1,0 +1,187 @@
+---
+title: 'pnpm本体に入ったリリース管理をCIにつなぐpnpm-release-actionを作った'
+description: 'pnpm 11.13で本体に入ったリリース管理は、コミットやリリースPR、タグ、GitHub Releaseをどう作るかをユーザーに委ねています。この部分を担うGitHub Actionとしてpnpm-release-actionを公開しました。リリースPRとpublishの2つのモードによるループと、その設計方針を紹介します。'
+createdAt: 2026-07-23
+updatedAt: 2026-07-23
+---
+
+import { LinkCard } from '@/app/blog/_components/link-card';
+
+# pnpm本体に入ったリリース管理をCIにつなぐpnpm-release-actionを作った
+
+## はじめに
+
+pnpm 11.13.0で、モノレポのリリース管理に必要な機能一式がpnpm本体に出揃いました。`pnpm change`で変更の意図を記録し、`pnpm version -r`でバージョンと変更履歴を更新するワークフローを、追加のツールなしで使えます。
+
+ここまで揃うと、次はこれをCIに乗せたくなります。変更の意図が溜まったらリリースPRを開き、マージされたらpublishとタグ付けとGitHub Releaseの作成まで進める、という自動化です。しかし、コミットやリリースPRを作る部分をpnpmは担いません。設計元の[RFC](https://github.com/pnpm/rfcs/blob/main/text/0006-monorepo-versioning.md)でも未解決の論点として残されていて、どう運用するかはいまのところユーザーに委ねられています。
+
+委ねられているのなら、自分の運用に合わせて自由に作れます。そのためのGitHub Actionとして、`pnpm-release-action`を作りました。
+
+<LinkCard href="https://github.com/k35o/pnpm-release-action" />
+
+この記事では、このアクションの仕組みと設計方針を紹介します。
+
+## コミットやリリースPRは誰が作るのか
+
+`pnpm version -r`が行うのはファイルの書き換えまでで、gitには一切触れません。コミットもタグも作られず、リリースPRもGitHub Releaseも存在しません。
+
+gitに触れないのは、実装が追いついていないからではありません。この機能の設計を提案したRFCには、決めきらずに残した論点を集めたUnresolved Questionsという節があります。その中に、この領域の論点が2つ挙げられています。1つは、リリースコミットやタグをpnpm自身が作るべきか、それともgitをCIに任せるべきかという論点です。もう1つは、リリースPRを開いてマージでpublishする公式のGitHub Actionを提供するか、レシピの文書化に留めるかという論点です。
+
+<LinkCard href="https://github.com/pnpm/rfcs/blob/main/text/0006-monorepo-versioning.md" />
+
+執筆時点で、この2つに結論は出ていません。実際に11.13で出荷された`pnpm version -r`はgitに触れない実装のままで、公式のGitHub Actionもまだありません（pnpm公式にあるのは、インストール用の`pnpm/action-setup`だけです）。当面この層をどう組むかは、ユーザーの手に委ねられています。
+
+`pnpm-release-action`は、この委ねられた層を引き受けるアクションです。
+
+## pnpm本体に入ったリリース管理の道具立て
+
+アクションの中身に入る前に、pnpm側を具体的に見ておきます。リリース管理は、2026年7月リリースのpnpm 11.13.0で出揃った機能群です。どのパッケージをどのバージョンに上げるかを決める工程は、これまでChangesetsをはじめとする外部ツールに任されてきました。pnpmはそれを本体の機能として取り込みました。軸になるのは`pnpm change`と`pnpm version -r`の2つのコマンドです。
+
+<LinkCard href="https://pnpm.io/versioning" />
+
+### pnpm changeで変更の意図を記録する
+
+`pnpm change`を実行すると、どのパッケージをどのレベルで上げるかを対話的に聞かれます。回答は説明文と一緒にMarkdownファイルとして`.changeset`ディレクトリに保存されます。この記事では、これをintentファイルと呼びます。
+
+```md
+---
+'@example/ui': minor
+'@example/core': patch
+---
+
+トーストコンポーネントを追加する
+```
+
+形式は従来のChangesetsと同じで、既存の`.changeset/*.md`もそのまま読まれます。intentファイルは機能PRの一部としてレビューされ、マージでベースブランチに溜まっていきます。溜まっている変更と予定されるリリース計画は、`pnpm change status`で確認できます。上のintentを置いたワークスペースでは、次のように表示されます。
+
+```txt
+Pending change intents:
+  .changeset/add-toast-component.md
+
+Release plan:
+  @example/core: 0.8.1 → 0.8.2 (patch, via intent)
+  @example/ui: 1.2.0 → 1.3.0 (minor, via intent)
+```
+
+### pnpm version -rでリリース計画を適用する
+
+`pnpm version -r`は、溜まったintentからリリース計画を組み立てて適用します。計画には、intentに書かれたバージョンアップに加えて、依存しているパッケージへの伝播も含まれます。あるパッケージが上がると、それに`workspace:`範囲で依存するパッケージも必要に応じて上がります。
+
+適用されるのは、まず各パッケージの`package.json`の`version`の更新です。あわせて、intentの説明文から各パッケージの`CHANGELOG.md`が組み立てられます。ただし、その`CHANGELOG.md`をどこに置くかは設定で選べます。デフォルトはリポジトリにコミットしない方式で、publish時に組み立ててnpmに公開するパッケージにだけ同梱します。従来どおりリポジトリにコミットしたい場合は、後述の設定で`repository`方式に切り替えます。
+
+ここで問題になるのが、どのintentが消費済みかの管理です。デフォルトの方式では、publishが終わるまでintentファイルの説明文が変更履歴の唯一のソースなので、versionの時点では削除されません。つまり、ファイルの有無では消費済みかどうかを判定できません。
+
+そこでpnpmは、どのリリースがどのintentを消費したかをledgerという台帳（`.changeset/ledger.yaml`）に記録します。エントリは`パッケージ名@バージョン`ごとで、リリースのたびに追記されます。次に示すのは、このアクション自身のリポジトリの執筆時点の台帳です。
+
+```yaml
+pnpm-release-action@0.1.0:
+  dir: ""
+  intents:
+    - action-skeleton
+    - ignore-pnpm-owned-files
+    - publish-mode
+    - self-release
+    - version-pr-mode
+pnpm-release-action@0.2.0:
+  dir: ""
+  intents:
+    - atomic-api-branch-update
+    - bundled-deps-update
+    - github-api-commits
+pnpm-release-action@0.2.1:
+  dir: ""
+  intents:
+    - drop-throttling-plugin
+pnpm-release-action@0.2.2:
+  dir: ""
+  intents:
+    - auto-merge-arming
+```
+
+この台帳が消費記録の正です。intentファイルが残っていても、再実行で同じintentが二重に消費されることはありません。
+
+### pnpm-workspace.yamlのversioningキーで設定する
+
+設定専用のファイルはなく、`pnpm-workspace.yaml`の`versioning`キーに書きます。
+
+```yaml
+versioning:
+  fixed:
+    - ["@example/cli", "@example/cli-bindings"]
+  changelog:
+    storage: repository # CHANGELOG.mdをコミットする方式に切り替える
+```
+
+`fixed`は、常に同じバージョンで一緒にリリースするパッケージのグループです。ほかにも、対象から外す`ignore`や、バージョンアップの上限を課す`maxBump`、プレリリース用のlanesといった設定が同じキーに並びます。
+
+## 2つのモードによるリリースループ
+
+ここからはアクションの話です。`pnpm-release-action`は実行のたびに、pnpmに保留中のリリース計画を問い合わせて2つのモードのどちらかを選びます。この問い合わせは使い捨てのgit worktree内で行うため、チェックアウト中の作業ツリーには触れません。
+
+intentが溜まっていればversionモードです。`pnpm-release/<ベースブランチ>`というブランチをトリガーコミットから作り直し、`pnpm version -r`を適用してlockfileを同期し、リリースPRを1つ開きます。PRはベースブランチに対して常に1つだけで、intentが増えるたびに作り直されます。PR本文には、どのパッケージがどのバージョンになるかの計画と変更履歴のプレビューが載ります。
+
+intentがなければpublishモードです。`build`入力があればそのコマンドを実行し、内蔵の`pnpm publish -r --report-summary`でnpmへ公開し、パッケージごとにタグをpushしてGitHub Releaseを作ります。npmに公開されないprivateパッケージについても、ledgerの差分からリリースを検出してタグとReleaseを作れます。
+
+つまり、リリースPRをマージすると次の実行がpublishモードになります。ループはこれだけです。
+
+なお、リリースと関係ないpushでも、intentがなければpublishモードに入ります。それでも何かが二重に出ることはありません。pnpmはレジストリにまだ無いバージョンだけをpublishし、タグとGitHub Releaseの対象もledgerの差分から決まるためです。
+
+ワークフローは次のようになります。
+
+```yaml
+name: Release
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+concurrency: ${{ github.workflow }}-${{ github.ref }}
+permissions:
+  contents: write
+  pull-requests: write
+  id-token: write # npmのOIDC trusted publishing用
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/create-github-app-token@1b10c78c7865c340bc4f6099eb2f838309f1e8c3 # v3.1.1
+        id: app-token
+        with:
+          client-id: ${{ secrets.APP_CLIENT_ID }}
+          private-key: ${{ secrets.APP_PRIVATE_KEY }}
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          fetch-depth: 0
+          token: ${{ steps.app-token.outputs.token }}
+      # pnpmのバージョンはpackage.jsonのpackageManagerから解決される（11.13.0以上が必要）
+      - uses: pnpm/action-setup@0ebf47130e4866e96fce0953f49152a61190b271 # v6.0.9
+      - uses: k35o/pnpm-release-action@5e009384bf5b1d2501f8405817b5d5578a90624e # v0.2.2
+        with:
+          build: pnpm build
+          github-token: ${{ steps.app-token.outputs.token }}
+          auto-merge: true # CIが通ったらリリースPRを自動マージ
+```
+
+認証には、デフォルトの`GITHUB_TOKEN`ではなくGitHub Appのトークンを勧めています。`GITHUB_TOKEN`で作ったPRやタグは他のワークフローを起動しないため、リリースPRのCIが走らないという定番のハマりどころがあるからです。また、デフォルトの`commit-mode: github-api`では、versionコミットをGitHub APIで作ります。GitHubがApp名義で署名してくれるので、botのコミットにも検証済みの署名が付きます。
+
+## 実装の工夫
+
+このアクションでは、薄く保つための工夫を2つしています。pnpmを再実装しないことと、パッケージの依存を小さくすることです。
+
+### pnpmを再実装しない
+
+リリース管理の難しい部分は、すべてpnpmのコマンドに委譲します。intentの解釈もリリース計画の算出も、変更履歴の生成もpublish対象の選択も、アクションは自分で計算しません。semverのロジックに至っては1行もありません。
+
+アクションが持つのは、pnpmが残したCI側の仕事だけです。コミットとブランチ、リリースPR、タグとGitHub Releaseを所有します。あわせて、後続のstepから使えるoutputs（`mode`や`published-packages`など）を公開します。この分担のおかげで、pnpm側の進化は自動的に取り込まれます。
+
+### パッケージの依存を小さくする
+
+実行時に持ち込むライブラリは、GitHub公式のツールキットと、その他ごくわずかなパッケージに絞っています。Changesets関連のパッケージにも依存していません。pnpm自体も同梱しません。リポジトリ側でセットアップされたpnpmをそのまま実行し、前提の11.13.0以上であるかだけを実行前に確認します。
+
+pnpm本体がこの層まで提供するようになれば、このアクションは不要になります。それも織り込んだうえで、薄く保っています。
+
+## おわりに
+
+pnpm本体のリリース管理はまだ新しく、その周辺はまっさらな状態です。`pnpm-release-action`はそこに置くCI層として、難しい部分を全部pnpmに委譲する薄い設計で作りました。
+
+pnpmネイティブのリリース管理をCIで完結させたい人の役に立てばうれしいです。不具合や要望があれば、リポジトリのIssueで教えてください。

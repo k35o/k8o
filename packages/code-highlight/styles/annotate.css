@@ -1,8 +1,12 @@
 @layer components {
-  /* shiki plastic 暗背景前提の固定トーン。テキスト色（白〜パステル）を潰さない alpha に抑えつつ、左バーで強調する。 */
+  /* 基準はライトテーマ（shiki one-light #FAFAFA）。ダークは末尾の .dark ルールが
+     従来の plastic (#21252B) 向けトーンへ上書きする。注釈色はテキストを潰さない
+     alpha に抑えつつ、左バーで強調する。 */
   @scope (.code-annotate-block) {
-    /* 全行の左に注釈表示用の gutter を確保し、コード本体のインデントを揃える */
-    .line {
+    /* 注釈付きブロックだけ、全行の左に ＋/－ マーカーと注釈バー用の gutter を
+       確保してコード本体のインデントを揃える。注釈が無いブロックは gutter を
+       置かず、ツールバーの言語ラベルとコードの開始位置を揃える */
+    :scope[data-annotated] .line {
       position: relative;
       padding-inline-start: 1.2em;
     }
@@ -17,41 +21,41 @@
     }
 
     .code-annotate-highlight {
-      background-color: rgb(245 200 80 / 0.16);
-      box-shadow: inset 6px 0 0 rgb(245 200 80);
+      background-color: rgb(191 135 0 / 0.14);
+      box-shadow: inset 6px 0 0 rgb(191 135 0);
     }
 
     .code-annotate-add {
-      background-color: rgb(120 220 130 / 0.16);
-      box-shadow: inset 6px 0 0 rgb(120 220 130);
+      background-color: rgb(46 160 67 / 0.14);
+      box-shadow: inset 6px 0 0 rgb(46 160 67);
     }
 
     .code-annotate-add::before {
       content: '＋';
       position: absolute;
       inset-inline-start: 0.4em;
-      color: rgb(120 220 130);
+      color: rgb(46 160 67);
       font-weight: 700;
     }
 
     .code-annotate-remove {
-      background-color: rgb(245 110 110 / 0.16);
-      box-shadow: inset 6px 0 0 rgb(245 110 110);
+      background-color: rgb(207 34 46 / 0.12);
+      box-shadow: inset 6px 0 0 rgb(207 34 46);
     }
 
     .code-annotate-remove::before {
       content: '－';
       position: absolute;
       inset-inline-start: 0.4em;
-      color: rgb(245 110 110);
+      color: rgb(207 34 46);
       font-weight: 700;
     }
 
     /* 同じ行に他の注釈 (highlight/add/remove) と重なった場合は cascade order で
        callout が後勝ちで上書きする。両方を視覚化するユースケースは想定していない。 */
     .code-annotate-has-callout {
-      background-color: rgb(120 180 245 / 0.3);
-      box-shadow: inset 6px 0 0 rgb(120 180 245);
+      background-color: rgb(80 140 220 / 0.18);
+      box-shadow: inset 6px 0 0 rgb(80 140 220);
     }
 
     /* コールアウトは対象行の直下、コード先頭の真下に配置し、上向き▲で対象行を指す */
@@ -84,9 +88,8 @@
       border-block-end: 0.5em solid rgb(80 140 220);
     }
 
-    /* コードブロックは常に暗背景（shiki plastic #21252b）。ツールバーはコードに
-       重ならないようコード上部のヘッダー行として流し込み、色はテーマトークンでは
-       なく背景に合わせた固定の淡色にする */
+    /* ツールバーはコードに重ならないようコード上部のヘッダー行として流し込み、
+       色はテーマトークンではなくコード面（shiki のテーマ背景）に合わせた固定色にする */
     :scope {
       /* 縦書き記事内でもコードブロックは横書きの島として扱い、
          ヘッダー行とコードが縦に積まれるようにする */
@@ -99,7 +102,7 @@
       align-items: center;
       gap: 0.5rem;
       padding: 0.35rem 1rem;
-      background-color: #21252b;
+      background-color: #fafafa;
       border-start-start-radius: 0.5rem;
       border-start-end-radius: 0.5rem;
     }
@@ -107,7 +110,7 @@
     .code-annotate-lang {
       font-size: 0.75rem;
       line-height: 1;
-      color: rgb(169 178 195);
+      color: rgb(105 108 119);
       text-transform: lowercase;
       user-select: none;
     }
@@ -119,7 +122,7 @@
       justify-content: center;
       padding: 0.3rem;
       border-radius: 0.4rem;
-      color: rgb(169 178 195);
+      color: rgb(105 108 119);
       cursor: pointer;
       transition:
         color 0.15s ease,
@@ -127,12 +130,12 @@
     }
 
     .code-annotate-copy:hover {
-      color: rgb(255 255 255);
-      background-color: rgb(255 255 255 / 0.12);
+      color: rgb(56 58 66);
+      background-color: rgb(0 0 0 / 0.06);
     }
 
     .code-annotate-copy:focus-visible {
-      outline: 2px solid rgb(120 180 245);
+      outline: 2px solid rgb(80 140 220);
       outline-offset: 2px;
     }
   }
@@ -141,5 +144,68 @@
      物理的な左右マージンで隣接ブロックとの間隔を確保する */
   .writing-v .code-annotate-block {
     margin-inline: 1rem;
+  }
+
+  /* ---- ダークテーマ（従来の plastic 向けトーン） ----
+     @scope 内から外側の .dark 祖先を参照しないため、素の子孫セレクタで上書きする */
+  .dark .code-annotate-block .code-annotate-highlight {
+    background-color: rgb(245 200 80 / 0.16);
+    box-shadow: inset 6px 0 0 rgb(245 200 80);
+  }
+
+  .dark .code-annotate-block .code-annotate-add {
+    background-color: rgb(120 220 130 / 0.16);
+    box-shadow: inset 6px 0 0 rgb(120 220 130);
+  }
+
+  .dark .code-annotate-block .code-annotate-add::before {
+    color: rgb(120 220 130);
+  }
+
+  .dark .code-annotate-block .code-annotate-remove {
+    background-color: rgb(245 110 110 / 0.16);
+    box-shadow: inset 6px 0 0 rgb(245 110 110);
+  }
+
+  .dark .code-annotate-block .code-annotate-remove::before {
+    color: rgb(245 110 110);
+  }
+
+  .dark .code-annotate-block .code-annotate-has-callout {
+    background-color: rgb(120 180 245 / 0.3);
+    box-shadow: inset 6px 0 0 rgb(120 180 245);
+  }
+
+  .dark .code-annotate-block .code-annotate-toolbar {
+    background-color: #21252b;
+  }
+
+  .dark .code-annotate-block .code-annotate-lang {
+    color: rgb(169 178 195);
+  }
+
+  .dark .code-annotate-block .code-annotate-copy {
+    color: rgb(169 178 195);
+  }
+
+  .dark .code-annotate-block .code-annotate-copy:hover {
+    color: rgb(255 255 255);
+    background-color: rgb(255 255 255 / 0.12);
+  }
+
+  .dark .code-annotate-block .code-annotate-copy:focus-visible {
+    outline-color: rgb(120 180 245);
+  }
+
+  /* shiki のデュアルテーマ切り替え: インラインstyleはライト色なので、
+     ダーク時はトークンごとの --shiki-dark 変数を !important で通す。
+     transformer が注入する行・コールアウトの span は変数を持たないため除外する */
+  .dark .shiki,
+  .dark .shiki span:not(.line, .code-annotate-callout-text) {
+    color: var(--shiki-dark) !important;
+    background-color: var(--shiki-dark-bg) !important;
+    font-style: var(--shiki-dark-font-style) !important;
+    font-weight: var(--shiki-dark-font-weight) !important;
+    text-decoration: var(--shiki-dark-text-decoration) !important;
   }
 }
