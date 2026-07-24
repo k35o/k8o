@@ -3,11 +3,12 @@ import { codeToHast } from 'shiki';
 
 import { annotateTransformer } from './transformer.ts';
 
-const toHast = (code: string) =>
+const toHast = (code: string, meta?: string) =>
   codeToHast(code, {
     lang: 'js',
     theme: 'plastic',
     transformers: [annotateTransformer()],
+    ...(meta === undefined ? {} : { meta: { __raw: meta } }),
   });
 
 const isElement = (node: ElementContent | undefined): node is Element =>
@@ -114,12 +115,30 @@ describe('annotateTransformer', () => {
 
       expect(preElement(tree)?.properties['data-lang']).toBe('js');
     });
+
+    it('メタの title="..." を data-filename として pre 要素に付与する', async () => {
+      const tree = await toHast('const x = 1;', 'title="foo.ts"');
+
+      expect(preElement(tree)?.properties['data-filename']).toBe('foo.ts');
+    });
+
+    it("シングルクォートの title='...' も data-filename として扱う", async () => {
+      const tree = await toHast('const x = 1;', "title='bar/baz.tsx'");
+
+      expect(preElement(tree)?.properties['data-filename']).toBe('bar/baz.tsx');
+    });
   });
 
   describe('エッジケース', () => {
     it('注釈なしのコードに対してもエラーにならない', async () => {
       const tree = await toHast('const x = 1;');
       expect(lineElements(tree)).toHaveLength(1);
+    });
+
+    it('title を含まないメタでは data-filename を付与しない', async () => {
+      const tree = await toHast('const x = 1;', 'showLineNumbers');
+
+      expect(preElement(tree)?.properties['data-filename']).toBeUndefined();
     });
 
     it('複数の連続指示が同じ対象行に重ねて適用される', async () => {

@@ -31,6 +31,15 @@ const createCalloutLine = (text: string, indent: number): Element => ({
   ],
 });
 
+// コードフェンスのメタ (```ts title="foo.ts") からファイル名を取り出す。
+// 否定文字クラス + * のみで組み、多項式バックトラッキングを避ける (CodeQL: js/polynomial-redos)
+const parseFilename = (raw: string | undefined): string | undefined => {
+  if (raw === undefined) return undefined;
+  const matched = /\btitle=(?:"([^"]*)"|'([^']*)')/u.exec(raw);
+  const value = (matched?.[1] ?? matched?.[2])?.trim();
+  return value !== undefined && value.length > 0 ? value : undefined;
+};
+
 const hasLineClass = (node: Element): boolean => {
   const raw = node.properties['class'];
   if (typeof raw === 'string') return raw.split(/\s+/u).includes('line');
@@ -86,6 +95,10 @@ export const annotateTransformer = (): ShikiTransformer => ({
     const { lang } = this.options;
     if (lang !== '' && lang !== 'text' && lang !== 'plaintext') {
       node.properties['data-lang'] = lang;
+    }
+    const filename = parseFilename(this.options.meta?.__raw);
+    if (filename !== undefined) {
+      node.properties['data-filename'] = filename;
     }
     // og は目印だけで描画に影響しないため、gutter の要否には数えない
     const state = (this.meta as AnnotateMeta).codeAnnotate;
