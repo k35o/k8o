@@ -1,10 +1,10 @@
 'use client';
 
-import type * as tokenize from '@repo/code-highlight/tokenize';
+import type * as tokenize from '@repo/code-highlight/tokenize-client';
 import type {
   HighlightedCode,
   HighlightTheme,
-} from '@repo/code-highlight/tokenize';
+} from '@repo/code-highlight/tokenize-client';
 import { useEffect, useRef, useState } from 'react';
 
 import type { LintLanguage } from '@/features/code-dock/interface/types';
@@ -13,7 +13,7 @@ import type { LintLanguage } from '@/features/code-dock/interface/types';
 let tokenizeModule: Promise<typeof tokenize> | null = null;
 
 const loadTokenize = (): Promise<typeof tokenize> =>
-  (tokenizeModule ??= import('@repo/code-highlight/tokenize'));
+  (tokenizeModule ??= import('@repo/code-highlight/tokenize-client'));
 
 // 初回ハイライトが失敗/大幅遅延しても、この時間を過ぎたらプレーンで見せる保険
 const REVEAL_FALLBACK_MS = 1500;

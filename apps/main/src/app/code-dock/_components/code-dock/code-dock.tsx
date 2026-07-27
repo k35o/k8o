@@ -10,7 +10,7 @@ import {
   useDebouncedTransition,
   useToast,
 } from '@k8o/arte-odyssey';
-import type { HighlightTheme } from '@repo/code-highlight/tokenize';
+import type { HighlightTheme } from '@repo/code-highlight/tokenize-client';
 import { useAsyncAction } from '@repo/react-hooks/use-async-action';
 import { useTheme } from 'next-themes';
 import { useEffect, useRef, useState } from 'react';

@@ -4,7 +4,7 @@ import { FormControl } from '@k8o/arte-odyssey';
 import type {
   HighlightedCode,
   HighlightTheme,
-} from '@repo/code-highlight/tokenize';
+} from '@repo/code-highlight/tokenize-client';
 import { Fragment, useState } from 'react';
 import type { FC, ReactNode, Ref } from 'react';
 
