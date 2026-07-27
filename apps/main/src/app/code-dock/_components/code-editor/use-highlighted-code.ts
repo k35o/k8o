@@ -76,8 +76,11 @@ export const useHighlightedCode = (
         if (requestRef.current === requestId) {
           setState({ code, data, language, theme });
         }
-      } catch {
-        // ハイライトは装飾なので、失敗してもプレーン表示で続行する
+      } catch (error) {
+        // ハイライトは装飾なので、失敗してもプレーン表示で続行する。ただし
+        // 黙って握りつぶすと全損に気づけないため記録は残す (本番の
+        // removeConsole も warn は残す)
+        console.warn('コードのハイライトに失敗しました', error);
       }
     })();
   }, [code, language, theme]);
