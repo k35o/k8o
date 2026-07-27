@@ -1,3 +1,5 @@
+import type * as shikijsCore from '@shikijs/core';
+
 import { highlightCode } from './tokenize-client.ts';
 
 const distinctColors = (
@@ -37,6 +39,32 @@ describe('highlightCode (client)', () => {
       const result = await highlightCode('SELECT * FROM users;', 'sql');
 
       expect(distinctColors(result.tokens).size).toBe(1);
+    });
+
+    it('初期化に一度失敗しても、次の呼び出しで再試行して復帰する', async () => {
+      vi.doMock('@shikijs/core', async (importOriginal) => {
+        const actual = await importOriginal<typeof shikijsCore>();
+        return {
+          ...actual,
+          createHighlighterCore: vi
+            .fn(actual.createHighlighterCore)
+            .mockRejectedValueOnce(new Error('チャンク読み込みに失敗')),
+        };
+      });
+      vi.resetModules();
+      try {
+        const { highlightCode: freshHighlightCode } =
+          await import('./tokenize-client.ts');
+
+        await expect(freshHighlightCode('const a = 1;', 'ts')).rejects.toThrow(
+          'チャンク読み込みに失敗',
+        );
+        const result = await freshHighlightCode('const a = 1;', 'ts');
+
+        expect(distinctColors(result.tokens).size).toBeGreaterThan(1);
+      } finally {
+        vi.doUnmock('@shikijs/core');
+      }
     });
   });
 

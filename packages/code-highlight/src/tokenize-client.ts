@@ -14,6 +14,9 @@ export type { HighlightedCode, HighlightTheme } from './tokenize';
 // 任意言語をハイライトするサーバー側は引き続き ./tokenize を使う。
 let highlighterPromise: Promise<HighlighterCore> | null = null;
 
+// 生成に失敗した Promise を ??= でキャッシュし続けると、チャンク読み込みの
+// 一時的な失敗でもセッション中ずっとハイライトが失敗し続ける。reject 時は
+// キャッシュを捨てて、次回の呼び出しで再試行できるようにする
 const getHighlighter = (): Promise<HighlighterCore> =>
   (highlighterPromise ??= createHighlighterCore({
     themes: [
@@ -27,6 +30,9 @@ const getHighlighter = (): Promise<HighlighterCore> =>
       import('@shikijs/langs/jsx'),
     ],
     engine: createJavaScriptRegexEngine(),
+  }).catch((error: unknown) => {
+    highlighterPromise = null;
+    throw error;
   }));
 
 export const highlightCode = async (

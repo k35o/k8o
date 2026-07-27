@@ -9,11 +9,18 @@ import { useEffect, useRef, useState } from 'react';
 
 import type { LintLanguage } from '@/features/code-dock/interface/types';
 
-// shiki を初期バンドルから外すため、初回利用時に一度だけ動的 import する
+// shiki を初期バンドルから外すため、初回利用時に一度だけ動的 import する。
+// 失敗した Promise をキャッシュし続けるとチャンク読み込みの一時的な失敗で
+// 以後ずっと失敗が固定されるため、reject 時はキャッシュを捨てて再試行させる
 let tokenizeModule: Promise<typeof tokenize> | null = null;
 
 const loadTokenize = (): Promise<typeof tokenize> =>
-  (tokenizeModule ??= import('@repo/code-highlight/tokenize-client'));
+  (tokenizeModule ??= import('@repo/code-highlight/tokenize-client').catch(
+    (error: unknown) => {
+      tokenizeModule = null;
+      throw error;
+    },
+  ));
 
 // 初回ハイライトが失敗/大幅遅延しても、この時間を過ぎたらプレーンで見せる保険
 const REVEAL_FALLBACK_MS = 1500;
