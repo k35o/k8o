@@ -1,19 +1,26 @@
 'use client';
 
-import type * as tokenize from '@repo/code-highlight/tokenize';
+import type * as tokenize from '@repo/code-highlight/tokenize-client';
 import type {
   HighlightedCode,
   HighlightTheme,
-} from '@repo/code-highlight/tokenize';
+} from '@repo/code-highlight/tokenize-client';
 import { useEffect, useRef, useState } from 'react';
 
 import type { LintLanguage } from '@/features/code-dock/interface/types';
 
-// shiki を初期バンドルから外すため、初回利用時に一度だけ動的 import する
+// shiki を初期バンドルから外すため、初回利用時に一度だけ動的 import する。
+// 失敗した Promise をキャッシュし続けるとチャンク読み込みの一時的な失敗で
+// 以後ずっと失敗が固定されるため、reject 時はキャッシュを捨てて再試行させる
 let tokenizeModule: Promise<typeof tokenize> | null = null;
 
 const loadTokenize = (): Promise<typeof tokenize> =>
-  (tokenizeModule ??= import('@repo/code-highlight/tokenize'));
+  (tokenizeModule ??= import('@repo/code-highlight/tokenize-client').catch(
+    (error: unknown) => {
+      tokenizeModule = null;
+      throw error;
+    },
+  ));
 
 // 初回ハイライトが失敗/大幅遅延しても、この時間を過ぎたらプレーンで見せる保険
 const REVEAL_FALLBACK_MS = 1500;
@@ -76,8 +83,11 @@ export const useHighlightedCode = (
         if (requestRef.current === requestId) {
           setState({ code, data, language, theme });
         }
-      } catch {
-        // ハイライトは装飾なので、失敗してもプレーン表示で続行する
+      } catch (error) {
+        // ハイライトは装飾なので、失敗してもプレーン表示で続行する。ただし
+        // 黙って握りつぶすと全損に気づけないため記録は残す (本番の
+        // removeConsole も warn は残す)
+        console.warn('コードのハイライトに失敗しました', error);
       }
     })();
   }, [code, language, theme]);
