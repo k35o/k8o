@@ -106,7 +106,7 @@ import文とpropsが正しいか確認する。
 
 - 見出し・段落・リンク・インラインコードは`mdx-components.tsx`が自動でarte-odysseyスタイルに変換する。素のmarkdownで書けばよい（独自に`<h2>`等を書かない）。
 - **import検証**: grepのヒット件数で判断せず、対象シンボルの`export`宣言を`index.ts`で1ファイルずつ目視確認する（再エクスポートチェーン: `playgrounds/index.ts`の`export *` → サブ`index.ts`の named export）。サブパス直接import（主流）でも index 経由でも、**使われているパスが解決すればよい**（index未登録＝壊れ、と誤判定しない）。
-- **arte-odysseyのpropsは推測しない**。`Alert`・`BaselineStatus`等は `apps/main` の AGENTS.md に従い `main-storybook-mcp` で確認する。**MCPが使えない場合**は `apps/main/node_modules/@k8o/arte-odyssey` の型定義（`dist/*.d.ts`）または `docs/` を読む。
+- **arte-odysseyのpropsは推測しない**。`Alert`・`BaselineStatus`等は `apps/main` の CLAUDE.md に従い `main-storybook-mcp` で確認する。**MCPが使えない場合**は `apps/main/node_modules/@k8o/arte-odyssey` の型定義（`dist/*.d.ts`）または `docs/` を読む。
 
 ## ブログ固有4: 見出し階層・リンク・画像・テーブル
 
