@@ -1,0 +1,108 @@
+name: Browser Support Monitor
+
+# browser-support データ同期の外形監視。監視は被監視系(Vercel/Turso/push)とインフラを
+# 共有しない: Vercel Cron が静かに死んでも、この workflow が乖離を検知して自走同期を
+# 試み、それでも直らなければ Issue を起票する(GitHub 通知メールが最終防衛線)。
+# 上流バージョンは health の自己申告ではなく、ここで独立に取得して突き合わせる。
+on:
+  schedule:
+    # admin の同期 cron (06:00 UTC) の後に検査する
+    - cron: '0 9 * * *'
+  workflow_dispatch:
+
+permissions: {}
+
+jobs:
+  monitor:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      issues: write
+    env:
+      HEALTH_URL: https://k8o.me/api/health/browser-support
+      SYNC_URL: https://k8o-admin-k8o.vercel.app/api/crons/sync-browser-support
+      LATEST_URL: https://github.com/web-platform-dx/web-features/releases/latest/download/data.json
+      GH_TOKEN: ${{ github.token }}
+      GH_REPO: ${{ github.repository }}
+      CRON_SECRET: ${{ secrets.CRON_SECRET }}
+      # k8o-admin は Vercel Deployment Protection 有効のため、外部からの自走復旧には
+      # プロジェクト設定の Protection Bypass for Automation シークレットが必要。
+      VERCEL_AUTOMATION_BYPASS_SECRET: ${{ secrets.VERCEL_AUTOMATION_BYPASS_SECRET }}
+    steps:
+      - name: Check, self-heal, and report
+        run: |
+          set -u
+
+          fetch_health() {
+            curl -sS --max-time 30 "$HEALTH_URL" || echo '{}'
+          }
+          health_status() {
+            echo "$1" | jq -r '.status // "unreachable"'
+          }
+          active_version() {
+            echo "$1" | jq -r '.activeVersion // ""'
+          }
+
+          # 上流最新バージョンを独立に発見する(302 の Location からタグをパース)
+          location=$(curl -sS --max-time 30 -o /dev/null -w '%{redirect_url}' -I "$LATEST_URL" || echo '')
+          latest=$(echo "$location" | sed -nE 's#.*/releases/download/v([0-9]+\.[0-9]+\.[0-9]+)/data\.json$#\1#p')
+
+          health=$(fetch_health)
+          status=$(health_status "$health")
+          active=$(active_version "$health")
+          echo "health: $health"
+          echo "upstream latest: ${latest:-unknown}"
+
+          unhealthy=false
+          reason=""
+          if [ "$status" != "ok" ]; then
+            unhealthy=true
+            reason="health status: $status"
+          fi
+          # 上流の対応メジャー(v3)最新に active が追いついていない場合も異常扱い。
+          # メジャー跨ぎ(v4)は admin 側が警報するため、ここでは対象外にする。
+          if [ -n "$latest" ] && [ "${latest%%.*}" = "3" ] && [ "$latest" != "$active" ]; then
+            unhealthy=true
+            reason="${reason:+$reason / }version lag: active=${active:-none} latest=$latest"
+          fi
+
+          if [ "$unhealthy" = "false" ]; then
+            echo "healthy: active=$active"
+            exit 0
+          fi
+          echo "unhealthy: $reason"
+
+          # 自走復旧: 同期エンドポイントを直接叩く(trigger=monitor として記録される)
+          if [ -n "${CRON_SECRET:-}" ] && [ -n "${VERCEL_AUTOMATION_BYPASS_SECRET:-}" ]; then
+            echo "triggering sync..."
+            curl -sS --max-time 120 \
+              -H "Authorization: Bearer $CRON_SECRET" \
+              -H "x-vercel-protection-bypass: $VERCEL_AUTOMATION_BYPASS_SECRET" \
+              "$SYNC_URL?trigger=monitor" || true
+            sleep 10
+            health=$(fetch_health)
+            status=$(health_status "$health")
+            active=$(active_version "$health")
+            if [ "$status" = "ok" ] && { [ -z "$latest" ] || [ "${latest%%.*}" != "3" ] || [ "$latest" = "$active" ]; }; then
+              echo "recovered by self-heal: active=$active"
+              exit 0
+            fi
+            reason="$reason / self-heal failed (status=$status active=${active:-none})"
+          else
+            reason="$reason / CRON_SECRET または VERCEL_AUTOMATION_BYPASS_SECRET 未設定のため自走復旧をスキップ"
+          fi
+
+          # Issue 起票(既存の open Issue があれば重複させない)
+          label='browser-support-monitor'
+          gh label create "$label" --force --color D93F0B \
+            --description 'browser-support 同期監視の自動起票' || true
+          existing=$(gh issue list --label "$label" --state open --json number --jq 'length')
+          if [ "$existing" != "0" ]; then
+            echo "open issue already exists; skip"
+            exit 1
+          fi
+          gh issue create \
+            --title "browser-support: データ同期の異常を検知 ($(date -u +%Y-%m-%d))" \
+            --label "$label" \
+            --body "$(printf '外形監視が異常を検知しました。\n\n- 判定: %s\n- health: %s\n- 上流最新: %s\n\n確認手順:\n1. %s を確認\n2. admin の Browser Support 画面で同期履歴を確認し、必要なら手動同期\n3. Vercel Cron (admin) の実行履歴を確認\n' "$reason" "$HEALTH_URL" "${latest:-unknown}" "$HEALTH_URL")"
+          exit 1
