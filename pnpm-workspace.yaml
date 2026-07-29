@@ -44,7 +44,6 @@ catalog:
   storybook-addon-vrt: 0.2.0
   tailwindcss: 4.3.3
   vitest: 4.1.10
-  web-features: 3.34.0
   wrangler: 4.112.0
   zod: 4.4.3
 
