@@ -1,7 +1,7 @@
+import type { HtmlElementInfo } from '@k8o/html-nest';
 import { useQueryStates } from 'nuqs';
 import { useCallback } from 'react';
 
-import type { HtmlElementInfo } from '../../_types/html-element';
 import { getElement } from '../../_utils/content-model';
 import {
   DEFAULT_TAG,

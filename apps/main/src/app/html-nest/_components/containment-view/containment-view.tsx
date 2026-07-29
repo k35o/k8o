@@ -1,13 +1,9 @@
 import { Anchor, Badge, Code, Separator, Tabs } from '@k8o/arte-odyssey';
+import { CONTENT_CATEGORY_LABEL, FORM_CATEGORY_LABEL } from '@k8o/html-nest';
+import type { ContentModelKind, HtmlElementInfo } from '@k8o/html-nest';
 import { useMemo } from 'react';
 import type { FC } from 'react';
 
-import {
-  CONTENT_CATEGORY_LABEL,
-  FORM_CATEGORY_LABEL,
-  KIND_LABEL,
-} from '../../_data/categories';
-import type { HtmlElementInfo } from '../../_types/html-element';
 import {
   canSelfNest,
   getChildren,
@@ -18,6 +14,17 @@ import { ElementPickerModal } from '../element-picker-modal';
 import { RelationSection } from '../relation-section';
 
 const TAB_IDS: ['child', 'parent'] = ['child', 'parent'];
+
+// content model 種別のバッジ表示ラベル。
+const KIND_LABEL: Record<ContentModelKind, string> = {
+  elements: '通常',
+  transparent: '透過 (transparent)',
+  empty: '空要素 (void)',
+  none: '内容なし (Nothing)',
+  text: 'テキストのみ',
+  foreign: 'SVG / MathML',
+  varies: '文脈依存',
+};
 
 type ContainmentViewProps = {
   element: HtmlElementInfo;

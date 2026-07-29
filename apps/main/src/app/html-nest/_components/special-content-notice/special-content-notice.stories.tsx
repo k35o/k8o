@@ -21,6 +21,8 @@ type Story = StoryObj<typeof SpecialContentNotice>;
 
 export const Transparent: Story = { args: { element: elementOf('a') } };
 export const Empty: Story = { args: { element: elementOf('img') } };
+export const Nothing: Story = { args: { element: elementOf('iframe') } };
 export const Text: Story = { args: { element: elementOf('title') } };
+export const TextWithNote: Story = { args: { element: elementOf('script') } };
 export const Foreign: Story = { args: { element: elementOf('svg') } };
 export const Varies: Story = { args: { element: elementOf('noscript') } };

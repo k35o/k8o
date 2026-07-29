@@ -21,6 +21,7 @@
   "dependencies": {
     "@ai-sdk/openai-compatible": "catalog:",
     "@k8o/arte-odyssey": "catalog:",
+    "@k8o/html-nest": "catalog:",
     "@k8o/oxc-config": "catalog:",
     "@mdx-js/loader": "3.1.1",
     "@mdx-js/react": "3.1.1",

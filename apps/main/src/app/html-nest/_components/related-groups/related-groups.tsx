@@ -1,6 +1,6 @@
+import type { RelatedElement } from '@k8o/html-nest';
 import type { FC } from 'react';
 
-import type { RelatedElement } from '../../_utils/content-model';
 import { groupByRole } from '../../_utils/role-grouping';
 import { NestChip } from '../nest-chip';
 

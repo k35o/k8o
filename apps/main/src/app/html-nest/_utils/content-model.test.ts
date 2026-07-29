@@ -1,20 +1,16 @@
-import { CONTENT_CATEGORY_METAS } from '../_data/categories';
-import { HTML_ELEMENTS, HTML_ELEMENT_TAGS } from '../_data/elements';
-import type { ContentCategory, HtmlElementInfo } from '../_types/html-element';
+import type { HtmlElementInfo } from '@k8o/html-nest';
+
+import { HTML_ELEMENTS } from '../_data/elements';
 import {
   canContain,
-  canSelfNest,
   describeAllowedContent,
   getChildren,
   getElement,
   getParents,
-  relationOf,
 } from './content-model';
 
-const TAG_SET = new Set(HTML_ELEMENT_TAGS);
-const CATEGORY_SET = new Set<string>(
-  CONTENT_CATEGORY_METAS.map((meta) => meta.key),
-);
+// 入れ子判定そのものは @k8o/html-nest 側のテストが守るため、
+// ここでは日本語化レイヤー（reason と要約文言）だけを検証する。
 
 // テスト本体に条件分岐を持ち込まないため、要素取得をモジュール側に閉じ込める。
 const el = (tag: string): HtmlElementInfo => {
@@ -25,201 +21,38 @@ const el = (tag: string): HtmlElementInfo => {
   return found;
 };
 
-const parentTagsOf = (tag: string): string[] =>
-  getParents(el(tag)).map((related) => related.element.tag);
+// 全要素の親子一覧に英語（非日本語）の reason が残っていないかを事前計算。
+// 文言のハードコードに依存しないため、パッケージが既定文言を変えても検出できる。
+const collectUntranslatedReasons = (): string[] =>
+  HTML_ELEMENTS.flatMap((element) =>
+    [...getParents(element), ...getChildren(element)].flatMap((related) =>
+      related.reason === undefined ? [] : [related.reason],
+    ),
+  ).filter((reason) => !/\P{ASCII}/u.test(reason));
 
-const childTagsOf = (tag: string): string[] =>
-  getChildren(el(tag)).map((related) => related.element.tag);
+const UNTRANSLATED_REASONS = collectUntranslatedReasons();
 
-// 参照される子・親の要素名がデータセットに存在するかを事前計算。
-const collectDanglingRefs = (): string[] => {
-  const dangling: string[] = [];
-  for (const element of HTML_ELEMENTS) {
-    const referenced = [
-      ...element.contentModel.elements,
-      ...(element.contentModel.conditionalElements ?? []),
-      ...element.contexts.elements,
-      ...(element.contexts.conditionalElements ?? []),
-    ];
-    for (const tag of referenced) {
-      if (!TAG_SET.has(tag)) {
-        dangling.push(`${element.tag} -> ${tag}`);
-      }
-    }
-  }
-  return dangling;
-};
-
-// 使用カテゴリがすべて既知キーかを事前計算。
-const collectUnknownCategories = (): string[] => {
-  const unknown: string[] = [];
-  for (const element of HTML_ELEMENTS) {
-    const used: readonly ContentCategory[] = [
-      ...element.categories,
-      ...(element.conditionalCategories ?? []),
-      ...element.contentModel.categories,
-      ...(element.contentModel.conditionalCategories ?? []),
-      ...element.contexts.categories,
-    ];
-    for (const category of used) {
-      if (!CATEGORY_SET.has(category)) {
-        unknown.push(`${element.tag}: ${category}`);
-      }
-    }
-  }
-  return unknown;
-};
-
-// 「PがCを子に持てる ⟺ CがPを親に持てる」の対称性違反を事前計算。
-const collectSymmetryMismatches = (): string[] => {
-  const mismatches: string[] = [];
-  for (const parent of HTML_ELEMENTS) {
-    const children = new Set(childTagsOf(parent.tag));
-    for (const child of HTML_ELEMENTS) {
-      if (parent.tag === child.tag) {
-        continue;
-      }
-      const inChildren = children.has(child.tag);
-      const inParents = parentTagsOf(child.tag).includes(parent.tag);
-      if (inChildren !== inParents) {
-        mismatches.push(`${parent.tag} ∋ ${child.tag}`);
-      }
-    }
-  }
-  return mismatches;
-};
-
-const DANGLING_REFS = collectDanglingRefs();
-const UNKNOWN_CATEGORIES = collectUnknownCategories();
-const SYMMETRY_MISMATCHES = collectSymmetryMismatches();
-const VOID_NON_EMPTY = HTML_ELEMENTS.filter(
-  (element) => element.void && element.contentModel.kind !== 'empty',
-).map((element) => element.tag);
-const ORPHANS = HTML_ELEMENTS.filter(
-  (element) => element.tag !== 'html' && getParents(element).length === 0,
-).map((element) => element.tag);
-
-describe('HTML要素データセットの整合性', () => {
-  describe('正常系', () => {
-    it('全115要素を重複なく持つ', () => {
-      expect(HTML_ELEMENTS).toHaveLength(115);
-      expect(TAG_SET.size).toBe(HTML_ELEMENTS.length);
-    });
-
-    it('参照される子・親の要素名はすべてデータセットに存在する', () => {
-      expect(DANGLING_REFS).toStrictEqual([]);
-    });
-
-    it('使用されるコンテンツカテゴリはすべて既知のキーである', () => {
-      expect(UNKNOWN_CATEGORIES).toStrictEqual([]);
-    });
-
-    it('void要素のcontent modelはemptyである', () => {
-      expect(VOID_NON_EMPTY).toStrictEqual([]);
-    });
+describe('canContain / reason の日本語化', () => {
+  it('親側の note 由来の reason は日本語化した note が返る', () => {
+    const check = canContain(el('a'), el('div'));
+    expect(check.conditional).toBe(true);
+    expect(check.reason).toContain('親のcontent modelに従う');
   });
 
-  describe('エッジケース', () => {
-    it('html以外のすべての要素は少なくとも1つの親を持つ', () => {
-      expect(ORPHANS).toStrictEqual([]);
-    });
-
-    it('ルート要素htmlは親を持たない', () => {
-      expect(parentTagsOf('html')).toStrictEqual([]);
-    });
-  });
-});
-
-describe('canContain / 入れ子関係の解決', () => {
-  describe('親子関係は対称である', () => {
-    it('PがCを子に持てる ⟺ CがPを親に持てる', () => {
-      expect(SYMMETRY_MISMATCHES).toStrictEqual([]);
-    });
+  it('子側の conditionalNote 由来の reason も日本語で返る', () => {
+    const check = canContain(el('div'), el('main'));
+    expect(check.conditional).toBe(true);
+    expect(check.reason).toContain('階層的に正しい');
   });
 
-  describe('正常系（典型的な入れ子）', () => {
-    it('liはul・ol・menuの中に置けるが、div・pの中には置けない', () => {
-      const parents = parentTagsOf('li');
-      expect(parents).toStrictEqual(
-        expect.arrayContaining(['ul', 'ol', 'menu']),
-      );
-      expect(parents).not.toContain('div');
-      expect(parents).not.toContain('p');
-    });
-
-    it('ulはliのみを子に持ち、p・divは子にできない', () => {
-      const children = childTagsOf('ul');
-      expect(children).toContain('li');
-      expect(children).not.toContain('p');
-      expect(children).not.toContain('div');
-    });
-
-    it('trはtable系の中に置け、td/thを子に持つ', () => {
-      expect(parentTagsOf('tr')).toStrictEqual(
-        expect.arrayContaining(['table', 'thead', 'tbody', 'tfoot']),
-      );
-      expect(childTagsOf('tr')).toStrictEqual(
-        expect.arrayContaining(['td', 'th']),
-      );
-    });
-
-    it('optionはselect・datalist・optgroupの中に置ける', () => {
-      expect(parentTagsOf('option')).toStrictEqual(
-        expect.arrayContaining(['select', 'datalist', 'optgroup']),
-      );
-    });
-
-    it('pはspanなどフレージングを子に持つが、divは子にできない', () => {
-      const children = childTagsOf('p');
-      expect(children).toStrictEqual(
-        expect.arrayContaining(['span', 'a', 'strong']),
-      );
-      expect(children).not.toContain('div');
-    });
-
-    it('bodyの親はhtmlだけである', () => {
-      expect(parentTagsOf('body')).toStrictEqual(['html']);
-    });
+  it('note を持たない条件付き関係は汎用文言も日本語になる', () => {
+    const check = canContain(el('div'), el('optgroup'));
+    expect(check.conditional).toBe(true);
+    expect(check.reason).toBe('文脈や属性によって変わります（仕様を参照）');
   });
 
-  describe('エッジケース（特殊なcontent model）', () => {
-    it('void要素imgは子要素を持てない', () => {
-      expect(childTagsOf('img')).toStrictEqual([]);
-    });
-
-    it('text専用のtitleは子要素を持たず、親はheadである', () => {
-      expect(childTagsOf('title')).toStrictEqual([]);
-      expect(parentTagsOf('title')).toStrictEqual(['head']);
-    });
-
-    it('transparentなaはflow相当を条件付きで子に持てる', () => {
-      const check = canContain(el('a'), el('div'));
-      expect(check.allowed).toBe(true);
-      expect(check.conditional).toBe(true);
-    });
-
-    it('divはdivを入れ子にできる（自己入れ子）', () => {
-      expect(canSelfNest(el('div')).allowed).toBe(true);
-    });
-  });
-
-  describe('relationOf', () => {
-    it('同じ要素同士の関係はselfになる', () => {
-      expect(relationOf(el('div'), el('div')).kind).toBe('self');
-    });
-
-    it('divとsectionは互いに親にも子にもなれる（both）', () => {
-      expect(relationOf(el('div'), el('section')).kind).toBe('both');
-    });
-
-    it('optionから見たselectはparent、selectから見たoptionはchild', () => {
-      expect(relationOf(el('option'), el('select')).kind).toBe('parent');
-      expect(relationOf(el('select'), el('option')).kind).toBe('child');
-    });
-
-    it('liとulは入れ子リストのため互いに親にも子にもなれる（both）', () => {
-      expect(relationOf(el('li'), el('ul')).kind).toBe('both');
-    });
+  it('関連要素一覧の reason はすべて日本語になっている', () => {
+    expect(UNTRANSLATED_REASONS).toStrictEqual([]);
   });
 });
 
@@ -247,5 +80,13 @@ describe('describeAllowedContent / 許可内容の要約', () => {
 
   it('テキストのみの要素はテキストのみと返す', () => {
     expect(describeAllowedContent(el('title'))).toBe('テキストのみ');
+  });
+
+  it('条件付きの内容はアスタリスク付きで併記し、一覧を空にしない', () => {
+    expect(describeAllowedContent(el('colgroup'))).toBe('<col>* / <template>*');
+    expect(describeAllowedContent(el('select'))).toContain('<button>*');
+    expect(describeAllowedContent(el('option'))).toBe(
+      'テキストのみ（条件付き: <div>* / Phrasing content*）',
+    );
   });
 });

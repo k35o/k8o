@@ -13,6 +13,7 @@ blockExoticSubdeps: true
 catalog:
   '@ai-sdk/openai-compatible': 3.0.12
   '@k8o/arte-odyssey': 11.0.0
+  '@k8o/html-nest': 0.2.0
   '@k8o/oxc-config': 0.2.0
   '@next/env': 16.2.10
   '@next/mdx': 16.2.10

@@ -1,14 +1,13 @@
 import { Code, FormControl, TextField } from '@k8o/arte-odyssey';
+import type { HtmlElementInfo, RelatedElement } from '@k8o/html-nest';
 import { useMemo, useState } from 'react';
 import type { FC, ReactNode } from 'react';
 
-import type { HtmlElementInfo } from '../../_types/html-element';
 import {
   canSelfNest,
   describeAllowedContent,
   getElement,
 } from '../../_utils/content-model';
-import type { RelatedElement } from '../../_utils/content-model';
 import { RelatedGroups } from '../related-groups';
 import { RelationResults } from '../relation-results';
 import { SpecialContentNotice } from '../special-content-notice';

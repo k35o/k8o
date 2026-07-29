@@ -1,8 +1,7 @@
 import { Tooltip } from '@k8o/arte-odyssey';
+import type { HtmlElementInfo } from '@k8o/html-nest';
 import { cn } from '@repo/helpers/cn';
 import type { FC } from 'react';
-
-import type { HtmlElementInfo } from '../../_types/html-element';
 
 type NestChipProps = {
   element: HtmlElementInfo;
