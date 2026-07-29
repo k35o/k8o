@@ -4,7 +4,7 @@ describe('getArtifacts', () => {
   it('公開している制作物一覧を返す', () => {
     const projects = getArtifacts();
 
-    expect(projects).toHaveLength(12);
+    expect(projects).toHaveLength(14);
     expect(projects).toStrictEqual(
       expect.arrayContaining([
         expect.objectContaining({
@@ -22,6 +22,18 @@ describe('getArtifacts', () => {
         expect.objectContaining({
           name: 'patrol-board',
           githubUrl: 'https://github.com/k35o/patrol-board',
+          websiteUrl: null,
+          npmPackageName: null,
+        }),
+        expect.objectContaining({
+          name: '@k8o/html-nest',
+          githubUrl: 'https://github.com/k35o/html-nest',
+          websiteUrl: 'https://k8o.me/html-nest',
+          npmPackageName: '@k8o/html-nest',
+        }),
+        expect.objectContaining({
+          name: 'pnpm-release-action',
+          githubUrl: 'https://github.com/k35o/pnpm-release-action',
           websiteUrl: null,
           npmPackageName: null,
         }),
