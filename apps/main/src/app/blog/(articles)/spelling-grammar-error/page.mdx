@@ -1,34 +1,80 @@
 ---
-title: スペルミス・文法エラーに対してスタイルを設定する::spelling-errorと::grammar-error
-description: ::spelling-errorと::grammar-error擬似要素は、ブラウザが検出したスペルミスや文法エラーにスタイルを適用できる機能です。デフォルトの下線表示をカスタマイズし、ユーザー体験を向上させられます
+title: スペルミス・文法エラーの装飾をCSSで制御する
+description: Baseline 2025入りしたtext-decoration-lineのspelling-error・grammar-error値を使うと、ブラウザ標準のエラー表示と同じ装飾を任意のテキストに与えられます。あわせて、検出された本物のエラーをスタイリングする::spelling-error・::grammar-error擬似要素も紹介します
 createdAt: 2025-06-29
-updatedAt: 2025-11-15
+updatedAt: 2026-07-29
 featureIds:
+  - text-decoration-spelling-grammar
   - spelling-grammar-error
 ---
 
 import { Alert } from '@k8o/arte-odyssey';
 import { PlaygroundEmbed } from '@/app/_components/playgrounds';
 
-# スペルミス・文法エラーに対してスタイルを設定する::spelling-errorと::grammar-error
-
-<BrowserSupportStatus featureId="spelling-grammar-error" />
+# スペルミス・文法エラーの装飾をCSSで制御する
 
 ## はじめに
 
 <Alert
-  tone="warning"
-  message="【連絡】この記事では以前、紹介する機能がFirefox 140のリリースによってBaseline入りしたと記述していましたが、実際には導入されていませんでしたのでその部分を修正しています。"
+  tone="info"
+  message="【更新】2026年7月: Baseline 2025入りしたtext-decoration-lineのspelling-error・grammar-errorを軸に記事を再構成しました。以前の版にあった、擬似要素がFirefox 140のリリースでBaseline入りしたという記述は誤りだったため、あわせて修正しています。"
 />
 
-擬似要素である`::spelling-error`と`::grammar-error`は、スペルミスや文法エラーとしてフラグ付けされたテキストに対するスタイルを定義するために使用されます。
+ブラウザはスペルミスを赤い波線、文法エラーを緑の下線のような装飾で知らせてくれます。CSSにはこの見た目を扱う機能が2つあります。エラー風の装飾を任意のテキストに与える`text-decoration-line`の値`spelling-error`と`grammar-error`、そしてブラウザが検出した本物のエラーへスタイルを当てる擬似要素`::spelling-error`と`::grammar-error`です。
 
-## ::spelling-error
+前者はBaseline 2025入りした一方、後者はまだBaselineに達していない先取りの機能です。この記事では使える状態になった値の方から紹介します。
+
+## text-decoration-lineでエラー風の装飾を描く
+
+<BrowserSupportStatus featureId="text-decoration-spelling-grammar" />
+
+`text-decoration-line`の値`spelling-error`と`grammar-error`は、Chrome 121とFirefox 137に続いてSafari 26.2が対応したことで、2025年12月にBaseline 2025入りしました。エラー検出とは無関係に、ブラウザ標準のエラー表示と同じ見た目を任意のテキストへ与えます。
+
+```css
+/* [!og] */
+.custom-spelling {
+  text-decoration-line: spelling-error;
+}
+
+.custom-grammar {
+  text-decoration-line: grammar-error;
+}
+```
+
+この値を指定したテキストには、そのブラウザがスペルミス・文法エラーの表示に使っているものと同じ装飾が描かれます。見た目は完全にブラウザ任せで、次の特徴があります。
+
+- `underline`など他の線種と組み合わせられない単独の値です
+- `text-decoration-color`や`text-decoration-style`、`text-decoration-thickness`の指定は無視されます
+- 未対応のブラウザでは装飾が描かれないだけで、他への影響はありません
+
+<PlaygroundEmbed
+  demo="text-decoration-lineによるエラー風装飾"
+  sectionId="spelling-grammar-error"
+/>
+
+ブラウザのスペルチェック（`spellcheck`）は日本語の文章を検出できませんが、この値は検出と切り離された純粋な装飾なので、デモのように日本語のテキストにもエラー風の見た目を与えられます。自前の校正機能を持つエディタで指摘箇所を示すときに、ブラウザのエラー表示と一貫した見た目を実現できます。
+
+[CSS Custom Highlight APIの記事](/blog/highlight)で紹介した`::highlight()`擬似要素の中では`text-decoration`系のプロパティが使えるため、組み合わせるとDOMを変更せずに自前で検出した誤りへネイティブ同等の装飾を引けます。
+
+```css
+::highlight(my-spellcheck) {
+  text-decoration-line: spelling-error;
+}
+```
+
+なお、この装飾は色と線だけの視覚的な表現です。実際の校正UIで使うときは、指摘の内容をテキストや支援技術にも伝わる形で併記する必要があります。
+
+## 検出されたエラーをスタイリングする擬似要素
+
+<BrowserSupportStatus featureId="spelling-grammar-error" />
+
+ここからは向きが逆の機能です。擬似要素`::spelling-error`と`::grammar-error`は、ブラウザのスペルチェックによってスペルミスや文法エラーとしてフラグ付けされたテキストに対するスタイルを定義します。まだBaselineに達していないため、先取りの機能として押さえておく位置づけです。
+
+### ::spelling-error
 
 スペルミスとしてフラグ付けされたテキストに対するスタイルを定義します。
 
 ```css
-/* [!og] */
 ::spelling-error {
   background-color: #ffcccc;
   color: #d8000c;
@@ -38,9 +84,15 @@ import { PlaygroundEmbed } from '@/app/_components/playgrounds';
 }
 ```
 
-`::spelling-error`の中では、`color`と`background-color`、`cursor`、`caret-color`、`outline`、`outlint-*`、`text-decoration`、`text-decoration-*`、`text-emphasis-color`、`text-shadow`のみが使用可能です。
+`::spelling-error`の中で使えるプロパティは、次の装飾系に限られます。
 
-## ::grammar-error
+- `color`と`background-color`
+- `text-decoration`とその関連プロパティ（`text-decoration-*`）
+- `outline`とそのlonghand（`outline-*`）
+- `cursor`と`caret-color`
+- `text-emphasis-color`と`text-shadow`
+
+### ::grammar-error
 
 文法エラーとしてフラグ付けされたテキストに対するスタイルを定義します。
 
@@ -55,25 +107,25 @@ import { PlaygroundEmbed } from '@/app/_components/playgrounds';
 
 `::grammar-error`も`::spelling-error`と同様のプロパティしか定義できません。
 
-## 例
+### spellcheckに検出させて試す
 
-`contenteditable`属性で編集可能なテキストエリアを準備しました。`spellcheck`属性が`true`に設定されているため、スペルミスや文法エラーが自動的に検出されます。
+`contenteditable`属性で編集可能なテキストエリアを準備しました。`spellcheck`属性が`true`のため、ブラウザのスペルチェックが働き、検出されたエラーが`::spelling-error`と`::grammar-error`でスタイリングされます。
 
 この例では`contenteditable`属性の値を`plaintext-only`にすることでテキストの入力しか行えないようにしています。[`plaintext-only`についても記事](/blog/contenteditable-plaintextonly)を書いているので良ければ読んでください。
-
-ここで検出されたエラーが`::spelling-error`と`::grammar-error`の擬似要素でスタイリングされます。
 
 <PlaygroundEmbed
   demo="スペル・文法エラースタイリング"
   sectionId="spelling-grammar-error"
 />
 
-そのままでは`spellcheck`属性の確認が行われず、見た目の変化がないことがあります。その場合は、テキストの一部を編集して再確認させることで、エラーが表示されるようになると思います。
+そのままでは`spellcheck`の確認が行われず、見た目の変化がないことがあります。その場合は、テキストの一部を編集して再確認させると、`speling`がスペルミスとして検出されます。
 
-また、ブラウザごとに`spellcheck`の挙動が異なるため、デフォルトの文章で両方のエラーを確認できない恐れがあります（Safariで確認しました）。期待としては、`speling`がスペルミス、`an grammar`の`an`が文法エラーとして検出されることです。
+一方、`an grammar`の`an`に期待している文法エラーの装飾は、多くの環境で表示されません。`::grammar-error`が当たるのはブラウザが文法エラーとしてフラグ付けしたテキストだけですが、Chromeは現状Webページのテキストに対する文法チェックを持たず、SafariもmacOSの文法チェックを有効にした場合に限られるためです。セレクタに対応していることと、それが当たるテキストをブラウザが作れることは別の問題です。
+
+文法エラーの装飾がどんな見た目になるかは、最初のデモの`text-decoration-line: grammar-error`で確認できます。
 
 ## おわりに
 
-Baseline 2025入りした`::spelling-error`と`::grammar-error`を紹介しました。
+スペルミス・文法エラーの装飾を扱う2つのCSS機能を紹介しました。エラーと同じ見た目を任意のテキストに与える`text-decoration-line`の値はBaseline 2025入りしており、検出された本物のエラーへスタイルを当てる擬似要素はBaseline未達の先取り機能という関係です。
 
-`spellcheck`自体が日本語対応していないので、日本語ユーザーにとってはあまり恩恵がないかもしれませんが、英語のコンテンツを扱うときのために覚えておきたいです。
+`spellcheck`自体が日本語対応していないので、擬似要素は日本語ユーザーにとってあまり恩恵がないかもしれませんが、`text-decoration-line`の方は検出に依存しない装飾として日本語でも使えるため、校正系のUIを作るときのために覚えておきたいです。
