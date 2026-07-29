@@ -55,6 +55,16 @@ export const getArtifacts = (): Artifact[] => [
     npmPackageName: 'storybook-framework-hono-vite',
     tags: ['Storybook', 'Hono', 'Vite'],
   },
+  // HTML / oxlint
+  {
+    name: '@k8o/html-nest',
+    description:
+      'WHATWG HTML仕様の要素の内包関係を構造化データとして提供するエンジンと、JSXのネスト違反を検出するoxlintプラグイン。',
+    githubUrl: 'https://github.com/k35o/html-nest',
+    websiteUrl: 'https://k8o.me/html-nest',
+    npmPackageName: '@k8o/html-nest',
+    tags: ['HTML', 'oxlint', 'JSX'],
+  },
   // Vite+ / ビルドツール 系
   {
     name: '@k8o/create',
@@ -111,6 +121,15 @@ export const getArtifacts = (): Artifact[] => [
     tags: ['Dotfiles', 'chezmoi', 'Shell', 'Personal'],
   },
   // 自動化 / GitHub Actions
+  {
+    name: 'pnpm-release-action',
+    description:
+      'pnpm組み込みのリリース管理をCIへつなぎ、リリースPRの作成からnpm publish・タグ・GitHub Releasesの作成までを行うGitHub Action。',
+    githubUrl: 'https://github.com/k35o/pnpm-release-action',
+    websiteUrl: null,
+    npmPackageName: null,
+    tags: ['GitHub Actions', 'pnpm', 'Release'],
+  },
   {
     name: 'patrol-board',
     description:
