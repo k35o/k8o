@@ -8,11 +8,11 @@ import {
   Modal,
   TextField,
 } from '@k8o/arte-odyssey';
+import type { RelatedElement } from '@k8o/html-nest';
 import { useCallback, useState } from 'react';
 import type { FC } from 'react';
 
 import { HTML_ELEMENTS } from '../../_data/elements';
-import type { RelatedElement } from '../../_utils/content-model';
 import { RelatedGroups } from '../related-groups';
 
 // 役割別チップで全要素を見せる。選択用なので conditional は使わず false 固定。
@@ -43,7 +43,7 @@ export const ElementPickerModal: FC<ElementPickerModalProps> = ({
       : ALL.filter(
           (related) =>
             related.element.tag.includes(q) ||
-            related.element.description.toLowerCase().includes(q),
+            (related.element.description?.toLowerCase().includes(q) ?? false),
         );
 
   const select = (tag: string): void => {

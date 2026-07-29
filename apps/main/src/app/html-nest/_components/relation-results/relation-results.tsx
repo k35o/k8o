@@ -1,7 +1,7 @@
 import { AlertIcon, CheckIcon } from '@k8o/arte-odyssey';
+import type { RelatedElement } from '@k8o/html-nest';
 import type { FC } from 'react';
 
-import type { RelatedElement } from '../../_utils/content-model';
 import { RelatedGroups } from '../related-groups';
 
 type RelationResultsProps = {

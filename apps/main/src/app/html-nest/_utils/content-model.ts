@@ -1,7 +1,20 @@
-import { CONTENT_CATEGORY_LABEL } from '../_data/categories';
-import { HTML_ELEMENTS } from '../_data/elements';
-import type { HtmlElementInfo } from '../_types/html-element';
+import {
+  CONTENT_CATEGORY_LABEL,
+  canContain as canContainBase,
+  canSelfNest as canSelfNestBase,
+} from '@k8o/html-nest';
+import type {
+  ContainCheck,
+  ContentModelKind,
+  HtmlElementInfo,
+  RelatedElement,
+} from '@k8o/html-nest';
 
+import { HTML_ELEMENTS } from '../_data/elements';
+
+// 入れ子判定は @k8o/html-nest に委ねる。パッケージ側の getElement /
+// getParents / getChildren は英語の要素データを走査するため、
+// 日本語化済みの HTML_ELEMENTS を対象にここで引き当て直す。
 const ELEMENT_BY_TAG: ReadonlyMap<string, HtmlElementInfo> = new Map(
   HTML_ELEMENTS.map((element) => [element.tag, element]),
 );
@@ -9,151 +22,35 @@ const ELEMENT_BY_TAG: ReadonlyMap<string, HtmlElementInfo> = new Map(
 export const getElement = (tag: string): HtmlElementInfo | undefined =>
   ELEMENT_BY_TAG.get(tag);
 
-const intersects = <T>(a: readonly T[], b: readonly T[]): boolean =>
-  a.some((value) => b.includes(value));
+// note 由来の reason は _data/elements.ts で日本語化済みなので、
+// パッケージ組み込みの既定文言（reasonKind が note 以外）だけをここで差し替える。
+const GENERIC_REASON_JA = '文脈や属性によって変わります（仕様を参照）';
 
-export type ContainCheck = {
-  allowed: boolean;
-  // 仕様上のアスタリスク（条件付き）でのみ許可される場合 true
-  conditional: boolean;
-  // conditional=true のときの「条件」の説明（日本語・任意）
-  reason?: string;
+const localizeCheck = (
+  check: ContainCheck,
+  parent: HtmlElementInfo,
+): ContainCheck => {
+  if (check.reasonKind === 'generic') {
+    return { ...check, reason: GENERIC_REASON_JA };
+  }
+  if (check.reasonKind === 'transparent') {
+    return {
+      ...check,
+      reason: `${parent.tag} は透過要素。親の content model に従います`,
+    };
+  }
+  return check;
 };
 
-const NOT_ALLOWED: ContainCheck = { allowed: false, conditional: false };
-const GENERIC_REASON = '文脈や属性によって変わります（仕様を参照）';
-
 // parent が child を直接の子として持てるか。
-// 入れ子関係は「親の content model が子を許可するか」を基本に、
-// 要素特有の親（child.contexts.elements）でも補完する。
 export const canContain = (
   parent: HtmlElementInfo,
   child: HtmlElementInfo,
-): ContainCheck => {
-  const model = parent.contentModel;
+): ContainCheck => localizeCheck(canContainBase(parent, child), parent);
 
-  // transparent: 実際は親の content model に従う。flow/phrasing を受け入れる近似とし、
-  // 文脈依存であることを示すため常に条件付き扱いにする（必須の具体子は無条件）。
-  if (model.kind === 'transparent') {
-    if (model.elements.includes(child.tag)) {
-      return { allowed: true, conditional: false };
-    }
-    const childCategories = new Set([
-      ...child.categories,
-      ...(child.conditionalCategories ?? []),
-    ]);
-    const flowLike =
-      childCategories.has('flow') || childCategories.has('phrasing');
-    return flowLike
-      ? {
-          allowed: true,
-          conditional: true,
-          reason:
-            parent.contentModel.note ??
-            `${parent.tag} は透過要素。親の content model に従います`,
-        }
-      : NOT_ALLOWED;
-  }
-
-  // empty / none / text / foreign / varies は通常 HTML 要素の子を持てないが、
-  // 子が「要素特有の親」としてこの親タグを明示している場合は許可する
-  // （例: スクリプト無効時の noscript 内に置ける link / meta / style）。
-  if (model.kind !== 'elements') {
-    if (child.contexts.elements.includes(parent.tag)) {
-      return { allowed: true, conditional: false };
-    }
-    if ((child.contexts.conditionalElements ?? []).includes(parent.tag)) {
-      return {
-        allowed: true,
-        conditional: true,
-        reason: parent.contentModel.note ?? GENERIC_REASON,
-      };
-    }
-    return NOT_ALLOWED;
-  }
-
-  const childCategories = child.categories;
-  const childConditionalCategories = child.conditionalCategories ?? [];
-
-  const elementMatch = model.elements.includes(child.tag);
-  const categoryMatch = intersects(model.categories, childCategories);
-  const contextMatch = child.contexts.elements.includes(parent.tag);
-
-  const conditionalElementMatch = (model.conditionalElements ?? []).includes(
-    child.tag,
-  );
-  const conditionalCategoryMatch =
-    intersects(model.conditionalCategories ?? [], childCategories) ||
-    intersects(model.categories, childConditionalCategories) ||
-    intersects(model.conditionalCategories ?? [], childConditionalCategories);
-  const conditionalContextMatch = (
-    child.contexts.conditionalElements ?? []
-  ).includes(parent.tag);
-
-  if (elementMatch || categoryMatch || contextMatch) {
-    return { allowed: true, conditional: false };
-  }
-  if (
-    conditionalElementMatch ||
-    conditionalCategoryMatch ||
-    conditionalContextMatch
-  ) {
-    // 条件の出どころが子側（子が条件付きでそのカテゴリ／この親を持つ）か
-    // 親側（親が条件付きで受け入れる）かで、説明の引き元を変える。
-    const childDriven =
-      intersects(model.categories, childConditionalCategories) ||
-      conditionalContextMatch;
-    const reason = childDriven
-      ? (child.conditionalNote ??
-        child.contexts.note ??
-        model.note ??
-        GENERIC_REASON)
-      : (model.note ?? child.conditionalNote ?? GENERIC_REASON);
-    return { allowed: true, conditional: true, reason };
-  }
-  return NOT_ALLOWED;
-};
-
-// 選択要素から見た候補要素の関係種別。
-type RelationKind = 'self' | 'both' | 'parent' | 'child' | 'none';
-
-export type Relation = {
-  kind: RelationKind;
-  // candidate が selected の親になれるか
-  asParent: ContainCheck;
-  // candidate が selected の子になれるか
-  asChild: ContainCheck;
-};
-
-// 選択要素 selected を基準にした candidate の関係を判定する。
-export const relationOf = (
-  selected: HtmlElementInfo,
-  candidate: HtmlElementInfo,
-): Relation => {
-  const asParent = canContain(candidate, selected);
-  const asChild = canContain(selected, candidate);
-
-  let kind: RelationKind;
-  if (selected.tag === candidate.tag) {
-    kind = 'self';
-  } else if (asParent.allowed && asChild.allowed) {
-    kind = 'both';
-  } else if (asParent.allowed) {
-    kind = 'parent';
-  } else if (asChild.allowed) {
-    kind = 'child';
-  } else {
-    kind = 'none';
-  }
-  return { kind, asParent, asChild };
-};
-
-export type RelatedElement = {
-  element: HtmlElementInfo;
-  conditional: boolean;
-  // conditional=true のときの条件説明（任意）
-  reason?: string;
-};
+// 自分自身を入れ子にできるか（div の中に div など）。
+export const canSelfNest = (selected: HtmlElementInfo): ContainCheck =>
+  localizeCheck(canSelfNestBase(selected), selected);
 
 const byTag = (a: RelatedElement, b: RelatedElement): number =>
   a.element.tag.localeCompare(b.element.tag);
@@ -187,36 +84,41 @@ export const getChildren = (selected: HtmlElementInfo): RelatedElement[] =>
     return check.allowed ? [toRelated(candidate, check)] : [];
   }).sort(byTag);
 
-// 自分自身を入れ子にできるか（div の中に div など）。
-export const canSelfNest = (selected: HtmlElementInfo): ContainCheck =>
-  canContain(selected, selected);
+// elements（通常）以外の content model 種別の要約文。
+const KIND_SUMMARY: Record<Exclude<ContentModelKind, 'elements'>, string> = {
+  empty: '空要素なので子を持てません',
+  none: '内容を持てません（Nothing）',
+  text: 'テキストのみ',
+  foreign: 'SVG / MathML の独自コンテンツ',
+  varies: '文脈により変化',
+  transparent: '親の content model に従う（透過）',
+};
 
 // その要素が「中に置けるもの」を短くまとめた日本語（不可だったときの理由表示用）。
+// パッケージの describeAllowedContent の日本語版フォークで、構成は本家に合わせて
+// あり、本家の要約に変更が入ったらここへも反映する。
 export const describeAllowedContent = (element: HtmlElementInfo): string => {
   const cm = element.contentModel;
-  if (cm.kind === 'empty') {
-    return '空要素なので子を持てません';
-  }
-  if (cm.kind === 'none') {
-    return '内容を持てません（Nothing）';
-  }
-  if (cm.kind === 'text') {
-    return 'テキストのみ';
-  }
-  if (cm.kind === 'foreign') {
-    return 'SVG / MathML の独自コンテンツ';
-  }
-  if (cm.kind === 'varies') {
-    return '文脈により変化';
-  }
-  if (cm.kind === 'transparent') {
-    return '親の content model に従う（透過）';
+  // 条件付きで置ける内容は仕様のアスタリスクに合わせて * を付けて併記する
+  // （colgroup のように条件付きしか持たない要素で一覧が空にならないようにする）。
+  const conditionalParts = [
+    ...(cm.conditionalElements ?? []).map((tag) => `<${tag}>*`),
+    ...(cm.conditionalCategories ?? []).map(
+      (category) => `${CONTENT_CATEGORY_LABEL[category]}*`,
+    ),
+  ];
+  if (cm.kind !== 'elements') {
+    const summary = KIND_SUMMARY[cm.kind];
+    return conditionalParts.length > 0
+      ? `${summary}（条件付き: ${conditionalParts.join(' / ')}）`
+      : summary;
   }
   // 具体要素とカテゴリの両方を受け入れる要素（details / fieldset / figure など）は、
   // 片方だけだと「置けるのは: <summary>」のように flow content が欠落するため併記する。
   const parts = [
     ...cm.elements.map((tag) => `<${tag}>`),
     ...cm.categories.map((category) => CONTENT_CATEGORY_LABEL[category]),
+    ...conditionalParts,
   ];
   return parts.length > 0 ? parts.join(' / ') : '—';
 };

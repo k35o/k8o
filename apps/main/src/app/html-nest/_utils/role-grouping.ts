@@ -1,5 +1,6 @@
+import type { RelatedElement } from '@k8o/html-nest';
+
 import { BOARD_GROUPS } from '../_data/board-groups';
-import type { RelatedElement } from './content-model';
 
 const ROLE_OF = new Map<string, string>();
 for (const group of BOARD_GROUPS) {

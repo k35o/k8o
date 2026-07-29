@@ -1,7 +1,6 @@
 import { Alert } from '@k8o/arte-odyssey';
+import type { HtmlElementInfo } from '@k8o/html-nest';
 import type { FC, ReactNode } from 'react';
-
-import type { HtmlElementInfo } from '../../_types/html-element';
 
 const NoteBox: FC<{ children: ReactNode }> = ({ children }) => (
   <div className="text-fg-mute border-border-mute bg-bg-subtle rounded-lg border px-4 py-3 text-sm leading-relaxed">
@@ -14,15 +13,20 @@ const NoteBox: FC<{ children: ReactNode }> = ({ children }) => (
 export const SpecialContentNotice: FC<{ element: HtmlElementInfo }> = ({
   element,
 }) => {
-  const { contentModel } = element;
-  const { kind } = contentModel;
+  const { kind, note } = element.contentModel;
+
+  // 要素固有の note はそれ自体が完結した説明なので、あれば種別共通の文言より優先する
+  // （iframe の「内容は Nothing。…」と汎用文の Nothing が重複するのを避ける）。
+  // note は句点なしで書かれているため、ここで「。」を補う。
+  const noteOr = (fallback: string): string =>
+    note === undefined ? fallback : `${note}。`;
 
   if (kind === 'transparent') {
     const messages = [
       '透過コンテンツです。中に入れられる要素は「この要素を置いた親」が許す内容に従います。下の一覧は目安で、すべて文脈しだいの条件付きです。',
     ];
-    if (contentModel.note !== undefined) {
-      messages.push(contentModel.note);
+    if (note !== undefined) {
+      messages.push(`${note}。`);
     }
     return <Alert message={messages} tone="info" />;
   }
@@ -32,22 +36,20 @@ export const SpecialContentNotice: FC<{ element: HtmlElementInfo }> = ({
   if (kind === 'none') {
     return (
       <NoteBox>
-        許可される内容はありません（content model:
-        Nothing）。DOM上の子は空で、書いた内容は content の DocumentFragment
-        に格納されます。
+        {noteOr('許可される内容はありません（content model: Nothing）。')}
       </NoteBox>
     );
   }
   if (kind === 'text') {
     return (
-      <NoteBox>テキストのみを入れられます。要素は入れられません。</NoteBox>
+      <NoteBox>
+        {noteOr('テキストのみを入れられます。要素は入れられません。')}
+      </NoteBox>
     );
   }
   if (kind === 'varies') {
     return (
-      <NoteBox>
-        文脈によって入れられる内容が変化します（スクリプトの有効・無効など）。
-      </NoteBox>
+      <NoteBox>{noteOr('文脈によって入れられる内容が変化します。')}</NoteBox>
     );
   }
   if (kind === 'foreign') {
