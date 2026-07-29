@@ -39,7 +39,7 @@ Next.js の `cacheLife` は `features/*/interface` に置く。`app` のUIコン
 
 admin の Server Action や cron から更新されうる DB 由来のキャッシュ（talks / tags / blogs / slides の一覧・詳細、reading-list の記事・ソース一覧）には `cacheTag('db-content')`（`@/shared/cache/cache-tags`）を付与する。admin は書き込み・同期の成功後に `/api/revalidate`（`REVALIDATE_SECRET` で認可）を叩いてこのタグを再検証する。
 
-baseline（機能一覧・ブラウザ対応バージョン）は `web-features` パッケージをビルド時に読むため DB 非依存で、`db-content` タグは付けない（デプロイ単位でのみ更新される）。
+browser-support（機能一覧）は admin の日次 cron が web-features の正典配布元（GitHub Releases）から取り込んで DB に保存し、main は `cacheTag('browser-support')` 付きの `'use cache'` で active データセットを読む。admin は同期成功後に `/api/revalidate` でこのタグを再検証する。ブラウザ最低版フロア（RootLayout が読む）だけは実行時 I/O を持たないコミット済み生成物で、`pnpm run -F main generate:browser-min-versions` で再生成する。
 
 ## Storybook MCP
 

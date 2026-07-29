@@ -52,8 +52,10 @@ export const metadata = {
   },
 } satisfies Metadata;
 
-export default async function RootLayout({ children }: LayoutProps<'/'>) {
-  const minVersions = await getBrowserMinVersions();
+export default function RootLayout({ children }: LayoutProps<'/'>) {
+  // フロアはコミット済み生成物由来の同期読み。全ページの静的シェルが実行時 I/O に
+  // 依存しないことを保証する(DB 障害でもシェルは無傷)。
+  const minVersions = getBrowserMinVersions();
   const gaId = process.env['NEXT_PUBLIC_GOOGLE_ANALYTICS_ID'];
 
   return (

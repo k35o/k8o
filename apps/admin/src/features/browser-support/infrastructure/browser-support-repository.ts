@@ -1,87 +1,115 @@
 import { db } from '@repo/database';
-import { and, count, desc, eq, like } from 'drizzle-orm';
-import type { SQL } from 'drizzle-orm';
+import type {
+  BrowserSupportSyncResult,
+  BrowserSupportSyncTrigger,
+} from '@repo/database/schema';
+import { parseBaselineDataset } from '@repo/helpers/baseline/model';
+import type { BaselineDataset } from '@repo/helpers/baseline/model';
+import { and, desc, eq, notInArray } from 'drizzle-orm';
 
-export type SnapshotStatus = 'newly' | 'widely';
-
-export type SnapshotRecord = {
+export type ActiveDatasetRecord = {
   id: number;
-  featureId: string;
-  name: string;
-  status: SnapshotStatus;
-  date: string;
+  upstreamVersion: string;
+  ingestedAt: string;
+  dataset: BaselineDataset;
 };
 
-export type FindSnapshotsParams = {
-  status?: SnapshotStatus | 'all';
-  q?: string;
-  page?: number;
-  pageSize?: number;
-};
+// ロールバックに備えて superseded を直近何世代残すか。可用性のためではない
+// (DB 障害時は superseded も読めない)ので、少数でよい。
+const KEEP_SUPERSEDED = 3;
 
-export type FindSnapshotsResult = {
-  items: SnapshotRecord[];
-  total: number;
-};
-
-export const fetchSnapshotStats = async () => {
-  const [statusCounts, totalCount] = await Promise.all([
-    db
+export const findActiveDataset =
+  async (): Promise<ActiveDatasetRecord | null> => {
+    const rows = await db
       .select({
-        status: db._schema.browserSupportSnapshots.status,
-        count: count(),
+        id: db._schema.browserSupportDatasets.id,
+        upstreamVersion: db._schema.browserSupportDatasets.upstreamVersion,
+        ingestedAt: db._schema.browserSupportDatasets.ingestedAt,
+        data: db._schema.browserSupportDatasets.data,
       })
-      .from(db._schema.browserSupportSnapshots)
-      .groupBy(db._schema.browserSupportSnapshots.status),
-    db.select({ count: count() }).from(db._schema.browserSupportSnapshots),
-  ]);
-
-  return {
-    newlyCount: statusCounts.find((s) => s.status === 'newly')?.count ?? 0,
-    widelyCount: statusCounts.find((s) => s.status === 'widely')?.count ?? 0,
-    total: totalCount[0]?.count ?? 0,
+      .from(db._schema.browserSupportDatasets)
+      .where(eq(db._schema.browserSupportDatasets.state, 'active'))
+      .orderBy(desc(db._schema.browserSupportDatasets.id))
+      .limit(1);
+    const row = rows[0];
+    if (row === undefined) {
+      return null;
+    }
+    // 自分が書いたデータでも読み時に検証する。壊れた active は「データ無し」に落とし、
+    // 表示エラーではなく再同期で回復できる状態にする。
+    const dataset = parseBaselineDataset(row.data);
+    if (dataset === null) {
+      return null;
+    }
+    return {
+      id: row.id,
+      upstreamVersion: row.upstreamVersion,
+      ingestedAt: row.ingestedAt,
+      dataset,
+    };
   };
+
+// 世代の置換。libSQL HTTP ドライバの interactive transaction は往復ごとにロックを
+// 保持しタイムアウトしやすいため、単一リクエストの db.batch(暗黙トランザクション)で
+// アトミックに行う。ブロブ方式なので文数はデータ量に依らず定数。
+export const applyDataset = async (dataset: BaselineDataset): Promise<void> => {
+  const datasets = db._schema.browserSupportDatasets;
+  await db.batch([
+    // 手動の強制再同期(同一バージョン)は既存行を消してから入れ直す
+    db
+      .delete(datasets)
+      .where(eq(datasets.upstreamVersion, dataset.upstreamVersion)),
+    db
+      .update(datasets)
+      .set({ state: 'superseded' })
+      .where(eq(datasets.state, 'active')),
+    db.insert(datasets).values({
+      upstreamVersion: dataset.upstreamVersion,
+      state: 'active',
+      data: dataset,
+    }),
+    db
+      .delete(datasets)
+      .where(
+        and(
+          eq(datasets.state, 'superseded'),
+          notInArray(
+            datasets.id,
+            db
+              .select({ id: datasets.id })
+              .from(datasets)
+              .where(eq(datasets.state, 'superseded'))
+              .orderBy(desc(datasets.id))
+              .limit(KEEP_SUPERSEDED),
+          ),
+        ),
+      ),
+  ]);
 };
 
-export const findSnapshots = async ({
-  status = 'all',
-  q,
-  page = 1,
-  pageSize = 20,
-}: FindSnapshotsParams = {}): Promise<FindSnapshotsResult> => {
-  const conditions: SQL[] = [];
-  if (status === 'newly' || status === 'widely') {
-    conditions.push(eq(db._schema.browserSupportSnapshots.status, status));
-  }
-  if (q !== undefined && q !== '') {
-    conditions.push(like(db._schema.browserSupportSnapshots.name, `%${q}%`));
-  }
-  const where = conditions.length === 0 ? undefined : and(...conditions);
-
-  const totalRow = await db
-    .select({ value: count() })
-    .from(db._schema.browserSupportSnapshots)
-    .where(where);
-  const total = totalRow[0]?.value ?? 0;
-
-  const items = await db
-    .select({
-      id: db._schema.browserSupportSnapshots.id,
-      featureId: db._schema.browserSupportSnapshots.featureId,
-      name: db._schema.browserSupportSnapshots.name,
-      status: db._schema.browserSupportSnapshots.status,
-      date: db._schema.browserSupportSnapshots.date,
-    })
-    .from(db._schema.browserSupportSnapshots)
-    .where(where)
-    // date は YYYY-MM-DD で重複が多いため、一意な id を tiebreaker に足して
-    // ページ境界での行の重複・欠落を防ぐ。
-    .orderBy(
-      desc(db._schema.browserSupportSnapshots.date),
-      desc(db._schema.browserSupportSnapshots.id),
-    )
-    .limit(pageSize)
-    .offset((page - 1) * pageSize);
-
-  return { items, total };
+export type SyncRunRecord = {
+  id: number;
+  trigger: BrowserSupportSyncTrigger;
+  result: BrowserSupportSyncResult;
+  upstreamVersion: string | null;
+  detail: string | null;
+  durationMs: number | null;
+  createdAt: string;
 };
+
+export const recordSyncRun = async (run: {
+  trigger: BrowserSupportSyncTrigger;
+  result: BrowserSupportSyncResult;
+  upstreamVersion: string | null;
+  detail: string | null;
+  durationMs: number;
+}): Promise<void> => {
+  await db.insert(db._schema.browserSupportSyncRuns).values(run);
+};
+
+export const findRecentSyncRuns = (limit: number): Promise<SyncRunRecord[]> =>
+  db
+    .select()
+    .from(db._schema.browserSupportSyncRuns)
+    .orderBy(desc(db._schema.browserSupportSyncRuns.id))
+    .limit(limit);

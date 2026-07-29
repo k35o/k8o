@@ -1,0 +1,13 @@
+{
+  "upstreamVersion": "3.34.2",
+  "generatedAt": "2026-07-29",
+  "minVersions": {
+    "chrome": "148",
+    "chrome_android": "148",
+    "edge": "148",
+    "firefox": "153",
+    "firefox_android": "153",
+    "safari": "26.5",
+    "safari_ios": "26.5"
+  }
+}

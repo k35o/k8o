@@ -8,7 +8,13 @@ import {
   uniqueIndex,
 } from 'drizzle-orm/sqlite-core';
 
-const PUSH_LOG_KINDS = ['readings_updated', 'browser_support_updated'] as const;
+const PUSH_LOG_KINDS = [
+  'readings_updated',
+  'browser_support_updated',
+  // 同期の異常（上流メジャー変化・検証失敗・上流リリース停滞）を運営者に知らせる警報。
+  // 更新通知と dedupeKey 空間を分けるため kind も分ける。
+  'browser_support_alert',
+] as const;
 export type PushLogKind = (typeof PUSH_LOG_KINDS)[number];
 
 export const pushLogs = sqliteTable(
@@ -32,7 +38,7 @@ export const pushLogs = sqliteTable(
     index('push_logs_sent_at_idx').on(table.sentAt),
     check(
       'push_logs_kind_check',
-      sql`${table.kind} IN ('readings_updated', 'browser_support_updated')`,
+      sql`${table.kind} IN ('readings_updated', 'browser_support_updated', 'browser_support_alert')`,
     ),
   ],
 );

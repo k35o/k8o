@@ -1,68 +1,75 @@
-import { diffSnapshots, readSnapshotFeatures } from './sync-browser-support';
-import type { SnapshotFeature } from './sync-browser-support';
+import type { BaselineFeature } from '@repo/helpers/baseline/model';
 
-// sync-browser-support.ts の import { db } で実 DB クライアントが生成されないようモックする。
-// 本テストは db を呼ばない純粋関数と実データのみを検証する。
+import { diffBaselineFeatures } from './sync-browser-support';
+
+// sync-browser-support.ts の import 連鎖で実 DB クライアントが生成されないようモックする。
+// 本テストは db を呼ばない純粋関数のみを検証する。
 vi.mock('@repo/database', () => ({ db: {} }));
 
 const feature = (
   featureId: string,
-  status: 'newly' | 'widely',
+  status: BaselineFeature['status'],
   date = '2026-01-01',
-): SnapshotFeature => ({ featureId, name: featureId, status, date });
+): BaselineFeature => ({
+  featureId,
+  name: featureId,
+  status,
+  baselineDate: status === 'limited' ? null : date,
+  resolvedDate: date,
+  support: [],
+});
 
-describe('diffSnapshots', () => {
+describe('diffBaselineFeatures', () => {
   describe('正常系', () => {
-    it('既存に無い機能は newFeatures / toInsert に入る', () => {
-      const plan = diffSnapshots([feature('a', 'newly')], []);
-      expect(plan.newFeatures.map((f) => f.featureId)).toStrictEqual(['a']);
-      expect(plan.toInsert.map((f) => f.featureId)).toStrictEqual(['a']);
-      expect(plan.statusChanges).toStrictEqual([]);
-      expect(plan.toUpdate).toStrictEqual([]);
+    it('前回に無い baseline 機能は reached に入る', () => {
+      const diff = diffBaselineFeatures([feature('a', 'newly')], []);
+      expect(diff.reached.map((f) => f.featureId)).toStrictEqual(['a']);
+      expect(diff.statusChanges).toStrictEqual([]);
     });
 
-    it('status が変わった機能は statusChanges / toUpdate に入る', () => {
-      const plan = diffSnapshots(
-        [feature('a', 'widely')],
-        [{ featureId: 'a', status: 'newly' }],
+    it('limited から baseline への到達も reached に入る', () => {
+      const diff = diffBaselineFeatures(
+        [feature('a', 'newly')],
+        [feature('a', 'limited')],
       );
-      expect(plan.statusChanges).toStrictEqual([
+      expect(diff.reached.map((f) => f.featureId)).toStrictEqual(['a']);
+    });
+
+    it('newly から widely への変化は statusChanges に入る', () => {
+      const diff = diffBaselineFeatures(
+        [feature('a', 'widely')],
+        [feature('a', 'newly')],
+      );
+      expect(diff.reached).toStrictEqual([]);
+      expect(diff.statusChanges).toStrictEqual([
         { feature: feature('a', 'widely'), previousStatus: 'newly' },
       ]);
-      expect(plan.toUpdate.map((f) => f.featureId)).toStrictEqual(['a']);
-      expect(plan.newFeatures).toStrictEqual([]);
     });
   });
 
   describe('異常系・エッジケース', () => {
     it('status が同じなら差分なし', () => {
-      const plan = diffSnapshots(
+      const diff = diffBaselineFeatures(
         [feature('a', 'newly')],
-        [{ featureId: 'a', status: 'newly' }],
+        [feature('a', 'newly')],
       );
-      expect(plan.newFeatures).toStrictEqual([]);
-      expect(plan.statusChanges).toStrictEqual([]);
-      expect(plan.toInsert).toStrictEqual([]);
-      expect(plan.toUpdate).toStrictEqual([]);
+      expect(diff.reached).toStrictEqual([]);
+      expect(diff.statusChanges).toStrictEqual([]);
     });
 
-    it('現在集合が空なら何も変更しない', () => {
-      const plan = diffSnapshots([], [{ featureId: 'a', status: 'newly' }]);
-      expect(plan.toInsert).toStrictEqual([]);
-      expect(plan.toUpdate).toStrictEqual([]);
-      expect(plan.newFeatures).toStrictEqual([]);
-      expect(plan.statusChanges).toStrictEqual([]);
+    it('limited のままの機能は通知対象にしない', () => {
+      const diff = diffBaselineFeatures(
+        [feature('a', 'limited')],
+        [feature('b', 'limited')],
+      );
+      expect(diff.reached).toStrictEqual([]);
+      expect(diff.statusChanges).toStrictEqual([]);
     });
-  });
-});
 
-describe('readSnapshotFeatures（実データ）', () => {
-  it('baseline(newly/widely)のみを返し、日付は YYYY-MM-DD', () => {
-    const features = readSnapshotFeatures();
-    expect(features.length).toBeGreaterThan(0);
-    for (const f of features) {
-      expect(['newly', 'widely']).toContain(f.status);
-      expect(f.date).toMatch(/^\d{4}-\d{2}-\d{2}$/u);
-    }
+    it('現在集合が空なら差分なし', () => {
+      const diff = diffBaselineFeatures([], [feature('a', 'newly')]);
+      expect(diff.reached).toStrictEqual([]);
+      expect(diff.statusChanges).toStrictEqual([]);
+    });
   });
 });

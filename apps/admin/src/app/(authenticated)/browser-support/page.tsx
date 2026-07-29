@@ -14,7 +14,7 @@ export default function BrowserSupportPage({
     <div className="flex flex-col gap-10">
       <PageHeader
         action={<SyncBrowserSupportButton />}
-        description="ブラウザ対応状況スナップショットの管理"
+        description="Baselineデータセットの取り込みと同期状態の管理"
         title="Browser Support"
       />
       <Suspense fallback={<ContentFallback />}>

@@ -17,6 +17,18 @@
       "types": "./src/array/shuffle.ts",
       "default": "./src/array/shuffle.ts"
     },
+    "./baseline/model": {
+      "types": "./src/baseline/model.ts",
+      "default": "./src/baseline/model.ts"
+    },
+    "./baseline/transform-upstream": {
+      "types": "./src/baseline/transform-upstream.ts",
+      "default": "./src/baseline/transform-upstream.ts"
+    },
+    "./baseline/invariants": {
+      "types": "./src/baseline/invariants.ts",
+      "default": "./src/baseline/invariants.ts"
+    },
     "./browser/detect-browser": {
       "types": "./src/browser/detect-browser.ts",
       "default": "./src/browser/detect-browser.ts"

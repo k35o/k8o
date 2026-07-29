@@ -456,6 +456,20 @@
       "when": 1784809870060,
       "tag": "0064_redundant_revanche",
       "breakpoints": true
+    },
+    {
+      "idx": 65,
+      "version": "6",
+      "when": 1785320956405,
+      "tag": "0065_right_living_lightning",
+      "breakpoints": true
+    },
+    {
+      "idx": 66,
+      "version": "6",
+      "when": 1785320957064,
+      "tag": "0066_lowly_plazm",
+      "breakpoints": true
     }
   ]
 }
