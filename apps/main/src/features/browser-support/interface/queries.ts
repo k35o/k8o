@@ -1,33 +1,78 @@
-import { cacheLife } from 'next/cache';
+import type { BrowserMinVersions } from '@repo/helpers/browser/detect-browser';
+import { cacheLife, cacheTag } from 'next/cache';
 
-import { getBrowserSupportFeatures as _getBrowserSupportFeatures } from '@/features/browser-support/application/features';
+import {
+  selectFeatureStatus,
+  selectFeedFeatures,
+} from '@/features/browser-support/application/features';
+import type { BrowserSupportFeature } from '@/features/browser-support/application/features';
 import { getBrowserMinVersions as _getBrowserMinVersions } from '@/features/browser-support/application/min-versions';
+import { findActiveBaselineDataset } from '@/features/browser-support/infrastructure/browser-support-dataset-repository';
+import type { ActiveBaselineDataset } from '@/features/browser-support/infrastructure/browser-support-dataset-repository';
+import { BROWSER_SUPPORT_CACHE_TAG } from '@/shared/cache/cache-tags';
 
-// oxlint-disable-next-line eslint/require-await, typescript/require-await -- 'use cache' は async 関数を要求する。web-features(ビルド時)由来でデータ取得は同期だが、Date.now() をこのキャッシュ境界内で解決するため async を維持する
-export async function getBrowserSupportFeatures() {
+// active データセットの共有ローダー。フィードと MDX の feature 解決が個別に DB を
+// 読まないよう、キャッシュ境界をここに一本化する。鮮度は TTL ではなく admin の同期
+// 成功時の /api/revalidate(タグ再検証)で担保するため、寿命は 'days' に寄せる。
+// 'minutes' にすると <BrowserSupportStatus> を埋め込んだブログ記事の静的シェルまで
+// 分単位の ISR + DB 依存になってしまう。
+// oxlint-disable-next-line eslint/require-await, typescript/require-await -- 'use cache' は async 関数を要求する
+async function getActiveDataset(): Promise<ActiveBaselineDataset | null> {
+  'use cache';
+  cacheLife('days');
+  cacheTag(BROWSER_SUPPORT_CACHE_TAG);
+
+  return findActiveBaselineDataset();
+}
+
+export type BrowserSupportMeta = {
+  upstreamVersion: string;
+  ingestedAt: string;
+};
+
+export async function getBrowserSupportFeatures(): Promise<{
+  features: BrowserSupportFeature[];
+  nowMs: number;
+  // データ同期前(空DB)は null。呼び出し側は空状態を表示する。
+  meta: BrowserSupportMeta | null;
+}> {
   'use cache';
   cacheLife('minutes');
+  cacheTag(BROWSER_SUPPORT_CACHE_TAG);
 
   // 「直近1週間」フィルタと limited の直近1年カットオフの基準時刻。component render では
-  // Date.now() を呼べない（React Compiler の purity / 静的プリレンダリングの現在時刻制約）
-  // ため、キャッシュ境界内で解決して features と一緒に返す。鮮度は cacheLife('minutes') 相当。
+  // Date.now() を呼べないため、キャッシュ境界内で解決して features と一緒に返す。
   const nowMs = Date.now();
-  return { features: _getBrowserSupportFeatures(nowMs), nowMs };
+  const active = await getActiveDataset();
+  if (active === null) {
+    return { features: [], nowMs, meta: null };
+  }
+  return {
+    features: selectFeedFeatures(active.dataset, nowMs),
+    nowMs,
+    meta: {
+      upstreamVersion: active.upstreamVersion,
+      ingestedAt: active.ingestedAt,
+    },
+  };
 }
 
-// oxlint-disable-next-line eslint/require-await, typescript/require-await -- 'use cache' は async 関数を要求する。web-features(ビルド時)由来でデータ取得は同期だが、全ページ静的シェルの寿命を握るため 'use cache' を維持する
-export async function getBrowserMinVersions() {
-  'use cache';
-  // RootLayout が Suspense 境界外で await するため、この cacheLife が全ページの
-  // 静的シェルの寿命になる。フロアは web-features(ビルド時)由来でデプロイ単位でしか
-  // 変わらないので、'days'(revalidate 1日 / expire 1週間)で背景更新に寄せる。
-  cacheLife('days');
-
-  const minVersions = _getBrowserMinVersions();
-  return minVersions;
+export async function getFeatureStatus(
+  featureId: string,
+): Promise<BrowserSupportFeature | null> {
+  const active = await getActiveDataset();
+  if (active === null) {
+    return null;
+  }
+  return selectFeatureStatus(active.dataset, featureId);
 }
 
-export { getFeatureStatus } from '@/features/browser-support/application/features';
+// フロアはコミット済み生成物(実行時 I/O ゼロ)。RootLayout が全ページの静的シェルで
+// 読むため、DB やキャッシュに依存させない。
+export function getBrowserMinVersions(): BrowserMinVersions {
+  return _getBrowserMinVersions();
+}
+
 export type {
   BrowserAvailability,
   BrowserSupportFeature,

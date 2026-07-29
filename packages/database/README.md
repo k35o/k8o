@@ -155,14 +155,21 @@ erDiagram
     integer published
     text created_at
   }
-  browser_support_snapshots {
+  browser_support_datasets {
     integer id PK
-    text feature_id UK
-    text name
-    text status
-    text date
+    text upstream_version UK
+    text state
+    text data
+    text ingested_at
+  }
+  browser_support_sync_runs {
+    integer id PK
+    text trigger
+    text result
+    text upstream_version
+    text detail
+    integer duration_ms
     text created_at
-    text updated_at
   }
   comments {
     integer id PK

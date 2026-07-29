@@ -17,7 +17,7 @@ export const SyncBrowserSupportButton: FC = () => {
       },
       onSuccess: (res) => {
         const parts = [
-          `新規: ${String(res.newFeatures ?? 0)}件`,
+          `新規: ${String(res.reachedCount ?? 0)}件`,
           `ステータス変更: ${String(res.statusChanges ?? 0)}件`,
         ];
         onOpen('success', parts.join('、'));

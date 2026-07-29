@@ -12,3 +12,8 @@ export {
   type ArticleSourceType,
 } from './article-sources';
 export type { PushLogKind } from './push-logs';
+export type { BrowserSupportDatasetState } from './browser-support-datasets';
+export type {
+  BrowserSupportSyncResult,
+  BrowserSupportSyncTrigger,
+} from './browser-support-sync-runs';

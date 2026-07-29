@@ -5,7 +5,9 @@ const DB_CONTENT_CACHE_TAG = 'db-content';
 // main は別デプロイのため revalidatePath では再検証できない。
 // secret 検証付きの main の /api/revalidate を叩いてタグを無効化する。
 // 失敗しても呼び出し元の Server Action は成功扱いのままにする。
-export async function revalidateMainCache(): Promise<void> {
+export async function revalidateMainCache(
+  tag: string = DB_CONTENT_CACHE_TAG,
+): Promise<void> {
   const url = process.env['MAIN_REVALIDATE_URL'];
   const secret = process.env['REVALIDATE_SECRET'];
   if (
@@ -27,7 +29,7 @@ export async function revalidateMainCache(): Promise<void> {
         Authorization: `Bearer ${secret}`,
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ tag: DB_CONTENT_CACHE_TAG }),
+      body: JSON.stringify({ tag }),
       // main が無応答でも Server Action を Vercel 関数タイムアウトまで待たせない
       signal: AbortSignal.timeout(5000),
     });

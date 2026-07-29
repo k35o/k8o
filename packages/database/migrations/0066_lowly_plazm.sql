@@ -1,0 +1,1 @@
+DROP TABLE `browser_support_snapshots`;

@@ -1,4 +1,5 @@
 import { Anchor } from '@k8o/arte-odyssey';
+import { formatDate } from '@repo/helpers/date/format';
 import { Suspense } from 'react';
 
 import { getFeatureBlogMap } from '@/features/blog/interface/queries';
@@ -10,10 +11,18 @@ import {
 } from './_components';
 
 export default async function BrowserSupportPage() {
-  const [{ features, nowMs }, blogMap] = await Promise.all([
+  const [{ features, nowMs, meta }, blogMap] = await Promise.all([
     getBrowserSupportFeatures(),
     getFeatureBlogMap(),
   ]);
+
+  if (meta === null) {
+    return (
+      <p className="text-fg-mute py-10 text-center text-sm">
+        データを同期しています。しばらくしてから再度アクセスしてください。
+      </p>
+    );
+  }
 
   const latestYear = features[0]?.resolvedDate.slice(0, 4) ?? '';
 
@@ -29,6 +38,8 @@ export default async function BrowserSupportPage() {
           nowMs={nowMs}
         />
       </Suspense>
+      {/* データ基準の常時表示は鮮度の計器を兼ねる: 更新が止まればここの日付が
+          古くなり、通知系が全滅していても見れば分かる。 */}
       <p className="text-fg-mute text-xs">
         Source:{' '}
         <Anchor
@@ -36,7 +47,8 @@ export default async function BrowserSupportPage() {
           openInNewTab
         >
           web-features
-        </Anchor>
+        </Anchor>{' '}
+        v{meta.upstreamVersion}（{formatDate(new Date(meta.ingestedAt))} 取得）
       </p>
     </div>
   );
