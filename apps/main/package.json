@@ -38,12 +38,12 @@
     "ai": "catalog:",
     "budoux": "0.8.4",
     "drizzle-orm": "catalog:",
-    "katex": "0.18.0",
+    "katex": "0.18.1",
     "next": "catalog:",
     "next-themes": "catalog:",
-    "nuqs": "2.9.0",
-    "oxfmt": "0.59.0",
-    "oxlint": "1.74.0",
+    "nuqs": "2.9.2",
+    "oxfmt": "0.60.0",
+    "oxlint": "1.75.0",
     "postcss": "catalog:",
     "react": "catalog:",
     "react-dom": "catalog:",
@@ -82,12 +82,12 @@
     "react-scan": "0.5.7",
     "storybook": "catalog:",
     "storybook-addon-determinism": "catalog:",
-    "storybook-addon-mock-date": "3.1.0",
+    "storybook-addon-mock-date": "3.1.1",
     "storybook-addon-vrt": "catalog:",
     "vitest": "catalog:"
   },
   "optionalDependencies": {
-    "@oxlint/binding-linux-x64-gnu": "1.74.0"
+    "@oxlint/binding-linux-x64-gnu": "1.75.0"
   },
   "msw": {
     "workerDirectory": [
