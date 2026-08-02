@@ -24,7 +24,7 @@ export const metadata = {
 
 export default function Layout({ children }: LayoutProps<'/notifications'>) {
   return (
-    <div className="mx-auto w-full max-w-3xl">
+    <div className="mx-auto w-full max-w-5xl">
       <div className="flex flex-col gap-8">
         <Heading type="h2">通知</Heading>
         {children}
