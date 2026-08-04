@@ -17,7 +17,9 @@ catalog:
   '@k8o/oxc-config': 0.2.1
   '@next/env': 16.3.0
   '@next/mdx': 16.3.0
+  '@next/playwright': 16.3.0
   '@next/third-parties': 16.3.0
+  '@playwright/test': 1.62.0
   '@storybook/addon-a11y': 10.5.5
   '@storybook/addon-docs': 10.5.5
   '@storybook/addon-mcp': '0.7.0'
@@ -57,6 +59,7 @@ minimumReleaseAgeExclude:
   - next@16.3.0
   - '@next/env@16.3.0'
   - '@next/mdx@16.3.0'
+  - '@next/playwright@16.3.0'
   - '@next/third-parties@16.3.0'
   - '@next/swc-darwin-arm64@16.3.0'
   - '@next/swc-darwin-x64@16.3.0'
