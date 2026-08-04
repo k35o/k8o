@@ -9,6 +9,7 @@ import { getBrowserMinVersions } from '@/features/browser-support/interface/quer
 import { ReactScan } from '@/shared/browser/react-scan';
 
 import { GlobalLayout } from './_components/global-layout';
+import { OfflineNotice } from './_components/offline-notice';
 import { ServiceWorkerRegister } from './_components/service-worker-register';
 import { TrustedTypesInit } from './_components/trusted-types-init';
 import { AppProvider } from './_providers/app';
@@ -69,6 +70,7 @@ export default function RootLayout({ children }: LayoutProps<'/'>) {
       >
         <AppProvider>
           <GlobalLayout minVersions={minVersions}>{children}</GlobalLayout>
+          <OfflineNotice />
         </AppProvider>
         <ServiceWorkerRegister />
         <Analytics />
