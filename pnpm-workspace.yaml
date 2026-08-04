@@ -30,7 +30,6 @@ catalog:
   '@vitest/coverage-v8': 4.1.10
   '@vitest/ui': 4.1.10
   ai: 7.0.40
-  babel-plugin-react-compiler: 1.0.0
   better-auth: 1.6.25
   chromatic: 18.1.0
   drizzle-orm: 0.45.2

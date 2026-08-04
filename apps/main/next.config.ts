@@ -57,6 +57,11 @@ const nextConfig: NextConfig = {
   partialPrefetching: true,
   experimental: {
     typedEnv: true,
+    // Storybook (nextjs-vite) が Turbopack 外で config を読むと検証で落ちるため、
+    // next CLI (Turbopack) 実行時だけ有効化する
+    ...(process.env['TURBOPACK'] === undefined
+      ? {}
+      : { turbopackRustReactCompiler: true }),
   },
 };
 
