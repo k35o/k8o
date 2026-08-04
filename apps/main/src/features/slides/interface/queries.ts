@@ -1,6 +1,7 @@
 import { cacheLife, cacheTag } from 'next/cache';
 
 import {
+  findSlideMetadata,
   getSlide,
   getSlideMetadata,
 } from '@/features/slides/application/slide';
@@ -13,9 +14,10 @@ export async function getSlideContents() {
   cacheTag(DB_CONTENT_CACHE_TAG);
 
   const slides = await getSlides();
-  return Promise.all(
+  const contents = await Promise.all(
     slides.map(async (slide) => {
-      const metadata = await getSlideMetadata(slide.slug);
+      const metadata = await findSlideMetadata(slide.slug);
+      if (metadata === null) return null;
       return {
         id: slide.id,
         slug: slide.slug,
@@ -27,6 +29,7 @@ export async function getSlideContents() {
       };
     }),
   );
+  return contents.filter((content) => content !== null);
 }
 
 export async function getSlideContent(slug: string) {

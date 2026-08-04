@@ -1,5 +1,6 @@
 import { db } from '@repo/database';
-import { getFrontmatter } from '@repo/helpers/mdx/frontmatter';
+import { findFrontmatter, getFrontmatter } from '@repo/helpers/mdx/frontmatter';
+import type { Frontmatter } from '@repo/helpers/mdx/frontmatter';
 
 import { getTocTree } from '@/shared/mdx/toc-tree';
 
@@ -48,5 +49,20 @@ export const findPublishedBlogId = async (
 };
 
 export const getBlogMetadata = (slug: string) => getFrontmatter(blogPath(slug));
+
+// DBのslugに対応するMDXが無いことがある（共有ローカルDBに他worktreeの
+// 執筆中記事のslugが混ざる等）。一覧系でその記事だけスキップできるよう、
+// ファイル欠損はエラーにせずnullで返す。
+export const findBlogMetadata = async (
+  slug: string,
+): Promise<Frontmatter | null> => {
+  const metadata = await findFrontmatter(blogPath(slug));
+  if (metadata === null) {
+    console.warn(
+      `ブログ "${slug}" のMDXファイルが存在しないため一覧から除外します`,
+    );
+  }
+  return metadata;
+};
 
 export const getBlogToc = (slug: string) => getTocTree(blogPath(slug));

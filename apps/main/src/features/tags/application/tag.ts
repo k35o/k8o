@@ -1,6 +1,6 @@
 import { db } from '@repo/database';
 
-import { getBlogMetadata } from '@/features/blog/application/blog';
+import { findBlogMetadata } from '@/features/blog/application/blog';
 
 export async function getTag(id: number): Promise<{
   id: number;
@@ -35,18 +35,21 @@ export async function getTag(id: number): Promise<{
     return null;
   }
 
-  const blogs = await Promise.all(
-    tag.blogTag
-      .filter((blogTag) => blogTag.blog.published)
-      .map(async (blogTag) => {
-        const metadata = await getBlogMetadata(blogTag.blog.slug);
-        return {
-          id: blogTag.blog.id,
-          slug: blogTag.blog.slug,
-          title: metadata.title,
-        };
-      }),
-  );
+  const blogs = (
+    await Promise.all(
+      tag.blogTag
+        .filter((blogTag) => blogTag.blog.published)
+        .map(async (blogTag) => {
+          const metadata = await findBlogMetadata(blogTag.blog.slug);
+          if (metadata === null) return null;
+          return {
+            id: blogTag.blog.id,
+            slug: blogTag.blog.slug,
+            title: metadata.title,
+          };
+        }),
+    )
+  ).filter((blog) => blog !== null);
 
   return {
     id: tag.id,
