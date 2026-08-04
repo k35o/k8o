@@ -15,9 +15,9 @@ catalog:
   '@k8o/arte-odyssey': 11.0.1
   '@k8o/html-nest': 0.2.0
   '@k8o/oxc-config': 0.2.1
-  '@next/env': 16.2.12
-  '@next/mdx': 16.2.12
-  '@next/third-parties': 16.2.12
+  '@next/env': 16.3.0
+  '@next/mdx': 16.3.0
+  '@next/third-parties': 16.3.0
   '@storybook/addon-a11y': 10.5.5
   '@storybook/addon-docs': 10.5.5
   '@storybook/addon-mcp': '0.7.0'
@@ -34,7 +34,7 @@ catalog:
   better-auth: 1.6.25
   chromatic: 18.1.0
   drizzle-orm: 0.45.2
-  next: 16.2.12
+  next: 16.3.0
   next-themes: 0.4.6
   postcss: 8.5.23
   postcss-load-config: 6.0.1
@@ -54,5 +54,18 @@ minimumReleaseAgeExclude:
   - '@k8o/*'
   # Renovate security update: next@16.2.11
   - next@16.2.11
+  # Next.js 16.3 の手動アップグレード（2026-08-03 リリース）
+  - next@16.3.0
+  - '@next/env@16.3.0'
+  - '@next/mdx@16.3.0'
+  - '@next/third-parties@16.3.0'
+  - '@next/swc-darwin-arm64@16.3.0'
+  - '@next/swc-darwin-x64@16.3.0'
+  - '@next/swc-linux-arm64-gnu@16.3.0'
+  - '@next/swc-linux-arm64-musl@16.3.0'
+  - '@next/swc-linux-x64-gnu@16.3.0'
+  - '@next/swc-linux-x64-musl@16.3.0'
+  - '@next/swc-win32-arm64-msvc@16.3.0'
+  - '@next/swc-win32-x64-msvc@16.3.0'
 
 verifyDepsBeforeRun: install

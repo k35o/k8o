@@ -54,10 +54,9 @@ const nextConfig: NextConfig = {
   },
   typedRoutes: true,
   cacheComponents: true,
+  partialPrefetching: true,
   experimental: {
-    viewTransition: true,
     typedEnv: true,
-    prefetchInlining: true,
   },
 };
 
