@@ -2,6 +2,7 @@ import { Anchor, Badge, Heading } from '@k8o/arte-odyssey';
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
+import { Suspense } from 'react';
 
 import {
   getPlaygroundSection,
@@ -48,9 +49,7 @@ export async function generateMetadata({
   };
 }
 
-export default async function PlaygroundSectionPage({
-  params,
-}: PageProperties) {
+async function PlaygroundSectionContent({ params }: PageProperties) {
   const { id } = await params;
   const section = getPlaygroundSection(id);
   if (!section) {
@@ -58,17 +57,7 @@ export default async function PlaygroundSectionPage({
   }
 
   return (
-    <div className="flex flex-col gap-8">
-      <Anchor
-        href="/playgrounds"
-        renderAnchor={({ className, href, children }) => (
-          <Link className={className} href={href}>
-            {children}
-          </Link>
-        )}
-      >
-        ← Playgrounds一覧に戻る
-      </Anchor>
+    <>
       <div className="flex flex-col gap-4">
         <div className="flex flex-wrap items-center gap-3">
           <Badge size="sm" text={playgroundCategoryLabels[section.category]} />
@@ -98,6 +87,40 @@ export default async function PlaygroundSectionPage({
           );
         })}
       </div>
+    </>
+  );
+}
+
+function PlaygroundSectionSkeleton() {
+  return (
+    <div className="flex animate-pulse flex-col gap-4">
+      <div className="flex flex-wrap items-center gap-3">
+        <div className="bg-bg-mute h-5 w-16 rounded-full" />
+        <div className="bg-bg-mute h-4 w-16 rounded-md" />
+      </div>
+      <div className="bg-bg-mute h-9 w-64 rounded-md" />
+      <div className="bg-bg-mute h-5 w-full max-w-xl rounded-md" />
+    </div>
+  );
+}
+
+// params に依存する描画を Suspense 配下へ隔離し、App Shell を URL 非依存に保つ
+export default function PlaygroundSectionPage({ params }: PageProperties) {
+  return (
+    <div className="flex flex-col gap-8">
+      <Anchor
+        href="/playgrounds"
+        renderAnchor={({ className, href, children }) => (
+          <Link className={className} href={href}>
+            {children}
+          </Link>
+        )}
+      >
+        ← Playgrounds一覧に戻る
+      </Anchor>
+      <Suspense fallback={<PlaygroundSectionSkeleton />}>
+        <PlaygroundSectionContent params={params} />
+      </Suspense>
     </div>
   );
 }
