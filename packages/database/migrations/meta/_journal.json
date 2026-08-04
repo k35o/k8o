@@ -477,6 +477,13 @@
       "when": 1785417868791,
       "tag": "0067_watery_mandrill",
       "breakpoints": true
+    },
+    {
+      "idx": 68,
+      "version": "6",
+      "when": 1785805987968,
+      "tag": "0068_fair_maximus",
+      "breakpoints": true
     }
   ]
 }

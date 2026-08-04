@@ -14,6 +14,7 @@ import { fieldSizingSection } from './field-sizing';
 import { fontFamilyMathSection } from './font-family-math';
 import { highlightSection } from './highlight';
 import { inputFileWebkitdirectorySection } from './input-file-webkitdirectory';
+import { intlLocaleInfoSection } from './intl-locale-info';
 import { invokerCommandsSection } from './invoker-commands';
 import { lcpSection } from './largest-contentful-paint';
 import { openPseudoSection } from './open-pseudo';
@@ -50,6 +51,7 @@ export const playgroundSections: PlaygroundSection[] = [
   fieldSizingSection,
   fontFamilyMathSection,
   inputFileWebkitdirectorySection,
+  intlLocaleInfoSection,
   invokerCommandsSection,
   lcpSection,
   openPseudoSection,
