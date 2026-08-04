@@ -1,6 +1,7 @@
 import { cacheLife, cacheTag } from 'next/cache';
 
 import {
+  findBlogMetadata,
   findPublishedBlogId as _findPublishedBlogId,
   getBlogToc as _getBlogToc,
   getBlog,
@@ -23,12 +24,12 @@ export async function getBlogContents() {
   cacheTag(DB_CONTENT_CACHE_TAG);
 
   const blogs = await getBlogs();
-  return Promise.all(
+  const contents = await Promise.all(
     blogs.map(async (blog) => {
-      const [metadata, readingTime] = await Promise.all([
-        getBlogMetadata(blog.slug),
-        getBlogReadingTime(blog.slug),
-      ]);
+      // readingTimeもMDXを読むため、先にmetadataでファイルの存在を確かめてから読む
+      const metadata = await findBlogMetadata(blog.slug);
+      if (metadata === null) return null;
+      const readingTime = await getBlogReadingTime(blog.slug);
       return {
         id: blog.id,
         slug: blog.slug,
@@ -41,6 +42,7 @@ export async function getBlogContents() {
       };
     }),
   );
+  return contents.filter((content) => content !== null);
 }
 
 export async function getBlogContent(slug: string) {

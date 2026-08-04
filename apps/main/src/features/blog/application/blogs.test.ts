@@ -1,8 +1,7 @@
 import { db } from '@repo/database';
-import { getFrontmatter } from '@repo/helpers/mdx/frontmatter';
 
+import { findBlogMetadata } from './blog';
 import { getBlogs, getBlogsByTags } from './blogs';
-import { blogPath } from './path';
 
 vi.mock('@repo/database', () => ({
   db: {
@@ -16,8 +15,7 @@ vi.mock('@repo/database', () => ({
     },
   },
 }));
-vi.mock('@repo/helpers/mdx/frontmatter');
-vi.mock('./path');
+vi.mock('./blog');
 
 describe('blogs service', () => {
   beforeEach(() => {
@@ -162,8 +160,7 @@ describe('blogs service', () => {
 
       vi.mocked(db.query.blogTag.findMany).mockResolvedValue(mockBlogTags);
       vi.mocked(db.query.blogs.findMany).mockResolvedValue(mockBlogs);
-      vi.mocked(blogPath).mockReturnValue('/path/to/blog');
-      vi.mocked(getFrontmatter).mockResolvedValue(mockMetadata);
+      vi.mocked(findBlogMetadata).mockResolvedValue(mockMetadata);
 
       const result = await getBlogsByTags('blog-1', [1, 2]);
 
@@ -229,8 +226,7 @@ describe('blogs service', () => {
 
       vi.mocked(db.query.blogTag.findMany).mockResolvedValue(mockBlogTags);
       vi.mocked(db.query.blogs.findMany).mockResolvedValue(mockBlogs);
-      vi.mocked(blogPath).mockReturnValue('/path/to/blog');
-      vi.mocked(getFrontmatter).mockResolvedValue(mockMetadata);
+      vi.mocked(findBlogMetadata).mockResolvedValue(mockMetadata);
 
       const result = await getBlogsByTags('current-blog', [1, 2]);
 
@@ -267,12 +263,108 @@ describe('blogs service', () => {
 
       vi.mocked(db.query.blogTag.findMany).mockResolvedValue(mockBlogTags);
       vi.mocked(db.query.blogs.findMany).mockResolvedValue(mockBlogs);
-      vi.mocked(blogPath).mockReturnValue('/path/to/blog');
-      vi.mocked(getFrontmatter).mockResolvedValue(mockMetadata);
+      vi.mocked(findBlogMetadata).mockResolvedValue(mockMetadata);
 
       const result = await getBlogsByTags('current-blog', [1]);
 
       expect(result).toHaveLength(6);
+    });
+
+    it('上位候補にMDX欠損があっても後続候補で最大6件を維持する', async () => {
+      const mockBlogTags = Array.from({ length: 7 }, (_, i) => ({
+        tagId: 1,
+        blogId: i + 1,
+      }));
+      const mockBlogs = Array.from({ length: 7 }, (_, i) => ({
+        id: i + 1,
+        slug: `blog-${(i + 1).toString()}`,
+        published: true,
+        createdAt: `2023-01-${String(i + 1).padStart(2, '0')}T00:00:00.000Z`,
+        blogTag: [
+          {
+            tag: {
+              id: 1,
+              name: 'TypeScript',
+            },
+          },
+        ],
+      }));
+
+      const mockMetadata = {
+        title: 'Test Blog',
+        description: 'Test Description',
+        createdAt: '2023-01-01T00:00:00.000Z',
+        updatedAt: '2023-01-01T00:00:00.000Z',
+      };
+
+      vi.mocked(db.query.blogTag.findMany).mockResolvedValue(mockBlogTags);
+      vi.mocked(db.query.blogs.findMany).mockResolvedValue(mockBlogs);
+      // タグマッチ数が同数のためDBの並び順どおりに呼ばれる: 先頭のblog-1だけ欠損
+      vi.mocked(findBlogMetadata)
+        .mockResolvedValueOnce(null)
+        .mockResolvedValue(mockMetadata);
+
+      const result = await getBlogsByTags('current-blog', [1]);
+
+      expect(result).toHaveLength(6);
+      expect(result.map((blog) => blog.slug)).not.toContain('blog-1');
+    });
+
+    it('MDXファイルが無いブログは結果から除外される', async () => {
+      const mockBlogTags = [
+        { tagId: 1, blogId: 1 },
+        { tagId: 1, blogId: 2 },
+      ];
+
+      const mockBlogs = [
+        {
+          id: 1,
+          slug: 'blog-1',
+          published: true,
+          createdAt: '2023-01-01T00:00:00.000Z',
+          blogTag: [
+            {
+              tag: {
+                id: 1,
+                name: 'TypeScript',
+              },
+            },
+          ],
+        },
+        {
+          id: 2,
+          slug: 'missing-blog',
+          published: true,
+          createdAt: '2023-01-02T00:00:00.000Z',
+          blogTag: [
+            {
+              tag: {
+                id: 1,
+                name: 'TypeScript',
+              },
+            },
+          ],
+        },
+      ];
+
+      const mockMetadata = {
+        title: 'Test Blog',
+        description: 'Test Description',
+        createdAt: '2023-01-01T00:00:00.000Z',
+        updatedAt: '2023-01-01T00:00:00.000Z',
+      };
+
+      vi.mocked(db.query.blogTag.findMany).mockResolvedValue(mockBlogTags);
+      vi.mocked(db.query.blogs.findMany).mockResolvedValue(mockBlogs);
+      // タグマッチ数が同数のためDBの並び順どおりに呼ばれる: blog-1 → missing-blog
+      vi.mocked(findBlogMetadata)
+        .mockResolvedValueOnce(mockMetadata)
+        .mockResolvedValueOnce(null);
+
+      const result = await getBlogsByTags('current-blog', [1]);
+
+      expect(result).toHaveLength(1);
+      expect(result[0]?.slug).toBe('blog-1');
     });
 
     it('該当するブログがない場合は空の配列を返す', async () => {

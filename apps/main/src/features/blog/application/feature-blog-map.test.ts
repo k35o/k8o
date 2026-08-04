@@ -1,8 +1,8 @@
-import { getBlogMetadata } from './blog';
+import { findBlogMetadata } from './blog';
 import { getBlogs } from './blogs';
 import { getFeatureBlogMap } from './feature-blog-map';
 
-vi.mock('./blog', () => ({ getBlogMetadata: vi.fn() }));
+vi.mock('./blog', () => ({ findBlogMetadata: vi.fn() }));
 vi.mock('./blogs', () => ({ getBlogs: vi.fn() }));
 
 const blogRow = (id: number, slug: string) => ({ id, slug, tags: [] });
@@ -26,7 +26,7 @@ describe('getFeatureBlogMap', () => {
         blogRow(1, 'blog-a'),
         blogRow(2, 'blog-b'),
       ]);
-      vi.mocked(getBlogMetadata)
+      vi.mocked(findBlogMetadata)
         .mockResolvedValueOnce(metadata('記事A', ['feature-1', 'feature-2']))
         .mockResolvedValueOnce(metadata('記事B', ['feature-3']));
 
@@ -41,11 +41,29 @@ describe('getFeatureBlogMap', () => {
 
     it('featureIdsが無い記事はマップに含めない', async () => {
       vi.mocked(getBlogs).mockResolvedValue([blogRow(1, 'blog-a')]);
-      vi.mocked(getBlogMetadata).mockResolvedValue(metadata('記事A'));
+      vi.mocked(findBlogMetadata).mockResolvedValue(metadata('記事A'));
 
       const result = await getFeatureBlogMap();
 
       expect(result).toStrictEqual({});
+    });
+  });
+
+  describe('異常系', () => {
+    it('MDXファイルが無い記事はマップから除外する', async () => {
+      vi.mocked(getBlogs).mockResolvedValue([
+        blogRow(1, 'blog-a'),
+        blogRow(2, 'missing-blog'),
+      ]);
+      vi.mocked(findBlogMetadata)
+        .mockResolvedValueOnce(metadata('記事A', ['feature-1']))
+        .mockResolvedValueOnce(null);
+
+      const result = await getFeatureBlogMap();
+
+      expect(result).toStrictEqual({
+        'feature-1': { slug: 'blog-a', title: '記事A' },
+      });
     });
   });
 
@@ -56,7 +74,7 @@ describe('getFeatureBlogMap', () => {
         blogRow(2, 'newest-blog'),
         blogRow(1, 'oldest-blog'),
       ]);
-      vi.mocked(getBlogMetadata)
+      vi.mocked(findBlogMetadata)
         .mockResolvedValueOnce(metadata('最新の記事', ['feature-1']))
         .mockResolvedValueOnce(metadata('古い記事', ['feature-1']));
 
@@ -74,7 +92,7 @@ describe('getFeatureBlogMap', () => {
         blogRow(2, 'newest-blog'),
         blogRow(1, 'oldest-blog'),
       ]);
-      vi.mocked(getBlogMetadata)
+      vi.mocked(findBlogMetadata)
         .mockImplementationOnce(async () => {
           await new Promise((resolve) => {
             setTimeout(resolve, 10);
@@ -97,7 +115,7 @@ describe('getFeatureBlogMap', () => {
         blogRow(2, 'newest-blog'),
         blogRow(1, 'oldest-blog'),
       ]);
-      vi.mocked(getBlogMetadata)
+      vi.mocked(findBlogMetadata)
         .mockResolvedValueOnce(metadata('最新の記事', ['feature-1']))
         .mockResolvedValueOnce(metadata('古い記事', ['feature-1']));
 

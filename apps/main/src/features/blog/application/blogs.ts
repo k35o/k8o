@@ -1,7 +1,6 @@
 import { db } from '@repo/database';
-import { getFrontmatter } from '@repo/helpers/mdx/frontmatter';
 
-import { blogPath } from './path';
+import { findBlogMetadata } from './blog';
 
 export const getBlogs = async () => {
   const blogRows = await db.query.blogs.findMany({
@@ -54,7 +53,7 @@ export const getBlogsByTags = async (slug: string, tagIds: number[]) => {
     },
   });
 
-  return Promise.all(
+  const blogs = await Promise.all(
     blogRows
       .toSorted((a, b) => {
         const aBlogTagIds = new Set(a.blogTag.map((blogTag) => blogTag.tag.id));
@@ -67,9 +66,9 @@ export const getBlogsByTags = async (slug: string, tagIds: number[]) => {
         ).length;
         return bTagCount - aTagCount;
       })
-      .slice(0, 6)
       .map(async (blog) => {
-        const blogMetadata = await getFrontmatter(blogPath(blog.slug));
+        const blogMetadata = await findBlogMetadata(blog.slug);
+        if (blogMetadata === null) return null;
         return {
           id: blog.id,
           slug: blog.slug,
@@ -79,4 +78,6 @@ export const getBlogsByTags = async (slug: string, tagIds: number[]) => {
         };
       }),
   );
+  // MDX欠損をスキップしても最大6件を保てるよう、絞り込みはメタデータ解決後に行う
+  return blogs.filter((blog) => blog !== null).slice(0, 6);
 };

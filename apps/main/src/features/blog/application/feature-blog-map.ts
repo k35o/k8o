@@ -1,4 +1,4 @@
-import { getBlogMetadata } from './blog';
+import { findBlogMetadata } from './blog';
 import { getBlogs } from './blogs';
 
 export type BlogLink = {
@@ -11,7 +11,7 @@ export async function getFeatureBlogMap(): Promise<Record<string, BlogLink>> {
   const metadataList = await Promise.all(
     blogs.map(async (blog) => ({
       slug: blog.slug,
-      metadata: await getBlogMetadata(blog.slug),
+      metadata: await findBlogMetadata(blog.slug),
     })),
   );
 
@@ -20,6 +20,7 @@ export async function getFeatureBlogMap(): Promise<Record<string, BlogLink>> {
   // getBlogsの並び（createdAt降順）で逐次確定し、最新記事を勝者にする。
   const map = new Map<string, BlogLink>();
   for (const { slug, metadata } of metadataList) {
+    if (metadata === null) continue;
     for (const featureId of metadata.featureIds ?? []) {
       const existing = map.get(featureId);
       if (existing) {
