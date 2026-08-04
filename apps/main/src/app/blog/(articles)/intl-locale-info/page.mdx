@@ -1,0 +1,207 @@
+---
+title: ロケール固有の情報を取得するIntl.Locale info
+description: Intl.Locale infoはIntl.Localeにロケール固有の情報を返すメソッドを追加するBaseline 2026の新機能です。getWeekInfoで週の始まりや週末の曜日、getTextInfoで書字方向、getCalendarsやgetHourCyclesで暦や時刻表記の慣習を取得でき、UIをロケールに合わせて組み立てられます。
+createdAt: 2026-08-04
+updatedAt: 2026-08-04
+featureIds:
+  - intl-locale-info
+---
+
+import { PlaygroundEmbed } from '@/app/_components/playgrounds';
+import { LinkCard } from '@/app/blog/_components/link-card';
+
+# ロケール固有の情報を取得するIntl.Locale info
+
+<BrowserSupportStatus featureId="intl-locale-info" />
+
+## はじめに
+
+2026年7月リリースのFirefox 153の対応で、Intl.Locale infoがBaseline 2026に追加されました。
+`Intl.Locale`からロケール固有の情報を取得できるようにする機能です。
+週の始まりや週末の曜日、書字方向、好まれる暦や時刻表記といった、ロケールに紐づく慣習を標準APIだけで取得できます。
+
+```js
+// [!og]
+const locale = new Intl.Locale('ja-JP');
+
+locale.getWeekInfo();
+// { firstDay: 7, weekend: [6, 7] }
+
+locale.getTextInfo();
+// { direction: 'ltr' }
+```
+
+<LinkCard href="https://github.com/tc39/proposal-intl-locale-info" />
+
+こうした情報の大元は、Unicodeコンソーシアムが管理するロケールデータのCLDR（Common Locale Data Repository）です。
+これまでは、CLDRのデータを含むライブラリを組み込むか、対象ロケールぶんの対応表を自前で管理して手に入れるものでした。
+Intl.Locale infoを使うと、ブラウザが持っているCLDR由来のデータをそのまま参照できます。
+
+## Intl.Localeに追加された7つのメソッド
+
+`Intl.Locale`は、BCP 47のロケール識別子をパースして、言語や地域といった構成要素へアクセスするためのオブジェクトです。
+
+```js
+const locale = new Intl.Locale('ja-JP');
+locale.language; // 'ja'
+locale.region; // 'JP'
+```
+
+Intl.Locale infoは、この`Intl.Locale`へ7つのメソッドを追加します。
+いずれも引数を取らず、CLDRに基づいた値を返します。
+
+- `getWeekInfo()`: 週の始まりと週末の曜日
+- `getTextInfo()`: 書字方向
+- `getCalendars()`: 好まれる暦
+- `getHourCycles()`: 時刻の表記法
+- `getNumberingSystems()`: 数字の表記
+- `getCollations()`: 文字列の並べ替え規則
+- `getTimeZones()`: 地域で使われるタイムゾーン
+
+## 週の始まりと週末を返すgetWeekInfo
+
+`getWeekInfo()`は`firstDay`と`weekend`を持つオブジェクトを返します。
+曜日は1が月曜、7が日曜の整数で表されます。
+`firstDay`は週の最初の曜日、`weekend`は週末とみなされる曜日の配列です。
+
+```js
+new Intl.Locale('ja-JP').getWeekInfo();
+// { firstDay: 7, weekend: [6, 7] }
+
+new Intl.Locale('en-GB').getWeekInfo();
+// { firstDay: 1, weekend: [6, 7] }
+
+new Intl.Locale('ar-EG').getWeekInfo();
+// { firstDay: 6, weekend: [5, 6] }
+```
+
+日本のカレンダーは日曜始まりで土日が週末、イギリスは月曜始まり、エジプトは土曜始まりで金曜と土曜が週末です。
+カレンダーUIの列の並び順や週末の色分けを、ロケールごとに正しく組み立てられます。
+
+## 書字方向を返すgetTextInfo
+
+`getTextInfo()`は、テキストを左右どちらの方向へ書くかを`direction`プロパティで返します。
+値は`ltr`か`rtl`のどちらかです。
+
+```js
+new Intl.Locale('ja-JP').getTextInfo(); // { direction: 'ltr' }
+new Intl.Locale('ar-EG').getTextInfo(); // { direction: 'rtl' }
+```
+
+HTMLの`dir`属性と同じ語彙なので、そのまま渡せます。
+
+```js
+const locale = new Intl.Locale(navigator.language);
+// [!hl]
+document.documentElement.dir = locale.getTextInfo().direction;
+```
+
+アラビア語やヘブライ語のような右から左へ書く言語では、テキストの向きだけでなくUI全体のレイアウトも反転させるのが自然です。
+`dir`属性を起点にCSSの論理プロパティでレイアウトを組んでいれば、この1行が反転のスイッチになります。
+
+## 好まれる暦を返すgetCalendars
+
+`getCalendars()`は、そのロケールで好まれる暦の識別子を、優先順に並べた配列で返します。
+先頭が既定の暦です。
+
+```js
+new Intl.Locale('ja-JP').getCalendars();
+// ['gregory', 'japanese']
+
+new Intl.Locale('ar-EG').getCalendars();
+// ['gregory', 'coptic', 'islamic', 'islamic-civil', 'islamic-tbla']
+```
+
+日本語ではグレゴリオ暦に加えて和暦（`japanese`）が、エジプトのアラビア語ではコプト暦やヒジュラ暦が候補に入ります。
+
+## 時刻の表記法を返すgetHourCycles
+
+`getHourCycles()`は、好まれる時刻の表記法の識別子を、同じく優先順の配列で返します。
+表記法は4種類あります。
+
+- `h11`: 0時から11時までの12時間制
+- `h12`: 1時から12時までの12時間制
+- `h23`: 0時から23時までの24時間制
+- `h24`: 1時から24時までの24時間制
+
+```js
+new Intl.Locale('ja-JP').getHourCycles(); // ['h23']
+new Intl.Locale('en-US').getHourCycles(); // ['h12']
+```
+
+日本語を含む多くのロケールは`h23`が、アメリカ英語は`h12`が既定です。
+
+## 数字の表記を返すgetNumberingSystems
+
+`getNumberingSystems()`は、好まれる数字の表記の識別子を優先順の配列で返します。
+
+```js
+new Intl.Locale('ja-JP').getNumberingSystems(); // ['latn']
+new Intl.Locale('ar-EG').getNumberingSystems(); // ['arab']
+```
+
+日本語では算用数字（`latn`）が、エジプトのアラビア語ではアラビア・インド数字（`arab`）が既定です。
+
+`getCalendars()`と`getHourCycles()`と`getNumberingSystems()`が返す識別子は、`Intl.DateTimeFormat`の`calendar`や`hourCycle`、`numberingSystem`といったオプションへそのまま渡せる値です。
+ロケールの既定に従いつつ、ユーザーへ切り替えの選択肢を提示する、といった作りに使えます。
+
+## 文字列の並べ替え規則を返すgetCollations
+
+`getCollations()`は、そのロケールで使われる文字列の並べ替え規則の識別子を、アルファベット順の配列で返します。
+
+```js
+new Intl.Locale('ja-JP').getCollations();
+// ['emoji', 'eor', 'unihan']
+```
+
+日本語では、絵文字の並べ替え（`emoji`）や、漢字を部首と画数で並べる方式（`unihan`）などが候補として返ります。
+なお、既定の並べ替えを表す`standard`と検索用の`search`は、仕様で一覧から常に除くと決められています。
+
+返った識別子は、`Intl.Collator`の`collation`オプションに渡して実際の並べ替えへ反映できます。
+
+## 地域のタイムゾーンを返すgetTimeZones
+
+`getTimeZones()`は、ロケールの地域サブタグに対応するIANAタイムゾーンIDを、辞書順に並んだ配列で返します。
+
+```js
+new Intl.Locale('ja-JP').getTimeZones(); // ['Asia/Tokyo']
+
+new Intl.Locale('en-US').getTimeZones();
+// ['America/Adak', 'America/Anchorage', ...] 全29件
+```
+
+地域サブタグを持たないロケールでは`undefined`を返します。
+
+```js
+new Intl.Locale('ja').getTimeZones(); // undefined
+```
+
+タイムゾーン選択UIで、ユーザーの地域に関係する候補を先頭へ出すような用途に使えます。
+返るのはあくまで地域に紐づくタイムゾーンの一覧です。
+ユーザーが現在いるタイムゾーンを知りたいときは、これまでどおり`Intl.DateTimeFormat().resolvedOptions().timeZone`を使います。
+
+## Unicode拡張キーワードを指定した場合
+
+ロケール識別子の`-u-`拡張で暦や時刻の表記法が明示されている場合、対応するメソッドは地域の既定ではなくその値だけを返します。
+
+```js
+new Intl.Locale('ja-JP-u-ca-japanese').getCalendars(); // ['japanese']
+new Intl.Locale('ja-JP-u-hc-h12').getHourCycles(); // ['h12']
+```
+
+ユーザーが選んだ暦や時刻表記をロケール識別子に載せて引き回すアプリケーションでは、地域の既定とユーザーの選択を同じコードで解決できます。
+
+## デモ
+
+ロケール識別子を変えながら、7つのメソッドが返す値を確認できます。
+プリセットのロケールを切り替えるか、任意の識別子を入力してみてください。
+
+<PlaygroundEmbed demo="ロケールごとの返り値を確認する" sectionId="intl-locale-info" />
+
+## おわりに
+
+`Intl.Locale`にロケール固有の慣習を返すメソッド群を追加する、Intl.Locale infoを紹介しました。
+週の形や書字方向、暦や時刻表記の好み、地域のタイムゾーンといった情報を、自前の対応表や追加のライブラリなしに取得できます。
+
+Firefox 153の対応でBaseline 2026のNewly availableになり、どのブラウザの最新版でも動くようになりました。
+多言語対応のUIを組むときの土台として、まずはカレンダーの週の並びや`dir`属性のような小さなところから使ってみてください。
