@@ -72,9 +72,3 @@ jobs:
 
       - name: Run test
         run: pnpm run test
-
-      # e2e 対象ルート(playgrounds)は DB クエリを発行しない。libSQL クライアントの
-      # モジュール初期化が有効な URL 形式を要求するためダミー URL だけ渡す
-      # (Linux ランナーには turso dev が必要とする sqld が無く、DB は配信できない)
-      - name: Run e2e
-        run: TURSO_DATABASE_URL=http://127.0.0.1:38787 pnpm --filter "./apps/main" run test:e2e

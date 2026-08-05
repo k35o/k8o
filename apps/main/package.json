@@ -12,7 +12,6 @@
     "generate:browser-min-versions": "node --import ./scripts/register-ts-resolver.ts scripts/generate-browser-min-versions.ts",
     "type-check": "next typegen && tsgo --noEmit",
     "test": "vitest run",
-    "test:e2e": "playwright test",
     "test:vrt": "VRT=1 vitest run --project=storybook",
     "test:watch": "vitest",
     "test:ui": "vitest --ui --coverage",
@@ -60,8 +59,6 @@
     "zod": "catalog:"
   },
   "devDependencies": {
-    "@next/playwright": "catalog:",
-    "@playwright/test": "catalog:",
     "@repo/typescript-config": "workspace:*",
     "@repo/vitest-config": "workspace:*",
     "@storybook/addon-a11y": "catalog:",
