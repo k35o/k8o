@@ -7,6 +7,14 @@ const OFFLINE_MESSAGE =
   'オフラインです。接続が回復すると自動的に再試行します。';
 
 test.describe('オフライン通知', () => {
+  // CIのLinux環境ではオフライン化したリクエストが即時失敗せずストールし、
+  // Next.jsの接続確認(200msタイムアウト=オンライン扱い)が誤判定するため
+  // ローカルでのみ実行する。ドキュメントもオフライン検証は本番ビルドを推奨
+  test.skip(
+    process.env['CI'] !== undefined,
+    'dev+headless CIではオフライン検知が不安定',
+  );
+
   test('オフライン中の遷移でバナーが表示され、復帰すると消える', async ({
     context,
     page,
