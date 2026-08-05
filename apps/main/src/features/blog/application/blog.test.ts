@@ -1,3 +1,5 @@
+import { readFile } from 'node:fs/promises';
+
 import { db } from '@repo/database';
 import { findFrontmatter, getFrontmatter } from '@repo/helpers/mdx/frontmatter';
 
@@ -21,6 +23,7 @@ vi.mock('@repo/database', () => ({
     },
   },
 }));
+vi.mock('node:fs/promises');
 vi.mock('@repo/helpers/mdx/frontmatter');
 vi.mock('@/shared/mdx/toc-tree');
 vi.mock('./path');
@@ -215,12 +218,14 @@ describe('blog service', () => {
       };
 
       vi.mocked(blogPath).mockReturnValue('/path/to/blog');
+      vi.mocked(readFile).mockResolvedValue('## Introduction');
       vi.mocked(getTocTree).mockResolvedValue(mockToc);
 
       const result = await getBlogToc('test-slug');
 
       expect(blogPath).toHaveBeenCalledWith('test-slug');
-      expect(getTocTree).toHaveBeenCalledWith('/path/to/blog');
+      expect(readFile).toHaveBeenCalledWith('/path/to/blog', 'utf-8');
+      expect(getTocTree).toHaveBeenCalledWith('## Introduction');
       expect(result).toBe(mockToc);
     });
   });

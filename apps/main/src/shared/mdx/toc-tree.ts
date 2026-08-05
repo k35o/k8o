@@ -1,5 +1,3 @@
-import { readFile } from 'node:fs/promises';
-
 import type { PhrasingContent, Root } from 'mdast';
 import { remark } from 'remark';
 import remarkFrontmatter from 'remark-frontmatter';
@@ -22,12 +20,11 @@ const phrasingText = (nodes: readonly PhrasingContent[]): string => {
   return result;
 };
 
-export const getTocTree = async (path: string) => {
+export const getTocTree = async (content: string) => {
   const headingTree: HeadingTree = {
     depth: 0,
     children: [],
   };
-  const content = await readFile(path, 'utf-8');
   await remark()
     .use(remarkFrontmatter)
     .use(() => (tree: Root) => {
