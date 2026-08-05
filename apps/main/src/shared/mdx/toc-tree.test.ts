@@ -1,29 +1,8 @@
-import { mkdtemp, rm, writeFile } from 'node:fs/promises';
-import { tmpdir } from 'node:os';
-import { join } from 'node:path';
-
 import { getTocTree } from './toc-tree';
-
-const tempDirs: string[] = [];
-
-afterEach(async () => {
-  await Promise.all(
-    tempDirs.map((dir) => rm(dir, { recursive: true, force: true })),
-  );
-  tempDirs.length = 0;
-});
-
-const createMdxFile = async (content: string): Promise<string> => {
-  const dir = await mkdtemp(join(tmpdir(), 'toc-tree-'));
-  tempDirs.push(dir);
-  const filePath = join(dir, 'article.mdx');
-  await writeFile(filePath, content);
-  return filePath;
-};
 
 describe('getTocTree', () => {
   it('h2からh4までの見出しを階層構造で返す', async () => {
-    const filePath = await createMdxFile(`---
+    const content = `---
 title: test
 ---
 
@@ -36,9 +15,9 @@ title: test
 #### 詳細
 
 ## まとめ
-`);
+`;
 
-    await expect(getTocTree(filePath)).resolves.toStrictEqual({
+    await expect(getTocTree(content)).resolves.toStrictEqual({
       depth: 0,
       children: [
         {
@@ -62,7 +41,7 @@ title: test
   });
 
   it('同じh2配下の複数のh3とh4を正しくぶら下げる', async () => {
-    const filePath = await createMdxFile(`## セクション1
+    const content = `## セクション1
 
 ### 小見出し1
 
@@ -73,9 +52,9 @@ title: test
 #### 詳細2
 
 ## セクション2
-`);
+`;
 
-    await expect(getTocTree(filePath)).resolves.toStrictEqual({
+    await expect(getTocTree(content)).resolves.toStrictEqual({
       depth: 0,
       children: [
         {
@@ -104,16 +83,16 @@ title: test
   });
 
   it('h2より浅い見出しや親のない見出しは無視する', async () => {
-    const filePath = await createMdxFile(`# h1
+    const content = `# h1
 
 ### 孤立したh3
 
 ## 見出し
 
 #### 孤立したh4
-`);
+`;
 
-    await expect(getTocTree(filePath)).resolves.toStrictEqual({
+    await expect(getTocTree(content)).resolves.toStrictEqual({
       depth: 0,
       children: [
         {
@@ -126,12 +105,12 @@ title: test
   });
 
   it('インラインコードや強調を含む見出しは全文を連結して採用する', async () => {
-    const filePath = await createMdxFile(`## \`source\`に何が入るか
+    const content = `## \`source\`に何が入るか
 
 ### 方式1: \`renderToString\`で**HTML文字列**を返す
-`);
+`;
 
-    await expect(getTocTree(filePath)).resolves.toStrictEqual({
+    await expect(getTocTree(content)).resolves.toStrictEqual({
       depth: 0,
       children: [
         {
@@ -150,16 +129,16 @@ title: test
   });
 
   it('h5以深の見出しは目次に含めない', async () => {
-    const filePath = await createMdxFile(`## セクション
+    const content = `## セクション
 
 ### 小見出し
 
 #### 詳細
 
 ##### 無視される見出し
-`);
+`;
 
-    await expect(getTocTree(filePath)).resolves.toStrictEqual({
+    await expect(getTocTree(content)).resolves.toStrictEqual({
       depth: 0,
       children: [
         {
