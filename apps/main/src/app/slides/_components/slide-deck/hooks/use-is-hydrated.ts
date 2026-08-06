@@ -1,14 +1,12 @@
 'use client';
 
-import { useEffect, useLayoutEffect, useState } from 'react';
+import { useSyncExternalStore } from 'react';
 
-const useBrowserLayoutEffect =
-  typeof window === 'undefined' ? useEffect : useLayoutEffect;
+// ハイドレーション済みかは一度 true になったら変わらないため、購読は不要。
+const subscribeNoop = (): (() => void) => () => undefined;
 
-export const useIsHydrated = (): boolean => {
-  const [isHydrated, setIsHydrated] = useState(false);
-  useBrowserLayoutEffect(() => {
-    setIsHydrated(true);
-  }, []);
-  return isHydrated;
-};
+const getSnapshot = (): boolean => true;
+const getServerSnapshot = (): boolean => false;
+
+export const useIsHydrated = (): boolean =>
+  useSyncExternalStore(subscribeNoop, getSnapshot, getServerSnapshot);
