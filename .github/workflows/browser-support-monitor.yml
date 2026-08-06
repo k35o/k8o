@@ -33,8 +33,16 @@ jobs:
         run: |
           set -u
 
+          # apex から www へのリダイレクトを追う(-L)。ok 以外は 503 + JSON body を返す
+          # 仕様のため -f は使えない。到達できても JSON でない応答(リダイレクト HTML や
+          # エッジのエラーページ)がありうるので、jq に渡す前に検証して unreachable に倒す。
           fetch_health() {
-            curl -sS --max-time 30 "$HEALTH_URL" || echo '{}'
+            body=$(curl -sSL --max-time 30 "$HEALTH_URL") || body=''
+            if echo "$body" | jq -e . >/dev/null 2>&1; then
+              echo "$body"
+            else
+              echo '{}'
+            fi
           }
           health_status() {
             echo "$1" | jq -r '.status // "unreachable"'
