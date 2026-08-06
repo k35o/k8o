@@ -1,7 +1,10 @@
 import type { HighlightedCode } from '@repo/code-highlight/tokenize';
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
+import { useState } from 'react';
+import type { FC } from 'react';
 import { expect, userEvent, waitFor, within } from 'storybook/test';
 
+import type { HighlightFn } from '@/app/_components/highlighted-code';
 import { DeckHighlightContext } from '@/app/_components/slide-deck';
 
 import { DeckPreview } from './deck-preview';
@@ -138,15 +141,19 @@ export const KeyboardNav: Story = {
 };
 
 // server action の代わりに使うフェイクのハイライト関数（1行=1トークンで色を付ける）。
-const fakeHighlight = (code: string): Promise<HighlightedCode | null> =>
-  Promise.resolve({
-    tokens: code.split('\n').map((line, index) => [
-      // a11y アドオンのコントラスト検査を満たす明るい色にする。
-      { content: line, offset: index, color: '#e6edf3' },
-    ]),
-    fg: '#abb2bf',
-    bg: '#282c34',
-  });
+// 色は a11y アドオンのコントラスト検査を満たす明るいものにする。
+const makeFakeHighlight =
+  (color: string): HighlightFn =>
+  (code: string): Promise<HighlightedCode | null> =>
+    Promise.resolve({
+      tokens: code
+        .split('\n')
+        .map((line, index) => [{ content: line, offset: index, color }]),
+      fg: '#abb2bf',
+      bg: '#282c34',
+    });
+
+const fakeHighlight = makeFakeHighlight('#e6edf3');
 
 export const Highlighted: Story = {
   args: {
@@ -156,9 +163,9 @@ export const Highlighted: Story = {
   // ハイライト関数はスタジオが注入する構造なので、ストーリーでも同じ形で注入する。
   decorators: [
     (Story) => (
-      <DeckHighlightContext.Provider value={fakeHighlight}>
+      <DeckHighlightContext value={fakeHighlight}>
         <Story />
-      </DeckHighlightContext.Provider>
+      </DeckHighlightContext>
     ),
   ],
   play: async ({ canvasElement }) => {
@@ -179,6 +186,59 @@ export const Highlighted: Story = {
       expect(
         document.body.querySelector('[data-slide-print] pre code span'),
       ).not.toBeNull();
+    });
+  },
+};
+
+// テーマ切替でハイライト関数が差し替わる状況を、スタジオと同じ注入の形で再現する。
+const SwitchableHighlight: FC<{ source: string }> = ({ source }) => {
+  const [highlight, setHighlight] = useState<HighlightFn>(() =>
+    makeFakeHighlight('#e6edf3'),
+  );
+  return (
+    <div className="flex h-full flex-col">
+      <button
+        onClick={() => {
+          setHighlight(() => makeFakeHighlight('#ffd7a0'));
+        }}
+        type="button"
+      >
+        テーマ切替
+      </button>
+      <div className="min-h-0 flex-1">
+        <DeckHighlightContext value={highlight}>
+          <DeckPreview isStreaming={false} source={source} />
+        </DeckHighlightContext>
+      </div>
+    </div>
+  );
+};
+
+// ハイライト関数が差し替わったら、同じデッキでも取得し直して配色が変わる。
+export const RehighlightOnHighlighterChange: Story = {
+  args: {
+    source: SAMPLE_DECK,
+    isStreaming: false,
+  },
+  render: ({ source }) => <SwitchableHighlight source={source ?? ''} />,
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    await userEvent.click(canvas.getByRole('button', { name: '次のスライド' }));
+    await userEvent.click(canvas.getByRole('button', { name: '次のスライド' }));
+    await waitFor(() => {
+      expect(canvasElement.querySelector('pre code span')).toHaveStyle({
+        color: '#e6edf3',
+      });
+    });
+
+    // userEvent.click は act でラップされる。act の中で更新が suspend すると
+    // Promise 解決後の再開が流れず、実ブラウザでは通る切替がここだけ止まるため、
+    // 切替の発火はネイティブの click で行う。
+    canvas.getByRole('button', { name: 'テーマ切替' }).click();
+    await waitFor(() => {
+      expect(canvasElement.querySelector('pre code span')).toHaveStyle({
+        color: '#ffd7a0',
+      });
     });
   },
 };
