@@ -58,6 +58,17 @@ const LANGUAGE_OPTIONS = [
 
 const LINT_DEBOUNCE_MS = 600;
 
+// 検査を終えた入力と、その結果。3つを1つの state にまとめることで、診断結果と
+// エラー表示が別々の入力に対応してしまう状態を作れなくする
+type LintOutcome = {
+  input: string;
+  diagnostics: LintDiagnostic[] | null;
+  error: string | null;
+};
+
+const lintInputKey = (code: string, language: LintLanguage): string =>
+  `${language}\n${code}`;
+
 export const CodeDock: FC<Props> = ({
   lintAction,
   formatAction,
@@ -67,14 +78,18 @@ export const CodeDock: FC<Props> = ({
   const [language, setLanguage] = useState<LintLanguage>(
     DEFAULT_SAMPLE_LANGUAGE,
   );
-  const [diagnostics, setDiagnostics] = useState<LintDiagnostic[] | null>(
-    initialDiagnostics ?? null,
+  // page.tsx がサーバーで検査済みの初期サンプルを渡してきた場合は、その入力を
+  // 検査済みとして始める（マウント直後の再検査が要らなくなる）
+  const [outcome, setOutcome] = useState<LintOutcome | null>(
+    Array.isArray(initialDiagnostics)
+      ? {
+          input: lintInputKey(DEFAULT_SAMPLE_CODE, DEFAULT_SAMPLE_LANGUAGE),
+          diagnostics: initialDiagnostics,
+          error: null,
+        }
+      : null,
   );
-  const [lintError, setLintError] = useState<string | null>(null);
   const [isLinting, dispatchLint] = useDebouncedTransition(LINT_DEBOUNCE_MS);
-  // 初期サンプルの診断結果を props で受け取っている場合、マウント直後の再検査は
-  // 不要なので最初の effect を 1 度だけスキップする
-  const shouldSkipInitialLint = useRef(Array.isArray(initialDiagnostics));
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const { resolvedTheme } = useTheme();
   // コードのハイライトはアプリのテーマに合わせる (light は one-light、それ以外は
@@ -96,28 +111,26 @@ export const CodeDock: FC<Props> = ({
 
   // 入力・言語変更・整形の反映のたびに、デバウンスして自動で検査する
   useEffect(() => {
-    if (shouldSkipInitialLint.current) {
-      shouldSkipInitialLint.current = false;
+    const input = lintInputKey(code, language);
+    if (outcome?.input === input) {
       return;
     }
     dispatchLint(async (signal) => {
       if (code === '') {
-        setDiagnostics(null);
-        setLintError(null);
+        setOutcome({ input, diagnostics: null, error: null });
         return;
       }
       const result = await lintAction(code, language);
       if (signal.aborted) {
         return;
       }
-      if (result.error !== undefined) {
-        setLintError(result.error);
-        return;
-      }
-      setDiagnostics(result.diagnostics);
-      setLintError(null);
+      setOutcome(
+        result.error === undefined
+          ? { input, diagnostics: result.diagnostics, error: null }
+          : { input, diagnostics: null, error: result.error },
+      );
     });
-  }, [code, language, dispatchLint, lintAction]);
+  }, [code, language, outcome, dispatchLint, lintAction]);
 
   // textarea は非制御なので、整形結果は必ず DOM に反映する (input 発火で
   // state も同期される)。undo 履歴を残せる insertText を優先し、非対応環境では
@@ -204,8 +217,8 @@ export const CodeDock: FC<Props> = ({
         <Alert message={formatError} tone="error" />
       )}
       <DiagnosticList
-        diagnostics={diagnostics}
-        errorMessage={lintError}
+        diagnostics={outcome?.diagnostics ?? null}
+        errorMessage={outcome?.error ?? null}
         isLinting={isLinting}
       />
     </div>
