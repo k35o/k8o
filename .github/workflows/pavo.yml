@@ -11,7 +11,7 @@ on:
 jobs:
   pavo:
     if: ${{ github.event_name != 'issue_comment' || startsWith(github.event.comment.body, '/pavo') }}
-    uses: k35o/pavo/.github/workflows/review.yml@21b955bced9e341f6f41d06747040ea78f10c727 # main
+    uses: k35o/pavo/.github/workflows/review.yml@6bfddd13cce00240f1768143d9ab71e845d021f6 # main
     with:
       instructions: default,nextjs,typescript
       extra_prompt: |
