@@ -76,7 +76,7 @@
     "@vitest/ui": "catalog:",
     "chromatic": "catalog:",
     "msw": "2.15.0",
-    "msw-storybook-addon": "2.0.7",
+    "msw-storybook-addon": "3.0.0",
     "postcss-load-config": "catalog:",
     "react-scan": "0.5.7",
     "storybook": "catalog:",
