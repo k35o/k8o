@@ -8,7 +8,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@k8o/arte-odyssey": "10.9.0",
+    "@k8o/arte-odyssey": "11.0.1",
     "react": "19.2.8",
     "react-dom": "19.2.8"
   },
