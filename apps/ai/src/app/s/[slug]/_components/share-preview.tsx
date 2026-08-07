@@ -1,51 +1,26 @@
-'use client';
+import { resolveShareEntryForRoute } from '@/features/share/interface/queries';
 
-import { useTheme } from 'next-themes';
-import { useEffect, useState } from 'react';
-
-import { ThemedPreviewIframe } from '@/app/_components/preview-iframe';
-import { resolveShareEntryAction } from '@/features/share/interface/actions';
+import { SharePreviewFrame } from './share-preview-frame';
 
 type SharePreviewProps = {
   slug: string;
   title: string;
 };
 
-// 公開ページのプレビュー。配信URL（Sandbox 起動を伴うことがある）を解決してから iframe を出す。
-export const SharePreview = ({ slug, title }: SharePreviewProps) => {
-  const { resolvedTheme } = useTheme();
-  const [url, setUrl] = useState<string | null>(null);
-  const [failed, setFailed] = useState(false);
+// 公開ページのプレビュー。配信URLの解決（Sandbox 起動を伴うことがある）は
+// 呼び出し側の Suspense 境界で待たせ、解決できてから iframe を出す。
+export const SharePreview = async ({ slug, title }: SharePreviewProps) => {
+  // 解決が reject してもページ全体を error boundary に落とさず、
+  // ヘッダを残したまま理由を伝える。
+  const entry = await resolveShareEntryForRoute(slug).catch(() => null);
 
-  useEffect(() => {
-    void (async () => {
-      try {
-        const res = await resolveShareEntryAction(slug);
-        if (res === null) {
-          setFailed(true);
-          return;
-        }
-        setUrl(res.url);
-      } catch {
-        // server action が想定外に reject しても spinner で固まらせない。
-        setFailed(true);
-      }
-    })();
-  }, [slug]);
-
-  if (failed) {
+  if (entry === null) {
     return (
       <div className="text-fg-mute flex h-full items-center justify-center p-6 text-center text-sm">
         プレビューを表示できませんでした。
       </div>
     );
   }
-  if (url === null) {
-    return (
-      <div className="text-fg-mute flex h-full items-center justify-center p-6 text-center text-sm motion-safe:animate-pulse">
-        プレビューを準備しています…
-      </div>
-    );
-  }
-  return <ThemedPreviewIframe theme={resolvedTheme} title={title} url={url} />;
+
+  return <SharePreviewFrame title={title} url={entry.url} />;
 };

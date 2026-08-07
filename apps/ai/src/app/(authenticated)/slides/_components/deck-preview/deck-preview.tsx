@@ -1,17 +1,15 @@
 'use client';
 
-import { useContext, useMemo, useState } from 'react';
+import { useMemo, useState } from 'react';
 import type { FC } from 'react';
 
 import {
-  DeckHighlightContext,
-  DeckHighlightsContext,
+  DeckHighlightsBoundary,
   DeckPrint,
   DeckSlideView,
   NavButton,
   ProgressBar,
   Stage,
-  useDeckHighlights,
   useKeyboardNav,
 } from '@/app/_components/slide-deck';
 import { parseDeck } from '@/features/slides/application/parse-deck';
@@ -25,9 +23,6 @@ export const DeckPreview: FC<DeckPreviewProps> = ({ source, isStreaming }) => {
   const slides = useMemo(() => parseDeck(source ?? ''), [source]);
   const total = slides.length;
   const [index, setIndex] = useState(0);
-  // コードブロックのハイライトをデッキ単位で一括取得する（関数はスタジオから注入）。
-  const highlightFn = useContext(DeckHighlightContext);
-  const highlights = useDeckHighlights(slides, isStreaming, highlightFn);
 
   // 生成完了の瞬間に表紙へ戻す（生成中は末尾のスライドへ自動追従しているため）。
   const [prevStreaming, setPrevStreaming] = useState(isStreaming);
@@ -81,8 +76,8 @@ export const DeckPreview: FC<DeckPreviewProps> = ({ source, isStreaming }) => {
   const currentNotes = current?.notes ?? [];
 
   return (
-    // 取得済みハイライトを配下の全スライド（DeckPrint 含む）へ配る。
-    <DeckHighlightsContext.Provider value={highlights}>
+    // 取得したハイライトを配下の全スライド（DeckPrint 含む）へ配る。
+    <DeckHighlightsBoundary isStreaming={isStreaming} slides={slides}>
       <div className="flex h-full min-h-0 flex-col">
         <ProgressBar current={displayIndex} total={total} />
         <div className="min-h-0 flex-1 px-4 pt-2">
@@ -138,6 +133,6 @@ export const DeckPreview: FC<DeckPreviewProps> = ({ source, isStreaming }) => {
         {/* 印刷/PDF出力用の全スライド描画（画面では非表示） */}
         <DeckPrint slides={slides} />
       </div>
-    </DeckHighlightsContext.Provider>
+    </DeckHighlightsBoundary>
   );
 };

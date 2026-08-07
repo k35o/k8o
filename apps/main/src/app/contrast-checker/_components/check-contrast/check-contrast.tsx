@@ -10,19 +10,19 @@ import { ApcaResultTable } from '../apca-result-table';
 import { ColorPallet } from '../color-pallet';
 import { ResultTable } from '../result-table';
 
+const WCAG_THRESHOLDS = {
+  AA_LARGE_TEXT: 3,
+  AAA_LARGE_TEXT: 4.5,
+  AA_NORMAL_TEXT: 4.5,
+  AAA_NORMAL_TEXT: 7,
+  LOW_VISIBILITY_WARNING: 2,
+} as const;
+
 export const CheckContrast: FC = () => {
   const [baseColor, setBaseColor] = useState('#000000');
   const [compareColor, setCompareColor] = useState('#ffffff');
   const contrast = calcContrast(baseColor, compareColor);
   const apcaLc = calcApca(compareColor, baseColor);
-
-  const WCAG_THRESHOLDS = {
-    AA_LARGE_TEXT: 3,
-    AAA_LARGE_TEXT: 4.5,
-    AA_NORMAL_TEXT: 4.5,
-    AAA_NORMAL_TEXT: 7,
-    LOW_VISIBILITY_WARNING: 2,
-  } as const;
 
   const isInvalidAaLargeText = contrast < WCAG_THRESHOLDS.AA_LARGE_TEXT;
   const isInvalidAaaLargeText = contrast < WCAG_THRESHOLDS.AAA_LARGE_TEXT;

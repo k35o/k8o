@@ -1,7 +1,12 @@
 'use client';
 
 import { Alert, Button, Card, SubscribeIcon } from '@k8o/arte-odyssey';
-import { useCallback, useEffect, useState, useSyncExternalStore } from 'react';
+import {
+  useEffect,
+  useState,
+  useSyncExternalStore,
+  useTransition,
+} from 'react';
 import type { FC } from 'react';
 
 import {
@@ -40,7 +45,7 @@ export const PushSubscribe: FC<Props> = ({ vapidPublicKey }) => {
   );
 
   const [isSubscribed, setIsSubscribed] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
+  const [isPending, startTransition] = useTransition();
   const [error, setError] = useState<string | null>(null);
 
   // 外部システム(PushManager)から現在の購読状態を同期する。
@@ -68,67 +73,63 @@ export const PushSubscribe: FC<Props> = ({ vapidPublicKey }) => {
     };
   }, [isSupported]);
 
-  const subscribe = useCallback(async () => {
-    setIsLoading(true);
+  const subscribe = (): void => {
     setError(null);
-
-    try {
-      const registration = await navigator.serviceWorker.ready;
-      const subscription = await registration.pushManager.subscribe({
-        userVisibleOnly: true,
-        applicationServerKey: urlBase64ToUint8Array(vapidPublicKey).buffer,
-      });
-
-      const json = subscription.toJSON();
-      const result = await subscribePushAction({
-        endpoint: subscription.endpoint,
-        keys: {
-          p256dh: json.keys?.['p256dh'] ?? '',
-          auth: json.keys?.['auth'] ?? '',
-        },
-      });
-
-      if (!result.success) {
-        await subscription.unsubscribe();
-        throw new Error(result.message);
-      }
-
-      setIsSubscribed(true);
-    } catch (e) {
-      setError(e instanceof Error ? e.message : '購読に失敗しました');
-    } finally {
-      setIsLoading(false);
-    }
-  }, [vapidPublicKey]);
-
-  const unsubscribe = useCallback(async () => {
-    setIsLoading(true);
-    setError(null);
-
-    try {
-      const registration = await navigator.serviceWorker.ready;
-      const subscription = await registration.pushManager.getSubscription();
-
-      if (subscription !== null) {
-        // subscribe と対称に、サーバー側の削除成功を確認してから
-        // ブラウザ側の購読解除と UI 更新を行う。
-        const result = await unsubscribePushAction({
-          endpoint: subscription.endpoint,
-          auth: subscription.toJSON().keys?.['auth'] ?? '',
+    startTransition(async () => {
+      try {
+        const registration = await navigator.serviceWorker.ready;
+        const subscription = await registration.pushManager.subscribe({
+          userVisibleOnly: true,
+          applicationServerKey: urlBase64ToUint8Array(vapidPublicKey).buffer,
         });
+
+        const json = subscription.toJSON();
+        const result = await subscribePushAction({
+          endpoint: subscription.endpoint,
+          keys: {
+            p256dh: json.keys?.['p256dh'] ?? '',
+            auth: json.keys?.['auth'] ?? '',
+          },
+        });
+
         if (!result.success) {
+          await subscription.unsubscribe();
           throw new Error(result.message);
         }
-        await subscription.unsubscribe();
-      }
 
-      setIsSubscribed(false);
-    } catch (e) {
-      setError(e instanceof Error ? e.message : '購読解除に失敗しました');
-    } finally {
-      setIsLoading(false);
-    }
-  }, []);
+        setIsSubscribed(true);
+      } catch (e) {
+        setError(e instanceof Error ? e.message : '購読に失敗しました');
+      }
+    });
+  };
+
+  const unsubscribe = (): void => {
+    setError(null);
+    startTransition(async () => {
+      try {
+        const registration = await navigator.serviceWorker.ready;
+        const subscription = await registration.pushManager.getSubscription();
+
+        if (subscription !== null) {
+          // subscribe と対称に、サーバー側の削除成功を確認してから
+          // ブラウザ側の購読解除と UI 更新を行う。
+          const result = await unsubscribePushAction({
+            endpoint: subscription.endpoint,
+            auth: subscription.toJSON().keys?.['auth'] ?? '',
+          });
+          if (!result.success) {
+            throw new Error(result.message);
+          }
+          await subscription.unsubscribe();
+        }
+
+        setIsSubscribed(false);
+      } catch (e) {
+        setError(e instanceof Error ? e.message : '購読解除に失敗しました');
+      }
+    });
+  };
 
   return (
     <Card width="full" appearance="bordered">
@@ -150,21 +151,21 @@ export const PushSubscribe: FC<Props> = ({ vapidPublicKey }) => {
               <Button
                 color="gray"
                 variant="outline"
-                disabled={isLoading}
-                onClick={() => void unsubscribe()}
+                disabled={isPending}
+                onClick={unsubscribe}
                 startIcon={<SubscribeIcon />}
               >
-                {isLoading ? '処理中...' : '購読を解除する'}
+                {isPending ? '処理中...' : '購読を解除する'}
               </Button>
             ) : (
               <Button
                 color="primary"
                 variant="solid"
-                disabled={isLoading}
-                onClick={() => void subscribe()}
+                disabled={isPending}
+                onClick={subscribe}
                 startIcon={<SubscribeIcon />}
               >
-                {isLoading ? '処理中...' : '通知を受け取る'}
+                {isPending ? '処理中...' : '通知を受け取る'}
               </Button>
             )}
           </div>

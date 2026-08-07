@@ -481,13 +481,13 @@ export const SlidesStudio = () => {
             >
               {/* コードブロックのハイライト（server action）はここで注入する。
                   UI 側で直接 import すると Storybook が DB まで辿ってしまうため。 */}
-              <DeckHighlightContext.Provider value={deckHighlight}>
+              <DeckHighlightContext value={deckHighlight}>
                 <DeckPreview
                   isStreaming={isBusy}
                   key={persistence.projectId ?? 'new'}
                   source={deckSource}
                 />
-              </DeckHighlightContext.Provider>
+              </DeckHighlightContext>
               {/* 履歴/フォーク選択の読込中オーバーレイ。 */}
               {pendingSelect === null ? null : (
                 <PreviewLoading message="スライドを読み込んでいます…" />

@@ -10,7 +10,8 @@ import { getPublicShareForRoute } from '@/features/share/interface/queries';
 import { SharePreview } from './_components/share-preview';
 
 // 共有プレビューの配信解決（Sandbox 起動を伴うことがある）が cold start で数十秒かかる
-// ことがあるため、server action のタイムアウトを延ばす。
+// ことがあるため、ルートのタイムアウトを延ばす。解決は Suspense 境界の内側で
+// ストリーミングされるので、ヘッダはこの待ち時間より先に表示される。
 export const maxDuration = 120;
 
 type SharePageProps = {
@@ -59,7 +60,15 @@ const ShareContent = async ({ params }: SharePageProps) => {
         </div>
       </header>
       <div className="min-h-0 flex-1">
-        <SharePreview slug={slug} title={share.title} />
+        <Suspense
+          fallback={
+            <div className="text-fg-mute flex h-full items-center justify-center p-6 text-center text-sm motion-safe:animate-pulse">
+              プレビューを準備しています…
+            </div>
+          }
+        >
+          <SharePreview slug={slug} title={share.title} />
+        </Suspense>
       </div>
     </div>
   );
