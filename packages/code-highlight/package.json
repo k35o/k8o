@@ -33,16 +33,16 @@
     "type-check": "tsgo --noEmit"
   },
   "dependencies": {
-    "@shikijs/core": "4.3.1",
-    "@shikijs/engine-javascript": "4.3.1",
-    "@shikijs/langs": "4.3.1",
-    "@shikijs/rehype": "4.3.1",
-    "@shikijs/themes": "4.3.1",
-    "shiki": "4.3.1"
+    "@shikijs/core": "4.4.1",
+    "@shikijs/engine-javascript": "4.4.1",
+    "@shikijs/langs": "4.4.1",
+    "@shikijs/rehype": "4.4.1",
+    "@shikijs/themes": "4.4.1",
+    "shiki": "4.4.1"
   },
   "devDependencies": {
     "@repo/typescript-config": "workspace:*",
-    "@shikijs/types": "4.3.1",
+    "@shikijs/types": "4.4.1",
     "@types/hast": "3.0.5",
     "@vitest/coverage-v8": "catalog:",
     "vitest": "catalog:"
