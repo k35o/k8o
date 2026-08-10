@@ -41,7 +41,7 @@ catalog:
   react-dom: 19.2.8
   storybook: 10.5.5
   storybook-addon-determinism: 0.1.2
-  storybook-addon-vrt: 0.2.1
+  storybook-addon-vrt: 0.4.0
   tailwindcss: 4.3.3
   vitest: 4.1.10
   wrangler: 4.118.0
@@ -51,6 +51,8 @@ minimumReleaseAge: 10080
 
 minimumReleaseAgeExclude:
   - '@k8o/*'
+  # 自作パッケージ（k35o公開）。@k8o/* と同じ信頼で除外する
+  - storybook-addon-vrt
   # Renovate security update: next@16.2.11
   - next@16.2.11
   # Next.js 16.3 の手動アップグレード（2026-08-03 リリース）
