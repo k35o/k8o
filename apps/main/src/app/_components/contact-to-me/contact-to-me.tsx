@@ -68,7 +68,7 @@ const ContactToMeModal: FC<{
       <Dialog.Root>
         <Dialog.Header onClose={onClose} title="お問い合わせ" />
         <Dialog.Content>
-          <form action={formAction} className="flex flex-col gap-8">
+          <form action={formAction} className="flex flex-col gap-4">
             <FormControl
               errorText={state.success === false ? state.message : undefined}
               helpText="255文字以内で入力してください"
