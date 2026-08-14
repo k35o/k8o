@@ -1,5 +1,10 @@
 name: Pavo
 
+# 呼び出し先（review.yml）も contents: read で動く設計。リポジトリの
+# デフォルト権限に依存せず、ここで GITHUB_TOKEN の上限を明示的に絞る
+permissions:
+  contents: read
+
 on:
   pull_request:
     types: [opened, synchronize, reopened, ready_for_review]

@@ -7,7 +7,7 @@
   ],
   "treatConfigHintsAsErrors": true,
   "tags": ["-lintignore"],
-  "ignoreBinaries": ["mise", "which"],
+  "ignoreBinaries": ["mise"],
   "workspaces": {
     "apps/main": {
       "ignoreDependencies": ["chromatic"]
