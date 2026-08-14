@@ -28,7 +28,7 @@
     "oxlint-tailwindcss": "1.7.1",
     "playwright": "1.62.1",
     "portless": "0.15.5",
-    "turbo": "2.10.8",
+    "turbo": "2.10.9",
     "typescript": "7.0.2",
     "vite-plus": "0.2.8",
     "vite-plus-inspector": "0.1.1",
