@@ -18,7 +18,7 @@ apps/admin のStorybook MCPは `admin-storybook-mcp`。propsの確認手順は�
 
 認証の有効/無効は `src/shared/auth/auth-enabled.ts` の `isAuthEnabled` に集約し、`proxy.ts`（middleware）と `verify-session.ts` の両方が参照する。
 
-- Vercel preview は認証OFF
+- Vercel preview は認証OFF（= preview URL の防御は Vercel Deployment Protection に依存する。ai と同様に有効化を維持すること。無効化すると preview URL だけで DB 書き込みや push 送信ができてしまう）
 - ローカル開発で `LOCAL_AUTH_BYPASS=true`（`.env.local`）を設定するとログインを省略できる。`NODE_ENV=development` のときだけ評価するため、本番では無視され bypass は起こらない
 - 実際にローカルでGitHubログインを検証したいときは `LOCAL_AUTH_BYPASS` を外す（その場合は GitHub OAuth アプリのコールバックを `https://admin.k8o.localhost/api/auth/callback/github` に設定）
 
