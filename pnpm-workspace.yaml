@@ -53,20 +53,5 @@ minimumReleaseAgeExclude:
   - '@k8o/*'
   # 自作パッケージ（k35o公開）。@k8o/* と同じ信頼で除外する
   - storybook-addon-vrt
-  # Renovate security update: next@16.2.11
-  - next@16.2.11
-  # Next.js 16.3 の手動アップグレード（2026-08-03 リリース）
-  - next@16.3.0
-  - '@next/env@16.3.0'
-  - '@next/mdx@16.3.0'
-  - '@next/third-parties@16.3.0'
-  - '@next/swc-darwin-arm64@16.3.0'
-  - '@next/swc-darwin-x64@16.3.0'
-  - '@next/swc-linux-arm64-gnu@16.3.0'
-  - '@next/swc-linux-arm64-musl@16.3.0'
-  - '@next/swc-linux-x64-gnu@16.3.0'
-  - '@next/swc-linux-x64-musl@16.3.0'
-  - '@next/swc-win32-arm64-msvc@16.3.0'
-  - '@next/swc-win32-x64-msvc@16.3.0'
 
 verifyDepsBeforeRun: install
