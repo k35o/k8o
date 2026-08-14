@@ -3,6 +3,6 @@
 // （未更新だと template-snapshot.test.ts が落ちる）。snapshotId は焼いた snapshot の ID。
 export const templateSnapshot = {
   templateHash:
-    '47f1e7768b82d3d488ecc0cca9c1e9aba4fa3a6adf0375f17be38b5505b25180',
-  snapshotId: 'snap_xkWcHP6LjshDHIy2RIrxvDEwRXOb',
+    'e62405af1f2cbc6725c5b47d79279ce0113601eb1450a1931e1cc2ea801477b1',
+  snapshotId: 'snap_SF3aqsphCJjr9nkg6BMA0KLezUcK',
 } as const;
