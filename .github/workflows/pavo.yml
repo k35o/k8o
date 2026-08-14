@@ -16,9 +16,12 @@ on:
 jobs:
   pavo:
     if: ${{ github.event_name != 'issue_comment' || startsWith(github.event.comment.body, '/pavo') }}
-    uses: k35o/pavo/.github/workflows/review.yml@6bfddd13cce00240f1768143d9ab71e845d021f6 # main
+    uses: k35o/pavo/.github/workflows/review.yml@18d66f82ac3f9c76fd4512e46c83efc7d752c9c7 # main
     with:
       instructions: default,nextjs,typescript
       extra_prompt: |
         Next.js App Router + oxlint のモノレポ。apps/main / apps/admin + packages/。
-    secrets: inherit
+    secrets:
+      K35O_BOT_CLIENT_ID: ${{ secrets.K35O_BOT_CLIENT_ID }}
+      K35O_BOT_PRIVATE_KEY: ${{ secrets.K35O_BOT_PRIVATE_KEY }}
+      CLAUDE_CODE_OAUTH_TOKEN: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
