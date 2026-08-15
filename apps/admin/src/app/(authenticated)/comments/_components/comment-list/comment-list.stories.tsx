@@ -1,17 +1,14 @@
-import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 import { expect, within } from 'storybook/test';
 
+import preview from '../../../../../../.storybook/preview';
 import { CommentList } from './comment-list';
 
-const meta: Meta<typeof CommentList> = {
+const meta = preview.meta({
   title: 'admin/comments/comment-list',
   component: CommentList,
-};
+});
 
-export default meta;
-type Story = StoryObj<typeof CommentList>;
-
-export const Primary: Story = {
+export const Primary = meta.story({
   args: {
     items: [
       {
@@ -41,9 +38,9 @@ export const Primary: Story = {
       canvas.getAllByRole('button', { name: '削除' }).length,
     ).toBeGreaterThan(0);
   },
-};
+});
 
-export const Empty: Story = {
+export const Empty = meta.story({
   args: {
     items: [],
   },
@@ -54,4 +51,4 @@ export const Empty: Story = {
       canvas.getByText('条件に一致するお問い合わせはありません'),
     ).toBeInTheDocument();
   },
-};
+});

@@ -1,13 +1,13 @@
 import { dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
-import type { StorybookConfig } from '@storybook/nextjs-vite';
+import { defineMain } from '@storybook/nextjs-vite/node';
 
 function getAbsolutePath(value: string) {
   return dirname(fileURLToPath(import.meta.resolve(`${value}/package.json`)));
 }
 
-const config: StorybookConfig = {
+export default defineMain({
   stories: ['../src/**/*.stories.tsx'],
   refs: {
     'arte-odyssey': {
@@ -26,6 +26,4 @@ const config: StorybookConfig = {
   features: {
     experimentalRSC: true,
   },
-};
-
-export default config;
+});

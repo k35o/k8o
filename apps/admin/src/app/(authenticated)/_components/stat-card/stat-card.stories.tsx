@@ -1,41 +1,38 @@
 import { ViewIcon } from '@k8o/arte-odyssey';
-import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 import { expect, within } from 'storybook/test';
 
+import preview from '../../../../../.storybook/preview';
 import { StatCard } from './stat-card';
 
-const meta: Meta<typeof StatCard> = {
+const meta = preview.meta({
   title: 'admin/stat-card',
   component: StatCard,
-};
+});
 
-export default meta;
-type Story = StoryObj<typeof StatCard>;
-
-export const Primary: Story = {
+export const Primary = meta.story({
   args: {
     label: '総閲覧数',
     value: '12,345',
   },
-};
+});
 
-export const WithDescription: Story = {
+export const WithDescription = meta.story({
   args: {
     label: '総閲覧数',
     value: '12,345',
     description: '先月比 +10%',
   },
-};
+});
 
-export const WithIcon: Story = {
+export const WithIcon = meta.story({
   args: {
     label: '総閲覧数',
     value: '12,345',
     icon: <ViewIcon size="md" />,
   },
-};
+});
 
-export const DisplaysLabel: Story = {
+export const DisplaysLabel = meta.story({
   args: {
     label: 'コメント数',
     value: '42',
@@ -46,4 +43,4 @@ export const DisplaysLabel: Story = {
     await expect(canvas.getByText('コメント数')).toBeInTheDocument();
     await expect(canvas.getByText('42')).toBeInTheDocument();
   },
-};
+});
