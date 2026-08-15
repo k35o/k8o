@@ -1,8 +1,8 @@
-import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 import { expect, fn, userEvent, within } from 'storybook/test';
 
 import type { ProjectListItem } from '@/features/projects/application/projects';
 
+import preview from '../../../../../.storybook/preview';
 import { ProjectList } from './project-list';
 
 const projects: ProjectListItem[] = [
@@ -24,15 +24,11 @@ const projects: ProjectListItem[] = [
   },
 ];
 
-const meta = {
+const meta = preview.meta({
   component: ProjectList,
-} satisfies Meta<typeof ProjectList>;
+});
 
-export default meta;
-
-type Story = StoryObj<typeof meta>;
-
-export const Empty: Story = {
+export const Empty = meta.story({
   args: {
     projects: [],
     currentProjectId: null,
@@ -44,9 +40,9 @@ export const Empty: Story = {
       canvas.getByText(/まだ保存された UI はありません/u),
     ).toBeInTheDocument();
   },
-};
+});
 
-export const WithProjects: Story = {
+export const WithProjects = meta.story({
   args: {
     projects,
     currentProjectId: 1,
@@ -59,4 +55,4 @@ export const WithProjects: Story = {
     await userEvent.click(canvas.getByText('料金プランの3カラム'));
     await expect(args.onSelect).toHaveBeenCalledWith(2);
   },
-};
+});

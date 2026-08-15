@@ -1,17 +1,13 @@
 import { CODE_SURFACE } from '@repo/code-highlight/theme';
 import type { HighlightedCode } from '@repo/code-highlight/tokenize';
-import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 import { expect, within } from 'storybook/test';
 
+import preview from '../../../../../.storybook/preview';
 import { CodeView } from './code-view';
 
-const meta = {
+const meta = preview.meta({
   component: CodeView,
-} satisfies Meta<typeof CodeView>;
-
-export default meta;
-
-type Story = StoryObj<typeof meta>;
+});
 
 // shiki を呼ばずに描画経路を検証するための最小フィクスチャ。
 const highlightedFixture: HighlightedCode = {
@@ -28,7 +24,7 @@ const highlightedFixture: HighlightedCode = {
   ],
 };
 
-export const Empty: Story = {
+export const Empty = meta.story({
   args: { code: null, highlighted: null },
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
@@ -36,9 +32,9 @@ export const Empty: Story = {
       canvas.getByText('ここに生成された TSX が表示されます'),
     ).toBeInTheDocument();
   },
-};
+});
 
-export const PlainWhileStreaming: Story = {
+export const PlainWhileStreaming = meta.story({
   args: {
     code: 'export default function Preview() {\n  return <div>hello</div>;\n}',
     highlighted: null,
@@ -49,9 +45,9 @@ export const PlainWhileStreaming: Story = {
       canvas.getByText(/export default function Preview/u),
     ).toBeInTheDocument();
   },
-};
+});
 
-export const Highlighted: Story = {
+export const Highlighted = meta.story({
   args: {
     code: 'const x = 1;',
     highlighted: highlightedFixture,
@@ -61,4 +57,4 @@ export const Highlighted: Story = {
     // トークンごとに span 分割されるため、キーワード片で確認する。
     await expect(canvas.getByText('const')).toBeInTheDocument();
   },
-};
+});
