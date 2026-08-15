@@ -1,13 +1,9 @@
-import type { Meta, StoryObj } from '@storybook/nextjs-vite';
-
+import preview from '../../../../../.storybook/preview';
 import { ExternalBlog } from './external-blog';
 
-const meta: Meta<typeof ExternalBlog> = {
+const meta = preview.meta({
   title: 'app/blog/external-blog',
   component: ExternalBlog,
-};
+});
 
-export default meta;
-type Story = StoryObj<typeof ExternalBlog>;
-
-export const Primary: Story = {};
+export const Primary = meta.story();

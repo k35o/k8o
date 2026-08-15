@@ -1,17 +1,14 @@
-import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 import { expect } from 'storybook/test';
 
+import preview from '../../../../.storybook/preview';
 import { OfflineNoticeAlert } from './offline-notice-alert';
 
-const meta: Meta<typeof OfflineNoticeAlert> = {
+const meta = preview.meta({
   title: 'app/globals/offline-notice',
   component: OfflineNoticeAlert,
-};
+});
 
-export default meta;
-type Story = StoryObj<typeof OfflineNoticeAlert>;
-
-export const Primary: Story = {
+export const Primary = meta.story({
   play: async ({ canvas }) => {
     await expect(await canvas.findByRole('alert')).toBeInTheDocument();
     await expect(
@@ -20,4 +17,4 @@ export const Primary: Story = {
       ),
     ).toBeInTheDocument();
   },
-};
+});

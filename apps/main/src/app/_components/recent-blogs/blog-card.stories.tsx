@@ -1,17 +1,14 @@
-import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 import { expect, within } from 'storybook/test';
 
+import preview from '../../../../.storybook/preview';
 import { BlogCard } from './blog-card';
 
-const meta: Meta<typeof BlogCard> = {
+const meta = preview.meta({
   title: 'app/globals/recent-blogs/blog-card',
   component: BlogCard,
-};
+});
 
-export default meta;
-type Story = StoryObj<typeof BlogCard>;
-
-export const Primary: Story = {
+export const Primary = meta.story({
   args: {
     slug: 'example-post',
     title: 'サンプル記事のタイトル',
@@ -20,9 +17,9 @@ export const Primary: Story = {
     tags: ['React', 'TypeScript'],
     createdAt: '2024-01-15T00:00:00.000Z',
   },
-};
+});
 
-export const DisplaysTitle: Story = {
+export const DisplaysTitle = meta.story({
   args: {
     slug: 'test-slug',
     title: 'テスト記事のタイトル',
@@ -37,9 +34,9 @@ export const DisplaysTitle: Story = {
       canvas.getByRole('heading', { name: 'テスト記事のタイトル' }),
     ).toBeInTheDocument();
   },
-};
+});
 
-export const DisplaysTags: Story = {
+export const DisplaysTags = meta.story({
   args: {
     slug: 'test-slug',
     title: 'テスト記事',
@@ -54,9 +51,9 @@ export const DisplaysTags: Story = {
     await expect(canvas.getByText('TypeScript')).toBeInTheDocument();
     await expect(canvas.getByText('Next.js')).toBeInTheDocument();
   },
-};
+});
 
-export const DisplaysDate: Story = {
+export const DisplaysDate = meta.story({
   args: {
     slug: 'test-slug',
     title: 'テスト記事',
@@ -69,9 +66,9 @@ export const DisplaysDate: Story = {
 
     await expect(canvas.getByText('2024年1月15日')).toBeInTheDocument();
   },
-};
+});
 
-export const HasLinkToBlog: Story = {
+export const HasLinkToBlog = meta.story({
   args: {
     slug: 'my-blog-post',
     title: 'ブログ記事リンクテスト',
@@ -85,9 +82,9 @@ export const HasLinkToBlog: Story = {
     const link = canvas.getByRole('link');
     await expect(link).toHaveAttribute('href', '/blog/my-blog-post');
   },
-};
+});
 
-export const WithoutDescription: Story = {
+export const WithoutDescription = meta.story({
   args: {
     slug: 'no-description',
     title: '説明なしの記事',
@@ -95,9 +92,9 @@ export const WithoutDescription: Story = {
     tags: ['TypeScript'],
     createdAt: '2024-02-20T00:00:00.000Z',
   },
-};
+});
 
-export const WithoutTags: Story = {
+export const WithoutTags = meta.story({
   args: {
     slug: 'no-tags',
     title: 'タグなしの記事',
@@ -105,4 +102,4 @@ export const WithoutTags: Story = {
     tags: [],
     createdAt: '2024-02-20T00:00:00.000Z',
   },
-};
+});

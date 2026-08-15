@@ -1,20 +1,17 @@
-import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 import { expect, fn, within } from 'storybook/test';
 
+import preview from '../../../../../../.storybook/preview';
 import { NavButton } from './nav-button';
 
-const meta: Meta<typeof NavButton> = {
+const meta = preview.meta({
   title: 'app/slides/slide-deck/nav-button',
   component: NavButton,
   args: {
     onAction: fn(() => undefined),
   },
-};
+});
 
-export default meta;
-type Story = StoryObj<typeof NavButton>;
-
-export const Prev: Story = {
+export const Prev = meta.story({
   args: {
     direction: 'prev',
     disabled: false,
@@ -24,9 +21,9 @@ export const Prev: Story = {
     await userEvent.click(canvas.getByRole('button', { name: '前のスライド' }));
     await expect(args.onAction).toHaveBeenCalledTimes(1);
   },
-};
+});
 
-export const Next: Story = {
+export const Next = meta.story({
   args: {
     direction: 'next',
     disabled: false,
@@ -36,9 +33,9 @@ export const Next: Story = {
     await userEvent.click(canvas.getByRole('button', { name: '次のスライド' }));
     await expect(args.onAction).toHaveBeenCalledTimes(1);
   },
-};
+});
 
-export const Disabled: Story = {
+export const Disabled = meta.story({
   args: {
     direction: 'next',
     disabled: true,
@@ -50,4 +47,4 @@ export const Disabled: Story = {
     await userEvent.click(button);
     await expect(args.onAction).not.toHaveBeenCalled();
   },
-};
+});

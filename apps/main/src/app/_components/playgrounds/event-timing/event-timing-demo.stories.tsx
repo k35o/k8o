@@ -1,11 +1,10 @@
-import type { Meta, StoryObj } from '@storybook/nextjs-vite';
-
+import preview from '../../../../../.storybook/preview';
 import { Playground } from '../playground';
 import { EventTimingDemo } from './event-timing-demo';
 
 const playgroundTitle = EventTimingDemo.name;
 
-const meta: Meta<typeof EventTimingDemo> = {
+const meta = preview.meta({
   title: 'playgrounds/event-timing/EventTimingDemo',
   component: EventTimingDemo,
   decorators: [
@@ -15,10 +14,6 @@ const meta: Meta<typeof EventTimingDemo> = {
       </Playground>
     ),
   ],
-};
+});
 
-export default meta;
-
-type Story = StoryObj<typeof EventTimingDemo>;
-
-export const Default: Story = {};
+export const Default = meta.story();

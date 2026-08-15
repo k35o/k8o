@@ -1,19 +1,16 @@
-import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 import { expect, within } from 'storybook/test';
 
+import preview from '../../../../../.storybook/preview';
 import { CheckContrast } from './check-contrast';
 
-const meta: Meta<typeof CheckContrast> = {
+const meta = preview.meta({
   title: 'app/contrast-checker/check-contrast',
   component: CheckContrast,
-};
+});
 
-export default meta;
-type Story = StoryObj<typeof CheckContrast>;
+export const Default = meta.story();
 
-export const Default: Story = {};
-
-export const InitialContrast: Story = {
+export const InitialContrast = meta.story({
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
 
@@ -23,9 +20,9 @@ export const InitialContrast: Story = {
 
     await expect(canvas.getByText('APCA Lc -107.9')).toBeInTheDocument();
   },
-};
+});
 
-export const ColorInputs: Story = {
+export const ColorInputs = meta.story({
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
 
@@ -35,4 +32,4 @@ export const ColorInputs: Story = {
     const colorInputs = canvasElement.querySelectorAll('input[type="color"]');
     await expect(colorInputs.length).toBe(2);
   },
-};
+});

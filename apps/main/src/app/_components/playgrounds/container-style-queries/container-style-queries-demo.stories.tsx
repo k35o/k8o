@@ -1,11 +1,10 @@
-import type { Meta, StoryObj } from '@storybook/nextjs-vite';
-
+import preview from '../../../../../.storybook/preview';
 import { Playground } from '../playground';
 import { ContainerStyleQueriesDemo } from './container-style-queries-demo';
 
 const playgroundTitle = ContainerStyleQueriesDemo.name;
 
-const meta: Meta<typeof ContainerStyleQueriesDemo> = {
+const meta = preview.meta({
   title: 'playgrounds/container-style-queries/ContainerStyleQueriesDemo',
   component: ContainerStyleQueriesDemo,
   decorators: [
@@ -15,10 +14,6 @@ const meta: Meta<typeof ContainerStyleQueriesDemo> = {
       </Playground>
     ),
   ],
-};
+});
 
-export default meta;
-
-type Story = StoryObj<typeof ContainerStyleQueriesDemo>;
-
-export const Default: Story = {};
+export const Default = meta.story();

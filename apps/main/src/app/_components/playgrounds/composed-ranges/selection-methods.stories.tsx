@@ -1,11 +1,10 @@
-import type { Meta, StoryObj } from '@storybook/nextjs-vite';
-
+import preview from '../../../../../.storybook/preview';
 import { Playground } from '../playground';
 import { SelectionMethods } from './selection-methods';
 
 const playgroundTitle = SelectionMethods.name;
 
-const meta: Meta<typeof SelectionMethods> = {
+const meta = preview.meta({
   title: 'playgrounds/composed-ranges/SelectionMethods',
   component: SelectionMethods,
   decorators: [
@@ -15,9 +14,6 @@ const meta: Meta<typeof SelectionMethods> = {
       </Playground>
     ),
   ],
-};
+});
 
-export default meta;
-type Story = StoryObj<typeof SelectionMethods>;
-
-export const Default: Story = {};
+export const Default = meta.story();

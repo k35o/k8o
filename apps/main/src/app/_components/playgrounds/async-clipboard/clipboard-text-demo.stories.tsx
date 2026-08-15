@@ -1,11 +1,10 @@
-import type { Meta, StoryObj } from '@storybook/nextjs-vite';
-
+import preview from '../../../../../.storybook/preview';
 import { Playground } from '../playground';
 import { ClipboardTextDemo } from './clipboard-text-demo';
 
 const playgroundTitle = ClipboardTextDemo.name;
 
-const meta: Meta<typeof ClipboardTextDemo> = {
+const meta = preview.meta({
   title: 'playgrounds/async-clipboard/ClipboardTextDemo',
   component: ClipboardTextDemo,
   decorators: [
@@ -15,9 +14,6 @@ const meta: Meta<typeof ClipboardTextDemo> = {
       </Playground>
     ),
   ],
-};
+});
 
-export default meta;
-type Story = StoryObj<typeof ClipboardTextDemo>;
-
-export const Default: Story = {};
+export const Default = meta.story();

@@ -1,9 +1,9 @@
-import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 import { expect, within } from 'storybook/test';
 
+import preview from '../../../../../../.storybook/preview';
 import { Cover } from './cover';
 
-const meta: Meta<typeof Cover> = {
+const meta = preview.meta({
   title: 'app/slides/slide-mdx/cover',
   component: Cover,
   decorators: [
@@ -16,12 +16,9 @@ const meta: Meta<typeof Cover> = {
       </div>
     ),
   ],
-};
+});
 
-export default meta;
-type Story = StoryObj<typeof Cover>;
-
-export const Primary: Story = {
+export const Primary = meta.story({
   args: {
     children: (
       <>
@@ -37,10 +34,10 @@ export const Primary: Story = {
       canvas.getByRole('heading', { level: 1, name: 'k8oのスライド機能' }),
     ).toBeInTheDocument();
   },
-};
+});
 
-export const TitleOnly: Story = {
+export const TitleOnly = meta.story({
   args: {
     children: <h1>シンプルな表紙</h1>,
   },
-};
+});

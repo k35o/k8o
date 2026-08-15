@@ -1,13 +1,9 @@
-import type { Meta, StoryObj } from '@storybook/nextjs-vite';
-
+import preview from '../../../../../.storybook/preview';
 import { PopoverDemo } from './popover-demo';
 
-const meta: Meta<typeof PopoverDemo> = {
+const meta = preview.meta({
   component: PopoverDemo,
   title: 'playgrounds/PopoverDemo',
-};
+});
 
-export default meta;
-type Story = StoryObj<typeof PopoverDemo>;
-
-export const Default: Story = {};
+export const Default = meta.story();

@@ -1,11 +1,10 @@
-import type { Meta, StoryObj } from '@storybook/nextjs-vite';
-
+import preview from '../../../../../.storybook/preview';
 import { Playground } from '../playground';
 import { UnitComparisonDemo } from './unit-comparison-demo';
 
 const playgroundTitle = UnitComparisonDemo.name;
 
-const meta: Meta<typeof UnitComparisonDemo> = {
+const meta = preview.meta({
   title: 'playgrounds/root-font-units/UnitComparisonDemo',
   component: UnitComparisonDemo,
   decorators: [
@@ -15,10 +14,6 @@ const meta: Meta<typeof UnitComparisonDemo> = {
       </Playground>
     ),
   ],
-};
+});
 
-export default meta;
-
-type Story = StoryObj<typeof UnitComparisonDemo>;
-
-export const Default: Story = {};
+export const Default = meta.story();

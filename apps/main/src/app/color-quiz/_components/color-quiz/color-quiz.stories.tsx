@@ -1,21 +1,18 @@
-import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 import { expect, within } from 'storybook/test';
 
+import preview from '../../../../../.storybook/preview';
 import { ColorQuiz } from './color-quiz';
 
-const meta: Meta<typeof ColorQuiz> = {
+const meta = preview.meta({
   title: 'app/color-quiz/color-quiz',
   component: ColorQuiz,
   // コンポーネント自体がMath.random()で出題色を生成するため、VRTの対象外にする
   parameters: { vrt: { skip: true } },
-};
+});
 
-export default meta;
-type Story = StoryObj<typeof ColorQuiz>;
+export const Primary = meta.story();
 
-export const Primary: Story = {};
-
-export const ColorToHexMode: Story = {
+export const ColorToHexMode = meta.story({
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
 
@@ -29,9 +26,9 @@ export const ColorToHexMode: Story = {
     });
     await expect(submitButton).toBeDisabled();
   },
-};
+});
 
-export const ColorToHexSubmit: Story = {
+export const ColorToHexSubmit = meta.story({
   play: async ({ canvasElement, userEvent }) => {
     const canvas = within(canvasElement);
 
@@ -54,10 +51,10 @@ export const ColorToHexSubmit: Story = {
       canvas.getByRole('button', { name: '次の問題へ' }),
     ).toBeInTheDocument();
   },
-};
+});
 
 // 選択肢が radiogroup として矢印キーで選択移動できる（selection follows focus）
-export const KeyboardSelectsOption: Story = {
+export const KeyboardSelectsOption = meta.story({
   play: async ({ canvasElement, userEvent }) => {
     const canvas = within(canvasElement);
     const panel = canvas.getByRole('tabpanel');
@@ -93,11 +90,11 @@ export const KeyboardSelectsOption: Story = {
       canvas.getByRole('button', { name: '回答する' }),
     ).toBeEnabled();
   },
-};
+});
 
 // 「次の問題へ」で回答ボタンが disabled 化してもフォーカスが body に落ちず、
 // 新しい問題の先頭選択肢へ移る
-export const FocusMovesToFirstOptionOnNext: Story = {
+export const FocusMovesToFirstOptionOnNext = meta.story({
   play: async ({ canvasElement, userEvent }) => {
     const canvas = within(canvasElement);
     const radios = within(
@@ -114,9 +111,9 @@ export const FocusMovesToFirstOptionOnNext: Story = {
     ).getAllByRole('radio');
     await expect(nextRadios[0]).toHaveFocus();
   },
-};
+});
 
-export const HexToColorMode: Story = {
+export const HexToColorMode = meta.story({
   play: async ({ canvasElement, userEvent }) => {
     const canvas = within(canvasElement);
 
@@ -132,9 +129,9 @@ export const HexToColorMode: Story = {
     });
     await expect(submitButton).toBeDisabled();
   },
-};
+});
 
-export const HexToColorSubmit: Story = {
+export const HexToColorSubmit = meta.story({
   play: async ({ canvasElement, userEvent }) => {
     const canvas = within(canvasElement);
 
@@ -160,4 +157,4 @@ export const HexToColorSubmit: Story = {
       canvas.getByRole('button', { name: '次の問題へ' }),
     ).toBeInTheDocument();
   },
-};
+});

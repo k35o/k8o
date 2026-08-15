@@ -1,11 +1,10 @@
-import type { Meta, StoryObj } from '@storybook/nextjs-vite';
-
+import preview from '../../../../../.storybook/preview';
 import { Playground } from '../playground';
 import { CrispEdgesDemo } from './crisp-edges-demo';
 
 const playgroundTitle = CrispEdgesDemo.name;
 
-const meta: Meta<typeof CrispEdgesDemo> = {
+const meta = preview.meta({
   title: 'playgrounds/crisp-edges/CrispEdgesDemo',
   component: CrispEdgesDemo,
   decorators: [
@@ -15,10 +14,6 @@ const meta: Meta<typeof CrispEdgesDemo> = {
       </Playground>
     ),
   ],
-};
+});
 
-export default meta;
-
-type Story = StoryObj<typeof CrispEdgesDemo>;
-
-export const Default: Story = {};
+export const Default = meta.story();

@@ -1,19 +1,16 @@
-import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 import { expect, within } from 'storybook/test';
 
+import preview from '../../../../.storybook/preview';
 import { ToggleTheme } from './toggle-theme';
 
-const meta: Meta<typeof ToggleTheme> = {
+const meta = preview.meta({
   title: 'app/globals/toggle-theme',
   component: ToggleTheme,
-};
+});
 
-export default meta;
-type Story = StoryObj<typeof ToggleTheme>;
+export const Primary = meta.story();
 
-export const Primary: Story = {};
-
-export const ClickToggle: Story = {
+export const ClickToggle = meta.story({
   play: async ({ canvasElement, userEvent }) => {
     const canvas = within(canvasElement);
 
@@ -25,4 +22,4 @@ export const ClickToggle: Story = {
 
     await expect(toggleButton).toBeInTheDocument();
   },
-};
+});

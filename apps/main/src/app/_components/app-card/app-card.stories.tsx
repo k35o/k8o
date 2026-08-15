@@ -1,35 +1,40 @@
-import type { Meta, StoryObj } from '@storybook/nextjs-vite';
+import type { FC, ReactNode } from 'react';
 import { expect, within } from 'storybook/test';
 
+import preview from '../../../../.storybook/preview';
 import { AppCard } from './app-card';
 
-const meta: Meta<typeof AppCard> = {
+const meta = preview.meta({
   title: 'app/globals/app-card',
-  component: AppCard,
-};
+  // linkのRoute unionはmeta.storyの型計算で "union type too complex" になるため、
+  // stringに広げた型で渡す
+  component: AppCard as FC<{
+    link: string;
+    title: string;
+    description: string;
+    icon?: ReactNode | undefined;
+  }>,
+});
 
-export default meta;
-type Story = StoryObj<typeof AppCard>;
-
-export const Primary: Story = {
+export const Primary = meta.story({
   args: {
     link: '/moji-count',
     title: 'もじカウント',
     description:
       'テキストの文字数を数えます。ひらがな・カタカナ・漢字・アルファベット・記号・絵文字など、文字の種類を問わず数えられます。',
   },
-};
+});
 
-export const External: Story = {
+export const External = meta.story({
   args: {
     link: 'https://arte-odyssey.k8o.me',
     title: 'ArteOdyssey',
     description:
       'k8o.meのデザインシステム。コンポーネントやトークンを確認できます。',
   },
-};
+});
 
-export const DisplaysTitle: Story = {
+export const DisplaysTitle = meta.story({
   args: {
     link: '/moji-count',
     title: 'テストアプリ',
@@ -42,9 +47,9 @@ export const DisplaysTitle: Story = {
       canvas.getByRole('heading', { name: 'テストアプリ' }),
     ).toBeInTheDocument();
   },
-};
+});
 
-export const DisplaysDescription: Story = {
+export const DisplaysDescription = meta.story({
   args: {
     link: '/radius-maker',
     title: 'アプリ名',
@@ -59,9 +64,9 @@ export const DisplaysDescription: Story = {
       ),
     ).toBeInTheDocument();
   },
-};
+});
 
-export const HasLink: Story = {
+export const HasLink = meta.story({
   args: {
     link: '/color-converter',
     title: 'カラーコンバーター',
@@ -73,4 +78,4 @@ export const HasLink: Story = {
     const link = canvas.getByRole('link');
     await expect(link).toHaveAttribute('href', '/color-converter');
   },
-};
+});

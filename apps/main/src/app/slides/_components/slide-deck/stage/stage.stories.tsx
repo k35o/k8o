@@ -1,9 +1,9 @@
-import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 import { expect, within } from 'storybook/test';
 
+import preview from '../../../../../../.storybook/preview';
 import { Stage } from './stage';
 
-const meta: Meta<typeof Stage> = {
+const meta = preview.meta({
   title: 'app/slides/slide-deck/stage',
   component: Stage,
   decorators: [
@@ -13,18 +13,15 @@ const meta: Meta<typeof Stage> = {
       </div>
     ),
   ],
-};
+});
 
-export default meta;
-type Story = StoryObj<typeof Stage>;
-
-export const Empty: Story = {
+export const Empty = meta.story({
   args: {
     children: null,
   },
-};
+});
 
-export const WithContent: Story = {
+export const WithContent = meta.story({
   args: {
     children: (
       <>
@@ -39,9 +36,9 @@ export const WithContent: Story = {
       canvas.getByRole('heading', { name: 'サンプル見出し' }),
     ).toBeInTheDocument();
   },
-};
+});
 
-export const WithQRCode: Story = {
+export const WithQRCode = meta.story({
   args: {
     qrUrl: 'https://k8o.me/slides/sample-deck',
     children: <h2>QR 付き</h2>,
@@ -52,4 +49,4 @@ export const WithQRCode: Story = {
       canvas.getByRole('img', { name: /QRコード/u }),
     ).toBeInTheDocument();
   },
-};
+});

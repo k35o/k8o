@@ -1,25 +1,22 @@
-import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 import { expect, fn, within } from 'storybook/test';
 
+import preview from '../../../../../.storybook/preview';
 import { BLOB_CORNERS } from '../../_utils/presets';
 import { CornerInputs } from './corner-inputs';
 
-const meta: Meta<typeof CornerInputs> = {
+const meta = preview.meta({
   title: 'app/radius-maker/corner-inputs',
   component: CornerInputs,
-};
+});
 
-export default meta;
-type Story = StoryObj<typeof CornerInputs>;
-
-export const Primary: Story = {
+export const Primary = meta.story({
   args: {
     corners: BLOB_CORNERS,
     onChangeValue: fn(() => {}),
   },
-};
+});
 
-export const InputValue: Story = {
+export const InputValue = meta.story({
   args: {
     corners: BLOB_CORNERS,
     onChangeValue: fn(() => {}),
@@ -43,4 +40,4 @@ export const InputValue: Story = {
       42,
     );
   },
-};
+});

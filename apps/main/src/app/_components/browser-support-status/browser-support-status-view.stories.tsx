@@ -1,8 +1,8 @@
-import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 import { expect, within } from 'storybook/test';
 
 import type { BrowserSupportFeature } from '@/features/browser-support/interface/queries';
 
+import preview from '../../../../.storybook/preview';
 import { BrowserSupportStatusView } from './browser-support-status-view';
 
 const allBrowsers = (version: string): BrowserSupportFeature['support'] => [
@@ -47,34 +47,31 @@ const limited: BrowserSupportFeature = {
   ],
 };
 
-const meta: Meta<typeof BrowserSupportStatusView> = {
+const meta = preview.meta({
   title: 'app/globals/browser-support-status',
   component: BrowserSupportStatusView,
   args: { feature: widely },
-};
+});
 
-export default meta;
-type Story = StoryObj<typeof BrowserSupportStatusView>;
-
-export const Widely: Story = {
+export const Widely = meta.story({
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
     await expect(canvas.getByText('Widely available')).toBeInTheDocument();
     await expect(canvas.getByText('Popover API')).toBeInTheDocument();
     await expect(canvas.getByText('2024年〜')).toBeInTheDocument();
   },
-};
+});
 
-export const Newly: Story = {
+export const Newly = meta.story({
   args: { feature: newly },
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
     await expect(canvas.getByText('Newly available')).toBeInTheDocument();
     await expect(canvas.getByText('Iterator.concat()')).toBeInTheDocument();
   },
-};
+});
 
-export const Limited: Story = {
+export const Limited = meta.story({
   args: { feature: limited },
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
@@ -82,4 +79,4 @@ export const Limited: Story = {
     await expect(canvas.getByText('Safari')).toBeInTheDocument();
     await expect(canvas.getAllByText('未対応').length).toBeGreaterThan(0);
   },
-};
+});

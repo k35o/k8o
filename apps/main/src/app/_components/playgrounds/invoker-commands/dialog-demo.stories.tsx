@@ -1,13 +1,9 @@
-import type { Meta, StoryObj } from '@storybook/nextjs-vite';
-
+import preview from '../../../../../.storybook/preview';
 import { DialogDemo } from './dialog-demo';
 
-const meta: Meta<typeof DialogDemo> = {
+const meta = preview.meta({
   component: DialogDemo,
   title: 'playgrounds/DialogDemo',
-};
+});
 
-export default meta;
-type Story = StoryObj<typeof DialogDemo>;
-
-export const Default: Story = {};
+export const Default = meta.story();

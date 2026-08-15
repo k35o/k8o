@@ -1,11 +1,10 @@
-import type { Meta, StoryObj } from '@storybook/nextjs-vite';
-
+import preview from '../../../../../.storybook/preview';
 import { Playground } from '../playground';
 import { TextIndentKeywordsDemo } from './text-indent-keywords-demo';
 
 const playgroundTitle = TextIndentKeywordsDemo.name;
 
-const meta: Meta<typeof TextIndentKeywordsDemo> = {
+const meta = preview.meta({
   title: 'playgrounds/text-indent-keywords/TextIndentKeywordsDemo',
   component: TextIndentKeywordsDemo,
   decorators: [
@@ -15,10 +14,6 @@ const meta: Meta<typeof TextIndentKeywordsDemo> = {
       </Playground>
     ),
   ],
-};
+});
 
-export default meta;
-
-type Story = StoryObj<typeof TextIndentKeywordsDemo>;
-
-export const Default: Story = {};
+export const Default = meta.story();

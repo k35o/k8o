@@ -1,22 +1,18 @@
-import type { Meta, StoryObj } from '@storybook/nextjs-vite';
-
+import preview from '../../../../.storybook/preview';
 import { ContactToMe } from './contact-to-me';
 
-const meta: Meta<typeof ContactToMe> = {
+const meta = preview.meta({
   title: 'app/globals/contact-to-me',
   component: ContactToMe,
-};
+});
 
-export default meta;
-type Story = StoryObj<typeof ContactToMe>;
+export const Primary = meta.story();
 
-export const Primary: Story = {};
-
-export const Open: Story = {
+export const Open = meta.story({
   play: ({ canvas }) => {
     const button = canvas.getByRole('button', {
       name: 'お問い合わせ',
     });
     button.click();
   },
-};
+});

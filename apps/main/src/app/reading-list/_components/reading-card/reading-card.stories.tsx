@@ -1,9 +1,9 @@
-import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 import { expect, within } from 'storybook/test';
 
+import preview from '../../../../../.storybook/preview';
 import { ReadingCard } from './reading-card';
 
-const meta: Meta<typeof ReadingCard> = {
+const meta = preview.meta({
   title: 'app/reading-list/reading-card',
   component: ReadingCard,
   args: {
@@ -18,12 +18,9 @@ const meta: Meta<typeof ReadingCard> = {
     summaryGaveUp: false,
     sourceTitle: 'Zenn',
   },
-};
+});
 
-export default meta;
-type Story = StoryObj<typeof ReadingCard>;
-
-export const WithSummary: Story = {
+export const WithSummary = meta.story({
   args: {
     summary:
       '型安全なルーティングを提供するTanStack Routerの入門記事。ファイルベースルーティング、検索パラメータの型付け、データローダー、コード分割、認証ガードまで、実プロジェクトで必要になる要素を一通り順を追って解説している。Next.jsやReact Routerからの移行も具体例つきで触れられている。',
@@ -41,9 +38,9 @@ export const WithSummary: Story = {
     ).toBeInTheDocument();
     await expect(canvas.getByText('Zenn')).toBeInTheDocument();
   },
-};
+});
 
-export const AutoGenerateOnView: Story = {
+export const AutoGenerateOnView = meta.story({
   args: {
     summary: null,
   },
@@ -57,17 +54,17 @@ export const AutoGenerateOnView: Story = {
       await canvas.findByText(/モック要約：型安全なルーティングを提供する/u),
     ).toBeInTheDocument();
   },
-};
+});
 
-export const NoImage: Story = {
+export const NoImage = meta.story({
   args: {
     imageUrl: null,
     summary:
       '型安全なルーティングを提供するTanStack Routerの入門記事。実プロジェクトで必要になる要素を一通り解説している。',
   },
-};
+});
 
-export const SummaryGaveUp: Story = {
+export const SummaryGaveUp = meta.story({
   args: {
     summary: null,
     summaryGaveUp: true,
@@ -83,4 +80,4 @@ export const SummaryGaveUp: Story = {
     await expect(canvas.queryByText('AI要約を生成中…')).not.toBeInTheDocument();
     await expect(canvas.queryByText('AI要約')).not.toBeInTheDocument();
   },
-};
+});

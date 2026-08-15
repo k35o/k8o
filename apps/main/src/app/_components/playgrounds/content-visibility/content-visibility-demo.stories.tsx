@@ -1,11 +1,10 @@
-import type { Meta, StoryObj } from '@storybook/nextjs-vite';
-
+import preview from '../../../../../.storybook/preview';
 import { Playground } from '../playground';
 import { ContentVisibilityDemo } from './content-visibility-demo';
 
 const playgroundTitle = ContentVisibilityDemo.name;
 
-const meta: Meta<typeof ContentVisibilityDemo> = {
+const meta = preview.meta({
   title: 'playgrounds/content-visibility/ContentVisibilityDemo',
   component: ContentVisibilityDemo,
   decorators: [
@@ -15,9 +14,6 @@ const meta: Meta<typeof ContentVisibilityDemo> = {
       </Playground>
     ),
   ],
-};
+});
 
-export default meta;
-type Story = StoryObj<typeof ContentVisibilityDemo>;
-
-export const Default: Story = {};
+export const Default = meta.story();

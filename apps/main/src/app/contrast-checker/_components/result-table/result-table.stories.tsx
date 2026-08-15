@@ -1,16 +1,12 @@
-import type { Meta, StoryObj } from '@storybook/nextjs-vite';
-
+import preview from '../../../../../.storybook/preview';
 import { ResultTable } from './result-table';
 
-const meta: Meta<typeof ResultTable> = {
+const meta = preview.meta({
   title: 'app/contrast-checker/result-table',
   component: ResultTable,
-};
+});
 
-export default meta;
-type Story = StoryObj<typeof ResultTable>;
-
-export const Valid: Story = {
+export const Valid = meta.story({
   args: {
     isInvalidAaLargeText: false,
     isInvalidAaaLargeText: false,
@@ -19,9 +15,9 @@ export const Valid: Story = {
     compareColor: '#000000',
     baseColor: '#2dd4bf',
   },
-};
+});
 
-export const Invalid: Story = {
+export const Invalid = meta.story({
   args: {
     isInvalidAaLargeText: true,
     isInvalidAaaLargeText: true,
@@ -30,9 +26,9 @@ export const Invalid: Story = {
     compareColor: '#000000',
     baseColor: '#2dd4bf',
   },
-};
+});
 
-export const ValidOnlyAA: Story = {
+export const ValidOnlyAA = meta.story({
   args: {
     isInvalidAaLargeText: false,
     isInvalidAaaLargeText: true,
@@ -41,4 +37,4 @@ export const ValidOnlyAA: Story = {
     compareColor: '#000000',
     baseColor: '#2dd4bf',
   },
-};
+});

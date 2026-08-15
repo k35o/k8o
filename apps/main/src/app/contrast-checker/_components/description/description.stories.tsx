@@ -1,13 +1,9 @@
-import type { Meta, StoryObj } from '@storybook/nextjs-vite';
-
+import preview from '../../../../../.storybook/preview';
 import { Description } from './description';
 
-const meta: Meta<typeof Description> = {
+const meta = preview.meta({
   title: 'app/contrast-checker/description',
   component: Description,
-};
+});
 
-export default meta;
-type Story = StoryObj<typeof Description>;
-
-export const Default: Story = {};
+export const Default = meta.story();

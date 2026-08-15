@@ -1,9 +1,9 @@
-import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 import { expect, fn, within } from 'storybook/test';
 
+import preview from '../../../../../.storybook/preview';
 import { PaletteControls } from './palette-controls';
 
-const meta: Meta<typeof PaletteControls> = {
+const meta = preview.meta({
   title: 'app/palette-maker/palette-controls',
   component: PaletteControls,
   args: {
@@ -15,12 +15,9 @@ const meta: Meta<typeof PaletteControls> = {
     onNameChange: fn(() => {}),
     onBaseColorChange: fn(() => {}),
   },
-};
+});
 
-export default meta;
-type Story = StoryObj<typeof PaletteControls>;
-
-export const Primary: Story = {
+export const Primary = meta.story({
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
     const sliders = canvas.getAllByRole('slider');
@@ -29,9 +26,9 @@ export const Primary: Story = {
       canvas.getByRole('textbox', { name: 'トークン名' }),
     ).toHaveValue('primary');
   },
-};
+});
 
-export const ChangeHue: Story = {
+export const ChangeHue = meta.story({
   play: async ({ args, canvasElement, userEvent }) => {
     const canvas = within(canvasElement);
     const input = canvas.getByRole('spinbutton', { name: '色相 (H)' });
@@ -39,9 +36,9 @@ export const ChangeHue: Story = {
     await userEvent.keyboard('{ArrowUp}');
     await expect(args.onHueChange).toHaveBeenLastCalledWith(251);
   },
-};
+});
 
-export const RenameToken: Story = {
+export const RenameToken = meta.story({
   play: async ({ args, canvasElement, userEvent }) => {
     const canvas = within(canvasElement);
     const input = canvas.getByRole('textbox', { name: 'トークン名' });
@@ -49,9 +46,9 @@ export const RenameToken: Story = {
     await userEvent.type(input, 'brand');
     await expect(args.onNameChange).toHaveBeenLastCalledWith('brand');
   },
-};
+});
 
-export const InvalidTokenName: Story = {
+export const InvalidTokenName = meta.story({
   play: async ({ args, canvasElement, userEvent }) => {
     const canvas = within(canvasElement);
     const input = canvas.getByRole('textbox', { name: 'トークン名' });
@@ -64,9 +61,9 @@ export const InvalidTokenName: Story = {
     ).toBeInTheDocument();
     await expect(args.onNameChange).not.toHaveBeenCalled();
   },
-};
+});
 
-export const PasteBaseColor: Story = {
+export const PasteBaseColor = meta.story({
   play: async ({ args, canvasElement, userEvent }) => {
     const canvas = within(canvasElement);
     const input = canvas.getByRole('textbox', { name: '基準色から取り込む' });
@@ -78,9 +75,9 @@ export const PasteBaseColor: Story = {
       alpha: 1,
     });
   },
-};
+});
 
-export const InvalidBaseColor: Story = {
+export const InvalidBaseColor = meta.story({
   play: async ({ canvasElement, userEvent }) => {
     const canvas = within(canvasElement);
     const input = canvas.getByRole('textbox', { name: '基準色から取り込む' });
@@ -89,4 +86,4 @@ export const InvalidBaseColor: Story = {
       await canvas.findByText('認識できない色形式です'),
     ).toBeInTheDocument();
   },
-};
+});

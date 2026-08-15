@@ -1,17 +1,14 @@
-import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 import { expect, within } from 'storybook/test';
 
+import preview from '../../../../../.storybook/preview';
 import { SlideCard } from './slide-card';
 
-const meta: Meta<typeof SlideCard> = {
+const meta = preview.meta({
   title: 'app/slides/slide-card',
   component: SlideCard,
-};
+});
 
-export default meta;
-type Story = StoryObj<typeof SlideCard>;
-
-export const Primary: Story = {
+export const Primary = meta.story({
   args: {
     slug: 'sample-deck',
     tags: ['React', 'TypeScript'],
@@ -20,9 +17,9 @@ export const Primary: Story = {
     createdAt: '2026-05-15T00:00:00.000Z',
     updatedAt: '2026-05-15T00:00:00.000Z',
   },
-};
+});
 
-export const HasLinkToSlide: Story = {
+export const HasLinkToSlide = meta.story({
   args: {
     slug: 'sample-deck',
     tags: [],
@@ -36,4 +33,4 @@ export const HasLinkToSlide: Story = {
     const link = canvas.getByRole('link');
     await expect(link).toHaveAttribute('href', '/slides/sample-deck');
   },
-};
+});

@@ -1,11 +1,10 @@
-import type { Meta, StoryObj } from '@storybook/nextjs-vite';
-
+import preview from '../../../../../.storybook/preview';
 import { Playground } from '../playground';
 import { ShapeFunctionDemo } from './shape-function-demo';
 
 const playgroundTitle = ShapeFunctionDemo.name;
 
-const meta: Meta<typeof ShapeFunctionDemo> = {
+const meta = preview.meta({
   title: 'playgrounds/shape-function/ShapeFunctionDemo',
   component: ShapeFunctionDemo,
   decorators: [
@@ -15,10 +14,6 @@ const meta: Meta<typeof ShapeFunctionDemo> = {
       </Playground>
     ),
   ],
-};
+});
 
-export default meta;
-
-type Story = StoryObj<typeof ShapeFunctionDemo>;
-
-export const Default: Story = {};
+export const Default = meta.story();

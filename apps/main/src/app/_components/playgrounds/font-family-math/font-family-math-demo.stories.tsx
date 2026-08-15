@@ -1,11 +1,10 @@
-import type { Meta, StoryObj } from '@storybook/nextjs-vite';
-
+import preview from '../../../../../.storybook/preview';
 import { Playground } from '../playground';
 import { FontFamilyMathDemo } from './font-family-math-demo';
 
 const playgroundTitle = FontFamilyMathDemo.name;
 
-const meta: Meta<typeof FontFamilyMathDemo> = {
+const meta = preview.meta({
   title: 'playgrounds/font-family-math/FontFamilyMathDemo',
   component: FontFamilyMathDemo,
   // font-family: math のシステム数式フォントはheadless環境で解決が
@@ -18,10 +17,6 @@ const meta: Meta<typeof FontFamilyMathDemo> = {
       </Playground>
     ),
   ],
-};
+});
 
-export default meta;
-
-type Story = StoryObj<typeof FontFamilyMathDemo>;
-
-export const Default: Story = {};
+export const Default = meta.story();

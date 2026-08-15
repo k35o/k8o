@@ -1,13 +1,9 @@
-import type { Meta, StoryObj } from '@storybook/nextjs-vite';
-
+import preview from '../../../../../.storybook/preview';
 import { Background } from './background';
 
-const meta: Meta<typeof Background> = {
+const meta = preview.meta({
   title: 'app/globals/global-layout/background',
   component: Background,
-};
+});
 
-export default meta;
-type Story = StoryObj<typeof Background>;
-
-export const Primary: Story = {};
+export const Primary = meta.story();

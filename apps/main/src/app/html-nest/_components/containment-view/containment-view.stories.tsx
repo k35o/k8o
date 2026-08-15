@@ -1,6 +1,6 @@
-import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 import { fn } from 'storybook/test';
 
+import preview from '../../../../../.storybook/preview';
 import { getElement } from '../../_utils/content-model';
 import { ContainmentView } from './containment-view';
 
@@ -12,19 +12,16 @@ const elementOf = (tag: string) => {
   return element;
 };
 
-const meta: Meta<typeof ContainmentView> = {
+const meta = preview.meta({
   title: 'app/html-nest/containment-view',
   component: ContainmentView,
   args: {
     onSelect: fn(() => {}),
   },
-};
+});
 
-export default meta;
-type Story = StoryObj<typeof ContainmentView>;
-
-export const Div: Story = { args: { element: elementOf('div') } };
-export const ListUl: Story = { args: { element: elementOf('ul') } };
-export const VoidImg: Story = { args: { element: elementOf('img') } };
-export const TransparentA: Story = { args: { element: elementOf('a') } };
-export const RootHtml: Story = { args: { element: elementOf('html') } };
+export const Div = meta.story({ args: { element: elementOf('div') } });
+export const ListUl = meta.story({ args: { element: elementOf('ul') } });
+export const VoidImg = meta.story({ args: { element: elementOf('img') } });
+export const TransparentA = meta.story({ args: { element: elementOf('a') } });
+export const RootHtml = meta.story({ args: { element: elementOf('html') } });

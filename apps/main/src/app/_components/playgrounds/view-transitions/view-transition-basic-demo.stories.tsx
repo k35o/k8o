@@ -1,11 +1,10 @@
-import type { Meta, StoryObj } from '@storybook/nextjs-vite';
-
+import preview from '../../../../../.storybook/preview';
 import { Playground } from '../playground';
 import { ViewTransitionBasicDemo } from './view-transition-basic-demo';
 
 const playgroundTitle = ViewTransitionBasicDemo.name;
 
-const meta: Meta<typeof ViewTransitionBasicDemo> = {
+const meta = preview.meta({
   title: 'playgrounds/view-transitions/ViewTransitionBasicDemo',
   component: ViewTransitionBasicDemo,
   decorators: [
@@ -15,10 +14,6 @@ const meta: Meta<typeof ViewTransitionBasicDemo> = {
       </Playground>
     ),
   ],
-};
+});
 
-export default meta;
-
-type Story = StoryObj<typeof ViewTransitionBasicDemo>;
-
-export const Default: Story = {};
+export const Default = meta.story();

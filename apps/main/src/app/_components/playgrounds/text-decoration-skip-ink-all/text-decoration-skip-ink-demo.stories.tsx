@@ -1,11 +1,10 @@
-import type { Meta, StoryObj } from '@storybook/nextjs-vite';
-
+import preview from '../../../../../.storybook/preview';
 import { Playground } from '../playground';
 import { TextDecorationSkipInkDemo } from './text-decoration-skip-ink-demo';
 
 const playgroundTitle = TextDecorationSkipInkDemo.name;
 
-const meta: Meta<typeof TextDecorationSkipInkDemo> = {
+const meta = preview.meta({
   title: 'playgrounds/text-decoration-skip-ink-all/TextDecorationSkipInkDemo',
   component: TextDecorationSkipInkDemo,
   decorators: [
@@ -15,10 +14,6 @@ const meta: Meta<typeof TextDecorationSkipInkDemo> = {
       </Playground>
     ),
   ],
-};
+});
 
-export default meta;
-
-type Story = StoryObj<typeof TextDecorationSkipInkDemo>;
-
-export const Default: Story = {};
+export const Default = meta.story();

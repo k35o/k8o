@@ -1,11 +1,10 @@
-import type { Meta, StoryObj } from '@storybook/nextjs-vite';
-
+import preview from '../../../../../.storybook/preview';
 import { Playground } from '../playground';
 import { PopoverApiDemo } from './popover-api-demo';
 
 const playgroundTitle = PopoverApiDemo.name;
 
-const meta: Meta<typeof PopoverApiDemo> = {
+const meta = preview.meta({
   title: 'playgrounds/popover/PopoverApiDemo',
   component: PopoverApiDemo,
   decorators: [
@@ -15,9 +14,6 @@ const meta: Meta<typeof PopoverApiDemo> = {
       </Playground>
     ),
   ],
-};
+});
 
-export default meta;
-type Story = StoryObj<typeof PopoverApiDemo>;
-
-export const Default: Story = {};
+export const Default = meta.story();

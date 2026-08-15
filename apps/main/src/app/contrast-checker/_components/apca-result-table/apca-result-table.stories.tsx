@@ -1,23 +1,20 @@
-import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 import { expect, within } from 'storybook/test';
 
+import preview from '../../../../../.storybook/preview';
 import { ApcaResultTable } from './apca-result-table';
 
-const meta: Meta<typeof ApcaResultTable> = {
+const meta = preview.meta({
   title: 'app/contrast-checker/apca-result-table',
   component: ApcaResultTable,
-};
+});
 
-export default meta;
-type Story = StoryObj<typeof ApcaResultTable>;
-
-export const AllValid: Story = {
+export const AllValid = meta.story({
   args: {
     lc: 100,
   },
-};
+});
 
-export const PartiallyValid: Story = {
+export const PartiallyValid = meta.story({
   args: {
     lc: 63,
   },
@@ -29,15 +26,15 @@ export const PartiallyValid: Story = {
     await expect(canvas.getAllByText('OK')).toHaveLength(8);
     await expect(canvas.getAllByText('NG')).toHaveLength(4);
   },
-};
+});
 
-export const AllInvalid: Story = {
+export const AllInvalid = meta.story({
   args: {
     lc: 10,
   },
-};
+});
 
-export const NegativeLc: Story = {
+export const NegativeLc = meta.story({
   args: {
     lc: -80,
   },
@@ -48,4 +45,4 @@ export const NegativeLc: Story = {
     await expect(canvas.getAllByText('OK')).toHaveLength(10);
     await expect(canvas.getAllByText('NG')).toHaveLength(2);
   },
-};
+});

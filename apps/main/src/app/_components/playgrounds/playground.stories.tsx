@@ -1,17 +1,14 @@
 import { Button } from '@k8o/arte-odyssey';
-import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 import { useState } from 'react';
 import type { FC } from 'react';
 
+import preview from '../../../../.storybook/preview';
 import { Playground } from './playground';
 
-const meta: Meta<typeof Playground> = {
+const meta = preview.meta({
   title: 'playgrounds/Playground',
   component: Playground,
-};
-
-export default meta;
-type Story = StoryObj<typeof Playground>;
+});
 
 const Counter: FC = () => {
   const [count, setCount] = useState(0);
@@ -30,18 +27,18 @@ const Counter: FC = () => {
   );
 };
 
-export const Primary: Story = {
+export const Primary = meta.story({
   args: {
     title: 'Counterのサンプル',
     children: <Counter />,
   },
-};
+});
 
-export const WithDescription: Story = {
+export const WithDescription = meta.story({
   args: {
     title: 'Counterのサンプル',
     description:
       'ボタンを押すとカウントが1ずつ増えます。デモの説明文はタイトルの下に表示されます。',
     children: <Counter />,
   },
-};
+});

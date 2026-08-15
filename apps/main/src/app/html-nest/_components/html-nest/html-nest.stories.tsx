@@ -1,19 +1,16 @@
-import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 import { expect, within } from 'storybook/test';
 
+import preview from '../../../../../.storybook/preview';
 import { HtmlNest } from './html-nest';
 
-const meta: Meta<typeof HtmlNest> = {
+const meta = preview.meta({
   title: 'app/html-nest/html-nest',
   component: HtmlNest,
-};
+});
 
-export default meta;
-type Story = StoryObj<typeof HtmlNest>;
+export const Default = meta.story();
 
-export const Default: Story = {};
-
-export const ShowsContainment: Story = {
+export const ShowsContainment = meta.story({
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
 
@@ -26,9 +23,9 @@ export const ShowsContainment: Story = {
       canvas.getByText('汎用のブロックレベルコンテナ。'),
     ).toBeInTheDocument();
   },
-};
+});
 
-export const NavigateByChip: Story = {
+export const NavigateByChip = meta.story({
   play: async ({ canvasElement, userEvent }) => {
     const canvas = within(canvasElement);
 
@@ -40,4 +37,4 @@ export const NavigateByChip: Story = {
       canvas.getByText('SVGベクターグラフィックの埋め込み要素。'),
     ).toBeInTheDocument();
   },
-};
+});

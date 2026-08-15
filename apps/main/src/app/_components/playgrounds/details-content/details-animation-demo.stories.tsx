@@ -1,11 +1,10 @@
-import type { Meta, StoryObj } from '@storybook/nextjs-vite';
-
+import preview from '../../../../../.storybook/preview';
 import { Playground } from '../playground';
 import { DetailsAnimationDemo } from './details-animation-demo';
 
 const playgroundTitle = DetailsAnimationDemo.name;
 
-const meta: Meta<typeof DetailsAnimationDemo> = {
+const meta = preview.meta({
   title: 'playgrounds/details-content/DetailsAnimationDemo',
   component: DetailsAnimationDemo,
   decorators: [
@@ -15,9 +14,6 @@ const meta: Meta<typeof DetailsAnimationDemo> = {
       </Playground>
     ),
   ],
-};
+});
 
-export default meta;
-type Story = StoryObj<typeof DetailsAnimationDemo>;
-
-export const Default: Story = {};
+export const Default = meta.story();

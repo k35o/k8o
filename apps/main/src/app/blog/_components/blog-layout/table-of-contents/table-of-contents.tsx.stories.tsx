@@ -1,16 +1,12 @@
-import type { Meta, StoryObj } from '@storybook/nextjs-vite';
-
+import preview from '../../../../../../.storybook/preview';
 import { TableOfContents } from './table-of-contents';
 
-const meta: Meta<typeof TableOfContents> = {
+const meta = preview.meta({
   title: 'app/blog/blog-layout/table-of-contents',
   component: TableOfContents,
-};
+});
 
-export default meta;
-type Story = StoryObj<typeof TableOfContents>;
-
-export const Primary: Story = {
+export const Primary = meta.story({
   args: {
     headingTree: {
       depth: 0,
@@ -64,4 +60,4 @@ export const Primary: Story = {
       ],
     },
   },
-};
+});

@@ -1,11 +1,10 @@
-import type { Meta, StoryObj } from '@storybook/nextjs-vite';
-
+import preview from '../../../../../.storybook/preview';
 import { Playground } from '../playground';
 import { CaretPositionDemo } from './caret-position-demo';
 
 const playgroundTitle = CaretPositionDemo.name;
 
-const meta: Meta<typeof CaretPositionDemo> = {
+const meta = preview.meta({
   title: 'playgrounds/caret-position-from-point/CaretPositionDemo',
   component: CaretPositionDemo,
   // ヒント行の「↑」記号のフォント解決が走行ごとに揺れる（Noto Sans JPの
@@ -18,10 +17,6 @@ const meta: Meta<typeof CaretPositionDemo> = {
       </Playground>
     ),
   ],
-};
+});
 
-export default meta;
-
-type Story = StoryObj<typeof CaretPositionDemo>;
-
-export const Default: Story = {};
+export const Default = meta.story();

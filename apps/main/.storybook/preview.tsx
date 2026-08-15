@@ -1,11 +1,20 @@
 import { cn } from '@repo/helpers/cn';
-import type { Preview } from '@storybook/nextjs-vite';
-import { initialize, mswLoader } from 'msw-storybook-addon';
+import addonA11y from '@storybook/addon-a11y';
+// root entry ('@storybook/addon-docs') は 'mdx/types' への module augmentation で
+// @types/mdx の JSX 参照を React の JSX.Element に差し替え、アプリ側の
+// mdx-components / mdx-parts の型付けを壊す。augmentation を持たない
+// preview entry から素の annotations を読み込んで合成する
+import * as addonDocs from '@storybook/addon-docs/preview';
+import { definePreview } from '@storybook/nextjs-vite';
+import addonMsw from 'msw-storybook-addon';
+import { setupWorker } from 'msw/browser';
 import { useTheme } from 'next-themes';
 import Script from 'next/script';
 import { NuqsTestingAdapter } from 'nuqs/adapters/testing';
 import { memo, useEffect } from 'react';
 import type { FC } from 'react';
+import addonDeterminism from 'storybook-addon-determinism';
+import addonMockDate from 'storybook-addon-mock-date';
 import { sb } from 'storybook/test';
 
 import { Background } from '../src/app/_components/global-layout/background/background';
@@ -22,14 +31,6 @@ sb.mock(import('./../src/features/contact/interface/actions.ts'));
 sb.mock(import('./../src/features/blog/interface/actions.ts'));
 sb.mock(import('./../src/features/reading-list/interface/article-actions.ts'));
 
-initialize(
-  {
-    onUnhandledRequest: 'bypass',
-    quiet: true,
-  },
-  handlers,
-);
-
 const ApplyThemeByStorybook: FC<{ theme: string }> = memo(
   function ApplyThemeByStorybook({ theme }) {
     const { theme: currentTheme, setTheme } = useTheme();
@@ -44,7 +45,7 @@ const ApplyThemeByStorybook: FC<{ theme: string }> = memo(
   },
 );
 
-const preview: Preview = {
+export default definePreview({
   globalTypes: {
     theme: {
       description: 'Toggle Color Theme.',
@@ -59,8 +60,8 @@ const preview: Preview = {
       },
     },
   },
+
   loaders: [
-    mswLoader,
     // M PLUS 2はfont-display: swapのため、初回ペイントまでにロードが
     // 間に合わないとフォールバック表示になり、VRTのスクリーンショットが
     // 揺れる。Story描画前に登録済みフォントをすべてロードして折り返し
@@ -71,8 +72,9 @@ const preview: Preview = {
       );
     },
   ],
+
   parameters: {
-    backgrounds: { disabled: true },
+    backgrounds: { disable: true },
     layout: 'fullscreen',
     // Math.random/crypto をシードして VRT を決定的にする。mockingDate と違い
     // 例外を投げないため、全Storyでグローバルに有効化して問題ない
@@ -95,6 +97,7 @@ const preview: Preview = {
       },
     },
   },
+
   decorators: [
     function WithAppProvider(Story, { globals, parameters }) {
       return (
@@ -116,12 +119,24 @@ const preview: Preview = {
             </NuqsTestingAdapter>
           </div>
           <ApplyThemeByStorybook
-            theme={(parameters.theme ?? globals.theme ?? 'light') as string}
+            theme={
+              (parameters['theme'] ?? globals['theme'] ?? 'light') as string
+            }
           />
         </AppProvider>
       );
     },
   ],
-};
 
-export default preview;
+  addons: [
+    addonA11y(),
+    addonDocs,
+    addonMsw(async () => {
+      const worker = setupWorker(...handlers);
+      await worker.start({ onUnhandledRequest: 'bypass', quiet: true });
+      return worker;
+    }),
+    addonMockDate(),
+    addonDeterminism(),
+  ],
+});

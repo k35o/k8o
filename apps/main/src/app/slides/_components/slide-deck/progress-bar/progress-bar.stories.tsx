@@ -1,23 +1,19 @@
-import type { Meta, StoryObj } from '@storybook/nextjs-vite';
-
+import preview from '../../../../../../.storybook/preview';
 import { ProgressBar } from './progress-bar';
 
-const meta: Meta<typeof ProgressBar> = {
+const meta = preview.meta({
   title: 'app/slides/slide-deck/progress-bar',
   component: ProgressBar,
-};
+});
 
-export default meta;
-type Story = StoryObj<typeof ProgressBar>;
-
-export const Start: Story = {
+export const Start = meta.story({
   args: { current: 0, total: 5 },
-};
+});
 
-export const Middle: Story = {
+export const Middle = meta.story({
   args: { current: 2, total: 5 },
-};
+});
 
-export const End: Story = {
+export const End = meta.story({
   args: { current: 4, total: 5 },
-};
+});

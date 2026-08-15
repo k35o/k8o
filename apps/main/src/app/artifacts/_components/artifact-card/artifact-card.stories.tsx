@@ -1,17 +1,14 @@
-import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 import { expect, within } from 'storybook/test';
 
+import preview from '../../../../../.storybook/preview';
 import { ArtifactCard } from './artifact-card';
 
-const meta: Meta<typeof ArtifactCard> = {
+const meta = preview.meta({
   title: 'app/artifacts/artifact-card',
   component: ArtifactCard,
-};
+});
 
-export default meta;
-type Story = StoryObj<typeof ArtifactCard>;
-
-export const Primary: Story = {
+export const Primary = meta.story({
   args: {
     name: 'skills',
     description: 'ClaudeやCodexなどで使う自分用のAIエージェント向けskills集。',
@@ -20,9 +17,9 @@ export const Primary: Story = {
     npmPackageName: null,
     tags: ['AI Agent', 'Skills'],
   },
-};
+});
 
-export const WithoutNpm: Story = {
+export const WithoutNpm = meta.story({
   args: {
     name: 'dotfiles',
     description: '日々の開発環境を整えるためのdotfilesとセットアップ群。',
@@ -31,9 +28,9 @@ export const WithoutNpm: Story = {
     npmPackageName: null,
     tags: ['Shell', 'CLI', 'macOS'],
   },
-};
+});
 
-export const DisplaysName: Story = {
+export const DisplaysName = meta.story({
   args: {
     name: 'ArteOdyssey',
     description:
@@ -50,9 +47,9 @@ export const DisplaysName: Story = {
       canvas.getByRole('heading', { name: 'ArteOdyssey' }),
     ).toBeInTheDocument();
   },
-};
+});
 
-export const DisplaysDescription: Story = {
+export const DisplaysDescription = meta.story({
   args: {
     name: 'better-css-modules',
     description: 'CSS Modulesを扱いやすくするための実験的なツール。',
@@ -68,9 +65,9 @@ export const DisplaysDescription: Story = {
       canvas.getByText('CSS Modulesを扱いやすくするための実験的なツール。'),
     ).toBeInTheDocument();
   },
-};
+});
 
-export const DisplaysTags: Story = {
+export const DisplaysTags = meta.story({
   args: {
     name: 'renovate-config',
     description: 'Renovateの設定を共通化するためのconfigリポジトリ。',
@@ -86,9 +83,9 @@ export const DisplaysTags: Story = {
     await expect(canvas.getByText('Config')).toBeInTheDocument();
     await expect(canvas.getByText('Automation')).toBeInTheDocument();
   },
-};
+});
 
-export const HasGitHubLink: Story = {
+export const HasGitHubLink = meta.story({
   args: {
     name: 'skills',
     description: 'ClaudeやCodexなどで使う自分用のAIエージェント向けskills集。',
@@ -107,9 +104,9 @@ export const HasGitHubLink: Story = {
       'https://github.com/k35o/skills',
     );
   },
-};
+});
 
-export const NoNpmLink: Story = {
+export const NoNpmLink = meta.story({
   args: {
     name: 'dotfiles',
     description: '日々の開発環境を整えるためのdotfilesとセットアップ群。',
@@ -125,9 +122,9 @@ export const NoNpmLink: Story = {
       canvas.queryByRole('link', { name: 'npmで見る' }),
     ).not.toBeInTheDocument();
   },
-};
+});
 
-export const HasWebsiteLink: Story = {
+export const HasWebsiteLink = meta.story({
   args: {
     name: 'ArteOdyssey',
     description:
@@ -147,4 +144,4 @@ export const HasWebsiteLink: Story = {
       'https://arte-odyssey.k8o.me/',
     );
   },
-};
+});

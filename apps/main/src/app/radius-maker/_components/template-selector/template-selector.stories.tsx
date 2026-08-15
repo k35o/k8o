@@ -1,25 +1,22 @@
-import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 import { expect, fn, within } from 'storybook/test';
 
+import preview from '../../../../../.storybook/preview';
 import { BLOB_CORNERS, RADIUS_PRESETS } from '../../_utils/presets';
 import { TemplateSelector } from './template-selector';
 
-const meta: Meta<typeof TemplateSelector> = {
+const meta = preview.meta({
   title: 'app/radius-maker/template-selector',
   component: TemplateSelector,
-};
+});
 
-export default meta;
-type Story = StoryObj<typeof TemplateSelector>;
-
-export const Primary: Story = {
+export const Primary = meta.story({
   args: {
     corners: BLOB_CORNERS,
     onSelect: fn(() => {}),
   },
-};
+});
 
-export const SelectPreset: Story = {
+export const SelectPreset = meta.story({
   args: {
     corners: BLOB_CORNERS,
     onSelect: fn(() => {}),
@@ -47,9 +44,9 @@ export const SelectPreset: Story = {
       bottomLeft: { x: 50, y: 50 },
     });
   },
-};
+});
 
-export const RandomBlob: Story = {
+export const RandomBlob = meta.story({
   args: {
     corners: BLOB_CORNERS,
     onSelect: fn(() => {}),
@@ -61,4 +58,4 @@ export const RandomBlob: Story = {
     await userEvent.click(canvas.getByRole('button', { name: 'ランダム' }));
     await expect(args.onSelect).toHaveBeenCalledTimes(1);
   },
-};
+});

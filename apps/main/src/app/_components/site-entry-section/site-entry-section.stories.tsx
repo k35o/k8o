@@ -1,19 +1,16 @@
-import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 import { expect, within } from 'storybook/test';
 
 import { siteEntries } from '@/shared/site/site-entries';
 
+import preview from '../../../../.storybook/preview';
 import { SiteEntrySection } from './site-entry-section';
 
-const meta: Meta<typeof SiteEntrySection> = {
+const meta = preview.meta({
   title: 'app/globals/site-entry-section',
   component: SiteEntrySection,
-};
+});
 
-export default meta;
-type Story = StoryObj<typeof SiteEntrySection>;
-
-export const Tools: Story = {
+export const Tools = meta.story({
   args: { kind: 'tool' },
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
@@ -28,9 +25,9 @@ export const Tools: Story = {
       toolCount,
     );
   },
-};
+});
 
-export const Explore: Story = {
+export const Explore = meta.story({
   args: { kind: 'reading' },
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
@@ -45,4 +42,4 @@ export const Explore: Story = {
       readingCount,
     );
   },
-};
+});

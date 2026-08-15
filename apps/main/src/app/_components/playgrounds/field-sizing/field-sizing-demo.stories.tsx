@@ -1,11 +1,10 @@
-import type { Meta, StoryObj } from '@storybook/nextjs-vite';
-
+import preview from '../../../../../.storybook/preview';
 import { Playground } from '../playground';
 import { FieldSizingDemo } from './field-sizing-demo';
 
 const playgroundTitle = FieldSizingDemo.name;
 
-const meta: Meta<typeof FieldSizingDemo> = {
+const meta = preview.meta({
   title: 'playgrounds/field-sizing/FieldSizingDemo',
   component: FieldSizingDemo,
   decorators: [
@@ -15,10 +14,6 @@ const meta: Meta<typeof FieldSizingDemo> = {
       </Playground>
     ),
   ],
-};
+});
 
-export default meta;
-
-type Story = StoryObj<typeof FieldSizingDemo>;
-
-export const Default: Story = {};
+export const Default = meta.story();

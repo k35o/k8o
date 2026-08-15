@@ -1,18 +1,15 @@
-import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 import { expect, within } from 'storybook/test';
 
+import preview from '../../../../../.storybook/preview';
 import { generatePalette } from '../../_utils/palette';
 import { PalettePreview } from './palette-preview';
 
-const meta: Meta<typeof PalettePreview> = {
+const meta = preview.meta({
   title: 'app/palette-maker/palette-preview',
   component: PalettePreview,
-};
+});
 
-export default meta;
-type Story = StoryObj<typeof PalettePreview>;
-
-export const Primary: Story = {
+export const Primary = meta.story({
   args: {
     swatches: generatePalette(250, 0.12),
   },
@@ -24,9 +21,9 @@ export const Primary: Story = {
       canvas.getByText('＊はsRGB色域に収めるため彩度を自動調整した段です'),
     ).not.toBeVisible();
   },
-};
+});
 
-export const WithClamped: Story = {
+export const WithClamped = meta.story({
   args: {
     swatches: generatePalette(145, 0.4),
   },
@@ -36,10 +33,10 @@ export const WithClamped: Story = {
       canvas.getByText('＊はsRGB色域に収めるため彩度を自動調整した段です'),
     ).toBeVisible();
   },
-};
+});
 
-export const Neutral: Story = {
+export const Neutral = meta.story({
   args: {
     swatches: generatePalette(250, 0),
   },
-};
+});

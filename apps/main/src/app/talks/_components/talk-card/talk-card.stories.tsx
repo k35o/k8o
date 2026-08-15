@@ -1,17 +1,14 @@
-import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 import { expect, within } from 'storybook/test';
 
+import preview from '../../../../../.storybook/preview';
 import { TalkCard } from './talk-card';
 
-const meta: Meta<typeof TalkCard> = {
+const meta = preview.meta({
   title: 'app/talks/talk-card',
   component: TalkCard,
-};
+});
 
-export default meta;
-type Story = StoryObj<typeof TalkCard>;
-
-export const Primary: Story = {
+export const Primary = meta.story({
   args: {
     title: 'Talk Title',
     eventUrl: 'https://example.com',
@@ -28,9 +25,9 @@ export const Primary: Story = {
       { id: 2, name: 'Tag 2' },
     ],
   },
-};
+});
 
-export const DisplaysTitle: Story = {
+export const DisplaysTitle = meta.story({
   args: {
     title: 'React 19の新機能について',
     eventUrl: 'https://example.com',
@@ -48,9 +45,9 @@ export const DisplaysTitle: Story = {
       canvas.getByRole('heading', { name: /React 19の新機能について/u }),
     ).toBeInTheDocument();
   },
-};
+});
 
-export const DisplaysEventInfo: Story = {
+export const DisplaysEventInfo = meta.story({
   args: {
     title: 'テスト発表',
     eventUrl: 'https://example.com',
@@ -68,9 +65,9 @@ export const DisplaysEventInfo: Story = {
 
     await expect(canvas.getByText('大阪')).toBeInTheDocument();
   },
-};
+});
 
-export const DisplaysTags: Story = {
+export const DisplaysTags = meta.story({
   args: {
     title: 'テスト発表',
     eventUrl: 'https://example.com',
@@ -92,9 +89,9 @@ export const DisplaysTags: Story = {
     await expect(canvas.getByText('TypeScript')).toBeInTheDocument();
     await expect(canvas.getByText('Next.js')).toBeInTheDocument();
   },
-};
+});
 
-export const HasSlideLink: Story = {
+export const HasSlideLink = meta.story({
   args: {
     title: 'テスト発表',
     eventUrl: 'https://example.com',
@@ -115,9 +112,9 @@ export const HasSlideLink: Story = {
       'https://slides.example.com/my-slides',
     );
   },
-};
+});
 
-export const HasBlogLink: Story = {
+export const HasBlogLink = meta.story({
   args: {
     title: 'テスト発表',
     eventUrl: 'https://example.com',
@@ -135,4 +132,4 @@ export const HasBlogLink: Story = {
     await expect(blogLink).toBeInTheDocument();
     await expect(blogLink).toHaveAttribute('href', '/blog/my-blog-post');
   },
-};
+});

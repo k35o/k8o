@@ -1,19 +1,16 @@
-import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 import { expect, within } from 'storybook/test';
 
+import preview from '../../../../../.storybook/preview';
 import { TextField } from './text-field';
 
-const meta: Meta<typeof TextField> = {
+const meta = preview.meta({
   title: 'app/moji-count/text-field',
   component: TextField,
-};
+});
 
-export default meta;
-type Story = StoryObj<typeof TextField>;
+export const Primary = meta.story();
 
-export const Primary: Story = {};
-
-export const InputText: Story = {
+export const InputText = meta.story({
   play: async ({ canvasElement, userEvent }) => {
     const canvas = within(canvasElement);
     const textarea = canvas.getByRole('textbox', {
@@ -24,9 +21,9 @@ export const InputText: Story = {
 
     await expect(canvas.getByText('5')).toBeInTheDocument();
   },
-};
+});
 
-export const InputLongText: Story = {
+export const InputLongText = meta.story({
   play: async ({ canvasElement, userEvent }) => {
     const canvas = within(canvasElement);
     const textarea = canvas.getByRole('textbox', {
@@ -37,4 +34,4 @@ export const InputLongText: Story = {
 
     await expect(canvas.getByText('16')).toBeInTheDocument();
   },
-};
+});

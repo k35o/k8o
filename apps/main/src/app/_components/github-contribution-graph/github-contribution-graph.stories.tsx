@@ -1,18 +1,15 @@
 import { formatDate } from '@repo/helpers/date/format';
-import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 import { expect, userEvent, waitFor, within } from 'storybook/test';
 
+import preview from '../../../../.storybook/preview';
 import { Presenter } from './presenter';
 
-const meta: Meta<typeof Presenter> = {
+const meta = preview.meta({
   title: 'app/globals/github-contribution-graph',
   component: Presenter,
-};
+});
 
-export default meta;
-type Story = StoryObj<typeof Presenter>;
-
-export const Primary: Story = {
+export const Primary = meta.story({
   args: {
     days: generateMockContributions(),
   },
@@ -24,9 +21,9 @@ export const Primary: Story = {
       '2022年12月20日(火): 0件のコントリビューション',
     );
   },
-};
+});
 
-export const DisplaysTitle: Story = {
+export const DisplaysTitle = meta.story({
   args: {
     days: generateMockContributions(),
   },
@@ -36,9 +33,9 @@ export const DisplaysTitle: Story = {
       canvas.getByRole('heading', { name: '開発の足あと' }),
     ).toBeInTheDocument();
   },
-};
+});
 
-export const DisplaysTotalContributions: Story = {
+export const DisplaysTotalContributions = meta.story({
   args: {
     days: generateMockContributions(),
   },
@@ -46,10 +43,10 @@ export const DisplaysTotalContributions: Story = {
     const canvas = within(canvasElement);
     await expect(canvas.getByText(/過去14日間で\d+件/u)).toBeInTheDocument();
   },
-};
+});
 
 // CSS :hover はテストのsynthetic eventでは発火しないため、同じ表示機構をfocusで検証する
-export const ShowsTooltipOnKeyboardFocus: Story = {
+export const ShowsTooltipOnKeyboardFocus = meta.story({
   args: {
     days: generateMockContributions(),
   },
@@ -68,15 +65,15 @@ export const ShowsTooltipOnKeyboardFocus: Story = {
       ).toBeVisible();
     });
   },
-};
+});
 
-export const HighActivity: Story = {
+export const HighActivity = meta.story({
   args: {
     days: generateMockContributions(true),
   },
-};
+});
 
-export const Empty: Story = {
+export const Empty = meta.story({
   args: {
     days: generateMockContributions(false, true),
   },
@@ -90,10 +87,10 @@ export const Empty: Story = {
       ),
     );
   },
-};
+});
 
 // モバイルやグリッド内などグラフのコンテナが狭いケース（日付ラベルが1日おきに間引かれる）
-export const Narrow: Story = {
+export const Narrow = meta.story({
   args: {
     days: generateMockContributions(),
   },
@@ -109,7 +106,7 @@ export const Narrow: Story = {
     const items = canvas.getAllByRole('listitem');
     await expect(items).toHaveLength(14);
   },
-};
+});
 
 function generateMockContributions(highActivity = false, empty = false) {
   const days: Array<{ date: string; count: number }> = [];

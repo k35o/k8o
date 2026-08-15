@@ -1,11 +1,10 @@
-import type { Meta, StoryObj } from '@storybook/nextjs-vite';
-
+import preview from '../../../../../.storybook/preview';
 import { Playground } from '../playground';
 import { WebkitRelativePathDemo } from './webkit-relative-path-demo';
 
 const playgroundTitle = WebkitRelativePathDemo.name;
 
-const meta = {
+const meta = preview.meta({
   title: 'playgrounds/input-file-webkitdirectory/WebkitRelativePathDemo',
   component: WebkitRelativePathDemo,
   decorators: [
@@ -15,9 +14,6 @@ const meta = {
       </Playground>
     ),
   ],
-} satisfies Meta<typeof WebkitRelativePathDemo>;
+});
 
-export default meta;
-type Story = StoryObj<typeof meta>;
-
-export const Default: Story = {};
+export const Default = meta.story();

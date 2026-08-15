@@ -1,11 +1,10 @@
-import type { Meta, StoryObj } from '@storybook/nextjs-vite';
-
+import preview from '../../../../../.storybook/preview';
 import { Playground } from '../playground';
 import { WakeLockDemo } from './wake-lock-demo';
 
 const playgroundTitle = WakeLockDemo.name;
 
-const meta: Meta<typeof WakeLockDemo> = {
+const meta = preview.meta({
   title: 'playgrounds/screen-wake-lock/WakeLockDemo',
   component: WakeLockDemo,
   decorators: [
@@ -15,9 +14,6 @@ const meta: Meta<typeof WakeLockDemo> = {
       </Playground>
     ),
   ],
-};
+});
 
-export default meta;
-type Story = StoryObj<typeof WakeLockDemo>;
-
-export const Default: Story = {};
+export const Default = meta.story();
