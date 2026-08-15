@@ -11,7 +11,7 @@ allowBuilds:
 blockExoticSubdeps: true
 
 catalog:
-  '@ai-sdk/openai-compatible': 3.0.26
+  '@ai-sdk/openai-compatible': 3.0.27
   '@k8o/arte-odyssey': 11.0.1
   '@k8o/html-nest': 0.2.0
   '@k8o/oxc-config': 0.2.1
@@ -29,7 +29,7 @@ catalog:
   '@vitest/browser-playwright': 4.1.10
   '@vitest/coverage-v8': 4.1.10
   '@vitest/ui': 4.1.10
-  ai: 7.0.57
+  ai: 7.0.58
   better-auth: 1.6.26
   chromatic: 18.1.0
   drizzle-orm: 0.45.2
