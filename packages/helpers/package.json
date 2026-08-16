@@ -144,7 +144,7 @@
     "test:watch": "vitest",
     "test:ui": "vitest --ui --coverage",
     "coverage": "vitest run --coverage",
-    "type-check": "tsgo --noEmit"
+    "type-check": "tsc --noEmit"
   },
   "dependencies": {
     "clsx": "2.1.1",
