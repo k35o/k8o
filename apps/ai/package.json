@@ -25,7 +25,7 @@
     "@repo/database": "workspace:*",
     "@repo/helpers": "workspace:*",
     "@tailwindcss/postcss": "catalog:",
-    "@vercel/sandbox": "2.9.2",
+    "@vercel/sandbox": "3.0.0",
     "ai": "catalog:",
     "better-auth": "catalog:",
     "drizzle-orm": "catalog:",
