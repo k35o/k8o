@@ -30,7 +30,7 @@
   "scripts": {
     "test": "vitest run",
     "test:watch": "vitest",
-    "type-check": "tsgo --noEmit"
+    "type-check": "tsc --noEmit"
   },
   "dependencies": {
     "@shikijs/core": "4.4.2",

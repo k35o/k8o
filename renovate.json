@@ -30,10 +30,6 @@
       "groupName": "vitest dependencies"
     },
     {
-      "matchPackageNames": ["/^@typescript/native-preview$/"],
-      "groupName": "tsgo dependencies"
-    },
-    {
       "matchPackageNames": ["/^react$/", "/^react-dom$/"],
       "groupName": "react dependencies"
     },

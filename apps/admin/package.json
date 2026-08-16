@@ -8,7 +8,7 @@
     "dev": "portless run next dev --inspect",
     "build": "next build",
     "start": "next start",
-    "type-check": "next typegen && tsgo --noEmit",
+    "type-check": "next typegen && tsc --noEmit",
     "test": "vitest run",
     "test:vrt": "VRT=1 vitest run --project=storybook",
     "test:watch": "vitest",
