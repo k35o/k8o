@@ -1,16 +1,12 @@
-import type { Meta, StoryObj } from '@storybook/nextjs-vite';
-
+import preview from '../../../../../../.storybook/preview';
 import { RecommendContent } from './recommend';
 
-const meta: Meta<typeof RecommendContent> = {
+const meta = preview.meta({
   title: 'app/blog/blog-layout/recommend',
   component: RecommendContent,
-};
+});
 
-export default meta;
-type Story = StoryObj<typeof RecommendContent>;
-
-export const Primary: Story = {
+export const Primary = meta.story({
   args: {
     blogs: [
       {
@@ -42,4 +38,4 @@ export const Primary: Story = {
       },
     ],
   },
-};
+});

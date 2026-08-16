@@ -1,24 +1,20 @@
-import type { Meta, StoryObj } from '@storybook/nextjs-vite';
-
+import preview from '../../../../../../.storybook/preview';
 import { SourceForm } from './source-form';
 
-const meta: Meta<typeof SourceForm> = {
+const meta = preview.meta({
   title: 'admin/reading-list/source-form',
   component: SourceForm,
-};
-
-export default meta;
-type Story = StoryObj<typeof SourceForm>;
+});
 
 const noopAction = () => Promise.resolve({});
 
-export const New: Story = {
+export const New = meta.story({
   args: {
     action: noopAction,
   },
-};
+});
 
-export const Edit: Story = {
+export const Edit = meta.story({
   args: {
     action: noopAction,
     defaultValues: {
@@ -28,9 +24,9 @@ export const Edit: Story = {
       type: 'feed',
     },
   },
-};
+});
 
-export const EditManual: Story = {
+export const EditManual = meta.story({
   args: {
     action: noopAction,
     defaultValues: {
@@ -40,4 +36,4 @@ export const EditManual: Story = {
       type: 'manual',
     },
   },
-};
+});

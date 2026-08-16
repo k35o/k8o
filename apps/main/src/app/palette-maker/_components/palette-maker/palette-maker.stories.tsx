@@ -1,20 +1,17 @@
-import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 import { expect, within } from 'storybook/test';
 
+import preview from '../../../../../.storybook/preview';
 import { PALETTE_STEPS } from '../../_types/palette';
 import { PaletteMaker } from './palette-maker';
 
-const meta: Meta<typeof PaletteMaker> = {
+const meta = preview.meta({
   title: 'app/palette-maker/palette-maker',
   component: PaletteMaker,
-};
+});
 
-export default meta;
-type Story = StoryObj<typeof PaletteMaker>;
+export const Primary = meta.story();
 
-export const Primary: Story = {};
-
-export const InitialState: Story = {
+export const InitialState = meta.story({
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
     await expect(canvas.getAllByRole('slider')).toHaveLength(2);
@@ -26,9 +23,9 @@ export const InitialState: Story = {
       PALETTE_STEPS.length + 1,
     );
   },
-};
+});
 
-export const ChangeHue: Story = {
+export const ChangeHue = meta.story({
   play: async ({ canvasElement, userEvent }) => {
     const canvas = within(canvasElement);
     const input = canvas.getByRole('spinbutton', { name: '色相 (H)' });
@@ -41,9 +38,9 @@ export const ChangeHue: Story = {
       ),
     ).toBeInTheDocument();
   },
-};
+});
 
-export const PasteBaseColor: Story = {
+export const PasteBaseColor = meta.story({
   play: async ({ canvasElement, userEvent }) => {
     const canvas = within(canvasElement);
     const input = canvas.getByRole('textbox', { name: '基準色から取り込む' });
@@ -53,9 +50,9 @@ export const PasteBaseColor: Story = {
     const chroma = canvas.getByRole('spinbutton', { name: 'ピーク彩度 (C)' });
     await expect(chroma).toHaveAttribute('aria-valuenow', '0.258');
   },
-};
+});
 
-export const PasteAchromaticBaseColor: Story = {
+export const PasteAchromaticBaseColor = meta.story({
   play: async ({ canvasElement, userEvent }) => {
     const canvas = within(canvasElement);
     const hue = canvas.getByRole('spinbutton', { name: '色相 (H)' });
@@ -67,9 +64,9 @@ export const PasteAchromaticBaseColor: Story = {
     // 無彩色の取り込みでは色相を動かさない
     await expect(hue.getAttribute('aria-valuenow')).toBe(hueBefore);
   },
-};
+});
 
-export const RenameToken: Story = {
+export const RenameToken = meta.story({
   play: async ({ canvasElement, userEvent }) => {
     const canvas = within(canvasElement);
     const input = canvas.getByRole('textbox', { name: 'トークン名' });
@@ -79,4 +76,4 @@ export const RenameToken: Story = {
       await canvas.findByText(/--color-brand-500:/u),
     ).toBeInTheDocument();
   },
-};
+});

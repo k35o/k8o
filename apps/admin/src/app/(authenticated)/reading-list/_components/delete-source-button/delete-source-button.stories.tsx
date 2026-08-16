@@ -1,18 +1,14 @@
-import type { Meta, StoryObj } from '@storybook/nextjs-vite';
-
+import preview from '../../../../../../.storybook/preview';
 import { DeleteSourceButton } from './delete-source-button';
 
-const meta: Meta<typeof DeleteSourceButton> = {
+const meta = preview.meta({
   title: 'admin/reading-list/delete-source-button',
   component: DeleteSourceButton,
-};
+});
 
-export default meta;
-type Story = StoryObj<typeof DeleteSourceButton>;
-
-export const Primary: Story = {
+export const Primary = meta.story({
   args: {
     id: 1,
     title: 'web.dev',
   },
-};
+});

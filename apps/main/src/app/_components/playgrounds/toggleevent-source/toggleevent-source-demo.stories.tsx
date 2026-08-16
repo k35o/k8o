@@ -1,11 +1,10 @@
-import type { Meta, StoryObj } from '@storybook/nextjs-vite';
-
+import preview from '../../../../../.storybook/preview';
 import { Playground } from '../playground';
 import { ToggleEventSourceDemo } from './toggleevent-source-demo';
 
 const playgroundTitle = ToggleEventSourceDemo.name;
 
-const meta: Meta<typeof ToggleEventSourceDemo> = {
+const meta = preview.meta({
   title: 'playgrounds/toggleevent-source/ToggleEventSourceDemo',
   component: ToggleEventSourceDemo,
   decorators: [
@@ -15,10 +14,6 @@ const meta: Meta<typeof ToggleEventSourceDemo> = {
       </Playground>
     ),
   ],
-};
+});
 
-export default meta;
-
-type Story = StoryObj<typeof ToggleEventSourceDemo>;
-
-export const Default: Story = {};
+export const Default = meta.story();

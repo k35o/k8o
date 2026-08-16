@@ -1,9 +1,9 @@
-import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 import { expect, within } from 'storybook/test';
 
+import preview from '../../../../../.storybook/preview';
 import { YearSection } from './year-section';
 
-const meta: Meta<typeof YearSection> = {
+const meta = preview.meta({
   title: 'app/blog/year-section',
   component: YearSection,
   args: {
@@ -29,12 +29,9 @@ const meta: Meta<typeof YearSection> = {
       },
     ],
   },
-};
+});
 
-export default meta;
-type Story = StoryObj<typeof YearSection>;
-
-export const Primary: Story = {
+export const Primary = meta.story({
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
 
@@ -45,4 +42,4 @@ export const Primary: Story = {
     await expect(canvas.getByText('最初の記事')).toBeInTheDocument();
     await expect(canvas.getByText('2番目の記事')).toBeInTheDocument();
   },
-};
+});

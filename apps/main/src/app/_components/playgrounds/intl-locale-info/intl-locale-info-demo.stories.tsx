@@ -1,11 +1,10 @@
-import type { Meta, StoryObj } from '@storybook/nextjs-vite';
-
+import preview from '../../../../../.storybook/preview';
 import { Playground } from '../playground';
 import { IntlLocaleInfoDemo } from './intl-locale-info-demo';
 
 const playgroundTitle = IntlLocaleInfoDemo.name;
 
-const meta: Meta<typeof IntlLocaleInfoDemo> = {
+const meta = preview.meta({
   title: 'playgrounds/intl-locale-info/IntlLocaleInfoDemo',
   component: IntlLocaleInfoDemo,
   decorators: [
@@ -15,10 +14,6 @@ const meta: Meta<typeof IntlLocaleInfoDemo> = {
       </Playground>
     ),
   ],
-};
+});
 
-export default meta;
-
-type Story = StoryObj<typeof IntlLocaleInfoDemo>;
-
-export const Default: Story = {};
+export const Default = meta.story();

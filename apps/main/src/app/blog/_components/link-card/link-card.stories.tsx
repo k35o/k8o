@@ -1,10 +1,10 @@
-import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 import { mocked } from 'storybook/test';
 
+import preview from '../../../../../.storybook/preview';
 import { LinkCard } from './link-card';
 import { getMetadata } from './metadata';
 
-const meta: Meta<typeof LinkCard> = {
+const meta = preview.meta({
   title: 'app/blog/link-card',
   component: LinkCard,
   beforeEach: () => {
@@ -15,18 +15,15 @@ const meta: Meta<typeof LinkCard> = {
       imageUrl: 'k8o.jpg',
     });
   },
-};
+});
 
-export default meta;
-type Story = StoryObj<typeof LinkCard>;
-
-export const Primary: Story = {
+export const Primary = meta.story({
   args: {
     href: 'https://example.com',
   },
-};
+});
 
-export const NoData: Story = {
+export const NoData = meta.story({
   args: {
     href: 'https://example.com',
   },
@@ -37,9 +34,9 @@ export const NoData: Story = {
       imageUrl: undefined,
     });
   },
-};
+});
 
-export const NoTitle: Story = {
+export const NoTitle = meta.story({
   args: {
     href: 'https://example.com',
   },
@@ -51,9 +48,9 @@ export const NoTitle: Story = {
       imageUrl: 'k8o.jpg',
     });
   },
-};
+});
 
-export const NoDescription: Story = {
+export const NoDescription = meta.story({
   args: {
     href: 'https://example.com',
   },
@@ -64,9 +61,9 @@ export const NoDescription: Story = {
       imageUrl: 'k8o.jpg',
     });
   },
-};
+});
 
-export const NoImage: Story = {
+export const NoImage = meta.story({
   args: {
     href: 'https://example.com',
   },
@@ -78,13 +75,13 @@ export const NoImage: Story = {
       imageUrl: undefined,
     });
   },
-};
+});
 
-export const FetchFailure: Story = {
+export const FetchFailure = meta.story({
   args: {
     href: 'https://example.com',
   },
   beforeEach: () => {
     mocked(getMetadata).mockRejectedValue(new Error('fetch failed'));
   },
-};
+});

@@ -1,11 +1,10 @@
-import type { Meta, StoryObj } from '@storybook/nextjs-vite';
-
+import preview from '../../../../../.storybook/preview';
 import { Playground } from '../playground';
 import { ContrastColorDemo } from './contrast-color-demo';
 
 const playgroundTitle = ContrastColorDemo.name;
 
-const meta: Meta<typeof ContrastColorDemo> = {
+const meta = preview.meta({
   title: 'playgrounds/contrast-color/ContrastColorDemo',
   component: ContrastColorDemo,
   decorators: [
@@ -15,10 +14,6 @@ const meta: Meta<typeof ContrastColorDemo> = {
       </Playground>
     ),
   ],
-};
+});
 
-export default meta;
-
-type Story = StoryObj<typeof ContrastColorDemo>;
-
-export const Default: Story = {};
+export const Default = meta.story();

@@ -1,11 +1,10 @@
-import type { Meta, StoryObj } from '@storybook/nextjs-vite';
-
+import preview from '../../../../../.storybook/preview';
 import { Playground } from '../playground';
 import { ScopeProximityDemo } from './scope-proximity-demo';
 
 const playgroundTitle = ScopeProximityDemo.name;
 
-const meta: Meta<typeof ScopeProximityDemo> = {
+const meta = preview.meta({
   title: 'playgrounds/scope/ScopeProximityDemo',
   component: ScopeProximityDemo,
   decorators: [
@@ -15,10 +14,6 @@ const meta: Meta<typeof ScopeProximityDemo> = {
       </Playground>
     ),
   ],
-};
+});
 
-export default meta;
-
-type Story = StoryObj<typeof ScopeProximityDemo>;
-
-export const Default: Story = {};
+export const Default = meta.story();

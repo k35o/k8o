@@ -1,19 +1,16 @@
-import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 import { expect, within } from 'storybook/test';
 
+import preview from '../../../../../.storybook/preview';
 import { ColorConverter } from './color-converter';
 
-const meta: Meta<typeof ColorConverter> = {
+const meta = preview.meta({
   title: 'app/color-converter/color-converter',
   component: ColorConverter,
-};
+});
 
-export default meta;
-type Story = StoryObj<typeof ColorConverter>;
+export const Primary = meta.story();
 
-export const Primary: Story = {};
-
-export const InitialState: Story = {
+export const InitialState = meta.story({
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
 
@@ -30,9 +27,9 @@ export const InitialState: Story = {
       '212',
     );
   },
-};
+});
 
-export const PasteRgb: Story = {
+export const PasteRgb = meta.story({
   play: async ({ canvasElement, userEvent }) => {
     const canvas = within(canvasElement);
 
@@ -48,9 +45,9 @@ export const PasteRgb: Story = {
     );
     await expect(canvas.getByText('rgb(255, 0, 0)')).toBeInTheDocument();
   },
-};
+});
 
-export const PasteOklch: Story = {
+export const PasteOklch = meta.story({
   play: async ({ canvasElement, userEvent }) => {
     const canvas = within(canvasElement);
 
@@ -64,9 +61,9 @@ export const PasteOklch: Story = {
     const red = canvas.getByRole('spinbutton', { name: 'R' });
     await expect(Number((red as HTMLInputElement).value)).toBeGreaterThan(250);
   },
-};
+});
 
-export const IncompleteInputKeepsColor: Story = {
+export const IncompleteInputKeepsColor = meta.story({
   play: async ({ canvasElement, userEvent }) => {
     const canvas = within(canvasElement);
 
@@ -89,9 +86,9 @@ export const IncompleteInputKeepsColor: Story = {
       '0',
     );
   },
-};
+});
 
-export const EditChannel: Story = {
+export const EditChannel = meta.story({
   play: async ({ canvasElement, userEvent }) => {
     const canvas = within(canvasElement);
 
@@ -102,4 +99,4 @@ export const EditChannel: Story = {
 
     await expect(canvas.getByText('rgb(94, 234, 0)')).toBeInTheDocument();
   },
-};
+});

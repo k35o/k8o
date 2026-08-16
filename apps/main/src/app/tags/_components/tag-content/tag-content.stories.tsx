@@ -1,16 +1,12 @@
-import type { Meta, StoryObj } from '@storybook/nextjs-vite';
-
+import preview from '../../../../../.storybook/preview';
 import { TagContent } from './tag-content';
 
-const meta: Meta<typeof TagContent> = {
+const meta = preview.meta({
   title: 'app/tags/tag-content',
   component: TagContent,
-};
+});
 
-export default meta;
-type Story = StoryObj<typeof TagContent>;
-
-export const Primary: Story = {
+export const Primary = meta.story({
   args: {
     name: 'k8o',
     blogs: [
@@ -27,4 +23,4 @@ export const Primary: Story = {
       },
     ],
   },
-};
+});

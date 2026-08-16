@@ -40,7 +40,7 @@ catalog:
   react: 19.2.8
   react-dom: 19.2.8
   storybook: 10.5.7
-  storybook-addon-determinism: 0.1.2
+  storybook-addon-determinism: 0.2.1
   storybook-addon-vrt: 0.4.0
   tailwindcss: 4.3.3
   vitest: 4.1.10
@@ -53,5 +53,7 @@ minimumReleaseAgeExclude:
   - '@k8o/*'
   # 自作パッケージ（k35o公開）。@k8o/* と同じ信頼で除外する
   - storybook-addon-vrt
+  - storybook-addon-mock-date
+  - storybook-addon-determinism
 
 verifyDepsBeforeRun: install

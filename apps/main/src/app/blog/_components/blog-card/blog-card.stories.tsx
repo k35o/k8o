@@ -1,17 +1,14 @@
-import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 import { expect, within } from 'storybook/test';
 
+import preview from '../../../../../.storybook/preview';
 import { BlogCard } from './blog-card';
 
-const meta: Meta<typeof BlogCard> = {
+const meta = preview.meta({
   title: 'app/blog/blog-card',
   component: BlogCard,
-};
+});
 
-export default meta;
-type Story = StoryObj<typeof BlogCard>;
-
-export const Primary: Story = {
+export const Primary = meta.story({
   args: {
     slug: 'tanstack-router-introduction',
     tags: ['React', 'TypeScript', 'TanStackRouter'],
@@ -21,9 +18,9 @@ export const Primary: Story = {
     createdAt: '2023-05-01T00:00:00.000Z',
     updatedAt: '2023-07-13T00:00:00.000Z',
   },
-};
+});
 
-export const DisplaysTitle: Story = {
+export const DisplaysTitle = meta.story({
   args: {
     slug: 'test-slug',
     tags: ['React'],
@@ -39,9 +36,9 @@ export const DisplaysTitle: Story = {
       canvas.getByRole('heading', { name: 'テスト記事のタイトル' }),
     ).toBeInTheDocument();
   },
-};
+});
 
-export const DisplaysTags: Story = {
+export const DisplaysTags = meta.story({
   args: {
     slug: 'test-slug',
     tags: ['React', 'TypeScript', 'Next.js'],
@@ -57,9 +54,9 @@ export const DisplaysTags: Story = {
     await expect(canvas.getByText('TypeScript')).toBeInTheDocument();
     await expect(canvas.getByText('Next.js')).toBeInTheDocument();
   },
-};
+});
 
-export const DisplaysDates: Story = {
+export const DisplaysDates = meta.story({
   args: {
     slug: 'test-slug',
     tags: [],
@@ -74,9 +71,9 @@ export const DisplaysDates: Story = {
     await expect(canvas.getByText('公開: 2024年1月15日')).toBeInTheDocument();
     await expect(canvas.getByText('更新: 2024年2月20日')).toBeInTheDocument();
   },
-};
+});
 
-export const HasLinkToBlog: Story = {
+export const HasLinkToBlog = meta.story({
   args: {
     slug: 'my-blog-post',
     tags: ['React'],
@@ -91,4 +88,4 @@ export const HasLinkToBlog: Story = {
     const link = canvas.getByRole('link');
     await expect(link).toHaveAttribute('href', '/blog/my-blog-post');
   },
-};
+});

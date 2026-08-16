@@ -1,8 +1,8 @@
-import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 import { expect, waitFor, within } from 'storybook/test';
 
 import type { LintDiagnostic } from '@/features/code-dock/interface/types';
 
+import preview from '../../../../../.storybook/preview';
 import { CodeDock } from './code-dock';
 import type { FormatAction, LintAction } from './code-dock';
 
@@ -33,17 +33,14 @@ const fakeFormat: FormatAction = () =>
 const failingFormat: FormatAction = () =>
   Promise.resolve({ error: '整形できませんでした: Unexpected token' });
 
-const meta: Meta<typeof CodeDock> = {
+const meta = preview.meta({
   title: 'app/code-dock/code-dock',
   component: CodeDock,
   args: {
     formatAction: fakeFormat,
     lintAction: fakeLint,
   },
-};
-
-export default meta;
-type Story = StoryObj<typeof CodeDock>;
+});
 
 // 初期サンプルの自動検査はデバウンス(600ms)後に走るため、検査結果の表示まで待つ。
 // 待たずに play を終えるとスピナー+プレースホルダーの状態で VRT が撮影されて
@@ -62,7 +59,7 @@ const waitForInitialLintResult = async (
 };
 
 // 正常系: 初期サンプルがデバウンス後に自動で検査される
-export const Primary: Story = {
+export const Primary = meta.story({
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
     await expect(
@@ -70,10 +67,10 @@ export const Primary: Story = {
     ).toBeInTheDocument();
     await waitForInitialLintResult(canvas);
   },
-};
+});
 
 // 正常系: コピーボタンが表示・クリックできる (クリップボードはブラウザ依存)
-export const Copy: Story = {
+export const Copy = meta.story({
   play: async ({ canvasElement, userEvent }) => {
     const canvas = within(canvasElement);
     const button = canvas.getByRole('button', { name: 'コピー' });
@@ -82,10 +79,10 @@ export const Copy: Story = {
     await expect(button).toBeInTheDocument();
     await waitForInitialLintResult(canvas);
   },
-};
+});
 
 // 正常系: 整形ボタンでエディタの内容が整形結果に置き換わり、再検査される
-export const Format: Story = {
+export const Format = meta.story({
   play: async ({ canvasElement, userEvent }) => {
     const canvas = within(canvasElement);
     const button = canvas.getByRole('button', { name: 'コードを整形' });
@@ -105,10 +102,10 @@ export const Format: Story = {
       { timeout: 5000 },
     );
   },
-};
+});
 
 // 異常系: 整形の失敗は Alert で通知される
-export const FormatFailed: Story = {
+export const FormatFailed = meta.story({
   args: {
     formatAction: failingFormat,
   },
@@ -125,10 +122,10 @@ export const FormatFailed: Story = {
     });
     await waitForInitialLintResult(canvas);
   },
-};
+});
 
 // 正常系: 言語を切り替えられる
-export const SwitchLanguage: Story = {
+export const SwitchLanguage = meta.story({
   play: async ({ canvasElement, userEvent }) => {
     const canvas = within(canvasElement);
     const select = canvas.getByRole('combobox', { name: '言語' });
@@ -138,4 +135,4 @@ export const SwitchLanguage: Story = {
     await expect(select).toHaveValue('ts');
     await waitForInitialLintResult(canvas);
   },
-};
+});

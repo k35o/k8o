@@ -1,17 +1,14 @@
-import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 import { expect, within } from 'storybook/test';
 
+import preview from '../../../../../../.storybook/preview';
 import { SourceList } from './source-list';
 
-const meta: Meta<typeof SourceList> = {
+const meta = preview.meta({
   title: 'admin/reading-list/source-list',
   component: SourceList,
-};
+});
 
-export default meta;
-type Story = StoryObj<typeof SourceList>;
-
-export const Primary: Story = {
+export const Primary = meta.story({
   args: {
     sources: [
       {
@@ -50,9 +47,9 @@ export const Primary: Story = {
     await expect(canvas.getByText('Zenn')).toBeInTheDocument();
     await expect(canvas.getByText('手動登録')).toBeInTheDocument();
   },
-};
+});
 
-export const Empty: Story = {
+export const Empty = meta.story({
   args: {
     sources: [],
   },
@@ -63,4 +60,4 @@ export const Empty: Story = {
       canvas.getByText('ソースがまだ登録されていません'),
     ).toBeInTheDocument();
   },
-};
+});

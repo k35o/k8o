@@ -1,23 +1,20 @@
-import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 import { expect, within } from 'storybook/test';
 
+import preview from '../../../../../.storybook/preview';
 import { TextLength } from './text-length';
 
-const meta: Meta<typeof TextLength> = {
+const meta = preview.meta({
   title: 'app/moji-count/text-length',
   component: TextLength,
-};
+});
 
-export default meta;
-type Story = StoryObj<typeof TextLength>;
-
-export const Primary: Story = {
+export const Primary = meta.story({
   args: {
     text: 'Hello, world!',
   },
-};
+});
 
-export const CountsEnglishText: Story = {
+export const CountsEnglishText = meta.story({
   args: {
     text: 'Hello',
   },
@@ -26,9 +23,9 @@ export const CountsEnglishText: Story = {
 
     await expect(canvas.getByText('5')).toBeInTheDocument();
   },
-};
+});
 
-export const CountsJapaneseText: Story = {
+export const CountsJapaneseText = meta.story({
   args: {
     text: 'こんにちは',
   },
@@ -37,9 +34,9 @@ export const CountsJapaneseText: Story = {
 
     await expect(canvas.getByText('5')).toBeInTheDocument();
   },
-};
+});
 
-export const CountsEmoji: Story = {
+export const CountsEmoji = meta.story({
   args: {
     text: '👨‍👩‍👧‍👦',
   },
@@ -48,9 +45,9 @@ export const CountsEmoji: Story = {
 
     await expect(canvas.getByText('1')).toBeInTheDocument();
   },
-};
+});
 
-export const CountsMixedText: Story = {
+export const CountsMixedText = meta.story({
   args: {
     text: 'Hello こんにちは 🎉',
   },
@@ -59,9 +56,9 @@ export const CountsMixedText: Story = {
 
     await expect(canvas.getByText('13')).toBeInTheDocument();
   },
-};
+});
 
-export const CountsEmptyText: Story = {
+export const CountsEmptyText = meta.story({
   args: {
     text: '',
   },
@@ -70,4 +67,4 @@ export const CountsEmptyText: Story = {
 
     await expect(canvas.getByText('0')).toBeInTheDocument();
   },
-};
+});

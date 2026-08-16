@@ -1,25 +1,22 @@
-import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 import { expect, within } from 'storybook/test';
 
+import preview from '../../../../../.storybook/preview';
 import { BLOB_CORNERS } from '../../_utils/presets';
 import { OutputPanel } from './output-panel';
 
-const meta: Meta<typeof OutputPanel> = {
+const meta = preview.meta({
   title: 'app/radius-maker/output-panel',
   component: OutputPanel,
-};
+});
 
-export default meta;
-type Story = StoryObj<typeof OutputPanel>;
-
-export const Primary: Story = {
+export const Primary = meta.story({
   args: {
     corners: BLOB_CORNERS,
     shape: 'round',
   },
-};
+});
 
-export const Simplified: Story = {
+export const Simplified = meta.story({
   args: {
     corners: {
       topLeft: { x: 50, y: 50 },
@@ -41,9 +38,9 @@ export const Simplified: Story = {
       canvas.getByRole('button', { name: '共有用URLをコピー' }),
     ).toBeInTheDocument();
   },
-};
+});
 
-export const WithCornerShape: Story = {
+export const WithCornerShape = meta.story({
   args: {
     corners: BLOB_CORNERS,
     shape: 'squircle',
@@ -54,4 +51,4 @@ export const WithCornerShape: Story = {
       'border-radius: 30% 70% 70% 30% / 30% 30% 70% 70%;\ncorner-shape: squircle;',
     );
   },
-};
+});

@@ -1,17 +1,14 @@
-import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 import { expect, within } from 'storybook/test';
 
+import preview from '../../../../../../.storybook/preview';
 import { BlogTable } from './blog-table';
 
-const meta: Meta<typeof BlogTable> = {
+const meta = preview.meta({
   title: 'admin/blogs/blog-table',
   component: BlogTable,
-};
+});
 
-export default meta;
-type Story = StoryObj<typeof BlogTable>;
-
-export const Primary: Story = {
+export const Primary = meta.story({
   args: {
     blogs: [
       {
@@ -41,9 +38,9 @@ export const Primary: Story = {
     await expect(canvas.getByText('12,345')).toBeInTheDocument();
     await expect(canvas.getAllByRole('switch').length).toBe(2);
   },
-};
+});
 
-export const Empty: Story = {
+export const Empty = meta.story({
   args: {
     blogs: [],
   },
@@ -54,4 +51,4 @@ export const Empty: Story = {
       canvas.getByText('条件に一致する記事はありません'),
     ).toBeInTheDocument();
   },
-};
+});

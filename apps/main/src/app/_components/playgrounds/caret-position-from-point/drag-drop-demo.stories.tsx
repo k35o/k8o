@@ -1,11 +1,10 @@
-import type { Meta, StoryObj } from '@storybook/nextjs-vite';
-
+import preview from '../../../../../.storybook/preview';
 import { Playground } from '../playground';
 import { DragDropDemo } from './drag-drop-demo';
 
 const playgroundTitle = DragDropDemo.name;
 
-const meta: Meta<typeof DragDropDemo> = {
+const meta = preview.meta({
   title: 'playgrounds/caret-position-from-point/DragDropDemo',
   component: DragDropDemo,
   // ヒント行の「↑」記号のフォント解決が走行ごとに揺れる（Noto Sans JPの
@@ -18,10 +17,6 @@ const meta: Meta<typeof DragDropDemo> = {
       </Playground>
     ),
   ],
-};
+});
 
-export default meta;
-
-type Story = StoryObj<typeof DragDropDemo>;
-
-export const Default: Story = {};
+export const Default = meta.story();

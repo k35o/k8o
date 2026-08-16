@@ -1,11 +1,10 @@
-import type { Meta, StoryObj } from '@storybook/nextjs-vite';
-
+import preview from '../../../../../.storybook/preview';
 import { Playground } from '../playground';
 import { HighlightSpellingDemo } from './highlight-spelling-demo';
 
 const playgroundTitle = HighlightSpellingDemo.name;
 
-const meta: Meta<typeof HighlightSpellingDemo> = {
+const meta = preview.meta({
   title: 'playgrounds/highlight/HighlightSpellingDemo',
   component: HighlightSpellingDemo,
   decorators: [
@@ -15,9 +14,6 @@ const meta: Meta<typeof HighlightSpellingDemo> = {
       </Playground>
     ),
   ],
-};
+});
 
-export default meta;
-type Story = StoryObj<typeof HighlightSpellingDemo>;
-
-export const Default: Story = {};
+export const Default = meta.story();

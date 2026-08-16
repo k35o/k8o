@@ -1,18 +1,15 @@
-import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 import { expect, fn, within } from 'storybook/test';
 
+import preview from '../../../../../.storybook/preview';
 import { BLOB_CORNERS } from '../../_utils/presets';
 import { RadiusCanvas } from './radius-canvas';
 
-const meta: Meta<typeof RadiusCanvas> = {
+const meta = preview.meta({
   title: 'app/radius-maker/radius-canvas',
   component: RadiusCanvas,
-};
+});
 
-export default meta;
-type Story = StoryObj<typeof RadiusCanvas>;
-
-export const Primary: Story = {
+export const Primary = meta.story({
   args: {
     corners: BLOB_CORNERS,
     shape: 'round',
@@ -20,9 +17,9 @@ export const Primary: Story = {
     height: 192,
     onChangeValue: fn(() => {}),
   },
-};
+});
 
-export const Handles: Story = {
+export const Handles = meta.story({
   args: {
     corners: BLOB_CORNERS,
     shape: 'round',
@@ -59,9 +56,9 @@ export const Handles: Story = {
       69,
     );
   },
-};
+});
 
-export const Landscape: Story = {
+export const Landscape = meta.story({
   args: {
     corners: BLOB_CORNERS,
     shape: 'round',
@@ -69,4 +66,4 @@ export const Landscape: Story = {
     height: 160,
     onChangeValue: fn(() => {}),
   },
-};
+});

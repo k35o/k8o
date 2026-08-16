@@ -1,11 +1,10 @@
-import type { Meta, StoryObj } from '@storybook/nextjs-vite';
-
+import preview from '../../../../../.storybook/preview';
 import { Playground } from '../playground';
 import { LCPDemo } from './lcp-demo';
 
 const playgroundTitle = LCPDemo.name;
 
-const meta: Meta<typeof LCPDemo> = {
+const meta = preview.meta({
   title: 'playgrounds/largest-contentful-paint/LCPDemo',
   component: LCPDemo,
   // PerformanceObserverの実測値（startTime/size等）を表示するデモのため、VRTの対象外にする
@@ -17,10 +16,6 @@ const meta: Meta<typeof LCPDemo> = {
       </Playground>
     ),
   ],
-};
+});
 
-export default meta;
-
-type Story = StoryObj<typeof LCPDemo>;
-
-export const Default: Story = {};
+export const Default = meta.story();

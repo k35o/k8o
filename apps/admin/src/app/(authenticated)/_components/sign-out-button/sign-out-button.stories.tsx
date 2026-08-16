@@ -1,22 +1,19 @@
-import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 import { expect, within } from 'storybook/test';
 
+import preview from '../../../../../.storybook/preview';
 import { SignOutButton } from './sign-out-button';
 
-const meta: Meta<typeof SignOutButton> = {
+const meta = preview.meta({
   title: 'admin/sign-out-button',
   component: SignOutButton,
-};
+});
 
-export default meta;
-type Story = StoryObj<typeof SignOutButton>;
+export const Primary = meta.story();
 
-export const Primary: Story = {};
-
-export const DisplaysLogoutButton: Story = {
+export const DisplaysLogoutButton = meta.story({
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
 
     await expect(canvas.getByText('ログアウト')).toBeInTheDocument();
   },
-};
+});

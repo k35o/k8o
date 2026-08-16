@@ -1,9 +1,12 @@
 import { cn } from '@repo/helpers/cn';
-import type { Preview } from '@storybook/nextjs-vite';
+import addonA11y from '@storybook/addon-a11y';
+import addonDocs from '@storybook/addon-docs';
+import { definePreview } from '@storybook/nextjs-vite';
 import { useTheme } from 'next-themes';
 import Script from 'next/script';
 import { memo, useEffect } from 'react';
 import type { FC } from 'react';
+import addonDeterminism from 'storybook-addon-determinism';
 import { sb } from 'storybook/test';
 
 import { AppProvider } from '../src/app/_providers/app';
@@ -35,7 +38,7 @@ const ApplyThemeByStorybook: FC<{ theme: string }> = memo(
   },
 );
 
-const preview: Preview = {
+export default definePreview({
   globalTypes: {
     theme: {
       description: 'Toggle Color Theme.',
@@ -50,8 +53,9 @@ const preview: Preview = {
       },
     },
   },
+
   parameters: {
-    backgrounds: { disabled: true },
+    backgrounds: { disable: true },
     layout: 'fullscreen',
     // Math.random/crypto をシードして VRT を決定的にする。mockingDate と違い
     // 例外を投げないため、全Storyでグローバルに有効化して問題ない
@@ -63,6 +67,7 @@ const preview: Preview = {
       test: 'error',
     },
   },
+
   decorators: [
     function WithAppProvider(Story, { globals, parameters }) {
       return (
@@ -81,12 +86,14 @@ const preview: Preview = {
             <Story />
           </div>
           <ApplyThemeByStorybook
-            theme={(parameters.theme ?? globals.theme ?? 'light') as string}
+            theme={
+              (parameters['theme'] ?? globals['theme'] ?? 'light') as string
+            }
           />
         </AppProvider>
       );
     },
   ],
-};
 
-export default preview;
+  addons: [addonA11y(), addonDocs(), addonDeterminism()],
+});

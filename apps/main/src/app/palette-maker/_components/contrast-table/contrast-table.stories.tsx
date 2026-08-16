@@ -1,19 +1,16 @@
-import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 import { expect, within } from 'storybook/test';
 
+import preview from '../../../../../.storybook/preview';
 import { PALETTE_STEPS } from '../../_types/palette';
 import { generatePalette } from '../../_utils/palette';
 import { ContrastTable } from './contrast-table';
 
-const meta: Meta<typeof ContrastTable> = {
+const meta = preview.meta({
   title: 'app/palette-maker/contrast-table',
   component: ContrastTable,
-};
+});
 
-export default meta;
-type Story = StoryObj<typeof ContrastTable>;
-
-export const Primary: Story = {
+export const Primary = meta.story({
   args: {
     swatches: generatePalette(250, 0.12),
   },
@@ -27,4 +24,4 @@ export const Primary: Story = {
       within(table).getByText('oklch(0.66 0.12 250)'),
     ).toBeInTheDocument();
   },
-};
+});

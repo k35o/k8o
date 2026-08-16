@@ -1,9 +1,9 @@
-import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 import { expect, fn, within } from 'storybook/test';
 
+import preview from '../../../../.storybook/preview';
 import { FeedbackCard } from './feedback-card';
 
-const meta: Meta<typeof FeedbackCard> = {
+const meta = preview.meta({
   title: 'app/globals/feedback-card',
   component: FeedbackCard,
   decorators: [
@@ -13,19 +13,16 @@ const meta: Meta<typeof FeedbackCard> = {
       </div>
     ),
   ],
-};
+});
 
-export default meta;
-type Story = StoryObj<typeof FeedbackCard>;
-
-export const Primary: Story = {
+export const Primary = meta.story({
   args: {
     title: 'この記事はどうでしたか？',
     onSubmit: fn(() => Promise.resolve(true)),
   },
-};
+});
 
-export const SelectFeedback: Story = {
+export const SelectFeedback = meta.story({
   args: {
     title: 'この記事はどうでしたか？',
     onSubmit: fn(() => Promise.resolve(true)),
@@ -39,9 +36,9 @@ export const SelectFeedback: Story = {
     const submitButton = canvas.getByRole('button', { name: '送信' });
     await expect(submitButton).not.toBeDisabled();
   },
-};
+});
 
-export const InputComment: Story = {
+export const InputComment = meta.story({
   args: {
     title: 'この記事はどうでしたか？',
     onSubmit: fn(() => Promise.resolve(true)),
@@ -55,9 +52,9 @@ export const InputComment: Story = {
     const submitButton = canvas.getByRole('button', { name: '送信' });
     await expect(submitButton).not.toBeDisabled();
   },
-};
+});
 
-export const SubmitFeedback: Story = {
+export const SubmitFeedback = meta.story({
   args: {
     title: 'この記事はどうでしたか？',
     onSubmit: fn(() => Promise.resolve(true)),
@@ -79,9 +76,9 @@ export const SubmitFeedback: Story = {
       await canvas.findByText('フィードバックありがとうございます！'),
     ).toBeInTheDocument();
   },
-};
+});
 
-export const SubmitFailureKeepsForm: Story = {
+export const SubmitFailureKeepsForm = meta.story({
   args: {
     title: 'この記事はどうでしたか？',
     onSubmit: fn(() => Promise.resolve(false)),
@@ -98,4 +95,4 @@ export const SubmitFailureKeepsForm: Story = {
       await canvas.findByRole('button', { name: '送信' }),
     ).toBeInTheDocument();
   },
-};
+});

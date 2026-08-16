@@ -1,11 +1,14 @@
-import type { Meta, StoryObj } from '@storybook/nextjs-vite';
+import type { ComponentProps } from 'react';
 import { expect, within } from 'storybook/test';
 
+import preview from '../../../../../.storybook/preview';
 import { RadiusMaker } from './radius-maker';
 
-const meta: Meta<typeof RadiusMaker> = {
+const meta = preview.meta({
   title: 'app/radius-maker/radius-maker',
   component: RadiusMaker,
+  // ネストしたunionリテラル（status・browser）のままargsを推論させると
+  // meta.storyの型推論が壊れるため、satisfiesで文脈型を与えて広げる
   args: {
     cornerShapeStatus: {
       featureId: 'corner-shape',
@@ -19,15 +22,12 @@ const meta: Meta<typeof RadiusMaker> = {
         { browser: 'edge', version: '139', date: '2025-08-05' },
       ],
     },
-  },
-};
+  } satisfies Partial<ComponentProps<typeof RadiusMaker>>,
+});
 
-export default meta;
-type Story = StoryObj<typeof RadiusMaker>;
+export const Primary = meta.story();
 
-export const Primary: Story = {};
-
-export const InitialState: Story = {
+export const InitialState = meta.story({
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
 
@@ -41,9 +41,9 @@ export const InitialState: Story = {
       canvas.getByText('border-radius: 30% 70% 70% 30% / 30% 30% 70% 70%;'),
     ).toBeInTheDocument();
   },
-};
+});
 
-export const SelectPreset: Story = {
+export const SelectPreset = meta.story({
   play: async ({ canvasElement, userEvent }) => {
     const canvas = within(canvasElement);
 
@@ -53,9 +53,9 @@ export const SelectPreset: Story = {
     const fields = canvas.getAllByRole('spinbutton', { name: '水平' });
     await Promise.all(fields.map((field) => expect(field).toHaveValue('50')));
   },
-};
+});
 
-export const SelectCornerShape: Story = {
+export const SelectCornerShape = meta.story({
   play: async ({ canvasElement, userEvent }) => {
     const canvas = within(canvasElement);
 
@@ -66,9 +66,9 @@ export const SelectCornerShape: Story = {
     const code = canvasElement.querySelector('code');
     await expect(code?.textContent).toContain('corner-shape: squircle;');
   },
-};
+});
 
-export const KeyboardOperation: Story = {
+export const KeyboardOperation = meta.story({
   play: async ({ canvasElement, userEvent }) => {
     const canvas = within(canvasElement);
 
@@ -81,4 +81,4 @@ export const KeyboardOperation: Story = {
     await userEvent.keyboard('{Shift>}{ArrowLeft}{/Shift}');
     await expect(slider).toHaveAttribute('aria-valuenow', '21');
   },
-};
+});

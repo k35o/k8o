@@ -1,5 +1,4 @@
 import type { HighlightedCode } from '@repo/code-highlight/tokenize';
-import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 import { useState } from 'react';
 import type { FC } from 'react';
 import { expect, userEvent, waitFor, within } from 'storybook/test';
@@ -7,6 +6,7 @@ import { expect, userEvent, waitFor, within } from 'storybook/test';
 import type { HighlightFn } from '@/app/_components/highlighted-code';
 import { DeckHighlightContext } from '@/app/_components/slide-deck';
 
+import preview from '../../../../../../.storybook/preview';
 import { DeckPreview } from './deck-preview';
 
 const SAMPLE_DECK = [
@@ -40,7 +40,7 @@ const SAMPLE_DECK = [
   '> 引用はこのように表示される。',
 ].join('\n');
 
-const meta = {
+const meta = preview.meta({
   component: DeckPreview,
   // Stage は 16:9 をコンテナクエリで決めるため、枠の高さを固定して描画する。
   decorators: [
@@ -50,13 +50,9 @@ const meta = {
       </div>
     ),
   ],
-} satisfies Meta<typeof DeckPreview>;
+});
 
-export default meta;
-
-type Story = StoryObj<typeof meta>;
-
-export const Empty: Story = {
+export const Empty = meta.story({
   args: {
     source: null,
     isStreaming: false,
@@ -67,9 +63,9 @@ export const Empty: Story = {
       canvas.getByText(/生成すると、ここにスライドのプレビュー/u),
     ).toBeInTheDocument();
   },
-};
+});
 
-export const Cover: Story = {
+export const Cover = meta.story({
   args: {
     source: SAMPLE_DECK,
     isStreaming: false,
@@ -90,9 +86,9 @@ export const Cover: Story = {
     await expect(printRoot).not.toBeNull();
     await expect(printRoot?.children.length).toBe(3);
   },
-};
+});
 
-export const WithNotes: Story = {
+export const WithNotes = meta.story({
   args: {
     source: SAMPLE_DECK,
     isStreaming: false,
@@ -112,9 +108,9 @@ export const WithNotes: Story = {
       await canvas.findByText(/ここは発表者向けのメモ。/u),
     ).toBeInTheDocument();
   },
-};
+});
 
-export const KeyboardNav: Story = {
+export const KeyboardNav = meta.story({
   args: {
     source: SAMPLE_DECK,
     isStreaming: false,
@@ -138,7 +134,7 @@ export const KeyboardNav: Story = {
       canvas.getByRole('heading', { level: 2, name: 'スライド機能のご紹介' }),
     ).toBeInTheDocument();
   },
-};
+});
 
 // server action の代わりに使うフェイクのハイライト関数（1行=1トークンで色を付ける）。
 // 色は a11y アドオンのコントラスト検査を満たす明るいものにする。
@@ -155,7 +151,7 @@ const makeFakeHighlight =
 
 const fakeHighlight = makeFakeHighlight('#e6edf3');
 
-export const Highlighted: Story = {
+export const Highlighted = meta.story({
   args: {
     source: SAMPLE_DECK,
     isStreaming: false,
@@ -188,7 +184,7 @@ export const Highlighted: Story = {
       ).not.toBeNull();
     });
   },
-};
+});
 
 // テーマ切替でハイライト関数が差し替わる状況を、スタジオと同じ注入の形で再現する。
 const SwitchableHighlight: FC<{ source: string }> = ({ source }) => {
@@ -215,7 +211,7 @@ const SwitchableHighlight: FC<{ source: string }> = ({ source }) => {
 };
 
 // ハイライト関数が差し替わったら、同じデッキでも取得し直して配色が変わる。
-export const RehighlightOnHighlighterChange: Story = {
+export const RehighlightOnHighlighterChange = meta.story({
   args: {
     source: SAMPLE_DECK,
     isStreaming: false,
@@ -241,9 +237,9 @@ export const RehighlightOnHighlighterChange: Story = {
       });
     });
   },
-};
+});
 
-export const Streaming: Story = {
+export const Streaming = meta.story({
   args: {
     // 生成中の途中経過（末尾のスライドが書きかけ）。
     source: [
@@ -267,4 +263,4 @@ export const Streaming: Story = {
       canvas.getByRole('button', { name: '前のスライド' }),
     ).toBeDisabled();
   },
-};
+});

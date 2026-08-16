@@ -1,6 +1,6 @@
-import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 import { expect, within } from 'storybook/test';
 
+import preview from '../../../../../.storybook/preview';
 import { StreamPreview } from './stream-preview';
 
 // 生成プロンプトのお手本に倣った宣言的サンプル（完成形）。
@@ -89,46 +89,42 @@ export default function Preview() {
   );
 }`;
 
-const meta = {
+const meta = preview.meta({
   component: StreamPreview,
-} satisfies Meta<typeof StreamPreview>;
-
-export default meta;
-
-type Story = StoryObj<typeof meta>;
+});
 
 // 完成形。アイコン付きボタンまで含めて素直に描けることを確認する。
-export const Complete: Story = {
+export const Complete = meta.story({
   args: { code: SAMPLE_RICH },
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
     await expect(canvas.getByText('申し込む')).toBeInTheDocument();
     await expect(canvas.getByText('プラン')).toBeInTheDocument();
   },
-};
+});
 
 // 生成 4 割時点。受信済みまで描き、先端にスケルトンが出る。
-export const StreamingEarly: Story = {
+export const StreamingEarly = meta.story({
   args: { code: SAMPLE_RICH.slice(0, Math.floor(SAMPLE_RICH.length * 0.4)) },
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
     await expect(canvas.getAllByRole('status').length).toBeGreaterThan(0);
   },
-};
+});
 
 // 生成 7 割時点。骨格が出揃い、末尾だけ未受信。
-export const StreamingLate: Story = {
+export const StreamingLate = meta.story({
   args: { code: SAMPLE_RICH.slice(0, Math.floor(SAMPLE_RICH.length * 0.7)) },
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
     await expect(canvas.getByText('プラン')).toBeInTheDocument();
     await expect(canvas.getAllByRole('status').length).toBeGreaterThan(0);
   },
-};
+});
 
 // サブセット外はコンポーネント名を画面に出さず、匿名プレースホルダとして描く。
 // 子を持つもの（Tabs）は子を透過描画し、葉（FormControl / 未登録アイコン）は無地ブロックになる。
-export const UnsupportedSubset: Story = {
+export const UnsupportedSubset = meta.story({
   args: { code: SAMPLE_HARD },
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
@@ -143,30 +139,30 @@ export const UnsupportedSubset: Story = {
         .length,
     ).toBeGreaterThan(0);
   },
-};
+});
 
 // .map() でデータ配列からカードを複製（完成形）。3枚が並ぶ。
-export const MapGridComplete: Story = {
+export const MapGridComplete = meta.story({
   args: { code: SAMPLE_GRID },
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
     await expect(canvas.getByText('田中 太郎')).toBeInTheDocument();
     await expect(canvas.getByText('鈴木 一郎')).toBeInTheDocument();
   },
-};
+});
 
 // .map() のテンプレートが途中。データ件数ぶんの部分カードが並び、先端にスケルトン。
-export const MapGridStreaming: Story = {
+export const MapGridStreaming = meta.story({
   args: { code: SAMPLE_GRID.slice(0, Math.floor(SAMPLE_GRID.length * 0.78)) },
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
     await expect(canvas.getAllByRole('status').length).toBeGreaterThan(0);
   },
-};
+});
 
 // 文字列連結式は値として描かず、生のコード片（`' + name + '`）が画面に漏れない。
 // 連結式を含む <p> は空になるが、周囲の本文（見出し）は通常どおり描ける。
-export const ConcatExpression: Story = {
+export const ConcatExpression = meta.story({
   args: { code: SAMPLE_CONCAT },
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
@@ -176,10 +172,10 @@ export const ConcatExpression: Story = {
     await expect(canvasElement.textContent).not.toContain("' +");
     await expect(canvasElement.textContent).not.toContain('こんにちは、');
   },
-};
+});
 
 // 生成開始直後（return 未到達＝まだ構造なし）。スケルトンではなくスピナーを出す。
-export const Empty: Story = {
+export const Empty = meta.story({
   args: {
     code: "import { Card } from '@k8o/arte-odyssey';\n\nexport default function Preview() {",
   },
@@ -187,4 +183,4 @@ export const Empty: Story = {
     const canvas = within(canvasElement);
     await expect(canvas.getByRole('status')).toBeInTheDocument();
   },
-};
+});

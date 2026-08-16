@@ -1,11 +1,10 @@
-import type { Meta, StoryObj } from '@storybook/nextjs-vite';
-
+import preview from '../../../../../.storybook/preview';
 import { Playground } from '../playground';
 import { ScrollendTriggerDemo } from './scrollend-trigger-demo';
 
 const playgroundTitle = ScrollendTriggerDemo.name;
 
-const meta: Meta<typeof ScrollendTriggerDemo> = {
+const meta = preview.meta({
   title: 'playgrounds/scrollend/ScrollendTriggerDemo',
   component: ScrollendTriggerDemo,
   decorators: [
@@ -15,10 +14,6 @@ const meta: Meta<typeof ScrollendTriggerDemo> = {
       </Playground>
     ),
   ],
-};
+});
 
-export default meta;
-
-type Story = StoryObj<typeof ScrollendTriggerDemo>;
-
-export const Default: Story = {};
+export const Default = meta.story();

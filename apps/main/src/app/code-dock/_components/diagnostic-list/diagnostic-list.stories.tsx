@@ -1,8 +1,8 @@
-import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 import { expect, within } from 'storybook/test';
 
 import type { LintDiagnostic } from '@/features/code-dock/interface/types';
 
+import preview from '../../../../../.storybook/preview';
 import { DiagnosticList } from './diagnostic-list';
 
 const sampleDiagnostics: LintDiagnostic[] = [
@@ -35,7 +35,7 @@ const sampleDiagnostics: LintDiagnostic[] = [
   },
 ];
 
-const meta: Meta<typeof DiagnosticList> = {
+const meta = preview.meta({
   title: 'app/code-dock/diagnostic-list',
   component: DiagnosticList,
   args: {
@@ -43,13 +43,10 @@ const meta: Meta<typeof DiagnosticList> = {
     errorMessage: null,
     isLinting: false,
   },
-};
-
-export default meta;
-type Story = StoryObj<typeof DiagnosticList>;
+});
 
 // 正常系: 診断が severity バッジ・位置・ルールコードつきで一覧表示される
-export const Primary: Story = {
+export const Primary = meta.story({
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
     await expect(
@@ -61,10 +58,10 @@ export const Primary: Story = {
     ).toBeInTheDocument();
     await expect(canvas.getByText('error 2 / warning 1')).toBeInTheDocument();
   },
-};
+});
 
 // 正常系: 診断 0 件は成功の Alert になる
-export const NoIssues: Story = {
+export const NoIssues = meta.story({
   args: {
     diagnostics: [],
   },
@@ -74,10 +71,10 @@ export const NoIssues: Story = {
       canvas.getByText('問題は見つかりませんでした'),
     ).toBeInTheDocument();
   },
-};
+});
 
 // 正常系: 未検査 (コードが空) は案内文を表示する
-export const NotChecked: Story = {
+export const NotChecked = meta.story({
   args: {
     diagnostics: null,
   },
@@ -87,10 +84,10 @@ export const NotChecked: Story = {
       canvas.getByText('コードを入力すると、自動で検査結果が表示されます。'),
     ).toBeInTheDocument();
   },
-};
+});
 
 // 正常系: 検査中はスピナーを表示する
-export const Linting: Story = {
+export const Linting = meta.story({
   args: {
     isLinting: true,
   },
@@ -98,10 +95,10 @@ export const Linting: Story = {
     const canvas = within(canvasElement);
     await expect(canvas.getByText('検査中')).toBeInTheDocument();
   },
-};
+});
 
 // 異常系: 検査自体の失敗はエラーの Alert になる
-export const LintFailed: Story = {
+export const LintFailed = meta.story({
   args: {
     errorMessage: 'コードの検査に失敗しました',
   },
@@ -111,4 +108,4 @@ export const LintFailed: Story = {
       canvas.getByText('コードの検査に失敗しました'),
     ).toBeInTheDocument();
   },
-};
+});

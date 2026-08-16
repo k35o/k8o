@@ -1,17 +1,14 @@
-import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 import { expect, within } from 'storybook/test';
 
+import preview from '../../../../../../.storybook/preview';
 import { ArticleTable } from './article-table';
 
-const meta: Meta<typeof ArticleTable> = {
+const meta = preview.meta({
   title: 'admin/reading-list/article-table',
   component: ArticleTable,
-};
+});
 
-export default meta;
-type Story = StoryObj<typeof ArticleTable>;
-
-export const Primary: Story = {
+export const Primary = meta.story({
   args: {
     articles: [
       {
@@ -46,9 +43,9 @@ export const Primary: Story = {
     await expect(canvas.getByText('web.dev')).toBeInTheDocument();
     await expect(canvas.getByText('Zenn')).toBeInTheDocument();
   },
-};
+});
 
-export const Empty: Story = {
+export const Empty = meta.story({
   args: {
     articles: [],
   },
@@ -59,4 +56,4 @@ export const Empty: Story = {
       canvas.getByText('取得済みの記事はありません'),
     ).toBeInTheDocument();
   },
-};
+});

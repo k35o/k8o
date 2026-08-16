@@ -1,5 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/nextjs-vite';
-
+import preview from '../../../../../.storybook/preview';
 import { BlogLayoutContent } from './blog-layout';
 import { WritingModeProvider } from './writing-mode';
 
@@ -85,7 +84,7 @@ const recommendedBlogs = [
   },
 ];
 
-const meta: Meta<typeof BlogLayoutContent> = {
+const meta = preview.meta({
   title: 'app/blog/blog-layout',
   component: BlogLayoutContent,
   decorators: [
@@ -97,12 +96,9 @@ const meta: Meta<typeof BlogLayoutContent> = {
       </WritingModeProvider>
     ),
   ],
-};
+});
 
-export default meta;
-type Story = StoryObj<typeof BlogLayoutContent>;
-
-export const Primary: Story = {
+export const Primary = meta.story({
   args: {
     blog,
     children: 'This is a blog layout',
@@ -111,4 +107,4 @@ export const Primary: Story = {
     slug: 'tanstack-router-introduction',
     readingTime: 5,
   },
-};
+});

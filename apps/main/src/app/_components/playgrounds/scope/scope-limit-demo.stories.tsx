@@ -1,11 +1,10 @@
-import type { Meta, StoryObj } from '@storybook/nextjs-vite';
-
+import preview from '../../../../../.storybook/preview';
 import { Playground } from '../playground';
 import { ScopeLimitDemo } from './scope-limit-demo';
 
 const playgroundTitle = ScopeLimitDemo.name;
 
-const meta: Meta<typeof ScopeLimitDemo> = {
+const meta = preview.meta({
   title: 'playgrounds/scope/ScopeLimitDemo',
   component: ScopeLimitDemo,
   decorators: [
@@ -15,10 +14,6 @@ const meta: Meta<typeof ScopeLimitDemo> = {
       </Playground>
     ),
   ],
-};
+});
 
-export default meta;
-
-type Story = StoryObj<typeof ScopeLimitDemo>;
-
-export const Default: Story = {};
+export const Default = meta.story();

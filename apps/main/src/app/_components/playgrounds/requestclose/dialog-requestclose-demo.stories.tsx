@@ -1,11 +1,10 @@
-import type { Meta, StoryObj } from '@storybook/nextjs-vite';
-
+import preview from '../../../../../.storybook/preview';
 import { Playground } from '../playground';
 import { DialogRequestCloseDemo } from './dialog-requestclose-demo';
 
 const playgroundTitle = DialogRequestCloseDemo.name;
 
-const meta: Meta<typeof DialogRequestCloseDemo> = {
+const meta = preview.meta({
   title: 'playgrounds/requestclose/DialogRequestCloseDemo',
   component: DialogRequestCloseDemo,
   decorators: [
@@ -15,9 +14,6 @@ const meta: Meta<typeof DialogRequestCloseDemo> = {
       </Playground>
     ),
   ],
-};
+});
 
-export default meta;
-type Story = StoryObj<typeof DialogRequestCloseDemo>;
-
-export const Default: Story = {};
+export const Default = meta.story();

@@ -1,9 +1,9 @@
-import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 import { expect, userEvent, within } from 'storybook/test';
 
 import type { BlogLink } from '@/features/blog/interface/queries';
 import type { BrowserSupportFeature } from '@/features/browser-support/interface/queries';
 
+import preview from '../../../../.storybook/preview';
 import { BrowserSupportFeatureList } from './browser-support-feature-list';
 
 // VRTを決定的にするため実行日時ではなく固定基準日を使う。args はモジュール評価時に
@@ -101,7 +101,7 @@ const BLOG_MAP: Record<string, BlogLink> = {
   'promise-try': { slug: 'promise-try', title: 'Promise.try()が来た' },
 };
 
-const meta: Meta<typeof BrowserSupportFeatureList> = {
+const meta = preview.meta({
   title: 'app/browser-support/browser-support-feature-list',
   component: BrowserSupportFeatureList,
   args: {
@@ -110,12 +110,9 @@ const meta: Meta<typeof BrowserSupportFeatureList> = {
     currentYear: toDate(0).slice(0, 4),
     nowMs: now,
   },
-};
+});
 
-export default meta;
-type Story = StoryObj<typeof BrowserSupportFeatureList>;
-
-export const Primary: Story = {
+export const Primary = meta.story({
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
     await expect(
@@ -132,18 +129,18 @@ export const Primary: Story = {
       canvas.getByRole('tablist', { name: '年を選択' }),
     ).toBeInTheDocument();
   },
-};
+});
 
-export const ShowsBrowserSupport: Story = {
+export const ShowsBrowserSupport = meta.story({
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
     // Limited の text-fit は Chrome 対応・Safari 未対応が並ぶ。
     await expect(canvas.getAllByText('text-fit').length).toBeGreaterThan(0);
     await expect(canvas.getAllByText('Safari').length).toBeGreaterThan(0);
   },
-};
+});
 
-export const FilterBySearch: Story = {
+export const FilterBySearch = meta.story({
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
     const searchInput = canvas.getByRole('textbox', { name: '検索' });
@@ -151,9 +148,9 @@ export const FilterBySearch: Story = {
     await expect(canvas.getByText('Popover API')).toBeInTheDocument();
     await expect(canvas.queryByText('Iterator.concat()')).toBeNull();
   },
-};
+});
 
-export const FilterOutLimited: Story = {
+export const FilterOutLimited = meta.story({
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
     // 先取り(Limited)を外すと text-fit が消え、Widely/Newly は残る。
@@ -163,17 +160,17 @@ export const FilterOutLimited: Story = {
     await expect(canvas.queryByText('text-fit')).toBeNull();
     await expect(canvas.getByText('Popover API')).toBeInTheDocument();
   },
-};
+});
 
-export const BlogLinkDisplayed: Story = {
+export const BlogLinkDisplayed = meta.story({
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
     const blogLinks = canvas.getAllByText('Blog');
     await expect(blogLinks.length).toBeGreaterThan(0);
   },
-};
+});
 
-export const EmptyResult: Story = {
+export const EmptyResult = meta.story({
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
     const searchInput = canvas.getByRole('textbox', { name: '検索' });
@@ -182,9 +179,9 @@ export const EmptyResult: Story = {
       canvas.getByText('該当する機能が見つかりません'),
     ).toBeInTheDocument();
   },
-};
+});
 
-export const FilterByRecentOnly: Story = {
+export const FilterByRecentOnly = meta.story({
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
     await userEvent.click(
@@ -194,4 +191,4 @@ export const FilterByRecentOnly: Story = {
     await expect(canvas.getAllByText('text-fit').length).toBeGreaterThan(0);
     await expect(canvas.queryByText('View transitions')).toBeNull();
   },
-};
+});

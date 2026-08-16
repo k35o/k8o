@@ -1,11 +1,11 @@
 import type { HighlightTheme } from '@repo/code-highlight/tokenize';
-import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 import { useState } from 'react';
-import type { FC } from 'react';
+import type { ComponentProps, FC } from 'react';
 import { expect, waitFor, within } from 'storybook/test';
 
 import type { LintLanguage } from '@/features/code-dock/interface/types';
 
+import preview from '../../../../../.storybook/preview';
 import { CodeEditor } from './code-editor';
 
 const ControlledEditor: FC<{
@@ -24,21 +24,20 @@ const ControlledEditor: FC<{
   );
 };
 
-const meta: Meta<typeof ControlledEditor> = {
+const meta = preview.meta({
   title: 'app/code-dock/code-editor',
   component: ControlledEditor,
+  // unionリテラルのままargsを推論させるとmeta.storyの型推論が壊れるため、
+  // satisfiesで文脈型を与えてunion全体に広げる
   args: {
     initialValue: "const greeting = 'Hello, k8o!';\n",
     language: 'tsx',
     theme: 'plastic',
-  },
-};
-
-export default meta;
-type Story = StoryObj<typeof ControlledEditor>;
+  } satisfies Partial<ComponentProps<typeof ControlledEditor>>,
+});
 
 // 正常系: shiki のトークンで色つき表示される (実ブラウザでハイライトが動く)
-export const Primary: Story = {
+export const Primary = meta.story({
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
     await expect(
@@ -54,10 +53,10 @@ export const Primary: Story = {
       { timeout: 10_000 },
     );
   },
-};
+});
 
 // 正常系: ライトテーマ (one-light) では明るい面色でハイライトされる
-export const OneLight: Story = {
+export const OneLight = meta.story({
   args: {
     theme: 'one-light',
   },
@@ -76,10 +75,10 @@ export const OneLight: Story = {
       { timeout: 10_000 },
     );
   },
-};
+});
 
 // 正常系: 入力すると textarea の値と表示テキストが同期する
-export const Typing: Story = {
+export const Typing = meta.story({
   args: {
     initialValue: '',
   },
@@ -95,4 +94,4 @@ export const Typing: Story = {
       expect(pre?.textContent).toContain('const answer = 42;');
     });
   },
-};
+});

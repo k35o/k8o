@@ -1,13 +1,9 @@
-import type { Meta, StoryObj } from '@storybook/nextjs-vite';
-
+import preview from '../../../../../.storybook/preview';
 import { CustomCommandDemo } from './custom-command-demo';
 
-const meta: Meta<typeof CustomCommandDemo> = {
+const meta = preview.meta({
   component: CustomCommandDemo,
   title: 'playgrounds/CustomCommandDemo',
-};
+});
 
-export default meta;
-type Story = StoryObj<typeof CustomCommandDemo>;
-
-export const Default: Story = {};
+export const Default = meta.story();

@@ -1,9 +1,8 @@
-import type { Meta, StoryObj } from '@storybook/nextjs-vite';
-
+import preview from '../../../../../../.storybook/preview';
 import { WritingModeProvider } from '../writing-mode';
 import { TableOfContentsSideRail } from './side-rail';
 
-const meta: Meta<typeof TableOfContentsSideRail> = {
+const meta = preview.meta({
   title: 'app/blog/blog-layout/table-of-contents-side-rail',
   component: TableOfContentsSideRail,
   decorators: [
@@ -13,12 +12,9 @@ const meta: Meta<typeof TableOfContentsSideRail> = {
       </WritingModeProvider>
     ),
   ],
-};
+});
 
-export default meta;
-type Story = StoryObj<typeof TableOfContentsSideRail>;
-
-export const Primary: Story = {
+export const Primary = meta.story({
   args: {
     headingTree: {
       depth: 0,
@@ -72,4 +68,4 @@ export const Primary: Story = {
       ],
     },
   },
-};
+});

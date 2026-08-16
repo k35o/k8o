@@ -1,18 +1,15 @@
-import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 import { expect } from 'storybook/test';
 
+import preview from '../../../../../.storybook/preview';
 import { BLOB_CORNERS } from '../../_utils/presets';
 import { UiPreview } from './ui-preview';
 
-const meta: Meta<typeof UiPreview> = {
+const meta = preview.meta({
   title: 'app/radius-maker/ui-preview',
   component: UiPreview,
-};
+});
 
-export default meta;
-type Story = StoryObj<typeof UiPreview>;
-
-export const Primary: Story = {
+export const Primary = meta.story({
   args: {
     corners: BLOB_CORNERS,
     shape: 'round',
@@ -23,9 +20,9 @@ export const Primary: Story = {
     );
     await expect(captions).toEqual(['アバター', 'ボタン', 'カード', '画像']);
   },
-};
+});
 
-export const Circle: Story = {
+export const Circle = meta.story({
   args: {
     corners: {
       topLeft: { x: 50, y: 50 },
@@ -35,4 +32,4 @@ export const Circle: Story = {
     },
     shape: 'round',
   },
-};
+});

@@ -1,22 +1,19 @@
-import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 import { expect, within } from 'storybook/test';
 
+import preview from '../../../../../.storybook/preview';
 import { generatePalette } from '../../_utils/palette';
 import { ExportPanel } from './export-panel';
 
-const meta: Meta<typeof ExportPanel> = {
+const meta = preview.meta({
   title: 'app/palette-maker/export-panel',
   component: ExportPanel,
   args: {
     name: 'primary',
     swatches: generatePalette(250, 0.12),
   },
-};
+});
 
-export default meta;
-type Story = StoryObj<typeof ExportPanel>;
-
-export const Primary: Story = {
+export const Primary = meta.story({
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
     await expect(canvas.getByText(/:root \{/u)).toBeInTheDocument();
@@ -30,9 +27,9 @@ export const Primary: Story = {
       canvas.getByRole('button', { name: '共有用URLをコピー' }),
     ).toBeInTheDocument();
   },
-};
+});
 
-export const SwitchToTailwind: Story = {
+export const SwitchToTailwind = meta.story({
   play: async ({ canvasElement, userEvent }) => {
     const canvas = within(canvasElement);
     await userEvent.click(canvas.getByRole('tab', { name: 'Tailwind @theme' }));
@@ -41,4 +38,4 @@ export const SwitchToTailwind: Story = {
       canvas.getByRole('button', { name: 'Tailwind @themeをコピー' }),
     ).toBeInTheDocument();
   },
-};
+});

@@ -1,9 +1,9 @@
-import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 import { expect, fn, screen, userEvent, within } from 'storybook/test';
 
+import preview from '../../../../../.storybook/preview';
 import { ShareControlView } from './share-control-view';
 
-const meta = {
+const meta = preview.meta({
   component: ShareControlView,
   args: {
     busy: false,
@@ -11,13 +11,9 @@ const meta = {
     onCopy: fn<() => void>(),
     onUnpublish: fn<() => void>(),
   },
-} satisfies Meta<typeof ShareControlView>;
+});
 
-export default meta;
-
-type Story = StoryObj<typeof meta>;
-
-export const Private: Story = {
+export const Private = meta.story({
   args: { isPublic: false, hasDraft: false },
   play: async ({ args, canvasElement }) => {
     const canvas = within(canvasElement);
@@ -25,9 +21,9 @@ export const Private: Story = {
     await userEvent.click(await screen.findByText('公開する'));
     await expect(args.onPublish).toHaveBeenCalled();
   },
-};
+});
 
-export const PublicNoDraft: Story = {
+export const PublicNoDraft = meta.story({
   args: { isPublic: true, hasDraft: false },
   play: async ({ args, canvasElement }) => {
     const canvas = within(canvasElement);
@@ -36,9 +32,9 @@ export const PublicNoDraft: Story = {
     await userEvent.click(screen.getByText('非公開にする'));
     await expect(args.onUnpublish).toHaveBeenCalled();
   },
-};
+});
 
-export const PublicWithDraft: Story = {
+export const PublicWithDraft = meta.story({
   args: { isPublic: true, hasDraft: true },
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
@@ -47,4 +43,4 @@ export const PublicWithDraft: Story = {
       await screen.findByText('変更を反映（再公開）'),
     ).toBeInTheDocument();
   },
-};
+});

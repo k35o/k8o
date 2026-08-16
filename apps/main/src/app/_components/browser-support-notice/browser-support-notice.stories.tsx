@@ -1,6 +1,6 @@
-import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 import { expect } from 'storybook/test';
 
+import preview from '../../../../.storybook/preview';
 import { BrowserSupportNotice } from './browser-support-notice';
 
 // 実際のブラウザより高い最低バージョンを渡し、検出されたブラウザが必ず
@@ -15,27 +15,24 @@ const FORCE_OUTDATED = {
   safari_ios: '9999',
 };
 
-const meta: Meta<typeof BrowserSupportNotice> = {
+const meta = preview.meta({
   title: 'app/globals/browser-support-notice',
   component: BrowserSupportNotice,
   beforeEach: () => {
     sessionStorage.removeItem('k8o:browser-support-notice-dismissed');
   },
-};
+});
 
-export default meta;
-type Story = StoryObj<typeof BrowserSupportNotice>;
-
-export const Primary: Story = {
+export const Primary = meta.story({
   args: {
     minVersions: FORCE_OUTDATED,
   },
   play: async ({ canvas }) => {
     await expect(await canvas.findByRole('alert')).toBeInTheDocument();
   },
-};
+});
 
-export const OpenModal: Story = {
+export const OpenModal = meta.story({
   args: {
     minVersions: FORCE_OUTDATED,
   },
@@ -49,9 +46,9 @@ export const OpenModal: Story = {
     ).toBeInTheDocument();
     await expect(canvas.getByText('推奨バージョン')).toBeInTheDocument();
   },
-};
+});
 
-export const Dismiss: Story = {
+export const Dismiss = meta.story({
   args: {
     minVersions: FORCE_OUTDATED,
   },
@@ -64,4 +61,4 @@ export const Dismiss: Story = {
 
     await expect(canvas.queryByRole('alert')).not.toBeInTheDocument();
   },
-};
+});

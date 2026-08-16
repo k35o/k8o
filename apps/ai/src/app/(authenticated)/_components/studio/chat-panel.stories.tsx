@@ -1,16 +1,18 @@
-import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 import type { UIMessage } from 'ai';
 import { useRef, useState } from 'react';
 import type { ComponentProps, FC, ReactNode } from 'react';
 
+import preview from '../../../../../.storybook/preview';
 import { ChatPanel } from './chat-panel';
 
 const noop = (): void => {
   // 見た目確認用のダミーハンドラ
 };
 
-const meta = {
+const meta = preview.meta({
   component: ChatPanel,
+  // propより狭い型（unionリテラル・null・[]）のままargsを推論させると
+  // meta.storyの型推論が壊れるため、satisfiesで文脈型を与えて広げる
   args: {
     status: 'ready',
     input: '',
@@ -24,11 +26,8 @@ const meta = {
     onStop: noop,
     onSelectModel: noop,
     messages: [],
-  },
-} satisfies Meta<typeof ChatPanel>;
-
-export default meta;
-type Story = StoryObj<typeof meta>;
+  } satisfies Partial<ComponentProps<typeof ChatPanel>>,
+});
 
 const mkMessage = (
   id: string,
@@ -77,11 +76,11 @@ const InteractiveDemo: FC<ComponentProps<typeof ChatPanel>> = (args) => {
   );
 };
 
-export const Default: Story = {
+export const Default = meta.story({
   render: (args) => <InteractiveDemo {...args} />,
-};
+});
 
-export const Empty: Story = {
+export const Empty = meta.story({
   args: {
     messages: [],
     emptyStateTitle: 'UI を生成しましょう',
@@ -98,9 +97,9 @@ export const Empty: Story = {
       <ChatPanel {...args} />
     </Frame>
   ),
-};
+});
 
-export const Generating: Story = {
+export const Generating = meta.story({
   args: {
     status: 'streaming',
     messages: [
@@ -114,4 +113,4 @@ export const Generating: Story = {
       <ChatPanel {...args} />
     </Frame>
   ),
-};
+});

@@ -1,18 +1,14 @@
-import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 import { expect, userEvent, within } from 'storybook/test';
 
+import preview from '../../../../.storybook/preview';
 import { ToggleTheme } from './toggle-theme';
 
-const meta = {
+const meta = preview.meta({
   component: ToggleTheme,
-} satisfies Meta<typeof ToggleTheme>;
-
-export default meta;
-
-type Story = StoryObj<typeof meta>;
+});
 
 // 実際のテーマ反映は preview の decorator(ApplyThemeByStorybook)が制御するため、描画と操作可能性のスモークに留める。
-export const Default: Story = {
+export const Default = meta.story({
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
     const button = canvas.getByRole('button', {
@@ -22,4 +18,4 @@ export const Default: Story = {
     await userEvent.click(button);
     await expect(button).toBeInTheDocument();
   },
-};
+});

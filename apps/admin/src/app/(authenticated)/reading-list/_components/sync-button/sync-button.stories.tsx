@@ -1,19 +1,16 @@
-import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 import { expect, within } from 'storybook/test';
 
+import preview from '../../../../../../.storybook/preview';
 import { SyncButton } from './sync-button';
 
-const meta: Meta<typeof SyncButton> = {
+const meta = preview.meta({
   title: 'admin/reading-list/sync-button',
   component: SyncButton,
-};
+});
 
-export default meta;
-type Story = StoryObj<typeof SyncButton>;
+export const Primary = meta.story();
 
-export const Primary: Story = {};
-
-export const DisplaysSyncButton: Story = {
+export const DisplaysSyncButton = meta.story({
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
 
@@ -21,4 +18,4 @@ export const DisplaysSyncButton: Story = {
       canvas.getByRole('button', { name: '記事を同期' }),
     ).toBeInTheDocument();
   },
-};
+});

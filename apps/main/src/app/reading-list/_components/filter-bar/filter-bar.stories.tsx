@@ -1,13 +1,16 @@
-import type { Meta, StoryObj } from '@storybook/nextjs-vite';
+import type { ComponentProps } from 'react';
 import { expect, fn, userEvent, within } from 'storybook/test';
 
+import preview from '../../../../../.storybook/preview';
+import type { SortOrder } from '../../_utils/constants';
 import { FilterBar } from './filter-bar';
 
-const noop = () => {};
-
-const meta: Meta<typeof FilterBar> = {
+const meta = preview.meta({
   title: 'app/reading-list/filter-bar',
   component: FilterBar,
+  // propより狭い型（unionリテラル・[]）のままargsを推論させるとmeta.storyの
+  // 型推論が壊れるため、satisfiesで文脈型を与えて広げる。関数は文脈型で
+  // 広がらないため、引数まで書いてpropのシグネチャに一致させる
   args: {
     sources: [
       { id: 1, title: 'web.dev', articleCount: 24 },
@@ -19,16 +22,13 @@ const meta: Meta<typeof FilterBar> = {
     query: '',
     sortOrder: 'newest',
     sourceIds: [],
-    onQueryChange: noop,
-    onSortChange: noop,
-    onSourceChange: noop,
-  },
-};
+    onQueryChange: (_value: string) => {},
+    onSortChange: (_value: SortOrder) => {},
+    onSourceChange: (_ids: number[]) => {},
+  } satisfies Partial<ComponentProps<typeof FilterBar>>,
+});
 
-export default meta;
-type Story = StoryObj<typeof FilterBar>;
-
-export const Primary: Story = {
+export const Primary = meta.story({
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
     await expect(
@@ -41,10 +41,10 @@ export const Primary: Story = {
       canvas.getByRole('combobox', { name: 'ソース' }),
     ).toBeInTheDocument();
   },
-};
+});
 
 // 正常系: 選択済みソースが削除可能なチップとして表示される
-export const WithSelectedSources: Story = {
+export const WithSelectedSources = meta.story({
   args: {
     sourceIds: [1, 3],
   },
@@ -53,10 +53,10 @@ export const WithSelectedSources: Story = {
     await expect(canvas.getByText('web.dev (24)')).toBeInTheDocument();
     await expect(canvas.getByText('Chrome Developers (8)')).toBeInTheDocument();
   },
-};
+});
 
 // 正常系: 入力して候補から選ぶと、その id が onSourceChange に渡る
-export const SelectByTyping: Story = {
+export const SelectByTyping = meta.story({
   args: {
     onSourceChange: fn<(ids: number[]) => void>(),
   },
@@ -69,4 +69,4 @@ export const SelectByTyping: Story = {
     await userEvent.click(option);
     await expect(args.onSourceChange).toHaveBeenCalledWith([2]);
   },
-};
+});

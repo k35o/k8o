@@ -1,19 +1,16 @@
-import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 import { expect, within } from 'storybook/test';
 
+import preview from '../../../../../.storybook/preview';
 import { AdminSidebar } from './admin-sidebar';
 
-const meta: Meta<typeof AdminSidebar> = {
+const meta = preview.meta({
   title: 'admin/admin-sidebar',
   component: AdminSidebar,
-};
+});
 
-export default meta;
-type Story = StoryObj<typeof AdminSidebar>;
+export const Primary = meta.story();
 
-export const Primary: Story = {};
-
-export const HighlightsActiveRoute: Story = {
+export const HighlightsActiveRoute = meta.story({
   parameters: {
     nextjs: {
       navigation: {
@@ -27,4 +24,4 @@ export const HighlightsActiveRoute: Story = {
     const link = canvas.getAllByText('お問い合わせ')[0]?.closest('a') ?? null;
     await expect(link).toHaveAttribute('aria-current', 'page');
   },
-};
+});
