@@ -1,11 +1,7 @@
 import 'server-only';
 import { Sandbox } from '@vercel/sandbox';
 
-import {
-  SANDBOX_PROJECT_ID,
-  SANDBOX_TEAM_ID,
-  SANDBOX_WORKDIR,
-} from './sandbox-config';
+import { SANDBOX_PROJECT_ID, SANDBOX_TEAM_ID } from './sandbox-config';
 import { templateSnapshot } from './template-snapshot';
 
 // 本番プレビュー: 焼いた snapshot から名前付き microVM を起こして vite dev を立て、その
@@ -78,7 +74,7 @@ const getOrCreate = async (name: string): Promise<Sandbox> => {
   const existing = await Sandbox.get({ name: fullName, ...creds() }).catch(
     () => null,
   );
-  // snapshot ソース指定時は runtime を渡さない（snapshot から継承）。
+  // snapshot ソース指定時は image を渡さない（snapshot から継承。SDK も型で禁じている）。
   const sandbox =
     existing ??
     (await Sandbox.create({
@@ -109,10 +105,11 @@ const ensureServing = async (
     servingConfirmedAt.set(fullName, Date.now());
     return url;
   }
+  // cwd は指定しない。session の既定 cwd（snapshot が継承した image の WORKDIR）が
+  // テンプレを焼いた場所そのものなので、writeFiles の相対パスと自動的に揃う。
   await sandbox.runCommand({
     cmd: 'npm',
     args: ['run', 'dev', '--', '--port', String(PORT), '--host'],
-    cwd: SANDBOX_WORKDIR,
     detached: true,
   });
   for (let i = 0; i < READY_TRIES; i += 1) {

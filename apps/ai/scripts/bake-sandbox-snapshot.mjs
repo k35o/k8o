@@ -9,9 +9,9 @@ import path from 'node:path';
 import { Sandbox } from '@vercel/sandbox';
 
 import {
+  SANDBOX_IMAGE,
   SANDBOX_PROJECT_ID,
   SANDBOX_TEAM_ID,
-  SANDBOX_WORKDIR,
 } from '../src/features/preview/infrastructure/sandbox-config.ts';
 import {
   collectTemplateFiles,
@@ -53,16 +53,17 @@ const sandbox = await Sandbox.create({
   token,
   teamId: SANDBOX_TEAM_ID,
   projectId: SANDBOX_PROJECT_ID,
-  runtime: 'node24',
+  image: SANDBOX_IMAGE,
   timeout: 10 * 60 * 1000,
 });
 try {
+  // writeFiles の相対パスも runCommand も session の既定 cwd（image の WORKDIR）を基準に
+  // 解決されるため、作業ディレクトリは指定しない。
   await sandbox.writeFiles(files);
   console.log('files written. running `npm ci`...');
   const ci = await sandbox.runCommand({
     cmd: 'npm',
     args: ['ci'],
-    cwd: SANDBOX_WORKDIR,
     timeoutMs: 8 * 60 * 1000,
   });
   console.log(`npm ci exit=${ci.exitCode}`);
