@@ -12,10 +12,8 @@ import type { UIMessage } from 'ai';
 import { memo } from 'react';
 import type { FC, ReactNode } from 'react';
 
-import {
-  messageText,
-  parseGeneration,
-} from '@/features/generation/application/parse-generation';
+import { messageText } from '@/features/generation/application/message-text';
+import { parseSpecProse } from '@/features/generation/application/spec-message';
 
 type Model = 'fugu' | 'fugu-ultra';
 
@@ -32,8 +30,12 @@ const AssistantRow: FC<{ children: ReactNode }> = ({ children }) => (
 // 出力フォーマットが違うため差し替え可能にする（モジュールレベルの定数を渡すこと）。
 type DescribeMessage = (text: string) => string | null;
 
-const describeUiMessage: DescribeMessage = (text) =>
-  parseGeneration(text).meta?.description ?? null;
+// 会話文（タイトル行 + 説明）から説明だけを取り出す。パッチは data パーツに
+// 分離済みなので text には含まれない。
+const describeUiMessage: DescribeMessage = (text) => {
+  const { description } = parseSpecProse(text);
+  return description === '' ? null : description;
+};
 
 // 確定済み assistant メッセージ。履歴はストリーミング中に毎トークン再パースされないよう memo する。
 const AssistantDescription = memo(

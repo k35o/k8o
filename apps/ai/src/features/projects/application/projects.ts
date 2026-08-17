@@ -1,4 +1,6 @@
 import 'server-only';
+import { isNonEmptySpec } from '@json-render/core';
+import type { Spec } from '@json-render/core';
 import type { AiVisibility } from '@repo/database/schema';
 
 import { toMeta } from '@/features/generation/application/parse-meta';
@@ -6,6 +8,7 @@ import type { GenerationMeta } from '@/features/generation/application/parse-met
 
 import {
   projectOwnedBy,
+  selectProjectWithLatestVersion,
   selectPublicProjectBySlug,
   updateProjectVisibility,
 } from '../infrastructure/project-repository';
@@ -14,7 +17,7 @@ import { createProjectStore } from './project-store';
 import type { ConversationTurn } from './project-store';
 
 export type UiStudioContent = {
-  code: string;
+  spec: Spec;
   meta: GenerationMeta;
   // 初版/フォークでは prompt が無いことがある。
   prompt?: string;
@@ -24,7 +27,7 @@ export type LoadedProject = {
   id: number;
   title: string;
   slug: string;
-  code: string;
+  spec: Spec;
   meta: GenerationMeta;
   versionId: number;
   // 古い順の全ターン（チャット復元用）。
@@ -35,7 +38,7 @@ export type PublicProject = {
   id: number;
   title: string;
   slug: string;
-  code: string;
+  spec: Spec;
   meta: GenerationMeta;
 };
 
@@ -45,8 +48,8 @@ const parseContent = (value: unknown): UiStudioContent | null => {
   if (typeof value !== 'object' || value === null) {
     return null;
   }
-  const { code, meta, prompt } = value as Record<string, unknown>;
-  if (typeof code !== 'string') {
+  const { spec, meta, prompt } = value as Record<string, unknown>;
+  if (!isNonEmptySpec(spec)) {
     return null;
   }
   const parsedMeta = toMeta(meta);
@@ -54,7 +57,7 @@ const parseContent = (value: unknown): UiStudioContent | null => {
     return null;
   }
   return {
-    code,
+    spec,
     meta: parsedMeta,
     ...(typeof prompt === 'string' ? { prompt } : {}),
   };
@@ -85,6 +88,15 @@ export const forkProject = (input: {
   sourceProjectId: number;
 }): Promise<{ projectId: number } | null> => store.forkProject(input);
 
+// 公開/非公開の操作用の軽量版。会話履歴（全版）は読まない。
+export const getProjectLatest = async (input: {
+  userId: string;
+  projectId: number;
+}): Promise<{ slug: string; versionId: number } | null> => {
+  const row = await selectProjectWithLatestVersion(input);
+  return row === null ? null : { slug: row.slug, versionId: row.versionId };
+};
+
 export const getProject = async (input: {
   userId: string;
   projectId: number;
@@ -97,7 +109,7 @@ export const getProject = async (input: {
     id: record.id,
     title: record.title,
     slug: record.slug,
-    code: record.content.code,
+    spec: record.content.spec,
     meta: record.content.meta,
     versionId: record.versionId,
     conversation: record.conversation,
@@ -142,7 +154,7 @@ export const getPublicProjectBySlug = async (
     id: row.id,
     title: row.title,
     slug: row.slug,
-    code: content.code,
+    spec: content.spec,
     meta: content.meta,
   };
 };

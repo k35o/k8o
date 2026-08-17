@@ -106,7 +106,7 @@ export const Generating = meta.story({
       mkMessage('u1', 'user', 'ヒーローセクションを作って'),
       mkMessage('a1', 'assistant', ''),
     ],
-    generatingStatus: 'UI を生成しています…（42 行）',
+    generatingStatus: 'UI を生成しています…（12 要素）',
   },
   render: (args) => (
     <Frame>

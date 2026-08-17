@@ -4,15 +4,9 @@ import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { Suspense } from 'react';
 
+import { SpecPreview } from '@/app/_components/spec-preview';
 import { ToggleTheme } from '@/app/_components/toggle-theme';
 import { getPublicShareForRoute } from '@/features/share/interface/queries';
-
-import { SharePreview } from './_components/share-preview';
-
-// 共有プレビューの配信解決（Sandbox 起動を伴うことがある）が cold start で数十秒かかる
-// ことがあるため、ルートのタイムアウトを延ばす。解決は Suspense 境界の内側で
-// ストリーミングされるので、ヘッダはこの待ち時間より先に表示される。
-export const maxDuration = 120;
 
 type SharePageProps = {
   params: Promise<{ slug: string }>;
@@ -32,7 +26,7 @@ export const generateMetadata = async ({
   };
 };
 
-// 公開共有ページ（認証なし）。スリムなヘッダ＋隔離した iframe で本物ビルドを描画する。
+// 公開共有ページ（認証なし）。スリムなヘッダ＋spec をその場で描画する。
 // DB アクセス（公開状態の確認）は uncached なため Cache Components 下では Suspense 配下に置く。
 const ShareContent = async ({ params }: SharePageProps) => {
   const { slug } = await params;
@@ -60,15 +54,7 @@ const ShareContent = async ({ params }: SharePageProps) => {
         </div>
       </header>
       <div className="min-h-0 flex-1">
-        <Suspense
-          fallback={
-            <div className="text-fg-mute flex h-full items-center justify-center p-6 text-center text-sm motion-safe:animate-pulse">
-              プレビューを準備しています…
-            </div>
-          }
-        >
-          <SharePreview slug={slug} title={share.title} />
-        </Suspense>
+        <SpecPreview spec={share.spec} />
       </div>
     </div>
   );

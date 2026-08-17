@@ -1,8 +1,9 @@
 'use client';
 
+import type { Spec } from '@json-render/core';
 import { useCallback, useEffect, useRef, useState } from 'react';
 
-import type { GenerationMeta } from '@/features/generation/application/parse-generation';
+import type { GenerationMeta } from '@/features/generation/application/parse-meta';
 import type {
   LoadedProject,
   ProjectListItem,
@@ -19,7 +20,7 @@ export type StudioPersistence = {
   projectTitle: string | null;
   currentVersionId: number | null;
   save: (content: {
-    code: string;
+    spec: Spec;
     meta: GenerationMeta;
     prompt: string;
   }) => Promise<void>;
@@ -61,11 +62,11 @@ export const useStudioPersistence = (): StudioPersistence => {
   }, [refresh]);
 
   const save = useCallback(
-    async (content: { code: string; meta: GenerationMeta; prompt: string }) => {
+    async (content: { spec: Spec; meta: GenerationMeta; prompt: string }) => {
       const res = await saveGenerationAction({
         projectId: projectIdRef.current,
         parentVersionId: versionIdRef.current,
-        code: content.code,
+        spec: content.spec,
         meta: content.meta,
         prompt: content.prompt,
       });

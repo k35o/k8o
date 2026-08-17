@@ -1,103 +1,72 @@
 'use client';
 
 import { useChat } from '@ai-sdk/react';
+import type { Spec } from '@json-render/core';
 import {
   Button,
   ForkIcon,
   FullscreenIcon,
   IconButton,
 } from '@k8o/arte-odyssey';
+import { validateGeneratedSpec } from '@k8o/arte-odyssey/json-render';
 import { DefaultChatTransport } from 'ai';
 import type { UIMessage } from 'ai';
-import { useTheme } from 'next-themes';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { useCallback, useEffect, useReducer, useRef, useState } from 'react';
+import { useEffect, useMemo, useReducer, useRef, useState } from 'react';
 
-import { ThemedPreviewIframe } from '@/app/_components/preview-iframe';
-import { ToggleTheme } from '@/app/_components/toggle-theme';
+import { SpecPreview } from '@/app/_components/spec-preview';
 import {
+  createInitialGenerationState,
   generationReducer,
-  initialGenerationState,
 } from '@/features/generation/application/generation-store';
-import { messageText } from '@/features/generation/application/parse-generation';
-import { resolveGeneration } from '@/features/generation/application/resolve-generation';
+import { messageText } from '@/features/generation/application/message-text';
 import {
-  applyPreviewCode,
-  startPreviewSession,
-} from '@/features/preview/interface/actions';
-import { loadProjectAndApplyAction } from '@/features/projects/interface/actions';
+  countElements,
+  hasSpecParts,
+  parseSpecProse,
+  specFromMessage,
+  toSpec,
+  usedComponentTypes,
+} from '@/features/generation/application/spec-message';
+import { specToTsx } from '@/features/generation/application/spec-to-tsx';
+import { loadProjectAction } from '@/features/projects/interface/actions';
 
-import { StreamPreview } from '../stream-preview';
-import { ToolNav } from '../tool-nav';
+import { StudioShell } from '../studio-shell';
 import { ChatPanel } from './chat-panel';
 import { CodePanel } from './code-panel';
 import { CopyCodeButton } from './copy-code-button';
 import { PreviewLoading } from './preview-loading';
-import { ProjectHistory } from './project-history';
 import { ShareControl } from './share-control';
 import { useStudioPersistence } from './use-studio-persistence';
 
-type PanelView = 'preview' | 'code';
-
-// HMR でプレビューが差し替わるのを待つ猶予。これを過ぎても iframe から反映通知が来なければ
-// 強制リロードへフォールバックする（websocket が張れず HMR が効かない環境向けの保険）。
-const PREVIEW_HMR_FALLBACK_MS = 2000;
+type PanelView = 'preview' | 'spec' | 'tsx';
 
 export const Studio = () => {
   const [input, setInput] = useState('');
   const [state, dispatch] = useReducer(
-    generationReducer,
-    initialGenerationState,
+    generationReducer<Spec>,
+    createInitialGenerationState<Spec>(),
   );
-  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
-  const [previewNonce, setPreviewNonce] = useState(0);
-  // プレビューへの反映〜iframe 読み込み完了までを覆うローディング。完了は iframe の onLoad で外す。
-  const [previewLoading, setPreviewLoading] = useState(false);
-  // 環境（Sandbox）の用意に失敗したとき。スピナーが回り続けないよう案内に切り替える。
-  const [previewFailed, setPreviewFailed] = useState(false);
   const [view, setView] = useState<PanelView>('preview');
   // 小画面では2ペインを並べられないので、タブで1つずつ表示する。
-  const [mobileTab, setMobileTab] = useState<'chat' | 'preview' | 'code'>(
-    'chat',
-  );
-  const [applyError, setApplyError] = useState<string | null>(null);
-  const [historyOpen, setHistoryOpen] = useState(false);
-  // 履歴/フォーク選択の読込中。Sandbox 書込待ちで反映まで時間がかかるため、押した直後に
-  // 「読み込み中」を見せて無反応に見えるのを防ぐ。タイトルは既知のリスト項目から先行表示する。
+  const [mobileTab, setMobileTab] = useState<'chat' | PanelView>('chat');
+  // 生成結果が catalog 検証に落ちたときの案内（チャット下部に出す）。
+  const [validationNotice, setValidationNotice] = useState<string | null>(null);
+  // 履歴/フォーク選択の読込中。押した直後に「読み込み中」を見せて無反応に見えるのを防ぐ。
   const [pendingSelect, setPendingSelect] = useState<{ title: string } | null>(
     null,
   );
   const frameRef = useRef<HTMLDivElement>(null);
   // 直近の指示。onFinish（一度きりのクロージャ）から版に保存して会話復元に使う。
   const lastPromptRef = useRef('');
-  // 差分編集（```edits）の適用土台。生成開始時点の currentFile に固定し、ストリーミング描画と
-  // onFinish の双方から同じ土台へ適用する（適用後の currentFile を土台にすると二重適用が起きるため）。
+  // パッチ適用の土台。生成開始時点の spec に固定し、ストリーミング描画と onFinish の
+  // 双方から同じ土台へ適用する（適用後の spec を土台にすると二重適用が起きるため）。
   // レンダー中に読むので ref ではなく state に持つ。
-  const [editBase, setEditBase] = useState<string | null>(null);
-  // HMR 反映待ちのフォールバック用タイマー。反映通知が来れば張り替えず解除する。
-  const reloadFallbackRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const clearReloadFallback = useCallback((): void => {
-    if (reloadFallbackRef.current !== null) {
-      clearTimeout(reloadFallbackRef.current);
-      reloadFallbackRef.current = null;
-    }
-  }, []);
-  // コード反映後の表示更新。まず HMR の差分反映（iframe からの updated 通知）を待ち、猶予内に
-  // 来なければ iframe を貼り替えて強制リロードする。前者なら白フラッシュなしで即時に切り替わる。
-  const reflectPreview = useCallback((): void => {
-    setPreviewLoading(true);
-    clearReloadFallback();
-    reloadFallbackRef.current = setTimeout(() => {
-      reloadFallbackRef.current = null;
-      setPreviewNonce((nonce) => nonce + 1);
-    }, PREVIEW_HMR_FALLBACK_MS);
-  }, [clearReloadFallback]);
-  // iframe（プレビュー）から HMR 反映通知が来たとき。安定参照にして iframe 側の購読を毎レンダー張り替えない。
-  const handlePreviewUpdated = useCallback((): void => {
-    clearReloadFallback();
-    setPreviewLoading(false);
-  }, [clearReloadFallback]);
-  const { resolvedTheme } = useTheme();
+  const [editBase, setEditBase] = useState<Spec | null>(null);
+  // 版の保存（DB 往復）が完了するまで次の生成をブロックする。useChat の status は
+  // onFinish の前に ready へ戻るため、この間に次を送ると projectId 未確定のまま
+  // 別プロジェクトへ分裂して保存されてしまう。
+  const [saving, setSaving] = useState(false);
   const persistence = useStudioPersistence();
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -117,112 +86,94 @@ export const Studio = () => {
       if (isAbort) {
         return;
       }
-      const parsed = resolveGeneration(messageText(message), editBase);
-      // 差分編集の適用失敗はビルドエラーと同じ自己修復ループへ流す（プレビューは前回の
-      // 正常版のまま、次ターンの system で全文再生成を促す）。
-      if (parsed.kind === 'edits' && parsed.editError !== null) {
-        setApplyError('変更の適用に失敗しました。');
-        dispatch({ type: 'build-failed', errors: parsed.editError });
-        setView('code');
-        setMobileTab('code');
+      const spec = specFromMessage(message, editBase);
+      if (spec === null) {
+        // spec パーツ自体が無ければ UI 変更のない会話応答（現状維持でよい）。
+        // パーツはあるのに組み上がらなかった場合は適用失敗なので、無言で
+        // 握り潰さず修復ループへ流す。
+        if (hasSpecParts(message)) {
+          setValidationNotice(
+            '生成された UI を組み立てられませんでした。「直して」と送ると作り直します。',
+          );
+          dispatch({
+            type: 'repair-needed',
+            repairPrompt:
+              '前回の出力はパッチとして適用できず、spec を組み立てられなかった。差分ではなく spec 全体を最初から出力し直すこと。',
+          });
+        }
         return;
       }
-      if (parsed.code !== null && parsed.meta !== null) {
+      const validated = validateGeneratedSpec(spec);
+      // 検証エラーは修復指示を次ターンの system に流す（プレビューは前回の正常版のまま）。
+      if (!validated.ok) {
+        setValidationNotice(
+          '生成された UI が検証エラーになりました。「直して」と送ると修正します。',
+        );
         dispatch({
-          type: 'generation-finished',
-          code: parsed.code,
-          meta: parsed.meta,
+          type: 'repair-needed',
+          repairPrompt: validated.repairPrompt,
         });
-        // prompt も版に残し、履歴から読み込んだときに会話を復元できるようにする。
-        void persistence.save({
-          code: parsed.code,
-          meta: parsed.meta,
-          prompt: lastPromptRef.current,
-        });
-        void (async () => {
-          if (parsed.code === null) {
-            return;
-          }
-          // 反映〜iframe 読み込み完了までローディングを出す（プレビュー表示が遅れても状態が分かるように）。
-          setPreviewLoading(true);
-          const res = await applyPreviewCode(parsed.code);
-          if (res.ok) {
-            setApplyError(null);
-            reflectPreview();
-            setView('preview');
-            setMobileTab('preview');
-            return;
-          }
-          // 反映に失敗したら HMR もリロードも起きないので、ローディングはここで外す。
-          clearReloadFallback();
-          setPreviewLoading(false);
-          // エラーを次ターンの system に流して自動修復を促す（プレビューは前回の正常版のまま＝白画面にしない）。
-          if (res.error !== undefined) {
-            setApplyError(res.error);
-            dispatch({ type: 'build-failed', errors: res.error });
-            setView('code');
-            setMobileTab('code');
-          }
-        })();
+        return;
       }
+      const finishedSpec = toSpec(validated.spec);
+      const prose = parseSpecProse(messageText(message));
+      const meta = {
+        title: prose.title ?? '無題の UI',
+        description: prose.description,
+        usedComponents: usedComponentTypes(finishedSpec),
+        changes: [],
+      };
+      dispatch({ type: 'generation-finished', content: finishedSpec, meta });
+      // prompt も版に残し、履歴から読み込んだときに会話を復元できるようにする。
+      // 保存が終わるまで saving を立て、次の生成の割り込みを防ぐ。
+      setSaving(true);
+      void persistence
+        .save({
+          spec: finishedSpec,
+          meta,
+          prompt: lastPromptRef.current,
+        })
+        .finally(() => {
+          setSaving(false);
+        });
+      setView('preview');
+      setMobileTab('preview');
     },
   });
 
   const isBusy = status === 'submitted' || status === 'streaming';
 
-  // 起動時にプレビューセッション（Sandbox）を用意する。失敗時は無限スピナーにせず案内を出す。
-  useEffect(() => {
-    void (async () => {
-      try {
-        const res = await startPreviewSession();
-        if (res === null) {
-          setPreviewFailed(true);
-        } else {
-          setPreviewUrl(res.url);
-        }
-      } catch {
-        setPreviewFailed(true);
-      }
-    })();
-  }, []);
-
-  // アンマウント時に HMR フォールバックのタイマーを始末する。
-  useEffect(
-    () => () => {
-      if (reloadFallbackRef.current !== null) {
-        clearTimeout(reloadFallbackRef.current);
-      }
-    },
-    [],
-  );
-
   const lastAssistant = messages.findLast(
     (message) => message.role === 'assistant',
   );
-  const resolved =
-    lastAssistant === undefined
-      ? null
-      : resolveGeneration(messageText(lastAssistant), editBase);
-  const streamingCode = resolved?.code ?? null;
-  const streamingLines =
-    streamingCode === null ? 0 : streamingCode.split('\n').length;
-  const lineSuffix =
-    streamingLines > 0 ? `（${streamingLines.toString()} 行）` : '';
-  let generatingStatus = `UI を生成しています…${lineSuffix}`;
-  if (status === 'submitted') {
-    generatingStatus = '考えています…';
-  } else if (resolved?.kind === 'edits') {
-    generatingStatus = `変更を適用しています…（${resolved.appliedEdits.toString()}箇所）`;
-  }
-  const displayedCode = isBusy
-    ? (streamingCode ?? state.currentFile)
-    : state.currentFile;
-  const hasResult = state.currentFile !== null;
-  // 生成中〜反映確定までは先行プレビュー（island）を最前面に出す。空の間はスピナー、構造が
-  // 届いたらスケルトン→逐次描画へ。これが出ている間は反映スピナー(PreviewLoading)を抑制し、
-  // 「島→いきなり円→完成」のチラつきを防ぐ。
-  const showStreamPreview =
-    isBusy || (previewLoading && streamingCode !== null);
+  // ストリーミング中の書きかけ spec。パッチ到着ごとに土台から組み立て直す。
+  const streamingSpec = useMemo(
+    () =>
+      lastAssistant === undefined
+        ? null
+        : specFromMessage(lastAssistant, editBase),
+    [lastAssistant, editBase],
+  );
+  const streamingCount = countElements(streamingSpec);
+  const countSuffix =
+    streamingCount > 0 ? `（${streamingCount.toString()} 要素）` : '';
+  const generatingStatus =
+    status === 'submitted'
+      ? '考えています…'
+      : `UI を生成しています…${countSuffix}`;
+  // プレビューは生成中なら書きかけの spec を逐次描画し、それ以外は確定版を出す。
+  const displaySpec = isBusy ? (streamingSpec ?? state.current) : state.current;
+  const specJson =
+    displaySpec === null ? null : JSON.stringify(displaySpec, null, 2);
+  // TSX への機械変換。TSX ビューを開いたときだけ計算する。
+  const tsxCode = useMemo(
+    () =>
+      view === 'tsx' && displaySpec !== null ? specToTsx(displaySpec) : null,
+    [view, displaySpec],
+  );
+  // コピー対象は見ているビューに合わせる（プレビュー中は生成物の実体である spec）。
+  const displayedCode = view === 'tsx' ? tsxCode : specJson;
+  const hasResult = state.current !== null;
   // 履歴から読み込んだ直後はチャットが空になるため、空状態でも「何を編集中か」を示す。
   const emptyStateTitle = hasResult
     ? `「${state.lastMeta?.title ?? 'プロジェクト'}」を編集中`
@@ -231,8 +182,8 @@ export const Studio = () => {
     ? '続けて指示すると、このUIを更新します。例:「色を温かいトーンに」「余白を広げて」'
     : '例: 「お問い合わせフォームのカード」「料金プランの3カラム」';
   let chatErrorText: string | null = null;
-  if (applyError !== null) {
-    chatErrorText = `${applyError} 「直して」と送ると修正します。`;
+  if (validationNotice !== null) {
+    chatErrorText = validationNotice;
   } else if (error !== undefined) {
     chatErrorText = 'エラーが発生しました。再試行してください。';
   }
@@ -250,25 +201,23 @@ export const Studio = () => {
     ) ?? null;
 
   const handleGenerate = async (text: string): Promise<void> => {
-    if (text === '' || isBusy) {
+    if (text === '' || isBusy || saving) {
       return;
     }
     setInput('');
-    setApplyError(null);
-    // 直前の反映待ちタイマーが生成中にリロードを起こさないよう始末する。
-    clearReloadFallback();
-    // 生成中は途中コードを先行プレビュー（StreamPreview）で逐次描画して見せる。完了で
-    // onFinish が実コンパイル版（iframe）へ切り替える。モバイルはチャットの「考えています…」を
-    // 残したいので mobileTab は切り替えない。
+    setValidationNotice(null);
+    // 生成中は書きかけの spec を SpecPreview が逐次描画する。モバイルはチャットの
+    // 「考えています…」を残したいので mobileTab は切り替えない。
     setView('preview');
     lastPromptRef.current = text;
-    setEditBase(state.currentFile);
+    setEditBase(state.current);
     await sendMessage(
       { text },
       {
         body: {
-          currentFile: state.currentFile,
-          buildErrors: state.buildErrors,
+          mode: 'ui',
+          currentSpec: state.current,
+          repairPrompt: state.repairPrompt,
           model: state.selectedModel,
         },
       },
@@ -285,15 +234,12 @@ export const Studio = () => {
   const handleNewProject = (): void => {
     // 生成中なら中断してから切り替える（生成中表示が新プロジェクトに残るのを防ぐ）。
     void stop();
-    // 直前の反映待ちタイマーが新プロジェクトでリロードを起こさないよう始末する。
-    clearReloadFallback();
-    setPreviewLoading(false);
     persistence.reset();
     dispatch({ type: 'reset' });
     setMessages([]);
-    setApplyError(null);
-    setHistoryOpen(false);
+    setValidationNotice(null);
     setPendingSelect(null);
+    setEditBase(null);
     setView('preview');
     setMobileTab('chat');
     router.replace('/');
@@ -302,28 +248,26 @@ export const Studio = () => {
   const handleSelectProject = async (id: number): Promise<void> => {
     // 生成中なら中断してから切り替える（生成中表示が切替先に漏れるのを防ぐ）。
     void stop();
-    setHistoryOpen(false);
-    // クリック直後に読込中を見せる（反映＝Sandbox 書込待ちで遅いため、何も変化せず無反応に
-    // 見えるのを防ぐ）。タイトルは既知のリスト項目から先行表示し、プレビューへ即切り替える。
+    // クリック直後に読込中を見せ、タイトルは既知のリスト項目から先行表示する。
     const known = persistence.projects.find((project) => project.id === id);
     setPendingSelect({ title: known?.title ?? '読み込み中…' });
     setView('preview');
     setMobileTab('preview');
     try {
-      // 読込（DB）と反映（Sandbox）を1サーバー往復にまとめ、往復・認証を半減する。
-      const result = await loadProjectAndApplyAction(id);
-      if (result === null) {
+      const project = await loadProjectAction(id);
+      if (project === null) {
         return;
       }
-      const { project, applied } = result;
       persistence.markLoaded(project);
       dispatch({
         type: 'load-project',
-        code: project.code,
+        content: project.spec,
         meta: project.meta,
       });
-      // 履歴を切り替えてもトークが消えないよう会話を復元する。各版を [user(指示) → assistant(meta JSON)] に展開し、
-      // assistant は json フェンスにすることで既存の描画ロジック（parseGeneration の description 抽出）で説明文が出る。
+      setEditBase(null);
+      // 履歴を切り替えてもトークが消えないよう会話を復元する。各版を
+      // [user(指示) → assistant(説明文)] に展開する。説明文はプレーンテキストなので
+      // ChatPanel の describe がそのまま表示する。
       const restored: UIMessage[] = project.conversation.flatMap(
         (turn, index): UIMessage[] => {
           const turnMessages: UIMessage[] = [];
@@ -340,7 +284,10 @@ export const Studio = () => {
             parts: [
               {
                 type: 'text',
-                text: `\`\`\`json\n${JSON.stringify(turn.meta)}\n\`\`\``,
+                text:
+                  turn.meta.description === ''
+                    ? '内容を更新しました'
+                    : turn.meta.description,
               },
             ],
           });
@@ -348,14 +295,7 @@ export const Studio = () => {
         },
       );
       setMessages(restored);
-      setApplyError(null);
-      if (applied.ok) {
-        // 反映済み。HMR の差分反映を待ち、来なければリロードへフォールバックする。
-        reflectPreview();
-        setView('preview');
-        setMobileTab('preview');
-      }
-      // 反映失敗（保存済みコードでは稀）時はプレビューを前版のまま据え置く。
+      setValidationNotice(null);
     } finally {
       // 読込が終わったら（成功/失敗/非所有いずれも）読込中表示を必ず外す。
       setPendingSelect(null);
@@ -399,128 +339,110 @@ export const Studio = () => {
   }, [persistence.projectId, router]);
 
   return (
-    <div className="flex min-h-0 flex-1 flex-col">
-      <ProjectHistory
-        currentProjectId={persistence.projectId}
-        isOpen={historyOpen}
-        onClose={() => {
-          setHistoryOpen(false);
-        }}
-        onSelect={(id) => {
-          void handleSelectProject(id);
-        }}
-        projects={persistence.projects}
-      />
-
-      <div className="border-border-mute flex flex-wrap items-center gap-x-4 gap-y-2 border-b px-4 py-2">
-        <div className="flex min-w-0 basis-full items-center gap-2 lg:w-110 lg:shrink-0 lg:grow-0 lg:basis-auto">
-          <span className="text-fg-base shrink-0 text-sm font-bold">
-            k8o AI Studio
-          </span>
-          <ToolNav current="/" />
-          <span className="text-fg-mute shrink-0 text-sm">/</span>
-          {pendingSelect === null ? (
-            persistence.projectId === null ? (
-              <span className="text-fg-mute truncate text-sm">
-                新しいプロジェクト
-              </span>
+    <StudioShell
+      currentProjectId={persistence.projectId}
+      header={
+        <>
+          <div className="flex min-w-0 items-center gap-2">
+            {pendingSelect === null ? (
+              persistence.projectId === null ? (
+                <span className="text-fg-mute truncate text-sm">
+                  新しいプロジェクト
+                </span>
+              ) : (
+                <span className="text-fg-base truncate text-sm font-medium">
+                  {persistence.projectTitle ?? '無題'}
+                </span>
+              )
             ) : (
+              // 読込中は選んだプロジェクト名を先行表示し、クリックが効いたことを示す。
               <span className="text-fg-base truncate text-sm font-medium">
-                {persistence.projectTitle ?? '無題'}
+                {pendingSelect.title}
               </span>
-            )
-          ) : (
-            // 読込中は選んだプロジェクト名を先行表示し、クリックが効いたことを示す。
-            <span className="text-fg-base truncate text-sm font-medium">
-              {pendingSelect.title}
-            </span>
-          )}
-        </div>
-        <div className="hidden gap-2 lg:flex">
-          <Button
-            color="primary"
-            onClick={() => {
-              setView('preview');
-            }}
-            size="sm"
-            variant={view === 'preview' ? 'solid' : 'skeleton'}
-          >
-            プレビュー
-          </Button>
-          <Button
-            color="primary"
-            onClick={() => {
-              setView('code');
-            }}
-            size="sm"
-            variant={view === 'code' ? 'solid' : 'skeleton'}
-          >
-            コード
-          </Button>
-        </div>
-        <div className="flex shrink-0 items-center gap-2 lg:ml-auto">
-          {persistence.projectId === null ? null : (
-            <>
-              <ShareControl
-                hasDraft={
-                  currentProject?.visibility === 'public' &&
-                  currentProject.publishedVersionId !== null &&
-                  persistence.currentVersionId !== null &&
-                  currentProject.publishedVersionId !==
-                    persistence.currentVersionId
-                }
-                isPublic={currentProject?.visibility === 'public'}
-                onChanged={() => {
-                  void persistence.refresh();
-                }}
-                projectId={persistence.projectId}
-                slug={currentProject?.slug ?? null}
-              />
+            )}
+          </div>
+          <div className="hidden gap-2 lg:flex">
+            <Button
+              color="primary"
+              onClick={() => {
+                setView('preview');
+              }}
+              size="sm"
+              variant={view === 'preview' ? 'solid' : 'skeleton'}
+            >
+              プレビュー
+            </Button>
+            <Button
+              color="primary"
+              onClick={() => {
+                setView('spec');
+              }}
+              size="sm"
+              variant={view === 'spec' ? 'solid' : 'skeleton'}
+            >
+              spec
+            </Button>
+            <Button
+              color="primary"
+              onClick={() => {
+                setView('tsx');
+              }}
+              size="sm"
+              variant={view === 'tsx' ? 'solid' : 'skeleton'}
+            >
+              TSX
+            </Button>
+          </div>
+          <div className="flex shrink-0 items-center gap-2 lg:ml-auto">
+            {persistence.projectId === null ? null : (
+              <>
+                <ShareControl
+                  hasDraft={
+                    currentProject?.visibility === 'public' &&
+                    currentProject.publishedVersionId !== null &&
+                    persistence.currentVersionId !== null &&
+                    currentProject.publishedVersionId !==
+                      persistence.currentVersionId
+                  }
+                  isPublic={currentProject?.visibility === 'public'}
+                  onChanged={() => {
+                    void persistence.refresh();
+                  }}
+                  projectId={persistence.projectId}
+                  slug={currentProject?.slug ?? null}
+                />
+                <IconButton
+                  color="base"
+                  label="フォーク"
+                  onAction={handleFork}
+                  size="sm"
+                >
+                  <ForkIcon size="sm" />
+                </IconButton>
+              </>
+            )}
+            <div className="hidden items-center gap-3 lg:flex">
+              <CopyCodeButton code={displayedCode} />
               <IconButton
                 color="base"
-                label="フォーク"
-                onAction={handleFork}
+                disabled={!hasResult}
+                label="全画面"
+                onClick={handleFullscreen}
                 size="sm"
               >
-                <ForkIcon size="sm" />
+                <FullscreenIcon size="sm" />
               </IconButton>
-            </>
-          )}
-          <div className="hidden items-center gap-3 lg:flex">
-            <CopyCodeButton code={hasResult ? displayedCode : null} />
-            <IconButton
-              color="base"
-              disabled={!hasResult}
-              label="全画面"
-              onClick={handleFullscreen}
-              size="sm"
-            >
-              <FullscreenIcon size="sm" />
-            </IconButton>
+            </div>
           </div>
-          <div className="border-border-mute mx-1 hidden h-5 border-l lg:block" />
-          <Button
-            color="gray"
-            onClick={() => {
-              setHistoryOpen(true);
-            }}
-            size="sm"
-            variant="outline"
-          >
-            履歴
-          </Button>
-          <Button
-            color="primary"
-            onClick={handleNewProject}
-            size="sm"
-            variant="outline"
-          >
-            新規
-          </Button>
-          <ToggleTheme />
-        </div>
-      </div>
-
+        </>
+      }
+      onNewProject={handleNewProject}
+      onSelectProject={(id) => {
+        void handleSelectProject(id);
+      }}
+      projects={persistence.projects}
+      tool="ui"
+    >
       <div className="flex gap-2 px-4 py-2 lg:hidden">
         <Button
           color="primary"
@@ -546,13 +468,24 @@ export const Studio = () => {
         <Button
           color="primary"
           onClick={() => {
-            setMobileTab('code');
-            setView('code');
+            setMobileTab('spec');
+            setView('spec');
           }}
           size="sm"
-          variant={mobileTab === 'code' ? 'solid' : 'skeleton'}
+          variant={mobileTab === 'spec' ? 'solid' : 'skeleton'}
         >
-          コード
+          spec
+        </Button>
+        <Button
+          color="primary"
+          onClick={() => {
+            setMobileTab('tsx');
+            setView('tsx');
+          }}
+          size="sm"
+          variant={mobileTab === 'tsx' ? 'solid' : 'skeleton'}
+        >
+          TSX
         </Button>
       </div>
 
@@ -592,59 +525,39 @@ export const Studio = () => {
           }`}
         >
           <div className="min-h-0 flex-1 overflow-hidden" ref={frameRef}>
-            <div className={view === 'preview' ? 'relative h-full' : 'hidden'}>
-              {previewFailed ? (
-                <div className="text-fg-mute flex h-full items-center justify-center p-6 text-center text-sm leading-relaxed">
-                  プレビュー環境を準備できませんでした。ページを再読み込みしてください。
-                </div>
-              ) : previewUrl === null ? (
-                // サンドボックスの起動待ち（cold start）。ここが遅いことが多いので明示する。
-                <PreviewLoading message="プレビュー環境を準備しています…" />
-              ) : hasResult ? (
-                <>
-                  <ThemedPreviewIframe
-                    key={previewNonce}
-                    onLoad={() => {
-                      clearReloadFallback();
-                      setPreviewLoading(false);
-                    }}
-                    onUpdated={handlePreviewUpdated}
-                    theme={resolvedTheme}
-                    title="preview"
-                    url={previewUrl}
-                  />
-                  {previewLoading && !showStreamPreview ? (
-                    <PreviewLoading message="プレビューを反映しています…" />
-                  ) : null}
-                </>
+            <div
+              className={
+                view === 'preview' ? 'bg-bg-surface relative h-full' : 'hidden'
+              }
+            >
+              {displaySpec === null ? (
+                isBusy ? (
+                  <PreviewLoading message="UI を生成しています…" />
+                ) : (
+                  <div className="text-fg-mute flex h-full items-center justify-center p-6 text-center text-sm leading-relaxed">
+                    生成すると、ここにライブプレビューが表示されます
+                  </div>
+                )
               ) : (
-                <div className="text-fg-mute flex h-full items-center justify-center p-6 text-center text-sm leading-relaxed">
-                  生成すると、ここにライブプレビューが表示されます
-                </div>
+                <SpecPreview loading={isBusy} spec={displaySpec} />
               )}
-              {/* 生成中〜反映確定までは、途中コードをホスト側で逐次描画した先行プレビューを
-                  iframe（と PreviewLoading の z-10）の上（z-20）に重ねる。Sandbox の cold start や
-                  HMR 反映を待たずに構造が見え、反映が確定（previewLoading=false かつ生成完了）すると
-                  外れて実 iframe が出る。iframe は下で読み込み継続するため通知経路は壊さない。 */}
-              {showStreamPreview ? (
-                <div className="bg-bg-base absolute inset-0 z-20 overflow-auto">
-                  <StreamPreview code={streamingCode} />
-                </div>
-              ) : null}
-              {/* 履歴/フォーク選択の読込中オーバーレイ。空状態でも確実に出すため最前面(z-30)に重ね、
-                  反映が始まると下の PreviewLoading(z-10) → iframe へと途切れず引き継ぐ。 */}
+              {/* 履歴/フォーク選択の読込中オーバーレイ。 */}
               {pendingSelect === null ? null : (
-                <div className="absolute inset-0 z-30">
+                <div className="absolute inset-0 z-10">
                   <PreviewLoading message="プロジェクトを読み込んでいます…" />
                 </div>
               )}
             </div>
-            <div className={view === 'code' ? 'h-full' : 'hidden'}>
-              <CodePanel code={displayedCode} isStreaming={isBusy} />
+            <div className={view === 'preview' ? 'hidden' : 'h-full'}>
+              <CodePanel
+                code={displayedCode}
+                isStreaming={isBusy}
+                lang={view === 'tsx' ? 'tsx' : 'json'}
+              />
             </div>
           </div>
         </div>
       </div>
-    </div>
+    </StudioShell>
   );
 };

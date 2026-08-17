@@ -6,10 +6,9 @@ import { isAuthEnabled } from './shared/auth/auth-enabled';
 
 const isDev = process.env.NODE_ENV === 'development';
 
-// admin と同じ厳格ベース（外部スクリプト・外部 fetch を持たないため）。
-// 違いは frame-src のみ: プレビュー iframe が Vercel Sandbox（*.vercel.run、
-// ローカル開発も同じ経路）を読み込む。frame-ancestors 'none' は studio の
-// 公開/フォーク等の副作用ボタンをクリックジャッキングから守る要
+// admin と同じ厳格ベース（外部スクリプト・外部 fetch・iframe を持たないため）。
+// frame-ancestors 'none' は studio の公開/フォーク等の副作用ボタンを
+// クリックジャッキングから守る要
 const cspHeader = `
     default-src 'self';
     script-src 'self' 'unsafe-inline'${isDev ? " 'unsafe-eval'" : ''};
@@ -18,7 +17,7 @@ const cspHeader = `
     font-src 'self';
     worker-src 'self' blob:;
     connect-src 'self';
-    frame-src 'self' https://*.vercel.run;
+    frame-src 'self';
     object-src 'none';
     base-uri 'self';
     form-action 'self';

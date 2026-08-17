@@ -6,12 +6,22 @@ AI関連ツールの置き場（`ai.k8o.me`）。第1号は arte-odyssey × Saka
 
 apps/main と同じ `app / features / shared` 構成（詳細は `apps/main/CLAUDE.md`）。Server Actions（`'use server'`）は `features/*/interface` に置く。`_actions` は新規作成しない。
 
-- `generation/` - Sakana Fugu（OpenAI互換, AI SDK v7）による TSX 生成（レート制限もここ）
-- `preview/` - 編集中のライブプレビュー（ローカルも本番も Vercel Sandbox に一本化）
-- `share/` - 公開共有（公開/Sandbox 配信/非公開化）
+- `generation/` - Sakana Fugu（OpenAI互換, AI SDK v7）による json-render spec 生成（レート制限もここ）
+- `share/` - 公開共有（公開/非公開化。/s/[slug] は DB の spec をその場で描画）
 - `projects/` - プロジェクト・版の永続化（@repo/database）
-- `highlight/` - 生成コードの shiki ハイライト
-- Vercel Sandbox の起動/配信は `preview/infrastructure/sandbox-preview.ts` に集約し、share は `preview/application/sandbox-runtime.ts`（公開境界）経由で利用する
+- `highlight/` - 生成物（spec JSON / スライド）の shiki ハイライト
+
+## 生成 UI（json-render）
+
+UI スタジオの生成物は TSX ではなく json-render の spec。catalog・registry・検証は
+`@k8o/arte-odyssey/json-render`（公式アダプタ）を使い、独自の catalog は作らない。
+
+- system prompt は `catalog.prompt({ mode: 'inline', ... })`（`build-spec-system-prompt.ts`）。
+  inline モードなので assistant の出力は「会話文 → JSONL パッチ」の混在ストリーム
+- サーバは `pipeJsonRender`（@json-render/core）でパッチ行を `data-spec` パーツへ分離し、
+  クライアントは `specFromMessage`（`spec-message.ts`）で土台 spec へ逐次適用して描画する
+- 描画は `JsonRenderUI`（`app/_components/spec-preview`）。iframe や Sandbox は無い
+- 完了時は `validateGeneratedSpec` で検証し、失敗時は repairPrompt を次ターンの system に流す
 
 ## 認証 & コスト保護
 
