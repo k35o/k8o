@@ -96,6 +96,9 @@ catalogs:
     storybook-addon-determinism:
       specifier: 0.2.1
       version: 0.2.1
+    storybook-addon-mock-date:
+      specifier: 3.2.1
+      version: 3.2.1
     storybook-addon-vrt:
       specifier: 0.4.0
       version: 0.4.0
@@ -555,7 +558,7 @@ importers:
         specifier: 'catalog:'
         version: 0.2.1(storybook@10.5.7(@types/react@19.2.18)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)(vite-plus@0.2.8(@opentelemetry/api@1.9.1)(@types/node@24.13.3)(@vitest/browser-playwright@4.1.10)(@vitest/coverage-v8@4.1.10)(@vitest/ui@4.1.10)(esbuild@0.28.1)(jiti@2.7.0)(msw@2.15.0(@types/node@24.13.3)(typescript@7.0.2))(tsx@4.22.3)(typescript@7.0.2)(vite@8.0.14(@types/node@24.13.3)(esbuild@0.28.1)(jiti@2.7.0)(tsx@4.22.3)(yaml@2.9.0))(yaml@2.9.0)))
       storybook-addon-mock-date:
-        specifier: 3.2.1
+        specifier: 'catalog:'
         version: 3.2.1(storybook@10.5.7(@types/react@19.2.18)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)(vite-plus@0.2.8(@opentelemetry/api@1.9.1)(@types/node@24.13.3)(@vitest/browser-playwright@4.1.10)(@vitest/coverage-v8@4.1.10)(@vitest/ui@4.1.10)(esbuild@0.28.1)(jiti@2.7.0)(msw@2.15.0(@types/node@24.13.3)(typescript@7.0.2))(tsx@4.22.3)(typescript@7.0.2)(vite@8.0.14(@types/node@24.13.3)(esbuild@0.28.1)(jiti@2.7.0)(tsx@4.22.3)(yaml@2.9.0))(yaml@2.9.0)))
       storybook-addon-vrt:
         specifier: 'catalog:'
