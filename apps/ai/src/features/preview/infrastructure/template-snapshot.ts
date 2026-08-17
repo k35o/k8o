@@ -4,5 +4,5 @@
 export const templateSnapshot = {
   templateHash:
     '47f1e7768b82d3d488ecc0cca9c1e9aba4fa3a6adf0375f17be38b5505b25180',
-  snapshotId: 'snap_xkWcHP6LjshDHIy2RIrxvDEwRXOb',
+  snapshotId: 'snap_eWBRhUIQyArvkX0XhgHKe9pHXjjb',
 } as const;

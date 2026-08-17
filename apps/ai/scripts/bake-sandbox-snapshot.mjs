@@ -1,28 +1,35 @@
 // sandbox-template を Vercel Sandbox に焼いて snapshot を作る（テンプレ・arte-odyssey 更新時に再実行）。
 // snapshot ID と内容ハッシュは template-snapshot.ts に書き出してコミット管理する
 // （env の手編集は不要。テンプレ変更時の焼き忘れは template-snapshot.test.ts が検知）。
-// 認証は VERCEL_TOKEN（fnox exec で注入）＋ team/project ID 明示渡し。
-// 使い方: fnox exec -- node apps/ai/scripts/bake-sandbox-snapshot.mjs
+// 認証は sandbox-preview.ts の creds() と同じ方針。既定は OIDC で、VERCEL_TOKEN が
+// あるときだけ明示認証する。
+// 使い方: vercel env pull apps/ai/.env.local のあと
+//   node --env-file=apps/ai/.env.local apps/ai/scripts/bake-sandbox-snapshot.mjs
 import { readFile, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 
 import { Sandbox } from '@vercel/sandbox';
 
 import {
+  SANDBOX_IMAGE,
   SANDBOX_PROJECT_ID,
   SANDBOX_TEAM_ID,
-  SANDBOX_WORKDIR,
 } from '../src/features/preview/infrastructure/sandbox-config.ts';
 import {
   collectTemplateFiles,
   computeTemplateHash,
 } from '../src/features/preview/infrastructure/template-hash.ts';
 
-const token = process.env.VERCEL_TOKEN;
-if (!token) {
-  console.error('VERCEL_TOKEN が未設定です（fnox exec -- で渡してください）');
-  process.exit(1);
-}
+// SDK は token / teamId / projectId を「3つ全部か0個か」しか受け付けない。0個なら
+// VERCEL_OIDC_TOKEN の JWT から team/project を読むため、明示渡しは不要になる。
+const creds = () => {
+  // VERCEL_TOKEN の有無（存在チェック）。秘密の比較ではない。
+  const token = process.env.VERCEL_TOKEN;
+  if (token === undefined || token.length === 0) {
+    return {};
+  }
+  return { token, teamId: SANDBOX_TEAM_ID, projectId: SANDBOX_PROJECT_ID };
+};
 
 // 焼いた snapshot の有効期限（最終使用からの寿命）。無期限(0)にすると再bakeのたびに
 // 旧 snapshot が消えず蓄積するため、期限を設けて自然失効させる。アクティブな snapshot は
@@ -50,19 +57,18 @@ for (const f of files) console.log(`  ${f.path}`);
 
 console.log('creating sandbox...');
 const sandbox = await Sandbox.create({
-  token,
-  teamId: SANDBOX_TEAM_ID,
-  projectId: SANDBOX_PROJECT_ID,
-  runtime: 'node24',
+  image: SANDBOX_IMAGE,
   timeout: 10 * 60 * 1000,
+  ...creds(),
 });
 try {
+  // writeFiles の相対パスも runCommand も session の既定 cwd（image の WORKDIR）を基準に
+  // 解決されるため、作業ディレクトリは指定しない。
   await sandbox.writeFiles(files);
   console.log('files written. running `npm ci`...');
   const ci = await sandbox.runCommand({
     cmd: 'npm',
     args: ['ci'],
-    cwd: SANDBOX_WORKDIR,
     timeoutMs: 8 * 60 * 1000,
   });
   console.log(`npm ci exit=${ci.exitCode}`);
