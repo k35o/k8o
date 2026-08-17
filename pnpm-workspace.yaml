@@ -8,8 +8,6 @@ allowBuilds:
   sharp: false
   workerd: false
 
-blockExoticSubdeps: true
-
 catalog:
   '@ai-sdk/openai-compatible': 3.0.27
   '@k8o/arte-odyssey': 11.0.1
