@@ -81,7 +81,7 @@
     "react-scan": "0.5.7",
     "storybook": "catalog:",
     "storybook-addon-determinism": "catalog:",
-    "storybook-addon-mock-date": "3.2.1",
+    "storybook-addon-mock-date": "catalog:",
     "storybook-addon-vrt": "catalog:",
     "vitest": "catalog:"
   },
