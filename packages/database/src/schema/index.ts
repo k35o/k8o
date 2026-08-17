@@ -3,7 +3,6 @@ import {
   aiProjectVersionsRelations,
 } from './ai-project-versions';
 import { aiProjects, aiProjectsRelations } from './ai-projects';
-import { aiShareServes } from './ai-share-serves';
 import { aiUsages, aiUsagesRelations } from './ai-usages';
 import { articleSources, articleSourcesRelations } from './article-sources';
 import { articles, articlesRelations } from './articles';
@@ -61,7 +60,6 @@ export const schema = {
   aiProjects,
   aiProjectVersions,
   aiUsages,
-  aiShareServes,
 };
 
 export const relations = {
