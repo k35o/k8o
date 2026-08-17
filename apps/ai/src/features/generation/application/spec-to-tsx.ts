@@ -210,6 +210,13 @@ const emitElement = (el: UIElement, ctx: Ctx): string[] => {
           '</Button>',
         ];
       }
+      // href は attrs() の共通経路を通らないため、動的値の検知もここで行う
+      // （黙って落とすとリンクの移植漏れに気づけない）。
+      if (isDynamicValue(href)) {
+        ctx.notes.add(
+          'href に動的値（$state 等）が使われていたため省略した。移植先で配線すること。',
+        );
+      }
       return [`<Button${base}>${label}</Button>`];
     }
     case 'Heading': {

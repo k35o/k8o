@@ -87,6 +87,21 @@ export default function Preview() {
   });
 
   describe('異常系', () => {
+    it('動的値の href を持つ Button も NOTE を残す（黙って落とさない）', () => {
+      const spec: Spec = {
+        root: 'b',
+        elements: {
+          b: {
+            type: 'Button',
+            props: { label: '開く', href: { $state: '/url' } },
+          },
+        },
+      };
+      const tsx = specToTsx(spec);
+      expect(tsx).toContain('// NOTE: href に動的値');
+      expect(tsx).toContain('<Button>開く</Button>');
+    });
+
     it('動的値（$state）の prop は省略して NOTE を残す', () => {
       const spec: Spec = {
         root: 'h',
