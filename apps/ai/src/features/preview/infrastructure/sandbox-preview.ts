@@ -1,7 +1,7 @@
 import 'server-only';
 import { Sandbox } from '@vercel/sandbox';
 
-import { SANDBOX_PROJECT_ID, SANDBOX_TEAM_ID } from './sandbox-config';
+import { sandboxCreds } from './sandbox-config';
 import { templateSnapshot } from './template-snapshot';
 
 // 本番プレビュー: 焼いた snapshot から名前付き microVM を起こして vite dev を立て、その
@@ -23,19 +23,6 @@ const SNAPSHOT_TAG = SNAPSHOT_ID.replaceAll(/[^a-z0-9]/giu, '')
   .slice(-12)
   .toLowerCase();
 const named = (name: string): string => `${name}-${SNAPSHOT_TAG}`;
-
-// デプロイ内は OIDC（VERCEL_OIDC_TOKEN）が自動で効くため creds 不要。ローカルでは
-// VERCEL_TOKEN を明示渡し（team/project は公開ID）。
-const creds = ():
-  | { token: string; teamId: string; projectId: string }
-  | object => {
-  // VERCEL_TOKEN の有無（存在チェック）。秘密の比較ではない。
-  const token = process.env['VERCEL_TOKEN'];
-  if (token === undefined || token.length === 0) {
-    return {};
-  }
-  return { token, teamId: SANDBOX_TEAM_ID, projectId: SANDBOX_PROJECT_ID };
-};
 
 const isServing = async (url: string): Promise<boolean> => {
   try {
@@ -71,9 +58,10 @@ const getOrCreate = async (name: string): Promise<Sandbox> => {
   if (cached !== undefined) {
     return cached;
   }
-  const existing = await Sandbox.get({ name: fullName, ...creds() }).catch(
-    () => null,
-  );
+  const existing = await Sandbox.get({
+    name: fullName,
+    ...sandboxCreds(),
+  }).catch(() => null);
   // snapshot ソース指定時は image を渡さない（snapshot から継承。SDK も型で禁じている）。
   const sandbox =
     existing ??
@@ -83,7 +71,7 @@ const getOrCreate = async (name: string): Promise<Sandbox> => {
       ports: [PORT],
       resources: { vcpus: 1 },
       timeout: TIMEOUT_MS,
-      ...creds(),
+      ...sandboxCreds(),
     }));
   handleCache.set(fullName, sandbox);
   return sandbox;
@@ -163,9 +151,10 @@ export const writeSandboxPreview = async (
 // 名前付きサンドボックスを停止する（非公開化時の後始末。ベストエフォート）。
 export const stopSandboxPreview = async (name: string): Promise<void> => {
   const fullName = named(name);
-  const sandbox = await Sandbox.get({ name: fullName, ...creds() }).catch(
-    () => null,
-  );
+  const sandbox = await Sandbox.get({
+    name: fullName,
+    ...sandboxCreds(),
+  }).catch(() => null);
   if (sandbox !== null) {
     await sandbox.stop().catch(() => undefined);
   }
