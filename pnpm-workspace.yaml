@@ -54,4 +54,13 @@ minimumReleaseAgeExclude:
   - storybook-addon-mock-date
   - storybook-addon-determinism
 
+trustPolicy: no-downgrade
+
+# lockfile導入時点の到達版のうち、過去リリースよりtrust levelが低いもの。バージョン固定で除外し、更新時は再検査させる
+trustPolicyExclude:
+  - '@preact/signals@2.9.1'
+  - 'ast-v8-to-istanbul@1.0.2'
+  - 'semver@6.3.1'
+  - 'tinyexec@1.2.2'
+
 verifyDepsBeforeRun: install
