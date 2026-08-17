@@ -105,7 +105,12 @@ describe('getPublicShare', () => {
         title: '料金表',
         slug: 'abc123',
         spec,
-        meta: { title: '料金表', description: '', usedComponents: [], changes: [] },
+        meta: {
+          title: '料金表',
+          description: '',
+          usedComponents: [],
+          changes: [],
+        },
       });
 
       await expect(getPublicShare('abc123')).resolves.toStrictEqual({
