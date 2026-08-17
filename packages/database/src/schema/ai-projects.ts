@@ -38,8 +38,6 @@ export const aiProjects = sqliteTable(
     forkOf: integer('fork_of'),
     // 公開中の version ID（論理参照）。
     publishedVersionId: integer('published_version_id'),
-    // 公開時に一度だけレンダリングした静的 HTML。/s/[slug] はこれを配信し、毎回サンドボックスを叩かない。
-    publicSnapshot: text('public_snapshot'),
     createdAt: text('created_at')
       .notNull()
       .$defaultFn(() => new Date().toISOString()),

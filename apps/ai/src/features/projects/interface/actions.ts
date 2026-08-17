@@ -1,10 +1,11 @@
 'use server';
 
+import { validateGeneratedSpec } from '@k8o/arte-odyssey/json-render';
 import { headers } from 'next/headers';
 
-import type { GenerationMeta } from '@/features/generation/application/parse-generation';
-import { applyStudioPreviewCode } from '@/features/preview/application/sandbox-runtime';
-import type { ApplyPreviewResult } from '@/features/preview/application/sandbox-runtime';
+import { toMeta } from '@/features/generation/application/parse-meta';
+import type { GenerationMeta } from '@/features/generation/application/parse-meta';
+import { toSpec } from '@/features/generation/application/spec-message';
 import { requireAllowedSession } from '@/shared/auth/require-allowed-session';
 
 import {
@@ -25,7 +26,7 @@ import type { LoadedSlidesProject } from '../application/slides-projects';
 export const saveGenerationAction = async (input: {
   projectId: number | null;
   parentVersionId: number | null;
-  code: string;
+  spec: unknown;
   meta: GenerationMeta;
   prompt: string;
 }): Promise<{ projectId: number; versionId: number; title: string } | null> => {
@@ -33,11 +34,22 @@ export const saveGenerationAction = async (input: {
   if (session === null) {
     return null;
   }
+  // server action の引数は信頼しない。spec は catalog に対して検証し、meta も
+  // 既知の形へ正規化してから保存する（クライアントで検証済みでも未検証として扱う）。
+  const validated = validateGeneratedSpec(input.spec);
+  const meta = toMeta(input.meta);
+  if (!validated.ok || meta === null) {
+    return null;
+  }
   return saveGeneration({
     userId: session.userId,
     projectId: input.projectId,
     parentVersionId: input.parentVersionId,
-    content: { code: input.code, meta: input.meta, prompt: input.prompt },
+    content: {
+      spec: toSpec(validated.spec),
+      meta,
+      prompt: input.prompt,
+    },
   });
 };
 
@@ -49,22 +61,15 @@ export const listProjectsAction = async (): Promise<ProjectListItem[]> => {
   return getProjectsForUser(session.userId);
 };
 
-// プロジェクト読込（DB）とプレビュー反映（Sandbox）を1往復・1回の認証にまとめる。
-// 切り替えで load→apply を別々に呼ぶと、ブラウザ↔サーバー往復とセッション照会が2回ずつ
-// 走って遅いため、ここで一括する。非所有/不存在は null。
-export const loadProjectAndApplyAction = async (
+// 非所有/不存在は null。
+export const loadProjectAction = async (
   projectId: number,
-): Promise<{ project: LoadedProject; applied: ApplyPreviewResult } | null> => {
+): Promise<LoadedProject | null> => {
   const session = await requireAllowedSession(await headers());
   if (session === null) {
     return null;
   }
-  const project = await getProject({ userId: session.userId, projectId });
-  if (project === null) {
-    return null;
-  }
-  const applied = await applyStudioPreviewCode(project.code);
-  return { project, applied };
+  return getProject({ userId: session.userId, projectId });
 };
 
 export const forkProjectAction = async (
@@ -88,11 +93,16 @@ export const saveSlidesGenerationAction = async (input: {
   if (session === null) {
     return null;
   }
+  // ui 側の saveGenerationAction と同じく、境界では meta を正規化してから保存する。
+  const meta = toMeta(input.meta);
+  if (meta === null || input.source.trim() === '') {
+    return null;
+  }
   return saveSlidesGeneration({
     userId: session.userId,
     projectId: input.projectId,
     parentVersionId: input.parentVersionId,
-    content: { source: input.source, meta: input.meta, prompt: input.prompt },
+    content: { source: input.source, meta, prompt: input.prompt },
   });
 };
 
@@ -106,7 +116,7 @@ export const listSlidesProjectsAction = async (): Promise<
   return getSlidesProjectsForUser(session.userId);
 };
 
-// スライドはホスト側でそのまま描画するため、ui-studio と違い Sandbox 反映は無い。非所有/不存在は null。
+// 非所有/不存在は null。
 export const loadSlidesProjectAction = async (
   projectId: number,
 ): Promise<LoadedSlidesProject | null> => {

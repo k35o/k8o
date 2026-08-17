@@ -9,14 +9,15 @@ import { CodeView } from './code-view';
 
 type CodePanelProps = {
   code: string | null;
+  lang: 'json' | 'tsx';
   isStreaming: boolean;
 };
 
-export const CodePanel: FC<CodePanelProps> = ({ code, isStreaming }) => {
+export const CodePanel: FC<CodePanelProps> = ({ code, lang, isStreaming }) => {
   const highlighted = useHighlightedCode(
     code,
     isStreaming,
-    'tsx',
+    lang,
     highlightGenerated,
   );
   return <CodeView code={code} highlighted={highlighted} />;

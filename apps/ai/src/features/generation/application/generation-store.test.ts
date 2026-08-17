@@ -1,5 +1,8 @@
-import { generationReducer, initialGenerationState } from './generation-store';
-import type { GenerationMeta } from './parse-generation';
+import {
+  createInitialGenerationState,
+  generationReducer,
+} from './generation-store';
+import type { GenerationMeta } from './parse-meta';
 
 const meta: GenerationMeta = {
   title: 't',
@@ -8,64 +11,66 @@ const meta: GenerationMeta = {
   changes: [],
 };
 
+const initial = createInitialGenerationState<string>();
+
 describe('generationReducer', () => {
   describe('正常系', () => {
-    it('generation-finished で lastMeta と currentFile を更新する', () => {
-      const next = generationReducer(initialGenerationState, {
+    it('generation-finished で lastMeta と current を更新する', () => {
+      const next = generationReducer(initial, {
         type: 'generation-finished',
-        code: 'CODE1',
+        content: 'CONTENT1',
         meta,
       });
       expect(next.lastMeta).toBe(meta);
-      expect(next.currentFile).toBe('CODE1');
-      expect(next.buildErrors).toBeNull();
+      expect(next.current).toBe('CONTENT1');
+      expect(next.repairPrompt).toBeNull();
     });
 
-    it('generation-finished は最新の meta/code で上書きする', () => {
-      const s1 = generationReducer(initialGenerationState, {
+    it('generation-finished は最新の meta/content で上書きする', () => {
+      const s1 = generationReducer(initial, {
         type: 'generation-finished',
-        code: 'C1',
+        content: 'C1',
         meta,
       });
       const meta2: GenerationMeta = { ...meta, title: 't2' };
       const s2 = generationReducer(s1, {
         type: 'generation-finished',
-        code: 'C2',
+        content: 'C2',
         meta: meta2,
       });
       expect(s2.lastMeta).toBe(meta2);
-      expect(s2.currentFile).toBe('C2');
+      expect(s2.current).toBe('C2');
     });
 
     it('load-project は当該版を起点にストアを置き換える', () => {
-      const s1 = generationReducer(initialGenerationState, {
+      const s1 = generationReducer(initial, {
         type: 'generation-finished',
-        code: 'C1',
+        content: 'C1',
         meta,
       });
       const loaded = generationReducer(s1, {
         type: 'load-project',
-        code: 'LOADED',
+        content: 'LOADED',
         meta,
       });
       expect(loaded.lastMeta).toBe(meta);
-      expect(loaded.currentFile).toBe('LOADED');
-      expect(loaded.buildErrors).toBeNull();
+      expect(loaded.current).toBe('LOADED');
+      expect(loaded.repairPrompt).toBeNull();
     });
 
     it('reset は選択モデルを保ちつつ初期状態へ戻す', () => {
       const s1 = generationReducer(
-        { ...initialGenerationState, selectedModel: 'fugu-ultra' },
-        { type: 'generation-finished', code: 'C1', meta },
+        { ...initial, selectedModel: 'fugu-ultra' },
+        { type: 'generation-finished', content: 'C1', meta },
       );
       const reset = generationReducer(s1, { type: 'reset' });
       expect(reset.lastMeta).toBeNull();
-      expect(reset.currentFile).toBeNull();
+      expect(reset.current).toBeNull();
       expect(reset.selectedModel).toBe('fugu-ultra');
     });
 
     it('select-model は選択モデルだけを更新する', () => {
-      const next = generationReducer(initialGenerationState, {
+      const next = generationReducer(initial, {
         type: 'select-model',
         model: 'fugu-ultra',
       });
@@ -74,18 +79,18 @@ describe('generationReducer', () => {
   });
 
   describe('エッジケース', () => {
-    it('build-failed で buildErrors が立ち、次の生成で消える', () => {
-      const failed = generationReducer(initialGenerationState, {
-        type: 'build-failed',
-        errors: 'boom',
+    it('repair-needed で repairPrompt が立ち、次の生成で消える', () => {
+      const failed = generationReducer(initial, {
+        type: 'repair-needed',
+        repairPrompt: 'boom',
       });
-      expect(failed.buildErrors).toBe('boom');
+      expect(failed.repairPrompt).toBe('boom');
       const ok = generationReducer(failed, {
         type: 'generation-finished',
-        code: 'FIXED',
+        content: 'FIXED',
         meta,
       });
-      expect(ok.buildErrors).toBeNull();
+      expect(ok.repairPrompt).toBeNull();
     });
   });
 });

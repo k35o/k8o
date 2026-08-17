@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useRef, useState } from 'react';
 
-import type { GenerationMeta } from '@/features/generation/application/parse-generation';
+import type { GenerationMeta } from '@/features/generation/application/parse-meta';
 import type { ProjectListItem } from '@/features/projects/application/projects';
 import type { LoadedSlidesProject } from '@/features/projects/application/slides-projects';
 import {

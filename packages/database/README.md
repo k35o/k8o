@@ -91,15 +91,8 @@ erDiagram
     text visibility
     integer fork_of
     integer published_version_id
-    text public_snapshot
     text created_at
     text updated_at
-  }
-  ai_share_serves {
-    integer id PK
-    text app
-    text slug
-    text created_at
   }
   ai_usages {
     integer id PK
