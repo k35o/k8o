@@ -155,6 +155,15 @@ erDiagram
     text data
     text ingested_at
   }
+  browser_support_feature_changes {
+    integer id PK
+    text feature_id
+    text feature_name
+    text status
+    text previous_status
+    text upstream_version
+    text changed_at
+  }
   browser_support_sync_runs {
     integer id PK
     text trigger
