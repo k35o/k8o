@@ -1,11 +1,12 @@
 import { db } from '@repo/database';
 import type {
+  BrowserSupportChangeStatus,
   BrowserSupportSyncResult,
   BrowserSupportSyncTrigger,
 } from '@repo/database/schema';
 import { parseBaselineDataset } from '@repo/helpers/baseline/model';
 import type { BaselineDataset } from '@repo/helpers/baseline/model';
-import { and, desc, eq, notInArray } from 'drizzle-orm';
+import { and, desc, eq, lt, notInArray } from 'drizzle-orm';
 
 export type ActiveDatasetRecord = {
   id: number;
@@ -17,6 +18,19 @@ export type ActiveDatasetRecord = {
 // ロールバックに備えて superseded を直近何世代残すか。可用性のためではない
 // (DB 障害時は superseded も読めない)ので、少数でよい。
 const KEEP_SUPERSEDED = 3;
+
+// 変更履歴の保持期間。main の表示窓(30日)より十分長く取り、それより古い行は
+// 世代置換のたびに削る。
+const CHANGE_RETENTION_DAYS = 90;
+const DAY_MS = 24 * 60 * 60 * 1000;
+
+export type FeatureChangeInput = {
+  featureId: string;
+  featureName: string;
+  status: BrowserSupportChangeStatus;
+  // null は baseline(newly/widely)への新規到達、非 null は baseline 内の遷移
+  previousStatus: BrowserSupportChangeStatus | null;
+};
 
 export const findActiveDataset =
   async (): Promise<ActiveDatasetRecord | null> => {
@@ -52,8 +66,14 @@ export const findActiveDataset =
 // 世代の置換。libSQL HTTP ドライバの interactive transaction は往復ごとにロックを
 // 保持しタイムアウトしやすいため、単一リクエストの db.batch(暗黙トランザクション)で
 // アトミックに行う。ブロブ方式なので文数はデータ量に依らず定数。
-export const applyDataset = async (dataset: BaselineDataset): Promise<void> => {
+export const applyDataset = async (
+  dataset: BaselineDataset,
+  changes: FeatureChangeInput[],
+): Promise<void> => {
   const datasets = db._schema.browserSupportDatasets;
+  const featureChanges = db._schema.browserSupportFeatureChanges;
+  // 同一バッチの全行に同じ時刻を刻む。main はこの時刻で同期単位のグループ表示をする。
+  const changedAt = new Date().toISOString();
   await db.batch([
     // 手動の強制再同期(同一バージョン)は既存行を消してから入れ直す
     db
@@ -84,6 +104,25 @@ export const applyDataset = async (dataset: BaselineDataset): Promise<void> => {
           ),
         ),
       ),
+    db
+      .delete(featureChanges)
+      .where(
+        lt(
+          featureChanges.changedAt,
+          new Date(Date.now() - CHANGE_RETENTION_DAYS * DAY_MS).toISOString(),
+        ),
+      ),
+    ...(changes.length > 0
+      ? [
+          db.insert(featureChanges).values(
+            changes.map((change) => ({
+              ...change,
+              upstreamVersion: dataset.upstreamVersion,
+              changedAt,
+            })),
+          ),
+        ]
+      : []),
   ]);
 };
 

@@ -3,7 +3,10 @@ import type {
   BrowserSupportSyncTrigger,
 } from '@repo/database/schema';
 import { checkBaselineInvariants } from '@repo/helpers/baseline/invariants';
-import type { BaselineFeature } from '@repo/helpers/baseline/model';
+import type {
+  BaselineFeature,
+  BaselineSupportStatus,
+} from '@repo/helpers/baseline/model';
 import {
   transformUpstreamData,
   UpstreamFormatError,
@@ -16,6 +19,7 @@ import {
   findActiveDataset,
   recordSyncRun,
 } from '../infrastructure/browser-support-repository';
+import type { FeatureChangeInput } from '../infrastructure/browser-support-repository';
 import {
   discoverLatestVersion,
   fetchUpstreamData,
@@ -56,7 +60,10 @@ export type BaselineDiff = {
   // baseline(newly/widely)に新規到達した feature
   reached: BaselineFeature[];
   // newly -> widely などの baseline 内ステータス変化
-  statusChanges: Array<{ feature: BaselineFeature; previousStatus: string }>;
+  statusChanges: Array<{
+    feature: BaselineFeature;
+    previousStatus: BaselineSupportStatus;
+  }>;
 };
 
 // 通知用の差分。前回データセットとの比較で「新規 baseline 到達」と「ステータス変化」を
@@ -86,6 +93,37 @@ export const diffBaselineFeatures = (
   }
 
   return { reached, statusChanges };
+};
+
+// diff を永続化用の変更行へ写す。diffBaselineFeatures の構築上 limited は混入しない
+// はずだが、型の保証が無いため防御的に除外する。
+export const toFeatureChangeRows = (
+  diff: BaselineDiff,
+): FeatureChangeInput[] => {
+  const rows: FeatureChangeInput[] = [];
+  for (const feature of diff.reached) {
+    if (feature.status === 'limited') {
+      continue;
+    }
+    rows.push({
+      featureId: feature.featureId,
+      featureName: feature.name,
+      status: feature.status,
+      previousStatus: null,
+    });
+  }
+  for (const { feature, previousStatus } of diff.statusChanges) {
+    if (feature.status === 'limited' || previousStatus === 'limited') {
+      continue;
+    }
+    rows.push({
+      featureId: feature.featureId,
+      featureName: feature.name,
+      status: feature.status,
+      previousStatus,
+    });
+  }
+  return rows;
 };
 
 const buildUpdateBody = (diff: BaselineDiff): string => {
@@ -265,9 +303,9 @@ export async function syncBrowserSupport({
       ? null
       : diffBaselineFeatures(dataset.features, active.dataset.features);
 
-  // 7. 世代置換
+  // 7. 世代置換。変更履歴も同一バッチで書く(初回取り込みは diff が無いので履歴なし)
   try {
-    await applyDataset(dataset);
+    await applyDataset(dataset, diff === null ? [] : toFeatureChangeRows(diff));
   } catch (error) {
     return finish({
       result: 'db_failed',
