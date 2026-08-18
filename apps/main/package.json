@@ -35,6 +35,7 @@
     "@repo/react-hooks": "workspace:*",
     "@tailwindcss/postcss": "catalog:",
     "@vercel/analytics": "2.0.1",
+    "@vercel/speed-insights": "2.0.0",
     "ai": "catalog:",
     "budoux": "0.9.0",
     "drizzle-orm": "catalog:",
