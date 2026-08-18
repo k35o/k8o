@@ -1,20 +1,19 @@
 name: Vercel Prebuilt Deploy
 
-# Vercel の Build Minutes を消費しないよう、ビルドを GitHub Actions（public repo は無料）で行い、
-# `vercel build` の成果物を `vercel deploy --prebuilt` でアップロードだけする。
-# Git 連携の自動ビルドと並存できるよう preview デプロイに限定している。
-# 本採用時は push / pull_request トリガーへ広げ、各 app の vercel.json に
-# `"git": { "deploymentEnabled": false }` を追加して二重デプロイを防ぐ。
+# ビルドを GitHub Actions（public repo は無料）で行い、`vercel build` の成果物を
+# `vercel deploy --prebuilt` でアップロードだけすることで、Vercel の Build Minutes を
+# 消費せずにデプロイする。Vercel 側の Git 連携ビルドは各 app の vercel.json の
+# `"git": { "deploymentEnabled": false }` で停止しており、preview（PR）と
+# production（main への push）の両方をこの workflow が担う。
 on:
-  # workflow_dispatch は default ブランチに載るまで起動できないため、
-  # この workflow 自身を変更する PR では全 app を試行デプロイして検証する
   pull_request:
-    paths:
-      - '.github/workflows/vercel-prebuilt.yml'
+  push:
+    branches:
+      - main
   workflow_dispatch:
     inputs:
       app:
-        description: 'デプロイするアプリ'
+        description: 'preview をデプロイするアプリ'
         required: true
         type: choice
         options:
@@ -26,17 +25,93 @@ on:
 permissions: {}
 
 jobs:
-  deploy-preview:
-    # fork PR は VERCEL_TOKEN を取得できないため除外する
-    if: ${{ github.event_name != 'pull_request' || github.event.pull_request.head.repo.fork != true }}
+  detect:
+    # fork PR は VERCEL_TOKEN を取得できず、renovate ブランチは preview 不要のため除外する
+    if: ${{ github.event_name != 'pull_request' || (github.event.pull_request.head.repo.fork != true && !startsWith(github.head_ref, 'renovate/')) }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read
+    outputs:
+      apps: ${{ steps.detect.outputs.apps }}
+    steps:
+      - name: Checkout branch
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+          # merge-base の解決に履歴が必要（shallow だと base の古い PR で誤検出する）
+          fetch-depth: 0
+
+      - name: Setup
+        uses: ./.github/actions/setup
+
+      - name: Detect affected apps
+        id: detect
+        env:
+          EVENT_NAME: ${{ github.event_name }}
+          DISPATCH_APP: ${{ inputs.app }}
+          PUSH_BEFORE: ${{ github.event.before }}
+        run: |
+          if [ "$EVENT_NAME" = "workflow_dispatch" ]; then
+            echo "apps=[\"$DISPATCH_APP\"]" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          if [ "$EVENT_NAME" = "push" ]; then
+            BASE="$PUSH_BEFORE"
+            # force push 等で before が辿れないと判定不能なので、安全側で全 app をデプロイする
+            if ! git rev-parse --verify "$BASE^{commit}" > /dev/null 2>&1; then
+              echo 'apps=["main","admin","ai"]' >> "$GITHUB_OUTPUT"
+              exit 0
+            fi
+          else
+            BASE=$(git merge-base origin/main HEAD)
+          fi
+
+          CHANGED=$(git diff --name-only "$BASE" HEAD)
+
+          # ビルド判定の基盤やルート依存が変わったら全 app を安全側でデプロイする
+          if echo "$CHANGED" | grep -qE '^(turbo\.json|mise\.toml|package\.json|pnpm-workspace\.yaml|pnpm-lock\.yaml|\.github/workflows/vercel-prebuilt\.yml)$'; then
+            echo 'apps=["main","admin","ai"]' >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          # 判定不能時は安全側で全 app をデプロイする
+          if ! AFFECTED=$(pnpm turbo query affected --packages --base "$BASE"); then
+            echo 'apps=["main","admin","ai"]' >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          apps=()
+          echo "$AFFECTED" | grep -q '"name": "main"' && apps+=(main)
+          echo "$AFFECTED" | grep -q '"name": "admin"' && apps+=(admin)
+          echo "$AFFECTED" | grep -q '"name": "@repo/ai"' && apps+=(ai)
+          # vercel.json は turbo のパッケージ入力に含まれないため個別に拾う
+          echo "$CHANGED" | grep -q '^apps/main/vercel\.json$' && apps+=(main)
+          echo "$CHANGED" | grep -q '^apps/admin/vercel\.json$' && apps+=(admin)
+          echo "$CHANGED" | grep -q '^apps/ai/vercel\.json$' && apps+=(ai)
+
+          if [ "${#apps[@]}" -eq 0 ]; then
+            echo 'apps=[]' >> "$GITHUB_OUTPUT"
+          else
+            echo "apps=$(printf '%s\n' "${apps[@]}" | sort -u | jq -R . | jq -sc .)" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Show detected apps
+        run: echo "apps=${{ steps.detect.outputs.apps }}"
+
+  deploy:
+    needs: detect
+    if: ${{ needs.detect.outputs.apps != '[]' }}
     runs-on: ubuntu-latest
     timeout-minutes: 20
     permissions:
       contents: read
+      pull-requests: write
     strategy:
       fail-fast: false
       matrix:
-        app: ${{ github.event_name == 'workflow_dispatch' && fromJSON(format('["{0}"]', inputs.app)) || fromJSON('["main", "admin", "ai"]') }}
+        app: ${{ fromJSON(needs.detect.outputs.apps) }}
     concurrency:
       group: vercel-prebuilt-${{ github.ref }}-${{ matrix.app }}
       cancel-in-progress: true
@@ -45,6 +120,7 @@ jobs:
       VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
       # プロジェクト ID は秘密情報ではないため、app との対応を workflow に直書きして自己文書化する
       VERCEL_PROJECT_ID: ${{ fromJSON('{"main":"prj_OrrQ8Nnl4sJJii9kpjOAtb6EeIjD","admin":"prj_aehv1FNgGlp0nGIZPyPFHShRqlAW","ai":"prj_Iz1SHi1C6rgwFz2YngTzeiRdsFE8"}')[matrix.app] }}
+      DEPLOY_TARGET: ${{ github.event_name == 'push' && 'production' || 'preview' }}
     steps:
       - name: Checkout branch
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -55,16 +131,48 @@ jobs:
         uses: ./.github/actions/setup
 
       - name: Pull Vercel project settings
-        run: pnpm dlx vercel@54.3.0 pull --yes --environment=preview --token="$VERCEL_TOKEN"
+        run: pnpm dlx vercel@54.3.0 pull --yes --environment="$DEPLOY_TARGET" --token="$VERCEL_TOKEN"
 
       - name: Build
         env:
           # sensitive 設定の env var は `vercel pull` だと空になるため、ビルド時に必要な
-          # GITHUB_TOKEN は Actions のトークンで代替する（トップページの contributions 取得で使う）
+          # GITHUB_TOKEN は Actions のトークンで代替する（main のトップページの contributions 取得で使う）
           GITHUB_TOKEN: ${{ github.token }}
-        run: pnpm dlx vercel@54.3.0 build --token="$VERCEL_TOKEN"
-
-      - name: Deploy (preview)
         run: |
-          URL=$(pnpm dlx vercel@54.3.0 deploy --prebuilt --token="$VERCEL_TOKEN")
-          echo "Preview (${{ matrix.app }}): $URL" >> "$GITHUB_STEP_SUMMARY"
+          if [ "$DEPLOY_TARGET" = "production" ]; then
+            pnpm dlx vercel@54.3.0 build --prod --token="$VERCEL_TOKEN"
+          else
+            pnpm dlx vercel@54.3.0 build --token="$VERCEL_TOKEN"
+          fi
+
+      - name: Deploy
+        id: deploy
+        run: |
+          if [ "$DEPLOY_TARGET" = "production" ]; then
+            URL=$(pnpm dlx vercel@54.3.0 deploy --prebuilt --prod --token="$VERCEL_TOKEN")
+          else
+            URL=$(pnpm dlx vercel@54.3.0 deploy --prebuilt --token="$VERCEL_TOKEN")
+          fi
+          echo "url=$URL" >> "$GITHUB_OUTPUT"
+          echo "${{ matrix.app }} ($DEPLOY_TARGET): $URL" >> "$GITHUB_STEP_SUMMARY"
+
+      # Git 連携停止で Vercel bot の preview URL コメントが来なくなる代わりに、
+      # app ごとに 1 コメントを marker で更新し続ける
+      - name: Comment preview URL
+        if: ${{ github.event_name == 'pull_request' }}
+        env:
+          GH_TOKEN: ${{ github.token }}
+          URL: ${{ steps.deploy.outputs.url }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+          APP: ${{ matrix.app }}
+        run: |
+          marker="<!-- vercel-prebuilt:$APP -->"
+          body=$(printf '%s\nPreview (**%s**): %s (%s)' "$marker" "$APP" "$URL" "$HEAD_SHA")
+          cid=$(gh api "repos/$GITHUB_REPOSITORY/issues/$PR_NUMBER/comments" --paginate \
+            --jq ".[] | select(.body | startswith(\"$marker\")) | .id" | head -1)
+          if [ -n "$cid" ]; then
+            gh api -X PATCH "repos/$GITHUB_REPOSITORY/issues/comments/$cid" -f body="$body" > /dev/null
+          else
+            gh api "repos/$GITHUB_REPOSITORY/issues/$PR_NUMBER/comments" -f body="$body" > /dev/null
+          fi
