@@ -139,8 +139,15 @@ jobs:
           # sensitive 設定の env var は `vercel pull` だと空になるため、ビルド時に必要な
           # GITHUB_TOKEN は Actions のトークンで代替する（main のトップページの contributions 取得で使う）
           GITHUB_TOKEN: ${{ github.token }}
+          PROD_TURSO_DATABASE_URL: ${{ secrets.TURSO_DATABASE_URL }}
+          PROD_TURSO_AUTH_TOKEN: ${{ secrets.TURSO_AUTH_TOKEN }}
         run: |
           if [ "$DEPLOY_TARGET" = "production" ]; then
+            # production の Turso 接続情報も sensitive で pull できないため GH secrets から
+            # 注入する（preview は pull した preview DB の値をそのまま使う）。ambient な
+            # 環境変数は pull された .env より優先されるため export で上書きできる
+            export TURSO_DATABASE_URL="$PROD_TURSO_DATABASE_URL"
+            export TURSO_AUTH_TOKEN="$PROD_TURSO_AUTH_TOKEN"
             pnpm dlx vercel@54.3.0 build --prod --token="$VERCEL_TOKEN"
           else
             pnpm dlx vercel@54.3.0 build --token="$VERCEL_TOKEN"
