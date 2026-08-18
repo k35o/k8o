@@ -4,10 +4,11 @@ const DB_CONTENT_CACHE_TAG = 'db-content';
 
 // main は別デプロイのため revalidatePath では再検証できない。
 // secret 検証付きの main の /api/revalidate を叩いてタグを無効化する。
-// 失敗しても呼び出し元の Server Action は成功扱いのままにする。
+// 失敗しても throw せず false を返す: 対話的な Server Action は成功扱いのままで
+// よく、失敗が自己回復しない呼び出し元(browser-support 同期)だけが警報を出す。
 export async function revalidateMainCache(
   tag: string = DB_CONTENT_CACHE_TAG,
-): Promise<void> {
+): Promise<boolean> {
   const url = process.env['MAIN_REVALIDATE_URL'];
   const secret = process.env['REVALIDATE_SECRET'];
   if (
@@ -19,7 +20,7 @@ export async function revalidateMainCache(
     console.warn(
       'MAIN_REVALIDATE_URL / REVALIDATE_SECRET が設定されていないため、mainの再検証をスキップしました',
     );
-    return;
+    return false;
   }
 
   try {
@@ -35,8 +36,11 @@ export async function revalidateMainCache(
     });
     if (!res.ok) {
       console.error(`mainの再検証に失敗しました: ${res.status}`);
+      return false;
     }
+    return true;
   } catch (error) {
     console.error('mainの再検証に失敗しました:', error);
+    return false;
   }
 }

@@ -348,8 +348,18 @@ export async function syncBrowserSupport({
     });
   }
 
-  // 9. main の表示キャッシュを再検証(失敗しても同期自体は成功扱い)
-  await revalidateMainCache(BROWSER_SUPPORT_CACHE_TAG);
+  // 9. main の表示キャッシュを再検証。失敗しても同期自体は成功扱いだが、次回の
+  // 定期同期は既知バージョンで noop になり再検証されないまま自己回復しないため、
+  // 警報を出して手動同期(force)での復旧を促す。
+  const revalidated = await revalidateMainCache(BROWSER_SUPPORT_CACHE_TAG);
+  if (!revalidated) {
+    await notify({
+      kind: 'alert',
+      title: 'Browser Support同期: mainの再検証に失敗',
+      body: `v${version} はDBに反映済みですが、mainの表示キャッシュを再検証できませんでした。キャッシュ期限まで古い表示が残ります。adminの手動同期を再実行してください。`,
+      dedupeKey: `browser-support:alert:revalidate:v${version}`,
+    });
+  }
 
   return finish({
     result: 'applied',
