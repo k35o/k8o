@@ -102,7 +102,9 @@ jobs:
 
   deploy:
     needs: detect
-    if: ${{ needs.detect.outputs.apps != '[]' }}
+    # 独自の if を書くと暗黙の success() が付与されず、skip された detect（fork PR・
+    # renovate）でも空 outputs のまま起動して fromJSON('') で落ちるため、result を明示確認する
+    if: ${{ needs.detect.result == 'success' && needs.detect.outputs.apps != '[]' }}
     runs-on: ubuntu-latest
     timeout-minutes: 20
     permissions:
