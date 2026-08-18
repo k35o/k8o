@@ -107,7 +107,6 @@ jobs:
     timeout-minutes: 20
     permissions:
       contents: read
-      pull-requests: write
     strategy:
       fail-fast: false
       matrix:
@@ -156,12 +155,20 @@ jobs:
           echo "url=$URL" >> "$GITHUB_OUTPUT"
           echo "${{ matrix.app }} ($DEPLOY_TARGET): $URL" >> "$GITHUB_STEP_SUMMARY"
 
+      - name: Generate k8o-bot token
+        if: ${{ github.event_name == 'pull_request' }}
+        id: app-token
+        uses: actions/create-github-app-token@bcd2ba49218906704ab6c1aa796996da409d3eb1 # v3.2.0
+        with:
+          client-id: ${{ secrets.K35O_BOT_CLIENT_ID }}
+          private-key: ${{ secrets.K35O_BOT_PRIVATE_KEY }}
+
       # Git 連携停止で Vercel bot の preview URL コメントが来なくなる代わりに、
       # app ごとに 1 コメントを marker で更新し続ける
       - name: Comment preview URL
         if: ${{ github.event_name == 'pull_request' }}
         env:
-          GH_TOKEN: ${{ github.token }}
+          GH_TOKEN: ${{ steps.app-token.outputs.token }}
           URL: ${{ steps.deploy.outputs.url }}
           PR_NUMBER: ${{ github.event.pull_request.number }}
           HEAD_SHA: ${{ github.event.pull_request.head.sha }}
