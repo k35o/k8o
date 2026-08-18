@@ -155,11 +155,13 @@ jobs:
 
       - name: Deploy
         id: deploy
+        # Hobby には 24 時間 5,000 ファイルのアップロード上限（api-upload-free）があり、
+        # main の成果物は数千ファイルあるため、tarball 1 本にまとめてアップロードする
         run: |
           if [ "$DEPLOY_TARGET" = "production" ]; then
-            URL=$(pnpm dlx vercel@54.3.0 deploy --prebuilt --prod --token="$VERCEL_TOKEN")
+            URL=$(pnpm dlx vercel@54.3.0 deploy --prebuilt --prod --archive=tgz --token="$VERCEL_TOKEN")
           else
-            URL=$(pnpm dlx vercel@54.3.0 deploy --prebuilt --token="$VERCEL_TOKEN")
+            URL=$(pnpm dlx vercel@54.3.0 deploy --prebuilt --archive=tgz --token="$VERCEL_TOKEN")
           fi
           echo "url=$URL" >> "$GITHUB_OUTPUT"
           echo "${{ matrix.app }} ($DEPLOY_TARGET): $URL" >> "$GITHUB_STEP_SUMMARY"
