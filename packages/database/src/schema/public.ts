@@ -13,6 +13,7 @@ export {
 } from './article-sources';
 export type { PushLogKind } from './push-logs';
 export type { BrowserSupportDatasetState } from './browser-support-datasets';
+export type { BrowserSupportChangeStatus } from './browser-support-feature-changes';
 export type {
   BrowserSupportSyncResult,
   BrowserSupportSyncTrigger,
