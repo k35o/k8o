@@ -3,6 +3,7 @@ import { GoogleAnalytics } from '@next/third-parties/google';
 import './_styles/globals.css';
 import '@repo/code-highlight/styles.css';
 import { Analytics } from '@vercel/analytics/react';
+import { SpeedInsights } from '@vercel/speed-insights/next';
 import type { Metadata } from 'next';
 
 import { getBrowserMinVersions } from '@/features/browser-support/interface/queries';
@@ -74,6 +75,7 @@ export default function RootLayout({ children }: LayoutProps<'/'>) {
         </AppProvider>
         <ServiceWorkerRegister />
         <Analytics />
+        <SpeedInsights />
         {gaId !== undefined && gaId !== '' && <GoogleAnalytics gaId={gaId} />}
       </body>
     </html>
