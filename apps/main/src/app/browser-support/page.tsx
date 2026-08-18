@@ -3,18 +3,25 @@ import { formatDate } from '@repo/helpers/date/format';
 import { Suspense } from 'react';
 
 import { getFeatureBlogMap } from '@/features/blog/interface/queries';
-import { getBrowserSupportFeatures } from '@/features/browser-support/interface/queries';
+import {
+  getBrowserSupportFeatures,
+  getRecentBrowserSupportChanges,
+} from '@/features/browser-support/interface/queries';
 
 import {
   BrowserSupportFeatureList,
   BrowserSupportFeatureListSkeleton,
+  BrowserSupportRecentChanges,
 } from './_components';
 
 export default async function BrowserSupportPage() {
-  const [{ features, nowMs, meta }, blogMap] = await Promise.all([
-    getBrowserSupportFeatures(),
-    getFeatureBlogMap(),
-  ]);
+  const [{ features, nowMs, meta }, blogMap, recentChanges] = await Promise.all(
+    [
+      getBrowserSupportFeatures(),
+      getFeatureBlogMap(),
+      getRecentBrowserSupportChanges(),
+    ],
+  );
 
   if (meta === null) {
     return (
@@ -28,6 +35,7 @@ export default async function BrowserSupportPage() {
 
   return (
     <div className="flex flex-col gap-6">
+      <BrowserSupportRecentChanges changes={recentChanges} />
       {/* nuqs が searchParams（動的データ）を読むため、静的プリレンダリング時は
           Suspense 境界が必要。境界内はリクエスト時にレンダリングされる。 */}
       <Suspense fallback={<BrowserSupportFeatureListSkeleton />}>
