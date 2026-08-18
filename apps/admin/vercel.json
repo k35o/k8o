@@ -1,5 +1,7 @@
 {
-  "ignoreCommand": "bash ../../scripts/ignore-build.sh admin",
+  "git": {
+    "deploymentEnabled": false
+  },
   "crons": [
     {
       "path": "/api/crons/sync-articles",
