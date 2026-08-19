@@ -21,6 +21,7 @@ import { blogViewDailies } from './blog-view-dailies';
 import { blogViews } from './blog-views';
 import { blogs, blogsRelations } from './blogs';
 import { browserSupportDatasets } from './browser-support-datasets';
+import { browserSupportFeatureChanges } from './browser-support-feature-changes';
 import { browserSupportSyncRuns } from './browser-support-sync-runs';
 import { comments, commentsRelations } from './comments';
 import { feedbacks, feedbacksRelations } from './feedback';
@@ -43,6 +44,7 @@ export const schema = {
   comments,
   reportingReports,
   browserSupportDatasets,
+  browserSupportFeatureChanges,
   browserSupportSyncRuns,
   pushSubscriptions,
   pushLogs,

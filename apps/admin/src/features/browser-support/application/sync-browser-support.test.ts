@@ -1,6 +1,9 @@
 import type { BaselineFeature } from '@repo/helpers/baseline/model';
 
-import { diffBaselineFeatures } from './sync-browser-support';
+import {
+  diffBaselineFeatures,
+  toFeatureChangeRows,
+} from './sync-browser-support';
 
 // sync-browser-support.ts の import 連鎖で実 DB クライアントが生成されないようモックする。
 // 本テストは db を呼ばない純粋関数のみを検証する。
@@ -70,6 +73,60 @@ describe('diffBaselineFeatures', () => {
       const diff = diffBaselineFeatures([], [feature('a', 'newly')]);
       expect(diff.reached).toStrictEqual([]);
       expect(diff.statusChanges).toStrictEqual([]);
+    });
+  });
+});
+
+describe('toFeatureChangeRows', () => {
+  describe('正常系', () => {
+    it('baseline 到達は previousStatus null の行になる', () => {
+      const diff = diffBaselineFeatures(
+        [feature('a', 'newly')],
+        [feature('a', 'limited')],
+      );
+      expect(toFeatureChangeRows(diff)).toStrictEqual([
+        {
+          featureId: 'a',
+          featureName: 'a',
+          status: 'newly',
+          previousStatus: null,
+        },
+      ]);
+    });
+
+    it('baseline 内の遷移は previousStatus 付きの行になる', () => {
+      const diff = diffBaselineFeatures(
+        [feature('a', 'widely')],
+        [feature('a', 'newly')],
+      );
+      expect(toFeatureChangeRows(diff)).toStrictEqual([
+        {
+          featureId: 'a',
+          featureName: 'a',
+          status: 'widely',
+          previousStatus: 'newly',
+        },
+      ]);
+    });
+
+    it('到達と遷移が混在しても両方の行を作る', () => {
+      const diff = diffBaselineFeatures(
+        [feature('a', 'newly'), feature('b', 'widely')],
+        [feature('b', 'newly')],
+      );
+      expect(
+        toFeatureChangeRows(diff).map((row) => row.featureId),
+      ).toStrictEqual(['a', 'b']);
+    });
+  });
+
+  describe('エッジケース', () => {
+    it('差分が空なら行を作らない', () => {
+      const diff = diffBaselineFeatures(
+        [feature('a', 'newly')],
+        [feature('a', 'newly')],
+      );
+      expect(toFeatureChangeRows(diff)).toStrictEqual([]);
     });
   });
 });

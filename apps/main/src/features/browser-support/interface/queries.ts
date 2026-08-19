@@ -7,6 +7,8 @@ import {
 } from '@/features/browser-support/application/features';
 import type { BrowserSupportFeature } from '@/features/browser-support/application/features';
 import { getBrowserMinVersions as _getBrowserMinVersions } from '@/features/browser-support/application/min-versions';
+import { findRecentFeatureChanges } from '@/features/browser-support/infrastructure/browser-support-change-repository';
+import type { BrowserSupportFeatureChange } from '@/features/browser-support/infrastructure/browser-support-change-repository';
 import { findActiveBaselineDataset } from '@/features/browser-support/infrastructure/browser-support-dataset-repository';
 import type { ActiveBaselineDataset } from '@/features/browser-support/infrastructure/browser-support-dataset-repository';
 import { BROWSER_SUPPORT_CACHE_TAG } from '@/shared/cache/cache-tags';
@@ -57,6 +59,24 @@ export async function getBrowserSupportFeatures(): Promise<{
   };
 }
 
+// 「最近の更新」の表示窓。同期時に記録した changedAt 基準なので、上流の baseline
+// 日付のラグに左右されず「このサイトが取り込んだ時点」からの新しさで絞れる。
+const RECENT_CHANGES_WINDOW_MS = 30 * 24 * 60 * 60 * 1000;
+// 上流の一括再計算などで異常に膨らんだ場合の表示上限
+const RECENT_CHANGES_LIMIT = 100;
+
+export async function getRecentBrowserSupportChanges(): Promise<
+  BrowserSupportFeatureChange[]
+> {
+  'use cache';
+  cacheLife('minutes');
+  cacheTag(BROWSER_SUPPORT_CACHE_TAG);
+
+  const since = new Date(Date.now() - RECENT_CHANGES_WINDOW_MS).toISOString();
+  const changes = await findRecentFeatureChanges(since, RECENT_CHANGES_LIMIT);
+  return changes;
+}
+
 export async function getFeatureStatus(
   featureId: string,
 ): Promise<BrowserSupportFeature | null> {
@@ -78,3 +98,4 @@ export type {
   BrowserSupportFeature,
   SupportStatus,
 } from '@/features/browser-support/application/features';
+export type { BrowserSupportFeatureChange } from '@/features/browser-support/infrastructure/browser-support-change-repository';
