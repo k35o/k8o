@@ -23,6 +23,7 @@ export const buildSpecSystemPrompt = (
 ): string => {
   const sections = [
     catalog.prompt({
+      // oxlint-disable-next-line typescript/no-deprecated -- 非推奨なのは旧別名の'generate'/'chat'だが、@deprecatedがmodeプロパティ自体に付いているため現行値の'inline'でも警告が出る
       mode: 'inline',
       system: K8O_SYSTEM,
       customRules: [...arteOdysseyRules, ...RESPONSE_RULES],
