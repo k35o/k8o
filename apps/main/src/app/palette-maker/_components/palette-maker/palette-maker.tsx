@@ -34,7 +34,7 @@ export const PaletteMaker: FC = () => {
         </div>
       </Card>
       <section className="flex flex-col gap-3">
-        <Heading type="h3">コントラスト詳細</Heading>
+        <Heading level="h3">コントラスト詳細</Heading>
         <ContrastTable swatches={swatches} />
       </section>
     </div>

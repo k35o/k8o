@@ -44,14 +44,14 @@ export function TextIndentKeywordsDemo() {
           onChange={(checked) => {
             setUseEachLine(checked);
           }}
-          value={useEachLine}
+          checked={useEachLine}
         />
         <Checkbox
           label="hanging"
           onChange={(checked) => {
             setUseHanging(checked);
           }}
-          value={useHanging}
+          checked={useHanging}
         />
       </div>
 

@@ -11,7 +11,7 @@ type Props = {
 
 export const YearSection: FC<Props> = ({ year, blogs }) => (
   <section className="flex flex-col gap-4">
-    <Heading type="h3">{year}年</Heading>
+    <Heading level="h3">{year}年</Heading>
     <div className="flex flex-col gap-4">
       {blogs.map((blog) => (
         <BlogCard key={blog.id} {...blog} />

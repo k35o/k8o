@@ -29,7 +29,7 @@ export const AppCard = ({
             {icon}
           </span>
         )}
-        <Heading type="h3">{title}</Heading>
+        <Heading level="h3">{title}</Heading>
       </div>
 
       <p className="text-fg-mute mt-4 line-clamp-3 flex-1 text-sm leading-relaxed">
@@ -49,7 +49,7 @@ export const AppCard = ({
   );
 
   return (
-    <Card appearance="shadow" interactive>
+    <Card variant="shadow" interactive>
       {isExternal ? (
         <a
           className="group"

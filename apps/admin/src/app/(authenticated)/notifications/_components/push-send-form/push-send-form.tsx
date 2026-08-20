@@ -15,7 +15,7 @@ export const PushSendForm: FC = () => {
   const [url, setUrl] = useState('');
   const [open, setOpen] = useState(false);
   const { isPending, run } = useAsyncAction();
-  const { onOpen } = useToast();
+  const { open: openToast } = useToast();
 
   const canSend = title.trim() !== '' && body.trim() !== '';
 
@@ -24,11 +24,11 @@ export const PushSendForm: FC = () => {
       () => sendManualPushAction({ title, body, url }),
       {
         onError: (message) => {
-          onOpen('error', message);
+          openToast('error', message);
         },
         onSuccess: (res) => {
           setOpen(false);
-          onOpen(
+          openToast(
             'success',
             `送信しました（成功 ${String(res.succeeded ?? 0)} / 失敗 ${String(res.failed ?? 0)}）`,
           );
@@ -41,7 +41,7 @@ export const PushSendForm: FC = () => {
   };
 
   return (
-    <Card appearance="shadow">
+    <Card variant="shadow">
       <div className="flex flex-col gap-4 p-6">
         <p className="text-fg-mute text-sm">
           全購読者へ即時送信します（送信ログには記録されません）。

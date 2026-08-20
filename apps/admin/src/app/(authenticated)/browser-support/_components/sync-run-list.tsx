@@ -31,7 +31,7 @@ export const SyncRunList: FC<{ runs: SyncRunRecord[] }> = ({ runs }) => {
   }
 
   return (
-    <Card appearance="shadow">
+    <Card variant="shadow">
       {runs.map((run) => {
         const meta = RESULT_META[run.result];
         return (
@@ -39,7 +39,7 @@ export const SyncRunList: FC<{ runs: SyncRunRecord[] }> = ({ runs }) => {
             className="border-border-mute flex items-center gap-3 border-b px-5 py-3 text-sm last:border-b-0"
             key={run.id}
           >
-            <Badge size="sm" text={meta.label} tone={meta.tone} />
+            <Badge size="sm" label={meta.label} tone={meta.tone} />
             <div className="flex min-w-0 flex-1 flex-col">
               <span className="text-xs">
                 {formatDateTime(run.createdAt)}（{TRIGGER_LABELS[run.trigger]}）

@@ -26,7 +26,7 @@ export default function Layout({ children }: LayoutProps<'/color-converter'>) {
   return (
     <div className="mx-auto w-full max-w-5xl">
       <div className="flex h-full flex-col gap-4">
-        <Heading type="h2">カラーコード職人</Heading>
+        <Heading level="h2">カラーコード職人</Heading>
         {children}
       </div>
     </div>

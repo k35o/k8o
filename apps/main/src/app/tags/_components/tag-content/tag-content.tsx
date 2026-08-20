@@ -23,7 +23,7 @@ export const TagContent: FC<{
         <TagIcon />
       </div>
       <div className="flex flex-col gap-2">
-        <Heading type="h3">{name}</Heading>
+        <Heading level="h3">{name}</Heading>
         <p className="text-fg-mute text-sm">
           {blogs.length + talks.length}
           件のコンテンツがあります
@@ -34,7 +34,7 @@ export const TagContent: FC<{
       {blogs.length > 0 && (
         <div className="flex flex-col gap-4">
           <Link href="/blog">
-            <Heading type="h4">Blog</Heading>
+            <Heading level="h4">Blog</Heading>
           </Link>
           <div className="grid-cols-auto-fill-70 grid justify-items-center gap-4">
             {blogs.map((blog) => (
@@ -52,7 +52,7 @@ export const TagContent: FC<{
       {talks.length > 0 && (
         <div className="flex flex-col gap-4">
           <Link href="/talks">
-            <Heading type="h4">Talks</Heading>
+            <Heading level="h4">Talks</Heading>
           </Link>
           <div className="grid-cols-auto-fill-70 grid justify-items-center gap-4">
             {talks.map((talk) => (

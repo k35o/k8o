@@ -64,12 +64,11 @@ export const ShareControlView: FC<ShareControlViewProps> = ({
         )}
       />
       <DropdownMenu.Content>
-        {items.map((item, index) => (
+        {items.map((item) => (
           <DropdownMenu.Item
-            index={index}
             key={item.label}
             label={item.label}
-            onClick={item.onClick}
+            onAction={item.onClick}
           />
         ))}
       </DropdownMenu.Content>

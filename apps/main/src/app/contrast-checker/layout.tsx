@@ -26,7 +26,7 @@ export default function Layout({ children }: LayoutProps<'/contrast-checker'>) {
   return (
     <div className="mx-auto w-full max-w-5xl">
       <div className="flex h-full flex-col gap-4">
-        <Heading type="h2">コントラストチェッカー</Heading>
+        <Heading level="h2">コントラストチェッカー</Heading>
         {children}
       </div>
     </div>

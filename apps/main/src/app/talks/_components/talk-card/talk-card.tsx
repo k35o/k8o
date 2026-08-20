@@ -86,7 +86,7 @@ export const TalkCard: FC<{
       <div className="flex flex-wrap items-center gap-2">
         {tags.map((tag) => (
           <Link href={`/tags/${tag.id.toString()}`} key={tag.id}>
-            <Badge interactive key={tag.id} size="sm" text={tag.name} />
+            <Badge interactive key={tag.id} size="sm" label={tag.name} />
           </Link>
         ))}
       </div>

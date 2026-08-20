@@ -107,7 +107,7 @@ export function ViewTransitionBasicDemo() {
         <Button onClick={shuffleItems}>シャッフル</Button>
         <Button onClick={addItem}>アイテムを追加</Button>
         <Button
-          color={isViewTransitionEnabled ? 'primary' : 'gray'}
+          color={isViewTransitionEnabled ? 'primary' : 'base'}
           onClick={() => {
             setIsViewTransitionEnabled(!isViewTransitionEnabled);
           }}

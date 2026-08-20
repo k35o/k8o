@@ -23,7 +23,7 @@ const SlideRow: FC<{ slide: SlideRecord }> = ({ slide }) => (
       {slide.tags.length > 0 && (
         <div className="flex flex-wrap gap-1">
           {slide.tags.map((tag) => (
-            <Badge key={tag} size="sm" text={tag} tone="neutral" />
+            <Badge key={tag} size="sm" label={tag} tone="neutral" />
           ))}
         </div>
       )}
@@ -43,7 +43,7 @@ export const SlideTable: FC<{ slides: SlideRecord[] }> = ({ slides }) => {
   }
 
   return (
-    <Card appearance="shadow">
+    <Card variant="shadow">
       {slides.map((slide) => (
         <SlideRow key={slide.id} slide={slide} />
       ))}

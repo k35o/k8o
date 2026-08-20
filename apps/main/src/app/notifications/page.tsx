@@ -23,7 +23,7 @@ export default function Page() {
     <div className="flex flex-col gap-8">
       <PushSubscribe vapidPublicKey={vapidPublicKey} />
       <section className="flex flex-col gap-4">
-        <Heading type="h3">通知履歴</Heading>
+        <Heading level="h3">通知履歴</Heading>
         <Suspense fallback={<HistorySkeleton />}>
           <NotificationHistory />
         </Suspense>

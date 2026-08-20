@@ -37,8 +37,8 @@ export const EditTalkContent = async ({
         <Breadcrumb.Separator />
         <Breadcrumb.Item>{talk.title}</Breadcrumb.Item>
       </Breadcrumb.List>
-      <Heading type="h1">トークを編集</Heading>
-      <Card appearance="shadow">
+      <Heading level="h1">トークを編集</Heading>
+      <Card variant="shadow">
         <div className="p-8">
           <TalkForm
             action={action}

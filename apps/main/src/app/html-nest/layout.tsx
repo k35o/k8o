@@ -27,7 +27,7 @@ export default function Layout({ children }: LayoutProps<'/html-nest'>) {
   return (
     <div className="mx-auto w-full max-w-6xl">
       <div className="flex h-full flex-col gap-4">
-        <Heading type="h2">{TITLE}</Heading>
+        <Heading level="h2">{TITLE}</Heading>
         {children}
       </div>
     </div>

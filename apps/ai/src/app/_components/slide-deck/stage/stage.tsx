@@ -20,7 +20,6 @@ export const Stage: FC<{ children: ReactNode; flush?: boolean }> = ({
       )}
     >
       <Logo
-        aria-hidden="true"
         className={cn(styles['watermark'], 'pointer-events-none absolute')}
       />
       <div

@@ -10,7 +10,7 @@ allowBuilds:
 
 catalog:
   '@ai-sdk/openai-compatible': 3.0.27
-  '@k8o/arte-odyssey': 11.0.1
+  '@k8o/arte-odyssey': 12.0.0
   '@k8o/html-nest': 0.2.0
   '@k8o/oxc-config': 0.2.1
   '@next/env': 16.3.0

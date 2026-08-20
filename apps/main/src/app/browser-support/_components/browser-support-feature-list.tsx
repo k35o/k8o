@@ -116,7 +116,7 @@ const FeatureList: FC<{
             className="flex items-start gap-3 px-1 py-3 sm:gap-4"
             key={feature.featureId}
           >
-            <Badge size="sm" text={meta.label} tone={meta.tone} />
+            <Badge size="sm" label={meta.label} tone={meta.tone} />
             <div className="flex min-w-0 flex-1 flex-col gap-0.5">
               <span className="text-sm leading-relaxed">{feature.name}</span>
               <span className="text-fg-mute font-mono text-xs">
@@ -221,21 +221,21 @@ export const BrowserSupportFeatureList: FC<{
               onChange={() => {
                 void setParams({ widely: !widely });
               }}
-              value={widely}
+              checked={widely}
             />
             <Checkbox
               label="Newly"
               onChange={() => {
                 void setParams({ newly: !newly });
               }}
-              value={newly}
+              checked={newly}
             />
             <Checkbox
               label="Limited（先取り）"
               onChange={() => {
                 void setParams({ limited: !limited });
               }}
-              value={limited}
+              checked={limited}
             />
           </div>
           <Checkbox
@@ -243,7 +243,7 @@ export const BrowserSupportFeatureList: FC<{
             onChange={() => {
               void setParams({ recent: !recentOnly });
             }}
-            value={recentOnly}
+            checked={recentOnly}
           />
         </div>
       </div>

@@ -48,7 +48,7 @@ export const SiteEntrySection = ({ kind }: { kind: SiteEntryKind }) => {
   return (
     <div className="flex flex-col gap-6">
       <div>
-        <Heading type="h2">{section.title}</Heading>
+        <Heading level="h2">{section.title}</Heading>
         <p className="text-fg-mute text-sm">{section.description}</p>
       </div>
       <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">

@@ -12,7 +12,7 @@ export function DonutScopeDemo() {
       <div className="flex items-center justify-between">
         <h3 className="font-bold">ドーナツスコープ</h3>
         <Button
-          color={showDonutScope ? 'primary' : 'gray'}
+          color={showDonutScope ? 'primary' : 'base'}
           onClick={() => {
             setShowDonutScope(!showDonutScope);
           }}

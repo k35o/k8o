@@ -23,7 +23,7 @@ const BlogRow: FC<{ blog: BlogRecord }> = ({ blog }) => (
       {blog.tags.length > 0 && (
         <div className="flex flex-wrap gap-1">
           {blog.tags.map((tag) => (
-            <Badge key={tag} size="sm" text={tag} tone="neutral" />
+            <Badge key={tag} size="sm" label={tag} tone="neutral" />
           ))}
         </div>
       )}
@@ -49,7 +49,7 @@ export const BlogTable: FC<{ blogs: BlogRecord[] }> = ({ blogs }) => {
   }
 
   return (
-    <Card appearance="shadow">
+    <Card variant="shadow">
       <div className="text-fg-mute border-border-mute flex items-center gap-3 border-b px-5 py-3 text-xs">
         <span className="flex-1">記事 (slug)</span>
         <span className="hidden w-20 text-right sm:block">閲覧数</span>

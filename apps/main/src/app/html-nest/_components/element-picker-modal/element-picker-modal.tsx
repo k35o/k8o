@@ -55,7 +55,7 @@ export const ElementPickerModal: FC<ElementPickerModalProps> = ({
   return (
     <>
       <Button
-        color="gray"
+        color="base"
         onClick={() => {
           setQuery('');
           setIsOpen(true);

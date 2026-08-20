@@ -58,7 +58,7 @@ export function FieldSizingDemo() {
         <div className="flex flex-wrap items-center gap-3">
           <span className="text-fg-base font-medium">プレビュー</span>
           <Badge
-            text={`field-sizing: ${value}`}
+            label={`field-sizing: ${value}`}
             tone="info"
             variant="outline"
           />

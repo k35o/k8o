@@ -17,7 +17,7 @@ export const BrowserSupportNoticeModal: FC<{
   detected: DetectedBrowser;
   minVersions: BrowserMinVersions;
 }> = ({ isOpen, onClose, detected, minVersions }) => (
-  <Modal isOpen={isOpen} onClose={onClose} type="center">
+  <Modal isOpen={isOpen} onClose={onClose} side="center">
     <Dialog.Root>
       <Dialog.Header onClose={onClose} title="ブラウザの更新について" />
       <Dialog.Content>

@@ -33,10 +33,10 @@ export const EditSourceContent = async ({
         <Breadcrumb.Item>{source.title}</Breadcrumb.Item>
       </Breadcrumb.List>
       <div className="flex items-center justify-between gap-4">
-        <Heading type="h1">{source.title}</Heading>
+        <Heading level="h1">{source.title}</Heading>
         <DeleteSourceButton id={source.id} title={source.title} />
       </div>
-      <Card appearance="shadow">
+      <Card variant="shadow">
         <div className="p-8">
           <SourceForm action={action} defaultValues={source} />
         </div>

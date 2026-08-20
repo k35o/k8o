@@ -132,7 +132,7 @@ export const PushSubscribe: FC<Props> = ({ vapidPublicKey }) => {
   };
 
   return (
-    <Card width="full" appearance="bordered">
+    <Card width="full" variant="outline">
       <div className="flex flex-col gap-4 p-6">
         <p className="text-fg-base text-sm">
           ReadingsとBrowser Supportの更新をプッシュ通知で受け取れます。
@@ -149,7 +149,7 @@ export const PushSubscribe: FC<Props> = ({ vapidPublicKey }) => {
           <div>
             {isSubscribed ? (
               <Button
-                color="gray"
+                color="base"
                 variant="outline"
                 disabled={isPending}
                 onClick={unsubscribe}

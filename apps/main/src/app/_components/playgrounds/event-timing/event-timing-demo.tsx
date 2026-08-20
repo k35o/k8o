@@ -143,7 +143,7 @@ export function EventTimingDemo() {
     <div className="space-y-4">
       <div className="flex flex-wrap items-center gap-3">
         <Button onClick={handleClick}>クリックして計測</Button>
-        <Button color="gray" onClick={handleReset} size="sm" variant="outline">
+        <Button color="base" onClick={handleReset} size="sm" variant="outline">
           リセット
         </Button>
         <span className="text-fg-mute text-sm">

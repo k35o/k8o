@@ -88,7 +88,7 @@ export function CaretPositionDemo() {
           <div className="mb-3 flex items-baseline justify-between gap-2">
             <h4 className="text-fg-base text-sm font-medium">結果</h4>
             <Button
-              color="gray"
+              color="base"
               onClick={handleReset}
               size="sm"
               variant="outline"

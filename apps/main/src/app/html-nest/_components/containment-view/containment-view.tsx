@@ -55,14 +55,14 @@ export const ContainmentView: FC<ContainmentViewProps> = ({
           </span>
           <Badge
             size="sm"
-            text={KIND_LABEL[element.contentModel.kind]}
+            label={KIND_LABEL[element.contentModel.kind]}
             tone="neutral"
             variant="solid"
           />
           {selfNest && (
             <Badge
               size="sm"
-              text="自己入れ子OK"
+              label="自己入れ子OK"
               tone="info"
               variant="outline"
             />
@@ -71,7 +71,7 @@ export const ContainmentView: FC<ContainmentViewProps> = ({
             <Badge
               key={category}
               size="sm"
-              text={FORM_CATEGORY_LABEL[category]}
+              label={FORM_CATEGORY_LABEL[category]}
               tone="neutral"
               variant="outline"
             />

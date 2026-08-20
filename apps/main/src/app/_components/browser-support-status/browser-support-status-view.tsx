@@ -46,7 +46,7 @@ export const BrowserSupportStatusView: FC<{
   return (
     <div className="border-border-base bg-bg-base my-4 flex max-w-full flex-col gap-3 rounded-xl border p-4 sm:p-5">
       <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
-        <Badge size="sm" text={meta.label} tone={meta.tone} />
+        <Badge size="sm" label={meta.label} tone={meta.tone} />
         <span className="text-sm font-medium">{feature.name}</span>
         {year !== null && (
           <span className="text-fg-mute text-xs">{year}年〜</span>

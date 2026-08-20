@@ -7,7 +7,7 @@ import type { FC } from 'react';
 import { authClient } from '@/shared/auth/auth-client';
 
 export const SignInForm: FC = () => {
-  const { onOpen } = useToast();
+  const { open } = useToast();
   // social ログインは GitHub への全画面リダイレクト。押下からリダイレクトまでの間が
   // 無反応に見えるため、保留中はボタンを無効化してスピナーを出す。失敗時のみ解除する。
   const [isPending, setIsPending] = useState(false);
@@ -20,7 +20,7 @@ export const SignInForm: FC = () => {
       fetchOptions: {
         onError: () => {
           setIsPending(false);
-          onOpen('error', 'ログインに失敗しました');
+          open('error', 'ログインに失敗しました');
         },
       },
     });
@@ -28,7 +28,7 @@ export const SignInForm: FC = () => {
 
   return (
     <Button
-      color="gray"
+      color="base"
       disabled={isPending}
       fullWidth
       onClick={handleSignIn}

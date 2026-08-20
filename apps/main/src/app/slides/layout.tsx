@@ -30,7 +30,7 @@ export default function Layout({ children }: LayoutProps<'/slides'>) {
     <div className="mx-auto w-full max-w-5xl">
       <div className="flex flex-col gap-6">
         <Link className="hover:underline" href="/slides">
-          <Heading type="h2">Slides</Heading>
+          <Heading level="h2">Slides</Heading>
         </Link>
         {children}
       </div>

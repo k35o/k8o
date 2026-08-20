@@ -6,7 +6,7 @@ import { ButtonLink } from '@/app/(authenticated)/_components';
 
 export const AddArticleLink: FC = () => (
   <ButtonLink
-    color="gray"
+    color="base"
     href="/reading-list/articles/new"
     size="sm"
     variant="outline"

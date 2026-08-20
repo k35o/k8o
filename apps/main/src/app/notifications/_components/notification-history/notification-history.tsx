@@ -22,10 +22,10 @@ export const NotificationHistory = async () => {
     <ul className="flex flex-col gap-4">
       {logs.map((log) => (
         <li key={log.id}>
-          <Card width="full" appearance="bordered">
+          <Card width="full" variant="outline">
             <div className="flex flex-col gap-2 p-4">
               <div className="flex items-center gap-2">
-                <Badge text={KIND_LABEL[log.kind]} tone="info" />
+                <Badge label={KIND_LABEL[log.kind]} tone="info" />
                 <time className="text-fg-mute text-xs" dateTime={log.sentAt}>
                   {formatDate(new Date(log.sentAt), 'yyyy年M月d日(E) HH:mm')}
                 </time>

@@ -20,25 +20,25 @@ type Props = {
 
 export const OutputPanel: FC<Props> = ({ corners, shape }) => {
   const { writeClipboard } = useClipboard();
-  const { onOpen } = useToast();
+  const { open } = useToast();
 
   const css = toCssText(corners, shape);
 
   const handleCopyCss = async () => {
     try {
       await writeClipboard(css);
-      onOpen('success', 'CSSをコピーしました');
+      open('success', 'CSSをコピーしました');
     } catch {
-      onOpen('error', 'コピーに失敗しました');
+      open('error', 'コピーに失敗しました');
     }
   };
 
   const handleCopyUrl = async () => {
     try {
       await writeClipboard(window.location.href);
-      onOpen('success', '共有用URLをコピーしました');
+      open('success', '共有用URLをコピーしました');
     } catch {
-      onOpen('error', 'コピーに失敗しました');
+      open('error', 'コピーに失敗しました');
     }
   };
 

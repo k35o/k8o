@@ -52,7 +52,7 @@ const DiagnosticItem: FC<{ diagnostic: LintDiagnostic }> = ({ diagnostic }) => {
       <div className="flex flex-wrap items-center gap-2">
         <Badge
           size="sm"
-          text={diagnostic.severity}
+          label={diagnostic.severity}
           tone={severityTone(diagnostic.severity)}
         />
         {pos === null ? null : (
@@ -119,7 +119,7 @@ export const DiagnosticList: FC<Props> = ({
   return (
     <section className="flex flex-col gap-4">
       <div className="flex flex-wrap items-center gap-3">
-        <Heading type="h3">検査結果</Heading>
+        <Heading level="h3">検査結果</Heading>
         {totalCount > 0 ? (
           <span className="text-fg-mute text-sm">
             {`error ${errorCount.toString()} / warning ${warningCount.toString()}`}

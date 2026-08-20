@@ -67,7 +67,7 @@ export const IntlLocaleInfoDemo: FC = () => {
         <div className="flex flex-wrap gap-2">
           {presetTags.map((preset) => (
             <Button
-              color="gray"
+              color="base"
               isActive={preset === tag}
               key={preset}
               onClick={() => {

@@ -29,7 +29,7 @@ export default function Layout({ children }: LayoutProps<'/tags'>) {
       <div className="flex flex-col gap-6">
         <div className="flex flex-col gap-4">
           <Link href="/tags">
-            <Heading type="h2">
+            <Heading level="h2">
               <span className="flex items-center gap-1">
                 <span className="text-primary-fg">
                   <TagIcon />

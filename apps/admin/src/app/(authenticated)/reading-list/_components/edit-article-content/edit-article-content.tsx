@@ -23,7 +23,7 @@ export const EditArticleContent = async ({
   const action = updateArticle.bind(null, article.id);
 
   return (
-    <Card appearance="shadow">
+    <Card variant="shadow">
       <div className="p-8">
         <ArticleForm
           action={action}

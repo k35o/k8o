@@ -15,7 +15,7 @@ export default function NewSourcePage() {
         <Breadcrumb.Separator />
         <Breadcrumb.Item>ソースを追加</Breadcrumb.Item>
       </Breadcrumb.List>
-      <Heading type="h1">ソースを追加</Heading>
+      <Heading level="h1">ソースを追加</Heading>
       <Suspense fallback={<ContentFallback />}>
         <NewSourceContent />
       </Suspense>

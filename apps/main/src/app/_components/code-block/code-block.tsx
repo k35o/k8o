@@ -19,7 +19,7 @@ export const CodeBlock: FC<Props> = ({
 }) => {
   const preRef = useRef<HTMLPreElement>(null);
   const { writeClipboard } = useClipboard();
-  const { onOpen } = useToast();
+  const { open } = useToast();
 
   const handleCopy = async () => {
     const code = preRef.current?.querySelector('code');
@@ -34,9 +34,9 @@ export const CodeBlock: FC<Props> = ({
         : code.textContent;
     try {
       await writeClipboard(text);
-      onOpen('success', 'コードをコピーしました');
+      open('success', 'コードをコピーしました');
     } catch {
-      onOpen('error', 'コピーに失敗しました');
+      open('error', 'コピーに失敗しました');
     }
   };
 

@@ -25,7 +25,7 @@ export const BaselineFeatureList: FC<{
   }
 
   return (
-    <Card appearance="shadow">
+    <Card variant="shadow">
       {features.map((feature) => {
         const meta = STATUS_META[feature.status];
         return (
@@ -39,7 +39,7 @@ export const BaselineFeatureList: FC<{
                 {feature.featureId}
               </span>
             </div>
-            <Badge size="sm" text={meta.label} tone={meta.tone} />
+            <Badge size="sm" label={meta.label} tone={meta.tone} />
             <span className="text-fg-mute hidden w-28 shrink-0 text-right text-xs sm:block">
               {feature.resolvedDate === ''
                 ? '-'

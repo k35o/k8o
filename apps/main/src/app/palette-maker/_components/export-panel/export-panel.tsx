@@ -28,14 +28,14 @@ type PanelProps = {
 
 const CodePanel: FC<PanelProps> = ({ code, copyLabel }) => {
   const { writeClipboard } = useClipboard();
-  const { onOpen } = useToast();
+  const { open } = useToast();
 
   const handleCopy = async () => {
     try {
       await writeClipboard(code);
-      onOpen('success', `${copyLabel}をコピーしました`);
+      open('success', `${copyLabel}をコピーしました`);
     } catch {
-      onOpen('error', 'コピーに失敗しました');
+      open('error', 'コピーに失敗しました');
     }
   };
 
@@ -62,14 +62,14 @@ const CodePanel: FC<PanelProps> = ({ code, copyLabel }) => {
 
 export const ExportPanel: FC<Props> = ({ name, swatches }) => {
   const { writeClipboard } = useClipboard();
-  const { onOpen } = useToast();
+  const { open } = useToast();
 
   const handleCopyUrl = async () => {
     try {
       await writeClipboard(window.location.href);
-      onOpen('success', '共有用URLをコピーしました');
+      open('success', '共有用URLをコピーしました');
     } catch {
-      onOpen('error', 'コピーに失敗しました');
+      open('error', 'コピーに失敗しました');
     }
   };
 

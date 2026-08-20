@@ -15,11 +15,11 @@ describe('specToTsx', () => {
           },
           title: {
             type: 'Heading',
-            props: { level: 'h2', text: 'お問い合わせ' },
+            props: { level: 'h2', label: 'お問い合わせ' },
           },
           card: {
             type: 'Card',
-            props: { appearance: 'shadow', size: 'lg' },
+            props: { variant: 'shadow', size: 'lg' },
             children: ['name', 'submit'],
           },
           name: {
@@ -39,8 +39,8 @@ describe('specToTsx', () => {
 export default function Preview() {
   return (
     <Stack direction="column" gap="lg">
-      <Heading type="h2">お問い合わせ</Heading>
-      <Card appearance="shadow">
+      <Heading level="h2">お問い合わせ</Heading>
+      <Card variant="shadow">
         <div className="p-8">
           <FormControl label="お名前" required
             renderInput={(props) => (
@@ -69,6 +69,33 @@ export default function Preview() {
       const tsx = specToTsx(spec);
       expect(tsx).toContain('renderItem={({ className, children }) => (');
       expect(tsx).toContain('<a className={className} href="https://k8o.me">');
+    });
+
+    it('グループ入力はラベルの span と aria-labelledby を伴って展開する', () => {
+      const spec: Spec = {
+        root: 'g',
+        elements: {
+          g: {
+            type: 'CheckboxGroup',
+            props: {
+              name: 'interests',
+              label: '興味のある分野',
+              options: [
+                { value: 'css', label: 'CSS' },
+                { value: 'a11y', label: 'アクセシビリティ' },
+              ],
+            },
+          },
+        },
+      };
+      const tsx = specToTsx(spec);
+      expect(tsx).toContain('id="interests-label">興味のある分野</span>');
+      expect(tsx).toContain(
+        '<CheckboxGroup.Root aria-labelledby="interests-label" name="interests">',
+      );
+      expect(tsx).toContain(
+        '<CheckboxGroup.Item itemValue="css" label="CSS" />',
+      );
     });
 
     it('Icon は実在するアイコンコンポーネントへ対応させて import する', () => {
@@ -108,7 +135,7 @@ export default function Preview() {
         elements: {
           h: {
             type: 'Heading',
-            props: { text: { $state: '/title' }, level: 'h3' },
+            props: { label: { $state: '/title' }, level: 'h3' },
           },
         },
       };

@@ -11,7 +11,7 @@ export function ScopeProximityDemo() {
       <div className="flex items-center justify-between">
         <h3 className="font-bold">スコープの近接性</h3>
         <Button
-          color={showProximity ? 'primary' : 'gray'}
+          color={showProximity ? 'primary' : 'base'}
           onClick={() => {
             setShowProximity(!showProximity);
           }}

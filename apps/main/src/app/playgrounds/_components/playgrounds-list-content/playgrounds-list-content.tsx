@@ -76,7 +76,7 @@ export const PlaygroundsListContent: FC<Props> = ({ playgrounds }) => {
           {categoryGroups.map((group) => (
             <section className="flex flex-col gap-4" key={group.category}>
               <div className="flex items-baseline gap-3">
-                <Heading type="h2">
+                <Heading level="h2">
                   {playgroundCategoryLabels[group.category]}
                 </Heading>
                 <span className="text-fg-mute text-sm">

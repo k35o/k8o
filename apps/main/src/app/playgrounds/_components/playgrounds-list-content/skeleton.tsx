@@ -4,7 +4,7 @@ import type { FC } from 'react';
 const CARD_KEYS = ['a', 'b', 'c', 'd', 'e', 'f'] as const;
 
 const PlaygroundCardSkeleton: FC = () => (
-  <Card appearance="shadow" interactive>
+  <Card variant="shadow" interactive>
     <div className="flex h-full animate-pulse flex-col gap-3 p-6">
       <div className="bg-bg-mute h-6 w-3/4 rounded-md" />
       <div className="bg-bg-mute h-4 w-full rounded-md" />

@@ -100,7 +100,7 @@ import文とpropsが正しいか確認する。
 |---------------|--------|-----------|
 | `BaselineStatus` | `@k8o/arte-odyssey` | `featureId`（frontmatterの`featureIds`と一致）。Web機能の記事ではH1直下 |
 | `Playground` | `@/app/_components/playgrounds` | `title`（必須）。子にデモ |
-| `LinkCard` | `@/app/blog/_components/link-card` | `href`（必須） / `publishedAt?` / `appearance?` |
+| `LinkCard` | `@/app/blog/_components/link-card` | `href`（必須） / `publishedAt?` / `variant?` |
 | `Image` / `FloatImage` | `@/app/blog/_components/image` | `src`・`alt`（どちらも必須） |
 | `Alert` | `@k8o/arte-odyssey` | `tone`（`warning`等） / `message` |
 

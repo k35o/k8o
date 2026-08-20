@@ -9,7 +9,7 @@ type Props = {
 };
 
 export const StatCard: FC<Props> = ({ label, value, description, icon }) => (
-  <Card appearance="shadow">
+  <Card variant="shadow">
     <div className="flex items-start justify-between gap-3 p-6">
       <div className="flex flex-col gap-2">
         <p className="text-fg-mute text-sm">{label}</p>

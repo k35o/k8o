@@ -25,7 +25,7 @@ export default function PlaygroundsPage() {
   return (
     <div className="flex flex-col gap-8">
       <div className="flex flex-col gap-3">
-        <Heading type="h1">Playgrounds</Heading>
+        <Heading level="h1">Playgrounds</Heading>
         <p className="text-fg-mute leading-relaxed">
           ブログ記事や興味のある技術の試作品を集めています。気になるものを選ぶと、実際に動かせるデモページが開きます。
         </p>

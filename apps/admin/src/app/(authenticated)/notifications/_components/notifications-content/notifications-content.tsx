@@ -68,7 +68,7 @@ export const NotificationsContent = async ({
       {overview.hostCounts.length > 0 && (
         <section className="flex flex-col gap-4">
           <SectionHeader title="購読ホスト" />
-          <Card appearance="shadow">
+          <Card variant="shadow">
             {overview.hostCounts.map((host) => (
               <div
                 className="border-border-mute flex items-center justify-between gap-3 border-b px-5 py-3 text-sm last:border-b-0"

@@ -15,7 +15,7 @@ type CopyCodeButtonProps = {
 // コピー対象はハイライト済み DOM ではなく生の code 文字列（span 分割や空行の \n の影響を避ける）。
 export const CopyCodeButton: FC<CopyCodeButtonProps> = ({ code }) => {
   const { writeClipboard } = useClipboard();
-  const { onOpen } = useToast();
+  const { open } = useToast();
 
   const handleCopy = async (): Promise<void> => {
     if (code === null) {
@@ -23,9 +23,9 @@ export const CopyCodeButton: FC<CopyCodeButtonProps> = ({ code }) => {
     }
     try {
       await writeClipboard(code);
-      onOpen('success', 'コードをコピーしました');
+      open('success', 'コードをコピーしました');
     } catch {
-      onOpen('error', 'コピーに失敗しました');
+      open('error', 'コピーに失敗しました');
     }
   };
 

@@ -9,13 +9,13 @@ export const PlaygroundCard: FC<{
   playground: PlaygroundSummary;
   headingType?: 'h3' | 'h4';
 }> = ({ playground, headingType = 'h3' }) => (
-  <Card appearance="shadow" interactive>
+  <Card variant="shadow" interactive>
     <Link
       className="group block h-full"
       href={`/playgrounds/${playground.id}` as Route}
     >
       <div className="flex h-full flex-col gap-3 p-6">
-        <Heading lineClamp={2} type={headingType}>
+        <Heading lineClamp={2} level={headingType}>
           {playground.title}
         </Heading>
         <p className="text-fg-mute line-clamp-2 flex-1 text-sm leading-relaxed">

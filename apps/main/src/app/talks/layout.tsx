@@ -23,7 +23,7 @@ export default function Layout({ children }: LayoutProps<'/talks'>) {
   return (
     <div className="mx-auto w-full max-w-5xl">
       <div className="flex flex-col gap-6">
-        <Heading type="h2">Talks</Heading>
+        <Heading level="h2">Talks</Heading>
         {children}
       </div>
     </div>

@@ -60,12 +60,12 @@ async function PlaygroundSectionContent({ params }: PageProperties) {
     <>
       <div className="flex flex-col gap-4">
         <div className="flex flex-wrap items-center gap-3">
-          <Badge size="sm" text={playgroundCategoryLabels[section.category]} />
+          <Badge size="sm" label={playgroundCategoryLabels[section.category]} />
           <span className="text-fg-mute text-sm">
             デモ{section.demos.length}件
           </span>
         </div>
-        <Heading type="h1">{section.title}</Heading>
+        <Heading level="h1">{section.title}</Heading>
         <p className="text-fg-mute leading-relaxed">{section.description}</p>
         {section.type === 'blog' && (
           <div className="flex">

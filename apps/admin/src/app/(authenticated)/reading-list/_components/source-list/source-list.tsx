@@ -21,7 +21,7 @@ export const SourceList: FC<{ sources: Source[] }> = ({ sources }) => {
   }
 
   return (
-    <Card appearance="shadow">
+    <Card variant="shadow">
       <div className="flex flex-col">
         {sources.map((source) => (
           <Link

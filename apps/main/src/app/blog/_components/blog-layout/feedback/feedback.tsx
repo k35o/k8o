@@ -9,15 +9,15 @@ import { feedback } from '@/features/blog/interface/actions';
 export const Feedback: FC<{
   slug: string;
 }> = ({ slug }) => {
-  const { onOpen } = useToast();
+  const { open } = useToast();
   return (
     <FeedbackCard
       onSubmit={async (id, comment) => {
         const result = await feedback(slug, id, comment);
         if (result.success) {
-          onOpen('success', 'フィードバックを送信しました！');
+          open('success', 'フィードバックを送信しました！');
         } else {
-          onOpen('error', result.message);
+          open('error', result.message);
         }
         return result.success;
       }}

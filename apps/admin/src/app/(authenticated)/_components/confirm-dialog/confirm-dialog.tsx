@@ -33,7 +33,7 @@ export const ConfirmDialog: FC<ConfirmDialogProps> = ({
         <div className="flex flex-col gap-6">
           {children}
           <div className="flex justify-end gap-3">
-            <Button color="gray" onClick={onClose} variant="outline">
+            <Button color="base" onClick={onClose} variant="outline">
               キャンセル
             </Button>
             <Button

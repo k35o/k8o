@@ -41,7 +41,7 @@ const ContactToMeModal: FC<{
   isOpen: boolean;
   onClose: () => void;
 }> = ({ isOpen, onClose }) => {
-  const { onOpen: onToastOpen } = useToast();
+  const { open: onToastOpen } = useToast();
 
   const handleAction = useCallback(
     async (

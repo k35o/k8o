@@ -18,16 +18,16 @@ import type { TalkRecord } from '@/features/talks/interface/queries';
 const TalkRow: FC<{ talk: TalkRecord }> = ({ talk }) => {
   const [open, setOpen] = useState(false);
   const { isPending, run } = useAsyncAction();
-  const { onOpen } = useToast();
+  const { open: openToast } = useToast();
 
   const handleDelete = (): void => {
     run(() => deleteTalk(talk.id), {
       onError: (message) => {
-        onOpen('error', message);
+        openToast('error', message);
       },
       onSuccess: () => {
         setOpen(false);
-        onOpen('success', 'トークを削除しました');
+        openToast('success', 'トークを削除しました');
       },
     });
   };
@@ -45,7 +45,7 @@ const TalkRow: FC<{ talk: TalkRecord }> = ({ talk }) => {
         </a>
         <div className="flex shrink-0 items-center gap-1">
           <ButtonLink
-            color="gray"
+            color="base"
             href={`/talks/${String(talk.id)}` as Route}
             size="sm"
             variant="skeleton"
@@ -53,7 +53,7 @@ const TalkRow: FC<{ talk: TalkRecord }> = ({ talk }) => {
             編集
           </ButtonLink>
           <Button
-            color="gray"
+            color="base"
             onClick={() => {
               setOpen(true);
             }}
@@ -74,7 +74,7 @@ const TalkRow: FC<{ talk: TalkRecord }> = ({ talk }) => {
       {talk.tags.length > 0 && (
         <div className="flex flex-wrap gap-1">
           {talk.tags.map((tag) => (
-            <Badge key={tag} size="sm" text={tag} tone="neutral" />
+            <Badge key={tag} size="sm" label={tag} tone="neutral" />
           ))}
         </div>
       )}
@@ -102,7 +102,7 @@ export const TalkList: FC<{ talks: TalkRecord[] }> = ({ talks }) => {
   }
 
   return (
-    <Card appearance="shadow">
+    <Card variant="shadow">
       {talks.map((talk) => (
         <TalkRow key={talk.id} talk={talk} />
       ))}

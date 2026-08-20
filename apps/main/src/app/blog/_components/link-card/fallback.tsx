@@ -1,14 +1,14 @@
 import { ExternalLinkIcon, Card } from '@k8o/arte-odyssey';
 import type { FC } from 'react';
 
-export type LinkCardAppearance = 'shadow' | 'bordered';
+export type LinkCardVariant = 'shadow' | 'outline';
 
 export const LinkCardFallback: FC<{
   href: string;
-  appearance?: LinkCardAppearance;
-}> = ({ href, appearance = 'shadow' }) => (
+  variant?: LinkCardVariant;
+}> = ({ href, variant = 'shadow' }) => (
   <div className="vertical:max-w-container-md">
-    <Card interactive appearance={appearance}>
+    <Card interactive variant={variant}>
       <a
         aria-label={href}
         className="group block h-full"

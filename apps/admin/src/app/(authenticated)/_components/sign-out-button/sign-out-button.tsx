@@ -9,7 +9,7 @@ import { authClient } from '@/shared/auth/auth-client';
 
 export const SignOutButton: FC = () => {
   const router = useRouter();
-  const { onOpen } = useToast();
+  const { open } = useToast();
   // signOut は fetchOptions のコールバック方式で promise を待てないため、useState で
   // 押下直後に保留中を出す。成功時は遷移して unmount するので解除は失敗時のみ。
   const [isPending, setIsPending] = useState(false);
@@ -24,7 +24,7 @@ export const SignOutButton: FC = () => {
         },
         onError: () => {
           setIsPending(false);
-          onOpen('error', 'ログアウトに失敗しました');
+          open('error', 'ログアウトに失敗しました');
         },
       },
     });

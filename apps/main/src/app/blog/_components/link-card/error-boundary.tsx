@@ -3,15 +3,15 @@ import type { FC, ReactNode } from 'react';
 import { ActivityErrorBoundary } from '@/app/_components/error-boundary';
 
 import { LinkCardFallback } from './fallback';
-import type { LinkCardAppearance } from './fallback';
+import type { LinkCardVariant } from './fallback';
 
 export const LinkCardErrorBoundary: FC<{
   href: string;
-  appearance?: LinkCardAppearance;
+  variant?: LinkCardVariant;
   children: ReactNode;
-}> = ({ href, appearance = 'shadow', children }) => (
+}> = ({ href, variant = 'shadow', children }) => (
   <ActivityErrorBoundary
-    fallback={<LinkCardFallback appearance={appearance} href={href} />}
+    fallback={<LinkCardFallback variant={variant} href={href} />}
   >
     {children}
   </ActivityErrorBoundary>

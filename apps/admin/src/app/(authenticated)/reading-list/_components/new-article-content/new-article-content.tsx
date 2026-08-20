@@ -11,7 +11,7 @@ export const NewArticleContent = async () => {
   const { sources } = await getReadingListContentData();
 
   return (
-    <Card appearance="shadow">
+    <Card variant="shadow">
       <div className="p-8">
         <ArticleForm
           action={createArticle}

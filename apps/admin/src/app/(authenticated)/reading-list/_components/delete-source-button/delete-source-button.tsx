@@ -24,7 +24,7 @@ export const DeleteSourceButton = ({
   return (
     <>
       <Button
-        color="gray"
+        color="base"
         onClick={() => {
           setOpen(true);
         }}

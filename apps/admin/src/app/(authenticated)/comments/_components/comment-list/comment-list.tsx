@@ -24,7 +24,7 @@ export const CommentList: FC<{ items: CommentItem[] }> = ({ items }) => {
           <div className="flex flex-wrap items-center justify-between gap-2">
             <div className="flex flex-wrap items-center gap-2 text-xs">
               {item.feedbackName !== null && (
-                <Badge size="sm" text={item.feedbackName} tone="neutral" />
+                <Badge size="sm" label={item.feedbackName} tone="neutral" />
               )}
               {item.blogSlug !== null && (
                 <a
