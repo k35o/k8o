@@ -16,11 +16,11 @@ catalog:
   '@next/env': 16.3.1
   '@next/mdx': 16.3.1
   '@next/third-parties': 16.3.1
-  '@storybook/addon-a11y': 10.5.7
-  '@storybook/addon-docs': 10.5.7
+  '@storybook/addon-a11y': 10.5.8
+  '@storybook/addon-docs': 10.5.8
   '@storybook/addon-mcp': '0.7.0'
-  '@storybook/addon-vitest': 10.5.7
-  '@storybook/nextjs-vite': 10.5.7
+  '@storybook/addon-vitest': 10.5.8
+  '@storybook/nextjs-vite': 10.5.8
   '@tailwindcss/postcss': 4.3.3
   '@types/react': 19.2.18
   '@types/react-dom': 19.2.4
@@ -37,7 +37,7 @@ catalog:
   postcss-load-config: 6.0.1
   react: 19.2.8
   react-dom: 19.2.8
-  storybook: 10.5.7
+  storybook: 10.5.8
   storybook-addon-determinism: 0.2.1
   storybook-addon-mock-date: 3.2.1
   storybook-addon-vrt: 0.4.0
