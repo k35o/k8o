@@ -95,7 +95,7 @@ export const BlogLayoutContent: FC<BlogLayoutContentProps> = ({
                   <TagIcon size="sm" />
                   {blog.tags.map((tag) => (
                     <Link href={`/tags/${tag.id.toString()}`} key={tag.id}>
-                      <Badge interactive key={tag.id} text={tag.name} />
+                      <Badge interactive key={tag.id} label={tag.name} />
                     </Link>
                   ))}
                 </div>

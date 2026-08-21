@@ -57,7 +57,7 @@ export const BrowserSupportRecentChanges: FC<{
   }
   return (
     <section className="flex flex-col gap-3">
-      <Heading type="h3">最近の更新</Heading>
+      <Heading level="h3">最近の更新</Heading>
       <div className="flex flex-col gap-4">
         {groupBySyncBatch(changes).map((group) => (
           <div
@@ -75,7 +75,7 @@ export const BrowserSupportRecentChanges: FC<{
                 >
                   <Badge
                     size="sm"
-                    text={STATUS_LABEL[change.status]}
+                    label={STATUS_LABEL[change.status]}
                     tone={STATUS_TONE[change.status]}
                   />
                   <span className="text-sm">{change.featureName}</span>

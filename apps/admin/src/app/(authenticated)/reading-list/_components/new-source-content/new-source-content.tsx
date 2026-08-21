@@ -9,7 +9,7 @@ export const NewSourceContent = async () => {
   await verifySession();
 
   return (
-    <Card appearance="shadow">
+    <Card variant="shadow">
       <div className="p-8">
         <SourceForm action={createSource} />
       </div>

@@ -30,7 +30,7 @@ export const ShareControl: FC<ShareControlProps> = ({
 }) => {
   const [busy, setBusy] = useState(false);
   const { writeClipboard } = useClipboard();
-  const { onOpen } = useToast();
+  const { open } = useToast();
 
   if (projectId === null) {
     return null;
@@ -47,14 +47,14 @@ export const ShareControl: FC<ShareControlProps> = ({
     try {
       const res = await publishProjectAction(projectId);
       if (res === null) {
-        onOpen('error', '公開に失敗しました');
+        open('error', '公開に失敗しました');
         return;
       }
       onChanged();
       await copyLink(res.slug);
-      onOpen('success', '公開しました。リンクをコピーしました');
+      open('success', '公開しました。リンクをコピーしました');
     } catch {
-      onOpen('error', '公開に失敗しました');
+      open('error', '公開に失敗しました');
     } finally {
       setBusy(false);
     }
@@ -65,13 +65,13 @@ export const ShareControl: FC<ShareControlProps> = ({
     try {
       const ok = await unpublishProjectAction(projectId);
       if (!ok) {
-        onOpen('error', '非公開化に失敗しました');
+        open('error', '非公開化に失敗しました');
         return;
       }
       onChanged();
-      onOpen('success', '非公開にしました');
+      open('success', '非公開にしました');
     } catch {
-      onOpen('error', '非公開化に失敗しました');
+      open('error', '非公開化に失敗しました');
     } finally {
       setBusy(false);
     }
@@ -82,7 +82,7 @@ export const ShareControl: FC<ShareControlProps> = ({
       return;
     }
     await copyLink(slug);
-    onOpen('success', 'リンクをコピーしました');
+    open('success', 'リンクをコピーしました');
   };
 
   return (

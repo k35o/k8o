@@ -31,7 +31,7 @@ export const BrowserSupportHelpDialog: FC = () => {
               </p>
               <div className="flex flex-col gap-2">
                 <div className="flex items-center gap-2">
-                  <Badge size="sm" text="Widely" tone="success" />
+                  <Badge size="sm" label="Widely" tone="success" />
                   <span className="text-sm font-bold">Widely Available</span>
                 </div>
                 <p className="text-fg-mute text-sm leading-relaxed">
@@ -40,7 +40,7 @@ export const BrowserSupportHelpDialog: FC = () => {
               </div>
               <div className="flex flex-col gap-2">
                 <div className="flex items-center gap-2">
-                  <Badge size="sm" text="Newly" tone="info" />
+                  <Badge size="sm" label="Newly" tone="info" />
                   <span className="text-sm font-bold">Newly Available</span>
                 </div>
                 <p className="text-fg-mute text-sm leading-relaxed">
@@ -49,7 +49,7 @@ export const BrowserSupportHelpDialog: FC = () => {
               </div>
               <div className="flex flex-col gap-2">
                 <div className="flex items-center gap-2">
-                  <Badge size="sm" text="Limited" tone="warning" />
+                  <Badge size="sm" label="Limited" tone="warning" />
                   <span className="text-sm font-bold">
                     Limited availability（先取り）
                   </span>

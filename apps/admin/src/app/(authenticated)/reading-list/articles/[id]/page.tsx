@@ -19,7 +19,7 @@ export default function EditArticlePage({
         <Breadcrumb.Separator />
         <Breadcrumb.Item>記事を編集</Breadcrumb.Item>
       </Breadcrumb.List>
-      <Heading type="h1">記事を編集</Heading>
+      <Heading level="h1">記事を編集</Heading>
       <Suspense fallback={<ContentFallback />}>
         <EditArticleContent params={params} />
       </Suspense>

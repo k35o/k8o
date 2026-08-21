@@ -56,7 +56,7 @@ export const DashboardContent = async () => {
         {topBlogs.length === 0 ? (
           <EmptyState message="閲覧データがありません" />
         ) : (
-          <Card appearance="shadow">
+          <Card variant="shadow">
             <ol className="divide-border-mute divide-y">
               {topBlogs.map((blog, index) => (
                 <li
@@ -75,7 +75,7 @@ export const DashboardContent = async () => {
                     {blog.slug}
                   </a>
                   {!blog.published && (
-                    <Badge size="sm" text="下書き" tone="warning" />
+                    <Badge size="sm" label="下書き" tone="warning" />
                   )}
                   <span className="text-fg-mute shrink-0 text-sm tabular-nums">
                     {blog.views.toLocaleString()}
@@ -102,7 +102,7 @@ export const DashboardContent = async () => {
         {recentArticles.length === 0 ? (
           <EmptyState message="取得済みの記事はありません" />
         ) : (
-          <Card appearance="shadow">
+          <Card variant="shadow">
             <ul className="divide-border-mute divide-y">
               {recentArticles.map((article) => (
                 <li className="px-5 py-4" key={article.id}>

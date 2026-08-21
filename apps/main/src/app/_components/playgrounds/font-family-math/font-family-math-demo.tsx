@@ -15,7 +15,7 @@ export function FontFamilyMathDemo() {
         onChange={(checked) => {
           setUseMathFont(checked);
         }}
-        value={useMathFont}
+        checked={useMathFont}
       />
 
       <div className="bg-bg-base space-y-4 rounded-xl p-6 shadow-sm">

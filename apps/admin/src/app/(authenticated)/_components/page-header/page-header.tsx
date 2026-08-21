@@ -10,7 +10,7 @@ type Props = {
 export const PageHeader: FC<Props> = ({ title, description, action }) => (
   <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
     <div className="flex flex-col gap-2">
-      <Heading type="h1">{title}</Heading>
+      <Heading level="h1">{title}</Heading>
       {description !== undefined && (
         <p className="text-fg-mute text-sm leading-relaxed">{description}</p>
       )}

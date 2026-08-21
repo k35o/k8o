@@ -5,7 +5,7 @@ import { SignInForm } from './_components/sign-in-form';
 export default function SignInPage() {
   return (
     <div className="w-full max-w-sm">
-      <Card appearance="shadow">
+      <Card variant="shadow">
         <div className="flex flex-col items-center gap-8 p-8">
           <div className="flex flex-col items-center gap-3 text-center">
             <LogoIcon size="xl" />

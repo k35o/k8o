@@ -84,7 +84,7 @@ export const CheckContrast: FC = () => {
         </p>
       </section>
       <section className="flex flex-col gap-3">
-        <Heading type="h3">WCAG 2.2による判定</Heading>
+        <Heading level="h3">WCAG 2.2による判定</Heading>
         <ResultTable
           baseColor={baseColor}
           compareColor={compareColor}
@@ -95,7 +95,7 @@ export const CheckContrast: FC = () => {
         />
       </section>
       <section className="flex flex-col gap-3">
-        <Heading type="h3">APCAによる判定</Heading>
+        <Heading level="h3">APCAによる判定</Heading>
         <ApcaResultTable lc={apcaLc} />
       </section>
     </div>

@@ -15,7 +15,7 @@ export default function NewArticlePage() {
         <Breadcrumb.Separator />
         <Breadcrumb.Item>記事を追加</Breadcrumb.Item>
       </Breadcrumb.List>
-      <Heading type="h1">記事を追加</Heading>
+      <Heading level="h1">記事を追加</Heading>
       <Suspense fallback={<ContentFallback />}>
         <NewArticleContent />
       </Suspense>

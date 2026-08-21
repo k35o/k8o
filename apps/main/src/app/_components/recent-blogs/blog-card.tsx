@@ -29,7 +29,7 @@ export const BlogCard: FC<BlogCardProps> = ({
     <Link className="group block h-full" href={`/blog/${slug}` as Route}>
       <div className="flex h-full flex-col justify-between gap-4 p-4">
         <div className="group-hover:text-primary-fg flex flex-col gap-1">
-          <Heading lineClamp={2} type="h3">
+          <Heading lineClamp={2} level="h3">
             {title}
           </Heading>
           {description !== null && (
@@ -41,7 +41,7 @@ export const BlogCard: FC<BlogCardProps> = ({
             <div className="flex flex-wrap items-center gap-2">
               <TagIcon size="sm" />
               {tags.map((tag) => (
-                <Badge key={tag} size="sm" text={tag} />
+                <Badge key={tag} size="sm" label={tag} />
               ))}
             </div>
           )}

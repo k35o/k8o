@@ -345,7 +345,7 @@ export const SlidesStudio = () => {
             )}
             <div className="hidden items-center gap-3 lg:flex">
               <Button
-                color="gray"
+                color="base"
                 disabled={!hasResult}
                 onClick={() => {
                   // DeckPreview が @media print 用に全スライドを描画済み（DeckPrint）。

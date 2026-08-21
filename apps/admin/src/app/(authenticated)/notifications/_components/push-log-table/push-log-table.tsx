@@ -11,13 +11,13 @@ export const PushLogTable: FC<{ logs: PushLogRecord[] }> = ({ logs }) => {
   }
 
   return (
-    <Card appearance="shadow">
+    <Card variant="shadow">
       {logs.map((log) => (
         <div
           className="border-border-mute flex items-center gap-3 border-b px-5 py-4 text-sm last:border-b-0"
           key={log.id}
         >
-          <Badge size="sm" text={log.kind} tone="neutral" />
+          <Badge size="sm" label={log.kind} tone="neutral" />
           <span className="min-w-0 flex-1 truncate">{log.title}</span>
           <span className="text-fg-success hidden shrink-0 tabular-nums sm:block">
             成功 {log.succeeded}

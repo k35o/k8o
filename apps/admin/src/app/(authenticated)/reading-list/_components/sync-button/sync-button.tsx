@@ -8,16 +8,16 @@ import { syncArticlesAction } from '@/features/reading-list/interface/article-ac
 
 export const SyncButton: FC = () => {
   const { isPending, run } = useAsyncAction();
-  const { onOpen } = useToast();
+  const { open } = useToast();
 
   const handleSync = () => {
     run(syncArticlesAction, {
       onError: (message) => {
-        onOpen('error', message);
+        open('error', message);
       },
       onSuccess: (res) => {
         if (res.failedSources !== undefined && res.failedSources.length > 0) {
-          onOpen(
+          open(
             'warning',
             `${String(res.newArticles ?? 0)}件追加、${String(res.updatedArticles ?? 0)}件更新（失敗: ${res.failedSources.join(', ')}）`,
           );
@@ -28,7 +28,7 @@ export const SyncButton: FC = () => {
           `${String(res.updatedArticles ?? 0)}件更新`,
           `${String(res.enrichedArticles ?? 0)}件OGP補完`,
         ];
-        onOpen('success', parts.join('、'));
+        open('success', parts.join('、'));
       },
     });
   };

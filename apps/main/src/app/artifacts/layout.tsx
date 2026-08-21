@@ -23,7 +23,7 @@ export default function Layout({ children }: LayoutProps<'/artifacts'>) {
   return (
     <div className="mx-auto w-full max-w-7xl">
       <div className="flex flex-col gap-6">
-        <Heading type="h2">Artifacts</Heading>
+        <Heading level="h2">Artifacts</Heading>
         {children}
       </div>
     </div>

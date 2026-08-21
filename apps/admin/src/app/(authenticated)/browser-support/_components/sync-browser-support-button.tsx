@@ -8,19 +8,19 @@ import { syncBrowserSupportAction } from '@/features/browser-support/interface/a
 
 export const SyncBrowserSupportButton: FC = () => {
   const { isPending, run } = useAsyncAction();
-  const { onOpen } = useToast();
+  const { open } = useToast();
 
   const handleSync = () => {
     run(syncBrowserSupportAction, {
       onError: (message) => {
-        onOpen('error', message);
+        open('error', message);
       },
       onSuccess: (res) => {
         const parts = [
           `新規: ${String(res.reachedCount ?? 0)}件`,
           `ステータス変更: ${String(res.statusChanges ?? 0)}件`,
         ];
-        onOpen('success', parts.join('、'));
+        open('success', parts.join('、'));
       },
     });
   };

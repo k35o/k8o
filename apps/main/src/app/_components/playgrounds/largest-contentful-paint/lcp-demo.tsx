@@ -104,7 +104,7 @@ export function LCPDemo() {
   return (
     <div className="space-y-4">
       <div className="flex flex-wrap items-center gap-3">
-        <Button color="gray" onClick={handleReset} size="sm" variant="outline">
+        <Button color="base" onClick={handleReset} size="sm" variant="outline">
           リセット
         </Button>
         <span className="text-fg-mute text-sm">
@@ -193,7 +193,7 @@ export function LCPDemo() {
                 <div className="flex items-center gap-2">
                   <span className="text-fg-mute">{entry.timestamp}</span>
                   {entry.element !== null && (
-                    <Badge size="sm" text={entry.element} />
+                    <Badge size="sm" label={entry.element} />
                   )}
                 </div>
                 <div className="flex items-center gap-3">

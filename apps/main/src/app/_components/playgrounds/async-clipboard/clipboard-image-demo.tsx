@@ -16,7 +16,7 @@ const OPTIONS = [
 export const ClipboardImageDemo: FC = () => {
   const ref = useRef<HTMLImageElement>(null);
   const [src, setSrc] = useState(primaryIcon.src);
-  const { onOpen } = useToast();
+  const { open } = useToast();
   const [selectedSrc, setSelectedSrc] = useState<string>(OPTIONS[0].value);
 
   const copyText = async () => {
@@ -41,9 +41,9 @@ export const ClipboardImageDemo: FC = () => {
       const file = new File([blob], 'k8o.png', { type: 'image/png' });
       const data = [new ClipboardItem({ 'image/png': file })];
       await navigator.clipboard.write(data);
-      onOpen('success', 'クリップボードにPNG画像をコピーしました');
+      open('success', 'クリップボードにPNG画像をコピーしました');
     } catch {
-      onOpen('error', 'クリップボードにPNG画像をコピーできませんでした');
+      open('error', 'クリップボードにPNG画像をコピーできませんでした');
     }
   };
 
@@ -61,16 +61,16 @@ export const ClipboardImageDemo: FC = () => {
 
       const firstBlob = blobs[0];
       if (firstBlob === undefined) {
-        onOpen('error', 'PNG画像が見つかりませんでした。');
+        open('error', 'PNG画像が見つかりませんでした。');
         return;
       }
       if (src.startsWith('blob:')) {
         URL.revokeObjectURL(src);
       }
       setSrc(URL.createObjectURL(firstBlob));
-      onOpen('success', 'クリップボードにPNG画像を貼り付けました。');
+      open('success', 'クリップボードにPNG画像を貼り付けました。');
     } catch {
-      onOpen('error', 'クリップボードからPNG画像を読み取れませんでした。');
+      open('error', 'クリップボードからPNG画像を読み取れませんでした。');
     }
   };
 

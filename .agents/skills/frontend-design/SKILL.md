@@ -92,7 +92,7 @@ description: 独自性のある本番品質のフロントエンドインター�
 
 ### スタイリング制約
 
-- **TailwindCSS**: ArteOdyssey (`@k8o/arte-odyssey/styles.css`) で定義されたカスタムトークンのみ使用
+- **TailwindCSS**: ArteOdyssey (`@k8o/arte-odyssey/tailwind.css`) で定義されたカスタムトークンのみ使用
 - **禁止**: 標準のTailwindクラス（`text-gray-600`など）は使用禁止
 
 ### アニメーション

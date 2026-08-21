@@ -11,7 +11,7 @@ export const NewTalkContent = async () => {
   const blogs = await getBlogOptions();
 
   return (
-    <Card appearance="shadow">
+    <Card variant="shadow">
       <div className="p-8">
         <TalkForm action={createTalk} blogs={blogs} />
       </div>

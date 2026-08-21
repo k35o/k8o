@@ -14,16 +14,16 @@ const TagRow: FC<{ tag: TagWithUsage }> = ({ tag }) => {
   const [deleteOpen, setDeleteOpen] = useState(false);
   const [name, setName] = useState(tag.name);
   const { isPending, run } = useAsyncAction();
-  const { onOpen } = useToast();
+  const { open } = useToast();
 
   const handleRename = (): void => {
     run(() => renameTag(tag.id, name), {
       onError: (message) => {
-        onOpen('error', message);
+        open('error', message);
       },
       onSuccess: () => {
         setRenameOpen(false);
-        onOpen('success', 'タグ名を更新しました');
+        open('success', 'タグ名を更新しました');
       },
     });
   };
@@ -31,11 +31,11 @@ const TagRow: FC<{ tag: TagWithUsage }> = ({ tag }) => {
   const handleDelete = (): void => {
     run(() => deleteTag(tag.id), {
       onError: (message) => {
-        onOpen('error', message);
+        open('error', message);
       },
       onSuccess: () => {
         setDeleteOpen(false);
-        onOpen('success', 'タグを削除しました');
+        open('success', 'タグを削除しました');
       },
     });
   };
@@ -54,11 +54,11 @@ const TagRow: FC<{ tag: TagWithUsage }> = ({ tag }) => {
       </span>
       <Badge
         size="sm"
-        text={`計 ${String(tag.total)}`}
+        label={`計 ${String(tag.total)}`}
         tone={tag.total > 0 ? 'neutral' : 'warning'}
       />
       <Button
-        color="gray"
+        color="base"
         onClick={() => {
           setRenameOpen(true);
         }}
@@ -68,7 +68,7 @@ const TagRow: FC<{ tag: TagWithUsage }> = ({ tag }) => {
         名前変更
       </Button>
       <Button
-        color="gray"
+        color="base"
         disabled={tag.total > 0}
         onClick={() => {
           setDeleteOpen(true);
@@ -121,7 +121,7 @@ export const TagList: FC<{ tags: TagWithUsage[] }> = ({ tags }) => {
   }
 
   return (
-    <Card appearance="shadow">
+    <Card variant="shadow">
       {tags.map((tag) => (
         <TagRow key={tag.id} tag={tag} />
       ))}

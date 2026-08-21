@@ -23,7 +23,7 @@ export default function Layout({ children }: LayoutProps<'/moji-count'>) {
   return (
     <div className="mx-auto w-full max-w-5xl">
       <div className="flex h-full flex-col gap-4">
-        <Heading type="h2">もじカウント</Heading>
+        <Heading level="h2">もじカウント</Heading>
         {children}
       </div>
     </div>

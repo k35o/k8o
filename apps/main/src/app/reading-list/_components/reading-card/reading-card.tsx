@@ -38,7 +38,7 @@ export const ReadingCard: FC<ReadingCardProps> = ({
   sourceTitle,
 }) => (
   <div className="vertical:max-w-container-md">
-    <Card interactive appearance="shadow">
+    <Card interactive variant="shadow">
       <div className="group vertical:flex-row relative isolate flex h-full flex-col overflow-hidden sm:flex-row">
         {imageUrl !== null && <ReadingCardImage src={imageUrl} />}
         <div className="flex flex-1 flex-col gap-2 p-4">

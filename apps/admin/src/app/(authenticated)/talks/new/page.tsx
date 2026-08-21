@@ -15,7 +15,7 @@ export default function NewTalkPage() {
         <Breadcrumb.Separator />
         <Breadcrumb.Item>トークを追加</Breadcrumb.Item>
       </Breadcrumb.List>
-      <Heading type="h1">トークを追加</Heading>
+      <Heading level="h1">トークを追加</Heading>
       <Suspense fallback={<ContentFallback />}>
         <NewTalkContent />
       </Suspense>

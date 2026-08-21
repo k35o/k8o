@@ -94,12 +94,12 @@ export const HexToColor: FC = () => {
               )}
               {showCorrectBadge && (
                 <span className="absolute top-2 right-2">
-                  <Badge text="正解" tone="success" />
+                  <Badge label="正解" tone="success" />
                 </span>
               )}
               {showWrongBadge && (
                 <span className="absolute top-2 right-2">
-                  <Badge text="あなたの回答" tone="error" />
+                  <Badge label="あなたの回答" tone="error" />
                 </span>
               )}
             </button>

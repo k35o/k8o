@@ -37,7 +37,7 @@ export const ListPagination: FC<Props> = ({ totalPages, currentPage }) => {
     <Pagination
       currentPage={currentPage}
       disabled={isPending}
-      onPageChange={handlePageChange}
+      onChange={handlePageChange}
       totalPages={totalPages}
     />
   );

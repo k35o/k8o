@@ -23,7 +23,7 @@ export default function Layout({ children }: LayoutProps<'/color-quiz'>) {
   return (
     <div className="mx-auto w-full max-w-5xl">
       <div className="flex h-full flex-col gap-4">
-        <Heading type="h2">カラーHexクイズ</Heading>
+        <Heading level="h2">カラーHexクイズ</Heading>
         {children}
       </div>
     </div>

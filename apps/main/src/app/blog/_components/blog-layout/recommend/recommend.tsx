@@ -23,18 +23,18 @@ export const RecommendContent: FC<RecommendProps> = ({ blogs }) => {
 
   return (
     <div className="flex flex-col gap-8">
-      <Heading type="h3">関連記事</Heading>
+      <Heading level="h3">関連記事</Heading>
       <div className="grid-cols-auto-fit-80 grid gap-4">
         {blogs.map((blog) => (
           <Card interactive key={blog.id}>
             <Link href={`/blog/${blog.slug}` as Route}>
               <div className="flex flex-col gap-4 p-4">
-                <Heading type="h4">{blog.title}</Heading>
+                <Heading level="h4">{blog.title}</Heading>
                 <div className="flex flex-col flex-wrap gap-2">
                   <div className="flex flex-wrap items-center gap-1">
                     <TagIcon size="sm" />
                     {blog.tags.map((tag) => (
-                      <Badge key={tag} size="sm" text={tag} />
+                      <Badge key={tag} size="sm" label={tag} />
                     ))}
                   </div>
                   <div className="text-fg-mute ml-auto flex items-center gap-1 text-xs">

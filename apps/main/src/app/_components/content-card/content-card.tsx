@@ -42,7 +42,7 @@ export const ContentCard: FC<ContentCardProps> = ({
     >
       <div className="flex h-full flex-col justify-between gap-4 p-4">
         <div className="group-hover:text-primary-fg flex flex-col gap-1">
-          <Heading lineClamp={3} type={headingType}>
+          <Heading lineClamp={3} level={headingType}>
             {title}
           </Heading>
           {description !== null && (
@@ -54,7 +54,7 @@ export const ContentCard: FC<ContentCardProps> = ({
             <div className="flex flex-wrap items-center gap-2">
               <TagIcon size="sm" />
               {tags.map((tag) => (
-                <Badge key={tag} size="sm" text={tag} />
+                <Badge key={tag} size="sm" label={tag} />
               ))}
             </div>
           )}

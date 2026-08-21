@@ -21,7 +21,7 @@ export const ArtifactCard: FC<Artifact> = ({
 }) => (
   <article className="border-border-mute bg-bg-base flex h-full flex-col gap-5 rounded-xl border p-5 shadow-sm transition-colors md:p-6">
     <div className="flex flex-col gap-2">
-      <Heading type="h3">{name}</Heading>
+      <Heading level="h3">{name}</Heading>
       <p className="text-fg-mute md:text-md text-sm leading-relaxed">
         {description}
       </p>
@@ -31,7 +31,7 @@ export const ArtifactCard: FC<Artifact> = ({
       {tags.length > 0 && (
         <div className="flex flex-wrap gap-2">
           {tags.map((tag) => (
-            <Badge key={tag} size="sm" text={tag} />
+            <Badge key={tag} size="sm" label={tag} />
           ))}
         </div>
       )}

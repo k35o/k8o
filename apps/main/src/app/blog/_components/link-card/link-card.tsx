@@ -5,16 +5,16 @@ import type { FC } from 'react';
 
 import { LinkCardErrorBoundary } from './error-boundary';
 import { LinkCardFallback } from './fallback';
-import type { LinkCardAppearance } from './fallback';
+import type { LinkCardVariant } from './fallback';
 import { MetaImage } from './image';
 import { getMetadata } from './metadata';
 
 const LinkCardLoading: FC<{
   href: string;
-  appearance?: LinkCardAppearance;
-}> = ({ href, appearance = 'shadow' }) => (
+  variant?: LinkCardVariant;
+}> = ({ href, variant = 'shadow' }) => (
   <div className="vertical:max-w-container-md">
-    <Card interactive appearance={appearance}>
+    <Card interactive variant={variant}>
       <a
         aria-label={`${href}（読み込み中）`}
         className="block"
@@ -40,13 +40,13 @@ const LinkCardLoading: FC<{
 const Content: FC<{
   href: string;
   publishedAt?: Date | string | undefined;
-  appearance?: LinkCardAppearance;
-}> = async ({ href, publishedAt, appearance = 'shadow' }) => {
+  variant?: LinkCardVariant;
+}> = async ({ href, publishedAt, variant = 'shadow' }) => {
   let metaData;
   try {
     metaData = await getMetadata(href);
   } catch {
-    return <LinkCardFallback appearance={appearance} href={href} />;
+    return <LinkCardFallback variant={variant} href={href} />;
   }
 
   if (
@@ -54,12 +54,12 @@ const Content: FC<{
     metaData.description === undefined &&
     metaData.imageUrl === undefined
   ) {
-    return <LinkCardFallback appearance={appearance} href={href} />;
+    return <LinkCardFallback variant={variant} href={href} />;
   }
 
   return (
     <div className="vertical:max-w-container-md">
-      <Card interactive appearance={appearance}>
+      <Card interactive variant={variant}>
         <a
           className="group block h-full"
           href={href}
@@ -108,13 +108,11 @@ const Content: FC<{
 export const LinkCard: FC<{
   href: string;
   publishedAt?: Date | string | undefined;
-  appearance?: LinkCardAppearance;
-}> = ({ href, publishedAt, appearance = 'shadow' }) => (
-  <LinkCardErrorBoundary appearance={appearance} href={href}>
-    <Suspense
-      fallback={<LinkCardLoading appearance={appearance} href={href} />}
-    >
-      <Content appearance={appearance} href={href} publishedAt={publishedAt} />
+  variant?: LinkCardVariant;
+}> = ({ href, publishedAt, variant = 'shadow' }) => (
+  <LinkCardErrorBoundary variant={variant} href={href}>
+    <Suspense fallback={<LinkCardLoading variant={variant} href={href} />}>
+      <Content variant={variant} href={href} publishedAt={publishedAt} />
     </Suspense>
   </LinkCardErrorBoundary>
 );

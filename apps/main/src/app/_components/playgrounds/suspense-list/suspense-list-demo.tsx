@@ -48,7 +48,7 @@ export const SuspenseListDemo: FC = () => {
             resetData();
             setUseSuspenseList(checked);
           }}
-          value={useSuspenseList}
+          checked={useSuspenseList}
         />
         <Checkbox
           label="フォールバックUIを表示する"
@@ -56,7 +56,7 @@ export const SuspenseListDemo: FC = () => {
             resetData();
             setHasFallback(checked);
           }}
-          value={hasFallback}
+          checked={hasFallback}
         />
         <FormControl
           label="revealOrder"

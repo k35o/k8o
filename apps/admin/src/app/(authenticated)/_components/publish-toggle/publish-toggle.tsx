@@ -19,7 +19,7 @@ export const PublishToggle: FC<PublishToggleProps> = ({
 }) => {
   const [published, setPublished] = useState(initialPublished);
   const { isPending, run } = useAsyncAction();
-  const { onOpen } = useToast();
+  const { open } = useToast();
 
   const handleToggle = (checked: boolean): void => {
     const next = checked;
@@ -27,10 +27,10 @@ export const PublishToggle: FC<PublishToggleProps> = ({
     run(() => onToggle(next), {
       onError: (message) => {
         setPublished(!next);
-        onOpen('error', message);
+        open('error', message);
       },
       onSuccess: () => {
-        onOpen('success', next ? '公開しました' : '下書きに戻しました');
+        open('success', next ? '公開しました' : '下書きに戻しました');
       },
     });
   };
@@ -40,7 +40,7 @@ export const PublishToggle: FC<PublishToggleProps> = ({
       disabled={isPending}
       label={published ? '公開' : '下書き'}
       onChange={handleToggle}
-      value={published}
+      checked={published}
     />
   );
 };

@@ -27,22 +27,22 @@ type Article = {
 
 const RefetchButton: FC<{ id: number }> = ({ id }) => {
   const { isPending, run } = useAsyncAction();
-  const { onOpen } = useToast();
+  const { open: openToast } = useToast();
 
   const handleRefetch = (): void => {
     run(() => refetchArticleMetadata(id), {
       onError: (message) => {
-        onOpen('error', message);
+        openToast('error', message);
       },
       onSuccess: () => {
-        onOpen('success', 'OGP を再取得しました');
+        openToast('success', 'OGP を再取得しました');
       },
     });
   };
 
   return (
     <Button
-      color="gray"
+      color="base"
       disabled={isPending}
       onClick={handleRefetch}
       size="sm"
@@ -64,7 +64,7 @@ const DeleteButton: FC<{ id: number; title: string }> = ({ id, title }) => {
   return (
     <>
       <Button
-        color="gray"
+        color="base"
         onClick={() => {
           setOpen(true);
         }}
@@ -99,7 +99,7 @@ export const ArticleTable: FC<{ articles: Article[] }> = ({ articles }) => {
   }
 
   return (
-    <Card appearance="shadow">
+    <Card variant="shadow">
       {articles.map((article) => (
         <div
           className="border-border-mute flex items-center gap-3 border-b px-5 py-4 text-sm last:border-b-0"
@@ -121,7 +121,7 @@ export const ArticleTable: FC<{ articles: Article[] }> = ({ articles }) => {
           </span>
           <div className="flex shrink-0 items-center gap-1">
             <ButtonLink
-              color="gray"
+              color="base"
               href={`/reading-list/articles/${String(article.id)}` as Route}
               size="sm"
               variant="skeleton"

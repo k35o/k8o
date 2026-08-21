@@ -177,7 +177,7 @@ export const ChatPanel: FC<Props> = ({
         <div className="flex items-center gap-2">
           <span className="text-fg-mute text-xs">モデル</span>
           <Button
-            color="gray"
+            color="base"
             disabled={isBusy}
             onClick={() => {
               onSelectModel('fugu');
@@ -188,7 +188,7 @@ export const ChatPanel: FC<Props> = ({
             fugu
           </Button>
           <Button
-            color="gray"
+            color="base"
             disabled={isBusy}
             onClick={() => {
               onSelectModel('fugu-ultra');

@@ -156,6 +156,40 @@ const wrap = (open: string, children: string[], close: string): string[] =>
     ? [open.replace(/>$/u, ' />')]
     : [open, ...indentLines(children, 1), close];
 
+// registry の LabeledField と同じ「見出し span + aria-labelledby」へ展開する。
+// v12 でグループ入力は aria-labelledby が必須になり、素で置くと名前が付かない。
+const emitLabeledGroup = (
+  el: UIElement,
+  ctx: Ctx,
+  renderField: (labelId: string) => string[],
+): string[] => {
+  const name = textProp(el, 'name', ctx);
+  const labelId = `${name === '' ? el.type.toLowerCase() : name}-label`;
+  return wrap(
+    '<div className="flex flex-col gap-1">',
+    [
+      `<span className="text-fg-base text-sm font-medium" id="${labelId}">${escapeText(textProp(el, 'label', ctx))}</span>`,
+      ...renderField(labelId),
+    ],
+    '</div>',
+  );
+};
+
+const emitCheckboxGroupItems = (el: UIElement, ctx: Ctx): string[] => {
+  const { options } = el.props;
+  if (!Array.isArray(options)) {
+    ctx.notes.add(
+      'options に動的値（$state 等）が使われていたため省略した。移植先で配線すること。',
+    );
+    return [];
+  }
+  return options.map((option: { value?: string; label?: string }) => {
+    const itemValue = attr('itemValue', option.value, ctx);
+    const label = attr('label', option.label, ctx);
+    return `<CheckboxGroup.Item ${[itemValue, label].filter((part) => part !== null).join(' ')} />`;
+  });
+};
+
 const emitElement = (el: UIElement, ctx: Ctx): string[] => {
   // 表示条件・繰り返し・アクションは TSX へ機械変換しない（挙動の移植は手動）。
   if (el.visible !== undefined || el.repeat !== undefined) {
@@ -186,7 +220,7 @@ const emitElement = (el: UIElement, ctx: Ctx): string[] => {
         typeof el.props['size'] === 'string' ? el.props['size'] : 'md';
       const padding = CARD_PADDING[size] ?? 'p-6';
       return wrap(
-        `<Card${attrs(el, ['appearance', 'interactive', 'width'], ctx)}>`,
+        `<Card${attrs(el, ['variant', 'interactive', 'width'], ctx)}>`,
         wrap(`<div className="${padding}">`, emitChildren(el, ctx), '</div>'),
         '</Card>',
       );
@@ -224,13 +258,13 @@ const emitElement = (el: UIElement, ctx: Ctx): string[] => {
       const level =
         typeof el.props['level'] === 'string' ? el.props['level'] : 'h2';
       return [
-        `<Heading${attrs(el, ['type', 'lineClamp'], ctx, { type: level })}>${escapeText(textProp(el, 'text', ctx))}</Heading>`,
+        `<Heading${attrs(el, ['level', 'lineClamp'], ctx, { level })}>${escapeText(textProp(el, 'label', ctx))}</Heading>`,
       ];
     }
     case 'Badge': {
       ctx.imports.add('Badge');
       return [
-        `<Badge${attrs(el, ['text', 'tone', 'variant', 'size'], ctx)} />`,
+        `<Badge${attrs(el, ['label', 'tone', 'variant', 'size'], ctx)} />`,
       ];
     }
     case 'Alert': {
@@ -252,7 +286,7 @@ const emitElement = (el: UIElement, ctx: Ctx): string[] => {
     case 'Progress': {
       ctx.imports.add('Progress');
       return [
-        `<Progress${attrs(el, ['progress', 'maxProgress', 'minProgress', 'label'], ctx)} />`,
+        `<Progress${attrs(el, ['value', 'max', 'min', 'label'], ctx)} />`,
       ];
     }
     case 'Avatar': {
@@ -264,7 +298,7 @@ const emitElement = (el: UIElement, ctx: Ctx): string[] => {
     case 'Anchor': {
       ctx.imports.add('Anchor');
       return [
-        `<Anchor${attrs(el, ['href', 'openInNewTab'], ctx)}>${escapeText(textProp(el, 'text', ctx))}</Anchor>`,
+        `<Anchor${attrs(el, ['href', 'openInNewTab'], ctx)}>${escapeText(textProp(el, 'label', ctx))}</Anchor>`,
       ];
     }
     case 'Code': {
@@ -350,11 +384,25 @@ const emitElement = (el: UIElement, ctx: Ctx): string[] => {
         `<${el.type}${attrs(el, ['label', 'name', 'defaultChecked', 'disabled'], ctx)} />`,
       ];
     }
-    case 'Select':
     case 'Radio':
     case 'RadioCard':
-    case 'CheckboxCard':
-    case 'CheckboxGroup':
+    case 'CheckboxCard': {
+      ctx.imports.add(el.type);
+      return emitLabeledGroup(el, ctx, (labelId) => [
+        `<${el.type} aria-labelledby="${labelId}"${attrs(el, ['name', 'options', 'defaultValue', 'invalid', 'disabled'], ctx)} />`,
+      ]);
+    }
+    case 'CheckboxGroup': {
+      ctx.imports.add('CheckboxGroup');
+      return emitLabeledGroup(el, ctx, (labelId) =>
+        wrap(
+          `<CheckboxGroup.Root aria-labelledby="${labelId}"${attrs(el, ['name', 'defaultValue'], ctx)}>`,
+          emitCheckboxGroupItems(el, ctx),
+          '</CheckboxGroup.Root>',
+        ),
+      );
+    }
+    case 'Select':
     case 'ListBox':
     case 'Autocomplete': {
       ctx.imports.add(el.type);

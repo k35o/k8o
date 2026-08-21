@@ -12,7 +12,7 @@ export function ScopeLimitDemo() {
       <div className="flex items-center justify-between">
         <h3 className="font-bold">:scopeを使ったスコープリミット</h3>
         <Button
-          color={useScopeSelector ? 'primary' : 'gray'}
+          color={useScopeSelector ? 'primary' : 'base'}
           onClick={() => {
             setUseScopeSelector(!useScopeSelector);
           }}

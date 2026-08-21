@@ -20,13 +20,13 @@ export const ReportTable: FC<{ reports: Report[] }> = ({ reports }) => {
   }
 
   return (
-    <Card appearance="shadow">
+    <Card variant="shadow">
       <Accordion.Root>
         {reports.map((report) => (
           <Accordion.Item key={report.id}>
             <Accordion.Button>
               <div className="flex flex-1 items-center gap-3">
-                <Badge size="sm" text={report.type} tone="neutral" />
+                <Badge size="sm" label={report.type} tone="neutral" />
                 <span className="min-w-0 flex-1 truncate text-sm">
                   {report.url}
                 </span>

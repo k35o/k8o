@@ -43,7 +43,7 @@ export default function Layout({ children }: LayoutProps<'/blog'>) {
           <div className="flex flex-col gap-6">
             <div className="flex items-center justify-between">
               <Link className="hover:underline" href="/blog">
-                <Heading type="h2">Blog</Heading>
+                <Heading level="h2">Blog</Heading>
               </Link>
               <div className="flex items-center gap-4">
                 <WritingModeSwitcher />

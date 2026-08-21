@@ -24,7 +24,7 @@ export default function Home() {
             width={128}
           />
           <div className="flex flex-col gap-3">
-            <Heading type="h1">k8o</Heading>
+            <Heading level="h1">k8o</Heading>
             <div className="flex flex-wrap items-center gap-2">
               <SocialIcons />
               <EmailTooltip />
@@ -41,7 +41,7 @@ export default function Home() {
 
         <div className="flex flex-col gap-6">
           <div>
-            <Heading type="h2">Activity</Heading>
+            <Heading level="h2">Activity</Heading>
             <p className="text-fg-mute text-sm">
               最近の発信と、GitHubでの活動の記録。
             </p>

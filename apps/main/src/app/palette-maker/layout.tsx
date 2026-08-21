@@ -26,7 +26,7 @@ export default function Layout({ children }: LayoutProps<'/palette-maker'>) {
   return (
     <div className="mx-auto w-full max-w-5xl">
       <div className="flex h-full flex-col gap-4">
-        <Heading type="h2">いろばしご</Heading>
+        <Heading level="h2">いろばしご</Heading>
         {children}
       </div>
     </div>

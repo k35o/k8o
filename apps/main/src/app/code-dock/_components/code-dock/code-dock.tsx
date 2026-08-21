@@ -98,14 +98,14 @@ export const CodeDock: FC<Props> = ({
     resolvedTheme === 'light' ? 'one-light' : 'plastic';
   const { error: formatError, isPending: isFormatting, run } = useAsyncAction();
   const { writeClipboard } = useClipboard();
-  const { onOpen } = useToast();
+  const { open } = useToast();
 
   const handleCopy = async (): Promise<void> => {
     try {
       await writeClipboard(code);
-      onOpen('success', 'コードをコピーしました');
+      open('success', 'コードをコピーしました');
     } catch {
-      onOpen('error', 'コピーに失敗しました');
+      open('error', 'コピーに失敗しました');
     }
   };
 

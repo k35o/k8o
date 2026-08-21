@@ -13,10 +13,10 @@ const SAMPLE_SPEC = {
       props: { direction: 'column', gap: 'lg' },
       children: ['title', 'card'],
     },
-    title: { type: 'Heading', props: { level: 'h2', text: 'お問い合わせ' } },
+    title: { type: 'Heading', props: { level: 'h2', label: 'お問い合わせ' } },
     card: {
       type: 'Card',
-      props: { appearance: 'shadow' },
+      props: { variant: 'shadow' },
       children: ['form'],
     },
     form: {

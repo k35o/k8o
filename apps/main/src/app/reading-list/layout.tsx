@@ -31,7 +31,7 @@ export default function Layout({ children }: LayoutProps<'/reading-list'>) {
     <div className="mx-auto w-full max-w-5xl">
       <div className="flex flex-col gap-8">
         <div className="flex items-center justify-between">
-          <Heading type="h2">Readings</Heading>
+          <Heading level="h2">Readings</Heading>
           <RssLink />
         </div>
         {children}

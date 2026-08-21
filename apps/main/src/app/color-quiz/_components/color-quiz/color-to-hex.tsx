@@ -131,12 +131,12 @@ export const ColorToHex: FC = () => {
               #{hex}
               {showCorrectBadge && (
                 <span className="absolute top-1 right-1">
-                  <Badge size="sm" text="正解" tone="success" />
+                  <Badge size="sm" label="正解" tone="success" />
                 </span>
               )}
               {showWrongBadge && (
                 <span className="absolute top-1 right-1">
-                  <Badge size="sm" text="あなたの回答" tone="error" />
+                  <Badge size="sm" label="あなたの回答" tone="error" />
                 </span>
               )}
             </button>

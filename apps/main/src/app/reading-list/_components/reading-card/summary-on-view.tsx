@@ -64,7 +64,7 @@ export const ReadingCardSummaryOnView: FC<{
     <div className="flex flex-col gap-1" ref={containerRef}>
       {isPending && (
         <span className="self-start">
-          <Badge size="sm" text="AI要約を生成中…" tone="info" />
+          <Badge size="sm" label="AI要約を生成中…" tone="info" />
         </span>
       )}
       {description !== null && (

@@ -15,16 +15,16 @@ type Props = {
 export const CommentActions: FC<Props> = ({ id }) => {
   const [open, setOpen] = useState(false);
   const { isPending, run } = useAsyncAction();
-  const { onOpen } = useToast();
+  const { open: openToast } = useToast();
 
   const handleDelete = (): void => {
     run(() => deleteComment(id), {
       onError: (message) => {
-        onOpen('error', message);
+        openToast('error', message);
       },
       onSuccess: () => {
         setOpen(false);
-        onOpen('success', '削除しました');
+        openToast('success', '削除しました');
       },
     });
   };
@@ -32,7 +32,7 @@ export const CommentActions: FC<Props> = ({ id }) => {
   return (
     <>
       <Button
-        color="gray"
+        color="base"
         onClick={() => {
           setOpen(true);
         }}

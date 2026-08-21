@@ -14,11 +14,11 @@ import type { FC } from 'react';
 export const OutputTable: FC<{ color: Color }> = ({ color }) => {
   const rows = formatAll(color);
   const { writeClipboard } = useClipboard();
-  const { onOpen } = useToast();
+  const { open } = useToast();
 
   const handleCopy = (value: string, label: string) => {
     void writeClipboard(value).then(() => {
-      onOpen('success', `${label}をコピーしました`);
+      open('success', `${label}をコピーしました`);
       return undefined;
     });
   };

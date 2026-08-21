@@ -10,7 +10,7 @@ import type { FC } from 'react';
 
 export const CopyMarkdownButton: FC<{ slug: string }> = ({ slug }) => {
   const { writeClipboard } = useClipboard();
-  const { onOpen } = useToast();
+  const { open } = useToast();
 
   const handleCopy = async () => {
     try {
@@ -20,9 +20,9 @@ export const CopyMarkdownButton: FC<{ slug: string }> = ({ slug }) => {
       }
       const text = await res.text();
       await writeClipboard(text);
-      onOpen('success', 'Markdownをコピーしました');
+      open('success', 'Markdownをコピーしました');
     } catch {
-      onOpen('error', 'Markdownのコピーに失敗しました');
+      open('error', 'Markdownのコピーに失敗しました');
     }
   };
 
