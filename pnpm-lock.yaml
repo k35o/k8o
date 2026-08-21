@@ -10,8 +10,8 @@ catalogs:
       specifier: 3.0.27
       version: 3.0.27
     '@k8o/arte-odyssey':
-      specifier: 12.0.0
-      version: 12.0.0
+      specifier: 12.0.1
+      version: 12.0.1
     '@k8o/html-nest':
       specifier: 0.2.0
       version: 0.2.0
@@ -160,7 +160,7 @@ importers:
     dependencies:
       '@k8o/arte-odyssey':
         specifier: 'catalog:'
-        version: 12.0.0(@json-render/core@0.19.0(zod@4.4.3))(@json-render/react@0.19.0(react@19.2.8)(zod@4.4.3))(@types/react-dom@19.2.4(@types/react@19.2.18))(@types/react@19.2.18)(ai@7.0.58(zod@4.4.3))(react-dom@19.2.8(react@19.2.8))(react@19.2.8)(tailwindcss@4.3.3)(typescript@7.0.2)(zod@4.4.3)
+        version: 12.0.1(@json-render/core@0.19.0(zod@4.4.3))(@json-render/react@0.19.0(react@19.2.8)(zod@4.4.3))(@types/react-dom@19.2.4(@types/react@19.2.18))(@types/react@19.2.18)(ai@7.0.58(zod@4.4.3))(react-dom@19.2.8(react@19.2.8))(react@19.2.8)(tailwindcss@4.3.3)(typescript@7.0.2)(zod@4.4.3)
       '@repo/database':
         specifier: workspace:*
         version: link:../../packages/database
@@ -275,7 +275,7 @@ importers:
         version: 0.19.0(react@19.2.8)(zod@4.4.3)
       '@k8o/arte-odyssey':
         specifier: 'catalog:'
-        version: 12.0.0(@json-render/core@0.19.0(zod@4.4.3))(@json-render/react@0.19.0(react@19.2.8)(zod@4.4.3))(@types/react-dom@19.2.4(@types/react@19.2.18))(@types/react@19.2.18)(ai@7.0.58(zod@4.4.3))(react-dom@19.2.8(react@19.2.8))(react@19.2.8)(tailwindcss@4.3.3)(typescript@7.0.2)(zod@4.4.3)
+        version: 12.0.1(@json-render/core@0.19.0(zod@4.4.3))(@json-render/react@0.19.0(react@19.2.8)(zod@4.4.3))(@types/react-dom@19.2.4(@types/react@19.2.18))(@types/react@19.2.18)(ai@7.0.58(zod@4.4.3))(react-dom@19.2.8(react@19.2.8))(react@19.2.8)(tailwindcss@4.3.3)(typescript@7.0.2)(zod@4.4.3)
       '@repo/code-highlight':
         specifier: workspace:*
         version: link:../../packages/code-highlight
@@ -387,7 +387,7 @@ importers:
         version: 3.0.27(zod@4.4.3)
       '@k8o/arte-odyssey':
         specifier: 'catalog:'
-        version: 12.0.0(@json-render/core@0.19.0(zod@4.4.3))(@json-render/react@0.19.0(react@19.2.8)(zod@4.4.3))(@types/react-dom@19.2.4(@types/react@19.2.18))(@types/react@19.2.18)(ai@7.0.58(zod@4.4.3))(react-dom@19.2.8(react@19.2.8))(react@19.2.8)(tailwindcss@4.3.3)(typescript@7.0.2)(zod@4.4.3)
+        version: 12.0.1(@json-render/core@0.19.0(zod@4.4.3))(@json-render/react@0.19.0(react@19.2.8)(zod@4.4.3))(@types/react-dom@19.2.4(@types/react@19.2.18))(@types/react@19.2.18)(ai@7.0.58(zod@4.4.3))(react-dom@19.2.8(react@19.2.8))(react@19.2.8)(tailwindcss@4.3.3)(typescript@7.0.2)(zod@4.4.3)
       '@k8o/html-nest':
         specifier: 'catalog:'
         version: 0.2.0
@@ -1862,8 +1862,8 @@ packages:
     peerDependencies:
       react: ^19.2.3
 
-  '@k8o/arte-odyssey@12.0.0':
-    resolution: {integrity: sha512-V9Z1PdhgX7F7GgLynIUl2JDRIsxlYczRBSzXTkHabFlzGBwt7TGpzS9/gbk1QZyFzTAnQU1XslEdM8fEkPHuRw==}
+  '@k8o/arte-odyssey@12.0.1':
+    resolution: {integrity: sha512-6MdtA5J1fhnH5pYeUxwYzRKSxNjaSgiH8B9e/SmUq2oAKedL/iPKl9F+wE0wIi0xrNjgVSvt96HwW0rYS8FmxQ==}
     peerDependencies:
       '@json-render/core': '>=0.19.0'
       '@json-render/react': '>=0.19.0'
@@ -7995,7 +7995,7 @@ snapshots:
     transitivePeerDependencies:
       - zod
 
-  '@k8o/arte-odyssey@12.0.0(@json-render/core@0.19.0(zod@4.4.3))(@json-render/react@0.19.0(react@19.2.8)(zod@4.4.3))(@types/react-dom@19.2.4(@types/react@19.2.18))(@types/react@19.2.18)(ai@7.0.58(zod@4.4.3))(react-dom@19.2.8(react@19.2.8))(react@19.2.8)(tailwindcss@4.3.3)(typescript@7.0.2)(zod@4.4.3)':
+  '@k8o/arte-odyssey@12.0.1(@json-render/core@0.19.0(zod@4.4.3))(@json-render/react@0.19.0(react@19.2.8)(zod@4.4.3))(@types/react-dom@19.2.4(@types/react@19.2.18))(@types/react@19.2.18)(ai@7.0.58(zod@4.4.3))(react-dom@19.2.8(react@19.2.8))(react@19.2.8)(tailwindcss@4.3.3)(typescript@7.0.2)(zod@4.4.3)':
     dependencies:
       clsx: 2.1.1
       lucide-react: 1.31.0(react@19.2.8)
