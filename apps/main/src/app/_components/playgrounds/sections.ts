@@ -28,6 +28,7 @@ import { scrollbarColorSection } from './scrollbar-color';
 import { scrollendSection } from './scrollend';
 import { shapeFunctionSection } from './shape-function';
 import { sharedWorkerSection } from './shared-worker';
+import { siblingCountIndexSection } from './sibling-count-index';
 import { spellingGrammarErrorSection } from './spelling-grammar-error';
 import { suspenseListSection } from './suspense-list';
 import { textDecorationSkipInkAllSection } from './text-decoration-skip-ink-all';
@@ -64,6 +65,7 @@ export const playgroundSections: PlaygroundSection[] = [
   scrollbarColorSection,
   scrollendSection,
   sharedWorkerSection,
+  siblingCountIndexSection,
   suspenseListSection,
   absSignSection,
   highlightSection,
