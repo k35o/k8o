@@ -1,0 +1,143 @@
+---
+title: 'sibling-index()とsibling-count()で並び順をCSSの計算に持ち込む'
+description: 'sibling-index()とsibling-count()は、要素が親の中で何番目かと、兄弟要素がいくつあるかを整数で返すCSSの関数です。Baseline 2026で主要ブラウザに揃い、順番に応じたアニメーションの遅延や項目数から逆算するレイアウトを、番号を配らずにCSSだけで書けるようになりました。'
+createdAt: 2026-08-22
+updatedAt: 2026-08-22
+featureIds:
+  - sibling-count
+---
+
+import { PlaygroundEmbed } from '@/app/_components/playgrounds';
+
+# sibling-index()とsibling-count()で並び順をCSSの計算に持ち込む
+
+<BrowserSupportStatus featureId="sibling-count" />
+
+## はじめに
+
+リストの項目を少しずつずらしてフェードインさせたいとき、これまでは各要素に`style="--i: 3"`のような番号を配るのが定番でした。テンプレート側でインデックスを埋め込むか、`li:nth-child(1)`から順に、項目数のぶんセレクタを書き並べるかのどちらかです。
+
+`sibling-index()`と`sibling-count()`は、この番号をCSS側から取れるようにする関数です。Chromeでは先行して使えていましたが、Safari 26.2に続いてFirefox 154が対応したことでBaseline 2026に加わりました。
+
+## 2つの関数
+
+`sibling-index()`は、親の中でその要素が何番目かを返します。`:nth-child()`と同じく1始まりです。`sibling-count()`は、自分自身を含めた兄弟要素の総数を返します。`Element.children`の`length`と同じ値です。
+
+どちらも引数を取らず、返すのは`<integer>`です。整数値なので`calc()`の中で他の値と掛け合わせられますし、整数を受け取るプロパティなら`calc()`で包まずそのまま書けます。
+
+```css
+li {
+  /* [!callout: 1番目の要素なら1] */
+  order: sibling-index();
+  /* [!callout: 兄弟が5つなら20%ずつ] */
+  width: calc(100% / sibling-count());
+}
+```
+
+## 何を数えるか
+
+数えるのは要素だけです。テキストノードやコメントノードは無視されるので、HTMLの改行やインデントで数がずれることはありません。
+
+一方で、要素であれば種類は問われません。リストの中に`<style>`や`<script>`を置くと、それも1つの兄弟として数えられて後続の番号がずれます。番号に影響させたくない要素は親の外に出しておきます。
+
+`display: none`の兄弟も数に入ります。数えているのはDOMツリー上の位置であって、レンダリングされるかどうかは関係ありません。CSSの多くの処理は、Shadow DOMのslotに振り分けたあとの木であるflat treeを対象にします。この2つは`:nth-child()`などと同じくDOMツリーのほうを数える、と仕様に注記されています。
+
+要素が増えたり減ったりすると値は計算し直されます。リストの先頭に要素を差し込めば、後続の要素の`sibling-index()`はすべて1つずつ繰り上がります。
+
+<PlaygroundEmbed demo="何が番号を消費するか" sectionId="sibling-count-index" />
+
+## 順番に応じて遅延をずらす
+
+もっとも素直な使いどころは、並び順に応じたアニメーションの遅延です。
+
+```css
+/* [!og] */
+li {
+  animation: fade-in 320ms backwards;
+  animation-delay: calc(sibling-index() * 90ms);
+}
+```
+
+これまで同じことをするには、テンプレート側で番号を出力しておく必要がありました。
+
+```html
+<li style="--i: 1">項目</li>
+<li style="--i: 2">項目</li>
+<li style="--i: 3">項目</li>
+```
+
+`sibling-index()`があれば、この`--i`は要らなくなります。項目が増減しても、マークアップ側で番号を振り直す処理は不要です。
+
+<PlaygroundEmbed
+  demo="sibling-index()で順番にフェードインさせる"
+  sectionId="sibling-count-index"
+/>
+
+## 兄弟の数から幅を決める
+
+`sibling-count()`は、項目数が動的に決まるレイアウトに向いています。タブやツールバーのように、子を横に等分したいケースです。
+
+```css
+.tabs > * {
+  width: calc(100% / sibling-count());
+}
+```
+
+`sibling-count()`が数えるのは、常にその関数を書いた要素の兄弟です。親側に書いた`grid-template-columns: repeat(sibling-count(), 1fr)`は、子の数ではなく親自身の兄弟の数で列を作ってしまいます。子の数から列を決めたい用途には使えません。
+
+```css
+.tabs {
+  /* [!hl] */
+  /* [!callout: .tabs の子ではなく .tabs 自身の兄弟の数になる] */
+  grid-template-columns: repeat(sibling-count(), 1fr);
+}
+```
+
+数えたいのが子であれば、`calc()`は子側に書きます。
+
+<PlaygroundEmbed
+  demo="sibling-count()とsibling-index()に追従するバー"
+  sectionId="sibling-count-index"
+/>
+
+## カスタムプロパティ経由で子孫に渡す
+
+計算結果をカスタムプロパティに逃がして子孫で使い回したくなりますが、`@property`で登録していないカスタムプロパティでは意図した値になりません。
+
+```css
+li {
+  --i: sibling-index();
+}
+
+li span {
+  /* [!callout: li の番号ではなく span 自身の番号で解決される] */
+  width: calc(var(--i) * 10px);
+}
+```
+
+登録されていないカスタムプロパティは、値がトークンのまま保持されて`var()`で参照した場所に展開されます。そのため`sibling-index()`が解決されるのは`li`ではなく`span`の位置で、`span`が唯一の子であればどの`li`の中でも1になります。
+
+`@property`で登録すると、宣言した要素の計算値の段階で整数に確定してから継承されます。
+
+```css
+@property --i {
+  syntax: '<integer>';
+  inherits: true;
+  initial-value: 0;
+}
+
+li {
+  --i: sibling-index();
+}
+
+li span {
+  /* [!callout: li の番号がそのまま降りてくる] */
+  width: calc(var(--i) * 10px);
+}
+```
+
+同じ要素の中で使い切るなら登録していないカスタムプロパティでも結果は変わりません。子孫に値を渡したいときだけ、`@property`での登録が必要になります。
+
+## おわりに
+
+`sibling-index()`と`sibling-count()`は、これまでテンプレート側で埋め込んでいた並び順の情報をCSSの値として扱えるようにする関数です。Baseline 2026で主要ブラウザに揃ったので、インラインの`style`で番号を配っていた箇所を減らしていけます。仕様には`:nth-child()`のように`of`で数える対象を絞る引数を将来追加しうるという注記もあり、兄弟の一部だけを数える使い方はこれからの拡張に委ねられています。
