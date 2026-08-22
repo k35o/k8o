@@ -498,6 +498,13 @@
       "when": 1787035751053,
       "tag": "0070_curved_bill_hollister",
       "breakpoints": true
+    },
+    {
+      "idx": 71,
+      "version": "6",
+      "when": 1787383146431,
+      "tag": "0071_gigantic_gwen_stacy",
+      "breakpoints": true
     }
   ]
 }
