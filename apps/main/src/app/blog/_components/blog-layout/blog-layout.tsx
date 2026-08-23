@@ -20,6 +20,7 @@ import type { getBlogsByTags } from '@/features/blog/interface/queries';
 import { blogBreadcrumbJsonLd, blogPostingJsonLd } from '@/shared/site/json-ld';
 
 import { BlogHeader } from '../blog-header';
+import { ArticleFrame } from './article-frame';
 import { END_OF_CONTENT_ID } from './constants';
 import { CopyMarkdownButton } from './copy-markdown-button';
 import { Feedback } from './feedback';
@@ -52,9 +53,9 @@ export const BlogLayoutContent: FC<BlogLayoutContentProps> = ({
   const shouldUseRecommendedBlogs = recommendedBlogs !== undefined;
 
   return (
-    <div className="mx-auto flex w-full max-w-5xl flex-col gap-6">
+    <ArticleFrame hasToc={headingTree.children.length > 0}>
       <BlogHeader />
-      <div className="gap-4 xl:flex">
+      <div className="xl:flex xl:gap-6">
         <ViewReporter slug={slug} />
         <div className="m-auto flex min-w-0 flex-1 flex-col gap-8 xl:max-w-5xl">
           <WritingModeContent>
@@ -137,7 +138,7 @@ export const BlogLayoutContent: FC<BlogLayoutContentProps> = ({
           <TableOfContents headingTree={headingTree} />
         </SilentErrorBoundary>
       </div>
-    </div>
+    </ArticleFrame>
   );
 };
 
