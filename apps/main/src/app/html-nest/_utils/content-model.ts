@@ -72,7 +72,7 @@ export const getParents = (selected: HtmlElementInfo): RelatedElement[] =>
     }
     const check = canContain(candidate, selected);
     return check.allowed ? [toRelated(candidate, check)] : [];
-  }).sort(byTag);
+  }).toSorted(byTag);
 
 // selected が「中に入れられる子要素」一覧（タグ名順）。
 export const getChildren = (selected: HtmlElementInfo): RelatedElement[] =>
@@ -82,7 +82,7 @@ export const getChildren = (selected: HtmlElementInfo): RelatedElement[] =>
     }
     const check = canContain(selected, candidate);
     return check.allowed ? [toRelated(candidate, check)] : [];
-  }).sort(byTag);
+  }).toSorted(byTag);
 
 // elements（通常）以外の content model 種別の要約文。
 const KIND_SUMMARY: Record<Exclude<ContentModelKind, 'elements'>, string> = {
