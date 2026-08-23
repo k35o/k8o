@@ -90,9 +90,7 @@ const meta = preview.meta({
   decorators: [
     (Story) => (
       <WritingModeProvider>
-        <div className="ml-24 max-w-5xl">
-          <Story />
-        </div>
+        <Story />
       </WritingModeProvider>
     ),
   ],

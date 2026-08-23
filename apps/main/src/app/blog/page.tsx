@@ -2,6 +2,7 @@ import { Suspense } from 'react';
 
 import { getBlogContents } from '@/features/blog/interface/queries';
 
+import { BlogHeader } from './_components/blog-header';
 import {
   BlogListContent,
   BlogListSkeleton,
@@ -11,8 +12,11 @@ export default async function Page() {
   const blogs = await getBlogContents();
 
   return (
-    <Suspense fallback={<BlogListSkeleton />}>
-      <BlogListContent blogs={blogs} />
-    </Suspense>
+    <div className="mx-auto flex w-full max-w-5xl flex-col gap-6">
+      <BlogHeader />
+      <Suspense fallback={<BlogListSkeleton />}>
+        <BlogListContent blogs={blogs} />
+      </Suspense>
+    </div>
   );
 }
