@@ -1,12 +1,6 @@
-import { Heading } from '@k8o/arte-odyssey';
 import type { Metadata } from 'next';
-import Link from 'next/link';
 
-import {
-  WritingModeProvider,
-  WritingModeSwitcher,
-} from './_components/blog-layout/writing-mode';
-import { ExternalBlog } from './_components/external-blog';
+import { WritingModeProvider } from './_components/blog-layout/writing-mode';
 import { ScrollToTopOnPathChange } from './_components/scroll-to-top-on-path-change';
 
 import './_styles/vertical-inline-code.css';
@@ -38,22 +32,7 @@ export default function Layout({ children }: LayoutProps<'/blog'>) {
   return (
     <>
       <ScrollToTopOnPathChange />
-      <WritingModeProvider>
-        <div className="mx-auto w-full max-w-5xl">
-          <div className="flex flex-col gap-6">
-            <div className="flex items-center justify-between">
-              <Link className="hover:underline" href="/blog">
-                <Heading level="h2">Blog</Heading>
-              </Link>
-              <div className="flex items-center gap-4">
-                <WritingModeSwitcher />
-                <ExternalBlog />
-              </div>
-            </div>
-            {children}
-          </div>
-        </div>
-      </WritingModeProvider>
+      <WritingModeProvider>{children}</WritingModeProvider>
     </>
   );
 }
