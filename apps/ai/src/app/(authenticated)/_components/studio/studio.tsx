@@ -12,7 +12,14 @@ import { validateGeneratedSpec } from '@k8o/arte-odyssey/json-render';
 import { DefaultChatTransport } from 'ai';
 import type { UIMessage } from 'ai';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { useEffect, useMemo, useReducer, useRef, useState } from 'react';
+import {
+  useEffect,
+  useEffectEvent,
+  useMemo,
+  useReducer,
+  useRef,
+  useState,
+} from 'react';
 
 import { SpecPreview } from '@/app/_components/spec-preview';
 import {
@@ -313,9 +320,10 @@ export const Studio = () => {
   };
 
   // 初回マウント時、URL に ?project=<id> があればそのプロジェクトを復元する。
-  // 初回レンダーの loader を ref に固定し依存を安定させ、Strict Mode の二重実行でも
-  // bootedRef で1回だけロードする。
-  const bootLoadRef = useRef(handleSelectProject);
+  // Strict Mode の二重実行でも bootedRef で1回だけロードする。
+  const bootLoad = useEffectEvent((projectId: number) => {
+    void handleSelectProject(projectId);
+  });
   const bootedRef = useRef(false);
   useEffect(() => {
     if (bootedRef.current) {
@@ -324,7 +332,7 @@ export const Studio = () => {
     bootedRef.current = true;
     const bootId = bootProjectIdRef.current;
     if (bootId !== null && bootId !== undefined) {
-      void bootLoadRef.current(bootId);
+      bootLoad(bootId);
     }
   }, []);
 
