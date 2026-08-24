@@ -1,11 +1,16 @@
-import { hexToRgb } from '@repo/helpers/color/convert';
-
 export const generateRandomHex = (): string => {
   const r = Math.floor(Math.random() * 256);
   const g = Math.floor(Math.random() * 256);
   const b = Math.floor(Math.random() * 256);
   return [r, g, b].map((v) => v.toString(16).padStart(2, '0')).join('');
 };
+
+// このモジュールが生成する #なし6桁hexだけを扱う前提の最小実装。
+const hexToRgb = (hex: string): { r: number; g: number; b: number } => ({
+  r: Number.parseInt(hex.slice(0, 2), 16),
+  g: Number.parseInt(hex.slice(2, 4), 16),
+  b: Number.parseInt(hex.slice(4, 6), 16),
+});
 
 const colorDistance = (hex1: string, hex2: string): number => {
   const c1 = hexToRgb(hex1);

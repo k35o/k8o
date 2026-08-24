@@ -49,10 +49,6 @@
       "types": "./src/color/calc-contrast.ts",
       "default": "./src/color/calc-contrast.ts"
     },
-    "./color/convert": {
-      "types": "./src/color/convert.ts",
-      "default": "./src/color/convert.ts"
-    },
     "./color/spaces": {
       "types": "./src/color/spaces.ts",
       "default": "./src/color/spaces.ts"
@@ -106,10 +102,6 @@
       "types": "./src/number/between.ts",
       "default": "./src/number/between.ts"
     },
-    "./number/commalize": {
-      "types": "./src/number/commalize.ts",
-      "default": "./src/number/commalize.ts"
-    },
     "./og/fetch-og-metadata": {
       "types": "./src/og/fetch-og-metadata.ts",
       "default": "./src/og/fetch-og-metadata.ts"
@@ -125,10 +117,6 @@
     "./sleep": {
       "types": "./src/sleep.ts",
       "default": "./src/sleep.ts"
-    },
-    "./uuid-v4": {
-      "types": "./src/uuid-v4.ts",
-      "default": "./src/uuid-v4.ts"
     },
     "./url/is-public-https-url": {
       "types": "./src/url/is-public-https-url.ts",

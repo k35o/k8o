@@ -1,3 +1,5 @@
+import { parseStrictHttpsHost } from './parse-strict-https-url';
+
 // SSRF 対策: 外部由来の URL を fetch する前に「公開 https URL か」を検証する純粋関数。
 // reading-list の記事 / フィード / OGP 取得など、ユーザー由来の URL を取得する箇所で使う。
 //
@@ -11,8 +13,6 @@
 //
 // 注意（残存リスク）: DNS 解決は行わないため、公開ホスト名が内部 IP に解決される
 // DNS リバインディングは防げない。リダイレクト先は safe-fetch 側で都度再検証する。
-
-const MAX_URL_LENGTH = 2048;
 
 const parseOctets = (host: string): readonly number[] | null => {
   const parts = host.split('.');
@@ -124,22 +124,12 @@ const isPrivateIpv6 = (host: string): boolean => {
 };
 
 export const isPublicHttpsUrl = (value: string): boolean => {
-  if (typeof value !== 'string' || value.length > MAX_URL_LENGTH) {
+  const parsedHost = parseStrictHttpsHost(value);
+  if (parsedHost === null) {
     return false;
   }
 
-  let url: URL;
-  try {
-    url = new URL(value);
-  } catch {
-    return false;
-  }
-
-  if (url.protocol !== 'https:') return false;
-  if (url.username !== '' || url.password !== '') return false;
-  if (url.port !== '' && url.port !== '443') return false;
-
-  let host = url.hostname.toLowerCase();
+  let host = parsedHost;
   if (host.startsWith('[') && host.endsWith(']')) {
     host = host.slice(1, -1);
   }
