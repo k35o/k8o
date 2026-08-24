@@ -5,10 +5,10 @@ import { useEffect, useRef, useState } from 'react';
 
 // ハイライト取得の実体（server action）は呼び出し側から渡す。UI コンポーネント側で
 // action を直接 import すると、Storybook が @repo/database まで辿ってしまうため。
+// デッキ全体を1往復で取れるようバッチ形（単一コードは1要素配列で呼ぶ）。
 export type HighlightFn = (
-  code: string,
-  lang: string,
-) => Promise<HighlightedCode | null>;
+  blocks: Array<{ code: string; lang: string }>,
+) => Promise<Array<HighlightedCode | null>>;
 
 // コード確定後に一度だけハイライトを取得する（ストリーミング中は往復させない）。
 // highlight が null の環境（Storybook 等）ではプレーン表示のまま。
@@ -36,8 +36,12 @@ export const useHighlightedCode = (
     requestRef.current = requestId;
     void (async () => {
       try {
-        const data = await highlight(code, lang);
-        if (data !== null && requestRef.current === requestId) {
+        const [data] = await highlight([{ code, lang }]);
+        if (
+          data !== null &&
+          data !== undefined &&
+          requestRef.current === requestId
+        ) {
           setState({ code, data });
         }
       } catch {

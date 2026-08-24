@@ -80,7 +80,7 @@ describe('unpublishProject', () => {
 
       await expect(
         unpublishProject({ userId: 'u1', projectId: 1 }),
-      ).resolves.toEqual({ slug: 'abc123' });
+      ).resolves.toStrictEqual({ slug: 'abc123' });
       expect(setVisibility).toHaveBeenCalledWith({
         userId: 'u1',
         projectId: 1,

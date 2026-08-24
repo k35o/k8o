@@ -43,22 +43,19 @@ const fetchHighlights = async (
   blocks: DeckCodeBlock[],
   highlight: HighlightFn,
 ): Promise<ReadonlyMap<string, HighlightedCode>> => {
-  const entries = await Promise.all(
-    blocks.map(async (block) => {
-      const key = highlightKey(block.lang, block.code);
-      try {
-        return [key, await highlight(block.code, block.lang)] as const;
-      } catch {
-        // ハイライトは装飾なので、失敗してもプレーン表示で続行する。
-        return [key, null] as const;
-      }
-    }),
-  );
   const highlights = new Map<string, HighlightedCode>();
-  for (const [key, data] of entries) {
-    if (data !== null) {
-      highlights.set(key, data);
+  try {
+    const results = await highlight(
+      blocks.map((block) => ({ code: block.code, lang: block.lang })),
+    );
+    for (const [index, data] of results.entries()) {
+      const block = blocks[index];
+      if (block !== undefined && data !== null) {
+        highlights.set(highlightKey(block.lang, block.code), data);
+      }
     }
+  } catch {
+    // ハイライトは装飾なので、失敗してもプレーン表示で続行する。
   }
   return highlights;
 };

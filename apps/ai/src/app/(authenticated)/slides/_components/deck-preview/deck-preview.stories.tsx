@@ -140,14 +140,16 @@ export const KeyboardNav = meta.story({
 // 色は a11y アドオンのコントラスト検査を満たす明るいものにする。
 const makeFakeHighlight =
   (color: string): HighlightFn =>
-  (code: string): Promise<HighlightedCode | null> =>
-    Promise.resolve({
-      tokens: code
-        .split('\n')
-        .map((line, index) => [{ content: line, offset: index, color }]),
-      fg: '#abb2bf',
-      bg: '#282c34',
-    });
+  (blocks): Promise<Array<HighlightedCode | null>> =>
+    Promise.resolve(
+      blocks.map(({ code }) => ({
+        tokens: code
+          .split('\n')
+          .map((line, index) => [{ content: line, offset: index, color }]),
+        fg: '#abb2bf',
+        bg: '#282c34',
+      })),
+    );
 
 const fakeHighlight = makeFakeHighlight('#e6edf3');
 

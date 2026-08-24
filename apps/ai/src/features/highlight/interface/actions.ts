@@ -36,24 +36,44 @@ const HIGHLIGHT_LANGS = new Set([
   'yaml',
 ]);
 
+// デッキ内の全コードブロックを1回の往復で取得できるようバッチ形にしている
+// （ブロック毎に呼ぶとセッション検証込みの POST が N 回走る）。単一コードの
+// 呼び出し側も1要素の配列で同じ action を使う。
 export const highlightGenerated = async (
-  code: string,
-  lang: string,
+  blocks: Array<{ code: string; lang: string }>,
   theme: 'light' | 'dark' = 'dark',
-): Promise<HighlightedCode | null> => {
+): Promise<Array<HighlightedCode | null>> => {
   // オーナー専用ツールに合わせ濫用防止のため action もゲートする。
   const session = await requireAllowedSession(await headers());
   if (session === null) {
-    return null;
+    return blocks.map(() => null);
   }
-  // 異常に長い入力での無駄な CPU を避ける。
-  if (code.length > MAX_CODE_LENGTH) {
-    return null;
+  // 引数はクライアントから改竄できるため形を検査する。
+  if (
+    !Array.isArray(blocks) ||
+    blocks.some(
+      (block) =>
+        typeof block !== 'object' ||
+        typeof block.code !== 'string' ||
+        typeof block.lang !== 'string',
+    )
+  ) {
+    return [];
   }
-  return highlightCode(
-    code,
-    HIGHLIGHT_LANGS.has(lang) ? lang : 'text',
-    // 引数はクライアントから改竄できるため、'light' 以外はすべて既定の暗色にする。
-    theme === 'light' ? 'one-light' : 'plastic',
+  // 異常に長い入力での無駄な CPU を避ける。分割で迂回できないよう合計長で判定する。
+  const totalLength = blocks.reduce((sum, block) => sum + block.code.length, 0);
+  if (totalLength > MAX_CODE_LENGTH) {
+    return blocks.map(() => null);
+  }
+  // 引数はクライアントから改竄できるため、'light' 以外はすべて既定の暗色にする。
+  const resolvedTheme = theme === 'light' ? 'one-light' : 'plastic';
+  return Promise.all(
+    blocks.map((block) =>
+      highlightCode(
+        block.code,
+        HIGHLIGHT_LANGS.has(block.lang) ? block.lang : 'text',
+        resolvedTheme,
+      ),
+    ),
   );
 };

@@ -93,7 +93,7 @@ export const SlidesStudio = ({
       return null;
     }
     const theme = resolvedTheme;
-    return (code, lang) => highlightGenerated(code, lang, theme);
+    return (blocks) => highlightGenerated(blocks, theme);
   }, [resolvedTheme]);
   const router = useRouter();
 
