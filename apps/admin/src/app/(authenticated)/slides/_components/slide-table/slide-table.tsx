@@ -30,7 +30,7 @@ const SlideRow: FC<{ slide: SlideRecord }> = ({ slide }) => (
     </div>
     <div className="flex w-24 shrink-0 justify-end">
       <PublishToggle
-        initialPublished={slide.published}
+        published={slide.published}
         onToggle={(next) => setSlidePublished(slide.id, next)}
       />
     </div>

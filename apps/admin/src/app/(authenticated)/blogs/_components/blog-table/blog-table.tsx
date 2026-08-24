@@ -36,7 +36,7 @@ const BlogRow: FC<{ blog: BlogRecord }> = ({ blog }) => (
     </span>
     <div className="flex w-24 shrink-0 justify-end">
       <PublishToggle
-        initialPublished={blog.published}
+        published={blog.published}
         onToggle={(next) => setBlogPublished(blog.id, next)}
       />
     </div>
