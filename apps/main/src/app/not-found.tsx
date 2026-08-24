@@ -1,6 +1,6 @@
 'use client';
 
-import { Button } from '@k8o/arte-odyssey';
+import { Anchor, Button } from '@k8o/arte-odyssey';
 import Image from 'next/image';
 import Link from 'next/link';
 
@@ -8,7 +8,7 @@ import notFoundImage from './_images/404.png';
 
 export default function NotFound() {
   return (
-    <div className="flex h-full flex-col items-center justify-center">
+    <div className="flex h-full flex-col items-center justify-center gap-6">
       <Image alt="404 Not Found" src={notFoundImage} />
       <Button
         renderItem={({ className, children }) => (
@@ -20,6 +20,12 @@ export default function NotFound() {
       >
         トップへ戻る
       </Button>
+      <p className="text-fg-mute text-sm">
+        <Anchor href="/blog">ブログ一覧</Anchor>・
+        <Anchor href="/sitemap.xml">サイトマップ</Anchor>・
+        <Anchor href="/llms.txt">llms.txt</Anchor>
+        からも探せます。
+      </p>
     </div>
   );
 }

@@ -7,7 +7,10 @@ export async function GET() {
 
   return new NextResponse(content, {
     headers: {
-      'Content-Type': 'text/plain; charset=utf-8',
+      'Content-Type': 'text/markdown; charset=utf-8',
+      // / は Accept で HTML と markdown を出し分けるため、共有キャッシュが
+      // Accept をキーに含むよう明示する
+      Vary: 'Accept',
     },
   });
 }
