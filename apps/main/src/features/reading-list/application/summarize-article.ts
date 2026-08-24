@@ -1,6 +1,9 @@
-import { db } from '@repo/database';
-import { and, eq, isNull, lt } from 'drizzle-orm';
-
+import {
+  findArticleForSummary,
+  findArticleSummary,
+  reserveSummaryAttempt,
+  saveArticleSummary,
+} from '../infrastructure/article-repository';
 import { summarizeArticle } from '../infrastructure/summarize';
 import { MAX_SUMMARY_ATTEMPTS } from './summary-policy';
 
@@ -12,10 +15,7 @@ type Result = {
 };
 
 export async function generateAndSaveSummary(id: number): Promise<Result> {
-  const article = await db.query.articles.findFirst({
-    columns: { id: true, url: true, summary: true, summaryAttempts: true },
-    where: eq(db._schema.articles.id, id),
-  });
+  const article = await findArticleForSummary(id);
 
   if (article === undefined) {
     return { summary: null, error: '記事が見つかりません' };
@@ -29,28 +29,13 @@ export async function generateAndSaveSummary(id: number): Promise<Result> {
   }
 
   // read-then-act だと並列リクエストで生成が多重実行されるため、
-  // 生成前に条件付き UPDATE で試行回数を予約し、変更できたリクエストだけが生成に進む
-  const reserved = await db
-    .update(db._schema.articles)
-    .set({
-      summaryAttempts: db._utils.increment(db._schema.articles.summaryAttempts),
-    })
-    .where(
-      and(
-        eq(db._schema.articles.id, id),
-        isNull(db._schema.articles.summary),
-        lt(db._schema.articles.summaryAttempts, MAX_SUMMARY_ATTEMPTS),
-      ),
-    );
-
-  if (reserved.rowsAffected === 0) {
+  // 生成前に試行回数を予約し、予約できたリクエストだけが生成に進む
+  const reserved = await reserveSummaryAttempt(id, MAX_SUMMARY_ATTEMPTS);
+  if (!reserved) {
     // 並列リクエストが先に summary を保存したか、試行上限に達している
-    const latest = await db.query.articles.findFirst({
-      columns: { summary: true },
-      where: eq(db._schema.articles.id, id),
-    });
-    if (latest !== undefined && latest.summary !== null) {
-      return { summary: latest.summary };
+    const latest = await findArticleSummary(id);
+    if (latest !== null) {
+      return { summary: latest };
     }
     return { summary: null, gaveUp: true };
   }
@@ -65,10 +50,7 @@ export async function generateAndSaveSummary(id: number): Promise<Result> {
     };
   }
 
-  await db
-    .update(db._schema.articles)
-    .set({ summary })
-    .where(eq(db._schema.articles.id, id));
+  await saveArticleSummary(id, summary);
 
   return { summary };
 }
