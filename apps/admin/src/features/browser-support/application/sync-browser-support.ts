@@ -7,6 +7,7 @@ import {
   transformUpstreamData,
   UpstreamFormatError,
 } from '@repo/helpers/baseline/transform-upstream';
+import { BROWSER_SUPPORT_CACHE_TAG } from '@repo/helpers/cache/main-cache-tags';
 
 import { revalidateMainCache } from '@/shared/cache/revalidate-main';
 
@@ -34,9 +35,6 @@ const SUPPORTED_MAJOR = 3;
 // 故障のどちらかなので、情報として警報する。
 const UPSTREAM_STALE_DAYS = 45;
 const DAY_MS = 24 * 60 * 60 * 1000;
-
-// main 側の browser-support 系 'use cache' に付与しているタグと揃える。
-const BROWSER_SUPPORT_CACHE_TAG = 'browser-support';
 
 type SyncNotification = {
   kind: 'update' | 'alert';

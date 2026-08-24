@@ -1,3 +1,4 @@
+import { DB_CONTENT_CACHE_TAG } from '@repo/helpers/cache/main-cache-tags';
 import { cacheLife, cacheTag } from 'next/cache';
 
 import {
@@ -6,7 +7,6 @@ import {
   getSlideMetadata,
 } from '@/features/slides/application/slide';
 import { getSlides } from '@/features/slides/application/slides';
-import { DB_CONTENT_CACHE_TAG } from '@/shared/cache/cache-tags';
 
 export async function getSlideContents() {
   'use cache';

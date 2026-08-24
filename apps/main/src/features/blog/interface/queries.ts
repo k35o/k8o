@@ -1,3 +1,4 @@
+import { DB_CONTENT_CACHE_TAG } from '@repo/helpers/cache/main-cache-tags';
 import { cacheLife, cacheTag } from 'next/cache';
 
 import {
@@ -14,7 +15,6 @@ import {
 import { getFeatureBlogMap as _getFeatureBlogMap } from '@/features/blog/application/feature-blog-map';
 import { getBlogOgCode as _getBlogOgCode } from '@/features/blog/application/og-code';
 import { estimateReadingTimeMinutes } from '@/features/blog/application/reading-time';
-import { DB_CONTENT_CACHE_TAG } from '@/shared/cache/cache-tags';
 
 import { getMarkdown } from './markdown';
 

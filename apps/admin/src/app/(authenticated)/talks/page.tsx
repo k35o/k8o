@@ -13,7 +13,12 @@ export default function TalksPage() {
     <div className="flex flex-col gap-10">
       <PageHeader
         action={
-          <ButtonLink color="primary" href="/talks/new" size="sm" variant="solid">
+          <ButtonLink
+            color="primary"
+            href="/talks/new"
+            size="sm"
+            variant="solid"
+          >
             トークを追加
           </ButtonLink>
         }

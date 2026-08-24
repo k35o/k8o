@@ -71,7 +71,9 @@ const DeleteButton: FC<{ id: number; title: string }> = ({ id, title }) => {
         title="取得済み記事の削除"
       >
         <p className="text-sm">「{title}」を削除しますか？</p>
-        {error !== undefined && <p className="text-fg-error text-sm">{error}</p>}
+        {error !== undefined && (
+          <p className="text-fg-error text-sm">{error}</p>
+        )}
       </ConfirmDialog>
     </>
   );

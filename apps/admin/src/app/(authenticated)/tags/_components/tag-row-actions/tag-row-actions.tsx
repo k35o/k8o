@@ -15,7 +15,11 @@ type Props = {
   canDelete: boolean;
 };
 
-export const TagRowActions: FC<Props> = ({ id, name: initialName, canDelete }) => {
+export const TagRowActions: FC<Props> = ({
+  id,
+  name: initialName,
+  canDelete,
+}) => {
   const [renameOpen, setRenameOpen] = useState(false);
   const [deleteOpen, setDeleteOpen] = useState(false);
   const [name, setName] = useState(initialName);
