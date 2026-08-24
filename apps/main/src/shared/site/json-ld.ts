@@ -4,6 +4,7 @@ const PERSON = {
   '@type': 'Person',
   name: 'k8o',
   url: SITE_URL,
+  jobTitle: 'Webフロントエンドエンジニア',
 } as const;
 
 type JsonLdValue =
@@ -39,6 +40,8 @@ export function personJsonLd(): JsonLdObject {
   return {
     '@context': 'https://schema.org',
     ...PERSON,
+    description:
+      'WebフロントエンドとTypeScriptが好きなソフトウェアエンジニア。デザインシステムArteOdysseyを開発している。',
     sameAs: [
       'https://x.com/k8ome',
       'https://github.com/k35o',
