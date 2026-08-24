@@ -1,6 +1,7 @@
 import { ListIcon, NewsIcon, RSSIcon } from '@k8o/arte-odyssey';
 
 import {
+  ButtonLink,
   ListPagination,
   SearchField,
   SectionHeader,
@@ -17,8 +18,6 @@ import {
   parsePageParam,
 } from '@/shared/search-params';
 
-import { AddArticleLink } from '../add-article-link';
-import { AddSourceLink } from '../add-source-link';
 import { ArticleTable } from '../article-table/article-table';
 import { SourceList } from '../source-list/source-list';
 import { SyncButton } from '../sync-button/sync-button';
@@ -65,7 +64,19 @@ export const ReadingListContent = async ({
       </div>
 
       <section className="flex flex-col gap-4">
-        <SectionHeader action={<AddSourceLink />} title="ソース" />
+        <SectionHeader
+          action={
+            <ButtonLink
+              color="primary"
+              href="/reading-list/sources/new"
+              size="sm"
+              variant="solid"
+            >
+              追加
+            </ButtonLink>
+          }
+          title="ソース"
+        />
         <SourceList sources={sources} />
       </section>
 
@@ -73,7 +84,14 @@ export const ReadingListContent = async ({
         <SectionHeader
           action={
             <div className="flex items-center gap-2">
-              <AddArticleLink />
+              <ButtonLink
+                color="base"
+                href="/reading-list/articles/new"
+                size="sm"
+                variant="outline"
+              >
+                記事を追加
+              </ButtonLink>
               <SyncButton />
             </div>
           }
