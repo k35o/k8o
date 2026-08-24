@@ -1,4 +1,6 @@
-import { cacheLife } from 'next/cache';
+import { cacheLife, cacheTag } from 'next/cache';
+
+import { NOTIFICATIONS_CACHE_TAG } from '@/shared/cache/cache-tags';
 
 import {
   findPushLogs,
@@ -13,6 +15,7 @@ import type {
 export const getPushOverview = async (): Promise<PushOverview> => {
   'use cache';
   cacheLife('minutes');
+  cacheTag(NOTIFICATIONS_CACHE_TAG);
 
   const result = await findPushOverview();
   return result;
@@ -23,6 +26,7 @@ export const getPushLogs = async (
 ): Promise<FindPushLogsResult> => {
   'use cache';
   cacheLife('minutes');
+  cacheTag(NOTIFICATIONS_CACHE_TAG);
 
   const result = await findPushLogs(params);
   return result;

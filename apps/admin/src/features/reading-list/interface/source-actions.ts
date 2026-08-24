@@ -1,10 +1,11 @@
 'use server';
 
-import { revalidatePath } from 'next/cache';
+import { updateTag } from 'next/cache';
 import { redirect } from 'next/navigation';
 
 import type { ActionState } from '@/shared/actions/action-state';
 import { verifySession } from '@/shared/auth/verify-session';
+import { READING_LIST_CACHE_TAG } from '@/shared/cache/cache-tags';
 import { revalidateMainCache } from '@/shared/cache/revalidate-main';
 
 import {
@@ -32,7 +33,7 @@ export async function createSource(
   }
 
   await revalidateMainCache();
-  revalidatePath('/reading-list');
+  updateTag(READING_LIST_CACHE_TAG);
   return redirect('/reading-list');
 }
 
@@ -55,7 +56,7 @@ export async function updateSource(
   }
 
   await revalidateMainCache();
-  revalidatePath('/reading-list');
+  updateTag(READING_LIST_CACHE_TAG);
   return redirect('/reading-list');
 }
 
@@ -69,6 +70,6 @@ export async function deleteSource(id: number): Promise<ActionState> {
   }
 
   await revalidateMainCache();
-  revalidatePath('/reading-list');
+  updateTag(READING_LIST_CACHE_TAG);
   return redirect('/reading-list');
 }

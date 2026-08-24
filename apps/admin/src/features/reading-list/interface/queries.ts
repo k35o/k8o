@@ -1,4 +1,6 @@
-import { cacheLife } from 'next/cache';
+import { cacheLife, cacheTag } from 'next/cache';
+
+import { READING_LIST_CACHE_TAG } from '@/shared/cache/cache-tags';
 
 import {
   findArticleForEdit,
@@ -11,6 +13,7 @@ import type { FindArticlesResult } from '../infrastructure/reading-list-reposito
 export const getReadingListContentData = async () => {
   'use cache';
   cacheLife('minutes');
+  cacheTag(READING_LIST_CACHE_TAG);
 
   const content = await findReadingListContent();
   return content;
@@ -23,6 +26,7 @@ export const getArticles = async (params: {
 }): Promise<FindArticlesResult> => {
   'use cache';
   cacheLife('minutes');
+  cacheTag(READING_LIST_CACHE_TAG);
 
   const result = await findArticles(params);
   return result;

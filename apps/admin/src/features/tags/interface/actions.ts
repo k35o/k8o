@@ -1,9 +1,10 @@
 'use server';
 
-import { revalidatePath } from 'next/cache';
+import { updateTag } from 'next/cache';
 
 import type { ActionState } from '@/shared/actions/action-state';
 import { verifySession } from '@/shared/auth/verify-session';
+import { TAGS_CACHE_TAG } from '@/shared/cache/cache-tags';
 import { revalidateMainCache } from '@/shared/cache/revalidate-main';
 
 import {
@@ -36,7 +37,7 @@ export async function createTag(
   }
 
   await revalidateMainCache();
-  revalidatePath('/tags');
+  updateTag(TAGS_CACHE_TAG);
   return { success: true };
 }
 
@@ -57,7 +58,7 @@ export async function renameTag(
   }
 
   await revalidateMainCache();
-  revalidatePath('/tags');
+  updateTag(TAGS_CACHE_TAG);
   return { success: true };
 }
 
@@ -76,6 +77,6 @@ export async function deleteTag(id: number): Promise<ActionState> {
   }
 
   await revalidateMainCache();
-  revalidatePath('/tags');
+  updateTag(TAGS_CACHE_TAG);
   return { success: true };
 }

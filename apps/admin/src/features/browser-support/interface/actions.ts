@@ -1,9 +1,10 @@
 'use server';
 
-import { revalidatePath } from 'next/cache';
+import { updateTag } from 'next/cache';
 
 import type { ActionState } from '@/shared/actions/action-state';
 import { verifySession } from '@/shared/auth/verify-session';
+import { BROWSER_SUPPORT_CACHE_TAG } from '@/shared/cache/cache-tags';
 
 import { runBrowserSupportSync } from './sync';
 
@@ -20,7 +21,7 @@ export async function syncBrowserSupportAction(): Promise<SyncActionState> {
     // 手動同期は復旧手段: 同一バージョンでも強制再取り込みする(壊れた active の
     // 回復や、同一タグのままのアセット差し替えを拾い直す用途)。
     const summary = await runBrowserSupportSync('manual', { force: true });
-    revalidatePath('/browser-support');
+    updateTag(BROWSER_SUPPORT_CACHE_TAG);
     if (
       summary.result === 'fetch_failed' ||
       summary.result === 'validation_failed' ||

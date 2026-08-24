@@ -1,9 +1,10 @@
 'use server';
 
-import { revalidatePath } from 'next/cache';
+import { updateTag } from 'next/cache';
 
 import type { ActionState } from '@/shared/actions/action-state';
 import { verifySession } from '@/shared/auth/verify-session';
+import { NOTIFICATIONS_CACHE_TAG } from '@/shared/cache/cache-tags';
 
 import { sendManualPush } from '../infrastructure/push-notification';
 
@@ -39,7 +40,7 @@ export async function sendManualPushAction(
       body: input.body,
       url,
     });
-    revalidatePath('/notifications');
+    updateTag(NOTIFICATIONS_CACHE_TAG);
     return { success: true, succeeded, failed };
   } catch {
     return { error: '送信に失敗しました（VAPID 設定を確認してください）' };
