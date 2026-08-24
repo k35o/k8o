@@ -6,8 +6,8 @@ import { Analytics } from '@vercel/analytics/react';
 import { SpeedInsights } from '@vercel/speed-insights/next';
 import type { Metadata } from 'next';
 
-import { getBrowserMinVersions } from '@/features/browser-support/interface/queries';
 import { ReactScan } from '@/app/_components/react-scan';
+import { getBrowserMinVersions } from '@/features/browser-support/interface/queries';
 
 import { GlobalLayout } from './_components/global-layout';
 import { OfflineNotice } from './_components/offline-notice';

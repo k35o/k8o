@@ -1,7 +1,5 @@
 import { db } from '@repo/database';
 
-import { findBlogMetadata } from '@/features/blog/application/blog';
-
 import { getTag } from './tag';
 
 vi.mock('@repo/database', () => ({
@@ -13,7 +11,6 @@ vi.mock('@repo/database', () => ({
     },
   },
 }));
-vi.mock('@/features/blog/application/blog');
 
 describe('getTag', () => {
   it('タグの詳細を取得できる', async () => {
@@ -41,12 +38,6 @@ describe('getTag', () => {
       ],
     });
     vi.mocked(db.query.tags.findFirst).mockImplementation(mockFirst);
-    vi.mocked(findBlogMetadata).mockResolvedValue({
-      title: 'Blog Title',
-      description: null,
-      createdAt: '2026-01-01T00:00:00.000Z',
-      updatedAt: '2026-01-01T00:00:00.000Z',
-    });
 
     const tag = await getTag(1);
 
@@ -57,7 +48,6 @@ describe('getTag', () => {
         {
           id: 1,
           slug: 'blog1',
-          title: 'Blog Title',
         },
       ],
       talks: [
@@ -68,7 +58,7 @@ describe('getTag', () => {
       ],
     });
   });
-  it('MDXファイルが無いブログはタグ詳細から除外される', async () => {
+  it('非公開のブログはタグ詳細から除外される', async () => {
     const mockFirst = vi.fn().mockResolvedValue({
       id: 1,
       name: 'tag1',
@@ -85,23 +75,14 @@ describe('getTag', () => {
           id: 2,
           blog: {
             id: 2,
-            slug: 'missing-blog',
-            published: true,
+            slug: 'draft-blog',
+            published: false,
           },
         },
       ],
       talkTag: [],
     });
     vi.mocked(db.query.tags.findFirst).mockImplementation(mockFirst);
-    // blogTagの並び順どおりに呼ばれる: blog1 → missing-blog
-    vi.mocked(findBlogMetadata)
-      .mockResolvedValueOnce({
-        title: 'Blog Title',
-        description: null,
-        createdAt: '2026-01-01T00:00:00.000Z',
-        updatedAt: '2026-01-01T00:00:00.000Z',
-      })
-      .mockResolvedValueOnce(null);
 
     const tag = await getTag(1);
 
@@ -109,7 +90,6 @@ describe('getTag', () => {
       {
         id: 1,
         slug: 'blog1',
-        title: 'Blog Title',
       },
     ]);
   });
