@@ -22,7 +22,6 @@ type VapidConfig = {
 type DeliveryResult = {
   succeeded: number;
   failed: number;
-  goneEndpoints: string[];
 };
 
 // 購読が無効になったとみなして削除する HTTP ステータス
@@ -92,7 +91,14 @@ const deliverToSubscriptions = async (
     }
   }
 
-  return { succeeded, failed: results.length - succeeded, goneEndpoints };
+  // 配信と無効購読の掃除は常に対で行う（410/404 は購読が失効した合図）。
+  if (goneEndpoints.length > 0) {
+    await db
+      .delete(db._schema.pushSubscriptions)
+      .where(inArray(db._schema.pushSubscriptions.endpoint, goneEndpoints));
+  }
+
+  return { succeeded, failed: results.length - succeeded };
 };
 
 export async function sendPushNotification({
@@ -121,16 +127,7 @@ export async function sendPushNotification({
   }
 
   const payload = JSON.stringify({ title, body, url });
-  const { succeeded, failed, goneEndpoints } = await deliverToSubscriptions(
-    payload,
-    vapid,
-  );
-
-  if (goneEndpoints.length > 0) {
-    await db
-      .delete(db._schema.pushSubscriptions)
-      .where(inArray(db._schema.pushSubscriptions.endpoint, goneEndpoints));
-  }
+  const { succeeded, failed } = await deliverToSubscriptions(payload, vapid);
 
   await db
     .update(db._schema.pushLogs)
@@ -162,16 +159,7 @@ export async function sendManualPush({
   }
 
   const payload = JSON.stringify({ title, body, url });
-  const { succeeded, failed, goneEndpoints } = await deliverToSubscriptions(
-    payload,
-    vapid,
-  );
-
-  if (goneEndpoints.length > 0) {
-    await db
-      .delete(db._schema.pushSubscriptions)
-      .where(inArray(db._schema.pushSubscriptions.endpoint, goneEndpoints));
-  }
+  const { succeeded, failed } = await deliverToSubscriptions(payload, vapid);
 
   return { succeeded, failed };
 }
