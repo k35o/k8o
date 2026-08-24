@@ -1,30 +1,15 @@
 import { Heading } from '@k8o/arte-odyssey';
-import type { Metadata } from 'next';
+
+import { buildPageMetadata } from '@/shared/site/build-page-metadata';
 
 import { RssLink } from './_components/rss-link';
 
-export const metadata = {
+export const metadata = buildPageMetadata({
   title: 'Readings',
   description: '気になっている記事を集めて、あとから探せるようにしています。',
-  openGraph: {
-    title: 'Readings',
-    description: '気になっている記事を集めて、あとから探せるようにしています。',
-    url: 'https://k8o.me/reading-list',
-    siteName: 'k8o',
-    locale: 'ja',
-    type: 'website',
-  },
-  twitter: {
-    title: 'Readings',
-    card: 'summary',
-    description: '気になっている記事を集めて、あとから探せるようにしています。',
-  },
-  alternates: {
-    types: {
-      'application/rss+xml': 'https://k8o.me/reading-list/feed',
-    },
-  },
-} satisfies Metadata;
+  path: '/reading-list',
+  rssFeedPath: '/reading-list/feed',
+});
 
 export default function Layout({ children }: LayoutProps<'/reading-list'>) {
   return (

@@ -1,23 +1,12 @@
 import { Heading } from '@k8o/arte-odyssey';
-import type { Metadata } from 'next';
 
-export const metadata = {
+import { buildPageMetadata } from '@/shared/site/build-page-metadata';
+
+export const metadata = buildPageMetadata({
   title: 'かどまるラボ',
   description: 'border-radiusを視覚的に操作してCSSを生成します。',
-  openGraph: {
-    title: 'かどまるラボ',
-    description: 'border-radiusを視覚的に操作してCSSを生成します。',
-    url: 'https://k8o.me/radius-maker',
-    siteName: 'k8o',
-    locale: 'ja',
-    type: 'website',
-  },
-  twitter: {
-    title: 'かどまるラボ',
-    card: 'summary',
-    description: 'border-radiusを視覚的に操作してCSSを生成します。',
-  },
-} satisfies Metadata;
+  path: '/radius-maker',
+});
 
 export default function Layout({ children }: LayoutProps<'/radius-maker'>) {
   return (

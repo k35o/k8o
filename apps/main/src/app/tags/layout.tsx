@@ -1,27 +1,14 @@
 import { Heading, TagIcon } from '@k8o/arte-odyssey';
-import type { Metadata } from 'next';
 import Link from 'next/link';
 
-export const metadata = {
+import { buildPageMetadata } from '@/shared/site/build-page-metadata';
+
+export const metadata = buildPageMetadata({
   title: 'Tags',
   description:
     'k8oで提供するサービスやブログのタグ一覧をまとめたページです。各タグの関連するコンテンツへのリンクを掲載しています。',
-  openGraph: {
-    title: 'Tags',
-    description:
-      'k8oで提供するサービスやブログのタグ一覧をまとめたページです。各タグの関連するコンテンツへのリンクを掲載しています。',
-    url: 'https://k8o.me/tags',
-    siteName: 'k8o',
-    locale: 'ja',
-    type: 'website',
-  },
-  twitter: {
-    title: 'Tags',
-    card: 'summary',
-    description:
-      'k8oで提供するサービスやブログのタグ一覧をまとめたページです。各タグの関連するコンテンツへのリンクを掲載しています。',
-  },
-} satisfies Metadata;
+  path: '/tags',
+});
 
 export default function Layout({ children }: LayoutProps<'/tags'>) {
   return (

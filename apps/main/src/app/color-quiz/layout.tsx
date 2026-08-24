@@ -1,23 +1,12 @@
 import { Heading } from '@k8o/arte-odyssey';
-import type { Metadata } from 'next';
 
-export const metadata = {
+import { buildPageMetadata } from '@/shared/site/build-page-metadata';
+
+export const metadata = buildPageMetadata({
   title: 'カラーHexクイズ',
   description: '色からHexコードを当てたり、Hexコードから色を選ぶクイズです。',
-  openGraph: {
-    title: 'カラーHexクイズ',
-    description: '色からHexコードを当てたり、Hexコードから色を選ぶクイズです。',
-    url: 'https://k8o.me/color-quiz',
-    siteName: 'k8o',
-    locale: 'ja',
-    type: 'website',
-  },
-  twitter: {
-    title: 'カラーHexクイズ',
-    card: 'summary',
-    description: '色からHexコードを当てたり、Hexコードから色を選ぶクイズです。',
-  },
-} satisfies Metadata;
+  path: '/color-quiz',
+});
 
 export default function Layout({ children }: LayoutProps<'/color-quiz'>) {
   return (

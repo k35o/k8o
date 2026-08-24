@@ -1,27 +1,16 @@
 import { Heading } from '@k8o/arte-odyssey';
-import type { Metadata } from 'next';
+
+import { buildPageMetadata } from '@/shared/site/build-page-metadata';
 
 const TITLE = 'HTMLいれ子マップ';
 const DESCRIPTION =
   'HTMLタグを選ぶと、親に置ける要素と中に入れられる子要素が浮かび上がります。';
 
-export const metadata = {
+export const metadata = buildPageMetadata({
   title: TITLE,
   description: DESCRIPTION,
-  openGraph: {
-    title: TITLE,
-    description: DESCRIPTION,
-    url: 'https://k8o.me/html-nest',
-    siteName: 'k8o',
-    locale: 'ja',
-    type: 'website',
-  },
-  twitter: {
-    title: TITLE,
-    card: 'summary',
-    description: DESCRIPTION,
-  },
-} satisfies Metadata;
+  path: '/html-nest',
+});
 
 export default function Layout({ children }: LayoutProps<'/html-nest'>) {
   return (

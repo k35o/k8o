@@ -5,6 +5,7 @@ import { Suspense } from 'react';
 import { JsonLd } from '@/app/_components/json-ld';
 import { getBlogContents } from '@/features/blog/interface/queries';
 import { getTag, getTags } from '@/features/tags/interface/queries';
+import { buildPageMetadata } from '@/shared/site/build-page-metadata';
 import { tagBreadcrumbJsonLd } from '@/shared/site/json-ld';
 
 import { TagContent } from '../_components/tag-content';
@@ -31,25 +32,11 @@ export async function generateMetadata({
     notFound();
   }
 
-  const description = `「${tag.name}」タグに関連するブログやトークをまとめたページです。`;
-
-  return {
+  return buildPageMetadata({
     title: tag.name,
-    description,
-    openGraph: {
-      title: tag.name,
-      description,
-      url: `https://k8o.me/tags/${tag.id.toString()}`,
-      siteName: 'k8o',
-      locale: 'ja',
-      type: 'website',
-    },
-    twitter: {
-      title: tag.name,
-      card: 'summary',
-      description,
-    },
-  };
+    description: `「${tag.name}」タグに関連するブログやトークをまとめたページです。`,
+    path: `/tags/${tag.id.toString()}`,
+  });
 }
 
 async function TagPageContent({ params }: PageProperties) {

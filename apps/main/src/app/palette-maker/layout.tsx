@@ -1,26 +1,13 @@
 import { Heading } from '@k8o/arte-odyssey';
-import type { Metadata } from 'next';
 
-export const metadata = {
+import { buildPageMetadata } from '@/shared/site/build-page-metadata';
+
+export const metadata = buildPageMetadata({
   title: 'いろばしご',
   description:
     'OKLCHの明度スケールで11段階のカラーパレットを生成し、コントラストを検証します。',
-  openGraph: {
-    title: 'いろばしご',
-    description:
-      'OKLCHの明度スケールで11段階のカラーパレットを生成し、コントラストを検証します。',
-    url: 'https://k8o.me/palette-maker',
-    siteName: 'k8o',
-    locale: 'ja',
-    type: 'website',
-  },
-  twitter: {
-    title: 'いろばしご',
-    card: 'summary',
-    description:
-      'OKLCHの明度スケールで11段階のカラーパレットを生成し、コントラストを検証します。',
-  },
-} satisfies Metadata;
+  path: '/palette-maker',
+});
 
 export default function Layout({ children }: LayoutProps<'/palette-maker'>) {
   return (
