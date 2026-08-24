@@ -55,6 +55,15 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       lastModified: latestOverall,
     },
     {
+      url: `${BASE_URL}/about`,
+    },
+    {
+      url: `${BASE_URL}/contact`,
+    },
+    {
+      url: `${BASE_URL}/privacy`,
+    },
+    {
       url: `${BASE_URL}/blog`,
       changeFrequency: 'weekly',
       lastModified: latestBlog,

@@ -1,7 +1,6 @@
 import { Logo } from '@k8o/arte-odyssey';
 import type { BrowserMinVersions } from '@repo/helpers/browser/detect-browser';
 import Link from 'next/link';
-import { Suspense } from 'react';
 import type { FC, ReactNode } from 'react';
 
 import { BrowserSupportNotice } from '../browser-support-notice';
@@ -29,16 +28,6 @@ export const GlobalLayout: FC<{
       <HeaderActions />
     </Header>
     <main className="flex grow justify-center px-4 pt-10 pb-4">{children}</main>
-    <Suspense
-      fallback={
-        <footer className="flex items-center justify-center p-4">
-          <p className="text-fg-mute md:text-lg">
-            ©︎ 2024〜2026 k8o. All Rights Reserved.
-          </p>
-        </footer>
-      }
-    >
-      <Footer />
-    </Suspense>
+    <Footer />
   </div>
 );
