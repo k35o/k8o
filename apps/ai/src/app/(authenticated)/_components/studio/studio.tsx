@@ -144,8 +144,8 @@ export const Studio = () => {
             meta,
             prompt: lastPromptRef.current,
           });
-        } catch (error) {
-          console.error('版の保存に失敗しました', error);
+        } catch (saveError) {
+          console.error('版の保存に失敗しました', saveError);
         }
       });
       setView('preview');
