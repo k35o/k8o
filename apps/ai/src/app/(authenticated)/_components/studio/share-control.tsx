@@ -20,7 +20,6 @@ type ShareControlProps = {
   onChanged: () => void;
 };
 
-// 公開は publish 時に本物ビルドが走るため数秒かかる。
 export const ShareControl: FC<ShareControlProps> = ({
   projectId,
   slug,

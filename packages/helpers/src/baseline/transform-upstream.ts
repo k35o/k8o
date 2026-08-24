@@ -129,7 +129,7 @@ const parseFeatureEntry = (
   }
   if (entry['kind'] === 'split') {
     const targets = entry['redirect_targets'];
-    // split は後継が複数ある。表示は先頭の後継に寄せる(従来実装と同じ)。
+    // split は後継が複数ある。表示は先頭の後継に寄せる。
     return Array.isArray(targets) && typeof targets[0] === 'string'
       ? { kind: 'redirect', target: targets[0] }
       : { kind: 'skip', reason: 'split without redirect_targets' };
