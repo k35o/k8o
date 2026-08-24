@@ -31,12 +31,14 @@ import {
 } from '@/features/projects/interface/actions';
 import { parseDeck } from '@/features/slides/application/parse-deck';
 
+import { ChatPanel } from '../../../_components/chat-panel';
+import { CopyCodeButton } from '../../../_components/copy-code-button';
+import { PreviewLoading } from '../../../_components/preview-loading';
+import {
+  useProjectPersistence,
+  useProjectUrlSync,
+} from '../../../_components/project-persistence';
 import { StudioShell } from '../../../_components/studio-shell';
-import { ChatPanel } from '../../../_components/studio/chat-panel';
-import { CopyCodeButton } from '../../../_components/studio/copy-code-button';
-import { PreviewLoading } from '../../../_components/studio/preview-loading';
-import { useProjectPersistence } from '../../../_components/studio/use-project-persistence';
-import { useProjectUrlSync } from '../../../_components/studio/use-project-url-sync';
 import { DeckPreview } from '../deck-preview';
 import { SourcePanel } from './source-panel';
 

@@ -37,14 +37,16 @@ import {
   saveGenerationAction,
 } from '@/features/projects/interface/actions';
 
+import { ChatPanel } from '../chat-panel';
+import { CopyCodeButton } from '../copy-code-button';
+import { PreviewLoading } from '../preview-loading';
+import {
+  useProjectPersistence,
+  useProjectUrlSync,
+} from '../project-persistence';
 import { StudioShell } from '../studio-shell';
-import { ChatPanel } from './chat-panel';
 import { CodePanel } from './code-panel';
-import { CopyCodeButton } from './copy-code-button';
-import { PreviewLoading } from './preview-loading';
 import { ShareControl } from './share-control';
-import { useProjectPersistence } from './use-project-persistence';
-import { useProjectUrlSync } from './use-project-url-sync';
 
 // 設定は完全に静的なので、レンダーごとに生成しない。
 const transport = new DefaultChatTransport({ api: '/api/generate' });

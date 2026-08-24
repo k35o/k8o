@@ -5,7 +5,7 @@ import type { FC } from 'react';
 import { useHighlightedCode } from '@/app/_components/highlighted-code';
 import { highlightGenerated } from '@/features/highlight/interface/actions';
 
-import { CodeView } from './code-view';
+import { CodeView } from '../code-view';
 
 type CodePanelProps = {
   code: string | null;
