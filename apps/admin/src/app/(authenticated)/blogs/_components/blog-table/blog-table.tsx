@@ -1,5 +1,3 @@
-'use client';
-
 import { Badge, Card } from '@k8o/arte-odyssey';
 import type { FC } from 'react';
 
@@ -37,7 +35,7 @@ const BlogRow: FC<{ blog: BlogRecord }> = ({ blog }) => (
     <div className="flex w-24 shrink-0 justify-end">
       <PublishToggle
         published={blog.published}
-        onToggle={(next) => setBlogPublished(blog.id, next)}
+        onToggle={setBlogPublished.bind(null, blog.id)}
       />
     </div>
   </div>

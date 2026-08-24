@@ -1,100 +1,52 @@
-'use client';
-
-import { Badge, Button, Card, useToast } from '@k8o/arte-odyssey';
+import { Badge, Card } from '@k8o/arte-odyssey';
 import { formatDate } from '@repo/helpers/date/format';
-import { useAsyncAction } from '@repo/react-hooks/use-async-action';
 import type { Route } from 'next';
-import { useState } from 'react';
 import type { FC } from 'react';
 
-import {
-  ButtonLink,
-  ConfirmDialog,
-  EmptyState,
-} from '@/app/(authenticated)/_components';
-import { deleteTalk } from '@/features/talks/interface/actions';
+import { ButtonLink, EmptyState } from '@/app/(authenticated)/_components';
 import type { TalkRecord } from '@/features/talks/interface/queries';
 
-const TalkRow: FC<{ talk: TalkRecord }> = ({ talk }) => {
-  const [open, setOpen] = useState(false);
-  const { isPending, run } = useAsyncAction();
-  const { open: openToast } = useToast();
+import { TalkRowActions } from '../talk-row-actions';
 
-  const handleDelete = (): void => {
-    run(() => deleteTalk(talk.id), {
-      onError: (message) => {
-        openToast('error', message);
-      },
-      onSuccess: () => {
-        setOpen(false);
-        openToast('success', 'トークを削除しました');
-      },
-    });
-  };
-
-  return (
-    <div className="border-border-mute flex flex-col gap-2 border-b px-5 py-4 text-sm last:border-b-0">
-      <div className="flex items-start justify-between gap-3">
-        <a
-          className="min-w-0 font-medium hover:underline"
-          href={talk.eventUrl}
-          rel="noopener noreferrer"
-          target="_blank"
-        >
-          {talk.title}
-        </a>
-        <div className="flex shrink-0 items-center gap-1">
-          <ButtonLink
-            color="base"
-            href={`/talks/${String(talk.id)}` as Route}
-            size="sm"
-            variant="skeleton"
-          >
-            編集
-          </ButtonLink>
-          <Button
-            color="base"
-            onClick={() => {
-              setOpen(true);
-            }}
-            size="sm"
-            variant="skeleton"
-          >
-            削除
-          </Button>
-        </div>
-      </div>
-
-      <div className="text-fg-mute flex flex-wrap items-center gap-x-2 gap-y-1 text-xs">
-        <span>{talk.eventName}</span>
-        {talk.eventLocation !== null && <span>・ {talk.eventLocation}</span>}
-        <span>・ {formatDate(new Date(talk.eventDate))}</span>
-      </div>
-
-      {talk.tags.length > 0 && (
-        <div className="flex flex-wrap gap-1">
-          {talk.tags.map((tag) => (
-            <Badge key={tag} size="sm" label={tag} tone="neutral" />
-          ))}
-        </div>
-      )}
-
-      <ConfirmDialog
-        confirmLabel="削除する"
-        isOpen={open}
-        isPending={isPending}
-        onClose={() => {
-          setOpen(false);
-        }}
-        onConfirm={handleDelete}
-        pendingLabel="削除中..."
-        title="トークの削除"
+const TalkRow: FC<{ talk: TalkRecord }> = ({ talk }) => (
+  <div className="border-border-mute flex flex-col gap-2 border-b px-5 py-4 text-sm last:border-b-0">
+    <div className="flex items-start justify-between gap-3">
+      <a
+        className="min-w-0 font-medium hover:underline"
+        href={talk.eventUrl}
+        rel="noopener noreferrer"
+        target="_blank"
       >
-        <p className="text-sm">「{talk.title}」を削除しますか？</p>
-      </ConfirmDialog>
+        {talk.title}
+      </a>
+      <div className="flex shrink-0 items-center gap-1">
+        <ButtonLink
+          color="base"
+          href={`/talks/${String(talk.id)}` as Route}
+          size="sm"
+          variant="skeleton"
+        >
+          編集
+        </ButtonLink>
+        <TalkRowActions id={talk.id} title={talk.title} />
+      </div>
     </div>
-  );
-};
+
+    <div className="text-fg-mute flex flex-wrap items-center gap-x-2 gap-y-1 text-xs">
+      <span>{talk.eventName}</span>
+      {talk.eventLocation !== null && <span>・ {talk.eventLocation}</span>}
+      <span>・ {formatDate(new Date(talk.eventDate))}</span>
+    </div>
+
+    {talk.tags.length > 0 && (
+      <div className="flex flex-wrap gap-1">
+        {talk.tags.map((tag) => (
+          <Badge key={tag} size="sm" label={tag} tone="neutral" />
+        ))}
+      </div>
+    )}
+  </div>
+);
 
 export const TalkList: FC<{ talks: TalkRecord[] }> = ({ talks }) => {
   if (talks.length === 0) {

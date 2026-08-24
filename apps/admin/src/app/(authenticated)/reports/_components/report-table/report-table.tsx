@@ -1,5 +1,3 @@
-'use client';
-
 import { Accordion, Badge, Card } from '@k8o/arte-odyssey';
 import { formatDate } from '@repo/helpers/date/format';
 import type { FC } from 'react';

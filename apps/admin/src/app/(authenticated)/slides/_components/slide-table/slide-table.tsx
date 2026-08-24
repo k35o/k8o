@@ -1,5 +1,3 @@
-'use client';
-
 import { Badge, Card } from '@k8o/arte-odyssey';
 import type { FC } from 'react';
 
@@ -31,7 +29,7 @@ const SlideRow: FC<{ slide: SlideRecord }> = ({ slide }) => (
     <div className="flex w-24 shrink-0 justify-end">
       <PublishToggle
         published={slide.published}
-        onToggle={(next) => setSlidePublished(slide.id, next)}
+        onToggle={setSlidePublished.bind(null, slide.id)}
       />
     </div>
   </div>
