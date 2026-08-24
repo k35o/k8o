@@ -1,41 +1,18 @@
-import { db } from '@repo/database';
 import { mapWithConcurrency } from '@repo/helpers/array/map-with-concurrency';
 import { compareDate } from '@repo/helpers/date/compare';
 import { NINETY_DAYS_MS } from '@repo/helpers/date/duration';
 import { isPublicHttpsUrl } from '@repo/helpers/url/is-public-https-url';
-import { safeFetch } from '@repo/helpers/url/safe-fetch';
-import { eq } from 'drizzle-orm';
-import Parser from 'rss-parser';
 
+import { fetchFeedItems } from '../infrastructure/feed-source';
 import { fetchOgMetadata } from '../infrastructure/og-metadata';
-
-const parser = new Parser();
+import {
+  findArticleTitles,
+  findFeedSources,
+  insertArticlesIgnoringDuplicates,
+  updateArticleTitles,
+} from '../infrastructure/reading-list-repository';
 
 const OG_CONCURRENCY = 5;
-
-function sanitizeFeedDates(xml: string): string {
-  return xml.replaceAll(
-    /<(updated|published)>([^<]+)<\/\1>/gu,
-    (match: string, tag: string, value: string) => {
-      if (Number.isNaN(new Date(value).getTime())) {
-        return `<${tag}></${tag}>`;
-      }
-      return match;
-    },
-  );
-}
-
-async function fetchFeed(url: string): Promise<Parser.Output<Parser.Item>> {
-  // SSRF 対策: 公開 https URL のみ許可し、リダイレクト先も都度検証する
-  const response = await safeFetch(url);
-  if (!response.ok) {
-    throw new Error(
-      `フィード取得失敗: ${response.status} ${response.statusText}`,
-    );
-  }
-  const xml = await response.text();
-  return parser.parseString(sanitizeFeedDates(xml));
-}
 
 type FeedArticle = {
   articleSourceId: number;
@@ -51,23 +28,20 @@ type SyncResult = {
 };
 
 export async function syncArticles(): Promise<SyncResult> {
-  const sources = await db.query.articleSources.findMany({
-    where: eq(db._schema.articleSources.type, 'feed'),
-  });
+  const sources = await findFeedSources();
 
   const ninetyDaysAgo = new Date(Date.now() - NINETY_DAYS_MS);
 
   const results = await Promise.allSettled(
     sources.map(async (source) => {
-      const feed = await fetchFeed(source.url);
+      const items = await fetchFeedItems(source.url);
       const candidates: FeedArticle[] = [];
 
-      for (const item of feed.items) {
-        const rawPublishedAt = item.isoDate ?? item.pubDate;
+      for (const item of items) {
         if (
           item.link === undefined ||
           item.title === undefined ||
-          rawPublishedAt === undefined
+          item.publishedAt === undefined
         ) {
           continue;
         }
@@ -77,9 +51,8 @@ export async function syncArticles(): Promise<SyncResult> {
           continue;
         }
 
-        // rss-parser はパース不能な pubDate のとき isoDate を設定しないため、
-        // 生文字列が TEXT カラムに混ざらないよう検証して ISO 8601 に正規化する
-        const publishedDate = new Date(rawPublishedAt);
+        // フィード由来の日付は生文字列が混ざりうるため、検証して ISO 8601 に正規化する
+        const publishedDate = new Date(item.publishedAt);
         if (Number.isNaN(publishedDate.getTime())) {
           continue;
         }
@@ -116,9 +89,7 @@ export async function syncArticles(): Promise<SyncResult> {
     }
   }
 
-  const existingArticles = await db.query.articles.findMany({
-    columns: { url: true, title: true },
-  });
+  const existingArticles = await findArticleTitles();
   const existingByUrl = new Map(existingArticles.map((a) => [a.url, a.title]));
 
   const newArticles: FeedArticle[] = [];
@@ -156,23 +127,11 @@ export async function syncArticles(): Promise<SyncResult> {
         };
       },
     );
-    // cron と手動同期の並走で同一 URL が同時に入り得るため、unique 違反を握って冪等にする
-    await db
-      .insert(db._schema.articles)
-      .values(newArticleRows)
-      .onConflictDoNothing({ target: db._schema.articles.url });
+    await insertArticlesIgnoringDuplicates(newArticleRows);
   }
 
   if (articlesToUpdate.length > 0) {
-    const now = new Date().toISOString();
-    await Promise.all(
-      articlesToUpdate.map((article) =>
-        db
-          .update(db._schema.articles)
-          .set({ title: article.title, updatedAt: now })
-          .where(eq(db._schema.articles.url, article.url)),
-      ),
-    );
+    await updateArticleTitles(articlesToUpdate);
   }
 
   return {
