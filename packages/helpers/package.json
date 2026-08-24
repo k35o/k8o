@@ -89,6 +89,10 @@
       "types": "./src/form/get-string-field.ts",
       "default": "./src/form/get-string-field.ts"
     },
+    "./is-authorized-bearer-request": {
+      "types": "./src/is-authorized-bearer-request.ts",
+      "default": "./src/is-authorized-bearer-request.ts"
+    },
     "./is-internal-route": {
       "types": "./src/is-internal-route.ts",
       "default": "./src/is-internal-route.ts"
