@@ -1,10 +1,10 @@
 'use client';
 
-import { Alert, Checkbox, FormControl, Select } from '@k8o/arte-odyssey';
+import { Alert, Checkbox } from '@k8o/arte-odyssey';
 import { cn } from '@repo/helpers/cn';
 import { sleep } from '@repo/helpers/sleep';
-import { Suspense, use, useCallback, useState } from 'react';
-import type { FC, SuspenseListProps, SuspenseListTailMode } from 'react';
+import { Suspense, use, useState } from 'react';
+import type { FC } from 'react';
 
 type Data = {
   cacheKey: 'key1' | 'key2' | 'key3' | 'key4';
@@ -21,19 +21,10 @@ const generateData = (): Data[] =>
 
 export const SuspenseListDemo: FC = () => {
   const [data, setData] = useState(() => generateData());
-  const resetData = useCallback(() => {
-    setData(() => generateData());
-  }, []);
-  const [useSuspenseList, setUseSuspenseList] = useState(true);
   const [hasFallback, setHasFallback] = useState(true);
-  const [revealOrder, setRevealOrder] =
-    useState<Exclude<SuspenseListProps['revealOrder'], undefined>>('together');
-  const [tail, setTail] =
-    useState<Exclude<SuspenseListProps['tail'], undefined>>('collapsed');
-
-  const hasTail = revealOrder !== 'together' && revealOrder !== 'independent';
-
-  const suspenseListProps = hasTail ? { revealOrder, tail } : { revealOrder };
+  const fallback = hasFallback ? (
+    <div className="bg-bg-mute rounded-xl p-4">Loading...</div>
+  ) : null;
 
   return (
     <div className="flex flex-col gap-6">
@@ -41,113 +32,20 @@ export const SuspenseListDemo: FC = () => {
         message="React v19.2、Nextjs v16で利用ができなくなったため、現在こちらの機能は利用できません。"
         tone="info"
       />
-      <div className="flex flex-col gap-4">
-        <Checkbox
-          label="SuspenseListを利用する"
-          onChange={(checked) => {
-            resetData();
-            setUseSuspenseList(checked);
-          }}
-          checked={useSuspenseList}
-        />
-        <Checkbox
-          label="フォールバックUIを表示する"
-          onChange={(checked) => {
-            resetData();
-            setHasFallback(checked);
-          }}
-          checked={hasFallback}
-        />
-        <FormControl
-          label="revealOrder"
-          renderInput={({ 'aria-labelledby': _, ...props }) => (
-            <Select
-              {...props}
-              onChange={(e) => {
-                resetData();
-                setRevealOrder(e.target.value as typeof revealOrder);
-              }}
-              options={[
-                { value: 'together', label: 'together' },
-                { value: 'forwards', label: 'forwards' },
-                { value: 'backwards', label: 'backwards' },
-              ]}
-              value={revealOrder}
-            />
-          )}
-        />
-        <FormControl
-          label="tail"
-          renderInput={({ 'aria-labelledby': _, ...props }) => (
-            <Select
-              {...props}
-              onChange={(e) => {
-                resetData();
-                setTail(e.target.value as typeof tail);
-              }}
-              options={[
-                { value: 'collapsed', label: 'collapsed' },
-                { value: 'hidden', label: 'hidden' },
-              ]}
-              value={tail}
-            />
-          )}
-        />
-      </div>
-      <div className="bg-bg-mute flex items-center justify-center rounded-md p-4">
-        <p className="text-fg-mute">
-          {useSuspenseList
-            ? `<SuspenseList revealOrder="${revealOrder}"${hasTail ? ` tail="${tail}"` : ''}>`
-            : 'SuspenseListを利用していません。'}
-        </p>
-      </div>
-      <DataList
-        data={data}
-        hasFallback={hasFallback}
-        key={`SuspenseList-${JSON.stringify(suspenseListProps)}`}
-        suspenseListProps={suspenseListProps}
-        useSuspenseList={useSuspenseList}
+      <Checkbox
+        label="フォールバックUIを表示する"
+        onChange={(checked) => {
+          setData(() => generateData());
+          setHasFallback(checked);
+        }}
+        checked={hasFallback}
       />
-    </div>
-  );
-};
-
-const DataList: FC<{
-  data: Data[];
-  useSuspenseList: boolean;
-  hasFallback: boolean;
-  suspenseListProps:
-    | {
-        revealOrder: 'forwards' | 'backwards' | 'unstable_legacy-backwards';
-        tail: SuspenseListTailMode;
-      }
-    | {
-        revealOrder: 'together' | 'independent';
-        tail?: never;
-      };
-}> = ({ data, useSuspenseList, hasFallback, suspenseListProps: _ }) => {
-  const fallback = hasFallback ? (
-    <div className="bg-bg-mute rounded-xl p-4">Loading...</div>
-  ) : null;
-  if (useSuspenseList) {
-    return (
-      <>
-        {data.map(({ cacheKey, getTime }) => (
-          <Suspense fallback={fallback} key={cacheKey}>
-            <Data data={{ cacheKey, getTime }} />
-          </Suspense>
-        ))}
-      </>
-    );
-  }
-  return (
-    <>
       {data.map(({ cacheKey, getTime }) => (
         <Suspense fallback={fallback} key={cacheKey}>
           <Data data={{ cacheKey, getTime }} />
         </Suspense>
       ))}
-    </>
+    </div>
   );
 };
 
