@@ -1,6 +1,6 @@
 import type { FC, ReactNode } from 'react';
 
-import { NOTES_ROLE } from '@/features/slides/application/notes-marker';
+import { NOTES_ROLE } from '@/app/slides/_utils/notes-marker';
 
 type NotesComponent = FC<{ children: ReactNode }> & {
   $$slideRole: typeof NOTES_ROLE;

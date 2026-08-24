@@ -6,7 +6,7 @@ import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import type { FC } from 'react';
 
-import type { Slide } from '@/features/slides/application/split-slides';
+import type { Slide } from '@/app/slides/_utils/split-slides';
 
 import { useDeckController } from '../hooks/use-deck-controller';
 import { useBroadcastViewerHeartbeat } from '../hooks/use-presenter-lifecycle';

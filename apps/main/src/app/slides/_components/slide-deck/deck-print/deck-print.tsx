@@ -3,7 +3,7 @@
 import type { FC } from 'react';
 import { createPortal } from 'react-dom';
 
-import type { Slide } from '@/features/slides/application/split-slides';
+import type { Slide } from '@/app/slides/_utils/split-slides';
 
 import { useIsHydrated } from '../hooks/use-is-hydrated';
 import { Stage } from '../stage';
