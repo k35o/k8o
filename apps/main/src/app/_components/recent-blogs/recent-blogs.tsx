@@ -1,6 +1,5 @@
 import { Card } from '@k8o/arte-odyssey';
 import { range } from '@repo/helpers/array/range';
-import { cacheLife } from 'next/cache';
 import { Suspense } from 'react';
 
 import { getBlogContents } from '@/features/blog/interface/queries';
@@ -30,9 +29,6 @@ export const RecentBlogs = () => (
 );
 
 const RecentBlogsContent = async () => {
-  'use cache';
-  cacheLife('max');
-
   const blogs = await getBlogContents();
   const recentBlogs = blogs.slice(0, 3);
 
