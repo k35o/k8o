@@ -9,7 +9,7 @@ import type { ProjectListItem } from '@/features/projects/application/projects';
 
 import { ProjectList } from './project-list';
 
-export type StudioTool = 'ui' | 'slides';
+type StudioTool = 'ui' | 'slides';
 
 const TOOLS: Array<{
   tool: StudioTool;
