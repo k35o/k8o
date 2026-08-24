@@ -11,16 +11,8 @@ import {
 import { validateGeneratedSpec } from '@k8o/arte-odyssey/json-render';
 import { DefaultChatTransport } from 'ai';
 import type { UIMessage } from 'ai';
-import { useRouter, useSearchParams } from 'next/navigation';
-import {
-  useEffect,
-  useEffectEvent,
-  useMemo,
-  useReducer,
-  useRef,
-  useState,
-  useTransition,
-} from 'react';
+import { useRouter } from 'next/navigation';
+import { useMemo, useReducer, useRef, useState, useTransition } from 'react';
 
 import { SpecPreview } from '@/app/_components/spec-preview';
 import {
@@ -37,7 +29,13 @@ import {
   usedComponentTypes,
 } from '@/features/generation/application/spec-message';
 import { specToTsx } from '@/features/generation/application/spec-to-tsx';
-import { loadProjectAction } from '@/features/projects/interface/actions';
+import type { ProjectListItem } from '@/features/projects/application/projects';
+import {
+  forkProjectAction,
+  listProjectsAction,
+  loadProjectAction,
+  saveGenerationAction,
+} from '@/features/projects/interface/actions';
 
 import { StudioShell } from '../studio-shell';
 import { ChatPanel } from './chat-panel';
@@ -45,14 +43,25 @@ import { CodePanel } from './code-panel';
 import { CopyCodeButton } from './copy-code-button';
 import { PreviewLoading } from './preview-loading';
 import { ShareControl } from './share-control';
-import { useStudioPersistence } from './use-studio-persistence';
+import { useProjectPersistence } from './use-project-persistence';
+import { useProjectUrlSync } from './use-project-url-sync';
 
 // 設定は完全に静的なので、レンダーごとに生成しない。
 const transport = new DefaultChatTransport({ api: '/api/generate' });
 
+const persistenceActions = {
+  list: listProjectsAction,
+  save: saveGenerationAction,
+  fork: forkProjectAction,
+};
+
 type PanelView = 'preview' | 'spec' | 'tsx';
 
-export const Studio = () => {
+export const Studio = ({
+  initialProjects,
+}: {
+  initialProjects: ProjectListItem[];
+}) => {
   const [input, setInput] = useState('');
   const [state, dispatch] = useReducer(
     generationReducer<Spec>,
@@ -78,16 +87,11 @@ export const Studio = () => {
   // onFinish の前に ready へ戻るため、この間に次を送ると projectId 未確定のまま
   // 別プロジェクトへ分裂して保存されてしまう。
   const [saving, startSaving] = useTransition();
-  const persistence = useStudioPersistence();
+  const persistence = useProjectPersistence<{ spec: Spec }>(
+    persistenceActions,
+    initialProjects,
+  );
   const router = useRouter();
-  const searchParams = useSearchParams();
-  // URL の ?project=<id> を初回レンダーで一度だけ拾い、リロード/ブックマークから復元する。
-  const bootProjectIdRef = useRef<number | null | undefined>(undefined);
-  if (bootProjectIdRef.current === undefined) {
-    const raw = searchParams.get('project');
-    const id = raw === null ? Number.NaN : Number(raw);
-    bootProjectIdRef.current = Number.isInteger(id) && id > 0 ? id : null;
-  }
 
   const { messages, sendMessage, status, error, setMessages, stop } = useChat({
     transport,
@@ -324,32 +328,9 @@ export const Studio = () => {
     }
   };
 
-  // 初回マウント時、URL に ?project=<id> があればそのプロジェクトを復元する。
-  // Strict Mode の二重実行でも bootedRef で1回だけロードする。
-  const bootLoad = useEffectEvent((projectId: number) => {
+  useProjectUrlSync('/', persistence.projectId, (projectId) => {
     void handleSelectProject(projectId);
   });
-  const bootedRef = useRef(false);
-  useEffect(() => {
-    if (bootedRef.current) {
-      return;
-    }
-    bootedRef.current = true;
-    const bootId = bootProjectIdRef.current;
-    if (bootId !== null && bootId !== undefined) {
-      bootLoad(bootId);
-    }
-  }, []);
-
-  // 選択中プロジェクトを URL(?project=<id>) に反映する。projectId が null のとき
-  // （初期 / boot 中 / 新規）は書き換えない。boot の ?project を握り潰さず、実行回数ではなく
-  // 値で判定するため Strict Mode の二重実行でも安全。新規化での「/」戻しは handleNewProject で行う。
-  useEffect(() => {
-    if (persistence.projectId === null) {
-      return;
-    }
-    router.replace(`/?project=${persistence.projectId.toString()}`);
-  }, [persistence.projectId, router]);
 
   return (
     <StudioShell

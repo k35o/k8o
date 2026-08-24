@@ -1,5 +1,6 @@
 import { Suspense } from 'react';
 
+import { listProjectsForRoute } from '@/features/projects/interface/queries';
 import { verifySession } from '@/shared/auth/verify-session';
 
 import { Studio, StudioSkeleton } from './_components/studio';
@@ -8,7 +9,8 @@ import { Studio, StudioSkeleton } from './_components/studio';
 // uncached（DB/cookie）かつ useChat の Math.random もあるため Suspense 配下に置く。
 const AuthenticatedStudio = async () => {
   await verifySession();
-  return <Studio />;
+  const projects = await listProjectsForRoute();
+  return <Studio initialProjects={projects} />;
 };
 
 export default function Page() {

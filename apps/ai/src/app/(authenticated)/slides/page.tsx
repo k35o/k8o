@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import { Suspense } from 'react';
 
+import { listSlidesProjectsForRoute } from '@/features/projects/interface/queries';
 import { verifySession } from '@/shared/auth/verify-session';
 
 import { StudioSkeleton } from '../_components/studio';
@@ -14,7 +15,8 @@ export const metadata: Metadata = {
 // uncached（DB/cookie）かつ useChat の Math.random もあるため Suspense 配下に置く。
 const AuthenticatedSlidesStudio = async () => {
   await verifySession();
-  return <SlidesStudio />;
+  const projects = await listSlidesProjectsForRoute();
+  return <SlidesStudio initialProjects={projects} />;
 };
 
 export default function Page() {

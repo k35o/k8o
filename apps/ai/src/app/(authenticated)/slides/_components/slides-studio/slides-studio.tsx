@@ -10,16 +10,8 @@ import {
 import { DefaultChatTransport } from 'ai';
 import type { UIMessage } from 'ai';
 import { useTheme } from 'next-themes';
-import { useRouter, useSearchParams } from 'next/navigation';
-import {
-  useEffect,
-  useEffectEvent,
-  useMemo,
-  useReducer,
-  useRef,
-  useState,
-  useTransition,
-} from 'react';
+import { useRouter } from 'next/navigation';
+import { useMemo, useReducer, useRef, useState, useTransition } from 'react';
 
 import type { HighlightFn } from '@/app/_components/highlighted-code';
 import { DeckHighlightContext } from '@/app/_components/slide-deck';
@@ -30,19 +22,32 @@ import {
 import { messageText } from '@/features/generation/application/message-text';
 import { parseSlidesGeneration } from '@/features/generation/application/parse-slides-generation';
 import { highlightGenerated } from '@/features/highlight/interface/actions';
-import { loadSlidesProjectAction } from '@/features/projects/interface/actions';
+import type { ProjectListItem } from '@/features/projects/application/projects';
+import {
+  forkSlidesProjectAction,
+  listSlidesProjectsAction,
+  loadSlidesProjectAction,
+  saveSlidesGenerationAction,
+} from '@/features/projects/interface/actions';
 import { parseDeck } from '@/features/slides/application/parse-deck';
 
 import { StudioShell } from '../../../_components/studio-shell';
 import { ChatPanel } from '../../../_components/studio/chat-panel';
 import { CopyCodeButton } from '../../../_components/studio/copy-code-button';
 import { PreviewLoading } from '../../../_components/studio/preview-loading';
+import { useProjectPersistence } from '../../../_components/studio/use-project-persistence';
+import { useProjectUrlSync } from '../../../_components/studio/use-project-url-sync';
 import { DeckPreview } from '../deck-preview';
 import { SourcePanel } from './source-panel';
-import { useSlidesPersistence } from './use-slides-persistence';
 
 // 設定は完全に静的なので、レンダーごとに生成しない。
 const transport = new DefaultChatTransport({ api: '/api/generate' });
+
+const persistenceActions = {
+  list: listSlidesProjectsAction,
+  save: saveSlidesGenerationAction,
+  fork: forkSlidesProjectAction,
+};
 
 type PanelView = 'preview' | 'source';
 
@@ -50,7 +55,11 @@ type PanelView = 'preview' | 'source';
 const describeSlidesMessage = (text: string): string | null =>
   parseSlidesGeneration(text).meta?.description ?? null;
 
-export const SlidesStudio = () => {
+export const SlidesStudio = ({
+  initialProjects,
+}: {
+  initialProjects: ProjectListItem[];
+}) => {
   const [input, setInput] = useState('');
   const [state, dispatch] = useReducer(
     generationReducer<string>,
@@ -72,7 +81,10 @@ export const SlidesStudio = () => {
   // onFinish の前に ready へ戻るため、この間に次を送ると projectId 未確定のまま
   // 別プロジェクトへ分裂して保存されてしまう。
   const [saving, startSaving] = useTransition();
-  const persistence = useSlidesPersistence();
+  const persistence = useProjectPersistence<{ source: string }>(
+    persistenceActions,
+    initialProjects,
+  );
   const { resolvedTheme } = useTheme();
   // コードブロックのハイライトはアプリのテーマに合わせる（light は one-light、dark は plastic）。
   // テーマ解決前（SSR直後）は null にして、無駄な取得と取り直しを避ける。
@@ -84,14 +96,6 @@ export const SlidesStudio = () => {
     return (code, lang) => highlightGenerated(code, lang, theme);
   }, [resolvedTheme]);
   const router = useRouter();
-  const searchParams = useSearchParams();
-  // URL の ?project=<id> を初回レンダーで一度だけ拾い、リロード/ブックマークから復元する。
-  const bootProjectIdRef = useRef<number | null | undefined>(undefined);
-  if (bootProjectIdRef.current === undefined) {
-    const raw = searchParams.get('project');
-    const id = raw === null ? Number.NaN : Number(raw);
-    bootProjectIdRef.current = Number.isInteger(id) && id > 0 ? id : null;
-  }
 
   const { messages, sendMessage, status, error, setMessages, stop } = useChat({
     transport,
@@ -274,31 +278,9 @@ export const SlidesStudio = () => {
     }
   };
 
-  // 初回マウント時、URL に ?project=<id> があればそのプロジェクトを復元する。
-  // Strict Mode の二重実行でも bootedRef で1回だけロードする。
-  const bootLoad = useEffectEvent((projectId: number) => {
+  useProjectUrlSync('/slides', persistence.projectId, (projectId) => {
     void handleSelectProject(projectId);
   });
-  const bootedRef = useRef(false);
-  useEffect(() => {
-    if (bootedRef.current) {
-      return;
-    }
-    bootedRef.current = true;
-    const bootId = bootProjectIdRef.current;
-    if (bootId !== null && bootId !== undefined) {
-      bootLoad(bootId);
-    }
-  }, []);
-
-  // 選択中プロジェクトを URL(?project=<id>) に反映する。projectId が null のとき
-  // （初期 / boot 中 / 新規）は書き換えない。新規化での「/slides」戻しは handleNewProject で行う。
-  useEffect(() => {
-    if (persistence.projectId === null) {
-      return;
-    }
-    router.replace(`/slides?project=${persistence.projectId.toString()}`);
-  }, [persistence.projectId, router]);
 
   return (
     <StudioShell
