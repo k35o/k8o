@@ -1,8 +1,8 @@
 'use client';
 
 import { Button, FormControl, TextField } from '@k8o/arte-odyssey';
-import { useEffect, useRef, useState } from 'react';
-import type { FC } from 'react';
+import { useRef, useState } from 'react';
+import type { FC, SyntheticEvent } from 'react';
 
 export const DialogRequestCloseDemo: FC = () => {
   const ref = useRef<HTMLDialogElement>(null);
@@ -10,41 +10,21 @@ export const DialogRequestCloseDemo: FC = () => {
   const [logs, setLogs] = useState<Array<{ id: number; message: string }>>([]);
   const logIdRef = useRef(0);
 
-  const stateRef = useRef(state);
-  useEffect(() => {
-    stateRef.current = state;
-  });
-
-  useEffect(() => {
-    const dialog = ref.current;
-    if (!dialog) return undefined;
-
-    const handleClose = () => {
-      const id = logIdRef.current++;
-      setLogs((prev) => [
-        { id, message: 'ダイアログが閉じられました' },
-        ...prev,
-      ]);
-      setState('');
-    };
-    const handleCancel = (e: Event) => {
-      const id = logIdRef.current++;
-      setLogs((prev) => [
-        { id, message: 'ダイアログがキャンセルされました' },
-        ...prev,
-      ]);
-      if (stateRef.current !== '') {
-        e.preventDefault();
-      }
-    };
-
-    dialog.addEventListener('close', handleClose);
-    dialog.addEventListener('cancel', handleCancel);
-    return () => {
-      dialog.removeEventListener('close', handleClose);
-      dialog.removeEventListener('cancel', handleCancel);
-    };
-  }, []);
+  const handleClose = () => {
+    const id = logIdRef.current++;
+    setLogs((prev) => [{ id, message: 'ダイアログが閉じられました' }, ...prev]);
+    setState('');
+  };
+  const handleCancel = (e: SyntheticEvent<HTMLDialogElement>) => {
+    const id = logIdRef.current++;
+    setLogs((prev) => [
+      { id, message: 'ダイアログがキャンセルされました' },
+      ...prev,
+    ]);
+    if (state !== '') {
+      e.preventDefault();
+    }
+  };
 
   return (
     <div className="flex flex-col gap-4 p-4">
@@ -68,6 +48,8 @@ export const DialogRequestCloseDemo: FC = () => {
       )}
       <dialog
         className="bg-bg-base backdrop:bg-back-drop m-auto max-h-[85dvh] w-5/6 max-w-2xl rounded-lg shadow-md"
+        onCancel={handleCancel}
+        onClose={handleClose}
         ref={ref}
       >
         <form

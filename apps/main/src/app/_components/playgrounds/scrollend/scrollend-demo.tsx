@@ -1,7 +1,7 @@
 'use client';
 
 import { range } from '@repo/helpers/array/range';
-import { useEffect, useRef, useState } from 'react';
+import { useState } from 'react';
 
 export function ScrollendDemo() {
   const [scrollCount, setScrollCount] = useState(0);
@@ -9,21 +9,6 @@ export function ScrollendDemo() {
   const [lastScrollendTime, setLastScrollendTime] = useState<string | null>(
     null,
   );
-  const scrollRef = useRef<HTMLElement>(null);
-
-  useEffect(() => {
-    const element = scrollRef.current;
-    if (!element) return undefined;
-
-    const handleScrollend = () => {
-      setScrollendCount((prev) => prev + 1);
-      setLastScrollendTime(new Date().toLocaleTimeString('ja-JP'));
-    };
-    element.addEventListener('scrollend', handleScrollend);
-    return () => {
-      element.removeEventListener('scrollend', handleScrollend);
-    };
-  }, []);
 
   return (
     <div className="space-y-4">
@@ -61,7 +46,10 @@ export function ScrollendDemo() {
         onScroll={() => {
           setScrollCount((prev) => prev + 1);
         }}
-        ref={scrollRef}
+        onScrollEnd={() => {
+          setScrollendCount((prev) => prev + 1);
+          setLastScrollendTime(new Date().toLocaleTimeString('ja-JP'));
+        }}
         tabIndex={0}
       >
         <div className="space-y-4">

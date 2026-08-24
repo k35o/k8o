@@ -42,40 +42,10 @@ const useScrollendCounter = () => {
   return { count, lastTrigger, showFlash, trigger, reset };
 };
 
-const useScrollendListener = (
-  ref: React.RefObject<HTMLElement | null>,
-  onScrollend: () => void,
-) => {
-  const handlerRef = useRef(onScrollend);
-  useEffect(() => {
-    handlerRef.current = onScrollend;
-  });
-
-  useEffect(() => {
-    const element = ref.current;
-    if (!element) return undefined;
-    const handler = () => {
-      handlerRef.current();
-    };
-    element.addEventListener('scrollend', handler);
-    return () => {
-      element.removeEventListener('scrollend', handler);
-    };
-  }, [ref]);
-};
-
 export function ScrollendTriggerDemo() {
   const { count, lastTrigger, showFlash, trigger, reset } =
     useScrollendCounter();
   const scrollToRef = useRef<HTMLElement>(null);
-  const snapRef = useRef<HTMLElement>(null);
-
-  useScrollendListener(scrollToRef, () => {
-    trigger('scrollTo()');
-  });
-  useScrollendListener(snapRef, () => {
-    trigger('scroll-snap');
-  });
 
   return (
     <div className="space-y-4 overflow-hidden">
@@ -129,6 +99,9 @@ export function ScrollendTriggerDemo() {
           <section
             aria-label="scrollTo()でスクロールする領域"
             className="bg-bg-mute h-40 overflow-y-scroll rounded-xl p-3"
+            onScrollEnd={() => {
+              trigger('scrollTo()');
+            }}
             ref={scrollToRef}
             tabIndex={0}
           >
@@ -150,7 +123,9 @@ export function ScrollendTriggerDemo() {
           <section
             aria-label="scroll-snapで横スクロールする領域"
             className="bg-bg-mute flex h-40 snap-x snap-mandatory gap-3 overflow-x-scroll rounded-xl p-3"
-            ref={snapRef}
+            onScrollEnd={() => {
+              trigger('scroll-snap');
+            }}
             tabIndex={0}
           >
             {range(0, 8).map((n) => (

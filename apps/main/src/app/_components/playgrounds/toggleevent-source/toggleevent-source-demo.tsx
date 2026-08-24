@@ -1,7 +1,8 @@
 'use client';
 
 import { Button, Code } from '@k8o/arte-odyssey';
-import { useEffect, useRef, useState } from 'react';
+import type { ToggleEvent as ReactToggleEvent } from 'react';
+import { useRef, useState } from 'react';
 
 type ToggleEventWithSource = ToggleEvent & { source?: Element | null };
 
@@ -63,33 +64,24 @@ export function ToggleEventSourceDemo() {
   const [active, setActive] = useState<Member>(FALLBACK);
   const [toggleLog, setToggleLog] = useState<ToggleLog>(INITIAL_LOG);
 
-  useEffect(() => {
-    const popover = popoverRef.current;
-    if (!popover) return undefined;
+  // source は toggle イベントの新しめの拡張で React の合成イベントに型が無いため、
+  // nativeEvent から読む。
+  const handleToggle = (event: ReactToggleEvent<HTMLDivElement>) => {
+    const { source } = event.nativeEvent as ToggleEventWithSource;
+    const sourceEl = source instanceof HTMLElement ? source : null;
+    const memberId = sourceEl?.dataset['memberId'] ?? null;
 
-    const onToggle = (event: Event) => {
-      const toggleEvent = event as ToggleEventWithSource;
-      const { source } = toggleEvent;
-      const sourceEl = source instanceof HTMLElement ? source : null;
-      const memberId = sourceEl?.dataset['memberId'] ?? null;
+    setToggleLog({
+      oldState: event.oldState,
+      newState: event.newState,
+      memberId,
+      buttonText: sourceEl ? sourceEl.textContent.trim() : null,
+    });
 
-      setToggleLog({
-        oldState: toggleEvent.oldState,
-        newState: toggleEvent.newState,
-        memberId,
-        buttonText: sourceEl ? sourceEl.textContent.trim() : null,
-      });
-
-      if (toggleEvent.newState !== 'open') return;
-      const member = MEMBERS.find((m) => m.id === memberId);
-      if (member) setActive(member);
-    };
-
-    popover.addEventListener('toggle', onToggle);
-    return () => {
-      popover.removeEventListener('toggle', onToggle);
-    };
-  }, []);
+    if (event.newState !== 'open') return;
+    const member = MEMBERS.find((m) => m.id === memberId);
+    if (member) setActive(member);
+  };
 
   // popover が開いている状態で別のボタンを押されても再ショーされるよう、
   // 明示的に hide → show でやり直して source を毎回更新する。
@@ -150,6 +142,7 @@ export function ToggleEventSourceDemo() {
       <div
         className="bg-bg-base m-auto w-72 rounded-md p-4 shadow-md"
         id={POPOVER_ID}
+        onToggle={handleToggle}
         popover="auto"
         ref={popoverRef}
       >
