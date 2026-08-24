@@ -1,18 +1,20 @@
 import 'server-only';
 import { isNonEmptySpec } from '@json-render/core';
 import type { Spec } from '@json-render/core';
-import type { AiVisibility } from '@repo/database/schema';
 
 import { toMeta } from '@/features/generation/application/parse-meta';
 import type { GenerationMeta } from '@/features/generation/application/parse-meta';
 
+import type {
+  AiVisibility,
+  ProjectListItem,
+} from '../infrastructure/project-repository';
 import {
   projectOwnedBy,
   selectProjectWithLatestVersion,
   selectPublicProjectBySlug,
   updateProjectVisibility,
 } from '../infrastructure/project-repository';
-import type { ProjectListItem } from '../infrastructure/project-repository';
 import { createProjectStore } from './project-store';
 import type { ConversationTurn } from './project-store';
 

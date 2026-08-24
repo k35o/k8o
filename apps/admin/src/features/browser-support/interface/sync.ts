@@ -1,11 +1,10 @@
-import type { BrowserSupportSyncTrigger } from '@repo/database/schema';
-
 // push-notification は別 feature だが、通知の配線は Next.js 境界(interface)の責務と
 // して interface 間 import を許容する。application 層は SyncNotifier に依存するだけ。
 import { sendPushNotification } from '@/features/push-notification/interface/commands';
 
 import { syncBrowserSupport } from '../application/sync-browser-support';
 import type { SyncSummary } from '../application/sync-browser-support';
+import type { BrowserSupportSyncTrigger } from '../infrastructure/browser-support-repository';
 
 // 警報のリンク先も公開側に寄せる。/browser-support は鮮度(データ基準日)を常時表示
 // しており、admin のデプロイ URL に依存せず状況を確認できる。

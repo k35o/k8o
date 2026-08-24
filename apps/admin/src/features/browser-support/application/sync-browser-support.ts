@@ -1,7 +1,3 @@
-import type {
-  BrowserSupportSyncResult,
-  BrowserSupportSyncTrigger,
-} from '@repo/database/schema';
 import { checkBaselineInvariants } from '@repo/helpers/baseline/invariants';
 import type {
   BaselineFeature,
@@ -14,12 +10,16 @@ import {
 
 import { revalidateMainCache } from '@/shared/cache/revalidate-main';
 
+import type {
+  BrowserSupportSyncResult,
+  BrowserSupportSyncTrigger,
+  FeatureChangeInput,
+} from '../infrastructure/browser-support-repository';
 import {
   applyDataset,
   findActiveDataset,
   recordSyncRun,
 } from '../infrastructure/browser-support-repository';
-import type { FeatureChangeInput } from '../infrastructure/browser-support-repository';
 import {
   discoverLatestVersion,
   fetchUpstreamData,

@@ -1,10 +1,12 @@
 import 'server-only';
 import { randomUUID } from 'node:crypto';
 
-import type { AiApp } from '@repo/database/schema';
-
 import type { GenerationMeta } from '@/features/generation/application/parse-meta';
 
+import type {
+  AiApp,
+  ProjectListItem,
+} from '../infrastructure/project-repository';
 import {
   insertProjectWithVersion,
   insertVersion,
@@ -13,7 +15,6 @@ import {
   selectProjectVersions,
   selectProjectWithLatestVersion,
 } from '../infrastructure/project-repository';
-import type { ProjectListItem } from '../infrastructure/project-repository';
 
 // 版の content に共通で入る形。アプリごとの本体（code / source など）はこれに足す。
 export type ProjectContent = {
