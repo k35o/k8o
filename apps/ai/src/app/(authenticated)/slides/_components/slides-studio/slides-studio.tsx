@@ -18,6 +18,7 @@ import {
   useReducer,
   useRef,
   useState,
+  useTransition,
 } from 'react';
 
 import type { HighlightFn } from '@/app/_components/highlighted-code';
@@ -39,6 +40,9 @@ import { PreviewLoading } from '../../../_components/studio/preview-loading';
 import { DeckPreview } from '../deck-preview';
 import { SourcePanel } from './source-panel';
 import { useSlidesPersistence } from './use-slides-persistence';
+
+// 設定は完全に静的なので、レンダーごとに生成しない。
+const transport = new DefaultChatTransport({ api: '/api/generate' });
 
 type PanelView = 'preview' | 'source';
 
@@ -67,7 +71,7 @@ export const SlidesStudio = () => {
   // 版の保存（DB 往復）が完了するまで次の生成をブロックする。useChat の status は
   // onFinish の前に ready へ戻るため、この間に次を送ると projectId 未確定のまま
   // 別プロジェクトへ分裂して保存されてしまう。
-  const [saving, setSaving] = useState(false);
+  const [saving, startSaving] = useTransition();
   const persistence = useSlidesPersistence();
   const { resolvedTheme } = useTheme();
   // コードブロックのハイライトはアプリのテーマに合わせる（light は one-light、dark は plastic）。
@@ -90,34 +94,35 @@ export const SlidesStudio = () => {
   }
 
   const { messages, sendMessage, status, error, setMessages, stop } = useChat({
-    transport: new DefaultChatTransport({ api: '/api/generate' }),
+    transport,
     onFinish: ({ message, isAbort }) => {
       // 生成中に別プロジェクトへ切り替えた等で中断された場合は、切替先へ結果を
       // 適用/保存しないよう即座に抜ける。
       if (isAbort) {
         return;
       }
-      const parsed = parseSlidesGeneration(messageText(message));
-      if (parsed.source !== null && parsed.meta !== null) {
+      const { source, meta } = parseSlidesGeneration(messageText(message));
+      if (source !== null && meta !== null) {
         // generation-store は ui-studio と共用しており、current にデッキの
         // Markdown ソースを入れる。
         dispatch({
           type: 'generation-finished',
-          content: parsed.source,
-          meta: parsed.meta,
+          content: source,
+          meta,
         });
         // prompt も版に残し、履歴から読み込んだときに会話を復元できるようにする。
-        // 保存が終わるまで saving を立て、次の生成の割り込みを防ぐ。
-        setSaving(true);
-        void persistence
-          .save({
-            source: parsed.source,
-            meta: parsed.meta,
-            prompt: lastPromptRef.current,
-          })
-          .finally(() => {
-            setSaving(false);
-          });
+        // 保存が終わるまで saving（transition）が続き、次の生成の割り込みを防ぐ。
+        startSaving(async () => {
+          try {
+            await persistence.save({
+              source,
+              meta,
+              prompt: lastPromptRef.current,
+            });
+          } catch (error) {
+            console.error('版の保存に失敗しました', error);
+          }
+        });
         setView('preview');
         setMobileTab('preview');
       }

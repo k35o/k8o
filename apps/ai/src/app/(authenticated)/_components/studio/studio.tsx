@@ -19,6 +19,7 @@ import {
   useReducer,
   useRef,
   useState,
+  useTransition,
 } from 'react';
 
 import { SpecPreview } from '@/app/_components/spec-preview';
@@ -45,6 +46,9 @@ import { CopyCodeButton } from './copy-code-button';
 import { PreviewLoading } from './preview-loading';
 import { ShareControl } from './share-control';
 import { useStudioPersistence } from './use-studio-persistence';
+
+// 設定は完全に静的なので、レンダーごとに生成しない。
+const transport = new DefaultChatTransport({ api: '/api/generate' });
 
 type PanelView = 'preview' | 'spec' | 'tsx';
 
@@ -73,7 +77,7 @@ export const Studio = () => {
   // 版の保存（DB 往復）が完了するまで次の生成をブロックする。useChat の status は
   // onFinish の前に ready へ戻るため、この間に次を送ると projectId 未確定のまま
   // 別プロジェクトへ分裂して保存されてしまう。
-  const [saving, setSaving] = useState(false);
+  const [saving, startSaving] = useTransition();
   const persistence = useStudioPersistence();
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -86,7 +90,7 @@ export const Studio = () => {
   }
 
   const { messages, sendMessage, status, error, setMessages, stop } = useChat({
-    transport: new DefaultChatTransport({ api: '/api/generate' }),
+    transport,
     onFinish: ({ message, isAbort }) => {
       // 生成中に別プロジェクトへ切り替えた等で中断された場合は、切替先へ結果を
       // 適用/保存しないよう即座に抜ける（生成中表示の漏れや誤保存を防ぐ）。
@@ -132,17 +136,18 @@ export const Studio = () => {
       };
       dispatch({ type: 'generation-finished', content: finishedSpec, meta });
       // prompt も版に残し、履歴から読み込んだときに会話を復元できるようにする。
-      // 保存が終わるまで saving を立て、次の生成の割り込みを防ぐ。
-      setSaving(true);
-      void persistence
-        .save({
-          spec: finishedSpec,
-          meta,
-          prompt: lastPromptRef.current,
-        })
-        .finally(() => {
-          setSaving(false);
-        });
+      // 保存が終わるまで saving（transition）が続き、次の生成の割り込みを防ぐ。
+      startSaving(async () => {
+        try {
+          await persistence.save({
+            spec: finishedSpec,
+            meta,
+            prompt: lastPromptRef.current,
+          });
+        } catch (error) {
+          console.error('版の保存に失敗しました', error);
+        }
+      });
       setView('preview');
       setMobileTab('preview');
     },
