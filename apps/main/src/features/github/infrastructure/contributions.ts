@@ -1,5 +1,3 @@
-import { graphql } from '@octokit/graphql';
-
 import {
   formatDateString,
   getJstDateBase,
@@ -69,18 +67,41 @@ export async function fetchUserContributions(
     }
   `;
 
-  const response = await graphql<ContributionCalendarResponse>(query, {
-    userName: username,
-    from: getJstUtcStart(from),
-    to: getJstUtcEnd(to),
+  const response = await fetch('https://api.github.com/graphql', {
+    method: 'POST',
     headers: {
       authorization: `token ${token}`,
+      'content-type': 'application/json',
     },
+    body: JSON.stringify({
+      query,
+      variables: {
+        userName: username,
+        from: getJstUtcStart(from),
+        to: getJstUtcEnd(to),
+      },
+    }),
   });
+  if (!response.ok) {
+    throw new Error(`GitHub GraphQL API error: ${String(response.status)}`);
+  }
+
+  const payload = (await response.json()) as {
+    data?: ContributionCalendarResponse;
+    errors?: Array<{ message: string }>;
+  };
+  if (payload.errors !== undefined && payload.errors.length > 0) {
+    throw new Error(
+      `GitHub GraphQL API error: ${payload.errors[0]?.message ?? 'unknown'}`,
+    );
+  }
+  if (payload.data === undefined) {
+    throw new Error('GitHub GraphQL API error: レスポンスに data がありません');
+  }
 
   const contributionMap = new Map<string, number>();
-  for (const week of response.user.contributionsCollection.contributionCalendar
-    .weeks) {
+  for (const week of payload.data.user.contributionsCollection
+    .contributionCalendar.weeks) {
     for (const day of week.contributionDays) {
       contributionMap.set(day.date, day.contributionCount);
     }

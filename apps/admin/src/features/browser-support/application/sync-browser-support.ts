@@ -53,7 +53,7 @@ export type SyncSummary = {
 
 // baseline(newly/widely) に到達済みの feature。diff の構築時点で limited を
 // 除外済みであることを型で運び、下流の防御的な再チェックを不要にする。
-export type BaselineReachedFeature = BaselineFeature & {
+type BaselineReachedFeature = BaselineFeature & {
   status: 'newly' | 'widely';
 };
 
