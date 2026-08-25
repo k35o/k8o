@@ -32,11 +32,12 @@ packages/auth-shell/→ admin・aiの認証ゲートとアプリシェル → pa
 packages/database/  → Drizzle ORM + Turso (libSQL)       → packages/database/CLAUDE.md
 packages/helpers/   → 共有ユーティリティ                  → packages/helpers/CLAUDE.md
 packages/typescript-config・vitest-config・code-highlight → 共有設定・コードハイライト
+packages/oxlint-plugin/ → リポジトリ固有のoxlintカスタムルール（k8o/*）
 ```
 
 各 app / package 固有の規約は、対応する `CLAUDE.md` を参照すること。
 
-`@repo/database` を直接 import するのは `apps/*/src/features/*/infrastructure/` を基本とし、小さい読み取りに限り `features/*/application` に置いてもよい。書き込みや外部接続の詳細は infrastructure へ切り出す。`app/` や `features/*/interface` から直接読まない（現時点では規約運用。機械的な禁止ルールは今後 oxc のカスタムルールとして導入する）。
+`@repo/database` を直接 import するのは `apps/*/src/features/*/infrastructure/` を基本とし、小さい読み取りに限り `features/*/application` に置いてもよい。書き込みや外部接続の詳細は infrastructure へ切り出す。`app/` や `features/*/interface` から直接読まない。例外として `@repo/database/auth` だけは admin / ai の `shared/auth` から import してよい（Better Auth インスタンスの共用）。この層境界は oxc カスタムルール `k8o/database-import-boundary` で機械的に強制される（application を小さな読み取りに留める質の部分はレビューで担保する）。
 
 ## コーディング規約
 

@@ -20,6 +20,8 @@ apps/admin のStorybook MCPは `admin-storybook-mcp`。propsの確認手順は�
 
 admin 固有の認証は `src/shared/auth/verify-cron-request.ts`（cron の Bearer 検証）のみ。
 
+Server Action（`'use server'`）は全 export 関数の先頭で `await verifySession()` を呼ぶ。認可はこの1行に依存しているため、oxc カスタムルール `k8o/require-verify-session` で機械的に強制される。
+
 - Vercel preview は認証OFF（= preview URL の防御は Vercel Deployment Protection に依存する。ai と同様に有効化を維持すること。無効化すると preview URL だけで DB 書き込みや push 送信ができてしまう）
 - ローカル開発で `LOCAL_AUTH_BYPASS=true`（`.env.local`）を設定するとログインを省略できる。`NODE_ENV=development` のときだけ評価するため、本番では無視され bypass は起こらない
 - 実際にローカルでGitHubログインを検証したいときは `LOCAL_AUTH_BYPASS` を外す（その場合は GitHub OAuth アプリのコールバックを `https://admin.k8o.localhost/api/auth/callback/github` に設定）
