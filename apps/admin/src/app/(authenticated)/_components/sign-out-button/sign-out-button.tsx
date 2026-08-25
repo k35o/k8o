@@ -15,8 +15,15 @@ export const SignOutButton: FC = () => {
 
   const handleSignOut = () => {
     startTransition(async () => {
-      const { error } = await authClient.signOut();
-      if (error) {
+      // ネットワーク断では signOut が例外を投げ、transition 経由で error boundary
+      // に乗ってしまうため、ここで受け止めてトーストに変える。
+      try {
+        const { error } = await authClient.signOut();
+        if (error) {
+          open('error', 'ログアウトに失敗しました');
+          return;
+        }
+      } catch {
         open('error', 'ログアウトに失敗しました');
         return;
       }
