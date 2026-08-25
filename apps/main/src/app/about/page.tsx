@@ -38,15 +38,12 @@ export default function Page() {
       <section className="flex flex-col gap-3">
         <Heading level="h3">発信している場所</Heading>
         <p className="leading-relaxed">
-          ブログのほかに、
+          技術記事はこのサイトの<Anchor href="/blog">ブログ</Anchor>
+          に書き、日々の気づきは
           <Anchor href="https://x.com/k8ome" openInNewTab>
             X
           </Anchor>
-          で日々の気づきを、
-          <Anchor href="https://qiita.com/k8o" openInNewTab>
-            Qiita
-          </Anchor>
-          で技術記事を発信しています。開発の活動は
+          で発信しています。開発の活動は
           <Anchor href="https://github.com/k35o" openInNewTab>
             GitHub
           </Anchor>

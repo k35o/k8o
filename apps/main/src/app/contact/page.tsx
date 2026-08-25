@@ -36,11 +36,7 @@ export default function Page() {
           <Anchor href="https://x.com/k8ome" openInNewTab>
             X（@k8ome）
           </Anchor>
-          のDMやリプライでも連絡できます。技術記事へのコメントは
-          <Anchor href="https://qiita.com/k8o" openInNewTab>
-            Qiita
-          </Anchor>
-          でも歓迎しています。気軽に声をかけてください。
+          のDMやリプライでも連絡できます。ブログ記事への感想や短い質問はXが目に留まりやすいです。気軽に声をかけてください。
         </p>
       </section>
     </>
