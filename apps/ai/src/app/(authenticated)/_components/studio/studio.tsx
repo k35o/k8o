@@ -2,12 +2,7 @@
 
 import { useChat } from '@ai-sdk/react';
 import type { Spec } from '@json-render/core';
-import {
-  Button,
-  ForkIcon,
-  FullscreenIcon,
-  IconButton,
-} from '@k8o/arte-odyssey';
+import { ForkIcon, FullscreenIcon, IconButton } from '@k8o/arte-odyssey';
 import { validateGeneratedSpec } from '@k8o/arte-odyssey/json-render';
 import { DefaultChatTransport } from 'ai';
 import type { UIMessage } from 'ai';
@@ -45,7 +40,10 @@ import {
   useProjectPersistence,
   useProjectUrlSync,
 } from '../project-persistence';
+import { ProjectTitle } from '../project-title';
+import { StudioPanes } from '../studio-panes';
 import { StudioShell } from '../studio-shell';
+import { ViewTabs } from '../view-tabs';
 import { ShareControl } from './share-control';
 
 // 設定は完全に静的なので、レンダーごとに生成しない。
@@ -58,6 +56,17 @@ const persistenceActions = {
 };
 
 type PanelView = 'preview' | 'spec' | 'tsx';
+
+const viewOptions = [
+  { value: 'preview', label: 'プレビュー' },
+  { value: 'spec', label: 'spec' },
+  { value: 'tsx', label: 'TSX' },
+] as const;
+
+const mobileTabOptions = [
+  { value: 'chat', label: 'チャット' },
+  ...viewOptions,
+] as const;
 
 export const Studio = ({
   initialProjects,
@@ -339,55 +348,14 @@ export const Studio = ({
       currentProjectId={persistence.projectId}
       header={
         <>
-          <div className="flex min-w-0 items-center gap-2">
-            {pendingSelect === null ? (
-              persistence.projectId === null ? (
-                <span className="text-fg-mute truncate text-sm">
-                  新しいプロジェクト
-                </span>
-              ) : (
-                <span className="text-fg-base truncate text-sm font-medium">
-                  {persistence.projectTitle ?? '無題'}
-                </span>
-              )
-            ) : (
-              // 読込中は選んだプロジェクト名を先行表示し、クリックが効いたことを示す。
-              <span className="text-fg-base truncate text-sm font-medium">
-                {pendingSelect.title}
-              </span>
-            )}
-          </div>
+          <ProjectTitle
+            newProjectLabel="新しいプロジェクト"
+            pendingTitle={pendingSelect?.title ?? null}
+            projectId={persistence.projectId}
+            projectTitle={persistence.projectTitle}
+          />
           <div className="hidden gap-2 lg:flex">
-            <Button
-              color="primary"
-              onClick={() => {
-                setView('preview');
-              }}
-              size="sm"
-              variant={view === 'preview' ? 'solid' : 'skeleton'}
-            >
-              プレビュー
-            </Button>
-            <Button
-              color="primary"
-              onClick={() => {
-                setView('spec');
-              }}
-              size="sm"
-              variant={view === 'spec' ? 'solid' : 'skeleton'}
-            >
-              spec
-            </Button>
-            <Button
-              color="primary"
-              onClick={() => {
-                setView('tsx');
-              }}
-              size="sm"
-              variant={view === 'tsx' ? 'solid' : 'skeleton'}
-            >
-              TSX
-            </Button>
+            <ViewTabs onChange={setView} options={viewOptions} value={view} />
           </div>
           <div className="flex shrink-0 items-center gap-2 lg:ml-auto">
             {persistence.projectId === null ? null : (
@@ -440,58 +408,20 @@ export const Studio = ({
       tool="ui"
     >
       <div className="flex gap-2 px-4 py-2 lg:hidden">
-        <Button
-          color="primary"
-          onClick={() => {
-            setMobileTab('chat');
+        <ViewTabs
+          onChange={(tab) => {
+            setMobileTab(tab);
+            if (tab !== 'chat') {
+              setView(tab);
+            }
           }}
-          size="sm"
-          variant={mobileTab === 'chat' ? 'solid' : 'skeleton'}
-        >
-          チャット
-        </Button>
-        <Button
-          color="primary"
-          onClick={() => {
-            setMobileTab('preview');
-            setView('preview');
-          }}
-          size="sm"
-          variant={mobileTab === 'preview' ? 'solid' : 'skeleton'}
-        >
-          プレビュー
-        </Button>
-        <Button
-          color="primary"
-          onClick={() => {
-            setMobileTab('spec');
-            setView('spec');
-          }}
-          size="sm"
-          variant={mobileTab === 'spec' ? 'solid' : 'skeleton'}
-        >
-          spec
-        </Button>
-        <Button
-          color="primary"
-          onClick={() => {
-            setMobileTab('tsx');
-            setView('tsx');
-          }}
-          size="sm"
-          variant={mobileTab === 'tsx' ? 'solid' : 'skeleton'}
-        >
-          TSX
-        </Button>
+          options={mobileTabOptions}
+          value={mobileTab}
+        />
       </div>
 
-      {/* grid-rows-1 で単一ペインも本体高さを満たす（小画面でメッセージがスクロールするように）。 */}
-      <div className="grid min-h-0 flex-1 grid-rows-1 lg:grid-cols-[440px_minmax(0,1fr)]">
-        <div
-          className={`border-border-mute min-h-0 min-w-0 flex-col lg:flex lg:border-r ${
-            mobileTab === 'chat' ? 'flex' : 'hidden'
-          }`}
-        >
+      <StudioPanes
+        chat={
           <ChatPanel
             emptyStateHint={emptyStateHint}
             emptyStateTitle={emptyStateTitle}
@@ -513,13 +443,9 @@ export const Studio = ({
             status={status}
             suggestions={promptSuggestions}
           />
-        </div>
-
-        <div
-          className={`min-h-0 min-w-0 flex-col overflow-hidden lg:flex ${
-            mobileTab === 'chat' ? 'hidden' : 'flex'
-          }`}
-        >
+        }
+        mobilePane={mobileTab === 'chat' ? 'chat' : 'panel'}
+        panel={
           <div className="min-h-0 flex-1 overflow-hidden" ref={frameRef}>
             <div
               className={
@@ -539,9 +465,7 @@ export const Studio = ({
               )}
               {/* 履歴/フォーク選択の読込中オーバーレイ。 */}
               {pendingSelect === null ? null : (
-                <div className="absolute inset-0 z-10">
-                  <PreviewLoading message="プロジェクトを読み込んでいます…" />
-                </div>
+                <PreviewLoading message="プロジェクトを読み込んでいます…" />
               )}
             </div>
             <div className={view === 'preview' ? 'hidden' : 'h-full'}>
@@ -552,8 +476,8 @@ export const Studio = ({
               />
             </div>
           </div>
-        </div>
-      </div>
+        }
+      />
     </StudioShell>
   );
 };

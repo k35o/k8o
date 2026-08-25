@@ -39,7 +39,10 @@ import {
   useProjectPersistence,
   useProjectUrlSync,
 } from '../../../_components/project-persistence';
+import { ProjectTitle } from '../../../_components/project-title';
+import { StudioPanes } from '../../../_components/studio-panes';
 import { StudioShell } from '../../../_components/studio-shell';
+import { ViewTabs } from '../../../_components/view-tabs';
 import { DeckPreview } from '../deck-preview';
 
 // 設定は完全に静的なので、レンダーごとに生成しない。
@@ -52,6 +55,16 @@ const persistenceActions = {
 };
 
 type PanelView = 'preview' | 'source';
+
+const viewOptions = [
+  { value: 'preview', label: 'プレビュー' },
+  { value: 'source', label: 'ソース' },
+] as const;
+
+const mobileTabOptions = [
+  { value: 'chat', label: 'チャット' },
+  ...viewOptions,
+] as const;
 
 // 吹き出しに出す説明文。スライドの出力フォーマット（md + json）から抽出する。
 const describeSlidesMessage = (text: string): string | null =>
@@ -69,9 +82,7 @@ export const SlidesStudio = ({
   );
   const [view, setView] = useState<PanelView>('preview');
   // 小画面では2ペインを並べられないので、タブで1つずつ表示する。
-  const [mobileTab, setMobileTab] = useState<'chat' | 'preview' | 'source'>(
-    'chat',
-  );
+  const [mobileTab, setMobileTab] = useState<'chat' | PanelView>('chat');
   // 履歴/フォーク選択の読込中。押した直後に「読み込み中」を見せて無反応に見えるのを防ぐ。
   const [pendingSelect, setPendingSelect] = useState<{ title: string } | null>(
     null,
@@ -289,45 +300,14 @@ export const SlidesStudio = ({
       currentProjectId={persistence.projectId}
       header={
         <>
-          <div className="flex min-w-0 items-center gap-2">
-            {pendingSelect === null ? (
-              persistence.projectId === null ? (
-                <span className="text-fg-mute truncate text-sm">
-                  新しいスライド
-                </span>
-              ) : (
-                <span className="text-fg-base truncate text-sm font-medium">
-                  {persistence.projectTitle ?? '無題'}
-                </span>
-              )
-            ) : (
-              // 読込中は選んだプロジェクト名を先行表示し、クリックが効いたことを示す。
-              <span className="text-fg-base truncate text-sm font-medium">
-                {pendingSelect.title}
-              </span>
-            )}
-          </div>
+          <ProjectTitle
+            newProjectLabel="新しいスライド"
+            pendingTitle={pendingSelect?.title ?? null}
+            projectId={persistence.projectId}
+            projectTitle={persistence.projectTitle}
+          />
           <div className="hidden gap-2 lg:flex">
-            <Button
-              color="primary"
-              onClick={() => {
-                setView('preview');
-              }}
-              size="sm"
-              variant={view === 'preview' ? 'solid' : 'skeleton'}
-            >
-              プレビュー
-            </Button>
-            <Button
-              color="primary"
-              onClick={() => {
-                setView('source');
-              }}
-              size="sm"
-              variant={view === 'source' ? 'solid' : 'skeleton'}
-            >
-              ソース
-            </Button>
+            <ViewTabs onChange={setView} options={viewOptions} value={view} />
           </div>
           <div className="flex shrink-0 items-center gap-2 lg:ml-auto">
             {persistence.projectId === null ? null : (
@@ -376,47 +356,20 @@ export const SlidesStudio = ({
       tool="slides"
     >
       <div className="flex gap-2 px-4 py-2 lg:hidden">
-        <Button
-          color="primary"
-          onClick={() => {
-            setMobileTab('chat');
+        <ViewTabs
+          onChange={(tab) => {
+            setMobileTab(tab);
+            if (tab !== 'chat') {
+              setView(tab);
+            }
           }}
-          size="sm"
-          variant={mobileTab === 'chat' ? 'solid' : 'skeleton'}
-        >
-          チャット
-        </Button>
-        <Button
-          color="primary"
-          onClick={() => {
-            setMobileTab('preview');
-            setView('preview');
-          }}
-          size="sm"
-          variant={mobileTab === 'preview' ? 'solid' : 'skeleton'}
-        >
-          プレビュー
-        </Button>
-        <Button
-          color="primary"
-          onClick={() => {
-            setMobileTab('source');
-            setView('source');
-          }}
-          size="sm"
-          variant={mobileTab === 'source' ? 'solid' : 'skeleton'}
-        >
-          ソース
-        </Button>
+          options={mobileTabOptions}
+          value={mobileTab}
+        />
       </div>
 
-      {/* grid-rows-1 で単一ペインも本体高さを満たす（小画面でメッセージがスクロールするように）。 */}
-      <div className="grid min-h-0 flex-1 grid-rows-1 lg:grid-cols-[440px_minmax(0,1fr)]">
-        <div
-          className={`border-border-mute min-h-0 min-w-0 flex-col lg:flex lg:border-r ${
-            mobileTab === 'chat' ? 'flex' : 'hidden'
-          }`}
-        >
+      <StudioPanes
+        chat={
           <ChatPanel
             describeMessage={describeSlidesMessage}
             emptyStateHint={emptyStateHint}
@@ -440,13 +393,9 @@ export const SlidesStudio = ({
             status={status}
             suggestions={promptSuggestions}
           />
-        </div>
-
-        <div
-          className={`min-h-0 min-w-0 flex-col overflow-hidden lg:flex ${
-            mobileTab === 'chat' ? 'hidden' : 'flex'
-          }`}
-        >
+        }
+        mobilePane={mobileTab === 'chat' ? 'chat' : 'panel'}
+        panel={
           <div className="min-h-0 flex-1 overflow-hidden" ref={frameRef}>
             <div
               className={
@@ -476,8 +425,8 @@ export const SlidesStudio = ({
               />
             </div>
           </div>
-        </div>
-      </div>
+        }
+      />
     </StudioShell>
   );
 };
