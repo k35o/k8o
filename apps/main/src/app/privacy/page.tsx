@@ -27,10 +27,6 @@ export default function Page() {
             Vercel AnalyticsおよびSpeed
             Insights：Cookieを使用せず、ページの閲覧状況やパフォーマンス指標を匿名で収集します。
           </li>
-          <li>
-            Cloudflare Web
-            Analytics：Cookieを使用せず、トラフィックの傾向を匿名で収集します。
-          </li>
         </ul>
       </section>
       <section className="flex flex-col gap-3">
