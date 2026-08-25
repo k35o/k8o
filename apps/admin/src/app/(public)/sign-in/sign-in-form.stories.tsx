@@ -1,7 +1,7 @@
+import { SignInForm } from '@repo/auth-shell/sign-in-form';
 import { expect, within } from 'storybook/test';
 
-import preview from '../../../../../../.storybook/preview';
-import { SignInForm } from './sign-in-form';
+import preview from '../../../../.storybook/preview';
 
 const meta = preview.meta({
   title: 'admin/sign-in/sign-in-form',

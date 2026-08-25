@@ -1,7 +1,7 @@
+import { verifySession } from '@repo/auth-shell/verify-session';
 import { Suspense } from 'react';
 
 import { listProjectsForRoute } from '@/features/projects/interface/queries';
-import { verifySession } from '@/shared/auth/verify-session';
 
 import { Studio, StudioSkeleton } from './_components/studio';
 

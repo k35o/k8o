@@ -29,7 +29,7 @@ Better Auth + GitHub OAuth（`@repo/database/auth` を共用）。**本人のみ
 
 LLM / サンドボックスは課金が発生するため、**課金が発生する全 API route / server action の先頭で `shared/auth/require-allowed-session.ts` を呼び、未許可は 401 で弾く**こと（middleware は `/api` を守らないため必須の防御層）。
 
-認証の有効/無効は `src/shared/auth/auth-enabled.ts` に集約。Vercel preview は認証OFF（= preview URL は課金の開き戸になるため、ai プロジェクトには Vercel Deployment Protection を併用する）。
+認証の実装は admin と共有で `@repo/auth-shell`（`packages/auth-shell/CLAUDE.md`）にある。認証まわりを直すときはそちらを直し、ai 側にコピーを作らない。認証の有効/無効は `@repo/auth-shell/auth-enabled` に集約。Vercel preview は認証OFF（= preview URL は課金の開き戸になるため、ai プロジェクトには Vercel Deployment Protection を併用する）。
 
 ローカル開発URLは `https://ai.k8o.localhost/`。`LOCAL_AUTH_BYPASS=true`（`.env.local`, NODE_ENV=development のときのみ）でログインを省略できる。
 

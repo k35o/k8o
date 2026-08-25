@@ -1,3 +1,5 @@
+import { verifySession } from '@repo/auth-shell/verify-session';
+
 import {
   FilterSelect,
   ListPagination,
@@ -5,7 +7,6 @@ import {
 } from '@/app/(authenticated)/_components';
 import { getBlogs } from '@/features/blog/interface/queries';
 import type { BlogSort, BlogStatus } from '@/features/blog/interface/queries';
-import { verifySession } from '@/shared/auth/verify-session';
 import {
   firstParam,
   getTotalPages,

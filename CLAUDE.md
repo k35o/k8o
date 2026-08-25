@@ -28,6 +28,7 @@ pnpm -F main exec svrt approve   # 変更を新しいベースラインとして
 apps/main/          → Next.jsアプリ（メイン）            → apps/main/CLAUDE.md
 apps/admin/         → 管理サイト（Better Auth）          → apps/admin/CLAUDE.md
 apps/ai/            → AIツール群（ai.k8o.me）            → apps/ai/CLAUDE.md
+packages/auth-shell/→ admin・aiの認証ゲートとアプリシェル → packages/auth-shell/CLAUDE.md
 packages/database/  → Drizzle ORM + Turso (libSQL)       → packages/database/CLAUDE.md
 packages/helpers/   → 共有ユーティリティ                  → packages/helpers/CLAUDE.md
 packages/typescript-config・vitest-config・code-highlight → 共有設定・コードハイライト

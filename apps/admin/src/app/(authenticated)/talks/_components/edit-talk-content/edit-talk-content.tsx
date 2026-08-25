@@ -1,4 +1,5 @@
 import { Breadcrumb, Card, Heading } from '@k8o/arte-odyssey';
+import { verifySession } from '@repo/auth-shell/verify-session';
 import { notFound } from 'next/navigation';
 
 import { updateTalk } from '@/features/talks/interface/actions';
@@ -6,7 +7,6 @@ import {
   getBlogOptions,
   getTalkForEdit,
 } from '@/features/talks/interface/queries';
-import { verifySession } from '@/shared/auth/verify-session';
 
 import { TalkForm } from '../talk-form';
 

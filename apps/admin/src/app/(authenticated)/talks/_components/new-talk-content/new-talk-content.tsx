@@ -1,8 +1,8 @@
 import { Card } from '@k8o/arte-odyssey';
+import { verifySession } from '@repo/auth-shell/verify-session';
 
 import { createTalk } from '@/features/talks/interface/actions';
 import { getBlogOptions } from '@/features/talks/interface/queries';
-import { verifySession } from '@/shared/auth/verify-session';
 
 import { TalkForm } from '../talk-form';
 

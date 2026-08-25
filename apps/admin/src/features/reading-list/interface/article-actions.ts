@@ -1,10 +1,10 @@
 'use server';
 
+import { verifySession } from '@repo/auth-shell/verify-session';
 import { updateTag } from 'next/cache';
 import { redirect } from 'next/navigation';
 
 import type { ActionState } from '@/shared/actions/action-state';
-import { verifySession } from '@/shared/auth/verify-session';
 import { READING_LIST_CACHE_TAG } from '@/shared/cache/cache-tags';
 import { revalidateMainCache } from '@/shared/cache/revalidate-main';
 

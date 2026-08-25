@@ -1,5 +1,6 @@
+import { verifySession } from '@repo/auth-shell/verify-session';
+
 import { getTalks } from '@/features/talks/interface/queries';
-import { verifySession } from '@/shared/auth/verify-session';
 
 import { TalkList } from '../talk-list';
 

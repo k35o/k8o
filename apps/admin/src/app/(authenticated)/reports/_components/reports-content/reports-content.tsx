@@ -1,4 +1,5 @@
 import { TableIcon } from '@k8o/arte-odyssey';
+import { verifySession } from '@repo/auth-shell/verify-session';
 
 import {
   FilterSelect,
@@ -11,7 +12,6 @@ import {
   getReports,
   getReportTypeCounts,
 } from '@/features/reports/interface/queries';
-import { verifySession } from '@/shared/auth/verify-session';
 import {
   firstParam,
   getTotalPages,
