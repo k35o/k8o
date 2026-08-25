@@ -1,30 +1,12 @@
-type Rgb = [number, number, number];
-
-const validHexColorRegex = /^#[0-9A-Fa-f]{6}$/u;
-
-const isValidHexColor = (hex: string): boolean => validHexColorRegex.test(hex);
-
-const convertHexToRgb = (hex: string): Rgb => {
-  if (!isValidHexColor(hex)) {
-    throw new Error(
-      `Invalid hex color format: ${hex}. Expected format: #RRGGBB`,
-    );
-  }
-
-  const r = Number.parseInt(hex.slice(1, 3), 16);
-  const g = Number.parseInt(hex.slice(3, 5), 16);
-  const b = Number.parseInt(hex.slice(5, 7), 16);
-  return [r, g, b];
-};
+import { convertHexToRgb } from './hex-rgb';
+import type { Rgb } from './hex-rgb';
+import { toLinear } from './spaces';
 
 const calcLuminance = (rgbColor: Rgb) => {
   const [r8, g8, b8] = rgbColor;
-  const rsrgb = r8 / 255;
-  const gsrgb = g8 / 255;
-  const bsrgb = b8 / 255;
-  const r = rsrgb <= 0.04045 ? rsrgb / 12.92 : ((rsrgb + 0.055) / 1.055) ** 2.4;
-  const g = gsrgb <= 0.04045 ? gsrgb / 12.92 : ((gsrgb + 0.055) / 1.055) ** 2.4;
-  const b = bsrgb <= 0.04045 ? bsrgb / 12.92 : ((bsrgb + 0.055) / 1.055) ** 2.4;
+  const r = toLinear(r8 / 255);
+  const g = toLinear(g8 / 255);
+  const b = toLinear(b8 / 255);
   return 0.2126 * r + 0.7152 * g + 0.0722 * b;
 };
 

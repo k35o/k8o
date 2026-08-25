@@ -1,19 +1,34 @@
 'use client';
 
 import { Button } from '@k8o/arte-odyssey';
-import { useCallback, useEffect, useRef, useState } from 'react';
+import {
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+  useSyncExternalStore,
+} from 'react';
 import type { FC } from 'react';
+
+// 機能対応は環境依存で SSR では判定できないため、useSyncExternalStore で
+// クライアント確定値を読む（サーバーは対応ありと仮定して初期描画を維持）。
+const subscribeNoop = (): (() => void) => () => undefined;
+const getSupportedSnapshot = (): boolean => 'wakeLock' in navigator;
+const getServerSnapshot = (): boolean => true;
 
 export const WakeLockDemo: FC = () => {
   const [isLocked, setIsLocked] = useState(false);
-  const [isSupported, setIsSupported] = useState(true);
+  const isSupported = useSyncExternalStore(
+    subscribeNoop,
+    getSupportedSnapshot,
+    getServerSnapshot,
+  );
   const wakeLock = useRef<WakeLockSentinel | null>(null);
   const isRequesting = useRef(false);
   const isUnmounted = useRef(false);
 
   useEffect(() => {
     isUnmounted.current = false;
-    setIsSupported('wakeLock' in navigator);
     return () => {
       isUnmounted.current = true;
       wakeLock.current?.release().catch((error: unknown) => {

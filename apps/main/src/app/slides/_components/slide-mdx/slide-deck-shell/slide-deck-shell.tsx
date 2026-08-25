@@ -1,6 +1,6 @@
 import type { FC, ReactNode } from 'react';
 
-import { splitSlides } from '@/features/slides/application/split-slides';
+import { splitSlides } from '@/app/slides/_utils/split-slides';
 
 import { SlideDeck } from '../../slide-deck/slide-deck';
 

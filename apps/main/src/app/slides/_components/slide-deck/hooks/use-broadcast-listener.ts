@@ -1,6 +1,6 @@
 'use client';
 
-import { useCallback, useEffect, useRef } from 'react';
+import { useCallback, useEffect, useEffectEvent, useRef } from 'react';
 
 type ChannelMessage = { type: 'sync'; index: number };
 
@@ -23,10 +23,7 @@ export const useBroadcastListener = ({
   onReceive: (index: number) => void;
 }): ((index: number) => void) => {
   const channelRef = useRef<BroadcastChannel | null>(null);
-  const onReceiveRef = useRef(onReceive);
-  useEffect(() => {
-    onReceiveRef.current = onReceive;
-  });
+  const handleReceive = useEffectEvent(onReceive);
 
   useEffect(() => {
     if (typeof BroadcastChannel === 'undefined') return undefined;
@@ -34,7 +31,7 @@ export const useBroadcastListener = ({
     channelRef.current = channel;
     const handler = (event: MessageEvent<unknown>) => {
       if (!isChannelMessage(event.data)) return;
-      onReceiveRef.current(event.data.index);
+      handleReceive(event.data.index);
     };
     channel.addEventListener('message', handler);
     return () => {

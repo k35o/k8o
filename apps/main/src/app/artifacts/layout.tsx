@@ -1,23 +1,12 @@
 import { Heading } from '@k8o/arte-odyssey';
-import type { Metadata } from 'next';
 
-export const metadata = {
+import { buildPageMetadata } from '@/shared/site/build-page-metadata';
+
+export const metadata = buildPageMetadata({
   title: 'Artifacts',
   description: 'dotfilesやskills、自作ツールなどの制作物をまとめています。',
-  openGraph: {
-    title: 'Artifacts',
-    description: 'dotfilesやskills、自作ツールなどの制作物をまとめています。',
-    url: 'https://k8o.me/artifacts',
-    siteName: 'k8o',
-    locale: 'ja',
-    type: 'website',
-  },
-  twitter: {
-    title: 'Artifacts',
-    card: 'summary',
-    description: 'dotfilesやskills、自作ツールなどの制作物をまとめています。',
-  },
-} satisfies Metadata;
+  path: '/artifacts',
+});
 
 export default function Layout({ children }: LayoutProps<'/artifacts'>) {
   return (

@@ -1,11 +1,13 @@
 'use server';
 
+import { updateTag } from 'next/cache';
 import { headers } from 'next/headers';
 
 import { requireAllowedSession } from '@/shared/auth/require-allowed-session';
 
 import { publishProject, unpublishProject } from '../application/share';
 import type { PublishedShare } from '../application/share';
+import { shareCacheTag } from './queries';
 
 export const publishProjectAction = async (
   projectId: number,
@@ -14,7 +16,11 @@ export const publishProjectAction = async (
   if (session === null) {
     return null;
   }
-  return publishProject({ userId: session.userId, projectId });
+  const res = await publishProject({ userId: session.userId, projectId });
+  if (res !== null) {
+    updateTag(shareCacheTag(res.slug));
+  }
+  return res;
 };
 
 export const unpublishProjectAction = async (
@@ -24,5 +30,10 @@ export const unpublishProjectAction = async (
   if (session === null) {
     return false;
   }
-  return unpublishProject({ userId: session.userId, projectId });
+  const res = await unpublishProject({ userId: session.userId, projectId });
+  if (res === null) {
+    return false;
+  }
+  updateTag(shareCacheTag(res.slug));
+  return true;
 };

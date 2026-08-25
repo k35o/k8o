@@ -1,10 +1,13 @@
 import { fetchUserContributions } from './contributions';
 
-const { graphqlMock } = vi.hoisted(() => ({ graphqlMock: vi.fn() }));
+const fetchMock = vi.fn();
+vi.stubGlobal('fetch', fetchMock);
 
-vi.mock('@octokit/graphql', () => ({
-  graphql: graphqlMock,
-}));
+const graphqlResponse = (data: unknown) => ({
+  ok: true,
+  status: 200,
+  json: () => Promise.resolve({ data }),
+});
 
 describe('fetchUserContributions', () => {
   beforeEach(() => {
@@ -28,15 +31,17 @@ describe('fetchUserContributions', () => {
   });
 
   it('カレンダーが空の場合は直近14日分を0件で返す', async () => {
-    graphqlMock.mockResolvedValue({
-      user: {
-        contributionsCollection: {
-          contributionCalendar: {
-            weeks: [],
+    fetchMock.mockResolvedValue(
+      graphqlResponse({
+        user: {
+          contributionsCollection: {
+            contributionCalendar: {
+              weeks: [],
+            },
           },
         },
-      },
-    });
+      }),
+    );
 
     await expect(fetchUserContributions('k35o')).resolves.toStrictEqual([
       { date: '2026-03-14', count: 0 },
@@ -55,48 +60,50 @@ describe('fetchUserContributions', () => {
       { date: '2026-03-27', count: 0 },
     ]);
 
-    expect(graphqlMock).toHaveBeenCalledWith(
-      expect.any(String),
-      expect.objectContaining({
-        userName: 'k35o',
-        from: '2026-03-13T15:00:00.000Z',
-        to: '2026-03-27T14:59:59.999Z',
-      }),
-    );
+    const [url, init] = fetchMock.mock.calls[0] as [string, RequestInit];
+    expect(url).toBe('https://api.github.com/graphql');
+    const body = JSON.parse(init.body as string) as { variables: unknown };
+    expect(body.variables).toStrictEqual({
+      userName: 'k35o',
+      from: '2026-03-13T15:00:00.000Z',
+      to: '2026-03-27T14:59:59.999Z',
+    });
   });
 
   it('カレンダーの日次コントリビューションを期間内で集計する', async () => {
-    graphqlMock.mockResolvedValue({
-      user: {
-        contributionsCollection: {
-          contributionCalendar: {
-            weeks: [
-              {
-                contributionDays: [
-                  { date: '2026-03-14', contributionCount: 0 },
-                  { date: '2026-03-15', contributionCount: 2 },
-                ],
-              },
-              {
-                contributionDays: [
-                  { date: '2026-03-20', contributionCount: 3 },
-                  { date: '2026-03-21', contributionCount: 4 },
-                ],
-              },
-              {
-                contributionDays: [
-                  { date: '2026-03-28', contributionCount: 99 },
-                ],
-              },
-            ],
+    fetchMock.mockResolvedValue(
+      graphqlResponse({
+        user: {
+          contributionsCollection: {
+            contributionCalendar: {
+              weeks: [
+                {
+                  contributionDays: [
+                    { date: '2026-03-14', contributionCount: 0 },
+                    { date: '2026-03-15', contributionCount: 2 },
+                  ],
+                },
+                {
+                  contributionDays: [
+                    { date: '2026-03-20', contributionCount: 3 },
+                    { date: '2026-03-21', contributionCount: 4 },
+                  ],
+                },
+                {
+                  contributionDays: [
+                    { date: '2026-03-28', contributionCount: 99 },
+                  ],
+                },
+              ],
+            },
           },
         },
-      },
-    });
+      }),
+    );
 
     const result = await fetchUserContributions('k35o');
 
-    expect(graphqlMock).toHaveBeenCalledTimes(1);
+    expect(fetchMock).toHaveBeenCalledTimes(1);
     expect(result).toStrictEqual([
       { date: '2026-03-14', count: 0 },
       { date: '2026-03-15', count: 2 },

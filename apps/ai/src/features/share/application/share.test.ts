@@ -71,12 +71,16 @@ describe('publishProject', () => {
 
 describe('unpublishProject', () => {
   describe('正常系', () => {
-    it('visibility を private に戻し、公開版 ID をクリアする', async () => {
+    it('visibility を private に戻し、公開版 ID をクリアして slug を返す', async () => {
+      vi.mocked(getProjectLatest).mockResolvedValue({
+        slug: 'abc123',
+        versionId: 42,
+      });
       vi.mocked(setVisibility).mockResolvedValue(true);
 
       await expect(
         unpublishProject({ userId: 'u1', projectId: 1 }),
-      ).resolves.toBe(true);
+      ).resolves.toStrictEqual({ slug: 'abc123' });
       expect(setVisibility).toHaveBeenCalledWith({
         userId: 'u1',
         projectId: 1,
@@ -87,12 +91,25 @@ describe('unpublishProject', () => {
   });
 
   describe('異常系', () => {
-    it('非所有なら setVisibility の false をそのまま返す', async () => {
+    it('プロジェクトが見つからなければ null を返し visibility を変更しない', async () => {
+      vi.mocked(getProjectLatest).mockResolvedValue(null);
+
+      await expect(
+        unpublishProject({ userId: 'u1', projectId: 1 }),
+      ).resolves.toBeNull();
+      expect(setVisibility).not.toHaveBeenCalled();
+    });
+
+    it('setVisibility が false（所有チェック落ち）なら null を返す', async () => {
+      vi.mocked(getProjectLatest).mockResolvedValue({
+        slug: 'abc123',
+        versionId: 42,
+      });
       vi.mocked(setVisibility).mockResolvedValue(false);
 
       await expect(
         unpublishProject({ userId: 'u1', projectId: 1 }),
-      ).resolves.toBe(false);
+      ).resolves.toBeNull();
     });
   });
 });

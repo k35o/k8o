@@ -2,7 +2,7 @@
 title: 複数のSuspenseの表示を制御するSuspenseList
 description: React18の実験的機能SuspenseListを使って複数のSuspenseの読み込み順序と表示パターンを制御する方法を解説します。レイアウトシフトの削減とUX向上を実現するコンポーネントです。
 createdAt: 2025-06-21 19:30:00.000000+09
-updatedAt: 2025-06-21 19:30:00.000000+09
+updatedAt: 2026-08-25 11:57:00.000000+09
 ---
 
 import { Alert } from '@k8o/arte-odyssey';
@@ -159,14 +159,14 @@ import { PlaygroundEmbed } from '@/app/_components/playgrounds';
 
 ## Playground
 
-実験的機能なので触った事ない人がほとんどだと思います。以下のPlaygroundで`SuspenseList`の世界を実際に体験してください。
+当初はこのPlaygroundで`revealOrder`や`tail`を切り替えながら`SuspenseList`を体験できましたが、その後のReact・Next.jsの更新で、このサイトが動く環境（React 19.2 / Next.js 16）では`SuspenseList`自体が利用できなくなりました。現在のPlaygroundでは、`SuspenseList`なしで複数の`Suspense`が並列に解決されていく様子と、フォールバックUIの有無による見え方の違いを確認できます。
 
 <PlaygroundEmbed
   demo="SuspenseListによる読み込み制御"
   sectionId="suspense-list"
 />
 
-PlaygroundはReactの製品版の最新バージョンで動いています。
+`SuspenseList`が再び利用できるようになったら、`revealOrder`と`tail`を試せるPlaygroundに戻す予定です。
 
 ## おわりに
 

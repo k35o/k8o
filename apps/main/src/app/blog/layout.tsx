@@ -1,32 +1,16 @@
-import type { Metadata } from 'next';
+import { buildPageMetadata } from '@/shared/site/build-page-metadata';
 
 import { WritingModeProvider } from './_components/blog-layout/writing-mode';
-import { ScrollToTopOnPathChange } from './_components/scroll-to-top-on-path-change';
 
 import './_styles/vertical-inline-code.css';
+import { ScrollToTopOnPathChange } from './_components/scroll-to-top-on-path-change';
 
-export const metadata = {
+export const metadata = buildPageMetadata({
   title: 'Blog',
   description: 'Webフロントエンドを中心に、日々のことも書いています。',
-  alternates: {
-    types: {
-      'application/rss+xml': 'https://k8o.me/blog/feed',
-    },
-  },
-  openGraph: {
-    title: 'Blog',
-    description: 'Webフロントエンドを中心に、日々のことも書いています。',
-    url: 'https://k8o.me/blog',
-    siteName: 'k8o',
-    locale: 'ja',
-    type: 'website',
-  },
-  twitter: {
-    title: 'Blog',
-    card: 'summary',
-    description: 'Webフロントエンドを中心に、日々のことも書いています。',
-  },
-} satisfies Metadata;
+  path: '/blog',
+  rssFeedPath: '/blog/feed',
+});
 
 export default function Layout({ children }: LayoutProps<'/blog'>) {
   return (

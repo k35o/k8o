@@ -35,7 +35,7 @@ packages/typescript-config・vitest-config・code-highlight → 共有設定・�
 
 各 app / package 固有の規約は、対応する `CLAUDE.md` を参照すること。
 
-`@repo/database` を直接 import してよいのは `apps/*/src/features/*/infrastructure/` のみ。`app/` や `features/*/interface` から直接読まない（現時点では規約運用。機械的な禁止ルールは今後 oxc のカスタムルールとして導入する）。
+`@repo/database` を直接 import するのは `apps/*/src/features/*/infrastructure/` を基本とし、小さい読み取りに限り `features/*/application` に置いてもよい。書き込みや外部接続の詳細は infrastructure へ切り出す。`app/` や `features/*/interface` から直接読まない（現時点では規約運用。機械的な禁止ルールは今後 oxc のカスタムルールとして導入する）。
 
 ## コーディング規約
 

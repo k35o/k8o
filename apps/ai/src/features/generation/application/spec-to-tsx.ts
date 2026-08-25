@@ -6,7 +6,8 @@ import type { Spec, UIElement } from '@json-render/core';
 // フォーム値の state 配線・動的値（$state 等）は移植先で行う前提。
 
 // catalog の Icon.name → 実コンポーネント名（registry の iconMap と同じ対応）。
-const ICON_COMPONENTS: Record<string, string> = {
+// catalog との1対1対応は spec-to-tsx.test.ts のドリフト検知テストが照合する。
+export const ICON_COMPONENTS: Record<string, string> = {
   plus: 'PlusIcon',
   minus: 'MinusIcon',
   check: 'CheckIcon',
@@ -54,6 +55,7 @@ const ICON_COMPONENTS: Record<string, string> = {
   interesting: 'InterestingIcon',
   boring: 'BoringIcon',
   shallow: 'ShallowIcon',
+  'arte-odyssey': 'ArteOdyssey',
   logo: 'LogoIcon',
   github: 'GitHubIcon',
   twitter: 'TwitterIcon',
@@ -374,7 +376,7 @@ const emitElement = (el: UIElement, ctx: Ctx): string[] => {
     case 'NumberField': {
       ctx.imports.add('NumberField');
       return [
-        `<NumberField${attrs(el, ['name', 'defaultValue', 'min', 'max', 'step'], ctx)} />`,
+        `<NumberField${attrs(el, ['name', 'defaultValue', 'min', 'max', 'step', 'invalid', 'disabled'], ctx)} />`,
       ];
     }
     case 'Checkbox':
@@ -384,7 +386,13 @@ const emitElement = (el: UIElement, ctx: Ctx): string[] => {
         `<${el.type}${attrs(el, ['label', 'name', 'defaultChecked', 'disabled'], ctx)} />`,
       ];
     }
-    case 'Radio':
+    case 'Radio': {
+      // catalog の Radio は invalid を持たない（RadioCard / CheckboxCard との差分）。
+      ctx.imports.add(el.type);
+      return emitLabeledGroup(el, ctx, (labelId) => [
+        `<Radio aria-labelledby="${labelId}"${attrs(el, ['name', 'options', 'defaultValue', 'disabled'], ctx)} />`,
+      ]);
+    }
     case 'RadioCard':
     case 'CheckboxCard': {
       ctx.imports.add(el.type);
@@ -413,7 +421,7 @@ const emitElement = (el: UIElement, ctx: Ctx): string[] => {
     case 'Slider': {
       ctx.imports.add('Slider');
       return [
-        `<Slider${attrs(el, ['name', 'defaultValue', 'min', 'max', 'step'], ctx)} />`,
+        `<Slider${attrs(el, ['name', 'defaultValue', 'min', 'max', 'step', 'invalid', 'disabled'], ctx)} />`,
       ];
     }
     case 'Form': {

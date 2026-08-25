@@ -1,6 +1,5 @@
+import { DB_CONTENT_CACHE_TAG } from '@repo/helpers/cache/main-cache-tags';
 import { cacheLife, cacheTag } from 'next/cache';
-
-import { DB_CONTENT_CACHE_TAG } from '@/shared/cache/cache-tags';
 
 import { getTag as _getTag } from '../application/tag';
 import { getTags as _getTags } from '../application/tags';

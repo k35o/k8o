@@ -1,26 +1,15 @@
 import { Heading } from '@k8o/arte-odyssey';
-import type { Metadata } from 'next';
+
+import { buildPageMetadata } from '@/shared/site/build-page-metadata';
 
 const description =
   'ReadingsとBrowser Supportの更新をプッシュ通知で受け取れます。受け取った通知の履歴も確認できます。';
 
-export const metadata = {
+export const metadata = buildPageMetadata({
   title: '通知',
   description,
-  openGraph: {
-    title: '通知',
-    description,
-    url: 'https://k8o.me/notifications',
-    siteName: 'k8o',
-    locale: 'ja',
-    type: 'website',
-  },
-  twitter: {
-    title: '通知',
-    card: 'summary',
-    description,
-  },
-} satisfies Metadata;
+  path: '/notifications',
+});
 
 export default function Layout({ children }: LayoutProps<'/notifications'>) {
   return (

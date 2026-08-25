@@ -1,10 +1,11 @@
 'use server';
 
-import { revalidatePath } from 'next/cache';
+import { updateTag } from 'next/cache';
 import { redirect } from 'next/navigation';
 
 import type { ActionState } from '@/shared/actions/action-state';
 import { verifySession } from '@/shared/auth/verify-session';
+import { TALKS_CACHE_TAG } from '@/shared/cache/cache-tags';
 import { revalidateMainCache } from '@/shared/cache/revalidate-main';
 
 import {
@@ -32,7 +33,7 @@ export async function createTalk(
   }
 
   await revalidateMainCache();
-  revalidatePath('/talks');
+  updateTag(TALKS_CACHE_TAG);
   return redirect('/talks');
 }
 
@@ -55,7 +56,7 @@ export async function updateTalk(
   }
 
   await revalidateMainCache();
-  revalidatePath('/talks');
+  updateTag(TALKS_CACHE_TAG);
   return redirect('/talks');
 }
 
@@ -69,6 +70,6 @@ export async function deleteTalk(id: number): Promise<ActionState> {
   }
 
   await revalidateMainCache();
-  revalidatePath('/talks');
+  updateTag(TALKS_CACHE_TAG);
   return { success: true };
 }

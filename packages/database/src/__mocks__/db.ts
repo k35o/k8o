@@ -1,8 +1,7 @@
-import { sql } from 'drizzle-orm';
-import type { AnyColumn } from 'drizzle-orm';
 import { drizzle } from 'drizzle-orm/libsql';
 
 import { relations, schema } from '../schema';
+import { increment } from '../utils';
 
 const drizzleDb = drizzle.mock({
   schema: {
@@ -14,6 +13,6 @@ const drizzleDb = drizzle.mock({
 export const db = Object.assign(drizzleDb, {
   _schema: schema,
   _utils: {
-    increment: (column: AnyColumn, value = 1) => sql`${column} + ${value}`,
+    increment,
   },
 });

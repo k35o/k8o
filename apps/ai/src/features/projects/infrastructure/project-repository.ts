@@ -4,6 +4,9 @@ import type { AiApp, AiVisibility } from '@repo/database/schema';
 import { and, desc, eq } from 'drizzle-orm';
 
 // DB アクセスはこの層に閉じる（features/*/infrastructure 以外から @repo/database を読まない）。
+// schema 由来の型も上位層へはここから配る。
+export type { AiApp, AiVisibility } from '@repo/database/schema';
+
 const projects = db._schema.aiProjects;
 const versions = db._schema.aiProjectVersions;
 

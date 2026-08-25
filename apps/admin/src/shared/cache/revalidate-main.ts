@@ -1,6 +1,4 @@
-// main 側の DB 由来キャッシュに付与している共通タグ
-// （apps/main/src/shared/cache/cache-tags.ts と揃える）。
-const DB_CONTENT_CACHE_TAG = 'db-content';
+import { DB_CONTENT_CACHE_TAG } from '@repo/helpers/cache/main-cache-tags';
 
 // main は別デプロイのため revalidatePath では再検証できない。
 // secret 検証付きの main の /api/revalidate を叩いてタグを無効化する。

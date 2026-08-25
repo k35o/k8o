@@ -1,9 +1,10 @@
 'use server';
 
-import { revalidatePath } from 'next/cache';
+import { updateTag } from 'next/cache';
 
 import type { ActionState } from '@/shared/actions/action-state';
 import { verifySession } from '@/shared/auth/verify-session';
+import { BLOGS_CACHE_TAG } from '@/shared/cache/cache-tags';
 import { revalidateMainCache } from '@/shared/cache/revalidate-main';
 
 import { updateBlogPublished } from '../infrastructure/blog-repository';
@@ -21,7 +22,6 @@ export async function setBlogPublished(
   }
 
   await revalidateMainCache();
-  revalidatePath('/blogs');
-  revalidatePath('/');
+  updateTag(BLOGS_CACHE_TAG);
   return { success: true };
 }

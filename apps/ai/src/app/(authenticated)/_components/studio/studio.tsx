@@ -11,8 +11,8 @@ import {
 import { validateGeneratedSpec } from '@k8o/arte-odyssey/json-render';
 import { DefaultChatTransport } from 'ai';
 import type { UIMessage } from 'ai';
-import { useRouter, useSearchParams } from 'next/navigation';
-import { useEffect, useMemo, useReducer, useRef, useState } from 'react';
+import { useRouter } from 'next/navigation';
+import { useMemo, useReducer, useRef, useState, useTransition } from 'react';
 
 import { SpecPreview } from '@/app/_components/spec-preview';
 import {
@@ -29,19 +29,41 @@ import {
   usedComponentTypes,
 } from '@/features/generation/application/spec-message';
 import { specToTsx } from '@/features/generation/application/spec-to-tsx';
-import { loadProjectAction } from '@/features/projects/interface/actions';
+import type { ProjectListItem } from '@/features/projects/application/projects';
+import {
+  forkProjectAction,
+  listProjectsAction,
+  loadProjectAction,
+  saveGenerationAction,
+} from '@/features/projects/interface/actions';
 
+import { ChatPanel } from '../chat-panel';
+import { CopyCodeButton } from '../copy-code-button';
+import { PreviewLoading } from '../preview-loading';
+import {
+  useProjectPersistence,
+  useProjectUrlSync,
+} from '../project-persistence';
 import { StudioShell } from '../studio-shell';
-import { ChatPanel } from './chat-panel';
 import { CodePanel } from './code-panel';
-import { CopyCodeButton } from './copy-code-button';
-import { PreviewLoading } from './preview-loading';
 import { ShareControl } from './share-control';
-import { useStudioPersistence } from './use-studio-persistence';
+
+// 設定は完全に静的なので、レンダーごとに生成しない。
+const transport = new DefaultChatTransport({ api: '/api/generate' });
+
+const persistenceActions = {
+  list: listProjectsAction,
+  save: saveGenerationAction,
+  fork: forkProjectAction,
+};
 
 type PanelView = 'preview' | 'spec' | 'tsx';
 
-export const Studio = () => {
+export const Studio = ({
+  initialProjects,
+}: {
+  initialProjects: ProjectListItem[];
+}) => {
   const [input, setInput] = useState('');
   const [state, dispatch] = useReducer(
     generationReducer<Spec>,
@@ -66,20 +88,15 @@ export const Studio = () => {
   // 版の保存（DB 往復）が完了するまで次の生成をブロックする。useChat の status は
   // onFinish の前に ready へ戻るため、この間に次を送ると projectId 未確定のまま
   // 別プロジェクトへ分裂して保存されてしまう。
-  const [saving, setSaving] = useState(false);
-  const persistence = useStudioPersistence();
+  const [saving, startSaving] = useTransition();
+  const persistence = useProjectPersistence<{ spec: Spec }>(
+    persistenceActions,
+    initialProjects,
+  );
   const router = useRouter();
-  const searchParams = useSearchParams();
-  // URL の ?project=<id> を初回レンダーで一度だけ拾い、リロード/ブックマークから復元する。
-  const bootProjectIdRef = useRef<number | null | undefined>(undefined);
-  if (bootProjectIdRef.current === undefined) {
-    const raw = searchParams.get('project');
-    const id = raw === null ? Number.NaN : Number(raw);
-    bootProjectIdRef.current = Number.isInteger(id) && id > 0 ? id : null;
-  }
 
   const { messages, sendMessage, status, error, setMessages, stop } = useChat({
-    transport: new DefaultChatTransport({ api: '/api/generate' }),
+    transport,
     onFinish: ({ message, isAbort }) => {
       // 生成中に別プロジェクトへ切り替えた等で中断された場合は、切替先へ結果を
       // 適用/保存しないよう即座に抜ける（生成中表示の漏れや誤保存を防ぐ）。
@@ -125,17 +142,18 @@ export const Studio = () => {
       };
       dispatch({ type: 'generation-finished', content: finishedSpec, meta });
       // prompt も版に残し、履歴から読み込んだときに会話を復元できるようにする。
-      // 保存が終わるまで saving を立て、次の生成の割り込みを防ぐ。
-      setSaving(true);
-      void persistence
-        .save({
-          spec: finishedSpec,
-          meta,
-          prompt: lastPromptRef.current,
-        })
-        .finally(() => {
-          setSaving(false);
-        });
+      // 保存が終わるまで saving（transition）が続き、次の生成の割り込みを防ぐ。
+      startSaving(async () => {
+        try {
+          await persistence.save({
+            spec: finishedSpec,
+            meta,
+            prompt: lastPromptRef.current,
+          });
+        } catch (saveError) {
+          console.error('版の保存に失敗しました', saveError);
+        }
+      });
       setView('preview');
       setMobileTab('preview');
     },
@@ -312,31 +330,9 @@ export const Studio = () => {
     }
   };
 
-  // 初回マウント時、URL に ?project=<id> があればそのプロジェクトを復元する。
-  // 初回レンダーの loader を ref に固定し依存を安定させ、Strict Mode の二重実行でも
-  // bootedRef で1回だけロードする。
-  const bootLoadRef = useRef(handleSelectProject);
-  const bootedRef = useRef(false);
-  useEffect(() => {
-    if (bootedRef.current) {
-      return;
-    }
-    bootedRef.current = true;
-    const bootId = bootProjectIdRef.current;
-    if (bootId !== null && bootId !== undefined) {
-      void bootLoadRef.current(bootId);
-    }
-  }, []);
-
-  // 選択中プロジェクトを URL(?project=<id>) に反映する。projectId が null のとき
-  // （初期 / boot 中 / 新規）は書き換えない。boot の ?project を握り潰さず、実行回数ではなく
-  // 値で判定するため Strict Mode の二重実行でも安全。新規化での「/」戻しは handleNewProject で行う。
-  useEffect(() => {
-    if (persistence.projectId === null) {
-      return;
-    }
-    router.replace(`/?project=${persistence.projectId.toString()}`);
-  }, [persistence.projectId, router]);
+  useProjectUrlSync('/', persistence.projectId, (projectId) => {
+    void handleSelectProject(projectId);
+  });
 
   return (
     <StudioShell

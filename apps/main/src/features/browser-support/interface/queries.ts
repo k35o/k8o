@@ -1,4 +1,5 @@
 import type { BrowserMinVersions } from '@repo/helpers/browser/detect-browser';
+import { BROWSER_SUPPORT_CACHE_TAG } from '@repo/helpers/cache/main-cache-tags';
 import { cacheLife, cacheTag } from 'next/cache';
 
 import {
@@ -11,7 +12,6 @@ import { findRecentFeatureChanges } from '@/features/browser-support/infrastruct
 import type { BrowserSupportFeatureChange } from '@/features/browser-support/infrastructure/browser-support-change-repository';
 import { findActiveBaselineDataset } from '@/features/browser-support/infrastructure/browser-support-dataset-repository';
 import type { ActiveBaselineDataset } from '@/features/browser-support/infrastructure/browser-support-dataset-repository';
-import { BROWSER_SUPPORT_CACHE_TAG } from '@/shared/cache/cache-tags';
 
 // active データセットの共有ローダー。フィードと MDX の feature 解決が個別に DB を
 // 読まないよう、キャッシュ境界をここに一本化する。鮮度は TTL ではなく admin の同期

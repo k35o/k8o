@@ -1,12 +1,11 @@
 'use server';
 
-import { revalidatePath } from 'next/cache';
+import { updateTag } from 'next/cache';
 import { redirect } from 'next/navigation';
 
-import { enrichArticleMetadata } from '@/features/reading-list/application/enrich-articles';
-import { syncArticles } from '@/features/reading-list/application/sync-articles';
 import type { ActionState } from '@/shared/actions/action-state';
 import { verifySession } from '@/shared/auth/verify-session';
+import { READING_LIST_CACHE_TAG } from '@/shared/cache/cache-tags';
 import { revalidateMainCache } from '@/shared/cache/revalidate-main';
 
 import {
@@ -19,6 +18,7 @@ import {
   parseArticleCreateFormData,
   parseArticleUpdateFormData,
 } from './article-form-validation';
+import { runArticleSync } from './sync';
 
 export async function deleteArticle(id: number): Promise<ActionState> {
   await verifySession();
@@ -30,8 +30,7 @@ export async function deleteArticle(id: number): Promise<ActionState> {
   }
 
   await revalidateMainCache();
-  revalidatePath('/reading-list');
-  revalidatePath('/');
+  updateTag(READING_LIST_CACHE_TAG);
   return { success: true };
 }
 
@@ -53,8 +52,7 @@ export async function createArticle(
   }
 
   await revalidateMainCache();
-  revalidatePath('/reading-list');
-  revalidatePath('/');
+  updateTag(READING_LIST_CACHE_TAG);
   return redirect('/reading-list');
 }
 
@@ -77,7 +75,7 @@ export async function updateArticle(
   }
 
   await revalidateMainCache();
-  revalidatePath('/reading-list');
+  updateTag(READING_LIST_CACHE_TAG);
   return redirect('/reading-list');
 }
 
@@ -94,7 +92,7 @@ export async function refetchArticleMetadata(id: number): Promise<ActionState> {
   }
 
   await revalidateMainCache();
-  revalidatePath('/reading-list');
+  updateTag(READING_LIST_CACHE_TAG);
   return { success: true };
 }
 
@@ -109,17 +107,9 @@ export async function syncArticlesAction(): Promise<SyncActionState> {
   await verifySession();
 
   try {
-    const result = await syncArticles();
-    const { enrichedArticles } = await enrichArticleMetadata();
-    await revalidateMainCache();
-    revalidatePath('/reading-list');
-    revalidatePath('/');
-    return {
-      newArticles: result.newArticles,
-      updatedArticles: result.updatedArticles,
-      enrichedArticles,
-      failedSources: result.failedSources,
-    };
+    const summary = await runArticleSync({ notify: false });
+    updateTag(READING_LIST_CACHE_TAG);
+    return summary;
   } catch {
     return { error: '記事の同期に失敗しました' };
   }

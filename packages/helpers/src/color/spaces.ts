@@ -22,7 +22,8 @@ const clamp = (value: number, min: number, max: number): number =>
 
 const normalizeHue = (hue: number): number => ((hue % 360) + 360) % 360;
 
-const toLinear = (channel: number): number => {
+// sRGB 逆ガンマ。WCAG コントラスト計算（calc-contrast）とも共用する。
+export const toLinear = (channel: number): number => {
   const sign = channel < 0 ? -1 : 1;
   const abs = Math.abs(channel);
   return abs <= 0.04045

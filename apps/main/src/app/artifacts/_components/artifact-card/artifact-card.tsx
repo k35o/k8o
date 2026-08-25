@@ -9,7 +9,7 @@ import {
 } from '@k8o/arte-odyssey';
 import type { FC } from 'react';
 
-import type { Artifact } from '@/features/artifacts/interface/queries';
+import type { Artifact } from '@/app/artifacts/_utils/artifacts';
 
 export const ArtifactCard: FC<Artifact> = ({
   name,

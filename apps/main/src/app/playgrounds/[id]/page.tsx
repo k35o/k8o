@@ -10,6 +10,7 @@ import {
   playgroundCategoryLabels,
   playgroundSections,
 } from '@/app/_components/playgrounds';
+import { buildPageMetadata } from '@/shared/site/build-page-metadata';
 
 import { BlogLinkButton } from './_components/blog-link-button';
 
@@ -30,23 +31,12 @@ export async function generateMetadata({
     notFound();
   }
 
-  return {
+  return buildPageMetadata({
     title: section.title,
     description: section.description,
-    openGraph: {
-      title: section.title,
-      description: section.description,
-      url: `https://k8o.me/playgrounds/${section.id}`,
-      siteName: 'k8o',
-      locale: 'ja',
-      type: 'website',
-    },
-    twitter: {
-      card: 'summary_large_image',
-      title: section.title,
-      description: section.description,
-    },
-  };
+    path: `/playgrounds/${section.id}`,
+    twitterCard: 'summary_large_image',
+  });
 }
 
 async function PlaygroundSectionContent({ params }: PageProperties) {

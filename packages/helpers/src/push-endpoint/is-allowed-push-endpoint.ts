@@ -1,6 +1,6 @@
-// SSRF 防止のため https + Push サービスホスト allowlist に限定する。
-const MAX_ENDPOINT_LENGTH = 2048;
+import { parseStrictHttpsHost } from '../url/parse-strict-https-url';
 
+// SSRF 防止のため https + Push サービスホスト allowlist に限定する。
 const ALLOWED_HOSTS: ReadonlySet<string> = new Set([
   'fcm.googleapis.com',
   'updates.push.services.mozilla.com',
@@ -13,31 +13,10 @@ const ALLOWED_HOST_SUFFIXES: readonly string[] = [
 ];
 
 export const isAllowedPushEndpoint = (endpoint: string): boolean => {
-  if (typeof endpoint !== 'string' || endpoint.length > MAX_ENDPOINT_LENGTH) {
+  const host = parseStrictHttpsHost(endpoint);
+  if (host === null) {
     return false;
   }
-
-  let url: URL;
-  try {
-    url = new URL(endpoint);
-  } catch {
-    return false;
-  }
-
-  if (url.protocol !== 'https:') {
-    return false;
-  }
-
-  // userinfo(user:pass@) によるホスト偽装を拒否する
-  if (url.username !== '' || url.password !== '') {
-    return false;
-  }
-
-  if (url.port !== '' && url.port !== '443') {
-    return false;
-  }
-
-  const host = url.hostname.toLowerCase();
 
   if (ALLOWED_HOSTS.has(host)) {
     return true;

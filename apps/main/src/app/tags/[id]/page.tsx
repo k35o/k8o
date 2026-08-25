@@ -3,7 +3,9 @@ import { notFound } from 'next/navigation';
 import { Suspense } from 'react';
 
 import { JsonLd } from '@/app/_components/json-ld';
+import { getBlogContents } from '@/features/blog/interface/queries';
 import { getTag, getTags } from '@/features/tags/interface/queries';
+import { buildPageMetadata } from '@/shared/site/build-page-metadata';
 import { tagBreadcrumbJsonLd } from '@/shared/site/json-ld';
 
 import { TagContent } from '../_components/tag-content';
@@ -30,39 +32,35 @@ export async function generateMetadata({
     notFound();
   }
 
-  const description = `「${tag.name}」タグに関連するブログやトークをまとめたページです。`;
-
-  return {
+  return buildPageMetadata({
     title: tag.name,
-    description,
-    openGraph: {
-      title: tag.name,
-      description,
-      url: `https://k8o.me/tags/${tag.id.toString()}`,
-      siteName: 'k8o',
-      locale: 'ja',
-      type: 'website',
-    },
-    twitter: {
-      title: tag.name,
-      card: 'summary',
-      description,
-    },
-  };
+    description: `「${tag.name}」タグに関連するブログやトークをまとめたページです。`,
+    path: `/tags/${tag.id.toString()}`,
+  });
 }
 
 async function TagPageContent({ params }: PageProperties) {
   const { id } = await params;
-  const tag = await getTag(Number(id));
+  const [tag, blogContents] = await Promise.all([
+    getTag(Number(id)),
+    getBlogContents(),
+  ]);
 
   if (!tag) {
     notFound();
   }
 
+  // タイトルはMDX解決済みのブログ一覧から引く（MDXが無いブログはここで落ちる）。
+  const blogTitles = new Map(blogContents.map((blog) => [blog.id, blog.title]));
+  const blogs = tag.blogs.flatMap((blog) => {
+    const title = blogTitles.get(blog.id);
+    return title === undefined ? [] : [{ ...blog, title }];
+  });
+
   return (
     <>
       <JsonLd data={tagBreadcrumbJsonLd(tag)} />
-      <TagContent {...tag} />
+      <TagContent blogs={blogs} name={tag.name} talks={tag.talks} />
     </>
   );
 }

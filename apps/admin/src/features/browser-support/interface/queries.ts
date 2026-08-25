@@ -2,7 +2,9 @@ import type {
   BaselineFeature,
   BaselineSupportStatus,
 } from '@repo/helpers/baseline/model';
-import { cacheLife } from 'next/cache';
+import { cacheLife, cacheTag } from 'next/cache';
+
+import { BROWSER_SUPPORT_CACHE_TAG } from '@/shared/cache/cache-tags';
 
 import {
   findActiveDataset,
@@ -19,6 +21,7 @@ import type {
 async function getActiveDatasetCached(): Promise<ActiveDatasetRecord | null> {
   'use cache';
   cacheLife('minutes');
+  cacheTag(BROWSER_SUPPORT_CACHE_TAG);
 
   return findActiveDataset();
 }
@@ -39,6 +42,7 @@ export const getBrowserSupportOverview =
   async (): Promise<BrowserSupportOverview> => {
     'use cache';
     cacheLife('minutes');
+    cacheTag(BROWSER_SUPPORT_CACHE_TAG);
 
     const [active, runs] = await Promise.all([
       getActiveDatasetCached(),

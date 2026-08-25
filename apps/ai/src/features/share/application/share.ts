@@ -46,17 +46,26 @@ export const publishProject = async (input: {
 };
 
 // private にした時点で /s/[slug] は 404 になる。非所有/不存在は setVisibility が
-// 所有チェックで false を返す。
-export const unpublishProject = (input: {
+// 所有チェックで false を返す。slug は公開キャッシュのタグ無効化に使うため返す。
+export const unpublishProject = async (input: {
   userId: string;
   projectId: number;
-}): Promise<boolean> =>
-  setVisibility({
+}): Promise<PublishedShare | null> => {
+  const latest = await getProjectLatest({
+    userId: input.userId,
+    projectId: input.projectId,
+  });
+  if (latest === null) {
+    return null;
+  }
+  const ok = await setVisibility({
     userId: input.userId,
     projectId: input.projectId,
     visibility: 'private',
     publishedVersionId: null,
   });
+  return ok ? { slug: latest.slug } : null;
+};
 
 export const getPublicShare = async (
   slug: string,

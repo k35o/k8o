@@ -1,6 +1,7 @@
 import type { Spec } from '@json-render/core';
+import { catalog } from '@k8o/arte-odyssey/json-render';
 
-import { specToTsx } from './spec-to-tsx';
+import { ICON_COMPONENTS, specToTsx } from './spec-to-tsx';
 
 describe('specToTsx', () => {
   describe('正常系', () => {
@@ -166,6 +167,18 @@ export default function Preview() {
       const spec: Spec = { root: 'missing', elements: {} };
       const tsx = specToTsx(spec);
       expect(tsx).toContain('export default function Preview()');
+    });
+  });
+
+  // 手書きの対応表は arte-odyssey のバージョンアップで黙って古びるため、
+  // インストール済み catalog と機械的に照合して転記漏れを検知する。
+  describe('catalogとのドリフト検知', () => {
+    it('ICON_COMPONENTS のキーが catalog の Icon.name と1対1で一致する', () => {
+      const iconNameOptions: readonly string[] =
+        catalog.data.components.Icon.props.shape.name.options;
+      expect(Object.keys(ICON_COMPONENTS).toSorted()).toStrictEqual(
+        [...iconNameOptions].toSorted(),
+      );
     });
   });
 });

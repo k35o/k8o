@@ -1,29 +1,14 @@
 import { Heading } from '@k8o/arte-odyssey';
-import type { Metadata } from 'next';
 import Link from 'next/link';
 
-export const metadata = {
+import { buildPageMetadata } from '@/shared/site/build-page-metadata';
+
+export const metadata = buildPageMetadata({
   title: 'Slides',
   description: '登壇や発表で使ったスライドをまとめています。',
-  alternates: {
-    types: {
-      'application/rss+xml': 'https://k8o.me/slides/feed',
-    },
-  },
-  openGraph: {
-    title: 'Slides',
-    description: '登壇や発表で使ったスライドをまとめています。',
-    url: 'https://k8o.me/slides',
-    siteName: 'k8o',
-    locale: 'ja',
-    type: 'website',
-  },
-  twitter: {
-    title: 'Slides',
-    card: 'summary',
-    description: '登壇や発表で使ったスライドをまとめています。',
-  },
-} satisfies Metadata;
+  path: '/slides',
+  rssFeedPath: '/slides/feed',
+});
 
 export default function Layout({ children }: LayoutProps<'/slides'>) {
   return (

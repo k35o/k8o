@@ -14,9 +14,12 @@ const latestOf = (dates: readonly string[]): Date | undefined =>
     : new Date(Math.max(...dates.map((date) => new Date(date).getTime())));
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const blogs = await getBlogContents();
-  const slides = await getSlideContents();
-  const tags = await getTags();
+  // 相互依存のない独立した 'use cache' クエリなので、直列に待たないよう並列化する。
+  const [blogs, slides, tags] = await Promise.all([
+    getBlogContents(),
+    getSlideContents(),
+    getTags(),
+  ]);
 
   const latestBlog = latestOf(blogs.map((blog) => blog.updatedAt));
   const latestSlide = latestOf(slides.map((slide) => slide.updatedAt));

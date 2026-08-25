@@ -1,35 +1,41 @@
-import { cacheLife } from 'next/cache';
+import { cacheLife, cacheTag } from 'next/cache';
+
+import { COMMENTS_CACHE_TAG } from '@/shared/cache/cache-tags';
 
 import {
-  getComments as _getComments,
-  getCommentStats as _getCommentStats,
-} from '@/features/comments/application/get-comments';
+  findComments,
+  findCommentStats,
+} from '../infrastructure/comment-repository';
 import type {
+  CommentRecord,
   CommentStats,
   FindCommentsParams,
   FindCommentsResult,
-} from '@/features/comments/application/get-comments';
+} from '../infrastructure/comment-repository';
+
+export type CommentItem = CommentRecord;
 
 export const getComments = async (
   params: FindCommentsParams,
 ): Promise<FindCommentsResult> => {
   'use cache';
   cacheLife('minutes');
+  cacheTag(COMMENTS_CACHE_TAG);
 
-  const result = await _getComments(params);
+  const result = await findComments(params);
   return result;
 };
 
 export const getCommentStats = async (): Promise<CommentStats> => {
   'use cache';
   cacheLife('minutes');
+  cacheTag(COMMENTS_CACHE_TAG);
 
-  const stats = await _getCommentStats();
+  const stats = await findCommentStats();
   return stats;
 };
 
 export type {
-  CommentItem,
   CommentStats,
   FindCommentsParams,
-} from '@/features/comments/application/get-comments';
+} from '../infrastructure/comment-repository';

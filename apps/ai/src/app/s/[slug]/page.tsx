@@ -27,7 +27,8 @@ export const generateMetadata = async ({
 };
 
 // 公開共有ページ（認証なし）。スリムなヘッダ＋spec をその場で描画する。
-// DB アクセス（公開状態の確認）は uncached なため Cache Components 下では Suspense 配下に置く。
+// 取得は 'use cache'（share:<slug> タグ、publish/unpublish が updateTag）で
+// キャッシュ済み。Suspense は params 由来の実行時アクセスのために必要。
 const ShareContent = async ({ params }: SharePageProps) => {
   const { slug } = await params;
   const share = await getPublicShareForRoute(slug);

@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useRef } from 'react';
+import { useEffect, useEffectEvent } from 'react';
 
 const NEXT_KEYS = new Set([
   'ArrowRight',
@@ -26,45 +26,43 @@ export const useKeyboardNav = ({
   onFirst: () => void;
   onLast: () => void;
 }) => {
-  const handlersRef = useRef({ onNext, onPrev, onFirst, onLast });
-  useEffect(() => {
-    handlersRef.current = { onNext, onPrev, onFirst, onLast };
+  const handleKeyDown = useEffectEvent((event: KeyboardEvent) => {
+    if (event.defaultPrevented) return;
+    const { target } = event;
+    if (target instanceof HTMLElement) {
+      const tag = target.tagName;
+      if (tag === 'INPUT' || tag === 'TEXTAREA' || target.isContentEditable) {
+        return;
+      }
+      // ボタン等の tabIndex >= 0 な要素（body 以外）にフォーカスがある間は奪わない。
+      if (target !== document.body && target.tabIndex >= 0) {
+        return;
+      }
+    }
+    if (NEXT_KEYS.has(event.key)) {
+      event.preventDefault();
+      onNext();
+      return;
+    }
+    if (PREV_KEYS.has(event.key)) {
+      event.preventDefault();
+      onPrev();
+      return;
+    }
+    if (event.key === 'Home') {
+      event.preventDefault();
+      onFirst();
+      return;
+    }
+    if (event.key === 'End') {
+      event.preventDefault();
+      onLast();
+    }
   });
 
   useEffect(() => {
     const handler = (event: KeyboardEvent) => {
-      if (event.defaultPrevented) return;
-      const { target } = event;
-      if (target instanceof HTMLElement) {
-        const tag = target.tagName;
-        if (tag === 'INPUT' || tag === 'TEXTAREA' || target.isContentEditable) {
-          return;
-        }
-        // ボタン等の tabIndex >= 0 な要素（body 以外）にフォーカスがある間は奪わない。
-        if (target !== document.body && target.tabIndex >= 0) {
-          return;
-        }
-      }
-      const h = handlersRef.current;
-      if (NEXT_KEYS.has(event.key)) {
-        event.preventDefault();
-        h.onNext();
-        return;
-      }
-      if (PREV_KEYS.has(event.key)) {
-        event.preventDefault();
-        h.onPrev();
-        return;
-      }
-      if (event.key === 'Home') {
-        event.preventDefault();
-        h.onFirst();
-        return;
-      }
-      if (event.key === 'End') {
-        event.preventDefault();
-        h.onLast();
-      }
+      handleKeyDown(event);
     };
     window.addEventListener('keydown', handler);
     return () => {

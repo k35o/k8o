@@ -1,21 +1,5 @@
-type Rgb = [number, number, number];
-
-const validHexColorRegex = /^#[0-9A-Fa-f]{6}$/u;
-
-const isValidHexColor = (hex: string): boolean => validHexColorRegex.test(hex);
-
-const convertHexToRgb = (hex: string): Rgb => {
-  if (!isValidHexColor(hex)) {
-    throw new Error(
-      `Invalid hex color format: ${hex}. Expected format: #RRGGBB`,
-    );
-  }
-
-  const r = Number.parseInt(hex.slice(1, 3), 16);
-  const g = Number.parseInt(hex.slice(3, 5), 16);
-  const b = Number.parseInt(hex.slice(5, 7), 16);
-  return [r, g, b];
-};
+import { convertHexToRgb } from './hex-rgb';
+import type { Rgb } from './hex-rgb';
 
 const SA98G = {
   mainTrc: 2.4,

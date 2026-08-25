@@ -21,9 +21,9 @@ import type {
   SupportStatus,
 } from '@/features/browser-support/interface/queries';
 
+import { matchesFeatureFilters } from '../_utils/matches-feature-filters';
+import type { StatusVisibility } from '../_utils/matches-feature-filters';
 import { browserSupportListParsers } from '../_utils/search-params';
-
-type StatusVisibility = Record<SupportStatus, boolean>;
 
 const STATUS_META: Record<
   SupportStatus,
@@ -80,23 +80,18 @@ const FeatureList: FC<{
   recentOnly,
   recentThresholdMs,
 }) => {
-  const filtered = useMemo(() => {
-    let result = features.filter((f) => visibility[f.status]);
-    if (recentOnly) {
-      result = result.filter(
-        (f) => new Date(f.resolvedDate).getTime() >= recentThresholdMs,
-      );
-    }
-    if (query) {
-      const lowerQuery = query.toLowerCase();
-      result = result.filter(
-        (f) =>
-          f.name.toLowerCase().includes(lowerQuery) ||
-          f.featureId.toLowerCase().includes(lowerQuery),
-      );
-    }
-    return result;
-  }, [features, visibility, query, recentOnly, recentThresholdMs]);
+  const filtered = useMemo(
+    () =>
+      features.filter((feature) =>
+        matchesFeatureFilters(feature, {
+          visibility,
+          query,
+          recentOnly,
+          recentThresholdMs,
+        }),
+      ),
+    [features, visibility, query, recentOnly, recentThresholdMs],
+  );
 
   if (filtered.length === 0) {
     return (
@@ -174,17 +169,15 @@ export const BrowserSupportFeatureList: FC<{
 
   const filteredCountByYear = useMemo(() => {
     const counts = new Map<string, number>();
-    const lowerQuery = query.toLowerCase();
     for (const feature of features) {
-      const matchesVisibility = visibility[feature.status];
-      const matchesRecent =
-        !recentOnly ||
-        new Date(feature.resolvedDate).getTime() >= recentThresholdMs;
-      const matchesQuery =
-        !query ||
-        feature.name.toLowerCase().includes(lowerQuery) ||
-        feature.featureId.toLowerCase().includes(lowerQuery);
-      if (matchesVisibility && matchesRecent && matchesQuery) {
+      if (
+        matchesFeatureFilters(feature, {
+          visibility,
+          query,
+          recentOnly,
+          recentThresholdMs,
+        })
+      ) {
         const year = feature.resolvedDate.slice(0, 4);
         counts.set(year, (counts.get(year) ?? 0) + 1);
       }

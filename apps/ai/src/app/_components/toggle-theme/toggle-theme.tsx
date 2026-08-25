@@ -2,25 +2,26 @@
 
 import { DarkModeIcon, IconButton, LightModeIcon } from '@k8o/arte-odyssey';
 import { useTheme } from 'next-themes';
-import { useCallback, useMemo } from 'react';
 import type { FC } from 'react';
 
 export const ToggleTheme: FC = () => {
   const { theme, setTheme, systemTheme } = useTheme();
 
-  const nextTheme = useMemo(() => {
-    if (theme === 'system') {
-      return systemTheme === 'dark' ? 'light' : 'dark';
-    }
-    return theme === 'dark' ? 'light' : 'dark';
-  }, [theme, systemTheme]);
+  const nextTheme =
+    theme === 'system'
+      ? systemTheme === 'dark'
+        ? 'light'
+        : 'dark'
+      : theme === 'dark'
+        ? 'light'
+        : 'dark';
 
-  const handleThemeCallback = useCallback(() => {
+  const handleToggleTheme = () => {
     setTheme(nextTheme);
-  }, [nextTheme, setTheme]);
+  };
 
   return (
-    <IconButton label="テーマを切り替える" onClick={handleThemeCallback}>
+    <IconButton label="テーマを切り替える" onClick={handleToggleTheme}>
       <span className="size-8 scale-100 rotate-0 transition-transform duration-300 dark:scale-0 dark:rotate-90">
         <DarkModeIcon size="lg" />
       </span>

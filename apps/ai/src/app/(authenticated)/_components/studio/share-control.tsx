@@ -1,7 +1,7 @@
 'use client';
 
 import { useClipboard, useToast } from '@k8o/arte-odyssey';
-import { useState } from 'react';
+import { useTransition } from 'react';
 import type { FC } from 'react';
 
 import {
@@ -20,7 +20,6 @@ type ShareControlProps = {
   onChanged: () => void;
 };
 
-// 公開は publish 時に本物ビルドが走るため数秒かかる。
 export const ShareControl: FC<ShareControlProps> = ({
   projectId,
   slug,
@@ -28,7 +27,7 @@ export const ShareControl: FC<ShareControlProps> = ({
   hasDraft,
   onChanged,
 }) => {
-  const [busy, setBusy] = useState(false);
+  const [busy, startTransition] = useTransition();
   const { writeClipboard } = useClipboard();
   const { open } = useToast();
 
@@ -42,39 +41,37 @@ export const ShareControl: FC<ShareControlProps> = ({
     );
   };
 
-  const handlePublish = async (): Promise<void> => {
-    setBusy(true);
-    try {
-      const res = await publishProjectAction(projectId);
-      if (res === null) {
+  const handlePublish = (): void => {
+    startTransition(async () => {
+      try {
+        const res = await publishProjectAction(projectId);
+        if (res === null) {
+          open('error', '公開に失敗しました');
+          return;
+        }
+        onChanged();
+        await copyLink(res.slug);
+        open('success', '公開しました。リンクをコピーしました');
+      } catch {
         open('error', '公開に失敗しました');
-        return;
       }
-      onChanged();
-      await copyLink(res.slug);
-      open('success', '公開しました。リンクをコピーしました');
-    } catch {
-      open('error', '公開に失敗しました');
-    } finally {
-      setBusy(false);
-    }
+    });
   };
 
-  const handleUnpublish = async (): Promise<void> => {
-    setBusy(true);
-    try {
-      const ok = await unpublishProjectAction(projectId);
-      if (!ok) {
+  const handleUnpublish = (): void => {
+    startTransition(async () => {
+      try {
+        const ok = await unpublishProjectAction(projectId);
+        if (!ok) {
+          open('error', '非公開化に失敗しました');
+          return;
+        }
+        onChanged();
+        open('success', '非公開にしました');
+      } catch {
         open('error', '非公開化に失敗しました');
-        return;
       }
-      onChanged();
-      open('success', '非公開にしました');
-    } catch {
-      open('error', '非公開化に失敗しました');
-    } finally {
-      setBusy(false);
-    }
+    });
   };
 
   const handleCopy = async (): Promise<void> => {
@@ -93,12 +90,8 @@ export const ShareControl: FC<ShareControlProps> = ({
       onCopy={() => {
         void handleCopy();
       }}
-      onPublish={() => {
-        void handlePublish();
-      }}
-      onUnpublish={() => {
-        void handleUnpublish();
-      }}
+      onPublish={handlePublish}
+      onUnpublish={handleUnpublish}
     />
   );
 };

@@ -1,25 +1,23 @@
-import type {
-  BrowserSupportSyncResult,
-  BrowserSupportSyncTrigger,
-} from '@repo/database/schema';
 import { checkBaselineInvariants } from '@repo/helpers/baseline/invariants';
-import type {
-  BaselineFeature,
-  BaselineSupportStatus,
-} from '@repo/helpers/baseline/model';
+import type { BaselineFeature } from '@repo/helpers/baseline/model';
 import {
   transformUpstreamData,
   UpstreamFormatError,
 } from '@repo/helpers/baseline/transform-upstream';
+import { BROWSER_SUPPORT_CACHE_TAG } from '@repo/helpers/cache/main-cache-tags';
 
 import { revalidateMainCache } from '@/shared/cache/revalidate-main';
 
+import type {
+  BrowserSupportSyncResult,
+  BrowserSupportSyncTrigger,
+  FeatureChangeInput,
+} from '../infrastructure/browser-support-repository';
 import {
   applyDataset,
   findActiveDataset,
   recordSyncRun,
 } from '../infrastructure/browser-support-repository';
-import type { FeatureChangeInput } from '../infrastructure/browser-support-repository';
 import {
   discoverLatestVersion,
   fetchUpstreamData,
@@ -34,9 +32,6 @@ const SUPPORTED_MAJOR = 3;
 // 故障のどちらかなので、情報として警報する。
 const UPSTREAM_STALE_DAYS = 45;
 const DAY_MS = 24 * 60 * 60 * 1000;
-
-// main 側の browser-support 系 'use cache' に付与しているタグと揃える。
-const BROWSER_SUPPORT_CACHE_TAG = 'browser-support';
 
 type SyncNotification = {
   kind: 'update' | 'alert';
@@ -56,13 +51,19 @@ export type SyncSummary = {
   detail: string | null;
 };
 
+// baseline(newly/widely) に到達済みの feature。diff の構築時点で limited を
+// 除外済みであることを型で運び、下流の防御的な再チェックを不要にする。
+type BaselineReachedFeature = BaselineFeature & {
+  status: 'newly' | 'widely';
+};
+
 export type BaselineDiff = {
   // baseline(newly/widely)に新規到達した feature
-  reached: BaselineFeature[];
+  reached: BaselineReachedFeature[];
   // newly -> widely などの baseline 内ステータス変化
   statusChanges: Array<{
-    feature: BaselineFeature;
-    previousStatus: BaselineSupportStatus;
+    feature: BaselineReachedFeature;
+    previousStatus: 'newly' | 'widely';
   }>;
 };
 
@@ -75,36 +76,33 @@ export const diffBaselineFeatures = (
   const previousStatusById = new Map(
     previous.map((f) => [f.featureId, f.status]),
   );
-  const reached: BaselineFeature[] = [];
+  const reached: BaselineReachedFeature[] = [];
   const statusChanges: BaselineDiff['statusChanges'] = [];
 
   for (const feature of current) {
     if (feature.status === 'limited') {
       continue;
     }
+    const reachedFeature = { ...feature, status: feature.status };
     const prev = previousStatusById.get(feature.featureId);
     if (prev === undefined || prev === 'limited') {
-      reached.push(feature);
+      reached.push(reachedFeature);
       continue;
     }
     if (prev !== feature.status) {
-      statusChanges.push({ feature, previousStatus: prev });
+      statusChanges.push({ feature: reachedFeature, previousStatus: prev });
     }
   }
 
   return { reached, statusChanges };
 };
 
-// diff を永続化用の変更行へ写す。diffBaselineFeatures の構築上 limited は混入しない
-// はずだが、型の保証が無いため防御的に除外する。
+// diff を永続化用の変更行へ写す。
 export const toFeatureChangeRows = (
   diff: BaselineDiff,
 ): FeatureChangeInput[] => {
   const rows: FeatureChangeInput[] = [];
   for (const feature of diff.reached) {
-    if (feature.status === 'limited') {
-      continue;
-    }
     rows.push({
       featureId: feature.featureId,
       featureName: feature.name,
@@ -113,9 +111,6 @@ export const toFeatureChangeRows = (
     });
   }
   for (const { feature, previousStatus } of diff.statusChanges) {
-    if (feature.status === 'limited' || previousStatus === 'limited') {
-      continue;
-    }
     rows.push({
       featureId: feature.featureId,
       featureName: feature.name,
@@ -126,10 +121,17 @@ export const toFeatureChangeRows = (
   return rows;
 };
 
+const countDiff = (
+  diff: BaselineDiff,
+): Pick<SyncSummary, 'newlyCount' | 'widelyCount' | 'statusChangeCount'> => ({
+  newlyCount: diff.reached.filter((f) => f.status === 'newly').length,
+  widelyCount: diff.reached.filter((f) => f.status === 'widely').length,
+  statusChangeCount: diff.statusChanges.length,
+});
+
 const buildUpdateBody = (diff: BaselineDiff): string => {
   const parts: string[] = [];
-  const newlyCount = diff.reached.filter((f) => f.status === 'newly').length;
-  const widelyCount = diff.reached.filter((f) => f.status === 'widely').length;
+  const { newlyCount, widelyCount } = countDiff(diff);
   if (newlyCount > 0) {
     parts.push(`Newly: ${String(newlyCount)}件`);
   }
@@ -368,8 +370,8 @@ export async function syncBrowserSupport({
       skippedFeatures.length > 0
         ? `skipped: ${String(skippedFeatures.length)}件`
         : null,
-    newlyCount: diff?.reached.filter((f) => f.status === 'newly').length ?? 0,
-    widelyCount: diff?.reached.filter((f) => f.status === 'widely').length ?? 0,
-    statusChangeCount: diff?.statusChanges.length ?? 0,
+    ...(diff === null
+      ? { newlyCount: 0, widelyCount: 0, statusChangeCount: 0 }
+      : countDiff(diff)),
   });
 }

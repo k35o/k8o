@@ -2,7 +2,7 @@
 
 import { Spinner, useToast } from '@k8o/arte-odyssey';
 import { useRouter } from 'next/navigation';
-import { useState } from 'react';
+import { useTransition } from 'react';
 import type { FC } from 'react';
 
 import { authClient } from '@/shared/auth/auth-client';
@@ -10,23 +10,25 @@ import { authClient } from '@/shared/auth/auth-client';
 export const SignOutButton: FC = () => {
   const router = useRouter();
   const { open } = useToast();
-  // signOut は fetchOptions のコールバック方式で promise を待てないため、useState で
-  // 押下直後に保留中を出す。成功時は遷移して unmount するので解除は失敗時のみ。
-  const [isPending, setIsPending] = useState(false);
+  // router.push もトランジション内で呼ぶため、isPending は /sign-in の描画完了まで続く
+  const [isPending, startTransition] = useTransition();
 
   const handleSignOut = () => {
-    setIsPending(true);
-    void authClient.signOut({
-      fetchOptions: {
-        onSuccess: () => {
-          router.push('/sign-in');
-          router.refresh();
-        },
-        onError: () => {
-          setIsPending(false);
+    startTransition(async () => {
+      // ネットワーク断では signOut が例外を投げ、transition 経由で error boundary
+      // に乗ってしまうため、ここで受け止めてトーストに変える。
+      try {
+        const { error } = await authClient.signOut();
+        if (error) {
           open('error', 'ログアウトに失敗しました');
-        },
-      },
+          return;
+        }
+      } catch {
+        open('error', 'ログアウトに失敗しました');
+        return;
+      }
+      router.push('/sign-in');
+      router.refresh();
     });
   };
 

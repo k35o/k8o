@@ -1,19 +1,11 @@
-import type { Metadata } from 'next';
+import { buildPageMetadata } from '@/shared/site/build-page-metadata';
 
-export const metadata = {
+export const metadata = buildPageMetadata({
   title: 'Playgrounds',
   description: 'ブログ記事や興味のある技術の試作品を集めています。',
-  openGraph: {
-    title: 'Playgrounds',
-    description: 'ブログ記事や興味のある技術の試作品を集めています。',
-    type: 'website',
-  },
-  twitter: {
-    card: 'summary_large_image',
-    title: 'Playgrounds',
-    description: 'ブログ記事や興味のある技術の試作品を集めています。',
-  },
-} satisfies Metadata;
+  path: '/playgrounds',
+  twitterCard: 'summary_large_image',
+});
 
 export default function PlaygroundsLayout({
   children,

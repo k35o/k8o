@@ -3,7 +3,7 @@
 import { useSearchParams } from 'next/navigation';
 import type { FC } from 'react';
 
-import type { Slide } from '@/features/slides/application/split-slides';
+import type { Slide } from '@/app/slides/_utils/split-slides';
 
 import { DeckPresenter } from '../deck-presenter';
 import { DeckPrint } from '../deck-print';
