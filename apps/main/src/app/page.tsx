@@ -1,4 +1,5 @@
 import { Heading, Separator } from '@k8o/arte-odyssey';
+import type { Metadata } from 'next';
 import Image from 'next/image';
 
 import { EmailTooltip } from './_components/email-tooltip';
@@ -9,6 +10,12 @@ import { RecentBlogs } from './_components/recent-blogs';
 import { SiteEntrySection } from './_components/site-entry-section';
 import { SocialIcons } from './_components/social-icons';
 import k8o from './_images/k8o.jpg';
+
+export const metadata = {
+  alternates: {
+    canonical: '/',
+  },
+} satisfies Metadata;
 
 export default function Home() {
   return (

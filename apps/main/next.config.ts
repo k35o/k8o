@@ -21,6 +21,21 @@ const nextConfig: NextConfig = {
           destination: '/blog/md/:slug',
           has: [{ type: 'header', key: 'accept', value: '.*text/markdown.*' }],
         },
+        {
+          // トップページも Accept: text/markdown でサイト索引の markdown を返す
+          source: '/',
+          destination: '/md/home',
+          has: [{ type: 'header', key: 'accept', value: '.*text/markdown.*' }],
+        },
+      ],
+      // どのルートにも一致しなかったパスへの markdown 要求には、404 ページの
+      // 描画に入る前に回復手段（索引・サイトマップ）を載せた markdown を返す
+      fallback: [
+        {
+          source: '/:path*',
+          destination: '/md/not-found',
+          has: [{ type: 'header', key: 'accept', value: '.*text/markdown.*' }],
+        },
       ],
     }),
   redirects: () =>
