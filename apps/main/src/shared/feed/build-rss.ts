@@ -27,7 +27,10 @@ const buildItem = (item: FeedItem): string =>
   [
     '<item>',
     `<title>${escapeXml(item.title)}</title>`,
-    `<description>${escapeXml(item.description)}</description>`,
+    // 空の description は要素ごと省く（旧rssライブラリと同じ出力）
+    ...(item.description === ''
+      ? []
+      : [`<description>${escapeXml(item.description)}</description>`]),
     `<link>${escapeXml(item.url)}</link>`,
     `<guid isPermaLink="false">${escapeXml(item.guid ?? item.url)}</guid>`,
     ...item.categories.map(

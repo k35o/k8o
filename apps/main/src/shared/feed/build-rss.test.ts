@@ -76,6 +76,23 @@ describe('buildRssFeed', () => {
   });
 
   describe('エッジケース', () => {
+    it('descriptionが空のitemはdescription要素ごと省く', () => {
+      const xml = buildRssFeed({
+        ...baseOptions,
+        items: [
+          {
+            title: 't',
+            description: '',
+            url: 'https://k8o.me/blog/a',
+            date: '2026-01-02T03:04:05.000Z',
+            categories: [],
+          },
+        ],
+      });
+
+      expect(xml).not.toContain('<description></description>');
+    });
+
     it('XML 特殊文字をエスケープする', () => {
       const xml = buildRssFeed({
         ...baseOptions,
