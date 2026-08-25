@@ -38,6 +38,7 @@ import {
 } from '@/features/projects/interface/actions';
 
 import { ChatPanel } from '../chat-panel';
+import { CodePanel } from '../code-panel';
 import { CopyCodeButton } from '../copy-code-button';
 import { PreviewLoading } from '../preview-loading';
 import {
@@ -45,7 +46,6 @@ import {
   useProjectUrlSync,
 } from '../project-persistence';
 import { StudioShell } from '../studio-shell';
-import { CodePanel } from './code-panel';
 import { ShareControl } from './share-control';
 
 // 設定は完全に静的なので、レンダーごとに生成しない。

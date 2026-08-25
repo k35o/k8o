@@ -32,6 +32,7 @@ import {
 import { parseDeck } from '@/features/slides/application/parse-deck';
 
 import { ChatPanel } from '../../../_components/chat-panel';
+import { CodePanel } from '../../../_components/code-panel';
 import { CopyCodeButton } from '../../../_components/copy-code-button';
 import { PreviewLoading } from '../../../_components/preview-loading';
 import {
@@ -40,7 +41,6 @@ import {
 } from '../../../_components/project-persistence';
 import { StudioShell } from '../../../_components/studio-shell';
 import { DeckPreview } from '../deck-preview';
-import { SourcePanel } from './source-panel';
 
 // 設定は完全に静的なので、レンダーごとに生成しない。
 const transport = new DefaultChatTransport({ api: '/api/generate' });
@@ -468,7 +468,12 @@ export const SlidesStudio = ({
               )}
             </div>
             <div className={view === 'source' ? 'h-full' : 'hidden'}>
-              <SourcePanel isStreaming={isBusy} source={displayedSource} />
+              <CodePanel
+                code={displayedSource}
+                emptyText="ここに生成されたスライドの Markdown が表示されます"
+                isStreaming={isBusy}
+                lang="markdown"
+              />
             </div>
           </div>
         </div>
