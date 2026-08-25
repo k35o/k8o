@@ -1,11 +1,11 @@
 'use client';
 
+import { useClient } from '@k8o/arte-odyssey';
 import { useCallback } from 'react';
 
 import { useBroadcastListener } from './use-broadcast-listener';
 import { useHashIndex, writeHashIndex } from './use-hash-index';
 import { toggleFullscreen, useIsFullscreen } from './use-is-fullscreen';
-import { useIsHydrated } from './use-is-hydrated';
 import { useKeyboardNav } from './use-keyboard-nav';
 
 const clamp = (value: number, max: number) => Math.max(0, Math.min(value, max));
@@ -61,7 +61,7 @@ export const useDeckController = ({
   });
 
   const isFullscreen = useIsFullscreen();
-  const isHydrated = useIsHydrated();
+  const isHydrated = useClient();
 
   return { index, goTo, next, prev, isFullscreen, isHydrated };
 };
