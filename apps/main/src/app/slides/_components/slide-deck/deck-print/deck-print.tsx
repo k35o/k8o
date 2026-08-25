@@ -1,11 +1,11 @@
 'use client';
 
+import { useClient } from '@k8o/arte-odyssey';
 import type { FC } from 'react';
 import { createPortal } from 'react-dom';
 
 import type { Slide } from '@/app/slides/_utils/split-slides';
 
-import { useIsHydrated } from '../hooks/use-is-hydrated';
 import { Stage } from '../stage';
 
 import styles from './deck-print.module.css';
@@ -13,7 +13,7 @@ import styles from './deck-print.module.css';
 // 印刷/PDF出力用に全スライドを1枚ずつ body 直下へ描画する。
 // 画面では非表示で、@media print のときだけ表示される（deck-print.module.css）。
 export const DeckPrint: FC<{ slides: Slide[] }> = ({ slides }) => {
-  const isHydrated = useIsHydrated();
+  const isHydrated = useClient();
 
   if (!isHydrated) return null;
 
