@@ -1,11 +1,10 @@
 'use client';
 
 import { Spinner, useToast } from '@k8o/arte-odyssey';
+import { authClient } from '@repo/auth-shell/auth-client';
 import { useRouter } from 'next/navigation';
 import { useTransition } from 'react';
 import type { FC } from 'react';
-
-import { authClient } from '@/shared/auth/auth-client';
 
 export const SignOutButton: FC = () => {
   const router = useRouter();

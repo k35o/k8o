@@ -1,9 +1,9 @@
 import { Card } from '@k8o/arte-odyssey';
+import { verifySession } from '@repo/auth-shell/verify-session';
 import { notFound } from 'next/navigation';
 
 import { updateArticle } from '@/features/reading-list/interface/article-actions';
 import { getArticleForEdit } from '@/features/reading-list/interface/queries';
-import { verifySession } from '@/shared/auth/verify-session';
 
 import { ArticleForm } from '../article-form/article-form';
 

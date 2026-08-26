@@ -1,4 +1,5 @@
 import { Badge, BlogIcon, Card, RSSIcon, ViewIcon } from '@k8o/arte-odyssey';
+import { verifySession } from '@repo/auth-shell/verify-session';
 import Link from 'next/link';
 
 import {
@@ -8,7 +9,6 @@ import {
 } from '@/app/(authenticated)/_components';
 import { getTopViewedBlogs } from '@/features/blog/interface/queries';
 import { getDashboardSummary } from '@/features/dashboard/interface/queries';
-import { verifySession } from '@/shared/auth/verify-session';
 
 const BLOG_BASE_URL = 'https://k8o.me/blog';
 

@@ -1,3 +1,5 @@
+import { verifySession } from '@repo/auth-shell/verify-session';
+
 import {
   EmptyState,
   FilterSelect,
@@ -10,7 +12,6 @@ import {
   getBrowserSupportOverview,
 } from '@/features/browser-support/interface/queries';
 import type { BaselineSupportStatus } from '@/features/browser-support/interface/queries';
-import { verifySession } from '@/shared/auth/verify-session';
 import {
   firstParam,
   getTotalPages,

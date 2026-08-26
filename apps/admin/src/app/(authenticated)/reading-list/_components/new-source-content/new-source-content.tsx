@@ -1,7 +1,7 @@
 import { Card } from '@k8o/arte-odyssey';
+import { verifySession } from '@repo/auth-shell/verify-session';
 
 import { createSource } from '@/features/reading-list/interface/source-actions';
-import { verifySession } from '@/shared/auth/verify-session';
 
 import { SourceForm } from '../source-form/source-form';
 

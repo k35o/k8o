@@ -1,5 +1,6 @@
+import { verifySession } from '@repo/auth-shell/verify-session';
+
 import { getSlides } from '@/features/slides/interface/queries';
-import { verifySession } from '@/shared/auth/verify-session';
 
 import { SlideTable } from '../slide-table';
 

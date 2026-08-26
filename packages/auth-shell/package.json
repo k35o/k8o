@@ -1,0 +1,74 @@
+{
+  "name": "@repo/auth-shell",
+  "version": "1.0.0",
+  "private": true,
+  "description": "admin / ai で共有する Better Auth の認証ゲートとアプリシェル",
+  "type": "module",
+  "exports": {
+    "./auth-client": {
+      "types": "./src/auth-client.ts",
+      "default": "./src/auth-client.ts"
+    },
+    "./auth-enabled": {
+      "types": "./src/auth-enabled.ts",
+      "default": "./src/auth-enabled.ts"
+    },
+    "./auth-route": {
+      "types": "./src/auth-route.ts",
+      "default": "./src/auth-route.ts"
+    },
+    "./error-page": {
+      "types": "./src/error-page.tsx",
+      "default": "./src/error-page.tsx"
+    },
+    "./global-error-content": {
+      "types": "./src/global-error-content.tsx",
+      "default": "./src/global-error-content.tsx"
+    },
+    "./proxy": {
+      "types": "./src/proxy.ts",
+      "default": "./src/proxy.ts"
+    },
+    "./public-layout": {
+      "types": "./src/public-layout.tsx",
+      "default": "./src/public-layout.tsx"
+    },
+    "./sign-in-form": {
+      "types": "./src/sign-in-form.tsx",
+      "default": "./src/sign-in-form.tsx"
+    },
+    "./sign-in-page": {
+      "types": "./src/sign-in-page.tsx",
+      "default": "./src/sign-in-page.tsx"
+    },
+    "./verify-session": {
+      "types": "./src/verify-session.ts",
+      "default": "./src/verify-session.ts"
+    }
+  },
+  "scripts": {
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "type-check": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@repo/database": "workspace:*",
+    "server-only": "0.0.1"
+  },
+  "devDependencies": {
+    "@k8o/arte-odyssey": "catalog:",
+    "@repo/typescript-config": "workspace:*",
+    "@types/react": "catalog:",
+    "@vitest/coverage-v8": "catalog:",
+    "better-auth": "catalog:",
+    "next": "catalog:",
+    "react": "catalog:",
+    "vitest": "catalog:"
+  },
+  "peerDependencies": {
+    "@k8o/arte-odyssey": "catalog:",
+    "better-auth": "catalog:",
+    "next": "catalog:",
+    "react": "catalog:"
+  }
+}

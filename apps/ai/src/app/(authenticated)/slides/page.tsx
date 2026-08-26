@@ -1,8 +1,8 @@
+import { verifySession } from '@repo/auth-shell/verify-session';
 import type { Metadata } from 'next';
 import { Suspense } from 'react';
 
 import { listSlidesProjectsForRoute } from '@/features/projects/interface/queries';
-import { verifySession } from '@/shared/auth/verify-session';
 
 import { StudioSkeleton } from '../_components/studio';
 import { SlidesStudio } from './_components/slides-studio';

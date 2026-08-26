@@ -1,4 +1,5 @@
 import { ListIcon, NewsIcon, RSSIcon } from '@k8o/arte-odyssey';
+import { verifySession } from '@repo/auth-shell/verify-session';
 
 import {
   ButtonLink,
@@ -11,7 +12,6 @@ import {
   getArticles,
   getReadingListContentData,
 } from '@/features/reading-list/interface/queries';
-import { verifySession } from '@/shared/auth/verify-session';
 import {
   firstParam,
   getTotalPages,

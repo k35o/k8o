@@ -1,6 +1,7 @@
+import { verifySession } from '@repo/auth-shell/verify-session';
+
 import { SectionHeader } from '@/app/(authenticated)/_components';
 import { getTags } from '@/features/tags/interface/queries';
-import { verifySession } from '@/shared/auth/verify-session';
 
 import { TagList } from '../tag-list';
 

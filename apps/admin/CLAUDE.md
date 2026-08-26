@@ -16,7 +16,9 @@ apps/admin のStorybook MCPは `admin-storybook-mcp`。propsの確認手順は�
 
 ローカル開発URL は `https://admin.k8o.localhost/`。
 
-認証の有効/無効は `src/shared/auth/auth-enabled.ts` の `isAuthEnabled` に集約し、`proxy.ts`（middleware）と `verify-session.ts` の両方が参照する。
+認証の実装は ai と共有で `@repo/auth-shell`（`packages/auth-shell/CLAUDE.md`）にある。認証まわりを直すときはそちらを直し、admin 側にコピーを作らない。認証の有効/無効は `@repo/auth-shell/auth-enabled` の `isAuthEnabled` に集約し、`proxy.ts`（middleware）と `verifySession` の両方が参照する。
+
+admin 固有の認証は `src/shared/auth/verify-cron-request.ts`（cron の Bearer 検証）のみ。
 
 - Vercel preview は認証OFF（= preview URL の防御は Vercel Deployment Protection に依存する。ai と同様に有効化を維持すること。無効化すると preview URL だけで DB 書き込みや push 送信ができてしまう）
 - ローカル開発で `LOCAL_AUTH_BYPASS=true`（`.env.local`）を設定するとログインを省略できる。`NODE_ENV=development` のときだけ評価するため、本番では無視され bypass は起こらない

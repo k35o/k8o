@@ -1,9 +1,9 @@
 import { Breadcrumb, Card, Heading, Separator } from '@k8o/arte-odyssey';
+import { verifySession } from '@repo/auth-shell/verify-session';
 import { notFound } from 'next/navigation';
 
 import { getArticleSourceForEdit } from '@/features/reading-list/interface/queries';
 import { updateSource } from '@/features/reading-list/interface/source-actions';
-import { verifySession } from '@/shared/auth/verify-session';
 
 import { DeleteSourceButton } from '../delete-source-button/delete-source-button';
 import { SourceForm } from '../source-form/source-form';

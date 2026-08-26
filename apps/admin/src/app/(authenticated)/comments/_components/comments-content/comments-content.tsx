@@ -1,4 +1,5 @@
 import { BlogIcon, LinkIcon, MailIcon } from '@k8o/arte-odyssey';
+import { verifySession } from '@repo/auth-shell/verify-session';
 
 import {
   ListPagination,
@@ -10,7 +11,6 @@ import {
   getComments,
   getCommentStats,
 } from '@/features/comments/interface/queries';
-import { verifySession } from '@/shared/auth/verify-session';
 import {
   firstParam,
   getTotalPages,
