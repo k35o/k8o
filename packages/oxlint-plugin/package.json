@@ -19,7 +19,7 @@
     "@oxlint/plugins": "1.73.0",
     "@repo/typescript-config": "workspace:*",
     "@types/node": "24.13.3",
-    "vite-plus": "0.2.8",
+    "vite-plus": "0.2.9",
     "vitest": "catalog:"
   }
 }

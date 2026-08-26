@@ -37,7 +37,7 @@ packages/oxlint-plugin/ → リポジトリ固有のoxlintカスタムルール�
 
 各 app / package 固有の規約は、対応する `CLAUDE.md` を参照すること。
 
-`@repo/database` を直接 import するのは `apps/*/src/features/*/infrastructure/` を基本とし、小さい読み取りに限り `features/*/application` に置いてもよい。書き込みや外部接続の詳細は infrastructure へ切り出す。`app/` や `features/*/interface` から直接読まない。例外として `@repo/database/auth` だけは admin / ai の `shared/auth` から import してよい（Better Auth インスタンスの共用）。この層境界は oxc カスタムルール `k8o/database-import-boundary` で機械的に強制される（application を小さな読み取りに留める質の部分はレビューで担保する）。
+`@repo/database` を直接 import するのは `apps/*/src/features/*/infrastructure/` を基本とし、小さい読み取りに限り `features/*/application` に置いてもよい。書き込みや外部接続の詳細は infrastructure へ切り出す。`app/` や `features/*/interface` から直接読まない。例外として `@repo/database/auth` だけは admin / ai の `shared/auth` から import してよい（`@repo/auth-shell` に乗らないアプリ固有の認可ゲート用。現状は ai の `require-allowed-session` が該当）。この層境界は oxc カスタムルール `k8o/database-import-boundary` で機械的に強制される（application を小さな読み取りに留める質の部分はレビューで担保する）。
 
 ## コーディング規約
 
