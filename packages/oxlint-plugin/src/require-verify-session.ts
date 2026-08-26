@@ -35,8 +35,11 @@ const startsWithVerifySession = (fn: ActionFunction): boolean => {
     return false;
   }
   if (body.type !== 'BlockStatement') {
-    // 式ボディの arrow。verifySession() 自体を返す形だけ許す
-    return isVerifySessionCall(body);
+    // 式ボディの arrow。verifySession() を返す形を await の有無どちらも許す
+    return (
+      isVerifySessionCall(body) ||
+      (body.type === 'AwaitExpression' && isVerifySessionCall(body.argument))
+    );
   }
   for (const item of body.body) {
     if (

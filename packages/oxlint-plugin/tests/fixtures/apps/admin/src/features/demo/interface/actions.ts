@@ -19,6 +19,9 @@ export const okArrowAction = async (): Promise<void> => {
   await verifySession();
 };
 
+export const okExpressionAction = async (): Promise<void> =>
+  await verifySession();
+
 const ngNamedAction = async (): Promise<void> => {
   await Promise.resolve();
 };
