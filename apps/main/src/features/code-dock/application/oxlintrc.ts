@@ -41,6 +41,8 @@ const flattenInto = (target: FlatOxlintrc, config: OxlintConfig): void => {
  *
  * vite.config.ts との差分 (Web ツールでは再現しないもの):
  * - tailwind プリセット: JS プラグイン (oxlint-tailwindcss) の実行環境が必要
+ * - jsPlugins の k8o/* カスタムルール (@repo/oxlint-plugin): 同じく JS プラグイン
+ *   の実行環境が必要で、リポジトリのパス前提のルールのため Web ツールには無関係
  * - typeAware: 型情報 lint は tsgolint バイナリと tsconfig が必要。
  *   type-aware ルールが rules に残っても oxlint は黙ってスキップする
  * - settings.next.rootDir / test・d.ts の overrides: 単一の入力ファイルには無関係
