@@ -68,6 +68,91 @@ const CARD_PADDING: Record<string, string> = {
   lg: 'p-8',
 };
 
+// 複数の case が共有する prop 列は定数にする。case をまとめたまま片方の
+// コンポーネント名で CONVERTED_PROPS を引くと、catalog が片側だけ変わったときに
+// 表と switch がずれても気づけないため。
+const TEXT_INPUT_PROPS = [
+  'name',
+  'placeholder',
+  'defaultValue',
+  'invalid',
+  'disabled',
+  'readOnly',
+] as const;
+const TOGGLE_PROPS = ['label', 'name', 'defaultChecked', 'disabled'] as const;
+const CHOICE_CARD_PROPS = [
+  'name',
+  'options',
+  'defaultValue',
+  'invalid',
+  'disabled',
+] as const;
+const OPTION_INPUT_PROPS = [
+  'name',
+  'options',
+  'defaultValue',
+  'invalid',
+  'disabled',
+] as const;
+// 1要素を複数タグへ展開するものは部位ごとに持ち、CONVERTED_PROPS ではその和を宣言する。
+const FORM_CONTROL_FIELD_PROPS = [
+  'label',
+  'required',
+  'helpText',
+  'errorText',
+  'invalid',
+] as const;
+const FORM_CONTROL_INPUT_PROPS = [
+  'name',
+  'placeholder',
+  'defaultValue',
+] as const;
+
+// emitElement が attrs() でそのまま JSX 属性へ変換する prop。
+const CONVERTED_PROPS = {
+  Stack: ['direction', 'gap', 'padding', 'align', 'justify'],
+  Grid: ['cols', 'minItemSize', 'gap'],
+  Card: ['variant', 'interactive', 'width'],
+  Button: ['color', 'variant', 'size', 'fullWidth'],
+  Heading: ['level', 'lineClamp'],
+  Badge: ['label', 'tone', 'variant', 'size'],
+  Alert: ['tone', 'message'],
+  Spinner: ['label', 'size'],
+  Separator: ['orientation', 'color'],
+  Skeleton: ['shape', 'size', 'animate'],
+  Progress: ['value', 'max', 'min', 'label'],
+  Avatar: ['name', 'src', 'alt', 'fallback', 'size'],
+  Anchor: ['href', 'openInNewTab'],
+  Code: [],
+  Icon: ['size'],
+  ChevronIcon: ['direction', 'size'],
+  IconButton: ['label', 'color', 'size'],
+  FormControl: [...FORM_CONTROL_FIELD_PROPS, ...FORM_CONTROL_INPUT_PROPS],
+  TextField: TEXT_INPUT_PROPS,
+  Textarea: TEXT_INPUT_PROPS,
+  PasswordInput: TEXT_INPUT_PROPS,
+  NumberField: [
+    'name',
+    'defaultValue',
+    'min',
+    'max',
+    'step',
+    'invalid',
+    'disabled',
+  ],
+  Slider: ['name', 'defaultValue', 'min', 'max', 'step', 'invalid', 'disabled'],
+  Checkbox: TOGGLE_PROPS,
+  Switch: TOGGLE_PROPS,
+  Radio: ['name', 'options', 'defaultValue', 'disabled'],
+  RadioCard: CHOICE_CARD_PROPS,
+  CheckboxCard: CHOICE_CARD_PROPS,
+  CheckboxGroup: ['name', 'defaultValue'],
+  Select: OPTION_INPUT_PROPS,
+  ListBox: OPTION_INPUT_PROPS,
+  Autocomplete: OPTION_INPUT_PROPS,
+  Form: [],
+} as const satisfies Record<string, readonly string[]>;
+
 type Ctx = {
   spec: Spec;
   imports: Set<string>;
@@ -202,7 +287,7 @@ const emitElement = (el: UIElement, ctx: Ctx): string[] => {
     case 'Stack': {
       ctx.imports.add('Stack');
       return wrap(
-        `<Stack${attrs(el, ['direction', 'gap', 'padding', 'align', 'justify'], ctx)}>`,
+        `<Stack${attrs(el, CONVERTED_PROPS.Stack, ctx)}>`,
         emitChildren(el, ctx),
         '</Stack>',
       );
@@ -210,7 +295,7 @@ const emitElement = (el: UIElement, ctx: Ctx): string[] => {
     case 'Grid': {
       ctx.imports.add('Grid');
       return wrap(
-        `<Grid${attrs(el, ['cols', 'minItemSize', 'gap'], ctx)}>`,
+        `<Grid${attrs(el, CONVERTED_PROPS.Grid, ctx)}>`,
         emitChildren(el, ctx),
         '</Grid>',
       );
@@ -221,7 +306,7 @@ const emitElement = (el: UIElement, ctx: Ctx): string[] => {
         typeof el.props['size'] === 'string' ? el.props['size'] : 'md';
       const padding = CARD_PADDING[size] ?? 'p-6';
       return wrap(
-        `<Card${attrs(el, ['variant', 'interactive', 'width'], ctx)}>`,
+        `<Card${attrs(el, CONVERTED_PROPS.Card, ctx)}>`,
         wrap(`<div className="${padding}">`, emitChildren(el, ctx), '</div>'),
         '</Card>',
       );
@@ -229,7 +314,7 @@ const emitElement = (el: UIElement, ctx: Ctx): string[] => {
     case 'Button': {
       ctx.imports.add('Button');
       const { href } = el.props;
-      const base = attrs(el, ['color', 'variant', 'size', 'fullWidth'], ctx);
+      const base = attrs(el, CONVERTED_PROPS.Button, ctx);
       const label = escapeText(textProp(el, 'label', ctx));
       if (typeof href === 'string' && href !== '') {
         // href 付きは renderItem でリンクとして描画する（実 Button の作法）。
@@ -259,47 +344,41 @@ const emitElement = (el: UIElement, ctx: Ctx): string[] => {
       const level =
         typeof el.props['level'] === 'string' ? el.props['level'] : 'h2';
       return [
-        `<Heading${attrs(el, ['level', 'lineClamp'], ctx, { level })}>${escapeText(textProp(el, 'label', ctx))}</Heading>`,
+        `<Heading${attrs(el, CONVERTED_PROPS.Heading, ctx, { level })}>${escapeText(textProp(el, 'label', ctx))}</Heading>`,
       ];
     }
     case 'Badge': {
       ctx.imports.add('Badge');
-      return [
-        `<Badge${attrs(el, ['label', 'tone', 'variant', 'size'], ctx)} />`,
-      ];
+      return [`<Badge${attrs(el, CONVERTED_PROPS.Badge, ctx)} />`];
     }
     case 'Alert': {
       ctx.imports.add('Alert');
-      return [`<Alert${attrs(el, ['tone', 'message'], ctx)} />`];
+      return [`<Alert${attrs(el, CONVERTED_PROPS.Alert, ctx)} />`];
     }
     case 'Spinner': {
       ctx.imports.add('Spinner');
-      return [`<Spinner${attrs(el, ['label', 'size'], ctx)} />`];
+      return [`<Spinner${attrs(el, CONVERTED_PROPS.Spinner, ctx)} />`];
     }
     case 'Separator': {
       ctx.imports.add('Separator');
-      return [`<Separator${attrs(el, ['orientation', 'color'], ctx)} />`];
+      return [`<Separator${attrs(el, CONVERTED_PROPS.Separator, ctx)} />`];
     }
     case 'Skeleton': {
       ctx.imports.add('Skeleton');
-      return [`<Skeleton${attrs(el, ['shape', 'size', 'animate'], ctx)} />`];
+      return [`<Skeleton${attrs(el, CONVERTED_PROPS.Skeleton, ctx)} />`];
     }
     case 'Progress': {
       ctx.imports.add('Progress');
-      return [
-        `<Progress${attrs(el, ['value', 'max', 'min', 'label'], ctx)} />`,
-      ];
+      return [`<Progress${attrs(el, CONVERTED_PROPS.Progress, ctx)} />`];
     }
     case 'Avatar': {
       ctx.imports.add('Avatar');
-      return [
-        `<Avatar${attrs(el, ['name', 'src', 'alt', 'fallback', 'size'], ctx)} />`,
-      ];
+      return [`<Avatar${attrs(el, CONVERTED_PROPS.Avatar, ctx)} />`];
     }
     case 'Anchor': {
       ctx.imports.add('Anchor');
       return [
-        `<Anchor${attrs(el, ['href', 'openInNewTab'], ctx)}>${escapeText(textProp(el, 'label', ctx))}</Anchor>`,
+        `<Anchor${attrs(el, CONVERTED_PROPS.Anchor, ctx)}>${escapeText(textProp(el, 'label', ctx))}</Anchor>`,
       ];
     }
     case 'Code': {
@@ -314,11 +393,11 @@ const emitElement = (el: UIElement, ctx: Ctx): string[] => {
         return [`{/* TODO: Icon(${name}) */}`];
       }
       ctx.imports.add(component);
-      return [`<${component}${attrs(el, ['size'], ctx)} />`];
+      return [`<${component}${attrs(el, CONVERTED_PROPS.Icon, ctx)} />`];
     }
     case 'ChevronIcon': {
       ctx.imports.add('ChevronIcon');
-      return [`<ChevronIcon${attrs(el, ['direction', 'size'], ctx)} />`];
+      return [`<ChevronIcon${attrs(el, CONVERTED_PROPS.ChevronIcon, ctx)} />`];
     }
     case 'IconButton': {
       const icon = textProp(el, 'icon', ctx);
@@ -332,7 +411,7 @@ const emitElement = (el: UIElement, ctx: Ctx): string[] => {
         ctx.imports.add(component);
       }
       return wrap(
-        `<IconButton${attrs(el, ['label', 'color', 'size'], ctx)}>`,
+        `<IconButton${attrs(el, CONVERTED_PROPS.IconButton, ctx)}>`,
         [iconJsx],
         '</IconButton>',
       );
@@ -351,13 +430,9 @@ const emitElement = (el: UIElement, ctx: Ctx): string[] => {
             ? 'PasswordInput'
             : 'TextField';
       ctx.imports.add(inputComponent);
-      const inputAttrs = attrs(
-        el,
-        ['name', 'placeholder', 'defaultValue'],
-        ctx,
-      );
+      const inputAttrs = attrs(el, FORM_CONTROL_INPUT_PROPS, ctx);
       return [
-        `<FormControl${attrs(el, ['label', 'required', 'helpText', 'errorText', 'invalid'], ctx)}`,
+        `<FormControl${attrs(el, FORM_CONTROL_FIELD_PROPS, ctx)}`,
         '  renderInput={(props) => (',
         `    <${inputComponent} {...props}${inputAttrs} />`,
         '  )}',
@@ -368,42 +443,40 @@ const emitElement = (el: UIElement, ctx: Ctx): string[] => {
     case 'Textarea':
     case 'PasswordInput': {
       ctx.imports.add(el.type);
-      return [
-        `<${el.type}${attrs(el, ['name', 'placeholder', 'defaultValue', 'invalid', 'disabled', 'readOnly'], ctx)} />`,
-      ];
+      return [`<${el.type}${attrs(el, TEXT_INPUT_PROPS, ctx)} />`];
     }
     case 'NumberField': {
       ctx.imports.add('NumberField');
-      return [
-        `<NumberField${attrs(el, ['name', 'defaultValue', 'min', 'max', 'step', 'invalid', 'disabled'], ctx)} />`,
-      ];
+      return [`<NumberField${attrs(el, CONVERTED_PROPS.NumberField, ctx)} />`];
+    }
+    case 'Slider': {
+      ctx.imports.add('Slider');
+      return [`<Slider${attrs(el, CONVERTED_PROPS.Slider, ctx)} />`];
     }
     case 'Checkbox':
     case 'Switch': {
       ctx.imports.add(el.type);
-      return [
-        `<${el.type}${attrs(el, ['label', 'name', 'defaultChecked', 'disabled'], ctx)} />`,
-      ];
+      return [`<${el.type}${attrs(el, TOGGLE_PROPS, ctx)} />`];
     }
     case 'Radio': {
       // catalog の Radio は invalid を持たない（RadioCard / CheckboxCard との差分）。
       ctx.imports.add(el.type);
       return emitLabeledGroup(el, ctx, (labelId) => [
-        `<Radio aria-labelledby="${labelId}"${attrs(el, ['name', 'options', 'defaultValue', 'disabled'], ctx)} />`,
+        `<Radio aria-labelledby="${labelId}"${attrs(el, CONVERTED_PROPS.Radio, ctx)} />`,
       ]);
     }
     case 'RadioCard':
     case 'CheckboxCard': {
       ctx.imports.add(el.type);
       return emitLabeledGroup(el, ctx, (labelId) => [
-        `<${el.type} aria-labelledby="${labelId}"${attrs(el, ['name', 'options', 'defaultValue', 'invalid', 'disabled'], ctx)} />`,
+        `<${el.type} aria-labelledby="${labelId}"${attrs(el, CHOICE_CARD_PROPS, ctx)} />`,
       ]);
     }
     case 'CheckboxGroup': {
       ctx.imports.add('CheckboxGroup');
       return emitLabeledGroup(el, ctx, (labelId) =>
         wrap(
-          `<CheckboxGroup.Root aria-labelledby="${labelId}"${attrs(el, ['name', 'defaultValue'], ctx)}>`,
+          `<CheckboxGroup.Root aria-labelledby="${labelId}"${attrs(el, CONVERTED_PROPS.CheckboxGroup, ctx)}>`,
           emitCheckboxGroupItems(el, ctx),
           '</CheckboxGroup.Root>',
         ),
@@ -413,15 +486,7 @@ const emitElement = (el: UIElement, ctx: Ctx): string[] => {
     case 'ListBox':
     case 'Autocomplete': {
       ctx.imports.add(el.type);
-      return [
-        `<${el.type}${attrs(el, ['name', 'options', 'defaultValue', 'invalid', 'disabled'], ctx)} />`,
-      ];
-    }
-    case 'Slider': {
-      ctx.imports.add('Slider');
-      return [
-        `<Slider${attrs(el, ['name', 'defaultValue', 'min', 'max', 'step', 'invalid', 'disabled'], ctx)} />`,
-      ];
+      return [`<${el.type}${attrs(el, OPTION_INPUT_PROPS, ctx)} />`];
     }
     case 'Form': {
       ctx.imports.add('Form');
