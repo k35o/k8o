@@ -1,12 +1,50 @@
 import type { Spec } from '@json-render/core';
+import * as ui from '@k8ordo/ui';
 import { catalog } from '@k8ordo/ui/json-render';
+import { registry } from '@k8ordo/ui/json-render/registry';
+import type { ReactElement } from 'react';
 
 import {
+  CARD_PADDING,
   CONVERTED_PROPS,
   EXCLUDED_PROPS,
+  FIELD_TYPE_INPUTS,
   ICON_COMPONENTS,
   specToTsx,
 } from './spec-to-tsx';
+
+// registry の描画関数をそのまま呼び、実際に描かれる要素を取り出す。手書きの
+// 対応表を registry のソースの写しではなく描画結果と突き合わせるため。
+// registry の値は ComponentType なので TS からは直接呼べず、実体が関数である
+// ことに寄せてキャストしている。Icon / Card は element しか見ない。
+const renderWidget = (
+  type: string,
+  props: Record<string, unknown>,
+): ReactElement => {
+  const render = registry[type] as unknown as
+    | ((args: {
+        element: { type: string; props: Record<string, unknown> };
+      }) => ReactElement)
+    | undefined;
+  if (render === undefined) {
+    throw new Error(`registry に ${type} が無い`);
+  }
+  return render({ element: { type, props } });
+};
+
+const exportedComponents: Record<string, unknown> = ui;
+
+const renderedIconComponent = (iconName: string): unknown =>
+  renderWidget('Icon', { name: iconName }).type;
+
+// registry の Card は children を padding つきの div で包む。その className が
+// CARD_PADDING の正の側になる。
+const renderedCardPadding = (size: string): unknown => {
+  const inner = renderWidget('Card', { size }).props as {
+    children: ReactElement;
+  };
+  return (inner.children.props as { className: string }).className;
+};
 
 // catalog のコンポーネント名 → prop 名。手書きの対応表と突き合わせる正の側。
 const CATALOG_PROP_KEYS: Record<string, readonly string[]> = Object.fromEntries(
@@ -298,6 +336,46 @@ export default function Preview() {
         [...iconNameOptions].toSorted(),
       );
     });
+
+    it.each(Object.entries(ICON_COMPONENTS))(
+      'アイコン %s の対応先 %s が registry の描画するコンポーネントと一致する',
+      (iconName, componentName) => {
+        expect(exportedComponents[componentName]).toBe(
+          renderedIconComponent(iconName),
+        );
+      },
+    );
+
+    it('CARD_PADDING のキーが catalog の Card.size と1対1で一致する', () => {
+      const sizeOptions: readonly string[] =
+        catalog.data.components.Card.props.shape.size.unwrap().options;
+      expect(Object.keys(CARD_PADDING).toSorted()).toStrictEqual(
+        [...sizeOptions].toSorted(),
+      );
+    });
+
+    it.each(Object.entries(CARD_PADDING))(
+      'Card の size %s のパディング %s が registry の描画と一致する',
+      (size, padding) => {
+        expect(renderedCardPadding(size)).toBe(padding);
+      },
+    );
+
+    it('FIELD_TYPE_INPUTS のキーが catalog の FormControl.fieldType と1対1で一致する', () => {
+      const fieldTypeOptions: readonly string[] =
+        catalog.data.components.FormControl.props.shape.fieldType.unwrap()
+          .options;
+      expect(Object.keys(FIELD_TYPE_INPUTS).toSorted()).toStrictEqual(
+        [...fieldTypeOptions].toSorted(),
+      );
+    });
+
+    it.each(Object.values(FIELD_TYPE_INPUTS))(
+      'FIELD_TYPE_INPUTS の対応先 %s が @k8ordo/ui の export として実在する',
+      (componentName) => {
+        expect(exportedComponents[componentName]).toBeDefined();
+      },
+    );
 
     it('CONVERTED_PROPS のキーが catalog に実在するコンポーネントである', () => {
       expect(unknownConvertedComponents).toStrictEqual([]);

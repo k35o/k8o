@@ -62,10 +62,18 @@ export const ICON_COMPONENTS: Record<string, string> = {
 };
 
 // Card の size → 内側パディング（registry の CARD_PADDING_CLASS と同じ対応）。
-const CARD_PADDING: Record<string, string> = {
+export const CARD_PADDING: Record<string, string> = {
   sm: 'p-4',
   md: 'p-6',
   lg: 'p-8',
+};
+
+// catalog の FormControl.fieldType → renderInput に置く入力コンポーネント
+// （registry の FormControlWidget と同じ対応）。
+export const FIELD_TYPE_INPUTS: Record<string, string> = {
+  text: 'TextField',
+  textarea: 'Textarea',
+  password: 'PasswordInput',
 };
 
 // 複数の case が共有する prop 列は定数にする。case をまとめたまま片方の
@@ -163,7 +171,7 @@ export const CONVERTED_PROPS = {
 
 // catalog にはあるが attrs() では出さない prop。JSX 属性以外の形へ変換するもの。
 // CONVERTED_PROPS との和が catalog の prop 全体を覆うことをテストが照合するので、
-// arte-odyssey が prop を増やしたらどちらかに足すまでテストが赤くなる。
+// @k8ordo/ui が prop を増やしたらどちらかに足すまでテストが赤くなる。
 export const EXCLUDED_PROPS = {
   // 内側 div の padding へ
   Card: ['size'],
@@ -460,12 +468,7 @@ const emitElement = (el: UIElement, ctx: Ctx): string[] => {
         typeof el.props['fieldType'] === 'string'
           ? el.props['fieldType']
           : 'text';
-      const inputComponent =
-        fieldType === 'textarea'
-          ? 'Textarea'
-          : fieldType === 'password'
-            ? 'PasswordInput'
-            : 'TextField';
+      const inputComponent = FIELD_TYPE_INPUTS[fieldType] ?? 'TextField';
       ctx.imports.add(inputComponent);
       const inputAttrs = attrs(el, FORM_CONTROL_INPUT_PROPS, ctx);
       return [
