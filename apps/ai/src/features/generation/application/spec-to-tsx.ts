@@ -70,16 +70,14 @@ const CARD_PADDING: Record<string, string> = {
 
 // 複数の case が共有する prop 列は定数にする。case をまとめたまま片方の
 // コンポーネント名で CONVERTED_PROPS を引くと、catalog が片側だけ変わったときに
-// 表と switch がずれても気づけないため。
+// 表と switch がずれてもテストが素通りするため。
 const TEXT_INPUT_PROPS = [
   'name',
   'placeholder',
   'defaultValue',
   'invalid',
   'disabled',
-  'readOnly',
 ] as const;
-const TOGGLE_PROPS = ['label', 'name', 'defaultChecked', 'disabled'] as const;
 const CHOICE_CARD_PROPS = [
   'name',
   'options',
@@ -107,9 +105,12 @@ const FORM_CONTROL_INPUT_PROPS = [
   'placeholder',
   'defaultValue',
 ] as const;
+const LIST_BOX_ROOT_PROPS = ['options', 'defaultValue'] as const;
+const LIST_BOX_TRIGGER_PROPS = ['label'] as const;
 
 // emitElement が attrs() でそのまま JSX 属性へ変換する prop。
-const CONVERTED_PROPS = {
+// catalog に無い prop の混入は spec-to-tsx.test.ts のドリフト検知テストが照合する。
+export const CONVERTED_PROPS = {
   Stack: ['direction', 'gap', 'padding', 'align', 'justify'],
   Grid: ['cols', 'minItemSize', 'gap'],
   Card: ['variant', 'interactive', 'width'],
@@ -128,8 +129,8 @@ const CONVERTED_PROPS = {
   ChevronIcon: ['direction', 'size'],
   IconButton: ['label', 'color', 'size'],
   FormControl: [...FORM_CONTROL_FIELD_PROPS, ...FORM_CONTROL_INPUT_PROPS],
-  TextField: TEXT_INPUT_PROPS,
-  Textarea: TEXT_INPUT_PROPS,
+  TextField: [...TEXT_INPUT_PROPS, 'readOnly'],
+  Textarea: [...TEXT_INPUT_PROPS, 'readOnly', 'rows', 'autoResize'],
   PasswordInput: TEXT_INPUT_PROPS,
   NumberField: [
     'name',
@@ -141,17 +142,53 @@ const CONVERTED_PROPS = {
     'disabled',
   ],
   Slider: ['name', 'defaultValue', 'min', 'max', 'step', 'invalid', 'disabled'],
-  Checkbox: TOGGLE_PROPS,
-  Switch: TOGGLE_PROPS,
+  Checkbox: ['label', 'name', 'defaultChecked', 'disabled'],
+  Switch: [
+    'label',
+    'name',
+    'defaultChecked',
+    'disabled',
+    'invalid',
+    'required',
+  ],
   Radio: ['name', 'options', 'defaultValue', 'disabled'],
   RadioCard: CHOICE_CARD_PROPS,
   CheckboxCard: CHOICE_CARD_PROPS,
   CheckboxGroup: ['name', 'defaultValue'],
   Select: OPTION_INPUT_PROPS,
-  ListBox: OPTION_INPUT_PROPS,
   Autocomplete: OPTION_INPUT_PROPS,
-  Form: [],
+  ListBox: [...LIST_BOX_ROOT_PROPS, ...LIST_BOX_TRIGGER_PROPS],
+  Form: ['action'],
 } as const satisfies Record<string, readonly string[]>;
+
+// catalog にはあるが attrs() では出さない prop。JSX 属性以外の形へ変換するもの。
+// CONVERTED_PROPS との和が catalog の prop 全体を覆うことをテストが照合するので、
+// arte-odyssey が prop を増やしたらどちらかに足すまでテストが赤くなる。
+export const EXCLUDED_PROPS = {
+  // 内側 div の padding へ
+  Card: ['size'],
+  // label は子テキストへ、href は renderItem のリンクへ
+  Button: ['label', 'href'],
+  // 子テキストへ
+  Heading: ['label'],
+  Anchor: ['label'],
+  Code: ['code'],
+  // アイコンコンポーネント名へ（ICON_COMPONENTS）
+  Icon: ['name'],
+  IconButton: ['icon'],
+  // renderInput に置く入力コンポーネントの選択へ
+  FormControl: ['fieldType'],
+  // グループ入力の label は見出し span へ（emitLabeledGroup）
+  Radio: ['label'],
+  RadioCard: ['label'],
+  CheckboxCard: ['label'],
+  // options は CheckboxGroup.Item 群へ
+  CheckboxGroup: ['label', 'options'],
+  // 実 ListBox.Root に name が無く registry も渡していない
+  ListBox: ['name'],
+} as const satisfies Partial<
+  Record<keyof typeof CONVERTED_PROPS, readonly string[]>
+>;
 
 type Ctx = {
   spec: Spec;
@@ -439,11 +476,20 @@ const emitElement = (el: UIElement, ctx: Ctx): string[] => {
         '/>',
       ];
     }
-    case 'TextField':
-    case 'Textarea':
+    case 'TextField': {
+      ctx.imports.add('TextField');
+      return [`<TextField${attrs(el, CONVERTED_PROPS.TextField, ctx)} />`];
+    }
+    case 'Textarea': {
+      ctx.imports.add('Textarea');
+      return [`<Textarea${attrs(el, CONVERTED_PROPS.Textarea, ctx)} />`];
+    }
     case 'PasswordInput': {
-      ctx.imports.add(el.type);
-      return [`<${el.type}${attrs(el, TEXT_INPUT_PROPS, ctx)} />`];
+      // catalog の PasswordInput は readOnly を持たない（TextField / Textarea との差分）。
+      ctx.imports.add('PasswordInput');
+      return [
+        `<PasswordInput${attrs(el, CONVERTED_PROPS.PasswordInput, ctx)} />`,
+      ];
     }
     case 'NumberField': {
       ctx.imports.add('NumberField');
@@ -453,14 +499,17 @@ const emitElement = (el: UIElement, ctx: Ctx): string[] => {
       ctx.imports.add('Slider');
       return [`<Slider${attrs(el, CONVERTED_PROPS.Slider, ctx)} />`];
     }
-    case 'Checkbox':
+    case 'Checkbox': {
+      ctx.imports.add('Checkbox');
+      return [`<Checkbox${attrs(el, CONVERTED_PROPS.Checkbox, ctx)} />`];
+    }
     case 'Switch': {
-      ctx.imports.add(el.type);
-      return [`<${el.type}${attrs(el, TOGGLE_PROPS, ctx)} />`];
+      ctx.imports.add('Switch');
+      return [`<Switch${attrs(el, CONVERTED_PROPS.Switch, ctx)} />`];
     }
     case 'Radio': {
       // catalog の Radio は invalid を持たない（RadioCard / CheckboxCard との差分）。
-      ctx.imports.add(el.type);
+      ctx.imports.add('Radio');
       return emitLabeledGroup(el, ctx, (labelId) => [
         `<Radio aria-labelledby="${labelId}"${attrs(el, CONVERTED_PROPS.Radio, ctx)} />`,
       ]);
@@ -483,14 +532,30 @@ const emitElement = (el: UIElement, ctx: Ctx): string[] => {
       );
     }
     case 'Select':
-    case 'ListBox':
     case 'Autocomplete': {
       ctx.imports.add(el.type);
       return [`<${el.type}${attrs(el, OPTION_INPUT_PROPS, ctx)} />`];
     }
+    case 'ListBox': {
+      // 実 ListBox は Root / Trigger / Content の組み立てで、フラットな1タグではない
+      // （registry の renderListBox と同じ形）。
+      ctx.imports.add('ListBox');
+      return wrap(
+        `<ListBox.Root${attrs(el, LIST_BOX_ROOT_PROPS, ctx)}>`,
+        [
+          `<ListBox.Trigger${attrs(el, LIST_BOX_TRIGGER_PROPS, ctx)} />`,
+          '<ListBox.Content />',
+        ],
+        '</ListBox.Root>',
+      );
+    }
     case 'Form': {
       ctx.imports.add('Form');
-      return wrap('<Form>', emitChildren(el, ctx), '</Form>');
+      return wrap(
+        `<Form${attrs(el, CONVERTED_PROPS.Form, ctx)}>`,
+        emitChildren(el, ctx),
+        '</Form>',
+      );
     }
     default: {
       // 複合コンポーネント（Tabs / Table / Modal 等）は API の組み立てが必要なため
