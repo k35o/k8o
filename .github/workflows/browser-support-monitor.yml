@@ -50,6 +50,22 @@ jobs:
           active_version() {
             echo "$1" | jq -r '.activeVersion // ""'
           }
+          last_success_at() {
+            echo "$1" | jq -r '.lastSuccessAt // ""'
+          }
+          floor_stale() {
+            echo "$1" | jq -r '.floorStale // false'
+          }
+
+          # ISO8601(UTC)を epoch へ。空や解釈不能なら空を返し、呼び出し側で fail-closed。
+          to_epoch() {
+            [ -n "$1" ] && date -u -d "$1" +%s 2>/dev/null || echo ''
+          }
+          # 上流リリースの公開時刻。公開リポジトリの読み取りなので GITHUB_TOKEN で足りる。
+          release_published_at() {
+            gh api "repos/web-platform-dx/web-features/releases/tags/v$1" \
+              --jq '.published_at' 2>/dev/null || echo ''
+          }
 
           # 上流最新バージョンを独立に発見する(302 の Location からタグをパース)
           location=$(curl -sS --max-time 30 -o /dev/null -w '%{redirect_url}' -I "$LATEST_URL" || echo '')
@@ -61,17 +77,43 @@ jobs:
           echo "health: $health"
           echo "upstream latest: ${latest:-unknown}"
 
+          # 再同期で直る異常(status・バージョン遅れ)と、コミットが要る異常(フロア乖離)を
+          # 分けて持つ。自走復旧は前者にだけ意味がある。
           unhealthy=false
+          syncable=false
           reason=""
           if [ "$status" != "ok" ]; then
             unhealthy=true
+            syncable=true
             reason="health status: $status"
           fi
           # 上流の対応メジャー(v3)最新に active が追いついていない場合も異常扱い。
           # メジャー跨ぎ(v4)は admin 側が警報するため、ここでは対象外にする。
+          # ただし上流リリース直後は日次 cron を待っているだけの正常な状態で、これを
+          # 異常にすると上流がリリースするたび誤報が出る。「リリース公開後に同期が成功
+          # したのに取り込めていない」ときだけ異常とし、公開時刻を解決できないときは
+          # 判定を諦めず fail-closed で異常扱いにする(静かに見逃さない)。
           if [ -n "$latest" ] && [ "${latest%%.*}" = "3" ] && [ "$latest" != "$active" ]; then
+            published=$(release_published_at "$latest")
+            published_epoch=$(to_epoch "$published")
+            synced_epoch=$(to_epoch "$(last_success_at "$health")")
+            if [ -z "$published_epoch" ]; then
+              echo "v$latest の公開時刻を解決できないため取り込み待ちと区別できない"
+            fi
+            if [ -n "$published_epoch" ] && [ -n "$synced_epoch" ] && [ "$synced_epoch" -le "$published_epoch" ]; then
+              echo "pending: v$latest は $published 公開。直近の同期成功はそれ以前のため取り込み待ち"
+            else
+              unhealthy=true
+              syncable=true
+              reason="${reason:+$reason / }version lag: active=${active:-none} latest=$latest"
+            fi
+          fi
+          # コミット済みフロア(RootLayout が読む生成物)と active データセットの乖離。
+          # 同期時の push 警報は1回きりで、見落とすと誰も気づかないまま古い警告閾値が
+          # 残り続けるため、ここで継続的に拾う。再同期では直らないので自走復旧はしない。
+          if [ "$(floor_stale "$health")" = "true" ]; then
             unhealthy=true
-            reason="${reason:+$reason / }version lag: active=${active:-none} latest=$latest"
+            reason="${reason:+$reason / }floor stale: browser-min-versions.json が active データセットとずれている"
           fi
 
           if [ "$unhealthy" = "false" ]; then
@@ -81,7 +123,9 @@ jobs:
           echo "unhealthy: $reason"
 
           # 自走復旧: 同期エンドポイントを直接叩く(trigger=monitor として記録される)
-          if [ -n "${CRON_SECRET:-}" ] && [ -n "${VERCEL_AUTOMATION_BYPASS_SECRET:-}" ]; then
+          if [ "$syncable" = "false" ]; then
+            echo "再同期では直らない異常のみのため自走復旧はしない"
+          elif [ -n "${CRON_SECRET:-}" ] && [ -n "${VERCEL_AUTOMATION_BYPASS_SECRET:-}" ]; then
             echo "triggering sync..."
             curl -sS --max-time 120 \
               -H "Authorization: Bearer $CRON_SECRET" \
@@ -91,11 +135,13 @@ jobs:
             health=$(fetch_health)
             status=$(health_status "$health")
             active=$(active_version "$health")
-            if [ "$status" = "ok" ] && { [ -z "$latest" ] || [ "${latest%%.*}" != "3" ] || [ "$latest" = "$active" ]; }; then
+            # 同期はフロア乖離を解消しない(むしろ新しい版を取り込んで露呈させる)ため、
+            # 復旧判定にも含める。
+            if [ "$status" = "ok" ] && { [ -z "$latest" ] || [ "${latest%%.*}" != "3" ] || [ "$latest" = "$active" ]; } && [ "$(floor_stale "$health")" != "true" ]; then
               echo "recovered by self-heal: active=$active"
               exit 0
             fi
-            reason="$reason / self-heal failed (status=$status active=${active:-none})"
+            reason="$reason / self-heal failed (status=$status active=${active:-none} floorStale=$(floor_stale "$health"))"
           else
             reason="$reason / CRON_SECRET または VERCEL_AUTOMATION_BYPASS_SECRET 未設定のため自走復旧をスキップ"
           fi
@@ -112,5 +158,5 @@ jobs:
           gh issue create \
             --title "browser-support: データ同期の異常を検知 ($(date -u +%Y-%m-%d))" \
             --label "$label" \
-            --body "$(printf '外形監視が異常を検知しました。\n\n- 判定: %s\n- health: %s\n- 上流最新: %s\n\n確認手順:\n1. %s を確認\n2. admin の Browser Support 画面で同期履歴を確認し、必要なら手動同期\n3. Vercel Cron (admin) の実行履歴を確認\n' "$reason" "$HEALTH_URL" "${latest:-unknown}" "$HEALTH_URL")"
+            --body "$(printf '外形監視が異常を検知しました。\n\n- 判定: %s\n- health: %s\n- 上流最新: %s\n\n確認手順:\n1. %s を確認\n2. admin の Browser Support 画面で同期履歴を確認し、必要なら手動同期\n3. Vercel Cron (admin) の実行履歴を確認\n4. floor stale なら `pnpm run -F main generate:browser-min-versions` を実行してコミット\n' "$reason" "$HEALTH_URL" "${latest:-unknown}" "$HEALTH_URL")"
           exit 1
