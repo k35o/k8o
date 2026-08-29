@@ -41,9 +41,9 @@
     "katex": "0.18.4",
     "next": "catalog:",
     "next-themes": "catalog:",
-    "nuqs": "2.9.5",
-    "oxfmt": "0.63.0",
-    "oxlint": "1.78.0",
+    "nuqs": "2.10.0",
+    "oxfmt": "0.64.0",
+    "oxlint": "1.79.0",
     "postcss": "catalog:",
     "react": "catalog:",
     "react-dom": "catalog:",
@@ -84,7 +84,7 @@
     "vitest": "catalog:"
   },
   "optionalDependencies": {
-    "@oxlint/binding-linux-x64-gnu": "1.78.0"
+    "@oxlint/binding-linux-x64-gnu": "1.79.0"
   },
   "msw": {
     "workerDirectory": [
