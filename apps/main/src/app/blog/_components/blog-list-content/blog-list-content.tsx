@@ -1,6 +1,6 @@
 'use client';
 
-import { BlogIcon, TextField } from '@k8o/arte-odyssey';
+import { BlogIcon, TextField } from '@k8ordo/ui';
 import { useQueryStates } from 'nuqs';
 import { useMemo } from 'react';
 import type { FC } from 'react';

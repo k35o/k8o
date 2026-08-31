@@ -98,15 +98,15 @@ import文とpropsが正しいか確認する。
 
 | コンポーネント | import | 主なprops |
 |---------------|--------|-----------|
-| `BaselineStatus` | `@k8o/arte-odyssey` | `featureId`（frontmatterの`featureIds`と一致）。Web機能の記事ではH1直下 |
+| `BaselineStatus` | `@k8ordo/ui` | `featureId`（frontmatterの`featureIds`と一致）。Web機能の記事ではH1直下 |
 | `Playground` | `@/app/_components/playgrounds` | `title`（必須）。子にデモ |
 | `LinkCard` | `@/app/blog/_components/link-card` | `href`（必須） / `publishedAt?` / `variant?` |
 | `Image` / `FloatImage` | `@/app/blog/_components/image` | `src`・`alt`（どちらも必須） |
-| `Alert` | `@k8o/arte-odyssey` | `tone`（`warning`等） / `message` |
+| `Alert` | `@k8ordo/ui` | `tone`（`warning`等） / `message` |
 
-- 見出し・段落・リンク・インラインコードは`mdx-components.tsx`が自動でarte-odysseyスタイルに変換する。素のmarkdownで書けばよい（独自に`<h2>`等を書かない）。
+- 見出し・段落・リンク・インラインコードは`mdx-components.tsx`が自動で@k8ordo/uiスタイルに変換する。素のmarkdownで書けばよい（独自に`<h2>`等を書かない）。
 - **import検証**: grepのヒット件数で判断せず、対象シンボルの`export`宣言を`index.ts`で1ファイルずつ目視確認する（再エクスポートチェーン: `playgrounds/index.ts`の`export *` → サブ`index.ts`の named export）。サブパス直接import（主流）でも index 経由でも、**使われているパスが解決すればよい**（index未登録＝壊れ、と誤判定しない）。
-- **arte-odysseyのpropsは推測しない**。`Alert`・`BaselineStatus`等は `apps/main` の CLAUDE.md に従い `main-storybook-mcp` で確認する。**MCPが使えない場合**は `apps/main/node_modules/@k8o/arte-odyssey` の型定義（`dist/*.d.ts`）または `docs/` を読む。
+- **@k8ordo/uiのpropsは推測しない**。`Alert`・`BaselineStatus`等は `apps/main` の CLAUDE.md に従い `main-storybook-mcp` で確認する。**MCPが使えない場合**は `apps/main/node_modules/@k8ordo/ui` の型定義（`dist/*.d.ts`）または `docs/` を読む。
 
 ## ブログ固有4: 見出し階層・リンク・画像・テーブル
 

@@ -1,4 +1,4 @@
-import { Card } from '@k8o/arte-odyssey';
+import { Card } from '@k8ordo/ui';
 import { formatDate } from '@repo/helpers/date/format';
 import type { Route } from 'next';
 import type { FC } from 'react';

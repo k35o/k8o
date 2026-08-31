@@ -1,6 +1,6 @@
 'use client';
 
-import { BadIcon, Button, GoodIcon, Textarea } from '@k8o/arte-odyssey';
+import { BadIcon, Button, GoodIcon, Textarea } from '@k8ordo/ui';
 import { cn } from '@repo/helpers/cn';
 import { useId, useState, useTransition } from 'react';
 import type { FC } from 'react';

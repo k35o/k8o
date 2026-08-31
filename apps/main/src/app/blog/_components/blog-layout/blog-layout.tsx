@@ -4,7 +4,7 @@ import {
   Separator,
   TagIcon,
   UpdateDateIcon,
-} from '@k8o/arte-odyssey';
+} from '@k8ordo/ui';
 import { formatDate } from '@repo/helpers/date/format';
 import Link from 'next/link';
 import type { FC, ReactNode } from 'react';

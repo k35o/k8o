@@ -1,6 +1,6 @@
 'use client';
 
-import { FormControl, Select } from '@k8o/arte-odyssey';
+import { FormControl, Select } from '@k8ordo/ui';
 import { useEffect, useRef, useState } from 'react';
 
 type ImageRendering = 'auto' | 'smooth' | 'crisp-edges' | 'pixelated';

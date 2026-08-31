@@ -1,4 +1,4 @@
-import { Card } from '@k8o/arte-odyssey';
+import { Card } from '@k8ordo/ui';
 import type { FC } from 'react';
 
 const CARD_KEYS = ['a', 'b', 'c', 'd', 'e'] as const;

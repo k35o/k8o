@@ -1,13 +1,8 @@
 'use client';
 
-import { AssistantIcon, Avatar, Button } from '@k8o/arte-odyssey';
-import {
-  Conversation,
-  Message,
-  PromptInput,
-  Suggestion,
-} from '@k8o/arte-odyssey/ai';
-import type { ChatStatus } from '@k8o/arte-odyssey/ai';
+import { AssistantIcon, Avatar, Button } from '@k8ordo/ui';
+import { Conversation, Message, PromptInput, Suggestion } from '@k8ordo/ui/ai';
+import type { ChatStatus } from '@k8ordo/ui/ai';
 import type { UIMessage } from 'ai';
 import { memo } from 'react';
 import type { FC, ReactNode } from 'react';

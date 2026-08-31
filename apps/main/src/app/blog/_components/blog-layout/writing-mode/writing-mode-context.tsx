@@ -1,6 +1,6 @@
 'use client';
 
-import { createSafeContext } from '@k8o/arte-odyssey';
+import { createSafeContext } from '@k8ordo/ui';
 import { useCallback, useMemo, useState } from 'react';
 import type { FC, ReactNode } from 'react';
 

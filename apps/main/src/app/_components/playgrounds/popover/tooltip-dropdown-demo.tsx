@@ -2,7 +2,7 @@
 
 /* oxlint-disable eslint/no-alert -- Popover/DropdownMenu の挙動を示すデモで、クリック結果を alert で表現している */
 
-import { Button, DropdownMenu, Tooltip } from '@k8o/arte-odyssey';
+import { Button, DropdownMenu, Tooltip } from '@k8ordo/ui';
 import type { FC } from 'react';
 
 export const TooltipDropdownDemo: FC = () => (

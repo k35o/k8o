@@ -1,6 +1,6 @@
 'use client';
 
-import { Button, Heading } from '@k8o/arte-odyssey';
+import { Button, Heading } from '@k8ordo/ui';
 import Link from 'next/link';
 import { useEffect } from 'react';
 

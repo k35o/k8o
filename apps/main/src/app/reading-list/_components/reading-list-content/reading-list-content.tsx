@@ -1,12 +1,6 @@
 'use client';
 
-import {
-  Button,
-  Card,
-  Drawer,
-  ListIcon,
-  SubscribeIcon,
-} from '@k8o/arte-odyssey';
+import { Button, Card, Drawer, ListIcon, SubscribeIcon } from '@k8ordo/ui';
 import { useQueryStates } from 'nuqs';
 import { useCallback, useMemo, useState } from 'react';
 import type { FC, ReactNode } from 'react';

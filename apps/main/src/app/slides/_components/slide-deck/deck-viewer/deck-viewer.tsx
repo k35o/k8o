@@ -1,6 +1,6 @@
 'use client';
 
-import { CloseIcon, IconButton } from '@k8o/arte-odyssey';
+import { CloseIcon, IconButton } from '@k8ordo/ui';
 import { cn } from '@repo/helpers/cn';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';

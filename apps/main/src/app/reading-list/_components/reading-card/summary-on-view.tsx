@@ -1,6 +1,6 @@
 'use client';
 
-import { Badge } from '@k8o/arte-odyssey';
+import { Badge } from '@k8ordo/ui';
 import { useAsyncAction } from '@repo/react-hooks/use-async-action';
 import { useEffect, useRef, useState } from 'react';
 import type { FC } from 'react';

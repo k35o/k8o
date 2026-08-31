@@ -1,4 +1,4 @@
-import { Logo } from '@k8o/arte-odyssey';
+import { Logo } from '@k8ordo/ui';
 import type { BrowserMinVersions } from '@repo/helpers/browser/detect-browser';
 import Link from 'next/link';
 import type { FC, ReactNode } from 'react';

@@ -1,6 +1,6 @@
 'use client';
 
-import { Anchor } from '@k8o/arte-odyssey';
+import { Anchor } from '@k8ordo/ui';
 import type { FC } from 'react';
 
 import { SPEC_INDEX_URL } from '../../_utils/references';

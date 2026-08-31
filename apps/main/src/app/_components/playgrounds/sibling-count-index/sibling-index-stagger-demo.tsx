@@ -1,6 +1,6 @@
 'use client';
 
-import { Button, Code, FormControl, Slider } from '@k8o/arte-odyssey';
+import { Button, Code, FormControl, Slider } from '@k8ordo/ui';
 import { useState } from 'react';
 
 export function SiblingIndexStaggerDemo() {

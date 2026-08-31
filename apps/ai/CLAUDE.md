@@ -1,6 +1,6 @@
 # apps/ai CLAUDE.md
 
-AI関連ツールの置き場（`ai.k8o.me`）。第1号は arte-odyssey × Sakana Fugu の v0風デザインシステム壁打ちツール。
+AI関連ツールの置き場（`ai.k8o.me`）。第1号は @k8ordo/ui × Sakana Fugu の v0風デザインシステム壁打ちツール。
 
 ## レイヤー構成（src/）
 
@@ -14,7 +14,7 @@ apps/main と同じ `app / features / shared` 構成（詳細は `apps/main/CLAU
 ## 生成 UI（json-render）
 
 UI スタジオの生成物は TSX ではなく json-render の spec。catalog・registry・検証は
-`@k8o/arte-odyssey/json-render`（公式アダプタ）を使い、独自の catalog は作らない。
+`@k8ordo/ui/json-render`（公式アダプタ）を使い、独自の catalog は作らない。
 
 - system prompt は `catalog.prompt({ mode: 'inline', ... })`（`build-spec-system-prompt.ts`）。
   inline モードなので assistant の出力は「会話文 → JSONL パッチ」の混在ストリーム

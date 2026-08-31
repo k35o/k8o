@@ -1,4 +1,4 @@
-import { Heading, Separator } from '@k8o/arte-odyssey';
+import { Heading, Separator } from '@k8ordo/ui';
 import type { Metadata } from 'next';
 import Image from 'next/image';
 
@@ -40,7 +40,7 @@ export default function Home() {
 
           <p className="text-fg-mute col-span-2 leading-relaxed lg:col-span-1 lg:col-start-2">
             Webフロントエンドを軸足に、最近は新しくブラウザで使えるようになった機能の深掘りをブログに残しています。
-            デザインとの境界にも興味があり、デザインシステムArteOdysseyを育てています。
+            デザインとの境界にも興味があり、デザインシステム@k8ordo/uiを育てています。
           </p>
         </header>
 

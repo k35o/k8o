@@ -1,11 +1,6 @@
 'use client';
 
-import {
-  CopyIcon,
-  IconButton,
-  useClipboard,
-  useToast,
-} from '@k8o/arte-odyssey';
+import { CopyIcon, IconButton, useClipboard, useToast } from '@k8ordo/ui';
 import type { FC } from 'react';
 
 type CopyCodeButtonProps = {

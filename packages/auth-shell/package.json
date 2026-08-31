@@ -56,7 +56,7 @@
     "server-only": "0.0.1"
   },
   "devDependencies": {
-    "@k8o/arte-odyssey": "catalog:",
+    "@k8ordo/ui": "catalog:",
     "@repo/typescript-config": "workspace:*",
     "@types/react": "catalog:",
     "@vitest/coverage-v8": "catalog:",
@@ -66,7 +66,7 @@
     "vitest": "catalog:"
   },
   "peerDependencies": {
-    "@k8o/arte-odyssey": "catalog:",
+    "@k8ordo/ui": "catalog:",
     "better-auth": "catalog:",
     "next": "catalog:",
     "react": "catalog:"

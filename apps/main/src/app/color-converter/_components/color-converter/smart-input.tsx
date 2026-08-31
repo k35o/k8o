@@ -1,6 +1,6 @@
 'use client';
 
-import { FormControl, TextField } from '@k8o/arte-odyssey';
+import { FormControl, TextField } from '@k8ordo/ui';
 import { formatHex } from '@repo/helpers/color/format';
 import { parseColor } from '@repo/helpers/color/parse';
 import type { Color } from '@repo/helpers/color/spaces';

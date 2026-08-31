@@ -1,5 +1,5 @@
 /* oxlint-disable jsx-a11y/no-noninteractive-tabindex -- 棒グラフの各データ点をキーボードフォーカスで参照（ツールチップ表示）できるようにするため */
-import { Card } from '@k8o/arte-odyssey';
+import { Card } from '@k8ordo/ui';
 import { cn } from '@repo/helpers/cn';
 import { formatDate } from '@repo/helpers/date/format';
 import type { FC } from 'react';

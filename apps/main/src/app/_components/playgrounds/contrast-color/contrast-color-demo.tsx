@@ -1,6 +1,6 @@
 'use client';
 
-import { FormControl, TextField } from '@k8o/arte-odyssey';
+import { FormControl, TextField } from '@k8ordo/ui';
 import { useState } from 'react';
 
 const isHexColor = (value: string) => /^#[0-9a-fA-F]{6}$/u.test(value);

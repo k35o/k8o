@@ -1,6 +1,6 @@
 'use client';
 
-import { IconButton, SubscribeIcon } from '@k8o/arte-odyssey';
+import { IconButton, SubscribeIcon } from '@k8ordo/ui';
 import Link from 'next/link';
 import type { FC } from 'react';
 

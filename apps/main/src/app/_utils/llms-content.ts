@@ -81,7 +81,7 @@ ${entriesContent}
 
 ## 開発者向けリソース
 - [GitHub: k35o/k8o](https://github.com/k35o/k8o) — このサイトのソースコード
-- [ArteOdyssey](https://www.npmjs.com/package/@k8o/arte-odyssey) — k8o が開発するデザインシステム（npm: \`@k8o/arte-odyssey\`）
+- [@k8ordo/ui](https://www.npmjs.com/package/@k8ordo/ui) — k8o が開発するデザインシステム（npm: \`@k8ordo/ui\`）
 - [@k8o/create](https://www.npmjs.com/package/@k8o/create) — Vite+ プロジェクトジェネレータ（npm: \`@k8o/create\`）
 `;
 }

@@ -10,9 +10,9 @@ allowBuilds:
 
 catalog:
   '@ai-sdk/openai-compatible': 3.0.35
-  '@k8o/arte-odyssey': 12.0.1
   '@k8o/html-nest': 0.2.0
   '@k8o/oxc-config': 0.3.0
+  '@k8ordo/ui': 1.0.0
   '@next/env': 16.3.2
   '@next/mdx': 16.3.2
   '@next/third-parties': 16.3.2
@@ -50,6 +50,7 @@ minimumReleaseAge: 10080
 
 minimumReleaseAgeExclude:
   - '@k8o/*'
+  - '@k8ordo/*'
   # 自作パッケージ（k35o公開）。@k8o/* と同じ信頼で除外する
   - storybook-addon-vrt
   - storybook-addon-mock-date

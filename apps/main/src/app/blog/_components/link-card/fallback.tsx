@@ -1,4 +1,4 @@
-import { ExternalLinkIcon, Card } from '@k8o/arte-odyssey';
+import { ExternalLinkIcon, Card } from '@k8ordo/ui';
 import type { FC } from 'react';
 
 export type LinkCardVariant = 'shadow' | 'outline';

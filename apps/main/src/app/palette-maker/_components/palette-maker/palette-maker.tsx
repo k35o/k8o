@@ -1,6 +1,6 @@
 'use client';
 
-import { Card, Heading } from '@k8o/arte-odyssey';
+import { Card, Heading } from '@k8ordo/ui';
 import { useMemo } from 'react';
 import type { FC } from 'react';
 

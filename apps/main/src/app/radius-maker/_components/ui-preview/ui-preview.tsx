@@ -1,6 +1,6 @@
 'use client';
 
-import { PaletteIcon } from '@k8o/arte-odyssey';
+import { PaletteIcon } from '@k8ordo/ui';
 import type { CSSProperties, FC } from 'react';
 
 import type { RadiusCorners } from '../../_types/corner-radius';

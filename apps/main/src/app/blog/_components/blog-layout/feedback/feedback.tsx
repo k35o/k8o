@@ -1,6 +1,6 @@
 'use client';
 
-import { useToast } from '@k8o/arte-odyssey';
+import { useToast } from '@k8ordo/ui';
 import type { FC } from 'react';
 
 import { FeedbackCard } from '@/app/_components/feedback-card';

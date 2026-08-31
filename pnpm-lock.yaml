@@ -9,15 +9,15 @@ catalogs:
     '@ai-sdk/openai-compatible':
       specifier: 3.0.35
       version: 3.0.35
-    '@k8o/arte-odyssey':
-      specifier: 12.0.1
-      version: 12.0.1
     '@k8o/html-nest':
       specifier: 0.2.0
       version: 0.2.0
     '@k8o/oxc-config':
       specifier: 0.3.0
       version: 0.3.0
+    '@k8ordo/ui':
+      specifier: 1.0.0
+      version: 1.0.0
     '@next/env':
       specifier: 16.3.2
       version: 16.3.2
@@ -161,9 +161,9 @@ importers:
 
   apps/admin:
     dependencies:
-      '@k8o/arte-odyssey':
+      '@k8ordo/ui':
         specifier: 'catalog:'
-        version: 12.0.1(@json-render/core@0.20.0(zod@4.4.3))(@json-render/react@0.20.0(react@19.2.8)(zod@4.4.3))(@types/react-dom@19.2.4(@types/react@19.2.18))(@types/react@19.2.18)(ai@7.0.77(zod@4.4.3))(react-dom@19.2.8(react@19.2.8))(react@19.2.8)(tailwindcss@4.3.3)(typescript@7.0.2)(zod@4.4.3)
+        version: 1.0.0(@json-render/core@0.20.0(zod@4.4.3))(@json-render/react@0.20.0(react@19.2.8)(zod@4.4.3))(@types/react-dom@19.2.4(@types/react@19.2.18))(@types/react@19.2.18)(ai@7.0.77(zod@4.4.3))(react-dom@19.2.8(react@19.2.8))(react@19.2.8)(tailwindcss@4.3.3)(typescript@7.0.2)(zod@4.4.3)
       '@repo/auth-shell':
         specifier: workspace:*
         version: link:../../packages/auth-shell
@@ -276,9 +276,9 @@ importers:
       '@json-render/react':
         specifier: 0.20.0
         version: 0.20.0(react@19.2.8)(zod@4.4.3)
-      '@k8o/arte-odyssey':
+      '@k8ordo/ui':
         specifier: 'catalog:'
-        version: 12.0.1(@json-render/core@0.20.0(zod@4.4.3))(@json-render/react@0.20.0(react@19.2.8)(zod@4.4.3))(@types/react-dom@19.2.4(@types/react@19.2.18))(@types/react@19.2.18)(ai@7.0.77(zod@4.4.3))(react-dom@19.2.8(react@19.2.8))(react@19.2.8)(tailwindcss@4.3.3)(typescript@7.0.2)(zod@4.4.3)
+        version: 1.0.0(@json-render/core@0.20.0(zod@4.4.3))(@json-render/react@0.20.0(react@19.2.8)(zod@4.4.3))(@types/react-dom@19.2.4(@types/react@19.2.18))(@types/react@19.2.18)(ai@7.0.77(zod@4.4.3))(react-dom@19.2.8(react@19.2.8))(react@19.2.8)(tailwindcss@4.3.3)(typescript@7.0.2)(zod@4.4.3)
       '@repo/auth-shell':
         specifier: workspace:*
         version: link:../../packages/auth-shell
@@ -391,15 +391,15 @@ importers:
       '@ai-sdk/openai-compatible':
         specifier: 'catalog:'
         version: 3.0.35(zod@4.4.3)
-      '@k8o/arte-odyssey':
-        specifier: 'catalog:'
-        version: 12.0.1(@json-render/core@0.20.0(zod@4.4.3))(@json-render/react@0.20.0(react@19.2.8)(zod@4.4.3))(@types/react-dom@19.2.4(@types/react@19.2.18))(@types/react@19.2.18)(ai@7.0.77(zod@4.4.3))(react-dom@19.2.8(react@19.2.8))(react@19.2.8)(tailwindcss@4.3.3)(typescript@7.0.2)(zod@4.4.3)
       '@k8o/html-nest':
         specifier: 'catalog:'
         version: 0.2.0
       '@k8o/oxc-config':
         specifier: 'catalog:'
         version: 0.3.0(@k8o/html-nest@0.2.0)(oxfmt@0.64.0(vite-plus@0.2.9(@opentelemetry/api@1.9.1)(@types/node@24.13.3)(@vitest/browser-playwright@4.1.10)(@vitest/coverage-v8@4.1.10)(@vitest/ui@4.1.10)(esbuild@0.28.1)(jiti@2.7.0)(msw@2.15.0(@types/node@24.13.3)(typescript@7.0.2))(tsx@4.22.3)(typescript@7.0.2)(vite@8.0.14(@types/node@24.13.3)(esbuild@0.28.1)(jiti@2.7.0)(tsx@4.22.3)(yaml@2.9.0))(yaml@2.9.0)))(oxlint-tailwindcss@1.10.0)(oxlint-tsgolint@7.0.2001)(oxlint@1.79.0(oxlint-tsgolint@7.0.2001)(vite-plus@0.2.9(@opentelemetry/api@1.9.1)(@types/node@24.13.3)(@vitest/browser-playwright@4.1.10)(@vitest/coverage-v8@4.1.10)(@vitest/ui@4.1.10)(esbuild@0.28.1)(jiti@2.7.0)(msw@2.15.0(@types/node@24.13.3)(typescript@7.0.2))(tsx@4.22.3)(typescript@7.0.2)(vite@8.0.14(@types/node@24.13.3)(esbuild@0.28.1)(jiti@2.7.0)(tsx@4.22.3)(yaml@2.9.0))(yaml@2.9.0)))
+      '@k8ordo/ui':
+        specifier: 'catalog:'
+        version: 1.0.0(@json-render/core@0.20.0(zod@4.4.3))(@json-render/react@0.20.0(react@19.2.8)(zod@4.4.3))(@types/react-dom@19.2.4(@types/react@19.2.18))(@types/react@19.2.18)(ai@7.0.77(zod@4.4.3))(react-dom@19.2.8(react@19.2.8))(react@19.2.8)(tailwindcss@4.3.3)(typescript@7.0.2)(zod@4.4.3)
       '@mdx-js/loader':
         specifier: 3.1.1
         version: 3.1.1(supports-color@10.2.2)
@@ -583,9 +583,9 @@ importers:
         specifier: 0.0.1
         version: 0.0.1
     devDependencies:
-      '@k8o/arte-odyssey':
+      '@k8ordo/ui':
         specifier: 'catalog:'
-        version: 12.0.1(@json-render/core@0.20.0(zod@4.4.3))(@json-render/react@0.20.0(react@19.2.8)(zod@4.4.3))(@types/react-dom@19.2.4(@types/react@19.2.18))(@types/react@19.2.18)(ai@7.0.77(zod@4.4.3))(react-dom@19.2.8(react@19.2.8))(react@19.2.8)(tailwindcss@4.3.3)(typescript@7.0.2)(zod@4.4.3)
+        version: 1.0.0(@json-render/core@0.20.0(zod@4.4.3))(@json-render/react@0.20.0(react@19.2.8)(zod@4.4.3))(@types/react-dom@19.2.4(@types/react@19.2.18))(@types/react@19.2.18)(ai@7.0.77(zod@4.4.3))(react-dom@19.2.8(react@19.2.8))(react@19.2.8)(tailwindcss@4.3.3)(typescript@7.0.2)(zod@4.4.3)
       '@repo/typescript-config':
         specifier: workspace:*
         version: link:../typescript-config
@@ -1920,9 +1920,42 @@ packages:
     peerDependencies:
       react: ^19.2.3
 
-  '@k8o/arte-odyssey@12.0.1':
-    resolution: {integrity: sha512-6MdtA5J1fhnH5pYeUxwYzRKSxNjaSgiH8B9e/SmUq2oAKedL/iPKl9F+wE0wIi0xrNjgVSvt96HwW0rYS8FmxQ==}
-    deprecated: renamed to @k8ordo/ui — see https://ordo.k8o.me
+  '@k8o/html-nest@0.2.0':
+    resolution: {integrity: sha512-q91ehLgvKgNq8iIf4ZMainUqwGRGyufZNuHX26/fJgaetFwL2jDBhjoxzsc0KO1GIILciJCvMPX9BEqFf+1hcg==}
+    engines: {node: '>=24.13.0'}
+
+  '@k8o/oxc-config@0.3.0':
+    resolution: {integrity: sha512-KhzgHQPvzN9BURfhn4JoetiMNKxogr9sAPgOVD+hnshoSbXD33+PzWAPPg84LyU/tybXsxit7Bkdy1YuJAfMPg==}
+    engines: {node: '>=24.13.0'}
+    peerDependencies:
+      '@k8o/html-nest': '>=0.2.0'
+      eslint-plugin-playwright: '>=2.0.0'
+      eslint-plugin-regexp: '>=3.0.0'
+      eslint-plugin-storybook: '>=10.0.0'
+      oxfmt: '>=0.43.0'
+      oxlint: '>=1.71.0'
+      oxlint-tailwindcss: '>=1.3.2'
+      oxlint-tsgolint: '>=0.23.0'
+    peerDependenciesMeta:
+      '@k8o/html-nest':
+        optional: true
+      eslint-plugin-playwright:
+        optional: true
+      eslint-plugin-regexp:
+        optional: true
+      eslint-plugin-storybook:
+        optional: true
+      oxfmt:
+        optional: true
+      oxlint:
+        optional: true
+      oxlint-tailwindcss:
+        optional: true
+      oxlint-tsgolint:
+        optional: true
+
+  '@k8ordo/ui@1.0.0':
+    resolution: {integrity: sha512-89puRjnHMssSSaY5iz0bGYo8feZNArMeUtIti2D1eOHgEOEomFbXAv8XNcZhyjDkws45oXvWJq8+ZRplzJaniw==}
     peerDependencies:
       '@json-render/core': '>=0.19.0'
       '@json-render/react': '>=0.19.0'
@@ -1959,40 +1992,6 @@ packages:
       typescript:
         optional: true
       zod:
-        optional: true
-
-  '@k8o/html-nest@0.2.0':
-    resolution: {integrity: sha512-q91ehLgvKgNq8iIf4ZMainUqwGRGyufZNuHX26/fJgaetFwL2jDBhjoxzsc0KO1GIILciJCvMPX9BEqFf+1hcg==}
-    engines: {node: '>=24.13.0'}
-
-  '@k8o/oxc-config@0.3.0':
-    resolution: {integrity: sha512-KhzgHQPvzN9BURfhn4JoetiMNKxogr9sAPgOVD+hnshoSbXD33+PzWAPPg84LyU/tybXsxit7Bkdy1YuJAfMPg==}
-    engines: {node: '>=24.13.0'}
-    peerDependencies:
-      '@k8o/html-nest': '>=0.2.0'
-      eslint-plugin-playwright: '>=2.0.0'
-      eslint-plugin-regexp: '>=3.0.0'
-      eslint-plugin-storybook: '>=10.0.0'
-      oxfmt: '>=0.43.0'
-      oxlint: '>=1.71.0'
-      oxlint-tailwindcss: '>=1.3.2'
-      oxlint-tsgolint: '>=0.23.0'
-    peerDependenciesMeta:
-      '@k8o/html-nest':
-        optional: true
-      eslint-plugin-playwright:
-        optional: true
-      eslint-plugin-regexp:
-        optional: true
-      eslint-plugin-storybook:
-        optional: true
-      oxfmt:
-        optional: true
-      oxlint:
-        optional: true
-      oxlint-tailwindcss:
-        optional: true
-      oxlint-tsgolint:
         optional: true
 
   '@libsql/client@0.17.4':
@@ -7984,23 +7983,6 @@ snapshots:
     transitivePeerDependencies:
       - zod
 
-  '@k8o/arte-odyssey@12.0.1(@json-render/core@0.20.0(zod@4.4.3))(@json-render/react@0.20.0(react@19.2.8)(zod@4.4.3))(@types/react-dom@19.2.4(@types/react@19.2.18))(@types/react@19.2.18)(ai@7.0.77(zod@4.4.3))(react-dom@19.2.8(react@19.2.8))(react@19.2.8)(tailwindcss@4.3.3)(typescript@7.0.2)(zod@4.4.3)':
-    dependencies:
-      clsx: 2.1.1
-      lucide-react: 1.31.0(react@19.2.8)
-      react: 19.2.8
-      react-dom: 19.2.8(react@19.2.8)
-      tailwind-merge: 3.6.0
-    optionalDependencies:
-      '@json-render/core': 0.20.0(zod@4.4.3)
-      '@json-render/react': 0.20.0(react@19.2.8)(zod@4.4.3)
-      '@types/react': 19.2.18
-      '@types/react-dom': 19.2.4(@types/react@19.2.18)
-      ai: 7.0.77(zod@4.4.3)
-      tailwindcss: 4.3.3
-      typescript: 7.0.2
-      zod: 4.4.3
-
   '@k8o/html-nest@0.2.0': {}
 
   '@k8o/oxc-config@0.3.0(904b5ff8c840075e30f9cb9e9dd9dfd5)':
@@ -8018,6 +8000,23 @@ snapshots:
       oxlint: 1.79.0(oxlint-tsgolint@7.0.2001)(vite-plus@0.2.9(@opentelemetry/api@1.9.1)(@types/node@24.13.3)(@vitest/browser-playwright@4.1.10)(@vitest/coverage-v8@4.1.10)(@vitest/ui@4.1.10)(esbuild@0.28.1)(jiti@2.7.0)(msw@2.15.0(@types/node@24.13.3)(typescript@7.0.2))(tsx@4.22.3)(typescript@7.0.2)(vite@8.0.14(@types/node@24.13.3)(esbuild@0.28.1)(jiti@2.7.0)(tsx@4.22.3)(yaml@2.9.0))(yaml@2.9.0))
       oxlint-tailwindcss: 1.10.0
       oxlint-tsgolint: 7.0.2001
+
+  '@k8ordo/ui@1.0.0(@json-render/core@0.20.0(zod@4.4.3))(@json-render/react@0.20.0(react@19.2.8)(zod@4.4.3))(@types/react-dom@19.2.4(@types/react@19.2.18))(@types/react@19.2.18)(ai@7.0.77(zod@4.4.3))(react-dom@19.2.8(react@19.2.8))(react@19.2.8)(tailwindcss@4.3.3)(typescript@7.0.2)(zod@4.4.3)':
+    dependencies:
+      clsx: 2.1.1
+      lucide-react: 1.31.0(react@19.2.8)
+      react: 19.2.8
+      react-dom: 19.2.8(react@19.2.8)
+      tailwind-merge: 3.6.0
+    optionalDependencies:
+      '@json-render/core': 0.20.0(zod@4.4.3)
+      '@json-render/react': 0.20.0(react@19.2.8)(zod@4.4.3)
+      '@types/react': 19.2.18
+      '@types/react-dom': 19.2.4(@types/react@19.2.18)
+      ai: 7.0.77(zod@4.4.3)
+      tailwindcss: 4.3.3
+      typescript: 7.0.2
+      zod: 4.4.3
 
   '@libsql/client@0.17.4':
     dependencies:

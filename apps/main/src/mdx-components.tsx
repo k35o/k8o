@@ -1,4 +1,4 @@
-import { Anchor, Code, LinkIcon } from '@k8o/arte-odyssey';
+import { Anchor, Code, LinkIcon } from '@k8ordo/ui';
 import { cn } from '@repo/helpers/cn';
 import { isInternalRoute } from '@repo/helpers/is-internal-route';
 import type { MDXComponents } from 'mdx/types';

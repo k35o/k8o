@@ -1,6 +1,6 @@
 'use client';
 
-import { Alert, Checkbox } from '@k8o/arte-odyssey';
+import { Alert, Checkbox } from '@k8ordo/ui';
 import { cn } from '@repo/helpers/cn';
 import { sleep } from '@repo/helpers/sleep';
 import { Suspense, use, useState } from 'react';

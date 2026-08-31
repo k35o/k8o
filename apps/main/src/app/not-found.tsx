@@ -1,6 +1,6 @@
 'use client';
 
-import { Anchor, Button } from '@k8o/arte-odyssey';
+import { Anchor, Button } from '@k8ordo/ui';
 import Image from 'next/image';
 import Link from 'next/link';
 

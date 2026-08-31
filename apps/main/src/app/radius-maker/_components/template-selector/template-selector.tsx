@@ -1,6 +1,6 @@
 'use client';
 
-import { SparklesIcon } from '@k8o/arte-odyssey';
+import { SparklesIcon } from '@k8ordo/ui';
 import { cn } from '@repo/helpers/cn';
 import type { FC } from 'react';
 

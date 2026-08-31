@@ -1,6 +1,6 @@
 'use client';
 
-import { FormControl, NumberField } from '@k8o/arte-odyssey';
+import { FormControl, NumberField } from '@k8ordo/ui';
 import { useState } from 'react';
 
 export function RootComparisonDemo() {

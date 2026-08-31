@@ -27,8 +27,8 @@ export const Primary = meta.story({
 
 export const External = meta.story({
   args: {
-    link: 'https://arte-odyssey.k8o.me',
-    title: 'ArteOdyssey',
+    link: 'https://ordo.k8o.me',
+    title: '@k8ordo/ui',
     description:
       'k8o.meのデザインシステム。コンポーネントやトークンを確認できます。',
   },

@@ -1,4 +1,4 @@
-import { Badge, BlogIcon, Card, RSSIcon, ViewIcon } from '@k8o/arte-odyssey';
+import { Badge, BlogIcon, Card, RSSIcon, ViewIcon } from '@k8ordo/ui';
 import { verifySession } from '@repo/auth-shell/verify-session';
 import Link from 'next/link';
 

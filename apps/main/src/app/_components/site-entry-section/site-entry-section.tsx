@@ -15,7 +15,7 @@ import {
   ShieldCheckIcon,
   SlideIcon,
   SquircleIcon,
-} from '@k8o/arte-odyssey';
+} from '@k8ordo/ui';
 import type { ReactNode } from 'react';
 
 import { KIND_SECTION, siteEntries } from '@/shared/site/site-entries';

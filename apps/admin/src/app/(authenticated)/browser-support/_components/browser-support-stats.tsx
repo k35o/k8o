@@ -1,4 +1,4 @@
-import { ShieldCheckIcon, SparklesIcon, TableIcon } from '@k8o/arte-odyssey';
+import { ShieldCheckIcon, SparklesIcon, TableIcon } from '@k8ordo/ui';
 import { formatDate } from '@repo/helpers/date/format';
 import type { FC } from 'react';
 

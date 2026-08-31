@@ -22,7 +22,7 @@
     "@ai-sdk/react": "4.0.80",
     "@json-render/core": "0.20.0",
     "@json-render/react": "0.20.0",
-    "@k8o/arte-odyssey": "catalog:",
+    "@k8ordo/ui": "catalog:",
     "@repo/auth-shell": "workspace:*",
     "@repo/code-highlight": "workspace:*",
     "@repo/database": "workspace:*",

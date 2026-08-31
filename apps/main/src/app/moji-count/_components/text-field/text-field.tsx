@@ -1,6 +1,6 @@
 'use client';
 
-import { FormControl, Textarea } from '@k8o/arte-odyssey';
+import { FormControl, Textarea } from '@k8ordo/ui';
 import { useDeferredValue, useEffect, useState } from 'react';
 
 import { countGraphemeLength } from '../../_utils/count-text';

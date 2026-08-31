@@ -1,6 +1,6 @@
 'use client';
 
-import { useClient } from '@k8o/arte-odyssey';
+import { useClient } from '@k8ordo/ui';
 import type { FC } from 'react';
 import { createPortal } from 'react-dom';
 

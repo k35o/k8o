@@ -1,6 +1,6 @@
 'use client';
 
-import { AlertIcon, Badge, Dialog, IconButton, Modal } from '@k8o/arte-odyssey';
+import { AlertIcon, Badge, Dialog, IconButton, Modal } from '@k8ordo/ui';
 import { useCallback, useState } from 'react';
 import type { FC } from 'react';
 

@@ -1,4 +1,4 @@
-import { Dialog, Modal } from '@k8o/arte-odyssey';
+import { Dialog, Modal } from '@k8ordo/ui';
 import { BROWSER_LABELS } from '@repo/helpers/browser/detect-browser';
 import type {
   CoreBrowser,

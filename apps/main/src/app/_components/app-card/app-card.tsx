@@ -1,9 +1,4 @@
-import {
-  Card,
-  ChevronIcon,
-  ExternalLinkIcon,
-  Heading,
-} from '@k8o/arte-odyssey';
+import { Card, ChevronIcon, ExternalLinkIcon, Heading } from '@k8ordo/ui';
 import type { Route } from 'next';
 import Link from 'next/link';
 import type { ReactNode } from 'react';

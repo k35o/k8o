@@ -1,6 +1,6 @@
 'use client';
 
-import { IconButton, MailIcon, Tooltip } from '@k8o/arte-odyssey';
+import { IconButton, MailIcon, Tooltip } from '@k8ordo/ui';
 import type { FC } from 'react';
 
 export const EmailTooltip: FC = () => (

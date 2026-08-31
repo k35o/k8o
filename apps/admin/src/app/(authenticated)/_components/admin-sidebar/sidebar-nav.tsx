@@ -1,6 +1,6 @@
 'use client';
 
-import { Spinner } from '@k8o/arte-odyssey';
+import { Spinner } from '@k8ordo/ui';
 import { cn } from '@repo/helpers/cn';
 import type { Route } from 'next';
 import Link, { useLinkStatus } from 'next/link';

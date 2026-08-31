@@ -56,7 +56,7 @@ updatedAt: 2025-01-10
 ---
 
 {/* 必要に応じてインポート */}
-{/* import { BaselineStatus } from '@k8o/arte-odyssey'; */}
+{/* import { BaselineStatus } from '@k8ordo/ui'; */}
 {/* import { MyDemo } from '@/app/_components/playgrounds/my-feature'; */}
 {/* import { Playground } from '@/app/_components/playgrounds'; */}
 

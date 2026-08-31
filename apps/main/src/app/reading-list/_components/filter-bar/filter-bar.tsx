@@ -7,7 +7,7 @@ import {
   Select,
   Separator,
   TextField,
-} from '@k8o/arte-odyssey';
+} from '@k8ordo/ui';
 import type { FC } from 'react';
 
 import { isSortOrder, SORT_OPTIONS } from '../../_utils/constants';

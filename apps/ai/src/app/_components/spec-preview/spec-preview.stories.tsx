@@ -1,10 +1,10 @@
-import type { ArteSpec } from '@k8o/arte-odyssey/json-render';
+import type { UISpec } from '@k8ordo/ui/json-render';
 import { expect, within } from 'storybook/test';
 
 import preview from '../../../../.storybook/preview';
 import { SpecPreview } from './spec-preview';
 
-// arte-odyssey catalog の代表的な部品で組んだサンプル spec（型付きで typo を防ぐ）。
+// @k8ordo/ui catalog の代表的な部品で組んだサンプル spec（型付きで typo を防ぐ）。
 const SAMPLE_SPEC = {
   root: 'page',
   elements: {
@@ -33,7 +33,7 @@ const SAMPLE_SPEC = {
       props: { label: '送信する', color: 'primary', variant: 'solid' },
     },
   },
-} satisfies ArteSpec;
+} satisfies UISpec;
 
 const meta = preview.meta({
   component: SpecPreview,

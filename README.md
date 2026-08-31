@@ -48,7 +48,7 @@ pnpm -F @repo/database db:status   # 稼働状況の確認
 - `apps/admin` - Next.js 管理サイト (Better Auth + GitHub OAuth)
 - `packages/database` - Drizzle ORM + Turso (libSQL)
 - `packages/helpers` - ユーティリティ関数
-- `@k8o/arte-odyssey` - UIコンポーネント ([npm](https://www.npmjs.com/package/@k8o/arte-odyssey))
+- `@k8ordo/ui` - UIコンポーネント ([npm](https://www.npmjs.com/package/@k8ordo/ui))
 
 **apps/main / apps/admin の配置方針**:
 

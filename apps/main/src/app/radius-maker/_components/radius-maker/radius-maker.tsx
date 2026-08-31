@@ -1,6 +1,6 @@
 'use client';
 
-import { Card, FormControl, NumberField, Select } from '@k8o/arte-odyssey';
+import { Card, FormControl, NumberField, Select } from '@k8ordo/ui';
 import type { FC } from 'react';
 
 import { BrowserSupportStatusView } from '@/app/_components/browser-support-status/browser-support-status-view';

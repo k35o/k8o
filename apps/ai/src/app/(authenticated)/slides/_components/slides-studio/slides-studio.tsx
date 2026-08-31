@@ -1,12 +1,7 @@
 'use client';
 
 import { useChat } from '@ai-sdk/react';
-import {
-  Button,
-  ForkIcon,
-  FullscreenIcon,
-  IconButton,
-} from '@k8o/arte-odyssey';
+import { Button, ForkIcon, FullscreenIcon, IconButton } from '@k8ordo/ui';
 import { DefaultChatTransport } from 'ai';
 import type { UIMessage } from 'ai';
 import { useTheme } from 'next-themes';

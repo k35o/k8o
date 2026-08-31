@@ -59,7 +59,7 @@ packages/oxlint-plugin/ → リポジトリ固有のoxlintカスタムルール�
 
 ## UI共通（apps/*）
 
-- TailwindはArteOdysseyのセマンティックトークンのみ使用（`text-fg-base` ○ / `text-gray-900` ×。標準Tailwindカラー禁止）。ドキュメントは各appの `node_modules/@k8o/arte-odyssey/docs/` を参照
+- Tailwindは@k8ordo/uiのセマンティックトークンのみ使用（`text-fg-base` ○ / `text-gray-900` ×。標準Tailwindカラー禁止）。ドキュメントは各appの `node_modules/@k8ordo/ui/docs/` を参照
 - デザインシステムのコンポーネントのpropsを推測で使わない。`shadow` のような一般的に見える名前でも、各appのStorybook MCPの `get-documentation` か実際のStoryで確認できたものだけを使う。ドキュメントに無いpropsは使わずユーザーに確認する
 - Storyの作成・更新前に `get-storybook-story-instructions` で最新ルールを確認し、作業後は `run-story-tests` で検証する
 

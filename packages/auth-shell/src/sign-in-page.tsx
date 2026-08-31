@@ -1,4 +1,4 @@
-import { Card, LogoIcon } from '@k8o/arte-odyssey';
+import { Card, LogoIcon } from '@k8ordo/ui';
 import type { FC } from 'react';
 
 import { SignInForm } from './sign-in-form';

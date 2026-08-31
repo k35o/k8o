@@ -7,7 +7,7 @@ import { colorToOklch, oklchToColor } from '@repo/helpers/color/spaces';
 import { PALETTE_STEPS } from '../_types/palette';
 import type { PaletteStep, PaletteSwatch } from '../_types/palette';
 
-// ArteOdyssey の tokens.css と同じ、全色相共通の明度ラダー
+// @k8ordo/ui の tokens.css と同じ、全色相共通の明度ラダー
 export const LIGHTNESS_LADDER: Record<PaletteStep, number> = {
   50: 0.975,
   100: 0.945,
@@ -22,7 +22,7 @@ export const LIGHTNESS_LADDER: Record<PaletteStep, number> = {
   950: 0.18,
 };
 
-// ArteOdyssey の red ランプの彩度をピーク(500)で正規化した係数
+// @k8ordo/ui の red ランプの彩度をピーク(500)で正規化した係数
 export const CHROMA_CURVE: Record<PaletteStep, number> = {
   50: 0.06,
   100: 0.16,

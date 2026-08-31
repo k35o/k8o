@@ -1,6 +1,6 @@
 'use client';
 
-import { Badge, Button } from '@k8o/arte-odyssey';
+import { Badge, Button } from '@k8ordo/ui';
 import {
   useCallback,
   useEffect,

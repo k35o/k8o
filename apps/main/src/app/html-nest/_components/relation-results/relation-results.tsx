@@ -1,5 +1,5 @@
-import { AlertIcon, CheckIcon } from '@k8o/arte-odyssey';
 import type { RelatedElement } from '@k8o/html-nest';
+import { AlertIcon, CheckIcon } from '@k8ordo/ui';
 import type { FC } from 'react';
 
 import { RelatedGroups } from '../related-groups';

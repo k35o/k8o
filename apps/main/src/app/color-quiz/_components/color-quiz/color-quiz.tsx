@@ -1,6 +1,6 @@
 'use client';
 
-import { Tabs } from '@k8o/arte-odyssey';
+import { Tabs } from '@k8ordo/ui';
 import { useSyncExternalStore } from 'react';
 
 import { ColorToHex } from './color-to-hex';

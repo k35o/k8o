@@ -1,4 +1,4 @@
-import { Alert } from '@k8o/arte-odyssey';
+import { Alert } from '@k8ordo/ui';
 import type { FC } from 'react';
 
 // useOffline は Next.js ランタイム外(Storybook)で評価できないため、

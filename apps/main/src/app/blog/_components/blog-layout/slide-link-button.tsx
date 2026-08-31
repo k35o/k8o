@@ -1,6 +1,6 @@
 'use client';
 
-import { Button, SlideIcon } from '@k8o/arte-odyssey';
+import { Button, SlideIcon } from '@k8ordo/ui';
 import type { FC } from 'react';
 
 export const SlideLinkButton: FC<{ href: string }> = ({ href }) => (

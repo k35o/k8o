@@ -1,11 +1,6 @@
 'use client';
 
-import {
-  Drawer,
-  IconButton,
-  LogoIcon,
-  NavigationMenuIcon,
-} from '@k8o/arte-odyssey';
+import { Drawer, IconButton, LogoIcon, NavigationMenuIcon } from '@k8ordo/ui';
 import { Suspense, useState } from 'react';
 import type { FC } from 'react';
 

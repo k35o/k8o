@@ -1,4 +1,4 @@
-import { Heading } from '@k8o/arte-odyssey';
+import { Heading } from '@k8ordo/ui';
 import { range } from '@repo/helpers/array/range';
 import { Suspense } from 'react';
 

@@ -1,4 +1,4 @@
-import { Anchor, Badge, Heading } from '@k8o/arte-odyssey';
+import { Anchor, Badge, Heading } from '@k8ordo/ui';
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';

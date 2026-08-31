@@ -1,4 +1,4 @@
-import { Spinner } from '@k8o/arte-odyssey';
+import { Spinner } from '@k8ordo/ui';
 import type { FC } from 'react';
 
 export const ContentFallback: FC = () => (

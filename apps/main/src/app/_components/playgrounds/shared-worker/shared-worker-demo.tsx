@@ -1,6 +1,6 @@
 'use client';
 
-import { Button, Code } from '@k8o/arte-odyssey';
+import { Button, Code } from '@k8ordo/ui';
 import { useEffect, useRef, useState, useSyncExternalStore } from 'react';
 
 const WORKER_URL = '/playgrounds/shared-worker.worker.js';

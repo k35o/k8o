@@ -5,7 +5,7 @@ import {
   PublishDateIcon,
   TagIcon,
   UpdateDateIcon,
-} from '@k8o/arte-odyssey';
+} from '@k8ordo/ui';
 import { formatDate } from '@repo/helpers/date/format';
 import type { Route } from 'next';
 import Link from 'next/link';

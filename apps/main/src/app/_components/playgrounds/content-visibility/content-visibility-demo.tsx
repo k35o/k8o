@@ -1,6 +1,6 @@
 'use client';
 
-import { Button, Code } from '@k8o/arte-odyssey';
+import { Button, Code } from '@k8ordo/ui';
 import { useState } from 'react';
 import type { FC } from 'react';
 

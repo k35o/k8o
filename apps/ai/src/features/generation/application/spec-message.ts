@@ -4,7 +4,7 @@ import {
   isNonEmptySpec,
 } from '@json-render/core';
 import type { Spec, SpecDataPart } from '@json-render/core';
-import type { ArteSpec } from '@k8o/arte-odyssey/json-render';
+import type { UISpec } from '@k8ordo/ui/json-render';
 import type { UIMessage } from 'ai';
 
 type SpecPart = {
@@ -71,9 +71,9 @@ export const parseSpecProse = (text: string): SpecProse => {
   return { title: null, description: trimmed };
 };
 
-// ArteSpec の state は `... | undefined` を含み、exactOptionalPropertyTypes 下では
+// UISpec の state は `... | undefined` を含み、exactOptionalPropertyTypes 下では
 // そのまま Spec に代入できない。undefined の state キーを落として揃える。
-export const toSpec = (spec: ArteSpec): Spec => {
+export const toSpec = (spec: UISpec): Spec => {
   const { state, ...rest } = spec;
   return state === undefined ? rest : { ...rest, state };
 };

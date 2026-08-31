@@ -1,4 +1,4 @@
-import { Card } from '@k8o/arte-odyssey';
+import { Card } from '@k8ordo/ui';
 import { range } from '@repo/helpers/array/range';
 import { Suspense } from 'react';
 

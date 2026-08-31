@@ -1,4 +1,4 @@
-import { Anchor, Heading } from '@k8o/arte-odyssey';
+import { Anchor, Heading } from '@k8ordo/ui';
 
 export default function Page() {
   return (

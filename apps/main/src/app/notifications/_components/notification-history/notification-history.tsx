@@ -1,4 +1,4 @@
-import { Anchor, Badge, Card } from '@k8o/arte-odyssey';
+import { Anchor, Badge, Card } from '@k8ordo/ui';
 import { formatDate } from '@repo/helpers/date/format';
 
 import { getPushLogs } from '@/features/push-notification/interface/queries';

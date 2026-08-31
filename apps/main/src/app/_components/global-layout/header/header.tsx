@@ -1,6 +1,6 @@
 'use client';
 
-import { useScrollDirection } from '@k8o/arte-odyssey';
+import { useScrollDirection } from '@k8ordo/ui';
 import type { FC, ReactNode } from 'react';
 
 export const Header: FC<{ children: ReactNode }> = ({ children }) => {

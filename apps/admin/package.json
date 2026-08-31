@@ -18,7 +18,7 @@
     "build-storybook": "storybook build"
   },
   "dependencies": {
-    "@k8o/arte-odyssey": "catalog:",
+    "@k8ordo/ui": "catalog:",
     "@repo/auth-shell": "workspace:*",
     "@repo/database": "workspace:*",
     "@repo/helpers": "workspace:*",

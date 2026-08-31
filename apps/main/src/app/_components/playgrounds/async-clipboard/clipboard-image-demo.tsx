@@ -1,6 +1,6 @@
 'use client';
 
-import { Button, FormControl, Select, useToast } from '@k8o/arte-odyssey';
+import { Button, FormControl, Select, useToast } from '@k8ordo/ui';
 import Image from 'next/image';
 import { useRef, useState } from 'react';
 import type { FC } from 'react';

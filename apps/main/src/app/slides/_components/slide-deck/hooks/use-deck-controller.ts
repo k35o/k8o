@@ -1,6 +1,6 @@
 'use client';
 
-import { useClient } from '@k8o/arte-odyssey';
+import { useClient } from '@k8ordo/ui';
 import { useCallback } from 'react';
 
 import { useBroadcastListener } from './use-broadcast-listener';

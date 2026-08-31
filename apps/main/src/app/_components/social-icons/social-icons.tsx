@@ -1,11 +1,6 @@
 'use client';
 
-import {
-  GitHubIcon,
-  IconButton,
-  QiitaIcon,
-  TwitterIcon,
-} from '@k8o/arte-odyssey';
+import { GitHubIcon, IconButton, QiitaIcon, TwitterIcon } from '@k8ordo/ui';
 import type { FC } from 'react';
 
 export const SocialIcons: FC = () => (

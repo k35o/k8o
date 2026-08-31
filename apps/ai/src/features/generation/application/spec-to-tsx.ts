@@ -1,8 +1,8 @@
 import type { Spec, UIElement } from '@json-render/core';
 
-// spec を arte-odyssey の実 API に沿った TSX へ機械変換する。壁打ちの成果物を
+// spec を @k8ordo/ui の実 API に沿った TSX へ機械変換する。壁打ちの成果物を
 // 実プロジェクトへ持ち出すためのスキャフォールドで、対応表は
-// @k8o/arte-odyssey/json-render/registry の描画実装（renderers）を正とする。
+// @k8ordo/ui/json-render/registry の描画実装（renderers）を正とする。
 // フォーム値の state 配線・動的値（$state 等）は移植先で行う前提。
 
 // catalog の Icon.name → 実コンポーネント名（registry の iconMap と同じ対応）。
@@ -55,7 +55,6 @@ export const ICON_COMPONENTS: Record<string, string> = {
   interesting: 'InterestingIcon',
   boring: 'BoringIcon',
   shallow: 'ShallowIcon',
-  'arte-odyssey': 'ArteOdyssey',
   logo: 'LogoIcon',
   github: 'GitHubIcon',
   twitter: 'TwitterIcon',
@@ -451,10 +450,7 @@ export const specToTsx = (spec: Spec): string => {
     lines.push(...[...ctx.notes].map((note) => `// NOTE: ${note}`), '');
   }
   if (importNames.length > 0) {
-    lines.push(
-      `import { ${importNames.join(', ')} } from '@k8o/arte-odyssey';`,
-      '',
-    );
+    lines.push(`import { ${importNames.join(', ')} } from '@k8ordo/ui';`, '');
   }
   lines.push(
     'export default function Preview() {',

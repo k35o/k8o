@@ -1,6 +1,6 @@
 'use client';
 
-import { Button } from '@k8o/arte-odyssey';
+import { Button } from '@k8ordo/ui';
 import { useAsyncAction } from '@repo/react-hooks/use-async-action';
 import { useState } from 'react';
 

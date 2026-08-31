@@ -4,7 +4,7 @@ import {
   HorizontalWritingIcon,
   IconButton,
   VerticalWritingIcon,
-} from '@k8o/arte-odyssey';
+} from '@k8ordo/ui';
 import type { FC } from 'react';
 
 import { useWritingMode } from './writing-mode-context';

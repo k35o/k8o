@@ -1,4 +1,4 @@
-import { Breadcrumb, Heading } from '@k8o/arte-odyssey';
+import { Breadcrumb, Heading } from '@k8ordo/ui';
 import { Suspense } from 'react';
 
 import { ContentFallback } from '@/app/(authenticated)/_components';

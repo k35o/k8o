@@ -1,6 +1,6 @@
 'use client';
 
-import { Pagination } from '@k8o/arte-odyssey';
+import { Pagination } from '@k8ordo/ui';
 import type { Route } from 'next';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { useTransition } from 'react';

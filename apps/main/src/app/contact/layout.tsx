@@ -1,4 +1,4 @@
-import { Heading } from '@k8o/arte-odyssey';
+import { Heading } from '@k8ordo/ui';
 import type { Metadata } from 'next';
 
 const DESCRIPTION = 'k8oへの連絡手段の一覧です。';

@@ -1,6 +1,6 @@
 'use client';
 
-import { Button, ChevronIcon } from '@k8o/arte-odyssey';
+import { Button, ChevronIcon } from '@k8ordo/ui';
 import { cn } from '@repo/helpers/cn';
 import { useState } from 'react';
 import { flushSync } from 'react-dom';

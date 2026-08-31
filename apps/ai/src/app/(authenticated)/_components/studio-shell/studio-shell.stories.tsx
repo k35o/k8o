@@ -1,4 +1,4 @@
-import { Button } from '@k8o/arte-odyssey';
+import { Button } from '@k8ordo/ui';
 import type { ComponentProps } from 'react';
 import { expect, within } from 'storybook/test';
 

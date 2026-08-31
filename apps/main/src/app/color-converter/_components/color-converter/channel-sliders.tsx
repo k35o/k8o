@@ -1,6 +1,6 @@
 'use client';
 
-import { NumberField, Slider, Tabs } from '@k8o/arte-odyssey';
+import { NumberField, Slider, Tabs } from '@k8ordo/ui';
 import { toSrgbGamut } from '@repo/helpers/color/gamut';
 import {
   clamp,
