@@ -1,6 +1,6 @@
 'use client';
 
-import { Alert, useDisclosure, useSessionStorage } from '@k8o/arte-odyssey';
+import { Alert, useDisclosure, useSessionStorage } from '@k8ordo/ui';
 import { isBrowserOutdated } from '@repo/helpers/browser/browser-support';
 import type { BrowserMinVersions } from '@repo/helpers/browser/detect-browser';
 import { useCallback } from 'react';

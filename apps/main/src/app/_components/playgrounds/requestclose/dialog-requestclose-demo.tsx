@@ -1,6 +1,6 @@
 'use client';
 
-import { Button, FormControl, TextField } from '@k8o/arte-odyssey';
+import { Button, FormControl, TextField } from '@k8ordo/ui';
 import { useRef, useState } from 'react';
 import type { FC, SyntheticEvent } from 'react';
 

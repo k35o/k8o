@@ -1,11 +1,4 @@
-import {
-  Alert,
-  Anchor,
-  Badge,
-  Code,
-  Heading,
-  Spinner,
-} from '@k8o/arte-odyssey';
+import { Alert, Anchor, Badge, Code, Heading, Spinner } from '@k8ordo/ui';
 import type { FC } from 'react';
 
 import type { LintDiagnostic } from '@/features/code-dock/interface/types';

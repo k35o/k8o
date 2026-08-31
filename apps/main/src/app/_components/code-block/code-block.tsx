@@ -1,6 +1,6 @@
 'use client';
 
-import { CopyIcon, useClipboard, useToast } from '@k8o/arte-odyssey';
+import { CopyIcon, useClipboard, useToast } from '@k8ordo/ui';
 import { cn } from '@repo/helpers/cn';
 import { useRef } from 'react';
 import type { ComponentProps, FC } from 'react';

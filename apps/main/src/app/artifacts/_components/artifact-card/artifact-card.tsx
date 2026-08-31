@@ -6,7 +6,7 @@ import {
   ExternalLinkIcon,
   GitHubIcon,
   Heading,
-} from '@k8o/arte-odyssey';
+} from '@k8ordo/ui';
 import type { FC } from 'react';
 
 import type { Artifact } from '@/app/artifacts/_utils/artifacts';

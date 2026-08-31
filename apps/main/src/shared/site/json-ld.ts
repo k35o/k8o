@@ -41,7 +41,7 @@ export function personJsonLd(): JsonLdObject {
     '@context': 'https://schema.org',
     ...PERSON,
     description:
-      'WebフロントエンドとTypeScriptが好きなソフトウェアエンジニア。デザインシステムArteOdysseyを開発している。',
+      'WebフロントエンドとTypeScriptが好きなソフトウェアエンジニア。デザインシステム@k8ordo/uiを開発している。',
     sameAs: [
       'https://x.com/k8ome',
       'https://github.com/k35o',

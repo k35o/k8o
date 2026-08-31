@@ -1,6 +1,6 @@
 'use client';
 
-import { Spinner, useToast } from '@k8o/arte-odyssey';
+import { Spinner, useToast } from '@k8ordo/ui';
 import { authClient } from '@repo/auth-shell/auth-client';
 import { useRouter } from 'next/navigation';
 import { useTransition } from 'react';

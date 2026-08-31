@@ -1,6 +1,6 @@
 'use client';
 
-import { FormControl, TextField } from '@k8o/arte-odyssey';
+import { FormControl, TextField } from '@k8ordo/ui';
 import { parseColor } from '@repo/helpers/color/parse';
 import type { Color } from '@repo/helpers/color/spaces';
 import { useState } from 'react';

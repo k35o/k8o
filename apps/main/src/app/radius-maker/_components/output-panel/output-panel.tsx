@@ -1,12 +1,6 @@
 'use client';
 
-import {
-  Button,
-  CopyIcon,
-  LinkIcon,
-  useClipboard,
-  useToast,
-} from '@k8o/arte-odyssey';
+import { Button, CopyIcon, LinkIcon, useClipboard, useToast } from '@k8ordo/ui';
 import type { FC } from 'react';
 
 import type { RadiusCorners } from '../../_types/corner-radius';

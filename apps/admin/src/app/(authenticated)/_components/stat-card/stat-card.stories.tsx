@@ -1,4 +1,4 @@
-import { ViewIcon } from '@k8o/arte-odyssey';
+import { ViewIcon } from '@k8ordo/ui';
 import { expect, within } from 'storybook/test';
 
 import preview from '../../../../../.storybook/preview';

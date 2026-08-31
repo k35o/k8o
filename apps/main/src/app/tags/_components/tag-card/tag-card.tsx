@@ -1,4 +1,4 @@
-import { ChevronIcon, Card, Separator } from '@k8o/arte-odyssey';
+import { ChevronIcon, Card, Separator } from '@k8ordo/ui';
 import { cn } from '@repo/helpers/cn';
 import type { Route } from 'next';
 import Link from 'next/link';

@@ -1,4 +1,4 @@
-import { Heading } from '@k8o/arte-odyssey';
+import { Heading } from '@k8ordo/ui';
 import { Suspense } from 'react';
 
 import { playgroundSections } from '@/app/_components/playgrounds';

@@ -10,8 +10,8 @@ function getAbsolutePath(value: string) {
 export default defineMain({
   stories: ['../src/**/*.stories.tsx'],
   refs: {
-    'arte-odyssey': {
-      title: 'ArteOdyssey',
+    'k8ordo-ui': {
+      title: '@k8ordo/ui',
       url: 'https://main--687a213c85e2e4589d8db1bb.chromatic.com',
     },
   },

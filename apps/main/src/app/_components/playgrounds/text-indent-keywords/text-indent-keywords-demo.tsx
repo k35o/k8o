@@ -1,6 +1,6 @@
 'use client';
 
-import { Checkbox, Code, FormControl, Select } from '@k8o/arte-odyssey';
+import { Checkbox, Code, FormControl, Select } from '@k8ordo/ui';
 import { useState } from 'react';
 
 const sampleText =

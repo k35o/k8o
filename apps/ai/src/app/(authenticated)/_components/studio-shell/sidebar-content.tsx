@@ -1,6 +1,6 @@
 'use client';
 
-import { Button, PaletteIcon, PlusIcon, SlideIcon } from '@k8o/arte-odyssey';
+import { Button, PaletteIcon, PlusIcon, SlideIcon } from '@k8ordo/ui';
 import Link from 'next/link';
 import type { FC, ReactNode } from 'react';
 

@@ -1,6 +1,6 @@
 'use client';
 
-import { Alert, Button, FormControl, Select } from '@k8o/arte-odyssey';
+import { Alert, Button, FormControl, Select } from '@k8ordo/ui';
 import { useActionState } from 'react';
 import type { FC } from 'react';
 

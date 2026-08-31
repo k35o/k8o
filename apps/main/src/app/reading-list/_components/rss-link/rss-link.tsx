@@ -1,6 +1,6 @@
 'use client';
 
-import { IconButton, RSSIcon } from '@k8o/arte-odyssey';
+import { IconButton, RSSIcon } from '@k8ordo/ui';
 import type { FC } from 'react';
 
 export const RssLink: FC = () => (

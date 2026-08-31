@@ -1,6 +1,6 @@
 'use client';
 
-import { NumberField } from '@k8o/arte-odyssey';
+import { NumberField } from '@k8ordo/ui';
 import { cn } from '@repo/helpers/cn';
 import { useId } from 'react';
 import type { FC } from 'react';

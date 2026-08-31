@@ -1,6 +1,6 @@
-import { Anchor, Badge, Code, Separator, Tabs } from '@k8o/arte-odyssey';
 import { CONTENT_CATEGORY_LABEL, FORM_CATEGORY_LABEL } from '@k8o/html-nest';
 import type { ContentModelKind, HtmlElementInfo } from '@k8o/html-nest';
+import { Anchor, Badge, Code, Separator, Tabs } from '@k8ordo/ui';
 import { useMemo } from 'react';
 import type { FC } from 'react';
 

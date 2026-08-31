@@ -1,6 +1,6 @@
 'use client';
 
-import { Button } from '@k8o/arte-odyssey';
+import { Button } from '@k8ordo/ui';
 import { useCallback, useRef, useState } from 'react';
 
 const INITIAL_TEXT = '吾輩は猫である。名前はまだ無い。';

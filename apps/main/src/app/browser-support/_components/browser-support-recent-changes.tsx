@@ -1,4 +1,4 @@
-import { Badge, Heading } from '@k8o/arte-odyssey';
+import { Badge, Heading } from '@k8ordo/ui';
 import { formatDate } from '@repo/helpers/date/format';
 import type { FC } from 'react';
 

@@ -1,4 +1,4 @@
-import { Anchor, Heading } from '@k8o/arte-odyssey';
+import { Anchor, Heading } from '@k8ordo/ui';
 
 export default function Page() {
   return (
@@ -7,11 +7,8 @@ export default function Page() {
         <Heading level="h3">k8oについて</Heading>
         <p className="leading-relaxed">
           Webフロントエンドを軸足に活動しているソフトウェアエンジニアです。TypeScriptとWeb標準が好きで、新しくブラウザで使えるようになった機能を試し、深掘りした結果をブログに残しています。解説には実際に動くデモを添えることを大切にしています。デザインとフロントエンドの境界にも興味があり、デザインシステム
-          <Anchor
-            href="https://www.npmjs.com/package/@k8o/arte-odyssey"
-            openInNewTab
-          >
-            ArteOdyssey
+          <Anchor href="https://www.npmjs.com/package/@k8ordo/ui" openInNewTab>
+            @k8ordo/ui
           </Anchor>
           の構築を通じてその交差点を探っています。
         </p>
@@ -32,7 +29,7 @@ export default function Page() {
           <Anchor href="https://github.com/k35o/k8o" openInNewTab>
             GitHub
           </Anchor>
-          で公開しています。デザインはArteOdysseyのコンポーネントとセマンティックトークンで統一しています。
+          で公開しています。デザインは@k8ordo/uiのコンポーネントとセマンティックトークンで統一しています。
         </p>
       </section>
       <section className="flex flex-col gap-3">

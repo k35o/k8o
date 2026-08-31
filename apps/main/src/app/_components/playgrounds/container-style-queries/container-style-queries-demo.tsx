@@ -1,6 +1,6 @@
 'use client';
 
-import { Code, Radio } from '@k8o/arte-odyssey';
+import { Code, Radio } from '@k8ordo/ui';
 import { useId, useState } from 'react';
 
 type Theme = 'light' | 'dark' | 'sepia';

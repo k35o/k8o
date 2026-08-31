@@ -1,5 +1,5 @@
 import type { Spec } from '@json-render/core';
-import { catalog } from '@k8o/arte-odyssey/json-render';
+import { catalog } from '@k8ordo/ui/json-render';
 
 import { ICON_COMPONENTS, specToTsx } from './spec-to-tsx';
 
@@ -35,7 +35,7 @@ describe('specToTsx', () => {
       };
       const tsx = specToTsx(spec);
       expect(tsx)
-        .toBe(`import { Button, Card, FormControl, Heading, Stack, TextField } from '@k8o/arte-odyssey';
+        .toBe(`import { Button, Card, FormControl, Heading, Stack, TextField } from '@k8ordo/ui';
 
 export default function Preview() {
   return (
@@ -108,9 +108,7 @@ export default function Preview() {
       };
       const tsx = specToTsx(spec);
       expect(tsx).toContain('<ExternalLinkIcon size="sm" />');
-      expect(tsx).toContain(
-        "import { ExternalLinkIcon } from '@k8o/arte-odyssey';",
-      );
+      expect(tsx).toContain("import { ExternalLinkIcon } from '@k8ordo/ui';");
     });
   });
 
@@ -170,7 +168,7 @@ export default function Preview() {
     });
   });
 
-  // 手書きの対応表は arte-odyssey のバージョンアップで黙って古びるため、
+  // 手書きの対応表は @k8ordo/ui のバージョンアップで黙って古びるため、
   // インストール済み catalog と機械的に照合して転記漏れを検知する。
   describe('catalogとのドリフト検知', () => {
     it('ICON_COMPONENTS のキーが catalog の Icon.name と1対1で一致する', () => {

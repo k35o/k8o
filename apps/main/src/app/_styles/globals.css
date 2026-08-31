@@ -1,4 +1,4 @@
-@import '@k8o/arte-odyssey/tailwind.css';
+@import '@k8ordo/ui/tailwind.css';
 
 /* 2rem は main の `px-4` × 2 ぶん */
 @utility max-w-container-* {

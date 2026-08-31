@@ -1,6 +1,6 @@
 'use client';
 
-import { Alert, Button, FormControl, Radio } from '@k8o/arte-odyssey';
+import { Alert, Button, FormControl, Radio } from '@k8ordo/ui';
 import { useActionState, useState } from 'react';
 
 import { LabeledTextField } from '@/app/(authenticated)/_components';

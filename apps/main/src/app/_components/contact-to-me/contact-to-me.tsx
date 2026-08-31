@@ -10,7 +10,7 @@ import {
   SendIcon,
   Textarea,
   useToast,
-} from '@k8o/arte-odyssey';
+} from '@k8ordo/ui';
 import { useActionState, useCallback, useState } from 'react';
 import type { FC } from 'react';
 

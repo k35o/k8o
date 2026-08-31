@@ -1,5 +1,5 @@
-import { Alert } from '@k8o/arte-odyssey';
 import type { HtmlElementInfo } from '@k8o/html-nest';
+import { Alert } from '@k8ordo/ui';
 import type { FC, ReactNode } from 'react';
 
 const NoteBox: FC<{ children: ReactNode }> = ({ children }) => (

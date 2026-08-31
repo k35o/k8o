@@ -7,7 +7,7 @@ import {
   Tabs,
   useClipboard,
   useToast,
-} from '@k8o/arte-odyssey';
+} from '@k8ordo/ui';
 import type { FC } from 'react';
 
 import type { PaletteSwatch } from '../../_types/palette';

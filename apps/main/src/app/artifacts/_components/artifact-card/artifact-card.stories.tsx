@@ -32,11 +32,11 @@ export const WithoutNpm = meta.story({
 
 export const DisplaysName = meta.story({
   args: {
-    name: 'ArteOdyssey',
+    name: '@k8ordo/ui',
     description:
       'k8o.meのデザインシステム。コンポーネントやトークンを管理している。',
-    githubUrl: 'https://github.com/k35o/arte-odyssey',
-    websiteUrl: 'https://arte-odyssey.k8o.me/',
+    githubUrl: 'https://github.com/k35o/k8ordo',
+    websiteUrl: 'https://ordo.k8o.me',
     npmPackageName: null,
     tags: ['Design System', 'TypeScript', 'React'],
   },
@@ -44,7 +44,7 @@ export const DisplaysName = meta.story({
     const canvas = within(canvasElement);
 
     await expect(
-      canvas.getByRole('heading', { name: 'ArteOdyssey' }),
+      canvas.getByRole('heading', { name: '@k8ordo/ui' }),
     ).toBeInTheDocument();
   },
 });
@@ -126,11 +126,11 @@ export const NoNpmLink = meta.story({
 
 export const HasWebsiteLink = meta.story({
   args: {
-    name: 'ArteOdyssey',
+    name: '@k8ordo/ui',
     description:
       'k8o.meのデザインシステム。コンポーネントやトークンを管理している。',
-    githubUrl: 'https://github.com/k35o/arte-odyssey',
-    websiteUrl: 'https://arte-odyssey.k8o.me/',
+    githubUrl: 'https://github.com/k35o/k8ordo',
+    websiteUrl: 'https://ordo.k8o.me',
     npmPackageName: null,
     tags: ['Design System', 'TypeScript', 'React'],
   },
@@ -139,9 +139,6 @@ export const HasWebsiteLink = meta.story({
 
     const websiteLink = canvas.getByRole('link', { name: 'サイトで見る' });
     await expect(websiteLink).toBeInTheDocument();
-    await expect(websiteLink).toHaveAttribute(
-      'href',
-      'https://arte-odyssey.k8o.me/',
-    );
+    await expect(websiteLink).toHaveAttribute('href', 'https://ordo.k8o.me');
   },
 });

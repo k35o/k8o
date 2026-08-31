@@ -1,13 +1,13 @@
 'use client';
 
-import { ArteOdysseyProvider, ToastProvider } from '@k8o/arte-odyssey';
+import { ToastProvider, UIProvider } from '@k8ordo/ui';
 import { ThemeProvider } from 'next-themes';
 import type { FC, PropsWithChildren } from 'react';
 
 export const AppProvider: FC<PropsWithChildren> = ({ children }) => (
   <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
-    <ArteOdysseyProvider>
+    <UIProvider>
       <ToastProvider>{children}</ToastProvider>
-    </ArteOdysseyProvider>
+    </UIProvider>
   </ThemeProvider>
 );

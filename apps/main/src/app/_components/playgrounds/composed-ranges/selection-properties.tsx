@@ -1,6 +1,6 @@
 'use client';
 
-import { Code, FormControl, TextField } from '@k8o/arte-odyssey';
+import { Code, FormControl, TextField } from '@k8ordo/ui';
 import { useEffect, useRef, useState } from 'react';
 
 // Selection はシングルトンで参照が変わらないため、配列で wrap して変更を検知する。

@@ -1,6 +1,6 @@
 'use client';
 
-import { Button, Heading } from '@k8o/arte-odyssey';
+import { Button, Heading } from '@k8ordo/ui';
 
 import './_styles/globals.css';
 

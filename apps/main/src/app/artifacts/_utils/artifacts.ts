@@ -10,12 +10,12 @@ export type Artifact = {
 export const getArtifacts = (): Artifact[] => [
   // デザインシステム
   {
-    name: '@k8o/arte-odyssey',
+    name: '@k8ordo/ui',
     description:
       'k8oのデザインシステム。Reactコンポーネントとデザイントークンに加え、LLM駆動でUIを生成するアダプタを備える。',
-    githubUrl: 'https://github.com/k35o/arte-odyssey',
-    websiteUrl: 'https://arte-odyssey.k8o.me/',
-    npmPackageName: '@k8o/arte-odyssey',
+    githubUrl: 'https://github.com/k35o/k8ordo',
+    websiteUrl: 'https://ordo.k8o.me',
+    npmPackageName: '@k8ordo/ui',
     tags: ['Design System', 'React', 'Generative UI'],
   },
   // Storybook 系

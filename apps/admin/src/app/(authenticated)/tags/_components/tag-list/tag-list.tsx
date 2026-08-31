@@ -1,4 +1,4 @@
-import { Badge, Card } from '@k8o/arte-odyssey';
+import { Badge, Card } from '@k8ordo/ui';
 import type { FC } from 'react';
 
 import { EmptyState } from '@/app/(authenticated)/_components';

@@ -1,12 +1,6 @@
 'use client';
 
-import {
-  Card,
-  CopyIcon,
-  IconButton,
-  useClipboard,
-  useToast,
-} from '@k8o/arte-odyssey';
+import { Card, CopyIcon, IconButton, useClipboard, useToast } from '@k8ordo/ui';
 import { formatAll } from '@repo/helpers/color/format';
 import type { Color } from '@repo/helpers/color/spaces';
 import type { FC } from 'react';

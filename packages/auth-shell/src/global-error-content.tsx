@@ -1,6 +1,6 @@
 'use client';
 
-import { Button, Heading } from '@k8o/arte-odyssey';
+import { Button, Heading } from '@k8ordo/ui';
 import type { FC } from 'react';
 
 // html / body は font とグローバル CSS をアプリ側が持つため、呼び出し側の

@@ -1,5 +1,5 @@
-import { Tooltip } from '@k8o/arte-odyssey';
 import type { HtmlElementInfo } from '@k8o/html-nest';
+import { Tooltip } from '@k8ordo/ui';
 import { cn } from '@repo/helpers/cn';
 import type { FC } from 'react';
 

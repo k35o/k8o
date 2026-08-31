@@ -1,6 +1,6 @@
 'use client';
 
-import { Card } from '@k8o/arte-odyssey';
+import { Card } from '@k8ordo/ui';
 import { parseColor } from '@repo/helpers/color/parse';
 import type { Color } from '@repo/helpers/color/spaces';
 import { useState } from 'react';

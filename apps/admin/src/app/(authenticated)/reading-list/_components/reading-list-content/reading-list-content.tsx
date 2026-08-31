@@ -1,4 +1,4 @@
-import { ListIcon, NewsIcon, RSSIcon } from '@k8o/arte-odyssey';
+import { ListIcon, NewsIcon, RSSIcon } from '@k8ordo/ui';
 import { verifySession } from '@repo/auth-shell/verify-session';
 
 import {

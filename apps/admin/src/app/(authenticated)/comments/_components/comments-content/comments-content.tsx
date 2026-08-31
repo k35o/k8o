@@ -1,4 +1,4 @@
-import { BlogIcon, LinkIcon, MailIcon } from '@k8o/arte-odyssey';
+import { BlogIcon, LinkIcon, MailIcon } from '@k8ordo/ui';
 import { verifySession } from '@repo/auth-shell/verify-session';
 
 import {

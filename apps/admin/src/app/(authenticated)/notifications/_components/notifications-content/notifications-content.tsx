@@ -1,4 +1,4 @@
-import { Card, HistoryIcon, SendIcon, SubscribeIcon } from '@k8o/arte-odyssey';
+import { Card, HistoryIcon, SendIcon, SubscribeIcon } from '@k8ordo/ui';
 import { verifySession } from '@repo/auth-shell/verify-session';
 import { formatDate } from '@repo/helpers/date/format';
 

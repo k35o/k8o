@@ -1,4 +1,4 @@
-import { ExternalLinkIcon, Card, PublishDateIcon } from '@k8o/arte-odyssey';
+import { ExternalLinkIcon, Card, PublishDateIcon } from '@k8ordo/ui';
 import { formatDate } from '@repo/helpers/date/format';
 import { Suspense } from 'react';
 import type { FC } from 'react';

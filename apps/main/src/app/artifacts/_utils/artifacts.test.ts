@@ -8,10 +8,10 @@ describe('getArtifacts', () => {
     expect(projects).toStrictEqual(
       expect.arrayContaining([
         expect.objectContaining({
-          name: '@k8o/arte-odyssey',
-          githubUrl: 'https://github.com/k35o/arte-odyssey',
-          websiteUrl: 'https://arte-odyssey.k8o.me/',
-          npmPackageName: '@k8o/arte-odyssey',
+          name: '@k8ordo/ui',
+          githubUrl: 'https://github.com/k35o/k8ordo',
+          websiteUrl: 'https://ordo.k8o.me',
+          npmPackageName: '@k8ordo/ui',
         }),
         expect.objectContaining({
           name: '@k8o/oxc-config',

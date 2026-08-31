@@ -1,5 +1,6 @@
 'use client';
 
+import type { RelatedElement } from '@k8o/html-nest';
 import {
   Button,
   Dialog,
@@ -7,8 +8,7 @@ import {
   ListIcon,
   Modal,
   TextField,
-} from '@k8o/arte-odyssey';
-import type { RelatedElement } from '@k8o/html-nest';
+} from '@k8ordo/ui';
 import { useCallback, useState } from 'react';
 import type { FC } from 'react';
 

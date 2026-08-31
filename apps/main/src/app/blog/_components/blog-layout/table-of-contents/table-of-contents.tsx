@@ -1,6 +1,6 @@
 'use client';
 
-import { useClickAway } from '@k8o/arte-odyssey';
+import { useClickAway } from '@k8ordo/ui';
 import { cn } from '@repo/helpers/cn';
 import Link from 'next/link';
 import { useRef } from 'react';

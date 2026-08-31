@@ -1,6 +1,6 @@
 'use client';
 
-import { Button, Code } from '@k8o/arte-odyssey';
+import { Button, Code } from '@k8ordo/ui';
 import type { ToggleEvent as ReactToggleEvent } from 'react';
 import { useRef, useState } from 'react';
 

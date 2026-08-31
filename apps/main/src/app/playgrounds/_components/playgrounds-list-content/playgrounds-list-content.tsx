@@ -1,6 +1,6 @@
 'use client';
 
-import { FlaskIcon, Heading, TextField } from '@k8o/arte-odyssey';
+import { FlaskIcon, Heading, TextField } from '@k8ordo/ui';
 import { useQueryStates } from 'nuqs';
 import { useMemo } from 'react';
 import type { FC } from 'react';

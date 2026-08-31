@@ -9,7 +9,7 @@ import {
   useClipboard,
   useDebouncedTransition,
   useToast,
-} from '@k8o/arte-odyssey';
+} from '@k8ordo/ui';
 import type { HighlightTheme } from '@repo/code-highlight/tokenize-client';
 import { useAsyncAction } from '@repo/react-hooks/use-async-action';
 import { useTheme } from 'next-themes';

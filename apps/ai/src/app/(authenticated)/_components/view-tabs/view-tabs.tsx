@@ -1,4 +1,4 @@
-import { Button } from '@k8o/arte-odyssey';
+import { Button } from '@k8ordo/ui';
 import type { ReactNode } from 'react';
 
 type ViewTabsProps<T extends string> = {

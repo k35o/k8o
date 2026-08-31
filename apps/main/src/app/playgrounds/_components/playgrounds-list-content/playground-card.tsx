@@ -1,4 +1,4 @@
-import { BlogIcon, Card, ChevronIcon, Heading } from '@k8o/arte-odyssey';
+import { BlogIcon, Card, ChevronIcon, Heading } from '@k8ordo/ui';
 import type { Route } from 'next';
 import Link from 'next/link';
 import type { FC } from 'react';

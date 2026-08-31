@@ -1,4 +1,4 @@
-import { Card } from '@k8o/arte-odyssey';
+import { Card } from '@k8ordo/ui';
 import type { FC, ReactNode } from 'react';
 
 type Props = {

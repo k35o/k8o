@@ -1,6 +1,6 @@
 'use client';
 
-import { Switch, useToast } from '@k8o/arte-odyssey';
+import { Switch, useToast } from '@k8ordo/ui';
 import { useOptimistic, useTransition } from 'react';
 import type { FC } from 'react';
 

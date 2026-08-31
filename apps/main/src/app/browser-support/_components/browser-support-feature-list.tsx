@@ -1,12 +1,6 @@
 'use client';
 
-import {
-  Badge,
-  Checkbox,
-  FormControl,
-  Tabs,
-  TextField,
-} from '@k8o/arte-odyssey';
+import { Badge, Checkbox, FormControl, Tabs, TextField } from '@k8ordo/ui';
 import { formatDate } from '@repo/helpers/date/format';
 import type { Route } from 'next';
 import Link from 'next/link';

@@ -1,6 +1,6 @@
 'use client';
 
-import { Button, TextField, useToast } from '@k8o/arte-odyssey';
+import { Button, TextField, useToast } from '@k8ordo/ui';
 import { useAsyncAction } from '@repo/react-hooks/use-async-action';
 import { useState } from 'react';
 import type { ChangeEvent, FC } from 'react';

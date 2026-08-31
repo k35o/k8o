@@ -1,6 +1,6 @@
 'use client';
 
-import { Button } from '@k8o/arte-odyssey';
+import { Button } from '@k8ordo/ui';
 import { range } from '@repo/helpers/array/range';
 import { useEffect, useRef, useState } from 'react';
 

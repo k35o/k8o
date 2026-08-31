@@ -8,7 +8,7 @@ describe('mdxToMarkdown', () => {
         'title: タイトル',
         '---',
         '',
-        "import { BrowserSupportStatus } from '@k8o/arte-odyssey';",
+        "import { BrowserSupportStatus } from '@k8ordo/ui';",
         "import { Playground } from '@/app/_components/playgrounds';",
         '',
         '# 見出し',

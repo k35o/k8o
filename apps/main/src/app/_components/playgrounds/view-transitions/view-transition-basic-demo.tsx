@@ -1,6 +1,6 @@
 'use client';
 
-import { Button, Code } from '@k8o/arte-odyssey';
+import { Button, Code } from '@k8ordo/ui';
 import { useTheme } from 'next-themes';
 import { useState } from 'react';
 import { flushSync } from 'react-dom';

@@ -1,6 +1,6 @@
 'use client';
 
-import { Button, FileField, FormControl } from '@k8o/arte-odyssey';
+import { Button, FileField, FormControl } from '@k8ordo/ui';
 export const WebkitRelativePathDemo = () => (
   <FormControl
     label="ディレクトリ選択"

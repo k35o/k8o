@@ -1,4 +1,4 @@
-import { arteOdysseyRules, catalog } from '@k8o/arte-odyssey/json-render';
+import { catalog, uiRules } from '@k8ordo/ui/json-render';
 
 type BuildSpecSystemPromptInput = {
   repairPrompt?: string | null | undefined;
@@ -8,7 +8,7 @@ const hasText = (value?: string | null): value is string =>
   typeof value === 'string' && value.trim() !== '';
 
 const K8O_SYSTEM =
-  'あなたは k8o のデザインシステム「arte-odyssey」に精通した UI デザイナーです。ユーザーの要望から、arte-odyssey コンポーネントで構成された UI を生成します。';
+  'あなたは k8o のデザインシステム「@k8ordo/ui」に精通した UI デザイナーです。ユーザーの要望から、@k8ordo/ui コンポーネントで構成された UI を生成します。';
 
 // inline モード（会話文→パッチ）の会話文パートに求める形式。タイトル行は
 // プロジェクト名・履歴表示の情報源になる（クライアントの parseSpecProse が抽出する）。
@@ -26,7 +26,7 @@ export const buildSpecSystemPrompt = (
       // oxlint-disable-next-line typescript/no-deprecated -- 非推奨なのは旧別名の'generate'/'chat'だが、@deprecatedがmodeプロパティ自体に付いているため現行値の'inline'でも警告が出る
       mode: 'inline',
       system: K8O_SYSTEM,
-      customRules: [...arteOdysseyRules, ...RESPONSE_RULES],
+      customRules: [...uiRules, ...RESPONSE_RULES],
     }),
   ];
 

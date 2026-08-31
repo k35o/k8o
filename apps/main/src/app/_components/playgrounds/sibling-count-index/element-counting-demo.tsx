@@ -1,6 +1,6 @@
 'use client';
 
-import { Switch } from '@k8o/arte-odyssey';
+import { Switch } from '@k8ordo/ui';
 import { useState } from 'react';
 
 const GHOST = 'text-fg-mute border-border-base rounded-lg border border-dashed';

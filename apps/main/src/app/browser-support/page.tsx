@@ -1,4 +1,4 @@
-import { Anchor } from '@k8o/arte-odyssey';
+import { Anchor } from '@k8ordo/ui';
 import { formatDate } from '@repo/helpers/date/format';
 import { Suspense } from 'react';
 

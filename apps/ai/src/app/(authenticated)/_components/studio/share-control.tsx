@@ -1,6 +1,6 @@
 'use client';
 
-import { useClipboard, useToast } from '@k8o/arte-odyssey';
+import { useClipboard, useToast } from '@k8ordo/ui';
 import { useTransition } from 'react';
 import type { FC } from 'react';
 

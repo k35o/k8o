@@ -2,8 +2,8 @@
 
 import { useChat } from '@ai-sdk/react';
 import type { Spec } from '@json-render/core';
-import { ForkIcon, FullscreenIcon, IconButton } from '@k8o/arte-odyssey';
-import { validateGeneratedSpec } from '@k8o/arte-odyssey/json-render';
+import { ForkIcon, FullscreenIcon, IconButton } from '@k8ordo/ui';
+import { validateGeneratedSpec } from '@k8ordo/ui/json-render';
 import { DefaultChatTransport } from 'ai';
 import type { UIMessage } from 'ai';
 import { useRouter } from 'next/navigation';

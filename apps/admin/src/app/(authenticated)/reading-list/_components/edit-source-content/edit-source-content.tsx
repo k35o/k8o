@@ -1,4 +1,4 @@
-import { Breadcrumb, Card, Heading, Separator } from '@k8o/arte-odyssey';
+import { Breadcrumb, Card, Heading, Separator } from '@k8ordo/ui';
 import { verifySession } from '@repo/auth-shell/verify-session';
 import { notFound } from 'next/navigation';
 

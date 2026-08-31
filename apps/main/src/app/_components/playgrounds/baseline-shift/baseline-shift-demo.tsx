@@ -1,6 +1,6 @@
 'use client';
 
-import { FormControl, Select } from '@k8o/arte-odyssey';
+import { FormControl, Select } from '@k8ordo/ui';
 import { useState } from 'react';
 
 type BaselineShiftValue = '0' | 'sub' | 'super' | '0.3em' | '-0.3em';

@@ -47,7 +47,7 @@ export default defineConfig({
             'better-auth/react',
             // 二重 React を防ぐため、registry（@json-render/react を内包）は
             // アプリ本体と同じ最適化パイプラインで事前バンドルする。
-            '@k8o/arte-odyssey/json-render/registry',
+            '@k8ordo/ui/json-render/registry',
           ],
         },
         test: {

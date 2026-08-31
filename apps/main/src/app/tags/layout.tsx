@@ -1,4 +1,4 @@
-import { Heading, TagIcon } from '@k8o/arte-odyssey';
+import { Heading, TagIcon } from '@k8ordo/ui';
 import Link from 'next/link';
 
 import { buildPageMetadata } from '@/shared/site/build-page-metadata';

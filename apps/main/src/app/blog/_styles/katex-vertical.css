@@ -1,4 +1,4 @@
-@reference '@k8o/arte-odyssey/tailwind.css';
+@reference '@k8ordo/ui/tailwind.css';
 
 @variant vertical {
   :where(.katex-display, .katex-display *) {

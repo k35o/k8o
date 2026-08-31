@@ -1,6 +1,6 @@
 'use client';
 
-import { Checkbox } from '@k8o/arte-odyssey';
+import { Checkbox } from '@k8ordo/ui';
 import { useState } from 'react';
 
 export function FontFamilyMathDemo() {

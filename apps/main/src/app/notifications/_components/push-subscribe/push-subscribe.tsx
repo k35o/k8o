@@ -1,6 +1,6 @@
 'use client';
 
-import { Alert, Button, Card, SubscribeIcon } from '@k8o/arte-odyssey';
+import { Alert, Button, Card, SubscribeIcon } from '@k8ordo/ui';
 import {
   useEffect,
   useState,

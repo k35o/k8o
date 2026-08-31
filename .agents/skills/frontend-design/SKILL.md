@@ -92,7 +92,7 @@ description: 独自性のある本番品質のフロントエンドインター�
 
 ### スタイリング制約
 
-- **TailwindCSS**: ArteOdyssey (`@k8o/arte-odyssey/tailwind.css`) で定義されたカスタムトークンのみ使用
+- **TailwindCSS**: @k8ordo/ui (`@k8ordo/ui/tailwind.css`) で定義されたカスタムトークンのみ使用
 - **禁止**: 標準のTailwindクラス（`text-gray-600`など）は使用禁止
 
 ### アニメーション
@@ -102,7 +102,7 @@ description: 独自性のある本番品質のフロントエンドインター�
 
 ### コンポーネント
 
-- **ArteOdyssey**: 基本的なUIコンポーネントは `@k8o/arte-odyssey` から利用
+- **@k8ordo/ui**: 基本的なUIコンポーネントは `@k8ordo/ui` から利用
 - **カスタム**: 独自の視覚表現が必要な場合はプロジェクト固有のコンポーネントを作成
 
 ## ライセンス
@@ -117,5 +117,5 @@ Copyright 2025 Anthropic, PBC
 
 **MODIFIED**: このファイルは原作から以下の変更を加えています：
 - 日本語に翻訳
-- k8oプロジェクト固有の設定を追加（ArteOdyssey UIライブラリ、TailwindCSSカスタムトークン等）
+- k8oプロジェクト固有の設定を追加（@k8ordo/ui UIライブラリ、TailwindCSSカスタムトークン等）
 - 避けるべきことにUIデザイン原則の注意項目を追加

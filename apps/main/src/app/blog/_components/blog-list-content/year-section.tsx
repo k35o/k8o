@@ -1,4 +1,4 @@
-import { Heading } from '@k8o/arte-odyssey';
+import { Heading } from '@k8ordo/ui';
 import type { FC } from 'react';
 
 import type { BlogSummary } from '../../_utils/types';

@@ -1,6 +1,6 @@
 'use client';
 
-import { Alert, Heading } from '@k8o/arte-odyssey';
+import { Alert, Heading } from '@k8ordo/ui';
 import { calcApca } from '@repo/helpers/color/calc-apca';
 import { calcContrast } from '@repo/helpers/color/calc-contrast';
 import { useEffect, useState } from 'react';

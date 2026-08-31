@@ -1,4 +1,4 @@
-import { Logo } from '@k8o/arte-odyssey';
+import { Logo } from '@k8ordo/ui';
 import { cn } from '@repo/helpers/cn';
 import type { FC, ReactNode } from 'react';
 

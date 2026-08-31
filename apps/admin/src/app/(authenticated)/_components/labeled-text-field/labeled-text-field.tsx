@@ -1,4 +1,4 @@
-import { FormControl, TextField } from '@k8o/arte-odyssey';
+import { FormControl, TextField } from '@k8ordo/ui';
 import type { FC } from 'react';
 
 type LabeledTextFieldProps = {

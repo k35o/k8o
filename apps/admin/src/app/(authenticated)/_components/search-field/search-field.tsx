@@ -1,6 +1,6 @@
 'use client';
 
-import { Spinner, TextField } from '@k8o/arte-odyssey';
+import { Spinner, TextField } from '@k8ordo/ui';
 import type { Route } from 'next';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { useEffect, useRef, useState, useTransition } from 'react';
@@ -70,7 +70,7 @@ export const SearchField: FC<Props> = ({
         aria-label={placeholder}
         onChange={handleChange}
         placeholder={placeholder}
-        // ArteOdyssey の TextField は幅ユーティリティを持たないため、
+        // @k8ordo/ui の TextField は幅ユーティリティを持たないため、
         // size 属性で実用的な横幅を確保する。
         size={32}
         value={value}

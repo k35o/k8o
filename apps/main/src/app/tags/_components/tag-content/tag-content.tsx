@@ -1,4 +1,4 @@
-import { Heading, TagIcon } from '@k8o/arte-odyssey';
+import { Heading, TagIcon } from '@k8ordo/ui';
 import type { Route } from 'next';
 import Link from 'next/link';
 import type { FC } from 'react';

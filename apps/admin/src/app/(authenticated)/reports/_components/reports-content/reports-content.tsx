@@ -1,4 +1,4 @@
-import { TableIcon } from '@k8o/arte-odyssey';
+import { TableIcon } from '@k8ordo/ui';
 import { verifySession } from '@repo/auth-shell/verify-session';
 
 import {

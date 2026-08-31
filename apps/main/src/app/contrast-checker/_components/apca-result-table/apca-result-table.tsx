@@ -1,4 +1,4 @@
-import { AlertIcon } from '@k8o/arte-odyssey';
+import { AlertIcon } from '@k8ordo/ui';
 import type { FC } from 'react';
 
 type Props = {

@@ -5,7 +5,7 @@ import {
   LockOpenIcon,
   Popover,
   Spinner,
-} from '@k8o/arte-odyssey';
+} from '@k8ordo/ui';
 import type { FC } from 'react';
 
 type ShareControlViewProps = {
