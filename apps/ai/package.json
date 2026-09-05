@@ -19,7 +19,7 @@
   },
   "dependencies": {
     "@ai-sdk/openai-compatible": "catalog:",
-    "@ai-sdk/react": "4.0.80",
+    "@ai-sdk/react": "4.0.87",
     "@json-render/core": "0.20.0",
     "@json-render/react": "0.20.0",
     "@k8ordo/ui": "catalog:",
