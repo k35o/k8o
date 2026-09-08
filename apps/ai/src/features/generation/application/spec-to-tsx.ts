@@ -62,11 +62,141 @@ export const ICON_COMPONENTS: Record<string, string> = {
 };
 
 // Card の size → 内側パディング（registry の CARD_PADDING_CLASS と同じ対応）。
-const CARD_PADDING: Record<string, string> = {
+export const CARD_PADDING: Record<string, string> = {
   sm: 'p-4',
   md: 'p-6',
   lg: 'p-8',
 };
+
+// catalog の FormControl.fieldType → renderInput に置く入力コンポーネント
+// （registry の FormControlWidget と同じ対応）。
+export const FIELD_TYPE_INPUTS: Record<string, string> = {
+  text: 'TextField',
+  textarea: 'Textarea',
+  password: 'PasswordInput',
+};
+
+// 複数の case が共有する prop 列は定数にする。case をまとめたまま片方の
+// コンポーネント名で CONVERTED_PROPS を引くと、catalog が片側だけ変わったときに
+// 表と switch がずれてもテストが素通りするため。
+const TEXT_INPUT_PROPS = [
+  'name',
+  'placeholder',
+  'defaultValue',
+  'invalid',
+  'disabled',
+] as const;
+const CHOICE_CARD_PROPS = [
+  'name',
+  'options',
+  'defaultValue',
+  'invalid',
+  'disabled',
+] as const;
+const OPTION_INPUT_PROPS = [
+  'name',
+  'options',
+  'defaultValue',
+  'invalid',
+  'disabled',
+] as const;
+// 1要素を複数タグへ展開するものは部位ごとに持ち、CONVERTED_PROPS ではその和を宣言する。
+const FORM_CONTROL_FIELD_PROPS = [
+  'label',
+  'required',
+  'helpText',
+  'errorText',
+  'invalid',
+] as const;
+const FORM_CONTROL_INPUT_PROPS = [
+  'name',
+  'placeholder',
+  'defaultValue',
+] as const;
+const LIST_BOX_ROOT_PROPS = ['options', 'defaultValue'] as const;
+const LIST_BOX_TRIGGER_PROPS = ['label'] as const;
+
+// emitElement が attrs() でそのまま JSX 属性へ変換する prop。
+// catalog に無い prop の混入は spec-to-tsx.test.ts のドリフト検知テストが照合する。
+export const CONVERTED_PROPS = {
+  Stack: ['direction', 'gap', 'padding', 'align', 'justify'],
+  Grid: ['cols', 'minItemSize', 'gap'],
+  Card: ['variant', 'interactive', 'width'],
+  Button: ['color', 'variant', 'size', 'fullWidth'],
+  Heading: ['level', 'lineClamp'],
+  Badge: ['label', 'tone', 'variant', 'size'],
+  Alert: ['tone', 'message'],
+  Spinner: ['label', 'size'],
+  Separator: ['orientation', 'color'],
+  Skeleton: ['shape', 'size', 'animate'],
+  Progress: ['value', 'max', 'min', 'label'],
+  Avatar: ['name', 'src', 'alt', 'fallback', 'size'],
+  Anchor: ['href', 'openInNewTab'],
+  Code: [],
+  Icon: ['size'],
+  ChevronIcon: ['direction', 'size'],
+  IconButton: ['label', 'color', 'size'],
+  FormControl: [...FORM_CONTROL_FIELD_PROPS, ...FORM_CONTROL_INPUT_PROPS],
+  TextField: [...TEXT_INPUT_PROPS, 'readOnly'],
+  Textarea: [...TEXT_INPUT_PROPS, 'readOnly', 'rows', 'autoResize'],
+  PasswordInput: TEXT_INPUT_PROPS,
+  NumberField: [
+    'name',
+    'defaultValue',
+    'min',
+    'max',
+    'step',
+    'invalid',
+    'disabled',
+  ],
+  Slider: ['name', 'defaultValue', 'min', 'max', 'step', 'invalid', 'disabled'],
+  Checkbox: ['label', 'name', 'defaultChecked', 'disabled'],
+  Switch: [
+    'label',
+    'name',
+    'defaultChecked',
+    'disabled',
+    'invalid',
+    'required',
+  ],
+  Radio: ['name', 'options', 'defaultValue', 'disabled'],
+  RadioCard: CHOICE_CARD_PROPS,
+  CheckboxCard: CHOICE_CARD_PROPS,
+  CheckboxGroup: ['name', 'defaultValue'],
+  Select: OPTION_INPUT_PROPS,
+  Autocomplete: OPTION_INPUT_PROPS,
+  ListBox: [...LIST_BOX_ROOT_PROPS, ...LIST_BOX_TRIGGER_PROPS],
+  Form: ['action'],
+} as const satisfies Record<string, readonly string[]>;
+
+// catalog にはあるが attrs() では出さない prop。JSX 属性以外の形へ変換するもの。
+// CONVERTED_PROPS との和が catalog の prop 全体を覆うことをテストが照合するので、
+// @k8ordo/ui が prop を増やしたらどちらかに足すまでテストが赤くなる。
+export const EXCLUDED_PROPS = {
+  // 内側 div の padding へ
+  Card: ['size'],
+  // label は子テキストへ、href は renderItem のリンクへ
+  Button: ['label', 'href'],
+  // 子テキストへ
+  Heading: ['label'],
+  Anchor: ['label'],
+  Code: ['code'],
+  // アイコンコンポーネント名へ（ICON_COMPONENTS）
+  Icon: ['name'],
+  IconButton: ['icon'],
+  // renderInput に置く入力コンポーネントの選択へ
+  FormControl: ['fieldType'],
+  // グループ入力の label は見出し span へ（emitLabeledGroup）
+  Radio: ['label'],
+  RadioCard: ['label'],
+  CheckboxCard: ['label'],
+  // options は CheckboxGroup.Item 群へ
+  CheckboxGroup: ['label', 'options'],
+  // 実 ListBox.Root に name が無く registry も渡していない
+  ListBox: ['name'],
+} as const satisfies Partial<
+  Record<keyof typeof CONVERTED_PROPS, readonly string[]>
+>;
 
 type Ctx = {
   spec: Spec;
@@ -202,7 +332,7 @@ const emitElement = (el: UIElement, ctx: Ctx): string[] => {
     case 'Stack': {
       ctx.imports.add('Stack');
       return wrap(
-        `<Stack${attrs(el, ['direction', 'gap', 'padding', 'align', 'justify'], ctx)}>`,
+        `<Stack${attrs(el, CONVERTED_PROPS.Stack, ctx)}>`,
         emitChildren(el, ctx),
         '</Stack>',
       );
@@ -210,7 +340,7 @@ const emitElement = (el: UIElement, ctx: Ctx): string[] => {
     case 'Grid': {
       ctx.imports.add('Grid');
       return wrap(
-        `<Grid${attrs(el, ['cols', 'minItemSize', 'gap'], ctx)}>`,
+        `<Grid${attrs(el, CONVERTED_PROPS.Grid, ctx)}>`,
         emitChildren(el, ctx),
         '</Grid>',
       );
@@ -221,7 +351,7 @@ const emitElement = (el: UIElement, ctx: Ctx): string[] => {
         typeof el.props['size'] === 'string' ? el.props['size'] : 'md';
       const padding = CARD_PADDING[size] ?? 'p-6';
       return wrap(
-        `<Card${attrs(el, ['variant', 'interactive', 'width'], ctx)}>`,
+        `<Card${attrs(el, CONVERTED_PROPS.Card, ctx)}>`,
         wrap(`<div className="${padding}">`, emitChildren(el, ctx), '</div>'),
         '</Card>',
       );
@@ -229,7 +359,7 @@ const emitElement = (el: UIElement, ctx: Ctx): string[] => {
     case 'Button': {
       ctx.imports.add('Button');
       const { href } = el.props;
-      const base = attrs(el, ['color', 'variant', 'size', 'fullWidth'], ctx);
+      const base = attrs(el, CONVERTED_PROPS.Button, ctx);
       const label = escapeText(textProp(el, 'label', ctx));
       if (typeof href === 'string' && href !== '') {
         // href 付きは renderItem でリンクとして描画する（実 Button の作法）。
@@ -259,47 +389,41 @@ const emitElement = (el: UIElement, ctx: Ctx): string[] => {
       const level =
         typeof el.props['level'] === 'string' ? el.props['level'] : 'h2';
       return [
-        `<Heading${attrs(el, ['level', 'lineClamp'], ctx, { level })}>${escapeText(textProp(el, 'label', ctx))}</Heading>`,
+        `<Heading${attrs(el, CONVERTED_PROPS.Heading, ctx, { level })}>${escapeText(textProp(el, 'label', ctx))}</Heading>`,
       ];
     }
     case 'Badge': {
       ctx.imports.add('Badge');
-      return [
-        `<Badge${attrs(el, ['label', 'tone', 'variant', 'size'], ctx)} />`,
-      ];
+      return [`<Badge${attrs(el, CONVERTED_PROPS.Badge, ctx)} />`];
     }
     case 'Alert': {
       ctx.imports.add('Alert');
-      return [`<Alert${attrs(el, ['tone', 'message'], ctx)} />`];
+      return [`<Alert${attrs(el, CONVERTED_PROPS.Alert, ctx)} />`];
     }
     case 'Spinner': {
       ctx.imports.add('Spinner');
-      return [`<Spinner${attrs(el, ['label', 'size'], ctx)} />`];
+      return [`<Spinner${attrs(el, CONVERTED_PROPS.Spinner, ctx)} />`];
     }
     case 'Separator': {
       ctx.imports.add('Separator');
-      return [`<Separator${attrs(el, ['orientation', 'color'], ctx)} />`];
+      return [`<Separator${attrs(el, CONVERTED_PROPS.Separator, ctx)} />`];
     }
     case 'Skeleton': {
       ctx.imports.add('Skeleton');
-      return [`<Skeleton${attrs(el, ['shape', 'size', 'animate'], ctx)} />`];
+      return [`<Skeleton${attrs(el, CONVERTED_PROPS.Skeleton, ctx)} />`];
     }
     case 'Progress': {
       ctx.imports.add('Progress');
-      return [
-        `<Progress${attrs(el, ['value', 'max', 'min', 'label'], ctx)} />`,
-      ];
+      return [`<Progress${attrs(el, CONVERTED_PROPS.Progress, ctx)} />`];
     }
     case 'Avatar': {
       ctx.imports.add('Avatar');
-      return [
-        `<Avatar${attrs(el, ['name', 'src', 'alt', 'fallback', 'size'], ctx)} />`,
-      ];
+      return [`<Avatar${attrs(el, CONVERTED_PROPS.Avatar, ctx)} />`];
     }
     case 'Anchor': {
       ctx.imports.add('Anchor');
       return [
-        `<Anchor${attrs(el, ['href', 'openInNewTab'], ctx)}>${escapeText(textProp(el, 'label', ctx))}</Anchor>`,
+        `<Anchor${attrs(el, CONVERTED_PROPS.Anchor, ctx)}>${escapeText(textProp(el, 'label', ctx))}</Anchor>`,
       ];
     }
     case 'Code': {
@@ -314,11 +438,11 @@ const emitElement = (el: UIElement, ctx: Ctx): string[] => {
         return [`{/* TODO: Icon(${name}) */}`];
       }
       ctx.imports.add(component);
-      return [`<${component}${attrs(el, ['size'], ctx)} />`];
+      return [`<${component}${attrs(el, CONVERTED_PROPS.Icon, ctx)} />`];
     }
     case 'ChevronIcon': {
       ctx.imports.add('ChevronIcon');
-      return [`<ChevronIcon${attrs(el, ['direction', 'size'], ctx)} />`];
+      return [`<ChevronIcon${attrs(el, CONVERTED_PROPS.ChevronIcon, ctx)} />`];
     }
     case 'IconButton': {
       const icon = textProp(el, 'icon', ctx);
@@ -332,7 +456,7 @@ const emitElement = (el: UIElement, ctx: Ctx): string[] => {
         ctx.imports.add(component);
       }
       return wrap(
-        `<IconButton${attrs(el, ['label', 'color', 'size'], ctx)}>`,
+        `<IconButton${attrs(el, CONVERTED_PROPS.IconButton, ctx)}>`,
         [iconJsx],
         '</IconButton>',
       );
@@ -344,88 +468,97 @@ const emitElement = (el: UIElement, ctx: Ctx): string[] => {
         typeof el.props['fieldType'] === 'string'
           ? el.props['fieldType']
           : 'text';
-      const inputComponent =
-        fieldType === 'textarea'
-          ? 'Textarea'
-          : fieldType === 'password'
-            ? 'PasswordInput'
-            : 'TextField';
+      const inputComponent = FIELD_TYPE_INPUTS[fieldType] ?? 'TextField';
       ctx.imports.add(inputComponent);
-      const inputAttrs = attrs(
-        el,
-        ['name', 'placeholder', 'defaultValue'],
-        ctx,
-      );
+      const inputAttrs = attrs(el, FORM_CONTROL_INPUT_PROPS, ctx);
       return [
-        `<FormControl${attrs(el, ['label', 'required', 'helpText', 'errorText', 'invalid'], ctx)}`,
+        `<FormControl${attrs(el, FORM_CONTROL_FIELD_PROPS, ctx)}`,
         '  renderInput={(props) => (',
         `    <${inputComponent} {...props}${inputAttrs} />`,
         '  )}',
         '/>',
       ];
     }
-    case 'TextField':
-    case 'Textarea':
+    case 'TextField': {
+      ctx.imports.add('TextField');
+      return [`<TextField${attrs(el, CONVERTED_PROPS.TextField, ctx)} />`];
+    }
+    case 'Textarea': {
+      ctx.imports.add('Textarea');
+      return [`<Textarea${attrs(el, CONVERTED_PROPS.Textarea, ctx)} />`];
+    }
     case 'PasswordInput': {
-      ctx.imports.add(el.type);
+      // catalog の PasswordInput は readOnly を持たない（TextField / Textarea との差分）。
+      ctx.imports.add('PasswordInput');
       return [
-        `<${el.type}${attrs(el, ['name', 'placeholder', 'defaultValue', 'invalid', 'disabled', 'readOnly'], ctx)} />`,
+        `<PasswordInput${attrs(el, CONVERTED_PROPS.PasswordInput, ctx)} />`,
       ];
     }
     case 'NumberField': {
       ctx.imports.add('NumberField');
-      return [
-        `<NumberField${attrs(el, ['name', 'defaultValue', 'min', 'max', 'step', 'invalid', 'disabled'], ctx)} />`,
-      ];
+      return [`<NumberField${attrs(el, CONVERTED_PROPS.NumberField, ctx)} />`];
     }
-    case 'Checkbox':
+    case 'Slider': {
+      ctx.imports.add('Slider');
+      return [`<Slider${attrs(el, CONVERTED_PROPS.Slider, ctx)} />`];
+    }
+    case 'Checkbox': {
+      ctx.imports.add('Checkbox');
+      return [`<Checkbox${attrs(el, CONVERTED_PROPS.Checkbox, ctx)} />`];
+    }
     case 'Switch': {
-      ctx.imports.add(el.type);
-      return [
-        `<${el.type}${attrs(el, ['label', 'name', 'defaultChecked', 'disabled'], ctx)} />`,
-      ];
+      ctx.imports.add('Switch');
+      return [`<Switch${attrs(el, CONVERTED_PROPS.Switch, ctx)} />`];
     }
     case 'Radio': {
       // catalog の Radio は invalid を持たない（RadioCard / CheckboxCard との差分）。
-      ctx.imports.add(el.type);
+      ctx.imports.add('Radio');
       return emitLabeledGroup(el, ctx, (labelId) => [
-        `<Radio aria-labelledby="${labelId}"${attrs(el, ['name', 'options', 'defaultValue', 'disabled'], ctx)} />`,
+        `<Radio aria-labelledby="${labelId}"${attrs(el, CONVERTED_PROPS.Radio, ctx)} />`,
       ]);
     }
     case 'RadioCard':
     case 'CheckboxCard': {
       ctx.imports.add(el.type);
       return emitLabeledGroup(el, ctx, (labelId) => [
-        `<${el.type} aria-labelledby="${labelId}"${attrs(el, ['name', 'options', 'defaultValue', 'invalid', 'disabled'], ctx)} />`,
+        `<${el.type} aria-labelledby="${labelId}"${attrs(el, CHOICE_CARD_PROPS, ctx)} />`,
       ]);
     }
     case 'CheckboxGroup': {
       ctx.imports.add('CheckboxGroup');
       return emitLabeledGroup(el, ctx, (labelId) =>
         wrap(
-          `<CheckboxGroup.Root aria-labelledby="${labelId}"${attrs(el, ['name', 'defaultValue'], ctx)}>`,
+          `<CheckboxGroup.Root aria-labelledby="${labelId}"${attrs(el, CONVERTED_PROPS.CheckboxGroup, ctx)}>`,
           emitCheckboxGroupItems(el, ctx),
           '</CheckboxGroup.Root>',
         ),
       );
     }
     case 'Select':
-    case 'ListBox':
     case 'Autocomplete': {
       ctx.imports.add(el.type);
-      return [
-        `<${el.type}${attrs(el, ['name', 'options', 'defaultValue', 'invalid', 'disabled'], ctx)} />`,
-      ];
+      return [`<${el.type}${attrs(el, OPTION_INPUT_PROPS, ctx)} />`];
     }
-    case 'Slider': {
-      ctx.imports.add('Slider');
-      return [
-        `<Slider${attrs(el, ['name', 'defaultValue', 'min', 'max', 'step', 'invalid', 'disabled'], ctx)} />`,
-      ];
+    case 'ListBox': {
+      // 実 ListBox は Root / Trigger / Content の組み立てで、フラットな1タグではない
+      // （registry の renderListBox と同じ形）。
+      ctx.imports.add('ListBox');
+      return wrap(
+        `<ListBox.Root${attrs(el, LIST_BOX_ROOT_PROPS, ctx)}>`,
+        [
+          `<ListBox.Trigger${attrs(el, LIST_BOX_TRIGGER_PROPS, ctx)} />`,
+          '<ListBox.Content />',
+        ],
+        '</ListBox.Root>',
+      );
     }
     case 'Form': {
       ctx.imports.add('Form');
-      return wrap('<Form>', emitChildren(el, ctx), '</Form>');
+      return wrap(
+        `<Form${attrs(el, CONVERTED_PROPS.Form, ctx)}>`,
+        emitChildren(el, ctx),
+        '</Form>',
+      );
     }
     default: {
       // 複合コンポーネント（Tabs / Table / Modal 等）は API の組み立てが必要なため
