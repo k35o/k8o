@@ -16,10 +16,10 @@
     "type-check": "tsc --noEmit"
   },
   "devDependencies": {
-    "@oxlint/plugins": "1.79.0",
+    "@oxlint/plugins": "1.80.0",
     "@repo/typescript-config": "workspace:*",
     "@types/node": "24.13.3",
-    "vite-plus": "0.2.9",
+    "vite-plus": "0.3.0",
     "vitest": "catalog:"
   }
 }
