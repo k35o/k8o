@@ -24,7 +24,7 @@
     "@ls-lint/ls-lint": "2.3.1",
     "@repo/oxlint-plugin": "workspace:*",
     "@types/node": "24.13.3",
-    "knip": "6.33.0",
+    "knip": "6.34.0",
     "oxlint-tailwindcss": "1.10.2",
     "playwright": "1.62.1",
     "portless": "0.15.6",
