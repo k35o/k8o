@@ -38,7 +38,7 @@ export function SiblingIndexStaggerDemo() {
         <div className="flex-1">
           <FormControl
             label={`項目数: ${String(count)}`}
-            renderInput={({ 'aria-labelledby': _, ...props }) => (
+            renderInput={({ 'aria-labelledby': _ariaLabelledby, ...props }) => (
               <Slider
                 {...props}
                 max={8}

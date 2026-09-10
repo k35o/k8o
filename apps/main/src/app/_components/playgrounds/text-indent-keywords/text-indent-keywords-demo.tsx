@@ -24,7 +24,7 @@ export function TextIndentKeywordsDemo() {
       <div className="flex flex-wrap items-end gap-4">
         <FormControl
           label="インデント量"
-          renderInput={({ 'aria-labelledby': _, ...props }) => (
+          renderInput={({ 'aria-labelledby': _ariaLabelledby, ...props }) => (
             <Select
               {...props}
               onChange={(e) => {

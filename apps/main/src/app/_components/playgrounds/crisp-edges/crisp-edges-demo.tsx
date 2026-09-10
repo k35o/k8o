@@ -56,7 +56,7 @@ export function CrispEdgesDemo() {
     <div className="flex flex-col gap-6">
       <FormControl
         label="image-rendering"
-        renderInput={({ 'aria-labelledby': _, ...props }) => (
+        renderInput={({ 'aria-labelledby': _ariaLabelledby, ...props }) => (
           <Select
             {...props}
             onChange={(e) => {

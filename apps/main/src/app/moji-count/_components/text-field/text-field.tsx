@@ -31,7 +31,7 @@ export const TextField = () => {
       <div className="h-full *:h-full">
         <FormControl
           label="カウントしたい文字列"
-          renderInput={({ 'aria-labelledby': _, ...props }) => (
+          renderInput={({ 'aria-labelledby': _ariaLabelledby, ...props }) => (
             <Textarea
               {...props}
               fullHeight

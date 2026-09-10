@@ -6,12 +6,12 @@ import { sleep } from '@repo/helpers/sleep';
 import { Suspense, use, useState } from 'react';
 import type { FC } from 'react';
 
-type Data = {
+type DataItem = {
   cacheKey: 'key1' | 'key2' | 'key3' | 'key4';
   getTime: Promise<number>;
 };
 
-const generateData = (): Data[] =>
+const generateData = (): DataItem[] =>
   [
     { cacheKey: 'key1', getTime: sleep(1500).then(() => 1500) },
     { cacheKey: 'key2', getTime: sleep(2000).then(() => 2000) },
@@ -50,7 +50,7 @@ export const SuspenseListDemo: FC = () => {
 };
 
 const Data: FC<{
-  data: Data;
+  data: DataItem;
 }> = ({ data }) => {
   const { cacheKey, getTime } = data;
   const resolvedTime = use(getTime);

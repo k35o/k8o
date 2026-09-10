@@ -21,7 +21,7 @@ export const LabeledTextField: FC<LabeledTextFieldProps> = ({
   <FormControl
     label={label}
     required={required}
-    renderInput={({ 'aria-labelledby': _, ...props }) => (
+    renderInput={({ 'aria-labelledby': _ariaLabelledby, ...props }) => (
       <TextField
         defaultValue={defaultValue}
         name={name}
