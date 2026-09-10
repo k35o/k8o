@@ -98,7 +98,7 @@ export const TableOfContentsSideRail: FC<{
     const list = listRef.current;
     const scroller = scrollerRef.current;
     if (!list || !scroller) return;
-    const active = list.querySelector('[aria-current="location"]');
+    const active = list.querySelector(`a[href="#${CSS.escape(activeId)}"]`);
     if (!(active instanceof HTMLElement)) return;
     const scrollerRect = scroller.getBoundingClientRect();
     const activeRect = active.getBoundingClientRect();
@@ -111,6 +111,8 @@ export const TableOfContentsSideRail: FC<{
 
   // リサイズやフォント読込で項目の折り返しが変わってもマーカー位置を追従させる
   useEffect(() => {
+    // 縦書きでは一覧を描画しないので観測対象がない
+    if (mode === 'vertical') return undefined;
     const list = listRef.current;
     if (!list) return undefined;
     const observer = new ResizeObserver(() => {

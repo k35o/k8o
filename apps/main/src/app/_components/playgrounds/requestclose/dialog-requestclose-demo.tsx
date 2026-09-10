@@ -61,7 +61,7 @@ export const DialogRequestCloseDemo: FC = () => {
         >
           <FormControl
             label="名前"
-            renderInput={({ 'aria-labelledby': _, ...props }) => (
+            renderInput={({ 'aria-labelledby': _ariaLabelledby, ...props }) => (
               <TextField
                 {...props}
                 onChange={(e) => {

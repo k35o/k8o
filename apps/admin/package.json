@@ -32,7 +32,8 @@
     "react": "catalog:",
     "react-dom": "catalog:",
     "rss-parser": "3.13.0",
-    "tailwindcss": "catalog:"
+    "tailwindcss": "catalog:",
+    "zod": "catalog:"
   },
   "devDependencies": {
     "@repo/typescript-config": "workspace:*",

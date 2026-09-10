@@ -83,7 +83,7 @@ export const TalkForm: FC<TalkFormProps> = ({
       <FormControl
         label="紐づけるブログ"
         required
-        renderInput={({ 'aria-labelledby': _, ...props }) => (
+        renderInput={({ 'aria-labelledby': _ariaLabelledby, ...props }) => (
           <Select
             {...props}
             defaultValue={

@@ -65,7 +65,7 @@ export const FilterBar: FC<Props> = ({
       />
       <FormControl
         label="並び順"
-        renderInput={({ 'aria-labelledby': _, ...props }) => (
+        renderInput={({ 'aria-labelledby': _ariaLabelledby, ...props }) => (
           <Select
             {...props}
             onChange={(e) => {

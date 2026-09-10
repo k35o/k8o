@@ -29,7 +29,7 @@ export function FieldSizingDemo() {
         <div className="w-44">
           <FormControl
             label="field-sizing を選ぶ"
-            renderInput={({ 'aria-labelledby': _, ...props }) => (
+            renderInput={({ 'aria-labelledby': _ariaLabelledby, ...props }) => (
               <Select
                 {...props}
                 onChange={(e) => {

@@ -44,7 +44,7 @@ export const ArticleForm: FC<ArticleFormProps> = ({
         <FormControl
           label="ソース"
           required
-          renderInput={({ 'aria-labelledby': _, ...props }) => (
+          renderInput={({ 'aria-labelledby': _ariaLabelledby, ...props }) => (
             <Select
               {...props}
               defaultValue=""
@@ -77,7 +77,7 @@ export const ArticleForm: FC<ArticleFormProps> = ({
       />
       <FormControl
         label="説明"
-        renderInput={({ 'aria-labelledby': _, ...props }) => (
+        renderInput={({ 'aria-labelledby': _ariaLabelledby, ...props }) => (
           <Textarea
             {...props}
             defaultValue={defaultValues?.description ?? ''}

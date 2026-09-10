@@ -28,7 +28,7 @@ export function BaselineShiftDemo() {
     <div className="flex flex-col gap-6">
       <FormControl
         label="baseline-shift"
-        renderInput={({ 'aria-labelledby': _, ...props }) => (
+        renderInput={({ 'aria-labelledby': _ariaLabelledby, ...props }) => (
           <Select
             {...props}
             onChange={(e) => {

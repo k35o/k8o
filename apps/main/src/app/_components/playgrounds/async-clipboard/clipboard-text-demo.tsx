@@ -69,7 +69,7 @@ export const ClipboardTextDemo: FC = () => {
         invalid={false}
         required={false}
         label="テキスト"
-        renderInput={({ 'aria-labelledby': _, ...props }) => (
+        renderInput={({ 'aria-labelledby': _ariaLabelledby, ...props }) => (
           <TextField
             onChange={(e) => {
               setText(e.currentTarget.value);
