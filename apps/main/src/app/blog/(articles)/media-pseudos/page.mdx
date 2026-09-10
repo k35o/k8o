@@ -1,0 +1,112 @@
+---
+title: ':playingと:pausedでメディアの再生状態にCSSを追従させる'
+description: ':playing、:paused、:muted、:seeking、:buffering、:stalled、:volume-lockedは、audioとvideoの再生状態にマッチするCSS疑似クラスです。Baseline 2026になり、:has()と組み合わせればJavaScriptを経由せずにプレイヤーUI全体を再生状態に追従させられます。ただしChromeでの出荷は155の予定で、152ではまだ動きません。'
+createdAt: 2026-09-09
+updatedAt: 2026-09-09
+featureIds:
+  - media-pseudos
+---
+
+import { PlaygroundEmbed } from '@/app/_components/playgrounds';
+
+# :playingと:pausedでメディアの再生状態にCSSを追従させる
+
+<BrowserSupportStatus featureId="media-pseudos" />
+
+## はじめに
+
+動画の上に再生ボタンを重ねて、再生が始まったら消す。読み込み待ちの間だけスピナーを出す。こうしたプレイヤーUIを作るとき、CSSからは`<video>`が再生中かどうかを知る手段がありませんでした。そのため`play`や`pause`、`waiting`といったイベントを購読して、JavaScriptを経由してスタイルを当てる必要がありました。
+
+`:playing`をはじめとするメディア要素の疑似クラスは、この状態をセレクタとして直接書けるようにするものです。Safariは15.4で先行して対応しており、Firefox 150が続いたあと、web-featuresのデータ上はChrome 152で対応したことになってBaseline 2026に加わりました。ただし実際のChrome 152では動きません。この点は最後の章で触れます。
+
+## 7つの疑似クラス
+
+対象は`<audio>`と`<video>`です。HTML仕様では、それぞれが`HTMLMediaElement`のプロパティにもとづいて次のように定義されています。
+
+- `:playing` - `paused`が`false`
+- `:paused` - `paused`が`true`
+- `:seeking` - `seeking`が`true`。シーク先の位置にまだ到達していない間
+- `:buffering` - `paused`が`false`で、`networkState`が`NETWORK_LOADING`、かつ`readyState`が`HAVE_CURRENT_DATA`以下。再生しようとしているのにデータが足りない状態
+- `:stalled` - `:buffering`のうち、データが一定時間届いていないもの。`stalled`イベントに相当する
+- `:muted` - `muted`が`true`
+- `:volume-locked` - ブラウザが音量をロックしている。iOSのSafariのように本体のボタンでしか音量を変えられない環境
+
+```css
+/* [!og] */
+.player:has(video:paused) .play-button {
+  display: grid;
+}
+
+.player:has(video:buffering) .spinner {
+  display: block;
+}
+
+.player:has(video:muted) .sound-icon {
+  opacity: 0.4;
+}
+```
+
+冒頭の例のように、これらの疑似クラスはメディア要素そのものよりも周りのUIに当てる場面がほとんどです。`<video>`は置換要素なので再生ボタンやスピナーは兄弟要素として重ねるしかなく、`<audio>`にいたっては`controls`属性がなければ描画すらされません。そこで`:has()`で状態を親のプレイヤーまで持ち上げます。こうすると`play`と`pause`のイベントリスナーは要らなくなります。ネイティブのコントロールから操作してもスクリプトから`play()`を呼んでも、`paused`プロパティが変わりさえすればCSSが追従します。
+
+<PlaygroundEmbed
+  demo=":playingで再生中のUIを動かす"
+  sectionId="media-pseudos"
+/>
+
+`:playing`と`:paused`は互いに補集合で、メディア要素は必ずどちらか一方にマッチします。読み込みが終わる前の要素は`paused`が`true`なので`:paused`側です。
+
+`:buffering`と`:stalled`は`:playing`の内側にあります。ユーザーが再生を求めていて、ブラウザ側の都合で止まっているのがこの2つなので、`:paused`と同時にマッチすることはありません。`:stalled`と判定されるまでの時間はブラウザに委ねられており、おおむね3秒程度です。
+
+## 属性ではなく今の状態を見る
+
+`muted`は属性セレクタでも取れそうに見えますが、`audio[muted]`と`audio:muted`は別のものです。`muted`属性が決めるのは要素が作られたときの初期値だけで、あとから付け外ししても音の状態は変わりません。逆にユーザーがコントロールのミュートボタンを押しても、属性は付きません。
+
+`:muted`が見ているのは`muted`プロパティ、つまり今まさに音が消されているかどうかです。同じことは`:playing`にも言えます。`autoplay`属性を付けていても、ブラウザの自動再生ポリシーで止められた要素は`:paused`のままです。
+
+```html
+<div class="hero">
+  <video autoplay muted playsinline src="hero.mp4"></video>
+  <!-- [!callout: 自動再生が止められたときだけ見える] -->
+  <button class="play-button">再生</button>
+</div>
+```
+
+```css
+.hero:has(video:playing) .play-button {
+  display: none;
+}
+```
+
+自動再生が成功したかどうかを`play()`の戻り値のPromiseで判定し、失敗時にボタンを出すコードを書く必要がなくなります。
+
+<PlaygroundEmbed demo=":mutedとmuted属性のずれ" sectionId="media-pseudos" />
+
+## Chrome 152ではまだ動かない
+
+2026年9月時点の安定版であるChrome 152では、これらの疑似クラスはセレクタとして解釈されません。開発者ツールのコンソールで次を実行すると`false`が返ります。
+
+```js
+CSS.supports('selector(:playing)');
+```
+
+Chromium 152のソースを見ると、該当する機能フラグ`CSSMediaElementPseudos`は[`experimental`](https://chromium.googlesource.com/chromium/src/+/refs/tags/152.0.7977.76/third_party/blink/renderer/platform/runtime_enabled_features.json5)のままで、Experimental Web Platform Featuresを有効にしないと動きません。[chromestatusの登録](https://chromestatus.com/feature/5068277495758848)では出荷予定のマイルストーンが155になっています。Chromeは約4週間ごとにメジャーバージョンが上がるので、155の安定版は2026年11月ごろの見込みです。
+
+それでもBaseline 2026と判定されているのは、判定の元になるbrowser-compat-dataがChromeの対応バージョンを152と記録しているためです。この値が実態に合っていないので、いずれ修正されてChrome 155までBaselineから外れるか、155が出て追いつくかのどちらかになります。この記事のデモも、SafariかFirefoxで開かないと動きません。
+
+未対応のブラウザでは、`:has(video:playing)`のように未知の疑似クラスを含む規則は丸ごと無効になります。`:has()`の引数は寛容ではないので、外側の`.player`まで含めて規則が捨てられます。再生ボタンを表示する側を既定にしておき、`:playing`で消す向きに書いておけば、未対応のブラウザでもボタンが出続けるだけで壊れません。
+
+```css
+/* [!callout: 既定では出しておく] */
+.player .play-button {
+  display: grid;
+}
+
+/* [!callout: 対応ブラウザだけがここを解釈する] */
+.player:has(video:playing) .play-button {
+  display: none;
+}
+```
+
+## おわりに
+
+メディア要素の疑似クラスは、`HTMLMediaElement`が持っている状態をそのままセレクタに写したものです。プレイヤーUIの見た目に関わる部分については、イベントを購読してJavaScriptを経由していたスタイルを、`:has()`と組み合わせたCSSに置き換えられます。再生ボタンのオーバーレイやローディングのスピナーのように、これまで小さなスクリプトを毎回書いていた箇所を宣言的に書けるようになります。Chromeで動くのは155からなので、それまでは表示する側を既定にした書き方で先行して使えます。

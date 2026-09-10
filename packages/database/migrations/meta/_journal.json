@@ -505,6 +505,13 @@
       "when": 1787383146431,
       "tag": "0071_gigantic_gwen_stacy",
       "breakpoints": true
+    },
+    {
+      "idx": 72,
+      "version": "6",
+      "when": 1788932413318,
+      "tag": "0072_complete_lucky_pierre",
+      "breakpoints": true
     }
   ]
 }

@@ -8,9 +8,11 @@ import { getTocTree } from '@/shared/mdx/toc-tree';
 
 import { blogPath } from './path';
 
-export const getBlog = async (slug: string) => {
+// 未公開の記事は URL 直打ちでも見せない（published は一覧だけでなく詳細にも効く）
+export const findBlog = async (slug: string) => {
   const blog = await db.query.blogs.findFirst({
-    where: (blogFields, { eq }) => eq(blogFields.slug, slug),
+    where: (blogFields, { and, eq }) =>
+      and(eq(blogFields.slug, slug), eq(blogFields.published, true)),
     with: {
       blogTag: {
         with: {
@@ -22,7 +24,7 @@ export const getBlog = async (slug: string) => {
   });
 
   if (!blog) {
-    throw new Error(`Blog not found: ${slug}`);
+    return null;
   }
 
   return {
