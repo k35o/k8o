@@ -132,7 +132,7 @@ jobs:
         uses: ./.github/actions/setup
 
       - name: Pull Vercel project settings
-        run: pnpm dlx vercel@54.3.0 pull --yes --environment="$DEPLOY_TARGET" --token="$VERCEL_TOKEN"
+        run: pnpm dlx --allow-build esbuild vercel@54.3.0 pull --yes --environment="$DEPLOY_TARGET" --token="$VERCEL_TOKEN"
 
       - name: Build
         env:
@@ -148,9 +148,9 @@ jobs:
             # 環境変数は pull された .env より優先されるため export で上書きできる
             export TURSO_DATABASE_URL="$PROD_TURSO_DATABASE_URL"
             export TURSO_AUTH_TOKEN="$PROD_TURSO_AUTH_TOKEN"
-            pnpm dlx vercel@54.3.0 build --prod --token="$VERCEL_TOKEN"
+            pnpm dlx --allow-build esbuild vercel@54.3.0 build --prod --token="$VERCEL_TOKEN"
           else
-            pnpm dlx vercel@54.3.0 build --token="$VERCEL_TOKEN"
+            pnpm dlx --allow-build esbuild vercel@54.3.0 build --token="$VERCEL_TOKEN"
           fi
 
       - name: Deploy
@@ -159,9 +159,9 @@ jobs:
         # main の成果物は数千ファイルあるため、tarball 1 本にまとめてアップロードする
         run: |
           if [ "$DEPLOY_TARGET" = "production" ]; then
-            URL=$(pnpm dlx vercel@54.3.0 deploy --prebuilt --prod --archive=tgz --token="$VERCEL_TOKEN")
+            URL=$(pnpm dlx --allow-build esbuild vercel@54.3.0 deploy --prebuilt --prod --archive=tgz --token="$VERCEL_TOKEN")
           else
-            URL=$(pnpm dlx vercel@54.3.0 deploy --prebuilt --archive=tgz --token="$VERCEL_TOKEN")
+            URL=$(pnpm dlx --allow-build esbuild vercel@54.3.0 deploy --prebuilt --archive=tgz --token="$VERCEL_TOKEN")
           fi
           echo "url=$URL" >> "$GITHUB_OUTPUT"
           echo "${{ matrix.app }} ($DEPLOY_TARGET): $URL" >> "$GITHUB_STEP_SUMMARY"
