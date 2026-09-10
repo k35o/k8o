@@ -131,10 +131,16 @@ jobs:
       - name: Setup
         uses: ./.github/actions/setup
 
+      # vercel CLI は 58.5.1 以降 provenance なしで公開されており、リポジトリ直下で
+      # pnpm dlx すると pnpm-workspace.yaml の trustPolicy: no-downgrade が CLI とその
+      # 依存（@vercel/*）を軒並み弾く。プロジェクト依存の方針を CLI に適用しないよう
+      # workspace の外（$RUNNER_TEMP）から実行し、対象ディレクトリは --cwd で渡す
       - name: Pull Vercel project settings
-        run: pnpm dlx --allow-build esbuild vercel@54.3.0 pull --yes --environment="$DEPLOY_TARGET" --token="$VERCEL_TOKEN"
+        working-directory: ${{ runner.temp }}
+        run: pnpm dlx --allow-build esbuild vercel@59.11.2 pull --cwd "$GITHUB_WORKSPACE" --yes --environment="$DEPLOY_TARGET" --token="$VERCEL_TOKEN"
 
       - name: Build
+        working-directory: ${{ runner.temp }}
         env:
           # sensitive 設定の env var は `vercel pull` だと空になるため、ビルド時に必要な
           # GITHUB_TOKEN は Actions のトークンで代替する（main のトップページの contributions 取得で使う）
@@ -148,20 +154,21 @@ jobs:
             # 環境変数は pull された .env より優先されるため export で上書きできる
             export TURSO_DATABASE_URL="$PROD_TURSO_DATABASE_URL"
             export TURSO_AUTH_TOKEN="$PROD_TURSO_AUTH_TOKEN"
-            pnpm dlx --allow-build esbuild vercel@54.3.0 build --prod --token="$VERCEL_TOKEN"
+            pnpm dlx --allow-build esbuild vercel@59.11.2 build --cwd "$GITHUB_WORKSPACE" --prod --token="$VERCEL_TOKEN"
           else
-            pnpm dlx --allow-build esbuild vercel@54.3.0 build --token="$VERCEL_TOKEN"
+            pnpm dlx --allow-build esbuild vercel@59.11.2 build --cwd "$GITHUB_WORKSPACE" --token="$VERCEL_TOKEN"
           fi
 
       - name: Deploy
         id: deploy
+        working-directory: ${{ runner.temp }}
         # Hobby には 24 時間 5,000 ファイルのアップロード上限（api-upload-free）があり、
         # main の成果物は数千ファイルあるため、tarball 1 本にまとめてアップロードする
         run: |
           if [ "$DEPLOY_TARGET" = "production" ]; then
-            URL=$(pnpm dlx --allow-build esbuild vercel@54.3.0 deploy --prebuilt --prod --archive=tgz --token="$VERCEL_TOKEN")
+            URL=$(pnpm dlx --allow-build esbuild vercel@59.11.2 deploy --cwd "$GITHUB_WORKSPACE" --prebuilt --prod --archive=tgz --token="$VERCEL_TOKEN")
           else
-            URL=$(pnpm dlx --allow-build esbuild vercel@54.3.0 deploy --prebuilt --archive=tgz --token="$VERCEL_TOKEN")
+            URL=$(pnpm dlx --allow-build esbuild vercel@59.11.2 deploy --cwd "$GITHUB_WORKSPACE" --prebuilt --archive=tgz --token="$VERCEL_TOKEN")
           fi
           echo "url=$URL" >> "$GITHUB_OUTPUT"
           echo "${{ matrix.app }} ($DEPLOY_TARGET): $URL" >> "$GITHUB_STEP_SUMMARY"
