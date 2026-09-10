@@ -41,40 +41,39 @@ export function LCPDemo() {
     getSupportedSnapshot,
     getServerSnapshot,
   );
+  // 受信済みエントリは ref に持ち、state には毎回その写しを入れる。buffered: true は
+  // observe のたびに過去エントリを再配信するため、effect の開始時に ref を空にして
+  // 再マウント時の重複を避ける（state の初期化を effect 内で行わないため）
+  const collectedRef = useRef<LCPEntry[]>([]);
   const entryIdRef = useRef(0);
 
   useEffect(() => {
     if (!isSupported) return undefined;
 
-    // buffered: true は observe のたびに過去エントリを再配信するため、
-    // 再マウント時の重複を避けて一覧を作り直す。
+    collectedRef.current = [];
     entryIdRef.current = 0;
-    setEntries([]);
 
     const observer = new PerformanceObserver((list) => {
       for (const entry of list.getEntries()) {
         if (!isLargestContentfulPaint(entry)) continue;
-        const lcpEntry = entry;
 
         entryIdRef.current += 1;
-
-        setEntries((prev) =>
-          [
-            {
-              id: entryIdRef.current,
-              startTime: lcpEntry.startTime,
-              renderTime: lcpEntry.renderTime,
-              loadTime: lcpEntry.loadTime,
-              size: lcpEntry.size,
-              element: lcpEntry.element?.tagName ?? null,
-              url: lcpEntry.url,
-              elementId: lcpEntry.id,
-              timestamp: new Date().toLocaleTimeString('ja-JP'),
-            },
-            ...prev,
-          ].slice(0, 10),
-        );
+        collectedRef.current = [
+          {
+            id: entryIdRef.current,
+            startTime: entry.startTime,
+            renderTime: entry.renderTime,
+            loadTime: entry.loadTime,
+            size: entry.size,
+            element: entry.element?.tagName ?? null,
+            url: entry.url,
+            elementId: entry.id,
+            timestamp: new Date().toLocaleTimeString('ja-JP'),
+          },
+          ...collectedRef.current,
+        ].slice(0, 10);
       }
+      setEntries(collectedRef.current);
     });
 
     observer.observe({ type: 'largest-contentful-paint', buffered: true });
@@ -85,8 +84,9 @@ export function LCPDemo() {
   }, [isSupported]);
 
   const handleReset = useCallback(() => {
-    setEntries([]);
+    collectedRef.current = [];
     entryIdRef.current = 0;
+    setEntries([]);
   }, []);
 
   if (!isSupported) {
