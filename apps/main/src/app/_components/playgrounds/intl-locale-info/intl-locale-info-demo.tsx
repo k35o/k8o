@@ -54,7 +54,7 @@ export const IntlLocaleInfoDemo: FC = () => {
           }
           invalid={results === null}
           label="ロケール識別子"
-          renderInput={({ 'aria-labelledby': _, ...props }) => (
+          renderInput={({ 'aria-labelledby': _ariaLabelledby, ...props }) => (
             <TextField
               onChange={(e) => {
                 setTag(e.currentTarget.value);

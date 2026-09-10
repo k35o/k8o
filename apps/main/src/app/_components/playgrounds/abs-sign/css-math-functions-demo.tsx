@@ -13,7 +13,7 @@ export function CssMathFunctionsDemo() {
         <FormControl
           helpText="横方向の位置を調整します"
           label="X値"
-          renderInput={({ 'aria-labelledby': _, ...props }) => (
+          renderInput={({ 'aria-labelledby': _ariaLabelledby, ...props }) => (
             <Slider
               {...props}
               max={100}
@@ -26,7 +26,7 @@ export function CssMathFunctionsDemo() {
         <FormControl
           helpText="縦方向の位置を調整します"
           label="Y値"
-          renderInput={({ 'aria-labelledby': _, ...props }) => (
+          renderInput={({ 'aria-labelledby': _ariaLabelledby, ...props }) => (
             <Slider
               {...props}
               max={100}
