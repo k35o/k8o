@@ -20,6 +20,7 @@ import { lcpSection } from './largest-contentful-paint';
 import { openPseudoSection } from './open-pseudo';
 import { popoverSection } from './popover';
 import { printColorAdjustSection } from './print-color-adjust';
+import { progressFunctionSection } from './progress-function';
 import { requestCloseSection } from './requestclose';
 import { rootFontUnitsSection } from './root-font-units';
 import { scopeSection } from './scope';
@@ -59,6 +60,7 @@ export const playgroundSections: PlaygroundSection[] = [
   popoverSection,
   requestCloseSection,
   printColorAdjustSection,
+  progressFunctionSection,
   rootFontUnitsSection,
   scopeSection,
   screenWakeLockSection,
