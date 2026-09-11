@@ -1,21 +1,28 @@
+import { notFound } from 'next/navigation';
+
 import {
+  findBlog,
   findBlogMetadata,
-  getBlog,
   getBlogMetadata,
 } from '@/features/blog/application/blog';
 import { getBlogs } from '@/features/blog/application/blogs';
 
 import { getMarkdown } from './markdown';
-import { getBlogContent, getBlogContents } from './queries';
+import { findBlogContent, getBlogContent, getBlogContents } from './queries';
 
 vi.mock('next/cache', () => ({
   cacheLife: vi.fn(),
   cacheTag: vi.fn(),
 }));
+vi.mock('next/navigation', () => ({
+  notFound: vi.fn(() => {
+    throw new Error('NEXT_NOT_FOUND');
+  }),
+}));
 vi.mock('@/features/blog/application/blog', () => ({
+  findBlog: vi.fn(),
   findBlogMetadata: vi.fn(),
   findPublishedBlogId: vi.fn(),
-  getBlog: vi.fn(),
   getBlogMetadata: vi.fn(),
   getBlogToc: vi.fn(),
 }));
@@ -112,7 +119,7 @@ describe('getBlogContent', () => {
 
   describe('異常系', () => {
     it('MDXファイルが無い場合は例外を投げる（詳細ページは一覧と違いエラーにする）', async () => {
-      vi.mocked(getBlog).mockResolvedValue({
+      vi.mocked(findBlog).mockResolvedValue({
         id: 1,
         slug: 'missing-blog',
         tags: [],
@@ -126,5 +133,62 @@ describe('getBlogContent', () => {
 
       await expect(getBlogContent('missing-blog')).rejects.toThrow('ENOENT');
     });
+  });
+});
+
+describe('findBlogContent', () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+  });
+
+  describe('正常系', () => {
+    it('公開済みの記事はメタデータと合わせて返す', async () => {
+      vi.mocked(findBlog).mockResolvedValue({
+        id: 1,
+        slug: 'blog-a',
+        tags: [{ id: 1, name: 'CSS' }],
+        slideUrl: undefined,
+      });
+      vi.mocked(getBlogMetadata).mockResolvedValue(metadata('タイトル'));
+
+      const result = await findBlogContent('blog-a');
+
+      expect(result).toStrictEqual({
+        id: 1,
+        slug: 'blog-a',
+        tags: [{ id: 1, name: 'CSS' }],
+        slideUrl: undefined,
+        title: 'タイトル',
+        description: null,
+        createdAt: '2026-01-01T00:00:00.000Z',
+        updatedAt: '2026-01-01T00:00:00.000Z',
+      });
+    });
+  });
+
+  describe('異常系', () => {
+    it('未公開または存在しない記事は null を返し、MDXは読まない', async () => {
+      vi.mocked(findBlog).mockResolvedValue(null);
+
+      const result = await findBlogContent('draft-blog');
+
+      expect(result).toBeNull();
+      expect(getBlogMetadata).not.toHaveBeenCalled();
+    });
+  });
+});
+
+describe('getBlogContent の 404', () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+  });
+
+  it('未公開または存在しない記事は notFound() で 404 にする', async () => {
+    vi.mocked(findBlog).mockResolvedValue(null);
+
+    await expect(getBlogContent('draft-blog')).rejects.toThrow(
+      'NEXT_NOT_FOUND',
+    );
+    expect(notFound).toHaveBeenCalledTimes(1);
   });
 });

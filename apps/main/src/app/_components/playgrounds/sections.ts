@@ -17,6 +17,7 @@ import { inputFileWebkitdirectorySection } from './input-file-webkitdirectory';
 import { intlLocaleInfoSection } from './intl-locale-info';
 import { invokerCommandsSection } from './invoker-commands';
 import { lcpSection } from './largest-contentful-paint';
+import { mediaPseudosSection } from './media-pseudos';
 import { openPseudoSection } from './open-pseudo';
 import { popoverSection } from './popover';
 import { printColorAdjustSection } from './print-color-adjust';
@@ -56,6 +57,7 @@ export const playgroundSections: PlaygroundSection[] = [
   intlLocaleInfoSection,
   invokerCommandsSection,
   lcpSection,
+  mediaPseudosSection,
   openPseudoSection,
   popoverSection,
   requestCloseSection,

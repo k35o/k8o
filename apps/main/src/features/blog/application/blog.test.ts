@@ -6,9 +6,9 @@ import { findFrontmatter, getFrontmatter } from '@repo/helpers/mdx/frontmatter';
 import { getTocTree } from '@/shared/mdx/toc-tree';
 
 import {
+  findBlog,
   findBlogMetadata,
   findPublishedBlogId,
-  getBlog,
   getBlogMetadata,
   getBlogToc,
 } from './blog';
@@ -33,7 +33,7 @@ describe('blog service', () => {
     vi.clearAllMocks();
   });
 
-  describe('getBlog', () => {
+  describe('findBlog', () => {
     it('ブログの詳細情報を取得できる', async () => {
       const mockBlog = {
         id: 1,
@@ -63,7 +63,7 @@ describe('blog service', () => {
 
       vi.mocked(db.query.blogs.findFirst).mockResolvedValue(mockBlog);
 
-      const result = await getBlog('test-slug');
+      const result = await findBlog('test-slug');
 
       expect(result).toStrictEqual({
         id: 1,
@@ -94,17 +94,42 @@ describe('blog service', () => {
 
       vi.mocked(db.query.blogs.findFirst).mockResolvedValue(mockBlog);
 
-      const result = await getBlog('test-slug');
+      const result = await findBlog('test-slug');
 
-      expect(result.slideUrl).toBeUndefined();
+      expect(result?.slideUrl).toBeUndefined();
     });
 
-    it('存在しないスラッグの場合はエラーを投げる', async () => {
+    it('公開済みの記事だけを slug で引く', async () => {
       vi.mocked(db.query.blogs.findFirst).mockResolvedValue(undefined);
 
-      await expect(getBlog('non-existent-slug')).rejects.toThrow(
-        'Blog not found: non-existent-slug',
+      await findBlog('draft-slug');
+
+      type WhereFn = (
+        fields: { slug: string; published: string },
+        ops: { and: typeof and; eq: typeof eq },
+      ) => unknown;
+      const eq = vi.fn((column: unknown, value: unknown) => ({
+        column,
+        value,
+      }));
+      const and = vi.fn((...conditions: unknown[]) => conditions);
+      const where = vi.mocked(db.query.blogs.findFirst).mock.calls[0]?.[0]
+        ?.where as unknown as WhereFn;
+      where(
+        { slug: 'slug-column', published: 'published-column' },
+        { and, eq },
       );
+
+      expect(eq).toHaveBeenCalledWith('slug-column', 'draft-slug');
+      expect(eq).toHaveBeenCalledWith('published-column', true);
+    });
+
+    it('存在しない、または未公開のスラッグの場合は null を返す', async () => {
+      vi.mocked(db.query.blogs.findFirst).mockResolvedValue(undefined);
+
+      const result = await findBlog('non-existent-slug');
+
+      expect(result).toBeNull();
     });
   });
 

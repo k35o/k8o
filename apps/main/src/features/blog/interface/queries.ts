@@ -1,11 +1,12 @@
 import { DB_CONTENT_CACHE_TAG } from '@repo/helpers/cache/main-cache-tags';
 import { cacheLife, cacheTag } from 'next/cache';
+import { notFound } from 'next/navigation';
 
 import {
+  findBlog,
   findBlogMetadata,
   findPublishedBlogId as _findPublishedBlogId,
   getBlogToc as _getBlogToc,
-  getBlog,
   getBlogMetadata,
 } from '@/features/blog/application/blog';
 import {
@@ -45,12 +46,15 @@ export async function getBlogContents() {
   return contents.filter((content) => content !== null);
 }
 
-export async function getBlogContent(slug: string) {
+export async function findBlogContent(slug: string) {
   'use cache';
   cacheLife('max');
   cacheTag(DB_CONTENT_CACHE_TAG);
 
-  const blog = await getBlog(slug);
+  const blog = await findBlog(slug);
+  if (blog === null) {
+    return null;
+  }
   const metadata = await getBlogMetadata(slug);
 
   return {
@@ -63,6 +67,16 @@ export async function getBlogContent(slug: string) {
     createdAt: metadata.createdAt,
     updatedAt: metadata.updatedAt,
   };
+}
+
+// 'use cache' の中で notFound() を投げないよう、キャッシュするのは DB 参照の結果だけにして
+// 404 の判定はキャッシュの外で行う
+export async function getBlogContent(slug: string) {
+  const blog = await findBlogContent(slug);
+  if (blog === null) {
+    notFound();
+  }
+  return blog;
 }
 
 export function findPublishedBlogId(slug: string): Promise<number | null> {
@@ -90,7 +104,10 @@ export async function getBlogsByTags(slug: string) {
   cacheLife('max');
   cacheTag(DB_CONTENT_CACHE_TAG);
 
-  const blog = await getBlogContent(slug);
+  const blog = await findBlogContent(slug);
+  if (blog === null) {
+    return [];
+  }
   return _getBlogsByTags(
     slug,
     blog.tags.map((tag) => tag.id),
