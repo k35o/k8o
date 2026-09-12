@@ -34,7 +34,7 @@
     "build:erd": "node --import ./scripts/register-ts-resolver.ts scripts/erd.ts"
   },
   "dependencies": {
-    "@libsql/client": "0.17.4",
+    "@libsql/client": "0.18.0",
     "better-auth": "catalog:",
     "drizzle-orm": "catalog:"
   },
