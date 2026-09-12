@@ -24,9 +24,9 @@ catalog:
   '@tailwindcss/postcss': 4.3.3
   '@types/react': 19.2.18
   '@types/react-dom': 19.2.5
-  '@vitest/browser-playwright': 4.1.11
-  '@vitest/coverage-v8': 4.1.11
-  '@vitest/ui': 4.1.11
+  '@vitest/browser-playwright': 5.0.0
+  '@vitest/coverage-v8': 5.0.0
+  '@vitest/ui': 5.0.0
   ai: 7.0.89
   better-auth: 1.7.2
   chromatic: 18.7.2
@@ -42,7 +42,7 @@ catalog:
   storybook-addon-mock-date: 3.2.1
   storybook-addon-vrt: 0.4.0
   tailwindcss: 4.3.3
-  vitest: 4.1.11
+  vitest: 5.0.0
   wrangler: 4.128.0
   zod: 4.5.4
 
