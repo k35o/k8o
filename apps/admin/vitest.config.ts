@@ -1,7 +1,6 @@
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
-import { jsxAutomaticPlugin } from '@repo/vitest-config/jsx-automatic';
 import { storybookTest } from '@storybook/addon-vitest/vitest-plugin';
 import { playwright } from '@vitest/browser-playwright';
 import { vrt } from 'storybook-addon-vrt/vitest-plugin';
@@ -11,6 +10,8 @@ const dirname =
   typeof __dirname === 'undefined' ? import.meta.dirname : __dirname;
 
 export default defineConfig({
+  // tsconfig の jsx: preserve に従うと JSX が変換されず node 環境のテストが動かない
+  oxc: { jsx: { runtime: 'automatic' } },
   test: {
     alias: {
       '@': fileURLToPath(new URL('./src', import.meta.url)),
@@ -23,7 +24,6 @@ export default defineConfig({
     projects: [
       {
         extends: true,
-        plugins: [jsxAutomaticPlugin],
         test: {
           env: {
             TZ: 'UTC',

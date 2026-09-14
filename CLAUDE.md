@@ -31,7 +31,7 @@ apps/ai/            → AIツール群（ai.k8o.me）            → apps/ai/CLA
 packages/auth-shell/→ admin・aiの認証ゲートとアプリシェル → packages/auth-shell/CLAUDE.md
 packages/database/  → Drizzle ORM + Turso (libSQL)       → packages/database/CLAUDE.md
 packages/helpers/   → 共有ユーティリティ                  → packages/helpers/CLAUDE.md
-packages/typescript-config・vitest-config・code-highlight → 共有設定・コードハイライト
+packages/typescript-config・code-highlight → 共有設定・コードハイライト
 packages/oxlint-plugin/ → リポジトリ固有のoxlintカスタムルール（k8o/*）
 ```
 
