@@ -88,6 +88,9 @@ export default defineConfig({
             }),
             headless: true,
             screenshotFailures: false,
+            // @storybook/addon-vitest 10 は Vitest 5 で Story のビューポートを
+            // 設定できないため、Storybook の既定値を明示する
+            viewport: { width: 1200, height: 900 },
           },
           isolate: false,
           setupFiles: [],
