@@ -23,7 +23,6 @@ export default defineConfig({
     },
     projects: [
       {
-        extends: true,
         test: {
           env: {
             TZ: 'UTC',
@@ -36,7 +35,6 @@ export default defineConfig({
         },
       },
       {
-        extends: true,
         plugins: [
           storybookTest({ configDir: path.join(dirname, '.storybook') }),
           vrt(),

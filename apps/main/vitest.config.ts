@@ -19,7 +19,6 @@ export default defineConfig({
     },
     projects: [
       {
-        extends: true,
         resolve: {
           alias: {
             'server-only': fileURLToPath(
@@ -39,7 +38,6 @@ export default defineConfig({
         },
       },
       {
-        extends: true,
         test: {
           env: {
             TZ: 'UTC',
@@ -49,7 +47,6 @@ export default defineConfig({
         },
       },
       {
-        extends: true,
         test: {
           env: {
             TZ: 'UTC',
@@ -59,7 +56,6 @@ export default defineConfig({
         },
       },
       {
-        extends: true,
         plugins: [
           storybookTest({
             storybookScript: 'pnpm storybook --ci',
