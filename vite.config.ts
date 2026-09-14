@@ -89,6 +89,23 @@ export default defineConfig({
         },
       },
       {
+        files: ['apps/**'],
+        rules: {
+          'no-restricted-imports': [
+            'error',
+            {
+              patterns: [
+                {
+                  group: ['drizzle-orm', 'drizzle-orm/*'],
+                  message:
+                    'drizzle は @repo/database 経由で使う（演算子などは @repo/database/orm）。apps が drizzle-orm を直接持つと @repo/database の db と別の実体になり、型が噛み合わなくなる。',
+                },
+              ],
+            },
+          ],
+        },
+      },
+      {
         files: [
           '**/*.test.ts',
           '**/*.test.tsx',
