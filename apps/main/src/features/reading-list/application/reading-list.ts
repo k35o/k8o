@@ -1,6 +1,6 @@
 import { db } from '@repo/database';
+import { desc, gte } from '@repo/database/orm';
 import { NINETY_DAYS_MS } from '@repo/helpers/date/duration';
-import { desc, gte } from 'drizzle-orm';
 
 import { MAX_SUMMARY_ATTEMPTS } from './summary-policy';
 

@@ -1,7 +1,7 @@
 import { db } from '@repo/database';
+import { eq, inArray } from '@repo/database/orm';
 import type { PushLogKind } from '@repo/database/schema';
 import { isAllowedPushEndpoint } from '@repo/helpers/push-endpoint';
-import { eq, inArray } from 'drizzle-orm';
 
 import { sendWebPush, WebPushError } from './web-push';
 

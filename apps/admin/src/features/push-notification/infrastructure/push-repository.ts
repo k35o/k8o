@@ -1,5 +1,5 @@
 import { db } from '@repo/database';
-import { count, desc } from 'drizzle-orm';
+import { count, desc } from '@repo/database/orm';
 
 type HostCount = {
   host: string;

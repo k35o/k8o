@@ -16,6 +16,10 @@
       "node": "./src/auth.ts",
       "default": "./src/auth.ts"
     },
+    "./orm": {
+      "types": "./src/orm.ts",
+      "default": "./src/orm.ts"
+    },
     "./schema": {
       "types": "./src/schema/public.ts",
       "default": "./src/schema/public.ts"

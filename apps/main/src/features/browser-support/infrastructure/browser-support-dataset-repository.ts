@@ -1,7 +1,7 @@
 import { db } from '@repo/database';
+import { desc, eq } from '@repo/database/orm';
 import { parseBaselineDataset } from '@repo/helpers/baseline/model';
 import type { BaselineDataset } from '@repo/helpers/baseline/model';
-import { desc, eq } from 'drizzle-orm';
 
 export type ActiveBaselineDataset = {
   upstreamVersion: string;

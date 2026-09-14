@@ -19,7 +19,7 @@ vi.mock('@repo/database', () => ({
   },
 }));
 
-vi.mock('drizzle-orm', () => ({
+vi.mock('@repo/database/orm', () => ({
   and: vi.fn((...conditions: unknown[]) => ({ __and: conditions })),
   eq: vi.fn((column: unknown, value: unknown) => ({ __eq: [column, value] })),
   isNull: vi.fn((column: unknown) => ({ __isNull: column })),

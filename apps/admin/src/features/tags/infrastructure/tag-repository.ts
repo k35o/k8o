@@ -1,5 +1,5 @@
 import { db } from '@repo/database';
-import { count, eq } from 'drizzle-orm';
+import { count, eq } from '@repo/database/orm';
 
 export type TagWithUsage = {
   id: number;

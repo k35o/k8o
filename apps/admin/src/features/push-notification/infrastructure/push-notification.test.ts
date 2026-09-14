@@ -25,7 +25,7 @@ vi.mock('@repo/database', () => ({
   },
 }));
 
-vi.mock('drizzle-orm', () => ({
+vi.mock('@repo/database/orm', () => ({
   eq: vi.fn((column: unknown, value: unknown) => ({ column, value })),
   inArray: vi.fn((column: unknown, values: unknown) => ({ column, values })),
 }));

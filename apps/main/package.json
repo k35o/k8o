@@ -36,7 +36,6 @@
     "@vercel/speed-insights": "2.0.0",
     "ai": "catalog:",
     "budoux": "0.9.1",
-    "drizzle-orm": "catalog:",
     "katex": "0.18.5",
     "next": "catalog:",
     "next-themes": "catalog:",

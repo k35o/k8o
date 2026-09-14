@@ -1,7 +1,7 @@
 import 'server-only';
 import { db } from '@repo/database';
+import { and, desc, eq } from '@repo/database/orm';
 import type { AiApp, AiVisibility } from '@repo/database/schema';
-import { and, desc, eq } from 'drizzle-orm';
 
 // DB アクセスはこの層に閉じる（features/*/infrastructure 以外から @repo/database を読まない）。
 // schema 由来の型も上位層へはここから配る。

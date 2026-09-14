@@ -1,6 +1,6 @@
 import { db } from '@repo/database';
+import { desc, gte } from '@repo/database/orm';
 import type { BrowserSupportChangeStatus } from '@repo/database/schema';
-import { desc, gte } from 'drizzle-orm';
 
 export type BrowserSupportFeatureChange = {
   featureId: string;

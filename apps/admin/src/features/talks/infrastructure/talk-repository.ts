@@ -1,5 +1,5 @@
 import { db } from '@repo/database';
-import { desc, eq, inArray } from 'drizzle-orm';
+import { desc, eq, inArray } from '@repo/database/orm';
 
 export type TalkRecord = {
   id: number;

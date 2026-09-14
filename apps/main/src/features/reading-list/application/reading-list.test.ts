@@ -1,5 +1,5 @@
 import { db } from '@repo/database';
-import { gte } from 'drizzle-orm';
+import { gte } from '@repo/database/orm';
 
 import { getArticleSources, getArticles } from './reading-list';
 import { MAX_SUMMARY_ATTEMPTS } from './summary-policy';
@@ -23,7 +23,7 @@ vi.mock('@repo/database', () => ({
   },
 }));
 
-vi.mock('drizzle-orm', () => ({
+vi.mock('@repo/database/orm', () => ({
   desc: vi.fn((value: unknown) => ({ type: 'desc', value })),
   gte: vi.fn((column: unknown, value: unknown) => ({
     type: 'gte',

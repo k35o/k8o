@@ -1,6 +1,6 @@
 import { db } from '@repo/database';
+import { and, count, desc, eq, gte, isNull, like } from '@repo/database/orm';
 import type { ArticleSourceType } from '@repo/database/schema';
-import { and, count, desc, eq, gte, isNull, like } from 'drizzle-orm';
 
 import { fetchOgMetadata } from './og-metadata';
 
