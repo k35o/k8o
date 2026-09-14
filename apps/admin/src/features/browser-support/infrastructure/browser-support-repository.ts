@@ -1,4 +1,5 @@
 import { db } from '@repo/database';
+import { and, desc, eq, lt, notInArray } from '@repo/database/orm';
 import type {
   BrowserSupportChangeStatus,
   BrowserSupportSyncResult,
@@ -6,7 +7,6 @@ import type {
 } from '@repo/database/schema';
 import { parseBaselineDataset } from '@repo/helpers/baseline/model';
 import type { BaselineDataset } from '@repo/helpers/baseline/model';
-import { and, desc, eq, lt, notInArray } from 'drizzle-orm';
 
 // schema 由来の型も上位層へはここから配る（reading-list-repository と同じ形）。
 export type {

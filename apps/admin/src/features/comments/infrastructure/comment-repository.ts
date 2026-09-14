@@ -1,6 +1,13 @@
 import { db } from '@repo/database';
-import { count, countDistinct, desc, eq, inArray, like } from 'drizzle-orm';
-import type { SQL } from 'drizzle-orm';
+import {
+  count,
+  countDistinct,
+  desc,
+  eq,
+  inArray,
+  like,
+} from '@repo/database/orm';
+import type { SQL } from '@repo/database/orm';
 
 export type CommentRecord = {
   id: number;

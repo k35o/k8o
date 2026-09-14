@@ -1,5 +1,5 @@
 import { db } from '@repo/database';
-import { and, eq, isNull, lt } from 'drizzle-orm';
+import { and, eq, isNull, lt } from '@repo/database/orm';
 
 export type ArticleForSummary = {
   id: number;

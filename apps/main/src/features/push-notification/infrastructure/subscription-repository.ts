@@ -1,5 +1,5 @@
 import { db } from '@repo/database';
-import { and, eq } from 'drizzle-orm';
+import { and, eq } from '@repo/database/orm';
 
 type SubscriptionInput = {
   endpoint: string;

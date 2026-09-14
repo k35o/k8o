@@ -1,5 +1,5 @@
 import { db } from '@repo/database';
-import { count, desc, eq, sum } from 'drizzle-orm';
+import { count, desc, eq, sum } from '@repo/database/orm';
 
 export const fetchDashboardSummary = async () => {
   const [blogCount, totalViews, articleCount, sourceCount, recentArticles] =

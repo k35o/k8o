@@ -25,7 +25,6 @@
     "@repo/react-hooks": "workspace:*",
     "@tailwindcss/postcss": "catalog:",
     "better-auth": "catalog:",
-    "drizzle-orm": "catalog:",
     "next": "catalog:",
     "next-themes": "catalog:",
     "postcss": "catalog:",
