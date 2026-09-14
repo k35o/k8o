@@ -22,7 +22,6 @@ const makeRequest = ({
 describe('POST /api/revalidate', () => {
   afterEach(() => {
     vi.unstubAllEnvs();
-    vi.clearAllMocks();
   });
 
   describe('正常系', () => {

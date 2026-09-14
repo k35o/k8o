@@ -5,7 +5,6 @@ vi.stubGlobal('fetch', mockFetch);
 
 describe('revalidateMainCache', () => {
   beforeEach(() => {
-    vi.clearAllMocks();
     vi.stubEnv(
       'MAIN_REVALIDATE_URL',
       'https://main.example.com/api/revalidate',

@@ -15,10 +15,6 @@ vi.mock('../infrastructure/reading-list-repository', () => ({
 }));
 
 describe('enrichArticleMetadata', () => {
-  beforeEach(() => {
-    vi.clearAllMocks();
-  });
-
   describe('正常系', () => {
     it('OGP 未取得の記事に取得した画像・説明を保存する', async () => {
       vi.mocked(findEnrichTargets).mockResolvedValue([

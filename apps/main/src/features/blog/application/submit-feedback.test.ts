@@ -43,10 +43,6 @@ const mockInsertSuccess = (): void => {
 };
 
 describe('submitFeedback', () => {
-  beforeEach(() => {
-    vi.clearAllMocks();
-  });
-
   describe('正常系', () => {
     it('コメントとblog紐付けをtransactionで原子的に挿入する', async () => {
       vi.mocked(db.query.blogs.findFirst).mockResolvedValue(mockBlog);

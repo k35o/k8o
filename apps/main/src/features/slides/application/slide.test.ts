@@ -17,10 +17,6 @@ vi.mock('@repo/helpers/mdx/frontmatter');
 vi.mock('./path');
 
 describe('slide service', () => {
-  beforeEach(() => {
-    vi.clearAllMocks();
-  });
-
   describe('getSlide', () => {
     it('スライドの詳細情報を取得できる', async () => {
       const mockSlide = {

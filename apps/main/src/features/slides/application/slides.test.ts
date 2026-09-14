@@ -13,10 +13,6 @@ vi.mock('@repo/database', () => ({
 }));
 
 describe('slides service', () => {
-  beforeEach(() => {
-    vi.clearAllMocks();
-  });
-
   describe('getSlides', () => {
     it('公開スライドの一覧を取得する', async () => {
       const mockSlides = [

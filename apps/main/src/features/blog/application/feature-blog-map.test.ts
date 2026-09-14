@@ -16,10 +16,6 @@ const metadata = (title: string, featureIds?: string[]) => ({
 });
 
 describe('getFeatureBlogMap', () => {
-  beforeEach(() => {
-    vi.clearAllMocks();
-  });
-
   describe('正常系', () => {
     it('featureIdsを持つ記事からマップを構築する', async () => {
       vi.mocked(getBlogs).mockResolvedValue([

@@ -39,7 +39,6 @@ const source = (
 
 describe('syncArticles', () => {
   beforeEach(() => {
-    vi.clearAllMocks();
     vi.useFakeTimers();
     vi.setSystemTime(new Date('2026-03-12T00:00:00Z'));
     vi.mocked(findArticleTitles).mockResolvedValue([]);

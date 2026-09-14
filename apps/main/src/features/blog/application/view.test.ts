@@ -33,10 +33,6 @@ const mockInsertChain = (resolvedValue: unknown) => {
 };
 
 describe('view service', () => {
-  beforeEach(() => {
-    vi.clearAllMocks();
-  });
-
   describe('incrementBlogView', () => {
     it('累計ビュー数を upsert でインクリメントできる', async () => {
       vi.mocked(db._utils.increment).mockReturnValue(

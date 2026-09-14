@@ -11,7 +11,6 @@ vi.mock('../application/view', () => ({
 
 describe('incrementBlogView (command)', () => {
   beforeEach(() => {
-    vi.clearAllMocks();
     vi.useFakeTimers();
   });
 

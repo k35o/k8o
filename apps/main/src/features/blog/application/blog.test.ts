@@ -29,10 +29,6 @@ vi.mock('@/shared/mdx/toc-tree');
 vi.mock('./path');
 
 describe('blog service', () => {
-  beforeEach(() => {
-    vi.clearAllMocks();
-  });
-
   describe('findBlog', () => {
     it('ブログの詳細情報を取得できる', async () => {
       const mockBlog = {

@@ -34,7 +34,6 @@ vi.mock('drizzle-orm', () => ({
 
 describe('reading-list service', () => {
   beforeEach(() => {
-    vi.clearAllMocks();
     vi.useFakeTimers();
     vi.setSystemTime(new Date('2026-03-27T12:00:00.000Z'));
   });
