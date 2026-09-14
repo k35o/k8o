@@ -40,7 +40,7 @@
   "dependencies": {
     "@libsql/client": "0.17.4",
     "better-auth": "catalog:",
-    "drizzle-orm": "catalog:"
+    "drizzle-orm": "0.45.2"
   },
   "devDependencies": {
     "@next/env": "catalog:",
