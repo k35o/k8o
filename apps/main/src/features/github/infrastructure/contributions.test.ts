@@ -11,7 +11,6 @@ const graphqlResponse = (data: unknown) => ({
 
 describe('fetchUserContributions', () => {
   beforeEach(() => {
-    vi.clearAllMocks();
     vi.useFakeTimers();
     vi.setSystemTime(new Date('2026-03-27T12:00:00.000Z'));
     vi.stubEnv('GITHUB_TOKEN', 'test-token');

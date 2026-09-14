@@ -28,10 +28,6 @@ const metadata = (title: string) => ({
 });
 
 describe('getSlideContents', () => {
-  beforeEach(() => {
-    vi.clearAllMocks();
-  });
-
   describe('正常系', () => {
     it('スライド一覧をメタデータつきで返す', async () => {
       vi.mocked(getSlides).mockResolvedValue([
@@ -87,10 +83,6 @@ describe('getSlideContents', () => {
 });
 
 describe('getSlideContent', () => {
-  beforeEach(() => {
-    vi.clearAllMocks();
-  });
-
   describe('異常系', () => {
     it('MDXファイルが無い場合は例外を投げる（詳細ページは一覧と違いエラーにする）', async () => {
       vi.mocked(getSlide).mockResolvedValue({

@@ -15,10 +15,6 @@ const feedResponse = (xml: string): Response =>
   }) as unknown as Response;
 
 describe('fetchFeedItems', () => {
-  beforeEach(() => {
-    vi.clearAllMocks();
-  });
-
   describe('正常系', () => {
     it('RSSのitemをtitle / link / publishedAtへ正規化する', async () => {
       vi.mocked(safeFetch).mockResolvedValue(

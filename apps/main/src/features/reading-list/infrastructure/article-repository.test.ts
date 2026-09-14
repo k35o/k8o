@@ -34,10 +34,6 @@ const mockUpdateChain = (rowsAffected: number) => {
 };
 
 describe('reserveSummaryAttempt', () => {
-  beforeEach(() => {
-    vi.clearAllMocks();
-  });
-
   describe('正常系', () => {
     it('summary未生成かつ試行上限未満の条件つきで試行回数をincrementする', async () => {
       const { setMock, whereMock } = mockUpdateChain(1);

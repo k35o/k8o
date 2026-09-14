@@ -1,12 +1,13 @@
 import { fileURLToPath } from 'node:url';
 
-import { jsxAutomaticPlugin } from '@repo/vitest-config/jsx-automatic';
 import { storybookTest } from '@storybook/addon-vitest/vitest-plugin';
 import { playwright } from '@vitest/browser-playwright';
 import { vrt } from 'storybook-addon-vrt/vitest-plugin';
 import { defineConfig } from 'vitest/config';
 
 export default defineConfig({
+  // tsconfig の jsx: preserve に従うと JSX が変換されず node 環境のテストが動かない
+  oxc: { jsx: { runtime: 'automatic' } },
   test: {
     alias: {
       '@': fileURLToPath(new URL('./src', import.meta.url)),
@@ -18,8 +19,6 @@ export default defineConfig({
     },
     projects: [
       {
-        extends: true,
-        plugins: [jsxAutomaticPlugin],
         resolve: {
           alias: {
             'server-only': fileURLToPath(
@@ -39,8 +38,6 @@ export default defineConfig({
         },
       },
       {
-        extends: true,
-        plugins: [jsxAutomaticPlugin],
         test: {
           env: {
             TZ: 'UTC',
@@ -50,8 +47,6 @@ export default defineConfig({
         },
       },
       {
-        extends: true,
-        plugins: [jsxAutomaticPlugin],
         test: {
           env: {
             TZ: 'UTC',
@@ -61,7 +56,6 @@ export default defineConfig({
         },
       },
       {
-        extends: true,
         plugins: [
           storybookTest({
             storybookScript: 'pnpm storybook --ci',
@@ -88,6 +82,9 @@ export default defineConfig({
             }),
             headless: true,
             screenshotFailures: false,
+            // @storybook/addon-vitest 10 は Vitest 5 で Story のビューポートを
+            // 設定できないため、Storybook の既定値を明示する
+            viewport: { width: 1200, height: 900 },
           },
           isolate: false,
           setupFiles: [],

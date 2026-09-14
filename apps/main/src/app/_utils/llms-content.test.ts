@@ -88,7 +88,6 @@ const talk = (overrides: Partial<Talk> = {}): Talk => ({
 
 describe('generateLlmsContent', () => {
   beforeEach(() => {
-    vi.clearAllMocks();
     vi.mocked(getBlogContents).mockResolvedValue([]);
     vi.mocked(getTalks).mockResolvedValue([]);
   });

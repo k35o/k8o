@@ -187,7 +187,6 @@ describe('syncBrowserSupport', () => {
     >();
 
   beforeEach(() => {
-    vi.clearAllMocks();
     notify.mockResolvedValue(undefined);
     vi.mocked(discoverLatestVersion).mockResolvedValue({
       version: '3.2.0',

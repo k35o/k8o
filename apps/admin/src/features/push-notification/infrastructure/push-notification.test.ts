@@ -58,7 +58,6 @@ const deleteWhereMock = vi.fn();
 
 describe('sendPushNotification', () => {
   beforeEach(() => {
-    vi.clearAllMocks();
     vi.stubEnv('VAPID_PUBLIC_KEY', 'vapid-public');
     vi.stubEnv('VAPID_PRIVATE_KEY', 'vapid-private');
     vi.stubEnv('VAPID_SUBJECT', 'mailto:admin@example.com');
@@ -230,7 +229,6 @@ describe('sendPushNotification', () => {
 
 describe('sendManualPush', () => {
   beforeEach(() => {
-    vi.clearAllMocks();
     vi.stubEnv('VAPID_PUBLIC_KEY', 'vapid-public');
     vi.stubEnv('VAPID_PRIVATE_KEY', 'vapid-private');
     vi.stubEnv('VAPID_SUBJECT', 'mailto:admin@example.com');

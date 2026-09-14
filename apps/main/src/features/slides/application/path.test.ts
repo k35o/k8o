@@ -7,10 +7,6 @@ vi.mock('path');
 vi.mock('process');
 
 describe('slidePath', () => {
-  beforeEach(() => {
-    vi.clearAllMocks();
-  });
-
   it('スライドファイルのパスを生成する', () => {
     const mockCwd = '/Users/test/project';
     const mockJoin = vi

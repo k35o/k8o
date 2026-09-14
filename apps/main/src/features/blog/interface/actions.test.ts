@@ -11,10 +11,6 @@ vi.mock('@/shared/validation/zod', () => ({
 }));
 
 describe('feedback', () => {
-  beforeEach(() => {
-    vi.clearAllMocks();
-  });
-
   describe('正常系', () => {
     it('validationを通過した入力をsubmitFeedbackへそのまま渡す', async () => {
       vi.mocked(submitFeedback).mockResolvedValue({ success: true });

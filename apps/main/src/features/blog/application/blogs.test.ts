@@ -18,10 +18,6 @@ vi.mock('@repo/database', () => ({
 vi.mock('./blog');
 
 describe('blogs service', () => {
-  beforeEach(() => {
-    vi.clearAllMocks();
-  });
-
   describe('getBlogs', () => {
     it('公開されたブログの一覧を取得できる', async () => {
       const mockBlogs = [

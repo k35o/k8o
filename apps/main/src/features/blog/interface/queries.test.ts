@@ -48,10 +48,6 @@ const metadata = (title: string) => ({
 });
 
 describe('getBlogContents', () => {
-  beforeEach(() => {
-    vi.clearAllMocks();
-  });
-
   describe('正常系', () => {
     it('ブログ一覧をメタデータ・読了時間つきで返す', async () => {
       vi.mocked(getBlogs).mockResolvedValue([
@@ -113,10 +109,6 @@ describe('getBlogContents', () => {
 });
 
 describe('getBlogContent', () => {
-  beforeEach(() => {
-    vi.clearAllMocks();
-  });
-
   describe('異常系', () => {
     it('MDXファイルが無い場合は例外を投げる（詳細ページは一覧と違いエラーにする）', async () => {
       vi.mocked(findBlog).mockResolvedValue({
@@ -137,10 +129,6 @@ describe('getBlogContent', () => {
 });
 
 describe('findBlogContent', () => {
-  beforeEach(() => {
-    vi.clearAllMocks();
-  });
-
   describe('正常系', () => {
     it('公開済みの記事はメタデータと合わせて返す', async () => {
       vi.mocked(findBlog).mockResolvedValue({
@@ -179,10 +167,6 @@ describe('findBlogContent', () => {
 });
 
 describe('getBlogContent の 404', () => {
-  beforeEach(() => {
-    vi.clearAllMocks();
-  });
-
   it('未公開または存在しない記事は notFound() で 404 にする', async () => {
     vi.mocked(findBlog).mockResolvedValue(null);
 

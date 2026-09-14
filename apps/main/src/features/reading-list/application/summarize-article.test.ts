@@ -34,7 +34,6 @@ const article = (
 
 describe('generateAndSaveSummary', () => {
   beforeEach(() => {
-    vi.clearAllMocks();
     vi.mocked(reserveSummaryAttempt).mockResolvedValue(true);
   });
 

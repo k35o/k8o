@@ -315,7 +315,6 @@ describe('buildEncryptedBody', () => {
 
 describe('sendWebPush', () => {
   beforeEach(() => {
-    vi.clearAllMocks();
     vi.stubGlobal('fetch', mockFetch);
     mockFetch.mockResolvedValue({
       ok: true,

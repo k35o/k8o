@@ -20,10 +20,6 @@ const spec: Spec = {
   elements: { a: { type: 'Button', props: { label: 'OK' } } },
 };
 
-beforeEach(() => {
-  vi.clearAllMocks();
-});
-
 describe('publishProject', () => {
   describe('正常系', () => {
     it('最新版を公開版として visibility を public にし、slug を返す', async () => {
