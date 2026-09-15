@@ -36,7 +36,7 @@
     "@vercel/speed-insights": "2.0.0",
     "ai": "catalog:",
     "budoux": "0.9.1",
-    "katex": "0.18.5",
+    "katex": "0.18.7",
     "next": "catalog:",
     "next-themes": "catalog:",
     "nuqs": "2.10.1",
