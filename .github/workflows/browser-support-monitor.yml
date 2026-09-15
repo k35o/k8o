@@ -32,12 +32,11 @@ jobs:
       - name: Check and self-heal sync
         id: check
         env:
-          SYNC_URL: https://k8o-admin-k8o.vercel.app/api/crons/sync-browser-support
+          # Deployment Protection は本番カスタムドメインを対象外にしているため、vercel.app
+          # ではなく admin.k8o.me を叩けばバイパスシークレット無しで同期エンドポイントに届く。
+          SYNC_URL: https://admin.k8o.me/api/crons/sync-browser-support
           LATEST_URL: https://github.com/web-platform-dx/web-features/releases/latest/download/data.json
           CRON_SECRET: ${{ secrets.CRON_SECRET }}
-          # k8o-admin は Vercel Deployment Protection 有効のため、外部からの自走復旧には
-          # プロジェクト設定の Protection Bypass for Automation シークレットが必要。
-          VERCEL_AUTOMATION_BYPASS_SECRET: ${{ secrets.VERCEL_AUTOMATION_BYPASS_SECRET }}
         run: |
           set -u
 
@@ -117,11 +116,10 @@ jobs:
           # 自走復旧: 同期エンドポイントを直接叩く(trigger=monitor として記録される)
           if [ -n "$sync_reason" ]; then
             echo "unhealthy: $sync_reason"
-            if [ -n "${CRON_SECRET:-}" ] && [ -n "${VERCEL_AUTOMATION_BYPASS_SECRET:-}" ]; then
+            if [ -n "${CRON_SECRET:-}" ]; then
               echo "triggering sync..."
               curl -sS --max-time 120 \
                 -H "Authorization: Bearer $CRON_SECRET" \
-                -H "x-vercel-protection-bypass: $VERCEL_AUTOMATION_BYPASS_SECRET" \
                 "$SYNC_URL?trigger=monitor" || true
               sleep 10
               health=$(fetch_health)
@@ -134,7 +132,7 @@ jobs:
                 echo "recovered by self-heal: active=$active"
               fi
             else
-              sync_reason="$sync_reason / CRON_SECRET または VERCEL_AUTOMATION_BYPASS_SECRET 未設定のため自走復旧をスキップ"
+              sync_reason="$sync_reason / CRON_SECRET 未設定のため自走復旧をスキップ"
             fi
           fi
 
