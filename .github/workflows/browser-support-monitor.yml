@@ -12,24 +12,32 @@ on:
 
 permissions: {}
 
+# 手動実行と定期実行が重なると、フロア再生成 PR のブランチを取り合うため直列にする
+concurrency:
+  group: browser-support-monitor
+  cancel-in-progress: false
+
 jobs:
   monitor:
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 15
     permissions:
+      contents: read
       issues: write
     env:
       HEALTH_URL: https://k8o.me/api/health/browser-support
-      SYNC_URL: https://k8o-admin-k8o.vercel.app/api/crons/sync-browser-support
-      LATEST_URL: https://github.com/web-platform-dx/web-features/releases/latest/download/data.json
       GH_TOKEN: ${{ github.token }}
       GH_REPO: ${{ github.repository }}
-      CRON_SECRET: ${{ secrets.CRON_SECRET }}
-      # k8o-admin は Vercel Deployment Protection 有効のため、外部からの自走復旧には
-      # プロジェクト設定の Protection Bypass for Automation シークレットが必要。
-      VERCEL_AUTOMATION_BYPASS_SECRET: ${{ secrets.VERCEL_AUTOMATION_BYPASS_SECRET }}
     steps:
-      - name: Check, self-heal, and report
+      - name: Check and self-heal sync
+        id: check
+        env:
+          SYNC_URL: https://k8o-admin-k8o.vercel.app/api/crons/sync-browser-support
+          LATEST_URL: https://github.com/web-platform-dx/web-features/releases/latest/download/data.json
+          CRON_SECRET: ${{ secrets.CRON_SECRET }}
+          # k8o-admin は Vercel Deployment Protection 有効のため、外部からの自走復旧には
+          # プロジェクト設定の Protection Bypass for Automation シークレットが必要。
+          VERCEL_AUTOMATION_BYPASS_SECRET: ${{ secrets.VERCEL_AUTOMATION_BYPASS_SECRET }}
         run: |
           set -u
 
@@ -71,83 +79,196 @@ jobs:
           location=$(curl -sS --max-time 30 -o /dev/null -w '%{redirect_url}' -I "$LATEST_URL" || echo '')
           latest=$(echo "$location" | sed -nE 's#.*/releases/download/v([0-9]+\.[0-9]+\.[0-9]+)/data\.json$#\1#p')
 
+          # 再同期で直る異常(status・バージョン遅れ)を sync_reason に集める。
+          # フロア乖離は再同期では直らないため、後段のステップで再生成 PR を出して直す。
+          evaluate() {
+            sync_reason=""
+            status=$(health_status "$health")
+            active=$(active_version "$health")
+            if [ "$status" != "ok" ]; then
+              sync_reason="health status: $status"
+            fi
+            # 上流の対応メジャー(v3)最新に active が追いついていない場合も異常扱い。
+            # メジャー跨ぎ(v4)は admin 側が警報するため、ここでは対象外にする。
+            # ただし上流リリース直後は日次 cron を待っているだけの正常な状態で、これを
+            # 異常にすると上流がリリースするたび誤報が出る。「リリース公開後に同期が成功
+            # したのに取り込めていない」ときだけ異常とし、公開時刻を解決できないときは
+            # 判定を諦めず fail-closed で異常扱いにする(静かに見逃さない)。
+            if [ -n "$latest" ] && [ "${latest%%.*}" = "3" ] && [ "$latest" != "$active" ]; then
+              published=$(release_published_at "$latest")
+              published_epoch=$(to_epoch "$published")
+              synced_epoch=$(to_epoch "$(last_success_at "$health")")
+              if [ -z "$published_epoch" ]; then
+                echo "v$latest の公開時刻を解決できないため取り込み待ちと区別できない"
+              fi
+              if [ -n "$published_epoch" ] && [ -n "$synced_epoch" ] && [ "$synced_epoch" -le "$published_epoch" ]; then
+                echo "pending: v$latest は $published 公開。直近の同期成功はそれ以前のため取り込み待ち"
+              else
+                sync_reason="${sync_reason:+$sync_reason / }version lag: active=${active:-none} latest=$latest"
+              fi
+            fi
+          }
+
           health=$(fetch_health)
-          status=$(health_status "$health")
-          active=$(active_version "$health")
           echo "health: $health"
           echo "upstream latest: ${latest:-unknown}"
+          evaluate
 
-          # 再同期で直る異常(status・バージョン遅れ)と、コミットが要る異常(フロア乖離)を
-          # 分けて持つ。自走復旧は前者にだけ意味がある。
-          unhealthy=false
-          syncable=false
-          reason=""
-          if [ "$status" != "ok" ]; then
-            unhealthy=true
-            syncable=true
-            reason="health status: $status"
-          fi
-          # 上流の対応メジャー(v3)最新に active が追いついていない場合も異常扱い。
-          # メジャー跨ぎ(v4)は admin 側が警報するため、ここでは対象外にする。
-          # ただし上流リリース直後は日次 cron を待っているだけの正常な状態で、これを
-          # 異常にすると上流がリリースするたび誤報が出る。「リリース公開後に同期が成功
-          # したのに取り込めていない」ときだけ異常とし、公開時刻を解決できないときは
-          # 判定を諦めず fail-closed で異常扱いにする(静かに見逃さない)。
-          if [ -n "$latest" ] && [ "${latest%%.*}" = "3" ] && [ "$latest" != "$active" ]; then
-            published=$(release_published_at "$latest")
-            published_epoch=$(to_epoch "$published")
-            synced_epoch=$(to_epoch "$(last_success_at "$health")")
-            if [ -z "$published_epoch" ]; then
-              echo "v$latest の公開時刻を解決できないため取り込み待ちと区別できない"
-            fi
-            if [ -n "$published_epoch" ] && [ -n "$synced_epoch" ] && [ "$synced_epoch" -le "$published_epoch" ]; then
-              echo "pending: v$latest は $published 公開。直近の同期成功はそれ以前のため取り込み待ち"
+          # 自走復旧: 同期エンドポイントを直接叩く(trigger=monitor として記録される)
+          if [ -n "$sync_reason" ]; then
+            echo "unhealthy: $sync_reason"
+            if [ -n "${CRON_SECRET:-}" ] && [ -n "${VERCEL_AUTOMATION_BYPASS_SECRET:-}" ]; then
+              echo "triggering sync..."
+              curl -sS --max-time 120 \
+                -H "Authorization: Bearer $CRON_SECRET" \
+                -H "x-vercel-protection-bypass: $VERCEL_AUTOMATION_BYPASS_SECRET" \
+                "$SYNC_URL?trigger=monitor" || true
+              sleep 10
+              health=$(fetch_health)
+              echo "health after self-heal: $health"
+              before="$sync_reason"
+              evaluate
+              if [ -n "$sync_reason" ]; then
+                sync_reason="$before / self-heal failed (status=$status active=${active:-none})"
+              else
+                echo "recovered by self-heal: active=$active"
+              fi
             else
-              unhealthy=true
-              syncable=true
-              reason="${reason:+$reason / }version lag: active=${active:-none} latest=$latest"
+              sync_reason="$sync_reason / CRON_SECRET または VERCEL_AUTOMATION_BYPASS_SECRET 未設定のため自走復旧をスキップ"
             fi
           fi
-          # コミット済みフロア(RootLayout が読む生成物)と active データセットの乖離。
-          # 同期時の push 警報は1回きりで、見落とすと誰も気づかないまま古い警告閾値が
-          # 残り続けるため、ここで継続的に拾う。再同期では直らないので自走復旧はしない。
-          if [ "$(floor_stale "$health")" = "true" ]; then
-            unhealthy=true
-            reason="${reason:+$reason / }floor stale: browser-min-versions.json が active データセットとずれている"
+
+          # フロア乖離は自走同期の後の health で判定する。同期が新しい版を取り込むと
+          # フロアのずれが露呈するため、その場合も同じ実行内で再生成 PR まで進める。
+          {
+            echo "sync_reason=$sync_reason"
+            echo "floor_stale=$(floor_stale "$health")"
+            echo "active=$active"
+            echo "latest=$latest"
+          } >> "$GITHUB_OUTPUT"
+
+      - name: Generate k8o-bot token
+        if: ${{ steps.check.outputs.floor_stale == 'true' }}
+        id: app-token
+        uses: actions/create-github-app-token@bcd2ba49218906704ab6c1aa796996da409d3eb1 # v3.2.0
+        with:
+          client-id: ${{ secrets.K35O_BOT_CLIENT_ID }}
+          private-key: ${{ secrets.K35O_BOT_PRIVATE_KEY }}
+          permission-contents: write
+          permission-pull-requests: write
+
+      - name: Checkout branch
+        if: ${{ steps.check.outputs.floor_stale == 'true' }}
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Setup
+        if: ${{ steps.check.outputs.floor_stale == 'true' }}
+        uses: ./.github/actions/setup
+
+      # コミット済みフロア(RootLayout が読む生成物)を active データセットの版で再生成し、
+      # k8o-bot 名義の PR を自動マージに乗せる。k8o-bot のトークンで作ったコミットと PR は
+      # GITHUB_TOKEN と違って ci / test を起動するため、必須チェックを通ってからマージされる。
+      - name: Open floor regeneration PR
+        if: ${{ steps.check.outputs.floor_stale == 'true' }}
+        id: floor
+        env:
+          GH_TOKEN: ${{ steps.app-token.outputs.token }}
+          ACTIVE: ${{ steps.check.outputs.active }}
+        run: |
+          set -eu
+          branch='bot/browser-min-versions'
+          floor='apps/main/src/features/browser-support/infrastructure/browser-min-versions.json'
+          title="fix(main): ブラウザ最低版フロアをv${ACTIVE}へ再生成する"
+
+          pnpm run -F main generate:browser-min-versions "$ACTIVE"
+          if git diff --quiet -- "$floor"; then
+            echo "reason=floor stale: main のフロアは v$ACTIVE と一致しているが本番に未反映(デプロイを確認)" >> "$GITHUB_OUTPUT"
+            exit 0
           fi
 
-          if [ "$unhealthy" = "false" ]; then
-            echo "healthy: active=$active"
+          pr=$(gh pr list --head "$branch" --base main --state open --json url,createdAt --jq '.[0] // empty')
+          if [ -z "$pr" ]; then
+            # 未マージで閉じられた PR のブランチが残っていれば捨て、main から作り直す
+            gh api -X DELETE "repos/$GH_REPO/git/refs/heads/$branch" >/dev/null 2>&1 || true
+            main_sha=$(gh api "repos/$GH_REPO/git/ref/heads/main" --jq .object.sha)
+            gh api "repos/$GH_REPO/git/refs" -f ref="refs/heads/$branch" -f sha="$main_sha" >/dev/null
+          fi
+
+          remote=$(gh api "repos/$GH_REPO/contents/$floor?ref=$branch")
+          if [ "$(echo "$remote" | jq -r .content | base64 -d)" != "$(cat "$floor")" ]; then
+            # main は署名必須のため git push ではなく API でコミットする。
+            # GitHub App が API で作ったコミットは GitHub が署名する。
+            gh api -X PUT "repos/$GH_REPO/contents/$floor" \
+              -f branch="$branch" \
+              -f sha="$(echo "$remote" | jq -r .sha)" \
+              -f message="$title" \
+              -f content="$(base64 -w0 "$floor")" >/dev/null
+          fi
+
+          if [ -z "$pr" ]; then
+            url=$(gh pr create --head "$branch" --base main --title "$title" \
+              --body "$(printf '外形監視が、コミット済みのブラウザ最低版フロアと本番の active データセット(v%s)のずれを検知したため再生成しました。\n\nCI 通過後に自動でマージされます。\n' "$ACTIVE")")
+            created_at=$(date -u +%Y-%m-%dT%H:%M:%SZ)
+          else
+            url=$(echo "$pr" | jq -r .url)
+            created_at=$(echo "$pr" | jq -r .createdAt)
+            gh pr edit "$url" --title "$title" >/dev/null
+          fi
+          gh pr merge "$url" --auto --merge
+          echo "pr=$url" >> "$GITHUB_OUTPUT"
+
+          # 日次の監視で前回から残っている PR は、CI 失敗などで自動マージが詰まっている
+          age=$(( $(date -u +%s) - $(date -u -d "$created_at" +%s) ))
+          if [ "$age" -gt $((12 * 60 * 60)) ]; then
+            echo "reason=floor stale: 再生成 PR $url が12時間以上マージされていない" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Report
+        if: ${{ !cancelled() }}
+        env:
+          CHECK_OUTCOME: ${{ steps.check.outcome }}
+          SYNC_REASON: ${{ steps.check.outputs.sync_reason }}
+          FLOOR_STALE: ${{ steps.check.outputs.floor_stale }}
+          FLOOR_OUTCOME: ${{ steps.floor.outcome }}
+          FLOOR_REASON: ${{ steps.floor.outputs.reason }}
+          FLOOR_PR: ${{ steps.floor.outputs.pr }}
+          LATEST: ${{ steps.check.outputs.latest }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          set -u
+          label='browser-support-monitor'
+
+          reason="$SYNC_REASON"
+          if [ "$CHECK_OUTCOME" != "success" ]; then
+            reason="監視スクリプト自体が失敗"
+          fi
+          if [ "$FLOOR_STALE" = "true" ]; then
+            if [ "$FLOOR_OUTCOME" != "success" ]; then
+              reason="${reason:+$reason / }floor stale: 再生成 PR の作成に失敗"
+            elif [ -n "$FLOOR_REASON" ]; then
+              reason="${reason:+$reason / }$FLOOR_REASON"
+            else
+              echo "floor stale: 再生成 PR $FLOOR_PR の自動マージ待ち"
+            fi
+          fi
+
+          if [ -z "$reason" ]; then
+            if [ "$FLOOR_STALE" = "true" ]; then
+              exit 0
+            fi
+            # 完全に健全に戻ったら過去の起票を閉じる。open のまま残すと次の異常の起票が
+            # 重複防止で抑止されてしまう。
+            for number in $(gh issue list --label "$label" --state open --json number --jq '.[].number'); do
+              gh issue close "$number" --comment "外形監視で健全な状態に戻ったことを確認したため自動で閉じます。($RUN_URL)"
+            done
+            echo "healthy"
             exit 0
           fi
           echo "unhealthy: $reason"
 
-          # 自走復旧: 同期エンドポイントを直接叩く(trigger=monitor として記録される)
-          if [ "$syncable" = "false" ]; then
-            echo "再同期では直らない異常のみのため自走復旧はしない"
-          elif [ -n "${CRON_SECRET:-}" ] && [ -n "${VERCEL_AUTOMATION_BYPASS_SECRET:-}" ]; then
-            echo "triggering sync..."
-            curl -sS --max-time 120 \
-              -H "Authorization: Bearer $CRON_SECRET" \
-              -H "x-vercel-protection-bypass: $VERCEL_AUTOMATION_BYPASS_SECRET" \
-              "$SYNC_URL?trigger=monitor" || true
-            sleep 10
-            health=$(fetch_health)
-            status=$(health_status "$health")
-            active=$(active_version "$health")
-            # 同期はフロア乖離を解消しない(むしろ新しい版を取り込んで露呈させる)ため、
-            # 復旧判定にも含める。
-            if [ "$status" = "ok" ] && { [ -z "$latest" ] || [ "${latest%%.*}" != "3" ] || [ "$latest" = "$active" ]; } && [ "$(floor_stale "$health")" != "true" ]; then
-              echo "recovered by self-heal: active=$active"
-              exit 0
-            fi
-            reason="$reason / self-heal failed (status=$status active=${active:-none} floorStale=$(floor_stale "$health"))"
-          else
-            reason="$reason / CRON_SECRET または VERCEL_AUTOMATION_BYPASS_SECRET 未設定のため自走復旧をスキップ"
-          fi
-
           # Issue 起票(既存の open Issue があれば重複させない)
-          label='browser-support-monitor'
           gh label create "$label" --force --color D93F0B \
             --description 'browser-support 同期監視の自動起票' || true
           existing=$(gh issue list --label "$label" --state open --json number --jq 'length')
@@ -155,8 +276,9 @@ jobs:
             echo "open issue already exists; skip"
             exit 1
           fi
+          # shellcheck disable=SC2016 # 本文のバッククォートは Markdown のコード表記
           gh issue create \
             --title "browser-support: データ同期の異常を検知 ($(date -u +%Y-%m-%d))" \
             --label "$label" \
-            --body "$(printf '外形監視が異常を検知しました。\n\n- 判定: %s\n- health: %s\n- 上流最新: %s\n\n確認手順:\n1. %s を確認\n2. admin の Browser Support 画面で同期履歴を確認し、必要なら手動同期\n3. Vercel Cron (admin) の実行履歴を確認\n4. floor stale なら `pnpm run -F main generate:browser-min-versions` を実行してコミット\n' "$reason" "$HEALTH_URL" "${latest:-unknown}" "$HEALTH_URL")"
+            --body "$(printf '外形監視が異常を検知しました。\n\n- 判定: %s\n- health: %s\n- 上流最新: %s\n- 実行: %s\n\n確認手順:\n1. %s を確認\n2. admin の Browser Support 画面で同期履歴を確認し、必要なら手動同期\n3. Vercel Cron (admin) の実行履歴を確認\n4. floor stale なら再生成 PR の CI を確認。手動で直すなら `pnpm run -F main generate:browser-min-versions <active版>` を実行してコミット\n\n健全に戻ると次回の監視で自動的に閉じられます。\n' "$reason" "$HEALTH_URL" "${LATEST:-unknown}" "$RUN_URL" "$HEALTH_URL")"
           exit 1
