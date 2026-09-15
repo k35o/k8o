@@ -39,7 +39,7 @@ Next.js の `cacheLife` は `features/*/interface` に置く。`app` のUIコン
 
 admin の Server Action や cron から更新されうる DB 由来のキャッシュ（talks / tags / blogs / slides の一覧・詳細、reading-list の記事・ソース一覧）には `cacheTag('db-content')`（`@repo/helpers/cache/main-cache-tags`）を付与する。admin は書き込み・同期の成功後に `/api/revalidate`（`REVALIDATE_SECRET` で認可）を叩いてこのタグを再検証する。
 
-browser-support（機能一覧）は admin の日次 cron が web-features の正典配布元（GitHub Releases）から取り込んで DB に保存し、main は `cacheTag('browser-support')` 付きの `'use cache'` で active データセットを読む。admin は同期成功後に `/api/revalidate` でこのタグを再検証する。ブラウザ最低版フロア（RootLayout が読む）だけは実行時 I/O を持たないコミット済み生成物で、`pnpm run -F main generate:browser-min-versions` で再生成する。
+browser-support（機能一覧）は admin の日次 cron が web-features の正典配布元（GitHub Releases）から取り込んで DB に保存し、main は `cacheTag('browser-support')` 付きの `'use cache'` で active データセットを読む。admin は同期成功後に `/api/revalidate` でこのタグを再検証する。ブラウザ最低版フロア（RootLayout が読む）だけは実行時 I/O を持たないコミット済み生成物で、`pnpm run -F main generate:browser-min-versions [version]` で再生成する。active データセットとずれると外形監視（`.github/workflows/browser-support-monitor.yml`）が k8o-bot 名義で再生成 PR を作り、自動マージする。
 
 ## Storybook MCP
 

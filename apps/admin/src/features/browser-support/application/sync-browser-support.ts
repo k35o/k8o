@@ -332,11 +332,12 @@ export async function syncBrowserSupport({
     if (
       minVersionsChanged(active?.dataset.minVersions ?? {}, dataset.minVersions)
     ) {
-      // RootLayout のフロアはリポジトリにコミットした生成物で、自動では追従しない。
+      // RootLayout のフロアはリポジトリにコミットした生成物で、反映には PR のマージと
+      // デプロイを経る。外形監視が PR を出すまで古いフロアが残ることを知らせる。
       await notify({
         kind: 'alert',
         title: 'Browser Support: 最低対応バージョンが変化',
-        body: `v${version} でブラウザ最低版フロアが変わりました。apps/main で pnpm run generate:browser-min-versions を実行してコミットしてください。`,
+        body: `v${version} でブラウザ最低版フロアが変わりました。外形監視が再生成PRを自動で作成し、CI通過後にマージされます。`,
         dedupeKey: `browser-support:alert:min-versions:v${version}`,
       });
     }
