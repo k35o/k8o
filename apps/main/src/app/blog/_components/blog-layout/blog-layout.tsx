@@ -111,7 +111,7 @@ export const BlogLayoutContent: FC<BlogLayoutContentProps> = ({
               {children}
             </article>
           </WritingModeContent>
-          <div id={END_OF_CONTENT_ID}>
+          <div className="flex flex-col gap-8" id={END_OF_CONTENT_ID}>
             <SilentErrorBoundary>
               <section className="bg-bg-base/90 w-full rounded-xl px-3 py-8 sm:px-10">
                 <Feedback slug={slug} />
