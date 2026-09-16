@@ -1,11 +1,11 @@
 @layer components {
-  /* 注釈の色は @k8ordo/ui のセマンティックトークンを参照する。このCSSは Tailwind を通らず、
+  /* 色は @k8ordo/ui のセマンティックトークンを参照する。このCSSは Tailwind を通らず、
      Tailwind は使われた --color-* しか出力しないので、:root / .dark に常に定義される
      --bg-* / --fg-* / --border-* 本体を使う。注釈の面はテキストを潰さないよう color-mix で薄める */
   @scope (.code-annotate-block) {
     /* 注釈付きブロックだけ、全行の左に ＋/－ マーカーと注釈バー用の gutter を
        確保してコード本体のインデントを揃える。注釈が無いブロックは gutter を
-       置かず、ツールバーの言語ラベルとコードの開始位置を揃える */
+       置かず、ラベルとコードの開始位置を揃える */
     :scope[data-annotated] .line {
       position: relative;
       padding-inline-start: 1.2em;
@@ -103,64 +103,69 @@
       border-block-end: 0.5em solid var(--fg-info);
     }
 
-    /* ツールバーはコードに重ならないようコード上部のヘッダー行として流し込み、
-       色はテーマトークンではなくコード面（shiki のテーマ背景）に合わせた固定色にする */
     :scope {
       /* 縦書き記事内でもコードブロックは横書きの島として扱い、
          ヘッダー行とコードが縦に積まれるようにする */
       writing-mode: horizontal-tb;
-      margin-block: 1rem;
+      margin-block: 1.5rem;
     }
 
-    /* 背景をコード面（one-light #fafafa）より一段グレーに落とし、線を引かずに
-       ヘッダー帯とコード本体の段差を作る */
-    .code-annotate-toolbar {
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-      padding: 0.35rem 1rem;
-      background-color: #edeef0;
-      border-start-start-radius: 0.5rem;
-      border-start-end-radius: 0.5rem;
+    /* コピーボタンを持つのはブログの CodeBlock だけなので、スライド等の wrapper には見た目を足さない */
+    :scope:has(> .code-annotate-copy) {
+      --code-surface: var(--bg-surface);
+      --code-ink: var(--fg-base);
+      --code-mute: var(--fg-mute);
+      --code-pill: var(--bg-mute);
+      position: relative;
+      margin-block: 1.75rem;
+      border-radius: 0.75rem;
+      background-color: var(--code-surface);
     }
 
-    .code-annotate-lang {
+    :scope:has(> .code-annotate-copy) > .shiki {
+      background-color: transparent !important;
+      padding: 1rem 1.25rem;
+      tab-size: 2;
+    }
+
+    :scope:has(> .code-annotate-tab) > .shiki {
+      padding-block-start: 0.375rem;
+    }
+
+    .code-annotate-tab {
+      display: block;
+      padding: 0.75rem 3rem 0 1.25rem;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
       font-size: 0.75rem;
       line-height: 1;
-      color: rgb(105 108 119);
-      text-transform: lowercase;
-      user-select: none;
-    }
-
-    /* ファイル名はコードの識別子なので、言語ラベルより主張を強め、等幅で見せる */
-    .code-annotate-filename {
-      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
-      font-size: 0.8rem;
-      line-height: 1;
-      color: rgb(56 58 66);
+      color: var(--code-mute);
     }
 
     .code-annotate-copy {
-      margin-inline-start: auto;
+      position: absolute;
+      inset-block-start: 0.4rem;
+      inset-inline-end: 0.4rem;
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      padding: 0.3rem;
-      border-radius: 0.4rem;
-      color: rgb(105 108 119);
+      padding: 0.35rem;
+      border-radius: 0.5rem;
+      /* 長い1行目の右端と重なったときに文字を隠せるよう、面と同じ色を敷く */
+      background-color: var(--code-surface);
+      color: var(--code-mute);
       cursor: pointer;
       transition:
-        color 0.15s ease,
-        background-color 0.15s ease;
+        color 0.15s ease-out,
+        background-color 0.15s ease-out;
     }
 
     .code-annotate-copy:hover {
-      color: rgb(56 58 66);
-      background-color: rgb(0 0 0 / 0.06);
+      color: var(--code-ink);
+      background-color: var(--code-pill);
     }
 
     .code-annotate-copy:focus-visible {
-      outline: 2px solid rgb(80 140 220);
+      outline: 2px solid var(--border-info);
       outline-offset: 2px;
     }
   }
@@ -171,41 +176,17 @@
     margin-inline: 1rem;
   }
 
-  /* ---- ダークテーマ（従来の plastic 向けトーン） ----
-     @scope 内から外側の .dark 祖先を参照しないため、素の子孫セレクタで上書きする */
-  /* コード面（plastic #21252b）より一段明るくして、ヘッダー帯を浮かせる */
-  .dark .code-annotate-block .code-annotate-toolbar {
-    background-color: #2c313b;
-  }
-
-  .dark .code-annotate-block .code-annotate-lang {
-    color: rgb(169 178 195);
-  }
-
-  .dark .code-annotate-block .code-annotate-filename {
-    color: rgb(220 223 228);
-  }
-
-  .dark .code-annotate-block .code-annotate-copy {
-    color: rgb(169 178 195);
-  }
-
-  .dark .code-annotate-block .code-annotate-copy:hover {
-    color: rgb(255 255 255);
-    background-color: rgb(255 255 255 / 0.12);
-  }
-
-  .dark .code-annotate-block .code-annotate-copy:focus-visible {
-    outline-color: rgb(120 180 245);
-  }
-
   /* shiki のデュアルテーマ切り替え: インラインstyleはライト色なので、
      ダーク時はトークンごとの --shiki-dark 変数を !important で通す。
-     transformer が注入する行・コールアウトの span は変数を持たないため除外する */
-  .dark .shiki,
-  .dark .shiki span:not(.line, .code-annotate-callout-text) {
+     transformer が注入する行・コールアウトの span は変数を持たないため除外する。
+     背景色を span にも敷くと、面の色と違う箱が文字の背後に浮くので pre だけに当てる */
+  .dark .shiki {
     color: var(--shiki-dark) !important;
     background-color: var(--shiki-dark-bg) !important;
+  }
+
+  .dark .shiki span:not(.line, .code-annotate-callout-text) {
+    color: var(--shiki-dark) !important;
     font-style: var(--shiki-dark-font-style) !important;
     font-weight: var(--shiki-dark-font-weight) !important;
     text-decoration: var(--shiki-dark-text-decoration) !important;

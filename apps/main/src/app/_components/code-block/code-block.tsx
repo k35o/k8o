@@ -40,31 +40,27 @@ export const CodeBlock: FC<Props> = ({
     }
   };
 
+  const label = filename ?? lang;
+
   return (
     <>
-      <div className="code-annotate-toolbar">
-        {filename === undefined ? (
-          lang !== undefined && (
-            <span className="code-annotate-lang">{lang}</span>
-          )
-        ) : (
-          <span className="code-annotate-filename">{filename}</span>
-        )}
-        <button
-          aria-label="コードをコピー"
-          className="code-annotate-copy"
-          onClick={() => {
-            void handleCopy();
-          }}
-          type="button"
-        >
-          <CopyIcon size="sm" />
-        </button>
-      </div>
+      {label !== undefined && (
+        <span className="code-annotate-tab">{label}</span>
+      )}
+      <button
+        aria-label="コードをコピー"
+        className="code-annotate-copy"
+        onClick={() => {
+          void handleCopy();
+        }}
+        type="button"
+      >
+        <CopyIcon size="sm" />
+      </button>
       <pre
         {...rest}
         className={cn(
-          'writing-h vertical:box-border vertical:mx-4 vertical:h-max vertical:max-h-full vertical:max-w-container-lg vertical:overflow-auto my-0 overflow-x-auto rounded-t-none rounded-b-lg px-4 py-1 sm:py-4',
+          'writing-h vertical:box-border vertical:mx-4 vertical:h-max vertical:max-h-full vertical:max-w-container-lg vertical:overflow-auto my-0 overflow-x-auto text-sm leading-7',
           className,
         )}
         ref={preRef}
