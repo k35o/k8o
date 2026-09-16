@@ -108,7 +108,7 @@ export function ToggleEventSourceDemo() {
       <ul className="flex flex-col gap-2">
         {MEMBERS.map((member) => (
           <li
-            className="bg-bg-base flex items-center justify-between rounded-md p-3"
+            className="flex items-center justify-between py-2"
             key={member.id}
           >
             <div>
@@ -129,7 +129,7 @@ export function ToggleEventSourceDemo() {
         ))}
       </ul>
 
-      <div className="bg-bg-subtle text-fg-mute rounded-md p-3 font-mono text-xs">
+      <div className="text-fg-mute font-mono text-xs">
         <p>最新の toggle イベントから取った情報（open / close 両方）</p>
         <p>event.oldState: {JSON.stringify(toggleLog.oldState)}</p>
         <p>event.newState: {JSON.stringify(toggleLog.newState)}</p>

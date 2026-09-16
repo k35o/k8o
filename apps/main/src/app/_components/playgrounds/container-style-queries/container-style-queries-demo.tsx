@@ -28,15 +28,13 @@ export function ContainerStyleQueriesDemo() {
         .csq-card {
           padding: 1rem;
           border-radius: 0.5rem;
-          border: 1px solid currentColor;
-          transition: background-color 200ms, color 200ms, border-color 200ms;
+          transition: background-color 200ms, color 200ms;
         }
 
         @container csq-theme style(--csq-theme: light) {
           .csq-card {
             background-color: #ffffff;
             color: #1f2937;
-            border-color: #d1d5db;
           }
         }
 
@@ -44,7 +42,6 @@ export function ContainerStyleQueriesDemo() {
           .csq-card {
             background-color: #0f172a;
             color: #f1f5f9;
-            border-color: #334155;
           }
         }
 
@@ -52,7 +49,6 @@ export function ContainerStyleQueriesDemo() {
           .csq-card {
             background-color: #f4ecd8;
             color: #5b4636;
-            border-color: #c9b48f;
           }
         }
       `}</style>

@@ -129,7 +129,7 @@ export function EventTimingDemo() {
 
   if (!isSupported) {
     return (
-      <div className="bg-bg-mute rounded-xl p-4">
+      <div>
         <p className="text-fg-mute text-sm">
           このブラウザはEvent Timing APIをサポートしていません。
         </p>
@@ -153,7 +153,7 @@ export function EventTimingDemo() {
       </div>
 
       {latestEntry && (
-        <div className="bg-bg-base rounded-xl p-4 shadow-sm">
+        <div>
           <div className="mb-3 flex items-center justify-between">
             <div className="flex items-center gap-2">
               <h4 className="text-fg-base font-medium">最新の計測結果</h4>
@@ -200,7 +200,7 @@ export function EventTimingDemo() {
           <div className="space-y-1">
             {entries.slice(1).map((entry) => (
               <div
-                className="bg-bg-mute flex items-center justify-between rounded-md px-3 py-2 text-sm"
+                className="flex items-center justify-between py-1 text-sm"
                 key={entry.id}
               >
                 <div className="flex items-center gap-2">

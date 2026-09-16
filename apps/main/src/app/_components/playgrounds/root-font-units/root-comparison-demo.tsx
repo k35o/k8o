@@ -26,7 +26,7 @@ export function RootComparisonDemo() {
         )}
       />
 
-      <div className="border-border-base flex flex-col gap-6 rounded-lg border p-6">
+      <div className="flex flex-col gap-6">
         <div style={{ fontSize: `${fontSize}px` }}>
           <div className="flex items-center gap-4">
             <span className="text-fg-mute w-16 font-mono text-xs">1ch</span>
@@ -42,8 +42,6 @@ export function RootComparisonDemo() {
             </span>
           </div>
         </div>
-
-        <div className="bg-border-base h-px" />
 
         <div>
           <div className="flex items-center gap-4">

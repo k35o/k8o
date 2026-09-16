@@ -8,7 +8,7 @@ import { isValidElement } from 'react';
 import type { FC, PropsWithChildren, ReactNode } from 'react';
 
 import { BrowserSupportStatus } from '@/app/_components/browser-support-status/browser-support-status';
-import { CodeBlock } from '@/app/_components/code-block';
+import { CodeBlock, CodeGroup } from '@/app/_components/code-block';
 
 // インラインコード等を含む見出しからidに使う全文を取り出す。
 // shared/mdx/toc-tree.ts の phrasingText と同じ結果になる必要がある
@@ -40,12 +40,12 @@ const LinkHeading: FC<
   return (
     <Comp
       className={cn(
-        'group my-4 font-bold',
-        type === 'h2' && 'mb-4 text-xl sm:text-2xl',
-        type === 'h3' && 'text-xl sm:text-2xl',
-        type === 'h4' && 'text-lg sm:text-xl',
-        type === 'h5' && 'text-md sm:text-lg',
-        type === 'h6' && 'text-sm sm:text-md',
+        'group font-bold leading-tight',
+        type === 'h2' && 'mt-10 mb-4 text-xl sm:text-2xl',
+        type === 'h3' && 'mt-10 mb-4 text-xl sm:text-2xl',
+        type === 'h4' && 'mt-8 mb-3 text-lg sm:text-xl',
+        type === 'h5' && 'mt-6 mb-2 text-md sm:text-lg',
+        type === 'h6' && 'mt-5 mb-2 text-sm sm:text-md',
       )}
       id={hasText ? text : undefined}
     >
@@ -107,7 +107,7 @@ export function useMDXComponents(components: MDXComponents): MDXComponents {
         <p>{children}</p>
       ),
     p: ({ children }) => (
-      <p className="sm:text-md vertical:indent-em my-2 text-sm leading-relaxed">
+      <p className="sm:text-md vertical:indent-em my-4 text-sm leading-relaxed sm:leading-7">
         {children}
       </p>
     ),
@@ -122,25 +122,26 @@ export function useMDXComponents(components: MDXComponents): MDXComponents {
       );
     },
     pre: (props) => <CodeBlock {...props} />,
+    'code-group': CodeGroup,
     li: ({ children }) => (
-      <li className="sm:text-md text-sm leading-relaxed">{children}</li>
+      <li className="sm:text-md text-sm leading-relaxed sm:leading-7">
+        {children}
+      </li>
     ),
     ul: ({ children }) => (
-      <ul className="sm:text-md my-4 flex list-disc flex-col gap-1 ps-5 text-sm">
+      <ul className="sm:text-md marker:text-fg-subtle my-5 flex list-disc flex-col gap-2 ps-6 text-sm">
         {children}
       </ul>
     ),
     ol: ({ children }) => (
-      <ol className="sm:text-md my-4 flex list-decimal flex-col gap-1 ps-5 text-sm">
+      <ol className="sm:text-md marker:text-fg-subtle my-5 flex list-decimal flex-col gap-2 ps-6 text-sm">
         {children}
       </ol>
     ),
     blockquote: ({ children }) => (
-      <figure className="bg-bg-mute my-4 rounded-lg p-2 ps-3">
-        <blockquote className="border-border-base text-fg-mute border-s-3 ps-2 text-sm">
-          {children}
-        </blockquote>
-      </figure>
+      <blockquote className="border-primary-border text-fg-mute my-6 border-s-2 ps-3 text-sm">
+        {children}
+      </blockquote>
     ),
     ...components,
   };

@@ -38,7 +38,7 @@ export function CssMathFunctionsDemo() {
         />
       </div>
       <div className="flex flex-col items-center gap-4">
-        <div className="border-border-base relative aspect-square w-full max-w-80 overflow-hidden border">
+        <div className="bg-bg-subtle relative aspect-square w-full max-w-80 overflow-hidden rounded-lg">
           <div className="bg-fg-subtle absolute top-0 left-1/2 h-full w-px" />
           <div className="bg-fg-subtle absolute top-1/2 left-0 h-px w-full" />
           <div

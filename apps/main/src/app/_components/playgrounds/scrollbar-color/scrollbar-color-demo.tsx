@@ -43,7 +43,7 @@ export function ScrollbarColorDemo() {
       </div>
 
       <div
-        className="border-border-base bg-bg-mute h-48 overflow-y-scroll rounded-lg border p-4"
+        className="bg-bg-mute h-48 overflow-y-scroll rounded-lg p-4"
         style={{
           scrollbarColor: `${thumbColor} ${trackColor}`,
         }}
@@ -64,8 +64,8 @@ export function ScrollbarColorDemo() {
         </div>
       </div>
 
-      <div className="bg-bg-subtle rounded-md p-3">
-        <p className="font-mono text-sm">
+      <div>
+        <p className="text-fg-mute font-mono text-sm">
           scrollbar-color: {thumbColor} {trackColor}&#x3B;
         </p>
       </div>

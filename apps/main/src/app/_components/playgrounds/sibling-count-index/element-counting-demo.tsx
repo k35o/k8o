@@ -4,7 +4,7 @@ import { Switch } from '@k8ordo/ui';
 import { useState } from 'react';
 
 const GHOST = 'text-fg-mute border-border-base rounded-lg border border-dashed';
-const ITEM = 'bg-bg-base text-fg-base rounded-lg';
+const ITEM = 'bg-bg-subtle text-fg-base rounded-lg';
 const OPEN_FRUIT = '<div class=&quot;scid-fruit&quot;>';
 
 // style と script を兄弟として数えさせるのが主題だが、JSX で書くと React が hoist
@@ -69,7 +69,7 @@ export function ElementCountingDemo() {
       />
 
       <div
-        className={`bg-bg-subtle overflow-x-auto rounded-xl p-5 sm:p-6 ${revealed ? 'scid-tree-revealed' : ''}`}
+        className={`overflow-x-auto ${revealed ? 'scid-tree-revealed' : ''}`}
         dangerouslySetInnerHTML={{ __html: NODES_HTML }}
       />
 

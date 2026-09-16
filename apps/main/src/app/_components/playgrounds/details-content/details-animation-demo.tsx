@@ -1,16 +1,10 @@
-import { cn } from '@repo/helpers/cn';
 import type { FC } from 'react';
 
 import styles from './details-animation-demo.module.css';
 
 export const DetailsAnimationDemo: FC = () => (
   <div className="flex flex-col gap-8">
-    <details
-      className={cn(
-        'rounded-xl bg-bg-base p-4 shadow-sm',
-        styles['detailsAnimation'],
-      )}
-    >
+    <details className={styles['detailsAnimation']}>
       <summary className="text-fg-base cursor-pointer font-bold">
         ::details-contentによるアニメーション
       </summary>

@@ -68,7 +68,7 @@ export function CustomCommandDemo() {
         </button>
       </div>
 
-      <div className="bg-bg-base flex items-center justify-center rounded-xl p-8 shadow-sm">
+      <div className="flex items-center justify-center py-4">
         <div
           className="size-24 overflow-hidden rounded-full transition-all duration-300"
           id="demo-image"
@@ -80,9 +80,7 @@ export function CustomCommandDemo() {
 
       <p className="text-fg-mute text-sm">
         カスタムコマンド（
-        <code className="bg-bg-subtle rounded-sm px-1">--zoom-in</code>、
-        <code className="bg-bg-subtle rounded-sm px-1">--zoom-out</code>、
-        <code className="bg-bg-subtle rounded-sm px-1">--reset</code>
+        <code>--zoom-in</code>、<code>--zoom-out</code>、<code>--reset</code>
         ）で操作しています。
       </p>
     </div>

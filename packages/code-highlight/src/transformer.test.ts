@@ -3,9 +3,9 @@ import { codeToHast } from 'shiki';
 
 import { annotateTransformer } from './transformer.ts';
 
-const toHast = (code: string, meta?: string) =>
+const toHast = (code: string, meta?: string, lang = 'js') =>
   codeToHast(code, {
-    lang: 'js',
+    lang,
     theme: 'plastic',
     transformers: [annotateTransformer()],
     ...(meta === undefined ? {} : { meta: { __raw: meta } }),
@@ -37,11 +37,14 @@ const lineElements = (tree: Root): Element[] => {
   );
 };
 
-const preElement = (tree: Root): Element | undefined => {
-  const wrapper = tree.children.find(
+const wrapperElement = (tree: Root): Element | undefined =>
+  tree.children.find(
     (child): child is Element =>
       child.type === 'element' && child.tagName === 'div',
   );
+
+const preElement = (tree: Root): Element | undefined => {
+  const wrapper = wrapperElement(tree);
   return wrapper && findElement(wrapper.children, 'pre');
 };
 
@@ -127,6 +130,18 @@ describe('annotateTransformer', () => {
 
       expect(preElement(tree)?.properties['data-filename']).toBe('bar/baz.tsx');
     });
+
+    it('ラッパーに言語を data-label として付与する', async () => {
+      const tree = await toHast('const x = 1;');
+
+      expect(wrapperElement(tree)?.properties['data-label']).toBe('js');
+    });
+
+    it('ファイル名があれば言語より優先して data-label にする', async () => {
+      const tree = await toHast('const x = 1;', 'title="foo.ts"');
+
+      expect(wrapperElement(tree)?.properties['data-label']).toBe('foo.ts');
+    });
   });
 
   describe('エッジケース', () => {
@@ -139,6 +154,12 @@ describe('annotateTransformer', () => {
       const tree = await toHast('const x = 1;', 'showLineNumbers');
 
       expect(preElement(tree)?.properties['data-filename']).toBeUndefined();
+    });
+
+    it('text の言語でファイル名も無ければ data-label を付与しない', async () => {
+      const tree = await toHast('plain', undefined, 'text');
+
+      expect(wrapperElement(tree)?.properties['data-label']).toBeUndefined();
     });
 
     it('複数の連続指示が同じ対象行に重ねて適用される', async () => {

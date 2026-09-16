@@ -42,3 +42,13 @@ export const WithDescription = meta.story({
     children: <Counter />,
   },
 });
+
+export const WithHref = meta.story({
+  args: {
+    title: 'Counterのサンプル',
+    description:
+      'ブログ埋め込み時は枠の右上にPlaygroundページへのアドレスバー風リンクが付きます。',
+    href: '/playgrounds/counter',
+    children: <Counter />,
+  },
+});

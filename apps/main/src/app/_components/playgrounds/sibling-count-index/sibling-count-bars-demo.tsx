@@ -91,7 +91,7 @@ export function SiblingCountBarsDemo() {
         </Button>
       </div>
 
-      <div className="bg-bg-subtle rounded-xl p-6">
+      <div>
         <div className="scid-chart">
           {ids.map((id) => (
             <div className="scid-cell" key={id}>

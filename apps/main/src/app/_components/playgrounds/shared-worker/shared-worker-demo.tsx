@@ -95,7 +95,7 @@ export function SharedWorkerDemo() {
         このページを別タブでもう一度開くと、Worker起動時刻が両タブで一致し、
         どちらかのタブで「+1」を押すと両タブのカウンタが同期するのが見えます。
       </p>
-      <div className="bg-bg-base rounded-xl p-6 shadow-sm">
+      <div>
         <p className="text-fg-mute text-xs">共有カウンタ</p>
         <div className="mt-2 flex items-baseline gap-4">
           <span className="text-primary-fg text-emphasize font-bold tabular-nums">
@@ -106,7 +106,7 @@ export function SharedWorkerDemo() {
           </Button>
         </div>
       </div>
-      <dl className="bg-bg-mute flex flex-col gap-2 rounded-xl p-4 text-sm">
+      <dl className="flex flex-col gap-2 text-sm">
         <div className="flex items-center justify-between">
           <dt className="text-fg-mute">Worker起動時刻</dt>
           <dd>

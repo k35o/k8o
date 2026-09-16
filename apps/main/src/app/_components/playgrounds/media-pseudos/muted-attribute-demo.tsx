@@ -19,7 +19,7 @@ export function MutedAttributeDemo() {
         }
       `}</style>
 
-      <div className="mp-attr-player border-border-mute flex flex-col gap-4 rounded-xl border-2 p-4">
+      <div className="mp-attr-player bg-bg-subtle flex flex-col gap-4 rounded-xl p-4">
         {/* 台詞のない合成音なのでキャプション用のtrackは付けない */}
         {/* oxlint-disable-next-line jsx-a11y/media-has-caption */}
         <audio

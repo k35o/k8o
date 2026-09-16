@@ -31,7 +31,7 @@ export function TextDecorationSkipInkDemo() {
         )}
       />
 
-      <div className="bg-bg-base rounded-xl p-6 text-lg shadow-sm">
+      <div className="text-lg">
         <p
           style={{
             textDecoration: 'underline',

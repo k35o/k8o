@@ -59,45 +59,43 @@ export const BlogLayoutContent: FC<BlogLayoutContentProps> = ({
         <ViewReporter slug={slug} />
         <div className="m-auto flex min-w-0 flex-1 flex-col gap-8 xl:max-w-5xl">
           <WritingModeContent>
-            <article className="bg-bg-base/90 vertical:bg-transparent vertical:rounded-none rounded-xl px-3 py-8 sm:px-10">
-              <div className="flex flex-col gap-3">
-                <div className="flex items-start justify-between gap-2">
-                  <h2 className="text-xl font-bold sm:text-2xl">
-                    {blog.title}
-                  </h2>
-                  <div className="flex items-center gap-1">
+            <article className="prose-code bg-bg-base/90 vertical:bg-transparent vertical:rounded-none rounded-xl px-4 py-8 sm:px-10">
+              <header className="flex flex-col gap-4">
+                <div className="flex items-start justify-between gap-4">
+                  <div className="text-fg-mute flex flex-wrap items-center gap-x-4 gap-y-1 text-xs sm:text-sm">
+                    <span className="inline-flex items-center gap-1">
+                      <span className="inline-flex translate-y-px">
+                        <PublishDateIcon size="sm" />
+                      </span>
+                      公開: {formatDate(new Date(blog.createdAt))}
+                    </span>
+                    {blog.updatedAt !== blog.createdAt && (
+                      <span className="inline-flex items-center gap-1">
+                        <span className="inline-flex translate-y-px">
+                          <UpdateDateIcon size="sm" />
+                        </span>
+                        更新: {formatDate(new Date(blog.updatedAt))}
+                      </span>
+                    )}
+                    <span>約{readingTime}分で読めます</span>
+                  </div>
+                  <div className="flex shrink-0 items-center gap-2">
+                    {blog.slideUrl !== undefined && (
+                      <SlideLinkButton href={blog.slideUrl} />
+                    )}
                     <CopyMarkdownButton slug={slug} />
                   </div>
                 </div>
+                <h2 className="text-xl leading-snug font-bold sm:text-2xl">
+                  {blog.title}
+                </h2>
                 {blog.description !== null && (
-                  <div className="bg-bg-mute rounded-xl p-4 sm:mt-4">
-                    <p className="text-fg-base sm:text-md text-sm">
-                      {blog.description}
-                    </p>
-                  </div>
+                  <p className="text-fg-mute sm:text-md text-sm leading-normal">
+                    {blog.description}
+                  </p>
                 )}
-                {blog.slideUrl !== undefined && (
-                  <div className="flex self-end">
-                    <SlideLinkButton href={blog.slideUrl} />
-                  </div>
-                )}
-                <div className="text-fg-mute flex flex-col items-end gap-1 text-xs sm:text-sm">
-                  <div className="flex items-center gap-1">
-                    <span>約{readingTime}分で読めます</span>
-                  </div>
-                  <div className="flex flex-wrap items-center justify-end gap-1">
-                    <div className="flex items-center gap-1">
-                      <PublishDateIcon size="sm" />
-                      <span>公開: {formatDate(new Date(blog.createdAt))}</span>
-                    </div>
-                    <div className="flex items-center gap-1">
-                      <UpdateDateIcon size="sm" />
-                      <span>更新: {formatDate(new Date(blog.updatedAt))}</span>
-                    </div>
-                  </div>
-                </div>
                 {blog.tags.length > 0 && (
-                  <div className="mb-4 flex flex-wrap items-center gap-2">
+                  <div className="flex flex-wrap items-center gap-2">
                     <TagIcon size="sm" />
                     {blog.tags.map((tag) => (
                       <Link href={`/tags/${tag.id.toString()}`} key={tag.id}>
@@ -106,14 +104,14 @@ export const BlogLayoutContent: FC<BlogLayoutContentProps> = ({
                     ))}
                   </div>
                 )}
-              </div>
-              <div className="m-2 sm:mt-4">
+              </header>
+              <div className="my-6">
                 <Separator />
               </div>
               {children}
             </article>
           </WritingModeContent>
-          <div id={END_OF_CONTENT_ID}>
+          <div className="flex flex-col gap-8" id={END_OF_CONTENT_ID}>
             <SilentErrorBoundary>
               <section className="bg-bg-base/90 w-full rounded-xl px-3 py-8 sm:px-10">
                 <Feedback slug={slug} />

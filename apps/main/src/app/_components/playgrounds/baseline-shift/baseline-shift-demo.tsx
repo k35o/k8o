@@ -52,7 +52,7 @@ export function BaselineShiftDemo() {
         <code>text</code> のベースラインです。
       </p>
 
-      <div className="bg-bg-base flex flex-col gap-2 rounded-xl p-6 shadow-sm">
+      <div className="flex flex-col gap-2">
         {EXAMPLES.map((example, idx) => (
           <svg
             aria-label={`baseline-shift: ${value} の例 ${(idx + 1).toString()}`}

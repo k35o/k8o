@@ -36,7 +36,7 @@ export const DialogRequestCloseDemo: FC = () => {
         ダイアログを開く
       </Button>
       {logs.length > 0 && (
-        <div className="border-border-base max-h-40 overflow-y-scroll border">
+        <div className="bg-bg-subtle max-h-40 overflow-y-scroll rounded-md">
           <ul className="list-disc p-2 pl-6">
             {logs.map((log) => (
               <li className="text-fg-mute" key={log.id}>
