@@ -1,7 +1,7 @@
 @layer components {
-  /* 基準はライトテーマ（shiki one-light #FAFAFA）。ダークは末尾の .dark ルールが
-     従来の plastic (#21252B) 向けトーンへ上書きする。注釈色はテキストを潰さない
-     alpha に抑えつつ、左バーで強調する。 */
+  /* 注釈の色は @k8ordo/ui のセマンティックトークンを参照する。このCSSは Tailwind を通らず、
+     Tailwind は使われた --color-* しか出力しないので、:root / .dark に常に定義される
+     --bg-* / --fg-* / --border-* 本体を使う。注釈の面はテキストを潰さないよう color-mix で薄める */
   @scope (.code-annotate-block) {
     /* 注釈付きブロックだけ、全行の左に ＋/－ マーカーと注釈バー用の gutter を
        確保してコード本体のインデントを揃える。注釈が無いブロックは gutter を
@@ -21,41 +21,57 @@
     }
 
     .code-annotate-highlight {
-      background-color: rgb(191 135 0 / 0.14);
-      box-shadow: inset 6px 0 0 rgb(191 135 0);
+      background-color: color-mix(
+        in oklab,
+        var(--border-warning) 16%,
+        transparent
+      );
+      box-shadow: inset 6px 0 0 var(--border-warning);
     }
 
     .code-annotate-add {
-      background-color: rgb(46 160 67 / 0.14);
-      box-shadow: inset 6px 0 0 rgb(46 160 67);
+      background-color: color-mix(
+        in oklab,
+        var(--border-success) 14%,
+        transparent
+      );
+      box-shadow: inset 6px 0 0 var(--border-success);
     }
 
     .code-annotate-add::before {
       content: '＋';
       position: absolute;
       inset-inline-start: 0.4em;
-      color: rgb(46 160 67);
+      color: var(--fg-success);
       font-weight: 700;
     }
 
     .code-annotate-remove {
-      background-color: rgb(207 34 46 / 0.12);
-      box-shadow: inset 6px 0 0 rgb(207 34 46);
+      background-color: color-mix(
+        in oklab,
+        var(--border-error) 12%,
+        transparent
+      );
+      box-shadow: inset 6px 0 0 var(--border-error);
     }
 
     .code-annotate-remove::before {
       content: '－';
       position: absolute;
       inset-inline-start: 0.4em;
-      color: rgb(207 34 46);
+      color: var(--fg-error);
       font-weight: 700;
     }
 
     /* 同じ行に他の注釈 (highlight/add/remove) と重なった場合は cascade order で
        callout が後勝ちで上書きする。両方を視覚化するユースケースは想定していない。 */
     .code-annotate-has-callout {
-      background-color: rgb(80 140 220 / 0.18);
-      box-shadow: inset 6px 0 0 rgb(80 140 220);
+      background-color: color-mix(
+        in oklab,
+        var(--border-info) 18%,
+        transparent
+      );
+      box-shadow: inset 6px 0 0 var(--border-info);
     }
 
     /* コールアウトは対象行の直下、コード先頭の真下に配置し、上向き▲で対象行を指す */
@@ -69,9 +85,8 @@
       display: inline-block;
       padding: 0.5em 1em;
       border-radius: 0.5em;
-      background-color: rgb(80 140 220);
-      box-shadow: 0 4px 12px rgb(0 0 0 / 0.35);
-      color: rgb(255 255 255);
+      background-color: var(--fg-info);
+      color: var(--fg-inverse);
       font-weight: 500;
       line-height: 1.4;
     }
@@ -85,7 +100,7 @@
       block-size: 0;
       border-inline-start: 0.5em solid transparent;
       border-inline-end: 0.5em solid transparent;
-      border-block-end: 0.5em solid rgb(80 140 220);
+      border-block-end: 0.5em solid var(--fg-info);
     }
 
     /* ツールバーはコードに重ならないようコード上部のヘッダー行として流し込み、
@@ -158,34 +173,6 @@
 
   /* ---- ダークテーマ（従来の plastic 向けトーン） ----
      @scope 内から外側の .dark 祖先を参照しないため、素の子孫セレクタで上書きする */
-  .dark .code-annotate-block .code-annotate-highlight {
-    background-color: rgb(245 200 80 / 0.16);
-    box-shadow: inset 6px 0 0 rgb(245 200 80);
-  }
-
-  .dark .code-annotate-block .code-annotate-add {
-    background-color: rgb(120 220 130 / 0.16);
-    box-shadow: inset 6px 0 0 rgb(120 220 130);
-  }
-
-  .dark .code-annotate-block .code-annotate-add::before {
-    color: rgb(120 220 130);
-  }
-
-  .dark .code-annotate-block .code-annotate-remove {
-    background-color: rgb(245 110 110 / 0.16);
-    box-shadow: inset 6px 0 0 rgb(245 110 110);
-  }
-
-  .dark .code-annotate-block .code-annotate-remove::before {
-    color: rgb(245 110 110);
-  }
-
-  .dark .code-annotate-block .code-annotate-has-callout {
-    background-color: rgb(120 180 245 / 0.3);
-    box-shadow: inset 6px 0 0 rgb(120 180 245);
-  }
-
   /* コード面（plastic #21252b）より一段明るくして、ヘッダー帯を浮かせる */
   .dark .code-annotate-block .code-annotate-toolbar {
     background-color: #2c313b;
