@@ -59,7 +59,7 @@ export const BlogLayoutContent: FC<BlogLayoutContentProps> = ({
         <ViewReporter slug={slug} />
         <div className="m-auto flex min-w-0 flex-1 flex-col gap-8 xl:max-w-5xl">
           <WritingModeContent>
-            <article className="bg-bg-base/90 vertical:bg-transparent vertical:rounded-none rounded-xl px-4 py-8 sm:px-10">
+            <article className="prose-code bg-bg-base/90 vertical:bg-transparent vertical:rounded-none rounded-xl px-4 py-8 sm:px-10">
               <header className="flex flex-col gap-4">
                 <div className="flex items-start justify-between gap-4">
                   <div className="text-fg-mute flex flex-wrap items-center gap-x-4 gap-y-1 text-xs sm:text-sm">
