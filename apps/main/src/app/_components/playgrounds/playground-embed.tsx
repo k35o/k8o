@@ -1,6 +1,3 @@
-import { Anchor } from '@k8ordo/ui';
-import type { Route } from 'next';
-import Link from 'next/link';
 import type { FC } from 'react';
 
 import { Playground } from './playground';
@@ -34,22 +31,11 @@ export const PlaygroundEmbed: FC<Props> = ({ sectionId, demo }) => {
         return (
           <Playground
             description={sectionDemo.description}
+            href={`/playgrounds/${section.id}`}
             key={sectionDemo.title}
             title={sectionDemo.title}
           >
             <DemoComponent />
-            <div className="mt-6 flex justify-end text-sm">
-              <Anchor
-                href={`/playgrounds/${section.id}` as Route}
-                renderAnchor={({ className, href, children }) => (
-                  <Link className={className} href={href}>
-                    {children}
-                  </Link>
-                )}
-              >
-                Playgroundページで開く
-              </Anchor>
-            </div>
           </Playground>
         );
       })}
