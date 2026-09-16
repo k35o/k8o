@@ -93,7 +93,8 @@ export const annotateTransformer = (): ShikiTransformer => ({
   },
   pre(node): Element {
     const { lang } = this.options;
-    if (lang !== '' && lang !== 'text' && lang !== 'plaintext') {
+    const hasLang = lang !== '' && lang !== 'text' && lang !== 'plaintext';
+    if (hasLang) {
       node.properties['data-lang'] = lang;
     }
     const filename = parseFilename(this.options.meta?.__raw);
@@ -105,11 +106,13 @@ export const annotateTransformer = (): ShikiTransformer => ({
     const hasVisibleAnnotation = (state?.annotations ?? []).some((line) =>
       line.some((annotation) => annotation.type !== 'og'),
     );
+    const label = filename ?? (hasLang ? lang : undefined);
     return {
       type: 'element',
       tagName: 'div',
       properties: {
         class: 'code-annotate-block',
+        ...(label === undefined ? {} : { 'data-label': label }),
         ...(hasVisibleAnnotation ? { 'data-annotated': '' } : {}),
       },
       children: [node],
