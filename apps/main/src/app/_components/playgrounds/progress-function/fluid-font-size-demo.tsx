@@ -37,13 +37,13 @@ export function FluidFontSizeDemo() {
         className="pf-fluid flex flex-col gap-4"
         style={{ '--width': `${String(width)}px` }}
       >
-        <div className="bg-bg-subtle flex flex-col gap-1 rounded-lg p-4">
+        <div className="flex flex-col gap-1">
           <Code>clamp(1rem, 0.5rem + 2vw, 2rem)</Code>
           <p className="pf-fluid-clamp text-fg-base leading-tight font-bold transition-[font-size] duration-150">
             見出しのサンプル
           </p>
         </div>
-        <div className="bg-bg-subtle flex flex-col gap-1 rounded-lg p-4">
+        <div className="flex flex-col gap-1">
           <Code>calc(1rem + progress(100vw, 400px, 1200px) * 1rem)</Code>
           <p className="pf-fluid-progress text-fg-base leading-tight font-bold transition-[font-size] duration-150">
             見出しのサンプル

@@ -74,11 +74,9 @@ export function DragDropDemo() {
 
   if (!isSupported) {
     return (
-      <div className="bg-bg-mute rounded-xl p-3">
-        <p className="text-fg-mute text-sm">
-          このブラウザはこのAPIをサポートしていません。
-        </p>
-      </div>
+      <p className="text-fg-mute text-sm">
+        このブラウザはこのAPIをサポートしていません。
+      </p>
     );
   }
 
@@ -106,10 +104,8 @@ export function DragDropDemo() {
           region ロールを持つ section だとイベントハンドラがエラーになるため div を使う */}
       <div
         aria-label="テキスト挿入エリア"
-        className={`rounded-lg border p-3 transition-colors ${
-          isDragOver
-            ? 'border-primary-border bg-primary-bg/10'
-            : 'border-border-base bg-bg-base'
+        className={`rounded-lg p-3 transition-colors ${
+          isDragOver ? 'bg-primary-bg-subtle' : 'bg-bg-subtle'
         }`}
         onDragLeave={handleDragLeave}
         onDragOver={handleDragOver}

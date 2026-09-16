@@ -27,7 +27,7 @@ export const SpellingGrammarErrorDemo: FC = () => (
     >
       Check a speling error and an grammar error.
     </p>
-    <pre className="bg-bg-mute text-fg-mute sm:text-md overflow-x-auto rounded-lg px-2 py-1 text-xs sm:p-4">
+    <pre className="text-fg-mute sm:text-md overflow-x-auto text-xs">
       <code>{APPLIED_CSS}</code>
     </pre>
     {/* セレクタをデモの要素に限定し、ページ内の他の入力要素へスタイルが波及しないようにする */}

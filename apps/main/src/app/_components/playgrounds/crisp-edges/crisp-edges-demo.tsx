@@ -81,7 +81,7 @@ export function CrispEdgesDemo() {
         width={16}
       />
 
-      <div className="bg-bg-base flex justify-center rounded-xl p-6 shadow-sm">
+      <div className="flex justify-center">
         {imageSrc !== null && (
           // oxlint-disable-next-line @next/next/no-img-element -- canvasから生成したdata URLのプレビューでnext/imageは不要
           <img

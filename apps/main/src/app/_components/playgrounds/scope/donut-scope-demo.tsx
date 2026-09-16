@@ -84,7 +84,7 @@ export function DonutScopeDemo() {
         </div>
       </div>
 
-      <pre className="bg-bg-mute text-fg-mute sm:text-md overflow-x-auto rounded-lg px-2 py-1 text-xs sm:p-4">
+      <pre className="text-fg-mute sm:text-md overflow-x-auto text-xs">
         <code>
           {showDonutScope
             ? `@scope (.article) to (.nested-content) {

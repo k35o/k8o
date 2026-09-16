@@ -131,7 +131,7 @@ export function ViewTransitionBasicDemo() {
             resolvedTheme === 'dark' ? item.color.dark : item.color.light;
           return (
             <li
-              className="flex items-center justify-between rounded-md p-4 opacity-80"
+              className="text-fg-base flex items-center justify-between rounded-md p-4"
               key={item.id}
               style={{
                 viewTransitionName: isViewTransitionEnabled
@@ -139,7 +139,6 @@ export function ViewTransitionBasicDemo() {
                   : 'none',
                 viewTransitionClass: 'item',
                 backgroundColor: bgColor,
-                color: 'var(--white)',
               }}
             >
               <span className="font-bold">{item.text}</span>
@@ -172,14 +171,8 @@ export function ViewTransitionBasicDemo() {
           <Code>view-transition-class: item;</Code>を持ちます。
         </li>
       </ul>
-      <pre
-        className="my-4 overflow-x-auto rounded-lg px-2 py-1 sm:p-4"
-        style={{
-          backgroundColor: '#21252B',
-          color: '#A9B2C3',
-        }}
-      >
-        <code className="sm:text-md text-xs">
+      <pre className="text-fg-mute sm:text-md my-4 overflow-x-auto text-xs">
+        <code>
           {`::view-transition-group(.item) {
   border-radius: var(--radius-md);
 }

@@ -25,7 +25,7 @@ export const ContentVisibilityDemo: FC = () => {
               {showHidden ? 'visible' : 'hidden'}に変更する
             </Button>
           </div>
-          <div className="bg-bg-base h-96 rounded-xl p-4 shadow-sm">
+          <div className="bg-bg-subtle h-96 rounded-xl p-4">
             <div
               style={{
                 contentVisibility: showHidden ? 'hidden' : 'visible',
@@ -56,7 +56,7 @@ export const ContentVisibilityDemo: FC = () => {
               {showAuto ? 'visible' : 'auto'}に変更する
             </Button>
           </div>
-          <div className="bg-bg-base h-96 rounded-xl p-4 shadow-sm">
+          <div className="bg-bg-subtle h-96 rounded-xl p-4">
             <div
               style={{
                 contentVisibility: showAuto ? 'auto' : 'visible',

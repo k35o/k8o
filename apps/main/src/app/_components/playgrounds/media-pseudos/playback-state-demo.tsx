@@ -17,11 +17,10 @@ export function PlaybackStateDemo() {
         }
 
         .mp-player {
-          border: 2px solid var(--color-border-mute);
-          transition: border-color 150ms, background-color 150ms;
+          background-color: var(--color-bg-subtle);
+          transition: background-color 150ms;
         }
         .mp-player:has(audio:playing) {
-          border-color: var(--color-primary-border);
           background-color: var(--color-primary-bg-subtle);
         }
 

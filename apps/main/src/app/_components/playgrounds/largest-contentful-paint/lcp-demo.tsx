@@ -91,7 +91,7 @@ export function LCPDemo() {
 
   if (!isSupported) {
     return (
-      <div className="bg-bg-mute rounded-xl p-4">
+      <div>
         <p className="text-fg-mute text-sm">
           このブラウザはLargest Contentful Paint APIをサポートしていません。
         </p>
@@ -114,20 +114,18 @@ export function LCPDemo() {
       </div>
 
       {latestEntry === undefined ? (
-        <div className="bg-bg-mute rounded-xl p-4">
+        <div>
           <p className="text-fg-mute text-sm">
             LCPエントリを待機中...ページを再読み込みすると計測されます。
           </p>
         </div>
       ) : (
-        <div className="bg-bg-base rounded-xl p-4 shadow-sm">
+        <div>
           <div className="mb-3 flex items-center justify-between">
             <div className="flex items-center gap-2">
               <h4 className="text-fg-base font-medium">現在のLCP</h4>
               {latestEntry.element !== null && (
-                <code className="bg-bg-mute rounded-sm px-1.5 py-0.5 text-xs">
-                  {latestEntry.element}
-                </code>
+                <code className="text-xs">{latestEntry.element}</code>
               )}
             </div>
             <span className="text-fg-mute text-xs">
@@ -187,7 +185,7 @@ export function LCPDemo() {
           <div className="space-y-1">
             {entries.slice(1).map((entry) => (
               <div
-                className="bg-bg-mute flex items-center justify-between rounded-md px-3 py-2 text-sm"
+                className="flex items-center justify-between py-1 text-sm"
                 key={entry.id}
               >
                 <div className="flex items-center gap-2">

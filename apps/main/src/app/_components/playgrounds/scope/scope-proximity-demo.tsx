@@ -53,11 +53,11 @@ export function ScopeProximityDemo() {
         `}
       </style>
 
-      <div className="demo-info-box border-border-base rounded-lg border p-4">
+      <div className="demo-info-box bg-bg-subtle rounded-lg p-4">
         <p className="demo-message rounded-sm p-2">情報メッセージ</p>
-        <div className="demo-warning-box border-border-base mt-4 rounded-lg border p-4">
+        <div className="demo-warning-box bg-bg-mute mt-4 rounded-lg p-4">
           <p className="demo-message rounded-sm p-2">警告メッセージ</p>
-          <div className="demo-info-box border-border-base mt-4 rounded-lg border p-4">
+          <div className="demo-info-box bg-bg-subtle mt-4 rounded-lg p-4">
             <p className="demo-message rounded-sm p-2">
               ネストされた情報メッセージ（@scopeがONなら近接性で決定）
             </p>
@@ -78,7 +78,7 @@ export function ScopeProximityDemo() {
         </li>
       </ul>
 
-      <pre className="bg-bg-mute text-fg-mute sm:text-md overflow-x-auto rounded-lg px-2 py-1 text-xs sm:p-4">
+      <pre className="text-fg-mute sm:text-md overflow-x-auto text-xs">
         <code>
           {showProximity
             ? `@scope (.info-box) {

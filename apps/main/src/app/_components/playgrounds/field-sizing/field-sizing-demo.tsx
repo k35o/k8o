@@ -1,6 +1,6 @@
 'use client';
 
-import { Badge, ChevronIcon, FormControl, Select, Separator } from '@k8ordo/ui';
+import { Badge, ChevronIcon, FormControl, Select } from '@k8ordo/ui';
 import { useState } from 'react';
 
 const fruitOptions = ['りんご', 'ぶどう', 'パイナップル', 'ドラゴンフルーツ'];
@@ -45,8 +45,6 @@ export function FieldSizingDemo() {
           値を切り替えると、下のコントロールに反映されます。
         </p>
       </div>
-
-      <Separator />
 
       <div className="flex flex-col gap-6">
         <div className="flex flex-wrap items-center gap-3">

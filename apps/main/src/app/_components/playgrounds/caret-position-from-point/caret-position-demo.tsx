@@ -60,11 +60,9 @@ export function CaretPositionDemo() {
 
   if (!isSupported) {
     return (
-      <div className="bg-bg-mute rounded-xl p-3">
-        <p className="text-fg-mute text-sm">
-          このブラウザはこのAPIをサポートしていません。
-        </p>
-      </div>
+      <p className="text-fg-mute text-sm">
+        このブラウザはこのAPIをサポートしていません。
+      </p>
     );
   }
 
@@ -72,7 +70,7 @@ export function CaretPositionDemo() {
     <div className="space-y-3">
       {/* caretPositionFromPointはマウス座標を必要とするためキーボードでは使用不可 */}
       <div
-        className="bg-bg-base cursor-text rounded-xl p-3 shadow-sm select-none"
+        className="bg-bg-subtle cursor-text rounded-xl p-3 select-none"
         onClick={handleClick}
       >
         <p className="text-fg-base text-sm leading-relaxed">
@@ -84,7 +82,7 @@ export function CaretPositionDemo() {
       </div>
 
       {caretInfo ? (
-        <div className="bg-bg-base rounded-xl p-3 shadow-sm">
+        <div>
           <div className="mb-3 flex items-baseline justify-between gap-2">
             <h4 className="text-fg-base text-sm font-medium">結果</h4>
             <Button
@@ -127,9 +125,9 @@ export function CaretPositionDemo() {
           </dl>
 
           {caretInfo.offsetNodeText !== null && (
-            <div className="border-border-base mt-3 border-t pt-3">
+            <div className="mt-3">
               <p className="text-fg-mute mb-1 text-xs">テキスト内の位置:</p>
-              <p className="bg-bg-mute text-fg-base overflow-x-auto rounded-sm p-2 font-mono text-xs leading-relaxed">
+              <p className="text-fg-base overflow-x-auto font-mono text-xs leading-relaxed">
                 {caretInfo.offsetNodeText.slice(0, caretInfo.offset)}
                 <span className="bg-primary-bg text-primary-fg px-0.5">|</span>
                 {caretInfo.offsetNodeText.slice(caretInfo.offset)}

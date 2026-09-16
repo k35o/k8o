@@ -55,7 +55,7 @@ export function TextIndentKeywordsDemo() {
         />
       </div>
 
-      <div className="bg-bg-base rounded-xl p-6 shadow-sm">
+      <div>
         <p
           style={{
             textIndent,

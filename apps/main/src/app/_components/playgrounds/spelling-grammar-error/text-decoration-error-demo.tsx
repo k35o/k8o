@@ -16,7 +16,7 @@ export const TextDecorationErrorDemo: FC = () => (
       <span className="grammar">文法が怪しく見せたい部分</span>
       を、ブラウザ標準のエラー表示と同じ装飾で描いています。
     </p>
-    <pre className="bg-bg-mute text-fg-mute sm:text-md overflow-x-auto rounded-lg px-2 py-1 text-xs sm:p-4">
+    <pre className="text-fg-mute sm:text-md overflow-x-auto text-xs">
       <code>{APPLIED_CSS}</code>
     </pre>
     {/* セレクタをデモの要素に限定し、ページ内の他要素へスタイルが波及しないようにする */}

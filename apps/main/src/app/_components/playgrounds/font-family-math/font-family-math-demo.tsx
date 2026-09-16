@@ -18,7 +18,7 @@ export function FontFamilyMathDemo() {
         checked={useMathFont}
       />
 
-      <div className="bg-bg-base space-y-4 rounded-xl p-6 shadow-sm">
+      <div className="space-y-4">
         <div>
           <p className="text-fg-mute mb-2 text-sm">
             ピタゴラスの定理（上付き文字）

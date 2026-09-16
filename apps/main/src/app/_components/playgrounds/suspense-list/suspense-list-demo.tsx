@@ -23,7 +23,7 @@ export const SuspenseListDemo: FC = () => {
   const [data, setData] = useState(() => generateData());
   const [hasFallback, setHasFallback] = useState(true);
   const fallback = hasFallback ? (
-    <div className="bg-bg-mute rounded-xl p-4">Loading...</div>
+    <div className="text-fg-mute">Loading...</div>
   ) : null;
 
   return (
@@ -55,7 +55,7 @@ const Data: FC<{
   const { cacheKey, getTime } = data;
   const resolvedTime = use(getTime);
   return (
-    <div className="border-border-mute flex items-center gap-2 rounded-md border p-4">
+    <div className="flex items-center gap-2 py-2">
       <span
         className={cn(
           'size-4 rounded-full',

@@ -46,7 +46,7 @@ export function ContrastColorDemo() {
       />
 
       <div
-        className="flex h-40 items-center justify-center rounded-xl p-8 text-xl font-bold shadow-sm"
+        className="flex h-40 items-center justify-center rounded-xl p-8 text-xl font-bold"
         style={{
           backgroundColor,
           color: `contrast-color(${backgroundColor})`,
@@ -55,11 +55,9 @@ export function ContrastColorDemo() {
         この文字色は contrast-color() で決まっています
       </div>
 
-      <div className="bg-bg-subtle rounded-xl p-4">
-        <p className="font-mono text-sm">
-          color: contrast-color({backgroundColor})&#x3B;
-        </p>
-      </div>
+      <p className="text-fg-mute font-mono text-sm">
+        color: contrast-color({backgroundColor})&#x3B;
+      </p>
     </div>
   );
 }
