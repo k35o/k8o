@@ -8,7 +8,7 @@ import { isValidElement } from 'react';
 import type { FC, PropsWithChildren, ReactNode } from 'react';
 
 import { BrowserSupportStatus } from '@/app/_components/browser-support-status/browser-support-status';
-import { CodeBlock } from '@/app/_components/code-block';
+import { CodeBlock, CodeGroup } from '@/app/_components/code-block';
 
 // インラインコード等を含む見出しからidに使う全文を取り出す。
 // shared/mdx/toc-tree.ts の phrasingText と同じ結果になる必要がある
@@ -122,6 +122,7 @@ export function useMDXComponents(components: MDXComponents): MDXComponents {
       );
     },
     pre: (props) => <CodeBlock {...props} />,
+    'code-group': CodeGroup,
     li: ({ children }) => (
       <li className="sm:text-md text-sm leading-relaxed">{children}</li>
     ),

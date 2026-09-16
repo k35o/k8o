@@ -168,12 +168,97 @@
       outline: 2px solid var(--border-info);
       outline-offset: 2px;
     }
+
+    /* @scope 内の規則は同じ詳細度なら外の規則に勝つので、グループ内の上書きもここに置き、
+       :is(.code-annotate-group *) の分だけ詳細度を上げる */
+    :scope:has(> .code-annotate-copy):is(.code-annotate-group *) {
+      margin: 0;
+      border-radius: 0;
+      background-color: transparent;
+    }
+
+    :scope:is(.code-annotate-group *) > .code-annotate-tab {
+      display: none;
+    }
+
+    :scope:has(> .code-annotate-copy):is(.code-annotate-group *) > .shiki {
+      padding-block-start: 0.5rem;
+    }
+
+    :scope:is(.code-annotate-group *) > .code-annotate-copy {
+      inset-block-start: -1.85rem;
+    }
+  }
+
+  ::view-transition-group(.code-group) {
+    animation-duration: 200ms;
+    animation-timing-function: ease-out;
+  }
+
+  .code-annotate-group {
+    --code-surface: var(--bg-surface);
+    --code-ink: var(--fg-base);
+    --code-mute: var(--fg-mute);
+    --code-pill: var(--bg-mute);
+    --code-track: var(--bg-mute);
+    --code-segment: var(--bg-base);
+    writing-mode: horizontal-tb;
+    margin-block: 1.75rem;
+    border-radius: 0.75rem;
+    background-color: var(--code-surface);
+  }
+
+  .code-annotate-group-tabs {
+    display: inline-flex;
+    gap: 0.125rem;
+    max-inline-size: calc(100% - 4rem);
+    margin: 0.5rem 0 0 0.75rem;
+    padding: 0.2rem;
+    border-radius: 0.6rem;
+    background-color: var(--code-track);
+    overflow-x: auto;
+  }
+
+  .code-annotate-group-tab {
+    flex: none;
+    padding: 0.4rem 0.8rem;
+    border-radius: 0.45rem;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    font-size: 0.75rem;
+    line-height: 1;
+    color: var(--code-mute);
+    cursor: pointer;
+    transition:
+      color 0.15s ease-out,
+      background-color 0.15s ease-out;
+  }
+
+  .code-annotate-group-tab:hover {
+    color: var(--code-ink);
+  }
+
+  .code-annotate-group-tab[aria-selected='true'] {
+    background-color: var(--code-segment);
+    color: var(--code-ink);
+  }
+
+  /* セグメントは隙間なく並ぶので、外側に出すと隣のピルに重なる。リングは内側に収める */
+  .code-annotate-group-tab:focus-visible {
+    outline: 2px solid var(--border-info);
+    outline-offset: -2px;
   }
 
   /* 縦書き記事(.writing-v)内では横書きの島が block 軸(水平)に並ぶため、
      物理的な左右マージンで隣接ブロックとの間隔を確保する */
-  .writing-v .code-annotate-block {
+  .writing-v .code-annotate-block:not(.code-annotate-group *),
+  .writing-v .code-annotate-group {
     margin-inline: 1rem;
+  }
+
+  /* ライトの「沈んだトラックに明るいピルが浮く」明暗の向きをダークでも保つため、割り当てを入れ替える */
+  .dark .code-annotate-group {
+    --code-track: var(--bg-subtle);
+    --code-segment: var(--bg-mute);
   }
 
   /* shiki のデュアルテーマ切り替え: インラインstyleはライト色なので、
