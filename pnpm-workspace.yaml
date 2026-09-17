@@ -22,8 +22,8 @@ catalog:
   '@storybook/addon-vitest': 10.6.0
   '@storybook/nextjs-vite': 10.6.0
   '@tailwindcss/postcss': 4.3.3
-  '@types/react': 19.2.18
-  '@types/react-dom': 19.2.7
+  '@types/react': 19.3.0
+  '@types/react-dom': 19.3.0
   '@vitest/browser-playwright': 5.0.0
   '@vitest/coverage-v8': 5.0.0
   '@vitest/ui': 5.0.0
@@ -34,8 +34,8 @@ catalog:
   next-themes: 0.4.6
   postcss: 8.5.28
   postcss-load-config: 6.0.1
-  react: 19.2.8
-  react-dom: 19.2.8
+  react: 19.3.0
+  react-dom: 19.3.0
   storybook: 10.6.0
   storybook-addon-determinism: 0.2.1
   storybook-addon-mock-date: 3.2.1
