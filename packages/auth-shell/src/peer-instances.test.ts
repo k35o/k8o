@@ -77,3 +77,26 @@ describe('peerDependencies の実体', () => {
     );
   });
 });
+
+// snapshots のキーの行だけ読めば足りるので、YAML パーサーは足さない
+const snapshotKeys = readFileSync(join(workspaceRoot, 'pnpm-lock.yaml'), 'utf8')
+  .split(/^(?=\S)/mu)
+  .filter((section) => section.startsWith('snapshots:'))
+  .flatMap((section) => section.match(/^ {2}\S+(?=:)/gmu) ?? [])
+  .map((line) => line.trim().replaceAll("'", ''));
+
+describe('lockfile の React と Next', () => {
+  describe('正常系', () => {
+    it.each(['react', 'react-dom', 'next', '@types/react', '@types/react-dom'])(
+      '%s の版と peer の組み合わせが1つに揃っている',
+      (name) => {
+        // toHaveLength だと失敗時に長いキーが省略されるので、diff で残ったキーを出す。
+        // vitest は同じメッセージの失敗を1つにまとめて表示するため、依存名を入れて分ける
+        expect(
+          snapshotKeys.filter((key) => key.startsWith(`${name}@`)),
+          `${name} を含む落ちた依存をまとめて \`pnpm update -r <依存名...>\` で再解決する`,
+        ).toStrictEqual([expect.any(String)]);
+      },
+    );
+  });
+});
