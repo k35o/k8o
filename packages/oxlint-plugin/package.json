@@ -18,7 +18,7 @@
   "devDependencies": {
     "@oxlint/plugins": "1.82.0",
     "@repo/typescript-config": "workspace:*",
-    "@types/node": "24.13.3",
+    "@types/node": "24.13.4",
     "vite-plus": "0.3.0",
     "vitest": "catalog:"
   }
