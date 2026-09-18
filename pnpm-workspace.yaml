@@ -12,7 +12,7 @@ catalog:
   '@ai-sdk/openai-compatible': 3.0.44
   '@k8o/html-nest': 0.2.0
   '@k8o/oxc-config': 0.3.0
-  '@k8ordo/ui': 1.0.0
+  '@k8ordo/ui': 2.0.0
   '@next/env': 16.3.4
   '@next/mdx': 16.3.4
   '@next/third-parties': 16.3.4
