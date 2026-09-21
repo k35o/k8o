@@ -63,7 +63,8 @@
     "better-auth": "catalog:",
     "next": "catalog:",
     "react": "catalog:",
-    "vitest": "catalog:"
+    "vitest": "catalog:",
+    "zod": "catalog:"
   },
   "peerDependencies": {
     "@k8ordo/ui": "catalog:",

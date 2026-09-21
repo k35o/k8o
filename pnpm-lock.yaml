@@ -712,7 +712,7 @@ importers:
     devDependencies:
       '@k8ordo/ui':
         specifier: 'catalog:'
-        version: 1.0.0(@json-render/core@0.20.0(zod@4.5.4))(@json-render/react@0.20.0(react@19.3.0)(zod@4.5.4))(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(ai@7.0.93(zod@4.5.4))(react-dom@19.3.0(react@19.3.0))(react@19.3.0)(tailwindcss@4.3.3)(typescript@7.0.2)(zod@4.5.4)
+        version: 1.0.0(@json-render/core@0.20.0(zod@4.6.4))(@json-render/react@0.20.0(react@19.3.0)(zod@4.6.4))(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(ai@7.0.93(zod@4.6.4))(react-dom@19.3.0(react@19.3.0))(react@19.3.0)(tailwindcss@4.3.3)(typescript@7.0.2)(zod@4.6.4)
       '@repo/typescript-config':
         specifier: workspace:*
         version: link:../typescript-config
@@ -734,6 +734,9 @@ importers:
       vitest:
         specifier: 'catalog:'
         version: 5.0.0(@opentelemetry/api@1.9.1)(@types/node@24.13.4)(@vitest/browser-playwright@4.1.11)(@vitest/browser-preview@4.1.11)(@vitest/coverage-v8@5.0.0)(@vitest/ui@4.1.11)(msw@2.15.0(@types/node@24.13.4)(typescript@7.0.2))(vite@8.0.14(@types/node@24.13.4)(esbuild@0.28.1)(jiti@2.7.0)(tsx@4.22.3)(yaml@2.9.0))
+      zod:
+        specifier: 'catalog:'
+        version: 4.6.4
 
   packages/code-highlight:
     dependencies:
@@ -7255,14 +7258,6 @@ snapshots:
 
   '@adobe/css-tools@4.5.0': {}
 
-  '@ai-sdk/gateway@4.0.75(zod@4.5.4)':
-    dependencies:
-      '@ai-sdk/provider': 4.0.10
-      '@ai-sdk/provider-utils': 5.0.36(zod@4.5.4)
-      '@vercel/oidc': 3.2.0
-      zod: 4.5.4
-    optional: true
-
   '@ai-sdk/gateway@4.0.75(zod@4.6.4)':
     dependencies:
       '@ai-sdk/provider': 4.0.10
@@ -7291,16 +7286,6 @@ snapshots:
       '@ai-sdk/provider': 4.0.14
       '@ai-sdk/provider-utils': 5.0.40(zod@4.6.4)
       zod: 4.6.4
-
-  '@ai-sdk/provider-utils@5.0.36(zod@4.5.4)':
-    dependencies:
-      '@ai-sdk/provider': 4.0.10
-      '@standard-schema/spec': 1.1.0
-      '@workflow/serde': 4.1.0
-      eventsource-parser: 3.0.8
-      undici: 7.29.0
-      zod: 4.5.4
-    optional: true
 
   '@ai-sdk/provider-utils@5.0.36(zod@4.6.4)':
     dependencies:
@@ -8053,22 +8038,9 @@ snapshots:
       '@jridgewell/resolve-uri': 3.1.2
       '@jridgewell/sourcemap-codec': 1.5.5
 
-  '@json-render/core@0.20.0(zod@4.5.4)':
-    dependencies:
-      zod: 4.5.4
-    optional: true
-
   '@json-render/core@0.20.0(zod@4.6.4)':
     dependencies:
       zod: 4.6.4
-
-  '@json-render/react@0.20.0(react@19.3.0)(zod@4.5.4)':
-    dependencies:
-      '@json-render/core': 0.20.0(zod@4.5.4)
-      react: 19.3.0
-    transitivePeerDependencies:
-      - zod
-    optional: true
 
   '@json-render/react@0.20.0(react@19.3.0)(zod@4.6.4)':
     dependencies:
@@ -8086,23 +8058,6 @@ snapshots:
       oxlint: 1.79.0(oxlint-tsgolint@7.0.2001)(vite-plus@0.3.1(@opentelemetry/api@1.9.1)(@types/node@24.13.4)(@vitest/browser-playwright@4.1.11)(@vitest/coverage-v8@4.1.11)(@vitest/ui@4.1.11)(esbuild@0.28.1)(jiti@2.7.0)(msw@2.15.0(@types/node@24.13.4)(typescript@7.0.2))(tsx@4.22.3)(typescript@7.0.2)(yaml@2.9.0))
       oxlint-tailwindcss: 1.12.0
       oxlint-tsgolint: 7.0.2001
-
-  '@k8ordo/ui@1.0.0(@json-render/core@0.20.0(zod@4.5.4))(@json-render/react@0.20.0(react@19.3.0)(zod@4.5.4))(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(ai@7.0.93(zod@4.5.4))(react-dom@19.3.0(react@19.3.0))(react@19.3.0)(tailwindcss@4.3.3)(typescript@7.0.2)(zod@4.5.4)':
-    dependencies:
-      clsx: 2.1.1
-      lucide-react: 1.31.0(react@19.3.0)
-      react: 19.3.0
-      react-dom: 19.3.0(react@19.3.0)
-      tailwind-merge: 3.6.0
-    optionalDependencies:
-      '@json-render/core': 0.20.0(zod@4.5.4)
-      '@json-render/react': 0.20.0(react@19.3.0)(zod@4.5.4)
-      '@types/react': 19.3.0
-      '@types/react-dom': 19.3.0(@types/react@19.3.0)
-      ai: 7.0.93(zod@4.5.4)
-      tailwindcss: 4.3.3
-      typescript: 7.0.2
-      zod: 4.5.4
 
   '@k8ordo/ui@1.0.0(@json-render/core@0.20.0(zod@4.6.4))(@json-render/react@0.20.0(react@19.3.0)(zod@4.6.4))(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(ai@7.0.93(zod@4.6.4))(react-dom@19.3.0(react@19.3.0))(react@19.3.0)(tailwindcss@4.3.3)(typescript@7.0.2)(zod@4.6.4)':
     dependencies:
@@ -9979,14 +9934,6 @@ snapshots:
       picocolors: 1.1.1
       prompts: 2.4.2
       yaml: 2.9.0
-
-  ai@7.0.93(zod@4.5.4):
-    dependencies:
-      '@ai-sdk/gateway': 4.0.75(zod@4.5.4)
-      '@ai-sdk/provider': 4.0.10
-      '@ai-sdk/provider-utils': 5.0.36(zod@4.5.4)
-      zod: 4.5.4
-    optional: true
 
   ai@7.0.93(zod@4.6.4):
     dependencies:
