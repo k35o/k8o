@@ -144,7 +144,7 @@
   },
   "dependencies": {
     "clsx": "2.1.1",
-    "tailwind-merge": "3.6.0",
+    "tailwind-merge": "3.7.0",
     "to-vfile": "8.0.0",
     "vfile-matter": "5.0.1"
   },
