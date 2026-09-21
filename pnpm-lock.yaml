@@ -318,7 +318,7 @@ importers:
     dependencies:
       '@k8ordo/ui':
         specifier: 'catalog:'
-        version: 1.0.0(@json-render/core@0.20.0(zod@4.6.4))(@json-render/react@0.20.0(react@19.3.0)(zod@4.6.4))(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(ai@7.0.93(zod@4.6.4))(react-dom@19.3.0(react@19.3.0))(react@19.3.0)(tailwindcss@4.3.3)(typescript@7.0.2)(zod@4.6.4)
+        version: 1.0.0(@json-render/core@0.20.0(zod@4.6.4))(@json-render/react@0.20.0(react@19.3.0)(zod@4.6.4))(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(ai@7.0.99(zod@4.6.4))(react-dom@19.3.0(react@19.3.0))(react@19.3.0)(tailwindcss@4.3.3)(typescript@7.0.2)(zod@4.6.4)
       '@repo/auth-shell':
         specifier: workspace:*
         version: link:../../packages/auth-shell
@@ -712,7 +712,7 @@ importers:
     devDependencies:
       '@k8ordo/ui':
         specifier: 'catalog:'
-        version: 1.0.0(@json-render/core@0.20.0(zod@4.6.4))(@json-render/react@0.20.0(react@19.3.0)(zod@4.6.4))(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(ai@7.0.93(zod@4.6.4))(react-dom@19.3.0(react@19.3.0))(react@19.3.0)(tailwindcss@4.3.3)(typescript@7.0.2)(zod@4.6.4)
+        version: 1.0.0(@json-render/core@0.20.0(zod@4.6.4))(@json-render/react@0.20.0(react@19.3.0)(zod@4.6.4))(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(ai@7.0.99(zod@4.6.4))(react-dom@19.3.0(react@19.3.0))(react@19.3.0)(tailwindcss@4.3.3)(typescript@7.0.2)(zod@4.6.4)
       '@repo/typescript-config':
         specifier: workspace:*
         version: link:../typescript-config
@@ -862,12 +862,6 @@ packages:
   '@adobe/css-tools@4.5.0':
     resolution: {integrity: sha512-6OzddxPio9UiWTCemp4N8cYLV2ZN1ncRnV1cVGtve7dhPOtRkleRyx32GQCYSwDYgaHU3USMm84tNsvKzRCa1Q==}
 
-  '@ai-sdk/gateway@4.0.75':
-    resolution: {integrity: sha512-HOnhw3oXtBnboBF7kAKipjToCN6+5w6EuukiUKiULcxBitS+vbHRRv9IUBcq+Z1wkXcJjfywKrt5r++I6OYyXg==}
-    engines: {node: '>=22'}
-    peerDependencies:
-      zod: ^3.25.76 || ^4.1.8
-
   '@ai-sdk/gateway@4.0.80':
     resolution: {integrity: sha512-6t+07o8lSthpKf64Xb1qHWR2bWvJ3Fd2oFvS9fQc45p31bi2OUqan246e/ojAmZpWCiMPjKyQ4TBr4MYytnTiQ==}
     engines: {node: '>=22'}
@@ -886,21 +880,11 @@ packages:
     peerDependencies:
       zod: ^3.25.76 || ^4.1.8
 
-  '@ai-sdk/provider-utils@5.0.36':
-    resolution: {integrity: sha512-MFXBn6XDyf37PNQAge/HTatPJE8Vmg/g/w4WPtjSV53jq8FKAzoaN5+43hsdQa9bqgN+/13jxug9ChvsG+godQ==}
-    engines: {node: '>=22'}
-    peerDependencies:
-      zod: ^3.25.76 || ^4.1.8
-
   '@ai-sdk/provider-utils@5.0.40':
     resolution: {integrity: sha512-zsXPwSAQ9mRJ2hvyITaLOYUyuGrBmzFhJXOg4mllGmla1PfNxZcm4GwqMiV2xQaDgcgBMdUGxXkp9xekZZNIkg==}
     engines: {node: '>=22'}
     peerDependencies:
       zod: ^3.25.76 || ^4.1.8
-
-  '@ai-sdk/provider@4.0.10':
-    resolution: {integrity: sha512-fX2ENAc7iDpZ+Wp4+Rk06Usn/Ys7dI9uAkGv0jlF6XVrW13NkRWx5Ou+U6lIM2E1fTLkCs16GGrUAaVvroag7A==}
-    engines: {node: '>=22'}
 
   '@ai-sdk/provider@4.0.14':
     resolution: {integrity: sha512-yukP2tbcQQErG5gLCMBGvpvb/rM3D3KlTKG6eKKOdNHLHqtNNDEeBxdYrY/JL+O76B2ig5dXY19H/f1HFSvRiQ==}
@@ -3821,9 +3805,6 @@ packages:
   '@types/ms@2.1.0':
     resolution: {integrity: sha512-GsCCIZDE/p3i96vtEqx+7dBUGXrc7zeSK3wwPHIaRThS+9OhWIXRqzs4d6k1SVU8g91DrNRWxWUGhp5KXQb2VA==}
 
-  '@types/node@24.13.3':
-    resolution: {integrity: sha512-Dh8vAsV36ig5wa9OX4pXvMc9D3Veibfw2wix0CUwYODLD8nkj9UsLjASr49nPg+2eKzxhBV+v7L8pXvT4e639Q==}
-
   '@types/node@24.13.4':
     resolution: {integrity: sha512-YJ7EqCstVTzIr0fMr7qul/977en+pQHrfmuKIo6Zr9i75Be21dr3MovcfvGtyvi2HAUrRerWps5sMO9I7WaxDw==}
 
@@ -4444,12 +4425,6 @@ packages:
   agent-install@0.0.6:
     resolution: {integrity: sha512-7NRMZ/ZDz2vHevQTgJsocBFpakB1/Wx5ip19YSJuj4VOXpraWztTerViNtdSyARKZT9e2yVwUUB5JXXCE7mNrA==}
     hasBin: true
-
-  ai@7.0.93:
-    resolution: {integrity: sha512-CJss6zb9mlltk/mCr8qom20NBnqEQxVawkqwtT62tCwsxilZpXfHNRMRwcS3XRpzdP1kEluVuDBUayYWEEd95g==}
-    engines: {node: '>=22'}
-    peerDependencies:
-      zod: ^3.25.76 || ^4.1.8
 
   ai@7.0.99:
     resolution: {integrity: sha512-Ov+3j/nSajaVH5hO8C94wN9wisG5tAJ8HWsLV9d/+nlzrRGUh3oYO3Kp1fRyUNWjAWLSpGLHLPaHCdfxb307Vg==}
@@ -7258,14 +7233,6 @@ snapshots:
 
   '@adobe/css-tools@4.5.0': {}
 
-  '@ai-sdk/gateway@4.0.75(zod@4.6.4)':
-    dependencies:
-      '@ai-sdk/provider': 4.0.10
-      '@ai-sdk/provider-utils': 5.0.36(zod@4.6.4)
-      '@vercel/oidc': 3.2.0
-      zod: 4.6.4
-    optional: true
-
   '@ai-sdk/gateway@4.0.80(zod@4.6.4)':
     dependencies:
       '@ai-sdk/provider': 4.0.14
@@ -7287,16 +7254,6 @@ snapshots:
       '@ai-sdk/provider-utils': 5.0.40(zod@4.6.4)
       zod: 4.6.4
 
-  '@ai-sdk/provider-utils@5.0.36(zod@4.6.4)':
-    dependencies:
-      '@ai-sdk/provider': 4.0.10
-      '@standard-schema/spec': 1.1.0
-      '@workflow/serde': 4.1.0
-      eventsource-parser: 3.0.8
-      undici: 7.29.0
-      zod: 4.6.4
-    optional: true
-
   '@ai-sdk/provider-utils@5.0.40(zod@4.6.4)':
     dependencies:
       '@ai-sdk/provider': 4.0.14
@@ -7305,11 +7262,6 @@ snapshots:
       eventsource-parser: 3.0.8
       undici: 7.29.0
       zod: 4.6.4
-
-  '@ai-sdk/provider@4.0.10':
-    dependencies:
-      json-schema: 0.4.0
-    optional: true
 
   '@ai-sdk/provider@4.0.14':
     dependencies:
@@ -8058,23 +8010,6 @@ snapshots:
       oxlint: 1.79.0(oxlint-tsgolint@7.0.2001)(vite-plus@0.3.1(@opentelemetry/api@1.9.1)(@types/node@24.13.4)(@vitest/browser-playwright@4.1.11)(@vitest/coverage-v8@4.1.11)(@vitest/ui@4.1.11)(esbuild@0.28.1)(jiti@2.7.0)(msw@2.15.0(@types/node@24.13.4)(typescript@7.0.2))(tsx@4.22.3)(typescript@7.0.2)(yaml@2.9.0))
       oxlint-tailwindcss: 1.12.0
       oxlint-tsgolint: 7.0.2001
-
-  '@k8ordo/ui@1.0.0(@json-render/core@0.20.0(zod@4.6.4))(@json-render/react@0.20.0(react@19.3.0)(zod@4.6.4))(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(ai@7.0.93(zod@4.6.4))(react-dom@19.3.0(react@19.3.0))(react@19.3.0)(tailwindcss@4.3.3)(typescript@7.0.2)(zod@4.6.4)':
-    dependencies:
-      clsx: 2.1.1
-      lucide-react: 1.31.0(react@19.3.0)
-      react: 19.3.0
-      react-dom: 19.3.0(react@19.3.0)
-      tailwind-merge: 3.6.0
-    optionalDependencies:
-      '@json-render/core': 0.20.0(zod@4.6.4)
-      '@json-render/react': 0.20.0(react@19.3.0)(zod@4.6.4)
-      '@types/react': 19.3.0
-      '@types/react-dom': 19.3.0(@types/react@19.3.0)
-      ai: 7.0.93(zod@4.6.4)
-      tailwindcss: 4.3.3
-      typescript: 7.0.2
-      zod: 4.6.4
 
   '@k8ordo/ui@1.0.0(@json-render/core@0.20.0(zod@4.6.4))(@json-render/react@0.20.0(react@19.3.0)(zod@4.6.4))(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(ai@7.0.99(zod@4.6.4))(react-dom@19.3.0(react@19.3.0))(react@19.3.0)(tailwindcss@4.3.3)(typescript@7.0.2)(zod@4.6.4)':
     dependencies:
@@ -9392,10 +9327,6 @@ snapshots:
 
   '@types/ms@2.1.0': {}
 
-  '@types/node@24.13.3':
-    dependencies:
-      undici-types: 7.18.2
-
   '@types/node@24.13.4':
     dependencies:
       undici-types: 7.18.2
@@ -9412,7 +9343,7 @@ snapshots:
 
   '@types/set-cookie-parser@2.4.10':
     dependencies:
-      '@types/node': 24.13.3
+      '@types/node': 24.13.4
 
   '@types/statuses@2.0.6': {}
 
@@ -9422,7 +9353,7 @@ snapshots:
 
   '@types/ws@8.18.1':
     dependencies:
-      '@types/node': 24.13.3
+      '@types/node': 24.13.4
 
   '@typescript-eslint/types@8.60.0': {}
 
@@ -9934,14 +9865,6 @@ snapshots:
       picocolors: 1.1.1
       prompts: 2.4.2
       yaml: 2.9.0
-
-  ai@7.0.93(zod@4.6.4):
-    dependencies:
-      '@ai-sdk/gateway': 4.0.75(zod@4.6.4)
-      '@ai-sdk/provider': 4.0.10
-      '@ai-sdk/provider-utils': 5.0.36(zod@4.6.4)
-      zod: 4.6.4
-    optional: true
 
   ai@7.0.99(zod@4.6.4):
     dependencies:
