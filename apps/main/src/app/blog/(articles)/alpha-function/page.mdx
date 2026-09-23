@@ -1,0 +1,105 @@
+---
+title: 'alpha()で色の不透明度だけを書き換える'
+description: 'alpha()は、元の色の色成分を変えずにアルファチャンネルだけを差し替えるCSSの関数です。Baseline 2026で主要ブラウザに揃い、色空間を意識せずにデザイントークンの半透明版を導き出せるようになりました。相対色構文やcolor-mix()との違いも整理します。'
+createdAt: 2026-09-23
+updatedAt: 2026-09-23
+featureIds:
+  - alpha
+---
+
+import { PlaygroundEmbed } from '@/app/_components/playgrounds';
+
+# alpha()で色の不透明度だけを書き換える
+
+<BrowserSupportStatus featureId="alpha" />
+
+## はじめに
+
+ブランドカラーを`--brand`というカスタムプロパティで持っていて、その半透明版をホバーの背景やフォーカスリングに使いたいとします。色そのものは変えず、不透明度だけを下げたいだけなのに、CSSにはそれを一言で書く手段が長くありませんでした。`rgb(from var(--brand) r g b / 40%)`のような相対色構文（`from`で元の色を渡し、成分を組み替えて新しい色を作る書き方）は色空間を指定する必要があり、`color-mix()`で`transparent`と混ぜる書き方は不透明度の指定が間接的です。
+
+`alpha()`は、元の色を受け取ってアルファチャンネル（色の不透明度を表す4つ目の成分）だけを差し替えた色を返す関数です。Chrome 151とFirefox 155で先行して使えており、Safari 27が対応したことでBaseline 2026に加わりました。
+
+## 構文と返り値
+
+`from`に続けて元の色を書き、スラッシュのあとに新しいアルファ値を書きます。アルファ値は`0`から`1`の数値か`0%`から`100%`のパーセンテージで、`calc()`も使えます。
+
+```css
+/* [!og] */
+:root {
+  --brand: oklch(55% 0.22 270);
+  /* 色成分はそのまま、不透明度だけ40%にする */
+  --brand-hover: alpha(from var(--brand) / 40%);
+}
+
+.button:hover {
+  background-color: var(--brand-hover);
+}
+```
+
+返り値は元の色と同じ色空間の色です。`oklch()`で書いた色を渡せば`oklch()`のまま返ってくるので、`display-p3`のような広色域の色を渡しても、sRGBに丸められて色が変わることはありません。
+
+アルファ値の中では`alpha`というキーワードで元の色のアルファチャンネルを参照できます。値は`0`から`1`の数値です。`calc(alpha * 0.5)`と書けば元の不透明度の半分になり、`clamp(0.2, alpha, 0.8)`と書けば元の不透明度を範囲内に収められます。
+
+```css
+:root {
+  --overlay: rgb(0 0 0 / 0.6);
+  /* 0.6の半分なので0.3になる */
+  --overlay-light: alpha(from var(--overlay) / calc(alpha * 0.5));
+}
+```
+
+固定値を渡したときは元の色の不透明度に関係なく、その値で上書きされます。相対値と固定値のどちらが欲しいかは、元の色がすでに半透明かどうかで決まります。
+
+<PlaygroundEmbed demo="固定値と相対値の違いを見る" sectionId="alpha-function" />
+
+## 相対色構文やcolor-mix()との違い
+
+不透明度を変えるだけなら、これまでも2つの書き方がありました。
+
+```css
+/* 相対色構文: 色空間を決めて全チャンネルを書き直す */
+--brand-hover: rgb(from var(--brand) r g b / 40%);
+
+/* color-mix(): 透明と混ぜる。40%が欲しいのに60%と書く */
+--brand-hover: color-mix(in srgb, var(--brand), transparent 60%);
+
+/* alpha(): 色空間を書かず、アルファだけを指定する */
+--brand-hover: alpha(from var(--brand) / 40%);
+```
+
+どちらも色空間を自分で選ぶ必要があります。`oklch()`のトークンを`rgb(from ...)`や`in srgb`に通すとsRGBに丸められ、元の色空間を保つには`oklch(from var(--brand) l c h / 40%)`のようにトークン側の関数に合わせて書き直すことになります。`alpha()`は元の色の色空間をそのまま引き継ぐので、トークンが`oklch()`でも`color(display-p3 ...)`でも派生色の側は変わりません。
+
+逆に、`alpha()`にできるのはアルファチャンネルの差し替えだけです。明度を下げたホバー色や彩度を落とした無効状態の色が欲しい場合は、これまで通り相対色構文で`l`や`c`を操作します。
+
+## トークンの派生色をまとめて定義する
+
+デザイントークンを1つ決めて、その派生色を`alpha()`で導く形にしておくと、元の色を差し替えたときに派生色が追従します。
+
+```css
+:root {
+  --brand: oklch(55% 0.22 270);
+  --brand-subtle: alpha(from var(--brand) / 12%);
+  --brand-glow: alpha(from var(--brand) / 40%);
+}
+
+.badge {
+  background-color: var(--brand-subtle);
+  color: var(--brand);
+}
+
+.input:focus-visible {
+  /* 輪郭は不透明な色に任せ、外側の光彩だけ半透明の派生色にする */
+  outline: 2px solid var(--brand);
+  box-shadow: 0 0 0 4px var(--brand-glow);
+}
+```
+
+`--brand`を変えれば`--brand-subtle`と`--brand-glow`も同じ色相で薄くなるので、テーマごとにアルファ違いの色を並べて管理する必要がなくなります。
+
+半透明の派生色は装飾に使い、フォーカスの輪郭のように認識に必要な部分には使わないほうが安全です。`oklch(55% 0.22 270)`を40%にすると白背景とのコントラストは1.8:1程度で、非テキストのコントラストの基準である3:1に届きません。上の例で輪郭を不透明な`--brand`にしているのはそのためです。
+
+<PlaygroundEmbed demo="トークンを差し替えて派生色を追従させる" sectionId="alpha-function" />
+
+## おわりに
+
+`alpha()`は、元の色の色成分と色空間を保ったまま、アルファチャンネルだけを差し替える関数です。相対色構文のように色空間を選ぶ必要がなく、`color-mix()`のように混合率へ読み替える必要もありません。デザイントークンの半透明版を導き出す用途では、`alpha()`が一番短く意図が伝わる書き方になります。
