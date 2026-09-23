@@ -526,6 +526,13 @@
       "when": 1790051765910,
       "tag": "0074_great_betty_ross",
       "breakpoints": true
+    },
+    {
+      "idx": 75,
+      "version": "6",
+      "when": 1790141417478,
+      "tag": "0075_lucky_meteorite",
+      "breakpoints": true
     }
   ]
 }
