@@ -20,6 +20,7 @@ import { invokerCommandsSection } from './invoker-commands';
 import { lcpSection } from './largest-contentful-paint';
 import { mediaPseudosSection } from './media-pseudos';
 import { openPseudoSection } from './open-pseudo';
+import { overflowAnchorSection } from './overflow-anchor';
 import { popoverSection } from './popover';
 import { printColorAdjustSection } from './print-color-adjust';
 import { progressFunctionSection } from './progress-function';
@@ -60,6 +61,7 @@ export const playgroundSections: PlaygroundSection[] = [
   invokerCommandsSection,
   lcpSection,
   mediaPseudosSection,
+  overflowAnchorSection,
   openPseudoSection,
   popoverSection,
   requestCloseSection,
