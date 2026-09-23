@@ -519,6 +519,13 @@
       "when": 1789112742390,
       "tag": "0073_clear_sauron",
       "breakpoints": true
+    },
+    {
+      "idx": 74,
+      "version": "6",
+      "when": 1790051765910,
+      "tag": "0074_great_betty_ross",
+      "breakpoints": true
     }
   ]
 }
