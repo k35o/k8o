@@ -2,6 +2,7 @@ import { absSignSection } from './abs-sign';
 import { activeViewTransitionSection } from './active-view-transition';
 import { alphaFunctionSection } from './alpha-function';
 import { asyncClipboardSection } from './async-clipboard';
+import { autocorrectSection } from './autocorrect';
 import { baselineShiftSection } from './baseline-shift';
 import { caretPositionFromPointSection } from './caret-position-from-point';
 import { composedRangesSection } from './composed-ranges';
@@ -45,6 +46,7 @@ export const playgroundSections: PlaygroundSection[] = [
   activeViewTransitionSection,
   alphaFunctionSection,
   asyncClipboardSection,
+  autocorrectSection,
   baselineShiftSection,
   caretPositionFromPointSection,
   composedRangesSection,
