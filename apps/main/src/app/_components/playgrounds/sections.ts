@@ -19,6 +19,7 @@ import { inputFileWebkitdirectorySection } from './input-file-webkitdirectory';
 import { intlLocaleInfoSection } from './intl-locale-info';
 import { invokerCommandsSection } from './invoker-commands';
 import { lcpSection } from './largest-contentful-paint';
+import { lightDarkImageSection } from './light-dark-image';
 import { mediaPseudosSection } from './media-pseudos';
 import { openPseudoSection } from './open-pseudo';
 import { overflowAnchorSection } from './overflow-anchor';
@@ -62,6 +63,7 @@ export const playgroundSections: PlaygroundSection[] = [
   intlLocaleInfoSection,
   invokerCommandsSection,
   lcpSection,
+  lightDarkImageSection,
   mediaPseudosSection,
   overflowAnchorSection,
   openPseudoSection,
