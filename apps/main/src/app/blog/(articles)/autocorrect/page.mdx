@@ -1,0 +1,68 @@
+---
+title: 'autocorrect属性で入力の自動修正を制御する'
+description: 'autocorrectは、編集可能な要素でOSやブラウザの自動修正を有効にするかを指定するHTMLのグローバル属性です。長くSafari独自の属性として使われてきましたが、HTML標準に入り、Firefox 136とChrome 153が対応してBaseline 2026に加わりました。値の解釈、form要素からの継承、spellcheckとの違いを整理します。'
+createdAt: 2026-09-25
+updatedAt: 2026-09-25
+featureIds:
+  - autocorrect
+---
+
+import { PlaygroundEmbed } from '@/app/_components/playgrounds';
+
+# autocorrect属性で入力の自動修正を制御する
+
+<BrowserSupportStatus featureId="autocorrect" />
+
+## はじめに
+
+ユーザー名や招待コードを入力する欄で、iPhoneが単語を勝手に置き換えてしまい、正しく打ったはずの値が送信できない。この経験がある人は多いはずです。対処として`autocorrect="off"`を書く習慣が広まりましたが、これはSafari独自の属性で、HTMLの仕様には載っていませんでした。他のブラウザは無視するだけで害もないため、おまじないとして書き継がれてきました。
+
+その属性が2024年にHTML標準へ取り込まれ、Firefox 136とChrome 153が対応して、`autocorrect`はBaseline 2026に加わりました。Safariでは14.1から使えていたので、おまじないのつもりで書いていた指定が、そのまま標準の挙動として扱われるようになりました。
+
+## 値と対象
+
+`autocorrect`はグローバル属性ですが、意味を持つのは編集可能な要素だけです。
+
+- `<input>`要素。ただし`type`が`password`と`email`と`url`なら属性に関係なく常に無効
+- `<textarea>`要素
+- `contenteditable`を持つ要素
+
+値は`on`か`off`で、自動修正が止まるのは`off`と書いたときだけです。空文字列も、`on`と`off`以外の値も、属性を書かない場合も、すべて`on`として扱われます。
+
+```html
+<!-- [!og] -->
+<label for="handle">ユーザー名</label>
+<input id="handle" name="handle" type="text" autocorrect="off" />
+
+<label for="bio">自己紹介</label>
+<textarea id="bio" name="bio"></textarea>
+```
+
+JavaScriptからは`HTMLElement.autocorrect`で読み書きできます。このプロパティが返すのは属性の文字列ではなく真偽値で、`autocorrect="off"`の要素では`false`、それ以外では`true`になります。対応しているかどうかは`'autocorrect' in HTMLElement.prototype`で判定できます。
+
+<PlaygroundEmbed demo="属性の値と反映されるプロパティを見る" sectionId="autocorrect" />
+
+## formからの継承
+
+`<form>`要素に`autocorrect`を書くと、自分に属性を持たない`<input>`や`<textarea>`はフォームの値を引き継ぎます。仕様上は`<button>`や`<select>`などフォームに属する要素も同じ扱いですが、編集できるテキストを持たないので、`autocorrect`プロパティの値がフォームと同じになる以上のことは起きません。`contenteditable`の要素は`<form>`の中にあっても引き継ぎません。
+
+```html
+<form autocorrect="off">
+  <!-- 属性がないのでフォームの off を引き継ぐ -->
+  <input name="code" type="text" />
+  <!-- 自分の指定が優先されて on になる -->
+  <textarea name="note" autocorrect="on"></textarea>
+</form>
+```
+
+識別子ばかりを入力するフォームでは、入力欄ごとに書くと付け忘れが起きます。`<form>`にまとめて書けば、その心配がありません。
+
+## spellcheckとの違い
+
+似た属性に`spellcheck`があります。`spellcheck`が決めるのはスペルミスに下線を引いて知らせるかどうかで、入力した文字はそのままです。`autocorrect`が決めるのは入力中に文字を置き換えるかどうかで、ユーザーが操作しなくても値が変わります。役割が違うため、2つは別々に指定できます。
+
+ユーザー名や商品コードのように、正確な文字列が必要な欄では`autocorrect="off"`にします。誤りは知らせてほしいが置き換えられては困る欄では、`spellcheck="true"`と`autocorrect="off"`を組み合わせます。自由記述の欄はどちらも既定のままで構いません。
+
+## おわりに
+
+`autocorrect`は、Safari独自の実装からHTML標準の属性になり、Firefox 136とChrome 153の対応で主要ブラウザに揃いました。値は`on`と`off`で、`<form>`に書けば子要素に継承されます。識別子を入力する欄に`autocorrect="off"`を付ける長年のおまじないは、仕様に裏付けのある指定になりました。

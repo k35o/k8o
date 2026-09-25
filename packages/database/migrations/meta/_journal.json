@@ -533,6 +533,13 @@
       "when": 1790141417478,
       "tag": "0075_lucky_meteorite",
       "breakpoints": true
+    },
+    {
+      "idx": 76,
+      "version": "6",
+      "when": 1790325171995,
+      "tag": "0076_bored_christian_walker",
+      "breakpoints": true
     }
   ]
 }
