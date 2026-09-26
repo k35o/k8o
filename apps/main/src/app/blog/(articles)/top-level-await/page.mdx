@@ -1,0 +1,107 @@
+---
+title: 'Top-level awaitでモジュールの評価を非同期処理の完了まで待たせる'
+description: 'Top-level awaitは、ESモジュールのトップレベルでawaitを書けるようにする構文です。Chrome 89とFirefox 89では2021年から使えていましたが、Safariに残っていた不具合がSafari 27で解消され、Baseline 2026に加わりました。モジュールグラフの評価がどう変わるか、使いどころと避けるべき場面はどこかを整理します。'
+createdAt: 2026-09-26
+updatedAt: 2026-09-26
+featureIds:
+  - top-level-await
+---
+
+# Top-level awaitでモジュールの評価を非同期処理の完了まで待たせる
+
+<BrowserSupportStatus featureId="top-level-await" />
+
+## はじめに
+
+ES2017で`await`が導入されたとき、書ける場所は`async`関数の中だけと決められました。モジュールの初期化で設定ファイルを取りに行きたい、WebAssemblyのインスタンス化を待ってからエクスポートしたい、といった場面では回り道を強いられます。`async`関数で包んで即時実行し、結果をPromiseとしてエクスポートするしかありませんでした。
+
+Top-level awaitは、ESモジュールのトップレベルで`await`を書けるようにするES2022の構文です。Chrome 89とFirefox 89が2021年に対応し、Safariも15で実装しましたが、同じモジュールを複数の場所から同時に`import`したときの不具合が残っていました。Safari 27でこれが解消され、Baseline 2026に加わりました。
+
+## 書き方と評価の流れ
+
+これまでは、モジュールのトップレベルに`await`を書くと構文エラーでした。実行時ではなく構文解析の段階で失敗するので、そのモジュールの1行目も、それを`import`している側の本体も実行されません。モジュールグラフのどこかに構文エラーがあると`<script type="module">`は丸ごと読み込みに失敗し、`try...catch`で拾う余地も、機能検出して分岐する余地もありません。
+
+そこで`async`関数で包んで即時実行し、その戻り値のPromiseをエクスポートしていました。利用側は値を使うたびに`await`を書く必要があります。
+
+```ts
+// config.ts（これまで）
+export const configPromise = (async () => {
+  const response = await fetch('/config.json');
+  return response.json();
+})();
+
+// app.ts
+import { configPromise } from './config.ts';
+
+const config = await configPromise;
+```
+
+Top-level awaitでは、モジュールのトップレベルに`await`を書くだけで済みます。`async`関数で包む必要はなく、`export`する値に`await`の結果をそのまま使えます。
+
+```ts
+// [!og]
+// config.ts
+const response = await fetch('/config.json');
+export const config = await response.json();
+```
+
+このモジュールを`import`する側からは、`config`はただの値に見えます。
+
+```ts
+// app.ts
+import { config } from './config.ts';
+
+// config.tsのawaitが終わってから、この行が実行される
+console.log(config.apiBase);
+```
+
+モジュールが`await`を含むと、そのモジュールの評価は非同期になり、依存している親モジュールの評価は子の完了を待ちます。ただし待つのは評価だけです。モジュールの取得と解析は並行して進むので、`app.ts`が`config.ts`のほかに`utils.ts`も`import`していれば、`utils.ts`の読み込みは`config.ts`の`fetch`を待たずに進み、両方が揃ってから`app.ts`の本体が実行されます。
+
+同じモジュールを複数の親が`import`している場合、評価は1回だけ行われ、すべての親がその完了を待ちます。Safariに不具合が残っていたのはこの経路です。複数の親が同時に待つ状況では子の評価が終わる前に親が動き出し、読み込んだ値を参照した時点で`ReferenceError`になることがありました。
+
+## 使いどころ
+
+Top-level awaitが向いているのは、モジュールの初期化そのものが非同期で、初期化が終わるまでモジュールを使う意味がない場面です。
+
+代表的なのは、環境に応じて実装を選ぶ場面です。動的`import()`と組み合わせれば、条件によって読み込むモジュールを変え、その結果をそのままエクスポートできます。
+
+```ts
+// 対応していれば標準の実装、なければポリフィルを使う
+const { formatDuration } = 'DurationFormat' in Intl
+  ? await import('./duration-native.ts')
+  : await import('./duration-polyfill.ts');
+
+export { formatDuration };
+```
+
+WebAssemblyのインスタンス化も同じように書けます。`WebAssembly.instantiateStreaming()`の結果を待ってからエクスポートすれば、利用側は初期化の完了を気にせず関数を呼べます。
+
+```ts
+const { instance } = await WebAssembly.instantiateStreaming(
+  fetch('/image.wasm'),
+);
+
+export const resize = instance.exports.resize as (w: number, h: number) => void;
+```
+
+翻訳ファイルのように、実行時にならないとどれが必要か決まらないリソースも、この形で読み込めます。テンプレートリテラルを含む動的`import()`なら、バンドラーが候補をまとめて分割してくれるので、実際に読み込まれるのは必要な言語の分だけです。
+
+```ts
+const lang = navigator.language.startsWith('ja') ? 'ja' : 'en';
+
+export const { messages } = await import(`./locales/${lang}.ts`);
+```
+
+## 避けるべき場面
+
+エントリーポイントから辿れる位置にあるモジュールで大きなリソースを待つと、そのリソースが届くまで画面は何も動きません。Top-level awaitは親モジュールの評価を止めるので、`await`が長引いた分だけアプリケーション全体の起動が遅れます。初期化に時間のかかる処理は、モジュールの評価で待つのをやめ、必要になった時点で`async`関数から呼ぶ形に寄せると起動が軽くなります。
+
+循環参照との組み合わせにも注意が必要です。`a.ts`と`b.ts`が互いに`import`している状態で、`b.ts`が`await`している処理が`a.ts`の実行結果に依存していると、互いに相手を待ったまま進まなくなります。循環参照そのものは実行時エラーになりません。Top-level awaitが入ると例外すら出ないまま止まるので、原因の特定に手間がかかります。
+
+Service Workerでは、モジュール形式で登録してもTop-level awaitを使えず、`await`を含むモジュールは登録の時点で失敗します。Service Workerのスクリプトは、評価が同期的に完了することを前提にしているからです。初期化で待ちたい処理があれば`install`イベントの`waitUntil()`に寄せます。
+
+CommonJSと通常のスクリプトでも使えません。`<script>`に`type="module"`が付いていなければ構文エラーになります。バンドラーを通すときは出力形式にも左右されます。IIFEやCommonJS形式への変換ではTop-level awaitを表現できないので、ESMで出力するか、バンドラー側の変換プラグインを用意します。
+
+## おわりに
+
+Top-level awaitは、モジュールの初期化が非同期であることを構文で表す仕組みです。設定の取得や実装の選択、WebAssemblyのインスタンス化のように、終わるまでモジュールを使う意味がない処理に向いています。一方で親モジュールの評価を止めるため、外してはいけない点が3つあります。エントリーポイントに近い場所で長い処理を待たせないこと、循環参照と組み合わせないこと、Service Workerで使わないことの3点です。ここさえ守れば、Promiseをエクスポートして利用側で`await`させる回りくどさから離れられます。
