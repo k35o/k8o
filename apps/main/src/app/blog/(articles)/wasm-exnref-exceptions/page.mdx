@@ -1,0 +1,192 @@
+---
+title: 'WebAssemblyのexnrefで例外を値として扱う'
+description: 'WebAssemblyの例外処理は、try_table命令と例外参照exnrefを使う形式に改定されました。例外の種類を表すタグとJavaScriptとの受け渡しから順に追い、旧形式では手に持てなかった例外を値として受け取れる、Baseline 2025の新形式を説明します。'
+createdAt: 2026-09-27
+updatedAt: 2026-09-27
+featureIds:
+  - wasm-exnref-exceptions
+---
+
+# WebAssemblyのexnrefで例外を値として扱う
+
+<BrowserSupportStatus featureId="wasm-exnref-exceptions" />
+
+## はじめに
+
+WebAssemblyは、C++やRustなどで書いたプログラムをブラウザで動かすためのバイナリ形式です。C++の`throw`と`catch`や、Rustのパニックを再現するには、WebAssembly側にも例外を投げて捕まえる仕組みが要ります。
+
+この仕組みは2022年に主要ブラウザで使えるようになりました。ただ、最初の形式では捕まえた例外そのものを手に持てなかったため、提案が改定されて例外を値として扱える形式に置き換わりました。新形式はChrome 137、Firefox 131、Safari 18.4で揃い、Baseline 2025に加わっています。
+
+この記事では、WebAssemblyのコードをWATというテキスト形式で書きます。実務ではコンパイラがバイナリを出力するので、WATを手で書くことはほとんどありません。それでも命令の意味を追うには、WATで書くのがいちばん短く済みます。WATの基本的な読み方は[Branch Hintingの記事](/blog/wasm-branch-hinting)で扱っています。
+
+## WebAssemblyの例外はタグで種類を区別する
+
+例外の投げ方とJavaScriptとの受け渡しは、旧形式でも新形式でも同じです。先にこの共通部分を見ておきます。
+
+JavaScriptの`throw`にはどんな値でも渡せますが、WebAssemblyの例外はタグという識別子で種類を区別します。タグは例外の型にあたり、例外が運ぶ値（ペイロード）の型もタグごとに決めます。
+
+タグは、JavaScript側で`WebAssembly.Tag`として作ってインポートで渡すか、WebAssembly側で定義してエクスポートします。JavaScriptが同じタグを持っていれば、WebAssemblyが投げた例外を`catch`で受け取ったときに、どのタグの例外かを判定できます。次の例はJavaScript側で作る書き方です。
+
+```ts
+// 32ビット整数を1つ運ぶ例外の種類を定義する
+const parseError = new WebAssembly.Tag({ parameters: ['i32'] });
+
+const { instance } = await WebAssembly.instantiateStreaming(
+  fetch('/parser.wasm'),
+  { env: { parse_error: parseError } },
+);
+
+const parse = instance.exports.parse as (input: number) => void;
+
+try {
+  parse(-1);
+} catch (e) {
+  // [!callout: WebAssemblyから来た例外は WebAssembly.Exception で、タグごとにペイロードを取り出せる]
+  if (e instanceof WebAssembly.Exception && e.is(parseError)) {
+    console.log('error code', e.getArg(parseError, 0));
+  } else {
+    throw e;
+  }
+}
+```
+
+WebAssembly側では、インポートしたタグを`throw`命令に渡して例外を投げます。
+
+```wasm
+(module
+  (tag $parse_error (import "env" "parse_error") (param i32))
+
+  (func (export "parse") (param $input i32)
+    ;; 入力が負なら、エラーコード 42 を載せて例外を投げる
+    local.get $input
+    i32.const 0
+    i32.lt_s
+    if
+      i32.const 42
+      throw $parse_error
+    end
+  )
+)
+```
+
+旧形式と新形式で違うのは、WebAssemblyの中で例外を捕まえる部分です。
+
+## 旧形式では例外を手に持てなかった
+
+旧形式と新形式を比べるため、1つの処理を両方の形式で書きます。題材は、関数を呼んで例外が起きたら、後始末をしてから同じ例外を投げ直すコードです。JavaScriptならこう書きます。
+
+```ts
+try {
+  work(input);
+} catch (e) {
+  cleanup();
+  // [!callout: 捕まえた例外は変数 e に入っていて、それを投げ直す]
+  throw e;
+}
+```
+
+旧形式のWATでは、JavaScriptの各行がそのまま命令に対応します。
+
+```wasm
+(func $with_cleanup (param $input i32)
+  try                   ;; try {
+    local.get $input
+    call $work          ;;   work(input);
+  catch_all             ;; } catch {
+    call $cleanup       ;;   cleanup();
+    rethrow 0           ;;   throw e; に当たる
+  end                   ;; }
+)
+```
+
+JavaScriptと違うのは、`catch_all`に変数`e`がないことです。旧形式では例外を捕まえられても、捕まえた例外を手に持てません。投げ直しの`rethrow`も、例外を渡す代わりに、どの`catch_all`が捕まえた例外かを番号で指します。`0`は`rethrow`をじかに囲む`catch_all`を指します。
+
+手に持てないので、JavaScriptなら当たり前の次の操作ができませんでした。例外を変数に取っておくこと、別の関数に渡すこと、`try`を抜けたあとで投げ直すことです。
+
+## 新形式では例外が値になった
+
+新形式では、捕まえた例外を値として受け取れます。この値の型が`exnref`で、JavaScriptの`e`に当たります。
+
+書き方の構造も変わります。旧形式では`catch_all`の下に後始末を書きましたが、新形式の`try_table`は、例外を捕まえたときの行き先を指定するだけです。後始末は、その行き先に書きます。先ほどの処理を新形式で書くと、こうなります。
+
+```wasm
+;; [!og]
+(func $with_cleanup (param $input i32)
+  ;; 捕まえた例外を入れておく変数。JavaScriptの e に当たる
+  (local $err exnref)
+
+  ;; $handler という名前の範囲。終わりへ移るときに exnref を1つ持っていく
+  block $handler (result exnref)
+    ;; この中で例外が起きたら、その例外を持って $handler の終わりへ移る
+    try_table (catch_all_ref $handler)
+      local.get $input
+      call $work          ;; work(input);
+    end
+    ;; 例外が起きなければここへ来て、そのまま関数から戻る
+    return
+  end
+  ;; $handler の終わり。例外が起きたときだけここへ来る
+  local.set $err        ;; 受け取った例外を $err に入れる
+  call $cleanup         ;; cleanup();
+  local.get $err
+  throw_ref             ;; throw e;
+)
+```
+
+`$handler`は、例外が起きたときの行き先に付けた名前です。`block $handler`から対応する`end`までが1つの範囲で、例外が起きるとその`end`の直後から実行が続きます。`(result exnref)`は、そのときに`exnref`を1つ持っていくという宣言です。例外が起きなかったときは持っていく`exnref`がないので、`end`に着く前に`return`で関数から戻っています。
+
+順に追います。
+
+1. `try_table`の中で`$work`を呼ぶ
+2. 例外が起きなければ、`return`で関数から戻る
+3. 例外が起きると、その例外を指す`exnref`の値を持って、`$handler`の終わりへ移る
+4. 受け取った値を変数`$err`に入れる
+5. `$cleanup`を呼んで後始末をする
+6. `$err`を`throw_ref`に渡し、同じ例外を投げ直す
+
+旧形式との違いは、例外が`$err`という値として手元にあることです。値なので変数に取っておけますし、別の関数にも渡せます。投げ直しも`catch`の番号を数えずに、`throw_ref`に値を渡すだけで済みます。
+
+## 捕まえ方は2つの選択の組み合わせ
+
+`try_table`に書く捕まえ方は4種類ありますが、覚えることは2つです。
+
+- 何を捕まえるか：名前に`_all`が付けばすべての例外、付かなければ指定したタグの例外だけ
+- 例外そのものを受け取るか：名前に`_ref`が付けば`exnref`を受け取り、付かなければ受け取らない
+
+タグを指定する捕まえ方は、これとは別にペイロードも受け取ります。タグが分かっていれば、運ばれてくる値の型も分かるからです。`$label`には、先ほどの`$handler`のように行き先の名前を書きます。組み合わせると次の4つになります。
+
+- `catch $tag $label`：指定したタグだけ捕まえ、ペイロードを受け取る。エラーコードを見て処理を分けたいときに使う
+- `catch_ref $tag $label`：指定したタグだけ捕まえ、ペイロードと`exnref`を受け取る。中身を見たうえで投げ直したいときに使う
+- `catch_all $label`：すべて捕まえ、何も受け取らない。何が起きても既定値を返す、といったときに使う
+- `catch_all_ref $label`：すべて捕まえ、`exnref`を受け取る。先ほどの例のように、後始末をしてから投げ直すときに使う
+
+1つの`try_table`には複数を並べられ、上から見て最初に当てはまるものが選ばれます。たとえば特定のタグは`catch`で処理し、それ以外は`catch_all_ref`で投げ直せます。
+
+```wasm
+try_table
+  (catch $parse_error $on_parse_error)
+  (catch_all_ref $on_other)
+  local.get $input
+  call $work
+end
+```
+
+これは`try_table`だけを抜き出した断片です。実際には`$on_parse_error`と`$on_other`という行き先を、先ほどの`$handler`と同じように用意します。
+
+`catch_all_ref`はタグを問わないので、JavaScriptから投げられた例外も受け取れます。受け取った`exnref`をそのまま`throw_ref`で投げ直せば、例外はWebAssemblyを素通りしてJavaScript側の`catch`に届きます。
+
+`throw_ref`で投げ直した例外は、JavaScript側には元の値のまま届きます。WebAssemblyが投げたものなら同じ`WebAssembly.Exception`、JavaScriptが投げたものなら元の`Error`オブジェクトです。`exnref`はWebAssemblyの中だけの型で、JavaScriptには公開されません。そのため新形式に移行しても、タグの節で示したJavaScript側のコードは書き換えずに済みます。
+
+## ツールチェインの対応
+
+WATを手で書く場面は少ないので、実際に気にするのはコンパイラがどちらの形式を出力するかです。
+
+- Emscripten：`-fwasm-exceptions`でWebAssemblyの例外を有効にすると、既定では旧形式が出力される。新形式にするには`-sWASM_LEGACY_EXCEPTIONS=0`も指定する
+- Binaryen：`wasm-opt`の`--enable-exception-handling`で例外処理を有効にする。旧形式のバイナリは`--translate-to-exnref`で新形式に変換できる
+- wabt：現行の`wat2wasm`は既定で`try_table`と`throw_ref`を受け付ける。古い版では`--enable-exceptions`を付ける
+
+新形式のバイナリは、対応していない古いブラウザでは読み込みに失敗します。対象のブラウザがすべて新形式に対応しているなら新形式を選び、既存の旧形式のバイナリはBinaryenで変換しておきます。旧形式も互換性のためにブラウザに残っていますが、標準になったのは新形式で、旧形式はレガシー扱いです。
+
+## おわりに
+
+旧形式のWebAssemblyでは、捕まえた例外を手に持てず、投げ直すときも`catch`の番号で指すしかありませんでした。新形式では、捕まえた例外を`exnref`という値として受け取れます。変数に取っておいて`throw_ref`に渡せば投げ直せるので、JavaScriptの`catch (e)`と同じ感覚で例外を扱えます。JavaScript側のコードは変わりませんが、出力形式を新形式に切り替えると、動くブラウザの範囲が変わる点には注意が要ります。
