@@ -7,6 +7,7 @@ import { autocorrectSection } from './autocorrect';
 import { baselineShiftSection } from './baseline-shift';
 import { caretPositionFromPointSection } from './caret-position-from-point';
 import { composedRangesSection } from './composed-ranges';
+import { containerNameQueriesSection } from './container-name-queries';
 import { containerStyleQueriesSection } from './container-style-queries';
 import { contentVisibilitySection } from './content-visibility';
 import { contrastColorSection } from './contrast-color';
@@ -53,6 +54,7 @@ export const playgroundSections: PlaygroundSection[] = [
   baselineShiftSection,
   caretPositionFromPointSection,
   composedRangesSection,
+  containerNameQueriesSection,
   containerStyleQueriesSection,
   contentVisibilitySection,
   contrastColorSection,
