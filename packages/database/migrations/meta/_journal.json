@@ -575,6 +575,13 @@
       "when": 1790576733640,
       "tag": "0081_strange_bishop",
       "breakpoints": true
+    },
+    {
+      "idx": 82,
+      "version": "6",
+      "when": 1790577763149,
+      "tag": "0082_deep_iron_monger",
+      "breakpoints": true
     }
   ]
 }

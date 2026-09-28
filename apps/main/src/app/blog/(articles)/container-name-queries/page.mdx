@@ -1,0 +1,155 @@
+---
+title: 'Name-only container queriesでコンテナの名前だけを条件にスタイルを当てる'
+description: 'Name-only container queriesは、@containerに条件を書かず名前だけを指定するコンテナクエリです。Firefox 149とSafari 26.4に続いてChrome 148が対応し、Baseline 2026に加わりました。書き方、子孫セレクタとの違い、サイズクエリと併用するときの注意を整理します。'
+createdAt: 2026-09-28
+updatedAt: 2026-09-28
+featureIds:
+  - container-name-queries
+---
+
+import { PlaygroundEmbed } from '@/app/_components/playgrounds';
+
+# Name-only container queriesでコンテナの名前だけを条件にスタイルを当てる
+
+<BrowserSupportStatus featureId="container-name-queries" />
+
+## はじめに
+
+同じカードでも、本文の中では横並びに、サイドバーの中では縦積みにしたいことがあります。コンポーネントの見た目を、置かれた場所に応じて変える場面です。
+
+これまでは、`.sidebar .card`のような子孫セレクタを使うか、`@container sidebar (width >= 0px)`のように必ず真になる条件を付けたコンテナクエリを使っていました。子孫セレクタでは、配置先のクラス名がコンポーネントのCSSに入り込みます。コンテナクエリでは、使わない条件のためだけに`container-type`を指定することになります。
+
+Name-only container queriesは、`@container sidebar`のように名前だけを書くコンテナクエリです。Firefox 149とSafari 26.4に続いてChrome 148が対応し、Baseline 2026に加わりました。
+
+## 書き方
+
+配置先の要素に`container-name`で名前を付け、`@container`にその名前だけを書きます。
+
+```css
+/* [!og] */
+.sidebar {
+  container-name: sidebar;
+}
+
+.card {
+  display: flex;
+  gap: 1rem;
+}
+
+@container sidebar {
+  .card {
+    flex-direction: column;
+  }
+}
+```
+
+`@container sidebar`の中のスタイルは、`sidebar`という名前の祖先を持つ要素に当たります。名前を持つ祖先は親でなくてもよく、何階層上にあっても構いません。
+
+`container-type`は指定しません。初期値の`normal`のままでも対象になります。サイズクエリのためのcontainmentがかからないので、名前を付けても要素のレイアウトは変わりません。
+
+`container-name`には空白区切りで複数の名前を書けます。`container-name: sidebar panel`とした要素は、`@container sidebar`と`@container panel`のどちらの対象にもなります。
+
+<PlaygroundEmbed
+  demo="コンテナの名前でカードのレイアウトを切り替える"
+  sectionId="container-name-queries"
+/>
+
+なお、Firefoxでは`container-name`をあとから変えても子孫のスタイルが更新されません。[Bugzillaに報告](https://bugzilla.mozilla.org/show_bug.cgi?id=2027807)されていますが、2026年9月時点のFirefox 156でも直っていません。
+
+## 子孫セレクタとの違い
+
+`.sidebar .card`と書いても同じ要素に当たりますが、次の3点が変わります。
+
+1つ目は詳細度です。`@container`は詳細度を増やさないので、中に書いた`.card`はクラス1つ分のままです。子孫セレクタではクラス2つ分になるので、上書きする側にも同じだけの詳細度が必要です。
+
+```css
+/* クラス2つ分。.card-denseでは上書きできない */
+.sidebar .card {
+  gap: 0.5rem;
+}
+
+/* クラス1つ分。後ろに書いた.card-denseで上書きできる */
+@container sidebar {
+  .card {
+    gap: 0.5rem;
+  }
+}
+
+.card-dense {
+  gap: 0;
+}
+```
+
+2つ目は、配置先のセレクタを知らなくて済むことです。コンポーネントのCSSには`sidebar`という名前しか出てきません。配置先が`<aside>`でも`.drawer`でも、`container-name: sidebar`を付ければ同じスタイルが当たります。
+
+3つ目はShadow DOMです。shadow treeの中に書いた子孫セレクタは、shadow hostより外側の要素にはマッチしません。`@container sidebar`なら、shadow treeの中に書いても外側の`sidebar`を見つけられます。コンテナはflat treeの祖先から探されるためです。
+
+```html
+<aside class="sidebar">
+  <user-card>
+    <template shadowrootmode="open">
+      <style>
+        .card {
+          display: flex;
+        }
+
+        /* shadow treeの外にある.sidebarの名前に反応する */
+        @container sidebar {
+          .card {
+            flex-direction: column;
+          }
+        }
+      </style>
+      <div class="card">...</div>
+    </template>
+  </user-card>
+</aside>
+```
+
+## サイズクエリと併用するとき
+
+名前だけのクエリと条件付きのクエリでは、対象になるコンテナが違います。名前だけのクエリは、`container-type`に関係なくその名前を持つ要素を見ます。サイズの条件を付けたクエリが見るのは、名前が一致し、かつサイズクエリのコンテナになっている要素だけです。
+
+```css
+.sidebar {
+  container-name: sidebar;
+}
+
+/* 当たる */
+@container sidebar {
+  .card {
+    flex-direction: column;
+  }
+}
+
+/* 当たらない。.sidebarはサイズクエリのコンテナではない */
+@container sidebar (width > 20rem) {
+  .card {
+    flex-direction: row;
+  }
+}
+```
+
+1つのコンテナで名前とサイズの両方を見るなら、`container: sidebar / inline-size`のように`container-type`も指定します。
+
+名前とサイズを別々のコンテナで見るなら、`@container`を入れ子にします。外側は`sidebar`という名前の祖先があるかを、内側は最も近いサイズクエリのコンテナの幅を見ます。
+
+```css
+@container sidebar {
+  @container (width > 20rem) {
+    .card {
+      flex-direction: row;
+    }
+  }
+}
+```
+
+## 書けないこと
+
+名前の否定は書けません。`@container not sidebar`は構文として無効で、ブロックごと無視されます。`sidebar`の外で当てたいスタイルは通常のルールとして書いておき、中でのスタイルを`@container sidebar`で上書きします。
+
+`@container sidebar`のスタイルは、名前を付けた要素自身にも当たりません。コンテナクエリが見るのは祖先なので、`@container sidebar`の中に`.sidebar`のスタイルを書いても、さらに上に`sidebar`という名前の要素が無ければ効きません。
+
+## おわりに
+
+Name-only container queriesで、配置先に付けた名前だけを条件にスタイルを書けるようになりました。`container-type`も、必ず真になる条件も要りません。Firefox 149、Safari 26.4、Chrome 148が対応し、主要ブラウザで使えます。
