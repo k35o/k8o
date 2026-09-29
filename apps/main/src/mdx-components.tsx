@@ -40,12 +40,12 @@ const LinkHeading: FC<
   return (
     <Comp
       className={cn(
-        'group font-bold leading-tight',
-        type === 'h2' && 'mt-10 mb-4 text-xl sm:text-2xl',
-        type === 'h3' && 'mt-10 mb-4 text-xl sm:text-2xl',
-        type === 'h4' && 'mt-8 mb-3 text-lg sm:text-xl',
-        type === 'h5' && 'mt-6 mb-2 text-md sm:text-lg',
-        type === 'h6' && 'mt-5 mb-2 text-sm sm:text-md',
+        'group font-bold',
+        type === 'h2' && 'mt-10 mb-4 text-xl/tight sm:text-2xl/tight',
+        type === 'h3' && 'mt-10 mb-4 text-xl/tight sm:text-2xl/tight',
+        type === 'h4' && 'mt-8 mb-3 text-lg/tight sm:text-xl/tight',
+        type === 'h5' && 'mt-6 mb-2 text-md/tight sm:text-lg/tight',
+        type === 'h6' && 'mt-5 mb-2 text-sm/tight sm:text-md/tight',
       )}
       id={hasText ? text : undefined}
     >
