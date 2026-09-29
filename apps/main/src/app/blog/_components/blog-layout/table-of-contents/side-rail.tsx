@@ -29,7 +29,7 @@ const RailItem: FC<{
       <Link
         aria-current={isActive ? 'location' : undefined}
         className={cn(
-          'block rounded-r-lg py-1.5 pr-2 leading-relaxed transition-colors duration-150 ease-out',
+          'block rounded-r-lg py-1.5 pr-2 transition-colors duration-150 ease-out',
           'focus-visible:ring-border-info focus-visible:outline-none focus-visible:ring-2',
           depth === 1 && 'pl-5 text-sm',
           depth === 2 && 'pl-11 text-xs',
