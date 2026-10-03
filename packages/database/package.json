@@ -40,11 +40,11 @@
   "dependencies": {
     "@libsql/client": "0.18.0",
     "better-auth": "catalog:",
-    "drizzle-orm": "0.45.2"
+    "drizzle-orm": "0.45.3"
   },
   "devDependencies": {
     "@next/env": "catalog:",
     "@repo/typescript-config": "workspace:*",
-    "drizzle-kit": "0.31.10"
+    "drizzle-kit": "0.31.11"
   }
 }
