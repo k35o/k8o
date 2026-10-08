@@ -227,6 +227,9 @@ catalogs:
     chromatic:
       specifier: 18.8.1
       version: 18.8.1
+    hono:
+      specifier: 4.13.12
+      version: 4.13.12
     next:
       specifier: 16.3.5
       version: 16.3.5
@@ -313,106 +316,6 @@ importers:
       wrangler:
         specifier: 'catalog:'
         version: 4.131.1(@types/node@24.19.0)
-
-  apps/admin:
-    dependencies:
-      '@k8ordo/ui':
-        specifier: 'catalog:'
-        version: 1.0.0(@json-render/core@0.20.0(zod@4.6.4))(@json-render/react@0.20.0(react@19.3.0)(zod@4.6.4))(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(ai@7.0.99(zod@4.6.4))(react-dom@19.3.0(react@19.3.0))(react@19.3.0)(tailwindcss@4.3.3)(typescript@7.0.2)(zod@4.6.4)
-      '@repo/auth-shell':
-        specifier: workspace:*
-        version: link:../../packages/auth-shell
-      '@repo/database':
-        specifier: workspace:*
-        version: link:../../packages/database
-      '@repo/helpers':
-        specifier: workspace:*
-        version: link:../../packages/helpers
-      '@repo/react-hooks':
-        specifier: workspace:*
-        version: link:../../packages/react-hooks
-      '@tailwindcss/postcss':
-        specifier: 'catalog:'
-        version: 4.3.3
-      better-auth:
-        specifier: 'catalog:'
-        version: 1.7.4(@opentelemetry/api@1.9.1)(drizzle-kit@0.31.10)(drizzle-orm@0.45.2(@libsql/client@0.17.4)(@opentelemetry/api@1.9.1)(kysely@0.28.17))(next@16.3.5(@babel/core@7.29.7(supports-color@10.2.2))(@opentelemetry/api@1.9.1)(@playwright/test@1.62.0)(@types/node@24.19.0)(babel-plugin-react-compiler@1.0.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0))(react-dom@19.3.0(react@19.3.0))(react@19.3.0)(vitest@5.0.2)
-      next:
-        specifier: 'catalog:'
-        version: 16.3.5(@babel/core@7.29.7)(@opentelemetry/api@1.9.1)(@playwright/test@1.62.0)(@types/node@24.19.0)(babel-plugin-react-compiler@1.0.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)
-      next-themes:
-        specifier: 'catalog:'
-        version: 0.4.6(react-dom@19.3.0(react@19.3.0))(react@19.3.0)
-      postcss:
-        specifier: 'catalog:'
-        version: 8.5.28
-      react:
-        specifier: 'catalog:'
-        version: 19.3.0
-      react-dom:
-        specifier: 'catalog:'
-        version: 19.3.0(react@19.3.0)
-      rss-parser:
-        specifier: 3.13.0
-        version: 3.13.0
-      tailwindcss:
-        specifier: 'catalog:'
-        version: 4.3.3
-      zod:
-        specifier: 'catalog:'
-        version: 4.6.4
-    devDependencies:
-      '@repo/typescript-config':
-        specifier: workspace:*
-        version: link:../../packages/typescript-config
-      '@storybook/addon-a11y':
-        specifier: 'catalog:'
-        version: 10.6.0(storybook@10.6.0(@types/react@19.3.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)(vite-plus@0.3.1(@opentelemetry/api@1.9.1)(@types/node@24.19.0)(@vitest/browser-playwright@4.1.11)(@vitest/coverage-v8@4.1.11)(@vitest/ui@4.1.11)(esbuild@0.28.1)(jiti@2.7.0)(msw@2.15.0(@types/node@24.19.0)(typescript@7.0.2))(tsx@4.22.3)(typescript@7.0.2)(yaml@2.9.0)))
-      '@storybook/addon-docs':
-        specifier: 'catalog:'
-        version: 10.6.0(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(storybook@10.6.0(@types/react@19.3.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)(vite-plus@0.3.1(@opentelemetry/api@1.9.1)(@types/node@24.19.0)(@vitest/browser-playwright@4.1.11)(@vitest/coverage-v8@4.1.11)(@vitest/ui@4.1.11)(esbuild@0.28.1)(jiti@2.7.0)(msw@2.15.0(@types/node@24.19.0)(typescript@7.0.2))(tsx@4.22.3)(typescript@7.0.2)(yaml@2.9.0)))
-      '@storybook/addon-mcp':
-        specifier: 'catalog:'
-        version: 10.6.0(@storybook/addon-vitest@10.6.0(@vitest/browser-playwright@5.0.2)(@vitest/browser@4.1.11)(@vitest/runner@4.1.11)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)(storybook@10.6.0(@types/react@19.3.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)(vite-plus@0.3.1(@opentelemetry/api@1.9.1)(@types/node@24.19.0)(@vitest/browser-playwright@4.1.11)(@vitest/coverage-v8@4.1.11)(@vitest/ui@4.1.11)(esbuild@0.28.1)(jiti@2.7.0)(msw@2.15.0(@types/node@24.19.0)(typescript@7.0.2))(tsx@4.22.3)(typescript@7.0.2)(yaml@2.9.0)))(vitest@5.0.2))(storybook@10.6.0(@types/react@19.3.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)(vite-plus@0.3.1(@opentelemetry/api@1.9.1)(@types/node@24.19.0)(@vitest/browser-playwright@4.1.11)(@vitest/coverage-v8@4.1.11)(@vitest/ui@4.1.11)(esbuild@0.28.1)(jiti@2.7.0)(msw@2.15.0(@types/node@24.19.0)(typescript@7.0.2))(tsx@4.22.3)(typescript@7.0.2)(yaml@2.9.0)))(typescript@7.0.2)
-      '@storybook/addon-vitest':
-        specifier: 'catalog:'
-        version: 10.6.0(@vitest/browser-playwright@5.0.2)(@vitest/browser@4.1.11)(@vitest/runner@4.1.11)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)(storybook@10.6.0(@types/react@19.3.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)(vite-plus@0.3.1(@opentelemetry/api@1.9.1)(@types/node@24.19.0)(@vitest/browser-playwright@4.1.11)(@vitest/coverage-v8@4.1.11)(@vitest/ui@4.1.11)(esbuild@0.28.1)(jiti@2.7.0)(msw@2.15.0(@types/node@24.19.0)(typescript@7.0.2))(tsx@4.22.3)(typescript@7.0.2)(yaml@2.9.0)))(vitest@5.0.2)
-      '@storybook/nextjs-vite':
-        specifier: 'catalog:'
-        version: 10.6.0(@babel/core@7.29.7(supports-color@10.2.2))(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(next@16.3.5(@babel/core@7.29.7(supports-color@10.2.2))(@opentelemetry/api@1.9.1)(@playwright/test@1.62.0)(@types/node@24.19.0)(babel-plugin-react-compiler@1.0.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0))(react-dom@19.3.0(react@19.3.0))(react@19.3.0)(storybook@10.6.0(@types/react@19.3.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)(vite-plus@0.3.1(@opentelemetry/api@1.9.1)(@types/node@24.19.0)(@vitest/browser-playwright@4.1.11)(@vitest/coverage-v8@4.1.11)(@vitest/ui@4.1.11)(esbuild@0.28.1)(jiti@2.7.0)(msw@2.15.0(@types/node@24.19.0)(typescript@7.0.2))(tsx@4.22.3)(typescript@7.0.2)(yaml@2.9.0)))(supports-color@10.2.2)(typescript@7.0.2)(vite@8.0.14(@types/node@24.19.0)(esbuild@0.28.1)(jiti@2.7.0)(tsx@4.22.3)(yaml@2.9.0))
-      '@types/react':
-        specifier: 'catalog:'
-        version: 19.3.0
-      '@types/react-dom':
-        specifier: 'catalog:'
-        version: 19.3.0(@types/react@19.3.0)
-      '@vitest/browser-playwright':
-        specifier: 'catalog:'
-        version: 5.0.2(msw@2.15.0(@types/node@24.19.0)(typescript@7.0.2))(playwright@1.63.0)(vite@8.0.14(@types/node@24.19.0)(esbuild@0.28.1)(jiti@2.7.0)(tsx@4.22.3)(yaml@2.9.0))(vitest@5.0.2)
-      '@vitest/coverage-v8':
-        specifier: 'catalog:'
-        version: 5.0.2(@vitest/browser@4.1.11)(vitest@5.0.2)
-      '@vitest/ui':
-        specifier: 'catalog:'
-        version: 5.0.2(vitest@5.0.2)
-      chromatic:
-        specifier: 'catalog:'
-        version: 18.8.1
-      postcss-load-config:
-        specifier: 'catalog:'
-        version: 6.0.1(jiti@2.7.0)(postcss@8.5.28)(tsx@4.22.3)(yaml@2.9.0)
-      storybook:
-        specifier: 'catalog:'
-        version: 10.6.0(@types/react@19.3.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)(vite-plus@0.3.1(@opentelemetry/api@1.9.1)(@types/node@24.19.0)(@vitest/browser-playwright@4.1.11)(@vitest/coverage-v8@4.1.11)(@vitest/ui@4.1.11)(esbuild@0.28.1)(jiti@2.7.0)(msw@2.15.0(@types/node@24.19.0)(typescript@7.0.2))(tsx@4.22.3)(typescript@7.0.2)(yaml@2.9.0))
-      storybook-addon-determinism:
-        specifier: 'catalog:'
-        version: 0.2.1(storybook@10.6.0(@types/react@19.3.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)(vite-plus@0.3.1(@opentelemetry/api@1.9.1)(@types/node@24.19.0)(@vitest/browser-playwright@4.1.11)(@vitest/coverage-v8@4.1.11)(@vitest/ui@4.1.11)(esbuild@0.28.1)(jiti@2.7.0)(msw@2.15.0(@types/node@24.19.0)(typescript@7.0.2))(tsx@4.22.3)(typescript@7.0.2)(yaml@2.9.0)))
-      storybook-addon-vrt:
-        specifier: 'catalog:'
-        version: 0.4.0(vite@8.0.14(@types/node@24.19.0)(esbuild@0.28.1)(jiti@2.7.0)(tsx@4.22.3)(yaml@2.9.0))(vitest@5.0.2)
-      vitest:
-        specifier: 'catalog:'
-        version: 5.0.2(@opentelemetry/api@1.9.1)(@types/node@24.19.0)(@vitest/browser-playwright@5.0.2)(@vitest/browser-preview@4.1.11)(@vitest/coverage-v8@5.0.2)(@vitest/ui@5.0.2)(msw@2.15.0(@types/node@24.19.0)(typescript@7.0.2))(vite@8.0.14(@types/node@24.19.0)(esbuild@0.28.1)(jiti@2.7.0)(tsx@4.22.3)(yaml@2.9.0))
 
   apps/ai:
     dependencies:
@@ -528,6 +431,37 @@ importers:
       storybook-addon-vrt:
         specifier: 'catalog:'
         version: 0.4.0(vite@8.0.14(@types/node@24.19.0)(esbuild@0.28.1)(jiti@2.7.0)(tsx@4.22.3)(yaml@2.9.0))(vitest@5.0.2)
+      vitest:
+        specifier: 'catalog:'
+        version: 5.0.2(@opentelemetry/api@1.9.1)(@types/node@24.19.0)(@vitest/browser-playwright@5.0.2)(@vitest/browser-preview@4.1.11)(@vitest/coverage-v8@5.0.2)(@vitest/ui@5.0.2)(msw@2.15.0(@types/node@24.19.0)(typescript@7.0.2))(vite@8.0.14(@types/node@24.19.0)(esbuild@0.28.1)(jiti@2.7.0)(tsx@4.22.3)(yaml@2.9.0))
+
+  apps/api:
+    dependencies:
+      '@repo/database':
+        specifier: workspace:*
+        version: link:../../packages/database
+      '@repo/helpers':
+        specifier: workspace:*
+        version: link:../../packages/helpers
+      hono:
+        specifier: 'catalog:'
+        version: 4.13.12
+      rss-parser:
+        specifier: 3.13.0
+        version: 3.13.0
+    devDependencies:
+      '@repo/typescript-config':
+        specifier: workspace:*
+        version: link:../../packages/typescript-config
+      '@types/node':
+        specifier: 24.19.0
+        version: 24.19.0
+      '@vitest/coverage-v8':
+        specifier: 'catalog:'
+        version: 5.0.2(@vitest/browser@5.0.2)(vitest@5.0.2)
+      '@vitest/ui':
+        specifier: 'catalog:'
+        version: 5.0.2(vitest@5.0.2)
       vitest:
         specifier: 'catalog:'
         version: 5.0.2(@opentelemetry/api@1.9.1)(@types/node@24.19.0)(@vitest/browser-playwright@5.0.2)(@vitest/browser-preview@4.1.11)(@vitest/coverage-v8@5.0.2)(@vitest/ui@5.0.2)(msw@2.15.0(@types/node@24.19.0)(typescript@7.0.2))(vite@8.0.14(@types/node@24.19.0)(esbuild@0.28.1)(jiti@2.7.0)(tsx@4.22.3)(yaml@2.9.0))
@@ -5286,6 +5220,10 @@ packages:
 
   hermes-parser@0.25.1:
     resolution: {integrity: sha512-6pEjquH3rqaI6cYAXYPcz9MS4rY6R4ngRgrgfDshRptUZIc3lw0MCIJIGDj9++mfySOuPTHB4nrSW99BCvOPIA==}
+
+  hono@4.13.12:
+    resolution: {integrity: sha512-6E2QDAc9Ick9Sq77ZrGS/dk2WUYni91aufTw6LJKpV7w8kW5/GxVUc650FOADOmlwg3K+f7Pun6XlV+pYmW6gw==}
+    engines: {node: '>=16.9.0'}
 
   html-escaper@2.0.2:
     resolution: {integrity: sha512-H2iMtd0I4Mt5eYiapRdIDjp+XzelXQ0tFE4JS7YFwFevXXMmOp9myNrUvCg0D6ws8iqkRPBfKHgbwig1SmlLfg==}
@@ -10753,6 +10691,8 @@ snapshots:
   hermes-parser@0.25.1:
     dependencies:
       hermes-estree: 0.25.1
+
+  hono@4.13.12: {}
 
   html-escaper@2.0.2:
     optional: true

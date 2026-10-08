@@ -38,7 +38,7 @@ export const findActiveBaselineDataset =
     if (row === undefined) {
       return null;
     }
-    // 壊れた active は「データ無し」に落とす。表示は空状態になり、復旧は admin の
+    // 壊れた active は「データ無し」に落とす。表示は空状態になり、復旧は api の
     // 強制再同期で行う(表示エラーには昇格させない)。
     const dataset = parseBaselineDataset(row.data);
     if (dataset === null) {
@@ -55,7 +55,7 @@ export type BrowserSupportHealth = {
   activeVersion: string | null;
   activeIngestedAt: string | null;
   // 「パイプラインが生きている」ことの心拍。noop(変化なし)と skipped_major(v4 対応
-  // 待ちの意図的な保留)も成功に含める。データ鮮度の劣化は admin の警報と鮮度フッターが
+  // 待ちの意図的な保留)も成功に含める。データ鮮度の劣化は api の警報と鮮度フッターが
   // 別途カバーし、ここでは生存だけを見る(鮮度と生存の分離)。
   lastSuccessAt: string | null;
   lastRun: { createdAt: string; result: string; trigger: string } | null;

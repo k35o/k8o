@@ -39,7 +39,8 @@ jobs:
       # 先に各アプリの型を生成しておかないと Route を string とみなし `as Route` を
       # 不要と誤検出する。
       - name: Generate Next.js route types
-        run: pnpm --filter "./apps/*" exec next typegen
+        # api は Next.js ではないため除く
+        run: pnpm --filter "./apps/*" --filter "!@repo/api" exec next typegen
 
       - name: Run check
         run: pnpm run check

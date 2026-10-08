@@ -1,0 +1,28 @@
+{
+  "name": "@repo/api",
+  "version": "1.0.0",
+  "private": true,
+  "description": "k8o API (cron jobs)",
+  "type": "module",
+  "scripts": {
+    "build": "vp pack",
+    "type-check": "tsc --noEmit",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:ui": "vitest --ui --coverage",
+    "coverage": "vitest run --coverage"
+  },
+  "dependencies": {
+    "@repo/database": "workspace:*",
+    "@repo/helpers": "workspace:*",
+    "hono": "catalog:",
+    "rss-parser": "3.13.0"
+  },
+  "devDependencies": {
+    "@repo/typescript-config": "workspace:*",
+    "@types/node": "24.19.0",
+    "@vitest/coverage-v8": "catalog:",
+    "@vitest/ui": "catalog:",
+    "vitest": "catalog:"
+  }
+}

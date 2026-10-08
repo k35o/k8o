@@ -20,7 +20,7 @@ jobs:
     with:
       instructions: default,nextjs,typescript
       extra_prompt: |
-        Next.js App Router + oxlint のモノレポ。apps/main / apps/admin + packages/。
+        Next.js App Router（apps/main / apps/ai）と Hono（apps/api）+ oxlint のモノレポ。共有コードは packages/。
     secrets:
       K35O_BOT_CLIENT_ID: ${{ secrets.K35O_BOT_CLIENT_ID }}
       K35O_BOT_PRIVATE_KEY: ${{ secrets.K35O_BOT_PRIVATE_KEY }}

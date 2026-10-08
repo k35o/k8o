@@ -31,7 +31,7 @@ export default defineConfig({
     },
     settings: {
       next: {
-        rootDir: ['apps/main', 'apps/admin', 'apps/ai'],
+        rootDir: ['apps/main', 'apps/ai'],
       },
       react: {
         version: '19.3.0',
@@ -43,10 +43,6 @@ export default defineConfig({
           {
             files: 'apps/main/**',
             use: 'apps/main/src/app/_styles/globals.css',
-          },
-          {
-            files: 'apps/admin/**',
-            use: 'apps/admin/src/app/_styles/globals.css',
           },
           {
             files: 'apps/ai/**',
@@ -63,9 +59,8 @@ export default defineConfig({
       },
     },
     rules: {
-      // @repo/database の import 層と admin Server Action の認可定型を強制する
+      // @repo/database の import 層を強制する
       'k8o/database-import-boundary': 'error',
-      'k8o/require-verify-session': 'error',
       // 既存コードの意図を変える修正が大量に必要なルールは、初回移行では段階導入にする。
       'import/no-unassigned-import': [
         'error',

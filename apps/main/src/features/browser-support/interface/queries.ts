@@ -14,7 +14,7 @@ import { findActiveBaselineDataset } from '@/features/browser-support/infrastruc
 import type { ActiveBaselineDataset } from '@/features/browser-support/infrastructure/browser-support-dataset-repository';
 
 // active データセットの共有ローダー。フィードと MDX の feature 解決が個別に DB を
-// 読まないよう、キャッシュ境界をここに一本化する。鮮度は TTL ではなく admin の同期
+// 読まないよう、キャッシュ境界をここに一本化する。鮮度は TTL ではなく api の同期
 // 成功時の /api/revalidate(タグ再検証)で担保するため、寿命は 'days' に寄せる。
 // 'minutes' にすると <BrowserSupportStatus> を埋め込んだブログ記事の静的シェルまで
 // 分単位の ISR + DB 依存になってしまう。

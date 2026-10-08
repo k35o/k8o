@@ -2,13 +2,9 @@
   "name": "@repo/auth-shell",
   "version": "1.0.0",
   "private": true,
-  "description": "admin / ai で共有する Better Auth の認証ゲートとアプリシェル",
+  "description": "ai の Better Auth の認証ゲートとアプリシェル",
   "type": "module",
   "exports": {
-    "./auth-client": {
-      "types": "./src/auth-client.ts",
-      "default": "./src/auth-client.ts"
-    },
     "./auth-enabled": {
       "types": "./src/auth-enabled.ts",
       "default": "./src/auth-enabled.ts"
@@ -32,10 +28,6 @@
     "./public-layout": {
       "types": "./src/public-layout.tsx",
       "default": "./src/public-layout.tsx"
-    },
-    "./sign-in-form": {
-      "types": "./src/sign-in-form.tsx",
-      "default": "./src/sign-in-form.tsx"
     },
     "./sign-in-page": {
       "types": "./src/sign-in-page.tsx",

@@ -19,7 +19,7 @@ pnpm run -F @repo/database migrate
 
 ### コンテンツ系の seed INSERT は id を書かない
 
-blogs / slides / talks / tags のようにコンテンツを seed する INSERT では、**id を手で振らない**こと。admin から作成・編集できるようになったため、id を固定すると admin が autoincrement で採番した行と**衝突して `migrate` が失敗する**。
+blogs / slides / talks / tags のようにコンテンツを seed する INSERT では、**id を手で振らない**こと。本番には過去に管理画面から autoincrement で採番した行があり、id を固定すると**衝突して `migrate` が失敗する**。
 
 - 自然キー（tags は `name`、blogs / slides は `slug`）で挿入し、`ON CONFLICT (...) DO NOTHING` で冪等にする
 - 関連テーブル（blog_tag 等）は id を直書きせず `(SELECT id FROM tags WHERE name = '...')` のようにキーで引く

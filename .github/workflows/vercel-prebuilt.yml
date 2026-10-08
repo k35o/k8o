@@ -18,7 +18,7 @@ on:
         type: choice
         options:
           - main
-          - admin
+          - api
           - ai
         default: main
 
@@ -61,7 +61,7 @@ jobs:
             BASE="$PUSH_BEFORE"
             # force push 等で before が辿れないと判定不能なので、安全側で全 app をデプロイする
             if ! git rev-parse --verify "$BASE^{commit}" > /dev/null 2>&1; then
-              echo 'apps=["main","admin","ai"]' >> "$GITHUB_OUTPUT"
+              echo 'apps=["main","api","ai"]' >> "$GITHUB_OUTPUT"
               exit 0
             fi
           else
@@ -72,23 +72,23 @@ jobs:
 
           # ビルド判定の基盤やルート依存が変わったら全 app を安全側でデプロイする
           if echo "$CHANGED" | grep -qE '^(turbo\.json|mise\.toml|package\.json|pnpm-workspace\.yaml|pnpm-lock\.yaml|\.github/workflows/vercel-prebuilt\.yml)$'; then
-            echo 'apps=["main","admin","ai"]' >> "$GITHUB_OUTPUT"
+            echo 'apps=["main","api","ai"]' >> "$GITHUB_OUTPUT"
             exit 0
           fi
 
           # 判定不能時は安全側で全 app をデプロイする
           if ! AFFECTED=$(pnpm turbo query affected --packages --base "$BASE"); then
-            echo 'apps=["main","admin","ai"]' >> "$GITHUB_OUTPUT"
+            echo 'apps=["main","api","ai"]' >> "$GITHUB_OUTPUT"
             exit 0
           fi
 
           apps=()
           echo "$AFFECTED" | grep -q '"name": "main"' && apps+=(main)
-          echo "$AFFECTED" | grep -q '"name": "admin"' && apps+=(admin)
+          echo "$AFFECTED" | grep -q '"name": "@repo/api"' && apps+=(api)
           echo "$AFFECTED" | grep -q '"name": "@repo/ai"' && apps+=(ai)
           # vercel.json は turbo のパッケージ入力に含まれないため個別に拾う
           echo "$CHANGED" | grep -q '^apps/main/vercel\.json$' && apps+=(main)
-          echo "$CHANGED" | grep -q '^apps/admin/vercel\.json$' && apps+=(admin)
+          echo "$CHANGED" | grep -q '^apps/api/vercel\.json$' && apps+=(api)
           echo "$CHANGED" | grep -q '^apps/ai/vercel\.json$' && apps+=(ai)
 
           if [ "${#apps[@]}" -eq 0 ]; then
@@ -120,7 +120,7 @@ jobs:
       VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
       VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
       # プロジェクト ID は秘密情報ではないため、app との対応を workflow に直書きして自己文書化する
-      VERCEL_PROJECT_ID: ${{ fromJSON('{"main":"prj_OrrQ8Nnl4sJJii9kpjOAtb6EeIjD","admin":"prj_aehv1FNgGlp0nGIZPyPFHShRqlAW","ai":"prj_Iz1SHi1C6rgwFz2YngTzeiRdsFE8"}')[matrix.app] }}
+      VERCEL_PROJECT_ID: ${{ fromJSON('{"main":"prj_OrrQ8Nnl4sJJii9kpjOAtb6EeIjD","api":"prj_aehv1FNgGlp0nGIZPyPFHShRqlAW","ai":"prj_Iz1SHi1C6rgwFz2YngTzeiRdsFE8"}')[matrix.app] }}
       DEPLOY_TARGET: ${{ github.event_name == 'push' && 'production' || 'preview' }}
     steps:
       - name: Checkout branch

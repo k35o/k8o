@@ -6,8 +6,8 @@ import { isAuthEnabled } from './auth-enabled';
 
 const isDev = process.env['NODE_ENV'] === 'development';
 
-// admin / ai はどちらも認証済みの面で外部埋め込みを持たないため、main より厳格に
-// できる（GA / codepen / vercel-scripts の許可は不要）。DB 書き込み・push 送信・
+// ai は認証済みの面で外部埋め込みを持たないため、main より厳格に
+// できる（GA / codepen / vercel-scripts の許可は不要）。DB 書き込みと
 // 課金の伴う操作を担う面なので XSS・クリックジャッキングの被害範囲を CSP で絞る。
 // frame-ancestors 'none' は ai studio の公開/フォーク等の副作用ボタンを守る要
 const cspHeader = `

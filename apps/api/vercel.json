@@ -1,0 +1,19 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "git": {
+    "deploymentEnabled": false
+  },
+  "framework": "hono",
+  "buildCommand": "pnpm run build",
+  "outputDirectory": "dist",
+  "crons": [
+    {
+      "path": "/cron/sync-articles",
+      "schedule": "0 0 * * *"
+    },
+    {
+      "path": "/cron/sync-browser-support",
+      "schedule": "0 6 * * *"
+    }
+  ]
+}
