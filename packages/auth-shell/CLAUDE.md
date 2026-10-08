@@ -1,8 +1,6 @@
 # packages/auth-shell CLAUDE.md
 
-apps/admin と apps/ai で共有する Better Auth の認証ゲートとアプリシェル。両アプリは
-同じ認証（GitHub OAuth + `ALLOWED_EMAILS`）・同じ CSP・同じサインイン画面を持つため、
-セキュリティパッチが片方のコピーにしか当たらない事故を防ぐ目的でここへ集約している。
+apps/ai の Better Auth（GitHub OAuth + `ALLOWED_EMAILS`）の認証ゲートとアプリシェル。
 
 **認証まわりの修正はこのパッケージだけを直す。アプリ側にコピーを作らない。**
 

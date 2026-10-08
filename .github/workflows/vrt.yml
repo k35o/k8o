@@ -12,7 +12,7 @@ concurrency:
 
 # VRT対象アプリ（pnpm workspaceのfilter名）。アプリを追加したらここに足す
 env:
-  VRT_APPS: main admin ai
+  VRT_APPS: main ai
 
 permissions:
   contents: read

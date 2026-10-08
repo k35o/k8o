@@ -85,14 +85,6 @@
       "types": "./src/date/format.ts",
       "default": "./src/date/format.ts"
     },
-    "./date/is-ymd-date": {
-      "types": "./src/date/is-ymd-date.ts",
-      "default": "./src/date/is-ymd-date.ts"
-    },
-    "./form/get-string-field": {
-      "types": "./src/form/get-string-field.ts",
-      "default": "./src/form/get-string-field.ts"
-    },
     "./is-authorized-bearer-request": {
       "types": "./src/is-authorized-bearer-request.ts",
       "default": "./src/is-authorized-bearer-request.ts"

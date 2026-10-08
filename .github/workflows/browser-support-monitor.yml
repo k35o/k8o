@@ -6,9 +6,14 @@ name: Browser Support Monitor
 # 上流バージョンは health の自己申告ではなく、ここで独立に取得して突き合わせる。
 on:
   schedule:
-    # admin の同期 cron (06:00 UTC) の後に検査する
+    # api の同期 cron (06:00 UTC) の後に検査する
     - cron: '0 9 * * *'
   workflow_dispatch:
+    inputs:
+      force:
+        description: '検査の前に、同じバージョンでも上流から取り込み直す（main の再検証に失敗したときの復旧用）'
+        type: boolean
+        default: false
 
 permissions: {}
 
@@ -33,10 +38,11 @@ jobs:
         id: check
         env:
           # Deployment Protection は本番カスタムドメインを対象外にしているため、vercel.app
-          # ではなく admin.k8o.me を叩けばバイパスシークレット無しで同期エンドポイントに届く。
-          SYNC_URL: https://admin.k8o.me/api/crons/sync-browser-support
+          # ではなく api.k8o.me を叩けばバイパスシークレット無しで同期エンドポイントに届く。
+          SYNC_URL: https://api.k8o.me/cron/sync-browser-support
           LATEST_URL: https://github.com/web-platform-dx/web-features/releases/latest/download/data.json
           CRON_SECRET: ${{ secrets.CRON_SECRET }}
+          FORCE: ${{ inputs.force }}
         run: |
           set -u
 
@@ -88,7 +94,7 @@ jobs:
               sync_reason="health status: $status"
             fi
             # 上流の対応メジャー(v3)最新に active が追いついていない場合も異常扱い。
-            # メジャー跨ぎ(v4)は admin 側が警報するため、ここでは対象外にする。
+            # メジャー跨ぎ(v4)は api 側が警報するため、ここでは対象外にする。
             # ただし上流リリース直後は日次 cron を待っているだけの正常な状態で、これを
             # 異常にすると上流がリリースするたび誤報が出る。「リリース公開後に同期が成功
             # したのに取り込めていない」ときだけ異常とし、公開時刻を解決できないときは
@@ -107,6 +113,26 @@ jobs:
               fi
             fi
           }
+
+          # 強制再同期は記録を自走復旧と分けるため trigger=manual で呼ぶ。失敗しても health は
+          # 前回の同期成功で ok のままになり得るので、応答で判定して Issue に載せる
+          forced_failure=""
+          if [ "${FORCE:-}" = "true" ]; then
+            if [ -z "${CRON_SECRET:-}" ]; then
+              forced_failure="forced resync: CRON_SECRET 未設定のためスキップ"
+            else
+              echo "forced resync..."
+              forced_body="$RUNNER_TEMP/forced-resync.json"
+              forced_code=$(curl -sS --max-time 120 -o "$forced_body" -w '%{http_code}' \
+                -H "Authorization: Bearer $CRON_SECRET" \
+                "$SYNC_URL?trigger=manual&force=true" || true)
+              echo "forced resync: http=$forced_code $(cat "$forced_body" 2>/dev/null || true)"
+              if [ "$forced_code" != "200" ]; then
+                forced_failure="forced resync failed (http=$forced_code)"
+              fi
+              sleep 10
+            fi
+          fi
 
           health=$(fetch_health)
           echo "health: $health"
@@ -134,6 +160,10 @@ jobs:
             else
               sync_reason="$sync_reason / CRON_SECRET 未設定のため自走復旧をスキップ"
             fi
+          fi
+
+          if [ -n "$forced_failure" ]; then
+            sync_reason="${sync_reason:+$sync_reason / }$forced_failure"
           fi
 
           # フロア乖離は自走同期の後の health で判定する。同期が新しい版を取り込むと
@@ -278,5 +308,5 @@ jobs:
           gh issue create \
             --title "browser-support: データ同期の異常を検知 ($(date -u +%Y-%m-%d))" \
             --label "$label" \
-            --body "$(printf '外形監視が異常を検知しました。\n\n- 判定: %s\n- health: %s\n- 上流最新: %s\n- 実行: %s\n\n確認手順:\n1. %s を確認\n2. admin の Browser Support 画面で同期履歴を確認し、必要なら手動同期\n3. Vercel Cron (admin) の実行履歴を確認\n4. floor stale なら再生成 PR の CI を確認。手動で直すなら `pnpm run -F main generate:browser-min-versions <active版>` を実行してコミット\n\n健全に戻ると次回の監視で自動的に閉じられます。\n' "$reason" "$HEALTH_URL" "${LATEST:-unknown}" "$RUN_URL" "$HEALTH_URL")"
+            --body "$(printf '外形監視が異常を検知しました。\n\n- 判定: %s\n- health: %s\n- 上流最新: %s\n- 実行: %s\n\n確認手順:\n1. %s を確認\n2. 同期履歴（browser_support_sync_runs）を確認し、必要ならこの workflow を force 付きで手動実行\n3. Vercel Cron（apps/api をデプロイしているプロジェクト）の実行履歴を確認\n4. floor stale なら再生成 PR の CI を確認。手動で直すなら `pnpm run -F main generate:browser-min-versions <active版>` を実行してコミット\n\n健全に戻ると次回の監視で自動的に閉じられます。\n' "$reason" "$HEALTH_URL" "${LATEST:-unknown}" "$RUN_URL" "$HEALTH_URL")"
           exit 1

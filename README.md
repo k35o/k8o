@@ -9,7 +9,6 @@ pnpm i --frozen-lockfile
 
 # 環境変数設定（URLは https://<name>.k8o.localhost を使う。ポート番号は不要）
 cp apps/main/.env.example apps/main/.env.local
-cp apps/admin/.env.example apps/admin/.env.local
 cp packages/database/.env.example packages/database/.env.local
 
 # ローカルHTTPS用のCA証明書をシステムに登録（初回のみ）
@@ -20,7 +19,7 @@ pnpm portless trust
 # 永続化したい場合は ~/.zshrc などに追記する
 export NODE_EXTRA_CA_CERTS=$HOME/.portless/ca.pem
 
-# 開発サーバー起動（proxy + main/admin + DB。DB は未起動なら起動・起動済みなら再利用）
+# 開発サーバー起動（proxy + main/ai + DB。DB は未起動なら起動・起動済みなら再利用）
 pnpm run dev
 
 # マイグレーション（pnpm dev 実行中に別ターミナルで実行）
@@ -45,12 +44,13 @@ pnpm -F @repo/database db:status   # 稼働状況の確認
 **Turborepo Monorepo**:
 
 - `apps/main` - Next.js (App Router)
-- `apps/admin` - Next.js 管理サイト (Better Auth + GitHub OAuth)
+- `apps/ai` - Next.js AI ツール群 (Better Auth + GitHub OAuth)
+- `apps/api` - Hono の API（api.k8o.me。Vercel Cron の同期など）
 - `packages/database` - Drizzle ORM + Turso (libSQL)
 - `packages/helpers` - ユーティリティ関数
 - `@k8ordo/ui` - UIコンポーネント ([npm](https://www.npmjs.com/package/@k8ordo/ui))
 
-**apps/main / apps/admin の配置方針**:
+**apps/main / apps/ai の配置方針**:
 
 - `app/` - App RouterのentryとUI。UIコンポーネントは `app/**/_components`
 - `features/` - 機能単位の非UIロジック。`interface` / `application` / `infrastructure` に分ける

@@ -200,13 +200,13 @@ pnpm run -F @repo/database generate:custom
 ### SQLの記述
 
 > **重要: id を手で振らない。** タグは `name`、ブログは `slug`（どちらも UNIQUE）で引く。
-> これにより admin で作成・編集したタグと **id が衝突せず**、再適用しても安全（冪等）になる。
+> これにより autoincrement で採番済みのタグと **id が衝突せず**、再適用しても安全（冪等）になる。
 > 埋めるのは **slug・日付・タグ名** だけ。`{next_id}` のような採番作業は不要。
 
 生成されたSQLファイルに以下を記述：
 
 ```sql
--- タグ: id は書かない。既存（admin 作成分も含む）なら何もしない
+-- タグ: id は書かない。既存なら何もしない
 INSERT INTO tags (name) VALUES ('タグ名') ON CONFLICT (name) DO NOTHING;--> statement-breakpoint
 
 -- ブログ: slug が一意なので id は書かない
@@ -226,7 +226,7 @@ INSERT INTO blog_tag (blog_id, tag_id) VALUES (
 ```
 
 > **注意**: 紐付けで参照するタグ名は、既存の **正確な name** と一致させること（`(SELECT id FROM tags WHERE name = ...)` が該当なしだと migration が落ちる）。
-> admin でタグをリネームした場合は、以降の migration では新しい name を使う。
+> タグをリネームした場合は、以降の migration では新しい name を使う。
 > スライド/トークを migration で投入する場合も、同様に id を書かず slug / name で引く。
 
 ### タグ名の確認
@@ -241,7 +241,6 @@ grep -rhoE "INSERT INTO tags [^;]*'[^']+'" packages/database/migrations/*.sql \
 
 - 既存タグはそのままの name で紐付ける（新規 INSERT は不要、`ON CONFLICT` で安全だが書かなくてよい）。
 - 新規タグは `INSERT INTO tags (name) VALUES ('新タグ') ON CONFLICT (name) DO NOTHING;` を足すだけ。
-- admin のタグ画面（`/tags`）でも既存タグ名・使用数を確認できる。
 
 ## チェックリスト
 

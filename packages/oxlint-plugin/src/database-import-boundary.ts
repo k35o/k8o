@@ -7,7 +7,7 @@ const AUTH_SPECIFIER = '@repo/database/auth';
 
 const ALLOWED_LAYER_PATTERN =
   /^features\/[^/]+\/(?:infrastructure|application)\//u;
-const AUTH_SHARED_APPS = new Set(['admin', 'ai']);
+const AUTH_SHARED_APPS = new Set(['ai']);
 
 const isDatabaseSpecifier = (specifier: string): boolean =>
   specifier === DATABASE_SPECIFIER ||

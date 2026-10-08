@@ -60,18 +60,13 @@ const diagnosticsFor = (filename: string, code: string): Diagnostic[] =>
   );
 
 const BOUNDARY = 'k8o(database-import-boundary)';
-const VERIFY_SESSION = 'k8o(require-verify-session)';
 
 describe('k8o oxlint plugin (oxlint 実行での統合テスト)', () => {
   describe('正常系', () => {
-    test('許可された層と対象外ファイルには診断が出ない', () => {
+    test('許可された層には診断が出ない', () => {
       const cleanFiles = [
-        'apps/admin/src/features/demo/infrastructure/demo-repository.ts',
+        'apps/ai/src/features/demo/infrastructure/demo-repository.ts',
         'apps/main/src/features/demo/application/demo.ts',
-        // 'use server' が無い interface ファイルは require-verify-session の対象外
-        'apps/admin/src/features/demo/interface/queries.ts',
-        // require-verify-session は admin だけが対象
-        'apps/main/src/features/demo/interface/actions.ts',
       ];
       for (const file of cleanFiles) {
         expect(
@@ -87,14 +82,8 @@ describe('k8o oxlint plugin (oxlint 実行での統合テスト)', () => {
       expect(found).toStrictEqual(
         [
           `apps/main/src/app/page.tsx ${BOUNDARY}`,
-          `apps/admin/src/features/demo/interface/bad-import.ts ${BOUNDARY}`,
-          `apps/admin/src/shared/auth/session.ts ${BOUNDARY}`,
-          `apps/admin/src/features/demo/interface/actions.ts ${VERIFY_SESSION}`,
-          `apps/admin/src/features/demo/interface/actions.ts ${VERIFY_SESSION}`,
-          `apps/admin/src/features/demo/interface/actions.ts ${VERIFY_SESSION}`,
-          `apps/admin/src/features/demo/interface/actions.ts ${VERIFY_SESSION}`,
-          `apps/admin/src/features/demo/interface/default-action.ts ${VERIFY_SESSION}`,
-          `apps/admin/src/app/inline-page.tsx ${VERIFY_SESSION}`,
+          `apps/ai/src/features/demo/interface/bad-import.ts ${BOUNDARY}`,
+          `apps/ai/src/shared/auth/session.ts ${BOUNDARY}`,
         ].toSorted(),
       );
     });
@@ -110,7 +99,7 @@ describe('k8o oxlint plugin (oxlint 実行での統合テスト)', () => {
     test('interface からの型だけの import も検出する', () => {
       expect(
         diagnosticsFor(
-          'apps/admin/src/features/demo/interface/bad-import.ts',
+          'apps/ai/src/features/demo/interface/bad-import.ts',
           BOUNDARY,
         ),
       ).toHaveLength(1);
@@ -118,43 +107,11 @@ describe('k8o oxlint plugin (oxlint 実行での統合テスト)', () => {
 
     test('shared/auth では auth 以外のサブパスを検出する', () => {
       const found = diagnosticsFor(
-        'apps/admin/src/shared/auth/session.ts',
+        'apps/ai/src/shared/auth/session.ts',
         BOUNDARY,
       );
       expect(found).toHaveLength(1);
       expect(found[0]?.message).toContain("'@repo/database/auth' だけ");
-    });
-
-    test("'use server' ファイルで verifySession を先頭で呼ばない export を検出する", () => {
-      const found = diagnosticsFor(
-        'apps/admin/src/features/demo/interface/actions.ts',
-        VERIFY_SESSION,
-      );
-      const missing = found.filter((diagnostic) =>
-        diagnostic.message.includes('認可はこの1行に依存'),
-      );
-      const unverifiable = found.filter((diagnostic) =>
-        diagnostic.message.includes('検証できない'),
-      );
-      // ngMissingAction / ngNotFirstAction / ngNamedAction の3件
-      expect(missing).toHaveLength(3);
-      // withMiddleware でラップされた ngWrappedAction の1件
-      expect(unverifiable).toHaveLength(1);
-    });
-
-    test('export default の Server Action も検出する', () => {
-      expect(
-        diagnosticsFor(
-          'apps/admin/src/features/demo/interface/default-action.ts',
-          VERIFY_SESSION,
-        ),
-      ).toHaveLength(1);
-    });
-
-    test("関数単位の 'use server'（インライン Server Action）も検出する", () => {
-      expect(
-        diagnosticsFor('apps/admin/src/app/inline-page.tsx', VERIFY_SESSION),
-      ).toHaveLength(1);
     });
   });
 });

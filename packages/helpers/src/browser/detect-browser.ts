@@ -25,7 +25,7 @@ export const CORE_BROWSERS: readonly CoreBrowser[] = [
   'safari_ios',
 ];
 
-// ブラウザキー→表示名。main の警告モーダルと admin の一覧で共通利用する。
+// ブラウザキー→表示名。main の警告モーダルで使う。
 export const BROWSER_LABELS: Record<CoreBrowser, string> = {
   chrome: 'Chrome',
   chrome_android: 'Chrome (Android)',

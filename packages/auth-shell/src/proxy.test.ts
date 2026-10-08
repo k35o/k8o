@@ -3,7 +3,7 @@ import { NextRequest } from 'next/server';
 import { createProxy } from './proxy';
 
 const request = (pathname: string): NextRequest =>
-  new NextRequest(`https://admin.k8o.me${pathname}`);
+  new NextRequest(`https://ai.k8o.me${pathname}`);
 
 const signedInRequest = (pathname: string): NextRequest => {
   const signedIn = request(pathname);
@@ -19,7 +19,7 @@ describe('createProxy', () => {
 
       expect(response.status).toBe(307);
       expect(response.headers.get('location')).toBe(
-        'https://admin.k8o.me/sign-in',
+        'https://ai.k8o.me/sign-in',
       );
     });
 
@@ -72,7 +72,7 @@ describe('createProxy', () => {
   describe('エッジケース', () => {
     it('publicPathPrefixesを渡さないアプリでは他アプリの公開パスも保護する', () => {
       expect(createProxy()(request('/s/abc')).headers.get('location')).toBe(
-        'https://admin.k8o.me/sign-in',
+        'https://ai.k8o.me/sign-in',
       );
     });
 
@@ -80,7 +80,7 @@ describe('createProxy', () => {
       const proxy = createProxy(['/s/']);
 
       expect(proxy(request('/blogs/s/abc')).headers.get('location')).toBe(
-        'https://admin.k8o.me/sign-in',
+        'https://ai.k8o.me/sign-in',
       );
     });
   });

@@ -29,10 +29,3 @@ jobs:
           onlyChanged: true
           skip: 'renovate/**'
           workingDir: apps/main
-      - name: Publish Admin to Chromatic
-        uses: chromaui/action@259eda5f0e44c0c1eab38b672f1c4c967cc969b7 # v18.8.1
-        with:
-          projectToken: ${{ secrets.CHROMATIC_ADMIN_PROJECT_TOKEN }}
-          onlyChanged: true
-          skip: 'renovate/**'
-          workingDir: apps/admin
