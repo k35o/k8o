@@ -107,6 +107,9 @@ jobs:
     if: ${{ needs.detect.result == 'success' && needs.detect.outputs.apps != '[]' }}
     runs-on: ubuntu-latest
     timeout-minutes: 20
+    # PR は workflow 自体を書き換えて任意の repo secret を参照できるため、本番の資格情報は
+    # main に限定した production Environment にだけ置き、preview から届かないことを GitHub 側で担保する
+    environment: ${{ github.event_name == 'push' && 'production' || 'preview' }}
     permissions:
       contents: read
     strategy:
@@ -149,8 +152,8 @@ jobs:
           PROD_TURSO_AUTH_TOKEN: ${{ secrets.TURSO_AUTH_TOKEN }}
         run: |
           if [ "$DEPLOY_TARGET" = "production" ]; then
-            # production の Turso 接続情報も sensitive で pull できないため GH secrets から
-            # 注入する（preview は pull した preview DB の値をそのまま使う）。ambient な
+            # production の Turso 接続情報も sensitive で pull できないため production Environment の
+            # secrets から注入する（preview は pull した preview DB の値をそのまま使う）。ambient な
             # 環境変数は pull された .env より優先されるため export で上書きできる
             export TURSO_DATABASE_URL="$PROD_TURSO_DATABASE_URL"
             export TURSO_AUTH_TOKEN="$PROD_TURSO_AUTH_TOKEN"
