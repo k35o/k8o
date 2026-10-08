@@ -6,6 +6,8 @@
       "Bash(turso db destroy:*)",
       "Bash(turso db delete:*)",
       "Bash(turso db rotate:*)",
+      "Bash(turso db shell:*)",
+      "Bash(turso db tokens:*)",
       "Bash(vercel --prod:*)",
       "Bash(vercel deploy --prod:*)",
       "Bash(vercel rm:*)",
