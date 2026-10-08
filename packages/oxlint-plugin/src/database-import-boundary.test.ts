@@ -13,7 +13,9 @@ describe('judgeDatabaseImport', () => {
       ).toBe('allowed');
       expect(
         judgeDatabaseImport(
-          file('apps/admin/src/features/tags/infrastructure/tag-repository.ts'),
+          file(
+            'apps/api/src/features/reading-list/infrastructure/reading-list-repository.ts',
+          ),
           '@repo/database/schema',
         ),
       ).toBe('allowed');
@@ -28,13 +30,7 @@ describe('judgeDatabaseImport', () => {
       ).toBe('allowed');
     });
 
-    test('admin / ai の shared/auth からは @repo/database/auth を import できる', () => {
-      expect(
-        judgeDatabaseImport(
-          file('apps/admin/src/shared/auth/verify-session.ts'),
-          '@repo/database/auth',
-        ),
-      ).toBe('allowed');
+    test('ai の shared/auth からは @repo/database/auth を import できる', () => {
       expect(
         judgeDatabaseImport(
           file('apps/ai/src/shared/auth/require-allowed-session.ts'),
@@ -69,7 +65,7 @@ describe('judgeDatabaseImport', () => {
     test('app/ からの import は禁止', () => {
       expect(
         judgeDatabaseImport(
-          file('apps/admin/src/app/api/auth/[...all]/route.ts'),
+          file('apps/ai/src/app/api/auth/[...all]/route.ts'),
           '@repo/database/auth',
         ),
       ).toBe('forbiddenLayer');
@@ -87,7 +83,7 @@ describe('judgeDatabaseImport', () => {
     test('shared/auth 以外の shared からの import は禁止', () => {
       expect(
         judgeDatabaseImport(
-          file('apps/admin/src/shared/cache/cache-tags.ts'),
+          file('apps/api/src/shared/cache/revalidate-main.ts'),
           '@repo/database',
         ),
       ).toBe('forbiddenLayer');
@@ -96,7 +92,7 @@ describe('judgeDatabaseImport', () => {
     test('shared/auth でも auth 以外のサブパスは禁止', () => {
       expect(
         judgeDatabaseImport(
-          file('apps/admin/src/shared/auth/verify-session.ts'),
+          file('apps/ai/src/shared/auth/require-allowed-session.ts'),
           '@repo/database',
         ),
       ).toBe('authSubpathOnly');
@@ -108,10 +104,16 @@ describe('judgeDatabaseImport', () => {
       ).toBe('authSubpathOnly');
     });
 
-    test('auth の共用例外は admin / ai だけで、main には無い', () => {
+    test('auth の共用例外は ai だけで、main と api には無い', () => {
       expect(
         judgeDatabaseImport(
           file('apps/main/src/shared/auth/session.ts'),
+          '@repo/database/auth',
+        ),
+      ).toBe('forbiddenLayer');
+      expect(
+        judgeDatabaseImport(
+          file('apps/api/src/shared/auth/require-cron-secret.ts'),
           '@repo/database/auth',
         ),
       ).toBe('forbiddenLayer');
@@ -141,7 +143,7 @@ describe('judgeDatabaseImport', () => {
       expect(
         judgeDatabaseImport(
           file(
-            'apps/tools/src/fixtures/apps/admin/src/features/x/infrastructure/repo.ts',
+            'apps/tools/src/fixtures/apps/main/src/features/x/infrastructure/repo.ts',
           ),
           '@repo/database',
         ),
@@ -151,7 +153,7 @@ describe('judgeDatabaseImport', () => {
     test('Windows 形式のパス区切りでも判定できる', () => {
       expect(
         judgeDatabaseImport(
-          'C:\\dev\\k8o\\apps\\admin\\src\\app\\page.tsx',
+          'C:\\dev\\k8o\\apps\\main\\src\\app\\page.tsx',
           '@repo/database',
         ),
       ).toBe('forbiddenLayer');
