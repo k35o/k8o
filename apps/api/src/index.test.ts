@@ -13,6 +13,11 @@ vi.mock('./features/browser-support/interface/sync', () => ({
 vi.mock('./mcp', () => ({
   mcpHandler: { fetch: vi.fn() },
 }));
+vi.mock('./features/blog/infrastructure/view-repository', () => ({
+  findPublishedBlogId: vi.fn(),
+  incrementBlogView: vi.fn(),
+  incrementBlogViewDaily: vi.fn(),
+}));
 
 const CRON_SECRET = 'cron-secret';
 

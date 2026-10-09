@@ -2,8 +2,13 @@
   "name": "@repo/api",
   "version": "1.0.0",
   "private": true,
-  "description": "k8o API (cron jobs and owner MCP)",
+  "description": "k8o API (cron jobs, owner MCP, and public routes)",
   "type": "module",
+  "exports": {
+    "./public": {
+      "types": "./src/public.ts"
+    }
+  },
   "scripts": {
     "build": "vp pack",
     "type-check": "tsc --noEmit",

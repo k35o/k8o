@@ -45,6 +45,11 @@ vi.mock('./features/reading-list/interface/sync', () => ({
 vi.mock('./features/browser-support/interface/sync', () => ({
   runBrowserSupportSync: vi.fn(),
 }));
+vi.mock('./features/blog/infrastructure/view-repository', () => ({
+  findPublishedBlogId: vi.fn(),
+  incrementBlogView: vi.fn(),
+  incrementBlogViewDaily: vi.fn(),
+}));
 
 const MCP_TOKEN = 'mcp-token';
 const CRON_SECRET = 'cron-secret';

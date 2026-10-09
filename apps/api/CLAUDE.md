@@ -1,18 +1,27 @@
 # apps/api CLAUDE.md
 
-k8o の API。Hono で書き、Vercel にデプロイする（本番ドメイン `api.k8o.me`）。Vercel Cron で動く定期同期と、オーナーが Claude Code から使う MCP（`/mcp`）を持つ。
+k8o の API。Hono で書き、Vercel にデプロイする（本番ドメイン `api.k8o.me`）。Vercel Cron で動く定期同期、オーナーが Claude Code から使う MCP（`/mcp`）、k8o.me のブラウザから呼ぶ公開ルート（`/public/*`）を持つ。
 
 ## レイヤー構成（src/）
 
-- `index.ts` … Hono アプリの入口。ルートを束ね、`shared/auth/require-bearer-secret.ts` で `/cron/*` に `CRON_SECRET`、`/mcp` に `MCP_TOKEN` の Bearer 検証をかける
+- `index.ts` … Hono アプリの入口。ルートを束ね、`shared/auth/require-bearer-secret.ts` で `/cron/*` に `CRON_SECRET`、`/mcp` に `MCP_TOKEN` の Bearer 検証をかける。`/public/*` は認証の無い公開ルート（`public.ts`）
 - `mcp.ts` … MCP サーバーの組み立て。各 feature の tool を登録する
-- `features/<feature>/interface/` … HTTP 境界（`cron-routes.ts`）と MCP の tool（`mcp-tools.ts`）、通知の配線などユースケースの組み立て
+- `features/<feature>/interface/` … HTTP 境界（`cron-routes.ts`・`public-routes.ts`）と MCP の tool（`mcp-tools.ts`）、通知の配線などユースケースの組み立て
 - `features/<feature>/application/`・`infrastructure/` … 分け方は apps/main と同じ（`apps/main/CLAUDE.md`）
 - `shared/` … アプリ内で横断利用する処理
 
 ## cron
 
 `vercel.json` の `crons` が `/cron/sync-articles`（00:00 UTC）と `/cron/sync-browser-support`（06:00 UTC）を叩く。`/cron/sync-articles` は RSS の取り込みと OGP の補完のあと、未要約の記事を Claude で要約する。1回の件数と経過時間で打ち切り、残りは翌日に回す。進み具合は MCP の `get_overview` で見る（Hobby の Vercel のログは1時間で消える）。`/cron/sync-browser-support` は `trigger=monitor|manual` と `force=true` も受け、外形監視（`.github/workflows/browser-support-monitor.yml`）の自走復旧と、workflow_dispatch からの強制再同期に使われる。
+
+## 公開ルート
+
+`/public/*` は k8o.me のブラウザから直接呼ぶ匿名の書き込み（`src/public.ts`）。main は `@repo/api/public` から `PublicApi` の型だけを読み、hc（`hono/client`）に `https://api.k8o.me` を渡して呼ぶ想定（パスの `/public` は型に含まれる）。main の CSP の `connect-src` に api の origin が要る。
+
+- ルートは `features/<feature>/interface/public-routes.ts` に書き、`src/public.ts` で束ねる。公開ルートのモジュールから MCP・cron・AI SDK を import しない（main の型検査に巻き込まれるため）
+- 許可する Origin は k8o.me と www.k8o.me だけで、main の preview やローカルからは書き込めない。cors は許可しない Origin を拒否しないので、フォームと同じ扱いになる POST（本文なしを含む）は csrf で、JSON はブラウザのプリフライトで止める。どちらもブラウザ外からの呼び出しには効かない
+- 検証は zod/mini を `hono/validator` の中で呼ぶ。ルートが返すエラーは `{ ok: false, error: '<code>' }` とステータスだけにし、利用者に見せる文言は main に置く。csrf の 403 と未定義のパスの 404 はテキストで返るので、呼ぶ側は `res.ok` で成否を見る
+- 本文は 64KB まで。想定外の例外は中身を出さずに 500 を返す
 
 ## MCP
 
