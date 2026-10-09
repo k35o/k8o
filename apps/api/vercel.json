@@ -6,6 +6,7 @@
   "framework": "hono",
   "buildCommand": "pnpm run build",
   "outputDirectory": "dist",
+  "regions": ["hnd1"],
   "crons": [
     {
       "path": "/cron/sync-articles",
