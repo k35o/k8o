@@ -33,6 +33,7 @@
     "@vercel/analytics": "2.0.1",
     "@vercel/speed-insights": "2.0.0",
     "budoux": "0.9.1",
+    "hono": "catalog:",
     "katex": "0.18.7",
     "next": "catalog:",
     "next-themes": "catalog:",
@@ -50,6 +51,7 @@
     "zod": "catalog:"
   },
   "devDependencies": {
+    "@repo/api": "workspace:*",
     "@repo/typescript-config": "workspace:*",
     "@storybook/addon-a11y": "catalog:",
     "@storybook/addon-docs": "catalog:",

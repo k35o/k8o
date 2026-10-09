@@ -5,7 +5,6 @@ import { notFound } from 'next/navigation';
 import {
   findBlog,
   findBlogMetadata,
-  findPublishedBlogId as _findPublishedBlogId,
   getBlogToc as _getBlogToc,
   getBlogMetadata,
 } from '@/features/blog/application/blog';
@@ -77,10 +76,6 @@ export async function getBlogContent(slug: string) {
     notFound();
   }
   return blog;
-}
-
-export function findPublishedBlogId(slug: string): Promise<number | null> {
-  return _findPublishedBlogId(slug);
 }
 
 export async function getBlogOgCode(slug: string) {

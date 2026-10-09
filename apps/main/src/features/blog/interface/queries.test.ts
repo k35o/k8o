@@ -22,7 +22,6 @@ vi.mock('next/navigation', () => ({
 vi.mock('@/features/blog/application/blog', () => ({
   findBlog: vi.fn(),
   findBlogMetadata: vi.fn(),
-  findPublishedBlogId: vi.fn(),
   getBlogMetadata: vi.fn(),
   getBlogToc: vi.fn(),
 }));
