@@ -16,10 +16,10 @@ k8o の API。Hono で書き、Vercel にデプロイする（本番ドメイン
 
 ## 公開ルート
 
-`/public/*` は k8o.me のブラウザから直接呼ぶ匿名の書き込み（`src/public.ts`）。main は `@repo/api/public` から `PublicApi` の型だけを読み、hc（`hono/client`）に `https://api.k8o.me` を渡して呼ぶ想定（パスの `/public` は型に含まれる）。main の CSP の `connect-src` に api の origin が要る。
+`/public/*` は k8o.me のブラウザから直接呼ぶ匿名の書き込み（`src/public.ts`）。main は `@repo/api/public` から `PublicApi` の型だけを読み、`apps/main/src/shared/api/public-api.ts` の hc（`hono/client`）で呼ぶ（パスの `/public` は型に含まれる）。向け先は本番が `https://api.k8o.me`、ローカルは同じ worktree の api。main の CSP の `connect-src` に api の origin が要る。
 
 - ルートは `features/<feature>/interface/public-routes.ts` に書き、`src/public.ts` で束ねる。公開ルートのモジュールから MCP・cron・AI SDK を import しない（main の型検査に巻き込まれるため）
-- 許可する Origin は k8o.me と www.k8o.me だけで、main の preview やローカルからは書き込めない。cors は許可しない Origin を拒否しないので、フォームと同じ扱いになる POST（本文なしを含む）は csrf で、JSON はブラウザのプリフライトで止める。どちらもブラウザ外からの呼び出しには効かない
+- 許可する Origin は k8o.me と www.k8o.me だけ。dev サーバー（`NODE_ENV=development`）では、ローカルの main（`https://(<ブランチ>.)main.k8o.localhost(:ポート)`）も許可する。main の preview からは書き込めない。cors は許可しない Origin を拒否しないので、フォームと同じ扱いになる POST（本文なしを含む）は csrf で、JSON はブラウザのプリフライトで止める。どちらもブラウザ外からの呼び出しには効かない
 - 検証は zod/mini を `hono/validator` の中で呼ぶ。ルートが返すエラーは `{ ok: false, error: '<code>' }` とステータスだけにし、利用者に見せる文言は main に置く。csrf の 403 と未定義のパスの 404 はテキストで返るので、呼ぶ側は `res.ok` で成否を見る
 - 本文は 64KB まで。想定外の例外は中身を出さずに 500 を返す
 
@@ -43,4 +43,4 @@ pnpm -F @repo/api type-check
 pnpm -F @repo/api build        # vp pack で dist/index.mjs に束ねる
 ```
 
-ローカルの dev サーバーは持たない。デプロイは `.github/workflows/vercel-prebuilt.yml`（matrix の `api`）が行う。Vercel に設定する環境変数は `.env.example` にある。
+ローカルでは `pnpm run dev` で main・ai と一緒に起動する（portless の `api.k8o`。worktree ではブランチ名が前に付く）。`src/dev.ts` を tsx と `@hono/node-server` で動かし、環境変数は `apps/api/.env.local` から読む（`.env.example` を写す。DB はローカルの turso）。`src/dev.ts` は Vercel が入口として探す名前（app・index・server）にしない。デプロイは `.github/workflows/vercel-prebuilt.yml`（matrix の `api`）が行う。Vercel に設定する環境変数は `.env.example` にある。
