@@ -528,6 +528,9 @@ importers:
       budoux:
         specifier: 0.9.1
         version: 0.9.1(supports-color@10.2.2)
+      hono:
+        specifier: 'catalog:'
+        version: 4.13.12
       katex:
         specifier: 0.18.7
         version: 0.18.7
@@ -574,6 +577,9 @@ importers:
         specifier: 'catalog:'
         version: 4.6.4
     devDependencies:
+      '@repo/api':
+        specifier: workspace:*
+        version: link:../api
       '@repo/typescript-config':
         specifier: workspace:*
         version: link:../../packages/typescript-config

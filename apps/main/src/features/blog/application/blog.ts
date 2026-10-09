@@ -38,20 +38,6 @@ export const findBlog = async (slug: string) => {
   };
 };
 
-export const findPublishedBlogId = async (
-  slug: string,
-): Promise<number | null> => {
-  const blog = await db.query.blogs.findFirst({
-    where: (blogFields, { and, eq }) =>
-      and(eq(blogFields.slug, slug), eq(blogFields.published, true)),
-    columns: {
-      id: true,
-    },
-  });
-
-  return blog?.id ?? null;
-};
-
 export const getBlogMetadata = (slug: string) => getFrontmatter(blogPath(slug));
 
 // DBのslugに対応するMDXが無いことがある（共有ローカルDBに他worktreeの

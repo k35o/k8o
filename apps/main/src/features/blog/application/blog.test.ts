@@ -8,7 +8,6 @@ import { getTocTree } from '@/shared/mdx/toc-tree';
 import {
   findBlog,
   findBlogMetadata,
-  findPublishedBlogId,
   getBlogMetadata,
   getBlogToc,
 } from './blog';
@@ -124,29 +123,6 @@ describe('blog service', () => {
       vi.mocked(db.query.blogs.findFirst).mockResolvedValue(undefined);
 
       const result = await findBlog('non-existent-slug');
-
-      expect(result).toBeNull();
-    });
-  });
-
-  describe('findPublishedBlogId', () => {
-    it('公開済みブログのIDを返す', async () => {
-      vi.mocked(db.query.blogs.findFirst).mockResolvedValue({
-        id: 1,
-        slug: 'test-slug',
-        published: true,
-        createdAt: new Date().toISOString(),
-      });
-
-      const result = await findPublishedBlogId('test-slug');
-
-      expect(result).toBe(1);
-    });
-
-    it('ブログが存在しない場合はnullを返す', async () => {
-      vi.mocked(db.query.blogs.findFirst).mockResolvedValue(undefined);
-
-      const result = await findPublishedBlogId('non-existent-slug');
 
       expect(result).toBeNull();
     });
