@@ -18,7 +18,7 @@
     "build-storybook": "storybook build"
   },
   "dependencies": {
-    "@ai-sdk/openai-compatible": "catalog:",
+    "@ai-sdk/anthropic": "catalog:",
     "@ai-sdk/react": "4.0.102",
     "@json-render/core": "0.20.0",
     "@json-render/react": "0.20.0",

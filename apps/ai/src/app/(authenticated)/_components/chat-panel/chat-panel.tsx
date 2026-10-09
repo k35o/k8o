@@ -8,9 +8,12 @@ import { memo } from 'react';
 import type { FC, ReactNode } from 'react';
 
 import { messageText } from '@/features/generation/application/message-text';
+import {
+  GENERATION_MODEL_LABELS,
+  GENERATION_MODELS,
+} from '@/features/generation/application/models';
+import type { GenerationModel } from '@/features/generation/application/models';
 import { parseSpecProse } from '@/features/generation/application/spec-message';
-
-type Model = 'fugu' | 'fugu-ultra';
 
 const NO_SUGGESTIONS: string[] = [];
 
@@ -60,13 +63,13 @@ type Props = {
   emptyStateHint: string;
   suggestions?: string[];
   errorText: string | null;
-  selectedModel: Model;
+  selectedModel: GenerationModel;
   inputPlaceholder?: string;
   describeMessage?: DescribeMessage;
   onInputChange: (value: string) => void;
   onSubmit: (text: string) => void;
   onStop: () => void;
-  onSelectModel: (model: Model) => void;
+  onSelectModel: (model: GenerationModel) => void;
 };
 
 export const ChatPanel: FC<Props> = ({
@@ -171,28 +174,20 @@ export const ChatPanel: FC<Props> = ({
         </PromptInput.Root>
         <div className="flex items-center gap-2">
           <span className="text-fg-mute text-xs">モデル</span>
-          <Button
-            color="base"
-            disabled={isBusy}
-            onClick={() => {
-              onSelectModel('fugu');
-            }}
-            size="sm"
-            variant={selectedModel === 'fugu' ? 'solid' : 'skeleton'}
-          >
-            fugu
-          </Button>
-          <Button
-            color="base"
-            disabled={isBusy}
-            onClick={() => {
-              onSelectModel('fugu-ultra');
-            }}
-            size="sm"
-            variant={selectedModel === 'fugu-ultra' ? 'solid' : 'skeleton'}
-          >
-            ultra
-          </Button>
+          {GENERATION_MODELS.map((model) => (
+            <Button
+              color="base"
+              disabled={isBusy}
+              key={model}
+              onClick={() => {
+                onSelectModel(model);
+              }}
+              size="sm"
+              variant={selectedModel === model ? 'solid' : 'skeleton'}
+            >
+              {GENERATION_MODEL_LABELS[model]}
+            </Button>
+          ))}
           {errorText === null ? null : (
             <span className="text-fg-error ml-auto text-xs leading-relaxed">
               {errorText}

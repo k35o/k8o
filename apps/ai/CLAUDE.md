@@ -1,12 +1,12 @@
 # apps/ai CLAUDE.md
 
-AI関連ツールの置き場（`ai.k8o.me`）。第1号は @k8ordo/ui × Sakana Fugu の v0風デザインシステム壁打ちツール。
+AI関連ツールの置き場（`ai.k8o.me`）。第1号は @k8ordo/ui × Claude の v0風デザインシステム壁打ちツール。
 
 ## レイヤー構成（src/）
 
 apps/main と同じ `app / features / shared` 構成（詳細は `apps/main/CLAUDE.md`）。Server Actions（`'use server'`）は `features/*/interface` に置く。`_actions` は新規作成しない。
 
-- `generation/` - Sakana Fugu（OpenAI互換, AI SDK v7）による json-render spec 生成（レート制限もここ）
+- `generation/` - Claude（Sonnet 5.5 / Opus 5.5、AI SDK v7 と @ai-sdk/anthropic）による json-render spec とスライドの生成（レート制限もここ）
 - `share/` - 公開共有（公開/非公開化。/s/[slug] は DB の spec をその場で描画）
 - `projects/` - プロジェクト・版の永続化（@repo/database）
 - `highlight/` - 生成物（spec JSON / スライド）の shiki ハイライト

@@ -1,3 +1,4 @@
+import { DEFAULT_GENERATION_MODEL } from './models';
 import type { GenerationModel } from './models';
 import type { GenerationMeta } from './parse-meta';
 
@@ -25,7 +26,7 @@ export const createInitialGenerationState = <
   current: null,
   lastMeta: null,
   repairPrompt: null,
-  selectedModel: 'fugu',
+  selectedModel: DEFAULT_GENERATION_MODEL,
 });
 
 export const generationReducer = <TContent>(

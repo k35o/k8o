@@ -20,7 +20,7 @@ const meta = preview.meta({
     emptyStateTitle: 'UI を生成しましょう',
     emptyStateHint: '作りたい画面を入力すると、ここに会話が並びます。',
     errorText: null,
-    selectedModel: 'fugu',
+    selectedModel: 'claude-sonnet-5-5',
     onInputChange: noop,
     onSubmit: noop,
     onStop: noop,

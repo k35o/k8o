@@ -60,21 +60,21 @@ describe('generationReducer', () => {
 
     it('reset は選択モデルを保ちつつ初期状態へ戻す', () => {
       const s1 = generationReducer(
-        { ...initial, selectedModel: 'fugu-ultra' },
+        { ...initial, selectedModel: 'claude-opus-5-5' },
         { type: 'generation-finished', content: 'C1', meta },
       );
       const reset = generationReducer(s1, { type: 'reset' });
       expect(reset.lastMeta).toBeNull();
       expect(reset.current).toBeNull();
-      expect(reset.selectedModel).toBe('fugu-ultra');
+      expect(reset.selectedModel).toBe('claude-opus-5-5');
     });
 
     it('select-model は選択モデルだけを更新する', () => {
       const next = generationReducer(initial, {
         type: 'select-model',
-        model: 'fugu-ultra',
+        model: 'claude-opus-5-5',
       });
-      expect(next.selectedModel).toBe('fugu-ultra');
+      expect(next.selectedModel).toBe('claude-opus-5-5');
     });
   });
 
