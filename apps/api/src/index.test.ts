@@ -9,6 +9,10 @@ vi.mock('./features/reading-list/interface/sync', () => ({
 vi.mock('./features/browser-support/interface/sync', () => ({
   runBrowserSupportSync: vi.fn(),
 }));
+// MCP の tool は DB クライアントを読み込むため、cron のテストでは差し替える
+vi.mock('./mcp', () => ({
+  mcpHandler: { fetch: vi.fn() },
+}));
 
 const CRON_SECRET = 'cron-secret';
 
@@ -71,10 +75,10 @@ describe('cron ルート', () => {
       },
     );
 
-    it('CRON_SECRET が未設定なら正しい形式でも 401 を返す', async () => {
-      vi.stubEnv('CRON_SECRET', '');
+    it('MCP 用の MCP_TOKEN では 401 を返す', async () => {
+      vi.stubEnv('MCP_TOKEN', 'mcp-token');
 
-      const res = await cronRequest('/cron/sync-articles', 'Bearer ');
+      const res = await cronRequest('/cron/sync-articles', 'Bearer mcp-token');
 
       expect(res.status).toBe(401);
     });

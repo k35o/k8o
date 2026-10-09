@@ -7,6 +7,11 @@
     "vercel": {
       "type": "http",
       "url": "https://mcp.vercel.com"
+    },
+    "k8o-api": {
+      "type": "http",
+      "url": "https://api.k8o.me/mcp",
+      "headersHelper": "token=$(fnox get -P bot K8O_API_MCP_TOKEN) && [ -n \"$token\" ] && printf '{\"Authorization\":\"Bearer %s\"}' \"$token\""
     }
   }
 }
