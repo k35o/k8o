@@ -46,7 +46,7 @@ jobs:
         run: |
           set -u
 
-          # apex から www へのリダイレクトを追う(-L)。ok 以外は 503 + JSON body を返す
+          # リダイレクトを追う(-L)。ok 以外は 503 + JSON body を返す
           # 仕様のため -f は使えない。到達できても JSON でない応答(リダイレクト HTML や
           # エッジのエラーページ)がありうるので、jq に渡す前に検証して unreachable に倒す。
           fetch_health() {
