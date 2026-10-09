@@ -2,7 +2,7 @@
   "name": "@repo/api",
   "version": "1.0.0",
   "private": true,
-  "description": "k8o API (cron jobs)",
+  "description": "k8o API (cron jobs and owner MCP)",
   "type": "module",
   "scripts": {
     "build": "vp pack",
@@ -13,12 +13,15 @@
     "coverage": "vitest run --coverage"
   },
   "dependencies": {
+    "@modelcontextprotocol/server": "2.2.0",
     "@repo/database": "workspace:*",
     "@repo/helpers": "workspace:*",
     "hono": "catalog:",
-    "rss-parser": "3.13.0"
+    "rss-parser": "3.13.0",
+    "zod": "catalog:"
   },
   "devDependencies": {
+    "@modelcontextprotocol/client": "2.2.0",
     "@repo/typescript-config": "workspace:*",
     "@types/node": "24.19.0",
     "@vitest/coverage-v8": "catalog:",

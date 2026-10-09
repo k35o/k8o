@@ -113,7 +113,7 @@ describe('judgeDatabaseImport', () => {
       ).toBe('forbiddenLayer');
       expect(
         judgeDatabaseImport(
-          file('apps/api/src/shared/auth/require-cron-secret.ts'),
+          file('apps/api/src/shared/auth/require-bearer-secret.ts'),
           '@repo/database/auth',
         ),
       ).toBe('forbiddenLayer');
