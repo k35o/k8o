@@ -582,6 +582,13 @@
       "when": 1790577763149,
       "tag": "0082_deep_iron_monger",
       "breakpoints": true
+    },
+    {
+      "idx": 83,
+      "version": "6",
+      "when": 1791533515110,
+      "tag": "0083_fixed_thunderbolts",
+      "breakpoints": true
     }
   ]
 }
