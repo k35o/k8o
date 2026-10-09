@@ -6,7 +6,7 @@ import { enrichArticleMetadata } from '../application/enrich-articles';
 import { summarizeArticles } from '../application/summarize-articles';
 import { syncArticles } from '../application/sync-articles';
 
-const READING_LIST_URL = 'https://www.k8o.me/reading-list';
+const READING_LIST_URL = 'https://k8o.me/reading-list';
 // 関数の上限（Vercel Hobby で300秒）から、締め切りの直前に始めた1件（本文の取得と生成で
 // 最大約70秒）と、再検証・通知の分を残す
 const SUMMARY_DEADLINE_MS = 180_000;
