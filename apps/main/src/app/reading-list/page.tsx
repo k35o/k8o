@@ -37,14 +37,12 @@ export default async function Page() {
   for (const article of articles) {
     cards[article.id] = (
       <ReadingCard
-        articleId={article.id}
         description={article.description}
         imageUrl={article.imageUrl}
         key={article.id}
         publishedAt={article.publishedAt}
         sourceTitle={article.source.title}
         summary={article.summary}
-        summaryGaveUp={article.summaryGaveUp}
         title={article.title}
         url={article.url}
       />

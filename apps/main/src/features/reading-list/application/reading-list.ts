@@ -2,8 +2,6 @@ import { db } from '@repo/database';
 import { desc, gte } from '@repo/database/orm';
 import { NINETY_DAYS_MS } from '@repo/helpers/date/duration';
 
-import { MAX_SUMMARY_ATTEMPTS } from './summary-policy';
-
 export async function getArticles() {
   const ninetyDaysAgo = new Date(Date.now() - NINETY_DAYS_MS).toISOString();
 
@@ -23,11 +21,6 @@ export async function getArticles() {
     imageUrl: article.imageUrl,
     description: article.description,
     summary: article.summary,
-    // 上限まで試行しても summary が無い記事は再生成を試みず、説明文のまま確定表示する
-    // （試行回数は生成開始前に予約 increment されるため、成功した記事でも上限に達しうる）
-    summaryGaveUp:
-      article.summary === null &&
-      article.summaryAttempts >= MAX_SUMMARY_ATTEMPTS,
     source: {
       id: article.articleSource.id,
       title: article.articleSource.title,

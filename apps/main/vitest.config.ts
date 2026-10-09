@@ -21,9 +21,6 @@ export default defineConfig({
       {
         resolve: {
           alias: {
-            'server-only': fileURLToPath(
-              new URL('./src/mocks/empty.ts', import.meta.url),
-            ),
             'next/cache': fileURLToPath(
               new URL('./src/mocks/next-cache.ts', import.meta.url),
             ),

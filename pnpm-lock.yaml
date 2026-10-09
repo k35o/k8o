@@ -489,9 +489,6 @@ importers:
 
   apps/main:
     dependencies:
-      '@ai-sdk/openai-compatible':
-        specifier: 'catalog:'
-        version: 3.0.48(zod@4.6.4)
       '@k8o/html-nest':
         specifier: 'catalog:'
         version: 0.2.0
@@ -519,9 +516,6 @@ importers:
       '@repo/helpers':
         specifier: workspace:*
         version: link:../../packages/helpers
-      '@repo/react-hooks':
-        specifier: workspace:*
-        version: link:../../packages/react-hooks
       '@tailwindcss/postcss':
         specifier: 'catalog:'
         version: 4.3.3
@@ -531,9 +525,6 @@ importers:
       '@vercel/speed-insights':
         specifier: 2.0.0
         version: 2.0.0(next@16.3.5(@babel/core@7.29.7(supports-color@10.2.2))(@opentelemetry/api@1.9.1)(@playwright/test@1.62.0)(@types/node@24.19.0)(babel-plugin-react-compiler@1.0.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0))(react@19.3.0)
-      ai:
-        specifier: 'catalog:'
-        version: 7.0.99(zod@4.6.4)
       budoux:
         specifier: 0.9.1
         version: 0.9.1(supports-color@10.2.2)
@@ -573,9 +564,6 @@ importers:
       remark-mdx:
         specifier: 3.1.1
         version: 3.1.1(supports-color@10.2.2)
-      server-only:
-        specifier: 0.0.1
-        version: 0.0.1
       tailwindcss:
         specifier: 'catalog:'
         version: 4.3.3
@@ -797,18 +785,6 @@ importers:
       vitest:
         specifier: 'catalog:'
         version: 5.0.2(@opentelemetry/api@1.9.1)(@types/node@24.19.0)(@vitest/browser-playwright@4.1.11)(@vitest/browser-preview@4.1.11)(@vitest/coverage-v8@4.1.11)(@vitest/ui@4.1.11)(msw@2.15.0(@types/node@24.19.0)(typescript@7.0.2))(vite@8.0.14(@types/node@24.19.0)(esbuild@0.28.1)(jiti@2.7.0)(tsx@4.22.3)(yaml@2.9.0))
-
-  packages/react-hooks:
-    devDependencies:
-      '@repo/typescript-config':
-        specifier: workspace:*
-        version: link:../typescript-config
-      '@types/react':
-        specifier: 'catalog:'
-        version: 19.3.0
-      react:
-        specifier: 'catalog:'
-        version: 19.3.0
 
   packages/typescript-config: {}
 
