@@ -13,7 +13,8 @@ const MIN_SUMMARY_CHARS = 100;
 // 指示は200〜400字。長すぎる出力は、指示から外れた生成か、本文に仕込まれた指示に従った
 // 可能性が高い
 const MAX_SUMMARY_CHARS = 600;
-// Sonnet 5.5 は thinking を止められず、thinking のトークンも上限に数えるため、要約の本文の
+// @ai-sdk/anthropic 4.0.53 では Sonnet 5.5 の thinking を止められず（between_tools を
+// 受け付けない）、thinking のトークンも上限に数えるため、要約の本文の
 // 分より大きく取る。一方で、生成が長引いたときに TIMEOUT_MS より先にこの上限で止まる
 // （途中切れは記事ごとの失敗、時間切れは API 側の不調として扱い分ける）大きさに留める
 const MAX_OUTPUT_TOKENS = 3000;

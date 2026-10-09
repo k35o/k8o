@@ -4,10 +4,16 @@ import type { UIMessage } from 'ai';
 
 // data-spec 等の data パーツはモデルに渡さない（会話文だけを文脈にする。spec の
 // 文脈は最新 spec を buildUserPrompt で最後の user メッセージに埋めて渡す）。
+// パッチ行を data パーツへ分けたあとに残る空白だけの text も落とす。Anthropic は text
+// パーツを1つずつブロックにして送るので、空白だけのブロックが API に拒否されうる
 export const stripDataParts = (messages: UIMessage[]): UIMessage[] =>
   messages.map((message) => ({
     ...message,
-    parts: message.parts.filter((part) => !part.type.startsWith('data-')),
+    parts: message.parts.filter(
+      (part) =>
+        !part.type.startsWith('data-') &&
+        !(part.type === 'text' && part.text.trim() === ''),
+    ),
   }));
 
 // 編集ターンでは、最後の user メッセージを json-render 標準の編集プロンプト

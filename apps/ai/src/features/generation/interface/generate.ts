@@ -1,3 +1,4 @@
+import type { AnthropicLanguageModelOptions } from '@ai-sdk/anthropic';
 import { isNonEmptySpec, pipeJsonRender } from '@json-render/core';
 import {
   convertToModelMessages,
@@ -12,7 +13,10 @@ import { requireAllowedSession } from '@/shared/auth/require-allowed-session';
 
 import { buildSlidesSystemPrompt } from '../application/build-slides-system-prompt';
 import { buildSpecSystemPrompt } from '../application/build-spec-system-prompt';
-import { GENERATION_MODELS } from '../application/models';
+import {
+  DEFAULT_GENERATION_MODEL,
+  GENERATION_MODELS,
+} from '../application/models';
 import { GENERATION_MODES } from '../application/modes';
 import {
   stripDataParts,
@@ -23,7 +27,7 @@ import {
   isOverLimit,
   windowStartIso,
 } from '../application/rate-limit';
-import { getFuguModel } from '../infrastructure/fugu-provider';
+import { getGenerationModel } from '../infrastructure/claude-provider';
 import {
   countRecentGenerations,
   insertGenerationUsage,
@@ -89,18 +93,25 @@ export async function handleGenerate(req: Request): Promise<Response> {
   }
 
   const result = streamText({
-    model: getFuguModel(model ?? 'fugu'),
+    model: getGenerationModel(model ?? DEFAULT_GENERATION_MODEL),
     instructions:
       mode === 'slides'
         ? buildSlidesSystemPrompt({ currentSource: currentFile })
         : buildSpecSystemPrompt({ repairPrompt }),
     messages: modelMessages,
-    temperature: 0.4,
-    maxOutputTokens: 8000,
+    // thinking のトークンも上限に数えるため、生成物の分より大きく取る
+    maxOutputTokens: 16_000,
     maxRetries: 2,
+    providerOptions: {
+      // 誤って拒否されたとき、拒否の種類によっては Claude API 側で別のモデルに切り替えて答えさせる
+      anthropic: {
+        effort: 'medium',
+        fallbacks: 'default',
+      } satisfies AnthropicLanguageModelOptions,
+    },
     abortSignal: req.signal,
     onError: ({ error }) => {
-      console.error('Fugu 生成エラー', error);
+      console.error('生成エラー', error);
     },
     onEnd: ({ usage }) => {
       // レート制限のカウント源なので利用量を記録する。
@@ -115,6 +126,10 @@ export async function handleGenerate(req: Request): Promise<Response> {
 
   const uiStream = toUIMessageStream({
     stream: result.stream,
+    // thinking は署名付きでクライアントの履歴に残り、次のターンで送り返される。この画面は
+    // system と前ターンの user を毎ターン作り直すので、送り返した thinking は API に 400 で
+    // 拒否される。画面にも出していないので、クライアントへ送らない
+    sendReasoning: false,
     onError: (error) =>
       error instanceof Error ? error.message : '生成中にエラーが発生しました',
   });

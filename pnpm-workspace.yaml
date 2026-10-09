@@ -9,7 +9,7 @@ allowBuilds:
   workerd: false
 
 catalog:
-  '@ai-sdk/openai-compatible': 3.0.48
+  '@ai-sdk/anthropic': 4.0.53
   '@k8o/html-nest': 0.2.0
   '@k8o/oxc-config': 0.3.0
   '@k8ordo/ui': 1.0.0

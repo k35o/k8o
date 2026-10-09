@@ -5,7 +5,7 @@ import { auth, isAllowedEmail } from '@repo/database/auth';
 // 課金が発生する API route / server action の先頭で呼ぶゲート。
 // @repo/auth-shell の verifySession と異なり redirect せず、許可されない場合は null を返す
 // （呼び出し側で 401 を返すこと）。middleware は /api を守らないため、
-// Fugu（LLM）を叩く境界では必ずこのゲートを通す。
+// LLM（Claude API）を叩く境界では必ずこのゲートを通す。
 export const requireAllowedSession = async (
   requestHeaders: Headers,
 ): Promise<{ userId: string } | null> => {
