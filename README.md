@@ -9,6 +9,7 @@ pnpm i --frozen-lockfile
 
 # 環境変数設定（URLは https://<name>.k8o.localhost を使う。ポート番号は不要）
 cp apps/main/.env.example apps/main/.env.local
+cp apps/api/.env.example apps/api/.env.local
 cp packages/database/.env.example packages/database/.env.local
 
 # ローカルHTTPS用のCA証明書をシステムに登録（初回のみ）
@@ -19,7 +20,7 @@ pnpm portless trust
 # 永続化したい場合は ~/.zshrc などに追記する
 export NODE_EXTRA_CA_CERTS=$HOME/.portless/ca.pem
 
-# 開発サーバー起動（proxy + main/ai + DB。DB は未起動なら起動・起動済みなら再利用）
+# 開発サーバー起動（proxy + main/ai/api + DB。DB は未起動なら起動・起動済みなら再利用）
 pnpm run dev
 
 # マイグレーション（pnpm dev 実行中に別ターミナルで実行）

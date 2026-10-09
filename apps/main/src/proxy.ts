@@ -10,7 +10,7 @@ const cspHeader = `
     img-src 'self' https: blob: data:;
     font-src 'self';
     worker-src 'self' blob:;
-    connect-src 'self' https://www.google-analytics.com https://*.google-analytics.com https://*.analytics.google.com https://va.vercel-scripts.com https://api.webstatus.dev https://api.k8o.me;
+    connect-src 'self' https://www.google-analytics.com https://*.google-analytics.com https://*.analytics.google.com https://va.vercel-scripts.com https://api.webstatus.dev https://api.k8o.me${isDev ? ' https://api.k8o.localhost:* https://*.api.k8o.localhost:*' : ''};
     frame-src 'self' https://codepen.io https://www.googletagmanager.com https://vercel.live;
     object-src 'none';
     base-uri 'self';

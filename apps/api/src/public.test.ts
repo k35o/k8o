@@ -34,6 +34,7 @@ describe('公開 API', () => {
   });
 
   afterEach(() => {
+    vi.unstubAllEnvs();
     vi.restoreAllMocks();
   });
 
@@ -114,6 +115,52 @@ describe('公開 API', () => {
 
           expect(res.status).toBe(403);
           expect(incrementBlogView).not.toHaveBeenCalled();
+        },
+      );
+    });
+  });
+
+  describe('ローカルの main からの呼び出し', () => {
+    describe('正常系', () => {
+      it.each([
+        'https://main.k8o.localhost',
+        'https://main.k8o.localhost:1355',
+        'https://api-dev-server.main.k8o.localhost:1355',
+      ])('dev サーバーでは %s からの POST を通す', async (origin) => {
+        vi.stubEnv('NODE_ENV', 'development');
+
+        const res = await post(VIEWS_PATH, { Origin: origin });
+
+        expect(res.status).toBe(204);
+        expect(res.headers.get('access-control-allow-origin')).toBe(origin);
+      });
+    });
+
+    describe('異常系', () => {
+      it('dev サーバーでなければ、ローカルの main からの POST も 403 にする', async () => {
+        vi.stubEnv('NODE_ENV', 'production');
+
+        const res = await post(VIEWS_PATH, {
+          Origin: 'https://main.k8o.localhost:1355',
+        });
+
+        expect(res.status).toBe(403);
+      });
+
+      it.each([
+        'http://main.k8o.localhost:1355',
+        'https://main.k8o.localhost.evil.example',
+        'https://a.b.main.k8o.localhost:1355',
+        'https://api.k8o.localhost:1355',
+      ])(
+        'dev サーバーでも、似せた Origin（%s）は 403 にする',
+        async (origin) => {
+          vi.stubEnv('NODE_ENV', 'development');
+
+          const res = await post(VIEWS_PATH, { Origin: origin });
+
+          expect(res.status).toBe(403);
+          expect(res.headers.get('access-control-allow-origin')).toBeNull();
         },
       );
     });
