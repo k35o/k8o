@@ -13,10 +13,14 @@
     "coverage": "vitest run --coverage"
   },
   "dependencies": {
+    "@ai-sdk/anthropic": "4.0.53",
     "@modelcontextprotocol/server": "2.2.0",
+    "@mozilla/readability": "0.6.0",
     "@repo/database": "workspace:*",
     "@repo/helpers": "workspace:*",
+    "ai": "catalog:",
     "hono": "catalog:",
+    "linkedom": "0.18.12",
     "rss-parser": "3.13.0",
     "zod": "catalog:"
   },

@@ -28,6 +28,9 @@ const articleSummary = {
   newArticles: 2,
   updatedArticles: 1,
   enrichedArticles: 0,
+  summarizedArticles: 3,
+  failedSummaries: 1,
+  summaryAborted: false,
   failedSources: [],
 };
 
@@ -102,6 +105,21 @@ describe('cron ルート', () => {
       vi.mocked(runArticleSync).mockResolvedValue({
         ...articleSummary,
         failedSources: ['example'],
+      });
+
+      const res = await cronRequest(
+        '/cron/sync-articles',
+        `Bearer ${CRON_SECRET}`,
+      );
+
+      expect(res.status).toBe(200);
+      await expect(res.json()).resolves.toMatchObject({ ok: false });
+    });
+
+    it('要約を途中で打ち切ったら 200 のまま ok を false にする', async () => {
+      vi.mocked(runArticleSync).mockResolvedValue({
+        ...articleSummary,
+        summaryAborted: true,
       });
 
       const res = await cronRequest(

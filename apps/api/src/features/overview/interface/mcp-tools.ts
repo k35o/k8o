@@ -2,6 +2,7 @@ import type { McpServer } from '@modelcontextprotocol/server';
 import { z } from 'zod';
 
 import { toolResult } from '../../../shared/mcp/tool-result';
+import { getSummaryProgress } from '../../reading-list/interface/queries';
 import { findOverview } from '../infrastructure/overview-repository';
 
 export const registerOverviewTools = (server: McpServer): void => {
@@ -10,7 +11,7 @@ export const registerOverviewTools = (server: McpServer): void => {
     {
       title: 'k8o の概要',
       description:
-        'ブログの公開数と総閲覧数、お問い合わせとブログへのフィードバックの合計件数と最新の受信日時、Web Push の購読数と直近の送信結果、reading-list の記事数とソース数、browser-support の取り込み状況をまとめて返す。',
+        'ブログの公開数と総閲覧数、お問い合わせとブログへのフィードバックの合計件数と最新の受信日時、Web Push の購読数と直近の送信結果、reading-list の記事数とソース数と直近90日の要約の状況（未要約の数と、そのうち試行の上限に達してあきらめた数）、browser-support の取り込み状況をまとめて返す。',
       inputSchema: z.object({}),
       outputSchema: z.object({
         blogs: z.object({
@@ -32,6 +33,8 @@ export const registerOverviewTools = (server: McpServer): void => {
           articles: z.number(),
           sources: z.number(),
           latestPublishedAt: z.string().nullable(),
+          unsummarized: z.number(),
+          summaryGaveUp: z.number(),
         }),
         browserSupport: z.object({
           activeVersion: z.string().nullable(),
@@ -52,6 +55,15 @@ export const registerOverviewTools = (server: McpServer): void => {
         openWorldHint: false,
       },
     },
-    async () => toolResult(await findOverview()),
+    async () => {
+      const [overview, summaryProgress] = await Promise.all([
+        findOverview(),
+        getSummaryProgress(),
+      ]);
+      return toolResult({
+        ...overview,
+        readingList: { ...overview.readingList, ...summaryProgress },
+      });
+    },
   );
 };

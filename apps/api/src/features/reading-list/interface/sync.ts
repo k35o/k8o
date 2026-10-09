@@ -3,20 +3,40 @@ import { revalidateMainCache } from '../../../shared/cache/revalidate-main';
 // して interface 間 import を許容する（browser-support/interface/sync.ts と同じ扱い）。
 import { sendPushNotification } from '../../push-notification/interface/commands';
 import { enrichArticleMetadata } from '../application/enrich-articles';
+import { summarizeArticles } from '../application/summarize-articles';
 import { syncArticles } from '../application/sync-articles';
 
 const READING_LIST_URL = 'https://www.k8o.me/reading-list';
+// 関数の上限（Vercel Hobby で300秒）から、締め切りの直前に始めた1件（本文の取得と生成で
+// 最大約70秒）と、再検証・通知の分を残す
+const SUMMARY_DEADLINE_MS = 180_000;
 
 export type ArticleSyncSummary = {
   newArticles: number;
   updatedArticles: number;
   enrichedArticles: number;
+  summarizedArticles: number;
+  failedSummaries: number;
+  summaryAborted: boolean;
   failedSources: string[];
 };
 
 export async function runArticleSync(): Promise<ArticleSyncSummary> {
+  const startedAt = Date.now();
   const { newArticles, updatedArticles, failedSources } = await syncArticles();
   const { enrichedArticles } = await enrichArticleMetadata();
+  const { summarizedArticles, failedSummaries, summaryAborted } =
+    await summarizeArticles(startedAt + SUMMARY_DEADLINE_MS).catch(
+      (error: unknown) => {
+        // 記事の取り込みは済んでいるので、要約の失敗で再検証と通知を止めない
+        console.error('記事の要約に失敗しました:', error);
+        return {
+          summarizedArticles: 0,
+          failedSummaries: 0,
+          summaryAborted: true,
+        };
+      },
+    );
 
   // main の reading-list 一覧は db-content タグ付きキャッシュ（cacheLife('hours')）の
   // ため、同期のたびに再検証して最大1時間の古い表示を防ぐ
@@ -50,5 +70,13 @@ export async function runArticleSync(): Promise<ArticleSyncSummary> {
     console.error('プッシュ通知の送信に失敗しました:', error);
   }
 
-  return { newArticles, updatedArticles, enrichedArticles, failedSources };
+  return {
+    newArticles,
+    updatedArticles,
+    enrichedArticles,
+    summarizedArticles,
+    failedSummaries,
+    summaryAborted,
+    failedSources,
+  };
 }

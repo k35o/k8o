@@ -2,6 +2,8 @@ import { safeFetch } from '@repo/helpers/url/safe-fetch';
 import Parser from 'rss-parser';
 
 const parser = new Parser();
+// 同じ関数の中で要約も動くので、1本のフィードが応答しないまま上限の300秒を食い潰さないようにする
+const FEED_TIMEOUT_MS = 10_000;
 
 function sanitizeFeedDates(xml: string): string {
   return xml.replaceAll(
@@ -25,7 +27,9 @@ export type FeedItem = {
 
 export async function fetchFeedItems(url: string): Promise<FeedItem[]> {
   // SSRF 対策: 公開 https URL のみ許可し、リダイレクト先も都度検証する
-  const response = await safeFetch(url);
+  const response = await safeFetch(url, {
+    signal: AbortSignal.timeout(FEED_TIMEOUT_MS),
+  });
   if (!response.ok) {
     throw new Error(
       `フィード取得失敗: ${response.status} ${response.statusText}`,

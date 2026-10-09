@@ -10,6 +10,7 @@ import {
 } from './features/blog/infrastructure/blog-repository';
 import { findInquiries } from './features/inquiries/infrastructure/inquiry-repository';
 import { findOverview } from './features/overview/infrastructure/overview-repository';
+import { getSummaryProgress } from './features/reading-list/interface/queries';
 import {
   findReports,
   findReportTypeCounts,
@@ -26,6 +27,9 @@ vi.mock('./features/inquiries/infrastructure/inquiry-repository', () => ({
 }));
 vi.mock('./features/overview/infrastructure/overview-repository', () => ({
   findOverview: vi.fn(),
+}));
+vi.mock('./features/reading-list/interface/queries', () => ({
+  getSummaryProgress: vi.fn(),
 }));
 vi.mock('./features/reports/infrastructure/report-repository', () => ({
   findReports: vi.fn(),
@@ -459,7 +463,7 @@ describe('MCP の tool', () => {
 
   describe('get_overview', () => {
     describe('正常系', () => {
-      it('リポジトリの集計をそのまま返す', async () => {
+      it('リポジトリの集計に、reading-list の要約の進み具合を足して返す', async () => {
         const overview = {
           blogs: { published: 90, drafts: 1, totalViews: 1234 },
           inquiries: { total: 3, latestAt: '2026-10-07T00:00:00.000Z' },
@@ -485,13 +489,24 @@ describe('MCP の tool', () => {
           },
         };
         vi.mocked(findOverview).mockResolvedValue(overview);
+        vi.mocked(getSummaryProgress).mockResolvedValue({
+          unsummarized: 20,
+          summaryGaveUp: 2,
+        });
 
         const result = await client.callTool({
           name: 'get_overview',
           arguments: {},
         });
 
-        expect(structured(result)).toStrictEqual(overview);
+        expect(structured(result)).toStrictEqual({
+          ...overview,
+          readingList: {
+            ...overview.readingList,
+            unsummarized: 20,
+            summaryGaveUp: 2,
+          },
+        });
       });
     });
 
@@ -506,7 +521,11 @@ describe('MCP の tool', () => {
             lastSucceeded: null,
             lastFailed: null,
           },
-          readingList: { articles: 0, sources: 0, latestPublishedAt: null },
+          readingList: {
+            articles: 0,
+            sources: 0,
+            latestPublishedAt: null,
+          },
           browserSupport: {
             activeVersion: null,
             activeIngestedAt: null,
@@ -514,13 +533,24 @@ describe('MCP の tool', () => {
           },
         };
         vi.mocked(findOverview).mockResolvedValue(overview);
+        vi.mocked(getSummaryProgress).mockResolvedValue({
+          unsummarized: 0,
+          summaryGaveUp: 0,
+        });
 
         const result = await client.callTool({
           name: 'get_overview',
           arguments: {},
         });
 
-        expect(structured(result)).toStrictEqual(overview);
+        expect(structured(result)).toStrictEqual({
+          ...overview,
+          readingList: {
+            ...overview.readingList,
+            unsummarized: 0,
+            summaryGaveUp: 0,
+          },
+        });
       });
     });
   });
