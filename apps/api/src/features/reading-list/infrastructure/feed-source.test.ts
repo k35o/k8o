@@ -39,6 +39,20 @@ describe('fetchFeedItems', () => {
       ]);
     });
 
+    it('応答しないフィードで関数の上限を食い潰さないよう、タイムアウトを付けて取得する', async () => {
+      vi.mocked(safeFetch).mockResolvedValue(
+        feedResponse(
+          '<rss version="2.0"><channel><title>t</title></channel></rss>',
+        ),
+      );
+
+      await fetchFeedItems('https://example.com/feed');
+
+      expect(safeFetch).toHaveBeenCalledWith('https://example.com/feed', {
+        signal: expect.any(AbortSignal),
+      });
+    });
+
     it('isoDateが無い（pubDateがパース不能な）itemは生のpubDateをpublishedAtに残す', async () => {
       vi.mocked(safeFetch).mockResolvedValue(
         feedResponse(

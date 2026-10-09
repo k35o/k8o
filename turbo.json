@@ -25,7 +25,6 @@
         "NEXT_PUBLIC_GOOGLE_ANALYTICS_ID",
         "SAKANA_API_KEY",
         "SAKANA_BASE_URL",
-        "SUMMARY_MODEL",
         "TURSO_AUTH_TOKEN",
         "TURSO_DATABASE_URL",
         "VAPID_PUBLIC_KEY"

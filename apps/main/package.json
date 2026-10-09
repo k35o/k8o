@@ -20,7 +20,6 @@
     "build-storybook": "storybook build"
   },
   "dependencies": {
-    "@ai-sdk/openai-compatible": "catalog:",
     "@k8o/html-nest": "catalog:",
     "@k8ordo/ui": "catalog:",
     "@mdx-js/loader": "3.1.1",
@@ -30,11 +29,9 @@
     "@repo/code-highlight": "workspace:*",
     "@repo/database": "workspace:*",
     "@repo/helpers": "workspace:*",
-    "@repo/react-hooks": "workspace:*",
     "@tailwindcss/postcss": "catalog:",
     "@vercel/analytics": "2.0.1",
     "@vercel/speed-insights": "2.0.0",
-    "ai": "catalog:",
     "budoux": "0.9.1",
     "katex": "0.18.7",
     "next": "catalog:",
@@ -48,7 +45,6 @@
     "remark-frontmatter": "5.0.0",
     "remark-math": "6.0.0",
     "remark-mdx": "3.1.1",
-    "server-only": "0.0.1",
     "tailwindcss": "catalog:",
     "uqr": "0.1.3",
     "zod": "catalog:"

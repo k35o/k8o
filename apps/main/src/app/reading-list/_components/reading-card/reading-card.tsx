@@ -15,26 +15,22 @@ const isHttpUrl = (value: string): boolean => {
 };
 
 export type ReadingCardProps = {
-  articleId: number;
   url: string;
   title: string;
   publishedAt: string;
   imageUrl: string | null;
   description: string | null;
   summary: string | null;
-  summaryGaveUp: boolean;
   sourceTitle: string;
 };
 
 export const ReadingCard: FC<ReadingCardProps> = ({
-  articleId,
   url,
   title,
   publishedAt,
   imageUrl,
   description,
   summary,
-  summaryGaveUp,
   sourceTitle,
 }) => (
   <div className="vertical:max-w-container-md">
@@ -59,12 +55,7 @@ export const ReadingCard: FC<ReadingCardProps> = ({
                 title
               )}
             </p>
-            <ReadingCardBody
-              articleId={articleId}
-              description={description}
-              summary={summary}
-              summaryGaveUp={summaryGaveUp}
-            />
+            <ReadingCardBody description={description} summary={summary} />
           </div>
           <div className="text-fg-subtle mt-auto flex flex-wrap items-center justify-between gap-2 text-xs">
             <div className="flex items-center gap-1">

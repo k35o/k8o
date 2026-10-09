@@ -24,8 +24,8 @@ export const articles = sqliteTable(
     imageUrl: text('image_url'),
     description: text('description'),
     summary: text('summary'),
-    // 要約生成を開始した試行回数（生成前に予約 increment）。上限まで試行しても
-    // summary が無い記事は以降あきらめ、説明文のまま確定表示する
+    // 要約を試みた回数。生成の前に予約するので、要約済みの記事でも1以上になりうる。
+    // API の呼び出しが失敗した回は数えない。上限に達した記事は、それ以上要約しない
     summaryAttempts: integer('summary_attempts').notNull().default(0),
     createdAt: text('created_at')
       .notNull()

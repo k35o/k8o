@@ -1,8 +1,0 @@
-{
-  "extends": "@repo/typescript-config/next.json",
-  "compilerOptions": {
-    "types": ["react"]
-  },
-  "include": ["src/**/*.ts", "src/**/*.tsx"],
-  "exclude": ["node_modules", "dist"]
-}
