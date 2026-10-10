@@ -14,8 +14,13 @@ Drizzle ORM + Turso (libSQL) のDBクライアントとスキーマを提供す�
 ## マイグレーション
 
 ```bash
-pnpm run -F @repo/database migrate
+pnpm run -F @repo/database generate  # スキーマの変更からマイグレーションを作る（コミットする）
+pnpm run -F @repo/database migrate   # ローカルの DB に流す
 ```
+
+本番と preview の DB には、`.github/workflows/vercel-prebuilt.yml` の migrate ジョブが、どのアプリのビルドよりも先に流す。Vercel のビルドでは generate も migrate もしない。コミットされていないマイグレーションは CI（`ci.yml`）が落とす。
+
+マイグレーションは新しいコードより先に当たる。列やテーブルを消すときは、先にそれを使わないコードをデプロイしてから、消すマイグレーションを出す。
 
 ### コンテンツ系の seed INSERT は id を書かない
 

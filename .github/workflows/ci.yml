@@ -48,6 +48,16 @@ jobs:
       - name: Run type check
         run: pnpm run type-check
 
+      # デプロイではマイグレーションを作らず、コミットされたものだけを流す
+      - name: Check database migrations are committed
+        run: |
+          pnpm -F @repo/database generate
+          if [ -n "$(git status --porcelain -- packages/database/migrations)" ]; then
+            echo "::error::スキーマの変更に対応するマイグレーションがコミットされていない。pnpm -F @repo/database generate の結果をコミットする"
+            git status --porcelain -- packages/database/migrations
+            exit 1
+          fi
+
   test:
     runs-on: ubuntu-latest
     timeout-minutes: 10
