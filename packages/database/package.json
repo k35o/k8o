@@ -11,11 +11,6 @@
       "node": "./src/db.ts",
       "default": "./src/db.ts"
     },
-    "./auth": {
-      "types": "./src/auth.ts",
-      "node": "./src/auth.ts",
-      "default": "./src/auth.ts"
-    },
     "./orm": {
       "types": "./src/orm.ts",
       "default": "./src/orm.ts"
@@ -30,8 +25,6 @@
     "db:serve": "node scripts/local-db.ts serve",
     "db:status": "node scripts/local-db.ts status",
     "type-check": "tsc --noEmit",
-    "test": "vitest run",
-    "test:watch": "vitest",
     "generate": "drizzle-kit generate",
     "generate:custom": "drizzle-kit generate --custom",
     "migrate": "drizzle-kit migrate",
@@ -40,14 +33,12 @@
     "build:erd": "node --import ./scripts/register-ts-resolver.ts scripts/erd.ts"
   },
   "dependencies": {
-    "@libsql/client": "0.18.0",
-    "better-auth": "catalog:",
-    "drizzle-orm": "0.45.2"
+    "@libsql/client": "catalog:",
+    "drizzle-orm": "catalog:"
   },
   "devDependencies": {
     "@next/env": "catalog:",
     "@repo/typescript-config": "workspace:*",
-    "drizzle-kit": "0.31.10",
-    "vitest": "catalog:"
+    "drizzle-kit": "catalog:"
   }
 }

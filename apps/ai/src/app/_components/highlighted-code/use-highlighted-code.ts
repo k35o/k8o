@@ -4,7 +4,7 @@ import type { HighlightedCode } from '@repo/code-highlight/tokenize';
 import { useEffect, useRef, useState } from 'react';
 
 // ハイライト取得の実体（server action）は呼び出し側から渡す。UI コンポーネント側で
-// action を直接 import すると、Storybook が @repo/database まで辿ってしまうため。
+// action を直接 import すると、Storybook が @repo/ai-database まで辿ってしまうため。
 // デッキ全体を1往復で取れるようバッチ形（単一コードは1要素配列で呼ぶ）。
 export type HighlightFn = (
   blocks: Array<{ code: string; lang: string }>,

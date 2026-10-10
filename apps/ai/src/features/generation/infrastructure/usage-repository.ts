@@ -1,7 +1,7 @@
 import 'server-only';
-import { db } from '@repo/database';
-import { and, count, eq, gte } from '@repo/database/orm';
-import type { AiApp } from '@repo/database/schema';
+import { db } from '@repo/ai-database';
+import { and, count, eq, gte } from '@repo/ai-database/orm';
+import type { AiApp } from '@repo/ai-database/schema';
 
 // 生成1回ごとの利用ログ（ai_usages）。レート制限とコスト把握の基盤。
 const usages = db._schema.aiUsages;

@@ -17,6 +17,8 @@
       "dependsOn": ["^build"],
       "env": [
         "AI_GENERATE_LIMIT_PER_HOUR",
+        "AI_TURSO_AUTH_TOKEN",
+        "AI_TURSO_DATABASE_URL",
         "ALLOWED_EMAILS",
         "BETTER_AUTH_SECRET",
         "BETTER_AUTH_URL",

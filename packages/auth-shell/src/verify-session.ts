@@ -1,5 +1,5 @@
 import 'server-only';
-import { auth, isAllowedEmail } from '@repo/database/auth';
+import { auth, isAllowedEmail } from '@repo/ai-database/auth';
 import { headers } from 'next/headers';
 import { redirect } from 'next/navigation';
 import { connection } from 'next/server';

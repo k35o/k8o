@@ -1,0 +1,47 @@
+{
+  "name": "@repo/ai-database",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Database client for the k8o AI app (auth and ai_* tables)",
+  "type": "module",
+  "exports": {
+    ".": {
+      "types": "./src/db.ts",
+      "storybook": "./src/__mocks__/db.ts",
+      "node": "./src/db.ts",
+      "default": "./src/db.ts"
+    },
+    "./auth": {
+      "types": "./src/auth.ts",
+      "node": "./src/auth.ts",
+      "default": "./src/auth.ts"
+    },
+    "./orm": {
+      "types": "./src/orm.ts",
+      "default": "./src/orm.ts"
+    },
+    "./schema": {
+      "types": "./src/schema/public.ts",
+      "default": "./src/schema/public.ts"
+    }
+  },
+  "scripts": {
+    "type-check": "tsc --noEmit",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "generate": "drizzle-kit generate",
+    "migrate": "drizzle-kit migrate",
+    "studio": "drizzle-kit studio"
+  },
+  "dependencies": {
+    "@libsql/client": "catalog:",
+    "better-auth": "catalog:",
+    "drizzle-orm": "catalog:"
+  },
+  "devDependencies": {
+    "@next/env": "catalog:",
+    "@repo/typescript-config": "workspace:*",
+    "drizzle-kit": "catalog:",
+    "vitest": "catalog:"
+  }
+}

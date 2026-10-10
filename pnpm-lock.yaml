@@ -176,6 +176,9 @@ catalogs:
     '@k8ordo/ui':
       specifier: 1.0.0
       version: 1.0.0
+    '@libsql/client':
+      specifier: 0.18.0
+      version: 0.18.0
     '@next/env':
       specifier: 16.3.8
       version: 16.3.8
@@ -227,6 +230,12 @@ catalogs:
     chromatic:
       specifier: 18.8.1
       version: 18.8.1
+    drizzle-kit:
+      specifier: 0.31.10
+      version: 0.31.10
+    drizzle-orm:
+      specifier: 0.45.2
+      version: 0.45.2
     hono:
       specifier: 4.13.12
       version: 4.13.12
@@ -334,15 +343,15 @@ importers:
       '@k8ordo/ui':
         specifier: 'catalog:'
         version: 1.0.0(@json-render/core@0.20.0(zod@4.6.4))(@json-render/react@0.20.0(react@19.3.0)(zod@4.6.4))(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(ai@7.0.99(zod@4.6.4))(react-dom@19.3.0(react@19.3.0))(react@19.3.0)(tailwindcss@4.3.3)(typescript@7.0.2)(zod@4.6.4)
+      '@repo/ai-database':
+        specifier: workspace:*
+        version: link:../../packages/ai-database
       '@repo/auth-shell':
         specifier: workspace:*
         version: link:../../packages/auth-shell
       '@repo/code-highlight':
         specifier: workspace:*
         version: link:../../packages/code-highlight
-      '@repo/database':
-        specifier: workspace:*
-        version: link:../../packages/database
       '@repo/helpers':
         specifier: workspace:*
         version: link:../../packages/helpers
@@ -656,11 +665,36 @@ importers:
         specifier: 'catalog:'
         version: 5.0.2(@opentelemetry/api@1.9.1)(@types/node@24.19.1)(@vitest/browser-playwright@5.0.2)(@vitest/browser-preview@4.1.11)(@vitest/coverage-v8@5.0.2)(@vitest/ui@5.0.2)(msw@2.15.0(@types/node@24.19.1)(typescript@7.0.2))(vite@8.0.14(@types/node@24.19.1)(esbuild@0.28.1)(jiti@2.7.0)(tsx@4.22.3)(yaml@2.9.0))
 
+  packages/ai-database:
+    dependencies:
+      '@libsql/client':
+        specifier: 'catalog:'
+        version: 0.18.0
+      better-auth:
+        specifier: 'catalog:'
+        version: 1.7.4(@opentelemetry/api@1.9.1)(drizzle-kit@0.31.10)(drizzle-orm@0.45.2(@libsql/client@0.18.0)(@opentelemetry/api@1.9.1)(kysely@0.28.17))(next@16.3.8(@babel/core@7.29.7(supports-color@10.2.2))(@opentelemetry/api@1.9.1)(@playwright/test@1.62.0)(@types/node@24.19.1)(babel-plugin-react-compiler@1.0.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0))(react-dom@19.3.0(react@19.3.0))(react@19.3.0)(vitest@5.0.2)
+      drizzle-orm:
+        specifier: 'catalog:'
+        version: 0.45.2(@libsql/client@0.18.0)(@opentelemetry/api@1.9.1)(kysely@0.28.17)
+    devDependencies:
+      '@next/env':
+        specifier: 'catalog:'
+        version: 16.3.8
+      '@repo/typescript-config':
+        specifier: workspace:*
+        version: link:../typescript-config
+      drizzle-kit:
+        specifier: 'catalog:'
+        version: 0.31.10
+      vitest:
+        specifier: 'catalog:'
+        version: 5.0.2(@opentelemetry/api@1.9.1)(@types/node@24.19.1)(@vitest/browser-playwright@5.0.2)(@vitest/browser-preview@4.1.11)(@vitest/coverage-v8@5.0.2)(@vitest/ui@5.0.2)(msw@2.15.0(@types/node@24.19.1)(typescript@7.0.2))(vite@8.0.14(@types/node@24.19.1)(esbuild@0.28.1)(jiti@2.7.0)(tsx@4.22.3)(yaml@2.9.0))
+
   packages/auth-shell:
     dependencies:
-      '@repo/database':
+      '@repo/ai-database':
         specifier: workspace:*
-        version: link:../database
+        version: link:../ai-database
       server-only:
         specifier: 0.0.1
         version: 0.0.1
@@ -733,13 +767,10 @@ importers:
   packages/database:
     dependencies:
       '@libsql/client':
-        specifier: 0.18.0
-        version: 0.18.0
-      better-auth:
         specifier: 'catalog:'
-        version: 1.7.4(@opentelemetry/api@1.9.1)(drizzle-kit@0.31.10)(drizzle-orm@0.45.2(@libsql/client@0.18.0)(@opentelemetry/api@1.9.1)(kysely@0.28.17))(next@16.3.8(@babel/core@7.29.7(supports-color@10.2.2))(@opentelemetry/api@1.9.1)(@playwright/test@1.62.0)(@types/node@24.19.1)(babel-plugin-react-compiler@1.0.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0))(react-dom@19.3.0(react@19.3.0))(react@19.3.0)(vitest@5.0.2)
+        version: 0.18.0
       drizzle-orm:
-        specifier: 0.45.2
+        specifier: 'catalog:'
         version: 0.45.2(@libsql/client@0.18.0)(@opentelemetry/api@1.9.1)(kysely@0.28.17)
     devDependencies:
       '@next/env':
@@ -749,11 +780,8 @@ importers:
         specifier: workspace:*
         version: link:../typescript-config
       drizzle-kit:
-        specifier: 0.31.10
-        version: 0.31.10
-      vitest:
         specifier: 'catalog:'
-        version: 5.0.2(@opentelemetry/api@1.9.1)(@types/node@24.19.1)(@vitest/browser-playwright@5.0.2)(@vitest/browser-preview@4.1.11)(@vitest/coverage-v8@5.0.2)(@vitest/ui@5.0.2)(msw@2.15.0(@types/node@24.19.1)(typescript@7.0.2))(vite@8.0.14(@types/node@24.19.1)(esbuild@0.28.1)(jiti@2.7.0)(tsx@4.22.3)(yaml@2.9.0))
+        version: 0.31.10
 
   packages/helpers:
     dependencies:
@@ -8852,7 +8880,7 @@ snapshots:
 
   '@types/ws@8.18.1':
     dependencies:
-      '@types/node': 24.13.4
+      '@types/node': 24.19.1
 
   '@typescript-eslint/types@8.60.0': {}
 

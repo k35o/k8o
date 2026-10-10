@@ -48,7 +48,7 @@
     "type-check": "tsc --noEmit"
   },
   "dependencies": {
-    "@repo/database": "workspace:*",
+    "@repo/ai-database": "workspace:*",
     "server-only": "0.0.1"
   },
   "devDependencies": {

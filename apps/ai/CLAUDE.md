@@ -8,7 +8,7 @@ apps/main と同じ `app / features / shared` 構成（詳細は `apps/main/CLAU
 
 - `generation/` - Claude（Sonnet 5.5 / Opus 5.5、AI SDK v7 と @ai-sdk/anthropic）による json-render spec とスライドの生成（レート制限もここ）
 - `share/` - 公開共有（公開/非公開化。/s/[slug] は DB の spec をその場で描画）
-- `projects/` - プロジェクト・版の永続化（@repo/database）
+- `projects/` - プロジェクト・版の永続化（@repo/ai-database）
 - `highlight/` - 生成物（spec JSON / スライド）の shiki ハイライト
 
 ## 生成 UI（json-render）
@@ -25,7 +25,7 @@ UI スタジオの生成物は TSX ではなく json-render の spec。catalog�
 
 ## 認証 & コスト保護
 
-Better Auth + GitHub OAuth（`@repo/database/auth` を共用）。**本人のみ**利用可（`ALLOWED_EMAILS`）。
+Better Auth + GitHub OAuth（`@repo/ai-database/auth`）。**本人のみ**利用可（`ALLOWED_EMAILS`）。
 
 LLM / サンドボックスは課金が発生するため、**課金が発生する全 API route / server action の先頭で `shared/auth/require-allowed-session.ts` を呼び、未許可は 401 で弾く**こと（middleware は `/api` を守らないため必須の防御層）。
 

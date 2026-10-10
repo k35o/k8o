@@ -2,16 +2,17 @@ import type { ESTree, Rule } from '@oxlint/plugins';
 
 import { parseAppSrcPath } from './app-src-path.ts';
 
-const DATABASE_SPECIFIER = '@repo/database';
-const AUTH_SPECIFIER = '@repo/database/auth';
+const DATABASE_PACKAGES = ['@repo/database', '@repo/ai-database'];
+const AUTH_SPECIFIER = '@repo/ai-database/auth';
 
 const ALLOWED_LAYER_PATTERN =
   /^features\/[^/]+\/(?:infrastructure|application)\//u;
 const AUTH_SHARED_APPS = new Set(['ai']);
 
 const isDatabaseSpecifier = (specifier: string): boolean =>
-  specifier === DATABASE_SPECIFIER ||
-  specifier.startsWith(`${DATABASE_SPECIFIER}/`);
+  DATABASE_PACKAGES.some(
+    (pkg) => specifier === pkg || specifier.startsWith(`${pkg}/`),
+  );
 
 export type DatabaseImportVerdict =
   | 'allowed'
@@ -47,13 +48,13 @@ export const databaseImportBoundary: Rule = {
     type: 'problem',
     docs: {
       description:
-        '@repo/database の import を features/*/infrastructure（読み取りのみ features/*/application も可）に限定する',
+        'DB パッケージ（@repo/database・@repo/ai-database）の import を features/*/infrastructure（読み取りのみ features/*/application も可）に限定する',
     },
     messages: {
       forbiddenLayer:
         "'{{specifier}}' を import できるのは features/*/infrastructure（小さな読み取りは features/*/application も可）だけ。DBアクセスはそこへ切り出し、app / interface からはそれを呼ぶ。",
       authSubpathOnly:
-        "shared/auth から import できるのは '@repo/database/auth' だけ。'{{specifier}}' へのアクセスは features/*/infrastructure へ切り出す。",
+        "shared/auth から import できるのは '@repo/ai-database/auth' だけ。'{{specifier}}' へのアクセスは features/*/infrastructure へ切り出す。",
     },
   },
   create(context) {

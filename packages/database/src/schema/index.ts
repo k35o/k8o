@@ -34,6 +34,8 @@ import { tags, tagsRelations } from './tags';
 import { talkTag, talkTagRelations } from './talk-tag';
 import { talks, talksRelations } from './talks';
 
+// 認証と ai_* は ai の DB（@repo/ai-database）に移した。k8o の DB から消すマイグレーションを
+// 出すまで、generate が DROP を作らないよう定義を残している
 export const schema = {
   user,
   session,
