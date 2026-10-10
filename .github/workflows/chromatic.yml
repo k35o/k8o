@@ -23,7 +23,7 @@ jobs:
       - name: Setup
         uses: ./.github/actions/setup
       - name: Publish Main to Chromatic
-        uses: chromaui/action@259eda5f0e44c0c1eab38b672f1c4c967cc969b7 # v18.8.1
+        uses: chromaui/action@a18e9f57b71eb05f941848c0b927aab2ee644e3e # v18.10.2
         with:
           projectToken: ${{ secrets.CHROMATIC_PROJECT_TOKEN }}
           onlyChanged: true
