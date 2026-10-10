@@ -5,6 +5,8 @@ import { csrf } from 'hono/csrf';
 import { HTTPException } from 'hono/http-exception';
 
 import { blogPublicRoutes } from './features/blog/interface/public-routes';
+import { inquiryPublicRoutes } from './features/inquiries/interface/public-routes';
+import { pushSubscriptionPublicRoutes } from './features/push-notification/interface/public-routes';
 
 const ALLOWED_ORIGINS = new Set(['https://k8o.me', 'https://www.k8o.me']);
 // ローカルの main（portless。worktree ではブランチ名が前に付き、ポートも付く）
@@ -25,7 +27,7 @@ export const publicRoutes = new Hono()
   .use(
     cors({
       origin: (origin) => (isAllowedOrigin(origin) ? origin : null),
-      allowMethods: ['POST'],
+      allowMethods: ['POST', 'DELETE'],
       allowHeaders: ['Content-Type'],
       maxAge: 7200,
     }),
@@ -39,6 +41,8 @@ export const publicRoutes = new Hono()
     }),
   )
   .route('/blogs', blogPublicRoutes)
+  .route('/inquiries', inquiryPublicRoutes)
+  .route('/push-subscriptions', pushSubscriptionPublicRoutes)
   .onError((error, c) => {
     if (error instanceof HTTPException) {
       return error.getResponse();

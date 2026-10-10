@@ -45,11 +45,11 @@ vi.mock('./features/reading-list/interface/sync', () => ({
 vi.mock('./features/browser-support/interface/sync', () => ({
   runBrowserSupportSync: vi.fn(),
 }));
-vi.mock('./features/blog/infrastructure/view-repository', () => ({
-  findPublishedBlogId: vi.fn(),
-  incrementBlogView: vi.fn(),
-  incrementBlogViewDaily: vi.fn(),
-}));
+// 公開ルートは DB クライアントを読み込むため、このテストでは空のアプリに差し替える
+vi.mock('./public', async () => {
+  const { Hono } = await import('hono');
+  return { publicRoutes: new Hono() };
+});
 
 const MCP_TOKEN = 'mcp-token';
 const CRON_SECRET = 'cron-secret';
