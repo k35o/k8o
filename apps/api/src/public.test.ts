@@ -9,6 +9,7 @@ import {
   deleteSubscription,
   insertSubscription,
 } from './features/push-notification/infrastructure/subscription-repository';
+import { insertReports } from './features/reports/infrastructure/report-repository';
 import app from './index';
 
 vi.mock('./features/blog/infrastructure/view-repository', () => ({
@@ -30,6 +31,11 @@ vi.mock(
     deleteSubscription: vi.fn(),
   }),
 );
+vi.mock('./features/reports/infrastructure/report-repository', () => ({
+  insertReports: vi.fn(),
+  findReports: vi.fn(),
+  findReportTypeCounts: vi.fn(),
+}));
 // cron と MCP は DB クライアントを読み込むため、このテストでは差し替える
 vi.mock('./mcp', () => ({ mcpHandler: { fetch: vi.fn() } }));
 vi.mock('./features/reading-list/interface/sync', () => ({
@@ -77,6 +83,7 @@ describe('公開 API', () => {
     vi.mocked(insertInquiry).mockResolvedValue();
     vi.mocked(insertSubscription).mockResolvedValue();
     vi.mocked(deleteSubscription).mockResolvedValue();
+    vi.mocked(insertReports).mockResolvedValue();
   });
 
   afterEach(() => {
@@ -577,6 +584,157 @@ describe('公開 API', () => {
 
         expect(res.status).toBe(400);
         expect(deleteSubscription).not.toHaveBeenCalled();
+      });
+    });
+  });
+  describe('POST /public/reports', () => {
+    const PATH = '/public/reports';
+    const CSP_REPORT = {
+      age: 12,
+      type: 'csp-violation',
+      url: 'https://k8o.me/blog/media-pseudos',
+      user_agent: 'Mozilla/5.0',
+      body: {
+        documentURL: 'https://k8o.me/blog/media-pseudos',
+        effectiveDirective: 'connect-src',
+        blockedURL: 'https://evil.example/collect',
+      },
+    };
+
+    // ブラウザの Reporting API が送る形（Origin は Chromium 134 より前だと付かない）
+    const sendReports = (body: unknown, headers: Record<string, string> = {}) =>
+      Promise.resolve(
+        app.request(PATH, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/reports+json', ...headers },
+          body: JSON.stringify(body),
+        }),
+      );
+
+    describe('正常系', () => {
+      it('Chromium と同じ形のプリフライトに、Origin と Content-Type を許可して答える', async () => {
+        const res = await app.request(PATH, {
+          method: 'OPTIONS',
+          headers: {
+            Origin: ORIGIN,
+            'Access-Control-Request-Method': 'POST',
+            'Access-Control-Request-Headers': 'content-type',
+          },
+        });
+
+        expect(res.status).toBe(204);
+        expect(res.headers.get('access-control-allow-origin')).toBe(ORIGIN);
+        expect(res.headers.get('access-control-allow-headers')).toMatch(
+          /content-type/iu,
+        );
+      });
+
+      it('application/reports+json のレポートを、種別・URL・本文だけ保存して 204 を返す', async () => {
+        const res = await sendReports([CSP_REPORT], { Origin: ORIGIN });
+
+        expect(res.status).toBe(204);
+        expect(insertReports).toHaveBeenCalledWith([
+          {
+            type: 'csp-violation',
+            url: 'https://k8o.me/blog/media-pseudos',
+            body: CSP_REPORT.body,
+          },
+        ]);
+      });
+
+      it('Origin の無いレポートも受ける', async () => {
+        const res = await sendReports([CSP_REPORT]);
+
+        expect(res.status).toBe(204);
+        expect(insertReports).toHaveBeenCalledOnce();
+      });
+
+      it('main のクライアントのエラーを application/json で受ける', async () => {
+        const res = await sendJson(PATH, [
+          {
+            type: 'client-error',
+            age: 0,
+            url: 'https://k8o.me/',
+            user_agent: 'Mozilla/5.0',
+            body: { name: 'TypeError', message: 'x is undefined' },
+          },
+        ]);
+
+        expect(res.status).toBe(204);
+        expect(insertReports).toHaveBeenCalledWith([
+          {
+            type: 'client-error',
+            url: 'https://k8o.me/',
+            body: { name: 'TypeError', message: 'x is undefined' },
+          },
+        ]);
+      });
+    });
+
+    describe('異常系', () => {
+      it('許可していない Origin のプリフライトには、Origin を許可しない', async () => {
+        const res = await app.request(PATH, {
+          method: 'OPTIONS',
+          headers: {
+            Origin: 'https://evil.example',
+            'Access-Control-Request-Method': 'POST',
+            'Access-Control-Request-Headers': 'content-type',
+          },
+        });
+
+        expect(res.headers.get('access-control-allow-origin')).toBeNull();
+      });
+
+      it('Reporting API の形でなければ 400 にして保存しない', async () => {
+        const res = await sendReports([{ type: 'csp-violation' }]);
+
+        expect(res.status).toBe(400);
+        expect(insertReports).not.toHaveBeenCalled();
+      });
+
+      // Safari は CSP 違反を application/csp-report で送る。JSON 系の Content-Type でないので本文を読まない
+      it('application/csp-report は本文を読まずに 400 にして保存しない', async () => {
+        const res = await app.request(PATH, {
+          method: 'POST',
+          headers: {
+            Origin: ORIGIN,
+            'Content-Type': 'application/csp-report',
+          },
+          body: JSON.stringify({
+            type: 'csp-violation',
+            url: CSP_REPORT.url,
+            body: CSP_REPORT.body,
+          }),
+        });
+
+        expect(res.status).toBe(400);
+        expect(insertReports).not.toHaveBeenCalled();
+      });
+
+      it('64KB を超える本文は 413 にして保存しない', async () => {
+        const res = await sendReports([
+          { ...CSP_REPORT, body: { sample: 'a'.repeat(64 * 1024) } },
+        ]);
+
+        expect(res.status).toBe(413);
+        expect(insertReports).not.toHaveBeenCalled();
+      });
+
+      // 410 はブラウザに送り先を消させるので返さない。保存の失敗は送り直してもらう
+      it('保存に失敗したら 500 を返す', async () => {
+        vi.mocked(insertReports).mockRejectedValue(new Error('db down'));
+
+        const res = await sendReports([CSP_REPORT]);
+
+        expect(res.status).toBe(500);
+      });
+    });
+
+    describe('エッジケース', () => {
+      it('空の配列は 204 を返す', async () => {
+        const res = await sendReports([]);
+
+        expect(res.status).toBe(204);
       });
     });
   });
