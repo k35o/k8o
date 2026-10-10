@@ -85,6 +85,9 @@ export const Default = meta.story({
     const sidebar = within(canvas.getByRole('complementary'));
     await expect(sidebar.getByText('料金プランの3カラム')).toBeInTheDocument();
     await expect(sidebar.getByText('お問い合わせフォーム')).toBeInTheDocument();
+    await expect(
+      sidebar.getByRole('button', { name: 'ログアウト' }),
+    ).toBeInTheDocument();
     // 現在地（UI）は aria-current でマークされる。
     const current = within(nav).getByText('UI').closest('a');
     await expect(current).toHaveAttribute('aria-current', 'page');
