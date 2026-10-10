@@ -1,6 +1,7 @@
 'use client';
 
 import { Button, PaletteIcon, PlusIcon, SlideIcon } from '@k8ordo/ui';
+import { SignOutButton } from '@repo/auth-shell/sign-out-button';
 import Link from 'next/link';
 import type { FC, ReactNode } from 'react';
 
@@ -95,7 +96,8 @@ export const SidebarContent: FC<SidebarContentProps> = ({
         projects={projects}
       />
     </div>
-    <div className="flex items-center justify-end px-4 py-3">
+    <div className="flex items-center justify-between px-4 py-3">
+      <SignOutButton />
       <ToggleTheme />
     </div>
   </div>

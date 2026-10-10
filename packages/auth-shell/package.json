@@ -33,6 +33,10 @@
       "types": "./src/sign-in-page.tsx",
       "default": "./src/sign-in-page.tsx"
     },
+    "./sign-out-button": {
+      "types": "./src/sign-out-button.tsx",
+      "default": "./src/sign-out-button.tsx"
+    },
     "./verify-session": {
       "types": "./src/verify-session.ts",
       "default": "./src/verify-session.ts"
