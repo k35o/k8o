@@ -9,13 +9,48 @@ import {
 } from 'react';
 import type { FC } from 'react';
 
-import {
-  subscribePushAction,
-  unsubscribePushAction,
-} from '@/features/push-notification/interface/actions';
+import { publicApi } from '@/shared/api/public-api';
 
 type Props = {
   vapidPublicKey: string;
+};
+
+const SUBSCRIBE_ERROR_MESSAGES = {
+  invalid_request: '購読情報が不正です',
+  endpoint_not_allowed: '許可されていない通知エンドポイントです',
+  invalid_keys: '購読鍵の形式が不正です',
+} as const;
+
+const SUBSCRIBE_FAILED_MESSAGE = '購読の登録に失敗しました';
+const UNSUBSCRIBE_FAILED_MESSAGE = '購読の解除に失敗しました';
+
+// api に登録できなかった理由を返す。登録できたら null
+const registerSubscription = async (
+  subscription: PushSubscription,
+): Promise<string | null> => {
+  const json = subscription.toJSON();
+  try {
+    const res = await publicApi.public['push-subscriptions'].$post({
+      json: {
+        endpoint: subscription.endpoint,
+        keys: {
+          p256dh: json.keys?.['p256dh'] ?? '',
+          auth: json.keys?.['auth'] ?? '',
+        },
+      },
+    });
+    if (res.ok) {
+      return null;
+    }
+    // hc の型にはルートが返すステータスしか無く、csrf の 403 や想定外の 500 は含まれない
+    const status: number = res.status;
+    if (status === 400) {
+      return SUBSCRIBE_ERROR_MESSAGES[(await res.json()).error];
+    }
+  } catch {
+    // 通信の失敗も、登録できなかったものとして扱う
+  }
+  return SUBSCRIBE_FAILED_MESSAGE;
 };
 
 // プッシュ通知対応は変化しないため、購読(変更通知)は不要。
@@ -83,18 +118,11 @@ export const PushSubscribe: FC<Props> = ({ vapidPublicKey }) => {
           applicationServerKey: urlBase64ToUint8Array(vapidPublicKey).buffer,
         });
 
-        const json = subscription.toJSON();
-        const result = await subscribePushAction({
-          endpoint: subscription.endpoint,
-          keys: {
-            p256dh: json.keys?.['p256dh'] ?? '',
-            auth: json.keys?.['auth'] ?? '',
-          },
-        });
-
-        if (!result.success) {
+        // api に無い購読をブラウザに残すと、通知が届かないのに購読中と表示される
+        const failure = await registerSubscription(subscription);
+        if (failure !== null) {
           await subscription.unsubscribe();
-          throw new Error(result.message);
+          throw new Error(failure);
         }
 
         setIsSubscribed(true);
@@ -114,12 +142,16 @@ export const PushSubscribe: FC<Props> = ({ vapidPublicKey }) => {
         if (subscription !== null) {
           // subscribe と対称に、サーバー側の削除成功を確認してから
           // ブラウザ側の購読解除と UI 更新を行う。
-          const result = await unsubscribePushAction({
-            endpoint: subscription.endpoint,
-            auth: subscription.toJSON().keys?.['auth'] ?? '',
-          });
-          if (!result.success) {
-            throw new Error(result.message);
+          const res = await publicApi.public['push-subscriptions']
+            .$delete({
+              json: {
+                endpoint: subscription.endpoint,
+                auth: subscription.toJSON().keys?.['auth'] ?? '',
+              },
+            })
+            .catch(() => null);
+          if (res === null || !res.ok) {
+            throw new Error(UNSUBSCRIBE_FAILED_MESSAGE);
           }
           await subscription.unsubscribe();
         }

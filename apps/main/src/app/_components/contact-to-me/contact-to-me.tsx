@@ -14,7 +14,19 @@ import {
 import { useActionState, useCallback, useState } from 'react';
 import type { FC } from 'react';
 
-import { contact } from '@/features/contact/interface/actions';
+import { publicApi } from '@/shared/api/public-api';
+
+type ContactState = {
+  error: string | null;
+  defaultValue: string;
+};
+
+const INITIAL_STATE: ContactState = { error: null, defaultValue: '' };
+
+const MAX_MESSAGE_LENGTH = 255;
+
+const FAILED_MESSAGE =
+  'お問い合わせの送信に失敗しました。しばらくしてから再度お試しください。';
 
 export const ContactToMe: FC = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -45,23 +57,38 @@ const ContactToMeModal: FC<{
 
   const handleAction = useCallback(
     async (
-      prevState: Awaited<ReturnType<typeof contact>>,
+      _prevState: ContactState,
       formData: FormData,
-    ) => {
-      const result = await contact(prevState, formData);
-      if (result.success === true) {
-        onToastOpen('success', 'お問い合わせの送信に成功しました');
-        onClose();
+    ): Promise<ContactState> => {
+      const value = formData.get('message');
+      const message = typeof value === 'string' ? value : '';
+      if (message.length > MAX_MESSAGE_LENGTH) {
+        return {
+          error: `${MAX_MESSAGE_LENGTH}文字を超えています（${message.length}文字）`,
+          defaultValue: message,
+        };
       }
-      return result;
+      try {
+        const res = await publicApi.public.inquiries.$post({
+          json: { message },
+        });
+        if (res.ok) {
+          onToastOpen('success', 'お問い合わせの送信に成功しました');
+          onClose();
+          return INITIAL_STATE;
+        }
+        return { error: FAILED_MESSAGE, defaultValue: message };
+      } catch {
+        return { error: FAILED_MESSAGE, defaultValue: message };
+      }
     },
     [onToastOpen, onClose],
   );
 
-  const [state, formAction, pending] = useActionState(handleAction, {
-    success: null,
-    defaultValue: '',
-  });
+  const [state, formAction, pending] = useActionState(
+    handleAction,
+    INITIAL_STATE,
+  );
 
   return (
     <Modal isOpen={isOpen} onClose={onClose}>
@@ -70,9 +97,9 @@ const ContactToMeModal: FC<{
         <Dialog.Content>
           <form action={formAction} className="flex flex-col gap-4">
             <FormControl
-              errorText={state.success === false ? state.message : undefined}
+              errorText={state.error ?? undefined}
               helpText="255文字以内で入力してください"
-              invalid={state.success === false}
+              invalid={state.error !== null}
               label="不具合やご要望をご記入ください"
               renderInput={({
                 id,

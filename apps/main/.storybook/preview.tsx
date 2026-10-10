@@ -27,8 +27,6 @@ import '../src/app/_styles/globals.css';
 sb.mock(import('./../src/app/blog/_components/link-card/metadata.ts'));
 sb.mock(import('./../src/features/blog/interface/queries.ts'));
 sb.mock(import('@repo/database'));
-sb.mock(import('./../src/features/contact/interface/actions.ts'));
-sb.mock(import('./../src/features/blog/interface/actions.ts'));
 
 const ApplyThemeByStorybook: FC<{ theme: string }> = memo(
   function ApplyThemeByStorybook({ theme }) {
