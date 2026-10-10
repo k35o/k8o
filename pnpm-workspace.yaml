@@ -13,9 +13,9 @@ catalog:
   '@k8o/html-nest': 0.2.0
   '@k8o/oxc-config': 0.3.0
   '@k8ordo/ui': 1.0.0
-  '@next/env': 16.3.6
-  '@next/mdx': 16.3.6
-  '@next/third-parties': 16.3.6
+  '@next/env': 16.3.8
+  '@next/mdx': 16.3.8
+  '@next/third-parties': 16.3.8
   '@storybook/addon-a11y': 10.6.0
   '@storybook/addon-docs': 10.6.0
   '@storybook/addon-mcp': '10.6.0'
