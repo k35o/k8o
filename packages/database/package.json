@@ -30,6 +30,8 @@
     "db:serve": "node scripts/local-db.ts serve",
     "db:status": "node scripts/local-db.ts status",
     "type-check": "tsc --noEmit",
+    "test": "vitest run",
+    "test:watch": "vitest",
     "generate": "drizzle-kit generate",
     "generate:custom": "drizzle-kit generate --custom",
     "migrate": "drizzle-kit migrate",
@@ -45,6 +47,7 @@
   "devDependencies": {
     "@next/env": "catalog:",
     "@repo/typescript-config": "workspace:*",
-    "drizzle-kit": "0.31.10"
+    "drizzle-kit": "0.31.10",
+    "vitest": "catalog:"
   }
 }
