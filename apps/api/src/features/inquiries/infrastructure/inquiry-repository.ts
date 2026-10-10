@@ -84,3 +84,7 @@ export const findInquiries = async ({
     total,
   };
 };
+
+export const insertInquiry = async (message: string): Promise<void> => {
+  await db.insert(db._schema.comments).values({ message });
+};
