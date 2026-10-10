@@ -21,7 +21,7 @@ const pillClass = (key: string, feedbackValue: string): string =>
 
 export const FeedbackCard: FC<{
   title: string;
-  onSubmit: (feedback: number | null, comment: string) => Promise<boolean>;
+  onSubmit: (feedback: 1 | 2 | null, comment: string) => Promise<boolean>;
 }> = ({ title, onSubmit }) => {
   const textareaId = useId();
   const errorId = useId();
