@@ -9,6 +9,12 @@ type ReportRecord = {
   createdAt: string;
 };
 
+type ReportInput = {
+  type: string;
+  url: string;
+  body: Record<string, unknown>;
+};
+
 type ReportTypeCount = {
   type: string;
   count: number;
@@ -54,3 +60,10 @@ export const findReports = ({
     )
     .limit(pageSize)
     .offset((page - 1) * pageSize);
+
+export const insertReports = async (reports: ReportInput[]): Promise<void> => {
+  if (reports.length === 0) {
+    return;
+  }
+  await db.insert(db._schema.reportingReports).values(reports);
+};

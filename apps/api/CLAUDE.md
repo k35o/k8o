@@ -22,6 +22,7 @@ k8o の API。Hono で書き、Vercel にデプロイする（本番ドメイン
 - 許可する Origin は k8o.me と www.k8o.me だけ。dev サーバー（`NODE_ENV=development`）では、ローカルの main（`https://(<ブランチ>.)main.k8o.localhost(:ポート)`）も許可する。main の preview からは書き込めない。cors は許可しない Origin を拒否しないので、フォームと同じ扱いになる POST（本文なしを含む）は csrf で、JSON はブラウザのプリフライトで止める。どちらもブラウザ外からの呼び出しには効かない
 - 検証は zod/mini を `hono/validator` の中で呼ぶ。ルートが返すエラーは `{ ok: false, error: '<code>' }` とステータスだけにし、利用者に見せる文言は main に置く。ミドルウェアと hono 自身が返すエラー（csrf の 403、未定義のパスの 404、壊れた JSON の 400）はテキストで返るので、呼ぶ側は `res.ok` で成否を見る
 - 本文は 64KB まで。想定外の例外は中身を出さずに 500 を返す
+- `/public/reports` は、main の Reporting-Endpoints を通してブラウザの Reporting API が送る CSP 違反と、main のクライアントのエラーを受ける。Reporting API は `application/reports+json` の配列を送り、Chromium と Firefox は別オリジンなのでプリフライトを経る（Chromium は毎回）。410 は Firefox に送り先を消させるので、どの場合も返さない（Chromium は 2xx 以外をすべて送り直す）。Safari は CSP 違反を `application/csp-report` の単一オブジェクトで、プリフライトなしで送る。JSON 系の Content-Type でないので `validator('json')` が本文を読まず 400 になり、受けていない
 
 ## MCP
 
