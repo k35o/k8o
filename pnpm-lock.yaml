@@ -311,8 +311,8 @@ importers:
         specifier: 0.3.1
         version: 0.3.1(@opentelemetry/api@1.9.1)(@types/node@24.19.1)(@vitest/browser-playwright@4.1.11)(@vitest/coverage-v8@4.1.11)(@vitest/ui@4.1.11)(esbuild@0.28.1)(jiti@2.7.0)(msw@2.15.0(@types/node@24.19.1)(typescript@7.0.2))(tsx@4.22.3)(typescript@7.0.2)(yaml@2.9.0)
       vite-plus-inspector:
-        specifier: 0.1.1
-        version: 0.1.1
+        specifier: 1.0.0
+        version: 1.0.0
       wrangler:
         specifier: 'catalog:'
         version: 4.131.1(@types/node@24.19.1)
@@ -6845,8 +6845,8 @@ packages:
       storybook: ^10.6.0
       vite: ^5.0.0 || ^6.0.0 || ^7.0.0 || ^8.0.0
 
-  vite-plus-inspector@0.1.1:
-    resolution: {integrity: sha512-djKnSjbDhiM2ZbzME8pPkq2UC2pP9uMxeoUuPy9r5WJFvEkB4jsZYh9ERk8A6rRa3u4yvUZox6g/YX6W8ry37A==}
+  vite-plus-inspector@1.0.0:
+    resolution: {integrity: sha512-kdHZzfDPGJ5Yr4A2EL11k9hh9lC4hxbbnJH2bib/O5XIQjAtTK3LycB4gs6JUCB/a2jMF2UDCX8XptqM0f5YTA==}
     engines: {node: '>=24.13.0'}
     hasBin: true
 
@@ -12719,7 +12719,7 @@ snapshots:
       - supports-color
       - typescript
 
-  vite-plus-inspector@0.1.1:
+  vite-plus-inspector@1.0.0:
     dependencies:
       cac: 7.0.0
       jiti: 2.7.0
