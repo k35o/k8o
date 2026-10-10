@@ -18,7 +18,7 @@ pnpm run -F @repo/database generate  # スキーマの変更からマイグレ�
 pnpm run -F @repo/database migrate   # ローカルの DB に流す
 ```
 
-本番と preview の DB には、`.github/workflows/vercel-prebuilt.yml` の migrate ジョブが、どのアプリのビルドよりも先に流す。Vercel のビルドでは generate も migrate もしない。コミットされていないマイグレーションは CI（`ci.yml`）が落とす。
+本番 DB には、`.github/workflows/vercel-prebuilt.yml` の migrate ジョブが、どのアプリのビルドよりも先に流す。preview DB には、main の deploy ジョブがビルドの前に流す（preview の Environment は承認が要るので、別ジョブにすると承認が2回になる）。Vercel のビルドでは generate も migrate もしない。コミットされていないマイグレーションは CI（`ci.yml`）が落とす。
 
 マイグレーションは新しいコードより先に当たる。列やテーブルを消すときは、先にそれを使わないコードをデプロイしてから、消すマイグレーションを出す。
 

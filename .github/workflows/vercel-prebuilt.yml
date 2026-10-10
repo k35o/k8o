@@ -100,26 +100,20 @@ jobs:
       - name: Show detected apps
         run: echo "apps=${{ steps.detect.outputs.apps }}"
 
-  # DB のマイグレーションは、どのアプリのビルドよりも先に一度だけ流す。アプリは並列に
+  # 本番 DB のマイグレーションは、どのアプリのビルドよりも先に一度だけ流す。アプリは並列に
   # デプロイされるので、ビルドの中で流すと新しいスキーマより先に別のアプリが出ることがある。
-  # main のビルドは DB を読むので、その前に終わっている必要もある
+  # main のビルドは DB を読むので、その前に終わっている必要もある。preview は deploy の中で流す
   migrate:
     needs: detect
-    if: ${{ needs.detect.result == 'success' && needs.detect.outputs.apps != '[]' }}
+    if: ${{ github.event_name == 'push' && needs.detect.result == 'success' && needs.detect.outputs.apps != '[]' }}
     runs-on: ubuntu-latest
     timeout-minutes: 10
-    environment: ${{ github.event_name == 'push' && 'production' || 'preview' }}
+    environment: production
     permissions:
       contents: read
     # concurrency は付けない。同じグループで待っている run は新しい run に置き換えられ、その run の
     # デプロイが全 app 分飛ばされる。重なっても、未適用のマイグレーションは1つのトランザクションで
     # 流れるので、後から流した方が DB を壊さずに失敗する（再実行すればよい）
-    env:
-      VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
-      VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
-      # preview の接続情報は、k8o の DB の持ち主である api のプロジェクトから pull する
-      VERCEL_PROJECT_ID: prj_aehv1FNgGlp0nGIZPyPFHShRqlAW
-      DEPLOY_TARGET: ${{ github.event_name == 'push' && 'production' || 'preview' }}
     steps:
       - name: Checkout branch
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -129,35 +123,18 @@ jobs:
       - name: Setup
         uses: ./.github/actions/setup
 
-      - name: Pull preview DB credentials
-        if: ${{ env.DEPLOY_TARGET == 'preview' }}
-        working-directory: ${{ runner.temp }}
-        run: pnpm dlx --allow-build esbuild vercel@59.11.2 pull --cwd "$GITHUB_WORKSPACE" --yes --environment=preview --token="$VERCEL_TOKEN"
-
       - name: Migrate
         env:
-          PROD_TURSO_DATABASE_URL: ${{ secrets.TURSO_DATABASE_URL }}
-          PROD_TURSO_AUTH_TOKEN: ${{ secrets.TURSO_AUTH_TOKEN }}
-        run: |
-          if [ "$DEPLOY_TARGET" = "production" ]; then
-            export TURSO_DATABASE_URL="$PROD_TURSO_DATABASE_URL"
-            export TURSO_AUTH_TOKEN="$PROD_TURSO_AUTH_TOKEN"
-          else
-            set -a
-            # shellcheck disable=SC1090
-            . <(grep -E '^TURSO_(DATABASE_URL|AUTH_TOKEN)=' "$GITHUB_WORKSPACE/.vercel/.env.preview.local")
-            set +a
-            # pull した値は secrets ではないので、ログに出ないよう自分で伏せる
-            echo "::add-mask::$TURSO_DATABASE_URL"
-            echo "::add-mask::$TURSO_AUTH_TOKEN"
-          fi
-          pnpm -F @repo/database migrate
+          TURSO_DATABASE_URL: ${{ secrets.TURSO_DATABASE_URL }}
+          TURSO_AUTH_TOKEN: ${{ secrets.TURSO_AUTH_TOKEN }}
+        run: pnpm -F @repo/database migrate
 
   deploy:
     needs: [detect, migrate]
     # 独自の if を書くと暗黙の success() が付与されず、skip された detect（fork PR・
     # renovate）でも空 outputs のまま起動して fromJSON('') で落ちるため、result を明示確認する
-    if: ${{ needs.detect.result == 'success' && needs.detect.outputs.apps != '[]' && needs.migrate.result == 'success' }}
+    # 本番は migrate の成功を待つ。preview では migrate がスキップされる
+    if: ${{ needs.detect.result == 'success' && needs.detect.outputs.apps != '[]' && (needs.migrate.result == 'success' || (github.event_name != 'push' && needs.migrate.result == 'skipped')) }}
     runs-on: ubuntu-latest
     timeout-minutes: 20
     # PR は workflow 自体を書き換えて任意の repo secret を参照できるため、本番の資格情報は
@@ -194,6 +171,20 @@ jobs:
       - name: Pull Vercel project settings
         working-directory: ${{ runner.temp }}
         run: pnpm dlx --allow-build esbuild vercel@59.11.2 pull --cwd "$GITHUB_WORKSPACE" --yes --environment="$DEPLOY_TARGET" --token="$VERCEL_TOKEN"
+
+      # preview は承認が要る Environment なので、承認を1回で済ませるよう migrate を別ジョブにせず
+      # deploy の中で流す（k8o の DB は main）。preview では、ほかのアプリが先に出ることがある
+      - name: Migrate preview k8o DB
+        if: ${{ env.DEPLOY_TARGET == 'preview' && matrix.app == 'main' }}
+        run: |
+          set -a
+          # shellcheck disable=SC1090
+          . <(grep -E '^TURSO_(DATABASE_URL|AUTH_TOKEN)=' "$GITHUB_WORKSPACE/.vercel/.env.preview.local")
+          set +a
+          # pull した値は secrets ではないので、ログに出ないよう自分で伏せる
+          echo "::add-mask::$TURSO_DATABASE_URL"
+          echo "::add-mask::$TURSO_AUTH_TOKEN"
+          pnpm -F @repo/database migrate
 
       - name: Build
         working-directory: ${{ runner.temp }}
