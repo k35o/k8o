@@ -1,5 +1,4 @@
 import { NextResponse } from 'next/server';
-import type { NextRequest } from 'next/server';
 
 const isDev = process.env.NODE_ENV === 'development';
 
@@ -30,18 +29,16 @@ const contentSecurityPolicyHeaderValue = cspHeader
   .replaceAll(/\s{2,}/gu, ' ')
   .trim();
 
-export function proxy(request: NextRequest) {
+export function proxy() {
   const response = NextResponse.next();
   response.headers.set(
     'Content-Security-Policy',
     contentSecurityPolicyHeaderValue,
   );
-  // 配信オリジンそのものを report 先にする。VERCEL_URL などデプロイ固有 URL は
-  // Vercel の Deployment Protection で SSO にリダイレクトされ、ブラウザからの
-  // CSP 違反レポート POST が届かず全損するため使わない
+  // preview と dev のレポートは、api が Origin を許可しないので受け付けられない
   response.headers.set(
     'Reporting-Endpoints',
-    `csp-endpoint="${request.nextUrl.origin}/api/reports"`,
+    'csp-endpoint="https://api.k8o.me/public/reports"',
   );
   response.headers.set('X-Content-Type-Options', 'nosniff');
   response.headers.set(

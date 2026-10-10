@@ -14,7 +14,7 @@
   - `features/<feature>/application/` - ユースケース・整形・機能固有の組み立て。小さい読み取り処理はここに置いてよい
   - `features/<feature>/infrastructure/` - DB、外部API、ファイルシステムなど外部接続の詳細。処理が太くなったら application からここへ切り出す
   - UIコンポーネントは置かない。UIは必ず `app/**/_components`
-  - UI からの書き込み（閲覧数・お問い合わせ・フィードバック・Push 購読）は持たない。UIから `shared/api/public-api.ts` の hc で api の公開ルート（`apps/api/CLAUDE.md`）を呼ぶ。Server Action は作らない
+  - ブラウザからの書き込み（閲覧数・お問い合わせ・フィードバック・Push 購読・CSP 違反とエラーのレポート）は持たない。UIからは `shared/api/public-api.ts` の hc で api の公開ルート（`apps/api/CLAUDE.md`）を呼び、CSP 違反は `proxy.ts` の Reporting-Endpoints で api に送らせる。Server Action は作らない
 - **shared/** - apps/main 内で横断利用する非UI共通処理（認証、MDX、OGP、browser API、api クライアント、site metadataなど）。UIコンポーネントや `cn` は置かない
 - **mocks/** - MSWモック定義
 
