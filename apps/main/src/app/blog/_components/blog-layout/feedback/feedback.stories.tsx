@@ -19,6 +19,13 @@ const meta = preview.meta({
   // どの Story もトーストで終わる。トーストは数秒で自動で閉じるので、撮影の時機で
   // 写り方が変わらないよう外す
   parameters: { vrt: { remove: '[data-toast-id]' } },
+  // 送信中はボタンが無効になってフォーカスを失うことがあり、応答の速さでフォーカスの枠が
+  // 出たり出なかったりする。VRT の撮影をそろえるため、最後にフォーカスを外す
+  afterEach: () => {
+    if (document.activeElement instanceof HTMLElement) {
+      document.activeElement.blur();
+    }
+  },
 });
 
 export const Submit = meta.story({
