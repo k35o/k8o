@@ -589,6 +589,13 @@
       "when": 1791533515110,
       "tag": "0083_fixed_thunderbolts",
       "breakpoints": true
+    },
+    {
+      "idx": 84,
+      "version": "6",
+      "when": 1791611556242,
+      "tag": "0084_hot_blue_blade",
+      "breakpoints": true
     }
   ]
 }
