@@ -1,6 +1,7 @@
 import { absSignSection } from './abs-sign';
 import { activeViewTransitionSection } from './active-view-transition';
 import { alphaFunctionSection } from './alpha-function';
+import { animationAccessorsSection } from './animation-accessors';
 import { ariaNotifySection } from './arianotify';
 import { asyncClipboardSection } from './async-clipboard';
 import { autocorrectSection } from './autocorrect';
@@ -48,6 +49,7 @@ import { viewTransitionsSection } from './view-transitions';
 export const playgroundSections: PlaygroundSection[] = [
   activeViewTransitionSection,
   alphaFunctionSection,
+  animationAccessorsSection,
   ariaNotifySection,
   asyncClipboardSection,
   autocorrectSection,
