@@ -1,20 +1,5 @@
-import {
-  aiProjectVersions,
-  aiProjectVersionsRelations,
-} from './ai-project-versions';
-import { aiProjects, aiProjectsRelations } from './ai-projects';
-import { aiUsages, aiUsagesRelations } from './ai-usages';
 import { articleSources, articleSourcesRelations } from './article-sources';
 import { articles, articlesRelations } from './articles';
-import {
-  account,
-  accountRelations,
-  session,
-  sessionRelations,
-  user,
-  userRelations,
-  verification,
-} from './auth-schema';
 import { blogComment, blogCommentRelations } from './blog-comment';
 import { blogTag, blogTagRelations } from './blog-tag';
 import { blogViewDailies } from './blog-view-dailies';
@@ -34,13 +19,7 @@ import { tags, tagsRelations } from './tags';
 import { talkTag, talkTagRelations } from './talk-tag';
 import { talks, talksRelations } from './talks';
 
-// 認証と ai_* は ai の DB（@repo/ai-database）に移した。k8o の DB から消すマイグレーションを
-// 出すまで、generate が DROP を作らないよう定義を残している
 export const schema = {
-  user,
-  session,
-  account,
-  verification,
   feedbacks,
   tags,
   comments,
@@ -61,15 +40,9 @@ export const schema = {
   slideTag,
   articleSources,
   articles,
-  aiProjects,
-  aiProjectVersions,
-  aiUsages,
 };
 
 export const relations = {
-  userRelations,
-  sessionRelations,
-  accountRelations,
   feedbacksRelations,
   tagsRelations,
   commentsRelations,
@@ -82,7 +55,4 @@ export const relations = {
   slideTagRelations,
   articleSourcesRelations,
   articlesRelations,
-  aiProjectsRelations,
-  aiProjectVersionsRelations,
-  aiUsagesRelations,
 };

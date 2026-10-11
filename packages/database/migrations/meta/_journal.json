@@ -589,6 +589,13 @@
       "when": 1791533515110,
       "tag": "0083_fixed_thunderbolts",
       "breakpoints": true
+    },
+    {
+      "idx": 84,
+      "version": "6",
+      "when": 1791693428050,
+      "tag": "0084_drop_auth_and_ai",
+      "breakpoints": true
     }
   ]
 }
