@@ -1,11 +1,11 @@
 import 'server-only';
-import { db } from '@repo/database';
-import { and, desc, eq } from '@repo/database/orm';
-import type { AiApp, AiVisibility } from '@repo/database/schema';
+import { db } from '@repo/ai-database';
+import { and, desc, eq } from '@repo/ai-database/orm';
+import type { AiApp, AiVisibility } from '@repo/ai-database/schema';
 
-// DB アクセスはこの層に閉じる（features/*/infrastructure 以外から @repo/database を読まない）。
+// DB アクセスはこの層に閉じる（features/*/infrastructure 以外から @repo/ai-database を読まない）。
 // schema 由来の型も上位層へはここから配る。
-export type { AiApp, AiVisibility } from '@repo/database/schema';
+export type { AiApp, AiVisibility } from '@repo/ai-database/schema';
 
 const projects = db._schema.aiProjects;
 const versions = db._schema.aiProjectVersions;

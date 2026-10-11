@@ -111,7 +111,7 @@ describe('k8o oxlint plugin (oxlint 実行での統合テスト)', () => {
         BOUNDARY,
       );
       expect(found).toHaveLength(1);
-      expect(found[0]?.message).toContain("'@repo/database/auth' だけ");
+      expect(found[0]?.message).toContain("'@repo/ai-database/auth' だけ");
     });
   });
 });

@@ -30,16 +30,27 @@ describe('judgeDatabaseImport', () => {
       ).toBe('allowed');
     });
 
-    test('ai の shared/auth からは @repo/database/auth を import できる', () => {
+    test('ai の shared/auth からは @repo/ai-database/auth を import できる', () => {
       expect(
         judgeDatabaseImport(
           file('apps/ai/src/shared/auth/require-allowed-session.ts'),
-          '@repo/database/auth',
+          '@repo/ai-database/auth',
         ),
       ).toBe('allowed');
     });
 
-    test('@repo/database 以外の specifier は対象外', () => {
+    test('@repo/ai-database も features/*/infrastructure から import できる', () => {
+      expect(
+        judgeDatabaseImport(
+          file(
+            'apps/ai/src/features/projects/infrastructure/project-repository.ts',
+          ),
+          '@repo/ai-database/orm',
+        ),
+      ).toBe('allowed');
+    });
+
+    test('DB パッケージ以外の specifier は対象外', () => {
       expect(
         judgeDatabaseImport(file('apps/main/src/app/page.tsx'), 'react'),
       ).toBeNull();
@@ -66,7 +77,16 @@ describe('judgeDatabaseImport', () => {
       expect(
         judgeDatabaseImport(
           file('apps/ai/src/app/api/auth/[...all]/route.ts'),
-          '@repo/database/auth',
+          '@repo/ai-database/auth',
+        ),
+      ).toBe('forbiddenLayer');
+    });
+
+    test('@repo/ai-database も app/ からの import は禁止', () => {
+      expect(
+        judgeDatabaseImport(
+          file('apps/ai/src/app/page.tsx'),
+          '@repo/ai-database',
         ),
       ).toBe('forbiddenLayer');
     });
@@ -93,13 +113,19 @@ describe('judgeDatabaseImport', () => {
       expect(
         judgeDatabaseImport(
           file('apps/ai/src/shared/auth/require-allowed-session.ts'),
-          '@repo/database',
+          '@repo/ai-database',
         ),
       ).toBe('authSubpathOnly');
       expect(
         judgeDatabaseImport(
           file('apps/ai/src/shared/auth/verify-session.ts'),
-          '@repo/database/schema',
+          '@repo/ai-database/schema',
+        ),
+      ).toBe('authSubpathOnly');
+      expect(
+        judgeDatabaseImport(
+          file('apps/ai/src/shared/auth/require-allowed-session.ts'),
+          '@repo/database',
         ),
       ).toBe('authSubpathOnly');
     });
@@ -108,13 +134,13 @@ describe('judgeDatabaseImport', () => {
       expect(
         judgeDatabaseImport(
           file('apps/main/src/shared/auth/session.ts'),
-          '@repo/database/auth',
+          '@repo/ai-database/auth',
         ),
       ).toBe('forbiddenLayer');
       expect(
         judgeDatabaseImport(
           file('apps/api/src/shared/auth/require-bearer-secret.ts'),
-          '@repo/database/auth',
+          '@repo/ai-database/auth',
         ),
       ).toBe('forbiddenLayer');
     });

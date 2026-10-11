@@ -1,13 +1,12 @@
 # @repo/database
 
-k8o のデータベース関連コードをまとめたパッケージです。
+k8o の DB（api が持ち主）のコードをまとめたパッケージです。認証と ai のテーブルは ai の DB（`@repo/ai-database`）にあります。
 
 このパッケージでは、主に以下を管理します。
 
 - Drizzle ORM のスキーマ定義
 - Turso / libSQL への接続
 - マイグレーション
-- Better Auth 用の DB スキーマ
 - Storybook 向けのモック DB エクスポート
 
 ## ディレクトリ構成
@@ -18,7 +17,6 @@ k8o のデータベース関連コードをまとめたパッケージです。
 packages/database/
 ├── src/
 │   ├── db.ts           # アプリケーション用の DB エクスポート
-│   ├── auth.ts         # Better Auth 関連のエクスポート
 │   ├── utils.ts        # DB 操作の補助ユーティリティ
 │   ├── schema/         # Drizzle のスキーマ定義
 │   └── __mocks__/      # Storybook / テスト向けのモック実装
@@ -32,8 +30,6 @@ packages/database/
 - `@repo/database`
   - 通常実行時は `src/db.ts`
   - `storybook` 条件では `src/__mocks__/db.ts`
-- `@repo/database/auth`
-  - Better Auth 用のエクスポート
 
 詳細は [`package.json`](./package.json) を参照してください。
 

@@ -123,11 +123,17 @@ jobs:
       - name: Setup
         uses: ./.github/actions/setup
 
-      - name: Migrate
+      - name: Migrate k8o DB
         env:
           TURSO_DATABASE_URL: ${{ secrets.TURSO_DATABASE_URL }}
           TURSO_AUTH_TOKEN: ${{ secrets.TURSO_AUTH_TOKEN }}
         run: pnpm -F @repo/database migrate
+
+      - name: Migrate ai DB
+        env:
+          AI_TURSO_DATABASE_URL: ${{ secrets.AI_TURSO_DATABASE_URL }}
+          AI_TURSO_AUTH_TOKEN: ${{ secrets.AI_TURSO_AUTH_TOKEN }}
+        run: pnpm -F @repo/ai-database migrate
 
   deploy:
     needs: [detect, migrate]
@@ -173,7 +179,7 @@ jobs:
         run: pnpm dlx --allow-build esbuild vercel@59.11.2 pull --cwd "$GITHUB_WORKSPACE" --yes --environment="$DEPLOY_TARGET" --token="$VERCEL_TOKEN"
 
       # preview は承認が要る Environment なので、承認を1回で済ませるよう migrate を別ジョブにせず
-      # deploy の中で流す（k8o の DB は main）。preview では、ほかのアプリが先に出ることがある
+      # deploy の中で流す（k8o の DB は main、ai の DB は ai）。preview では、ほかのアプリが先に出ることがある
       - name: Migrate preview k8o DB
         if: ${{ env.DEPLOY_TARGET == 'preview' && matrix.app == 'main' }}
         run: |
@@ -186,6 +192,17 @@ jobs:
           echo "::add-mask::$TURSO_AUTH_TOKEN"
           pnpm -F @repo/database migrate
 
+      - name: Migrate preview ai DB
+        if: ${{ env.DEPLOY_TARGET == 'preview' && matrix.app == 'ai' }}
+        run: |
+          set -a
+          # shellcheck disable=SC1090
+          . <(grep -E '^AI_TURSO_(DATABASE_URL|AUTH_TOKEN)=' "$GITHUB_WORKSPACE/.vercel/.env.preview.local")
+          set +a
+          echo "::add-mask::$AI_TURSO_DATABASE_URL"
+          echo "::add-mask::$AI_TURSO_AUTH_TOKEN"
+          pnpm -F @repo/ai-database migrate
+
       - name: Build
         working-directory: ${{ runner.temp }}
         env:
@@ -194,6 +211,8 @@ jobs:
           GITHUB_TOKEN: ${{ github.token }}
           PROD_TURSO_DATABASE_URL: ${{ secrets.TURSO_DATABASE_URL }}
           PROD_TURSO_AUTH_TOKEN: ${{ secrets.TURSO_AUTH_TOKEN }}
+          PROD_AI_TURSO_DATABASE_URL: ${{ secrets.AI_TURSO_DATABASE_URL }}
+          PROD_AI_TURSO_AUTH_TOKEN: ${{ secrets.AI_TURSO_AUTH_TOKEN }}
         run: |
           if [ "$DEPLOY_TARGET" = "production" ]; then
             # production の Turso 接続情報も sensitive で pull できないため production Environment の
@@ -201,6 +220,8 @@ jobs:
             # 環境変数は pull された .env より優先されるため export で上書きできる
             export TURSO_DATABASE_URL="$PROD_TURSO_DATABASE_URL"
             export TURSO_AUTH_TOKEN="$PROD_TURSO_AUTH_TOKEN"
+            export AI_TURSO_DATABASE_URL="$PROD_AI_TURSO_DATABASE_URL"
+            export AI_TURSO_AUTH_TOKEN="$PROD_AI_TURSO_AUTH_TOKEN"
             pnpm dlx --allow-build esbuild vercel@59.11.2 build --cwd "$GITHUB_WORKSPACE" --prod --token="$VERCEL_TOKEN"
           else
             pnpm dlx --allow-build esbuild vercel@59.11.2 build --cwd "$GITHUB_WORKSPACE" --token="$VERCEL_TOKEN"

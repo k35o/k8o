@@ -52,9 +52,11 @@ jobs:
       - name: Check database migrations are committed
         run: |
           pnpm -F @repo/database generate
-          if [ -n "$(git status --porcelain -- packages/database/migrations)" ]; then
-            echo "::error::スキーマの変更に対応するマイグレーションがコミットされていない。pnpm -F @repo/database generate の結果をコミットする"
-            git status --porcelain -- packages/database/migrations
+          pnpm -F @repo/ai-database generate
+          changes=$(git status --porcelain -- packages/database/migrations packages/ai-database/migrations)
+          if [ -n "$changes" ]; then
+            echo "::error::スキーマの変更に対応するマイグレーションがコミットされていない。各 DB パッケージで generate した結果をコミットする"
+            echo "$changes"
             exit 1
           fi
 

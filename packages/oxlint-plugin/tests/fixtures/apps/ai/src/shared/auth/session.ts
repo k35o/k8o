@@ -1,4 +1,4 @@
-import { db } from '@repo/database';
-import { auth } from '@repo/database/auth';
+import { db } from '@repo/ai-database';
+import { auth } from '@repo/ai-database/auth';
 
 export const helpers = { auth, db };

@@ -59,14 +59,14 @@ export default defineConfig({
       },
     },
     rules: {
-      // @repo/database の import 層を強制する
+      // DB パッケージ（@repo/database・@repo/ai-database）の import 層を強制する
       'k8o/database-import-boundary': 'error',
       // 既存コードの意図を変える修正が大量に必要なルールは、初回移行では段階導入にする。
       'import/no-unassigned-import': [
         'error',
         { allow: ['**/*.css', '@/libs/zod', 'react', 'server-only'] },
       ],
-      // `_schema` / `_utils` などのアンダースコア接頭辞は @repo/database の
+      // `_schema` / `_utils` などのアンダースコア接頭辞は DB パッケージの
       // 内部API（直接アクセス非推奨）を表す規約として使っているため許可する。
       'no-underscore-dangle': 'off',
       // 実在しない no-op クラス(text-base/rounded/tracking 等)は修正済み。残るのは
@@ -93,7 +93,7 @@ export default defineConfig({
                 {
                   group: ['drizzle-orm', 'drizzle-orm/*'],
                   message:
-                    'drizzle は @repo/database 経由で使う（演算子などは @repo/database/orm）。apps が drizzle-orm を直接持つと @repo/database の db と別の実体になり、型が噛み合わなくなる。',
+                    'drizzle は DB パッケージ経由で使う（演算子などは @repo/database/orm か @repo/ai-database/orm）。apps が drizzle-orm を直接持つと DB パッケージの db と別の実体になり、型が噛み合わなくなる。',
                 },
               ],
             },

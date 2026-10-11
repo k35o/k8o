@@ -10,7 +10,7 @@ vi.mock('next/server', () => ({ connection }));
 vi.mock('next/headers', () => ({
   headers: (): Promise<Headers> => Promise.resolve(new Headers()),
 }));
-vi.mock('@repo/database/auth', () => ({
+vi.mock('@repo/ai-database/auth', () => ({
   auth: { api: { getSession } },
   isAllowedEmail: (email: string): boolean => email === 'allowed@example.com',
 }));
