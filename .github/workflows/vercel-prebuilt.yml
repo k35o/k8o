@@ -137,10 +137,10 @@ jobs:
 
   deploy:
     needs: [detect, migrate]
-    # 独自の if を書くと暗黙の success() が付与されず、skip された detect（fork PR・
-    # renovate）でも空 outputs のまま起動して fromJSON('') で落ちるため、result を明示確認する
-    # 本番は migrate の成功を待つ。preview では migrate がスキップされる
-    if: ${{ needs.detect.result == 'success' && needs.detect.outputs.apps != '[]' && (needs.migrate.result == 'success' || (github.event_name != 'push' && needs.migrate.result == 'skipped')) }}
+    # preview では migrate がスキップされる。状態を見る関数が無いと暗黙の success() が付き、
+    # needs のスキップで deploy もスキップされるので、!cancelled() で外して result を明示確認する。
+    # 本番は migrate の成功を待つ。skip された detect（fork PR・renovate）では起動しない
+    if: ${{ !cancelled() && needs.detect.result == 'success' && needs.detect.outputs.apps != '[]' && (needs.migrate.result == 'success' || (github.event_name != 'push' && needs.migrate.result == 'skipped')) }}
     runs-on: ubuntu-latest
     timeout-minutes: 20
     # PR は workflow 自体を書き換えて任意の repo secret を参照できるため、本番の資格情報は
