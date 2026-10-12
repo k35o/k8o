@@ -22,6 +22,8 @@ pnpm run -F @repo/database migrate   # ローカルの DB に流す
 
 マイグレーションは新しいコードより先に当たる。列やテーブルを消すときは、先にそれを使わないコードをデプロイしてから、消すマイグレーションを出す。
 
+ほかのブランチとマイグレーションの番号が衝突したら、番号を手で付け替えず、generate（seed なら generate:custom）で作り直す。付け替えると `_journal.json` の `when` が古いまま残り、migrate がエラーを出さずにそのマイグレーションを飛ばす（CI が落とす）。
+
 ### コンテンツ系の seed INSERT は id を書かない
 
 blogs / slides / talks / tags のようにコンテンツを seed する INSERT では、**id を手で振らない**こと。本番には過去に管理画面から autoincrement で採番した行があり、id を固定すると**衝突して `migrate` が失敗する**。
