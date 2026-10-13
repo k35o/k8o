@@ -1,0 +1,6 @@
+# vercel CLI とその依存（@vercel/*）は provenance なしで公開されており、ルートの trustPolicy: no-downgrade に
+# 通らない。ルートの workspace に入れず、trustPolicy を課さない専用の workspace の lockfile で固定する
+allowBuilds:
+  esbuild: false
+
+minimumReleaseAge: 10080

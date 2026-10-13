@@ -18,15 +18,7 @@ jobs:
     if: ${{ github.event.pull_request.head.repo.fork != true }}
     permissions:
       contents: read
-      pull-requests: write
     steps:
-      - name: Generate k8o-bot token
-        id: app-token
-        uses: actions/create-github-app-token@bcd2ba49218906704ab6c1aa796996da409d3eb1 # v3.2.0
-        with:
-          client-id: ${{ secrets.K35O_BOT_CLIENT_ID }}
-          private-key: ${{ secrets.K35O_BOT_PRIVATE_KEY }}
-
       - name: Checkout branch
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
@@ -49,6 +41,15 @@ jobs:
             git --no-pager diff -- packages/database/README.md
             echo "::endgroup::"
           fi
+
+      # PR のコード（依存のインストールと build:erd）を動かすステップに見せないよう、その後で発行する
+      - name: Generate k8o-bot token
+        id: app-token
+        uses: actions/create-github-app-token@bcd2ba49218906704ab6c1aa796996da409d3eb1 # v3.2.0
+        with:
+          client-id: ${{ secrets.K35O_BOT_CLIENT_ID }}
+          private-key: ${{ secrets.K35O_BOT_PRIVATE_KEY }}
+          permission-pull-requests: write
 
       - name: Post update request
         if: steps.drift.outputs.stale == 'true'
