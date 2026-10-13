@@ -1,5 +1,8 @@
 import { publicApi } from '@/shared/api/public-api';
 
+// api の /public/reports は body を JSON にして 8192 字を超えるレポートを捨てるので、
+// 合わせてその内側に収める
+const MAX_MESSAGE_LENGTH = 1024;
 const MAX_STACK_LENGTH = 4096;
 
 type ClientError = Error & { digest?: string };
@@ -12,7 +15,7 @@ export const reportClientError = (clientError: ClientError): void => {
     user_agent: window.navigator.userAgent,
     body: {
       name: clientError.name,
-      message: clientError.message,
+      message: clientError.message.slice(0, MAX_MESSAGE_LENGTH),
       digest: clientError.digest,
       stack: clientError.stack?.slice(0, MAX_STACK_LENGTH),
     },
