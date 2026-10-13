@@ -4,7 +4,6 @@
   "globalPassThroughEnv": [
     "CRON_SECRET",
     "GITHUB_TOKEN",
-    "K8O_PUSH_API_KEY",
     "MAIN_REVALIDATE_URL",
     "REVALIDATE_SECRET"
   ],
