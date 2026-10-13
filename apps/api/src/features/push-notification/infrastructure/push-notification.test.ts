@@ -1,7 +1,11 @@
 import { db } from '@repo/database';
 
 import { sendPushNotification } from './push-notification';
-import { sendWebPush, WebPushError } from './web-push';
+import {
+  InvalidSubscriptionKeysError,
+  sendWebPush,
+  WebPushError,
+} from './web-push';
 
 vi.mock('./web-push', async () => {
   const actual = await vi.importActual<Record<string, unknown>>('./web-push');
@@ -99,7 +103,7 @@ describe('sendPushNotification', () => {
         url: 'https://k8o.me/readings',
         dedupeKey: 'readings:2026-07-02',
         succeeded: 0,
-        failed: 0,
+        failed: 2,
       });
       expect(sendWebPush).toHaveBeenCalledTimes(2);
       expect(sendWebPush).toHaveBeenCalledWith(
@@ -158,26 +162,60 @@ describe('sendPushNotification', () => {
       });
     });
 
-    it('WebPushError 以外のエラーは failed に数えるが購読は削除しない', async () => {
+    it('鍵を読み込めない購読は、応答が無くても削除する', async () => {
       vi.mocked(db.query.pushSubscriptions.findMany).mockResolvedValue([
         subscription(FCM_ENDPOINT),
+        subscription(MOZILLA_ENDPOINT),
       ] as never);
-      vi.mocked(sendWebPush).mockRejectedValue(new Error('network error'));
+      vi.mocked(sendWebPush)
+        .mockRejectedValueOnce(new InvalidSubscriptionKeysError())
+        .mockResolvedValueOnce(new Response());
 
       await sendPushNotification(notificationParams);
 
-      expect(updateSetMock).toHaveBeenCalledWith({ succeeded: 0, failed: 1 });
-      expect(db.delete).not.toHaveBeenCalled();
+      expect(updateSetMock).toHaveBeenCalledWith({ succeeded: 1, failed: 1 });
+      expect(deleteWhereMock).toHaveBeenCalledWith({
+        column: db._schema.pushSubscriptions.endpoint,
+        values: [FCM_ENDPOINT],
+      });
+    });
+
+    it('同時に送るのは10件までに絞り、全件に送る', async () => {
+      const subscriptions = Array.from({ length: 25 }, (_, i) =>
+        subscription(`${FCM_ENDPOINT}${i}`),
+      );
+      vi.mocked(db.query.pushSubscriptions.findMany).mockResolvedValue(
+        subscriptions as never,
+      );
+      let inFlight = 0;
+      let maxInFlight = 0;
+      vi.mocked(sendWebPush).mockImplementation(async () => {
+        inFlight += 1;
+        maxInFlight = Math.max(maxInFlight, inFlight);
+        await new Promise((resolve) => {
+          setTimeout(resolve, 0);
+        });
+        inFlight -= 1;
+        return new Response();
+      });
+
+      await sendPushNotification(notificationParams);
+
+      expect(maxInFlight).toBe(10);
+      expect(sendWebPush).toHaveBeenCalledTimes(25);
+      expect(updateSetMock).toHaveBeenCalledWith({ succeeded: 25, failed: 0 });
     });
   });
 
   describe('dedupe', () => {
     it('既に claim 済み(dedupeKey 重複)なら送信しない', async () => {
+      vi.mocked(db.query.pushSubscriptions.findMany).mockResolvedValue([
+        subscription(FCM_ENDPOINT),
+      ] as never);
       insertReturningMock.mockResolvedValue([]);
 
       await sendPushNotification(notificationParams);
 
-      expect(db.query.pushSubscriptions.findMany).not.toHaveBeenCalled();
       expect(sendWebPush).not.toHaveBeenCalled();
       expect(db.update).not.toHaveBeenCalled();
     });
@@ -197,6 +235,68 @@ describe('sendPushNotification', () => {
       expect(sendWebPush).not.toHaveBeenCalled();
 
       warnSpy.mockRestore();
+    });
+
+    it.each([
+      [
+        '名前解決できない',
+        new TypeError('fetch failed', {
+          cause: Object.assign(
+            new Error('getaddrinfo ENOTFOUND missing.push.apple.com'),
+            { code: 'ENOTFOUND' },
+          ),
+        }),
+      ],
+      [
+        '時間内に応答が無い',
+        new DOMException(
+          'The operation was aborted due to timeout',
+          'TimeoutError',
+        ),
+      ],
+      [
+        'VAPID の鍵を読み込めない',
+        new DOMException('Invalid keyData', 'DataError'),
+      ],
+    ])('%s失敗は failed に数えるが購読は削除しない', async (_, error) => {
+      vi.mocked(db.query.pushSubscriptions.findMany).mockResolvedValue([
+        subscription(FCM_ENDPOINT),
+      ] as never);
+      vi.mocked(sendWebPush).mockRejectedValue(error);
+
+      await sendPushNotification(notificationParams);
+
+      expect(updateSetMock).toHaveBeenCalledWith({ succeeded: 0, failed: 1 });
+      expect(db.delete).not.toHaveBeenCalled();
+    });
+
+    it('購読を読み込めなければ claim せず、再実行で送れる状態を残す', async () => {
+      vi.mocked(db.query.pushSubscriptions.findMany).mockRejectedValue(
+        new Error('db unavailable'),
+      );
+
+      await expect(sendPushNotification(notificationParams)).rejects.toThrow(
+        'db unavailable',
+      );
+
+      expect(db.insert).not.toHaveBeenCalled();
+    });
+
+    it('購読の削除に失敗しても、送信結果は記録する', async () => {
+      vi.mocked(db.query.pushSubscriptions.findMany).mockResolvedValue([
+        subscription(FCM_ENDPOINT),
+        subscription(MOZILLA_ENDPOINT),
+      ] as never);
+      vi.mocked(sendWebPush)
+        .mockRejectedValueOnce(new WebPushError(410, 'Gone'))
+        .mockResolvedValueOnce(new Response());
+      deleteWhereMock.mockRejectedValueOnce(new Error('db unavailable'));
+
+      await expect(sendPushNotification(notificationParams)).rejects.toThrow(
+        'db unavailable',
+      );
+
+      expect(updateSetMock).toHaveBeenCalledWith({ succeeded: 1, failed: 1 });
     });
   });
 

@@ -67,9 +67,9 @@ const sendJson = (
     }),
   );
 
-const P256DH = Buffer.concat([Buffer.from([0x04]), Buffer.alloc(64)]).toString(
-  'base64url',
-);
+// RFC 8291 の例にある受信側の公開鍵
+const P256DH =
+  'BCVxsr7N_eNgVRqvHtD0zTZsEc6-VV-JvLexhqUzORcxaOzi6-AYWXvTBHm4bjyPjs7Vd8pZGH6SRpkNtoIAiw4';
 const AUTH = Buffer.alloc(16).toString('base64url');
 const ENDPOINT = 'https://fcm.googleapis.com/fcm/send/abc123';
 
@@ -548,6 +548,26 @@ describe('公開 API', () => {
           ok: false,
           error: 'invalid_keys',
         });
+      });
+
+      it('長さが合っていても P-256 の点として読めない鍵は保存しない', async () => {
+        const res = await sendJson(PATH, {
+          endpoint: ENDPOINT,
+          keys: {
+            p256dh: Buffer.concat([
+              Buffer.from([0x04]),
+              Buffer.alloc(64),
+            ]).toString('base64url'),
+            auth: AUTH,
+          },
+        });
+
+        expect(res.status).toBe(400);
+        await expect(res.json()).resolves.toStrictEqual({
+          ok: false,
+          error: 'invalid_keys',
+        });
+        expect(insertSubscription).not.toHaveBeenCalled();
       });
 
       it('長すぎる endpoint は、許可したホストでも形の誤りとして保存しない', async () => {

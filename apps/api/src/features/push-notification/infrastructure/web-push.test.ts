@@ -5,6 +5,8 @@ import {
   base64UrlEncode,
   base64UrlEncodeBytes,
   buildEncryptedBody,
+  importSubscriptionKeys,
+  InvalidSubscriptionKeysError,
   sendWebPush,
   WebPushError,
 } from './web-push';
@@ -313,6 +315,101 @@ describe('buildEncryptedBody', () => {
   });
 });
 
+describe('importSubscriptionKeys', () => {
+  describe('正常系', () => {
+    it('ブラウザが作る形の鍵を読み込める', async () => {
+      const client = await generateClientKeys();
+
+      await expect(
+        importSubscriptionKeys(client.subscriptionKeys),
+      ).resolves.not.toBeNull();
+    });
+
+    it('auth は32バイトまで受け付ける', async () => {
+      const client = await generateClientKeys();
+
+      await expect(
+        importSubscriptionKeys({
+          p256dh: client.subscriptionKeys.p256dh,
+          auth: toB64Url(new Uint8Array(32)),
+        }),
+      ).resolves.not.toBeNull();
+    });
+  });
+
+  describe('異常系', () => {
+    it.each([
+      [
+        'P-256 の曲線上に無い点',
+        (keys: ClientKeys): { p256dh: string; auth: string } => ({
+          p256dh: toB64Url(
+            concatBytes(Uint8Array.from([4]), new Uint8Array(64)),
+          ),
+          auth: keys.subscriptionKeys.auth,
+        }),
+      ],
+      [
+        // y の偶奇によらず、x 座標に 0x02 を付ければ曲線上の点になる
+        '圧縮形式の点',
+        (keys: ClientKeys): { p256dh: string; auth: string } => ({
+          p256dh: toB64Url(
+            concatBytes(Uint8Array.from([2]), keys.publicKeyRaw.slice(1, 33)),
+          ),
+          auth: keys.subscriptionKeys.auth,
+        }),
+      ],
+      [
+        '先頭が 0x04 でない65バイト',
+        (keys: ClientKeys): { p256dh: string; auth: string } => ({
+          p256dh: toB64Url(
+            concatBytes(Uint8Array.from([5]), keys.publicKeyRaw.slice(1)),
+          ),
+          auth: keys.subscriptionKeys.auth,
+        }),
+      ],
+      [
+        'base64url で使わない文字を含む p256dh',
+        (keys: ClientKeys): { p256dh: string; auth: string } => ({
+          p256dh: `${keys.subscriptionKeys.p256dh}!`,
+          auth: keys.subscriptionKeys.auth,
+        }),
+      ],
+      [
+        '16バイト未満の auth',
+        (keys: ClientKeys): { p256dh: string; auth: string } => ({
+          p256dh: keys.subscriptionKeys.p256dh,
+          auth: toB64Url(new Uint8Array(15)),
+        }),
+      ],
+      [
+        '32バイトを超える auth',
+        (keys: ClientKeys): { p256dh: string; auth: string } => ({
+          p256dh: keys.subscriptionKeys.p256dh,
+          auth: toB64Url(new Uint8Array(33)),
+        }),
+      ],
+    ])('%sは読み込めない', async (_, toKeys) => {
+      const client = await generateClientKeys();
+
+      await expect(importSubscriptionKeys(toKeys(client))).resolves.toBeNull();
+    });
+
+    it('鍵の中身と関係のない importKey の失敗は、読めない鍵とせずにそのまま投げる', async () => {
+      const client = await generateClientKeys();
+      const importKey = vi
+        .spyOn(crypto.subtle, 'importKey')
+        .mockRejectedValueOnce(
+          new DOMException('not supported', 'NotSupportedError'),
+        );
+
+      await expect(
+        importSubscriptionKeys(client.subscriptionKeys),
+      ).rejects.toThrow('not supported');
+      importKey.mockRestore();
+    });
+  });
+});
+
 describe('sendWebPush', () => {
   beforeEach(() => {
     vi.stubGlobal('fetch', mockFetch);
@@ -380,6 +477,30 @@ describe('sendWebPush', () => {
       // RFC 8188 ヘッダ: rs=4096(BE) と idlen=65
       expect(body.slice(16, 20)).toStrictEqual(Uint8Array.from([0, 0, 16, 0]));
       expect(body[20]).toBe(65);
+    });
+
+    it('応答しない Push サービスを待ち続けないよう、10秒で打ち切る signal を付ける', async () => {
+      const client = await generateClientKeys();
+      const vapid = await generateVapidKeys();
+      const timeout = vi.spyOn(AbortSignal, 'timeout');
+
+      await sendWebPush(
+        {
+          endpoint: 'https://push.example.net/push/abc',
+          keys: client.subscriptionKeys,
+        },
+        'hello',
+        {
+          vapidPublicKey: vapid.publicKey,
+          vapidPrivateKey: vapid.privateKey,
+          vapidSubject: 'mailto:admin@example.com',
+        },
+      );
+
+      const { init } = capturedRequest();
+      expect(timeout).toHaveBeenCalledExactlyOnceWith(10_000);
+      expect(init.signal).toBe(timeout.mock.results[0]?.value);
+      timeout.mockRestore();
     });
 
     it('VAPID の JWT が公開鍵で検証でき aud/exp/sub が正しい', async () => {
@@ -519,6 +640,54 @@ describe('sendWebPush', () => {
 
       await expect(promise).rejects.toThrow(WebPushError);
       await expect(promise).rejects.toMatchObject({ status: 410 });
+    });
+
+    it('購読の鍵を読み込めなければ、送らずに InvalidSubscriptionKeysError を投げる', async () => {
+      const client = await generateClientKeys();
+      const vapid = await generateVapidKeys();
+
+      const promise = sendWebPush(
+        {
+          endpoint: 'https://push.example.net/push/abc',
+          keys: {
+            p256dh: toB64Url(
+              concatBytes(Uint8Array.from([4]), new Uint8Array(64)),
+            ),
+            auth: client.subscriptionKeys.auth,
+          },
+        },
+        'hello',
+        {
+          vapidPublicKey: vapid.publicKey,
+          vapidPrivateKey: vapid.privateKey,
+          vapidSubject: 'mailto:admin@example.com',
+        },
+      );
+
+      await expect(promise).rejects.toThrow(InvalidSubscriptionKeysError);
+      expect(mockFetch).not.toHaveBeenCalled();
+    });
+
+    it('VAPID の鍵を読み込めない失敗は、購読の鍵の誤りとして扱わない', async () => {
+      const client = await generateClientKeys();
+      const vapid = await generateVapidKeys();
+
+      const promise = sendWebPush(
+        {
+          endpoint: 'https://push.example.net/push/abc',
+          keys: client.subscriptionKeys,
+        },
+        'hello',
+        {
+          vapidPublicKey: vapid.publicKey,
+          vapidPrivateKey: toB64Url(new Uint8Array(5)),
+          vapidSubject: 'mailto:admin@example.com',
+        },
+      );
+
+      await expect(promise).rejects.not.toBeInstanceOf(
+        InvalidSubscriptionKeysError,
+      );
     });
   });
 });
