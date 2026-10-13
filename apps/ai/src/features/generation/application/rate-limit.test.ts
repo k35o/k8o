@@ -1,4 +1,4 @@
-import { generationLimit, isOverLimit, windowStartIso } from './rate-limit';
+import { generationLimit, windowStartIso } from './rate-limit';
 
 describe('rate-limit', () => {
   afterEach(() => {
@@ -6,12 +6,6 @@ describe('rate-limit', () => {
   });
 
   describe('正常系', () => {
-    it('上限未満は false、上限到達以上で true', () => {
-      expect(isOverLimit(59, 60)).toBe(false);
-      expect(isOverLimit(60, 60)).toBe(true);
-      expect(isOverLimit(61, 60)).toBe(true);
-    });
-
     it('windowStartIso は now から1時間前の ISO を返す', () => {
       const now = Date.parse('2026-06-23T12:00:00.000Z');
       expect(windowStartIso(now)).toBe('2026-06-23T11:00:00.000Z');

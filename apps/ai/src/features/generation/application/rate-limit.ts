@@ -13,6 +13,3 @@ export const generationLimit = (): number =>
 // now を引数に取り決定的に保つ。
 export const windowStartIso = (now: number): string =>
   new Date(now - WINDOW_MS).toISOString();
-
-export const isOverLimit = (count: number, limit: number): boolean =>
-  count >= limit;
