@@ -32,6 +32,7 @@ const contentSecurityPolicyHeaderValue = cspHeader
 
 const nextConfig: NextConfig = {
   reactCompiler: true,
+  poweredByHeader: false,
   allowedDevOrigins: ['main.k8o.localhost', '*.main.k8o.localhost'],
   pageExtensions: ['tsx', 'mdx', 'ts'],
   rewrites: () =>

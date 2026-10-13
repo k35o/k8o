@@ -2,6 +2,7 @@ import type { NextConfig } from 'next';
 
 const nextConfig: NextConfig = {
   reactCompiler: true,
+  poweredByHeader: false,
   allowedDevOrigins: ['ai.k8o.localhost', '*.ai.k8o.localhost'],
   compiler: {
     removeConsole: process.env['NODE_ENV'] === 'production' && {
