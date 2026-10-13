@@ -44,6 +44,12 @@ DB 由来のキャッシュ（talks / tags / blogs / slides の一覧・詳細�
 
 browser-support（機能一覧）は api の日次 cron が web-features の正典配布元（GitHub Releases）から取り込んで DB に保存し、main は `cacheTag('browser-support')` 付きの `'use cache'` で active データセットを読む。api は同期成功後に `/api/revalidate` でこのタグを再検証する。ブラウザ最低版フロア（RootLayout が読む）だけは実行時 I/O を持たないコミット済み生成物で、`pnpm run -F main generate:browser-min-versions [version]` で再生成する。active データセットとずれると外形監視（`.github/workflows/browser-support-monitor.yml`）が k8o-bot 名義で再生成 PR を作り、自動マージする。
 
+## セキュリティヘッダー
+
+`next.config.ts` の headers() が全ページに CSP・`Content-Security-Policy-Report-Only`・Reporting-Endpoints を返す。どちらの違反も `csp-endpoint`（api の `/public/reports`）に届き、api の MCP の `list_reports`（type は `csp-violation`）で読める。
+
+Trusted Types は Report-Only で観測している。強制側の CSP は `trusted-types` で作れるポリシー名を縛るだけで、sink は縛らない。`require-trusted-types-for 'script'` と `default` を除いた `trusted-types` は Report-Only にだけ置く（dev では `require-trusted-types-for` を付けない）。default ポリシーは作らない。作ると sink に渡した文字列がそこで変換され、Report-Only の違反として上がらなくなる。生の文字列を渡した sink は、body の `disposition` が `report`、`effectiveDirective` が `require-trusted-types-for` のレポートになり、`sample` に sink 名と値の先頭が、`sourceFile` と行番号に呼び出し元が入る。
+
 ## Storybook MCP
 
 apps/main のStorybook MCPは `main-storybook-mcp`。propsの確認手順はルートのCLAUDE.md「UI共通」を参照。

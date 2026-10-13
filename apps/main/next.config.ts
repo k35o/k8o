@@ -3,6 +3,8 @@ import type { NextConfig } from 'next';
 
 const isDev = process.env['NODE_ENV'] === 'development';
 
+const trustedTypePolicyNames = 'nextjs nextjs#bundler goog#html lit-html';
+
 const cspHeader = `
     default-src 'self';
     script-src 'self' 'unsafe-inline' https://www.googletagmanager.com https://va.vercel-scripts.com https://vercel.live${isDev ? " 'unsafe-eval'" : ''};
@@ -16,8 +18,7 @@ const cspHeader = `
     base-uri 'self';
     form-action 'self';
     frame-ancestors 'none';
-    ${isDev ? '' : "require-trusted-types-for 'script';"}
-    trusted-types nextjs nextjs#bundler goog#html lit-html default;
+    trusted-types ${trustedTypePolicyNames} default;
     report-to csp-endpoint;
     ${
       // Safari/WebKit は localhost の http でも https に強制アップグレードするため、
@@ -26,9 +27,17 @@ const cspHeader = `
     }
 `;
 
-const contentSecurityPolicyHeaderValue = cspHeader
-  .replaceAll(/\s{2,}/gu, ' ')
-  .trim();
+// require-trusted-types-for を強制すると、生の文字列を渡す sink を通すために default
+// ポリシーが要る。default があると違反の判定より先にその変換が効き、Report-Only でも
+// sink の違反が上がらない。default を作らず、sink は Report-Only でだけ縛る
+const cspReportOnlyHeader = `
+    ${isDev ? '' : "require-trusted-types-for 'script';"}
+    trusted-types ${trustedTypePolicyNames};
+    report-to csp-endpoint;
+`;
+
+const toHeaderValue = (policy: string): string =>
+  policy.replaceAll(/\s{2,}/gu, ' ').trim();
 
 const nextConfig: NextConfig = {
   reactStrictMode: true,
@@ -74,7 +83,11 @@ const nextConfig: NextConfig = {
         headers: [
           {
             key: 'Content-Security-Policy',
-            value: contentSecurityPolicyHeaderValue,
+            value: toHeaderValue(cspHeader),
+          },
+          {
+            key: 'Content-Security-Policy-Report-Only',
+            value: toHeaderValue(cspReportOnlyHeader),
           },
           // preview と dev のレポートは、api が Origin を許可しないので受け付けられない
           {

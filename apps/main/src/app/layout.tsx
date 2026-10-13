@@ -12,7 +12,6 @@ import { getBrowserMinVersions } from '@/features/browser-support/interface/quer
 import { GlobalLayout } from './_components/global-layout';
 import { OfflineNotice } from './_components/offline-notice';
 import { ServiceWorkerRegister } from './_components/service-worker-register';
-import { TrustedTypesInit } from './_components/trusted-types-init';
 import { AppProvider } from './_providers/app';
 import { mPlus2 } from './_styles/font';
 
@@ -63,9 +62,6 @@ export default function RootLayout({ children }: LayoutProps<'/'>) {
   return (
     <html lang="ja" suppressHydrationWarning>
       {process.env['NODE_ENV'] === 'development' && <ReactScan />}
-      <head>
-        <TrustedTypesInit />
-      </head>
       <body
         className={`${mPlus2.variable} bg-bg-surface font-m-plus-2 text-fg-base tracking-none font-medium antialiased`}
       >
