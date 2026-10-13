@@ -15,8 +15,7 @@
       "ignoreDependencies": ["chromatic"]
     },
     "packages/oxlint-plugin": {
-      "ignore": ["tests/fixtures/**"],
-      "ignoreDependencies": ["vite-plus"]
+      "ignore": ["tests/fixtures/**"]
     }
   }
 }

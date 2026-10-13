@@ -1,4 +1,4 @@
-import type { Plugin } from '@oxlint/plugins';
+import type { Plugin } from 'vite-plus/lint/plugins';
 
 import { databaseImportBoundary } from './database-import-boundary.ts';
 
