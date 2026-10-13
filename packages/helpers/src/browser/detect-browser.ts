@@ -56,7 +56,7 @@ export const parseBrowserFromUserAgent = (
     if (osMatched) {
       return {
         browser: 'safari_ios',
-        version: `${osMatched[1]}.${osMatched[2]}`,
+        version: osMatched.slice(1).join('.'),
       };
     }
     return null;
@@ -92,7 +92,7 @@ export const parseBrowserFromUserAgent = (
   if (/Safari\//u.test(ua)) {
     const matched = /Version\/(\d+)\.(\d+)/u.exec(ua);
     if (matched) {
-      return { browser: 'safari', version: `${matched[1]}.${matched[2]}` };
+      return { browser: 'safari', version: matched.slice(1).join('.') };
     }
   }
 

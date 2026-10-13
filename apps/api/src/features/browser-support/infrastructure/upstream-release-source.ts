@@ -57,10 +57,9 @@ export const discoverLatestVersion = async (): Promise<DiscoveredVersion> => {
       `Location からバージョンタグを解決できない: ${location}`,
     );
   }
-  const [, majorStr, minor, patch] = matched;
   return {
-    version: `${majorStr}.${minor}.${patch}`,
-    major: Number(majorStr),
+    version: matched.slice(1).join('.'),
+    major: Number(matched[1]),
   };
 };
 

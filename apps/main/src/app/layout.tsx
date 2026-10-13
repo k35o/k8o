@@ -61,7 +61,7 @@ export default function RootLayout({ children }: LayoutProps<'/'>) {
 
   return (
     <html lang="ja" suppressHydrationWarning>
-      {process.env['NODE_ENV'] === 'development' && <ReactScan />}
+      {process.env.NODE_ENV === 'development' && <ReactScan />}
       <body
         className={`${mPlus2.variable} bg-bg-surface font-m-plus-2 text-fg-base tracking-none font-medium antialiased`}
       >
