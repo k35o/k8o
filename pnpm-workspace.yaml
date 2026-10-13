@@ -57,8 +57,6 @@ minimumReleaseAgeExclude:
   - storybook-addon-vrt
   - storybook-addon-mock-date
   - storybook-addon-determinism
-  # Renovate security update: next@16.3.8
-  - next@16.3.8
 
 trustPolicy: no-downgrade
 
