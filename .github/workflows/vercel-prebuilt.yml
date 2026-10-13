@@ -125,8 +125,8 @@ jobs:
 
       - name: Migrate k8o DB
         env:
-          TURSO_DATABASE_URL: ${{ secrets.TURSO_DATABASE_URL }}
-          TURSO_AUTH_TOKEN: ${{ secrets.TURSO_AUTH_TOKEN }}
+          K8O_TURSO_DATABASE_URL: ${{ secrets.K8O_TURSO_DATABASE_URL }}
+          K8O_TURSO_AUTH_TOKEN: ${{ secrets.K8O_TURSO_AUTH_TOKEN }}
         run: pnpm -F @repo/database migrate
 
       - name: Migrate ai DB
@@ -185,11 +185,11 @@ jobs:
         run: |
           set -a
           # shellcheck disable=SC1090
-          . <(grep -E '^TURSO_(DATABASE_URL|AUTH_TOKEN)=' "$GITHUB_WORKSPACE/.vercel/.env.preview.local")
+          . <(grep -E '^K8O_TURSO_(DATABASE_URL|AUTH_TOKEN)=' "$GITHUB_WORKSPACE/.vercel/.env.preview.local")
           set +a
           # pull した値は secrets ではないので、ログに出ないよう自分で伏せる
-          echo "::add-mask::$TURSO_DATABASE_URL"
-          echo "::add-mask::$TURSO_AUTH_TOKEN"
+          echo "::add-mask::$K8O_TURSO_DATABASE_URL"
+          echo "::add-mask::$K8O_TURSO_AUTH_TOKEN"
           pnpm -F @repo/database migrate
 
       - name: Migrate preview ai DB
@@ -209,8 +209,8 @@ jobs:
           # sensitive 設定の env var は `vercel pull` だと空になるため、ビルド時に必要な
           # GITHUB_TOKEN は Actions のトークンで代替する（main のトップページの contributions 取得で使う）
           GITHUB_TOKEN: ${{ github.token }}
-          PROD_TURSO_DATABASE_URL: ${{ secrets.TURSO_DATABASE_URL }}
-          PROD_TURSO_AUTH_TOKEN: ${{ secrets.TURSO_AUTH_TOKEN }}
+          PROD_K8O_TURSO_DATABASE_URL: ${{ secrets.K8O_TURSO_DATABASE_URL }}
+          PROD_K8O_TURSO_AUTH_TOKEN: ${{ secrets.K8O_TURSO_AUTH_TOKEN }}
           PROD_AI_TURSO_DATABASE_URL: ${{ secrets.AI_TURSO_DATABASE_URL }}
           PROD_AI_TURSO_AUTH_TOKEN: ${{ secrets.AI_TURSO_AUTH_TOKEN }}
         run: |
@@ -218,8 +218,8 @@ jobs:
             # production の Turso 接続情報も sensitive で pull できないため production Environment の
             # secrets から注入する（preview は pull した preview DB の値をそのまま使う）。ambient な
             # 環境変数は pull された .env より優先されるため export で上書きできる
-            export TURSO_DATABASE_URL="$PROD_TURSO_DATABASE_URL"
-            export TURSO_AUTH_TOKEN="$PROD_TURSO_AUTH_TOKEN"
+            export K8O_TURSO_DATABASE_URL="$PROD_K8O_TURSO_DATABASE_URL"
+            export K8O_TURSO_AUTH_TOKEN="$PROD_K8O_TURSO_AUTH_TOKEN"
             export AI_TURSO_DATABASE_URL="$PROD_AI_TURSO_DATABASE_URL"
             export AI_TURSO_AUTH_TOKEN="$PROD_AI_TURSO_AUTH_TOKEN"
             pnpm dlx --allow-build esbuild vercel@59.11.2 build --cwd "$GITHUB_WORKSPACE" --prod --token="$VERCEL_TOKEN"

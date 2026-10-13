@@ -4,10 +4,10 @@ import { drizzle } from 'drizzle-orm/libsql/http';
 import { relations, schema } from './schema';
 import { increment } from './utils';
 
-const authToken = process.env['TURSO_AUTH_TOKEN'];
+const authToken = process.env['K8O_TURSO_AUTH_TOKEN'];
 
 const client = createClient({
-  url: process.env['TURSO_DATABASE_URL'] ?? '',
+  url: process.env['K8O_TURSO_DATABASE_URL'] ?? '',
   ...(authToken !== undefined && authToken !== '' ? { authToken } : {}),
 });
 
