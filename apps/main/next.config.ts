@@ -31,7 +31,6 @@ const contentSecurityPolicyHeaderValue = cspHeader
   .trim();
 
 const nextConfig: NextConfig = {
-  reactStrictMode: true,
   reactCompiler: true,
   allowedDevOrigins: ['main.k8o.localhost', '*.main.k8o.localhost'],
   pageExtensions: ['tsx', 'mdx', 'ts'],

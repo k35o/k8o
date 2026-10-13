@@ -1,7 +1,6 @@
 import type { NextConfig } from 'next';
 
 const nextConfig: NextConfig = {
-  reactStrictMode: true,
   reactCompiler: true,
   allowedDevOrigins: ['ai.k8o.localhost', '*.ai.k8o.localhost'],
   compiler: {
