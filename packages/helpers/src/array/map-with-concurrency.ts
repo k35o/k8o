@@ -8,7 +8,6 @@ export const mapWithConcurrency = async <T, R>(
 
   const worker = async (): Promise<void> => {
     for (const [index, item] of iterator) {
-      // oxlint-disable-next-line eslint/no-await-in-loop -- ワーカープールでは各ワーカーが逐次 await することで同時実行数を制限する
       results[index] = await fn(item, index);
     }
   };

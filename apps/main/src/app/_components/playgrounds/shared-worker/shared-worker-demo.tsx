@@ -63,14 +63,12 @@ export function SharedWorkerDemo() {
     // bfcacheに入る (event.persisted === true) ときはポートを生かしたまま離脱する
     const handlePageHide = (event: PageTransitionEvent) => {
       if (event.persisted) return;
-      // oxlint-disable-next-line require-post-message-target-origin -- MessagePort.postMessageはtargetOrigin非対応
       worker.port.postMessage({ type: 'disconnect' });
     };
     window.addEventListener('pagehide', handlePageHide);
 
     return () => {
       window.removeEventListener('pagehide', handlePageHide);
-      // oxlint-disable-next-line require-post-message-target-origin -- MessagePort.postMessageはtargetOrigin非対応
       worker.port.postMessage({ type: 'disconnect' });
       worker.port.close();
       port.current = null;

@@ -18,7 +18,6 @@ import type { ActiveBaselineDataset } from '@/features/browser-support/infrastru
 // 成功時の /api/revalidate(タグ再検証)で担保するため、寿命は 'days' に寄せる。
 // 'minutes' にすると <BrowserSupportStatus> を埋め込んだブログ記事の静的シェルまで
 // 分単位の ISR + DB 依存になってしまう。
-// oxlint-disable-next-line eslint/require-await, typescript/require-await -- 'use cache' は async 関数を要求する
 async function getActiveDataset(): Promise<ActiveBaselineDataset | null> {
   'use cache';
   cacheLife('days');

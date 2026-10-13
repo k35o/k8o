@@ -27,8 +27,6 @@ export const useBroadcastViewerHeartbeat = ({
     if (sessionId === '') return undefined;
     const channel = new BroadcastChannel(lifecycleChannelName(slug, sessionId));
     const send = (): void => {
-      // BroadcastChannel.postMessage は targetOrigin を取らない
-      // oxlint-disable-next-line unicorn/require-post-message-target-origin
       channel.postMessage({ type: 'viewer-alive' } satisfies HeartbeatMessage);
     };
     send();

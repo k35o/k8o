@@ -36,7 +36,6 @@ const readTextWithLimit = async (response: Response): Promise<string> => {
   let text = '';
   let bytes = 0;
   while (bytes < MAX_HTML_BYTES) {
-    // oxlint-disable-next-line eslint/no-await-in-loop -- ストリームは順に読むしかない
     const { done, value } = await reader.read();
     if (done) {
       return text + decoder.decode();
