@@ -5,7 +5,7 @@ const nextConfig: NextConfig = {
   poweredByHeader: false,
   allowedDevOrigins: ['ai.k8o.localhost', '*.ai.k8o.localhost'],
   compiler: {
-    removeConsole: process.env['NODE_ENV'] === 'production' && {
+    removeConsole: process.env.NODE_ENV === 'production' && {
       exclude: ['error', 'warn'],
     },
   },

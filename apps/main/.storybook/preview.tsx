@@ -1,3 +1,4 @@
+import { resetStateRegistry } from '@k8ordo/state';
 import { cn } from '@repo/helpers/cn';
 import addonA11y from '@storybook/addon-a11y';
 // root entry ('@storybook/addon-docs') は 'mdx/types' への module augmentation で
@@ -56,6 +57,12 @@ export default definePreview({
         dynamicTitle: true,
       },
     },
+  },
+
+  // Story は同じページで続けて実行されるため、前の Story で更新した @k8ordo/state の
+  // 状態が残らないよう Story ごとに初期化する
+  beforeEach: () => {
+    resetStateRegistry();
   },
 
   loaders: [
@@ -130,7 +137,7 @@ export default definePreview({
     addonDocs,
     addonMsw(async () => {
       const worker = setupWorker(...handlers);
-      await worker.start({ onUnhandledRequest: 'bypass', quiet: true });
+      await worker.start({ onUnhandledFrame: 'bypass', quiet: true });
       return worker;
     }),
     addonMockDate(),

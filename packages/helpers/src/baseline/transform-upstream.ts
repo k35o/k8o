@@ -276,6 +276,7 @@ export const transformUpstreamData = (
 };
 
 if (import.meta.vitest) {
+  const { describe, expect, it } = import.meta.vitest;
   const upstream = {
     browsers: {
       chrome: {

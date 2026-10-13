@@ -44,8 +44,6 @@ export const useBroadcastListener = ({
   return useCallback((index: number) => {
     const channel = channelRef.current;
     if (channel === null) return;
-    // BroadcastChannel.postMessage は targetOrigin を取らない
-    // oxlint-disable-next-line unicorn/require-post-message-target-origin
     channel.postMessage({ type: 'sync', index } satisfies ChannelMessage);
   }, []);
 };

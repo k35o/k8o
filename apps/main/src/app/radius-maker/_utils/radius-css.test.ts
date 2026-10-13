@@ -1,3 +1,5 @@
+import { describe, expect, it } from 'vitest';
+
 import type { RadiusCorners } from '../_types/corner-radius';
 import { cornersEqual, toBorderRadiusValue, toCssText } from './radius-css';
 

@@ -57,10 +57,9 @@ export const discoverLatestVersion = async (): Promise<DiscoveredVersion> => {
       `Location からバージョンタグを解決できない: ${location}`,
     );
   }
-  const [, majorStr, minor, patch] = matched;
   return {
-    version: `${majorStr}.${minor}.${patch}`,
-    major: Number(majorStr),
+    version: matched.slice(1).join('.'),
+    major: Number(matched[1]),
   };
 };
 
@@ -81,7 +80,6 @@ const readBodyWithLimit = async (res: Response): Promise<string> => {
   const reader = res.body.getReader();
   const chunks: Uint8Array[] = [];
   let received = 0;
-  /* oxlint-disable eslint/no-await-in-loop -- ストリームの逐次読み取り */
   for (;;) {
     const chunk = await reader.read();
     if (chunk.done) {
@@ -94,7 +92,6 @@ const readBodyWithLimit = async (res: Response): Promise<string> => {
     }
     chunks.push(chunk.value);
   }
-  /* oxlint-enable eslint/no-await-in-loop */
   const merged = new Uint8Array(received);
   let offset = 0;
   for (const chunk of chunks) {
@@ -107,7 +104,6 @@ const readBodyWithLimit = async (res: Response): Promise<string> => {
 export const fetchUpstreamData = async (version: string): Promise<unknown> => {
   const failures: string[] = [];
   // fallback チェーンなので並列化しない: primary が成功したら他チャネルは叩かない。
-  /* oxlint-disable eslint/no-await-in-loop -- 逐次フォールバックが目的 */
   for (const url of channelUrls(version)) {
     try {
       const res = await fetch(url, {
@@ -128,6 +124,5 @@ export const fetchUpstreamData = async (version: string): Promise<unknown> => {
       failures.push(`${url}: ${String(error)}`);
     }
   }
-  /* oxlint-enable eslint/no-await-in-loop */
   throw new UpstreamFetchError(failures.join(' / '));
 };

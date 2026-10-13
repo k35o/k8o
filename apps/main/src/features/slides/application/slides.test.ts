@@ -1,4 +1,5 @@
 import { db } from '@repo/database';
+import { describe, expect, it, vi } from 'vitest';
 
 import { getSlides } from './slides';
 

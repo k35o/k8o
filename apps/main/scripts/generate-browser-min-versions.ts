@@ -31,8 +31,7 @@ const discoverLatestVersion = async (): Promise<string> => {
       `バージョンタグを解決できない: status=${String(res.status)} location=${location}`,
     );
   }
-  const [, major, minor, patch] = matched;
-  return `${major}.${minor}.${patch}`;
+  return matched.slice(1).join('.');
 };
 
 const requested = process.argv[2];

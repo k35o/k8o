@@ -64,7 +64,7 @@ export function SelectionProperties() {
         </p>
         <p>
           {current
-            ? `${current.anchorNode?.textContent}, ${current.anchorOffset}`
+            ? `${current.anchorNode?.textContent ?? ''}, ${current.anchorOffset}`
             : ''}
         </p>
       </div>
@@ -76,7 +76,7 @@ export function SelectionProperties() {
         </p>
         <p>
           {current
-            ? `${current.focusNode?.textContent}, ${current.focusOffset}`
+            ? `${current.focusNode?.textContent ?? ''}, ${current.focusOffset}`
             : ''}
         </p>
       </div>

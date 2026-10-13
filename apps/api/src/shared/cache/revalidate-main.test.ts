@@ -1,3 +1,5 @@
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+
 import { revalidateMainCache } from './revalidate-main';
 
 const mockFetch = vi.fn() as ReturnType<typeof vi.fn>;

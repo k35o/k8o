@@ -1,4 +1,5 @@
 import type { UIMessage } from 'ai';
+import { describe, expect, it } from 'vitest';
 
 import { stripDataParts } from './prompt-messages';
 

@@ -1,3 +1,5 @@
+import { describe, expect, it, vi } from 'vitest';
+
 import { findBlogMetadata } from './blog';
 import { getBlogs } from './blogs';
 import { getFeatureBlogMap } from './feature-blog-map';

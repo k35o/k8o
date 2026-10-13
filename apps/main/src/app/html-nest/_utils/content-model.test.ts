@@ -1,4 +1,5 @@
 import type { HtmlElementInfo } from '@k8o/html-nest';
+import { describe, expect, it } from 'vitest';
 
 import { HTML_ELEMENTS } from '../_data/elements';
 import {

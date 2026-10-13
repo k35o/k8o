@@ -1,5 +1,6 @@
 import { db } from '@repo/database';
 import { findFrontmatter, getFrontmatter } from '@repo/helpers/mdx/frontmatter';
+import { describe, expect, it, vi } from 'vitest';
 
 import { slidePath } from './path';
 import { findSlideMetadata, getSlide, getSlideMetadata } from './slide';

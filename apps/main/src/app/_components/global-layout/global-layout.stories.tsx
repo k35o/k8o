@@ -13,12 +13,6 @@ const meta = preview.meta({
   args: { children: null } satisfies Partial<
     ComponentProps<typeof GlobalLayout>
   >,
-  beforeEach: () => {
-    // browser-support-notice の Dismiss Story が同一セッションの sessionStorage に
-    // dismissed を残すと OutdatedBrowser のバナーが消えて VRT が不安定になるため、
-    // Story 実行前に必ずクリアする。
-    sessionStorage.removeItem('k8o:browser-support-notice-dismissed');
-  },
 });
 
 export const Primary = meta.story();
@@ -35,11 +29,6 @@ export const OutdatedBrowser = meta.story({
       safari: '9999',
       safari_ios: '9999',
     },
-  },
-  // テストは同一ページで実行されるため、browser-support-notice の Dismiss 実行後だと
-  // 閉じた状態が sessionStorage に残ってバナーが出なくなる。毎回クリアして状態を揃える
-  beforeEach: () => {
-    sessionStorage.removeItem('k8o:browser-support-notice-dismissed');
   },
   // バナーはクライアント側のブラウザ判定後に描画されるため、表示を待ってから
   // VRT のスクリーンショットが撮影されるようにする

@@ -1,3 +1,5 @@
+import { describe, expect, it } from 'vitest';
+
 import { generateBlobCorners } from './random-blob';
 
 describe('generateBlobCorners', () => {

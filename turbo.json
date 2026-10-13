@@ -1,5 +1,6 @@
 {
-  "$schema": "https://turborepo.com/schema.json",
+  "$schema": "https://turborepo.dev/schema.json",
+  "agentGuidance": false,
   "globalEnv": ["NODE_ENV", "PORTLESS_URL", "VERCEL_ENV"],
   "globalPassThroughEnv": [
     "CRON_SECRET",

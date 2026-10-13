@@ -2,9 +2,11 @@ import { execFileSync } from 'node:child_process';
 import { createRequire } from 'node:module';
 import { dirname, join, resolve } from 'node:path';
 
+import { describe, expect, test } from 'vitest';
+
 const fixturesDir = resolve(import.meta.dirname, 'fixtures');
 
-// vite-plus が同梱する oxlint 本体を、vite-plus/bin/oxlint と同じ手順で解決する
+// vite-plus が依存として持つ oxlint 本体を、vite-plus のパッケージから辿って解決する
 const resolveOxlintBin = (): string => {
   const requireHere = createRequire(import.meta.url);
   const vitePlusDir = dirname(requireHere.resolve('vite-plus/package.json'));

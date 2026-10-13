@@ -1,3 +1,5 @@
+import { describe, expect, it } from 'vitest';
+
 import { groupBlogsByYear } from './group-blogs-by-year';
 import type { BlogSummary } from './types';
 

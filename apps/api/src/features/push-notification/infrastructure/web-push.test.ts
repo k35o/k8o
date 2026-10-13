@@ -1,5 +1,7 @@
 import { Buffer } from 'node:buffer';
 
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+
 import {
   base64UrlDecode,
   base64UrlEncode,

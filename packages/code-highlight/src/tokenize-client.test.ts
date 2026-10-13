@@ -1,4 +1,5 @@
 import type * as shikijsCore from '@shikijs/core';
+import { describe, expect, it, vi } from 'vitest';
 
 import { highlightCode } from './tokenize-client.ts';
 

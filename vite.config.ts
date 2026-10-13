@@ -1,4 +1,4 @@
-import { fmt, nextjs, tailwind, test } from '@k8o/oxc-config';
+import { fmt, nextjs, tailwind, test, TEST_GLOBS } from '@k8o/oxc-config';
 import { defineConfig } from 'vite-plus';
 
 const ignorePatterns = [
@@ -27,7 +27,6 @@ export default defineConfig({
     ignorePatterns,
     options: {
       reportUnusedDisableDirectives: 'error',
-      typeAware: true,
     },
     settings: {
       next: {
@@ -37,8 +36,7 @@ export default defineConfig({
         version: '19.3.0',
       },
       tailwindcss: {
-        // oxlint-tailwindcss v1 から、対象ファイルと CSS エントリーポイントの
-        // 対応を glob で明示する形式に変更された（先勝ちで評価される）。
+        // 対象ファイルと CSS エントリーポイントの対応を glob で明示する（先勝ちで評価される）。
         entryPoint: [
           {
             files: 'apps/main/**',
@@ -61,18 +59,8 @@ export default defineConfig({
     rules: {
       // DB パッケージ（@repo/database・@repo/ai-database）の import 層を強制する
       'k8o/database-import-boundary': 'error',
-      // 既存コードの意図を変える修正が大量に必要なルールは、初回移行では段階導入にする。
-      'import/no-unassigned-import': [
-        'error',
-        { allow: ['**/*.css', '@/libs/zod', 'react', 'server-only'] },
-      ],
-      // `_schema` / `_utils` などのアンダースコア接頭辞は DB パッケージの
-      // 内部API（直接アクセス非推奨）を表す規約として使っているため許可する。
-      'no-underscore-dangle': 'off',
-      // 実在しない no-op クラス(text-base/rounded/tracking 等)は修正済み。残るのは
-      // font-mono(31件, next/font 絡みで別途対応)と、custom utility(grid-cols-auto-fill-*)
-      // や CSS module / inline style のクラスを弾く誤検知。この2つが片付くまでは off にする
-      // (大量警告で vite-plus が CI の stdout で panic するのを避けるため)。
+      // font-mono（next/font 絡みで別途対応）と、Playground がコンポーネント内の <style> で
+      // 定義したクラスを未知のクラスとして報告する。この2つが片付くまでは off にする
       'tailwindcss/no-unknown-classes': 'off',
     },
     overrides: [
@@ -100,24 +88,7 @@ export default defineConfig({
           ],
         },
       },
-      {
-        files: [
-          '**/*.test.ts',
-          '**/*.test.tsx',
-          '**/*.spec.ts',
-          '**/*.spec.tsx',
-          '**/*.stories.ts',
-          '**/*.stories.tsx',
-        ],
-        plugins: [...(test.plugins ?? [])],
-        rules: {
-          ...test.rules,
-          // vi.fn() を型パラメータなしで使う書き方を許容する。
-          'vitest/require-mock-type-parameters': 'off',
-          // URL バリデーションのテストで javascript: スキームを不正入力として渡すため許可する。
-          'no-script-url': 'off',
-        },
-      },
+      { files: [...TEST_GLOBS], ...test },
     ],
   },
   staged: {

@@ -1,3 +1,5 @@
+import { describe, expect, it } from 'vitest';
+
 import { BOARD_GROUPS } from './board-groups';
 import { HTML_ELEMENT_TAGS } from './elements';
 

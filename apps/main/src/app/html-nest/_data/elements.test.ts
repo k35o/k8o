@@ -1,6 +1,7 @@
 import { HTML_ELEMENTS as BASE_HTML_ELEMENTS } from '@k8o/html-nest';
 import type { HtmlElementInfo } from '@k8o/html-nest';
 import { HTML_ELEMENT_DESCRIPTIONS } from '@k8o/html-nest/descriptions';
+import { describe, expect, it } from 'vitest';
 
 import { HTML_ELEMENTS } from './elements';
 

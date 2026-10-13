@@ -1,4 +1,5 @@
 import { safeFetch } from '@repo/helpers/url/safe-fetch';
+import { describe, expect, it, vi } from 'vitest';
 
 import { extractArticleText, fetchArticleText } from './article-text';
 

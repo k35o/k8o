@@ -1,6 +1,8 @@
 import { globSync, readdirSync, readFileSync, realpathSync } from 'node:fs';
 import { dirname, join, relative, resolve } from 'node:path';
 
+import { describe, expect, it } from 'vitest';
+
 type Manifest = {
   name: string;
   dependencies?: Record<string, string>;

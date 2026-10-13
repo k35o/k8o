@@ -5,6 +5,7 @@ import { twMerge } from 'tailwind-merge';
 export const cn = (...inputs: ClassValue[]) => twMerge(clsx(inputs));
 
 if (import.meta.vitest) {
+  const { describe, expect, it } = import.meta.vitest;
   describe('cn', () => {
     it('truthyなclass名を結合する', () => {
       expect(cn('px-2', false, undefined, 'py-4')).toBe('px-2 py-4');

@@ -111,6 +111,7 @@ export const parseBaselineDataset = (raw: unknown): BaselineDataset | null => {
 };
 
 if (import.meta.vitest) {
+  const { describe, expect, it } = import.meta.vitest;
   const validFeature: BaselineFeature = {
     featureId: 'grid',
     name: 'Grid',

@@ -1,5 +1,6 @@
 import React from 'react';
 import type { FC, ReactNode } from 'react';
+import { describe, expect, it } from 'vitest';
 
 import { NOTES_ROLE } from './notes-marker';
 import { splitSlides } from './split-slides';

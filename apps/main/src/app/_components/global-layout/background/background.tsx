@@ -1,3 +1,4 @@
+import { cn } from '@repo/helpers/cn';
 import type { FC } from 'react';
 
 import styles from './background.module.css';
@@ -48,10 +49,10 @@ const Legs: FC<{ paths: string[]; dots: Dot[] }> = ({ paths, dots }) => (
 
 export const Background: FC = () => (
   <div aria-hidden="true" className={styles['background']}>
-    <div className={`${styles['corner']} ${styles['topLeft']}`}>
+    <div className={cn(styles['corner'], styles['topLeft'])}>
       <Legs paths={legPathsTopLeft} dots={dotsTopLeft} />
     </div>
-    <div className={`${styles['corner']} ${styles['bottomRight']}`}>
+    <div className={cn(styles['corner'], styles['bottomRight'])}>
       <Legs paths={legPathsBottomRight} dots={dotsBottomRight} />
     </div>
     <div className={styles['grain']} />

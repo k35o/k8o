@@ -1,3 +1,5 @@
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+
 import { fetchUserContributions } from './contributions';
 
 const fetchMock = vi.fn();

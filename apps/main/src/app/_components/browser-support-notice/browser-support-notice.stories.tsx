@@ -18,9 +18,6 @@ const FORCE_OUTDATED = {
 const meta = preview.meta({
   title: 'app/globals/browser-support-notice',
   component: BrowserSupportNotice,
-  beforeEach: () => {
-    sessionStorage.removeItem('k8o:browser-support-notice-dismissed');
-  },
 });
 
 export const Primary = meta.story({

@@ -27,7 +27,6 @@ export const isAuthorizedBearerRequest = (
 if (import.meta.vitest) {
   const { describe, expect, it } = import.meta.vitest;
 
-  // oxlint-disable-next-line unicorn/consistent-function-scoping -- テスト専用ヘルパーを本体のモジュールスコープへ出さない
   const makeRequest = (authHeader?: string): Request =>
     new Request('https://example.com/api/protected', {
       headers: authHeader === undefined ? {} : { Authorization: authHeader },

@@ -49,6 +49,7 @@ export const formatDate = (
 };
 
 if (import.meta.vitest) {
+  const { expect, it, vi } = import.meta.vitest;
   it('日付をデフォルト設定でフォーマットする', () => {
     const expected = '2022年1月1日(土)';
     vi.useFakeTimers();

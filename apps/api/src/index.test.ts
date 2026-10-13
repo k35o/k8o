@@ -1,3 +1,5 @@
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+
 import { runBrowserSupportSync } from './features/browser-support/interface/sync';
 import type { SyncSummary } from './features/browser-support/interface/sync';
 import { runArticleSync } from './features/reading-list/interface/sync';

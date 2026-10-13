@@ -1,4 +1,5 @@
 import { NextRequest } from 'next/server';
+import { describe, expect, it, vi } from 'vitest';
 
 import { createProxy } from './proxy';
 

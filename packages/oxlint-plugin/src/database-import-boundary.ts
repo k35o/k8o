@@ -1,4 +1,4 @@
-import type { ESTree, Rule } from '@oxlint/plugins';
+import type { ESTree, Rule } from 'vite-plus/lint/plugins';
 
 import { parseAppSrcPath } from './app-src-path.ts';
 

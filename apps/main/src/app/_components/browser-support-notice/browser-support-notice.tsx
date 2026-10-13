@@ -1,6 +1,7 @@
 'use client';
 
-import { Alert, useDisclosure, useSessionStorage } from '@k8ordo/ui';
+import { useAppState } from '@k8ordo/state';
+import { Alert, useDisclosure } from '@k8ordo/ui';
 import { isBrowserOutdated } from '@repo/helpers/browser/browser-support';
 import type { BrowserMinVersions } from '@repo/helpers/browser/detect-browser';
 import { useCallback } from 'react';
@@ -8,9 +9,8 @@ import type { FC, ReactNode } from 'react';
 
 import { BrowserSupportNoticeModal } from './browser-support-notice-modal';
 import { BROWSER_SUPPORT_MESSAGE } from './messages';
+import { noticeState } from './notice-state';
 import { isNoticeForced, useDetectedBrowser } from './use-detected-browser';
-
-const STORAGE_KEY = 'k8o:browser-support-notice-dismissed';
 
 const LINK_CLASS =
   'text-primary-fg cursor-pointer underline underline-offset-2';
@@ -19,8 +19,7 @@ export const BrowserSupportNotice: FC<{
   minVersions: BrowserMinVersions;
 }> = ({ minVersions }) => {
   const detected = useDetectedBrowser();
-  // 一度閉じたらそのセッション中は再表示しない(SessionStorage)。
-  const [dismissed, setDismissed] = useSessionStorage(STORAGE_KEY, false);
+  const [{ dismissed }, updateNotice] = useAppState(noticeState);
   const modal = useDisclosure();
 
   // Alert.action.renderItem はレンダー毎に新規定義すると lint(nested components)に
@@ -51,7 +50,7 @@ export const BrowserSupportNotice: FC<{
         closeLabel="この通知を閉じる"
         message={BROWSER_SUPPORT_MESSAGE}
         onClose={() => {
-          setDismissed(true);
+          updateNotice({ dismissed: true });
         }}
         tone="warning"
       />

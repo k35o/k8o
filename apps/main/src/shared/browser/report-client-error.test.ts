@@ -1,3 +1,5 @@
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+
 import { reportClientError } from './report-client-error';
 
 const fetchMock = vi.fn<typeof fetch>();

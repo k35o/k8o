@@ -1,4 +1,5 @@
 import type { Element, Nodes, Root, Text } from 'hast';
+import { describe, expect, it } from 'vitest';
 
 import { GROUP_TAG, groupAdjacentCodeBlocks } from './group.ts';
 

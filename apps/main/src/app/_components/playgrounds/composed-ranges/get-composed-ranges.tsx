@@ -55,7 +55,7 @@ export function GetComposedRanges() {
                 <Code>range.startOffset</Code>
               </p>
               <p>
-                {`${ranges[0].startContainer.textContent}, ${ranges[0].startOffset}`}
+                {`${ranges[0].startContainer.textContent ?? ''}, ${ranges[0].startOffset}`}
               </p>
             </div>
             <div className="flex flex-col gap-2">
@@ -64,7 +64,7 @@ export function GetComposedRanges() {
                 <Code>range.endOffset</Code>
               </p>
               <p>
-                {`${ranges[0].endContainer.textContent}, ${ranges[0].endOffset}`}
+                {`${ranges[0].endContainer.textContent ?? ''}, ${ranges[0].endOffset}`}
               </p>
             </div>
           </div>
@@ -78,7 +78,7 @@ export function GetComposedRanges() {
                 <Code>range.startOffset</Code>
               </p>
               <p>
-                {`${ranges[1].startContainer.textContent}, ${ranges[1].startOffset}`}
+                {`${ranges[1].startContainer.textContent ?? ''}, ${ranges[1].startOffset}`}
               </p>
             </div>
             <div>
@@ -87,7 +87,7 @@ export function GetComposedRanges() {
                 <Code>range.endOffset</Code>
               </p>
               <p>
-                {`${ranges[1].endContainer.textContent}, ${ranges[1].endOffset}`}
+                {`${ranges[1].endContainer.textContent ?? ''}, ${ranges[1].endOffset}`}
               </p>
             </div>
           </div>
@@ -101,7 +101,7 @@ export function GetComposedRanges() {
                 <Code>range.startOffset</Code>
               </p>
               <p>
-                {`${ranges[2].startContainer.textContent}, ${ranges[2].startOffset}`}
+                {`${ranges[2].startContainer.textContent ?? ''}, ${ranges[2].startOffset}`}
               </p>
             </div>
             <div>
@@ -110,7 +110,7 @@ export function GetComposedRanges() {
                 <Code>range.endOffset</Code>
               </p>
               <p>
-                {`${ranges[2].endContainer.textContent}, ${ranges[2].endOffset}`}
+                {`${ranges[2].endContainer.textContent ?? ''}, ${ranges[2].endOffset}`}
               </p>
             </div>
           </div>

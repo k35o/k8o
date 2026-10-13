@@ -1,7 +1,7 @@
 import withMdx from '@next/mdx';
 import type { NextConfig } from 'next';
 
-const isDev = process.env['NODE_ENV'] === 'development';
+const isDev = process.env.NODE_ENV === 'development';
 
 const trustedTypePolicyNames = 'nextjs nextjs#bundler goog#html lit-html';
 
@@ -104,7 +104,7 @@ const nextConfig: NextConfig = {
       },
     ]),
   compiler: {
-    removeConsole: process.env['NODE_ENV'] === 'production' && {
+    removeConsole: process.env.NODE_ENV === 'production' && {
       exclude: ['error', 'warn'],
     },
   },

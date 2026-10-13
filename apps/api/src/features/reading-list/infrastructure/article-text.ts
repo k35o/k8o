@@ -20,8 +20,8 @@ export const extractArticleText = (html: string): string => {
   for (const element of document.querySelectorAll(NON_ARTICLE_SELECTOR)) {
     element.remove();
   }
-  // textContent は段落や見出しの境目に区切りを入れず、文や単語がつながってしまう
   const article = new Readability(document, {
+    // oxlint-disable-next-line unicorn/prefer-dom-node-text-content -- textContent は段落や見出しの境目に区切りを入れず、文や単語がつながってしまう
     serializer: (node) => (node as HTMLElement).innerText,
   }).parse();
   return (article?.content ?? '').replaceAll(/\s+/gu, ' ').trim();
@@ -36,7 +36,6 @@ const readTextWithLimit = async (response: Response): Promise<string> => {
   let text = '';
   let bytes = 0;
   while (bytes < MAX_HTML_BYTES) {
-    // oxlint-disable-next-line eslint/no-await-in-loop -- ストリームは順に読むしかない
     const { done, value } = await reader.read();
     if (done) {
       return text + decoder.decode();

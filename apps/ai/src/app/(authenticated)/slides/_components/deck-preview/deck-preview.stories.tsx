@@ -174,14 +174,14 @@ export const Highlighted = meta.story({
       await canvas.findByRole('heading', { level: 2, name: 'コードの見た目' }),
     ).toBeInTheDocument();
     // デッキ単位で取得したハイライトがコードブロックに適用される（キー照合を含む検証）。
-    await waitFor(() => {
+    await waitFor(async () => {
       const token = canvasElement.querySelector('pre code span');
-      expect(token).not.toBeNull();
-      expect(token).toHaveStyle({ color: '#e6edf3' });
+      await expect(token).not.toBeNull();
+      await expect(token).toHaveStyle({ color: '#e6edf3' });
     });
     // 印刷用ポータル（DeckPrint）にも同じハイライトが行き渡る。
-    await waitFor(() => {
-      expect(
+    await waitFor(async () => {
+      await expect(
         document.body.querySelector('[data-slide-print] pre code span'),
       ).not.toBeNull();
     });
@@ -223,8 +223,8 @@ export const RehighlightOnHighlighterChange = meta.story({
     const canvas = within(canvasElement);
     await userEvent.click(canvas.getByRole('button', { name: '次のスライド' }));
     await userEvent.click(canvas.getByRole('button', { name: '次のスライド' }));
-    await waitFor(() => {
-      expect(canvasElement.querySelector('pre code span')).toHaveStyle({
+    await waitFor(async () => {
+      await expect(canvasElement.querySelector('pre code span')).toHaveStyle({
         color: '#e6edf3',
       });
     });
@@ -233,8 +233,8 @@ export const RehighlightOnHighlighterChange = meta.story({
     // Promise 解決後の再開が流れず、実ブラウザでは通る切替がここだけ止まるため、
     // 切替の発火はネイティブの click で行う。
     canvas.getByRole('button', { name: 'テーマ切替' }).click();
-    await waitFor(() => {
-      expect(canvasElement.querySelector('pre code span')).toHaveStyle({
+    await waitFor(async () => {
+      await expect(canvasElement.querySelector('pre code span')).toHaveStyle({
         color: '#ffd7a0',
       });
     });

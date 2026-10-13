@@ -1,3 +1,5 @@
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+
 import { publicApi } from './public-api';
 
 const fetchMock = vi.fn<typeof fetch>();

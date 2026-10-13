@@ -8,7 +8,6 @@ export const mapWithConcurrency = async <T, R>(
 
   const worker = async (): Promise<void> => {
     for (const [index, item] of iterator) {
-      // oxlint-disable-next-line eslint/no-await-in-loop -- ワーカープールでは各ワーカーが逐次 await することで同時実行数を制限する
       results[index] = await fn(item, index);
     }
   };
@@ -24,6 +23,7 @@ export const mapWithConcurrency = async <T, R>(
 };
 
 if (import.meta.vitest) {
+  const { describe, expect, it } = import.meta.vitest;
   describe('mapWithConcurrency', () => {
     describe('正常系', () => {
       it('入力と同じ順序で結果を返す', async () => {

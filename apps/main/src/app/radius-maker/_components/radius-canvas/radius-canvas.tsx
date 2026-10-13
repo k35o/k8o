@@ -1,4 +1,3 @@
-/* oxlint-disable jsx-a11y/prefer-tag-over-role -- 枠線上を自由に動くドラッグハンドルはinput[type=range]では表現できないため、WAI-ARIAのsliderパターンで実装する */
 'use client';
 
 import { cn } from '@repo/helpers/cn';
@@ -179,6 +178,8 @@ export const RadiusCanvas: FC<Props> = ({
         {HANDLES.map(({ corner, axis }) => {
           const value = corners[corner][axis];
           const active = isActive(corner, axis);
+          // 枠線上を自由に動くドラッグハンドルは input[type=range] では表現できないため、
+          // WAI-ARIA の slider パターンで実装する
           return (
             <div
               aria-label={`${CORNER_LABELS[corner]}の${AXIS_LABELS[axis]}方向の丸み`}

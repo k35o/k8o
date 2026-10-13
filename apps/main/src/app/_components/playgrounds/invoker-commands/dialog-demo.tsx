@@ -1,5 +1,3 @@
-/* oxlint-disable react/no-unknown-property -- Baseline 2025 の Invoker Commands API 属性をデモするため */
-
 export function DialogDemo() {
   return (
     <div className="space-y-4">

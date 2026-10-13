@@ -106,7 +106,7 @@ export const checkBaselineInvariants = ({
 };
 
 if (import.meta.vitest) {
-  // oxlint-disable-next-line unicorn/consistent-function-scoping -- テスト専用ファクトリを本番コードのスコープに出さない
+  const { describe, expect, it } = import.meta.vitest;
   const makeDataset = (
     overrides: Partial<BaselineDataset> = {},
   ): BaselineDataset => ({
@@ -118,7 +118,6 @@ if (import.meta.vitest) {
     ...overrides,
   });
 
-  // oxlint-disable-next-line unicorn/consistent-function-scoping -- テスト専用ファクトリを本番コードのスコープに出さない
   const makeFeatures = (count: number, status: 'widely' | 'newly' = 'widely') =>
     Array.from({ length: count }, (_, i) => ({
       featureId: i === 0 ? 'flexbox' : i === 1 ? 'grid' : `feat-${String(i)}`,

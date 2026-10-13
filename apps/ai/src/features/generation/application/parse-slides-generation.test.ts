@@ -1,3 +1,5 @@
+import { describe, expect, it } from 'vitest';
+
 import { parseSlidesGeneration } from './parse-slides-generation';
 
 const DECK = [
