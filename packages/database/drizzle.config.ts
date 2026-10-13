@@ -4,12 +4,14 @@ import { defineConfig } from 'drizzle-kit';
 const projectDir = process.cwd();
 loadEnvConfig(projectDir);
 
+const authToken = process.env['K8O_TURSO_AUTH_TOKEN'];
+
 export default defineConfig({
   schema: './src/schema',
   out: './migrations',
   dialect: 'turso',
   dbCredentials: {
     url: process.env['K8O_TURSO_DATABASE_URL'] ?? '',
-    authToken: process.env['K8O_TURSO_AUTH_TOKEN'],
+    ...(authToken !== undefined && authToken !== '' ? { authToken } : {}),
   },
 });
