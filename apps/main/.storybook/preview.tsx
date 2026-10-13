@@ -137,7 +137,7 @@ export default definePreview({
     addonDocs,
     addonMsw(async () => {
       const worker = setupWorker(...handlers);
-      await worker.start({ onUnhandledRequest: 'bypass', quiet: true });
+      await worker.start({ onUnhandledFrame: 'bypass', quiet: true });
       return worker;
     }),
     addonMockDate(),
