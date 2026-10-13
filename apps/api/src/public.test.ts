@@ -720,6 +720,67 @@ describe('公開 API', () => {
         expect(insertReports).not.toHaveBeenCalled();
       });
 
+      it.each([
+        ['type が 65 字の', { type: 'a'.repeat(65) }],
+        ['url が 2049 字の', { url: `https://k8o.me/${'a'.repeat(2034)}` }],
+        ['user_agent が 513 字の', { user_agent: 'a'.repeat(513) }],
+        [
+          'body が JSON で 8193 字の',
+          { body: { sample: 'a'.repeat(8193 - '{"sample":""}'.length) } },
+        ],
+      ])(
+        '%sレポートは捨て、ほかのレポートだけを保存して 204 を返す',
+        async (_, override) => {
+          const res = await sendReports([
+            { ...CSP_REPORT, ...override },
+            CSP_REPORT,
+          ]);
+
+          expect(res.status).toBe(204);
+          expect(insertReports).toHaveBeenCalledWith([
+            {
+              type: CSP_REPORT.type,
+              url: CSP_REPORT.url,
+              body: CSP_REPORT.body,
+            },
+          ]);
+        },
+      );
+
+      it('51 件を送ったら、先頭の 50 件だけを保存して 204 を返す', async () => {
+        const reports = Array.from({ length: 51 }, (_, i) => ({
+          ...CSP_REPORT,
+          url: `https://k8o.me/${i}`,
+        }));
+
+        const res = await sendReports(reports);
+
+        expect(res.status).toBe(204);
+        expect(insertReports).toHaveBeenCalledWith(
+          reports.slice(0, 50).map(({ type, url, body }) => ({
+            type,
+            url,
+            body,
+          })),
+        );
+      });
+
+      it('すべてが上限を超えていても 204 を返し、何も保存しない', async () => {
+        const res = await sendReports([
+          { ...CSP_REPORT, type: 'a'.repeat(65) },
+        ]);
+
+        expect(res.status).toBe(204);
+        expect(insertReports).toHaveBeenCalledWith([]);
+      });
+
+      it('配列でなければ 400 にして保存しない', async () => {
+        const res = await sendReports(CSP_REPORT);
+
+        expect(res.status).toBe(400);
+        expect(insertReports).not.toHaveBeenCalled();
+      });
+
       // 410 はブラウザに送り先を消させるので返さない。保存の失敗は送り直してもらう
       it('保存に失敗したら 500 を返す', async () => {
         vi.mocked(insertReports).mockRejectedValue(new Error('db down'));
@@ -735,6 +796,23 @@ describe('公開 API', () => {
         const res = await sendReports([]);
 
         expect(res.status).toBe(204);
+      });
+
+      it('どの項目も上限ちょうどのレポートは保存する', async () => {
+        const report = {
+          ...CSP_REPORT,
+          type: 'a'.repeat(64),
+          url: `https://k8o.me/${'a'.repeat(2033)}`,
+          user_agent: 'a'.repeat(512),
+          body: { sample: 'a'.repeat(8192 - '{"sample":""}'.length) },
+        };
+
+        const res = await sendReports([report]);
+
+        expect(res.status).toBe(204);
+        expect(insertReports).toHaveBeenCalledWith([
+          { type: report.type, url: report.url, body: report.body },
+        ]);
       });
     });
   });
