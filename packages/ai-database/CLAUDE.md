@@ -17,4 +17,6 @@ pnpm run -F @repo/ai-database generate  # スキーマの変更からマイグ�
 
 本番（Turso の `ai`）には `.github/workflows/vercel-prebuilt.yml` の migrate ジョブが、どのアプリのビルドよりも先に流す。preview（`ai-preview`）には、ai の deploy ジョブがビルドの前に流す。ローカル用の DB は用意していない。
 
+ほかのブランチとマイグレーションの番号が衝突したら、番号を手で付け替えず、generate で作り直す。付け替えると `_journal.json` の `when` が古いまま残り、migrate がエラーを出さずにそのマイグレーションを飛ばす（CI が落とす）。
+
 preview の ai は認証が OFF で、id が `local` の user として書き込む。libSQL は外部キーを強制するので、`ai-preview` には id が `local` の user 行を入れておく。

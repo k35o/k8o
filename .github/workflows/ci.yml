@@ -60,6 +60,18 @@ jobs:
             exit 1
           fi
 
+      - name: Check migration journal timestamps are increasing
+        run: |
+          failed=0
+          for journal in packages/database/migrations/meta/_journal.json packages/ai-database/migrations/meta/_journal.json; do
+            errors=$(jq -r --arg f "$journal" '.entries | sort_by(.idx) | . as $e | range(1; length) | $e[.] as $cur | select($cur.when <= $e[. - 1].when) | "::error file=\($f)::idx \($cur.idx)（\($cur.tag)）の when が直前のエントリより大きくなく、migrate がこのマイグレーションを飛ばす。番号を手で付け替えず generate で作り直す"' "$journal")
+            if [ -n "$errors" ]; then
+              echo "$errors"
+              failed=1
+            fi
+          done
+          exit "$failed"
+
   test:
     runs-on: ubuntu-latest
     timeout-minutes: 10
