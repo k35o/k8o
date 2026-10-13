@@ -13,7 +13,7 @@ Drizzle ORM + Turso (libSQL) のDBクライアントとスキーマを提供す�
 
 ## 接続
 
-`K8O_TURSO_DATABASE_URL` / `K8O_TURSO_AUTH_TOKEN` でつなぐ（Turso の本番は `k8o`、preview は `k8o-preview`）。トークンは使う側ごとに分ける。本番の main は読み取り専用、api と CI の migrate は読み書き。preview は main の deploy ジョブが migrate するので、main にも読み書きのトークンを渡す。Turso の starter はグループが1つなので、`turso db tokens invalidate` は ai の DB のトークンもまとめて失効させる。
+`K8O_TURSO_DATABASE_URL` / `K8O_TURSO_AUTH_TOKEN` でつなぐ（Turso の本番は `k8o`、preview は `k8o-preview`）。トークンは使う側ごとに分ける。本番の main は読み取り専用、api と CI の migrate は読み書き。preview は main の deploy ジョブが migrate するので、main にも読み書きのトークンを渡す。DB は Turso の default グループにあり、`turso db tokens invalidate` は使えない。失効は `turso group tokens invalidate default` で、ai の DB のトークンもまとめて失効する（starter はグループが1つ）。
 
 ## マイグレーション
 
