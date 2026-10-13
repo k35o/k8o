@@ -40,8 +40,8 @@ const toHeaderValue = (policy: string): string =>
   policy.replaceAll(/\s{2,}/gu, ' ').trim();
 
 const nextConfig: NextConfig = {
-  reactStrictMode: true,
   reactCompiler: true,
+  poweredByHeader: false,
   allowedDevOrigins: ['main.k8o.localhost', '*.main.k8o.localhost'],
   pageExtensions: ['tsx', 'mdx', 'ts'],
   rewrites: () =>
@@ -103,15 +103,6 @@ const nextConfig: NextConfig = {
         ],
       },
     ]),
-  redirects: () =>
-    Promise.resolve([
-      // 旧 /baseline は /browser-support へ恒久リダイレクト（既存リンク・ブックマーク互換）
-      {
-        source: '/baseline',
-        destination: '/browser-support',
-        permanent: true,
-      },
-    ]),
   compiler: {
     removeConsole: process.env['NODE_ENV'] === 'production' && {
       exclude: ['error', 'warn'],
@@ -129,11 +120,7 @@ const nextConfig: NextConfig = {
     // 16.3 では og-image ルートの prerender が "use cache called after prerender
     // ended" のレースで稀に失敗するため、ページ単位のリトライで緩和する
     staticGenerationRetryCount: 3,
-    // Storybook (nextjs-vite) が Turbopack 外で config を読むと検証で落ちるため、
-    // next CLI (Turbopack) 実行時だけ有効化する
-    ...(process.env['TURBOPACK'] === undefined
-      ? {}
-      : { turbopackRustReactCompiler: true }),
+    turbopackRustReactCompiler: true,
   },
 };
 
