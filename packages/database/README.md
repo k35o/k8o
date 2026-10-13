@@ -56,49 +56,6 @@ pnpm run -F @repo/database build:erd
 
 ```mermaid
 erDiagram
-  account {
-    text id PK
-    text account_id
-    text provider_id
-    text user_id FK
-    text access_token
-    text refresh_token
-    text id_token
-    integer access_token_expires_at
-    integer refresh_token_expires_at
-    text scope
-    text password
-    integer created_at
-    integer updated_at
-  }
-  ai_project_versions {
-    integer id PK
-    integer project_id FK
-    integer parent_id
-    text content
-    text created_at
-  }
-  ai_projects {
-    integer id PK
-    text app
-    text user_id FK
-    text title
-    text slug UK
-    text visibility
-    integer fork_of
-    integer published_version_id
-    text created_at
-    text updated_at
-  }
-  ai_usages {
-    integer id PK
-    text app
-    text user_id FK
-    text kind
-    integer input_tokens
-    integer output_tokens
-    text created_at
-  }
   article_sources {
     integer id PK
     text title
@@ -208,16 +165,6 @@ erDiagram
     text body
     text created_at
   }
-  session {
-    text id PK
-    integer expires_at
-    text token UK
-    integer created_at
-    integer updated_at
-    text ip_address
-    text user_agent
-    text user_id FK
-  }
   slide_tag {
     integer slide_id FK
     integer tag_id FK
@@ -246,24 +193,6 @@ erDiagram
     text slide_url
     integer blog_id FK
   }
-  user {
-    text id PK
-    text name
-    text email UK
-    integer email_verified
-    text image
-    integer created_at
-    integer updated_at
-  }
-  verification {
-    text id PK
-    text identifier
-    text value
-    integer expires_at
-    integer created_at
-    integer updated_at
-  }
-  ai_projects ||--o{ ai_project_versions : "project_id"
   article_sources ||--o{ articles : "article_source_id"
   blogs ||--o{ blog_comment : "blog_id"
   blogs ||--o{ blog_tag : "blog_id"
@@ -277,10 +206,6 @@ erDiagram
   tags ||--o{ slide_tag : "tag_id"
   tags ||--o{ talk_tag : "tag_id"
   talks ||--o{ talk_tag : "talk_id"
-  user ||--o{ account : "user_id"
-  user ||--o{ ai_projects : "user_id"
-  user ||--o{ ai_usages : "user_id"
-  user ||--o{ session : "user_id"
 ```
 <!-- ERD:END -->
 
