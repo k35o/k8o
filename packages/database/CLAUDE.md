@@ -13,7 +13,7 @@ Drizzle ORM + Turso (libSQL) のDBクライアントとスキーマを提供す�
 
 ## 接続
 
-`K8O_TURSO_DATABASE_URL` / `K8O_TURSO_AUTH_TOKEN` でつなぐ（Turso の本番は `k8o`、preview は `k8o-preview`）。トークンは使う側ごとに分ける。本番の main は読み取り専用、api と CI の migrate は読み書き。preview は main の deploy ジョブが migrate するので、main にも読み書きのトークンを渡す。Turso の starter はグループが1つなので、`turso db tokens invalidate` は ai の DB のトークンもまとめて失効させる。
+`K8O_TURSO_DATABASE_URL` / `K8O_TURSO_AUTH_TOKEN` でつなぐ（Turso の本番は `k8o`、preview は `k8o-preview`）。トークンは使う側ごとに分ける。本番の main は読み取り専用、api と CI の migrate は読み書き。preview は main の deploy ジョブが migrate するので、main にも読み書きのトークンを渡す。DB は Turso の default グループにあり、`turso db tokens invalidate` は使えない。失効は `turso group tokens invalidate default` で、ai の DB のトークンもまとめて失効する（starter はグループが1つ）。
 
 ## マイグレーション
 
@@ -30,7 +30,7 @@ pnpm run -F @repo/database migrate   # ローカルの DB に流す
 
 ### コンテンツ系の seed INSERT は id を書かない
 
-blogs / slides / talks / tags のようにコンテンツを seed する INSERT では、**id を手で振らない**こと。本番には過去に管理画面から autoincrement で採番した行があり、id を固定すると**衝突して `migrate` が失敗する**。
+blogs / slides / talks / tags のようにコンテンツを seed する INSERT では、**id を手で振らない**こと。本番にはマイグレーションの外で autoincrement 採番された行があり、id を固定すると**衝突して `migrate` が失敗する**。
 
 - 自然キー（tags は `name`、blogs / slides は `slug`）で挿入し、`ON CONFLICT (...) DO NOTHING` で冪等にする
 - 関連テーブル（blog_tag 等）は id を直書きせず `(SELECT id FROM tags WHERE name = '...')` のようにキーで引く
