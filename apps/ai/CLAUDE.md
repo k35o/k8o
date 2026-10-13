@@ -30,6 +30,8 @@ Better Auth + GitHub OAuth（`@repo/ai-database/auth`）。**本人のみ**利�
 
 LLM（Claude API）は課金が発生するため、**課金が発生する全 API route / server action の先頭で `shared/auth/require-allowed-session.ts` を呼び、未許可は弾く（API route は 401 を返し、server action は null・空配列・false などを返す）**こと（`src/proxy.ts` は matcher で `/api` を外しているため必須の防御層）。
 
+生成回数の上限（アプリと利用者ごとに1時間あたり `AI_GENERATE_LIMIT_PER_HOUR` 回）は `ai_usages` の行で数える。Claude を呼ぶ経路は、呼ぶ前に `reserveGenerationUsage`（`generation/infrastructure/usage-repository.ts`）で行を予約し、予約できなければ 429 で断る。トークン数は `streamText` の `onEnd` と `onAbort` で、予約した行へあとから書き込む。
+
 認証の実装は `@repo/auth-shell`（`packages/auth-shell/CLAUDE.md`）にある。認証まわりを直すときはそちらを直し、ai 側にコピーを作らない。認証の有効/無効は `@repo/auth-shell/auth-enabled` に集約。Vercel preview は認証OFF（= preview URL は課金の開き戸になるため、ai プロジェクトには Vercel Deployment Protection を併用する）。
 
 ローカル開発URLは `https://ai.k8o.localhost/`。`LOCAL_AUTH_BYPASS=true`（`.env.local`, NODE_ENV=development のときのみ）でログインを省略できる。

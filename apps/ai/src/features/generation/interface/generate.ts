@@ -7,6 +7,7 @@ import {
   toUIMessageStream,
 } from 'ai';
 import type { UIMessage } from 'ai';
+import { after } from 'next/server';
 import * as z from 'zod/mini';
 
 import { requireAllowedSession } from '@/shared/auth/require-allowed-session';
@@ -22,15 +23,13 @@ import {
   stripDataParts,
   withEditContext,
 } from '../application/prompt-messages';
-import {
-  generationLimit,
-  isOverLimit,
-  windowStartIso,
-} from '../application/rate-limit';
+import { generationLimit, windowStartIso } from '../application/rate-limit';
+import { sumStepTokens } from '../application/step-tokens';
+import type { StepUsage } from '../application/step-tokens';
 import { getGenerationModel } from '../infrastructure/claude-provider';
 import {
-  countRecentGenerations,
-  insertGenerationUsage,
+  reserveGenerationUsage,
+  updateGenerationUsageTokens,
 } from '../infrastructure/usage-repository';
 
 const bodySchema = z.object({
@@ -68,16 +67,6 @@ export async function handleGenerate(req: Request): Promise<Response> {
     parsed.data;
   const app = mode === 'slides' ? ('slides' as const) : ('ui-studio' as const);
 
-  // userId 単位のレート制限（スライディング1時間ウィンドウ）。暴走時のコストを抑える。
-  const recent = await countRecentGenerations({
-    app,
-    userId: session.userId,
-    sinceIso: windowStartIso(Date.now()),
-  });
-  if (isOverLimit(recent, generationLimit())) {
-    return new Response('Rate limit exceeded', { status: 429 });
-  }
-
   const editBase = isNonEmptySpec(currentSpec) ? currentSpec : null;
   const uiMessages =
     app === 'ui-studio'
@@ -91,6 +80,28 @@ export async function handleGenerate(req: Request): Promise<Response> {
   } catch {
     return new Response(null, { status: 400 });
   }
+
+  // userId 単位のレート制限（スライディング1時間ウィンドウ）。暴走時のコストを抑える。
+  // 中断した生成も数えるよう、Claude を呼ぶ前に利用の行を予約する
+  const now = Date.now();
+  const usageId = await reserveGenerationUsage({
+    app,
+    userId: session.userId,
+    createdAt: new Date(now).toISOString(),
+    sinceIso: windowStartIso(now),
+    limit: generationLimit(),
+  });
+  if (usageId === null) {
+    return new Response('Rate limit exceeded', { status: 429 });
+  }
+
+  // onAbort には終わったステップしか渡らないので、onEnd もステップから数えて同じ処理にする。
+  // 応答を返したあとに関数が止まっても書き込みが欠けないよう after に載せる
+  const recordTokens = ({ steps }: { steps: readonly StepUsage[] }): void => {
+    after(
+      updateGenerationUsageTokens({ id: usageId, ...sumStepTokens(steps) }),
+    );
+  };
 
   const result = streamText({
     model: getGenerationModel(model ?? DEFAULT_GENERATION_MODEL),
@@ -113,15 +124,8 @@ export async function handleGenerate(req: Request): Promise<Response> {
     onError: ({ error }) => {
       console.error('生成エラー', error);
     },
-    onEnd: ({ usage }) => {
-      // レート制限のカウント源なので利用量を記録する。
-      void insertGenerationUsage({
-        app,
-        userId: session.userId,
-        inputTokens: usage.inputTokens ?? null,
-        outputTokens: usage.outputTokens ?? null,
-      });
-    },
+    onEnd: recordTokens,
+    onAbort: recordTokens,
   });
 
   const uiStream = toUIMessageStream({
