@@ -17,9 +17,6 @@ const nextConfig: NextConfig = {
   experimental: {
     typedEnv: true,
     useOffline: true,
-    // 16.3 では og-image ルートの prerender が "use cache called after prerender
-    // ended" のレースで稀に失敗するため、ページ単位のリトライで緩和する
-    staticGenerationRetryCount: 3,
     turbopackRustReactCompiler: true,
   },
 };
