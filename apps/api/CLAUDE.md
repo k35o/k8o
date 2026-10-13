@@ -23,6 +23,7 @@ k8o の API。Hono で書き、Vercel にデプロイする（本番ドメイン
 - 検証は zod/mini を `hono/validator` の中で呼ぶ。ルートが返すエラーは `{ ok: false, error: '<code>' }` とステータスだけにし、利用者に見せる文言は main に置く。ミドルウェアと hono 自身が返すエラー（csrf の 403、未定義のパスの 404、壊れた JSON の 400）はテキストで返るので、呼ぶ側は `res.ok` で成否を見る
 - 本文は 64KB まで。想定外の例外は中身を出さずに 500 を返す
 - `/public/reports` は、main の Reporting-Endpoints を通してブラウザの Reporting API が送る CSP 違反と、main のクライアントのエラーを受ける。Reporting API は `application/reports+json` の配列を送り、Chromium と Firefox は別オリジンなのでプリフライトを経る（Chromium は毎回）。410 は Firefox に送り先を消させるので、どの場合も返さない（Chromium は 2xx 以外をすべて送り直す）。Safari は CSP 違反を `application/csp-report` の単一オブジェクトで、プリフライトなしで送る。JSON 系の Content-Type でないので `validator('json')` が本文を読まず 400 になり、受けていない
+- `/public/reports` は1件ごとに `type` 64字、`url` 2048字、`user_agent` 512字、`body` を JSON にして 8192字までを受け、超えたレポートは捨てる。1回のリクエストで保存するのは、残りのうち先頭の 50件まで。捨てたときも 204 を返す。配列でない・必須のキーが無いといった形の誤りは 400
 
 ## MCP
 

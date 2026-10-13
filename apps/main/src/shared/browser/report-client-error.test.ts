@@ -92,6 +92,17 @@ describe('reportClientError', () => {
   });
 
   describe('エッジケース', () => {
+    it('メッセージは 1024 文字で切る', async () => {
+      reportClientError(new Error('a'.repeat(2000)));
+
+      await vi.waitFor(() => {
+        expect(fetchMock).toHaveBeenCalledOnce();
+      });
+      expect(sentRequest().body).toMatchObject([
+        { body: { message: 'a'.repeat(1024) } },
+      ]);
+    });
+
     it('スタックは 4096 文字で切る', async () => {
       reportClientError(createError('a'.repeat(5000)));
 
