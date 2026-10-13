@@ -33,6 +33,13 @@ const meta = preview.meta({
       browserSubscription,
     );
   },
+  // 送信中はボタンが無効になってフォーカスを失うことがあり、応答の速さでフォーカスの枠が
+  // 出たり出なかったりする。VRT の撮影をそろえるため、最後にフォーカスを外す
+  afterEach: () => {
+    if (document.activeElement instanceof HTMLElement) {
+      document.activeElement.blur();
+    }
+  },
 });
 
 export const Subscribe = meta.story({
