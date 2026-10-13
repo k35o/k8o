@@ -305,6 +305,7 @@ describe('syncArticles', () => {
       vi.mocked(fetchFeedItems).mockResolvedValue([
         {
           title: 'XSS を狙う記事',
+          // oxlint-disable-next-line no-script-url -- 弾かれる不正入力として渡す
           link: 'javascript:alert(1)',
           publishedAt: '2026-03-10T00:00:00Z',
         },
