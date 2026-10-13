@@ -6,7 +6,7 @@
 
 ### 1. DB にレコードを追加
 
-`packages/database/migrations/` に custom migration を追加 (`drizzle-kit generate:custom`)。`slides` テーブルに 1 行 insert する。
+`packages/database/migrations/` に custom migration を追加 (`pnpm run -F @repo/database generate:custom`)。`slides` テーブルに 1 行 insert する。
 
 `id` は手で振らず、自然キー (`slug`) で `ON CONFLICT DO NOTHING` を使う (autoincrement で採番済みの行と衝突させないため。詳細は `packages/database/CLAUDE.md`)。
 
@@ -133,7 +133,7 @@ import {
 - 全スライドが 1 枚 1 ページ (16:9) で出力される
 - `print-color-adjust: exact` により、**表示中のテーマの配色** (背景・シンタックスハイライト等) をそのまま引き継ぐ。ダークテーマ表示中はダークのまま出力される
 - 印刷用の描画は `_components/slide-deck/deck-print` が担当し、`body` 直下へ portal して他のサイト要素を `@media print` で隠す
-- Chrome (v136 未満) 向けに `-webkit-print-color-adjust` も併記済み。ダイアログの「背景のグラフィック」設定に依存せず色が出る
+- Chrome (v136 未満) 向けに `-webkit-print-color-adjust` も併記している。ダイアログの「背景のグラフィック」設定に依存せず色が出る
 
 ## 表示の中身
 
@@ -155,6 +155,7 @@ apps/main/src/app/slides/
 │   ├── slide-mdx/              writer 向け JSX 部品
 │   ├── slide-deck/             デッキ実装 (viewer / presenter / stage / hooks 等)
 │   └── slide-card/             /slides 一覧用カード
+├── _utils/                     スライド分割と Notes の識別 (split-slides / notes-marker)
 ├── feed/                       RSS feed
 ├── layout.tsx                  /slides 共通レイアウト
 ├── opengraph-image.tsx

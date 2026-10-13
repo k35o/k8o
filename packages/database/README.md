@@ -17,10 +17,12 @@ k8o の DB（api が持ち主）のコードをまとめたパッケージです
 packages/database/
 ├── src/
 │   ├── db.ts           # アプリケーション用の DB エクスポート
+│   ├── orm.ts          # drizzle-orm の再エクスポート
 │   ├── utils.ts        # DB 操作の補助ユーティリティ
 │   ├── schema/         # Drizzle のスキーマ定義
 │   └── __mocks__/      # Storybook / テスト向けのモック実装
 ├── migrations/         # drizzle-kit が生成するマイグレーション
+├── scripts/            # ローカル DB の起動と ER 図の生成
 ├── drizzle.config.ts   # drizzle-kit 設定
 └── package.json
 ```
@@ -30,6 +32,10 @@ packages/database/
 - `@repo/database`
   - 通常実行時は `src/db.ts`
   - `storybook` 条件では `src/__mocks__/db.ts`
+- `@repo/database/orm`
+  - `src/orm.ts`（drizzle-orm の再エクスポート）
+- `@repo/database/schema`
+  - `src/schema/public.ts`（DB クライアントに依存しない型と定数）
 
 詳細は [`package.json`](./package.json) を参照してください。
 
@@ -212,6 +218,6 @@ erDiagram
 ## 運用方針
 
 - スキーマ変更は `src/schema/` を更新し、必要に応じてマイグレーションを生成します。
-- テーブル定義やカラム一覧を README に手書きしません。下の ER 図セクションは `build:erd` による自動生成で、マーカー間を直接編集しません。
+- テーブル定義やカラム一覧を README に手書きしません。上の ER 図セクションは `build:erd` による自動生成で、マーカー間を直接編集しません。
 - 現在の正確な構造は `src/schema/` と `migrations/` を一次情報とします。
 - スキーマを変更したら `pnpm run -F @repo/database build:erd` で README の ER 図を更新します。

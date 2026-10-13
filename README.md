@@ -47,7 +47,8 @@ pnpm -F @repo/database db:status   # 稼働状況の確認
 - `apps/main` - Next.js (App Router)
 - `apps/ai` - Next.js AI ツール群 (Better Auth + GitHub OAuth)
 - `apps/api` - Hono の API（api.k8o.me。Vercel Cron の同期など）
-- `packages/database` - Drizzle ORM + Turso (libSQL)
+- `packages/database` - k8o の DB（Drizzle ORM + Turso (libSQL)）
+- `packages/ai-database` - ai の DB（認証と ai_*。Drizzle ORM + Turso (libSQL)）
 - `packages/helpers` - ユーティリティ関数
 - `@k8ordo/ui` - UIコンポーネント ([npm](https://www.npmjs.com/package/@k8ordo/ui))
 
@@ -58,7 +59,7 @@ pnpm -F @repo/database db:status   # 稼働状況の確認
 - `shared/` - アプリ内で横断利用する非UI共通処理
 - `packages/helpers` - アプリ非依存の純粋helper。`cn` もここに置く
 
-`@repo/database` の import 境界は、oxc 移行時に lint ルールとして固定する予定です。現時点では `app` から直接 DB を読まず、`features/*/interface` か `features/*/application` に寄せます。
+DB のパッケージ（`@repo/database`・`@repo/ai-database`）を import できるのは `features/*/infrastructure` と、小さな読み取りに限り `features/*/application` です。`app` や `features/*/interface` からは直接読みません。例外は ai の `shared/auth` から `@repo/ai-database/auth` を読む場合だけです。この境界は oxc のカスタムルール `k8o/database-import-boundary` で強制しています。
 
 ## 本番環境
 

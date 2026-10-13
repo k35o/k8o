@@ -9,7 +9,7 @@ k8oのブログ記事（MDX）を公開前にレビューする。**文章面は
 
 ## 対象範囲
 
-**行うこと**: `/writing-review` の文章観点をブログ記事に適用（不在時はフォールバック）／`@repo/code-highlight`のディレクティブ活用／frontmatter整合性（`featureIds`⇔`<BaselineStatus>`）／MDXコンポーネントのimport・props／見出し階層・リンク・画像／本文の太字不使用。重要度つきの統合レポートを出す。
+**行うこと**: `/writing-review` の文章観点をブログ記事に適用（不在時はフォールバック）／`@repo/code-highlight`のディレクティブ活用／frontmatter整合性（`featureIds`⇔`<BrowserSupportStatus>`）／MDXコンポーネントのimport・props／見出し階層・リンク・画像／本文の太字不使用。重要度つきの統合レポートを出す。
 
 **行わないこと**: ファイルの自動修正（レポートのみ）／執筆・アウトライン作成／公開ファイル一式の準備（`layout.tsx`/`opengraph-image.tsx`/マイグレーション → `/blog-prep`）／コードの動作・技術的正しさ（別途確認）。
 
@@ -20,11 +20,11 @@ k8oのブログ記事（MDX）を公開前にレビューする。**文章面は
 ```
 apps/main/src/app/blog/(articles)/<slug>/
 ├── page.mdx              # 記事本体（レビューの主対象）
-├── layout.tsx            # メタデータ（タイトル/日付/タグはDBから取得）
+├── layout.tsx            # メタデータ（タイトル/日付はfrontmatter、タグはDBから取得）
 └── opengraph-image.tsx   # OGP画像生成（[!og]を使うか判定するために参照）
 ```
 
-`page.mdx`: 先頭にYAML frontmatter（`---`）、続いて`import`文と本文。本文の`# H1`は**レンダリング時に非表示**（タイトルはレイアウト/DB側）。実セクションは`##`から始め、表示時に`##`→h3相当・`###`→h4相当へ1段繰り下げられる（執筆時は`##`/`###`をそのまま書く）。内部リンクは`next/link`、外部リンクは通常リンクへ自動変換。
+`page.mdx`: 先頭にYAML frontmatter（`---`）、続いて`import`文と本文。本文の`# H1`は**レンダリング時に非表示**（タイトルはfrontmatterの`title`をレイアウトが表示する）。実セクションは`##`から始め、表示時に`##`→h3相当・`###`→h4相当へ1段繰り下げられる（執筆時は`##`/`###`をそのまま書く）。内部リンクは`next/link`、外部リンクは通常リンクへ自動変換。
 
 ## レビューの進め方
 
@@ -68,12 +68,12 @@ printf '%s' "$PROSE" | rg -c '(です|ます)。'; printf '%s' "$PROSE" | rg -c 
 
 `page.mdx`は`@repo/code-highlight`（Shiki）でハイライトされる。
 
-> このパッケージの機能は**ディレクティブのみ**。`title=`/ファイル名/言語ラベル/コピーボタンは存在しないので、その有無は指摘対象にしない。
+> ディレクティブのほかに、フェンスのメタ`title="..."`がファイル名のラベルになる（無ければ言語名がラベルになる）。コピーボタンはすべてのコードブロックに付き、本文を挟まずに続けて書いたコードブロックはタブで切り替える1つのブロックにまとまる。
 
 | 項目 | 内容 | 重要度 |
 |------|------|--------|
 | フェンスの言語指定 | すべての` ``` `に言語を付ける（` ```ts `など）。言語なしはハイライトが効かない | 要修正 |
-| `[!og]`マーカー | いずれか1つのコードブロックに`// [!og]`（OGP画像に載るコードを選ぶ）。判定は`opengraph-image.tsx`が`@/features/blog/interface/queries`の`getBlogOgCode`を呼ぶか。無いとコードが載らず劣化（エラーにはならない）。**較正: [!og]無しの記事も全体の約2割あり、コード無しOGPを許容する設計。コードが主役の記事であれば推奨、そうでなければ任意** | 推奨/任意 |
+| `[!og]`マーカー | いずれか1つのコードブロックに`// [!og]`（OGP画像に載るコードを選ぶ）。判定は`opengraph-image.tsx`が`@/app/blog/_components/blog-og-image`の`renderBlogOgImage`（中で`getBlogOgCode`を呼ぶ）を使うか。無いとコードが載らず劣化（エラーにはならない）。**較正: [!og]無しの記事も全体の約2割あり、コード無しOGPを許容する設計。コードが主役の記事であれば推奨、そうでなければ任意** | 推奨/任意 |
 | 注目行の強調 | 地の文で「この行が重要」と言うコードに`[!hl]`/`[!callout:]`が無ければ付ける余地 | 任意 |
 | 差分の表現 | before/after・追加削除を見せるコードに`[!+]`/`[!-]`が使える（現状ほぼ未使用） | 任意 |
 
@@ -81,14 +81,14 @@ printf '%s' "$PROSE" | rg -c '(です|ます)。'; printf '%s' "$PROSE" | rg -c 
 
 ## ブログ固有2: frontmatter整合性
 
-`packages/helpers/src/mdx/frontmatter.ts`の`isFrontmatter`が**コードで検証するのは型だけ**（必須キーの有無・日付が`Date.parse`可能・`featureIds`が文字列配列）。`featureIds`⇔`<BaselineStatus>`の一致は慣習なので人手で確認する。
+`packages/helpers/src/mdx/frontmatter.ts`の`isFrontmatter`が**コードで検証するのは型だけ**（必須キーの有無・日付が`Date.parse`可能・`featureIds`が文字列配列）。`featureIds`⇔`<BrowserSupportStatus>`の一致は慣習なので人手で確認する。
 
 | フィールド | 必須 | チェック |
 |-----------|:----:|---------|
 | `title` | ✅ | 文字列。本文先頭の`# <title>`と一致 |
 | `description` | ✅ | キー必須（値は`null`可）。SEO向けに簡潔か |
 | `createdAt` / `updatedAt` | ✅ | `Date.parse`可能な日付（例: `2026-05-26`）。更新したなら`updatedAt`が新しいか |
-| `featureIds` | 任意 | 文字列配列（型はコードが検証）。**各IDが本文の`<BaselineStatus featureId="...">`と1対1で一致**するか人手確認（片方だけ・綴り違いを指摘） |
+| `featureIds` | 任意 | 文字列配列（型はコードが検証）。**各IDが本文の`<BrowserSupportStatus featureId="..." />`と1対1で一致**するか人手確認（片方だけ・綴り違いを指摘） |
 
 frontmatterが不正だと`getFrontmatter()`が`Invalid frontmatter in <path>`で落ちる。必須キー欠落・日付不正は要修正。
 
@@ -98,15 +98,16 @@ import文とpropsが正しいか確認する。
 
 | コンポーネント | import | 主なprops |
 |---------------|--------|-----------|
-| `BaselineStatus` | `@k8ordo/ui` | `featureId`（frontmatterの`featureIds`と一致）。Web機能の記事ではH1直下 |
+| `BrowserSupportStatus` | 不要（`mdx-components.tsx`に登録されている） | `featureId`（frontmatterの`featureIds`と一致）。Web機能の記事ではH1直下 |
+| `PlaygroundEmbed` | `@/app/_components/playgrounds` | `sectionId`（必須。`playgrounds/sections.ts`のセクションの`id`） / `demo?`（デモの`title`。省略するとセクションの全デモ） |
 | `Playground` | `@/app/_components/playgrounds` | `title`（必須）。子にデモ |
 | `LinkCard` | `@/app/blog/_components/link-card` | `href`（必須） / `publishedAt?` / `variant?` |
 | `Image` / `FloatImage` | `@/app/blog/_components/image` | `src`・`alt`（どちらも必須） |
 | `Alert` | `@k8ordo/ui` | `tone`（`warning`等） / `message` |
 
 - 見出し・段落・リンク・インラインコードは`mdx-components.tsx`が自動で@k8ordo/uiスタイルに変換する。素のmarkdownで書けばよい（独自に`<h2>`等を書かない）。
-- **import検証**: grepのヒット件数で判断せず、対象シンボルの`export`宣言を`index.ts`で1ファイルずつ目視確認する（再エクスポートチェーン: `playgrounds/index.ts`の`export *` → サブ`index.ts`の named export）。サブパス直接import（主流）でも index 経由でも、**使われているパスが解決すればよい**（index未登録＝壊れ、と誤判定しない）。
-- **@k8ordo/uiのpropsは推測しない**。`Alert`・`BaselineStatus`等は `apps/main` の CLAUDE.md に従い `main-storybook-mcp` で確認する。**MCPが使えない場合**は `apps/main/node_modules/@k8ordo/ui` の型定義（`dist/*.d.ts`）または `docs/` を読む。
+- **import検証**: grepのヒット件数で判断せず、対象シンボルの`export`宣言を`index.ts`で1ファイルずつ目視確認する。`PlaygroundEmbed`は、`sectionId`が`playgrounds/sections.ts`の`playgroundSections`にあるセクションの`id`と一致するか、`demo`を渡すならそのセクションのデモの`title`と一致するかも確かめる（一致しないと描画時に例外で落ちる）。
+- **@k8ordo/uiのpropsは推測しない**。`Alert`等は `apps/main` の CLAUDE.md に従い `main-storybook-mcp` で確認する。**MCPが使えない場合**は `apps/main/node_modules/@k8ordo/ui` の型定義（`dist/**/*.d.mts`）または `docs/` を読む。
 
 ## ブログ固有4: 見出し階層・リンク・画像・テーブル
 
@@ -139,7 +140,7 @@ import文とpropsが正しいか確認する。
 - `page.mdx:60` 注目コードに `[!hl]` を付ける余地
 
 ### 指摘なしの観点
-- frontmatter / featureIds⇔BaselineStatus: OK
+- frontmatter / featureIds⇔BrowserSupportStatus: OK
 - MDXコンポーネント: OK
 - 文章（writing-review）: 全観点（日本語ルール〜語り口・事実確認）とも問題なし
 ```
@@ -157,7 +158,7 @@ import文とpropsが正しいか確認する。
 - [ ] ブログ固有の上書き: 本文に太字（`**`）が無い
 - [ ] 機械的補助コマンド（太字 / 言語なしフェンス / `[!og]` / テーブル / 英日スペース / 文体）を実行した
 - [ ] ブログ固有1: `@repo/code-highlight`の活用（言語・`[!og]`較正・`[!hl]`/`[!callout:]`）
-- [ ] ブログ固有2: frontmatter整合性（必須キー・`featureIds`⇔`BaselineStatus`）
+- [ ] ブログ固有2: frontmatter整合性（必須キー・`featureIds`⇔`BrowserSupportStatus`）
 - [ ] ブログ固有3: MDXコンポーネントのimport/props（MCP不在時は型定義/docsで確認）
 - [ ] ブログ固有4: 見出し階層・リンク到達性・画像alt・テーブル不使用・数式記事のKaTeX CSS import
 - [ ] 文章面とブログ固有を統合し、重要度つきレポートを出力した（ファイルは変更していない）

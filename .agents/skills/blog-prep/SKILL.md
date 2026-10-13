@@ -56,14 +56,12 @@ updatedAt: 2025-01-10
 ---
 
 {/* 必要に応じてインポート */}
-{/* import { BaselineStatus } from '@k8ordo/ui'; */}
-{/* import { MyDemo } from '@/app/_components/playgrounds/my-feature'; */}
-{/* import { Playground } from '@/app/_components/playgrounds'; */}
+{/* import { PlaygroundEmbed } from '@/app/_components/playgrounds'; */}
 
 # タイトル
 
-{/* Baseline機能を紹介する記事の場合 */}
-{/* <BaselineStatus featureId="feature-id"></BaselineStatus> */}
+{/* Web機能を紹介する記事の場合（frontmatter の featureIds にも同じ ID を書く） */}
+{/* <BrowserSupportStatus featureId="feature-id" /> */}
 
 {/* ここに記事の内容を執筆する */}
 ```
@@ -76,33 +74,12 @@ updatedAt: 2025-01-10
 import type { Metadata } from 'next';
 
 import { BlogLayout } from '@/app/blog/_components/blog-layout';
-import { getBlogContent } from '@/features/blog/interface/queries';
+import { buildBlogMetadata } from '@/features/blog/interface/metadata';
 
 const slug = 'my-article'; // 実際のスラグに置き換える
 
-export async function generateMetadata(): Promise<Metadata> {
-  const blog = await getBlogContent(slug);
-
-  return {
-    title: blog.title,
-    description: blog.description,
-    category: blog.tags.map((tag) => tag.name).join(', '),
-    openGraph: {
-      title: blog.title,
-      description: blog.description ?? undefined,
-      url: `https://k8o.me/blog/${slug}`,
-      publishedTime: blog.createdAt,
-      authors: ['k8o'],
-      siteName: 'k8o',
-      locale: 'ja',
-      type: 'article',
-    },
-    twitter: {
-      title: blog.title,
-      card: 'summary_large_image',
-      description: blog.description ?? undefined,
-    },
-  };
+export function generateMetadata(): Promise<Metadata> {
+  return buildBlogMetadata(slug);
 }
 
 // 実際のスラグに置き換える
@@ -125,11 +102,7 @@ import '@/app/blog/_styles/katex-vertical.css';
 ### 3. opengraph-image.tsx
 
 ```typescript
-import { OgImage } from '@/app/_components/og-image';
-import {
-  getBlogContent,
-  getBlogOgCode,
-} from '@/features/blog/interface/queries';
+import { renderBlogOgImage } from '@/app/blog/_components/blog-og-image';
 
 export const alt = '記事タイトル';
 export const size = {
@@ -139,18 +112,9 @@ export const size = {
 
 export const contentType = 'image/png';
 
-export default async function Image() {
+export default function Image() {
   // 実際のスラグに置き換える
-  const [blog, ogCode] = await Promise.all([
-    getBlogContent('my-article'),
-    getBlogOgCode('my-article'),
-  ]);
-
-  return OgImage({
-    category: 'Blog',
-    title: blog.title,
-    code: ogCode ?? undefined,
-  });
+  return renderBlogOgImage('my-article');
 }
 ```
 
@@ -171,23 +135,29 @@ apps/main/src/app/_components/playgrounds/{feature-name}/
 import type { PlaygroundSection } from '../types';
 import { MyDemo } from './my-demo';
 
-export { MyDemo } from './my-demo';
-
 export const mySection: PlaygroundSection = {
   id: 'my-feature',
   title: 'My Feature',
   description: '機能の説明',
+  category: 'css', // css・html・js-api・performance・react のいずれか
   type: 'blog',
   slug: 'my-feature',
-  demos: [{ component: MyDemo, title: 'デモタイトル' }],
+  demos: [
+    {
+      component: MyDemo,
+      title: 'デモタイトル',
+      description: 'デモの説明',
+    },
+  ],
 };
 ```
 
-#### playgrounds/index.tsへの追加
+#### playgrounds/sections.tsへの追加
 
-- `export * from './{slug}';` を追加
-- `import { mySection } from './{slug}';` を追加
+- `import { mySection } from './{feature-name}';` を追加
 - `playgroundSections` 配列に追加
+
+記事では `<PlaygroundEmbed sectionId="my-feature" />` で埋め込む。`demo` にデモの `title` を渡すと、そのデモだけを出す。
 
 ## データベースマイグレーション
 
@@ -201,7 +171,7 @@ pnpm run -F @repo/database generate:custom
 
 > **重要: id を手で振らない。** タグは `name`、ブログは `slug`（どちらも UNIQUE）で引く。
 > これにより autoincrement で採番済みのタグと **id が衝突せず**、再適用しても安全（冪等）になる。
-> 埋めるのは **slug・日付・タグ名** だけ。`{next_id}` のような採番作業は不要。
+> 埋めるのは **slug・日付・タグ名** だけ。
 
 生成されたSQLファイルに以下を記述：
 
@@ -234,7 +204,7 @@ INSERT INTO blog_tag (blog_id, tag_id) VALUES (
 id は採番しないので、必要なのは **既存タグの正確な name** を知ることだけ（表記ゆれ防止）。
 
 ```bash
-# 既存タグ名の一覧（旧形式 (id, name) も新形式 (name) も拾う）
+# 既存タグ名の一覧（(id, name) を書いた INSERT も (name) だけの INSERT も拾う）
 grep -rhoE "INSERT INTO tags [^;]*'[^']+'" packages/database/migrations/*.sql \
   | grep -oE "'[^']+'" | sort -u
 ```
@@ -252,7 +222,7 @@ grep -rhoE "INSERT INTO tags [^;]*'[^']+'" packages/database/migrations/*.sql \
 - [ ] `opengraph-image.tsx` 作成
 - [ ] Playgroundコンポーネント作成（必要な場合）
 - [ ] Storybookストーリー作成（必要な場合）
-- [ ] `playgrounds/index.ts` 更新（必要な場合）
+- [ ] `playgrounds/sections.ts` 更新（必要な場合）
 
 ### データベース
 

@@ -10,9 +10,9 @@ pnpm run build
 pnpm run check                # Vite+ / OXC lint・format チェック（check:write で自動修正）
 pnpm run type-check
 pnpm run ls-lint              # ファイル名規約チェック
-pnpm run test                                           # 全テスト
-pnpm run test -- --project="features test"              # feature系のみ
-pnpm run test -- --project=storybook                    # Storybookテストのみ
+pnpm run test                                             # 全テスト
+pnpm run test --filter=main -- --project="features test"  # main の feature系のみ
+pnpm run test --filter=main -- --project=storybook        # main の Storybookテストのみ
 pnpm run -F main storybook    # Storybook起動 (port 6006)
 pnpm run -F @repo/database migrate
 
@@ -61,8 +61,8 @@ DB のパッケージ（k8o の DB は `@repo/database`、ai の DB は `@repo/a
 ## UI共通（apps/main・apps/ai）
 
 - Tailwindは@k8ordo/uiのセマンティックトークンのみ使用（`text-fg-base` ○ / `text-gray-900` ×。標準Tailwindカラー禁止）。ドキュメントは各appの `node_modules/@k8ordo/ui/docs/` を参照
-- デザインシステムのコンポーネントのpropsを推測で使わない。`shadow` のような一般的に見える名前でも、各appのStorybook MCPの `get-documentation` か実際のStoryで確認できたものだけを使う。ドキュメントに無いpropsは使わずユーザーに確認する
-- Storyの作成・更新前に `get-storybook-story-instructions` で最新ルールを確認し、作業後は `run-story-tests` で検証する
+- デザインシステムのコンポーネントのpropsを推測で使わない。`shadow` のような一般的に見える名前でも、各appのStorybook MCPの `docs-show` か実際のStoryで確認できたものだけを使う。ドキュメントに無いpropsは使わずユーザーに確認する
+- Storyの作成・更新前に `get-storybook-story-instructions` で最新ルールを確認し、作業後は `test-run` で検証する
 
 ## PRレビュー対応
 
@@ -81,7 +81,7 @@ k8o でしか使わない秘密は、ルートの `fnox.toml` に age で暗号�
 
 ## Git Hooks (vite-plus)
 
-`vp config` が `.vite-hooks/_` にディスパッチャを生成し `core.hooksPath` を切り替える（pnpm install 時に自動実行）。
+`vp config` が `.vite-hooks/_` にディスパッチャを生成し `core.hooksPath` を切り替える。pnpm install からは呼ばれないので、手で実行する。
 
 - **pre-commit**: `vp staged`（`vite.config.ts` の `staged` ブロックに従い `vp check --fix` を実行、fixedは自動stage） + `pnpm run ls-lint`
 - **pre-push**: `vp check`
