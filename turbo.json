@@ -24,9 +24,9 @@
         "BETTER_AUTH_URL",
         "GITHUB_CLIENT_ID",
         "GITHUB_CLIENT_SECRET",
+        "K8O_TURSO_AUTH_TOKEN",
+        "K8O_TURSO_DATABASE_URL",
         "NEXT_PUBLIC_GOOGLE_ANALYTICS_ID",
-        "TURSO_AUTH_TOKEN",
-        "TURSO_DATABASE_URL",
         "VAPID_PUBLIC_KEY"
       ],
       "inputs": ["$TURBO_DEFAULT$", ".env", ".env.*"],
