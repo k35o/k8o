@@ -12,6 +12,21 @@ type VapidOptions = {
   vapidSubject: string;
 };
 
+type ClientKeys = {
+  publicKey: CryptoKey;
+  publicKeyBytes: Uint8Array<ArrayBuffer>;
+  authSecret: Uint8Array<ArrayBuffer>;
+};
+
+// importKey の DataError をそのまま投げないのは、VAPID の鍵の誤りも同じ例外になり、
+// 呼び出し側が購読ごとの失敗と取り違えて全購読を消してしまうため
+export class InvalidSubscriptionKeysError extends Error {
+  constructor() {
+    super('購読の鍵を読み込めません');
+    this.name = 'InvalidSubscriptionKeysError';
+  }
+}
+
 export class WebPushError extends Error {
   readonly status: number;
 
@@ -22,6 +37,13 @@ export class WebPushError extends Error {
   }
 }
 
+const UNCOMPRESSED_P256_KEY_LENGTH = 65;
+const UNCOMPRESSED_POINT_PREFIX = 0x04;
+const MIN_AUTH_SECRET_LENGTH = 16;
+const MAX_AUTH_SECRET_LENGTH = 32;
+// 同時に送る数を絞っているので、応答しない Push サービスが送り手を塞ぎ続けないよう打ち切る
+const PUSH_TIMEOUT_MS = 10_000;
+
 function isCryptoKeyPair(key: CryptoKey | CryptoKeyPair): key is CryptoKeyPair {
   return 'privateKey' in key && 'publicKey' in key;
 }
@@ -30,11 +52,53 @@ function utf8(str: string): Uint8Array<ArrayBuffer> {
   return new Uint8Array(new TextEncoder().encode(str));
 }
 
+const decodeOrNull = (str: string): Uint8Array<ArrayBuffer> | null => {
+  try {
+    return base64UrlDecode(str);
+  } catch {
+    return null;
+  }
+};
+
+export async function importSubscriptionKeys(
+  keys: Subscription['keys'],
+): Promise<ClientKeys | null> {
+  const publicKeyBytes = decodeOrNull(keys.p256dh);
+  const authSecret = decodeOrNull(keys.auth);
+  // importKey は圧縮形式の点も受け付けるが、RFC 8291 の鍵は非圧縮の形に限られる
+  if (
+    publicKeyBytes?.length !== UNCOMPRESSED_P256_KEY_LENGTH ||
+    publicKeyBytes[0] !== UNCOMPRESSED_POINT_PREFIX ||
+    authSecret === null ||
+    authSecret.length < MIN_AUTH_SECRET_LENGTH ||
+    authSecret.length > MAX_AUTH_SECRET_LENGTH
+  ) {
+    return null;
+  }
+  try {
+    const publicKey = await crypto.subtle.importKey(
+      'raw',
+      publicKeyBytes,
+      { name: 'ECDH', namedCurve: 'P-256' },
+      false,
+      [],
+    );
+    return { publicKey, publicKeyBytes, authSecret };
+  } catch {
+    return null;
+  }
+}
+
 export async function sendWebPush(
   subscription: Subscription,
   payload: string,
   vapid: VapidOptions,
 ): Promise<Response> {
+  const client = await importSubscriptionKeys(subscription.keys);
+  if (client === null) {
+    throw new InvalidSubscriptionKeysError();
+  }
+
   const payloadBytes = utf8(payload);
 
   const keyResult = await crypto.subtle.generateKey(
@@ -47,17 +111,8 @@ export async function sendWebPush(
   }
   const localKeyPair = keyResult;
 
-  const clientPublicKeyBytes = base64UrlDecode(subscription.keys.p256dh);
-  const clientPublicKey = await crypto.subtle.importKey(
-    'raw',
-    clientPublicKeyBytes,
-    { name: 'ECDH', namedCurve: 'P-256' },
-    false,
-    [],
-  );
-
   const sharedSecret = await crypto.subtle.deriveBits(
-    { name: 'ECDH', public: clientPublicKey },
+    { name: 'ECDH', public: client.publicKey },
     localKeyPair.privateKey,
     256,
   );
@@ -71,13 +126,11 @@ export async function sendWebPush(
   }
   const localPublicKey = new Uint8Array(localPublicKeyExport);
 
-  const authSecret = base64UrlDecode(subscription.keys.auth);
-
   const { contentEncryptionKey, nonce, salt } = await deriveEncryptionKeys(
     sharedSecret,
-    authSecret,
+    client.authSecret,
     localPublicKey,
-    clientPublicKeyBytes,
+    client.publicKeyBytes,
   );
 
   const encrypted = await encryptPayload(
@@ -106,6 +159,7 @@ export async function sendWebPush(
     },
     body,
     redirect: 'manual',
+    signal: AbortSignal.timeout(PUSH_TIMEOUT_MS),
   });
 
   if (!response.ok) {

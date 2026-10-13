@@ -1,9 +1,14 @@
 import { db } from '@repo/database';
 import { eq, inArray } from '@repo/database/orm';
 import type { PushLogKind } from '@repo/database/schema';
+import { mapWithConcurrency } from '@repo/helpers/array/map-with-concurrency';
 import { isAllowedPushEndpoint } from '@repo/helpers/push-endpoint';
 
-import { sendWebPush, WebPushError } from './web-push';
+import {
+  InvalidSubscriptionKeysError,
+  sendWebPush,
+  WebPushError,
+} from './web-push';
 
 type SendPushNotificationParams = {
   kind: PushLogKind;
@@ -19,13 +24,32 @@ type VapidConfig = {
   subject: string;
 };
 
+type StoredSubscription = {
+  endpoint: string;
+  p256dh: string;
+  auth: string;
+};
+
+type DeliveryOutcome = 'succeeded' | 'failed' | 'dead';
+
 type DeliveryResult = {
   succeeded: number;
   failed: number;
+  deadEndpoints: string[];
 };
+
+const PUSH_CONCURRENCY = 10;
 
 // 購読が無効になったとみなして削除する HTTP ステータス
 const GONE_STATUSES = new Set([404, 410]);
+
+// 応答の無い失敗で購読を消すのは、保存された鍵が読めないときだけにする。名前解決の失敗
+// (ENOTFOUND)や接続・TLS・時間切れは、Push サービスや DNS の一時的な障害と1回の送信では
+// 見分けられない。消した購読は利用者が購読し直すまで戻らないため、疑わしい失敗では残す
+const isDeadSubscription = (error: unknown): boolean =>
+  error instanceof WebPushError
+    ? GONE_STATUSES.has(error.status)
+    : error instanceof InvalidSubscriptionKeysError;
 
 const readVapidConfig = (): VapidConfig | null => {
   const publicKey = process.env['VAPID_PUBLIC_KEY'];
@@ -44,22 +68,25 @@ const readVapidConfig = (): VapidConfig | null => {
   return { publicKey, privateKey, subject };
 };
 
-const deliverToSubscriptions = async (
-  payload: string,
-  vapid: VapidConfig,
-): Promise<DeliveryResult> => {
+const findDeliverableSubscriptions = async (): Promise<
+  StoredSubscription[]
+> => {
   const subscriptions = await db.query.pushSubscriptions.findMany({
     columns: { endpoint: true, p256dh: true, auth: true },
   });
-
   // 多層防御: 保存時に検証済みだが、送信直前にも allowlist を再チェックする
-  const valid = subscriptions.filter((sub) =>
-    isAllowedPushEndpoint(sub.endpoint),
-  );
+  return subscriptions.filter((sub) => isAllowedPushEndpoint(sub.endpoint));
+};
 
-  // Promise.allSettled は reason が any になるため、結果を型付きに正規化する
-  const results = await Promise.all(
-    valid.map(async (sub) => {
+const deliverToSubscriptions = async (
+  subscriptions: readonly StoredSubscription[],
+  payload: string,
+  vapid: VapidConfig,
+): Promise<DeliveryResult> => {
+  const outcomes = await mapWithConcurrency(
+    subscriptions,
+    PUSH_CONCURRENCY,
+    async (sub): Promise<DeliveryOutcome> => {
       try {
         await sendWebPush(
           {
@@ -73,32 +100,21 @@ const deliverToSubscriptions = async (
             vapidSubject: vapid.subject,
           },
         );
-        return { ok: true as const };
+        return 'succeeded';
       } catch (error) {
-        const status = error instanceof WebPushError ? error.status : null;
-        return { ok: false as const, endpoint: sub.endpoint, status };
+        return isDeadSubscription(error) ? 'dead' : 'failed';
       }
-    }),
+    },
   );
 
-  let succeeded = 0;
-  const goneEndpoints: string[] = [];
-  for (const result of results) {
-    if (result.ok) {
-      succeeded += 1;
-    } else if (result.status !== null && GONE_STATUSES.has(result.status)) {
-      goneEndpoints.push(result.endpoint);
-    }
-  }
-
-  // 配信と無効購読の掃除は常に対で行う（410/404 は購読が失効した合図）。
-  if (goneEndpoints.length > 0) {
-    await db
-      .delete(db._schema.pushSubscriptions)
-      .where(inArray(db._schema.pushSubscriptions.endpoint, goneEndpoints));
-  }
-
-  return { succeeded, failed: results.length - succeeded };
+  const succeeded = outcomes.filter((outcome) => outcome === 'succeeded');
+  return {
+    succeeded: succeeded.length,
+    failed: outcomes.length - succeeded.length,
+    deadEndpoints: subscriptions
+      .filter((_, index) => outcomes[index] === 'dead')
+      .map((sub) => sub.endpoint),
+  };
 };
 
 export async function sendPushNotification({
@@ -114,11 +130,23 @@ export async function sendPushNotification({
     return;
   }
 
+  // claim より先に読む。読み込みに失敗したとき、claim だけが残って再実行でも送れなくなるのを避ける
+  const subscriptions = await findDeliverableSubscriptions();
+
   // claim-first: 送信前に dedupeKey で履歴行を確保する。unique 制約により
   // 並行 cron 実行でも claim できた1実行だけが送信し、二重通知を防ぐ。
+  // 送信の途中で関数が止まっても届かなかったことが履歴に残るよう、全件を失敗として確保し、結果で上書きする
   const claimed = await db
     .insert(db._schema.pushLogs)
-    .values({ kind, title, body, url, dedupeKey, succeeded: 0, failed: 0 })
+    .values({
+      kind,
+      title,
+      body,
+      url,
+      dedupeKey,
+      succeeded: 0,
+      failed: subscriptions.length,
+    })
     .onConflictDoNothing({ target: db._schema.pushLogs.dedupeKey })
     .returning({ id: db._schema.pushLogs.id });
   const logId = claimed[0]?.id;
@@ -127,10 +155,21 @@ export async function sendPushNotification({
   }
 
   const payload = JSON.stringify({ title, body, url });
-  const { succeeded, failed } = await deliverToSubscriptions(payload, vapid);
+  const { succeeded, failed, deadEndpoints } = await deliverToSubscriptions(
+    subscriptions,
+    payload,
+    vapid,
+  );
 
+  // 購読の掃除に失敗しても送信結果は残るよう、記録を先にする
   await db
     .update(db._schema.pushLogs)
     .set({ succeeded, failed })
     .where(eq(db._schema.pushLogs.id, logId));
+
+  if (deadEndpoints.length > 0) {
+    await db
+      .delete(db._schema.pushSubscriptions)
+      .where(inArray(db._schema.pushSubscriptions.endpoint, deadEndpoints));
+  }
 }

@@ -3,11 +3,11 @@ import { Hono } from 'hono';
 import { validator } from 'hono/validator';
 import * as z from 'zod/mini';
 
-import { isValidPushKeys } from '../application/push-keys';
 import {
   deleteSubscription,
   insertSubscription,
 } from '../infrastructure/subscription-repository';
+import { importSubscriptionKeys } from '../infrastructure/web-push';
 
 const MAX_ENDPOINT_LENGTH = 2048;
 const MAX_KEY_LENGTH = 256;
@@ -30,7 +30,7 @@ const unsubscribeSchema = z.object({
 export const pushSubscriptionPublicRoutes = new Hono()
   .post(
     '/',
-    validator('json', (value, c) => {
+    validator('json', async (value, c) => {
       const parsed = subscribeSchema.safeParse(value);
       if (!parsed.success) {
         return c.json({ ok: false, error: 'invalid_request' } as const, 400);
@@ -42,7 +42,7 @@ export const pushSubscriptionPublicRoutes = new Hono()
           400,
         );
       }
-      if (!isValidPushKeys(parsed.data.keys.p256dh, parsed.data.keys.auth)) {
+      if ((await importSubscriptionKeys(parsed.data.keys)) === null) {
         return c.json({ ok: false, error: 'invalid_keys' } as const, 400);
       }
       return parsed.data;
