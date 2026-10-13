@@ -58,7 +58,11 @@ describe('summarizeArticle', () => {
         maxOutputTokens: 3000,
         timeout: 60_000,
         providerOptions: {
-          anthropic: { effort: 'low', fallbacks: 'default' },
+          anthropic: {
+            effort: 'low',
+            fallbacks: 'default',
+            thinking: { type: 'between_tools' },
+          },
         },
       });
       expect(options).not.toHaveProperty('temperature');
