@@ -393,6 +393,20 @@ describe('importSubscriptionKeys', () => {
 
       await expect(importSubscriptionKeys(toKeys(client))).resolves.toBeNull();
     });
+
+    it('鍵の中身と関係のない importKey の失敗は、読めない鍵とせずにそのまま投げる', async () => {
+      const client = await generateClientKeys();
+      const importKey = vi
+        .spyOn(crypto.subtle, 'importKey')
+        .mockRejectedValueOnce(
+          new DOMException('not supported', 'NotSupportedError'),
+        );
+
+      await expect(
+        importSubscriptionKeys(client.subscriptionKeys),
+      ).rejects.toThrow('not supported');
+      importKey.mockRestore();
+    });
   });
 });
 
@@ -465,9 +479,10 @@ describe('sendWebPush', () => {
       expect(body[20]).toBe(65);
     });
 
-    it('応答しない Push サービスを待ち続けないよう、打ち切りの signal を付ける', async () => {
+    it('応答しない Push サービスを待ち続けないよう、10秒で打ち切る signal を付ける', async () => {
       const client = await generateClientKeys();
       const vapid = await generateVapidKeys();
+      const timeout = vi.spyOn(AbortSignal, 'timeout');
 
       await sendWebPush(
         {
@@ -483,7 +498,9 @@ describe('sendWebPush', () => {
       );
 
       const { init } = capturedRequest();
-      expect(init.signal).toBeInstanceOf(AbortSignal);
+      expect(timeout).toHaveBeenCalledExactlyOnceWith(10_000);
+      expect(init.signal).toBe(timeout.mock.results[0]?.value);
+      timeout.mockRestore();
     });
 
     it('VAPID の JWT が公開鍵で検証でき aud/exp/sub が正しい', async () => {

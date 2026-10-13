@@ -41,7 +41,6 @@ const UNCOMPRESSED_P256_KEY_LENGTH = 65;
 const UNCOMPRESSED_POINT_PREFIX = 0x04;
 const MIN_AUTH_SECRET_LENGTH = 16;
 const MAX_AUTH_SECRET_LENGTH = 32;
-// 同時に送る数を絞っているので、応答しない Push サービスが送り手を塞ぎ続けないよう打ち切る
 const PUSH_TIMEOUT_MS = 10_000;
 
 function isCryptoKeyPair(key: CryptoKey | CryptoKeyPair): key is CryptoKeyPair {
@@ -65,7 +64,7 @@ export async function importSubscriptionKeys(
 ): Promise<ClientKeys | null> {
   const publicKeyBytes = decodeOrNull(keys.p256dh);
   const authSecret = decodeOrNull(keys.auth);
-  // importKey は圧縮形式の点も受け付けるが、RFC 8291 の鍵は非圧縮の形に限られる
+  // importKey は非圧縮以外の形の点も受け付けるが、RFC 8291 の鍵は非圧縮の形に限られる
   if (
     publicKeyBytes?.length !== UNCOMPRESSED_P256_KEY_LENGTH ||
     publicKeyBytes[0] !== UNCOMPRESSED_POINT_PREFIX ||
@@ -84,8 +83,13 @@ export async function importSubscriptionKeys(
       [],
     );
     return { publicKey, publicKeyBytes, authSecret };
-  } catch {
-    return null;
+  } catch (error) {
+    // 鍵の中身による失敗（DataError）だけを読めない鍵とする。実行環境の失敗まで null にすると、
+    // 送信側がすべての購読を消してしまう
+    if (error instanceof DOMException && error.name === 'DataError') {
+      return null;
+    }
+    throw error;
   }
 }
 

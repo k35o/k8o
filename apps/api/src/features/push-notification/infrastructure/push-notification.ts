@@ -43,9 +43,8 @@ const PUSH_CONCURRENCY = 10;
 // 購読が無効になったとみなして削除する HTTP ステータス
 const GONE_STATUSES = new Set([404, 410]);
 
-// 応答の無い失敗で購読を消すのは、保存された鍵が読めないときだけにする。名前解決の失敗
-// (ENOTFOUND)や接続・TLS・時間切れは、Push サービスや DNS の一時的な障害と1回の送信では
-// 見分けられない。消した購読は利用者が購読し直すまで戻らないため、疑わしい失敗では残す
+// 応答の無い失敗（名前解決・接続・TLS・時間切れ）は一時的な障害と見分けられず、消した購読は
+// 利用者が購読し直すまで戻らないので、鍵が読めないとき以外は残す
 const isDeadSubscription = (error: unknown): boolean =>
   error instanceof WebPushError
     ? GONE_STATUSES.has(error.status)
@@ -133,9 +132,9 @@ export async function sendPushNotification({
   // claim より先に読む。読み込みに失敗したとき、claim だけが残って再実行でも送れなくなるのを避ける
   const subscriptions = await findDeliverableSubscriptions();
 
-  // claim-first: 送信前に dedupeKey で履歴行を確保する。unique 制約により
+  // 送信より前に dedupeKey で履歴行を確保する。unique 制約により
   // 並行 cron 実行でも claim できた1実行だけが送信し、二重通知を防ぐ。
-  // 送信の途中で関数が止まっても届かなかったことが履歴に残るよう、全件を失敗として確保し、結果で上書きする
+  // 送信の途中で関数が止まると結果が分からないので、全件を失敗として確保しておき、結果で上書きする
   const claimed = await db
     .insert(db._schema.pushLogs)
     .values({
