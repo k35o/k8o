@@ -2,6 +2,7 @@ export const isInternalRoute = (href: string): href is `/${string}` =>
   !href.startsWith('http');
 
 if (import.meta.vitest) {
+  const { expect, it } = import.meta.vitest;
   it('httpから始まるhrefはexternalなものとして判定する', () => {
     expect(isInternalRoute('https://k8o.me/dummy')).toBe(false);
   });

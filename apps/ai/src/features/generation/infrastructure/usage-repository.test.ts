@@ -2,6 +2,7 @@ import { DatabaseSync } from 'node:sqlite';
 import type { SQLInputValue } from 'node:sqlite';
 
 import { db } from '@repo/ai-database';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 import {
   reserveGenerationUsage,

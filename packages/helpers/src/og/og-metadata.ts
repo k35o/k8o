@@ -108,6 +108,7 @@ export const parseOgMetadata = (html: string, baseUrl?: string): OgMetadata => {
 };
 
 if (import.meta.vitest) {
+  const { describe, expect, it } = import.meta.vitest;
   describe('parseOgMetadata', () => {
     describe('正常系', () => {
       it('og:title / og:description / og:image を抽出する', () => {

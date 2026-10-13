@@ -106,6 +106,7 @@ export const checkBaselineInvariants = ({
 };
 
 if (import.meta.vitest) {
+  const { describe, expect, it } = import.meta.vitest;
   const makeDataset = (
     overrides: Partial<BaselineDataset> = {},
   ): BaselineDataset => ({

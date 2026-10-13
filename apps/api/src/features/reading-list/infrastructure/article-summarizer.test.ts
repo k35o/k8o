@@ -1,4 +1,5 @@
 import { generateText } from 'ai';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { summarizeArticle } from './article-summarizer';
 import { fetchArticleText } from './article-text';

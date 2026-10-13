@@ -1,3 +1,5 @@
+import { describe, expect, it, vi } from 'vitest';
+
 import { fetchOgMetadata } from '../infrastructure/og-metadata';
 import {
   findEnrichTargets,

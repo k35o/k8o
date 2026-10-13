@@ -1,5 +1,6 @@
 import { isInGamut, toSrgbGamut } from '@repo/helpers/color/gamut';
 import { oklchToColor } from '@repo/helpers/color/spaces';
+import { describe, expect, it } from 'vitest';
 
 import { PALETTE_STEPS } from '../_types/palette';
 import { CHROMA_CURVE, LIGHTNESS_LADDER, generatePalette } from './palette';

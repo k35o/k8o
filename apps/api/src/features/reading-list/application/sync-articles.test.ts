@@ -1,3 +1,5 @@
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+
 import { fetchFeedItems } from '../infrastructure/feed-source';
 import { fetchOgMetadata } from '../infrastructure/og-metadata';
 import {

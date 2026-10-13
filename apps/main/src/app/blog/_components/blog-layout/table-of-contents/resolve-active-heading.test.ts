@@ -1,3 +1,5 @@
+import { describe, expect, it } from 'vitest';
+
 import { END_OF_CONTENT_ID } from '../constants';
 import {
   ACTIVE_LINE_OFFSET,

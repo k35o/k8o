@@ -1,6 +1,8 @@
 import { join } from 'node:path';
 import { cwd } from 'node:process';
 
+import { describe, expect, it, vi } from 'vitest';
+
 import { slidePath } from './path';
 
 vi.mock('path');

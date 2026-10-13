@@ -1,3 +1,5 @@
+import { describe, expect, it } from 'vitest';
+
 import { buildSlidesSystemPrompt } from './build-slides-system-prompt';
 
 describe('buildSlidesSystemPrompt', () => {

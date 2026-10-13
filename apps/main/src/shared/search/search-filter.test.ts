@@ -1,3 +1,5 @@
+import { describe, expect, it } from 'vitest';
+
 import { matchesSearchQuery } from './search-filter';
 
 describe('matchesSearchQuery', () => {

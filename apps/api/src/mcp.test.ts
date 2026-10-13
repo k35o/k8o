@@ -3,6 +3,7 @@ import {
   StreamableHTTPClientTransport,
 } from '@modelcontextprotocol/client';
 import type { VersionNegotiationMode } from '@modelcontextprotocol/client';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 import {
   findBlogs,

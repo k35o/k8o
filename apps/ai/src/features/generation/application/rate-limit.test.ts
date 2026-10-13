@@ -1,3 +1,5 @@
+import { afterEach, describe, expect, it, vi } from 'vitest';
+
 import { generationLimit, windowStartIso } from './rate-limit';
 
 describe('rate-limit', () => {

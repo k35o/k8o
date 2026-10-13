@@ -23,6 +23,7 @@ export const mapWithConcurrency = async <T, R>(
 };
 
 if (import.meta.vitest) {
+  const { describe, expect, it } = import.meta.vitest;
   describe('mapWithConcurrency', () => {
     describe('正常系', () => {
       it('入力と同じ順序で結果を返す', async () => {

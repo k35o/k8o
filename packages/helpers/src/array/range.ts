@@ -9,6 +9,7 @@ function* _range(start: number, end: number): Generator<number> {
 }
 
 if (import.meta.vitest) {
+  const { describe, expect, it } = import.meta.vitest;
   describe('range', () => {
     it('start以上end未満の配列を返す', () => {
       expect(range(2, 5)).toEqual([2, 3, 4]);

@@ -1,4 +1,5 @@
 import type { Spec } from '@json-render/core';
+import { describe, expect, it, vi } from 'vitest';
 
 import {
   getProjectLatest,

@@ -1,3 +1,5 @@
+import { describe, expect, it } from 'vitest';
+
 import { filterPlaygrounds } from './filter-playgrounds';
 import type { PlaygroundSummary } from './types';
 

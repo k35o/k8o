@@ -1,5 +1,6 @@
 import type { Element, ElementContent, Root } from 'hast';
 import { codeToHast } from 'shiki';
+import { describe, expect, it } from 'vitest';
 
 import { annotateTransformer } from './transformer.ts';
 

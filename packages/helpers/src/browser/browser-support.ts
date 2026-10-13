@@ -74,6 +74,7 @@ export const computeMinVersions = (
 };
 
 if (import.meta.vitest) {
+  const { describe, expect, it } = import.meta.vitest;
   describe('compareVersions', () => {
     describe('正常系', () => {
       it('メジャーバージョンを数値として比較する', () => {

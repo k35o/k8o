@@ -1,6 +1,7 @@
 import { format } from 'node:util';
 
 import { DrizzleQueryError } from 'drizzle-orm';
+import { afterEach, describe, expect, it, vi } from 'vitest';
 
 import { logAuthEvent } from './auth-logger';
 

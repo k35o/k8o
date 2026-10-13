@@ -3,6 +3,7 @@ import * as ui from '@k8ordo/ui';
 import { catalog } from '@k8ordo/ui/json-render';
 import { registry } from '@k8ordo/ui/json-render/registry';
 import type { ReactElement } from 'react';
+import { describe, expect, it } from 'vitest';
 
 import {
   CARD_PADDING,

@@ -2,6 +2,7 @@ import type {
   BaselineDataset,
   BaselineFeature,
 } from '@repo/helpers/baseline/model';
+import { describe, expect, it } from 'vitest';
 
 import { selectFeatureStatus, selectFeedFeatures } from './features';
 

@@ -1,6 +1,7 @@
 import { SPEC_DATA_PART_TYPE } from '@json-render/core';
 import type { JsonPatch, Spec } from '@json-render/core';
 import type { UIMessage } from 'ai';
+import { describe, expect, it } from 'vitest';
 
 import {
   countElements,

@@ -1,3 +1,5 @@
+import { describe, expect, it } from 'vitest';
+
 import { isTokenName, paletteMakerParsers } from './search-params';
 
 describe('isTokenName', () => {

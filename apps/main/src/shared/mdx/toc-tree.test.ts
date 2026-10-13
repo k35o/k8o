@@ -1,3 +1,5 @@
+import { describe, expect, it } from 'vitest';
+
 import { getTocTree } from './toc-tree';
 
 describe('getTocTree', () => {

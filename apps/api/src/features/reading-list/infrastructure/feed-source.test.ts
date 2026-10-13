@@ -1,4 +1,5 @@
 import { safeFetch } from '@repo/helpers/url/safe-fetch';
+import { describe, expect, it, vi } from 'vitest';
 
 import { fetchFeedItems } from './feed-source';
 

@@ -16,7 +16,6 @@ export default defineConfig({
     alias: {
       '@': fileURLToPath(new URL('./src', import.meta.url)),
     },
-    globals: true,
     coverage: {
       provider: 'v8',
       changed: true,

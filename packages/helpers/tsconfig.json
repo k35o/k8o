@@ -1,7 +1,7 @@
 {
   "extends": "@repo/typescript-config/next.json",
   "compilerOptions": {
-    "types": ["node", "vitest/globals", "vitest/importMeta"]
+    "types": ["node", "vitest/importMeta"]
   },
   "include": ["src/**/*.ts"],
   "exclude": ["node_modules", "dist"]

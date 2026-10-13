@@ -1,3 +1,5 @@
+import { describe, expect, test } from 'vitest';
+
 import { judgeDatabaseImport } from './database-import-boundary.ts';
 
 const file = (rel: string): string => `/Users/dev/k8o/${rel}`;

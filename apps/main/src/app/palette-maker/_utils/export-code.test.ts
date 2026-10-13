@@ -1,3 +1,5 @@
+import { describe, expect, it } from 'vitest';
+
 import { PALETTE_STEPS } from '../_types/palette';
 import { toCssVariablesCode, toTailwindThemeCode } from './export-code';
 import { generatePalette } from './palette';

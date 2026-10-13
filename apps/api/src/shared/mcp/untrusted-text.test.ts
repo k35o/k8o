@@ -1,3 +1,5 @@
+import { describe, expect, it } from 'vitest';
+
 import { toUntrustedText } from './untrusted-text';
 
 // フォーマッタがエスケープを実際の不可視文字に戻してしまうため、コードポイントで組み立てる

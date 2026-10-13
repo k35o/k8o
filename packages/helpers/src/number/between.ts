@@ -2,6 +2,7 @@ export const between = (value: number, min: number, max: number): number =>
   Math.min(Math.max(value, min), max);
 
 if (import.meta.vitest) {
+  const { describe, expect, it } = import.meta.vitest;
   describe('between', () => {
     it('minとmaxの間の値の場合はそのまま返す', () => {
       expect(between(5, 0, 10)).toBe(5);

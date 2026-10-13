@@ -1,3 +1,5 @@
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+
 import { summarizeArticle } from '../infrastructure/article-summarizer';
 import {
   countSummaryProgress,

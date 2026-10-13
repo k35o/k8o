@@ -1,3 +1,5 @@
+import { describe, expect, it } from 'vitest';
+
 import { filterBlogs } from './filter-blogs';
 import type { BlogSummary } from './types';
 
