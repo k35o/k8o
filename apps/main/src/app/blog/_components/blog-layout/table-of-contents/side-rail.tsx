@@ -25,7 +25,7 @@ const RailItem: FC<{
 }> = ({ node, depth, activeId, onNavigate }) => {
   const isActive = activeId === node.text;
   return (
-    <li className={cn(depth === 1 && '[&:not(:first-child)]:mt-1')}>
+    <li className={cn(depth === 1 && 'not-first:mt-1')}>
       <Link
         aria-current={isActive ? 'location' : undefined}
         className={cn(

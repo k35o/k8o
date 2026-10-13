@@ -91,8 +91,7 @@ describe('summarizeArticles', () => {
       const result = await summarizeArticles(LATER);
 
       expect(releaseSummaryAttempt).not.toHaveBeenCalled();
-      expect(saveArticleSummary).toHaveBeenCalledOnce();
-      expect(saveArticleSummary).toHaveBeenCalledWith(2, '要約');
+      expect(saveArticleSummary).toHaveBeenCalledExactlyOnceWith(2, '要約');
       expect(result).toStrictEqual({
         summarizedArticles: 1,
         failedSummaries: 1,

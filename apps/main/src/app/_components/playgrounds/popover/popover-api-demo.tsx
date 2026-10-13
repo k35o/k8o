@@ -15,7 +15,7 @@ export const PopoverApiDemo: FC = () => (
       </Button>
     </div>
     <p
-      className="backdrop:bg-back-drop m-auto max-w-1/3 rounded-md p-4 opacity-0 transition-opacity duration-500 open:opacity-100 open:starting:opacity-0"
+      className="backdrop:bg-back-drop m-auto max-w-1/3 rounded-md p-4 opacity-0 transition-opacity duration-500 open:opacity-100 starting:open:opacity-0"
       id="popover1"
       popover="auto"
     >
