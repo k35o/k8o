@@ -8,12 +8,12 @@ import { memo } from 'react';
 import type { FC, ReactNode } from 'react';
 
 import { messageText } from '@/features/generation/application/message-text';
+import { parseSpecProse } from '@/features/generation/application/spec-message';
 import {
   GENERATION_MODEL_LABELS,
   GENERATION_MODELS,
-} from '@/features/generation/application/models';
-import type { GenerationModel } from '@/features/generation/application/models';
-import { parseSpecProse } from '@/features/generation/application/spec-message';
+} from '@/shared/claude/models';
+import type { GenerationModel } from '@/shared/claude/models';
 
 const NO_SUGGESTIONS: string[] = [];
 
