@@ -30,7 +30,8 @@ k8o の API。Hono で書き、Vercel にデプロイする（本番ドメイン
 `/owner/*` は、オーナーのアプリ（今は ai）がサーバーから呼ぶ読み取りの API（`src/owner.ts`）。ai は k8o の DB の資格情報を持たず、k8o のデータはここから読む。呼ぶ側は `@repo/api/owner` から `OwnerApi` の型だけを読み、hc で呼ぶ。
 
 - トークンはクライアントごとに分ける。ai の本番は `OWNER_API_TOKEN_AI`、ai の preview は `OWNER_API_TOKEN_AI_PREVIEW` と同じ値を持ち、どちらも本番の api を呼ぶ。片方だけを入れ替え・失効できる。クライアントを足すときは環境変数を足して `index.ts` の `requireBearerSecret` に並べる
-- ルートは `features/<feature>/interface/owner-routes.ts` に書き、`src/owner.ts` で束ねる。エラーは公開ルートと同じく `{ ok: false, error: '<code>' }` とステータスで返す
+- ルートは `features/<feature>/interface/owner-routes.ts` に書き、`src/owner.ts` で束ねる。オーナー API のモジュールから MCP・cron・AI SDK を import しない（ai の型検査に巻き込まれるため）
+- エラーは公開ルートと同じく `{ ok: false, error: '<code>' }` とステータスで返す
 - `GET /owner/blogs` は記事の一覧、`GET /owner/blogs/:slug` は記事の markdown を返す。記事の本文とタイトルは main の MDX にあり DB には無いので、main の公開ページ（`https://k8o.me/blog/feed` と `https://k8o.me/blog/<slug>.md`）から取る。slug は `[a-z0-9-]` だけを受ける
 
 ## MCP
