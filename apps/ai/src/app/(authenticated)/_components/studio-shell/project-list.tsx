@@ -2,18 +2,13 @@ import type { FC } from 'react';
 
 import type { ProjectListItem } from '@/features/projects/application/projects';
 
+import { UpdatedAt } from '../updated-at';
+
 type ProjectListProps = {
   projects: ProjectListItem[];
   currentProjectId: number | null;
   emptyText?: string | undefined;
   onSelect: (projectId: number) => void;
-};
-
-const pad = (n: number): string => String(n).padStart(2, '0');
-
-const formatDate = (iso: string): string => {
-  const date = new Date(iso);
-  return `${pad(date.getMonth() + 1)}/${pad(date.getDate())} ${pad(date.getHours())}:${pad(date.getMinutes())}`;
 };
 
 export const ProjectList: FC<ProjectListProps> = ({
@@ -47,7 +42,7 @@ export const ProjectList: FC<ProjectListProps> = ({
               {project.title}
             </span>
             <span className="text-fg-mute text-xs">
-              {formatDate(project.updatedAt)}
+              <UpdatedAt dateTime={project.updatedAt} />
               {project.visibility === 'public' ? ' · 公開' : ''}
             </span>
           </button>

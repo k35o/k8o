@@ -52,6 +52,11 @@ export const WithProjects = meta.story({
     const canvas = within(canvasElement);
     await expect(canvas.getByText('お問い合わせフォーム')).toBeInTheDocument();
     await expect(canvas.getByText(/公開/u)).toBeInTheDocument();
+    // 更新日時は日本時間で出す
+    const current = canvas.getByRole('button', {
+      name: /お問い合わせフォーム/u,
+    });
+    await expect(within(current).getByText('06/22 18:30')).toBeInTheDocument();
     await userEvent.click(canvas.getByText('料金プランの3カラム'));
     await expect(args.onSelect).toHaveBeenCalledWith(2);
   },
