@@ -102,6 +102,7 @@ const meta = preview.meta({
     messages: [],
     status: 'ready',
     isServerRunning: false,
+    isStopping: false,
     errorText: null,
     draft: '',
     onDraftChange: fn<(draft: string) => void>(),
@@ -223,6 +224,52 @@ export const ServerRunningAfterPartialReply = meta.story({
       canvas.getByRole('status', {
         name: '応答を生成しています（画面を離れても続きます）',
       }),
+    ).toBeInTheDocument();
+  },
+});
+
+export const Stopping = meta.story({
+  args: {
+    messages: [question, streamingAnswer],
+    isServerRunning: true,
+    isStopping: true,
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    // 途中までの返答は残し、その下でサーバーの生成が止まるのを待つ
+    await expect(
+      canvas.getByRole('button', { name: /read_blog/u }),
+    ).toBeInTheDocument();
+    await expect(
+      canvas.getByRole('status', { name: '停止しています…' }),
+    ).toBeInTheDocument();
+    await expect(
+      canvas.queryByRole('status', {
+        name: '応答を生成しています（画面を離れても続きます）',
+      }),
+    ).not.toBeInTheDocument();
+    await expect(
+      canvas.getByRole('button', { name: '停止' }),
+    ).toBeInTheDocument();
+  },
+});
+
+export const StoppingBeforeReply = meta.story({
+  args: {
+    messages: [question, { id: 'a3', role: 'assistant', parts: [] }],
+    status: 'submitted',
+    isStopping: true,
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    await expect(
+      canvas.getByRole('status', { name: '停止しています…' }),
+    ).toBeInTheDocument();
+    await expect(
+      canvas.queryByRole('status', { name: '考えています…' }),
+    ).not.toBeInTheDocument();
+    await expect(
+      canvas.getByRole('button', { name: '停止' }),
     ).toBeInTheDocument();
   },
 });

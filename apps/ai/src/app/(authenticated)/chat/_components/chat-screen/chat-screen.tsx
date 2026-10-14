@@ -9,10 +9,16 @@ import { threadTitleFrom } from '@/features/agent/application/agent-message';
 import type { AgentUIMessage } from '@/features/agent/application/agent-message';
 import {
   createdAtAfterSync,
+  deferredStopAfter,
+  isStopping,
   serverSyncAfter,
+  stopRequestOnPress,
   unsavedUserText,
 } from '@/features/agent/application/thread-sync';
-import type { ServerSync } from '@/features/agent/application/thread-sync';
+import type {
+  ServerSync,
+  StopRequest,
+} from '@/features/agent/application/thread-sync';
 import { DEFAULT_GENERATION_MODEL } from '@/shared/claude/models';
 import type { GenerationModel } from '@/shared/claude/models';
 
@@ -28,6 +34,14 @@ const transport = new DefaultChatTransport<AgentUIMessage>({
     body: { ...body, threadId: id, trigger, message: messages.at(-1) },
   }),
 });
+
+const requestStop = async (threadId: string): Promise<void> => {
+  try {
+    await fetch(`/api/chat/${threadId}/stop`, { method: 'POST' });
+  } catch (stopError) {
+    console.error('停止を要求できませんでした', stopError);
+  }
+};
 
 type ChatScreenProps = {
   thread: { id: string; title: string | null; model: GenerationModel | null };
@@ -50,6 +64,7 @@ export const ChatScreen: FC<ChatScreenProps> = ({
   const [firstSentAt, setFirstSentAt] = useState<string | null>(null);
   const [createdAt, setCreatedAt] = useState<string | null>(null);
   const [draft, setDraft] = useState('');
+  const [stopRequest, setStopRequest] = useState<StopRequest | null>(null);
 
   const titleOf = (
     current: AgentUIMessage[],
@@ -106,6 +121,7 @@ export const ChatScreen: FC<ChatScreenProps> = ({
   useThreadSync({
     threadId: thread.id,
     mode: sync,
+    stopSent: stopRequest === 'sent',
     onSettled: (serverMessages) => {
       if (serverMessages !== null) {
         const unsaved = unsavedUserText(messages, serverMessages);
@@ -150,6 +166,7 @@ export const ChatScreen: FC<ChatScreenProps> = ({
   const handleSubmit = (text: string): void => {
     clearError();
     setDraft('');
+    setStopRequest(null);
     if (created) {
       touchThread(title, true);
     } else {
@@ -158,16 +175,27 @@ export const ChatScreen: FC<ChatScreenProps> = ({
     void sendMessage({ text }, { body: created ? {} : { model } });
   };
 
-  const handleStop = async (): Promise<void> => {
-    try {
-      await fetch(`/api/chat/${thread.id}/stop`, { method: 'POST' });
-    } catch (stopError) {
-      console.error('停止を要求できませんでした', stopError);
-    }
-    if (status === 'submitted' || status === 'streaming') {
-      await stop();
-    }
+  const handleStop = (): void => {
+    setStopRequest(stopRequestOnPress(status));
   };
+  if (stopRequest === 'deferred') {
+    const next = deferredStopAfter(status);
+    if (next !== 'deferred') {
+      setStopRequest(next);
+    }
+  }
+  const stopping = isStopping({ request: stopRequest, status, sync });
+  const sendStop = useEffectEvent(() => {
+    void requestStop(thread.id);
+    void stop();
+  });
+  // 押したときと、応答が流れ始めたとき（描画中に 'sent' へ進める）の両方から1回だけ送るため、effect で送る。
+  // 止まり終えたあとに Activity で effect が掛け直されても送り直さないよう、停止中のときだけ送る
+  useEffect(() => {
+    if (stopRequest === 'sent' && stopping) {
+      sendStop();
+    }
+  }, [stopRequest, stopping]);
 
   return (
     <>
@@ -179,13 +207,12 @@ export const ChatScreen: FC<ChatScreenProps> = ({
         draft={draft}
         errorText={error?.message ?? null}
         isServerRunning={sync === 'wait'}
+        isStopping={stopping}
         messages={messages}
         model={model}
         onDraftChange={setDraft}
         onSelectModel={setModel}
-        onStop={() => {
-          void handleStop();
-        }}
+        onStop={handleStop}
         onSubmit={handleSubmit}
         status={status}
       />

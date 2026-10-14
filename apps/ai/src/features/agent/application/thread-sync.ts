@@ -1,4 +1,4 @@
-import type { ChatOnFinishCallback } from 'ai';
+import type { ChatOnFinishCallback, ChatStatus } from 'ai';
 
 import type { AgentUIMessage } from './agent-message';
 import type { ThreadSnapshot } from './threads';
@@ -58,6 +58,52 @@ export const nextSyncStep = (mode: ServerSync, read: ThreadRead): SyncStep => {
       return mode === 'check' ? { type: 'wait' } : { type: 'retry' };
   }
 };
+
+const SYNC_INTERVAL_MS = 2000;
+const STOPPING_SYNC_INTERVAL_MS = 500;
+
+// 停止を送ったあとは、保存された返答へ早く置き換えるよう、生成中と読めたときだけ短い間隔で読み直す。
+// 404 と読めなかったときは、スレッドができるのを待つ幅と失敗のあとの間隔を縮めないよう、いつもの間隔のまま
+export const syncRetryDelayMs = (input: {
+  stopSent: boolean;
+  read: ThreadRead;
+}): number =>
+  input.stopSent && input.read.type === 'snapshot'
+    ? STOPPING_SYNC_INTERVAL_MS
+    : SYNC_INTERVAL_MS;
+
+// 押した停止の段階。'deferred' は応答が流れ始めるのを待っている、'sent' は送る（送った）
+export type StopRequest = 'deferred' | 'sent';
+
+// サーバーは実行の印を付けて user メッセージを保存してから応答を流し、印が付く前に届いた停止は捨てるので、
+// 応答が流れ始める前（submitted）に押された停止は、流れ始めるまで送らない
+export const stopRequestOnPress = (status: ChatStatus): StopRequest =>
+  status === 'submitted' ? 'deferred' : 'sent';
+
+// 流れ始めずに終わったら、印が付いたか分からないので送らずに取り下げる（断られたなら生成していない。
+// 切れたなら、サーバーの生成を待つあいだにもう一度押せる）
+export const deferredStopAfter = (status: ChatStatus): StopRequest | null => {
+  switch (status) {
+    case 'submitted':
+      return 'deferred';
+    case 'streaming':
+      return 'sent';
+    case 'ready':
+    case 'error':
+      return null;
+  }
+};
+
+// 押したことと今の受信・同期から導くので、停止が自然な終わりと競って読み直さずに済んだときにも残らない
+export const isStopping = (input: {
+  request: StopRequest | null;
+  status: ChatStatus;
+  sync: ServerSync | null;
+}): boolean =>
+  input.request !== null &&
+  (input.status === 'submitted' ||
+    input.status === 'streaming' ||
+    input.sync === 'wait');
 
 // 新しいスレッドは応答が流れ始めた時点で作られたとみなすが、流れ始める前に止めたり切れたりしても
 // サーバーに保存されていれば作られている
