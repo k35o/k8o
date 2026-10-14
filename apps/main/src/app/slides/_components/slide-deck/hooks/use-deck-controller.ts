@@ -1,6 +1,5 @@
 'use client';
 
-import { useClient } from '@k8ordo/ui';
 import { useCallback } from 'react';
 
 import { useBroadcastListener } from './use-broadcast-listener';
@@ -61,7 +60,6 @@ export const useDeckController = ({
   });
 
   const isFullscreen = useIsFullscreen();
-  const isHydrated = useClient();
 
-  return { index, goTo, next, prev, isFullscreen, isHydrated };
+  return { index, goTo, next, prev, isFullscreen };
 };

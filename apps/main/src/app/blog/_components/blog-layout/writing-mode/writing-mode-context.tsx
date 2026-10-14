@@ -1,7 +1,6 @@
 'use client';
 
-import { createSafeContext } from '@k8ordo/ui';
-import { useCallback, useMemo, useState } from 'react';
+import { createContext, use, useCallback, useMemo, useState } from 'react';
 import type { FC, ReactNode } from 'react';
 
 import type { WritingMode } from './writing-mode-params';
@@ -11,12 +10,15 @@ type WritingModeContextValue = {
   toggle: () => void;
 };
 
-const [WritingModeContextProvider, useWritingMode] =
-  createSafeContext<WritingModeContextValue>(
-    'useWritingMode must be used within a WritingModeProvider',
-  );
+const WritingModeContext = createContext<WritingModeContextValue | null>(null);
 
-export { useWritingMode };
+export const useWritingMode = (): WritingModeContextValue => {
+  const value = use(WritingModeContext);
+  if (value === null) {
+    throw new Error('useWritingMode must be used within a WritingModeProvider');
+  }
+  return value;
+};
 
 export const WritingModeProvider: FC<{ children: ReactNode }> = ({
   children,
@@ -29,9 +31,5 @@ export const WritingModeProvider: FC<{ children: ReactNode }> = ({
 
   const value = useMemo(() => ({ mode, toggle }), [mode, toggle]);
 
-  return (
-    <WritingModeContextProvider value={value}>
-      {children}
-    </WritingModeContextProvider>
-  );
+  return <WritingModeContext value={value}>{children}</WritingModeContext>;
 };

@@ -5,6 +5,7 @@ import type { FC } from 'react';
 
 import type { Slide } from '@/app/slides/_utils/split-slides';
 
+import { BrowserOnly } from '../browser-only';
 import { useDeckController } from '../hooks/use-deck-controller';
 import { useClosePresenterOnViewerStop } from '../hooks/use-presenter-lifecycle';
 import { NavButton } from '../nav-button';
@@ -17,7 +18,7 @@ export const DeckPresenter: FC<{
   qrUrl: string;
 }> = ({ slug, title, slides, qrUrl }) => {
   const total = slides.length;
-  const { index, next, prev, isHydrated } = useDeckController({
+  const { index, next, prev } = useDeckController({
     total,
     channelName: `slides:${slug}`,
   });
@@ -57,7 +58,7 @@ export const DeckPresenter: FC<{
           </p>
           <div className="min-h-0 min-w-0 flex-1 overflow-hidden">
             <Stage key={`current-${index.toString()}`} qrUrl={qrUrl}>
-              {isHydrated ? current?.content : null}
+              <BrowserOnly>{current?.content}</BrowserOnly>
             </Stage>
           </div>
         </section>
@@ -75,7 +76,7 @@ export const DeckPresenter: FC<{
               </div>
             ) : (
               <Stage key={`next-${index.toString()}`}>
-                {isHydrated ? nextSlide.content : null}
+                <BrowserOnly>{nextSlide.content}</BrowserOnly>
               </Stage>
             )}
           </div>

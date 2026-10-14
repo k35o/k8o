@@ -1,6 +1,7 @@
 'use client';
 
 import { useSearchParams } from 'next/navigation';
+import { Suspense } from 'react';
 import type { FC } from 'react';
 
 import type { Slide } from '@/app/slides/_utils/split-slides';
@@ -28,7 +29,9 @@ export const SlideDeck: FC<{
     <>
       {deck}
       {/* 印刷/PDF用の全スライド描画（画面では非表示） */}
-      <DeckPrint slides={slides} />
+      <Suspense fallback={null}>
+        <DeckPrint slides={slides} />
+      </Suspense>
     </>
   );
 };

@@ -1,8 +1,8 @@
 'use client';
 
-import { useClient } from '@k8ordo/ui';
+import { Suspense, use } from 'react';
 import type { FC } from 'react';
-import { createPortal } from 'react-dom';
+import { browser, createPortal } from 'react-dom';
 
 import type { DeckSlide } from '@/features/slides/application/parse-deck';
 
@@ -11,12 +11,12 @@ import { Stage } from '../stage';
 
 import styles from './deck-print.module.css';
 
-// 印刷/PDF出力用に全スライドを1枚ずつ body 直下へ描画する。
-// 画面では非表示で、@media print のときだけ表示される（deck-print.module.css）。
-export const DeckPrint: FC<{ slides: DeckSlide[] }> = ({ slides }) => {
-  const isHydrated = useClient();
+type DeckPrintProps = { slides: DeckSlide[] };
 
-  if (!isHydrated) return null;
+const DeckPrintPortal: FC<DeckPrintProps> = ({ slides }) => {
+  // body へのポータルはブラウザでしか作れない。サーバーは fallback（何も無し）を描き、
+  // hydrate 後にここが描かれる
+  use(browser());
 
   return createPortal(
     <div className={styles['root']} data-slide-print="true">
@@ -32,3 +32,13 @@ export const DeckPrint: FC<{ slides: DeckSlide[] }> = ({ slides }) => {
     document.body,
   );
 };
+
+// 印刷/PDF出力用に全スライドを1枚ずつ body 直下へ描画する。
+// 画面では非表示で、@media print のときだけ表示される（deck-print.module.css）。
+// 外側の Suspense（DeckHighlightsBoundary）の fallback にも children として入るので、
+// 境界は自分で持つ
+export const DeckPrint: FC<DeckPrintProps> = ({ slides }) => (
+  <Suspense>
+    <DeckPrintPortal slides={slides} />
+  </Suspense>
+);

@@ -1,8 +1,8 @@
 'use client';
 
-import { useClient } from '@k8ordo/ui';
+import { use } from 'react';
 import type { FC } from 'react';
-import { createPortal } from 'react-dom';
+import { browser, createPortal } from 'react-dom';
 
 import type { Slide } from '@/app/slides/_utils/split-slides';
 
@@ -13,9 +13,8 @@ import styles from './deck-print.module.css';
 // 印刷/PDF出力用に全スライドを1枚ずつ body 直下へ描画する。
 // 画面では非表示で、@media print のときだけ表示される（deck-print.module.css）。
 export const DeckPrint: FC<{ slides: Slide[] }> = ({ slides }) => {
-  const isHydrated = useClient();
-
-  if (!isHydrated) return null;
+  // body 直下へのポータルはブラウザでしか作れない
+  use(browser());
 
   return createPortal(
     <div className={styles['root']} data-slide-print="true">

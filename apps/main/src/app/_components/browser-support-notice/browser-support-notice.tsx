@@ -1,10 +1,10 @@
 'use client';
 
 import { useAppState } from '@k8ordo/state';
-import { Alert, useDisclosure } from '@k8ordo/ui';
+import { Alert } from '@k8ordo/ui';
 import { isBrowserOutdated } from '@repo/helpers/browser/browser-support';
 import type { BrowserMinVersions } from '@repo/helpers/browser/detect-browser';
-import { useCallback } from 'react';
+import { useCallback, useState } from 'react';
 import type { FC, ReactNode } from 'react';
 
 import { BrowserSupportNoticeModal } from './browser-support-notice-modal';
@@ -20,17 +20,23 @@ export const BrowserSupportNotice: FC<{
 }> = ({ minVersions }) => {
   const detected = useDetectedBrowser();
   const [{ dismissed }, updateNotice] = useAppState(noticeState);
-  const modal = useDisclosure();
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   // Alert.action.renderItem はレンダー毎に新規定義すると lint(nested components)に
   // 触れるため、安定参照にする。
   const renderDetailLink = useCallback(
     ({ children }: { children: ReactNode }): ReactNode => (
-      <button className={LINK_CLASS} onClick={modal.open} type="button">
+      <button
+        className={LINK_CLASS}
+        onClick={() => {
+          setIsModalOpen(true);
+        }}
+        type="button"
+      >
         {children}
       </button>
     ),
-    [modal.open],
+    [],
   );
 
   if (detected === null || !isBrowserOutdated(detected, minVersions)) {
@@ -56,9 +62,11 @@ export const BrowserSupportNotice: FC<{
       />
       <BrowserSupportNoticeModal
         detected={detected}
-        isOpen={modal.isOpen}
+        isOpen={isModalOpen}
         minVersions={minVersions}
-        onClose={modal.close}
+        onClose={() => {
+          setIsModalOpen(false);
+        }}
       />
     </div>
   );

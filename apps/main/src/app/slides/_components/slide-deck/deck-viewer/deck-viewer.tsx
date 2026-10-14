@@ -8,6 +8,7 @@ import type { FC } from 'react';
 
 import type { Slide } from '@/app/slides/_utils/split-slides';
 
+import { BrowserOnly } from '../browser-only';
 import { useDeckController } from '../hooks/use-deck-controller';
 import { useBroadcastViewerHeartbeat } from '../hooks/use-presenter-lifecycle';
 import { NavButton } from '../nav-button';
@@ -21,7 +22,7 @@ export const DeckViewer: FC<{
   qrUrl: string;
 }> = ({ slug, title, slides, qrUrl }) => {
   const total = slides.length;
-  const { index, next, prev, isFullscreen, isHydrated } = useDeckController({
+  const { index, next, prev, isFullscreen } = useDeckController({
     total,
     channelName: `slides:${slug}`,
   });
@@ -67,10 +68,12 @@ export const DeckViewer: FC<{
             <IconButton
               color="transparent"
               label="Slides一覧へ戻る"
+              // next/link は onClick や ref に明示的な undefined を受けない
+              // (exactOptionalPropertyTypes) ため、束は展開せず要るものだけ取り出す
               renderItem={({
+                'aria-label': ariaLabel,
                 className,
                 children: itemChildren,
-                'aria-label': ariaLabel,
                 triggerProps,
               }) => (
                 <Link
@@ -122,7 +125,7 @@ export const DeckViewer: FC<{
         className={cn('min-h-0 flex-1', isMaximized ? null : 'px-4 pt-2 pb-4')}
       >
         <Stage flush={isMaximized} key={index} qrUrl={qrUrl}>
-          {isHydrated ? current?.content : null}
+          <BrowserOnly>{current?.content}</BrowserOnly>
         </Stage>
       </div>
       {isPresenting && (
