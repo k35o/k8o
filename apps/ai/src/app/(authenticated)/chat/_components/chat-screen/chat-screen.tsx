@@ -12,6 +12,7 @@ import {
   deferredStopAfter,
   isStopping,
   serverSyncAfter,
+  stopRequestAfterFailedSend,
   stopRequestOnPress,
   unsavedUserText,
 } from '@/features/agent/application/thread-sync';
@@ -35,11 +36,18 @@ const transport = new DefaultChatTransport<AgentUIMessage>({
   }),
 });
 
-const requestStop = async (threadId: string): Promise<void> => {
+const requestStop = async (threadId: string): Promise<boolean> => {
   try {
-    await fetch(`/api/chat/${threadId}/stop`, { method: 'POST' });
+    const response = await fetch(`/api/chat/${threadId}/stop`, {
+      method: 'POST',
+    });
+    if (!response.ok) {
+      console.error('停止を要求できませんでした', response.status);
+    }
+    return response.ok;
   } catch (stopError) {
     console.error('停止を要求できませんでした', stopError);
+    return false;
   }
 };
 
@@ -121,7 +129,7 @@ export const ChatScreen: FC<ChatScreenProps> = ({
   useThreadSync({
     threadId: thread.id,
     mode: sync,
-    stopSent: stopRequest === 'sent',
+    stopSent: stopRequest === 'released' || stopRequest === 'sent',
     onSettled: (serverMessages) => {
       if (serverMessages !== null) {
         const unsaved = unsavedUserText(messages, serverMessages);
@@ -175,8 +183,20 @@ export const ChatScreen: FC<ChatScreenProps> = ({
     void sendMessage({ text }, { body: created ? {} : { model } });
   };
 
+  const sendStop = (): void => {
+    void requestStop(thread.id).then((delivered) => {
+      if (!delivered) {
+        setStopRequest(stopRequestAfterFailedSend);
+      }
+    });
+    void stop();
+  };
   const handleStop = (): void => {
-    setStopRequest(stopRequestOnPress(status));
+    const next = stopRequestOnPress(status);
+    setStopRequest(next);
+    if (next === 'sent') {
+      sendStop();
+    }
   };
   if (stopRequest === 'deferred') {
     const next = deferredStopAfter(status);
@@ -185,15 +205,12 @@ export const ChatScreen: FC<ChatScreenProps> = ({
     }
   }
   const stopping = isStopping({ request: stopRequest, status, sync });
-  const sendStop = useEffectEvent(() => {
-    void requestStop(thread.id);
-    void stop();
-  });
-  // 押したときと、応答が流れ始めたとき（描画中に 'sent' へ進める）の両方から1回だけ送るため、effect で送る。
+  const sendReleasedStop = useEffectEvent(sendStop);
+  // 応答が流れ始めたこと（描画中に 'released' へ進める）を受けて送るので、effect で送る。
   // 止まり終えたあとに Activity で effect が掛け直されても送り直さないよう、停止中のときだけ送る
   useEffect(() => {
-    if (stopRequest === 'sent' && stopping) {
-      sendStop();
+    if (stopRequest === 'released' && stopping) {
+      sendReleasedStop();
     }
   }, [stopRequest, stopping]);
 

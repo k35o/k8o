@@ -7,6 +7,7 @@ import {
   isStopping,
   nextSyncStep,
   serverSyncAfter,
+  stopRequestAfterFailedSend,
   stopRequestOnPress,
   syncRetryDelayMs,
   unsavedUserText,
@@ -222,7 +223,7 @@ describe('stopRequestOnPress', () => {
     });
 
     it.each(['ready', 'error'] as const)(
-      '受信を終えてサーバーの生成を待っているあいだ（%s）に押したら、すぐ送る',
+      '受信を終えてサーバーの生成を待っているあいだ（%s）に押したら、停止を送ったあとの押し直しでも、すぐ送る',
       (status) => {
         expect(stopRequestOnPress(status)).toBe('sent');
       },
@@ -239,7 +240,7 @@ describe('stopRequestOnPress', () => {
 describe('deferredStopAfter', () => {
   describe('正常系', () => {
     it('応答が流れ始めたら、待っていた停止を送る', () => {
-      expect(deferredStopAfter('streaming')).toBe('sent');
+      expect(deferredStopAfter('streaming')).toBe('released');
     });
 
     it('まだ流れ始めていなければ、待ち続ける', () => {
@@ -254,6 +255,27 @@ describe('deferredStopAfter', () => {
         expect(deferredStopAfter(status)).toBeNull();
       },
     );
+  });
+});
+
+describe('stopRequestAfterFailedSend', () => {
+  describe('異常系', () => {
+    it.each(['sent', 'released'] as const)(
+      '送った停止（%s）が届かなかったら、取り下げてもう一度押せるようにする',
+      (request) => {
+        expect(stopRequestAfterFailedSend(request)).toBeNull();
+      },
+    );
+  });
+
+  describe('エッジケース', () => {
+    it('届かないうちに次の送信で、流れ始めを待つ停止に変わっていたら、それは残す', () => {
+      expect(stopRequestAfterFailedSend('deferred')).toBe('deferred');
+    });
+
+    it('届かないうちに次の送信で取り下げられていたら、取り下げたまま', () => {
+      expect(stopRequestAfterFailedSend(null)).toBeNull();
+    });
   });
 });
 

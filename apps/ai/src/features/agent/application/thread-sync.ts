@@ -72,11 +72,13 @@ export const syncRetryDelayMs = (input: {
     ? STOPPING_SYNC_INTERVAL_MS
     : SYNC_INTERVAL_MS;
 
-// 押した停止の段階。'deferred' は応答が流れ始めるのを待っている、'sent' は送る（送った）
-export type StopRequest = 'deferred' | 'sent';
+// 押した停止の段階。'deferred' は応答が流れ始めるのを待っている、'released' は流れ始めたので送る（送った）、
+// 'sent' は押したときに送った
+export type StopRequest = 'deferred' | 'released' | 'sent';
 
 // サーバーは実行の印を付けて user メッセージを保存してから応答を流し、印が付く前に届いた停止は捨てるので、
-// 応答が流れ始める前（submitted）に押された停止は、流れ始めるまで送らない
+// 応答が流れ始める前（submitted）に押された停止は、流れ始めるまで送らない。
+// それ以外は押すたびに送り、先に送った停止が届かなかったときも押し直せば止められるようにする
 export const stopRequestOnPress = (status: ChatStatus): StopRequest =>
   status === 'submitted' ? 'deferred' : 'sent';
 
@@ -87,12 +89,18 @@ export const deferredStopAfter = (status: ChatStatus): StopRequest | null => {
     case 'submitted':
       return 'deferred';
     case 'streaming':
-      return 'sent';
+      return 'released';
     case 'ready':
     case 'error':
       return null;
   }
 };
+
+// 送った停止が届かなかったら、「停止しています…」を出し続けないよう取り下げ、もう一度押せるようにする。
+// 届かないうちに次の送信で流れ始めを待つ停止に変わっていたら、それは残す
+export const stopRequestAfterFailedSend = (
+  current: StopRequest | null,
+): StopRequest | null => (current === 'deferred' ? 'deferred' : null);
 
 // 押したことと今の受信・同期から導くので、停止が自然な終わりと競って読み直さずに済んだときにも残らない
 export const isStopping = (input: {
