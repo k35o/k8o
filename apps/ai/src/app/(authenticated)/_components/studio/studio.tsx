@@ -272,11 +272,18 @@ export const Studio = ({ projects }: { projects: ProjectListItem[] }) => {
     setMobileTab('preview');
     // 読込が終わったら（成功/失敗/非所有いずれも）読込中表示を外す。待つあいだに別のプロジェクトへ
     // 移っていたら、移った先の読込中表示は移った先の読込が外す。
-    const project = await loadProjectAction(id).finally(() => {
-      if (isLatest()) {
-        setPendingSelect(null);
-      }
-    });
+    // 例外も読めなかった（null）ときと同じに扱い、向かっていた先を今のプロジェクトに戻す。
+    // 戻さないと、そのあとの保存が別のプロジェクトへ移ったものとして捨てられる
+    const project = await loadProjectAction(id)
+      .catch((loadError: unknown) => {
+        console.error('プロジェクトを読み込めませんでした', loadError);
+        return null;
+      })
+      .finally(() => {
+        if (isLatest()) {
+          setPendingSelect(null);
+        }
+      });
     // 待つあいだに別のプロジェクトへ移っていたら、移った先を上書きしないよう捨てる。
     if (!isLatest()) {
       return;
