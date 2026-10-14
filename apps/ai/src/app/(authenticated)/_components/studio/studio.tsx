@@ -262,6 +262,7 @@ export const Studio = ({ projects }: { projects: ProjectListItem[] }) => {
   };
 
   const handleSelectProject = async (id: number): Promise<void> => {
+    const isLatest = persistence.startLoading(id);
     // 生成中なら中断してから切り替える（生成中表示が切替先に漏れるのを防ぐ）。
     void stop();
     // クリック直後に読込中を見せ、タイトルは既知のリスト項目から先行表示する。
@@ -269,53 +270,58 @@ export const Studio = ({ projects }: { projects: ProjectListItem[] }) => {
     setPendingSelect({ title: known?.title ?? '読み込み中…' });
     setView('preview');
     setMobileTab('preview');
-    try {
-      const project = await loadProjectAction(id);
-      if (project === null) {
-        return;
+    // 読込が終わったら（成功/失敗/非所有いずれも）読込中表示を外す。待つあいだに別のプロジェクトへ
+    // 移っていたら、移った先の読込中表示は移った先の読込が外す。
+    const project = await loadProjectAction(id).finally(() => {
+      if (isLatest()) {
+        setPendingSelect(null);
       }
-      persistence.markLoaded(project);
-      dispatch({
-        type: 'load-project',
-        content: project.spec,
-        meta: project.meta,
-      });
-      setEditBase(null);
-      // 履歴を切り替えてもトークが消えないよう会話を復元する。各版を
-      // [user(指示) → assistant(説明文)] に展開する。説明文はプレーンテキストなので
-      // ChatPanel の describe がそのまま表示する。
-      const restored: UIMessage[] = project.conversation.flatMap(
-        (turn, index): UIMessage[] => {
-          const turnMessages: UIMessage[] = [];
-          if (turn.prompt !== null && turn.prompt !== '') {
-            turnMessages.push({
-              id: `h-u-${index.toString()}`,
-              role: 'user',
-              parts: [{ type: 'text', text: turn.prompt }],
-            });
-          }
-          turnMessages.push({
-            id: `h-a-${index.toString()}`,
-            role: 'assistant',
-            parts: [
-              {
-                type: 'text',
-                text:
-                  turn.meta.description === ''
-                    ? '内容を更新しました'
-                    : turn.meta.description,
-              },
-            ],
-          });
-          return turnMessages;
-        },
-      );
-      setMessages(restored);
-      setValidationNotice(null);
-    } finally {
-      // 読込が終わったら（成功/失敗/非所有いずれも）読込中表示を必ず外す。
-      setPendingSelect(null);
+    });
+    // 待つあいだに別のプロジェクトへ移っていたら、移った先を上書きしないよう捨てる。
+    if (!isLatest()) {
+      return;
     }
+    persistence.markLoaded(project);
+    if (project === null) {
+      return;
+    }
+    dispatch({
+      type: 'load-project',
+      content: project.spec,
+      meta: project.meta,
+    });
+    setEditBase(null);
+    // 履歴を切り替えてもトークが消えないよう会話を復元する。各版を
+    // [user(指示) → assistant(説明文)] に展開する。説明文はプレーンテキストなので
+    // ChatPanel の describe がそのまま表示する。
+    const restored: UIMessage[] = project.conversation.flatMap(
+      (turn, index): UIMessage[] => {
+        const turnMessages: UIMessage[] = [];
+        if (turn.prompt !== null && turn.prompt !== '') {
+          turnMessages.push({
+            id: `h-u-${index.toString()}`,
+            role: 'user',
+            parts: [{ type: 'text', text: turn.prompt }],
+          });
+        }
+        turnMessages.push({
+          id: `h-a-${index.toString()}`,
+          role: 'assistant',
+          parts: [
+            {
+              type: 'text',
+              text:
+                turn.meta.description === ''
+                  ? '内容を更新しました'
+                  : turn.meta.description,
+            },
+          ],
+        });
+        return turnMessages;
+      },
+    );
+    setMessages(restored);
+    setValidationNotice(null);
   };
 
   const handleFork = async (): Promise<void> => {
@@ -325,7 +331,7 @@ export const Studio = ({ projects }: { projects: ProjectListItem[] }) => {
     await persistence.fork(persistence.projectId);
   };
 
-  useProjectUrlSync(persistence.projectId, {
+  useProjectUrlSync(persistence.isHeadingTo, {
     load: (projectId) => {
       void handleSelectProject(projectId);
     },

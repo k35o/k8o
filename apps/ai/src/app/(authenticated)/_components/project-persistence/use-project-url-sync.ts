@@ -6,12 +6,12 @@ import { useEffect, useEffectEvent } from 'react';
 import { parseProjectId } from './parse-project-id';
 
 export const useProjectUrlSync = (
-  projectId: number | null,
+  isHeadingTo: (projectId: number | null) => boolean,
   on: { load: (projectId: number) => void; reset: () => void },
 ): void => {
   const urlProjectId = parseProjectId(useSearchParams().get('project'));
   const follow = useEffectEvent((next: number | null) => {
-    if (next === projectId) {
+    if (isHeadingTo(next)) {
       return;
     }
     if (next === null) {
