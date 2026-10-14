@@ -78,6 +78,9 @@ export const Default = meta.story({
     await expect(within(nav).getByText('UI')).toBeInTheDocument();
     await expect(within(nav).getByText('スライド')).toBeInTheDocument();
     await expect(
+      within(nav).getByRole('link', { name: 'チャット' }),
+    ).toHaveAttribute('href', '/chat');
+    await expect(
       canvas.getByRole('button', { name: /新規作成/u }),
     ).toBeInTheDocument();
     // プロジェクト一覧はサイドバー（complementary）内にある。ヘッダのタイトルと

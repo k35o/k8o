@@ -10,7 +10,7 @@ type Prices = {
 };
 
 // 100万トークンあたりのドルは、そのまま1トークンあたりのマイクロドルになるので、換算せずに掛ける
-const PRICE_PER_MTOK_USD = {
+export const PRICE_PER_MTOK_USD = {
   'claude-sonnet-5-5': {
     input: 2,
     output: 10,
