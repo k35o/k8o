@@ -34,14 +34,14 @@ const textOf = (message: AgentUIMessage): string =>
 const toolOutputText = (output: unknown): string =>
   typeof output === 'string' ? output : JSON.stringify(output, null, 2);
 
-const ToolPart: FC<{ part: AgentToolPart; isStreaming: boolean }> = ({
+const ToolPart: FC<{ part: AgentToolPart; isGenerating: boolean }> = ({
   part,
-  isStreaming,
+  isGenerating,
 }) => {
   const name = part.type.slice('tool-'.length);
   // 止めた返答には、入力の状態のまま終わった呼び出しが残る。待ち続ける表示にしない
   if (
-    !isStreaming &&
+    !isGenerating &&
     (part.state === 'input-streaming' || part.state === 'input-available')
   ) {
     return (
@@ -79,10 +79,38 @@ const ToolPart: FC<{ part: AgentToolPart; isStreaming: boolean }> = ({
   }
 };
 
-const AgentPart: FC<{ part: AgentMessagePart; isStreaming: boolean }> = ({
-  part,
-  isStreaming,
-}) => {
+// 止めた返答の reasoning は streaming のまま保存されるので、受信中のときだけ思考中にする
+const isThinking = (
+  part: Extract<AgentMessagePart, { type: 'reasoning' }>,
+  isStreaming: boolean,
+): boolean => isStreaming && part.state === 'streaming';
+
+const rendersPart = (part: AgentMessagePart, isStreaming: boolean): boolean => {
+  switch (part.type) {
+    case 'text':
+    case 'tool-list_blogs':
+    case 'tool-read_blog':
+      return true;
+    case 'reasoning':
+      return part.text.trim() !== '' || isThinking(part, isStreaming);
+    default:
+      return false;
+  }
+};
+
+export const hasVisiblePart = (
+  message: AgentUIMessage,
+  isStreaming: boolean,
+): boolean => message.parts.some((part) => rendersPart(part, isStreaming));
+
+const AgentPart: FC<{
+  part: AgentMessagePart;
+  isStreaming: boolean;
+  isServerRunning: boolean;
+}> = ({ part, isStreaming, isServerRunning }) => {
+  if (!rendersPart(part, isStreaming)) {
+    return null;
+  }
   switch (part.type) {
     case 'text':
       return (
@@ -92,17 +120,17 @@ const AgentPart: FC<{ part: AgentMessagePart; isStreaming: boolean }> = ({
           <MarkdownText>{part.text}</MarkdownText>
         </Message.Content>
       );
-    case 'reasoning': {
-      // 止めた返答の reasoning は streaming のまま保存されるので、受信中のときだけ思考中にする
-      const thinking = isStreaming && part.state === 'streaming';
-      if (part.text.trim() === '' && !thinking) {
-        return null;
-      }
-      return <Reasoning isStreaming={thinking}>{part.text}</Reasoning>;
-    }
+    case 'reasoning':
+      return (
+        <Reasoning isStreaming={isThinking(part, isStreaming)}>
+          {part.text}
+        </Reasoning>
+      );
     case 'tool-list_blogs':
     case 'tool-read_blog':
-      return <ToolPart isStreaming={isStreaming} part={part} />;
+      return (
+        <ToolPart isGenerating={isStreaming || isServerRunning} part={part} />
+      );
     default:
       return null;
   }
@@ -114,11 +142,13 @@ const partKey = (part: AgentMessagePart, index: number): string =>
 type AgentMessageProps = {
   message: AgentUIMessage;
   isStreaming: boolean;
+  isServerRunning: boolean;
 };
 
 export const AgentMessage: FC<AgentMessageProps> = ({
   message,
   isStreaming,
+  isServerRunning,
 }) => {
   if (message.role === 'user') {
     return (
@@ -134,6 +164,7 @@ export const AgentMessage: FC<AgentMessageProps> = ({
       <div className="flex min-w-0 flex-1 flex-col gap-3">
         {message.parts.map((part, index) => (
           <AgentPart
+            isServerRunning={isServerRunning}
             isStreaming={isStreaming}
             key={partKey(part, index)}
             part={part}

@@ -15,7 +15,7 @@ import {
 } from '@/shared/claude/models';
 import type { GenerationModel } from '@/shared/claude/models';
 
-import { AgentMessage } from '../agent-message';
+import { AgentMessage, hasVisiblePart } from '../agent-message';
 
 const MODEL_OPTIONS = GENERATION_MODELS.map((model) => ({
   value: model,
@@ -32,6 +32,20 @@ const PendingReply: FC<{ label: string }> = ({ label }) => (
     </p>
   </Message.Root>
 );
+
+const pendingLabelOf = (input: {
+  isReceiving: boolean;
+  isWaitingServer: boolean;
+  lastShown: AgentUIMessage | undefined;
+}): string | null => {
+  if (input.isWaitingServer) {
+    return '応答を生成しています（画面を離れても続きます）';
+  }
+  if (input.isReceiving && input.lastShown?.role !== 'assistant') {
+    return '考えています…';
+  }
+  return null;
+};
 
 type EmptyStateProps = {
   model: GenerationModel;
@@ -99,10 +113,22 @@ export const ChatView: FC<ChatViewProps> = ({
   onStop,
 }) => {
   const isReceiving = status === 'submitted' || status === 'streaming';
+  const isWaitingServer = isServerRunning && !isReceiving;
   // サーバーの生成を待つ間も送信を止め、停止ボタンを出す
-  const inputStatus: ChatStatus =
-    isServerRunning && !isReceiving ? 'submitted' : status;
+  const inputStatus: ChatStatus = isWaitingServer ? 'submitted' : status;
   const isEmpty = messages.length === 0 && !isServerRunning && !isReceiving;
+  const last = messages.at(-1);
+  // 描くものが届く前の返答の行を出すと、空の行と待ちの行でアバターが2つ並ぶので、待ちの行だけにする
+  const hidesLast =
+    (isReceiving || isWaitingServer) &&
+    last?.role === 'assistant' &&
+    !hasVisiblePart(last, status === 'streaming');
+  const shownMessages = hidesLast ? messages.slice(0, -1) : messages;
+  const pendingLabel = pendingLabelOf({
+    isReceiving,
+    isWaitingServer,
+    lastShown: shownMessages.at(-1),
+  });
 
   return (
     <div className="flex min-h-0 flex-1 flex-col">
@@ -120,21 +146,20 @@ export const ChatView: FC<ChatViewProps> = ({
               label="会話"
             >
               <div className="mx-auto flex w-full max-w-3xl flex-col gap-6">
-                {messages.map((message, index) => (
-                  <AgentMessage
-                    isStreaming={
-                      status === 'streaming' && index === messages.length - 1
-                    }
-                    key={message.id}
-                    message={message}
-                  />
-                ))}
-                {status === 'submitted' ? (
-                  <PendingReply label="考えています…" />
-                ) : null}
-                {isServerRunning && !isReceiving ? (
-                  <PendingReply label="応答を生成しています（画面を離れても続きます）" />
-                ) : null}
+                {shownMessages.map((message, index) => {
+                  const isLast = index === messages.length - 1;
+                  return (
+                    <AgentMessage
+                      isServerRunning={isWaitingServer && isLast}
+                      isStreaming={status === 'streaming' && isLast}
+                      key={message.id}
+                      message={message}
+                    />
+                  );
+                })}
+                {pendingLabel === null ? null : (
+                  <PendingReply label={pendingLabel} />
+                )}
               </div>
             </Conversation.Messages>
             <Conversation.ScrollButton />

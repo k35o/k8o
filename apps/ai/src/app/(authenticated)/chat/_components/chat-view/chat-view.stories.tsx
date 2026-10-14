@@ -135,6 +135,46 @@ export const Streaming = meta.story({
   },
 });
 
+export const Submitted = meta.story({
+  args: {
+    messages: [question, { id: 'a3', role: 'assistant', parts: [] }],
+    status: 'submitted',
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    // 中身の無い返答の行は出さず、待ちの行だけを1つ出す
+    await expect(canvas.getAllByRole('img', { name: 'AI' })).toHaveLength(1);
+    await expect(
+      canvas.getByRole('status', { name: '考えています…' }),
+    ).toBeInTheDocument();
+  },
+});
+
+export const StreamingBeforeFirstPart = meta.story({
+  args: {
+    messages: [
+      question,
+      {
+        id: 'a3',
+        role: 'assistant',
+        parts: [
+          { type: 'step-start' },
+          { type: 'custom', kind: 'anthropic.message_start' },
+        ],
+      },
+    ],
+    status: 'streaming',
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    // 描くものがまだ無いうちは、待ちの表示を消さない
+    await expect(canvas.getAllByRole('img', { name: 'AI' })).toHaveLength(1);
+    await expect(
+      canvas.getByRole('status', { name: '考えています…' }),
+    ).toBeInTheDocument();
+  },
+});
+
 export const ServerRunning = meta.story({
   args: { messages: [question], isServerRunning: true },
   play: async ({ args, canvasElement }) => {
@@ -146,6 +186,21 @@ export const ServerRunning = meta.story({
     ).toBeInTheDocument();
     await userEvent.click(canvas.getByRole('button', { name: '停止' }));
     await expect(args.onStop).toHaveBeenCalledOnce();
+  },
+});
+
+export const ServerRunningAfterPartialReply = meta.story({
+  args: { messages: [question, streamingAnswer], isServerRunning: true },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    // 受信は切れても、サーバーで続いている tool の呼び出しは止まったように描かない
+    const tool = canvas.getByRole('button', { name: /read_blog/u });
+    await expect(within(tool).getByRole('status')).toBeInTheDocument();
+    await expect(
+      canvas.getByRole('status', {
+        name: '応答を生成しています（画面を離れても続きます）',
+      }),
+    ).toBeInTheDocument();
   },
 });
 

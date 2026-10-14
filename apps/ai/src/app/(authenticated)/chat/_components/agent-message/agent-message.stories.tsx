@@ -87,6 +87,7 @@ const meta = preview.meta({
   args: {
     message: answer,
     isStreaming: false,
+    isServerRunning: false,
   },
 });
 
@@ -177,5 +178,25 @@ export const Stopped = meta.story({
     await userEvent.click(tool);
     await expect(canvas.getByText('完了する前に止まりました')).toBeVisible();
     await expect(canvas.getByRole('alert')).toHaveTextContent('停止しました');
+  },
+});
+
+export const ServerRunning = meta.story({
+  args: {
+    message: { id: 'a4', role: 'assistant', parts: inProgressParts },
+    isServerRunning: true,
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    // 受信していないので思考中にはしないが、サーバーで続いている tool の呼び出しは進行中にする
+    await expect(
+      canvas.getByRole('button', { name: '思考の過程' }),
+    ).toBeInTheDocument();
+    const tool = canvas.getByRole('button', { name: /read_blog/u });
+    await expect(within(tool).getByRole('status')).toBeInTheDocument();
+    await userEvent.click(tool);
+    await expect(
+      canvas.queryByText('完了する前に止まりました'),
+    ).not.toBeInTheDocument();
   },
 });

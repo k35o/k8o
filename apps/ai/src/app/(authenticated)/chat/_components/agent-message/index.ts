@@ -1,1 +1,1 @@
-export { AgentMessage } from './agent-message';
+export { AgentMessage, hasVisiblePart } from './agent-message';
