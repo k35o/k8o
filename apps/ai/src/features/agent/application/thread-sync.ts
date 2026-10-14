@@ -57,3 +57,20 @@ export const nextSyncStep = (mode: ServerSync, read: ThreadRead): SyncStep => {
       return mode === 'check' ? { type: 'wait' } : { type: 'retry' };
   }
 };
+
+// サーバーはクライアントが付けた id のまま保存するので、id で保存されたかを見る
+export const unsavedUserText = (
+  local: AgentUIMessage[],
+  saved: AgentUIMessage[],
+): string | null => {
+  const lastUser = local.findLast((message) => message.role === 'user');
+  if (
+    lastUser === undefined ||
+    saved.some((message) => message.id === lastUser.id)
+  ) {
+    return null;
+  }
+  return lastUser.parts
+    .flatMap((part) => (part.type === 'text' ? [part.text] : []))
+    .join('\n');
+};

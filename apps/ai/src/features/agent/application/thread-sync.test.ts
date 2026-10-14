@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 
 import type { AgentUIMessage } from './agent-message';
-import { nextSyncStep, serverSyncAfter } from './thread-sync';
+import { nextSyncStep, serverSyncAfter, unsavedUserText } from './thread-sync';
 
 type ChatFinish = Parameters<typeof serverSyncAfter>[0];
 
@@ -164,6 +164,46 @@ describe('nextSyncStep', () => {
       expect(
         nextSyncStep('wait', { type: 'not-found', count: 5 }),
       ).toStrictEqual({ type: 'settle', messages: [] });
+    });
+  });
+});
+
+describe('unsavedUserText', () => {
+  const firstQuestion: AgentUIMessage = {
+    id: 'u1',
+    role: 'user',
+    parts: [{ type: 'text', text: 'こんにちは' }],
+  };
+  const refusedQuestion: AgentUIMessage = {
+    id: 'u2',
+    role: 'user',
+    parts: [{ type: 'text', text: 'ariaNotify の記事を\n要約して' }],
+  };
+
+  describe('正常系', () => {
+    it('最後に送った本文がサーバーに保存されていなければ、その本文を返す', () => {
+      expect(
+        unsavedUserText(
+          [firstQuestion, assistantMessage, refusedQuestion],
+          [firstQuestion, assistantMessage],
+        ),
+      ).toBe('ariaNotify の記事を\n要約して');
+    });
+
+    it('最後に送った本文がサーバーに保存されていれば、何も返さない', () => {
+      expect(
+        unsavedUserText([firstQuestion, assistantMessage], savedMessages),
+      ).toBeNull();
+    });
+  });
+
+  describe('エッジケース', () => {
+    it('新しいスレッドで、サーバーに何も無ければ、送った本文を返す', () => {
+      expect(unsavedUserText([firstQuestion], [])).toBe('こんにちは');
+    });
+
+    it('送った本文が無ければ、何も返さない', () => {
+      expect(unsavedUserText([], [])).toBeNull();
     });
   });
 });

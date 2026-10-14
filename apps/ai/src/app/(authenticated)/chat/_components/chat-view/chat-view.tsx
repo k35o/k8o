@@ -94,6 +94,8 @@ type ChatViewProps = {
   status: ChatStatus;
   isServerRunning: boolean;
   errorText: string | null;
+  draft: string;
+  onDraftChange: (draft: string) => void;
   model: GenerationModel;
   canSelectModel: boolean;
   onSelectModel: (model: GenerationModel) => void;
@@ -106,6 +108,8 @@ export const ChatView: FC<ChatViewProps> = ({
   status,
   isServerRunning,
   errorText,
+  draft,
+  onDraftChange,
   model,
   canSelectModel,
   onSelectModel,
@@ -172,9 +176,11 @@ export const ChatView: FC<ChatViewProps> = ({
             <Alert message={errorText} tone="error" />
           )}
           <PromptInput.Root
+            onChange={onDraftChange}
             onStop={onStop}
             onSubmit={onSubmit}
             status={inputStatus}
+            value={draft}
           >
             <PromptInput.Textarea placeholder="例: View Transitions の記事を要約して" />
             <PromptInput.Submit sendLabel="送信" stopLabel="停止" />

@@ -7,7 +7,10 @@ import type { FC } from 'react';
 
 import { threadTitleFrom } from '@/features/agent/application/agent-message';
 import type { AgentUIMessage } from '@/features/agent/application/agent-message';
-import { serverSyncAfter } from '@/features/agent/application/thread-sync';
+import {
+  serverSyncAfter,
+  unsavedUserText,
+} from '@/features/agent/application/thread-sync';
 import type { ServerSync } from '@/features/agent/application/thread-sync';
 import type { ThreadListItem } from '@/features/agent/application/threads';
 import { DEFAULT_GENERATION_MODEL } from '@/shared/claude/models';
@@ -46,6 +49,7 @@ export const ChatScreen: FC<ChatScreenProps> = ({
   );
   const [firstSentAt, setFirstSentAt] = useState<string | null>(null);
   const [createdAt, setCreatedAt] = useState<string | null>(null);
+  const [draft, setDraft] = useState('');
 
   const {
     messages,
@@ -73,6 +77,10 @@ export const ChatScreen: FC<ChatScreenProps> = ({
     mode: sync,
     onSettled: (serverMessages) => {
       if (serverMessages !== null) {
+        const unsaved = unsavedUserText(messages, serverMessages);
+        if (unsaved !== null) {
+          setDraft((current) => (current.trim() === '' ? unsaved : current));
+        }
         setMessages(serverMessages);
       }
       setSync(null);
@@ -110,6 +118,7 @@ export const ChatScreen: FC<ChatScreenProps> = ({
 
   const handleSubmit = (text: string): void => {
     clearError();
+    setDraft('');
     if (!created) {
       setFirstSentAt(new Date().toISOString());
     }
@@ -135,10 +144,12 @@ export const ChatScreen: FC<ChatScreenProps> = ({
     >
       <ChatView
         canSelectModel={!created && messages.length === 0}
+        draft={draft}
         errorText={error?.message ?? null}
         isServerRunning={sync === 'wait'}
         messages={messages}
         model={model}
+        onDraftChange={setDraft}
         onSelectModel={setModel}
         onStop={() => {
           void handleStop();

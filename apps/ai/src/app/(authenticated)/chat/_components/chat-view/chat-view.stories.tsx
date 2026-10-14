@@ -1,4 +1,5 @@
-import type { ComponentProps } from 'react';
+import { useState } from 'react';
+import type { ComponentProps, FC } from 'react';
 import { expect, fn, userEvent, within } from 'storybook/test';
 
 import type {
@@ -66,8 +67,28 @@ const endedAnswer = (end: RunEnd): AgentUIMessage => ({
   parts: [{ type: 'text', state: 'done', text: `${end} の返答` }],
 });
 
+// 入力欄の本文は親が持つので、打った文字が残るよう Story でも状態を持つ
+const ChatViewWithDraft: FC<ComponentProps<typeof ChatView>> = ({
+  draft,
+  onDraftChange,
+  ...props
+}) => {
+  const [value, setValue] = useState(draft);
+  return (
+    <ChatView
+      {...props}
+      draft={value}
+      onDraftChange={(next) => {
+        setValue(next);
+        onDraftChange(next);
+      }}
+    />
+  );
+};
+
 const meta = preview.meta({
   component: ChatView,
+  render: (args) => <ChatViewWithDraft {...args} />,
   decorators: [
     (Story) => (
       <div className="bg-bg-surface flex h-160 flex-col">
@@ -82,6 +103,8 @@ const meta = preview.meta({
     status: 'ready',
     isServerRunning: false,
     errorText: null,
+    draft: '',
+    onDraftChange: fn<(draft: string) => void>(),
     model: 'claude-sonnet-5-5',
     canSelectModel: false,
     onSelectModel: fn<(model: GenerationModel) => void>(),
@@ -216,6 +239,23 @@ export const ErrorText = meta.story({
     await expect(canvas.getByRole('alert')).toHaveTextContent(
       '1時間あたりの上限に達しました。しばらく待ってから送ってください。',
     );
+  },
+});
+
+export const RestoredDraft = meta.story({
+  args: {
+    messages: [],
+    status: 'error',
+    errorText: 'この会話は長くなりすぎました。新しいチャットで続けてください',
+    draft: 'ariaNotify の記事を要約して',
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    // 断られた送信の本文は入力欄に戻り、そのまま送り直せる
+    await expect(canvas.getByRole('textbox')).toHaveValue(
+      'ariaNotify の記事を要約して',
+    );
+    await expect(canvas.getByRole('button', { name: '送信' })).toBeEnabled();
   },
 });
 
