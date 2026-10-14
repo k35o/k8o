@@ -5,6 +5,7 @@ import { createContext, use } from 'react';
 import type { FC } from 'react';
 import Markdown from 'react-markdown';
 import type { Components } from 'react-markdown';
+import remarkGfm from 'remark-gfm';
 
 // react-markdown の code はインラインかコードブロックの中かを区別できないので、pre から伝える
 const InCodeBlockContext = createContext(false);
@@ -36,6 +37,24 @@ const components: Components = {
   strong: ({ children }) => <strong className="font-bold">{children}</strong>,
   em: ({ children }) => <em className="italic">{children}</em>,
   hr: () => <hr className="border-border-mute" />,
+  table: ({ children }) => (
+    <div
+      className="overflow-x-auto"
+      // 横にスクロールする広い表をキーボードでも読めるよう、フォーカスできるようにする
+      // oxlint-disable-next-line jsx-a11y/no-noninteractive-tabindex
+      tabIndex={0}
+    >
+      <table className="border-collapse text-sm">{children}</table>
+    </div>
+  ),
+  th: ({ children }) => (
+    <th className="border-border-base border px-2 py-1 text-left font-bold">
+      {children}
+    </th>
+  ),
+  td: ({ children }) => (
+    <td className="border-border-base border px-2 py-1">{children}</td>
+  ),
   pre: ({ children }) => (
     <pre
       className="bg-bg-mute text-fg-base overflow-x-auto rounded-lg p-3 text-sm"
@@ -58,11 +77,16 @@ const components: Components = {
 
 // 画像を読み込むと、モデルが書いた URL へ外から通信させられるので描かない
 const DISALLOWED_ELEMENTS = ['img'];
+const REMARK_PLUGINS = [remarkGfm];
 
 export const MarkdownText: FC<{ children: string }> = ({ children }) => (
   // Message.Content の pre-wrap を受け継ぐと、ブロックの間の改行が空行として出るので戻す
   <div className="flex flex-col gap-3 whitespace-normal">
-    <Markdown components={components} disallowedElements={DISALLOWED_ELEMENTS}>
+    <Markdown
+      components={components}
+      disallowedElements={DISALLOWED_ELEMENTS}
+      remarkPlugins={REMARK_PLUGINS}
+    >
       {children}
     </Markdown>
   </div>

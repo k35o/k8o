@@ -54,6 +54,12 @@ const answer: AgentUIMessage = {
         '- **ライブリージョン**を置かなくて済みます',
         '',
         '詳しくは[記事](https://k8o.me/blog/arianotify)を読んでください。',
+        '一覧は https://k8o.me/blog にあります。',
+        '',
+        '| 方法 | DOM の変更 |',
+        '| --- | --- |',
+        '| ariaNotify メソッド | 要らない |',
+        '| ライブリージョン | 要る |',
         '',
         '![図](https://example.com/figure.png)',
         '',
@@ -120,6 +126,13 @@ export const Answer = meta.story({
       'href',
       'https://k8o.me/blog/arianotify',
     );
+    // 素の URL もリンクにする
+    await expect(
+      canvas.getByRole('link', { name: 'https://k8o.me/blog' }),
+    ).toHaveAttribute('href', 'https://k8o.me/blog');
+    await expect(
+      canvas.getByRole('cell', { name: 'ライブリージョン' }),
+    ).toBeInTheDocument();
     await expect(
       canvas.getByText("document.ariaNotify('保存しました');"),
     ).toBeInTheDocument();
