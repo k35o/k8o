@@ -37,6 +37,11 @@ import { StudioPanes } from '../../../_components/studio-panes';
 import { ToolHeader } from '../../../_components/tool-frame';
 import { ViewTabs } from '../../../_components/view-tabs';
 import { DeckPreview } from '../deck-preview';
+import {
+  MOBILE_TAB_OPTIONS,
+  NEW_PROJECT_EMPTY_STATE,
+  VIEW_OPTIONS,
+} from './new-project';
 
 // 設定は完全に静的なので、レンダーごとに生成しない。
 const transport = new DefaultChatTransport({ api: '/api/generate' });
@@ -47,16 +52,6 @@ const persistenceActions = {
 };
 
 type PanelView = 'preview' | 'source';
-
-const viewOptions = [
-  { value: 'preview', label: 'プレビュー' },
-  { value: 'source', label: 'ソース' },
-] as const;
-
-const mobileTabOptions = [
-  { value: 'chat', label: 'チャット' },
-  ...viewOptions,
-] as const;
 
 // 吹き出しに出す説明文。スライドの出力フォーマット（md + json）から抽出する。
 const describeSlidesMessage = (text: string): string | null =>
@@ -162,20 +157,16 @@ export const SlidesStudio = ({ projects }: { projects: ProjectListItem[] }) => {
   // 履歴から読み込んだ直後はチャットが空になるため、空状態でも「何を編集中か」を示す。
   const emptyStateTitle = hasResult
     ? `「${state.lastMeta?.title ?? 'スライド'}」を編集中`
-    : 'スライドを生成しましょう';
+    : NEW_PROJECT_EMPTY_STATE.title;
   const emptyStateHint = hasResult
     ? '続けて指示すると、このスライドを更新します。例:「もっと簡潔に」「コード例を追加して」'
-    : '例: 「TypeScript 入門の LT スライド」「自己紹介の5枚デッキ」';
+    : NEW_PROJECT_EMPTY_STATE.hint;
   const chatErrorText =
     error === undefined ? null : 'エラーが発生しました。再試行してください。';
   // 初回（まだ結果がない）ときだけ、最初の一手を促すサジェストを出す。
   const promptSuggestions = hasResult
     ? []
-    : [
-        'TypeScript 入門の LT スライド',
-        'モノレポ運用の勉強会資料',
-        '自己紹介の5枚デッキ',
-      ];
+    : NEW_PROJECT_EMPTY_STATE.suggestions;
 
   const handleGenerate = async (text: string): Promise<void> => {
     if (text === '' || isBusy || saving) {
@@ -304,7 +295,7 @@ export const SlidesStudio = ({ projects }: { projects: ProjectListItem[] }) => {
           projectTitle={persistence.projectTitle}
         />
         <div className="hidden gap-2 lg:flex">
-          <ViewTabs onChange={setView} options={viewOptions} value={view} />
+          <ViewTabs onChange={setView} options={VIEW_OPTIONS} value={view} />
         </div>
         <div className="flex shrink-0 items-center gap-2 lg:ml-auto">
           {persistence.projectId === null ? null : (
@@ -351,7 +342,7 @@ export const SlidesStudio = ({ projects }: { projects: ProjectListItem[] }) => {
               setView(tab);
             }
           }}
-          options={mobileTabOptions}
+          options={MOBILE_TAB_OPTIONS}
           value={mobileTab}
         />
       </div>

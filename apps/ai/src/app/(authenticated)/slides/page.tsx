@@ -4,8 +4,7 @@ import { Suspense } from 'react';
 
 import { listSlidesProjectsForRoute } from '@/features/projects/interface/queries';
 
-import { StudioSkeleton } from '../_components/studio';
-import { SlidesStudio } from './_components/slides-studio';
+import { SlidesPlaceholder, SlidesStudio } from './_components/slides-studio';
 
 export const metadata: Metadata = {
   title: 'スライド生成 | k8o AI Studio',
@@ -21,7 +20,7 @@ const AuthenticatedSlidesStudio = async () => {
 
 export default function Page() {
   return (
-    <Suspense fallback={<StudioSkeleton />}>
+    <Suspense fallback={<SlidesPlaceholder />}>
       <AuthenticatedSlidesStudio />
     </Suspense>
   );

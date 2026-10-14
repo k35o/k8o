@@ -42,6 +42,11 @@ import { ProjectTitle } from '../project-title';
 import { StudioPanes } from '../studio-panes';
 import { ToolHeader } from '../tool-frame';
 import { ViewTabs } from '../view-tabs';
+import {
+  MOBILE_TAB_OPTIONS,
+  NEW_PROJECT_EMPTY_STATE,
+  VIEW_OPTIONS,
+} from './new-project';
 import { ShareControl } from './share-control';
 
 // 設定は完全に静的なので、レンダーごとに生成しない。
@@ -53,17 +58,6 @@ const persistenceActions = {
 };
 
 type PanelView = 'preview' | 'spec' | 'tsx';
-
-const viewOptions = [
-  { value: 'preview', label: 'プレビュー' },
-  { value: 'spec', label: 'spec' },
-  { value: 'tsx', label: 'TSX' },
-] as const;
-
-const mobileTabOptions = [
-  { value: 'chat', label: 'チャット' },
-  ...viewOptions,
-] as const;
 
 export const Studio = ({ projects }: { projects: ProjectListItem[] }) => {
   const [input, setInput] = useState('');
@@ -196,10 +190,10 @@ export const Studio = ({ projects }: { projects: ProjectListItem[] }) => {
   // 履歴から読み込んだ直後はチャットが空になるため、空状態でも「何を編集中か」を示す。
   const emptyStateTitle = hasResult
     ? `「${state.lastMeta?.title ?? 'プロジェクト'}」を編集中`
-    : 'UI を生成しましょう';
+    : NEW_PROJECT_EMPTY_STATE.title;
   const emptyStateHint = hasResult
     ? '続けて指示すると、このUIを更新します。例:「色を温かいトーンに」「余白を広げて」'
-    : '例: 「お問い合わせフォームのカード」「料金プランの3カラム」';
+    : NEW_PROJECT_EMPTY_STATE.hint;
   let chatErrorText: string | null = null;
   if (validationNotice !== null) {
     chatErrorText = validationNotice;
@@ -209,11 +203,7 @@ export const Studio = ({ projects }: { projects: ProjectListItem[] }) => {
   // 初回（まだ結果がない）ときだけ、最初の一手を促すサジェストを出す。
   const promptSuggestions = hasResult
     ? []
-    : [
-        'お問い合わせフォームのカード',
-        '料金プランの3カラム',
-        'ヒーローセクション',
-      ];
+    : NEW_PROJECT_EMPTY_STATE.suggestions;
   const currentProject =
     projects.find((project) => project.id === persistence.projectId) ?? null;
 
@@ -355,7 +345,7 @@ export const Studio = ({ projects }: { projects: ProjectListItem[] }) => {
           projectTitle={persistence.projectTitle}
         />
         <div className="hidden gap-2 lg:flex">
-          <ViewTabs onChange={setView} options={viewOptions} value={view} />
+          <ViewTabs onChange={setView} options={VIEW_OPTIONS} value={view} />
         </div>
         <div className="flex shrink-0 items-center gap-2 lg:ml-auto">
           {persistence.projectId === null ? null : (
@@ -404,7 +394,7 @@ export const Studio = ({ projects }: { projects: ProjectListItem[] }) => {
               setView(tab);
             }
           }}
-          options={mobileTabOptions}
+          options={MOBILE_TAB_OPTIONS}
           value={mobileTab}
         />
       </div>
