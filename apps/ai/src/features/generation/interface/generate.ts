@@ -6,18 +6,20 @@ import {
   streamText,
   toUIMessageStream,
 } from 'ai';
-import type { UIMessage } from 'ai';
+import type { LanguageModelUsage, UIMessage } from 'ai';
 import { after } from 'next/server';
 import * as z from 'zod/mini';
 
 import {
-  generationLimit,
-  windowStartIso,
-} from '@/features/usage/application/rate-limit';
+  addUsageTokens,
+  EMPTY_USAGE_TOKENS,
+  toUsageTokens,
+} from '@/features/usage/application/pricing';
 import {
-  reserveGenerationUsage,
-  updateGenerationUsageTokens,
-} from '@/features/usage/infrastructure/usage-repository';
+  recordUsage,
+  reserveUsage,
+  USAGE_REFUSAL_MESSAGES,
+} from '@/features/usage/application/usage';
 import { requireAllowedSession } from '@/shared/auth/require-allowed-session';
 import { getGenerationModel } from '@/shared/claude/claude-provider';
 import {
@@ -32,8 +34,6 @@ import {
   stripDataParts,
   withEditContext,
 } from '../application/prompt-messages';
-import { sumStepTokens } from '../application/step-tokens';
-import type { StepUsage } from '../application/step-tokens';
 
 const bodySchema = z.object({
   id: z.optional(z.string()),
@@ -84,30 +84,39 @@ export async function handleGenerate(req: Request): Promise<Response> {
     return new Response(null, { status: 400 });
   }
 
-  // userId 単位のレート制限（スライディング1時間ウィンドウ）。暴走時のコストを抑える。
-  // 中断した生成も数えるよう、Claude を呼ぶ前に利用の行を予約する
-  const now = Date.now();
-  const usageId = await reserveGenerationUsage({
+  const generationModel = model ?? DEFAULT_GENERATION_MODEL;
+  const reservation = await reserveUsage({
     app,
     userId: session.userId,
-    createdAt: new Date(now).toISOString(),
-    sinceIso: windowStartIso(now),
-    limit: generationLimit(),
+    model: generationModel,
+    now: Date.now(),
   });
-  if (usageId === null) {
-    return new Response('Rate limit exceeded', { status: 429 });
+  if (!reservation.ok) {
+    return new Response(USAGE_REFUSAL_MESSAGES[reservation.reason], {
+      status: 429,
+    });
   }
 
   // onAbort には終わったステップしか渡らないので、onEnd もステップから数えて同じ処理にする。
   // 応答を返したあとに関数が止まっても書き込みが欠けないよう after に載せる
-  const recordTokens = ({ steps }: { steps: readonly StepUsage[] }): void => {
+  const recordTokens = ({
+    steps,
+  }: {
+    steps: ReadonlyArray<{ usage: LanguageModelUsage }>;
+  }): void => {
     after(
-      updateGenerationUsageTokens({ id: usageId, ...sumStepTokens(steps) }),
+      recordUsage({
+        usageId: reservation.usageId,
+        model: generationModel,
+        tokens: steps
+          .map((step) => toUsageTokens(step.usage))
+          .reduce(addUsageTokens, EMPTY_USAGE_TOKENS),
+      }),
     );
   };
 
   const result = streamText({
-    model: getGenerationModel(model ?? DEFAULT_GENERATION_MODEL),
+    model: getGenerationModel(generationModel),
     instructions:
       mode === 'slides'
         ? buildSlidesSystemPrompt({ currentSource: currentFile })

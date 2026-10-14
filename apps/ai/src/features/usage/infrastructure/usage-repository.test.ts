@@ -5,8 +5,9 @@ import { db } from '@repo/ai-database';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 import {
-  reserveGenerationUsage,
-  updateGenerationUsageTokens,
+  insertUsageWithinLimits,
+  selectCostSinceMicroUsd,
+  updateUsageCost,
 } from './usage-repository';
 
 vi.mock('server-only', () => ({}));
@@ -33,12 +34,13 @@ const insertRow = (row: {
   app: string;
   userId: string;
   createdAt: string;
+  costMicroUsd?: number | null;
 }): void => {
   sqlite
     .prepare(
-      "insert into ai_usages (app, user_id, kind, created_at) values (?, ?, 'generation', ?)",
+      "insert into ai_usages (app, user_id, kind, created_at, cost_micro_usd) values (?, ?, 'generation', ?, ?)",
     )
-    .run(row.app, row.userId, row.createdAt);
+    .run(row.app, row.userId, row.createdAt, row.costMicroUsd ?? null);
 };
 
 // node:sqlite の行はプロトタイプを持たないので、比べられるよう普通のオブジェクトに写す
@@ -54,10 +56,16 @@ const selectRows = (): unknown[] =>
 const base = {
   app: 'ui-studio',
   userId: 'u1',
+  model: 'claude-sonnet-5-5',
   createdAt: '2026-10-13T12:00:00.000Z',
   sinceIso: '2026-10-13T11:00:00.000Z',
   limit: 2,
+  monthStartIso: '2026-10-01T00:00:00.000Z',
+  budgetMicroUsd: 1000,
 } as const;
+
+// 1時間のウィンドウより前で、当月に入る時刻。予算だけに数えたい行に使う
+const EARLIER_THIS_MONTH = '2026-10-02T00:00:00.000Z';
 
 beforeEach(() => {
   sqlite = new DatabaseSync(':memory:');
@@ -78,10 +86,10 @@ beforeEach(() => {
   `);
 });
 
-describe('reserveGenerationUsage', () => {
+describe('insertUsageWithinLimits', () => {
   describe('正常系', () => {
-    it('上限未満なら、トークン数が空の利用の行を入れてその id を返す', async () => {
-      const id = await reserveGenerationUsage(base);
+    it('上限と予算に収まれば、モデルだけを入れた利用の行を入れてその id を返す', async () => {
+      const id = await insertUsageWithinLimits(base);
 
       expect(id).toBe(1);
       expect(selectRows()).toStrictEqual([
@@ -90,7 +98,7 @@ describe('reserveGenerationUsage', () => {
           app: 'ui-studio',
           user_id: 'u1',
           kind: 'generation',
-          model: null,
+          model: 'claude-sonnet-5-5',
           input_tokens: null,
           output_tokens: null,
           cache_read_tokens: null,
@@ -104,10 +112,28 @@ describe('reserveGenerationUsage', () => {
 
   describe('異常系', () => {
     it('上限ちょうどに達していると、行を入れずに null を返す', async () => {
-      await expect(reserveGenerationUsage(base)).resolves.toBe(1);
-      await expect(reserveGenerationUsage(base)).resolves.toBe(2);
+      await expect(insertUsageWithinLimits(base)).resolves.toBe(1);
+      await expect(insertUsageWithinLimits(base)).resolves.toBe(2);
 
-      await expect(reserveGenerationUsage(base)).resolves.toBeNull();
+      await expect(insertUsageWithinLimits(base)).resolves.toBeNull();
+      expect(selectRows()).toHaveLength(2);
+    });
+
+    it('当月の費用の合計が予算ちょうどに達していると、行を入れずに null を返す', async () => {
+      insertRow({
+        app: 'ui-studio',
+        userId: 'u1',
+        createdAt: EARLIER_THIS_MONTH,
+        costMicroUsd: 600,
+      });
+      insertRow({
+        app: 'ui-studio',
+        userId: 'u1',
+        createdAt: EARLIER_THIS_MONTH,
+        costMicroUsd: 400,
+      });
+
+      await expect(insertUsageWithinLimits(base)).resolves.toBeNull();
       expect(selectRows()).toHaveLength(2);
     });
   });
@@ -121,8 +147,8 @@ describe('reserveGenerationUsage', () => {
         createdAt: '2026-10-13T10:59:59.999Z',
       });
 
-      await expect(reserveGenerationUsage(base)).resolves.toBe(3);
-      await expect(reserveGenerationUsage(base)).resolves.toBeNull();
+      await expect(insertUsageWithinLimits(base)).resolves.toBe(3);
+      await expect(insertUsageWithinLimits(base)).resolves.toBeNull();
     });
 
     it('ほかのアプリやほかの利用者の行は数えない', async () => {
@@ -131,36 +157,162 @@ describe('reserveGenerationUsage', () => {
       insertRow({ app: 'ui-studio', userId: 'u2', createdAt: base.createdAt });
       insertRow({ app: 'ui-studio', userId: 'u2', createdAt: base.createdAt });
 
-      await expect(reserveGenerationUsage(base)).resolves.toBe(5);
+      await expect(insertUsageWithinLimits(base)).resolves.toBe(5);
     });
 
     it('同時に来た要求でも、上限を超えて予約しない', async () => {
       const ids = await Promise.all([
-        reserveGenerationUsage({ ...base, limit: 1 }),
-        reserveGenerationUsage({ ...base, limit: 1 }),
+        insertUsageWithinLimits({ ...base, limit: 1 }),
+        insertUsageWithinLimits({ ...base, limit: 1 }),
       ]);
 
       expect(ids.filter((id) => id !== null)).toHaveLength(1);
       expect(selectRows()).toHaveLength(1);
     });
+
+    it('予算まで1マイクロドルでも残っていれば予約する', async () => {
+      insertRow({
+        app: 'ui-studio',
+        userId: 'u1',
+        createdAt: EARLIER_THIS_MONTH,
+        costMicroUsd: 999,
+      });
+
+      await expect(insertUsageWithinLimits(base)).resolves.toBe(2);
+    });
+
+    it('月初ちょうどの行の費用は予算に数え、それより前の行の費用は数えない', async () => {
+      insertRow({
+        app: 'ui-studio',
+        userId: 'u1',
+        createdAt: '2026-09-30T23:59:59.999Z',
+        costMicroUsd: 5000,
+      });
+
+      await expect(insertUsageWithinLimits(base)).resolves.toBe(2);
+
+      insertRow({
+        app: 'ui-studio',
+        userId: 'u1',
+        createdAt: base.monthStartIso,
+        costMicroUsd: 1000,
+      });
+
+      await expect(insertUsageWithinLimits(base)).resolves.toBeNull();
+    });
+
+    it('ほかのアプリやほかの利用者の費用も予算に数える', async () => {
+      insertRow({
+        app: 'slides',
+        userId: 'u1',
+        createdAt: EARLIER_THIS_MONTH,
+        costMicroUsd: 500,
+      });
+      insertRow({
+        app: 'agent',
+        userId: 'u2',
+        createdAt: EARLIER_THIS_MONTH,
+        costMicroUsd: 500,
+      });
+
+      await expect(insertUsageWithinLimits(base)).resolves.toBeNull();
+    });
+
+    it('費用が null の行（予約したばかりの行や、費用の列を足す前の行）は0円として数える', async () => {
+      insertRow({
+        app: 'ui-studio',
+        userId: 'u1',
+        createdAt: EARLIER_THIS_MONTH,
+        costMicroUsd: null,
+      });
+      insertRow({
+        app: 'ui-studio',
+        userId: 'u1',
+        createdAt: EARLIER_THIS_MONTH,
+        costMicroUsd: 999,
+      });
+
+      await expect(insertUsageWithinLimits(base)).resolves.toBe(3);
+    });
   });
 });
 
-describe('updateGenerationUsageTokens', () => {
+describe('selectCostSinceMicroUsd', () => {
   describe('正常系', () => {
-    it('予約した行だけにトークン数を書き込む', async () => {
-      await reserveGenerationUsage(base);
-      await reserveGenerationUsage(base);
+    it('指定した時刻以降の全行の費用を足し合わせ、null の行は0円として数える', async () => {
+      insertRow({
+        app: 'ui-studio',
+        userId: 'u1',
+        createdAt: '2026-09-30T23:59:59.999Z',
+        costMicroUsd: 5000,
+      });
+      insertRow({
+        app: 'ui-studio',
+        userId: 'u1',
+        createdAt: base.monthStartIso,
+        costMicroUsd: 300,
+      });
+      insertRow({
+        app: 'agent',
+        userId: 'u2',
+        createdAt: EARLIER_THIS_MONTH,
+        costMicroUsd: 200,
+      });
+      insertRow({
+        app: 'slides',
+        userId: 'u1',
+        createdAt: EARLIER_THIS_MONTH,
+        costMicroUsd: null,
+      });
 
-      await updateGenerationUsageTokens({
+      await expect(selectCostSinceMicroUsd(base.monthStartIso)).resolves.toBe(
+        500,
+      );
+    });
+  });
+
+  describe('エッジケース', () => {
+    it('行が無ければ 0 を返す', async () => {
+      await expect(selectCostSinceMicroUsd(base.monthStartIso)).resolves.toBe(
+        0,
+      );
+    });
+  });
+});
+
+describe('updateUsageCost', () => {
+  describe('正常系', () => {
+    it('予約した行だけに、トークン数の内訳と費用を書き込む', async () => {
+      await insertUsageWithinLimits(base);
+      await insertUsageWithinLimits(base);
+
+      await updateUsageCost({
         id: 1,
-        inputTokens: 120,
-        outputTokens: 30,
+        inputTokens: 1200,
+        outputTokens: 300,
+        cacheReadTokens: 800,
+        cacheWriteTokens: 100,
+        costMicroUsd: 4210,
       });
 
       expect(selectRows()).toMatchObject([
-        { id: 1, input_tokens: 120, output_tokens: 30 },
-        { id: 2, input_tokens: null, output_tokens: null },
+        {
+          id: 1,
+          model: 'claude-sonnet-5-5',
+          input_tokens: 1200,
+          output_tokens: 300,
+          cache_read_tokens: 800,
+          cache_write_tokens: 100,
+          cost_micro_usd: 4210,
+        },
+        {
+          id: 2,
+          input_tokens: null,
+          output_tokens: null,
+          cache_read_tokens: null,
+          cache_write_tokens: null,
+          cost_micro_usd: null,
+        },
       ]);
     });
   });
