@@ -1,5 +1,6 @@
-// RootLayout が読むブラウザ最低版フロアの生成。フロアは全ページの静的シェルを握る
-// ため実行時 I/O(DB・ネットワーク)に依存させず、生成物をリポジトリにコミットする。
+// RootLayout が読むブラウザ最低版フロアと、同じ版から作る .browserslistrc の生成。
+// フロアは全ページの静的シェルを握るため実行時 I/O(DB・ネットワーク)に依存させず、
+// 生成物をリポジトリにコミットする。
 // active データセットとずれると外形監視(browser-support-monitor)が版を指定して
 // 再生成し、PR を自動で出す。
 //
@@ -11,8 +12,9 @@
 import { writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 
-// 拡張子なしの相対 import は register-ts-resolver が実行時に .ts へ補完する
 import { transformUpstreamData } from '../../../packages/helpers/src/baseline/transform-upstream';
+// 拡張子なしの相対 import は register-ts-resolver が実行時に .ts へ補完する
+import { renderBrowserslistrc } from '../../../packages/helpers/src/browser/browserslist';
 
 const RELEASE_LATEST_URL =
   'https://github.com/web-platform-dx/web-features/releases/latest/download/data.json';
@@ -61,5 +63,11 @@ writeFileSync(
     null,
     2,
   )}\n`,
+);
+// Next.js は browserslist を Lightning CSS と SWC のターゲットに使う。画面に出すフロアと
+// 同じ版から作り、リポジトリ直下に置いて apps/* すべてに効かせる
+writeFileSync(
+  join(import.meta.dirname, '../../../.browserslistrc'),
+  renderBrowserslistrc(dataset.minVersions),
 );
 console.log(`generated: v${version}`, dataset.minVersions);

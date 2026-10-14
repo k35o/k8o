@@ -211,7 +211,7 @@ jobs:
           title="fix(main): ブラウザ最低版フロアをv${ACTIVE}へ再生成する"
 
           pnpm run -F main generate:browser-min-versions "$ACTIVE"
-          if git diff --quiet -- "$floor"; then
+          if git diff --quiet -- "$floor" .browserslistrc; then
             echo "reason=floor stale: main のフロアは v$ACTIVE と一致しているが本番に未反映(デプロイを確認)" >> "$GITHUB_OUTPUT"
             exit 0
           fi
@@ -224,16 +224,19 @@ jobs:
             gh api "repos/$GH_REPO/git/refs" -f ref="refs/heads/$branch" -f sha="$main_sha" >/dev/null
           fi
 
-          remote=$(gh api "repos/$GH_REPO/contents/$floor?ref=$branch")
-          if [ "$(echo "$remote" | jq -r .content | base64 -d)" != "$(cat "$floor")" ]; then
-            # main は署名必須のため git push ではなく API でコミットする。
-            # GitHub App が API で作ったコミットは GitHub が署名する。
-            gh api -X PUT "repos/$GH_REPO/contents/$floor" \
-              -f branch="$branch" \
-              -f sha="$(echo "$remote" | jq -r .sha)" \
-              -f message="$title" \
-              -f content="$(base64 -w0 "$floor")" >/dev/null
-          fi
+          # 生成物はフロアの JSON と、同じ版から作る .browserslistrc（Next の CSS / JS の
+          # ターゲット）の 2 つ。main は署名必須のため git push ではなく API でコミットする。
+          # GitHub App が API で作ったコミットは GitHub が署名する。
+          for file in "$floor" .browserslistrc; do
+            remote=$(gh api "repos/$GH_REPO/contents/$file?ref=$branch")
+            if [ "$(echo "$remote" | jq -r .content | base64 -d)" != "$(cat "$file")" ]; then
+              gh api -X PUT "repos/$GH_REPO/contents/$file" \
+                -f branch="$branch" \
+                -f sha="$(echo "$remote" | jq -r .sha)" \
+                -f message="$title" \
+                -f content="$(base64 -w0 "$file")" >/dev/null
+            fi
+          done
 
           if [ -z "$pr" ]; then
             url=$(gh pr create --head "$branch" --base main --title "$title" \
