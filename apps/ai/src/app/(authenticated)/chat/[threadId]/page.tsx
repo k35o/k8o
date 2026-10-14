@@ -3,10 +3,7 @@ import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { Suspense } from 'react';
 
-import {
-  listThreadsForRoute,
-  loadThreadForRoute,
-} from '@/features/agent/interface/queries';
+import { loadThreadForRoute } from '@/features/agent/interface/queries';
 
 import { ChatScreen } from '../_components/chat-screen';
 import { ChatSkeleton } from '../_components/chat-skeleton';
@@ -22,10 +19,7 @@ const ExistingChat = async ({
 }) => {
   await verifySession();
   const { threadId } = await params;
-  const [thread, threads] = await Promise.all([
-    loadThreadForRoute(threadId),
-    listThreadsForRoute(),
-  ]);
+  const thread = await loadThreadForRoute(threadId);
   if (thread === null) {
     notFound();
   }
@@ -33,7 +27,6 @@ const ExistingChat = async ({
     <ChatScreen
       initialMessages={thread.messages}
       initialRunning={thread.running}
-      initialThreads={threads}
       key={thread.id}
       thread={{ id: thread.id, title: thread.title, model: thread.model }}
     />

@@ -7,14 +7,14 @@ import type { ThreadListItem } from '@/features/agent/application/threads';
 
 import { UpdatedAt } from '../../../_components/updated-at';
 
-// スレッドを移るたびに一覧は作り直され、スクロールが先頭に戻るので、今いるスレッドを見える位置へ寄せる
+// 開いた時点で今のスレッドが一覧の下のほうにあっても見えるよう、見える位置へ寄せる
 const revealCurrent = (element: HTMLAnchorElement | null): void => {
   element?.scrollIntoView({ block: 'nearest' });
 };
 
 type ThreadListProps = {
   threads: ThreadListItem[];
-  currentThreadId: string;
+  currentThreadId: string | null;
   onNavigate?: (() => void) | undefined;
 };
 

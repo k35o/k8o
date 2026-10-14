@@ -34,7 +34,7 @@ import {
 } from '../../../_components/project-persistence';
 import { ProjectTitle } from '../../../_components/project-title';
 import { StudioPanes } from '../../../_components/studio-panes';
-import { StudioShell } from '../../../_components/studio-shell';
+import { ToolHeader } from '../../../_components/tool-frame';
 import { ViewTabs } from '../../../_components/view-tabs';
 import { DeckPreview } from '../deck-preview';
 
@@ -282,62 +282,54 @@ export const SlidesStudio = ({ projects }: { projects: ProjectListItem[] }) => {
   });
 
   return (
-    <StudioShell
-      basePath="/slides"
-      currentProjectId={persistence.projectId}
-      header={
-        <>
-          <ProjectTitle
-            newProjectLabel="新しいスライド"
-            pendingTitle={pendingSelect?.title ?? null}
-            projectId={persistence.projectId}
-            projectTitle={persistence.projectTitle}
-          />
-          <div className="hidden gap-2 lg:flex">
-            <ViewTabs onChange={setView} options={viewOptions} value={view} />
+    <>
+      <ToolHeader>
+        <ProjectTitle
+          newProjectLabel="新しいスライド"
+          pendingTitle={pendingSelect?.title ?? null}
+          projectId={persistence.projectId}
+          projectTitle={persistence.projectTitle}
+        />
+        <div className="hidden gap-2 lg:flex">
+          <ViewTabs onChange={setView} options={viewOptions} value={view} />
+        </div>
+        <div className="flex shrink-0 items-center gap-2 lg:ml-auto">
+          {persistence.projectId === null ? null : (
+            <IconButton
+              color="base"
+              label="フォーク"
+              onAction={handleFork}
+              size="sm"
+            >
+              <ForkIcon size="sm" />
+            </IconButton>
+          )}
+          <div className="hidden items-center gap-3 lg:flex">
+            <Button
+              color="base"
+              disabled={!hasResult}
+              onClick={() => {
+                // DeckPreview が @media print 用に全スライドを描画済み（DeckPrint）。
+                window.print();
+              }}
+              size="sm"
+              variant="outline"
+            >
+              PDF出力
+            </Button>
+            <CopyCodeButton code={hasResult ? displayedSource : null} />
+            <IconButton
+              color="base"
+              disabled={!hasResult}
+              label="全画面"
+              onClick={handleFullscreen}
+              size="sm"
+            >
+              <FullscreenIcon size="sm" />
+            </IconButton>
           </div>
-          <div className="flex shrink-0 items-center gap-2 lg:ml-auto">
-            {persistence.projectId === null ? null : (
-              <IconButton
-                color="base"
-                label="フォーク"
-                onAction={handleFork}
-                size="sm"
-              >
-                <ForkIcon size="sm" />
-              </IconButton>
-            )}
-            <div className="hidden items-center gap-3 lg:flex">
-              <Button
-                color="base"
-                disabled={!hasResult}
-                onClick={() => {
-                  // DeckPreview が @media print 用に全スライドを描画済み（DeckPrint）。
-                  window.print();
-                }}
-                size="sm"
-                variant="outline"
-              >
-                PDF出力
-              </Button>
-              <CopyCodeButton code={hasResult ? displayedSource : null} />
-              <IconButton
-                color="base"
-                disabled={!hasResult}
-                label="全画面"
-                onClick={handleFullscreen}
-                size="sm"
-              >
-                <FullscreenIcon size="sm" />
-              </IconButton>
-            </div>
-          </div>
-        </>
-      }
-      projects={projects}
-      projectsEmptyText="まだ保存されたスライドはありません。生成すると自動で履歴に残ります。"
-      tool="slides"
-    >
+        </div>
+      </ToolHeader>
       <div className="flex gap-2 px-4 py-2 lg:hidden">
         <ViewTabs
           onChange={(tab) => {
@@ -410,6 +402,6 @@ export const SlidesStudio = ({ projects }: { projects: ProjectListItem[] }) => {
           </div>
         }
       />
-    </StudioShell>
+    </>
   );
 };

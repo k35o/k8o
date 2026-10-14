@@ -40,7 +40,7 @@ import {
 } from '../project-persistence';
 import { ProjectTitle } from '../project-title';
 import { StudioPanes } from '../studio-panes';
-import { StudioShell } from '../studio-shell';
+import { ToolHeader } from '../tool-frame';
 import { ViewTabs } from '../view-tabs';
 import { ShareControl } from './share-control';
 
@@ -333,63 +333,56 @@ export const Studio = ({ projects }: { projects: ProjectListItem[] }) => {
   });
 
   return (
-    <StudioShell
-      basePath="/"
-      currentProjectId={persistence.projectId}
-      header={
-        <>
-          <ProjectTitle
-            newProjectLabel="新しいプロジェクト"
-            pendingTitle={pendingSelect?.title ?? null}
-            projectId={persistence.projectId}
-            projectTitle={persistence.projectTitle}
-          />
-          <div className="hidden gap-2 lg:flex">
-            <ViewTabs onChange={setView} options={viewOptions} value={view} />
-          </div>
-          <div className="flex shrink-0 items-center gap-2 lg:ml-auto">
-            {persistence.projectId === null ? null : (
-              <>
-                <ShareControl
-                  hasDraft={
-                    currentProject?.visibility === 'public' &&
-                    currentProject.publishedVersionId !== null &&
-                    persistence.currentVersionId !== null &&
-                    currentProject.publishedVersionId !==
-                      persistence.currentVersionId
-                  }
-                  isPublic={currentProject?.visibility === 'public'}
-                  projectId={persistence.projectId}
-                  slug={currentProject?.slug ?? null}
-                />
-                <IconButton
-                  color="base"
-                  label="フォーク"
-                  onAction={handleFork}
-                  size="sm"
-                >
-                  <ForkIcon size="sm" />
-                </IconButton>
-              </>
-            )}
-            <div className="hidden items-center gap-3 lg:flex">
-              <CopyCodeButton code={displayedCode} />
+    <>
+      <ToolHeader>
+        <ProjectTitle
+          newProjectLabel="新しいプロジェクト"
+          pendingTitle={pendingSelect?.title ?? null}
+          projectId={persistence.projectId}
+          projectTitle={persistence.projectTitle}
+        />
+        <div className="hidden gap-2 lg:flex">
+          <ViewTabs onChange={setView} options={viewOptions} value={view} />
+        </div>
+        <div className="flex shrink-0 items-center gap-2 lg:ml-auto">
+          {persistence.projectId === null ? null : (
+            <>
+              <ShareControl
+                hasDraft={
+                  currentProject?.visibility === 'public' &&
+                  currentProject.publishedVersionId !== null &&
+                  persistence.currentVersionId !== null &&
+                  currentProject.publishedVersionId !==
+                    persistence.currentVersionId
+                }
+                isPublic={currentProject?.visibility === 'public'}
+                projectId={persistence.projectId}
+                slug={currentProject?.slug ?? null}
+              />
               <IconButton
                 color="base"
-                disabled={!hasResult}
-                label="全画面"
-                onClick={handleFullscreen}
+                label="フォーク"
+                onAction={handleFork}
                 size="sm"
               >
-                <FullscreenIcon size="sm" />
+                <ForkIcon size="sm" />
               </IconButton>
-            </div>
+            </>
+          )}
+          <div className="hidden items-center gap-3 lg:flex">
+            <CopyCodeButton code={displayedCode} />
+            <IconButton
+              color="base"
+              disabled={!hasResult}
+              label="全画面"
+              onClick={handleFullscreen}
+              size="sm"
+            >
+              <FullscreenIcon size="sm" />
+            </IconButton>
           </div>
-        </>
-      }
-      projects={projects}
-      tool="ui"
-    >
+        </div>
+      </ToolHeader>
       <div className="flex gap-2 px-4 py-2 lg:hidden">
         <ViewTabs
           onChange={(tab) => {
@@ -461,6 +454,6 @@ export const Studio = ({ projects }: { projects: ProjectListItem[] }) => {
           </div>
         }
       />
-    </StudioShell>
+    </>
   );
 };

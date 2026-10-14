@@ -2,7 +2,7 @@
 
 import { useChat } from '@ai-sdk/react';
 import { APICallError, DefaultChatTransport } from 'ai';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useEffectEvent, useRef, useState } from 'react';
 import type { FC } from 'react';
 
 import { threadTitleFrom } from '@/features/agent/application/agent-message';
@@ -12,12 +12,12 @@ import {
   unsavedUserText,
 } from '@/features/agent/application/thread-sync';
 import type { ServerSync } from '@/features/agent/application/thread-sync';
-import type { ThreadListItem } from '@/features/agent/application/threads';
 import { DEFAULT_GENERATION_MODEL } from '@/shared/claude/models';
 import type { GenerationModel } from '@/shared/claude/models';
 
-import { ChatShell } from '../chat-shell';
+import { ToolHeader } from '../../../_components/tool-frame';
 import { ChatHeader, ChatView } from '../chat-view';
+import { useTouchedThreads } from '../touched-threads';
 import { useThreadSync } from './use-thread-sync';
 
 // 履歴はサーバーが持っているので、送るのは最後のメッセージだけにする
@@ -32,15 +32,14 @@ type ChatScreenProps = {
   thread: { id: string; title: string | null; model: GenerationModel | null };
   initialMessages: AgentUIMessage[];
   initialRunning: boolean;
-  initialThreads: ThreadListItem[];
 };
 
 export const ChatScreen: FC<ChatScreenProps> = ({
   thread,
   initialMessages,
   initialRunning,
-  initialThreads,
 }) => {
+  const { touch } = useTouchedThreads();
   const [sync, setSync] = useState<ServerSync | null>(
     initialRunning ? 'wait' : null,
   );
@@ -50,6 +49,27 @@ export const ChatScreen: FC<ChatScreenProps> = ({
   const [firstSentAt, setFirstSentAt] = useState<string | null>(null);
   const [createdAt, setCreatedAt] = useState<string | null>(null);
   const [draft, setDraft] = useState('');
+
+  const titleOf = (current: AgentUIMessage[]): string | null => {
+    if (thread.title !== null) {
+      return thread.title;
+    }
+    const firstUserMessage = current.find((message) => message.role === 'user');
+    return createdAt === null || firstUserMessage === undefined
+      ? null
+      : threadTitleFrom(firstUserMessage);
+  };
+  const touchThread = (current: AgentUIMessage[], running: boolean): void => {
+    const title = titleOf(current);
+    if (title !== null) {
+      touch({
+        id: thread.id,
+        title,
+        updatedAt: new Date().toISOString(),
+        running,
+      });
+    }
+  };
 
   const rejectedRef = useRef(false);
   const {
@@ -72,7 +92,9 @@ export const ChatScreen: FC<ChatScreenProps> = ({
     onFinish: (finish) => {
       const next = serverSyncAfter(finish, rejectedRef.current);
       rejectedRef.current = false;
-      if (next !== null) {
+      if (next === null) {
+        touchThread(finish.messages, false);
+      } else {
         setSync(next);
       }
     },
@@ -90,6 +112,7 @@ export const ChatScreen: FC<ChatScreenProps> = ({
         setMessages(serverMessages);
       }
       setSync(null);
+      touchThread(messages, false);
     },
     onRunning: () => {
       setSync('wait');
@@ -102,30 +125,24 @@ export const ChatScreen: FC<ChatScreenProps> = ({
   }
   const created = thread.model !== null || createdAt !== null;
 
-  useEffect(() => {
-    if (createdAt !== null) {
-      window.history.replaceState(null, '', `/chat/${thread.id}`);
-    }
-  }, [createdAt, thread.id]);
+  const title = titleOf(messages);
 
-  const firstUserMessage = messages.find((message) => message.role === 'user');
-  const title =
-    thread.title ??
-    (createdAt === null || firstUserMessage === undefined
-      ? null
-      : threadTitleFrom(firstUserMessage));
-  const threads =
-    createdAt === null || title === null
-      ? initialThreads
-      : [
-          { id: thread.id, title, updatedAt: createdAt, running: false },
-          ...initialThreads,
-        ];
+  const showCreated = useEffectEvent((createdTitle: string, at: string) => {
+    window.history.replaceState(null, '', `/chat/${thread.id}`);
+    touch({ id: thread.id, title: createdTitle, updatedAt: at, running: true });
+  });
+  useEffect(() => {
+    if (createdAt !== null && title !== null) {
+      showCreated(title, createdAt);
+    }
+  }, [createdAt, title]);
 
   const handleSubmit = (text: string): void => {
     clearError();
     setDraft('');
-    if (!created) {
+    if (created) {
+      touchThread(messages, true);
+    } else {
       setFirstSentAt(new Date().toISOString());
     }
     void sendMessage({ text }, { body: created ? {} : { model } });
@@ -143,11 +160,10 @@ export const ChatScreen: FC<ChatScreenProps> = ({
   };
 
   return (
-    <ChatShell
-      currentThreadId={thread.id}
-      header={<ChatHeader model={model} title={title} />}
-      threads={threads}
-    >
+    <>
+      <ToolHeader>
+        <ChatHeader model={model} title={title} />
+      </ToolHeader>
       <ChatView
         canSelectModel={!created && messages.length === 0}
         draft={draft}
@@ -163,6 +179,6 @@ export const ChatScreen: FC<ChatScreenProps> = ({
         onSubmit={handleSubmit}
         status={status}
       />
-    </ChatShell>
+    </>
   );
 };

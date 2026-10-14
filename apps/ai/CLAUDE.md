@@ -30,7 +30,7 @@ UI スタジオの生成物は json-render の spec。コード表示の TSX は
 
 ## エージェント（/chat）
 
-`/chat` は新しいスレッド、`/chat/[threadId]` は既存のスレッドの画面（`app/(authenticated)/chat/`）。サイドバーは `/`・`/slides` の `StudioShell` とは別の `ChatShell` で、ツールのナビ（`ToolNav`）だけを共有する。
+`/chat` は新しいスレッド、`/chat/[threadId]` は既存のスレッドの画面（`app/(authenticated)/chat/`）。サイドバーの枠（ToolNav・サインアウト・テーマ・スマホの Drawer）は `(authenticated)/layout` の `ToolFrame` にあり、ツールごとの一覧は `@sidebar` のスロット（チャットはスレッドを移っても作り直さないよう `@sidebar/chat/layout`）が描く。
 
 - `POST /api/chat` が、`streamText` に tool（`list_blogs`・`read_blog`）を渡してループを回す。ステップ数や時間の上限は `agent/application/agent-run.ts` にある
 - スレッドの ID はページが決め、最初の POST が予約を通ったときに、サーバーがスレッドの行を作る

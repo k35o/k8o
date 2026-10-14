@@ -1,1 +1,1 @@
-export { ProjectList } from './project-list';
+export { ProjectListSlot } from './project-list-slot';
