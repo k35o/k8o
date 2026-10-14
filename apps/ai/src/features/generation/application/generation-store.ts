@@ -1,5 +1,6 @@
-import { DEFAULT_GENERATION_MODEL } from './models';
-import type { GenerationModel } from './models';
+import { DEFAULT_GENERATION_MODEL } from '@/shared/claude/models';
+import type { GenerationModel } from '@/shared/claude/models';
+
 import type { GenerationMeta } from './parse-meta';
 
 // UI スタジオ（spec）とスライド（Markdown ソース）で content の型が違うため、

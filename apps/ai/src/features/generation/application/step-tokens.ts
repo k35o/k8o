@@ -1,4 +1,4 @@
-import type { GenerationTokens } from '../infrastructure/usage-repository';
+import type { GenerationTokens } from '@/features/usage/infrastructure/usage-repository';
 
 export type StepUsage = {
   usage: { inputTokens: number | undefined; outputTokens: number | undefined };

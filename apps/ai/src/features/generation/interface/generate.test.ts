@@ -2,13 +2,13 @@ import { MockLanguageModelV4 } from 'ai/test';
 import { after } from 'next/server';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
-import { requireAllowedSession } from '@/shared/auth/require-allowed-session';
-
-import { getGenerationModel } from '../infrastructure/claude-provider';
 import {
   reserveGenerationUsage,
   updateGenerationUsageTokens,
-} from '../infrastructure/usage-repository';
+} from '@/features/usage/infrastructure/usage-repository';
+import { requireAllowedSession } from '@/shared/auth/require-allowed-session';
+import { getGenerationModel } from '@/shared/claude/claude-provider';
+
 import { handleGenerate } from './generate';
 
 vi.mock('server-only', () => ({}));
@@ -16,10 +16,10 @@ vi.mock('next/server', () => ({ after: vi.fn() }));
 vi.mock('@/shared/auth/require-allowed-session', () => ({
   requireAllowedSession: vi.fn(),
 }));
-vi.mock('../infrastructure/claude-provider', () => ({
+vi.mock('@/shared/claude/claude-provider', () => ({
   getGenerationModel: vi.fn(),
 }));
-vi.mock('../infrastructure/usage-repository', () => ({
+vi.mock('@/features/usage/infrastructure/usage-repository', () => ({
   reserveGenerationUsage: vi.fn(),
   updateGenerationUsageTokens: vi.fn(),
 }));

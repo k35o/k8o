@@ -10,27 +10,30 @@ import type { UIMessage } from 'ai';
 import { after } from 'next/server';
 import * as z from 'zod/mini';
 
+import {
+  generationLimit,
+  windowStartIso,
+} from '@/features/usage/application/rate-limit';
+import {
+  reserveGenerationUsage,
+  updateGenerationUsageTokens,
+} from '@/features/usage/infrastructure/usage-repository';
 import { requireAllowedSession } from '@/shared/auth/require-allowed-session';
-
-import { buildSlidesSystemPrompt } from '../application/build-slides-system-prompt';
-import { buildSpecSystemPrompt } from '../application/build-spec-system-prompt';
+import { getGenerationModel } from '@/shared/claude/claude-provider';
 import {
   DEFAULT_GENERATION_MODEL,
   GENERATION_MODELS,
-} from '../application/models';
+} from '@/shared/claude/models';
+
+import { buildSlidesSystemPrompt } from '../application/build-slides-system-prompt';
+import { buildSpecSystemPrompt } from '../application/build-spec-system-prompt';
 import { GENERATION_MODES } from '../application/modes';
 import {
   stripDataParts,
   withEditContext,
 } from '../application/prompt-messages';
-import { generationLimit, windowStartIso } from '../application/rate-limit';
 import { sumStepTokens } from '../application/step-tokens';
 import type { StepUsage } from '../application/step-tokens';
-import { getGenerationModel } from '../infrastructure/claude-provider';
-import {
-  reserveGenerationUsage,
-  updateGenerationUsageTokens,
-} from '../infrastructure/usage-repository';
 
 const bodySchema = z.object({
   id: z.optional(z.string()),
