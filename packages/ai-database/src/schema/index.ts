@@ -3,6 +3,11 @@ import {
   aiProjectVersionsRelations,
 } from './ai-project-versions';
 import { aiProjects, aiProjectsRelations } from './ai-projects';
+import {
+  aiThreadMessages,
+  aiThreadMessagesRelations,
+} from './ai-thread-messages';
+import { aiThreads, aiThreadsRelations } from './ai-threads';
 import { aiUsages, aiUsagesRelations } from './ai-usages';
 import {
   account,
@@ -24,6 +29,8 @@ export const schema = {
   aiProjects,
   aiProjectVersions,
   aiUsages,
+  aiThreads,
+  aiThreadMessages,
 };
 
 export const relations = {
@@ -33,4 +40,6 @@ export const relations = {
   aiProjectsRelations,
   aiProjectVersionsRelations,
   aiUsagesRelations,
+  aiThreadsRelations,
+  aiThreadMessagesRelations,
 };

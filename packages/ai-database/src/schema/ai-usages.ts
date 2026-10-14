@@ -15,8 +15,12 @@ export const aiUsages = sqliteTable(
       .references(() => user.id, { onDelete: 'cascade' }),
     // 'generation' など、アプリ内での課金アクション種別。
     kind: text('kind').notNull(),
+    model: text('model'),
     inputTokens: integer('input_tokens'),
     outputTokens: integer('output_tokens'),
+    cacheReadTokens: integer('cache_read_tokens'),
+    cacheWriteTokens: integer('cache_write_tokens'),
+    costMicroUsd: integer('cost_micro_usd'),
     createdAt: text('created_at')
       .notNull()
       .$defaultFn(() => new Date().toISOString()),

@@ -46,8 +46,12 @@ export const reserveGenerationUsage = async (input: {
           app: sql<AiApp>`${input.app}`.as('app'),
           userId: sql<string>`${input.userId}`.as('user_id'),
           kind: sql<string>`${GENERATION_KIND}`.as('kind'),
+          model: sql<null>`null`.as('model'),
           inputTokens: sql<null>`null`.as('input_tokens'),
           outputTokens: sql<null>`null`.as('output_tokens'),
+          cacheReadTokens: sql<null>`null`.as('cache_read_tokens'),
+          cacheWriteTokens: sql<null>`null`.as('cache_write_tokens'),
+          costMicroUsd: sql<null>`null`.as('cost_micro_usd'),
           createdAt: sql<string>`${input.createdAt}`.as('created_at'),
         })
         .from(recent)

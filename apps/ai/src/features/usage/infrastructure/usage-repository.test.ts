@@ -46,7 +46,7 @@ const selectRows = (): unknown[] =>
   structuredClone(
     sqlite
       .prepare(
-        'select id, app, user_id, kind, input_tokens, output_tokens, created_at from ai_usages order by id',
+        'select id, app, user_id, kind, model, input_tokens, output_tokens, cache_read_tokens, cache_write_tokens, cost_micro_usd, created_at from ai_usages order by id',
       )
       .all(),
   );
@@ -69,7 +69,11 @@ beforeEach(() => {
       kind text not null,
       input_tokens integer,
       output_tokens integer,
-      created_at text not null
+      created_at text not null,
+      model text,
+      cache_read_tokens integer,
+      cache_write_tokens integer,
+      cost_micro_usd integer
     )
   `);
 });
@@ -86,8 +90,12 @@ describe('reserveGenerationUsage', () => {
           app: 'ui-studio',
           user_id: 'u1',
           kind: 'generation',
+          model: null,
           input_tokens: null,
           output_tokens: null,
+          cache_read_tokens: null,
+          cache_write_tokens: null,
+          cost_micro_usd: null,
           created_at: '2026-10-13T12:00:00.000Z',
         },
       ]);
