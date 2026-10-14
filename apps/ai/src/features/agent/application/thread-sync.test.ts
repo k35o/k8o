@@ -1,7 +1,12 @@
 import { describe, expect, it } from 'vitest';
 
 import type { AgentUIMessage } from './agent-message';
-import { nextSyncStep, serverSyncAfter, unsavedUserText } from './thread-sync';
+import {
+  createdAtAfterSync,
+  nextSyncStep,
+  serverSyncAfter,
+  unsavedUserText,
+} from './thread-sync';
 
 type ChatFinish = Parameters<typeof serverSyncAfter>[0];
 
@@ -168,6 +173,58 @@ describe('nextSyncStep', () => {
       expect(
         nextSyncStep('wait', { type: 'not-found', count: 5 }),
       ).toStrictEqual({ type: 'settle', messages: [] });
+    });
+  });
+});
+
+describe('createdAtAfterSync', () => {
+  const firstSentAt = '2026-10-14T01:00:00.000Z';
+
+  describe('正常系', () => {
+    it('応答が流れ始める前に止めても、サーバーに保存されていれば、最初に送った時刻に作られたとみなす', () => {
+      expect(
+        createdAtAfterSync({
+          createdAt: null,
+          firstSentAt,
+          saved: savedMessages,
+        }),
+      ).toBe(firstSentAt);
+    });
+
+    it('応答が流れ始めて作られたスレッドは、作られた時刻を変えない', () => {
+      expect(
+        createdAtAfterSync({
+          createdAt: '2026-10-14T00:00:00.000Z',
+          firstSentAt,
+          saved: savedMessages,
+        }),
+      ).toBe('2026-10-14T00:00:00.000Z');
+    });
+  });
+
+  describe('異常系', () => {
+    it('サーバーに何も保存されていなければ、作られていないとみなす', () => {
+      expect(
+        createdAtAfterSync({ createdAt: null, firstSentAt, saved: [] }),
+      ).toBeNull();
+    });
+
+    it('読めないまま諦めたら、作られていないとみなす', () => {
+      expect(
+        createdAtAfterSync({ createdAt: null, firstSentAt, saved: null }),
+      ).toBeNull();
+    });
+  });
+
+  describe('エッジケース', () => {
+    it('このタブで送っていないスレッドは、読み直しただけでは作られたとみなさない', () => {
+      expect(
+        createdAtAfterSync({
+          createdAt: null,
+          firstSentAt: null,
+          saved: savedMessages,
+        }),
+      ).toBeNull();
     });
   });
 });

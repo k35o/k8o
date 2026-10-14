@@ -59,6 +59,23 @@ export const nextSyncStep = (mode: ServerSync, read: ThreadRead): SyncStep => {
   }
 };
 
+// 新しいスレッドは応答が流れ始めた時点で作られたとみなすが、流れ始める前に止めたり切れたりしても
+// サーバーに保存されていれば作られている
+export const createdAtAfterSync = (input: {
+  createdAt: string | null;
+  firstSentAt: string | null;
+  saved: AgentUIMessage[] | null;
+}): string | null => {
+  if (
+    input.createdAt !== null ||
+    input.saved === null ||
+    input.saved.length === 0
+  ) {
+    return input.createdAt;
+  }
+  return input.firstSentAt;
+};
+
 // サーバーはクライアントが付けた id のまま保存するので、id で保存されたかを見る
 export const unsavedUserText = (
   local: AgentUIMessage[],

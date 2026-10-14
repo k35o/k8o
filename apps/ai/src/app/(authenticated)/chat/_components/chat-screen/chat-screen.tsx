@@ -8,6 +8,7 @@ import type { FC } from 'react';
 import { threadTitleFrom } from '@/features/agent/application/agent-message';
 import type { AgentUIMessage } from '@/features/agent/application/agent-message';
 import {
+  createdAtAfterSync,
   serverSyncAfter,
   unsavedUserText,
 } from '@/features/agent/application/thread-sync';
@@ -50,17 +51,19 @@ export const ChatScreen: FC<ChatScreenProps> = ({
   const [createdAt, setCreatedAt] = useState<string | null>(null);
   const [draft, setDraft] = useState('');
 
-  const titleOf = (current: AgentUIMessage[]): string | null => {
+  const titleOf = (
+    current: AgentUIMessage[],
+    threadCreatedAt: string | null,
+  ): string | null => {
     if (thread.title !== null) {
       return thread.title;
     }
     const firstUserMessage = current.find((message) => message.role === 'user');
-    return createdAt === null || firstUserMessage === undefined
+    return threadCreatedAt === null || firstUserMessage === undefined
       ? null
       : threadTitleFrom(firstUserMessage);
   };
-  const touchThread = (current: AgentUIMessage[], running: boolean): void => {
-    const title = titleOf(current);
+  const touchThread = (title: string | null, running: boolean): void => {
     if (title !== null) {
       touch({
         id: thread.id,
@@ -93,7 +96,7 @@ export const ChatScreen: FC<ChatScreenProps> = ({
       const next = serverSyncAfter(finish, rejectedRef.current);
       rejectedRef.current = false;
       if (next === null) {
-        touchThread(finish.messages, false);
+        touchThread(titleOf(finish.messages, createdAt), false);
       } else {
         setSync(next);
       }
@@ -112,7 +115,13 @@ export const ChatScreen: FC<ChatScreenProps> = ({
         setMessages(serverMessages);
       }
       setSync(null);
-      touchThread(messages, false);
+      const settledCreatedAt = createdAtAfterSync({
+        createdAt,
+        firstSentAt,
+        saved: serverMessages,
+      });
+      setCreatedAt(settledCreatedAt);
+      touchThread(titleOf(messages, settledCreatedAt), false);
     },
     onRunning: () => {
       setSync('wait');
@@ -125,10 +134,11 @@ export const ChatScreen: FC<ChatScreenProps> = ({
   }
   const created = thread.model !== null || createdAt !== null;
 
-  const title = titleOf(messages);
+  const title = titleOf(messages, createdAt);
 
   const showCreated = useEffectEvent((createdTitle: string, at: string) => {
     window.history.replaceState(null, '', `/chat/${thread.id}`);
+    // 作られた時刻で触るので、そのあと終わったとして触った行（保存が分かって作られたときも）を上書きしない
     touch({ id: thread.id, title: createdTitle, updatedAt: at, running: true });
   });
   useEffect(() => {
@@ -141,7 +151,7 @@ export const ChatScreen: FC<ChatScreenProps> = ({
     clearError();
     setDraft('');
     if (created) {
-      touchThread(messages, true);
+      touchThread(title, true);
     } else {
       setFirstSentAt(new Date().toISOString());
     }
