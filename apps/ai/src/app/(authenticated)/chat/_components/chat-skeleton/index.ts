@@ -1,1 +1,1 @@
-export { ChatSkeleton } from './chat-skeleton';
+export { ChatLoading } from './chat-loading';

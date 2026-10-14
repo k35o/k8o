@@ -14,6 +14,7 @@ const threads: ThreadListItem[] = [
   {
     id: '6f1c2a4e-0b7d-4c55-9a3e-2f8d1b6c9e01',
     title: 'a11y の記事を教えて',
+    model: 'claude-sonnet-5-5',
     updatedAt: '2026-10-14T00:30:00.000Z',
     running: false,
   },

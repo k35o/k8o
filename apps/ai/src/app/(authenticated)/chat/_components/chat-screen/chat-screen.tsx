@@ -25,6 +25,7 @@ import type { GenerationModel } from '@/shared/claude/models';
 
 import { ToolHeader } from '../../../_components/tool-frame';
 import { ChatHeader, ChatView } from '../chat-view';
+import { useOpeningThread } from '../opening-thread';
 import { useTouchedThreads } from '../touched-threads';
 import { useThreadSync } from './use-thread-sync';
 
@@ -63,6 +64,7 @@ export const ChatScreen: FC<ChatScreenProps> = ({
   initialRunning,
 }) => {
   const { touch } = useTouchedThreads();
+  const { forget: forgetOpening } = useOpeningThread();
   const [sync, setSync] = useState<ServerSync | null>(
     initialRunning ? 'wait' : null,
   );
@@ -91,11 +93,17 @@ export const ChatScreen: FC<ChatScreenProps> = ({
       touch({
         id: thread.id,
         title,
+        model,
         updatedAt: new Date().toISOString(),
         running,
       });
     }
   };
+
+  const forgetShownOpening = useEffectEvent(forgetOpening);
+  useEffect(() => {
+    forgetShownOpening();
+  }, []);
 
   const rejectedRef = useRef(false);
   const {
@@ -163,7 +171,13 @@ export const ChatScreen: FC<ChatScreenProps> = ({
   const showCreated = useEffectEvent((createdTitle: string, at: string) => {
     window.history.replaceState(null, '', `/chat/${thread.id}`);
     // 作られた時刻で触るので、そのあと終わったとして触った行（保存が分かって作られたときも）を上書きしない
-    touch({ id: thread.id, title: createdTitle, updatedAt: at, running: true });
+    touch({
+      id: thread.id,
+      title: createdTitle,
+      model,
+      updatedAt: at,
+      running: true,
+    });
   });
   useEffect(() => {
     if (createdAt !== null && title !== null) {

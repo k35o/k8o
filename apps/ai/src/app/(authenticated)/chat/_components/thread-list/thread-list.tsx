@@ -15,7 +15,7 @@ const revealCurrent = (element: HTMLAnchorElement | null): void => {
 type ThreadListProps = {
   threads: ThreadListItem[];
   currentThreadId: string | null;
-  onNavigate?: (() => void) | undefined;
+  onNavigate?: ((thread: ThreadListItem) => void) | undefined;
 };
 
 export const ThreadList: FC<ThreadListProps> = ({
@@ -45,7 +45,7 @@ export const ThreadList: FC<ThreadListProps> = ({
               )}
               href={`/chat/${thread.id}`}
               onNavigate={() => {
-                onNavigate?.();
+                onNavigate?.(thread);
               }}
               ref={isCurrent ? revealCurrent : undefined}
             >

@@ -6,6 +6,7 @@ import { withTouchedThreads } from './touched-threads';
 const older: ThreadListItem = {
   id: 'older',
   title: '前の会話',
+  model: 'claude-sonnet-5-5',
   updatedAt: '2026-10-13T12:00:00.000Z',
   running: false,
 };
@@ -13,6 +14,7 @@ const older: ThreadListItem = {
 const newer: ThreadListItem = {
   id: 'newer',
   title: '最近の会話',
+  model: 'claude-opus-5-5',
   updatedAt: '2026-10-14T00:00:00.000Z',
   running: false,
 };
@@ -23,6 +25,7 @@ describe('withTouchedThreads', () => {
       const created: ThreadListItem = {
         id: 'created',
         title: '新しい会話',
+        model: 'claude-sonnet-5-5',
         updatedAt: '2026-10-14T01:00:00.000Z',
         running: true,
       };

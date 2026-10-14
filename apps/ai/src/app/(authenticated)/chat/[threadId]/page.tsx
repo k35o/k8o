@@ -6,7 +6,7 @@ import { Suspense } from 'react';
 import { loadThreadForRoute } from '@/features/agent/interface/queries';
 
 import { ChatScreen } from '../_components/chat-screen';
-import { ChatSkeleton } from '../_components/chat-skeleton';
+import { ChatLoading } from '../_components/chat-skeleton';
 
 export const metadata: Metadata = {
   title: 'チャット | k8o AI Studio',
@@ -35,7 +35,7 @@ const ExistingChat = async ({
 
 export default function Page({ params }: PageProps<'/chat/[threadId]'>) {
   return (
-    <Suspense fallback={<ChatSkeleton />}>
+    <Suspense fallback={<ChatLoading />}>
       <ExistingChat params={params} />
     </Suspense>
   );
