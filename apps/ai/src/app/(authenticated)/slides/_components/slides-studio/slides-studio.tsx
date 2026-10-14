@@ -5,7 +5,6 @@ import { Button, ForkIcon, FullscreenIcon, IconButton } from '@k8ordo/ui';
 import { DefaultChatTransport } from 'ai';
 import type { UIMessage } from 'ai';
 import { useTheme } from 'next-themes';
-import { useRouter } from 'next/navigation';
 import { useMemo, useReducer, useRef, useState, useTransition } from 'react';
 
 import type { HighlightFn } from '@/app/_components/highlighted-code';
@@ -20,7 +19,6 @@ import { highlightGenerated } from '@/features/highlight/interface/actions';
 import type { ProjectListItem } from '@/features/projects/application/projects';
 import {
   forkSlidesProjectAction,
-  listSlidesProjectsAction,
   loadSlidesProjectAction,
   saveSlidesGenerationAction,
 } from '@/features/projects/interface/actions';
@@ -44,7 +42,6 @@ import { DeckPreview } from '../deck-preview';
 const transport = new DefaultChatTransport({ api: '/api/generate' });
 
 const persistenceActions = {
-  list: listSlidesProjectsAction,
   save: saveSlidesGenerationAction,
   fork: forkSlidesProjectAction,
 };
@@ -65,11 +62,7 @@ const mobileTabOptions = [
 const describeSlidesMessage = (text: string): string | null =>
   parseSlidesGeneration(text).meta?.description ?? null;
 
-export const SlidesStudio = ({
-  initialProjects,
-}: {
-  initialProjects: ProjectListItem[];
-}) => {
+export const SlidesStudio = ({ projects }: { projects: ProjectListItem[] }) => {
   const [input, setInput] = useState('');
   const [state, dispatch] = useReducer(
     generationReducer<string>,
@@ -91,7 +84,7 @@ export const SlidesStudio = ({
   const [saving, startSaving] = useTransition();
   const persistence = useProjectPersistence<{ source: string }>(
     persistenceActions,
-    initialProjects,
+    '/slides',
   );
   const { resolvedTheme } = useTheme();
   // コードブロックのハイライトはアプリのテーマに合わせる（light は one-light、dark は plastic）。
@@ -103,7 +96,6 @@ export const SlidesStudio = ({
     const theme = resolvedTheme;
     return (blocks) => highlightGenerated(blocks, theme);
   }, [resolvedTheme]);
-  const router = useRouter();
 
   const { messages, sendMessage, status, error, setMessages, stop } = useChat({
     transport,
@@ -213,7 +205,7 @@ export const SlidesStudio = ({
     }
   };
 
-  const handleNewProject = (): void => {
+  const resetProject = (): void => {
     // 生成中なら中断してから切り替える（生成中表示が新プロジェクトに残るのを防ぐ）。
     void stop();
     persistence.reset();
@@ -222,13 +214,12 @@ export const SlidesStudio = ({
     setPendingSelect(null);
     setView('preview');
     setMobileTab('chat');
-    router.replace('/slides');
   };
 
   const handleSelectProject = async (id: number): Promise<void> => {
     // 生成中なら中断してから切り替える（生成中表示が切替先に漏れるのを防ぐ）。
     void stop();
-    const known = persistence.projects.find((project) => project.id === id);
+    const known = projects.find((project) => project.id === id);
     setPendingSelect({ title: known?.title ?? '読み込み中…' });
     setView('preview');
     setMobileTab('preview');
@@ -280,18 +271,19 @@ export const SlidesStudio = ({
     if (persistence.projectId === null) {
       return;
     }
-    const newId = await persistence.fork(persistence.projectId);
-    if (newId !== null) {
-      await handleSelectProject(newId);
-    }
+    await persistence.fork(persistence.projectId);
   };
 
-  useProjectUrlSync('/slides', persistence.projectId, (projectId) => {
-    void handleSelectProject(projectId);
+  useProjectUrlSync(persistence.projectId, {
+    load: (projectId) => {
+      void handleSelectProject(projectId);
+    },
+    reset: resetProject,
   });
 
   return (
     <StudioShell
+      basePath="/slides"
       currentProjectId={persistence.projectId}
       header={
         <>
@@ -342,11 +334,7 @@ export const SlidesStudio = ({
           </div>
         </>
       }
-      onNewProject={handleNewProject}
-      onSelectProject={(id) => {
-        void handleSelectProject(id);
-      }}
-      projects={persistence.projects}
+      projects={projects}
       projectsEmptyText="まだ保存されたスライドはありません。生成すると自動で履歴に残ります。"
       tool="slides"
     >

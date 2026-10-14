@@ -7,10 +7,6 @@ import type { ProjectListItem } from '@/features/projects/application/projects';
 import preview from '../../../../../.storybook/preview';
 import { StudioShell } from './studio-shell';
 
-const noop = (): void => {
-  // 見た目確認用のダミーハンドラ
-};
-
 const projects: ProjectListItem[] = [
   {
     id: 1,
@@ -43,10 +39,9 @@ const meta = preview.meta({
   // meta.storyの型推論が壊れるため、satisfiesで文脈型を与えて広げる
   args: {
     tool: 'ui',
+    basePath: '/',
     projects,
     currentProjectId: 1,
-    onSelectProject: noop,
-    onNewProject: noop,
     header: (
       <>
         <span className="text-fg-base truncate text-sm font-medium">
@@ -81,8 +76,8 @@ export const Default = meta.story({
       within(nav).getByRole('link', { name: 'チャット' }),
     ).toHaveAttribute('href', '/chat');
     await expect(
-      canvas.getByRole('button', { name: /新規作成/u }),
-    ).toBeInTheDocument();
+      canvas.getByRole('link', { name: /新規作成/u }),
+    ).toHaveAttribute('href', '/');
     // プロジェクト一覧はサイドバー（complementary）内にある。ヘッダのタイトルと
     // 重複しうるためスコープして探す。
     const sidebar = within(canvas.getByRole('complementary'));
@@ -100,6 +95,7 @@ export const Default = meta.story({
 export const SlidesTool = meta.story({
   args: {
     tool: 'slides',
+    basePath: '/slides',
     projectsEmptyText:
       'まだ保存されたスライドはありません。生成すると自動で履歴に残ります。',
     projects: [],
@@ -110,6 +106,9 @@ export const SlidesTool = meta.story({
     const nav = canvas.getByRole('navigation', { name: 'AI ツール' });
     const current = within(nav).getByText('スライド').closest('a');
     await expect(current).toHaveAttribute('aria-current', 'page');
+    await expect(
+      canvas.getByRole('link', { name: /新規作成/u }),
+    ).toHaveAttribute('href', '/slides');
     await expect(
       canvas.getByText(/まだ保存されたスライドはありません/u),
     ).toBeInTheDocument();

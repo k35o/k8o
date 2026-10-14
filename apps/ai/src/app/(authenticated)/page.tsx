@@ -10,7 +10,7 @@ import { Studio, StudioSkeleton } from './_components/studio';
 const AuthenticatedStudio = async () => {
   await verifySession();
   const projects = await listProjectsForRoute();
-  return <Studio initialProjects={projects} />;
+  return <Studio projects={projects} />;
 };
 
 export default function Page() {

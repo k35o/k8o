@@ -6,7 +6,6 @@ import { ForkIcon, FullscreenIcon, IconButton } from '@k8ordo/ui';
 import { validateGeneratedSpec } from '@k8ordo/ui/json-render';
 import { DefaultChatTransport } from 'ai';
 import type { UIMessage } from 'ai';
-import { useRouter } from 'next/navigation';
 import { useMemo, useReducer, useRef, useState, useTransition } from 'react';
 
 import { SpecPreview } from '@/app/_components/spec-preview';
@@ -27,7 +26,6 @@ import { specToTsx } from '@/features/generation/application/spec-to-tsx';
 import type { ProjectListItem } from '@/features/projects/application/projects';
 import {
   forkProjectAction,
-  listProjectsAction,
   loadProjectAction,
   saveGenerationAction,
 } from '@/features/projects/interface/actions';
@@ -50,7 +48,6 @@ import { ShareControl } from './share-control';
 const transport = new DefaultChatTransport({ api: '/api/generate' });
 
 const persistenceActions = {
-  list: listProjectsAction,
   save: saveGenerationAction,
   fork: forkProjectAction,
 };
@@ -68,11 +65,7 @@ const mobileTabOptions = [
   ...viewOptions,
 ] as const;
 
-export const Studio = ({
-  initialProjects,
-}: {
-  initialProjects: ProjectListItem[];
-}) => {
+export const Studio = ({ projects }: { projects: ProjectListItem[] }) => {
   const [input, setInput] = useState('');
   const [state, dispatch] = useReducer(
     generationReducer<Spec>,
@@ -100,9 +93,8 @@ export const Studio = ({
   const [saving, startSaving] = useTransition();
   const persistence = useProjectPersistence<{ spec: Spec }>(
     persistenceActions,
-    initialProjects,
+    '/',
   );
-  const router = useRouter();
 
   const { messages, sendMessage, status, error, setMessages, stop } = useChat({
     transport,
@@ -223,9 +215,7 @@ export const Studio = ({
         'ヒーローセクション',
       ];
   const currentProject =
-    persistence.projects.find(
-      (project) => project.id === persistence.projectId,
-    ) ?? null;
+    projects.find((project) => project.id === persistence.projectId) ?? null;
 
   const handleGenerate = async (text: string): Promise<void> => {
     if (text === '' || isBusy || saving) {
@@ -258,7 +248,7 @@ export const Studio = ({
     }
   };
 
-  const handleNewProject = (): void => {
+  const resetProject = (): void => {
     // 生成中なら中断してから切り替える（生成中表示が新プロジェクトに残るのを防ぐ）。
     void stop();
     persistence.reset();
@@ -269,14 +259,13 @@ export const Studio = ({
     setEditBase(null);
     setView('preview');
     setMobileTab('chat');
-    router.replace('/');
   };
 
   const handleSelectProject = async (id: number): Promise<void> => {
     // 生成中なら中断してから切り替える（生成中表示が切替先に漏れるのを防ぐ）。
     void stop();
     // クリック直後に読込中を見せ、タイトルは既知のリスト項目から先行表示する。
-    const known = persistence.projects.find((project) => project.id === id);
+    const known = projects.find((project) => project.id === id);
     setPendingSelect({ title: known?.title ?? '読み込み中…' });
     setView('preview');
     setMobileTab('preview');
@@ -333,18 +322,19 @@ export const Studio = ({
     if (persistence.projectId === null) {
       return;
     }
-    const newId = await persistence.fork(persistence.projectId);
-    if (newId !== null) {
-      await handleSelectProject(newId);
-    }
+    await persistence.fork(persistence.projectId);
   };
 
-  useProjectUrlSync('/', persistence.projectId, (projectId) => {
-    void handleSelectProject(projectId);
+  useProjectUrlSync(persistence.projectId, {
+    load: (projectId) => {
+      void handleSelectProject(projectId);
+    },
+    reset: resetProject,
   });
 
   return (
     <StudioShell
+      basePath="/"
       currentProjectId={persistence.projectId}
       header={
         <>
@@ -369,9 +359,6 @@ export const Studio = ({
                       persistence.currentVersionId
                   }
                   isPublic={currentProject?.visibility === 'public'}
-                  onChanged={() => {
-                    void persistence.refresh();
-                  }}
                   projectId={persistence.projectId}
                   slug={currentProject?.slug ?? null}
                 />
@@ -400,11 +387,7 @@ export const Studio = ({
           </div>
         </>
       }
-      onNewProject={handleNewProject}
-      onSelectProject={(id) => {
-        void handleSelectProject(id);
-      }}
-      projects={persistence.projects}
+      projects={projects}
       tool="ui"
     >
       <div className="flex gap-2 px-4 py-2 lg:hidden">

@@ -2,22 +2,22 @@
 
 import { Button, PlusIcon } from '@k8ordo/ui';
 import { SignOutButton } from '@repo/auth-shell/sign-out-button';
+import Link from 'next/link';
 import type { FC } from 'react';
 
 import { ToggleTheme } from '@/app/_components/toggle-theme';
 import type { ProjectListItem } from '@/features/projects/application/projects';
 
+import { ProjectList } from '../project-list';
 import { ToolNav } from '../tool-nav';
 import type { StudioTool } from '../tool-nav';
-import { ProjectList } from './project-list';
 
 export type SidebarContentProps = {
   tool: StudioTool;
+  basePath: '/' | '/slides';
   projects: ProjectListItem[];
   currentProjectId: number | null;
   projectsEmptyText?: string | undefined;
-  onSelectProject: (projectId: number) => void;
-  onNewProject: () => void;
   onNavigate?: (() => void) | undefined;
 };
 
@@ -25,18 +25,27 @@ export type SidebarContentProps = {
 // ツール切替（ナビ）とプロジェクト履歴・新規作成をここへ集約する。
 export const SidebarContent: FC<SidebarContentProps> = ({
   tool,
+  basePath,
   projects,
   currentProjectId,
   projectsEmptyText,
-  onSelectProject,
-  onNewProject,
   onNavigate,
 }) => (
   <div className="flex h-full min-h-0 flex-col">
     <div className="flex flex-col gap-3 px-3 pt-3">
       <Button
         color="primary"
-        onClick={onNewProject}
+        renderItem={({ className, children }) => (
+          <Link
+            className={className}
+            href={basePath}
+            onNavigate={() => {
+              onNavigate?.();
+            }}
+          >
+            {children}
+          </Link>
+        )}
         size="sm"
         startIcon={<PlusIcon size="sm" />}
         variant="solid"
@@ -50,9 +59,10 @@ export const SidebarContent: FC<SidebarContentProps> = ({
     </p>
     <div className="min-h-0 flex-1 overflow-y-auto">
       <ProjectList
+        basePath={basePath}
         currentProjectId={currentProjectId}
         emptyText={projectsEmptyText}
-        onSelect={onSelectProject}
+        onNavigate={onNavigate}
         projects={projects}
       />
     </div>

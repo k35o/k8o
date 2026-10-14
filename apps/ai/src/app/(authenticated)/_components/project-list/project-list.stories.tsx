@@ -1,4 +1,4 @@
-import { expect, fn, userEvent, within } from 'storybook/test';
+import { expect, within } from 'storybook/test';
 
 import type { ProjectListItem } from '@/features/projects/application/projects';
 
@@ -31,8 +31,8 @@ const meta = preview.meta({
 export const Empty = meta.story({
   args: {
     projects: [],
+    basePath: '/',
     currentProjectId: null,
-    onSelect: fn<(projectId: number) => void>(),
   },
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
@@ -45,19 +45,22 @@ export const Empty = meta.story({
 export const WithProjects = meta.story({
   args: {
     projects,
+    basePath: '/',
     currentProjectId: 1,
-    onSelect: fn<(projectId: number) => void>(),
   },
-  play: async ({ args, canvasElement }) => {
+  play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
-    await expect(canvas.getByText('お問い合わせフォーム')).toBeInTheDocument();
-    await expect(canvas.getByText(/公開/u)).toBeInTheDocument();
-    // 更新日時は日本時間で出す
-    const current = canvas.getByRole('button', {
+    const current = canvas.getByRole('link', {
       name: /お問い合わせフォーム/u,
     });
+    await expect(current).toHaveAttribute('href', '/?project=1');
+    await expect(current).toHaveAttribute('aria-current', 'page');
+    // 更新日時は日本時間で出す
     await expect(within(current).getByText('06/22 18:30')).toBeInTheDocument();
-    await userEvent.click(canvas.getByText('料金プランの3カラム'));
-    await expect(args.onSelect).toHaveBeenCalledWith(2);
+
+    const other = canvas.getByRole('link', { name: /料金プランの3カラム/u });
+    await expect(other).toHaveAttribute('href', '/?project=2');
+    await expect(other).not.toHaveAttribute('aria-current');
+    await expect(within(other).getByText(/公開/u)).toBeInTheDocument();
   },
 });

@@ -11,14 +11,12 @@ import { requireAllowedSession } from '@/shared/auth/require-allowed-session';
 import {
   forkProject,
   getProject,
-  getProjectsForUser,
   saveGeneration,
 } from '../application/projects';
-import type { LoadedProject, ProjectListItem } from '../application/projects';
+import type { LoadedProject } from '../application/projects';
 import {
   forkSlidesProject,
   getSlidesProject,
-  getSlidesProjectsForUser,
   saveSlidesGeneration,
 } from '../application/slides-projects';
 import type { LoadedSlidesProject } from '../application/slides-projects';
@@ -51,14 +49,6 @@ export const saveGenerationAction = async (input: {
       prompt: input.prompt,
     },
   });
-};
-
-export const listProjectsAction = async (): Promise<ProjectListItem[]> => {
-  const session = await requireAllowedSession(await headers());
-  if (session === null) {
-    return [];
-  }
-  return getProjectsForUser(session.userId);
 };
 
 // 非所有/不存在は null。
@@ -104,16 +94,6 @@ export const saveSlidesGenerationAction = async (input: {
     parentVersionId: input.parentVersionId,
     content: { source: input.source, meta, prompt: input.prompt },
   });
-};
-
-export const listSlidesProjectsAction = async (): Promise<
-  ProjectListItem[]
-> => {
-  const session = await requireAllowedSession(await headers());
-  if (session === null) {
-    return [];
-  }
-  return getSlidesProjectsForUser(session.userId);
 };
 
 // 非所有/不存在は null。

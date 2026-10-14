@@ -47,18 +47,7 @@ export const StudioShell: FC<StudioShellProps> = ({
         {/* 閉じている間は描画しない。常設サイドバーと同じ内容が DOM に二重に
             存在すると、支援技術・テストの双方でランドマークが重複するため。 */}
         {menuOpen ? (
-          <SidebarContent
-            {...sidebar}
-            onNavigate={closeMenu}
-            onNewProject={() => {
-              closeMenu();
-              sidebar.onNewProject();
-            }}
-            onSelectProject={(projectId) => {
-              closeMenu();
-              sidebar.onSelectProject(projectId);
-            }}
-          />
+          <SidebarContent {...sidebar} onNavigate={closeMenu} />
         ) : null}
       </Drawer>
 

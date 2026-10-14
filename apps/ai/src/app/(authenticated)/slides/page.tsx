@@ -16,7 +16,7 @@ export const metadata: Metadata = {
 const AuthenticatedSlidesStudio = async () => {
   await verifySession();
   const projects = await listSlidesProjectsForRoute();
-  return <SlidesStudio initialProjects={projects} />;
+  return <SlidesStudio projects={projects} />;
 };
 
 export default function Page() {

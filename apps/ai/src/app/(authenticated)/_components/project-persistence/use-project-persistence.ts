@@ -1,9 +1,9 @@
 'use client';
 
+import { useRouter } from 'next/navigation';
 import { useCallback, useRef, useState } from 'react';
 
 import type { GenerationMeta } from '@/features/generation/application/parse-meta';
-import type { ProjectListItem } from '@/features/projects/application/projects';
 
 type SaveResult = {
   projectId: number;
@@ -12,7 +12,6 @@ type SaveResult = {
 } | null;
 
 type PersistenceActions<TContent> = {
-  list: () => Promise<ProjectListItem[]>;
   save: (
     input: TContent & {
       projectId: number | null;
@@ -25,7 +24,6 @@ type PersistenceActions<TContent> = {
 };
 
 export type ProjectPersistence<TContent> = {
-  projects: ProjectListItem[];
   projectId: number | null;
   projectTitle: string | null;
   currentVersionId: number | null;
@@ -38,22 +36,25 @@ export type ProjectPersistence<TContent> = {
     versionId: number;
     title: string;
   }) => void;
-  fork: (sourceProjectId: number) => Promise<number | null>;
+  fork: (sourceProjectId: number) => Promise<void>;
   reset: () => void;
-  refresh: () => Promise<void>;
 };
+
+// 保存と fork は画面を離れたあとに返ることがあり、隠れたスタジオから URL を変えると
+// 移った先の画面から連れ戻してしまうので、このスタジオの URL にいるときだけ変える。
+const isOnStudio = (basePath: '/' | '/slides'): boolean =>
+  window.location.pathname === basePath;
 
 // UI/スライド両スタジオ共通のプロジェクト永続化。サーバー側の createProjectStore と
 // 同じ構図で、アプリ差分（呼ぶ action と保存 content の型）はパラメータで注入する。
 // actions はモジュールスコープの定数を渡すこと。
-// 一覧の初期値はページの Server Component で取得したものを受け取り、以後は refresh で更新する。
 // projectId / version は ref で持ち、useChat の onFinish のような一度きりの
 // クロージャから最新値を参照する（stale 回避）。
 export const useProjectPersistence = <TContent>(
   actions: PersistenceActions<TContent>,
-  initialProjects: ProjectListItem[],
+  basePath: '/' | '/slides',
 ): ProjectPersistence<TContent> => {
-  const [projects, setProjects] = useState<ProjectListItem[]>(initialProjects);
+  const router = useRouter();
   const [projectId, setProjectId] = useState<number | null>(null);
   const [projectTitle, setProjectTitle] = useState<string | null>(null);
   const [currentVersionId, setCurrentVersionId] = useState<number | null>(null);
@@ -71,12 +72,9 @@ export const useProjectPersistence = <TContent>(
     [],
   );
 
-  const refresh = useCallback(async () => {
-    setProjects(await actions.list());
-  }, [actions]);
-
   const save = useCallback(
     async (content: TContent & { meta: GenerationMeta; prompt: string }) => {
+      const wasNew = projectIdRef.current === null;
       const res = await actions.save({
         ...content,
         projectId: projectIdRef.current,
@@ -86,9 +84,11 @@ export const useProjectPersistence = <TContent>(
         return;
       }
       setCurrent(res.projectId, res.versionId, res.title);
-      await refresh();
+      if (wasNew && isOnStudio(basePath)) {
+        router.replace(`${basePath}?project=${res.projectId.toString()}`);
+      }
     },
-    [actions, refresh, setCurrent],
+    [actions, basePath, router, setCurrent],
   );
 
   const markLoaded = useCallback(
@@ -99,15 +99,14 @@ export const useProjectPersistence = <TContent>(
   );
 
   const fork = useCallback(
-    async (sourceProjectId: number): Promise<number | null> => {
+    async (sourceProjectId: number): Promise<void> => {
       const res = await actions.fork(sourceProjectId);
-      if (res === null) {
-        return null;
+      if (res === null || !isOnStudio(basePath)) {
+        return;
       }
-      await refresh();
-      return res.projectId;
+      router.push(`${basePath}?project=${res.projectId.toString()}`);
     },
-    [actions, refresh],
+    [actions, basePath, router],
   );
 
   const reset = useCallback(() => {
@@ -115,7 +114,6 @@ export const useProjectPersistence = <TContent>(
   }, [setCurrent]);
 
   return {
-    projects,
     projectId,
     projectTitle,
     currentVersionId,
@@ -123,6 +121,5 @@ export const useProjectPersistence = <TContent>(
     markLoaded,
     fork,
     reset,
-    refresh,
   };
 };
