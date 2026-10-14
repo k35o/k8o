@@ -15,6 +15,11 @@ const updatedAtFormat = new Intl.DateTimeFormat('ja-JP', {
   hourCycle: 'h23',
 });
 
+// スレッドを移るたびに一覧は作り直され、スクロールが先頭に戻るので、今いるスレッドを見える位置へ寄せる
+const revealCurrent = (element: HTMLAnchorElement | null): void => {
+  element?.scrollIntoView({ block: 'nearest' });
+};
+
 type ThreadListProps = {
   threads: ThreadListItem[];
   currentThreadId: string;
@@ -50,6 +55,7 @@ export const ThreadList: FC<ThreadListProps> = ({
               onNavigate={() => {
                 onNavigate?.();
               }}
+              ref={isCurrent ? revealCurrent : undefined}
             >
               <span className="text-fg-base truncate text-sm font-bold">
                 {thread.title}

@@ -66,3 +66,34 @@ export const WithThreads = meta.story({
     await expect(within(current).queryByText('生成中')).not.toBeInTheDocument();
   },
 });
+
+const manyThreads: ThreadListItem[] = Array.from(
+  { length: 30 },
+  (_, index) => ({
+    id: `thread-${index.toString()}`,
+    title: `会話 ${index.toString()}`,
+    updatedAt: '2026-10-13T12:05:00.000Z',
+    running: false,
+  }),
+);
+
+export const CurrentBelowTheFold = meta.story({
+  decorators: [
+    (Story) => (
+      <div className="h-60 overflow-y-auto" data-testid="scroller">
+        <Story />
+      </div>
+    ),
+  ],
+  args: { threads: manyThreads, currentThreadId: 'thread-25' },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    // 一覧の下のほうにある今のスレッドも、開いた時点で見えている
+    const scroller = canvas.getByTestId('scroller').getBoundingClientRect();
+    const current = canvas
+      .getByRole('link', { name: /会話 25/u })
+      .getBoundingClientRect();
+    await expect(current.top).toBeGreaterThanOrEqual(scroller.top);
+    await expect(current.bottom).toBeLessThanOrEqual(scroller.bottom);
+  },
+});
