@@ -8,7 +8,7 @@ import type { FC, ReactNode } from 'react';
 import { SidebarContent } from './sidebar-content';
 import type { SidebarContentProps } from './sidebar-content';
 
-type StudioShellProps = SidebarContentProps & {
+type StudioShellProps = Omit<SidebarContentProps, 'onNavigate'> & {
   // ヘッダのツール固有部分（プロジェクト名・ビュー切替・アクション群）。
   header: ReactNode;
   children: ReactNode;
@@ -49,6 +49,7 @@ export const StudioShell: FC<StudioShellProps> = ({
         {menuOpen ? (
           <SidebarContent
             {...sidebar}
+            onNavigate={closeMenu}
             onNewProject={() => {
               closeMenu();
               sidebar.onNewProject();

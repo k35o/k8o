@@ -18,6 +18,7 @@ export type SidebarContentProps = {
   projectsEmptyText?: string | undefined;
   onSelectProject: (projectId: number) => void;
   onNewProject: () => void;
+  onNavigate?: (() => void) | undefined;
 };
 
 // サイドバーの中身。デスクトップの常設 aside とモバイルの Drawer の両方に入る。
@@ -29,6 +30,7 @@ export const SidebarContent: FC<SidebarContentProps> = ({
   projectsEmptyText,
   onSelectProject,
   onNewProject,
+  onNavigate,
 }) => (
   <div className="flex h-full min-h-0 flex-col">
     <div className="flex flex-col gap-3 px-3 pt-3">
@@ -41,7 +43,7 @@ export const SidebarContent: FC<SidebarContentProps> = ({
       >
         新規作成
       </Button>
-      <ToolNav current={tool} />
+      <ToolNav current={tool} onNavigate={onNavigate} />
     </div>
     <p className="text-fg-mute px-5 pt-5 pb-1 text-xs font-bold">
       プロジェクト
