@@ -42,10 +42,14 @@ type ToolFrameProps = {
 
 export const ToolFrame: FC<ToolFrameProps> = ({ sidebar, children }) => {
   const [menuOpen, setMenuOpen] = useState(false);
-  // 枠ごと Activity で隠れても Modal は dialog を閉じないので、隠れるときに Drawer を外して文書を inert のまま残さない
+  const [drawerKey, setDrawerKey] = useState(0);
+  // 枠ごと Activity で隠れると Modal の effect が止まって dialog を閉じないので、隠れるときに Drawer を作り直し、
+  // 開いた dialog を文書から外して inert のまま残さない。ふだんの開け閉めは Modal に close() させ、
+  // 閉じるアニメーションとメニューのボタンへのフォーカスの戻りを残す
   useLayoutEffect(
     () => () => {
       setMenuOpen(false);
+      setDrawerKey((key) => key + 1);
     },
     [],
   );
@@ -70,13 +74,17 @@ export const ToolFrame: FC<ToolFrameProps> = ({ sidebar, children }) => {
           <SidebarBody sidebar={sidebar} />
         </aside>
 
-        {/* 閉じている間は描画しない。常設のサイドバーと同じ内容が DOM に二重にあると、
-            ランドマークが重複するため。 */}
-        {menuOpen ? (
-          <Drawer isOpen onClose={menu.close} side="left" title="k8o AI Studio">
-            <SidebarBody sidebar={sidebar} />
-          </Drawer>
-        ) : null}
+        <Drawer
+          isOpen={menuOpen}
+          key={drawerKey}
+          onClose={menu.close}
+          side="left"
+          title="k8o AI Studio"
+        >
+          {/* 閉じている間は中身を描画しない。常設のサイドバーと同じ内容が DOM に二重にあると、
+              ランドマークが重複するため。 */}
+          {menuOpen ? <SidebarBody sidebar={sidebar} /> : null}
+        </Drawer>
 
         <main className="flex min-h-0 min-w-0 flex-1 flex-col">{children}</main>
       </div>
