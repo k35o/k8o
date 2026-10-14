@@ -9,14 +9,15 @@ type ChatFinish = Parameters<ChatOnFinishCallback<AgentUIMessage>>[0];
 export type ServerSync = 'wait' | 'check';
 
 // 最後まで受け取れたときは、SSE が閉じる前にサーバーが保存を終えているので読み直さない。
-// 切断でないエラーは送信を断られた（4xx）ときを含み、サーバーで生成していない見込みが高いので、待たずに1回だけ確かめる。
-// SDK は切断のときも isError を立てるので、isDisconnect を先に見る
-export const serverSyncAfter = (finish: ChatFinish): ServerSync | null => {
-  if (finish.isDisconnect) {
-    return 'wait';
-  }
+// HTTP の応答で断られた（rejected）ときはサーバーで生成していない見込みが高いので、待たずに1回だけ確かめる。
+// 通信の失敗は SDK の isDisconnect では見分けきれない（Safari の 'Load failed' では立たない）ので、
+// 応答で断られたか、それ以外のエラーかで分ける
+export const serverSyncAfter = (
+  finish: ChatFinish,
+  rejected: boolean,
+): ServerSync | null => {
   if (finish.isError) {
-    return 'check';
+    return rejected ? 'check' : 'wait';
   }
   if (finish.isAbort || finish.finishReason === undefined) {
     return 'wait';

@@ -42,7 +42,7 @@ const finishes = {
     isDisconnect: true,
     isError: true,
   },
-  // 4xx で断られた、またはストリームの error で終わった
+  // Safari の 'Load failed' のように、SDK が切断とみなさない通信の失敗。HTTP で断られたときも同じ形
   failed: {
     message: assistantMessage,
     messages: [],
@@ -62,26 +62,30 @@ const finishes = {
 describe('serverSyncAfter', () => {
   describe('正常系', () => {
     it('最後まで受け取れたなら、サーバーから読み直さない', () => {
-      expect(serverSyncAfter(finishes.completed)).toBeNull();
+      expect(serverSyncAfter(finishes.completed, false)).toBeNull();
     });
 
     it.each([
       ['停止した', finishes.stopped],
       ['回線が切れた', finishes.disconnected],
     ])('%sなら、サーバーの生成が終わるまで待つ', (_label, finish) => {
-      expect(serverSyncAfter(finish)).toBe('wait');
+      expect(serverSyncAfter(finish, false)).toBe('wait');
     });
   });
 
   describe('異常系', () => {
-    it('切断でないエラーで終わったら、待たずに1回だけ確かめる', () => {
-      expect(serverSyncAfter(finishes.failed)).toBe('check');
+    it('HTTP の応答で断られたら、待たずに1回だけ確かめる', () => {
+      expect(serverSyncAfter(finishes.failed, true)).toBe('check');
+    });
+
+    it('SDK が切断とみなさない通信の失敗やストリームのエラーでは、サーバーの生成が終わるまで待つ', () => {
+      expect(serverSyncAfter(finishes.failed, false)).toBe('wait');
     });
   });
 
   describe('エッジケース', () => {
     it('finish を受け取らずにストリームが閉じたなら、サーバーの生成が終わるまで待つ', () => {
-      expect(serverSyncAfter(finishes.closedWithoutFinish)).toBe('wait');
+      expect(serverSyncAfter(finishes.closedWithoutFinish, false)).toBe('wait');
     });
   });
 });
@@ -146,7 +150,7 @@ describe('nextSyncStep', () => {
     });
 
     it('新しいスレッドで送った直後に回線が切れたら、スレッドができる前の 404 では諦めずに読み直す', () => {
-      expect(serverSyncAfter(finishes.disconnected)).toBe('wait');
+      expect(serverSyncAfter(finishes.disconnected, false)).toBe('wait');
       expect(
         nextSyncStep('wait', { type: 'not-found', count: 1 }),
       ).toStrictEqual({ type: 'retry' });

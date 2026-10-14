@@ -1,8 +1,8 @@
 'use client';
 
 import { useChat } from '@ai-sdk/react';
-import { DefaultChatTransport } from 'ai';
-import { useEffect, useState } from 'react';
+import { APICallError, DefaultChatTransport } from 'ai';
+import { useEffect, useRef, useState } from 'react';
 import type { FC } from 'react';
 
 import { threadTitleFrom } from '@/features/agent/application/agent-message';
@@ -51,6 +51,7 @@ export const ChatScreen: FC<ChatScreenProps> = ({
   const [createdAt, setCreatedAt] = useState<string | null>(null);
   const [draft, setDraft] = useState('');
 
+  const rejectedRef = useRef(false);
   const {
     messages,
     sendMessage,
@@ -64,8 +65,13 @@ export const ChatScreen: FC<ChatScreenProps> = ({
     messages: initialMessages,
     transport,
     throttle: 50,
+    // SDK は onError を onFinish より先に呼ぶ。HTTP の応答で断られたときだけ APICallError になる
+    onError: (chatError) => {
+      rejectedRef.current = APICallError.isInstance(chatError);
+    },
     onFinish: (finish) => {
-      const next = serverSyncAfter(finish);
+      const next = serverSyncAfter(finish, rejectedRef.current);
+      rejectedRef.current = false;
       if (next !== null) {
         setSync(next);
       }
