@@ -8,6 +8,9 @@ export type GenerationModel = (typeof GENERATION_MODELS)[number];
 
 export const DEFAULT_GENERATION_MODEL: GenerationModel = 'claude-sonnet-5-5';
 
+export const isGenerationModel = (value: string): value is GenerationModel =>
+  GENERATION_MODELS.some((model) => model === value);
+
 export const GENERATION_MODEL_LABELS: Record<GenerationModel, string> = {
   'claude-sonnet-5-5': 'Sonnet 5.5',
   'claude-opus-5-5': 'Opus 5.5',
