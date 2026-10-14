@@ -2,11 +2,14 @@
   "name": "@repo/api",
   "version": "1.0.0",
   "private": true,
-  "description": "k8o API (cron jobs, owner MCP, and public routes)",
+  "description": "k8o API (cron jobs, owner MCP, owner API, and public routes)",
   "type": "module",
   "exports": {
     "./public": {
       "types": "./src/public.ts"
+    },
+    "./owner": {
+      "types": "./src/owner.ts"
     }
   },
   "scripts": {

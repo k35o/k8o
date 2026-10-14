@@ -1,12 +1,12 @@
 # apps/api CLAUDE.md
 
-k8o の API。Hono で書き、Vercel にデプロイする（本番ドメイン `api.k8o.me`）。Vercel Cron で動く定期同期、オーナーが Claude Code から使う MCP（`/mcp`）、k8o.me のブラウザから呼ぶ公開ルート（`/public/*`）を持つ。
+k8o の API。Hono で書き、Vercel にデプロイする（本番ドメイン `api.k8o.me`）。Vercel Cron で動く定期同期、オーナーが Claude Code から使う MCP（`/mcp`）、ai などオーナーのアプリから呼ぶオーナー API（`/owner/*`）、k8o.me のブラウザから呼ぶ公開ルート（`/public/*`）を持つ。
 
 ## レイヤー構成（src/）
 
-- `index.ts` … Hono アプリの入口。ルートを束ね、`shared/auth/require-bearer-secret.ts` で `/cron/*` に `CRON_SECRET`、`/mcp` に `MCP_TOKEN` の Bearer 検証をかける。`/public/*` は認証の無い公開ルート（`public.ts`）
+- `index.ts` … Hono アプリの入口。ルートを束ね、`shared/auth/require-bearer-secret.ts` で `/cron/*` に `CRON_SECRET`、`/mcp` に `MCP_TOKEN`、`/owner/*` にクライアントごとのトークンの Bearer 検証をかける。`/owner/*` は `owner.ts`、`/public/*` は認証の無い公開ルート（`public.ts`）
 - `mcp.ts` … MCP サーバーの組み立て。各 feature の tool を登録する
-- `features/<feature>/interface/` … HTTP 境界（`cron-routes.ts`・`public-routes.ts`）と MCP の tool（`mcp-tools.ts`）、通知の配線などユースケースの組み立て
+- `features/<feature>/interface/` … HTTP 境界（`cron-routes.ts`・`owner-routes.ts`・`public-routes.ts`）と MCP の tool（`mcp-tools.ts`）、通知の配線などユースケースの組み立て
 - `features/<feature>/application/`・`infrastructure/` … 分け方は apps/main と同じ（`apps/main/CLAUDE.md`）
 - `shared/` … アプリ内で横断利用する処理
 
@@ -24,6 +24,14 @@ k8o の API。Hono で書き、Vercel にデプロイする（本番ドメイン
 - 本文は 64KB まで。想定外の例外は中身を出さずに 500 を返す
 - `/public/reports` は、main の Reporting-Endpoints を通してブラウザの Reporting API が送る CSP 違反と、main のクライアントのエラーを受ける。Reporting API は `application/reports+json` の配列を送り、Chromium と Firefox は別オリジンなのでプリフライトを経る（Chromium は毎回）。410 は Firefox に送り先を消させるので、どの場合も返さない（Chromium は 2xx 以外をすべて送り直す）。Safari は CSP 違反を `application/csp-report` の単一オブジェクトで、プリフライトなしで送る。JSON 系の Content-Type でないので `validator('json')` が本文を読まず 400 になり、受けていない
 - `/public/reports` は1件ごとに `type` 64字、`url` 2048字、`user_agent` 512字、`body` を JSON にして 8192字までを受け、超えたレポートは捨てる。1回のリクエストで保存するのは、残りのうち先頭の 50件まで。捨てたときも 204 を返す。配列でない・必須のキーが無いといった形の誤りは 400
+
+## オーナー API
+
+`/owner/*` は、オーナーのアプリ（今は ai）がサーバーから呼ぶ読み取りの API（`src/owner.ts`）。ai は k8o の DB の資格情報を持たず、k8o のデータはここから読む。呼ぶ側は `@repo/api/owner` から `OwnerApi` の型だけを読み、hc で呼ぶ。
+
+- トークンはクライアントごとに分ける。ai の本番は `OWNER_API_TOKEN_AI`、ai の preview は `OWNER_API_TOKEN_AI_PREVIEW` と同じ値を持ち、どちらも本番の api を呼ぶ。片方だけを入れ替え・失効できる。クライアントを足すときは環境変数を足して `index.ts` の `requireBearerSecret` に並べる
+- ルートは `features/<feature>/interface/owner-routes.ts` に書き、`src/owner.ts` で束ねる。エラーは公開ルートと同じく `{ ok: false, error: '<code>' }` とステータスで返す
+- `GET /owner/blogs` は記事の一覧、`GET /owner/blogs/:slug` は記事の markdown を返す。記事の本文とタイトルは main の MDX にあり DB には無いので、main の公開ページ（`https://k8o.me/blog/feed` と `https://k8o.me/blog/<slug>.md`）から取る。slug は `[a-z0-9-]` だけを受ける
 
 ## MCP
 
