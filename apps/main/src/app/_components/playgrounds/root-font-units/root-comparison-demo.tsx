@@ -16,7 +16,9 @@ export function RootComparisonDemo() {
             <NumberField
               max={48}
               min={8}
-              onChange={setFontSize}
+              onChange={(value) => {
+                if (value !== null) setFontSize(value);
+              }}
               step={1}
               value={fontSize}
               {...props}

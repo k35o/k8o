@@ -60,7 +60,9 @@ export const RadiusMaker: FC<{
                   {...props}
                   max={PREVIEW_SIZE.max}
                   min={PREVIEW_SIZE.min}
-                  onChange={setWidth}
+                  onChange={(value) => {
+                    if (value !== null) setWidth(value);
+                  }}
                   value={width}
                 />
               )}
@@ -72,7 +74,9 @@ export const RadiusMaker: FC<{
                   {...props}
                   max={PREVIEW_SIZE.max}
                   min={PREVIEW_SIZE.min}
-                  onChange={setHeight}
+                  onChange={(value) => {
+                    if (value !== null) setHeight(value);
+                  }}
                   value={height}
                 />
               )}

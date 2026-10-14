@@ -57,7 +57,7 @@ export const CornerInputs: FC<Props> = ({ corners, onChangeValue }) => {
                   max={100}
                   min={0}
                   onChange={(value) => {
-                    onChangeValue(corner, axis, value);
+                    if (value !== null) onChangeValue(corner, axis, value);
                   }}
                   value={corners[corner][axis]}
                 />

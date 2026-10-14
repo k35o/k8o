@@ -38,9 +38,9 @@ type Channel = {
 const ChannelControl: FC<{ channel: Channel }> = ({ channel }) => {
   const id = useId();
   const value = clamp(channel.value, channel.min, channel.max);
-  // NumberField のクリア時などに渡る NaN は無視する。
-  const handleChange = (next: number): void => {
-    if (!Number.isNaN(next)) {
+  // NumberField を空欄にしたときの null は無視する。
+  const handleChange = (next: number | null): void => {
+    if (next !== null) {
       channel.onChange(next);
     }
   };
