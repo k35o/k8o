@@ -84,6 +84,21 @@ const ANTHROPIC_OPTIONS = {
 const isNonEmptyArray = (value: unknown): boolean =>
   Array.isArray(value) && value.length > 0;
 
+// ai が export していない @ai-sdk/provider の getErrorMessage の写し。ループの中で Claude に送る
+// tool のエラー文はこれで作られ、保存する文字列がずれると次のターンで送り返す履歴が食い違う
+const errorMessageOf = (error: unknown): string => {
+  if (error === null || error === undefined) {
+    return 'unknown error';
+  }
+  if (typeof error === 'string') {
+    return error;
+  }
+  if (error instanceof Error) {
+    return error.toString();
+  }
+  return JSON.stringify(error);
+};
+
 const streamRun = async (input: {
   threadId: string;
   runId: string;
@@ -164,8 +179,7 @@ const streamRun = async (input: {
         part.type === 'finish'
           ? { end: endOfFinish(part.finishReason, budgetExceeded) }
           : undefined,
-      onError: (error) =>
-        error instanceof Error ? error.message : '生成中にエラーが発生しました',
+      onError: errorMessageOf,
       onEnd: async ({ responseMessage, outcome }) => {
         runEnded.abort();
         await finishRun({

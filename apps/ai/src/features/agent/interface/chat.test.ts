@@ -804,6 +804,69 @@ describe('handleChat', () => {
       ]);
     });
 
+    it('tool がエラーになった返答を次のターンで送り返すとき、tool の結果はループの中で送ったものと同じ文字列にする', async () => {
+      vi.mocked(fetchOwnerBlogMarkdown).mockResolvedValue(null);
+      const firstTurn = mockClaude(
+        [
+          { type: 'stream-start', warnings: [] },
+          {
+            type: 'tool-call',
+            toolCallId: 'call-missing',
+            toolName: 'read_blog',
+            input: JSON.stringify({ slug: 'missing' }),
+          },
+          {
+            type: 'tool-call',
+            toolCallId: 'call-invalid',
+            toolName: 'read_blog',
+            input: JSON.stringify({ slug: 'Bad_Slug' }),
+          },
+          finishChunk('tool-calls'),
+        ],
+        textStep('記事が見つかりませんでした'),
+      );
+      const firstResponse = await handleChat(chatRequest(chatBody()));
+      await firstResponse.text();
+      await settle();
+
+      vi.mocked(selectThread).mockResolvedValue(existingThread());
+      vi.mocked(selectThreadMessages).mockResolvedValue(savedMessages());
+      const nextTurn = mockClaude(textStep('答え'));
+      const nextResponse = await handleChat(
+        chatRequest(chatBody({ message: userMessage('ほかの記事は？', 'u2') })),
+      );
+      await nextResponse.text();
+
+      const toolResultsSentInLoop = firstTurn.doStreamCalls[1]?.prompt.filter(
+        (message) => message.role === 'tool',
+      );
+      expect(toolResultsSentInLoop).toMatchObject([
+        {
+          content: [
+            {
+              toolCallId: 'call-missing',
+              output: {
+                type: 'error-text',
+                value: 'Error: 記事が見つかりません: missing',
+              },
+            },
+            {
+              toolCallId: 'call-invalid',
+              output: {
+                type: 'error-text',
+                value: expect.stringMatching(/^AI_InvalidToolInputError: /u),
+              },
+            },
+          ],
+        },
+      ]);
+      expect(
+        nextTurn.doStreamCalls[0]?.prompt.filter(
+          (message) => message.role === 'tool',
+        ),
+      ).toStrictEqual(toolResultsSentInLoop);
+    });
+
     it('送り返した thinking を Claude API に落とされたら、ログに残す', async () => {
       const error = vi.spyOn(console, 'error').mockImplementation(() => {});
       const inputTransformations = [

@@ -45,7 +45,7 @@ UI スタジオの生成物は json-render の spec。コード表示の TSX は
 スレッドの間、Claude に送る system（`AGENT_INSTRUCTIONS`）、tools の集合と定義、model、effort、thinking の設定を変えない。履歴は追記だけにし、編集・削除・regenerate の口を作らない。送り返す thinking ブロックの署名は、system・tools・それより前のメッセージに結び付いていて、変えるとその位置から後ろの thinking が無効になる。prompt cache も作り直しになる。
 
 - thinking に `blockBinding: { prefixMismatchBehavior: 'drop_block' }` を付けているので、噛み合わない thinking は 400 にならず、API に落とされる。落とされたステップは `onStepEnd` が console.error で残す。system や tools を変えてデプロイすると、既存のスレッドでこれが出る
-- DB から組み直した履歴が、ループの中で送った形と1字でもずれると、同じことが起きる。`toUIMessageStream` の `onError` の戻り値は tool のエラー文として保存され、次のターンで送り返されるので、ループの中で送る `error.message` と同じ値を返す
+- DB から組み直した履歴が、ループの中で送った形と1字でもずれると、同じことが起きる。`toUIMessageStream` の `onError` の戻り値は tool のエラー文として保存され、次のターンで送り返されるので、ループの中で Claude に送る文字列と同じ規則（@ai-sdk/provider の `getErrorMessage`。Error なら `toString()`、文字列ならそのまま）で返す。この戻り値は、ストリーム全体のエラーで画面に出す文言にもなる
 
 ### オーナー API
 
