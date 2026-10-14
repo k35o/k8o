@@ -5,14 +5,10 @@ import { DefaultChatTransport } from 'ai';
 import { useEffect, useState } from 'react';
 import type { FC } from 'react';
 
-import {
-  serverSyncAfter,
-  threadTitleFrom,
-} from '@/features/agent/application/agent-message';
-import type {
-  AgentUIMessage,
-  ServerSync,
-} from '@/features/agent/application/agent-message';
+import { threadTitleFrom } from '@/features/agent/application/agent-message';
+import type { AgentUIMessage } from '@/features/agent/application/agent-message';
+import { serverSyncAfter } from '@/features/agent/application/thread-sync';
+import type { ServerSync } from '@/features/agent/application/thread-sync';
 import type { ThreadListItem } from '@/features/agent/application/threads';
 import { DEFAULT_GENERATION_MODEL } from '@/shared/claude/models';
 import type { GenerationModel } from '@/shared/claude/models';

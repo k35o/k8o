@@ -2,18 +2,44 @@
 
 import { useEffect, useEffectEvent } from 'react';
 
+import type { AgentUIMessage } from '@/features/agent/application/agent-message';
+import { nextSyncStep } from '@/features/agent/application/thread-sync';
 import type {
-  AgentUIMessage,
   ServerSync,
-} from '@/features/agent/application/agent-message';
+  ThreadRead,
+} from '@/features/agent/application/thread-sync';
 import type { ThreadSnapshot } from '@/features/agent/application/threads';
 
 const SYNC_INTERVAL_MS = 2000;
-// 送った直後に切れると、サーバーがスレッドを作る前に読むことがあるので、1回の 404 では諦めない
-const MAX_NOT_FOUND = 5;
 
-// 'wait' はサーバーの生成が終わるまで読み続け、'check' は1回だけ読んで生成中なら 'wait' に移る。
-// onSettled の null は、読めないまま諦めたこと（今のメッセージをそのまま残す）を表す
+const readThread = async (
+  threadId: string,
+  notFoundCount: number,
+  signal: AbortSignal,
+): Promise<ThreadRead | null> => {
+  try {
+    const response = await fetch(`/api/chat/${threadId}`, {
+      cache: 'no-store',
+      signal,
+    });
+    if (response.status === 401) {
+      return { type: 'unauthorized' };
+    }
+    if (response.status === 404) {
+      return { type: 'not-found', count: notFoundCount + 1 };
+    }
+    if (!response.ok) {
+      return { type: 'failed' };
+    }
+    return {
+      type: 'snapshot',
+      snapshot: (await response.json()) as ThreadSnapshot,
+    };
+  } catch {
+    return signal.aborted ? null : { type: 'failed' };
+  }
+};
+
 export const useThreadSync = ({
   threadId,
   mode,
@@ -37,47 +63,26 @@ export const useThreadSync = ({
     let notFoundCount = 0;
 
     const poll = async (): Promise<void> => {
-      try {
-        const response = await fetch(`/api/chat/${threadId}`, {
-          cache: 'no-store',
-          signal: controller.signal,
-        });
-        if (response.status === 401) {
-          settle(null);
-          return;
-        }
-        if (response.status === 404) {
-          notFoundCount += 1;
-          if (mode === 'check' || notFoundCount >= MAX_NOT_FOUND) {
-            settle([]);
-            return;
-          }
-        } else if (response.ok) {
-          const snapshot = (await response.json()) as ThreadSnapshot;
-          if (!snapshot.running) {
-            settle(snapshot.messages);
-            return;
-          }
-          if (mode === 'check') {
-            wait();
-            return;
-          }
-        } else if (mode === 'check') {
-          wait();
-          return;
-        }
-      } catch {
-        if (controller.signal.aborted) {
-          return;
-        }
-        if (mode === 'check') {
-          wait();
-          return;
-        }
+      const read = await readThread(threadId, notFoundCount, controller.signal);
+      if (read === null) {
+        return;
       }
-      timer = setTimeout(() => {
-        void poll();
-      }, SYNC_INTERVAL_MS);
+      if (read.type === 'not-found') {
+        notFoundCount = read.count;
+      }
+      const step = nextSyncStep(mode, read);
+      switch (step.type) {
+        case 'settle':
+          settle(step.messages);
+          return;
+        case 'wait':
+          wait();
+          return;
+        case 'retry':
+          timer = setTimeout(() => {
+            void poll();
+          }, SYNC_INTERVAL_MS);
+      }
     };
 
     void poll();
