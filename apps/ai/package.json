@@ -30,6 +30,7 @@
     "@tailwindcss/postcss": "catalog:",
     "ai": "catalog:",
     "better-auth": "catalog:",
+    "hono": "catalog:",
     "next": "catalog:",
     "next-themes": "catalog:",
     "postcss": "catalog:",
@@ -41,6 +42,7 @@
     "zod": "catalog:"
   },
   "devDependencies": {
+    "@repo/api": "workspace:*",
     "@repo/typescript-config": "workspace:*",
     "@storybook/addon-a11y": "catalog:",
     "@storybook/addon-docs": "catalog:",
