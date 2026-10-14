@@ -17,7 +17,7 @@ export type RunEnd =
   | 'stopped'
   | 'timeout';
 
-export type AgentMessageMetadata = { end?: RunEnd };
+type AgentMessageMetadata = { end?: RunEnd };
 
 export type AgentUIMessage = UIMessage<
   AgentMessageMetadata,
@@ -42,9 +42,20 @@ export const threadTitleFrom = (message: AgentUIMessage): string => {
 
 type ChatFinish = Parameters<ChatOnFinishCallback<AgentUIMessage>>[0];
 
-// 最後まで受け取れたときは、SSE が閉じる前にサーバーが保存を終えているので読み直さない
-export const needsServerSync = (finish: ChatFinish): boolean =>
-  finish.isAbort ||
-  finish.isDisconnect ||
-  finish.isError ||
-  finish.finishReason === undefined;
+export type ServerSync = 'wait' | 'check';
+
+// 最後まで受け取れたときは、SSE が閉じる前にサーバーが保存を終えているので読み直さない。
+// エラーは送信を断られた（4xx）ときを含み、サーバーで生成していない見込みが高いので、待たずに1回だけ確かめる
+export const serverSyncAfter = (finish: ChatFinish): ServerSync | null => {
+  if (finish.isError) {
+    return 'check';
+  }
+  if (
+    finish.isAbort ||
+    finish.isDisconnect ||
+    finish.finishReason === undefined
+  ) {
+    return 'wait';
+  }
+  return null;
+};

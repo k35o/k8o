@@ -56,6 +56,10 @@ import type { ThreadRow } from '../application/threads';
 import { agentTools } from '../application/tools';
 
 const RUN_IN_PROGRESS_MESSAGE = 'この会話は応答を生成中です';
+// 本文が無いと、画面には AI SDK の英語の既定の文言が出る
+const UNAUTHORIZED_MESSAGE = 'ログインし直してください';
+const INVALID_REQUEST_MESSAGE = '送信内容を読み取れませんでした';
+const THREAD_NOT_FOUND_MESSAGE = 'この会話は見つかりません';
 const CONTEXT_FULL_MESSAGE =
   'この会話は長くなりすぎました。新しいチャットで続けてください';
 
@@ -212,27 +216,27 @@ const modelFor = (
 export async function handleChat(req: Request): Promise<Response> {
   const session = await requireAllowedSession(req.headers);
   if (session === null) {
-    return new Response(null, { status: 401 });
+    return new Response(UNAUTHORIZED_MESSAGE, { status: 401 });
   }
 
   let body: unknown;
   try {
     body = await req.json();
   } catch {
-    return new Response(null, { status: 400 });
+    return new Response(INVALID_REQUEST_MESSAGE, { status: 400 });
   }
   const request = await parseChatRequest(body);
   if (request === null) {
-    return new Response(null, { status: 400 });
+    return new Response(INVALID_REQUEST_MESSAGE, { status: 400 });
   }
 
   const thread = await findThread(request.threadId);
   if (thread !== null && thread.userId !== session.userId) {
-    return new Response(null, { status: 404 });
+    return new Response(THREAD_NOT_FOUND_MESSAGE, { status: 404 });
   }
   const model = modelFor(thread, request.model);
   if (model === null) {
-    return new Response(null, { status: 400 });
+    return new Response(INVALID_REQUEST_MESSAGE, { status: 400 });
   }
   if ((thread?.lastInputTokens ?? 0) > MAX_CONTEXT_INPUT_TOKENS) {
     return new Response(CONTEXT_FULL_MESSAGE, { status: 409 });

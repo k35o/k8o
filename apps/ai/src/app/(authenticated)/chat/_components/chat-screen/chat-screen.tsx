@@ -6,10 +6,13 @@ import { useEffect, useState } from 'react';
 import type { FC } from 'react';
 
 import {
-  needsServerSync,
+  serverSyncAfter,
   threadTitleFrom,
 } from '@/features/agent/application/agent-message';
-import type { AgentUIMessage } from '@/features/agent/application/agent-message';
+import type {
+  AgentUIMessage,
+  ServerSync,
+} from '@/features/agent/application/agent-message';
 import type { ThreadListItem } from '@/features/agent/application/threads';
 import { DEFAULT_GENERATION_MODEL } from '@/shared/claude/models';
 import type { GenerationModel } from '@/shared/claude/models';
@@ -39,7 +42,9 @@ export const ChatScreen: FC<ChatScreenProps> = ({
   initialRunning,
   initialThreads,
 }) => {
-  const [syncing, setSyncing] = useState(initialRunning);
+  const [sync, setSync] = useState<ServerSync | null>(
+    initialRunning ? 'wait' : null,
+  );
   const [model, setModel] = useState<GenerationModel>(
     thread.model ?? DEFAULT_GENERATION_MODEL,
   );
@@ -60,18 +65,24 @@ export const ChatScreen: FC<ChatScreenProps> = ({
     transport,
     throttle: 50,
     onFinish: (finish) => {
-      if (needsServerSync(finish)) {
-        setSyncing(true);
+      const next = serverSyncAfter(finish);
+      if (next !== null) {
+        setSync(next);
       }
     },
   });
 
   useThreadSync({
     threadId: thread.id,
-    enabled: syncing,
+    mode: sync,
     onSettled: (serverMessages) => {
-      setMessages(serverMessages);
-      setSyncing(false);
+      if (serverMessages !== null) {
+        setMessages(serverMessages);
+      }
+      setSync(null);
+    },
+    onRunning: () => {
+      setSync('wait');
     },
   });
 
@@ -129,7 +140,7 @@ export const ChatScreen: FC<ChatScreenProps> = ({
       <ChatView
         canSelectModel={!created && messages.length === 0}
         errorText={error?.message ?? null}
-        isServerRunning={syncing}
+        isServerRunning={sync === 'wait'}
         messages={messages}
         model={model}
         onSelectModel={setModel}

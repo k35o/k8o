@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import { needsServerSync, threadTitleFrom } from './agent-message';
+import { serverSyncAfter, threadTitleFrom } from './agent-message';
 import type { AgentUIMessage } from './agent-message';
 
 const userMessage = (text: string): AgentUIMessage => ({
@@ -9,7 +9,7 @@ const userMessage = (text: string): AgentUIMessage => ({
   parts: [{ type: 'text', text }],
 });
 
-type ChatFinish = Parameters<typeof needsServerSync>[0];
+type ChatFinish = Parameters<typeof serverSyncAfter>[0];
 
 // finish を受け取らずにストリームが閉じたときは finishReason が無い
 const closedWithoutFinish: ChatFinish = {
@@ -62,24 +62,27 @@ describe('threadTitleFrom', () => {
   });
 });
 
-describe('needsServerSync', () => {
+describe('serverSyncAfter', () => {
   describe('正常系', () => {
     it('最後まで受け取れたなら、サーバーから読み直さない', () => {
-      expect(needsServerSync(finish())).toBe(false);
+      expect(serverSyncAfter(finish())).toBeNull();
     });
 
     it.each([
       ['停止した', { isAbort: true }],
       ['接続が切れた', { isDisconnect: true }],
-      ['エラーになった', { isError: true }],
-    ])('%sなら、サーバーから読み直す', (_label, overrides) => {
-      expect(needsServerSync(finish(overrides))).toBe(true);
+    ])('%sなら、サーバーの生成が終わるまで待つ', (_label, overrides) => {
+      expect(serverSyncAfter(finish(overrides))).toBe('wait');
+    });
+
+    it('エラーになったら、待たずに1回だけ確かめる', () => {
+      expect(serverSyncAfter(finish({ isError: true }))).toBe('check');
     });
   });
 
   describe('エッジケース', () => {
-    it('finish を受け取らずにストリームが閉じたなら、サーバーから読み直す', () => {
-      expect(needsServerSync(closedWithoutFinish)).toBe(true);
+    it('finish を受け取らずにストリームが閉じたなら、サーバーの生成が終わるまで待つ', () => {
+      expect(serverSyncAfter(closedWithoutFinish)).toBe('wait');
     });
   });
 });
