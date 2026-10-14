@@ -3,7 +3,7 @@ import type { Metadata } from 'next';
 import { Suspense } from 'react';
 
 import { ChatScreen } from './_components/chat-screen';
-import { ChatSkeleton } from './_components/chat-skeleton';
+import { NewChatPlaceholder } from './_components/new-chat-placeholder';
 
 export const metadata: Metadata = {
   title: 'チャット | k8o AI Studio',
@@ -26,7 +26,7 @@ const NewChat = async () => {
 
 export default function Page() {
   return (
-    <Suspense fallback={<ChatSkeleton />}>
+    <Suspense fallback={<NewChatPlaceholder />}>
       <NewChat />
     </Suspense>
   );
