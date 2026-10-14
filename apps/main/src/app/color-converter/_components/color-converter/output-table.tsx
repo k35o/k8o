@@ -1,21 +1,12 @@
 'use client';
 
-import { Card, CopyIcon, IconButton, useClipboard, useToast } from '@k8ordo/ui';
+import { Card, CopyButton } from '@k8ordo/ui';
 import { formatAll } from '@repo/helpers/color/format';
 import type { Color } from '@repo/helpers/color/spaces';
 import type { FC } from 'react';
 
 export const OutputTable: FC<{ color: Color }> = ({ color }) => {
   const rows = formatAll(color);
-  const { writeClipboard } = useClipboard();
-  const { open } = useToast();
-
-  const handleCopy = (value: string, label: string) => {
-    void writeClipboard(value).then(() => {
-      open('success', `${label}をコピーしました`);
-      return undefined;
-    });
-  };
 
   return (
     <Card>
@@ -39,15 +30,11 @@ export const OutputTable: FC<{ color: Color }> = ({ color }) => {
                 </code>
               </td>
               <td className="py-2 pr-3 pl-1 align-middle">
-                <IconButton
-                  color="base"
+                <CopyButton
+                  iconOnly
                   label={`${row.label}をコピー`}
-                  onClick={() => {
-                    handleCopy(row.value, row.label);
-                  }}
-                >
-                  <CopyIcon />
-                </IconButton>
+                  value={row.value}
+                />
               </td>
             </tr>
           ))}

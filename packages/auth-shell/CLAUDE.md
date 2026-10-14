@@ -30,3 +30,7 @@ Next.js の規約ファイル（`error.tsx` / `(public)/layout.tsx` / `api/auth/
 
 `global-error.tsx` はフォント（`_styles/font.ts`）とグローバル CSS がアプリ側にあるため、
 `html` / `body` はアプリ側に置き、中身だけを `GlobalErrorContent` として共有する。
+
+@k8ordo/ui の組み込み文言は `@k8ordo/i18n` のロケール集合（`defineLocales`）で決まる。集合は
+アプリ側（ai の `src/i18n.ts`）が定義し、このパッケージでは定義しない。`@k8ordo/i18n` を peer に
+しているのは、ui と同じ実体に解決させるため（`peer-instances.test.ts` が検査する）。

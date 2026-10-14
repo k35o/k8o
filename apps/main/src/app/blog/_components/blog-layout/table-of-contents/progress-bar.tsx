@@ -33,7 +33,7 @@ export const ProgressBar: FC<{
           cy="16"
           fill="none"
           r={radius}
-          stroke="var(--bg-raised)"
+          stroke="var(--color-bg-raised)"
           strokeWidth="3"
         />
         <circle
@@ -42,7 +42,7 @@ export const ProgressBar: FC<{
           cy="16"
           fill="none"
           r={radius}
-          stroke="var(--primary-bg)"
+          stroke="var(--color-primary-bg)"
           strokeDasharray={circumference}
           strokeDashoffset={offset}
           strokeWidth="3"

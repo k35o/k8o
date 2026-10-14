@@ -4,6 +4,8 @@ import type { ReactNode } from 'react';
 
 import { AppProvider } from './_providers/app';
 
+import '@/i18n';
+
 import './_styles/globals.css';
 import { mPlus2, notoSansJp } from './_styles/font';
 

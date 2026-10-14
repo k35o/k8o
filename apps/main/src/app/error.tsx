@@ -31,6 +31,8 @@ export default function ErrorPage({
         </Button>
         <Button
           color="base"
+          // next/link は onClick や ref に明示的な undefined を受けない
+          // (exactOptionalPropertyTypes) ため、束は展開せず要るものだけ取り出す
           renderItem={({ className, children }) => (
             <Link className={className} href="/">
               {children}

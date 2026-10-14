@@ -9,17 +9,17 @@ export const ExternalBlog: FC = () => (
       color="base"
       label="Qiitaのアカウント"
       renderItem={({
-        className,
         children,
-        'aria-label': ariaLabel,
+        disabled: _disabled,
         triggerProps,
+        type: _type,
+        ...props
       }) => (
         <a
-          aria-label={ariaLabel}
-          className={className}
           href="https://qiita.com/k8o"
           rel="noopener noreferrer"
           target="_blank"
+          {...props}
           {...triggerProps}
         >
           {children}
@@ -32,17 +32,17 @@ export const ExternalBlog: FC = () => (
       color="base"
       label="RSSフィード"
       renderItem={({
-        className,
         children,
-        'aria-label': ariaLabel,
+        disabled: _disabled,
         triggerProps,
+        type: _type,
+        ...props
       }) => (
         <a
-          aria-label={ariaLabel}
-          className={className}
           href="/blog/feed"
           rel="noopener noreferrer"
           target="_blank"
+          {...props}
           {...triggerProps}
         >
           {children}

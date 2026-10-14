@@ -363,10 +363,12 @@ const emitElement = (el: UIElement, ctx: Ctx): string[] => {
       const label = escapeText(textProp(el, 'label', ctx));
       if (typeof href === 'string' && href !== '') {
         // href 付きは renderItem でリンクとして描画する（実 Button の作法）。
+        // registry は className と children だけ取るが、移植先で onClick や disabled を
+        // 足しても捨てられないよう、<button> 専用の disabled / type を外して残りを広げる。
         return [
           `<Button${base}`,
-          '  renderItem={({ className, children }) => (',
-          `    <a className={className} href=${escapeAttrString(href)}>`,
+          '  renderItem={({ children, disabled: _disabled, type: _type, ...props }) => (',
+          `    <a {...props} href=${escapeAttrString(href)}>`,
           '      {children}',
           '    </a>',
           '  )}',

@@ -173,9 +173,15 @@ catalogs:
     '@k8o/oxc-config':
       specifier: 1.1.0
       version: 1.1.0
+    '@k8ordo/i18n':
+      specifier: 1.0.0
+      version: 1.0.0
+    '@k8ordo/state':
+      specifier: 1.0.0
+      version: 1.0.0
     '@k8ordo/ui':
-      specifier: 2.0.0
-      version: 2.0.0
+      specifier: 2.1.0
+      version: 2.1.0
     '@libsql/client':
       specifier: 0.18.0
       version: 0.18.0
@@ -340,9 +346,12 @@ importers:
       '@json-render/react':
         specifier: 0.21.0
         version: 0.21.0(react@19.3.0)(zod@4.6.5)
+      '@k8ordo/i18n':
+        specifier: 'catalog:'
+        version: 1.0.0(typescript@7.0.2)
       '@k8ordo/ui':
         specifier: 'catalog:'
-        version: 2.0.0(@json-render/core@0.21.0(zod@4.6.5))(@json-render/react@0.21.0(react@19.3.0)(zod@4.6.5))(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(ai@7.0.128(zod@4.6.5))(react-dom@19.3.0(react@19.3.0))(react@19.3.0)(tailwindcss@4.3.3)(typescript@7.0.2)(zod@4.6.5)
+        version: 2.1.0(@json-render/core@0.21.0(zod@4.6.5))(@json-render/react@0.21.0(react@19.3.0)(zod@4.6.5))(@k8ordo/i18n@1.0.0(typescript@7.0.2))(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(ai@7.0.128(zod@4.6.5))(react-dom@19.3.0(react@19.3.0))(react@19.3.0)(typescript@7.0.2)(zod@4.6.5)
       '@repo/ai-database':
         specifier: workspace:*
         version: link:../../packages/ai-database
@@ -516,12 +525,15 @@ importers:
       '@k8o/html-nest':
         specifier: 'catalog:'
         version: 0.2.0
+      '@k8ordo/i18n':
+        specifier: 'catalog:'
+        version: 1.0.0(typescript@7.0.2)
       '@k8ordo/state':
-        specifier: 0.2.0
-        version: 0.2.0(@types/react@19.3.0)(react@19.3.0)(typescript@7.0.2)(zod@4.6.5)
+        specifier: 'catalog:'
+        version: 1.0.0(@types/react@19.3.0)(react@19.3.0)(typescript@7.0.2)(zod@4.6.5)
       '@k8ordo/ui':
         specifier: 'catalog:'
-        version: 2.0.0(@json-render/core@0.21.0(zod@4.6.5))(@json-render/react@0.21.0(react@19.3.0)(zod@4.6.5))(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(ai@7.0.128(zod@4.6.5))(react-dom@19.3.0(react@19.3.0))(react@19.3.0)(tailwindcss@4.3.3)(typescript@7.0.2)(zod@4.6.5)
+        version: 2.1.0(@json-render/core@0.21.0(zod@4.6.5))(@json-render/react@0.21.0(react@19.3.0)(zod@4.6.5))(@k8ordo/i18n@1.0.0(typescript@7.0.2))(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(ai@7.0.128(zod@4.6.5))(react-dom@19.3.0(react@19.3.0))(react@19.3.0)(typescript@7.0.2)(zod@4.6.5)
       '@mdx-js/loader':
         specifier: 3.1.1
         version: 3.1.1(supports-color@10.2.2)
@@ -711,9 +723,12 @@ importers:
         specifier: 0.0.1
         version: 0.0.1
     devDependencies:
+      '@k8ordo/i18n':
+        specifier: 'catalog:'
+        version: 1.0.0(typescript@7.0.2)
       '@k8ordo/ui':
         specifier: 'catalog:'
-        version: 2.0.0(@json-render/core@0.21.0(zod@4.6.5))(@json-render/react@0.21.0(react@19.3.0)(zod@4.6.5))(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(ai@7.0.128(zod@4.6.5))(react-dom@19.3.0(react@19.3.0))(react@19.3.0)(tailwindcss@4.3.3)(typescript@7.0.2)(zod@4.6.5)
+        version: 2.1.0(@json-render/core@0.21.0(zod@4.6.5))(@json-render/react@0.21.0(react@19.3.0)(zod@4.6.5))(@k8ordo/i18n@1.0.0(typescript@7.0.2))(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(ai@7.0.128(zod@4.6.5))(react-dom@19.3.0(react@19.3.0))(react@19.3.0)(typescript@7.0.2)(zod@4.6.5)
       '@repo/typescript-config':
         specifier: workspace:*
         version: link:../typescript-config
@@ -1889,13 +1904,21 @@ packages:
       oxlint-tailwindcss:
         optional: true
 
-  '@k8ordo/state@0.2.0':
-    resolution: {integrity: sha512-QJu93Dbtx4cfGyDllMOPr4dwHwqSJMuSs28uvwxyT15koAS1yRTLUBwK10kRzGyrvSiqKlsqccwMcKxOTMA9zQ==}
+  '@k8ordo/i18n@1.0.0':
+    resolution: {integrity: sha512-MI6BVXyFZzZ/JBisVf81iJ83Nx6aHP/qyE2CRIddQgTTMJRQwFHUz8MKzPWvcREA09mVfG8AgfacKJeOROQBWQ==}
     peerDependencies:
-      '@k8ordo/router': ^0.1.0
-      '@types/react': '>=19.2.18'
-      react: '>=19.2.6'
-      typescript: '>=7.0.2'
+      typescript: '>=7.0.0'
+    peerDependenciesMeta:
+      typescript:
+        optional: true
+
+  '@k8ordo/state@1.0.0':
+    resolution: {integrity: sha512-PqzdLhb/m8exwdO11cC9QcA9soAXyhIRKL6Q0bqiXjJE/rYHYudiIsc0gULPPDIdN8q+7tCBPM5Wafc5j3RF3Q==}
+    peerDependencies:
+      '@k8ordo/router': ^1.0.0
+      '@types/react': '>=19.3.0'
+      react: '>=19.3.0'
+      typescript: '>=7.0.0'
       zod: ^4.4.3
     peerDependenciesMeta:
       '@k8ordo/router':
@@ -1905,21 +1928,21 @@ packages:
       typescript:
         optional: true
 
-  '@k8ordo/ui@2.0.0':
-    resolution: {integrity: sha512-NfNeEd3eLblBk4X/whWGNrBzdyWE3q8hSvEzwBHDKYAvz9CJkhYMyqW8KoBjDU9eP3TIyTnLR7MGV7PE98eS1w==}
+  '@k8ordo/ui@2.1.0':
+    resolution: {integrity: sha512-3jzSQfz/8odUEmua1U4ZEXulx56YYd4MO0JZlqP78jQGqo3nsixz0NW0Hy3xahzT0FSPA3bochPNmrcVbC3phw==}
     peerDependencies:
-      '@json-render/core': '>=0.19.0'
-      '@json-render/react': '>=0.19.0'
-      '@openuidev/lang-core': '>=0.2.10'
-      '@openuidev/react-lang': '>=0.2.9'
-      '@types/react': '>=19.2.18'
-      '@types/react-dom': '>=19.2.4'
+      '@json-render/core': '>=0.21.0 <0.22.0'
+      '@json-render/react': '>=0.21.0 <0.22.0'
+      '@k8ordo/i18n': ^1.0.0
+      '@openuidev/lang-core': '>=0.3.0 <0.4.0'
+      '@openuidev/react-lang': '>=0.3.0 <0.4.0'
+      '@types/react': '>=19.3.0'
+      '@types/react-dom': '>=19.3.0'
       ai: '>=7.0.51'
-      react: '>=19.2.6'
-      react-dom: '>=19.2.6'
+      react: '>=19.3.0'
+      react-dom: '>=19.3.0'
       streamdown: '>=2.5.0'
-      tailwindcss: '>=4.3.3'
-      typescript: '>=7.0.2'
+      typescript: '>=7.0.0'
       zod: ^4.4.3
     peerDependenciesMeta:
       '@json-render/core':
@@ -1937,8 +1960,6 @@ packages:
       ai:
         optional: true
       streamdown:
-        optional: true
-      tailwindcss:
         optional: true
       typescript:
         optional: true
@@ -5598,10 +5619,14 @@ packages:
   lru-cache@5.1.1:
     resolution: {integrity: sha512-KpNARQA3Iwv+jTA0utUVVbrh+Jlrr1Fv0e56GGzAFOXN7dk/FviaDW8LHmK52DlcH4WP2n6gI8vN1aesBFgo9w==}
 
-  lucide-react@1.31.0:
-    resolution: {integrity: sha512-G8u2eEtoHUnUa9f8lbvqDhCiORMnYLdUEo06EEG9MQvHQrInKcX3Pa2TH39MM5qyzRcWETxB0+aOwAPI1g1kEg==}
+  lucide-react@1.52.0:
+    resolution: {integrity: sha512-TUgPtl5ZI9WgxOcbu4ckaC5B3l1qxPQrCMgb6OfUB9owx/OvSJfcf93SMgUWAxRw5/1XDfh9uI5F5iNGXCcGDQ==}
     peerDependencies:
+      '@types/react': '*'
       react: ^16.5.1 || ^17.0.0 || ^18.0.0 || ^19.0.0
+    peerDependenciesMeta:
+      '@types/react':
+        optional: true
 
   lz-string@1.5.0:
     resolution: {integrity: sha512-h5bgJWpxJNswbU7qCrV0tIKQCaS3blPDrqKWx+QxzuzL1zGUzij9XCWLrSLsJPu5t+eWA/ycetzYAO5IOMcWAQ==}
@@ -6527,9 +6552,6 @@ packages:
   tagged-tag@1.0.0:
     resolution: {integrity: sha512-yEFYrVhod+hdNyx7g5Bnkkb0G6si8HJurOoOEgC8B/O0uXLHlaey/65KRv6cuWBNhBgHKAROVpc7QyYqE5gFng==}
     engines: {node: '>=20'}
-
-  tailwind-merge@3.6.0:
-    resolution: {integrity: sha512-uxL7qAVQriqRQPAyK3pj66VqskWqoZ37PW94jwOTwNfq/z9oyu1V+eqrZqtR2+fCiXdYOZe/Modt8GtvqNzu+w==}
 
   tailwind-merge@3.7.0:
     resolution: {integrity: sha512-XPPUyAc+cvspz3lHTcR/QgPfW2A0lv/xQNIjX3HGhLR+Nq2lHaLq5MtTesHn8GUr3W3DguT2KT5x3NVgRtYwmA==}
@@ -7837,7 +7859,11 @@ snapshots:
       '@k8o/html-nest': 0.2.0
       oxlint-tailwindcss: 1.14.0
 
-  '@k8ordo/state@0.2.0(@types/react@19.3.0)(react@19.3.0)(typescript@7.0.2)(zod@4.6.5)':
+  '@k8ordo/i18n@1.0.0(typescript@7.0.2)':
+    optionalDependencies:
+      typescript: 7.0.2
+
+  '@k8ordo/state@1.0.0(@types/react@19.3.0)(react@19.3.0)(typescript@7.0.2)(zod@4.6.5)':
     dependencies:
       react: 19.3.0
       zod: 4.6.5
@@ -7845,20 +7871,21 @@ snapshots:
       '@types/react': 19.3.0
       typescript: 7.0.2
 
-  '@k8ordo/ui@2.0.0(@json-render/core@0.21.0(zod@4.6.5))(@json-render/react@0.21.0(react@19.3.0)(zod@4.6.5))(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(ai@7.0.128(zod@4.6.5))(react-dom@19.3.0(react@19.3.0))(react@19.3.0)(tailwindcss@4.3.3)(typescript@7.0.2)(zod@4.6.5)':
+  '@k8ordo/ui@2.1.0(@json-render/core@0.21.0(zod@4.6.5))(@json-render/react@0.21.0(react@19.3.0)(zod@4.6.5))(@k8ordo/i18n@1.0.0(typescript@7.0.2))(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(ai@7.0.128(zod@4.6.5))(react-dom@19.3.0(react@19.3.0))(react@19.3.0)(typescript@7.0.2)(zod@4.6.5)':
     dependencies:
+      '@k8ordo/i18n': 1.0.0(typescript@7.0.2)
       clsx: 2.1.1
-      lucide-react: 1.31.0(react@19.3.0)
+      lucide-react: 1.52.0(@types/react@19.3.0)(react@19.3.0)
       react: 19.3.0
       react-dom: 19.3.0(react@19.3.0)
-      tailwind-merge: 3.6.0
+      server-only: 0.0.1
+      shiki: 4.5.0
     optionalDependencies:
       '@json-render/core': 0.21.0(zod@4.6.5)
       '@json-render/react': 0.21.0(react@19.3.0)(zod@4.6.5)
       '@types/react': 19.3.0
       '@types/react-dom': 19.3.0(@types/react@19.3.0)
       ai: 7.0.128(zod@4.6.5)
-      tailwindcss: 4.3.3
       typescript: 7.0.2
       zod: 4.6.5
 
@@ -10722,9 +10749,11 @@ snapshots:
     dependencies:
       yallist: 3.1.1
 
-  lucide-react@1.31.0(react@19.3.0):
+  lucide-react@1.52.0(@types/react@19.3.0)(react@19.3.0):
     dependencies:
       react: 19.3.0
+    optionalDependencies:
+      '@types/react': 19.3.0
 
   lz-string@1.5.0: {}
 
@@ -12228,8 +12257,6 @@ snapshots:
       use-sync-external-store: 1.6.0(react@19.3.0)
 
   tagged-tag@1.0.0: {}
-
-  tailwind-merge@3.6.0: {}
 
   tailwind-merge@3.7.0: {}
 

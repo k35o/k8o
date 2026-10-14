@@ -1,2 +1,3 @@
+@import 'tailwindcss';
 @import '@k8ordo/ui/tailwind.css';
 @source '../../../../../packages/auth-shell/src';

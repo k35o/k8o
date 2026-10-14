@@ -1,7 +1,6 @@
 @layer components {
-  /* 色は @k8ordo/ui のセマンティックトークンを参照する。このCSSは Tailwind を通らず、
-     Tailwind は使われた --color-* しか出力しないので、:root / .dark に常に定義される
-     --bg-* / --fg-* / --border-* 本体を使う。注釈の面はテキストを潰さないよう color-mix で薄める */
+  /* 色は @k8ordo/ui のセマンティックトークン（:root / .dark の --color-*）を参照する。
+     注釈の面はテキストを潰さないよう color-mix で薄める */
   @scope (.code-annotate-block) {
     /* 注釈付きブロックだけ、全行の左に ＋/－ マーカーと注釈バー用の gutter を
        確保してコード本体のインデントを揃える。注釈が無いブロックは gutter を
@@ -23,43 +22,43 @@
     .code-annotate-highlight {
       background-color: color-mix(
         in oklab,
-        var(--border-warning) 16%,
+        var(--color-border-warning) 16%,
         transparent
       );
-      box-shadow: inset 6px 0 0 var(--border-warning);
+      box-shadow: inset 6px 0 0 var(--color-border-warning);
     }
 
     .code-annotate-add {
       background-color: color-mix(
         in oklab,
-        var(--border-success) 14%,
+        var(--color-border-success) 14%,
         transparent
       );
-      box-shadow: inset 6px 0 0 var(--border-success);
+      box-shadow: inset 6px 0 0 var(--color-border-success);
     }
 
     .code-annotate-add::before {
       content: '＋';
       position: absolute;
       inset-inline-start: 0.4em;
-      color: var(--fg-success);
+      color: var(--color-fg-success);
       font-weight: 700;
     }
 
     .code-annotate-remove {
       background-color: color-mix(
         in oklab,
-        var(--border-error) 12%,
+        var(--color-border-error) 12%,
         transparent
       );
-      box-shadow: inset 6px 0 0 var(--border-error);
+      box-shadow: inset 6px 0 0 var(--color-border-error);
     }
 
     .code-annotate-remove::before {
       content: '－';
       position: absolute;
       inset-inline-start: 0.4em;
-      color: var(--fg-error);
+      color: var(--color-fg-error);
       font-weight: 700;
     }
 
@@ -68,10 +67,10 @@
     .code-annotate-has-callout {
       background-color: color-mix(
         in oklab,
-        var(--border-info) 18%,
+        var(--color-border-info) 18%,
         transparent
       );
-      box-shadow: inset 6px 0 0 var(--border-info);
+      box-shadow: inset 6px 0 0 var(--color-border-info);
     }
 
     /* コールアウトは対象行の直下、コード先頭の真下に配置し、上向き▲で対象行を指す */
@@ -85,8 +84,8 @@
       display: inline-block;
       padding: 0.5em 1em;
       border-radius: 0.5em;
-      background-color: var(--fg-info);
-      color: var(--fg-inverse);
+      background-color: var(--color-fg-info);
+      color: var(--color-fg-inverse);
       font-weight: 500;
       line-height: 1.4;
     }
@@ -100,7 +99,7 @@
       block-size: 0;
       border-inline-start: 0.5em solid transparent;
       border-inline-end: 0.5em solid transparent;
-      border-block-end: 0.5em solid var(--fg-info);
+      border-block-end: 0.5em solid var(--color-fg-info);
     }
 
     :scope {
@@ -112,10 +111,10 @@
 
     /* コピーボタンを持つのはブログの CodeBlock だけなので、スライド等の wrapper には見た目を足さない */
     :scope:has(> .code-annotate-copy) {
-      --code-surface: var(--bg-surface);
-      --code-ink: var(--fg-base);
-      --code-mute: var(--fg-mute);
-      --code-pill: var(--bg-mute);
+      --code-surface: var(--color-bg-surface);
+      --code-ink: var(--color-fg-base);
+      --code-mute: var(--color-fg-mute);
+      --code-pill: var(--color-bg-mute);
       position: relative;
       margin-block: 1.75rem;
       border-radius: 0.75rem;
@@ -141,32 +140,15 @@
       color: var(--code-mute);
     }
 
+    /* CopyButton を包む span。ボタンの見た目は IconButton が持つので、ここは配置と
+       「長い1行目の右端と重なったときに文字を隠す」ための面だけ */
     .code-annotate-copy {
       position: absolute;
       inset-block-start: 0.4rem;
       inset-inline-end: 0.4rem;
       display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      padding: 0.35rem;
       border-radius: 0.5rem;
-      /* 長い1行目の右端と重なったときに文字を隠せるよう、面と同じ色を敷く */
       background-color: var(--code-surface);
-      color: var(--code-mute);
-      cursor: pointer;
-      transition:
-        color 0.15s ease-out,
-        background-color 0.15s ease-out;
-    }
-
-    .code-annotate-copy:hover {
-      color: var(--code-ink);
-      background-color: var(--code-pill);
-    }
-
-    .code-annotate-copy:focus-visible {
-      outline: 2px solid var(--border-info);
-      outline-offset: 2px;
     }
 
     /* @scope 内の規則は同じ詳細度なら外の規則に勝つので、グループ内の上書きもここに置き、
@@ -196,12 +178,12 @@
   }
 
   .code-annotate-group {
-    --code-surface: var(--bg-surface);
-    --code-ink: var(--fg-base);
-    --code-mute: var(--fg-mute);
-    --code-pill: var(--bg-mute);
-    --code-track: var(--bg-mute);
-    --code-segment: var(--bg-base);
+    --code-surface: var(--color-bg-surface);
+    --code-ink: var(--color-fg-base);
+    --code-mute: var(--color-fg-mute);
+    --code-pill: var(--color-bg-mute);
+    --code-track: var(--color-bg-mute);
+    --code-segment: var(--color-bg-base);
     writing-mode: horizontal-tb;
     margin-block: 1.75rem;
     border-radius: 0.75rem;
@@ -244,7 +226,7 @@
 
   /* セグメントは隙間なく並ぶので、外側に出すと隣のピルに重なる。リングは内側に収める */
   .code-annotate-group-tab:focus-visible {
-    outline: 2px solid var(--border-info);
+    outline: 2px solid var(--color-border-info);
     outline-offset: -2px;
   }
 
@@ -257,8 +239,8 @@
 
   /* ライトの「沈んだトラックに明るいピルが浮く」明暗の向きをダークでも保つため、割り当てを入れ替える */
   .dark .code-annotate-group {
-    --code-track: var(--bg-subtle);
-    --code-segment: var(--bg-mute);
+    --code-track: var(--color-bg-subtle);
+    --code-segment: var(--color-bg-mute);
   }
 
   /* shiki のデュアルテーマ切り替え: インラインstyleはライト色なので、

@@ -18,9 +18,13 @@ import type { GenerationModel } from '@/shared/claude/models';
 const NO_SUGGESTIONS: string[] = [];
 
 const AssistantRow: FC<{ children: ReactNode }> = ({ children }) => (
-  <Message.Root from="assistant">
-    <Avatar color="primary" icon={<AssistantIcon />} name="AI" size="sm" />
-    <div className="flex min-w-0 flex-1 flex-col gap-2">{children}</div>
+  <Message.Root
+    avatar={
+      <Avatar color="primary" icon={<AssistantIcon />} name="AI" size="sm" />
+    }
+    from="assistant"
+  >
+    {children}
   </Message.Root>
 );
 
@@ -165,7 +169,10 @@ export const ChatPanel: FC<Props> = ({
         <PromptInput.Root
           onChange={onInputChange}
           onStop={onStop}
-          onSubmit={onSubmit}
+          // 添付は受け付けないので、第2引数の FileList は渡さない
+          onSubmit={(message) => {
+            onSubmit(message);
+          }}
           status={status}
           value={input}
         >

@@ -1,6 +1,6 @@
 'use client';
 
-import { CopyIcon, useClipboard, useToast } from '@k8ordo/ui';
+import { CopyButton } from '@k8ordo/ui';
 import { cn } from '@repo/helpers/cn';
 import { useRef } from 'react';
 import type { ComponentProps, FC } from 'react';
@@ -18,26 +18,17 @@ export const CodeBlock: FC<Props> = ({
   ...rest
 }) => {
   const preRef = useRef<HTMLPreElement>(null);
-  const { writeClipboard } = useClipboard();
-  const { open } = useToast();
 
-  const handleCopy = async () => {
+  const readCode = (): string => {
     const code = preRef.current?.querySelector('code');
-    if (!code) return;
+    if (!code) return '';
     // 注釈のコールアウト行はコピー対象から除外する
     const lines = code.querySelectorAll(
       '.line:not(.code-annotate-callout-line)',
     );
-    const text =
-      lines.length > 0
-        ? Array.from(lines, (line) => line.textContent).join('\n')
-        : code.textContent;
-    try {
-      await writeClipboard(text);
-      open('success', 'コードをコピーしました');
-    } catch {
-      open('error', 'コピーに失敗しました');
-    }
+    return lines.length > 0
+      ? Array.from(lines, (line) => line.textContent).join('\n')
+      : code.textContent;
   };
 
   const label = filename ?? lang;
@@ -47,16 +38,14 @@ export const CodeBlock: FC<Props> = ({
       {label !== undefined && (
         <span className="code-annotate-tab">{label}</span>
       )}
-      <button
-        aria-label="コードをコピー"
-        className="code-annotate-copy"
-        onClick={() => {
-          void handleCopy();
-        }}
-        type="button"
-      >
-        <CopyIcon size="sm" />
-      </button>
+      <span className="code-annotate-copy">
+        <CopyButton
+          iconOnly
+          label="コードをコピー"
+          size="sm"
+          value={readCode}
+        />
+      </span>
       <pre
         {...rest}
         className={cn(

@@ -11,6 +11,8 @@ export default function NotFound() {
     <div className="flex h-full flex-col items-center justify-center gap-6">
       <Image alt="404 Not Found" src={notFoundImage} />
       <Button
+        // next/link は onClick や ref に明示的な undefined を受けない
+        // (exactOptionalPropertyTypes) ため、束は展開せず要るものだけ取り出す
         renderItem={({ className, children }) => (
           <Link className={className} href="/">
             {children}

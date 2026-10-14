@@ -24,6 +24,9 @@ export const ChatSidebar: FC<ChatSidebarProps> = ({
     <div className="flex flex-col gap-3 px-3 pt-3">
       <Button
         color="primary"
+        // Next の Link は onClick / onMouseEnter / ref に undefined を受けないため、束を
+        // そのまま広げられない。この Button は onClick も disabled も持たないので、
+        // className と children だけ取り出せば捨てるものは無い
         renderItem={({ className, children }) => (
           <Link
             className={className}

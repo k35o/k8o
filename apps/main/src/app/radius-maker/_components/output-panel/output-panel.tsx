@@ -1,6 +1,6 @@
 'use client';
 
-import { Button, CopyIcon, LinkIcon, useClipboard, useToast } from '@k8ordo/ui';
+import { CopyButton } from '@k8ordo/ui';
 import type { FC } from 'react';
 
 import type { RadiusCorners } from '../../_types/corner-radius';
@@ -13,28 +13,7 @@ type Props = {
 };
 
 export const OutputPanel: FC<Props> = ({ corners, shape }) => {
-  const { writeClipboard } = useClipboard();
-  const { open } = useToast();
-
   const css = toCssText(corners, shape);
-
-  const handleCopyCss = async () => {
-    try {
-      await writeClipboard(css);
-      open('success', 'CSSをコピーしました');
-    } catch {
-      open('error', 'コピーに失敗しました');
-    }
-  };
-
-  const handleCopyUrl = async () => {
-    try {
-      await writeClipboard(window.location.href);
-      open('success', '共有用URLをコピーしました');
-    } catch {
-      open('error', 'コピーに失敗しました');
-    }
-  };
 
   return (
     <div className="bg-bg-subtle flex flex-wrap items-center justify-between gap-x-6 gap-y-3 rounded-xl px-4 py-3">
@@ -42,26 +21,12 @@ export const OutputPanel: FC<Props> = ({ corners, shape }) => {
         {css}
       </code>
       <div className="flex flex-wrap gap-2">
-        <Button
-          onClick={() => {
-            void handleCopyCss();
-          }}
+        <CopyButton label="CSSをコピー" size="sm" value={css} />
+        <CopyButton
+          label="共有用URLをコピー"
           size="sm"
-          startIcon={<CopyIcon size="sm" />}
-          variant="outline"
-        >
-          CSSをコピー
-        </Button>
-        <Button
-          onClick={() => {
-            void handleCopyUrl();
-          }}
-          size="sm"
-          startIcon={<LinkIcon size="sm" />}
-          variant="outline"
-        >
-          共有用URLをコピー
-        </Button>
+          value={() => window.location.href}
+        />
       </div>
     </div>
   );

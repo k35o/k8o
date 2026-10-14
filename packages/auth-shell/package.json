@@ -52,6 +52,7 @@
     "server-only": "0.0.1"
   },
   "devDependencies": {
+    "@k8ordo/i18n": "catalog:",
     "@k8ordo/ui": "catalog:",
     "@repo/typescript-config": "workspace:*",
     "@types/react": "catalog:",
@@ -63,6 +64,7 @@
     "zod": "catalog:"
   },
   "peerDependencies": {
+    "@k8ordo/i18n": "catalog:",
     "@k8ordo/ui": "catalog:",
     "better-auth": "catalog:",
     "next": "catalog:",

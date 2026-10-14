@@ -2,6 +2,9 @@
 
 import { GlobalErrorContent } from '@repo/auth-shell/global-error-content';
 
+// root layout ごと置き換わるので、ロケール集合もここから読み込む
+import '@/i18n';
+
 import './_styles/globals.css';
 
 import { cn } from '@repo/helpers/cn';

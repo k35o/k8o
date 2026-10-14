@@ -3,6 +3,7 @@
 import { Button, Heading } from '@k8ordo/ui';
 
 import './_styles/globals.css';
+import '@/i18n';
 
 import { cn } from '@repo/helpers/cn';
 import { useEffect } from 'react';

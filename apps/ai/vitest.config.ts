@@ -31,6 +31,13 @@ export default defineConfig({
             'src/features/**/*.test.{ts,tsx}',
             'src/shared/**/*.test.{ts,tsx}',
           ],
+          server: {
+            deps: {
+              // @k8ordo/ui は部品の JS が CSS を import するので、Node に素通し
+              // すると .css の読み込みで落ちる。Vite に通して CSS を空にする
+              inline: [/@k8ordo\/ui/u],
+            },
+          },
         },
       },
       {

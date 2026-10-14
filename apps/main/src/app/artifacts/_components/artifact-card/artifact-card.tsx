@@ -38,12 +38,17 @@ export const ArtifactCard: FC<Artifact> = ({
 
       <div className="flex flex-wrap gap-2">
         <Button
-          renderItem={({ className, children }) => (
+          renderItem={({
+            children,
+            disabled: _disabled,
+            type: _type,
+            ...props
+          }) => (
             <a
-              className={className}
               href={githubUrl}
               rel="noopener noreferrer"
               target="_blank"
+              {...props}
             >
               {children}
             </a>
@@ -56,12 +61,17 @@ export const ArtifactCard: FC<Artifact> = ({
         </Button>
         {websiteUrl !== null && (
           <Button
-            renderItem={({ className, children }) => (
+            renderItem={({
+              children,
+              disabled: _disabled,
+              type: _type,
+              ...props
+            }) => (
               <a
-                className={className}
                 href={websiteUrl}
                 rel="noopener noreferrer"
                 target="_blank"
+                {...props}
               >
                 {children}
               </a>
@@ -75,12 +85,17 @@ export const ArtifactCard: FC<Artifact> = ({
         )}
         {npmPackageName !== null && (
           <Button
-            renderItem={({ className, children }) => (
+            renderItem={({
+              children,
+              disabled: _disabled,
+              type: _type,
+              ...props
+            }) => (
               <a
-                className={className}
                 href={`https://www.npmjs.com/package/${npmPackageName}`}
                 rel="noopener noreferrer"
                 target="_blank"
+                {...props}
               >
                 {children}
               </a>

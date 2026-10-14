@@ -49,17 +49,17 @@ export const TalkCard: FC<{
           <IconButton
             label="イベントのリンク"
             renderItem={({
-              className,
               children,
-              'aria-label': ariaLabel,
+              disabled: _disabled,
               triggerProps,
+              type: _type,
+              ...props
             }) => (
               <a
-                aria-label={ariaLabel}
-                className={className}
                 href={eventUrl}
                 rel="noopener noreferrer"
                 target="_blank"
+                {...props}
                 {...triggerProps}
               >
                 {children}
@@ -92,12 +92,17 @@ export const TalkCard: FC<{
       </div>
       <div className="flex flex-wrap gap-4">
         <Button
-          renderItem={({ className, children }) => (
+          renderItem={({
+            children,
+            disabled: _disabled,
+            type: _type,
+            ...props
+          }) => (
             <a
-              className={className}
               href={slideUrl}
               rel="noopener noreferrer"
               target="_blank"
+              {...props}
             >
               {children}
             </a>
@@ -109,6 +114,8 @@ export const TalkCard: FC<{
           スライドを見る
         </Button>
         <Button
+          // next/link は onClick や ref に明示的な undefined を受けない
+          // (exactOptionalPropertyTypes) ため、束は展開せず要るものだけ取り出す
           renderItem={({ className, children }) => (
             <Link className={className} href={`/blog/${blog.slug}` as Route}>
               {children}

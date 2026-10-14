@@ -24,8 +24,12 @@ const MODEL_OPTIONS = GENERATION_MODELS.map((model) => ({
 }));
 
 const PendingReply: FC<{ label: string }> = ({ label }) => (
-  <Message.Root from="assistant">
-    <Avatar color="primary" icon={<AssistantIcon />} name="AI" size="sm" />
+  <Message.Root
+    avatar={
+      <Avatar color="primary" icon={<AssistantIcon />} name="AI" size="sm" />
+    }
+    from="assistant"
+  >
     <p className="text-fg-mute flex items-center gap-2 text-sm">
       <Spinner label={label} size="sm" />
       <span aria-hidden>{label}</span>
@@ -178,7 +182,10 @@ export const ChatView: FC<ChatViewProps> = ({
           <PromptInput.Root
             onChange={onDraftChange}
             onStop={onStop}
-            onSubmit={onSubmit}
+            // 添付は受け付けないので、第2引数の FileList は渡さない
+            onSubmit={(message) => {
+              onSubmit(message);
+            }}
             status={inputStatus}
             value={draft}
           >
