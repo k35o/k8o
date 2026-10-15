@@ -2,6 +2,8 @@
 
 import { Button, Heading } from '@k8ordo/ui';
 
+import styles from './error-page.module.css';
+
 export function ErrorPage({
   reset,
 }: {
@@ -9,10 +11,10 @@ export function ErrorPage({
   reset: () => void;
 }) {
   return (
-    <div className="flex h-full flex-col items-center justify-center gap-8 px-4 py-16 text-center">
-      <div className="flex flex-col gap-3">
+    <div className={styles.root}>
+      <div className={styles.message}>
         <Heading level="h2">問題が発生しました</Heading>
-        <p className="text-fg-mute leading-relaxed">
+        <p className={styles.description}>
           予期しないエラーが発生しました。再試行しても解決しない場合は、時間をおいて再度お試しください。
         </p>
       </div>

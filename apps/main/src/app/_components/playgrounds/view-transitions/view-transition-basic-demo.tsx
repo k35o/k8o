@@ -5,6 +5,8 @@ import { useTheme } from 'next-themes';
 import { useState } from 'react';
 import { flushSync } from 'react-dom';
 
+import styles from './view-transition-basic-demo.module.css';
+
 const COLORS = [
   { light: 'var(--red-200)', dark: 'var(--red-800)' },
   { light: 'var(--pink-200)', dark: 'var(--pink-800)' },
@@ -84,7 +86,7 @@ export function ViewTransitionBasicDemo() {
   };
 
   return (
-    <div className="space-y-6">
+    <div className={styles.root}>
       <style>{`
         ::view-transition-group(.item) {
           border-radius: var(--radius-md);
@@ -103,7 +105,7 @@ export function ViewTransitionBasicDemo() {
           background-color: ${resolvedTheme === 'dark' ? COLORS[6].light : COLORS[6].dark};
         }
       `}</style>
-      <div className="flex flex-wrap gap-2">
+      <div className={styles.actions}>
         <Button onClick={shuffleItems}>シャッフル</Button>
         <Button onClick={addItem}>アイテムを追加</Button>
         <Button
@@ -125,13 +127,13 @@ export function ViewTransitionBasicDemo() {
         </Button>
       </div>
 
-      <ul className="grid grid-cols-1 gap-4 sm:grid-cols-3">
+      <ul className={styles.items}>
         {items.map((item) => {
           const bgColor =
             resolvedTheme === 'dark' ? item.color.dark : item.color.light;
           return (
             <li
-              className="text-fg-base flex items-center justify-between rounded-md p-4"
+              className={styles.item}
               key={item.id}
               style={{
                 viewTransitionName: isViewTransitionEnabled
@@ -141,7 +143,7 @@ export function ViewTransitionBasicDemo() {
                 backgroundColor: bgColor,
               }}
             >
-              <span className="font-bold">{item.text}</span>
+              <span className={styles.itemText}>{item.text}</span>
               <Button
                 onClick={() => {
                   removeItem(item.id);
@@ -156,7 +158,7 @@ export function ViewTransitionBasicDemo() {
         })}
       </ul>
 
-      <ul className="flex list-inside list-disc flex-col gap-1 text-sm">
+      <ul className={styles.notes}>
         <li>
           View TransitionのON/OFFの切り替えは<Code>view-transition-name</Code>を
           <Code>none</Code>に指定することで行なっています。
@@ -171,7 +173,7 @@ export function ViewTransitionBasicDemo() {
           <Code>view-transition-class: item;</Code>を持ちます。
         </li>
       </ul>
-      <pre className="text-fg-mute sm:text-md my-4 overflow-x-auto text-xs">
+      <pre className={styles.code}>
         <code>
           {`::view-transition-group(.item) {
   border-radius: var(--radius-md);

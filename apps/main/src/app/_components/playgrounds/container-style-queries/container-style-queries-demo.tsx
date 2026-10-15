@@ -1,7 +1,10 @@
 'use client';
 
 import { Code, Radio } from '@k8ordo/ui';
+import { cn } from '@repo/helpers/cn';
 import { useId, useState } from 'react';
+
+import styles from './container-style-queries-demo.module.css';
 
 type Theme = 'light' | 'dark' | 'sepia';
 
@@ -19,7 +22,7 @@ export function ContainerStyleQueriesDemo() {
   const labelId = useId();
 
   return (
-    <div className="flex flex-col gap-6">
+    <div className={styles.root}>
       <style>{`
         .csq-theme-root {
           container-name: csq-theme;
@@ -53,15 +56,15 @@ export function ContainerStyleQueriesDemo() {
         }
       `}</style>
 
-      <div className="flex flex-col gap-2">
-        <p className="text-fg-mute text-sm">
+      <div className={styles.control}>
+        <p className={styles.note}>
           親の<Code>--csq-theme</Code>を切り替えると、子の
           <Code>.csq-card</Code>のスタイルが<Code>@container style()</Code>
           で追従します。途中のラッパーは<Code>--csq-theme: light</Code>
           に固定していますが、<Code>container-name</Code>
           で対象を親に固定しているので、深い子孫のカードも親の値で判定されます。
         </p>
-        <p className="text-fg-base text-sm font-bold" id={labelId}>
+        <p className={styles.controlLabel} id={labelId}>
           親の<Code>--csq-theme</Code>の値
         </p>
         <Radio
@@ -78,28 +81,25 @@ export function ContainerStyleQueriesDemo() {
       </div>
 
       <div
-        className="csq-theme-root flex flex-col gap-3 rounded-lg p-4"
+        className={cn('csq-theme-root', styles.parent)}
         style={{ '--csq-theme': theme }}
       >
-        <p className="text-fg-mute text-sm">
+        <p className={styles.note}>
           親 (<Code>{`--csq-theme: ${theme}`}</Code>)
         </p>
         <div className="csq-card">
-          <p className="font-bold">直近の子のカード</p>
-          <p className="text-sm">親の値に応じて色が変わります。</p>
+          <p className={styles.cardTitle}>直近の子のカード</p>
+          <p className={styles.cardText}>親の値に応じて色が変わります。</p>
         </div>
-        <div
-          className="bg-bg-subtle rounded-md p-3"
-          style={{ '--csq-theme': 'light' }}
-        >
-          <p className="text-fg-mute mb-2 text-sm">
+        <div className={styles.wrapper} style={{ '--csq-theme': 'light' }}>
+          <p className={styles.wrapperNote}>
             途中のラッパーは<Code>--csq-theme: light</Code>に固定
           </p>
           <div className="csq-card">
-            <p className="font-bold">深い子孫のカード</p>
-            <p className="text-sm">
+            <p className={styles.cardTitle}>深い子孫のカード</p>
+            <p className={styles.cardText}>
               途中で上書きされていても、
-              <code className="font-mono">container-name</code>
+              <code className={styles.code}>container-name</code>
               で親に固定しているので親の値で判定されます。
             </p>
           </div>

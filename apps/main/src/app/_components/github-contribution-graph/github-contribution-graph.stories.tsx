@@ -4,6 +4,8 @@ import { expect, userEvent, waitFor, within } from 'storybook/test';
 import preview from '../../../../.storybook/preview';
 import { Presenter } from './presenter';
 
+import styles from './github-contribution-graph.stories.module.css';
+
 const meta = preview.meta({
   title: 'app/globals/github-contribution-graph',
   component: Presenter,
@@ -96,7 +98,7 @@ export const Narrow = meta.story({
   },
   decorators: [
     (Story) => (
-      <div className="max-w-90">
+      <div className={styles.narrow}>
         <Story />
       </div>
     ),

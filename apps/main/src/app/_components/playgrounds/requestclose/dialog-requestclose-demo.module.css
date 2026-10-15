@@ -1,0 +1,49 @@
+.root {
+  display: flex;
+  flex-direction: column;
+  gap: calc(var(--spacing) * 4);
+  padding: calc(var(--spacing) * 4);
+}
+
+.logs {
+  max-height: calc(var(--spacing) * 40);
+  overflow-y: scroll;
+  border-radius: var(--radius-md);
+  background-color: var(--color-bg-subtle);
+}
+
+.logList {
+  padding: calc(var(--spacing) * 2);
+  padding-left: calc(var(--spacing) * 6);
+  list-style-type: disc;
+}
+
+.log {
+  color: var(--color-fg-mute);
+}
+
+.dialog {
+  width: calc(5 / 6 * 100%);
+  max-width: 42rem;
+  max-height: 85dvh;
+  margin: auto;
+  border-radius: var(--radius-lg);
+  background-color: var(--color-bg-base);
+  box-shadow: var(--shadow-md);
+
+  &::backdrop {
+    background-color: var(--color-back-drop);
+  }
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: calc(var(--spacing) * 4);
+  padding: calc(var(--spacing) * 6);
+}
+
+.actions {
+  display: flex;
+  gap: calc(var(--spacing) * 4);
+}

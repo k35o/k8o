@@ -1,0 +1,46 @@
+.root {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-around;
+  gap: calc(var(--spacing) * 4);
+  width: 100%;
+}
+
+.column {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: calc(var(--spacing) * 2);
+}
+
+.image {
+  border-radius: var(--radius-xl);
+}
+
+.pasted {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: calc(var(--spacing) * 4);
+  width: 100%;
+}
+
+.pastedHeader {
+  display: flex;
+  flex-direction: column;
+  gap: calc(var(--spacing) * 2);
+  width: 100%;
+}
+
+.pastedTitle {
+  align-self: flex-start;
+  font-weight: var(--font-weight-bold);
+}
+
+.pastedNote {
+  align-self: flex-end;
+  color: var(--color-fg-mute);
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-sm);
+}

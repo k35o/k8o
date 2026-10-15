@@ -1,53 +1,34 @@
 'use client';
 
-import { Card, CopyIcon, IconButton, useClipboard, useToast } from '@k8ordo/ui';
+import { Card, CopyButton } from '@k8ordo/ui';
 import { formatAll } from '@repo/helpers/color/format';
 import type { Color } from '@repo/helpers/color/spaces';
 import type { FC } from 'react';
 
+import styles from './output-table.module.css';
+
 export const OutputTable: FC<{ color: Color }> = ({ color }) => {
   const rows = formatAll(color);
-  const { writeClipboard } = useClipboard();
-  const { open } = useToast();
-
-  const handleCopy = (value: string, label: string) => {
-    void writeClipboard(value).then(() => {
-      open('success', `${label}をコピーしました`);
-      return undefined;
-    });
-  };
 
   return (
     <Card>
-      <table className="w-full text-left">
-        <caption className="sr-only">色形式の対応表</caption>
+      <table className={styles.table}>
+        <caption className={styles.srOnly}>色形式の対応表</caption>
         <tbody>
           {rows.map((row) => (
-            <tr
-              className="border-border-base border-b last:border-b-0"
-              key={row.key}
-            >
-              <th
-                className="text-fg-mute w-14 p-3 align-middle text-xs font-bold sm:w-24 sm:text-sm"
-                scope="row"
-              >
+            <tr className={styles.row} key={row.key}>
+              <th className={styles.label} scope="row">
                 {row.label}
               </th>
-              <td className="px-2 py-3 align-middle">
-                <code className="text-fg-base font-mono text-xs break-all select-all sm:text-sm">
-                  {row.value}
-                </code>
+              <td className={styles.value}>
+                <code className={styles.code}>{row.value}</code>
               </td>
-              <td className="py-2 pr-3 pl-1 align-middle">
-                <IconButton
-                  color="base"
+              <td className={styles.action}>
+                <CopyButton
+                  iconOnly
                   label={`${row.label}をコピー`}
-                  onClick={() => {
-                    handleCopy(row.value, row.label);
-                  }}
-                >
-                  <CopyIcon />
-                </IconButton>
+                  value={row.value}
+                />
               </td>
             </tr>
           ))}

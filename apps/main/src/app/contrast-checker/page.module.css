@@ -1,0 +1,8 @@
+.root {
+  display: grid;
+  gap: calc(var(--spacing) * 6);
+  height: 100%;
+  padding: calc(var(--spacing) * 10);
+  border-radius: var(--radius-xl);
+  background-color: var(--color-bg-base);
+}

@@ -4,6 +4,8 @@ import { Button, Code, Switch } from '@k8ordo/ui';
 import { range } from '@repo/helpers/array/range';
 import { useEffect, useRef, useState } from 'react';
 
+import styles from './anchor-exclusion-demo.module.css';
+
 const ITEM_COUNT = 10;
 const SKELETON_INDEX = 4;
 const SKELETON_HEIGHT = 96;
@@ -34,8 +36,8 @@ export function AnchorExclusionDemo() {
   }, []);
 
   return (
-    <div className="flex flex-col gap-6">
-      <div className="flex flex-wrap items-center gap-4">
+    <div className={styles.root}>
+      <div className={styles.controls}>
         <Switch
           checked={excluded}
           label="スケルトンに overflow-anchor: none を付ける"
@@ -55,22 +57,19 @@ export function AnchorExclusionDemo() {
 
       <section
         aria-label="アンカーノードの除外を確認するスクロール領域"
-        className="bg-bg-mute relative h-56 overflow-y-scroll rounded-xl p-4"
+        className={styles.scroller}
         ref={containerRef}
         style={{
           scrollbarColor: 'var(--color-fg-subtle) var(--color-bg-subtle)',
         }}
         tabIndex={0}
       >
-        <div className="flex flex-col gap-3">
+        <div className={styles.list}>
           {range(0, ITEM_COUNT).map((n) =>
             n === SKELETON_INDEX ? (
               <div
-                className={
-                  loaded
-                    ? 'bg-bg-base rounded-md p-3 shadow-sm transition-[height] duration-200'
-                    : 'bg-bg-subtle animate-pulse rounded-md p-3 transition-[height] duration-200'
-                }
+                className={styles.skeleton}
+                data-loaded={loaded}
                 key="skeleton"
                 onTransitionEnd={(e) => {
                   if (loaded || e.propertyName !== 'height') return;
@@ -85,25 +84,22 @@ export function AnchorExclusionDemo() {
                   overflowAnchor: excluded ? 'none' : 'auto',
                 }}
               >
-                <p className="text-fg-base text-sm">
+                <p className={styles.skeletonText}>
                   {loaded
                     ? '読み込みが終わった本文。スケルトンより背が高い'
                     : '読み込み中のスケルトン'}
                 </p>
               </div>
             ) : (
-              <div
-                className="bg-bg-base rounded-md p-3 shadow-sm"
-                key={`item-${String(n)}`}
-              >
-                <p className="text-fg-base">アイテム {String(n + 1)}</p>
+              <div className={styles.item} key={`item-${String(n)}`}>
+                <p className={styles.itemText}>アイテム {String(n + 1)}</p>
               </div>
             ),
           )}
         </div>
       </section>
 
-      <p className="text-fg-mute text-sm">
+      <p className={styles.note}>
         スケルトンが表示領域の上端をまたいだ状態で、読み込み完了で背が高くなります。スケルトンがアンカーノードのままだと、その上端は動かないので直後のアイテムが押し出されます。
         <Code>overflow-anchor: none</Code>
         を付けると直後のアイテムがアンカーノードになり、高さの差だけスクロール位置が補正されて、見えていたアイテムはその場に留まります。

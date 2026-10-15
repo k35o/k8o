@@ -7,6 +7,7 @@ featureIds:
   - json-modules
 ---
 
+import styles from './page.module.css';
 
 # withキーワードを使用したJSONモジュールのインポート
 
@@ -51,7 +52,7 @@ JavaScriptがインポートされたときは、構文解析及びに実行ま�
 
 <iframe
   height="300"
-  className="writing-h vertical:box-border vertical:mx-4 vertical:max-h-full vertical:max-w-container-2xl w-full"
+  className={styles.embed}
   title="JSON Import Attribute"
   src="https://codepen.io/kokisakano/embed/dPPBMxz?default-tab=result"
   loading="lazy"

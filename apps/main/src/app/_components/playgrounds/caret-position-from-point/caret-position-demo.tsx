@@ -3,6 +3,8 @@
 import { Button } from '@k8ordo/ui';
 import { useCallback, useState } from 'react';
 
+import styles from './caret-position-demo.module.css';
+
 type CaretInfo = {
   offsetNodeType: string;
   offsetNodeName: string;
@@ -60,31 +62,26 @@ export function CaretPositionDemo() {
 
   if (!isSupported) {
     return (
-      <p className="text-fg-mute text-sm">
+      <p className={styles.note}>
         このブラウザはこのAPIをサポートしていません。
       </p>
     );
   }
 
   return (
-    <div className="space-y-3">
+    <div className={styles.root}>
       {/* caretPositionFromPointはマウス座標を必要とするためキーボードでは使用不可 */}
-      <div
-        className="bg-bg-subtle cursor-text rounded-xl p-3 select-none"
-        onClick={handleClick}
-      >
-        <p className="text-fg-base text-sm leading-relaxed">
+      <div className={styles.target} onClick={handleClick}>
+        <p className={styles.sample}>
           吾輩は猫である。名前はまだ無い。どこで生れたかとんと見当がつかぬ。何でも薄暗いじめじめした所でニャーニャー泣いていた事だけは記憶している。
         </p>
-        <p className="text-fg-mute mt-2 text-xs">
-          ↑ テキストの好きな位置をクリック
-        </p>
+        <p className={styles.hint}>↑ テキストの好きな位置をクリック</p>
       </div>
 
       {caretInfo ? (
         <div>
-          <div className="mb-3 flex items-baseline justify-between gap-2">
-            <h4 className="text-fg-base text-sm font-medium">結果</h4>
+          <div className={styles.resultHeader}>
+            <h4 className={styles.resultTitle}>結果</h4>
             <Button
               color="base"
               onClick={handleReset}
@@ -95,29 +92,23 @@ export function CaretPositionDemo() {
             </Button>
           </div>
 
-          <dl className="space-y-1.5 text-xs">
-            <div className="flex flex-wrap items-baseline gap-x-2">
-              <dt className="text-fg-mute">offset</dt>
-              <dd className="text-fg-base text-sm font-medium">
-                {caretInfo.offset}
-              </dd>
+          <dl className={styles.fields}>
+            <div className={styles.field}>
+              <dt className={styles.fieldName}>offset</dt>
+              <dd className={styles.offsetValue}>{caretInfo.offset}</dd>
             </div>
-            <div className="flex flex-wrap items-baseline gap-x-2">
-              <dt className="text-fg-mute">nodeType</dt>
-              <dd className="text-fg-base font-medium">
-                {caretInfo.offsetNodeType}
-              </dd>
+            <div className={styles.field}>
+              <dt className={styles.fieldName}>nodeType</dt>
+              <dd className={styles.fieldValue}>{caretInfo.offsetNodeType}</dd>
             </div>
-            <div className="flex flex-wrap items-baseline gap-x-2">
-              <dt className="text-fg-mute">nodeName</dt>
-              <dd className="text-fg-base font-medium">
-                {caretInfo.offsetNodeName}
-              </dd>
+            <div className={styles.field}>
+              <dt className={styles.fieldName}>nodeName</dt>
+              <dd className={styles.fieldValue}>{caretInfo.offsetNodeName}</dd>
             </div>
             {caretInfo.rectX !== null && (
-              <div className="flex flex-wrap items-baseline gap-x-2">
-                <dt className="text-fg-mute">rect</dt>
-                <dd className="text-fg-base font-medium">
+              <div className={styles.field}>
+                <dt className={styles.fieldName}>rect</dt>
+                <dd className={styles.fieldValue}>
                   ({caretInfo.rectX.toFixed(0)}, {caretInfo.rectY?.toFixed(0)})
                 </dd>
               </div>
@@ -125,18 +116,18 @@ export function CaretPositionDemo() {
           </dl>
 
           {caretInfo.offsetNodeText !== null && (
-            <div className="mt-3">
-              <p className="text-fg-mute mb-1 text-xs">テキスト内の位置:</p>
-              <p className="text-fg-base overflow-x-auto font-mono text-xs leading-relaxed">
+            <div className={styles.position}>
+              <p className={styles.positionLabel}>テキスト内の位置:</p>
+              <p className={styles.positionText}>
                 {caretInfo.offsetNodeText.slice(0, caretInfo.offset)}
-                <span className="bg-primary-bg text-primary-fg px-0.5">|</span>
+                <span className={styles.caret}>|</span>
                 {caretInfo.offsetNodeText.slice(caretInfo.offset)}
               </p>
             </div>
           )}
         </div>
       ) : (
-        <p className="text-fg-mute text-xs">
+        <p className={styles.placeholder}>
           クリックするとキャレット情報が表示されます。
         </p>
       )}

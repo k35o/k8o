@@ -3,21 +3,21 @@ import type { FC } from 'react';
 
 import { SignInForm } from './sign-in-form';
 
+import styles from './sign-in-page.module.css';
+
 export const SignInPage: FC<{ title: string; description: string }> = ({
   title,
   description,
 }) => (
-  <div className="w-full max-w-sm">
+  <div className={styles.root}>
     <Card variant="shadow">
-      <div className="flex flex-col items-center gap-8 p-8">
-        <div className="flex flex-col items-center gap-3 text-center">
+      <div className={styles.card}>
+        <div className={styles.header}>
           <LogoIcon size="xl" />
-          <div className="flex flex-col gap-2">
-            <h1 className="font-noto-sans-jp text-2xl font-bold">{title}</h1>
-            <p className="text-fg-mute text-sm leading-relaxed">
-              {description}
-            </p>
-            <p className="text-fg-mute text-xs">
+          <div className={styles.titles}>
+            <h1 className={styles.title}>{title}</h1>
+            <p className={styles.description}>{description}</p>
+            <p className={styles.note}>
               許可されたユーザーのみログインできます
             </p>
           </div>

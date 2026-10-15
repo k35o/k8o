@@ -8,6 +8,8 @@ import type { FC } from 'react';
 import primaryIcon from '@/app/blog/(articles)/async-clipboard/_images/primary.png';
 import k8oIcon from '@/app/icon.png';
 
+import styles from './clipboard-image-demo.module.css';
+
 const OPTIONS = [
   { value: '1', label: '画像1' },
   { value: '2', label: '画像2' },
@@ -75,8 +77,8 @@ export const ClipboardImageDemo: FC = () => {
   };
 
   return (
-    <div className="flex w-full flex-wrap items-end justify-around gap-4">
-      <div className="flex flex-col items-center gap-2">
+    <div className={styles.root}>
+      <div className={styles.column}>
         <FormControl
           label="画像を選択する"
           renderInput={(props) => (
@@ -92,7 +94,7 @@ export const ClipboardImageDemo: FC = () => {
         />
         <Image
           alt={`コピーする画像${selectedSrc}`}
-          className="rounded-xl"
+          className={styles.image}
           height={128}
           ref={ref}
           src={selectedSrc === '1' ? k8oIcon : primaryIcon}
@@ -101,17 +103,17 @@ export const ClipboardImageDemo: FC = () => {
         />
         <Button onClick={() => void copyText()}>PNG画像をコピーする</Button>
       </div>
-      <div className="flex flex-col items-center gap-2">
-        <div className="flex w-full flex-col items-center gap-4">
-          <div className="flex w-full flex-col gap-2">
-            <p className="self-start font-bold">ペーストされた画像</p>
-            <p className="text-fg-mute self-end text-sm">
+      <div className={styles.column}>
+        <div className={styles.pasted}>
+          <div className={styles.pastedHeader}>
+            <p className={styles.pastedTitle}>ペーストされた画像</p>
+            <p className={styles.pastedNote}>
               権限があれば、外部でコピーした画像も貼り付けられます
             </p>
           </div>
           <Image
             alt="ペーストされた画像"
-            className="rounded-xl"
+            className={styles.image}
             height={128}
             src={src}
             unoptimized

@@ -9,19 +9,24 @@ allowBuilds:
 
 catalog:
   '@ai-sdk/anthropic': 4.0.72
+  '@better-css-modules/cli': 0.4.0
+  '@better-css-modules/core': 0.4.0
+  '@better-css-modules/turbopack': 0.4.0
+  '@better-css-modules/vite': 0.4.0
   '@k8o/html-nest': 0.2.0
   '@k8o/oxc-config': 1.1.0
-  '@k8ordo/ui': 2.0.0
+  '@k8ordo/i18n': 1.0.0
+  '@k8ordo/state': 1.0.0
+  '@k8ordo/ui': 2.1.0
   '@libsql/client': 0.18.0
-  '@next/env': 16.3.8
-  '@next/mdx': 16.3.8
-  '@next/third-parties': 16.3.8
+  '@next/env': 16.4.0
+  '@next/mdx': 16.4.0
+  '@next/third-parties': 16.4.0
   '@storybook/addon-a11y': 10.6.1
   '@storybook/addon-docs': 10.6.1
   '@storybook/addon-mcp': '10.6.1'
   '@storybook/addon-vitest': 10.6.1
   '@storybook/nextjs-vite': 10.6.1
-  '@tailwindcss/postcss': 4.3.3
   '@types/react': 19.3.0
   '@types/react-dom': 19.3.0
   '@vitest/browser-playwright': 5.0.3
@@ -33,17 +38,14 @@ catalog:
   drizzle-kit: 0.31.11
   drizzle-orm: 0.45.3
   hono: 4.13.13
-  next: 16.3.8
+  next: 16.4.0
   next-themes: 0.4.6
-  postcss: 8.5.29
-  postcss-load-config: 6.0.1
   react: 19.3.0
   react-dom: 19.3.0
   storybook: 10.6.1
   storybook-addon-determinism: 0.2.1
   storybook-addon-mock-date: 3.2.1
   storybook-addon-vrt: 0.4.0
-  tailwindcss: 4.3.3
   vitest: 5.0.3
   wrangler: 4.147.0
   zod: 4.6.5
@@ -51,12 +53,16 @@ catalog:
 minimumReleaseAge: 10080
 
 minimumReleaseAgeExclude:
+  - '@better-css-modules/*'
   - '@k8o/*'
   - '@k8ordo/*'
   # 自作パッケージ（k35o公開）。@k8o/* と同じ信頼で除外する
   - storybook-addon-vrt
   - storybook-addon-mock-date
   - storybook-addon-determinism
+
+patchedDependencies:
+  '@storybook/nextjs-vite@10.6.1': patches/@storybook__nextjs-vite@10.6.1.patch
 
 trustPolicy: no-downgrade
 

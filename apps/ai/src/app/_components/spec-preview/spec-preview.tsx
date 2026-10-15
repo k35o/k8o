@@ -4,6 +4,8 @@ import type { Spec } from '@json-render/core';
 import { JsonRenderUI } from '@k8ordo/ui/json-render/registry';
 import type { FC } from 'react';
 
+import styles from './spec-preview.module.css';
+
 type SpecPreviewProps = {
   spec: Spec | null;
   loading?: boolean;
@@ -16,8 +18,8 @@ export const SpecPreview: FC<SpecPreviewProps> = ({
   spec,
   loading = false,
 }) => (
-  <div className="h-full overflow-auto">
-    <div className="mx-auto max-w-5xl p-8">
+  <div className={styles.root}>
+    <div className={styles.canvas}>
       <JsonRenderUI loading={loading} spec={spec} />
     </div>
   </div>

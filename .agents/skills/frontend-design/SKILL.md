@@ -92,13 +92,13 @@ description: 独自性のある本番品質のフロントエンドインター�
 
 ### スタイリング制約
 
-- **TailwindCSS**: @k8ordo/ui (`@k8ordo/ui/tailwind.css`) で定義されたカスタムトークンのみ使用
-- **禁止**: 標準のTailwindクラス（`text-gray-600`など）は使用禁止
+- **CSS Modules**: コンポーネントの隣の `<name>.module.css` に書き、`styles.x` で参照する
+- **トークン**: 色・余白・角丸・影・文字・時間は @k8ordo/ui のトークン（`var(--color-fg-base)` など）のみ使用。生の値（`#fff`、`13px`）は禁止（`pnpm run check:css` で検査される）
 
 ### アニメーション
 
 - **Motion**: Reactコンポーネントには `motion` ライブラリを使用
-- **CSS**: 単純なトランジションにはTailwindのtransitionユーティリティを活用
+- **CSS**: 単純なトランジションは module の `transition-*` に `--duration-*` / `--easing-*` トークンで書く
 
 ### コンポーネント
 
@@ -117,5 +117,5 @@ Copyright 2025 Anthropic, PBC
 
 **MODIFIED**: このファイルは原作から以下の変更を加えています：
 - 日本語に翻訳
-- k8oプロジェクト固有の設定を追加（@k8ordo/ui UIライブラリ、TailwindCSSカスタムトークン等）
+- k8oプロジェクト固有の設定を追加（@k8ordo/ui UIライブラリ、CSS Modules とデザイントークン等）
 - 避けるべきことにUIデザイン原則の注意項目を追加

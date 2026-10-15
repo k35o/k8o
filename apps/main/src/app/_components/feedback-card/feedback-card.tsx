@@ -1,23 +1,15 @@
 'use client';
 
 import { BadIcon, Button, GoodIcon, Textarea } from '@k8ordo/ui';
-import { cn } from '@repo/helpers/cn';
 import { useId, useState, useTransition } from 'react';
 import type { FC } from 'react';
+
+import styles from './feedback-card.module.css';
 
 const FEEDBACK_MAP = {
   good: 1,
   bad: 2,
 } as const satisfies Record<string, number>;
-
-const pillClass = (key: string, feedbackValue: string): string =>
-  cn(
-    'flex items-center gap-1.5 rounded-full px-3 py-1.5 text-sm transition-colors',
-    'disabled:cursor-not-allowed disabled:opacity-50',
-    feedbackValue === key
-      ? 'bg-primary-bg text-primary-fg'
-      : 'bg-bg-mute text-fg-mute hover:bg-bg-emphasize hover:text-fg-base',
-  );
 
 export const FeedbackCard: FC<{
   title: string;
@@ -51,23 +43,18 @@ export const FeedbackCard: FC<{
 
   if (isSubmitted) {
     return (
-      <p className="text-fg-mute py-4 text-center text-sm">
-        フィードバックありがとうございます！
-      </p>
+      <p className={styles.thanks}>フィードバックありがとうございます！</p>
     );
   }
 
   return (
-    <div className="flex flex-col gap-4">
-      <div className="flex flex-wrap items-center justify-between gap-3">
-        <p className="text-fg-mute text-sm">{title}</p>
-        <fieldset
-          aria-label="フィードバック"
-          className="flex items-center gap-2 border-none p-0"
-        >
+    <div className={styles.root}>
+      <div className={styles.header}>
+        <p className={styles.title}>{title}</p>
+        <fieldset aria-label="フィードバック" className={styles.choices}>
           <button
             aria-pressed={feedbackValue === 'good'}
-            className={pillClass('good', feedbackValue)}
+            className={styles.pill}
             disabled={isPending}
             onClick={() => {
               toggleFeedback('good');
@@ -79,7 +66,7 @@ export const FeedbackCard: FC<{
           </button>
           <button
             aria-pressed={feedbackValue === 'bad'}
-            className={pillClass('bad', feedbackValue)}
+            className={styles.pill}
             disabled={isPending}
             onClick={() => {
               toggleFeedback('bad');
@@ -91,8 +78,8 @@ export const FeedbackCard: FC<{
           </button>
         </fieldset>
       </div>
-      <div className="flex flex-col gap-3">
-        <label className="sr-only" htmlFor={textareaId}>
+      <div className={styles.body}>
+        <label className={styles.srOnly} htmlFor={textareaId}>
           コメント
         </label>
         <Textarea
@@ -108,11 +95,11 @@ export const FeedbackCard: FC<{
           value={comment}
         />
         {isInvalidComment && (
-          <p className="text-fg-error text-xs" id={errorId}>
+          <p className={styles.error} id={errorId}>
             500文字以内でご記入ください
           </p>
         )}
-        <div className="flex justify-end">
+        <div className={styles.actions}>
           <Button
             disabled={
               !(feedbackValue || comment) || isInvalidComment || isPending

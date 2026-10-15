@@ -1,10 +1,10 @@
 'use client';
 
 import { useAppState } from '@k8ordo/state';
-import { Alert, useDisclosure } from '@k8ordo/ui';
+import { Alert } from '@k8ordo/ui';
 import { isBrowserOutdated } from '@repo/helpers/browser/browser-support';
 import type { BrowserMinVersions } from '@repo/helpers/browser/detect-browser';
-import { useCallback } from 'react';
+import { useCallback, useState } from 'react';
 import type { FC, ReactNode } from 'react';
 
 import { BrowserSupportNoticeModal } from './browser-support-notice-modal';
@@ -12,25 +12,30 @@ import { BROWSER_SUPPORT_MESSAGE } from './messages';
 import { noticeState } from './notice-state';
 import { isNoticeForced, useDetectedBrowser } from './use-detected-browser';
 
-const LINK_CLASS =
-  'text-primary-fg cursor-pointer underline underline-offset-2';
+import styles from './browser-support-notice.module.css';
 
 export const BrowserSupportNotice: FC<{
   minVersions: BrowserMinVersions;
 }> = ({ minVersions }) => {
   const detected = useDetectedBrowser();
   const [{ dismissed }, updateNotice] = useAppState(noticeState);
-  const modal = useDisclosure();
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   // Alert.action.renderItem はレンダー毎に新規定義すると lint(nested components)に
   // 触れるため、安定参照にする。
   const renderDetailLink = useCallback(
     ({ children }: { children: ReactNode }): ReactNode => (
-      <button className={LINK_CLASS} onClick={modal.open} type="button">
+      <button
+        className={styles.detailLink}
+        onClick={() => {
+          setIsModalOpen(true);
+        }}
+        type="button"
+      >
         {children}
       </button>
     ),
-    [modal.open],
+    [],
   );
 
   if (detected === null || !isBrowserOutdated(detected, minVersions)) {
@@ -44,7 +49,7 @@ export const BrowserSupportNotice: FC<{
   }
 
   return (
-    <div className="mx-auto w-full max-w-5xl px-4 pt-4">
+    <div className={styles.root}>
       <Alert
         action={{ label: '詳しくはこちら', renderItem: renderDetailLink }}
         closeLabel="この通知を閉じる"
@@ -56,9 +61,11 @@ export const BrowserSupportNotice: FC<{
       />
       <BrowserSupportNoticeModal
         detected={detected}
-        isOpen={modal.isOpen}
+        isOpen={isModalOpen}
         minVersions={minVersions}
-        onClose={modal.close}
+        onClose={() => {
+          setIsModalOpen(false);
+        }}
       />
     </div>
   );

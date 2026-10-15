@@ -2,6 +2,7 @@ import { GoogleAnalytics } from '@next/third-parties/google';
 
 import './_styles/globals.css';
 import '@repo/code-highlight/styles.css';
+import '@/i18n';
 import { Analytics } from '@vercel/analytics/react';
 import { SpeedInsights } from '@vercel/speed-insights/next';
 import type { Metadata } from 'next';
@@ -14,6 +15,8 @@ import { OfflineNotice } from './_components/offline-notice';
 import { ServiceWorkerRegister } from './_components/service-worker-register';
 import { AppProvider } from './_providers/app';
 import { mPlus2 } from './_styles/font';
+
+import styles from './layout.module.css';
 
 export const metadata = {
   metadataBase: new URL('https://k8o.me'),
@@ -62,9 +65,7 @@ export default function RootLayout({ children }: LayoutProps<'/'>) {
   return (
     <html lang="ja" suppressHydrationWarning>
       {process.env.NODE_ENV === 'development' && <ReactScan />}
-      <body
-        className={`${mPlus2.variable} bg-bg-surface font-m-plus-2 text-fg-base tracking-none font-medium antialiased`}
-      >
+      <body className={`${mPlus2.variable} ${styles.body}`}>
         <AppProvider>
           <GlobalLayout minVersions={minVersions}>{children}</GlobalLayout>
           <OfflineNotice />

@@ -3,6 +3,8 @@
 import { Button } from '@k8ordo/ui';
 import { useCallback, useRef, useState } from 'react';
 
+import styles from './drag-drop-demo.module.css';
+
 const INITIAL_TEXT = '吾輩は猫である。名前はまだ無い。';
 const DRAGGABLE_WORDS = ['素敵な', '可愛い', '立派な'];
 
@@ -74,18 +76,18 @@ export function DragDropDemo() {
 
   if (!isSupported) {
     return (
-      <p className="text-fg-mute text-sm">
+      <p className={styles.note}>
         このブラウザはこのAPIをサポートしていません。
       </p>
     );
   }
 
   return (
-    <div className="space-y-3">
-      <div className="flex flex-wrap gap-2">
+    <div className={styles.root}>
+      <div className={styles.words}>
         {DRAGGABLE_WORDS.map((word) => (
           <span
-            className="bg-primary-bg text-primary-fg cursor-grab rounded-sm px-2 py-1 text-sm active:cursor-grabbing"
+            className={styles.word}
             draggable
             key={word}
             onDragStart={(e) => {
@@ -104,19 +106,16 @@ export function DragDropDemo() {
           region ロールを持つ section だとイベントハンドラがエラーになるため div を使う */}
       <div
         aria-label="テキスト挿入エリア"
-        className={`rounded-lg p-3 transition-colors ${
-          isDragOver ? 'bg-primary-bg-subtle' : 'bg-bg-subtle'
-        }`}
+        className={styles.dropZone}
+        data-drag-over={isDragOver}
         onDragLeave={handleDragLeave}
         onDragOver={handleDragOver}
         onDrop={handleDrop}
       >
-        <p className="text-fg-base text-sm leading-relaxed" ref={textRef}>
+        <p className={styles.sample} ref={textRef}>
           {text}
         </p>
-        <p className="text-fg-mute mt-2 text-xs">
-          ↑ 上のワードをドラッグしてここにドロップ
-        </p>
+        <p className={styles.hint}>↑ 上のワードをドラッグしてここにドロップ</p>
       </div>
     </div>
   );

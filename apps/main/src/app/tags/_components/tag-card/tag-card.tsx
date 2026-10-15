@@ -1,8 +1,9 @@
 import { ChevronIcon, Card, Separator } from '@k8ordo/ui';
-import { cn } from '@repo/helpers/cn';
 import type { Route } from 'next';
 import Link from 'next/link';
 import type { FC } from 'react';
+
+import styles from './tag-card.module.css';
 
 export const TagCard: FC<{
   title: string;
@@ -12,27 +13,15 @@ export const TagCard: FC<{
   linkLabel: string;
 }> = ({ title, href, count, label, linkLabel }) => (
   <Card interactive width="fit">
-    <Link
-      aria-label={linkLabel}
-      className={cn(
-        'flex h-full w-70 flex-col gap-2 rounded-xl p-4',
-        'group',
-        'hover:bg-primary-bg-mute hover:text-primary-fg',
-      )}
-      href={href}
-    >
-      <div className="flex w-full basis-full items-center justify-between">
-        <span className="text-lg font-bold">{title}</span>
-        {count !== undefined && (
-          <span className="bg-primary-bg text-primary-fg min-w-8 rounded-full px-2 py-1 text-center">
-            {count}
-          </span>
-        )}
+    <Link aria-label={linkLabel} className={styles.root} href={href}>
+      <div className={styles.header}>
+        <span className={styles.title}>{title}</span>
+        {count !== undefined && <span className={styles.count}>{count}</span>}
       </div>
       <Separator />
-      <div className="flex items-center justify-between gap-2">
-        <span className="text-sm">{label}</span>
-        <span className="hidden group-hover:block">
+      <div className={styles.footer}>
+        <span className={styles.label}>{label}</span>
+        <span className={styles.chevron}>
           <ChevronIcon direction="right" size="sm" />
         </span>
       </div>

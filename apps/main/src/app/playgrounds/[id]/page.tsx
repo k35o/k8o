@@ -1,4 +1,5 @@
 import { Anchor, Badge, Heading } from '@k8ordo/ui';
+import { cn } from '@repo/helpers/cn';
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
@@ -13,6 +14,8 @@ import {
 import { buildPageMetadata } from '@/shared/site/build-page-metadata';
 
 import { BlogLinkButton } from './_components/blog-link-button';
+
+import styles from './page.module.css';
 
 export function generateStaticParams() {
   return playgroundSections.map((section) => ({ id: section.id }));
@@ -48,17 +51,15 @@ async function PlaygroundSectionContent({ params }: PageProperties) {
 
   return (
     <>
-      <div className="flex flex-col gap-4">
-        <div className="flex flex-wrap items-center gap-3">
+      <div className={styles.header}>
+        <div className={styles.meta}>
           <Badge size="sm" label={playgroundCategoryLabels[section.category]} />
-          <span className="text-fg-mute text-sm">
-            デモ{section.demos.length}件
-          </span>
+          <span className={styles.count}>デモ{section.demos.length}件</span>
         </div>
         <Heading level="h1">{section.title}</Heading>
-        <p className="text-fg-mute leading-relaxed">{section.description}</p>
+        <p className={styles.description}>{section.description}</p>
         {section.type === 'blog' && (
-          <div className="flex">
+          <div className={styles.blogLink}>
             <BlogLinkButton slug={section.slug} />
           </div>
         )}
@@ -83,13 +84,13 @@ async function PlaygroundSectionContent({ params }: PageProperties) {
 
 function PlaygroundSectionSkeleton() {
   return (
-    <div className="flex animate-pulse flex-col gap-4">
-      <div className="flex flex-wrap items-center gap-3">
-        <div className="bg-bg-mute h-5 w-16 rounded-full" />
-        <div className="bg-bg-mute h-4 w-16 rounded-md" />
+    <div className={styles.skeleton}>
+      <div className={styles.meta}>
+        <div className={cn(styles.bone, styles.skeletonBadge)} />
+        <div className={cn(styles.bone, styles.skeletonCount)} />
       </div>
-      <div className="bg-bg-mute h-9 w-64 rounded-md" />
-      <div className="bg-bg-mute h-5 w-full max-w-xl rounded-md" />
+      <div className={cn(styles.bone, styles.skeletonTitle)} />
+      <div className={cn(styles.bone, styles.skeletonDescription)} />
     </div>
   );
 }
@@ -97,7 +98,7 @@ function PlaygroundSectionSkeleton() {
 // params に依存する描画を Suspense 配下へ隔離し、App Shell を URL 非依存に保つ
 export default function PlaygroundSectionPage({ params }: PageProperties) {
   return (
-    <div className="flex flex-col gap-8">
+    <div className={styles.root}>
       <Anchor
         href="/playgrounds"
         renderAnchor={({ className, href, children }) => (

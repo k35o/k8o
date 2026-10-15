@@ -16,6 +16,10 @@ apps/main と同じ `app / features / shared` 構成（詳細は `apps/main/CLAU
 
 `shared/claude/` には、generation・agent・usage が共通で使うモデルの定義（`models.ts`）と provider（`claude-provider.ts`）を置く。
 
+## 文言のロケール
+
+@k8ordo/ui の組み込み文言（閉じる・必須・コピーしましたなど）は `@k8ordo/i18n` のロケール集合で決まり、集合が無い環境では英語になる。集合は `src/i18n.ts` の1か所で定義し、サーバーの描画（`app/layout.tsx`・`global-error.tsx`）とブラウザ（`_providers/app.tsx`）の両方から副作用 import する。`@repo/auth-shell` の部品もこの集合に乗る。
+
 ## 生成 UI（json-render）
 
 UI スタジオの生成物は json-render の spec。コード表示の TSX は `spec-to-tsx.ts` で spec から変換する。catalog・registry・検証は

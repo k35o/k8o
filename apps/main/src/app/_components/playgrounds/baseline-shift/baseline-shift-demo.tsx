@@ -3,6 +3,8 @@
 import { FormControl, Select } from '@k8ordo/ui';
 import { useState } from 'react';
 
+import styles from './baseline-shift-demo.module.css';
+
 type BaselineShiftValue = '0' | 'sub' | 'super' | '0.3em' | '-0.3em';
 
 const FONT_SIZE = 28;
@@ -25,7 +27,7 @@ export function BaselineShiftDemo() {
   const [value, setValue] = useState<BaselineShiftValue>('super');
 
   return (
-    <div className="flex flex-col gap-6">
+    <div className={styles.root}>
       <FormControl
         label="baseline-shift"
         renderInput={({ 'aria-labelledby': _ariaLabelledby, ...props }) => (
@@ -46,13 +48,13 @@ export function BaselineShiftDemo() {
         )}
       />
 
-      <p className="text-fg-mute text-sm">
+      <p className={styles.note}>
         SVGの <code>tspan</code> に <code>baseline-shift: {value}</code>{' '}
         を当てています。赤い文字がずらしの対象、グレーの破線が親{' '}
         <code>text</code> のベースラインです。
       </p>
 
-      <div className="flex flex-col gap-2">
+      <div className={styles.examples}>
         {EXAMPLES.map((example, idx) => (
           <svg
             aria-label={`baseline-shift: ${value} の例 ${(idx + 1).toString()}`}
@@ -62,7 +64,7 @@ export function BaselineShiftDemo() {
             width="100%"
           >
             <line
-              className="stroke-border-base"
+              className={styles.baseline}
               strokeDasharray="3 3"
               strokeWidth="1"
               x1="0"
@@ -71,14 +73,14 @@ export function BaselineShiftDemo() {
               y2={BASELINE_Y}
             />
             <text
-              className="fill-fg-base"
+              className={styles.text}
               fontSize={FONT_SIZE}
               x="0"
               y={BASELINE_Y}
             >
               {example.prefix}
               <tspan
-                className="fill-fg-error"
+                className={styles.shifted}
                 fontSize="0.8em"
                 fontWeight="bold"
                 style={{ baselineShift: value }}

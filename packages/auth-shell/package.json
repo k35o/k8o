@@ -45,13 +45,17 @@
   "scripts": {
     "test": "vitest run",
     "test:watch": "vitest",
-    "type-check": "tsc --noEmit"
+    "type-check": "better-css-modules generate && tsc --noEmit",
+    "check:css": "better-css-modules check"
   },
   "dependencies": {
     "@repo/ai-database": "workspace:*",
     "server-only": "0.0.1"
   },
   "devDependencies": {
+    "@better-css-modules/cli": "catalog:",
+    "@better-css-modules/core": "catalog:",
+    "@k8ordo/i18n": "catalog:",
     "@k8ordo/ui": "catalog:",
     "@repo/typescript-config": "workspace:*",
     "@types/react": "catalog:",
@@ -63,6 +67,7 @@
     "zod": "catalog:"
   },
   "peerDependencies": {
+    "@k8ordo/i18n": "catalog:",
     "@k8ordo/ui": "catalog:",
     "better-auth": "catalog:",
     "next": "catalog:",

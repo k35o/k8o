@@ -8,7 +8,7 @@ import type { Components } from 'react-markdown';
 
 import type { DeckSlide } from '@/features/slides/application/parse-deck';
 
-import { Cover } from '../cover';
+import { Cover, CoverSubtitle, CoverText, CoverTitle } from '../cover';
 import {
   Blockquote,
   H1,
@@ -138,8 +138,20 @@ const components: Components = {
   blockquote: ({ children }) => <Blockquote>{children}</Blockquote>,
 };
 
-// 1枚ぶんのスライド本文。Stage の content（cqi コンテキスト）の中に置いて使う。
-export const DeckSlideView: FC<{ slide: DeckSlide }> = ({ slide }) => {
-  const body = <Markdown components={components}>{slide.source}</Markdown>;
-  return slide.isCover ? <Cover>{body}</Cover> : body;
+// 表紙は見出しと本文を表紙用の部品に差し替える。
+const coverComponents: Components = {
+  ...components,
+  h1: ({ children }) => <CoverTitle>{children}</CoverTitle>,
+  h2: ({ children }) => <CoverSubtitle>{children}</CoverSubtitle>,
+  p: ({ children }) => <CoverText>{children}</CoverText>,
 };
+
+// 1枚ぶんのスライド本文。Stage の content（cqi コンテキスト）の中に置いて使う。
+export const DeckSlideView: FC<{ slide: DeckSlide }> = ({ slide }) =>
+  slide.isCover ? (
+    <Cover>
+      <Markdown components={coverComponents}>{slide.source}</Markdown>
+    </Cover>
+  ) : (
+    <Markdown components={components}>{slide.source}</Markdown>
+  );

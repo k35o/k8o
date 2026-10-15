@@ -4,10 +4,12 @@ import { getTags } from '@/features/tags/interface/queries';
 
 import { TagCard } from './_components/tag-card';
 
+import styles from './page.module.css';
+
 export default async function Page() {
   const tags = await getTags();
   return (
-    <section className="grid-cols-auto-fill-70 grid justify-items-center gap-4">
+    <section className={styles.root}>
       {tags.map((tag) => {
         if (tag.blogCount + tag.talkCount === 0) {
           return null;

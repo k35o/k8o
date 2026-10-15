@@ -4,6 +4,8 @@ import { Button, FormControl, TextField } from '@k8ordo/ui';
 import { useEffect, useState } from 'react';
 import type { FC } from 'react';
 
+import styles from './clipboard-text-demo.module.css';
+
 type ClipboardPermissionName = 'clipboard-read' | 'clipboard-write';
 
 const subscribePermission = (
@@ -55,7 +57,7 @@ export const ClipboardTextDemo: FC = () => {
   }, []);
 
   return (
-    <div className="flex flex-col items-center gap-4">
+    <div className={styles.root}>
       <div>
         <p>
           クリップボードの読み取り: {readPermissions ?? '読み込めませんでした'}
@@ -79,7 +81,7 @@ export const ClipboardTextDemo: FC = () => {
           />
         )}
       />
-      <div className="flex flex-wrap gap-4">
+      <div className={styles.actions}>
         <Button
           onClick={() => {
             void navigator.clipboard.writeText(text);

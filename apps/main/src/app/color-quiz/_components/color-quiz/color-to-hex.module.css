@@ -1,0 +1,130 @@
+.root {
+  display: flex;
+  flex-direction: column;
+  gap: calc(var(--spacing) * 6);
+}
+
+.srOnly {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: calc(var(--spacing) * -0.25);
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border-width: 0;
+}
+
+.target {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: calc(var(--spacing) * 48);
+  border-radius: var(--radius-xl);
+}
+
+.targetHex {
+  font-size: var(--font-size-lg);
+  line-height: var(--line-height-lg);
+  font-weight: var(--font-weight-bold);
+  letter-spacing: var(--letter-spacing-normal);
+}
+
+.result {
+  text-align: center;
+}
+
+.verdict {
+  font-size: var(--font-size-lg);
+  line-height: var(--line-height-lg);
+  font-weight: var(--font-weight-bold);
+}
+
+.comparison {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: calc(var(--spacing) * 4);
+  margin-top: calc(var(--spacing) * 4);
+}
+
+.comparisonItem {
+  display: flex;
+  flex-direction: column;
+  gap: calc(var(--spacing) * 2);
+}
+
+.comparisonLabel {
+  color: var(--color-fg-mute);
+  text-align: center;
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-sm);
+}
+
+.swatch {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: calc(var(--spacing) * 24);
+  border-radius: var(--radius-xl);
+}
+
+.swatchHex {
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-sm);
+  font-weight: var(--font-weight-bold);
+  letter-spacing: var(--letter-spacing-normal);
+}
+
+.options {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: calc(var(--spacing) * 4);
+}
+
+.option {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: calc(var(--spacing) * 14);
+  border-width: 1px;
+  border-style: solid;
+  border-color: var(--color-border-base);
+  border-radius: var(--radius-xl);
+  background-color: var(--color-bg-base);
+  font-family: var(--font-family-mono);
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-sm);
+  letter-spacing: var(--letter-spacing-normal);
+  transition: all var(--duration-fast) var(--easing-in-out);
+}
+
+.selectable {
+  cursor: pointer;
+
+  @media (hover: hover) {
+    &:hover {
+      background-color: var(--color-bg-mute);
+    }
+  }
+}
+
+.selected {
+  outline: 2px solid var(--color-primary-border);
+}
+
+.correct {
+  outline: 2px solid var(--color-border-success);
+}
+
+.wrong {
+  outline: 2px solid var(--color-border-error);
+}
+
+.badge {
+  position: absolute;
+  top: var(--spacing);
+  right: var(--spacing);
+}

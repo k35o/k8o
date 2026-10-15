@@ -2,10 +2,10 @@ import type { HtmlElementInfo } from '@k8o/html-nest';
 import { Alert } from '@k8ordo/ui';
 import type { FC, ReactNode } from 'react';
 
+import styles from './special-content-notice.module.css';
+
 const NoteBox: FC<{ children: ReactNode }> = ({ children }) => (
-  <div className="text-fg-mute border-border-mute bg-bg-subtle rounded-lg border px-4 py-3 text-sm leading-relaxed">
-    {children}
-  </div>
+  <div className={styles.root}>{children}</div>
 );
 
 // 選択要素の content model 種別に応じた「子要素についての説明」。

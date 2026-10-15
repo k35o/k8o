@@ -1,0 +1,48 @@
+.root {
+  display: flex;
+  flex-direction: column;
+  gap: calc(var(--spacing) * 4);
+}
+
+.input {
+  max-width: calc(var(--spacing) * 80);
+  padding-inline: calc(var(--spacing) * 4);
+  padding-block: calc(var(--spacing) * 2);
+  border-radius: var(--radius-full);
+  background-color: var(--color-primary-bg);
+  color: var(--color-primary-fg);
+  font-size: var(--font-size-md);
+  line-height: var(--line-height-md);
+  font-weight: var(--font-weight-bold);
+  text-align: center;
+  cursor: pointer;
+
+  @media (hover: hover) {
+    &:hover {
+      background-color: color-mix(
+        in oklab,
+        var(--color-primary-bg) 90%,
+        transparent
+      );
+    }
+  }
+
+  &:active {
+    background-color: color-mix(
+      in oklab,
+      var(--color-primary-bg) 80%,
+      transparent
+    );
+  }
+
+  &:focus-visible {
+    border-color: transparent;
+    outline-style: none;
+    box-shadow: var(--shadow-ring-info);
+
+    @media (forced-colors: active) {
+      outline: 2px solid transparent;
+      outline-offset: 2px;
+    }
+  }
+}

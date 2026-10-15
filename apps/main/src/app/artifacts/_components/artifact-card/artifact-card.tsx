@@ -11,6 +11,8 @@ import type { FC } from 'react';
 
 import type { Artifact } from '@/app/artifacts/_utils/artifacts';
 
+import styles from './artifact-card.module.css';
+
 export const ArtifactCard: FC<Artifact> = ({
   name,
   description,
@@ -19,31 +21,34 @@ export const ArtifactCard: FC<Artifact> = ({
   npmPackageName,
   tags,
 }) => (
-  <article className="border-border-mute bg-bg-base flex h-full flex-col gap-5 rounded-xl border p-5 shadow-sm transition-colors md:p-6">
-    <div className="flex flex-col gap-2">
+  <article className={styles.root}>
+    <div className={styles.header}>
       <Heading level="h3">{name}</Heading>
-      <p className="text-fg-mute md:text-md text-sm leading-relaxed">
-        {description}
-      </p>
+      <p className={styles.description}>{description}</p>
     </div>
 
-    <div className="border-border-mute mt-auto flex flex-col gap-4 border-t pt-4">
+    <div className={styles.footer}>
       {tags.length > 0 && (
-        <div className="flex flex-wrap gap-2">
+        <div className={styles.tags}>
           {tags.map((tag) => (
             <Badge key={tag} size="sm" label={tag} />
           ))}
         </div>
       )}
 
-      <div className="flex flex-wrap gap-2">
+      <div className={styles.actions}>
         <Button
-          renderItem={({ className, children }) => (
+          renderItem={({
+            children,
+            disabled: _disabled,
+            type: _type,
+            ...props
+          }) => (
             <a
-              className={className}
               href={githubUrl}
               rel="noopener noreferrer"
               target="_blank"
+              {...props}
             >
               {children}
             </a>
@@ -56,12 +61,17 @@ export const ArtifactCard: FC<Artifact> = ({
         </Button>
         {websiteUrl !== null && (
           <Button
-            renderItem={({ className, children }) => (
+            renderItem={({
+              children,
+              disabled: _disabled,
+              type: _type,
+              ...props
+            }) => (
               <a
-                className={className}
                 href={websiteUrl}
                 rel="noopener noreferrer"
                 target="_blank"
+                {...props}
               >
                 {children}
               </a>
@@ -75,12 +85,17 @@ export const ArtifactCard: FC<Artifact> = ({
         )}
         {npmPackageName !== null && (
           <Button
-            renderItem={({ className, children }) => (
+            renderItem={({
+              children,
+              disabled: _disabled,
+              type: _type,
+              ...props
+            }) => (
               <a
-                className={className}
                 href={`https://www.npmjs.com/package/${npmPackageName}`}
                 rel="noopener noreferrer"
                 target="_blank"
+                {...props}
               >
                 {children}
               </a>

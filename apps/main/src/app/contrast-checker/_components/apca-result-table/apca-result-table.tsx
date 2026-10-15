@@ -1,5 +1,8 @@
 import { AlertIcon } from '@k8ordo/ui';
+import { cn } from '@repo/helpers/cn';
 import type { FC } from 'react';
+
+import styles from './apca-result-table.module.css';
 
 type Props = {
   lc: number;
@@ -40,14 +43,14 @@ const APCA_LEVELS = [
 
 const Status: FC<{ isInvalid: boolean }> = ({ isInvalid }) =>
   isInvalid ? (
-    <div className="text-fg-error flex items-center justify-center gap-1">
+    <div className={cn(styles.status, styles.ng)}>
       <AlertIcon size="sm" status="error" />
-      <span className="font-bold">NG</span>
+      <span className={styles.statusLabel}>NG</span>
     </div>
   ) : (
-    <div className="text-fg-success flex items-center justify-center gap-1">
+    <div className={cn(styles.status, styles.ok)}>
       <AlertIcon size="sm" status="success" />
-      <span className="font-bold">OK</span>
+      <span className={styles.statusLabel}>OK</span>
     </div>
   );
 
@@ -56,53 +59,43 @@ export const ApcaResultTable: FC<Props> = ({ lc }) => {
   const absLc = Math.abs(lc);
 
   return (
-    <div className="border-border-base bg-bg-base overflow-hidden rounded-xl border">
-      <div className="sm:hidden">
+    <div className={styles.root}>
+      <div className={styles.cards}>
         {APCA_LEVELS.map((level) => (
-          <div
-            className="border-border-base flex flex-col gap-2 border-b p-4 last:border-b-0"
-            key={level.threshold}
-          >
-            <div className="flex items-center justify-between gap-3">
-              <p className="text-sm font-bold">Lc {level.threshold}以上</p>
+          <div className={styles.card} key={level.threshold}>
+            <div className={styles.cardHeader}>
+              <p className={styles.cardThreshold}>Lc {level.threshold}以上</p>
               <Status isInvalid={absLc < level.threshold} />
             </div>
-            <p className="text-sm">{level.usage}</p>
-            <p className="text-fg-mute text-xs">{level.example}</p>
+            <p className={styles.cardUsage}>{level.usage}</p>
+            <p className={styles.cardExample}>{level.example}</p>
           </div>
         ))}
       </div>
-      <table className="hidden w-full sm:table">
+      <table className={styles.table}>
         <thead>
-          <tr className="border-border-base bg-bg-mute md:text-md border-b text-xs font-medium sm:text-sm">
-            <th className="px-3 py-2 sm:px-4 sm:py-3" scope="col">
+          <tr className={styles.headRow}>
+            <th className={styles.headCell} scope="col">
               判定
             </th>
-            <th className="px-3 py-2 sm:px-4 sm:py-3" scope="col">
+            <th className={styles.headCell} scope="col">
               基準
             </th>
-            <th className="px-3 py-2 text-left sm:px-4 sm:py-3" scope="col">
+            <th className={cn(styles.headCell, styles.alignStart)} scope="col">
               用途
             </th>
           </tr>
         </thead>
         <tbody>
           {APCA_LEVELS.map((level) => (
-            <tr
-              className="border-border-base border-b last:border-b-0"
-              key={level.threshold}
-            >
-              <td className="p-2 sm:py-3">
+            <tr className={styles.row} key={level.threshold}>
+              <td className={styles.statusCell}>
                 <Status isInvalid={absLc < level.threshold} />
               </td>
-              <td className="px-3 py-2 text-center font-bold whitespace-nowrap sm:px-4 sm:py-3">
-                Lc {level.threshold}以上
-              </td>
-              <td className="px-3 py-2 sm:px-4 sm:py-3">
-                <p className="md:text-md text-sm">{level.usage}</p>
-                <p className="text-fg-mute text-xs md:text-sm">
-                  {level.example}
-                </p>
+              <td className={styles.thresholdCell}>Lc {level.threshold}以上</td>
+              <td className={styles.usageCell}>
+                <p className={styles.usage}>{level.usage}</p>
+                <p className={styles.example}>{level.example}</p>
               </td>
             </tr>
           ))}

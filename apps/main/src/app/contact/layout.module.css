@@ -1,0 +1,11 @@
+.root {
+  width: 100%;
+  max-width: 48rem;
+  margin-inline: auto;
+}
+
+.content {
+  display: flex;
+  flex-direction: column;
+  gap: calc(var(--spacing) * 8);
+}

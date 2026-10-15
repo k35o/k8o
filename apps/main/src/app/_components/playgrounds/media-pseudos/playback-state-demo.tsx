@@ -1,7 +1,10 @@
 'use client';
 
 import { Button, Code } from '@k8ordo/ui';
+import { cn } from '@repo/helpers/cn';
 import { useRef } from 'react';
+
+import styles from './playback-state-demo.module.css';
 
 const bars = [0, 1, 2, 3, 4];
 
@@ -9,7 +12,7 @@ export function PlaybackStateDemo() {
   const audioRef = useRef<HTMLAudioElement>(null);
 
   return (
-    <div className="flex flex-col gap-6">
+    <div className={styles.root}>
       <style>{`
         @keyframes mp-bounce {
           from { scale: 1 0.15; }
@@ -47,11 +50,11 @@ export function PlaybackStateDemo() {
         }
       `}</style>
 
-      <div className="mp-player flex flex-col gap-4 rounded-xl p-4">
-        <div className="flex h-16 items-end justify-center gap-2">
+      <div className={cn('mp-player', styles.player)}>
+        <div className={styles.bars}>
           {bars.map((bar) => (
             <span
-              className="mp-bar bg-primary-fg block h-full w-3 rounded-full"
+              className={cn('mp-bar', styles.bar)}
               key={bar}
               style={{ animationDelay: `${String(bar * 90)}ms` }}
             />
@@ -60,26 +63,22 @@ export function PlaybackStateDemo() {
         {/* 台詞のない合成音なのでキャプション用のtrackは付けない */}
         {/* oxlint-disable-next-line jsx-a11y/media-has-caption */}
         <audio
-          className="w-full"
+          className={styles.audio}
           controls
           loop
           ref={audioRef}
           src="/playgrounds/media-pseudos-tone.wav"
         />
-        <ul className="m-0 flex list-none flex-wrap gap-2 p-0">
-          <li className="mp-chip mp-chip-playing bg-bg-subtle text-fg-base rounded-full px-3 py-1 font-mono text-xs">
+        <ul className={styles.chips}>
+          <li className={cn('mp-chip mp-chip-playing', styles.chip)}>
             :playing
           </li>
-          <li className="mp-chip mp-chip-paused bg-bg-subtle text-fg-base rounded-full px-3 py-1 font-mono text-xs">
-            :paused
-          </li>
-          <li className="mp-chip mp-chip-muted bg-bg-subtle text-fg-base rounded-full px-3 py-1 font-mono text-xs">
-            :muted
-          </li>
+          <li className={cn('mp-chip mp-chip-paused', styles.chip)}>:paused</li>
+          <li className={cn('mp-chip mp-chip-muted', styles.chip)}>:muted</li>
         </ul>
       </div>
 
-      <div className="flex flex-wrap gap-3">
+      <div className={styles.actions}>
         <Button
           onClick={() => {
             void audioRef.current?.play();
@@ -109,7 +108,7 @@ export function PlaybackStateDemo() {
         </Button>
       </div>
 
-      <p className="text-fg-mute text-sm">
+      <p className={styles.note}>
         バーのアニメーションは<Code>animation-play-state</Code>を
         <Code>.player:has(audio:playing)</Code>
         で切り替えているだけです。ネイティブのコントロールから操作しても、ボタンから

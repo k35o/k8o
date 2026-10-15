@@ -1,0 +1,37 @@
+.root {
+  position: sticky;
+  top: 0;
+  z-index: var(--z-index-overlay);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: calc(var(--spacing) * 4);
+  transition: translate var(--duration-slow) var(--easing-in-out);
+
+  &[data-scrolling-down='true'] {
+    translate: 0 -100%;
+  }
+
+  /* キーボードでヘッダー内コントロールへ移動したら常に表示する (WCAG 2.4.11) */
+  &:focus-within {
+    translate: 0;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    transition-property: none;
+  }
+}
+
+.bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  max-width: 64rem;
+  padding-inline: calc(var(--spacing) * 8);
+  padding-block: calc(var(--spacing) * 2);
+  border-radius: var(--radius-full);
+  background-color: color-mix(in oklab, var(--color-bg-base) 60%, transparent);
+  box-shadow: var(--shadow-md);
+  backdrop-filter: blur(12px);
+}

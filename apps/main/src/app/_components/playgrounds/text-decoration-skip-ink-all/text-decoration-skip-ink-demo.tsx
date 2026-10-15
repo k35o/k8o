@@ -3,6 +3,8 @@
 import { FormControl, Select } from '@k8ordo/ui';
 import { useState } from 'react';
 
+import styles from './text-decoration-skip-ink-demo.module.css';
+
 type SkipInk = 'auto' | 'none' | 'all';
 
 const SAMPLE_TEXT =
@@ -12,7 +14,7 @@ export function TextDecorationSkipInkDemo() {
   const [value, setValue] = useState<SkipInk>('all');
 
   return (
-    <div className="flex flex-col gap-6">
+    <div className={styles.root}>
       <FormControl
         label="text-decoration-skip-ink"
         renderInput={({ 'aria-labelledby': _ariaLabelledby, ...props }) => (
@@ -31,7 +33,7 @@ export function TextDecorationSkipInkDemo() {
         )}
       />
 
-      <div className="text-lg">
+      <div className={styles.sample}>
         <p
           style={{
             textDecoration: 'underline',

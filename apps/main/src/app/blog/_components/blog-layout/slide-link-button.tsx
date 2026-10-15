@@ -5,13 +5,8 @@ import type { FC } from 'react';
 
 export const SlideLinkButton: FC<{ href: string }> = ({ href }) => (
   <Button
-    renderItem={({ className, children }) => (
-      <a
-        className={className}
-        href={href}
-        rel="noopener noreferrer"
-        target="_blank"
-      >
+    renderItem={({ children, disabled: _disabled, type: _type, ...props }) => (
+      <a href={href} rel="noopener noreferrer" target="_blank" {...props}>
         {children}
       </a>
     )}

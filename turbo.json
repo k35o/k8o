@@ -49,6 +49,9 @@
     "storybook": {
       "cache": false,
       "persistent": true
+    },
+    "check:css": {
+      "dependsOn": ["transit"]
     }
   }
 }

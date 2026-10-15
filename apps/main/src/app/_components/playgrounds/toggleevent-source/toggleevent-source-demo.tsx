@@ -4,6 +4,8 @@ import { Button, Code } from '@k8ordo/ui';
 import type { ToggleEvent as ReactToggleEvent } from 'react';
 import { useRef, useState } from 'react';
 
+import styles from './toggleevent-source-demo.module.css';
+
 type ToggleEventWithSource = ToggleEvent & { source?: Element | null };
 
 type ShowPopoverOptions = { source?: Element };
@@ -97,23 +99,20 @@ export function ToggleEventSourceDemo() {
   };
 
   return (
-    <div className="flex flex-col gap-4">
-      <p className="text-fg-mute text-sm">
+    <div className={styles.root}>
+      <p className={styles.description}>
         どのメンバーの「詳細」を押しても同じポップオーバーが開きます。
         <Code>toggle</Code>イベントの<Code>event.source</Code>
         から発火元のボタンを取って、その<Code>data-member-id</Code>
         で表示内容を切り替えます。
       </p>
 
-      <ul className="flex flex-col gap-2">
+      <ul className={styles.members}>
         {MEMBERS.map((member) => (
-          <li
-            className="flex items-center justify-between py-2"
-            key={member.id}
-          >
+          <li className={styles.member} key={member.id}>
             <div>
-              <p className="text-fg-base font-bold">{member.name}</p>
-              <p className="text-fg-mute text-xs">{member.role}</p>
+              <p className={styles.name}>{member.name}</p>
+              <p className={styles.role}>{member.role}</p>
             </div>
             <Button
               aria-label={`${member.name}の詳細`}
@@ -129,7 +128,7 @@ export function ToggleEventSourceDemo() {
         ))}
       </ul>
 
-      <div className="text-fg-mute font-mono text-xs">
+      <div className={styles.log}>
         <p>最新の toggle イベントから取った情報（open / close 両方）</p>
         <p>event.oldState: {JSON.stringify(toggleLog.oldState)}</p>
         <p>event.newState: {JSON.stringify(toggleLog.newState)}</p>
@@ -140,16 +139,16 @@ export function ToggleEventSourceDemo() {
       </div>
 
       <div
-        className="bg-bg-base m-auto w-72 rounded-md p-4 shadow-md"
+        className={styles.popover}
         id={POPOVER_ID}
         onToggle={handleToggle}
         popover="auto"
         ref={popoverRef}
       >
-        <p className="text-fg-base font-bold">{active.name}</p>
-        <p className="text-fg-mute mt-1 text-xs">{active.role}</p>
-        <p className="text-fg-base mt-2 text-sm">{active.bio}</p>
-        <div className="mt-3 flex justify-end">
+        <p className={styles.name}>{active.name}</p>
+        <p className={styles.popoverRole}>{active.role}</p>
+        <p className={styles.bio}>{active.bio}</p>
+        <div className={styles.popoverActions}>
           <Button
             data-member-id="close"
             popoverTarget={POPOVER_ID}

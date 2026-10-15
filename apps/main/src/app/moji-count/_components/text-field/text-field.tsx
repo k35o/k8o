@@ -6,6 +6,8 @@ import { useDeferredValue, useEffect, useState } from 'react';
 import { countGraphemeLength } from '../../_utils/count-text';
 import { TextLength } from '../text-length';
 
+import styles from './text-field.module.css';
+
 export const TextField = () => {
   const [text, setText] = useState('');
   const deferredText = useDeferredValue(text);
@@ -26,9 +28,9 @@ export const TextField = () => {
   }, [text]);
 
   return (
-    <div className="flex grow flex-col gap-2">
-      <output className="sr-only">{announcement}</output>
-      <div className="h-full *:h-full">
+    <div className={styles.root}>
+      <output className={styles.srOnly}>{announcement}</output>
+      <div className={styles.field}>
         <FormControl
           label="カウントしたい文字列"
           renderInput={({ 'aria-labelledby': _ariaLabelledby, ...props }) => (
@@ -45,9 +47,9 @@ export const TextField = () => {
           )}
         />
       </div>
-      <div className="flex gap-2">
-        <p className="text-lg">文字数：</p>
-        <p className="text-xl font-bold">
+      <div className={styles.result}>
+        <p className={styles.resultLabel}>文字数：</p>
+        <p className={styles.resultValue}>
           <TextLength text={deferredText} />
         </p>
       </div>

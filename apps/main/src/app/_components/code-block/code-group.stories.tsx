@@ -4,6 +4,7 @@ import preview from '../../../../.storybook/preview';
 import { CodeBlock } from './code-block';
 import { CodeGroup } from './code-group';
 
+import styles from './code-group.stories.module.css';
 // アプリではルートの layout が読み込むため、Storybook では Story 側で読み込む
 import '@repo/code-highlight/styles.css';
 
@@ -52,7 +53,7 @@ const meta = preview.meta({
   },
   decorators: [
     (Story) => (
-      <div className="bg-bg-base p-4">
+      <div className={styles.canvas}>
         <Story />
       </div>
     ),

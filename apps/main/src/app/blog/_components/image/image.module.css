@@ -1,0 +1,38 @@
+.figure {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: calc(var(--spacing) * 2);
+  margin-inline: auto;
+  margin-block: calc(var(--spacing) * 6);
+
+  @container style(--writing: vertical) {
+    max-width: min(32rem, 100svw - 2rem);
+  }
+}
+
+.image {
+  border-radius: var(--radius-lg);
+  /* Tailwind の ring-1 と同じ 1px の縁取り。1px のリングにはデザインシステムの --shadow-ring-* が無い */
+  outline: 1px solid var(--color-border-subtle);
+  background-color: var(--color-bg-subtle);
+  box-shadow: var(--shadow-xs);
+
+  @container style(--writing: vertical) {
+    width: 100%;
+    height: auto;
+    writing-mode: horizontal-tb;
+  }
+}
+
+.caption {
+  color: var(--color-fg-mute);
+  font-size: var(--font-size-xs);
+  line-height: var(--line-height-relaxed);
+  text-align: center;
+}
+
+.float {
+  float: right;
+  margin-inline-start: calc(var(--spacing) * 4);
+}

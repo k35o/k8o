@@ -1,0 +1,12 @@
+.root {
+  width: 100%;
+  max-width: 64rem;
+  margin-inline: auto;
+}
+
+.content {
+  display: flex;
+  flex-direction: column;
+  gap: calc(var(--spacing) * 4);
+  height: 100%;
+}

@@ -1,11 +1,12 @@
 import { Badge } from '@k8ordo/ui';
-import { cn } from '@repo/helpers/cn';
 import Link from 'next/link';
 import type { FC } from 'react';
 
 import type { ThreadListItem } from '@/features/agent/application/threads';
 
 import { UpdatedAt } from '../../../_components/updated-at';
+
+import styles from './thread-list.module.css';
 
 // 開いた時点で今のスレッドが一覧の下のほうにあっても見えるよう、見える位置へ寄せる
 const revealCurrent = (element: HTMLAnchorElement | null): void => {
@@ -25,34 +26,29 @@ export const ThreadList: FC<ThreadListProps> = ({
 }) => {
   if (threads.length === 0) {
     return (
-      <p className="text-fg-mute p-4 text-sm leading-relaxed">
+      <p className={styles.empty}>
         まだ会話はありません。送ると履歴に残ります。
       </p>
     );
   }
 
   return (
-    <ul className="flex flex-col gap-1 p-2">
+    <ul className={styles.root}>
       {threads.map((thread) => {
         const isCurrent = thread.id === currentThreadId;
         return (
           <li key={thread.id}>
             <Link
               aria-current={isCurrent ? 'page' : undefined}
-              className={cn(
-                'flex flex-col gap-1 rounded-xl px-4 py-3 transition-colors duration-150',
-                isCurrent ? 'bg-primary-bg-subtle' : 'hover:bg-bg-mute',
-              )}
+              className={styles.link}
               href={`/chat/${thread.id}`}
               onNavigate={() => {
                 onNavigate?.(thread);
               }}
               ref={isCurrent ? revealCurrent : undefined}
             >
-              <span className="text-fg-base truncate text-sm font-bold">
-                {thread.title}
-              </span>
-              <span className="text-fg-mute flex items-center gap-2 text-xs">
+              <span className={styles.title}>{thread.title}</span>
+              <span className={styles.meta}>
                 <UpdatedAt dateTime={thread.updatedAt} />
                 {thread.running ? (
                   <Badge label="生成中" size="sm" tone="info" />

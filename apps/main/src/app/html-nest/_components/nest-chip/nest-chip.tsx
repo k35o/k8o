@@ -1,7 +1,8 @@
 import type { HtmlElementInfo } from '@k8o/html-nest';
 import { Tooltip } from '@k8ordo/ui';
-import { cn } from '@repo/helpers/cn';
 import type { FC } from 'react';
+
+import styles from './nest-chip.module.css';
 
 type NestChipProps = {
   element: HtmlElementInfo;
@@ -11,14 +12,6 @@ type NestChipProps = {
   reason: string | undefined;
   onSelect: (tag: string) => void;
 };
-
-const chipClass = (conditional: boolean): string =>
-  cn(
-    'flex items-center gap-1 rounded-lg border px-2.5 py-1.5 transition-colors duration-150 ease-out',
-    'focus-visible:ring-primary-border outline-none focus-visible:ring-2',
-    'bg-bg-base hover:bg-bg-mute',
-    conditional ? 'border-border-warning border-dashed' : 'border-border-mute',
-  );
 
 export const NestChip: FC<NestChipProps> = ({
   element,
@@ -32,10 +25,8 @@ export const NestChip: FC<NestChipProps> = ({
   };
   const inner = (
     <>
-      <span className="text-fg-base font-mono text-sm">{`<${element.tag}>`}</span>
-      {conditional && (
-        <span className="text-fg-warning text-xs font-bold">*</span>
-      )}
+      <span className={styles.tag}>{`<${element.tag}>`}</span>
+      {conditional && <span className={styles.mark}>*</span>}
     </>
   );
 
@@ -48,7 +39,8 @@ export const NestChip: FC<NestChipProps> = ({
             <button
               {...props}
               aria-label={label}
-              className={chipClass(conditional)}
+              className={styles.root}
+              data-conditional={conditional}
               onClick={onClick}
               type="button"
             >
@@ -57,7 +49,7 @@ export const NestChip: FC<NestChipProps> = ({
           )}
         />
         <Tooltip.Content>
-          <p className="max-w-xs text-sm leading-relaxed">条件: {reason}</p>
+          <p className={styles.reason}>条件: {reason}</p>
         </Tooltip.Content>
       </Tooltip.Root>
     );
@@ -66,7 +58,8 @@ export const NestChip: FC<NestChipProps> = ({
   return (
     <button
       aria-label={label}
-      className={chipClass(conditional)}
+      className={styles.root}
+      data-conditional={conditional}
       onClick={onClick}
       type="button"
     >

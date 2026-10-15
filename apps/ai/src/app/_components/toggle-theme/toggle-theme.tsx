@@ -4,6 +4,8 @@ import { DarkModeIcon, IconButton, LightModeIcon } from '@k8ordo/ui';
 import { useTheme } from 'next-themes';
 import type { FC } from 'react';
 
+import styles from './toggle-theme.module.css';
+
 export const ToggleTheme: FC = () => {
   const { theme, setTheme, systemTheme } = useTheme();
 
@@ -22,10 +24,10 @@ export const ToggleTheme: FC = () => {
 
   return (
     <IconButton label="テーマを切り替える" onClick={handleToggleTheme}>
-      <span className="size-8 scale-100 rotate-0 transition-transform duration-300 dark:scale-0 dark:rotate-90">
+      <span className={styles.moon}>
         <DarkModeIcon size="lg" />
       </span>
-      <span className="absolute size-8 scale-0 rotate-90 transition-transform duration-300 dark:scale-100 dark:rotate-0">
+      <span className={styles.sun}>
         <LightModeIcon size="lg" />
       </span>
     </IconButton>

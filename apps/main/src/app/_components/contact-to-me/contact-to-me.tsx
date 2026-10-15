@@ -16,6 +16,8 @@ import type { FC } from 'react';
 
 import { publicApi } from '@/shared/api/public-api';
 
+import styles from './contact-to-me.module.css';
+
 type ContactState = {
   error: string | null;
   defaultValue: string;
@@ -95,7 +97,7 @@ const ContactToMeModal: FC<{
       <Dialog.Root>
         <Dialog.Header onClose={onClose} title="お問い合わせ" />
         <Dialog.Content>
-          <form action={formAction} className="flex flex-col gap-4">
+          <form action={formAction} className={styles.form}>
             <FormControl
               errorText={state.error ?? undefined}
               helpText="255文字以内で入力してください"
@@ -119,13 +121,13 @@ const ContactToMeModal: FC<{
                 />
               )}
             />
-            <p className="self-end text-sm">
+            <p className={styles.issueNote}>
               <Anchor href="https://github.com/k35o/k8o/issues/new">
                 GitHub&nbsp;Issue
               </Anchor>
               からのお問い合わせもお待ちしております。
             </p>
-            <div className="w-full">
+            <div className={styles.submit}>
               <Button disabled={pending} fullWidth type="submit">
                 送信
               </Button>

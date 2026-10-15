@@ -1,0 +1,66 @@
+.root {
+  display: flex;
+  flex-direction: column;
+  gap: calc(var(--spacing) * 6);
+}
+
+.field {
+  display: flex;
+  align-items: center;
+  gap: calc(var(--spacing) * 3);
+}
+
+.unit {
+  flex-shrink: 0;
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-sm);
+  color: var(--color-fg-mute);
+}
+
+.samples {
+  display: flex;
+  flex-direction: column;
+  gap: calc(var(--spacing) * 6);
+}
+
+.row {
+  display: flex;
+  align-items: center;
+  gap: calc(var(--spacing) * 4);
+}
+
+.caption {
+  font-family: var(--font-family-mono);
+  font-size: var(--font-size-xs);
+  line-height: var(--line-height-xs);
+  color: var(--color-fg-mute);
+}
+
+.unitName {
+  width: calc(var(--spacing) * 16);
+}
+
+.ruler {
+  display: flex;
+  align-items: center;
+  gap: calc(var(--spacing) * 2);
+}
+
+.bar {
+  height: calc(var(--spacing) * 2);
+  border-radius: var(--radius-sm);
+}
+
+.ch {
+  background-color: var(--color-primary-fg);
+}
+
+.rch {
+  background-color: var(--color-secondary-fg);
+}
+
+.note {
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-sm);
+  color: var(--color-fg-mute);
+}

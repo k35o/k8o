@@ -1,0 +1,53 @@
+/* 閉じた dialog も last-child に数えられるため、旧 space-y はボタンの下にも
+   余白を付けていた。その高さを保つために gap ではなくボタン側の margin で取る */
+.trigger {
+  margin-block-end: calc(var(--spacing) * 4);
+  border-radius: var(--radius-md);
+  background-color: var(--color-primary-bg);
+  padding-inline: calc(var(--spacing) * 4);
+  padding-block: calc(var(--spacing) * 2);
+  color: var(--color-primary-fg);
+}
+
+.dialog {
+  margin: auto;
+  border-radius: var(--radius-lg);
+  background-color: var(--color-bg-base);
+  padding: calc(var(--spacing) * 6);
+  box-shadow: var(--shadow-md);
+
+  &::backdrop {
+    background-color: var(--color-back-drop);
+  }
+}
+
+.content {
+  display: flex;
+  flex-direction: column;
+  gap: calc(var(--spacing) * 4);
+}
+
+.message {
+  color: var(--color-fg-base);
+}
+
+.note {
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-sm);
+  color: var(--color-fg-mute);
+}
+
+.closeButton {
+  align-self: flex-start;
+  border-radius: var(--radius-md);
+  background-color: var(--color-bg-mute);
+  padding-inline: calc(var(--spacing) * 4);
+  padding-block: calc(var(--spacing) * 2);
+  color: var(--color-fg-base);
+
+  @media (hover: hover) {
+    &:hover {
+      background-color: var(--color-bg-subtle);
+    }
+  }
+}

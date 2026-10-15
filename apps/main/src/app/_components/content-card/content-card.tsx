@@ -11,6 +11,8 @@ import type { Route } from 'next';
 import Link from 'next/link';
 import type { FC } from 'react';
 
+import styles from './content-card.module.css';
+
 type ContentCardProps = {
   hrefPrefix: string;
   headingType: 'h3' | 'h4';
@@ -36,40 +38,37 @@ export const ContentCard: FC<ContentCardProps> = ({
   readingTime,
 }) => (
   <Card interactive>
-    <Link
-      className="group block h-full"
-      href={`${hrefPrefix}/${slug}` as Route}
-    >
-      <div className="flex h-full flex-col justify-between gap-4 p-4">
-        <div className="group-hover:text-primary-fg flex flex-col gap-1">
+    <Link className={styles.link} href={`${hrefPrefix}/${slug}` as Route}>
+      <div className={styles.root}>
+        <div className={styles.heading}>
           <Heading lineClamp={3} level={headingType}>
             {title}
           </Heading>
           {description !== null && (
-            <p className="text-fg-mute line-clamp-3 text-sm">{description}</p>
+            <p className={styles.description}>{description}</p>
           )}
         </div>
-        <div className="flex flex-wrap items-center justify-between gap-4">
+        <div className={styles.meta}>
           {tags.length > 0 && (
-            <div className="flex flex-wrap items-center gap-2">
+            <div className={styles.tags}>
               <TagIcon size="sm" />
               {tags.map((tag) => (
                 <Badge key={tag} size="sm" label={tag} />
               ))}
             </div>
           )}
-          <div className="text-fg-mute ml-auto flex flex-col items-end gap-1 text-xs">
+          <div className={styles.dates}>
             {readingTime !== undefined && (
               <span>約{readingTime}分で読めます</span>
             )}
-            <div className="flex items-center gap-4">
-              <div className="flex items-center gap-1">
+            <div className={styles.dateRow}>
+              <div className={styles.date}>
                 <PublishDateIcon size="sm" />
                 <span>
                   公開: {formatDate(new Date(createdAt), 'yyyy年M月d日')}
                 </span>
               </div>
-              <div className="flex items-center gap-1">
+              <div className={styles.date}>
                 <UpdateDateIcon size="sm" />
                 <span>
                   更新: {formatDate(new Date(updatedAt), 'yyyy年M月d日')}

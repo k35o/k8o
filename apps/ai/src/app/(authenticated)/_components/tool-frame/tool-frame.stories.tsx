@@ -10,6 +10,8 @@ import { SidebarSection } from './sidebar-section';
 import { ToolFrame } from './tool-frame';
 import { ToolHeader } from './tool-header';
 
+import styles from './tool-frame.stories.module.css';
+
 const threads: ThreadListItem[] = [
   {
     id: '6f1c2a4e-0b7d-4c55-9a3e-2f8d1b6c9e01',
@@ -29,7 +31,7 @@ const meta = preview.meta({
   component: ToolFrame,
   decorators: [
     (Story) => (
-      <div className="bg-bg-surface flex h-160 flex-col">
+      <div className={styles.frame}>
         <Story />
       </div>
     ),
@@ -48,9 +50,7 @@ const meta = preview.meta({
         <ToolHeader>
           <ChatHeader model="claude-sonnet-5-5" title={null} />
         </ToolHeader>
-        <div className="text-fg-mute flex flex-1 items-center justify-center text-sm">
-          会話
-        </div>
+        <div className={styles.placeholder}>会話</div>
       </>
     ),
   } satisfies Partial<ComponentProps<typeof ToolFrame>>,

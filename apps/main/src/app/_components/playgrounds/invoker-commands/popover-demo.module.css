@@ -1,0 +1,49 @@
+/* 閉じた popover も last-child に数えられるため、旧 space-y はボタン列の下にも
+   余白を付けていた。その高さを保つために gap ではなくボタン列側の margin で取る */
+.controls {
+  display: flex;
+  gap: calc(var(--spacing) * 4);
+  margin-block-end: calc(var(--spacing) * 4);
+}
+
+.control {
+  display: flex;
+  flex-direction: column;
+  gap: calc(var(--spacing) * 2);
+}
+
+.label {
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-sm);
+  color: var(--color-fg-mute);
+}
+
+.button {
+  align-self: flex-start;
+  border-radius: var(--radius-md);
+  background-color: var(--color-primary-bg);
+  padding-inline: calc(var(--spacing) * 4);
+  padding-block: calc(var(--spacing) * 2);
+  color: var(--color-primary-fg);
+}
+
+.popover {
+  inset: auto;
+  top: 50%;
+  left: 50%;
+  translate: -50% -50%;
+  border-radius: var(--radius-lg);
+  background-color: var(--color-bg-base);
+  padding: calc(var(--spacing) * 4);
+  box-shadow: var(--shadow-md);
+}
+
+.title {
+  color: var(--color-fg-base);
+}
+
+.description {
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-sm);
+  color: var(--color-fg-mute);
+}

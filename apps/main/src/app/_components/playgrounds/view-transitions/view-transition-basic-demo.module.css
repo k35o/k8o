@@ -1,0 +1,58 @@
+.root {
+  display: flex;
+  flex-direction: column;
+  gap: calc(var(--spacing) * 6);
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: calc(var(--spacing) * 2);
+}
+
+.items {
+  display: grid;
+  grid-template-columns: repeat(1, minmax(0, 1fr));
+  gap: calc(var(--spacing) * 4);
+
+  @media (width >= 40rem) {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+.item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: calc(var(--spacing) * 4);
+  border-radius: var(--radius-md);
+  color: var(--color-fg-base);
+}
+
+.itemText {
+  font-weight: var(--font-weight-bold);
+}
+
+.notes {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing);
+  list-style-type: disc;
+  list-style-position: inside;
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-sm);
+}
+
+/* 親の space-y を gap にしたので、my-4 のうち前の要素の margin に相殺されていた上側は持たない */
+.code {
+  margin-block-end: calc(var(--spacing) * 4);
+  overflow-x: auto;
+  font-size: var(--font-size-xs);
+  line-height: var(--line-height-xs);
+  color: var(--color-fg-mute);
+
+  @media (width >= 40rem) {
+    font-size: var(--font-size-md);
+    line-height: var(--line-height-md);
+  }
+}

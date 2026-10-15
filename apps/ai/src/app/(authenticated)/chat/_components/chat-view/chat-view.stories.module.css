@@ -1,0 +1,13 @@
+.frame {
+  display: flex;
+  flex-direction: column;
+  height: calc(var(--spacing) * 160);
+  background-color: var(--color-bg-surface);
+}
+
+.narrowFrame {
+  display: flex;
+  flex-direction: column;
+  width: calc(var(--spacing) * 90);
+  height: calc(var(--spacing) * 160);
+}

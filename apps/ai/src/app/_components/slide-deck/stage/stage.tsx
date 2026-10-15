@@ -11,22 +11,10 @@ export const Stage: FC<{ children: ReactNode; flush?: boolean }> = ({
   children,
   flush = false,
 }) => (
-  <div className={cn(styles['frame'], 'relative size-full')}>
-    <div
-      className={cn(
-        styles['box'],
-        'bg-bg-base text-fg-base relative overflow-hidden',
-        flush ? null : 'rounded-lg shadow-md',
-      )}
-    >
-      <Logo
-        className={cn(styles['watermark'], 'pointer-events-none absolute')}
-      />
-      <div
-        className={cn(styles['content'], 'relative flex size-full flex-col')}
-      >
-        {children}
-      </div>
+  <div className={styles.root}>
+    <div className={cn(styles.box, !flush && styles.framed)}>
+      <Logo className={styles.watermark} />
+      <div className={styles.content}>{children}</div>
     </div>
   </div>
 );

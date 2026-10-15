@@ -1,0 +1,29 @@
+.root {
+  display: flex;
+  flex-direction: column;
+  gap: calc(var(--spacing) * 6);
+}
+
+.note {
+  color: var(--color-fg-mute);
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-sm);
+}
+
+.examples {
+  display: flex;
+  flex-direction: column;
+  gap: calc(var(--spacing) * 2);
+}
+
+.baseline {
+  stroke: var(--color-border-base);
+}
+
+.text {
+  fill: var(--color-fg-base);
+}
+
+.shifted {
+  fill: var(--color-fg-error);
+}

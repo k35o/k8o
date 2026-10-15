@@ -4,6 +4,8 @@ import { Button } from '@k8ordo/ui';
 import { range } from '@repo/helpers/array/range';
 import { useEffect, useRef, useState } from 'react';
 
+import styles from './scrollend-trigger-demo.module.css';
+
 const FLASH_DURATION_MS = 300;
 
 const useScrollendCounter = () => {
@@ -48,31 +50,27 @@ export function ScrollendTriggerDemo() {
   const scrollToRef = useRef<HTMLElement>(null);
 
   return (
-    <div className="space-y-4 overflow-hidden">
-      <div className="flex flex-wrap items-center gap-3">
-        <div className="bg-bg-mute relative flex items-center gap-2 rounded-md px-3 py-1.5">
-          <span className="text-fg-mute text-sm">scrollend:</span>
-          <span className="text-primary-fg font-bold">{count}</span>
-          <span className="text-fg-mute text-sm">回</span>
-          {showFlash ? (
-            <div className="bg-primary-bg absolute inset-0 rounded-md opacity-30" />
-          ) : null}
+    <div className={styles.root}>
+      <div className={styles.status}>
+        <div className={styles.counter}>
+          <span className={styles.label}>scrollend:</span>
+          <span className={styles.count}>{count}</span>
+          <span className={styles.label}>回</span>
+          {showFlash ? <div className={styles.flash} /> : null}
         </div>
         {lastTrigger !== null && (
-          <div className="bg-bg-subtle text-fg-base rounded-md px-3 py-1.5 text-sm">
-            {lastTrigger}
-          </div>
+          <div className={styles.lastTrigger}>{lastTrigger}</div>
         )}
         <Button color="base" onClick={reset} size="sm" variant="outline">
           リセット
         </Button>
       </div>
 
-      <div className="grid gap-4 sm:grid-cols-2">
-        <div className="min-w-0 space-y-2">
-          <div className="flex items-center justify-between">
-            <h4 className="text-sm font-bold">scrollTo() API</h4>
-            <div className="flex gap-1">
+      <div className={styles.grid}>
+        <div className={styles.column}>
+          <div className={styles.columnHeader}>
+            <h4 className={styles.heading}>scrollTo() API</h4>
+            <div className={styles.actions}>
               <Button
                 color="primary"
                 onClick={() => {
@@ -98,19 +96,16 @@ export function ScrollendTriggerDemo() {
           </div>
           <section
             aria-label="scrollTo()でスクロールする領域"
-            className="bg-bg-mute h-40 overflow-y-scroll rounded-xl p-3"
+            className={styles.scroller}
             onScrollEnd={() => {
               trigger('scrollTo()');
             }}
             ref={scrollToRef}
             tabIndex={0}
           >
-            <div className="space-y-2">
+            <div className={styles.list}>
               {range(0, 10).map((n) => (
-                <div
-                  className="bg-bg-base text-fg-base rounded-md px-3 py-2 text-sm shadow-sm"
-                  key={`scroll-to-item-${n}`}
-                >
+                <div className={styles.item} key={`scroll-to-item-${n}`}>
                   アイテム {n + 1}
                 </div>
               ))}
@@ -118,31 +113,24 @@ export function ScrollendTriggerDemo() {
           </section>
         </div>
 
-        <div className="min-w-0 space-y-2">
-          <h4 className="text-sm font-bold">scroll-snap</h4>
+        <div className={styles.column}>
+          <h4 className={styles.heading}>scroll-snap</h4>
           <section
             aria-label="scroll-snapで横スクロールする領域"
-            className="bg-bg-mute flex h-40 snap-x snap-mandatory gap-3 overflow-x-scroll rounded-xl p-3"
+            className={styles.snapScroller}
             onScrollEnd={() => {
               trigger('scroll-snap');
             }}
             tabIndex={0}
           >
             {range(0, 8).map((n) => (
-              <div
-                className="bg-bg-base flex w-28 shrink-0 snap-center flex-col items-center justify-center gap-2 rounded-lg p-4 shadow-sm"
-                key={`snap-item-${n}`}
-              >
-                <span className="text-primary-fg text-2xl font-bold">
-                  {n + 1}
-                </span>
-                <span className="text-fg-mute text-xs">スナップ</span>
+              <div className={styles.snapItem} key={`snap-item-${n}`}>
+                <span className={styles.snapNumber}>{n + 1}</span>
+                <span className={styles.snapLabel}>スナップ</span>
               </div>
             ))}
           </section>
-          <p className="text-fg-mute text-xs">
-            横にスクロールするとスナップします
-          </p>
+          <p className={styles.note}>横にスクロールするとスナップします</p>
         </div>
       </div>
     </div>

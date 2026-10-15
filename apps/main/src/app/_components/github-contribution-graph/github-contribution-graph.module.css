@@ -1,0 +1,32 @@
+.skeleton {
+  display: flex;
+  flex-direction: column;
+  gap: calc(var(--spacing) * 4);
+  padding: calc(var(--spacing) * 6);
+}
+
+.bone {
+  border-radius: var(--radius-sm);
+  background-color: var(--color-bg-mute);
+  animation: pulse var(--duration-pulse) var(--easing-pulse) infinite;
+}
+
+.boneTitle {
+  width: calc(var(--spacing) * 32);
+  height: calc(var(--spacing) * 5);
+}
+
+.boneGraph {
+  height: calc(var(--spacing) * 48);
+}
+
+.boneTotal {
+  width: calc(var(--spacing) * 24);
+  height: calc(var(--spacing) * 4);
+}
+
+@keyframes pulse {
+  50% {
+    opacity: 0.5;
+  }
+}

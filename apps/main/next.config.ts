@@ -1,3 +1,4 @@
+import { withBetterCssModules } from '@better-css-modules/turbopack';
 import withMdx from '@next/mdx';
 import type { NextConfig } from 'next';
 
@@ -124,9 +125,13 @@ const nextConfig: NextConfig = {
   },
 };
 
-export default withMdx({
-  options: {
-    remarkPlugins: ['remark-math', 'remark-frontmatter'],
-    rehypePlugins: ['rehype-katex', '@repo/code-highlight'],
-  },
-})(nextConfig);
+// withBetterCssModules は async の config 関数を返すので、オブジェクトしか受けない
+// withMdx の外側に置く
+export default withBetterCssModules(
+  withMdx({
+    options: {
+      remarkPlugins: ['remark-math', 'remark-frontmatter'],
+      rehypePlugins: ['rehype-katex', '@repo/code-highlight'],
+    },
+  })(nextConfig),
+);

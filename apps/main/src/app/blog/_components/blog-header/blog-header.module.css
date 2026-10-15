@@ -1,0 +1,19 @@
+.root {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.titleLink {
+  @media (hover: hover) {
+    &:hover {
+      text-decoration-line: underline;
+    }
+  }
+}
+
+.actions {
+  display: flex;
+  align-items: center;
+  gap: calc(var(--spacing) * 4);
+}

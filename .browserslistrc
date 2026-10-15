@@ -1,0 +1,9 @@
+# generate:browser-min-versions が browser-min-versions.json と同じ版から生成する。手で編集しない。
+# Next.js (Lightning CSS / SWC) の変換ターゲットを、画面に出している対応ブラウザのフロアに合わせる。
+chrome >= 153
+and_chr >= 153
+edge >= 153
+firefox >= 155
+and_ff >= 155
+safari >= 27
+ios_saf >= 27

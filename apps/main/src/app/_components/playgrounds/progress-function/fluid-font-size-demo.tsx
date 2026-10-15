@@ -1,13 +1,16 @@
 'use client';
 
 import { Code, FormControl, Slider } from '@k8ordo/ui';
+import { cn } from '@repo/helpers/cn';
 import { useState } from 'react';
+
+import styles from './fluid-font-size-demo.module.css';
 
 export function FluidFontSizeDemo() {
   const [width, setWidth] = useState(800);
 
   return (
-    <div className="flex flex-col gap-6">
+    <div className={styles.root}>
       <style>{`
         /* 2vw を画面幅に見立てた値の 2% に置き換えて、clamp() 版の一次式をそのまま再現する */
         .pf-fluid-clamp {
@@ -34,24 +37,24 @@ export function FluidFontSizeDemo() {
       />
 
       <div
-        className="pf-fluid flex flex-col gap-4"
+        className={cn('pf-fluid', styles.samples)}
         style={{ '--width': `${String(width)}px` }}
       >
-        <div className="flex flex-col gap-1">
+        <div className={styles.sample}>
           <Code>clamp(1rem, 0.5rem + 2vw, 2rem)</Code>
-          <p className="pf-fluid-clamp text-fg-base leading-tight font-bold transition-[font-size] duration-150">
+          <p className={cn('pf-fluid-clamp', styles.heading)}>
             見出しのサンプル
           </p>
         </div>
-        <div className="flex flex-col gap-1">
+        <div className={styles.sample}>
           <Code>calc(1rem + progress(100vw, 400px, 1200px) * 1rem)</Code>
-          <p className="pf-fluid-progress text-fg-base leading-tight font-bold transition-[font-size] duration-150">
+          <p className={cn('pf-fluid-progress', styles.heading)}>
             見出しのサンプル
           </p>
         </div>
       </div>
 
-      <p className="text-fg-mute text-sm">
+      <p className={styles.note}>
         実際の画面幅の代わりに、スライダーの値を<Code>--width</Code>
         として両方の式に渡しています。上は逆算した係数で書いた一次式、下は
         <Code>progress()</Code>

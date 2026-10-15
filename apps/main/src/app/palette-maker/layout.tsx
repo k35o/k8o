@@ -2,6 +2,8 @@ import { Heading } from '@k8ordo/ui';
 
 import { buildPageMetadata } from '@/shared/site/build-page-metadata';
 
+import styles from './layout.module.css';
+
 export const metadata = buildPageMetadata({
   title: 'いろばしご',
   description:
@@ -11,8 +13,8 @@ export const metadata = buildPageMetadata({
 
 export default function Layout({ children }: LayoutProps<'/palette-maker'>) {
   return (
-    <div className="mx-auto w-full max-w-5xl">
-      <div className="flex h-full flex-col gap-4">
+    <div className={styles.root}>
+      <div className={styles.content}>
         <Heading level="h2">いろばしご</Heading>
         {children}
       </div>

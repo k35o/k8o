@@ -11,6 +11,8 @@ import { SiteEntrySection } from './_components/site-entry-section';
 import { SocialIcons } from './_components/social-icons';
 import k8o from './_images/k8o.jpg';
 
+import styles from './page.module.css';
+
 export const metadata = {
   alternates: {
     canonical: '/',
@@ -19,26 +21,26 @@ export const metadata = {
 
 export default function Home() {
   return (
-    <div className="mx-auto w-full max-w-5xl">
+    <div className={styles.root}>
       <HomeJsonLd />
-      <div className="flex flex-col gap-12">
-        <header className="grid grid-cols-[auto_1fr] items-center gap-x-4 gap-y-5 pt-2 lg:gap-x-10">
+      <div className={styles.sections}>
+        <header className={styles.header}>
           <Image
             alt="k8oのアイコン"
-            className="size-16 rounded-full lg:row-span-2 lg:size-32"
+            className={styles.avatar}
             height={128}
             src={k8o}
             width={128}
           />
-          <div className="flex flex-col gap-3">
+          <div className={styles.identity}>
             <Heading level="h1">k8o</Heading>
-            <div className="flex flex-wrap items-center gap-2">
+            <div className={styles.contacts}>
               <SocialIcons />
               <EmailTooltip />
             </div>
           </div>
 
-          <p className="text-fg-mute col-span-2 leading-relaxed lg:col-span-1 lg:col-start-2">
+          <p className={styles.intro}>
             Webフロントエンドを軸足に、最近は新しくブラウザで使えるようになった機能の深掘りをブログに残しています。
             デザインとの境界にも興味があり、デザインシステム@k8ordo/uiを育てています。
           </p>
@@ -46,25 +48,25 @@ export default function Home() {
 
         <Separator color="subtle" />
 
-        <div className="flex flex-col gap-6">
+        <div className={styles.activity}>
           <div>
             <Heading level="h2">Activity</Heading>
-            <p className="text-fg-mute text-sm">
+            <p className={styles.activityLead}>
               最近の発信と、GitHubでの活動の記録。
             </p>
           </div>
           <ActivityErrorBoundary
             fallback={
-              <div className="grid gap-8">
+              <div className={styles.activityFallback}>
                 <RecentBlogs />
               </div>
             }
           >
-            <div className="grid items-start gap-8 md:grid-cols-2 lg:grid-cols-3">
-              <div className="lg:sticky lg:top-4">
+            <div className={styles.activityGrid}>
+              <div className={styles.contributions}>
                 <GitHubContributionGraph />
               </div>
-              <div className="md:col-span-2">
+              <div className={styles.recentBlogs}>
                 <RecentBlogs />
               </div>
             </div>

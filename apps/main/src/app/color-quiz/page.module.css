@@ -1,0 +1,9 @@
+.root {
+  padding: calc(var(--spacing) * 5);
+  border-radius: var(--radius-xl);
+  background-color: var(--color-bg-raised);
+
+  @media (width >= 40rem) {
+    padding: calc(var(--spacing) * 6);
+  }
+}

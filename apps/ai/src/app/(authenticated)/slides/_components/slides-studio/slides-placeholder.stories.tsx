@@ -4,6 +4,8 @@ import preview from '../../../../../../.storybook/preview';
 import { ToolFrame } from '../../../_components/tool-frame';
 import { SlidesPlaceholder } from './slides-placeholder';
 
+import styles from './slides-placeholder.stories.module.css';
+
 // Storybook の型は navigation に segments を持たないが、実行時は segments からルーターの木を組み、
 // ToolFrame の useSelectedLayoutSegment がそれを読む。型の注釈を付けない定数にして渡す
 const slidesNavigation = { pathname: '/slides', segments: ['slides'] };
@@ -12,7 +14,7 @@ const meta = preview.meta({
   component: SlidesPlaceholder,
   decorators: [
     (Story) => (
-      <div className="bg-bg-surface flex h-160 flex-col">
+      <div className={styles.frame}>
         <ToolFrame sidebar={null}>
           <Story />
         </ToolFrame>

@@ -1,0 +1,10 @@
+.body {
+  background-color: var(--color-bg-surface);
+  color: var(--color-fg-base);
+  /* better-css-modules-disable-next-line tokens/unknown -- next/font が body のクラスで宣言する変数で、グローバル CSS には無い */
+  font-family: var(--font-family-m-plus-2);
+  font-weight: var(--font-weight-medium);
+  letter-spacing: var(--letter-spacing-none);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}

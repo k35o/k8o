@@ -1,9 +1,11 @@
 import { CheckContrast } from './_components/check-contrast';
 import { Description } from './_components/description';
 
+import styles from './page.module.css';
+
 export default function Page() {
   return (
-    <section className="bg-bg-base grid h-full gap-6 rounded-xl p-10">
+    <section className={styles.root}>
       <CheckContrast />
       <Description />
     </section>

@@ -8,11 +8,13 @@ import {
   BlogListSkeleton,
 } from './_components/blog-list-content';
 
+import styles from './page.module.css';
+
 export default async function Page() {
   const blogs = await getBlogContents();
 
   return (
-    <div className="mx-auto flex w-full max-w-5xl flex-col gap-6">
+    <div className={styles.root}>
       <BlogHeader />
       <Suspense fallback={<BlogListSkeleton />}>
         <BlogListContent blogs={blogs} />

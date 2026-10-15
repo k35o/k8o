@@ -1,0 +1,17 @@
+.root {
+  display: flex;
+  flex-direction: column;
+  gap: calc(var(--spacing) * 3);
+}
+
+.code {
+  overflow-x: auto;
+  font-size: var(--font-size-xs);
+  line-height: var(--line-height-xs);
+  color: var(--color-fg-mute);
+
+  @media (width >= 40rem) {
+    font-size: var(--font-size-md);
+    line-height: var(--line-height-md);
+  }
+}

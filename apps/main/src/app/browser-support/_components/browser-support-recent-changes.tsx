@@ -4,6 +4,8 @@ import type { FC } from 'react';
 
 import type { BrowserSupportFeatureChange } from '@/features/browser-support/interface/queries';
 
+import styles from './browser-support-recent-changes.module.css';
+
 const STATUS_LABEL: Record<BrowserSupportFeatureChange['status'], string> = {
   newly: 'Newly',
   widely: 'Widely',
@@ -56,21 +58,21 @@ export const BrowserSupportRecentChanges: FC<{
     return null;
   }
   return (
-    <section className="flex flex-col gap-3">
+    <section className={styles.root}>
       <Heading level="h3">最近の更新</Heading>
-      <div className="flex flex-col gap-4">
+      <div className={styles.groups}>
         {groupBySyncBatch(changes).map((group) => (
           <div
-            className="flex flex-col gap-1.5"
+            className={styles.group}
             key={`${group.upstreamVersion}-${group.changedAt}`}
           >
-            <p className="text-fg-mute text-xs">
+            <p className={styles.groupMeta}>
               {formatDate(new Date(group.changedAt))}・v{group.upstreamVersion}
             </p>
-            <ul className="flex flex-col gap-1.5">
+            <ul className={styles.changes}>
               {group.changes.map((change) => (
                 <li
-                  className="flex flex-wrap items-center gap-x-2 gap-y-0.5"
+                  className={styles.change}
                   key={`${change.featureId}-${change.changedAt}`}
                 >
                   <Badge
@@ -78,8 +80,10 @@ export const BrowserSupportRecentChanges: FC<{
                     label={STATUS_LABEL[change.status]}
                     tone={STATUS_TONE[change.status]}
                   />
-                  <span className="text-sm">{change.featureName}</span>
-                  <span className="text-fg-mute text-xs">
+                  <span className={styles.featureName}>
+                    {change.featureName}
+                  </span>
+                  <span className={styles.previous}>
                     {change.previousStatus === null
                       ? 'Baseline 到達'
                       : `${STATUS_LABEL[change.previousStatus]} から`}

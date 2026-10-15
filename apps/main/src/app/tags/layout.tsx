@@ -3,6 +3,8 @@ import Link from 'next/link';
 
 import { buildPageMetadata } from '@/shared/site/build-page-metadata';
 
+import styles from './layout.module.css';
+
 export const metadata = buildPageMetadata({
   title: 'Tags',
   description:
@@ -12,13 +14,13 @@ export const metadata = buildPageMetadata({
 
 export default function Layout({ children }: LayoutProps<'/tags'>) {
   return (
-    <div className="mx-auto w-full max-w-5xl">
-      <div className="flex flex-col gap-6">
-        <div className="flex flex-col gap-4">
+    <div className={styles.root}>
+      <div className={styles.content}>
+        <div className={styles.header}>
           <Link href="/tags">
             <Heading level="h2">
-              <span className="flex items-center gap-1">
-                <span className="text-primary-fg">
+              <span className={styles.title}>
+                <span className={styles.titleIcon}>
                   <TagIcon />
                 </span>
                 タグ置き場

@@ -6,6 +6,8 @@ import type { ThreadListItem } from '@/features/agent/application/threads';
 import preview from '../../../../../../.storybook/preview';
 import { ThreadList } from './thread-list';
 
+import styles from './thread-list.stories.module.css';
+
 const threads: ThreadListItem[] = [
   {
     id: '6f1c2a4e-0b7d-4c55-9a3e-2f8d1b6c9e01',
@@ -27,7 +29,7 @@ const meta = preview.meta({
   component: ThreadList,
   decorators: [
     (Story) => (
-      <div className="bg-bg-subtle w-60">
+      <div className={styles.frame}>
         <Story />
       </div>
     ),
@@ -83,7 +85,7 @@ const manyThreads: ThreadListItem[] = Array.from(
 export const CurrentBelowTheFold = meta.story({
   decorators: [
     (Story) => (
-      <div className="h-60 overflow-y-auto" data-testid="scroller">
+      <div className={styles.scroller} data-testid="scroller">
         <Story />
       </div>
     ),

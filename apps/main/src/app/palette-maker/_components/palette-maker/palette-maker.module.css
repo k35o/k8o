@@ -1,0 +1,22 @@
+.root {
+  display: flex;
+  flex-direction: column;
+  gap: calc(var(--spacing) * 6);
+}
+
+.panel {
+  display: flex;
+  flex-direction: column;
+  gap: calc(var(--spacing) * 6);
+  padding: calc(var(--spacing) * 5);
+
+  @media (width >= 40rem) {
+    padding: calc(var(--spacing) * 6);
+  }
+}
+
+.contrast {
+  display: flex;
+  flex-direction: column;
+  gap: calc(var(--spacing) * 3);
+}

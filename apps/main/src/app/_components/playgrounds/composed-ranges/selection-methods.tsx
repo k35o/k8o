@@ -3,20 +3,22 @@
 import { Button, Code } from '@k8ordo/ui';
 import { useRef } from 'react';
 
+import styles from './selection-methods.module.css';
+
 export function SelectionMethods() {
   const textRef = useRef<HTMLParagraphElement>(null);
   return (
-    <div className="flex flex-col gap-4">
-      <div className="flex flex-col">
-        <p className="font-bold">サンプルテキスト</p>
+    <div className={styles.root}>
+      <div className={styles.sample}>
+        <p className={styles.label}>サンプルテキスト</p>
         <p ref={textRef}>
           あさ、眼をさますときの気持は、面白い。かくれんぼのとき、押入れの真っ暗い中に、じっと、しゃがんで隠れていて、突然、でこちゃんに、がらっと襖をあけられ、日の光がどっと来て、でこちゃんに、「見つけた！」と大声で言われて、まぶしさ、それから、へんな間の悪さ、それから、胸がどきどきして、着物のまえを合せたりして、ちょっと、てれくさく、押入れから出て来て、急にむかむか腹立たしく、あの感じ、いや、ちがう、あの感じでもない、なんだか、もっとやりきれない。
         </p>
       </div>
-      <div className="flex flex-col gap-2">
+      <div className={styles.method}>
         <div>
-          <p className="font-bold">選択範囲の追加</p>
-          <p className="font-bold">
+          <p className={styles.label}>選択範囲の追加</p>
+          <p className={styles.label}>
             （<Code>selection.addRange(Range)</Code>）
           </p>
         </div>
@@ -38,10 +40,10 @@ export function SelectionMethods() {
           「突然、でこちゃんに」を選択する
         </Button>
       </div>
-      <div className="flex flex-col gap-2">
+      <div className={styles.method}>
         <div>
-          <p className="font-bold">選択範囲の削除</p>
-          <p className="font-bold">
+          <p className={styles.label}>選択範囲の削除</p>
+          <p className={styles.label}>
             （<Code>selection.removeAllRanges()</Code>,{' '}
             <Code>selection.empty()</Code>）
           </p>
@@ -57,10 +59,10 @@ export function SelectionMethods() {
           選択範囲を削除する
         </Button>
       </div>
-      <div className="flex flex-col gap-2">
+      <div className={styles.method}>
         <div>
-          <p className="font-bold">要素の子を全て選択する</p>
-          <p className="font-bold">
+          <p className={styles.label}>要素の子を全て選択する</p>
+          <p className={styles.label}>
             （<Code>selection.selectAllChildren(Node)</Code>）
           </p>
         </div>
@@ -76,10 +78,10 @@ export function SelectionMethods() {
           要素の子を全て選択する
         </Button>
       </div>
-      <div className="flex flex-col gap-2">
+      <div className={styles.method}>
         <div>
-          <p className="font-bold">範囲の変更</p>
-          <p className="font-bold">
+          <p className={styles.label}>範囲の変更</p>
+          <p className={styles.label}>
             （<Code>selection.extend(Node, ?offset)</Code>）
           </p>
         </div>

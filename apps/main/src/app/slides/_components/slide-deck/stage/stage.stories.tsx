@@ -3,12 +3,14 @@ import { expect, within } from 'storybook/test';
 import preview from '../../../../../../.storybook/preview';
 import { Stage } from './stage';
 
+import styles from './stage.stories.module.css';
+
 const meta = preview.meta({
   title: 'app/slides/slide-deck/stage',
   component: Stage,
   decorators: [
     (Story) => (
-      <div className="h-svh w-full">
+      <div className={styles.frame}>
         <Story />
       </div>
     ),

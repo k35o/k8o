@@ -5,6 +5,8 @@ import type { ComponentProps, FC, ReactNode } from 'react';
 import preview from '../../../../../.storybook/preview';
 import { ChatPanel } from './chat-panel';
 
+import styles from './chat-panel.stories.module.css';
+
 const noop = (): void => {
   // 見た目確認用のダミーハンドラ
 };
@@ -44,9 +46,7 @@ const seed: UIMessage[] = [
 ];
 
 const Frame: FC<{ children: ReactNode }> = ({ children }) => (
-  <div className="border-border-mute bg-bg-base flex h-160 w-110 flex-col border">
-    {children}
-  </div>
+  <div className={styles.frame}>{children}</div>
 );
 
 const InteractiveDemo: FC<ComponentProps<typeof ChatPanel>> = (args) => {

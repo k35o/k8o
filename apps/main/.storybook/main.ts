@@ -1,6 +1,7 @@
 import { dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
+import betterCssModules from '@better-css-modules/vite';
 import { defineMain } from '@storybook/nextjs-vite/node';
 
 function getAbsolutePath(value: string) {
@@ -27,5 +28,11 @@ export default defineMain({
   features: {
     experimentalRSC: true,
   },
+  // Storybook は Vite で組むので、Turbopack の loader の代わりに Vite プラグインで
+  // CSS Modules を layer で包む
+  viteFinal: (viteConfig) => ({
+    ...viteConfig,
+    plugins: [...(viteConfig.plugins ?? []), betterCssModules()],
+  }),
   staticDirs: ['./public', '../public'],
 });

@@ -1,0 +1,156 @@
+.root {
+  display: flex;
+  flex-direction: column;
+  gap: calc(var(--spacing) * 4);
+  overflow: hidden;
+}
+
+.status {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: calc(var(--spacing) * 3);
+}
+
+.counter {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: calc(var(--spacing) * 2);
+  padding-inline: calc(var(--spacing) * 3);
+  padding-block: calc(var(--spacing) * 1.5);
+  border-radius: var(--radius-md);
+  background-color: var(--color-bg-mute);
+}
+
+.label {
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-sm);
+  color: var(--color-fg-mute);
+}
+
+.count {
+  font-weight: var(--font-weight-bold);
+  color: var(--color-primary-fg);
+}
+
+.flash {
+  position: absolute;
+  inset: 0;
+  border-radius: var(--radius-md);
+  background-color: var(--color-primary-bg);
+  opacity: 30%;
+}
+
+.lastTrigger {
+  padding-inline: calc(var(--spacing) * 3);
+  padding-block: calc(var(--spacing) * 1.5);
+  border-radius: var(--radius-md);
+  background-color: var(--color-bg-subtle);
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-sm);
+  color: var(--color-fg-base);
+}
+
+.grid {
+  display: grid;
+  gap: calc(var(--spacing) * 4);
+
+  @media (width >= 40rem) {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+.column {
+  display: flex;
+  flex-direction: column;
+  gap: calc(var(--spacing) * 2);
+  min-width: 0;
+}
+
+.columnHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.heading {
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-sm);
+  font-weight: var(--font-weight-bold);
+}
+
+.actions {
+  display: flex;
+  gap: var(--spacing);
+}
+
+.scroller {
+  height: calc(var(--spacing) * 40);
+  overflow-y: scroll;
+  padding: calc(var(--spacing) * 3);
+  border-radius: var(--radius-xl);
+  background-color: var(--color-bg-mute);
+}
+
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: calc(var(--spacing) * 2);
+}
+
+.item {
+  padding-inline: calc(var(--spacing) * 3);
+  padding-block: calc(var(--spacing) * 2);
+  border-radius: var(--radius-md);
+  background-color: var(--color-bg-base);
+  box-shadow: var(--shadow-sm);
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-sm);
+  color: var(--color-fg-base);
+}
+
+.snapScroller {
+  display: flex;
+  gap: calc(var(--spacing) * 3);
+  height: calc(var(--spacing) * 40);
+  overflow-x: scroll;
+  scroll-snap-type: x mandatory;
+  padding: calc(var(--spacing) * 3);
+  border-radius: var(--radius-xl);
+  background-color: var(--color-bg-mute);
+}
+
+.snapItem {
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  gap: calc(var(--spacing) * 2);
+  width: calc(var(--spacing) * 28);
+  scroll-snap-align: center;
+  padding: calc(var(--spacing) * 4);
+  border-radius: var(--radius-lg);
+  background-color: var(--color-bg-base);
+  box-shadow: var(--shadow-sm);
+}
+
+.snapNumber {
+  font-size: var(--font-size-2xl);
+  line-height: var(--line-height-2xl);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-primary-fg);
+}
+
+.snapLabel {
+  font-size: var(--font-size-xs);
+  line-height: var(--line-height-xs);
+  color: var(--color-fg-mute);
+}
+
+.note {
+  font-size: var(--font-size-xs);
+  line-height: var(--line-height-xs);
+  color: var(--color-fg-mute);
+}

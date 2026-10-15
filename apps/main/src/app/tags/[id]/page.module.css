@@ -1,0 +1,49 @@
+.skeleton {
+  display: flex;
+  flex-direction: column;
+  gap: calc(var(--spacing) * 8);
+  animation: pulse var(--duration-pulse) var(--easing-pulse) infinite;
+}
+
+.skeletonSummary {
+  display: flex;
+  align-items: center;
+  gap: calc(var(--spacing) * 4);
+  padding: calc(var(--spacing) * 6);
+  border-radius: var(--radius-xl);
+  background-color: var(--color-bg-base);
+  box-shadow: var(--shadow-sm);
+}
+
+.bone {
+  border-radius: var(--radius-md);
+  background-color: var(--color-bg-mute);
+}
+
+.skeletonIcon {
+  width: calc(var(--spacing) * 10);
+  height: calc(var(--spacing) * 10);
+  border-radius: var(--radius-full);
+}
+
+.skeletonText {
+  display: flex;
+  flex-direction: column;
+  gap: calc(var(--spacing) * 2);
+}
+
+.skeletonTitle {
+  width: calc(var(--spacing) * 32);
+  height: calc(var(--spacing) * 6);
+}
+
+.skeletonCount {
+  width: calc(var(--spacing) * 44);
+  height: calc(var(--spacing) * 4);
+}
+
+@keyframes pulse {
+  50% {
+    opacity: 0.5;
+  }
+}

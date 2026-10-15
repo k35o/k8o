@@ -67,3 +67,6 @@ routes.json
 
 # Visual regression testing
 .vrt/
+
+# better-css-modules が生成する CSS Modules の型
+__generated__/

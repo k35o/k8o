@@ -3,6 +3,8 @@
 import { Button, FormControl, Select, TextField } from '@k8ordo/ui';
 import { useState } from 'react';
 
+import styles from './announcement-demo.module.css';
+
 const priorityOptions = [
   { value: 'normal', label: "'normal'（既定値）" },
   { value: 'high', label: "'high'" },
@@ -38,7 +40,7 @@ export function AnnouncementDemo() {
   const [sentList, setSentList] = useState<readonly Sent[]>([]);
 
   return (
-    <div className="flex flex-col gap-6">
+    <div className={styles.root}>
       <FormControl
         helpText="スクリーンリーダーを起動した状態でボタンを押すと、この文字列が読み上げられます"
         label="読み上げる文字列"
@@ -53,7 +55,7 @@ export function AnnouncementDemo() {
         )}
       />
 
-      <div className="grid gap-4 sm:grid-cols-2">
+      <div className={styles.options}>
         <FormControl
           label="priority"
           renderInput={({ 'aria-labelledby': _ariaLabelledby, ...props }) => (
@@ -103,19 +105,16 @@ export function AnnouncementDemo() {
         </Button>
       </div>
 
-      <div className="flex flex-col gap-2">
-        <p className="text-fg-base text-sm font-bold">呼び出し履歴</p>
+      <div className={styles.history}>
+        <p className={styles.heading}>呼び出し履歴</p>
         {sentList.length === 0 ? (
-          <p className="text-fg-mute text-sm">まだ呼び出していません</p>
+          <p className={styles.note}>まだ呼び出していません</p>
         ) : (
-          <ol className="flex flex-col gap-1">
+          <ol className={styles.entries}>
             {sentList.map((sent) => (
-              <li
-                className="text-fg-base font-mono text-sm break-all"
-                key={sent.id}
-              >
+              <li className={styles.entry} key={sent.id}>
                 {`button.ariaNotify('${sent.announcement}', { priority: '${sent.priority}' })`}
-                <span className="text-fg-mute">
+                <span className={styles.lang}>
                   {' '}
                   lang=&quot;{sent.lang}&quot;
                 </span>

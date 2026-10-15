@@ -43,6 +43,8 @@ import {
   VIEW_OPTIONS,
 } from './new-project';
 
+import styles from './slides-studio.module.css';
+
 // 設定は完全に静的なので、レンダーごとに生成しない。
 const transport = new DefaultChatTransport({ api: '/api/generate' });
 
@@ -294,10 +296,10 @@ export const SlidesStudio = ({ projects }: { projects: ProjectListItem[] }) => {
           projectId={persistence.projectId}
           projectTitle={persistence.projectTitle}
         />
-        <div className="hidden gap-2 lg:flex">
+        <div className={styles.viewTabs}>
           <ViewTabs onChange={setView} options={VIEW_OPTIONS} value={view} />
         </div>
-        <div className="flex shrink-0 items-center gap-2 lg:ml-auto">
+        <div className={styles.actions}>
           {persistence.projectId === null ? null : (
             <IconButton
               color="base"
@@ -308,7 +310,7 @@ export const SlidesStudio = ({ projects }: { projects: ProjectListItem[] }) => {
               <ForkIcon size="sm" />
             </IconButton>
           )}
-          <div className="hidden items-center gap-3 lg:flex">
+          <div className={styles.desktopActions}>
             <Button
               color="base"
               disabled={!hasResult}
@@ -334,7 +336,7 @@ export const SlidesStudio = ({ projects }: { projects: ProjectListItem[] }) => {
           </div>
         </div>
       </ToolHeader>
-      <div className="flex gap-2 px-4 py-2 lg:hidden">
+      <div className={styles.mobileTabs}>
         <ViewTabs
           onChange={(tab) => {
             setMobileTab(tab);
@@ -375,12 +377,8 @@ export const SlidesStudio = ({ projects }: { projects: ProjectListItem[] }) => {
         }
         mobilePane={mobileTab === 'chat' ? 'chat' : 'panel'}
         panel={
-          <div className="min-h-0 flex-1 overflow-hidden" ref={frameRef}>
-            <div
-              className={
-                view === 'preview' ? 'bg-bg-surface relative h-full' : 'hidden'
-              }
-            >
+          <div className={styles.frame} ref={frameRef}>
+            <div className={styles.preview} data-active={view === 'preview'}>
               {/* コードブロックのハイライト（server action）はここで注入する。
                   UI 側で直接 import すると Storybook が DB まで辿ってしまうため。 */}
               <DeckHighlightContext value={deckHighlight}>
@@ -395,7 +393,7 @@ export const SlidesStudio = ({ projects }: { projects: ProjectListItem[] }) => {
                 <PreviewLoading message="スライドを読み込んでいます…" />
               )}
             </div>
-            <div className={view === 'source' ? 'h-full' : 'hidden'}>
+            <div className={styles.source} data-active={view === 'source'}>
               <CodePanel
                 code={displayedSource}
                 emptyText="ここに生成されたスライドの Markdown が表示されます"

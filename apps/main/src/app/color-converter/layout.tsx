@@ -2,6 +2,8 @@ import { Heading } from '@k8ordo/ui';
 
 import { buildPageMetadata } from '@/shared/site/build-page-metadata';
 
+import styles from './layout.module.css';
+
 export const metadata = buildPageMetadata({
   title: 'カラーコード職人',
   description:
@@ -11,8 +13,8 @@ export const metadata = buildPageMetadata({
 
 export default function Layout({ children }: LayoutProps<'/color-converter'>) {
   return (
-    <div className="mx-auto w-full max-w-5xl">
-      <div className="flex h-full flex-col gap-4">
+    <div className={styles.root}>
+      <div className={styles.content}>
         <Heading level="h2">カラーコード職人</Heading>
         {children}
       </div>

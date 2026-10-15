@@ -1,5 +1,7 @@
 import { buildPageMetadata } from '@/shared/site/build-page-metadata';
 
+import styles from './layout.module.css';
+
 export const metadata = buildPageMetadata({
   title: 'Playgrounds',
   description: 'ブログ記事や興味のある技術の試作品を集めています。',
@@ -10,5 +12,5 @@ export const metadata = buildPageMetadata({
 export default function PlaygroundsLayout({
   children,
 }: LayoutProps<'/playgrounds'>) {
-  return <div className="mx-auto w-full max-w-5xl">{children}</div>;
+  return <div className={styles.root}>{children}</div>;
 }

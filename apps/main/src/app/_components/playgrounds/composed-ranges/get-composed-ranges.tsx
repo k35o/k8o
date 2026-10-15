@@ -3,6 +3,8 @@
 import { Button, Code } from '@k8ordo/ui';
 import { useEffect, useRef, useState } from 'react';
 
+import styles from './get-composed-ranges.module.css';
+
 export function GetComposedRanges() {
   const ref = useRef<HTMLParagraphElement>(null);
   const shadow = useRef<ShadowRoot | null>(null);
@@ -26,11 +28,11 @@ export function GetComposedRanges() {
   }, []);
 
   return (
-    <div className="flex flex-col gap-4">
-      <div className="flex flex-col">
-        <p className="font-bold">
+    <div className={styles.root}>
+      <div className={styles.sample}>
+        <p className={styles.label}>
           サンプルテキスト
-          <span className="text-fg-mute text-sm">
+          <span className={styles.note}>
             （テキスト全体が閉じたShadow Tree）
           </span>
         </p>
@@ -44,13 +46,13 @@ export function GetComposedRanges() {
         </p>
       </div>
       {ranges && (
-        <div className="flex flex-col gap-3">
-          <div className="flex flex-col gap-2">
-            <p className="font-bold">
+        <div className={styles.results}>
+          <div className={styles.result}>
+            <p className={styles.label}>
               <Code>selection.getRangeAt(0)</Code>
             </p>
             <div>
-              <p className="font-bold">
+              <p className={styles.label}>
                 <Code>range.startContainer.textContent</Code>,{' '}
                 <Code>range.startOffset</Code>
               </p>
@@ -58,8 +60,8 @@ export function GetComposedRanges() {
                 {`${ranges[0].startContainer.textContent ?? ''}, ${ranges[0].startOffset}`}
               </p>
             </div>
-            <div className="flex flex-col gap-2">
-              <p className="font-bold">
+            <div className={styles.field}>
+              <p className={styles.label}>
                 <Code>range.endContainer.textContent</Code>,{' '}
                 <Code>range.endOffset</Code>
               </p>
@@ -68,12 +70,12 @@ export function GetComposedRanges() {
               </p>
             </div>
           </div>
-          <div className="flex flex-col gap-2">
-            <p className="font-bold">
+          <div className={styles.result}>
+            <p className={styles.label}>
               <Code>selection.getComposedRanges(options)[0]</Code>
             </p>
             <div>
-              <p className="font-bold">
+              <p className={styles.label}>
                 <Code>range.startContainer.textContent</Code>,{' '}
                 <Code>range.startOffset</Code>
               </p>
@@ -82,7 +84,7 @@ export function GetComposedRanges() {
               </p>
             </div>
             <div>
-              <p className="font-bold">
+              <p className={styles.label}>
                 <Code>range.endContainer.textContent</Code>,{' '}
                 <Code>range.endOffset</Code>
               </p>
@@ -91,12 +93,12 @@ export function GetComposedRanges() {
               </p>
             </div>
           </div>
-          <div className="flex flex-col gap-2">
-            <p className="font-bold">
+          <div className={styles.result}>
+            <p className={styles.label}>
               <Code>selection.getComposedRanges()[0]</Code>
             </p>
             <div>
-              <p className="font-bold">
+              <p className={styles.label}>
                 <Code>range.startContainer.textContent</Code>,{' '}
                 <Code>range.startOffset</Code>
               </p>
@@ -105,7 +107,7 @@ export function GetComposedRanges() {
               </p>
             </div>
             <div>
-              <p className="font-bold">
+              <p className={styles.label}>
                 <Code>range.endContainer.textContent</Code>,{' '}
                 <Code>range.endOffset</Code>
               </p>
@@ -134,7 +136,7 @@ export function GetComposedRanges() {
       >
         選択範囲のテキストを取得する
       </Button>
-      <p className="text-fg-mute text-sm">
+      <p className={styles.note}>
         SafariやIOSのChrome等ではoptionsを含んだgetComposedRangesメソッドが正しく動作しない場合があります。
       </p>
     </div>

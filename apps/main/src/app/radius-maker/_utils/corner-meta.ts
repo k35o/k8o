@@ -11,11 +11,3 @@ export const AXIS_LABELS: Record<Axis, string> = {
   x: '水平',
   y: '垂直',
 };
-
-// ドラッグハンドルと数値入力で同じ角を対応づけるための色
-export const CORNER_COLOR_CLASSES: Record<Corner, string> = {
-  topLeft: 'bg-group-primary',
-  topRight: 'bg-group-secondary',
-  bottomRight: 'bg-group-tertiary',
-  bottomLeft: 'bg-group-quaternary',
-};

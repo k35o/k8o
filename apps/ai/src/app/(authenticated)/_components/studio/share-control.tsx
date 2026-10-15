@@ -1,6 +1,6 @@
 'use client';
 
-import { useClipboard, useToast } from '@k8ordo/ui';
+import { useToast } from '@k8ordo/ui';
 import { useTransition } from 'react';
 import type { FC } from 'react';
 
@@ -26,7 +26,6 @@ export const ShareControl: FC<ShareControlProps> = ({
   hasDraft,
 }) => {
   const [busy, startTransition] = useTransition();
-  const { writeClipboard } = useClipboard();
   const { open } = useToast();
 
   if (projectId === null) {
@@ -34,9 +33,9 @@ export const ShareControl: FC<ShareControlProps> = ({
   }
 
   const copyLink = async (targetSlug: string): Promise<void> => {
-    await writeClipboard(`${window.location.origin}/s/${targetSlug}`).catch(
-      () => undefined,
-    );
+    await navigator.clipboard
+      .writeText(`${window.location.origin}/s/${targetSlug}`)
+      .catch(() => undefined);
   };
 
   const handlePublish = (): void => {

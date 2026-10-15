@@ -1,0 +1,83 @@
+.root {
+  display: flex;
+  flex-direction: column;
+  gap: calc(var(--spacing) * 6);
+}
+
+.note {
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-sm);
+  color: var(--color-fg-mute);
+}
+
+.section {
+  display: flex;
+  flex-direction: column;
+  gap: calc(var(--spacing) * 2);
+  border-radius: var(--radius-lg);
+  padding: calc(var(--spacing) * 3);
+  transition-property:
+    color, background-color, border-color, outline-color, text-decoration-color,
+    fill, stroke;
+  transition-duration: var(--duration-fast);
+  transition-timing-function: var(--easing-in-out);
+}
+
+.heading {
+  font-weight: var(--font-weight-bold);
+  color: var(--color-fg-base);
+}
+
+.details {
+  border-radius: var(--radius-md);
+  background-color: var(--color-bg-base);
+  padding: calc(var(--spacing) * 3);
+}
+
+.summary {
+  cursor: pointer;
+}
+
+.detailsBody {
+  margin-top: calc(var(--spacing) * 2);
+}
+
+.dialogRow {
+  display: flex;
+  align-items: center;
+  gap: calc(var(--spacing) * 3);
+}
+
+.hint {
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-sm);
+  color: var(--color-fg-mute);
+}
+
+.dialog {
+  inset: 0;
+  width: fit-content;
+  height: fit-content;
+  margin: auto;
+  border-radius: var(--radius-md);
+  background-color: var(--color-bg-base);
+  padding: calc(var(--spacing) * 4);
+}
+
+.dialogBody {
+  margin-bottom: calc(var(--spacing) * 3);
+}
+
+.select {
+  border-radius: var(--radius-md);
+  background-color: var(--color-bg-base);
+  padding: calc(var(--spacing) * 2);
+}
+
+.colorInput {
+  width: calc(var(--spacing) * 24);
+  height: calc(var(--spacing) * 12);
+  border-radius: var(--radius-md);
+  background-color: var(--color-bg-base);
+  padding: var(--spacing);
+}

@@ -1,9 +1,6 @@
 'use client';
 
-import { useClickAway } from '@k8ordo/ui';
-import { cn } from '@repo/helpers/cn';
 import Link from 'next/link';
-import { useRef } from 'react';
 import type { FC } from 'react';
 
 import type { HeadingTree } from '@/shared/mdx/types';
@@ -11,6 +8,8 @@ import type { HeadingTree } from '@/shared/mdx/types';
 import { END_OF_CONTENT_ID } from '../constants';
 import { ProgressBar } from './progress-bar';
 import { useActiveHeading } from './use-active-heading';
+
+import styles from './table-of-contents.module.css';
 
 const LinkButton: FC<{
   depth: number;
@@ -20,12 +19,8 @@ const LinkButton: FC<{
 }> = ({ depth, text, isActive, onNavigate }) => (
   <Link
     aria-current={isActive ? 'location' : undefined}
-    className={cn(
-      'inline-block w-full rounded-xl px-4 py-2 transition-colors hover:bg-bg-mute focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-border-info focus-visible:ring-offset-2 sm:text-lg',
-      depth === 2 && 'pl-8 text-sm sm:text-md',
-      depth === 3 && 'pl-12 text-xs sm:text-sm',
-      isActive && 'xl:bg-primary-bg xl:font-bold xl:text-fg-base',
-    )}
+    className={styles.link}
+    data-depth={depth}
     href={`#${text}`}
     onClick={() => {
       onNavigate(text);
@@ -34,6 +29,23 @@ const LinkButton: FC<{
     {text}
   </Link>
 );
+
+// 開いた目次の外を押したら閉じる。要素に結び付く購読なので、cleanup を返す
+// ref callback で持ち、effect を使わない
+const closeOnPointerDownOutside = (
+  details: HTMLDetailsElement | null,
+): (() => void) | undefined => {
+  if (details === null) return undefined;
+  const handler = (event: PointerEvent): void => {
+    if (event.target instanceof Node && !details.contains(event.target)) {
+      details.open = false;
+    }
+  };
+  document.addEventListener('pointerdown', handler);
+  return () => {
+    document.removeEventListener('pointerdown', handler);
+  };
+};
 
 type TocNode = {
   text: string;
@@ -81,13 +93,6 @@ export const TableOfContents: FC<{
 }> = ({ headingTree }) => {
   const [activeId, setActiveId] = useActiveHeading();
 
-  const ref = useRef<HTMLDetailsElement>(null);
-  useClickAway(ref, () => {
-    if (ref.current) {
-      ref.current.open = false;
-    }
-  });
-
   if (headingTree.children.length === 0) return null;
 
   // 記事間の遷移直後は共有ストアに前の記事の見出しが残ることがあるため、
@@ -103,20 +108,13 @@ export const TableOfContents: FC<{
         : activeId;
 
   return (
-    <details
-      className={cn(
-        'fixed w-80 rounded-xl bg-bg-raised shadow-md xl:hidden',
-        'right-4 bottom-4 open:right-0 open:bottom-0 sm:right-16 sm:bottom-8 sm:open:right-16 sm:open:bottom-8',
-        'open:details-content:border-border-mute open:details-content:border-t open:details-content:p-4 open:details-content:pt-0',
-      )}
-      ref={ref}
-    >
-      <summary className="text-md text-primary-fg flex items-center gap-2 p-4 font-bold sm:text-lg">
+    <details className={styles.root} ref={closeOnPointerDownOutside}>
+      <summary className={styles.summary}>
         <ProgressBar activeId={activeId} headingTree={headingTree} />
-        <span className="truncate">{summaryText}</span>
+        <span className={styles.summaryText}>{summaryText}</span>
       </summary>
       <nav aria-label="もくじ">
-        <ul className="text-fg-base flex max-h-[75vh] flex-col overflow-y-scroll p-2">
+        <ul className={styles.list}>
           {headingTree.children.map((node) => (
             <TocItem
               activeId={activeId}

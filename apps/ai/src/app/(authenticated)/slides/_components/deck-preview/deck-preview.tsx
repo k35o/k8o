@@ -14,6 +14,8 @@ import {
 } from '@/app/_components/slide-deck';
 import { parseDeck } from '@/features/slides/application/parse-deck';
 
+import styles from './deck-preview.module.css';
+
 type DeckPreviewProps = {
   source: string | null;
   isStreaming: boolean;
@@ -61,7 +63,7 @@ export const DeckPreview: FC<DeckPreviewProps> = ({ source, isStreaming }) => {
 
   if (total === 0) {
     return (
-      <div className="text-fg-mute flex h-full items-center justify-center p-6 text-center text-sm leading-relaxed">
+      <div className={styles.empty}>
         {isStreaming
           ? 'スライドを生成しています…'
           : '生成すると、ここにスライドのプレビューが表示されます'}
@@ -78,26 +80,26 @@ export const DeckPreview: FC<DeckPreviewProps> = ({ source, isStreaming }) => {
   return (
     // 取得したハイライトを配下の全スライド（DeckPrint 含む）へ配る。
     <DeckHighlightsBoundary isStreaming={isStreaming} slides={slides}>
-      <div className="flex h-full min-h-0 flex-col">
+      <div className={styles.root}>
         <ProgressBar current={displayIndex} total={total} />
-        <div className="min-h-0 flex-1 px-4 pt-2">
+        <div className={styles.stage}>
           <Stage key={displayIndex}>
             {current === undefined ? null : <DeckSlideView slide={current} />}
           </Stage>
         </div>
         {deckHasNotes ? (
-          <div className="px-4 pt-2">
+          <div className={styles.notes}>
             {/* max-h を超えたときキーボードでスクロールできるよう tabIndex でフォーカス可能にする
               （スクロール領域の既知の例外なので a11y ルールを範囲抑制する）。 */}
             {/* oxlint-disable jsx-a11y/no-noninteractive-tabindex */}
             <section
               aria-label="発表者ノート"
-              className="border-border-mute text-fg-mute h-24 overflow-auto rounded-lg border px-3 py-2 text-xs leading-relaxed whitespace-pre-wrap"
+              className={styles.notesPanel}
               tabIndex={0}
             >
               {currentNotes.length > 0 ? (
                 <>
-                  <span className="text-fg-base font-bold">ノート: </span>
+                  <span className={styles.notesLabel}>ノート: </span>
                   {currentNotes.join('\n')}
                 </>
               ) : (
@@ -107,7 +109,7 @@ export const DeckPreview: FC<DeckPreviewProps> = ({ source, isStreaming }) => {
             {/* oxlint-enable jsx-a11y/no-noninteractive-tabindex */}
           </div>
         ) : null}
-        <div className="flex items-center justify-between gap-2 px-4 py-2">
+        <div className={styles.nav}>
           <NavButton
             direction="prev"
             disabled={isStreaming || displayIndex === 0}
@@ -115,12 +117,8 @@ export const DeckPreview: FC<DeckPreviewProps> = ({ source, isStreaming }) => {
               goTo(displayIndex - 1);
             }}
           />
-          <p
-            aria-live="polite"
-            className="text-fg-mute text-sm font-medium tabular-nums"
-          >
-            <span className="text-primary-fg">{displayIndex + 1}</span> /{' '}
-            {total}
+          <p aria-live="polite" className={styles.counter}>
+            <span className={styles.current}>{displayIndex + 1}</span> / {total}
           </p>
           <NavButton
             direction="next"

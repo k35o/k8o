@@ -11,6 +11,8 @@ import { blogListParsers } from '../../_utils/search-params';
 import type { BlogSummary } from '../../_utils/types';
 import { YearSection } from './year-section';
 
+import styles from './blog-list-content.module.css';
+
 type Props = {
   blogs: readonly BlogSummary[];
 };
@@ -30,9 +32,9 @@ export const BlogListContent: FC<Props> = ({ blogs }) => {
   );
 
   return (
-    <div className="flex flex-col gap-6">
-      <div className="flex flex-wrap items-center justify-between gap-x-4 gap-y-2">
-        <div className="w-full max-w-xs">
+    <div className={styles.root}>
+      <div className={styles.toolbar}>
+        <div className={styles.search}>
           <TextField
             aria-label="記事を検索"
             onChange={(e) => {
@@ -42,22 +44,20 @@ export const BlogListContent: FC<Props> = ({ blogs }) => {
             value={query}
           />
         </div>
-        <p aria-live="polite" className="text-fg-mute shrink-0 text-sm">
+        <p aria-live="polite" className={styles.count}>
           {filteredCount}件の記事
         </p>
       </div>
       {filteredCount === 0 ? (
-        <div className="flex flex-col items-center gap-3 py-16 text-center">
-          <div className="text-fg-subtle">
+        <div className={styles.empty}>
+          <div className={styles.emptyIcon}>
             <BlogIcon size="lg" />
           </div>
-          <p className="text-fg-base text-lg font-bold">
-            条件に一致する記事がありません
-          </p>
-          <p className="text-fg-mute text-sm">検索条件を変更してみてください</p>
+          <p className={styles.emptyTitle}>条件に一致する記事がありません</p>
+          <p className={styles.emptyText}>検索条件を変更してみてください</p>
         </div>
       ) : (
-        <div className="flex flex-col gap-8">
+        <div className={styles.years}>
           {yearGroups.map((group) => (
             <YearSection
               blogs={group.blogs}

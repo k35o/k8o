@@ -1,15 +1,18 @@
 'use client';
 
 import { Button, Code } from '@k8ordo/ui';
+import { cn } from '@repo/helpers/cn';
 import { useState } from 'react';
+
+import styles from './scope-proximity-demo.module.css';
 
 export function ScopeProximityDemo() {
   const [showProximity, setShowProximity] = useState(true);
 
   return (
-    <div className="space-y-4">
-      <div className="flex items-center justify-between">
-        <h3 className="font-bold">スコープの近接性</h3>
+    <div className={styles.root}>
+      <div className={styles.header}>
+        <h3 className={styles.title}>スコープの近接性</h3>
         <Button
           color={showProximity ? 'primary' : 'base'}
           onClick={() => {
@@ -53,19 +56,19 @@ export function ScopeProximityDemo() {
         `}
       </style>
 
-      <div className="demo-info-box bg-bg-subtle rounded-lg p-4">
-        <p className="demo-message rounded-sm p-2">情報メッセージ</p>
-        <div className="demo-warning-box bg-bg-mute mt-4 rounded-lg p-4">
-          <p className="demo-message rounded-sm p-2">警告メッセージ</p>
-          <div className="demo-info-box bg-bg-subtle mt-4 rounded-lg p-4">
-            <p className="demo-message rounded-sm p-2">
+      <div className={cn('demo-info-box', styles.infoBox)}>
+        <p className={cn('demo-message', styles.message)}>情報メッセージ</p>
+        <div className={cn('demo-warning-box', styles.warningBox)}>
+          <p className={cn('demo-message', styles.message)}>警告メッセージ</p>
+          <div className={cn('demo-info-box', styles.nestedInfoBox)}>
+            <p className={cn('demo-message', styles.message)}>
               ネストされた情報メッセージ（@scopeがONなら近接性で決定）
             </p>
           </div>
         </div>
       </div>
 
-      <ul className="list-inside list-disc space-y-1 text-sm">
+      <ul className={styles.notes}>
         <li>
           <Code>@scope</Code>がONの場合、最も内側の
           <Code>&lt;p&gt;</Code>は近接性により
@@ -78,7 +81,7 @@ export function ScopeProximityDemo() {
         </li>
       </ul>
 
-      <pre className="text-fg-mute sm:text-md overflow-x-auto text-xs">
+      <pre className={styles.code}>
         <code>
           {showProximity
             ? `@scope (.info-box) {

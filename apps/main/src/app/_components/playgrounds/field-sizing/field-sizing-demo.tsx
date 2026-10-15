@@ -3,6 +3,8 @@
 import { Badge, ChevronIcon, FormControl, Select } from '@k8ordo/ui';
 import { useState } from 'react';
 
+import styles from './field-sizing-demo.module.css';
+
 const fruitOptions = ['りんご', 'ぶどう', 'パイナップル', 'ドラゴンフルーツ'];
 
 const fieldSizingOptions = [
@@ -24,9 +26,9 @@ export function FieldSizingDemo() {
   const fieldStyle = { fieldSizing: value } as const;
 
   return (
-    <div className="flex flex-col gap-8">
-      <div className="flex flex-wrap items-end gap-x-6 gap-y-3">
-        <div className="w-44">
+    <div className={styles.root}>
+      <div className={styles.header}>
+        <div className={styles.selectField}>
           <FormControl
             label="field-sizing を選ぶ"
             renderInput={({ 'aria-labelledby': _ariaLabelledby, ...props }) => (
@@ -41,14 +43,14 @@ export function FieldSizingDemo() {
             )}
           />
         </div>
-        <p className="text-fg-mute pb-2.5 text-sm">
+        <p className={styles.headerNote}>
           値を切り替えると、下のコントロールに反映されます。
         </p>
       </div>
 
-      <div className="flex flex-col gap-6">
-        <div className="flex flex-wrap items-center gap-3">
-          <span className="text-fg-base font-medium">プレビュー</span>
+      <div className={styles.preview}>
+        <div className={styles.previewHeader}>
+          <span className={styles.previewTitle}>プレビュー</span>
           <Badge
             label={`field-sizing: ${value}`}
             tone="info"
@@ -56,7 +58,7 @@ export function FieldSizingDemo() {
           />
         </div>
 
-        <p className="text-fg-mute text-sm">
+        <p className={styles.note}>
           各コントロールには min-width
           を設定しているため、縮んでもその幅で止まります。テキストエリアには
           rows も指定していますが、content
@@ -64,11 +66,11 @@ export function FieldSizingDemo() {
           に達するとスクロールします。
         </p>
 
-        <label className="flex flex-col items-start gap-1.5">
-          <span className="text-fg-mute text-sm">テキスト入力</span>
+        <label className={styles.field}>
+          <span className={styles.fieldLabel}>テキスト入力</span>
           <input
             aria-label="テキスト入力"
-            className="border-border-base bg-bg-base text-fg-base max-w-full min-w-32 rounded-lg border px-3.5 py-2"
+            className={styles.textInput}
             onChange={(e) => {
               setText(e.target.value);
             }}
@@ -78,13 +80,13 @@ export function FieldSizingDemo() {
           />
         </label>
 
-        <label className="flex flex-col items-start gap-1.5">
-          <span className="text-fg-mute text-sm">
+        <label className={styles.field}>
+          <span className={styles.fieldLabel}>
             プレースホルダー付き入力（空のときはプレースホルダー幅）
           </span>
           <input
             aria-label="プレースホルダー付き入力"
-            className="border-border-base bg-bg-base text-fg-base max-w-full min-w-32 rounded-lg border px-3.5 py-2"
+            className={styles.textInput}
             onChange={(e) => {
               setEmail(e.target.value);
             }}
@@ -95,11 +97,11 @@ export function FieldSizingDemo() {
           />
         </label>
 
-        <label className="flex flex-col items-start gap-1.5">
-          <span className="text-fg-mute text-sm">テキストエリア</span>
+        <label className={styles.field}>
+          <span className={styles.fieldLabel}>テキストエリア</span>
           <textarea
             aria-label="テキストエリア"
-            className="border-border-base bg-bg-base text-fg-base max-h-40 max-w-full min-w-48 rounded-lg border px-3.5 py-2"
+            className={styles.textarea}
             onChange={(e) => {
               setComment(e.target.value);
             }}
@@ -109,12 +111,12 @@ export function FieldSizingDemo() {
           />
         </label>
 
-        <label className="flex flex-col items-start gap-1.5">
-          <span className="text-fg-mute text-sm">セレクトボックス</span>
-          <div className="border-border-base bg-bg-base flex w-fit items-center rounded-lg border">
+        <label className={styles.field}>
+          <span className={styles.fieldLabel}>セレクトボックス</span>
+          <div className={styles.selectBox}>
             <select
               aria-label="セレクトボックス"
-              className="text-fg-base appearance-none bg-transparent py-2 ps-3.5 pe-1.5"
+              className={styles.select}
               onChange={(e) => {
                 setFruit(e.target.value);
               }}
@@ -127,7 +129,7 @@ export function FieldSizingDemo() {
                 </option>
               ))}
             </select>
-            <span aria-hidden className="text-fg-mute pointer-events-none pe-3">
+            <span aria-hidden className={styles.chevron}>
               <ChevronIcon direction="down" size="sm" />
             </span>
           </div>

@@ -1,0 +1,19 @@
+.syncing {
+  padding-block: calc(var(--spacing) * 10);
+  color: var(--color-fg-mute);
+  text-align: center;
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-sm);
+}
+
+.root {
+  display: flex;
+  flex-direction: column;
+  gap: calc(var(--spacing) * 6);
+}
+
+.source {
+  color: var(--color-fg-mute);
+  font-size: var(--font-size-xs);
+  line-height: var(--line-height-xs);
+}

@@ -11,15 +11,17 @@ import { PaletteControls } from '../palette-controls';
 import { PalettePreview } from '../palette-preview';
 import { usePaletteState } from './use-palette-state';
 
+import styles from './palette-maker.module.css';
+
 export const PaletteMaker: FC = () => {
   const { hue, chroma, name, setHue, setChroma, setName, setBaseColor } =
     usePaletteState();
   const swatches = useMemo(() => generatePalette(hue, chroma), [hue, chroma]);
 
   return (
-    <div className="flex flex-col gap-6">
+    <div className={styles.root}>
       <Card>
-        <div className="flex flex-col gap-6 p-5 sm:p-6">
+        <div className={styles.panel}>
           <PalettePreview swatches={swatches} />
           <PaletteControls
             chroma={chroma}
@@ -33,7 +35,7 @@ export const PaletteMaker: FC = () => {
           <ExportPanel name={name} swatches={swatches} />
         </div>
       </Card>
-      <section className="flex flex-col gap-3">
+      <section className={styles.contrast}>
         <Heading level="h3">コントラスト詳細</Heading>
         <ContrastTable swatches={swatches} />
       </section>

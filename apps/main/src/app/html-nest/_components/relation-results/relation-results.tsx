@@ -1,8 +1,11 @@
 import type { RelatedElement } from '@k8o/html-nest';
 import { AlertIcon, CheckIcon } from '@k8ordo/ui';
+import { cn } from '@repo/helpers/cn';
 import type { FC } from 'react';
 
 import { RelatedGroups } from '../related-groups';
+
+import styles from './relation-results.module.css';
 
 type RelationResultsProps = {
   items: readonly RelatedElement[];
@@ -26,10 +29,10 @@ export const RelationResults: FC<RelationResultsProps> = ({
   }
 
   return (
-    <div className="flex flex-col gap-4">
+    <div className={styles.root}>
       {okItems.length > 0 && (
         <div>
-          <p className="text-fg-success mb-2 flex items-center gap-1.5 text-xs font-medium">
+          <p className={cn(styles.heading, styles.ok)}>
             <CheckIcon size="sm" />
             {okLabel}（{okItems.length}）
           </p>
@@ -38,7 +41,7 @@ export const RelationResults: FC<RelationResultsProps> = ({
       )}
       {condItems.length > 0 && (
         <div>
-          <p className="text-fg-warning mb-2 flex items-center gap-1.5 text-xs font-medium">
+          <p className={cn(styles.heading, styles.conditional)}>
             <AlertIcon size="sm" status="warning" />
             条件付き（{condItems.length}）
           </p>

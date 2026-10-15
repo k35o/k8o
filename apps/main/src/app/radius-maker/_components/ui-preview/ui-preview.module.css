@@ -1,0 +1,104 @@
+.root {
+  display: flex;
+  flex-direction: column;
+  gap: calc(var(--spacing) * 4);
+}
+
+.title {
+  color: var(--color-fg-base);
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-sm);
+  font-weight: var(--font-weight-bold);
+}
+
+.samples {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  column-gap: calc(var(--spacing) * 8);
+  row-gap: calc(var(--spacing) * 5);
+}
+
+.sample {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: calc(var(--spacing) * 2);
+}
+
+.caption {
+  color: var(--color-fg-mute);
+  font-size: var(--font-size-xs);
+  line-height: var(--line-height-xs);
+}
+
+.avatar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: calc(var(--spacing) * 14);
+  height: calc(var(--spacing) * 14);
+  background-color: var(--color-primary-bg);
+  color: var(--color-primary-fg);
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-sm);
+  font-weight: var(--font-weight-bold);
+}
+
+.button {
+  padding-inline: calc(var(--spacing) * 5);
+  padding-block: calc(var(--spacing) * 2);
+  background-color: var(--color-primary-fg);
+  color: var(--color-bg-base);
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-sm);
+  font-weight: var(--font-weight-bold);
+}
+
+.card {
+  width: calc(var(--spacing) * 40);
+  padding: calc(var(--spacing) * 3);
+  border-width: 1px;
+  border-style: solid;
+  border-color: var(--color-border-mute);
+  background-color: var(--color-bg-base);
+  box-shadow: var(--shadow-sm);
+}
+
+.line {
+  border-radius: var(--radius-full);
+  background-color: var(--color-bg-mute);
+}
+
+.lineTitle {
+  width: 75%;
+  height: calc(var(--spacing) * 2);
+  margin-bottom: calc(var(--spacing) * 2);
+}
+
+.lineBody {
+  width: 100%;
+  height: calc(var(--spacing) * 1.5);
+  margin-bottom: var(--spacing);
+}
+
+.lineTail {
+  width: calc(5 / 6 * 100%);
+  height: calc(var(--spacing) * 1.5);
+}
+
+.image {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: calc(var(--spacing) * 40);
+  height: calc(var(--spacing) * 24);
+  background-color: var(--color-primary-bg);
+  color: var(--color-primary-fg);
+}
+
+.note {
+  color: var(--color-fg-mute);
+  font-size: var(--font-size-xs);
+  line-height: var(--line-height-xs);
+}

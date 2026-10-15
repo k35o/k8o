@@ -7,7 +7,8 @@ k8oは個人ポートフォリオサイト。Next.js App Router（main・ai）�
 ```bash
 pnpm run dev                  # 開発（ローカルDB含む全パッケージ起動）
 pnpm run build
-pnpm run check                # Vite+ / OXC lint・format チェック（check:write で自動修正）
+pnpm run check                # Vite+ / OXC lint・format チェック + CSS Modules の検査（check:write で lint・format を自動修正）
+pnpm run check:css            # CSS Modules の検査だけ（better-css-modules check）
 pnpm run type-check
 pnpm run ls-lint              # ファイル名規約チェック
 pnpm run test                                             # 全テスト
@@ -60,7 +61,10 @@ DB のパッケージ（k8o の DB は `@repo/database`、ai の DB は `@repo/a
 
 ## UI共通（apps/main・apps/ai）
 
-- Tailwindは@k8ordo/uiのセマンティックトークンのみ使用（`text-fg-base` ○ / `text-gray-900` ×。標準Tailwindカラー禁止）。ドキュメントは各appの `node_modules/@k8ordo/ui/docs/` を参照
+- スタイルは CSS Modules。コンポーネントの隣に `<name>.module.css`（Story の飾りは `<name>.stories.module.css`）を置き、`styles.root` のドット記法で参照する。型は `__generated__/` に生成される（`next typegen` / `better-css-modules generate`。auth-shell だけはスタイルシートの隣に出してコミットする）
+- 値は @k8ordo/ui のトークンだけを使う（`color: var(--color-fg-base)` ○ / `color: #333` ×、`padding: calc(var(--spacing) * 4)` ○ / `padding: 16px` ×）。`better-css-modules check`（`pnpm run check:css`）が生の値・未使用クラス・`:global` などを機械的に弾く。無効化コメントは `/* better-css-modules-disable-next-line <rule> -- 理由 */` の形で理由を必須にする
+- 状態は `data-*` / `aria-*` 属性にして `&[data-active='true']` で書く。ダークは色トークン（必要なら `light-dark()`）で表し、変形など色以外だけ `:root[class~='dark'] &`（`.dark &` は CSS Modules がローカル化するので効かない）。縦書きは `@container style(--writing: vertical)`。ブレークポイントは `@media (width >= 40rem)`（sm）/ `48rem` / `64rem` / `80rem`
+- @k8ordo/ui のドキュメントは各appの `node_modules/@k8ordo/ui/docs/` を参照
 - デザインシステムのコンポーネントのpropsを推測で使わない。`shadow` のような一般的に見える名前でも、各appのStorybook MCPの `docs-show` か実際のStoryで確認できたものだけを使う。ドキュメントに無いpropsは使わずユーザーに確認する
 - Storyの作成・更新前に `get-storybook-story-instructions` で最新ルールを確認し、作業後は `test-run` で検証する
 

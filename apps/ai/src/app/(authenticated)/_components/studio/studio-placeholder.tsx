@@ -17,6 +17,8 @@ import {
   VIEW_OPTIONS,
 } from './new-project';
 
+import styles from './studio-placeholder.module.css';
+
 const ignore = (): void => undefined;
 
 // 新しいプロジェクトには読み込む中身が無いので、セッションを確かめるあいだも骨組みではなく、
@@ -30,12 +32,12 @@ export const StudioPlaceholder: FC = () => (
         projectId={null}
         projectTitle={null}
       />
-      <div className="contents" inert>
-        <div className="hidden gap-2 lg:flex">
+      <div className={styles.inert} inert>
+        <div className={styles.viewTabs}>
           <ViewTabs onChange={ignore} options={VIEW_OPTIONS} value="preview" />
         </div>
-        <div className="flex shrink-0 items-center gap-2 lg:ml-auto">
-          <div className="hidden items-center gap-3 lg:flex">
+        <div className={styles.actions}>
+          <div className={styles.desktopActions}>
             <CopyCodeButton code={null} />
             <IconButton color="base" disabled label="全画面" size="sm">
               <FullscreenIcon size="sm" />
@@ -44,8 +46,8 @@ export const StudioPlaceholder: FC = () => (
         </div>
       </div>
     </ToolHeader>
-    <div className="contents" inert>
-      <div className="flex gap-2 px-4 py-2 lg:hidden">
+    <div className={styles.inert} inert>
+      <div className={styles.mobileTabs}>
         <ViewTabs onChange={ignore} options={MOBILE_TAB_OPTIONS} value="chat" />
       </div>
       <StudioPanes
@@ -68,9 +70,9 @@ export const StudioPlaceholder: FC = () => (
         }
         mobilePane="chat"
         panel={
-          <div className="min-h-0 flex-1 overflow-hidden">
-            <div className="bg-bg-surface relative h-full">
-              <div className="text-fg-mute flex h-full items-center justify-center p-6 text-center text-sm leading-relaxed">
+          <div className={styles.frame}>
+            <div className={styles.preview}>
+              <div className={styles.placeholder}>
                 生成すると、ここにライブプレビューが表示されます
               </div>
             </div>

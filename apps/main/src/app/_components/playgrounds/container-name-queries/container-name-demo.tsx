@@ -1,7 +1,10 @@
 'use client';
 
 import { Code, Radio } from '@k8ordo/ui';
+import { cn } from '@repo/helpers/cn';
 import { useId, useState } from 'react';
+
+import styles from './container-name-demo.module.css';
 
 type ContainerName = 'none' | 'sidebar' | 'footer';
 
@@ -19,7 +22,7 @@ export function ContainerNameDemo() {
   const labelId = useId();
 
   return (
-    <div className="flex flex-col gap-6">
+    <div className={styles.root}>
       <style>{`
         .profile-card {
           display: flex;
@@ -46,8 +49,8 @@ export function ContainerNameDemo() {
         }
       `}</style>
 
-      <div className="flex flex-col gap-2">
-        <p className="text-fg-base text-sm font-bold" id={labelId}>
+      <div className={styles.control}>
+        <p className={styles.controlLabel} id={labelId}>
           親の<Code>container-name</Code>の値
         </p>
         <Radio
@@ -64,26 +67,22 @@ export function ContainerNameDemo() {
       </div>
 
       {/* Firefoxはcontainer-nameの変更で子孫のスタイルを再計算しない(bug 2027807)ので、keyで要素ごと作り直す */}
-      <div
-        className="bg-bg-subtle flex flex-col gap-3 rounded-lg p-4"
-        key={name}
-        style={{ containerName: name }}
-      >
-        <p className="text-fg-mute text-sm">
+      <div className={styles.parent} key={name} style={{ containerName: name }}>
+        <p className={styles.note}>
           親 (<Code>{`container-name: ${name}`}</Code>)
         </p>
-        <div className="profile-card bg-bg-base rounded-lg">
-          <span className="bg-primary-fg block size-10 shrink-0 rounded-full" />
-          <div className="flex flex-col gap-1">
-            <p className="text-fg-base font-bold">k8o</p>
-            <p className="profile-card-description text-fg-mute text-sm">
+        <div className={cn('profile-card', styles.card)}>
+          <span className={styles.avatar} />
+          <div className={styles.profile}>
+            <p className={styles.name}>k8o</p>
+            <p className={cn('profile-card-description', styles.description)}>
               Webフロントエンドのエンジニアです。
             </p>
           </div>
         </div>
       </div>
 
-      <p className="text-fg-mute text-sm">
+      <p className={styles.note}>
         カードのスタイルは<Code>@container sidebar</Code>と
         <Code>@container footer</Code>
         に分けて書いてあり、親の名前と一致したほうが当たります。カードのクラスは変えていません。

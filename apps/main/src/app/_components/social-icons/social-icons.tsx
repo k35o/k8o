@@ -8,17 +8,17 @@ export const SocialIcons: FC = () => (
     <IconButton
       label="Xのアカウント"
       renderItem={({
-        className,
         children,
-        'aria-label': ariaLabel,
+        disabled: _disabled,
         triggerProps,
+        type: _type,
+        ...props
       }) => (
         <a
-          aria-label={ariaLabel}
-          className={className}
           href="https://x.com/k8ome"
           rel="noopener noreferrer"
           target="_blank"
+          {...props}
           {...triggerProps}
         >
           {children}
@@ -30,17 +30,17 @@ export const SocialIcons: FC = () => (
     <IconButton
       label="GitHubのアカウント"
       renderItem={({
-        className,
         children,
-        'aria-label': ariaLabel,
+        disabled: _disabled,
         triggerProps,
+        type: _type,
+        ...props
       }) => (
         <a
-          aria-label={ariaLabel}
-          className={className}
           href="https://github.com/k35o"
           rel="noopener noreferrer"
           target="_blank"
+          {...props}
           {...triggerProps}
         >
           {children}
@@ -52,17 +52,17 @@ export const SocialIcons: FC = () => (
     <IconButton
       label="Qiitaのアカウント"
       renderItem={({
-        className,
         children,
-        'aria-label': ariaLabel,
+        disabled: _disabled,
         triggerProps,
+        type: _type,
+        ...props
       }) => (
         <a
-          aria-label={ariaLabel}
-          className={className}
           href="https://qiita.com/k8o"
           rel="noopener noreferrer"
           target="_blank"
+          {...props}
           {...triggerProps}
         >
           {children}

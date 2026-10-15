@@ -22,6 +22,8 @@ import type { SiteEntryIcon, SiteEntryKind } from '@/shared/site/site-entries';
 
 import { AppCard } from '../app-card';
 
+import styles from './site-entry-section.module.css';
+
 const ICON: Record<SiteEntryIcon, ReactNode> = {
   browserSupport: <ShieldCheckIcon size="md" />,
   colorConverter: <ColorInfoIcon size="md" />,
@@ -44,12 +46,12 @@ export const SiteEntrySection = ({ kind }: { kind: SiteEntryKind }) => {
   const entries = siteEntries.filter((entry) => entry.kind === kind);
 
   return (
-    <div className="flex flex-col gap-6">
+    <div className={styles.root}>
       <div>
         <Heading level="h2">{section.title}</Heading>
-        <p className="text-fg-mute text-sm">{section.description}</p>
+        <p className={styles.description}>{section.description}</p>
       </div>
-      <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
+      <div className={styles.entries}>
         {entries.map((entry) => (
           <AppCard
             description={entry.description}

@@ -1,10 +1,13 @@
 'use client';
 
 import { Badge, Button } from '@k8ordo/ui';
+import { cn } from '@repo/helpers/cn';
 import type { FC } from 'react';
 
 import { useColorQuiz } from './use-color-quiz';
 import { useQuizRadioGroup } from './use-quiz-radio-group';
+
+import styles from './color-to-hex.module.css';
 
 export const ColorToHex: FC = () => {
   const {
@@ -24,20 +27,20 @@ export const ColorToHex: FC = () => {
   });
 
   return (
-    <div className="flex flex-col gap-6">
+    <div className={styles.root}>
       {/* 正誤と正解の hex をスクリーンリーダーに通知する永続ライブリージョン */}
-      <output className="sr-only">
+      <output className={styles.srOnly}>
         {phase === 'result'
           ? `${isCorrect ? '正解' : '不正解'}。正解は #${targetHex} です`
           : ''}
       </output>
       <div
-        className="flex h-48 w-full items-center justify-center rounded-xl"
+        className={styles.target}
         style={{ backgroundColor: `#${targetHex}` }}
       >
         {phase === 'result' && (
           <p
-            className="text-lg font-bold tracking-normal"
+            className={styles.targetHex}
             style={{ color: `contrast-color(#${targetHex})` }}
           >
             #{targetHex}
@@ -45,20 +48,18 @@ export const ColorToHex: FC = () => {
         )}
       </div>
       {phase === 'result' && (
-        <div className="text-center">
-          <p className="text-lg font-bold">
-            {isCorrect ? '正解！' : '不正解...'}
-          </p>
+        <div className={styles.result}>
+          <p className={styles.verdict}>{isCorrect ? '正解！' : '不正解...'}</p>
           {selectedHex !== null && !isCorrect && (
-            <div className="mt-4 grid grid-cols-2 gap-4">
-              <div className="flex flex-col gap-2">
-                <p className="text-fg-mute text-center text-sm">あなたの回答</p>
+            <div className={styles.comparison}>
+              <div className={styles.comparisonItem}>
+                <p className={styles.comparisonLabel}>あなたの回答</p>
                 <div
-                  className="flex h-24 items-center justify-center rounded-xl"
+                  className={styles.swatch}
                   style={{ backgroundColor: `#${selectedHex}` }}
                 >
                   <p
-                    className="text-sm font-bold tracking-normal"
+                    className={styles.swatchHex}
                     style={{
                       color: `contrast-color(#${selectedHex})`,
                     }}
@@ -67,14 +68,14 @@ export const ColorToHex: FC = () => {
                   </p>
                 </div>
               </div>
-              <div className="flex flex-col gap-2">
-                <p className="text-fg-mute text-center text-sm">正解</p>
+              <div className={styles.comparisonItem}>
+                <p className={styles.comparisonLabel}>正解</p>
                 <div
-                  className="flex h-24 items-center justify-center rounded-xl"
+                  className={styles.swatch}
                   style={{ backgroundColor: `#${targetHex}` }}
                 >
                   <p
-                    className="text-sm font-bold tracking-normal"
+                    className={styles.swatchHex}
                     style={{
                       color: `contrast-color(#${targetHex})`,
                     }}
@@ -89,7 +90,7 @@ export const ColorToHex: FC = () => {
       )}
       <div
         aria-label="Hexの選択肢"
-        className="grid grid-cols-2 gap-4"
+        className={styles.options}
         role="radiogroup"
       >
         {options.map((hex, index) => {
@@ -110,18 +111,13 @@ export const ColorToHex: FC = () => {
               key={hex}
               {...getRadioProps(hex, index)}
               aria-label={optionLabel}
-              className={[
-                'relative flex h-14 items-center justify-center rounded-xl border border-border-base font-mono text-sm tracking-normal transition-all',
-                'bg-bg-base',
-                isSelected && phase === 'question'
-                  ? 'ring-2 ring-primary-border'
-                  : '',
-                showCorrectBadge ? 'ring-2 ring-border-success' : '',
-                showWrongBadge ? 'ring-2 ring-border-error' : '',
-                phase === 'question' ? 'cursor-pointer hover:bg-bg-mute' : '',
-              ]
-                .filter(Boolean)
-                .join(' ')}
+              className={cn(
+                styles.option,
+                phase === 'question' && styles.selectable,
+                isSelected && phase === 'question' && styles.selected,
+                showCorrectBadge && styles.correct,
+                showWrongBadge && styles.wrong,
+              )}
               disabled={phase === 'result'}
               onClick={() => {
                 setSelectedHex(hex);
@@ -130,12 +126,12 @@ export const ColorToHex: FC = () => {
             >
               #{hex}
               {showCorrectBadge && (
-                <span className="absolute top-1 right-1">
+                <span className={styles.badge}>
                   <Badge size="sm" label="正解" tone="success" />
                 </span>
               )}
               {showWrongBadge && (
-                <span className="absolute top-1 right-1">
+                <span className={styles.badge}>
                   <Badge size="sm" label="あなたの回答" tone="error" />
                 </span>
               )}

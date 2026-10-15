@@ -1,4 +1,5 @@
 import { ExternalLinkIcon, Card, PublishDateIcon } from '@k8ordo/ui';
+import { cn } from '@repo/helpers/cn';
 import { formatDate } from '@repo/helpers/date/format';
 import { Suspense } from 'react';
 import type { FC } from 'react';
@@ -9,27 +10,29 @@ import type { LinkCardVariant } from './fallback';
 import { MetaImage } from './image';
 import { getMetadata } from './metadata';
 
+import styles from './link-card.module.css';
+
 const LinkCardLoading: FC<{
   href: string;
   variant?: LinkCardVariant;
 }> = ({ href, variant = 'shadow' }) => (
-  <div className="vertical:max-w-container-md">
+  <div className={styles.root}>
     <Card interactive variant={variant}>
       <a
         aria-label={`${href}（読み込み中）`}
-        className="block"
+        className={styles.loadingLink}
         href={href}
         rel="noopener noreferrer"
         target="_blank"
       >
-        <div className="vertical:flex-row flex animate-pulse flex-col overflow-hidden sm:flex-row">
-          <div className="bg-bg-mute vertical:w-48 vertical:shrink-0 vertical:rounded-s-xl vertical:rounded-e-none w-full rounded-t-xl sm:w-48 sm:shrink-0 sm:rounded-s-xl sm:rounded-e-none">
-            <div className="bg-bg-mute aspect-video w-full" />
+        <div className={styles.loadingBody}>
+          <div className={styles.loadingImage}>
+            <div className={styles.loadingImageFrame} />
           </div>
-          <div className="flex flex-1 flex-col gap-3 p-4">
-            <div className="bg-bg-mute h-5 w-3/4 rounded-md" />
-            <div className="bg-bg-mute h-4 w-full rounded-md" />
-            <div className="bg-bg-mute mt-auto h-3 w-1/3 rounded-md" />
+          <div className={styles.loadingText}>
+            <div className={cn(styles.bone, styles.boneTitle)} />
+            <div className={cn(styles.bone, styles.boneDescription)} />
+            <div className={cn(styles.bone, styles.boneHost)} />
           </div>
         </div>
       </a>
@@ -58,41 +61,41 @@ const Content: FC<{
   }
 
   return (
-    <div className="vertical:max-w-container-md">
+    <div className={styles.root}>
       <Card interactive variant={variant}>
         <a
-          className="group block h-full"
+          className={styles.link}
           href={href}
           rel="noopener noreferrer"
           target="_blank"
         >
-          <div className="vertical:flex-row flex h-full flex-col overflow-hidden sm:flex-row">
+          <div className={styles.body}>
             {metaData.imageUrl !== undefined && (
               <MetaImage src={metaData.imageUrl} />
             )}
-            <div className="flex flex-1 flex-col gap-2 p-4">
+            <div className={styles.text}>
               {metaData.title !== undefined && (
-                <div className="group-hover:text-primary-fg flex flex-col gap-1 transition-colors duration-200 ease-out">
-                  <p className="text-md vertical:block vertical:max-block-[8em] vertical:overflow-hidden line-clamp-2 font-bold">
+                <div className={styles.heading}>
+                  <p className={cn(styles.clamp, styles.title)}>
                     {metaData.title}
                   </p>
                   {metaData.description !== undefined && (
-                    <p className="text-fg-mute vertical:block vertical:max-block-[8em] vertical:overflow-hidden line-clamp-2 text-sm">
+                    <p className={cn(styles.clamp, styles.description)}>
                       {metaData.description}
                     </p>
                   )}
                 </div>
               )}
-              <div className="text-fg-subtle mt-auto flex flex-wrap items-center justify-between gap-2 text-xs">
+              <div className={styles.footer}>
                 {publishedAt !== undefined && (
-                  <div className="flex items-center gap-1">
+                  <div className={styles.footerItem}>
                     <PublishDateIcon size="sm" />
                     <span>
                       {formatDate(new Date(publishedAt), 'yyyy年M月d日')}
                     </span>
                   </div>
                 )}
-                <div className="flex items-center gap-1">
+                <div className={styles.footerItem}>
                   <ExternalLinkIcon size="sm" />
                   <p>{new URL(href).hostname}</p>
                 </div>

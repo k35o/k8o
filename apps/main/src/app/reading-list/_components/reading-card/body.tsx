@@ -2,6 +2,8 @@ import type { FC } from 'react';
 
 import { ReadingCardSummary } from './summary';
 
+import styles from './body.module.css';
+
 export const ReadingCardBody: FC<{
   description: string | null;
   summary: string | null;
@@ -11,6 +13,6 @@ export const ReadingCardBody: FC<{
   }
 
   return description === null ? null : (
-    <p className="text-fg-mute text-sm">{description}</p>
+    <p className={styles.root}>{description}</p>
   );
 };

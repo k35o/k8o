@@ -1,3 +1,6 @@
+import { globSync, readFileSync, realpathSync } from 'node:fs';
+import { join, resolve } from 'node:path';
+
 import type { Spec } from '@json-render/core';
 import * as ui from '@k8ordo/ui';
 import { catalog } from '@k8ordo/ui/json-render';
@@ -38,13 +41,30 @@ const exportedComponents: Record<string, unknown> = ui;
 const renderedIconComponent = (iconName: string): unknown =>
   renderWidget('Icon', { name: iconName }).type;
 
-// registry の Card は children を padding つきの div で包む。その className が
-// CARD_PADDING の正の側になる。
-const renderedCardPadding = (size: string): unknown => {
+// registry の Card は children を padding つきの div で包む。その className は
+// CSS Modules のハッシュなので、同梱の CSS から padding の --spacing 倍率を読み、
+// CARD_PADDING の倍率と突き合わせる。dist の CSS は exports に無いため、
+// ファイルとして読む
+const renderedCardClassName = (size: string): string => {
   const inner = renderWidget('Card', { size }).props as {
     children: ReactElement;
   };
   return (inner.children.props as { className: string }).className;
+};
+
+const uiDistDir = realpathSync(
+  resolve(import.meta.dirname, '../../../../node_modules/@k8ordo/ui/dist'),
+);
+const uiCss = globSync('**/*.css', { cwd: uiDistDir })
+  .map((file) => readFileSync(join(uiDistDir, file), 'utf8'))
+  .join('\n');
+
+const paddingSpacingOf = (className: string): number | null => {
+  const match = new RegExp(
+    `\\.${className}\\s*\\{[^}]*padding:\\s*calc\\(var\\(--spacing\\)\\s*\\*\\s*(\\d+)\\)`,
+    'u',
+  ).exec(uiCss);
+  return match?.[1] === undefined ? null : Number(match[1]);
 };
 
 // catalog のコンポーネント名 → prop 名。手書きの対応表と突き合わせる正の側。
@@ -122,7 +142,7 @@ export default function Preview() {
     <Stack direction="column" gap="lg">
       <Heading level="h2">お問い合わせ</Heading>
       <Card variant="shadow">
-        <div className="p-8">
+        <div style={{ padding: 'calc(var(--spacing) * 8)' }}>
           <FormControl label="お名前" required
             renderInput={(props) => (
               <TextField {...props} name="name" />
@@ -148,8 +168,10 @@ export default function Preview() {
         },
       };
       const tsx = specToTsx(spec);
-      expect(tsx).toContain('renderItem={({ className, children }) => (');
-      expect(tsx).toContain('<a className={className} href="https://k8o.me">');
+      expect(tsx).toContain(
+        'renderItem={({ children, disabled: _disabled, type: _type, ...props }) => (',
+      );
+      expect(tsx).toContain('<a {...props} href="https://k8o.me">');
     });
 
     it('グループ入力はラベルの span と aria-labelledby を伴って展開する', () => {
@@ -356,9 +378,9 @@ export default function Preview() {
     });
 
     it.each(Object.entries(CARD_PADDING))(
-      'Card の size %s のパディング %s が registry の描画と一致する',
-      (size, padding) => {
-        expect(renderedCardPadding(size)).toBe(padding);
+      'Card の size %s のパディング（--spacing の %d 倍）が registry の描画と一致する',
+      (size, spacing) => {
+        expect(paddingSpacingOf(renderedCardClassName(size))).toBe(spacing);
       },
     );
 

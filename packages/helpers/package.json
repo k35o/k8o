@@ -37,6 +37,10 @@
       "types": "./src/browser/browser-support.ts",
       "default": "./src/browser/browser-support.ts"
     },
+    "./browser/browserslist": {
+      "types": "./src/browser/browserslist.ts",
+      "default": "./src/browser/browserslist.ts"
+    },
     "./cache/main-cache-tags": {
       "types": "./src/cache/main-cache-tags.ts",
       "default": "./src/cache/main-cache-tags.ts"
@@ -136,7 +140,6 @@
   },
   "dependencies": {
     "clsx": "2.1.1",
-    "tailwind-merge": "3.7.0",
     "to-vfile": "8.0.0",
     "vfile-matter": "5.0.1"
   },

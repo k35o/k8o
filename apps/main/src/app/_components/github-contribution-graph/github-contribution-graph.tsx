@@ -1,16 +1,19 @@
 import { Card } from '@k8ordo/ui';
+import { cn } from '@repo/helpers/cn';
 import { Suspense } from 'react';
 
 import { getUserContributions } from '@/features/github/interface/queries';
 
 import { Presenter } from './presenter';
 
+import styles from './github-contribution-graph.module.css';
+
 const Skeleton = () => (
   <Card>
-    <div className="flex flex-col gap-4 p-6">
-      <div className="bg-bg-mute h-5 w-32 animate-pulse rounded-sm" />
-      <div className="bg-bg-mute h-48 animate-pulse rounded-sm" />
-      <div className="bg-bg-mute h-4 w-24 animate-pulse rounded-sm" />
+    <div className={styles.skeleton}>
+      <div className={cn(styles.bone, styles.boneTitle)} />
+      <div className={cn(styles.bone, styles.boneGraph)} />
+      <div className={cn(styles.bone, styles.boneTotal)} />
     </div>
   </Card>
 );

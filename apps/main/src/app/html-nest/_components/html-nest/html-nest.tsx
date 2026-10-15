@@ -7,14 +7,16 @@ import { SPEC_INDEX_URL } from '../../_utils/references';
 import { ContainmentView } from '../containment-view';
 import { useNestState } from './use-nest-state';
 
+import styles from './html-nest.module.css';
+
 export const HtmlNest: FC = () => {
   const { element, setSelected } = useNestState();
 
   return (
-    <div className="flex flex-col gap-4">
+    <div className={styles.root}>
       <ContainmentView element={element} onSelect={setSelected} />
 
-      <p className="text-fg-mute text-xs">
+      <p className={styles.source}>
         データ出典:{' '}
         <Anchor href={SPEC_INDEX_URL} openInNewTab>
           WHATWG HTML Standard（要素インデックス）

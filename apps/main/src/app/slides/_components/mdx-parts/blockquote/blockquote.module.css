@@ -1,7 +1,10 @@
-.blockquote {
+/* better-css-modules-disable tokens/spacing, tokens/font-size -- スライドはコンテナ幅（cqi）に比例させる */
+.root {
   font-size: 2.2cqi;
   border-inline-start-style: solid;
   border-inline-start-width: 0.3cqi;
+  border-inline-start-color: var(--color-primary-border);
   padding-inline-start: 1.5cqi;
   margin: 0 0 1.5cqi;
+  color: var(--color-fg-mute);
 }

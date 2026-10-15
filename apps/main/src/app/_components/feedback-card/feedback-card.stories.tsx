@@ -3,12 +3,14 @@ import { expect, fn, within } from 'storybook/test';
 import preview from '../../../../.storybook/preview';
 import { FeedbackCard } from './feedback-card';
 
+import styles from './feedback-card.stories.module.css';
+
 const meta = preview.meta({
   title: 'app/globals/feedback-card',
   component: FeedbackCard,
   decorators: [
     (Story) => (
-      <div className="bg-bg-base p-4">
+      <div className={styles.canvas}>
         <Story />
       </div>
     ),

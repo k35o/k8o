@@ -1,7 +1,14 @@
-import { expect, within } from 'storybook/test';
+import { expect, waitFor, within } from 'storybook/test';
 
 import preview from '../../../../../.storybook/preview';
 import { ColorQuiz } from './color-quiz';
+
+// 選択は startTransition と ViewTransition を通して非同期にコミットされるため、反映を待つ
+const expectTabSelected = async (tab: HTMLElement): Promise<void> => {
+  await waitFor(async () => {
+    await expect(tab).toHaveAttribute('aria-selected', 'true');
+  });
+};
 
 const meta = preview.meta({
   title: 'app/color-quiz/color-quiz',
@@ -121,8 +128,7 @@ export const HexToColorMode = meta.story({
       name: 'Hexから色を当てる',
     });
     await userEvent.click(tab);
-
-    await expect(tab).toHaveAttribute('aria-selected', 'true');
+    await expectTabSelected(tab);
 
     const submitButton = canvas.getByRole('button', {
       name: '回答する',
@@ -139,6 +145,7 @@ export const HexToColorSubmit = meta.story({
       name: 'Hexから色を当てる',
     });
     await userEvent.click(tab);
+    await expectTabSelected(tab);
 
     const panel = canvas.getByRole('tabpanel');
     const group = within(panel).getByRole('radiogroup', {
@@ -150,6 +157,10 @@ export const HexToColorSubmit = meta.story({
 
     const submitButton = canvas.getByRole('button', {
       name: '回答する',
+    });
+    // パネルのクロスフェード中に起きた更新は、クロスフェードが終わってからコミットされる
+    await waitFor(async () => {
+      await expect(submitButton).toBeEnabled();
     });
     await userEvent.click(submitButton);
 

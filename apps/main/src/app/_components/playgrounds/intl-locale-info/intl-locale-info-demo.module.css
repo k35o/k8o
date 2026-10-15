@@ -1,0 +1,54 @@
+.root {
+  display: flex;
+  flex-direction: column;
+  gap: calc(var(--spacing) * 6);
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: calc(var(--spacing) * 3);
+}
+
+.presets {
+  display: flex;
+  flex-wrap: wrap;
+  gap: calc(var(--spacing) * 2);
+}
+
+.results {
+  display: flex;
+  flex-direction: column;
+  gap: calc(var(--spacing) * 3);
+}
+
+.result {
+  display: flex;
+  flex-direction: column;
+  gap: calc(var(--spacing) * 0.5);
+
+  @media (width >= 40rem) {
+    flex-direction: row;
+    gap: calc(var(--spacing) * 3);
+  }
+}
+
+.method {
+  flex-shrink: 0;
+  font-family: var(--font-family-mono);
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-sm);
+  color: var(--color-fg-base);
+
+  @media (width >= 40rem) {
+    width: calc(var(--spacing) * 56);
+  }
+}
+
+.value {
+  font-family: var(--font-family-mono);
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-sm);
+  color: var(--color-fg-mute);
+  word-break: break-all;
+}

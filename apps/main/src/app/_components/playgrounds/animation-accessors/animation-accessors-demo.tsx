@@ -1,8 +1,11 @@
 'use client';
 
 import { Button, Code } from '@k8ordo/ui';
+import { cn } from '@repo/helpers/cn';
 import type { AnimationEvent as ReactAnimationEvent } from 'react';
 import { useState } from 'react';
+
+import styles from './animation-accessors-demo.module.css';
 
 type AnimationEventType =
   | 'animationstart'
@@ -68,10 +71,10 @@ export function AnimationAccessorsDemo() {
     };
 
   return (
-    <div className="flex flex-col gap-6">
+    <div className={styles.root}>
       <style>{targetStyle}</style>
 
-      <div className="flex items-center gap-4">
+      <div className={styles.controls}>
         <Button
           onClick={() => {
             setRun((prev) => prev + 1);
@@ -84,7 +87,7 @@ export function AnimationAccessorsDemo() {
         {/* keyを変えて作り直し、2本のCSSAnimationを毎回新しく始める */}
         <div
           aria-hidden="true"
-          className={`bg-primary-bg size-12 rounded-lg ${run === 0 ? '' : TARGET_CLASS}`}
+          className={cn(styles.target, run !== 0 && TARGET_CLASS)}
           key={run}
           onAnimationEnd={record('animationend')}
           onAnimationIteration={record('animationiteration')}
@@ -92,37 +95,34 @@ export function AnimationAccessorsDemo() {
         />
       </div>
 
-      <div className="flex flex-col gap-2">
-        <p className="text-fg-base text-sm font-bold">イベントのログ</p>
+      <div className={styles.section}>
+        <p className={styles.heading}>イベントのログ</p>
         {log.length === 0 ? (
-          <p className="text-fg-mute text-sm">
+          <p className={styles.note}>
             再生を押すと、イベントごとに<Code>event.animation</Code>
             から読んだ値が並びます
           </p>
         ) : (
-          <ol className="flex flex-col gap-1">
+          <ol className={styles.entries}>
             {log.map((entry) => (
-              <li
-                className="text-fg-mute flex flex-wrap gap-x-3 font-mono text-xs"
-                key={entry.id}
-              >
-                <span className="text-fg-base font-bold">{entry.type}</span>
+              <li className={styles.entry} key={entry.id}>
+                <span className={styles.entryType}>{entry.type}</span>
                 <span>
                   animationName:{' '}
-                  <span className="text-fg-base">{entry.animationName}</span>
+                  <span className={styles.value}>{entry.animationName}</span>
                 </span>
                 <span>
                   animation.effect.getTiming().duration:{' '}
-                  <span className="text-fg-base">{entry.duration}</span>
+                  <span className={styles.value}>{entry.duration}</span>
                 </span>
                 <span>
                   animation.playState:{' '}
-                  <span className="text-fg-base">{entry.playState}</span>
+                  <span className={styles.value}>{entry.playState}</span>
                 </span>
                 {entry.inGetAnimations !== null && (
                   <span>
                     getAnimations().includes(animation):{' '}
-                    <span className="text-fg-base">
+                    <span className={styles.value}>
                       {String(entry.inGetAnimations)}
                     </span>
                   </span>
@@ -133,13 +133,13 @@ export function AnimationAccessorsDemo() {
         )}
       </div>
 
-      <div className="flex flex-col gap-2">
-        <p className="text-fg-mute text-sm">
+      <div className={styles.section}>
+        <p className={styles.note}>
           要素に当てているCSSです。<Code>animationName</Code>
           はどちらも<Code>beat</Code>ですが、<Code>event.animation</Code>
           のdurationで2本を区別できます。
         </p>
-        <pre className="text-fg-mute my-0 overflow-x-auto text-xs">
+        <pre className={styles.code}>
           <code>{targetStyle}</code>
         </pre>
       </div>

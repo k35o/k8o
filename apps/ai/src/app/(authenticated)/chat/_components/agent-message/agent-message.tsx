@@ -159,21 +159,23 @@ export const AgentMessage: FC<AgentMessageProps> = ({
   }
   const end = message.metadata?.end;
   return (
-    <Message.Root from="assistant">
-      <Avatar color="primary" icon={<AssistantIcon />} name="AI" size="sm" />
-      <div className="flex min-w-0 flex-1 flex-col gap-3">
-        {message.parts.map((part, index) => (
-          <AgentPart
-            isServerRunning={isServerRunning}
-            isStreaming={isStreaming}
-            key={partKey(part, index)}
-            part={part}
-          />
-        ))}
-        {end === undefined || end === 'completed' ? null : (
-          <Alert message={RUN_END_MESSAGES[end]} tone="warning" />
-        )}
-      </div>
+    <Message.Root
+      avatar={
+        <Avatar color="primary" icon={<AssistantIcon />} name="AI" size="sm" />
+      }
+      from="assistant"
+    >
+      {message.parts.map((part, index) => (
+        <AgentPart
+          isServerRunning={isServerRunning}
+          isStreaming={isStreaming}
+          key={partKey(part, index)}
+          part={part}
+        />
+      ))}
+      {end === undefined || end === 'completed' ? null : (
+        <Alert message={RUN_END_MESSAGES[end]} tone="warning" />
+      )}
     </Message.Root>
   );
 };

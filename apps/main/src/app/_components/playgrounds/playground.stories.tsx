@@ -5,6 +5,8 @@ import type { FC } from 'react';
 import preview from '../../../../.storybook/preview';
 import { Playground } from './playground';
 
+import styles from './playground.stories.module.css';
+
 const meta = preview.meta({
   title: 'playgrounds/Playground',
   component: Playground,
@@ -14,7 +16,7 @@ const Counter: FC = () => {
   const [count, setCount] = useState(0);
 
   return (
-    <div className="flex flex-col items-center justify-center gap-4">
+    <div className={styles.counter}>
       <p>{count}</p>
       <Button
         onClick={() => {

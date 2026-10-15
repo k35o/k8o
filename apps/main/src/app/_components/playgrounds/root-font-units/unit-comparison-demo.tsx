@@ -1,76 +1,74 @@
 'use client';
 
+import styles from './unit-comparison-demo.module.css';
+
 const SCALE = 4;
 
 export function UnitComparisonDemo() {
   return (
-    <div className="space-y-8">
+    <div className={styles.root}>
       <div>
-        <p className="text-fg-base mb-2 text-sm font-bold">
-          幅を測る単位（rch, ric）
-        </p>
+        <p className={styles.heading}>幅を測る単位（rch, ric）</p>
 
-        <div className="flex gap-12">
-          <div className="flex flex-col items-start gap-1">
+        <div className={styles.samples}>
+          <div className={styles.widthSample}>
             <span style={{ fontSize: `${SCALE}rem`, lineHeight: 1 }}>水</span>
             <div
-              className="bg-primary-fg rounded-sm"
+              className={styles.bar}
               style={{
                 width: `${SCALE}ric`,
                 height: '8px',
               }}
             />
-            <span className="text-fg-mute font-mono text-xs">1ric</span>
+            <span className={styles.unitName}>1ric</span>
           </div>
 
-          <div className="flex flex-col items-start gap-1">
+          <div className={styles.widthSample}>
             <span style={{ fontSize: `${SCALE}rem`, lineHeight: 1 }}>0</span>
             <div
-              className="bg-primary-fg rounded-sm"
+              className={styles.bar}
               style={{
                 width: `${SCALE}rch`,
                 height: '8px',
               }}
             />
-            <span className="text-fg-mute font-mono text-xs">1rch</span>
+            <span className={styles.unitName}>1rch</span>
           </div>
         </div>
       </div>
 
       <div>
-        <p className="text-fg-base mb-2 text-sm font-bold">
-          高さを測る単位（rcap, rex）
-        </p>
+        <p className={styles.heading}>高さを測る単位（rcap, rex）</p>
 
-        <div className="flex gap-12">
-          <div className="flex items-baseline gap-0.5">
+        <div className={styles.samples}>
+          <div className={styles.heightSample}>
             <span style={{ fontSize: `${SCALE}rem`, lineHeight: 1 }}>H</span>
             <div
-              className="bg-primary-fg rounded-sm"
+              className={styles.bar}
               style={{
                 width: '8px',
                 height: `${SCALE}rcap`,
               }}
             />
             <span
-              className="text-fg-mute font-mono text-xs"
+              className={styles.unitName}
               style={{ writingMode: 'vertical-rl' }}
             >
               1rcap
             </span>
           </div>
 
-          <div className="flex items-baseline gap-0.5">
+          <div className={styles.heightSample}>
             <span style={{ fontSize: `${SCALE}rem`, lineHeight: 1 }}>x</span>
             <div
-              className="bg-primary-fg rounded-sm"
+              className={styles.bar}
               style={{
                 width: '8px',
                 height: `${SCALE}rex`,
               }}
             />
             <span
-              className="text-fg-mute font-mono text-xs"
+              className={styles.unitName}
               style={{ writingMode: 'vertical-rl' }}
             >
               1rex
@@ -79,7 +77,7 @@ export function UnitComparisonDemo() {
         </div>
       </div>
 
-      <p className="text-fg-mute text-sm">
+      <p className={styles.note}>
         文字と単位バーをそれぞれ{SCALE}倍にしたものを表示しています。
         <br />
         1ricは「水」の幅、1rch は「0」の幅、1rcap

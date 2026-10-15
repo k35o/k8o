@@ -3,6 +3,8 @@
 import { Code, FormControl, Select, TextField } from '@k8ordo/ui';
 import { useEffect, useRef, useState } from 'react';
 
+import styles from './attribute-reflection-demo.module.css';
+
 const valueOptions = [
   { value: 'unset', label: '属性なし' },
   { value: 'on', label: 'autocorrect="on"' },
@@ -39,7 +41,7 @@ export function AttributeReflectionDemo() {
   }, [value]);
 
   return (
-    <div className="flex flex-col gap-6">
+    <div className={styles.root}>
       <FormControl
         label="autocorrect属性の値"
         renderInput={({ 'aria-labelledby': _ariaLabelledby, ...props }) => (
@@ -64,16 +66,16 @@ export function AttributeReflectionDemo() {
         )}
       />
 
-      <p className="text-fg-base text-sm">
+      <p className={styles.result}>
         <Code>input.autocorrect</Code>の値:{' '}
-        <span className="font-mono font-bold">
+        <span className={styles.value}>
           {reflected === null
             ? '未対応（プロパティが無い）'
             : String(reflected)}
         </span>
       </p>
 
-      <p className="text-fg-mute text-sm">
+      <p className={styles.note}>
         属性の文字列ではなく真偽値が返ります。
         <Code>off</Code>のときだけ<Code>false</Code>で、空文字列や未定義の値は
         <Code>on</Code>と同じ<Code>true</Code>になります。

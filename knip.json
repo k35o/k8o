@@ -9,13 +9,18 @@
   "ignoreBinaries": ["mise", "vercel"],
   "workspaces": {
     "apps/main": {
-      "ignoreDependencies": ["chromatic"]
+      "ignoreDependencies": ["chromatic"],
+      "entry": ["better-css-modules.config.ts"]
     },
     "apps/ai": {
-      "ignoreDependencies": ["chromatic"]
+      "ignoreDependencies": ["chromatic"],
+      "entry": ["better-css-modules.config.ts"]
     },
     "packages/oxlint-plugin": {
       "ignore": ["tests/fixtures/**"]
+    },
+    "packages/auth-shell": {
+      "entry": ["better-css-modules.config.ts"]
     }
   }
 }

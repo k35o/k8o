@@ -4,6 +4,8 @@ import preview from '../../../../../../.storybook/preview';
 import { ToolFrame } from '../../../_components/tool-frame';
 import { ChatSkeleton } from './chat-skeleton';
 
+import styles from './chat-skeleton.stories.module.css';
+
 const threadId = '6f1c2a4e-0b7d-4c55-9a3e-2f8d1b6c9e01';
 
 // Storybook の型は navigation に segments を持たないが、実行時は segments からルーターの木を組み、
@@ -22,13 +24,13 @@ const headerIn = (canvasElement: HTMLElement): HTMLElement => {
 };
 
 const hasSkeleton = (element: HTMLElement): boolean =>
-  element.querySelector('.motion-safe\\:animate-pulse') !== null;
+  element.querySelector('[data-skeleton]') !== null;
 
 const meta = preview.meta({
   component: ChatSkeleton,
   decorators: [
     (Story) => (
-      <div className="bg-bg-surface flex h-160 flex-col">
+      <div className={styles.frame}>
         <ToolFrame sidebar={null}>
           <Story />
         </ToolFrame>

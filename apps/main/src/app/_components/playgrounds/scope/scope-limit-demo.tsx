@@ -1,16 +1,19 @@
 'use client';
 
 import { Button } from '@k8ordo/ui';
+import { cn } from '@repo/helpers/cn';
 import Image from 'next/image';
 import { useState } from 'react';
+
+import styles from './scope-limit-demo.module.css';
 
 export function ScopeLimitDemo() {
   const [useScopeSelector, setUseScopeSelector] = useState(true);
 
   return (
-    <div className="space-y-4">
-      <div className="flex items-center justify-between">
-        <h3 className="font-bold">:scopeを使ったスコープリミット</h3>
+    <div className={styles.root}>
+      <div className={styles.header}>
+        <h3 className={styles.title}>:scopeを使ったスコープリミット</h3>
         <Button
           color={useScopeSelector ? 'primary' : 'base'}
           onClick={() => {
@@ -42,26 +45,26 @@ export function ScopeLimitDemo() {
         `}
       </style>
 
-      <div className="demo-article-limit bg-bg-mute space-y-4 rounded-lg p-4">
-        <p className="text-fg-mute text-sm">.article（スコープルート）</p>
-        <div className="flex gap-4">
+      <div className={cn('demo-article-limit', styles.article)}>
+        <p className={styles.caption}>.article（スコープルート）</p>
+        <div className={styles.images}>
           <Image
             alt="記事の画像"
-            className="h-20 w-24 object-cover"
+            className={styles.image}
             height={80}
             src="/icon.png"
             width={96}
           />
         </div>
 
-        <div className="demo-nested-limit bg-bg-subtle rounded-md p-4">
-          <p className="text-fg-mute text-sm">
+        <div className={cn('demo-nested-limit', styles.nested)}>
+          <p className={styles.caption}>
             .nested-content（直接の子 → 常に除外）
           </p>
-          <div className="mt-2 flex gap-4">
+          <div className={styles.nestedImages}>
             <Image
               alt="直接の子の画像"
-              className="h-20 w-24 object-cover"
+              className={styles.image}
               height={80}
               src="/icon.png"
               width={96}
@@ -69,16 +72,16 @@ export function ScopeLimitDemo() {
           </div>
         </div>
 
-        <div className="bg-bg-subtle rounded-md p-4">
-          <p className="text-fg-mute text-sm">ラッパー要素</p>
-          <div className="demo-nested-limit bg-bg-mute mt-2 rounded-md p-4">
-            <p className="text-fg-mute text-sm">
+        <div className={styles.nested}>
+          <p className={styles.caption}>ラッパー要素</p>
+          <div className={cn('demo-nested-limit', styles.grandchild)}>
+            <p className={styles.caption}>
               .nested-content（孫要素 → :scope &gt;の時は適用される）
             </p>
-            <div className="mt-2 flex gap-4">
+            <div className={styles.nestedImages}>
               <Image
                 alt="孫要素の画像"
-                className="h-20 w-24 object-cover"
+                className={styles.image}
                 height={80}
                 src="/icon.png"
                 width={96}
@@ -88,7 +91,7 @@ export function ScopeLimitDemo() {
         </div>
       </div>
 
-      <pre className="text-fg-mute sm:text-md overflow-x-auto text-xs">
+      <pre className={styles.code}>
         <code>
           {useScopeSelector
             ? `@scope (.article) to (:scope > .nested-content) {

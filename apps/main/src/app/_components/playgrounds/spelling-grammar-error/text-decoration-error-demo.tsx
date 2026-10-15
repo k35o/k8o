@@ -1,5 +1,7 @@
 import type { FC } from 'react';
 
+import styles from './text-decoration-error-demo.module.css';
+
 const APPLIED_CSS = `.spelling {
   text-decoration-line: spelling-error;
 }
@@ -9,14 +11,14 @@ const APPLIED_CSS = `.spelling {
 }`;
 
 export const TextDecorationErrorDemo: FC = () => (
-  <div className="flex flex-col gap-3">
+  <div className={styles.root}>
     <p className="text-decoration-error-demo" lang="ja">
       この文章では
       <span className="spelling">誤字っぽく見せたい部分</span>と
       <span className="grammar">文法が怪しく見せたい部分</span>
       を、ブラウザ標準のエラー表示と同じ装飾で描いています。
     </p>
-    <pre className="text-fg-mute sm:text-md overflow-x-auto text-xs">
+    <pre className={styles.code}>
       <code>{APPLIED_CSS}</code>
     </pre>
     {/* セレクタをデモの要素に限定し、ページ内の他要素へスタイルが波及しないようにする */}

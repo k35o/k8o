@@ -1,0 +1,19 @@
+.empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  padding: calc(var(--spacing) * 6);
+  text-align: center;
+  color: var(--color-fg-mute);
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-relaxed);
+}
+
+.code {
+  height: 100%;
+  overflow: auto;
+  padding: calc(var(--spacing) * 5);
+  font-size: var(--font-size-xs);
+  line-height: var(--line-height-relaxed);
+}

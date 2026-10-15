@@ -1,19 +1,18 @@
 import NextImage from 'next/image';
 import type { ComponentProps, FC } from 'react';
 
+import styles from './image.module.css';
+
 type Props = Omit<ComponentProps<typeof NextImage>, 'className'>;
 
 export const Image: FC<Props> = (props) => (
-  <figure className="vertical:max-w-container-lg mx-auto my-6 flex flex-col items-center gap-2">
-    <NextImage
-      className="bg-bg-subtle ring-border-subtle vertical:writing-h vertical:h-auto vertical:w-full rounded-lg shadow-xs ring-1"
-      {...props}
-    />
+  <figure className={styles.figure}>
+    <NextImage className={styles.image} {...props} />
     {props.alt !== '' && (
       <figcaption
         // alt と同じ文を読み上げで二重にしない
         aria-hidden
-        className="text-fg-mute text-center text-xs leading-relaxed"
+        className={styles.caption}
       >
         {props.alt}
       </figcaption>
@@ -22,7 +21,7 @@ export const Image: FC<Props> = (props) => (
 );
 
 export const FloatImage: FC<Props> = (props) => (
-  <div className="float-right ms-4">
+  <div className={styles.float}>
     <Image {...props} />
   </div>
 );

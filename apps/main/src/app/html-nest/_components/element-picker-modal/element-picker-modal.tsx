@@ -15,6 +15,8 @@ import type { FC } from 'react';
 import { HTML_ELEMENTS } from '../../_data/elements';
 import { RelatedGroups } from '../related-groups';
 
+import styles from './element-picker-modal.module.css';
+
 // 役割別チップで全要素を見せる。選択用なので conditional は使わず false 固定。
 const ALL: RelatedElement[] = HTML_ELEMENTS.map((element) => ({
   element,
@@ -72,7 +74,7 @@ export const ElementPickerModal: FC<ElementPickerModalProps> = ({
           <Dialog.Content>
             {/* 閉じている間は重い一覧を組み立てない。 */}
             {isOpen && (
-              <div className="flex flex-col gap-3">
+              <div className={styles.root}>
                 <FormControl
                   label="要素を検索"
                   renderInput={(props) => (
@@ -86,11 +88,11 @@ export const ElementPickerModal: FC<ElementPickerModalProps> = ({
                     />
                   )}
                 />
-                <div className="max-h-[55vh] overflow-y-auto">
+                <div className={styles.list}>
                   {filtered.length > 0 ? (
                     <RelatedGroups items={filtered} onSelect={select} />
                   ) : (
-                    <p className="text-fg-mute text-sm">該当なし</p>
+                    <p className={styles.empty}>該当なし</p>
                   )}
                 </div>
               </div>

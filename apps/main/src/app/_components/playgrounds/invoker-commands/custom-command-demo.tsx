@@ -5,6 +5,8 @@ import { useEffect, useRef } from 'react';
 
 import k8oIcon from '@/app/_images/k8o.jpg';
 
+import styles from './custom-command-demo.module.css';
+
 export function CustomCommandDemo() {
   const imageRef = useRef<HTMLDivElement>(null);
   const scaleRef = useRef(1);
@@ -38,10 +40,10 @@ export function CustomCommandDemo() {
   }, []);
 
   return (
-    <div className="space-y-4">
-      <div className="flex gap-2">
+    <div className={styles.root}>
+      <div className={styles.actions}>
         <button
-          className="bg-primary-bg text-primary-fg rounded-md px-4 py-2"
+          className={styles.zoomButton}
           command="--zoom-in"
           commandfor="demo-image"
           type="button"
@@ -49,7 +51,7 @@ export function CustomCommandDemo() {
           拡大
         </button>
         <button
-          className="bg-primary-bg text-primary-fg rounded-md px-4 py-2"
+          className={styles.zoomButton}
           command="--zoom-out"
           commandfor="demo-image"
           type="button"
@@ -57,7 +59,7 @@ export function CustomCommandDemo() {
           縮小
         </button>
         <button
-          className="bg-bg-mute text-fg-base hover:bg-bg-subtle rounded-md px-4 py-2"
+          className={styles.resetButton}
           command="--reset"
           commandfor="demo-image"
           type="button"
@@ -66,17 +68,13 @@ export function CustomCommandDemo() {
         </button>
       </div>
 
-      <div className="flex items-center justify-center py-4">
-        <div
-          className="size-24 overflow-hidden rounded-full transition-all duration-300"
-          id="demo-image"
-          ref={imageRef}
-        >
-          <Image alt="k8o" className="size-full object-cover" src={k8oIcon} />
+      <div className={styles.stage}>
+        <div className={styles.image} id="demo-image" ref={imageRef}>
+          <Image alt="k8o" className={styles.photo} src={k8oIcon} />
         </div>
       </div>
 
-      <p className="text-fg-mute text-sm">
+      <p className={styles.note}>
         カスタムコマンド（
         <code>--zoom-in</code>、<code>--zoom-out</code>、<code>--reset</code>
         ）で操作しています。

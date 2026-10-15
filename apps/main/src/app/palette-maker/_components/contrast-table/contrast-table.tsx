@@ -3,6 +3,8 @@ import type { FC } from 'react';
 
 import type { PaletteSwatch } from '../../_types/palette';
 
+import styles from './contrast-table.module.css';
+
 type Props = {
   swatches: readonly PaletteSwatch[];
 };
@@ -20,10 +22,10 @@ const ContrastValue: FC<ContrastValueProps> = ({ hex, text, ratio, apca }) => {
   const isPass = ratio >= AA_NORMAL_TEXT;
 
   return (
-    <div className="flex items-center gap-2">
+    <div className={styles.value}>
       <span
         aria-hidden="true"
-        className="flex size-8 shrink-0 items-center justify-center rounded-md text-sm font-bold"
+        className={styles.sample}
         style={{
           backgroundColor: hex,
           color: text === 'white' ? '#ffffff' : '#000000',
@@ -31,48 +33,39 @@ const ContrastValue: FC<ContrastValueProps> = ({ hex, text, ratio, apca }) => {
       >
         Aa
       </span>
-      <div className="flex flex-col">
+      <div className={styles.scores}>
         {/* 合否を色だけに頼らず、アイコン(形)と読み上げテキストでも伝える */}
-        <span
-          className={`flex items-center gap-1 text-sm font-bold ${
-            isPass ? 'text-fg-success' : 'text-fg-error'
-          }`}
-        >
+        <span className={styles.ratio} data-pass={isPass}>
           <AlertIcon size="sm" status={isPass ? 'success' : 'error'} />
           {ratio.toFixed(2)}
-          <span className="sr-only">
+          <span className={styles.srOnly}>
             {isPass ? '（AA合格）' : '（AA不合格）'}
           </span>
         </span>
-        <span className="text-fg-mute text-xs">Lc {apca.toFixed(1)}</span>
+        <span className={styles.apca}>Lc {apca.toFixed(1)}</span>
       </div>
     </div>
   );
 };
 
 export const ContrastTable: FC<Props> = ({ swatches }) => (
-  <div className="flex flex-col gap-2">
-    <div className="border-border-base bg-bg-base overflow-hidden rounded-xl border">
-      <div className="sm:hidden">
+  <div className={styles.root}>
+    <div className={styles.frame}>
+      <div className={styles.cards}>
         {swatches.map((swatch) => (
-          <div
-            className="border-border-base flex flex-col gap-3 border-b p-4 last:border-b-0"
-            key={swatch.step}
-          >
-            <div className="flex items-center gap-2">
+          <div className={styles.card} key={swatch.step}>
+            <div className={styles.cardHeader}>
               <span
                 aria-hidden="true"
-                className="border-border-base size-6 shrink-0 rounded-md border"
+                className={styles.swatch}
                 style={{ backgroundColor: swatch.hex }}
               />
-              <span className="text-fg-base font-bold">{swatch.step}</span>
-              <span className="text-fg-mute font-mono text-xs">
-                {swatch.hex}
-              </span>
+              <span className={styles.step}>{swatch.step}</span>
+              <span className={styles.hex}>{swatch.hex}</span>
             </div>
-            <div className="grid grid-cols-2 gap-2">
-              <div className="flex flex-col gap-1">
-                <span className="text-fg-mute text-xs">白文字</span>
+            <div className={styles.cardScores}>
+              <div className={styles.cardScore}>
+                <span className={styles.cardLabel}>白文字</span>
                 <ContrastValue
                   apca={swatch.apcaWhite}
                   hex={swatch.hex}
@@ -80,8 +73,8 @@ export const ContrastTable: FC<Props> = ({ swatches }) => (
                   text="white"
                 />
               </div>
-              <div className="flex flex-col gap-1">
-                <span className="text-fg-mute text-xs">黒文字</span>
+              <div className={styles.cardScore}>
+                <span className={styles.cardLabel}>黒文字</span>
                 <ContrastValue
                   apca={swatch.apcaBlack}
                   hex={swatch.hex}
@@ -93,47 +86,40 @@ export const ContrastTable: FC<Props> = ({ swatches }) => (
           </div>
         ))}
       </div>
-      <table className="hidden w-full sm:table">
+      <table className={styles.table}>
         <thead>
-          <tr className="border-border-base bg-bg-mute border-b text-left text-sm font-medium">
-            <th className="px-4 py-3" scope="col">
+          <tr className={styles.headRow}>
+            <th className={styles.headCell} scope="col">
               段
             </th>
-            <th className="px-4 py-3" scope="col">
+            <th className={styles.headCell} scope="col">
               色
             </th>
-            <th className="px-4 py-3" scope="col">
+            <th className={styles.headCell} scope="col">
               OKLCH
             </th>
-            <th className="px-4 py-3" scope="col">
+            <th className={styles.headCell} scope="col">
               白文字
             </th>
-            <th className="px-4 py-3" scope="col">
+            <th className={styles.headCell} scope="col">
               黒文字
             </th>
           </tr>
         </thead>
         <tbody>
           {swatches.map((swatch) => (
-            <tr
-              className="border-border-base border-b last:border-b-0"
-              key={swatch.step}
-            >
-              <td className="text-fg-base px-4 py-2 font-bold">
-                {swatch.step}
-              </td>
-              <td className="text-fg-mute px-4 py-2 font-mono text-xs">
+            <tr className={styles.row} key={swatch.step}>
+              <td className={styles.stepCell}>{swatch.step}</td>
+              <td className={styles.monoCell}>
                 <span
                   aria-hidden="true"
-                  className="border-border-base mr-2 inline-block size-6 rounded-md border align-middle"
+                  className={styles.inlineSwatch}
                   style={{ backgroundColor: swatch.hex }}
                 />
                 {swatch.hex}
               </td>
-              <td className="text-fg-mute px-4 py-2 font-mono text-xs">
-                {swatch.cssOklch}
-              </td>
-              <td className="px-4 py-2">
+              <td className={styles.monoCell}>{swatch.cssOklch}</td>
+              <td className={styles.cell}>
                 <ContrastValue
                   apca={swatch.apcaWhite}
                   hex={swatch.hex}
@@ -141,7 +127,7 @@ export const ContrastTable: FC<Props> = ({ swatches }) => (
                   text="white"
                 />
               </td>
-              <td className="px-4 py-2">
+              <td className={styles.cell}>
                 <ContrastValue
                   apca={swatch.apcaBlack}
                   hex={swatch.hex}
@@ -154,7 +140,7 @@ export const ContrastTable: FC<Props> = ({ swatches }) => (
         </tbody>
       </table>
     </div>
-    <p className="text-fg-mute text-xs">
+    <p className={styles.note}>
       WCAG比は4.5以上（通常テキストのAA基準）を合格とし、色とアイコンで示しています
     </p>
   </div>

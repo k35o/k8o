@@ -1,6 +1,4 @@
-'use client';
-
-import { CopyIcon, IconButton, useClipboard, useToast } from '@k8ordo/ui';
+import { CopyButton } from '@k8ordo/ui';
 import type { FC } from 'react';
 
 type CopyCodeButtonProps = {
@@ -8,31 +6,12 @@ type CopyCodeButtonProps = {
 };
 
 // コピー対象はハイライト済み DOM ではなく生の code 文字列（span 分割や空行の \n の影響を避ける）。
-export const CopyCodeButton: FC<CopyCodeButtonProps> = ({ code }) => {
-  const { writeClipboard } = useClipboard();
-  const { open } = useToast();
-
-  const handleCopy = async (): Promise<void> => {
-    if (code === null) {
-      return;
-    }
-    try {
-      await writeClipboard(code);
-      open('success', 'コードをコピーしました');
-    } catch {
-      open('error', 'コピーに失敗しました');
-    }
-  };
-
-  return (
-    <IconButton
-      color="base"
-      disabled={code === null}
-      label="コードをコピー"
-      onAction={handleCopy}
-      size="sm"
-    >
-      <CopyIcon size="sm" />
-    </IconButton>
-  );
-};
+export const CopyCodeButton: FC<CopyCodeButtonProps> = ({ code }) => (
+  <CopyButton
+    disabled={code === null}
+    iconOnly
+    label="コードをコピー"
+    size="sm"
+    value={code ?? ''}
+  />
+);

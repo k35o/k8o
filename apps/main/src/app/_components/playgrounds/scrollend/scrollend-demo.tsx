@@ -3,6 +3,8 @@
 import { range } from '@repo/helpers/array/range';
 import { useState } from 'react';
 
+import styles from './scrollend-demo.module.css';
+
 export function ScrollendDemo() {
   const [scrollCount, setScrollCount] = useState(0);
   const [scrollendCount, setScrollendCount] = useState(0);
@@ -11,24 +13,24 @@ export function ScrollendDemo() {
   );
 
   return (
-    <div className="space-y-4">
-      <div className="flex flex-wrap items-center gap-4">
-        <div className="flex items-center gap-2">
-          <span className="text-fg-mute text-sm">scroll発火:</span>
-          <span className="text-fg-info font-bold">{scrollCount}回</span>
+    <div className={styles.root}>
+      <div className={styles.status}>
+        <div className={styles.counter}>
+          <span className={styles.label}>scroll発火:</span>
+          <span className={styles.scrollCount}>{scrollCount}回</span>
         </div>
-        <div className="flex items-center gap-2">
-          <span className="text-fg-mute text-sm">scrollend発火:</span>
-          <span className="text-primary-fg font-bold">{scrollendCount}回</span>
+        <div className={styles.counter}>
+          <span className={styles.label}>scrollend発火:</span>
+          <span className={styles.scrollendCount}>{scrollendCount}回</span>
         </div>
         {lastScrollendTime !== null && (
-          <div className="flex items-center gap-2">
-            <span className="text-fg-mute text-sm">最終発火:</span>
-            <span className="text-sm">{lastScrollendTime}</span>
+          <div className={styles.counter}>
+            <span className={styles.label}>最終発火:</span>
+            <span className={styles.time}>{lastScrollendTime}</span>
           </div>
         )}
         <button
-          className="bg-bg-mute hover:bg-bg-subtle ml-auto rounded-md px-3 py-1 text-sm"
+          className={styles.reset}
           onClick={() => {
             setScrollCount(0);
             setScrollendCount(0);
@@ -42,7 +44,7 @@ export function ScrollendDemo() {
 
       <section
         aria-label="scrollendイベントを確認するスクロール領域"
-        className="bg-bg-mute h-48 overflow-y-scroll rounded-xl p-4"
+        className={styles.scroller}
         onScroll={() => {
           setScrollCount((prev) => prev + 1);
         }}
@@ -52,14 +54,11 @@ export function ScrollendDemo() {
         }}
         tabIndex={0}
       >
-        <div className="space-y-4">
+        <div className={styles.list}>
           {range(0, 20).map((n) => (
-            <div
-              className="bg-bg-base rounded-md p-3 shadow-sm"
-              key={`scrollend-item-${n}`}
-            >
-              <p className="text-fg-base">アイテム {n + 1}</p>
-              <p className="text-fg-mute text-sm">
+            <div className={styles.item} key={`scrollend-item-${n}`}>
+              <p className={styles.itemTitle}>アイテム {n + 1}</p>
+              <p className={styles.itemText}>
                 スクロールしてscrollendイベントの発火を確認してください
               </p>
             </div>
@@ -67,7 +66,7 @@ export function ScrollendDemo() {
         </div>
       </section>
 
-      <p className="text-fg-mute text-sm">
+      <p className={styles.note}>
         上のエリアをスクロールすると、scroll
         イベントは連続して発火しますが、scrollend
         イベントはスクロールが完全に終了したときのみ発火します。

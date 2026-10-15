@@ -4,6 +4,8 @@ import { Button, Code, Switch } from '@k8ordo/ui';
 import { range } from '@repo/helpers/array/range';
 import { useEffect, useRef, useState } from 'react';
 
+import styles from './scroll-anchoring-demo.module.css';
+
 const INITIAL_COUNT = 12;
 const MAP_HEIGHT = 224;
 
@@ -52,8 +54,8 @@ export function ScrollAnchoringDemo() {
   const scale = metrics === null ? 0 : MAP_HEIGHT / metrics.scrollHeight;
 
   return (
-    <div className="flex flex-col gap-6">
-      <div className="flex flex-wrap items-center gap-4">
+    <div className={styles.root}>
+      <div className={styles.controls}>
         <Switch
           checked={anchoring}
           label="overflow-anchor: auto（補正あり）"
@@ -83,10 +85,10 @@ export function ScrollAnchoringDemo() {
         </Button>
       </div>
 
-      <div className="flex gap-4">
+      <div className={styles.body}>
         <section
           aria-label="スクロールアンカリングを確認するスクロール領域"
-          className="bg-bg-mute h-56 min-w-0 flex-1 overflow-y-scroll rounded-xl p-4"
+          className={styles.scroller}
           onScroll={(e) => {
             const prependedBlock = prependedRef.current;
             if (prependedBlock !== null) {
@@ -101,14 +103,11 @@ export function ScrollAnchoringDemo() {
           }}
           tabIndex={0}
         >
-          <div className="flex flex-col gap-3">
-            <div
-              className="flex flex-col gap-3 empty:hidden"
-              ref={prependedRef}
-            >
+          <div className={styles.list}>
+            <div className={styles.prepended} ref={prependedRef}>
               {range(0, prepended).map((n) => (
                 <div
-                  className="bg-primary-bg text-primary-fg rounded-md p-3 text-sm"
+                  className={styles.prependedItem}
                   key={`prepended-${String(n)}`}
                 >
                   あとから先頭に追加された要素 {String(prepended - n)}
@@ -116,11 +115,8 @@ export function ScrollAnchoringDemo() {
               ))}
             </div>
             {range(0, INITIAL_COUNT).map((n) => (
-              <div
-                className="bg-bg-base rounded-md p-3 shadow-sm"
-                key={`item-${String(n)}`}
-              >
-                <p className="text-fg-base">アイテム {String(n + 1)}</p>
+              <div className={styles.item} key={`item-${String(n)}`}>
+                <p className={styles.itemText}>アイテム {String(n + 1)}</p>
               </div>
             ))}
           </div>
@@ -129,17 +125,17 @@ export function ScrollAnchoringDemo() {
         {/* スクロール領域の全体を縦に縮めた地図。追加した要素の領域と、いま見えている範囲を重ねる */}
         <div
           aria-hidden="true"
-          className="bg-bg-subtle relative w-6 shrink-0 rounded-full"
+          className={styles.map}
           style={{ height: MAP_HEIGHT }}
         >
           {metrics !== null && (
             <>
               <div
-                className="bg-primary-bg absolute inset-x-0 top-0 rounded-t-full"
+                className={styles.mapPrepended}
                 style={{ height: metrics.prependedHeight * scale }}
               />
               <div
-                className="border-fg-base absolute inset-x-0 rounded-sm border-2 transition-[top] duration-200"
+                className={styles.mapViewport}
                 style={{
                   top: metrics.scrollTop * scale,
                   height: metrics.clientHeight * scale,
@@ -151,19 +147,17 @@ export function ScrollAnchoringDemo() {
       </div>
 
       {metrics !== null && (
-        <dl className="grid grid-cols-[auto_1fr] gap-x-4 gap-y-1 text-sm">
-          <dt className="text-fg-mute">scrollTop</dt>
-          <dd className="text-fg-base font-mono">
-            {String(metrics.scrollTop)}px
-          </dd>
-          <dt className="text-fg-mute">先頭に追加した要素の高さ</dt>
-          <dd className="text-fg-base font-mono">
+        <dl className={styles.metrics}>
+          <dt className={styles.metricName}>scrollTop</dt>
+          <dd className={styles.metricValue}>{String(metrics.scrollTop)}px</dd>
+          <dt className={styles.metricName}>先頭に追加した要素の高さ</dt>
+          <dd className={styles.metricValue}>
             {String(metrics.prependedHeight)}px
           </dd>
         </dl>
       )}
 
-      <p className="text-fg-mute text-sm">
+      <p className={styles.note}>
         途中までスクロールした状態で先頭に要素を足します。右の帯は領域全体を縮めた地図で、上の塗りが追加した要素、枠がいま見えている範囲です。
         <Code>auto</Code>
         では枠が追加した高さのぶん下へ動いて見えているアイテムが留まり、

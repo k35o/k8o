@@ -1,4 +1,5 @@
-.figure {
+/* better-css-modules-disable tokens/spacing, tokens/font-size, tokens/line-height -- スライドはコンテナ幅（cqi）に比例させる */
+.root {
   margin: 0 0 1cqi;
   display: flex;
   flex-direction: column;
@@ -6,7 +7,7 @@
   gap: 0.5cqi;
 }
 
-.img {
+.image {
   display: block;
   max-width: 50%;
   max-height: 35cqh;

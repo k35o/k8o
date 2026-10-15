@@ -7,10 +7,12 @@ import type { FC } from 'react';
 export const NotificationsLink: FC = () => (
   <IconButton
     label="通知"
+    // next/link は onClick や ref に明示的な undefined を受けない
+    // (exactOptionalPropertyTypes) ため、束は展開せず要るものだけ取り出す
     renderItem={({
+      'aria-label': ariaLabel,
       className,
       children,
-      'aria-label': ariaLabel,
       triggerProps,
     }) => (
       <Link

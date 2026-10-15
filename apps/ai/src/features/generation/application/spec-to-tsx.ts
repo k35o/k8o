@@ -61,12 +61,21 @@ export const ICON_COMPONENTS: Record<string, string> = {
   qiita: 'QiitaIcon',
 };
 
-// Card の size → 内側パディング（registry の CARD_PADDING_CLASS と同じ対応）。
-export const CARD_PADDING: Record<string, string> = {
-  sm: 'p-4',
-  md: 'p-6',
-  lg: 'p-8',
+// Card の size → 内側パディングの --spacing 倍率（registry の CARD_PADDING_CLASS と同じ対応）。
+export const CARD_PADDING: Record<string, number> = {
+  sm: 4,
+  md: 6,
+  lg: 8,
 };
+
+// 移植先に Tailwind を仮定せず、registry が CSS Modules で当てているのと同じ
+// 見た目を @k8ordo/ui のトークンで書いた inline style にする。
+const FIELD_STYLE =
+  "{{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing)' }}";
+const FIELD_LABEL_STYLE =
+  "{{ color: 'var(--color-fg-base)', fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', lineHeight: 'var(--line-height-sm)' }}";
+const cardPaddingStyle = (spacing: number): string =>
+  `{{ padding: 'calc(var(--spacing) * ${spacing.toString()})' }}`;
 
 // catalog の FormControl.fieldType → renderInput に置く入力コンポーネント
 // （registry の FormControlWidget と同じ対応）。
@@ -297,9 +306,9 @@ const emitLabeledGroup = (
   const name = textProp(el, 'name', ctx);
   const labelId = `${name === '' ? el.type.toLowerCase() : name}-label`;
   return wrap(
-    '<div className="flex flex-col gap-1">',
+    `<div style=${FIELD_STYLE}>`,
     [
-      `<span className="text-fg-base text-sm font-medium" id="${labelId}">${escapeText(textProp(el, 'label', ctx))}</span>`,
+      `<span style=${FIELD_LABEL_STYLE} id="${labelId}">${escapeText(textProp(el, 'label', ctx))}</span>`,
       ...renderField(labelId),
     ],
     '</div>',
@@ -349,10 +358,14 @@ const emitElement = (el: UIElement, ctx: Ctx): string[] => {
       ctx.imports.add('Card');
       const size =
         typeof el.props['size'] === 'string' ? el.props['size'] : 'md';
-      const padding = CARD_PADDING[size] ?? 'p-6';
+      const padding = CARD_PADDING[size] ?? 6;
       return wrap(
         `<Card${attrs(el, CONVERTED_PROPS.Card, ctx)}>`,
-        wrap(`<div className="${padding}">`, emitChildren(el, ctx), '</div>'),
+        wrap(
+          `<div style=${cardPaddingStyle(padding)}>`,
+          emitChildren(el, ctx),
+          '</div>',
+        ),
         '</Card>',
       );
     }
@@ -363,10 +376,12 @@ const emitElement = (el: UIElement, ctx: Ctx): string[] => {
       const label = escapeText(textProp(el, 'label', ctx));
       if (typeof href === 'string' && href !== '') {
         // href 付きは renderItem でリンクとして描画する（実 Button の作法）。
+        // registry は className と children だけ取るが、移植先で onClick や disabled を
+        // 足しても捨てられないよう、<button> 専用の disabled / type を外して残りを広げる。
         return [
           `<Button${base}`,
-          '  renderItem={({ className, children }) => (',
-          `    <a className={className} href=${escapeAttrString(href)}>`,
+          '  renderItem={({ children, disabled: _disabled, type: _type, ...props }) => (',
+          `    <a {...props} href=${escapeAttrString(href)}>`,
           '      {children}',
           '    </a>',
           '  )}',

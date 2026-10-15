@@ -5,11 +5,13 @@
 import { Button, DropdownMenu, Tooltip } from '@k8ordo/ui';
 import type { FC } from 'react';
 
+import styles from './tooltip-dropdown-demo.module.css';
+
 export const TooltipDropdownDemo: FC = () => (
-  <div className="flex flex-col gap-4">
-    <div className="flex flex-wrap items-center justify-around gap-4">
-      <div className="flex flex-col items-center gap-2">
-        <p className="text-lg font-bold md:text-xl">Tooltip</p>
+  <div className={styles.root}>
+    <div className={styles.row}>
+      <div className={styles.item}>
+        <p className={styles.title}>Tooltip</p>
         <Tooltip.Root placement="bottom">
           <Tooltip.Trigger
             renderItem={(props) => (
@@ -23,8 +25,8 @@ export const TooltipDropdownDemo: FC = () => (
           </Tooltip.Content>
         </Tooltip.Root>
       </div>
-      <div className="flex flex-col items-center gap-2">
-        <p className="text-lg font-bold md:text-xl">Dropdown Menu</p>
+      <div className={styles.item}>
+        <p className={styles.title}>Dropdown Menu</p>
         <DropdownMenu.Root>
           <DropdownMenu.Trigger label="Options" variant="outline" />
           <DropdownMenu.Content>
@@ -50,8 +52,6 @@ export const TooltipDropdownDemo: FC = () => (
         </DropdownMenu.Root>
       </div>
     </div>
-    <p className="text-fg-mute self-center text-xs md:text-sm">
-      このUIの実装はPopover APIを使っていません。
-    </p>
+    <p className={styles.note}>このUIの実装はPopover APIを使っていません。</p>
   </div>
 );

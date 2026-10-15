@@ -1,18 +1,20 @@
 'use client';
 
 import { CloseIcon, IconButton } from '@k8ordo/ui';
-import { cn } from '@repo/helpers/cn';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import type { FC } from 'react';
 
 import type { Slide } from '@/app/slides/_utils/split-slides';
 
+import { BrowserOnly } from '../browser-only';
 import { useDeckController } from '../hooks/use-deck-controller';
 import { useBroadcastViewerHeartbeat } from '../hooks/use-presenter-lifecycle';
 import { NavButton } from '../nav-button';
 import { ProgressBar } from '../progress-bar';
 import { Stage } from '../stage';
+
+import styles from './deck-viewer.module.css';
 
 export const DeckViewer: FC<{
   slug: string;
@@ -21,7 +23,7 @@ export const DeckViewer: FC<{
   qrUrl: string;
 }> = ({ slug, title, slides, qrUrl }) => {
   const total = slides.length;
-  const { index, next, prev, isFullscreen, isHydrated } = useDeckController({
+  const { index, next, prev, isFullscreen } = useDeckController({
     total,
     channelName: `slides:${slug}`,
   });
@@ -59,18 +61,20 @@ export const DeckViewer: FC<{
     <section
       aria-label={title}
       aria-roledescription="slide deck"
-      className="bg-bg-mute text-fg-base fixed inset-0 z-50 flex flex-col"
+      className={styles.root}
     >
       {!isMaximized && (
-        <header className="flex items-center justify-between gap-4 px-4 py-2">
-          <div className="flex items-center gap-2">
+        <header className={styles.header}>
+          <div className={styles.titleRow}>
             <IconButton
               color="transparent"
               label="Slides一覧へ戻る"
+              // next/link は onClick や ref に明示的な undefined を受けない
+              // (exactOptionalPropertyTypes) ため、束は展開せず要るものだけ取り出す
               renderItem={({
+                'aria-label': ariaLabel,
                 className,
                 children: itemChildren,
-                'aria-label': ariaLabel,
                 triggerProps,
               }) => (
                 <Link
@@ -85,17 +89,14 @@ export const DeckViewer: FC<{
             >
               <CloseIcon />
             </IconButton>
-            <p className="text-fg-base truncate text-sm font-bold">{title}</p>
+            <p className={styles.title}>{title}</p>
           </div>
-          <div className="flex items-center gap-3">
-            <p
-              aria-live="polite"
-              className="text-primary-fg text-sm font-medium tabular-nums"
-            >
-              {index + 1} <span className="text-fg-mute">/ {total}</span>
+          <div className={styles.actions}>
+            <p aria-live="polite" className={styles.counter}>
+              {index + 1} <span className={styles.total}>/ {total}</span>
             </p>
             <button
-              className="text-fg-mute hover:text-primary-fg cursor-pointer text-sm underline"
+              className={styles.action}
               onClick={() => {
                 const opened = window.open(presenterHref, '_blank');
                 if (opened === null) return;
@@ -106,7 +107,7 @@ export const DeckViewer: FC<{
               発表者モード
             </button>
             <button
-              className="text-fg-mute hover:text-primary-fg cursor-pointer text-sm underline"
+              className={styles.action}
               onClick={() => {
                 window.print();
               }}
@@ -118,16 +119,14 @@ export const DeckViewer: FC<{
         </header>
       )}
       {!isMaximized && <ProgressBar current={index} total={total} />}
-      <div
-        className={cn('min-h-0 flex-1', isMaximized ? null : 'px-4 pt-2 pb-4')}
-      >
+      <div className={styles.stage} data-maximized={isMaximized}>
         <Stage flush={isMaximized} key={index} qrUrl={qrUrl}>
-          {isHydrated ? current?.content : null}
+          <BrowserOnly>{current?.content}</BrowserOnly>
         </Stage>
       </div>
       {isPresenting && (
-        <div className="pointer-events-none absolute top-2 right-2 z-10">
-          <div className="pointer-events-auto">
+        <div className={styles.exit}>
+          <div className={styles.exitButton}>
             <IconButton
               color="base"
               label="発表者モードを終了"
@@ -141,7 +140,7 @@ export const DeckViewer: FC<{
         </div>
       )}
       {!isMaximized && (
-        <footer className="flex items-center justify-between gap-2 px-4 py-2">
+        <footer className={styles.footer}>
           <NavButton direction="prev" disabled={index === 0} onAction={prev} />
           <NavButton
             direction="next"

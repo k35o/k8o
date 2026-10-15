@@ -7,57 +7,49 @@ import Markdown from 'react-markdown';
 import type { Components } from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 
+import styles from './markdown-text.module.css';
+
 // react-markdown の code はインラインかコードブロックの中かを区別できないので、pre から伝える
 const InCodeBlockContext = createContext(false);
 
 const components: Components = {
-  h1: ({ children }) => <h1 className="text-base font-bold">{children}</h1>,
-  h2: ({ children }) => <h2 className="text-base font-bold">{children}</h2>,
-  h3: ({ children }) => <h3 className="text-base font-bold">{children}</h3>,
-  h4: ({ children }) => <h4 className="text-base font-bold">{children}</h4>,
-  h5: ({ children }) => <h5 className="text-base font-bold">{children}</h5>,
-  h6: ({ children }) => <h6 className="text-base font-bold">{children}</h6>,
+  h1: ({ children }) => <h1 className={styles.heading}>{children}</h1>,
+  h2: ({ children }) => <h2 className={styles.heading}>{children}</h2>,
+  h3: ({ children }) => <h3 className={styles.heading}>{children}</h3>,
+  h4: ({ children }) => <h4 className={styles.heading}>{children}</h4>,
+  h5: ({ children }) => <h5 className={styles.heading}>{children}</h5>,
+  h6: ({ children }) => <h6 className={styles.heading}>{children}</h6>,
   a: ({ href, children }) =>
     href === undefined || href === '' ? (
       <span>{children}</span>
     ) : (
       <Anchor href={href}>{children}</Anchor>
     ),
-  ul: ({ children }) => (
-    <ul className="flex list-disc flex-col gap-1 pl-6">{children}</ul>
-  ),
-  ol: ({ children }) => (
-    <ol className="flex list-decimal flex-col gap-1 pl-6">{children}</ol>
-  ),
+  ul: ({ children }) => <ul className={styles.list}>{children}</ul>,
+  ol: ({ children }) => <ol className={styles.orderedList}>{children}</ol>,
   blockquote: ({ children }) => (
-    <blockquote className="border-border-base text-fg-mute flex flex-col gap-3 border-l-4 pl-4">
-      {children}
-    </blockquote>
+    <blockquote className={styles.blockquote}>{children}</blockquote>
   ),
-  strong: ({ children }) => <strong className="font-bold">{children}</strong>,
-  em: ({ children }) => <em className="italic">{children}</em>,
-  hr: () => <hr className="border-border-mute" />,
+  strong: ({ children }) => (
+    <strong className={styles.strong}>{children}</strong>
+  ),
+  em: ({ children }) => <em className={styles.em}>{children}</em>,
+  hr: () => <hr className={styles.hr} />,
   table: ({ children }) => (
     <div
-      className="overflow-x-auto"
+      className={styles.tableScroller}
       // 横にスクロールする広い表をキーボードでも読めるよう、フォーカスできるようにする
       // oxlint-disable-next-line jsx-a11y/no-noninteractive-tabindex
       tabIndex={0}
     >
-      <table className="border-collapse text-sm">{children}</table>
+      <table className={styles.table}>{children}</table>
     </div>
   ),
-  th: ({ children }) => (
-    <th className="border-border-base border px-2 py-1 text-left font-bold">
-      {children}
-    </th>
-  ),
-  td: ({ children }) => (
-    <td className="border-border-base border px-2 py-1">{children}</td>
-  ),
+  th: ({ children }) => <th className={styles.th}>{children}</th>,
+  td: ({ children }) => <td className={styles.td}>{children}</td>,
   pre: ({ children }) => (
     <pre
-      className="bg-bg-mute text-fg-base overflow-x-auto rounded-lg p-3 text-sm"
+      className={styles.pre}
       // 横にスクロールする長い行をキーボードでも読めるよう、フォーカスできるようにする
       // oxlint-disable-next-line jsx-a11y/no-noninteractive-tabindex
       tabIndex={0}
@@ -81,7 +73,7 @@ const REMARK_PLUGINS = [remarkGfm];
 
 export const MarkdownText: FC<{ children: string }> = ({ children }) => (
   // Message.Content の pre-wrap を受け継ぐと、ブロックの間の改行が空行として出るので戻す
-  <div className="flex flex-col gap-3 whitespace-normal">
+  <div className={styles.root}>
     <Markdown
       components={components}
       disallowedElements={DISALLOWED_ELEMENTS}

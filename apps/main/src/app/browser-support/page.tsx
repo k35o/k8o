@@ -14,6 +14,8 @@ import {
   BrowserSupportRecentChanges,
 } from './_components';
 
+import styles from './page.module.css';
+
 export default async function BrowserSupportPage() {
   const [{ features, nowMs, meta }, blogMap, recentChanges] = await Promise.all(
     [
@@ -25,7 +27,7 @@ export default async function BrowserSupportPage() {
 
   if (meta === null) {
     return (
-      <p className="text-fg-mute py-10 text-center text-sm">
+      <p className={styles.syncing}>
         データを同期しています。しばらくしてから再度アクセスしてください。
       </p>
     );
@@ -34,7 +36,7 @@ export default async function BrowserSupportPage() {
   const latestYear = features[0]?.resolvedDate.slice(0, 4) ?? '';
 
   return (
-    <div className="flex flex-col gap-6">
+    <div className={styles.root}>
       <BrowserSupportRecentChanges changes={recentChanges} />
       {/* nuqs が searchParams（動的データ）を読むため、静的プリレンダリング時は
           Suspense 境界が必要。境界内はリクエスト時にレンダリングされる。 */}
@@ -48,7 +50,7 @@ export default async function BrowserSupportPage() {
       </Suspense>
       {/* データ基準の常時表示は鮮度の計器を兼ねる: 更新が止まればここの日付が
           古くなり、通知系が全滅していても見れば分かる。 */}
-      <p className="text-fg-mute text-xs">
+      <p className={styles.source}>
         Source:{' '}
         <Anchor
           href="https://github.com/web-platform-dx/web-features"

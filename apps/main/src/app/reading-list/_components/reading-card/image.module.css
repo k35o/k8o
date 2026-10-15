@@ -1,0 +1,39 @@
+.root {
+  display: flex;
+  width: 100%;
+  flex-direction: column;
+  justify-content: center;
+  overflow: hidden;
+  border-top-left-radius: var(--radius-xl);
+  border-top-right-radius: var(--radius-xl);
+  background-color: var(--color-bg-subtle);
+
+  @media (width >= 40rem) {
+    width: calc(var(--spacing) * 48);
+    flex-shrink: 0;
+    border-start-start-radius: var(--radius-xl);
+    border-end-start-radius: var(--radius-xl);
+    border-start-end-radius: 0;
+    border-end-end-radius: 0;
+  }
+
+  @container style(--writing: vertical) {
+    width: calc(var(--spacing) * 48);
+    flex-shrink: 0;
+    border-start-start-radius: var(--radius-xl);
+    border-end-start-radius: var(--radius-xl);
+    border-start-end-radius: 0;
+    border-end-end-radius: 0;
+  }
+}
+
+.frame {
+  position: relative;
+  aspect-ratio: 16 / 9;
+  width: 100%;
+}
+
+.image {
+  object-fit: contain;
+  object-position: center;
+}
