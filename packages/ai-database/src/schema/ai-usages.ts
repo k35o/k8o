@@ -4,6 +4,9 @@ import { index, integer, sqliteTable, text } from 'drizzle-orm/sqlite-core';
 import { AI_APPS } from './ai-projects';
 import { user } from './auth-schema';
 
+const AI_USAGE_KINDS = ['generation', 'ui'] as const;
+export type AiUsageKind = (typeof AI_USAGE_KINDS)[number];
+
 // AI 機能横断の利用ログ。レート制限・コスト把握の基盤（生成1回ごとに1行）。
 export const aiUsages = sqliteTable(
   'ai_usages',
@@ -13,8 +16,8 @@ export const aiUsages = sqliteTable(
     userId: text('user_id')
       .notNull()
       .references(() => user.id, { onDelete: 'cascade' }),
-    // 'generation' など、アプリ内での課金アクション種別。
-    kind: text('kind').notNull(),
+    // アプリ内での課金アクション種別。
+    kind: text('kind', { enum: AI_USAGE_KINDS }).notNull(),
     model: text('model'),
     inputTokens: integer('input_tokens'),
     outputTokens: integer('output_tokens'),

@@ -6,11 +6,28 @@ import {
   fetchOwnerBlogs,
 } from '../infrastructure/owner-api';
 import type { OwnerBlog } from '../infrastructure/owner-api';
+import { generateUi } from './generate-ui';
+import type * as generateUiModule from './generate-ui';
 import { agentTools } from './tools';
 
+vi.mock('server-only', () => ({}));
+vi.mock('@/features/usage/infrastructure/usage-repository', () => ({
+  insertUsageWithinLimits: vi.fn(),
+  selectCostSinceMicroUsd: vi.fn(),
+  updateUsageCost: vi.fn(),
+}));
+vi.mock('@/features/artifacts/infrastructure/artifact-repository', () => ({
+  insertArtifactWithFirstVersion: vi.fn(),
+  insertNextVersion: vi.fn(),
+  selectVersion: vi.fn(),
+}));
 vi.mock('../infrastructure/owner-api', () => ({
   fetchOwnerBlogs: vi.fn(),
   fetchOwnerBlogMarkdown: vi.fn(),
+}));
+vi.mock('./generate-ui', async (importOriginal) => ({
+  ...(await importOriginal<typeof generateUiModule>()),
+  generateUi: vi.fn(),
 }));
 
 const blog = (description: string): OwnerBlog => ({
@@ -46,6 +63,13 @@ const acceptsSlug = async (slug: string): Promise<boolean> => {
   const result = await asSchema(agentTools.read_blog.inputSchema).validate?.({
     slug,
   });
+  return result?.success === true;
+};
+
+const acceptsUiInput = async (input: unknown): Promise<boolean> => {
+  const result = await asSchema(agentTools.generate_ui.inputSchema).validate?.(
+    input,
+  );
   return result?.success === true;
 };
 
@@ -172,6 +196,62 @@ describe('read_blog', () => {
       vi.mocked(fetchOwnerBlogMarkdown).mockResolvedValue('あ'.repeat(50_000));
 
       await expect(readBlog('arianotify')).resolves.toBe('あ'.repeat(50_000));
+    });
+  });
+});
+
+describe('generate_ui', () => {
+  const context = {
+    userId: 'u1',
+    threadId: 'thread-1',
+    model: 'claude-sonnet-5-5',
+  } as const;
+  const uiInput = { title: '確認ボタン', instruction: 'OK のボタンを置く' };
+
+  describe('正常系', () => {
+    it('入力と、利用者・会話・モデルの文脈と、中断のシグナルを UI の生成に渡す', () => {
+      const controller = new AbortController();
+
+      agentTools.generate_ui.execute(uiInput, {
+        toolCallId: 'call-1',
+        messages: [],
+        context,
+        abortSignal: controller.signal,
+      });
+
+      expect(generateUi).toHaveBeenCalledExactlyOnceWith({
+        input: uiInput,
+        context,
+        abortSignal: controller.signal,
+      });
+    });
+
+    it.each([
+      ['base を省いた入力', uiInput],
+      ['base が null の入力', { ...uiInput, base: null }],
+      [
+        '版を指した base',
+        { ...uiInput, base: { artifactId: 'a1b2c3d4e5f6', version: 2 } },
+      ],
+    ])('%s を受ける', async (_label, input) => {
+      await expect(acceptsUiInput(input)).resolves.toBe(true);
+    });
+  });
+
+  describe('異常系', () => {
+    it.each([
+      ['空のタイトル', { ...uiInput, title: '' }],
+      ['空の指示', { ...uiInput, instruction: '' }],
+      [
+        '0 の版',
+        { ...uiInput, base: { artifactId: 'a1b2c3d4e5f6', version: 0 } },
+      ],
+      [
+        '整数でない版',
+        { ...uiInput, base: { artifactId: 'a1b2c3d4e5f6', version: 1.5 } },
+      ],
+    ])('%s は受けない', async (_label, input) => {
+      await expect(acceptsUiInput(input)).resolves.toBe(false);
     });
   });
 });

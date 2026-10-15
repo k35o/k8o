@@ -1,0 +1,98 @@
+.root {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  min-height: 0;
+  background-color: var(--color-bg-surface);
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  gap: calc(var(--spacing) * 3);
+  min-height: calc(var(--spacing) * 12);
+  border-bottom: 1px solid var(--color-border-mute);
+  padding-inline: calc(var(--spacing) * 4);
+  padding-block: calc(var(--spacing) * 2);
+}
+
+.title {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: var(--color-fg-base);
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-sm);
+  font-weight: var(--font-weight-bold);
+
+  &:focus-visible {
+    outline-style: none;
+    box-shadow: var(--shadow-ring-info);
+
+    @media (forced-colors: active) {
+      outline: 2px solid transparent;
+      outline-offset: 2px;
+    }
+  }
+}
+
+/* 状態の文はカードとペインの本文に全文が出るので、見出しでは縮めて省く */
+.progress {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: var(--color-fg-mute);
+  font-size: var(--font-size-xs);
+  line-height: var(--line-height-xs);
+}
+
+.actions {
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  gap: calc(var(--spacing) * 2);
+  margin-left: auto;
+}
+
+.viewTabs,
+.close {
+  display: none;
+
+  @media (width >= 80rem) {
+    display: flex;
+  }
+}
+
+.viewTabs {
+  gap: calc(var(--spacing) * 2);
+}
+
+.notice {
+  padding-inline: calc(var(--spacing) * 4);
+  padding-top: calc(var(--spacing) * 4);
+}
+
+.body {
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.preview {
+  position: relative;
+  height: 100%;
+
+  &[data-active='false'] {
+    display: none;
+  }
+}
+
+.code {
+  height: 100%;
+
+  &[data-active='false'] {
+    display: none;
+  }
+}

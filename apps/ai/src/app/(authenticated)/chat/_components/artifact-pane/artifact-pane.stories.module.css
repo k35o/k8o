@@ -1,0 +1,13 @@
+.frame {
+  display: flex;
+  flex-direction: column;
+  height: calc(var(--spacing) * 160);
+}
+
+.narrow {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  width: calc(var(--spacing) * 80);
+  min-height: 0;
+}

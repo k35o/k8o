@@ -87,6 +87,7 @@ export async function handleGenerate(req: Request): Promise<Response> {
   const generationModel = model ?? DEFAULT_GENERATION_MODEL;
   const reservation = await reserveUsage({
     app,
+    kind: 'generation',
     userId: session.userId,
     model: generationModel,
     now: Date.now(),

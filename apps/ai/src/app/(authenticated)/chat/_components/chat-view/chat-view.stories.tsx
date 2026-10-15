@@ -62,6 +62,35 @@ const streamingAnswer: AgentUIMessage = {
   ],
 };
 
+const stoppedUiAnswer: AgentUIMessage = {
+  id: 'a5',
+  role: 'assistant',
+  metadata: { end: 'stopped' },
+  parts: [
+    { type: 'step-start' },
+    {
+      type: 'tool-generate_ui',
+      toolCallId: 'ui-stopped',
+      state: 'output-available',
+      preliminary: true,
+      input: { title: '料金プラン', instruction: '3つのプランを比べる' },
+      output: {
+        status: 'generating',
+        phase: 'drawing',
+        spec: {
+          root: 'title',
+          elements: {
+            title: {
+              type: 'Heading',
+              props: { level: 'h2', label: '料金プラン' },
+            },
+          },
+        },
+      },
+    },
+  ],
+};
+
 const endedAnswer = (end: RunEnd): AgentUIMessage => ({
   id: `end-${end}`,
   role: 'assistant',
@@ -113,6 +142,8 @@ const meta = preview.meta({
     onSelectModel: fn<(model: GenerationModel) => void>(),
     onSubmit: fn<(text: string) => void>(),
     onStop: fn<() => void>(),
+    selectedToolCallId: null,
+    onOpenArtifact: fn<(toolCallId: string) => void>(),
   } satisfies Partial<ComponentProps<typeof ChatView>>,
 });
 
@@ -120,6 +151,13 @@ export const NewThread = meta.story({
   args: { canSelectModel: true },
   play: async ({ args, canvasElement }) => {
     const canvas = within(canvasElement);
+    await expect(
+      canvas.getByText('ブログについて聞く・UI を作る'),
+    ).toBeInTheDocument();
+    await expect(canvas.getByRole('textbox')).toHaveAttribute(
+      'placeholder',
+      '例: 料金プランを3列で比べる UI を作って',
+    );
     await expect(
       canvas.getByRole('radio', { name: 'Sonnet 5.5' }),
     ).toBeChecked();
@@ -227,6 +265,29 @@ export const ServerRunningAfterPartialReply = meta.story({
         name: '応答を生成しています（画面を離れても続きます）',
       }),
     ).toBeInTheDocument();
+  },
+});
+
+export const ServerRunningAfterStoppedUi = meta.story({
+  args: {
+    messages: [
+      question,
+      stoppedUiAnswer,
+      { id: 'u2', role: 'user', parts: [{ type: 'text', text: '続けて' }] },
+    ],
+    isServerRunning: true,
+  },
+  play: async ({ args, canvasElement }) => {
+    const canvas = within(canvasElement);
+    // サーバーで続いているのは最後の user への返答で、前の返答に残った途中の出力ではない
+    await expect(canvas.getByText('途中で止まりました')).toBeInTheDocument();
+    await expect(
+      canvas.queryByText(/生成を続けています/u),
+    ).not.toBeInTheDocument();
+    await userEvent.click(
+      canvas.getByRole('button', { name: '途中までを見る' }),
+    );
+    await expect(args.onOpenArtifact).toHaveBeenCalledWith('ui-stopped');
   },
 });
 

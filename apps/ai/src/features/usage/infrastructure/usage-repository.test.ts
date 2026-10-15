@@ -32,15 +32,22 @@ vi.spyOn(db.$client, 'execute').mockImplementation((statement) => {
 
 const insertRow = (row: {
   app: string;
+  kind?: string;
   userId: string;
   createdAt: string;
   costMicroUsd?: number | null;
 }): void => {
   sqlite
     .prepare(
-      "insert into ai_usages (app, user_id, kind, created_at, cost_micro_usd) values (?, ?, 'generation', ?, ?)",
+      'insert into ai_usages (app, user_id, kind, created_at, cost_micro_usd) values (?, ?, ?, ?, ?)',
     )
-    .run(row.app, row.userId, row.createdAt, row.costMicroUsd ?? null);
+    .run(
+      row.app,
+      row.userId,
+      row.kind ?? 'generation',
+      row.createdAt,
+      row.costMicroUsd ?? null,
+    );
 };
 
 // node:sqlite の行はプロトタイプを持たないので、比べられるよう普通のオブジェクトに写す
@@ -55,6 +62,7 @@ const selectRows = (): unknown[] =>
 
 const base = {
   app: 'ui-studio',
+  kind: 'generation',
   userId: 'u1',
   model: 'claude-sonnet-5-5',
   createdAt: '2026-10-13T12:00:00.000Z',
@@ -88,16 +96,20 @@ beforeEach(() => {
 
 describe('insertUsageWithinLimits', () => {
   describe('正常系', () => {
-    it('上限と予算に収まれば、モデルだけを入れた利用の行を入れてその id を返す', async () => {
-      const id = await insertUsageWithinLimits(base);
+    it('上限と予算に収まれば、種類とモデルだけを入れた利用の行を入れてその id を返す', async () => {
+      const id = await insertUsageWithinLimits({
+        ...base,
+        app: 'agent',
+        kind: 'ui',
+      });
 
       expect(id).toBe(1);
       expect(selectRows()).toStrictEqual([
         {
           id: 1,
-          app: 'ui-studio',
+          app: 'agent',
           user_id: 'u1',
-          kind: 'generation',
+          kind: 'ui',
           model: 'claude-sonnet-5-5',
           input_tokens: null,
           output_tokens: null,
@@ -149,6 +161,22 @@ describe('insertUsageWithinLimits', () => {
 
       await expect(insertUsageWithinLimits(base)).resolves.toBe(3);
       await expect(insertUsageWithinLimits(base)).resolves.toBeNull();
+    });
+
+    it('エージェントの UI の生成の行も、会話と同じ1時間の上限に数える', async () => {
+      insertRow({
+        app: 'agent',
+        kind: 'ui',
+        userId: 'u1',
+        createdAt: base.createdAt,
+      });
+
+      await expect(
+        insertUsageWithinLimits({ ...base, app: 'agent' }),
+      ).resolves.toBe(2);
+      await expect(
+        insertUsageWithinLimits({ ...base, app: 'agent' }),
+      ).resolves.toBeNull();
     });
 
     it('ほかのアプリやほかの利用者の行は数えない', async () => {

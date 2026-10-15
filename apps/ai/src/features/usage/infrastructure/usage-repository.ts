@@ -2,13 +2,12 @@ import 'server-only';
 import { db } from '@repo/ai-database';
 import { and, count, eq, gte, lt, sql } from '@repo/ai-database/orm';
 import type { SQL } from '@repo/ai-database/orm';
-import type { AiApp } from '@repo/ai-database/schema';
+import type { AiApp, AiUsageKind } from '@repo/ai-database/schema';
 
 import type { GenerationModel } from '@/shared/claude/models';
 
 // 生成1回ごとの利用ログ（ai_usages）。レート制限とコスト把握の基盤。
 const usages = db._schema.aiUsages;
-const GENERATION_KIND = 'generation';
 
 // 予約したばかりの行と、費用の列を足す前の行は cost_micro_usd が null なので、0円として数える
 const spentMicroUsd = (): SQL<number> =>
@@ -18,6 +17,7 @@ const spentMicroUsd = (): SQL<number> =>
 // 上限の確認と行の予約を1文で行う
 export const insertUsageWithinLimits = async (input: {
   app: AiApp;
+  kind: AiUsageKind;
   userId: string;
   model: GenerationModel;
   createdAt: string;
@@ -33,7 +33,6 @@ export const insertUsageWithinLimits = async (input: {
       and(
         eq(usages.userId, input.userId),
         eq(usages.app, input.app),
-        eq(usages.kind, GENERATION_KIND),
         gte(usages.createdAt, input.sinceIso),
       ),
     )
@@ -55,7 +54,7 @@ export const insertUsageWithinLimits = async (input: {
           id: sql<number>`null`.as('id'),
           app: sql<AiApp>`${input.app}`.as('app'),
           userId: sql<string>`${input.userId}`.as('user_id'),
-          kind: sql<string>`${GENERATION_KIND}`.as('kind'),
+          kind: sql<AiUsageKind>`${input.kind}`.as('kind'),
           model: sql<string>`${input.model}`.as('model'),
           inputTokens: sql<null>`null`.as('input_tokens'),
           outputTokens: sql<null>`null`.as('output_tokens'),

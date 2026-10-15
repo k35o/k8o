@@ -16,6 +16,7 @@ export const ViewTabs = <T extends string>({
 }: ViewTabsProps<T>): ReactNode =>
   options.map((option) => (
     <Button
+      aria-pressed={option.value === value}
       color="primary"
       key={option.value}
       onClick={() => {
