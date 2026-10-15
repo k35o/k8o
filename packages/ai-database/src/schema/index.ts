@@ -1,3 +1,5 @@
+import { aiArtifactVersions } from './ai-artifact-versions';
+import { aiArtifacts } from './ai-artifacts';
 import {
   aiProjectVersions,
   aiProjectVersionsRelations,
@@ -31,6 +33,8 @@ export const schema = {
   aiUsages,
   aiThreads,
   aiThreadMessages,
+  aiArtifacts,
+  aiArtifactVersions,
 };
 
 export const relations = {
