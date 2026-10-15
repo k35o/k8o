@@ -29,6 +29,7 @@ UI スタジオとエージェントの `generate_ui` は、どちらも json-re
 - system prompt は `catalog.prompt({ mode: 'inline', ... })`（`build-spec-system-prompt.ts`）。
   inline モードなので assistant の出力は「会話文 → JSONL パッチ」の混在ストリーム
 - 描画は `JsonRenderUI`（`app/_components/spec-preview`）。アプリと同じドキュメントに描画するので、テーマ・フォントはアプリのものを継承する
+- 同じ文書の画面より狭い枠に描くので、ビューポートのメディアクエリでは並べ方が変わらない。そのため system prompt の規則で、描く枠の幅（280〜960px ほど）を伝え、横に並べるときは Grid の `cols: 'auto-fit'` と `minItemSize` を使うよう求める。依頼に列の数があっても固定の cols にしない
 
 ### スタジオ（/api/generate）
 
