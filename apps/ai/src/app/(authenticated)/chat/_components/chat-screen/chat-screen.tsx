@@ -23,6 +23,7 @@ import type {
 } from '@/features/agent/application/thread-sync';
 import {
   lastCallKeyOf,
+  paneVersionsOf,
   shownArtifact,
   uiArtifactsOf,
   uiLiveOf,
@@ -265,6 +266,7 @@ export const ChatScreen: FC<ChatScreenProps> = ({
   const pinCall = (toolCallId: string): void => {
     pin({ type: 'pinned', toolCallId, lastCallKey: lastCallKeyOf(artifacts) });
   };
+  const versions = paneVersionsOf(artifacts, shown);
   const openArtifact = (toolCallId: string): void => {
     paneFocus.openPane(toolCallId, () => {
       pinCall(toolCallId);
@@ -356,7 +358,9 @@ export const ChatScreen: FC<ChatScreenProps> = ({
                 closePane(shown.toolCallId);
               }}
               onExpandedChange={setExpanded}
+              onSelectVersion={pinCall}
               onViewChange={setView}
+              versions={versions}
               view={view}
             />
           )

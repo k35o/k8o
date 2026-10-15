@@ -1,5 +1,6 @@
 import type { Spec } from '@json-render/core';
-import type { ComponentProps } from 'react';
+import { useState } from 'react';
+import type { ComponentProps, FC } from 'react';
 import { expect, fn, userEvent, within } from 'storybook/test';
 
 import preview from '../../../../../../.storybook/preview';
@@ -26,6 +27,41 @@ const CONTACT: Spec = {
   },
 };
 
+const DONE = {
+  toolCallId: 'ui-done',
+  title: 'お問い合わせフォーム',
+  spec: CONTACT,
+  text: 'キーワードで探せるフォームを置きました。',
+  open: 'preview',
+  state: 'done',
+  artifactId: 'a1b2c3d4e5f6',
+  version: 2,
+} as const;
+
+const VERSIONS = [
+  { toolCallId: 'ui-v1', version: 1 },
+  { toolCallId: 'ui-v2', version: 2 },
+  { toolCallId: 'ui-v3', version: 3 },
+];
+
+// ChatScreen と同じく、選んだ版をペインに出す。版ごとに spec を変えると、本体を作り直さなくても入力欄が消えて見えるので、同じ spec にする
+const VersionSwitcher: FC<ComponentProps<typeof ArtifactPane>> = (props) => {
+  const [shown, setShown] = useState({ toolCallId: 'ui-v2', version: 2 });
+  return (
+    <ArtifactPane
+      {...props}
+      artifact={{ ...DONE, ...shown }}
+      onSelectVersion={(toolCallId) => {
+        setShown(
+          VERSIONS.find((version) => version.toolCallId === toolCallId) ??
+            shown,
+        );
+      }}
+      versions={VERSIONS}
+    />
+  );
+};
+
 const meta = preview.meta({
   component: ArtifactPane,
   decorators: [
@@ -38,15 +74,9 @@ const meta = preview.meta({
   // propより狭い型（unionリテラル）のままargsを推論させると meta.storyの型推論が壊れるため、
   // satisfiesで文脈型を与えて広げる
   args: {
-    artifact: {
-      toolCallId: 'ui-done',
-      title: 'お問い合わせフォーム',
-      spec: CONTACT,
-      text: 'キーワードで探せるフォームを置きました。',
-      open: 'preview',
-      state: 'done',
-      version: 2,
-    },
+    artifact: DONE,
+    versions: [],
+    onSelectVersion: fn<(toolCallId: string) => void>(),
     view: 'preview',
     onViewChange: fn<(view: ArtifactView) => void>(),
     expanded: false,
@@ -57,6 +87,7 @@ const meta = preview.meta({
 });
 
 export const Done = meta.story({
+  args: { versions: [{ toolCallId: 'ui-done', version: 2 }] },
   play: async ({ args, canvasElement }) => {
     const canvas = within(canvasElement);
     const pane = canvas.getByRole('region', { name: 'UI のプレビュー' });
@@ -64,6 +95,10 @@ export const Done = meta.story({
       within(pane).getByRole('heading', { name: 'お問い合わせフォーム' }),
     ).toBeInTheDocument();
     await expect(within(pane).getByText('版 2')).toBeInTheDocument();
+    // 版が1つなら、選ぶ口を出さずにバッジで示す
+    await expect(
+      within(pane).queryByRole('combobox', { name: /表示する版/u }),
+    ).not.toBeInTheDocument();
     await expect(
       within(pane).getByRole('heading', { name: 'お問い合わせ' }),
     ).toBeInTheDocument();
@@ -106,6 +141,81 @@ export const Expanded = meta.story({
     await expect(expand).toHaveAttribute('aria-pressed', 'true');
     await userEvent.click(expand);
     await expect(args.onExpandedChange).toHaveBeenCalledWith(false);
+  },
+});
+
+export const SwitchesVersion = meta.story({
+  render: (args) => <VersionSwitcher {...args} />,
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    await userEvent.type(canvas.getByLabelText('キーワード'), '料金');
+    await expect(canvas.getByLabelText('キーワード')).toHaveValue('料金');
+    await userEvent.click(
+      canvas.getByRole('combobox', { name: '表示する版 版 2' }),
+    );
+    await userEvent.click(canvas.getByRole('option', { name: '版 3' }));
+    // 見出しは作り直さないので、選んだあともトリガーにフォーカスが戻る
+    await expect(
+      canvas.getByRole('combobox', { name: '表示する版 版 3' }),
+    ).toHaveFocus();
+    // 別の版へ移ると、本体を作り直して生成 UI の入力を持ち越さない
+    await expect(canvas.getByLabelText('キーワード')).toHaveValue('');
+    await expect(
+      canvas
+        .getAllByText('版 3')
+        .filter((element) => element.checkVisibility()),
+    ).toHaveLength(1);
+  },
+});
+
+export const ReselectsCurrentVersion = meta.story({
+  args: { artifact: { ...DONE, toolCallId: 'ui-v2' }, versions: VERSIONS },
+  play: async ({ args, canvasElement }) => {
+    const canvas = within(canvasElement);
+    await userEvent.click(
+      canvas.getByRole('combobox', { name: '表示する版 版 2' }),
+    );
+    await userEvent.click(canvas.getByRole('option', { name: '版 2' }));
+    // 今出している版を選び直しても、選んだことにしない
+    await expect(args.onSelectVersion).not.toHaveBeenCalled();
+    await userEvent.click(
+      canvas.getByRole('combobox', { name: '表示する版 版 2' }),
+    );
+    await userEvent.click(canvas.getByRole('option', { name: '版 3' }));
+    await expect(args.onSelectVersion).toHaveBeenCalledOnce();
+    await expect(args.onSelectVersion).toHaveBeenCalledWith('ui-v3');
+  },
+});
+
+export const VersionsOnNarrow = meta.story({
+  decorators: [
+    (Story) => (
+      <div className={styles.narrow}>
+        <Story />
+      </div>
+    ),
+  ],
+  args: {
+    view: 'spec',
+    artifact: { ...DONE, toolCallId: 'ui-v2' },
+    versions: VERSIONS,
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const pane = canvas
+      .getByRole('region', { name: 'UI のプレビュー' })
+      .getBoundingClientRect();
+    // 版の選ぶ口があっても、タイトルを潰さず、コピーのボタンをペインの外へ押し出さない
+    await expect(
+      canvas
+        .getByRole('heading', { name: 'お問い合わせフォーム' })
+        .getBoundingClientRect().width,
+    ).toBeGreaterThan(48);
+    await expect(
+      canvas
+        .getByRole('button', { name: 'コードをコピー' })
+        .getBoundingClientRect().right,
+    ).toBeLessThanOrEqual(pane.right);
   },
 });
 

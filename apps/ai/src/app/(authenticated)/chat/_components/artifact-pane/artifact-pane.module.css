@@ -37,6 +37,12 @@
   }
 }
 
+/* ListBox のトリガーは幅いっぱいに伸びるので、中身の幅に留める */
+.versions {
+  display: flex;
+  flex-shrink: 0;
+}
+
 /* 状態の文はカードとペインの本文に全文が出るので、見出しでは縮めて省く */
 .progress {
   min-width: 0;

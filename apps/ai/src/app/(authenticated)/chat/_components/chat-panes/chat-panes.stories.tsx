@@ -54,6 +54,7 @@ const pricingDone = {
   text: '3つのプランを横に並べました。',
   open: 'preview',
   state: 'done',
+  artifactId: 'a1b2c3d4e5f6',
   version: 1,
 } as const;
 
@@ -188,7 +189,9 @@ const FocusingPanes: FC = () => {
           highlight={null}
           onClose={ignore}
           onExpandedChange={ignore}
+          onSelectVersion={ignore}
           onViewChange={ignore}
+          versions={[]}
           view="preview"
         />
       }
@@ -216,7 +219,9 @@ const meta = preview.meta({
         highlight={null}
         onClose={ignore}
         onExpandedChange={ignore}
+        onSelectVersion={ignore}
         onViewChange={ignore}
+        versions={[]}
         view="preview"
       />
     ),

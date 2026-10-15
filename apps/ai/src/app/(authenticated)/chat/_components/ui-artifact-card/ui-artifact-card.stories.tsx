@@ -26,6 +26,7 @@ const meta = preview.meta({
       text: '3つのプランを横に並べました。',
       open: 'preview',
       state: 'done',
+      artifactId: 'a1b2c3d4e5f6',
       version: 2,
     },
     isActive: false,
