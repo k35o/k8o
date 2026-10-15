@@ -39,6 +39,7 @@ import { ChatPanes, usePaneFocus } from '../chat-panes';
 import { ChatHeader, ChatView } from '../chat-view';
 import { useOpeningThread } from '../opening-thread';
 import { useTouchedThreads } from '../touched-threads';
+import { usePanePin } from './use-pane-pin';
 import { useThreadSync } from './use-thread-sync';
 
 import styles from './chat-screen.module.css';
@@ -94,11 +95,13 @@ export const ChatScreen: FC<ChatScreenProps> = ({
   const [createdAt, setCreatedAt] = useState<string | null>(null);
   const [draft, setDraft] = useState('');
   const [stopRequest, setStopRequest] = useState<StopRequest | null>(null);
-  const [selection, setSelection] = useState<PaneSelection>({
-    type: 'follow',
-  });
+  const [closed, setClosed] = useState<Extract<
+    PaneSelection,
+    { type: 'closed' }
+  > | null>(null);
   const [view, setView] = useState<ArtifactView>('preview');
-  const [mobilePane, setMobilePane] = useState<'chat' | 'pane'>('chat');
+  const threadPath = `/chat/${thread.id}`;
+  const { pinned, pin, unpin } = usePanePin(threadPath);
   const paneFocus = usePaneFocus();
 
   const titleOf = (
@@ -194,7 +197,10 @@ export const ChatScreen: FC<ChatScreenProps> = ({
   const title = titleOf(messages, createdAt);
 
   const showCreated = useEffectEvent((createdTitle: string, at: string) => {
-    window.history.replaceState(null, '', `/chat/${thread.id}`);
+    // Activity から戻るたびに走り直すので、もう移っていれば、開いたペインの検索パラメータと履歴の印を捨てないよう書き直さない
+    if (window.location.pathname !== threadPath) {
+      window.history.replaceState(null, '', threadPath);
+    }
     // 作られた時刻で触るので、そのあと終わったとして触った行（保存が分かって作られたときも）を上書きしない
     touch({
       id: thread.id,
@@ -209,20 +215,6 @@ export const ChatScreen: FC<ChatScreenProps> = ({
       showCreated(title, createdAt);
     }
   }, [createdAt, title]);
-
-  const handleSubmit = (text: string): void => {
-    clearError();
-    setDraft('');
-    setStopRequest(null);
-    // ペインが消えて会話に戻されていても、次の生成でプレビューへ勝手に移らないよう、会話のタブに揃える
-    setMobilePane('chat');
-    if (created) {
-      touchThread(title, true);
-    } else {
-      setFirstSentAt(new Date().toISOString());
-    }
-    void sendMessage({ text }, { body: created ? {} : { model } });
-  };
 
   const sendStop = (): void => {
     void requestStop(thread.id).then((delivered) => {
@@ -259,30 +251,50 @@ export const ChatScreen: FC<ChatScreenProps> = ({
     live: uiLiveOf({ status, isServerRunning: sync === 'wait' }),
     isStopping: stopping,
   });
-  const shown = shownArtifact(artifacts, selection);
+  const shown = shownArtifact(
+    artifacts,
+    pinned ?? closed ?? { type: 'follow' },
+  );
+  const pinCall = (toolCallId: string): void => {
+    pin({ type: 'pinned', toolCallId, lastCallKey: lastCallKeyOf(artifacts) });
+  };
   const openArtifact = (toolCallId: string): void => {
     paneFocus.openPane(toolCallId, () => {
-      setSelection({
-        type: 'pinned',
-        toolCallId,
-        lastCallKey: lastCallKeyOf(artifacts),
-      });
+      pinCall(toolCallId);
       setView('preview');
-      setMobilePane('pane');
     });
   };
   const changeMobileTab = (tab: 'chat' | ArtifactView): void => {
     if (tab === 'chat') {
-      setMobilePane('chat');
+      unpin();
       return;
     }
     setView(tab);
-    setMobilePane('pane');
+    if (pinned === null && shown !== null) {
+      pinCall(shown.toolCallId);
+    }
   };
   const closePane = (toolCallId: string): void => {
     paneFocus.closePane(toolCallId, () => {
-      setSelection({ type: 'closed', lastCallKey: lastCallKeyOf(artifacts) });
+      setClosed({ type: 'closed', lastCallKey: lastCallKeyOf(artifacts) });
+      unpin();
     });
+  };
+
+  const handleSubmit = (text: string): void => {
+    clearError();
+    setDraft('');
+    setStopRequest(null);
+    // ペインに出せるものが無いまま固定が残っていると、次の生成で xl 未満の画面がプレビューへ勝手に移るので、外す
+    if (pinned !== null && shown === null) {
+      unpin();
+    }
+    if (created) {
+      touchThread(title, true);
+    } else {
+      setFirstSentAt(new Date().toISOString());
+    }
+    void sendMessage({ text }, { body: created ? {} : { model } });
   };
 
   return (
@@ -295,7 +307,7 @@ export const ChatScreen: FC<ChatScreenProps> = ({
           <ViewTabs
             onChange={changeMobileTab}
             options={MOBILE_TAB_OPTIONS}
-            value={mobilePane === 'chat' ? 'chat' : view}
+            value={pinned === null ? 'chat' : view}
           />
         </div>
       )}
@@ -320,7 +332,7 @@ export const ChatScreen: FC<ChatScreenProps> = ({
             status={status}
           />
         }
-        mobilePane={mobilePane}
+        mobilePane={pinned === null ? 'chat' : 'pane'}
         pane={
           shown === null ? null : (
             // 別の呼び出しへ移ったら、生成 UI の入力やスクロールを持ち越さない
