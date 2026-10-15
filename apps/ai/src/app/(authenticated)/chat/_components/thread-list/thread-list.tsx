@@ -5,25 +5,17 @@ import type { FC } from 'react';
 
 import type { ThreadListItem } from '@/features/agent/application/threads';
 
-// サーバー（UTC）とブラウザで同じ文字列にしないとハイドレーションがずれるので、時刻帯を固定する
-const updatedAtFormat = new Intl.DateTimeFormat('ja-JP', {
-  timeZone: 'Asia/Tokyo',
-  month: '2-digit',
-  day: '2-digit',
-  hour: '2-digit',
-  minute: '2-digit',
-  hourCycle: 'h23',
-});
+import { UpdatedAt } from '../../../_components/updated-at';
 
-// スレッドを移るたびに一覧は作り直され、スクロールが先頭に戻るので、今いるスレッドを見える位置へ寄せる
+// 開いた時点で今のスレッドが一覧の下のほうにあっても見えるよう、見える位置へ寄せる
 const revealCurrent = (element: HTMLAnchorElement | null): void => {
   element?.scrollIntoView({ block: 'nearest' });
 };
 
 type ThreadListProps = {
   threads: ThreadListItem[];
-  currentThreadId: string;
-  onNavigate?: (() => void) | undefined;
+  currentThreadId: string | null;
+  onNavigate?: ((thread: ThreadListItem) => void) | undefined;
 };
 
 export const ThreadList: FC<ThreadListProps> = ({
@@ -53,7 +45,7 @@ export const ThreadList: FC<ThreadListProps> = ({
               )}
               href={`/chat/${thread.id}`}
               onNavigate={() => {
-                onNavigate?.();
+                onNavigate?.(thread);
               }}
               ref={isCurrent ? revealCurrent : undefined}
             >
@@ -61,9 +53,7 @@ export const ThreadList: FC<ThreadListProps> = ({
                 {thread.title}
               </span>
               <span className="text-fg-mute flex items-center gap-2 text-xs">
-                <time dateTime={thread.updatedAt}>
-                  {updatedAtFormat.format(new Date(thread.updatedAt))}
-                </time>
+                <UpdatedAt dateTime={thread.updatedAt} />
                 {thread.running ? (
                   <Badge label="生成中" size="sm" tone="info" />
                 ) : null}

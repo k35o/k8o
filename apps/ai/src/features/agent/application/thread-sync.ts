@@ -1,4 +1,4 @@
-import type { ChatOnFinishCallback } from 'ai';
+import type { ChatOnFinishCallback, ChatStatus } from 'ai';
 
 import type { AgentUIMessage } from './agent-message';
 import type { ThreadSnapshot } from './threads';
@@ -57,6 +57,77 @@ export const nextSyncStep = (mode: ServerSync, read: ThreadRead): SyncStep => {
     case 'failed':
       return mode === 'check' ? { type: 'wait' } : { type: 'retry' };
   }
+};
+
+const SYNC_INTERVAL_MS = 2000;
+const STOPPING_SYNC_INTERVAL_MS = 500;
+
+// 停止を送ったあとは、保存された返答へ早く置き換えるよう、生成中と読めたときだけ短い間隔で読み直す。
+// 404 と読めなかったときは、スレッドができるのを待つ幅と失敗のあとの間隔を縮めないよう、いつもの間隔のまま
+export const syncRetryDelayMs = (input: {
+  stopSent: boolean;
+  read: ThreadRead;
+}): number =>
+  input.stopSent && input.read.type === 'snapshot'
+    ? STOPPING_SYNC_INTERVAL_MS
+    : SYNC_INTERVAL_MS;
+
+// 押した停止の段階。'deferred' は応答が流れ始めるのを待っている、'released' は流れ始めたので送る（送った）、
+// 'sent' は押したときに送った
+export type StopRequest = 'deferred' | 'released' | 'sent';
+
+// サーバーは実行の印を付けて user メッセージを保存してから応答を流し、印が付く前に届いた停止は捨てるので、
+// 応答が流れ始める前（submitted）に押された停止は、流れ始めるまで送らない。
+// それ以外は押すたびに送り、先に送った停止が届かなかったときも押し直せば止められるようにする
+export const stopRequestOnPress = (status: ChatStatus): StopRequest =>
+  status === 'submitted' ? 'deferred' : 'sent';
+
+// 流れ始めずに終わったら、印が付いたか分からないので送らずに取り下げる（断られたなら生成していない。
+// 切れたなら、サーバーの生成を待つあいだにもう一度押せる）
+export const deferredStopAfter = (status: ChatStatus): StopRequest | null => {
+  switch (status) {
+    case 'submitted':
+      return 'deferred';
+    case 'streaming':
+      return 'released';
+    case 'ready':
+    case 'error':
+      return null;
+  }
+};
+
+// 送った停止が届かなかったら、「停止しています…」を出し続けないよう取り下げ、もう一度押せるようにする。
+// 届かないうちに次の送信で流れ始めを待つ停止に変わっていたら、それは残す
+export const stopRequestAfterFailedSend = (
+  current: StopRequest | null,
+): StopRequest | null => (current === 'deferred' ? 'deferred' : null);
+
+// 押したことと今の受信・同期から導くので、停止が自然な終わりと競って読み直さずに済んだときにも残らない
+export const isStopping = (input: {
+  request: StopRequest | null;
+  status: ChatStatus;
+  sync: ServerSync | null;
+}): boolean =>
+  input.request !== null &&
+  (input.status === 'submitted' ||
+    input.status === 'streaming' ||
+    input.sync === 'wait');
+
+// 新しいスレッドは応答が流れ始めた時点で作られたとみなすが、流れ始める前に止めたり切れたりしても
+// サーバーに保存されていれば作られている
+export const createdAtAfterSync = (input: {
+  createdAt: string | null;
+  firstSentAt: string | null;
+  saved: AgentUIMessage[] | null;
+}): string | null => {
+  if (
+    input.createdAt !== null ||
+    input.saved === null ||
+    input.saved.length === 0
+  ) {
+    return input.createdAt;
+  }
+  return input.firstSentAt;
 };
 
 // サーバーはクライアントが付けた id のまま保存するので、id で保存されたかを見る

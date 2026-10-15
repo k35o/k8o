@@ -1,6 +1,7 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { touchRunHeartbeat } from '../infrastructure/thread-repository';
+import { STOP_POLL_MS } from './agent-run';
 import { watchStopRequest } from './stop-watch';
 
 vi.mock('server-only', () => ({}));
@@ -27,24 +28,24 @@ afterEach(() => {
 
 describe('watchStopRequest', () => {
   describe('正常系', () => {
-    it('2 秒ごとに、その時刻で生存の印を更新する', async () => {
+    it('1 秒ごとに、その時刻で生存の印を更新する', async () => {
       watch();
 
-      await vi.advanceTimersByTimeAsync(4000);
+      await vi.advanceTimersByTimeAsync(STOP_POLL_MS * 2);
 
       expect(vi.mocked(touchRunHeartbeat).mock.calls).toStrictEqual([
         [
           {
             threadId: 't1',
             runId: 'run-1',
-            heartbeatAt: '2026-10-14T12:00:02.000Z',
+            heartbeatAt: '2026-10-14T12:00:01.000Z',
           },
         ],
         [
           {
             threadId: 't1',
             runId: 'run-1',
-            heartbeatAt: '2026-10-14T12:00:04.000Z',
+            heartbeatAt: '2026-10-14T12:00:02.000Z',
           },
         ],
       ]);
@@ -54,7 +55,7 @@ describe('watchStopRequest', () => {
       vi.mocked(touchRunHeartbeat).mockResolvedValue({ stopRequested: true });
       const { onStop } = watch();
 
-      await vi.advanceTimersByTimeAsync(6000);
+      await vi.advanceTimersByTimeAsync(STOP_POLL_MS * 3);
 
       expect(onStop).toHaveBeenCalledOnce();
       expect(touchRunHeartbeat).toHaveBeenCalledTimes(3);
@@ -63,10 +64,10 @@ describe('watchStopRequest', () => {
     it('signal を中断すると、それ以降は読まない', async () => {
       const controller = new AbortController();
       watch(controller.signal);
-      await vi.advanceTimersByTimeAsync(2000);
+      await vi.advanceTimersByTimeAsync(STOP_POLL_MS);
 
       controller.abort();
-      await vi.advanceTimersByTimeAsync(10_000);
+      await vi.advanceTimersByTimeAsync(STOP_POLL_MS * 5);
 
       expect(touchRunHeartbeat).toHaveBeenCalledOnce();
     });
@@ -80,7 +81,7 @@ describe('watchStopRequest', () => {
         .mockResolvedValue({ stopRequested: true });
       const { onStop } = watch();
 
-      await vi.advanceTimersByTimeAsync(4000);
+      await vi.advanceTimersByTimeAsync(STOP_POLL_MS * 2);
 
       expect(error).toHaveBeenCalledOnce();
       expect(onStop).toHaveBeenCalledOnce();
@@ -90,7 +91,7 @@ describe('watchStopRequest', () => {
       vi.mocked(touchRunHeartbeat).mockResolvedValue(null);
       watch();
 
-      await vi.advanceTimersByTimeAsync(10_000);
+      await vi.advanceTimersByTimeAsync(STOP_POLL_MS * 5);
 
       expect(touchRunHeartbeat).toHaveBeenCalledOnce();
     });
@@ -102,11 +103,11 @@ describe('watchStopRequest', () => {
       const read = Promise.withResolvers<{ stopRequested: boolean }>();
       vi.mocked(touchRunHeartbeat).mockReturnValue(read.promise);
       const { onStop } = watch(controller.signal);
-      await vi.advanceTimersByTimeAsync(2000);
+      await vi.advanceTimersByTimeAsync(STOP_POLL_MS);
 
       controller.abort();
       read.resolve({ stopRequested: true });
-      await vi.advanceTimersByTimeAsync(10_000);
+      await vi.advanceTimersByTimeAsync(STOP_POLL_MS * 5);
 
       expect(onStop).not.toHaveBeenCalled();
       expect(touchRunHeartbeat).toHaveBeenCalledOnce();
@@ -117,7 +118,7 @@ describe('watchStopRequest', () => {
       controller.abort();
       watch(controller.signal);
 
-      await vi.advanceTimersByTimeAsync(10_000);
+      await vi.advanceTimersByTimeAsync(STOP_POLL_MS * 5);
 
       expect(touchRunHeartbeat).not.toHaveBeenCalled();
     });
@@ -127,11 +128,11 @@ describe('watchStopRequest', () => {
       vi.mocked(touchRunHeartbeat).mockReturnValueOnce(read.promise);
       watch();
 
-      await vi.advanceTimersByTimeAsync(10_000);
+      await vi.advanceTimersByTimeAsync(STOP_POLL_MS * 5);
       expect(touchRunHeartbeat).toHaveBeenCalledOnce();
 
       read.resolve({ stopRequested: false });
-      await vi.advanceTimersByTimeAsync(2000);
+      await vi.advanceTimersByTimeAsync(STOP_POLL_MS);
       expect(touchRunHeartbeat).toHaveBeenCalledTimes(2);
     });
   });

@@ -26,6 +26,7 @@ export type ThreadSnapshot =
 export type ThreadListItem = {
   id: string;
   title: string;
+  model: GenerationModel | null;
   updatedAt: string;
   running: boolean;
 };
@@ -148,6 +149,7 @@ export const listThreads = async (input: {
   (await selectThreadsByUser(input.userId)).map((thread) => ({
     id: thread.id,
     title: thread.title,
+    model: isGenerationModel(thread.model) ? thread.model : null,
     updatedAt: thread.updatedAt,
     running: isRunActive(thread, input.now),
   }));

@@ -5,7 +5,6 @@ import { Button, ForkIcon, FullscreenIcon, IconButton } from '@k8ordo/ui';
 import { DefaultChatTransport } from 'ai';
 import type { UIMessage } from 'ai';
 import { useTheme } from 'next-themes';
-import { useRouter } from 'next/navigation';
 import { useMemo, useReducer, useRef, useState, useTransition } from 'react';
 
 import type { HighlightFn } from '@/app/_components/highlighted-code';
@@ -20,7 +19,6 @@ import { highlightGenerated } from '@/features/highlight/interface/actions';
 import type { ProjectListItem } from '@/features/projects/application/projects';
 import {
   forkSlidesProjectAction,
-  listSlidesProjectsAction,
   loadSlidesProjectAction,
   saveSlidesGenerationAction,
 } from '@/features/projects/interface/actions';
@@ -36,40 +34,30 @@ import {
 } from '../../../_components/project-persistence';
 import { ProjectTitle } from '../../../_components/project-title';
 import { StudioPanes } from '../../../_components/studio-panes';
-import { StudioShell } from '../../../_components/studio-shell';
+import { ToolHeader } from '../../../_components/tool-frame';
 import { ViewTabs } from '../../../_components/view-tabs';
 import { DeckPreview } from '../deck-preview';
+import {
+  MOBILE_TAB_OPTIONS,
+  NEW_PROJECT_EMPTY_STATE,
+  VIEW_OPTIONS,
+} from './new-project';
 
 // 設定は完全に静的なので、レンダーごとに生成しない。
 const transport = new DefaultChatTransport({ api: '/api/generate' });
 
 const persistenceActions = {
-  list: listSlidesProjectsAction,
   save: saveSlidesGenerationAction,
   fork: forkSlidesProjectAction,
 };
 
 type PanelView = 'preview' | 'source';
 
-const viewOptions = [
-  { value: 'preview', label: 'プレビュー' },
-  { value: 'source', label: 'ソース' },
-] as const;
-
-const mobileTabOptions = [
-  { value: 'chat', label: 'チャット' },
-  ...viewOptions,
-] as const;
-
 // 吹き出しに出す説明文。スライドの出力フォーマット（md + json）から抽出する。
 const describeSlidesMessage = (text: string): string | null =>
   parseSlidesGeneration(text).meta?.description ?? null;
 
-export const SlidesStudio = ({
-  initialProjects,
-}: {
-  initialProjects: ProjectListItem[];
-}) => {
+export const SlidesStudio = ({ projects }: { projects: ProjectListItem[] }) => {
   const [input, setInput] = useState('');
   const [state, dispatch] = useReducer(
     generationReducer<string>,
@@ -91,7 +79,7 @@ export const SlidesStudio = ({
   const [saving, startSaving] = useTransition();
   const persistence = useProjectPersistence<{ source: string }>(
     persistenceActions,
-    initialProjects,
+    '/slides',
   );
   const { resolvedTheme } = useTheme();
   // コードブロックのハイライトはアプリのテーマに合わせる（light は one-light、dark は plastic）。
@@ -103,7 +91,6 @@ export const SlidesStudio = ({
     const theme = resolvedTheme;
     return (blocks) => highlightGenerated(blocks, theme);
   }, [resolvedTheme]);
-  const router = useRouter();
 
   const { messages, sendMessage, status, error, setMessages, stop } = useChat({
     transport,
@@ -170,20 +157,16 @@ export const SlidesStudio = ({
   // 履歴から読み込んだ直後はチャットが空になるため、空状態でも「何を編集中か」を示す。
   const emptyStateTitle = hasResult
     ? `「${state.lastMeta?.title ?? 'スライド'}」を編集中`
-    : 'スライドを生成しましょう';
+    : NEW_PROJECT_EMPTY_STATE.title;
   const emptyStateHint = hasResult
     ? '続けて指示すると、このスライドを更新します。例:「もっと簡潔に」「コード例を追加して」'
-    : '例: 「TypeScript 入門の LT スライド」「自己紹介の5枚デッキ」';
+    : NEW_PROJECT_EMPTY_STATE.hint;
   const chatErrorText =
     error === undefined ? null : 'エラーが発生しました。再試行してください。';
   // 初回（まだ結果がない）ときだけ、最初の一手を促すサジェストを出す。
   const promptSuggestions = hasResult
     ? []
-    : [
-        'TypeScript 入門の LT スライド',
-        'モノレポ運用の勉強会資料',
-        '自己紹介の5枚デッキ',
-      ];
+    : NEW_PROJECT_EMPTY_STATE.suggestions;
 
   const handleGenerate = async (text: string): Promise<void> => {
     if (text === '' || isBusy || saving) {
@@ -213,7 +196,7 @@ export const SlidesStudio = ({
     }
   };
 
-  const handleNewProject = (): void => {
+  const resetProject = (): void => {
     // 生成中なら中断してから切り替える（生成中表示が新プロジェクトに残るのを防ぐ）。
     void stop();
     persistence.reset();
@@ -222,134 +205,135 @@ export const SlidesStudio = ({
     setPendingSelect(null);
     setView('preview');
     setMobileTab('chat');
-    router.replace('/slides');
   };
 
   const handleSelectProject = async (id: number): Promise<void> => {
+    const isLatest = persistence.startLoading(id);
     // 生成中なら中断してから切り替える（生成中表示が切替先に漏れるのを防ぐ）。
     void stop();
-    const known = persistence.projects.find((project) => project.id === id);
+    const known = projects.find((project) => project.id === id);
     setPendingSelect({ title: known?.title ?? '読み込み中…' });
     setView('preview');
     setMobileTab('preview');
-    try {
-      const project = await loadSlidesProjectAction(id);
-      if (project === null) {
-        return;
-      }
-      persistence.markLoaded(project);
-      dispatch({
-        type: 'load-project',
-        content: project.source,
-        meta: project.meta,
+    // 読込が終わったら（成功/失敗/非所有いずれも）読込中表示を外す。待つあいだに別のプロジェクトへ
+    // 移っていたら、移った先の読込中表示は移った先の読込が外す。
+    // 例外も読めなかった（null）ときと同じに扱い、向かっていた先を今のプロジェクトに戻す。
+    // 戻さないと、そのあとの保存が別のプロジェクトへ移ったものとして捨てられる
+    const project = await loadSlidesProjectAction(id)
+      .catch((loadError: unknown) => {
+        console.error('スライドを読み込めませんでした', loadError);
+        return null;
+      })
+      .finally(() => {
+        if (isLatest()) {
+          setPendingSelect(null);
+        }
       });
-      // 履歴を切り替えてもトークが消えないよう会話を復元する。各版を
-      // [user(指示) → assistant(meta JSON)] に展開し、assistant は json フェンスに
-      // することで describeSlidesMessage が説明文を抽出できる。
-      const restored: UIMessage[] = project.conversation.flatMap(
-        (turn, index): UIMessage[] => {
-          const turnMessages: UIMessage[] = [];
-          if (turn.prompt !== null && turn.prompt !== '') {
-            turnMessages.push({
-              id: `h-u-${index.toString()}`,
-              role: 'user',
-              parts: [{ type: 'text', text: turn.prompt }],
-            });
-          }
-          turnMessages.push({
-            id: `h-a-${index.toString()}`,
-            role: 'assistant',
-            parts: [
-              {
-                type: 'text',
-                text: `\`\`\`json\n${JSON.stringify(turn.meta)}\n\`\`\``,
-              },
-            ],
-          });
-          return turnMessages;
-        },
-      );
-      setMessages(restored);
-    } finally {
-      // 読込が終わったら（成功/失敗/非所有いずれも）読込中表示を必ず外す。
-      setPendingSelect(null);
+    // 待つあいだに別のプロジェクトへ移っていたら、移った先を上書きしないよう捨てる。
+    if (!isLatest()) {
+      return;
     }
+    persistence.markLoaded(project);
+    if (project === null) {
+      return;
+    }
+    dispatch({
+      type: 'load-project',
+      content: project.source,
+      meta: project.meta,
+    });
+    // 履歴を切り替えてもトークが消えないよう会話を復元する。各版を
+    // [user(指示) → assistant(meta JSON)] に展開し、assistant は json フェンスに
+    // することで describeSlidesMessage が説明文を抽出できる。
+    const restored: UIMessage[] = project.conversation.flatMap(
+      (turn, index): UIMessage[] => {
+        const turnMessages: UIMessage[] = [];
+        if (turn.prompt !== null && turn.prompt !== '') {
+          turnMessages.push({
+            id: `h-u-${index.toString()}`,
+            role: 'user',
+            parts: [{ type: 'text', text: turn.prompt }],
+          });
+        }
+        turnMessages.push({
+          id: `h-a-${index.toString()}`,
+          role: 'assistant',
+          parts: [
+            {
+              type: 'text',
+              text: `\`\`\`json\n${JSON.stringify(turn.meta)}\n\`\`\``,
+            },
+          ],
+        });
+        return turnMessages;
+      },
+    );
+    setMessages(restored);
   };
 
   const handleFork = async (): Promise<void> => {
     if (persistence.projectId === null) {
       return;
     }
-    const newId = await persistence.fork(persistence.projectId);
-    if (newId !== null) {
-      await handleSelectProject(newId);
-    }
+    await persistence.fork(persistence.projectId);
   };
 
-  useProjectUrlSync('/slides', persistence.projectId, (projectId) => {
-    void handleSelectProject(projectId);
+  useProjectUrlSync(persistence.isHeadingTo, {
+    load: (projectId) => {
+      void handleSelectProject(projectId);
+    },
+    reset: resetProject,
   });
 
   return (
-    <StudioShell
-      currentProjectId={persistence.projectId}
-      header={
-        <>
-          <ProjectTitle
-            newProjectLabel="新しいスライド"
-            pendingTitle={pendingSelect?.title ?? null}
-            projectId={persistence.projectId}
-            projectTitle={persistence.projectTitle}
-          />
-          <div className="hidden gap-2 lg:flex">
-            <ViewTabs onChange={setView} options={viewOptions} value={view} />
+    <>
+      <ToolHeader>
+        <ProjectTitle
+          newProjectLabel="新しいスライド"
+          pendingTitle={pendingSelect?.title ?? null}
+          projectId={persistence.projectId}
+          projectTitle={persistence.projectTitle}
+        />
+        <div className="hidden gap-2 lg:flex">
+          <ViewTabs onChange={setView} options={VIEW_OPTIONS} value={view} />
+        </div>
+        <div className="flex shrink-0 items-center gap-2 lg:ml-auto">
+          {persistence.projectId === null ? null : (
+            <IconButton
+              color="base"
+              label="フォーク"
+              onAction={handleFork}
+              size="sm"
+            >
+              <ForkIcon size="sm" />
+            </IconButton>
+          )}
+          <div className="hidden items-center gap-3 lg:flex">
+            <Button
+              color="base"
+              disabled={!hasResult}
+              onClick={() => {
+                // DeckPreview が @media print 用に全スライドを描画済み（DeckPrint）。
+                window.print();
+              }}
+              size="sm"
+              variant="outline"
+            >
+              PDF出力
+            </Button>
+            <CopyCodeButton code={hasResult ? displayedSource : null} />
+            <IconButton
+              color="base"
+              disabled={!hasResult}
+              label="全画面"
+              onClick={handleFullscreen}
+              size="sm"
+            >
+              <FullscreenIcon size="sm" />
+            </IconButton>
           </div>
-          <div className="flex shrink-0 items-center gap-2 lg:ml-auto">
-            {persistence.projectId === null ? null : (
-              <IconButton
-                color="base"
-                label="フォーク"
-                onAction={handleFork}
-                size="sm"
-              >
-                <ForkIcon size="sm" />
-              </IconButton>
-            )}
-            <div className="hidden items-center gap-3 lg:flex">
-              <Button
-                color="base"
-                disabled={!hasResult}
-                onClick={() => {
-                  // DeckPreview が @media print 用に全スライドを描画済み（DeckPrint）。
-                  window.print();
-                }}
-                size="sm"
-                variant="outline"
-              >
-                PDF出力
-              </Button>
-              <CopyCodeButton code={hasResult ? displayedSource : null} />
-              <IconButton
-                color="base"
-                disabled={!hasResult}
-                label="全画面"
-                onClick={handleFullscreen}
-                size="sm"
-              >
-                <FullscreenIcon size="sm" />
-              </IconButton>
-            </div>
-          </div>
-        </>
-      }
-      onNewProject={handleNewProject}
-      onSelectProject={(id) => {
-        void handleSelectProject(id);
-      }}
-      projects={persistence.projects}
-      projectsEmptyText="まだ保存されたスライドはありません。生成すると自動で履歴に残ります。"
-      tool="slides"
-    >
+        </div>
+      </ToolHeader>
       <div className="flex gap-2 px-4 py-2 lg:hidden">
         <ViewTabs
           onChange={(tab) => {
@@ -358,7 +342,7 @@ export const SlidesStudio = ({
               setView(tab);
             }
           }}
-          options={mobileTabOptions}
+          options={MOBILE_TAB_OPTIONS}
           value={mobileTab}
         />
       </div>
@@ -422,6 +406,6 @@ export const SlidesStudio = ({
           </div>
         }
       />
-    </StudioShell>
+    </>
   );
 };

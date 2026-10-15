@@ -10,12 +10,14 @@ const threads: ThreadListItem[] = [
   {
     id: '6f1c2a4e-0b7d-4c55-9a3e-2f8d1b6c9e01',
     title: 'a11y の記事を教えて',
+    model: 'claude-sonnet-5-5',
     updatedAt: '2026-10-14T00:30:00.000Z',
     running: true,
   },
   {
     id: '0d9e8f7a-6b5c-4d3e-8f2a-1b0c9d8e7f62',
     title: 'View Transitions の記事を比べて',
+    model: 'claude-opus-5-5',
     updatedAt: '2026-10-13T12:05:00.000Z',
     running: false,
   },
@@ -72,6 +74,7 @@ const manyThreads: ThreadListItem[] = Array.from(
   (_, index) => ({
     id: `thread-${index.toString()}`,
     title: `会話 ${index.toString()}`,
+    model: 'claude-sonnet-5-5',
     updatedAt: '2026-10-13T12:05:00.000Z',
     running: false,
   }),
