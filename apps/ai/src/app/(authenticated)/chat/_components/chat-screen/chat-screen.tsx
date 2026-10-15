@@ -4,6 +4,7 @@ import { useChat } from '@ai-sdk/react';
 import { APICallError, DefaultChatTransport } from 'ai';
 import { useEffect, useEffectEvent, useRef, useState } from 'react';
 import type { FC } from 'react';
+import { flushSync } from 'react-dom';
 
 import { threadTitleFrom } from '@/features/agent/application/agent-message';
 import type { AgentUIMessage } from '@/features/agent/application/agent-message';
@@ -100,6 +101,7 @@ export const ChatScreen: FC<ChatScreenProps> = ({
     { type: 'closed' }
   > | null>(null);
   const [view, setView] = useState<ArtifactView>('preview');
+  const [expanded, setExpanded] = useState(false);
   const threadPath = `/chat/${thread.id}`;
   const { pinned, pin, unpin } = usePanePin(threadPath);
   const paneFocus = usePaneFocus();
@@ -255,6 +257,11 @@ export const ChatScreen: FC<ChatScreenProps> = ({
     artifacts,
     pinned ?? closed ?? { type: 'follow' },
   );
+  // ペインは閉じるボタンを通らずにも消える（戻るで閉じた状態が効く、出せる UI の生成が失敗するなど）。
+  // 広げた状態を残すと、次に出たペインで押したカードや書いている入力欄ごと会話が隠れるので捨てる
+  if (expanded && shown === null) {
+    setExpanded(false);
+  }
   const pinCall = (toolCallId: string): void => {
     pin({ type: 'pinned', toolCallId, lastCallKey: lastCallKeyOf(artifacts) });
   };
@@ -275,6 +282,10 @@ export const ChatScreen: FC<ChatScreenProps> = ({
     }
   };
   const closePane = (toolCallId: string): void => {
+    // 広げたままだとカードのボタンが隠れた会話の中にあり、フォーカスを移せないので、先に会話を出して描く
+    flushSync(() => {
+      setExpanded(false);
+    });
     paneFocus.closePane(toolCallId, () => {
       setClosed({ type: 'closed', lastCallKey: lastCallKeyOf(artifacts) });
       unpin();
@@ -332,18 +343,19 @@ export const ChatScreen: FC<ChatScreenProps> = ({
             status={status}
           />
         }
+        expanded={expanded}
         mobilePane={pinned === null ? 'chat' : 'pane'}
         pane={
           shown === null ? null : (
-            // 別の呼び出しへ移ったら、生成 UI の入力やスクロールを持ち越さない
             <ArtifactPane
               artifact={shown}
+              expanded={expanded}
               headingRef={paneFocus.headingRef}
               highlight={highlightGenerated}
-              key={shown.toolCallId}
               onClose={() => {
                 closePane(shown.toolCallId);
               }}
+              onExpandedChange={setExpanded}
               onViewChange={setView}
               view={view}
             />

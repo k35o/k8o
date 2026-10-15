@@ -57,6 +57,7 @@
 }
 
 .viewTabs,
+.expand,
 .close {
   display: none;
 

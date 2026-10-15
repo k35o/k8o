@@ -126,6 +126,7 @@ const MOBILE_PANE_OPTIONS = [
 const SwitchablePanes: FC<ComponentProps<typeof ChatPanes>> = ({
   chat,
   pane,
+  expanded,
 }) => {
   const [mobilePane, setMobilePane] = useState<'chat' | 'pane'>('chat');
   return (
@@ -137,7 +138,12 @@ const SwitchablePanes: FC<ComponentProps<typeof ChatPanes>> = ({
           value={mobilePane}
         />
       </div>
-      <ChatPanes chat={chat} mobilePane={mobilePane} pane={pane} />
+      <ChatPanes
+        chat={chat}
+        expanded={expanded}
+        mobilePane={mobilePane}
+        pane={pane}
+      />
     </>
   );
 };
@@ -172,13 +178,16 @@ const FocusingPanes: FC = () => {
           status="ready"
         />
       }
+      expanded={false}
       mobilePane={mobilePane}
       pane={
         <ArtifactPane
           artifact={{ ...pricingDone, title: '料金の比較' }}
+          expanded={false}
           headingRef={paneFocus.headingRef}
           highlight={null}
           onClose={ignore}
+          onExpandedChange={ignore}
           onViewChange={ignore}
           view="preview"
         />
@@ -203,13 +212,16 @@ const meta = preview.meta({
     pane: (
       <ArtifactPane
         artifact={pricingDone}
+        expanded={false}
         highlight={null}
         onClose={ignore}
+        onExpandedChange={ignore}
         onViewChange={ignore}
         view="preview"
       />
     ),
     mobilePane: 'chat',
+    expanded: false,
   } satisfies Partial<ComponentProps<typeof ChatPanes>>,
 });
 
@@ -243,6 +255,18 @@ export const PaneGoneWhileShown = meta.story({
     // プレビューを見ているあいだにペインが無くなっても、何も出ない画面に閉じ込めず会話を出す
     await expect(canvas.getByRole('log')).toBeVisible();
     await expect(canvas.getByRole('textbox')).toBeVisible();
+  },
+});
+
+export const ExpandedBelowXl = meta.story({
+  args: { expanded: true },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    // 広げるのは xl 以上だけで、テストのビューポートでは今のタブの規則のまま会話を出す
+    await expect(canvas.getByRole('log')).toBeVisible();
+    await expect(
+      canvas.getByRole('region', { name: 'UI のプレビュー', hidden: true }),
+    ).not.toBeVisible();
   },
 });
 

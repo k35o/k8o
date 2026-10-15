@@ -1,7 +1,13 @@
 'use client';
 
 import type { Spec } from '@json-render/core';
-import { Alert, Badge, CloseIcon, IconButton } from '@k8ordo/ui';
+import {
+  Alert,
+  Badge,
+  CloseIcon,
+  FullscreenIcon,
+  IconButton,
+} from '@k8ordo/ui';
 import type { FC, MouseEvent, Ref } from 'react';
 
 import { useHighlightedCode } from '@/app/_components/highlighted-code';
@@ -42,6 +48,8 @@ type ArtifactPaneProps = {
   artifact: PaneArtifactView;
   view: ArtifactView;
   onViewChange: (view: ArtifactView) => void;
+  expanded: boolean;
+  onExpandedChange: (expanded: boolean) => void;
   onClose: () => void;
   // Storybook から server action を辿らないよう、呼び出し側から渡す。null ならハイライトしない
   highlight: HighlightFn | null;
@@ -52,6 +60,8 @@ export const ArtifactPane: FC<ArtifactPaneProps> = ({
   artifact,
   view,
   onViewChange,
+  expanded,
+  onExpandedChange,
   onClose,
   highlight,
   headingRef,
@@ -85,6 +95,19 @@ export const ArtifactPane: FC<ArtifactPaneProps> = ({
             />
           </div>
           {view === 'preview' ? null : <CopyCodeButton code={code} />}
+          <div className={styles.expand}>
+            <IconButton
+              aria-pressed={expanded}
+              color={expanded ? 'primary' : 'transparent'}
+              label="全画面で見る"
+              onClick={() => {
+                onExpandedChange(!expanded);
+              }}
+              size="sm"
+            >
+              <FullscreenIcon size="sm" />
+            </IconButton>
+          </div>
           <div className={styles.close}>
             <IconButton label="プレビューを閉じる" onClick={onClose} size="sm">
               <CloseIcon size="sm" />
@@ -100,7 +123,9 @@ export const ArtifactPane: FC<ArtifactPaneProps> = ({
           />
         </div>
       ) : null}
-      <div className={styles.body}>
+      {/* 別の呼び出しへ移ったら、生成 UI の入力やスクロールを持ち越さない。
+          見出しは作り直さず、新しい生成への追従で、見出しのボタンのフォーカスを落とさない */}
+      <div className={styles.body} key={artifact.toolCallId}>
         {/* 生成 UI の入力を残すよう、コードを見ているあいだもアンマウントせずに隠す */}
         <div
           className={styles.preview}

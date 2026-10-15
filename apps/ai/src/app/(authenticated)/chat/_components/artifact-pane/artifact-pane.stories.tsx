@@ -49,6 +49,8 @@ const meta = preview.meta({
     },
     view: 'preview',
     onViewChange: fn<(view: ArtifactView) => void>(),
+    expanded: false,
+    onExpandedChange: fn<(expanded: boolean) => void>(),
     onClose: fn<() => void>(),
     highlight: null,
   } satisfies Partial<ComponentProps<typeof ArtifactPane>>,
@@ -74,6 +76,14 @@ export const Done = meta.story({
     await expect(tsx).not.toBeVisible();
     await userEvent.click(tsx);
     await expect(args.onViewChange).toHaveBeenCalledWith('tsx');
+    const expand = canvas.getByRole('button', {
+      name: '全画面で見る',
+      hidden: true,
+    });
+    await expect(expand).not.toBeVisible();
+    await expect(expand).toHaveAttribute('aria-pressed', 'false');
+    await userEvent.click(expand);
+    await expect(args.onExpandedChange).toHaveBeenCalledWith(true);
     const close = canvas.getByRole('button', {
       name: 'プレビューを閉じる',
       hidden: true,
@@ -81,6 +91,21 @@ export const Done = meta.story({
     await expect(close).not.toBeVisible();
     await userEvent.click(close);
     await expect(args.onClose).toHaveBeenCalledOnce();
+  },
+});
+
+export const Expanded = meta.story({
+  args: { expanded: true },
+  play: async ({ args, canvasElement }) => {
+    const canvas = within(canvasElement);
+    const expand = canvas.getByRole('button', {
+      name: '全画面で見る',
+      hidden: true,
+    });
+    // 広げても名前は変えず、押した状態で伝える
+    await expect(expand).toHaveAttribute('aria-pressed', 'true');
+    await userEvent.click(expand);
+    await expect(args.onExpandedChange).toHaveBeenCalledWith(false);
   },
 });
 

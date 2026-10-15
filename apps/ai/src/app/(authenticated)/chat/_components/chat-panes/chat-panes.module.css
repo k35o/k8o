@@ -8,6 +8,11 @@
     &[data-has-pane='true'] {
       grid-template-columns: 440px minmax(0, 1fr);
     }
+
+    /* 隠した会話の列はトラックを取らないので、上書きしないとペインが 440px の1列目に入る */
+    &[data-expanded='true'] {
+      grid-template-columns: minmax(0, 1fr);
+    }
   }
 }
 
@@ -25,10 +30,22 @@
   }
 }
 
+.column {
+  @media (width >= 80rem) {
+    &[data-collapsed='true'] {
+      display: none;
+    }
+  }
+}
+
 .pane {
   overflow: hidden;
 
   @media (width >= 80rem) {
     border-left: 1px solid var(--color-border-mute);
+
+    &[data-expanded='true'] {
+      border-left-style: none;
+    }
   }
 }
