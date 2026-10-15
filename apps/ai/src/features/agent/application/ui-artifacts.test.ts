@@ -564,6 +564,26 @@ describe('lastCallKeyOf と shownArtifact', () => {
         })?.toolCallId,
       ).toBe('call-done');
     });
+
+    it('固定した呼び出しが会話に無ければ、出せる最後のパーツを出す', () => {
+      expect(
+        shownArtifact(twoDone, {
+          type: 'pinned',
+          toolCallId: 'call-elsewhere',
+          lastCallKey: 'call-done-2',
+        })?.toolCallId,
+      ).toBe('call-done-2');
+    });
+
+    it('固定した時点の最後の呼び出しが会話に無ければ、固定を解いて出せる最後のパーツを出す', () => {
+      expect(
+        shownArtifact(twoDone, {
+          type: 'pinned',
+          toolCallId: 'call-done',
+          lastCallKey: 'call-elsewhere',
+        })?.toolCallId,
+      ).toBe('call-done-2');
+    });
   });
 
   describe('エッジケース', () => {
