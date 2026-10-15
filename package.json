@@ -7,7 +7,7 @@
   "scripts": {
     "dev": "portless proxy start --https && turbo run dev",
     "build": "turbo run build",
-    "check": "vp check",
+    "check": "vp check && turbo run check:css",
     "check:write": "vp check --fix",
     "ls-lint": "ls-lint",
     "inspect": "vp-inspect",
@@ -17,7 +17,8 @@
     "storybook": "turbo run storybook",
     "turbo:devtools": "turbo devtools",
     "install-playwright": "playwright install --with-deps chromium",
-    "knip": "knip"
+    "knip": "knip",
+    "check:css": "turbo run check:css"
   },
   "devDependencies": {
     "@k8o/oxc-config": "catalog:",

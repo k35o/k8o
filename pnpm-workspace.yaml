@@ -9,6 +9,10 @@ allowBuilds:
 
 catalog:
   '@ai-sdk/anthropic': 4.0.72
+  '@better-css-modules/cli': 0.4.0
+  '@better-css-modules/core': 0.4.0
+  '@better-css-modules/turbopack': 0.4.0
+  '@better-css-modules/vite': 0.4.0
   '@k8o/html-nest': 0.2.0
   '@k8o/oxc-config': 1.1.0
   '@k8ordo/i18n': 1.0.0
@@ -53,6 +57,7 @@ catalog:
 minimumReleaseAge: 10080
 
 minimumReleaseAgeExclude:
+  - '@better-css-modules/*'
   - '@k8o/*'
   - '@k8ordo/*'
   # 自作パッケージ（k35o公開）。@k8o/* と同じ信頼で除外する

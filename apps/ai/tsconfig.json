@@ -4,7 +4,8 @@
     "paths": {
       "@/*": ["./src/*"]
     },
-    "types": ["node", "vitest/importMeta"]
+    "types": ["node", "vitest/importMeta"],
+    "rootDirs": [".", "./__generated__"]
   },
   "include": [
     "next-env.d.ts",
@@ -12,7 +13,8 @@
     "**/*.tsx",
     ".next/types/**/*.ts",
     ".storybook/*.ts",
-    ".storybook/*.tsx"
+    ".storybook/*.tsx",
+    "__generated__"
   ],
   "exclude": ["node_modules", "sandbox-template"]
 }

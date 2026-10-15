@@ -17,7 +17,8 @@
     "test:ui": "vitest --ui --coverage",
     "coverage": "vitest run --coverage",
     "storybook": "storybook dev -p 6006 --no-open",
-    "build-storybook": "storybook build"
+    "build-storybook": "storybook build",
+    "check:css": "better-css-modules check"
   },
   "dependencies": {
     "@k8o/html-nest": "catalog:",
@@ -53,6 +54,10 @@
     "zod": "catalog:"
   },
   "devDependencies": {
+    "@better-css-modules/cli": "catalog:",
+    "@better-css-modules/core": "catalog:",
+    "@better-css-modules/turbopack": "catalog:",
+    "@better-css-modules/vite": "catalog:",
     "@repo/api": "workspace:*",
     "@repo/typescript-config": "workspace:*",
     "@storybook/addon-a11y": "catalog:",

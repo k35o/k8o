@@ -1,8 +1,9 @@
 {
   "extends": "@repo/typescript-config/next.json",
   "compilerOptions": {
-    "types": ["node", "react"]
+    "types": ["node", "react"],
+    "rootDirs": [".", "./__generated__"]
   },
-  "include": ["src/**/*.ts", "src/**/*.tsx"],
+  "include": ["src/**/*.ts", "src/**/*.tsx", "__generated__"],
   "exclude": ["node_modules", "dist"]
 }

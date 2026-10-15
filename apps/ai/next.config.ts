@@ -1,3 +1,4 @@
+import { withBetterCssModules } from '@better-css-modules/turbopack';
 import type { NextConfig } from 'next';
 
 const nextConfig: NextConfig = {
@@ -22,4 +23,4 @@ const nextConfig: NextConfig = {
   },
 };
 
-export default nextConfig;
+export default withBetterCssModules(nextConfig);
