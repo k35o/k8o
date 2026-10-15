@@ -11,6 +11,7 @@ apps/main と同じ `app / features / shared` 構成（詳細は `apps/main/CLAU
 - `usage/` - Claude の利用ログ（ai_usages）、1時間あたりの生成回数の上限、月の予算と単価（`pricing.ts`）
 - `share/` - 公開共有（公開/非公開化。/s/[slug] は DB の spec をその場で描画）
 - `projects/` - プロジェクト・版の永続化（@repo/ai-database）
+- `artifacts/` - 生成物と版の保存（ai_artifacts・ai_artifact_versions）。版の行は書き換えず、直すたびに次の番号の版を足す。読むのは持ち主の版だけ
 - `highlight/` - 生成物（spec JSON / spec から変換した TSX / スライド）の shiki ハイライト
 - `slides/` - デッキ Markdown のスライド分割とコードブロックの抽出（`parse-deck.ts`）
 
