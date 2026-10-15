@@ -1,4 +1,4 @@
-import { fmt, nextjs, tailwind, test, TEST_GLOBS } from '@k8o/oxc-config';
+import { fmt, nextjs, test, TEST_GLOBS } from '@k8o/oxc-config';
 import { defineConfig } from 'vite-plus';
 
 const ignorePatterns = [
@@ -21,7 +21,7 @@ export default defineConfig({
     ignorePatterns,
   },
   lint: {
-    extends: [nextjs, tailwind],
+    extends: [nextjs],
     // リポジトリ固有のカスタムルール（k8o/*）。実装は packages/oxlint-plugin
     jsPlugins: ['@repo/oxlint-plugin'],
     ignorePatterns,
@@ -35,33 +35,10 @@ export default defineConfig({
       react: {
         version: '19.3.0',
       },
-      tailwindcss: {
-        // 対象ファイルと CSS エントリーポイントの対応を glob で明示する（先勝ちで評価される）。
-        entryPoint: [
-          {
-            files: 'apps/main/**',
-            use: 'apps/main/src/app/_styles/globals.css',
-          },
-          {
-            files: 'apps/ai/**',
-            use: 'apps/ai/src/app/_styles/globals.css',
-          },
-          // packages 配下など app に属さない共有コード（cn.ts のテスト内
-          // class 文字列など）向けのフォールバック。先勝ちのため各 app の
-          // マッピングが優先される。
-          {
-            files: '**',
-            use: 'apps/main/src/app/_styles/globals.css',
-          },
-        ],
-      },
     },
     rules: {
       // DB パッケージ（@repo/database・@repo/ai-database）の import 層を強制する
       'k8o/database-import-boundary': 'error',
-      // font-mono（next/font 絡みで別途対応）と、Playground がコンポーネント内の <style> で
-      // 定義したクラスを未知のクラスとして報告する。この2つが片付くまでは off にする
-      'tailwindcss/no-unknown-classes': 'off',
     },
     overrides: [
       {
@@ -92,7 +69,7 @@ export default defineConfig({
     ],
   },
   staged: {
-    '*.{js,ts,tsx,json,jsonc}':
+    '*.{js,ts,tsx,json,jsonc,css}':
       'vp check --fix --no-error-on-unmatched-pattern',
   },
 });

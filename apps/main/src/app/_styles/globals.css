@@ -1,33 +1,4 @@
-@import 'tailwindcss';
-@import '@k8ordo/ui/tailwind.css';
-
-/* 2rem は main の `px-4` × 2 ぶん */
-@utility max-w-container-* {
-  max-width: min(--value(--container-*), 100svw - 2rem);
-}
-
-/* 10rem は sticky Header (5.5rem) + Footer (4rem) + 余裕 (4px) */
-@utility max-h-app-content {
-  max-height: calc(100svh - 10rem);
-}
-
-@utility indent-em {
-  text-indent: 1em;
-}
-
-/* デザインシステムの Code は className を受け取らないため、読み物の中だけ子孫セレクタで上書きする。
-   等幅は同じサイズでも字面が大きく見えるので、font-size の指定ではなく font-size-adjust で
-   周囲の文字（見出しの中なら見出し）の一段下に揃える */
-@utility prose-code {
-  & :not(pre) > code {
-    background-color: var(--color-bg-subtle);
-    color: var(--color-primary-fg);
-    padding-inline: 0.3rem;
-    margin-inline: 0.125rem;
-    border-radius: 0.375rem;
-    font-size-adjust: 0.48;
-  }
-}
+@import '@k8ordo/ui/styles.css';
 
 @media (prefers-reduced-motion) {
   ::view-transition-group(*),

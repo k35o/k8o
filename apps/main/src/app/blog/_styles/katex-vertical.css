@@ -1,6 +1,6 @@
-@reference '@k8ordo/ui/tailwind.css';
-
-@variant vertical {
+/* 縦書きの記事でも数式は横書きで組む。縦書きかどうかは @k8ordo/ui の .writing-v が立てる
+   --writing で見る（.writing-h の島では horizontal に戻る） */
+@container style(--writing: vertical) {
   :where(.katex-display, .katex-display *) {
     writing-mode: horizontal-tb;
     text-orientation: initial;
