@@ -42,8 +42,12 @@ const PendingReply: FC<{ label: string }> = ({ label }) => (
 const pendingLabelOf = (input: {
   isReceiving: boolean;
   isWaitingServer: boolean;
+  isStopping: boolean;
   lastShown: AgentUIMessage | undefined;
 }): string | null => {
+  if (input.isStopping) {
+    return '停止しています…';
+  }
   if (input.isWaitingServer) {
     return '応答を生成しています（画面を離れても続きます）';
   }
@@ -99,6 +103,7 @@ type ChatViewProps = {
   messages: AgentUIMessage[];
   status: ChatStatus;
   isServerRunning: boolean;
+  isStopping: boolean;
   errorText: string | null;
   draft: string;
   onDraftChange: (draft: string) => void;
@@ -113,6 +118,7 @@ export const ChatView: FC<ChatViewProps> = ({
   messages,
   status,
   isServerRunning,
+  isStopping,
   errorText,
   draft,
   onDraftChange,
@@ -137,6 +143,7 @@ export const ChatView: FC<ChatViewProps> = ({
   const pendingLabel = pendingLabelOf({
     isReceiving,
     isWaitingServer,
+    isStopping,
     lastShown: shownMessages.at(-1),
   });
 

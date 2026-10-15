@@ -41,10 +41,11 @@ beforeEach(() => {
 
 describe('listThreads', () => {
   describe('正常系', () => {
-    it('利用者のスレッドを、読んだ時点で生成中かどうかと一緒に返す', async () => {
+    it('利用者のスレッドを、モデルと読んだ時点で生成中かどうかと一緒に返す', async () => {
       vi.mocked(selectThreadsByUser).mockResolvedValue([
         thread({
           id: 't2',
+          model: 'claude-sonnet-5-5',
           runId: 'run-1',
           runHeartbeatAt: '2026-10-14T11:59:58.000Z',
         }),
@@ -55,17 +56,37 @@ describe('listThreads', () => {
         {
           id: 't2',
           title: '記事の要約',
+          model: 'claude-sonnet-5-5',
           updatedAt: '2026-10-14T11:00:00.000Z',
           running: true,
         },
         {
           id: 't1',
           title: '記事の要約',
+          model: 'claude-opus-5-5',
           updatedAt: '2026-10-14T11:00:00.000Z',
           running: false,
         },
       ]);
       expect(selectThreadsByUser).toHaveBeenCalledExactlyOnceWith('u1');
+    });
+  });
+
+  describe('エッジケース', () => {
+    it('モデルが知らないものなら、一覧には残してモデルを null にする', async () => {
+      vi.mocked(selectThreadsByUser).mockResolvedValue([
+        thread({ model: 'claude-haiku-4-5' }),
+      ]);
+
+      await expect(listThreads({ userId: 'u1', now })).resolves.toStrictEqual([
+        {
+          id: 't1',
+          title: '記事の要約',
+          model: null,
+          updatedAt: '2026-10-14T11:00:00.000Z',
+          running: false,
+        },
+      ]);
     });
   });
 });

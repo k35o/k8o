@@ -1,2 +1,2 @@
 export { Studio } from './studio';
-export { StudioSkeleton } from './studio-skeleton';
+export { StudioPlaceholder } from './studio-placeholder';

@@ -3,14 +3,15 @@
 import { useEffect, useEffectEvent } from 'react';
 
 import type { AgentUIMessage } from '@/features/agent/application/agent-message';
-import { nextSyncStep } from '@/features/agent/application/thread-sync';
+import {
+  nextSyncStep,
+  syncRetryDelayMs,
+} from '@/features/agent/application/thread-sync';
 import type {
   ServerSync,
   ThreadRead,
 } from '@/features/agent/application/thread-sync';
 import type { ThreadSnapshot } from '@/features/agent/application/threads';
-
-const SYNC_INTERVAL_MS = 2000;
 
 const readThread = async (
   threadId: string,
@@ -43,11 +44,13 @@ const readThread = async (
 export const useThreadSync = ({
   threadId,
   mode,
+  stopSent,
   onSettled,
   onRunning,
 }: {
   threadId: string;
   mode: ServerSync | null;
+  stopSent: boolean;
   onSettled: (messages: AgentUIMessage[] | null) => void;
   onRunning: () => void;
 }): void => {
@@ -81,7 +84,7 @@ export const useThreadSync = ({
         case 'retry':
           timer = setTimeout(() => {
             void poll();
-          }, SYNC_INTERVAL_MS);
+          }, syncRetryDelayMs({ stopSent, read }));
       }
     };
 
@@ -90,5 +93,5 @@ export const useThreadSync = ({
       controller.abort();
       clearTimeout(timer);
     };
-  }, [mode, threadId]);
+  }, [mode, threadId, stopSent]);
 };

@@ -41,6 +41,12 @@ export default defineConfig({
         },
       },
       {
+        test: {
+          name: { label: 'app test', color: 'yellow' },
+          include: ['src/app/**/*.test.{ts,tsx}'],
+        },
+      },
+      {
         plugins: [
           storybookTest({ configDir: path.join(dirname, '.storybook') }),
           vrt(),

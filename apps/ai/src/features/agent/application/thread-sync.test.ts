@@ -1,7 +1,17 @@
 import { describe, expect, it } from 'vitest';
 
 import type { AgentUIMessage } from './agent-message';
-import { nextSyncStep, serverSyncAfter, unsavedUserText } from './thread-sync';
+import {
+  createdAtAfterSync,
+  deferredStopAfter,
+  isStopping,
+  nextSyncStep,
+  serverSyncAfter,
+  stopRequestAfterFailedSend,
+  stopRequestOnPress,
+  syncRetryDelayMs,
+  unsavedUserText,
+} from './thread-sync';
 
 type ChatFinish = Parameters<typeof serverSyncAfter>[0];
 
@@ -168,6 +178,191 @@ describe('nextSyncStep', () => {
       expect(
         nextSyncStep('wait', { type: 'not-found', count: 5 }),
       ).toStrictEqual({ type: 'settle', messages: [] });
+    });
+  });
+});
+
+describe('syncRetryDelayMs', () => {
+  const running = {
+    type: 'snapshot',
+    snapshot: { running: true },
+  } as const;
+
+  describe('正常系', () => {
+    it('停止を送っていなければ、生成中でも2秒おきに読む', () => {
+      expect(syncRetryDelayMs({ stopSent: false, read: running })).toBe(2000);
+    });
+
+    it('停止を送ったあと生成中と読めたら、0.5秒おきに読む', () => {
+      expect(syncRetryDelayMs({ stopSent: true, read: running })).toBe(500);
+    });
+  });
+
+  describe('エッジケース', () => {
+    it('停止を送ったあとでも、404 なら2秒おきに読み、スレッドができるのを待つ幅を縮めない', () => {
+      expect(
+        syncRetryDelayMs({
+          stopSent: true,
+          read: { type: 'not-found', count: 1 },
+        }),
+      ).toBe(2000);
+    });
+
+    it('停止を送ったあとでも、読めなかったら2秒おきに読む', () => {
+      expect(
+        syncRetryDelayMs({ stopSent: true, read: { type: 'failed' } }),
+      ).toBe(2000);
+    });
+  });
+});
+
+describe('stopRequestOnPress', () => {
+  describe('正常系', () => {
+    it('応答が流れているあいだに押したら、すぐ送る', () => {
+      expect(stopRequestOnPress('streaming')).toBe('sent');
+    });
+
+    it.each(['ready', 'error'] as const)(
+      '受信を終えてサーバーの生成を待っているあいだ（%s）に押したら、停止を送ったあとの押し直しでも、すぐ送る',
+      (status) => {
+        expect(stopRequestOnPress(status)).toBe('sent');
+      },
+    );
+  });
+
+  describe('エッジケース', () => {
+    it('応答が流れ始める前に押したら、サーバーが実行の印を付けるまで送らずに待つ', () => {
+      expect(stopRequestOnPress('submitted')).toBe('deferred');
+    });
+  });
+});
+
+describe('deferredStopAfter', () => {
+  describe('正常系', () => {
+    it('応答が流れ始めたら、待っていた停止を送る', () => {
+      expect(deferredStopAfter('streaming')).toBe('released');
+    });
+
+    it('まだ流れ始めていなければ、待ち続ける', () => {
+      expect(deferredStopAfter('submitted')).toBe('deferred');
+    });
+  });
+
+  describe('異常系', () => {
+    it.each(['error', 'ready'] as const)(
+      '流れ始めずに終わったら（%s）、送らずに取り下げる',
+      (status) => {
+        expect(deferredStopAfter(status)).toBeNull();
+      },
+    );
+  });
+});
+
+describe('stopRequestAfterFailedSend', () => {
+  describe('異常系', () => {
+    it.each(['sent', 'released'] as const)(
+      '送った停止（%s）が届かなかったら、取り下げてもう一度押せるようにする',
+      (request) => {
+        expect(stopRequestAfterFailedSend(request)).toBeNull();
+      },
+    );
+  });
+
+  describe('エッジケース', () => {
+    it('届かないうちに次の送信で、流れ始めを待つ停止に変わっていたら、それは残す', () => {
+      expect(stopRequestAfterFailedSend('deferred')).toBe('deferred');
+    });
+
+    it('届かないうちに次の送信で取り下げられていたら、取り下げたまま', () => {
+      expect(stopRequestAfterFailedSend(null)).toBeNull();
+    });
+  });
+});
+
+describe('isStopping', () => {
+  describe('正常系', () => {
+    it('応答が流れ始める前に押したら、流れ始めるのを待つあいだも停止中とする', () => {
+      expect(
+        isStopping({ request: 'deferred', status: 'submitted', sync: null }),
+      ).toBe(true);
+    });
+
+    it('停止を送って受信を止めたら、サーバーの生成が終わるのを待つあいだも停止中とする', () => {
+      expect(
+        isStopping({ request: 'sent', status: 'ready', sync: 'wait' }),
+      ).toBe(true);
+    });
+
+    it('サーバーの生成が終わったと分かったら（停止より先に最後まで受け取れて読み直さなかったときも）、停止中ではない', () => {
+      expect(isStopping({ request: 'sent', status: 'ready', sync: null })).toBe(
+        false,
+      );
+    });
+
+    it('停止を押していなければ、受信中でも停止中ではない', () => {
+      expect(
+        isStopping({ request: null, status: 'streaming', sync: null }),
+      ).toBe(false);
+    });
+  });
+
+  describe('エッジケース', () => {
+    it('待っていた停止を送る前に応答が流れ始めても、停止中のまま', () => {
+      expect(
+        isStopping({ request: 'deferred', status: 'streaming', sync: null }),
+      ).toBe(true);
+    });
+  });
+});
+
+describe('createdAtAfterSync', () => {
+  const firstSentAt = '2026-10-14T01:00:00.000Z';
+
+  describe('正常系', () => {
+    it('応答が流れ始める前に止めても、サーバーに保存されていれば、最初に送った時刻に作られたとみなす', () => {
+      expect(
+        createdAtAfterSync({
+          createdAt: null,
+          firstSentAt,
+          saved: savedMessages,
+        }),
+      ).toBe(firstSentAt);
+    });
+
+    it('応答が流れ始めて作られたスレッドは、作られた時刻を変えない', () => {
+      expect(
+        createdAtAfterSync({
+          createdAt: '2026-10-14T00:00:00.000Z',
+          firstSentAt,
+          saved: savedMessages,
+        }),
+      ).toBe('2026-10-14T00:00:00.000Z');
+    });
+  });
+
+  describe('異常系', () => {
+    it('サーバーに何も保存されていなければ、作られていないとみなす', () => {
+      expect(
+        createdAtAfterSync({ createdAt: null, firstSentAt, saved: [] }),
+      ).toBeNull();
+    });
+
+    it('読めないまま諦めたら、作られていないとみなす', () => {
+      expect(
+        createdAtAfterSync({ createdAt: null, firstSentAt, saved: null }),
+      ).toBeNull();
+    });
+  });
+
+  describe('エッジケース', () => {
+    it('このタブで送っていないスレッドは、読み直しただけでは作られたとみなさない', () => {
+      expect(
+        createdAtAfterSync({
+          createdAt: null,
+          firstSentAt: null,
+          saved: savedMessages,
+        }),
+      ).toBeNull();
     });
   });
 });

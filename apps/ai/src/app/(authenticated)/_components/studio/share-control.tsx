@@ -17,7 +17,6 @@ type ShareControlProps = {
   isPublic: boolean;
   // 公開中だが作業版が公開版より進んでいる（再公開で反映できる）。
   hasDraft: boolean;
-  onChanged: () => void;
 };
 
 export const ShareControl: FC<ShareControlProps> = ({
@@ -25,7 +24,6 @@ export const ShareControl: FC<ShareControlProps> = ({
   slug,
   isPublic,
   hasDraft,
-  onChanged,
 }) => {
   const [busy, startTransition] = useTransition();
   const { open } = useToast();
@@ -48,7 +46,6 @@ export const ShareControl: FC<ShareControlProps> = ({
           open('error', '公開に失敗しました');
           return;
         }
-        onChanged();
         await copyLink(res.slug);
         open('success', '公開しました。リンクをコピーしました');
       } catch {
@@ -65,7 +62,6 @@ export const ShareControl: FC<ShareControlProps> = ({
           open('error', '非公開化に失敗しました');
           return;
         }
-        onChanged();
         open('success', '非公開にしました');
       } catch {
         open('error', '非公開化に失敗しました');

@@ -28,7 +28,7 @@ const TOOLS: Array<{
 ];
 
 type ToolNavProps = {
-  current: StudioTool;
+  current: StudioTool | null;
   onNavigate?: (() => void) | undefined;
 };
 

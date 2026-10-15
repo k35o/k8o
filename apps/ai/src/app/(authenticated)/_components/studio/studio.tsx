@@ -6,7 +6,6 @@ import { ForkIcon, FullscreenIcon, IconButton } from '@k8ordo/ui';
 import { validateGeneratedSpec } from '@k8ordo/ui/json-render';
 import { DefaultChatTransport } from 'ai';
 import type { UIMessage } from 'ai';
-import { useRouter } from 'next/navigation';
 import { useMemo, useReducer, useRef, useState, useTransition } from 'react';
 
 import { SpecPreview } from '@/app/_components/spec-preview';
@@ -27,7 +26,6 @@ import { specToTsx } from '@/features/generation/application/spec-to-tsx';
 import type { ProjectListItem } from '@/features/projects/application/projects';
 import {
   forkProjectAction,
-  listProjectsAction,
   loadProjectAction,
   saveGenerationAction,
 } from '@/features/projects/interface/actions';
@@ -42,39 +40,26 @@ import {
 } from '../project-persistence';
 import { ProjectTitle } from '../project-title';
 import { StudioPanes } from '../studio-panes';
-import { StudioShell } from '../studio-shell';
+import { ToolHeader } from '../tool-frame';
 import { ViewTabs } from '../view-tabs';
+import {
+  MOBILE_TAB_OPTIONS,
+  NEW_PROJECT_EMPTY_STATE,
+  VIEW_OPTIONS,
+} from './new-project';
 import { ShareControl } from './share-control';
-
-import styles from './studio.module.css';
 
 // 設定は完全に静的なので、レンダーごとに生成しない。
 const transport = new DefaultChatTransport({ api: '/api/generate' });
 
 const persistenceActions = {
-  list: listProjectsAction,
   save: saveGenerationAction,
   fork: forkProjectAction,
 };
 
 type PanelView = 'preview' | 'spec' | 'tsx';
 
-const viewOptions = [
-  { value: 'preview', label: 'プレビュー' },
-  { value: 'spec', label: 'spec' },
-  { value: 'tsx', label: 'TSX' },
-] as const;
-
-const mobileTabOptions = [
-  { value: 'chat', label: 'チャット' },
-  ...viewOptions,
-] as const;
-
-export const Studio = ({
-  initialProjects,
-}: {
-  initialProjects: ProjectListItem[];
-}) => {
+export const Studio = ({ projects }: { projects: ProjectListItem[] }) => {
   const [input, setInput] = useState('');
   const [state, dispatch] = useReducer(
     generationReducer<Spec>,
@@ -102,9 +87,8 @@ export const Studio = ({
   const [saving, startSaving] = useTransition();
   const persistence = useProjectPersistence<{ spec: Spec }>(
     persistenceActions,
-    initialProjects,
+    '/',
   );
-  const router = useRouter();
 
   const { messages, sendMessage, status, error, setMessages, stop } = useChat({
     transport,
@@ -206,10 +190,10 @@ export const Studio = ({
   // 履歴から読み込んだ直後はチャットが空になるため、空状態でも「何を編集中か」を示す。
   const emptyStateTitle = hasResult
     ? `「${state.lastMeta?.title ?? 'プロジェクト'}」を編集中`
-    : 'UI を生成しましょう';
+    : NEW_PROJECT_EMPTY_STATE.title;
   const emptyStateHint = hasResult
     ? '続けて指示すると、このUIを更新します。例:「色を温かいトーンに」「余白を広げて」'
-    : '例: 「お問い合わせフォームのカード」「料金プランの3カラム」';
+    : NEW_PROJECT_EMPTY_STATE.hint;
   let chatErrorText: string | null = null;
   if (validationNotice !== null) {
     chatErrorText = validationNotice;
@@ -219,15 +203,9 @@ export const Studio = ({
   // 初回（まだ結果がない）ときだけ、最初の一手を促すサジェストを出す。
   const promptSuggestions = hasResult
     ? []
-    : [
-        'お問い合わせフォームのカード',
-        '料金プランの3カラム',
-        'ヒーローセクション',
-      ];
+    : NEW_PROJECT_EMPTY_STATE.suggestions;
   const currentProject =
-    persistence.projects.find(
-      (project) => project.id === persistence.projectId,
-    ) ?? null;
+    projects.find((project) => project.id === persistence.projectId) ?? null;
 
   const handleGenerate = async (text: string): Promise<void> => {
     if (text === '' || isBusy || saving) {
@@ -260,7 +238,7 @@ export const Studio = ({
     }
   };
 
-  const handleNewProject = (): void => {
+  const resetProject = (): void => {
     // 生成中なら中断してから切り替える（生成中表示が新プロジェクトに残るのを防ぐ）。
     void stop();
     persistence.reset();
@@ -271,145 +249,144 @@ export const Studio = ({
     setEditBase(null);
     setView('preview');
     setMobileTab('chat');
-    router.replace('/');
   };
 
   const handleSelectProject = async (id: number): Promise<void> => {
+    const isLatest = persistence.startLoading(id);
     // 生成中なら中断してから切り替える（生成中表示が切替先に漏れるのを防ぐ）。
     void stop();
     // クリック直後に読込中を見せ、タイトルは既知のリスト項目から先行表示する。
-    const known = persistence.projects.find((project) => project.id === id);
+    const known = projects.find((project) => project.id === id);
     setPendingSelect({ title: known?.title ?? '読み込み中…' });
     setView('preview');
     setMobileTab('preview');
-    try {
-      const project = await loadProjectAction(id);
-      if (project === null) {
-        return;
-      }
-      persistence.markLoaded(project);
-      dispatch({
-        type: 'load-project',
-        content: project.spec,
-        meta: project.meta,
+    // 読込が終わったら（成功/失敗/非所有いずれも）読込中表示を外す。待つあいだに別のプロジェクトへ
+    // 移っていたら、移った先の読込中表示は移った先の読込が外す。
+    // 例外も読めなかった（null）ときと同じに扱い、向かっていた先を今のプロジェクトに戻す。
+    // 戻さないと、そのあとの保存が別のプロジェクトへ移ったものとして捨てられる
+    const project = await loadProjectAction(id)
+      .catch((loadError: unknown) => {
+        console.error('プロジェクトを読み込めませんでした', loadError);
+        return null;
+      })
+      .finally(() => {
+        if (isLatest()) {
+          setPendingSelect(null);
+        }
       });
-      setEditBase(null);
-      // 履歴を切り替えてもトークが消えないよう会話を復元する。各版を
-      // [user(指示) → assistant(説明文)] に展開する。説明文はプレーンテキストなので
-      // ChatPanel の describe がそのまま表示する。
-      const restored: UIMessage[] = project.conversation.flatMap(
-        (turn, index): UIMessage[] => {
-          const turnMessages: UIMessage[] = [];
-          if (turn.prompt !== null && turn.prompt !== '') {
-            turnMessages.push({
-              id: `h-u-${index.toString()}`,
-              role: 'user',
-              parts: [{ type: 'text', text: turn.prompt }],
-            });
-          }
-          turnMessages.push({
-            id: `h-a-${index.toString()}`,
-            role: 'assistant',
-            parts: [
-              {
-                type: 'text',
-                text:
-                  turn.meta.description === ''
-                    ? '内容を更新しました'
-                    : turn.meta.description,
-              },
-            ],
-          });
-          return turnMessages;
-        },
-      );
-      setMessages(restored);
-      setValidationNotice(null);
-    } finally {
-      // 読込が終わったら（成功/失敗/非所有いずれも）読込中表示を必ず外す。
-      setPendingSelect(null);
+    // 待つあいだに別のプロジェクトへ移っていたら、移った先を上書きしないよう捨てる。
+    if (!isLatest()) {
+      return;
     }
+    persistence.markLoaded(project);
+    if (project === null) {
+      return;
+    }
+    dispatch({
+      type: 'load-project',
+      content: project.spec,
+      meta: project.meta,
+    });
+    setEditBase(null);
+    // 履歴を切り替えてもトークが消えないよう会話を復元する。各版を
+    // [user(指示) → assistant(説明文)] に展開する。説明文はプレーンテキストなので
+    // ChatPanel の describe がそのまま表示する。
+    const restored: UIMessage[] = project.conversation.flatMap(
+      (turn, index): UIMessage[] => {
+        const turnMessages: UIMessage[] = [];
+        if (turn.prompt !== null && turn.prompt !== '') {
+          turnMessages.push({
+            id: `h-u-${index.toString()}`,
+            role: 'user',
+            parts: [{ type: 'text', text: turn.prompt }],
+          });
+        }
+        turnMessages.push({
+          id: `h-a-${index.toString()}`,
+          role: 'assistant',
+          parts: [
+            {
+              type: 'text',
+              text:
+                turn.meta.description === ''
+                  ? '内容を更新しました'
+                  : turn.meta.description,
+            },
+          ],
+        });
+        return turnMessages;
+      },
+    );
+    setMessages(restored);
+    setValidationNotice(null);
   };
 
   const handleFork = async (): Promise<void> => {
     if (persistence.projectId === null) {
       return;
     }
-    const newId = await persistence.fork(persistence.projectId);
-    if (newId !== null) {
-      await handleSelectProject(newId);
-    }
+    await persistence.fork(persistence.projectId);
   };
 
-  useProjectUrlSync('/', persistence.projectId, (projectId) => {
-    void handleSelectProject(projectId);
+  useProjectUrlSync(persistence.isHeadingTo, {
+    load: (projectId) => {
+      void handleSelectProject(projectId);
+    },
+    reset: resetProject,
   });
 
   return (
-    <StudioShell
-      currentProjectId={persistence.projectId}
-      header={
-        <>
-          <ProjectTitle
-            newProjectLabel="新しいプロジェクト"
-            pendingTitle={pendingSelect?.title ?? null}
-            projectId={persistence.projectId}
-            projectTitle={persistence.projectTitle}
-          />
-          <div className={styles.viewTabs}>
-            <ViewTabs onChange={setView} options={viewOptions} value={view} />
-          </div>
-          <div className={styles.actions}>
-            {persistence.projectId === null ? null : (
-              <>
-                <ShareControl
-                  hasDraft={
-                    currentProject?.visibility === 'public' &&
-                    currentProject.publishedVersionId !== null &&
-                    persistence.currentVersionId !== null &&
-                    currentProject.publishedVersionId !==
-                      persistence.currentVersionId
-                  }
-                  isPublic={currentProject?.visibility === 'public'}
-                  onChanged={() => {
-                    void persistence.refresh();
-                  }}
-                  projectId={persistence.projectId}
-                  slug={currentProject?.slug ?? null}
-                />
-                <IconButton
-                  color="base"
-                  label="フォーク"
-                  onAction={handleFork}
-                  size="sm"
-                >
-                  <ForkIcon size="sm" />
-                </IconButton>
-              </>
-            )}
-            <div className={styles.desktopActions}>
-              <CopyCodeButton code={displayedCode} />
+    <>
+      <ToolHeader>
+        <ProjectTitle
+          newProjectLabel="新しいプロジェクト"
+          pendingTitle={pendingSelect?.title ?? null}
+          projectId={persistence.projectId}
+          projectTitle={persistence.projectTitle}
+        />
+        <div className="hidden gap-2 lg:flex">
+          <ViewTabs onChange={setView} options={VIEW_OPTIONS} value={view} />
+        </div>
+        <div className="flex shrink-0 items-center gap-2 lg:ml-auto">
+          {persistence.projectId === null ? null : (
+            <>
+              <ShareControl
+                hasDraft={
+                  currentProject?.visibility === 'public' &&
+                  currentProject.publishedVersionId !== null &&
+                  persistence.currentVersionId !== null &&
+                  currentProject.publishedVersionId !==
+                    persistence.currentVersionId
+                }
+                isPublic={currentProject?.visibility === 'public'}
+                projectId={persistence.projectId}
+                slug={currentProject?.slug ?? null}
+              />
               <IconButton
                 color="base"
-                disabled={!hasResult}
-                label="全画面"
-                onClick={handleFullscreen}
+                label="フォーク"
+                onAction={handleFork}
                 size="sm"
               >
-                <FullscreenIcon size="sm" />
+                <ForkIcon size="sm" />
               </IconButton>
-            </div>
+            </>
+          )}
+          <div className="hidden items-center gap-3 lg:flex">
+            <CopyCodeButton code={displayedCode} />
+            <IconButton
+              color="base"
+              disabled={!hasResult}
+              label="全画面"
+              onClick={handleFullscreen}
+              size="sm"
+            >
+              <FullscreenIcon size="sm" />
+            </IconButton>
           </div>
-        </>
-      }
-      onNewProject={handleNewProject}
-      onSelectProject={(id) => {
-        void handleSelectProject(id);
-      }}
-      projects={persistence.projects}
-      tool="ui"
-    >
-      <div className={styles.mobileTabs}>
+        </div>
+      </ToolHeader>
+      <div className="flex gap-2 px-4 py-2 lg:hidden">
         <ViewTabs
           onChange={(tab) => {
             setMobileTab(tab);
@@ -417,7 +394,7 @@ export const Studio = ({
               setView(tab);
             }
           }}
-          options={mobileTabOptions}
+          options={MOBILE_TAB_OPTIONS}
           value={mobileTab}
         />
       </div>
@@ -448,13 +425,17 @@ export const Studio = ({
         }
         mobilePane={mobileTab === 'chat' ? 'chat' : 'panel'}
         panel={
-          <div className={styles.frame} ref={frameRef}>
-            <div className={styles.preview} data-active={view === 'preview'}>
+          <div className="min-h-0 flex-1 overflow-hidden" ref={frameRef}>
+            <div
+              className={
+                view === 'preview' ? 'bg-bg-surface relative h-full' : 'hidden'
+              }
+            >
               {displaySpec === null ? (
                 isBusy ? (
                   <PreviewLoading message="UI を生成しています…" />
                 ) : (
-                  <div className={styles.placeholder}>
+                  <div className="text-fg-mute flex h-full items-center justify-center p-6 text-center text-sm leading-relaxed">
                     生成すると、ここにライブプレビューが表示されます
                   </div>
                 )
@@ -466,7 +447,7 @@ export const Studio = ({
                 <PreviewLoading message="プロジェクトを読み込んでいます…" />
               )}
             </div>
-            <div className={styles.code} data-active={view !== 'preview'}>
+            <div className={view === 'preview' ? 'hidden' : 'h-full'}>
               <CodePanel
                 code={displayedCode}
                 isStreaming={isBusy}
@@ -476,6 +457,6 @@ export const Studio = ({
           </div>
         }
       />
-    </StudioShell>
+    </>
   );
 };
