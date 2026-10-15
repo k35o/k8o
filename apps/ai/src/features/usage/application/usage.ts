@@ -1,5 +1,5 @@
 import 'server-only';
-import type { AiApp } from '@repo/ai-database/schema';
+import type { AiApp, AiUsageKind } from '@repo/ai-database/schema';
 
 import type { GenerationModel } from '@/shared/claude/models';
 
@@ -32,12 +32,14 @@ export const isMonthlyBudgetExceeded = async (now: number): Promise<boolean> =>
 // 中断した生成も数えるよう、Claude を呼ぶ前に利用の行を予約する
 export const reserveUsage = async (input: {
   app: AiApp;
+  kind: AiUsageKind;
   userId: string;
   model: GenerationModel;
   now: number;
 }): Promise<UsageReservation> => {
   const usageId = await insertUsageWithinLimits({
     app: input.app,
+    kind: input.kind,
     userId: input.userId,
     model: input.model,
     createdAt: new Date(input.now).toISOString(),

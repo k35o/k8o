@@ -107,7 +107,7 @@ afterEach(() => {
 
 describe('handleGenerate', () => {
   describe('正常系', () => {
-    it('Claude を呼ぶ前に、頼んだモデルで、1時間あたりの上限と月の予算を条件に利用の行を予約する', async () => {
+    it('Claude を呼ぶ前に、頼んだモデルと生成の種類で、1時間あたりの上限と月の予算を条件に利用の行を予約する', async () => {
       vi.stubEnv('AI_GENERATE_LIMIT_PER_HOUR', '5');
       const { model } = mockClaude('finish');
 
@@ -119,6 +119,7 @@ describe('handleGenerate', () => {
       expect(response.status).toBe(200);
       expect(insertUsageWithinLimits).toHaveBeenCalledExactlyOnceWith({
         app: 'slides',
+        kind: 'generation',
         userId: 'u1',
         model: 'claude-opus-5-5',
         createdAt: '2026-10-13T12:00:00.000Z',

@@ -69,6 +69,8 @@ LLM（Claude API）は課金が発生するため、**課金が発生する全 A
 
 生成回数の上限（アプリと利用者ごとに1時間あたり `AI_GENERATE_LIMIT_PER_HOUR` 回）と月の予算（UTC の月初からの全行の費用の合計が $100 未満）は `ai_usages` の行で数える。Claude を呼ぶ経路は、`/api/generate` も `/api/chat` も、呼ぶ前に `reserveUsage`（`usage/application/usage.ts`）で行を予約し、予約できなければ 429 で断る。`reserveUsage` を通さずに Claude を呼ばない。トークン数と費用は `recordUsage` で、予約した行へあとから書き込む。単価は `usage/application/pricing.ts` にある。
 
+- 行は、アプリ（`app`）と、Claude を呼んだ種類（`kind`）を持つ。`/api/generate` と `/api/chat` は `'generation'` で予約する
+- 1時間の上限は、種類で絞らずに、アプリと利用者ごとの全行を数える
 - 予算は、アプリと利用者で絞らずに数える
 - エージェントは、tool を呼んだステップのあとにも予算を確かめて止まる。同時に走る実行はどれも予約を通れるので、予算を超えるのは、同時の実行の数 × 1ステップ分まで
 - 予算に数えないもの

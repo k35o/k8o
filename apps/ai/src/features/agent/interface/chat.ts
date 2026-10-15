@@ -260,6 +260,7 @@ export async function handleChat(req: Request): Promise<Response> {
   // 断られたときに空のスレッドを残さないよう、スレッドを作る前に予約する
   const reservation = await reserveUsage({
     app: 'agent',
+    kind: 'generation',
     userId: session.userId,
     model,
     now,

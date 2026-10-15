@@ -18,6 +18,7 @@ const now = Date.parse('2026-10-14T12:00:00.000Z');
 
 const reservation = {
   app: 'agent',
+  kind: 'ui',
   userId: 'u1',
   model: 'claude-sonnet-5-5',
   now,
@@ -35,7 +36,7 @@ afterEach(() => {
 
 describe('reserveUsage', () => {
   describe('正常系', () => {
-    it('1時間あたりの上限と月の予算を条件に、モデルつきで利用の行を予約する', async () => {
+    it('1時間あたりの上限と月の予算を条件に、種類とモデルつきで利用の行を予約する', async () => {
       vi.stubEnv('AI_GENERATE_LIMIT_PER_HOUR', '5');
 
       await expect(reserveUsage(reservation)).resolves.toStrictEqual({
@@ -44,6 +45,7 @@ describe('reserveUsage', () => {
       });
       expect(insertUsageWithinLimits).toHaveBeenCalledExactlyOnceWith({
         app: 'agent',
+        kind: 'ui',
         userId: 'u1',
         model: 'claude-sonnet-5-5',
         createdAt: '2026-10-14T12:00:00.000Z',

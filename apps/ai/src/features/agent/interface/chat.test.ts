@@ -378,6 +378,7 @@ describe('handleChat', () => {
       expect(insertUsageWithinLimits).toHaveBeenCalledExactlyOnceWith(
         expect.objectContaining({
           app: 'agent',
+          kind: 'generation',
           userId: 'u1',
           model: 'claude-opus-5-5',
         }),
