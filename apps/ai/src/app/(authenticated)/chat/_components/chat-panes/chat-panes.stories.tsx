@@ -177,7 +177,10 @@ const FocusingPanes: FC = () => {
         <ArtifactPane
           artifact={{ ...pricingDone, title: '料金の比較' }}
           headingRef={paneFocus.headingRef}
+          highlight={null}
           onClose={ignore}
+          onViewChange={ignore}
+          view="preview"
         />
       }
     />
@@ -197,7 +200,15 @@ const meta = preview.meta({
   // satisfiesで文脈型を与えて広げる
   args: {
     chat: <Chat />,
-    pane: <ArtifactPane artifact={pricingDone} onClose={ignore} />,
+    pane: (
+      <ArtifactPane
+        artifact={pricingDone}
+        highlight={null}
+        onClose={ignore}
+        onViewChange={ignore}
+        view="preview"
+      />
+    ),
     mobilePane: 'chat',
   } satisfies Partial<ComponentProps<typeof ChatPanes>>,
 });

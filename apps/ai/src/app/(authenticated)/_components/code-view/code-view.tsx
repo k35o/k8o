@@ -26,6 +26,9 @@ export const CodeView: FC<CodeViewProps> = ({
       <pre
         className={styles.code}
         style={{ backgroundColor: CODE_SURFACE.bg, color: CODE_SURFACE.fg }}
+        // 枠を超える長いコードをキーボードでもスクロールできるよう、フォーカスできるようにする
+        // oxlint-disable-next-line jsx-a11y/no-noninteractive-tabindex
+        tabIndex={0}
       >
         <code>{code}</code>
       </pre>
@@ -36,6 +39,9 @@ export const CodeView: FC<CodeViewProps> = ({
     <pre
       className={styles.code}
       style={{ backgroundColor: highlighted.bg, color: highlighted.fg }}
+      // 枠を超える長いコードをキーボードでもスクロールできるよう、フォーカスできるようにする
+      // oxlint-disable-next-line jsx-a11y/no-noninteractive-tabindex
+      tabIndex={0}
     >
       <code>
         {highlighted.tokens.map((line, lineIndex) => (

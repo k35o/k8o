@@ -27,12 +27,14 @@ import {
   uiLiveOf,
 } from '@/features/agent/application/ui-artifacts';
 import type { PaneSelection } from '@/features/agent/application/ui-artifacts';
+import { highlightGenerated } from '@/features/highlight/interface/actions';
 import { DEFAULT_GENERATION_MODEL } from '@/shared/claude/models';
 import type { GenerationModel } from '@/shared/claude/models';
 
 import { ToolHeader } from '../../../_components/tool-frame';
 import { ViewTabs } from '../../../_components/view-tabs';
-import { ArtifactPane } from '../artifact-pane';
+import { ARTIFACT_VIEW_OPTIONS, ArtifactPane } from '../artifact-pane';
+import type { ArtifactView } from '../artifact-pane';
 import { ChatPanes, usePaneFocus } from '../chat-panes';
 import { ChatHeader, ChatView } from '../chat-view';
 import { useOpeningThread } from '../opening-thread';
@@ -49,9 +51,9 @@ const transport = new DefaultChatTransport<AgentUIMessage>({
   }),
 });
 
-const MOBILE_PANE_OPTIONS = [
+const MOBILE_TAB_OPTIONS = [
   { value: 'chat', label: 'チャット' },
-  { value: 'pane', label: 'プレビュー' },
+  ...ARTIFACT_VIEW_OPTIONS,
 ] as const;
 
 const requestStop = async (threadId: string): Promise<boolean> => {
@@ -95,6 +97,7 @@ export const ChatScreen: FC<ChatScreenProps> = ({
   const [selection, setSelection] = useState<PaneSelection>({
     type: 'follow',
   });
+  const [view, setView] = useState<ArtifactView>('preview');
   const [mobilePane, setMobilePane] = useState<'chat' | 'pane'>('chat');
   const paneFocus = usePaneFocus();
 
@@ -264,8 +267,17 @@ export const ChatScreen: FC<ChatScreenProps> = ({
         toolCallId,
         lastCallKey: lastCallKeyOf(artifacts),
       });
+      setView('preview');
       setMobilePane('pane');
     });
+  };
+  const changeMobileTab = (tab: 'chat' | ArtifactView): void => {
+    if (tab === 'chat') {
+      setMobilePane('chat');
+      return;
+    }
+    setView(tab);
+    setMobilePane('pane');
   };
   const closePane = (toolCallId: string): void => {
     paneFocus.closePane(toolCallId, () => {
@@ -281,9 +293,9 @@ export const ChatScreen: FC<ChatScreenProps> = ({
       {shown === null ? null : (
         <div className={styles.mobileTabs}>
           <ViewTabs
-            onChange={setMobilePane}
-            options={MOBILE_PANE_OPTIONS}
-            value={mobilePane}
+            onChange={changeMobileTab}
+            options={MOBILE_TAB_OPTIONS}
+            value={mobilePane === 'chat' ? 'chat' : view}
           />
         </div>
       )}
@@ -315,10 +327,13 @@ export const ChatScreen: FC<ChatScreenProps> = ({
             <ArtifactPane
               artifact={shown}
               headingRef={paneFocus.headingRef}
+              highlight={highlightGenerated}
               key={shown.toolCallId}
               onClose={() => {
                 closePane(shown.toolCallId);
               }}
+              onViewChange={setView}
+              view={view}
             />
           )
         }

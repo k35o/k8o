@@ -51,7 +51,7 @@ UI スタジオとエージェントの `generate_ui` は、どちらも json-re
   - 利用者・会話・モデルは `toolsContext` で渡す。時間の上限は、ほかの tool より長い `UI_TOOL_TIMEOUT_MS`
   - execute は async generator で、書きかけの spec を間引いて preliminary の出力で流し、最後に保存した版（artifactId・版・要約・spec）を流す
   - Claude に送り返すのは、`toModelOutput` の短い文（artifactId・版・タイトル・要約）だけで、spec は送らない
-- 会話には `generate_ui` の呼び出しをカードで出し、UI を横のペインでプレビューする。xl 以上は会話 440px とペインの2列にし、それより狭い幅ではタブで1枚ずつ出す
+- 会話には `generate_ui` の呼び出しをカードで出し、UI を横のペインでプレビューする。ペインでは、spec の JSON と、spec から変換した TSX も見てコピーできる。xl 以上は会話 440px とペインの2列にし、それより狭い幅ではタブで1枚ずつ出す
   - カードとペインは、メッセージの tool の出力だけから描く。ペインに出す呼び出しは、`agent/application/ui-artifacts.ts` が描画中に導く。初期値は最後の UI に追従し、カードで固定するか閉じても、新しい生成が始まると追従に戻る
   - 生成 UI のリンクとフォームは、ペインの包みで移動を止める。会話の画面ごと移動すると受信が切れるため。/s/[slug] ではリンクが動いてよいので、共有の `SpecPreview` には入れない
 - スレッドの ID はページが決め、最初の POST が予約を通ったときに、サーバーがスレッドの行を作る
