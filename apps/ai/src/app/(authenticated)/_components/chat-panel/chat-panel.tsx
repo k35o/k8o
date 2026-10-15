@@ -15,6 +15,8 @@ import {
 } from '@/shared/claude/models';
 import type { GenerationModel } from '@/shared/claude/models';
 
+import styles from './chat-panel.module.css';
+
 const NO_SUGGESTIONS: string[] = [];
 
 const AssistantRow: FC<{ children: ReactNode }> = ({ children }) => (
@@ -97,20 +99,16 @@ export const ChatPanel: FC<Props> = ({
   const lastMessageId = messages.at(-1)?.id;
 
   return (
-    <div className="flex min-h-0 flex-1 flex-col">
-      <div className="min-h-0 flex-1">
+    <div className={styles.root}>
+      <div className={styles.body}>
         {messages.length === 0 ? (
-          <div className="flex h-full flex-col items-center justify-center gap-4 px-6 text-center">
-            <div className="flex flex-col gap-2">
-              <p className="text-fg-base text-sm font-bold">
-                {emptyStateTitle}
-              </p>
-              <p className="text-fg-mute text-sm leading-relaxed">
-                {emptyStateHint}
-              </p>
+          <div className={styles.empty}>
+            <div className={styles.emptyText}>
+              <p className={styles.emptyTitle}>{emptyStateTitle}</p>
+              <p className={styles.emptyHint}>{emptyStateHint}</p>
             </div>
             {suggestions.length > 0 ? (
-              <div className="flex justify-center">
+              <div className={styles.suggestions}>
                 <Suggestion.List label="例">
                   {suggestions.map((suggestion) => (
                     <Suggestion.Item
@@ -165,7 +163,7 @@ export const ChatPanel: FC<Props> = ({
         )}
       </div>
 
-      <div className="border-border-mute flex flex-col gap-2 border-t p-4">
+      <div className={styles.composer}>
         <PromptInput.Root
           onChange={onInputChange}
           onStop={onStop}
@@ -179,8 +177,8 @@ export const ChatPanel: FC<Props> = ({
           <PromptInput.Textarea placeholder={inputPlaceholder} />
           <PromptInput.Submit sendLabel="生成する" stopLabel="停止" />
         </PromptInput.Root>
-        <div className="flex items-center gap-2">
-          <span className="text-fg-mute text-xs">モデル</span>
+        <div className={styles.models}>
+          <span className={styles.modelsLabel}>モデル</span>
           {GENERATION_MODELS.map((model) => (
             <Button
               color="base"
@@ -196,9 +194,7 @@ export const ChatPanel: FC<Props> = ({
             </Button>
           ))}
           {errorText === null ? null : (
-            <span className="text-fg-error ml-auto text-xs leading-relaxed">
-              {errorText}
-            </span>
+            <span className={styles.error}>{errorText}</span>
           )}
         </div>
       </div>

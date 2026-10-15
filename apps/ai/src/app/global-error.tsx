@@ -11,6 +11,8 @@ import { cn } from '@repo/helpers/cn';
 
 import { mPlus2, notoSansJp } from './_styles/font';
 
+import styles from './global-error.module.css';
+
 // root layout ごと失敗した場合のフォールバックなので、Provider に依存しない最小構成にする
 export default function GlobalError({
   reset,
@@ -20,13 +22,7 @@ export default function GlobalError({
 }) {
   return (
     <html lang="ja">
-      <body
-        className={cn(
-          mPlus2.variable,
-          notoSansJp.variable,
-          'bg-bg-surface font-m-plus-2 font-medium text-fg-base antialiased',
-        )}
-      >
+      <body className={cn(mPlus2.variable, notoSansJp.variable, styles.body)}>
         <GlobalErrorContent reset={reset} />
       </body>
     </html>

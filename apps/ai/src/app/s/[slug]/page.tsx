@@ -8,6 +8,8 @@ import { SpecPreview } from '@/app/_components/spec-preview';
 import { ToggleTheme } from '@/app/_components/toggle-theme';
 import { getPublicShareForRoute } from '@/features/share/interface/queries';
 
+import styles from './page.module.css';
+
 type SharePageProps = {
   params: Promise<{ slug: string }>;
 };
@@ -36,25 +38,20 @@ const ShareContent = async ({ params }: SharePageProps) => {
     notFound();
   }
   return (
-    <div className="bg-bg-surface flex h-dvh flex-col">
-      <header className="border-border-mute flex items-center justify-between gap-4 border-b px-6 py-3">
-        <div className="flex min-w-0 flex-col">
-          <span className="text-fg-base truncate text-sm font-bold">
-            {share.title}
-          </span>
-          <span className="text-fg-mute text-xs">k8o AI Studio で作成</span>
+    <div className={styles.root}>
+      <header className={styles.header}>
+        <div className={styles.titles}>
+          <span className={styles.title}>{share.title}</span>
+          <span className={styles.caption}>k8o AI Studio で作成</span>
         </div>
-        <div className="flex shrink-0 items-center gap-3">
+        <div className={styles.actions}>
           <ToggleTheme />
-          <Link
-            className="text-fg-base text-sm font-medium hover:underline"
-            href="/"
-          >
+          <Link className={styles.homeLink} href="/">
             k8o AI Studio
           </Link>
         </div>
       </header>
-      <div className="min-h-0 flex-1">
+      <div className={styles.content}>
         <SpecPreview spec={share.spec} />
       </div>
     </div>
@@ -65,7 +62,7 @@ export default function SharePage({ params }: SharePageProps) {
   return (
     <Suspense
       fallback={
-        <div className="bg-bg-surface flex h-dvh items-center justify-center">
+        <div className={styles.fallback}>
           <Spinner label="読み込み中" size="lg" />
         </div>
       }

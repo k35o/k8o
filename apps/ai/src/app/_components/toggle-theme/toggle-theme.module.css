@@ -1,0 +1,31 @@
+/* 月と太陽を重ねて置き、テーマに応じて回転しながら入れ替える。
+   CSS Modules は .dark をローカル化するので、テーマを持つ html の class 属性で見る */
+.moon,
+.sun {
+  width: calc(var(--spacing) * 8);
+  height: calc(var(--spacing) * 8);
+  transition-property: scale, rotate;
+  transition-duration: var(--duration-slow);
+  transition-timing-function: var(--easing-in-out);
+}
+
+.moon {
+  scale: 1;
+  rotate: 0deg;
+
+  :root[class~='dark'] & {
+    scale: 0;
+    rotate: 90deg;
+  }
+}
+
+.sun {
+  position: absolute;
+  scale: 0;
+  rotate: 90deg;
+
+  :root[class~='dark'] & {
+    scale: 1;
+    rotate: 0deg;
+  }
+}

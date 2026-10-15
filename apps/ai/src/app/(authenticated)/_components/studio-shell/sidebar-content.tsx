@@ -11,6 +11,8 @@ import { ToolNav } from '../tool-nav';
 import type { StudioTool } from '../tool-nav';
 import { ProjectList } from './project-list';
 
+import styles from './sidebar-content.module.css';
+
 export type SidebarContentProps = {
   tool: StudioTool;
   projects: ProjectListItem[];
@@ -32,8 +34,8 @@ export const SidebarContent: FC<SidebarContentProps> = ({
   onNewProject,
   onNavigate,
 }) => (
-  <div className="flex h-full min-h-0 flex-col">
-    <div className="flex flex-col gap-3 px-3 pt-3">
+  <div className={styles.root}>
+    <div className={styles.top}>
       <Button
         color="primary"
         onClick={onNewProject}
@@ -45,10 +47,8 @@ export const SidebarContent: FC<SidebarContentProps> = ({
       </Button>
       <ToolNav current={tool} onNavigate={onNavigate} />
     </div>
-    <p className="text-fg-mute px-5 pt-5 pb-1 text-xs font-bold">
-      プロジェクト
-    </p>
-    <div className="min-h-0 flex-1 overflow-y-auto">
+    <p className={styles.heading}>プロジェクト</p>
+    <div className={styles.list}>
       <ProjectList
         currentProjectId={currentProjectId}
         emptyText={projectsEmptyText}
@@ -56,7 +56,7 @@ export const SidebarContent: FC<SidebarContentProps> = ({
         projects={projects}
       />
     </div>
-    <div className="flex items-center justify-between px-4 py-3">
+    <div className={styles.footer}>
       <SignOutButton />
       <ToggleTheme />
     </div>

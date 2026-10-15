@@ -3,6 +3,8 @@ import type { HighlightedCode } from '@repo/code-highlight/tokenize';
 import { Fragment } from 'react';
 import type { FC } from 'react';
 
+import styles from './code-view.module.css';
+
 type CodeViewProps = {
   code: string | null;
   highlighted: HighlightedCode | null;
@@ -15,18 +17,14 @@ export const CodeView: FC<CodeViewProps> = ({
   emptyText = 'ここに生成された TSX が表示されます',
 }) => {
   if (code === null) {
-    return (
-      <div className="text-fg-mute flex h-full items-center justify-center p-6 text-center text-sm leading-relaxed">
-        {emptyText}
-      </div>
-    );
+    return <div className={styles.empty}>{emptyText}</div>;
   }
 
   // ハイライト取得前は暗色面を維持してプレーン表示（チラつき防止）。
   if (highlighted === null) {
     return (
       <pre
-        className="h-full overflow-auto p-5 text-xs leading-relaxed"
+        className={styles.code}
         style={{ backgroundColor: CODE_SURFACE.bg, color: CODE_SURFACE.fg }}
       >
         <code>{code}</code>
@@ -36,7 +34,7 @@ export const CodeView: FC<CodeViewProps> = ({
 
   return (
     <pre
-      className="h-full overflow-auto p-5 text-xs leading-relaxed"
+      className={styles.code}
       style={{ backgroundColor: highlighted.bg, color: highlighted.fg }}
     >
       <code>

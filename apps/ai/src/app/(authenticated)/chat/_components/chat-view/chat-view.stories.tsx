@@ -11,6 +11,8 @@ import type { GenerationModel } from '@/shared/claude/models';
 import preview from '../../../../../../.storybook/preview';
 import { ChatView } from './chat-view';
 
+import styles from './chat-view.stories.module.css';
+
 const question: AgentUIMessage = {
   id: 'u1',
   role: 'user',
@@ -91,7 +93,7 @@ const meta = preview.meta({
   render: (args) => <ChatViewWithDraft {...args} />,
   decorators: [
     (Story) => (
-      <div className="bg-bg-surface flex h-160 flex-col">
+      <div className={styles.frame}>
         <Story />
       </div>
     ),
@@ -294,7 +296,7 @@ export const RunEnds = meta.story({
 export const NarrowWidth = meta.story({
   decorators: [
     (Story) => (
-      <div className="flex h-160 w-90 flex-col">
+      <div className={styles.narrowFrame}>
         <Story />
       </div>
     ),

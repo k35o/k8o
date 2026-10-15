@@ -46,6 +46,8 @@ import { StudioShell } from '../studio-shell';
 import { ViewTabs } from '../view-tabs';
 import { ShareControl } from './share-control';
 
+import styles from './studio.module.css';
+
 // 設定は完全に静的なので、レンダーごとに生成しない。
 const transport = new DefaultChatTransport({ api: '/api/generate' });
 
@@ -354,10 +356,10 @@ export const Studio = ({
             projectId={persistence.projectId}
             projectTitle={persistence.projectTitle}
           />
-          <div className="hidden gap-2 lg:flex">
+          <div className={styles.viewTabs}>
             <ViewTabs onChange={setView} options={viewOptions} value={view} />
           </div>
-          <div className="flex shrink-0 items-center gap-2 lg:ml-auto">
+          <div className={styles.actions}>
             {persistence.projectId === null ? null : (
               <>
                 <ShareControl
@@ -385,7 +387,7 @@ export const Studio = ({
                 </IconButton>
               </>
             )}
-            <div className="hidden items-center gap-3 lg:flex">
+            <div className={styles.desktopActions}>
               <CopyCodeButton code={displayedCode} />
               <IconButton
                 color="base"
@@ -407,7 +409,7 @@ export const Studio = ({
       projects={persistence.projects}
       tool="ui"
     >
-      <div className="flex gap-2 px-4 py-2 lg:hidden">
+      <div className={styles.mobileTabs}>
         <ViewTabs
           onChange={(tab) => {
             setMobileTab(tab);
@@ -446,17 +448,13 @@ export const Studio = ({
         }
         mobilePane={mobileTab === 'chat' ? 'chat' : 'panel'}
         panel={
-          <div className="min-h-0 flex-1 overflow-hidden" ref={frameRef}>
-            <div
-              className={
-                view === 'preview' ? 'bg-bg-surface relative h-full' : 'hidden'
-              }
-            >
+          <div className={styles.frame} ref={frameRef}>
+            <div className={styles.preview} data-active={view === 'preview'}>
               {displaySpec === null ? (
                 isBusy ? (
                   <PreviewLoading message="UI を生成しています…" />
                 ) : (
-                  <div className="text-fg-mute flex h-full items-center justify-center p-6 text-center text-sm leading-relaxed">
+                  <div className={styles.placeholder}>
                     生成すると、ここにライブプレビューが表示されます
                   </div>
                 )
@@ -468,7 +466,7 @@ export const Studio = ({
                 <PreviewLoading message="プロジェクトを読み込んでいます…" />
               )}
             </div>
-            <div className={view === 'preview' ? 'hidden' : 'h-full'}>
+            <div className={styles.code} data-active={view !== 'preview'}>
               <CodePanel
                 code={displayedCode}
                 isStreaming={isBusy}

@@ -17,6 +17,8 @@ import type { GenerationModel } from '@/shared/claude/models';
 
 import { AgentMessage, hasVisiblePart } from '../agent-message';
 
+import styles from './chat-view.module.css';
+
 const MODEL_OPTIONS = GENERATION_MODELS.map((model) => ({
   value: model,
   label: GENERATION_MODEL_LABELS[model],
@@ -30,7 +32,7 @@ const PendingReply: FC<{ label: string }> = ({ label }) => (
     }
     from="assistant"
   >
-    <p className="text-fg-mute flex items-center gap-2 text-sm">
+    <p className={styles.pending}>
       <Spinner label={label} size="sm" />
       <span aria-hidden>{label}</span>
     </p>
@@ -64,16 +66,16 @@ const EmptyState: FC<EmptyStateProps> = ({
 }) => {
   const modelLabelId = useId();
   return (
-    <div className="flex h-full flex-col items-center justify-center gap-8 overflow-y-auto px-4 py-8">
-      <div className="flex flex-col gap-2 text-center">
-        <p className="text-fg-base font-bold">k8o のブログについて聞く</p>
-        <p className="text-fg-mute text-sm leading-relaxed">
+    <div className={styles.empty}>
+      <div className={styles.emptyText}>
+        <p className={styles.emptyTitle}>k8o のブログについて聞く</p>
+        <p className={styles.emptyHint}>
           記事を探して読み、要点をまとめたり比べたりします。
         </p>
       </div>
       {canSelectModel ? (
-        <div className="flex w-full max-w-md flex-col gap-2">
-          <p className="text-fg-mute text-xs font-bold" id={modelLabelId}>
+        <div className={styles.models}>
+          <p className={styles.modelsLabel} id={modelLabelId}>
             モデル
           </p>
           <RadioCard
@@ -139,8 +141,8 @@ export const ChatView: FC<ChatViewProps> = ({
   });
 
   return (
-    <div className="flex min-h-0 flex-1 flex-col">
-      <div className="min-h-0 flex-1">
+    <div className={styles.root}>
+      <div className={styles.body}>
         {isEmpty ? (
           <EmptyState
             canSelectModel={canSelectModel}
@@ -153,7 +155,7 @@ export const ChatView: FC<ChatViewProps> = ({
               isStreaming={status === 'streaming'}
               label="会話"
             >
-              <div className="mx-auto flex w-full max-w-3xl flex-col gap-6">
+              <div className={styles.conversation}>
                 {shownMessages.map((message, index) => {
                   const isLast = index === messages.length - 1;
                   return (
@@ -174,8 +176,8 @@ export const ChatView: FC<ChatViewProps> = ({
           </Conversation.Root>
         )}
       </div>
-      <div className="border-border-mute border-t p-4">
-        <div className="mx-auto flex w-full max-w-3xl flex-col gap-3">
+      <div className={styles.composer}>
+        <div className={styles.composerInner}>
           {errorText === null ? null : (
             <Alert message={errorText} tone="error" />
           )}

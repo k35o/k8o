@@ -9,6 +9,8 @@ import type { ThreadListItem } from '@/features/agent/application/threads';
 
 import { ChatSidebar } from './chat-sidebar';
 
+import styles from './chat-shell.module.css';
+
 type ChatShellProps = {
   threads: ThreadListItem[];
   currentThreadId: string;
@@ -28,10 +30,10 @@ export const ChatShell: FC<ChatShellProps> = ({
   };
 
   return (
-    <div className="flex min-h-0 flex-1">
-      <aside className="bg-bg-subtle border-border-mute hidden w-60 shrink-0 flex-col border-r lg:flex">
-        <div className="px-5 pt-4 pb-1">
-          <Link className="text-fg-base text-sm font-bold" href="/">
+    <div className={styles.root}>
+      <aside className={styles.sidebar}>
+        <div className={styles.brand}>
+          <Link className={styles.brandLink} href="/">
             k8o AI Studio
           </Link>
         </div>
@@ -55,9 +57,9 @@ export const ChatShell: FC<ChatShellProps> = ({
         ) : null}
       </Drawer>
 
-      <div className="flex min-h-0 min-w-0 flex-1 flex-col">
-        <header className="border-border-mute flex items-center gap-4 border-b px-4 py-2">
-          <div className="lg:hidden">
+      <div className={styles.main}>
+        <header className={styles.header}>
+          <div className={styles.menu}>
             <IconButton
               color="transparent"
               label="メニューを開く"

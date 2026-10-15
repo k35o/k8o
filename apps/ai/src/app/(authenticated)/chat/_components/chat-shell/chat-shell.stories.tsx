@@ -7,6 +7,8 @@ import preview from '../../../../../../.storybook/preview';
 import { ChatHeader } from '../chat-view';
 import { ChatShell } from './chat-shell';
 
+import styles from './chat-shell.stories.module.css';
+
 const threads: ThreadListItem[] = [
   {
     id: '6f1c2a4e-0b7d-4c55-9a3e-2f8d1b6c9e01',
@@ -20,7 +22,7 @@ const meta = preview.meta({
   component: ChatShell,
   decorators: [
     (Story) => (
-      <div className="bg-bg-surface flex h-160 flex-col">
+      <div className={styles.frame}>
         <Story />
       </div>
     ),
@@ -29,11 +31,7 @@ const meta = preview.meta({
     threads,
     currentThreadId: '9a8b7c6d-5e4f-4a3b-9c2d-1e0f9a8b7c6d',
     header: <ChatHeader model="claude-sonnet-5-5" title={null} />,
-    children: (
-      <div className="text-fg-mute flex flex-1 items-center justify-center text-sm">
-        会話
-      </div>
-    ),
+    children: <div className={styles.content}>会話</div>,
   } satisfies Partial<ComponentProps<typeof ChatShell>>,
 });
 

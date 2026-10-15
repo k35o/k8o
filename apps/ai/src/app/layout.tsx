@@ -9,6 +9,8 @@ import '@/i18n';
 import './_styles/globals.css';
 import { mPlus2, notoSansJp } from './_styles/font';
 
+import styles from './layout.module.css';
+
 export const metadata = {
   title: 'k8o AI',
   description: 'k8o の AI ツール',
@@ -21,13 +23,7 @@ export const metadata = {
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html lang="ja" suppressHydrationWarning>
-      <body
-        className={cn(
-          mPlus2.variable,
-          notoSansJp.variable,
-          'bg-bg-surface font-m-plus-2 font-medium text-fg-base antialiased',
-        )}
-      >
+      <body className={cn(mPlus2.variable, notoSansJp.variable, styles.body)}>
         <AppProvider>{children}</AppProvider>
       </body>
     </html>

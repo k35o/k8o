@@ -1,5 +1,7 @@
 import type { FC, ReactNode } from 'react';
 
+import styles from './studio-panes.module.css';
+
 type StudioPanesProps = {
   // 小画面はタブで1ペインずつ表示する（デスクトップは常に2ペイン並べる）。
   mobilePane: 'chat' | 'panel';
@@ -14,19 +16,11 @@ export const StudioPanes: FC<StudioPanesProps> = ({
   chat,
   panel,
 }) => (
-  <div className="grid min-h-0 flex-1 grid-rows-1 lg:grid-cols-[440px_minmax(0,1fr)]">
-    <div
-      className={`border-border-mute min-h-0 min-w-0 flex-col lg:flex lg:border-r ${
-        mobilePane === 'chat' ? 'flex' : 'hidden'
-      }`}
-    >
+  <div className={styles.root}>
+    <div className={styles.chat} data-active={mobilePane === 'chat'}>
       {chat}
     </div>
-    <div
-      className={`min-h-0 min-w-0 flex-col overflow-hidden lg:flex ${
-        mobilePane === 'chat' ? 'hidden' : 'flex'
-      }`}
-    >
+    <div className={styles.panel} data-active={mobilePane === 'panel'}>
       {panel}
     </div>
   </div>

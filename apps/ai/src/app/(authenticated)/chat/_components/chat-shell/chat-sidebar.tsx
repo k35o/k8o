@@ -9,6 +9,8 @@ import type { ThreadListItem } from '@/features/agent/application/threads';
 import { ToolNav } from '../../../_components/tool-nav';
 import { ThreadList } from '../thread-list';
 
+import styles from './chat-sidebar.module.css';
+
 type ChatSidebarProps = {
   threads: ThreadListItem[];
   currentThreadId: string;
@@ -20,8 +22,8 @@ export const ChatSidebar: FC<ChatSidebarProps> = ({
   currentThreadId,
   onNavigate,
 }) => (
-  <div className="flex h-full min-h-0 flex-col">
-    <div className="flex flex-col gap-3 px-3 pt-3">
+  <div className={styles.root}>
+    <div className={styles.top}>
       <Button
         color="primary"
         // Next の Link は onClick / onMouseEnter / ref に undefined を受けないため、束を
@@ -46,15 +48,15 @@ export const ChatSidebar: FC<ChatSidebarProps> = ({
       </Button>
       <ToolNav current="chat" onNavigate={onNavigate} />
     </div>
-    <p className="text-fg-mute px-5 pt-5 pb-1 text-xs font-bold">履歴</p>
-    <div className="min-h-0 flex-1 overflow-y-auto">
+    <p className={styles.heading}>履歴</p>
+    <div className={styles.list}>
       <ThreadList
         currentThreadId={currentThreadId}
         onNavigate={onNavigate}
         threads={threads}
       />
     </div>
-    <div className="flex items-center justify-between px-4 py-3">
+    <div className={styles.footer}>
       <SignOutButton />
       <ToggleTheme />
     </div>

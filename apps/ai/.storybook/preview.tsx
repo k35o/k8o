@@ -1,4 +1,3 @@
-import { cn } from '@repo/helpers/cn';
 import addonA11y from '@storybook/addon-a11y';
 import addonDocs from '@storybook/addon-docs';
 import { definePreview } from '@storybook/nextjs-vite';
@@ -13,6 +12,7 @@ import { AppProvider } from '../src/app/_providers/app';
 import { mPlus2, notoSansJp } from '../src/app/_styles/font';
 
 import '../src/app/_styles/globals.css';
+import './preview.css';
 
 sb.mock(import('@repo/ai-database'));
 
@@ -65,16 +65,9 @@ export default definePreview({
       return (
         <AppProvider>
           <Script id="storybook-body-class">
-            {`document.body.classList.add(${cn(
-              mPlus2.variable,
-              notoSansJp.variable,
-              'text-fg-base font-medium font-m-plus-2',
-            )
-              .split(' ')
-              .map((c) => `'${c}'`)
-              .join(', ')})`}
+            {`document.body.classList.add('${mPlus2.variable}', '${notoSansJp.variable}')`}
           </Script>
-          <div className="bg-bg-base min-h-svh p-6">
+          <div className="story-canvas">
             <Story />
           </div>
           <ApplyThemeByStorybook

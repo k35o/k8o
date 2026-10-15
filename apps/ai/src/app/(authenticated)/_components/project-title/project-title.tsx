@@ -1,5 +1,7 @@
 import type { FC } from 'react';
 
+import styles from './project-title.module.css';
+
 type ProjectTitleProps = {
   // 読込中に先行表示するプロジェクト名（クリックが効いたことを示す）。
   pendingTitle: string | null;
@@ -16,19 +18,15 @@ export const ProjectTitle: FC<ProjectTitleProps> = ({
   projectTitle,
   newProjectLabel,
 }) => (
-  <div className="flex min-w-0 items-center gap-2">
+  <div className={styles.root}>
     {pendingTitle === null ? (
       projectId === null ? (
-        <span className="text-fg-mute truncate text-sm">{newProjectLabel}</span>
+        <span className={styles.placeholder}>{newProjectLabel}</span>
       ) : (
-        <span className="text-fg-base truncate text-sm font-medium">
-          {projectTitle ?? '無題'}
-        </span>
+        <span className={styles.title}>{projectTitle ?? '無題'}</span>
       )
     ) : (
-      <span className="text-fg-base truncate text-sm font-medium">
-        {pendingTitle}
-      </span>
+      <span className={styles.title}>{pendingTitle}</span>
     )}
   </div>
 );

@@ -2,6 +2,8 @@ import type { FC } from 'react';
 
 import type { ProjectListItem } from '@/features/projects/application/projects';
 
+import styles from './project-list.module.css';
+
 type ProjectListProps = {
   projects: ProjectListItem[];
   currentProjectId: number | null;
@@ -23,30 +25,23 @@ export const ProjectList: FC<ProjectListProps> = ({
   onSelect,
 }) => {
   if (projects.length === 0) {
-    return (
-      <p className="text-fg-mute p-4 text-sm leading-relaxed">{emptyText}</p>
-    );
+    return <p className={styles.empty}>{emptyText}</p>;
   }
 
   return (
-    <ul className="flex flex-col gap-1 p-2">
+    <ul className={styles.root}>
       {projects.map((project) => (
         <li key={project.id}>
           <button
-            className={`flex w-full flex-col gap-0.5 rounded-xl px-4 py-3 text-left transition-colors duration-150 ${
-              project.id === currentProjectId
-                ? 'bg-primary-bg-subtle'
-                : 'hover:bg-bg-subtle'
-            }`}
+            aria-current={project.id === currentProjectId ? 'true' : undefined}
+            className={styles.item}
             onClick={() => {
               onSelect(project.id);
             }}
             type="button"
           >
-            <span className="text-fg-base truncate text-sm font-bold">
-              {project.title}
-            </span>
-            <span className="text-fg-mute text-xs">
+            <span className={styles.title}>{project.title}</span>
+            <span className={styles.meta}>
               {formatDate(project.updatedAt)}
               {project.visibility === 'public' ? ' · 公開' : ''}
             </span>

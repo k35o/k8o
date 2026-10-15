@@ -1,0 +1,10 @@
+.root {
+  height: 100%;
+  overflow: auto;
+}
+
+.canvas {
+  max-width: 64rem;
+  margin-inline: auto;
+  padding: calc(var(--spacing) * 8);
+}

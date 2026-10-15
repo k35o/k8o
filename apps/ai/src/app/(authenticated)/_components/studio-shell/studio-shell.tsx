@@ -8,6 +8,8 @@ import type { FC, ReactNode } from 'react';
 import { SidebarContent } from './sidebar-content';
 import type { SidebarContentProps } from './sidebar-content';
 
+import styles from './studio-shell.module.css';
+
 type StudioShellProps = Omit<SidebarContentProps, 'onNavigate'> & {
   // ヘッダのツール固有部分（プロジェクト名・ビュー切替・アクション群）。
   header: ReactNode;
@@ -28,10 +30,10 @@ export const StudioShell: FC<StudioShellProps> = ({
   };
 
   return (
-    <div className="flex min-h-0 flex-1">
-      <aside className="bg-bg-subtle border-border-mute hidden w-60 shrink-0 flex-col border-r lg:flex">
-        <div className="px-5 pt-4 pb-1">
-          <Link className="text-fg-base text-sm font-bold" href="/">
+    <div className={styles.root}>
+      <aside className={styles.sidebar}>
+        <div className={styles.brand}>
+          <Link className={styles.brandLink} href="/">
             k8o AI Studio
           </Link>
         </div>
@@ -62,9 +64,9 @@ export const StudioShell: FC<StudioShellProps> = ({
         ) : null}
       </Drawer>
 
-      <div className="flex min-h-0 min-w-0 flex-1 flex-col">
-        <header className="border-border-mute flex flex-wrap items-center gap-x-4 gap-y-2 border-b px-4 py-2">
-          <div className="lg:hidden">
+      <div className={styles.main}>
+        <header className={styles.header}>
+          <div className={styles.menu}>
             <IconButton
               color="transparent"
               label="メニューを開く"

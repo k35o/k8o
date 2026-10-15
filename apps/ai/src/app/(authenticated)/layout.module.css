@@ -1,0 +1,14 @@
+.root {
+  display: flex;
+  flex-direction: column;
+  height: 100dvh;
+  background-color: var(--color-bg-surface);
+}
+
+.main {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  min-height: 0;
+  width: 100%;
+}

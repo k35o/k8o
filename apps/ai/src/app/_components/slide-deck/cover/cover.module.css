@@ -1,4 +1,5 @@
-.cover {
+/* better-css-modules-disable tokens/spacing, tokens/font-size, tokens/line-height -- スライドはコンテナ幅（cqi）に比例させる */
+.root {
   flex: 1;
   display: flex;
   flex-direction: column;
@@ -9,30 +10,25 @@
   padding: 2cqi 0;
 }
 
-/* 表紙内では H1 を大見出し、H2 をサブタイトル、p を補足情報として再定義 */
-.cover :global(h1) {
-  font-size: 7cqi;
-  font-weight: 700;
-  line-height: 1.15;
+.title {
   margin: 0;
-  padding: 0;
-  border: none;
+  font-size: 7cqi;
+  font-weight: var(--font-weight-bold);
+  line-height: 1.15;
   color: var(--color-fg-base);
 }
 
-.cover :global(h2) {
-  font-size: 3.2cqi;
-  font-weight: 500;
-  line-height: 1.3;
+.subtitle {
   margin: 0;
-  padding: 0;
-  border: none;
+  font-size: 3.2cqi;
+  font-weight: var(--font-weight-medium);
+  line-height: 1.3;
   color: var(--color-primary-fg);
 }
 
-.cover :global(p) {
+.text {
+  margin: 0;
   font-size: 2cqi;
   line-height: 1.5;
-  margin: 0;
   color: var(--color-fg-mute);
 }

@@ -9,6 +9,8 @@ import { DeckHighlightContext } from '@/app/_components/slide-deck';
 import preview from '../../../../../../.storybook/preview';
 import { DeckPreview } from './deck-preview';
 
+import styles from './deck-preview.stories.module.css';
+
 const SAMPLE_DECK = [
   '<Cover>',
   '# k8o のスライド生成',
@@ -194,7 +196,7 @@ const SwitchableHighlight: FC<{ source: string }> = ({ source }) => {
     makeFakeHighlight('#e6edf3'),
   );
   return (
-    <div className="flex h-full flex-col">
+    <div className={styles.frame}>
       <button
         onClick={() => {
           setHighlight(() => makeFakeHighlight('#ffd7a0'));
@@ -203,7 +205,7 @@ const SwitchableHighlight: FC<{ source: string }> = ({ source }) => {
       >
         テーマ切替
       </button>
-      <div className="min-h-0 flex-1">
+      <div className={styles.body}>
         <DeckHighlightContext value={highlight}>
           <DeckPreview isStreaming={false} source={source} />
         </DeckHighlightContext>

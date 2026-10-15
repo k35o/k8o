@@ -1,9 +1,7 @@
 import type { ReactNode } from 'react';
 
+import styles from './public-layout.module.css';
+
 export function PublicLayout({ children }: { children: ReactNode }) {
-  return (
-    <main className="bg-bg-surface flex min-h-dvh items-center justify-center px-6 py-10">
-      {children}
-    </main>
-  );
+  return <main className={styles.root}>{children}</main>;
 }

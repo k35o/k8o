@@ -7,6 +7,8 @@ import type { ProjectListItem } from '@/features/projects/application/projects';
 import preview from '../../../../../.storybook/preview';
 import { StudioShell } from './studio-shell';
 
+import styles from './studio-shell.stories.module.css';
+
 const noop = (): void => {
   // 見た目確認用のダミーハンドラ
 };
@@ -34,7 +36,7 @@ const meta = preview.meta({
   component: StudioShell,
   decorators: [
     (Story) => (
-      <div className="bg-bg-surface flex h-160 flex-col">
+      <div className={styles.frame}>
         <Story />
       </div>
     ),
@@ -49,10 +51,8 @@ const meta = preview.meta({
     onNewProject: noop,
     header: (
       <>
-        <span className="text-fg-base truncate text-sm font-medium">
-          料金プランの3カラム
-        </span>
-        <div className="ml-auto flex items-center gap-2">
+        <span className={styles.title}>料金プランの3カラム</span>
+        <div className={styles.actions}>
           <Button color="primary" size="sm" variant="solid">
             プレビュー
           </Button>
@@ -62,11 +62,7 @@ const meta = preview.meta({
         </div>
       </>
     ),
-    children: (
-      <div className="text-fg-mute flex flex-1 items-center justify-center text-sm">
-        メインコンテンツ
-      </div>
-    ),
+    children: <div className={styles.content}>メインコンテンツ</div>,
   } satisfies Partial<ComponentProps<typeof StudioShell>>,
 });
 

@@ -1,6 +1,7 @@
+/* better-css-modules-disable tokens/spacing, tokens/font-size, tokens/line-height -- スライドはコンテナ幅（cqi）に比例させる */
 .h1 {
   font-size: 5.5cqi;
-  font-weight: 700;
+  font-weight: var(--font-weight-bold);
   margin: 0 0 2cqi;
   line-height: 1.1;
   color: var(--color-fg-base);
@@ -12,8 +13,10 @@
   padding-bottom: 0.5cqi;
   border-bottom-width: 0.2cqi;
   border-bottom-style: solid;
+  border-bottom-color: var(--color-primary-border);
   line-height: 1.2;
-  font-weight: 700;
+  font-weight: var(--font-weight-bold);
+  color: var(--color-primary-fg);
 }
 
 .h3 {
@@ -22,15 +25,18 @@
   padding-bottom: 0.4cqi;
   border-bottom-width: 0.15cqi;
   border-bottom-style: solid;
+  border-bottom-color: var(--color-primary-border);
   line-height: 1.2;
-  font-weight: 700;
+  font-weight: var(--font-weight-bold);
+  color: var(--color-primary-fg);
 }
 
 .h4 {
   font-size: 2.6cqi;
   margin: 0 0 0.8cqi;
   line-height: 1.3;
-  font-weight: 700;
+  font-weight: var(--font-weight-bold);
+  color: var(--color-secondary-fg);
 }
 
 .p {
@@ -58,6 +64,15 @@
 .li {
   font-size: 2cqi;
   margin: 0.25em 0;
+
+  &::marker {
+    color: var(--color-primary-border);
+  }
+}
+
+.strong {
+  color: var(--color-primary-fg);
+  font-weight: var(--font-weight-bold);
 }
 
 .pre {
@@ -66,7 +81,7 @@
   line-height: 1.5;
   margin: 0 0 1.2cqi;
   padding: 1.2cqi 1.6cqi;
-  border-radius: 0.5cqi;
+  border-radius: var(--radius-md);
   overflow: auto;
   max-width: 100%;
   background-color: var(--color-bg-subtle);
@@ -76,6 +91,8 @@
   font-size: 2.2cqi;
   border-inline-start-style: solid;
   border-inline-start-width: 0.3cqi;
+  border-inline-start-color: var(--color-primary-border);
   padding-inline-start: 1.5cqi;
   margin: 0 0 1.5cqi;
+  color: var(--color-fg-mute);
 }
