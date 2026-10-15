@@ -1,9 +1,12 @@
 import { range } from '@repo/helpers/array/range';
+import { cn } from '@repo/helpers/cn';
 import type { FC } from 'react';
 
 import { ToolHeader } from '../../../_components/tool-frame';
 import { ChatHeader } from '../chat-view';
 import type { OpeningThread } from '../opening-thread';
+
+import styles from './chat-skeleton.module.css';
 
 type ChatSkeletonProps = {
   thread: OpeningThread | null;
@@ -14,8 +17,8 @@ export const ChatSkeleton: FC<ChatSkeletonProps> = ({ thread }) => (
     <ToolHeader>
       {thread === null ? (
         <>
-          <div className="bg-bg-mute h-4 w-40 rounded-md motion-safe:animate-pulse" />
-          <div className="bg-bg-mute ml-auto h-5 w-20 rounded-md motion-safe:animate-pulse" />
+          <div className={cn(styles.bone, styles.title)} data-skeleton />
+          <div className={cn(styles.bone, styles.badge)} data-skeleton />
         </>
       ) : (
         <ChatHeader model={thread.model} title={thread.title} />
@@ -24,24 +27,25 @@ export const ChatSkeleton: FC<ChatSkeletonProps> = ({ thread }) => (
     <div
       aria-busy
       aria-label="読み込み中"
-      className="flex min-h-0 flex-1 flex-col"
+      className={styles.root}
       role="status"
     >
-      <div className="min-h-0 flex-1 p-4">
-        <div className="mx-auto flex w-full max-w-3xl flex-col gap-6">
-          <div className="bg-bg-mute ml-auto h-10 w-1/2 rounded-2xl motion-safe:animate-pulse" />
-          <div className="flex flex-col gap-2">
+      <div className={styles.body}>
+        <div className={styles.conversation}>
+          <div className={cn(styles.bone, styles.question)} data-skeleton />
+          <div className={styles.answer}>
             {range(0, 3).map((n) => (
               <div
-                className="bg-bg-mute h-4 w-full rounded-md motion-safe:animate-pulse"
+                className={cn(styles.bone, styles.line)}
+                data-skeleton
                 key={`chat-message-skeleton-${n}`}
               />
             ))}
           </div>
         </div>
       </div>
-      <div className="border-border-mute border-t p-4">
-        <div className="bg-bg-mute mx-auto h-14 w-full max-w-3xl rounded-2xl motion-safe:animate-pulse" />
+      <div className={styles.composer}>
+        <div className={cn(styles.bone, styles.input)} data-skeleton />
       </div>
     </div>
   </>

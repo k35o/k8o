@@ -1,0 +1,29 @@
+.root {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  min-height: 0;
+}
+
+.actions {
+  display: flex;
+  flex-direction: column;
+  padding-inline: calc(var(--spacing) * 3);
+  padding-top: calc(var(--spacing) * 3);
+}
+
+.heading {
+  padding-inline: calc(var(--spacing) * 5);
+  padding-top: calc(var(--spacing) * 5);
+  padding-bottom: var(--spacing);
+  color: var(--color-fg-mute);
+  font-size: var(--font-size-xs);
+  line-height: var(--line-height-xs);
+  font-weight: var(--font-weight-bold);
+}
+
+.list {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+}

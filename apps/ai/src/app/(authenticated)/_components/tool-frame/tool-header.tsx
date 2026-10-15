@@ -5,6 +5,8 @@ import type { FC, ReactNode } from 'react';
 
 import { useSidebarMenu } from './sidebar-menu';
 
+import styles from './tool-header.module.css';
+
 type ToolHeaderProps = {
   children: ReactNode;
 };
@@ -12,8 +14,8 @@ type ToolHeaderProps = {
 export const ToolHeader: FC<ToolHeaderProps> = ({ children }) => {
   const { open } = useSidebarMenu();
   return (
-    <header className="border-border-mute flex flex-wrap items-center gap-x-4 gap-y-2 border-b px-4 py-2">
-      <div className="lg:hidden">
+    <header className={styles.root}>
+      <div className={styles.menu}>
         <IconButton
           color="transparent"
           label="メニューを開く"

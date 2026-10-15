@@ -9,3 +9,20 @@
   line-height: var(--line-height-sm);
   font-weight: var(--font-weight-bold);
 }
+
+.modelSkeleton {
+  width: calc(var(--spacing) * 20);
+  height: calc(var(--spacing) * 5);
+  border-radius: var(--radius-md);
+  background-color: var(--color-bg-mute);
+
+  @media (prefers-reduced-motion: no-preference) {
+    animation: pulse var(--duration-pulse) var(--easing-pulse) infinite;
+  }
+}
+
+@keyframes pulse {
+  50% {
+    opacity: 0.5;
+  }
+}

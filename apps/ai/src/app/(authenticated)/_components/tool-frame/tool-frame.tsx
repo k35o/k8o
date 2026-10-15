@@ -11,6 +11,8 @@ import { ToggleTheme } from '@/app/_components/toggle-theme';
 import { CurrentToolNav, ToolNav } from '../tool-nav';
 import { SidebarMenuContext, useSidebarMenu } from './sidebar-menu';
 
+import styles from './tool-frame.module.css';
+
 type SidebarBodyProps = {
   sidebar: ReactNode;
 };
@@ -18,8 +20,8 @@ type SidebarBodyProps = {
 const SidebarBody: FC<SidebarBodyProps> = ({ sidebar }) => {
   const { close } = useSidebarMenu();
   return (
-    <div className="flex h-full min-h-0 flex-col">
-      <div className="px-3 pt-3">
+    <div className={styles.body}>
+      <div className={styles.nav}>
         {/* /chat/[threadId] のプリレンダーでは ID が決まらず、現在地のセグメントを読むと止まるので、
             ナビだけを待たせて枠の残りを静的な殻に入れる */}
         <Suspense fallback={<ToolNav current={null} onNavigate={close} />}>
@@ -27,7 +29,7 @@ const SidebarBody: FC<SidebarBodyProps> = ({ sidebar }) => {
         </Suspense>
       </div>
       {sidebar}
-      <div className="flex items-center justify-between px-4 py-3">
+      <div className={styles.footer}>
         <SignOutButton />
         <ToggleTheme />
       </div>
@@ -64,10 +66,10 @@ export const ToolFrame: FC<ToolFrameProps> = ({ sidebar, children }) => {
 
   return (
     <SidebarMenuContext value={menu}>
-      <div className="flex min-h-0 flex-1">
-        <aside className="bg-bg-subtle border-border-mute hidden w-60 shrink-0 flex-col border-r lg:flex">
-          <div className="px-5 pt-4 pb-1">
-            <Link className="text-fg-base text-sm font-bold" href="/">
+      <div className={styles.root}>
+        <aside className={styles.sidebar}>
+          <div className={styles.brand}>
+            <Link className={styles.brandLink} href="/">
               k8o AI Studio
             </Link>
           </div>
@@ -86,7 +88,7 @@ export const ToolFrame: FC<ToolFrameProps> = ({ sidebar, children }) => {
           {menuOpen ? <SidebarBody sidebar={sidebar} /> : null}
         </Drawer>
 
-        <main className="flex min-h-0 min-w-0 flex-1 flex-col">{children}</main>
+        <main className={styles.main}>{children}</main>
       </div>
     </SidebarMenuContext>
   );

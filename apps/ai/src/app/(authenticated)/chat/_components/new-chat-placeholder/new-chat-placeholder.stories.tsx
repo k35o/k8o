@@ -4,6 +4,8 @@ import preview from '../../../../../../.storybook/preview';
 import { ToolFrame } from '../../../_components/tool-frame';
 import { NewChatPlaceholder } from './new-chat-placeholder';
 
+import styles from './new-chat-placeholder.stories.module.css';
+
 // Storybook の型は navigation に segments を持たないが、実行時は segments からルーターの木を組み、
 // ToolFrame の useSelectedLayoutSegment がそれを読む。型の注釈を付けない定数にして渡す
 const chatNavigation = { pathname: '/chat', segments: ['chat'] };
@@ -12,7 +14,7 @@ const meta = preview.meta({
   component: NewChatPlaceholder,
   decorators: [
     (Story) => (
-      <div className="bg-bg-surface flex h-160 flex-col">
+      <div className={styles.frame}>
         <ToolFrame sidebar={null}>
           <Story />
         </ToolFrame>

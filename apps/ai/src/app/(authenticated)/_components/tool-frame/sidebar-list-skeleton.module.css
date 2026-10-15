@@ -1,0 +1,23 @@
+.root {
+  display: flex;
+  flex-direction: column;
+  gap: calc(var(--spacing) * 2);
+  padding: calc(var(--spacing) * 2);
+}
+
+.item {
+  width: 100%;
+  height: calc(var(--spacing) * 12);
+  border-radius: var(--radius-xl);
+  background-color: var(--color-bg-mute);
+
+  @media (prefers-reduced-motion: no-preference) {
+    animation: pulse var(--duration-pulse) var(--easing-pulse) infinite;
+  }
+}
+
+@keyframes pulse {
+  50% {
+    opacity: 0.5;
+  }
+}

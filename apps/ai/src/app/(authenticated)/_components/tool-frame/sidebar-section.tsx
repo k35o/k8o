@@ -6,6 +6,8 @@ import type { FC, ReactNode } from 'react';
 
 import { useSidebarMenu } from './sidebar-menu';
 
+import styles from './sidebar-section.module.css';
+
 type SidebarSectionProps = {
   heading: string;
   newHref: '/' | '/slides' | '/chat';
@@ -22,8 +24,8 @@ export const SidebarSection: FC<SidebarSectionProps> = ({
   const { close } = useSidebarMenu();
   return (
     // スロットは DOM で包まれずにサイドバーの flex の直下に入るので、ここで残りの高さを取って一覧をスクロールさせる
-    <div className="flex min-h-0 flex-1 flex-col">
-      <div className="flex flex-col px-3 pt-3">
+    <div className={styles.root}>
+      <div className={styles.actions}>
         <Button
           color="primary"
           renderItem={({ className, children: label }) => (
@@ -38,8 +40,8 @@ export const SidebarSection: FC<SidebarSectionProps> = ({
           {newLabel}
         </Button>
       </div>
-      <p className="text-fg-mute px-5 pt-5 pb-1 text-xs font-bold">{heading}</p>
-      <div className="min-h-0 flex-1 overflow-y-auto">{children}</div>
+      <p className={styles.heading}>{heading}</p>
+      <div className={styles.list}>{children}</div>
     </div>
   );
 };

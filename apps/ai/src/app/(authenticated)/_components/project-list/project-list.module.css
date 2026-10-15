@@ -16,11 +16,9 @@
   display: flex;
   flex-direction: column;
   gap: calc(var(--spacing) * 0.5);
-  width: 100%;
   border-radius: var(--radius-xl);
   padding-inline: calc(var(--spacing) * 4);
   padding-block: calc(var(--spacing) * 3);
-  text-align: left;
   transition-property:
     color, background-color, border-color, outline-color, text-decoration-color,
     fill, stroke;
@@ -33,7 +31,7 @@
     }
   }
 
-  &[aria-current='true'] {
+  &[aria-current='page'] {
     background-color: var(--color-primary-bg-subtle);
   }
 }
