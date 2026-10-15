@@ -21,10 +21,13 @@ export const Default = meta.story({
   },
   play: async ({ args, canvasElement }) => {
     const canvas = within(canvasElement);
+    // 選んでいるビューを、見た目だけでなく押された状態でも伝える
     await expect(
-      canvas.getByRole('button', { name: 'プレビュー' }),
+      canvas.getByRole('button', { name: 'プレビュー', pressed: true }),
     ).toBeInTheDocument();
-    await userEvent.click(canvas.getByRole('button', { name: 'spec' }));
+    await userEvent.click(
+      canvas.getByRole('button', { name: 'spec', pressed: false }),
+    );
     await expect(args.onChange).toHaveBeenCalledWith('spec');
   },
 });

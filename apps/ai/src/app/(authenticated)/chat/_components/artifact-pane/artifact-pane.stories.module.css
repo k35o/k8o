@@ -1,0 +1,5 @@
+.frame {
+  display: flex;
+  flex-direction: column;
+  height: calc(var(--spacing) * 160);
+}

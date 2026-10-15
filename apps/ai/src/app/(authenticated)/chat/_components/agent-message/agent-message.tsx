@@ -2,16 +2,18 @@
 
 import { Alert, AssistantIcon, Avatar } from '@k8ordo/ui';
 import { Message, Reasoning, ToolInvocation } from '@k8ordo/ui/ai';
-import type { FC } from 'react';
+import type { FC, Ref } from 'react';
 
 import type {
   AgentUIMessage,
   RunEnd,
 } from '@/features/agent/application/agent-message';
 import { MAX_STEPS } from '@/features/agent/application/agent-run';
+import { uiArtifactView } from '@/features/agent/application/ui-artifacts';
 import { MONTHLY_BUDGET_MICRO_USD } from '@/features/usage/application/budget';
 
 import { MarkdownText } from '../markdown-text';
+import { UiArtifactCard } from '../ui-artifact-card';
 
 type AgentMessagePart = AgentUIMessage['parts'][number];
 type AgentToolPart = Extract<AgentMessagePart, { type: `tool-${string}` }>;
@@ -90,6 +92,7 @@ const rendersPart = (part: AgentMessagePart, isStreaming: boolean): boolean => {
     case 'text':
     case 'tool-list_blogs':
     case 'tool-read_blog':
+    case 'tool-generate_ui':
       return true;
     case 'reasoning':
       return part.text.trim() !== '' || isThinking(part, isStreaming);
@@ -103,11 +106,30 @@ export const hasVisiblePart = (
   isStreaming: boolean,
 ): boolean => message.parts.some((part) => rendersPart(part, isStreaming));
 
-const AgentPart: FC<{
-  part: AgentMessagePart;
-  isStreaming: boolean;
-  isServerRunning: boolean;
-}> = ({ part, isStreaming, isServerRunning }) => {
+type ArtifactSelection = {
+  selectedToolCallId: string | null;
+  onOpenArtifact: (toolCallId: string) => void;
+  artifactButtonRef?:
+    | ((toolCallId: string) => Ref<HTMLButtonElement>)
+    | undefined;
+};
+
+const AgentPart: FC<
+  {
+    part: AgentMessagePart;
+    isStreaming: boolean;
+    isServerRunning: boolean;
+    isStopping: boolean;
+  } & ArtifactSelection
+> = ({
+  part,
+  isStreaming,
+  isServerRunning,
+  isStopping,
+  selectedToolCallId,
+  onOpenArtifact,
+  artifactButtonRef,
+}) => {
   if (!rendersPart(part, isStreaming)) {
     return null;
   }
@@ -131,6 +153,24 @@ const AgentPart: FC<{
       return (
         <ToolPart isGenerating={isStreaming || isServerRunning} part={part} />
       );
+    case 'tool-generate_ui':
+      return (
+        <UiArtifactCard
+          artifact={uiArtifactView(part, {
+            live: isStreaming
+              ? 'receiving'
+              : isServerRunning
+                ? 'waiting'
+                : null,
+            isStopping,
+          })}
+          buttonRef={artifactButtonRef?.(part.toolCallId)}
+          isActive={selectedToolCallId === part.toolCallId}
+          onOpen={() => {
+            onOpenArtifact(part.toolCallId);
+          }}
+        />
+      );
     default:
       return null;
   }
@@ -143,12 +183,17 @@ type AgentMessageProps = {
   message: AgentUIMessage;
   isStreaming: boolean;
   isServerRunning: boolean;
-};
+  isStopping: boolean;
+} & ArtifactSelection;
 
 export const AgentMessage: FC<AgentMessageProps> = ({
   message,
   isStreaming,
   isServerRunning,
+  isStopping,
+  selectedToolCallId,
+  onOpenArtifact,
+  artifactButtonRef,
 }) => {
   if (message.role === 'user') {
     return (
@@ -167,10 +212,14 @@ export const AgentMessage: FC<AgentMessageProps> = ({
     >
       {message.parts.map((part, index) => (
         <AgentPart
+          artifactButtonRef={artifactButtonRef}
           isServerRunning={isServerRunning}
+          isStopping={isStopping}
           isStreaming={isStreaming}
           key={partKey(part, index)}
+          onOpenArtifact={onOpenArtifact}
           part={part}
+          selectedToolCallId={selectedToolCallId}
         />
       ))}
       {end === undefined || end === 'completed' ? null : (

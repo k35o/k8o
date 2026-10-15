@@ -20,14 +20,26 @@ import type {
   ServerSync,
   StopRequest,
 } from '@/features/agent/application/thread-sync';
+import {
+  lastCallKeyOf,
+  shownArtifact,
+  uiArtifactsOf,
+  uiLiveOf,
+} from '@/features/agent/application/ui-artifacts';
+import type { PaneSelection } from '@/features/agent/application/ui-artifacts';
 import { DEFAULT_GENERATION_MODEL } from '@/shared/claude/models';
 import type { GenerationModel } from '@/shared/claude/models';
 
 import { ToolHeader } from '../../../_components/tool-frame';
+import { ViewTabs } from '../../../_components/view-tabs';
+import { ArtifactPane } from '../artifact-pane';
+import { ChatPanes, usePaneFocus } from '../chat-panes';
 import { ChatHeader, ChatView } from '../chat-view';
 import { useOpeningThread } from '../opening-thread';
 import { useTouchedThreads } from '../touched-threads';
 import { useThreadSync } from './use-thread-sync';
+
+import styles from './chat-screen.module.css';
 
 // 履歴はサーバーが持っているので、送るのは最後のメッセージだけにする
 const transport = new DefaultChatTransport<AgentUIMessage>({
@@ -36,6 +48,11 @@ const transport = new DefaultChatTransport<AgentUIMessage>({
     body: { ...body, threadId: id, trigger, message: messages.at(-1) },
   }),
 });
+
+const MOBILE_PANE_OPTIONS = [
+  { value: 'chat', label: 'チャット' },
+  { value: 'pane', label: 'プレビュー' },
+] as const;
 
 const requestStop = async (threadId: string): Promise<boolean> => {
   try {
@@ -75,6 +92,11 @@ export const ChatScreen: FC<ChatScreenProps> = ({
   const [createdAt, setCreatedAt] = useState<string | null>(null);
   const [draft, setDraft] = useState('');
   const [stopRequest, setStopRequest] = useState<StopRequest | null>(null);
+  const [selection, setSelection] = useState<PaneSelection>({
+    type: 'follow',
+  });
+  const [mobilePane, setMobilePane] = useState<'chat' | 'pane'>('chat');
+  const paneFocus = usePaneFocus();
 
   const titleOf = (
     current: AgentUIMessage[],
@@ -189,6 +211,8 @@ export const ChatScreen: FC<ChatScreenProps> = ({
     clearError();
     setDraft('');
     setStopRequest(null);
+    // ペインが消えて会話に戻されていても、次の生成でプレビューへ勝手に移らないよう、会話のタブに揃える
+    setMobilePane('chat');
     if (created) {
       touchThread(title, true);
     } else {
@@ -228,24 +252,76 @@ export const ChatScreen: FC<ChatScreenProps> = ({
     }
   }, [stopRequest, stopping]);
 
+  const artifacts = uiArtifactsOf(messages, {
+    live: uiLiveOf({ status, isServerRunning: sync === 'wait' }),
+    isStopping: stopping,
+  });
+  const shown = shownArtifact(artifacts, selection);
+  const openArtifact = (toolCallId: string): void => {
+    paneFocus.openPane(toolCallId, () => {
+      setSelection({
+        type: 'pinned',
+        toolCallId,
+        lastCallKey: lastCallKeyOf(artifacts),
+      });
+      setMobilePane('pane');
+    });
+  };
+  const closePane = (toolCallId: string): void => {
+    paneFocus.closePane(toolCallId, () => {
+      setSelection({ type: 'closed', lastCallKey: lastCallKeyOf(artifacts) });
+    });
+  };
+
   return (
     <>
       <ToolHeader>
         <ChatHeader model={model} title={title} />
       </ToolHeader>
-      <ChatView
-        canSelectModel={!created && messages.length === 0}
-        draft={draft}
-        errorText={error?.message ?? null}
-        isServerRunning={sync === 'wait'}
-        isStopping={stopping}
-        messages={messages}
-        model={model}
-        onDraftChange={setDraft}
-        onSelectModel={setModel}
-        onStop={handleStop}
-        onSubmit={handleSubmit}
-        status={status}
+      {shown === null ? null : (
+        <div className={styles.mobileTabs}>
+          <ViewTabs
+            onChange={setMobilePane}
+            options={MOBILE_PANE_OPTIONS}
+            value={mobilePane}
+          />
+        </div>
+      )}
+      <ChatPanes
+        chat={
+          <ChatView
+            artifactButtonRef={paneFocus.artifactButtonRef}
+            canSelectModel={!created && messages.length === 0}
+            draft={draft}
+            errorText={error?.message ?? null}
+            inputRef={paneFocus.inputRef}
+            isServerRunning={sync === 'wait'}
+            isStopping={stopping}
+            messages={messages}
+            model={model}
+            onDraftChange={setDraft}
+            onOpenArtifact={openArtifact}
+            onSelectModel={setModel}
+            onStop={handleStop}
+            onSubmit={handleSubmit}
+            selectedToolCallId={shown?.toolCallId ?? null}
+            status={status}
+          />
+        }
+        mobilePane={mobilePane}
+        pane={
+          shown === null ? null : (
+            // 別の呼び出しへ移ったら、生成 UI の入力やスクロールを持ち越さない
+            <ArtifactPane
+              artifact={shown}
+              headingRef={paneFocus.headingRef}
+              key={shown.toolCallId}
+              onClose={() => {
+                closePane(shown.toolCallId);
+              }}
+            />
+          )
+        }
       />
     </>
   );

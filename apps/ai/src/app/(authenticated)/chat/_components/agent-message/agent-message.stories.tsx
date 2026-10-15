@@ -1,4 +1,6 @@
-import { expect, userEvent, within } from 'storybook/test';
+import type { Spec } from '@json-render/core';
+import type { ComponentProps } from 'react';
+import { expect, fn, userEvent, within } from 'storybook/test';
 
 import type { AgentUIMessage } from '@/features/agent/application/agent-message';
 
@@ -82,13 +84,80 @@ const inProgressParts: AgentUIMessage['parts'] = [
   },
 ];
 
+const PRICING: Spec = {
+  root: 'title',
+  elements: {
+    title: { type: 'Heading', props: { level: 'h2', label: '料金プラン' } },
+  },
+};
+
+const uiInput = { title: '料金プラン', instruction: '3つのプランを比べる' };
+
+const uiAnswer: AgentUIMessage = {
+  id: 'a5',
+  role: 'assistant',
+  metadata: { end: 'completed' },
+  parts: [
+    { type: 'step-start' },
+    {
+      type: 'tool-generate_ui',
+      toolCallId: 'ui-done',
+      state: 'output-available',
+      input: uiInput,
+      output: {
+        status: 'done',
+        artifactId: 'a1b2c3d4e5f6',
+        version: 1,
+        summary: '3つのプランを横に並べました。',
+        spec: PRICING,
+      },
+    },
+    {
+      type: 'tool-generate_ui',
+      toolCallId: 'ui-stopped',
+      state: 'output-available',
+      preliminary: true,
+      input: { ...uiInput, title: '問い合わせフォーム' },
+      output: { status: 'generating', phase: 'drawing', spec: PRICING },
+    },
+    {
+      type: 'tool-generate_ui',
+      toolCallId: 'ui-failed',
+      state: 'output-error',
+      input: { ...uiInput, title: 'ダッシュボード' },
+      errorText: 'Error: UI の検証エラーを直せませんでした: [title] label',
+    },
+    { type: 'text', state: 'done', text: '料金プランの UI を作りました。' },
+  ],
+};
+
+const uiGeneratingParts: AgentUIMessage['parts'] = [
+  { type: 'step-start' },
+  {
+    type: 'tool-generate_ui',
+    toolCallId: 'ui-generating',
+    state: 'output-available',
+    preliminary: true,
+    input: {
+      ...uiInput,
+      base: { artifactId: 'a1b2c3d4e5f6', version: 1 },
+    },
+    output: { status: 'generating', phase: 'drawing', spec: PRICING },
+  },
+];
+
 const meta = preview.meta({
   component: AgentMessage,
+  // propより狭い型（null）のままargsを推論させると meta.storyの型推論が壊れるため、
+  // satisfiesで文脈型を与えて広げる
   args: {
     message: answer,
     isStreaming: false,
     isServerRunning: false,
-  },
+    isStopping: false,
+    selectedToolCallId: null,
+    onOpenArtifact: fn<(toolCallId: string) => void>(),
+  } satisfies Partial<ComponentProps<typeof AgentMessage>>,
 });
 
 export const UserMessage = meta.story({
@@ -197,6 +266,74 @@ export const ServerRunning = meta.story({
     await userEvent.click(tool);
     await expect(
       canvas.queryByText('完了する前に止まりました'),
+    ).not.toBeInTheDocument();
+  },
+});
+
+export const UiArtifacts = meta.story({
+  args: { message: uiAnswer, selectedToolCallId: 'ui-done' },
+  play: async ({ args, canvasElement }) => {
+    const canvas = within(canvasElement);
+    await expect(canvas.getByText('料金プラン')).toBeInTheDocument();
+    await expect(canvas.getByText('版 1')).toBeInTheDocument();
+    await expect(
+      canvas.getByText('3つのプランを横に並べました。'),
+    ).toBeInTheDocument();
+    // ペインに出ているカードでも、xl 未満のテストのビューポートではペインと同時に見えないので、開く口のまま出す
+    await userEvent.click(
+      canvas.getByRole('button', { name: 'プレビューを開く' }),
+    );
+    await expect(args.onOpenArtifact).toHaveBeenCalledWith('ui-done');
+    await expect(canvas.getByText('表示中')).not.toBeVisible();
+    // 生きていない返答に残った途中の出力は、止まったものとして途中まで開ける
+    await expect(canvas.getByText('途中で止まりました')).toBeInTheDocument();
+    await userEvent.click(
+      canvas.getByRole('button', { name: '途中までを見る' }),
+    );
+    await expect(args.onOpenArtifact).toHaveBeenLastCalledWith('ui-stopped');
+    // 失敗は、Error: を外した文だけを出し、開くボタンを出さない
+    await expect(
+      canvas.getByText('UI の検証エラーを直せませんでした: [title] label'),
+    ).toBeInTheDocument();
+    await expect(
+      canvas.getAllByRole('button', { name: /を開く|を見る|表示中/u }),
+    ).toHaveLength(2);
+    // spec の JSON を会話に流し込まない
+    await expect(canvas.queryByText(/"root"/u)).not.toBeInTheDocument();
+  },
+});
+
+export const GeneratingUi = meta.story({
+  args: {
+    message: { id: 'a6', role: 'assistant', parts: uiGeneratingParts },
+    isStreaming: true,
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    await expect(
+      canvas.getByRole('status', { name: '描いています…' }),
+    ).toBeInTheDocument();
+    await expect(canvas.getByText('版 1 を直しています')).toBeInTheDocument();
+    await expect(
+      canvas.getByRole('button', { name: 'プレビューを開く' }),
+    ).toBeInTheDocument();
+  },
+});
+
+export const StoppingUi = meta.story({
+  args: {
+    message: { id: 'a7', role: 'assistant', parts: uiGeneratingParts },
+    isServerRunning: true,
+    isStopping: true,
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    // 止めているあいだは、サーバーを待っていても「生成を続けています」にしない
+    await expect(
+      canvas.getByRole('status', { name: '停止しています…' }),
+    ).toBeInTheDocument();
+    await expect(
+      canvas.queryByText(/生成を続けています/u),
     ).not.toBeInTheDocument();
   },
 });

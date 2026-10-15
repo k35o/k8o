@@ -4,7 +4,7 @@ import { Alert, AssistantIcon, Avatar, RadioCard, Spinner } from '@k8ordo/ui';
 import { Conversation, Message, PromptInput } from '@k8ordo/ui/ai';
 import type { ChatStatus } from '@k8ordo/ui/ai';
 import { useId } from 'react';
-import type { FC } from 'react';
+import type { FC, Ref } from 'react';
 
 import type { AgentUIMessage } from '@/features/agent/application/agent-message';
 import { PRICE_PER_MTOK_USD } from '@/features/usage/application/pricing';
@@ -72,9 +72,10 @@ const EmptyState: FC<EmptyStateProps> = ({
   return (
     <div className={styles.empty}>
       <div className={styles.emptyText}>
-        <p className={styles.emptyTitle}>k8o のブログについて聞く</p>
+        <p className={styles.emptyTitle}>ブログについて聞く・UI を作る</p>
         <p className={styles.emptyHint}>
-          記事を探して読み、要点をまとめたり比べたりします。
+          記事を探して読み、要点をまとめます。@k8ordo/ui で UI
+          を作り、プレビューに出します
         </p>
       </div>
       {canSelectModel ? (
@@ -112,6 +113,12 @@ type ChatViewProps = {
   onSelectModel: (model: GenerationModel) => void;
   onSubmit: (text: string) => void;
   onStop: () => void;
+  selectedToolCallId: string | null;
+  onOpenArtifact: (toolCallId: string) => void;
+  artifactButtonRef?:
+    | ((toolCallId: string) => Ref<HTMLButtonElement>)
+    | undefined;
+  inputRef?: Ref<HTMLTextAreaElement> | undefined;
 };
 
 export const ChatView: FC<ChatViewProps> = ({
@@ -127,6 +134,10 @@ export const ChatView: FC<ChatViewProps> = ({
   onSelectModel,
   onSubmit,
   onStop,
+  selectedToolCallId,
+  onOpenArtifact,
+  artifactButtonRef,
+  inputRef = null,
 }) => {
   const isReceiving = status === 'submitted' || status === 'streaming';
   const isWaitingServer = isServerRunning && !isReceiving;
@@ -167,10 +178,14 @@ export const ChatView: FC<ChatViewProps> = ({
                   const isLast = index === messages.length - 1;
                   return (
                     <AgentMessage
+                      artifactButtonRef={artifactButtonRef}
                       isServerRunning={isWaitingServer && isLast}
+                      isStopping={isStopping && isLast}
                       isStreaming={status === 'streaming' && isLast}
                       key={message.id}
                       message={message}
+                      onOpenArtifact={onOpenArtifact}
+                      selectedToolCallId={selectedToolCallId}
                     />
                   );
                 })}
@@ -198,7 +213,10 @@ export const ChatView: FC<ChatViewProps> = ({
             status={inputStatus}
             value={draft}
           >
-            <PromptInput.Textarea placeholder="例: View Transitions の記事を要約して" />
+            <PromptInput.Textarea
+              placeholder="例: 料金プランを3列で比べる UI を作って"
+              ref={inputRef}
+            />
             <PromptInput.Submit sendLabel="送信" stopLabel="停止" />
           </PromptInput.Root>
         </div>

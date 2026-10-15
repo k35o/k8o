@@ -28,9 +28,11 @@ export const NewChatPlaceholder: FC = () => (
         messages={[]}
         model={DEFAULT_GENERATION_MODEL}
         onDraftChange={ignore}
+        onOpenArtifact={ignore}
         onSelectModel={ignore}
         onStop={ignore}
         onSubmit={ignore}
+        selectedToolCallId={null}
         status="ready"
       />
     </div>

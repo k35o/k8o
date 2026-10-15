@@ -34,12 +34,12 @@ export const Default = meta.story({
       canvas.getByRole('heading', { name: '新しいチャット' }),
     ).toBeInTheDocument();
     await expect(
-      canvas.getByText('k8o のブログについて聞く'),
+      canvas.getByText('ブログについて聞く・UI を作る'),
     ).toBeInTheDocument();
     await expect(canvas.queryByLabelText('読み込み中')).not.toBeInTheDocument();
     // 確かめ終えるまでは、会話の欄を操作させない
     await expect(
-      canvas.getByText('k8o のブログについて聞く').closest('[inert]'),
+      canvas.getByText('ブログについて聞く・UI を作る').closest('[inert]'),
     ).not.toBeNull();
   },
 });
