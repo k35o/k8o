@@ -40,6 +40,11 @@ vi.mock('@/features/usage/infrastructure/usage-repository', () => ({
   selectCostSinceMicroUsd: vi.fn(),
   updateUsageCost: vi.fn(),
 }));
+vi.mock('@/features/artifacts/infrastructure/artifact-repository', () => ({
+  insertArtifactWithFirstVersion: vi.fn(),
+  insertNextVersion: vi.fn(),
+  selectVersion: vi.fn(),
+}));
 vi.mock('../infrastructure/thread-repository', () => ({
   claimThreadRun: vi.fn(),
   insertThreadMessage: vi.fn(),

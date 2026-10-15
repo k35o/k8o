@@ -6,6 +6,12 @@ import {
   fetchOwnerBlogs,
 } from '../infrastructure/owner-api';
 import type { OwnerBlog } from '../infrastructure/owner-api';
+import {
+  generateUi,
+  generateUiContextSchema,
+  generateUiInputSchema,
+  generateUiModelOutput,
+} from './generate-ui';
 
 // api の BLOG_SLUG_PATTERN と同じ値。@repo/api は型しか読めないので複製する
 const BLOG_SLUG_PATTERN = /^[a-z0-9-]+$/u;
@@ -62,5 +68,16 @@ export const agentTools = {
       }
       return truncateMarkdown(markdown);
     },
+  }),
+  generate_ui: tool({
+    description:
+      '@k8ordo/ui のコンポーネントで UI を作るか直し、利用者の画面のプレビューに出す。保存した UI の artifactId と版を返す',
+    inputSchema: generateUiInputSchema,
+    contextSchema: generateUiContextSchema,
+    execute: (input, { context, abortSignal }) =>
+      generateUi({ input, context, abortSignal }),
+    // 関数をそのまま渡すと、tool() が input と output の型を推論できなくなる
+    toModelOutput: ({ input, output }) =>
+      generateUiModelOutput({ input, output }),
   }),
 };

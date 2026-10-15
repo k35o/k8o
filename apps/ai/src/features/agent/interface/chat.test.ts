@@ -1,7 +1,10 @@
+import { streamText } from 'ai';
+import type * as ai from 'ai';
 import { convertArrayToReadableStream, MockLanguageModelV4 } from 'ai/test';
 import { after } from 'next/server';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
+import { insertArtifactWithFirstVersion } from '@/features/artifacts/infrastructure/artifact-repository';
 import {
   insertUsageWithinLimits,
   selectCostSinceMicroUsd,
@@ -28,6 +31,10 @@ import {
 import type { ThreadRow } from '../infrastructure/thread-repository';
 import { handleChat } from './chat';
 
+vi.mock('ai', async (importOriginal) => {
+  const actual = await importOriginal<typeof ai>();
+  return { ...actual, streamText: vi.fn(actual.streamText) };
+});
 vi.mock('server-only', () => ({}));
 vi.mock('next/server', () => ({ after: vi.fn() }));
 vi.mock('@/shared/auth/require-allowed-session', () => ({
@@ -40,6 +47,11 @@ vi.mock('@/features/usage/infrastructure/usage-repository', () => ({
   insertUsageWithinLimits: vi.fn(),
   selectCostSinceMicroUsd: vi.fn(),
   updateUsageCost: vi.fn(),
+}));
+vi.mock('@/features/artifacts/infrastructure/artifact-repository', () => ({
+  insertArtifactWithFirstVersion: vi.fn(),
+  insertNextVersion: vi.fn(),
+  selectVersion: vi.fn(),
 }));
 vi.mock('../infrastructure/thread-repository', () => ({
   claimThreadRun: vi.fn(),
@@ -135,7 +147,7 @@ const textStep = (
 ];
 
 const toolStep = (
-  toolName: 'list_blogs' | 'read_blog',
+  toolName: 'list_blogs' | 'read_blog' | 'generate_ui',
   input: unknown,
   toolCallId = 'call-1',
 ): LanguageModelV4StreamPart[] => [
@@ -148,6 +160,26 @@ const toolStep = (
   },
   finishChunk('tool-calls'),
 ];
+
+const UI_SPEC = {
+  root: 'ok',
+  elements: { ok: { type: 'Button', props: { label: 'OK' } } },
+};
+
+// generate_ui の中で UI を組む Claude の1回の呼び出し
+const uiSpecStep = (): LanguageModelV4StreamPart[] =>
+  textStep(
+    [
+      'タイトル: 確認',
+      'OK のボタンを置きました。',
+      '```spec',
+      '{"op":"add","path":"/root","value":"ok"}',
+      '{"op":"add","path":"/elements/ok","value":{"type":"Button","props":{"label":"OK"}}}',
+      '```',
+    ].join('\n'),
+  );
+
+const uiInput = { title: '確認ボタン', instruction: 'OK のボタンを置く' };
 
 // 渡したステップを、呼ばれた順に1つずつ流す Claude の代役
 const mockClaude = (
@@ -293,6 +325,7 @@ beforeEach(() => {
   vi.mocked(updateLastInputTokens).mockResolvedValue();
   vi.mocked(fetchOwnerBlogs).mockResolvedValue([blog]);
   vi.mocked(fetchOwnerBlogMarkdown).mockResolvedValue('# ariaNotify()');
+  vi.mocked(insertArtifactWithFirstVersion).mockResolvedValue();
 });
 
 afterEach(() => {
@@ -453,6 +486,77 @@ describe('handleChat', () => {
           blockBinding: { prefixMismatchBehavior: 'drop_block' },
         },
       });
+    });
+
+    it('generate_ui を呼ぶと、UI の生成を別に予約して tool の中で回し、保存した版を確定の出力として残す', async () => {
+      mockClaude(
+        toolStep('generate_ui', uiInput),
+        uiSpecStep(),
+        textStep('確認のボタンを作りました'),
+      );
+
+      const response = await handleChat(chatRequest(chatBody()));
+      await response.text();
+      await settle();
+
+      expect(contentParts(savedAssistant())).toMatchObject([
+        {
+          type: 'tool-generate_ui',
+          state: 'output-available',
+          input: uiInput,
+          output: {
+            status: 'done',
+            artifactId: expect.stringMatching(/^[0-9a-f]{12}$/u),
+            version: 1,
+            summary: 'OK のボタンを置きました。',
+            spec: UI_SPEC,
+          },
+        },
+        { type: 'text', text: '確認のボタンを作りました' },
+      ]);
+      expect(vi.mocked(insertUsageWithinLimits).mock.calls).toMatchObject([
+        [{ app: 'agent', kind: 'generation', userId: 'u1' }],
+        [
+          {
+            app: 'agent',
+            kind: 'ui',
+            userId: 'u1',
+            model: 'claude-sonnet-5-5',
+          },
+        ],
+      ]);
+      expect(insertArtifactWithFirstVersion).toHaveBeenCalledExactlyOnceWith(
+        expect.objectContaining({
+          userId: 'u1',
+          threadId: THREAD_ID,
+          title: '確認ボタン',
+          content: { spec: UI_SPEC },
+        }),
+      );
+    });
+
+    it('generate_ui には、会話の文脈と、ほかの tool より長い時間の上限を渡す', async () => {
+      mockClaude(textStep('答え'));
+
+      const response = await handleChat(chatRequest(chatBody()));
+      await response.text();
+
+      expect(streamText).toHaveBeenCalledExactlyOnceWith(
+        expect.objectContaining({
+          toolsContext: {
+            generate_ui: {
+              userId: 'u1',
+              threadId: THREAD_ID,
+              model: 'claude-sonnet-5-5',
+            },
+          },
+          timeout: {
+            totalMs: 750_000,
+            toolMs: 30_000,
+            tools: { generate_uiMs: 360_000 },
+          },
+        }),
+      );
     });
   });
 
@@ -803,6 +907,94 @@ describe('handleChat', () => {
       expect(assistantTurn?.content).toStrictEqual([
         expect.objectContaining({ type: 'text', text: '読みます' }),
       ]);
+    });
+
+    it('文を書かずに generate_ui を呼んで止めた返答のあとの次のターンでは、そのステップの thinking も送らない', async () => {
+      vi.mocked(selectThread).mockResolvedValue(existingThread());
+      vi.mocked(selectThreadMessages).mockResolvedValue([
+        userMessage('UI を作って', 'u0'),
+        {
+          id: 'a0',
+          role: 'assistant',
+          parts: [
+            { type: 'step-start' },
+            {
+              type: 'reasoning',
+              text: 'UI を作る',
+              state: 'done',
+              providerMetadata: { anthropic: { signature: 'sig' } },
+            },
+            {
+              type: 'tool-generate_ui',
+              toolCallId: 'call-0',
+              state: 'output-available',
+              input: uiInput,
+              output: { status: 'generating', phase: 'drawing', spec: null },
+              preliminary: true,
+            },
+          ],
+          metadata: { end: 'stopped' },
+        },
+      ]);
+      const model = mockClaude(textStep('答え'));
+
+      const response = await handleChat(chatRequest(chatBody()));
+      await response.text();
+
+      expect(
+        model.doStreamCalls[0]?.prompt.filter(
+          (message) => message.role !== 'system',
+        ),
+      ).toMatchObject([
+        { role: 'user', content: [{ type: 'text', text: 'UI を作って' }] },
+        {
+          role: 'user',
+          content: [{ type: 'text', text: 'arianotify の記事を要約して' }],
+        },
+      ]);
+    });
+
+    it('generate_ui の返答を次のターンで送り返すとき、tool の結果はループの中で送ったものと同じ文字列にする', async () => {
+      const firstTurn = mockClaude(
+        toolStep('generate_ui', uiInput, 'call-ui'),
+        uiSpecStep(),
+        textStep('作りました'),
+      );
+      const firstResponse = await handleChat(chatRequest(chatBody()));
+      await firstResponse.text();
+      await settle();
+
+      vi.mocked(selectThread).mockResolvedValue(existingThread());
+      vi.mocked(selectThreadMessages).mockResolvedValue(savedMessages());
+      const nextTurn = mockClaude(textStep('答え'));
+      const nextResponse = await handleChat(
+        chatRequest(chatBody({ message: userMessage('ボタンを大きく', 'u2') })),
+      );
+      await nextResponse.text();
+
+      const toolResultsSentInLoop = firstTurn.doStreamCalls[2]?.prompt.filter(
+        (message) => message.role === 'tool',
+      );
+      expect(toolResultsSentInLoop).toMatchObject([
+        {
+          content: [
+            {
+              toolCallId: 'call-ui',
+              output: {
+                type: 'text',
+                value: expect.stringMatching(
+                  /^UI「確認ボタン」を artifactId: [0-9a-f]{12} の版 1 として保存し、利用者の画面のプレビューに出しました。\nOK のボタンを置きました。$/u,
+                ),
+              },
+            },
+          ],
+        },
+      ]);
+      expect(
+        nextTurn.doStreamCalls[0]?.prompt.filter(
+          (message) => message.role === 'tool',
+        ),
+      ).toStrictEqual(toolResultsSentInLoop);
     });
 
     it('tool がエラーになった返答を次のターンで送り返すとき、tool の結果はループの中で送ったものと同じ文字列にする', async () => {

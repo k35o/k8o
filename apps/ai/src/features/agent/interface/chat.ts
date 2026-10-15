@@ -38,9 +38,11 @@ import {
   MAX_STEPS,
   RUN_TIMEOUT_MS,
   TOOL_TIMEOUT_MS,
+  UI_TOOL_TIMEOUT_MS,
   withRunEnd,
 } from '../application/agent-run';
 import { parseChatRequest } from '../application/chat-request';
+import { dropThinkingOnlySteps } from '../application/drop-thinking-only-steps';
 import { AGENT_INSTRUCTIONS } from '../application/instructions';
 import { watchStopRequest } from '../application/stop-watch';
 import {
@@ -102,11 +104,12 @@ const errorMessageOf = (error: unknown): string => {
 const streamRun = async (input: {
   threadId: string;
   runId: string;
+  userId: string;
   usageId: number;
   model: GenerationModel;
   messages: AgentUIMessage[];
 }): Promise<Response> => {
-  const { threadId, runId, usageId, model, messages } = input;
+  const { threadId, runId, userId, usageId, model, messages } = input;
   const controller = new AbortController();
   const runEnded = new AbortController();
   let usage = EMPTY_USAGE_TOKENS;
@@ -115,11 +118,12 @@ const streamRun = async (input: {
   const result = streamText({
     model: getGenerationModel(model),
     instructions: AGENT_INSTRUCTIONS,
-    messages: await convertToModelMessages(messages, {
+    messages: await convertToModelMessages(dropThinkingOnlySteps(messages), {
       tools: agentTools,
       ignoreIncompleteToolCalls: true,
     }),
     tools: agentTools,
+    toolsContext: { generate_ui: { userId, threadId, model } },
     stopWhen: [
       isStepCount(MAX_STEPS),
       async () => {
@@ -135,7 +139,11 @@ const streamRun = async (input: {
     ],
     // req.signal を渡すと切断でも止まるので、利用者の停止だけを受けるシグナルを渡す
     abortSignal: controller.signal,
-    timeout: { totalMs: RUN_TIMEOUT_MS, toolMs: TOOL_TIMEOUT_MS },
+    timeout: {
+      totalMs: RUN_TIMEOUT_MS,
+      toolMs: TOOL_TIMEOUT_MS,
+      tools: { generate_uiMs: UI_TOOL_TIMEOUT_MS },
+    },
     maxOutputTokens: MAX_OUTPUT_TOKENS,
     providerOptions: { anthropic: ANTHROPIC_OPTIONS },
     // SDK は onStepEnd の例外を握りつぶすので、失敗はここでログに残す
@@ -294,6 +302,7 @@ export async function handleChat(req: Request): Promise<Response> {
     return await streamRun({
       threadId: request.threadId,
       runId,
+      userId: session.userId,
       usageId: reservation.usageId,
       model,
       messages: [...history, request.message],
