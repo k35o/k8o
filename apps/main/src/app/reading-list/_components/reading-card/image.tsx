@@ -4,6 +4,8 @@ import Image from 'next/image';
 import { useState } from 'react';
 import type { FC } from 'react';
 
+import styles from './image.module.css';
+
 // 読み込み失敗時もコンテナ（画像領域）は残し、レイアウトシフト（CLS）を避ける
 export const ReadingCardImage: FC<{
   src: string;
@@ -11,12 +13,12 @@ export const ReadingCardImage: FC<{
   const [isError, setIsError] = useState(false);
 
   return (
-    <div className="bg-bg-subtle vertical:w-48 vertical:shrink-0 vertical:rounded-s-xl vertical:rounded-e-none flex w-full flex-col justify-center overflow-hidden rounded-t-xl sm:w-48 sm:shrink-0 sm:rounded-s-xl sm:rounded-e-none">
-      <div className="relative aspect-video w-full">
+    <div className={styles.root}>
+      <div className={styles.frame}>
         {!isError && (
           <Image
             alt=""
-            className="object-contain object-center"
+            className={styles.image}
             fill
             onError={() => {
               setIsError(true);

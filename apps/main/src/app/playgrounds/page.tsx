@@ -9,6 +9,8 @@ import {
 } from './_components/playgrounds-list-content';
 import type { PlaygroundSummary } from './_utils/types';
 
+import styles from './page.module.css';
+
 const playgroundSummaries: PlaygroundSummary[] = playgroundSections
   .map((section) => ({
     id: section.id,
@@ -23,10 +25,10 @@ const playgroundSummaries: PlaygroundSummary[] = playgroundSections
 
 export default function PlaygroundsPage() {
   return (
-    <div className="flex flex-col gap-8">
-      <div className="flex flex-col gap-3">
+    <div className={styles.root}>
+      <div className={styles.header}>
         <Heading level="h1">Playgrounds</Heading>
-        <p className="text-fg-mute leading-relaxed">
+        <p className={styles.description}>
           ブログ記事や興味のある技術の試作品を集めています。気になるものを選ぶと、実際に動かせるデモページが開きます。
         </p>
       </div>

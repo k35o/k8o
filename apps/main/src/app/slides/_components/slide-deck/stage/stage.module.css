@@ -1,5 +1,9 @@
+/* better-css-modules-disable tokens/spacing, tokens/font-size, tokens/line-height -- スライドはコンテナ寸法（cqi / cqw / cqh）に比例させる */
 .frame {
   container-type: size;
+  position: relative;
+  width: 100%;
+  height: 100%;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -9,9 +13,23 @@
   width: min(100cqw, calc(100cqh * 16 / 9));
   aspect-ratio: 16 / 9;
   container-type: size;
+  position: relative;
+  overflow: hidden;
+  background-color: var(--color-bg-base);
+  color: var(--color-fg-base);
+
+  &[data-flush='false'] {
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-md);
+  }
 }
 
 .content {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
   padding: 5cqi 6cqi;
   font-size: 2.5cqi;
   line-height: 1.6;
@@ -19,6 +37,8 @@
 }
 
 .watermark {
+  pointer-events: none;
+  position: absolute;
   inset: auto -10cqw -25cqh auto;
   width: 70cqw;
   opacity: 0.04;
@@ -26,11 +46,13 @@
 }
 
 .qr {
+  position: absolute;
   bottom: 3cqh;
   right: 2.5cqw;
   width: 7cqw;
   height: 7cqw;
-  border-radius: 0.5cqi;
-  background: white;
+  border-radius: var(--radius-md);
+  /* better-css-modules-disable-next-line tokens/color -- QR の静寂域は配色テーマに関わらず白 */
+  background-color: white;
   padding: 0.4cqi;
 }

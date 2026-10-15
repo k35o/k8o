@@ -3,14 +3,14 @@ import type { FC } from 'react';
 import styles from './details-animation-demo.module.css';
 
 export const DetailsAnimationDemo: FC = () => (
-  <div className="flex flex-col gap-8">
-    <details className={styles['detailsAnimation']}>
-      <summary className="text-fg-base cursor-pointer font-bold">
+  <div className={styles.root}>
+    <details className={styles.detailsAnimation}>
+      <summary className={styles.summary}>
         ::details-contentによるアニメーション
       </summary>
       <p>想定した通りにアニメーションが適用されます</p>
     </details>
-    <p className="text-fg-mute text-sm">
+    <p className={styles.note}>
       例として実装したアニメーションは@prefers-reduced-motionに対応していません。注意してご利用ください。
     </p>
   </div>

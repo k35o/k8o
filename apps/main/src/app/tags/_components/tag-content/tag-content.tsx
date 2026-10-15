@@ -5,6 +5,8 @@ import type { FC } from 'react';
 
 import { TagCard } from '../tag-card';
 
+import styles from './tag-content.module.css';
+
 export const TagContent: FC<{
   name: string;
   blogs: Array<{
@@ -17,26 +19,26 @@ export const TagContent: FC<{
     title: string;
   }>;
 }> = ({ name, blogs, talks }) => (
-  <div className="flex flex-col gap-8">
-    <div className="bg-bg-base flex items-center gap-4 rounded-xl p-6 shadow-sm">
-      <div className="bg-primary-bg text-primary-fg flex size-10 items-center justify-center rounded-full">
+  <div className={styles.root}>
+    <div className={styles.summary}>
+      <div className={styles.icon}>
         <TagIcon />
       </div>
-      <div className="flex flex-col gap-2">
+      <div className={styles.summaryText}>
         <Heading level="h3">{name}</Heading>
-        <p className="text-fg-mute text-sm">
+        <p className={styles.count}>
           {blogs.length + talks.length}
           件のコンテンツがあります
         </p>
       </div>
     </div>
-    <div className="flex flex-col gap-8">
+    <div className={styles.sections}>
       {blogs.length > 0 && (
-        <div className="flex flex-col gap-4">
+        <div className={styles.section}>
           <Link href="/blog">
             <Heading level="h4">Blog</Heading>
           </Link>
-          <div className="grid-cols-auto-fill-70 grid justify-items-center gap-4">
+          <div className={styles.grid}>
             {blogs.map((blog) => (
               <TagCard
                 href={`/blog/${blog.slug}` as Route}
@@ -50,11 +52,11 @@ export const TagContent: FC<{
         </div>
       )}
       {talks.length > 0 && (
-        <div className="flex flex-col gap-4">
+        <div className={styles.section}>
           <Link href="/talks">
             <Heading level="h4">Talks</Heading>
           </Link>
-          <div className="grid-cols-auto-fill-70 grid justify-items-center gap-4">
+          <div className={styles.grid}>
             {talks.map((talk) => (
               <TagCard
                 href="/talks"

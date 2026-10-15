@@ -1,7 +1,10 @@
 'use client';
 
 import { Code, Radio } from '@k8ordo/ui';
+import { cn } from '@repo/helpers/cn';
 import { useId, useState } from 'react';
+
+import styles from './scheme-image-demo.module.css';
 
 const schemeOptions = [
   { value: 'light dark', label: 'light dark（OSの設定に従う）' },
@@ -19,7 +22,7 @@ export function SchemeImageDemo() {
   const labelId = useId();
 
   return (
-    <div className="flex flex-col gap-6">
+    <div className={styles.root}>
       <style>{`
         .ldi-box {
           background-image: light-dark(
@@ -29,8 +32,8 @@ export function SchemeImageDemo() {
         }
       `}</style>
 
-      <div className="flex flex-col gap-2">
-        <p className="text-fg-base text-sm font-bold" id={labelId}>
+      <div className={styles.field}>
+        <p className={styles.label} id={labelId}>
           枠の<Code>color-scheme</Code>
         </p>
         <Radio
@@ -48,11 +51,11 @@ export function SchemeImageDemo() {
 
       <div
         aria-hidden="true"
-        className="ldi-box h-40 rounded-xl"
+        className={cn('ldi-box', styles.swatch)}
         style={{ colorScheme: scheme }}
       />
 
-      <p className="text-fg-mute text-sm">
+      <p className={styles.note}>
         枠の<Code>background-image</Code>には、<Code>light-dark()</Code>
         に直線グラデーションと放射状グラデーションを渡しています。ライトは斜めの直線、ダークは中心が明るい放射状で、
         <Code>light dark</Code>ではOSの設定に従います。

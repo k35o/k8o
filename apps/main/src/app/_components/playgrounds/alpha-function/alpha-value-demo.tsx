@@ -1,13 +1,16 @@
 'use client';
 
 import { Code, FormControl, Slider } from '@k8ordo/ui';
+import { cn } from '@repo/helpers/cn';
 import { useState } from 'react';
+
+import styles from './alpha-value-demo.module.css';
 
 export function AlphaValueDemo() {
   const [percent, setPercent] = useState(50);
 
   return (
-    <div className="flex flex-col gap-6">
+    <div className={styles.root}>
       <style>{`
         .af-value {
           --origin: oklch(55% 0.22 270 / 0.6);
@@ -47,33 +50,33 @@ export function AlphaValueDemo() {
       />
 
       <div
-        className="af-value flex flex-col gap-3"
+        className={cn('af-value', styles.samples)}
         style={{
           '--alpha-percent': `${String(percent)}%`,
           '--alpha-ratio': String(percent / 100),
         }}
       >
-        <div className="flex flex-col gap-1">
+        <div className={styles.sample}>
           <Code>var(--origin)</Code>
-          <div className="af-checker overflow-hidden rounded-md">
-            <div className="af-value-origin h-12" />
+          <div className={cn('af-checker', styles.swatch)}>
+            <div className={cn('af-value-origin', styles.bar)} />
           </div>
         </div>
-        <div className="flex flex-col gap-1">
+        <div className={styles.sample}>
           <Code>{`alpha(from var(--origin) / ${String(percent)}%)`}</Code>
-          <div className="af-checker overflow-hidden rounded-md">
-            <div className="af-value-fixed h-12" />
+          <div className={cn('af-checker', styles.swatch)}>
+            <div className={cn('af-value-fixed', styles.bar)} />
           </div>
         </div>
-        <div className="flex flex-col gap-1">
+        <div className={styles.sample}>
           <Code>{`alpha(from var(--origin) / calc(alpha * ${String(percent / 100)}))`}</Code>
-          <div className="af-checker overflow-hidden rounded-md">
-            <div className="af-value-relative h-12" />
+          <div className={cn('af-checker', styles.swatch)}>
+            <div className={cn('af-value-relative', styles.bar)} />
           </div>
         </div>
       </div>
 
-      <p className="text-fg-mute text-sm">
+      <p className={styles.note}>
         固定値は元の不透明度に関係なくスライダーの値になります。相対値は元の0.6に係数を掛けるので、同じスライダーの値でも常に固定値より薄くなります。
       </p>
     </div>

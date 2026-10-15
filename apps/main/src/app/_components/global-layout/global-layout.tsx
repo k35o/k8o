@@ -9,25 +9,27 @@ import { Footer } from './footer';
 import { Header } from './header';
 import { HeaderActions } from './header-actions';
 
+import styles from './global-layout.module.css';
+
 const EMPTY_MIN_VERSIONS: BrowserMinVersions = {};
 
 export const GlobalLayout: FC<{
   children: ReactNode;
   minVersions?: BrowserMinVersions;
 }> = ({ children, minVersions = EMPTY_MIN_VERSIONS }) => (
-  <div className="flex min-h-svh flex-col">
+  <div className={styles.root}>
     <Background />
     <BrowserSupportNotice minVersions={minVersions} />
     <Header>
       <Link href="/">
         <h1>
-          <span className="sr-only">k8o</span>
-          <Logo className="h-10" />
+          <span className={styles.srOnly}>k8o</span>
+          <Logo className={styles.logo} />
         </h1>
       </Link>
       <HeaderActions />
     </Header>
-    <main className="flex grow justify-center px-4 pt-10 pb-4">{children}</main>
+    <main className={styles.main}>{children}</main>
     <Footer />
   </div>
 );

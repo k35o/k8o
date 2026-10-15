@@ -16,6 +16,8 @@ import { TemplateSelector } from '../template-selector';
 import { UiPreview } from '../ui-preview';
 import { useRadiusState } from './use-radius-state';
 
+import styles from './radius-maker.module.css';
+
 const SHAPE_OPTIONS = CORNER_SHAPES.map((shape) => ({
   value: shape,
   label: CORNER_SHAPE_LABELS[shape],
@@ -40,9 +42,9 @@ export const RadiusMaker: FC<{
   } = useRadiusState();
 
   return (
-    <div className="flex flex-col gap-6">
+    <div className={styles.root}>
       <Card>
-        <div className="flex flex-col gap-6 p-5 sm:p-6">
+        <div className={styles.editor}>
           <RadiusCanvas
             corners={corners}
             height={height}
@@ -52,7 +54,7 @@ export const RadiusMaker: FC<{
           />
           <OutputPanel corners={corners} shape={shape} />
           <TemplateSelector corners={corners} onSelect={setCorners} />
-          <div className="grid gap-4 sm:grid-cols-3">
+          <div className={styles.sizeFields}>
             <FormControl
               label="幅(px)"
               renderInput={(props) => (
@@ -102,15 +104,15 @@ export const RadiusMaker: FC<{
           )}
         </div>
       </Card>
-      <div className="grid gap-6 sm:grid-cols-2 sm:items-start">
+      <div className={styles.panels}>
         <Card>
-          <div className="flex flex-col gap-3 p-5">
-            <p className="text-fg-base text-sm font-bold">数値で調整する</p>
+          <div className={styles.inputs}>
+            <p className={styles.inputsTitle}>数値で調整する</p>
             <CornerInputs corners={corners} onChangeValue={setCornerValue} />
           </div>
         </Card>
         <Card>
-          <div className="p-5">
+          <div className={styles.preview}>
             <UiPreview corners={corners} shape={shape} />
           </div>
         </Card>

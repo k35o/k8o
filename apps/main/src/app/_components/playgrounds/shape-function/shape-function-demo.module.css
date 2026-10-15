@@ -1,0 +1,51 @@
+.root {
+  display: flex;
+  flex-direction: column;
+  gap: calc(var(--spacing) * 6);
+}
+
+.comparison {
+  display: flex;
+  flex-direction: column;
+  gap: calc(var(--spacing) * 6);
+
+  @media (width >= 40rem) {
+    flex-direction: row;
+    gap: calc(var(--spacing) * 8);
+  }
+}
+
+.panel {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: calc(var(--spacing) * 2);
+}
+
+.heading {
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-sm);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-fg-base);
+}
+
+.frame {
+  overflow: hidden;
+  border-radius: var(--radius-md);
+  background-color: var(--color-bg-mute);
+}
+
+.shape {
+  height: calc(var(--spacing) * 32);
+  background-image: linear-gradient(
+    to bottom right in oklab,
+    var(--color-group-secondary),
+    var(--color-group-quaternary)
+  );
+}
+
+.note {
+  font-size: var(--font-size-xs);
+  line-height: var(--line-height-xs);
+  color: var(--color-fg-mute);
+}

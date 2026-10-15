@@ -1,11 +1,13 @@
+import styles from './popover-demo.module.css';
+
 export function PopoverDemo() {
   return (
-    <div className="space-y-4">
-      <div className="flex gap-4">
-        <div className="space-y-2">
-          <p className="text-fg-mute text-sm">Invoker Commands API</p>
+    <div>
+      <div className={styles.controls}>
+        <div className={styles.control}>
+          <p className={styles.label}>Invoker Commands API</p>
           <button
-            className="bg-primary-bg text-primary-fg rounded-md px-4 py-2"
+            className={styles.button}
             command="toggle-popover"
             commandfor="demo-popover"
             type="button"
@@ -13,10 +15,10 @@ export function PopoverDemo() {
             メニュー
           </button>
         </div>
-        <div className="space-y-2">
-          <p className="text-fg-mute text-sm">Popover API</p>
+        <div className={styles.control}>
+          <p className={styles.label}>Popover API</p>
           <button
-            className="bg-primary-bg text-primary-fg rounded-md px-4 py-2"
+            className={styles.button}
             popoverTarget="demo-popover"
             popoverTargetAction="toggle"
             type="button"
@@ -26,13 +28,9 @@ export function PopoverDemo() {
         </div>
       </div>
 
-      <div
-        className="bg-bg-base inset-auto top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 rounded-lg p-4 shadow-md"
-        id="demo-popover"
-        popover=""
-      >
-        <p className="text-fg-base">Popoverの内容</p>
-        <p className="text-fg-mute text-sm">
+      <div className={styles.popover} id="demo-popover" popover="">
+        <p className={styles.title}>Popoverの内容</p>
+        <p className={styles.description}>
           どちらのボタンでも同じPopoverを操作できます。
         </p>
       </div>

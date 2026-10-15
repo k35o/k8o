@@ -1,0 +1,3 @@
+.root {
+  padding-block: calc(var(--spacing) * 10);
+}

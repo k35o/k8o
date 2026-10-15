@@ -12,6 +12,8 @@ import { useWritingMode } from '../writing-mode/writing-mode-context';
 import { ProgressBar } from './progress-bar';
 import { useActiveHeading } from './use-active-heading';
 
+import styles from './side-rail.module.css';
+
 type TocNode = {
   text: string;
   children?: readonly TocNode[];
@@ -25,19 +27,11 @@ const RailItem: FC<{
 }> = ({ node, depth, activeId, onNavigate }) => {
   const isActive = activeId === node.text;
   return (
-    <li className={cn(depth === 1 && 'not-first:mt-1')}>
+    <li>
       <Link
         aria-current={isActive ? 'location' : undefined}
-        className={cn(
-          'block rounded-r-lg py-1.5 pr-2 transition-colors duration-150 ease-out',
-          'focus-visible:ring-border-info focus-visible:outline-none focus-visible:ring-2',
-          depth === 1 && 'pl-5 text-sm',
-          depth === 2 && 'pl-11 text-xs',
-          depth === 3 && 'pl-14 text-xs',
-          isActive
-            ? 'text-fg-base font-bold'
-            : 'text-fg-mute hover:text-fg-base',
-        )}
+        className={styles.link}
+        data-depth={depth}
         href={`#${node.text}`}
         onClick={() => {
           onNavigate(node.text);
@@ -132,43 +126,32 @@ export const TableOfContentsSideRail: FC<{
     : `${(marker ? marker.top + marker.height : 0).toString()}px`;
 
   return (
-    <nav aria-label="もくじ" className={cn('w-64 shrink-0', className)}>
-      <div
-        className="bg-bg-raised sticky top-24 max-h-[calc(100vh-8rem)] overflow-y-auto overscroll-contain rounded-xl p-4 shadow-md"
-        ref={scrollerRef}
-      >
-        <div className="mb-4 flex items-center justify-between gap-2">
-          <p
-            className={cn(
-              'text-sm font-bold transition-colors duration-150 ease-out',
-              isComplete ? 'text-primary-fg' : 'text-fg-base',
-            )}
-          >
+    <nav aria-label="もくじ" className={cn(styles.root, className)}>
+      <div className={styles.panel} ref={scrollerRef}>
+        <div className={styles.heading}>
+          <p className={styles.title} data-complete={isComplete}>
             {isComplete ? 'さいごまで よみました' : 'もくじ'}
           </p>
           <ProgressBar activeId={activeId} headingTree={headingTree} />
         </div>
-        <div className="relative" ref={listRef}>
+        <div className={styles.tree} ref={listRef}>
+          <div aria-hidden="true" className={styles.rail} />
           <div
             aria-hidden="true"
-            className="bg-border-mute absolute inset-y-0 left-0 w-px"
-          />
-          <div
-            aria-hidden="true"
-            className="bg-primary-bg absolute top-0 left-0 w-px transition-[height] duration-300 ease-out"
+            className={styles.trail}
             style={{ height: trailHeight }}
           />
           {marker && (
             <div
               aria-hidden="true"
-              className="bg-primary-bg absolute -left-px w-0.75 rounded-full transition-[transform,height] duration-300 ease-out"
+              className={styles.marker}
               style={{
                 height: `${marker.height.toString()}px`,
                 transform: `translateY(${marker.top.toString()}px)`,
               }}
             />
           )}
-          <ul className="flex flex-col">
+          <ul className={styles.list}>
             {headingTree.children.map((node) => (
               <RailItem
                 activeId={activeId}

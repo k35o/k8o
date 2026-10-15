@@ -1,0 +1,10 @@
+.root {
+  display: flex;
+  flex-direction: column;
+  gap: calc(var(--spacing) * 6);
+}
+
+.sample {
+  font-size: var(--font-size-lg);
+  line-height: var(--line-height-lg);
+}

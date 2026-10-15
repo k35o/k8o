@@ -3,15 +3,14 @@ import { expect, within } from 'storybook/test';
 import preview from '../../../../../../.storybook/preview';
 import { Cover } from './cover';
 
+import styles from './cover.stories.module.css';
+
 const meta = preview.meta({
   title: 'app/slides/slide-mdx/cover',
   component: Cover,
   decorators: [
     (Story) => (
-      <div
-        className="bg-bg-base flex h-svh w-full flex-col"
-        style={{ containerType: 'inline-size' }}
-      >
+      <div className={styles.frame}>
         <Story />
       </div>
     ),

@@ -1,0 +1,15 @@
+.root {
+  display: grid;
+  height: 100%;
+  gap: calc(var(--spacing) * 4);
+  padding-block: calc(var(--spacing) * 10);
+}
+
+.note {
+  text-align: right;
+}
+
+.noteText {
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-sm);
+}

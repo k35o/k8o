@@ -1,0 +1,69 @@
+.root {
+  display: flex;
+  flex-direction: column;
+  gap: calc(var(--spacing) * 4);
+}
+
+.status {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.state {
+  display: flex;
+  align-items: center;
+  gap: calc(var(--spacing) * 2);
+}
+
+.dot {
+  width: calc(var(--spacing) * 3);
+  height: calc(var(--spacing) * 3);
+  border-radius: var(--radius-full);
+  background-color: var(--color-border-success);
+}
+
+.caption {
+  color: var(--color-fg-mute);
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-sm);
+}
+
+.stage {
+  display: flex;
+  justify-content: center;
+}
+
+.card {
+  width: calc(var(--spacing) * 64);
+  height: calc(var(--spacing) * 48);
+  border-radius: var(--radius-xl);
+}
+
+.actions {
+  display: flex;
+  justify-content: center;
+  gap: calc(var(--spacing) * 4);
+}
+
+.pager {
+  display: flex;
+  justify-content: center;
+  gap: calc(var(--spacing) * 2);
+}
+
+.pagerDot {
+  width: calc(var(--spacing) * 2);
+  height: calc(var(--spacing) * 2);
+  border-radius: var(--radius-full);
+  background-color: var(--color-border-base);
+  transition-property:
+    color, background-color, border-color, outline-color, text-decoration-color,
+    fill, stroke;
+  transition-duration: var(--duration-fast);
+  transition-timing-function: var(--easing-in-out);
+
+  &[data-active='true'] {
+    background-color: var(--color-fg-base);
+  }
+}

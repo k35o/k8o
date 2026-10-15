@@ -12,6 +12,8 @@ import { RelatedGroups } from '../related-groups';
 import { RelationResults } from '../relation-results';
 import { SpecialContentNotice } from '../special-content-notice';
 
+import styles from './relation-section.module.css';
+
 type Direction = 'child' | 'parent';
 
 type RelationSectionProps = {
@@ -92,10 +94,10 @@ export const RelationSection: FC<RelationSectionProps> = ({
 
   if (isSpecialChild) {
     return (
-      <section className="flex flex-col">
+      <section className={styles.root}>
         <SpecialContentNotice element={element} />
         {items.length > 0 && (
-          <div className="mt-3">
+          <div className={styles.groups}>
             <RelatedGroups items={items} onSelect={onSelect} />
           </div>
         )}
@@ -105,8 +107,8 @@ export const RelationSection: FC<RelationSectionProps> = ({
 
   if (isRootParent) {
     return (
-      <section className="flex flex-col">
-        <p className="text-fg-mute text-sm">
+      <section className={styles.root}>
+        <p className={styles.note}>
           <Code>{`<${element.tag}>`}</Code> はルート要素（親を持ちません）
         </p>
       </section>
@@ -114,8 +116,8 @@ export const RelationSection: FC<RelationSectionProps> = ({
   }
 
   return (
-    <section className="flex flex-col">
-      <div className="mb-3">
+    <section className={styles.root}>
+      <div className={styles.search}>
         <FormControl
           label={LABEL[direction]}
           renderInput={(props) => (
@@ -131,12 +133,12 @@ export const RelationSection: FC<RelationSectionProps> = ({
         />
       </div>
       {invalidTarget !== undefined && (
-        <p className="border-border-mute bg-bg-subtle text-fg-base mb-3 rounded-md border px-3 py-2 text-sm leading-relaxed">
-          <span className="text-fg-error font-medium">×</span> {invalidNote}
+        <p className={styles.notice}>
+          <span className={styles.noticeMark}>×</span> {invalidNote}
         </p>
       )}
       {isSelfQuery && (
-        <p className="border-border-mute bg-bg-subtle text-fg-base mb-3 rounded-md border px-3 py-2 text-sm leading-relaxed">
+        <p className={styles.notice}>
           <Code>{`<${element.tag}>`}</Code>{' '}
           {selfNest.allowed
             ? `は自分自身を入れ子にできます${selfNest.conditional ? '（条件付き）' : ''}。`
@@ -149,7 +151,7 @@ export const RelationSection: FC<RelationSectionProps> = ({
         onSelect={onSelect}
       />
       {filtered.length === 0 && !isInvalid && !isSelfQuery && (
-        <p className="text-fg-mute text-sm">該当なし</p>
+        <p className={styles.note}>該当なし</p>
       )}
     </section>
   );

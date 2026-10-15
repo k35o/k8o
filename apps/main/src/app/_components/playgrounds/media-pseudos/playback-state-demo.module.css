@@ -1,0 +1,65 @@
+.root {
+  display: flex;
+  flex-direction: column;
+  gap: calc(var(--spacing) * 6);
+}
+
+.player {
+  display: flex;
+  flex-direction: column;
+  gap: calc(var(--spacing) * 4);
+  border-radius: var(--radius-xl);
+  padding: calc(var(--spacing) * 4);
+}
+
+.bars {
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  gap: calc(var(--spacing) * 2);
+  height: calc(var(--spacing) * 16);
+}
+
+.bar {
+  display: block;
+  width: calc(var(--spacing) * 3);
+  height: 100%;
+  border-radius: var(--radius-full);
+  background-color: var(--color-primary-fg);
+}
+
+.audio {
+  width: 100%;
+}
+
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: calc(var(--spacing) * 2);
+  margin: 0;
+  padding: 0;
+  list-style-type: none;
+}
+
+.chip {
+  border-radius: var(--radius-full);
+  background-color: var(--color-bg-subtle);
+  padding-inline: calc(var(--spacing) * 3);
+  padding-block: var(--spacing);
+  font-family: var(--font-family-mono);
+  font-size: var(--font-size-xs);
+  line-height: var(--line-height-xs);
+  color: var(--color-fg-base);
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: calc(var(--spacing) * 3);
+}
+
+.note {
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-sm);
+  color: var(--color-fg-mute);
+}

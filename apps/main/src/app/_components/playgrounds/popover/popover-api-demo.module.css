@@ -1,0 +1,27 @@
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: calc(var(--spacing) * 2);
+}
+
+.popover {
+  max-width: calc(100% / 3);
+  margin: auto;
+  border-radius: var(--radius-md);
+  padding: calc(var(--spacing) * 4);
+  opacity: 0;
+  /* better-css-modules-disable-next-line tokens/duration -- Popover の開閉フェードを見せるデモなので 500ms を保つ */
+  transition: opacity 500ms var(--easing-in-out);
+
+  &::backdrop {
+    background-color: var(--color-back-drop);
+  }
+
+  &:popover-open {
+    opacity: 1;
+
+    @starting-style {
+      opacity: 0;
+    }
+  }
+}

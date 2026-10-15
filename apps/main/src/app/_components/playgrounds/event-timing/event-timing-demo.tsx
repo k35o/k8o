@@ -9,6 +9,8 @@ import {
   useSyncExternalStore,
 } from 'react';
 
+import styles from './event-timing-demo.module.css';
+
 const isPerformanceEventTiming = (
   entry: PerformanceEntry,
 ): entry is PerformanceEventTiming => entry.entryType === 'event';
@@ -130,7 +132,7 @@ export function EventTimingDemo() {
   if (!isSupported) {
     return (
       <div>
-        <p className="text-fg-mute text-sm">
+        <p className={styles.note}>
           このブラウザはEvent Timing APIをサポートしていません。
         </p>
       </div>
@@ -140,52 +142,49 @@ export function EventTimingDemo() {
   const latestEntry = entries[0];
 
   return (
-    <div className="space-y-4">
-      <div className="flex flex-wrap items-center gap-3">
+    <div className={styles.root}>
+      <div className={styles.controls}>
         <Button onClick={handleClick}>クリックして計測</Button>
         <Button color="base" onClick={handleReset} size="sm" variant="outline">
           リセット
         </Button>
-        <span className="text-fg-mute text-sm">
-          計測回数:{' '}
-          <span className="text-fg-base font-medium">{entries.length}</span>
+        <span className={styles.count}>
+          計測回数: <span className={styles.countValue}>{entries.length}</span>
         </span>
       </div>
 
       {latestEntry && (
         <div>
-          <div className="mb-3 flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <h4 className="text-fg-base font-medium">最新の計測結果</h4>
+          <div className={styles.latestHeader}>
+            <div className={styles.latestTitle}>
+              <h4 className={styles.latestHeading}>最新の計測結果</h4>
               <Code>{latestEntry.name}</Code>
             </div>
-            <span className="text-fg-mute text-xs">
-              {latestEntry.timestamp}
-            </span>
+            <span className={styles.timestamp}>{latestEntry.timestamp}</span>
           </div>
-          <div className="mb-4">
-            <div className="mb-1 flex items-baseline gap-2">
-              <span className="text-primary-fg text-2xl font-bold">
+          <div className={styles.duration}>
+            <div className={styles.durationRow}>
+              <span className={styles.durationValue}>
                 {latestEntry.duration.toFixed(0)}
               </span>
-              <span className="text-fg-mute text-sm">ms (duration)</span>
+              <span className={styles.durationUnit}>ms (duration)</span>
             </div>
           </div>
-          <div className="space-y-2">
+          <div className={styles.bars}>
             <TimingBar
-              color="bg-fg-info"
+              tone="info"
               label="入力遅延"
               maxValue={latestEntry.duration}
               value={latestEntry.inputDelay}
             />
             <TimingBar
-              color="bg-fg-warning"
+              tone="warning"
               label="処理時間"
               maxValue={latestEntry.duration}
               value={latestEntry.processingTime}
             />
             <TimingBar
-              color="bg-fg-success"
+              tone="success"
               label="描画遅延"
               maxValue={latestEntry.duration}
               value={latestEntry.presentationDelay}
@@ -195,29 +194,26 @@ export function EventTimingDemo() {
       )}
 
       {entries.length > 1 && (
-        <div className="space-y-2">
-          <h4 className="text-fg-mute text-sm font-medium">履歴</h4>
-          <div className="space-y-1">
+        <div className={styles.history}>
+          <h4 className={styles.historyHeading}>履歴</h4>
+          <div className={styles.historyList}>
             {entries.slice(1).map((entry) => (
-              <div
-                className="flex items-center justify-between py-1 text-sm"
-                key={entry.id}
-              >
-                <div className="flex items-center gap-2">
-                  <span className="text-fg-mute">{entry.timestamp}</span>
+              <div className={styles.historyRow} key={entry.id}>
+                <div className={styles.historyName}>
+                  <span className={styles.historyTime}>{entry.timestamp}</span>
                   <Code>{entry.name}</Code>
                 </div>
-                <div className="flex items-center gap-3">
-                  <span className="text-fg-mute text-xs">
+                <div className={styles.historyMetrics}>
+                  <span className={styles.metric}>
                     入力: {entry.inputDelay.toFixed(1)}ms
                   </span>
-                  <span className="text-fg-mute text-xs">
+                  <span className={styles.metric}>
                     処理: {entry.processingTime.toFixed(1)}ms
                   </span>
-                  <span className="text-fg-mute text-xs">
+                  <span className={styles.metric}>
                     描画: {entry.presentationDelay.toFixed(1)}ms
                   </span>
-                  <span className="text-fg-base font-medium">
+                  <span className={styles.historyDuration}>
                     {entry.duration.toFixed(0)}ms
                   </span>
                 </div>
@@ -227,7 +223,7 @@ export function EventTimingDemo() {
         </div>
       )}
 
-      <p className="text-fg-mute text-sm">
+      <p className={styles.note}>
         ボタンをクリックすると、Event Timing
         APIを使ってイベントの処理時間を計測します。
         約50msの処理を意図的に行うため、処理時間が可視化されます。
@@ -236,31 +232,32 @@ export function EventTimingDemo() {
   );
 }
 
+type TimingTone = 'info' | 'warning' | 'success';
+
 function TimingBar({
   label,
   value,
   maxValue,
-  color,
+  tone,
 }: {
   label: string;
   value: number;
   maxValue: number;
-  color: string;
+  tone: TimingTone;
 }) {
   const percentage = maxValue > 0 ? Math.min(100, (value / maxValue) * 100) : 0;
 
   return (
-    <div className="flex items-center gap-3">
-      <span className="text-fg-mute w-16 shrink-0 text-xs">{label}</span>
-      <div className="bg-bg-mute relative h-4 flex-1 overflow-hidden rounded-full">
+    <div className={styles.bar}>
+      <span className={styles.barLabel}>{label}</span>
+      <div className={styles.barTrack}>
         <div
-          className={`absolute inset-y-0 left-0 rounded-full ${color} transition-all duration-300`}
+          className={styles.barFill}
+          data-tone={tone}
           style={{ width: `${percentage}%` }}
         />
       </div>
-      <span className="text-fg-base w-16 shrink-0 text-right text-xs font-medium">
-        {value.toFixed(1)}ms
-      </span>
+      <span className={styles.barValue}>{value.toFixed(1)}ms</span>
     </div>
   );
 }

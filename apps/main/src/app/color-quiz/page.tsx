@@ -1,8 +1,10 @@
 import { ColorQuiz } from './_components/color-quiz';
 
+import styles from './page.module.css';
+
 export default function Page() {
   return (
-    <section className="bg-bg-raised rounded-xl p-5 sm:p-6">
+    <section className={styles.root}>
       <ColorQuiz />
     </section>
   );

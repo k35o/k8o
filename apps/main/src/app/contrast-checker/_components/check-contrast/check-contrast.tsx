@@ -10,6 +10,8 @@ import { ApcaResultTable } from '../apca-result-table';
 import { ColorPallet } from '../color-pallet';
 import { ResultTable } from '../result-table';
 
+import styles from './check-contrast.module.css';
+
 const WCAG_THRESHOLDS = {
   AA_LARGE_TEXT: 3,
   AAA_LARGE_TEXT: 4.5,
@@ -44,9 +46,9 @@ export const CheckContrast: FC = () => {
   }, [contrast, apcaLc]);
 
   return (
-    <div className="flex flex-col gap-8">
-      <output className="sr-only">{announcement}</output>
-      <div className="grid grid-cols-2 gap-4">
+    <div className={styles.root}>
+      <output className={styles.srOnly}>{announcement}</output>
+      <div className={styles.palettes}>
         <ColorPallet color={baseColor} label="背景色" setColor={setBaseColor} />
         <ColorPallet
           color={compareColor}
@@ -54,13 +56,9 @@ export const CheckContrast: FC = () => {
           setColor={setCompareColor}
         />
       </div>
-      <div className="flex flex-col items-center justify-center gap-1 sm:flex-row sm:gap-6">
-        <p className="sm:text-md text-center text-sm font-medium">
-          コントラスト比 {contrast.toFixed(2)}:1
-        </p>
-        <p className="sm:text-md text-center text-sm font-medium">
-          APCA Lc {apcaLc.toFixed(1)}
-        </p>
+      <div className={styles.scores}>
+        <p className={styles.score}>コントラスト比 {contrast.toFixed(2)}:1</p>
+        <p className={styles.score}>APCA Lc {apcaLc.toFixed(1)}</p>
       </div>
       {contrast < WCAG_THRESHOLDS.LOW_VISIBILITY_WARNING && (
         <Alert
@@ -70,20 +68,17 @@ export const CheckContrast: FC = () => {
       )}
       <section
         aria-label="選択した色の組み合わせのプレビュー"
-        className="flex flex-col items-center justify-center gap-3 rounded-xl p-6 md:p-8"
+        className={styles.preview}
         style={{ backgroundColor: baseColor }}
       >
-        <p
-          className="text-xl font-bold md:text-3xl"
-          style={{ color: compareColor }}
-        >
+        <p className={styles.previewTitle} style={{ color: compareColor }}>
           テキストのプレビュー
         </p>
-        <p className="md:text-md text-xs" style={{ color: compareColor }}>
+        <p className={styles.previewText} style={{ color: compareColor }}>
           この文字と背景色の組み合わせを確認できます
         </p>
       </section>
-      <section className="flex flex-col gap-3">
+      <section className={styles.section}>
         <Heading level="h3">WCAG 2.2による判定</Heading>
         <ResultTable
           baseColor={baseColor}
@@ -94,7 +89,7 @@ export const CheckContrast: FC = () => {
           isInvalidAaNormalText={isInvalidAaNormalText}
         />
       </section>
-      <section className="flex flex-col gap-3">
+      <section className={styles.section}>
         <Heading level="h3">APCAによる判定</Heading>
         <ApcaResultTable lc={apcaLc} />
       </section>

@@ -1,5 +1,4 @@
 import { resetStateRegistry } from '@k8ordo/state';
-import { cn } from '@repo/helpers/cn';
 import addonA11y from '@storybook/addon-a11y';
 // root entry ('@storybook/addon-docs') は 'mdx/types' への module augmentation で
 // @types/mdx の JSX 参照を React の JSX.Element に差し替え、アプリ側の
@@ -24,6 +23,7 @@ import { mPlus2 } from '../src/app/_styles/font';
 import { handlers } from '../src/mocks/handlers';
 
 import '../src/app/_styles/globals.css';
+import './preview.css';
 
 sb.mock(import('./../src/app/blog/_components/link-card/metadata.ts'));
 sb.mock(import('./../src/features/blog/interface/queries.ts'));
@@ -107,15 +107,9 @@ export default definePreview({
       return (
         <AppProvider>
           <Script id="storybook-body-class">
-            {`document.body.classList.add(${cn(
-              mPlus2.variable,
-              'text-fg-base font-medium font-m-plus-2',
-            )
-              .split(' ')
-              .map((c) => `'${c}'`)
-              .join(', ')})`}
+            {`document.body.classList.add('${mPlus2.variable}')`}
           </Script>
-          <div className="min-h-svh p-6">
+          <div className="story-canvas">
             <Background />
             {/* 本物の NuqsAdapter より内側に挟み、VRT 並列実行での Story 間 URL 状態リークを防ぐ */}
             <NuqsTestingAdapter>

@@ -1,13 +1,16 @@
 'use client';
 
 import { Code, FormControl, Slider } from '@k8ordo/ui';
+import { cn } from '@repo/helpers/cn';
 import { useState } from 'react';
+
+import styles from './token-derivation-demo.module.css';
 
 export function TokenDerivationDemo() {
   const [hue, setHue] = useState(270);
 
   return (
-    <div className="flex flex-col gap-6">
+    <div className={styles.root}>
       <style>{`
         .af-token {
           --brand: oklch(55% 0.22 var(--hue));
@@ -39,18 +42,16 @@ export function TokenDerivationDemo() {
       />
 
       <div
-        className="af-token flex flex-wrap items-center gap-4"
+        className={cn('af-token', styles.samples)}
         style={{ '--hue': String(hue) }}
       >
-        <span className="af-token-badge rounded-full px-3 py-1 text-sm font-bold">
+        <span className={cn('af-token-badge', styles.badge)}>
           --brand-subtle
         </span>
-        <span className="af-token-input text-fg-base rounded-md px-4 py-2 text-sm">
-          --brand-glow
-        </span>
+        <span className={cn('af-token-input', styles.input)}>--brand-glow</span>
       </div>
 
-      <p className="text-fg-mute text-sm">
+      <p className={styles.note}>
         <Code>--brand</Code>
         の色相だけを動かしています。バッジの背景と入力欄の光彩は
         <Code>alpha()</Code>

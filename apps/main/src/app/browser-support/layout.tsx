@@ -4,6 +4,8 @@ import { buildPageMetadata } from '@/shared/site/build-page-metadata';
 
 import { BrowserSupportHelpDialog } from './_components/browser-support-help-dialog';
 
+import styles from './layout.module.css';
+
 const description =
   'Webプラットフォーム機能のブラウザ対応状況を一覧します。すべての対象ブラウザで使える機能（Widely / Newly）に加えて、まだ一部ブラウザのみ対応の新しい機能（先取り）も、ブラウザ別の対応状況つきで確認できます。';
 
@@ -15,9 +17,9 @@ export const metadata = buildPageMetadata({
 
 export default function Layout({ children }: LayoutProps<'/browser-support'>) {
   return (
-    <div className="mx-auto w-full max-w-7xl">
-      <div className="flex flex-col gap-6">
-        <div className="flex items-center gap-2">
+    <div className={styles.root}>
+      <div className={styles.content}>
+        <div className={styles.titleRow}>
           <Heading level="h2">Browser Support</Heading>
           <BrowserSupportHelpDialog />
         </div>

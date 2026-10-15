@@ -19,6 +19,8 @@ import { matchesFeatureFilters } from '../_utils/matches-feature-filters';
 import type { StatusVisibility } from '../_utils/matches-feature-filters';
 import { browserSupportListParsers } from '../_utils/search-params';
 
+import styles from './browser-support-feature-list.module.css';
+
 const STATUS_META: Record<
   SupportStatus,
   { label: string; tone: 'success' | 'info' | 'warning' }
@@ -41,16 +43,13 @@ const getAvailableYears = (features: BrowserSupportFeature[]): string[] => {
 const BrowserSupport: FC<{ feature: BrowserSupportFeature }> = ({
   feature,
 }) => (
-  <ul className="mt-0.5 flex flex-wrap gap-x-3 gap-y-0.5">
+  <ul className={styles.support}>
     {toBrowserFamilies(feature.support).map((family) => (
-      <li className="flex items-center gap-1 text-xs" key={family.label}>
-        <span className="text-fg-mute">{family.label}</span>
+      <li className={styles.supportItem} key={family.label}>
+        <span className={styles.supportLabel}>{family.label}</span>
         <span
-          className={
-            family.supported
-              ? 'text-fg-success font-mono'
-              : 'text-fg-mute font-mono'
-          }
+          className={styles.supportVersion}
+          data-supported={family.supported}
         >
           {family.supported ? (family.version ?? '対応') : '—'}
         </span>
@@ -88,40 +87,31 @@ const FeatureList: FC<{
   );
 
   if (filtered.length === 0) {
-    return (
-      <p className="text-fg-mute py-12 text-center text-sm">
-        該当する機能が見つかりません
-      </p>
-    );
+    return <p className={styles.empty}>該当する機能が見つかりません</p>;
   }
 
   return (
-    <ul className="divide-border-base divide-y">
+    <ul>
       {filtered.map((feature) => {
         const blog = blogMap[feature.featureId];
         const meta = STATUS_META[feature.status];
         return (
-          <li
-            className="flex items-start gap-3 px-1 py-3 sm:gap-4"
-            key={feature.featureId}
-          >
+          <li className={styles.item} key={feature.featureId}>
             <Badge size="sm" label={meta.label} tone={meta.tone} />
-            <div className="flex min-w-0 flex-1 flex-col gap-0.5">
-              <span className="text-sm leading-relaxed">{feature.name}</span>
-              <span className="text-fg-mute font-mono text-xs">
-                {feature.featureId}
-              </span>
+            <div className={styles.body}>
+              <span className={styles.name}>{feature.name}</span>
+              <span className={styles.featureId}>{feature.featureId}</span>
               <BrowserSupport feature={feature} />
             </div>
             {blog && (
               <Link
-                className="text-primary-fg shrink-0 text-xs transition-colors duration-150 ease-out hover:underline"
+                className={styles.blogLink}
                 href={`/blog/${blog.slug}` as Route}
               >
                 Blog
               </Link>
             )}
-            <span className="text-fg-mute hidden shrink-0 text-xs sm:block">
+            <span className={styles.date}>
               {formatDate(new Date(feature.resolvedDate), 'yyyy/MM/dd')}
             </span>
           </li>
@@ -184,9 +174,9 @@ export const BrowserSupportFeatureList: FC<{
     : availableYears[0];
 
   return (
-    <section className="bg-bg-raised flex flex-col gap-6 rounded-xl p-5 sm:p-6">
-      <div className="flex flex-col gap-4">
-        <div className="sm:max-w-64">
+    <section className={styles.root}>
+      <div className={styles.filters}>
+        <div className={styles.search}>
           <FormControl
             label="検索"
             renderInput={(props) => (
@@ -201,8 +191,8 @@ export const BrowserSupportFeatureList: FC<{
             )}
           />
         </div>
-        <div className="flex flex-wrap items-center gap-x-8 gap-y-4 text-sm">
-          <div className="flex flex-wrap gap-4">
+        <div className={styles.toggles}>
+          <div className={styles.statusToggles}>
             <Checkbox
               label="Widely"
               onChange={() => {
@@ -253,7 +243,7 @@ export const BrowserSupportFeatureList: FC<{
               return (
                 <Tabs.Tab id={year} key={year}>
                   {year}
-                  <span className="text-fg-mute ml-1 text-xs">{count}</span>
+                  <span className={styles.count}>{count}</span>
                 </Tabs.Tab>
               );
             })}

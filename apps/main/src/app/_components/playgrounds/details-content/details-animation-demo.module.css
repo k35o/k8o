@@ -1,5 +1,12 @@
+.root {
+  display: flex;
+  flex-direction: column;
+  gap: calc(var(--spacing) * 8);
+}
+
 .detailsAnimation::details-content {
   interpolate-size: allow-keywords;
+  /* better-css-modules-disable-next-line tokens/duration, tokens/easing -- 記事に載せた CSS と同じ値で動かす */
   transition:
     height 0.5s ease,
     content-visibility 0.5s ease allow-discrete;
@@ -9,4 +16,16 @@
 
 .detailsAnimation[open]::details-content {
   height: auto;
+}
+
+.summary {
+  color: var(--color-fg-base);
+  cursor: pointer;
+  font-weight: var(--font-weight-bold);
+}
+
+.note {
+  color: var(--color-fg-mute);
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-sm);
 }

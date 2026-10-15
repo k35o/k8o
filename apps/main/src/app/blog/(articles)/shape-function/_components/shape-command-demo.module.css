@@ -1,3 +1,23 @@
+.root {
+  overflow: hidden;
+  border-radius: var(--radius-md);
+  background-color: var(--color-bg-mute);
+}
+
+.narrow {
+  max-width: calc(var(--spacing) * 48);
+  margin-inline: auto;
+}
+
+.shape {
+  height: calc(var(--spacing) * 32);
+  background-image: linear-gradient(
+    to bottom right in oklab,
+    var(--color-group-primary),
+    var(--color-group-quaternary)
+  );
+}
+
 .line {
   clip-path: shape(
     from 0% 0%,
@@ -36,11 +56,11 @@
   clip-path: shape(from 50% 15%, arc to 50% 85% of 60px 55px cw, close);
 }
 
-.arc-large {
+.arcLarge {
   clip-path: shape(from 50% 15%, arc to 50% 85% of 60px 55px large cw, close);
 }
 
-.arc-rotate {
+.arcRotate {
   clip-path: shape(
     from 50% 15%,
     arc to 50% 85% of 80px 50px cw rotate 45deg,

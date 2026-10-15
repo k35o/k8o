@@ -1,10 +1,11 @@
 'use client';
 
 import { Alert, Checkbox } from '@k8ordo/ui';
-import { cn } from '@repo/helpers/cn';
 import { sleep } from '@repo/helpers/sleep';
 import { Suspense, use, useState } from 'react';
 import type { FC } from 'react';
+
+import styles from './suspense-list-demo.module.css';
 
 type DataItem = {
   cacheKey: 'key1' | 'key2' | 'key3' | 'key4';
@@ -23,11 +24,11 @@ export const SuspenseListDemo: FC = () => {
   const [data, setData] = useState(() => generateData());
   const [hasFallback, setHasFallback] = useState(true);
   const fallback = hasFallback ? (
-    <div className="text-fg-mute">Loading...</div>
+    <div className={styles.fallback}>Loading...</div>
   ) : null;
 
   return (
-    <div className="flex flex-col gap-6">
+    <div className={styles.root}>
       <Alert
         message="React v19.2、Nextjs v16で利用ができなくなったため、現在こちらの機能は利用できません。"
         tone="info"
@@ -55,19 +56,8 @@ const Data: FC<{
   const { cacheKey, getTime } = data;
   const resolvedTime = use(getTime);
   return (
-    <div className="flex items-center gap-2 py-2">
-      <span
-        className={cn(
-          'size-4 rounded-full',
-          cacheKey === 'key1'
-            ? 'bg-group-primary'
-            : cacheKey === 'key2'
-              ? 'bg-group-secondary'
-              : cacheKey === 'key3'
-                ? 'bg-group-tertiary'
-                : 'bg-group-quaternary',
-        )}
-      />
+    <div className={styles.item}>
+      <span className={styles.dot} data-cache-key={cacheKey} />
       <p>Cache Key: {cacheKey}</p>
       <p>Time: {resolvedTime}ms</p>
     </div>

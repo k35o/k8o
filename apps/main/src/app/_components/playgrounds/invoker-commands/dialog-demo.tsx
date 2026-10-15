@@ -1,8 +1,10 @@
+import styles from './dialog-demo.module.css';
+
 export function DialogDemo() {
   return (
-    <div className="space-y-4">
+    <div>
       <button
-        className="bg-primary-bg text-primary-fg rounded-md px-4 py-2"
+        className={styles.trigger}
         command="show-modal"
         commandfor="demo-dialog"
         type="button"
@@ -12,18 +14,18 @@ export function DialogDemo() {
 
       <dialog
         aria-label="デモダイアログ"
-        className="bg-bg-base backdrop:bg-back-drop m-auto rounded-lg p-6 shadow-md"
+        className={styles.dialog}
         id="demo-dialog"
       >
-        <div className="space-y-4">
-          <p className="text-fg-base">
+        <div className={styles.content}>
+          <p className={styles.message}>
             このDialogはInvoker Commands APIで開かれました。
           </p>
-          <p className="text-fg-mute text-sm">
+          <p className={styles.note}>
             JavaScriptを使わず、HTML属性だけで操作しています。
           </p>
           <button
-            className="bg-bg-mute text-fg-base hover:bg-bg-subtle rounded-md px-4 py-2"
+            className={styles.closeButton}
             command="close"
             commandfor="demo-dialog"
             type="button"

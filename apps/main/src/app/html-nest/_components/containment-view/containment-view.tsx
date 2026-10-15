@@ -13,6 +13,8 @@ import { specUrl } from '../../_utils/references';
 import { ElementPickerModal } from '../element-picker-modal';
 import { RelationSection } from '../relation-section';
 
+import styles from './containment-view.module.css';
+
 const TAB_IDS: ['child', 'parent'] = ['child', 'parent'];
 
 // content model 種別のバッジ表示ラベル。
@@ -43,14 +45,14 @@ export const ContainmentView: FC<ContainmentViewProps> = ({
   );
 
   return (
-    <div className="flex flex-col gap-4">
-      <div className="border-primary-border bg-primary-bg-subtle rounded-xl border p-4 sm:p-5">
-        <div className="mb-1.5 flex items-center justify-between gap-2">
-          <p className="text-primary-fg text-xs font-medium">選択中の要素</p>
+    <div className={styles.root}>
+      <div className={styles.selected}>
+        <div className={styles.selectedHeader}>
+          <p className={styles.selectedLabel}>選択中の要素</p>
           <ElementPickerModal onSelect={onSelect} />
         </div>
-        <div className="flex flex-wrap items-center gap-2.5">
-          <span className="text-2xl">
+        <div className={styles.badges}>
+          <span className={styles.tag}>
             <Code>{`<${element.tag}>`}</Code>
           </span>
           <Badge
@@ -77,12 +79,10 @@ export const ContainmentView: FC<ContainmentViewProps> = ({
             />
           ))}
         </div>
-        <p className="text-fg-mute mt-1.5 text-sm leading-relaxed">
-          {element.description}
-        </p>
-        <div className="mt-3 flex flex-wrap items-center gap-x-3 gap-y-1.5">
+        <p className={styles.description}>{element.description}</p>
+        <div className={styles.categories}>
           {element.categories.map((category) => (
-            <span className="text-fg-mute text-xs" key={category}>
+            <span className={styles.category} key={category}>
               {CONTENT_CATEGORY_LABEL[category]}
             </span>
           ))}
@@ -92,24 +92,20 @@ export const ContainmentView: FC<ContainmentViewProps> = ({
         </div>
       </div>
 
-      <div className="border-border-base bg-bg-base flex flex-col gap-4 rounded-xl border p-4 sm:p-5">
+      <div className={styles.relations}>
         <Tabs.Root defaultSelectedId="child" ids={TAB_IDS}>
           <Tabs.List label="子要素か親要素かを切り替え">
             <Tabs.Tab id="child">
               子要素にできるもの
-              <span className="text-fg-mute ml-1 text-xs">
-                {children.length}
-              </span>
+              <span className={styles.count}>{children.length}</span>
             </Tabs.Tab>
             <Tabs.Tab id="parent">
               親要素にできるもの
-              <span className="text-fg-mute ml-1 text-xs">
-                {parents.length}
-              </span>
+              <span className={styles.count}>{parents.length}</span>
             </Tabs.Tab>
           </Tabs.List>
           <Tabs.Panel id="child">
-            <div className="pt-4">
+            <div className={styles.panel}>
               <RelationSection
                 direction="child"
                 element={element}
@@ -120,7 +116,7 @@ export const ContainmentView: FC<ContainmentViewProps> = ({
             </div>
           </Tabs.Panel>
           <Tabs.Panel id="parent">
-            <div className="pt-4">
+            <div className={styles.panel}>
               <RelationSection
                 direction="parent"
                 element={element}
@@ -135,15 +131,15 @@ export const ContainmentView: FC<ContainmentViewProps> = ({
         {hasConditional && (
           <>
             <Separator color="mute" />
-            <p className="text-fg-mute text-xs">
-              <span className="text-fg-warning font-bold">*</span> ＝
+            <p className={styles.legend}>
+              <span className={styles.legendMark}>*</span> ＝
               文脈により条件付き（破線枠の要素）
             </p>
           </>
         )}
       </div>
 
-      <p aria-live="polite" className="sr-only">
+      <p aria-live="polite" className={styles.srOnly}>
         {`${element.tag} を選択。子要素にできるもの ${children.length} 件、親要素にできるもの ${parents.length} 件。`}
       </p>
     </div>

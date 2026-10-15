@@ -6,6 +6,8 @@ import type { HeadingTree } from '@/shared/mdx/types';
 
 import { END_OF_CONTENT_ID } from '../constants';
 
+import styles from './progress-bar.module.css';
+
 export const ProgressBar: FC<{
   activeId: string;
   headingTree: HeadingTree;
@@ -21,13 +23,9 @@ export const ProgressBar: FC<{
   const offset = circumference * (1 - currentPercentage / 100);
 
   return (
-    <div className="relative size-8 shrink-0">
-      <span className="sr-only">読了率 {currentPercentage}%</span>
-      <svg
-        aria-hidden="true"
-        className="size-full -rotate-90"
-        viewBox="0 0 32 32"
-      >
+    <div className={styles.root}>
+      <span className={styles.srOnly}>読了率 {currentPercentage}%</span>
+      <svg aria-hidden="true" className={styles.ring} viewBox="0 0 32 32">
         <circle
           cx="16"
           cy="16"
@@ -37,7 +35,7 @@ export const ProgressBar: FC<{
           strokeWidth="3"
         />
         <circle
-          className="transition-[stroke-dashoffset] duration-500 ease-in-out"
+          className={styles.progress}
           cx="16"
           cy="16"
           fill="none"
@@ -48,10 +46,7 @@ export const ProgressBar: FC<{
           strokeWidth="3"
         />
       </svg>
-      <div
-        aria-hidden="true"
-        className="absolute inset-0 flex items-center justify-center text-xs"
-      >
+      <div aria-hidden="true" className={styles.value}>
         {currentPercentage}
       </div>
     </div>

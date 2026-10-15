@@ -1,7 +1,10 @@
 'use client';
 
 import { Button, Code } from '@k8ordo/ui';
+import { cn } from '@repo/helpers/cn';
 import { useState } from 'react';
+
+import styles from './sibling-count-bars-demo.module.css';
 
 let nextId = 0;
 const createIds = (length: number): number[] =>
@@ -11,7 +14,7 @@ export function SiblingCountBarsDemo() {
   const [ids, setIds] = useState(() => createIds(4));
 
   return (
-    <div className="flex flex-col gap-6">
+    <div className={styles.root}>
       <style>{`
         @property --scid-bar-index {
           syntax: "<integer>";
@@ -57,7 +60,7 @@ export function SiblingCountBarsDemo() {
         }
       `}</style>
 
-      <div className="flex flex-wrap gap-2">
+      <div className={styles.actions}>
         <Button
           color="base"
           onClick={() => {
@@ -95,14 +98,14 @@ export function SiblingCountBarsDemo() {
         <div className="scid-chart">
           {ids.map((id) => (
             <div className="scid-cell" key={id}>
-              <div className="scid-cell-bar bg-primary-bg rounded-t-md" />
-              <span className="scid-cell-label text-fg-mute text-xs" />
+              <div className={cn('scid-cell-bar', styles.bar)} />
+              <span className={cn('scid-cell-label', styles.label)} />
             </div>
           ))}
         </div>
       </div>
 
-      <p className="text-fg-mute text-sm leading-relaxed">
+      <p className={styles.note}>
         幅は<Code>calc(100% / sibling-count())</Code>
         、高さは<Code>@property</Code>で登録した
         <Code>--scid-bar-index</Code>に<Code>sibling-index()</Code>

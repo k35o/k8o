@@ -4,15 +4,17 @@ import type { FC } from 'react';
 import type { BlogSummary } from '../../_utils/types';
 import { BlogCard } from '../blog-card';
 
+import styles from './year-section.module.css';
+
 type Props = {
   year: number;
   blogs: readonly BlogSummary[];
 };
 
 export const YearSection: FC<Props> = ({ year, blogs }) => (
-  <section className="flex flex-col gap-4">
+  <section className={styles.root}>
     <Heading level="h3">{year}年</Heading>
-    <div className="flex flex-col gap-4">
+    <div className={styles.list}>
       {blogs.map((blog) => (
         <BlogCard key={blog.id} {...blog} />
       ))}

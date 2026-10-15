@@ -3,6 +3,8 @@
 import { Checkbox, Code, FormControl, Select } from '@k8ordo/ui';
 import { useState } from 'react';
 
+import styles from './text-indent-keywords-demo.module.css';
+
 const sampleText =
   'これはtext-indentプロパティのデモです。テキストのインデントがどのように適用されるかを確認できます。各キーワードの違いを比較してみてください。';
 
@@ -20,8 +22,8 @@ export function TextIndentKeywordsDemo() {
     .join(' ');
 
   return (
-    <div className="flex flex-col gap-6">
-      <div className="flex flex-wrap items-end gap-4">
+    <div className={styles.root}>
+      <div className={styles.controls}>
         <FormControl
           label="インデント量"
           renderInput={({ 'aria-labelledby': _ariaLabelledby, ...props }) => (

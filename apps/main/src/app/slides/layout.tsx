@@ -3,6 +3,8 @@ import Link from 'next/link';
 
 import { buildPageMetadata } from '@/shared/site/build-page-metadata';
 
+import styles from './layout.module.css';
+
 export const metadata = buildPageMetadata({
   title: 'Slides',
   description: '登壇や発表で使ったスライドをまとめています。',
@@ -12,9 +14,9 @@ export const metadata = buildPageMetadata({
 
 export default function Layout({ children }: LayoutProps<'/slides'>) {
   return (
-    <div className="mx-auto w-full max-w-5xl">
-      <div className="flex flex-col gap-6">
-        <Link className="hover:underline" href="/slides">
+    <div className={styles.root}>
+      <div className={styles.stack}>
+        <Link className={styles.link} href="/slides">
           <Heading level="h2">Slides</Heading>
         </Link>
         {children}

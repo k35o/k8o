@@ -1,3 +1,4 @@
+import { cn } from '@repo/helpers/cn';
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { Suspense } from 'react';
@@ -9,6 +10,8 @@ import { buildPageMetadata } from '@/shared/site/build-page-metadata';
 import { tagBreadcrumbJsonLd } from '@/shared/site/json-ld';
 
 import { TagContent } from '../_components/tag-content';
+
+import styles from './page.module.css';
 
 export async function generateStaticParams() {
   const tags = await getTags();
@@ -67,12 +70,12 @@ async function TagPageContent({ params }: PageProperties) {
 
 function TagContentSkeleton() {
   return (
-    <div className="flex animate-pulse flex-col gap-8">
-      <div className="bg-bg-base flex items-center gap-4 rounded-xl p-6 shadow-sm">
-        <div className="bg-bg-mute size-10 rounded-full" />
-        <div className="flex flex-col gap-2">
-          <div className="bg-bg-mute h-6 w-32 rounded-md" />
-          <div className="bg-bg-mute h-4 w-44 rounded-md" />
+    <div className={styles.skeleton}>
+      <div className={styles.skeletonSummary}>
+        <div className={cn(styles.bone, styles.skeletonIcon)} />
+        <div className={styles.skeletonText}>
+          <div className={cn(styles.bone, styles.skeletonTitle)} />
+          <div className={cn(styles.bone, styles.skeletonCount)} />
         </div>
       </div>
     </div>

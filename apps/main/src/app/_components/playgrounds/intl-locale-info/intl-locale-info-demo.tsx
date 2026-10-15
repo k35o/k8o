@@ -4,6 +4,8 @@ import { Button, FormControl, TextField } from '@k8ordo/ui';
 import { useState } from 'react';
 import type { FC } from 'react';
 
+import styles from './intl-locale-info-demo.module.css';
+
 const presetTags = [
   'ja-JP',
   'en-US',
@@ -46,8 +48,8 @@ export const IntlLocaleInfoDemo: FC = () => {
   const results = resolveResults(tag.trim());
 
   return (
-    <div className="flex flex-col gap-6">
-      <div className="flex flex-col gap-3">
+    <div className={styles.root}>
+      <div className={styles.form}>
         <FormControl
           errorText={
             results === null ? 'ロケール識別子として解釈できません' : undefined
@@ -64,7 +66,7 @@ export const IntlLocaleInfoDemo: FC = () => {
             />
           )}
         />
-        <div className="flex flex-wrap gap-2">
+        <div className={styles.presets}>
           {presetTags.map((preset) => (
             <Button
               color="base"
@@ -82,18 +84,11 @@ export const IntlLocaleInfoDemo: FC = () => {
         </div>
       </div>
       {results !== null && (
-        <dl className="flex flex-col gap-3">
+        <dl className={styles.results}>
           {results.map(({ method, value }) => (
-            <div
-              className="flex flex-col gap-0.5 sm:flex-row sm:gap-3"
-              key={method}
-            >
-              <dt className="text-fg-base shrink-0 font-mono text-sm sm:w-56">
-                {method}
-              </dt>
-              <dd className="text-fg-mute font-mono text-sm break-all">
-                {value}
-              </dd>
+            <div className={styles.result} key={method}>
+              <dt className={styles.method}>{method}</dt>
+              <dd className={styles.value}>{value}</dd>
             </div>
           ))}
         </dl>

@@ -1,6 +1,7 @@
 import { FormControl } from '@k8ordo/ui';
-import { cn } from '@repo/helpers/cn';
 import type { ChangeEventHandler, FC } from 'react';
+
+import styles from './color-pallet.module.css';
 
 type Props = {
   label: string;
@@ -17,19 +18,16 @@ export const ColorPallet: FC<Props> = ({ label, color, setColor }) => {
     <FormControl
       label={label}
       renderInput={({ id }) => (
-        <div className="flex flex-col gap-2">
+        <div className={styles.root}>
           <input
             aria-label={label}
-            className={cn(
-              'h-24 w-full cursor-pointer overflow-hidden rounded-xl border border-border-base p-1',
-              'focus-visible:border-transparent focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-border-info',
-            )}
+            className={styles.input}
             id={id}
             onChange={handleChange}
             type="color"
             value={color}
           />
-          <p className="text-center font-mono text-sm">{color}</p>
+          <p className={styles.value}>{color}</p>
         </div>
       )}
     />

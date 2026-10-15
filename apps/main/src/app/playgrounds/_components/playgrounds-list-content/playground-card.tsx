@@ -5,31 +5,31 @@ import type { FC } from 'react';
 
 import type { PlaygroundSummary } from '../../_utils/types';
 
+import styles from './playground-card.module.css';
+
 export const PlaygroundCard: FC<{
   playground: PlaygroundSummary;
   headingType?: 'h3' | 'h4';
 }> = ({ playground, headingType = 'h3' }) => (
   <Card variant="shadow" interactive>
     <Link
-      className="group block h-full"
+      className={styles.root}
       href={`/playgrounds/${playground.id}` as Route}
     >
-      <div className="flex h-full flex-col gap-3 p-6">
+      <div className={styles.body}>
         <Heading lineClamp={2} level={headingType}>
           {playground.title}
         </Heading>
-        <p className="text-fg-mute line-clamp-2 flex-1 text-sm leading-relaxed">
-          {playground.description}
-        </p>
-        <div className="text-fg-subtle flex items-center gap-3 text-xs">
+        <p className={styles.description}>{playground.description}</p>
+        <div className={styles.meta}>
           <span>デモ{playground.demoCount}件</span>
           {playground.hasBlog && (
-            <span className="flex items-center gap-1">
+            <span className={styles.blog}>
               <BlogIcon size="sm" />
               ブログ記事
             </span>
           )}
-          <span className="group-hover:text-primary-fg ml-auto flex items-center transition-all duration-150 ease-out group-hover:translate-x-0.5">
+          <span className={styles.chevron}>
             <ChevronIcon direction="right" size="sm" />
           </span>
         </div>

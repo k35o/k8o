@@ -6,6 +6,8 @@ import type { FC } from 'react';
 
 import { getBlogsByTags } from '@/features/blog/interface/queries';
 
+import styles from './recommend.module.css';
+
 type RecommendProps = {
   blogs: Awaited<ReturnType<typeof getBlogsByTags>>;
 };
@@ -16,22 +18,22 @@ export const RecommendContent: FC<RecommendProps> = ({ blogs }) => {
   }
 
   return (
-    <div className="flex flex-col gap-8">
+    <div className={styles.root}>
       <Heading level="h3">関連記事</Heading>
-      <div className="grid-cols-auto-fit-80 grid gap-4">
+      <div className={styles.grid}>
         {blogs.map((blog) => (
           <Card interactive key={blog.id}>
             <Link href={`/blog/${blog.slug}` as Route}>
-              <div className="flex flex-col gap-4 p-4">
+              <div className={styles.card}>
                 <Heading level="h4">{blog.title}</Heading>
-                <div className="flex flex-col flex-wrap gap-2">
-                  <div className="flex flex-wrap items-center gap-1">
+                <div className={styles.details}>
+                  <div className={styles.tags}>
                     <TagIcon size="sm" />
                     {blog.tags.map((tag) => (
                       <Badge key={tag} size="sm" label={tag} />
                     ))}
                   </div>
-                  <div className="text-fg-mute ml-auto flex items-center gap-1 text-xs">
+                  <div className={styles.date}>
                     <PublishDateIcon size="sm" />
                     <span>
                       公開:{' '}

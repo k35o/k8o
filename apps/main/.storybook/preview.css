@@ -1,0 +1,11 @@
+/* layout.tsx の body と同じ組版。body は React が描かないので素の CSS で当てる */
+body {
+  color: var(--color-fg-base);
+  font-family: var(--font-family-m-plus-2);
+  font-weight: var(--font-weight-medium);
+}
+
+.story-canvas {
+  min-height: 100svh;
+  padding: calc(var(--spacing) * 6);
+}

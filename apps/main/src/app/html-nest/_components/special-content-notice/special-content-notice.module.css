@@ -1,0 +1,12 @@
+.root {
+  border-width: 1px;
+  border-style: solid;
+  border-color: var(--color-border-mute);
+  border-radius: var(--radius-lg);
+  background-color: var(--color-bg-subtle);
+  color: var(--color-fg-mute);
+  padding-inline: calc(var(--spacing) * 4);
+  padding-block: calc(var(--spacing) * 3);
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-relaxed);
+}

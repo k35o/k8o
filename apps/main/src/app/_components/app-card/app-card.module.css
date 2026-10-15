@@ -1,0 +1,60 @@
+.link {
+  @media (hover: hover) {
+    &:hover .arrow {
+      color: var(--color-primary-fg);
+      translate: calc(var(--spacing) * 0.5);
+    }
+  }
+}
+
+.root {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  padding: calc(var(--spacing) * 7);
+  text-align: left;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  gap: calc(var(--spacing) * 3);
+}
+
+.icon {
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  width: calc(var(--spacing) * 10);
+  height: calc(var(--spacing) * 10);
+  border-radius: var(--radius-lg);
+  background-color: var(--color-bg-mute);
+  color: var(--color-primary-fg);
+}
+
+.description {
+  display: -webkit-box;
+  flex: 1;
+  margin-top: calc(var(--spacing) * 4);
+  overflow: hidden;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+  color: var(--color-fg-mute);
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-relaxed);
+}
+
+.footer {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  margin-top: calc(var(--spacing) * 6);
+}
+
+.arrow {
+  display: flex;
+  align-items: center;
+  color: var(--color-fg-subtle);
+  transition: all var(--duration-fast) var(--easing-out);
+}

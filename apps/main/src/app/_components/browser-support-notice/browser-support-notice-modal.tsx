@@ -7,6 +7,8 @@ import type {
 } from '@repo/helpers/browser/detect-browser';
 import type { FC } from 'react';
 
+import styles from './browser-support-notice-modal.module.css';
+
 // モバイル版はデスクトップと同じバージョンになるため、一覧はデスクトップのみ表示する。
 const BROWSER_ORDER: CoreBrowser[] = ['chrome', 'edge', 'firefox', 'safari'];
 
@@ -21,28 +23,27 @@ export const BrowserSupportNoticeModal: FC<{
     <Dialog.Root>
       <Dialog.Header onClose={onClose} title="ブラウザの更新について" />
       <Dialog.Content>
-        <div className="text-fg-base flex flex-col gap-4 text-sm leading-relaxed">
+        <div className={styles.root}>
           <p>
             このサイトは、新しくブラウザに追加された機能を積極的に使っています。お使いのブラウザはバージョンが古いため、表示が崩れたり、一部の機能が正しく動作しないことがあります。最新版への更新をおすすめします。
           </p>
-          <div className="border-border-base flex items-baseline justify-between gap-4 rounded-lg border p-3">
-            <span className="text-fg-mute">お使いのブラウザ</span>
-            <span className="font-bold">
+          <div className={styles.current}>
+            <span className={styles.currentLabel}>お使いのブラウザ</span>
+            <span className={styles.currentVersion}>
               {BROWSER_LABELS[detected.browser]} {detected.version}
             </span>
           </div>
-          <div className="flex flex-col gap-2">
-            <p className="font-bold">推奨バージョン</p>
-            <dl className="border-border-base flex flex-col gap-1.5 rounded-lg border p-3">
+          <div className={styles.recommended}>
+            <p className={styles.recommendedTitle}>推奨バージョン</p>
+            <dl className={styles.versions}>
               {BROWSER_ORDER.filter(
                 (browser) => minVersions[browser] !== undefined,
               ).map((browser) => (
-                <div
-                  className="flex items-baseline justify-between gap-4"
-                  key={browser}
-                >
+                <div className={styles.version} key={browser}>
                   <dt>{BROWSER_LABELS[browser]}</dt>
-                  <dd className="font-bold">{minVersions[browser]} 以降</dd>
+                  <dd className={styles.minVersion}>
+                    {minVersions[browser]} 以降
+                  </dd>
                 </div>
               ))}
             </dl>

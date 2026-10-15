@@ -3,6 +3,8 @@
 import { Button, Code } from '@k8ordo/ui';
 import { useEffect, useRef, useState, useSyncExternalStore } from 'react';
 
+import styles from './shared-worker-demo.module.css';
+
 const WORKER_URL = '/playgrounds/shared-worker.worker.js';
 
 // 機能対応は環境依存で SSR では判定できないため、useSyncExternalStore で
@@ -81,45 +83,40 @@ export function SharedWorkerDemo() {
 
   if (!supported) {
     return (
-      <p className="text-fg-mute text-sm">
+      <p className={styles.unsupported}>
         このブラウザはSharedWorkerをサポートしていません。
       </p>
     );
   }
 
   return (
-    <div className="flex flex-col gap-4">
-      <p className="text-fg-mute text-xs">
+    <div className={styles.root}>
+      <p className={styles.note}>
         このページを別タブでもう一度開くと、Worker起動時刻が両タブで一致し、
         どちらかのタブで「+1」を押すと両タブのカウンタが同期するのが見えます。
       </p>
       <div>
-        <p className="text-fg-mute text-xs">共有カウンタ</p>
-        <div className="mt-2 flex items-baseline gap-4">
-          <span className="text-primary-fg text-emphasize font-bold tabular-nums">
-            {count}
-          </span>
+        <p className={styles.note}>共有カウンタ</p>
+        <div className={styles.counter}>
+          <span className={styles.count}>{count}</span>
           <Button onClick={handleIncrement} size="sm" type="button">
             +1
           </Button>
         </div>
       </div>
-      <dl className="flex flex-col gap-2 text-sm">
-        <div className="flex items-center justify-between">
-          <dt className="text-fg-mute">Worker起動時刻</dt>
+      <dl className={styles.details}>
+        <div className={styles.detail}>
+          <dt className={styles.term}>Worker起動時刻</dt>
           <dd>
             <Code>{startedAt === null ? '...' : formatTime(startedAt)}</Code>
           </dd>
         </div>
-        <div className="flex items-center justify-between">
-          <dt className="text-fg-mute">接続中のタブ数</dt>
-          <dd className="flex items-center gap-2">
-            <span aria-hidden className="flex gap-1">
+        <div className={styles.detail}>
+          <dt className={styles.term}>接続中のタブ数</dt>
+          <dd className={styles.connections}>
+            <span aria-hidden className={styles.dots}>
               {Array.from({ length: connections }, (_, index) => (
-                <span
-                  className="bg-primary-fg inline-block size-2 rounded-full"
-                  key={index}
-                />
+                <span className={styles.dot} key={index} />
               ))}
             </span>
             <Code>{String(connections)}</Code>

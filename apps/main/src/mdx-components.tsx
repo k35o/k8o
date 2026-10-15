@@ -10,6 +10,8 @@ import type { FC, PropsWithChildren, ReactNode } from 'react';
 import { BrowserSupportStatus } from '@/app/_components/browser-support-status/browser-support-status';
 import { CodeBlock, CodeGroup } from '@/app/_components/code-block';
 
+import styles from './mdx-components.module.css';
+
 // インラインコード等を含む見出しからidに使う全文を取り出す。
 // shared/mdx/toc-tree.ts の phrasingText と同じ結果になる必要がある
 const isReactNodeArray = (value: ReactNode): value is readonly ReactNode[] =>
@@ -27,11 +29,20 @@ const extractText = (children: ReactNode): string => {
   return '';
 };
 
-const LinkHeading: FC<
-  PropsWithChildren<{
-    type: 'h2' | 'h3' | 'h4' | 'h5' | 'h6';
-  }>
-> = ({ type, children }) => {
+type HeadingLevel = 'h2' | 'h3' | 'h4' | 'h5' | 'h6';
+
+const headingLevelClass: Record<HeadingLevel, string> = {
+  h2: styles.h2,
+  h3: styles.h3,
+  h4: styles.h4,
+  h5: styles.h5,
+  h6: styles.h6,
+};
+
+const LinkHeading: FC<PropsWithChildren<{ type: HeadingLevel }>> = ({
+  type,
+  children,
+}) => {
   const Comp = type;
 
   const text = extractText(children);
@@ -39,37 +50,16 @@ const LinkHeading: FC<
 
   return (
     <Comp
-      className={cn(
-        'group font-bold',
-        type === 'h2' && 'mt-10 mb-4 text-xl/tight sm:text-2xl/tight',
-        type === 'h3' && 'mt-10 mb-4 text-xl/tight sm:text-2xl/tight',
-        type === 'h4' && 'mt-8 mb-3 text-lg/tight sm:text-xl/tight',
-        type === 'h5' && 'mt-6 mb-2 text-md/tight sm:text-lg/tight',
-        type === 'h6' && 'mt-5 mb-2 text-sm/tight sm:text-md/tight',
-      )}
+      className={cn(styles.heading, headingLevelClass[type])}
       id={hasText ? text : undefined}
     >
       {hasText && (
         <a
-          className="relative"
+          className={styles.anchor}
           href={`#${encodeURIComponent(text)}`}
           tabIndex={-1}
         >
-          <span
-            className={cn(
-              'absolute top-1 box-content text-fg-mute opacity-0 transition-opacity duration-500 sm:group-hover:opacity-100',
-              type === 'h2' &&
-                'top-1.5 -inset-s-7 pe-2 vertical:-top-7 vertical:right-auto vertical:left-1.5 vertical:pe-0',
-              type === 'h3' &&
-                '-inset-s-7 pe-2 vertical:-top-7 vertical:right-auto vertical:left-1.5 vertical:pe-0',
-              type === 'h4' &&
-                'top-2 -inset-s-5 pe-2 vertical:-top-5 vertical:right-auto vertical:left-1.5 vertical:pe-0',
-              type === 'h5' &&
-                'top-1.5 -inset-s-5 pe-2 vertical:-top-5 vertical:right-auto vertical:left-1.5 vertical:pe-0',
-              type === 'h6' &&
-                '-inset-s-5 pe-2 vertical:-top-5 vertical:right-auto vertical:left-1.5 vertical:pe-0',
-            )}
-          >
+          <span className={styles.anchorIcon}>
             <LinkIcon size={['h2', 'h3'].includes(type) ? 'md' : 'sm'} />
           </span>
         </a>
@@ -106,42 +96,24 @@ export function useMDXComponents(components: MDXComponents): MDXComponents {
       ) : (
         <p>{children}</p>
       ),
-    p: ({ children }) => (
-      <p className="sm:text-md vertical:indent-em my-4 text-sm leading-relaxed sm:leading-7">
-        {children}
-      </p>
-    ),
+    p: ({ children }) => <p className={styles.paragraph}>{children}</p>,
     code: ({ children, ...props }) => {
       if (typeof children === 'string') {
         return <Code>{children}</Code>;
       }
       return (
-        <code {...props} className="sm:text-md text-sm">
+        <code {...props} className={styles.code}>
           {children}
         </code>
       );
     },
     pre: (props) => <CodeBlock {...props} />,
     'code-group': CodeGroup,
-    li: ({ children }) => (
-      <li className="sm:text-md text-sm leading-relaxed sm:leading-7">
-        {children}
-      </li>
-    ),
-    ul: ({ children }) => (
-      <ul className="sm:text-md marker:text-fg-subtle my-5 flex list-disc flex-col gap-2 ps-6 text-sm">
-        {children}
-      </ul>
-    ),
-    ol: ({ children }) => (
-      <ol className="sm:text-md marker:text-fg-subtle my-5 flex list-decimal flex-col gap-2 ps-6 text-sm">
-        {children}
-      </ol>
-    ),
+    li: ({ children }) => <li className={styles.listItem}>{children}</li>,
+    ul: ({ children }) => <ul className={styles.unorderedList}>{children}</ul>,
+    ol: ({ children }) => <ol className={styles.orderedList}>{children}</ol>,
     blockquote: ({ children }) => (
-      <blockquote className="border-primary-border text-fg-mute my-6 border-s-2 ps-3 text-sm">
-        {children}
-      </blockquote>
+      <blockquote className={styles.blockquote}>{children}</blockquote>
     ),
     ...components,
   };

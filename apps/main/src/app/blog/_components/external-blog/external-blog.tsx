@@ -3,8 +3,10 @@
 import { IconButton, QiitaIcon, RSSIcon } from '@k8ordo/ui';
 import type { FC } from 'react';
 
+import styles from './external-blog.module.css';
+
 export const ExternalBlog: FC = () => (
-  <div className="flex gap-4">
+  <div className={styles.root}>
     <IconButton
       color="base"
       label="Qiitaのアカウント"

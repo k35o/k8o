@@ -9,6 +9,8 @@ import type { SortOrder } from '../../_utils/constants';
 import { readingListParsers } from '../../_utils/search-params';
 import { FilterBar } from '../filter-bar';
 
+import styles from './reading-list-content.module.css';
+
 type ArticleMeta = {
   id: number;
   title: string;
@@ -87,22 +89,22 @@ export const ReadingListContent: FC<Props> = ({ articles, sources, cards }) => {
   };
 
   return (
-    <div className="grid gap-8 xl:-mx-16 xl:grid-cols-[16rem_minmax(0,1fr)] xl:items-start">
-      <aside className="hidden xl:sticky xl:top-6 xl:block">
+    <div className={styles.root}>
+      <aside className={styles.aside}>
         <Card variant="shadow">
-          <div className="p-4">
+          <div className={styles.filter}>
             <FilterBar {...filterBarProps} />
           </div>
         </Card>
       </aside>
-      <div className="flex min-w-0 flex-1 flex-col gap-6">
-        <div className="flex items-center justify-between gap-4">
-          <p className="text-fg-mute text-sm">
+      <div className={styles.main}>
+        <div className={styles.toolbar}>
+          <p className={styles.count}>
             {filteredArticles.length}件の記事
             {sourceIds.length > 0 &&
               ` / ${sourceIds.length}件のソースで絞り込み中`}
           </p>
-          <div className="shrink-0 xl:hidden">
+          <div className={styles.drawerButton}>
             <Button
               onClick={() => {
                 setIsDrawerOpen(true);
@@ -116,19 +118,17 @@ export const ReadingListContent: FC<Props> = ({ articles, sources, cards }) => {
           </div>
         </div>
         {filteredArticles.length === 0 ? (
-          <div className="flex flex-col items-center gap-3 py-16 text-center">
-            <div className="text-fg-subtle">
+          <div className={styles.empty}>
+            <div className={styles.emptyIcon}>
               <SubscribeIcon size="lg" />
             </div>
-            <p className="text-fg-base text-lg font-bold">
-              条件に一致する記事がありません
-            </p>
-            <p className="text-fg-mute text-sm">
+            <p className={styles.emptyTitle}>条件に一致する記事がありません</p>
+            <p className={styles.emptyText}>
               検索条件やソースの選択を変更してみてください
             </p>
           </div>
         ) : (
-          <div className="flex flex-col gap-4">
+          <div className={styles.list}>
             {filteredArticles.map((article) => cards[article.id])}
           </div>
         )}

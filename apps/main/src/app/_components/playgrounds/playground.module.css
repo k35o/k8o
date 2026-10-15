@@ -1,0 +1,157 @@
+.root {
+  margin-block: calc(var(--spacing) * 10);
+
+  @media (width >= 40rem) {
+    margin-block: calc(var(--spacing) * 12);
+  }
+
+  /* 縦書きの記事に埋め込まれたときは横書きの島として、幅と高さを画面に収める */
+  @container style(--writing: vertical) {
+    max-width: min(42rem, 100svw - 2rem);
+    max-height: calc(100svh - 10rem);
+    overflow: auto;
+  }
+
+  /* デザインシステムの Code は className を受け取らないため、説明文の中だけ子孫セレクタで上書きする。
+     等幅は同じサイズでも字面が大きく見えるので、font-size の指定ではなく font-size-adjust で
+     周囲の文字の一段下に揃える */
+  /* better-css-modules-disable-next-line pure/subject -- Code の要素は自分が書かない */
+  & :not(pre) > code {
+    margin-inline: calc(var(--spacing) * 0.5);
+    padding-inline: calc(var(--spacing) * 1.2);
+    border-radius: var(--radius-sm);
+    background-color: var(--color-bg-subtle);
+    color: var(--color-primary-fg);
+    font-size-adjust: 0.48;
+  }
+}
+
+.frame {
+  padding: calc(var(--spacing) * 2);
+  border-radius: var(--radius-xl);
+  background-color: light-dark(var(--color-bg-surface), var(--color-bg-subtle));
+}
+
+.header {
+  display: flex;
+  flex-direction: column;
+  gap: calc(var(--spacing) * 1.5);
+  padding-inline: calc(var(--spacing) * 3);
+  padding-top: calc(var(--spacing) * 2);
+  padding-bottom: calc(var(--spacing) * 3);
+}
+
+.titleRow {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  column-gap: calc(var(--spacing) * 3);
+  row-gap: calc(var(--spacing) * 2);
+}
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing);
+  padding-block: var(--spacing);
+  padding-inline-start: calc(var(--spacing) * 2);
+  padding-inline-end: calc(var(--spacing) * 2.5);
+  border-radius: var(--radius-full);
+  background-color: var(--color-primary-bg-subtle);
+  color: var(--color-primary-fg);
+  font-size: var(--font-size-xs);
+  line-height: var(--line-height-xs);
+  font-weight: var(--font-weight-bold);
+}
+
+/* 狭い画面ではアドレスバーをピルの行に残し、タイトルを次の行に送る */
+.title {
+  order: 2;
+  flex-basis: 100%;
+  color: var(--color-fg-base);
+  font-size: var(--font-size-md);
+  line-height: var(--line-height-md);
+  font-weight: var(--font-weight-bold);
+
+  @media (width >= 40rem) {
+    order: 1;
+    flex-basis: auto;
+    font-size: var(--font-size-lg);
+    line-height: var(--line-height-lg);
+  }
+}
+
+.link {
+  order: 1;
+  display: inline-flex;
+  align-items: center;
+  gap: calc(var(--spacing) * 2);
+  min-width: 0;
+  max-width: 100%;
+  margin-inline-start: auto;
+  padding-inline: calc(var(--spacing) * 3.5);
+  padding-block: calc(var(--spacing) * 1.5);
+  border-radius: var(--radius-full);
+  background-color: var(--color-bg-base);
+  color: var(--color-fg-mute);
+  font-family: var(--font-family-mono);
+  font-size: var(--font-size-xs);
+  line-height: var(--line-height-xs);
+  transition-property:
+    color, background-color, border-color, outline-color, text-decoration-color,
+    fill, stroke;
+  transition-duration: var(--duration-fast);
+  transition-timing-function: var(--easing-out);
+
+  @media (hover: hover) {
+    &:hover {
+      color: var(--color-fg-base);
+    }
+  }
+
+  @media (width >= 40rem) {
+    order: 2;
+  }
+}
+
+.shortHref {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+
+  @media (width >= 40rem) {
+    display: none;
+  }
+}
+
+.fullHref {
+  display: none;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+
+  @media (width >= 40rem) {
+    display: inline;
+  }
+}
+
+.linkIcon {
+  display: inline-flex;
+  flex-shrink: 0;
+}
+
+.description {
+  color: var(--color-fg-mute);
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-relaxed);
+}
+
+.body {
+  padding: calc(var(--spacing) * 6);
+  border-radius: var(--radius-lg);
+  background-color: var(--color-bg-base);
+
+  @media (width >= 40rem) {
+    padding: calc(var(--spacing) * 8);
+  }
+}

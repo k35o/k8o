@@ -1,0 +1,14 @@
+.root {
+  display: flex;
+  flex-direction: column;
+  gap: calc(var(--spacing) * 6);
+}
+
+.canvas {
+  display: none;
+}
+
+.preview {
+  display: flex;
+  justify-content: center;
+}

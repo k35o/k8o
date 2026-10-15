@@ -10,9 +10,11 @@ featureIds:
 
 import { PlaygroundEmbed } from '@/app/_components/playgrounds';
 
+import styles from './page.module.css';
+
 # view-transitions
 
-<div className="flex gap-4 flex-col">
+<div className={styles.supportStatuses}>
   <BrowserSupportStatus featureId="view-transitions" />
   <BrowserSupportStatus featureId="view-transition-class" />
 </div>

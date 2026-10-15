@@ -1,0 +1,226 @@
+.root {
+  display: flex;
+  flex-direction: column;
+  gap: calc(var(--spacing) * 4);
+  padding: calc(var(--spacing) * 6);
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  gap: calc(var(--spacing) * 2);
+}
+
+.title {
+  color: var(--color-fg-base);
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-sm);
+  font-weight: var(--font-weight-bold);
+}
+
+.chart {
+  container-type: inline-size;
+  display: grid;
+  grid-template-columns: auto 1fr;
+  grid-template-rows: 1fr auto;
+  column-gap: calc(var(--spacing) * 2);
+  row-gap: var(--spacing);
+  height: calc(var(--spacing) * 48);
+}
+
+.axis {
+  position: relative;
+  grid-column-start: 1;
+  grid-row-start: 1;
+  min-width: calc(var(--spacing) * 4);
+  color: var(--color-fg-mute);
+  font-size: var(--font-size-xs);
+  line-height: var(--line-height-xs);
+}
+
+.tick {
+  position: absolute;
+  right: 0;
+  translate: 0 -50%;
+
+  &.scaleZero {
+    translate: 0 50%;
+  }
+}
+
+.plot {
+  position: relative;
+  grid-column-start: 2;
+  grid-row-start: 1;
+}
+
+.gridline {
+  position: absolute;
+  inset-inline: 0;
+  border-top-width: 1px;
+  border-top-style: dashed;
+  border-top-color: var(--color-border-subtle);
+}
+
+.scaleMax {
+  top: 0;
+}
+
+.scaleThreeQuarters {
+  top: 25%;
+}
+
+.scaleHalf {
+  top: 50%;
+}
+
+.scaleQuarter {
+  top: 75%;
+}
+
+.scaleZero {
+  bottom: 0;
+}
+
+.bars {
+  position: relative;
+  display: flex;
+  gap: 1.5%;
+  height: 100%;
+}
+
+.bar {
+  position: relative;
+  display: flex;
+  flex: 1;
+  align-items: flex-end;
+  border-radius: var(--radius-sm);
+
+  &:focus-visible {
+    outline-style: none;
+    box-shadow: var(--shadow-ring-info);
+
+    @media (forced-colors: active) {
+      outline: 2px solid transparent;
+      outline-offset: 2px;
+    }
+  }
+
+  @media (hover: hover) {
+    &:hover {
+      .highlight,
+      .tooltip {
+        opacity: 1;
+      }
+
+      .fill {
+        /* better-css-modules-disable-next-line tokens/internal -- 塗りと同じ teal スケールの一段濃い色 */
+        background-color: var(--teal-700);
+      }
+    }
+  }
+
+  &:focus {
+    .highlight,
+    .tooltip {
+      opacity: 1;
+    }
+
+    .fill {
+      /* better-css-modules-disable-next-line tokens/internal -- 塗りと同じ teal スケールの一段濃い色 */
+      background-color: var(--teal-700);
+    }
+  }
+}
+
+.highlight {
+  position: absolute;
+  inset: 0;
+  border-radius: var(--radius-sm);
+  background-color: var(--color-bg-subtle);
+  opacity: 0;
+  transition: opacity var(--duration-fast) var(--easing-out);
+}
+
+.fill {
+  position: relative;
+  width: 100%;
+  border-top-left-radius: var(--radius-lg);
+  border-top-right-radius: var(--radius-lg);
+  /* better-css-modules-disable-next-line tokens/internal -- セマンティックトークンにチャートの塗りに合う濃さがないため、置き換え前の recharts 実装と同じ teal スケールを直接使う */
+  background-color: var(--teal-600);
+  transition: background-color var(--duration-fast) var(--easing-out);
+}
+
+.tooltip {
+  position: absolute;
+  bottom: 100%;
+  z-index: var(--z-index-raised);
+  width: max-content;
+  margin-bottom: var(--spacing);
+  padding-inline: calc(var(--spacing) * 3);
+  padding-block: calc(var(--spacing) * 2);
+  border-radius: var(--radius-xl);
+  background-color: var(--color-bg-base);
+  color: var(--color-fg-base);
+  box-shadow: var(--shadow-md);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity var(--duration-fast) var(--easing-out);
+}
+
+.tooltipStart {
+  left: 0;
+}
+
+.tooltipEnd {
+  right: 0;
+}
+
+.tooltipCenter {
+  left: 50%;
+  translate: -50%;
+}
+
+.count {
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-sm);
+  font-weight: var(--font-weight-bold);
+}
+
+.date {
+  color: var(--color-fg-mute);
+  font-size: var(--font-size-xs);
+  line-height: var(--line-height-xs);
+}
+
+.labels {
+  position: relative;
+  grid-column-start: 2;
+  grid-row-start: 2;
+  height: calc(var(--spacing) * 4);
+}
+
+.label {
+  position: absolute;
+  top: 0;
+  translate: -50%;
+  color: var(--color-fg-mute);
+  font-size: var(--font-size-xs);
+  line-height: var(--line-height-xs);
+  white-space: nowrap;
+}
+
+.labelThinned {
+  display: none;
+
+  @container (width >= 36rem) {
+    display: block;
+  }
+}
+
+.total {
+  color: var(--color-fg-mute);
+  font-size: var(--font-size-xs);
+  line-height: var(--line-height-xs);
+}

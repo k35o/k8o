@@ -1,16 +1,19 @@
 'use client';
 
 import { Button } from '@k8ordo/ui';
+import { cn } from '@repo/helpers/cn';
 import Image from 'next/image';
 import { useState } from 'react';
+
+import styles from './donut-scope-demo.module.css';
 
 export function DonutScopeDemo() {
   const [showDonutScope, setShowDonutScope] = useState(true);
 
   return (
-    <div className="space-y-4">
-      <div className="flex items-center justify-between">
-        <h3 className="font-bold">ドーナツスコープ</h3>
+    <div className={styles.root}>
+      <div className={styles.header}>
+        <h3 className={styles.title}>ドーナツスコープ</h3>
         <Button
           color={showDonutScope ? 'primary' : 'base'}
           onClick={() => {
@@ -40,42 +43,40 @@ export function DonutScopeDemo() {
         `}
       </style>
 
-      <div className="demo-article bg-bg-mute space-y-4 rounded-lg p-4">
-        <p className="text-fg-mute text-sm">
-          .article内の画像（スタイル適用対象）
-        </p>
-        <div className="flex gap-4">
+      <div className={cn('demo-article', styles.article)}>
+        <p className={styles.caption}>.article内の画像（スタイル適用対象）</p>
+        <div className={styles.images}>
           <Image
             alt="サンプル画像1"
-            className="h-20 w-24 object-cover"
+            className={styles.image}
             height={80}
             src="/icon.png"
             width={96}
           />
           <Image
             alt="サンプル画像2"
-            className="h-20 w-24 object-cover"
+            className={styles.image}
             height={80}
             src="/icon.png"
             width={96}
           />
         </div>
 
-        <div className="demo-nested-content bg-bg-subtle rounded-md p-4">
-          <p className="text-fg-mute text-sm">
+        <div className={cn('demo-nested-content', styles.nested)}>
+          <p className={styles.caption}>
             .nested-content内の画像（除外される）
           </p>
-          <div className="mt-2 flex gap-4">
+          <div className={styles.nestedImages}>
             <Image
               alt="ネストされた画像1"
-              className="h-20 w-24 object-cover"
+              className={styles.image}
               height={80}
               src="/icon.png"
               width={96}
             />
             <Image
               alt="ネストされた画像2"
-              className="h-20 w-24 object-cover"
+              className={styles.image}
               height={80}
               src="/icon.png"
               width={96}
@@ -84,7 +85,7 @@ export function DonutScopeDemo() {
         </div>
       </div>
 
-      <pre className="text-fg-mute sm:text-md overflow-x-auto text-xs">
+      <pre className={styles.code}>
         <code>
           {showDonutScope
             ? `@scope (.article) to (.nested-content) {

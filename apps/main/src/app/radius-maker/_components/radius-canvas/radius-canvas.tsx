@@ -7,12 +7,10 @@ import type { CSSProperties, FC, KeyboardEvent, PointerEvent } from 'react';
 
 import type { Axis, Corner, RadiusCorners } from '../../_types/corner-radius';
 import type { CornerShape } from '../../_types/corner-shape';
-import {
-  AXIS_LABELS,
-  CORNER_COLOR_CLASSES,
-  CORNER_LABELS,
-} from '../../_utils/corner-meta';
+import { AXIS_LABELS, CORNER_LABELS } from '../../_utils/corner-meta';
 import { toBorderRadiusValue } from '../../_utils/radius-css';
+
+import styles from './radius-canvas.module.css';
 
 type Handle = {
   corner: Corner;
@@ -149,7 +147,7 @@ export const RadiusCanvas: FC<Props> = ({
 
   return (
     <div
-      className="text-border-mute bg-bg-subtle flex items-center justify-center rounded-2xl px-10 py-12"
+      className={styles.root}
       style={{
         backgroundImage:
           'radial-gradient(currentColor 1.5px, transparent 1.5px)',
@@ -157,7 +155,7 @@ export const RadiusCanvas: FC<Props> = ({
       }}
     >
       <div
-        className="border-primary-border relative border-2 border-dashed"
+        className={styles.frame}
         ref={containerRef}
         style={{
           width: `min(100%, ${width}px)`,
@@ -166,9 +164,8 @@ export const RadiusCanvas: FC<Props> = ({
       >
         <div
           className={cn(
-            'bg-primary-fg size-full',
-            activeHandle === null &&
-              'transition-[border-radius] duration-150 ease-out motion-reduce:transition-none',
+            styles.shape,
+            activeHandle === null && styles.shapeAnimated,
           )}
           style={{
             borderRadius: toBorderRadiusValue(corners),
@@ -188,17 +185,9 @@ export const RadiusCanvas: FC<Props> = ({
               aria-valuemin={0}
               aria-valuenow={value}
               aria-valuetext={`${value}%`}
-              className={cn(
-                'group/handle absolute size-6 touch-none rounded-full sm:size-5',
-                '-translate-x-1/2 -translate-y-1/2',
-                'border-border-base border-2',
-                CORNER_COLOR_CLASSES[corner],
-                active
-                  ? 'ring-fg-mute cursor-grabbing border-transparent ring-4'
-                  : 'cursor-grab',
-                'hover:ring-fg-mute hover:border-transparent hover:ring-4',
-                'focus-visible:ring-fg-mute focus-visible:border-transparent focus-visible:ring-4 focus-visible:outline-hidden',
-              )}
+              className={styles.handle}
+              data-active={active}
+              data-corner={corner}
               key={`${corner}-${axis}`}
               onKeyDown={(e) => {
                 handleKeyDown(e, corner, axis);
@@ -216,16 +205,7 @@ export const RadiusCanvas: FC<Props> = ({
               style={handlePositionStyle(corner, axis, value)}
               tabIndex={0}
             >
-              <span
-                className={cn(
-                  'bg-fg-base text-bg-base absolute -top-8 left-1/2 -translate-x-1/2',
-                  'rounded-md px-1.5 py-0.5 font-mono text-xs whitespace-nowrap',
-                  'pointer-events-none opacity-0 group-focus-visible/handle:opacity-100',
-                  active && 'opacity-100',
-                )}
-              >
-                {value}%
-              </span>
+              <span className={styles.tooltip}>{value}%</span>
             </div>
           );
         })}

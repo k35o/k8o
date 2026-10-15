@@ -2,6 +2,8 @@ import { formatHex } from '@repo/helpers/color/format';
 import type { Color } from '@repo/helpers/color/spaces';
 import type { FC } from 'react';
 
+import styles from './color-tip.module.css';
+
 const CHECKERBOARD = {
   backgroundImage:
     'repeating-conic-gradient(rgb(128 128 128 / 0.25) 0% 25%, transparent 0% 50%)',
@@ -14,14 +16,11 @@ export const ColorTip: FC<{ color: Color }> = ({ color }) => {
   const opaque = formatHex({ ...color, alpha: 1 });
 
   return (
-    <div className="relative h-36 w-full overflow-hidden rounded-xl">
-      <div className="absolute inset-0" style={CHECKERBOARD} />
-      <div
-        className="absolute inset-0 flex items-center justify-center transition-colors duration-200"
-        style={{ backgroundColor: css }}
-      >
+    <div className={styles.root}>
+      <div className={styles.checkerboard} style={CHECKERBOARD} />
+      <div className={styles.swatch} style={{ backgroundColor: css }}>
         <p
-          className="font-mono text-2xl font-bold tracking-normal select-all"
+          className={styles.code}
           style={{ color: `contrast-color(${opaque})` }}
         >
           {css}

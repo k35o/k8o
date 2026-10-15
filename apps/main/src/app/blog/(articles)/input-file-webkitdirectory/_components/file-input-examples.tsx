@@ -2,11 +2,10 @@
 
 import { FormControl } from '@k8ordo/ui';
 
-const inputClassName =
-  'max-w-80 cursor-pointer rounded-full text-center font-bold bg-primary-bg text-primary-fg hover:bg-primary-bg/90 active:bg-primary-bg/80 focus-visible:border-transparent focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-border-info px-4 py-2 text-md';
+import styles from './file-input-examples.module.css';
 
 export const BasicFileInputExamples = () => (
-  <div className="flex flex-col gap-4">
+  <div className={styles.root}>
     <FormControl
       label="単一ファイル選択"
       renderInput={({
@@ -17,7 +16,7 @@ export const BasicFileInputExamples = () => (
         <input
           aria-describedby={ariaDescribedby}
           aria-labelledby={ariaLabelledby}
-          className={inputClassName}
+          className={styles.input}
           id={id}
           type="file"
         />
@@ -34,7 +33,7 @@ export const BasicFileInputExamples = () => (
         <input
           aria-describedby={ariaDescribedby}
           aria-labelledby={ariaLabelledby}
-          className={inputClassName}
+          className={styles.input}
           id={id}
           multiple
           type="file"
@@ -55,7 +54,7 @@ export const WebkitDirectoryInputExample = () => (
       <input
         aria-describedby={ariaDescribedby}
         aria-labelledby={ariaLabelledby}
-        className={inputClassName}
+        className={styles.input}
         id={id}
         type="file"
         webkitdirectory

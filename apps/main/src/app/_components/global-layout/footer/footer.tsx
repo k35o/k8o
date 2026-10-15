@@ -3,32 +3,25 @@ import { Suspense } from 'react';
 
 import { Copyright } from './copyright';
 
+import styles from './footer.module.css';
+
 export function Footer() {
   return (
-    <footer className="flex flex-col items-center gap-3 p-4">
+    <footer className={styles.root}>
       <nav aria-label="サイト情報">
-        <ul className="flex items-center gap-6">
+        <ul className={styles.links}>
           <li>
-            <Link
-              className="text-fg-mute hover:text-fg-base text-sm transition-colors"
-              href="/about"
-            >
+            <Link className={styles.link} href="/about">
               About
             </Link>
           </li>
           <li>
-            <Link
-              className="text-fg-mute hover:text-fg-base text-sm transition-colors"
-              href="/contact"
-            >
+            <Link className={styles.link} href="/contact">
               Contact
             </Link>
           </li>
           <li>
-            <Link
-              className="text-fg-mute hover:text-fg-base text-sm transition-colors"
-              href="/privacy"
-            >
+            <Link className={styles.link} href="/privacy">
               Privacy
             </Link>
           </li>
@@ -36,7 +29,7 @@ export function Footer() {
       </nav>
       <Suspense
         fallback={
-          <p className="text-fg-mute md:text-lg">
+          <p className={styles.copyright}>
             ©︎ 2024〜2026 k8o. All Rights Reserved.
           </p>
         }

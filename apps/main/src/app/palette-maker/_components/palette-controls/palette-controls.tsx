@@ -8,6 +8,8 @@ import type { ChangeEventHandler, FC } from 'react';
 import { HUE, PEAK_CHROMA, isTokenName } from '../../_utils/search-params';
 import { BaseColorInput } from './base-color-input';
 
+import styles from './palette-controls.module.css';
+
 type ChannelRowProps = {
   label: string;
   min: number;
@@ -35,14 +37,11 @@ const ChannelRow: FC<ChannelRowProps> = ({
     }
   };
   return (
-    <div className="flex items-center gap-3">
-      <label
-        className="text-fg-base w-28 shrink-0 text-sm font-bold"
-        htmlFor={id}
-      >
+    <div className={styles.channel}>
+      <label className={styles.channelLabel} htmlFor={id}>
         {label}
       </label>
-      <div className="min-w-0 grow">
+      <div className={styles.slider}>
         <Slider
           aria-label={label}
           id={id}
@@ -53,7 +52,7 @@ const ChannelRow: FC<ChannelRowProps> = ({
           value={value}
         />
       </div>
-      <div className="w-24 shrink-0">
+      <div className={styles.number}>
         <NumberField
           aria-label={label}
           max={max}
@@ -113,8 +112,8 @@ export const PaletteControls: FC<Props> = ({
   };
 
   return (
-    <div className="flex flex-col gap-6">
-      <div className="flex flex-col gap-4">
+    <div className={styles.root}>
+      <div className={styles.channels}>
         <ChannelRow
           label="色相 (H)"
           max={HUE.max}
@@ -134,7 +133,7 @@ export const PaletteControls: FC<Props> = ({
           value={chroma}
         />
       </div>
-      <div className="grid gap-6 sm:grid-cols-2">
+      <div className={styles.fields}>
         <FormControl
           errorText={
             invalidName

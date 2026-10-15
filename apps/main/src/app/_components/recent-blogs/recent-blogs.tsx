@@ -1,21 +1,24 @@
 import { Card } from '@k8ordo/ui';
 import { range } from '@repo/helpers/array/range';
+import { cn } from '@repo/helpers/cn';
 import { Suspense } from 'react';
 
 import { getBlogContents } from '@/features/blog/interface/queries';
 
 import { BlogCard } from './blog-card';
 
+import styles from './recent-blogs.module.css';
+
 const Skeleton = () => (
-  <div className="flex flex-col gap-4">
+  <div className={styles.root}>
     {range(0, 3).map((n) => (
       <Card key={`recent-blog-skeleton-${n}`}>
-        <div className="flex flex-col gap-4 p-4">
-          <div className="flex flex-col gap-2">
-            <div className="bg-bg-mute h-6 w-3/4 animate-pulse rounded-sm" />
-            <div className="bg-bg-mute h-4 w-full animate-pulse rounded-sm" />
+        <div className={styles.skeletonCard}>
+          <div className={styles.skeletonText}>
+            <div className={cn(styles.bone, styles.boneTitle)} />
+            <div className={cn(styles.bone, styles.boneDescription)} />
           </div>
-          <div className="bg-bg-mute h-4 w-24 animate-pulse rounded-sm" />
+          <div className={cn(styles.bone, styles.boneDate)} />
         </div>
       </Card>
     ))}
@@ -33,7 +36,7 @@ const RecentBlogsContent = async () => {
   const recentBlogs = blogs.slice(0, 3);
 
   return (
-    <div className="flex flex-col gap-4">
+    <div className={styles.root}>
       {recentBlogs.map((blog) => (
         <BlogCard key={blog.id} {...blog} />
       ))}

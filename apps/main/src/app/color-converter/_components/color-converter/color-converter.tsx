@@ -10,6 +10,8 @@ import { ColorTip } from './color-tip';
 import { OutputTable } from './output-table';
 import { SmartInput } from './smart-input';
 
+import styles from './color-converter.module.css';
+
 const INITIAL_COLOR: Color = parseColor('#5eead4') ?? {
   r: 0,
   g: 0,
@@ -21,15 +23,15 @@ export const ColorConverter = () => {
   const [color, setColor] = useState<Color>(INITIAL_COLOR);
 
   return (
-    <div className="flex flex-col gap-6">
+    <div className={styles.root}>
       <ColorTip color={color} />
       <Card>
-        <div className="p-5">
+        <div className={styles.cardBody}>
           <SmartInput color={color} onColorChange={setColor} />
         </div>
       </Card>
       <Card>
-        <div className="p-5">
+        <div className={styles.cardBody}>
           <ChannelSliders color={color} onColorChange={setColor} />
         </div>
       </Card>

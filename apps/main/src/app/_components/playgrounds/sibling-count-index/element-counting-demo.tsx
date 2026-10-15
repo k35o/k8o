@@ -1,10 +1,13 @@
 'use client';
 
 import { Switch } from '@k8ordo/ui';
+import { cn } from '@repo/helpers/cn';
 import { useState } from 'react';
 
-const GHOST = 'text-fg-mute border-border-base rounded-lg border border-dashed';
-const ITEM = 'bg-bg-subtle text-fg-base rounded-lg';
+import styles from './element-counting-demo.module.css';
+
+const GHOST = styles.ghost;
+const ITEM = styles.item;
 const OPEN_FRUIT = '<div class=&quot;scid-fruit&quot;>';
 
 // style と script を兄弟として数えさせるのが主題だが、JSX で書くと React が hoist
@@ -22,7 +25,7 @@ export function ElementCountingDemo() {
   const [revealed, setRevealed] = useState(false);
 
   return (
-    <div className="flex flex-col gap-6">
+    <div className={styles.root}>
       <style>{`
         .scid-node {
           counter-reset: scid-index sibling-index();
@@ -69,15 +72,15 @@ export function ElementCountingDemo() {
       />
 
       <div
-        className={`overflow-x-auto ${revealed ? 'scid-tree-revealed' : ''}`}
+        className={cn(styles.tree, revealed && 'scid-tree-revealed')}
         dangerouslySetInnerHTML={{ __html: NODES_HTML }}
       />
 
-      <p className="text-fg-mute text-sm leading-relaxed">
+      <p className={styles.note}>
         見えているものだけだと番号は2、3、5、7と飛びます。スイッチを入れると、1の
-        <code className="font-mono">{'<style>'}</code>、4の
-        <code className="font-mono">display: none</code>な項目、6の
-        <code className="font-mono">{'<script>'}</code>
+        <code className={styles.code}>{'<style>'}</code>、4の
+        <code className={styles.code}>display: none</code>な項目、6の
+        <code className={styles.code}>{'<script>'}</code>
         が現れて番号がつながります。コメントとテキストノードは番号を消費しません。
       </p>
     </div>

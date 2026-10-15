@@ -11,6 +11,8 @@ import type { FC } from 'react';
 
 import { publicApi } from '@/shared/api/public-api';
 
+import styles from './push-subscribe.module.css';
+
 type Props = {
   vapidPublicKey: string;
 };
@@ -165,8 +167,8 @@ export const PushSubscribe: FC<Props> = ({ vapidPublicKey }) => {
 
   return (
     <Card width="full" variant="outline">
-      <div className="flex flex-col gap-4 p-6">
-        <p className="text-fg-base text-sm">
+      <div className={styles.root}>
+        <p className={styles.text}>
           ReadingsとBrowser Supportの更新をプッシュ通知で受け取れます。
         </p>
         {!isSupported && (

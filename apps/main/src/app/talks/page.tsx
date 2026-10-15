@@ -4,10 +4,12 @@ import { talkEventsJsonLd } from '@/shared/site/json-ld';
 
 import { TalkCard } from './_components/talk-card';
 
+import styles from './page.module.css';
+
 export default async function Page() {
   const talks = await getTalks();
   return (
-    <div className="flex flex-col gap-4">
+    <div className={styles.root}>
       <JsonLd data={talkEventsJsonLd(talks)} />
       {talks.map((talk) => (
         <TalkCard key={talk.id} {...talk} />

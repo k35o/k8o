@@ -1,5 +1,7 @@
 import type { FC } from 'react';
 
+import styles from './spelling-grammar-error-demo.module.css';
+
 const APPLIED_CSS = `::spelling-error {
   background-color: var(--color-bg-error);
   color: var(--color-fg-error);
@@ -16,7 +18,7 @@ const APPLIED_CSS = `::spelling-error {
 }`;
 
 export const SpellingGrammarErrorDemo: FC = () => (
-  <div className="flex flex-col gap-3">
+  <div className={styles.root}>
     <p
       aria-label="スペル・文法エラーを試す編集可能なテキスト"
       className="spelling-grammar-error-demo"
@@ -27,7 +29,7 @@ export const SpellingGrammarErrorDemo: FC = () => (
     >
       Check a speling error and an grammar error.
     </p>
-    <pre className="text-fg-mute sm:text-md overflow-x-auto text-xs">
+    <pre className={styles.code}>
       <code>{APPLIED_CSS}</code>
     </pre>
     {/* セレクタをデモの要素に限定し、ページ内の他の入力要素へスタイルが波及しないようにする */}

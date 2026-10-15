@@ -1,0 +1,112 @@
+.root {
+  display: flex;
+  flex-direction: column;
+  gap: calc(var(--spacing) * 6);
+}
+
+.controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: calc(var(--spacing) * 4);
+}
+
+.body {
+  display: flex;
+  gap: calc(var(--spacing) * 4);
+}
+
+.scroller {
+  flex: 1;
+  min-width: 0;
+  height: calc(var(--spacing) * 56);
+  overflow-y: scroll;
+  border-radius: var(--radius-xl);
+  background-color: var(--color-bg-mute);
+  padding: calc(var(--spacing) * 4);
+}
+
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: calc(var(--spacing) * 3);
+}
+
+.prepended {
+  display: flex;
+  flex-direction: column;
+  gap: calc(var(--spacing) * 3);
+
+  &:empty {
+    display: none;
+  }
+}
+
+.prependedItem {
+  border-radius: var(--radius-md);
+  background-color: var(--color-primary-bg);
+  padding: calc(var(--spacing) * 3);
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-sm);
+  color: var(--color-primary-fg);
+}
+
+.item {
+  border-radius: var(--radius-md);
+  background-color: var(--color-bg-base);
+  padding: calc(var(--spacing) * 3);
+  box-shadow: var(--shadow-sm);
+}
+
+.itemText {
+  color: var(--color-fg-base);
+}
+
+.map {
+  position: relative;
+  flex-shrink: 0;
+  width: calc(var(--spacing) * 6);
+  border-radius: var(--radius-full);
+  background-color: var(--color-bg-subtle);
+}
+
+.mapPrepended {
+  position: absolute;
+  inset-inline: 0;
+  top: 0;
+  border-top-left-radius: var(--radius-full);
+  border-top-right-radius: var(--radius-full);
+  background-color: var(--color-primary-bg);
+}
+
+.mapViewport {
+  position: absolute;
+  inset-inline: 0;
+  border: 2px solid var(--color-fg-base);
+  border-radius: var(--radius-sm);
+  transition: top var(--duration-moderate) var(--easing-in-out);
+}
+
+.metrics {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  column-gap: calc(var(--spacing) * 4);
+  row-gap: var(--spacing);
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-sm);
+}
+
+.metricName {
+  color: var(--color-fg-mute);
+}
+
+.metricValue {
+  font-family: var(--font-family-mono);
+  color: var(--color-fg-base);
+}
+
+.note {
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-sm);
+  color: var(--color-fg-mute);
+}

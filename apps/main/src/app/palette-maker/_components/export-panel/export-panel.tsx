@@ -9,6 +9,8 @@ import {
   toTailwindThemeCode,
 } from '../../_utils/export-code';
 
+import styles from './export-panel.module.css';
+
 type Props = {
   name: string;
   swatches: readonly PaletteSwatch[];
@@ -20,9 +22,9 @@ type PanelProps = {
 };
 
 const CodePanel: FC<PanelProps> = ({ code, copyLabel }) => (
-  <div className="bg-bg-subtle flex flex-col gap-3 rounded-xl px-4 py-3">
-    <pre className="overflow-x-auto">
-      <code className="text-fg-base font-mono text-sm">{code}</code>
+  <div className={styles.codePanel}>
+    <pre className={styles.pre}>
+      <code className={styles.code}>{code}</code>
     </pre>
     <div>
       <CopyButton label={`${copyLabel}をコピー`} size="sm" value={code} />
@@ -31,14 +33,14 @@ const CodePanel: FC<PanelProps> = ({ code, copyLabel }) => (
 );
 
 export const ExportPanel: FC<Props> = ({ name, swatches }) => (
-  <div className="flex flex-col gap-3">
+  <div className={styles.root}>
     <Tabs.Root defaultSelectedId="css" ids={['css', 'tailwind']}>
       <Tabs.List label="エクスポート形式">
         <Tabs.Tab id="css">CSS変数</Tabs.Tab>
         <Tabs.Tab id="tailwind">Tailwind @theme</Tabs.Tab>
       </Tabs.List>
       <Tabs.Panel id="css">
-        <div className="pt-3">
+        <div className={styles.panel}>
           <CodePanel
             code={toCssVariablesCode(name, swatches)}
             copyLabel="CSS変数"
@@ -46,7 +48,7 @@ export const ExportPanel: FC<Props> = ({ name, swatches }) => (
         </div>
       </Tabs.Panel>
       <Tabs.Panel id="tailwind">
-        <div className="pt-3">
+        <div className={styles.panel}>
           <CodePanel
             code={toTailwindThemeCode(name, swatches)}
             copyLabel="Tailwind @theme"

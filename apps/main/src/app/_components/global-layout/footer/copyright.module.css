@@ -1,0 +1,8 @@
+.root {
+  color: var(--color-fg-mute);
+
+  @media (width >= 48rem) {
+    font-size: var(--font-size-lg);
+    line-height: var(--line-height-lg);
+  }
+}

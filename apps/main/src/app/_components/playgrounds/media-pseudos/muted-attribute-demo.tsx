@@ -1,13 +1,16 @@
 'use client';
 
 import { Button, Code } from '@k8ordo/ui';
+import { cn } from '@repo/helpers/cn';
 import { useRef } from 'react';
+
+import styles from './muted-attribute-demo.module.css';
 
 export function MutedAttributeDemo() {
   const audioRef = useRef<HTMLAudioElement>(null);
 
   return (
-    <div className="flex flex-col gap-6">
+    <div className={styles.root}>
       <style>{`
         .mp-attr-chip {
           opacity: 0.35;
@@ -19,27 +22,29 @@ export function MutedAttributeDemo() {
         }
       `}</style>
 
-      <div className="mp-attr-player bg-bg-subtle flex flex-col gap-4 rounded-xl p-4">
+      <div className={cn('mp-attr-player', styles.player)}>
         {/* 台詞のない合成音なのでキャプション用のtrackは付けない */}
         {/* oxlint-disable-next-line jsx-a11y/media-has-caption */}
         <audio
-          className="w-full"
+          className={styles.audio}
           controls
           loop
           ref={audioRef}
           src="/playgrounds/media-pseudos-tone.wav"
         />
-        <ul className="m-0 flex list-none flex-wrap gap-2 p-0">
-          <li className="mp-attr-chip mp-attr-chip-attribute bg-bg-subtle text-fg-base rounded-full px-3 py-1 font-mono text-xs">
+        <ul className={styles.chips}>
+          <li
+            className={cn('mp-attr-chip mp-attr-chip-attribute', styles.chip)}
+          >
             audio[muted]
           </li>
-          <li className="mp-attr-chip mp-attr-chip-pseudo bg-bg-subtle text-fg-base rounded-full px-3 py-1 font-mono text-xs">
+          <li className={cn('mp-attr-chip mp-attr-chip-pseudo', styles.chip)}>
             audio:muted
           </li>
         </ul>
       </div>
 
-      <div className="flex flex-wrap gap-3">
+      <div className={styles.actions}>
         <Button
           onClick={() => {
             const audio = audioRef.current;
@@ -62,7 +67,7 @@ export function MutedAttributeDemo() {
         </Button>
       </div>
 
-      <p className="text-fg-mute text-sm">
+      <p className={styles.note}>
         <Code>muted</Code>
         属性は要素が作られたときの初期値を決めるだけで、あとから付け外ししても音は変わりません。コントロールのミュートボタンや
         <Code>muted</Code>プロパティで変えた今の状態を表すのは

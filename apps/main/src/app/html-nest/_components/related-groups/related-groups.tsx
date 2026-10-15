@@ -4,13 +4,15 @@ import type { FC } from 'react';
 import { groupByRole } from '../../_utils/role-grouping';
 import { NestChip } from '../nest-chip';
 
+import styles from './related-groups.module.css';
+
 type RelatedGroupsProps = {
   items: readonly RelatedElement[];
   onSelect: (tag: string) => void;
 };
 
 const ChipList: FC<RelatedGroupsProps> = ({ items, onSelect }) => (
-  <ul className="flex flex-wrap gap-2">
+  <ul className={styles.chips}>
     {items.map((item) => (
       <li key={item.element.tag}>
         <NestChip
@@ -30,10 +32,10 @@ export const RelatedGroups: FC<RelatedGroupsProps> = ({ items, onSelect }) => {
     return null;
   }
   return (
-    <div className="flex flex-col gap-3">
+    <div className={styles.root}>
       {groupByRole(items).map((group) => (
-        <div className="flex flex-col gap-2" key={group.role}>
-          <p className="text-fg-mute text-xs font-medium">
+        <div className={styles.group} key={group.role}>
+          <p className={styles.groupLabel}>
             {group.role}（{group.items.length}）
           </p>
           <ChipList items={group.items} onSelect={onSelect} />

@@ -1,6 +1,8 @@
 import { Heading } from '@k8ordo/ui';
 import type { Metadata } from 'next';
 
+import styles from './layout.module.css';
+
 const DESCRIPTION = 'k8oへの連絡手段の一覧です。';
 
 export const metadata = {
@@ -26,8 +28,8 @@ export const metadata = {
 
 export default function Layout({ children }: LayoutProps<'/contact'>) {
   return (
-    <div className="mx-auto w-full max-w-3xl">
-      <div className="flex flex-col gap-8">
+    <div className={styles.root}>
+      <div className={styles.content}>
         <Heading level="h2">Contact</Heading>
         {children}
       </div>

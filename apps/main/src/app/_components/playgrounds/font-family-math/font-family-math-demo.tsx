@@ -3,13 +3,15 @@
 import { Checkbox } from '@k8ordo/ui';
 import { useState } from 'react';
 
+import styles from './font-family-math-demo.module.css';
+
 export function FontFamilyMathDemo() {
   const [useMathFont, setUseMathFont] = useState(true);
 
   const fontFamily = useMathFont ? 'math' : 'sans-serif';
 
   return (
-    <div className="space-y-6">
+    <div>
       <Checkbox
         label="mathフォントを適用する"
         onChange={(checked) => {
@@ -18,37 +20,31 @@ export function FontFamilyMathDemo() {
         checked={useMathFont}
       />
 
-      <div className="space-y-4">
+      <div className={styles.samples}>
         <div>
-          <p className="text-fg-mute mb-2 text-sm">
-            ピタゴラスの定理（上付き文字）
-          </p>
-          <p className="text-2xl" style={{ fontFamily }}>
+          <p className={styles.caption}>ピタゴラスの定理（上付き文字）</p>
+          <p className={styles.formula} style={{ fontFamily }}>
             x² + y² = z²
           </p>
         </div>
 
         <div>
-          <p className="text-fg-mute mb-2 text-sm">
-            等差数列（上付き・下付き文字）
-          </p>
-          <p className="text-2xl" style={{ fontFamily }}>
+          <p className={styles.caption}>等差数列（上付き・下付き文字）</p>
+          <p className={styles.formula} style={{ fontFamily }}>
             aₙ = a₁ + (n−1)d
           </p>
         </div>
 
         <div>
-          <p className="text-fg-mute mb-2 text-sm">
-            数の集合（Blackboard bold）
-          </p>
-          <p className="text-2xl" style={{ fontFamily }}>
+          <p className={styles.caption}>数の集合（Blackboard bold）</p>
+          <p className={styles.formula} style={{ fontFamily }}>
             ℕ ⊂ ℤ ⊂ ℚ ⊂ ℝ ⊂ ℂ
           </p>
         </div>
 
         <div>
-          <p className="text-fg-mute mb-2 text-sm">積分記号</p>
-          <p className="text-2xl" style={{ fontFamily }}>
+          <p className={styles.caption}>積分記号</p>
+          <p className={styles.formula} style={{ fontFamily }}>
             ∫₀^∞ e⁻ˣ dx = 1
           </p>
         </div>

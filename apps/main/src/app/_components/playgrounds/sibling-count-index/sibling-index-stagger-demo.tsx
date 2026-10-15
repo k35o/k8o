@@ -1,14 +1,17 @@
 'use client';
 
 import { Button, Code, FormControl, Slider } from '@k8ordo/ui';
+import { cn } from '@repo/helpers/cn';
 import { useState } from 'react';
+
+import styles from './sibling-index-stagger-demo.module.css';
 
 export function SiblingIndexStaggerDemo() {
   const [count, setCount] = useState(5);
   const [playKey, setPlayKey] = useState(0);
 
   return (
-    <div className="flex flex-col gap-6">
+    <div className={styles.root}>
       <style>{`
         @keyframes sci-stagger-fade-in {
           from {
@@ -34,8 +37,8 @@ export function SiblingIndexStaggerDemo() {
         }
       `}</style>
 
-      <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:gap-6">
-        <div className="flex-1">
+      <div className={styles.controls}>
+        <div className={styles.field}>
           <FormControl
             label={`項目数: ${String(count)}`}
             renderInput={({ 'aria-labelledby': _ariaLabelledby, ...props }) => (
@@ -60,19 +63,13 @@ export function SiblingIndexStaggerDemo() {
         </Button>
       </div>
 
-      <ul
-        className="flex list-none flex-col gap-2 p-0"
-        key={`${String(count)}-${String(playKey)}`}
-      >
+      <ul className={styles.list} key={`${String(count)}-${String(playKey)}`}>
         {Array.from({ length: count }, (_, index) => (
-          <li
-            className="sci-stagger-item bg-bg-subtle text-fg-base rounded-md px-4 py-3 text-sm"
-            key={index}
-          />
+          <li className={cn('sci-stagger-item', styles.item)} key={index} />
         ))}
       </ul>
 
-      <p className="text-fg-mute text-sm">
+      <p className={styles.note}>
         遅延は<Code>animation-delay: calc(sibling-index() * 90ms)</Code>
         、行頭の番号は<Code>counter-reset</Code>に渡した
         <Code>sibling-index()</Code>

@@ -11,21 +11,21 @@ type ShapeCommandType =
   | 'arc-rotate'
   | 'move';
 
+const shapeStyles: Record<ShapeCommandType, string> = {
+  line: styles.line,
+  curve: styles.curve,
+  smooth: styles.smooth,
+  arc: styles.arc,
+  'arc-large': styles.arcLarge,
+  'arc-rotate': styles.arcRotate,
+  move: styles.move,
+};
+
 export const ShapeCommandDemo = ({ type }: { type: ShapeCommandType }) => {
   const isArc = type.startsWith('arc');
   return (
-    <div
-      className={cn(
-        'bg-bg-mute overflow-hidden rounded-md',
-        isArc && 'mx-auto max-w-48',
-      )}
-    >
-      <div
-        className={cn(
-          'from-group-primary to-group-quaternary h-32 bg-linear-to-br',
-          styles[type],
-        )}
-      />
+    <div className={cn(styles.root, isArc && styles.narrow)}>
+      <div className={cn(styles.shape, shapeStyles[type])} />
     </div>
   );
 };

@@ -1,10 +1,13 @@
 'use client';
 
 import { Badge, Button } from '@k8ordo/ui';
+import { cn } from '@repo/helpers/cn';
 import type { FC } from 'react';
 
 import { useColorQuiz } from './use-color-quiz';
 import { useQuizRadioGroup } from './use-quiz-radio-group';
+
+import styles from './hex-to-color.module.css';
 
 export const HexToColor: FC = () => {
   const {
@@ -24,28 +27,20 @@ export const HexToColor: FC = () => {
   });
 
   return (
-    <div className="flex flex-col gap-6">
+    <div className={styles.root}>
       {/* 正誤と正解の hex をスクリーンリーダーに通知する永続ライブリージョン */}
-      <output className="sr-only">
+      <output className={styles.srOnly}>
         {phase === 'result'
           ? `${isCorrect ? '正解' : '不正解'}。正解は #${targetHex} です`
           : ''}
       </output>
-      <div className="text-center">
-        <p className="font-mono text-3xl font-bold tracking-normal">
-          #{targetHex}
-        </p>
+      <div className={styles.question}>
+        <p className={styles.targetHex}>#{targetHex}</p>
         {phase === 'result' && (
-          <p className="mt-2 text-lg font-bold">
-            {isCorrect ? '正解！' : '不正解...'}
-          </p>
+          <p className={styles.verdict}>{isCorrect ? '正解！' : '不正解...'}</p>
         )}
       </div>
-      <div
-        aria-label="色の選択肢"
-        className="grid grid-cols-2 gap-4"
-        role="radiogroup"
-      >
+      <div aria-label="色の選択肢" className={styles.options} role="radiogroup">
         {options.map((hex, index) => {
           const isSelected = selectedHex === hex;
           const isAnswer = hex === targetHex;
@@ -64,17 +59,13 @@ export const HexToColor: FC = () => {
               key={hex}
               {...getRadioProps(hex, index)}
               aria-label={optionLabel}
-              className={[
-                'relative flex h-28 items-center justify-center rounded-xl transition-all',
-                isSelected && phase === 'question'
-                  ? 'ring-4 ring-primary-border'
-                  : '',
-                showCorrectBadge ? 'ring-4 ring-border-success' : '',
-                showWrongBadge ? 'ring-4 ring-border-error' : '',
-                phase === 'question' ? 'cursor-pointer hover:opacity-80' : '',
-              ]
-                .filter(Boolean)
-                .join(' ')}
+              className={cn(
+                styles.option,
+                phase === 'question' && styles.selectable,
+                isSelected && phase === 'question' && styles.selected,
+                showCorrectBadge && styles.correct,
+                showWrongBadge && styles.wrong,
+              )}
               disabled={phase === 'result'}
               onClick={() => {
                 setSelectedHex(hex);
@@ -84,7 +75,7 @@ export const HexToColor: FC = () => {
             >
               {phase === 'result' && (
                 <p
-                  className="text-sm font-bold tracking-normal"
+                  className={styles.optionHex}
                   style={{
                     color: `contrast-color(#${hex})`,
                   }}
@@ -93,12 +84,12 @@ export const HexToColor: FC = () => {
                 </p>
               )}
               {showCorrectBadge && (
-                <span className="absolute top-2 right-2">
+                <span className={styles.badge}>
                   <Badge label="正解" tone="success" />
                 </span>
               )}
               {showWrongBadge && (
-                <span className="absolute top-2 right-2">
+                <span className={styles.badge}>
                   <Badge label="あなたの回答" tone="error" />
                 </span>
               )}

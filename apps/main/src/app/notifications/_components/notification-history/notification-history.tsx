@@ -3,6 +3,8 @@ import { formatDate } from '@repo/helpers/date/format';
 
 import { getPushLogs } from '@/features/push-notification/interface/queries';
 
+import styles from './notification-history.module.css';
+
 type PushLog = Awaited<ReturnType<typeof getPushLogs>>[number];
 
 const KIND_LABEL: Record<PushLog['kind'], string> = {
@@ -15,23 +17,23 @@ export const NotificationHistory = async () => {
   const logs = await getPushLogs();
 
   if (logs.length === 0) {
-    return <p className="text-fg-mute text-sm">まだ通知の履歴はありません。</p>;
+    return <p className={styles.empty}>まだ通知の履歴はありません。</p>;
   }
 
   return (
-    <ul className="flex flex-col gap-4">
+    <ul className={styles.list}>
       {logs.map((log) => (
         <li key={log.id}>
           <Card width="full" variant="outline">
-            <div className="flex flex-col gap-2 p-4">
-              <div className="flex items-center gap-2">
+            <div className={styles.item}>
+              <div className={styles.meta}>
                 <Badge label={KIND_LABEL[log.kind]} tone="info" />
-                <time className="text-fg-mute text-xs" dateTime={log.sentAt}>
+                <time className={styles.time} dateTime={log.sentAt}>
                   {formatDate(new Date(log.sentAt), 'yyyy年M月d日(E) HH:mm')}
                 </time>
               </div>
-              <p className="text-fg-base font-bold">{log.title}</p>
-              <p className="text-fg-base text-sm">{log.body}</p>
+              <p className={styles.title}>{log.title}</p>
+              <p className={styles.body}>{log.body}</p>
               {log.url !== null && <Anchor href={log.url}>{log.url}</Anchor>}
             </div>
           </Card>

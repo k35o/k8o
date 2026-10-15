@@ -1,6 +1,8 @@
 import { Heading } from '@k8ordo/ui';
 import type { Metadata } from 'next';
 
+import styles from './layout.module.css';
+
 const DESCRIPTION =
   'k8o.meにおけるアクセス解析やお問い合わせ情報の取り扱いについて説明します。';
 
@@ -27,8 +29,8 @@ export const metadata = {
 
 export default function Layout({ children }: LayoutProps<'/privacy'>) {
   return (
-    <div className="mx-auto w-full max-w-3xl">
-      <div className="flex flex-col gap-8">
+    <div className={styles.root}>
+      <div className={styles.content}>
         <Heading level="h2">プライバシーポリシー</Heading>
         {children}
       </div>

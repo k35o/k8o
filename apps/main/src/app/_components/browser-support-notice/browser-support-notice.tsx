@@ -12,8 +12,7 @@ import { BROWSER_SUPPORT_MESSAGE } from './messages';
 import { noticeState } from './notice-state';
 import { isNoticeForced, useDetectedBrowser } from './use-detected-browser';
 
-const LINK_CLASS =
-  'text-primary-fg cursor-pointer underline underline-offset-2';
+import styles from './browser-support-notice.module.css';
 
 export const BrowserSupportNotice: FC<{
   minVersions: BrowserMinVersions;
@@ -27,7 +26,7 @@ export const BrowserSupportNotice: FC<{
   const renderDetailLink = useCallback(
     ({ children }: { children: ReactNode }): ReactNode => (
       <button
-        className={LINK_CLASS}
+        className={styles.detailLink}
         onClick={() => {
           setIsModalOpen(true);
         }}
@@ -50,7 +49,7 @@ export const BrowserSupportNotice: FC<{
   }
 
   return (
-    <div className="mx-auto w-full max-w-5xl px-4 pt-4">
+    <div className={styles.root}>
       <Alert
         action={{ label: '詳しくはこちら', renderItem: renderDetailLink }}
         closeLabel="この通知を閉じる"

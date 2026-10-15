@@ -5,6 +5,8 @@ import { cn } from '@repo/helpers/cn';
 import { useRef } from 'react';
 import type { ComponentProps, FC } from 'react';
 
+import styles from './code-block.module.css';
+
 type Props = ComponentProps<'pre'> & {
   'data-lang'?: string;
   'data-filename'?: string;
@@ -48,10 +50,8 @@ export const CodeBlock: FC<Props> = ({
       </span>
       <pre
         {...rest}
-        className={cn(
-          'writing-h vertical:box-border vertical:mx-4 vertical:h-max vertical:max-h-full vertical:max-w-container-lg vertical:overflow-auto my-0 overflow-x-auto text-sm leading-7',
-          className,
-        )}
+        // writing-h はデザインシステムのグローバルクラス。縦書きの中でもコードは横書きに固定する
+        className={cn('writing-h', styles.root, className)}
         ref={preRef}
       >
         {children}

@@ -4,16 +4,18 @@ import { Button, Code } from '@k8ordo/ui';
 import { useState } from 'react';
 import type { FC } from 'react';
 
+import styles from './content-visibility-demo.module.css';
+
 export const ContentVisibilityDemo: FC = () => {
   const [showHidden, setShowHidden] = useState(true);
   const [showAuto, setShowAuto] = useState(true);
 
   return (
-    <div className="flex flex-col gap-6">
-      <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-        <div className="flex flex-col gap-3">
-          <div className="flex items-center justify-between">
-            <p className="font-bold">
+    <div className={styles.root}>
+      <div className={styles.columns}>
+        <div className={styles.column}>
+          <div className={styles.columnHeader}>
+            <p className={styles.label}>
               <Code>content-visibility: hidden</Code>
             </p>
             <Button
@@ -25,14 +27,14 @@ export const ContentVisibilityDemo: FC = () => {
               {showHidden ? 'visible' : 'hidden'}に変更する
             </Button>
           </div>
-          <div className="bg-bg-subtle h-96 rounded-xl p-4">
+          <div className={styles.box}>
             <div
               style={{
                 contentVisibility: showHidden ? 'hidden' : 'visible',
               }}
             >
-              <h3 className="text-md mb-2 font-bold">サンプルコンテンツ</h3>
-              <p className="mb-4">
+              <h3 className={styles.heading}>サンプルコンテンツ</h3>
+              <p className={styles.text}>
                 このコンテンツは<Code>content-visibility: hidden</Code>
                 によって制御されています。非表示の場合、レンダリング処理が行われず、スクリーンリーダーやブラウザ検索からもアクセスできません。
               </p>
@@ -42,9 +44,9 @@ export const ContentVisibilityDemo: FC = () => {
             </div>
           </div>
         </div>
-        <div className="flex flex-col gap-3">
-          <div className="flex items-center justify-between">
-            <p className="font-bold">
+        <div className={styles.column}>
+          <div className={styles.columnHeader}>
+            <p className={styles.label}>
               <Code>content-visibility: auto</Code>
             </p>
             <Button
@@ -56,14 +58,14 @@ export const ContentVisibilityDemo: FC = () => {
               {showAuto ? 'visible' : 'auto'}に変更する
             </Button>
           </div>
-          <div className="bg-bg-subtle h-96 rounded-xl p-4">
+          <div className={styles.box}>
             <div
               style={{
                 contentVisibility: showAuto ? 'auto' : 'visible',
               }}
             >
-              <h3 className="text-md mb-2 font-bold">サンプルコンテンツ</h3>
-              <p className="mb-4">
+              <h3 className={styles.heading}>サンプルコンテンツ</h3>
+              <p className={styles.text}>
                 このコンテンツは<Code>content-visibility: auto</Code>
                 によって制御されています。ビューポート外の要素のレンダリング処理を必要なタイミングまでスキップできます。
               </p>

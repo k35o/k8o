@@ -3,19 +3,21 @@
 import { FormControl, TextField } from '@k8ordo/ui';
 import { useState } from 'react';
 
+import styles from './contrast-color-demo.module.css';
+
 const isHexColor = (value: string) => /^#[0-9a-fA-F]{6}$/u.test(value);
 
 export function ContrastColorDemo() {
   const [backgroundColor, setBackgroundColor] = useState('#2563eb');
 
   return (
-    <div className="flex flex-col gap-6">
+    <div className={styles.root}>
       <FormControl
         label="背景色"
         renderInput={({ 'aria-labelledby': _ariaLabelledby, ...props }) => (
-          <div className="flex items-center gap-3">
+          <div className={styles.picker}>
             <label
-              className="border-border-base relative size-10 shrink-0 cursor-pointer overflow-hidden rounded-full border-2"
+              className={styles.swatch}
               style={{
                 backgroundColor: isHexColor(backgroundColor)
                   ? backgroundColor
@@ -24,7 +26,7 @@ export function ContrastColorDemo() {
             >
               <input
                 aria-label="カラーピッカー"
-                className="absolute inset-0 size-full cursor-pointer opacity-0"
+                className={styles.colorInput}
                 onChange={(e) => {
                   setBackgroundColor(e.target.value);
                 }}
@@ -46,7 +48,7 @@ export function ContrastColorDemo() {
       />
 
       <div
-        className="flex h-40 items-center justify-center rounded-xl p-8 text-xl font-bold"
+        className={styles.preview}
         style={{
           backgroundColor,
           color: `contrast-color(${backgroundColor})`,
@@ -55,7 +57,7 @@ export function ContrastColorDemo() {
         この文字色は contrast-color() で決まっています
       </div>
 
-      <p className="text-fg-mute font-mono text-sm">
+      <p className={styles.code}>
         color: contrast-color({backgroundColor})&#x3B;
       </p>
     </div>

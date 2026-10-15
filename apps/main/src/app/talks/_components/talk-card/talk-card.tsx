@@ -16,6 +16,8 @@ import type { Route } from 'next';
 import Link from 'next/link';
 import type { FC } from 'react';
 
+import styles from './talk-card.module.css';
+
 export const TalkCard: FC<{
   title: string;
   eventUrl: string;
@@ -42,9 +44,9 @@ export const TalkCard: FC<{
   tags,
 }) => (
   <Card>
-    <div className="flex flex-col gap-6 p-8">
-      <div className="flex flex-col gap-2">
-        <h2 className="flex items-center gap-2 text-lg font-bold md:text-2xl">
+    <div className={styles.root}>
+      <div className={styles.header}>
+        <h2 className={styles.title}>
           {title}
           <IconButton
             label="イベントのリンク"
@@ -69,28 +71,28 @@ export const TalkCard: FC<{
             <ExternalLinkIcon />
           </IconButton>
         </h2>
-        <p className="text-fg-mute text-md md:text-lg">{eventName}</p>
+        <p className={styles.event}>{eventName}</p>
       </div>
-      <div className="flex flex-wrap gap-2">
-        <div className="text-fg-mute md:text-md flex items-center gap-1 text-sm">
+      <div className={styles.details}>
+        <div className={styles.detail}>
           <PublishDateIcon size="sm" />
           <span>{formatDate(new Date(eventDate))}</span>
         </div>
         {eventLocation !== null && (
-          <div className="text-fg-mute md:text-md flex items-center gap-1 text-sm">
+          <div className={styles.detail}>
             <LocationIcon size="sm" />
             <span>{eventLocation}</span>
           </div>
         )}
       </div>
-      <div className="flex flex-wrap items-center gap-2">
+      <div className={styles.tags}>
         {tags.map((tag) => (
           <Link href={`/tags/${tag.id.toString()}`} key={tag.id}>
             <Badge interactive key={tag.id} size="sm" label={tag.name} />
           </Link>
         ))}
       </div>
-      <div className="flex flex-wrap gap-4">
+      <div className={styles.actions}>
         <Button
           renderItem={({
             children,

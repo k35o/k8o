@@ -17,10 +17,10 @@ export const DeckPrint: FC<{ slides: Slide[] }> = ({ slides }) => {
   use(browser());
 
   return createPortal(
-    <div className={styles['root']} data-slide-print="true">
+    <div className={styles.root} data-slide-print="true">
       {slides.map((slide, index) => (
         // スライドは並び替わらないため index を key に使う
-        <div className={styles['page']} key={index}>
+        <div className={styles.page} key={index}>
           <Stage flush>{slide.content}</Stage>
         </div>
       ))}

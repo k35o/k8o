@@ -1,26 +1,26 @@
 import { ExternalLinkIcon, Card } from '@k8ordo/ui';
 import type { FC } from 'react';
 
+import styles from './fallback.module.css';
+
 export type LinkCardVariant = 'shadow' | 'outline';
 
 export const LinkCardFallback: FC<{
   href: string;
   variant?: LinkCardVariant;
 }> = ({ href, variant = 'shadow' }) => (
-  <div className="vertical:max-w-container-md">
+  <div className={styles.root}>
     <Card interactive variant={variant}>
       <a
         aria-label={href}
-        className="group block h-full"
+        className={styles.link}
         href={href}
         rel="noopener noreferrer"
         target="_blank"
       >
-        <div className="flex h-full flex-col gap-2 p-4">
-          <p className="text-md group-hover:text-primary-fg vertical:block vertical:max-block-[8em] vertical:overflow-hidden line-clamp-2 font-bold break-all transition-colors duration-200 ease-out">
-            {href}
-          </p>
-          <div className="text-fg-subtle mt-auto flex items-center gap-1 text-xs">
+        <div className={styles.body}>
+          <p className={styles.title}>{href}</p>
+          <div className={styles.host}>
             <ExternalLinkIcon size="sm" />
             <p>{new URL(href).hostname}</p>
           </div>

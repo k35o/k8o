@@ -3,13 +3,15 @@
 import { Code, FormControl, Slider } from '@k8ordo/ui';
 import { useState } from 'react';
 
+import styles from './css-math-functions-demo.module.css';
+
 export function CssMathFunctionsDemo() {
   const [xValue, setXValue] = useState(-50);
   const [yValue, setYValue] = useState(30);
 
   return (
-    <div className="space-y-6">
-      <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+    <div className={styles.root}>
+      <div className={styles.controls}>
         <FormControl
           helpText="横方向の位置を調整します"
           label="X値"
@@ -37,12 +39,12 @@ export function CssMathFunctionsDemo() {
           )}
         />
       </div>
-      <div className="flex flex-col items-center gap-4">
-        <div className="bg-bg-subtle relative aspect-square w-full max-w-80 overflow-hidden rounded-lg">
-          <div className="bg-fg-subtle absolute top-0 left-1/2 h-full w-px" />
-          <div className="bg-fg-subtle absolute top-1/2 left-0 h-px w-full" />
+      <div className={styles.preview}>
+        <div className={styles.plane}>
+          <div className={styles.axisY} />
+          <div className={styles.axisX} />
           <div
-            className="absolute z-10 size-6 rounded-full transition-all duration-300 ease-out"
+            className={styles.point}
             style={{
               '--x': xValue.toString(),
               '--y': yValue.toString(),
@@ -56,7 +58,7 @@ export function CssMathFunctionsDemo() {
             }}
           />
 
-          <div className="text-fg-mute absolute top-2 left-2 text-xs">
+          <div className={styles.readout}>
             <p>
               座標: ({xValue}, {yValue})
             </p>
@@ -73,7 +75,7 @@ export function CssMathFunctionsDemo() {
             </p>
           </div>
         </div>
-        <div className="text-fg-mute flex flex-col items-start gap-2 text-xs md:text-sm">
+        <div className={styles.notes}>
           <p>
             ※<Code>abs</Code>
             を用いて、座標の絶対値の和が大きいほど要素のサイズを大きくしています。透明度も同じようにしています。

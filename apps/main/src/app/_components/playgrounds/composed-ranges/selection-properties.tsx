@@ -3,6 +3,8 @@
 import { Code, FormControl, TextField } from '@k8ordo/ui';
 import { useEffect, useRef, useState } from 'react';
 
+import styles from './selection-properties.module.css';
+
 // Selection はシングルトンで参照が変わらないため、配列で wrap して変更を検知する。
 type SelectionSnapshot = [Selection] | null;
 
@@ -39,9 +41,9 @@ export function SelectionProperties() {
   const current = selection?.[0];
 
   return (
-    <div className="flex flex-col gap-4" ref={ref}>
-      <div className="flex flex-col">
-        <p className="font-bold">サンプルテキスト</p>
+    <div className={styles.root} ref={ref}>
+      <div className={styles.sample}>
+        <p className={styles.label}>サンプルテキスト</p>
         <p>
           あさ、眼をさますときの気持は、面白い。かくれんぼのとき、押入れの真っ暗い中に、じっと、しゃがんで隠れていて、突然、でこちゃんに、がらっと襖をあけられ、日の光がどっと来て、でこちゃんに、「見つけた！」と大声で言われて、まぶしさ、それから、へんな間の悪さ、それから、胸がどきどきして、着物のまえを合せたりして、ちょっと、てれくさく、押入れから出て来て、急にむかむか腹立たしく、あの感じ、いや、ちがう、あの感じでもない、なんだか、もっとやりきれない。
         </p>
@@ -51,14 +53,14 @@ export function SelectionProperties() {
         renderInput={(props) => <TextField {...props} />}
       />
       <div>
-        <p className="font-bold">
+        <p className={styles.label}>
           選択中のテキスト（<Code>selection.toString()</Code>）
         </p>
         <p>{current ? current.toString() : ''}</p>
       </div>
       <div>
-        <p className="font-bold">選択要素の開始位置の要素</p>
-        <p className="font-bold">
+        <p className={styles.label}>選択要素の開始位置の要素</p>
+        <p className={styles.label}>
           （<Code>selection.anchorNode.textContent</Code>,{' '}
           <Code>selection.anchorOffset</Code>）
         </p>
@@ -69,8 +71,8 @@ export function SelectionProperties() {
         </p>
       </div>
       <div>
-        <p className="font-bold">選択要素の終了位置の要素</p>
-        <p className="font-bold">
+        <p className={styles.label}>選択要素の終了位置の要素</p>
+        <p className={styles.label}>
           （<Code>selection.focusNode.textContent</Code>,{' '}
           <Code>selection.focusOffset</Code>）
         </p>
@@ -81,7 +83,7 @@ export function SelectionProperties() {
         </p>
       </div>
       <div>
-        <p className="font-bold">
+        <p className={styles.label}>
           選択の種類（<Code>selection.type</Code>）
         </p>
         <p>{current ? current.type : ''}</p>

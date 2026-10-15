@@ -5,6 +5,8 @@ import { cn } from '@repo/helpers/cn';
 import { useState } from 'react';
 import { flushSync } from 'react-dom';
 
+import styles from './active-view-transition-demo.module.css';
+
 type CardCount = (typeof CARDS)[number]['id'];
 
 const CARDS = [
@@ -56,7 +58,7 @@ export function ActiveViewTransitionDemo() {
   };
 
   return (
-    <div className="space-y-4">
+    <div className={styles.root}>
       <style>{`
         /* 遷移中にのみ表示されるインジケーター */
         .transition-indicator {
@@ -112,29 +114,29 @@ export function ActiveViewTransitionDemo() {
         }
       `}</style>
 
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-2">
+      <div className={styles.status}>
+        <div className={styles.state}>
           <div
             aria-hidden="true"
-            className="bg-border-success transition-indicator size-3 rounded-full"
+            className={cn('transition-indicator', styles.dot)}
           />
-          <output className="text-fg-mute text-sm">
+          <output className={styles.caption}>
             {isTransitioning ? '遷移中...' : '待機中'}
           </output>
         </div>
-        <span className="text-fg-mute text-sm">
+        <span className={styles.caption}>
           {currentIndex + 1} / {CARDS.length}
         </span>
       </div>
 
-      <div className="flex justify-center">
+      <div className={styles.stage}>
         <div
-          className="card-content h-48 w-64 rounded-xl"
+          className={cn('card-content', styles.card)}
           style={{ backgroundColor: card.color }}
         />
       </div>
 
-      <div className="flex justify-center gap-4">
+      <div className={styles.actions}>
         <Button
           onClick={() => {
             navigate('backwards');
@@ -153,13 +155,11 @@ export function ActiveViewTransitionDemo() {
         </Button>
       </div>
 
-      <div className="flex justify-center gap-2">
+      <div className={styles.pager}>
         {CARDS.map((c, index) => (
           <div
-            className={cn(
-              'size-2 rounded-full transition-colors',
-              index === currentIndex ? 'bg-fg-base' : 'bg-border-base',
-            )}
+            className={styles.pagerDot}
+            data-active={index === currentIndex}
             key={c.id}
           />
         ))}

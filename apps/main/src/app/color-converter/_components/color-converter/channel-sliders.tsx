@@ -15,6 +15,8 @@ import type { Color, Oklch } from '@repo/helpers/color/spaces';
 import { useId, useState } from 'react';
 import type { FC } from 'react';
 
+import styles from './channel-sliders.module.css';
+
 type Props = {
   color: Color;
   onColorChange: (color: Color) => void;
@@ -45,14 +47,11 @@ const ChannelControl: FC<{ channel: Channel }> = ({ channel }) => {
     }
   };
   return (
-    <div className="flex items-center gap-3">
-      <label
-        className="text-fg-base w-8 shrink-0 text-sm font-bold"
-        htmlFor={id}
-      >
+    <div className={styles.control}>
+      <label className={styles.label} htmlFor={id}>
         {channel.label}
       </label>
-      <div className="min-w-0 grow">
+      <div className={styles.slider}>
         <Slider
           aria-label={channel.label}
           id={id}
@@ -63,7 +62,7 @@ const ChannelControl: FC<{ channel: Channel }> = ({ channel }) => {
           value={value}
         />
       </div>
-      <div className="w-20 shrink-0">
+      <div className={styles.number}>
         <NumberField
           aria-label={channel.label}
           max={channel.max}
@@ -79,7 +78,7 @@ const ChannelControl: FC<{ channel: Channel }> = ({ channel }) => {
 };
 
 const ChannelGroup: FC<{ channels: Channel[] }> = ({ channels }) => (
-  <div className="flex flex-col gap-4 pt-4">
+  <div className={styles.group}>
     {channels.map((channel) => (
       <ChannelControl channel={channel} key={channel.label} />
     ))}

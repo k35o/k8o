@@ -3,6 +3,8 @@
 import { FormControl, Select } from '@k8ordo/ui';
 import { useEffect, useRef, useState } from 'react';
 
+import styles from './crisp-edges-demo.module.css';
+
 type ImageRendering = 'auto' | 'smooth' | 'crisp-edges' | 'pixelated';
 
 const PATTERN: ReadonlyArray<readonly number[]> = [
@@ -53,7 +55,7 @@ export function CrispEdgesDemo() {
   }, []);
 
   return (
-    <div className="flex flex-col gap-6">
+    <div className={styles.root}>
       <FormControl
         label="image-rendering"
         renderInput={({ 'aria-labelledby': _ariaLabelledby, ...props }) => (
@@ -75,13 +77,13 @@ export function CrispEdgesDemo() {
 
       <canvas
         aria-hidden="true"
-        className="hidden"
+        className={styles.canvas}
         height={16}
         ref={canvasRef}
         width={16}
       />
 
-      <div className="flex justify-center">
+      <div className={styles.preview}>
         {imageSrc !== null && (
           // oxlint-disable-next-line @next/next/no-img-element -- canvasから生成したdata URLのプレビューでnext/imageは不要
           <img

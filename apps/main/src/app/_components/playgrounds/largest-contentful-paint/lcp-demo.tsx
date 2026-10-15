@@ -9,6 +9,8 @@ import {
   useSyncExternalStore,
 } from 'react';
 
+import styles from './lcp-demo.module.css';
+
 const isLargestContentfulPaint = (
   entry: PerformanceEntry,
 ): entry is LargestContentfulPaint =>
@@ -92,7 +94,7 @@ export function LCPDemo() {
   if (!isSupported) {
     return (
       <div>
-        <p className="text-fg-mute text-sm">
+        <p className={styles.note}>
           このブラウザはLargest Contentful Paint APIをサポートしていません。
         </p>
       </div>
@@ -102,75 +104,70 @@ export function LCPDemo() {
   const latestEntry = entries[0];
 
   return (
-    <div className="space-y-4">
-      <div className="flex flex-wrap items-center gap-3">
+    <div className={styles.root}>
+      <div className={styles.toolbar}>
         <Button color="base" onClick={handleReset} size="sm" variant="outline">
           リセット
         </Button>
-        <span className="text-fg-mute text-sm">
-          検出回数:{' '}
-          <span className="text-fg-base font-medium">{entries.length}</span>
+        <span className={styles.count}>
+          検出回数: <span className={styles.countValue}>{entries.length}</span>
         </span>
       </div>
 
       {latestEntry === undefined ? (
         <div>
-          <p className="text-fg-mute text-sm">
+          <p className={styles.note}>
             LCPエントリを待機中...ページを再読み込みすると計測されます。
           </p>
         </div>
       ) : (
         <div>
-          <div className="mb-3 flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <h4 className="text-fg-base font-medium">現在のLCP</h4>
+          <div className={styles.latestHeader}>
+            <div className={styles.latestTitle}>
+              <h4 className={styles.heading}>現在のLCP</h4>
               {latestEntry.element !== null && (
-                <code className="text-xs">{latestEntry.element}</code>
+                <code className={styles.tag}>{latestEntry.element}</code>
               )}
             </div>
-            <span className="text-fg-mute text-xs">
-              {latestEntry.timestamp}
-            </span>
+            <span className={styles.timestamp}>{latestEntry.timestamp}</span>
           </div>
-          <div className="mb-4">
-            <div className="mb-1 flex items-baseline gap-2">
-              <span className="text-primary-fg text-2xl font-bold">
+          <div className={styles.primary}>
+            <div className={styles.primaryRow}>
+              <span className={styles.startTime}>
                 {latestEntry.startTime.toFixed(0)}
               </span>
-              <span className="text-fg-mute text-sm">ms (startTime)</span>
+              <span className={styles.unit}>ms (startTime)</span>
             </div>
           </div>
-          <div className="space-y-2 text-sm">
-            <div className="flex justify-between">
-              <span className="text-fg-mute">renderTime</span>
-              <span className="text-fg-base font-medium">
+          <div className={styles.metrics}>
+            <div className={styles.metric}>
+              <span className={styles.metricName}>renderTime</span>
+              <span className={styles.metricValue}>
                 {latestEntry.renderTime.toFixed(1)}ms
               </span>
             </div>
-            <div className="flex justify-between">
-              <span className="text-fg-mute">loadTime</span>
-              <span className="text-fg-base font-medium">
+            <div className={styles.metric}>
+              <span className={styles.metricName}>loadTime</span>
+              <span className={styles.metricValue}>
                 {latestEntry.loadTime.toFixed(1)}ms
               </span>
             </div>
-            <div className="flex justify-between">
-              <span className="text-fg-mute">size</span>
-              <span className="text-fg-base font-medium">
+            <div className={styles.metric}>
+              <span className={styles.metricName}>size</span>
+              <span className={styles.metricValue}>
                 {latestEntry.size.toLocaleString()}px²
               </span>
             </div>
             {latestEntry.url && (
-              <div className="flex justify-between gap-2">
-                <span className="text-fg-mute shrink-0">url</span>
-                <span className="text-fg-base truncate text-xs font-medium">
-                  {latestEntry.url}
-                </span>
+              <div className={styles.metricUrl}>
+                <span className={styles.metricUrlName}>url</span>
+                <span className={styles.metricUrlValue}>{latestEntry.url}</span>
               </div>
             )}
             {latestEntry.elementId && (
-              <div className="flex justify-between">
-                <span className="text-fg-mute">id</span>
-                <span className="text-fg-base font-medium">
+              <div className={styles.metric}>
+                <span className={styles.metricName}>id</span>
+                <span className={styles.metricValue}>
                   {latestEntry.elementId}
                 </span>
               </div>
@@ -180,25 +177,22 @@ export function LCPDemo() {
       )}
 
       {entries.length > 1 && (
-        <div className="space-y-2">
-          <h4 className="text-fg-mute text-sm font-medium">LCP候補の履歴</h4>
-          <div className="space-y-1">
+        <div className={styles.history}>
+          <h4 className={styles.historyHeading}>LCP候補の履歴</h4>
+          <div className={styles.historyList}>
             {entries.slice(1).map((entry) => (
-              <div
-                className="flex items-center justify-between py-1 text-sm"
-                key={entry.id}
-              >
-                <div className="flex items-center gap-2">
-                  <span className="text-fg-mute">{entry.timestamp}</span>
+              <div className={styles.historyItem} key={entry.id}>
+                <div className={styles.historyMeta}>
+                  <span className={styles.historyTime}>{entry.timestamp}</span>
                   {entry.element !== null && (
                     <Badge size="sm" label={entry.element} />
                   )}
                 </div>
-                <div className="flex items-center gap-3">
-                  <span className="text-fg-mute text-xs">
+                <div className={styles.historyValues}>
+                  <span className={styles.historySize}>
                     {entry.size.toLocaleString()}px²
                   </span>
-                  <span className="text-fg-base font-medium">
+                  <span className={styles.historyStart}>
                     {entry.startTime.toFixed(0)}ms
                   </span>
                 </div>
@@ -208,7 +202,7 @@ export function LCPDemo() {
         </div>
       )}
 
-      <p className="text-fg-mute text-sm">
+      <p className={styles.note}>
         ページ読み込み時のLCP（Largest Contentful
         Paint）を計測しています。ページを再読み込みすると新しい計測結果が表示されます。
       </p>

@@ -13,6 +13,8 @@ import type { FC } from 'react';
 import { isSortOrder, SORT_OPTIONS } from '../../_utils/constants';
 import type { SortOrder } from '../../_utils/constants';
 
+import styles from './filter-bar.module.css';
+
 type Source = {
   id: number;
   title: string;
@@ -48,7 +50,7 @@ export const FilterBar: FC<Props> = ({
     }));
 
   return (
-    <div className="flex flex-col gap-5">
+    <div className={styles.root}>
       <Heading level="h4">絞り込み</Heading>
       <FormControl
         label="検索"

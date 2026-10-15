@@ -1,0 +1,7 @@
+.root {
+  margin-block: 0;
+  overflow-x: auto;
+  font-size: var(--font-size-sm);
+  /* text-sm の 2 倍 = 28px。leading-7 と同じ高さ */
+  line-height: var(--line-height-loose);
+}

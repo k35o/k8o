@@ -1,9 +1,11 @@
 import { Button } from '@k8ordo/ui';
 import type { FC } from 'react';
 
+import styles from './popover-api-demo.module.css';
+
 export const PopoverApiDemo: FC = () => (
   <div>
-    <div className="flex flex-wrap gap-2">
+    <div className={styles.actions}>
       <Button popoverTarget="popover1" popoverTargetAction="toggle">
         popovertargetaction: toggle
       </Button>
@@ -14,11 +16,7 @@ export const PopoverApiDemo: FC = () => (
         popovertargetaction: hide
       </Button>
     </div>
-    <p
-      className="backdrop:bg-back-drop m-auto max-w-1/3 rounded-md p-4 opacity-0 transition-opacity duration-500 open:opacity-100 starting:open:opacity-0"
-      id="popover1"
-      popover="auto"
-    >
+    <p className={styles.popover} id="popover1" popover="auto">
       このポップオーバーはPopover APIによって表示されました。
       ESCキーやこのコンテンツの外側のクリック、toggleまたはhideボタンで閉じられます。
     </p>

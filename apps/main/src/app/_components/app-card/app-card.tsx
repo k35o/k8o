@@ -3,6 +3,8 @@ import type { Route } from 'next';
 import Link from 'next/link';
 import type { ReactNode } from 'react';
 
+import styles from './app-card.module.css';
+
 export const AppCard = ({
   link,
   title,
@@ -17,22 +19,18 @@ export const AppCard = ({
   const isExternal = typeof link === 'string' && link.startsWith('https://');
 
   const content = (
-    <div className="flex h-full flex-col p-7 text-left">
-      <div className="flex items-center gap-3">
+    <div className={styles.root}>
+      <div className={styles.header}>
         {icon === undefined ? null : (
-          <span className="bg-bg-mute text-primary-fg flex size-10 shrink-0 items-center justify-center rounded-lg">
-            {icon}
-          </span>
+          <span className={styles.icon}>{icon}</span>
         )}
         <Heading level="h3">{title}</Heading>
       </div>
 
-      <p className="text-fg-mute mt-4 line-clamp-3 flex-1 text-sm leading-relaxed">
-        {description}
-      </p>
+      <p className={styles.description}>{description}</p>
 
-      <div className="mt-6 flex items-center justify-end">
-        <span className="text-fg-subtle group-hover:text-primary-fg flex items-center transition-all duration-150 ease-out group-hover:translate-x-0.5">
+      <div className={styles.footer}>
+        <span className={styles.arrow}>
           {isExternal ? (
             <ExternalLinkIcon size="sm" />
           ) : (
@@ -47,7 +45,7 @@ export const AppCard = ({
     <Card variant="shadow" interactive>
       {isExternal ? (
         <a
-          className="group"
+          className={styles.link}
           href={link}
           rel="noopener noreferrer"
           target="_blank"
@@ -55,7 +53,7 @@ export const AppCard = ({
           {content}
         </a>
       ) : (
-        <Link className="group" href={link}>
+        <Link className={styles.link} href={link}>
           {content}
         </Link>
       )}

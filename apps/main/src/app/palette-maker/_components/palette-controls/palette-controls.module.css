@@ -1,0 +1,45 @@
+.channel {
+  display: flex;
+  align-items: center;
+  gap: calc(var(--spacing) * 3);
+}
+
+.channelLabel {
+  color: var(--color-fg-base);
+  width: calc(var(--spacing) * 28);
+  flex-shrink: 0;
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-sm);
+  font-weight: var(--font-weight-bold);
+}
+
+.slider {
+  min-width: 0;
+  flex-grow: 1;
+}
+
+.number {
+  width: calc(var(--spacing) * 24);
+  flex-shrink: 0;
+}
+
+.root {
+  display: flex;
+  flex-direction: column;
+  gap: calc(var(--spacing) * 6);
+}
+
+.channels {
+  display: flex;
+  flex-direction: column;
+  gap: calc(var(--spacing) * 4);
+}
+
+.fields {
+  display: grid;
+  gap: calc(var(--spacing) * 6);
+
+  @media (width >= 40rem) {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}

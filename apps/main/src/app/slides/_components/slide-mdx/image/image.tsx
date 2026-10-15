@@ -11,16 +11,16 @@ type Props = {
 };
 
 export const Image: FC<Props> = ({ src, alt, caption }) => (
-  <figure className={styles['figure']}>
+  <figure className={styles.root}>
     <NextImage
       alt={alt}
-      className={styles['img']}
+      className={styles.image}
       loading="eager"
       priority
       src={src}
     />
     {caption !== undefined && caption !== '' && (
-      <figcaption className={styles['caption']}>{caption}</figcaption>
+      <figcaption className={styles.caption}>{caption}</figcaption>
     )}
   </figure>
 );

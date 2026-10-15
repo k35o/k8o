@@ -33,13 +33,18 @@ const dotsBottomRight: Dot[] = [
 ];
 
 const Legs: FC<{ paths: string[]; dots: Dot[] }> = ({ paths, dots }) => (
-  <svg viewBox="0 0 240 240" fill="none" aria-hidden="true">
-    <g className={styles['leg']}>
+  <svg
+    aria-hidden="true"
+    className={styles.legs}
+    fill="none"
+    viewBox="0 0 240 240"
+  >
+    <g className={styles.leg}>
       {paths.map((d) => (
         <path key={d} d={d} />
       ))}
     </g>
-    <g className={styles['dot']}>
+    <g className={styles.dot}>
       {dots.map((dot) => (
         <circle key={`${dot.cx}-${dot.cy}`} cx={dot.cx} cy={dot.cy} r={dot.r} />
       ))}
@@ -48,13 +53,13 @@ const Legs: FC<{ paths: string[]; dots: Dot[] }> = ({ paths, dots }) => (
 );
 
 export const Background: FC = () => (
-  <div aria-hidden="true" className={styles['background']}>
-    <div className={cn(styles['corner'], styles['topLeft'])}>
+  <div aria-hidden="true" className={styles.root}>
+    <div className={cn(styles.corner, styles.topLeft)}>
       <Legs paths={legPathsTopLeft} dots={dotsTopLeft} />
     </div>
-    <div className={cn(styles['corner'], styles['bottomRight'])}>
+    <div className={cn(styles.corner, styles.bottomRight)}>
       <Legs paths={legPathsBottomRight} dots={dotsBottomRight} />
     </div>
-    <div className={styles['grain']} />
+    <div className={styles.grain} />
   </div>
 );

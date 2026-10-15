@@ -1,5 +1,6 @@
 'use client';
 
+import { cn } from '@repo/helpers/cn';
 import { useState } from 'react';
 import type { FC } from 'react';
 
@@ -10,6 +11,8 @@ import { useDeckController } from '../hooks/use-deck-controller';
 import { useClosePresenterOnViewerStop } from '../hooks/use-presenter-lifecycle';
 import { NavButton } from '../nav-button';
 import { Stage } from '../stage';
+
+import styles from './deck-presenter.module.css';
 
 export const DeckPresenter: FC<{
   slug: string;
@@ -32,48 +35,29 @@ export const DeckPresenter: FC<{
   useClosePresenterOnViewerStop({ slug, sessionId });
 
   return (
-    <section
-      aria-label={`${title} - 発表者モード`}
-      className="bg-bg-mute text-fg-base fixed inset-0 z-50 flex flex-col gap-2 p-4"
-    >
-      <header className="flex items-center justify-between gap-4">
-        <p className="text-fg-base truncate text-sm font-bold">
-          {title}{' '}
-          <span className="text-fg-mute font-medium">- 発表者モード</span>
+    <section aria-label={`${title} - 発表者モード`} className={styles.root}>
+      <header className={styles.header}>
+        <p className={styles.title}>
+          {title} <span className={styles.mode}>- 発表者モード</span>
         </p>
-        <p
-          aria-live="polite"
-          className="text-primary-fg text-sm font-medium tabular-nums"
-        >
-          {index + 1} <span className="text-fg-mute">/ {total}</span>
+        <p aria-live="polite" className={styles.counter}>
+          {index + 1} <span className={styles.total}>/ {total}</span>
         </p>
       </header>
-      <div className="grid min-h-0 flex-1 grid-cols-1 grid-rows-[1fr_auto] gap-4 lg:grid-cols-[2fr_1fr] lg:grid-rows-[2fr_1fr]">
-        <section
-          aria-label="現在のスライド"
-          className="flex min-h-0 min-w-0 flex-col gap-1 lg:row-span-2"
-        >
-          <p className="text-primary-fg text-xs font-medium tracking-normal uppercase">
-            Now
-          </p>
-          <div className="min-h-0 min-w-0 flex-1 overflow-hidden">
+      <div className={styles.panels}>
+        <section aria-label="現在のスライド" className={styles.current}>
+          <p className={cn(styles.caption, styles.captionCurrent)}>Now</p>
+          <div className={styles.slot}>
             <Stage key={`current-${index.toString()}`} qrUrl={qrUrl}>
               <BrowserOnly>{current?.content}</BrowserOnly>
             </Stage>
           </div>
         </section>
-        <section
-          aria-label="次のスライド"
-          className="flex min-h-0 min-w-0 flex-col gap-1"
-        >
-          <p className="text-fg-mute text-xs font-medium tracking-normal uppercase">
-            Next
-          </p>
-          <div className="min-h-0 min-w-0 flex-1 overflow-hidden">
+        <section aria-label="次のスライド" className={styles.next}>
+          <p className={cn(styles.caption, styles.captionNext)}>Next</p>
+          <div className={styles.slot}>
             {nextSlide === undefined ? (
-              <div className="bg-bg-base text-fg-mute flex h-full items-center justify-center rounded-lg text-sm">
-                最終スライドです
-              </div>
+              <div className={styles.end}>最終スライドです</div>
             ) : (
               <Stage key={`next-${index.toString()}`}>
                 <BrowserOnly>{nextSlide.content}</BrowserOnly>
@@ -81,16 +65,11 @@ export const DeckPresenter: FC<{
             )}
           </div>
         </section>
-        <section
-          aria-label="発表者ノート"
-          className="bg-bg-base flex min-h-0 min-w-0 flex-col gap-2 overflow-auto rounded-lg p-4"
-        >
-          <p className="text-secondary-fg text-xs font-medium tracking-normal uppercase">
-            Notes
-          </p>
-          <div className="text-fg-base text-sm leading-relaxed">
+        <section aria-label="発表者ノート" className={styles.notes}>
+          <p className={cn(styles.caption, styles.captionNotes)}>Notes</p>
+          <div className={styles.notesBody}>
             {current === undefined || current.notes.length === 0 ? (
-              <p className="text-fg-mute italic">ノートはありません</p>
+              <p className={styles.empty}>ノートはありません</p>
             ) : (
               current.notes.map((note, i) => (
                 <div key={i.toString()}>{note}</div>
@@ -99,7 +78,7 @@ export const DeckPresenter: FC<{
           </div>
         </section>
       </div>
-      <footer className="flex items-center justify-between gap-2">
+      <footer className={styles.footer}>
         <NavButton direction="prev" disabled={index === 0} onAction={prev} />
         <NavButton
           direction="next"

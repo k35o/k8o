@@ -12,6 +12,8 @@ import { reportClientError } from '@/shared/browser/report-client-error';
 
 import { mPlus2 } from './_styles/font';
 
+import styles from './global-error.module.css';
+
 // root layout ごと失敗した場合のフォールバックなので、Provider に依存しない最小構成にする
 export default function GlobalError({
   error,
@@ -26,16 +28,11 @@ export default function GlobalError({
 
   return (
     <html lang="ja">
-      <body
-        className={cn(
-          mPlus2.variable,
-          'bg-bg-surface font-m-plus-2 font-medium text-fg-base tracking-none antialiased',
-        )}
-      >
-        <div className="flex min-h-dvh flex-col items-center justify-center gap-8 px-4 text-center">
-          <div className="flex flex-col gap-3">
+      <body className={cn(mPlus2.variable, styles.body)}>
+        <div className={styles.content}>
+          <div className={styles.message}>
             <Heading level="h1">問題が発生しました</Heading>
-            <p className="text-fg-mute leading-relaxed">
+            <p className={styles.description}>
               予期しないエラーが発生しました。再試行しても解決しない場合は、時間をおいて再度お試しください。
             </p>
           </div>

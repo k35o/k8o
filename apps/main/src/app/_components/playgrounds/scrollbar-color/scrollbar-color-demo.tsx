@@ -3,19 +3,21 @@
 import { range } from '@repo/helpers/array/range';
 import { useState } from 'react';
 
+import styles from './scrollbar-color-demo.module.css';
+
 export function ScrollbarColorDemo() {
   const [thumbColor, setThumbColor] = useState('#6366f1');
   const [trackColor, setTrackColor] = useState('#e2e8f0');
 
   return (
-    <div className="space-y-4">
-      <div className="flex flex-wrap gap-4">
-        <div className="flex items-center gap-2">
-          <label className="text-fg-mute text-sm" htmlFor="thumb-color">
+    <div className={styles.root}>
+      <div className={styles.controls}>
+        <div className={styles.control}>
+          <label className={styles.label} htmlFor="thumb-color">
             つまみ（thumb）:
           </label>
           <input
-            className="border-border-base h-8 w-16 cursor-pointer rounded-sm border"
+            className={styles.colorInput}
             id="thumb-color"
             onChange={(e) => {
               setThumbColor(e.target.value);
@@ -23,14 +25,14 @@ export function ScrollbarColorDemo() {
             type="color"
             value={thumbColor}
           />
-          <span className="font-mono text-sm">{thumbColor}</span>
+          <span className={styles.value}>{thumbColor}</span>
         </div>
-        <div className="flex items-center gap-2">
-          <label className="text-fg-mute text-sm" htmlFor="track-color">
+        <div className={styles.control}>
+          <label className={styles.label} htmlFor="track-color">
             トラック（track）:
           </label>
           <input
-            className="border-border-base h-8 w-16 cursor-pointer rounded-sm border"
+            className={styles.colorInput}
             id="track-color"
             onChange={(e) => {
               setTrackColor(e.target.value);
@@ -38,25 +40,22 @@ export function ScrollbarColorDemo() {
             type="color"
             value={trackColor}
           />
-          <span className="font-mono text-sm">{trackColor}</span>
+          <span className={styles.value}>{trackColor}</span>
         </div>
       </div>
 
       <div
-        className="bg-bg-mute h-48 overflow-y-scroll rounded-lg p-4"
+        className={styles.scroller}
         style={{
           scrollbarColor: `${thumbColor} ${trackColor}`,
         }}
         tabIndex={0}
       >
-        <div className="space-y-4">
+        <div className={styles.list}>
           {range(0, 20).map((n) => (
-            <div
-              className="bg-bg-base rounded-md p-3 shadow-sm"
-              key={`scrollbar-item-${n}`}
-            >
-              <p className="text-fg-base">アイテム {n + 1}</p>
-              <p className="text-fg-mute text-sm">
+            <div className={styles.item} key={`scrollbar-item-${n}`}>
+              <p className={styles.itemTitle}>アイテム {n + 1}</p>
+              <p className={styles.itemText}>
                 スクロールバーの色が変わっていることを確認してください
               </p>
             </div>
@@ -65,7 +64,7 @@ export function ScrollbarColorDemo() {
       </div>
 
       <div>
-        <p className="text-fg-mute font-mono text-sm">
+        <p className={styles.output}>
           scrollbar-color: {thumbColor} {trackColor}&#x3B;
         </p>
       </div>
