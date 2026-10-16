@@ -12,16 +12,13 @@ import {
   uiUserPrompt,
 } from '@/features/generation/application/ui-spec';
 import type { UiSpecDraft } from '@/features/generation/application/ui-spec';
+
 import {
-  addUsageTokens,
-  EMPTY_USAGE_TOKENS,
-} from '@/features/usage/application/pricing';
-import {
-  recordUsage,
-  reserveUsage,
-  USAGE_REFUSAL_MESSAGES,
-} from '@/features/usage/application/usage';
-import { GENERATION_MODELS } from '@/shared/claude/models';
+  progressIntervalMs,
+  truncateSummary,
+  withReservedUsage,
+} from './artifact-tool';
+import type { ArtifactToolContext } from './artifact-tool';
 
 export const generateUiInputSchema = z.object({
   title: z
@@ -52,14 +49,7 @@ export const generateUiInputSchema = z.object({
     ),
 });
 
-export const generateUiContextSchema = z.object({
-  userId: z.string(),
-  threadId: z.string(),
-  model: z.enum(GENERATION_MODELS),
-});
-
 type GenerateUiInput = z.infer<typeof generateUiInputSchema>;
-type GenerateUiContext = z.infer<typeof generateUiContextSchema>;
 
 type GeneratingPhase = 'thinking' | 'drawing' | 'repairing';
 
@@ -73,24 +63,8 @@ export type GenerateUiOutput =
       spec: Spec;
     };
 
-const UI_PROGRESS_INTERVAL_MS = 300;
-// 送る量が1秒あたりおよそ 20KB で頭打ちになるよう、spec が大きいほど間をあける
-const PROGRESS_CHARS_PER_MS = 20;
-const MAX_SUMMARY_CHARS = 300;
-
-// サロゲートペアを途中で切らないよう、UTF-16 の長さではなく文字で数える
-const truncate = (text: string): string => {
-  const chars = Array.from(text);
-  return chars.length <= MAX_SUMMARY_CHARS
-    ? text
-    : `${chars.slice(0, MAX_SUMMARY_CHARS).join('')}…`;
-};
-
-const progressIntervalMs = (spec: Spec | null): number =>
-  Math.max(
-    UI_PROGRESS_INTERVAL_MS,
-    spec === null ? 0 : JSON.stringify(spec).length / PROGRESS_CHARS_PER_MS,
-  );
+const specProgressIntervalMs = (spec: Spec | null): number =>
+  progressIntervalMs(spec === null ? 0 : JSON.stringify(spec).length);
 
 // SSE に書き出す前や保存したメッセージに載ったあとで組み立て中の spec が書き換わらないよう、複製して流す
 const progress = (
@@ -106,61 +80,40 @@ async function* attempt(input: {
   phase: 'thinking' | 'repairing';
   base: Spec | null;
   userPrompt: string;
-  context: GenerateUiContext;
+  context: ArtifactToolContext;
   abortSignal: AbortSignal | undefined;
 }): AsyncGenerator<GenerateUiOutput, UiSpecDraft> {
-  const { context } = input;
-  const reservation = await reserveUsage({
-    app: 'agent',
-    kind: 'ui',
-    userId: context.userId,
-    model: context.model,
-    now: Date.now(),
-  });
-  if (!reservation.ok) {
-    throw new Error(USAGE_REFUSAL_MESSAGES[reservation.reason]);
-  }
+  return yield* withReservedUsage(
+    { kind: 'ui', context: input.context },
+    async function* (onStepUsage) {
+      let phase: GeneratingPhase = input.phase;
+      yield progress(phase, input.base);
+      let nextProgressAt = Date.now() + specProgressIntervalMs(input.base);
 
-  let tokens = EMPTY_USAGE_TOKENS;
-  try {
-    let phase: GeneratingPhase = input.phase;
-    yield progress(phase, input.base);
-    let nextProgressAt = Date.now() + progressIntervalMs(input.base);
-
-    const drafts = streamUiSpec({
-      model: context.model,
-      base: input.base,
-      userPrompt: input.userPrompt,
-      abortSignal: input.abortSignal,
-      onStepUsage: (step) => {
-        tokens = addUsageTokens(tokens, step);
-      },
-    });
-    let next = await drafts.next();
-    while (next.done !== true) {
-      const now = Date.now();
-      // 描き始めたことは間引かずに伝える
-      if (phase === 'thinking') {
-        phase = 'drawing';
-        nextProgressAt = now;
+      const drafts = streamUiSpec({
+        model: input.context.model,
+        base: input.base,
+        userPrompt: input.userPrompt,
+        abortSignal: input.abortSignal,
+        onStepUsage,
+      });
+      let next = await drafts.next();
+      while (next.done !== true) {
+        const now = Date.now();
+        // 描き始めたことは間引かずに伝える
+        if (phase === 'thinking') {
+          phase = 'drawing';
+          nextProgressAt = now;
+        }
+        if (now >= nextProgressAt) {
+          yield progress(phase, next.value.spec);
+          nextProgressAt = now + specProgressIntervalMs(next.value.spec);
+        }
+        next = await drafts.next();
       }
-      if (now >= nextProgressAt) {
-        yield progress(phase, next.value.spec);
-        nextProgressAt = now + progressIntervalMs(next.value.spec);
-      }
-      next = await drafts.next();
-    }
-    return next.value;
-  } finally {
-    // tool が返ったあとの予算の確かめ（stopWhen）に入るよう、after に載せずに書き終えてから返る
-    await recordUsage({
-      usageId: reservation.usageId,
-      model: context.model,
-      tokens,
-    }).catch((error: unknown) => {
-      console.error('利用の記録に失敗しました', error);
-    });
-  }
+      return next.value;
+    },
+  );
 }
 
 export async function* generateUi({
@@ -169,7 +122,7 @@ export async function* generateUi({
   abortSignal,
 }: {
   input: GenerateUiInput;
-  context: GenerateUiContext;
+  context: ArtifactToolContext;
   abortSignal: AbortSignal | undefined;
 }): AsyncGenerator<GenerateUiOutput> {
   const target = input.base ?? null;
@@ -203,7 +156,7 @@ export async function* generateUi({
     throw new Error(
       settled.summary === ''
         ? 'UI は変わりませんでした'
-        : `UI は変わりませんでした: ${truncate(settled.summary)}`,
+        : `UI は変わりませんでした: ${truncateSummary(settled.summary)}`,
     );
   }
   const ready =
@@ -226,7 +179,7 @@ export async function* generateUi({
 
   // 止めたのに版ができる隙間を狭める
   abortSignal?.throwIfAborted();
-  const summary = truncate(ready.summary);
+  const summary = truncateSummary(ready.summary);
   const saved = await saveUiVersion({
     userId: context.userId,
     threadId: context.threadId,

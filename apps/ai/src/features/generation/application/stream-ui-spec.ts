@@ -6,52 +6,21 @@ import {
 } from '@json-render/core';
 import type { Spec } from '@json-render/core';
 import { streamText } from 'ai';
-import type { FinishReason, ProviderMetadata } from 'ai';
-import * as z from 'zod/mini';
 
-import { toUsageTokens } from '@/features/usage/application/pricing';
 import type { UsageTokens } from '@/features/usage/application/pricing';
 import { getGenerationModel } from '@/shared/claude/claude-provider';
 import type { GenerationModel } from '@/shared/claude/models';
 
 import { buildSpecSystemPrompt } from './build-spec-system-prompt';
+import { generationTextOf } from './generation-stream';
+import type { GenerationFailure } from './generation-stream';
 import type { UiSpecDraft } from './ui-spec';
 
-const messageStartUsageSchema = z.object({
-  input_tokens: z.number(),
-  cache_read_input_tokens: z.nullish(z.number()),
-  cache_creation_input_tokens: z.nullish(z.number()),
-});
-
-// 中断したステップには finish-step が流れず usage を取れないので、message_start が持つ入力の分を数える
-const startedUsageOf = (
-  metadata: ProviderMetadata | undefined,
-): UsageTokens | null => {
-  const parsed = messageStartUsageSchema.safeParse(
-    metadata?.['anthropic']?.['usage'],
-  );
-  if (!parsed.success) {
-    return null;
+const failureMessage = (failure: GenerationFailure): string => {
+  if (failure.type === 'error') {
+    return `UI の生成でエラーが起きました: ${failure.message}`;
   }
-  const cacheReadTokens = parsed.data.cache_read_input_tokens ?? 0;
-  const cacheWriteTokens = parsed.data.cache_creation_input_tokens ?? 0;
-  return {
-    inputTokens: parsed.data.input_tokens + cacheReadTokens + cacheWriteTokens,
-    outputTokens: 0,
-    cacheReadTokens,
-    cacheWriteTokens,
-  };
-};
-
-const describeError = (error: unknown): string => {
-  if (error instanceof Error) {
-    return error.message;
-  }
-  return typeof error === 'string' ? error : JSON.stringify(error);
-};
-
-const unfinishedMessage = (finishReason: FinishReason | undefined): string => {
-  switch (finishReason) {
+  switch (failure.finishReason) {
     case 'length':
       return '出力の上限に達したため、UI を組み立てられませんでした。小さく分けて頼んでください';
     case 'content-filter':
@@ -117,62 +86,23 @@ export async function* streamUiSpec(input: {
     prose: proseLines.join('\n'),
   });
 
-  let finishReason: FinishReason | undefined;
-  let streamError: { error: unknown } | null = null;
-  let startedUsage: UsageTokens | null = null;
-  try {
-    for await (const part of result.stream) {
-      const appliedBefore = appliedPatchCount;
-      switch (part.type) {
-        case 'text-delta':
-          parser.push(part.text);
-          break;
-        // 次の text のブロックと行が繋がらないよう、ブロックの終わりで区切る
-        case 'text-end':
-          parser.flush();
-          break;
-        case 'custom':
-          if (part.kind === 'anthropic.message_start') {
-            startedUsage = startedUsageOf(part.providerMetadata);
-          }
-          break;
-        // エラーで終わったステップは入力トークン数を持たないので、message_start の分を残す
-        case 'finish-step':
-          if (part.usage.inputTokens !== undefined) {
-            input.onStepUsage(toUsageTokens(part.usage));
-            startedUsage = null;
-          }
-          break;
-        // エラーのあとの finish-step まで読んで usage を受け取ってから投げる
-        case 'error':
-          streamError ??= { error: part.error };
-          break;
-        case 'finish':
-          finishReason = part.finishReason;
-          break;
-        default:
-          break;
-      }
-      if (appliedPatchCount !== appliedBefore) {
-        yield draft();
-      }
+  for await (const part of generationTextOf({
+    stream: result.stream,
+    abortSignal: input.abortSignal,
+    onStepUsage: input.onStepUsage,
+    failureMessage,
+  })) {
+    const appliedBefore = appliedPatchCount;
+    if (part.type === 'text-delta') {
+      parser.push(part.text);
+    } else {
+      // 次の text のブロックと行が繋がらないよう、ブロックの終わりで区切る
+      parser.flush();
     }
-  } finally {
-    if (startedUsage !== null) {
-      input.onStepUsage(startedUsage);
+    if (appliedPatchCount !== appliedBefore) {
+      yield draft();
     }
   }
-
   parser.flush();
-  // 中断された streamText は例外を投げず、abort のパーツを流して閉じる
-  input.abortSignal?.throwIfAborted();
-  if (streamError !== null) {
-    throw new Error(
-      `UI の生成でエラーが起きました: ${describeError(streamError.error)}`,
-    );
-  }
-  if (finishReason !== 'stop') {
-    throw new Error(unfinishedMessage(finishReason));
-  }
   return draft();
 }
