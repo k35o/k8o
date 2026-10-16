@@ -4,19 +4,24 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 import {
   insertArtifactWithFirstVersion,
   insertNextVersion,
+  selectArtifactVersions,
   selectVersion,
 } from '../infrastructure/artifact-repository';
 import {
   findSlidesVersion,
   findUiVersion,
+  loadArtifact,
   saveSlidesVersion,
   saveUiVersion,
+  versionFromParam,
 } from './artifacts';
 
 vi.mock('server-only', () => ({}));
 vi.mock('../infrastructure/artifact-repository', () => ({
   insertArtifactWithFirstVersion: vi.fn(),
   insertNextVersion: vi.fn(),
+  selectArtifacts: vi.fn(),
+  selectArtifactVersions: vi.fn(),
   selectVersion: vi.fn(),
 }));
 
@@ -39,6 +44,7 @@ beforeEach(() => {
   vi.mocked(insertNextVersion).mockResolvedValue(3);
   vi.mocked(selectVersion).mockResolvedValue({
     id: 12,
+    kind: 'ui',
     title: '問い合わせフォーム',
     content: { spec: SPEC },
   });
@@ -102,7 +108,6 @@ describe('findUiVersion', () => {
         artifactId: 'a1b2c3d4e5f6',
         version: 2,
         userId: 'u1',
-        kind: 'ui',
       });
     });
   });
@@ -110,6 +115,17 @@ describe('findUiVersion', () => {
   describe('異常系', () => {
     it('版が見つからなければ null を返す', async () => {
       vi.mocked(selectVersion).mockResolvedValue(null);
+
+      await expect(findUiVersion(query)).resolves.toBeNull();
+    });
+
+    it('slides の生成物の版なら null を返す', async () => {
+      vi.mocked(selectVersion).mockResolvedValue({
+        id: 12,
+        kind: 'slides',
+        title: 'LT の資料',
+        content: { source: '## まとめ' },
+      });
 
       await expect(findUiVersion(query)).resolves.toBeNull();
     });
@@ -122,6 +138,7 @@ describe('findUiVersion', () => {
     ])('%sなら null を返す', async (_label, content) => {
       vi.mocked(selectVersion).mockResolvedValue({
         id: 12,
+        kind: 'ui',
         title: '問い合わせフォーム',
         content,
       });
@@ -189,6 +206,7 @@ describe('findSlidesVersion', () => {
     it('持ち主の slides の版を読み、その id・生成物・タイトル・source を返す', async () => {
       vi.mocked(selectVersion).mockResolvedValue({
         id: 12,
+        kind: 'slides',
         title: 'LT の資料',
         content: { source: '## まとめ' },
       });
@@ -203,7 +221,6 @@ describe('findSlidesVersion', () => {
         artifactId: 'a1b2c3d4e5f6',
         version: 2,
         userId: 'u1',
-        kind: 'slides',
       });
     });
   });
@@ -212,6 +229,10 @@ describe('findSlidesVersion', () => {
     it('版が見つからなければ null を返す', async () => {
       vi.mocked(selectVersion).mockResolvedValue(null);
 
+      await expect(findSlidesVersion(query)).resolves.toBeNull();
+    });
+
+    it('ui の生成物の版なら null を返す', async () => {
       await expect(findSlidesVersion(query)).resolves.toBeNull();
     });
 
@@ -224,11 +245,251 @@ describe('findSlidesVersion', () => {
     ])('%sなら null を返す', async (_label, content) => {
       vi.mocked(selectVersion).mockResolvedValue({
         id: 12,
+        kind: 'slides',
         title: 'LT の資料',
         content,
       });
 
       await expect(findSlidesVersion(query)).resolves.toBeNull();
+    });
+  });
+});
+
+describe('loadArtifact', () => {
+  const historyRow = {
+    kind: 'ui',
+    title: '問い合わせフォーム',
+    summary: 'ボタンを大きくしました。',
+    threadId: 'thread-1',
+  } as const;
+
+  beforeEach(() => {
+    vi.mocked(selectArtifactVersions).mockResolvedValue([
+      {
+        ...historyRow,
+        version: 3,
+        instruction: '最初の版に検索欄を足す',
+        threadId: null,
+        createdAt: '2026-10-15T14:00:00.000Z',
+        parentArtifactId: 'a1b2c3d4e5f6',
+        parentVersion: 1,
+      },
+      {
+        ...historyRow,
+        version: 2,
+        instruction: 'ボタンを大きくする',
+        createdAt: '2026-10-15T13:00:00.000Z',
+        parentArtifactId: 'a1b2c3d4e5f6',
+        parentVersion: 1,
+      },
+      {
+        ...historyRow,
+        version: 1,
+        instruction: '問い合わせフォームを作る',
+        createdAt: '2026-10-15T12:00:00.000Z',
+        parentArtifactId: null,
+        parentVersion: null,
+      },
+    ]);
+  });
+
+  describe('正常系', () => {
+    it('全版の履歴に、土台の版から直した版か新しく作った版かを添え、選んだ版の中身と一緒に返す', async () => {
+      await expect(
+        loadArtifact({ artifactId: 'a1b2c3d4e5f6', version: 2, userId: 'u1' }),
+      ).resolves.toStrictEqual({
+        id: 'a1b2c3d4e5f6',
+        kind: 'ui',
+        versions: [
+          {
+            version: 3,
+            title: '問い合わせフォーム',
+            instruction: '最初の版に検索欄を足す',
+            summary: 'ボタンを大きくしました。',
+            threadId: null,
+            createdAt: '2026-10-15T14:00:00.000Z',
+            origin: { type: 'edit', version: 1 },
+          },
+          {
+            version: 2,
+            title: '問い合わせフォーム',
+            instruction: 'ボタンを大きくする',
+            summary: 'ボタンを大きくしました。',
+            threadId: 'thread-1',
+            createdAt: '2026-10-15T13:00:00.000Z',
+            origin: { type: 'edit', version: 1 },
+          },
+          {
+            version: 1,
+            title: '問い合わせフォーム',
+            instruction: '問い合わせフォームを作る',
+            summary: 'ボタンを大きくしました。',
+            threadId: 'thread-1',
+            createdAt: '2026-10-15T12:00:00.000Z',
+            origin: { type: 'new' },
+          },
+        ],
+        selected: {
+          version: 2,
+          kind: 'ui',
+          title: '問い合わせフォーム',
+          spec: SPEC,
+        },
+      });
+      expect(selectArtifactVersions).toHaveBeenCalledExactlyOnceWith({
+        artifactId: 'a1b2c3d4e5f6',
+        userId: 'u1',
+      });
+      expect(selectVersion).toHaveBeenCalledExactlyOnceWith({
+        artifactId: 'a1b2c3d4e5f6',
+        version: 2,
+        userId: 'u1',
+      });
+    });
+
+    it('版を選んでいなければ、いちばん新しい版を選ぶ', async () => {
+      const loaded = await loadArtifact({
+        artifactId: 'a1b2c3d4e5f6',
+        version: null,
+        userId: 'u1',
+      });
+
+      expect(loaded?.selected.version).toBe(3);
+      expect(selectVersion).toHaveBeenCalledExactlyOnceWith({
+        artifactId: 'a1b2c3d4e5f6',
+        version: 3,
+        userId: 'u1',
+      });
+    });
+
+    it('スライドの版は、デッキの source を中身にして返す', async () => {
+      const slidesRow = {
+        kind: 'slides',
+        title: 'LT の資料',
+        threadId: 'thread-1',
+      } as const;
+      vi.mocked(selectArtifactVersions).mockResolvedValue([
+        {
+          ...slidesRow,
+          version: 2,
+          instruction: 'まとめを足す',
+          summary: 'まとめのスライドを足しました。',
+          createdAt: '2026-10-15T13:00:00.000Z',
+          parentArtifactId: 'a1b2c3d4e5f6',
+          parentVersion: 1,
+        },
+        {
+          ...slidesRow,
+          version: 1,
+          instruction: 'LT の資料を作る',
+          summary: '5枚の資料を作りました。',
+          createdAt: '2026-10-15T12:00:00.000Z',
+          parentArtifactId: null,
+          parentVersion: null,
+        },
+      ]);
+      vi.mocked(selectVersion).mockResolvedValue({
+        id: 12,
+        kind: 'slides',
+        title: 'LT の資料',
+        content: { source: '## まとめ' },
+      });
+
+      await expect(
+        loadArtifact({ artifactId: 'a1b2c3d4e5f6', version: 2, userId: 'u1' }),
+      ).resolves.toStrictEqual({
+        id: 'a1b2c3d4e5f6',
+        kind: 'slides',
+        versions: [
+          {
+            version: 2,
+            title: 'LT の資料',
+            instruction: 'まとめを足す',
+            summary: 'まとめのスライドを足しました。',
+            threadId: 'thread-1',
+            createdAt: '2026-10-15T13:00:00.000Z',
+            origin: { type: 'edit', version: 1 },
+          },
+          {
+            version: 1,
+            title: 'LT の資料',
+            instruction: 'LT の資料を作る',
+            summary: '5枚の資料を作りました。',
+            threadId: 'thread-1',
+            createdAt: '2026-10-15T12:00:00.000Z',
+            origin: { type: 'new' },
+          },
+        ],
+        selected: {
+          version: 2,
+          kind: 'slides',
+          title: 'LT の資料',
+          source: '## まとめ',
+        },
+      });
+    });
+  });
+
+  describe('異常系', () => {
+    it('持ち主の生成物でなければ（履歴が空なら）、版を読まずに null を返す', async () => {
+      vi.mocked(selectArtifactVersions).mockResolvedValue([]);
+
+      await expect(
+        loadArtifact({ artifactId: 'a1b2c3d4e5f6', version: 2, userId: 'u2' }),
+      ).resolves.toBeNull();
+      expect(selectVersion).not.toHaveBeenCalled();
+    });
+
+    it('選んだ版が無ければ null を返す', async () => {
+      vi.mocked(selectVersion).mockResolvedValue(null);
+
+      await expect(
+        loadArtifact({ artifactId: 'a1b2c3d4e5f6', version: 9, userId: 'u1' }),
+      ).resolves.toBeNull();
+    });
+
+    it('選んだ版の中身が壊れていれば null を返す', async () => {
+      vi.mocked(selectVersion).mockResolvedValue({
+        id: 12,
+        kind: 'ui',
+        title: '問い合わせフォーム',
+        content: { source: '## まとめ' },
+      });
+
+      await expect(
+        loadArtifact({ artifactId: 'a1b2c3d4e5f6', version: 2, userId: 'u1' }),
+      ).resolves.toBeNull();
+    });
+  });
+});
+
+describe('versionFromParam', () => {
+  describe('正常系', () => {
+    it('値が無ければ、いちばん新しい版を指す null を返す', () => {
+      expect(versionFromParam(undefined)).toBeNull();
+    });
+
+    it.each([
+      ['1', 1],
+      ['12', 12],
+    ])('1以上の整数の %s は、その版の番号 %d にする', (value, version) => {
+      expect(versionFromParam(value)).toBe(version);
+    });
+  });
+
+  describe('異常系', () => {
+    it.each([
+      ['空の文字列', ''],
+      ['0', '0'],
+      ['負の数', '-1'],
+      ['小数', '1.5'],
+      ['先頭が0', '01'],
+      ['数でない文字列', 'abc'],
+      ['数のあとに文字が続く', '2a'],
+      ['安全な整数を超える数', '9007199254740993'],
+      ['同じ名前で2つ渡された値', ['1', '2']],
+    ])('%sなら invalid を返す', (_label, value) => {
+      expect(versionFromParam(value)).toBe('invalid');
     });
   });
 });

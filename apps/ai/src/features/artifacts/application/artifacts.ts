@@ -8,6 +8,8 @@ import type { AiArtifactKind } from '@repo/ai-database/schema';
 import {
   insertArtifactWithFirstVersion,
   insertNextVersion,
+  selectArtifacts,
+  selectArtifactVersions,
   selectVersion,
 } from '../infrastructure/artifact-repository';
 
@@ -36,6 +38,41 @@ type VersionQuery = {
   artifactId: string;
   version: number;
   userId: string;
+};
+
+type ArtifactContent =
+  | { kind: 'ui'; spec: Spec }
+  | { kind: 'slides'; source: string };
+
+type ArtifactVersion = ArtifactContent & { title: string };
+
+export type ArtifactListItem = {
+  id: string;
+  kind: AiArtifactKind;
+  title: string;
+  updatedAt: string;
+};
+
+type VersionOrigin = { type: 'new' } | { type: 'edit'; version: number };
+
+type HistoryVersion = {
+  version: number;
+  title: string;
+  instruction: string;
+  summary: string;
+  threadId: string | null;
+  createdAt: string;
+  origin: VersionOrigin;
+};
+
+type ArtifactHistory = {
+  id: string;
+  kind: AiArtifactKind;
+  versions: HistoryVersion[];
+};
+
+export type LoadedArtifact = ArtifactHistory & {
+  selected: ArtifactVersion & { version: number };
 };
 
 // Claude が tool の入力に写す値なので、UUID をそのまま使わず短くする
@@ -87,6 +124,31 @@ const sourceOf = (content: unknown): string | null =>
     ? content.source
     : null;
 
+const contentOf = (
+  kind: AiArtifactKind,
+  content: unknown,
+): ArtifactContent | null => {
+  if (kind === 'ui') {
+    const spec = specOf(content);
+    return spec === null ? null : { kind, spec };
+  }
+  const source = sourceOf(content);
+  return source === null ? null : { kind, source };
+};
+
+const readVersion = async (
+  input: VersionQuery,
+): Promise<{ id: number; version: ArtifactVersion } | null> => {
+  const row = await selectVersion(input);
+  if (row === null) {
+    return null;
+  }
+  const content = contentOf(row.kind, row.content);
+  return content === null
+    ? null
+    : { id: row.id, version: { title: row.title, ...content } };
+};
+
 export const saveUiVersion = ({
   spec,
   ...input
@@ -96,12 +158,16 @@ export const saveUiVersion = ({
 export const findUiVersion = async (
   input: VersionQuery,
 ): Promise<UiVersion | null> => {
-  const row = await selectVersion({ ...input, kind: 'ui' });
-  const spec = specOf(row?.content);
-  if (row === null || spec === null) {
+  const stored = await readVersion(input);
+  if (stored?.version.kind !== 'ui') {
     return null;
   }
-  return { id: row.id, artifactId: input.artifactId, title: row.title, spec };
+  return {
+    id: stored.id,
+    artifactId: input.artifactId,
+    title: stored.version.title,
+    spec: stored.version.spec,
+  };
 };
 
 export const saveSlidesVersion = ({
@@ -113,15 +179,87 @@ export const saveSlidesVersion = ({
 export const findSlidesVersion = async (
   input: VersionQuery,
 ): Promise<SlidesVersion | null> => {
-  const row = await selectVersion({ ...input, kind: 'slides' });
-  const source = sourceOf(row?.content);
-  if (row === null || source === null) {
+  const stored = await readVersion(input);
+  if (stored?.version.kind !== 'slides') {
     return null;
   }
   return {
-    id: row.id,
+    id: stored.id,
     artifactId: input.artifactId,
-    title: row.title,
-    source,
+    title: stored.version.title,
+    source: stored.version.source,
   };
+};
+
+export const listArtifacts = async (input: {
+  userId: string;
+}): Promise<ArtifactListItem[]> => selectArtifacts(input);
+
+const originOf = (
+  artifactId: string,
+  parent: { artifactId: string | null; version: number | null },
+): VersionOrigin =>
+  parent.artifactId === artifactId && parent.version !== null
+    ? { type: 'edit', version: parent.version }
+    : { type: 'new' };
+
+const getArtifactHistory = async (input: {
+  artifactId: string;
+  userId: string;
+}): Promise<ArtifactHistory | null> => {
+  const rows = await selectArtifactVersions(input);
+  const [latest] = rows;
+  if (latest === undefined) {
+    return null;
+  }
+  return {
+    id: input.artifactId,
+    kind: latest.kind,
+    versions: rows.map((row) => ({
+      version: row.version,
+      title: row.title,
+      instruction: row.instruction,
+      summary: row.summary,
+      threadId: row.threadId,
+      createdAt: row.createdAt,
+      origin: originOf(input.artifactId, {
+        artifactId: row.parentArtifactId,
+        version: row.parentVersion,
+      }),
+    })),
+  };
+};
+
+export const loadArtifact = async (input: {
+  artifactId: string;
+  version: number | null;
+  userId: string;
+}): Promise<LoadedArtifact | null> => {
+  const history = await getArtifactHistory({
+    artifactId: input.artifactId,
+    userId: input.userId,
+  });
+  const version = input.version ?? history?.versions[0]?.version;
+  if (history === null || version === undefined) {
+    return null;
+  }
+  const stored = await readVersion({ ...input, version });
+  return stored === null
+    ? null
+    : { ...history, selected: { version, ...stored.version } };
+};
+
+const VERSION_PARAM = /^[1-9][0-9]*$/u;
+
+export const versionFromParam = (
+  value: string | string[] | undefined,
+): number | null | 'invalid' => {
+  if (value === undefined) {
+    return null;
+  }
+  if (typeof value !== 'string' || !VERSION_PARAM.test(value)) {
+    return 'invalid';
+  }
+  const version = Number(value);
+  return Number.isSafeInteger(version) ? version : 'invalid';
 };

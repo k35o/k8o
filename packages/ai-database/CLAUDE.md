@@ -6,7 +6,7 @@ ai（`apps/ai`）の DB。Better Auth の認証テーブル（user / session / a
 
 - `src/db.ts` … `AI_TURSO_DATABASE_URL` / `AI_TURSO_AUTH_TOKEN` でつなぐクライアント。`storybook` 条件では `src/__mocks__/db.ts`
 - `src/auth.ts` … Better Auth の設定。`drizzleAdapter` には schema を渡さず、db に載せたスキーマから user などを探すので、認証のテーブルは `src/schema/index.ts` の `schema` に必ず入れる
-- `src/orm.ts` … drizzle の演算子の再エクスポート（apps は drizzle-orm に直接依存しない）
+- `src/orm.ts` … drizzle の演算子と、同じテーブルを別名で結合する `alias` の再エクスポート（apps は drizzle-orm に直接依存しない）
 - `src/schema/public.ts` … クライアントに依存しない型の公開エントリ
 
 ## マイグレーション
