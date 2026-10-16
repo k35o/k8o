@@ -4,19 +4,22 @@ import type { GenerationMeta } from './parse-meta';
 export type ParsedSlidesGeneration = {
   source: string | null;
   meta: GenerationMeta | null;
-  isComplete: boolean;
+  isSourceComplete: boolean;
 };
 
 // デッキ本文はコードブロック（```）を含みうるため、外側はバッククォート4つ以上の
 // フェンスで囲む取り決め（開きと同じ長さ以上の行で閉じる = CommonMark と同じ規則）。
 const MD_OPEN = /^(`{3,})(?:md|markdown)[ \t]*$/mu;
 const META_FENCE = /```json\n([\s\S]*?)```/u;
+// 外側を3つのバッククォートで書かれると、中のコードブロックのフェンスの行でデッキが切れ、
+// 本当の閉じフェンスが後ろに残る。meta より前にフェンスの行が残れば、切れたとみなす
+const FENCE_ONLY_LINE = /^`{3,}[ \t]*$/mu;
 
 // ストリーミング中・完了後の双方で使う。本文は md フェンス、meta は末尾 JSON フェンス。
 export const parseSlidesGeneration = (raw: string): ParsedSlidesGeneration => {
   const open = MD_OPEN.exec(raw);
   let source: string | null = null;
-  let sourceComplete = false;
+  let sourceClosed = false;
   // meta の探索開始位置。デッキ内の ```json コードブロックを meta と誤認しないよう、
   // デッキが閉じた位置より後ろだけを見る。
   let metaFrom = 0;
@@ -36,15 +39,17 @@ export const parseSlidesGeneration = (raw: string): ParsedSlidesGeneration => {
       source = partial.trim() === '' ? null : partial;
     } else {
       source = rest.slice(0, close.index).trim();
-      sourceComplete = true;
+      sourceClosed = true;
       metaFrom = bodyStart + close.index + close[0].length;
     }
   }
 
   let meta: GenerationMeta | null = null;
+  let isSourceComplete = false;
   // デッキが開いたまま閉じていない間は meta を探さない（本文中の json を誤検出しない）。
-  if (open === null || sourceComplete) {
-    const metaMatch = META_FENCE.exec(raw.slice(metaFrom));
+  if (open === null || sourceClosed) {
+    const after = raw.slice(metaFrom);
+    const metaMatch = META_FENCE.exec(after);
     if (metaMatch?.[1] !== undefined) {
       try {
         meta = toMeta(JSON.parse(metaMatch[1]));
@@ -52,7 +57,10 @@ export const parseSlidesGeneration = (raw: string): ParsedSlidesGeneration => {
         meta = null;
       }
     }
+    const beforeMeta =
+      metaMatch === null ? after : after.slice(0, metaMatch.index);
+    isSourceComplete = sourceClosed && !FENCE_ONLY_LINE.test(beforeMeta);
   }
 
-  return { source, meta, isComplete: sourceComplete && meta !== null };
+  return { source, meta, isSourceComplete };
 };

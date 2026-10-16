@@ -20,21 +20,25 @@ const COVER_CLOSE = /\s*<\/Cover>\s*$/u;
 // ストリーミング途中でタグが途切れた末尾（例: "<Cov" "</Note"）。本文に混ぜず捨てる。
 const TRAILING_PARTIAL_TAG = /<\/?[A-Z][A-Za-z]*$/u;
 
+// 開きと同じ長さ以上のバッククォートだけの行で閉じる（CommonMark と同じ規則）。
+const fenceAfter = (fence: number | null, line: string): number | null => {
+  const length = FENCE_OPEN.exec(line.trimStart())?.[1]?.length;
+  if (length === undefined) {
+    return fence;
+  }
+  if (fence === null) {
+    return length;
+  }
+  return length >= fence && line.trim() === '`'.repeat(length) ? null : fence;
+};
+
 // コードフェンス内の --- で誤分割しないよう、フェンス状態を追いながら区切り行で分割する。
 const splitBySeparator = (source: string): string[] => {
   const chunks: string[] = [];
   let current: string[] = [];
   let fence: number | null = null;
   for (const line of source.split('\n')) {
-    const fenceMatch = FENCE_OPEN.exec(line.trimStart());
-    if (fenceMatch?.[1] !== undefined) {
-      const { length } = fenceMatch[1];
-      if (fence === null) {
-        fence = length;
-      } else if (length >= fence && line.trim() === '`'.repeat(length)) {
-        fence = null;
-      }
-    }
+    fence = fenceAfter(fence, line);
     if (fence === null && SEPARATOR.test(line)) {
       chunks.push(current.join('\n'));
       current = [];
@@ -46,35 +50,34 @@ const splitBySeparator = (source: string): string[] => {
   return chunks;
 };
 
+export const hasUnclosedCodeFence = (source: string): boolean => {
+  let fence: number | null = null;
+  for (const line of source.split('\n')) {
+    fence = fenceAfter(fence, line);
+  }
+  return fence !== null;
+};
+
 // スライドの Markdown ソースからコードブロックを列挙する（ハイライトの事前取得用）。
-// splitBySeparator と同じフェンス規則（開きと同じ長さ以上のバッククォート行で閉じる）。
 export const extractCodeBlocks = (source: string): DeckCodeBlock[] => {
   const blocks: DeckCodeBlock[] = [];
   let fence: number | null = null;
   let lang = '';
   let lines: string[] = [];
   for (const line of source.split('\n')) {
-    const fenceMatch = FENCE_OPEN.exec(line.trimStart());
-    if (fenceMatch?.[1] !== undefined) {
-      const { length } = fenceMatch[1];
-      if (fence === null) {
-        fence = length;
-        lang = line.trim().slice(length).trim();
-        lines = [];
-        continue;
-      }
-      if (length >= fence && line.trim() === '`'.repeat(length)) {
-        blocks.push({
-          code: lines.join('\n'),
-          lang: lang === '' ? 'text' : lang,
-        });
-        fence = null;
-        continue;
-      }
-    }
-    if (fence !== null) {
+    const next = fenceAfter(fence, line);
+    if (fence === null && next !== null) {
+      lang = line.trim().slice(next).trim();
+      lines = [];
+    } else if (fence !== null && next === null) {
+      blocks.push({
+        code: lines.join('\n'),
+        lang: lang === '' ? 'text' : lang,
+      });
+    } else if (fence !== null) {
       lines.push(line);
     }
+    fence = next;
   }
   // 閉じフェンス未到達（ストリーミング途中）のブロックは確定していないため含めない。
   return blocks;
