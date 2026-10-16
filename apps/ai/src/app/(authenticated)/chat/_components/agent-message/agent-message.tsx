@@ -9,11 +9,11 @@ import type {
   RunEnd,
 } from '@/features/agent/application/agent-message';
 import { MAX_STEPS } from '@/features/agent/application/agent-run';
-import { uiArtifactView } from '@/features/agent/application/ui-artifacts';
+import { chatArtifactOf } from '@/features/agent/application/chat-artifacts';
 import { MONTHLY_BUDGET_MICRO_USD } from '@/features/usage/application/budget';
 
+import { ArtifactCard } from '../artifact-card';
 import { MarkdownText } from '../markdown-text';
-import { UiArtifactCard } from '../ui-artifact-card';
 
 type AgentMessagePart = AgentUIMessage['parts'][number];
 type AgentToolPart = Extract<AgentMessagePart, { type: `tool-${string}` }>;
@@ -155,8 +155,8 @@ const AgentPart: FC<
       );
     case 'tool-generate_ui':
       return (
-        <UiArtifactCard
-          artifact={uiArtifactView(part, {
+        <ArtifactCard
+          artifact={chatArtifactOf(part, {
             live: isStreaming
               ? 'receiving'
               : isServerRunning

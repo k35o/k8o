@@ -9,6 +9,14 @@ import { flushSync } from 'react-dom';
 import { threadTitleFrom } from '@/features/agent/application/agent-message';
 import type { AgentUIMessage } from '@/features/agent/application/agent-message';
 import {
+  artifactLiveOf,
+  chatArtifactsOf,
+  lastCallKeyOf,
+  paneVersionsOf,
+  shownArtifact,
+} from '@/features/agent/application/chat-artifacts';
+import type { PaneSelection } from '@/features/agent/application/chat-artifacts';
+import {
   createdAtAfterSync,
   deferredStopAfter,
   isStopping,
@@ -21,14 +29,6 @@ import type {
   ServerSync,
   StopRequest,
 } from '@/features/agent/application/thread-sync';
-import {
-  lastCallKeyOf,
-  paneVersionsOf,
-  shownArtifact,
-  uiArtifactsOf,
-  uiLiveOf,
-} from '@/features/agent/application/ui-artifacts';
-import type { PaneSelection } from '@/features/agent/application/ui-artifacts';
 import { highlightGenerated } from '@/features/highlight/interface/actions';
 import { DEFAULT_GENERATION_MODEL } from '@/shared/claude/models';
 import type { GenerationModel } from '@/shared/claude/models';
@@ -250,8 +250,8 @@ export const ChatScreen: FC<ChatScreenProps> = ({
     }
   }, [stopRequest, stopping]);
 
-  const artifacts = uiArtifactsOf(messages, {
-    live: uiLiveOf({ status, isServerRunning: sync === 'wait' }),
+  const artifacts = chatArtifactsOf(messages, {
+    live: artifactLiveOf({ status, isServerRunning: sync === 'wait' }),
     isStopping: stopping,
   });
   const shown = shownArtifact(

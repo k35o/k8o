@@ -15,9 +15,9 @@ import { useHighlightedCode } from '@/app/_components/highlighted-code';
 import type { HighlightFn } from '@/app/_components/highlighted-code';
 import { SpecPreview } from '@/app/_components/spec-preview';
 import type {
-  PaneArtifactView,
+  PaneArtifact,
   PaneVersion,
-} from '@/features/agent/application/ui-artifacts';
+} from '@/features/agent/application/chat-artifacts';
 import { specToTsx } from '@/features/generation/application/spec-to-tsx';
 
 import { CodeView } from '../../../_components/code-view';
@@ -49,7 +49,7 @@ const codeOf = (spec: Spec | null, view: ArtifactView): string | null => {
 };
 
 type ArtifactPaneProps = {
-  artifact: PaneArtifactView;
+  artifact: PaneArtifact;
   versions: readonly PaneVersion[];
   onSelectVersion: (toolCallId: string) => void;
   view: ArtifactView;

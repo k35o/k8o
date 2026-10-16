@@ -1,4 +1,4 @@
-import type { PaneSelection } from '@/features/agent/application/ui-artifacts';
+import type { PaneSelection } from '@/features/agent/application/chat-artifacts';
 
 export type PinnedPane = Extract<PaneSelection, { type: 'pinned' }>;
 

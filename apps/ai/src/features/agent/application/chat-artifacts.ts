@@ -8,9 +8,9 @@ type UiToolPart = Extract<
   { type: 'tool-generate_ui' }
 >;
 
-export type UiLive = 'receiving' | 'waiting' | null;
+export type ArtifactLive = 'receiving' | 'waiting' | null;
 
-export type UiArtifactView = {
+export type ChatArtifact = {
   toolCallId: string;
   title: string;
   spec: Spec | null;
@@ -23,7 +23,7 @@ export type UiArtifactView = {
   | { state: 'failed' }
 );
 
-export type PaneArtifactView = Exclude<UiArtifactView, { state: 'failed' }>;
+export type PaneArtifact = Exclude<ChatArtifact, { state: 'failed' }>;
 
 export type PaneVersion = { toolCallId: string; version: number };
 
@@ -49,7 +49,7 @@ const truncate = (text: string): string => {
 };
 
 // 保存する errorText は Claude に送った文と同じでなければならないので、言い換えと切り詰めは表示の上だけで行う
-export const uiErrorText = (errorText: string): string => {
+export const artifactErrorText = (errorText: string): string => {
   if (errorText.startsWith('TimeoutError:')) {
     return '時間の上限に達したため止まりました';
   }
@@ -59,10 +59,10 @@ export const uiErrorText = (errorText: string): string => {
   return truncate(errorText.replace(/^Error: /u, ''));
 };
 
-export const uiLiveOf = (input: {
+export const artifactLiveOf = (input: {
   status: ChatStatus;
   isServerRunning: boolean;
-}): UiLive => {
+}): ArtifactLive => {
   if (input.status === 'streaming') {
     return 'receiving';
   }
@@ -71,10 +71,10 @@ export const uiLiveOf = (input: {
     : null;
 };
 
-export const uiArtifactView = (
+export const chatArtifactOf = (
   part: UiToolPart,
-  { live, isStopping }: { live: UiLive; isStopping: boolean },
-): UiArtifactView => {
+  { live, isStopping }: { live: ArtifactLive; isStopping: boolean },
+): ChatArtifact => {
   const { toolCallId } = part;
   const title =
     part.input?.title === undefined || part.input.title === ''
@@ -85,7 +85,7 @@ export const uiArtifactView = (
       toolCallId,
       title,
       spec: null,
-      text: uiErrorText(part.errorText),
+      text: artifactErrorText(part.errorText),
       open: null,
       state: 'failed',
     };
@@ -147,17 +147,17 @@ export const uiArtifactView = (
 
 // 生きているのは、全体の最後のメッセージが assistant のときの、そのメッセージだけ。
 // 前のメッセージに残った中断のパーツを、生成中と取り違えないため
-export const uiArtifactsOf = (
+export const chatArtifactsOf = (
   messages: AgentUIMessage[],
-  { live, isStopping }: { live: UiLive; isStopping: boolean },
-): UiArtifactView[] =>
+  { live, isStopping }: { live: ArtifactLive; isStopping: boolean },
+): ChatArtifact[] =>
   messages.flatMap((message, index) => {
     const isLive =
       index === messages.length - 1 && message.role === 'assistant';
     return message.parts.flatMap((part) =>
       part.type === 'tool-generate_ui'
         ? [
-            uiArtifactView(
+            chatArtifactOf(
               part,
               isLive ? { live, isStopping } : { live: null, isStopping: false },
             ),
@@ -166,19 +166,17 @@ export const uiArtifactsOf = (
     );
   });
 
-const isPaneArtifact = (
-  artifact: UiArtifactView,
-): artifact is PaneArtifactView =>
+const isPaneArtifact = (artifact: ChatArtifact): artifact is PaneArtifact =>
   artifact.state === 'generating' ||
   (artifact.state !== 'failed' && artifact.spec !== null);
 
-export const lastCallKeyOf = (artifacts: UiArtifactView[]): string | null =>
+export const lastCallKeyOf = (artifacts: ChatArtifact[]): string | null =>
   artifacts.at(-1)?.toolCallId ?? null;
 
 export const shownArtifact = (
-  artifacts: UiArtifactView[],
+  artifacts: ChatArtifact[],
   selection: PaneSelection,
-): PaneArtifactView | null => {
+): PaneArtifact | null => {
   const latest = artifacts.findLast(isPaneArtifact) ?? null;
   if (latest === null || selection.type === 'follow') {
     return latest;
@@ -199,8 +197,8 @@ export const shownArtifact = (
 };
 
 export const paneVersionsOf = (
-  artifacts: UiArtifactView[],
-  shown: PaneArtifactView | null,
+  artifacts: ChatArtifact[],
+  shown: PaneArtifact | null,
 ): PaneVersion[] => {
   if (shown?.state !== 'done') {
     return [];

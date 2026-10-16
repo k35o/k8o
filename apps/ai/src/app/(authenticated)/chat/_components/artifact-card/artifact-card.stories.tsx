@@ -2,10 +2,10 @@ import type { Spec } from '@json-render/core';
 import type { ComponentProps } from 'react';
 import { expect, fn, userEvent, within } from 'storybook/test';
 
-import { uiErrorText } from '@/features/agent/application/ui-artifacts';
+import { artifactErrorText } from '@/features/agent/application/chat-artifacts';
 
 import preview from '../../../../../../.storybook/preview';
-import { UiArtifactCard } from './ui-artifact-card';
+import { ArtifactCard } from './artifact-card';
 
 const PRICING: Spec = {
   root: 'title',
@@ -15,7 +15,7 @@ const PRICING: Spec = {
 };
 
 const meta = preview.meta({
-  component: UiArtifactCard,
+  component: ArtifactCard,
   // propより狭い型（unionリテラル）のままargsを推論させると meta.storyの型推論が壊れるため、
   // satisfiesで文脈型を与えて広げる
   args: {
@@ -31,7 +31,7 @@ const meta = preview.meta({
     },
     isActive: false,
     onOpen: fn<() => void>(),
-  } satisfies Partial<ComponentProps<typeof UiArtifactCard>>,
+  } satisfies Partial<ComponentProps<typeof ArtifactCard>>,
 });
 
 export const Done = meta.story({
@@ -180,7 +180,7 @@ export const FailedWithLongReason = meta.story({
       toolCallId: 'ui-failed-long',
       title: '料金プラン',
       spec: null,
-      text: uiErrorText(UNFIXED_ERROR_TEXT),
+      text: artifactErrorText(UNFIXED_ERROR_TEXT),
       open: null,
       state: 'failed',
     },
