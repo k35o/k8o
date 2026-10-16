@@ -1,13 +1,23 @@
 'use client';
 
 import type { Spec } from '@json-render/core';
-import { Alert, Badge, CloseIcon, IconButton } from '@k8ordo/ui';
+import {
+  Alert,
+  Badge,
+  CloseIcon,
+  FullscreenIcon,
+  IconButton,
+  ListBox,
+} from '@k8ordo/ui';
 import type { FC, MouseEvent, Ref } from 'react';
 
 import { useHighlightedCode } from '@/app/_components/highlighted-code';
 import type { HighlightFn } from '@/app/_components/highlighted-code';
 import { SpecPreview } from '@/app/_components/spec-preview';
-import type { PaneArtifactView } from '@/features/agent/application/ui-artifacts';
+import type {
+  PaneArtifactView,
+  PaneVersion,
+} from '@/features/agent/application/ui-artifacts';
 import { specToTsx } from '@/features/generation/application/spec-to-tsx';
 
 import { CodeView } from '../../../_components/code-view';
@@ -40,8 +50,12 @@ const codeOf = (spec: Spec | null, view: ArtifactView): string | null => {
 
 type ArtifactPaneProps = {
   artifact: PaneArtifactView;
+  versions: readonly PaneVersion[];
+  onSelectVersion: (toolCallId: string) => void;
   view: ArtifactView;
   onViewChange: (view: ArtifactView) => void;
+  expanded: boolean;
+  onExpandedChange: (expanded: boolean) => void;
   onClose: () => void;
   // Storybook から server action を辿らないよう、呼び出し側から渡す。null ならハイライトしない
   highlight: HighlightFn | null;
@@ -50,8 +64,12 @@ type ArtifactPaneProps = {
 
 export const ArtifactPane: FC<ArtifactPaneProps> = ({
   artifact,
+  versions,
+  onSelectVersion,
   view,
   onViewChange,
+  expanded,
+  onExpandedChange,
   onClose,
   highlight,
   headingRef,
@@ -70,7 +88,26 @@ export const ArtifactPane: FC<ArtifactPaneProps> = ({
         <h2 className={styles.title} ref={headingRef} tabIndex={-1}>
           {artifact.title}
         </h2>
-        {artifact.state === 'done' ? (
+        {versions.length >= 2 ? (
+          <div className={styles.versions}>
+            <ListBox.Root
+              // ListBox は今の値を選び直しても onChange を呼ぶ。追従中に今の版を選び直したとき、見た目の変わらない記録を history に積まないよう、版が変わるときだけ伝える
+              onChange={(toolCallId) => {
+                if (toolCallId !== artifact.toolCallId) {
+                  onSelectVersion(toolCallId);
+                }
+              }}
+              options={versions.map((version) => ({
+                value: version.toolCallId,
+                label: `版 ${version.version.toString()}`,
+              }))}
+              value={artifact.toolCallId}
+            >
+              <ListBox.Trigger label="表示する版" size="sm" />
+              <ListBox.Content />
+            </ListBox.Root>
+          </div>
+        ) : artifact.state === 'done' ? (
           <Badge label={`版 ${artifact.version.toString()}`} size="sm" />
         ) : null}
         {isGenerating ? (
@@ -85,6 +122,19 @@ export const ArtifactPane: FC<ArtifactPaneProps> = ({
             />
           </div>
           {view === 'preview' ? null : <CopyCodeButton code={code} />}
+          <div className={styles.expand}>
+            <IconButton
+              aria-pressed={expanded}
+              color={expanded ? 'primary' : 'transparent'}
+              label="全画面で見る"
+              onClick={() => {
+                onExpandedChange(!expanded);
+              }}
+              size="sm"
+            >
+              <FullscreenIcon size="sm" />
+            </IconButton>
+          </div>
           <div className={styles.close}>
             <IconButton label="プレビューを閉じる" onClick={onClose} size="sm">
               <CloseIcon size="sm" />
@@ -100,7 +150,9 @@ export const ArtifactPane: FC<ArtifactPaneProps> = ({
           />
         </div>
       ) : null}
-      <div className={styles.body}>
+      {/* 別の呼び出しへ移ったら、生成 UI の入力やスクロールを持ち越さない。
+          見出しは作り直さず、新しい生成への追従や版の切り替えで、見出しのボタンのフォーカスを落とさない */}
+      <div className={styles.body} key={artifact.toolCallId}>
         {/* 生成 UI の入力を残すよう、コードを見ているあいだもアンマウントせずに隠す */}
         <div
           className={styles.preview}

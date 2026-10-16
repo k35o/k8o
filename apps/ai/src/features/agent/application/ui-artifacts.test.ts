@@ -4,6 +4,7 @@ import { describe, expect, it } from 'vitest';
 import type { AgentUIMessage } from './agent-message';
 import {
   lastCallKeyOf,
+  paneVersionsOf,
   shownArtifact,
   uiArtifactsOf,
   uiArtifactView,
@@ -152,6 +153,7 @@ describe('uiArtifactView', () => {
         text: '3つのプランを並べました。',
         open: 'preview',
         state: 'done',
+        artifactId: 'a1b2c3d4e5f6',
         version: 1,
       });
     });
@@ -602,6 +604,141 @@ describe('lastCallKeyOf と shownArtifact', () => {
         state: 'generating',
         spec: null,
       });
+    });
+  });
+});
+
+describe('paneVersionsOf', () => {
+  const editingPricing = {
+    ...EDIT_INPUT,
+    base: { artifactId: 'pricing', version: 1 },
+  };
+  const doneOf = (
+    toolCallId: string,
+    artifactId: string,
+    version: number,
+    input: Extract<UiToolPart, { state: 'output-available' }>['input'] = INPUT,
+  ): UiToolPart => ({
+    ...parts.done,
+    toolCallId,
+    input,
+    output: { ...parts.done.output, artifactId, version },
+  });
+  const versionsShowing = (
+    artifacts: UiArtifactView[],
+    toolCallId: string,
+  ): ReturnType<typeof paneVersionsOf> =>
+    paneVersionsOf(
+      artifacts,
+      shownArtifact(artifacts, {
+        type: 'pinned',
+        toolCallId,
+        lastCallKey: lastCallKeyOf(artifacts),
+      }),
+    );
+
+  describe('正常系', () => {
+    it('出している版と同じ artifactId の、できた版だけを、会話の順に返す', () => {
+      const artifacts = uiArtifactsOf(
+        [
+          assistant('a1', doneOf('call-v1', 'pricing', 1)),
+          assistant('a2', doneOf('call-other', 'dashboard', 1)),
+          assistant('a3', { ...parts.failed, input: editingPricing }),
+          assistant('a4', { ...parts.drawing, input: editingPricing }),
+          assistant('a5', doneOf('call-v2', 'pricing', 2)),
+          assistant('a6', {
+            ...parts.repairing,
+            toolCallId: 'call-editing',
+            input: editingPricing,
+          }),
+        ],
+        receiving,
+      );
+
+      expect(versionsShowing(artifacts, 'call-v1')).toStrictEqual([
+        { toolCallId: 'call-v1', version: 1 },
+        { toolCallId: 'call-v2', version: 2 },
+      ]);
+    });
+
+    it('前の版を土台に直した版も、同じ UI の版として並べる', () => {
+      const artifacts = uiArtifactsOf(
+        [
+          assistant('a1', doneOf('call-v1', 'pricing', 1)),
+          assistant('a2', doneOf('call-v2', 'pricing', 2)),
+          assistant('a3', doneOf('call-v3', 'pricing', 3, editingPricing)),
+        ],
+        notLive,
+      );
+
+      expect(versionsShowing(artifacts, 'call-v3')).toStrictEqual([
+        { toolCallId: 'call-v1', version: 1 },
+        { toolCallId: 'call-v2', version: 2 },
+        { toolCallId: 'call-v3', version: 3 },
+      ]);
+    });
+  });
+
+  describe('エッジケース', () => {
+    it('版が1つなら、その1つだけを返す', () => {
+      const artifacts = uiArtifactsOf(
+        [
+          assistant('a1', doneOf('call-v1', 'pricing', 1)),
+          assistant('a2', doneOf('call-other', 'dashboard', 1)),
+        ],
+        notLive,
+      );
+
+      expect(versionsShowing(artifacts, 'call-other')).toStrictEqual([
+        { toolCallId: 'call-other', version: 1 },
+      ]);
+    });
+
+    it.each([
+      [
+        '生成中',
+        uiArtifactsOf(
+          [
+            assistant('a1', doneOf('call-v1', 'pricing', 1)),
+            assistant('a2', doneOf('call-v2', 'pricing', 2)),
+            assistant('a3', {
+              ...parts.repairing,
+              toolCallId: 'call-shown',
+              input: editingPricing,
+            }),
+          ],
+          receiving,
+        ),
+      ],
+      [
+        '止めた途中',
+        uiArtifactsOf(
+          [
+            assistant('a1', doneOf('call-v1', 'pricing', 1)),
+            assistant('a2', doneOf('call-v2', 'pricing', 2)),
+            assistant('a3', {
+              ...parts.repairing,
+              toolCallId: 'call-shown',
+              input: editingPricing,
+            }),
+          ],
+          notLive,
+        ),
+      ],
+    ])('出している UI が%sなら、空を返す', (_, artifacts) => {
+      expect(versionsShowing(artifacts, 'call-shown')).toStrictEqual([]);
+    });
+
+    it('ペインに何も出していなければ、空を返す', () => {
+      const artifacts = uiArtifactsOf(
+        [
+          assistant('a1', doneOf('call-v1', 'pricing', 1)),
+          assistant('a2', doneOf('call-v2', 'pricing', 2)),
+        ],
+        notLive,
+      );
+
+      expect(paneVersionsOf(artifacts, null)).toStrictEqual([]);
     });
   });
 });

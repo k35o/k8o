@@ -18,12 +18,14 @@ export type UiArtifactView = {
   open: 'preview' | 'partial' | null;
 } & (
   | { state: 'generating'; editingVersion: number | null }
-  | { state: 'done'; version: number }
+  | { state: 'done'; artifactId: string; version: number }
   | { state: 'stopped' }
   | { state: 'failed' }
 );
 
 export type PaneArtifactView = Exclude<UiArtifactView, { state: 'failed' }>;
+
+export type PaneVersion = { toolCallId: string; version: number };
 
 export type PaneSelection =
   | { type: 'follow' }
@@ -100,6 +102,7 @@ export const uiArtifactView = (
       text: part.output.summary,
       open: 'preview',
       state: 'done',
+      artifactId: part.output.artifactId,
       version: part.output.version,
     };
   }
@@ -192,5 +195,19 @@ export const shownArtifact = (
       .filter(isPaneArtifact)
       .find((artifact) => artifact.toolCallId === selection.toolCallId) ??
     latest
+  );
+};
+
+export const paneVersionsOf = (
+  artifacts: UiArtifactView[],
+  shown: PaneArtifactView | null,
+): PaneVersion[] => {
+  if (shown?.state !== 'done') {
+    return [];
+  }
+  return artifacts.flatMap((artifact) =>
+    artifact.state === 'done' && artifact.artifactId === shown.artifactId
+      ? [{ toolCallId: artifact.toolCallId, version: artifact.version }]
+      : [],
   );
 };
