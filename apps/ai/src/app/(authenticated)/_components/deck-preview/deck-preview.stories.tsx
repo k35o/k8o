@@ -1,7 +1,14 @@
 import type { HighlightedCode } from '@repo/code-highlight/tokenize';
-import { useState } from 'react';
+import { useCallback, useState } from 'react';
 import type { FC } from 'react';
-import { expect, userEvent, waitFor, within } from 'storybook/test';
+import {
+  expect,
+  mocked,
+  spyOn,
+  userEvent,
+  waitFor,
+  within,
+} from 'storybook/test';
 
 import type { HighlightFn } from '@/app/_components/highlighted-code';
 import { DeckHighlightContext } from '@/app/_components/slide-deck';
@@ -205,19 +212,36 @@ export const Highlighted = meta.story({
 });
 
 // テーマ切替でハイライト関数が差し替わる状況を、スタジオと同じ注入の形で再現する。
+// 切り替えたあとの取得は「新しい配色を返す」を押すまで返さず、取得のあいだの表示を見られるようにする。
 const SwitchableHighlight: FC<{ source: string }> = ({ source }) => {
   const [highlight, setHighlight] = useState<HighlightFn>(() =>
     makeFakeHighlight('#e6edf3'),
   );
+  const [response, setResponse] =
+    useState<PromiseWithResolvers<undefined> | null>(null);
   return (
     <div className={styles.frame}>
       <button
         onClick={() => {
-          setHighlight(() => makeFakeHighlight('#ffd7a0'));
+          const pending = Promise.withResolvers<undefined>();
+          setResponse(pending);
+          setHighlight((): HighlightFn => async (blocks) => {
+            await pending.promise;
+            return makeFakeHighlight('#ffd7a0')(blocks);
+          });
         }}
         type="button"
       >
         テーマ切替
+      </button>
+      <button
+        disabled={response === null}
+        onClick={() => {
+          response?.resolve(undefined);
+        }}
+        type="button"
+      >
+        新しい配色を返す
       </button>
       <div className={styles.body}>
         <DeckHighlightContext value={highlight}>
@@ -228,7 +252,8 @@ const SwitchableHighlight: FC<{ source: string }> = ({ source }) => {
   );
 };
 
-// ハイライト関数が差し替わったら、同じデッキでも取得し直して配色が変わる。
+// ハイライト関数が差し替わったら、同じデッキでも取得し直して配色が変わる。取得のあいだは
+// プレーンに戻さず、今の配色のままにする。
 export const RehighlightOnHighlighterChange = meta.story({
   args: {
     source: SAMPLE_DECK,
@@ -246,15 +271,69 @@ export const RehighlightOnHighlighterChange = meta.story({
       });
     });
 
-    // userEvent.click は act でラップされる。act の中で更新が suspend すると
-    // Promise 解決後の再開が流れず、実ブラウザでは通る切替がここだけ止まるため、
-    // 切替の発火はネイティブの click で行う。
-    canvas.getByRole('button', { name: 'テーマ切替' }).click();
+    await userEvent.click(canvas.getByRole('button', { name: 'テーマ切替' }));
+    await expect(canvasElement.querySelector('pre code span')).toHaveStyle({
+      color: '#e6edf3',
+    });
+
+    await userEvent.click(
+      canvas.getByRole('button', { name: '新しい配色を返す' }),
+    );
     await waitFor(async () => {
       await expect(canvasElement.querySelector('pre code span')).toHaveStyle({
         color: '#ffd7a0',
       });
     });
+  },
+});
+
+// Next の Server Action は、呼ばれたその場で App Router の state を更新する。同じ形の更新を
+// 起こすフェイクを注入し、ハイライトの取得が描画の外で始まることを確かめる。
+const ActionLikeHighlight: FC<{ source: string }> = ({ source }) => {
+  const [requests, setRequests] = useState(0);
+  const highlight = useCallback<HighlightFn>((blocks) => {
+    setRequests((count) => count + 1);
+    return fakeHighlight(blocks);
+  }, []);
+  return (
+    <div className={styles.frame}>
+      <p>ハイライトの要求: {requests}</p>
+      <div className={styles.body}>
+        <DeckHighlightContext value={highlight}>
+          <DeckPreview isStreaming={false} printable={false} source={source} />
+        </DeckHighlightContext>
+      </div>
+    </div>
+  );
+};
+
+export const HighlightOutsideRender = meta.story({
+  args: {
+    source: SAMPLE_DECK,
+    isStreaming: false,
+    printable: false,
+  },
+  beforeEach: () => {
+    spyOn(console, 'error');
+  },
+  render: ({ source }) => <ActionLikeHighlight source={source ?? ''} />,
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    await expect(
+      await canvas.findByText('ハイライトの要求: 1'),
+    ).toBeInTheDocument();
+    await userEvent.click(canvas.getByRole('button', { name: '次のスライド' }));
+    await userEvent.click(canvas.getByRole('button', { name: '次のスライド' }));
+    await waitFor(async () => {
+      await expect(canvasElement.querySelector('pre code span')).toHaveStyle({
+        color: '#e6edf3',
+      });
+    });
+    const updatesWhileRendering = mocked(console.error).mock.calls.filter(
+      ([message]) =>
+        String(message).includes('while rendering a different component'),
+    );
+    await expect(updatesWhileRendering).toEqual([]);
   },
 });
 

@@ -4,7 +4,7 @@ import { useMemo, useRef, useState } from 'react';
 import type { FC } from 'react';
 
 import {
-  DeckHighlightsBoundary,
+  DeckHighlightsProvider,
   DeckPrint,
   DeckSlideView,
   NavButton,
@@ -89,7 +89,7 @@ export const DeckPreview: FC<DeckPreviewProps> = ({
 
   return (
     // 取得したハイライトを配下の全スライド（DeckPrint 含む）へ配る。
-    <DeckHighlightsBoundary isStreaming={isStreaming} slides={slides}>
+    <DeckHighlightsProvider isStreaming={isStreaming} slides={slides}>
       {/* スライドを押すとデッキにフォーカスが入り、キーで送れる。Tab では止めない */}
       <div className={styles.root} ref={rootRef} tabIndex={-1}>
         <ProgressBar current={displayIndex} total={total} />
@@ -142,6 +142,6 @@ export const DeckPreview: FC<DeckPreviewProps> = ({
         {/* 印刷/PDF出力用の全スライド描画（画面では非表示） */}
         {printable ? <DeckPrint slides={slides} /> : null}
       </div>
-    </DeckHighlightsBoundary>
+    </DeckHighlightsProvider>
   );
 };
