@@ -86,8 +86,9 @@ UI スタジオとエージェントの `generate_ui` は、どちらも json-re
   - URL は `history` の pushState・replaceState で書く（`chat-screen/use-pane-pin.ts`）。開くとき、URL に `pane` が無ければ積み、あれば置き換える。外すときは、この文書で積んだ記録なら `history.back()` で戻り、そうでなければ置き換えて消す。そのため xl 未満の戻るは、プレビューを閉じて会話に戻る。history に渡す state に Next の `__NA` を入れない（入れると Next がルーターに伝えず、`useSearchParams` が変わらない）
   - ペインの見出しで、出している生成物と同じ会話の中の、同じ artifactId のできた版を選べる。選ぶと、カードで固定したのと同じく `?pane=` に持つ。生成中と止めた途中のものは版に数えず、それを出しているあいだは選ぶ口を出さない
   - xl 以上では、ペインの見出しの「全画面で見る」で会話の列を隠し、ペインを作業領域いっぱいに広げる。会話はマウントしたまま隠す。広げた状態は ChatScreen の state に持って URL には持たず、ペインが消えると戻る
-  - 生成 UI とスライドのリンクと、生成 UI のフォームは、ペインの包みで移動を止める。会話の画面ごと移動すると受信が切れるため。/s/[slug] ではリンクが動いてよいので、共有の `SpecPreview` には入れない
-  - スライドは、スライドのスタジオと同じ `DeckPreview`（`(authenticated)/_components/deck-preview`）で描く。デッキのコードブロックのハイライトは、アプリのテーマに合わせる。矢印・Space・PageUp/Down・Home/End は、デッキにフォーカスがある（スライドを押した）ときだけ効き、会話のスクロールを奪わない
+  - ペインの本文（プレビューとコード）は、会話の外でも使える `ArtifactBody`（`(authenticated)/_components/artifact-body`）で描く。見出し・版の切り替え・止めた途中の注記はペインが持つ
+  - 生成 UI とスライドのリンクと、生成 UI のフォームは、`ArtifactBody` の包みで移動を止める。会話の画面ごと移動すると受信が切れるため。/s/[slug] ではリンクが動いてよいので、共有の `SpecPreview` には入れない
+  - スライドは、スライドのスタジオと同じ `DeckPreview`（`(authenticated)/_components/deck-preview`）で描く。デッキのコードブロックのハイライトは、アプリのテーマに合わせる（`(authenticated)/_components/deck-highlight` の `useDeckHighlight`）。矢印・Space・PageUp/Down・Home/End は、デッキにフォーカスがある（スライドを押した）ときだけ効き、会話のスクロールを奪わない
   - ペインには印刷用の全スライド（`DeckPrint`）を描かない。印刷用のスライドを表示しているあいだはほかの要素が印刷から外れ、会話の画面を印刷してもスライドしか出なくなるため
 - スレッドの ID はページが決め、最初の POST が予約を通ったときに、サーバーがスレッドの行を作る
 - メッセージは UIMessage を JSON のまま `ai_thread_messages` に追記する。user は実行の開始時、assistant は終了時に1行ずつ書く。終わり方（完了・停止・予算・エラーなど）は assistant の `metadata.end` に残す

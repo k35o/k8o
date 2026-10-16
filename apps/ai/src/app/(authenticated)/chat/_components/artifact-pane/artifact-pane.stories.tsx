@@ -4,8 +4,8 @@ import type { ComponentProps, FC } from 'react';
 import { expect, fn, userEvent, within } from 'storybook/test';
 
 import preview from '../../../../../../.storybook/preview';
+import type { ArtifactView } from '../../../_components/artifact-body';
 import { ArtifactPane } from './artifact-pane';
-import type { ArtifactView } from './artifact-views';
 
 import styles from './artifact-pane.stories.module.css';
 
