@@ -209,6 +209,58 @@ describe('generate_ui', () => {
   const uiInput = { title: '確認ボタン', instruction: 'OK のボタンを置く' };
 
   describe('正常系', () => {
+    // 既存のスレッドに残った tool の定義と1字でもずれると、送り返す thinking が落とされる
+    it('Claude に送る description と入力の JSON Schema は、既存のスレッドに残った定義のまま', async () => {
+      expect(agentTools.generate_ui.description).toBe(
+        '@k8ordo/ui のコンポーネントで UI を作るか直し、利用者の画面のプレビューに出す。保存した UI の artifactId と版を返す',
+      );
+      expect(
+        await asSchema(agentTools.generate_ui.inputSchema).jsonSchema,
+      ).toStrictEqual({
+        $schema: 'http://json-schema.org/draft-07/schema#',
+        type: 'object',
+        properties: {
+          title: {
+            type: 'string',
+            minLength: 1,
+            description: 'UI の短い名前。カードとプレビューの見出しになる',
+          },
+          base: {
+            description:
+              '前に作った UI を直すときに、土台にする版を指す。省くと新しい UI を作る',
+            anyOf: [
+              {
+                type: 'object',
+                properties: {
+                  artifactId: {
+                    type: 'string',
+                    description: '直す UI の artifactId',
+                  },
+                  version: {
+                    type: 'integer',
+                    exclusiveMinimum: 0,
+                    maximum: 9_007_199_254_740_991,
+                    description: '土台にする版',
+                  },
+                },
+                required: ['artifactId', 'version'],
+                additionalProperties: false,
+              },
+              { type: 'null' },
+            ],
+          },
+          instruction: {
+            type: 'string',
+            minLength: 1,
+            description:
+              '作る UI、または直す内容。UI を組む役はこの会話を読まないので、組むのに要ることをすべて書く',
+          },
+        },
+        required: ['title', 'instruction'],
+        additionalProperties: false,
+      });
+    });
+
     it('入力と、利用者・会話・モデルの文脈と、中断のシグナルを UI の生成に渡す', () => {
       const controller = new AbortController();
 
