@@ -4,7 +4,7 @@ import { index, integer, sqliteTable, text } from 'drizzle-orm/sqlite-core';
 import { AI_APPS } from './ai-projects';
 import { user } from './auth-schema';
 
-const AI_USAGE_KINDS = ['generation', 'ui'] as const;
+const AI_USAGE_KINDS = ['generation', 'ui', 'slides'] as const;
 export type AiUsageKind = (typeof AI_USAGE_KINDS)[number];
 
 // AI 機能横断の利用ログ。レート制限・コスト把握の基盤（生成1回ごとに1行）。
