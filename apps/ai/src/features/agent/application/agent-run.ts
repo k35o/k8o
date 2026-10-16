@@ -9,6 +9,7 @@ export const MAX_OUTPUT_TOKENS = 32_000;
 export const RUN_TIMEOUT_MS = 750_000;
 export const TOOL_TIMEOUT_MS = 30_000;
 export const UI_TOOL_TIMEOUT_MS = 360_000;
+export const SLIDES_TOOL_TIMEOUT_MS = 360_000;
 export const STOP_POLL_MS = 1000;
 const HEARTBEAT_STALE_MS = 30_000;
 // 文脈の上限（100万トークン）に届いて以後の要求がすべて断られる前に、新しいチャットへ移ってもらう

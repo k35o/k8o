@@ -8,6 +8,11 @@ import {
 import type { OwnerBlog } from '../infrastructure/owner-api';
 import { artifactToolContextSchema } from './artifact-tool';
 import {
+  generateSlides,
+  generateSlidesInputSchema,
+  generateSlidesModelOutput,
+} from './generate-slides';
+import {
   generateUi,
   generateUiInputSchema,
   generateUiModelOutput,
@@ -79,5 +84,16 @@ export const agentTools = {
     // 関数をそのまま渡すと、tool() が input と output の型を推論できなくなる
     toModelOutput: ({ input, output }) =>
       generateUiModelOutput({ input, output }),
+  }),
+  generate_slides: tool({
+    description:
+      'Markdown のスライドデッキ（発表資料）を作るか直し、利用者の画面のプレビューに出す。保存したスライドの artifactId と版を返す',
+    inputSchema: generateSlidesInputSchema,
+    contextSchema: artifactToolContextSchema,
+    execute: (input, { context, abortSignal }) =>
+      generateSlides({ input, context, abortSignal }),
+    // 関数をそのまま渡すと、tool() が input と output の型を推論できなくなる
+    toModelOutput: ({ input, output }) =>
+      generateSlidesModelOutput({ input, output }),
   }),
 };

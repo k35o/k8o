@@ -147,7 +147,7 @@ const textStep = (
 ];
 
 const toolStep = (
-  toolName: 'list_blogs' | 'read_blog' | 'generate_ui',
+  toolName: 'list_blogs' | 'read_blog' | 'generate_ui' | 'generate_slides',
   input: unknown,
   toolCallId = 'call-1',
 ): LanguageModelV4StreamPart[] => [
@@ -180,6 +180,32 @@ const uiSpecStep = (): LanguageModelV4StreamPart[] =>
   );
 
 const uiInput = { title: '確認ボタン', instruction: 'OK のボタンを置く' };
+
+const SLIDES_DECK = [
+  '<Cover>',
+  '# 発表',
+  '</Cover>',
+  '',
+  '---',
+  '',
+  '## まとめ',
+].join('\n');
+
+// generate_slides の中でデッキを書く Claude の1回の呼び出し
+const slidesDeckStep = (): LanguageModelV4StreamPart[] =>
+  textStep(
+    [
+      '````md',
+      SLIDES_DECK,
+      '````',
+      '',
+      '```json',
+      '{"title": "発表", "description": "2枚のスライドにしました。", "changes": []}',
+      '```',
+    ].join('\n'),
+  );
+
+const slidesInput = { title: 'LT の資料', instruction: '2枚のスライドにする' };
 
 // 渡したステップを、呼ばれた順に1つずつ流す Claude の代役
 const mockClaude = (
@@ -535,25 +561,75 @@ describe('handleChat', () => {
       );
     });
 
-    it('generate_ui には、会話の文脈と、ほかの tool より長い時間の上限を渡す', async () => {
+    it('generate_slides を呼ぶと、スライドの生成を別に予約して tool の中で回し、保存した版を確定の出力として残す', async () => {
+      mockClaude(
+        toolStep('generate_slides', slidesInput),
+        slidesDeckStep(),
+        textStep('スライドを作りました'),
+      );
+
+      const response = await handleChat(chatRequest(chatBody()));
+      await response.text();
+      await settle();
+
+      expect(contentParts(savedAssistant())).toMatchObject([
+        {
+          type: 'tool-generate_slides',
+          state: 'output-available',
+          input: slidesInput,
+          output: {
+            status: 'done',
+            artifactId: expect.stringMatching(/^[0-9a-f]{12}$/u),
+            version: 1,
+            summary: '2枚のスライドにしました。',
+            source: SLIDES_DECK,
+          },
+        },
+        { type: 'text', text: 'スライドを作りました' },
+      ]);
+      expect(vi.mocked(insertUsageWithinLimits).mock.calls).toMatchObject([
+        [{ app: 'agent', kind: 'generation', userId: 'u1' }],
+        [
+          {
+            app: 'agent',
+            kind: 'slides',
+            userId: 'u1',
+            model: 'claude-sonnet-5-5',
+          },
+        ],
+      ]);
+      expect(insertArtifactWithFirstVersion).toHaveBeenCalledExactlyOnceWith(
+        expect.objectContaining({
+          userId: 'u1',
+          kind: 'slides',
+          threadId: THREAD_ID,
+          title: 'LT の資料',
+          content: { source: SLIDES_DECK },
+        }),
+      );
+    });
+
+    it('generate_ui と generate_slides には、会話の文脈と、ほかの tool より長い時間の上限を渡す', async () => {
       mockClaude(textStep('答え'));
 
       const response = await handleChat(chatRequest(chatBody()));
       await response.text();
 
+      const artifactContext = {
+        userId: 'u1',
+        threadId: THREAD_ID,
+        model: 'claude-sonnet-5-5',
+      };
       expect(streamText).toHaveBeenCalledExactlyOnceWith(
         expect.objectContaining({
           toolsContext: {
-            generate_ui: {
-              userId: 'u1',
-              threadId: THREAD_ID,
-              model: 'claude-sonnet-5-5',
-            },
+            generate_ui: artifactContext,
+            generate_slides: artifactContext,
           },
           timeout: {
             totalMs: 750_000,
             toolMs: 30_000,
-            tools: { generate_uiMs: 360_000 },
+            tools: { generate_uiMs: 360_000, generate_slidesMs: 360_000 },
           },
         }),
       );
@@ -984,6 +1060,49 @@ describe('handleChat', () => {
                 type: 'text',
                 value: expect.stringMatching(
                   /^UI「確認ボタン」を artifactId: [0-9a-f]{12} の版 1 として保存し、利用者の画面のプレビューに出しました。\nOK のボタンを置きました。$/u,
+                ),
+              },
+            },
+          ],
+        },
+      ]);
+      expect(
+        nextTurn.doStreamCalls[0]?.prompt.filter(
+          (message) => message.role === 'tool',
+        ),
+      ).toStrictEqual(toolResultsSentInLoop);
+    });
+
+    it('generate_slides の返答を次のターンで送り返すとき、tool の結果はループの中で送ったものと同じ文字列にする', async () => {
+      const firstTurn = mockClaude(
+        toolStep('generate_slides', slidesInput, 'call-slides'),
+        slidesDeckStep(),
+        textStep('作りました'),
+      );
+      const firstResponse = await handleChat(chatRequest(chatBody()));
+      await firstResponse.text();
+      await settle();
+
+      vi.mocked(selectThread).mockResolvedValue(existingThread());
+      vi.mocked(selectThreadMessages).mockResolvedValue(savedMessages());
+      const nextTurn = mockClaude(textStep('答え'));
+      const nextResponse = await handleChat(
+        chatRequest(chatBody({ message: userMessage('まとめを足して', 'u2') })),
+      );
+      await nextResponse.text();
+
+      const toolResultsSentInLoop = firstTurn.doStreamCalls[2]?.prompt.filter(
+        (message) => message.role === 'tool',
+      );
+      expect(toolResultsSentInLoop).toMatchObject([
+        {
+          content: [
+            {
+              toolCallId: 'call-slides',
+              output: {
+                type: 'text',
+                value: expect.stringMatching(
+                  /^スライド「LT の資料」を artifactId: [0-9a-f]{12} の版 1 として保存し、利用者の画面のプレビューに出しました。\n2枚のスライドにしました。$/u,
                 ),
               },
             },
