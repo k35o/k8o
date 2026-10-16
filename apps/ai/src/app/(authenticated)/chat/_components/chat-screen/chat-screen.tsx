@@ -2,12 +2,23 @@
 
 import { useChat } from '@ai-sdk/react';
 import { APICallError, DefaultChatTransport } from 'ai';
-import { useEffect, useEffectEvent, useRef, useState } from 'react';
+import { useTheme } from 'next-themes';
+import { useEffect, useEffectEvent, useMemo, useRef, useState } from 'react';
 import type { FC } from 'react';
 import { flushSync } from 'react-dom';
 
+import type { HighlightFn } from '@/app/_components/highlighted-code';
+import { DeckHighlightContext } from '@/app/_components/slide-deck';
 import { threadTitleFrom } from '@/features/agent/application/agent-message';
 import type { AgentUIMessage } from '@/features/agent/application/agent-message';
+import {
+  artifactLiveOf,
+  chatArtifactsOf,
+  lastCallKeyOf,
+  paneVersionsOf,
+  shownArtifact,
+} from '@/features/agent/application/chat-artifacts';
+import type { PaneSelection } from '@/features/agent/application/chat-artifacts';
 import {
   createdAtAfterSync,
   deferredStopAfter,
@@ -21,21 +32,17 @@ import type {
   ServerSync,
   StopRequest,
 } from '@/features/agent/application/thread-sync';
-import {
-  lastCallKeyOf,
-  paneVersionsOf,
-  shownArtifact,
-  uiArtifactsOf,
-  uiLiveOf,
-} from '@/features/agent/application/ui-artifacts';
-import type { PaneSelection } from '@/features/agent/application/ui-artifacts';
 import { highlightGenerated } from '@/features/highlight/interface/actions';
 import { DEFAULT_GENERATION_MODEL } from '@/shared/claude/models';
 import type { GenerationModel } from '@/shared/claude/models';
 
 import { ToolHeader } from '../../../_components/tool-frame';
 import { ViewTabs } from '../../../_components/view-tabs';
-import { ARTIFACT_VIEW_OPTIONS, ArtifactPane } from '../artifact-pane';
+import {
+  ARTIFACT_VIEW_OPTIONS,
+  ArtifactPane,
+  artifactViewFor,
+} from '../artifact-pane';
 import type { ArtifactView } from '../artifact-pane';
 import { ChatPanes, usePaneFocus } from '../chat-panes';
 import { ChatHeader, ChatView } from '../chat-view';
@@ -54,10 +61,7 @@ const transport = new DefaultChatTransport<AgentUIMessage>({
   }),
 });
 
-const MOBILE_TAB_OPTIONS = [
-  { value: 'chat', label: 'チャット' },
-  ...ARTIFACT_VIEW_OPTIONS,
-] as const;
+const CHAT_TAB = { value: 'chat', label: 'チャット' } as const;
 
 const requestStop = async (threadId: string): Promise<boolean> => {
   try {
@@ -106,6 +110,17 @@ export const ChatScreen: FC<ChatScreenProps> = ({
   const threadPath = `/chat/${thread.id}`;
   const { pinned, pin, unpin } = usePanePin(threadPath);
   const paneFocus = usePaneFocus();
+  const { resolvedTheme } = useTheme();
+  // スライドのコードブロックのハイライトはアプリのテーマに合わせる（light は one-light、dark は plastic）。
+  // テーマ解決前（SSR直後）は null にして、無駄な取得と取り直しを避ける。関数の参照がハイライトの
+  // キャッシュのキーなので、テーマが変わるときだけ作り直す
+  const deckHighlight = useMemo<HighlightFn | null>(() => {
+    if (resolvedTheme !== 'light' && resolvedTheme !== 'dark') {
+      return null;
+    }
+    const theme = resolvedTheme;
+    return (blocks) => highlightGenerated(blocks, theme);
+  }, [resolvedTheme]);
 
   const titleOf = (
     current: AgentUIMessage[],
@@ -250,8 +265,8 @@ export const ChatScreen: FC<ChatScreenProps> = ({
     }
   }, [stopRequest, stopping]);
 
-  const artifacts = uiArtifactsOf(messages, {
-    live: uiLiveOf({ status, isServerRunning: sync === 'wait' }),
+  const artifacts = chatArtifactsOf(messages, {
+    live: artifactLiveOf({ status, isServerRunning: sync === 'wait' }),
     isStopping: stopping,
   });
   const shown = shownArtifact(
@@ -267,6 +282,8 @@ export const ChatScreen: FC<ChatScreenProps> = ({
     pin({ type: 'pinned', toolCallId, lastCallKey: lastCallKeyOf(artifacts) });
   };
   const versions = paneVersionsOf(artifacts, shown);
+  const paneView =
+    shown === null ? 'preview' : artifactViewFor(shown.kind, view);
   const openArtifact = (toolCallId: string): void => {
     paneFocus.openPane(toolCallId, () => {
       pinCall(toolCallId);
@@ -319,8 +336,8 @@ export const ChatScreen: FC<ChatScreenProps> = ({
         <div className={styles.mobileTabs}>
           <ViewTabs
             onChange={changeMobileTab}
-            options={MOBILE_TAB_OPTIONS}
-            value={pinned === null ? 'chat' : view}
+            options={[CHAT_TAB, ...ARTIFACT_VIEW_OPTIONS[shown.kind]]}
+            value={pinned === null ? 'chat' : paneView}
           />
         </div>
       )}
@@ -349,20 +366,22 @@ export const ChatScreen: FC<ChatScreenProps> = ({
         mobilePane={pinned === null ? 'chat' : 'pane'}
         pane={
           shown === null ? null : (
-            <ArtifactPane
-              artifact={shown}
-              expanded={expanded}
-              headingRef={paneFocus.headingRef}
-              highlight={highlightGenerated}
-              onClose={() => {
-                closePane(shown.toolCallId);
-              }}
-              onExpandedChange={setExpanded}
-              onSelectVersion={pinCall}
-              onViewChange={setView}
-              versions={versions}
-              view={view}
-            />
+            <DeckHighlightContext value={deckHighlight}>
+              <ArtifactPane
+                artifact={shown}
+                expanded={expanded}
+                headingRef={paneFocus.headingRef}
+                highlight={highlightGenerated}
+                onClose={() => {
+                  closePane(shown.toolCallId);
+                }}
+                onExpandedChange={setExpanded}
+                onSelectVersion={pinCall}
+                onViewChange={setView}
+                versions={versions}
+                view={paneView}
+              />
+            </DeckHighlightContext>
           )
         }
       />

@@ -2,7 +2,7 @@ import { sqliteTable, text } from 'drizzle-orm/sqlite-core';
 
 import { user } from './auth-schema';
 
-const AI_ARTIFACT_KINDS = ['ui'] as const;
+const AI_ARTIFACT_KINDS = ['ui', 'slides'] as const;
 export type AiArtifactKind = (typeof AI_ARTIFACT_KINDS)[number];
 
 export const aiArtifacts = sqliteTable('ai_artifacts', {

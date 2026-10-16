@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useEffectEvent } from 'react';
+import type { RefObject } from 'react';
 
 const NEXT_KEYS = new Set([
   'ArrowRight',
@@ -12,15 +13,20 @@ const NEXT_KEYS = new Set([
 const PREV_KEYS = new Set(['ArrowLeft', 'ArrowUp', 'PageUp']);
 
 // apps/main の slides の useKeyboardNav を移植したもの（フルスクリーンキーは省略）。
-// デッキ専用ページと違いスタジオには多数の操作要素があるため、フォーカス可能な要素
-// （ボタン・リンク・スクロール可能なノート欄など）にフォーカスがある間は反応せず、
-// Space によるボタン起動や矢印キーでのスクロールといった既定動作に譲る。
+// デッキ専用ページと違い、同じ画面に会話や多数の操作要素が並ぶため、デッキの中（scopeRef）に
+// フォーカスがあるときだけ扱い、その中のフォーカス可能な要素（ボタン・スクロール可能な
+// ノート欄など）では、Space によるボタン起動や矢印キーでのスクロールといった既定動作に譲る。
+// デッキの要素の onKeyDown で受けないのは、静的な要素にキーのハンドラを付けると a11y の lint に
+// 当たるため。ref オブジェクトで確かめるのは、ハイライトの Suspense が fallback と本体を
+// 出し分けるあいだに、デッキの要素が入れ替わるため
 export const useKeyboardNav = ({
+  scopeRef,
   onNext,
   onPrev,
   onFirst,
   onLast,
 }: {
+  scopeRef: RefObject<HTMLElement | null>;
   onNext: () => void;
   onPrev: () => void;
   onFirst: () => void;
@@ -29,13 +35,18 @@ export const useKeyboardNav = ({
   const handleKeyDown = useEffectEvent((event: KeyboardEvent) => {
     if (event.defaultPrevented) return;
     const { target } = event;
+    if (
+      !(target instanceof Node) ||
+      scopeRef.current?.contains(target) !== true
+    ) {
+      return;
+    }
     if (target instanceof HTMLElement) {
       const tag = target.tagName;
       if (tag === 'INPUT' || tag === 'TEXTAREA' || target.isContentEditable) {
         return;
       }
-      // ボタン等の tabIndex >= 0 な要素（body 以外）にフォーカスがある間は奪わない。
-      if (target !== document.body && target.tabIndex >= 0) {
+      if (target.tabIndex >= 0) {
         return;
       }
     }

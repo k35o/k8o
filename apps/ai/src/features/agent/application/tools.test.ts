@@ -6,6 +6,8 @@ import {
   fetchOwnerBlogs,
 } from '../infrastructure/owner-api';
 import type { OwnerBlog } from '../infrastructure/owner-api';
+import { generateSlides } from './generate-slides';
+import type * as generateSlidesModule from './generate-slides';
 import { generateUi } from './generate-ui';
 import type * as generateUiModule from './generate-ui';
 import { agentTools } from './tools';
@@ -28,6 +30,10 @@ vi.mock('../infrastructure/owner-api', () => ({
 vi.mock('./generate-ui', async (importOriginal) => ({
   ...(await importOriginal<typeof generateUiModule>()),
   generateUi: vi.fn(),
+}));
+vi.mock('./generate-slides', async (importOriginal) => ({
+  ...(await importOriginal<typeof generateSlidesModule>()),
+  generateSlides: vi.fn(),
 }));
 
 const blog = (description: string): OwnerBlog => ({
@@ -73,9 +79,30 @@ const acceptsUiInput = async (input: unknown): Promise<boolean> => {
   return result?.success === true;
 };
 
+const acceptsSlidesInput = async (input: unknown): Promise<boolean> => {
+  const result = await asSchema(
+    agentTools.generate_slides.inputSchema,
+  ).validate?.(input);
+  return result?.success === true;
+};
+
 beforeEach(() => {
   vi.mocked(fetchOwnerBlogs).mockResolvedValue([]);
   vi.mocked(fetchOwnerBlogMarkdown).mockResolvedValue('# 本文');
+});
+
+describe('agentTools', () => {
+  describe('正常系', () => {
+    // 既存のスレッドに残った tools の並びが変わると、送り返す thinking が落とされる
+    it('tool は、前からある tool の並びを変えずに、generate_slides を最後に置く', () => {
+      expect(Object.keys(agentTools)).toStrictEqual([
+        'list_blogs',
+        'read_blog',
+        'generate_ui',
+        'generate_slides',
+      ]);
+    });
+  });
 });
 
 describe('list_blogs', () => {
@@ -209,6 +236,58 @@ describe('generate_ui', () => {
   const uiInput = { title: '確認ボタン', instruction: 'OK のボタンを置く' };
 
   describe('正常系', () => {
+    // 既存のスレッドに残った tool の定義と1字でもずれると、送り返す thinking が落とされる
+    it('Claude に送る description と入力の JSON Schema は、既存のスレッドに残った定義のまま', async () => {
+      expect(agentTools.generate_ui.description).toBe(
+        '@k8ordo/ui のコンポーネントで UI を作るか直し、利用者の画面のプレビューに出す。保存した UI の artifactId と版を返す',
+      );
+      expect(
+        await asSchema(agentTools.generate_ui.inputSchema).jsonSchema,
+      ).toStrictEqual({
+        $schema: 'http://json-schema.org/draft-07/schema#',
+        type: 'object',
+        properties: {
+          title: {
+            type: 'string',
+            minLength: 1,
+            description: 'UI の短い名前。カードとプレビューの見出しになる',
+          },
+          base: {
+            description:
+              '前に作った UI を直すときに、土台にする版を指す。省くと新しい UI を作る',
+            anyOf: [
+              {
+                type: 'object',
+                properties: {
+                  artifactId: {
+                    type: 'string',
+                    description: '直す UI の artifactId',
+                  },
+                  version: {
+                    type: 'integer',
+                    exclusiveMinimum: 0,
+                    maximum: 9_007_199_254_740_991,
+                    description: '土台にする版',
+                  },
+                },
+                required: ['artifactId', 'version'],
+                additionalProperties: false,
+              },
+              { type: 'null' },
+            ],
+          },
+          instruction: {
+            type: 'string',
+            minLength: 1,
+            description:
+              '作る UI、または直す内容。UI を組む役はこの会話を読まないので、組むのに要ることをすべて書く',
+          },
+        },
+        required: ['title', 'instruction'],
+        additionalProperties: false,
+      });
+    });
+
     it('入力と、利用者・会話・モデルの文脈と、中断のシグナルを UI の生成に渡す', () => {
       const controller = new AbortController();
 
@@ -252,6 +331,120 @@ describe('generate_ui', () => {
       ],
     ])('%s は受けない', async (_label, input) => {
       await expect(acceptsUiInput(input)).resolves.toBe(false);
+    });
+  });
+});
+
+describe('generate_slides', () => {
+  const context = {
+    userId: 'u1',
+    threadId: 'thread-1',
+    model: 'claude-sonnet-5-5',
+  } as const;
+  const slidesInput = {
+    title: 'LT の資料',
+    instruction: '5枚のスライドにする',
+  };
+
+  describe('正常系', () => {
+    // 最初のデプロイで既存のスレッドに残り、そのあと1字でもずれると送り返す thinking が落とされる
+    it('Claude に送る description と入力の JSON Schema を固定する', async () => {
+      expect(agentTools.generate_slides.description).toBe(
+        'Markdown のスライドデッキ（発表資料）を作るか直し、利用者の画面のプレビューに出す。保存したスライドの artifactId と版を返す',
+      );
+      expect(
+        await asSchema(agentTools.generate_slides.inputSchema).jsonSchema,
+      ).toStrictEqual({
+        $schema: 'http://json-schema.org/draft-07/schema#',
+        type: 'object',
+        properties: {
+          title: {
+            type: 'string',
+            minLength: 1,
+            description: 'スライドの短い名前。カードとプレビューの見出しになる',
+          },
+          base: {
+            description:
+              '前に作ったスライドを直すときに、土台にする版を指す。省くと新しいスライドを作る',
+            anyOf: [
+              {
+                type: 'object',
+                properties: {
+                  artifactId: {
+                    type: 'string',
+                    description: '直すスライドの artifactId',
+                  },
+                  version: {
+                    type: 'integer',
+                    exclusiveMinimum: 0,
+                    maximum: 9_007_199_254_740_991,
+                    description: '土台にする版',
+                  },
+                },
+                required: ['artifactId', 'version'],
+                additionalProperties: false,
+              },
+              { type: 'null' },
+            ],
+          },
+          instruction: {
+            type: 'string',
+            minLength: 1,
+            description:
+              '作るスライド、または直す内容。スライドを書く役はこの会話も記事も読まないので、題材・聞き手・枚数・各スライドの要点・載せるコードなど、書くのに要ることをすべて書く',
+          },
+        },
+        required: ['title', 'instruction'],
+        additionalProperties: false,
+      });
+    });
+
+    it('入力と、利用者・会話・モデルの文脈と、中断のシグナルをスライドの生成に渡す', () => {
+      const controller = new AbortController();
+
+      agentTools.generate_slides.execute(slidesInput, {
+        toolCallId: 'call-1',
+        messages: [],
+        context,
+        abortSignal: controller.signal,
+      });
+
+      expect(generateSlides).toHaveBeenCalledExactlyOnceWith({
+        input: slidesInput,
+        context,
+        abortSignal: controller.signal,
+      });
+    });
+
+    it.each([
+      ['base を省いた入力', slidesInput],
+      ['base が null の入力', { ...slidesInput, base: null }],
+      [
+        '版を指した base',
+        { ...slidesInput, base: { artifactId: 'a1b2c3d4e5f6', version: 2 } },
+      ],
+    ])('%s を受ける', async (_label, input) => {
+      await expect(acceptsSlidesInput(input)).resolves.toBe(true);
+    });
+  });
+
+  describe('異常系', () => {
+    it.each([
+      ['空のタイトル', { ...slidesInput, title: '' }],
+      ['空の指示', { ...slidesInput, instruction: '' }],
+      [
+        '0 の版',
+        { ...slidesInput, base: { artifactId: 'a1b2c3d4e5f6', version: 0 } },
+      ],
+      [
+        '整数でない版',
+        {
+          ...slidesInput,
+          base: { artifactId: 'a1b2c3d4e5f6', version: 1.5 },
+        },
+      ],
+    ])('%s は受けない', async (_label, input) => {
+      await expect(acceptsSlidesInput(input)).resolves.toBe(false);
     });
   });
 });

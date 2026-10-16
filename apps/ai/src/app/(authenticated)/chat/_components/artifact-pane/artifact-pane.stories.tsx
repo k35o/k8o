@@ -28,6 +28,7 @@ const CONTACT: Spec = {
 };
 
 const DONE = {
+  kind: 'ui',
   toolCallId: 'ui-done',
   title: 'お問い合わせフォーム',
   spec: CONTACT,
@@ -44,20 +45,17 @@ const VERSIONS = [
   { toolCallId: 'ui-v3', version: 3 },
 ];
 
-// ChatScreen と同じく、選んだ版をペインに出す。版ごとに spec を変えると、本体を作り直さなくても入力欄が消えて見えるので、同じ spec にする
+// ChatScreen と同じく、選んだ版をペインに出す。版ごとに中身を変えると、本体を作り直さなくても入力欄やスライドの位置が戻って見えるので、同じ中身にする
 const VersionSwitcher: FC<ComponentProps<typeof ArtifactPane>> = (props) => {
-  const [shown, setShown] = useState({ toolCallId: 'ui-v2', version: 2 });
+  const [shown, setShown] = useState(props.artifact.toolCallId);
   return (
     <ArtifactPane
       {...props}
-      artifact={{ ...DONE, ...shown }}
-      onSelectVersion={(toolCallId) => {
-        setShown(
-          VERSIONS.find((version) => version.toolCallId === toolCallId) ??
-            shown,
-        );
+      artifact={{
+        ...props.artifact,
+        ...props.versions.find((version) => version.toolCallId === shown),
       }}
-      versions={VERSIONS}
+      onSelectVersion={setShown}
     />
   );
 };
@@ -145,6 +143,7 @@ export const Expanded = meta.story({
 });
 
 export const SwitchesVersion = meta.story({
+  args: { artifact: { ...DONE, toolCallId: 'ui-v2' }, versions: VERSIONS },
   render: (args) => <VersionSwitcher {...args} />,
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
@@ -249,6 +248,7 @@ export const CodeBeforeSpec = meta.story({
   args: {
     view: 'spec',
     artifact: {
+      kind: 'ui',
       toolCallId: 'ui-thinking',
       title: 'お問い合わせフォーム',
       spec: null,
@@ -283,6 +283,7 @@ export const WaitingCodeOnNarrow = meta.story({
   args: {
     view: 'spec',
     artifact: {
+      kind: 'ui',
       toolCallId: 'ui-waiting',
       title: 'お問い合わせフォーム',
       spec: CONTACT,
@@ -314,6 +315,7 @@ export const WaitingCodeOnNarrow = meta.story({
 export const Thinking = meta.story({
   args: {
     artifact: {
+      kind: 'ui',
       toolCallId: 'ui-thinking',
       title: 'お問い合わせフォーム',
       spec: null,
@@ -338,6 +340,7 @@ export const Thinking = meta.story({
 export const Drawing = meta.story({
   args: {
     artifact: {
+      kind: 'ui',
       toolCallId: 'ui-drawing',
       title: 'お問い合わせフォーム',
       spec: {
@@ -377,6 +380,7 @@ export const Drawing = meta.story({
 export const Stopped = meta.story({
   args: {
     artifact: {
+      kind: 'ui',
       toolCallId: 'ui-stopped',
       title: 'お問い合わせフォーム',
       spec: CONTACT,
@@ -418,6 +422,237 @@ export const LinksAndForms = meta.story({
       document.removeEventListener('submit', record);
     }
     await expect(prevented).toStrictEqual(['click', 'submit']);
+    await expect(document.location.href).toBe(before);
+  },
+});
+
+const SLIDES_DECK = [
+  '<Cover>',
+  '# TypeScript 入門',
+  '## 型の基礎',
+  '</Cover>',
+  '',
+  '---',
+  '',
+  '## 型とは',
+  '',
+  '- 値の形を[ハンドブック](https://www.typescriptlang.org/docs/)で確かめる',
+  '',
+  '<Notes>',
+  '最初に型の目的を話す。',
+  '</Notes>',
+  '',
+  '---',
+  '',
+  '## 型注釈',
+  '',
+  '```ts',
+  'const answer: number = 42;',
+  '```',
+].join('\n');
+
+const SLIDES_DONE = {
+  kind: 'slides',
+  toolCallId: 'slides-done',
+  title: '入門の発表',
+  source: SLIDES_DECK,
+  text: '型の基礎を3枚にまとめました。',
+  open: 'preview',
+  state: 'done',
+  artifactId: 's1t2u3v4w5x6',
+  version: 1,
+} as const;
+
+const SLIDES_VERSIONS = [
+  { toolCallId: 'slides-v1', version: 1 },
+  { toolCallId: 'slides-v2', version: 2 },
+];
+
+export const SlidesDone = meta.story({
+  args: { artifact: SLIDES_DONE },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const pane = canvas.getByRole('region', { name: 'スライドのプレビュー' });
+    await expect(
+      within(pane).getByRole('heading', { level: 2, name: '入門の発表' }),
+    ).toBeInTheDocument();
+    await expect(within(pane).getByText('版 1')).toBeInTheDocument();
+    await expect(
+      within(pane).getByRole('heading', { level: 1, name: 'TypeScript 入門' }),
+    ).toBeInTheDocument();
+    await expect(within(pane).getByText('/ 3')).toBeInTheDocument();
+    // スライドのコードのビューは Markdown だけで、UI の spec と TSX は出さない
+    await expect(
+      within(pane).getByRole('button', { name: 'Markdown', hidden: true }),
+    ).toBeInTheDocument();
+    await expect(
+      within(pane).queryByRole('button', { name: 'TSX', hidden: true }),
+    ).not.toBeInTheDocument();
+    await userEvent.click(
+      within(pane).getByRole('button', { name: '次のスライド' }),
+    );
+    await expect(
+      await within(pane).findByRole('heading', { level: 2, name: '型とは' }),
+    ).toBeInTheDocument();
+    await expect(
+      within(pane).getByText(/最初に型の目的を話す。/u),
+    ).toBeInTheDocument();
+    // UI と同じ枠に、デッキの送りの操作まで収まる
+    await expect(
+      within(pane)
+        .getByRole('button', { name: '次のスライド' })
+        .getBoundingClientRect().bottom,
+    ).toBeLessThanOrEqual(pane.getBoundingClientRect().bottom);
+    // 会話の画面には、印刷用のスライドを描かない
+    await expect(document.body.querySelector('[data-slide-print]')).toBeNull();
+  },
+});
+
+export const SlidesMarkdown = meta.story({
+  args: { artifact: SLIDES_DONE, view: 'markdown' },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    await expect(canvas.getByText(/## 型注釈/u)).toBeVisible();
+    await expect(
+      canvas.getByRole('button', { name: 'コードをコピー' }),
+    ).toBeEnabled();
+    // Markdown を見ているあいだも、デッキはアンマウントせずに隠す
+    await expect(
+      canvas.getByRole('heading', {
+        level: 1,
+        name: 'TypeScript 入門',
+        hidden: true,
+      }),
+    ).not.toBeVisible();
+  },
+});
+
+export const SlidesThinking = meta.story({
+  args: {
+    artifact: {
+      kind: 'slides',
+      toolCallId: 'slides-thinking',
+      title: '入門の発表',
+      source: null,
+      text: '考えています…',
+      open: 'preview',
+      state: 'generating',
+      editingVersion: 1,
+    },
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    // デッキが届くまでは待ちの表示にし、DeckPreview の空の文を出さない
+    await expect(
+      canvas
+        .getAllByText('考えています…')
+        .filter((element) => element.checkVisibility()),
+    ).toHaveLength(2);
+    await expect(
+      canvas.queryByRole('button', { name: '次のスライド' }),
+    ).not.toBeInTheDocument();
+  },
+});
+
+export const SlidesWriting = meta.story({
+  args: {
+    artifact: {
+      kind: 'slides',
+      toolCallId: 'slides-writing',
+      title: '入門の発表',
+      source: SLIDES_DECK,
+      text: 'スライドを書いています…',
+      open: 'preview',
+      state: 'generating',
+      editingVersion: null,
+    },
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    // 書いているあいだは、書き込まれている最後のスライドを出し、送らせない
+    await expect(
+      canvas.getByRole('heading', { level: 2, name: '型注釈' }),
+    ).toBeInTheDocument();
+    await expect(
+      canvas.getByRole('button', { name: '前のスライド' }),
+    ).toBeDisabled();
+    await expect(
+      canvas.getByRole('button', { name: '次のスライド' }),
+    ).toBeDisabled();
+  },
+});
+
+export const SlidesStopped = meta.story({
+  args: {
+    artifact: {
+      kind: 'slides',
+      toolCallId: 'slides-stopped',
+      title: '入門の発表',
+      source: SLIDES_DECK,
+      text: '途中で止まりました',
+      open: 'partial',
+      state: 'stopped',
+    },
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    await expect(canvas.getByRole('alert')).toHaveTextContent(
+      '保存していない、途中までのスライドです。続けるときはもう一度頼んでください',
+    );
+    await expect(
+      canvas.getByRole('heading', { level: 1, name: 'TypeScript 入門' }),
+    ).toBeInTheDocument();
+  },
+});
+
+export const SlidesSwitchesVersion = meta.story({
+  args: {
+    artifact: { ...SLIDES_DONE, toolCallId: 'slides-v2', version: 2 },
+    versions: SLIDES_VERSIONS,
+  },
+  render: (args) => <VersionSwitcher {...args} />,
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    await userEvent.click(canvas.getByRole('button', { name: '次のスライド' }));
+    await expect(
+      await canvas.findByRole('heading', { level: 2, name: '型とは' }),
+    ).toBeInTheDocument();
+    await userEvent.click(
+      canvas.getByRole('combobox', { name: '表示する版 版 2' }),
+    );
+    await userEvent.click(canvas.getByRole('option', { name: '版 1' }));
+    // 別の版へ移ると、デッキを作り直して表紙から出す
+    await expect(
+      await canvas.findByRole('heading', {
+        level: 1,
+        name: 'TypeScript 入門',
+      }),
+    ).toBeInTheDocument();
+  },
+});
+
+export const SlidesLinks = meta.story({
+  args: { artifact: SLIDES_DONE },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const document = canvasElement.ownerDocument;
+    const before = document.location.href;
+    await userEvent.click(canvas.getByRole('button', { name: '次のスライド' }));
+    const prevented: string[] = [];
+    const record = (event: Event): void => {
+      if (event.defaultPrevented) {
+        prevented.push(event.type);
+      }
+    };
+    document.addEventListener('click', record);
+    try {
+      await userEvent.click(
+        await canvas.findByRole('link', { name: 'ハンドブック' }),
+      );
+    } finally {
+      document.removeEventListener('click', record);
+    }
+    await expect(prevented).toStrictEqual(['click']);
     await expect(document.location.href).toBe(before);
   },
 });

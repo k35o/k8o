@@ -1,6 +1,5 @@
 'use client';
 
-import type { Spec } from '@json-render/core';
 import {
   Alert,
   Badge,
@@ -9,19 +8,21 @@ import {
   IconButton,
   ListBox,
 } from '@k8ordo/ui';
-import type { FC, MouseEvent, Ref } from 'react';
+import type { FC, MouseEvent, ReactNode, Ref } from 'react';
 
 import { useHighlightedCode } from '@/app/_components/highlighted-code';
 import type { HighlightFn } from '@/app/_components/highlighted-code';
 import { SpecPreview } from '@/app/_components/spec-preview';
 import type {
-  PaneArtifactView,
+  ArtifactKind,
+  PaneArtifact,
   PaneVersion,
-} from '@/features/agent/application/ui-artifacts';
+} from '@/features/agent/application/chat-artifacts';
 import { specToTsx } from '@/features/generation/application/spec-to-tsx';
 
 import { CodeView } from '../../../_components/code-view';
 import { CopyCodeButton } from '../../../_components/copy-code-button';
+import { DeckPreview } from '../../../_components/deck-preview';
 import { PreviewLoading } from '../../../_components/preview-loading';
 import { ViewTabs } from '../../../_components/view-tabs';
 import { ARTIFACT_VIEW_OPTIONS } from './artifact-views';
@@ -29,7 +30,20 @@ import type { ArtifactView } from './artifact-views';
 
 import styles from './artifact-pane.module.css';
 
-// 生成 UI のリンクとフォームで会話の画面ごと移動すると、受信が切れて会話を見失うので、移動だけを止める。
+const PANE_TEXTS = {
+  ui: {
+    label: 'UI のプレビュー',
+    stopped:
+      '保存していない、途中までの UI です。続けるときはもう一度頼んでください',
+  },
+  slides: {
+    label: 'スライドのプレビュー',
+    stopped:
+      '保存していない、途中までのスライドです。続けるときはもう一度頼んでください',
+  },
+} as const satisfies Record<ArtifactKind, { label: string; stopped: string }>;
+
+// 生成物のリンクとフォームで会話の画面ごと移動すると、受信が切れて会話を見失うので、移動だけを止める。
 // 伝播は止めないので、生成 UI 側のハンドラはそのまま動く。/s/[slug] ではリンクが動いてよいので、共有の SpecPreview には入れない
 const preventLinkNavigation = (event: MouseEvent): void => {
   if (
@@ -41,15 +55,52 @@ const preventLinkNavigation = (event: MouseEvent): void => {
 };
 
 // 見ていないビューのコードは作らない。TSX への変換は spec が届くたびに走るため
-const codeOf = (spec: Spec | null, view: ArtifactView): string | null => {
-  if (spec === null || view === 'preview') {
+const codeOf = (artifact: PaneArtifact, view: ArtifactView): string | null => {
+  if (view === 'preview') {
     return null;
   }
-  return view === 'tsx' ? specToTsx(spec) : JSON.stringify(spec, null, 2);
+  if (artifact.kind === 'slides') {
+    return artifact.source;
+  }
+  if (artifact.spec === null) {
+    return null;
+  }
+  return view === 'tsx'
+    ? specToTsx(artifact.spec)
+    : JSON.stringify(artifact.spec, null, 2);
+};
+
+const codeLangOf = (kind: ArtifactKind, view: ArtifactView): string => {
+  if (kind === 'slides') {
+    return 'markdown';
+  }
+  return view === 'tsx' ? 'tsx' : 'json';
+};
+
+const previewOf = (
+  artifact: PaneArtifact,
+  isGenerating: boolean,
+): ReactNode => {
+  if (artifact.kind === 'slides') {
+    return artifact.source === null ? (
+      <PreviewLoading message={artifact.text} />
+    ) : (
+      <DeckPreview
+        isStreaming={isGenerating}
+        printable={false}
+        source={artifact.source}
+      />
+    );
+  }
+  return artifact.spec === null ? (
+    <PreviewLoading message={artifact.text} />
+  ) : (
+    <SpecPreview loading={isGenerating} spec={artifact.spec} />
+  );
 };
 
 type ArtifactPaneProps = {
-  artifact: PaneArtifactView;
+  artifact: PaneArtifact;
   versions: readonly PaneVersion[];
   onSelectVersion: (toolCallId: string) => void;
   view: ArtifactView;
@@ -75,15 +126,18 @@ export const ArtifactPane: FC<ArtifactPaneProps> = ({
   headingRef,
 }) => {
   const isGenerating = artifact.state === 'generating';
-  const code = codeOf(artifact.spec, view);
+  const code = codeOf(artifact, view);
   const highlighted = useHighlightedCode(
     code,
     isGenerating,
-    view === 'tsx' ? 'tsx' : 'json',
+    codeLangOf(artifact.kind, view),
     highlight,
   );
   return (
-    <section aria-label="UI のプレビュー" className={styles.root}>
+    <section
+      aria-label={PANE_TEXTS[artifact.kind].label}
+      className={styles.root}
+    >
       <div className={styles.header}>
         <h2 className={styles.title} ref={headingRef} tabIndex={-1}>
           {artifact.title}
@@ -117,7 +171,7 @@ export const ArtifactPane: FC<ArtifactPaneProps> = ({
           <div className={styles.viewTabs}>
             <ViewTabs
               onChange={onViewChange}
-              options={ARTIFACT_VIEW_OPTIONS}
+              options={ARTIFACT_VIEW_OPTIONS[artifact.kind]}
               value={view}
             />
           </div>
@@ -144,16 +198,13 @@ export const ArtifactPane: FC<ArtifactPaneProps> = ({
       </div>
       {artifact.state === 'stopped' ? (
         <div className={styles.notice}>
-          <Alert
-            message="保存していない、途中までの UI です。続けるときはもう一度頼んでください"
-            tone="warning"
-          />
+          <Alert message={PANE_TEXTS[artifact.kind].stopped} tone="warning" />
         </div>
       ) : null}
-      {/* 別の呼び出しへ移ったら、生成 UI の入力やスクロールを持ち越さない。
+      {/* 別の呼び出しへ移ったら、生成 UI の入力やスクロール、スライドの位置を持ち越さない。
           見出しは作り直さず、新しい生成への追従や版の切り替えで、見出しのボタンのフォーカスを落とさない */}
       <div className={styles.body} key={artifact.toolCallId}>
-        {/* 生成 UI の入力を残すよう、コードを見ているあいだもアンマウントせずに隠す */}
+        {/* 生成 UI の入力やスライドの位置を残すよう、コードを見ているあいだもアンマウントせずに隠す */}
         <div
           className={styles.preview}
           data-active={view === 'preview'}
@@ -162,11 +213,7 @@ export const ArtifactPane: FC<ArtifactPaneProps> = ({
             event.preventDefault();
           }}
         >
-          {artifact.spec === null ? (
-            <PreviewLoading message={artifact.text} />
-          ) : (
-            <SpecPreview loading={isGenerating} spec={artifact.spec} />
-          )}
+          {previewOf(artifact, isGenerating)}
         </div>
         <div className={styles.code} data-active={view !== 'preview'}>
           <CodeView

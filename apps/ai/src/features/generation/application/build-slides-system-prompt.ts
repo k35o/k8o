@@ -59,20 +59,21 @@ const BASE_PROMPT = [
   'それ以外の前置き・後置きの文章は書かない。',
 ].join('\n');
 
+export const currentDeckSection = (source: string): string =>
+  [
+    '# 現在のデッキ（これを土台に、ユーザー指示へ従って全文を再生成する。差分ではなく完全な置き換え）',
+    '````md',
+    source,
+    '````',
+  ].join('\n');
+
 export const buildSlidesSystemPrompt = (
   input: BuildSlidesSystemPromptInput = {},
 ): string => {
   const sections = [BASE_PROMPT];
 
   if (hasText(input.currentSource)) {
-    sections.push(
-      [
-        '# 現在のデッキ（これを土台に、ユーザー指示へ従って全文を再生成する。差分ではなく完全な置き換え）',
-        '````md',
-        input.currentSource,
-        '````',
-      ].join('\n'),
-    );
+    sections.push(currentDeckSection(input.currentSource));
   }
 
   return sections.join('\n\n');

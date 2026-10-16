@@ -3,19 +3,23 @@ import { describe, expect, it } from 'vitest';
 
 import type { AgentUIMessage } from './agent-message';
 import {
+  artifactErrorText,
+  artifactLiveOf,
+  chatArtifactOf,
+  chatArtifactsOf,
   lastCallKeyOf,
   paneVersionsOf,
   shownArtifact,
-  uiArtifactsOf,
-  uiArtifactView,
-  uiErrorText,
-  uiLiveOf,
-} from './ui-artifacts';
-import type { UiArtifactView } from './ui-artifacts';
+} from './chat-artifacts';
+import type { ChatArtifact } from './chat-artifacts';
 
 type UiToolPart = Extract<
   AgentUIMessage['parts'][number],
   { type: 'tool-generate_ui' }
+>;
+type SlidesToolPart = Extract<
+  AgentUIMessage['parts'][number],
+  { type: 'tool-generate_slides' }
 >;
 
 const BUTTON: Spec = {
@@ -89,11 +93,77 @@ const parts = {
   },
 } satisfies Record<string, UiToolPart>;
 
+const DECK = [
+  '<Cover>',
+  '# TypeScript 入門',
+  '</Cover>',
+  '',
+  '---',
+  '',
+  '## 型とは',
+].join('\n');
+
+const SLIDES_INPUT = { title: 'TypeScript 入門', instruction: '5枚で' };
+const SLIDES_EDIT_INPUT = {
+  title: 'TypeScript 入門',
+  base: { artifactId: 's1t2u3v4w5x6', version: 1 },
+  instruction: '3枚目のコードを短く',
+};
+
+const slidesParts = {
+  inputAvailable: {
+    type: 'tool-generate_slides',
+    toolCallId: 'slides-input',
+    state: 'input-available',
+    input: SLIDES_INPUT,
+  },
+  thinking: {
+    type: 'tool-generate_slides',
+    toolCallId: 'slides-thinking',
+    state: 'output-available',
+    preliminary: true,
+    input: SLIDES_EDIT_INPUT,
+    output: { status: 'generating', phase: 'thinking', source: null },
+  },
+  writing: {
+    type: 'tool-generate_slides',
+    toolCallId: 'slides-writing',
+    state: 'output-available',
+    preliminary: true,
+    input: SLIDES_INPUT,
+    output: { status: 'generating', phase: 'writing', source: DECK },
+  },
+  done: {
+    type: 'tool-generate_slides',
+    toolCallId: 'slides-done',
+    state: 'output-available',
+    input: SLIDES_INPUT,
+    output: {
+      status: 'done',
+      artifactId: 's1t2u3v4w5x6',
+      version: 1,
+      summary: '型の基礎を5枚にまとめました。',
+      source: DECK,
+    },
+  },
+  failed: {
+    type: 'tool-generate_slides',
+    toolCallId: 'slides-failed',
+    state: 'output-error',
+    input: SLIDES_INPUT,
+    errorText:
+      'Error: スライドを読み取れませんでした: スライドが1枚もありません',
+  },
+} satisfies Record<string, SlidesToolPart>;
+
 const notLive = { live: null, isStopping: false } as const;
 const receiving = { live: 'receiving', isStopping: false } as const;
 const waiting = { live: 'waiting', isStopping: false } as const;
 
-const assistant = (id: string, ...toolParts: UiToolPart[]): AgentUIMessage => ({
+const assistant = (
+  id: string,
+  ...toolParts: Array<UiToolPart | SlidesToolPart>
+): AgentUIMessage => ({
   id,
   role: 'assistant',
   parts: [{ type: 'step-start' }, ...toolParts],
@@ -105,13 +175,14 @@ const user = (id: string): AgentUIMessage => ({
   parts: [{ type: 'text', text: 'UI を作って' }],
 });
 
-const keysOf = (artifacts: UiArtifactView[]): string[] =>
+const keysOf = (artifacts: ChatArtifact[]): string[] =>
   artifacts.map((artifact) => artifact.toolCallId);
 
-describe('uiArtifactView', () => {
+describe('chatArtifactOf', () => {
   describe('正常系', () => {
     it('入力が届いているあいだは準備中で、ボタンを出さない', () => {
-      expect(uiArtifactView(parts.inputAvailable, receiving)).toStrictEqual({
+      expect(chatArtifactOf(parts.inputAvailable, receiving)).toStrictEqual({
+        kind: 'ui',
         toolCallId: 'call-input',
         title: '料金表',
         spec: null,
@@ -129,7 +200,7 @@ describe('uiArtifactView', () => {
     ])(
       '%s途中の出力を受信しているあいだは、段階の文とボタンを出す',
       (_, part, text, spec) => {
-        expect(uiArtifactView(part, receiving)).toMatchObject({
+        expect(chatArtifactOf(part, receiving)).toMatchObject({
           state: 'generating',
           text,
           spec,
@@ -139,14 +210,15 @@ describe('uiArtifactView', () => {
     );
 
     it('直しているあいだは、土台の版を添える', () => {
-      expect(uiArtifactView(parts.repairing, receiving)).toMatchObject({
+      expect(chatArtifactOf(parts.repairing, receiving)).toMatchObject({
         state: 'generating',
         editingVersion: 2,
       });
     });
 
     it('確定の出力は、要約と版を出す', () => {
-      expect(uiArtifactView(parts.done, notLive)).toStrictEqual({
+      expect(chatArtifactOf(parts.done, notLive)).toStrictEqual({
+        kind: 'ui',
         toolCallId: 'call-done',
         title: '料金表',
         spec: BUTTON,
@@ -159,7 +231,8 @@ describe('uiArtifactView', () => {
     });
 
     it('失敗は、表示用に直したエラーの文を出し、ボタンを出さない', () => {
-      expect(uiArtifactView(parts.failed, receiving)).toStrictEqual({
+      expect(chatArtifactOf(parts.failed, receiving)).toStrictEqual({
+        kind: 'ui',
         toolCallId: 'call-failed',
         title: '料金表',
         spec: null,
@@ -172,12 +245,12 @@ describe('uiArtifactView', () => {
 
   describe('異常系', () => {
     it('受信が切れてサーバーを待つあいだは、待っている文にし、spec があればボタンを出す', () => {
-      expect(uiArtifactView(parts.drawing, waiting)).toMatchObject({
+      expect(chatArtifactOf(parts.drawing, waiting)).toMatchObject({
         state: 'generating',
         text: '生成を続けています。終わると最新に置き換わります',
         open: 'preview',
       });
-      expect(uiArtifactView(parts.thinking, waiting)).toMatchObject({
+      expect(chatArtifactOf(parts.thinking, waiting)).toMatchObject({
         state: 'generating',
         open: null,
       });
@@ -186,7 +259,7 @@ describe('uiArtifactView', () => {
     it('止めているあいだは、受信中でも待っていても「停止しています…」にする', () => {
       for (const live of ['receiving', 'waiting'] as const) {
         expect(
-          uiArtifactView(parts.drawing, { live, isStopping: true }),
+          chatArtifactOf(parts.drawing, { live, isStopping: true }),
         ).toMatchObject({
           state: 'generating',
           text: '停止しています…',
@@ -196,7 +269,8 @@ describe('uiArtifactView', () => {
     });
 
     it('生きていないメッセージの途中の出力は、途中で止まったものとして spec を開ける', () => {
-      expect(uiArtifactView(parts.drawing, notLive)).toStrictEqual({
+      expect(chatArtifactOf(parts.drawing, notLive)).toStrictEqual({
+        kind: 'ui',
         toolCallId: 'call-drawing',
         title: '料金表',
         spec: BUTTON,
@@ -207,11 +281,11 @@ describe('uiArtifactView', () => {
     });
 
     it('spec の無いまま止まったものは、ボタンを出さない', () => {
-      expect(uiArtifactView(parts.inputAvailable, notLive)).toMatchObject({
+      expect(chatArtifactOf(parts.inputAvailable, notLive)).toMatchObject({
         state: 'stopped',
         open: null,
       });
-      expect(uiArtifactView(parts.thinking, notLive)).toMatchObject({
+      expect(chatArtifactOf(parts.thinking, notLive)).toMatchObject({
         state: 'stopped',
         open: null,
       });
@@ -220,7 +294,7 @@ describe('uiArtifactView', () => {
 
   describe('エッジケース', () => {
     it('入力が届き始めたばかりなら、届いた分のタイトルを出す', () => {
-      expect(uiArtifactView(parts.inputStreaming, receiving)).toMatchObject({
+      expect(chatArtifactOf(parts.inputStreaming, receiving)).toMatchObject({
         title: '料金',
         text: '準備しています…',
       });
@@ -228,7 +302,7 @@ describe('uiArtifactView', () => {
 
     it('タイトルがまだ届いていなければ「UI」と出す', () => {
       expect(
-        uiArtifactView(
+        chatArtifactOf(
           {
             type: 'tool-generate_ui',
             toolCallId: 'call-empty',
@@ -242,7 +316,7 @@ describe('uiArtifactView', () => {
 
     it('base が null の呼び出しは、新しく作るものとして版を添えない', () => {
       expect(
-        uiArtifactView(
+        chatArtifactOf(
           { ...parts.thinking, input: { ...INPUT, base: null } },
           receiving,
         ),
@@ -251,7 +325,7 @@ describe('uiArtifactView', () => {
 
     it('確定の出力が preliminary で届いたあいだは、まだ描いているものとして出す', () => {
       expect(
-        uiArtifactView({ ...parts.done, preliminary: true }, receiving),
+        chatArtifactOf({ ...parts.done, preliminary: true }, receiving),
       ).toMatchObject({
         state: 'generating',
         text: '描いています…',
@@ -261,28 +335,140 @@ describe('uiArtifactView', () => {
   });
 });
 
-describe('uiErrorText', () => {
+describe('chatArtifactOf のスライド', () => {
+  describe('正常系', () => {
+    it('確定の出力は、デッキの source と要約と版を出す', () => {
+      expect(chatArtifactOf(slidesParts.done, notLive)).toStrictEqual({
+        kind: 'slides',
+        toolCallId: 'slides-done',
+        title: 'TypeScript 入門',
+        source: DECK,
+        text: '型の基礎を5枚にまとめました。',
+        open: 'preview',
+        state: 'done',
+        artifactId: 's1t2u3v4w5x6',
+        version: 1,
+      });
+    });
+
+    it.each([
+      ['考えている', slidesParts.thinking, '考えています…', null],
+      ['書いている', slidesParts.writing, 'スライドを書いています…', DECK],
+    ])(
+      '%s途中の出力を受信しているあいだは、段階の文とボタンを出す',
+      (_, part, text, source) => {
+        expect(chatArtifactOf(part, receiving)).toMatchObject({
+          kind: 'slides',
+          state: 'generating',
+          text,
+          source,
+          open: 'preview',
+        });
+      },
+    );
+
+    it('直しているあいだは、考えている途中でも土台の版を添える', () => {
+      expect(chatArtifactOf(slidesParts.thinking, receiving)).toMatchObject({
+        state: 'generating',
+        editingVersion: 1,
+      });
+    });
+
+    it('失敗は、表示用に直したエラーの文を出し、ボタンを出さない', () => {
+      expect(chatArtifactOf(slidesParts.failed, receiving)).toStrictEqual({
+        kind: 'slides',
+        toolCallId: 'slides-failed',
+        title: 'TypeScript 入門',
+        source: null,
+        text: 'スライドを読み取れませんでした: スライドが1枚もありません',
+        open: null,
+        state: 'failed',
+      });
+    });
+  });
+
+  describe('異常系', () => {
+    it.each([
+      ['受信が切れてサーバーを待つ', waiting],
+      ['止めている', { live: 'receiving', isStopping: true } as const],
+    ])(
+      '考えている途中で%sあいだは、デッキが無いのでボタンを出さない',
+      (_, live) => {
+        expect(chatArtifactOf(slidesParts.thinking, live)).toMatchObject({
+          state: 'generating',
+          open: null,
+        });
+      },
+    );
+
+    it('考えている途中で止まったものは、デッキが無いのでボタンを出さない', () => {
+      expect(chatArtifactOf(slidesParts.thinking, notLive)).toMatchObject({
+        state: 'stopped',
+        text: '途中で止まりました',
+        open: null,
+      });
+    });
+
+    it('書いている途中で止まったものは、途中までのデッキを開ける', () => {
+      expect(chatArtifactOf(slidesParts.writing, notLive)).toMatchObject({
+        state: 'stopped',
+        source: DECK,
+        open: 'partial',
+      });
+    });
+  });
+
+  describe('エッジケース', () => {
+    it('タイトルがまだ届いていなければ「スライド」と出す', () => {
+      expect(
+        chatArtifactOf(
+          {
+            type: 'tool-generate_slides',
+            toolCallId: 'slides-empty',
+            state: 'input-streaming',
+            input: undefined,
+          },
+          receiving,
+        ),
+      ).toMatchObject({ kind: 'slides', title: 'スライド', source: null });
+    });
+
+    it('確定の出力が preliminary で届いたあいだは、まだ書いているものとして出す', () => {
+      expect(
+        chatArtifactOf({ ...slidesParts.done, preliminary: true }, receiving),
+      ).toMatchObject({
+        state: 'generating',
+        text: 'スライドを書いています…',
+        source: DECK,
+      });
+    });
+  });
+});
+
+describe('artifactErrorText', () => {
   describe('正常系', () => {
     it('先頭の「Error: 」を外す', () => {
       expect(
-        uiErrorText('Error: UI が見つかりません: artifactId x の版 1'),
+        artifactErrorText('Error: UI が見つかりません: artifactId x の版 1'),
       ).toBe('UI が見つかりません: artifactId x の版 1');
     });
 
     it('tool の時間の上限で止まったことを言い換える', () => {
-      expect(uiErrorText('TimeoutError: signal timed out')).toBe(
+      expect(artifactErrorText('TimeoutError: signal timed out')).toBe(
         '時間の上限に達したため止まりました',
       );
     });
 
     it('中断で止まったことを言い換える', () => {
-      expect(uiErrorText('AbortError: This operation was aborted')).toBe(
+      expect(artifactErrorText('AbortError: This operation was aborted')).toBe(
         '止まりました',
       );
     });
 
     it('300 文字までなら、切らずに出す', () => {
-      expect(uiErrorText(`Error: ${'あ'.repeat(300)}`)).toBe('あ'.repeat(300));
+      expect(artifactErrorText(`Error: ${'あ'.repeat(300)}`)).toBe(
+        'あ'.repeat(300),
+      );
     });
   });
 
@@ -290,7 +476,7 @@ describe('uiErrorText', () => {
     it('長い検証エラーは、300 文字で切って … を付ける', () => {
       const issue = (key: string): string =>
         `[${key}] Unknown component type "DataGrid". Use one of: Stack, Grid, Button, Card, Badge, Heading, Alert, Callout, Spinner, S…`;
-      const text = uiErrorText(
+      const text = artifactErrorText(
         `Error: UI の検証エラーを直せませんでした: ${[issue('a'), issue('b'), issue('c')].join(' / ')}`,
       );
 
@@ -301,14 +487,14 @@ describe('uiErrorText', () => {
     });
 
     it('切るときに、サロゲートペアを途中で切らない', () => {
-      expect(uiErrorText(`Error: ${'🍣'.repeat(301)}`)).toBe(
+      expect(artifactErrorText(`Error: ${'🍣'.repeat(301)}`)).toBe(
         `${'🍣'.repeat(300)}…`,
       );
     });
 
     it('Error の toString でない文は、そのまま出す', () => {
       expect(
-        uiErrorText(
+        artifactErrorText(
           '1時間あたりの上限に達しました。しばらく待ってから送ってください。',
         ),
       ).toBe(
@@ -318,38 +504,40 @@ describe('uiErrorText', () => {
   });
 });
 
-describe('uiLiveOf', () => {
+describe('artifactLiveOf', () => {
   describe('正常系', () => {
     it('受信中なら receiving', () => {
-      expect(uiLiveOf({ status: 'streaming', isServerRunning: false })).toBe(
-        'receiving',
-      );
+      expect(
+        artifactLiveOf({ status: 'streaming', isServerRunning: false }),
+      ).toBe('receiving');
     });
 
     it('受信が切れてサーバーを待っているなら waiting', () => {
-      expect(uiLiveOf({ status: 'error', isServerRunning: true })).toBe(
+      expect(artifactLiveOf({ status: 'error', isServerRunning: true })).toBe(
         'waiting',
       );
     });
 
     it('どちらでもなければ null', () => {
-      expect(uiLiveOf({ status: 'ready', isServerRunning: false })).toBeNull();
+      expect(
+        artifactLiveOf({ status: 'ready', isServerRunning: false }),
+      ).toBeNull();
     });
   });
 
   describe('エッジケース', () => {
     it('送ったばかりのあいだは、サーバーを待っていても生きている返答として扱わない', () => {
       expect(
-        uiLiveOf({ status: 'submitted', isServerRunning: true }),
+        artifactLiveOf({ status: 'submitted', isServerRunning: true }),
       ).toBeNull();
     });
   });
 });
 
-describe('uiArtifactsOf', () => {
+describe('chatArtifactsOf', () => {
   describe('正常系', () => {
     it('会話の順に generate_ui のパーツを集め、最後の assistant だけを生きているものにする', () => {
-      const artifacts = uiArtifactsOf(
+      const artifacts = chatArtifactsOf(
         [
           user('u1'),
           assistant('a1', parts.drawing),
@@ -369,7 +557,7 @@ describe('uiArtifactsOf', () => {
 
   describe('異常系', () => {
     it('最後が user なら、ひとつ前の assistant に途中の出力が残っていても生成中にしない', () => {
-      const artifacts = uiArtifactsOf(
+      const artifacts = chatArtifactsOf(
         [user('u1'), assistant('a1', parts.drawing), user('u2')],
         { live: 'waiting', isStopping: false },
       );
@@ -381,7 +569,7 @@ describe('uiArtifactsOf', () => {
 });
 
 describe('lastCallKeyOf と shownArtifact', () => {
-  const twoDone = uiArtifactsOf(
+  const twoDone = chatArtifactsOf(
     [
       assistant('a1', parts.done),
       assistant('a2', { ...parts.done, toolCallId: 'call-done-2' }),
@@ -414,7 +602,7 @@ describe('lastCallKeyOf と shownArtifact', () => {
     });
 
     it('新しい生成が始まると、固定も閉じた状態も解けて最後を出す', () => {
-      const started = uiArtifactsOf(
+      const started = chatArtifactsOf(
         [
           assistant('a1', parts.done),
           assistant('a2', { ...parts.done, toolCallId: 'call-done-2' }),
@@ -439,7 +627,7 @@ describe('lastCallKeyOf と shownArtifact', () => {
 
   describe('異常系', () => {
     it('エラーと spec の無い中断は追従の対象にせず、その前のパーツを出す', () => {
-      const artifacts = uiArtifactsOf(
+      const artifacts = chatArtifactsOf(
         [
           assistant('a1', parts.done),
           assistant('a2', parts.thinking, parts.failed),
@@ -459,7 +647,7 @@ describe('lastCallKeyOf と shownArtifact', () => {
     it('最後の呼び出しは、ペインに出せない失敗や spec の無い中断も含めて決める', () => {
       expect(
         lastCallKeyOf(
-          uiArtifactsOf(
+          chatArtifactsOf(
             [
               assistant('a1', parts.done),
               assistant('a2', parts.thinking, parts.failed),
@@ -472,7 +660,7 @@ describe('lastCallKeyOf と shownArtifact', () => {
 
     describe('生成中に閉じるか固定したあとで、その生成が出せないまま終わっても、選んだ状態を保つ', () => {
       const whileGenerating = lastCallKeyOf(
-        uiArtifactsOf(
+        chatArtifactsOf(
           [
             assistant('a1', parts.done),
             assistant('a2', { ...parts.done, toolCallId: 'call-done-2' }),
@@ -481,8 +669,8 @@ describe('lastCallKeyOf と shownArtifact', () => {
           receiving,
         ),
       );
-      const endedWith = (part: UiToolPart): UiArtifactView[] =>
-        uiArtifactsOf(
+      const endedWith = (part: UiToolPart): ChatArtifact[] =>
+        chatArtifactsOf(
           [
             assistant('a1', parts.done),
             assistant('a2', { ...parts.done, toolCallId: 'call-done-2' }),
@@ -518,7 +706,7 @@ describe('lastCallKeyOf と shownArtifact', () => {
     });
 
     it('閉じるか固定したあとに新しい生成が始まれば、それが失敗しても解けたままにし、出せる最後を出す', () => {
-      const failed = uiArtifactsOf(
+      const failed = chatArtifactsOf(
         [
           assistant('a1', parts.done),
           assistant('a2', { ...parts.done, toolCallId: 'call-done-2' }),
@@ -540,7 +728,7 @@ describe('lastCallKeyOf と shownArtifact', () => {
     });
 
     it('spec を残して止まったものは追従の対象にする', () => {
-      const artifacts = uiArtifactsOf(
+      const artifacts = chatArtifactsOf(
         [assistant('a1', parts.done), assistant('a2', parts.drawing)],
         notLive,
       );
@@ -551,7 +739,7 @@ describe('lastCallKeyOf と shownArtifact', () => {
     });
 
     it('固定したパーツが失敗に変わったら、最後を出す', () => {
-      const artifacts = uiArtifactsOf(
+      const artifacts = chatArtifactsOf(
         [
           assistant('a1', { ...parts.failed, toolCallId: 'call-pinned' }),
           assistant('a2', parts.done),
@@ -590,12 +778,15 @@ describe('lastCallKeyOf と shownArtifact', () => {
 
   describe('エッジケース', () => {
     it('出せるパーツが無ければ、追従していても出さない', () => {
-      const artifacts = uiArtifactsOf([assistant('a1', parts.failed)], notLive);
+      const artifacts = chatArtifactsOf(
+        [assistant('a1', parts.failed)],
+        notLive,
+      );
       expect(shownArtifact(artifacts, { type: 'follow' })).toBeNull();
     });
 
     it('生成中なら、まだ spec が無くても出す', () => {
-      const artifacts = uiArtifactsOf(
+      const artifacts = chatArtifactsOf(
         [user('u1'), assistant('a1', parts.inputStreaming)],
         receiving,
       );
@@ -625,7 +816,7 @@ describe('paneVersionsOf', () => {
     output: { ...parts.done.output, artifactId, version },
   });
   const versionsShowing = (
-    artifacts: UiArtifactView[],
+    artifacts: ChatArtifact[],
     toolCallId: string,
   ): ReturnType<typeof paneVersionsOf> =>
     paneVersionsOf(
@@ -639,7 +830,7 @@ describe('paneVersionsOf', () => {
 
   describe('正常系', () => {
     it('出している版と同じ artifactId の、できた版だけを、会話の順に返す', () => {
-      const artifacts = uiArtifactsOf(
+      const artifacts = chatArtifactsOf(
         [
           assistant('a1', doneOf('call-v1', 'pricing', 1)),
           assistant('a2', doneOf('call-other', 'dashboard', 1)),
@@ -662,7 +853,7 @@ describe('paneVersionsOf', () => {
     });
 
     it('前の版を土台に直した版も、同じ UI の版として並べる', () => {
-      const artifacts = uiArtifactsOf(
+      const artifacts = chatArtifactsOf(
         [
           assistant('a1', doneOf('call-v1', 'pricing', 1)),
           assistant('a2', doneOf('call-v2', 'pricing', 2)),
@@ -681,7 +872,7 @@ describe('paneVersionsOf', () => {
 
   describe('エッジケース', () => {
     it('版が1つなら、その1つだけを返す', () => {
-      const artifacts = uiArtifactsOf(
+      const artifacts = chatArtifactsOf(
         [
           assistant('a1', doneOf('call-v1', 'pricing', 1)),
           assistant('a2', doneOf('call-other', 'dashboard', 1)),
@@ -697,7 +888,7 @@ describe('paneVersionsOf', () => {
     it.each([
       [
         '生成中',
-        uiArtifactsOf(
+        chatArtifactsOf(
           [
             assistant('a1', doneOf('call-v1', 'pricing', 1)),
             assistant('a2', doneOf('call-v2', 'pricing', 2)),
@@ -712,7 +903,7 @@ describe('paneVersionsOf', () => {
       ],
       [
         '止めた途中',
-        uiArtifactsOf(
+        chatArtifactsOf(
           [
             assistant('a1', doneOf('call-v1', 'pricing', 1)),
             assistant('a2', doneOf('call-v2', 'pricing', 2)),
@@ -730,7 +921,7 @@ describe('paneVersionsOf', () => {
     });
 
     it('ペインに何も出していなければ、空を返す', () => {
-      const artifacts = uiArtifactsOf(
+      const artifacts = chatArtifactsOf(
         [
           assistant('a1', doneOf('call-v1', 'pricing', 1)),
           assistant('a2', doneOf('call-v2', 'pricing', 2)),
@@ -739,6 +930,77 @@ describe('paneVersionsOf', () => {
       );
 
       expect(paneVersionsOf(artifacts, null)).toStrictEqual([]);
+    });
+  });
+});
+
+describe('UI とスライドが混ざった会話', () => {
+  describe('正常系', () => {
+    it('kind を問わず会話の順に集め、追従は新しい呼び出しへ移る', () => {
+      const artifacts = chatArtifactsOf(
+        [assistant('a1', parts.done), assistant('a2', slidesParts.writing)],
+        receiving,
+      );
+      expect(
+        artifacts.map((artifact) => [artifact.toolCallId, artifact.kind]),
+      ).toStrictEqual([
+        ['call-done', 'ui'],
+        ['slides-writing', 'slides'],
+      ]);
+      expect(shownArtifact(artifacts, { type: 'follow' })?.toolCallId).toBe(
+        'slides-writing',
+      );
+    });
+
+    it('UI を固定していても、スライドの生成が始まると固定が解ける', () => {
+      const pinned = {
+        type: 'pinned',
+        toolCallId: 'call-done',
+        lastCallKey: 'call-done-2',
+      } as const;
+      const artifacts = chatArtifactsOf(
+        [
+          assistant('a1', parts.done),
+          assistant('a2', { ...parts.done, toolCallId: 'call-done-2' }),
+          assistant('a3', slidesParts.inputAvailable),
+        ],
+        receiving,
+      );
+      expect(shownArtifact(artifacts, pinned)?.toolCallId).toBe('slides-input');
+    });
+
+    it('同じ artifactId のスライドの版だけを並べ、UI の版を混ぜない', () => {
+      const artifacts = chatArtifactsOf(
+        [
+          assistant('a1', parts.done),
+          assistant('a2', slidesParts.done),
+          assistant('a3', {
+            ...slidesParts.done,
+            toolCallId: 'slides-done-2',
+            input: SLIDES_EDIT_INPUT,
+            output: { ...slidesParts.done.output, version: 2 },
+          }),
+        ],
+        notLive,
+      );
+      expect(
+        paneVersionsOf(artifacts, shownArtifact(artifacts, { type: 'follow' })),
+      ).toStrictEqual([
+        { toolCallId: 'slides-done', version: 1 },
+        { toolCallId: 'slides-done-2', version: 2 },
+      ]);
+    });
+  });
+
+  describe('異常系', () => {
+    it('考えている途中で止まったスライドは追従の対象にせず、その前の UI を出す', () => {
+      const artifacts = chatArtifactsOf(
+        [assistant('a1', parts.done), assistant('a2', slidesParts.thinking)],
+        notLive,
+      );
+      expect(shownArtifact(artifacts, { type: 'follow' })?.toolCallId).toBe(
+        'call-done',
+      );
     });
   });
 });

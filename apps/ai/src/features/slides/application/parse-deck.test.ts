@@ -1,6 +1,10 @@
 import { describe, expect, it } from 'vitest';
 
-import { extractCodeBlocks, parseDeck } from './parse-deck';
+import {
+  extractCodeBlocks,
+  hasUnclosedCodeFence,
+  parseDeck,
+} from './parse-deck';
 
 describe('parseDeck', () => {
   describe('正常系', () => {
@@ -121,6 +125,51 @@ describe('extractCodeBlocks', () => {
     it('閉じフェンス未到達（ストリーミング途中）のブロックは含めない', () => {
       const blocks = extractCodeBlocks(['```ts', 'const a ='].join('\n'));
       expect(blocks).toStrictEqual([]);
+    });
+
+    it('4つのフェンスの中にある3つのフェンスの行は、閉じとみなさずコードに含める', () => {
+      const blocks = extractCodeBlocks(
+        ['````md', '```ts', 'x', '```', '````'].join('\n'),
+      );
+      expect(blocks).toStrictEqual([{ code: '```ts\nx\n```', lang: 'md' }]);
+    });
+  });
+});
+
+describe('hasUnclosedCodeFence', () => {
+  describe('正常系', () => {
+    it('コードブロックがすべて閉じていれば偽を返す', () => {
+      expect(
+        hasUnclosedCodeFence(
+          ['## コード', '```ts', 'const a = 1;', '```', '本文'].join('\n'),
+        ),
+      ).toBe(false);
+    });
+
+    it('コードブロックが開いたまま終わっていれば真を返す', () => {
+      expect(
+        hasUnclosedCodeFence(['## コード', '```ts', 'const a = 1;'].join('\n')),
+      ).toBe(true);
+    });
+  });
+
+  describe('エッジケース', () => {
+    it('4つのフェンスの中にある3つのフェンスの行では閉じず、開いたままなら真を返す', () => {
+      expect(
+        hasUnclosedCodeFence(['````md', '```ts', 'x', '```'].join('\n')),
+      ).toBe(true);
+    });
+
+    it('コードの中の --- は区切りとみなさず、閉じていれば偽を返す', () => {
+      expect(
+        hasUnclosedCodeFence(
+          ['```yaml', '---', 'key: value', '```'].join('\n'),
+        ),
+      ).toBe(false);
+    });
+
+    it('コードブロックが無ければ偽を返す', () => {
+      expect(hasUnclosedCodeFence('## 見出し\n本文')).toBe(false);
     });
   });
 });

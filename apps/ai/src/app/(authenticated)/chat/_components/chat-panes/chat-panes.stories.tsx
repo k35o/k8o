@@ -48,6 +48,7 @@ const PRICING: Spec = {
 };
 
 const pricingDone = {
+  kind: 'ui',
   toolCallId: 'ui-done',
   title: '料金プラン',
   spec: PRICING,

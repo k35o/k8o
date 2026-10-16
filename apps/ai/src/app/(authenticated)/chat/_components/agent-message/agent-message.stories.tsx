@@ -146,6 +146,72 @@ const uiGeneratingParts: AgentUIMessage['parts'] = [
   },
 ];
 
+const DECK = ['<Cover>', '# TypeScript 入門', '</Cover>'].join('\n');
+
+const slidesInput = {
+  title: 'TypeScript 入門',
+  instruction: '型の基礎を5枚で',
+};
+
+const slidesAnswer: AgentUIMessage = {
+  id: 'a8',
+  role: 'assistant',
+  metadata: { end: 'completed' },
+  parts: [
+    { type: 'step-start' },
+    {
+      type: 'tool-generate_slides',
+      toolCallId: 'slides-done',
+      state: 'output-available',
+      input: slidesInput,
+      output: {
+        status: 'done',
+        artifactId: 's1t2u3v4w5x6',
+        version: 1,
+        summary: '型の基礎を5枚にまとめました。',
+        source: DECK,
+      },
+    },
+    {
+      type: 'tool-generate_slides',
+      toolCallId: 'slides-stopped-writing',
+      state: 'output-available',
+      preliminary: true,
+      input: { ...slidesInput, title: '型の発展' },
+      output: { status: 'generating', phase: 'writing', source: DECK },
+    },
+    {
+      type: 'tool-generate_slides',
+      toolCallId: 'slides-stopped-thinking',
+      state: 'output-available',
+      preliminary: true,
+      input: { ...slidesInput, title: '型の応用' },
+      output: { status: 'generating', phase: 'thinking', source: null },
+    },
+    {
+      type: 'tool-generate_slides',
+      toolCallId: 'slides-failed',
+      state: 'output-error',
+      input: { ...slidesInput, title: '型の歴史' },
+      errorText:
+        'Error: スライドを読み取れませんでした: デッキの中のコードブロックが閉じていません',
+    },
+    { type: 'text', state: 'done', text: '型の基礎のスライドを作りました。' },
+  ],
+};
+
+const slidesGeneratingParts: AgentUIMessage['parts'] = [
+  { type: 'step-start' },
+  {
+    type: 'tool-generate_slides',
+    toolCallId: 'slides-generating',
+    state: 'output-available',
+    preliminary: true,
+    input: slidesInput,
+    output: { status: 'generating', phase: 'writing', source: DECK },
+  },
+];
+
 const meta = preview.meta({
   component: AgentMessage,
   // propより狭い型（null）のままargsを推論させると meta.storyの型推論が壊れるため、
@@ -335,5 +401,56 @@ export const StoppingUi = meta.story({
     await expect(
       canvas.queryByText(/生成を続けています/u),
     ).not.toBeInTheDocument();
+  },
+});
+
+export const SlidesArtifacts = meta.story({
+  args: { message: slidesAnswer, selectedToolCallId: 'slides-done' },
+  play: async ({ args, canvasElement }) => {
+    const canvas = within(canvasElement);
+    await expect(canvas.getByText('TypeScript 入門')).toBeInTheDocument();
+    await expect(canvas.getByText('版 1')).toBeInTheDocument();
+    await expect(
+      canvas.getByText('型の基礎を5枚にまとめました。'),
+    ).toBeInTheDocument();
+    await userEvent.click(
+      canvas.getByRole('button', { name: 'プレビューを開く' }),
+    );
+    await expect(args.onOpenArtifact).toHaveBeenCalledWith('slides-done');
+    // 書いている途中で止まったものは途中まで開けて、書く前に止まったものは開くものが無い
+    await expect(canvas.getAllByText('途中で止まりました')).toHaveLength(2);
+    await userEvent.click(
+      canvas.getByRole('button', { name: '途中までを見る' }),
+    );
+    await expect(args.onOpenArtifact).toHaveBeenLastCalledWith(
+      'slides-stopped-writing',
+    );
+    await expect(
+      canvas.getByText(
+        'スライドを読み取れませんでした: デッキの中のコードブロックが閉じていません',
+      ),
+    ).toBeInTheDocument();
+    await expect(
+      canvas.getAllByRole('button', { name: /を開く|を見る|表示中/u }),
+    ).toHaveLength(2);
+    // デッキの Markdown を会話に流し込まない
+    await expect(canvas.queryByText(/<Cover>/u)).not.toBeInTheDocument();
+  },
+});
+
+export const GeneratingSlides = meta.story({
+  args: {
+    message: { id: 'a9', role: 'assistant', parts: slidesGeneratingParts },
+    isStreaming: true,
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    // 生成中のスライドだけの返答も、行ごと隠さずにカードを出す
+    await expect(
+      canvas.getByRole('status', { name: 'スライドを書いています…' }),
+    ).toBeInTheDocument();
+    await expect(
+      canvas.getByRole('button', { name: 'プレビューを開く' }),
+    ).toBeInTheDocument();
   },
 });

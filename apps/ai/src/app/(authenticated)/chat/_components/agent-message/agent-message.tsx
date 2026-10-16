@@ -9,11 +9,11 @@ import type {
   RunEnd,
 } from '@/features/agent/application/agent-message';
 import { MAX_STEPS } from '@/features/agent/application/agent-run';
-import { uiArtifactView } from '@/features/agent/application/ui-artifacts';
+import { chatArtifactOf } from '@/features/agent/application/chat-artifacts';
 import { MONTHLY_BUDGET_MICRO_USD } from '@/features/usage/application/budget';
 
+import { ArtifactCard } from '../artifact-card';
 import { MarkdownText } from '../markdown-text';
-import { UiArtifactCard } from '../ui-artifact-card';
 
 type AgentMessagePart = AgentUIMessage['parts'][number];
 type AgentToolPart = Extract<AgentMessagePart, { type: `tool-${string}` }>;
@@ -93,6 +93,7 @@ const rendersPart = (part: AgentMessagePart, isStreaming: boolean): boolean => {
     case 'tool-list_blogs':
     case 'tool-read_blog':
     case 'tool-generate_ui':
+    case 'tool-generate_slides':
       return true;
     case 'reasoning':
       return part.text.trim() !== '' || isThinking(part, isStreaming);
@@ -154,9 +155,10 @@ const AgentPart: FC<
         <ToolPart isGenerating={isStreaming || isServerRunning} part={part} />
       );
     case 'tool-generate_ui':
+    case 'tool-generate_slides':
       return (
-        <UiArtifactCard
-          artifact={uiArtifactView(part, {
+        <ArtifactCard
+          artifact={chatArtifactOf(part, {
             live: isStreaming
               ? 'receiving'
               : isServerRunning

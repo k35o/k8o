@@ -1,19 +1,19 @@
 # apps/ai CLAUDE.md
 
-AI関連ツールの置き場（`ai.k8o.me`）。@k8ordo/ui × Claude の v0風デザインシステム壁打ちツール（`/`）、スライド生成（`/slides`）、k8o のブログ記事を読めるエージェントとのチャット（`/chat`）がある。
+AI関連ツールの置き場（`ai.k8o.me`）。@k8ordo/ui × Claude の v0風デザインシステム壁打ちツール（`/`）、スライド生成（`/slides`）、k8o のブログ記事を読み、UI とスライドを作れるエージェントとのチャット（`/chat`）がある。
 
 ## レイヤー構成（src/）
 
 apps/main と同じ `app / features / shared` 構成（詳細は `apps/main/CLAUDE.md`）。Server Actions（`'use server'`）は `features/*/interface` に置く。
 
 - `generation/` - Claude（Sonnet 5.5 / Opus 5.5、AI SDK v7 と @ai-sdk/anthropic）による json-render spec とスライドの生成
-- `agent/` - `/chat` のエージェント。tool つきの生成のループ、スレッドとメッセージの保存（ai_threads・ai_thread_messages）、オーナー API から記事を読む tool、UI を作って直す tool
+- `agent/` - `/chat` のエージェント。tool つきの生成のループ、スレッドとメッセージの保存（ai_threads・ai_thread_messages）、オーナー API から記事を読む tool、UI とスライドを作って直す tool
 - `usage/` - Claude の利用ログ（ai_usages）、1時間あたりの生成回数の上限、月の予算と単価（`pricing.ts`）
 - `share/` - 公開共有（公開/非公開化。/s/[slug] は DB の spec をその場で描画）
 - `projects/` - プロジェクト・版の永続化（@repo/ai-database）
 - `artifacts/` - 生成物と版の保存（ai_artifacts・ai_artifact_versions）。版の行は書き換えず、直すたびに次の番号の版を足す。読むのは持ち主の版だけ
 - `highlight/` - 生成物（spec JSON / spec から変換した TSX / スライド）の shiki ハイライト
-- `slides/` - デッキ Markdown のスライド分割とコードブロックの抽出（`parse-deck.ts`）
+- `slides/` - デッキ Markdown のスライド分割、コードブロックの抽出、閉じていないコードブロックの検出（`parse-deck.ts`）
 
 `shared/claude/` には、generation・agent・usage が共通で使うモデルの定義（`models.ts`）と provider（`claude-provider.ts`）を置く。
 
@@ -43,22 +43,46 @@ UI スタジオとエージェントの `generate_ui` は、どちらも json-re
 - system は毎回同じ `buildSpecSystemPrompt()` にして、末尾に cache のブレークポイントを置く。直すときの土台と修復の指示は user の文（`buildUserPrompt`）に置き、system には連結しない
 - 組み上がった spec は `validateGeneratedSpec` で検証し、落ちたら壊れた spec を土台に、tool の中で1回だけ直させる（`ui-spec.ts`）。それでも通らなければ tool のエラーにする
 
+## スライド（Markdown のデッキ）
+
+スライドのスタジオとエージェントの `generate_slides` は、どちらも Markdown のデッキを作る。system prompt は `build-slides-system-prompt.ts`。出力は、バッククォート4つの md のフェンスで囲んだデッキと、そのあとの json のフェンスの meta（title・description・changes）で、`parseSlidesGeneration`（`parse-slides-generation.ts`）が切り出す。スライドの分割とコードブロックの抽出は `slides/application/parse-deck.ts`、描画は `app/_components/slide-deck` にある。
+
+### スタジオ（/api/generate）
+
+- 直すときは、今のデッキを system の末尾（`buildSlidesSystemPrompt({ currentSource })`）に置く
+- クライアントが、会話の text から `parseSlidesGeneration` でデッキと meta を読んで描く
+
+### エージェントの tool（generate_slides）
+
+- tool の中で Claude を1回呼び、`streamSlidesDeck`（`stream-slides-deck.ts`）が届いた text を積み上げる。usage と終わり方は、`streamUiSpec` と同じ `generationTextOf`（`generation-stream.ts`）で読む
+- system は毎回同じ `buildSlidesSystemPrompt()` にして、末尾に cache のブレークポイントを置く。直すときの土台のデッキは user の文（`slidesUserPrompt`）に置き、system には連結しない
+- 書き終えた出力は、`settleSlidesDeck`（`slides-deck.ts`）が次の3つを確かめて受け取る。満たさなければ、書き直させずに tool のエラーにする
+  - デッキの囲みが閉じて、途中で切れていない（`isSourceComplete`）。外側を3つのバッククォートで書かれると、中のコードブロックのフェンスの行でデッキが切れ、本当の閉じフェンスが後ろに残る。そのため、閉じたあと meta の手前までにフェンスだけの行が残れば、切れたとみなす
+  - デッキの中のコードブロックが閉じている（`hasUnclosedCodeFence`）
+  - スライドが1枚以上ある
+- タイトルは tool の入力から取り、meta は要約にだけ使う。meta が無くても受け取る
+- 書きかけのデッキは、1枚以上のスライドが読めてから流す。考えているあいだは、直すときも土台を流さない。スライドは全文の置き換えで、土台から続かないため
+
 ## エージェント（/chat）
 
 `/chat` は新しいスレッド、`/chat/[threadId]` は既存のスレッドの画面（`app/(authenticated)/chat/`）。サイドバーの枠（ToolNav・サインアウト・テーマ・スマホの Drawer）は `(authenticated)/layout` の `ToolFrame` にあり、ツールごとの一覧は `@sidebar` のスロット（チャットはスレッドを移っても作り直さないよう `@sidebar/chat/layout`）が描く。
 
-- `POST /api/chat` が、`streamText` に tool（`list_blogs`・`read_blog`・`generate_ui`）を渡してループを回す。ステップ数や時間の上限は `agent/application/agent-run.ts` にある
-- `generate_ui`（`agent/application/generate-ui.ts`）は、UI を新しく作るか、`base` で指した持ち主の版を土台に直して、`features/artifacts` に版として保存する
-  - 利用者・会話・モデルは `toolsContext` で渡す。時間の上限は、ほかの tool より長い `UI_TOOL_TIMEOUT_MS`
-  - execute は async generator で、書きかけの spec を間引いて preliminary の出力で流し、最後に保存した版（artifactId・版・要約・spec）を流す
-  - Claude に送り返すのは、`toModelOutput` の短い文（artifactId・版・タイトル・要約）だけで、spec は送らない
-- 会話には `generate_ui` の呼び出しをカードで出し、UI を横のペインでプレビューする。ペインでは、spec の JSON と、spec から変換した TSX も見てコピーできる。xl 以上は会話 440px とペインの2列にし、それより狭い幅ではタブで1枚ずつ出す
-  - カードとペインは、メッセージの tool の出力だけから描く。ペインに出す呼び出しは、`agent/application/ui-artifacts.ts` が描画中に導く。初期値は最後の UI に追従し、カードで固定するか閉じても、新しい生成が始まると追従に戻る
-  - カードや xl 未満のタブで開いた（固定した）呼び出しは、`?pane=<toolCallId>` で URL に持つ。固定した時点の最後の呼び出しが別なら `&since=<toolCallId>` も持ち、固定が解けたかを URL とメッセージだけで決める。固定は、この会話のパス（`/chat/<id>`）にいるあいだ描画中に URL から導くので、再読み込みしても同じ UI が開く。ほかのパスにいるあいだ（Activity で隠れているあいだ）は、最後に読んだ固定を保ち、ペインをマウントし直さない。xl 未満では、`pane` があるあいだプレビューを出す。閉じた状態とビュー（プレビュー・spec・TSX）は URL に持たない
+- `POST /api/chat` が、`streamText` に tool（`list_blogs`・`read_blog`・`generate_ui`・`generate_slides`）を渡してループを回す。ステップ数や時間の上限は `agent/application/agent-run.ts` にある
+- `generate_ui`（`agent/application/generate-ui.ts`）と `generate_slides`（`agent/application/generate-slides.ts`）は、UI・スライドを新しく作るか、`base` で指した持ち主の版を土台に直して、`features/artifacts` に版として保存する。生成物は kind（`'ui'`・`'slides'`）で分けて読むので、もう一方の tool で作った artifactId を `base` に渡されても見つからない
+  - 利用者・会話・モデルは `toolsContext` で渡す。時間の上限は、ほかの tool より長い `UI_TOOL_TIMEOUT_MS`・`SLIDES_TOOL_TIMEOUT_MS`
+  - execute は async generator で、書きかけ（spec か、デッキの source）を間引いて preliminary の出力で流し、最後に保存した版（artifactId・版・要約・spec か source）を流す
+  - Claude に送り返すのは、`toModelOutput` の短い文（artifactId・版・タイトル・要約）だけで、spec と source は送らない
+  - tool の文脈の schema、Claude を呼ぶ前の予約と返る前の記録、書きかけを流す間隔、要約の切り詰めは、2つの tool で `agent/application/artifact-tool.ts` を使う
+- 会話には `generate_ui`・`generate_slides` の呼び出しをカードで出し、UI とスライドを横のペインでプレビューする。ペインでは、UI は spec の JSON と spec から変換した TSX を、スライドはデッキの Markdown を見てコピーできる。xl 以上は会話 440px とペインの2列にし、それより狭い幅ではタブで1枚ずつ出す
+  - カードとペインは、メッセージの tool の出力だけから描く。ペインに出す呼び出しは、`agent/application/chat-artifacts.ts` が描画中に導く。UI とスライドの呼び出しを1つの列に並べ、初期値は最後の生成物に追従し、カードで固定するか閉じても、新しい生成が始まると追従に戻る
+  - ビュー（プレビュー・spec・TSX・Markdown）は ChatScreen の state に持ち、出している生成物の kind に無いビューはプレビューとして描く
+  - カードや xl 未満のタブで開いた（固定した）呼び出しは、`?pane=<toolCallId>` で URL に持つ。固定した時点の最後の呼び出しが別なら `&since=<toolCallId>` も持ち、固定が解けたかを URL とメッセージだけで決める。固定は、この会話のパス（`/chat/<id>`）にいるあいだ描画中に URL から導くので、再読み込みしても同じ生成物が開く。ほかのパスにいるあいだ（Activity で隠れているあいだ）は、最後に読んだ固定を保ち、ペインをマウントし直さない。xl 未満では、`pane` があるあいだプレビューを出す。閉じた状態とビューは URL に持たない
   - URL は `history` の pushState・replaceState で書く（`chat-screen/use-pane-pin.ts`）。開くとき、URL に `pane` が無ければ積み、あれば置き換える。外すときは、この文書で積んだ記録なら `history.back()` で戻り、そうでなければ置き換えて消す。そのため xl 未満の戻るは、プレビューを閉じて会話に戻る。history に渡す state に Next の `__NA` を入れない（入れると Next がルーターに伝えず、`useSearchParams` が変わらない）
-  - ペインの見出しで、出している UI と同じ会話の中の、同じ artifactId のできた版を選べる。選ぶと、カードで固定したのと同じく `?pane=` に持つ。生成中と止めた途中の UI は版に数えず、それを出しているあいだは選ぶ口を出さない
+  - ペインの見出しで、出している生成物と同じ会話の中の、同じ artifactId のできた版を選べる。選ぶと、カードで固定したのと同じく `?pane=` に持つ。生成中と止めた途中のものは版に数えず、それを出しているあいだは選ぶ口を出さない
   - xl 以上では、ペインの見出しの「全画面で見る」で会話の列を隠し、ペインを作業領域いっぱいに広げる。会話はマウントしたまま隠す。広げた状態は ChatScreen の state に持って URL には持たず、ペインが消えると戻る
-  - 生成 UI のリンクとフォームは、ペインの包みで移動を止める。会話の画面ごと移動すると受信が切れるため。/s/[slug] ではリンクが動いてよいので、共有の `SpecPreview` には入れない
+  - 生成 UI とスライドのリンクと、生成 UI のフォームは、ペインの包みで移動を止める。会話の画面ごと移動すると受信が切れるため。/s/[slug] ではリンクが動いてよいので、共有の `SpecPreview` には入れない
+  - スライドは、スライドのスタジオと同じ `DeckPreview`（`(authenticated)/_components/deck-preview`）で描く。デッキのコードブロックのハイライトは、アプリのテーマに合わせる。矢印・Space・PageUp/Down・Home/End は、デッキにフォーカスがある（スライドを押した）ときだけ効き、会話のスクロールを奪わない
+  - ペインには印刷用の全スライド（`DeckPrint`）を描かない。印刷の CSS は、body に印刷用のスライドがあるあいだほかの要素を印刷から外し、会話の画面は別のパスへ移っても Activity で隠れたまま残るため
 - スレッドの ID はページが決め、最初の POST が予約を通ったときに、サーバーがスレッドの行を作る
 - メッセージは UIMessage を JSON のまま `ai_thread_messages` に追記する。user は実行の開始時、assistant は終了時に1行ずつ書く。終わり方（完了・停止・予算・エラーなど）は assistant の `metadata.end` に残す
 - ブラウザが切断しても、生成は最後まで続けて返答を保存する。そのため `req.signal` を `abortSignal` に渡さず、`vercel.json` の `functions` に `supportsCancellation` を付けない（付けると、切断で `req.signal` が abort される）
@@ -94,15 +118,15 @@ LLM（Claude API）は課金が発生するため、**課金が発生する全 A
 生成回数の上限（アプリと利用者ごとに1時間あたり `AI_GENERATE_LIMIT_PER_HOUR` 回）と月の予算（UTC の月初からの全行の費用の合計が $100 未満）は `ai_usages` の行で数える。Claude を呼ぶ経路は、`/api/generate` も `/api/chat` も、呼ぶ前に `reserveUsage`（`usage/application/usage.ts`）で行を予約し、予約できなければ 429 で断る。`reserveUsage` を通さずに Claude を呼ばない。トークン数と費用は `recordUsage` で、予約した行へあとから書き込む。単価は `usage/application/pricing.ts` にある。
 
 - 行は、アプリ（`app`）と、Claude を呼んだ種類（`kind`）を持つ。`/api/generate` と `/api/chat` は `'generation'` で予約する
-- `generate_ui` は、tool の中で Claude を呼ぶたびに `app: 'agent'`・`kind: 'ui'` で別に予約し、tool が返る前に usage を書き終える。断られても 429 にはならず、断りの文言（`USAGE_REFUSAL_MESSAGES`）で tool のエラーになる。1時間の枠なら会話は続き、予算ならそのステップのあとの確かめで止まる
+- `generate_ui` と `generate_slides` は、tool の中で Claude を呼ぶたびに `app: 'agent'` と、それぞれ `kind: 'ui'`・`kind: 'slides'` で別に予約し、tool が返る前に usage を書き終える。断られても 429 にはならず、断りの文言（`USAGE_REFUSAL_MESSAGES`）で tool のエラーになる。1時間の枠なら会話は続き、予算ならそのステップのあとの確かめで止まる
 - 1時間の上限は、種類で絞らずに、アプリと利用者ごとの全行を数える
 - 予算は、アプリと利用者で絞らずに数える
 - エージェントは、tool を呼んだステップのあとにも予算を確かめて止まる。同時に走る実行はどれも予約を通れるので、予算を超えるのは、同時の実行の数 × 1ステップ分まで
-- 1ステップで並べた `generate_ui` も、どれも同じ時点の予算を見て予約を通る。そのため、1ステップで並べた `generate_ui` の数 × 最大2回分（修復を含む）の生成まで、さらに予算を超えうる。歯止めは1時間の枠
+- 1ステップで並べた `generate_ui`・`generate_slides` も、どれも同じ時点の予算を見て予約を通る。そのため、1ステップで並べた `generate_ui` の数 × 最大2回分（修復を含む）と `generate_slides` の数 × 1回分の生成まで、さらに予算を超えうる。歯止めは1時間の枠
 - 予算に数えないもの
   - preview（`ai-preview` の DB）の分。本番とは別に数える
   - api の記事の要約。`ANTHROPIC_API_KEY` は Vercel の Shared Environment Variables で api と共有しているが、api の分は `ai_usages` に載らない
-  - 中断したステップと、途中でエラーになったステップの usage。記録されずに欠けることがある。`generate_ui` の中の呼び出しは、`anthropic.message_start` が持つ入力と cache のトークンだけを記録し、出力の分が欠ける
+  - 中断したステップと、途中でエラーになったステップの usage。記録されずに欠けることがある。`generate_ui`・`generate_slides` の中の呼び出しは、`anthropic.message_start` が持つ入力と cache のトークンだけを記録し、出力の分が欠ける
 - 最後の歯止めは、キーに紐づいたサブスクの月のクレジット。使い切ると API が止まり、請求はされない。ai 専用のキーや Anthropic Console の支出上限は置いていない
 
 ## Storybook MCP

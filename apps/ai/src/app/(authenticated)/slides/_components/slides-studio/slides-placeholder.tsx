@@ -7,11 +7,11 @@ import { DEFAULT_GENERATION_MODEL } from '@/shared/claude/models';
 
 import { ChatPanel } from '../../../_components/chat-panel';
 import { CopyCodeButton } from '../../../_components/copy-code-button';
+import { DeckPreview } from '../../../_components/deck-preview';
 import { ProjectTitle } from '../../../_components/project-title';
 import { StudioPanes } from '../../../_components/studio-panes';
 import { ToolHeader } from '../../../_components/tool-frame';
 import { ViewTabs } from '../../../_components/view-tabs';
-import { DeckPreview } from '../deck-preview';
 import {
   MOBILE_TAB_OPTIONS,
   NEW_PROJECT_EMPTY_STATE,
@@ -77,7 +77,7 @@ export const SlidesPlaceholder: FC = () => (
         panel={
           <div className={styles.frame}>
             <div className={styles.preview}>
-              <DeckPreview isStreaming={false} source={null} />
+              <DeckPreview isStreaming={false} printable source={null} />
             </div>
           </div>
         }

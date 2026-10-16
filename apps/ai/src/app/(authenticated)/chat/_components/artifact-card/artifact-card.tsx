@@ -1,23 +1,30 @@
-import { Badge, Button, Card, PaletteIcon, Spinner } from '@k8ordo/ui';
+import {
+  Badge,
+  Button,
+  Card,
+  PaletteIcon,
+  SlideIcon,
+  Spinner,
+} from '@k8ordo/ui';
 import type { FC, Ref } from 'react';
 
-import type { UiArtifactView } from '@/features/agent/application/ui-artifacts';
+import type { ChatArtifact } from '@/features/agent/application/chat-artifacts';
 
-import styles from './ui-artifact-card.module.css';
+import styles from './artifact-card.module.css';
 
 const OPEN_LABELS = {
   preview: 'プレビューを開く',
   partial: '途中までを見る',
 } as const;
 
-type UiArtifactCardProps = {
-  artifact: UiArtifactView;
+type ArtifactCardProps = {
+  artifact: ChatArtifact;
   isActive: boolean;
   onOpen: () => void;
   buttonRef?: Ref<HTMLButtonElement> | undefined;
 };
 
-export const UiArtifactCard: FC<UiArtifactCardProps> = ({
+export const ArtifactCard: FC<ArtifactCardProps> = ({
   artifact,
   isActive,
   onOpen,
@@ -27,7 +34,11 @@ export const UiArtifactCard: FC<UiArtifactCardProps> = ({
     <div className={styles.body}>
       <div className={styles.heading}>
         <span className={styles.icon}>
-          <PaletteIcon size="sm" />
+          {artifact.kind === 'ui' ? (
+            <PaletteIcon size="sm" />
+          ) : (
+            <SlideIcon size="sm" />
+          )}
         </span>
         <p className={styles.title}>{artifact.title}</p>
         {artifact.state === 'done' ? (

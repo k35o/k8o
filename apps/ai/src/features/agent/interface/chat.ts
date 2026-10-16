@@ -37,6 +37,7 @@ import {
   MAX_OUTPUT_TOKENS,
   MAX_STEPS,
   RUN_TIMEOUT_MS,
+  SLIDES_TOOL_TIMEOUT_MS,
   TOOL_TIMEOUT_MS,
   UI_TOOL_TIMEOUT_MS,
   withRunEnd,
@@ -115,6 +116,7 @@ const streamRun = async (input: {
   let usage = EMPTY_USAGE_TOKENS;
   let budgetExceeded = false;
 
+  const artifactContext = { userId, threadId, model };
   const result = streamText({
     model: getGenerationModel(model),
     instructions: AGENT_INSTRUCTIONS,
@@ -123,7 +125,10 @@ const streamRun = async (input: {
       ignoreIncompleteToolCalls: true,
     }),
     tools: agentTools,
-    toolsContext: { generate_ui: { userId, threadId, model } },
+    toolsContext: {
+      generate_ui: artifactContext,
+      generate_slides: artifactContext,
+    },
     stopWhen: [
       isStepCount(MAX_STEPS),
       async () => {
@@ -142,7 +147,10 @@ const streamRun = async (input: {
     timeout: {
       totalMs: RUN_TIMEOUT_MS,
       toolMs: TOOL_TIMEOUT_MS,
-      tools: { generate_uiMs: UI_TOOL_TIMEOUT_MS },
+      tools: {
+        generate_uiMs: UI_TOOL_TIMEOUT_MS,
+        generate_slidesMs: SLIDES_TOOL_TIMEOUT_MS,
+      },
     },
     maxOutputTokens: MAX_OUTPUT_TOKENS,
     providerOptions: { anthropic: ANTHROPIC_OPTIONS },

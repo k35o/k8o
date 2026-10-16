@@ -107,13 +107,15 @@ const DeckHighlightsProvider: FC<{
  * ハイライト関数はテーマ切替で差し替わる。これは緊急の更新ではないので
  * useDeferredValue に載せ、新しい配色が揃うまで現在の配色を出したままにする
  * （そのまま切り替えると、取得のあいだ fallback のプレーン表示に巻き戻る）。
+ * 最初の描画では null として扱う。テーマはブラウザでしか決まらず、サーバーで
+ * 描いたデッキを引き継ぐ描画で Suspense を挟むと、サーバーの HTML と食い違うため。
  */
 export const DeckHighlightsBoundary: FC<{
   slides: DeckSlide[];
   isStreaming: boolean;
   children: ReactNode;
 }> = ({ slides, isStreaming, children }) => {
-  const highlight = useDeferredValue(useContext(DeckHighlightContext));
+  const highlight = useDeferredValue(useContext(DeckHighlightContext), null);
   if (isStreaming || highlight === null) {
     return children;
   }
