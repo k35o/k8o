@@ -3,20 +3,6 @@
 }
 
 @media print {
-  /* better-css-modules-disable-next-line pure/at-rule -- 印刷専用の module なので、スライドを 16:9 のページとして出す @page もここに置く */
-  @page {
-    size: 1280px 720px;
-    margin: 0;
-  }
-
-  /* 印刷ルートが存在するときだけ、それ以外のサイト要素（ヘッダー等）を隠す。
-     :has() ガードにより、スライドを離脱した後の印刷では通常の印刷に戻る。 */
-  /* better-css-modules-disable-next-line pure/global -- 自分の外にあるサイト要素を印刷から外すため、body 直下を直接指す */
-  :global(body:has([data-slide-print]) > *:not([data-slide-print])) {
-    /* better-css-modules-disable-next-line pure/important -- 外側の要素が持つ display を確実に打ち消す */
-    display: none !important;
-  }
-
   .root {
     display: block;
     /* スライドの配色（背景・シンタックスハイライト等）をそのまま印刷に引き継ぐ。

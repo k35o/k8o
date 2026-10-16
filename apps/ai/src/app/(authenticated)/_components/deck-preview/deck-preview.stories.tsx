@@ -1,6 +1,6 @@
 import type { HighlightedCode } from '@repo/code-highlight/tokenize';
-import { useCallback, useState } from 'react';
-import type { FC } from 'react';
+import { Activity, useCallback, useState } from 'react';
+import type { ActivityProps, FC } from 'react';
 import {
   expect,
   mocked,
@@ -49,6 +49,25 @@ const SAMPLE_DECK = [
   '> 引用はこのように表示される。',
 ].join('\n');
 
+const hasPrintRule = (rules: CSSRuleList): boolean =>
+  [...rules].some(
+    (rule) =>
+      rule instanceof CSSPageRule ||
+      (rule instanceof CSSStyleRule &&
+        rule.selectorText.includes('[data-slide-print]')) ||
+      (rule instanceof CSSGroupingRule && hasPrintRule(rule.cssRules)),
+  );
+
+// 文書全体に効く印刷の規則（@page と、[data-slide-print] を指す body 直下の規則）を持つ <style> の
+// media。片方だけ別のシートへ移っても、そのシートの media が混ざって落ちるよう、どちらの規則でも拾う。
+// CSS のコメントに引っかからないよう、textContent ではなく解析された規則をたどる
+const printRuleMedia = (): string[] =>
+  [...document.querySelectorAll('style')]
+    .filter(
+      (style) => style.sheet !== null && hasPrintRule(style.sheet.cssRules),
+    )
+    .map((style) => style.media);
+
 const meta = preview.meta({
   component: DeckPreview,
   // Stage は 16:9 をコンテナクエリで決めるため、枠の高さを固定して描画する。
@@ -96,6 +115,108 @@ export const Cover = meta.story({
     const printRoot = document.body.querySelector('[data-slide-print]');
     await expect(printRoot).not.toBeNull();
     await expect(printRoot?.children.length).toBe(3);
+    // 表示しているあいだは、印刷の規則が印刷のときに効く。
+    await expect(printRuleMedia()).toEqual(['print']);
+  },
+});
+
+// ルートを移ったときの Activity と同じく、印刷用のスライドを描くデッキを隠したり外したりする。
+const ActivityDeck: FC<{
+  source: string;
+  initialMode: NonNullable<ActivityProps['mode']>;
+}> = ({ source, initialMode }) => {
+  const [mode, setMode] = useState(initialMode);
+  const [mounted, setMounted] = useState(true);
+  return (
+    <div className={styles.frame}>
+      <button
+        onClick={() => {
+          setMode(mode === 'visible' ? 'hidden' : 'visible');
+        }}
+        type="button"
+      >
+        {mode === 'visible' ? '隠す' : '表示する'}
+      </button>
+      <button
+        onClick={() => {
+          setMounted(false);
+        }}
+        type="button"
+      >
+        外す
+      </button>
+      <div className={styles.body}>
+        {mounted ? (
+          <Activity mode={mode}>
+            <DeckPreview isStreaming={false} printable source={source} />
+          </Activity>
+        ) : null}
+      </div>
+    </div>
+  );
+};
+
+// Activity で隠れた画面の印刷用のスライドは body に残るが、印刷の規則は切れ、ほかの画面の印刷に
+// 効かない。表示に戻ると効き直し、外すと規則ごと無くなる。
+export const HiddenByActivity = meta.story({
+  args: {
+    source: SAMPLE_DECK,
+    isStreaming: false,
+    printable: true,
+  },
+  render: ({ source }) => (
+    <ActivityDeck initialMode="visible" source={source ?? ''} />
+  ),
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    await waitFor(async () => {
+      await expect(printRuleMedia()).toEqual(['print']);
+    });
+
+    await userEvent.click(canvas.getByRole('button', { name: '隠す' }));
+    await waitFor(async () => {
+      await expect(printRuleMedia()).toEqual(['not all']);
+    });
+    await expect(
+      document.body.querySelector('[data-slide-print]'),
+    ).not.toBeNull();
+
+    await userEvent.click(canvas.getByRole('button', { name: '表示する' }));
+    await waitFor(async () => {
+      await expect(printRuleMedia()).toEqual(['print']);
+    });
+
+    await userEvent.click(canvas.getByRole('button', { name: '外す' }));
+    await waitFor(async () => {
+      await expect(printRuleMedia()).toEqual([]);
+    });
+  },
+});
+
+// hidden の Activity の中で先に描かれると、ref が付かないまま印刷用のスライドが body に入る。
+// そのあいだも印刷の規則は効かず、表示したときに初めて効く。
+export const MountedHidden = meta.story({
+  args: {
+    source: SAMPLE_DECK,
+    isStreaming: false,
+    printable: true,
+  },
+  render: ({ source }) => (
+    <ActivityDeck initialMode="hidden" source={source ?? ''} />
+  ),
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    await waitFor(async () => {
+      await expect(
+        document.body.querySelector('[data-slide-print]'),
+      ).not.toBeNull();
+    });
+    await expect(printRuleMedia()).toEqual(['not all']);
+
+    await userEvent.click(canvas.getByRole('button', { name: '表示する' }));
+    await waitFor(async () => {
+      await expect(printRuleMedia()).toEqual(['print']);
+    });
   },
 });
 
@@ -384,5 +505,7 @@ export const NotPrintable = meta.story({
     ).toBeInTheDocument();
     // 会話のペインでは、印刷用の全スライドを body に描かない。
     await expect(document.body.querySelector('[data-slide-print]')).toBeNull();
+    // 印刷の規則も入れず、会話の画面はふつうの用紙にそのまま印刷される。
+    await expect(printRuleMedia()).toEqual([]);
   },
 });
