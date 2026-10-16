@@ -3,25 +3,30 @@ import type { ChatStatus } from 'ai';
 
 import type { AgentUIMessage } from './agent-message';
 
-type UiToolPart = Extract<
+type ArtifactToolPart = Extract<
   AgentUIMessage['parts'][number],
-  { type: 'tool-generate_ui' }
+  { type: 'tool-generate_ui' | 'tool-generate_slides' }
 >;
 
 export type ArtifactLive = 'receiving' | 'waiting' | null;
 
-export type ChatArtifact = {
+type ArtifactContent =
+  | { kind: 'ui'; spec: Spec | null }
+  | { kind: 'slides'; source: string | null };
+
+export type ArtifactKind = ArtifactContent['kind'];
+
+export type ChatArtifact = ArtifactContent & {
   toolCallId: string;
   title: string;
-  spec: Spec | null;
   text: string;
   open: 'preview' | 'partial' | null;
 } & (
-  | { state: 'generating'; editingVersion: number | null }
-  | { state: 'done'; artifactId: string; version: number }
-  | { state: 'stopped' }
-  | { state: 'failed' }
-);
+    | { state: 'generating'; editingVersion: number | null }
+    | { state: 'done'; artifactId: string; version: number }
+    | { state: 'stopped' }
+    | { state: 'failed' }
+  );
 
 export type PaneArtifact = Exclude<ChatArtifact, { state: 'failed' }>;
 
@@ -36,7 +41,19 @@ const PHASE_TEXT = {
   thinking: '考えています…',
   drawing: '描いています…',
   repairing: '検証エラーを直しています…',
+  writing: 'スライドを書いています…',
 } as const;
+
+const DEFAULT_TITLES = {
+  ui: 'UI',
+  slides: 'スライド',
+} as const satisfies Record<ArtifactKind, string>;
+
+// 最後の出力は、確定の出力として届き直すまで preliminary のまま流れるので、書いている段階の文にする
+const WRITING_PHASES = {
+  ui: 'drawing',
+  slides: 'writing',
+} as const satisfies Record<ArtifactKind, keyof typeof PHASE_TEXT>;
 
 const MAX_ERROR_CHARS = 300;
 
@@ -71,20 +88,39 @@ export const artifactLiveOf = (input: {
     : null;
 };
 
+const contentOf = (part: ArtifactToolPart): ArtifactContent => {
+  switch (part.type) {
+    case 'tool-generate_ui':
+      return {
+        kind: 'ui',
+        spec: part.state === 'output-available' ? part.output.spec : null,
+      };
+    case 'tool-generate_slides':
+      return {
+        kind: 'slides',
+        source: part.state === 'output-available' ? part.output.source : null,
+      };
+  }
+};
+
+const hasContent = (content: ArtifactContent): boolean =>
+  content.kind === 'ui' ? content.spec !== null : content.source !== null;
+
 export const chatArtifactOf = (
-  part: UiToolPart,
+  part: ArtifactToolPart,
   { live, isStopping }: { live: ArtifactLive; isStopping: boolean },
 ): ChatArtifact => {
   const { toolCallId } = part;
+  const content = contentOf(part);
   const title =
     part.input?.title === undefined || part.input.title === ''
-      ? 'UI'
+      ? DEFAULT_TITLES[content.kind]
       : part.input.title;
   if (part.state === 'output-error') {
     return {
+      ...content,
       toolCallId,
       title,
-      spec: null,
       text: artifactErrorText(part.errorText),
       open: null,
       state: 'failed',
@@ -96,9 +132,9 @@ export const chatArtifactOf = (
     part.output.status === 'done'
   ) {
     return {
+      ...content,
       toolCallId,
       title,
-      spec: part.output.spec,
       text: part.output.summary,
       open: 'preview',
       state: 'done',
@@ -107,21 +143,20 @@ export const chatArtifactOf = (
     };
   }
   const output = part.state === 'output-available' ? part.output : null;
-  const spec = output?.spec ?? null;
   if (live === null) {
     return {
+      ...content,
       toolCallId,
       title,
-      spec,
       text: '途中で止まりました',
-      open: spec === null ? null : 'partial',
+      open: hasContent(content) ? 'partial' : null,
       state: 'stopped',
     };
   }
   const generating = {
+    ...content,
     toolCallId,
     title,
-    spec,
     state: 'generating',
     editingVersion: part.input?.base?.version ?? null,
   } as const;
@@ -131,7 +166,7 @@ export const chatArtifactOf = (
       text: isStopping
         ? '停止しています…'
         : '生成を続けています。終わると最新に置き換わります',
-      open: spec === null ? null : 'preview',
+      open: hasContent(content) ? 'preview' : null,
     };
   }
   if (output === null) {
@@ -139,8 +174,11 @@ export const chatArtifactOf = (
   }
   return {
     ...generating,
-    // 最後の出力は、確定の出力として届き直すまで preliminary のまま流れる
-    text: PHASE_TEXT[output.status === 'generating' ? output.phase : 'drawing'],
+    text: PHASE_TEXT[
+      output.status === 'generating'
+        ? output.phase
+        : WRITING_PHASES[content.kind]
+    ],
     open: 'preview',
   };
 };
@@ -155,7 +193,7 @@ export const chatArtifactsOf = (
     const isLive =
       index === messages.length - 1 && message.role === 'assistant';
     return message.parts.flatMap((part) =>
-      part.type === 'tool-generate_ui'
+      part.type === 'tool-generate_ui' || part.type === 'tool-generate_slides'
         ? [
             chatArtifactOf(
               part,
@@ -168,7 +206,7 @@ export const chatArtifactsOf = (
 
 const isPaneArtifact = (artifact: ChatArtifact): artifact is PaneArtifact =>
   artifact.state === 'generating' ||
-  (artifact.state !== 'failed' && artifact.spec !== null);
+  (artifact.state !== 'failed' && hasContent(artifact));
 
 export const lastCallKeyOf = (artifacts: ChatArtifact[]): string | null =>
   artifacts.at(-1)?.toolCallId ?? null;

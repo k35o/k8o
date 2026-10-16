@@ -152,7 +152,7 @@ export const NewThread = meta.story({
   play: async ({ args, canvasElement }) => {
     const canvas = within(canvasElement);
     await expect(
-      canvas.getByText('ブログについて聞く・UI を作る'),
+      canvas.getByText('ブログについて聞く・UI やスライドを作る'),
     ).toBeInTheDocument();
     await expect(canvas.getByRole('textbox')).toHaveAttribute(
       'placeholder',

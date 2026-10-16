@@ -17,6 +17,10 @@ type UiToolPart = Extract<
   AgentUIMessage['parts'][number],
   { type: 'tool-generate_ui' }
 >;
+type SlidesToolPart = Extract<
+  AgentUIMessage['parts'][number],
+  { type: 'tool-generate_slides' }
+>;
 
 const BUTTON: Spec = {
   root: 'ok',
@@ -89,11 +93,77 @@ const parts = {
   },
 } satisfies Record<string, UiToolPart>;
 
+const DECK = [
+  '<Cover>',
+  '# TypeScript 入門',
+  '</Cover>',
+  '',
+  '---',
+  '',
+  '## 型とは',
+].join('\n');
+
+const SLIDES_INPUT = { title: 'TypeScript 入門', instruction: '5枚で' };
+const SLIDES_EDIT_INPUT = {
+  title: 'TypeScript 入門',
+  base: { artifactId: 's1t2u3v4w5x6', version: 1 },
+  instruction: '3枚目のコードを短く',
+};
+
+const slidesParts = {
+  inputAvailable: {
+    type: 'tool-generate_slides',
+    toolCallId: 'slides-input',
+    state: 'input-available',
+    input: SLIDES_INPUT,
+  },
+  thinking: {
+    type: 'tool-generate_slides',
+    toolCallId: 'slides-thinking',
+    state: 'output-available',
+    preliminary: true,
+    input: SLIDES_EDIT_INPUT,
+    output: { status: 'generating', phase: 'thinking', source: null },
+  },
+  writing: {
+    type: 'tool-generate_slides',
+    toolCallId: 'slides-writing',
+    state: 'output-available',
+    preliminary: true,
+    input: SLIDES_INPUT,
+    output: { status: 'generating', phase: 'writing', source: DECK },
+  },
+  done: {
+    type: 'tool-generate_slides',
+    toolCallId: 'slides-done',
+    state: 'output-available',
+    input: SLIDES_INPUT,
+    output: {
+      status: 'done',
+      artifactId: 's1t2u3v4w5x6',
+      version: 1,
+      summary: '型の基礎を5枚にまとめました。',
+      source: DECK,
+    },
+  },
+  failed: {
+    type: 'tool-generate_slides',
+    toolCallId: 'slides-failed',
+    state: 'output-error',
+    input: SLIDES_INPUT,
+    errorText:
+      'Error: スライドを読み取れませんでした: スライドが1枚もありません',
+  },
+} satisfies Record<string, SlidesToolPart>;
+
 const notLive = { live: null, isStopping: false } as const;
 const receiving = { live: 'receiving', isStopping: false } as const;
 const waiting = { live: 'waiting', isStopping: false } as const;
 
-const assistant = (id: string, ...toolParts: UiToolPart[]): AgentUIMessage => ({
+const assistant = (
+  id: string,
+  ...toolParts: Array<UiToolPart | SlidesToolPart>
+): AgentUIMessage => ({
   id,
   role: 'assistant',
   parts: [{ type: 'step-start' }, ...toolParts],
@@ -112,6 +182,7 @@ describe('chatArtifactOf', () => {
   describe('正常系', () => {
     it('入力が届いているあいだは準備中で、ボタンを出さない', () => {
       expect(chatArtifactOf(parts.inputAvailable, receiving)).toStrictEqual({
+        kind: 'ui',
         toolCallId: 'call-input',
         title: '料金表',
         spec: null,
@@ -147,6 +218,7 @@ describe('chatArtifactOf', () => {
 
     it('確定の出力は、要約と版を出す', () => {
       expect(chatArtifactOf(parts.done, notLive)).toStrictEqual({
+        kind: 'ui',
         toolCallId: 'call-done',
         title: '料金表',
         spec: BUTTON,
@@ -160,6 +232,7 @@ describe('chatArtifactOf', () => {
 
     it('失敗は、表示用に直したエラーの文を出し、ボタンを出さない', () => {
       expect(chatArtifactOf(parts.failed, receiving)).toStrictEqual({
+        kind: 'ui',
         toolCallId: 'call-failed',
         title: '料金表',
         spec: null,
@@ -197,6 +270,7 @@ describe('chatArtifactOf', () => {
 
     it('生きていないメッセージの途中の出力は、途中で止まったものとして spec を開ける', () => {
       expect(chatArtifactOf(parts.drawing, notLive)).toStrictEqual({
+        kind: 'ui',
         toolCallId: 'call-drawing',
         title: '料金表',
         spec: BUTTON,
@@ -256,6 +330,116 @@ describe('chatArtifactOf', () => {
         state: 'generating',
         text: '描いています…',
         spec: BUTTON,
+      });
+    });
+  });
+});
+
+describe('chatArtifactOf のスライド', () => {
+  describe('正常系', () => {
+    it('確定の出力は、デッキの source と要約と版を出す', () => {
+      expect(chatArtifactOf(slidesParts.done, notLive)).toStrictEqual({
+        kind: 'slides',
+        toolCallId: 'slides-done',
+        title: 'TypeScript 入門',
+        source: DECK,
+        text: '型の基礎を5枚にまとめました。',
+        open: 'preview',
+        state: 'done',
+        artifactId: 's1t2u3v4w5x6',
+        version: 1,
+      });
+    });
+
+    it.each([
+      ['考えている', slidesParts.thinking, '考えています…', null],
+      ['書いている', slidesParts.writing, 'スライドを書いています…', DECK],
+    ])(
+      '%s途中の出力を受信しているあいだは、段階の文とボタンを出す',
+      (_, part, text, source) => {
+        expect(chatArtifactOf(part, receiving)).toMatchObject({
+          kind: 'slides',
+          state: 'generating',
+          text,
+          source,
+          open: 'preview',
+        });
+      },
+    );
+
+    it('直しているあいだは、考えている途中でも土台の版を添える', () => {
+      expect(chatArtifactOf(slidesParts.thinking, receiving)).toMatchObject({
+        state: 'generating',
+        editingVersion: 1,
+      });
+    });
+
+    it('失敗は、表示用に直したエラーの文を出し、ボタンを出さない', () => {
+      expect(chatArtifactOf(slidesParts.failed, receiving)).toStrictEqual({
+        kind: 'slides',
+        toolCallId: 'slides-failed',
+        title: 'TypeScript 入門',
+        source: null,
+        text: 'スライドを読み取れませんでした: スライドが1枚もありません',
+        open: null,
+        state: 'failed',
+      });
+    });
+  });
+
+  describe('異常系', () => {
+    it.each([
+      ['受信が切れてサーバーを待つ', waiting],
+      ['止めている', { live: 'receiving', isStopping: true } as const],
+    ])(
+      '考えている途中で%sあいだは、デッキが無いのでボタンを出さない',
+      (_, live) => {
+        expect(chatArtifactOf(slidesParts.thinking, live)).toMatchObject({
+          state: 'generating',
+          open: null,
+        });
+      },
+    );
+
+    it('考えている途中で止まったものは、デッキが無いのでボタンを出さない', () => {
+      expect(chatArtifactOf(slidesParts.thinking, notLive)).toMatchObject({
+        state: 'stopped',
+        text: '途中で止まりました',
+        open: null,
+      });
+    });
+
+    it('書いている途中で止まったものは、途中までのデッキを開ける', () => {
+      expect(chatArtifactOf(slidesParts.writing, notLive)).toMatchObject({
+        state: 'stopped',
+        source: DECK,
+        open: 'partial',
+      });
+    });
+  });
+
+  describe('エッジケース', () => {
+    it('タイトルがまだ届いていなければ「スライド」と出す', () => {
+      expect(
+        chatArtifactOf(
+          {
+            type: 'tool-generate_slides',
+            toolCallId: 'slides-empty',
+            state: 'input-streaming',
+            input: undefined,
+          },
+          receiving,
+        ),
+      ).toMatchObject({ kind: 'slides', title: 'スライド', source: null });
+    });
+
+    it('確定の出力が preliminary で届いたあいだは、まだ書いているものとして出す', () => {
+      expect(
+        chatArtifactOf({ ...slidesParts.done, preliminary: true }, receiving),
+      ).toMatchObject({
+        state: 'generating',
+        text: 'スライドを書いています…',
+        source: DECK,
       });
     });
   });
@@ -746,6 +930,77 @@ describe('paneVersionsOf', () => {
       );
 
       expect(paneVersionsOf(artifacts, null)).toStrictEqual([]);
+    });
+  });
+});
+
+describe('UI とスライドが混ざった会話', () => {
+  describe('正常系', () => {
+    it('kind を問わず会話の順に集め、追従は新しい呼び出しへ移る', () => {
+      const artifacts = chatArtifactsOf(
+        [assistant('a1', parts.done), assistant('a2', slidesParts.writing)],
+        receiving,
+      );
+      expect(
+        artifacts.map((artifact) => [artifact.toolCallId, artifact.kind]),
+      ).toStrictEqual([
+        ['call-done', 'ui'],
+        ['slides-writing', 'slides'],
+      ]);
+      expect(shownArtifact(artifacts, { type: 'follow' })?.toolCallId).toBe(
+        'slides-writing',
+      );
+    });
+
+    it('UI を固定していても、スライドの生成が始まると固定が解ける', () => {
+      const pinned = {
+        type: 'pinned',
+        toolCallId: 'call-done',
+        lastCallKey: 'call-done-2',
+      } as const;
+      const artifacts = chatArtifactsOf(
+        [
+          assistant('a1', parts.done),
+          assistant('a2', { ...parts.done, toolCallId: 'call-done-2' }),
+          assistant('a3', slidesParts.inputAvailable),
+        ],
+        receiving,
+      );
+      expect(shownArtifact(artifacts, pinned)?.toolCallId).toBe('slides-input');
+    });
+
+    it('同じ artifactId のスライドの版だけを並べ、UI の版を混ぜない', () => {
+      const artifacts = chatArtifactsOf(
+        [
+          assistant('a1', parts.done),
+          assistant('a2', slidesParts.done),
+          assistant('a3', {
+            ...slidesParts.done,
+            toolCallId: 'slides-done-2',
+            input: SLIDES_EDIT_INPUT,
+            output: { ...slidesParts.done.output, version: 2 },
+          }),
+        ],
+        notLive,
+      );
+      expect(
+        paneVersionsOf(artifacts, shownArtifact(artifacts, { type: 'follow' })),
+      ).toStrictEqual([
+        { toolCallId: 'slides-done', version: 1 },
+        { toolCallId: 'slides-done-2', version: 2 },
+      ]);
+    });
+  });
+
+  describe('異常系', () => {
+    it('考えている途中で止まったスライドは追従の対象にせず、その前の UI を出す', () => {
+      const artifacts = chatArtifactsOf(
+        [assistant('a1', parts.done), assistant('a2', slidesParts.thinking)],
+        notLive,
+      );
+      expect(shownArtifact(artifacts, { type: 'follow' })?.toolCallId).toBe(
+        'call-done',
+      );
     });
   });
 });

@@ -1,2 +1,6 @@
 export { ArtifactPane } from './artifact-pane';
-export { ARTIFACT_VIEW_OPTIONS, type ArtifactView } from './artifact-views';
+export {
+  ARTIFACT_VIEW_OPTIONS,
+  artifactViewFor,
+  type ArtifactView,
+} from './artifact-views';

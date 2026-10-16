@@ -72,10 +72,12 @@ const EmptyState: FC<EmptyStateProps> = ({
   return (
     <div className={styles.empty}>
       <div className={styles.emptyText}>
-        <p className={styles.emptyTitle}>ブログについて聞く・UI を作る</p>
+        <p className={styles.emptyTitle}>
+          ブログについて聞く・UI やスライドを作る
+        </p>
         <p className={styles.emptyHint}>
           記事を探して読み、要点をまとめます。@k8ordo/ui で UI
-          を作り、プレビューに出します
+          を、記事やテーマからスライドを作り、プレビューに出します
         </p>
       </div>
       {canSelectModel ? (

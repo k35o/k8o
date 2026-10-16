@@ -93,6 +93,7 @@ const rendersPart = (part: AgentMessagePart, isStreaming: boolean): boolean => {
     case 'tool-list_blogs':
     case 'tool-read_blog':
     case 'tool-generate_ui':
+    case 'tool-generate_slides':
       return true;
     case 'reasoning':
       return part.text.trim() !== '' || isThinking(part, isStreaming);
@@ -154,6 +155,7 @@ const AgentPart: FC<
         <ToolPart isGenerating={isStreaming || isServerRunning} part={part} />
       );
     case 'tool-generate_ui':
+    case 'tool-generate_slides':
       return (
         <ArtifactCard
           artifact={chatArtifactOf(part, {

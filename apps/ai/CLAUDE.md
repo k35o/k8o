@@ -73,13 +73,16 @@ UI スタジオとエージェントの `generate_ui` は、どちらも json-re
   - execute は async generator で、書きかけ（spec か、デッキの source）を間引いて preliminary の出力で流し、最後に保存した版（artifactId・版・要約・spec か source）を流す
   - Claude に送り返すのは、`toModelOutput` の短い文（artifactId・版・タイトル・要約）だけで、spec と source は送らない
   - tool の文脈の schema、Claude を呼ぶ前の予約と返る前の記録、書きかけを流す間隔、要約の切り詰めは、2つの tool で `agent/application/artifact-tool.ts` を使う
-- 会話には `generate_ui` の呼び出しをカードで出し、UI を横のペインでプレビューする。ペインでは、spec の JSON と、spec から変換した TSX も見てコピーできる。xl 以上は会話 440px とペインの2列にし、それより狭い幅ではタブで1枚ずつ出す
-  - カードとペインは、メッセージの tool の出力だけから描く。ペインに出す呼び出しは、`agent/application/chat-artifacts.ts` が描画中に導く。初期値は最後の UI に追従し、カードで固定するか閉じても、新しい生成が始まると追従に戻る
-  - カードや xl 未満のタブで開いた（固定した）呼び出しは、`?pane=<toolCallId>` で URL に持つ。固定した時点の最後の呼び出しが別なら `&since=<toolCallId>` も持ち、固定が解けたかを URL とメッセージだけで決める。固定は、この会話のパス（`/chat/<id>`）にいるあいだ描画中に URL から導くので、再読み込みしても同じ UI が開く。ほかのパスにいるあいだ（Activity で隠れているあいだ）は、最後に読んだ固定を保ち、ペインをマウントし直さない。xl 未満では、`pane` があるあいだプレビューを出す。閉じた状態とビュー（プレビュー・spec・TSX）は URL に持たない
+- 会話には `generate_ui`・`generate_slides` の呼び出しをカードで出し、UI とスライドを横のペインでプレビューする。ペインでは、UI は spec の JSON と spec から変換した TSX を、スライドはデッキの Markdown を見てコピーできる。xl 以上は会話 440px とペインの2列にし、それより狭い幅ではタブで1枚ずつ出す
+  - カードとペインは、メッセージの tool の出力だけから描く。ペインに出す呼び出しは、`agent/application/chat-artifacts.ts` が描画中に導く。UI とスライドの呼び出しを1つの列に並べ、初期値は最後の生成物に追従し、カードで固定するか閉じても、新しい生成が始まると追従に戻る
+  - ビュー（プレビュー・spec・TSX・Markdown）は ChatScreen の state に持ち、出している生成物の kind に無いビューはプレビューとして描く
+  - カードや xl 未満のタブで開いた（固定した）呼び出しは、`?pane=<toolCallId>` で URL に持つ。固定した時点の最後の呼び出しが別なら `&since=<toolCallId>` も持ち、固定が解けたかを URL とメッセージだけで決める。固定は、この会話のパス（`/chat/<id>`）にいるあいだ描画中に URL から導くので、再読み込みしても同じ生成物が開く。ほかのパスにいるあいだ（Activity で隠れているあいだ）は、最後に読んだ固定を保ち、ペインをマウントし直さない。xl 未満では、`pane` があるあいだプレビューを出す。閉じた状態とビューは URL に持たない
   - URL は `history` の pushState・replaceState で書く（`chat-screen/use-pane-pin.ts`）。開くとき、URL に `pane` が無ければ積み、あれば置き換える。外すときは、この文書で積んだ記録なら `history.back()` で戻り、そうでなければ置き換えて消す。そのため xl 未満の戻るは、プレビューを閉じて会話に戻る。history に渡す state に Next の `__NA` を入れない（入れると Next がルーターに伝えず、`useSearchParams` が変わらない）
-  - ペインの見出しで、出している UI と同じ会話の中の、同じ artifactId のできた版を選べる。選ぶと、カードで固定したのと同じく `?pane=` に持つ。生成中と止めた途中の UI は版に数えず、それを出しているあいだは選ぶ口を出さない
+  - ペインの見出しで、出している生成物と同じ会話の中の、同じ artifactId のできた版を選べる。選ぶと、カードで固定したのと同じく `?pane=` に持つ。生成中と止めた途中のものは版に数えず、それを出しているあいだは選ぶ口を出さない
   - xl 以上では、ペインの見出しの「全画面で見る」で会話の列を隠し、ペインを作業領域いっぱいに広げる。会話はマウントしたまま隠す。広げた状態は ChatScreen の state に持って URL には持たず、ペインが消えると戻る
-  - 生成 UI のリンクとフォームは、ペインの包みで移動を止める。会話の画面ごと移動すると受信が切れるため。/s/[slug] ではリンクが動いてよいので、共有の `SpecPreview` には入れない
+  - 生成 UI とスライドのリンクと、生成 UI のフォームは、ペインの包みで移動を止める。会話の画面ごと移動すると受信が切れるため。/s/[slug] ではリンクが動いてよいので、共有の `SpecPreview` には入れない
+  - スライドは、スライドのスタジオと同じ `DeckPreview`（`(authenticated)/_components/deck-preview`）で描く。デッキのコードブロックのハイライトは、アプリのテーマに合わせる。矢印・Space・PageUp/Down・Home/End は、デッキにフォーカスがある（スライドを押した）ときだけ効き、会話のスクロールを奪わない
+  - ペインには印刷用の全スライド（`DeckPrint`）を描かない。印刷の CSS は、body に印刷用のスライドがあるあいだほかの要素を印刷から外し、会話の画面は別のパスへ移っても Activity で隠れたまま残るため
 - スレッドの ID はページが決め、最初の POST が予約を通ったときに、サーバーがスレッドの行を作る
 - メッセージは UIMessage を JSON のまま `ai_thread_messages` に追記する。user は実行の開始時、assistant は終了時に1行ずつ書く。終わり方（完了・停止・予算・エラーなど）は assistant の `metadata.end` に残す
 - ブラウザが切断しても、生成は最後まで続けて返答を保存する。そのため `req.signal` を `abortSignal` に渡さず、`vercel.json` の `functions` に `supportsCancellation` を付けない（付けると、切断で `req.signal` が abort される）
