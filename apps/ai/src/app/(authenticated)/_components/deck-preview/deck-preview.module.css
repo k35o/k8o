@@ -15,6 +15,17 @@
   flex-direction: column;
   height: 100%;
   min-height: 0;
+
+  &:focus-visible {
+    outline-style: none;
+    /* better-css-modules-disable-next-line tokens/shadow -- デッキは overflow: hidden の枠いっぱいに描き、外側のリングが切れるので、同じリングを内側に描く */
+    box-shadow: inset var(--shadow-ring-info);
+
+    @media (forced-colors: active) {
+      outline: 2px solid transparent;
+      outline-offset: -2px;
+    }
+  }
 }
 
 .stage {

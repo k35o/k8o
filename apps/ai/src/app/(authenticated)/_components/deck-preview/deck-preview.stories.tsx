@@ -140,6 +140,13 @@ export const KeyboardNav = meta.story({
         name: 'スライド機能のご紹介',
       }),
     ).toBeInTheDocument();
+    // キーで操作すると、ブラウザ既定の枠ではなくデザインシステムのリングを内側に出す。
+    const deck = document.activeElement;
+    if (!(deck instanceof HTMLElement)) {
+      throw new Error('デッキにフォーカスがありません');
+    }
+    await expect(getComputedStyle(deck).outlineStyle).toBe('none');
+    await expect(getComputedStyle(deck).boxShadow).toContain('inset');
     // ノート欄（フォーカス可能なスクロール領域）にフォーカスがある間は、
     // デッキ操作にキーを奪わず既定動作（スクロール）に譲る。
     const notes = canvas.getByRole('region', { name: '発表者ノート' });
