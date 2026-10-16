@@ -35,8 +35,8 @@ const DeckPrintPortal: FC<DeckPrintProps> = ({ slides }) => {
 
 // 印刷/PDF出力用に全スライドを1枚ずつ body 直下へ描画する。
 // 画面では非表示で、@media print のときだけ表示される（deck-print.module.css）。
-// 外側の Suspense（DeckHighlightsBoundary）の fallback にも children として入るので、
-// 境界は自分で持つ
+// ポータルはサーバーでは描けず suspend するので、デッキの本体まで fallback に
+// 巻き込まないよう境界は自分で持つ
 export const DeckPrint: FC<DeckPrintProps> = ({ slides }) => (
   <Suspense>
     <DeckPrintPortal slides={slides} />

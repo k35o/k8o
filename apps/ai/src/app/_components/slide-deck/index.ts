@@ -1,7 +1,7 @@
 export { DeckPrint } from './deck-print';
 export {
   DeckHighlightContext,
-  DeckHighlightsBoundary,
+  DeckHighlightsProvider,
 } from './deck-highlights';
 export { DeckSlideView } from './deck-slide-view/deck-slide-view';
 export { NavButton } from './nav-button';

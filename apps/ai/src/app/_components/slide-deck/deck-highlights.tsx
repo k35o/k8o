@@ -1,13 +1,7 @@
 'use client';
 
 import type { HighlightedCode } from '@repo/code-highlight/tokenize';
-import {
-  createContext,
-  Suspense,
-  use,
-  useContext,
-  useDeferredValue,
-} from 'react';
+import { createContext, useContext, useEffect, useState } from 'react';
 import type { FC, ReactNode } from 'react';
 
 import type { HighlightFn } from '@/app/_components/highlighted-code';
@@ -26,23 +20,20 @@ import {
 // 既定は null（Storybook などでは取得せずプレーン表示）。
 export const DeckHighlightContext = createContext<HighlightFn | null>(null);
 
-const EMPTY: Promise<ReadonlyMap<string, HighlightedCode>> = Promise.resolve(
-  new Map(),
-);
+type DeckHighlights = ReadonlyMap<string, HighlightedCode>;
 
-// レンダーのたびに新しい Promise を作ると use() が解決しないため、取得済みの
-// Promise を「注入された関数 → デッキ内容」で引けるようにキャッシュする。
-// 関数はテーマ切替で差し替わるので、WeakMap のキーにすると古いテーマぶんは
-// 参照が切れた時点で回収される。
-const cache = new WeakMap<
-  HighlightFn,
-  Map<string, Promise<ReadonlyMap<string, HighlightedCode>>>
->();
+const EMPTY: DeckHighlights = new Map();
+
+// 版を切り替えて戻る・隠れていた会話の画面に戻るといった、同じデッキを描き直すたびに
+// server action を往復させないよう、取得した Promise を「注入された関数 → デッキ内容」で
+// 引けるようにキャッシュする。関数はテーマ切替で差し替わるので、WeakMap のキーにすると
+// 古いテーマぶんは参照が切れた時点で回収される。
+const cache = new WeakMap<HighlightFn, Map<string, Promise<DeckHighlights>>>();
 
 const fetchHighlights = async (
   blocks: DeckCodeBlock[],
   highlight: HighlightFn,
-): Promise<ReadonlyMap<string, HighlightedCode>> => {
+): Promise<DeckHighlights> => {
   const highlights = new Map<string, HighlightedCode>();
   try {
     const results = await highlight(
@@ -63,10 +54,10 @@ const fetchHighlights = async (
 const deckHighlights = (
   slides: DeckSlide[],
   highlight: HighlightFn,
-): Promise<ReadonlyMap<string, HighlightedCode>> => {
+): Promise<DeckHighlights> => {
   const blocks = slides.flatMap((slide) => extractCodeBlocks(slide.source));
   if (blocks.length === 0) {
-    return EMPTY;
+    return Promise.resolve(EMPTY);
   }
   const deckKey = blocks
     .map((block) => highlightKey(block.lang, block.code))
@@ -86,44 +77,51 @@ const deckHighlights = (
   return pending;
 };
 
-const DeckHighlightsProvider: FC<{
-  slides: DeckSlide[];
-  highlight: HighlightFn;
-  children: ReactNode;
-}> = ({ slides, highlight, children }) => (
-  <DeckHighlightsContext value={use(deckHighlights(slides, highlight))}>
-    {children}
-  </DeckHighlightsContext>
-);
+const useDeckHighlights = (
+  slides: DeckSlide[],
+  highlight: HighlightFn | null,
+): DeckHighlights => {
+  const [highlights, setHighlights] = useState(EMPTY);
+  useEffect(() => {
+    if (highlight === null) {
+      return;
+    }
+    const controller = new AbortController();
+    void (async () => {
+      const next = await deckHighlights(slides, highlight);
+      if (!controller.signal.aborted) {
+        setHighlights(next);
+      }
+    })();
+    return () => {
+      controller.abort();
+    };
+  }, [slides, highlight]);
+  return highlights;
+};
 
 /**
  * デッキ内の全コードブロックのハイライトを一括で取得し、配下（DeckPrint 含む）へ
  * 配る。スライド単位で都度取得しないため、ページ送りや印刷でも往復は増えない。
  *
- * 初回取得中は children をプレーンのまま見せたいので、fallback にも同じ children を
- * 渡す。生成中（isStreaming）は内容が確定しておらず、書きかけのコードを取得しても
- * 捨てるだけなので取得しない。
- *
- * ハイライト関数はテーマ切替で差し替わる。これは緊急の更新ではないので
- * useDeferredValue に載せ、新しい配色が揃うまで現在の配色を出したままにする
- * （そのまま切り替えると、取得のあいだ fallback のプレーン表示に巻き戻る）。
- * 最初の描画では null として扱う。テーマはブラウザでしか決まらず、サーバーで
- * 描いたデッキを引き継ぐ描画で Suspense を挟むと、サーバーの HTML と食い違うため。
+ * server action は呼ばれたその場で App Router の state を更新するので、描画中には呼ばず
+ * effect で取得を始める。結果は effect のあとの state にだけ置き、ハイドレーションの描画を
+ * サーバーと同じプレーンにする（テーマはブラウザでしか決まらない）。取得のあいだは手元の
+ * 結果を出したままにするので、テーマの切り替えでは新しい配色が揃うまで今の配色が残る。
+ * 生成中（isStreaming）は内容が確定しておらず、書きかけのコードを取得しても捨てるだけなので
+ * 取得しない。
  */
-export const DeckHighlightsBoundary: FC<{
+export const DeckHighlightsProvider: FC<{
   slides: DeckSlide[];
   isStreaming: boolean;
   children: ReactNode;
 }> = ({ slides, isStreaming, children }) => {
-  const highlight = useDeferredValue(useContext(DeckHighlightContext), null);
-  if (isStreaming || highlight === null) {
-    return children;
-  }
+  const highlight = useContext(DeckHighlightContext);
+  const target = isStreaming ? null : highlight;
+  const highlights = useDeckHighlights(slides, target);
   return (
-    <Suspense fallback={children}>
-      <DeckHighlightsProvider highlight={highlight} slides={slides}>
-        {children}
-      </DeckHighlightsProvider>
-    </Suspense>
+    <DeckHighlightsContext value={target === null ? EMPTY : highlights}>
+      {children}
+    </DeckHighlightsContext>
   );
 };
