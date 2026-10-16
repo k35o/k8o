@@ -27,6 +27,7 @@ import { parseDeck } from '@/features/slides/application/parse-deck';
 import { ChatPanel } from '../../../_components/chat-panel';
 import { CodePanel } from '../../../_components/code-panel';
 import { CopyCodeButton } from '../../../_components/copy-code-button';
+import { DeckPreview } from '../../../_components/deck-preview';
 import { PreviewLoading } from '../../../_components/preview-loading';
 import {
   useProjectPersistence,
@@ -36,7 +37,6 @@ import { ProjectTitle } from '../../../_components/project-title';
 import { StudioPanes } from '../../../_components/studio-panes';
 import { ToolHeader } from '../../../_components/tool-frame';
 import { ViewTabs } from '../../../_components/view-tabs';
-import { DeckPreview } from '../deck-preview';
 import {
   MOBILE_TAB_OPTIONS,
   NEW_PROJECT_EMPTY_STATE,
@@ -385,6 +385,7 @@ export const SlidesStudio = ({ projects }: { projects: ProjectListItem[] }) => {
                 <DeckPreview
                   isStreaming={isBusy}
                   key={persistence.projectId ?? 'new'}
+                  printable
                   source={deckSource}
                 />
               </DeckHighlightContext>

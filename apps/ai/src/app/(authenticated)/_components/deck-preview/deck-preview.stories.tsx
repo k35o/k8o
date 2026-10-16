@@ -6,7 +6,7 @@ import { expect, userEvent, waitFor, within } from 'storybook/test';
 import type { HighlightFn } from '@/app/_components/highlighted-code';
 import { DeckHighlightContext } from '@/app/_components/slide-deck';
 
-import preview from '../../../../../../.storybook/preview';
+import preview from '../../../../../.storybook/preview';
 import { DeckPreview } from './deck-preview';
 
 import styles from './deck-preview.stories.module.css';
@@ -58,6 +58,7 @@ export const Empty = meta.story({
   args: {
     source: null,
     isStreaming: false,
+    printable: false,
   },
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
@@ -71,6 +72,7 @@ export const Cover = meta.story({
   args: {
     source: SAMPLE_DECK,
     isStreaming: false,
+    printable: true,
   },
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
@@ -94,6 +96,7 @@ export const WithNotes = meta.story({
   args: {
     source: SAMPLE_DECK,
     isStreaming: false,
+    printable: false,
   },
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
@@ -116,10 +119,20 @@ export const KeyboardNav = meta.story({
   args: {
     source: SAMPLE_DECK,
     isStreaming: false,
+    printable: false,
   },
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
-    // フォーカスが body にある間は矢印キーでスライドが進む。
+    const cover = canvas.getByRole('heading', {
+      level: 1,
+      name: 'k8o のスライド生成',
+    });
+    // デッキの外（body）にフォーカスがある間は、同じ画面の会話のスクロールを奪わないよう進めない。
+    await expect(document.activeElement).toBe(document.body);
+    await userEvent.keyboard('{ArrowRight}');
+    await expect(cover).toBeInTheDocument();
+    // スライドを押すとデッキにフォーカスが入り、矢印キーで進む。
+    await userEvent.click(cover);
     await userEvent.keyboard('{ArrowRight}');
     await expect(
       await canvas.findByRole('heading', {
@@ -159,6 +172,7 @@ export const Highlighted = meta.story({
   args: {
     source: SAMPLE_DECK,
     isStreaming: false,
+    printable: true,
   },
   // ハイライト関数はスタジオが注入する構造なので、ストーリーでも同じ形で注入する。
   decorators: [
@@ -207,7 +221,7 @@ const SwitchableHighlight: FC<{ source: string }> = ({ source }) => {
       </button>
       <div className={styles.body}>
         <DeckHighlightContext value={highlight}>
-          <DeckPreview isStreaming={false} source={source} />
+          <DeckPreview isStreaming={false} printable={false} source={source} />
         </DeckHighlightContext>
       </div>
     </div>
@@ -219,6 +233,7 @@ export const RehighlightOnHighlighterChange = meta.story({
   args: {
     source: SAMPLE_DECK,
     isStreaming: false,
+    printable: false,
   },
   render: ({ source }) => <SwitchableHighlight source={source ?? ''} />,
   play: async ({ canvasElement }) => {
@@ -256,6 +271,7 @@ export const Streaming = meta.story({
       '- 要点',
     ].join('\n'),
     isStreaming: true,
+    printable: false,
   },
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
@@ -266,5 +282,21 @@ export const Streaming = meta.story({
     await expect(
       canvas.getByRole('button', { name: '前のスライド' }),
     ).toBeDisabled();
+  },
+});
+
+export const NotPrintable = meta.story({
+  args: {
+    source: SAMPLE_DECK,
+    isStreaming: false,
+    printable: false,
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    await expect(
+      canvas.getByRole('heading', { level: 1, name: 'k8o のスライド生成' }),
+    ).toBeInTheDocument();
+    // 会話のペインでは、印刷用の全スライドを body に描かない。
+    await expect(document.body.querySelector('[data-slide-print]')).toBeNull();
   },
 });

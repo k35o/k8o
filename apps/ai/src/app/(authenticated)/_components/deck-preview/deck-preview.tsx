@@ -1,6 +1,6 @@
 'use client';
 
-import { useMemo, useState } from 'react';
+import { useMemo, useRef, useState } from 'react';
 import type { FC } from 'react';
 
 import {
@@ -19,10 +19,19 @@ import styles from './deck-preview.module.css';
 type DeckPreviewProps = {
   source: string | null;
   isStreaming: boolean;
+  // 印刷の CSS は、body に印刷用のスライドがあるあいだ、ほかの要素を印刷から外す。会話のペインで
+  // 描くと、会話の画面の印刷はスライドになる。また、会話の画面は別のパスへ移っても Activity で
+  // 隠れたまま残り、印刷用のスライドも display: none で body に残るので、ほかの画面の印刷は白紙になる
+  printable: boolean;
 };
 
-export const DeckPreview: FC<DeckPreviewProps> = ({ source, isStreaming }) => {
+export const DeckPreview: FC<DeckPreviewProps> = ({
+  source,
+  isStreaming,
+  printable,
+}) => {
   const slides = useMemo(() => parseDeck(source ?? ''), [source]);
+  const rootRef = useRef<HTMLDivElement>(null);
   const total = slides.length;
   const [index, setIndex] = useState(0);
 
@@ -47,6 +56,7 @@ export const DeckPreview: FC<DeckPreviewProps> = ({ source, isStreaming }) => {
   };
 
   useKeyboardNav({
+    scopeRef: rootRef,
     onNext: () => {
       goTo(displayIndex + 1);
     },
@@ -80,7 +90,8 @@ export const DeckPreview: FC<DeckPreviewProps> = ({ source, isStreaming }) => {
   return (
     // 取得したハイライトを配下の全スライド（DeckPrint 含む）へ配る。
     <DeckHighlightsBoundary isStreaming={isStreaming} slides={slides}>
-      <div className={styles.root}>
+      {/* スライドを押すとデッキにフォーカスが入り、キーで送れる。Tab では止めない */}
+      <div className={styles.root} ref={rootRef} tabIndex={-1}>
         <ProgressBar current={displayIndex} total={total} />
         <div className={styles.stage}>
           <Stage key={displayIndex}>
@@ -129,7 +140,7 @@ export const DeckPreview: FC<DeckPreviewProps> = ({ source, isStreaming }) => {
           />
         </div>
         {/* 印刷/PDF出力用の全スライド描画（画面では非表示） */}
-        <DeckPrint slides={slides} />
+        {printable ? <DeckPrint slides={slides} /> : null}
       </div>
     </DeckHighlightsBoundary>
   );
