@@ -1,0 +1,10 @@
+.frame {
+  display: flex;
+  flex-direction: column;
+  height: calc(var(--spacing) * 160);
+  background-color: var(--color-bg-surface);
+}
+
+.versionSwitch {
+  display: contents;
+}

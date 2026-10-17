@@ -13,6 +13,7 @@ export type {
   ArtifactListItem,
   LoadedArtifact,
 } from '../application/artifacts';
+export { versionFromParam } from '../application/artifacts';
 
 // 一覧が読めなくても、生成物のページそのものは使えるようにする
 export const listArtifactsForRoute = async (): Promise<ArtifactListItem[]> => {

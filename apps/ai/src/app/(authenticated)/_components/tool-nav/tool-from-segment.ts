@@ -9,6 +9,8 @@ export const toolFromSegment = (segment: string | null): StudioTool | null => {
       return 'slides';
     case 'chat':
       return 'chat';
+    case 'artifacts':
+      return 'artifacts';
     default:
       return null;
   }

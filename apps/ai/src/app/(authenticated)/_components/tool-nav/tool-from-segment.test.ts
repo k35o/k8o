@@ -8,6 +8,7 @@ describe('toolFromSegment', () => {
       ['/ のページ', null, 'ui'],
       ['スライド', 'slides', 'slides'],
       ['チャット', 'chat', 'chat'],
+      ['作ったもの', 'artifacts', 'artifacts'],
     ] as const)(
       '%sにいるなら、そのツールを現在地にする',
       (_label, segment, tool) => {

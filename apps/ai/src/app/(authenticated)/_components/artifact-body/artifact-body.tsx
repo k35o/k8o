@@ -19,7 +19,8 @@ type ArtifactContent =
   | { kind: 'ui'; spec: Spec | null }
   | { kind: 'slides'; source: string | null };
 
-// 生成物のリンクとフォームで画面ごと移動すると、会話の画面では受信が切れて会話を見失うので、移動だけを止める。
+// 生成物のリンクとフォームで画面ごと移動すると、会話の画面では受信が切れて会話を見失い、生成物のページでも
+// 見ていた版から離れるので、移動だけを止める。
 // 伝播は止めないので、生成 UI 側のハンドラはそのまま動く。/s/[slug] ではリンクが動いてよいので、共有の SpecPreview には入れない
 const preventLinkNavigation = (event: MouseEvent): void => {
   if (

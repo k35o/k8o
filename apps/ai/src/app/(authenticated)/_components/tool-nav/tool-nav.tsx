@@ -1,14 +1,14 @@
-import { AssistantIcon, PaletteIcon, SlideIcon } from '@k8ordo/ui';
+import { AssistantIcon, PackageIcon, PaletteIcon, SlideIcon } from '@k8ordo/ui';
 import Link from 'next/link';
 import type { FC, ReactNode } from 'react';
 
 import styles from './tool-nav.module.css';
 
-export type StudioTool = 'ui' | 'slides' | 'chat';
+export type StudioTool = 'ui' | 'slides' | 'chat' | 'artifacts';
 
 const TOOLS: Array<{
   tool: StudioTool;
-  href: '/' | '/slides' | '/chat';
+  href: '/' | '/slides' | '/chat' | '/artifacts';
   label: string;
   icon: ReactNode;
 }> = [
@@ -24,6 +24,12 @@ const TOOLS: Array<{
     href: '/chat',
     label: 'チャット',
     icon: <AssistantIcon size="sm" />,
+  },
+  {
+    tool: 'artifacts',
+    href: '/artifacts',
+    label: '作ったもの',
+    icon: <PackageIcon size="sm" />,
   },
 ];
 

@@ -1,6 +1,6 @@
 # apps/ai CLAUDE.md
 
-AI関連ツールの置き場（`ai.k8o.me`）。@k8ordo/ui × Claude の v0風デザインシステム壁打ちツール（`/`）、スライド生成（`/slides`）、k8o のブログ記事を読み、UI とスライドを作れるエージェントとのチャット（`/chat`）がある。
+AI関連ツールの置き場（`ai.k8o.me`）。@k8ordo/ui × Claude の v0風デザインシステム壁打ちツール（`/`）、スライド生成（`/slides`）、k8o のブログ記事を読み、UI とスライドを作れるエージェントとのチャット（`/chat`）、チャットで作った UI とスライドを版の履歴ごと見返す生成物のページ（`/artifacts`）がある。
 
 ## レイヤー構成（src/）
 
@@ -87,7 +87,7 @@ UI スタジオとエージェントの `generate_ui` は、どちらも json-re
   - ペインの見出しで、出している生成物と同じ会話の中の、同じ artifactId のできた版を選べる。選ぶと、カードで固定したのと同じく `?pane=` に持つ。生成中と止めた途中のものは版に数えず、それを出しているあいだは選ぶ口を出さない
   - xl 以上では、ペインの見出しの「全画面で見る」で会話の列を隠し、ペインを作業領域いっぱいに広げる。会話はマウントしたまま隠す。広げた状態は ChatScreen の state に持って URL には持たず、ペインが消えると戻る
   - ペインの本文（プレビューとコード）は、会話の外でも使える `ArtifactBody`（`(authenticated)/_components/artifact-body`）で描く。見出し・版の切り替え・止めた途中の注記はペインが持つ
-  - 生成 UI とスライドのリンクと、生成 UI のフォームは、`ArtifactBody` の包みで移動を止める。会話の画面ごと移動すると受信が切れるため。/s/[slug] ではリンクが動いてよいので、共有の `SpecPreview` には入れない
+  - 生成 UI とスライドのリンクと、生成 UI のフォームは、`ArtifactBody` の包みで移動を止める。会話の画面ごと移動すると受信が切れ、生成物のページでも見ていた版から離れるため。/s/[slug] ではリンクが動いてよいので、共有の `SpecPreview` には入れない
   - スライドは、スライドのスタジオと同じ `DeckPreview`（`(authenticated)/_components/deck-preview`）で描く。デッキのコードブロックのハイライトは、アプリのテーマに合わせる（`(authenticated)/_components/deck-highlight` の `useDeckHighlight`）。矢印・Space・PageUp/Down・Home/End は、デッキにフォーカスがある（スライドを押した）ときだけ効き、会話のスクロールを奪わない
   - ペインには印刷用の全スライド（`DeckPrint`）を描かない。印刷用のスライドを表示しているあいだはほかの要素が印刷から外れ、会話の画面を印刷してもスライドしか出なくなるため
 - スレッドの ID はページが決め、最初の POST が予約を通ったときに、サーバーがスレッドの行を作る
@@ -109,6 +109,17 @@ UI スタジオとエージェントの `generate_ui` は、どちらも json-re
 ### オーナー API
 
 tool は、オーナー API（`https://api.k8o.me/owner/*`。`apps/api/CLAUDE.md`）から記事の一覧と本文を読む（`agent/infrastructure/owner-api.ts`）。本番も preview も本番の api を呼ぶ。トークンは `OWNER_API_TOKEN` で、本番と preview で別の値を Vercel に sensitive で置く（本番は api の `OWNER_API_TOKEN_AI`、preview は `OWNER_API_TOKEN_AI_PREVIEW` と同じ値）。未設定のときは tool がエラーを返すだけで、会話は続く。
+
+## 生成物のページ（/artifacts）
+
+会話の外で、持ち主の生成物（UI とスライド）を一覧し、版の履歴をたどる画面（`app/(authenticated)/artifacts/`）。画面の文言（ToolNav・見出し・一覧・案内など）では「作ったもの」と呼ぶ。コードの名前は artifacts のまま。
+
+- 一覧は `@sidebar/artifacts/layout` が描く（最新版を作った時刻の新しい順に 100 件まで）。チャットと同じく layout に置き、生成物を移っても作り直さない
+- `/artifacts` の本文は、生成物のあるなしで分けない固定の案内で、DB を読まない。スマホでは一覧が Drawer の中にあり、本文が空に見えないようにするため
+- `/artifacts/[artifactId]` は、DB の全版を履歴の列に並べ、`?v=N` で版を選ぶ（無ければ最新版）。`v` が 1 以上の整数として読めなければ 404 にする。ほかの会話でできた版や、カードの無い版も並ぶ。会話でできた版には、その会話（`/chat/<threadId>`）へのリンクを出す
+- 本文は会話のペインと同じ `ArtifactBody` で描き、版ごとに作り直す。`?v=` を移っても読み込みの骨組みには置き換わらず、ビューと xl 未満のタブの state は残る。次の版が届くまでは、押した履歴の行の背景を変える（`useLinkStatus`）。xl 以上は本文と履歴の2列、xl 未満はタブ（ビューと「履歴」）で1枚ずつ出す。隠すのは CSS（`data-shown`）で、本文はアンマウントしない
+- 一覧も履歴も DB をキャッシュせずに読む。ただしブラウザの戻る・進むでは、Next がクライアントのキャッシュから画面を戻すので、そのあいだに足された生成物や版は出ない
+- 履歴は、一覧や履歴のリンクで開き直すと新しくなる。一覧（`@sidebar/artifacts/layout`）は共有の layout なので、`/artifacts` の中を移っても取り直されない。ほかのツールへ移ってから ToolNav などのリンクで入り直すか、再読み込みすると新しくなる
 
 ## 認証 & コスト保護
 
