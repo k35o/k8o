@@ -7,7 +7,9 @@ import {
   FullscreenIcon,
   IconButton,
   ListBox,
+  PackageIcon,
 } from '@k8ordo/ui';
+import Link from 'next/link';
 import type { FC, Ref } from 'react';
 
 import type { HighlightFn } from '@/app/_components/highlighted-code';
@@ -104,6 +106,29 @@ export const ArtifactPane: FC<ArtifactPaneProps> = ({
           <p className={styles.progress}>{artifact.text}</p>
         ) : null}
         <div className={styles.actions}>
+          {artifact.state === 'done' ? (
+            <IconButton
+              label="作ったもののページを開く"
+              renderItem={({
+                className,
+                children,
+                'aria-label': ariaLabel,
+                triggerProps,
+              }) => (
+                <Link
+                  aria-label={ariaLabel}
+                  className={className}
+                  href={`/artifacts/${artifact.artifactId}?v=${artifact.version.toString()}`}
+                  {...triggerProps}
+                >
+                  {children}
+                </Link>
+              )}
+              size="sm"
+            >
+              <PackageIcon size="sm" />
+            </IconButton>
+          ) : null}
           <div className={styles.viewTabs}>
             <ViewTabs
               onChange={onViewChange}
