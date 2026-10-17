@@ -19,9 +19,8 @@ import styles from './deck-preview.module.css';
 type DeckPreviewProps = {
   source: string | null;
   isStreaming: boolean;
-  // 印刷の CSS は、body に印刷用のスライドがあるあいだ、ほかの要素を印刷から外す。会話のペインで
-  // 描くと、会話の画面の印刷はスライドになる。また、会話の画面は別のパスへ移っても Activity で
-  // 隠れたまま残り、印刷用のスライドも display: none で body に残るので、ほかの画面の印刷は白紙になる
+  // 印刷用のスライドを表示しているあいだは、ほかの要素が印刷から外れる。会話のペインで描くと、
+  // 会話の画面を印刷してもスライドしか出ない
   printable: boolean;
 };
 
