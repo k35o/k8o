@@ -169,6 +169,7 @@ export const ArtifactPane: FC<ArtifactPaneProps> = ({
         highlight={highlight}
         isGenerating={isGenerating}
         key={artifact.toolCallId}
+        printable={false}
         view={view}
         waitingText={artifact.text}
       />

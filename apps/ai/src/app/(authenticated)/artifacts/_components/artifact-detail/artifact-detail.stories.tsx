@@ -1,7 +1,7 @@
 import type { Spec } from '@json-render/core';
 import { useState } from 'react';
 import type { ComponentProps, FC } from 'react';
-import { expect, userEvent, within } from 'storybook/test';
+import { expect, spyOn, userEvent, within } from 'storybook/test';
 
 import type { LoadedArtifact } from '@/features/artifacts/interface/queries';
 
@@ -172,6 +172,16 @@ const draftOf = (canvasElement: HTMLElement): string | null => {
   return url.pathname === '/chat' ? url.searchParams.get('draft') : null;
 };
 
+// 文書全体に効く印刷の規則（@page）を持つ <style> の media
+const printRuleMedia = (): string[] =>
+  [...document.querySelectorAll('style')]
+    .filter((style) =>
+      [...(style.sheet?.cssRules ?? [])].some(
+        (rule) => rule instanceof CSSPageRule,
+      ),
+    )
+    .map((style) => style.media);
+
 const meta = preview.meta({
   component: ArtifactDetail,
   decorators: [
@@ -217,6 +227,10 @@ export const Ui = meta.story({
     await expect(draftOf(canvasElement)).toBe(
       'UI「料金表」（artifactId: a1b2c3d4e5f6）の版 2 を土台に、',
     );
+    // UI は PDF に出さない
+    await expect(
+      header.queryByRole('button', { name: 'PDF出力' }),
+    ).not.toBeInTheDocument();
   },
 });
 
@@ -341,5 +355,33 @@ export const Slides = meta.story({
     await expect(draftOf(canvasElement)).toBe(
       'スライド「TypeScript 入門」（artifactId: s1t2u3v4w5x6）の版 1 を土台に、',
     );
+  },
+});
+
+export const PrintSlides = meta.story({
+  args: { artifact: SLIDES_ARTIFACT },
+  beforeEach: () => {
+    spyOn(window, 'print').mockImplementation(() => {});
+  },
+  play: async ({ canvasElement }) => {
+    const printedSlides = (): number | undefined =>
+      document.body.querySelector('[data-slide-print]')?.children.length;
+    // 選んでいる版の全スライドを、印刷用に描いておく
+    await expect(printedSlides()).toBe(2);
+    await expect(printRuleMedia()).toEqual(['print']);
+    await userEvent.click(
+      within(headerIn(canvasElement)).getByRole('button', {
+        name: 'PDF出力',
+      }),
+    );
+    await expect(window.print).toHaveBeenCalledOnce();
+
+    // 履歴や Markdown を出しているあいだも、本文は隠すだけなので印刷できる
+    await userEvent.click(visibleButton(canvasElement, '履歴'));
+    await expect(printedSlides()).toBe(2);
+    await expect(printRuleMedia()).toEqual(['print']);
+    await userEvent.click(visibleButton(canvasElement, 'Markdown'));
+    await expect(printedSlides()).toBe(2);
+    await expect(printRuleMedia()).toEqual(['print']);
   },
 });

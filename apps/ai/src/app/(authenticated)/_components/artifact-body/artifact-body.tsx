@@ -64,6 +64,7 @@ const previewOf = (
   content: ArtifactContent,
   waitingText: string,
   isGenerating: boolean,
+  printable: boolean,
 ): ReactNode => {
   if (content.kind === 'slides') {
     return content.source === null ? (
@@ -71,7 +72,7 @@ const previewOf = (
     ) : (
       <DeckPreview
         isStreaming={isGenerating}
-        printable={false}
+        printable={printable}
         source={content.source}
       />
     );
@@ -88,6 +89,7 @@ type ArtifactBodyProps = {
   waitingText: string;
   isGenerating: boolean;
   view: ArtifactView;
+  printable: boolean;
   // Storybook から server action を辿らないよう、呼び出し側から渡す。null ならハイライトしない
   highlight: HighlightFn | null;
 };
@@ -97,6 +99,7 @@ export const ArtifactBody: FC<ArtifactBodyProps> = ({
   waitingText,
   isGenerating,
   view,
+  printable,
   highlight,
 }) => {
   const code = codeOf(content, view);
@@ -117,7 +120,7 @@ export const ArtifactBody: FC<ArtifactBodyProps> = ({
           event.preventDefault();
         }}
       >
-        {previewOf(content, waitingText, isGenerating)}
+        {previewOf(content, waitingText, isGenerating, printable)}
       </div>
       <div className={styles.code} data-active={view !== 'preview'}>
         <CodeView

@@ -65,6 +65,18 @@ export const ArtifactDetail: FC<ArtifactDetailProps> = ({
             />
           </div>
           {view === 'preview' ? null : <CopyCodeButton code={code} />}
+          {selected.kind === 'slides' ? (
+            <Button
+              color="base"
+              onClick={() => {
+                window.print();
+              }}
+              size="sm"
+              variant="outline"
+            >
+              PDF出力
+            </Button>
+          ) : null}
           <Button
             color="base"
             renderItem={({ className, children }) => (
@@ -101,7 +113,8 @@ export const ArtifactDetail: FC<ArtifactDetailProps> = ({
         />
       </div>
       <div className={styles.body}>
-        {/* xl 未満で履歴を出しているあいだも、生成 UI の入力やスライドの位置を残すよう、本文をアンマウントせずに隠す */}
+        {/* xl 未満で履歴を出しているあいだも、生成 UI の入力やスライドの位置と印刷用のスライドを残すよう、本文をアンマウントせずに
+            CSS で隠す。Activity で隠すと、印刷の規則も切れる */}
         <div className={styles.main} data-shown={!historyShown}>
           {/* 版を移ったら、生成 UI の入力やスライドの位置を持ち越さない */}
           <ArtifactBody
@@ -109,6 +122,7 @@ export const ArtifactDetail: FC<ArtifactDetailProps> = ({
             highlight={highlight}
             isGenerating={false}
             key={`${artifact.id}:${selected.version.toString()}`}
+            printable
             view={view}
             waitingText=""
           />
