@@ -160,6 +160,18 @@ const visibleButton = (
   return button;
 };
 
+// 「新しいチャットで直す」のリンクが入力欄に入れる書き出し
+const draftOf = (canvasElement: HTMLElement): string | null => {
+  const href = within(canvasElement)
+    .getByRole('link', { name: '新しいチャットで直す' })
+    .getAttribute('href');
+  if (href === null) {
+    return null;
+  }
+  const url = new URL(href, canvasElement.ownerDocument.location.origin);
+  return url.pathname === '/chat' ? url.searchParams.get('draft') : null;
+};
+
 const meta = preview.meta({
   component: ArtifactDetail,
   decorators: [
@@ -201,6 +213,10 @@ export const Ui = meta.story({
     await expect(
       header.getByRole('button', { name: 'TSX', hidden: true }),
     ).not.toBeVisible();
+    // 新しいチャットの入力欄に、選んでいる版を土台にする書き出しを入れる
+    await expect(draftOf(canvasElement)).toBe(
+      'UI「料金表」（artifactId: a1b2c3d4e5f6）の版 2 を土台に、',
+    );
   },
 });
 
@@ -322,5 +338,8 @@ export const Slides = meta.story({
     ).not.toBeInTheDocument();
     await userEvent.click(visibleButton(canvasElement, 'Markdown'));
     await expect(canvas.getByText(/## 型注釈/u)).toBeVisible();
+    await expect(draftOf(canvasElement)).toBe(
+      'スライド「TypeScript 入門」（artifactId: s1t2u3v4w5x6）の版 1 を土台に、',
+    );
   },
 });

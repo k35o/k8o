@@ -1,5 +1,6 @@
 .title {
-  flex: 1;
+  /* 狭い幅でタイトルが潰れないよう、操作のほうを次の行へ送る */
+  flex: 1 1 10rem;
   min-width: 0;
   overflow: hidden;
   text-overflow: ellipsis;

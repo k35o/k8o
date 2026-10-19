@@ -81,12 +81,14 @@ type ChatScreenProps = {
   thread: { id: string; title: string | null; model: GenerationModel | null };
   initialMessages: AgentUIMessage[];
   initialRunning: boolean;
+  initialDraft: string;
 };
 
 export const ChatScreen: FC<ChatScreenProps> = ({
   thread,
   initialMessages,
   initialRunning,
+  initialDraft,
 }) => {
   const { touch } = useTouchedThreads();
   const { forget: forgetOpening } = useOpeningThread();
@@ -98,7 +100,7 @@ export const ChatScreen: FC<ChatScreenProps> = ({
   );
   const [firstSentAt, setFirstSentAt] = useState<string | null>(null);
   const [createdAt, setCreatedAt] = useState<string | null>(null);
-  const [draft, setDraft] = useState('');
+  const [draft, setDraft] = useState(initialDraft);
   const [stopRequest, setStopRequest] = useState<StopRequest | null>(null);
   const [closed, setClosed] = useState<Extract<
     PaneSelection,

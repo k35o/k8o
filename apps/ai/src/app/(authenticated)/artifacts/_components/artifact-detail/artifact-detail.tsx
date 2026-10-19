@@ -1,6 +1,7 @@
 'use client';
 
-import { Badge } from '@k8ordo/ui';
+import { AssistantIcon, Badge, Button } from '@k8ordo/ui';
+import Link from 'next/link';
 import { useState } from 'react';
 import type { FC } from 'react';
 
@@ -22,6 +23,18 @@ import { ArtifactHistory } from '../artifact-history';
 import styles from './artifact-detail.module.css';
 
 const HISTORY_TAB = { value: 'history', label: '履歴' } as const;
+
+// UI とスライドの artifactId は別もので、Claude が generate_ui と generate_slides のどちらで直すかを選べるよう、種類も書く
+const DRAFT_KINDS = {
+  ui: 'UI',
+  slides: 'スライド',
+} as const satisfies Record<LoadedArtifact['kind'], string>;
+
+const editDraftOf = (
+  artifactId: string,
+  selected: LoadedArtifact['selected'],
+): string =>
+  `${DRAFT_KINDS[selected.kind]}「${selected.title}」（artifactId: ${artifactId}）の版 ${selected.version.toString()} を土台に、`;
 
 type ArtifactDetailProps = {
   artifact: LoadedArtifact;
@@ -52,6 +65,25 @@ export const ArtifactDetail: FC<ArtifactDetailProps> = ({
             />
           </div>
           {view === 'preview' ? null : <CopyCodeButton code={code} />}
+          <Button
+            color="base"
+            renderItem={({ className, children }) => (
+              <Link
+                className={className}
+                href={{
+                  pathname: '/chat',
+                  query: { draft: editDraftOf(artifact.id, selected) },
+                }}
+              >
+                {children}
+              </Link>
+            )}
+            size="sm"
+            startIcon={<AssistantIcon size="sm" />}
+            variant="outline"
+          >
+            新しいチャットで直す
+          </Button>
         </div>
       </ToolHeader>
       <div className={styles.mobileTabs}>

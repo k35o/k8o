@@ -92,6 +92,7 @@ UI スタジオとエージェントの `generate_ui` は、どちらも json-re
   - スライドは、スライドのスタジオと同じ `DeckPreview`（`(authenticated)/_components/deck-preview`）で描く。デッキのコードブロックのハイライトは、アプリのテーマに合わせる（`(authenticated)/_components/deck-highlight` の `useDeckHighlight`）。矢印・Space・PageUp/Down・Home/End は、デッキにフォーカスがある（スライドを押した）ときだけ効き、会話のスクロールを奪わない
   - ペインには印刷用の全スライド（`DeckPrint`）を描かない。印刷用のスライドを表示しているあいだはほかの要素が印刷から外れ、会話の画面を印刷してもスライドしか出なくなるため
 - スレッドの ID はページが決め、最初の POST が予約を通ったときに、サーバーがスレッドの行を作る
+- `/chat?draft=<文>` は、その文を新しいチャットの入力欄に入れるだけで送らない。だれでも作れる URL なので、送るのはいつも利用者の操作にする。最初の送信で URL が `/chat/<id>` に置き換わり、`draft` は消える
 - メッセージは UIMessage を JSON のまま `ai_thread_messages` に追記する。user は実行の開始時、assistant は終了時に1行ずつ書く。終わり方（完了・停止・予算・エラーなど）は assistant の `metadata.end` に残す
 - ブラウザが切断しても、生成は最後まで続けて返答を保存する。そのため `req.signal` を `abortSignal` に渡さず、`vercel.json` の `functions` に `supportsCancellation` を付けない（付けると、切断で `req.signal` が abort される）
 - 停止は、`POST /api/chat/[threadId]/stop` が `ai_threads.stop_requested_at` を書き、走っている関数が定期的に読んで自分の生成を abort する。同じ読み取りで生存の印（`run_heartbeat_at`）を更新し、`HEARTBEAT_STALE_MS` のあいだ更新の無い実行中の印は、次の要求が取り直す
@@ -119,6 +120,7 @@ tool は、オーナー API（`https://api.k8o.me/owner/*`。`apps/api/CLAUDE.md
 - `/artifacts` の本文は、生成物のあるなしで分けない固定の案内で、DB を読まない。スマホでは一覧が Drawer の中にあり、本文が空に見えないようにするため
 - `/artifacts/[artifactId]` は、DB の全版を履歴の列に並べ、`?v=N` で版を選ぶ（無ければ最新版）。`v` が 1 以上の整数として読めなければ 404 にする。ほかの会話でできた版や、カードの無い版も並ぶ。会話でできた版には、その会話（`/chat/<threadId>`）へのリンクを出す
 - 本文は会話のペインと同じ `ArtifactBody` で描き、版ごとに作り直す。`?v=` を移っても読み込みの骨組みには置き換わらず、ビューと xl 未満のタブの state は残る。次の版が届くまでは、押した履歴の行の背景を変える（`useLinkStatus`）。xl 以上は本文と履歴の2列、xl 未満はタブ（ビューと「履歴」）で1枚ずつ出す。隠すのは CSS（`data-shown`）で、本文はアンマウントしない
+- 会話の外から Claude に直させる口は、見出しの「新しいチャットで直す」だけ。選んでいる版を土台にする書き出し（`UI「<タイトル>」（artifactId: <id>）の版 <N> を土台に、`。スライドなら「スライド」）を `/chat?draft=` で新しいチャットの入力欄に入れ、続きは利用者が書いて送る。書き出しは利用者の発言として送られるので、system・tools・履歴の形は変わらない
 - 一覧も履歴も DB をキャッシュせずに読む。ただしブラウザの戻る・進むでは、Next がクライアントのキャッシュから画面を戻すので、そのあいだに足された生成物や版は出ない
 - 履歴は、一覧や履歴のリンクで開き直すと新しくなる。一覧（`@sidebar/artifacts/layout`）は共有の layout なので、`/artifacts` の中を移っても取り直されない。ほかのツールへ移ってから ToolNav などのリンクで入り直すか、再読み込みすると新しくなる
 

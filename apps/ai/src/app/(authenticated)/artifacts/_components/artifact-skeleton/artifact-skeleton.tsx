@@ -11,6 +11,7 @@ export const ArtifactSkeleton: FC = () => (
     <ToolHeader>
       <div className={cn(styles.bone, styles.title)} data-skeleton />
       <div className={cn(styles.bone, styles.badge)} data-skeleton />
+      <div className={cn(styles.bone, styles.action)} data-skeleton />
     </ToolHeader>
     <div
       aria-busy
