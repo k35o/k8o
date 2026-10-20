@@ -69,7 +69,7 @@ export const ToolFrame: FC<ToolFrameProps> = ({ sidebar, children }) => {
       <div className={styles.root}>
         <aside className={styles.sidebar}>
           <div className={styles.brand}>
-            <Link className={styles.brandLink} href="/">
+            <Link className={styles.brandLink} href="/chat">
               k8o AI Studio
             </Link>
           </div>

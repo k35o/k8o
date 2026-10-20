@@ -20,11 +20,7 @@ const Artifacts = async () => {
 export default function Layout({ children }: { children: ReactNode }) {
   return (
     <>
-      <SidebarSection
-        heading="作ったもの"
-        newHref="/chat"
-        newLabel="チャットで作る"
-      >
+      <SidebarSection heading="作ったもの" newLabel="チャットで作る">
         <Suspense fallback={<SidebarListSkeleton />}>
           <Artifacts />
         </Suspense>

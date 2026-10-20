@@ -10,14 +10,12 @@ import styles from './sidebar-section.module.css';
 
 type SidebarSectionProps = {
   heading: string;
-  newHref: '/' | '/slides' | '/chat';
   newLabel: string;
   children: ReactNode;
 };
 
 export const SidebarSection: FC<SidebarSectionProps> = ({
   heading,
-  newHref,
   newLabel,
   children,
 }) => {
@@ -29,7 +27,7 @@ export const SidebarSection: FC<SidebarSectionProps> = ({
         <Button
           color="primary"
           renderItem={({ className, children: label }) => (
-            <Link className={className} href={newHref} onNavigate={close}>
+            <Link className={className} href="/chat" onNavigate={close}>
               {label}
             </Link>
           )}

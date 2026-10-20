@@ -1,8 +1,0 @@
-.frame {
-  display: flex;
-  flex-direction: column;
-  width: calc(var(--spacing) * 110);
-  height: calc(var(--spacing) * 160);
-  border: 1px solid var(--color-border-mute);
-  background-color: var(--color-bg-base);
-}

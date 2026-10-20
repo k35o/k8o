@@ -17,7 +17,7 @@ describe('threadIdFromPathname', () => {
 
   describe('エッジケース', () => {
     it.each([
-      ['ほかのツール', '/slides'],
+      ['ほかのツール', '/artifacts'],
       ['ID の無い末尾のスラッシュ', '/chat/'],
       ['スレッドより深いパス', '/chat/abc/def'],
       ['chat で始まる別のパス', '/chatroom/abc'],

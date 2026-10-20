@@ -8,13 +8,13 @@ import styles from './code-view.module.css';
 type CodeViewProps = {
   code: string | null;
   highlighted: HighlightedCode | null;
-  emptyText?: string | undefined;
+  emptyText: string;
 };
 
 export const CodeView: FC<CodeViewProps> = ({
   code,
   highlighted,
-  emptyText = 'ここに生成された TSX が表示されます',
+  emptyText,
 }) => {
   if (code === null) {
     return <div className={styles.empty}>{emptyText}</div>;

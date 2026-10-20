@@ -7,6 +7,7 @@ import { CodeView } from './code-view';
 
 const meta = preview.meta({
   component: CodeView,
+  args: { emptyText: '生成を始めています' },
 });
 
 // shiki を呼ばずに描画経路を検証するための最小フィクスチャ。
@@ -28,9 +29,7 @@ export const Empty = meta.story({
   args: { code: null, highlighted: null },
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
-    await expect(
-      canvas.getByText('ここに生成された TSX が表示されます'),
-    ).toBeInTheDocument();
+    await expect(canvas.getByText('生成を始めています')).toBeInTheDocument();
   },
 });
 

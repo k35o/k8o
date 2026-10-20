@@ -75,7 +75,7 @@ describe('pinnedPaneAt', () => {
       ['別の会話', '/chat/thread-2', ''],
       ['固定のある別の会話', '/chat/thread-2', 'pane=call-x'],
       ['新しいチャット', '/chat', ''],
-      ['別のツール', '/slides', 'project=project-1'],
+      ['別のツール', '/artifacts/a1b2c3d4e5f6', 'v=2'],
     ])(
       '%sのパスにいるあいだは、URL によらず保っている固定を返す',
       (_label, pathname, search) => {

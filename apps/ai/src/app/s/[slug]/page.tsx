@@ -55,7 +55,7 @@ const ShareContent = async ({ params }: SharePageProps) => {
         <div className={styles.actions}>
           {share.kind === 'slides' ? <PrintButton /> : null}
           <ToggleTheme />
-          <Link className={styles.homeLink} href="/">
+          <Link className={styles.homeLink} href="/chat">
             k8o AI Studio
           </Link>
         </div>
