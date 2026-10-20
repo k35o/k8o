@@ -54,7 +54,10 @@ export type ArtifactListItem = {
   isPublic: boolean;
 };
 
-type VersionOrigin = { type: 'new' } | { type: 'edit'; version: number };
+type VersionOrigin =
+  | { type: 'new' }
+  | { type: 'edit'; version: number }
+  | { type: 'fork'; artifactId: string; version: number; title: string };
 
 type HistoryVersion = {
   version: number;
@@ -96,6 +99,7 @@ const saveVersion = async (
       id: artifactId,
       userId: input.userId,
       kind: input.kind,
+      parentId: null,
       ...values,
     });
     return { artifactId, version: 1 };
@@ -199,17 +203,57 @@ export const findSlidesVersion = async (
   };
 };
 
+export const forkVersion = async (
+  input: VersionQuery,
+): Promise<SavedVersion | null> => {
+  const row = await selectVersion(input);
+  if (row === null) {
+    return null;
+  }
+  const artifactId = newArtifactId();
+  await insertArtifactWithFirstVersion({
+    id: artifactId,
+    userId: input.userId,
+    kind: row.kind,
+    parentId: row.id,
+    threadId: null,
+    title: `${row.title}（フォーク）`,
+    // 依頼から生まれた版ではないが、列が NOT NULL なので空にする
+    instruction: '',
+    summary: row.summary,
+    content: row.content,
+  });
+  return { artifactId, version: 1 };
+};
+
 export const listArtifacts = async (input: {
   userId: string;
 }): Promise<ArtifactListItem[]> => selectArtifacts(input);
 
 const originOf = (
   artifactId: string,
-  parent: { artifactId: string | null; version: number | null },
-): VersionOrigin =>
-  parent.artifactId === artifactId && parent.version !== null
+  parent: {
+    artifactId: string | null;
+    version: number | null;
+    title: string | null;
+  },
+): VersionOrigin => {
+  if (
+    parent.artifactId === null ||
+    parent.version === null ||
+    parent.title === null
+  ) {
+    return { type: 'new' };
+  }
+  return parent.artifactId === artifactId
     ? { type: 'edit', version: parent.version }
-    : { type: 'new' };
+    : {
+        type: 'fork',
+        artifactId: parent.artifactId,
+        version: parent.version,
+        title: parent.title,
+      };
+};
 
 const getArtifactHistory = async (input: {
   artifactId: string;
@@ -233,6 +277,7 @@ const getArtifactHistory = async (input: {
       origin: originOf(input.artifactId, {
         artifactId: row.parentArtifactId,
         version: row.parentVersion,
+        title: row.parentTitle,
       }),
     })),
   };

@@ -18,6 +18,8 @@ import { ArtifactKindBadge } from '../../../_components/artifact-kind-badge';
 import { CopyCodeButton } from '../../../_components/copy-code-button';
 import { ToolHeader } from '../../../_components/tool-frame';
 import { ViewTabs } from '../../../_components/view-tabs';
+import { ArtifactForkButton } from '../artifact-fork-button';
+import type { ArtifactForkAction } from '../artifact-fork-button';
 import { ArtifactHistory } from '../artifact-history';
 import { ArtifactShareMenu } from '../artifact-share-menu';
 import type { ArtifactShareActions } from '../artifact-share-menu';
@@ -38,18 +40,20 @@ const editDraftOf = (
 ): string =>
   `${DRAFT_KINDS[selected.kind]}「${selected.title}」（artifactId: ${artifactId}）の版 ${selected.version.toString()} を土台に、`;
 
-// highlight と shareActions は、Storybook から server action を辿らないよう、呼び出し側から渡す
+// highlight・shareActions・forkAction は、Storybook から server action を辿らないよう、呼び出し側から渡す
 type ArtifactDetailProps = {
   artifact: ArtifactForRoute;
   // null ならハイライトしない
   highlight: HighlightFn | null;
   shareActions: ArtifactShareActions;
+  forkAction: ArtifactForkAction;
 };
 
 export const ArtifactDetail: FC<ArtifactDetailProps> = ({
   artifact,
   highlight,
   shareActions,
+  forkAction,
 }) => {
   const [view, setView] = useState<ArtifactView>('preview');
   const [historyShown, setHistoryShown] = useState(false);
@@ -106,6 +110,11 @@ export const ArtifactDetail: FC<ArtifactDetailProps> = ({
             artifactId={artifact.id}
             selectedVersion={selected.version}
             share={artifact.share}
+          />
+          <ArtifactForkButton
+            action={forkAction}
+            artifactId={artifact.id}
+            version={selected.version}
           />
         </div>
       </ToolHeader>

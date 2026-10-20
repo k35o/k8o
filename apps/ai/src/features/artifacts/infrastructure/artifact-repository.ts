@@ -29,6 +29,7 @@ type VersionRow = {
   id: number;
   kind: AiArtifactKind;
   title: string;
+  summary: string;
   content: unknown;
 };
 
@@ -50,15 +51,18 @@ type HistoryRow = {
   createdAt: string;
   parentArtifactId: string | null;
   parentVersion: number | null;
+  parentTitle: string | null;
 };
 
 // libSQL の HTTP の対話トランザクションは往復ごとにロックを持ち続けるので、版の無い生成物が
 // 残らないよう、生成物と版 1 を1回の batch（暗黙のトランザクション）で書く
 export const insertArtifactWithFirstVersion = async (
-  input: VersionValues & {
+  input: Omit<VersionValues, 'threadId'> & {
     id: string;
     userId: string;
     kind: AiArtifactKind;
+    parentId: number | null;
+    threadId: string | null;
   },
 ): Promise<void> => {
   await db.batch([
@@ -68,7 +72,7 @@ export const insertArtifactWithFirstVersion = async (
     db.insert(versions).values({
       artifactId: input.id,
       version: 1,
-      parentId: null,
+      parentId: input.parentId,
       threadId: input.threadId,
       title: input.title,
       instruction: input.instruction,
@@ -127,6 +131,7 @@ export const selectVersion = async (input: {
       id: versions.id,
       kind: artifacts.kind,
       title: versions.title,
+      summary: versions.summary,
       content: versions.content,
     })
     .from(versions)
@@ -188,6 +193,7 @@ export const selectArtifactVersions = async (input: {
       createdAt: versions.createdAt,
       parentArtifactId: parents.artifactId,
       parentVersion: parents.version,
+      parentTitle: parents.title,
     })
     .from(versions)
     .innerJoin(artifacts, eq(artifacts.id, versions.artifactId))

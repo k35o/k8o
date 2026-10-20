@@ -5,6 +5,7 @@ import type { FC } from 'react';
 import { DeckHighlightContext } from '@/app/_components/slide-deck';
 import {
   changeSharedVersionAction,
+  forkArtifactVersionAction,
   publishArtifactVersionAction,
   unpublishArtifactAction,
 } from '@/features/artifacts/interface/actions';
@@ -29,6 +30,7 @@ export const ArtifactScreen: FC<ArtifactScreenProps> = ({ artifact }) => (
   <DeckHighlightContext value={useDeckHighlight()}>
     <ArtifactDetail
       artifact={artifact}
+      forkAction={forkArtifactVersionAction}
       highlight={highlightGenerated}
       shareActions={SHARE_ACTIONS}
     />

@@ -1,4 +1,5 @@
-import { refresh } from 'next/cache';
+import { refresh, revalidatePath } from 'next/cache';
+import { redirect } from 'next/navigation';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { requireAllowedSession } from '@/shared/auth/require-allowed-session';
@@ -8,14 +9,20 @@ import {
   publishVersion,
   unpublish,
 } from '../application/artifact-shares';
+import { forkVersion } from '../application/artifacts';
 import {
   changeSharedVersionAction,
+  forkArtifactVersionAction,
   publishArtifactVersionAction,
   unpublishArtifactAction,
 } from './actions';
 
 vi.mock('next/cache', () => ({
   refresh: vi.fn(),
+  revalidatePath: vi.fn(),
+}));
+vi.mock('next/navigation', () => ({
+  redirect: vi.fn(),
 }));
 vi.mock('next/headers', () => ({
   headers: vi.fn(() => Promise.resolve(new Headers())),
@@ -27,6 +34,9 @@ vi.mock('../application/artifact-shares', () => ({
   changeSharedVersion: vi.fn(),
   publishVersion: vi.fn(),
   unpublish: vi.fn(),
+}));
+vi.mock('../application/artifacts', () => ({
+  forkVersion: vi.fn(),
 }));
 
 const ARTIFACT_ID = 'a1b2c3d4e5f6';
@@ -132,6 +142,57 @@ describe('unpublishArtifactAction', () => {
       await expect(unpublishArtifactAction(ARTIFACT_ID)).resolves.toBe(false);
       expect(unpublish).not.toHaveBeenCalled();
       expect(refresh).not.toHaveBeenCalled();
+    });
+  });
+});
+
+describe('forkArtifactVersionAction', () => {
+  describe('正常系', () => {
+    it('持ち主として版をフォークし、一覧を取り直させてから、新しい生成物のページへ移す', async () => {
+      vi.mocked(forkVersion).mockResolvedValue({
+        artifactId: 'f6e5d4c3b2a1',
+        version: 1,
+      });
+
+      await forkArtifactVersionAction(ARTIFACT_ID, 2);
+
+      expect(forkVersion).toHaveBeenCalledExactlyOnceWith({
+        userId: 'u1',
+        artifactId: ARTIFACT_ID,
+        version: 2,
+      });
+      expect(revalidatePath).toHaveBeenCalledExactlyOnceWith(
+        '/artifacts',
+        'layout',
+      );
+      expect(redirect).toHaveBeenCalledExactlyOnceWith(
+        '/artifacts/f6e5d4c3b2a1',
+      );
+      // redirect は投げて終わるので、取り直させるのはその前
+      expect(revalidatePath).toHaveBeenCalledBefore(vi.mocked(redirect));
+    });
+  });
+
+  describe('異常系', () => {
+    it('持ち主の版が無ければ、取り直させず移らずに戻る', async () => {
+      vi.mocked(forkVersion).mockResolvedValue(null);
+
+      await expect(
+        forkArtifactVersionAction(ARTIFACT_ID, 2),
+      ).resolves.toBeUndefined();
+      expect(revalidatePath).not.toHaveBeenCalled();
+      expect(redirect).not.toHaveBeenCalled();
+    });
+
+    it('未許可の利用者なら、フォークせず移らずに戻る', async () => {
+      vi.mocked(requireAllowedSession).mockResolvedValue(null);
+
+      await expect(
+        forkArtifactVersionAction(ARTIFACT_ID, 2),
+      ).resolves.toBeUndefined();
+      expect(forkVersion).not.toHaveBeenCalled();
+      expect(revalidatePath).not.toHaveBeenCalled();
+      expect(redirect).not.toHaveBeenCalled();
     });
   });
 });

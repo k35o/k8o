@@ -44,6 +44,7 @@ describe('publishVersion', () => {
       id: 12,
       kind: 'ui',
       title: '問い合わせフォーム',
+      summary: '入力欄2つと送信ボタンのフォームです。',
       content: { spec: SPEC },
     });
     vi.mocked(upsertShare).mockResolvedValue('AAAAAAAAAAAAAAAA');
@@ -98,6 +99,7 @@ describe('changeSharedVersion', () => {
       id: 12,
       kind: 'ui',
       title: '問い合わせフォーム',
+      summary: '入力欄2つと送信ボタンのフォームです。',
       content: { spec: SPEC },
     });
   });

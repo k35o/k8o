@@ -48,11 +48,22 @@ const firstVersion = {
   id: 'a1b2c3d4e5f6',
   userId: 'u1',
   kind: 'ui',
+  parentId: null,
   threadId: 'thread-1',
   title: '問い合わせフォーム',
   instruction: '名前とメールの入力欄と送信ボタンを置く',
   summary: '入力欄2つと送信ボタンのフォームです。',
   content: { spec: SPEC },
+} as const;
+
+// firstVersion を先に書くと、その版 1 の行の id は 1 になる。それを親にしたフォーク
+const forkOfFirstVersion = {
+  ...firstVersion,
+  id: 'f6e5d4c3b2a1',
+  parentId: 1,
+  threadId: null,
+  title: '問い合わせフォーム（フォーク）',
+  instruction: '',
 } as const;
 
 const nextVersion = (input: {
@@ -141,6 +152,33 @@ describe('insertArtifactWithFirstVersion', () => {
           thread_id: 'thread-1',
           title: '問い合わせフォーム',
           instruction: '名前とメールの入力欄と送信ボタンを置く',
+          summary: '入力欄2つと送信ボタンのフォームです。',
+          content:
+            '{"spec":{"root":"a","elements":{"a":{"type":"Button","props":{"label":"OK"}}}}}',
+          created_at: NOW,
+        },
+      ]);
+    });
+
+    it('フォークでは、ほかの生成物の版を親にし、会話に属さない版 1 を書く', async () => {
+      await insertArtifactWithFirstVersion(firstVersion);
+
+      await insertArtifactWithFirstVersion(forkOfFirstVersion);
+
+      expect(artifactRows()).toStrictEqual([
+        expect.objectContaining({ id: 'a1b2c3d4e5f6' }),
+        { id: 'f6e5d4c3b2a1', user_id: 'u1', kind: 'ui', created_at: NOW },
+      ]);
+      expect(versionRows()).toStrictEqual([
+        expect.objectContaining({ id: 1, artifact_id: 'a1b2c3d4e5f6' }),
+        {
+          id: 2,
+          artifact_id: 'f6e5d4c3b2a1',
+          version: 1,
+          parent_id: 1,
+          thread_id: null,
+          title: '問い合わせフォーム（フォーク）',
+          instruction: '',
           summary: '入力欄2つと送信ボタンのフォームです。',
           content:
             '{"spec":{"root":"a","elements":{"a":{"type":"Button","props":{"label":"OK"}}}}}',
@@ -252,11 +290,12 @@ describe('selectVersion', () => {
   } as const;
 
   describe('正常系', () => {
-    it('持ち主・版番号が合えば、その版の id・生成物の種類・タイトル・中身を返す', async () => {
+    it('持ち主・版番号が合えば、その版の id・生成物の種類・タイトル・要約・中身を返す', async () => {
       await expect(selectVersion(query)).resolves.toStrictEqual({
         id: 2,
         kind: 'ui',
         title: '問い合わせフォーム',
+        summary: 'ボタンを大きくしました。',
         content: { spec: SPEC },
       });
     });
@@ -416,6 +455,7 @@ describe('selectArtifactVersions', () => {
           createdAt: '2026-10-15T14:00:00.000Z',
           parentArtifactId: 'a1b2c3d4e5f6',
           parentVersion: 1,
+          parentTitle: '問い合わせフォーム',
         },
         {
           kind: 'ui',
@@ -427,6 +467,7 @@ describe('selectArtifactVersions', () => {
           createdAt: '2026-10-15T13:00:00.000Z',
           parentArtifactId: 'a1b2c3d4e5f6',
           parentVersion: 1,
+          parentTitle: '問い合わせフォーム',
         },
         {
           kind: 'ui',
@@ -438,7 +479,27 @@ describe('selectArtifactVersions', () => {
           createdAt: NOW,
           parentArtifactId: null,
           parentVersion: null,
+          parentTitle: null,
         },
+      ]);
+    });
+
+    it('フォークした版には、フォーク元の生成物と版の番号とタイトルを添える', async () => {
+      await insertArtifactWithFirstVersion({
+        ...forkOfFirstVersion,
+        parentId: 3,
+      });
+
+      await expect(
+        selectArtifactVersions({ ...query, artifactId: 'f6e5d4c3b2a1' }),
+      ).resolves.toStrictEqual([
+        expect.objectContaining({
+          version: 1,
+          threadId: null,
+          parentArtifactId: 'a1b2c3d4e5f6',
+          parentVersion: 3,
+          parentTitle: '検索つきの問い合わせフォーム',
+        }),
       ]);
     });
   });

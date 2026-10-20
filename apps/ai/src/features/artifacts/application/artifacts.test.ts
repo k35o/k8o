@@ -10,6 +10,7 @@ import {
 import {
   findSlidesVersion,
   findUiVersion,
+  forkVersion,
   loadArtifact,
   saveSlidesVersion,
   saveUiVersion,
@@ -46,6 +47,7 @@ beforeEach(() => {
     id: 12,
     kind: 'ui',
     title: '問い合わせフォーム',
+    summary: 'ボタンを大きくしました。',
     content: { spec: SPEC },
   });
 });
@@ -63,6 +65,7 @@ describe('saveUiVersion', () => {
         id: saved.artifactId,
         userId: 'u1',
         kind: 'ui',
+        parentId: null,
         threadId: 'thread-1',
         title: '問い合わせフォーム',
         instruction: 'ボタンを大きくする',
@@ -124,6 +127,7 @@ describe('findUiVersion', () => {
         id: 12,
         kind: 'slides',
         title: 'LT の資料',
+        summary: '',
         content: { source: '## まとめ' },
       });
 
@@ -140,6 +144,7 @@ describe('findUiVersion', () => {
         id: 12,
         kind: 'ui',
         title: '問い合わせフォーム',
+        summary: '',
         content,
       });
 
@@ -171,6 +176,7 @@ describe('saveSlidesVersion', () => {
         id: saved.artifactId,
         userId: 'u1',
         kind: 'slides',
+        parentId: null,
         threadId: 'thread-1',
         title: 'LT の資料',
         instruction: '5枚のスライドにする',
@@ -208,6 +214,7 @@ describe('findSlidesVersion', () => {
         id: 12,
         kind: 'slides',
         title: 'LT の資料',
+        summary: '',
         content: { source: '## まとめ' },
       });
 
@@ -247,10 +254,69 @@ describe('findSlidesVersion', () => {
         id: 12,
         kind: 'slides',
         title: 'LT の資料',
+        summary: '',
         content,
       });
 
       await expect(findSlidesVersion(query)).resolves.toBeNull();
+    });
+  });
+});
+
+describe('forkVersion', () => {
+  const query = { artifactId: 'a1b2c3d4e5f6', version: 2, userId: 'u1' };
+
+  describe('正常系', () => {
+    it('持ち主の版の中身と要約を写し、その版を親にした会話に属さない版 1 で、新しい生成物を作る', async () => {
+      const forked = await forkVersion(query);
+
+      expect(forked).toStrictEqual({
+        artifactId: expect.stringMatching(/^[0-9a-f]{12}$/),
+        version: 1,
+      });
+      expect(forked?.artifactId).not.toBe('a1b2c3d4e5f6');
+      expect(selectVersion).toHaveBeenCalledExactlyOnceWith(query);
+      expect(insertArtifactWithFirstVersion).toHaveBeenCalledExactlyOnceWith({
+        id: forked?.artifactId,
+        userId: 'u1',
+        kind: 'ui',
+        parentId: 12,
+        threadId: null,
+        title: '問い合わせフォーム（フォーク）',
+        instruction: '',
+        summary: 'ボタンを大きくしました。',
+        content: { spec: SPEC },
+      });
+    });
+
+    it('スライドの版は、スライドの生成物としてデッキの source を写す', async () => {
+      vi.mocked(selectVersion).mockResolvedValue({
+        id: 12,
+        kind: 'slides',
+        title: 'LT の資料',
+        summary: '5枚の資料を作りました。',
+        content: { source: '## まとめ' },
+      });
+
+      await forkVersion(query);
+
+      expect(insertArtifactWithFirstVersion).toHaveBeenCalledExactlyOnceWith(
+        expect.objectContaining({
+          kind: 'slides',
+          title: 'LT の資料（フォーク）',
+          summary: '5枚の資料を作りました。',
+          content: { source: '## まとめ' },
+        }),
+      );
+    });
+  });
+
+  describe('異常系', () => {
+    it('持ち主の版でなければ（見つからなければ）、作らずに null を返す', async () => {
+      vi.mocked(selectVersion).mockResolvedValue(null);
+
+      await expect(forkVersion({ ...query, userId: 'u2' })).resolves.toBeNull();
+      expect(insertArtifactWithFirstVersion).not.toHaveBeenCalled();
     });
   });
 });
@@ -273,6 +339,7 @@ describe('loadArtifact', () => {
         createdAt: '2026-10-15T14:00:00.000Z',
         parentArtifactId: 'a1b2c3d4e5f6',
         parentVersion: 1,
+        parentTitle: '問い合わせフォーム',
       },
       {
         ...historyRow,
@@ -281,6 +348,7 @@ describe('loadArtifact', () => {
         createdAt: '2026-10-15T13:00:00.000Z',
         parentArtifactId: 'a1b2c3d4e5f6',
         parentVersion: 1,
+        parentTitle: '問い合わせフォーム',
       },
       {
         ...historyRow,
@@ -289,6 +357,7 @@ describe('loadArtifact', () => {
         createdAt: '2026-10-15T12:00:00.000Z',
         parentArtifactId: null,
         parentVersion: null,
+        parentTitle: null,
       },
     ]);
   });
@@ -377,6 +446,7 @@ describe('loadArtifact', () => {
           createdAt: '2026-10-15T13:00:00.000Z',
           parentArtifactId: 'a1b2c3d4e5f6',
           parentVersion: 1,
+          parentTitle: 'LT の資料',
         },
         {
           ...slidesRow,
@@ -386,12 +456,14 @@ describe('loadArtifact', () => {
           createdAt: '2026-10-15T12:00:00.000Z',
           parentArtifactId: null,
           parentVersion: null,
+          parentTitle: null,
         },
       ]);
       vi.mocked(selectVersion).mockResolvedValue({
         id: 12,
         kind: 'slides',
         title: 'LT の資料',
+        summary: '',
         content: { source: '## まとめ' },
       });
 
@@ -428,6 +500,47 @@ describe('loadArtifact', () => {
         },
       });
     });
+
+    it('ほかの生成物の版を親に持つ版は、フォーク元の生成物と版の番号とタイトルを由来にする', async () => {
+      vi.mocked(selectArtifactVersions).mockResolvedValue([
+        {
+          ...historyRow,
+          version: 2,
+          instruction: 'ボタンを大きくする',
+          createdAt: '2026-10-15T13:00:00.000Z',
+          parentArtifactId: 'f6e5d4c3b2a1',
+          parentVersion: 1,
+          parentTitle: '問い合わせフォーム（フォーク）',
+        },
+        {
+          ...historyRow,
+          version: 1,
+          title: '問い合わせフォーム（フォーク）',
+          instruction: '',
+          threadId: null,
+          createdAt: '2026-10-15T12:00:00.000Z',
+          parentArtifactId: 'a1b2c3d4e5f6',
+          parentVersion: 3,
+          parentTitle: '問い合わせフォーム',
+        },
+      ]);
+
+      const loaded = await loadArtifact({
+        artifactId: 'f6e5d4c3b2a1',
+        version: null,
+        userId: 'u1',
+      });
+
+      expect(loaded?.versions.map(({ origin }) => origin)).toStrictEqual([
+        { type: 'edit', version: 1 },
+        {
+          type: 'fork',
+          artifactId: 'a1b2c3d4e5f6',
+          version: 3,
+          title: '問い合わせフォーム',
+        },
+      ]);
+    });
   });
 
   describe('異常系', () => {
@@ -453,6 +566,7 @@ describe('loadArtifact', () => {
         id: 12,
         kind: 'ui',
         title: '問い合わせフォーム',
+        summary: '',
         content: { source: '## まとめ' },
       });
 
