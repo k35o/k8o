@@ -22,8 +22,6 @@ description: k8oブログ記事の技術的準備ワークフロー。MDXファ�
 - 記事の内容の執筆・ライティング
 - 記事の構成・アウトライン作成
 
-> **注意**: 記事の執筆には `/doc-coauthoring` スキルを使用してください。
-
 ## 必要なファイル
 
 新しいブログ記事を公開するには、以下のファイルが必要：
@@ -53,18 +51,23 @@ title: 'タイトル'
 description: '説明文（SEO用、100-160文字程度）'
 createdAt: 2025-01-10
 updatedAt: 2025-01-10
+featureIds:
+  - feature-id
 ---
 
-{/* 必要に応じてインポート */}
-{/* import { PlaygroundEmbed } from '@/app/_components/playgrounds'; */}
+import { PlaygroundEmbed } from '@/app/_components/playgrounds';
 
 # タイトル
 
-{/* Web機能を紹介する記事の場合（frontmatter の featureIds にも同じ ID を書く） */}
-{/* <BrowserSupportStatus featureId="feature-id" /> */}
+<BrowserSupportStatus featureId="feature-id" />
 
 {/* ここに記事の内容を執筆する */}
+
+<PlaygroundEmbed demo="デモタイトル" sectionId="my-feature" />
 ```
+
+- `featureIds` には紹介する Web 機能の web-features の ID を書き、H1 の直下に同じ ID の `<BrowserSupportStatus featureId="..." />` を置く。`BrowserSupportStatus` は `mdx-components.tsx` に登録されているので import しない。`featureIds` に書いた機能は `/browser-support` からこの記事へリンクされる。Web 機能を紹介しない記事では、`featureIds` と `<BrowserSupportStatus>` を書かない
+- `<PlaygroundEmbed>` の `sectionId` にはセクションの `id`、`demo` にはデモの `title` を渡す（`demo` を省くとセクションの全デモが並ぶ）。Playground が無い記事では、import と `<PlaygroundEmbed>` を書かない
 
 ### 2. layout.tsx
 
@@ -124,18 +127,87 @@ export default function Image() {
 
 ```
 apps/main/src/app/_components/playgrounds/{feature-name}/
-├── {feature-name}-demo.tsx           # メインコンポーネント
-├── {feature-name}-demo.stories.tsx   # Storybook
-└── index.ts                          # エクスポート
+├── {demo-name}-demo.tsx           # デモ本体
+├── {demo-name}-demo.module.css    # デモのスタイル
+├── {demo-name}-demo.stories.tsx   # Storybook
+└── index.ts                       # セクションの定義
+```
+
+デモが1つなら `{demo-name}` は `{feature-name}` と同じにする。デモが複数あるときは、デモごとに3つのファイルを置く（例: `scope/`）。
+
+#### デモ本体とスタイル
+
+スタイルは CSS Modules で書き、値は @k8ordo/ui のトークンだけを使う（規約はルートの `CLAUDE.md` の「UI共通」）。
+
+紹介する CSS そのものを見せるデモでは、その CSS を文字列で持ち、`<style>` で当てて、同じ文字列を `<pre><code>` で表示する。`<style>` の中身はページ全体に効くので、セレクタのクラス名にはほかのデモと衝突しない接頭辞を付ける。
+
+```tsx
+import styles from './my-feature-demo.module.css';
+
+const demoStyle = `.mf-target {
+  text-decoration-line: underline;
+}`;
+
+export function MyFeatureDemo() {
+  return (
+    <div className={styles.root}>
+      <style>{demoStyle}</style>
+      <p className="mf-target">対象の要素</p>
+      <pre className={styles.code}>
+        <code>{demoStyle}</code>
+      </pre>
+    </div>
+  );
+}
+```
+
+```css
+.root {
+  display: flex;
+  flex-direction: column;
+  gap: calc(var(--spacing) * 6);
+}
+
+.code {
+  margin-block: 0;
+  overflow-x: auto;
+  color: var(--color-fg-mute);
+  font-size: var(--font-size-xs);
+  line-height: var(--line-height-xs);
+}
+```
+
+#### Storybookの例
+
+```tsx
+import preview from '../../../../../.storybook/preview';
+import { Playground } from '../playground';
+import { MyFeatureDemo } from './my-feature-demo';
+
+const playgroundTitle = MyFeatureDemo.name;
+
+const meta = preview.meta({
+  title: 'playgrounds/my-feature/MyFeatureDemo',
+  component: MyFeatureDemo,
+  decorators: [
+    (Story) => (
+      <Playground title={playgroundTitle}>
+        <Story />
+      </Playground>
+    ),
+  ],
+});
+
+export const Default = meta.story();
 ```
 
 #### index.tsの例
 
 ```typescript
 import type { PlaygroundSection } from '../types';
-import { MyDemo } from './my-demo';
+import { MyFeatureDemo } from './my-feature-demo';
 
-export const mySection: PlaygroundSection = {
+export const myFeatureSection: PlaygroundSection = {
   id: 'my-feature',
   title: 'My Feature',
   description: '機能の説明',
@@ -144,7 +216,7 @@ export const mySection: PlaygroundSection = {
   slug: 'my-feature',
   demos: [
     {
-      component: MyDemo,
+      component: MyFeatureDemo,
       title: 'デモタイトル',
       description: 'デモの説明',
     },
@@ -154,10 +226,8 @@ export const mySection: PlaygroundSection = {
 
 #### playgrounds/sections.tsへの追加
 
-- `import { mySection } from './{feature-name}';` を追加
+- `import { myFeatureSection } from './{feature-name}';` を追加
 - `playgroundSections` 配列に追加
-
-記事では `<PlaygroundEmbed sectionId="my-feature" />` で埋め込む。`demo` にデモの `title` を渡すと、そのデモだけを出す。
 
 ## データベースマイグレーション
 
@@ -216,11 +286,11 @@ grep -rhoE "INSERT INTO tags [^;]*'[^']+'" packages/database/migrations/*.sql \
 
 ### ファイル作成
 
-- [ ] `page.mdx` 雛形作成
+- [ ] `page.mdx` 雛形作成（Web 機能の記事なら `featureIds` と `<BrowserSupportStatus>` の ID をそろえる）
 - [ ] `layout.tsx` 作成
 - [ ] 数式（`$`・`$$`・` ```math `）を使う場合: `layout.tsx` に KaTeX CSS を import
 - [ ] `opengraph-image.tsx` 作成
-- [ ] Playgroundコンポーネント作成（必要な場合）
+- [ ] Playgroundのデモと `.module.css` 作成（必要な場合）
 - [ ] Storybookストーリー作成（必要な場合）
 - [ ] `playgrounds/sections.ts` 更新（必要な場合）
 
@@ -231,4 +301,4 @@ grep -rhoE "INSERT INTO tags [^;]*'[^']+'" packages/database/migrations/*.sql \
 
 ### 次のステップ
 
-- [ ] 記事の内容を執筆（`/doc-coauthoring` スキルを使用可）
+- [ ] 記事の内容を執筆し、公開前に `/blog-review` でレビューする
