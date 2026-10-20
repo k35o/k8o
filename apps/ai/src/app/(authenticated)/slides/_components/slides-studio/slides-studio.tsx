@@ -7,6 +7,7 @@ import type { UIMessage } from 'ai';
 import { useTheme } from 'next-themes';
 import { useMemo, useReducer, useRef, useState, useTransition } from 'react';
 
+import { DeckPreview } from '@/app/_components/deck-preview';
 import type { HighlightFn } from '@/app/_components/highlighted-code';
 import { DeckHighlightContext } from '@/app/_components/slide-deck';
 import {
@@ -27,7 +28,6 @@ import { parseDeck } from '@/features/slides/application/parse-deck';
 import { ChatPanel } from '../../../_components/chat-panel';
 import { CodePanel } from '../../../_components/code-panel';
 import { CopyCodeButton } from '../../../_components/copy-code-button';
-import { DeckPreview } from '../../../_components/deck-preview';
 import { PreviewLoading } from '../../../_components/preview-loading';
 import {
   useProjectPersistence,

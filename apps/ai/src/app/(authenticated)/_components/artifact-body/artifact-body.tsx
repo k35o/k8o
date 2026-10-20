@@ -3,13 +3,13 @@
 import type { Spec } from '@json-render/core';
 import type { FC, MouseEvent, ReactNode } from 'react';
 
+import { DeckPreview } from '@/app/_components/deck-preview';
 import { useHighlightedCode } from '@/app/_components/highlighted-code';
 import type { HighlightFn } from '@/app/_components/highlighted-code';
 import { SpecPreview } from '@/app/_components/spec-preview';
 import { specToTsx } from '@/features/generation/application/spec-to-tsx';
 
 import { CodeView } from '../code-view';
-import { DeckPreview } from '../deck-preview';
 import { PreviewLoading } from '../preview-loading';
 import type { ArtifactView } from './artifact-views';
 

@@ -89,7 +89,7 @@ UI スタジオとエージェントの `generate_ui` は、どちらも json-re
   - xl 以上では、ペインの見出しの「全画面で見る」で会話の列を隠し、ペインを作業領域いっぱいに広げる。会話はマウントしたまま隠す。広げた状態は ChatScreen の state に持って URL には持たず、ペインが消えると戻る
   - ペインの本文（プレビューとコード）は、会話の外でも使える `ArtifactBody`（`(authenticated)/_components/artifact-body`）で描く。見出し・版の切り替え・止めた途中の注記はペインが持つ
   - 生成 UI とスライドのリンクと、生成 UI のフォームは、`ArtifactBody` の包みで移動を止める。会話の画面ごと移動すると受信が切れ、生成物のページでも見ていた版から離れるため。/s/[slug] ではリンクが動いてよいので、共有の `SpecPreview` には入れない
-  - スライドは、スライドのスタジオと同じ `DeckPreview`（`(authenticated)/_components/deck-preview`）で描く。デッキのコードブロックのハイライトは、アプリのテーマに合わせる（`(authenticated)/_components/deck-highlight` の `useDeckHighlight`）。矢印・Space・PageUp/Down・Home/End は、デッキにフォーカスがある（スライドを押した）ときだけ効き、会話のスクロールを奪わない
+  - スライドは、スライドのスタジオと同じ `DeckPreview`（`app/_components/deck-preview`）で描く。デッキのコードブロックのハイライトは、アプリのテーマに合わせる（`(authenticated)/_components/deck-highlight` の `useDeckHighlight`）。矢印・Space・PageUp/Down・Home/End は、デッキにフォーカスがある（スライドを押した）ときだけ効き、会話のスクロールを奪わない
   - ペインには印刷用の全スライド（`DeckPrint`）を描かない。印刷用のスライドを表示しているあいだはほかの要素が印刷から外れ、会話の画面を印刷してもスライドしか出なくなるため
 - スレッドの ID はページが決め、最初の POST が予約を通ったときに、サーバーがスレッドの行を作る
 - `/chat?draft=<文>` は、その文を新しいチャットの入力欄に入れるだけで送らない。だれでも作れる URL なので、送るのはいつも利用者の操作にする。最初の送信で URL が `/chat/<id>` に置き換わり、`draft` は消える

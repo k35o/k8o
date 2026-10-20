@@ -13,7 +13,7 @@ import {
 import type { HighlightFn } from '@/app/_components/highlighted-code';
 import { DeckHighlightContext } from '@/app/_components/slide-deck';
 
-import preview from '../../../../../.storybook/preview';
+import preview from '../../../../.storybook/preview';
 import { DeckPreview } from './deck-preview';
 
 import styles from './deck-preview.stories.module.css';

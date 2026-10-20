@@ -3,11 +3,11 @@
 import { Button, FullscreenIcon, IconButton } from '@k8ordo/ui';
 import type { FC } from 'react';
 
+import { DeckPreview } from '@/app/_components/deck-preview';
 import { DEFAULT_GENERATION_MODEL } from '@/shared/claude/models';
 
 import { ChatPanel } from '../../../_components/chat-panel';
 import { CopyCodeButton } from '../../../_components/copy-code-button';
-import { DeckPreview } from '../../../_components/deck-preview';
 import { ProjectTitle } from '../../../_components/project-title';
 import { StudioPanes } from '../../../_components/studio-panes';
 import { ToolHeader } from '../../../_components/tool-frame';
