@@ -7,6 +7,8 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import {
   insertArtifactWithFirstVersion,
   insertNextVersion,
+  selectArtifacts,
+  selectArtifactVersions,
   selectVersion,
 } from './artifact-repository';
 
@@ -68,14 +70,14 @@ const nextVersion = (input: {
   });
 
 // node:sqlite の行はプロトタイプを持たないので、比べられるよう普通のオブジェクトに写す
-const selectArtifacts = (): unknown[] =>
+const artifactRows = (): unknown[] =>
   structuredClone(
     sqlite
       .prepare('select id, user_id, kind, created_at from ai_artifacts')
       .all(),
   );
 
-const selectVersions = (): unknown[] =>
+const versionRows = (): unknown[] =>
   structuredClone(
     sqlite
       .prepare(
@@ -94,6 +96,7 @@ beforeEach(() => {
       kind text not null,
       created_at text not null
     );
+    create index ai_artifacts_user_id_idx on ai_artifacts (user_id);
     create table ai_artifact_versions (
       id integer primary key autoincrement not null,
       artifact_id text not null references ai_artifacts(id) on delete cascade,
@@ -120,10 +123,10 @@ describe('insertArtifactWithFirstVersion', () => {
     it('生成物と、親の無い版 1 を書く', async () => {
       await insertArtifactWithFirstVersion(firstVersion);
 
-      expect(selectArtifacts()).toStrictEqual([
+      expect(artifactRows()).toStrictEqual([
         { id: 'a1b2c3d4e5f6', user_id: 'u1', kind: 'ui', created_at: NOW },
       ]);
-      expect(selectVersions()).toStrictEqual([
+      expect(versionRows()).toStrictEqual([
         {
           id: 1,
           artifact_id: 'a1b2c3d4e5f6',
@@ -158,7 +161,7 @@ describe('insertNextVersion', () => {
     it('その生成物の最後の版の次の番号で、土台を親にした版を足し、その番号を返す', async () => {
       await expect(nextVersion({ parentId: 1 })).resolves.toBe(2);
 
-      expect(selectVersions()).toStrictEqual([
+      expect(versionRows()).toStrictEqual([
         expect.objectContaining({ id: 1, version: 1 }),
         {
           id: 2,
@@ -180,7 +183,7 @@ describe('insertNextVersion', () => {
       await nextVersion({ parentId: 1 });
 
       await expect(nextVersion({ parentId: 1 })).resolves.toBe(3);
-      expect(selectVersions()).toMatchObject([
+      expect(versionRows()).toMatchObject([
         { id: 1, version: 1, parent_id: null },
         { id: 2, version: 2, parent_id: 1 },
         { id: 3, version: 3, parent_id: 1 },
@@ -200,7 +203,7 @@ describe('insertNextVersion', () => {
         }),
       );
 
-      expect(selectVersions()).toMatchObject([
+      expect(versionRows()).toMatchObject([
         { id: 1, artifact_id: 'a1b2c3d4e5f6', version: 1 },
       ]);
     });
@@ -240,13 +243,13 @@ describe('selectVersion', () => {
     artifactId: 'a1b2c3d4e5f6',
     version: 2,
     userId: 'u1',
-    kind: 'ui',
   } as const;
 
   describe('正常系', () => {
-    it('持ち主・種類・版番号が合えば、その版の id・タイトル・中身を返す', async () => {
+    it('持ち主・版番号が合えば、その版の id・生成物の種類・タイトル・中身を返す', async () => {
       await expect(selectVersion(query)).resolves.toStrictEqual({
         id: 2,
+        kind: 'ui',
         title: '問い合わせフォーム',
         content: { spec: SPEC },
       });
@@ -260,14 +263,6 @@ describe('selectVersion', () => {
       ).resolves.toBeNull();
     });
 
-    it('種類が違う生成物なら null を返す', async () => {
-      sqlite.exec(
-        "update ai_artifacts set kind = 'slides' where id = 'a1b2c3d4e5f6'",
-      );
-
-      await expect(selectVersion(query)).resolves.toBeNull();
-    });
-
     it('その番号の版が無ければ null を返す', async () => {
       await expect(selectVersion({ ...query, version: 3 })).resolves.toBeNull();
     });
@@ -276,6 +271,161 @@ describe('selectVersion', () => {
       await expect(
         selectVersion({ ...query, artifactId: 'f6e5d4c3b2a1' }),
       ).resolves.toBeNull();
+    });
+  });
+});
+
+describe('selectArtifacts', () => {
+  describe('正常系', () => {
+    it('持ち主の生成物を、最新版を作った時刻の新しい順に、最新版のタイトルと時刻で返す', async () => {
+      await insertArtifactWithFirstVersion(firstVersion);
+      vi.setSystemTime(Date.parse('2026-10-15T13:00:00.000Z'));
+      await insertArtifactWithFirstVersion({
+        ...firstVersion,
+        id: 'f6e5d4c3b2a1',
+        kind: 'slides',
+        title: 'LT の資料',
+        content: { source: '## まとめ' },
+      });
+      vi.setSystemTime(Date.parse('2026-10-15T14:00:00.000Z'));
+      await insertNextVersion({
+        artifactId: firstVersion.id,
+        parentId: 1,
+        threadId: 'thread-2',
+        title: '大きいボタンの問い合わせフォーム',
+        instruction: 'ボタンを大きくする',
+        summary: 'ボタンを大きくしました。',
+        content: { spec: SPEC },
+      });
+
+      await expect(selectArtifacts({ userId: 'u1' })).resolves.toStrictEqual([
+        {
+          id: 'a1b2c3d4e5f6',
+          kind: 'ui',
+          title: '大きいボタンの問い合わせフォーム',
+          updatedAt: '2026-10-15T14:00:00.000Z',
+        },
+        {
+          id: 'f6e5d4c3b2a1',
+          kind: 'slides',
+          title: 'LT の資料',
+          updatedAt: '2026-10-15T13:00:00.000Z',
+        },
+      ]);
+    });
+  });
+
+  describe('異常系', () => {
+    it('ほかの利用者の生成物は返さない', async () => {
+      await insertArtifactWithFirstVersion(firstVersion);
+      await insertArtifactWithFirstVersion({
+        ...firstVersion,
+        id: 'f6e5d4c3b2a1',
+        userId: 'u2',
+      });
+
+      await expect(selectArtifacts({ userId: 'u1' })).resolves.toMatchObject([
+        { id: 'a1b2c3d4e5f6' },
+      ]);
+    });
+  });
+
+  describe('エッジケース', () => {
+    it('101件あれば、最新版の新しい100件までを返す', async () => {
+      const insertArtifact = sqlite.prepare(
+        "insert into ai_artifacts (id, user_id, kind, created_at) values (?, 'u1', 'ui', ?)",
+      );
+      const insertVersion = sqlite.prepare(
+        "insert into ai_artifact_versions (artifact_id, version, title, instruction, summary, content, created_at) values (?, 1, 'UI', '', '', '{}', ?)",
+      );
+      for (let minute = 0; minute <= 100; minute += 1) {
+        const id = `artifact-${minute.toString().padStart(3, '0')}`;
+        const createdAt = new Date(
+          Date.parse(NOW) + minute * 60_000,
+        ).toISOString();
+        insertArtifact.run(id, createdAt);
+        insertVersion.run(id, createdAt);
+      }
+
+      const listed = await selectArtifacts({ userId: 'u1' });
+
+      expect(listed).toHaveLength(100);
+      expect(listed.at(0)?.id).toBe('artifact-100');
+      expect(listed.at(-1)?.id).toBe('artifact-001');
+    });
+  });
+});
+
+describe('selectArtifactVersions', () => {
+  beforeEach(async () => {
+    await insertArtifactWithFirstVersion(firstVersion);
+    vi.setSystemTime(Date.parse('2026-10-15T13:00:00.000Z'));
+    await nextVersion({ parentId: 1 });
+    vi.setSystemTime(Date.parse('2026-10-15T14:00:00.000Z'));
+    await insertNextVersion({
+      artifactId: firstVersion.id,
+      parentId: 1,
+      threadId: 'thread-2',
+      title: '検索つきの問い合わせフォーム',
+      instruction: '最初の版に検索欄を足す',
+      summary: '検索欄を足しました。',
+      content: { spec: SPEC },
+    });
+  });
+
+  const query = { artifactId: 'a1b2c3d4e5f6', userId: 'u1' } as const;
+
+  describe('正常系', () => {
+    it('生成物の全版を、新しい順に、生成物の種類と土台にした版の番号を添えて返し、中身は返さない', async () => {
+      await expect(selectArtifactVersions(query)).resolves.toStrictEqual([
+        {
+          kind: 'ui',
+          version: 3,
+          title: '検索つきの問い合わせフォーム',
+          instruction: '最初の版に検索欄を足す',
+          summary: '検索欄を足しました。',
+          threadId: 'thread-2',
+          createdAt: '2026-10-15T14:00:00.000Z',
+          parentArtifactId: 'a1b2c3d4e5f6',
+          parentVersion: 1,
+        },
+        {
+          kind: 'ui',
+          version: 2,
+          title: '問い合わせフォーム',
+          instruction: 'ボタンを大きくする',
+          summary: 'ボタンを大きくしました。',
+          threadId: 'thread-1',
+          createdAt: '2026-10-15T13:00:00.000Z',
+          parentArtifactId: 'a1b2c3d4e5f6',
+          parentVersion: 1,
+        },
+        {
+          kind: 'ui',
+          version: 1,
+          title: '問い合わせフォーム',
+          instruction: '名前とメールの入力欄と送信ボタンを置く',
+          summary: '入力欄2つと送信ボタンのフォームです。',
+          threadId: 'thread-1',
+          createdAt: NOW,
+          parentArtifactId: null,
+          parentVersion: null,
+        },
+      ]);
+    });
+  });
+
+  describe('異常系', () => {
+    it('持ち主でなければ空の配列を返す', async () => {
+      await expect(
+        selectArtifactVersions({ ...query, userId: 'u2' }),
+      ).resolves.toStrictEqual([]);
+    });
+
+    it('生成物が無ければ空の配列を返す', async () => {
+      await expect(
+        selectArtifactVersions({ ...query, artifactId: 'f6e5d4c3b2a1' }),
+      ).resolves.toStrictEqual([]);
     });
   });
 });

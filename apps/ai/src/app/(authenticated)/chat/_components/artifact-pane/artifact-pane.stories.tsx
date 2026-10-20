@@ -4,8 +4,8 @@ import type { ComponentProps, FC } from 'react';
 import { expect, fn, userEvent, within } from 'storybook/test';
 
 import preview from '../../../../../../.storybook/preview';
+import type { ArtifactView } from '../../../_components/artifact-body';
 import { ArtifactPane } from './artifact-pane';
-import type { ArtifactView } from './artifact-views';
 
 import styles from './artifact-pane.stories.module.css';
 
@@ -93,6 +93,12 @@ export const Done = meta.story({
       within(pane).getByRole('heading', { name: 'お問い合わせフォーム' }),
     ).toBeInTheDocument();
     await expect(within(pane).getByText('版 2')).toBeInTheDocument();
+    // できた版は、生成物のページでその版を開ける。xl 未満でも隠さない
+    const open = within(pane).getByRole('link', {
+      name: '作ったもののページを開く',
+    });
+    await expect(open).toHaveAttribute('href', '/artifacts/a1b2c3d4e5f6?v=2');
+    await expect(open).toBeVisible();
     // 版が1つなら、選ぶ口を出さずにバッジで示す
     await expect(
       within(pane).queryByRole('combobox', { name: /表示する版/u }),
@@ -334,6 +340,10 @@ export const Thinking = meta.story({
         .filter((element) => element.checkVisibility()),
     ).toHaveLength(2);
     await expect(canvas.queryByText(/版 /u)).not.toBeInTheDocument();
+    // 版になっていないものは、生成物のページで開けない
+    await expect(
+      canvas.queryByRole('link', { name: '作ったもののページを開く' }),
+    ).not.toBeInTheDocument();
   },
 });
 
@@ -397,6 +407,9 @@ export const Stopped = meta.story({
     await expect(
       canvas.getByRole('heading', { name: 'お問い合わせ' }),
     ).toBeInTheDocument();
+    await expect(
+      canvas.queryByRole('link', { name: '作ったもののページを開く' }),
+    ).not.toBeInTheDocument();
   },
 });
 
@@ -477,6 +490,9 @@ export const SlidesDone = meta.story({
       within(pane).getByRole('heading', { level: 2, name: '入門の発表' }),
     ).toBeInTheDocument();
     await expect(within(pane).getByText('版 1')).toBeInTheDocument();
+    await expect(
+      within(pane).getByRole('link', { name: '作ったもののページを開く' }),
+    ).toHaveAttribute('href', '/artifacts/s1t2u3v4w5x6?v=1');
     await expect(
       within(pane).getByRole('heading', { level: 1, name: 'TypeScript 入門' }),
     ).toBeInTheDocument();

@@ -25,6 +25,7 @@ const ExistingChat = async ({
   }
   return (
     <ChatScreen
+      initialDraft=""
       initialMessages={thread.messages}
       initialRunning={thread.running}
       key={thread.id}

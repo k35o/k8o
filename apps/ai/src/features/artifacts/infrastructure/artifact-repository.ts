@@ -1,10 +1,12 @@
 import 'server-only';
 import { db } from '@repo/ai-database';
-import { and, eq, sql } from '@repo/ai-database/orm';
+import { alias, and, desc, eq, max, sql } from '@repo/ai-database/orm';
 import type { AiArtifactKind } from '@repo/ai-database/schema';
 
 const artifacts = db._schema.aiArtifacts;
 const versions = db._schema.aiArtifactVersions;
+
+const ARTIFACT_LIST_LIMIT = 100;
 
 type VersionValues = {
   threadId: string;
@@ -16,8 +18,28 @@ type VersionValues = {
 
 type VersionRow = {
   id: number;
+  kind: AiArtifactKind;
   title: string;
   content: unknown;
+};
+
+type ArtifactRow = {
+  id: string;
+  kind: AiArtifactKind;
+  title: string;
+  updatedAt: string;
+};
+
+type HistoryRow = {
+  kind: AiArtifactKind;
+  version: number;
+  title: string;
+  instruction: string;
+  summary: string;
+  threadId: string | null;
+  createdAt: string;
+  parentArtifactId: string | null;
+  parentVersion: number | null;
 };
 
 // libSQL の HTTP の対話トランザクションは往復ごとにロックを持ち続けるので、版の無い生成物が
@@ -89,11 +111,11 @@ export const selectVersion = async (input: {
   artifactId: string;
   version: number;
   userId: string;
-  kind: AiArtifactKind;
 }): Promise<VersionRow | null> => {
   const [row] = await db
     .select({
       id: versions.id,
+      kind: artifacts.kind,
       title: versions.title,
       content: versions.content,
     })
@@ -104,9 +126,65 @@ export const selectVersion = async (input: {
         eq(versions.artifactId, input.artifactId),
         eq(versions.version, input.version),
         eq(artifacts.userId, input.userId),
-        eq(artifacts.kind, input.kind),
       ),
     )
     .limit(1);
   return row ?? null;
+};
+
+export const selectArtifacts = async (input: {
+  userId: string;
+}): Promise<ArtifactRow[]> => {
+  const others = alias(versions, 'others');
+  const latestVersion = db
+    .select({ version: max(others.version) })
+    .from(others)
+    .where(eq(others.artifactId, artifacts.id));
+  return db
+    .select({
+      id: artifacts.id,
+      kind: artifacts.kind,
+      title: versions.title,
+      updatedAt: versions.createdAt,
+    })
+    .from(artifacts)
+    .innerJoin(
+      versions,
+      and(
+        eq(versions.artifactId, artifacts.id),
+        eq(versions.version, latestVersion),
+      ),
+    )
+    .where(eq(artifacts.userId, input.userId))
+    .orderBy(desc(versions.createdAt))
+    .limit(ARTIFACT_LIST_LIMIT);
+};
+
+export const selectArtifactVersions = async (input: {
+  artifactId: string;
+  userId: string;
+}): Promise<HistoryRow[]> => {
+  const parents = alias(versions, 'parents');
+  return db
+    .select({
+      kind: artifacts.kind,
+      version: versions.version,
+      title: versions.title,
+      instruction: versions.instruction,
+      summary: versions.summary,
+      threadId: versions.threadId,
+      createdAt: versions.createdAt,
+      parentArtifactId: parents.artifactId,
+      parentVersion: parents.version,
+    })
+    .from(versions)
+    .innerJoin(artifacts, eq(artifacts.id, versions.artifactId))
+    .leftJoin(parents, eq(parents.id, versions.parentId))
+    .where(
+      and(
+        eq(versions.artifactId, input.artifactId),
+        eq(artifacts.userId, input.userId),
+      ),
+    )
+    .orderBy(desc(versions.version));
 };

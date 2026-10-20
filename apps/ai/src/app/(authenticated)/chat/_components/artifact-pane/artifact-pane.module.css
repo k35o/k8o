@@ -80,26 +80,3 @@
   padding-inline: calc(var(--spacing) * 4);
   padding-top: calc(var(--spacing) * 4);
 }
-
-.body {
-  flex: 1;
-  min-height: 0;
-  overflow: hidden;
-}
-
-.preview {
-  position: relative;
-  height: 100%;
-
-  &[data-active='false'] {
-    display: none;
-  }
-}
-
-.code {
-  height: 100%;
-
-  &[data-active='false'] {
-    display: none;
-  }
-}

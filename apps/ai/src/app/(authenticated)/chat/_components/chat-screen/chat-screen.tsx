@@ -2,12 +2,10 @@
 
 import { useChat } from '@ai-sdk/react';
 import { APICallError, DefaultChatTransport } from 'ai';
-import { useTheme } from 'next-themes';
-import { useEffect, useEffectEvent, useMemo, useRef, useState } from 'react';
+import { useEffect, useEffectEvent, useRef, useState } from 'react';
 import type { FC } from 'react';
 import { flushSync } from 'react-dom';
 
-import type { HighlightFn } from '@/app/_components/highlighted-code';
 import { DeckHighlightContext } from '@/app/_components/slide-deck';
 import { threadTitleFrom } from '@/features/agent/application/agent-message';
 import type { AgentUIMessage } from '@/features/agent/application/agent-message';
@@ -36,14 +34,15 @@ import { highlightGenerated } from '@/features/highlight/interface/actions';
 import { DEFAULT_GENERATION_MODEL } from '@/shared/claude/models';
 import type { GenerationModel } from '@/shared/claude/models';
 
-import { ToolHeader } from '../../../_components/tool-frame';
-import { ViewTabs } from '../../../_components/view-tabs';
 import {
   ARTIFACT_VIEW_OPTIONS,
-  ArtifactPane,
   artifactViewFor,
-} from '../artifact-pane';
-import type { ArtifactView } from '../artifact-pane';
+} from '../../../_components/artifact-body';
+import type { ArtifactView } from '../../../_components/artifact-body';
+import { useDeckHighlight } from '../../../_components/deck-highlight';
+import { ToolHeader } from '../../../_components/tool-frame';
+import { ViewTabs } from '../../../_components/view-tabs';
+import { ArtifactPane } from '../artifact-pane';
 import { ChatPanes, usePaneFocus } from '../chat-panes';
 import { ChatHeader, ChatView } from '../chat-view';
 import { useOpeningThread } from '../opening-thread';
@@ -82,12 +81,14 @@ type ChatScreenProps = {
   thread: { id: string; title: string | null; model: GenerationModel | null };
   initialMessages: AgentUIMessage[];
   initialRunning: boolean;
+  initialDraft: string;
 };
 
 export const ChatScreen: FC<ChatScreenProps> = ({
   thread,
   initialMessages,
   initialRunning,
+  initialDraft,
 }) => {
   const { touch } = useTouchedThreads();
   const { forget: forgetOpening } = useOpeningThread();
@@ -99,7 +100,7 @@ export const ChatScreen: FC<ChatScreenProps> = ({
   );
   const [firstSentAt, setFirstSentAt] = useState<string | null>(null);
   const [createdAt, setCreatedAt] = useState<string | null>(null);
-  const [draft, setDraft] = useState('');
+  const [draft, setDraft] = useState(initialDraft);
   const [stopRequest, setStopRequest] = useState<StopRequest | null>(null);
   const [closed, setClosed] = useState<Extract<
     PaneSelection,
@@ -110,17 +111,7 @@ export const ChatScreen: FC<ChatScreenProps> = ({
   const threadPath = `/chat/${thread.id}`;
   const { pinned, pin, unpin } = usePanePin(threadPath);
   const paneFocus = usePaneFocus();
-  const { resolvedTheme } = useTheme();
-  // スライドのコードブロックのハイライトはアプリのテーマに合わせる（light は one-light、dark は plastic）。
-  // テーマ解決前（SSR直後）は null にして、無駄な取得と取り直しを避ける。関数の参照がハイライトの
-  // キャッシュのキーなので、テーマが変わるときだけ作り直す
-  const deckHighlight = useMemo<HighlightFn | null>(() => {
-    if (resolvedTheme !== 'light' && resolvedTheme !== 'dark') {
-      return null;
-    }
-    const theme = resolvedTheme;
-    return (blocks) => highlightGenerated(blocks, theme);
-  }, [resolvedTheme]);
+  const deckHighlight = useDeckHighlight();
 
   const titleOf = (
     current: AgentUIMessage[],

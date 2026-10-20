@@ -1,6 +1,6 @@
 # apps/ai CLAUDE.md
 
-AI関連ツールの置き場（`ai.k8o.me`）。@k8ordo/ui × Claude の v0風デザインシステム壁打ちツール（`/`）、スライド生成（`/slides`）、k8o のブログ記事を読み、UI とスライドを作れるエージェントとのチャット（`/chat`）がある。
+AI関連ツールの置き場（`ai.k8o.me`）。@k8ordo/ui × Claude の v0風デザインシステム壁打ちツール（`/`）、スライド生成（`/slides`）、k8o のブログ記事を読み、UI とスライドを作れるエージェントとのチャット（`/chat`）、チャットで作った UI とスライドを版の履歴ごと見返す生成物のページ（`/artifacts`）がある。
 
 ## レイヤー構成（src/）
 
@@ -11,7 +11,7 @@ apps/main と同じ `app / features / shared` 構成（詳細は `apps/main/CLAU
 - `usage/` - Claude の利用ログ（ai_usages）、1時間あたりの生成回数の上限、月の予算と単価（`pricing.ts`）
 - `share/` - 公開共有（公開/非公開化。/s/[slug] は DB の spec をその場で描画）
 - `projects/` - プロジェクト・版の永続化（@repo/ai-database）
-- `artifacts/` - 生成物と版の保存（ai_artifacts・ai_artifact_versions）。版の行は書き換えず、直すたびに次の番号の版を足す。読むのは持ち主の版だけ
+- `artifacts/` - 生成物と版の保存と読み取り（ai_artifacts・ai_artifact_versions）。版の行は書き換えず、直すたびに次の番号の版を足す。読むのは持ち主のものだけで、版の中身のほかに、生成物の一覧（最新版の新しい順）と、生成物ごとの全版の履歴を読める
 - `highlight/` - 生成物（spec JSON / spec から変換した TSX / スライド）の shiki ハイライト
 - `slides/` - デッキ Markdown のスライド分割、コードブロックの抽出、閉じていないコードブロックの検出（`parse-deck.ts`）
 
@@ -65,9 +65,9 @@ UI スタジオとエージェントの `generate_ui` は、どちらも json-re
 
 ### 印刷（PDF出力）
 
-- 印刷用の全スライド（`DeckPrint`）は、`DeckPreview` の `printable` が真のときだけ、body へのポータルに 1280×720 のページとして描く。ブラウザの印刷で PDF にする
+- 印刷用の全スライド（`DeckPrint`）は、`DeckPreview` の `printable` が真のときだけ、body へのポータルに 1280×720 のページとして描く。ブラウザの印刷で PDF にする。真にするのは、スライドのスタジオと生成物のページ
 - 文書全体に効く印刷の規則（`@page` と、body の直下の印刷用のスライド以外を印刷から外す規則）は、CSS Modules に置かない。ポータルの中の `<style>` に置き、印刷用のスライドを表示しているあいだだけ有効にする。Activity で隠れた画面に残ったポータルは、ほかの画面の印刷に効かない
-- 印刷用のスライドを描く画面の中で、デッキを `<Activity>` で隠さない。隠すと印刷の規則も切れ、印刷にスライドが出ない。タブなどで隠すときは CSS（`data-active`）で隠す
+- 印刷用のスライドを描く画面の中で、デッキを `<Activity>` で隠さない。隠すと印刷の規則も切れ、印刷にスライドが出ない。タブなどで隠すときは CSS で隠す
 
 ## エージェント（/chat）
 
@@ -85,11 +85,14 @@ UI スタジオとエージェントの `generate_ui` は、どちらも json-re
   - カードや xl 未満のタブで開いた（固定した）呼び出しは、`?pane=<toolCallId>` で URL に持つ。固定した時点の最後の呼び出しが別なら `&since=<toolCallId>` も持ち、固定が解けたかを URL とメッセージだけで決める。固定は、この会話のパス（`/chat/<id>`）にいるあいだ描画中に URL から導くので、再読み込みしても同じ生成物が開く。ほかのパスにいるあいだ（Activity で隠れているあいだ）は、最後に読んだ固定を保ち、ペインをマウントし直さない。xl 未満では、`pane` があるあいだプレビューを出す。閉じた状態とビューは URL に持たない
   - URL は `history` の pushState・replaceState で書く（`chat-screen/use-pane-pin.ts`）。開くとき、URL に `pane` が無ければ積み、あれば置き換える。外すときは、この文書で積んだ記録なら `history.back()` で戻り、そうでなければ置き換えて消す。そのため xl 未満の戻るは、プレビューを閉じて会話に戻る。history に渡す state に Next の `__NA` を入れない（入れると Next がルーターに伝えず、`useSearchParams` が変わらない）
   - ペインの見出しで、出している生成物と同じ会話の中の、同じ artifactId のできた版を選べる。選ぶと、カードで固定したのと同じく `?pane=` に持つ。生成中と止めた途中のものは版に数えず、それを出しているあいだは選ぶ口を出さない
+  - できた版を出しているあいだは、ペインの見出しの「作ったもののページを開く」で、その版の生成物のページ（`/artifacts/<artifactId>?v=<版>`）へ移れる。生成中と止めた途中のものは版になっていないので出さない。移っても会話の画面は Activity で隠れて残り、戻ると同じ状態に戻る
   - xl 以上では、ペインの見出しの「全画面で見る」で会話の列を隠し、ペインを作業領域いっぱいに広げる。会話はマウントしたまま隠す。広げた状態は ChatScreen の state に持って URL には持たず、ペインが消えると戻る
-  - 生成 UI とスライドのリンクと、生成 UI のフォームは、ペインの包みで移動を止める。会話の画面ごと移動すると受信が切れるため。/s/[slug] ではリンクが動いてよいので、共有の `SpecPreview` には入れない
-  - スライドは、スライドのスタジオと同じ `DeckPreview`（`(authenticated)/_components/deck-preview`）で描く。デッキのコードブロックのハイライトは、アプリのテーマに合わせる。矢印・Space・PageUp/Down・Home/End は、デッキにフォーカスがある（スライドを押した）ときだけ効き、会話のスクロールを奪わない
+  - ペインの本文（プレビューとコード）は、会話の外でも使える `ArtifactBody`（`(authenticated)/_components/artifact-body`）で描く。見出し・版の切り替え・止めた途中の注記はペインが持つ
+  - 生成 UI とスライドのリンクと、生成 UI のフォームは、`ArtifactBody` の包みで移動を止める。会話の画面ごと移動すると受信が切れ、生成物のページでも見ていた版から離れるため。/s/[slug] ではリンクが動いてよいので、共有の `SpecPreview` には入れない
+  - スライドは、スライドのスタジオと同じ `DeckPreview`（`(authenticated)/_components/deck-preview`）で描く。デッキのコードブロックのハイライトは、アプリのテーマに合わせる（`(authenticated)/_components/deck-highlight` の `useDeckHighlight`）。矢印・Space・PageUp/Down・Home/End は、デッキにフォーカスがある（スライドを押した）ときだけ効き、会話のスクロールを奪わない
   - ペインには印刷用の全スライド（`DeckPrint`）を描かない。印刷用のスライドを表示しているあいだはほかの要素が印刷から外れ、会話の画面を印刷してもスライドしか出なくなるため
 - スレッドの ID はページが決め、最初の POST が予約を通ったときに、サーバーがスレッドの行を作る
+- `/chat?draft=<文>` は、その文を新しいチャットの入力欄に入れるだけで送らない。だれでも作れる URL なので、送るのはいつも利用者の操作にする。最初の送信で URL が `/chat/<id>` に置き換わり、`draft` は消える
 - メッセージは UIMessage を JSON のまま `ai_thread_messages` に追記する。user は実行の開始時、assistant は終了時に1行ずつ書く。終わり方（完了・停止・予算・エラーなど）は assistant の `metadata.end` に残す
 - ブラウザが切断しても、生成は最後まで続けて返答を保存する。そのため `req.signal` を `abortSignal` に渡さず、`vercel.json` の `functions` に `supportsCancellation` を付けない（付けると、切断で `req.signal` が abort される）
 - 停止は、`POST /api/chat/[threadId]/stop` が `ai_threads.stop_requested_at` を書き、走っている関数が定期的に読んで自分の生成を abort する。同じ読み取りで生存の印（`run_heartbeat_at`）を更新し、`HEARTBEAT_STALE_MS` のあいだ更新の無い実行中の印は、次の要求が取り直す
@@ -108,6 +111,19 @@ UI スタジオとエージェントの `generate_ui` は、どちらも json-re
 ### オーナー API
 
 tool は、オーナー API（`https://api.k8o.me/owner/*`。`apps/api/CLAUDE.md`）から記事の一覧と本文を読む（`agent/infrastructure/owner-api.ts`）。本番も preview も本番の api を呼ぶ。トークンは `OWNER_API_TOKEN` で、本番と preview で別の値を Vercel に sensitive で置く（本番は api の `OWNER_API_TOKEN_AI`、preview は `OWNER_API_TOKEN_AI_PREVIEW` と同じ値）。未設定のときは tool がエラーを返すだけで、会話は続く。
+
+## 生成物のページ（/artifacts）
+
+会話の外で、持ち主の生成物（UI とスライド）を一覧し、版の履歴をたどる画面（`app/(authenticated)/artifacts/`）。画面の文言（ToolNav・見出し・一覧・案内など）では「作ったもの」と呼ぶ。コードの名前は artifacts のまま。
+
+- 一覧は `@sidebar/artifacts/layout` が描く（最新版を作った時刻の新しい順に 100 件まで）。チャットと同じく layout に置き、生成物を移っても作り直さない
+- `/artifacts` の本文は、生成物のあるなしで分けない固定の案内で、DB を読まない。スマホでは一覧が Drawer の中にあり、本文が空に見えないようにするため
+- `/artifacts/[artifactId]` は、DB の全版を履歴の列に並べ、`?v=N` で版を選ぶ（無ければ最新版）。`v` が 1 以上の整数として読めなければ 404 にする。ほかの会話でできた版や、カードの無い版も並ぶ。会話でできた版には、その会話（`/chat/<threadId>`）へのリンクを出す
+- 本文は会話のペインと同じ `ArtifactBody` で描き、版ごとに作り直す。`?v=` を移っても読み込みの骨組みには置き換わらず、ビューと xl 未満のタブの state は残る。次の版が届くまでは、押した履歴の行の背景を変える（`useLinkStatus`）。xl 以上は本文と履歴の2列、xl 未満はタブ（ビューと「履歴」）で1枚ずつ出す。隠すのは CSS（`data-shown`）で、本文はアンマウントしない
+- スライドでは、見出しの「PDF出力」がブラウザの印刷を開き、選んでいる版の全スライドを PDF にする。本文の `DeckPreview` を `printable` で描き、Markdown のビューや「履歴」のタブを出しているあいだも CSS で隠すだけなので、そのまま印刷できる
+- 会話の外から Claude に直させる口は、見出しの「新しいチャットで直す」だけ。選んでいる版を土台にする書き出し（`UI「<タイトル>」（artifactId: <id>）の版 <N> を土台に、`。スライドなら「スライド」）を `/chat?draft=` で新しいチャットの入力欄に入れ、続きは利用者が書いて送る。書き出しは利用者の発言として送られるので、system・tools・履歴の形は変わらない
+- 一覧も履歴も DB をキャッシュせずに読む。ただしブラウザの戻る・進むでは、Next がクライアントのキャッシュから画面を戻すので、そのあいだに足された生成物や版は出ない
+- 履歴は、一覧や履歴のリンクで開き直すと新しくなる。一覧（`@sidebar/artifacts/layout`）は共有の layout なので、`/artifacts` の中を移っても取り直されない。ほかのツールへ移ってから ToolNav などのリンクで入り直すか、再読み込みすると新しくなる
 
 ## 認証 & コスト保護
 

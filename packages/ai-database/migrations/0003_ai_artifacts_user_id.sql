@@ -1,0 +1,1 @@
+CREATE INDEX `ai_artifacts_user_id_idx` ON `ai_artifacts` (`user_id`);
