@@ -9,11 +9,11 @@ apps/main と同じ `app / features / shared` 構成（詳細は `apps/main/CLAU
 - `generation/` - Claude（Sonnet 5.5 / Opus 5.5、AI SDK v7 と @ai-sdk/anthropic）による json-render spec とスライドの生成
 - `agent/` - `/chat` のエージェント。tool つきの生成のループ、スレッドとメッセージの保存（ai_threads・ai_thread_messages）、オーナー API から記事を読む tool、UI とスライドを作って直す tool
 - `usage/` - Claude の利用ログ（ai_usages）、1時間あたりの生成回数の上限、月の予算と単価（`pricing.ts`）
-- `share/` - 公開共有（公開/非公開化。/s/[slug] は DB の spec をその場で描画）
+- `share/` - 公開ページ（/s/[slug]）の読み取りと、旧スタジオの公開・非公開。公開ページは、生成物の公開と旧スタジオの公開を slug の形で振り分けて読む（「公開ページ」の節）
 - `projects/` - プロジェクト・版の永続化（@repo/ai-database）
 - `artifacts/` - 生成物と版の保存と読み取り（ai_artifacts・ai_artifact_versions）と、その公開（ai_artifact_shares）。版の行は書き換えず、直すたびに次の番号の版を足す。読むのは持ち主のものだけで、版の中身のほかに、生成物の一覧（最新版の新しい順）と、生成物ごとの全版の履歴を読める。公開は、持ち主が選んだ版を公開の行に書く。公開中に別の版を公開すると、slug を変えずに版だけを差し替える。公開する版を変える操作は、公開の行があるときだけ版を差し替え、無ければ書かない。別のタブで取り消したあとの古い画面から押されても、取り消した生成物を公開し直さないため。取り消すと行を消すので、公開し直すと別の slug になる。公開ページのための、slug から公開している版の id を引く読み取りと、版の id から中身を引く読み取りだけは、持ち主で絞らない
-- `highlight/` - 生成物（spec JSON / spec から変換した TSX / スライド）の shiki ハイライト。許す言語、長さとブロック数の上限、shiki の呼び出しは `application/highlight.ts` に置き、画面から呼ぶ server action（`highlightGenerated`）は、引数の形とセッションを確かめてからそれを呼ぶ
-- `slides/` - デッキ Markdown のスライド分割、コードブロックの抽出、閉じていないコードブロックの検出（`parse-deck.ts`）
+- `highlight/` - 生成物（spec JSON / spec から変換した TSX / スライド）の shiki ハイライト。許す言語、長さとブロック数の上限、shiki の呼び出しは `application/highlight.ts` に置き、画面から呼ぶ server action（`highlightGenerated`）は、引数の形とセッションを確かめてからそれを呼ぶ。公開ページは、公開した版の中身だけを入力に、セッションを通さずに呼ぶ
+- `slides/` - デッキ Markdown のスライド分割、コードブロックの抽出（デッキ全体の並びは `deckCodeBlocks`）、閉じていないコードブロックの検出、発表者ノートを外したデッキ（`stripNotes`）（`parse-deck.ts`）
 
 `shared/claude/` には、generation・agent・usage が共通で使うモデルの定義（`models.ts`）と provider（`claude-provider.ts`）を置く。
 
@@ -65,7 +65,7 @@ UI スタジオとエージェントの `generate_ui` は、どちらも json-re
 
 ### 印刷（PDF出力）
 
-- 印刷用の全スライド（`DeckPrint`）は、`DeckPreview` の `printable` が真のときだけ、body へのポータルに 1280×720 のページとして描く。ブラウザの印刷で PDF にする。真にするのは、スライドのスタジオと生成物のページ
+- 印刷用の全スライド（`DeckPrint`）は、`DeckPreview` の `printable` が真のときだけ、body へのポータルに 1280×720 のページとして描く。ブラウザの印刷で PDF にする。真にするのは、スライドのスタジオと生成物のページと公開ページ
 - 文書全体に効く印刷の規則（`@page` と、body の直下の印刷用のスライド以外を印刷から外す規則）は、CSS Modules に置かない。ポータルの中の `<style>` に置き、印刷用のスライドを表示しているあいだだけ有効にする。Activity で隠れた画面に残ったポータルは、ほかの画面の印刷に効かない
 - 印刷用のスライドを描く画面の中で、デッキを `<Activity>` で隠さない。隠すと印刷の規則も切れ、印刷にスライドが出ない。タブなどで隠すときは CSS で隠す
 
@@ -124,6 +124,21 @@ tool は、オーナー API（`https://api.k8o.me/owner/*`。`apps/api/CLAUDE.md
 - 会話の外から Claude に直させる口は、見出しの「新しいチャットで直す」だけ。選んでいる版を土台にする書き出し（`UI「<タイトル>」（artifactId: <id>）の版 <N> を土台に、`。スライドなら「スライド」）を `/chat?draft=` で新しいチャットの入力欄に入れ、続きは利用者が書いて送る。書き出しは利用者の発言として送られるので、system・tools・履歴の形は変わらない
 - 一覧も履歴も DB をキャッシュせずに読む。ただしブラウザの戻る・進むでは、Next がクライアントのキャッシュから画面を戻すので、そのあいだに足された生成物や版は出ない
 - 履歴は、一覧や履歴のリンクで開き直すと新しくなる。一覧（`@sidebar/artifacts/layout`）は共有の layout なので、`/artifacts` の中を移っても取り直されない。ほかのツールへ移ってから ToolNav などのリンクで入り直すか、再読み込みすると新しくなる
+
+## 公開ページ（/s/[slug]）
+
+公開した UI とスライドを、ログインしていない閲覧者に見せる画面（`app/s/[slug]/`）。proxy の公開パスなので認証を通さない。匿名で叩ける URL なので、読み取りだけにして server action を置かない。
+
+- slug の形で、どちらか一方だけを引く（`share/interface/queries.ts`）。16 文字の base64url は生成物の公開（ai_artifact_shares）、16 進 12 桁は旧スタジオの公開（ai_projects）で、どちらの形でもなければ DB を引かずに 404 にする
+- 生成物の公開は、slug から公開している版の id を引くところをキャッシュしない。タグの無効化はインスタンスの中だけで効くので、取り消しをどのインスタンスでもすぐ効かせるため。版の中身とハイライトは、版の id ごとに `'use cache'`（`cacheLife('max')`）で持つ。版の行は書き換えないので古くならず、タグで無効化しない
+- 旧スタジオの公開は、slug ごとの `'use cache'`（`cacheLife('days')`、タグ `share:<slug>`）で読み、公開・非公開の action が `updateTag` する
+- generateMetadata と本文の読み取りは、`React.cache` で1回の要求の中の1回にまとめる。見つからないときは stream が始まったあとの `notFound()` なので、200 のまま noindex の 404 の画面になる
+- 送るのはタイトルと中身だけ（`PublicShare`）。生成物の id・版の id と番号・依頼・要約は送らない。取り消したら URL ごと捨てられるよう、slug を生成物の id と分けているため
+- UI は `SpecPreview` で描き、生成 UI のリンクとフォームは動く
+- スライドは `SharedDeck` が `DeckPreview` を `printable` で描き、見出しの「PDF出力」で印刷できる
+  - 発表者ノートはサーバーで外してから送る。生成の system は、ノートは画面に出ないと伝えて書かせているため。画面にも PDF にも出ない
+  - コードブロックのハイライトは、サーバーでノートを外したデッキから、2つのテーマ分を `{ lang, code, light, dark }` の列で作る。テーマは閲覧者のブラウザで決まるため。`SharedDeck` は、テーマに合わせて、受け取ったブロックを言語とコードで引いて当て、無ければプレーンにする。コードブロックはハイライトのトークンで本文を描くので、並び順で当てると、並びがずれたときに別のコードが出るため
+- 取り消しても、Slack などに貼ったときの展開（タイトルと説明）と、閲覧者が開いたままの画面や保存した PDF は残る
 
 ## 認証 & コスト保護
 

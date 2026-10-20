@@ -1,0 +1,3 @@
+.frame {
+  height: calc(var(--spacing) * 120);
+}

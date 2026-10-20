@@ -5,7 +5,7 @@ import { createContext, useContext, useEffect, useState } from 'react';
 import type { FC, ReactNode } from 'react';
 
 import type { HighlightFn } from '@/app/_components/highlighted-code';
-import { extractCodeBlocks } from '@/features/slides/application/parse-deck';
+import { deckCodeBlocks } from '@/features/slides/application/parse-deck';
 import type {
   DeckCodeBlock,
   DeckSlide,
@@ -16,8 +16,8 @@ import {
   highlightKey,
 } from './deck-slide-view/deck-slide-view';
 
-// コードブロックのハイライト関数（server action）。スタジオ側から注入する。
-// 既定は null（Storybook などでは取得せずプレーン表示）。
+// コードブロックのハイライト関数。ログインした画面は server action で、公開ページはサーバーで作っておいた
+// ハイライトから取るので、使う画面から注入する。既定は null（Storybook などでは取得せずプレーン表示）。
 export const DeckHighlightContext = createContext<HighlightFn | null>(null);
 
 type DeckHighlights = ReadonlyMap<string, HighlightedCode>;
@@ -55,7 +55,7 @@ const deckHighlights = (
   slides: DeckSlide[],
   highlight: HighlightFn,
 ): Promise<DeckHighlights> => {
-  const blocks = slides.flatMap((slide) => extractCodeBlocks(slide.source));
+  const blocks = deckCodeBlocks(slides);
   if (blocks.length === 0) {
     return Promise.resolve(EMPTY);
   }

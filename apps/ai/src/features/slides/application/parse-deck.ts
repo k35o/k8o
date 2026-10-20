@@ -83,6 +83,10 @@ export const extractCodeBlocks = (source: string): DeckCodeBlock[] => {
   return blocks;
 };
 
+// ハイライトを作る側と当てる側で並びがずれないよう、デッキからブロックを組む式をここに1つだけ持つ
+export const deckCodeBlocks = (slides: DeckSlide[]): DeckCodeBlock[] =>
+  slides.flatMap((slide) => extractCodeBlocks(slide.source));
+
 const parseSlide = (chunk: string): DeckSlide => {
   const notes: string[] = [];
   let rest = chunk.replace(NOTES_BLOCK, (_, body: string) => {
@@ -128,3 +132,9 @@ export const parseDeck = (source: string): DeckSlide[] => {
   }
   return slides;
 };
+
+// デッキ全体に正規表現を当てると、閉じていない <Notes> から後ろのスライドまで消えるので、parseDeck と同じくスライドごとに外す
+export const stripNotes = (source: string): string =>
+  splitBySeparator(source)
+    .map((chunk) => chunk.replace(NOTES_BLOCK, '').replace(NOTES_OPEN_ONLY, ''))
+    .join('\n---\n');

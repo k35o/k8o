@@ -7,12 +7,21 @@ import { Suspense } from 'react';
 import { SpecPreview } from '@/app/_components/spec-preview';
 import { ToggleTheme } from '@/app/_components/toggle-theme';
 import { getPublicShareForRoute } from '@/features/share/interface/queries';
+import type { PublicShare } from '@/features/share/interface/queries';
+
+import { PrintButton } from './_components/print-button';
+import { SharedDeck } from './_components/shared-deck';
 
 import styles from './page.module.css';
 
 type SharePageProps = {
   params: Promise<{ slug: string }>;
 };
+
+const DESCRIPTIONS = {
+  ui: (title) => `k8o AI Studio で作成した UI「${title}」`,
+  slides: (title) => `k8o AI Studio で作成したスライド「${title}」`,
+} satisfies Record<PublicShare['kind'], (title: string) => string>;
 
 export const generateMetadata = async ({
   params,
@@ -24,13 +33,12 @@ export const generateMetadata = async ({
   }
   return {
     title: `${share.title} | k8o AI Studio`,
-    description: `k8o AI Studio で作成した UI「${share.title}」`,
+    description: DESCRIPTIONS[share.kind](share.title),
   };
 };
 
-// 公開共有ページ（認証なし）。スリムなヘッダ＋spec をその場で描画する。
-// 取得は 'use cache'（share:<slug> タグ、publish/unpublish が updateTag）で
-// キャッシュ済み。Suspense は params 由来の実行時アクセスのために必要。
+// 公開共有ページ（認証なし）。スリムなヘッダと、公開した UI かスライドを描く。
+// Suspense は params 由来の実行時アクセスのために必要。
 const ShareContent = async ({ params }: SharePageProps) => {
   const { slug } = await params;
   const share = await getPublicShareForRoute(slug);
@@ -45,6 +53,7 @@ const ShareContent = async ({ params }: SharePageProps) => {
           <span className={styles.caption}>k8o AI Studio で作成</span>
         </div>
         <div className={styles.actions}>
+          {share.kind === 'slides' ? <PrintButton /> : null}
           <ToggleTheme />
           <Link className={styles.homeLink} href="/">
             k8o AI Studio
@@ -52,7 +61,11 @@ const ShareContent = async ({ params }: SharePageProps) => {
         </div>
       </header>
       <div className={styles.content}>
-        <SpecPreview spec={share.spec} />
+        {share.kind === 'ui' ? (
+          <SpecPreview spec={share.spec} />
+        ) : (
+          <SharedDeck highlights={share.highlights} source={share.source} />
+        )}
       </div>
     </div>
   );
