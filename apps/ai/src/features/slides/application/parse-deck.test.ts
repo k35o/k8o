@@ -1,9 +1,11 @@
 import { describe, expect, it } from 'vitest';
 
 import {
+  deckCodeBlocks,
   extractCodeBlocks,
   hasUnclosedCodeFence,
   parseDeck,
+  stripNotes,
 } from './parse-deck';
 
 describe('parseDeck', () => {
@@ -170,6 +172,129 @@ describe('hasUnclosedCodeFence', () => {
 
     it('コードブロックが無ければ偽を返す', () => {
       expect(hasUnclosedCodeFence('## 見出し\n本文')).toBe(false);
+    });
+  });
+});
+
+describe('deckCodeBlocks', () => {
+  describe('正常系', () => {
+    it('スライドの順、スライドの中の順にコードブロックを並べる', () => {
+      const slides = parseDeck(
+        [
+          '## 1枚目',
+          '```ts',
+          'a',
+          '```',
+          '```bash',
+          'b',
+          '```',
+          '---',
+          '## 2枚目',
+          '本文',
+          '---',
+          '## 3枚目',
+          '```',
+          'c',
+          '```',
+        ].join('\n'),
+      );
+
+      expect(deckCodeBlocks(slides)).toStrictEqual([
+        { code: 'a', lang: 'ts' },
+        { code: 'b', lang: 'bash' },
+        { code: 'c', lang: 'text' },
+      ]);
+    });
+  });
+
+  describe('エッジケース', () => {
+    it('コードブロックが無ければ空配列を返す', () => {
+      expect(deckCodeBlocks(parseDeck('## 見出し\n本文'))).toStrictEqual([]);
+    });
+  });
+});
+
+describe('stripNotes', () => {
+  describe('正常系', () => {
+    it('どのスライドの閉じたノートも外し、ノートを除いた本文は parseDeck で元と同じに読める', () => {
+      const source = [
+        '<Cover>',
+        '# 表紙',
+        '</Cover>',
+        '<Notes>',
+        '表紙のメモ',
+        '</Notes>',
+        '---',
+        '## 2枚目',
+        '- 要点',
+        '<Notes>',
+        '2枚目のメモ',
+        '</Notes>',
+        '```ts',
+        'const a = 1;',
+        '```',
+      ].join('\n');
+
+      const slides = parseDeck(stripNotes(source));
+
+      expect(slides.flatMap((slide) => slide.notes)).toStrictEqual([]);
+      expect(
+        slides.map((slide) => [slide.isCover, slide.source]),
+      ).toStrictEqual(
+        parseDeck(source).map((slide) => [slide.isCover, slide.source]),
+      );
+    });
+
+    it('ノートの無いデッキはそのまま返す', () => {
+      const source = ['## 1枚目', '本文', '---', '## 2枚目', '本文'].join('\n');
+
+      expect(stripNotes(source)).toBe(source);
+    });
+  });
+
+  describe('異常系', () => {
+    it('閉じていないノートは、そのスライドの中だけを外し、後ろのスライドは残す', () => {
+      const source = [
+        '## 1枚目',
+        '<Notes>',
+        '閉じていないメモ',
+        '---',
+        '## 2枚目',
+        '本文',
+      ].join('\n');
+
+      const slides = parseDeck(stripNotes(source));
+
+      expect(slides.map((slide) => slide.source)).toStrictEqual([
+        '## 1枚目',
+        '## 2枚目\n本文',
+      ]);
+      expect(slides.flatMap((slide) => slide.notes)).toStrictEqual([]);
+    });
+  });
+
+  describe('エッジケース', () => {
+    it('コードブロックの中の --- では切らず、コードを残したままノートを外す', () => {
+      const source = [
+        '## コード',
+        '```yaml',
+        '---',
+        'key: value',
+        '```',
+        '<Notes>',
+        'メモ',
+        '</Notes>',
+        '---',
+        '## 次',
+      ].join('\n');
+
+      const slides = parseDeck(stripNotes(source));
+
+      expect(slides.map((slide) => slide.source)).toStrictEqual([
+        '## コード\n```yaml\n---\nkey: value\n```',
+        '## 次',
+      ]);
+      expect(slides.flatMap((slide) => slide.notes)).toStrictEqual([]);
     });
   });
 });

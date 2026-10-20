@@ -1,12 +1,13 @@
 import type { Spec } from '@json-render/core';
 import { useState } from 'react';
 import type { ComponentProps, FC } from 'react';
-import { expect, spyOn, userEvent, within } from 'storybook/test';
+import { expect, fn, spyOn, userEvent, within } from 'storybook/test';
 
-import type { LoadedArtifact } from '@/features/artifacts/interface/queries';
+import type { ArtifactForRoute } from '@/features/artifacts/interface/queries';
 
 import preview from '../../../../../../.storybook/preview';
 import { ToolFrame } from '../../../_components/tool-frame';
+import type { ArtifactShareActions } from '../artifact-share-menu';
 import { ArtifactDetail } from './artifact-detail';
 
 import styles from './artifact-detail.stories.module.css';
@@ -31,7 +32,7 @@ const PRICING: Spec = {
   },
 };
 
-const UI_ARTIFACT: LoadedArtifact = {
+const UI_ARTIFACT: ArtifactForRoute = {
   id: 'a1b2c3d4e5f6',
   kind: 'ui',
   versions: [
@@ -64,6 +65,7 @@ const UI_ARTIFACT: LoadedArtifact = {
     },
   ],
   selected: { version: 2, kind: 'ui', title: '料金表', spec: PRICING },
+  share: null,
 };
 
 const DECK = [
@@ -81,7 +83,7 @@ const DECK = [
   '```',
 ].join('\n');
 
-const SLIDES_ARTIFACT: LoadedArtifact = {
+const SLIDES_ARTIFACT: ArtifactForRoute = {
   id: 's1t2u3v4w5x6',
   kind: 'slides',
   versions: [
@@ -101,6 +103,7 @@ const SLIDES_ARTIFACT: LoadedArtifact = {
     title: 'TypeScript 入門',
     source: DECK,
   },
+  share: null,
 };
 
 // Storybook の型は navigation に segments を持たないが、実行時は segments からルーターの木を組み、
@@ -115,6 +118,7 @@ const artifactNavigation = {
 const VersionSwitch: FC<ComponentProps<typeof ArtifactDetail>> = ({
   artifact,
   highlight,
+  shareActions,
 }) => {
   const [version, setVersion] = useState(artifact.selected.version);
   return (
@@ -133,6 +137,7 @@ const VersionSwitch: FC<ComponentProps<typeof ArtifactDetail>> = ({
       <ArtifactDetail
         artifact={{ ...artifact, selected: { ...artifact.selected, version } }}
         highlight={highlight}
+        shareActions={shareActions}
       />
     </div>
   );
@@ -199,6 +204,11 @@ const meta = preview.meta({
   args: {
     artifact: UI_ARTIFACT,
     highlight: null,
+    shareActions: {
+      publish: fn<ArtifactShareActions['publish']>(),
+      changeVersion: fn<ArtifactShareActions['changeVersion']>(),
+      unpublish: fn<ArtifactShareActions['unpublish']>(),
+    },
   } satisfies Partial<ComponentProps<typeof ArtifactDetail>>,
 });
 
@@ -231,6 +241,33 @@ export const Ui = meta.story({
     await expect(
       header.queryByRole('button', { name: 'PDF出力' }),
     ).not.toBeInTheDocument();
+    await expect(
+      header.getByRole('button', { name: '共有（非公開）' }),
+    ).toBeVisible();
+    await expect(canvas.queryByText('公開中')).not.toBeInTheDocument();
+  },
+});
+
+export const Published = meta.story({
+  args: {
+    artifact: {
+      ...UI_ARTIFACT,
+      share: { slug: 'AAAAAAAAAAAAAAAA', version: 3 },
+    },
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    // 選んでいる版と別の版を公開していても、見出しの操作と履歴の印は公開している版を指す
+    await expect(
+      within(headerIn(canvasElement)).getByRole('button', {
+        name: '共有（版 3 を公開中）',
+      }),
+    ).toBeVisible();
+    await expect(
+      within(
+        canvas.getByRole('link', { name: /^版 3(?!を)/u, hidden: true }),
+      ).getByText('公開中'),
+    ).toBeInTheDocument();
   },
 });
 

@@ -7,9 +7,10 @@
 
 .header {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
-  justify-content: space-between;
-  gap: calc(var(--spacing) * 4);
+  column-gap: calc(var(--spacing) * 4);
+  row-gap: calc(var(--spacing) * 2);
   border-bottom: 1px solid var(--color-border-mute);
   padding-inline: calc(var(--spacing) * 6);
   padding-block: calc(var(--spacing) * 3);
@@ -17,6 +18,8 @@
 
 .titles {
   display: flex;
+  /* 狭い幅でタイトルが潰れないよう、操作のほうを次の行へ送る */
+  flex: 1 1 10rem;
   flex-direction: column;
   min-width: 0;
 }
@@ -32,6 +35,9 @@
 }
 
 .caption {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
   color: var(--color-fg-mute);
   font-size: var(--font-size-xs);
   line-height: var(--line-height-xs);
@@ -42,6 +48,7 @@
   flex-shrink: 0;
   align-items: center;
   gap: calc(var(--spacing) * 3);
+  margin-left: auto;
 }
 
 .homeLink {

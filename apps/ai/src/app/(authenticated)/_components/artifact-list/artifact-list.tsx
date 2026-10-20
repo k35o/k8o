@@ -1,3 +1,4 @@
+import { Badge } from '@k8ordo/ui';
 import Link from 'next/link';
 import type { FC } from 'react';
 
@@ -48,7 +49,12 @@ export const ArtifactList: FC<ArtifactListProps> = ({
               }}
               ref={isCurrent ? revealCurrent : undefined}
             >
-              <span className={styles.title}>{artifact.title}</span>
+              <span className={styles.head}>
+                <span className={styles.title}>{artifact.title}</span>
+                {artifact.isPublic ? (
+                  <Badge label="公開" size="sm" tone="success" />
+                ) : null}
+              </span>
               <span className={styles.meta}>
                 <UpdatedAt dateTime={artifact.updatedAt} />
                 <ArtifactKindBadge kind={artifact.kind} />

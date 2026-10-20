@@ -14,12 +14,14 @@ const artifacts: ArtifactListItem[] = [
     kind: 'ui',
     title: '料金表',
     updatedAt: '2026-10-14T00:30:00.000Z',
+    isPublic: true,
   },
   {
     id: 's1t2u3v4w5x6',
     kind: 'slides',
     title: 'TypeScript 入門',
     updatedAt: '2026-10-13T12:05:00.000Z',
+    isPublic: false,
   },
 ];
 
@@ -59,11 +61,14 @@ export const WithArtifacts = meta.story({
     await expect(within(ui).getByText('UI')).toBeInTheDocument();
     // 最新版を作った日時は日本時間で出す
     await expect(within(ui).getByText('10/14 09:30')).toBeInTheDocument();
+    // 公開中のものに印を付ける
+    await expect(within(ui).getByText('公開')).toBeInTheDocument();
 
     const current = canvas.getByRole('link', { name: /TypeScript 入門/u });
     await expect(current).toHaveAttribute('href', '/artifacts/s1t2u3v4w5x6');
     await expect(current).toHaveAttribute('aria-current', 'page');
     await expect(within(current).getByText('スライド')).toBeInTheDocument();
+    await expect(within(current).queryByText('公開')).not.toBeInTheDocument();
   },
 });
 
@@ -74,6 +79,7 @@ const manyArtifacts: ArtifactListItem[] = Array.from(
     kind: 'ui',
     title: `UI ${index.toString()}`,
     updatedAt: '2026-10-13T12:05:00.000Z',
+    isPublic: false,
   }),
 );
 

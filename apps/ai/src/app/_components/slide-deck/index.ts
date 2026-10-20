@@ -3,7 +3,7 @@ export {
   DeckHighlightContext,
   DeckHighlightsProvider,
 } from './deck-highlights';
-export { DeckSlideView } from './deck-slide-view/deck-slide-view';
+export { DeckSlideView, highlightKey } from './deck-slide-view/deck-slide-view';
 export { NavButton } from './nav-button';
 export { ProgressBar } from './progress-bar';
 export { Stage } from './stage';

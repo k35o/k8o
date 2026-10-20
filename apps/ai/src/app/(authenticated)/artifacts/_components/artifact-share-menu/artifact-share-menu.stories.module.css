@@ -1,0 +1,5 @@
+.frame {
+  display: flex;
+  justify-content: flex-end;
+  padding: calc(var(--spacing) * 4);
+}

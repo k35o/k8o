@@ -1,6 +1,6 @@
 'use client';
 
-import { Anchor } from '@k8ordo/ui';
+import { Anchor, Badge } from '@k8ordo/ui';
 import Link, { useLinkStatus } from 'next/link';
 import { useId } from 'react';
 import type { FC } from 'react';
@@ -15,6 +15,7 @@ type ArtifactHistoryProps = {
   artifactId: string;
   versions: LoadedArtifact['versions'];
   selectedVersion: number;
+  publicVersion: number | null;
 };
 
 // useLinkStatus は Link の子孫でしか読めないので、行の Link の中に目印を置き、行の見た目は CSS で変える
@@ -27,6 +28,7 @@ export const ArtifactHistory: FC<ArtifactHistoryProps> = ({
   artifactId,
   versions,
   selectedVersion,
+  publicVersion,
 }) => {
   const headingId = useId();
   return (
@@ -52,6 +54,9 @@ export const ArtifactHistory: FC<ArtifactHistoryProps> = ({
               >
                 <span className={styles.head}>
                   <span className={styles.version}>{label}</span>
+                  {version.version === publicVersion ? (
+                    <Badge label="公開中" size="sm" tone="success" />
+                  ) : null}
                   {version.origin.type === 'edit' ? (
                     <span className={styles.origin}>
                       版 {version.origin.version.toString()} から

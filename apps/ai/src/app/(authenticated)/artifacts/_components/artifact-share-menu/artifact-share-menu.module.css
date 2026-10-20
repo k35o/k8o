@@ -1,0 +1,17 @@
+.confirm {
+  display: flex;
+  flex-direction: column;
+  gap: calc(var(--spacing) * 4);
+}
+
+.description {
+  color: var(--color-fg-base);
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-relaxed);
+}
+
+.confirmActions {
+  display: flex;
+  justify-content: flex-end;
+  gap: calc(var(--spacing) * 2);
+}
