@@ -27,7 +27,8 @@ apps/main と同じ `app / features / shared` 構成（詳細は `apps/main/CLAU
 
 - system prompt は `catalog.prompt({ mode: 'inline', ... })`（`build-spec-system-prompt.ts`）。
   inline モードなので assistant の出力は「会話文 → JSONL パッチ」の混在ストリーム
-- 描画は `JsonRenderUI`（`app/_components/spec-preview`）。アプリと同じドキュメントに描画するので、テーマ・フォントはアプリのものを継承する
+- 描画は `JsonRenderUI`（`app/_components/spec-preview`）。アプリと同じドキュメントに描画するので、テーマ・フォントはアプリのものを継承し、auth-shell の CSP も効く
+  - CSP の img-src は自分のオリジンと data:・blob: だけなので、Avatar の src が外の URL なら読み込めない。ブラウザで描き始めたとき（ペインを開く・画面を移る）は頭文字になる。サーバーで描いた最初の画面（`/chat/<threadId>`・`/artifacts/<artifactId>`・`/s/<slug>` を直接開くか再読み込みしたとき）は、ハイドレーションより前に読み込みが失敗して onError が届かず、壊れた画像の印が残った丸になる
 - 同じ文書の画面より狭い枠に描くので、ビューポートのメディアクエリでは並べ方が変わらない。そのため system prompt の規則で、描く枠の幅（280〜960px ほど）を伝え、横に並べるときは Grid の `cols: 'auto-fit'` と `minItemSize` を使うよう求める。依頼に列の数があっても固定の cols にしない
 - tool の中で Claude を1回ずつ呼び、`streamUiSpec`（`stream-ui-spec.ts`）がサーバーで spec を組み立てる。`createMixedStreamParser` で会話文とパッチを分け、土台の複製にパッチを当てる。会話文の行は改行で繋ぎ、タイトル行を除いた説明を要約にする
 - system は毎回同じ `buildSpecSystemPrompt()` にして、末尾に cache のブレークポイントを置く。直すときの土台と修復の指示は user の文（`buildUserPrompt`）に置き、system には連結しない

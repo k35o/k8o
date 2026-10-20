@@ -51,6 +51,23 @@ describe('createProxy', () => {
       expect(headers.get('X-Content-Type-Options')).toBe('nosniff');
       expect(headers.get('Referrer-Policy')).toBe('same-origin');
     });
+
+    it.each([
+      ['公開パス', createProxy(['/s/'])(request('/s/abc'))],
+      ['ログイン済み', createProxy()(signedInRequest('/blogs'))],
+      ['未ログインのリダイレクト', createProxy()(request('/blogs'))],
+    ])(
+      '%sの応答でも、画像は自分のオリジンと data:・blob: からだけ読む',
+      (_, { headers }) => {
+        const imgSrc = headers
+          .get('Content-Security-Policy')
+          ?.split(';')
+          .map((directive) => directive.trim())
+          .find((directive) => directive.startsWith('img-src '));
+
+        expect(imgSrc).toBe("img-src 'self' blob: data:");
+      },
+    );
   });
 
   describe('異常系', () => {
