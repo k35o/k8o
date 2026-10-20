@@ -30,6 +30,7 @@ import { popoverSection } from './popover';
 import { printColorAdjustSection } from './print-color-adjust';
 import { progressFunctionSection } from './progress-function';
 import { requestCloseSection } from './requestclose';
+import { revertRuleSection } from './revert-rule';
 import { rootFontUnitsSection } from './root-font-units';
 import { scopeSection } from './scope';
 import { screenWakeLockSection } from './screen-wake-lock';
@@ -75,6 +76,7 @@ export const playgroundSections: PlaygroundSection[] = [
   openPseudoSection,
   popoverSection,
   requestCloseSection,
+  revertRuleSection,
   printColorAdjustSection,
   progressFunctionSection,
   rootFontUnitsSection,
