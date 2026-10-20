@@ -44,7 +44,7 @@ type ArtifactContent =
   | { kind: 'ui'; spec: Spec }
   | { kind: 'slides'; source: string };
 
-type ArtifactVersion = ArtifactContent & { title: string };
+export type ArtifactVersion = ArtifactContent & { title: string };
 
 export type ArtifactListItem = {
   id: string;
@@ -136,6 +136,15 @@ const contentOf = (
   return source === null ? null : { kind, source };
 };
 
+export const versionFromRow = (row: {
+  kind: AiArtifactKind;
+  title: string;
+  content: unknown;
+}): ArtifactVersion | null => {
+  const content = contentOf(row.kind, row.content);
+  return content === null ? null : { title: row.title, ...content };
+};
+
 const readVersion = async (
   input: VersionQuery,
 ): Promise<{ id: number; version: ArtifactVersion } | null> => {
@@ -143,10 +152,8 @@ const readVersion = async (
   if (row === null) {
     return null;
   }
-  const content = contentOf(row.kind, row.content);
-  return content === null
-    ? null
-    : { id: row.id, version: { title: row.title, ...content } };
+  const version = versionFromRow(row);
+  return version === null ? null : { id: row.id, version };
 };
 
 export const saveUiVersion = ({
