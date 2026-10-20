@@ -1,8 +1,11 @@
 import { relations } from 'drizzle-orm';
 import { index, integer, sqliteTable, text } from 'drizzle-orm/sqlite-core';
 
-import { AI_APPS } from './ai-projects';
 import { user } from './auth-schema';
+
+// 利用の行を書いた経路
+const AI_APPS = ['ui-studio', 'slides', 'agent'] as const;
+export type AiApp = (typeof AI_APPS)[number];
 
 const AI_USAGE_KINDS = ['generation', 'ui', 'slides'] as const;
 export type AiUsageKind = (typeof AI_USAGE_KINDS)[number];

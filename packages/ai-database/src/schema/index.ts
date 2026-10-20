@@ -2,11 +2,6 @@ import { aiArtifactShares } from './ai-artifact-shares';
 import { aiArtifactVersions } from './ai-artifact-versions';
 import { aiArtifacts } from './ai-artifacts';
 import {
-  aiProjectVersions,
-  aiProjectVersionsRelations,
-} from './ai-project-versions';
-import { aiProjects, aiProjectsRelations } from './ai-projects';
-import {
   aiThreadMessages,
   aiThreadMessagesRelations,
 } from './ai-thread-messages';
@@ -29,8 +24,6 @@ export const schema = {
   session,
   account,
   verification,
-  aiProjects,
-  aiProjectVersions,
   aiUsages,
   aiThreads,
   aiThreadMessages,
@@ -43,8 +36,6 @@ export const relations = {
   userRelations,
   sessionRelations,
   accountRelations,
-  aiProjectsRelations,
-  aiProjectVersionsRelations,
   aiUsagesRelations,
   aiThreadsRelations,
   aiThreadMessagesRelations,
