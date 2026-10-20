@@ -1,0 +1,100 @@
+---
+title: 'revert-ruleでルール1つ分だけカスケードを巻き戻す'
+description: 'revert-ruleは、プロパティの値を、自身が書かれたスタイルルールがなかった場合の値に戻すCSSのキーワードです。Firefox 150とChrome 148に続いてSafari 27が対応し、Baseline 2026に加わりました。revertやrevert-layerとの戻り先の違いと、変数が無いときだけ宣言を取り消す書き方を整理します。'
+createdAt: 2026-10-20
+updatedAt: 2026-10-20
+featureIds:
+  - revert-rule
+---
+
+import { PlaygroundEmbed } from '@/app/_components/playgrounds';
+
+# revert-ruleでルール1つ分だけカスケードを巻き戻す
+
+<BrowserSupportStatus featureId="revert-rule" />
+
+## はじめに
+
+ボタンの背景色を基本のルールで決めておき、カスタムプロパティが渡されたときだけ別のルールで差し替えたいとします。素直に書くと、`--tint`を渡さなかったボタンの背景は`royalblue`ではなく透明になります。
+
+```css
+.button {
+  background-color: royalblue;
+}
+
+.button.tinted {
+  background-color: var(--tint); /* --tint が無いと → transparent */
+}
+```
+
+`.button.tinted`の宣言が選ばれた時点で、`.button`の`royalblue`は使われません。`--tint`が無いと値が無効になり、初期値の`transparent`になります。これまでは、基本のルールを`background-color: var(--tint, royalblue)`のように書いておき、CSS変数を上書きして差し替えるしかありませんでした。
+
+`revert-rule`は、プロパティの値を、自身が書かれたスタイルルールがなかった場合の値に戻すCSSのキーワードです。Firefox 150とChrome 148に続いてSafari 27が対応し、Baseline 2026に加わりました。
+
+## revert・revert-layerとの違い
+
+3つのキーワードは巻き戻す単位が違います。`revert`はオリジン、`revert-layer`はカスケードレイヤー、`revert-rule`はスタイルルールを単位にします。同じ`components`レイヤーに3つのキーワードを書き、背景色がそれぞれどの値になるかをコメントに示します。
+
+```css
+@layer base {
+  .highlight {
+    background-color: lightgray;
+  }
+}
+
+@layer components {
+  .highlight {
+    background-color: royalblue;
+  }
+
+  .highlight.rule {
+    background-color: revert-rule; /* → royalblue */
+  }
+
+  .highlight.layer {
+    background-color: revert-layer; /* → lightgray */
+  }
+
+  .highlight.origin {
+    background-color: revert; /* → transparent */
+  }
+}
+```
+
+`revert-rule`だけが同じレイヤーの`.highlight`に戻り、ほかの2つはレイヤーやオリジンごと飛ばします。
+
+<PlaygroundEmbed demo="キーワードを切り替えて戻り先を比べる" sectionId="revert-rule" />
+
+## 変数が無いときだけ宣言を取り消す
+
+冒頭の例は、`var()`のフォールバックに`revert-rule`を書けば解決します。フォールバックにはCSS全体キーワードを書けます。
+
+```css
+/* [!og] */
+.button {
+  background-color: royalblue;
+}
+
+.button.tinted {
+  background-color: var(--tint, revert-rule);
+}
+```
+
+`--tint`が未定義なら、このルールの宣言はなかったことになり、`.button`の`royalblue`が当たります。`--tint: revert-rule`と変数のほうに書くと、戻るのは`--tint`自体なので注意してください。
+
+## 同じルールの宣言には戻らない
+
+`revert-rule`は、同じルールで先に書いた宣言にも戻りません。
+
+```css
+.highlight.quiet {
+  color: red;
+  color: revert-rule;
+}
+```
+
+`color`は`red`ではなく前のルールの値になります。[仕様](https://drafts.csswg.org/css-cascade-5/#revert-rule-keyword)では、そのスタイルルールが存在しなかったものとして値を計算し直すからです。
+
+## おわりに
+
+`revert-rule`を使うと、ルールの宣言だけをなかったことにできます。`var()`のフォールバックと組み合わせれば、変数が無いときだけ宣言を取り消せます。
