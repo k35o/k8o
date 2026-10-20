@@ -46,6 +46,7 @@ apps/main と同じ `app / features / shared` 構成（詳細は `apps/main/CLAU
   - スライドが1枚以上ある
 - タイトルは tool の入力から取り、meta は要約にだけ使う。meta が無くても受け取る
 - 書きかけのデッキは、1枚以上のスライドが読めてから流す。考えているあいだは、直すときも土台を流さない。スライドは全文の置き換えで、土台から続かないため
+- Markdown の画像は、system で禁じ、描画（`DeckSlideView`）でも描かない
 
 ### 印刷（PDF出力）
 

@@ -146,12 +146,23 @@ const coverComponents: Components = {
   p: ({ children }) => <CoverText>{children}</CoverText>,
 };
 
+// system で禁じている画像をモデルが書いても、外の URL は CSP で読み込めず、壊れた画像の枠が
+// 出るので描かない
+const DISALLOWED_ELEMENTS = ['img'];
+
 // 1枚ぶんのスライド本文。Stage の content（cqi コンテキスト）の中に置いて使う。
 export const DeckSlideView: FC<{ slide: DeckSlide }> = ({ slide }) =>
   slide.isCover ? (
     <Cover>
-      <Markdown components={coverComponents}>{slide.source}</Markdown>
+      <Markdown
+        components={coverComponents}
+        disallowedElements={DISALLOWED_ELEMENTS}
+      >
+        {slide.source}
+      </Markdown>
     </Cover>
   ) : (
-    <Markdown components={components}>{slide.source}</Markdown>
+    <Markdown components={components} disallowedElements={DISALLOWED_ELEMENTS}>
+      {slide.source}
+    </Markdown>
   );
