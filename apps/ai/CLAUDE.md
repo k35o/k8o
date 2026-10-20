@@ -12,7 +12,7 @@ apps/main と同じ `app / features / shared` 構成（詳細は `apps/main/CLAU
 - `share/` - 公開共有（公開/非公開化。/s/[slug] は DB の spec をその場で描画）
 - `projects/` - プロジェクト・版の永続化（@repo/ai-database）
 - `artifacts/` - 生成物と版の保存と読み取り（ai_artifacts・ai_artifact_versions）と、その公開（ai_artifact_shares）。版の行は書き換えず、直すたびに次の番号の版を足す。読むのは持ち主のものだけで、版の中身のほかに、生成物の一覧（最新版の新しい順）と、生成物ごとの全版の履歴を読める。公開は、持ち主が選んだ版を公開の行に書く。公開中に別の版を公開すると、slug を変えずに版だけを差し替える。公開する版を変える操作は、公開の行があるときだけ版を差し替え、無ければ書かない。別のタブで取り消したあとの古い画面から押されても、取り消した生成物を公開し直さないため。取り消すと行を消すので、公開し直すと別の slug になる。公開ページのための、slug から公開している版の id を引く読み取りと、版の id から中身を引く読み取りだけは、持ち主で絞らない
-- `highlight/` - 生成物（spec JSON / spec から変換した TSX / スライド）の shiki ハイライト
+- `highlight/` - 生成物（spec JSON / spec から変換した TSX / スライド）の shiki ハイライト。許す言語、長さとブロック数の上限、shiki の呼び出しは `application/highlight.ts` に置き、画面から呼ぶ server action（`highlightGenerated`）は、引数の形とセッションを確かめてからそれを呼ぶ
 - `slides/` - デッキ Markdown のスライド分割、コードブロックの抽出、閉じていないコードブロックの検出（`parse-deck.ts`）
 
 `shared/claude/` には、generation・agent・usage が共通で使うモデルの定義（`models.ts`）と provider（`claude-provider.ts`）を置く。
