@@ -17,7 +17,7 @@ apps/ai の Better Auth（GitHub OAuth + `ALLOWED_EMAILS`）の認証ゲート�
 
 `/api` 配下や課金の伴う境界は middleware では守れないため、アプリ側の追加ゲートで
 守る。ai では API route や Server Action の先頭で `shared/auth/require-allowed-session.ts` を呼ぶ。
-redirect せず、許可されないと null を返すので、呼び出し側が断る（`/api/generate` は 401 を返す）。
+redirect せず、許可されないと null を返すので、呼び出し側が断る（`/api/chat` は 401 を返す）。
 
 ## アプリ側の使い方
 

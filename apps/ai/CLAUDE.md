@@ -1,16 +1,15 @@
 # apps/ai CLAUDE.md
 
-AI関連ツールの置き場（`ai.k8o.me`）。@k8ordo/ui × Claude の v0風デザインシステム壁打ちツール（`/`）、スライド生成（`/slides`）、k8o のブログ記事を読み、UI とスライドを作れるエージェントとのチャット（`/chat`）、チャットで作った UI とスライドを版の履歴ごと見返し、版を公開・フォークできる生成物のページ（`/artifacts`）がある。
+AI関連ツールの置き場（`ai.k8o.me`）。k8o のブログ記事を読み、UI とスライドを作れるエージェントとのチャット（`/chat`）と、チャットで作った UI とスライドを版の履歴ごと見返し、版を公開・フォークできる生成物のページ（`/artifacts`）がある。`/` は `/chat` へ移す（`next.config.ts` の redirects）。
 
 ## レイヤー構成（src/）
 
 apps/main と同じ `app / features / shared` 構成（詳細は `apps/main/CLAUDE.md`）。Server Actions（`'use server'`）は `features/*/interface` に置く。
 
-- `generation/` - Claude（Sonnet 5.5 / Opus 5.5、AI SDK v7 と @ai-sdk/anthropic）による json-render spec とスライドの生成
+- `generation/` - エージェントの tool（`generate_ui`・`generate_slides`）の中で Claude（Sonnet 5.5 / Opus 5.5、AI SDK v7 と @ai-sdk/anthropic）を呼び、json-render の spec とスライドのデッキを作る部品（system prompt・ストリームの読み取り・受け取りの確かめ）と、spec から TSX への変換
 - `agent/` - `/chat` のエージェント。tool つきの生成のループ、スレッドとメッセージの保存（ai_threads・ai_thread_messages）、オーナー API から記事を読む tool、UI とスライドを作って直す tool
 - `usage/` - Claude の利用ログ（ai_usages）、1時間あたりの生成回数の上限、月の予算と単価（`pricing.ts`）
-- `share/` - 公開ページ（/s/[slug]）の読み取りと、旧スタジオの公開・非公開。公開ページは、生成物の公開と旧スタジオの公開を slug の形で振り分けて読む（「公開ページ」の節）
-- `projects/` - プロジェクト・版の永続化（@repo/ai-database）
+- `share/` - 公開ページ（/s/[slug]）の読み取り。slug から公開している生成物の版を引き、タイトルと中身にして返す
 - `artifacts/` - 生成物と版の保存と読み取り（ai_artifacts・ai_artifact_versions）と、その公開（ai_artifact_shares）。版の行は書き換えず、直すたびに次の番号の版を足す。読むのは持ち主のものだけで、版の中身のほかに、生成物の一覧（最新版の新しい順）と、生成物ごとの全版の履歴を読める。公開は、持ち主が選んだ版を公開の行に書く。公開中に別の版を公開すると、slug を変えずに版だけを差し替える。公開する版を変える操作は、公開の行があるときだけ版を差し替え、無ければ書かない。別のタブで取り消したあとの古い画面から押されても、取り消した生成物を公開し直さないため。取り消すと行を消すので、公開し直すと別の slug になる。フォークは、持ち主の版の中身と要約を写した版 1 で新しい生成物を作り、元の版を親（parent_id）にする。依頼から生まれた版ではないので依頼は空にし、会話に属さないので thread_id は null にする。公開ページのための、slug から公開している版の id を引く読み取りと、版の id から中身を引く読み取りだけは、持ち主で絞らない
 - `highlight/` - 生成物（spec JSON / spec から変換した TSX / スライド）の shiki ハイライト。許す言語、長さとブロック数の上限、shiki の呼び出しは `application/highlight.ts` に置き、画面から呼ぶ server action（`highlightGenerated`）は、引数の形とセッションを確かめてからそれを呼ぶ。公開ページは、公開した版の中身だけを入力に、セッションを通さずに呼ぶ
 - `slides/` - デッキ Markdown のスライド分割、コードブロックの抽出（デッキ全体の並びは `deckCodeBlocks`）、閉じていないコードブロックの検出、発表者ノートを外したデッキ（`stripNotes`）（`parse-deck.ts`）
@@ -23,36 +22,20 @@ apps/main と同じ `app / features / shared` 構成（詳細は `apps/main/CLAU
 
 ## 生成 UI（json-render）
 
-UI スタジオとエージェントの `generate_ui` は、どちらも json-render の spec を作る。コード表示の TSX は `spec-to-tsx.ts` で spec から変換する。catalog・registry・検証は
+エージェントの `generate_ui` は、json-render の spec を作る。コード表示の TSX は `spec-to-tsx.ts` で spec から変換する。catalog・registry・検証は
 `@k8ordo/ui/json-render`（公式アダプタ）を使い、独自の catalog は作らない。
 
 - system prompt は `catalog.prompt({ mode: 'inline', ... })`（`build-spec-system-prompt.ts`）。
   inline モードなので assistant の出力は「会話文 → JSONL パッチ」の混在ストリーム
 - 描画は `JsonRenderUI`（`app/_components/spec-preview`）。アプリと同じドキュメントに描画するので、テーマ・フォントはアプリのものを継承する
 - 同じ文書の画面より狭い枠に描くので、ビューポートのメディアクエリでは並べ方が変わらない。そのため system prompt の規則で、描く枠の幅（280〜960px ほど）を伝え、横に並べるときは Grid の `cols: 'auto-fit'` と `minItemSize` を使うよう求める。依頼に列の数があっても固定の cols にしない
-
-### スタジオ（/api/generate）
-
-- サーバは `pipeJsonRender`（@json-render/core）でパッチ行を `data-spec` パーツへ分離し、
-  クライアントは `specFromMessage`（`spec-message.ts`）で土台 spec へ逐次適用して描画する
-- 完了時は `validateGeneratedSpec` で検証し、失敗時は repairPrompt を次ターンの system に流す
-
-### エージェントの tool（generate_ui）
-
 - tool の中で Claude を1回ずつ呼び、`streamUiSpec`（`stream-ui-spec.ts`）がサーバーで spec を組み立てる。`createMixedStreamParser` で会話文とパッチを分け、土台の複製にパッチを当てる。会話文の行は改行で繋ぎ、タイトル行を除いた説明を要約にする
 - system は毎回同じ `buildSpecSystemPrompt()` にして、末尾に cache のブレークポイントを置く。直すときの土台と修復の指示は user の文（`buildUserPrompt`）に置き、system には連結しない
 - 組み上がった spec は `validateGeneratedSpec` で検証し、落ちたら壊れた spec を土台に、tool の中で1回だけ直させる（`ui-spec.ts`）。それでも通らなければ tool のエラーにする
 
 ## スライド（Markdown のデッキ）
 
-スライドのスタジオとエージェントの `generate_slides` は、どちらも Markdown のデッキを作る。system prompt は `build-slides-system-prompt.ts`。出力は、バッククォート4つの md のフェンスで囲んだデッキと、そのあとの json のフェンスの meta（title・description・changes）で、`parseSlidesGeneration`（`parse-slides-generation.ts`）が切り出す。スライドの分割とコードブロックの抽出は `slides/application/parse-deck.ts`、描画は `app/_components/slide-deck` にある。
-
-### スタジオ（/api/generate）
-
-- 直すときは、今のデッキを system の末尾（`buildSlidesSystemPrompt({ currentSource })`）に置く
-- クライアントが、会話の text から `parseSlidesGeneration` でデッキと meta を読んで描く
-
-### エージェントの tool（generate_slides）
+エージェントの `generate_slides` は、Markdown のデッキを作る。system prompt は `build-slides-system-prompt.ts`。出力は、バッククォート4つの md のフェンスで囲んだデッキと、そのあとの json のフェンスの meta（title・description・changes）で、`parseSlidesGeneration`（`parse-slides-generation.ts`）が切り出す。スライドの分割とコードブロックの抽出は `slides/application/parse-deck.ts`、描画は `app/_components/slide-deck` にある。
 
 - tool の中で Claude を1回呼び、`streamSlidesDeck`（`stream-slides-deck.ts`）が届いた text を積み上げる。usage と終わり方は、`streamUiSpec` と同じ `generationTextOf`（`generation-stream.ts`）で読む
 - system は毎回同じ `buildSlidesSystemPrompt()` にして、末尾に cache のブレークポイントを置く。直すときの土台のデッキは user の文（`slidesUserPrompt`）に置き、system には連結しない
@@ -65,7 +48,7 @@ UI スタジオとエージェントの `generate_ui` は、どちらも json-re
 
 ### 印刷（PDF出力）
 
-- 印刷用の全スライド（`DeckPrint`）は、`DeckPreview` の `printable` が真のときだけ、body へのポータルに 1280×720 のページとして描く。ブラウザの印刷で PDF にする。真にするのは、スライドのスタジオと生成物のページと公開ページ
+- 印刷用の全スライド（`DeckPrint`）は、`DeckPreview` の `printable` が真のときだけ、body へのポータルに 1280×720 のページとして描く。ブラウザの印刷で PDF にする。真にするのは、生成物のページと公開ページ
 - 文書全体に効く印刷の規則（`@page` と、body の直下の印刷用のスライド以外を印刷から外す規則）は、CSS Modules に置かない。ポータルの中の `<style>` に置き、印刷用のスライドを表示しているあいだだけ有効にする。Activity で隠れた画面に残ったポータルは、ほかの画面の印刷に効かない
 - 印刷用のスライドを描く画面の中で、デッキを `<Activity>` で隠さない。隠すと印刷の規則も切れ、印刷にスライドが出ない。タブなどで隠すときは CSS で隠す
 
@@ -89,7 +72,7 @@ UI スタジオとエージェントの `generate_ui` は、どちらも json-re
   - xl 以上では、ペインの見出しの「全画面で見る」で会話の列を隠し、ペインを作業領域いっぱいに広げる。会話はマウントしたまま隠す。広げた状態は ChatScreen の state に持って URL には持たず、ペインが消えると戻る
   - ペインの本文（プレビューとコード）は、会話の外でも使える `ArtifactBody`（`(authenticated)/_components/artifact-body`）で描く。見出し・版の切り替え・止めた途中の注記はペインが持つ
   - 生成 UI とスライドのリンクと、生成 UI のフォームは、`ArtifactBody` の包みで移動を止める。会話の画面ごと移動すると受信が切れ、生成物のページでも見ていた版から離れるため。/s/[slug] ではリンクが動いてよいので、共有の `SpecPreview` には入れない
-  - スライドは、スライドのスタジオと同じ `DeckPreview`（`app/_components/deck-preview`）で描く。デッキのコードブロックのハイライトは、アプリのテーマに合わせる（`(authenticated)/_components/deck-highlight` の `useDeckHighlight`）。矢印・Space・PageUp/Down・Home/End は、デッキにフォーカスがある（スライドを押した）ときだけ効き、会話のスクロールを奪わない
+  - スライドは `DeckPreview`（`app/_components/deck-preview`）で描く。デッキのコードブロックのハイライトは、アプリのテーマに合わせる（`(authenticated)/_components/deck-highlight` の `useDeckHighlight`）。矢印・Space・PageUp/Down・Home/End は、デッキにフォーカスがある（スライドを押した）ときだけ効き、会話のスクロールを奪わない
   - ペインには印刷用の全スライド（`DeckPrint`）を描かない。印刷用のスライドを表示しているあいだはほかの要素が印刷から外れ、会話の画面を印刷してもスライドしか出なくなるため
 - スレッドの ID はページが決め、最初の POST が予約を通ったときに、サーバーがスレッドの行を作る
 - `/chat?draft=<文>` は、その文を新しいチャットの入力欄に入れるだけで送らない。だれでも作れる URL なので、送るのはいつも利用者の操作にする。最初の送信で URL が `/chat/<id>` に置き換わり、`draft` は消える
@@ -132,9 +115,8 @@ tool は、オーナー API（`https://api.k8o.me/owner/*`。`apps/api/CLAUDE.md
 
 公開した UI とスライドを、ログインしていない閲覧者に見せる画面（`app/s/[slug]/`）。proxy の公開パスなので認証を通さない。匿名で叩ける URL なので、読み取りだけにして server action を置かない。
 
-- slug の形で、どちらか一方だけを引く（`share/interface/queries.ts`）。16 文字の base64url は生成物の公開（ai_artifact_shares）、16 進 12 桁は旧スタジオの公開（ai_projects）で、どちらの形でもなければ DB を引かずに 404 にする
+- slug が生成物の公開の形（16 文字の base64url）でなければ、DB を引かずに 404 にする（`share/interface/queries.ts`）
 - 生成物の公開は、slug から公開している版の id を引くところをキャッシュしない。タグの無効化はインスタンスの中だけで効くので、取り消しをどのインスタンスでもすぐ効かせるため。版の中身とハイライトは、版の id ごとに `'use cache'`（`cacheLife('max')`）で持つ。版の行は書き換えないので古くならず、タグで無効化しない
-- 旧スタジオの公開は、slug ごとの `'use cache'`（`cacheLife('days')`、タグ `share:<slug>`）で読み、公開・非公開の action が `updateTag` する
 - generateMetadata と本文の読み取りは、`React.cache` で1回の要求の中の1回にまとめる。見つからないときは stream が始まったあとの `notFound()` なので、200 のまま noindex の 404 の画面になる
 - 送るのはタイトルと中身だけ（`PublicShare`）。生成物の id・版の id と番号・依頼・要約は送らない。取り消したら URL ごと捨てられるよう、slug を生成物の id と分けているため
 - UI は `SpecPreview` で描き、生成 UI のリンクとフォームは動く
@@ -155,9 +137,9 @@ LLM（Claude API）は課金が発生するため、**課金が発生する全 A
 
 ## 利用回数と予算
 
-生成回数の上限（アプリと利用者ごとに1時間あたり `AI_GENERATE_LIMIT_PER_HOUR` 回）と月の予算（UTC の月初からの全行の費用の合計が $100 未満）は `ai_usages` の行で数える。Claude を呼ぶ経路は、`/api/generate` も `/api/chat` も、呼ぶ前に `reserveUsage`（`usage/application/usage.ts`）で行を予約し、予約できなければ 429 で断る。`reserveUsage` を通さずに Claude を呼ばない。トークン数と費用は `recordUsage` で、予約した行へあとから書き込む。単価は `usage/application/pricing.ts` にある。
+生成回数の上限（アプリと利用者ごとに1時間あたり `AI_GENERATE_LIMIT_PER_HOUR` 回）と月の予算（UTC の月初からの全行の費用の合計が $100 未満）は `ai_usages` の行で数える。`/api/chat` は、Claude を呼ぶ前に `reserveUsage`（`usage/application/usage.ts`）で行を予約し、予約できなければ 429 で断る。`reserveUsage` を通さずに Claude を呼ばない。トークン数と費用は `recordUsage` で、予約した行へあとから書き込む。単価は `usage/application/pricing.ts` にある。
 
-- 行は、アプリ（`app`）と、Claude を呼んだ種類（`kind`）を持つ。`/api/generate` と `/api/chat` は `'generation'` で予約する
+- 行は、アプリ（`app`。書く値は `'agent'` だけ）と、Claude を呼んだ種類（`kind`）を持つ。`/api/chat` は `app: 'agent'`・`kind: 'generation'` で予約する
 - `generate_ui` と `generate_slides` は、tool の中で Claude を呼ぶたびに `app: 'agent'` と、それぞれ `kind: 'ui'`・`kind: 'slides'` で別に予約し、tool が返る前に usage を書き終える。断られても 429 にはならず、断りの文言（`USAGE_REFUSAL_MESSAGES`）で tool のエラーになる。1時間の枠なら会話は続き、予算ならそのステップのあとの確かめで止まる
 - 1時間の上限は、種類で絞らずに、アプリと利用者ごとの全行を数える
 - 予算は、アプリと利用者で絞らずに数える

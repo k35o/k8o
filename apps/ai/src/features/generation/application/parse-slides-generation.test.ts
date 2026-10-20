@@ -85,7 +85,7 @@ describe('parseSlidesGeneration', () => {
       expect(result.meta?.title).toBe('本物');
     });
 
-    it('json フェンスだけのテキスト（会話復元用）からも meta を取れる', () => {
+    it('json フェンスだけのテキストからも meta を取れる', () => {
       const raw = ['```json', '{"title": "t", "description": "d"}', '```'].join(
         '\n',
       );

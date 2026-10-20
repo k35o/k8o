@@ -21,7 +21,7 @@ const Threads = async () => {
 export default function Layout({ children }: { children: ReactNode }) {
   return (
     <>
-      <SidebarSection heading="履歴" newHref="/chat" newLabel="新しいチャット">
+      <SidebarSection heading="履歴" newLabel="新しいチャット">
         <Suspense fallback={<SidebarListSkeleton />}>
           <Threads />
         </Suspense>

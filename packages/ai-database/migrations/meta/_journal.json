@@ -36,6 +36,13 @@
       "when": 1792460580154,
       "tag": "0004_ai_artifact_shares",
       "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "6",
+      "when": 1792486241474,
+      "tag": "0005_drop_ai_projects",
+      "breakpoints": true
     }
   ]
 }

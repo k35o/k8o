@@ -1,8 +1,12 @@
 import { relations } from 'drizzle-orm';
 import { index, integer, sqliteTable, text } from 'drizzle-orm/sqlite-core';
 
-import { AI_APPS } from './ai-projects';
 import { user } from './auth-schema';
+
+// 利用の行を書いた経路。DB には、この型に無い 'ui-studio'・'slides' の行もある。SQLite の text の enum は型だけで、
+// 行を検査しないため
+const AI_APPS = ['agent'] as const;
+export type AiApp = (typeof AI_APPS)[number];
 
 const AI_USAGE_KINDS = ['generation', 'ui', 'slides'] as const;
 export type AiUsageKind = (typeof AI_USAGE_KINDS)[number];

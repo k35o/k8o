@@ -25,7 +25,7 @@ const threads: ThreadListItem[] = [
 // Storybook の型は navigation に segments を持たないが、実行時は segments からルーターの木を組み、
 // useSelectedLayoutSegment がそれを読む。型の注釈を付けない定数にして渡す
 const chatNavigation = { pathname: '/chat', segments: ['chat'] };
-const uiNavigation = { pathname: '/', segments: [] };
+const artifactsNavigation = { pathname: '/artifacts', segments: ['artifacts'] };
 
 const meta = preview.meta({
   component: ToolFrame,
@@ -41,7 +41,7 @@ const meta = preview.meta({
   },
   args: {
     sidebar: (
-      <SidebarSection heading="履歴" newHref="/chat" newLabel="新しいチャット">
+      <SidebarSection heading="履歴" newLabel="新しいチャット">
         <ThreadList currentThreadId={null} threads={threads} />
       </SidebarSection>
     ),
@@ -65,6 +65,9 @@ export const Default = meta.story({
     await expect(canvas.getByText('Sonnet 5.5')).toBeInTheDocument();
 
     const sidebar = within(canvas.getByRole('complementary'));
+    await expect(
+      sidebar.getByRole('link', { name: 'k8o AI Studio' }),
+    ).toHaveAttribute('href', '/chat');
     const nav = within(sidebar.getByRole('navigation', { name: 'AI ツール' }));
     await expect(nav.getByRole('link', { name: 'チャット' })).toHaveAttribute(
       'aria-current',
@@ -82,14 +85,15 @@ export const Default = meta.story({
   },
 });
 
-export const UiTool = meta.story({
+export const ArtifactsTool = meta.story({
   parameters: {
-    nextjs: { navigation: uiNavigation },
+    nextjs: { navigation: artifactsNavigation },
   },
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
     const nav = within(canvas.getByRole('navigation', { name: 'AI ツール' }));
-    await expect(nav.getByRole('link', { name: 'UI' })).toHaveAttribute(
+    await expect(nav.getAllByRole('link')).toHaveLength(2);
+    await expect(nav.getByRole('link', { name: '作ったもの' })).toHaveAttribute(
       'aria-current',
       'page',
     );

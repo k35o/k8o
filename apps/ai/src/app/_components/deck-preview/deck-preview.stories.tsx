@@ -309,7 +309,7 @@ export const Highlighted = meta.story({
     isStreaming: false,
     printable: true,
   },
-  // ハイライト関数はスタジオが注入する構造なので、ストーリーでも同じ形で注入する。
+  // ハイライト関数は画面（useDeckHighlight）が注入する構造なので、ストーリーでも同じ形で注入する。
   decorators: [
     (Story) => (
       <DeckHighlightContext value={fakeHighlight}>
@@ -339,7 +339,7 @@ export const Highlighted = meta.story({
   },
 });
 
-// テーマ切替でハイライト関数が差し替わる状況を、スタジオと同じ注入の形で再現する。
+// テーマ切替でハイライト関数が差し替わる状況を、画面（useDeckHighlight）と同じ注入の形で再現する。
 // 切り替えたあとの取得は「新しい配色を返す」を押すまで返さず、取得のあいだの表示を見られるようにする。
 const SwitchableHighlight: FC<{ source: string }> = ({ source }) => {
   const [highlight, setHighlight] = useState<HighlightFn>(() =>

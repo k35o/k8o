@@ -45,7 +45,7 @@ describe('judgeDatabaseImport', () => {
       expect(
         judgeDatabaseImport(
           file(
-            'apps/ai/src/features/projects/infrastructure/project-repository.ts',
+            'apps/ai/src/features/artifacts/infrastructure/artifact-repository.ts',
           ),
           '@repo/ai-database/orm',
         ),

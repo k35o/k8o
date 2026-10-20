@@ -14,6 +14,7 @@ const nextConfig: NextConfig = {
     browserToTerminal: true,
   },
   typedRoutes: true,
+  redirects: () => [{ source: '/', destination: '/chat', permanent: false }],
   cacheComponents: true,
   partialPrefetching: true,
   experimental: {

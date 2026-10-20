@@ -5,8 +5,6 @@ import { toolFromSegment } from './tool-from-segment';
 describe('toolFromSegment', () => {
   describe('正常系', () => {
     it.each([
-      ['/ のページ', null, 'ui'],
-      ['スライド', 'slides', 'slides'],
       ['チャット', 'chat', 'chat'],
       ['作ったもの', 'artifacts', 'artifacts'],
     ] as const)(
@@ -18,8 +16,11 @@ describe('toolFromSegment', () => {
   });
 
   describe('エッジケース', () => {
-    it('ツールではないセグメントなら、どのツールも現在地にしない', () => {
-      expect(toolFromSegment('settings')).toBeNull();
-    });
+    it.each([null, 'slides', 'settings'])(
+      'ツールではないセグメント（%s）なら、どのツールも現在地にしない',
+      (segment) => {
+        expect(toolFromSegment(segment)).toBeNull();
+      },
+    );
   });
 });

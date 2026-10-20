@@ -3,7 +3,6 @@ import {
   parseDeck,
 } from '@/features/slides/application/parse-deck';
 
-import { currentDeckSection } from './build-slides-system-prompt';
 import { parseSlidesGeneration } from './parse-slides-generation';
 
 type SlidesDeckSettlement =
@@ -17,9 +16,15 @@ export const slidesUserPrompt = (input: {
 }): string =>
   input.base === null
     ? input.instruction
-    : [currentDeckSection(input.base), `# 指示\n${input.instruction}`].join(
-        '\n\n',
-      );
+    : [
+        '# 現在のデッキ（これを土台に、ユーザー指示へ従って全文を再生成する。差分ではなく完全な置き換え）',
+        '````md',
+        input.base,
+        '````',
+        '',
+        '# 指示',
+        input.instruction,
+      ].join('\n');
 
 export const settleSlidesDeck = (input: {
   text: string;

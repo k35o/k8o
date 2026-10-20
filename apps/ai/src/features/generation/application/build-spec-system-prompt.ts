@@ -1,17 +1,10 @@
 import { catalog, uiRules } from '@k8ordo/ui/json-render';
 
-type BuildSpecSystemPromptInput = {
-  repairPrompt?: string | null | undefined;
-};
-
-const hasText = (value?: string | null): value is string =>
-  typeof value === 'string' && value.trim() !== '';
-
 const K8O_SYSTEM =
   'あなたは k8o のデザインシステム「@k8ordo/ui」に精通した UI デザイナーです。ユーザーの要望から、@k8ordo/ui コンポーネントで構成された UI を生成します。';
 
-// inline モード（会話文→パッチ）の会話文パートに求める形式。タイトル行は
-// プロジェクト名・履歴表示の情報源になる（クライアントの parseSpecProse が抽出する）。
+// inline モード（会話文→パッチ）の会話文パートに求める形式。tool はタイトル行を外し、
+// 残りを要約にする（settleUiSpec の parseSpecProse）。
 const RESPONSE_RULES = [
   '応答は必ず「タイトル: <このUIの短い名前>」の1行で始め、続けて今回の生成・変更内容を1〜2文の日本語で説明してから、パッチを出力する。',
   'UI の変更が不要な質問・相談には、パッチを出力せず日本語の文章だけで答える。',
@@ -33,26 +26,10 @@ const LAYOUT_RULES = [
   'Table と DataTable は、枠が狭くても横にスクロールせず、列を詰めてセルの文を1字ずつでも折り返す。300px ほどの枠でも収まるよう、列は2つまでにし、セルは数字か6字ほどまでの語にする。列が3つ以上要るときや、セルに長い語や文が入るときは、Table にせず、行ごとに Card を作り、Grid の auto-fit（minItemSize 64）で並べる。',
 ];
 
-export const buildSpecSystemPrompt = (
-  input: BuildSpecSystemPromptInput = {},
-): string => {
-  const sections = [
-    catalog.prompt({
-      // oxlint-disable-next-line typescript/no-deprecated -- 非推奨なのは旧別名の'generate'/'chat'だが、@deprecatedがmodeプロパティ自体に付いているため現行値の'inline'でも警告が出る
-      mode: 'inline',
-      system: K8O_SYSTEM,
-      customRules: [...uiRules, ...RESPONSE_RULES, ...LAYOUT_RULES],
-    }),
-  ];
-
-  if (hasText(input.repairPrompt)) {
-    sections.push(
-      [
-        '# 前回の出力は検証エラーになった。次の指摘をすべて解消した spec を出力すること',
-        input.repairPrompt,
-      ].join('\n'),
-    );
-  }
-
-  return sections.join('\n\n');
-};
+export const buildSpecSystemPrompt = (): string =>
+  catalog.prompt({
+    // oxlint-disable-next-line typescript/no-deprecated -- 非推奨なのは旧別名の'generate'/'chat'だが、@deprecatedがmodeプロパティ自体に付いているため現行値の'inline'でも警告が出る
+    mode: 'inline',
+    system: K8O_SYSTEM,
+    customRules: [...uiRules, ...RESPONSE_RULES, ...LAYOUT_RULES],
+  });
