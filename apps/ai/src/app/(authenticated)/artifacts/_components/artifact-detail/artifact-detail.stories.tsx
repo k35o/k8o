@@ -1,12 +1,23 @@
 import type { Spec } from '@json-render/core';
+import { getRouter, redirect } from '@storybook/nextjs-vite/navigation.mock';
 import { useState } from 'react';
 import type { ComponentProps, FC } from 'react';
-import { expect, fn, spyOn, userEvent, within } from 'storybook/test';
+import {
+  expect,
+  fn,
+  mocked,
+  screen,
+  spyOn,
+  userEvent,
+  waitFor,
+  within,
+} from 'storybook/test';
 
 import type { ArtifactForRoute } from '@/features/artifacts/interface/queries';
 
 import preview from '../../../../../../.storybook/preview';
 import { ToolFrame } from '../../../_components/tool-frame';
+import type { ArtifactForkAction } from '../artifact-fork-button';
 import type { ArtifactShareActions } from '../artifact-share-menu';
 import { ArtifactDetail } from './artifact-detail';
 
@@ -119,6 +130,7 @@ const VersionSwitch: FC<ComponentProps<typeof ArtifactDetail>> = ({
   artifact,
   highlight,
   shareActions,
+  forkAction,
 }) => {
   const [version, setVersion] = useState(artifact.selected.version);
   return (
@@ -136,6 +148,7 @@ const VersionSwitch: FC<ComponentProps<typeof ArtifactDetail>> = ({
     >
       <ArtifactDetail
         artifact={{ ...artifact, selected: { ...artifact.selected, version } }}
+        forkAction={forkAction}
         highlight={highlight}
         shareActions={shareActions}
       />
@@ -209,6 +222,7 @@ const meta = preview.meta({
       changeVersion: fn<ArtifactShareActions['changeVersion']>(),
       unpublish: fn<ArtifactShareActions['unpublish']>(),
     },
+    forkAction: fn<ArtifactForkAction>(),
   } satisfies Partial<ComponentProps<typeof ArtifactDetail>>,
 });
 
@@ -245,6 +259,31 @@ export const Ui = meta.story({
       header.getByRole('button', { name: '共有（非公開）' }),
     ).toBeVisible();
     await expect(canvas.queryByText('公開中')).not.toBeInTheDocument();
+  },
+});
+
+export const Fork = meta.story({
+  play: async ({ args, canvasElement }) => {
+    mocked(args.forkAction).mockImplementation(() =>
+      Promise.resolve().then(() => redirect('/artifacts/f6e5d4c3b2a1')),
+    );
+    // 狭い幅でも、選んでいる版をフォークできる
+    await userEvent.click(
+      within(headerIn(canvasElement)).getByRole('button', {
+        name: '版 2 をフォーク',
+      }),
+    );
+    await expect(args.forkAction).toHaveBeenCalledOnce();
+    await expect(args.forkAction).toHaveBeenCalledWith('a1b2c3d4e5f6', 2);
+    await waitFor(() =>
+      expect(getRouter().push).toHaveBeenCalledWith(
+        '/artifacts/f6e5d4c3b2a1',
+        {},
+      ),
+    );
+    await expect(
+      screen.queryByText('フォークできませんでした'),
+    ).not.toBeInTheDocument();
   },
 });
 

@@ -123,6 +123,55 @@ export const ThreadLinks = meta.story({
   },
 });
 
+export const Forked = meta.story({
+  args: {
+    artifactId: 'f6e5d4c3b2a1',
+    versions: [
+      {
+        version: 2,
+        title: '料金表（フォーク）',
+        instruction: '月払いだけにして',
+        summary: '年払いの列を外しました。',
+        threadId: THREAD_ID,
+        createdAt: '2026-10-16T03:00:00.000Z',
+        origin: { type: 'edit', version: 1 },
+      },
+      {
+        version: 1,
+        title: '料金表（フォーク）',
+        instruction: '',
+        summary: '年払いの価格を並べました。',
+        threadId: null,
+        createdAt: '2026-10-15T06:00:00.000Z',
+        origin: {
+          type: 'fork',
+          artifactId: 'a1b2c3d4e5f6',
+          version: 3,
+          title: '料金表',
+        },
+      },
+    ],
+    selectedVersion: 1,
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    // フォーク元の版へ戻れる。行のリンクの中には入れない
+    const source = canvas.getByRole('link', {
+      name: '「料金表」の版 3 からフォーク',
+    });
+    await expect(source).toHaveAttribute('href', '/artifacts/a1b2c3d4e5f6?v=3');
+    const forked = canvas.getByRole('link', { name: /^版 1(?!を)/u });
+    await expect(forked).toHaveAttribute('href', '/artifacts/f6e5d4c3b2a1?v=1');
+    await expect(forked).not.toContainElement(source);
+    // フォークしたあとに直した版は、ふつうの由来を出す
+    await expect(
+      within(canvas.getByRole('link', { name: /^版 2(?!を)/u })).getByText(
+        '版 1 から',
+      ),
+    ).toBeInTheDocument();
+  },
+});
+
 export const Pending = meta.story({
   beforeEach: () => {
     useLinkStatus.mockReturnValue({ pending: true });

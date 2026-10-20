@@ -73,6 +73,21 @@ export const ArtifactHistory: FC<ArtifactHistoryProps> = ({
                 )}
                 <PendingMark />
               </Link>
+              {version.origin.type === 'fork' ? (
+                // 行のリンクの中に入れ子にできないので、兄弟に置く
+                <div className={styles.fork}>
+                  <Anchor
+                    href={`/artifacts/${version.origin.artifactId}?v=${version.origin.version.toString()}`}
+                    renderAnchor={({ href, className, children }) => (
+                      <Link className={className} href={href}>
+                        {children}
+                      </Link>
+                    )}
+                  >
+                    {`「${version.origin.title}」の版 ${version.origin.version.toString()} からフォーク`}
+                  </Anchor>
+                </div>
+              ) : null}
               {isSelected && version.summary !== '' ? (
                 <p className={styles.summary}>{version.summary}</p>
               ) : null}
