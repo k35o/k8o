@@ -51,6 +51,7 @@ export type ArtifactListItem = {
   kind: AiArtifactKind;
   title: string;
   updatedAt: string;
+  isPublic: boolean;
 };
 
 type VersionOrigin = { type: 'new' } | { type: 'edit'; version: number };

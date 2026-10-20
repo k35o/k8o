@@ -36,7 +36,15 @@
   }
 }
 
+.head {
+  display: flex;
+  align-items: center;
+  gap: calc(var(--spacing) * 2);
+}
+
 .title {
+  flex: 1;
+  min-width: 0;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;

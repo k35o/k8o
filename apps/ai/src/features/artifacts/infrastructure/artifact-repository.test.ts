@@ -19,7 +19,7 @@ vi.hoisted(() => {
   vi.stubEnv('AI_TURSO_DATABASE_URL', 'http://localhost');
 });
 
-// libsql の代わりに、ai_artifacts と ai_artifact_versions だけを持つインメモリの SQLite で SQL を実行する
+// libsql の代わりに、生成物・版・公開の3つのテーブルだけを持つインメモリの SQLite で SQL を実行する
 let sqlite: DatabaseSync;
 
 const run = (statement: unknown): { rows: unknown[] } => {
@@ -111,6 +111,12 @@ beforeEach(() => {
     );
     create unique index ai_artifact_versions_artifact_version_idx
       on ai_artifact_versions (artifact_id, version);
+    create table ai_artifact_shares (
+      artifact_id text primary key not null references ai_artifacts(id) on delete cascade,
+      slug text not null,
+      version_id integer not null references ai_artifact_versions(id) on delete cascade
+    );
+    create unique index ai_artifact_shares_slug_unique on ai_artifact_shares (slug);
   `);
 });
 
@@ -304,13 +310,35 @@ describe('selectArtifacts', () => {
           kind: 'ui',
           title: '大きいボタンの問い合わせフォーム',
           updatedAt: '2026-10-15T14:00:00.000Z',
+          isPublic: false,
         },
         {
           id: 'f6e5d4c3b2a1',
           kind: 'slides',
           title: 'LT の資料',
           updatedAt: '2026-10-15T13:00:00.000Z',
+          isPublic: false,
         },
+      ]);
+    });
+
+    it('公開の行がある生成物だけを、公開中として返す', async () => {
+      await insertArtifactWithFirstVersion(firstVersion);
+      await insertArtifactWithFirstVersion({
+        ...firstVersion,
+        id: 'f6e5d4c3b2a1',
+      });
+      sqlite.exec(
+        "insert into ai_artifact_shares (artifact_id, slug, version_id) values ('f6e5d4c3b2a1', 'AAAAAAAAAAAAAAAA', 2)",
+      );
+
+      const listed = await selectArtifacts({ userId: 'u1' });
+
+      expect(
+        listed.map(({ id, isPublic }) => ({ id, isPublic })),
+      ).toStrictEqual([
+        { id: 'a1b2c3d4e5f6', isPublic: false },
+        { id: 'f6e5d4c3b2a1', isPublic: true },
       ]);
     });
   });

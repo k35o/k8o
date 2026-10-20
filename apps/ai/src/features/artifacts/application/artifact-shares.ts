@@ -17,7 +17,7 @@ type ArtifactRef = {
   artifactId: string;
 };
 
-type ArtifactShare = {
+export type ArtifactShare = {
   slug: string;
   version: number;
 };

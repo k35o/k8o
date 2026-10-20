@@ -54,6 +54,7 @@ const meta = preview.meta({
     artifactId: 'a1b2c3d4e5f6',
     versions,
     selectedVersion: 2,
+    publicVersion: null,
   } satisfies Partial<ComponentProps<typeof ArtifactHistory>>,
 });
 
@@ -87,6 +88,22 @@ export const Default = meta.story({
     await expect(first).not.toHaveAttribute('aria-current');
     // 新しく作った版は、由来を出さない
     await expect(within(first).queryByText(/から$/u)).not.toBeInTheDocument();
+    // 公開していなければ、どの版にも公開の印を出さない
+    await expect(history.queryByText('公開中')).not.toBeInTheDocument();
+  },
+});
+
+export const Published = meta.story({
+  args: { publicVersion: 3 },
+  play: async ({ canvasElement }) => {
+    const history = within(canvasElement);
+    // 公開している版の行にだけ、選んでいる版でなくても印を出す
+    await expect(
+      within(history.getByRole('link', { name: /^版 3(?!を)/u })).getByText(
+        '公開中',
+      ),
+    ).toBeInTheDocument();
+    await expect(history.getAllByText('公開中')).toHaveLength(1);
   },
 });
 

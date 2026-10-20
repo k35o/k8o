@@ -1,10 +1,19 @@
 import 'server-only';
 import { db } from '@repo/ai-database';
-import { alias, and, desc, eq, max, sql } from '@repo/ai-database/orm';
+import {
+  alias,
+  and,
+  desc,
+  eq,
+  isNotNull,
+  max,
+  sql,
+} from '@repo/ai-database/orm';
 import type { AiArtifactKind } from '@repo/ai-database/schema';
 
 const artifacts = db._schema.aiArtifacts;
 const versions = db._schema.aiArtifactVersions;
+const shares = db._schema.aiArtifactShares;
 
 const ARTIFACT_LIST_LIMIT = 100;
 
@@ -28,6 +37,7 @@ type ArtifactRow = {
   kind: AiArtifactKind;
   title: string;
   updatedAt: string;
+  isPublic: boolean;
 };
 
 type HistoryRow = {
@@ -146,6 +156,7 @@ export const selectArtifacts = async (input: {
       kind: artifacts.kind,
       title: versions.title,
       updatedAt: versions.createdAt,
+      isPublic: isNotNull(shares.artifactId).mapWith(Boolean),
     })
     .from(artifacts)
     .innerJoin(
@@ -155,6 +166,7 @@ export const selectArtifacts = async (input: {
         eq(versions.version, latestVersion),
       ),
     )
+    .leftJoin(shares, eq(shares.artifactId, artifacts.id))
     .where(eq(artifacts.userId, input.userId))
     .orderBy(desc(versions.createdAt))
     .limit(ARTIFACT_LIST_LIMIT);

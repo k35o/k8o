@@ -6,7 +6,7 @@ import { useState } from 'react';
 import type { FC } from 'react';
 
 import type { HighlightFn } from '@/app/_components/highlighted-code';
-import type { LoadedArtifact } from '@/features/artifacts/interface/queries';
+import type { ArtifactForRoute } from '@/features/artifacts/interface/queries';
 
 import {
   ARTIFACT_VIEW_OPTIONS,
@@ -19,6 +19,8 @@ import { CopyCodeButton } from '../../../_components/copy-code-button';
 import { ToolHeader } from '../../../_components/tool-frame';
 import { ViewTabs } from '../../../_components/view-tabs';
 import { ArtifactHistory } from '../artifact-history';
+import { ArtifactShareMenu } from '../artifact-share-menu';
+import type { ArtifactShareActions } from '../artifact-share-menu';
 
 import styles from './artifact-detail.module.css';
 
@@ -28,23 +30,26 @@ const HISTORY_TAB = { value: 'history', label: '履歴' } as const;
 const DRAFT_KINDS = {
   ui: 'UI',
   slides: 'スライド',
-} as const satisfies Record<LoadedArtifact['kind'], string>;
+} as const satisfies Record<ArtifactForRoute['kind'], string>;
 
 const editDraftOf = (
   artifactId: string,
-  selected: LoadedArtifact['selected'],
+  selected: ArtifactForRoute['selected'],
 ): string =>
   `${DRAFT_KINDS[selected.kind]}「${selected.title}」（artifactId: ${artifactId}）の版 ${selected.version.toString()} を土台に、`;
 
+// highlight と shareActions は、Storybook から server action を辿らないよう、呼び出し側から渡す
 type ArtifactDetailProps = {
-  artifact: LoadedArtifact;
-  // Storybook から server action を辿らないよう、呼び出し側から渡す。null ならハイライトしない
+  artifact: ArtifactForRoute;
+  // null ならハイライトしない
   highlight: HighlightFn | null;
+  shareActions: ArtifactShareActions;
 };
 
 export const ArtifactDetail: FC<ArtifactDetailProps> = ({
   artifact,
   highlight,
+  shareActions,
 }) => {
   const [view, setView] = useState<ArtifactView>('preview');
   const [historyShown, setHistoryShown] = useState(false);
@@ -96,6 +101,12 @@ export const ArtifactDetail: FC<ArtifactDetailProps> = ({
           >
             新しいチャットで直す
           </Button>
+          <ArtifactShareMenu
+            actions={shareActions}
+            artifactId={artifact.id}
+            selectedVersion={selected.version}
+            share={artifact.share}
+          />
         </div>
       </ToolHeader>
       <div className={styles.mobileTabs}>
@@ -130,6 +141,7 @@ export const ArtifactDetail: FC<ArtifactDetailProps> = ({
         <div className={styles.history} data-shown={historyShown}>
           <ArtifactHistory
             artifactId={artifact.id}
+            publicVersion={artifact.share?.version ?? null}
             selectedVersion={selected.version}
             versions={artifact.versions}
           />
