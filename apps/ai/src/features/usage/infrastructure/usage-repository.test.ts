@@ -61,7 +61,7 @@ const selectRows = (): unknown[] =>
   );
 
 const base = {
-  app: 'ui-studio',
+  app: 'agent',
   kind: 'generation',
   userId: 'u1',
   model: 'claude-sonnet-5-5',
@@ -97,11 +97,7 @@ beforeEach(() => {
 describe('insertUsageWithinLimits', () => {
   describe('正常系', () => {
     it('上限と予算に収まれば、種類とモデルだけを入れた利用の行を入れてその id を返す', async () => {
-      const id = await insertUsageWithinLimits({
-        ...base,
-        app: 'agent',
-        kind: 'ui',
-      });
+      const id = await insertUsageWithinLimits({ ...base, kind: 'ui' });
 
       expect(id).toBe(1);
       expect(selectRows()).toStrictEqual([
@@ -133,13 +129,13 @@ describe('insertUsageWithinLimits', () => {
 
     it('当月の費用の合計が予算ちょうどに達していると、行を入れずに null を返す', async () => {
       insertRow({
-        app: 'ui-studio',
+        app: 'agent',
         userId: 'u1',
         createdAt: EARLIER_THIS_MONTH,
         costMicroUsd: 600,
       });
       insertRow({
-        app: 'ui-studio',
+        app: 'agent',
         userId: 'u1',
         createdAt: EARLIER_THIS_MONTH,
         costMicroUsd: 400,
@@ -152,9 +148,9 @@ describe('insertUsageWithinLimits', () => {
 
   describe('エッジケース', () => {
     it('ウィンドウの開始時刻ちょうどの行は数え、それより前の行は数えない', async () => {
-      insertRow({ app: 'ui-studio', userId: 'u1', createdAt: base.sinceIso });
+      insertRow({ app: 'agent', userId: 'u1', createdAt: base.sinceIso });
       insertRow({
-        app: 'ui-studio',
+        app: 'agent',
         userId: 'u1',
         createdAt: '2026-10-13T10:59:59.999Z',
       });
@@ -163,7 +159,7 @@ describe('insertUsageWithinLimits', () => {
       await expect(insertUsageWithinLimits(base)).resolves.toBeNull();
     });
 
-    it('エージェントの UI の生成の行も、会話と同じ1時間の上限に数える', async () => {
+    it('tool の生成の行（kind: ui）も、会話の行と同じ1時間の上限に数える', async () => {
       insertRow({
         app: 'agent',
         kind: 'ui',
@@ -171,19 +167,15 @@ describe('insertUsageWithinLimits', () => {
         createdAt: base.createdAt,
       });
 
-      await expect(
-        insertUsageWithinLimits({ ...base, app: 'agent' }),
-      ).resolves.toBe(2);
-      await expect(
-        insertUsageWithinLimits({ ...base, app: 'agent' }),
-      ).resolves.toBeNull();
+      await expect(insertUsageWithinLimits(base)).resolves.toBe(2);
+      await expect(insertUsageWithinLimits(base)).resolves.toBeNull();
     });
 
-    it('ほかのアプリやほかの利用者の行は数えない', async () => {
+    it('app が agent でない行と、ほかの利用者の行は数えない', async () => {
+      insertRow({ app: 'ui-studio', userId: 'u1', createdAt: base.createdAt });
       insertRow({ app: 'slides', userId: 'u1', createdAt: base.createdAt });
-      insertRow({ app: 'slides', userId: 'u1', createdAt: base.createdAt });
-      insertRow({ app: 'ui-studio', userId: 'u2', createdAt: base.createdAt });
-      insertRow({ app: 'ui-studio', userId: 'u2', createdAt: base.createdAt });
+      insertRow({ app: 'agent', userId: 'u2', createdAt: base.createdAt });
+      insertRow({ app: 'agent', userId: 'u2', createdAt: base.createdAt });
 
       await expect(insertUsageWithinLimits(base)).resolves.toBe(5);
     });
@@ -200,7 +192,7 @@ describe('insertUsageWithinLimits', () => {
 
     it('予算まで1マイクロドルでも残っていれば予約する', async () => {
       insertRow({
-        app: 'ui-studio',
+        app: 'agent',
         userId: 'u1',
         createdAt: EARLIER_THIS_MONTH,
         costMicroUsd: 999,
@@ -211,7 +203,7 @@ describe('insertUsageWithinLimits', () => {
 
     it('月初ちょうどの行の費用は予算に数え、それより前の行の費用は数えない', async () => {
       insertRow({
-        app: 'ui-studio',
+        app: 'agent',
         userId: 'u1',
         createdAt: '2026-09-30T23:59:59.999Z',
         costMicroUsd: 5000,
@@ -220,7 +212,7 @@ describe('insertUsageWithinLimits', () => {
       await expect(insertUsageWithinLimits(base)).resolves.toBe(2);
 
       insertRow({
-        app: 'ui-studio',
+        app: 'agent',
         userId: 'u1',
         createdAt: base.monthStartIso,
         costMicroUsd: 1000,
@@ -229,7 +221,7 @@ describe('insertUsageWithinLimits', () => {
       await expect(insertUsageWithinLimits(base)).resolves.toBeNull();
     });
 
-    it('ほかのアプリやほかの利用者の費用も予算に数える', async () => {
+    it('app が agent でない行と、ほかの利用者の費用も予算に数える', async () => {
       insertRow({
         app: 'slides',
         userId: 'u1',
@@ -248,13 +240,13 @@ describe('insertUsageWithinLimits', () => {
 
     it('費用が null の行（予約したばかりの行や、費用の列を足す前の行）は0円として数える', async () => {
       insertRow({
-        app: 'ui-studio',
+        app: 'agent',
         userId: 'u1',
         createdAt: EARLIER_THIS_MONTH,
         costMicroUsd: null,
       });
       insertRow({
-        app: 'ui-studio',
+        app: 'agent',
         userId: 'u1',
         createdAt: EARLIER_THIS_MONTH,
         costMicroUsd: 999,
