@@ -3,6 +3,7 @@ import type { ComponentProps } from 'react';
 import { expect, fn, userEvent, within } from 'storybook/test';
 
 import type { AgentUIMessage } from '@/features/agent/application/agent-message';
+import { WITHHELD_OUTPUT_TEXT } from '@/features/agent/application/withhold-tool-outputs';
 
 import preview from '../../../../../../.storybook/preview';
 import { AgentMessage } from './agent-message';
@@ -211,6 +212,34 @@ const slidesGeneratingParts: AgentUIMessage['parts'] = [
     output: { status: 'generating', phase: 'writing', source: DECK },
   },
 ];
+
+// 保存するときに GitHub の tool の出力を置き換え、そのあとの思考の過程を外した返答
+const withheldGithubAnswer: AgentUIMessage = {
+  id: 'a10',
+  role: 'assistant',
+  metadata: { end: 'completed' },
+  parts: [
+    { type: 'step-start' },
+    {
+      type: 'reasoning',
+      text: 'proxy.ts を読んで、認証の分かれ目を探す。',
+      state: 'done',
+    },
+    {
+      type: 'tool-read_github_file',
+      toolCallId: 'github-read',
+      state: 'output-available',
+      input: { repo: 'k8o', path: 'apps/ai/src/proxy.ts' },
+      output: WITHHELD_OUTPUT_TEXT,
+    },
+    { type: 'step-start' },
+    {
+      type: 'text',
+      state: 'done',
+      text: '`proxy.ts` は、公開ページのパスだけ認証を通さずに通します。',
+    },
+  ],
+};
 
 const meta = preview.meta({
   component: AgentMessage,
@@ -451,6 +480,22 @@ export const GeneratingSlides = meta.story({
     ).toBeInTheDocument();
     await expect(
       canvas.getByRole('button', { name: 'プレビューを開く' }),
+    ).toBeInTheDocument();
+  },
+});
+
+export const WithheldGithubOutput = meta.story({
+  args: { message: withheldGithubAnswer },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    await userEvent.click(
+      canvas.getByRole('button', { name: /read_github_file/u }),
+    );
+    // 出力は保存した決まった文になるが、何を読んだか（入力）は残る
+    await expect(canvas.getByText(WITHHELD_OUTPUT_TEXT)).toBeVisible();
+    await expect(canvas.getByText(/apps\/ai\/src\/proxy\.ts/u)).toBeVisible();
+    await expect(
+      canvas.getByText(/公開ページのパスだけ認証を通さずに通します/u),
     ).toBeInTheDocument();
   },
 });

@@ -94,6 +94,11 @@ const rendersPart = (part: AgentMessagePart, isStreaming: boolean): boolean => {
     case 'tool-read_blog':
     case 'tool-generate_ui':
     case 'tool-generate_slides':
+    case 'tool-list_github_repos':
+    case 'tool-read_github_file':
+    case 'tool-search_github_code':
+    case 'tool-search_github_issues':
+    case 'tool-read_github_issue':
       return true;
     case 'reasoning':
       return part.text.trim() !== '' || isThinking(part, isStreaming);
@@ -151,6 +156,11 @@ const AgentPart: FC<
       );
     case 'tool-list_blogs':
     case 'tool-read_blog':
+    case 'tool-list_github_repos':
+    case 'tool-read_github_file':
+    case 'tool-search_github_code':
+    case 'tool-search_github_issues':
+    case 'tool-read_github_issue':
       return (
         <ToolPart isGenerating={isStreaming || isServerRunning} part={part} />
       );
