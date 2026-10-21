@@ -1,4 +1,5 @@
 import { tool } from 'ai';
+import type { InferToolOutput } from 'ai';
 import * as z from 'zod/mini';
 
 import {
@@ -96,4 +97,20 @@ export const agentTools = {
     toModelOutput: ({ input, output }) =>
       generateSlidesModelOutput({ input, output }),
   }),
+};
+
+type AgentTools = typeof agentTools;
+
+// 出力は保存するときに決まった文へ置き換えるので、出力が文字列の tool にしか true を付けられない
+export type WithholdsOutput = {
+  [Name in keyof AgentTools]: InferToolOutput<AgentTools[Name]> extends string
+    ? boolean
+    : false;
+};
+
+export const WITHHOLDS_OUTPUT: WithholdsOutput = {
+  list_blogs: false,
+  read_blog: false,
+  generate_ui: false,
+  generate_slides: false,
 };

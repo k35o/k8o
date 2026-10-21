@@ -90,6 +90,7 @@ apps/main と同じ `app / features / shared` 構成（詳細は `apps/main/CLAU
 
 - thinking に `blockBinding: { prefixMismatchBehavior: 'drop_block' }` を付けているので、噛み合わない thinking は 400 にならず、API に落とされる。落とされたステップは `onStepEnd` が console.error で残す。system や tools を変えてデプロイすると、既存のスレッドでこれが出る
 - DB から組み直した履歴が、ループの中で送った形と1字でもずれると、同じことが起きる。`toUIMessageStream` の `onError` の戻り値は tool のエラー文として保存され、次のターンで送り返されるので、ループの中で Claude に送る文字列と同じ規則（@ai-sdk/provider の `getErrorMessage`。Error なら `toString()`、文字列ならそのまま）で返す。この戻り値は、ストリーム全体のエラーで画面に出す文言にもなる
+- その例外として、第三者が書ける文を返す tool（`tools.ts` の `WITHHOLDS_OUTPUT` が true のもの）の出力は、保存するときに決まった文（`WITHHELD_OUTPUT_TEXT`）に置き換え、同じメッセージで最初に置き換えた出力より後ろの reasoning を外す（`withhold-tool-outputs.ts`）。次のターンからは置き換えた形を送るので、その位置から後ろの prompt cache が一度だけ作り直しになり、それより後のターンは毎回同じ形を送る。置き換えた文は行に書くので、定数を変えても保存済みのスレッドの履歴はずれない。そのような tool の出力は文字列にし（`WithholdsOutput` の型が強いる）、`toModelOutput` を付けない（次のターンでは置き換えた文で呼ばれる）
 - tool の `toModelOutput` は、ループの中では生の値で、次のターンでは DB から戻した値で呼ばれる。どちらでも同じ文になるよう、tool の input と output だけから決める
 - 止めた返答の、結果の届かなかった tool の呼び出しは、`ignoreIncompleteToolCalls` で落として送る。落とすと thinking だけになるステップは、送る前にステップごと落とす（`drop-thinking-only-steps.ts`）
 

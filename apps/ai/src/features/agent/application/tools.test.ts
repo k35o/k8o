@@ -10,7 +10,7 @@ import { generateSlides } from './generate-slides';
 import type * as generateSlidesModule from './generate-slides';
 import { generateUi } from './generate-ui';
 import type * as generateUiModule from './generate-ui';
-import { agentTools } from './tools';
+import { agentTools, WITHHOLDS_OUTPUT } from './tools';
 
 vi.mock('server-only', () => ({}));
 vi.mock('@/features/usage/infrastructure/usage-repository', () => ({
@@ -101,6 +101,19 @@ describe('agentTools', () => {
         'generate_ui',
         'generate_slides',
       ]);
+    });
+  });
+});
+
+describe('WITHHOLDS_OUTPUT', () => {
+  describe('正常系', () => {
+    it('今の tool は、どれも出力を保存する', () => {
+      expect(WITHHOLDS_OUTPUT).toStrictEqual({
+        list_blogs: false,
+        read_blog: false,
+        generate_ui: false,
+        generate_slides: false,
+      });
     });
   });
 });
