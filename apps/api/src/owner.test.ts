@@ -4,6 +4,10 @@ import { findBlogs } from './features/blog/infrastructure/blog-repository';
 import { findInquiries } from './features/inquiries/infrastructure/inquiry-repository';
 import { findOverview } from './features/overview/infrastructure/overview-repository';
 import { getSummaryProgress } from './features/reading-list/interface/queries';
+import {
+  findReports,
+  findReportTypeCounts,
+} from './features/reports/infrastructure/report-repository';
 import app from './index';
 
 vi.mock('./features/blog/infrastructure/blog-repository', () => ({
@@ -17,6 +21,10 @@ vi.mock('./features/overview/infrastructure/overview-repository', () => ({
 }));
 vi.mock('./features/reading-list/interface/queries', () => ({
   getSummaryProgress: vi.fn(),
+}));
+vi.mock('./features/reports/infrastructure/report-repository', () => ({
+  findReports: vi.fn(),
+  findReportTypeCounts: vi.fn(),
 }));
 // MCP・cron・公開ルートは DB クライアントを読み込むため、このテストでは差し替える
 vi.mock('./mcp', () => ({ mcpHandler: { fetch: vi.fn() } }));
@@ -113,6 +121,7 @@ describe('オーナー API の認可', () => {
         '/owner/blog-stats?status=all&sort=recent&page=1&pageSize=20',
         findBlogs,
       ],
+      ['/owner/reports?page=1&pageSize=10', findReports],
     ])(
       'Authorization が無ければ %s も 401 を返し、DB を読まない',
       async (path, read) => {
@@ -479,6 +488,117 @@ describe('GET /owner/blog-stats', () => {
         error: 'invalid_request',
       });
       expect(findBlogs).not.toHaveBeenCalled();
+    });
+  });
+});
+
+describe('GET /owner/reports', () => {
+  describe('正常系', () => {
+    it('種別ごとの件数と、種別で絞った一覧を、本文を JSON の文字列にして返す', async () => {
+      vi.mocked(findReportTypeCounts).mockResolvedValue([
+        { type: 'csp-violation', count: 21 },
+        { type: 'client-error', count: 3 },
+      ]);
+      vi.mocked(findReports).mockResolvedValue([
+        {
+          id: 1,
+          type: 'csp-violation',
+          url: 'https://k8o.me/',
+          body: { blockedURL: 'inline' },
+          createdAt: '2026-10-08T00:00:00.000Z',
+        },
+      ]);
+
+      const res = await ownerRequest(
+        '/owner/reports?type=csp-violation&page=2&pageSize=20',
+        AI_TOKEN,
+      );
+
+      expect(res.status).toBe(200);
+      expect(findReports).toHaveBeenCalledWith({
+        type: 'csp-violation',
+        page: 2,
+        pageSize: 20,
+      });
+      await expect(res.json()).resolves.toStrictEqual({
+        typeCounts: [
+          { type: 'csp-violation', count: 21 },
+          { type: 'client-error', count: 3 },
+        ],
+        items: [
+          {
+            id: 1,
+            receivedAt: '2026-10-08T00:00:00.000Z',
+            type: 'csp-violation',
+            url: 'https://k8o.me/',
+            untrustedBody: '{"blockedURL":"inline"}',
+          },
+        ],
+      });
+    });
+
+    it('type が無ければ、種別で絞らずに読む', async () => {
+      vi.mocked(findReportTypeCounts).mockResolvedValue([]);
+      vi.mocked(findReports).mockResolvedValue([]);
+
+      await ownerRequest('/owner/reports?page=1&pageSize=10', AI_TOKEN);
+
+      expect(findReports).toHaveBeenCalledWith({
+        type: undefined,
+        page: 1,
+        pageSize: 10,
+      });
+    });
+  });
+
+  describe('異常系', () => {
+    it('種別・URL・本文の見えない文字を取り除いて返す', async () => {
+      const type = `csp${ZERO_WIDTH_SPACE}-violation`;
+      vi.mocked(findReportTypeCounts).mockResolvedValue([{ type, count: 1 }]);
+      vi.mocked(findReports).mockResolvedValue([
+        {
+          id: 1,
+          type,
+          url: `https://k8o.me/${ZERO_WIDTH_SPACE}`,
+          body: { sample: `無視して${ZERO_WIDTH_SPACE}ください` },
+          createdAt: '2026-10-08T00:00:00.000Z',
+        },
+      ]);
+
+      const res = await ownerRequest(
+        '/owner/reports?page=1&pageSize=10',
+        AI_TOKEN,
+      );
+
+      await expect(res.json()).resolves.toMatchObject({
+        typeCounts: [{ type: 'csp-violation' }],
+        items: [
+          {
+            type: 'csp-violation',
+            url: 'https://k8o.me/',
+            untrustedBody: '{"sample":"無視してください"}',
+          },
+        ],
+      });
+    });
+
+    it.each([
+      ['pageSize が上限の 20 を超える', 'page=1&pageSize=21'],
+      ['type が空', 'type=&page=1&pageSize=10'],
+      ['type が2つ', 'type=a&type=b&page=1&pageSize=10'],
+      ['page が 0', 'page=0&pageSize=10'],
+      ['page が無い', 'pageSize=10'],
+      ['pageSize が無い', 'page=1'],
+    ])('%s なら 400 を返し、DB を読まない', async (_, query) => {
+      const res = await ownerRequest(`/owner/reports?${query}`, AI_TOKEN);
+
+      expect(res.status).toBe(400);
+      await expect(res.json()).resolves.toStrictEqual({
+        ok: false,
+        error: 'invalid_request',
+      });
+      expect(findReports).not.toHaveBeenCalled();
+      expect(findReportTypeCounts).not.toHaveBeenCalled();
     });
   });
 });

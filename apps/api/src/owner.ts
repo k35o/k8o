@@ -7,6 +7,7 @@ import {
 } from './features/blog/interface/owner-routes';
 import { inquiryOwnerRoutes } from './features/inquiries/interface/owner-routes';
 import { overviewOwnerRoutes } from './features/overview/interface/owner-routes';
+import { reportOwnerRoutes } from './features/reports/interface/owner-routes';
 
 export const ownerRoutes = new Hono()
   .basePath('/owner')
@@ -15,6 +16,7 @@ export const ownerRoutes = new Hono()
   .route('/inquiries', inquiryOwnerRoutes)
   // /blogs/stats にすると、/blogs/:slug の stats という slug の記事に届かなくなる
   .route('/blog-stats', blogStatsOwnerRoutes)
+  .route('/reports', reportOwnerRoutes)
   .onError((error, c) => {
     if (error instanceof HTTPException) {
       return error.getResponse();
