@@ -79,6 +79,28 @@ describe('fetchOwnerBlogs', () => {
       );
       expect(fetchMock).not.toHaveBeenCalled();
     });
+
+    it.each([
+      ['末尾の改行', 'owner-secret\n'],
+      ['途中の CRLF', 'owner\r\nsecret'],
+      ['空白', 'owner secret'],
+    ])(
+      'トークンに%sが入っていたら、api を呼ばず、値を入れない文で例外を投げる',
+      async (_, token) => {
+        vi.stubEnv('OWNER_API_TOKEN', token);
+
+        const error = await fetchOwnerBlogs(undefined).catch(
+          (thrown: unknown) => thrown,
+        );
+
+        expect(error).toStrictEqual(
+          new Error(
+            'OWNER_API_TOKEN に Bearer のトークンに使えない文字（改行など）が入っています',
+          ),
+        );
+        expect(fetchMock).not.toHaveBeenCalled();
+      },
+    );
   });
 
   describe('エッジケース', () => {
@@ -89,6 +111,19 @@ describe('fetchOwnerBlogs', () => {
         'OWNER_API_TOKEN が設定されていません',
       );
       expect(fetchMock).not.toHaveBeenCalled();
+    });
+
+    it.each([
+      ['base64', 'ab+/Cd9=='],
+      ['base64url', 'ab-_Cd9'],
+      ['16進', '0123abcdef'],
+    ])('%s で作ったトークンは、そのまま Bearer で送る', async (_, token) => {
+      vi.stubEnv('OWNER_API_TOKEN', token);
+      fetchMock.mockResolvedValue(Response.json({ items: [] }));
+
+      await fetchOwnerBlogs(undefined);
+
+      expect(requestedAuthorization()).toBe(`Bearer ${token}`);
     });
 
     it('呼ぶたびにその時点のトークンを読む', async () => {

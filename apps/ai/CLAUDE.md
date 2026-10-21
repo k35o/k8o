@@ -96,7 +96,7 @@ apps/main と同じ `app / features / shared` 構成（詳細は `apps/main/CLAU
 
 ### オーナー API
 
-tool は、オーナー API（`https://api.k8o.me/owner/*`。`apps/api/CLAUDE.md`）から記事の一覧と本文を読む（`agent/infrastructure/owner-api.ts`）。本番も preview も本番の api を呼ぶ。トークンは `OWNER_API_TOKEN` で、本番と preview で別の値を Vercel に sensitive で置く（本番は api の `OWNER_API_TOKEN_AI`、preview は `OWNER_API_TOKEN_AI_PREVIEW` と同じ値）。未設定のときは tool がエラーを返すだけで、会話は続く。
+tool は、オーナー API（`https://api.k8o.me/owner/*`。`apps/api/CLAUDE.md`）から記事の一覧と本文を読む（`agent/infrastructure/owner-api.ts`）。本番も preview も本番の api を呼ぶ。トークンは `OWNER_API_TOKEN` で、本番と preview で別の値を Vercel に sensitive で置く（本番は api の `OWNER_API_TOKEN_AI`、preview は `OWNER_API_TOKEN_AI_PREVIEW` と同じ値）。未設定のときは tool がエラーを返すだけで、会話は続く。値が Bearer のトークンの形（英数字と `-._~+/`、末尾の `=`）でなければ、改行が混ざったときにエラー文へ値が漏れないよう、api を呼ばずに値を入れない文でエラーを返す。
 
 ### GitHub
 

@@ -8,6 +8,14 @@ const ownerApiToken = (): string => {
   if (!token) {
     throw new Error('OWNER_API_TOKEN が設定されていません');
   }
+  // 改行などヘッダーに使えない文字があると、fetch が投げる TypeError の文にトークンが
+  // まるごと入り、tool のエラー文として保存されるので、api を呼ぶ前に値を入れない文で弾く。
+  // 形は RFC 6750 の b64token（base64・base64url・16進で作った値が通る）
+  if (!/^[\w.~+/-]+=*$/u.test(token)) {
+    throw new Error(
+      'OWNER_API_TOKEN に Bearer のトークンに使えない文字（改行など）が入っています',
+    );
+  }
   return token;
 };
 
