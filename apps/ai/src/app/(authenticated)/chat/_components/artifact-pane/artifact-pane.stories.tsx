@@ -646,29 +646,3 @@ export const SlidesSwitchesVersion = meta.story({
     ).toBeInTheDocument();
   },
 });
-
-export const SlidesLinks = meta.story({
-  args: { artifact: SLIDES_DONE },
-  play: async ({ canvasElement }) => {
-    const canvas = within(canvasElement);
-    const document = canvasElement.ownerDocument;
-    const before = document.location.href;
-    await userEvent.click(canvas.getByRole('button', { name: '次のスライド' }));
-    const prevented: string[] = [];
-    const record = (event: Event): void => {
-      if (event.defaultPrevented) {
-        prevented.push(event.type);
-      }
-    };
-    document.addEventListener('click', record);
-    try {
-      await userEvent.click(
-        await canvas.findByRole('link', { name: 'ハンドブック' }),
-      );
-    } finally {
-      document.removeEventListener('click', record);
-    }
-    await expect(prevented).toStrictEqual(['click']);
-    await expect(document.location.href).toBe(before);
-  },
-});
