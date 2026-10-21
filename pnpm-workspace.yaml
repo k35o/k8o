@@ -9,10 +9,10 @@ allowBuilds:
 
 catalog:
   '@ai-sdk/anthropic': 4.0.72
-  '@better-css-modules/cli': 0.4.0
-  '@better-css-modules/core': 0.4.0
-  '@better-css-modules/turbopack': 0.4.0
-  '@better-css-modules/vite': 0.4.0
+  '@better-css-modules/cli': 0.4.1
+  '@better-css-modules/core': 0.4.1
+  '@better-css-modules/turbopack': 0.4.1
+  '@better-css-modules/vite': 0.4.1
   '@k8o/html-nest': 0.2.0
   '@k8o/oxc-config': 1.1.0
   '@k8ordo/i18n': 1.0.0
@@ -38,6 +38,7 @@ catalog:
   drizzle-kit: 0.31.11
   drizzle-orm: 0.45.3
   hono: 4.13.13
+  katex: 0.19.0
   next: 16.4.0
   next-themes: 0.4.6
   react: 19.3.0
@@ -47,7 +48,7 @@ catalog:
   storybook-addon-mock-date: 3.2.1
   storybook-addon-vrt: 0.4.0
   vitest: 5.0.3
-  wrangler: 4.147.0
+  wrangler: 4.149.0
   zod: 4.6.5
 
 minimumReleaseAge: 10080
@@ -60,6 +61,17 @@ minimumReleaseAgeExclude:
   - storybook-addon-vrt
   - storybook-addon-mock-date
   - storybook-addon-determinism
+  # @better-css-modules/core 0.4.1 が固定する版（脆弱性の修正を含む）。2026-10-25 に成熟したら消す
+  - 'postcss@8.5.31'
+
+# drizzle-kit 0.31.11 は @esbuild-kit/esm-loader を依存に持つが、bundle のどこからも読み込まない。
+# これが脆弱な esbuild 0.18 を固定して audit に残るので、依存ごと外す。drizzle-kit を上げたら要否を見直す
+overrides:
+  'drizzle-kit>@esbuild-kit/esm-loader': '-'
+  # remark-math が使う micromark-extension-math は katex ^0.16 に依存する。index が HTML 出力用の
+  # mathHtml も読み込むので katex を import するが、MDX の描画には使わない。記事が読む版と
+  # そろえ、脆弱性のある 0.16 を残さない
+  'micromark-extension-math>katex': 'catalog:'
 
 patchedDependencies:
   '@storybook/nextjs-vite@10.6.1': patches/@storybook__nextjs-vite@10.6.1.patch

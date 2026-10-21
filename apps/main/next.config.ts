@@ -1,3 +1,5 @@
+import { fileURLToPath } from 'node:url';
+
 import { withBetterCssModules } from '@better-css-modules/turbopack';
 import withMdx from '@next/mdx';
 import type { NextConfig } from 'next';
@@ -131,7 +133,14 @@ export default withBetterCssModules(
   withMdx({
     options: {
       remarkPlugins: ['remark-math', 'remark-frontmatter'],
-      rehypePlugins: ['rehype-katex', '@repo/code-highlight'],
+      rehypePlugins: [
+        // @next/mdx は文字列のプラグインを MDX ファイルの場所から require.resolve するので、
+        // apps/main のファイルは絶対パスで渡す
+        fileURLToPath(
+          new URL('./src/shared/mdx/rehype-math.ts', import.meta.url),
+        ),
+        '@repo/code-highlight',
+      ],
     },
   })(nextConfig),
 );
