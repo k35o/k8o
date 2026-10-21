@@ -509,3 +509,46 @@ export const NotPrintable = meta.story({
     await expect(printRuleMedia()).toEqual([]);
   },
 });
+
+// system で禁じている画像をモデルが書いても、表紙にもふつうのスライドにも描かない。参照形式の画像と、
+// スキームの無い URL も同じ
+const IMAGE_DECK = [
+  '<Cover>',
+  '# 画像のあるデッキ',
+  '',
+  '![表紙の図](https://example.com/cover.png)',
+  '</Cover>',
+  '',
+  '---',
+  '',
+  '## 構成',
+  '',
+  'サーバーとブラウザの役割を分ける。',
+  '',
+  '![図](https://example.com/a.png)',
+  '',
+  '![図][1]',
+  '',
+  '[1]: //example.com/b.png',
+].join('\n');
+
+export const WithoutImages = meta.story({
+  args: {
+    source: IMAGE_DECK,
+    isStreaming: false,
+    printable: false,
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    await expect(
+      canvas.getByRole('heading', { level: 1, name: '画像のあるデッキ' }),
+    ).toBeInTheDocument();
+    await expect(canvasElement.querySelector('img')).toBeNull();
+
+    await userEvent.click(canvas.getByRole('button', { name: '次のスライド' }));
+    await expect(
+      await canvas.findByText('サーバーとブラウザの役割を分ける。'),
+    ).toBeInTheDocument();
+    await expect(canvasElement.querySelector('img')).toBeNull();
+  },
+});

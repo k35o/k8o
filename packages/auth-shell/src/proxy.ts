@@ -9,12 +9,14 @@ const isDev = process.env['NODE_ENV'] === 'development';
 // ai は認証済みの面で外部埋め込みを持たないため、main より厳格に
 // できる（GA / codepen / vercel-scripts の許可は不要）。DB 書き込みと
 // 課金の伴う操作を担う面なので XSS・クリックジャッキングの被害範囲を CSP で絞る。
-// frame-ancestors 'none' は ai studio の公開/フォーク等の副作用ボタンを守る要
+// frame-ancestors 'none' は ai studio の公開/フォーク等の副作用ボタンを守る要。
+// img-src に外のホストを入れない。ai は生成物（モデルが書いた spec とデッキ）を同じ文書に
+// 描くので、外の画像は、URL に載せた中身を外へ送る口になる
 const cspHeader = `
     default-src 'self';
     script-src 'self' 'unsafe-inline'${isDev ? " 'unsafe-eval'" : ''};
     style-src 'self' 'unsafe-inline';
-    img-src 'self' https: blob: data:;
+    img-src 'self' blob: data:;
     font-src 'self';
     worker-src 'self' blob:;
     connect-src 'self';
