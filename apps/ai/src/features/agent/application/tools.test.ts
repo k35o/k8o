@@ -98,7 +98,7 @@ beforeEach(() => {
 describe('agentTools', () => {
   describe('正常系', () => {
     // 既存のスレッドに残った tools の並びが変わると、送り返す thinking が落とされる
-    it('tool は、前からある tool の並びを変えずに、GitHub の tool と k8o.me の運営の tool を後ろに足す', () => {
+    it('tool は、前からある tool の並びを変えずに、GitHub の tool と k8o.me の運営の tool と web の tool を後ろに足す', () => {
       expect(Object.keys(agentTools)).toStrictEqual([
         'list_blogs',
         'read_blog',
@@ -113,6 +113,8 @@ describe('agentTools', () => {
         'list_inquiries',
         'list_blog_stats',
         'list_browser_reports',
+        'web_search',
+        'web_fetch',
       ]);
     });
   });
@@ -120,7 +122,7 @@ describe('agentTools', () => {
 
 describe('WITHHOLDS_OUTPUT', () => {
   describe('正常系', () => {
-    it('GitHub の tool と、お問い合わせとブラウザからのレポートの一覧の出力だけを保存しない', () => {
+    it('GitHub の tool と、お問い合わせとブラウザからのレポートの一覧と、web の tool の出力だけを保存しない', () => {
       expect(WITHHOLDS_OUTPUT).toStrictEqual({
         list_blogs: false,
         read_blog: false,
@@ -135,6 +137,8 @@ describe('WITHHOLDS_OUTPUT', () => {
         list_inquiries: true,
         list_blog_stats: false,
         list_browser_reports: true,
+        web_search: true,
+        web_fetch: true,
       });
     });
   });

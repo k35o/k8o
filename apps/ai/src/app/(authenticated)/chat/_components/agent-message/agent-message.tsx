@@ -11,10 +11,12 @@ import type {
 } from '@/features/agent/application/agent-message';
 import { MAX_STEPS } from '@/features/agent/application/agent-run';
 import { chatArtifactOf } from '@/features/agent/application/chat-artifacts';
+import { WITHHELD_OUTPUT_TEXT } from '@/features/agent/application/withhold-tool-outputs';
 import { MONTHLY_BUDGET_MICRO_USD } from '@/features/usage/application/budget';
 
 import { ArtifactCard } from '../artifact-card';
 import { MarkdownText } from '../markdown-text';
+import { webFetchOutputText, webSearchOutputText } from './web-tool-output';
 
 type AgentMessagePart = AgentUIMessage['parts'][number];
 type AgentToolPart = Extract<AgentMessagePart, { type: `tool-${string}` }>;
@@ -34,14 +36,41 @@ const textOf = (message: AgentUIMessage): string =>
     .flatMap((part) => (part.type === 'text' ? [part.text] : []))
     .join('\n');
 
-const toolOutputText = (output: unknown): string =>
-  typeof output === 'string' ? output : JSON.stringify(output, null, 2);
+const toolOutputText = (
+  part: Extract<AgentToolPart, { state: 'output-available' }>,
+): string => {
+  switch (part.type) {
+    case 'tool-web_search':
+      return webSearchOutputText(part.output);
+    case 'tool-web_fetch':
+      return webFetchOutputText(part.output);
+    default:
+      return typeof part.output === 'string'
+        ? part.output
+        : JSON.stringify(part.output, null, 2);
+  }
+};
 
 const ToolPart: FC<{ part: AgentToolPart; isGenerating: boolean }> = ({
   part,
   isGenerating,
 }) => {
   const name = part.type.slice('tool-'.length);
+  // provider が実行した tool は、保存するときに結果を落として呼び出しだけに戻している
+  if (
+    !isGenerating &&
+    part.providerExecuted === true &&
+    part.state === 'input-available'
+  ) {
+    return (
+      <ToolInvocation
+        input={part.input}
+        name={name}
+        output={WITHHELD_OUTPUT_TEXT}
+        state="output-available"
+      />
+    );
+  }
   // 止めた返答には、入力の状態のまま終わった呼び出しが残る。待ち続ける表示にしない
   if (
     !isGenerating &&
@@ -62,7 +91,7 @@ const ToolPart: FC<{ part: AgentToolPart; isGenerating: boolean }> = ({
         <ToolInvocation
           input={part.input}
           name={name}
-          output={toolOutputText(part.output)}
+          output={toolOutputText(part)}
           state={part.state}
         />
       );

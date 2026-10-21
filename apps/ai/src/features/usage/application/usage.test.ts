@@ -108,7 +108,7 @@ describe('isMonthlyBudgetExceeded', () => {
 
 describe('recordUsage', () => {
   describe('正常系', () => {
-    it('予約した行に、トークン数の内訳とモデルの単価で数えた費用を書く', async () => {
+    it('予約した行に、トークン数の内訳と、モデルの単価で数えた費用に web 検索の代金を足したものを書く', async () => {
       await recordUsage({
         usageId: 7,
         model: 'claude-opus-5-5',
@@ -118,6 +118,7 @@ describe('recordUsage', () => {
           cacheReadTokens: 6000,
           cacheWriteTokens: 2000,
         },
+        webSearches: 2,
       });
 
       expect(updateUsageCost).toHaveBeenCalledExactlyOnceWith({
@@ -126,7 +127,7 @@ describe('recordUsage', () => {
         outputTokens: 1000,
         cacheReadTokens: 6000,
         cacheWriteTokens: 2000,
-        costMicroUsd: 39_200,
+        costMicroUsd: 59_200,
       });
     });
   });

@@ -1,4 +1,6 @@
-import { streamText } from 'ai';
+import { inspect } from 'node:util';
+
+import { JSONParseError, streamText, TypeValidationError } from 'ai';
 import type * as ai from 'ai';
 import { convertArrayToReadableStream, MockLanguageModelV4 } from 'ai/test';
 import { after } from 'next/server';
@@ -226,6 +228,88 @@ const readFileSteps = (): LanguageModelV4StreamPart[][] => [
     { type: 'text-end', id: 't' },
     finishChunk('stop'),
   ],
+];
+
+const SEARCH_INPUT = { query: 'React 20' };
+
+const ENCRYPTED_CONTENT = '検索の結果の暗号文';
+
+const CITED_TEXT = '引用した元の文';
+
+const PAGE_TEXT = 'web_fetch で読んだページの本文';
+
+const searchCall = (toolCallId: string): LanguageModelV4StreamPart => ({
+  type: 'tool-call',
+  toolCallId,
+  toolName: 'web_search',
+  input: JSON.stringify(SEARCH_INPUT),
+  providerExecuted: true,
+});
+
+const searchResult = (toolCallId: string): LanguageModelV4StreamPart => ({
+  type: 'tool-result',
+  toolCallId,
+  toolName: 'web_search',
+  result: [
+    {
+      type: 'web_search_result',
+      url: 'https://react.dev/blog',
+      title: 'React Blog',
+      pageAge: null,
+      encryptedContent: ENCRYPTED_CONTENT,
+    },
+  ],
+});
+
+// 考えてから web_search で検索し、結果を読んでまた考えてから、引用つきで答える Claude の1ステップ。
+// @ai-sdk/anthropic と同じく、検索の結果ごとと引用ごとに出典（source）も流す
+const searchStep = (): LanguageModelV4StreamPart[] => [
+  { type: 'stream-start', warnings: [] },
+  ...reasoningChunks('r1', 'sig-1'),
+  { type: 'text-start', id: 't1' },
+  { type: 'text-delta', id: 't1', delta: '調べます' },
+  { type: 'text-end', id: 't1' },
+  searchCall('srvtoolu_1'),
+  searchResult('srvtoolu_1'),
+  {
+    type: 'source',
+    sourceType: 'url',
+    id: 'src-result',
+    url: 'https://react.dev/blog',
+    title: 'React Blog',
+    providerMetadata: { anthropic: { pageAge: null } },
+  },
+  ...reasoningChunks('r2', 'sig-2'),
+  { type: 'text-start', id: 't2' },
+  {
+    type: 'source',
+    sourceType: 'url',
+    id: 'src-citation',
+    url: 'https://react.dev/blog',
+    title: 'React Blog',
+    providerMetadata: {
+      anthropic: { citedText: CITED_TEXT, encryptedIndex: 'index' },
+    },
+  },
+  { type: 'text-delta', id: 't2', delta: 'React 20 が出ました' },
+  {
+    type: 'text-end',
+    id: 't2',
+    providerMetadata: {
+      anthropic: {
+        citations: [
+          {
+            type: 'web_search_result_location',
+            url: 'https://react.dev/blog',
+            title: 'React Blog',
+            cited_text: CITED_TEXT,
+            encrypted_index: 'index',
+          },
+        ],
+      },
+    },
+  },
+  finishChunk('stop'),
 ];
 
 const UI_SPEC = {
@@ -723,6 +807,63 @@ describe('handleChat', () => {
       expect(JSON.stringify(assistant)).not.toContain(SOURCE_LINE);
     });
 
+    it('web 検索を含む返答は、画面へは結果を流し、保存では呼び出しだけを残して、後ろの thinking と引用を外す', async () => {
+      mockClaude(searchStep());
+
+      const response = await handleChat(chatRequest(chatBody()));
+      const body = await response.text();
+      await settle();
+
+      expect(body).toContain(ENCRYPTED_CONTENT);
+      const assistant = savedAssistant();
+      expect(contentParts(assistant)).toMatchObject([
+        {
+          type: 'reasoning',
+          providerMetadata: { anthropic: { signature: 'sig-1' } },
+        },
+        { type: 'text', text: '調べます' },
+        {
+          type: 'tool-web_search',
+          toolCallId: 'srvtoolu_1',
+          providerExecuted: true,
+          state: 'input-available',
+          input: SEARCH_INPUT,
+        },
+        { type: 'text', text: 'React 20 が出ました' },
+      ]);
+      expect(JSON.stringify(assistant)).not.toContain(ENCRYPTED_CONTENT);
+      expect(JSON.stringify(assistant)).not.toContain(CITED_TEXT);
+      expect(JSON.stringify(assistant)).not.toContain('React Blog');
+    });
+
+    it('利用の記録に、結果の届いた web 検索の数だけ、1回 10,000 マイクロドルの代金をステップをまたいで足す', async () => {
+      mockClaude(
+        [
+          { type: 'stream-start', warnings: [] },
+          searchCall('srvtoolu_1'),
+          searchResult('srvtoolu_1'),
+          {
+            type: 'tool-call',
+            toolCallId: 'call-1',
+            toolName: 'list_blogs',
+            input: '{}',
+          },
+          finishChunk('tool-calls'),
+        ],
+        textStep('答え'),
+      );
+
+      const response = await handleChat(chatRequest(chatBody()));
+      await response.text();
+      await settle();
+
+      expect(
+        vi
+          .mocked(updateUsageCost)
+          .mock.calls.map(([input]) => input.costMicroUsd),
+      ).toStrictEqual([12_610, 15_220]);
+    });
+
     it('generate_ui と generate_slides には、会話の文脈と、ほかの tool より長い時間の上限を渡す', async () => {
       mockClaude(textStep('答え'));
 
@@ -948,6 +1089,57 @@ describe('handleChat', () => {
       // エラーで終わったステップの入力トークン数で、直近の値を上書きしない
       expect(updateLastInputTokens).not.toHaveBeenCalled();
     });
+
+    // @ai-sdk/anthropic は、応答のかたまりを読めないと、かたまりの値を持つエラーを流す
+    it.each([
+      [
+        'TypeValidationError',
+        new TypeValidationError({
+          value: { data: PAGE_TEXT },
+          cause: new Error('invalid'),
+        }),
+        ['AI_TypeValidationError'],
+      ],
+      [
+        'JSONParseError',
+        new JSONParseError({
+          text: `{"data":"${PAGE_TEXT}"`,
+          cause: new SyntaxError('Unexpected end of JSON input'),
+        }),
+        ['AI_JSONParseError'],
+      ],
+      [
+        'TypeValidationError を原因に持つエラー',
+        new Error('stream failed', {
+          cause: new TypeValidationError({
+            value: { data: PAGE_TEXT },
+            cause: new Error('invalid'),
+          }),
+        }),
+        ['Error', 'AI_TypeValidationError'],
+      ],
+    ] as const)(
+      'Claude の応答のかたまりを読めなかったエラー（%s）は、かたまりの中身をログに出さず、エラーの名前を残す',
+      async (_, streamed, names) => {
+        const error = vi.spyOn(console, 'error').mockImplementation(() => {});
+        mockClaude([
+          { type: 'stream-start', warnings: [] },
+          { type: 'error', error: streamed },
+        ]);
+
+        const response = await handleChat(chatRequest(chatBody()));
+        await response.text();
+        await settle();
+
+        expect(error).toHaveBeenCalledWith(
+          'エージェントの生成エラー',
+          expect.objectContaining({ names }),
+        );
+        expect(inspect(error.mock.calls, { depth: null })).not.toContain(
+          PAGE_TEXT,
+        );
+      },
+    );
 
     it('Claude のストリームが例外で切れても、failed として保存し、実行中の印を外す', async () => {
       vi.spyOn(console, 'error').mockImplementation(() => {});
@@ -1426,6 +1618,38 @@ describe('handleChat', () => {
           (message) => message.role === 'tool',
         ),
       ).toStrictEqual(toolResultsSentInLoop);
+    });
+
+    it('web 検索を含む返答のあとの次のターンでは、web の呼び出しも結果も送らず、返答の文を引用なしで送る', async () => {
+      mockClaude(searchStep());
+      const firstResponse = await handleChat(chatRequest(chatBody()));
+      await firstResponse.text();
+      await settle();
+
+      const nextTurn = await sendNextTurn('ほかには？', 'u2');
+
+      const sent = nextTurn.doStreamCalls[0]?.prompt.filter(
+        (message) => message.role !== 'system',
+      );
+      expect(sent).toMatchObject([
+        {
+          role: 'user',
+          content: [{ type: 'text', text: 'arianotify の記事を要約して' }],
+        },
+        {
+          role: 'assistant',
+          content: [
+            {
+              type: 'reasoning',
+              providerOptions: { anthropic: { signature: 'sig-1' } },
+            },
+            { type: 'text', text: '調べます' },
+            { type: 'text', text: 'React 20 が出ました' },
+          ],
+        },
+        { role: 'user', content: [{ type: 'text', text: 'ほかには？' }] },
+      ]);
+      expect(JSON.stringify(sent)).not.toContain(CITED_TEXT);
     });
 
     it('送り返した thinking を Claude API に落とされたら、ログに残す', async () => {
