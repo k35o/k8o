@@ -14,7 +14,7 @@ apps/main と同じ `app / features / shared` 構成（詳細は `apps/main/CLAU
 - `highlight/` - 生成物（spec JSON / spec から変換した TSX / スライド）の shiki ハイライト。許す言語、長さとブロック数の上限、shiki の呼び出しは `application/highlight.ts` に置き、画面から呼ぶ server action（`highlightGenerated`）は、引数の形とセッションを確かめてからそれを呼ぶ。公開ページは、公開した版の中身だけを入力に、セッションを通さずに呼ぶ
 - `slides/` - デッキ Markdown のスライド分割、コードブロックの抽出（デッキ全体の並びは `deckCodeBlocks`）、閉じていないコードブロックの検出、発表者ノートを外したデッキ（`stripNotes`）（`parse-deck.ts`）
 
-`shared/claude/` には、generation・agent・usage が共通で使うモデルの定義（`models.ts`）と provider（`claude-provider.ts`）を置く。
+`shared/claude/` には、generation・agent・usage が共通で使うモデルの定義（`models.ts`）と provider（`claude-provider.ts`）を置く。provider は、Claude API への要求の本文に `web_fetch` の定義があれば、読む URL の出どころ（`url_sources`）を足して送る（`createAnthropic` の `fetch`）。@ai-sdk/anthropic が `url_sources` を API に渡せないため。`web_fetch` の無い要求の本文は変えない
 
 ## 文言のロケール
 
