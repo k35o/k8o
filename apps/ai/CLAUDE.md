@@ -46,7 +46,7 @@ apps/main と同じ `app / features / shared` 構成（詳細は `apps/main/CLAU
   - スライドが1枚以上ある
 - タイトルは tool の入力から取り、meta は要約にだけ使う。meta が無くても受け取る
 - 書きかけのデッキは、1枚以上のスライドが読めてから流す。考えているあいだは、直すときも土台を流さない。スライドは全文の置き換えで、土台から続かないため
-- Markdown の画像は、system で禁じ、描画（`DeckSlideView`）でも描かない
+- Markdown の画像とリンクは、system で禁じ、描画（`DeckSlideView`）でも描かない。リンクは文字だけ残す
 
 ### 印刷（PDF出力）
 
@@ -73,7 +73,7 @@ apps/main と同じ `app / features / shared` 構成（詳細は `apps/main/CLAU
   - できた版を出しているあいだは、ペインの見出しの「作ったもののページを開く」で、その版の生成物のページ（`/artifacts/<artifactId>?v=<版>`）へ移れる。生成中と止めた途中のものは版になっていないので出さない。移っても会話の画面は Activity で隠れて残り、戻ると同じ状態に戻る
   - xl 以上では、ペインの見出しの「全画面で見る」で会話の列を隠し、ペインを作業領域いっぱいに広げる。会話はマウントしたまま隠す。広げた状態は ChatScreen の state に持って URL には持たず、ペインが消えると戻る
   - ペインの本文（プレビューとコード）は、会話の外でも使える `ArtifactBody`（`(authenticated)/_components/artifact-body`）で描く。見出し・版の切り替え・止めた途中の注記はペインが持つ
-  - 生成 UI とスライドのリンクと、生成 UI のフォームは、`ArtifactBody` の包みで移動を止める。会話の画面ごと移動すると受信が切れ、生成物のページでも見ていた版から離れるため。/s/[slug] ではリンクが動いてよいので、共有の `SpecPreview` には入れない
+  - 生成 UI のリンクとフォームは、`ArtifactBody` の包みで移動を止める。会話の画面ごと移動すると受信が切れ、生成物のページでも見ていた版から離れるため。/s/[slug] ではリンクが動いてよいので、共有の `SpecPreview` には入れない
   - スライドは `DeckPreview`（`app/_components/deck-preview`）で描く。デッキのコードブロックのハイライトは、アプリのテーマに合わせる（`(authenticated)/_components/deck-highlight` の `useDeckHighlight`）。矢印・Space・PageUp/Down・Home/End は、デッキにフォーカスがある（スライドを押した）ときだけ効き、会話のスクロールを奪わない
   - ペインには印刷用の全スライド（`DeckPrint`）を描かない。印刷用のスライドを表示しているあいだはほかの要素が印刷から外れ、会話の画面を印刷してもスライドしか出なくなるため
 - スレッドの ID はページが決め、最初の POST が予約を通ったときに、サーバーがスレッドの行を作る

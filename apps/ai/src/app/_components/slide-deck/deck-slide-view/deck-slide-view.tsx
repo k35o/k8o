@@ -146,9 +146,10 @@ const coverComponents: Components = {
   p: ({ children }) => <CoverText>{children}</CoverText>,
 };
 
-// system で禁じている画像をモデルが書いても、外の URL は CSP で読み込めず、壊れた画像の枠が
-// 出るので描かない
-const DISALLOWED_ELEMENTS = ['img'];
+// system で禁じている画像とリンクをモデルが書いても描かず、リンクは文字だけ残す。外の画像は CSP で
+// 読み込めずに壊れた画像の枠が出て、リンクは URL に載せた中身を、押した人（公開ページの閲覧者や
+// PDF の読み手を含む）から外へ送るため
+const DISALLOWED_ELEMENTS = ['img', 'a'];
 
 // 1枚ぶんのスライド本文。Stage の content（cqi コンテキスト）の中に置いて使う。
 export const DeckSlideView: FC<{ slide: DeckSlide }> = ({ slide }) =>
@@ -157,12 +158,17 @@ export const DeckSlideView: FC<{ slide: DeckSlide }> = ({ slide }) =>
       <Markdown
         components={coverComponents}
         disallowedElements={DISALLOWED_ELEMENTS}
+        unwrapDisallowed
       >
         {slide.source}
       </Markdown>
     </Cover>
   ) : (
-    <Markdown components={components} disallowedElements={DISALLOWED_ELEMENTS}>
+    <Markdown
+      components={components}
+      disallowedElements={DISALLOWED_ELEMENTS}
+      unwrapDisallowed
+    >
       {slide.source}
     </Markdown>
   );

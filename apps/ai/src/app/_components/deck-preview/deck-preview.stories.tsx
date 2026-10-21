@@ -552,3 +552,48 @@ export const WithoutImages = meta.story({
     await expect(canvasElement.querySelector('img')).toBeNull();
   },
 });
+
+// system で禁じているリンクをモデルが書いても、表紙にもふつうのスライドにも、印刷用の全スライドにも
+// 描かずに文字だけ残す。参照形式のリンクと、スキームの無い URL も同じ
+const LINK_DECK = [
+  '<Cover>',
+  '# リンクのあるデッキ',
+  '',
+  '[資料](https://example.com/cover?d=1)',
+  '</Cover>',
+  '',
+  '---',
+  '',
+  '## 参考',
+  '',
+  '- 値の形を[ハンドブック](https://www.typescriptlang.org/docs/)で確かめる',
+  '- [仕様][1]を読む',
+  '',
+  '[1]: //example.com/spec',
+].join('\n');
+
+export const WithoutLinks = meta.story({
+  args: {
+    source: LINK_DECK,
+    isStreaming: false,
+    printable: true,
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    await expect(canvas.getByText('資料')).toBeInTheDocument();
+    await expect(canvasElement.querySelector('a')).toBeNull();
+
+    await userEvent.click(canvas.getByRole('button', { name: '次のスライド' }));
+    await expect(
+      await canvas.findByText('値の形をハンドブックで確かめる'),
+    ).toBeInTheDocument();
+    await expect(canvas.getByText('仕様を読む')).toBeInTheDocument();
+    await expect(canvasElement.querySelector('a')).toBeNull();
+
+    const printRoot = document.body.querySelector('[data-slide-print]');
+    await expect(printRoot).toHaveTextContent('値の形をハンドブックで確かめる');
+    await expect(
+      document.body.querySelectorAll('[data-slide-print] a'),
+    ).toHaveLength(0);
+  },
+});
