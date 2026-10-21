@@ -9,10 +9,10 @@ allowBuilds:
 
 catalog:
   '@ai-sdk/anthropic': 4.0.72
-  '@better-css-modules/cli': 0.4.0
-  '@better-css-modules/core': 0.4.0
-  '@better-css-modules/turbopack': 0.4.0
-  '@better-css-modules/vite': 0.4.0
+  '@better-css-modules/cli': 0.4.1
+  '@better-css-modules/core': 0.4.1
+  '@better-css-modules/turbopack': 0.4.1
+  '@better-css-modules/vite': 0.4.1
   '@k8o/html-nest': 0.2.0
   '@k8o/oxc-config': 1.1.0
   '@k8ordo/i18n': 1.0.0
@@ -60,6 +60,8 @@ minimumReleaseAgeExclude:
   - storybook-addon-vrt
   - storybook-addon-mock-date
   - storybook-addon-determinism
+  # @better-css-modules/core 0.4.1 が固定する版（脆弱性の修正を含む）。2026-10-25 に成熟したら消す
+  - 'postcss@8.5.31'
 
 # drizzle-kit 0.31.11 は @esbuild-kit/esm-loader を依存に持つが、bundle のどこからも読み込まない。
 # これが脆弱な esbuild 0.18 を固定して audit に残るので、依存ごと外す。drizzle-kit を上げたら要否を見直す
