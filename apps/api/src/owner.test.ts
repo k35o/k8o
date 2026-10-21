@@ -1,7 +1,15 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
+import { findOverview } from './features/overview/infrastructure/overview-repository';
+import { getSummaryProgress } from './features/reading-list/interface/queries';
 import app from './index';
 
+vi.mock('./features/overview/infrastructure/overview-repository', () => ({
+  findOverview: vi.fn(),
+}));
+vi.mock('./features/reading-list/interface/queries', () => ({
+  getSummaryProgress: vi.fn(),
+}));
 // MCP・cron・公開ルートは DB クライアントを読み込むため、このテストでは差し替える
 vi.mock('./mcp', () => ({ mcpHandler: { fetch: vi.fn() } }));
 vi.mock('./features/reading-list/interface/sync', () => ({
@@ -86,6 +94,16 @@ describe('オーナー API の認可', () => {
       await expect(res.json()).resolves.toStrictEqual({ ok: false });
       expect(fetchMock).not.toHaveBeenCalled();
     });
+
+    it.each([['/owner/overview', findOverview]])(
+      'Authorization が無ければ %s も 401 を返し、DB を読まない',
+      async (path, read) => {
+        const res = await ownerRequest(path);
+
+        expect(res.status).toBe(401);
+        expect(read).not.toHaveBeenCalled();
+      },
+    );
 
     it('どのクライアントのトークンとも違えば 401 を返す', async () => {
       const res = await ownerRequest('/owner/blogs', 'wrong');
@@ -221,5 +239,70 @@ describe('GET /owner/blogs/:slug', () => {
         expect(fetchMock).not.toHaveBeenCalled();
       },
     );
+  });
+});
+
+describe('GET /owner/overview', () => {
+  describe('正常系', () => {
+    it('DB の集計に、reading-list の要約の進み具合を足して返す', async () => {
+      vi.mocked(findOverview).mockResolvedValue({
+        blogs: { published: 90, drafts: 1, totalViews: 1234 },
+        inquiries: { total: 3, latestAt: '2026-10-07T00:00:00.000Z' },
+        push: {
+          subscribers: 5,
+          lastSentAt: '2026-10-08T00:01:00.000Z',
+          lastSucceeded: 5,
+          lastFailed: 0,
+        },
+        readingList: {
+          articles: 300,
+          sources: 12,
+          latestPublishedAt: '2026-10-08T00:00:00.000Z',
+        },
+        browserSupport: {
+          activeVersion: '3.40.1',
+          activeIngestedAt: '2026-10-08T14:40:34.555Z',
+          lastRun: {
+            result: 'applied',
+            trigger: 'manual',
+            createdAt: '2026-10-08T14:40:36.027Z',
+          },
+        },
+      });
+      vi.mocked(getSummaryProgress).mockResolvedValue({
+        unsummarized: 20,
+        summaryGaveUp: 2,
+      });
+
+      const res = await ownerRequest('/owner/overview', AI_TOKEN);
+
+      expect(res.status).toBe(200);
+      await expect(res.json()).resolves.toStrictEqual({
+        blogs: { published: 90, drafts: 1, totalViews: 1234 },
+        inquiries: { total: 3, latestAt: '2026-10-07T00:00:00.000Z' },
+        push: {
+          subscribers: 5,
+          lastSentAt: '2026-10-08T00:01:00.000Z',
+          lastSucceeded: 5,
+          lastFailed: 0,
+        },
+        readingList: {
+          articles: 300,
+          sources: 12,
+          latestPublishedAt: '2026-10-08T00:00:00.000Z',
+          unsummarized: 20,
+          summaryGaveUp: 2,
+        },
+        browserSupport: {
+          activeVersion: '3.40.1',
+          activeIngestedAt: '2026-10-08T14:40:34.555Z',
+          lastRun: {
+            result: 'applied',
+            trigger: 'manual',
+            createdAt: '2026-10-08T14:40:36.027Z',
+          },
+        },
+      });
+    });
   });
 });

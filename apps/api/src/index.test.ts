@@ -15,10 +15,14 @@ vi.mock('./features/browser-support/interface/sync', () => ({
 vi.mock('./mcp', () => ({
   mcpHandler: { fetch: vi.fn() },
 }));
-// 公開ルートは DB クライアントを読み込むため、このテストでは空のアプリに差し替える
+// 公開ルートとオーナー API は DB クライアントを読み込むため、このテストでは空のアプリに差し替える
 vi.mock('./public', async () => {
   const { Hono } = await import('hono');
   return { publicRoutes: new Hono() };
+});
+vi.mock('./owner', async () => {
+  const { Hono } = await import('hono');
+  return { ownerRoutes: new Hono() };
 });
 
 const CRON_SECRET = 'cron-secret';

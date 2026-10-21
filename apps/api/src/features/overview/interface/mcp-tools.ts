@@ -2,8 +2,7 @@ import type { McpServer } from '@modelcontextprotocol/server';
 import { z } from 'zod';
 
 import { toolResult } from '../../../shared/mcp/tool-result';
-import { getSummaryProgress } from '../../reading-list/interface/queries';
-import { findOverview } from '../infrastructure/overview-repository';
+import { getOverview } from './get-overview';
 
 export const registerOverviewTools = (server: McpServer): void => {
   server.registerTool(
@@ -55,15 +54,6 @@ export const registerOverviewTools = (server: McpServer): void => {
         openWorldHint: false,
       },
     },
-    async () => {
-      const [overview, summaryProgress] = await Promise.all([
-        findOverview(),
-        getSummaryProgress(),
-      ]);
-      return toolResult({
-        ...overview,
-        readingList: { ...overview.readingList, ...summaryProgress },
-      });
-    },
+    async () => toolResult(await getOverview()),
   );
 };
