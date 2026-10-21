@@ -2,7 +2,7 @@ import type { Element, ElementContent, Root } from 'hast';
 import { visit } from 'unist-util-visit';
 import { describe, expect, it } from 'vitest';
 
-import rehypeMath from './rehype-math';
+import rehypeMath from './rehype-math.ts';
 
 const text = (value: string): ElementContent => ({ type: 'text', value });
 

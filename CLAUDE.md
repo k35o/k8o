@@ -34,6 +34,7 @@ packages/database/  → k8o の DB（Drizzle ORM + Turso）  → packages/databa
 packages/ai-database/ → ai の DB（認証と ai_*）        → packages/ai-database/CLAUDE.md
 packages/helpers/   → 共有ユーティリティ                  → packages/helpers/CLAUDE.md
 packages/typescript-config・code-highlight → 共有設定・コードハイライト
+packages/mdx-preset/ → main の MDX に通す remark・rehype の preset（数式・コードハイライト）と KaTeX の CSS
 packages/oxlint-plugin/ → リポジトリ固有のoxlintカスタムルール（k8o/*）
 ```
 

@@ -3,7 +3,7 @@ import type { Metadata } from 'next';
 import { BlogLayout } from '@/app/blog/_components/blog-layout';
 import { buildBlogMetadata } from '@/features/blog/interface/metadata';
 
-import 'katex/dist/katex.min.css';
+import '@repo/mdx-preset/katex.css';
 import '@/app/blog/_styles/katex-vertical.css';
 
 const slug = 'font-family-math';

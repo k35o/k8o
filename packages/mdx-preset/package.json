@@ -1,0 +1,37 @@
+{
+  "name": "@repo/mdx-preset",
+  "version": "1.0.0",
+  "private": true,
+  "description": "k8o の MDX に通す remark・rehype プラグインの preset（数式とコードハイライト）",
+  "type": "module",
+  "exports": {
+    "./remark": {
+      "types": "./src/remark.ts",
+      "default": "./src/remark.ts"
+    },
+    "./rehype": {
+      "types": "./src/rehype.ts",
+      "default": "./src/rehype.ts"
+    },
+    "./katex.css": "./styles/katex.css"
+  },
+  "scripts": {
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "type-check": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@repo/code-highlight": "workspace:*",
+    "hast-util-from-html-isomorphic": "2.0.0",
+    "katex": "catalog:",
+    "remark-frontmatter": "5.0.0",
+    "remark-math": "6.0.0",
+    "unist-util-visit": "5.1.0"
+  },
+  "devDependencies": {
+    "@repo/typescript-config": "workspace:*",
+    "@types/hast": "3.0.5",
+    "@vitest/coverage-v8": "catalog:",
+    "vitest": "catalog:"
+  }
+}

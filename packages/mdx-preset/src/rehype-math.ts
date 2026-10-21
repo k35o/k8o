@@ -3,8 +3,8 @@ import { fromHtmlIsomorphic } from 'hast-util-from-html-isomorphic';
 import katex from 'katex';
 import { SKIP, visit } from 'unist-util-visit';
 
-// remark-math が出す数式の要素を KaTeX の HTML に置き換える MDX の rehype プラグイン。
-// 記事は apps/main の katex の CSS を読むので、HTML も同じ katex で作る。rehype-katex は
+// remark-math が出す数式の要素を KaTeX の HTML に置き換える rehype プラグイン。
+// 記事はこのパッケージの katex.css を読むので、HTML も同じ katex で作る。rehype-katex は
 // katex ^0.16 を固定し、0.18 でクラス名が変わった CSS と合わなくなっていた
 
 type MessageSink = {
