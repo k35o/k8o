@@ -2,7 +2,7 @@
 
 import { Anchor, Code } from '@k8ordo/ui';
 import { createContext, use } from 'react';
-import type { FC } from 'react';
+import type { FC, ReactNode } from 'react';
 import Markdown from 'react-markdown';
 import type { Components } from 'react-markdown';
 import remarkGfm from 'remark-gfm';
@@ -11,6 +11,45 @@ import styles from './markdown-text.module.css';
 
 // react-markdown の code はインラインかコードブロックの中かを区別できないので、pre から伝える
 const InCodeBlockContext = createContext(false);
+
+// 相対の href を、サーバーの描画とブラウザで同じに解くためのオリジン。どのホストとも重ならない
+const SELF_ORIGIN = 'https://self.invalid';
+
+const externalUrlOf = (href: string): URL | null => {
+  const url = URL.parse(href, SELF_ORIGIN);
+  if (
+    url === null ||
+    (url.protocol !== 'http:' && url.protocol !== 'https:') ||
+    url.origin === SELF_ORIGIN
+  ) {
+    return null;
+  }
+  return url;
+};
+
+const MarkdownLink: FC<{ href: string; children: ReactNode }> = ({
+  href,
+  children,
+}) => {
+  const external = externalUrlOf(href);
+  if (external === null) {
+    return <Anchor href={href}>{children}</Anchor>;
+  }
+  // Anchor は http で始まる href だけを外として描くので、//host も外に見えるよう解いた URL を渡す
+  const link = <Anchor href={external.href}>{children}</Anchor>;
+  // 文字が URL そのものでも、国際化ドメインは Unicode のまま出て、userinfo は別のホストを先に見せるので、
+  // 文字が行き先のオリジン（punycode のホスト）から始まるときだけ、ホストは見えているとして添えない
+  return typeof children === 'string' &&
+    URL.parse(children)?.href === external.href &&
+    children.startsWith(external.origin) ? (
+    link
+  ) : (
+    <>
+      {link}
+      <span className={styles.host}>（{external.host}）</span>
+    </>
+  );
+};
 
 const components: Components = {
   h1: ({ children }) => <h1 className={styles.heading}>{children}</h1>,
@@ -23,7 +62,7 @@ const components: Components = {
     href === undefined || href === '' ? (
       <span>{children}</span>
     ) : (
-      <Anchor href={href}>{children}</Anchor>
+      <MarkdownLink href={href}>{children}</MarkdownLink>
     ),
   ul: ({ children }) => <ul className={styles.list}>{children}</ul>,
   ol: ({ children }) => <ol className={styles.orderedList}>{children}</ol>,
