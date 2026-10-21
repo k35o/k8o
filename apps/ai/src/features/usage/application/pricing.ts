@@ -1,4 +1,4 @@
-import type { LanguageModelUsage } from 'ai';
+import type { ContentPart, LanguageModelUsage, ToolSet } from 'ai';
 
 import type { GenerationModel } from '@/shared/claude/models';
 
@@ -19,6 +19,14 @@ export const PRICE_PER_MTOK_USD = {
   },
   'claude-opus-5-5': { input: 4, output: 20, cacheWrite: 5, cacheRead: 0.2 },
 } as const satisfies Record<GenerationModel, Prices>;
+
+const WEB_SEARCH_MICRO_USD = 10_000;
+
+// エラーになった検索は課金されないので、結果の届いた検索だけを数える
+export const webSearchesOf = (content: Array<ContentPart<ToolSet>>): number =>
+  content.filter(
+    (part) => part.type === 'tool-result' && part.toolName === 'web_search',
+  ).length;
 
 export type UsageTokens = {
   inputTokens: number;
@@ -54,15 +62,19 @@ export const addUsageTokens = (
 export const costMicroUsd = (
   model: GenerationModel,
   tokens: UsageTokens,
+  webSearches: number,
 ): number => {
   const prices = PRICE_PER_MTOK_USD[model];
   // inputTokens はキャッシュの読み書きを含んだ合計なので、それを除いた分に入力の単価を掛ける
   const uncachedInputTokens =
     tokens.inputTokens - tokens.cacheReadTokens - tokens.cacheWriteTokens;
-  return Math.ceil(
-    uncachedInputTokens * prices.input +
-      tokens.cacheWriteTokens * prices.cacheWrite +
-      tokens.cacheReadTokens * prices.cacheRead +
-      tokens.outputTokens * prices.output,
+  return (
+    Math.ceil(
+      uncachedInputTokens * prices.input +
+        tokens.cacheWriteTokens * prices.cacheWrite +
+        tokens.cacheReadTokens * prices.cacheRead +
+        tokens.outputTokens * prices.output,
+    ) +
+    webSearches * WEB_SEARCH_MICRO_USD
   );
 };

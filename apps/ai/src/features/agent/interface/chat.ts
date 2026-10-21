@@ -14,6 +14,7 @@ import {
   addUsageTokens,
   EMPTY_USAGE_TOKENS,
   toUsageTokens,
+  webSearchesOf,
 } from '@/features/usage/application/pricing';
 import {
   isMonthlyBudgetExceeded,
@@ -115,6 +116,7 @@ const streamRun = async (input: {
   const controller = new AbortController();
   const runEnded = new AbortController();
   let usage = EMPTY_USAGE_TOKENS;
+  let webSearches = 0;
   let budgetExceeded = false;
 
   const artifactContext = { userId, threadId, model };
@@ -158,6 +160,7 @@ const streamRun = async (input: {
     // SDK は onStepEnd の例外を握りつぶすので、失敗はここでログに残す
     onStepEnd: async (step) => {
       usage = addUsageTokens(usage, toUsageTokens(step.usage));
+      webSearches += webSearchesOf(step.content);
       const inputTransformations =
         step.providerMetadata?.['anthropic']?.['inputTransformations'];
       if (isNonEmptyArray(inputTransformations)) {
@@ -167,7 +170,7 @@ const streamRun = async (input: {
         );
       }
       await Promise.all([
-        recordUsage({ usageId, model, tokens: usage }).catch(
+        recordUsage({ usageId, model, tokens: usage, webSearches }).catch(
           logFailure('利用の記録に失敗しました'),
         ),
         // エラーで終わったステップには入力トークン数が無いので、前の値を残す

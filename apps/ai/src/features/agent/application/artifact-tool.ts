@@ -64,6 +64,7 @@ export async function* withReservedUsage<T, R>(
       usageId: reservation.usageId,
       model: context.model,
       tokens,
+      webSearches: 0,
     }).catch((error: unknown) => {
       console.error('利用の記録に失敗しました', error);
     });
