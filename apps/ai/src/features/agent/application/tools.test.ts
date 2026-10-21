@@ -94,12 +94,17 @@ beforeEach(() => {
 describe('agentTools', () => {
   describe('正常系', () => {
     // 既存のスレッドに残った tools の並びが変わると、送り返す thinking が落とされる
-    it('tool は、前からある tool の並びを変えずに、generate_slides を最後に置く', () => {
+    it('tool は、前からある tool の並びを変えずに、GitHub の tool を後ろに足す', () => {
       expect(Object.keys(agentTools)).toStrictEqual([
         'list_blogs',
         'read_blog',
         'generate_ui',
         'generate_slides',
+        'list_github_repos',
+        'read_github_file',
+        'search_github_code',
+        'search_github_issues',
+        'read_github_issue',
       ]);
     });
   });
@@ -107,12 +112,17 @@ describe('agentTools', () => {
 
 describe('WITHHOLDS_OUTPUT', () => {
   describe('正常系', () => {
-    it('今の tool は、どれも出力を保存する', () => {
+    it('GitHub の tool の出力だけを保存しない', () => {
       expect(WITHHOLDS_OUTPUT).toStrictEqual({
         list_blogs: false,
         read_blog: false,
         generate_ui: false,
         generate_slides: false,
+        list_github_repos: true,
+        read_github_file: true,
+        search_github_code: true,
+        search_github_issues: true,
+        read_github_issue: true,
       });
     });
   });

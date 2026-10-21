@@ -17,6 +17,8 @@ import type { AgentUIMessage } from '../application/agent-message';
 import { watchStopRequest } from '../application/stop-watch';
 import type * as toolsModule from '../application/tools';
 import { WITHHELD_OUTPUT_TEXT } from '../application/withhold-tool-outputs';
+import { fetchGithubContent } from '../infrastructure/github-api';
+import type * as githubApiModule from '../infrastructure/github-api';
 import {
   fetchOwnerBlogMarkdown,
   fetchOwnerBlogs,
@@ -68,15 +70,18 @@ vi.mock('../infrastructure/owner-api', () => ({
   fetchOwnerBlogs: vi.fn(),
   fetchOwnerBlogMarkdown: vi.fn(),
 }));
+vi.mock('../infrastructure/github-api', async (importOriginal) => ({
+  ...(await importOriginal<typeof githubApiModule>()),
+  fetchGithubContent: vi.fn(),
+  fetchGithubIssue: vi.fn(),
+  fetchGithubIssueComments: vi.fn(),
+  fetchGithubPull: vi.fn(),
+  fetchGithubPullFiles: vi.fn(),
+  fetchGithubRepos: vi.fn(),
+  searchGithubCode: vi.fn(),
+  searchGithubIssues: vi.fn(),
+}));
 vi.mock('../application/stop-watch', () => ({ watchStopRequest: vi.fn() }));
-// 出力を保存しない tool はまだ無いので、出力が文字列の read_blog を保存しないものとして確かめる
-vi.mock('../application/tools', async (importOriginal) => {
-  const actual = await importOriginal<typeof toolsModule>();
-  return {
-    ...actual,
-    WITHHOLDS_OUTPUT: { ...actual.WITHHOLDS_OUTPUT, read_blog: true },
-  };
-});
 
 type LanguageModelV4StreamPart =
   Awaited<
@@ -157,7 +162,7 @@ const textStep = (
 ];
 
 const toolStep = (
-  toolName: 'list_blogs' | 'read_blog' | 'generate_ui' | 'generate_slides',
+  toolName: keyof (typeof toolsModule)['agentTools'],
   input: unknown,
   toolCallId = 'call-1',
 ): LanguageModelV4StreamPart[] => [
@@ -187,18 +192,25 @@ const reasoningChunks = (
   { type: 'reasoning-end', id },
 ];
 
-const ARTICLE = '# ariaNotify() の本文';
+const SOURCE_LINE = "const marker = '原文の行';";
 
-// 考えてから read_blog で記事を読み、読んだあとにまた考えてから答える Claude の2ステップ
-const readArticleSteps = (): LanguageModelV4StreamPart[][] => [
+const FILE_INPUT = { repo: 'k8o', path: 'apps/ai/src/proxy.ts' };
+
+const FILE_OUTPUT = [
+  'k35o/k8o の apps/ai/src/proxy.ts（ref: 既定の枝・全 1 行・1〜1 行目）',
+  `1\t${SOURCE_LINE}`,
+].join('\n');
+
+// 考えてから read_github_file でファイルを読み、読んだあとにまた考えてから答える Claude の2ステップ
+const readFileSteps = (): LanguageModelV4StreamPart[][] => [
   [
     { type: 'stream-start', warnings: [] },
     ...reasoningChunks('r1', 'sig-1'),
     {
       type: 'tool-call',
       toolCallId: 'call-read',
-      toolName: 'read_blog',
-      input: JSON.stringify({ slug: 'arianotify' }),
+      toolName: 'read_github_file',
+      input: JSON.stringify(FILE_INPUT),
     },
     finishChunk('tool-calls'),
   ],
@@ -419,6 +431,11 @@ beforeEach(() => {
   vi.mocked(fetchOwnerBlogs).mockResolvedValue([blog]);
   vi.mocked(fetchOwnerBlogMarkdown).mockResolvedValue('# ariaNotify()');
   vi.mocked(insertArtifactWithFirstVersion).mockResolvedValue();
+  vi.mocked(fetchGithubContent).mockResolvedValue({
+    type: 'file',
+    size: SOURCE_LINE.length,
+    text: SOURCE_LINE,
+  });
 });
 
 afterEach(() => {
@@ -676,15 +693,14 @@ describe('handleChat', () => {
       );
     });
 
-    it('保存しない tool を読んだ返答は、画面へは原文を流し、保存では出力を決まった文に置き換えて、そのあとの thinking を外す', async () => {
-      vi.mocked(fetchOwnerBlogMarkdown).mockResolvedValue(ARTICLE);
-      mockClaude(...readArticleSteps());
+    it('GitHub を読んだ返答は、画面へは原文を流し、保存では出力を決まった文に置き換えて、そのあとの thinking を外す', async () => {
+      mockClaude(...readFileSteps());
 
       const response = await handleChat(chatRequest(chatBody()));
       const body = await response.text();
       await settle();
 
-      expect(body).toContain(ARTICLE);
+      expect(body).toContain(SOURCE_LINE);
       const assistant = savedAssistant();
       expect(contentParts(assistant)).toMatchObject([
         {
@@ -692,15 +708,15 @@ describe('handleChat', () => {
           providerMetadata: { anthropic: { signature: 'sig-1' } },
         },
         {
-          type: 'tool-read_blog',
+          type: 'tool-read_github_file',
           toolCallId: 'call-read',
           state: 'output-available',
-          input: { slug: 'arianotify' },
+          input: FILE_INPUT,
           output: WITHHELD_OUTPUT_TEXT,
         },
         { type: 'text', text: '要約です' },
       ]);
-      expect(JSON.stringify(assistant)).not.toContain(ARTICLE);
+      expect(JSON.stringify(assistant)).not.toContain(SOURCE_LINE);
     });
 
     it('generate_ui と generate_slides には、会話の文脈と、ほかの tool より長い時間の上限を渡す', async () => {
@@ -1273,9 +1289,8 @@ describe('handleChat', () => {
       ).toStrictEqual(toolResultsSentInLoop);
     });
 
-    it('保存しない tool を読んだ返答のあとの次のターンでは、原文の代わりに置き換えた文を text の tool の結果として送り、外した thinking を送らない', async () => {
-      vi.mocked(fetchOwnerBlogMarkdown).mockResolvedValue(ARTICLE);
-      const firstTurn = mockClaude(...readArticleSteps());
+    it('GitHub を読んだ返答のあとの次のターンでは、原文の代わりに置き換えた文を text の tool の結果として送り、外した thinking を送らない', async () => {
+      const firstTurn = mockClaude(...readFileSteps());
       const firstResponse = await handleChat(chatRequest(chatBody()));
       await firstResponse.text();
       await settle();
@@ -1291,7 +1306,7 @@ describe('handleChat', () => {
           content: [
             {
               toolCallId: 'call-read',
-              output: { type: 'text', value: ARTICLE },
+              output: { type: 'text', value: FILE_OUTPUT },
             },
           ],
         },
@@ -1330,9 +1345,8 @@ describe('handleChat', () => {
       ]);
     });
 
-    it('保存しない tool の出力を置き換えたあとは、次のターンとその次のターンで、同じ履歴を1字もずらさずに送る', async () => {
-      vi.mocked(fetchOwnerBlogMarkdown).mockResolvedValue(ARTICLE);
-      mockClaude(...readArticleSteps());
+    it('GitHub の出力を置き換えたあとは、次のターンとその次のターンで、同じ履歴を1字もずらさずに送る', async () => {
+      mockClaude(...readFileSteps());
       const firstResponse = await handleChat(chatRequest(chatBody()));
       await firstResponse.text();
       await settle();
@@ -1359,6 +1373,55 @@ describe('handleChat', () => {
         },
         { role: 'user', content: [{ type: 'text', text: 'ありがとう' }] },
       ]);
+    });
+
+    it('GitHub の tool がエラーになった返答は、エラー文を置き換えずに保存し、次のターンもループの中と同じ文を送る', async () => {
+      vi.mocked(fetchGithubContent).mockRejectedValue(
+        new Error(
+          '見つかりません。名前・パス・番号が違うか、読む権限がありません',
+        ),
+      );
+      const firstTurn = mockClaude(
+        toolStep('read_github_file', FILE_INPUT, 'call-missing'),
+        textStep('見つかりませんでした'),
+      );
+      const firstResponse = await handleChat(chatRequest(chatBody()));
+      await firstResponse.text();
+      await settle();
+      expect(contentParts(savedAssistant())).toMatchObject([
+        {
+          type: 'tool-read_github_file',
+          state: 'output-error',
+          errorText:
+            'Error: 見つかりません。名前・パス・番号が違うか、読む権限がありません',
+        },
+        { type: 'text', text: '見つかりませんでした' },
+      ]);
+
+      const nextTurn = await sendNextTurn('ほかには？', 'u2');
+
+      const toolResultsSentInLoop = firstTurn.doStreamCalls[1]?.prompt.filter(
+        (message) => message.role === 'tool',
+      );
+      expect(toolResultsSentInLoop).toMatchObject([
+        {
+          content: [
+            {
+              toolCallId: 'call-missing',
+              output: {
+                type: 'error-text',
+                value:
+                  'Error: 見つかりません。名前・パス・番号が違うか、読む権限がありません',
+              },
+            },
+          ],
+        },
+      ]);
+      expect(
+        nextTurn.doStreamCalls[0]?.prompt.filter(
+          (message) => message.role === 'tool',
+        ),
+      ).toStrictEqual(toolResultsSentInLoop);
     });
 
     it('送り返した thinking を Claude API に落とされたら、ログに残す', async () => {

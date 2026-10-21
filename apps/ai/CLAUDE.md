@@ -1,13 +1,13 @@
 # apps/ai CLAUDE.md
 
-AI関連ツールの置き場（`ai.k8o.me`）。k8o のブログ記事を読み、UI とスライドを作れるエージェントとのチャット（`/chat`）と、チャットで作った UI とスライドを版の履歴ごと見返し、版を公開・フォークできる生成物のページ（`/artifacts`）がある。`/` は `/chat` へ移す（`next.config.ts` の redirects）。
+AI関連ツールの置き場（`ai.k8o.me`）。k8o のブログ記事と k35o の GitHub のリポジトリを読み、UI とスライドを作れるエージェントとのチャット（`/chat`）と、チャットで作った UI とスライドを版の履歴ごと見返し、版を公開・フォークできる生成物のページ（`/artifacts`）がある。`/` は `/chat` へ移す（`next.config.ts` の redirects）。
 
 ## レイヤー構成（src/）
 
 apps/main と同じ `app / features / shared` 構成（詳細は `apps/main/CLAUDE.md`）。Server Actions（`'use server'`）は `features/*/interface` に置く。
 
 - `generation/` - エージェントの tool（`generate_ui`・`generate_slides`）の中で Claude（Sonnet 5.5 / Opus 5.5、AI SDK v7 と @ai-sdk/anthropic）を呼び、json-render の spec とスライドのデッキを作る部品（system prompt・ストリームの読み取り・受け取りの確かめ）と、spec から TSX への変換
-- `agent/` - `/chat` のエージェント。tool つきの生成のループ、スレッドとメッセージの保存（ai_threads・ai_thread_messages）、オーナー API から記事を読む tool、UI とスライドを作って直す tool
+- `agent/` - `/chat` のエージェント。tool つきの生成のループ、スレッドとメッセージの保存（ai_threads・ai_thread_messages）、オーナー API から記事を読む tool、GitHub から k35o のリポジトリを読む tool、UI とスライドを作って直す tool
 - `usage/` - Claude の利用ログ（ai_usages）、1時間あたりの生成回数の上限、月の予算と単価（`pricing.ts`）
 - `share/` - 公開ページ（/s/[slug]）の読み取り。slug から公開している生成物の版を引き、タイトルと中身にして返す
 - `artifacts/` - 生成物と版の保存と読み取り（ai_artifacts・ai_artifact_versions）と、その公開（ai_artifact_shares）。版の行は書き換えず、直すたびに次の番号の版を足す。読むのは持ち主のものだけで、版の中身のほかに、生成物の一覧（最新版の新しい順）と、生成物ごとの全版の履歴を読める。公開は、持ち主が選んだ版を公開の行に書く。公開中に別の版を公開すると、slug を変えずに版だけを差し替える。公開する版を変える操作は、公開の行があるときだけ版を差し替え、無ければ書かない。別のタブで取り消したあとの古い画面から押されても、取り消した生成物を公開し直さないため。取り消すと行を消すので、公開し直すと別の slug になる。フォークは、持ち主の版の中身と要約を写した版 1 で新しい生成物を作り、元の版を親（parent_id）にする。依頼から生まれた版ではないので依頼は空にし、会話に属さないので thread_id は null にする。公開ページのための、slug から公開している版の id を引く読み取りと、版の id から中身を引く読み取りだけは、持ち主で絞らない
@@ -58,7 +58,7 @@ apps/main と同じ `app / features / shared` 構成（詳細は `apps/main/CLAU
 
 `/chat` は新しいスレッド、`/chat/[threadId]` は既存のスレッドの画面（`app/(authenticated)/chat/`）。サイドバーの枠（ToolNav・サインアウト・テーマ・スマホの Drawer）は `(authenticated)/layout` の `ToolFrame` にあり、ツールごとの一覧は `@sidebar` のスロット（チャットはスレッドを移っても作り直さないよう `@sidebar/chat/layout`）が描く。
 
-- `POST /api/chat` が、`streamText` に tool（`list_blogs`・`read_blog`・`generate_ui`・`generate_slides`）を渡してループを回す。ステップ数や時間の上限は `agent/application/agent-run.ts` にある
+- `POST /api/chat` が、`streamText` に tool（`list_blogs`・`read_blog`・`generate_ui`・`generate_slides`・`list_github_repos`・`read_github_file`・`search_github_code`・`search_github_issues`・`read_github_issue`）を渡してループを回す。ステップ数や時間の上限は `agent/application/agent-run.ts` にある
 - `generate_ui`（`agent/application/generate-ui.ts`）と `generate_slides`（`agent/application/generate-slides.ts`）は、UI・スライドを新しく作るか、`base` で指した持ち主の版を土台に直して、`features/artifacts` に版として保存する。生成物は kind（`'ui'`・`'slides'`）で分けて読むので、もう一方の tool で作った artifactId を `base` に渡されても見つからない
   - 利用者・会話・モデルは `toolsContext` で渡す。時間の上限は、ほかの tool より長い `UI_TOOL_TIMEOUT_MS`・`SLIDES_TOOL_TIMEOUT_MS`
   - execute は async generator で、書きかけ（spec か、デッキの source）を間引いて preliminary の出力で流し、最後に保存した版（artifactId・版・要約・spec か source）を流す
@@ -97,6 +97,18 @@ apps/main と同じ `app / features / shared` 構成（詳細は `apps/main/CLAU
 ### オーナー API
 
 tool は、オーナー API（`https://api.k8o.me/owner/*`。`apps/api/CLAUDE.md`）から記事の一覧と本文を読む（`agent/infrastructure/owner-api.ts`）。本番も preview も本番の api を呼ぶ。トークンは `OWNER_API_TOKEN` で、本番と preview で別の値を Vercel に sensitive で置く（本番は api の `OWNER_API_TOKEN_AI`、preview は `OWNER_API_TOKEN_AI_PREVIEW` と同じ値）。未設定のときは tool がエラーを返すだけで、会話は続く。
+
+### GitHub
+
+GitHub の tool（`list_github_repos`・`read_github_file`・`search_github_code`・`search_github_issues`・`read_github_issue`）は、REST API（`https://api.github.com`、版 `2026-03-10`）から k35o の公開リポジトリを読む（`agent/infrastructure/github-api.ts`）。出力の形と切り詰めは `agent/application/github-tools.ts` にある。
+
+- 読む口は、リポジトリの一覧（`GET /users/k35o/repos`）、ファイルとディレクトリ（contents を object のメディアタイプで読む。1 MB を超えるファイルは GitHub が中身を返さない）、コードの検索（text-match の断片）、issue と PR の検索、issue と PR の本文・コメント・枝・変更したファイル。PR の変更後のファイルは、`read_github_issue` が返す head の SHA を `read_github_file` の `ref` に渡して読む
+- fine-grained PAT は GitHub のすべての公開リポジトリを読めるので、owner は tool の入力に取らずにコードの定数（`GITHUB_OWNER`）にする。検索は `user:k35o` か `repo:k35o/<repo>` を足し、検索語の修飾子で範囲が広がっても、結果を k35o のものに絞る。owner を入力に取ると、だれでも作れるリポジトリが注入の入口になり、tool の引数が宛先を選べる送信にもなるため
+- 宛先は `https://api.github.com` に固定する。モデルが決めた値は区切りごとに符号化して pathname に置き、空・`.`・`..` の区切りは弾く。リダイレクトは追わずにエラーにする。応答の中の URL（`Link` を含む）はたどらずにモデルにも渡さず、次のページは `page` を渡させて組み直す
+- トークンは `GITHUB_READ_TOKEN`（読み取り専用の fine-grained PAT）で、本番と preview で別の PAT を Vercel に Sensitive で置く。Sensitive でない値は、prebuilt の workflow の `vercel pull` が、依存のコードも動くビルドの runner に書き出すため。実行時にだけ読むので、turbo.json と workflow には足さない。`GITHUB_TOKEN` は Actions のトークンで main が使っているので、この名前は使わない
+- 未設定のときは tool がエラーを返すだけで、会話は続く。値に英数字と `_` のほかの文字（前後を含む改行など）があるときも、GitHub を呼ばずに値を入れない文のエラーにする。ヘッダーに使えない文字で fetch が投げる例外の文には、トークンがまるごと入るため
+- エラー文は tool の結果として保存され、毎ターン送り返される。そのため、GitHub の応答の本文も、リポジトリ名やパスも入れずに、状態のコードから決まった文を作る。ログ（`console.error`）も、口の形と状態のコードだけを残す（404 と 422 は残さない）。上限（403・429）のときは待つ秒数を返し、自分では再試行しない
+- 出力は保存しない（`WITHHOLDS_OUTPUT` が true。「会話の不変条件」）。再読み込みのあとは、tool の出力が決まった文になり、そのあとの思考の過程は出ない。次のターンで中身が要るときは、Claude が同じ入力で読み直す
 
 ## 生成物のページ（/artifacts）
 

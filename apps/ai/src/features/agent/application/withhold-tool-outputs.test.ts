@@ -10,12 +10,18 @@ import {
 
 type AgentPart = AgentUIMessage['parts'][number];
 
-// 出力を保存しない tool はまだ無いので、出力が文字列の read_blog を保存しないものとして確かめる
+// tools.ts の値を読み込むと DB などの mock が要るので、分け方は手で書き、出力が文字列の read_blog を
+// 保存しないものとして確かめる
 const withholdsReadBlog: WithholdsOutput = {
   list_blogs: false,
   read_blog: true,
   generate_ui: false,
   generate_slides: false,
+  list_github_repos: false,
+  read_github_file: false,
+  search_github_code: false,
+  search_github_issues: false,
+  read_github_issue: false,
 };
 
 const withholdsNothing: WithholdsOutput = {
@@ -23,6 +29,11 @@ const withholdsNothing: WithholdsOutput = {
   read_blog: false,
   generate_ui: false,
   generate_slides: false,
+  list_github_repos: false,
+  read_github_file: false,
+  search_github_code: false,
+  search_github_issues: false,
+  read_github_issue: false,
 };
 
 const assistant = (parts: AgentPart[]): AgentUIMessage => ({
