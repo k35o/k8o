@@ -241,6 +241,129 @@ const withheldGithubAnswer: AgentUIMessage = {
   ],
 };
 
+const REACT_POST_URL = 'https://react.dev/blog/2025/10/01/react-19-2';
+
+const SEARCH_CIPHERTEXT = '検索の結果の暗号文';
+
+const webSearchCall: AgentUIMessage['parts'][number] = {
+  type: 'tool-web_search',
+  toolCallId: 'web-search',
+  providerExecuted: true,
+  state: 'input-available',
+  input: { query: 'React 19.2' },
+};
+
+const webFetchCall: AgentUIMessage['parts'][number] = {
+  type: 'tool-web_fetch',
+  toolCallId: 'web-fetch',
+  providerExecuted: true,
+  state: 'input-available',
+  input: { url: REACT_POST_URL },
+};
+
+const webAnswerText: AgentUIMessage['parts'][number] = {
+  type: 'text',
+  state: 'done',
+  text: `[React 19.2](${REACT_POST_URL}) で \`<Activity />\` が足されました。`,
+};
+
+// 受信した画面には、検索の結果と読んだページが残る
+const liveWebAnswer: AgentUIMessage = {
+  id: 'a11',
+  role: 'assistant',
+  metadata: { end: 'completed' },
+  parts: [
+    { type: 'step-start' },
+    {
+      ...webSearchCall,
+      state: 'output-available',
+      output: [
+        {
+          type: 'web_search_result',
+          url: REACT_POST_URL,
+          title: 'React 19.2 – React',
+          pageAge: null,
+          encryptedContent: SEARCH_CIPHERTEXT,
+        },
+        {
+          type: 'web_search_result',
+          url: 'https://example.com/react',
+          title: null,
+          pageAge: null,
+          encryptedContent: SEARCH_CIPHERTEXT,
+        },
+      ],
+    },
+    {
+      ...webFetchCall,
+      state: 'output-available',
+      output: {
+        type: 'web_fetch_result',
+        url: REACT_POST_URL,
+        retrievedAt: '2026-10-21T10:30:00Z',
+        content: {
+          type: 'document',
+          title: 'React 19.2 – React',
+          source: {
+            type: 'text',
+            mediaType: 'text/plain',
+            data: 'React 19.2 で <Activity /> を足しました。',
+          },
+        },
+      },
+    },
+    {
+      type: 'tool-web_fetch',
+      toolCallId: 'web-fetch-pdf',
+      providerExecuted: true,
+      state: 'output-available',
+      input: { url: 'https://example.com/paper.pdf' },
+      output: {
+        type: 'web_fetch_result',
+        url: 'https://example.com/paper.pdf',
+        retrievedAt: null,
+        content: {
+          type: 'document',
+          title: null,
+          source: {
+            type: 'base64',
+            mediaType: 'application/pdf',
+            data: 'JVBERi0xLjQK',
+          },
+        },
+      },
+    },
+    {
+      type: 'tool-web_search',
+      toolCallId: 'web-search-failed',
+      providerExecuted: true,
+      state: 'output-error',
+      input: { query: 'React 20' },
+      errorText:
+        '{"type":"web_search_tool_result_error","errorCode":"too_many_requests"}',
+    },
+    webAnswerText,
+  ],
+};
+
+// 保存するときに web の tool の結果を落として呼び出しだけに戻し、そのあとの思考の過程を外した返答
+const withheldWebAnswer: AgentUIMessage = {
+  id: 'a12',
+  role: 'assistant',
+  metadata: { end: 'completed' },
+  parts: [
+    { type: 'step-start' },
+    {
+      type: 'reasoning',
+      text: 'React の最新のリリースを探す。',
+      state: 'done',
+    },
+    webSearchCall,
+    webFetchCall,
+    webAnswerText,
+  ],
+};
+
 const meta = preview.meta({
   component: AgentMessage,
   // propより狭い型（null）のままargsを推論させると meta.storyの型推論が壊れるため、
@@ -497,5 +620,92 @@ export const WithheldGithubOutput = meta.story({
     await expect(
       canvas.getByText(/公開ページのパスだけ認証を通さずに通します/u),
     ).toBeInTheDocument();
+  },
+});
+
+export const LiveWebOutputs = meta.story({
+  args: { message: liveWebAnswer },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const [search, failedSearch] = canvas.getAllByRole('button', {
+      name: /web_search/u,
+    });
+    const [fetched, fetchedPdf] = canvas.getAllByRole('button', {
+      name: /web_fetch/u,
+    });
+    if (
+      search === undefined ||
+      failedSearch === undefined ||
+      fetched === undefined ||
+      fetchedPdf === undefined
+    ) {
+      throw new Error('web の tool の呼び出しが描かれていません');
+    }
+
+    // 検索の結果は、暗号文を出さずに題と URL だけを並べる
+    await userEvent.click(search);
+    await expect(
+      canvas.getByText(/^- React 19\.2 – React/u, { selector: 'pre' }),
+    ).toHaveTextContent(
+      `- React 19.2 – React ${REACT_POST_URL} - https://example.com/react https://example.com/react`,
+    );
+    await expect(
+      canvas.queryByText(new RegExp(SEARCH_CIPHERTEXT, 'u')),
+    ).not.toBeInTheDocument();
+
+    // 読んだページは、URL と取得した日時、題、本文の順に出し、PDF は大きさだけを出す
+    await userEvent.click(fetched);
+    await expect(
+      canvas.getByText(/に取得）/u, { selector: 'pre' }),
+    ).toHaveTextContent(
+      `${REACT_POST_URL}（2026-10-21T10:30:00Z に取得） React 19.2 – React React 19.2 で <Activity /> を足しました。`,
+    );
+    await userEvent.click(fetchedPdf);
+    await expect(canvas.getByText(/PDF（9 バイト）/u)).toBeVisible();
+
+    // 実行中に届いたエラーは、API の決まった値なのでそのまま出す
+    await userEvent.click(failedSearch);
+    await expect(canvas.getByText(/too_many_requests/u)).toBeVisible();
+  },
+});
+
+export const WithheldWebCalls = meta.story({
+  args: { message: withheldWebAnswer },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const search = canvas.getByRole('button', { name: /web_search/u });
+    const fetched = canvas.getByRole('button', { name: /web_fetch/u });
+    // 呼び出しだけのパーツも、止まって待っている表示にせず、保存していないことを出す
+    await expect(within(search).queryByRole('status')).not.toBeInTheDocument();
+    await userEvent.click(search);
+    await userEvent.click(fetched);
+    await expect(canvas.getAllByText(WITHHELD_OUTPUT_TEXT)).toHaveLength(2);
+    await expect(
+      canvas.getByText(/React 19\.2/u, { selector: 'pre' }),
+    ).toBeVisible();
+    await expect(
+      canvas.queryByText('完了する前に止まりました'),
+    ).not.toBeInTheDocument();
+  },
+});
+
+export const RunningWebCall = meta.story({
+  args: {
+    message: {
+      id: 'a13',
+      role: 'assistant',
+      parts: [{ type: 'step-start' }, webSearchCall],
+    },
+    isStreaming: true,
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    // 受信している途中の呼び出しは、結果を待っている表示にする
+    const search = canvas.getByRole('button', { name: /web_search/u });
+    await expect(within(search).getByRole('status')).toBeInTheDocument();
+    await userEvent.click(search);
+    await expect(
+      canvas.queryByText(WITHHELD_OUTPUT_TEXT),
+    ).not.toBeInTheDocument();
   },
 });

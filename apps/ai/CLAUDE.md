@@ -129,6 +129,7 @@ GitHub の tool（`list_github_repos`・`read_github_file`・`search_github_code
 - `url_sources` の書き足しと title の補いは、上流の版で直ったら戻す（`url_sources` は tool の引数に移し、`toModelOutput` は外す）。pnpm の patch にしないのは、Renovate が依存をまとめて上げる PR の install を、上流が直すまで毎回止めるため。送る定義の JSON は `web-tools.test.ts` が固定しているので、戻したあとも同じ JSON を送っているかを確かめられる
 - 引数は API に送る tool の定義に入るので、変えると既存のスレッドの thinking が落ちる（「会話の不変条件」）。`web_search` は1要求 5 回まで。`web_fetch` は1要求 3 回まで、1本 30,000 トークンまで（`max_content_tokens`。続きを読む引数が無いので、大きな文書のページが切られずに収まる値）。`user_location`・ドメインの絞り込み・fetch の引用は渡さない
 - 出力は保存しない（`WITHHOLDS_OUTPUT` が true。呼び出しだけに戻す。「会話の不変条件」）。返答の text の引用も外す。出典は、ai の SDK の出典のチップ（`sendSources`）を使わず、system で、読んだページの URL を返答のリンクで添えさせる
+- 会話には、呼び出しを `ToolInvocation` で出す（`chat/_components/agent-message`）。検索の結果は、Claude にしか読めない暗号文を出さずに題と URL を並べ、読んだページは URL・取得した日時・題・本文を出す。PDF は base64 を出さずに大きさだけにする（`web-tool-output.ts`）。生成していないときの呼び出しだけのパーツ（再読み込みのあとと、止めた途中）は、止まった呼び出しにせず、検索語か URL と決まった文（`WITHHELD_OUTPUT_TEXT`）を出す
 - 検索の代金は費用に入る（「利用回数と予算」）
 - Anthropic Console の組織の設定で web search か web fetch が切られると、tools を送るすべての要求が 400 になり、チャットが止まる
 - 応答のかたまりを SDK が読めなかったときのエラー（`TypeValidationError`・`JSONParseError`）は、message にかたまりの JSON をまるごと持ち、読んだページの本文や PDF の base64 も入る。生成エラーのログ（`streamText` の `onError`）には、エラーの連鎖のどこかにそれがあれば、名前と context だけを残す。画面のエラー表示には、ループの中と同じ規則（「会話の不変条件」）の文がそのまま出る。ストリーム全体のエラーなので保存はされない
