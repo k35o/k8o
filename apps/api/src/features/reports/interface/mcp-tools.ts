@@ -2,7 +2,7 @@ import type { McpServer } from '@modelcontextprotocol/server';
 import { z } from 'zod';
 
 import { toolResult } from '../../../shared/mcp/tool-result';
-import { toUntrustedText } from '../../../shared/mcp/untrusted-text';
+import { toUntrustedText } from '../../../shared/text/untrusted-text';
 import {
   findReports,
   findReportTypeCounts,

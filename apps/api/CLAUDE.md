@@ -40,7 +40,7 @@ k8o の API。Hono で書き、Vercel にデプロイする（本番ドメイン
 
 - tool を足すときは `features/<feature>/interface/mcp-tools.ts` に `register*Tools` を書き、`mcp.ts` で登録する
 - スキーマは `zod`（classic）で書く。SDK が JSON Schema を取り出すのに classic 版の機能を使うため、`zod/mini` では型が通らない
-- 第三者が書いた文字列（お問い合わせ本文やレポートなど）は `shared/mcp/untrusted-text.ts` を通し、フィールド名か説明でデータとして扱うよう明示する
+- 第三者が書いた文字列（お問い合わせ本文やレポートなど）は `shared/text/untrusted-text.ts` を通し、フィールド名か説明でデータとして扱うよう明示する
 - 公開ページを変える tool には `_meta['anthropic/requiresUserInteraction']` を付け、毎回確認させる
 - 第三者の文章への対策で強制力があるのは、この確認だけ。お問い合わせやレポートを読むセッションでは auto mode を使わず、外部へ書き込める tool に確認を挟む
 - tool 内の例外は SDK が `isError` の結果に変えて返すので、Vercel のログには残らない。失敗は会話の中で気づく
