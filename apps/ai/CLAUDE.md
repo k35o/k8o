@@ -1,13 +1,13 @@
 # apps/ai CLAUDE.md
 
-AI関連ツールの置き場（`ai.k8o.me`）。k8o のブログ記事と k8o.me の運営のデータ（概要・お問い合わせ・記事ごとの閲覧数・ブラウザからのレポート）、k35o の GitHub のリポジトリを読み、UI とスライドを作れるエージェントとのチャット（`/chat`）と、チャットで作った UI とスライドを版の履歴ごと見返し、版を公開・フォークできる生成物のページ（`/artifacts`）がある。`/` は `/chat` へ移す（`next.config.ts` の redirects）。
+AI関連ツールの置き場（`ai.k8o.me`）。k8o のブログ記事と k8o.me の運営のデータ（概要・お問い合わせ・記事ごとの閲覧数・ブラウザからのレポート）、k35o の GitHub のリポジトリを読み、web を検索して読み、UI とスライドを作れるエージェントとのチャット（`/chat`）と、チャットで作った UI とスライドを版の履歴ごと見返し、版を公開・フォークできる生成物のページ（`/artifacts`）がある。`/` は `/chat` へ移す（`next.config.ts` の redirects）。
 
 ## レイヤー構成（src/）
 
 apps/main と同じ `app / features / shared` 構成（詳細は `apps/main/CLAUDE.md`）。Server Actions（`'use server'`）は `features/*/interface` に置く。
 
 - `generation/` - エージェントの tool（`generate_ui`・`generate_slides`）の中で Claude（Sonnet 5.5 / Opus 5.5、AI SDK v7 と @ai-sdk/anthropic）を呼び、json-render の spec とスライドのデッキを作る部品（system prompt・ストリームの読み取り・受け取りの確かめ）と、spec から TSX への変換
-- `agent/` - `/chat` のエージェント。tool つきの生成のループ、スレッドとメッセージの保存（ai_threads・ai_thread_messages）、オーナー API から記事と k8o.me の運営のデータを読む tool、GitHub から k35o のリポジトリを読む tool、UI とスライドを作って直す tool
+- `agent/` - `/chat` のエージェント。tool つきの生成のループ、スレッドとメッセージの保存（ai_threads・ai_thread_messages）、オーナー API から記事と k8o.me の運営のデータを読む tool、GitHub から k35o のリポジトリを読む tool、Claude API の中で web を検索して読む tool、UI とスライドを作って直す tool
 - `usage/` - Claude の利用ログ（ai_usages）、1時間あたりの生成回数の上限、月の予算と単価（`pricing.ts`）
 - `share/` - 公開ページ（/s/[slug]）の読み取り。slug から公開している生成物の版を引き、タイトルと中身にして返す
 - `artifacts/` - 生成物と版の保存と読み取り（ai_artifacts・ai_artifact_versions）と、その公開（ai_artifact_shares）。版の行は書き換えず、直すたびに次の番号の版を足す。読むのは持ち主のものだけで、版の中身のほかに、生成物の一覧（最新版の新しい順）と、生成物ごとの全版の履歴を読める。公開は、持ち主が選んだ版を公開の行に書く。公開中に別の版を公開すると、slug を変えずに版だけを差し替える。公開する版を変える操作は、公開の行があるときだけ版を差し替え、無ければ書かない。別のタブで取り消したあとの古い画面から押されても、取り消した生成物を公開し直さないため。取り消すと行を消すので、公開し直すと別の slug になる。フォークは、持ち主の版の中身と要約を写した版 1 で新しい生成物を作り、元の版を親（parent_id）にする。依頼から生まれた版ではないので依頼は空にし、会話に属さないので thread_id は null にする。公開ページのための、slug から公開している版の id を引く読み取りと、版の id から中身を引く読み取りだけは、持ち主で絞らない
@@ -58,7 +58,7 @@ apps/main と同じ `app / features / shared` 構成（詳細は `apps/main/CLAU
 
 `/chat` は新しいスレッド、`/chat/[threadId]` は既存のスレッドの画面（`app/(authenticated)/chat/`）。サイドバーの枠（ToolNav・サインアウト・テーマ・スマホの Drawer）は `(authenticated)/layout` の `ToolFrame` にあり、ツールごとの一覧は `@sidebar` のスロット（チャットはスレッドを移っても作り直さないよう `@sidebar/chat/layout`）が描く。
 
-- `POST /api/chat` が、`streamText` に tool（`list_blogs`・`read_blog`・`generate_ui`・`generate_slides`・`list_github_repos`・`read_github_file`・`search_github_code`・`search_github_issues`・`read_github_issue`・`get_site_overview`・`list_inquiries`・`list_blog_stats`・`list_browser_reports`）を渡してループを回す。ステップ数や時間の上限は `agent/application/agent-run.ts` にある
+- `POST /api/chat` が、`streamText` に tool（`list_blogs`・`read_blog`・`generate_ui`・`generate_slides`・`list_github_repos`・`read_github_file`・`search_github_code`・`search_github_issues`・`read_github_issue`・`get_site_overview`・`list_inquiries`・`list_blog_stats`・`list_browser_reports`・`web_search`・`web_fetch`）を渡してループを回す。ステップ数や時間の上限は `agent/application/agent-run.ts` にある
 - `generate_ui`（`agent/application/generate-ui.ts`）と `generate_slides`（`agent/application/generate-slides.ts`）は、UI・スライドを新しく作るか、`base` で指した持ち主の版を土台に直して、`features/artifacts` に版として保存する。生成物は kind（`'ui'`・`'slides'`）で分けて読むので、もう一方の tool で作った artifactId を `base` に渡されても見つからない
   - 利用者・会話・モデルは `toolsContext` で渡す。時間の上限は、ほかの tool より長い `UI_TOOL_TIMEOUT_MS`・`SLIDES_TOOL_TIMEOUT_MS`
   - execute は async generator で、書きかけ（spec か、デッキの source）を間引いて preliminary の出力で流し、最後に保存した版（artifactId・版・要約・spec か source）を流す
@@ -118,6 +118,26 @@ GitHub の tool（`list_github_repos`・`read_github_file`・`search_github_code
 - 未設定のときは tool がエラーを返すだけで、会話は続く。値に英数字と `_` のほかの文字（前後を含む改行など）があるときも、GitHub を呼ばずに値を入れない文のエラーにする。ヘッダーに使えない文字で fetch が投げる例外の文には、トークンがまるごと入るため
 - エラー文は tool の結果として保存され、毎ターン送り返される。そのため、GitHub の応答の本文も、リポジトリ名やパスも入れずに、状態のコードから決まった文を作る。ログ（`console.error`）も、口の形と状態のコードだけを残す（404 と 422 は残さない）。上限（403・429）のときは待つ秒数を返し、自分では再試行しない
 - 出力は保存しない（`WITHHOLDS_OUTPUT` が true。「会話の不変条件」）。再読み込みのあとは、tool の出力が決まった文になり、そのあとの思考の過程は出ない。次のターンで中身が要るときは、Claude が同じ入力で読み直す
+
+### Web
+
+`web_search`（`web_search_20250305`）と `web_fetch`（`web_fetch_20250910`）は、Anthropic が Claude API の要求の中で実行する server tool（`agent/application/web-tools.ts`）。検索もページの取得も Anthropic の側で行い、ai から外へは要求を出さない。`web_fetch` は PDF も読み、robots.txt・private のアドレス・資格情報らしい URL は API が断る。
+
+- 版は dynamic filtering の無い素の版にする。`_20260209` 以降は中で code execution が動き、絞った第三者の文が平文で入る `code_execution` のパーツが会話に混ざる。それを切る `allowed_callers` を、SDK は server tool に渡せない
+- `web_fetch` で読める URL の出どころは、利用者のメッセージと `web_search` の結果だけにする（`url_sources`。provider の `fetch` で足す）。client の tool の結果には、モデルが書いた文（generate_* の要約とエラー文、GitHub の検索語の見出し、入力の検証で落ちたときのエラー文）と、匿名の人が書ける値（お問い合わせの本文、レポートの URL）が写る。そこに中身を足した URL を置かせて読ませれば、外へ送れるため。読んだページの中のリンクも出どころにしない。ページに URL を並べるだけで、どれを読むかを選ばせて中身を伝える道ができるため。前のターンの検索の結果は保存しないので、前に見つけたページは検索し直してから読む（system で伝える）
+- @ai-sdk/anthropic は、`web_search` の結果の title が null だと鍵ごと省き、同じ実行の次のステップへ送り返すときの検証で落ちる。`web_search` に `toModelOutput` を付けて、title を null で補う
+- `url_sources` の書き足しと title の補いは、上流の版で直ったら戻す（`url_sources` は tool の引数に移し、`toModelOutput` は外す）。pnpm の patch にしないのは、Renovate が依存をまとめて上げる PR の install を、上流が直すまで毎回止めるため。送る定義の JSON は `web-tools.test.ts` が固定しているので、戻したあとも同じ JSON を送っているかを確かめられる
+- 引数は API に送る tool の定義に入るので、変えると既存のスレッドの thinking が落ちる（「会話の不変条件」）。`web_search` は1要求 5 回まで。`web_fetch` は1要求 3 回まで、1本 30,000 トークンまで（`max_content_tokens`。続きを読む引数が無いので、大きな文書のページが切られずに収まる値）。`user_location`・ドメインの絞り込み・fetch の引用は渡さない
+- 出力は保存しない（`WITHHOLDS_OUTPUT` が true。呼び出しだけに戻す。「会話の不変条件」）。返答の text の引用も外す。出典は、ai の SDK の出典のチップ（`sendSources`）を使わず、system で、読んだページの URL を返答のリンクで添えさせる
+- 検索の代金は費用に入る（「利用回数と予算」）
+- Anthropic Console の組織の設定で web search か web fetch が切られると、tools を送るすべての要求が 400 になり、チャットが止まる
+- 応答のかたまりを SDK が読めなかったときのエラー（`TypeValidationError`・`JSONParseError`）は、message にかたまりの JSON をまるごと持ち、読んだページの本文や PDF の base64 も入る。生成エラーのログ（`streamText` の `onError`）には、エラーの連鎖のどこかにそれがあれば、名前と context だけを残す。画面のエラー表示には、ループの中と同じ規則（「会話の不変条件」）の文がそのまま出る。ストリーム全体のエラーなので保存はされない
+- 残るもの
+  - 攻撃する側が用意した URL の中からどれを読むかを注入で選ばせると、選んだことで少しずつ中身が伝わる。注入した文に URL を並べる形と、語ごとのページを索引に載せておき、検索語に中身を載せさせて当たったページを読ませる形がある。1回の読み取りで伝わるのは、選べる URL の数の対数ビット。閉じるには、`web_search` の結果を出どころから外すか、`allowed_domains` しかない
+  - 検索語は Anthropic の検索の提供元に届く。お問い合わせの個人の情報を検索語に入れさせる注入は、system の1行でしか止まらない
+  - `pause_turn` で、結果を待つ呼び出しが残らない形で止まると、実行は `completed` で終わり、返答は途中のまま残る。続きは利用者が頼む
+  - PDF には `max_content_tokens` が効かない（500 kB で約 125,000 トークン）。読んだ中身は同じ実行の続くステップで送り直されて積み上がるので、何本も読むと文脈の上限を超えた要求が 400 になり、実行はエラーで終わる。次のターンは最後のステップの入力トークン数で断るので、たくさん読んだターンのあとは、保存しない分だけ小さいのに 409 になりうる
+  - `web_fetch` は Anthropic の cache を返すことがあり、最新の中身とは限らない。JavaScript で描くページは読めない
 
 ## 生成物のページ（/artifacts）
 

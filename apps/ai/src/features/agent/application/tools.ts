@@ -20,6 +20,7 @@ import {
 } from './generate-ui';
 import { githubTools } from './github-tools';
 import { siteTools } from './site-tools';
+import { webTools } from './web-tools';
 
 // api の BLOG_SLUG_PATTERN と同じ値。@repo/api は型しか読めないので複製する
 const BLOG_SLUG_PATTERN = /^[a-z0-9-]+$/u;
@@ -101,6 +102,7 @@ export const agentTools = {
   }),
   ...githubTools,
   ...siteTools,
+  ...webTools,
 };
 
 type AgentTools = typeof agentTools;
@@ -131,4 +133,6 @@ export const WITHHOLDS_OUTPUT: WithholdsOutput = {
   list_inquiries: true,
   list_blog_stats: false,
   list_browser_reports: true,
+  web_search: true,
+  web_fetch: true,
 };

@@ -5,8 +5,10 @@ import {
   createUIMessageStreamResponse,
   generateId,
   isStepCount,
+  JSONParseError,
   streamText,
   toUIMessageStream,
+  TypeValidationError,
 } from 'ai';
 import { after } from 'next/server';
 
@@ -104,6 +106,27 @@ const errorMessageOf = (error: unknown): string => {
   return JSON.stringify(error);
 };
 
+// 応答のかたまりを SDK が読めなかったときのエラーは、message にかたまりの JSON（web の tool が読んだページの
+// 本文や PDF の base64）をまるごと持ち、Node の inspect の深さの上限も効かない。連鎖のどこかにあれば、
+// ログには名前と context だけを残す
+const loggableErrorOf = (error: unknown): unknown => {
+  const names: string[] = [];
+  for (
+    let current: unknown = error;
+    current instanceof Error;
+    current = current.cause
+  ) {
+    names.push(current.name);
+    if (TypeValidationError.isInstance(current)) {
+      return { names, context: current.context };
+    }
+    if (JSONParseError.isInstance(current)) {
+      return { names };
+    }
+  }
+  return error;
+};
+
 const streamRun = async (input: {
   threadId: string;
   runId: string;
@@ -183,7 +206,7 @@ const streamRun = async (input: {
       ]);
     },
     onError: ({ error }) => {
-      console.error('エージェントの生成エラー', error);
+      console.error('エージェントの生成エラー', loggableErrorOf(error));
     },
   });
 

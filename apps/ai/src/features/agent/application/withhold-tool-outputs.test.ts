@@ -27,6 +27,8 @@ const withholdsReadBlog: WithholdsOutput = {
   list_inquiries: false,
   list_blog_stats: false,
   list_browser_reports: false,
+  web_search: false,
+  web_fetch: false,
 };
 
 const withholdsNothing: WithholdsOutput = {
@@ -43,6 +45,8 @@ const withholdsNothing: WithholdsOutput = {
   list_inquiries: false,
   list_blog_stats: false,
   list_browser_reports: false,
+  web_search: false,
+  web_fetch: false,
 };
 
 const assistant = (parts: AgentPart[]): AgentUIMessage => ({
