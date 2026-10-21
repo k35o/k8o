@@ -26,6 +26,8 @@ vi.mock('@/features/artifacts/infrastructure/artifact-repository', () => ({
 vi.mock('../infrastructure/owner-api', () => ({
   fetchOwnerBlogs: vi.fn(),
   fetchOwnerBlogMarkdown: vi.fn(),
+  fetchOwnerOverview: vi.fn(),
+  fetchOwnerInquiries: vi.fn(),
 }));
 vi.mock('./generate-ui', async (importOriginal) => ({
   ...(await importOriginal<typeof generateUiModule>()),
@@ -94,7 +96,7 @@ beforeEach(() => {
 describe('agentTools', () => {
   describe('正常系', () => {
     // 既存のスレッドに残った tools の並びが変わると、送り返す thinking が落とされる
-    it('tool は、前からある tool の並びを変えずに、GitHub の tool を後ろに足す', () => {
+    it('tool は、前からある tool の並びを変えずに、GitHub の tool と k8o.me の運営の tool を後ろに足す', () => {
       expect(Object.keys(agentTools)).toStrictEqual([
         'list_blogs',
         'read_blog',
@@ -105,6 +107,8 @@ describe('agentTools', () => {
         'search_github_code',
         'search_github_issues',
         'read_github_issue',
+        'get_site_overview',
+        'list_inquiries',
       ]);
     });
   });
@@ -112,7 +116,7 @@ describe('agentTools', () => {
 
 describe('WITHHOLDS_OUTPUT', () => {
   describe('正常系', () => {
-    it('GitHub の tool の出力だけを保存しない', () => {
+    it('GitHub の tool とお問い合わせの一覧の出力だけを保存しない', () => {
       expect(WITHHOLDS_OUTPUT).toStrictEqual({
         list_blogs: false,
         read_blog: false,
@@ -123,6 +127,8 @@ describe('WITHHOLDS_OUTPUT', () => {
         search_github_code: true,
         search_github_issues: true,
         read_github_issue: true,
+        get_site_overview: false,
+        list_inquiries: true,
       });
     });
   });

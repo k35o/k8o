@@ -1,13 +1,13 @@
 # apps/ai CLAUDE.md
 
-AI関連ツールの置き場（`ai.k8o.me`）。k8o のブログ記事と k35o の GitHub のリポジトリを読み、UI とスライドを作れるエージェントとのチャット（`/chat`）と、チャットで作った UI とスライドを版の履歴ごと見返し、版を公開・フォークできる生成物のページ（`/artifacts`）がある。`/` は `/chat` へ移す（`next.config.ts` の redirects）。
+AI関連ツールの置き場（`ai.k8o.me`）。k8o のブログ記事と k8o.me の運営のデータ、k35o の GitHub のリポジトリを読み、UI とスライドを作れるエージェントとのチャット（`/chat`）と、チャットで作った UI とスライドを版の履歴ごと見返し、版を公開・フォークできる生成物のページ（`/artifacts`）がある。`/` は `/chat` へ移す（`next.config.ts` の redirects）。
 
 ## レイヤー構成（src/）
 
 apps/main と同じ `app / features / shared` 構成（詳細は `apps/main/CLAUDE.md`）。Server Actions（`'use server'`）は `features/*/interface` に置く。
 
 - `generation/` - エージェントの tool（`generate_ui`・`generate_slides`）の中で Claude（Sonnet 5.5 / Opus 5.5、AI SDK v7 と @ai-sdk/anthropic）を呼び、json-render の spec とスライドのデッキを作る部品（system prompt・ストリームの読み取り・受け取りの確かめ）と、spec から TSX への変換
-- `agent/` - `/chat` のエージェント。tool つきの生成のループ、スレッドとメッセージの保存（ai_threads・ai_thread_messages）、オーナー API から記事を読む tool、GitHub から k35o のリポジトリを読む tool、UI とスライドを作って直す tool
+- `agent/` - `/chat` のエージェント。tool つきの生成のループ、スレッドとメッセージの保存（ai_threads・ai_thread_messages）、オーナー API から記事と k8o.me の運営のデータを読む tool、GitHub から k35o のリポジトリを読む tool、UI とスライドを作って直す tool
 - `usage/` - Claude の利用ログ（ai_usages）、1時間あたりの生成回数の上限、月の予算と単価（`pricing.ts`）
 - `share/` - 公開ページ（/s/[slug]）の読み取り。slug から公開している生成物の版を引き、タイトルと中身にして返す
 - `artifacts/` - 生成物と版の保存と読み取り（ai_artifacts・ai_artifact_versions）と、その公開（ai_artifact_shares）。版の行は書き換えず、直すたびに次の番号の版を足す。読むのは持ち主のものだけで、版の中身のほかに、生成物の一覧（最新版の新しい順）と、生成物ごとの全版の履歴を読める。公開は、持ち主が選んだ版を公開の行に書く。公開中に別の版を公開すると、slug を変えずに版だけを差し替える。公開する版を変える操作は、公開の行があるときだけ版を差し替え、無ければ書かない。別のタブで取り消したあとの古い画面から押されても、取り消した生成物を公開し直さないため。取り消すと行を消すので、公開し直すと別の slug になる。フォークは、持ち主の版の中身と要約を写した版 1 で新しい生成物を作り、元の版を親（parent_id）にする。依頼から生まれた版ではないので依頼は空にし、会話に属さないので thread_id は null にする。公開ページのための、slug から公開している版の id を引く読み取りと、版の id から中身を引く読み取りだけは、持ち主で絞らない
@@ -58,7 +58,7 @@ apps/main と同じ `app / features / shared` 構成（詳細は `apps/main/CLAU
 
 `/chat` は新しいスレッド、`/chat/[threadId]` は既存のスレッドの画面（`app/(authenticated)/chat/`）。サイドバーの枠（ToolNav・サインアウト・テーマ・スマホの Drawer）は `(authenticated)/layout` の `ToolFrame` にあり、ツールごとの一覧は `@sidebar` のスロット（チャットはスレッドを移っても作り直さないよう `@sidebar/chat/layout`）が描く。
 
-- `POST /api/chat` が、`streamText` に tool（`list_blogs`・`read_blog`・`generate_ui`・`generate_slides`・`list_github_repos`・`read_github_file`・`search_github_code`・`search_github_issues`・`read_github_issue`）を渡してループを回す。ステップ数や時間の上限は `agent/application/agent-run.ts` にある
+- `POST /api/chat` が、`streamText` に tool（`list_blogs`・`read_blog`・`generate_ui`・`generate_slides`・`list_github_repos`・`read_github_file`・`search_github_code`・`search_github_issues`・`read_github_issue`・`get_site_overview`・`list_inquiries`）を渡してループを回す。ステップ数や時間の上限は `agent/application/agent-run.ts` にある
 - `generate_ui`（`agent/application/generate-ui.ts`）と `generate_slides`（`agent/application/generate-slides.ts`）は、UI・スライドを新しく作るか、`base` で指した持ち主の版を土台に直して、`features/artifacts` に版として保存する。生成物は kind（`'ui'`・`'slides'`）で分けて読むので、もう一方の tool で作った artifactId を `base` に渡されても見つからない
   - 利用者・会話・モデルは `toolsContext` で渡す。時間の上限は、ほかの tool より長い `UI_TOOL_TIMEOUT_MS`・`SLIDES_TOOL_TIMEOUT_MS`
   - execute は async generator で、書きかけ（spec か、デッキの source）を間引いて preliminary の出力で流し、最後に保存した版（artifactId・版・要約・spec か source）を流す
@@ -96,7 +96,12 @@ apps/main と同じ `app / features / shared` 構成（詳細は `apps/main/CLAU
 
 ### オーナー API
 
-tool は、オーナー API（`https://api.k8o.me/owner/*`。`apps/api/CLAUDE.md`）から記事の一覧と本文を読む（`agent/infrastructure/owner-api.ts`）。本番も preview も本番の api を呼ぶ。トークンは `OWNER_API_TOKEN` で、本番と preview で別の値を Vercel に sensitive で置く（本番は api の `OWNER_API_TOKEN_AI`、preview は `OWNER_API_TOKEN_AI_PREVIEW` と同じ値）。未設定のときは tool がエラーを返すだけで、会話は続く。値が Bearer のトークンの形（英数字と `-._~+/`、末尾の `=`）でなければ、改行が混ざったときにエラー文へ値が漏れないよう、api を呼ばずに値を入れない文でエラーを返す。
+tool は、オーナー API（`https://api.k8o.me/owner/*`。`apps/api/CLAUDE.md`）から、記事の一覧と本文と、k8o.me の運営のデータを読む（`agent/infrastructure/owner-api.ts`）。本番も preview も本番の api を呼ぶ。トークンは `OWNER_API_TOKEN` で、本番と preview で別の値を Vercel に sensitive で置く（本番は api の `OWNER_API_TOKEN_AI`、preview は `OWNER_API_TOKEN_AI_PREVIEW` と同じ値）。api 側の写しも sensitive で置かなければ、ここを sensitive にしても守りにならない。未設定のときは tool がエラーを返すだけで、会話は続く。値が Bearer のトークンの形（英数字と `-._~+/`、末尾の `=`）でなければ、改行が混ざったときにエラー文へ値が漏れないよう、api を呼ばずに値を入れない文でエラーを返す。
+
+- 記事は `list_blogs`・`read_blog`（`agent/application/tools.ts`）が、運営のデータは `get_site_overview`（概要）・`list_inquiries`（お問い合わせと記事へのフィードバック）が読む（`agent/application/site-tools.ts`）。運営のデータの口は、api の MCP の読み取りの tool と同じ形を返す
+- 1ページの件数は ai の定数で決めて毎回渡し（お問い合わせは 20 件）、モデルには渡させない。次のページの番号は、api が返す全体の件数から決めて `nextPage` で返す
+- 200 でなければ、パスと状態のコードだけの決まった文で tool のエラーにし、同じ文をログに残す。query は入れない。応答の形は実行時に確かめない。型は hc が api のソースから取るので、口を変えるときは api を先にデプロイする
+- `list_inquiries` の出力は保存しない（`WITHHOLDS_OUTPUT` が true。「会話の不変条件」）。本文は匿名の第三者が書き、個人の情報も入りうるため。出力は字下げした JSON の文字列にして、本文の改行や `"` を符号化し、JSON の文字列の外に出られないようにする。U+2028・U+2029 や全角の引用符で、行が変わったように見せる余地は残る。`get_site_overview` は件数・日時・状態・版だけなので、api の値をそのまま返して保存する。保存する tool の口に第三者の文の項目が足されると原文が残るので、口を変えるときは分け方も見直す
 
 ### GitHub
 
