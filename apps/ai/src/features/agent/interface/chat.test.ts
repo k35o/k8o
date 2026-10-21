@@ -15,6 +15,10 @@ import { getGenerationModel } from '@/shared/claude/claude-provider';
 
 import type { AgentUIMessage } from '../application/agent-message';
 import { watchStopRequest } from '../application/stop-watch';
+import type * as toolsModule from '../application/tools';
+import { WITHHELD_OUTPUT_TEXT } from '../application/withhold-tool-outputs';
+import { fetchGithubContent } from '../infrastructure/github-api';
+import type * as githubApiModule from '../infrastructure/github-api';
 import {
   fetchOwnerBlogMarkdown,
   fetchOwnerBlogs,
@@ -65,6 +69,17 @@ vi.mock('../infrastructure/thread-repository', () => ({
 vi.mock('../infrastructure/owner-api', () => ({
   fetchOwnerBlogs: vi.fn(),
   fetchOwnerBlogMarkdown: vi.fn(),
+}));
+vi.mock('../infrastructure/github-api', async (importOriginal) => ({
+  ...(await importOriginal<typeof githubApiModule>()),
+  fetchGithubContent: vi.fn(),
+  fetchGithubIssue: vi.fn(),
+  fetchGithubIssueComments: vi.fn(),
+  fetchGithubPull: vi.fn(),
+  fetchGithubPullFiles: vi.fn(),
+  fetchGithubRepos: vi.fn(),
+  searchGithubCode: vi.fn(),
+  searchGithubIssues: vi.fn(),
 }));
 vi.mock('../application/stop-watch', () => ({ watchStopRequest: vi.fn() }));
 
@@ -147,7 +162,7 @@ const textStep = (
 ];
 
 const toolStep = (
-  toolName: 'list_blogs' | 'read_blog' | 'generate_ui' | 'generate_slides',
+  toolName: keyof (typeof toolsModule)['agentTools'],
   input: unknown,
   toolCallId = 'call-1',
 ): LanguageModelV4StreamPart[] => [
@@ -159,6 +174,54 @@ const toolStep = (
     input: JSON.stringify(input),
   },
   finishChunk('tool-calls'),
+];
+
+// @ai-sdk/anthropic と同じく、署名は空の reasoning-delta の providerMetadata で流す
+const reasoningChunks = (
+  id: string,
+  signature: string,
+): LanguageModelV4StreamPart[] => [
+  { type: 'reasoning-start', id },
+  { type: 'reasoning-delta', id, delta: `${signature} の思考` },
+  {
+    type: 'reasoning-delta',
+    id,
+    delta: '',
+    providerMetadata: { anthropic: { signature } },
+  },
+  { type: 'reasoning-end', id },
+];
+
+const SOURCE_LINE = "const marker = '原文の行';";
+
+const FILE_INPUT = { repo: 'k8o', path: 'apps/ai/src/proxy.ts' };
+
+const FILE_OUTPUT = [
+  'k35o/k8o の apps/ai/src/proxy.ts（ref: 既定の枝・全 1 行・1〜1 行目）',
+  `1\t${SOURCE_LINE}`,
+].join('\n');
+
+// 考えてから read_github_file でファイルを読み、読んだあとにまた考えてから答える Claude の2ステップ
+const readFileSteps = (): LanguageModelV4StreamPart[][] => [
+  [
+    { type: 'stream-start', warnings: [] },
+    ...reasoningChunks('r1', 'sig-1'),
+    {
+      type: 'tool-call',
+      toolCallId: 'call-read',
+      toolName: 'read_github_file',
+      input: JSON.stringify(FILE_INPUT),
+    },
+    finishChunk('tool-calls'),
+  ],
+  [
+    { type: 'stream-start', warnings: [] },
+    ...reasoningChunks('r2', 'sig-2'),
+    { type: 'text-start', id: 't' },
+    { type: 'text-delta', id: 't', delta: '要約です' },
+    { type: 'text-end', id: 't' },
+    finishChunk('stop'),
+  ],
 ];
 
 const UI_SPEC = {
@@ -311,6 +374,22 @@ const savedAssistant = (): AgentUIMessage => {
 const contentParts = (message: AgentUIMessage): AgentUIMessage['parts'] =>
   message.parts.filter((part) => part.type !== 'step-start');
 
+// 保存したメッセージを履歴にして、既存のスレッドで次のターンを送る
+const sendNextTurn = async (
+  text: string,
+  id: string,
+): Promise<MockLanguageModelV4> => {
+  vi.mocked(selectThread).mockResolvedValue(existingThread());
+  vi.mocked(selectThreadMessages).mockResolvedValue(savedMessages());
+  const model = mockClaude(textStep(`${text}への答え`));
+  const response = await handleChat(
+    chatRequest(chatBody({ message: userMessage(text, id) })),
+  );
+  await response.text();
+  await settle();
+  return model;
+};
+
 const startedRunId = (): string => {
   const [input] =
     vi.mocked(insertThreadWithRun).mock.calls[0] ??
@@ -352,6 +431,11 @@ beforeEach(() => {
   vi.mocked(fetchOwnerBlogs).mockResolvedValue([blog]);
   vi.mocked(fetchOwnerBlogMarkdown).mockResolvedValue('# ariaNotify()');
   vi.mocked(insertArtifactWithFirstVersion).mockResolvedValue();
+  vi.mocked(fetchGithubContent).mockResolvedValue({
+    type: 'file',
+    size: SOURCE_LINE.length,
+    text: SOURCE_LINE,
+  });
 });
 
 afterEach(() => {
@@ -607,6 +691,32 @@ describe('handleChat', () => {
           content: { source: SLIDES_DECK },
         }),
       );
+    });
+
+    it('GitHub を読んだ返答は、画面へは原文を流し、保存では出力を決まった文に置き換えて、そのあとの thinking を外す', async () => {
+      mockClaude(...readFileSteps());
+
+      const response = await handleChat(chatRequest(chatBody()));
+      const body = await response.text();
+      await settle();
+
+      expect(body).toContain(SOURCE_LINE);
+      const assistant = savedAssistant();
+      expect(contentParts(assistant)).toMatchObject([
+        {
+          type: 'reasoning',
+          providerMetadata: { anthropic: { signature: 'sig-1' } },
+        },
+        {
+          type: 'tool-read_github_file',
+          toolCallId: 'call-read',
+          state: 'output-available',
+          input: FILE_INPUT,
+          output: WITHHELD_OUTPUT_TEXT,
+        },
+        { type: 'text', text: '要約です' },
+      ]);
+      expect(JSON.stringify(assistant)).not.toContain(SOURCE_LINE);
     });
 
     it('generate_ui と generate_slides には、会話の文脈と、ほかの tool より長い時間の上限を渡す', async () => {
@@ -1167,6 +1277,141 @@ describe('handleChat', () => {
               output: {
                 type: 'error-text',
                 value: expect.stringMatching(/^AI_InvalidToolInputError: /u),
+              },
+            },
+          ],
+        },
+      ]);
+      expect(
+        nextTurn.doStreamCalls[0]?.prompt.filter(
+          (message) => message.role === 'tool',
+        ),
+      ).toStrictEqual(toolResultsSentInLoop);
+    });
+
+    it('GitHub を読んだ返答のあとの次のターンでは、原文の代わりに置き換えた文を text の tool の結果として送り、外した thinking を送らない', async () => {
+      const firstTurn = mockClaude(...readFileSteps());
+      const firstResponse = await handleChat(chatRequest(chatBody()));
+      await firstResponse.text();
+      await settle();
+
+      const nextTurn = await sendNextTurn('ほかには？', 'u2');
+
+      expect(
+        firstTurn.doStreamCalls[1]?.prompt.filter(
+          (message) => message.role === 'tool',
+        ),
+      ).toMatchObject([
+        {
+          content: [
+            {
+              toolCallId: 'call-read',
+              output: { type: 'text', value: FILE_OUTPUT },
+            },
+          ],
+        },
+      ]);
+      expect(
+        nextTurn.doStreamCalls[0]?.prompt.filter(
+          (message) => message.role !== 'system',
+        ),
+      ).toMatchObject([
+        {
+          role: 'user',
+          content: [{ type: 'text', text: 'arianotify の記事を要約して' }],
+        },
+        {
+          role: 'assistant',
+          content: [
+            {
+              type: 'reasoning',
+              providerOptions: { anthropic: { signature: 'sig-1' } },
+            },
+            { type: 'tool-call', toolCallId: 'call-read' },
+          ],
+        },
+        {
+          role: 'tool',
+          content: [
+            {
+              type: 'tool-result',
+              toolCallId: 'call-read',
+              output: { type: 'text', value: WITHHELD_OUTPUT_TEXT },
+            },
+          ],
+        },
+        { role: 'assistant', content: [{ type: 'text', text: '要約です' }] },
+        { role: 'user', content: [{ type: 'text', text: 'ほかには？' }] },
+      ]);
+    });
+
+    it('GitHub の出力を置き換えたあとは、次のターンとその次のターンで、同じ履歴を1字もずらさずに送る', async () => {
+      mockClaude(...readFileSteps());
+      const firstResponse = await handleChat(chatRequest(chatBody()));
+      await firstResponse.text();
+      await settle();
+
+      const secondTurn = await sendNextTurn('ほかには？', 'u2');
+      const thirdTurn = await sendNextTurn('ありがとう', 'u3');
+
+      const sentInSecondTurn = secondTurn.doStreamCalls[0]?.prompt;
+      const sentInThirdTurn = thirdTurn.doStreamCalls[0]?.prompt;
+      expect(
+        sentInSecondTurn?.filter((message) => message.role === 'tool'),
+      ).toMatchObject([
+        {
+          content: [{ output: { type: 'text', value: WITHHELD_OUTPUT_TEXT } }],
+        },
+      ]);
+      expect(sentInThirdTurn?.slice(0, sentInSecondTurn?.length)).toStrictEqual(
+        sentInSecondTurn,
+      );
+      expect(sentInThirdTurn?.slice(sentInSecondTurn?.length)).toMatchObject([
+        {
+          role: 'assistant',
+          content: [{ type: 'text', text: 'ほかには？への答え' }],
+        },
+        { role: 'user', content: [{ type: 'text', text: 'ありがとう' }] },
+      ]);
+    });
+
+    it('GitHub の tool がエラーになった返答は、エラー文を置き換えずに保存し、次のターンもループの中と同じ文を送る', async () => {
+      vi.mocked(fetchGithubContent).mockRejectedValue(
+        new Error(
+          '見つかりません。名前・パス・番号が違うか、読む権限がありません',
+        ),
+      );
+      const firstTurn = mockClaude(
+        toolStep('read_github_file', FILE_INPUT, 'call-missing'),
+        textStep('見つかりませんでした'),
+      );
+      const firstResponse = await handleChat(chatRequest(chatBody()));
+      await firstResponse.text();
+      await settle();
+      expect(contentParts(savedAssistant())).toMatchObject([
+        {
+          type: 'tool-read_github_file',
+          state: 'output-error',
+          errorText:
+            'Error: 見つかりません。名前・パス・番号が違うか、読む権限がありません',
+        },
+        { type: 'text', text: '見つかりませんでした' },
+      ]);
+
+      const nextTurn = await sendNextTurn('ほかには？', 'u2');
+
+      const toolResultsSentInLoop = firstTurn.doStreamCalls[1]?.prompt.filter(
+        (message) => message.role === 'tool',
+      );
+      expect(toolResultsSentInLoop).toMatchObject([
+        {
+          content: [
+            {
+              toolCallId: 'call-missing',
+              output: {
+                type: 'error-text',
+                value:
+                  'Error: 見つかりません。名前・パス・番号が違うか、読む権限がありません',
               },
             },
           ],

@@ -56,7 +56,8 @@ import {
   startRun,
 } from '../application/threads';
 import type { ThreadRow } from '../application/threads';
-import { agentTools } from '../application/tools';
+import { agentTools, WITHHOLDS_OUTPUT } from '../application/tools';
+import { withholdToolOutputs } from '../application/withhold-tool-outputs';
 
 const RUN_IN_PROGRESS_MESSAGE = 'この会話は応答を生成中です';
 // 本文が無いと、画面には AI SDK の英語の既定の文言が出る
@@ -201,10 +202,13 @@ const streamRun = async (input: {
         await finishRun({
           threadId,
           runId,
-          assistantMessage: withRunEnd(responseMessage, {
-            outcome,
-            stopRequested: controller.signal.aborted,
-          }),
+          assistantMessage: withholdToolOutputs(
+            withRunEnd(responseMessage, {
+              outcome,
+              stopRequested: controller.signal.aborted,
+            }),
+            WITHHOLDS_OUTPUT,
+          ),
         });
       },
     }),

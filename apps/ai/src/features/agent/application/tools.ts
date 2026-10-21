@@ -1,4 +1,5 @@
 import { tool } from 'ai';
+import type { InferToolOutput } from 'ai';
 import * as z from 'zod/mini';
 
 import {
@@ -17,6 +18,7 @@ import {
   generateUiInputSchema,
   generateUiModelOutput,
 } from './generate-ui';
+import { githubTools } from './github-tools';
 
 // api の BLOG_SLUG_PATTERN と同じ値。@repo/api は型しか読めないので複製する
 const BLOG_SLUG_PATTERN = /^[a-z0-9-]+$/u;
@@ -96,4 +98,26 @@ export const agentTools = {
     toModelOutput: ({ input, output }) =>
       generateSlidesModelOutput({ input, output }),
   }),
+  ...githubTools,
+};
+
+type AgentTools = typeof agentTools;
+
+// 出力は保存するときに決まった文へ置き換えるので、出力が文字列の tool にしか true を付けられない
+export type WithholdsOutput = {
+  [Name in keyof AgentTools]: InferToolOutput<AgentTools[Name]> extends string
+    ? boolean
+    : false;
+};
+
+export const WITHHOLDS_OUTPUT: WithholdsOutput = {
+  list_blogs: false,
+  read_blog: false,
+  generate_ui: false,
+  generate_slides: false,
+  list_github_repos: true,
+  read_github_file: true,
+  search_github_code: true,
+  search_github_issues: true,
+  read_github_issue: true,
 };
