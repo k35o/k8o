@@ -9,6 +9,10 @@ import { defineConfig } from 'vitest/config';
 const dirname =
   typeof __dirname === 'undefined' ? import.meta.dirname : __dirname;
 
+// @k8ordo/ui は部品の JS が CSS を import するので、Node に素通し
+// すると .css の読み込みで落ちる。Vite に通して CSS を空にする
+const INLINE_K8ORDO_UI = { deps: { inline: [/@k8ordo\/ui/u] } };
+
 export default defineConfig({
   // tsconfig の jsx: preserve に従うと JSX が変換されず node 環境のテストが動かない
   oxc: { jsx: { runtime: 'automatic' } },
@@ -31,19 +35,14 @@ export default defineConfig({
             'src/features/**/*.test.{ts,tsx}',
             'src/shared/**/*.test.{ts,tsx}',
           ],
-          server: {
-            deps: {
-              // @k8ordo/ui は部品の JS が CSS を import するので、Node に素通し
-              // すると .css の読み込みで落ちる。Vite に通して CSS を空にする
-              inline: [/@k8ordo\/ui/u],
-            },
-          },
+          server: INLINE_K8ORDO_UI,
         },
       },
       {
         test: {
           name: { label: 'app test', color: 'yellow' },
           include: ['src/app/**/*.test.{ts,tsx}'],
+          server: INLINE_K8ORDO_UI,
         },
       },
       {

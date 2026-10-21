@@ -1,7 +1,7 @@
 'use client';
 
 import type { Spec } from '@json-render/core';
-import type { FC, MouseEvent, ReactNode } from 'react';
+import type { FC, ReactNode } from 'react';
 
 import { DeckPreview } from '@/app/_components/deck-preview';
 import { useHighlightedCode } from '@/app/_components/highlighted-code';
@@ -18,18 +18,6 @@ import styles from './artifact-body.module.css';
 type ArtifactContent =
   | { kind: 'ui'; spec: Spec | null }
   | { kind: 'slides'; source: string | null };
-
-// 生成物のリンクとフォームで画面ごと移動すると、会話の画面では受信が切れて会話を見失い、生成物のページでも
-// 見ていた版から離れるので、移動だけを止める。
-// 伝播は止めないので、生成 UI 側のハンドラはそのまま動く。/s/[slug] ではリンクが動いてよいので、共有の SpecPreview には入れない
-const preventLinkNavigation = (event: MouseEvent): void => {
-  if (
-    event.target instanceof Element &&
-    event.target.closest('a[href]') !== null
-  ) {
-    event.preventDefault();
-  }
-};
 
 // 見ていないビューのコードは作らない。TSX への変換は spec が届くたびに走るため
 export const codeOf = (
@@ -112,14 +100,7 @@ export const ArtifactBody: FC<ArtifactBodyProps> = ({
   return (
     <div className={styles.root}>
       {/* 生成 UI の入力やスライドの位置を残すよう、コードを見ているあいだもアンマウントせずに隠す */}
-      <div
-        className={styles.preview}
-        data-active={view === 'preview'}
-        onClickCapture={preventLinkNavigation}
-        onSubmitCapture={(event) => {
-          event.preventDefault();
-        }}
-      >
+      <div className={styles.preview} data-active={view === 'preview'}>
         {previewOf(content, waitingText, isGenerating, printable)}
       </div>
       <div className={styles.code} data-active={view !== 'preview'}>
