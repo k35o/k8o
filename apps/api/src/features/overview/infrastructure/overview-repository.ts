@@ -5,7 +5,7 @@ import type {
   BrowserSupportSyncTrigger,
 } from '@repo/database/schema';
 
-type Overview = {
+export type Overview = {
   blogs: { published: number; drafts: number; totalViews: number };
   inquiries: { total: number; latestAt: string | null };
   push: {

@@ -1,19 +1,14 @@
 import { mapWithConcurrency } from '@repo/helpers/array/map-with-concurrency';
-import { NINETY_DAYS_MS } from '@repo/helpers/date/duration';
 
 import { summarizeArticle } from '../infrastructure/article-summarizer';
 import {
-  countSummaryProgress,
   findSummaryTargets,
   releaseSummaryAttempt,
   reserveSummaryAttempt,
   saveArticleSummary,
 } from '../infrastructure/reading-list-repository';
-import type {
-  SummaryProgress,
-  SummaryTarget,
-} from '../infrastructure/reading-list-repository';
-import { MAX_SUMMARY_ATTEMPTS } from './summary-policy';
+import type { SummaryTarget } from '../infrastructure/reading-list-repository';
+import { MAX_SUMMARY_ATTEMPTS, summaryWindowStart } from './summary-policy';
 
 const SUMMARY_LIMIT = 60;
 const SUMMARY_CONCURRENCY = 4;
@@ -25,9 +20,6 @@ export type SummarizeResult = {
 };
 
 type ArticleOutcome = 'summarized' | 'failed' | 'skipped';
-
-const ninetyDaysAgo = (): string =>
-  new Date(Date.now() - NINETY_DAYS_MS).toISOString();
 
 const releaseQuietly = async (article: SummaryTarget): Promise<void> => {
   try {
@@ -41,7 +33,7 @@ export async function summarizeArticles(
   deadline: number,
 ): Promise<SummarizeResult> {
   const targets = await findSummaryTargets(
-    ninetyDaysAgo(),
+    summaryWindowStart(),
     MAX_SUMMARY_ATTEMPTS,
     SUMMARY_LIMIT,
   );
@@ -94,6 +86,3 @@ export async function summarizeArticles(
     summaryAborted: aborted,
   };
 }
-
-export const getSummaryProgress = (): Promise<SummaryProgress> =>
-  countSummaryProgress(ninetyDaysAgo(), MAX_SUMMARY_ATTEMPTS);

@@ -38,8 +38,12 @@ vi.mock('./features/reports/infrastructure/report-repository', () => ({
   findReports: vi.fn(),
   findReportTypeCounts: vi.fn(),
 }));
-// cron と MCP は DB クライアントを読み込むため、このテストでは差し替える
+// cron・MCP・オーナー API は DB クライアントを読み込むため、このテストでは差し替える
 vi.mock('./mcp', () => ({ mcpHandler: { fetch: vi.fn() } }));
+vi.mock('./owner', async () => {
+  const { Hono } = await import('hono');
+  return { ownerRoutes: new Hono() };
+});
 vi.mock('./features/reading-list/interface/sync', () => ({
   runArticleSync: vi.fn(),
 }));
