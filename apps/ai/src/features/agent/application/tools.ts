@@ -19,6 +19,7 @@ import {
   generateUiModelOutput,
 } from './generate-ui';
 import { githubTools } from './github-tools';
+import { siteTools } from './site-tools';
 
 // api の BLOG_SLUG_PATTERN と同じ値。@repo/api は型しか読めないので複製する
 const BLOG_SLUG_PATTERN = /^[a-z0-9-]+$/u;
@@ -99,6 +100,7 @@ export const agentTools = {
       generateSlidesModelOutput({ input, output }),
   }),
   ...githubTools,
+  ...siteTools,
 };
 
 type AgentTools = typeof agentTools;
@@ -120,4 +122,8 @@ export const WITHHOLDS_OUTPUT: WithholdsOutput = {
   search_github_code: true,
   search_github_issues: true,
   read_github_issue: true,
+  get_site_overview: false,
+  list_inquiries: true,
+  list_blog_stats: false,
+  list_browser_reports: true,
 };

@@ -22,6 +22,10 @@ const withholdsReadBlog: WithholdsOutput = {
   search_github_code: false,
   search_github_issues: false,
   read_github_issue: false,
+  get_site_overview: false,
+  list_inquiries: false,
+  list_blog_stats: false,
+  list_browser_reports: false,
 };
 
 const withholdsNothing: WithholdsOutput = {
@@ -34,6 +38,10 @@ const withholdsNothing: WithholdsOutput = {
   search_github_code: false,
   search_github_issues: false,
   read_github_issue: false,
+  get_site_overview: false,
+  list_inquiries: false,
+  list_blog_stats: false,
+  list_browser_reports: false,
 };
 
 const assistant = (parts: AgentPart[]): AgentUIMessage => ({

@@ -1,6 +1,13 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
-import { fetchOwnerBlogMarkdown, fetchOwnerBlogs } from './owner-api';
+import {
+  fetchOwnerBlogMarkdown,
+  fetchOwnerBlogs,
+  fetchOwnerBlogStats,
+  fetchOwnerInquiries,
+  fetchOwnerOverview,
+  fetchOwnerReports,
+} from './owner-api';
 
 vi.mock('server-only', () => ({}));
 
@@ -13,6 +20,74 @@ const BLOG = {
   tags: ['a11y', 'JavaScript'],
   publishedAt: '2026-09-28T00:00:00.000Z',
   url: 'https://k8o.me/blog/arianotify',
+};
+
+const OVERVIEW = {
+  blogs: { published: 42, drafts: 3, totalViews: 12_345 },
+  inquiries: { total: 21, latestAt: '2026-10-20T09:00:00.000Z' },
+  push: {
+    subscribers: 8,
+    lastSentAt: '2026-10-19T00:00:00.000Z',
+    lastSucceeded: 7,
+    lastFailed: 1,
+  },
+  readingList: {
+    articles: 300,
+    sources: 12,
+    latestPublishedAt: '2026-10-20T00:00:00.000Z',
+    unsummarized: 13,
+    summaryGaveUp: 2,
+  },
+  browserSupport: {
+    activeVersion: '7.1.0',
+    activeIngestedAt: '2026-10-20T06:00:00.000Z',
+    lastRun: {
+      result: 'applied',
+      trigger: 'cron',
+      createdAt: '2026-10-20T06:00:00.000Z',
+    },
+  },
+};
+
+const INQUIRY_PAGE = {
+  total: 21,
+  items: [
+    {
+      id: 7,
+      receivedAt: '2026-10-20T09:00:00.000Z',
+      kind: 'contact',
+      blogSlug: null,
+      feedbackLabel: null,
+      untrustedMessage: '記事の誤字を見つけました',
+    },
+  ],
+};
+
+const BLOG_STATS = {
+  total: 1,
+  items: [
+    {
+      slug: 'arianotify',
+      published: true,
+      createdAt: '2026-09-28T00:00:00.000Z',
+      views: 1234,
+      feedbackCount: 5,
+      tags: ['a11y'],
+    },
+  ],
+};
+
+const REPORT_PAGE = {
+  typeCounts: [{ type: 'csp-violation', count: 120 }],
+  items: [
+    {
+      id: 31,
+      receivedAt: '2026-10-20T09:00:00.000Z',
+      type: 'csp-violation',
+      url: 'https://k8o.me/blog/arianotify',
+      untrustedBody: '{"effectiveDirective":"img-src"}',
+    },
+  ],
 };
 
 const fetchMock = vi.fn<typeof fetch>();
@@ -214,5 +289,208 @@ describe('fetchOwnerBlogMarkdown', () => {
         fetchOwnerBlogMarkdown('Bad_Slug', undefined),
       ).resolves.toBeNull();
     });
+  });
+});
+
+describe('fetchOwnerOverview', () => {
+  describe('正常系', () => {
+    it('本番の api の運営の概要を、トークンを Bearer で添えて読む', async () => {
+      fetchMock.mockResolvedValue(Response.json(OVERVIEW));
+
+      await expect(fetchOwnerOverview(undefined)).resolves.toStrictEqual(
+        OVERVIEW,
+      );
+      expect(requestedUrl()).toBe('https://api.k8o.me/owner/overview');
+      expect(requestedAuthorization()).toBe(`Bearer ${TOKEN}`);
+    });
+
+    it('渡した中断のシグナルで fetch を中断できるようにする', async () => {
+      fetchMock.mockResolvedValue(Response.json(OVERVIEW));
+      const controller = new AbortController();
+
+      await fetchOwnerOverview(controller.signal);
+
+      expect(requestedInit()?.signal).toBe(controller.signal);
+    });
+  });
+
+  describe('異常系', () => {
+    it.each([401, 500])(
+      '%i が返ったら、パスと状態だけの文をログに残して例外を投げる',
+      async (status) => {
+        fetchMock.mockResolvedValue(Response.json({ ok: false }, { status }));
+
+        await expect(fetchOwnerOverview(undefined)).rejects.toThrow(
+          `オーナー API の /owner/overview が ${status} を返しました`,
+        );
+        expect(console.error).toHaveBeenCalledExactlyOnceWith(
+          `オーナー API の /owner/overview が ${status} を返しました`,
+        );
+      },
+    );
+  });
+});
+
+describe('fetchOwnerInquiries', () => {
+  describe('正常系', () => {
+    it('ページの番号と件数を query に載せて、本番の api のお問い合わせの一覧を、トークンを Bearer で添えて読む', async () => {
+      fetchMock.mockResolvedValue(Response.json(INQUIRY_PAGE));
+
+      await expect(
+        fetchOwnerInquiries({ page: 2, pageSize: 20 }, undefined),
+      ).resolves.toStrictEqual(INQUIRY_PAGE);
+      expect(requestedUrl()).toBe(
+        'https://api.k8o.me/owner/inquiries?page=2&pageSize=20',
+      );
+      expect(requestedAuthorization()).toBe(`Bearer ${TOKEN}`);
+    });
+
+    it('渡した中断のシグナルで fetch を中断できるようにする', async () => {
+      fetchMock.mockResolvedValue(Response.json(INQUIRY_PAGE));
+      const controller = new AbortController();
+
+      await fetchOwnerInquiries({ page: 1, pageSize: 20 }, controller.signal);
+
+      expect(requestedInit()?.signal).toBe(controller.signal);
+    });
+  });
+
+  describe('異常系', () => {
+    it.each([400, 401, 500])(
+      '%i が返ったら、query を入れずにパスと状態だけの文をログに残して例外を投げる',
+      async (status) => {
+        fetchMock.mockResolvedValue(Response.json({ ok: false }, { status }));
+
+        await expect(
+          fetchOwnerInquiries({ page: 2, pageSize: 20 }, undefined),
+        ).rejects.toThrow(
+          new Error(
+            `オーナー API の /owner/inquiries が ${status} を返しました`,
+          ),
+        );
+        expect(console.error).toHaveBeenCalledExactlyOnceWith(
+          `オーナー API の /owner/inquiries が ${status} を返しました`,
+        );
+      },
+    );
+  });
+});
+
+describe('fetchOwnerBlogStats', () => {
+  describe('正常系', () => {
+    it('絞り込み・並び順・ページの番号と件数を query に載せて、本番の api の記事ごとの記録を、トークンを Bearer で添えて読む', async () => {
+      fetchMock.mockResolvedValue(Response.json(BLOG_STATS));
+
+      await expect(
+        fetchOwnerBlogStats(
+          { status: 'draft', sort: 'views', page: 2, pageSize: 50 },
+          undefined,
+        ),
+      ).resolves.toStrictEqual(BLOG_STATS);
+      expect(requestedUrl()).toBe(
+        'https://api.k8o.me/owner/blog-stats?status=draft&sort=views&page=2&pageSize=50',
+      );
+      expect(requestedAuthorization()).toBe(`Bearer ${TOKEN}`);
+    });
+
+    it('渡した中断のシグナルで fetch を中断できるようにする', async () => {
+      fetchMock.mockResolvedValue(Response.json(BLOG_STATS));
+      const controller = new AbortController();
+
+      await fetchOwnerBlogStats(
+        { status: 'all', sort: 'recent', page: 1, pageSize: 50 },
+        controller.signal,
+      );
+
+      expect(requestedInit()?.signal).toBe(controller.signal);
+    });
+  });
+
+  describe('異常系', () => {
+    it.each([400, 401, 500])(
+      '%i が返ったら、query を入れずにパスと状態だけの文をログに残して例外を投げる',
+      async (status) => {
+        fetchMock.mockResolvedValue(Response.json({ ok: false }, { status }));
+
+        await expect(
+          fetchOwnerBlogStats(
+            { status: 'draft', sort: 'views', page: 2, pageSize: 50 },
+            undefined,
+          ),
+        ).rejects.toThrow(
+          new Error(
+            `オーナー API の /owner/blog-stats が ${status} を返しました`,
+          ),
+        );
+        expect(console.error).toHaveBeenCalledExactlyOnceWith(
+          `オーナー API の /owner/blog-stats が ${status} を返しました`,
+        );
+      },
+    );
+  });
+});
+
+describe('fetchOwnerReports', () => {
+  describe('正常系', () => {
+    it('種別・ページの番号と件数を query に載せて、本番の api のレポートの一覧を、トークンを Bearer で添えて読む', async () => {
+      fetchMock.mockResolvedValue(Response.json(REPORT_PAGE));
+
+      await expect(
+        fetchOwnerReports(
+          { type: 'csp-violation', page: 2, pageSize: 10 },
+          undefined,
+        ),
+      ).resolves.toStrictEqual(REPORT_PAGE);
+      expect(requestedUrl()).toBe(
+        'https://api.k8o.me/owner/reports?type=csp-violation&page=2&pageSize=10',
+      );
+      expect(requestedAuthorization()).toBe(`Bearer ${TOKEN}`);
+    });
+
+    it('種別が無ければ、query に type を載せない', async () => {
+      fetchMock.mockResolvedValue(Response.json(REPORT_PAGE));
+
+      await fetchOwnerReports(
+        { type: undefined, page: 1, pageSize: 10 },
+        undefined,
+      );
+
+      expect(requestedUrl()).toBe(
+        'https://api.k8o.me/owner/reports?page=1&pageSize=10',
+      );
+    });
+
+    it('渡した中断のシグナルで fetch を中断できるようにする', async () => {
+      fetchMock.mockResolvedValue(Response.json(REPORT_PAGE));
+      const controller = new AbortController();
+
+      await fetchOwnerReports(
+        { type: undefined, page: 1, pageSize: 10 },
+        controller.signal,
+      );
+
+      expect(requestedInit()?.signal).toBe(controller.signal);
+    });
+  });
+
+  describe('異常系', () => {
+    it.each([400, 401, 500])(
+      '%i が返ったら、query を入れずにパスと状態だけの文をログに残して例外を投げる',
+      async (status) => {
+        fetchMock.mockResolvedValue(Response.json({ ok: false }, { status }));
+
+        await expect(
+          fetchOwnerReports(
+            { type: 'csp-violation', page: 2, pageSize: 10 },
+            undefined,
+          ),
+        ).rejects.toThrow(
+          new Error(`オーナー API の /owner/reports が ${status} を返しました`),
+        );
+        expect(console.error).toHaveBeenCalledExactlyOnceWith(
+          `オーナー API の /owner/reports が ${status} を返しました`,
+        );
+      },
+    );
   });
 });

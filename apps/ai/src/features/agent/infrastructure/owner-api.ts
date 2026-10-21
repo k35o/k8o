@@ -1,7 +1,7 @@
 import 'server-only';
 import type { OwnerApi } from '@repo/api/owner';
 import { hc } from 'hono/client';
-import type { InferResponseType } from 'hono/client';
+import type { InferRequestType, InferResponseType } from 'hono/client';
 
 const ownerApiToken = (): string => {
   const token = process.env['OWNER_API_TOKEN'];
@@ -27,6 +27,30 @@ export type OwnerBlog = InferResponseType<
   typeof ownerApi.owner.blogs.$get,
   200
 >['items'][number];
+
+export type OwnerOverview = InferResponseType<
+  typeof ownerApi.owner.overview.$get,
+  200
+>;
+
+type OwnerInquiryPage = InferResponseType<
+  typeof ownerApi.owner.inquiries.$get,
+  200
+>;
+
+type OwnerBlogStatsQuery = InferRequestType<
+  (typeof ownerApi.owner)['blog-stats']['$get']
+>['query'];
+
+export type OwnerBlogStats = InferResponseType<
+  (typeof ownerApi.owner)['blog-stats']['$get'],
+  200
+>;
+
+type OwnerReportPage = InferResponseType<
+  typeof ownerApi.owner.reports.$get,
+  200
+>;
 
 // tool の例外はモデルへの tool の結果になるだけでログに残らないので、ここで残す
 const unexpectedStatus = (path: string, status: number): Error => {
@@ -66,4 +90,85 @@ export const fetchOwnerBlogMarkdown = async (
     throw unexpectedStatus(`/owner/blogs/${slug}`, status);
   }
   return (await res.json()).markdown;
+};
+
+export const fetchOwnerOverview = async (
+  signal: AbortSignal | undefined,
+): Promise<OwnerOverview> => {
+  const res = await ownerApi.owner.overview.$get(
+    {},
+    { init: { signal: signal ?? null } },
+  );
+  const status: number = res.status;
+  if (status !== 200) {
+    throw unexpectedStatus('/owner/overview', status);
+  }
+  return res.json();
+};
+
+export const fetchOwnerInquiries = async (
+  { page, pageSize }: { page: number; pageSize: number },
+  signal: AbortSignal | undefined,
+): Promise<OwnerInquiryPage> => {
+  const res = await ownerApi.owner.inquiries.$get(
+    { query: { page: String(page), pageSize: String(pageSize) } },
+    { init: { signal: signal ?? null } },
+  );
+  if (res.status !== 200) {
+    throw unexpectedStatus('/owner/inquiries', res.status);
+  }
+  return res.json();
+};
+
+export const fetchOwnerBlogStats = async (
+  {
+    status,
+    sort,
+    page,
+    pageSize,
+  }: Pick<OwnerBlogStatsQuery, 'status' | 'sort'> & {
+    page: number;
+    pageSize: number;
+  },
+  signal: AbortSignal | undefined,
+): Promise<OwnerBlogStats> => {
+  const res = await ownerApi.owner['blog-stats'].$get(
+    {
+      query: {
+        status,
+        sort,
+        page: String(page),
+        pageSize: String(pageSize),
+      },
+    },
+    { init: { signal: signal ?? null } },
+  );
+  if (res.status !== 200) {
+    throw unexpectedStatus('/owner/blog-stats', res.status);
+  }
+  return res.json();
+};
+
+export const fetchOwnerReports = async (
+  {
+    type,
+    page,
+    pageSize,
+  }: { type: string | undefined; page: number; pageSize: number },
+  signal: AbortSignal | undefined,
+): Promise<OwnerReportPage> => {
+  const res = await ownerApi.owner.reports.$get(
+    {
+      query: {
+        type,
+        page: String(page),
+        pageSize: String(pageSize),
+      },
+    },
+    { init: { signal: signal ?? null } },
+  );
+  if (res.status !== 200) {
+    throw unexpectedStatus('/owner/reports', res.status);
+  }
+  return res.json();
 };

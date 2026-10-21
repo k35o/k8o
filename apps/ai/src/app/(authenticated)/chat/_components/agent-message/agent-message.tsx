@@ -2,6 +2,7 @@
 
 import { Alert, AssistantIcon, Avatar } from '@k8ordo/ui';
 import { Message, Reasoning, ToolInvocation } from '@k8ordo/ui/ai';
+import { isStaticToolUIPart } from 'ai';
 import type { FC, Ref } from 'react';
 
 import type {
@@ -88,17 +89,11 @@ const isThinking = (
 ): boolean => isStreaming && part.state === 'streaming';
 
 const rendersPart = (part: AgentMessagePart, isStreaming: boolean): boolean => {
+  if (isStaticToolUIPart(part)) {
+    return true;
+  }
   switch (part.type) {
     case 'text':
-    case 'tool-list_blogs':
-    case 'tool-read_blog':
-    case 'tool-generate_ui':
-    case 'tool-generate_slides':
-    case 'tool-list_github_repos':
-    case 'tool-read_github_file':
-    case 'tool-search_github_code':
-    case 'tool-search_github_issues':
-    case 'tool-read_github_issue':
       return true;
     case 'reasoning':
       return part.text.trim() !== '' || isThinking(part, isStreaming);
@@ -139,33 +134,11 @@ const AgentPart: FC<
   if (!rendersPart(part, isStreaming)) {
     return null;
   }
-  switch (part.type) {
-    case 'text':
-      return (
-        <Message.Content
-          isStreaming={isStreaming && part.state === 'streaming'}
-        >
-          <MarkdownText>{part.text}</MarkdownText>
-        </Message.Content>
-      );
-    case 'reasoning':
-      return (
-        <Reasoning isStreaming={isThinking(part, isStreaming)}>
-          {part.text}
-        </Reasoning>
-      );
-    case 'tool-list_blogs':
-    case 'tool-read_blog':
-    case 'tool-list_github_repos':
-    case 'tool-read_github_file':
-    case 'tool-search_github_code':
-    case 'tool-search_github_issues':
-    case 'tool-read_github_issue':
-      return (
-        <ToolPart isGenerating={isStreaming || isServerRunning} part={part} />
-      );
-    case 'tool-generate_ui':
-    case 'tool-generate_slides':
+  if (isStaticToolUIPart(part)) {
+    if (
+      part.type === 'tool-generate_ui' ||
+      part.type === 'tool-generate_slides'
+    ) {
       return (
         <ArtifactCard
           artifact={chatArtifactOf(part, {
@@ -182,6 +155,26 @@ const AgentPart: FC<
             onOpenArtifact(part.toolCallId);
           }}
         />
+      );
+    }
+    return (
+      <ToolPart isGenerating={isStreaming || isServerRunning} part={part} />
+    );
+  }
+  switch (part.type) {
+    case 'text':
+      return (
+        <Message.Content
+          isStreaming={isStreaming && part.state === 'streaming'}
+        >
+          <MarkdownText>{part.text}</MarkdownText>
+        </Message.Content>
+      );
+    case 'reasoning':
+      return (
+        <Reasoning isStreaming={isThinking(part, isStreaming)}>
+          {part.text}
+        </Reasoning>
       );
     default:
       return null;
