@@ -1,10 +1,14 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
+import { findBlogs } from './features/blog/infrastructure/blog-repository';
 import { findInquiries } from './features/inquiries/infrastructure/inquiry-repository';
 import { findOverview } from './features/overview/infrastructure/overview-repository';
 import { getSummaryProgress } from './features/reading-list/interface/queries';
 import app from './index';
 
+vi.mock('./features/blog/infrastructure/blog-repository', () => ({
+  findBlogs: vi.fn(),
+}));
 vi.mock('./features/inquiries/infrastructure/inquiry-repository', () => ({
   findInquiries: vi.fn(),
 }));
@@ -105,6 +109,10 @@ describe('オーナー API の認可', () => {
     it.each([
       ['/owner/overview', findOverview],
       ['/owner/inquiries?page=1&pageSize=20', findInquiries],
+      [
+        '/owner/blog-stats?status=all&sort=recent&page=1&pageSize=20',
+        findBlogs,
+      ],
     ])(
       'Authorization が無ければ %s も 401 を返し、DB を読まない',
       async (path, read) => {
@@ -413,6 +421,64 @@ describe('GET /owner/inquiries', () => {
         error: 'invalid_request',
       });
       expect(findInquiries).not.toHaveBeenCalled();
+    });
+  });
+});
+
+describe('GET /owner/blog-stats', () => {
+  describe('正常系', () => {
+    it('絞り込み・並び順・ページを DB の読み取りに渡し、結果をそのまま返す', async () => {
+      const blogs = {
+        total: 51,
+        items: [
+          {
+            slug: 'media-pseudos',
+            published: false,
+            createdAt: '2026-09-09T00:00:00.000Z',
+            views: 0,
+            feedbackCount: 1,
+            tags: ['CSS'],
+          },
+        ],
+      };
+      vi.mocked(findBlogs).mockResolvedValue(blogs);
+
+      const res = await ownerRequest(
+        '/owner/blog-stats?status=draft&sort=views&page=2&pageSize=50',
+        AI_TOKEN,
+      );
+
+      expect(res.status).toBe(200);
+      expect(findBlogs).toHaveBeenCalledWith({
+        status: 'draft',
+        sort: 'views',
+        page: 2,
+        pageSize: 50,
+      });
+      await expect(res.json()).resolves.toStrictEqual(blogs);
+    });
+  });
+
+  describe('異常系', () => {
+    it.each([
+      ['status が組の外', 'status=archived&sort=recent&page=1&pageSize=20'],
+      ['sort が組の外', 'status=all&sort=title&page=1&pageSize=20'],
+      [
+        'pageSize が上限の 50 を超える',
+        'status=all&sort=recent&page=1&pageSize=51',
+      ],
+      ['page が 0', 'status=all&sort=recent&page=0&pageSize=20'],
+      ['status が無い', 'sort=recent&page=1&pageSize=20'],
+      ['sort が無い', 'status=all&page=1&pageSize=20'],
+    ])('%s なら 400 を返し、DB を読まない', async (_, query) => {
+      const res = await ownerRequest(`/owner/blog-stats?${query}`, AI_TOKEN);
+
+      expect(res.status).toBe(400);
+      await expect(res.json()).resolves.toStrictEqual({
+        ok: false,
+        error: 'invalid_request',
+      });
+      expect(findBlogs).not.toHaveBeenCalled();
     });
   });
 });

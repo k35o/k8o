@@ -1,7 +1,10 @@
 import { Hono } from 'hono';
 import { HTTPException } from 'hono/http-exception';
 
-import { blogOwnerRoutes } from './features/blog/interface/owner-routes';
+import {
+  blogOwnerRoutes,
+  blogStatsOwnerRoutes,
+} from './features/blog/interface/owner-routes';
 import { inquiryOwnerRoutes } from './features/inquiries/interface/owner-routes';
 import { overviewOwnerRoutes } from './features/overview/interface/owner-routes';
 
@@ -10,6 +13,8 @@ export const ownerRoutes = new Hono()
   .route('/blogs', blogOwnerRoutes)
   .route('/overview', overviewOwnerRoutes)
   .route('/inquiries', inquiryOwnerRoutes)
+  // /blogs/stats にすると、/blogs/:slug の stats という slug の記事に届かなくなる
+  .route('/blog-stats', blogStatsOwnerRoutes)
   .onError((error, c) => {
     if (error instanceof HTTPException) {
       return error.getResponse();

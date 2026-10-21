@@ -33,7 +33,7 @@ k8o の API。Hono で書き、Vercel にデプロイする（本番ドメイン
 - ルートは `features/<feature>/interface/owner-routes.ts` に書き、`src/owner.ts` で束ねる。オーナー API のモジュールから MCP・cron・AI SDK を import しない（ai の型検査に巻き込まれるため）
 - エラーは公開ルートと同じく `{ ok: false, error: '<code>' }` とステータスで返す
 - `GET /owner/blogs` は記事の一覧、`GET /owner/blogs/:slug` は記事の markdown を返す。記事の本文とタイトルは main の MDX にあり DB には無いので、main の公開ページ（`https://k8o.me/blog/feed` と `https://k8o.me/blog/<slug>.md`）から取る。slug は `[a-z0-9-]` だけを受ける
-- 管理データの口は、MCP の読み取りの tool と同じ関数を通し、同じ形を返す。`GET /owner/overview` は `get_overview`、`GET /owner/inquiries` は `list_inquiries` に当たる。入力は query で受け、既定値は持たずに呼ぶ側が毎回渡す。件数の上限は MCP と同じで、形の誤りは 400 の `invalid_request`
+- 管理データの口は、MCP の読み取りの tool と同じ関数を通し、同じ形を返す。`GET /owner/overview` は `get_overview`、`GET /owner/inquiries` は `list_inquiries`、`GET /owner/blog-stats`（記事ごとの閲覧数・フィードバックの件数・下書き）は `list_blogs` に当たる。入力は query で受け、既定値は持たずに呼ぶ側が毎回渡す。件数の上限は MCP と同じで、形の誤りは 400 の `invalid_request`
 - 第三者が書いた文（お問い合わせの本文など）は `shared/text/untrusted-text.ts` を通して返す。ai は、その文を返す口を読む tool の出力を保存しない（apps/ai の `WITHHOLDS_OUTPUT`）。保存する tool では api の値をそのまま残すので、第三者の文を返す項目をほかの口に足すときは、ai の分け方も見直す
 
 ## MCP
