@@ -2,11 +2,7 @@ import type { McpServer } from '@modelcontextprotocol/server';
 import { z } from 'zod';
 
 import { toolResult } from '../../../shared/mcp/tool-result';
-import { toUntrustedText } from '../../../shared/text/untrusted-text';
-import { findInquiries } from '../infrastructure/inquiry-repository';
-
-// 投稿時の上限（お問い合わせ255字・フィードバック500字）より大きく取り、切り詰めは保険にとどめる
-const MESSAGE_MAX_LENGTH = 1000;
+import { listInquiries } from '../application/list-inquiries';
 
 export const registerInquiryTools = (server: McpServer): void => {
   server.registerTool(
@@ -39,22 +35,7 @@ export const registerInquiryTools = (server: McpServer): void => {
         openWorldHint: false,
       },
     },
-    async ({ page, pageSize }) => {
-      const { items, total } = await findInquiries({ page, pageSize });
-      return toolResult({
-        total,
-        items: items.map((item) => ({
-          id: item.id,
-          receivedAt: item.createdAt,
-          kind: item.blogSlug === null ? 'contact' : 'blog_feedback',
-          blogSlug: item.blogSlug,
-          feedbackLabel: item.feedbackName,
-          untrustedMessage:
-            item.message === null
-              ? null
-              : toUntrustedText(item.message, MESSAGE_MAX_LENGTH),
-        })),
-      });
-    },
+    async ({ page, pageSize }) =>
+      toolResult(await listInquiries({ page, pageSize })),
   );
 };

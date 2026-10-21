@@ -33,7 +33,8 @@ k8o の API。Hono で書き、Vercel にデプロイする（本番ドメイン
 - ルートは `features/<feature>/interface/owner-routes.ts` に書き、`src/owner.ts` で束ねる。オーナー API のモジュールから MCP・cron・AI SDK を import しない（ai の型検査に巻き込まれるため）
 - エラーは公開ルートと同じく `{ ok: false, error: '<code>' }` とステータスで返す
 - `GET /owner/blogs` は記事の一覧、`GET /owner/blogs/:slug` は記事の markdown を返す。記事の本文とタイトルは main の MDX にあり DB には無いので、main の公開ページ（`https://k8o.me/blog/feed` と `https://k8o.me/blog/<slug>.md`）から取る。slug は `[a-z0-9-]` だけを受ける
-- 管理データの口は、MCP の読み取りの tool と同じ関数を通し、同じ形を返す。`GET /owner/overview` は `get_overview` に当たる
+- 管理データの口は、MCP の読み取りの tool と同じ関数を通し、同じ形を返す。`GET /owner/overview` は `get_overview`、`GET /owner/inquiries` は `list_inquiries` に当たる。入力は query で受け、既定値は持たずに呼ぶ側が毎回渡す。件数の上限は MCP と同じで、形の誤りは 400 の `invalid_request`
+- 第三者が書いた文（お問い合わせの本文など）は `shared/text/untrusted-text.ts` を通して返す。ai は、その文を返す口を読む tool の出力を保存しない（apps/ai の `WITHHOLDS_OUTPUT`）。保存する tool では api の値をそのまま残すので、第三者の文を返す項目をほかの口に足すときは、ai の分け方も見直す
 
 ## MCP
 
@@ -41,7 +42,7 @@ k8o の API。Hono で書き、Vercel にデプロイする（本番ドメイン
 
 - tool を足すときは `features/<feature>/interface/mcp-tools.ts` に `register*Tools` を書き、`mcp.ts` で登録する
 - スキーマは `zod`（classic）で書く。SDK が JSON Schema を取り出すのに classic 版の機能を使うため、`zod/mini` では型が通らない
-- 第三者が書いた文字列（お問い合わせ本文やレポートなど）は `shared/text/untrusted-text.ts` を通し、フィールド名か説明でデータとして扱うよう明示する
+- 第三者が書いた文字列（お問い合わせ本文やレポートなど）は、オーナー API と同じく `shared/text/untrusted-text.ts` を通し、フィールド名か説明でデータとして扱うよう明示する
 - 公開ページを変える tool には `_meta['anthropic/requiresUserInteraction']` を付け、毎回確認させる
 - 第三者の文章への対策で強制力があるのは、この確認だけ。お問い合わせやレポートを読むセッションでは auto mode を使わず、外部へ書き込める tool に確認を挟む
 - tool 内の例外は SDK が `isError` の結果に変えて返すので、Vercel のログには残らない。失敗は会話の中で気づく

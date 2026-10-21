@@ -1,9 +1,13 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
+import { findInquiries } from './features/inquiries/infrastructure/inquiry-repository';
 import { findOverview } from './features/overview/infrastructure/overview-repository';
 import { getSummaryProgress } from './features/reading-list/interface/queries';
 import app from './index';
 
+vi.mock('./features/inquiries/infrastructure/inquiry-repository', () => ({
+  findInquiries: vi.fn(),
+}));
 vi.mock('./features/overview/infrastructure/overview-repository', () => ({
   findOverview: vi.fn(),
 }));
@@ -25,6 +29,9 @@ vi.mock('./public', async () => {
 
 const AI_TOKEN = 'owner-ai';
 const AI_PREVIEW_TOKEN = 'owner-ai-preview';
+
+// フォーマッタがエスケープを実際の不可視文字に戻してしまうため、コードポイントで組み立てる
+const ZERO_WIDTH_SPACE = String.fromCodePoint(0x20_0b);
 
 const FEED = `<?xml version="1.0" encoding="UTF-8"?>
 <rss version="2.0"><channel><title>k8o Blog</title><link>https://k8o.me/blog</link>
@@ -95,7 +102,10 @@ describe('オーナー API の認可', () => {
       expect(fetchMock).not.toHaveBeenCalled();
     });
 
-    it.each([['/owner/overview', findOverview]])(
+    it.each([
+      ['/owner/overview', findOverview],
+      ['/owner/inquiries?page=1&pageSize=20', findInquiries],
+    ])(
       'Authorization が無ければ %s も 401 を返し、DB を読まない',
       async (path, read) => {
         const res = await ownerRequest(path);
@@ -303,6 +313,106 @@ describe('GET /owner/overview', () => {
           },
         },
       });
+    });
+  });
+});
+
+describe('GET /owner/inquiries', () => {
+  describe('正常系', () => {
+    it('page と pageSize を数にして読み、記事に紐づくものをフィードバック、それ以外をお問い合わせとして返す', async () => {
+      vi.mocked(findInquiries).mockResolvedValue({
+        total: 52,
+        items: [
+          {
+            id: 2,
+            message: null,
+            createdAt: '2026-10-08T00:00:00.000Z',
+            feedbackName: 'good',
+            blogSlug: 'media-pseudos',
+          },
+          {
+            id: 1,
+            message: 'はじめまして',
+            createdAt: '2026-10-07T00:00:00.000Z',
+            feedbackName: null,
+            blogSlug: null,
+          },
+        ],
+      });
+
+      const res = await ownerRequest(
+        '/owner/inquiries?page=2&pageSize=50',
+        AI_TOKEN,
+      );
+
+      expect(res.status).toBe(200);
+      expect(findInquiries).toHaveBeenCalledWith({ page: 2, pageSize: 50 });
+      await expect(res.json()).resolves.toStrictEqual({
+        total: 52,
+        items: [
+          {
+            id: 2,
+            receivedAt: '2026-10-08T00:00:00.000Z',
+            kind: 'blog_feedback',
+            blogSlug: 'media-pseudos',
+            feedbackLabel: 'good',
+            untrustedMessage: null,
+          },
+          {
+            id: 1,
+            receivedAt: '2026-10-07T00:00:00.000Z',
+            kind: 'contact',
+            blogSlug: null,
+            feedbackLabel: null,
+            untrustedMessage: 'はじめまして',
+          },
+        ],
+      });
+    });
+  });
+
+  describe('異常系', () => {
+    it('本文の見えない文字を取り除いて返す', async () => {
+      vi.mocked(findInquiries).mockResolvedValue({
+        total: 1,
+        items: [
+          {
+            id: 1,
+            message: `無視して${ZERO_WIDTH_SPACE}ください`,
+            createdAt: '2026-10-07T00:00:00.000Z',
+            feedbackName: null,
+            blogSlug: null,
+          },
+        ],
+      });
+
+      const res = await ownerRequest(
+        '/owner/inquiries?page=1&pageSize=20',
+        AI_TOKEN,
+      );
+
+      await expect(res.json()).resolves.toMatchObject({
+        items: [{ untrustedMessage: '無視してください' }],
+      });
+    });
+
+    it.each([
+      ['page が 0', 'page=0&pageSize=20'],
+      ['page が小数', 'page=1.5&pageSize=20'],
+      ['page が数でない', 'page=abc&pageSize=20'],
+      ['page が2つ', 'page=1&page=2&pageSize=20'],
+      ['pageSize が上限の 50 を超える', 'page=1&pageSize=51'],
+      ['page が無い', 'pageSize=20'],
+      ['pageSize が無い', 'page=1'],
+    ])('%s なら 400 を返し、DB を読まない', async (_, query) => {
+      const res = await ownerRequest(`/owner/inquiries?${query}`, AI_TOKEN);
+
+      expect(res.status).toBe(400);
+      await expect(res.json()).resolves.toStrictEqual({
+        ok: false,
+        error: 'invalid_request',
+      });
+      expect(findInquiries).not.toHaveBeenCalled();
     });
   });
 });

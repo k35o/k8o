@@ -2,12 +2,14 @@ import { Hono } from 'hono';
 import { HTTPException } from 'hono/http-exception';
 
 import { blogOwnerRoutes } from './features/blog/interface/owner-routes';
+import { inquiryOwnerRoutes } from './features/inquiries/interface/owner-routes';
 import { overviewOwnerRoutes } from './features/overview/interface/owner-routes';
 
 export const ownerRoutes = new Hono()
   .basePath('/owner')
   .route('/blogs', blogOwnerRoutes)
   .route('/overview', overviewOwnerRoutes)
+  .route('/inquiries', inquiryOwnerRoutes)
   .onError((error, c) => {
     if (error instanceof HTTPException) {
       return error.getResponse();
