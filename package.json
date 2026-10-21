@@ -35,7 +35,7 @@
     "wrangler": "catalog:"
   },
   "engines": {
-    "node": ">=24.14.1"
+    "node": ">=24.22.1"
   },
   "packageManager": "pnpm@12.12.1"
 }

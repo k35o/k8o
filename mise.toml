@@ -1,5 +1,5 @@
 [tools]
-node = "24.21.0"
+node = "24.22.1"
 pnpm = "12.12.1"
 # ローカル DB(turso dev) の起動に必要。scripts/local-db.ts が `mise which turso`
 # で解決するため、暗黙のグローバル依存にせず宣言する
