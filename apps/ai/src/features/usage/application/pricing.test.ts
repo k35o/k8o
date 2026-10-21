@@ -1,4 +1,4 @@
-import type { LanguageModelUsage } from 'ai';
+import type { ContentPart, LanguageModelUsage, ToolSet } from 'ai';
 import { describe, expect, it } from 'vitest';
 
 import {
@@ -6,6 +6,7 @@ import {
   costMicroUsd,
   EMPTY_USAGE_TOKENS,
   toUsageTokens,
+  webSearchesOf,
 } from './pricing';
 import type { UsageTokens } from './pricing';
 
@@ -50,7 +51,7 @@ describe('costMicroUsd', () => {
     ] as const)(
       '%s の%s 100万トークンを、その単価のマイクロドルで数える',
       (model, _kind, usage, expected) => {
-        expect(costMicroUsd(model, usage)).toBe(expected);
+        expect(costMicroUsd(model, usage, 0)).toBe(expected);
       },
     );
 
@@ -64,8 +65,19 @@ describe('costMicroUsd', () => {
             cacheWriteTokens: 2000,
             outputTokens: 1000,
           }),
+          0,
         ),
       ).toBe(20_200);
+    });
+
+    it('web 検索は、1回ごとに 10,000 マイクロドルを足す', () => {
+      expect(
+        costMicroUsd(
+          'claude-sonnet-5-5',
+          tokens({ inputTokens: 1000, outputTokens: 100 }),
+          3,
+        ),
+      ).toBe(33_000);
     });
   });
 
@@ -75,12 +87,84 @@ describe('costMicroUsd', () => {
         costMicroUsd(
           'claude-sonnet-5-5',
           tokens({ inputTokens: 3, cacheReadTokens: 3 }),
+          0,
         ),
       ).toBe(1);
     });
 
     it('トークンが無ければ0円', () => {
-      expect(costMicroUsd('claude-opus-5-5', EMPTY_USAGE_TOKENS)).toBe(0);
+      expect(costMicroUsd('claude-opus-5-5', EMPTY_USAGE_TOKENS, 0)).toBe(0);
+    });
+
+    it('トークンが無くても、web 検索の代金は数える', () => {
+      expect(costMicroUsd('claude-opus-5-5', EMPTY_USAGE_TOKENS, 1)).toBe(
+        10_000,
+      );
+    });
+  });
+});
+
+describe('webSearchesOf', () => {
+  const searchResult = (toolCallId: string): ContentPart<ToolSet> => ({
+    type: 'tool-result',
+    toolCallId,
+    toolName: 'web_search',
+    input: { query: 'React 19' },
+    output: [],
+    providerExecuted: true,
+  });
+
+  describe('正常系', () => {
+    it('web 検索の回数を、結果の届いた web_search の数で数える', () => {
+      expect(
+        webSearchesOf([
+          { type: 'text', text: '調べます' },
+          {
+            type: 'tool-call',
+            toolCallId: 'srvtoolu_1',
+            toolName: 'web_search',
+            input: { query: 'React 19' },
+            providerExecuted: true,
+          },
+          searchResult('srvtoolu_1'),
+          searchResult('srvtoolu_2'),
+        ]),
+      ).toBe(2);
+    });
+  });
+
+  describe('異常系', () => {
+    it('エラーで終わった検索と、ほかの tool の結果は数えない', () => {
+      expect(
+        webSearchesOf([
+          {
+            type: 'tool-error',
+            toolCallId: 'srvtoolu_1',
+            toolName: 'web_search',
+            input: { query: 'React 19' },
+            error: {
+              type: 'web_search_tool_result_error',
+              errorCode: 'too_many_requests',
+            },
+            providerExecuted: true,
+          },
+          {
+            type: 'tool-result',
+            toolCallId: 'srvtoolu_2',
+            toolName: 'web_fetch',
+            input: { url: 'https://react.dev/' },
+            output: {},
+            providerExecuted: true,
+          },
+          {
+            type: 'tool-result',
+            toolCallId: 'call-1',
+            toolName: 'list_blogs',
+            input: {},
+            output: { items: [] },
+          },
+        ]),
+      ).toBe(0);
     });
   });
 });

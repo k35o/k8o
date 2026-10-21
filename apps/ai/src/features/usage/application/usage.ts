@@ -65,10 +65,11 @@ export const recordUsage = async (input: {
   usageId: number;
   model: GenerationModel;
   tokens: UsageTokens;
+  webSearches: number;
 }): Promise<void> => {
   await updateUsageCost({
     id: input.usageId,
     ...input.tokens,
-    costMicroUsd: costMicroUsd(input.model, input.tokens),
+    costMicroUsd: costMicroUsd(input.model, input.tokens, input.webSearches),
   });
 };

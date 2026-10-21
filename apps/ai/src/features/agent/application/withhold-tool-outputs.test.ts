@@ -1,3 +1,4 @@
+import { convertToModelMessages } from 'ai';
 import { describe, expect, it } from 'vitest';
 
 import type { AgentUIMessage } from './agent-message';
@@ -26,6 +27,8 @@ const withholdsReadBlog: WithholdsOutput = {
   list_inquiries: false,
   list_blog_stats: false,
   list_browser_reports: false,
+  web_search: false,
+  web_fetch: false,
 };
 
 const withholdsNothing: WithholdsOutput = {
@@ -42,6 +45,8 @@ const withholdsNothing: WithholdsOutput = {
   list_inquiries: false,
   list_blog_stats: false,
   list_browser_reports: false,
+  web_search: false,
+  web_fetch: false,
 };
 
 const assistant = (parts: AgentPart[]): AgentUIMessage => ({
@@ -91,6 +96,61 @@ const listedBlogs: AgentPart = {
 };
 
 const answer: AgentPart = { type: 'text', text: '要約です', state: 'done' };
+
+// provider が実行する tool の代わりに、read_blog に providerExecuted を付けて確かめる
+const serverResult: AgentPart = {
+  type: 'tool-read_blog',
+  toolCallId: 'srvtoolu_1',
+  providerExecuted: true,
+  state: 'output-available',
+  input: { slug: 'arianotify' },
+  output: ARTICLE,
+  preliminary: false,
+  callProviderMetadata: { anthropic: { caller: 'direct' } },
+  resultProviderMetadata: { anthropic: { cached: false } },
+};
+
+const serverCall: AgentPart = {
+  type: 'tool-read_blog',
+  toolCallId: 'srvtoolu_1',
+  providerExecuted: true,
+  state: 'input-available',
+  input: { slug: 'arianotify' },
+  callProviderMetadata: { anthropic: { caller: 'direct' } },
+};
+
+const CITED_TEXT = '引用した元の文';
+
+const citedAnswer: AgentPart = {
+  type: 'text',
+  text: '要約です',
+  state: 'done',
+  providerMetadata: {
+    anthropic: {
+      citations: [
+        {
+          type: 'web_search_result_location',
+          url: 'https://example.com/',
+          title: '元のページ',
+          cited_text: CITED_TEXT,
+          encrypted_index: 'enc',
+        },
+      ],
+      signature: 'kept',
+    },
+    other: { kept: true },
+  },
+};
+
+const uncitedAnswer: AgentPart = {
+  type: 'text',
+  text: '要約です',
+  state: 'done',
+  providerMetadata: {
+    anthropic: { signature: 'kept' },
+    other: { kept: true },
+  },
+};
 
 describe('withholdToolOutputs', () => {
   describe('正常系', () => {
@@ -201,9 +261,74 @@ describe('withholdToolOutputs', () => {
         message,
       );
     });
+
+    it('provider が実行した tool は、結果の項目を落として呼び出しだけに戻し、input などほかの項目は残す', () => {
+      expect(
+        withholdToolOutputs(
+          assistant([{ type: 'step-start' }, serverResult]),
+          withholdsReadBlog,
+        ),
+      ).toStrictEqual(assistant([{ type: 'step-start' }, serverCall]));
+    });
+
+    it('呼び出しだけに戻した provider の tool より後ろの reasoning を外し、前の reasoning は残す', () => {
+      expect(
+        withholdToolOutputs(
+          assistant([
+            { type: 'step-start' },
+            reasoning('sig-1'),
+            serverResult,
+            reasoning('sig-2'),
+            answer,
+          ]),
+          withholdsReadBlog,
+        ),
+      ).toStrictEqual(
+        assistant([
+          { type: 'step-start' },
+          reasoning('sig-1'),
+          serverCall,
+          answer,
+        ]),
+      );
+    });
+
+    it('text の引用（anthropic.citations）を外し、ほかの metadata と文は残す', () => {
+      expect(
+        withholdToolOutputs(
+          assistant([{ type: 'step-start' }, serverResult, citedAnswer]),
+          withholdsReadBlog,
+        ),
+      ).toStrictEqual(
+        assistant([{ type: 'step-start' }, serverCall, uncitedAnswer]),
+      );
+    });
   });
 
   describe('異常系', () => {
+    it('provider が実行した tool のエラーも、errorText を落として呼び出しだけにする', () => {
+      expect(
+        withholdToolOutputs(
+          assistant([
+            { type: 'step-start' },
+            {
+              type: 'tool-read_blog',
+              toolCallId: 'srvtoolu_1',
+              providerExecuted: true,
+              state: 'output-error',
+              input: { slug: 'arianotify' },
+              errorText:
+                '{"type":"web_search_tool_result_error","errorCode":"unavailable"}',
+              callProviderMetadata: { anthropic: { caller: 'direct' } },
+              resultProviderMetadata: { anthropic: { cached: false } },
+            },
+            reasoning('sig-2'),
+          ]),
+          withholdsReadBlog,
+        ),
+      ).toStrictEqual(assistant([{ type: 'step-start' }, serverCall]));
+    });
+
     it('エラーで終わった呼び出しは、errorText を残し、後ろの reasoning も外さない', () => {
       const message = assistant([
         { type: 'step-start' },
@@ -293,6 +418,101 @@ describe('withholdToolOutputs', () => {
           withheldArticle(),
         ]),
       ]);
+    });
+
+    // client の tool と並べて呼ぶと、API は provider の tool を次の要求に回し、結果は前のステップの
+    // パーツに入る
+    it('結果が前のステップのパーツに入った provider の tool も呼び出しだけにして、後ろのステップの reasoning を外す', () => {
+      expect(
+        withholdToolOutputs(
+          assistant([
+            { type: 'step-start' },
+            reasoning('sig-1'),
+            serverResult,
+            listedBlogs,
+            { type: 'step-start' },
+            reasoning('sig-2'),
+            answer,
+          ]),
+          withholdsReadBlog,
+        ),
+      ).toStrictEqual(
+        assistant([
+          { type: 'step-start' },
+          reasoning('sig-1'),
+          serverCall,
+          listedBlogs,
+          { type: 'step-start' },
+          answer,
+        ]),
+      );
+    });
+
+    it('呼び出しだけにしたあとに送る形にすると、provider の tool の呼び出しも結果も送らない', async () => {
+      const saved = withholdToolOutputs(
+        assistant([
+          { type: 'step-start' },
+          reasoning('sig-1'),
+          { type: 'text', text: '調べます', state: 'done' },
+          serverResult,
+          reasoning('sig-2'),
+          citedAnswer,
+        ]),
+        withholdsReadBlog,
+      );
+
+      await expect(
+        convertToModelMessages(
+          dropThinkingOnlySteps([
+            {
+              id: 'u1',
+              role: 'user',
+              parts: [{ type: 'text', text: '調べて' }],
+            },
+            saved,
+          ]),
+          { ignoreIncompleteToolCalls: true },
+        ),
+      ).resolves.toStrictEqual([
+        { role: 'user', content: [{ type: 'text', text: '調べて' }] },
+        {
+          role: 'assistant',
+          content: [
+            {
+              type: 'reasoning',
+              text: 'sig-1 の思考',
+              providerOptions: { anthropic: { signature: 'sig-1' } },
+            },
+            { type: 'text', text: '調べます' },
+            {
+              type: 'text',
+              text: '要約です',
+              providerOptions: {
+                anthropic: { signature: 'kept' },
+                other: { kept: true },
+              },
+            },
+          ],
+        },
+      ]);
+    });
+
+    it('入力が流れている途中で終わった provider の tool は変えず、後ろの reasoning も外さない', () => {
+      const message = assistant([
+        { type: 'step-start' },
+        {
+          type: 'tool-read_blog',
+          toolCallId: 'srvtoolu_1',
+          providerExecuted: true,
+          state: 'input-streaming',
+          input: undefined,
+        },
+        reasoning('sig-2'),
+      ]);
+
+      expect(withholdToolOutputs(message, withholdsReadBlog)).toStrictEqual(
+        message,
+      );
     });
   });
 });

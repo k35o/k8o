@@ -20,6 +20,7 @@ import {
 } from './generate-ui';
 import { githubTools } from './github-tools';
 import { siteTools } from './site-tools';
+import { webTools } from './web-tools';
 
 // api の BLOG_SLUG_PATTERN と同じ値。@repo/api は型しか読めないので複製する
 const BLOG_SLUG_PATTERN = /^[a-z0-9-]+$/u;
@@ -101,15 +102,21 @@ export const agentTools = {
   }),
   ...githubTools,
   ...siteTools,
+  ...webTools,
 };
 
 type AgentTools = typeof agentTools;
 
-// 出力は保存するときに決まった文へ置き換えるので、出力が文字列の tool にしか true を付けられない
+// provider が実行する tool は呼び出しだけを残し、ほかは出力を決まった文に置き換えるので、
+// 出力が文字列の tool と provider が実行する tool にしか true を付けられない
 export type WithholdsOutput = {
-  [Name in keyof AgentTools]: InferToolOutput<AgentTools[Name]> extends string
+  [Name in keyof AgentTools]: AgentTools[Name] extends {
+    isProviderExecuted: true;
+  }
     ? boolean
-    : false;
+    : InferToolOutput<AgentTools[Name]> extends string
+      ? boolean
+      : false;
 };
 
 export const WITHHOLDS_OUTPUT: WithholdsOutput = {
@@ -126,4 +133,6 @@ export const WITHHOLDS_OUTPUT: WithholdsOutput = {
   list_inquiries: true,
   list_blog_stats: false,
   list_browser_reports: true,
+  web_search: true,
+  web_fetch: true,
 };

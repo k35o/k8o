@@ -5,8 +5,10 @@ import {
   createUIMessageStreamResponse,
   generateId,
   isStepCount,
+  JSONParseError,
   streamText,
   toUIMessageStream,
+  TypeValidationError,
 } from 'ai';
 import { after } from 'next/server';
 
@@ -14,6 +16,7 @@ import {
   addUsageTokens,
   EMPTY_USAGE_TOKENS,
   toUsageTokens,
+  webSearchesOf,
 } from '@/features/usage/application/pricing';
 import {
   isMonthlyBudgetExceeded,
@@ -103,6 +106,27 @@ const errorMessageOf = (error: unknown): string => {
   return JSON.stringify(error);
 };
 
+// 応答のかたまりを SDK が読めなかったときのエラーは、message にかたまりの JSON（web の tool が読んだページの
+// 本文や PDF の base64）をまるごと持ち、Node の inspect の深さの上限も効かない。連鎖のどこかにあれば、
+// ログには名前と context だけを残す
+const loggableErrorOf = (error: unknown): unknown => {
+  const names: string[] = [];
+  for (
+    let current: unknown = error;
+    current instanceof Error;
+    current = current.cause
+  ) {
+    names.push(current.name);
+    if (TypeValidationError.isInstance(current)) {
+      return { names, context: current.context };
+    }
+    if (JSONParseError.isInstance(current)) {
+      return { names };
+    }
+  }
+  return error;
+};
+
 const streamRun = async (input: {
   threadId: string;
   runId: string;
@@ -115,6 +139,7 @@ const streamRun = async (input: {
   const controller = new AbortController();
   const runEnded = new AbortController();
   let usage = EMPTY_USAGE_TOKENS;
+  let webSearches = 0;
   let budgetExceeded = false;
 
   const artifactContext = { userId, threadId, model };
@@ -158,6 +183,7 @@ const streamRun = async (input: {
     // SDK は onStepEnd の例外を握りつぶすので、失敗はここでログに残す
     onStepEnd: async (step) => {
       usage = addUsageTokens(usage, toUsageTokens(step.usage));
+      webSearches += webSearchesOf(step.content);
       const inputTransformations =
         step.providerMetadata?.['anthropic']?.['inputTransformations'];
       if (isNonEmptyArray(inputTransformations)) {
@@ -167,7 +193,7 @@ const streamRun = async (input: {
         );
       }
       await Promise.all([
-        recordUsage({ usageId, model, tokens: usage }).catch(
+        recordUsage({ usageId, model, tokens: usage, webSearches }).catch(
           logFailure('利用の記録に失敗しました'),
         ),
         // エラーで終わったステップには入力トークン数が無いので、前の値を残す
@@ -180,7 +206,7 @@ const streamRun = async (input: {
       ]);
     },
     onError: ({ error }) => {
-      console.error('エージェントの生成エラー', error);
+      console.error('エージェントの生成エラー', loggableErrorOf(error));
     },
   });
 
