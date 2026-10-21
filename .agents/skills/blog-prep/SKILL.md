@@ -93,10 +93,10 @@ export default function Layout({ children }: LayoutProps<'/blog/my-article'>) {
 
 #### 数式（KaTeX）を使う記事の場合
 
-数式の変換（remark-math + rehype-katex）は `next.config.ts` で全記事に効いているため、本文では `$...$`・`$$...$$`・` ```math ` フェンスがそのまま使える。ただし **KaTeX の CSS はグローバルには読み込まれない**（数式を使わない記事に配信しないため）。数式を使う記事は `layout.tsx` の先頭に以下の 2 行を追加する:
+数式の変換（`@repo/mdx-preset` の remark・rehype の preset。remark-math と KaTeX）は `next.config.ts` で全記事に効いているため、本文では `$...$`・`$$...$$`・` ```math ` フェンスがそのまま使える。ただし **KaTeX の CSS はグローバルには読み込まれない**（数式を使わない記事に配信しないため）。数式を使う記事は `layout.tsx` の先頭に以下の 2 行を追加する:
 
 ```typescript
-import 'katex/dist/katex.min.css';
+import '@repo/mdx-preset/katex.css';
 import '@/app/blog/_styles/katex-vertical.css';
 ```
 

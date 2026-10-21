@@ -117,7 +117,7 @@ import文とpropsが正しいか確認する。
 - **テーブルは使わない**（要修正）: markdownテーブル（`| … | … |`）は**横スクロールに弱く、特にモバイルや縦書き表示で崩れる**。本文では使わず、箇条書き・段落・定義（`用語：説明`）、または必要なら画像（`<Image>`）で代替する。機械検出は機械コマンド(4)。
 - **リンク**: 空リンク（`[テキスト]()`）が無いか。外部リンクは到達性を確認（任意で `curl -sI <url> | head -1`）。参考文献は`<LinkCard href="...">`を使う選択肢。
 - **画像**: `<Image>`/`<FloatImage>`に`alt`があるか（必須）。
-- **数式（KaTeX）**: 本文に数式（`$$`・` ```math `・インライン`$...$`）があるのに、同記事の`layout.tsx`に`katex/dist/katex.min.css`と`@/app/blog/_styles/katex-vertical.css`のimportが無ければ**要修正**（KaTeX CSSはグローバル読み込みされないため、数式が二重表示に崩れる）。機械確認: `grep -nE '\$\$|^```math' page.mdx`がヒットしたら`grep -n 'katex' layout.tsx`を突き合わせる（インライン`$`はコード内の`$`と紛らわしいので人手で確認）。
+- **数式（KaTeX）**: 本文に数式（`$$`・` ```math `・インライン`$...$`）があるのに、同記事の`layout.tsx`に`@repo/mdx-preset/katex.css`と`@/app/blog/_styles/katex-vertical.css`のimportが無ければ**要修正**（KaTeX CSSはグローバル読み込みされないため、数式が二重表示に崩れる）。機械確認: `grep -nE '\$\$|^```math' page.mdx`がヒットしたら`grep -n 'katex' layout.tsx`を突き合わせる（インライン`$`はコード内の`$`と紛らわしいので人手で確認）。
 
 ## レポート形式
 

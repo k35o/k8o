@@ -1,0 +1,2 @@
+/* rehype-math が HTML を作る katex と同じ版の CSS を読む */
+@import 'katex/dist/katex.min.css';

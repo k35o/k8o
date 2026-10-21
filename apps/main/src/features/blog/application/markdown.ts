@@ -1,8 +1,7 @@
 import { stripAnnotationComments } from '@repo/code-highlight/parser';
+import remarkPreset from '@repo/mdx-preset/remark';
 import type { Root, RootContent } from 'mdast';
 import { remark } from 'remark';
-import remarkFrontmatter from 'remark-frontmatter';
-import remarkMath from 'remark-math';
 import remarkMdx from 'remark-mdx';
 
 type MdxJsxElement = Extract<
@@ -14,9 +13,9 @@ type Edit = { start: number; end: number; text: string };
 
 const SITE_URL = 'https://k8o.me';
 
-// remark-math がないと $\mathbb{N}$ のような数式内の {} がMDX式として解釈されて
-// パースに失敗するため、本番のMDXパイプライン (next.config.ts) と揃える
-const parser = remark().use(remarkMdx).use(remarkFrontmatter).use(remarkMath);
+// 本番のMDX (next.config.ts) と同じ remark の preset で読む。remark-math がないと
+// $\mathbb{N}$ のような数式内の {} がMDX式として解釈されてパースに失敗する
+const parser = remark().use(remarkMdx).use(remarkPreset);
 
 const getStringAttribute = (
   node: MdxJsxElement,
