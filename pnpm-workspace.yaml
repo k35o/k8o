@@ -47,7 +47,7 @@ catalog:
   storybook-addon-mock-date: 3.2.1
   storybook-addon-vrt: 0.4.0
   vitest: 5.0.3
-  wrangler: 4.147.0
+  wrangler: 4.149.0
   zod: 4.6.5
 
 minimumReleaseAge: 10080
@@ -60,6 +60,11 @@ minimumReleaseAgeExclude:
   - storybook-addon-vrt
   - storybook-addon-mock-date
   - storybook-addon-determinism
+
+# drizzle-kit 0.31.11 は @esbuild-kit/esm-loader を依存に持つが、bundle のどこからも読み込まない。
+# これが脆弱な esbuild 0.18 を固定して audit に残るので、依存ごと外す。drizzle-kit を上げたら要否を見直す
+overrides:
+  'drizzle-kit>@esbuild-kit/esm-loader': '-'
 
 patchedDependencies:
   '@storybook/nextjs-vite@10.6.1': patches/@storybook__nextjs-vite@10.6.1.patch

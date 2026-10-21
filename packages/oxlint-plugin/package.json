@@ -18,7 +18,7 @@
   "devDependencies": {
     "@repo/typescript-config": "workspace:*",
     "@types/node": "24.19.2",
-    "vite-plus": "1.0.0",
+    "vite-plus": "1.1.0",
     "vitest": "catalog:"
   }
 }
