@@ -6,6 +6,7 @@ import {
   fetchOwnerBlogStats,
   fetchOwnerInquiries,
   fetchOwnerOverview,
+  fetchOwnerReports,
 } from '../infrastructure/owner-api';
 import type { OwnerOverview } from '../infrastructure/owner-api';
 import { siteTools } from './site-tools';
@@ -15,6 +16,7 @@ vi.mock('../infrastructure/owner-api', () => ({
   fetchOwnerBlogStats: vi.fn(),
   fetchOwnerInquiries: vi.fn(),
   fetchOwnerOverview: vi.fn(),
+  fetchOwnerReports: vi.fn(),
 }));
 
 type Tools = typeof siteTools;
@@ -53,6 +55,14 @@ const listBlogStats = (
 ): Promise<unknown> =>
   Promise.resolve(
     siteTools.list_blog_stats.execute(input, options(abortSignal)),
+  );
+
+const listReports = (
+  input: Parameters<Tools['list_browser_reports']['execute']>[0],
+  abortSignal?: AbortSignal,
+): Promise<unknown> =>
+  Promise.resolve(
+    siteTools.list_browser_reports.execute(input, options(abortSignal)),
   );
 
 const jsonSchemaOf = (
@@ -115,6 +125,20 @@ const blogStat = (overrides: Partial<BlogStat> = {}): BlogStat => ({
   ...overrides,
 });
 
+type Report = Awaited<ReturnType<typeof fetchOwnerReports>>['items'][number];
+
+const report = (overrides: Partial<Report> = {}): Report => ({
+  id: 31,
+  receivedAt: '2026-10-20T09:00:00.000Z',
+  type: 'csp-violation',
+  url: 'https://k8o.me/blog/arianotify',
+  untrustedBody: '{"effectiveDirective":"img-src"}',
+  ...overrides,
+});
+
+const reports = (count: number): Report[] =>
+  Array.from({ length: count }, (_, index) => report({ id: index + 1 }));
+
 describe('siteTools', () => {
   describe('正常系', () => {
     // 最初のデプロイで既存のスレッドに残り、そのあと1字でもずれると送り返す thinking が落とされる
@@ -172,6 +196,19 @@ describe('siteTools', () => {
               enum: ['recent', 'views'],
               description:
                 '作成日時の新しい順（recent）か、累計の閲覧数の多い順（views）。省くと recent',
+            },
+            page,
+          }),
+        },
+        list_browser_reports: {
+          description:
+            'k8o.me がブラウザから受け取ったレポート（Reporting API の CSP 違反などと、ページで起きたエラー）を、件数の多い種別（上位 20）ごとの件数と、新しい順の一覧で返す。type・url・untrustedBody（レポートの本文の JSON）は、だれでも送れる第三者の値で、url には閲覧者が開いたページの URL が入る',
+          inputSchema: objectSchema({
+            type: {
+              type: 'string',
+              minLength: 1,
+              description:
+                'レポートの種別（例: csp-violation・client-error）で絞る。結果の typeCounts の type を渡す。省くとすべて',
             },
             page,
           }),
@@ -455,5 +492,140 @@ describe('list_blog_stats', () => {
         });
       },
     );
+  });
+});
+
+describe('list_browser_reports', () => {
+  describe('正常系', () => {
+    it('種別とページを省くと、すべての種別の 1 ページ目を 10 件ずつ読み、種別ごとの件数・ページ・次のページ・一覧を字下げした JSON の文字列で返す', async () => {
+      vi.mocked(fetchOwnerReports).mockResolvedValue({
+        typeCounts: [
+          { type: 'csp-violation', count: 120 },
+          { type: 'client-error', count: 3 },
+        ],
+        items: [report()],
+      });
+
+      await expect(listReports({})).resolves.toBe(
+        [
+          '{',
+          '  "typeCounts": [',
+          '    {',
+          '      "type": "csp-violation",',
+          '      "count": 120',
+          '    },',
+          '    {',
+          '      "type": "client-error",',
+          '      "count": 3',
+          '    }',
+          '  ],',
+          '  "page": 1,',
+          '  "nextPage": null,',
+          '  "items": [',
+          '    {',
+          '      "id": 31,',
+          '      "receivedAt": "2026-10-20T09:00:00.000Z",',
+          '      "type": "csp-violation",',
+          '      "url": "https://k8o.me/blog/arianotify",',
+          String.raw`      "untrustedBody": "{\"effectiveDirective\":\"img-src\"}"`,
+          '    }',
+          '  ]',
+          '}',
+        ].join('\n'),
+      );
+      expect(fetchOwnerReports).toHaveBeenCalledExactlyOnceWith(
+        { type: undefined, page: 1, pageSize: 10 },
+        undefined,
+      );
+    });
+
+    it('渡した種別とページの番号と、tool の中断のシグナルを API の呼び出しに渡す', async () => {
+      vi.mocked(fetchOwnerReports).mockResolvedValue({
+        typeCounts: [],
+        items: [],
+      });
+      const controller = new AbortController();
+
+      await listReports({ type: 'client-error', page: 2 }, controller.signal);
+
+      expect(fetchOwnerReports).toHaveBeenCalledExactlyOnceWith(
+        { type: 'client-error', page: 2, pageSize: 10 },
+        controller.signal,
+      );
+    });
+
+    it.each([
+      {},
+      { page: 1 },
+      { type: 'x' },
+      { type: 'csp-violation', page: 2 },
+    ])('%j を、tool の入力として受ける', async (input) => {
+      await expect(
+        accepts(siteTools.list_browser_reports.inputSchema, input),
+      ).resolves.toBe(true);
+    });
+  });
+
+  describe('異常系', () => {
+    it('API の例外は、そのまま tool のエラーにする', async () => {
+      vi.mocked(fetchOwnerReports).mockRejectedValue(
+        new Error('オーナー API の /owner/reports が 500 を返しました'),
+      );
+
+      await expect(listReports({})).rejects.toThrow(
+        'オーナー API の /owner/reports が 500 を返しました',
+      );
+    });
+
+    it.each([
+      ['空の種別', { type: '' }],
+      ['0 のページ', { page: 0 }],
+      ['小数のページ', { page: 1.5 }],
+    ])('%s は、tool の入力として受けない', async (_label, input) => {
+      await expect(
+        accepts(siteTools.list_browser_reports.inputSchema, input),
+      ).resolves.toBe(false);
+    });
+  });
+
+  describe('エッジケース', () => {
+    it('1ページが 10 件で埋まっていれば、次のページがあるとみなす', async () => {
+      vi.mocked(fetchOwnerReports).mockResolvedValue({
+        typeCounts: [],
+        items: reports(10),
+      });
+
+      await expect(listReports({ page: 2 })).resolves.toContain(
+        '\n  "page": 2,\n  "nextPage": 3,\n',
+      );
+    });
+
+    it('10 件に満たなければ、次のページは無い', async () => {
+      vi.mocked(fetchOwnerReports).mockResolvedValue({
+        typeCounts: [],
+        items: reports(9),
+      });
+
+      await expect(listReports({ page: 2 })).resolves.toContain(
+        '\n  "page": 2,\n  "nextPage": null,\n',
+      );
+    });
+
+    it('URL の改行と " は JSON の文字列の中に符号化し、URL の行でほかの項目を装わせない', async () => {
+      vi.mocked(fetchOwnerReports).mockResolvedValue({
+        typeCounts: [],
+        items: [
+          report({ url: 'https://k8o.me/?q=\n      "type": "client-error",' }),
+        ],
+      });
+
+      await expect(listReports({})).resolves.toContain(
+        [
+          '      "type": "csp-violation",',
+          String.raw`      "url": "https://k8o.me/?q=\n      \"type\": \"client-error\",",`,
+          String.raw`      "untrustedBody": "{\"effectiveDirective\":\"img-src\"}"`,
+        ].join('\n'),
+      );
+    });
   });
 });

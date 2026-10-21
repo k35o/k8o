@@ -47,6 +47,11 @@ export type OwnerBlogStats = InferResponseType<
   200
 >;
 
+type OwnerReportPage = InferResponseType<
+  typeof ownerApi.owner.reports.$get,
+  200
+>;
+
 // tool の例外はモデルへの tool の結果になるだけでログに残らないので、ここで残す
 const unexpectedStatus = (path: string, status: number): Error => {
   const message = `オーナー API の ${path} が ${status} を返しました`;
@@ -140,6 +145,30 @@ export const fetchOwnerBlogStats = async (
   );
   if (res.status !== 200) {
     throw unexpectedStatus('/owner/blog-stats', res.status);
+  }
+  return res.json();
+};
+
+export const fetchOwnerReports = async (
+  {
+    type,
+    page,
+    pageSize,
+  }: { type: string | undefined; page: number; pageSize: number },
+  signal: AbortSignal | undefined,
+): Promise<OwnerReportPage> => {
+  const res = await ownerApi.owner.reports.$get(
+    {
+      query: {
+        type,
+        page: String(page),
+        pageSize: String(pageSize),
+      },
+    },
+    { init: { signal: signal ?? null } },
+  );
+  if (res.status !== 200) {
+    throw unexpectedStatus('/owner/reports', res.status);
   }
   return res.json();
 };

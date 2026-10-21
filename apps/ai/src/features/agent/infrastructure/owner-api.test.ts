@@ -6,6 +6,7 @@ import {
   fetchOwnerBlogStats,
   fetchOwnerInquiries,
   fetchOwnerOverview,
+  fetchOwnerReports,
 } from './owner-api';
 
 vi.mock('server-only', () => ({}));
@@ -72,6 +73,19 @@ const BLOG_STATS = {
       views: 1234,
       feedbackCount: 5,
       tags: ['a11y'],
+    },
+  ],
+};
+
+const REPORT_PAGE = {
+  typeCounts: [{ type: 'csp-violation', count: 120 }],
+  items: [
+    {
+      id: 31,
+      receivedAt: '2026-10-20T09:00:00.000Z',
+      type: 'csp-violation',
+      url: 'https://k8o.me/blog/arianotify',
+      untrustedBody: '{"effectiveDirective":"img-src"}',
     },
   ],
 };
@@ -410,6 +424,71 @@ describe('fetchOwnerBlogStats', () => {
         );
         expect(console.error).toHaveBeenCalledExactlyOnceWith(
           `オーナー API の /owner/blog-stats が ${status} を返しました`,
+        );
+      },
+    );
+  });
+});
+
+describe('fetchOwnerReports', () => {
+  describe('正常系', () => {
+    it('種別・ページの番号と件数を query に載せて、本番の api のレポートの一覧を、トークンを Bearer で添えて読む', async () => {
+      fetchMock.mockResolvedValue(Response.json(REPORT_PAGE));
+
+      await expect(
+        fetchOwnerReports(
+          { type: 'csp-violation', page: 2, pageSize: 10 },
+          undefined,
+        ),
+      ).resolves.toStrictEqual(REPORT_PAGE);
+      expect(requestedUrl()).toBe(
+        'https://api.k8o.me/owner/reports?type=csp-violation&page=2&pageSize=10',
+      );
+      expect(requestedAuthorization()).toBe(`Bearer ${TOKEN}`);
+    });
+
+    it('種別が無ければ、query に type を載せない', async () => {
+      fetchMock.mockResolvedValue(Response.json(REPORT_PAGE));
+
+      await fetchOwnerReports(
+        { type: undefined, page: 1, pageSize: 10 },
+        undefined,
+      );
+
+      expect(requestedUrl()).toBe(
+        'https://api.k8o.me/owner/reports?page=1&pageSize=10',
+      );
+    });
+
+    it('渡した中断のシグナルで fetch を中断できるようにする', async () => {
+      fetchMock.mockResolvedValue(Response.json(REPORT_PAGE));
+      const controller = new AbortController();
+
+      await fetchOwnerReports(
+        { type: undefined, page: 1, pageSize: 10 },
+        controller.signal,
+      );
+
+      expect(requestedInit()?.signal).toBe(controller.signal);
+    });
+  });
+
+  describe('異常系', () => {
+    it.each([400, 401, 500])(
+      '%i が返ったら、query を入れずにパスと状態だけの文をログに残して例外を投げる',
+      async (status) => {
+        fetchMock.mockResolvedValue(Response.json({ ok: false }, { status }));
+
+        await expect(
+          fetchOwnerReports(
+            { type: 'csp-violation', page: 2, pageSize: 10 },
+            undefined,
+          ),
+        ).rejects.toThrow(
+          new Error(`オーナー API の /owner/reports が ${status} を返しました`),
+        );
+        expect(console.error).toHaveBeenCalledExactlyOnceWith(
+          `オーナー API の /owner/reports が ${status} を返しました`,
         );
       },
     );

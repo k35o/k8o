@@ -125,4 +125,5 @@ export const WITHHOLDS_OUTPUT: WithholdsOutput = {
   get_site_overview: false,
   list_inquiries: true,
   list_blog_stats: false,
+  list_browser_reports: true,
 };

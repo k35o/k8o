@@ -29,6 +29,7 @@ vi.mock('../infrastructure/owner-api', () => ({
   fetchOwnerOverview: vi.fn(),
   fetchOwnerInquiries: vi.fn(),
   fetchOwnerBlogStats: vi.fn(),
+  fetchOwnerReports: vi.fn(),
 }));
 vi.mock('./generate-ui', async (importOriginal) => ({
   ...(await importOriginal<typeof generateUiModule>()),
@@ -111,6 +112,7 @@ describe('agentTools', () => {
         'get_site_overview',
         'list_inquiries',
         'list_blog_stats',
+        'list_browser_reports',
       ]);
     });
   });
@@ -118,7 +120,7 @@ describe('agentTools', () => {
 
 describe('WITHHOLDS_OUTPUT', () => {
   describe('正常系', () => {
-    it('GitHub の tool とお問い合わせの一覧の出力だけを保存しない', () => {
+    it('GitHub の tool と、お問い合わせとブラウザからのレポートの一覧の出力だけを保存しない', () => {
       expect(WITHHOLDS_OUTPUT).toStrictEqual({
         list_blogs: false,
         read_blog: false,
@@ -132,6 +134,7 @@ describe('WITHHOLDS_OUTPUT', () => {
         get_site_overview: false,
         list_inquiries: true,
         list_blog_stats: false,
+        list_browser_reports: true,
       });
     });
   });

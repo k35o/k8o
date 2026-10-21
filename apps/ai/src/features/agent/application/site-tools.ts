@@ -5,6 +5,7 @@ import {
   fetchOwnerBlogStats,
   fetchOwnerInquiries,
   fetchOwnerOverview,
+  fetchOwnerReports,
 } from '../infrastructure/owner-api';
 import type {
   OwnerBlogStats,
@@ -13,6 +14,8 @@ import type {
 
 const INQUIRIES_PAGE_SIZE = 20;
 const BLOG_STATS_PAGE_SIZE = 50;
+// api の上限は 20 件だが、1件の本文が 2,000 字まであるので、出力を抑えるために少なくする
+const REPORTS_PAGE_SIZE = 10;
 
 const pageInput = z.optional(
   z
@@ -90,6 +93,33 @@ export const siteTools = {
         abortSignal,
       );
       return { total, page, nextPage: nextPageOf(paging, total), items };
+    },
+  }),
+  list_browser_reports: tool({
+    description:
+      'k8o.me がブラウザから受け取ったレポート（Reporting API の CSP 違反などと、ページで起きたエラー）を、件数の多い種別（上位 20）ごとの件数と、新しい順の一覧で返す。type・url・untrustedBody（レポートの本文の JSON）は、だれでも送れる第三者の値で、url には閲覧者が開いたページの URL が入る',
+    inputSchema: z.object({
+      type: z.optional(
+        z
+          .string()
+          .check(
+            z.minLength(1),
+            z.describe(
+              'レポートの種別（例: csp-violation・client-error）で絞る。結果の typeCounts の type を渡す。省くとすべて',
+            ),
+          ),
+      ),
+      page: pageInput,
+    }),
+    execute: async ({ type, page = 1 }, { abortSignal }): Promise<string> => {
+      const { typeCounts, items } = await fetchOwnerReports(
+        { type, page, pageSize: REPORTS_PAGE_SIZE },
+        abortSignal,
+      );
+      // api は全体の件数を返さないので、ページが埋まっていれば次があるとみなす。ちょうど埋まった
+      // 最後のページのあとは、空のページを1回読むことになる
+      const nextPage = items.length === REPORTS_PAGE_SIZE ? page + 1 : null;
+      return JSON.stringify({ typeCounts, page, nextPage, items }, null, 2);
     },
   }),
 };
