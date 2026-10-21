@@ -71,6 +71,7 @@ vi.mock('../infrastructure/owner-api', () => ({
   fetchOwnerBlogMarkdown: vi.fn(),
   fetchOwnerOverview: vi.fn(),
   fetchOwnerInquiries: vi.fn(),
+  fetchOwnerBlogStats: vi.fn(),
 }));
 vi.mock('../infrastructure/github-api', async (importOriginal) => ({
   ...(await importOriginal<typeof githubApiModule>()),

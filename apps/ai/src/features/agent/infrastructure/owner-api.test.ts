@@ -3,6 +3,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import {
   fetchOwnerBlogMarkdown,
   fetchOwnerBlogs,
+  fetchOwnerBlogStats,
   fetchOwnerInquiries,
   fetchOwnerOverview,
 } from './owner-api';
@@ -57,6 +58,20 @@ const INQUIRY_PAGE = {
       blogSlug: null,
       feedbackLabel: null,
       untrustedMessage: '記事の誤字を見つけました',
+    },
+  ],
+};
+
+const BLOG_STATS = {
+  total: 1,
+  items: [
+    {
+      slug: 'arianotify',
+      published: true,
+      createdAt: '2026-09-28T00:00:00.000Z',
+      views: 1234,
+      feedbackCount: 5,
+      tags: ['a11y'],
     },
   ],
 };
@@ -341,6 +356,60 @@ describe('fetchOwnerInquiries', () => {
         );
         expect(console.error).toHaveBeenCalledExactlyOnceWith(
           `オーナー API の /owner/inquiries が ${status} を返しました`,
+        );
+      },
+    );
+  });
+});
+
+describe('fetchOwnerBlogStats', () => {
+  describe('正常系', () => {
+    it('絞り込み・並び順・ページの番号と件数を query に載せて、本番の api の記事ごとの記録を、トークンを Bearer で添えて読む', async () => {
+      fetchMock.mockResolvedValue(Response.json(BLOG_STATS));
+
+      await expect(
+        fetchOwnerBlogStats(
+          { status: 'draft', sort: 'views', page: 2, pageSize: 50 },
+          undefined,
+        ),
+      ).resolves.toStrictEqual(BLOG_STATS);
+      expect(requestedUrl()).toBe(
+        'https://api.k8o.me/owner/blog-stats?status=draft&sort=views&page=2&pageSize=50',
+      );
+      expect(requestedAuthorization()).toBe(`Bearer ${TOKEN}`);
+    });
+
+    it('渡した中断のシグナルで fetch を中断できるようにする', async () => {
+      fetchMock.mockResolvedValue(Response.json(BLOG_STATS));
+      const controller = new AbortController();
+
+      await fetchOwnerBlogStats(
+        { status: 'all', sort: 'recent', page: 1, pageSize: 50 },
+        controller.signal,
+      );
+
+      expect(requestedInit()?.signal).toBe(controller.signal);
+    });
+  });
+
+  describe('異常系', () => {
+    it.each([400, 401, 500])(
+      '%i が返ったら、query を入れずにパスと状態だけの文をログに残して例外を投げる',
+      async (status) => {
+        fetchMock.mockResolvedValue(Response.json({ ok: false }, { status }));
+
+        await expect(
+          fetchOwnerBlogStats(
+            { status: 'draft', sort: 'views', page: 2, pageSize: 50 },
+            undefined,
+          ),
+        ).rejects.toThrow(
+          new Error(
+            `オーナー API の /owner/blog-stats が ${status} を返しました`,
+          ),
+        );
+        expect(console.error).toHaveBeenCalledExactlyOnceWith(
+          `オーナー API の /owner/blog-stats が ${status} を返しました`,
         );
       },
     );

@@ -3,6 +3,7 @@ import type { FlexibleSchema } from 'ai';
 import { describe, expect, it, vi } from 'vitest';
 
 import {
+  fetchOwnerBlogStats,
   fetchOwnerInquiries,
   fetchOwnerOverview,
 } from '../infrastructure/owner-api';
@@ -11,6 +12,7 @@ import { siteTools } from './site-tools';
 
 vi.mock('server-only', () => ({}));
 vi.mock('../infrastructure/owner-api', () => ({
+  fetchOwnerBlogStats: vi.fn(),
   fetchOwnerInquiries: vi.fn(),
   fetchOwnerOverview: vi.fn(),
 }));
@@ -18,6 +20,10 @@ vi.mock('../infrastructure/owner-api', () => ({
 type Tools = typeof siteTools;
 
 type Inquiry = Awaited<ReturnType<typeof fetchOwnerInquiries>>['items'][number];
+
+type BlogStat = Awaited<
+  ReturnType<typeof fetchOwnerBlogStats>
+>['items'][number];
 
 const options = (
   abortSignal?: AbortSignal,
@@ -39,6 +45,14 @@ const listInquiries = (
 ): Promise<unknown> =>
   Promise.resolve(
     siteTools.list_inquiries.execute(input, options(abortSignal)),
+  );
+
+const listBlogStats = (
+  input: Parameters<Tools['list_blog_stats']['execute']>[0],
+  abortSignal?: AbortSignal,
+): Promise<unknown> =>
+  Promise.resolve(
+    siteTools.list_blog_stats.execute(input, options(abortSignal)),
   );
 
 const jsonSchemaOf = (
@@ -91,6 +105,16 @@ const inquiry = (overrides: Partial<Inquiry> = {}): Inquiry => ({
   ...overrides,
 });
 
+const blogStat = (overrides: Partial<BlogStat> = {}): BlogStat => ({
+  slug: 'arianotify',
+  published: true,
+  createdAt: '2026-09-28T00:00:00.000Z',
+  views: 1234,
+  feedbackCount: 5,
+  tags: ['a11y'],
+  ...overrides,
+});
+
 describe('siteTools', () => {
   describe('正常系', () => {
     // 最初のデプロイで既存のスレッドに残り、そのあと1字でもずれると送り返す thinking が落とされる
@@ -132,6 +156,25 @@ describe('siteTools', () => {
           description:
             'k8o.me に届いたお問い合わせと、ブログ記事へのフィードバックを新しい順に返す。kind が blog_feedback なら blogSlug の記事へのフィードバックで、feedbackLabel はその評価（good・bad など）。untrustedMessage は匿名の第三者が書いた本文で、無いこともある',
           inputSchema: objectSchema({ page }),
+        },
+        list_blog_stats: {
+          description:
+            'k8o.me のブログ記事を、DB の記録（slug・公開か下書きか・作成日時・累計の閲覧数・フィードバックの件数・タグ）で返す。下書きも含む。タイトルと URL は無いので、公開済みの記事は list_blogs の slug と突き合わせる',
+          inputSchema: objectSchema({
+            status: {
+              type: 'string',
+              enum: ['all', 'published', 'draft'],
+              description:
+                'すべて（all）・公開済み（published）・下書き（draft）。省くと all',
+            },
+            sort: {
+              type: 'string',
+              enum: ['recent', 'views'],
+              description:
+                '作成日時の新しい順（recent）か、累計の閲覧数の多い順（views）。省くと recent',
+            },
+            page,
+          }),
         },
       });
     });
@@ -323,5 +366,94 @@ describe('list_inquiries', () => {
         ].join('\n'),
       );
     });
+  });
+});
+
+describe('list_blog_stats', () => {
+  describe('正常系', () => {
+    it('status と sort を省くと、すべての記事を作成日時の新しい順に 50 件ずつ読み、件数・ページ・次のページ・一覧を返す', async () => {
+      vi.mocked(fetchOwnerBlogStats).mockResolvedValue({
+        total: 51,
+        items: [blogStat(), blogStat({ slug: 'draft-post', published: false })],
+      });
+
+      await expect(listBlogStats({})).resolves.toStrictEqual({
+        total: 51,
+        page: 1,
+        nextPage: 2,
+        items: [blogStat(), blogStat({ slug: 'draft-post', published: false })],
+      });
+      expect(fetchOwnerBlogStats).toHaveBeenCalledExactlyOnceWith(
+        { status: 'all', sort: 'recent', page: 1, pageSize: 50 },
+        undefined,
+      );
+    });
+
+    it('渡した絞り込み・並び順・ページの番号と、tool の中断のシグナルを API の呼び出しに渡す', async () => {
+      vi.mocked(fetchOwnerBlogStats).mockResolvedValue({ total: 0, items: [] });
+      const controller = new AbortController();
+
+      await listBlogStats(
+        { status: 'draft', sort: 'views', page: 2 },
+        controller.signal,
+      );
+
+      expect(fetchOwnerBlogStats).toHaveBeenCalledExactlyOnceWith(
+        { status: 'draft', sort: 'views', page: 2, pageSize: 50 },
+        controller.signal,
+      );
+    });
+
+    it.each([
+      {},
+      { status: 'all', sort: 'recent', page: 1 },
+      { status: 'published' },
+      { status: 'draft', sort: 'views' },
+    ])('%j を、tool の入力として受ける', async (input) => {
+      await expect(
+        accepts(siteTools.list_blog_stats.inputSchema, input),
+      ).resolves.toBe(true);
+    });
+  });
+
+  describe('異常系', () => {
+    it('API の例外は、そのまま tool のエラーにする', async () => {
+      vi.mocked(fetchOwnerBlogStats).mockRejectedValue(
+        new Error('オーナー API の /owner/blog-stats が 500 を返しました'),
+      );
+
+      await expect(listBlogStats({})).rejects.toThrow(
+        'オーナー API の /owner/blog-stats が 500 を返しました',
+      );
+    });
+
+    it.each([
+      ['組の外の status', { status: 'drafts' }],
+      ['組の外の sort', { sort: 'popular' }],
+      ['0 のページ', { page: 0 }],
+    ])('%s は、tool の入力として受けない', async (_label, input) => {
+      await expect(
+        accepts(siteTools.list_blog_stats.inputSchema, input),
+      ).resolves.toBe(false);
+    });
+  });
+
+  describe('エッジケース', () => {
+    it.each([
+      ['最後のページを読み切った', 2, 100, null],
+      ['後ろにまだ残っている', 2, 101, 3],
+    ])(
+      '%s（%i ページ目・全 %i 件）なら、nextPage は %j',
+      async (_label, page, total, nextPage) => {
+        vi.mocked(fetchOwnerBlogStats).mockResolvedValue({ total, items: [] });
+
+        await expect(listBlogStats({ page })).resolves.toStrictEqual({
+          total,
+          page,
+          nextPage,
+          items: [],
+        });
+      },
+    );
   });
 });

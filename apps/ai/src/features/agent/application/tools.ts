@@ -124,4 +124,5 @@ export const WITHHOLDS_OUTPUT: WithholdsOutput = {
   read_github_issue: true,
   get_site_overview: false,
   list_inquiries: true,
+  list_blog_stats: false,
 };

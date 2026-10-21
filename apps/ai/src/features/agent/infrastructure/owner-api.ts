@@ -1,7 +1,7 @@
 import 'server-only';
 import type { OwnerApi } from '@repo/api/owner';
 import { hc } from 'hono/client';
-import type { InferResponseType } from 'hono/client';
+import type { InferRequestType, InferResponseType } from 'hono/client';
 
 const ownerApiToken = (): string => {
   const token = process.env['OWNER_API_TOKEN'];
@@ -35,6 +35,15 @@ export type OwnerOverview = InferResponseType<
 
 type OwnerInquiryPage = InferResponseType<
   typeof ownerApi.owner.inquiries.$get,
+  200
+>;
+
+type OwnerBlogStatsQuery = InferRequestType<
+  (typeof ownerApi.owner)['blog-stats']['$get']
+>['query'];
+
+export type OwnerBlogStats = InferResponseType<
+  (typeof ownerApi.owner)['blog-stats']['$get'],
   200
 >;
 
@@ -102,6 +111,35 @@ export const fetchOwnerInquiries = async (
   );
   if (res.status !== 200) {
     throw unexpectedStatus('/owner/inquiries', res.status);
+  }
+  return res.json();
+};
+
+export const fetchOwnerBlogStats = async (
+  {
+    status,
+    sort,
+    page,
+    pageSize,
+  }: Pick<OwnerBlogStatsQuery, 'status' | 'sort'> & {
+    page: number;
+    pageSize: number;
+  },
+  signal: AbortSignal | undefined,
+): Promise<OwnerBlogStats> => {
+  const res = await ownerApi.owner['blog-stats'].$get(
+    {
+      query: {
+        status,
+        sort,
+        page: String(page),
+        pageSize: String(pageSize),
+      },
+    },
+    { init: { signal: signal ?? null } },
+  );
+  if (res.status !== 200) {
+    throw unexpectedStatus('/owner/blog-stats', res.status);
   }
   return res.json();
 };

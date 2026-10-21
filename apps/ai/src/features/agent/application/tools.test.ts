@@ -28,6 +28,7 @@ vi.mock('../infrastructure/owner-api', () => ({
   fetchOwnerBlogMarkdown: vi.fn(),
   fetchOwnerOverview: vi.fn(),
   fetchOwnerInquiries: vi.fn(),
+  fetchOwnerBlogStats: vi.fn(),
 }));
 vi.mock('./generate-ui', async (importOriginal) => ({
   ...(await importOriginal<typeof generateUiModule>()),
@@ -109,6 +110,7 @@ describe('agentTools', () => {
         'read_github_issue',
         'get_site_overview',
         'list_inquiries',
+        'list_blog_stats',
       ]);
     });
   });
@@ -129,6 +131,7 @@ describe('WITHHOLDS_OUTPUT', () => {
         read_github_issue: true,
         get_site_overview: false,
         list_inquiries: true,
+        list_blog_stats: false,
       });
     });
   });

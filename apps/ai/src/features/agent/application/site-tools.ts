@@ -2,12 +2,17 @@ import { tool } from 'ai';
 import * as z from 'zod/mini';
 
 import {
+  fetchOwnerBlogStats,
   fetchOwnerInquiries,
   fetchOwnerOverview,
 } from '../infrastructure/owner-api';
-import type { OwnerOverview } from '../infrastructure/owner-api';
+import type {
+  OwnerBlogStats,
+  OwnerOverview,
+} from '../infrastructure/owner-api';
 
 const INQUIRIES_PAGE_SIZE = 20;
+const BLOG_STATS_PAGE_SIZE = 50;
 
 const pageInput = z.optional(
   z
@@ -24,6 +29,8 @@ const nextPageOf = (
   { page, pageSize }: { page: number; pageSize: number },
   total: number,
 ): number | null => (page * pageSize < total ? page + 1 : null);
+
+type BlogStatsPage = OwnerBlogStats & { page: number; nextPage: number | null };
 
 export const siteTools = {
   get_site_overview: tool({
@@ -47,6 +54,42 @@ export const siteTools = {
         null,
         2,
       );
+    },
+  }),
+  list_blog_stats: tool({
+    description:
+      'k8o.me のブログ記事を、DB の記録（slug・公開か下書きか・作成日時・累計の閲覧数・フィードバックの件数・タグ）で返す。下書きも含む。タイトルと URL は無いので、公開済みの記事は list_blogs の slug と突き合わせる',
+    inputSchema: z.object({
+      status: z.optional(
+        z
+          .enum(['all', 'published', 'draft'])
+          .check(
+            z.describe(
+              'すべて（all）・公開済み（published）・下書き（draft）。省くと all',
+            ),
+          ),
+      ),
+      sort: z.optional(
+        z
+          .enum(['recent', 'views'])
+          .check(
+            z.describe(
+              '作成日時の新しい順（recent）か、累計の閲覧数の多い順（views）。省くと recent',
+            ),
+          ),
+      ),
+      page: pageInput,
+    }),
+    execute: async (
+      { status = 'all', sort = 'recent', page = 1 },
+      { abortSignal },
+    ): Promise<BlogStatsPage> => {
+      const paging = { page, pageSize: BLOG_STATS_PAGE_SIZE };
+      const { total, items } = await fetchOwnerBlogStats(
+        { status, sort, ...paging },
+        abortSignal,
+      );
+      return { total, page, nextPage: nextPageOf(paging, total), items };
     },
   }),
 };
