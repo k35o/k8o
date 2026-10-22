@@ -4,5 +4,5 @@
   "devDependencies": {
     "vercel": "63.1.2"
   },
-  "packageManager": "pnpm@12.12.1"
+  "packageManager": "pnpm@12.13.0"
 }
