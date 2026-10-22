@@ -7,7 +7,10 @@ import { HTTPException } from 'hono/http-exception';
 import { blogPublicRoutes } from './features/blog/interface/public-routes';
 import { browserSupportPublicRoutes } from './features/browser-support/interface/public-routes';
 import { inquiryPublicRoutes } from './features/inquiries/interface/public-routes';
-import { pushSubscriptionPublicRoutes } from './features/push-notification/interface/public-routes';
+import {
+  pushLogPublicRoutes,
+  pushSubscriptionPublicRoutes,
+} from './features/push-notification/interface/public-routes';
 import {
   readingListPublicRoutes,
   redirectReadingListFeedQuery,
@@ -75,6 +78,7 @@ export const publicRoutes = new Hono()
   .route('/blogs', blogPublicRoutes)
   .route('/browser-support', browserSupportPublicRoutes)
   .route('/inquiries', inquiryPublicRoutes)
+  .route('/push-logs', pushLogPublicRoutes)
   .route('/push-subscriptions', pushSubscriptionPublicRoutes)
   .route('/reading-list', readingListPublicRoutes)
   .route('/reports', reportPublicRoutes)

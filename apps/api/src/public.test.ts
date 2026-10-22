@@ -12,6 +12,7 @@ import {
   findRecentFeatureChanges,
 } from './features/browser-support/infrastructure/browser-support-repository';
 import { insertInquiry } from './features/inquiries/infrastructure/inquiry-repository';
+import { findPublicPushLogs } from './features/push-notification/infrastructure/push-log-repository';
 import {
   deleteSubscription,
   insertSubscription,
@@ -42,6 +43,12 @@ vi.mock('./features/inquiries/infrastructure/inquiry-repository', () => ({
   insertInquiry: vi.fn(),
   findInquiries: vi.fn(),
 }));
+vi.mock(
+  './features/push-notification/infrastructure/push-log-repository',
+  () => ({
+    findPublicPushLogs: vi.fn(),
+  }),
+);
 vi.mock(
   './features/push-notification/infrastructure/subscription-repository',
   () => ({
@@ -186,6 +193,15 @@ const BARE_ARTICLE = {
   source: SOURCE,
 };
 
+const PUSH_LOG = {
+  id: 5,
+  kind: 'readings_updated',
+  title: 'Readings を更新しました',
+  body: '3件の記事を追加しました',
+  url: 'https://k8o.me/reading-list',
+  sentAt: '2026-07-19T00:05:00.000Z',
+} as const;
+
 describe('公開 API', () => {
   beforeEach(() => {
     vi.spyOn(console, 'error').mockImplementation(() => undefined);
@@ -207,6 +223,7 @@ describe('公開 API', () => {
     vi.mocked(findArticleSources).mockResolvedValue([
       { id: SOURCE.id, title: SOURCE.title },
     ]);
+    vi.mocked(findPublicPushLogs).mockResolvedValue([PUSH_LOG]);
   });
 
   afterEach(() => {
@@ -1289,6 +1306,21 @@ describe('公開 API', () => {
           expect(findRecentArticles).not.toHaveBeenCalled();
         },
       );
+    });
+  });
+
+  describe('GET /public/push-logs', () => {
+    describe('正常系', () => {
+      it('50件を上限に読んだ通知の履歴を返し、CDN に10分置く', async () => {
+        const res = await app.request('/public/push-logs');
+
+        expect(res.status).toBe(200);
+        expect(res.headers.get('cache-control')).toBe(
+          'public, max-age=60, s-maxage=600, stale-while-revalidate=86400, stale-if-error=86400',
+        );
+        await expect(res.json()).resolves.toStrictEqual({ logs: [PUSH_LOG] });
+        expect(findPublicPushLogs).toHaveBeenCalledWith(50);
+      });
     });
   });
 });
