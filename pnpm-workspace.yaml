@@ -22,11 +22,11 @@ catalog:
   '@next/env': 16.4.0
   '@next/mdx': 16.4.0
   '@next/third-parties': 16.4.0
-  '@storybook/addon-a11y': 10.6.1
-  '@storybook/addon-docs': 10.6.1
-  '@storybook/addon-mcp': '10.6.1'
-  '@storybook/addon-vitest': 10.6.1
-  '@storybook/nextjs-vite': 10.6.1
+  '@storybook/addon-a11y': 10.6.2
+  '@storybook/addon-docs': 10.6.2
+  '@storybook/addon-mcp': '10.6.2'
+  '@storybook/addon-vitest': 10.6.2
+  '@storybook/nextjs-vite': 10.6.2
   '@types/react': 19.3.0
   '@types/react-dom': 19.3.0
   '@vitest/browser-playwright': 5.0.3
@@ -43,7 +43,7 @@ catalog:
   next-themes: 0.4.6
   react: 19.3.0
   react-dom: 19.3.0
-  storybook: 10.6.1
+  storybook: 10.6.2
   storybook-addon-determinism: 0.2.1
   storybook-addon-mock-date: 3.2.1
   storybook-addon-vrt: 0.4.0
@@ -74,7 +74,7 @@ overrides:
   'micromark-extension-math>katex': 'catalog:'
 
 patchedDependencies:
-  '@storybook/nextjs-vite@10.6.1': patches/@storybook__nextjs-vite@10.6.1.patch
+  '@storybook/nextjs-vite@10.6.2': patches/@storybook__nextjs-vite@10.6.2.patch
 
 trustPolicy: no-downgrade
 
