@@ -70,11 +70,6 @@ export async function OgCodeImage({ title, code }: OgCodeImageProps) {
   const visibleLines = highlighted.tokens.slice(0, maxVisibleLines);
 
   const titleFontSize = calcTitleFontSize(title);
-  const fontText = `${title}k8o`;
-  const [font450, monoFont] = await Promise.all([
-    getMPlus2Font({ text: fontText }),
-    getJetBrainsMonoFont({ text: `${code.code}${code.lang}` }),
-  ]);
 
   return new ImageResponse(
     <div
@@ -161,7 +156,6 @@ export async function OgCodeImage({ title, code }: OgCodeImageProps) {
               alignItems: 'flex-start',
               color: '#0f172a',
               fontSize: titleFontSize,
-              fontWeight: 450,
               lineHeight: TITLE_LINE_HEIGHT,
               letterSpacing: '-0.02em',
             }}
@@ -200,7 +194,6 @@ export async function OgCodeImage({ title, code }: OgCodeImageProps) {
               style={{
                 color: '#18181b',
                 fontSize: 36,
-                fontWeight: 450,
               }}
             >
               k8o
@@ -313,13 +306,13 @@ export async function OgCodeImage({ title, code }: OgCodeImageProps) {
       fonts: [
         {
           name: 'M PLUS 2',
-          data: font450,
+          data: getMPlus2Font(),
           style: 'normal',
           weight: 400,
         },
         {
           name: 'JetBrains Mono',
-          data: monoFont,
+          data: getJetBrainsMonoFont(),
           style: 'normal',
           weight: 400,
         },

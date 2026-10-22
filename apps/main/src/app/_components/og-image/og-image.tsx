@@ -24,11 +24,9 @@ export function OgImage({ title, category, code }: OgImageProps) {
   return OgTextImage({ title, category });
 }
 
-async function OgTextImage({ title, category }: Omit<OgImageProps, 'code'>) {
+function OgTextImage({ title, category }: Omit<OgImageProps, 'code'>) {
   const words = loadDefaultJapaneseParser().parse(title);
   const iconDataUrl = getIconDataUrl();
-  const fontText = `${title}${category ?? ''}${(category ?? '').toUpperCase()}k8oK8O`;
-  const font450 = await getMPlus2Font({ text: fontText });
 
   return new ImageResponse(
     <div
@@ -97,7 +95,6 @@ async function OgTextImage({ title, category }: Omit<OgImageProps, 'code'>) {
             marginBottom: 40,
             color: '#0f172a',
             fontSize: 68,
-            fontWeight: 450,
             lineHeight: 1.2,
             letterSpacing: '-0.02em',
           }}
@@ -155,7 +152,6 @@ async function OgTextImage({ title, category }: Omit<OgImageProps, 'code'>) {
                   style={{
                     color: '#334155',
                     fontSize: 32,
-                    fontWeight: 450,
                     letterSpacing: '0.1em',
                     textTransform: 'uppercase',
                   }}
@@ -167,7 +163,6 @@ async function OgTextImage({ title, category }: Omit<OgImageProps, 'code'>) {
                 style={{
                   color: '#18181b',
                   fontSize: 48,
-                  fontWeight: 450,
                 }}
               >
                 k8o
@@ -194,7 +189,7 @@ async function OgTextImage({ title, category }: Omit<OgImageProps, 'code'>) {
       fonts: [
         {
           name: 'M PLUS 2',
-          data: font450,
+          data: getMPlus2Font(),
           style: 'normal',
           weight: 400,
         },
