@@ -1,10 +1,12 @@
 name: Vercel Prebuilt Deploy
+# 空のときは、GitHub がイベントごとの既定の名前（コミットや PR の題）を付ける
+run-name: ${{ github.event_name == 'workflow_dispatch' && format('{0} を {1} へデプロイ', inputs.app, inputs.target) || '' }}
 
 # ビルドを GitHub Actions（public repo は無料）で行い、`vercel build` の成果物を
 # `vercel deploy --prebuilt` でアップロードだけすることで、Vercel の Build Minutes を
 # 消費せずにデプロイする。Vercel 側の Git 連携ビルドは各 app の vercel.json の
-# `"git": { "deploymentEnabled": false }` で停止しており、preview（PR）と
-# production（main への push）の両方をこの workflow が担う。
+# `"git": { "deploymentEnabled": false }` で停止しており、preview（PR と workflow_dispatch）と
+# production（main への push と、target が production の workflow_dispatch）の両方をこの workflow が担う。
 on:
   pull_request:
   push:
@@ -13,7 +15,7 @@ on:
   workflow_dispatch:
     inputs:
       app:
-        description: 'preview をデプロイするアプリ'
+        description: 'デプロイするアプリ'
         required: true
         type: choice
         options:
@@ -21,6 +23,14 @@ on:
           - api
           - ai
         default: main
+      target:
+        description: 'デプロイ先。production は main ブランチから起こしたときだけ動き、本番を出し直す（ビルド時に読む DB の変更を反映する）'
+        required: true
+        type: choice
+        options:
+          - preview
+          - production
+        default: preview
 
 permissions: {}
 
@@ -34,6 +44,7 @@ jobs:
       contents: read
     outputs:
       apps: ${{ steps.detect.outputs.apps }}
+      production: ${{ github.event_name == 'push' || inputs.target == 'production' }}
     steps:
       - name: Checkout branch
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -107,7 +118,7 @@ jobs:
   # main のビルドは DB を読むので、その前に終わっている必要もある。preview は deploy の中で流す
   migrate:
     needs: detect
-    if: ${{ github.event_name == 'push' && needs.detect.result == 'success' && needs.detect.outputs.apps != '[]' }}
+    if: ${{ needs.detect.outputs.production == 'true' && needs.detect.result == 'success' && needs.detect.outputs.apps != '[]' }}
     runs-on: ubuntu-latest
     timeout-minutes: 10
     environment: production
@@ -142,12 +153,13 @@ jobs:
     # preview では migrate がスキップされる。状態を見る関数が無いと暗黙の success() が付き、
     # needs のスキップで deploy もスキップされるので、!cancelled() で外して result を明示確認する。
     # 本番は migrate の成功を待つ。skip された detect（fork PR・renovate）では起動しない
-    if: ${{ !cancelled() && needs.detect.result == 'success' && needs.detect.outputs.apps != '[]' && (needs.migrate.result == 'success' || (github.event_name != 'push' && needs.migrate.result == 'skipped')) }}
+    if: ${{ !cancelled() && needs.detect.result == 'success' && needs.detect.outputs.apps != '[]' && (needs.migrate.result == 'success' || (needs.detect.outputs.production != 'true' && needs.migrate.result == 'skipped')) }}
     runs-on: ubuntu-latest
     timeout-minutes: 20
     # PR は workflow 自体を書き換えて任意の repo secret を参照できるため、本番の資格情報は
-    # main に限定した production Environment にだけ置き、preview から届かないことを GitHub 側で担保する
-    environment: ${{ github.event_name == 'push' && 'production' || 'preview' }}
+    # main に限定した production Environment にだけ置き、preview から届かないことを GitHub 側で担保する。
+    # main 以外の ref で target に production を選んだ workflow_dispatch も、この Environment で止まる
+    environment: ${{ needs.detect.outputs.production == 'true' && 'production' || 'preview' }}
     permissions:
       contents: read
     strategy:
@@ -163,7 +175,7 @@ jobs:
       VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
       # プロジェクト ID は秘密情報ではないため、app との対応を workflow に直書きして自己文書化する
       VERCEL_PROJECT_ID: ${{ fromJSON('{"main":"prj_OrrQ8Nnl4sJJii9kpjOAtb6EeIjD","api":"prj_aehv1FNgGlp0nGIZPyPFHShRqlAW","ai":"prj_Iz1SHi1C6rgwFz2YngTzeiRdsFE8"}')[matrix.app] }}
-      DEPLOY_TARGET: ${{ github.event_name == 'push' && 'production' || 'preview' }}
+      DEPLOY_TARGET: ${{ needs.detect.outputs.production == 'true' && 'production' || 'preview' }}
     steps:
       - name: Checkout branch
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
