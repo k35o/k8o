@@ -16,12 +16,17 @@ k8o の API。Hono で書き、Vercel にデプロイする（本番ドメイン
 
 ## 公開ルート
 
-`/public/*` は k8o.me のブラウザから直接呼ぶ匿名の書き込み（`src/public.ts`）。main は `@repo/api/public` から `PublicApi` の型だけを読み、`apps/main/src/shared/api/public-api.ts` の hc（`hono/client`）で呼ぶ（パスの `/public` は型に含まれる）。向け先は本番が `https://api.k8o.me`、ローカルは同じ worktree の api。main の CSP の `connect-src` に api の origin が要る。
+`/public/*` は k8o.me のブラウザから直接呼ぶ匿名の書き込みと、公開データの読み取り（`src/public.ts`）。main は `@repo/api/public` から `PublicApi` の型だけを読み、`apps/main/src/shared/api/public-api.ts` の hc（`hono/client`）で呼ぶ（パスの `/public` は型に含まれる）。向け先は本番が `https://api.k8o.me`、ローカルは同じ worktree の api。main の CSP の `connect-src` に api の origin が要る。
 
 - ルートは `features/<feature>/interface/public-routes.ts` に書き、`src/public.ts` で束ねる。公開ルートのモジュールから MCP・cron・AI SDK を import しない（main の型検査に巻き込まれるため）
-- 許可する Origin は k8o.me と www.k8o.me だけ。dev サーバー（`NODE_ENV=development`）では、ローカルの main（`https://(<ブランチ>.)main.k8o.localhost(:ポート)`）も許可する。main の preview からは書き込めない。cors は許可しない Origin を拒否しないので、フォームと同じ扱いになる POST（本文なしを含む）は csrf で、JSON はブラウザのプリフライトで止める。どちらもブラウザ外からの呼び出しには効かない
+- 書き込み（POST・DELETE とそのプリフライト）で許可する Origin は k8o.me と www.k8o.me だけ。dev サーバー（`NODE_ENV=development`）では、ローカルの main（`https://(<ブランチ>.)main.k8o.localhost(:ポート)`）も許可する。main の preview からは書き込めない。cors は許可しない Origin を拒否しないので、フォームと同じ扱いになる POST（本文なしを含む）は csrf で、JSON はブラウザのプリフライトで止める。どちらもブラウザ外からの呼び出しには効かない
 - 検証は zod/mini を `hono/validator` の中で呼ぶ。ルートが返すエラーは `{ ok: false, error: '<code>' }` とステータスだけにし、利用者に見せる文言は main に置く。ミドルウェアと hono 自身が返すエラー（csrf の 403、未定義のパスの 404、壊れた JSON の 400）はテキストで返るので、呼ぶ側は `res.ok` で成否を見る
 - 本文は 64KB まで。想定外の例外は中身を出さずに 500 を返す
+- 読み取りは GET（と HEAD）で、日々変わる表示の最新値を返す。`GET /public/browser-support` は表示する機能・最近の更新・選んだ時刻、`GET /public/browser-support/features/:featureId` は1機能の状態（旧い ID も解決する）を返す
+- 読み取りの CORS は Origin を問わず `Access-Control-Allow-Origin: *` を返し、`Vary: Origin` を付けない。読むのは k8o.me に出ている公開のデータだけで、preview の main からも読める
+- 読み取りは query を受けず、query 付きの GET・HEAD は 400 の `invalid_request` にする。CDN は query を含めた URL でキャッシュするので、query を変えるだけでキャッシュを外して DB に届かせられるため
+- 読み取りの Cache-Control はルートが `shared/cache/public-cache-control.ts` で付ける（Vercel の CDN が `s-maxage`・`stale-while-revalidate`・`stale-if-error` を解釈する）。データで決まる 404（無い featureId）も 200 と同じだけ持たせる。ルートが付けなかった応答（400・500・未定義のパスの 404）は `no-store` になる
+- 読み取りの応答の形は、項目を足すだけにする。api と main は並列にデプロイされ、main が先に出ると古い api の応答を読むので、main の client が読む項目を足すときは api の PR を先に本番へ出し、main の PR はそのあとにマージする。api を Instant Rollback するときは、戻す先に無い項目を main が読んでいないかを見る
 - `/public/reports` は、main の Reporting-Endpoints を通してブラウザの Reporting API が送る CSP 違反と、main のクライアントのエラーを受ける。Reporting API は `application/reports+json` の配列を送り、Chromium と Firefox は別オリジンなのでプリフライトを経る（Chromium は毎回）。410 は Firefox に送り先を消させるので、どの場合も返さない（Chromium は 2xx 以外をすべて送り直す）。Safari は CSP 違反を `application/csp-report` の単一オブジェクトで、プリフライトなしで送る。JSON 系の Content-Type でないので `validator('json')` が本文を読まず 400 になり、受けていない
 - `/public/reports` は1件ごとに `type` 64字、`url` 2048字、`user_agent` 512字、`body` を JSON にして 8192字までを受け、超えたレポートは捨てる。1回のリクエストで保存するのは、残りのうち先頭の 50件まで。捨てたときも 204 を返す。配列でない・必須のキーが無いといった形の誤りは 400
 

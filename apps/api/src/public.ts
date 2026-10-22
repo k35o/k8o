@@ -5,6 +5,7 @@ import { csrf } from 'hono/csrf';
 import { HTTPException } from 'hono/http-exception';
 
 import { blogPublicRoutes } from './features/blog/interface/public-routes';
+import { browserSupportPublicRoutes } from './features/browser-support/interface/public-routes';
 import { inquiryPublicRoutes } from './features/inquiries/interface/public-routes';
 import { pushSubscriptionPublicRoutes } from './features/push-notification/interface/public-routes';
 import { reportPublicRoutes } from './features/reports/interface/public-routes';
@@ -20,19 +21,44 @@ const isAllowedOrigin = (origin: string): boolean =>
   (process.env['NODE_ENV'] === 'development' && LOCAL_MAIN_ORIGIN.test(origin));
 const MAX_BODY_BYTES = 64 * 1024;
 
-// k8o.me のブラウザから直接呼ぶ匿名の書き込み。cors は許可しない Origin を拒否しないので、
-// フォームと同じ扱いになる POST（本文なしを含む）は csrf で止め、JSON はブラウザの
-// プリフライトで止める
+const isReadMethod = (method: string): boolean =>
+  method === 'GET' || method === 'HEAD';
+
+const writeCors = cors({
+  origin: (origin) => (isAllowedOrigin(origin) ? origin : null),
+  allowMethods: ['POST', 'DELETE'],
+  allowHeaders: ['Content-Type'],
+  maxAge: 7200,
+});
+// 読むのは k8o.me に出ている公開のデータだけなので、GET と HEAD は Origin を問わない。Origin を
+// 選ぶ cors を GET にも掛けると、preview の main からの読み取りを拒み、CDN の応答に Vary: Origin が付く
+const readCors = cors({ origin: '*' });
+
+// k8o.me のブラウザから直接呼ぶ匿名の書き込みと、公開データの読み取り。cors は許可しない
+// Origin を拒否しないので、フォームと同じ扱いになる POST（本文なしを含む）は csrf で止め、
+// JSON はブラウザのプリフライトで止める
 export const publicRoutes = new Hono()
   .basePath('/public')
-  .use(
-    cors({
-      origin: (origin) => (isAllowedOrigin(origin) ? origin : null),
-      allowMethods: ['POST', 'DELETE'],
-      allowHeaders: ['Content-Type'],
-      maxAge: 7200,
-    }),
+  .use((c, next) =>
+    isReadMethod(c.req.method) ? readCors(c, next) : writeCors(c, next),
   )
+  .use(async (c, next) => {
+    const isRead = isReadMethod(c.req.method);
+    // CDN は query を含めた URL でキャッシュするので、query を変えるだけでキャッシュを外して
+    // DB や GitHub に届かせられる。読み取りの口は query を受けない
+    if (isRead && c.req.url.includes('?')) {
+      throw new HTTPException(400, {
+        res: c.json({ ok: false, error: 'invalid_request' } as const, 400, {
+          'Cache-Control': 'no-store',
+        }),
+      });
+    }
+    await next();
+    // 400・500・未定義のパスの 404 を CDN とブラウザに持たせない
+    if (isRead && !c.res.headers.has('Cache-Control')) {
+      c.res.headers.set('Cache-Control', 'no-store');
+    }
+  })
   .use(csrf({ origin: isAllowedOrigin }))
   .use(
     bodyLimit({
@@ -42,6 +68,7 @@ export const publicRoutes = new Hono()
     }),
   )
   .route('/blogs', blogPublicRoutes)
+  .route('/browser-support', browserSupportPublicRoutes)
   .route('/inquiries', inquiryPublicRoutes)
   .route('/push-subscriptions', pushSubscriptionPublicRoutes)
   .route('/reports', reportPublicRoutes)

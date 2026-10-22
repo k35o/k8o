@@ -1,3 +1,4 @@
+import type { BaselineDataset } from '@repo/helpers/baseline/model';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { insertBlogFeedback } from './features/blog/infrastructure/feedback-repository';
@@ -6,6 +7,10 @@ import {
   incrementBlogView,
   incrementBlogViewDaily,
 } from './features/blog/infrastructure/view-repository';
+import {
+  findActiveDataset,
+  findRecentFeatureChanges,
+} from './features/browser-support/infrastructure/browser-support-repository';
 import { insertInquiry } from './features/inquiries/infrastructure/inquiry-repository';
 import {
   deleteSubscription,
@@ -22,6 +27,13 @@ vi.mock('./features/blog/infrastructure/view-repository', () => ({
 vi.mock('./features/blog/infrastructure/feedback-repository', () => ({
   insertBlogFeedback: vi.fn(),
 }));
+vi.mock(
+  './features/browser-support/infrastructure/browser-support-repository',
+  () => ({
+    findActiveDataset: vi.fn(),
+    findRecentFeatureChanges: vi.fn(),
+  }),
+);
 vi.mock('./features/inquiries/infrastructure/inquiry-repository', () => ({
   insertInquiry: vi.fn(),
   findInquiries: vi.fn(),
@@ -79,6 +91,54 @@ const P256DH =
 const AUTH = Buffer.alloc(16).toString('base64url');
 const ENDPOINT = 'https://fcm.googleapis.com/fcm/send/abc123';
 
+const DAILY_CACHE_CONTROL =
+  'public, max-age=300, s-maxage=3600, stale-while-revalidate=86400, stale-if-error=86400';
+
+const ANCHOR_POSITIONING = {
+  featureId: 'anchor-positioning',
+  name: 'Anchor positioning',
+  status: 'newly',
+  baselineDate: '2026-04-01',
+  resolvedDate: '2026-04-01',
+  support: [{ browser: 'chrome', version: '125', date: '2024-05-14' }],
+} as const satisfies BaselineDataset['features'][number];
+const GRID = {
+  featureId: 'grid',
+  name: 'Grid',
+  status: 'widely',
+  baselineDate: '2020-01-15',
+  resolvedDate: '2020-01-15',
+  support: [{ browser: 'chrome', version: '57', date: '2017-03-09' }],
+} as const satisfies BaselineDataset['features'][number];
+const LIMITED_OLD = {
+  featureId: 'limited-old',
+  name: 'Limited old',
+  status: 'limited',
+  baselineDate: null,
+  resolvedDate: '2024-01-15',
+  support: [{ browser: 'chrome', version: '120', date: '2024-01-15' }],
+} as const satisfies BaselineDataset['features'][number];
+const ACTIVE_DATASET = {
+  id: 3,
+  upstreamVersion: '3.34.2',
+  ingestedAt: '2026-07-19T06:00:00.000Z',
+  dataset: {
+    schemaVersion: 1,
+    upstreamVersion: '3.34.2',
+    features: [ANCHOR_POSITIONING, GRID, LIMITED_OLD],
+    redirects: { 'old-grid': 'grid' },
+    minVersions: { chrome: '120' },
+  },
+} satisfies NonNullable<Awaited<ReturnType<typeof findActiveDataset>>>;
+const FEATURE_CHANGE = {
+  featureId: 'anchor-positioning',
+  featureName: 'Anchor positioning',
+  status: 'newly',
+  previousStatus: null,
+  upstreamVersion: '3.34.2',
+  changedAt: '2026-07-19T06:00:00.000Z',
+} as const;
+
 describe('公開 API', () => {
   beforeEach(() => {
     vi.spyOn(console, 'error').mockImplementation(() => undefined);
@@ -90,11 +150,14 @@ describe('公開 API', () => {
     vi.mocked(insertSubscription).mockResolvedValue();
     vi.mocked(deleteSubscription).mockResolvedValue();
     vi.mocked(insertReports).mockResolvedValue();
+    vi.mocked(findActiveDataset).mockResolvedValue(ACTIVE_DATASET);
+    vi.mocked(findRecentFeatureChanges).mockResolvedValue([FEATURE_CHANGE]);
   });
 
   afterEach(() => {
     vi.unstubAllEnvs();
     vi.restoreAllMocks();
+    vi.useRealTimers();
   });
 
   describe('CORS と CSRF', () => {
@@ -130,6 +193,13 @@ describe('公開 API', () => {
         });
 
         expect(res.status).toBe(204);
+      });
+
+      it('書き込みの応答は Origin ごとに変わるので、Vary に Origin を付ける', async () => {
+        const res = await post(VIEWS_PATH, { Origin: ORIGIN });
+
+        expect(res.status).toBe(204);
+        expect(res.headers.get('vary')).toMatch(/Origin/u);
       });
 
       it.each([
@@ -839,6 +909,208 @@ describe('公開 API', () => {
         expect(insertReports).toHaveBeenCalledWith([
           { type: report.type, url: report.url, body: report.body },
         ]);
+      });
+    });
+  });
+
+  describe('公開の GET', () => {
+    const PATH = '/public/browser-support';
+
+    describe('正常系', () => {
+      it.each([
+        ['許可していない Origin', { Origin: 'https://evil.example' }],
+        ['Origin の無い', {}],
+      ])(
+        '%s からの GET にも * を返し、Vary に Origin を付けない',
+        async (_, headers) => {
+          const res = await app.request(PATH, { headers });
+
+          expect(res.status).toBe(200);
+          expect(res.headers.get('access-control-allow-origin')).toBe('*');
+          expect(res.headers.get('vary')).toBeNull();
+        },
+      );
+
+      it('HEAD は本文を返さず、GET と同じヘッダーを返す', async () => {
+        const res = await app.request(PATH, {
+          method: 'HEAD',
+          headers: { Origin: ORIGIN },
+        });
+
+        expect(res.status).toBe(200);
+        expect(res.headers.get('access-control-allow-origin')).toBe('*');
+        expect(res.headers.get('cache-control')).toBe(DAILY_CACHE_CONTROL);
+        await expect(res.text()).resolves.toBe('');
+      });
+    });
+
+    describe('異常系', () => {
+      it.each([
+        ['GET', `${PATH}?v=1`],
+        ['GET', `${PATH}?`],
+        ['GET', `${PATH}/features/grid?v=1`],
+        ['HEAD', `${PATH}?v=1`],
+      ])(
+        'query 付きの %s %s は、DB を読まずに 400 を返し、キャッシュさせない',
+        async (method, path) => {
+          const res = await app.request(path, { method });
+
+          expect(res.status).toBe(400);
+          expect(res.headers.get('cache-control')).toBe('no-store');
+          expect(findActiveDataset).not.toHaveBeenCalled();
+          expect(findRecentFeatureChanges).not.toHaveBeenCalled();
+        },
+      );
+
+      it('query 付きの GET の 400 は、ほかの公開ルートと同じ形の JSON で返す', async () => {
+        const res = await app.request(`${PATH}?v=1`);
+
+        await expect(res.json()).resolves.toStrictEqual({
+          ok: false,
+          error: 'invalid_request',
+        });
+      });
+
+      it('DB が失敗したら、中身を出さずに 500 を返し、キャッシュさせない', async () => {
+        vi.mocked(findActiveDataset).mockRejectedValue(new Error('db secret'));
+
+        const res = await app.request(PATH);
+
+        expect(res.status).toBe(500);
+        expect(res.headers.get('cache-control')).toBe('no-store');
+        await expect(res.json()).resolves.toStrictEqual({
+          ok: false,
+          error: 'internal_error',
+        });
+      });
+
+      it('未定義のパスの 404 はキャッシュさせない', async () => {
+        const res = await app.request('/public/unknown');
+
+        expect(res.status).toBe(404);
+        expect(res.headers.get('cache-control')).toBe('no-store');
+      });
+    });
+  });
+
+  describe('GET /public/browser-support', () => {
+    const PATH = '/public/browser-support';
+
+    beforeEach(() => {
+      vi.useFakeTimers({ toFake: ['Date'] });
+      vi.setSystemTime(new Date('2026-07-20T00:00:00.000Z'));
+    });
+
+    describe('正常系', () => {
+      it('いまの時刻で選んだ機能と、直近30日の更新を返す', async () => {
+        const res = await app.request(PATH);
+
+        expect(res.status).toBe(200);
+        await expect(res.json()).resolves.toStrictEqual({
+          meta: {
+            upstreamVersion: '3.34.2',
+            ingestedAt: '2026-07-19T06:00:00.000Z',
+          },
+          features: [ANCHOR_POSITIONING, GRID],
+          recentChanges: [FEATURE_CHANGE],
+          nowMs: 1_784_505_600_000,
+        });
+        expect(findRecentFeatureChanges).toHaveBeenCalledWith(
+          '2026-06-20T00:00:00.000Z',
+          100,
+        );
+      });
+
+      it('CDN に1時間持たせ、DB が落ちても古い値を返させる', async () => {
+        const res = await app.request(PATH);
+
+        expect(res.headers.get('cache-control')).toBe(DAILY_CACHE_CONTROL);
+      });
+    });
+
+    describe('エッジケース', () => {
+      it('同期前で active のデータが無くても、更新の履歴は返す', async () => {
+        vi.mocked(findActiveDataset).mockResolvedValue(null);
+
+        const res = await app.request(PATH);
+
+        expect(res.status).toBe(200);
+        await expect(res.json()).resolves.toStrictEqual({
+          meta: null,
+          features: [],
+          recentChanges: [FEATURE_CHANGE],
+          nowMs: 1_784_505_600_000,
+        });
+      });
+    });
+  });
+
+  describe('GET /public/browser-support/features/:featureId', () => {
+    const PATH = '/public/browser-support/features';
+
+    describe('正常系', () => {
+      it('機能の状態を返す', async () => {
+        const res = await app.request(`${PATH}/grid`);
+
+        expect(res.status).toBe(200);
+        expect(res.headers.get('cache-control')).toBe(DAILY_CACHE_CONTROL);
+        await expect(res.json()).resolves.toStrictEqual({ feature: GRID });
+      });
+
+      it('旧い ID は redirects で今の機能に解決する', async () => {
+        const res = await app.request(`${PATH}/old-grid`);
+
+        await expect(res.json()).resolves.toStrictEqual({ feature: GRID });
+      });
+    });
+
+    describe('異常系', () => {
+      it.each([
+        ['データに無い ID', 'unknown-feature', ACTIVE_DATASET],
+        ['同期前の', 'grid', null],
+      ])(
+        '%sは 404 を返し、200 と同じだけキャッシュさせる',
+        async (_, featureId, active) => {
+          vi.mocked(findActiveDataset).mockResolvedValue(active);
+
+          const res = await app.request(`${PATH}/${featureId}`);
+
+          expect(res.status).toBe(404);
+          expect(res.headers.get('cache-control')).toBe(DAILY_CACHE_CONTROL);
+          await expect(res.json()).resolves.toStrictEqual({
+            ok: false,
+            error: 'not_found',
+          });
+        },
+      );
+
+      it.each([
+        ['大文字を含む', 'Grid'],
+        ['_ を含む', 'a_b'],
+        ['ASCII でない', encodeURIComponent('あ')],
+        ['101字の', 'a'.repeat(101)],
+      ])(
+        '%s ID は DB を読まずに 400 を返し、キャッシュさせない',
+        async (_, featureId) => {
+          const res = await app.request(`${PATH}/${featureId}`);
+
+          expect(res.status).toBe(400);
+          expect(res.headers.get('cache-control')).toBe('no-store');
+          expect(findActiveDataset).not.toHaveBeenCalled();
+          await expect(res.json()).resolves.toStrictEqual({
+            ok: false,
+            error: 'invalid_request',
+          });
+        },
+      );
+    });
+
+    describe('エッジケース', () => {
+      it('100字の ID は受け付けて DB を読む', async () => {
+        const res = await app.request(`${PATH}/${'a'.repeat(100)}`);
+
+        expect(res.status).toBe(404);
+        expect(findActiveDataset).toHaveBeenCalledOnce();
       });
     });
   });
