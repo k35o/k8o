@@ -29,6 +29,10 @@
       "types": "./src/baseline/invariants.ts",
       "default": "./src/baseline/invariants.ts"
     },
+    "./baseline/select": {
+      "types": "./src/baseline/select.ts",
+      "default": "./src/baseline/select.ts"
+    },
     "./browser/detect-browser": {
       "types": "./src/browser/detect-browser.ts",
       "default": "./src/browser/detect-browser.ts"
@@ -89,6 +93,10 @@
       "types": "./src/date/format.ts",
       "default": "./src/date/format.ts"
     },
+    "./feed/build-rss": {
+      "types": "./src/feed/build-rss.ts",
+      "default": "./src/feed/build-rss.ts"
+    },
     "./is-authorized-bearer-request": {
       "types": "./src/is-authorized-bearer-request.ts",
       "default": "./src/is-authorized-bearer-request.ts"
@@ -117,6 +125,10 @@
     "./push-endpoint": {
       "types": "./src/push-endpoint/is-allowed-push-endpoint.ts",
       "default": "./src/push-endpoint/is-allowed-push-endpoint.ts"
+    },
+    "./push-log/history": {
+      "types": "./src/push-log/history.ts",
+      "default": "./src/push-log/history.ts"
     },
     "./sleep": {
       "types": "./src/sleep.ts",
