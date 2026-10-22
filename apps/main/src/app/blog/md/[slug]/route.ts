@@ -1,6 +1,9 @@
 import { NextResponse } from 'next/server';
 
-import { getMarkdown } from '@/features/blog/interface/markdown';
+import {
+  findBlogMarkdown,
+  isPublishedBlog,
+} from '@/features/blog/interface/queries';
 
 export async function GET(
   _request: Request,
@@ -8,22 +11,24 @@ export async function GET(
 ) {
   const { slug } = await params;
 
-  try {
-    const markdown = await getMarkdown(slug);
-    return new NextResponse(markdown, {
-      headers: {
-        'Content-Type': 'text/markdown; charset=utf-8',
-        // /blog/:slug は Accept で HTML と markdown を出し分けるため、
-        // 共有キャッシュが Accept をキーに含むよう明示する
-        Vary: 'Accept',
-        // 本文はデプロイ時に固定される MDX 由来で、Vercel の CDN キャッシュは
-        // デプロイで無効化される。CopyMarkdown やエージェントからの再取得を
-        // 関数実行なしで返せるよう CDN にキャッシュさせる
-        'Cache-Control':
-          'public, s-maxage=86400, stale-while-revalidate=604800',
-      },
-    });
-  } catch {
+  const markdown = (await isPublishedBlog(slug))
+    ? await findBlogMarkdown(slug)
+    : null;
+  if (markdown === null) {
     return new NextResponse('Not Found', { status: 404 });
   }
+
+  return new NextResponse(markdown, {
+    headers: {
+      'Content-Type': 'text/markdown; charset=utf-8',
+      // /blog/:slug は Accept で HTML と markdown を出し分けるため、
+      // 共有キャッシュが Accept をキーに含むよう明示する
+      Vary: 'Accept',
+      // CopyMarkdown やエージェントからの再取得を関数実行なしで返せるよう CDN に
+      // キャッシュさせる。ただし公開状態で 200 と 404 が変わるのに、この応答には
+      // キャッシュタグが無く、公開を切り替えたあとの revalidateTag では CDN から
+      // 消えない。非公開に戻した記事の本文が残る時間を抑えるため、数分にとどめる
+      'Cache-Control': 'public, s-maxage=300, stale-while-revalidate=300',
+    },
+  });
 }

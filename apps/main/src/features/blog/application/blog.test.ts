@@ -178,7 +178,7 @@ describe('blog service', () => {
 
         expect(result).toBeNull();
         expect(warn).toHaveBeenCalledWith(
-          'ブログ "missing-slug" のMDXファイルが存在しないため一覧から除外します',
+          'ブログ "missing-slug" のMDXファイルが存在しないため、記事が無いものとして扱います',
         );
         warn.mockRestore();
       });

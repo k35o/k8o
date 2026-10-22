@@ -68,6 +68,25 @@ export async function findBlogContent(slug: string) {
   };
 }
 
+// 動的なルートの 'use cache' は関数のインスタンスごとのメモリに残り、公開を切り替えたあとの
+// db-content の再検証がほかのインスタンスに届く保証が無いので、公開状態はキャッシュせずに読む
+export async function isPublishedBlog(slug: string): Promise<boolean> {
+  return (await findBlog(slug)) !== null;
+}
+
+export async function findBlogMarkdown(slug: string): Promise<string | null> {
+  'use cache';
+  cacheLife('max');
+
+  // MDX が無いことは、このキャッシュの内側で null に読み替える。'use cache' から投げた
+  // 例外は本番では code を持たないものに置き換わり、呼ぶ側で ENOENT と見分けられない
+  const metadata = await findBlogMetadata(slug);
+  if (metadata === null) {
+    return null;
+  }
+  return getMarkdown(slug);
+}
+
 // 'use cache' の中で notFound() を投げないよう、キャッシュするのは DB 参照の結果だけにして
 // 404 の判定はキャッシュの外で行う
 export async function getBlogContent(slug: string) {
