@@ -16,6 +16,9 @@
     "enabled": true,
     "managerFilePatterns": ["/^mise\\.toml$/"]
   },
+  "lockFileMaintenance": {
+    "schedule": ["* * * * 1"]
+  },
   "packageRules": [
     {
       "matchPackageNames": ["/^next$/", "/^@next/"],
