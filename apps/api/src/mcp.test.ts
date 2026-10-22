@@ -17,7 +17,7 @@ import {
   findReportTypeCounts,
 } from './features/reports/infrastructure/report-repository';
 import app from './index';
-import { revalidateMainCache } from './shared/cache/revalidate-main';
+import { requestMainRebuild } from './shared/deploy/request-main-rebuild';
 
 vi.mock('./features/blog/infrastructure/blog-repository', () => ({
   findBlogs: vi.fn(),
@@ -36,8 +36,8 @@ vi.mock('./features/reports/infrastructure/report-repository', () => ({
   findReports: vi.fn(),
   findReportTypeCounts: vi.fn(),
 }));
-vi.mock('./shared/cache/revalidate-main', () => ({
-  revalidateMainCache: vi.fn(),
+vi.mock('./shared/deploy/request-main-rebuild', () => ({
+  requestMainRebuild: vi.fn(),
 }));
 // cron の同期は DB クライアントを読み込むため、このテストでは差し替える
 vi.mock('./features/reading-list/interface/sync', () => ({
@@ -414,9 +414,9 @@ describe('MCP の tool', () => {
 
   describe('set_blog_published', () => {
     describe('正常系', () => {
-      it('公開状態を更新し、main の db-content キャッシュを再検証する', async () => {
+      it('公開状態を更新し、main の本番の再ビルドを起こす', async () => {
         vi.mocked(updateBlogPublishedBySlug).mockResolvedValue(true);
-        vi.mocked(revalidateMainCache).mockResolvedValue(true);
+        vi.mocked(requestMainRebuild).mockResolvedValue(true);
 
         const result = await client.callTool({
           name: 'set_blog_published',
@@ -427,17 +427,17 @@ describe('MCP の tool', () => {
           'media-pseudos',
           true,
         );
-        expect(revalidateMainCache).toHaveBeenCalledWith();
+        expect(requestMainRebuild).toHaveBeenCalledOnce();
         expect(structured(result)).toStrictEqual({
           slug: 'media-pseudos',
           published: true,
-          revalidated: true,
+          rebuildRequested: true,
         });
       });
     });
 
     describe('異常系', () => {
-      it('slug が見つからなければエラーを返し、再検証しない', async () => {
+      it('slug が見つからなければエラーを返し、再ビルドを起こさない', async () => {
         vi.mocked(updateBlogPublishedBySlug).mockResolvedValue(false);
 
         const result = await client.callTool({
@@ -446,12 +446,12 @@ describe('MCP の tool', () => {
         });
 
         expect(result.isError).toBe(true);
-        expect(revalidateMainCache).not.toHaveBeenCalled();
+        expect(requestMainRebuild).not.toHaveBeenCalled();
       });
 
-      it('再検証に失敗しても更新は成功として返し、revalidated で伝える', async () => {
+      it('再ビルドを起こせなくても更新は成功として返し、rebuildRequested で伝える', async () => {
         vi.mocked(updateBlogPublishedBySlug).mockResolvedValue(true);
-        vi.mocked(revalidateMainCache).mockResolvedValue(false);
+        vi.mocked(requestMainRebuild).mockResolvedValue(false);
 
         const result = await client.callTool({
           name: 'set_blog_published',
@@ -461,7 +461,7 @@ describe('MCP の tool', () => {
         expect(structured(result)).toStrictEqual({
           slug: 'media-pseudos',
           published: false,
-          revalidated: false,
+          rebuildRequested: false,
         });
       });
     });

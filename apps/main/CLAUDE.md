@@ -40,7 +40,7 @@ Next.js の `cacheLife` は `features/*/interface` に置く。`app` のUIコン
 
 `/api/revalidate` の Route Handler は、受け取ったタグを `revalidateTag` で再検証する。
 
-DB 由来のキャッシュ（talks / tags / blogs / slides の一覧・詳細、reading-list の記事・ソース一覧）には `cacheTag('db-content')`（`@repo/helpers/cache/main-cache-tags`）を付与する。api（`apps/api`）は reading-list の同期後と、MCP の `set_blog_published` でブログの公開状態を変えたあとに `/api/revalidate`（`REVALIDATE_SECRET` で認可）を叩いてこのタグを再検証する。
+DB 由来のキャッシュ（talks / tags / blogs / slides の一覧・詳細、reading-list の記事・ソース一覧）には `cacheTag('db-content')`（`@repo/helpers/cache/main-cache-tags`）を付与する。api（`apps/api`）は reading-list の同期後に `/api/revalidate`（`REVALIDATE_SECRET` で認可）を叩いてこのタグを再検証する。MCP の `set_blog_published` でブログの公開状態を変えたときは、再検証ではなく、api が main の本番を再ビルドする（`apps/api/CLAUDE.md` の MCP）。
 
 browser-support（機能一覧）は api の日次 cron が web-features の正典配布元（GitHub Releases）から取り込んで DB に保存し、main は `cacheTag('browser-support')` 付きの `'use cache'` で active データセットを読む。api は同期成功後に `/api/revalidate` でこのタグを再検証する。ブラウザ最低版フロア（RootLayout が読む）だけは実行時 I/O を持たないコミット済み生成物で、`pnpm run -F main generate:browser-min-versions [version]` で再生成する。同じ版からリポジトリ直下の `.browserslistrc`（Next.js の Lightning CSS / SWC のターゲット）も生成するので、手で編集しない。active データセットとずれると外形監視（`.github/workflows/browser-support-monitor.yml`）が k8o-bot 名義で再生成 PR を作り、自動マージする。
 
