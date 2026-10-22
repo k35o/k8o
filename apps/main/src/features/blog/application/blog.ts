@@ -41,15 +41,15 @@ export const findBlog = async (slug: string) => {
 export const getBlogMetadata = (slug: string) => getFrontmatter(blogPath(slug));
 
 // DBのslugに対応するMDXが無いことがある（共有ローカルDBに他worktreeの
-// 執筆中記事のslugが混ざる等）。一覧系でその記事だけスキップできるよう、
-// ファイル欠損はエラーにせずnullで返す。
+// 執筆中記事のslugが混ざる等）。一覧系や .md でその記事を無いものとして
+// 扱えるよう、ファイル欠損はエラーにせずnullで返す。
 export const findBlogMetadata = async (
   slug: string,
 ): Promise<Frontmatter | null> => {
   const metadata = await findFrontmatter(blogPath(slug));
   if (metadata === null) {
     console.warn(
-      `ブログ "${slug}" のMDXファイルが存在しないため一覧から除外します`,
+      `ブログ "${slug}" のMDXファイルが存在しないため、記事が無いものとして扱います`,
     );
   }
   return metadata;

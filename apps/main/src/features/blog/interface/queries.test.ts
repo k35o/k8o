@@ -9,7 +9,13 @@ import {
 import { getBlogs } from '@/features/blog/application/blogs';
 
 import { getMarkdown } from './markdown';
-import { findBlogContent, getBlogContent, getBlogContents } from './queries';
+import {
+  findBlogContent,
+  findBlogMarkdown,
+  getBlogContent,
+  getBlogContents,
+  isPublishedBlog,
+} from './queries';
 
 vi.mock('next/cache', () => ({
   cacheLife: vi.fn(),
@@ -174,5 +180,60 @@ describe('getBlogContent の 404', () => {
       'NEXT_NOT_FOUND',
     );
     expect(notFound).toHaveBeenCalledTimes(1);
+  });
+});
+
+describe('isPublishedBlog', () => {
+  describe('正常系', () => {
+    it('公開済みの記事なら true を返す', async () => {
+      vi.mocked(findBlog).mockResolvedValue({
+        id: 1,
+        slug: 'blog-a',
+        tags: [],
+        slideUrl: undefined,
+      });
+
+      await expect(isPublishedBlog('blog-a')).resolves.toBe(true);
+    });
+  });
+
+  describe('異常系', () => {
+    it('下書きまたは存在しない記事なら false を返す', async () => {
+      vi.mocked(findBlog).mockResolvedValue(null);
+
+      await expect(isPublishedBlog('draft-blog')).resolves.toBe(false);
+    });
+
+    it('DB を読めないときは false にせず失敗させる', async () => {
+      vi.mocked(findBlog).mockRejectedValue(new Error('DB に繋がらない'));
+
+      await expect(isPublishedBlog('blog-a')).rejects.toThrow(
+        'DB に繋がらない',
+      );
+    });
+  });
+});
+
+describe('findBlogMarkdown', () => {
+  describe('正常系', () => {
+    it('MDX がある記事は markdown を返す', async () => {
+      vi.mocked(findBlogMetadata).mockResolvedValue(metadata('タイトル'));
+      vi.mocked(getMarkdown).mockResolvedValue('# タイトル\n\n本文');
+
+      await expect(findBlogMarkdown('blog-a')).resolves.toBe(
+        '# タイトル\n\n本文',
+      );
+    });
+  });
+
+  describe('異常系', () => {
+    it('MDX が無い記事は null を返し、本文を読まない', async () => {
+      vi.mocked(findBlogMetadata).mockResolvedValue(null);
+
+      const result = await findBlogMarkdown('missing-blog');
+
+      expect(result).toBeNull();
+      expect(getMarkdown).not.toHaveBeenCalledWith('missing-blog');
+    });
   });
 });
