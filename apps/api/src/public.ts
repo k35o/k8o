@@ -8,6 +8,10 @@ import { blogPublicRoutes } from './features/blog/interface/public-routes';
 import { browserSupportPublicRoutes } from './features/browser-support/interface/public-routes';
 import { inquiryPublicRoutes } from './features/inquiries/interface/public-routes';
 import { pushSubscriptionPublicRoutes } from './features/push-notification/interface/public-routes';
+import {
+  readingListPublicRoutes,
+  redirectReadingListFeedQuery,
+} from './features/reading-list/interface/public-routes';
 import { reportPublicRoutes } from './features/reports/interface/public-routes';
 
 const ALLOWED_ORIGINS = new Set(['https://k8o.me', 'https://www.k8o.me']);
@@ -42,6 +46,7 @@ export const publicRoutes = new Hono()
   .use((c, next) =>
     isReadMethod(c.req.method) ? readCors(c, next) : writeCors(c, next),
   )
+  .use('/reading-list/feed', redirectReadingListFeedQuery)
   .use(async (c, next) => {
     const isRead = isReadMethod(c.req.method);
     // CDN は query を含めた URL でキャッシュするので、query を変えるだけでキャッシュを外して
@@ -71,6 +76,7 @@ export const publicRoutes = new Hono()
   .route('/browser-support', browserSupportPublicRoutes)
   .route('/inquiries', inquiryPublicRoutes)
   .route('/push-subscriptions', pushSubscriptionPublicRoutes)
+  .route('/reading-list', readingListPublicRoutes)
   .route('/reports', reportPublicRoutes)
   .onError((error, c) => {
     if (error instanceof HTTPException) {

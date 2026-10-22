@@ -16,6 +16,10 @@ import {
   deleteSubscription,
   insertSubscription,
 } from './features/push-notification/infrastructure/subscription-repository';
+import {
+  findArticleSources,
+  findRecentArticles,
+} from './features/reading-list/infrastructure/reading-list-repository';
 import { insertReports } from './features/reports/infrastructure/report-repository';
 import app from './index';
 
@@ -43,6 +47,13 @@ vi.mock(
   () => ({
     insertSubscription: vi.fn(),
     deleteSubscription: vi.fn(),
+  }),
+);
+vi.mock(
+  './features/reading-list/infrastructure/reading-list-repository',
+  () => ({
+    findRecentArticles: vi.fn(),
+    findArticleSources: vi.fn(),
   }),
 );
 vi.mock('./features/reports/infrastructure/report-repository', () => ({
@@ -139,6 +150,42 @@ const FEATURE_CHANGE = {
   changedAt: '2026-07-19T06:00:00.000Z',
 } as const;
 
+const SOURCE = {
+  id: 1,
+  title: 'Example & Blog',
+  siteUrl: 'https://example.com',
+};
+const SUMMARIZED_ARTICLE = {
+  id: 10,
+  title: 'AI が要約した記事',
+  url: 'https://example.com/a',
+  publishedAt: '2026-07-18T09:00:00.000Z',
+  imageUrl: 'https://example.com/a.png',
+  description: '元記事の説明',
+  summary: '要約 <b>',
+  source: SOURCE,
+};
+const DESCRIBED_ARTICLE = {
+  id: 11,
+  title: '説明だけの記事',
+  url: 'https://example.com/b?x=1&y=2',
+  publishedAt: '2026-07-17T09:00:00.000Z',
+  imageUrl: null,
+  description: '元記事の説明',
+  summary: null,
+  source: SOURCE,
+};
+const BARE_ARTICLE = {
+  id: 12,
+  title: '説明も要約も無い記事',
+  url: 'https://example.com/c',
+  publishedAt: '2026-07-16T09:00:00.000Z',
+  imageUrl: null,
+  description: null,
+  summary: null,
+  source: SOURCE,
+};
+
 describe('公開 API', () => {
   beforeEach(() => {
     vi.spyOn(console, 'error').mockImplementation(() => undefined);
@@ -152,6 +199,14 @@ describe('公開 API', () => {
     vi.mocked(insertReports).mockResolvedValue();
     vi.mocked(findActiveDataset).mockResolvedValue(ACTIVE_DATASET);
     vi.mocked(findRecentFeatureChanges).mockResolvedValue([FEATURE_CHANGE]);
+    vi.mocked(findRecentArticles).mockResolvedValue([
+      SUMMARIZED_ARTICLE,
+      DESCRIBED_ARTICLE,
+      BARE_ARTICLE,
+    ]);
+    vi.mocked(findArticleSources).mockResolvedValue([
+      { id: SOURCE.id, title: SOURCE.title },
+    ]);
   });
 
   afterEach(() => {
@@ -1112,6 +1167,128 @@ describe('公開 API', () => {
         expect(res.status).toBe(404);
         expect(findActiveDataset).toHaveBeenCalledOnce();
       });
+    });
+  });
+
+  describe('GET /public/reading-list', () => {
+    beforeEach(() => {
+      vi.useFakeTimers({ toFake: ['Date'] });
+      vi.setSystemTime(new Date('2026-07-20T00:00:00.000Z'));
+    });
+
+    describe('正常系', () => {
+      it('直近90日の記事とソースの一覧を返す', async () => {
+        const res = await app.request('/public/reading-list');
+
+        expect(res.status).toBe(200);
+        expect(res.headers.get('cache-control')).toBe(DAILY_CACHE_CONTROL);
+        await expect(res.json()).resolves.toStrictEqual({
+          articles: [SUMMARIZED_ARTICLE, DESCRIBED_ARTICLE, BARE_ARTICLE],
+          sources: [{ id: 1, title: 'Example & Blog' }],
+        });
+        expect(findRecentArticles).toHaveBeenCalledWith(
+          '2026-04-21T00:00:00.000Z',
+        );
+      });
+    });
+
+    describe('異常系', () => {
+      it('query 付きの GET は、フィードと違って戻さずに 400 を返す', async () => {
+        const res = await app.request('/public/reading-list?v=1');
+
+        expect(res.status).toBe(400);
+        expect(findRecentArticles).not.toHaveBeenCalled();
+      });
+    });
+  });
+
+  describe('GET /public/reading-list/feed', () => {
+    const PATH = '/public/reading-list/feed';
+
+    beforeEach(() => {
+      vi.useFakeTimers({ toFake: ['Date'] });
+      vi.setSystemTime(new Date('2026-07-20T00:00:00.000Z'));
+    });
+
+    describe('正常系', () => {
+      it('直近90日の記事を、self を k8o.me の URL にした RSS で返し、AI の要約にだけ【AI要約】を付ける', async () => {
+        const res = await app.request(PATH);
+
+        expect(res.status).toBe(200);
+        expect(res.headers.get('content-type')).toBe(
+          'application/rss+xml; charset=utf-8',
+        );
+        expect(res.headers.get('cache-control')).toBe(DAILY_CACHE_CONTROL);
+        await expect(res.text()).resolves.toBe(
+          '<?xml version="1.0" encoding="UTF-8"?>' +
+            '<rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0">' +
+            '<channel>' +
+            '<title>k8o Readings</title>' +
+            '<description>気になっている記事を集めて、あとから探せるようにしています。</description>' +
+            '<link>https://k8o.me/reading-list</link>' +
+            '<atom:link href="https://k8o.me/reading-list/feed" rel="self" type="application/rss+xml"/>' +
+            '<language>ja</language>' +
+            '<item>' +
+            '<title>AI が要約した記事</title>' +
+            '<description>【AI要約】要約 &lt;b&gt;</description>' +
+            '<link>https://example.com/a</link>' +
+            '<guid isPermaLink="false">https://example.com/a</guid>' +
+            '<category>Example &amp; Blog</category>' +
+            '<pubDate>Sat, 18 Jul 2026 09:00:00 GMT</pubDate>' +
+            '</item>' +
+            '<item>' +
+            '<title>説明だけの記事</title>' +
+            '<description>元記事の説明</description>' +
+            '<link>https://example.com/b?x=1&amp;y=2</link>' +
+            '<guid isPermaLink="false">https://example.com/b?x=1&amp;y=2</guid>' +
+            '<category>Example &amp; Blog</category>' +
+            '<pubDate>Fri, 17 Jul 2026 09:00:00 GMT</pubDate>' +
+            '</item>' +
+            '<item>' +
+            '<title>説明も要約も無い記事</title>' +
+            '<link>https://example.com/c</link>' +
+            '<guid isPermaLink="false">https://example.com/c</guid>' +
+            '<category>Example &amp; Blog</category>' +
+            '<pubDate>Thu, 16 Jul 2026 09:00:00 GMT</pubDate>' +
+            '</item>' +
+            '</channel>' +
+            '</rss>',
+        );
+        expect(findRecentArticles).toHaveBeenCalledWith(
+          '2026-04-21T00:00:00.000Z',
+        );
+      });
+    });
+
+    describe('エッジケース', () => {
+      it('直近90日に記事が無くても、channel だけのフィードを返す', async () => {
+        vi.mocked(findRecentArticles).mockResolvedValue([]);
+
+        const res = await app.request(PATH);
+
+        expect(res.status).toBe(200);
+        const xml = await res.text();
+        expect(xml).toContain('<title>k8o Readings</title>');
+        expect(xml).not.toContain('<item>');
+      });
+
+      it.each([
+        ['GET', `${PATH}?utm_source=x`],
+        ['GET', `${PATH}?`],
+        ['HEAD', `${PATH}?utm_source=x`],
+      ])(
+        'query 付きの %s %s は、DB を読まずに query の無い k8o.me のフィードの URL へ 308 で戻す',
+        async (method, path) => {
+          const res = await app.request(path, { method });
+
+          expect(res.status).toBe(308);
+          expect(res.headers.get('location')).toBe(
+            'https://k8o.me/reading-list/feed',
+          );
+          expect(res.headers.get('cache-control')).toBe(DAILY_CACHE_CONTROL);
+          expect(findRecentArticles).not.toHaveBeenCalled();
+        },
+      );
     });
   });
 });

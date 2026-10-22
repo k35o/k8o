@@ -6,6 +6,56 @@ export const findFeedSources = () =>
     where: eq(db._schema.articleSources.type, 'feed'),
   });
 
+export type ReadingListArticle = {
+  id: number;
+  title: string;
+  url: string;
+  publishedAt: string;
+  imageUrl: string | null;
+  description: string | null;
+  summary: string | null;
+  source: { id: number; title: string; siteUrl: string };
+};
+
+export const findRecentArticles = async (
+  since: string,
+): Promise<ReadingListArticle[]> => {
+  const rows = await db.query.articles.findMany({
+    columns: {
+      id: true,
+      title: true,
+      url: true,
+      publishedAt: true,
+      imageUrl: true,
+      description: true,
+      summary: true,
+    },
+    with: {
+      articleSource: { columns: { id: true, title: true, siteUrl: true } },
+    },
+    where: gte(db._schema.articles.publishedAt, since),
+    orderBy: (articles) => [desc(articles.publishedAt)],
+  });
+  return rows.map((article) => ({
+    id: article.id,
+    title: article.title,
+    url: article.url,
+    publishedAt: article.publishedAt,
+    imageUrl: article.imageUrl,
+    description: article.description,
+    summary: article.summary,
+    source: article.articleSource,
+  }));
+};
+
+export type ReadingListSource = { id: number; title: string };
+
+export const findArticleSources = (): Promise<ReadingListSource[]> =>
+  db.query.articleSources.findMany({
+    columns: { id: true, title: true },
+    orderBy: (sources) => [sources.title],
+  });
+
 export const findArticleTitles = () =>
   db.query.articles.findMany({
     columns: { url: true, title: true },
