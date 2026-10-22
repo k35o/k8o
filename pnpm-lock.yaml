@@ -665,6 +665,9 @@ importers:
       chromatic:
         specifier: 'catalog:'
         version: 18.11.0
+      linkedom:
+        specifier: 0.18.13
+        version: 0.18.13
       msw:
         specifier: 3.0.2
         version: 3.0.2(@types/node@24.19.2)(graphql@16.14.0)(supports-color@10.2.2)(typescript@7.0.2)(vite@8.3.4(@types/node@24.19.2)(esbuild@0.28.1)(jiti@2.7.0)(tsx@4.23.15)(yaml@2.9.1))

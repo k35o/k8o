@@ -52,6 +52,12 @@ export default defineConfig({
         },
       },
       {
+        test: {
+          name: { label: 'scripts test', color: 'blue' },
+          include: ['scripts/**/*.test.ts'],
+        },
+      },
+      {
         plugins: [
           storybookTest({
             storybookScript: 'pnpm storybook --ci',
