@@ -11,7 +11,7 @@ on:
   workflow_dispatch:
     inputs:
       force:
-        description: '検査の前に、同じバージョンでも上流から取り込み直す（main の再検証に失敗したときの復旧用）'
+        description: '検査の前に、同じバージョンでも上流から取り込み直す'
         type: boolean
         default: false
 
@@ -30,10 +30,16 @@ jobs:
       contents: read
       issues: write
     env:
-      HEALTH_URL: https://k8o.me/api/health/browser-support
+      HEALTH_URL: https://api.k8o.me/public/browser-support/health
+      FLOOR_FILE: apps/main/src/features/browser-support/infrastructure/browser-min-versions.json
       GH_TOKEN: ${{ github.token }}
       GH_REPO: ${{ github.repository }}
     steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
       - name: Check and self-heal sync
         id: check
         env:
@@ -66,8 +72,11 @@ jobs:
           last_success_at() {
             echo "$1" | jq -r '.lastSuccessAt // ""'
           }
+          # コミット済みのフロアを active のフロアと比べる。active が無いときと health を
+          # 読めないときは比べない
           floor_stale() {
-            echo "$1" | jq -r '.floorStale // false'
+            echo "$1" | jq --slurpfile repo "$FLOOR_FILE" \
+              '.minVersions != null and .minVersions != $repo[0].minVersions'
           }
 
           # ISO8601(UTC)を epoch へ。空や解釈不能なら空を返し、呼び出し側で fail-closed。
@@ -185,12 +194,6 @@ jobs:
           permission-contents: write
           permission-pull-requests: write
 
-      - name: Checkout branch
-        if: ${{ steps.check.outputs.floor_stale == 'true' }}
-        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-        with:
-          persist-credentials: false
-
       - name: Setup
         if: ${{ steps.check.outputs.floor_stale == 'true' }}
         uses: ./.github/actions/setup
@@ -207,12 +210,11 @@ jobs:
         run: |
           set -eu
           branch='bot/browser-min-versions'
-          floor='apps/main/src/features/browser-support/infrastructure/browser-min-versions.json'
           title="fix(main): ブラウザ最低版フロアをv${ACTIVE}へ再生成する"
 
           pnpm run -F main generate:browser-min-versions "$ACTIVE"
-          if git diff --quiet -- "$floor" .browserslistrc; then
-            echo "reason=floor stale: main のフロアは v$ACTIVE と一致しているが本番に未反映(デプロイを確認)" >> "$GITHUB_OUTPUT"
+          if git diff --quiet -- "$FLOOR_FILE" .browserslistrc; then
+            echo "reason=floor stale: v$ACTIVE から生成したフロアがコミット済みのものと同じで、api の active のフロアと合わない(生成スクリプトと api の同期の計算を確認)" >> "$GITHUB_OUTPUT"
             exit 0
           fi
 
@@ -227,7 +229,7 @@ jobs:
           # 生成物はフロアの JSON と、同じ版から作る .browserslistrc（Next の CSS / JS の
           # ターゲット）の 2 つ。main は署名必須のため git push ではなく API でコミットする。
           # GitHub App が API で作ったコミットは GitHub が署名する。
-          for file in "$floor" .browserslistrc; do
+          for file in "$FLOOR_FILE" .browserslistrc; do
             remote=$(gh api "repos/$GH_REPO/contents/$file?ref=$branch")
             if [ "$(echo "$remote" | jq -r .content | base64 -d)" != "$(cat "$file")" ]; then
               gh api -X PUT "repos/$GH_REPO/contents/$file" \
