@@ -1323,4 +1323,190 @@ describe('公開 API', () => {
       });
     });
   });
+
+  describe('GET /public/github/contributions', () => {
+    const PATH = '/public/github/contributions';
+    const ENCODED_PATH = '/public/github/contribution%73';
+    const NOW = new Date('2026-07-20T00:00:00.000Z');
+    const fetchMock = vi.fn<typeof fetch>();
+    // ルートは GitHub の結果をモジュールに覚えるので、テストごとに読み込み直して空にする
+    let freshApp: typeof app;
+
+    beforeEach(async () => {
+      vi.useFakeTimers({ toFake: ['Date'] });
+      vi.setSystemTime(NOW);
+      vi.stubEnv('GITHUB_READ_TOKEN', 'github_pat_test_token');
+      vi.stubGlobal('fetch', fetchMock);
+      fetchMock.mockReset();
+      fetchMock.mockImplementation(() =>
+        Promise.resolve(
+          Response.json({
+            data: {
+              user: {
+                contributionsCollection: {
+                  contributionCalendar: {
+                    weeks: [
+                      {
+                        contributionDays: [
+                          { date: '2026-07-19', contributionCount: 5 },
+                          { date: '2026-07-20', contributionCount: 2 },
+                        ],
+                      },
+                    ],
+                  },
+                },
+              },
+            },
+          }),
+        ),
+      );
+      vi.resetModules();
+      ({ default: freshApp } = await import('./index'));
+    });
+
+    afterEach(() => {
+      vi.unstubAllGlobals();
+    });
+
+    describe('正常系', () => {
+      it('k35o の日本時間の今日までの14日分の草を返す', async () => {
+        const res = await freshApp.request(PATH);
+
+        expect(res.status).toBe(200);
+        await expect(res.json()).resolves.toStrictEqual({
+          days: [
+            { date: '2026-07-07', count: 0 },
+            { date: '2026-07-08', count: 0 },
+            { date: '2026-07-09', count: 0 },
+            { date: '2026-07-10', count: 0 },
+            { date: '2026-07-11', count: 0 },
+            { date: '2026-07-12', count: 0 },
+            { date: '2026-07-13', count: 0 },
+            { date: '2026-07-14', count: 0 },
+            { date: '2026-07-15', count: 0 },
+            { date: '2026-07-16', count: 0 },
+            { date: '2026-07-17', count: 0 },
+            { date: '2026-07-18', count: 0 },
+            { date: '2026-07-19', count: 5 },
+            { date: '2026-07-20', count: 2 },
+          ],
+        });
+        expect(
+          (
+            JSON.parse(fetchMock.mock.calls[0]?.[1]?.body as string) as {
+              variables: { userName: string };
+            }
+          ).variables.userName,
+        ).toBe('k35o');
+      });
+
+      it('CDN に3時間置き、GitHub が落ちても古い値を返させる', async () => {
+        const res = await freshApp.request(PATH);
+
+        expect(res.headers.get('cache-control')).toBe(
+          'public, max-age=600, s-maxage=10800, stale-while-revalidate=86400, stale-if-error=86400',
+        );
+        expect(res.headers.get('access-control-allow-origin')).toBe('*');
+      });
+
+      it('書き方の違うパスに続けて GET しても、GitHub を1回しか呼ばない', async () => {
+        await freshApp.request(PATH);
+
+        const res = await freshApp.request(ENCODED_PATH);
+
+        expect(res.status).toBe(200);
+        expect(fetchMock).toHaveBeenCalledOnce();
+      });
+
+      it('GitHub の応答を待つあいだに届いた GET は、同じ呼び出しの結果を使う', async () => {
+        const github = Promise.withResolvers<Response>();
+        fetchMock.mockReturnValueOnce(github.promise);
+
+        const responses = Promise.all([
+          freshApp.request(PATH),
+          freshApp.request(ENCODED_PATH),
+        ]);
+        await new Promise((resolve) => setTimeout(resolve, 0));
+        github.resolve(
+          Response.json({
+            data: {
+              user: {
+                contributionsCollection: {
+                  contributionCalendar: { weeks: [] },
+                },
+              },
+            },
+          }),
+        );
+
+        const statuses = (await responses).map((res) => res.status);
+        expect(statuses).toStrictEqual([200, 200]);
+        expect(fetchMock).toHaveBeenCalledOnce();
+      });
+
+      it.each([
+        ['10分たつまでは、GitHub を呼び直さない', 599_999, 1],
+        ['10分たったら、GitHub を呼び直す', 600_000, 2],
+      ])('%s', async (_, elapsedMs, calls) => {
+        await freshApp.request(PATH);
+        vi.setSystemTime(NOW.getTime() + elapsedMs);
+
+        const res = await freshApp.request(PATH);
+
+        expect(res.status).toBe(200);
+        expect(fetchMock).toHaveBeenCalledTimes(calls);
+      });
+    });
+
+    describe('異常系', () => {
+      it('GitHub が失敗したら 502 を返し、キャッシュさせない', async () => {
+        fetchMock.mockResolvedValue(new Response(null, { status: 401 }));
+
+        const res = await freshApp.request(PATH);
+
+        expect(res.status).toBe(502);
+        expect(res.headers.get('cache-control')).toBe('no-store');
+        await expect(res.json()).resolves.toStrictEqual({
+          ok: false,
+          error: 'upstream_error',
+        });
+      });
+
+      it.each([
+        ['1分たつまでは、GitHub を呼び直さずに 502 を返す', 59_999, 1, 502],
+        ['1分たったら、GitHub を呼び直す', 60_000, 2, 200],
+      ])('GitHub が失敗したあと、%s', async (_, elapsedMs, calls, status) => {
+        fetchMock.mockResolvedValueOnce(new Response(null, { status: 401 }));
+        await freshApp.request(PATH);
+        vi.setSystemTime(NOW.getTime() + elapsedMs);
+
+        const res = await freshApp.request(PATH);
+
+        expect(res.status).toBe(status);
+        expect(fetchMock).toHaveBeenCalledTimes(calls);
+      });
+
+      it('トークンが未設定なら、GitHub を呼ばずに 500 を返し、キャッシュさせない', async () => {
+        vi.stubEnv('GITHUB_READ_TOKEN', '');
+
+        const res = await freshApp.request(PATH);
+
+        expect(res.status).toBe(500);
+        expect(res.headers.get('cache-control')).toBe('no-store');
+        await expect(res.json()).resolves.toStrictEqual({
+          ok: false,
+          error: 'internal_error',
+        });
+        expect(fetchMock).not.toHaveBeenCalled();
+      });
+
+      it('query 付きの GET は、GitHub を呼ばずに 400 を返す', async () => {
+        const res = await freshApp.request(`${PATH}?v=1`);
+
+        expect(res.status).toBe(400);
+        expect(res.headers.get('cache-control')).toBe('no-store');
+        expect(fetchMock).not.toHaveBeenCalled();
+      });
+    });
+  });
 });

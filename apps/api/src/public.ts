@@ -6,6 +6,7 @@ import { HTTPException } from 'hono/http-exception';
 
 import { blogPublicRoutes } from './features/blog/interface/public-routes';
 import { browserSupportPublicRoutes } from './features/browser-support/interface/public-routes';
+import { githubPublicRoutes } from './features/github/interface/public-routes';
 import { inquiryPublicRoutes } from './features/inquiries/interface/public-routes';
 import {
   pushLogPublicRoutes,
@@ -77,6 +78,7 @@ export const publicRoutes = new Hono()
   )
   .route('/blogs', blogPublicRoutes)
   .route('/browser-support', browserSupportPublicRoutes)
+  .route('/github', githubPublicRoutes)
   .route('/inquiries', inquiryPublicRoutes)
   .route('/push-logs', pushLogPublicRoutes)
   .route('/push-subscriptions', pushSubscriptionPublicRoutes)
