@@ -1,31 +1,22 @@
 import { Heading } from '@k8ordo/ui';
-import { range } from '@repo/helpers/array/range';
-import { Suspense } from 'react';
+
+import { getPushLogs } from '@/features/push-notification/interface/queries';
 
 import { NotificationHistory } from './_components/notification-history';
 import { PushSubscribe } from './_components/push-subscribe';
 
 import styles from './page.module.css';
 
-const HistorySkeleton = () => (
-  <ul className={styles.skeleton}>
-    {range(0, 3).map((n) => (
-      <li className={styles.skeletonItem} key={`history-skeleton-${n}`} />
-    ))}
-  </ul>
-);
-
-export default function Page() {
+export default async function Page() {
   const vapidPublicKey = process.env['VAPID_PUBLIC_KEY'] ?? '';
+  const pushLogs = await getPushLogs();
 
   return (
     <div className={styles.root}>
       <PushSubscribe vapidPublicKey={vapidPublicKey} />
       <section className={styles.history}>
         <Heading level="h3">通知履歴</Heading>
-        <Suspense fallback={<HistorySkeleton />}>
-          <NotificationHistory />
-        </Suspense>
+        <NotificationHistory pushLogs={pushLogs} />
       </section>
     </div>
   );

@@ -3,7 +3,7 @@
 import { Card, FormControl, NumberField, Select } from '@k8ordo/ui';
 import type { FC } from 'react';
 
-import { BrowserSupportStatusView } from '@/app/_components/browser-support-status/browser-support-status-view';
+import { BrowserSupportStatusLive } from '@/app/_components/browser-support-status/browser-support-status-live';
 import type { BrowserSupportFeature } from '@/features/browser-support/interface/queries';
 
 import { CORNER_SHAPE_LABELS, CORNER_SHAPES } from '../../_types/corner-shape';
@@ -100,7 +100,10 @@ export const RadiusMaker: FC<{
             />
           </div>
           {shape !== 'round' && (
-            <BrowserSupportStatusView feature={cornerShapeStatus} />
+            <BrowserSupportStatusLive
+              feature={cornerShapeStatus}
+              featureId="corner-shape"
+            />
           )}
         </div>
       </Card>

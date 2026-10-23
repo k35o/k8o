@@ -1,11 +1,16 @@
+'use client';
+
 import { Anchor, Badge, Card } from '@k8ordo/ui';
 import { formatDate } from '@repo/helpers/date/format';
+import type { FC } from 'react';
 
-import { getPushLogs } from '@/features/push-notification/interface/queries';
+import type { PushLogs } from '@/features/push-notification/interface/queries';
+import { useLiveSnapshot } from '@/shared/api/live-snapshot';
+import { publicApi, readOrNull } from '@/shared/api/public-api';
 
 import styles from './notification-history.module.css';
 
-type PushLog = Awaited<ReturnType<typeof getPushLogs>>[number];
+type PushLog = PushLogs['logs'][number];
 
 const KIND_LABEL: Record<PushLog['kind'], string> = {
   readings_updated: 'Readings',
@@ -13,8 +18,13 @@ const KIND_LABEL: Record<PushLog['kind'], string> = {
   browser_support_alert: 'Browser Support警報',
 };
 
-export const NotificationHistory = async () => {
-  const logs = await getPushLogs();
+const loadPushLogs = (): Promise<PushLogs | null> =>
+  readOrNull(publicApi.public['push-logs'].$get());
+
+export const NotificationHistory: FC<{ pushLogs: PushLogs }> = ({
+  pushLogs,
+}) => {
+  const { logs } = useLiveSnapshot('push-logs', loadPushLogs, pushLogs);
 
   if (logs.length === 0) {
     return <p className={styles.empty}>まだ通知の履歴はありません。</p>;
