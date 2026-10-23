@@ -21,6 +21,7 @@ import { Background } from '../src/app/_components/global-layout/background/back
 import { AppProvider } from '../src/app/_providers/app';
 import { mPlus2 } from '../src/app/_styles/font';
 import { handlers } from '../src/mocks/handlers';
+import { resetLiveSnapshots } from '../src/shared/api/live-snapshot';
 
 import '../src/app/_styles/globals.css';
 import './preview.css';
@@ -60,9 +61,10 @@ export default definePreview({
   },
 
   // Story は同じページで続けて実行されるため、前の Story で更新した @k8ordo/state の
-  // 状態が残らないよう Story ごとに初期化する
+  // 状態と、差し替えで読んだ api の値が残らないよう Story ごとに初期化する
   beforeEach: () => {
     resetStateRegistry();
+    resetLiveSnapshots();
   },
 
   loaders: [

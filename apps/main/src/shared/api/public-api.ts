@@ -1,5 +1,6 @@
 import type { PublicApi } from '@repo/api/public';
-import { hc } from 'hono/client';
+import { hc, parseResponse } from 'hono/client';
+import type { ClientResponse } from 'hono/client';
 
 const LOCAL_MAIN_HOST = /(?:^|\.)main\.k8o\.localhost$/u;
 
@@ -79,3 +80,14 @@ const fetchRetryingWhenOffline: typeof fetch = async (input, init) => {
 export const publicApi = hc<PublicApi>(apiOrigin(), {
   fetch: fetchRetryingWhenOffline,
 });
+
+type OkBody<T extends ClientResponse<unknown>> =
+  ReturnType<typeof parseResponse<T>> extends Promise<infer Body>
+    ? Body
+    : never;
+
+// 日々の表示の差し替えは、読めなければビルド時の値のまま描くだけなので、届かなかったのも
+// 2xx 以外も null にそろえる
+export const readOrNull = <T extends ClientResponse<unknown>>(
+  request: Promise<T>,
+): Promise<OkBody<T> | null> => parseResponse(request).catch(() => null);
