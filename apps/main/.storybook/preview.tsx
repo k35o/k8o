@@ -26,7 +26,6 @@ import { resetLiveSnapshots } from '../src/shared/api/live-snapshot';
 import '../src/app/_styles/globals.css';
 import './preview.css';
 
-sb.mock(import('./../src/app/blog/_components/link-card/metadata.ts'));
 sb.mock(import('./../src/features/blog/interface/queries.ts'));
 sb.mock(import('@repo/database'));
 

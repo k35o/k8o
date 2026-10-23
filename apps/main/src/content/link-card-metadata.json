@@ -1,0 +1,139 @@
+{
+  "http://k8o.me/blog/react19-usereducer-ts-type-inference": {},
+  "https://2025.tskaigi.org/talks/k35o": {
+    "title": "React19で変化したuseReducerの型から学ぶTypeScriptの型推論 | TSKaigi 2025",
+    "description": "TSKaigi 2025 のスピーカー、トーク情報です。",
+    "imageUrl": "https://2025.tskaigi.org/ogp/talks/k35o.png"
+  },
+  "https://docs.google.com/presentation/d/1c7fYqn7-v3hnbKtmwXHbvwuCs6cNq_ThLKVDZ7rvbA0/preview?slide=id.g260298bad6d_0_77": {
+    "title": "2025-05-23 SignalとObservable ― 新たなデータモデルを解きほぐす (TSKaigi 2025)",
+    "description": "SignalとObservable ― 新たなデータモデルを解きほぐす TSKaigi 2025 lacolaco @laco2net",
+    "imageUrl": "https://lh7-us.googleusercontent.com/docs/AHkbwyIMA6jYOY-2hUItza9chLfMtBRHXrq0Rk_OxNqzoZaVunvWPB31SEFmb9QUKyBKjBVG3D4kSHNERMa1FXKUy5mhOLxhBYbu_CWpE1HimrMjrp4tJAw=w1200-h630-p"
+  },
+  "https://drafts.csswg.org/css-color-5/#contrast-color": {
+    "title": "CSS Color Module Level 5"
+  },
+  "https://drafts.csswg.org/css-color-6/#funcdef-contrast-color": {
+    "title": "CSS Color Module Level 6"
+  },
+  "https://drafts.csswg.org/css-inline-3/#baseline-shift-property": {
+    "title": "CSS Inline Layout Module Level 3"
+  },
+  "https://github.blog/changelog/2025-07-31-npm-trusted-publishing-with-oidc-is-generally-available/": {
+    "title": "npm trusted publishing with OIDC is generally available - GitHub Changelog",
+    "description": "As of today, npm trusted publishing with OpenID Connect (OIDC) is now generally available. This feature enables you to securely publish npm packages directly from CI/CD workflows using OpenID Connect&hellip;",
+    "imageUrl": "https://github.blog/wp-content/themes/github-2021-child/dist/img/social-v3-new-releases.jpg"
+  },
+  "https://github.com/DefinitelyTyped/DefinitelyTyped/discussions/63607": {
+    "title": "Improve [react] useReducer type inference · DefinitelyTyped DefinitelyTyped · Discussion #63607",
+    "description": "The problem useReducer does not infer the state parameter from the initial state passed in: const [state, dispatch] = useReducer( (state, action: Action) => { // ... }, 0, ); This should infer stat...",
+    "imageUrl": "https://opengraph.githubassets.com/a8525ac24d575ff95002615456073410ec31a4255aa8af91f7b29e937bec711b/DefinitelyTyped/DefinitelyTyped/discussions/63607"
+  },
+  "https://github.com/facebook/react/pull/15902": {
+    "title": "Add SuspenseList Component by sebmarkbage · Pull Request #15902 · react/react",
+    "description": "This component lets you coordinate the loading sequence of nested Suspense boundaries. How this happens is defined by the revealOrder property. By default, it behaves like a noop so the nested boun...",
+    "imageUrl": "https://opengraph.githubassets.com/da67f6a7ffb7421ea70bc5860c5188dd6237c15c8bf0b6090e6ec7a99e77f0da/react/react/pull/15902"
+  },
+  "https://github.com/facebook/react/pull/33424": {
+    "title": "Replace Implicit Options on SuspenseList with Explicit Options by sebmarkbage · Pull Request #33424 · react/react",
+    "description": "We want to change the defaults for revealOrder and tail on SuspenseList. This is an intermediate step to allow experimental users to upgrade.\nTo explicitly specify these options I added revealOrder...",
+    "imageUrl": "https://opengraph.githubassets.com/b0ca00ffdab9862591f34a88477a93608c28fee4f820083d52ea10bdca303e8c/react/react/pull/33424"
+  },
+  "https://github.com/k35o/pnpm-release-action": {
+    "title": "GitHub - k35o/pnpm-release-action: CI layer for pnpm built-in versioning: release PRs, tags, and GitHub Releases",
+    "description": "CI layer for pnpm built-in versioning: release PRs, tags, and GitHub Releases - k35o/pnpm-release-action",
+    "imageUrl": "https://opengraph.githubassets.com/43c4523427fec294a3cfa01cb5fdc2931fe5948899ee4bfaaca8d1486f3df44d/k35o/pnpm-release-action"
+  },
+  "https://github.com/k35o/storybook-framework-hono-vite": {
+    "title": "GitHub - k35o/storybook-framework-hono-vite",
+    "description": "Contribute to k35o/storybook-framework-hono-vite development by creating an account on GitHub.",
+    "imageUrl": "https://opengraph.githubassets.com/b8711b6e05b73467faae53e4309d79354236027297df363de0376d37c6e6287e/k35o/storybook-framework-hono-vite"
+  },
+  "https://github.com/pnpm/rfcs/blob/main/text/0006-monorepo-versioning.md": {
+    "title": "rfcs/text/0006-monorepo-versioning.md at main · pnpm/rfcs",
+    "description": "Contribute to pnpm/rfcs development by creating an account on GitHub.",
+    "imageUrl": "https://opengraph.githubassets.com/4450e2fbb05dceeec798ba6a0ec6d92fd7d650d10be67e95943aeec7ec7f218d/pnpm/rfcs"
+  },
+  "https://github.com/storybookjs/storybook/releases/tag/v9.1.0": {
+    "title": "Release v9.1.0 · storybookjs/storybook",
+    "description": "9.1.0\nStorybook 9.1 is packed with new features and improvements to enhance accessibility, streamline testing, and make your development workflow even smoother!\n🚀 Improved upgrade command with mono...",
+    "imageUrl": "https://opengraph.githubassets.com/03326eabcbeb15d9a7df8d56fb58ac28bc8272ec57d7bc1659cbc220a545e20b/storybookjs/storybook/releases/tag/v9.1.0"
+  },
+  "https://github.com/tc39/proposal-intl-duration-format": {
+    "title": "GitHub - tc39/proposal-intl-duration-format",
+    "description": "Contribute to tc39/proposal-intl-duration-format development by creating an account on GitHub.",
+    "imageUrl": "https://opengraph.githubassets.com/02ade641db95722a72ab1d802af65248ba4266644c7dce0ce1d7477f197c0a68/tc39/proposal-intl-duration-format"
+  },
+  "https://github.com/tc39/proposal-intl-locale-info": {
+    "title": "GitHub - tc39/proposal-intl-locale-info: An API to expose information of locale, such as week data ( first day of a week, weekend start, weekend end), hour cycle, measurement system, commonly used calendar, etc.",
+    "description": "An API to expose information of locale, such as week data ( first day of a week, weekend start, weekend end), hour cycle, measurement system, commonly used calendar, etc. - tc39/proposal-intl-local...",
+    "imageUrl": "https://opengraph.githubassets.com/9f7404dd8d54b8e694c36483c78f160901a78eee55b06300a06298cb15275a84/tc39/proposal-intl-locale-info"
+  },
+  "https://github.com/tc39/proposal-iterator-helpers": {
+    "title": "GitHub - tc39/proposal-iterator-helpers: Methods for working with iterators in ECMAScript",
+    "description": "Methods for working with iterators in ECMAScript. Contribute to tc39/proposal-iterator-helpers development by creating an account on GitHub.",
+    "imageUrl": "https://opengraph.githubassets.com/cd8eb7b1abf28e9ee6daffc77aa00fc39e355df58d0a58a8119bf9ea20a1d2ca/tc39/proposal-iterator-helpers"
+  },
+  "https://github.com/tc39/proposal-iterator-sequencing": {
+    "title": "GitHub - tc39/proposal-iterator-sequencing: a TC39 proposal to create iterators by sequencing existing iterators",
+    "description": "a TC39 proposal to create iterators by sequencing existing iterators - tc39/proposal-iterator-sequencing",
+    "imageUrl": "https://opengraph.githubassets.com/f1c7e93de6b23131e12fcc060217d2df05a3a5eddeb38c1269b842b1eddee82c/tc39/proposal-iterator-sequencing"
+  },
+  "https://github.com/tc39/proposal-math-sum/tree/main/polyfill": {
+    "title": "proposal-math-sum/polyfill at main · tc39/proposal-math-sum",
+    "description": "TC39 proposal to add a summation method to JavaScript - tc39/proposal-math-sum",
+    "imageUrl": "https://opengraph.githubassets.com/a7caecd5fb3f513bd13ae6a5c4e9c32e52944bcf4fbbc99139956668043a07b5/tc39/proposal-math-sum"
+  },
+  "https://github.com/tc39/proposal-promise-try": {
+    "title": "GitHub - tc39/proposal-promise-try: ECMAScript Proposal, specs, and reference implementation for Promise.try",
+    "description": "ECMAScript Proposal, specs, and reference implementation for Promise.try - tc39/proposal-promise-try",
+    "imageUrl": "https://opengraph.githubassets.com/617c0d0b0f2d72ada814864c08861dff2654401ae04d5f08c7f900098db83886/tc39/proposal-promise-try"
+  },
+  "https://github.com/w3c/csswg-drafts/issues/10092": {
+    "title": "[css-images-4] Allow gradients with a single color stop and 0-1 positions · Issue #10092 · w3c/csswg-drafts",
+    "description": "This came up in #10077 but I’m opening a new issue since I proposed a different path but then the change qualifies as substantive. So currently, CSS Images 4 has prose and grammar that disallows si...",
+    "imageUrl": "https://opengraph.githubassets.com/a5a4c24b297317a063bc0f4a8052dec7ebbbdc78b94da00f3b17a3f8fd368d0a/w3c/csswg-drafts/issues/10092"
+  },
+  "https://html.spec.whatwg.org/multipage/interaction.html#attr-contenteditable": {
+    "title": "HTML Standard"
+  },
+  "https://pnpm.io/versioning": {
+    "title": "Release management | pnpm",
+    "description": "Added in: v11.13.0",
+    "imageUrl": "https://pnpm.io/img/ogimage.png"
+  },
+  "https://speakerdeck.com/berlysia/typescript-native-porting-observation-tskaigi-2025": {
+    "title": "TypeScriptネイティブ移植観察レポート TSKaigi 2025",
+    "description": "https://2025.tskaigi.org/talks/berlysia\r\n\r\n## 2025-03-11 ネイティブ移植に関する発表と周辺出演\r\nhttps://devblogs.microsoft.com/typescript/typescript-native-port/\r\nhttps://&hellip;",
+    "imageUrl": "https://files.speakerdeck.com/presentations/1bd58d5cf1454b879024e003c0585f5d/slide_0.jpg?35198687"
+  },
+  "https://speakerdeck.com/noritakaikeda/ji-neng-de-ning-ji-nogai-nian-woyong-ite-fu-shu-roru-lei-si-noji-neng-woduo-kuhan-musisutemuno-hurontoendonokonponentowoshi-qie-nifen-ge-suru": {
+    "title": "機能的凝集の概念を用いて 複数ロール、類似の機能を多く含むシステムの フロントエンドのコンポーネントを適切に分割する",
+    "description": "TSKaigi2025の登壇資料です",
+    "imageUrl": "https://files.speakerdeck.com/presentations/f581e9637f424bbbadb772a283a196e8/slide_0.jpg?35203636"
+  },
+  "https://storybook.js.org/docs/sharing/storybook-composition": {
+    "title": "Storybook: Frontend workshop for UI development",
+    "description": "Storybook is a frontend workshop for building UI components and pages in isolation. Thousands of teams use it for UI development, testing, and documentation. It's open source and free.",
+    "imageUrl": "https://storybook.js.org/opengraph-image.jpg?841db310ba5a3a1e"
+  },
+  "https://talks.antfu.me/2025/tskaigi/1": {
+    "title": "The New Powerful ESLint Config with Type Safety - Slidev"
+  },
+  "https://w3c.github.io/clipboard-apis/#dom-clipboarditem-supports": {
+    "title": "Clipboard API and events"
+  },
+  "https://wicg.github.io/entries-api/#html-forms": {
+    "title": "File and Directory Entries API"
+  },
+  "https://www.aft.or.jp/uc/": {
+    "title": "色彩検定UC（色のユニバーサルデザイン）級とは｜色彩検定協会/カラーコーディネーター",
+    "description": "色の見え方は、生まれ持った「色覚特性」や将来誰もが直面する「加齢」により、個人差があります。本サイトでは、誰もに配慮できるやさしい社会のために必要な「色のユニバーサルデザイン」について、わかりやすくご紹介します。",
+    "imageUrl": "https://www.aft.or.jp/uc/assets/img/ogp.png"
+  },
+  "https://www.chromatic.com/docs/mcp/": {
+    "title": "MCP • Chromatic docs",
+    "description": "Learn how to deploy a Storybook MCP server using Chromatic.",
+    "imageUrl": "https://www.chromatic.com/docs/assets/og-docs.png"
+  }
+}

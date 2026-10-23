@@ -8,6 +8,7 @@ import { remark } from 'remark';
 import remarkMdx from 'remark-mdx';
 import { describe, expect, it } from 'vitest';
 
+import { collectLinkCardHrefs } from './link-card-urls';
 import { blogPath } from './path';
 
 // macOS の .DS_Store のような隠しファイルだけを外す。直下に置いた foo.mdx のような誤りは、
@@ -41,6 +42,14 @@ const hasMath = (node: Nodes): boolean =>
 
 const mathSlugs = slugs.filter((slug) => hasMath(parse(slug)));
 
+const linkCardMetadataHrefs = new Set(
+  Object.keys(
+    JSON.parse(
+      readFileSync(join(cwd(), 'src/content/link-card-metadata.json'), 'utf8'),
+    ),
+  ),
+);
+
 describe('src/content/blog の記事', () => {
   describe('正常系', () => {
     it('記事がある', () => {
@@ -61,6 +70,17 @@ describe('src/content/blog の記事', () => {
       '%s は数式を使うので @repo/mdx-preset/katex.css を import する',
       (slug) => {
         expect(esmImportSources(slug)).toContain('@repo/mdx-preset/katex.css');
+      },
+    );
+
+    it.each(slugs)(
+      '%s の LinkCard の href は、すべて src/content/link-card-metadata.json にある（無ければ generate:link-card-metadata を流す）',
+      (slug) => {
+        expect(
+          collectLinkCardHrefs(readFileSync(blogPath(slug), 'utf8')).filter(
+            (href) => !linkCardMetadataHrefs.has(href),
+          ),
+        ).toStrictEqual([]);
       },
     );
   });
