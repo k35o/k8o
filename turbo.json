@@ -4,7 +4,6 @@
   "globalEnv": ["NODE_ENV", "PORTLESS_URL", "VERCEL_ENV"],
   "globalPassThroughEnv": [
     "CRON_SECRET",
-    "GITHUB_TOKEN",
     "MAIN_REVALIDATE_URL",
     "REVALIDATE_SECRET"
   ],

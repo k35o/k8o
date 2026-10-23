@@ -39,7 +39,6 @@ Next.jsの機能やAPIは `apps/main/node_modules/next/dist/docs/` のバンド�
 
 Next.js の `cacheLife` は `features/*/interface` に置く。`app` のUIコンポーネントや `application` 層には原則として置かない。
 
-- `cacheLife('minutes')` - GitHub のコントリビューションなど、短時間で鮮度が必要な読み取り
 - `cacheLife('days')` - リンクカードの OGP メタデータ
 - `cacheLife('max')` - browser-support の active データセットと最近の更新、reading-list の記事・ソース一覧、Push 通知の履歴（いずれもブラウザで api の値に差し替える）、MDX metadata、静的な site metadata、`db-content` タグで再検証する talks / tags / blogs / slides、ビルド時に近い安定データ
 
