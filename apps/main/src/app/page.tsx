@@ -2,6 +2,8 @@ import { Heading, Separator } from '@k8ordo/ui';
 import type { Metadata } from 'next';
 import Image from 'next/image';
 
+import { getBlogContents } from '@/features/blog/interface/queries';
+
 import { EmailTooltip } from './_components/email-tooltip';
 import { HomeJsonLd } from './_components/json-ld';
 import { RecentBlogs } from './_components/recent-blogs';
@@ -17,7 +19,9 @@ export const metadata = {
   },
 } satisfies Metadata;
 
-export default function Home() {
+export default async function Home() {
+  const blogs = await getBlogContents();
+
   return (
     <div className={styles.root}>
       <HomeJsonLd />
@@ -51,7 +55,7 @@ export default function Home() {
             <Heading level="h2">Activity</Heading>
             <p className={styles.activityLead}>最近の発信の記録。</p>
           </div>
-          <RecentBlogs />
+          <RecentBlogs blogs={blogs.slice(0, 3)} />
         </div>
 
         <SiteEntrySection kind="reading" />
