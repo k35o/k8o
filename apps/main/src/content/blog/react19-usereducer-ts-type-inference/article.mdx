@@ -6,8 +6,8 @@ updatedAt: 2025-05-24 14:00:00.000000+00
 ---
 
 import '@repo/mdx-preset/katex.css';
-import inferencePattern from './_images/inference-pattern.png';
-import react18vsreact19 from './_images/react18vsreact19.png';
+import inferencePattern from './_images/inference-pattern.avif';
+import react18vsreact19 from './_images/react18vsreact19.avif';
 
 # React19で変化したuseReducerの型から学ぶTypeScriptの型推論
 
@@ -470,6 +470,8 @@ React18では、`reducer`関数という主体となる型があり、そこか�
 <Image
   src={react18vsreact19}
   alt="React18とReact19のuseReducerの型の違いを図示したもの"
+  width={1794}
+  height={628}
 />
 
 これを一般化して、以下のように定義します。
@@ -480,6 +482,8 @@ React18では、`reducer`関数という主体となる型があり、そこか�
 <Image
   src={inferencePattern}
   alt="React18式とReact19式の型推論法の違いを図示したもの"
+  width={1920}
+  height={740}
 />
 
 React19式は型の定義が簡潔で可読性も高くなりやすく利用しやすい使いやすい型になっていますが、React18式は値の主従関係を型に持ち込むような複雑な定義となります。

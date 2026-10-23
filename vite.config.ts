@@ -65,6 +65,11 @@ export default defineConfig({
           ],
         },
       },
+      {
+        // main は画像を AVIF に変換してコミットし、Vercel の画像最適化に頼らず素の img で描く
+        files: ['apps/main/**'],
+        rules: { '@next/next/no-img-element': 'off' },
+      },
       { files: [...TEST_GLOBS], ...test },
     ],
   },

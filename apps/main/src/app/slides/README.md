@@ -95,7 +95,7 @@ import {
 |---|---|
 | `<SlideDeckShell slug title>` | デッキの最上位ラッパー (必須)。`slug` と `title` を渡す |
 | `<Cover>` | 表紙レイアウト。中央配置 + 大見出し用 |
-| `<Image src alt caption?>` | 静的インポート画像。`StaticImageData` を `src` に渡す |
+| `<Image src alt width height caption?>` | 静的インポートした画像。`src` に import の値、`width`・`height` に画像の寸法を渡す |
 | `<Notes>` | 発表者ノート。観覧側には表示されない |
 
 ## MDX 記法
@@ -108,7 +108,7 @@ import {
 | `**bold**` | (slides の `<strong>` は primary teal) |
 | `> 引用` | blockquote (primary 縦線) |
 
-画像は markdown `![]()` ではなく `<Image src={...} />` を使う。リモート URL は受け付けない (`StaticImageData` のみ)。
+画像は markdown `![]()` ではなく `<Image src={...} width={...} height={...} />` を使う。リモート URL は受け付けない (静的インポートのみ)。画像は `pnpm run -F main optimize:image` で AVIF にしてから import する。
 
 ## キーボード操作
 

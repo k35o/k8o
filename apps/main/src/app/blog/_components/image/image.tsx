@@ -1,20 +1,39 @@
-import NextImage from 'next/image';
-import type { ComponentProps, FC } from 'react';
+import type { FC } from 'react';
 
 import styles from './image.module.css';
 
-type Props = Omit<ComponentProps<typeof NextImage>, 'className'>;
+type Props = {
+  src: { src: string };
+  alt: string;
+  width: number;
+  height: number;
+  loading?: 'eager' | 'lazy';
+};
 
-export const Image: FC<Props> = (props) => (
+export const Image: FC<Props> = ({
+  src,
+  alt,
+  width,
+  height,
+  loading = 'lazy',
+}) => (
   <figure className={styles.figure}>
-    <NextImage className={styles.image} {...props} />
-    {props.alt !== '' && (
+    <img
+      alt={alt}
+      className={styles.image}
+      decoding="async"
+      height={height}
+      loading={loading}
+      src={src.src}
+      width={width}
+    />
+    {alt !== '' && (
       <figcaption
         // alt と同じ文を読み上げで二重にしない
         aria-hidden
         className={styles.caption}
       >
-        {props.alt}
+        {alt}
       </figcaption>
     )}
   </figure>

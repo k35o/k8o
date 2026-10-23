@@ -6,8 +6,8 @@ updatedAt: 2024-09-28
 ---
 
 import '@repo/mdx-preset/katex.css';
-import luminanceVsLightness from './_images/luminance-vs-lightness.png';
-import powByTwoPointFour from './_images/pow-by-two-point-four.png';
+import luminanceVsLightness from './_images/luminance-vs-lightness.avif';
+import powByTwoPointFour from './_images/pow-by-two-point-four.avif';
 
 # 色のコントラスト比は重要だけどどうやって求めるんだっけ？
 
@@ -52,6 +52,8 @@ $L_1$は$L_2$よりも相対的に明るい色となるようにします。輝�
 <Image
   src={luminanceVsLightness}
   alt="輝度に対しての物理的な明るさと人間が感じる明るさを図示したグラフ"
+  width={1920}
+  height={1223}
 />
 [^2]
 
@@ -60,6 +62,8 @@ $L_1$は$L_2$よりも相対的に明るい色となるようにします。輝�
 <Image
   src={powByTwoPointFour}
   alt="y=xの2.4乗をxの範囲が0から1で表記したグラフ"
+  width={1392}
+  height={1372}
 />
 また、$0.04045$以下ではその寄与が過度になってしまうので単純に$12.92$で割るだけの式になっています。
 

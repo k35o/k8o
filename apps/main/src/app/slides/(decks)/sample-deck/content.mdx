@@ -11,7 +11,7 @@ import {
   Notes,
   SlideDeckShell,
 } from '@/app/slides/_components/slide-mdx';
-import k8oImage from '@/app/_images/k8o.jpg';
+import k8oImage from '@/app/_images/k8o.avif';
 
 <SlideDeckShell slug="sample-deck" title="サンプルスライド">
 
@@ -69,9 +69,9 @@ console.log(greet('k8o'));
 
 ## 画像の埋め込み
 
-<Image src={k8oImage} alt="k8oのアイコン" caption="ローカルの静的インポート画像を埋め込み" />
+<Image src={k8oImage} alt="k8oのアイコン" width={512} height={512} caption="ローカルの静的インポート画像を埋め込み" />
 
-`import` した `StaticImageData` を `<Image src={...} />` に渡せば、Next.js `Image` 経由で最適化される。
+`import` した画像を `<Image src={...} width={...} height={...} />` に渡すと、素の `img` で描かれる。
 
 ---
 

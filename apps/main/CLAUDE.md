@@ -9,6 +9,7 @@
   - UIコンポーネントは `app/**/_components` に置く。route専用ならroute配下、複数routeで使うなら `app/_components`
   - route localな状態・型・純粋utilityは `app/**/_state`, `app/**/_types`, `app/**/_utils` に置いてよい
   - `_api` は作らない。Next.js entryからは `features/*/interface` を読む
+  - 画像は next/image（Vercel の画像最適化）を使わず、素の img に width と height を書いて描く。リポジトリに置く画像は `pnpm run -F main optimize:image <元の画像> <出力.avif> [--max-width <px>]` で AVIF にしてコミットし、静的 import の値の `src` を渡す
 - **features/** - 機能単位の非UIロジック
   - `features/<feature>/interface/` - Next.jsとの境界。`app` が読む関数と、`'use cache'`・`cacheLife` を置く
   - `features/<feature>/application/` - ユースケース・整形・機能固有の組み立て。小さい読み取り処理はここに置いてよい
@@ -19,6 +20,7 @@
 - **content/** - ブログ記事の中身。`content/blog/<slug>/` に `article.mdx` と、その記事だけが使う `_images/`・`_components/`・`article.module.css` を置く
   - `app/blog/[slug]/page.tsx` が公開済みの記事を `generateStaticParams` で挙げ、MDX を動的 import して描く。OG は `app/blog/[slug]/og.png/route.ts`。記事ごとの `layout.tsx`・`opengraph-image.tsx` は作らない
   - 記事が使う部品（`BrowserSupportStatus`・`PlaygroundEmbed`・`Playground`・`LinkCard`・`Image`・`FloatImage`・`Alert`）は `app/blog/_components/blog-mdx-components` の `blogMdxComponents` で渡す。MDX は `@/app/...` を import しない（`features/blog/application/article-files.test.ts` が確かめる）。相対の import（`./_images`・`./_components`・`./article.module.css`）と、パッケージの import は使ってよい
+  - 記事の画像は AVIF にして `_images/` に置き、`Image`・`FloatImage` に width と height を書く。width と height が画像の縦横比と合うことは `article-files.test.ts` が確かめる
   - 見出し・段落・リンク・コードなどの部品は `app/_components/mdx-base`。ルートの `mdx-components.tsx` はこれだけを返し、スライドの MDX も使う
   - 記事の `LinkCard` が描く OGP は `content/link-card-metadata.json` にコミットする。`pnpm run -F main generate:link-card-metadata` が記事の LinkCard の URL を集め、JSON に無い URL と、値が `{}`（OGP が取れなかった）の URL を取って書く（`--refresh` で全件を取り直す）。記事に LinkCard を足したら流す（抜けは `article-files.test.ts` が落とす）
 - **shared/** - apps/main 内で横断利用する非UI共通処理（MDX、OGP、browser API、api クライアント、site metadataなど）。UIコンポーネントや `cn` は置かない

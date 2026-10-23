@@ -1,13 +1,12 @@
 import { Heading, Separator } from '@k8ordo/ui';
 import type { Metadata } from 'next';
-import Image from 'next/image';
 
 import { EmailTooltip } from './_components/email-tooltip';
 import { HomeJsonLd } from './_components/json-ld';
 import { RecentBlogs } from './_components/recent-blogs';
 import { SiteEntrySection } from './_components/site-entry-section';
 import { SocialIcons } from './_components/social-icons';
-import k8o from './_images/k8o.jpg';
+import k8o from './_images/k8o.avif';
 
 import styles from './page.module.css';
 
@@ -23,11 +22,12 @@ export default function Home() {
       <HomeJsonLd />
       <div className={styles.sections}>
         <header className={styles.header}>
-          <Image
+          <img
             alt="k8oのアイコン"
             className={styles.avatar}
+            fetchPriority="high"
             height={128}
-            src={k8o}
+            src={k8o.src}
             width={128}
           />
           <div className={styles.identity}>
