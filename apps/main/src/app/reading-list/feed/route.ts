@@ -1,8 +1,8 @@
+import { buildRssFeed } from '@repo/helpers/feed/build-rss';
 import { cacheLife } from 'next/cache';
 import { NextResponse } from 'next/server';
 
 import { getArticles } from '@/features/reading-list/interface/queries';
-import { buildRssFeed } from '@/shared/feed/build-rss';
 
 import { metadata } from '../layout';
 

@@ -1,5 +1,5 @@
 import { db } from '@repo/database';
-import { and, desc, eq, lt, notInArray } from '@repo/database/orm';
+import { and, desc, eq, gte, lt, notInArray } from '@repo/database/orm';
 import type {
   BrowserSupportChangeStatus,
   BrowserSupportSyncResult,
@@ -68,6 +68,31 @@ export const findActiveDataset =
       dataset,
     };
   };
+
+export type BrowserSupportFeatureChange = FeatureChangeInput & {
+  upstreamVersion: string;
+  changedAt: string;
+};
+
+export const findRecentFeatureChanges = (
+  since: string,
+  limit: number,
+): Promise<BrowserSupportFeatureChange[]> => {
+  const changes = db._schema.browserSupportFeatureChanges;
+  return db
+    .select({
+      featureId: changes.featureId,
+      featureName: changes.featureName,
+      status: changes.status,
+      previousStatus: changes.previousStatus,
+      upstreamVersion: changes.upstreamVersion,
+      changedAt: changes.changedAt,
+    })
+    .from(changes)
+    .where(gte(changes.changedAt, since))
+    .orderBy(desc(changes.changedAt), desc(changes.id))
+    .limit(limit);
+};
 
 // 世代の置換。libSQL HTTP ドライバの interactive transaction は往復ごとにロックを
 // 保持しタイムアウトしやすいため、単一リクエストの db.batch(暗黙トランザクション)で

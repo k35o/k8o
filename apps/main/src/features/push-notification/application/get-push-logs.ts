@@ -1,5 +1,5 @@
+import { PUSH_LOG_HISTORY_LIMIT } from '@repo/helpers/push-log/history';
+
 import { findPushLogs } from '../infrastructure/push-log-repository';
 
-const HISTORY_LIMIT = 50;
-
-export const getPushLogs = () => findPushLogs(HISTORY_LIMIT);
+export const getPushLogs = () => findPushLogs(PUSH_LOG_HISTORY_LIMIT);

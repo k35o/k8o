@@ -1,12 +1,14 @@
+import type { BaselineFeature } from '@repo/helpers/baseline/model';
+import {
+  RECENT_CHANGES_LIMIT,
+  RECENT_CHANGES_WINDOW_MS,
+  selectFeatureStatus,
+  selectFeedFeatures,
+} from '@repo/helpers/baseline/select';
 import type { BrowserMinVersions } from '@repo/helpers/browser/detect-browser';
 import { BROWSER_SUPPORT_CACHE_TAG } from '@repo/helpers/cache/main-cache-tags';
 import { cacheLife, cacheTag } from 'next/cache';
 
-import {
-  selectFeatureStatus,
-  selectFeedFeatures,
-} from '@/features/browser-support/application/features';
-import type { BrowserSupportFeature } from '@/features/browser-support/application/features';
 import { getBrowserMinVersions as _getBrowserMinVersions } from '@/features/browser-support/application/min-versions';
 import { findRecentFeatureChanges } from '@/features/browser-support/infrastructure/browser-support-change-repository';
 import type { BrowserSupportFeatureChange } from '@/features/browser-support/infrastructure/browser-support-change-repository';
@@ -32,7 +34,7 @@ export type BrowserSupportMeta = {
 };
 
 export async function getBrowserSupportFeatures(): Promise<{
-  features: BrowserSupportFeature[];
+  features: BaselineFeature[];
   nowMs: number;
   // データ同期前(空DB)は null。呼び出し側は空状態を表示する。
   meta: BrowserSupportMeta | null;
@@ -58,12 +60,6 @@ export async function getBrowserSupportFeatures(): Promise<{
   };
 }
 
-// 「最近の更新」の表示窓。同期時に記録した changedAt 基準なので、上流の baseline
-// 日付のラグに左右されず「このサイトが取り込んだ時点」からの新しさで絞れる。
-const RECENT_CHANGES_WINDOW_MS = 30 * 24 * 60 * 60 * 1000;
-// 上流の一括再計算などで異常に膨らんだ場合の表示上限
-const RECENT_CHANGES_LIMIT = 100;
-
 export async function getRecentBrowserSupportChanges(): Promise<
   BrowserSupportFeatureChange[]
 > {
@@ -78,7 +74,7 @@ export async function getRecentBrowserSupportChanges(): Promise<
 
 export async function getFeatureStatus(
   featureId: string,
-): Promise<BrowserSupportFeature | null> {
+): Promise<BaselineFeature | null> {
   const active = await getActiveDataset();
   if (active === null) {
     return null;
@@ -93,8 +89,8 @@ export function getBrowserMinVersions(): BrowserMinVersions {
 }
 
 export type {
-  BrowserAvailability,
-  BrowserSupportFeature,
-  SupportStatus,
-} from '@/features/browser-support/application/features';
+  BaselineBrowserSupport as BrowserAvailability,
+  BaselineFeature as BrowserSupportFeature,
+  BaselineSupportStatus as SupportStatus,
+} from '@repo/helpers/baseline/model';
 export type { BrowserSupportFeatureChange } from '@/features/browser-support/infrastructure/browser-support-change-repository';
