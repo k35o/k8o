@@ -10,7 +10,7 @@
   - route localな状態・型・純粋utilityは `app/**/_state`, `app/**/_types`, `app/**/_utils` に置いてよい
   - `_api` は作らない。Next.js entryからは `features/*/interface` を読む
 - **features/** - 機能単位の非UIロジック
-  - `features/<feature>/interface/` - Next.jsとの境界。`app` が読む関数と、`'use cache'`・`cacheLife`・`cacheTag` を置く
+  - `features/<feature>/interface/` - Next.jsとの境界。`app` が読む関数と、`'use cache'`・`cacheLife` を置く
   - `features/<feature>/application/` - ユースケース・整形・機能固有の組み立て。小さい読み取り処理はここに置いてよい
   - `features/<feature>/infrastructure/` - DB、外部API、ファイルシステムなど外部接続の詳細。処理が太くなったら application からここへ切り出す
   - UIコンポーネントは置かない。UIは必ず `app/**/_components`
@@ -20,7 +20,7 @@
   - `app/blog/[slug]/page.tsx` が公開済みの記事を `generateStaticParams` で挙げ、MDX を動的 import して描く。OG は `app/blog/[slug]/og.png/route.ts`。記事ごとの `layout.tsx`・`opengraph-image.tsx` は作らない
   - 記事が使う部品（`BrowserSupportStatus`・`PlaygroundEmbed`・`Playground`・`LinkCard`・`Image`・`FloatImage`・`Alert`）は `app/blog/_components/blog-mdx-components` の `blogMdxComponents` で渡す。MDX は `@/app/...` を import しない（`features/blog/application/article-files.test.ts` が確かめる）。相対の import（`./_images`・`./_components`・`./article.module.css`）と、パッケージの import は使ってよい
   - 見出し・段落・リンク・コードなどの部品は `app/_components/mdx-base`。ルートの `mdx-components.tsx` はこれだけを返し、スライドの MDX も使う
-- **shared/** - apps/main 内で横断利用する非UI共通処理（認証、MDX、OGP、browser API、api クライアント、site metadataなど）。UIコンポーネントや `cn` は置かない
+- **shared/** - apps/main 内で横断利用する非UI共通処理（MDX、OGP、browser API、api クライアント、site metadataなど）。UIコンポーネントや `cn` は置かない
 - **mocks/** - Storybook の MSW ハンドラ（`handlers.ts`）と、features のテストで `next/cache` を差し替えるモック（`next-cache.ts`）。api への GET は既定で 503 を返すので、差し替える表示はビルド時の値のまま描かれる。差し替えを確かめる story だけが `beforeEach` の `msw.use` で応答を決める
 
 依存方向:
@@ -40,11 +40,9 @@ Next.jsの機能やAPIは `apps/main/node_modules/next/dist/docs/` のバンド�
 Next.js の `cacheLife` は `features/*/interface` に置く。`app` のUIコンポーネントや `application` 層には原則として置かない。
 
 - `cacheLife('days')` - リンクカードの OGP メタデータ
-- `cacheLife('max')` - browser-support の active データセットと最近の更新、reading-list の記事・ソース一覧、Push 通知の履歴（いずれもブラウザで api の値に差し替える）、MDX metadata、静的な site metadata、`db-content` タグで再検証する talks / tags / blogs / slides、ビルド時に近い安定データ
+- `cacheLife('max')` - DB の talks / tags / blogs / slides、browser-support の active データセットと最近の更新、reading-list の記事・ソース一覧、Push 通知の履歴、MDX metadata、静的な site metadata、ビルド時に近い安定データ
 
-`/api/revalidate` の Route Handler は、受け取ったタグを `revalidateTag` で再検証する。
-
-DB 由来のキャッシュ（talks / tags / blogs / slides の一覧・詳細）には `cacheTag('db-content')`（`@repo/helpers/cache/main-cache-tags`）を付与する。api（`apps/api`）は reading-list の同期後に `/api/revalidate`（`REVALIDATE_SECRET` で認可）を叩いてこのタグを再検証する。記事の公開・非公開はマイグレーションでだけ変わり、本番ではマイグレーションを流したあとに main をビルドして出すので、公開の切り替えは再検証に頼らない。
+表示はビルド時に固め、タグによるオンデマンドの再検証はしない（`cacheTag` は付けない）。talks / tags / blogs / slides と記事の公開・非公開はマイグレーションでだけ変わり、本番ではマイグレーションを流したあとに main をビルドして出すので、デプロイで新しくなる。日々変わる browser-support・reading-list・通知の履歴は、ブラウザで api の公開の GET の値に差し替える。
 
 reading-list は、main がビルド時に記事・ソース一覧を読んで描き、ブラウザで api の `GET /public/reading-list` の値に差し替える。フィード（`/reading-list/feed`）は main では作らず、`next.config.ts` の rewrites で api の `GET /public/reading-list/feed` を中継する。中継した応答を main の CDN に持たせるため、headers で `x-vercel-enable-rewrite-caching: 1`（2026-04-06 より前に作ったプロジェクトの opt-in）と `Vercel-CDN-Cache-Control` を付ける。api の CDN は `s-maxage`・`stale-while-revalidate`・`stale-if-error` を外して `public, max-age=300` だけを返すので、main の CDN での寿命は `Vercel-CDN-Cache-Control` で決める。このヘッダーは main の CDN が使って取り除くので、リーダーに届く Cache-Control は `public, max-age=300` のまま。
 
