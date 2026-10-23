@@ -1,7 +1,7 @@
 import { readFile } from 'node:fs/promises';
 
 import { db } from '@repo/database';
-import { findFrontmatter, getFrontmatter } from '@repo/helpers/mdx/frontmatter';
+import { findFrontmatter } from '@repo/helpers/mdx/frontmatter';
 import type { Frontmatter } from '@repo/helpers/mdx/frontmatter';
 
 import { getTocTree } from '@/shared/mdx/toc-tree';
@@ -38,11 +38,9 @@ export const findBlog = async (slug: string) => {
   };
 };
 
-export const getBlogMetadata = (slug: string) => getFrontmatter(blogPath(slug));
-
 // DBのslugに対応するMDXが無いことがある（共有ローカルDBに他worktreeの
-// 執筆中記事のslugが混ざる等）。一覧系や .md でその記事を無いものとして
-// 扱えるよう、ファイル欠損はエラーにせずnullで返す。
+// 執筆中記事のslugが混ざる、公開のマイグレーションが記事を含むデプロイより先に本番のDBに入る等）。
+// その記事を無いもの（一覧から外し、詳細・OG・.md は404）として扱えるよう、ファイル欠損はエラーにせずnullで返す。
 export const findBlogMetadata = async (
   slug: string,
 ): Promise<Frontmatter | null> => {

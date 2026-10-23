@@ -1,0 +1,24 @@
+---
+title: parseHtmlUnsafeでHTMLをDocumentに変換する
+description:
+createdAt: 2025-10-11
+updatedAt: 2025-10-11
+featureIds:
+  - parse-html-unsafe
+---
+
+# parseHtmlUnsafeでHTMLをDocumentに変換する
+
+<BrowserSupportStatus featureId="parse-html-unsafe" />
+
+`TrustedHTML`またはHTML文字列を`Document`オブジェクトに変換する`parseHtmlUnsafe()`関数がBaseline 2025に追加されました。
+
+名前に`Unsafe`とついている通り、このメソッドはXSSの危険性がある要素を自動的には削除しません。
+安全性を重視した`parseHTML()`メソッドも存在しますが、こちらは多くのブラウザでまだ実装されていないため、現時点では`parseHTMLUnsafe()`が主に使用されています。
+
+`Unsafe`な状況を軽減するため、いくつかの対策が用意されています。
+変換元の値として`TrustedHTML`を使用する方法や、第2引数のオプションで`sanitizer`を指定する方法などです。ただし、`TrustedHTML`は本記事執筆時点ではFirefoxでサポートされておらず、`sanitizer`オプションも多くのブラウザで未対応という状況です。
+
+この機能はDeclarative Shadow DOMを扱う際に特に有効です。
+似た機能を持つ`DOMParser.parseFromString()`プロパティを使ってDeclarative Shadow DOMを用いたWeb Componentsを含むHTMLレスポンスを解析しても、`parseFromString`はDeclarative Shadow DOMを解析できません。
+一方、`parseHTMLUnsafe()`はDeclarative Shadow DOMも解析できるため、これらのコンポーネントを正しく解析することが可能です。

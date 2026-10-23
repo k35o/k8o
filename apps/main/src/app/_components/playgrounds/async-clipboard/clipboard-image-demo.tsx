@@ -5,8 +5,8 @@ import Image from 'next/image';
 import { useRef, useState } from 'react';
 import type { FC } from 'react';
 
-import primaryIcon from '@/app/blog/(articles)/async-clipboard/_images/primary.png';
 import k8oIcon from '@/app/icon.png';
+import primaryIcon from '@/content/blog/async-clipboard/_images/primary.png';
 
 import styles from './clipboard-image-demo.module.css';
 

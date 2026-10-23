@@ -6,6 +6,13 @@ const BLOG_URL = 'https://k8o.me/blog';
 
 export const buildBlogMetadata = async (slug: string): Promise<Metadata> => {
   const blog = await getBlogContent(slug);
+  const image = {
+    url: `${BLOG_URL}/${slug}/og.png`,
+    width: 1200,
+    height: 630,
+    type: 'image/png',
+    alt: blog.title,
+  };
 
   return {
     title: blog.title,
@@ -27,11 +34,13 @@ export const buildBlogMetadata = async (slug: string): Promise<Metadata> => {
       siteName: 'k8o',
       locale: 'ja',
       type: 'article',
+      images: [image],
     },
     twitter: {
       title: blog.title,
       card: 'summary_large_image',
       description: blog.description ?? undefined,
+      images: [image],
     },
   };
 };

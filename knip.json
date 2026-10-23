@@ -10,7 +10,10 @@
   "workspaces": {
     "apps/main": {
       "ignoreDependencies": ["chromatic"],
-      "entry": ["better-css-modules.config.ts"]
+      "entry": [
+        "better-css-modules.config.ts",
+        "src/content/blog/*/article.mdx"
+      ]
     },
     "apps/ai": {
       "ignoreDependencies": ["chromatic"],

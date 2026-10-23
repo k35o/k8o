@@ -6,7 +6,6 @@ import {
   findBlog,
   findBlogMetadata,
   getBlogToc as _getBlogToc,
-  getBlogMetadata,
 } from '@/features/blog/application/blog';
 import {
   getBlogsByTags as _getBlogsByTags,
@@ -54,7 +53,10 @@ export async function findBlogContent(slug: string) {
   if (blog === null) {
     return null;
   }
-  const metadata = await getBlogMetadata(slug);
+  const metadata = await findBlogMetadata(slug);
+  if (metadata === null) {
+    return null;
+  }
 
   return {
     id: blog.id,

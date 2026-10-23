@@ -11,7 +11,7 @@ describe('blogPath', () => {
       const result = blogPath('test-slug');
 
       expect(result).toBe(
-        join(cwd(), 'src/app/blog/(articles)/test-slug/page.mdx'),
+        join(cwd(), 'src/content/blog/test-slug/article.mdx'),
       );
     });
 
@@ -19,7 +19,7 @@ describe('blogPath', () => {
       const result = blogPath('feature-123');
 
       expect(result).toBe(
-        join(cwd(), 'src/app/blog/(articles)/feature-123/page.mdx'),
+        join(cwd(), 'src/content/blog/feature-123/article.mdx'),
       );
     });
   });

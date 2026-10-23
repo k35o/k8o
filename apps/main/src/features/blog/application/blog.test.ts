@@ -1,17 +1,12 @@
 import { readFile } from 'node:fs/promises';
 
 import { db } from '@repo/database';
-import { findFrontmatter, getFrontmatter } from '@repo/helpers/mdx/frontmatter';
+import { findFrontmatter } from '@repo/helpers/mdx/frontmatter';
 import { describe, expect, it, vi } from 'vitest';
 
 import { getTocTree } from '@/shared/mdx/toc-tree';
 
-import {
-  findBlog,
-  findBlogMetadata,
-  getBlogMetadata,
-  getBlogToc,
-} from './blog';
+import { findBlog, findBlogMetadata, getBlogToc } from './blog';
 import { blogPath } from './path';
 
 vi.mock('@repo/database', () => ({
@@ -126,26 +121,6 @@ describe('blog service', () => {
       const result = await findBlog('non-existent-slug');
 
       expect(result).toBeNull();
-    });
-  });
-
-  describe('getBlogMetadata', () => {
-    it('ブログのメタデータを取得できる', async () => {
-      const mockMetadata = {
-        title: 'Test Blog',
-        description: 'Test Description',
-        createdAt: '2023-01-01T00:00:00.000Z',
-        updatedAt: '2023-01-01T00:00:00.000Z',
-      };
-
-      vi.mocked(blogPath).mockReturnValue('/path/to/blog');
-      vi.mocked(getFrontmatter).mockResolvedValue(mockMetadata);
-
-      const result = await getBlogMetadata('test-slug');
-
-      expect(blogPath).toHaveBeenCalledWith('test-slug');
-      expect(getFrontmatter).toHaveBeenCalledWith('/path/to/blog');
-      expect(result).toBe(mockMetadata);
     });
   });
 

@@ -1,0 +1,12 @@
+/* better-css-modules-disable usage/unused-module -- article.mdx から import する。check は .mdx を読まない */
+.embed {
+  width: 100%;
+  writing-mode: horizontal-tb;
+
+  @container style(--writing: vertical) {
+    box-sizing: border-box;
+    max-width: min(42rem, 100svw - 2rem);
+    max-height: 100%;
+    margin-inline: calc(var(--spacing) * 4);
+  }
+}

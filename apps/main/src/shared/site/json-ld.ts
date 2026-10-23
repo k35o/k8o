@@ -69,7 +69,7 @@ export function blogPostingJsonLd(blog: BlogPostingInput): JsonLdObject {
     description: blog.description ?? undefined,
     url,
     mainEntityOfPage: url,
-    image: `${url}/opengraph-image`,
+    image: `${url}/og.png`,
     datePublished: blog.createdAt,
     dateModified: blog.updatedAt,
     inLanguage: 'ja',
