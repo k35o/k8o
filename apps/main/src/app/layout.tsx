@@ -1,9 +1,6 @@
-import { GoogleAnalytics } from '@next/third-parties/google';
-
 import './_styles/globals.css';
 import '@repo/code-highlight/styles.css';
 import '@/i18n';
-import { Analytics } from '@vercel/analytics/react';
 import { SpeedInsights } from '@vercel/speed-insights/next';
 import type { Metadata } from 'next';
 
@@ -71,9 +68,17 @@ export default function RootLayout({ children }: LayoutProps<'/'>) {
           <OfflineNotice />
         </AppProvider>
         <ServiceWorkerRegister />
-        <Analytics />
         <SpeedInsights />
-        {gaId !== undefined && gaId !== '' && <GoogleAnalytics gaId={gaId} />}
+        {/* next/script は script を JS で差し込み、Trusted Types の sink の違反になるので、素の script で HTML に書く */}
+        {gaId !== undefined && gaId !== '' && (
+          <>
+            <script
+              async
+              src={`https://www.googletagmanager.com/gtag/js?id=${gaId}`}
+            />
+            <script async src="/ga-init.js" data-ga-id={gaId} />
+          </>
+        )}
       </body>
     </html>
   );

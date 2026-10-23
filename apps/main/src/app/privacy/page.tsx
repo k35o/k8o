@@ -26,8 +26,8 @@ export default function Page() {
             を参照してください。
           </li>
           <li>
-            Vercel AnalyticsおよびSpeed
-            Insights：Cookieを使用せず、ページの閲覧状況やパフォーマンス指標を匿名で収集します。
+            Vercel Speed
+            Insights：Cookieを使用せず、ページのパフォーマンス指標を匿名で収集します。
           </li>
         </ul>
       </section>
