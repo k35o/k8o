@@ -20,6 +20,7 @@
   - `app/blog/[slug]/page.tsx` が公開済みの記事を `generateStaticParams` で挙げ、MDX を動的 import して描く。OG は `app/blog/[slug]/og.png/route.ts`。記事ごとの `layout.tsx`・`opengraph-image.tsx` は作らない
   - 記事が使う部品（`BrowserSupportStatus`・`PlaygroundEmbed`・`Playground`・`LinkCard`・`Image`・`FloatImage`・`Alert`）は `app/blog/_components/blog-mdx-components` の `blogMdxComponents` で渡す。MDX は `@/app/...` を import しない（`features/blog/application/article-files.test.ts` が確かめる）。相対の import（`./_images`・`./_components`・`./article.module.css`）と、パッケージの import は使ってよい
   - 見出し・段落・リンク・コードなどの部品は `app/_components/mdx-base`。ルートの `mdx-components.tsx` はこれだけを返し、スライドの MDX も使う
+  - 記事の `LinkCard` が描く OGP は `content/link-card-metadata.json` にコミットする。`pnpm run -F main generate:link-card-metadata` が記事の LinkCard の URL を集め、JSON に無い URL と、値が `{}`（OGP が取れなかった）の URL を取って書く（`--refresh` で全件を取り直す）。記事に LinkCard を足したら流す（抜けは `article-files.test.ts` が落とす）
 - **shared/** - apps/main 内で横断利用する非UI共通処理（MDX、OGP、browser API、api クライアント、site metadataなど）。UIコンポーネントや `cn` は置かない
 - **mocks/** - Storybook の MSW ハンドラ（`handlers.ts`）と、features のテストで `next/cache` を差し替えるモック（`next-cache.ts`）。api への GET は既定で 503 を返すので、差し替える表示はビルド時の値のまま描かれる。差し替えを確かめる story だけが `beforeEach` の `msw.use` で応答を決める
 
@@ -39,7 +40,6 @@ Next.jsの機能やAPIは `apps/main/node_modules/next/dist/docs/` のバンド�
 
 Next.js の `cacheLife` は `features/*/interface` に置く。`app` のUIコンポーネントや `application` 層には原則として置かない。
 
-- `cacheLife('days')` - リンクカードの OGP メタデータ
 - `cacheLife('max')` - DB の talks / tags / blogs / slides、browser-support の active データセットと最近の更新、reading-list の記事・ソース一覧、Push 通知の履歴、MDX metadata、静的な site metadata、ビルド時に近い安定データ
 
 表示はビルド時に固め、タグによるオンデマンドの再検証はしない（`cacheTag` は付けない）。talks / tags / blogs / slides と記事の公開・非公開はマイグレーションでだけ変わり、本番ではマイグレーションを流したあとに main をビルドして出すので、デプロイで新しくなる。日々変わる browser-support・reading-list・通知の履歴は、ブラウザで api の公開の GET の値に差し替える。

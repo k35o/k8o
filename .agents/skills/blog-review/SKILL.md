@@ -103,7 +103,7 @@ frontmatterが不正だと`getFrontmatter()`が`Invalid frontmatter in <path>`�
 | `BrowserSupportStatus` | `featureId`（frontmatterの`featureIds`と一致）。Web機能の記事ではH1直下 |
 | `PlaygroundEmbed` | `sectionId`（必須。`playgrounds/playground-embed.tsx`の`embeds`のキー＝セクションの`id`） / `demo?`（デモの`title`。省略するとセクションの全デモ） |
 | `Playground` | `title`（必須）。子にデモ |
-| `LinkCard` | `href`（必須） / `publishedAt?` / `variant?` |
+| `LinkCard` | `href`（必須） / `variant?` |
 | `Image` / `FloatImage` | `src`・`alt`（どちらも必須） |
 | `Alert` | `tone`（`warning`等） / `message` |
 
@@ -117,7 +117,7 @@ frontmatterが不正だと`getFrontmatter()`が`Invalid frontmatter in <path>`�
 
 - **見出し階層**: `# H1`は記事タイトルの1つだけ（非表示）。実セクションは`##`から。階層を飛ばさない（`##`の次に`####`を置かない）。同名見出しの重複に注意（アンカーID衝突）。
 - **テーブルは使わない**（要修正）: markdownテーブル（`| … | … |`）は**横スクロールに弱く、特にモバイルや縦書き表示で崩れる**。本文では使わず、箇条書き・段落・定義（`用語：説明`）、または必要なら画像（`<Image>`）で代替する。機械検出は機械コマンド(4)。
-- **リンク**: 空リンク（`[テキスト]()`）が無いか。外部リンクは到達性を確認（任意で `curl -sI <url> | head -1`）。参考文献は`<LinkCard href="...">`を使う選択肢。
+- **リンク**: 空リンク（`[テキスト]()`）が無いか。外部リンクは到達性を確認（任意で `curl -sI <url> | head -1`）。参考文献は`<LinkCard href="...">`を使う選択肢。`<LinkCard>`を足したら`pnpm run -F main generate:link-card-metadata`を流したか（抜けは`features/blog/application/article-files.test.ts`が落とす）。出力に「OGP が取れなかった」が出たら、時間をおいて流し直す。それでも出るURL（`http://`やOGPを持たないページ）は`{}`のままでよい。`--refresh`は使わない。
 - **画像**: `<Image>`/`<FloatImage>`に`alt`があるか（必須）。
 - **数式（KaTeX）**: 数式を使う記事が`import '@repo/mdx-preset/katex.css';`を持つことは`features/blog/application/article-files.test.ts`が確かめる。`pnpm run test --filter=main -- --project="features test"`が通ることを確かめる。
 
