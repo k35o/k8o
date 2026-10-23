@@ -14,9 +14,9 @@ import { JsonLd } from '@/app/_components/json-ld';
 import {
   getBlogContent,
   getBlogReadingTime,
+  getBlogsByTags,
   getBlogToc,
 } from '@/features/blog/interface/queries';
-import type { getBlogsByTags } from '@/features/blog/interface/queries';
 import { blogBreadcrumbJsonLd, blogPostingJsonLd } from '@/shared/site/json-ld';
 
 import { BlogHeader } from '../blog-header';
@@ -24,7 +24,7 @@ import { ArticleFrame } from './article-frame';
 import { END_OF_CONTENT_ID } from './constants';
 import { CopyMarkdownButton } from './copy-markdown-button';
 import { Feedback } from './feedback';
-import { Recommend, RecommendContent } from './recommend';
+import { Recommend } from './recommend';
 import { SlideLinkButton } from './slide-link-button';
 import { TableOfContents, TableOfContentsSideRail } from './table-of-contents';
 import { ViewReporter } from './view-reporter';
@@ -40,7 +40,7 @@ type BlogLayoutProps = {
 type BlogLayoutContentProps = BlogLayoutProps & {
   blog: Awaited<ReturnType<typeof getBlogContent>>;
   headingTree: Awaited<ReturnType<typeof getBlogToc>>;
-  recommendedBlogs?: Awaited<ReturnType<typeof getBlogsByTags>>;
+  recommendedBlogs: Awaited<ReturnType<typeof getBlogsByTags>>;
   readingTime: number;
 };
 
@@ -51,100 +51,93 @@ export const BlogLayoutContent: FC<BlogLayoutContentProps> = ({
   readingTime,
   recommendedBlogs,
   slug,
-}) => {
-  const shouldUseRecommendedBlogs = recommendedBlogs !== undefined;
-
-  return (
-    <ArticleFrame hasToc={headingTree.children.length > 0}>
-      <BlogHeader />
-      <div className={styles.columns}>
-        <ViewReporter slug={slug} />
-        <div className={styles.main}>
-          <WritingModeContent>
-            <article className={styles.article}>
-              <header className={styles.header}>
-                <div className={styles.headerRow}>
-                  <div className={styles.meta}>
+}) => (
+  <ArticleFrame hasToc={headingTree.children.length > 0}>
+    <BlogHeader />
+    <div className={styles.columns}>
+      <ViewReporter slug={slug} />
+      <div className={styles.main}>
+        <WritingModeContent>
+          <article className={styles.article}>
+            <header className={styles.header}>
+              <div className={styles.headerRow}>
+                <div className={styles.meta}>
+                  <span className={styles.metaItem}>
+                    <span className={styles.metaIcon}>
+                      <PublishDateIcon size="sm" />
+                    </span>
+                    公開: {formatDate(new Date(blog.createdAt))}
+                  </span>
+                  {blog.updatedAt !== blog.createdAt && (
                     <span className={styles.metaItem}>
                       <span className={styles.metaIcon}>
-                        <PublishDateIcon size="sm" />
+                        <UpdateDateIcon size="sm" />
                       </span>
-                      公開: {formatDate(new Date(blog.createdAt))}
+                      更新: {formatDate(new Date(blog.updatedAt))}
                     </span>
-                    {blog.updatedAt !== blog.createdAt && (
-                      <span className={styles.metaItem}>
-                        <span className={styles.metaIcon}>
-                          <UpdateDateIcon size="sm" />
-                        </span>
-                        更新: {formatDate(new Date(blog.updatedAt))}
-                      </span>
-                    )}
-                    <span>約{readingTime}分で読めます</span>
-                  </div>
-                  <div className={styles.actions}>
-                    {blog.slideUrl !== undefined && (
-                      <SlideLinkButton href={blog.slideUrl} />
-                    )}
-                    <CopyMarkdownButton slug={slug} />
-                  </div>
+                  )}
+                  <span>約{readingTime}分で読めます</span>
                 </div>
-                <h2 className={styles.title}>{blog.title}</h2>
-                {blog.description !== null && (
-                  <p className={styles.description}>{blog.description}</p>
-                )}
-                {blog.tags.length > 0 && (
-                  <div className={styles.tags}>
-                    <TagIcon size="sm" />
-                    {blog.tags.map((tag) => (
-                      <Link href={`/tags/${tag.id.toString()}`} key={tag.id}>
-                        <Badge interactive key={tag.id} label={tag.name} />
-                      </Link>
-                    ))}
-                  </div>
-                )}
-              </header>
-              <div className={styles.separator}>
-                <Separator />
+                <div className={styles.actions}>
+                  {blog.slideUrl !== undefined && (
+                    <SlideLinkButton href={blog.slideUrl} />
+                  )}
+                  <CopyMarkdownButton slug={slug} />
+                </div>
               </div>
-              {children}
-            </article>
-          </WritingModeContent>
-          <div className={styles.footer} id={END_OF_CONTENT_ID}>
-            <SilentErrorBoundary>
-              <section className={styles.feedback}>
-                <Feedback slug={slug} />
-              </section>
-            </SilentErrorBoundary>
-            <SilentErrorBoundary>
-              {shouldUseRecommendedBlogs ? (
-                <RecommendContent blogs={recommendedBlogs} />
-              ) : (
-                <Recommend slug={slug} />
+              <h2 className={styles.title}>{blog.title}</h2>
+              {blog.description !== null && (
+                <p className={styles.description}>{blog.description}</p>
               )}
-            </SilentErrorBoundary>
-          </div>
+              {blog.tags.length > 0 && (
+                <div className={styles.tags}>
+                  <TagIcon size="sm" />
+                  {blog.tags.map((tag) => (
+                    <Link href={`/tags/${tag.id.toString()}`} key={tag.id}>
+                      <Badge interactive key={tag.id} label={tag.name} />
+                    </Link>
+                  ))}
+                </div>
+              )}
+            </header>
+            <div className={styles.separator}>
+              <Separator />
+            </div>
+            {children}
+          </article>
+        </WritingModeContent>
+        <div className={styles.footer} id={END_OF_CONTENT_ID}>
+          <SilentErrorBoundary>
+            <section className={styles.feedback}>
+              <Feedback slug={slug} />
+            </section>
+          </SilentErrorBoundary>
+          <SilentErrorBoundary>
+            <Recommend blogs={recommendedBlogs} />
+          </SilentErrorBoundary>
         </div>
-        <SilentErrorBoundary>
-          <TableOfContentsSideRail
-            className={styles.sideRail}
-            headingTree={headingTree}
-          />
-        </SilentErrorBoundary>
-        <SilentErrorBoundary>
-          <TableOfContents headingTree={headingTree} />
-        </SilentErrorBoundary>
       </div>
-    </ArticleFrame>
-  );
-};
+      <SilentErrorBoundary>
+        <TableOfContentsSideRail
+          className={styles.sideRail}
+          headingTree={headingTree}
+        />
+      </SilentErrorBoundary>
+      <SilentErrorBoundary>
+        <TableOfContents headingTree={headingTree} />
+      </SilentErrorBoundary>
+    </div>
+  </ArticleFrame>
+);
 
 export const BlogLayout: FC<BlogLayoutProps> = async ({ children, slug }) => {
-  // 3つは相互依存のない独立した 'use cache' クエリなので、キャッシュミス時の
+  // 相互依存のない独立した 'use cache' クエリなので、キャッシュミス時の
   // 動的レンダーやビルド時プリレンダーで直列に待たないよう並列化する
-  const [blog, headingTree, readingTime] = await Promise.all([
+  const [blog, headingTree, readingTime, recommendedBlogs] = await Promise.all([
     getBlogContent(slug),
     getBlogToc(slug),
     getBlogReadingTime(slug),
+    getBlogsByTags(slug),
   ]);
 
   return (
@@ -155,6 +148,7 @@ export const BlogLayout: FC<BlogLayoutProps> = async ({ children, slug }) => {
         blog={blog}
         headingTree={headingTree}
         readingTime={readingTime}
+        recommendedBlogs={recommendedBlogs}
         slug={slug}
       >
         {children}

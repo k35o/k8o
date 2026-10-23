@@ -1,9 +1,11 @@
+import { expect } from 'storybook/test';
+
 import preview from '../../../../../../.storybook/preview';
-import { RecommendContent } from './recommend';
+import { Recommend } from './recommend';
 
 const meta = preview.meta({
   title: 'app/blog/blog-layout/recommend',
-  component: RecommendContent,
+  component: Recommend,
 });
 
 export const Primary = meta.story({
@@ -37,5 +39,25 @@ export const Primary = meta.story({
         ],
       },
     ],
+  },
+  play: async ({ canvas }) => {
+    await expect(
+      canvas.getByRole('heading', { name: '関連記事' }),
+    ).toBeInTheDocument();
+    const links = canvas.getAllByRole('link');
+    await expect(links.map((link) => link.getAttribute('href'))).toStrictEqual([
+      '/blog/atomics-pause',
+      '/blog/screen-wake-lock',
+      '/blog/async-clipboard',
+    ]);
+  },
+});
+
+export const Empty = meta.story({
+  args: { blogs: [] },
+  play: async ({ canvas }) => {
+    await expect(
+      canvas.queryByRole('heading', { name: '関連記事' }),
+    ).not.toBeInTheDocument();
   },
 });

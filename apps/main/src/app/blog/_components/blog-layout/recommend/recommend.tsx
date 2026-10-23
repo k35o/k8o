@@ -4,7 +4,7 @@ import type { Route } from 'next';
 import Link from 'next/link';
 import type { FC } from 'react';
 
-import { getBlogsByTags } from '@/features/blog/interface/queries';
+import type { getBlogsByTags } from '@/features/blog/interface/queries';
 
 import styles from './recommend.module.css';
 
@@ -12,7 +12,7 @@ type RecommendProps = {
   blogs: Awaited<ReturnType<typeof getBlogsByTags>>;
 };
 
-export const RecommendContent: FC<RecommendProps> = ({ blogs }) => {
+export const Recommend: FC<RecommendProps> = ({ blogs }) => {
   if (blogs.length === 0) {
     return null;
   }
@@ -48,9 +48,4 @@ export const RecommendContent: FC<RecommendProps> = ({ blogs }) => {
       </div>
     </div>
   );
-};
-
-export const Recommend: FC<{ slug: string }> = async ({ slug }) => {
-  const blogs = await getBlogsByTags(slug);
-  return <RecommendContent blogs={blogs} />;
 };
