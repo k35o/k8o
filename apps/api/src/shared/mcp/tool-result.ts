@@ -7,8 +7,3 @@ export const toolResult = (
   content: [{ type: 'text', text: JSON.stringify(structuredContent) }],
   structuredContent,
 });
-
-export const toolError = (message: string): CallToolResult => ({
-  content: [{ type: 'text', text: message }],
-  isError: true,
-});

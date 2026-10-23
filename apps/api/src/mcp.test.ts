@@ -5,10 +5,7 @@ import {
 import type { VersionNegotiationMode } from '@modelcontextprotocol/client';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
-import {
-  findBlogs,
-  updateBlogPublishedBySlug,
-} from './features/blog/infrastructure/blog-repository';
+import { findBlogs } from './features/blog/infrastructure/blog-repository';
 import { findInquiries } from './features/inquiries/infrastructure/inquiry-repository';
 import { findOverview } from './features/overview/infrastructure/overview-repository';
 import { getSummaryProgress } from './features/reading-list/interface/queries';
@@ -17,11 +14,9 @@ import {
   findReportTypeCounts,
 } from './features/reports/infrastructure/report-repository';
 import app from './index';
-import { revalidateMainCache } from './shared/cache/revalidate-main';
 
 vi.mock('./features/blog/infrastructure/blog-repository', () => ({
   findBlogs: vi.fn(),
-  updateBlogPublishedBySlug: vi.fn(),
 }));
 vi.mock('./features/inquiries/infrastructure/inquiry-repository', () => ({
   findInquiries: vi.fn(),
@@ -35,9 +30,6 @@ vi.mock('./features/reading-list/interface/queries', () => ({
 vi.mock('./features/reports/infrastructure/report-repository', () => ({
   findReports: vi.fn(),
   findReportTypeCounts: vi.fn(),
-}));
-vi.mock('./shared/cache/revalidate-main', () => ({
-  revalidateMainCache: vi.fn(),
 }));
 // cron の同期は DB クライアントを読み込むため、このテストでは差し替える
 vi.mock('./features/reading-list/interface/sync', () => ({
@@ -153,30 +145,16 @@ describe('MCP の tool', () => {
 
   describe('tools/list', () => {
     describe('正常系', () => {
-      it('読み取りの tool だけを readOnly とし、公開切替には毎回の確認を求める', async () => {
+      it('すべての tool を読み取りだけにする', async () => {
         const { tools } = await client.listTools();
 
         expect(
-          tools.map(({ name, annotations, _meta }) => ({
-            name,
-            annotations,
-            _meta,
-          })),
+          tools.map(({ name, annotations }) => ({ name, annotations })),
         ).toStrictEqual([
-          { name: 'get_overview', annotations: READ_ONLY, _meta: undefined },
-          { name: 'list_inquiries', annotations: READ_ONLY, _meta: undefined },
-          { name: 'list_blogs', annotations: READ_ONLY, _meta: undefined },
-          {
-            name: 'set_blog_published',
-            annotations: {
-              readOnlyHint: false,
-              destructiveHint: true,
-              idempotentHint: true,
-              openWorldHint: false,
-            },
-            _meta: { 'anthropic/requiresUserInteraction': true },
-          },
-          { name: 'list_reports', annotations: READ_ONLY, _meta: undefined },
+          { name: 'get_overview', annotations: READ_ONLY },
+          { name: 'list_inquiries', annotations: READ_ONLY },
+          { name: 'list_blogs', annotations: READ_ONLY },
+          { name: 'list_reports', annotations: READ_ONLY },
         ]);
       });
     });
@@ -187,7 +165,7 @@ describe('MCP の tool', () => {
 
         const { tools } = await modernClient.listTools();
 
-        expect(tools).toHaveLength(5);
+        expect(tools).toHaveLength(4);
         expect(modernClient.getServerCapabilities()?.tools).toStrictEqual({
           listChanged: false,
         });
@@ -408,61 +386,6 @@ describe('MCP の tool', () => {
 
         expect(result.isError).toBe(true);
         expect(findBlogs).not.toHaveBeenCalled();
-      });
-    });
-  });
-
-  describe('set_blog_published', () => {
-    describe('正常系', () => {
-      it('公開状態を更新し、main の db-content キャッシュを再検証する', async () => {
-        vi.mocked(updateBlogPublishedBySlug).mockResolvedValue(true);
-        vi.mocked(revalidateMainCache).mockResolvedValue(true);
-
-        const result = await client.callTool({
-          name: 'set_blog_published',
-          arguments: { slug: 'media-pseudos', published: true },
-        });
-
-        expect(updateBlogPublishedBySlug).toHaveBeenCalledWith(
-          'media-pseudos',
-          true,
-        );
-        expect(revalidateMainCache).toHaveBeenCalledWith();
-        expect(structured(result)).toStrictEqual({
-          slug: 'media-pseudos',
-          published: true,
-          revalidated: true,
-        });
-      });
-    });
-
-    describe('異常系', () => {
-      it('slug が見つからなければエラーを返し、再検証しない', async () => {
-        vi.mocked(updateBlogPublishedBySlug).mockResolvedValue(false);
-
-        const result = await client.callTool({
-          name: 'set_blog_published',
-          arguments: { slug: 'unknown', published: true },
-        });
-
-        expect(result.isError).toBe(true);
-        expect(revalidateMainCache).not.toHaveBeenCalled();
-      });
-
-      it('再検証に失敗しても更新は成功として返し、revalidated で伝える', async () => {
-        vi.mocked(updateBlogPublishedBySlug).mockResolvedValue(true);
-        vi.mocked(revalidateMainCache).mockResolvedValue(false);
-
-        const result = await client.callTool({
-          name: 'set_blog_published',
-          arguments: { slug: 'media-pseudos', published: false },
-        });
-
-        expect(structured(result)).toStrictEqual({
-          slug: 'media-pseudos',
-          published: false,
-          revalidated: false,
-        });
       });
     });
   });

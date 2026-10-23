@@ -269,6 +269,16 @@ INSERT INTO blog_tag (blog_id, tag_id) VALUES (
 > タグをリネームした場合は、以降の migration では新しい name を使う。
 > スライド/トークを migration で投入する場合も、同様に id を書かず slug / name で引く。
 
+### 公開・非公開の切り替え
+
+公開状態は `blogs.published` を書き換えるマイグレーションでだけ変える。下書きのまま入れるときは上の INSERT の `published` を `0` にし、公開するときに別のマイグレーションで書き換える。
+
+```sql
+UPDATE blogs SET published = 1 WHERE slug = '{slug}';
+```
+
+マージすると CI が本番の DB にマイグレーションを流し、そのあと main をビルドしてデプロイするので、公開は main のデプロイと同時に反映される。
+
 ### タグ名の確認
 
 id は採番しないので、必要なのは **既存タグの正確な name** を知ることだけ（表記ゆれ防止）。

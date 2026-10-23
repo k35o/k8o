@@ -68,9 +68,11 @@ export async function findBlogContent(slug: string) {
   };
 }
 
-// 動的なルートの 'use cache' は関数のインスタンスごとのメモリに残り、公開を切り替えたあとの
-// db-content の再検証がほかのインスタンスに届く保証が無いので、公開状態はキャッシュせずに読む
 export async function isPublishedBlog(slug: string): Promise<boolean> {
+  'use cache';
+  cacheLife('max');
+  cacheTag(DB_CONTENT_CACHE_TAG);
+
   return (await findBlog(slug)) !== null;
 }
 
