@@ -68,6 +68,7 @@ describe('buildTargets', () => {
         { label: '/icon-192.png', path: '/icon-192.png', accept: null },
         { label: '/badge-72.png', path: '/badge-72.png', accept: null },
         { label: '/sw.js', path: '/sw.js', accept: null },
+        { label: '/ga-init.js', path: '/ga-init.js', accept: null },
         {
           label: '/playgrounds/shared-worker.worker.js',
           path: '/playgrounds/shared-worker.worker.js',

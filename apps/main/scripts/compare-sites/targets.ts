@@ -24,6 +24,7 @@ const FIXED_PATHS = [
   '/icon-192.png',
   '/badge-72.png',
   '/sw.js',
+  '/ga-init.js',
   '/playgrounds/shared-worker.worker.js',
   '/playgrounds/media-pseudos-tone.wav',
 ] as const;
