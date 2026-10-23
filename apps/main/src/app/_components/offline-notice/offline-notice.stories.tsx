@@ -3,7 +3,8 @@ import { expect, spyOn, waitFor } from 'storybook/test';
 import preview from '../../../../.storybook/preview';
 import { OfflineNotice } from './offline-notice';
 
-const MESSAGE = 'オフラインです。接続が回復すると自動的に再試行します。';
+const MESSAGE =
+  'オフラインです。送信した内容は接続が回復すると自動的に送り直します。';
 
 // Storybook を動かすブラウザはオンラインのままなので、navigator.onLine を差し替えてから
 // ブラウザと同じイベントを送る

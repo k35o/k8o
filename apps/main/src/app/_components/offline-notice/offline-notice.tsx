@@ -32,7 +32,7 @@ export const OfflineNotice: FC = () => {
   return (
     <div className={styles.root}>
       <Alert
-        message="オフラインです。接続が回復すると自動的に再試行します。"
+        message="オフラインです。送信した内容は接続が回復すると自動的に送り直します。"
         tone="warning"
       />
     </div>
