@@ -39,16 +39,16 @@ Next.jsの機能やAPIは `apps/main/node_modules/next/dist/docs/` のバンド�
 
 Next.js の `cacheLife` は `features/*/interface` に置く。`app` のUIコンポーネントや `application` 層には原則として置かない。
 
-- `cacheLife('minutes')` - GitHub のコントリビューション、Push 通知の履歴、browser-support の機能一覧と最近の更新など、短時間で鮮度が必要な読み取り
+- `cacheLife('minutes')` - GitHub のコントリビューション、Push 通知の履歴など、短時間で鮮度が必要な読み取り
 - `cacheLife('hours')` - reading-list の記事・ソース一覧と、そのフィード
 - `cacheLife('days')` - リンクカードの OGP メタデータ
-- `cacheLife('max')` - browser-support の active データセット、MDX metadata、静的な site metadata、`db-content` タグで再検証する talks / tags / blogs / slides、ビルド時に近い安定データ
+- `cacheLife('max')` - browser-support の active データセットと最近の更新（ブラウザで api の値に差し替える）、MDX metadata、静的な site metadata、`db-content` タグで再検証する talks / tags / blogs / slides、ビルド時に近い安定データ
 
 `/api/revalidate` の Route Handler は、受け取ったタグを `revalidateTag` で再検証する。
 
 DB 由来のキャッシュ（talks / tags / blogs / slides の一覧・詳細、reading-list の記事・ソース一覧）には `cacheTag('db-content')`（`@repo/helpers/cache/main-cache-tags`）を付与する。api（`apps/api`）は reading-list の同期後に `/api/revalidate`（`REVALIDATE_SECRET` で認可）を叩いてこのタグを再検証する。記事の公開・非公開はマイグレーションでだけ変わり、本番ではマイグレーションを流したあとに main をビルドして出すので、公開の切り替えは再検証に頼らない。
 
-browser-support（機能一覧）は api の日次 cron が web-features の正典配布元（GitHub Releases）から取り込んで DB に保存する。main はビルド時に active データセットを読んで描き、記事の `<BrowserSupportStatus>` とかどまるラボの対応状況は、ブラウザで api の `GET /public/browser-support/features/:featureId` の値に差し替える。機能一覧と最近の更新は `cacheTag('browser-support')` を付けて読み、api は同期成功後に `/api/revalidate` でこのタグを再検証する。ブラウザ最低版フロア（RootLayout が読む）だけは実行時 I/O を持たないコミット済み生成物で、`pnpm run -F main generate:browser-min-versions [version]` で再生成する。同じ版からリポジトリ直下の `.browserslistrc`（Next.js の Lightning CSS / SWC のターゲット）も生成するので、手で編集しない。active データセットとずれると外形監視（`.github/workflows/browser-support-monitor.yml`）が k8o-bot 名義で再生成 PR を作り、自動マージする。
+browser-support（機能一覧）は api の日次 cron が web-features の正典配布元（GitHub Releases）から取り込んで DB に保存する。main はビルド時に active データセットと最近の更新を読んで描き、ブラウザで api の値に差し替える。`/browser-support` は `GET /public/browser-support`、記事の `<BrowserSupportStatus>` とかどまるラボの対応状況は `GET /public/browser-support/features/:featureId` を読む。ブラウザ最低版フロア（RootLayout が読む）だけは実行時 I/O を持たないコミット済み生成物で、`pnpm run -F main generate:browser-min-versions [version]` で再生成する。同じ版からリポジトリ直下の `.browserslistrc`（Next.js の Lightning CSS / SWC のターゲット）も生成するので、手で編集しない。active データセットとずれると外形監視（`.github/workflows/browser-support-monitor.yml`）が k8o-bot 名義で再生成 PR を作り、自動マージする。
 
 ## セキュリティヘッダー
 
