@@ -182,10 +182,20 @@ export const myFeatureSection: PlaygroundSection = {
 };
 ```
 
-#### playgrounds/sections.tsへの追加
+#### playgrounds/sections.ts と playground-embed.tsx への追加
 
-- `import { myFeatureSection } from './{feature-name}';` を追加
-- `playgroundSections` 配列に追加
+- `sections.ts` に `import { myFeatureSection } from './{feature-name}';` を追加し、`playgroundSections` 配列に追加（`/playgrounds` の一覧とページが使う）
+- `playground-embed.tsx` の `embeds` に、セクションの `id` をキーにして次の 1 件を追加（記事の `<PlaygroundEmbed>` が使う。記事のページは、そのページで描くセクションのデモだけを読む）
+
+```tsx
+'my-feature': dynamic(() =>
+  import('./my-feature').then(({ myFeatureSection }) =>
+    toEmbed(myFeatureSection),
+  ),
+),
+```
+
+`embeds` に無い `sectionId` を記事が渡すと、ビルドのプリレンダーで落ちる。
 
 ## データベースマイグレーション
 
@@ -258,7 +268,7 @@ grep -rhoE "INSERT INTO tags [^;]*'[^']+'" packages/database/migrations/*.sql \
 - [ ] 数式（`$`・`$$`・` ```math `）を使う場合: `article.mdx` に KaTeX の CSS を import
 - [ ] Playgroundのデモと `.module.css` 作成（必要な場合）
 - [ ] Storybookストーリー作成（必要な場合）
-- [ ] `playgrounds/sections.ts` 更新（必要な場合）
+- [ ] `playgrounds/sections.ts` と `playground-embed.tsx` の `embeds` 更新（必要な場合）
 
 ### データベース
 

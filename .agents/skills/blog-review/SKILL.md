@@ -101,14 +101,14 @@ frontmatterが不正だと`getFrontmatter()`が`Invalid frontmatter in <path>`�
 | コンポーネント | 主なprops |
 |---------------|-----------|
 | `BrowserSupportStatus` | `featureId`（frontmatterの`featureIds`と一致）。Web機能の記事ではH1直下 |
-| `PlaygroundEmbed` | `sectionId`（必須。`playgrounds/sections.ts`のセクションの`id`） / `demo?`（デモの`title`。省略するとセクションの全デモ） |
+| `PlaygroundEmbed` | `sectionId`（必須。`playgrounds/playground-embed.tsx`の`embeds`のキー＝セクションの`id`） / `demo?`（デモの`title`。省略するとセクションの全デモ） |
 | `Playground` | `title`（必須）。子にデモ |
 | `LinkCard` | `href`（必須） / `publishedAt?` / `variant?` |
 | `Image` / `FloatImage` | `src`・`alt`（どちらも必須） |
 | `Alert` | `tone`（`warning`等） / `message` |
 
 - 見出し・段落・リンク・インラインコードは`apps/main/src/app/_components/mdx-base`が自動で@k8ordo/uiスタイルに変換する。素のmarkdownで書けばよい（独自に`<h2>`等を書かない）。
-- **import検証**: MDXが`@/app/...`を import していたら要修正（`features/blog/application/article-files.test.ts`が落ちる）。画像と記事だけの部品は`./_images/...`・`./_components/...`の相対パスで import し、そのファイルと`export`宣言があるかを1つずつ目視確認する。`PlaygroundEmbed`は、`sectionId`が`playgrounds/sections.ts`の`playgroundSections`にあるセクションの`id`と一致するか、`demo`を渡すならそのセクションのデモの`title`と一致するかも確かめる（一致しないと描画時に例外で落ちる）。
+- **import検証**: MDXが`@/app/...`を import していたら要修正（`features/blog/application/article-files.test.ts`が落ちる）。画像と記事だけの部品は`./_images/...`・`./_components/...`の相対パスで import し、そのファイルと`export`宣言があるかを1つずつ目視確認する。`PlaygroundEmbed`は、`sectionId`が`playgrounds/playground-embed.tsx`の`embeds`のキー（セクションの`id`）と一致するか、`demo`を渡すならそのセクションのデモの`title`と一致するかも確かめる（一致しないとビルドのプリレンダーで落ちる）。
 - **@k8ordo/uiのpropsは推測しない**。`Alert`等は `apps/main` の CLAUDE.md に従い `main-storybook-mcp` で確認する。**MCPが使えない場合**は `apps/main/node_modules/@k8ordo/ui` の型定義（`dist/**/*.d.mts`）または `docs/` を読む。
 
 ## ブログ固有4: 見出し階層・リンク・画像・テーブル
