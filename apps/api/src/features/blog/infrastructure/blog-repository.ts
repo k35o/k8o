@@ -117,15 +117,3 @@ export const findBlogs = async ({
     total,
   };
 };
-
-export const updateBlogPublishedBySlug = async (
-  slug: string,
-  published: boolean,
-): Promise<boolean> => {
-  const updated = await db
-    .update(db._schema.blogs)
-    .set({ published })
-    .where(eq(db._schema.blogs.slug, slug))
-    .returning({ id: db._schema.blogs.id });
-  return updated.length > 0;
-};

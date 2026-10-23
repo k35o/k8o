@@ -26,8 +26,8 @@ export async function GET(
       Vary: 'Accept',
       // CopyMarkdown やエージェントからの再取得を関数実行なしで返せるよう CDN に
       // キャッシュさせる。ただし公開状態で 200 と 404 が変わるのに、この応答には
-      // キャッシュタグが無く、公開を切り替えたあとの revalidateTag では CDN から
-      // 消えない。非公開に戻した記事の本文が残る時間を抑えるため、数分にとどめる
+      // キャッシュタグが無く、CDN から狙って消せない。非公開に戻した記事の本文が
+      // 残る時間を抑えるため、数分にとどめる
       'Cache-Control': 'public, s-maxage=300, stale-while-revalidate=300',
     },
   });
