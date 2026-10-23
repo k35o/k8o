@@ -34,7 +34,6 @@
     "@repo/database": "workspace:*",
     "@repo/helpers": "workspace:*",
     "@repo/mdx-preset": "workspace:*",
-    "@vercel/analytics": "2.0.1",
     "@vercel/speed-insights": "2.0.0",
     "budoux": "0.9.3",
     "hono": "catalog:",
