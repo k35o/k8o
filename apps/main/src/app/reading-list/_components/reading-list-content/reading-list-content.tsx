@@ -3,34 +3,30 @@
 import { Button, Card, Drawer, ListIcon, SubscribeIcon } from '@k8ordo/ui';
 import { useQueryStates } from 'nuqs';
 import { useCallback, useMemo, useState } from 'react';
-import type { FC, ReactNode } from 'react';
+import type { FC } from 'react';
+
+import type { ReadingList } from '@/features/reading-list/interface/queries';
+import { useLiveSnapshot } from '@/shared/api/live-snapshot';
+import { publicApi, readOrNull } from '@/shared/api/public-api';
 
 import type { SortOrder } from '../../_utils/constants';
 import { readingListParsers } from '../../_utils/search-params';
 import { FilterBar } from '../filter-bar';
+import { ReadingCard } from '../reading-card';
 
 import styles from './reading-list-content.module.css';
 
-type ArticleMeta = {
-  id: number;
-  title: string;
-  publishedAt: string;
-  sourceId: number;
-};
+const loadReadingList = (): Promise<ReadingList | null> =>
+  readOrNull(publicApi.public['reading-list'].$get());
 
-type Source = {
-  id: number;
-  title: string;
-  articleCount: number;
-};
-
-type Props = {
-  articles: readonly ArticleMeta[];
-  sources: readonly Source[];
-  cards: Readonly<Record<number, ReactNode>>;
-};
-
-export const ReadingListContent: FC<Props> = ({ articles, sources, cards }) => {
+export const ReadingListContent: FC<{ readingList: ReadingList }> = ({
+  readingList,
+}) => {
+  const { articles, sources } = useLiveSnapshot(
+    'reading-list',
+    loadReadingList,
+    readingList,
+  );
   const [params, setParams] = useQueryStates(readingListParsers);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 
@@ -65,7 +61,7 @@ export const ReadingListContent: FC<Props> = ({ articles, sources, cards }) => {
       if (lowerQuery && !article.title.toLowerCase().includes(lowerQuery)) {
         return false;
       }
-      if (sourceIds.length > 0 && !sourceIds.includes(article.sourceId)) {
+      if (sourceIds.length > 0 && !sourceIds.includes(article.source.id)) {
         return false;
       }
       return true;
@@ -78,6 +74,12 @@ export const ReadingListContent: FC<Props> = ({ articles, sources, cards }) => {
     });
   }, [articles, query, sourceIds, sortOrder]);
 
+  const articleCountBySource = new Map<number, number>();
+  for (const article of articles) {
+    const count = articleCountBySource.get(article.source.id) ?? 0;
+    articleCountBySource.set(article.source.id, count + 1);
+  }
+
   const filterBarProps = {
     onQueryChange: handleQueryChange,
     onSortChange: handleSortChange,
@@ -85,7 +87,11 @@ export const ReadingListContent: FC<Props> = ({ articles, sources, cards }) => {
     query,
     sortOrder,
     sourceIds,
-    sources,
+    sources: sources.map((source) => ({
+      id: source.id,
+      title: source.title,
+      articleCount: articleCountBySource.get(source.id) ?? 0,
+    })),
   };
 
   return (
@@ -129,7 +135,18 @@ export const ReadingListContent: FC<Props> = ({ articles, sources, cards }) => {
           </div>
         ) : (
           <div className={styles.list}>
-            {filteredArticles.map((article) => cards[article.id])}
+            {filteredArticles.map((article) => (
+              <ReadingCard
+                description={article.description}
+                imageUrl={article.imageUrl}
+                key={article.id}
+                publishedAt={article.publishedAt}
+                sourceTitle={article.source.title}
+                summary={article.summary}
+                title={article.title}
+                url={article.url}
+              />
+            ))}
           </div>
         )}
       </div>

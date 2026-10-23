@@ -1,25 +1,24 @@
-import { DB_CONTENT_CACHE_TAG } from '@repo/helpers/cache/main-cache-tags';
-import { cacheLife, cacheTag } from 'next/cache';
+import type { InferResponseType } from 'hono/client';
+import { cacheLife } from 'next/cache';
 
-import {
-  getArticleSources as _getArticleSources,
-  getArticles as _getArticles,
-} from '../application/reading-list';
+import type { publicApi } from '@/shared/api/public-api';
 
-export async function getArticles() {
+import { getArticleSources, getArticles } from '../application/reading-list';
+
+// ビルド時の値はブラウザで api の GET の値に差し替えるので、型を api の応答にそろえ、
+// 形がずれたら型検査で止める
+export type ReadingList = InferResponseType<
+  (typeof publicApi)['public']['reading-list']['$get'],
+  200
+>;
+
+export async function getReadingList(): Promise<ReadingList> {
   'use cache';
-  cacheLife('hours');
-  cacheTag(DB_CONTENT_CACHE_TAG);
+  cacheLife('max');
 
-  const articles = await _getArticles();
-  return articles;
-}
-
-export async function getArticleSources() {
-  'use cache';
-  cacheLife('hours');
-  cacheTag(DB_CONTENT_CACHE_TAG);
-
-  const articleSources = await _getArticleSources();
-  return articleSources;
+  const [articles, sources] = await Promise.all([
+    getArticles(),
+    getArticleSources(),
+  ]);
+  return { articles, sources };
 }
