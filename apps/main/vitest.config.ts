@@ -48,7 +48,7 @@ export default defineConfig({
             TZ: 'UTC',
           },
           name: { label: 'app test', color: 'yellow' },
-          include: ['src/app/**/*.test.{ts,tsx}'],
+          include: ['src/app/**/*.test.{ts,tsx}', 'next.config.test.ts'],
         },
       },
       {
