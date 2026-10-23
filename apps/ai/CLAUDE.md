@@ -114,7 +114,7 @@ GitHub の tool（`list_github_repos`・`read_github_file`・`search_github_code
 - 読む口は、リポジトリの一覧（`GET /users/k35o/repos`）、ファイルとディレクトリ（contents を object のメディアタイプで読む。1 MB を超えるファイルは GitHub が中身を返さない）、コードの検索（text-match の断片）、issue と PR の検索、issue と PR の本文・コメント・枝・変更したファイル。PR の変更後のファイルは、`read_github_issue` が返す head の SHA を `read_github_file` の `ref` に渡して読む
 - fine-grained PAT は GitHub のすべての公開リポジトリを読めるので、owner は tool の入力に取らずにコードの定数（`GITHUB_OWNER`）にする。検索は `user:k35o` か `repo:k35o/<repo>` を足し、検索語の修飾子で範囲が広がっても、結果を k35o のものに絞る。owner を入力に取ると、だれでも作れるリポジトリが注入の入口になり、tool の引数が宛先を選べる送信にもなるため
 - 宛先は `https://api.github.com` に固定する。モデルが決めた値は区切りごとに符号化して pathname に置き、空・`.`・`..` の区切りは弾く。リダイレクトは追わずにエラーにする。応答の中の URL（`Link` を含む）はたどらずにモデルにも渡さず、次のページは `page` を渡させて組み直す
-- トークンは `GITHUB_READ_TOKEN`（読み取り専用の fine-grained PAT）で、本番と preview で別の PAT を Vercel に Sensitive で置く。Sensitive でない値は、prebuilt の workflow の `vercel pull` が、依存のコードも動くビルドの runner に書き出すため。実行時にだけ読むので、turbo.json と workflow には足さない。`GITHUB_TOKEN` は Actions のトークンで main が使っているので、この名前は使わない
+- トークンは `GITHUB_READ_TOKEN`（読み取り専用の fine-grained PAT）で、本番と preview で別の PAT を Vercel に Sensitive で置く。Sensitive でない値は、prebuilt の workflow の `vercel pull` が、依存のコードも動くビルドの runner に書き出すため。実行時にだけ読むので、turbo.json と workflow には足さない。`GITHUB_TOKEN` は Actions のトークンの名前なので、使わない
 - 未設定のときは tool がエラーを返すだけで、会話は続く。値に英数字と `_` のほかの文字（前後を含む改行など）があるときも、GitHub を呼ばずに値を入れない文のエラーにする。ヘッダーに使えない文字で fetch が投げる例外の文には、トークンがまるごと入るため
 - エラー文は tool の結果として保存され、毎ターン送り返される。そのため、GitHub の応答の本文も、リポジトリ名やパスも入れずに、状態のコードから決まった文を作る。ログ（`console.error`）も、口の形と状態のコードだけを残す（404 と 422 は残さない）。上限（403・429）のときは待つ秒数を返し、自分では再試行しない
 - 出力は保存しない（`WITHHOLDS_OUTPUT` が true。「会話の不変条件」）。再読み込みのあとは、tool の出力が決まった文になり、そのあとの思考の過程は出ない。次のターンで中身が要るときは、Claude が同じ入力で読み直す

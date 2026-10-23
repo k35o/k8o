@@ -208,13 +208,9 @@ jobs:
           echo "::add-mask::$AI_TURSO_AUTH_TOKEN"
           pnpm -F @repo/ai-database migrate
 
-      # sensitive の env var は `vercel pull` で値が取れない（`[SENSITIVE]` に置き換わる）ため、ビルド時に必要な
-      # GITHUB_TOKEN は Actions のトークンで代替する（main のトップページの contributions 取得で使う）
       - name: Build preview
         if: ${{ env.DEPLOY_TARGET == 'preview' }}
         working-directory: .github/vercel-cli
-        env:
-          GITHUB_TOKEN: ${{ github.token }}
         run: pnpm exec vercel build --cwd "$GITHUB_WORKSPACE"
 
       # production の Turso のトークンも sensitive で pull できないため、接続情報は production Environment の
@@ -225,7 +221,6 @@ jobs:
         if: ${{ env.DEPLOY_TARGET == 'production' }}
         working-directory: .github/vercel-cli
         env:
-          GITHUB_TOKEN: ${{ github.token }}
           K8O_TURSO_DATABASE_URL: ${{ matrix.app == 'main' && secrets.K8O_TURSO_DATABASE_URL || '' }}
           K8O_TURSO_AUTH_TOKEN: ${{ matrix.app == 'main' && secrets.K8O_TURSO_READONLY_AUTH_TOKEN || '' }}
           AI_TURSO_DATABASE_URL: ${{ matrix.app == 'ai' && secrets.AI_TURSO_DATABASE_URL || '' }}

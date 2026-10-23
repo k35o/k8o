@@ -3,8 +3,6 @@ import type { Metadata } from 'next';
 import Image from 'next/image';
 
 import { EmailTooltip } from './_components/email-tooltip';
-import { ActivityErrorBoundary } from './_components/error-boundary';
-import { GitHubContributionGraph } from './_components/github-contribution-graph';
 import { HomeJsonLd } from './_components/json-ld';
 import { RecentBlogs } from './_components/recent-blogs';
 import { SiteEntrySection } from './_components/site-entry-section';
@@ -51,26 +49,9 @@ export default function Home() {
         <div className={styles.activity}>
           <div>
             <Heading level="h2">Activity</Heading>
-            <p className={styles.activityLead}>
-              最近の発信と、GitHubでの活動の記録。
-            </p>
+            <p className={styles.activityLead}>最近の発信の記録。</p>
           </div>
-          <ActivityErrorBoundary
-            fallback={
-              <div className={styles.activityFallback}>
-                <RecentBlogs />
-              </div>
-            }
-          >
-            <div className={styles.activityGrid}>
-              <div className={styles.contributions}>
-                <GitHubContributionGraph />
-              </div>
-              <div className={styles.recentBlogs}>
-                <RecentBlogs />
-              </div>
-            </div>
-          </ActivityErrorBoundary>
+          <RecentBlogs />
         </div>
 
         <SiteEntrySection kind="reading" />
