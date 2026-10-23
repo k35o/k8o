@@ -1,4 +1,3 @@
-import type { BaselineFeature } from '@repo/helpers/baseline/model';
 import {
   RECENT_CHANGES_LIMIT,
   RECENT_CHANGES_WINDOW_MS,
@@ -7,6 +6,7 @@ import {
 } from '@repo/helpers/baseline/select';
 import type { BrowserMinVersions } from '@repo/helpers/browser/detect-browser';
 import { BROWSER_SUPPORT_CACHE_TAG } from '@repo/helpers/cache/main-cache-tags';
+import type { InferResponseType } from 'hono/client';
 import { cacheLife, cacheTag } from 'next/cache';
 
 import { getBrowserMinVersions as _getBrowserMinVersions } from '@/features/browser-support/application/min-versions';
@@ -14,16 +14,24 @@ import { findRecentFeatureChanges } from '@/features/browser-support/infrastruct
 import type { BrowserSupportFeatureChange } from '@/features/browser-support/infrastructure/browser-support-change-repository';
 import { findActiveBaselineDataset } from '@/features/browser-support/infrastructure/browser-support-dataset-repository';
 import type { ActiveBaselineDataset } from '@/features/browser-support/infrastructure/browser-support-dataset-repository';
+import type { publicApi } from '@/shared/api/public-api';
+
+type BrowserSupportApi = (typeof publicApi)['public']['browser-support'];
+
+// ビルド時の値はブラウザで api の GET の値に差し替えるので、型を api の応答にそろえ、
+// 形がずれたら型検査で止める
+export type BrowserSupportFeature = InferResponseType<
+  BrowserSupportApi['features'][':featureId']['$get'],
+  200
+>['feature'];
+export type BrowserAvailability = BrowserSupportFeature['support'][number];
+export type SupportStatus = BrowserSupportFeature['status'];
 
 // active データセットの共有ローダー。フィードと MDX の feature 解決が個別に DB を
-// 読まないよう、キャッシュ境界をここに一本化する。鮮度は TTL ではなく api の同期
-// 成功時の /api/revalidate(タグ再検証)で担保するため、寿命は 'days' に寄せる。
-// 'minutes' にすると <BrowserSupportStatus> を埋め込んだブログ記事の静的シェルまで
-// 分単位の ISR + DB 依存になってしまう。
+// 読まないよう、キャッシュ境界をここに一本化する
 async function getActiveDataset(): Promise<ActiveBaselineDataset | null> {
   'use cache';
-  cacheLife('days');
-  cacheTag(BROWSER_SUPPORT_CACHE_TAG);
+  cacheLife('max');
 
   return findActiveBaselineDataset();
 }
@@ -34,7 +42,7 @@ export type BrowserSupportMeta = {
 };
 
 export async function getBrowserSupportFeatures(): Promise<{
-  features: BaselineFeature[];
+  features: BrowserSupportFeature[];
   nowMs: number;
   // データ同期前(空DB)は null。呼び出し側は空状態を表示する。
   meta: BrowserSupportMeta | null;
@@ -74,7 +82,7 @@ export async function getRecentBrowserSupportChanges(): Promise<
 
 export async function getFeatureStatus(
   featureId: string,
-): Promise<BaselineFeature | null> {
+): Promise<BrowserSupportFeature | null> {
   const active = await getActiveDataset();
   if (active === null) {
     return null;
@@ -88,9 +96,4 @@ export function getBrowserMinVersions(): BrowserMinVersions {
   return _getBrowserMinVersions();
 }
 
-export type {
-  BaselineBrowserSupport as BrowserAvailability,
-  BaselineFeature as BrowserSupportFeature,
-  BaselineSupportStatus as SupportStatus,
-} from '@repo/helpers/baseline/model';
 export type { BrowserSupportFeatureChange } from '@/features/browser-support/infrastructure/browser-support-change-repository';

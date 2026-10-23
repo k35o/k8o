@@ -15,12 +15,13 @@
   - `features/<feature>/infrastructure/` - DB、外部API、ファイルシステムなど外部接続の詳細。処理が太くなったら application からここへ切り出す
   - UIコンポーネントは置かない。UIは必ず `app/**/_components`
   - ブラウザからの書き込み（閲覧数・お問い合わせ・フィードバック・Push 購読・CSP 違反とエラーのレポート）は持たない。UIからは `shared/api/public-api.ts` の hc で api の公開ルート（`apps/api/CLAUDE.md`）を呼び、CSP 違反は `next.config.ts` の headers() で返す Reporting-Endpoints で api に送らせる。Server Action は作らない
+  - ブラウザで api の公開の GET の値に差し替える表示は、server の部品がビルド時の値を読んで client の部品に渡し、client の部品が `shared/api/live-snapshot.ts` の `useLiveSnapshot` で差し替える。GET は `shared/api/public-api.ts` の `readOrNull` で読み、読めなければビルド時の値のまま描く
 - **content/** - ブログ記事の中身。`content/blog/<slug>/` に `article.mdx` と、その記事だけが使う `_images/`・`_components/`・`article.module.css` を置く
   - `app/blog/[slug]/page.tsx` が公開済みの記事を `generateStaticParams` で挙げ、MDX を動的 import して描く。OG は `app/blog/[slug]/og.png/route.ts`。記事ごとの `layout.tsx`・`opengraph-image.tsx` は作らない
   - 記事が使う部品（`BrowserSupportStatus`・`PlaygroundEmbed`・`Playground`・`LinkCard`・`Image`・`FloatImage`・`Alert`）は `app/blog/_components/blog-mdx-components` の `blogMdxComponents` で渡す。MDX は `@/app/...` を import しない（`features/blog/application/article-files.test.ts` が確かめる）。相対の import（`./_images`・`./_components`・`./article.module.css`）と、パッケージの import は使ってよい
   - 見出し・段落・リンク・コードなどの部品は `app/_components/mdx-base`。ルートの `mdx-components.tsx` はこれだけを返し、スライドの MDX も使う
 - **shared/** - apps/main 内で横断利用する非UI共通処理（認証、MDX、OGP、browser API、api クライアント、site metadataなど）。UIコンポーネントや `cn` は置かない
-- **mocks/** - Storybook の MSW ハンドラ（`handlers.ts`）と、features のテストで `next/cache` を差し替えるモック（`next-cache.ts`）
+- **mocks/** - Storybook の MSW ハンドラ（`handlers.ts`）と、features のテストで `next/cache` を差し替えるモック（`next-cache.ts`）。api への GET は既定で 503 を返すので、差し替える表示はビルド時の値のまま描かれる。差し替えを確かめる story だけが `beforeEach` の `msw.use` で応答を決める
 
 依存方向:
 
@@ -40,14 +41,14 @@ Next.js の `cacheLife` は `features/*/interface` に置く。`app` のUIコン
 
 - `cacheLife('minutes')` - GitHub のコントリビューション、Push 通知の履歴、browser-support の機能一覧と最近の更新など、短時間で鮮度が必要な読み取り
 - `cacheLife('hours')` - reading-list の記事・ソース一覧と、そのフィード
-- `cacheLife('days')` - リンクカードの OGP メタデータと、api の同期後のタグ再検証で鮮度を保つ browser-support の active データセット
-- `cacheLife('max')` - MDX metadata、静的な site metadata、`db-content` タグで再検証する talks / tags / blogs / slides、ビルド時に近い安定データ
+- `cacheLife('days')` - リンクカードの OGP メタデータ
+- `cacheLife('max')` - browser-support の active データセット、MDX metadata、静的な site metadata、`db-content` タグで再検証する talks / tags / blogs / slides、ビルド時に近い安定データ
 
 `/api/revalidate` の Route Handler は、受け取ったタグを `revalidateTag` で再検証する。
 
 DB 由来のキャッシュ（talks / tags / blogs / slides の一覧・詳細、reading-list の記事・ソース一覧）には `cacheTag('db-content')`（`@repo/helpers/cache/main-cache-tags`）を付与する。api（`apps/api`）は reading-list の同期後に `/api/revalidate`（`REVALIDATE_SECRET` で認可）を叩いてこのタグを再検証する。記事の公開・非公開はマイグレーションでだけ変わり、本番ではマイグレーションを流したあとに main をビルドして出すので、公開の切り替えは再検証に頼らない。
 
-browser-support（機能一覧）は api の日次 cron が web-features の正典配布元（GitHub Releases）から取り込んで DB に保存し、main は `cacheTag('browser-support')` 付きの `'use cache'` で active データセットを読む。api は同期成功後に `/api/revalidate` でこのタグを再検証する。ブラウザ最低版フロア（RootLayout が読む）だけは実行時 I/O を持たないコミット済み生成物で、`pnpm run -F main generate:browser-min-versions [version]` で再生成する。同じ版からリポジトリ直下の `.browserslistrc`（Next.js の Lightning CSS / SWC のターゲット）も生成するので、手で編集しない。active データセットとずれると外形監視（`.github/workflows/browser-support-monitor.yml`）が k8o-bot 名義で再生成 PR を作り、自動マージする。
+browser-support（機能一覧）は api の日次 cron が web-features の正典配布元（GitHub Releases）から取り込んで DB に保存する。main はビルド時に active データセットを読んで描き、記事の `<BrowserSupportStatus>` とかどまるラボの対応状況は、ブラウザで api の `GET /public/browser-support/features/:featureId` の値に差し替える。機能一覧と最近の更新は `cacheTag('browser-support')` を付けて読み、api は同期成功後に `/api/revalidate` でこのタグを再検証する。ブラウザ最低版フロア（RootLayout が読む）だけは実行時 I/O を持たないコミット済み生成物で、`pnpm run -F main generate:browser-min-versions [version]` で再生成する。同じ版からリポジトリ直下の `.browserslistrc`（Next.js の Lightning CSS / SWC のターゲット）も生成するので、手で編集しない。active データセットとずれると外形監視（`.github/workflows/browser-support-monitor.yml`）が k8o-bot 名義で再生成 PR を作り、自動マージする。
 
 ## セキュリティヘッダー
 

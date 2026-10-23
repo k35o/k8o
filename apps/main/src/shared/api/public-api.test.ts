@@ -1,6 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
-import { publicApi } from './public-api';
+import { publicApi, readOrNull } from './public-api';
 
 const fetchMock = vi.fn<typeof fetch>();
 const connection = { onLine: true };
@@ -113,6 +113,48 @@ describe('publicApi', () => {
       await expect(outcome).resolves.toStrictEqual(
         new TypeError('Failed to fetch'),
       );
+    });
+  });
+});
+
+describe('readOrNull', () => {
+  const FEATURE_URL =
+    'https://api.k8o.me/public/browser-support/features/popover';
+
+  const readFeature = (): Promise<unknown> =>
+    readOrNull(
+      publicApi.public['browser-support'].features[':featureId'].$get({
+        param: { featureId: 'popover' },
+      }),
+    );
+
+  describe('正常系', () => {
+    it('2xx なら本文の JSON を返す', async () => {
+      fetchMock.mockResolvedValue(
+        Response.json({ feature: { featureId: 'popover' } }),
+      );
+
+      await expect(readFeature()).resolves.toStrictEqual({
+        feature: { featureId: 'popover' },
+      });
+      expect(fetchMock).toHaveBeenCalledExactlyOnceWith(
+        FEATURE_URL,
+        expect.objectContaining({ method: 'GET' }),
+      );
+    });
+  });
+
+  describe('異常系', () => {
+    it('2xx 以外なら null を返す', async () => {
+      fetchMock.mockResolvedValue(new Response(null, { status: 503 }));
+
+      await expect(readFeature()).resolves.toBeNull();
+    });
+
+    it('オンラインのまま届かなかったら null を返す', async () => {
+      fetchMock.mockRejectedValue(new TypeError('Failed to fetch'));
+
+      await expect(readFeature()).resolves.toBeNull();
     });
   });
 });
