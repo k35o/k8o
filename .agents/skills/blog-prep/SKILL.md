@@ -1,6 +1,6 @@
 ---
 name: blog-prep
-description: k8oブログ記事の技術的準備ワークフロー。MDXファイル、レイアウト、OGP画像、Playgroundコンポーネント、マイグレーションなど必要なファイル一式を作成。記事の執筆は別途行う。
+description: k8oブログ記事の技術的準備ワークフロー。MDXファイル、Playgroundコンポーネント、マイグレーションなど必要なファイル一式を作成。記事の執筆は別途行う。
 ---
 
 # ブログ記事準備スキル
@@ -12,10 +12,9 @@ description: k8oブログ記事の技術的準備ワークフロー。MDXファ�
 ### このスキルが行うこと
 
 - ブログ記事に必要なファイル構造の作成
-- layout.tsx、opengraph-image.tsxの作成
 - Playgroundコンポーネントの雛形作成
 - データベースマイグレーションの作成
-- 空のpage.mdxファイルの作成
+- 空のarticle.mdxファイルの作成
 
 ### このスキルが行わないこと
 
@@ -27,23 +26,23 @@ description: k8oブログ記事の技術的準備ワークフロー。MDXファ�
 新しいブログ記事を公開するには、以下のファイルが必要：
 
 ```
-apps/main/src/app/blog/(articles)/{slug}/
-├── page.mdx              # 記事本体
-├── layout.tsx            # メタデータ・レイアウト
-└── opengraph-image.tsx   # OGP画像生成
+apps/main/src/content/blog/{slug}/
+├── article.mdx   # 記事本体
+├── _images/      # 記事の画像（使う場合）
+└── _components/  # この記事だけの部品（使う場合）
 ```
 
 | ファイル | 必須 |
 |---------|------|
-| `page.mdx` | ✅ |
-| `layout.tsx` | ✅ |
-| `opengraph-image.tsx` | ✅ |
+| `article.mdx` | ✅ |
 | Playground (`apps/main/src/app/_components/playgrounds/{feature-name}/`) | デモがある場合 |
 | マイグレーション (`packages/database/migrations/`) | ✅ |
 
+記事のページ（`/blog/{slug}`）のレイアウトとメタデータ、OGP画像（`/blog/{slug}/og.png`）は、`apps/main/src/app/blog/[slug]/` が全記事に共通で作る。記事ごとの `layout.tsx` や `opengraph-image.tsx` は作らない。
+
 ## ファイルテンプレート
 
-### 1. page.mdx（雛形）
+### 1. article.mdx（雛形）
 
 ```mdx
 ---
@@ -55,8 +54,6 @@ featureIds:
   - feature-id
 ---
 
-import { PlaygroundEmbed } from '@/app/_components/playgrounds';
-
 # タイトル
 
 <BrowserSupportStatus featureId="feature-id" />
@@ -66,62 +63,23 @@ import { PlaygroundEmbed } from '@/app/_components/playgrounds';
 <PlaygroundEmbed demo="デモタイトル" sectionId="my-feature" />
 ```
 
-- `featureIds` には紹介する Web 機能の web-features の ID を書き、H1 の直下に同じ ID の `<BrowserSupportStatus featureId="..." />` を置く。`BrowserSupportStatus` は `mdx-components.tsx` に登録されているので import しない。`featureIds` に書いた機能は `/browser-support` からこの記事へリンクされる。Web 機能を紹介しない記事では、`featureIds` と `<BrowserSupportStatus>` を書かない
-- `<PlaygroundEmbed>` の `sectionId` にはセクションの `id`、`demo` にはデモの `title` を渡す（`demo` を省くとセクションの全デモが並ぶ）。Playground が無い記事では、import と `<PlaygroundEmbed>` を書かない
+- 記事で使う部品（`BrowserSupportStatus`・`PlaygroundEmbed`・`Playground`・`LinkCard`・`Image`・`FloatImage`・`Alert`）は `apps/main/src/app/blog/_components/blog-mdx-components` の `blogMdxComponents` で渡されるので、import しない。MDX から `@/app/...` を import すると、`features/blog/application/article-files.test.ts` が落ちる
+- 記事の画像は `_images/` に、この記事だけの部品は `_components/` に置き、`./_images/...`・`./_components/...` の相対パスで import する
+- `featureIds` には紹介する Web 機能の web-features の ID を書き、H1 の直下に同じ ID の `<BrowserSupportStatus featureId="..." />` を置く。`featureIds` に書いた機能は `/browser-support` からこの記事へリンクされる。Web 機能を紹介しない記事では、`featureIds` と `<BrowserSupportStatus>` を書かない
+- `<PlaygroundEmbed>` の `sectionId` にはセクションの `id`、`demo` にはデモの `title` を渡す（`demo` を省くとセクションの全デモが並ぶ）。Playground が無い記事では、`<PlaygroundEmbed>` を書かない
+- OGP画像には記事のタイトルが入る。コードが主役の記事では、載せたいコードブロックの1つに `// [!og]` を書くと、そのコードも描かれる
 
-### 2. layout.tsx
+### 2. 数式（KaTeX）を使う記事
 
-`LayoutProps`の型パラメータには、実際のブログスラグを指定する（例: `/blog/my-article`）。
+数式の変換（`@repo/mdx-preset` の remark・rehype の preset。remark-math と KaTeX）は `next.config.ts` で全記事に効いているため、本文では `$...$`・`$$...$$`・` ```math ` フェンスがそのまま使える。KaTeX の CSS は記事が自分で持つので、数式を使う記事の `article.mdx` が import する。frontmatter の直後に以下の 1 行を追加する（縦書きの調整も同じ CSS に入っている）:
 
-```typescript
-import type { Metadata } from 'next';
-
-import { BlogLayout } from '@/app/blog/_components/blog-layout';
-import { buildBlogMetadata } from '@/features/blog/interface/metadata';
-
-const slug = 'my-article'; // 実際のスラグに置き換える
-
-export function generateMetadata(): Promise<Metadata> {
-  return buildBlogMetadata(slug);
-}
-
-// 実際のスラグに置き換える
-export default function Layout({ children }: LayoutProps<'/blog/my-article'>) {
-  return <BlogLayout slug={slug}>{children}</BlogLayout>;
-}
-```
-
-#### 数式（KaTeX）を使う記事の場合
-
-数式の変換（`@repo/mdx-preset` の remark・rehype の preset。remark-math と KaTeX）は `next.config.ts` で全記事に効いているため、本文では `$...$`・`$$...$$`・` ```math ` フェンスがそのまま使える。ただし **KaTeX の CSS はグローバルには読み込まれない**（数式を使わない記事に配信しないため）。数式を使う記事は `layout.tsx` の先頭に以下の 2 行を追加する:
-
-```typescript
+```mdx
 import '@repo/mdx-preset/katex.css';
-import '@/app/blog/_styles/katex-vertical.css';
 ```
 
-忘れると `.katex-mathml` が隠れず**数式が二重表示に崩れる**。既存の例: `apps/main/src/app/blog/(articles)/font-family-math/layout.tsx`。
+今の Next のビルドでは、記事の CSS は `/blog/[slug]` の1つのルートにまとまり、ほかの数式の記事の import ですべての記事のページに載る。そのため import を忘れても見た目では気づけない。抜けは `apps/main/src/features/blog/application/article-files.test.ts` が落とす。既存の例: `apps/main/src/content/blog/font-family-math/article.mdx`。
 
-### 3. opengraph-image.tsx
-
-```typescript
-import { renderBlogOgImage } from '@/app/blog/_components/blog-og-image';
-
-export const alt = '記事タイトル';
-export const size = {
-  width: 1200,
-  height: 630,
-};
-
-export const contentType = 'image/png';
-
-export default function Image() {
-  // 実際のスラグに置き換える
-  return renderBlogOgImage('my-article');
-}
-```
-
-### 4. Playgroundコンポーネント（デモがある場合）
+### 3. Playgroundコンポーネント（デモがある場合）
 
 ディレクトリ名は機能の内容がわかる名前を使用する（例: `caret-position-from-point`, `event-timing`）。
 
@@ -296,10 +254,8 @@ grep -rhoE "INSERT INTO tags [^;]*'[^']+'" packages/database/migrations/*.sql \
 
 ### ファイル作成
 
-- [ ] `page.mdx` 雛形作成（Web 機能の記事なら `featureIds` と `<BrowserSupportStatus>` の ID をそろえる）
-- [ ] `layout.tsx` 作成
-- [ ] 数式（`$`・`$$`・` ```math `）を使う場合: `layout.tsx` に KaTeX CSS を import
-- [ ] `opengraph-image.tsx` 作成
+- [ ] `apps/main/src/content/blog/{slug}/article.mdx` 雛形作成（Web 機能の記事なら `featureIds` と `<BrowserSupportStatus>` の ID をそろえる）
+- [ ] 数式（`$`・`$$`・` ```math `）を使う場合: `article.mdx` に KaTeX の CSS を import
 - [ ] Playgroundのデモと `.module.css` 作成（必要な場合）
 - [ ] Storybookストーリー作成（必要な場合）
 - [ ] `playgrounds/sections.ts` 更新（必要な場合）
