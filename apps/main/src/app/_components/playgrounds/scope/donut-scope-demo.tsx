@@ -2,7 +2,6 @@
 
 import { Button } from '@k8ordo/ui';
 import { cn } from '@repo/helpers/cn';
-import Image from 'next/image';
 import { useState } from 'react';
 
 import styles from './donut-scope-demo.module.css';
@@ -46,17 +45,21 @@ export function DonutScopeDemo() {
       <div className={cn('demo-article', styles.article)}>
         <p className={styles.caption}>.article内の画像（スタイル適用対象）</p>
         <div className={styles.images}>
-          <Image
+          <img
             alt="サンプル画像1"
             className={styles.image}
+            decoding="async"
             height={80}
+            loading="lazy"
             src="/icon.png"
             width={96}
           />
-          <Image
+          <img
             alt="サンプル画像2"
             className={styles.image}
+            decoding="async"
             height={80}
+            loading="lazy"
             src="/icon.png"
             width={96}
           />
@@ -67,17 +70,21 @@ export function DonutScopeDemo() {
             .nested-content内の画像（除外される）
           </p>
           <div className={styles.nestedImages}>
-            <Image
+            <img
               alt="ネストされた画像1"
               className={styles.image}
+              decoding="async"
               height={80}
+              loading="lazy"
               src="/icon.png"
               width={96}
             />
-            <Image
+            <img
               alt="ネストされた画像2"
               className={styles.image}
+              decoding="async"
               height={80}
+              loading="lazy"
               src="/icon.png"
               width={96}
             />

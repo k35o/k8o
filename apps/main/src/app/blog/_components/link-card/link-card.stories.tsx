@@ -1,3 +1,5 @@
+import { expect, waitFor } from 'storybook/test';
+
 import preview from '../../../../../.storybook/preview';
 import { LinkCardView } from './link-card-view';
 
@@ -38,5 +40,18 @@ export const NoDescription = meta.story({
 export const NoImage = meta.story({
   args: {
     metadata: { title, description },
+  },
+});
+
+export const BrokenImage = meta.story({
+  args: {
+    metadata: { title, description, imageUrl: '/link-card-missing-image.png' },
+  },
+  play: async ({ canvas, canvasElement }) => {
+    // 読み込めない画像は、画像の枠ごと消してテキストだけのカードにする
+    await waitFor(async () => {
+      await expect(canvasElement.querySelector('img')).toBeNull();
+    });
+    await expect(canvas.getByText(title)).toBeInTheDocument();
   },
 });

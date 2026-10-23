@@ -2,7 +2,6 @@
 
 import { Button } from '@k8ordo/ui';
 import { cn } from '@repo/helpers/cn';
-import Image from 'next/image';
 import { useState } from 'react';
 
 import styles from './scope-limit-demo.module.css';
@@ -48,10 +47,12 @@ export function ScopeLimitDemo() {
       <div className={cn('demo-article-limit', styles.article)}>
         <p className={styles.caption}>.article（スコープルート）</p>
         <div className={styles.images}>
-          <Image
+          <img
             alt="記事の画像"
             className={styles.image}
+            decoding="async"
             height={80}
+            loading="lazy"
             src="/icon.png"
             width={96}
           />
@@ -62,10 +63,12 @@ export function ScopeLimitDemo() {
             .nested-content（直接の子 → 常に除外）
           </p>
           <div className={styles.nestedImages}>
-            <Image
+            <img
               alt="直接の子の画像"
               className={styles.image}
+              decoding="async"
               height={80}
+              loading="lazy"
               src="/icon.png"
               width={96}
             />
@@ -79,10 +82,12 @@ export function ScopeLimitDemo() {
               .nested-content（孫要素 → :scope &gt;の時は適用される）
             </p>
             <div className={styles.nestedImages}>
-              <Image
+              <img
                 alt="孫要素の画像"
                 className={styles.image}
+                decoding="async"
                 height={80}
+                loading="lazy"
                 src="/icon.png"
                 width={96}
               />

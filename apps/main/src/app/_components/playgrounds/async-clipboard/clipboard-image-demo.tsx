@@ -1,7 +1,6 @@
 'use client';
 
 import { Button, FormControl, Select, useToast } from '@k8ordo/ui';
-import Image from 'next/image';
 import { useRef, useState } from 'react';
 import type { FC } from 'react';
 
@@ -92,13 +91,14 @@ export const ClipboardImageDemo: FC = () => {
             />
           )}
         />
-        <Image
+        <img
           alt={`コピーする画像${selectedSrc}`}
           className={styles.image}
+          decoding="async"
           height={128}
+          loading="lazy"
           ref={ref}
-          src={selectedSrc === '1' ? k8oIcon : primaryIcon}
-          unoptimized
+          src={(selectedSrc === '1' ? k8oIcon : primaryIcon).src}
           width={128}
         />
         <Button onClick={() => void copyText()}>PNG画像をコピーする</Button>
@@ -111,12 +111,13 @@ export const ClipboardImageDemo: FC = () => {
               権限があれば、外部でコピーした画像も貼り付けられます
             </p>
           </div>
-          <Image
+          <img
             alt="ペーストされた画像"
             className={styles.image}
+            decoding="async"
             height={128}
+            loading="lazy"
             src={src}
-            unoptimized
             width={128}
           />
         </div>

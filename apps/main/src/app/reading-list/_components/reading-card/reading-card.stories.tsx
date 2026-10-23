@@ -1,4 +1,4 @@
-import { expect, within } from 'storybook/test';
+import { expect, waitFor, within } from 'storybook/test';
 
 import preview from '../../../../../.storybook/preview';
 import { ReadingCard } from './reading-card';
@@ -58,5 +58,22 @@ export const WithoutSummary = meta.story({
       canvas.getByText(/Reactのルーティングには主に/u),
     ).toBeInTheDocument();
     await expect(canvas.queryByText('AI要約')).not.toBeInTheDocument();
+  },
+});
+
+export const BrokenImage = meta.story({
+  args: {
+    imageUrl: '/reading-card-missing-image.png',
+  },
+  play: async ({ canvasElement }) => {
+    // 読み込めない画像は消すが、画像の枠は残してレイアウトを保つ
+    await waitFor(async () => {
+      await expect(canvasElement.querySelector('img')).toBeNull();
+    });
+    await expect(
+      within(canvasElement).getByText(
+        'Reactの新しいルーティングライブラリ、TanStackRouterを学ぶ',
+      ),
+    ).toBeInTheDocument();
   },
 });

@@ -1,8 +1,9 @@
 'use client';
 
-import Image from 'next/image';
 import { useState } from 'react';
 import type { FC } from 'react';
+
+import { replayImageError } from '@/shared/browser/replay-image-error';
 
 import styles from './image.module.css';
 
@@ -16,16 +17,16 @@ export const ReadingCardImage: FC<{
     <div className={styles.root}>
       <div className={styles.frame}>
         {!isError && (
-          <Image
+          <img
             alt=""
             className={styles.image}
-            fill
+            decoding="async"
+            loading="lazy"
             onError={() => {
               setIsError(true);
             }}
-            sizes="(min-width: 640px) 192px, 100vw"
+            ref={replayImageError}
             src={src}
-            unoptimized
           />
         )}
       </div>

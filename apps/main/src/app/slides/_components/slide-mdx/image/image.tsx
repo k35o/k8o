@@ -1,23 +1,23 @@
-import NextImage from 'next/image';
-import type { StaticImageData } from 'next/image';
 import type { FC } from 'react';
 
 import styles from './image.module.css';
 
 type Props = {
-  src: StaticImageData;
+  src: { src: string };
   alt: string;
+  width: number;
+  height: number;
   caption?: string;
 };
 
-export const Image: FC<Props> = ({ src, alt, caption }) => (
+export const Image: FC<Props> = ({ src, alt, width, height, caption }) => (
   <figure className={styles.root}>
-    <NextImage
+    <img
       alt={alt}
       className={styles.image}
-      loading="eager"
-      priority
-      src={src}
+      height={height}
+      src={src.src}
+      width={width}
     />
     {caption !== undefined && caption !== '' && (
       <figcaption className={styles.caption}>{caption}</figcaption>

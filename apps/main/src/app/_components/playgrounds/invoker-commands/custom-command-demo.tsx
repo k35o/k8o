@@ -1,9 +1,8 @@
 'use client';
 
-import Image from 'next/image';
 import { useEffect, useRef } from 'react';
 
-import k8oIcon from '@/app/_images/k8o.jpg';
+import k8oIcon from '@/app/_images/k8o.avif';
 
 import styles from './custom-command-demo.module.css';
 
@@ -70,7 +69,15 @@ export function CustomCommandDemo() {
 
       <div className={styles.stage}>
         <div className={styles.image} id="demo-image" ref={imageRef}>
-          <Image alt="k8o" className={styles.photo} src={k8oIcon} />
+          <img
+            alt="k8o"
+            className={styles.photo}
+            decoding="async"
+            height={512}
+            loading="lazy"
+            src={k8oIcon.src}
+            width={512}
+          />
         </div>
       </div>
 
