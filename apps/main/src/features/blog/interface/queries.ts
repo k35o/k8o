@@ -1,5 +1,4 @@
-import { DB_CONTENT_CACHE_TAG } from '@repo/helpers/cache/main-cache-tags';
-import { cacheLife, cacheTag } from 'next/cache';
+import { cacheLife } from 'next/cache';
 import { notFound } from 'next/navigation';
 
 import {
@@ -20,7 +19,6 @@ import { getMarkdown } from './markdown';
 export async function getBlogContents() {
   'use cache';
   cacheLife('max');
-  cacheTag(DB_CONTENT_CACHE_TAG);
 
   const blogs = await getBlogs();
   const contents = await Promise.all(
@@ -47,7 +45,6 @@ export async function getBlogContents() {
 export async function findBlogContent(slug: string) {
   'use cache';
   cacheLife('max');
-  cacheTag(DB_CONTENT_CACHE_TAG);
 
   const blog = await findBlog(slug);
   if (blog === null) {
@@ -73,7 +70,6 @@ export async function findBlogContent(slug: string) {
 export async function isPublishedBlog(slug: string): Promise<boolean> {
   'use cache';
   cacheLife('max');
-  cacheTag(DB_CONTENT_CACHE_TAG);
 
   return (await findBlog(slug)) !== null;
 }
@@ -120,7 +116,6 @@ export async function getBlogToc(slug: string) {
 export async function getBlogsByTags(slug: string) {
   'use cache';
   cacheLife('max');
-  cacheTag(DB_CONTENT_CACHE_TAG);
 
   const blog = await findBlogContent(slug);
   if (blog === null) {
@@ -143,7 +138,6 @@ export async function getBlogReadingTime(slug: string): Promise<number> {
 export async function getFeatureBlogMap() {
   'use cache';
   cacheLife('max');
-  cacheTag(DB_CONTENT_CACHE_TAG);
 
   const featureBlogMap = await _getFeatureBlogMap();
   return featureBlogMap;

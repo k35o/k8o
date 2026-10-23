@@ -2,9 +2,8 @@ import { isAuthorizedBearerRequest } from '@repo/helpers/is-authorized-bearer-re
 import { createMiddleware } from 'hono/factory';
 import { HTTPException } from 'hono/http-exception';
 
-// hono/bearer-auth を使わないのは、main の /api/revalidate と同じヘルパーで未設定の
-// secret の拒否と定数時間比較を揃え、401 { ok: false } を返すため。
-// secret はテストで差し替えられるよう、リクエストごとに環境変数から読む
+// hono/bearer-auth を使わないのは、Authorization の形が崩れていても 400 ではなく 401 を
+// 返すため。secret はテストで差し替えられるよう、リクエストごとに環境変数から読む
 export const requireBearerSecret = (...envNames: readonly string[]) =>
   createMiddleware(async (c, next) => {
     const authorized = envNames.some((envName) =>

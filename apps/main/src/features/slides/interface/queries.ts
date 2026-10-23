@@ -1,5 +1,4 @@
-import { DB_CONTENT_CACHE_TAG } from '@repo/helpers/cache/main-cache-tags';
-import { cacheLife, cacheTag } from 'next/cache';
+import { cacheLife } from 'next/cache';
 
 import {
   findSlideMetadata,
@@ -11,7 +10,6 @@ import { getSlides } from '@/features/slides/application/slides';
 export async function getSlideContents() {
   'use cache';
   cacheLife('max');
-  cacheTag(DB_CONTENT_CACHE_TAG);
 
   const slides = await getSlides();
   const contents = await Promise.all(
@@ -35,7 +33,6 @@ export async function getSlideContents() {
 export async function getSlideContent(slug: string) {
   'use cache';
   cacheLife('max');
-  cacheTag(DB_CONTENT_CACHE_TAG);
 
   const slide = await getSlide(slug);
   const metadata = await getSlideMetadata(slug);

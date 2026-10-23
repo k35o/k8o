@@ -6,7 +6,6 @@ import type {
 import { transformUpstreamData } from '@repo/helpers/baseline/transform-upstream';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
-import { revalidateMainCache } from '../../../shared/cache/revalidate-main';
 import {
   applyDataset,
   findActiveDataset,
@@ -24,9 +23,6 @@ import {
 
 // infrastructure と helpers をモックし、実 DB クライアントや外部通信なしで
 // application 層のオーケストレーション(通知・記録の分岐)を検証する。
-vi.mock('../../../shared/cache/revalidate-main', () => ({
-  revalidateMainCache: vi.fn(),
-}));
 vi.mock('../infrastructure/browser-support-repository', () => ({
   applyDataset: vi.fn(),
   findActiveDataset: vi.fn(),
@@ -192,7 +188,7 @@ describe('syncBrowserSupport', () => {
       version: '3.2.0',
       major: 3,
     });
-    // 前回と同一 features にして update 通知を発生させず、再検証の分岐に絞る
+    // 前回と同一 features にして、update 通知が出ない取り込みにする
     vi.mocked(findActiveDataset).mockResolvedValue({
       id: 1,
       upstreamVersion: '3.1.0',
@@ -210,32 +206,15 @@ describe('syncBrowserSupport', () => {
     });
     vi.mocked(applyDataset).mockResolvedValue(undefined);
     vi.mocked(recordSyncRun).mockResolvedValue(undefined);
-    vi.mocked(revalidateMainCache).mockResolvedValue(true);
   });
 
   describe('正常系', () => {
-    it('mainの再検証に成功したら警報を出さない', async () => {
+    it('機能の状態が前回と変わらない新しい版は、取り込んで applied を返し、通知しない', async () => {
       const summary = await syncBrowserSupport({ trigger: 'cron', notify });
 
       expect(summary.result).toBe('applied');
-      expect(revalidateMainCache).toHaveBeenCalledWith('browser-support');
+      expect(applyDataset).toHaveBeenCalledOnce();
       expect(notify).not.toHaveBeenCalled();
-    });
-  });
-
-  describe('異常系', () => {
-    it('mainの再検証に失敗したら dedupeKey つきの警報を出し、同期自体は成功扱いにする', async () => {
-      vi.mocked(revalidateMainCache).mockResolvedValue(false);
-
-      const summary = await syncBrowserSupport({ trigger: 'cron', notify });
-
-      expect(summary.result).toBe('applied');
-      expect(notify).toHaveBeenCalledExactlyOnceWith({
-        kind: 'alert',
-        title: expect.stringContaining('mainの再検証に失敗'),
-        body: expect.stringContaining('v3.2.0'),
-        dedupeKey: 'browser-support:alert:revalidate:v3.2.0',
-      });
     });
   });
 });

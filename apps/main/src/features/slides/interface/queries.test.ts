@@ -11,7 +11,6 @@ import { getSlideContent, getSlideContents } from './queries';
 
 vi.mock('next/cache', () => ({
   cacheLife: vi.fn(),
-  cacheTag: vi.fn(),
 }));
 vi.mock('@/features/slides/application/slide', () => ({
   findSlideMetadata: vi.fn(),

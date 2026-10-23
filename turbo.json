@@ -2,11 +2,7 @@
   "$schema": "https://turborepo.dev/schema.json",
   "agentGuidance": false,
   "globalEnv": ["NODE_ENV", "PORTLESS_URL", "VERCEL_ENV"],
-  "globalPassThroughEnv": [
-    "CRON_SECRET",
-    "MAIN_REVALIDATE_URL",
-    "REVALIDATE_SECRET"
-  ],
+  "globalPassThroughEnv": ["CRON_SECRET"],
   "tasks": {
     "dev": {
       "cache": false,
