@@ -144,7 +144,6 @@ const nextConfig: NextConfig = {
   partialPrefetching: true,
   experimental: {
     typedEnv: true,
-    useOffline: true,
     turbopackRustReactCompiler: true,
   },
 };
