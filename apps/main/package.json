@@ -11,6 +11,7 @@
     "analyze": "next experimental-analyze",
     "generate:browser-min-versions": "node --import ./scripts/register-ts-resolver.ts scripts/generate-browser-min-versions.ts",
     "compare:sites": "node --import ./scripts/register-ts-resolver.ts scripts/compare-sites.ts",
+    "generate:link-card-metadata": "node --import ./scripts/register-ts-resolver.ts scripts/generate-link-card-metadata.ts",
     "type-check": "next typegen && tsc --noEmit",
     "test": "vitest run",
     "test:vrt": "VRT=1 vitest run --project=storybook",
