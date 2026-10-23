@@ -9,23 +9,3 @@
   flex-direction: column;
   gap: calc(var(--spacing) * 4);
 }
-
-.skeleton {
-  display: flex;
-  flex-direction: column;
-  gap: calc(var(--spacing) * 4);
-}
-
-.skeletonItem {
-  width: 100%;
-  height: calc(var(--spacing) * 28);
-  border-radius: var(--radius-xl);
-  background-color: var(--color-bg-mute);
-  animation: pulse var(--duration-pulse) var(--easing-pulse) infinite;
-}
-
-@keyframes pulse {
-  50% {
-    opacity: 0.5;
-  }
-}
