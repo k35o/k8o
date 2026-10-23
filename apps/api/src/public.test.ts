@@ -10,7 +10,9 @@ import {
 import {
   findActiveDataset,
   findRecentFeatureChanges,
+  findRecentSyncRuns,
 } from './features/browser-support/infrastructure/browser-support-repository';
+import type { SyncRunSummary } from './features/browser-support/infrastructure/browser-support-repository';
 import { insertInquiry } from './features/inquiries/infrastructure/inquiry-repository';
 import { findPublicPushLogs } from './features/push-notification/infrastructure/push-log-repository';
 import {
@@ -37,6 +39,7 @@ vi.mock(
   () => ({
     findActiveDataset: vi.fn(),
     findRecentFeatureChanges: vi.fn(),
+    findRecentSyncRuns: vi.fn(),
   }),
 );
 vi.mock('./features/inquiries/infrastructure/inquiry-repository', () => ({
@@ -1183,6 +1186,182 @@ describe('公開 API', () => {
 
         expect(res.status).toBe(404);
         expect(findActiveDataset).toHaveBeenCalledOnce();
+      });
+    });
+  });
+
+  describe('GET /public/browser-support/health', () => {
+    const PATH = '/public/browser-support/health';
+    const NOOP_RUN = {
+      createdAt: '2026-07-19T06:00:00.000Z',
+      result: 'noop',
+      trigger: 'cron',
+    } as const;
+    // 読む件数を減らしても気づけるよう、固定の配列ではなく、渡された件数だけを新しい順に返す
+    const stubRuns = (runs: SyncRunSummary[]) =>
+      vi
+        .mocked(findRecentSyncRuns)
+        .mockImplementation((limit) => Promise.resolve(runs.slice(0, limit)));
+
+    beforeEach(() => {
+      vi.useFakeTimers({ toFake: ['Date'] });
+      vi.setSystemTime(new Date('2026-07-20T09:00:00.000Z'));
+      stubRuns([NOOP_RUN]);
+    });
+
+    describe('正常系', () => {
+      it('同期が30時間以内に成功し、active のデータがあれば、ok と active のフロアを 200 で返す', async () => {
+        const res = await app.request(PATH);
+
+        expect(res.status).toBe(200);
+        await expect(res.json()).resolves.toStrictEqual({
+          status: 'ok',
+          activeVersion: '3.34.2',
+          activeIngestedAt: '2026-07-19T06:00:00.000Z',
+          lastSuccessAt: '2026-07-19T06:00:00.000Z',
+          lastRun: NOOP_RUN,
+          minVersions: { chrome: '120' },
+        });
+      });
+
+      it('監視がいつも今の状態を読めるよう、CDN にもブラウザにも持たせない', async () => {
+        const res = await app.request(PATH);
+
+        expect(res.headers.get('cache-control')).toBe('no-store');
+        expect(res.headers.get('access-control-allow-origin')).toBe('*');
+      });
+
+      it('最後の run から続けて失敗していても、それより前の成功を心拍として数える', async () => {
+        const cronFailedRun = {
+          createdAt: '2026-07-20T06:00:00.000Z',
+          result: 'fetch_failed',
+          trigger: 'cron',
+        } as const;
+        const manualFailedRun = {
+          createdAt: '2026-07-19T12:00:00.000Z',
+          result: 'validation_failed',
+          trigger: 'manual',
+        } as const;
+        stubRuns([cronFailedRun, manualFailedRun, NOOP_RUN]);
+
+        const res = await app.request(PATH);
+
+        expect(res.status).toBe(200);
+        await expect(res.json()).resolves.toMatchObject({
+          status: 'ok',
+          lastSuccessAt: '2026-07-19T06:00:00.000Z',
+          lastRun: cronFailedRun,
+        });
+      });
+
+      it.each(['applied', 'skipped_major'] as const)(
+        '%s の run も心拍として数える',
+        async (result) => {
+          stubRuns([{ ...NOOP_RUN, result }]);
+
+          const res = await app.request(PATH);
+
+          expect(res.status).toBe(200);
+        },
+      );
+    });
+
+    describe('異常系', () => {
+      it('最後の成功から30時間たったら、stale を 503 で返し、キャッシュさせない', async () => {
+        vi.setSystemTime(new Date('2026-07-20T12:00:00.000Z'));
+
+        const res = await app.request(PATH);
+
+        expect(res.status).toBe(503);
+        expect(res.headers.get('cache-control')).toBe('no-store');
+        await expect(res.json()).resolves.toMatchObject({
+          status: 'stale',
+          lastSuccessAt: '2026-07-19T06:00:00.000Z',
+        });
+      });
+
+      it.each(['fetch_failed', 'validation_failed', 'db_failed'] as const)(
+        '直近の run が %s だけなら、stale を 503 で返す',
+        async (result) => {
+          stubRuns([{ ...NOOP_RUN, result }]);
+
+          const res = await app.request(PATH);
+
+          expect(res.status).toBe(503);
+          await expect(res.json()).resolves.toMatchObject({
+            status: 'stale',
+            lastSuccessAt: null,
+          });
+        },
+      );
+
+      it('同期が生きていても active のデータが無ければ、stale を 503 で返し、フロアは null にする', async () => {
+        vi.mocked(findActiveDataset).mockResolvedValue(null);
+
+        const res = await app.request(PATH);
+
+        expect(res.status).toBe(503);
+        await expect(res.json()).resolves.toStrictEqual({
+          status: 'stale',
+          activeVersion: null,
+          activeIngestedAt: null,
+          lastSuccessAt: '2026-07-19T06:00:00.000Z',
+          lastRun: NOOP_RUN,
+          minVersions: null,
+        });
+      });
+
+      it.each([
+        ['active のデータ', findActiveDataset],
+        ['同期の履歴', findRecentSyncRuns],
+      ] as const)(
+        '%sを DB から読めなければ、中身を出さずに degraded を 503 で返し、キャッシュさせない',
+        async (_, read) => {
+          vi.mocked(read).mockRejectedValue(new Error('db secret'));
+
+          const res = await app.request(PATH);
+
+          expect(res.status).toBe(503);
+          expect(res.headers.get('cache-control')).toBe('no-store');
+          await expect(res.json()).resolves.toStrictEqual({
+            status: 'degraded',
+            activeVersion: null,
+            activeIngestedAt: null,
+            lastSuccessAt: null,
+            lastRun: null,
+            minVersions: null,
+          });
+        },
+      );
+    });
+
+    describe('エッジケース', () => {
+      it('最後の成功から30時間に1ミリ秒足りなければ ok のまま', async () => {
+        vi.setSystemTime(new Date('2026-07-20T11:59:59.999Z'));
+
+        const res = await app.request(PATH);
+
+        expect(res.status).toBe(200);
+      });
+
+      it('同期の履歴が無ければ、stale を 503 で返す', async () => {
+        stubRuns([]);
+
+        const res = await app.request(PATH);
+
+        expect(res.status).toBe(503);
+        await expect(res.json()).resolves.toMatchObject({
+          status: 'stale',
+          lastSuccessAt: null,
+          lastRun: null,
+        });
+      });
+
+      it('query 付きの GET は DB を読まずに 400 を返す', async () => {
+        const res = await app.request(`${PATH}?v=1`);
+
+        expect(res.status).toBe(400);
+        expect(findRecentSyncRuns).not.toHaveBeenCalled();
       });
     });
   });

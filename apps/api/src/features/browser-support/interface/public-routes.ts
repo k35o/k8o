@@ -3,6 +3,7 @@ import { validator } from 'hono/validator';
 import * as z from 'zod/mini';
 
 import { publicCacheControl } from '../../../shared/cache/public-cache-control';
+import { getBrowserSupportHealth } from '../application/browser-support-health';
 import {
   findFeatureStatus,
   getBrowserSupportSnapshot,
@@ -40,4 +41,11 @@ export const browserSupportPublicRoutes = new Hono()
       }
       return c.json({ feature }, 200, CACHE_HEADERS);
     },
-  );
+  )
+  .get('/health', async (c) => {
+    const health = await getBrowserSupportHealth(Date.now());
+    // 外形監視がいつも今の状態を読めるよう、ほかの読み取りと違って CDN に持たせない
+    return c.json(health, health.status === 'ok' ? 200 : 503, {
+      'Cache-Control': 'no-store',
+    });
+  });

@@ -94,6 +94,27 @@ export const findRecentFeatureChanges = (
     .limit(limit);
 };
 
+export type SyncRunSummary = {
+  createdAt: string;
+  result: BrowserSupportSyncResult;
+  trigger: BrowserSupportSyncTrigger;
+};
+
+export const findRecentSyncRuns = (
+  limit: number,
+): Promise<SyncRunSummary[]> => {
+  const runs = db._schema.browserSupportSyncRuns;
+  return db
+    .select({
+      createdAt: runs.createdAt,
+      result: runs.result,
+      trigger: runs.trigger,
+    })
+    .from(runs)
+    .orderBy(desc(runs.id))
+    .limit(limit);
+};
+
 // 世代の置換。libSQL HTTP ドライバの interactive transaction は往復ごとにロックを
 // 保持しタイムアウトしやすいため、単一リクエストの db.batch(暗黙トランザクション)で
 // アトミックに行う。ブロブ方式なので文数はデータ量に依らず定数。
