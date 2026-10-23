@@ -85,7 +85,6 @@ export function CrispEdgesDemo() {
 
       <div className={styles.preview}>
         {imageSrc !== null && (
-          // oxlint-disable-next-line @next/next/no-img-element -- canvasから生成したdata URLのプレビューでnext/imageは不要
           <img
             alt="16x16のドット絵を16倍に拡大した例"
             height={256}

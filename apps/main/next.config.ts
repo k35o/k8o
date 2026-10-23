@@ -134,6 +134,11 @@ const nextConfig: NextConfig = {
   logging: {
     browserToTerminal: true,
   },
+  turbopack: {
+    // AVIF は変換済みのものをコミットし、そのまま配る。Turbopack は AVIF を読めず
+    // 「最適化せずに出す」という警告を画像ごとに出すが、それが意図どおりなので消す
+    ignoreIssue: [{ path: '**/*.avif' }],
+  },
   typedRoutes: true,
   cacheComponents: true,
   partialPrefetching: true,

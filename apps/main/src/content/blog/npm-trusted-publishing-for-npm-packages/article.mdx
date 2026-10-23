@@ -5,8 +5,8 @@ createdAt: 2025-08-14
 updatedAt: 2025-11-15
 ---
 
-import initTP from './_images/init-trusted-publisher.png';
-import setTP from './_images/set-trusted-publisher.png';
+import initTP from './_images/init-trusted-publisher.avif';
+import setTP from './_images/set-trusted-publisher.avif';
 
 # OIDCを利用したnpmパッケージの公開が可能になったので、Changeset×GitHub Actionsで試してみる
 
@@ -135,11 +135,11 @@ OIDCを利用する場合は、`NPM_TOKEN`の設定は不要です。
 
 リリースするパッケージの`Settings`ページを開き、`Trusted Publisher`で`GitHub Actions`を選択します。
 
-<Image src={initTP} alt="Trusted Publisherの選択画面、GitHub ActionsとGitLab CI/CDの選択肢がある" />
+<Image src={initTP} alt="Trusted Publisherの選択画面、GitHub ActionsとGitLab CI/CDの選択肢がある" width={1246} height={424} />
 
 `GitHub Actions`を選択すると、`Trusted Publisher`の設定が開始されます。
 
-<Image src={setTP} alt="Trusted Publisherの設定画面、Organization or userにk35o、RepositoryにArteOdyssey、Workflow filenameにrelease.ymlを記述している" />
+<Image src={setTP} alt="Trusted Publisherの設定画面、Organization or userにk35o、RepositoryにArteOdyssey、Workflow filenameにrelease.ymlを記述している" width={1566} height={1132} />
 
 `Workflow filename`には拡張子を含めたファイル名だけを記述することに注意してください。
 
