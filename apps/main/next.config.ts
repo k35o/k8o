@@ -67,6 +67,12 @@ const nextConfig: NextConfig = {
           has: [{ type: 'header', key: 'accept', value: '.*text/markdown.*' }],
         },
       ],
+      afterFiles: [
+        {
+          source: '/reading-list/feed',
+          destination: 'https://api.k8o.me/public/reading-list/feed',
+        },
+      ],
       // どのルートにも一致しなかったパスへの markdown 要求には、404 ページの
       // 描画に入る前に回復手段（索引・サイトマップ）を載せた markdown を返す
       fallback: [
@@ -100,6 +106,22 @@ const nextConfig: NextConfig = {
             key: 'Permissions-Policy',
             value:
               'camera=(), microphone=(), geolocation=(), browsing-topics=()',
+          },
+        ],
+      },
+      {
+        source: '/reading-list/feed',
+        headers: [
+          // 2026-04-06 より前に作った Vercel のプロジェクトは、外への rewrite の応答を、
+          // このヘッダーが無いとキャッシュせず、毎回 api に届ける
+          { key: 'x-vercel-enable-rewrite-caching', value: '1' },
+          // api の CDN は s-maxage・stale-while-revalidate・stale-if-error を外して返すので、
+          // main の CDN での寿命はここで決める。CDN-Cache-Control と違い、main の CDN が
+          // 使って取り除くので、リーダーや途中の共有キャッシュには届かない
+          {
+            key: 'Vercel-CDN-Cache-Control',
+            value:
+              'max-age=3600, stale-while-revalidate=86400, stale-if-error=86400',
           },
         ],
       },
