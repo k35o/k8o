@@ -89,6 +89,18 @@ describe('cron ルート', () => {
       },
     );
 
+    it.each(['Basic Y3Jvbjpz', 'Bearer', 'Bearer a b'])(
+      'Authorization が "%s" と形が崩れていても 401 を返し同期しない',
+      async (authorization) => {
+        const res = await cronRequest('/cron/sync-articles', authorization);
+
+        expect(res.status).toBe(401);
+        await expect(res.json()).resolves.toStrictEqual({ ok: false });
+        expect(runArticleSync).not.toHaveBeenCalled();
+        expect(runBrowserSupportSync).not.toHaveBeenCalled();
+      },
+    );
+
     it('MCP 用の MCP_TOKEN では 401 を返す', async () => {
       vi.stubEnv('MCP_TOKEN', 'mcp-token');
 

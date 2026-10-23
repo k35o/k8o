@@ -4,9 +4,7 @@ import {
   transformUpstreamData,
   UpstreamFormatError,
 } from '@repo/helpers/baseline/transform-upstream';
-import { BROWSER_SUPPORT_CACHE_TAG } from '@repo/helpers/cache/main-cache-tags';
 
-import { revalidateMainCache } from '../../../shared/cache/revalidate-main';
 import type {
   BrowserSupportSyncResult,
   BrowserSupportSyncTrigger,
@@ -347,19 +345,6 @@ export async function syncBrowserSupport({
       title: 'Browser Support同期: 警告',
       body: `v${version}: ${warnings.join(' / ')}`,
       dedupeKey: `browser-support:alert:warning:v${version}`,
-    });
-  }
-
-  // 9. main の表示キャッシュを再検証。失敗しても同期自体は成功扱いだが、次回の
-  // 定期同期は既知バージョンで noop になり再検証されないまま自己回復しないため、
-  // 警報を出して手動同期(force)での復旧を促す。
-  const revalidated = await revalidateMainCache(BROWSER_SUPPORT_CACHE_TAG);
-  if (!revalidated) {
-    await notify({
-      kind: 'alert',
-      title: 'Browser Support同期: mainの再検証に失敗',
-      body: `v${version} はDBに反映済みですが、mainの表示キャッシュを再検証できませんでした。キャッシュ期限まで古い表示が残ります。Browser Support Monitor を force 付きで手動実行してください。`,
-      dedupeKey: `browser-support:alert:revalidate:v${version}`,
     });
   }
 

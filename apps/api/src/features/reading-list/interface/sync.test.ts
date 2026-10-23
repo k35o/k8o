@@ -1,15 +1,11 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
-import { revalidateMainCache } from '../../../shared/cache/revalidate-main';
 import { sendPushNotification } from '../../push-notification/interface/commands';
 import { enrichArticleMetadata } from '../application/enrich-articles';
 import { summarizeArticles } from '../application/summarize-articles';
 import { syncArticles } from '../application/sync-articles';
 import { runArticleSync } from './sync';
 
-vi.mock('../../../shared/cache/revalidate-main', () => ({
-  revalidateMainCache: vi.fn(),
-}));
 vi.mock('../../push-notification/interface/commands', () => ({
   sendPushNotification: vi.fn(),
 }));
@@ -49,7 +45,7 @@ describe('runArticleSync', () => {
   });
 
   describe('正常系', () => {
-    it('取り込み・補完・要約の結果をまとめて返し、要約の後に再検証する', async () => {
+    it('取り込み・補完・要約の結果をまとめて返し、通知を1回送る', async () => {
       const result = await runArticleSync();
 
       expect(result).toStrictEqual({
@@ -61,11 +57,6 @@ describe('runArticleSync', () => {
         summaryAborted: false,
         failedSources: [],
       });
-      const [summarizedAt] =
-        vi.mocked(summarizeArticles).mock.invocationCallOrder;
-      const [revalidatedAt] =
-        vi.mocked(revalidateMainCache).mock.invocationCallOrder;
-      expect(summarizedAt).toBeLessThan(Number(revalidatedAt));
       expect(sendPushNotification).toHaveBeenCalledOnce();
     });
 
@@ -77,7 +68,7 @@ describe('runArticleSync', () => {
   });
 
   describe('異常系', () => {
-    it('要約が例外で失敗しても、打ち切りとして返し、再検証と通知は行う', async () => {
+    it('要約が例外で失敗しても、打ち切りとして返し、通知は行う', async () => {
       vi.mocked(summarizeArticles).mockRejectedValue(new Error('db'));
 
       const result = await runArticleSync();
@@ -87,7 +78,6 @@ describe('runArticleSync', () => {
         failedSummaries: 0,
         summaryAborted: true,
       });
-      expect(revalidateMainCache).toHaveBeenCalledOnce();
       expect(sendPushNotification).toHaveBeenCalledOnce();
     });
   });

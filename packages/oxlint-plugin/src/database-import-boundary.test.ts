@@ -105,7 +105,7 @@ describe('judgeDatabaseImport', () => {
     test('shared/auth 以外の shared からの import は禁止', () => {
       expect(
         judgeDatabaseImport(
-          file('apps/api/src/shared/cache/revalidate-main.ts'),
+          file('apps/api/src/shared/cache/public-cache-control.ts'),
           '@repo/database',
         ),
       ).toBe('forbiddenLayer');

@@ -1,4 +1,3 @@
-import { revalidateMainCache } from '../../../shared/cache/revalidate-main';
 // push-notification は別 feature だが、通知の配線は HTTP 境界(interface)の責務と
 // して interface 間 import を許容する（browser-support/interface/sync.ts と同じ扱い）。
 import { sendPushNotification } from '../../push-notification/interface/commands';
@@ -8,7 +7,7 @@ import { syncArticles } from '../application/sync-articles';
 
 const READING_LIST_URL = 'https://k8o.me/reading-list';
 // 関数の上限（Vercel Hobby で300秒）から、締め切りの直前に始めた1件（本文の取得と生成で
-// 最大約70秒）と、再検証・通知の分を残す
+// 最大約70秒）と、通知の分を残す
 const SUMMARY_DEADLINE_MS = 180_000;
 
 export type ArticleSyncSummary = {
@@ -28,7 +27,7 @@ export async function runArticleSync(): Promise<ArticleSyncSummary> {
   const { summarizedArticles, failedSummaries, summaryAborted } =
     await summarizeArticles(startedAt + SUMMARY_DEADLINE_MS).catch(
       (error: unknown) => {
-        // 記事の取り込みは済んでいるので、要約の失敗で再検証と通知を止めない
+        // 記事の取り込みは済んでいるので、要約の失敗で通知を止めない
         console.error('記事の要約に失敗しました:', error);
         return {
           summarizedArticles: 0,
@@ -37,10 +36,6 @@ export async function runArticleSync(): Promise<ArticleSyncSummary> {
         };
       },
     );
-
-  // main の reading-list 一覧は db-content タグ付きキャッシュ（cacheLife('hours')）の
-  // ため、同期のたびに再検証して最大1時間の古い表示を防ぐ
-  await revalidateMainCache();
 
   // 同日のリトライで結果カウントが変わっても重複通知しないよう、dedupe は日付のみで行う
   const today = new Date().toISOString().slice(0, 10);
