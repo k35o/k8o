@@ -5,7 +5,7 @@ import remarkFrontmatter from 'remark-frontmatter';
 import type { HeadingTree } from './types';
 
 // インラインコードや強調を含む見出しでも全文を採用する。
-// mdx-components.tsx の LinkHeading が id に使うテキスト抽出と同じ結果になる必要がある
+// app/_components/mdx-base の LinkHeading が id に使うテキスト抽出と同じ結果になる必要がある
 const phrasingText = (nodes: readonly PhrasingContent[]): string => {
   let result = '';
   for (const node of nodes) {

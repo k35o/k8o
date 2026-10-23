@@ -1,11 +1,7 @@
 import { notFound } from 'next/navigation';
 import { describe, expect, it, vi } from 'vitest';
 
-import {
-  findBlog,
-  findBlogMetadata,
-  getBlogMetadata,
-} from '@/features/blog/application/blog';
+import { findBlog, findBlogMetadata } from '@/features/blog/application/blog';
 import { getBlogs } from '@/features/blog/application/blogs';
 
 import { getMarkdown } from './markdown';
@@ -29,7 +25,6 @@ vi.mock('next/navigation', () => ({
 vi.mock('@/features/blog/application/blog', () => ({
   findBlog: vi.fn(),
   findBlogMetadata: vi.fn(),
-  getBlogMetadata: vi.fn(),
   getBlogToc: vi.fn(),
 }));
 vi.mock('@/features/blog/application/blogs', () => ({
@@ -116,20 +111,19 @@ describe('getBlogContents', () => {
 
 describe('getBlogContent', () => {
   describe('異常系', () => {
-    it('MDXファイルが無い場合は例外を投げる（詳細ページは一覧と違いエラーにする）', async () => {
+    it('DB では公開済みでも MDX が無い記事は notFound() で 404 にする', async () => {
       vi.mocked(findBlog).mockResolvedValue({
         id: 1,
         slug: 'missing-blog',
         tags: [],
         slideUrl: undefined,
       });
-      vi.mocked(getBlogMetadata).mockRejectedValue(
-        Object.assign(new Error('ENOENT: no such file or directory'), {
-          code: 'ENOENT',
-        }),
-      );
+      vi.mocked(findBlogMetadata).mockResolvedValue(null);
 
-      await expect(getBlogContent('missing-blog')).rejects.toThrow('ENOENT');
+      await expect(getBlogContent('missing-blog')).rejects.toThrow(
+        'NEXT_NOT_FOUND',
+      );
+      expect(notFound).toHaveBeenCalledTimes(1);
     });
   });
 });
@@ -143,7 +137,7 @@ describe('findBlogContent', () => {
         tags: [{ id: 1, name: 'CSS' }],
         slideUrl: undefined,
       });
-      vi.mocked(getBlogMetadata).mockResolvedValue(metadata('タイトル'));
+      vi.mocked(findBlogMetadata).mockResolvedValue(metadata('タイトル'));
 
       const result = await findBlogContent('blog-a');
 
@@ -167,7 +161,19 @@ describe('findBlogContent', () => {
       const result = await findBlogContent('draft-blog');
 
       expect(result).toBeNull();
-      expect(getBlogMetadata).not.toHaveBeenCalled();
+      expect(findBlogMetadata).not.toHaveBeenCalled();
+    });
+
+    it('DB では公開済みでも MDX が無い記事は null を返す', async () => {
+      vi.mocked(findBlog).mockResolvedValue({
+        id: 1,
+        slug: 'missing-blog',
+        tags: [],
+        slideUrl: undefined,
+      });
+      vi.mocked(findBlogMetadata).mockResolvedValue(null);
+
+      await expect(findBlogContent('missing-blog')).resolves.toBeNull();
     });
   });
 });

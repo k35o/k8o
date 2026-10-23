@@ -2,7 +2,7 @@ import { resetStateRegistry } from '@k8ordo/state';
 import addonA11y from '@storybook/addon-a11y';
 // root entry ('@storybook/addon-docs') は 'mdx/types' への module augmentation で
 // @types/mdx の JSX 参照を React の JSX.Element に差し替え、アプリ側の
-// mdx-components / mdx-parts の型付けを壊す。augmentation を持たない
+// mdx-base / mdx-parts の型付けを壊す。augmentation を持たない
 // preview entry から素の annotations を読み込んで合成する
 import * as addonDocs from '@storybook/addon-docs/preview';
 import { definePreview } from '@storybook/nextjs-vite';

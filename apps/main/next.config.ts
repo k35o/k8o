@@ -44,7 +44,7 @@ const nextConfig: NextConfig = {
   reactCompiler: true,
   poweredByHeader: false,
   allowedDevOrigins: ['main.k8o.localhost', '*.main.k8o.localhost'],
-  pageExtensions: ['tsx', 'mdx', 'ts'],
+  pageExtensions: ['tsx', 'ts'],
   rewrites: () =>
     Promise.resolve({
       // 記事ページ (/blog/:slug) より先に評価させるため beforeFiles に置く

@@ -9,5 +9,5 @@ export const blogPath = (slug: string): string => {
   if (!SLUG_RE.test(slug)) {
     throw new Error(`Invalid slug: ${slug}`);
   }
-  return join(cwd(), `src/app/blog/(articles)/${slug}/page.mdx`);
+  return join(cwd(), `src/content/blog/${slug}/article.mdx`);
 };

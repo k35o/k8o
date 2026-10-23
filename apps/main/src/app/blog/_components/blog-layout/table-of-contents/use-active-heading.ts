@@ -5,7 +5,7 @@ import { useSyncExternalStore } from 'react';
 import { END_OF_CONTENT_ID } from '../constants';
 import { resolveActiveHeading } from './resolve-active-heading';
 
-// MDXの見出しはmdx-componentsで1段深いタグに変換される（## → h3, ### → h4, #### → h5）
+// MDXの見出しはmdx-baseで1段深いタグに変換される（## → h3, ### → h4, #### → h5）
 const HEADING_SELECTOR = `h3[id], h4[id], h5[id], #${END_OF_CONTENT_ID}`;
 
 // IntersectionObserverは判定バンド（画面上部の細い帯）を見出しが1フレームで

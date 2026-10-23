@@ -88,7 +88,7 @@ describe('blogPostingJsonLd', () => {
         headline: 'サンプル記事',
         description: '記事の説明',
         url: 'https://k8o.me/blog/sample-post',
-        image: 'https://k8o.me/blog/sample-post/opengraph-image',
+        image: 'https://k8o.me/blog/sample-post/og.png',
         datePublished: '2025-01-01',
         dateModified: '2025-01-02',
         keywords: ['CSS', 'React'],

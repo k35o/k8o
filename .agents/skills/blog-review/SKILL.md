@@ -11,20 +11,22 @@ k8oのブログ記事（MDX）を公開前にレビューする。**文章面は
 
 **行うこと**: `/writing-review` の文章観点をブログ記事に適用（不在時はフォールバック）／`@repo/code-highlight`のディレクティブ活用／frontmatter整合性（`featureIds`⇔`<BrowserSupportStatus>`）／MDXコンポーネントのimport・props／見出し階層・リンク・画像／本文の太字不使用。重要度つきの統合レポートを出す。
 
-**行わないこと**: ファイルの自動修正（レポートのみ）／執筆・アウトライン作成／公開ファイル一式の準備（`layout.tsx`/`opengraph-image.tsx`/マイグレーション → `/blog-prep`）／コードの動作・技術的正しさ（別途確認）。
+**行わないこと**: ファイルの自動修正（レポートのみ）／執筆・アウトライン作成／公開ファイル一式の準備（`article.mdx`の雛形/マイグレーション → `/blog-prep`）／コードの動作・技術的正しさ（別途確認）。
 
 > 記事の準備は `/blog-prep`。本スキルはその後段（執筆を終えた記事の公開前レビュー）。修正依頼でもまずレポートを出して合意してから着手する。**ファイルは変更しない。**
 
 ## レビュー対象の特定
 
 ```
-apps/main/src/app/blog/(articles)/<slug>/
-├── page.mdx              # 記事本体（レビューの主対象）
-├── layout.tsx            # メタデータ（タイトル/日付はfrontmatter、タグはDBから取得）
-└── opengraph-image.tsx   # OGP画像生成（[!og]を使うか判定するために参照）
+apps/main/src/content/blog/<slug>/
+├── article.mdx   # 記事本体（レビューの主対象）
+├── _images/      # 記事の画像（あれば）
+└── _components/  # この記事だけの部品（あれば）
 ```
 
-`page.mdx`: 先頭にYAML frontmatter（`---`）、続いて`import`文と本文。本文の`# H1`は**レンダリング時に非表示**（タイトルはfrontmatterの`title`をレイアウトが表示する）。実セクションは`##`から始め、表示時に`##`→h3相当・`###`→h4相当へ1段繰り下げられる（執筆時は`##`/`###`をそのまま書く）。内部リンクは`next/link`、外部リンクは通常リンクへ自動変換。
+ページのメタデータ（タイトル/日付はfrontmatter、タグはDBから取得）とOGP画像（`/blog/<slug>/og.png`）は、`apps/main/src/app/blog/[slug]/`が全記事に共通で作る。
+
+`article.mdx`: 先頭にYAML frontmatter（`---`）、続いて`import`文と本文。本文の`# H1`は**レンダリング時に非表示**（タイトルはfrontmatterの`title`をレイアウトが表示する）。実セクションは`##`から始め、表示時に`##`→h3相当・`###`→h4相当へ1段繰り下げられる（執筆時は`##`/`###`をそのまま書く）。内部リンクは`next/link`、外部リンクは通常リンクへ自動変換。
 
 ## レビューの進め方
 
@@ -35,7 +37,7 @@ apps/main/src/app/blog/(articles)/<slug>/
 
 ### writing-review 連携（二層）
 
-- **`/writing-review` が使える場合**: Skillツールで `writing-review` を実行し、対象 `page.mdx` を渡して、その指摘を取り込む（これを文章面の正とする）。レポートでは出所を `【writing-review】` と添える。
+- **`/writing-review` が使える場合**: Skillツールで `writing-review` を実行し、対象 `article.mdx` を渡して、その指摘を取り込む（これを文章面の正とする）。レポートでは出所を `【writing-review】` と添える。
 - **使えない場合のフォールバック**（CI・他者クローン・別マシン等、writing-review が無い環境）: 詳細表は複製しないが、最低限ここだけは自分で見る。
   - 文体混在（ですます/である）／ら抜き言葉／英語と日本語の間のスペース／AI的な太字・「重要なのは〜である」式の定型句／内容がドキュメントの焼き直しでないか（独自性）。
   - 文章系の機械コマンドは下の「機械的補助コマンド」のフォールバック節を使う。
@@ -45,7 +47,7 @@ apps/main/src/app/blog/(articles)/<slug>/
 対象記事のパスを`FILE`に入れて実行（ripgrep / awk）。
 
 ```bash
-FILE='apps/main/src/app/blog/(articles)/<slug>/page.mdx'
+FILE='apps/main/src/content/blog/<slug>/article.mdx'
 PROSE=$(awk '/^[[:space:]]*```/{f=!f;next} !f' "$FILE")   # フェンス内を除いた本文
 
 # (1) 太字（ブログは太字禁止＝出力された全てが候補）
@@ -66,14 +68,14 @@ printf '%s' "$PROSE" | rg -c '(です|ます)。'; printf '%s' "$PROSE" | rg -c 
 
 ## ブログ固有1: @repo/code-highlightの活用
 
-`page.mdx`は`@repo/code-highlight`（Shiki）でハイライトされる。
+`article.mdx`は`@repo/code-highlight`（Shiki）でハイライトされる。
 
 > ディレクティブのほかに、フェンスのメタ`title="..."`がファイル名のラベルになる（無ければ言語名がラベルになる）。コピーボタンはすべてのコードブロックに付き、本文を挟まずに続けて書いたコードブロックはタブで切り替える1つのブロックにまとまる。
 
 | 項目 | 内容 | 重要度 |
 |------|------|--------|
 | フェンスの言語指定 | すべての` ``` `に言語を付ける（` ```ts `など）。言語なしはハイライトが効かない | 要修正 |
-| `[!og]`マーカー | いずれか1つのコードブロックに`// [!og]`（OGP画像に載るコードを選ぶ）。判定は`opengraph-image.tsx`が`@/app/blog/_components/blog-og-image`の`renderBlogOgImage`（中で`getBlogOgCode`を呼ぶ）を使うか。無いとコードが載らず劣化（エラーにはならない）。**較正: [!og]無しの記事も全体の約2割あり、コード無しOGPを許容する設計。コードが主役の記事であれば推奨、そうでなければ任意** | 推奨/任意 |
+| `[!og]`マーカー | いずれか1つのコードブロックに`// [!og]`（OGP画像に載るコードを選ぶ）。OGP画像（`/blog/<slug>/og.png`）は全記事で`getBlogOgCode`がこのマーカーのコードを探して描く。無いとコードが載らず劣化（エラーにはならない）。**較正: [!og]無しの記事も全体の約2割あり、コード無しOGPを許容する設計。コードが主役の記事であれば推奨、そうでなければ任意** | 推奨/任意 |
 | 注目行の強調 | 地の文で「この行が重要」と言うコードに`[!hl]`/`[!callout:]`が無ければ付ける余地 | 任意 |
 | 差分の表現 | before/after・追加削除を見せるコードに`[!+]`/`[!-]`が使える（現状ほぼ未使用） | 任意 |
 
@@ -94,19 +96,19 @@ frontmatterが不正だと`getFrontmatter()`が`Invalid frontmatter in <path>`�
 
 ## ブログ固有3: MDXコンポーネントの利用
 
-import文とpropsが正しいか確認する。
+下の部品は`apps/main/src/app/blog/_components/blog-mdx-components`の`blogMdxComponents`で渡されるので、MDXでは import しない。propsが正しいか確認する。
 
-| コンポーネント | import | 主なprops |
-|---------------|--------|-----------|
-| `BrowserSupportStatus` | 不要（`mdx-components.tsx`に登録されている） | `featureId`（frontmatterの`featureIds`と一致）。Web機能の記事ではH1直下 |
-| `PlaygroundEmbed` | `@/app/_components/playgrounds` | `sectionId`（必須。`playgrounds/sections.ts`のセクションの`id`） / `demo?`（デモの`title`。省略するとセクションの全デモ） |
-| `Playground` | `@/app/_components/playgrounds` | `title`（必須）。子にデモ |
-| `LinkCard` | `@/app/blog/_components/link-card` | `href`（必須） / `publishedAt?` / `variant?` |
-| `Image` / `FloatImage` | `@/app/blog/_components/image` | `src`・`alt`（どちらも必須） |
-| `Alert` | `@k8ordo/ui` | `tone`（`warning`等） / `message` |
+| コンポーネント | 主なprops |
+|---------------|-----------|
+| `BrowserSupportStatus` | `featureId`（frontmatterの`featureIds`と一致）。Web機能の記事ではH1直下 |
+| `PlaygroundEmbed` | `sectionId`（必須。`playgrounds/playground-embed.tsx`の`embeds`のキー＝セクションの`id`） / `demo?`（デモの`title`。省略するとセクションの全デモ） |
+| `Playground` | `title`（必須）。子にデモ |
+| `LinkCard` | `href`（必須） / `publishedAt?` / `variant?` |
+| `Image` / `FloatImage` | `src`・`alt`（どちらも必須） |
+| `Alert` | `tone`（`warning`等） / `message` |
 
-- 見出し・段落・リンク・インラインコードは`mdx-components.tsx`が自動で@k8ordo/uiスタイルに変換する。素のmarkdownで書けばよい（独自に`<h2>`等を書かない）。
-- **import検証**: grepのヒット件数で判断せず、対象シンボルの`export`宣言を`index.ts`で1ファイルずつ目視確認する。`PlaygroundEmbed`は、`sectionId`が`playgrounds/sections.ts`の`playgroundSections`にあるセクションの`id`と一致するか、`demo`を渡すならそのセクションのデモの`title`と一致するかも確かめる（一致しないと描画時に例外で落ちる）。
+- 見出し・段落・リンク・インラインコードは`apps/main/src/app/_components/mdx-base`が自動で@k8ordo/uiスタイルに変換する。素のmarkdownで書けばよい（独自に`<h2>`等を書かない）。
+- **import検証**: MDXが`@/app/...`を import していたら要修正（`features/blog/application/article-files.test.ts`が落ちる）。画像と記事だけの部品は`./_images/...`・`./_components/...`の相対パスで import し、そのファイルと`export`宣言があるかを1つずつ目視確認する。`PlaygroundEmbed`は、`sectionId`が`playgrounds/playground-embed.tsx`の`embeds`のキー（セクションの`id`）と一致するか、`demo`を渡すならそのセクションのデモの`title`と一致するかも確かめる（一致しないとビルドのプリレンダーで落ちる）。
 - **@k8ordo/uiのpropsは推測しない**。`Alert`等は `apps/main` の CLAUDE.md に従い `main-storybook-mcp` で確認する。**MCPが使えない場合**は `apps/main/node_modules/@k8ordo/ui` の型定義（`dist/**/*.d.mts`）または `docs/` を読む。
 
 ## ブログ固有4: 見出し階層・リンク・画像・テーブル
@@ -117,7 +119,7 @@ import文とpropsが正しいか確認する。
 - **テーブルは使わない**（要修正）: markdownテーブル（`| … | … |`）は**横スクロールに弱く、特にモバイルや縦書き表示で崩れる**。本文では使わず、箇条書き・段落・定義（`用語：説明`）、または必要なら画像（`<Image>`）で代替する。機械検出は機械コマンド(4)。
 - **リンク**: 空リンク（`[テキスト]()`）が無いか。外部リンクは到達性を確認（任意で `curl -sI <url> | head -1`）。参考文献は`<LinkCard href="...">`を使う選択肢。
 - **画像**: `<Image>`/`<FloatImage>`に`alt`があるか（必須）。
-- **数式（KaTeX）**: 本文に数式（`$$`・` ```math `・インライン`$...$`）があるのに、同記事の`layout.tsx`に`@repo/mdx-preset/katex.css`と`@/app/blog/_styles/katex-vertical.css`のimportが無ければ**要修正**（KaTeX CSSはグローバル読み込みされないため、数式が二重表示に崩れる）。機械確認: `grep -nE '\$\$|^```math' page.mdx`がヒットしたら`grep -n 'katex' layout.tsx`を突き合わせる（インライン`$`はコード内の`$`と紛らわしいので人手で確認）。
+- **数式（KaTeX）**: 数式を使う記事が`import '@repo/mdx-preset/katex.css';`を持つことは`features/blog/application/article-files.test.ts`が確かめる。`pnpm run test --filter=main -- --project="features test"`が通ることを確かめる。
 
 ## レポート形式
 
@@ -127,17 +129,17 @@ import文とpropsが正しいか確認する。
 ## ブログ記事レビュー: <slug>
 
 ### 🔴 要修正
-- `page.mdx:12` 本文に太字 `**重要**` → ブログは太字を使わない。文の組み立てで強調
-- `page.mdx:42` 言語指定のないコードフェンス → ` ```ts ` を付ける
-- `page.mdx:55` 本文にmarkdownテーブル → 横スクロールに弱い。箇条書き/定義に置き換える
-- `page.mdx:88` 文体混在（ですます/である）【writing-review】
+- `article.mdx:12` 本文に太字 `**重要**` → ブログは太字を使わない。文の組み立てで強調
+- `article.mdx:42` 言語指定のないコードフェンス → ` ```ts ` を付ける
+- `article.mdx:55` 本文にmarkdownテーブル → 横スクロールに弱い。箇条書き/定義に置き換える
+- `article.mdx:88` 文体混在（ですます/である）【writing-review】
 
 ### 🟡 推奨
-- `page.mdx` コードが主役だが `[!og]` 無し（`getBlogOgCode`使用）→ 代表ブロックに `// [!og]`
-- `page.mdx:15` 「React の」→「Reactの」【writing-review】
+- `article.mdx` コードが主役だが `[!og]` 無し（`getBlogOgCode`使用）→ 代表ブロックに `// [!og]`
+- `article.mdx:15` 「React の」→「Reactの」【writing-review】
 
 ### 🟢 任意
-- `page.mdx:60` 注目コードに `[!hl]` を付ける余地
+- `article.mdx:60` 注目コードに `[!hl]` を付ける余地
 
 ### 指摘なしの観点
 - frontmatter / featureIds⇔BrowserSupportStatus: OK
@@ -159,6 +161,6 @@ import文とpropsが正しいか確認する。
 - [ ] 機械的補助コマンド（太字 / 言語なしフェンス / `[!og]` / テーブル / 英日スペース / 文体）を実行した
 - [ ] ブログ固有1: `@repo/code-highlight`の活用（言語・`[!og]`較正・`[!hl]`/`[!callout:]`）
 - [ ] ブログ固有2: frontmatter整合性（必須キー・`featureIds`⇔`BrowserSupportStatus`）
-- [ ] ブログ固有3: MDXコンポーネントのimport/props（MCP不在時は型定義/docsで確認）
-- [ ] ブログ固有4: 見出し階層・リンク到達性・画像alt・テーブル不使用・数式記事のKaTeX CSS import
+- [ ] ブログ固有3: MDXコンポーネントのprops（importしない。MCP不在時は型定義/docsで確認）
+- [ ] ブログ固有4: 見出し階層・リンク到達性・画像alt・テーブル不使用・`article-files.test.ts`が通る
 - [ ] 文章面とブログ固有を統合し、重要度つきレポートを出力した（ファイルは変更していない）
