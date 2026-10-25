@@ -1,7 +1,7 @@
 import { Heading } from '@k8ordo/ui';
 import { Suspense } from 'react';
 
-import { playgroundSections } from '@/app/_components/playgrounds';
+import { playgroundSections } from '@/playgrounds';
 
 import {
   PlaygroundsListContent,

@@ -15,22 +15,23 @@ INSERT INTO slides (slug, published, created_at)
   VALUES ('my-talk', 1, '2026-05-15T00:00:00.000Z') ON CONFLICT (slug) DO NOTHING;
 ```
 
-### 2. ルートディレクトリを作成
+### 2. ルートと本文のディレクトリを作成
 
 ```
 apps/main/src/app/slides/(decks)/<slug>/
 ├── layout.tsx          # metadata, OG タグ
 ├── page.tsx            # MDX を render
-├── content.mdx         # スライド本体
 └── opengraph-image.tsx # (任意) OG 画像
+
+apps/main/src/content/slides/<slug>/
+└── content.mdx         # スライド本体
 ```
 
 ### 3. `page.tsx`
 
 ```tsx
 import { slideMDXComponents } from '@/app/slides/_components/mdx-parts';
-
-import Content from './content.mdx';
+import Content from '@/content/slides/my-talk/content.mdx';
 
 export default function Page() {
   return <Content components={slideMDXComponents} />;
@@ -46,13 +47,6 @@ description: 何の話か
 createdAt: 2026-05-15
 updatedAt: 2026-05-15
 ---
-
-import {
-  Cover,
-  Image,
-  Notes,
-  SlideDeckShell,
-} from '@/app/slides/_components/slide-mdx';
 
 <SlideDeckShell slug="my-talk" title="My Talk">
 
@@ -89,13 +83,13 @@ import {
 
 ## 利用できるコンポーネント
 
-`@/app/slides/_components/slide-mdx` から import する。
+MDX では import せずに使う。`_components/slide-mdx` の部品を、`page.tsx` が `slideMDXComponents` で渡す。MDX は `@/`・`next`・`next-themes` を import しない（`features/slides/application/slide-files.test.ts` が確かめる）。
 
 | Component | 用途 |
 |---|---|
 | `<SlideDeckShell slug title>` | デッキの最上位ラッパー (必須)。`slug` と `title` を渡す |
 | `<Cover>` | 表紙レイアウト。中央配置 + 大見出し用 |
-| `<Image src alt width height caption?>` | 静的インポートした画像。`src` に import の値、`width`・`height` に画像の寸法を渡す |
+| `<Image src alt width height caption?>` | `public` に置いた画像。`src` に URL、`width`・`height` に画像の寸法を渡す |
 | `<Notes>` | 発表者ノート。観覧側には表示されない |
 
 ## MDX 記法
@@ -108,7 +102,7 @@ import {
 | `**bold**` | (slides の `<strong>` は primary teal) |
 | `> 引用` | blockquote (primary 縦線) |
 
-画像は markdown `![]()` ではなく `<Image src={...} width={...} height={...} />` を使う。リモート URL は受け付けない (静的インポートのみ)。画像は `pnpm run -F main optimize:image` で AVIF にしてから import する。
+画像は markdown `![]()` ではなく `<Image src="..." width={...} height={...} />` を使う。画像は `pnpm run -F main optimize:image` で AVIF にして `apps/main/public/slides/<slug>-<名前>.avif` に置き、`src` に `/slides/<slug>-<名前>.avif` を渡す。
 
 ## キーボード操作
 
@@ -146,12 +140,11 @@ import {
 
 ```
 apps/main/src/app/slides/
-├── (decks)/<slug>/             各スライドデッキ
-│   ├── content.mdx
+├── (decks)/<slug>/             各スライドデッキ (本文は src/content/slides/<slug>/content.mdx)
 │   ├── layout.tsx
 │   └── page.tsx
 ├── _components/
-│   ├── mdx-parts/              MDX タグの上書き (内部、page.tsx だけが利用)
+│   ├── mdx-parts/              MDX タグの上書きと slide-mdx の部品をまとめた slideMDXComponents (page.tsx だけが利用)
 │   ├── slide-mdx/              writer 向け JSX 部品
 │   ├── slide-deck/             デッキ実装 (viewer / presenter / stage / hooks 等)
 │   └── slide-card/             /slides 一覧用カード

@@ -1,0 +1,78 @@
+---
+title: サンプルスライド
+description: スライド機能の動作確認用デッキ。
+createdAt: 2026-05-15
+updatedAt: 2026-05-15
+---
+
+<SlideDeckShell slug="sample-deck" title="サンプルスライド">
+
+<Cover>
+
+# k8o のスライド機能
+
+## サンプルプレゼンテーション
+
+2026年5月 / k8o
+
+</Cover>
+
+---
+
+## スライド機能のご紹介
+
+k8o.meに追加されたスライド機能のサンプルデッキです。
+
+<Notes>
+これは1枚目のノート。発表者モードでのみ表示される。
+</Notes>
+
+---
+
+## 操作
+
+- 矢印キー: 前後のスライドへ移動
+- スペース: 次のスライドへ
+- Home / End: 最初 / 最後へ
+
+<Notes>
+操作説明スライド。キーボード操作中心。
+</Notes>
+
+---
+
+## コードハイライト
+
+```ts
+const greet = (name: string): string => `Hello, ${name}!`;
+
+console.log(greet('k8o'));
+```
+
+`rehype` の `@repo/code-highlight` が効くので、ブログと同じ見た目でシンタックスハイライトされる。
+
+---
+
+## 発表者モード
+
+右上の「発表者モード」リンクから別タブで開ける。`BroadcastChannel`で観覧側と同期する。
+
+---
+
+## 画像の埋め込み
+
+<Image src="/slides/sample-deck-k8o.avif" alt="k8oのアイコン" width={512} height={512} caption="public に置いた画像を埋め込み" />
+
+`public` に置いた画像の URL を `<Image src="..." width={...} height={...} />` に渡すと、素の `img` で描かれる。
+
+---
+
+## おわり
+
+ご清聴ありがとうございました。
+
+<Notes>
+クロージング。質疑への誘導など。
+</Notes>
+
+</SlideDeckShell>

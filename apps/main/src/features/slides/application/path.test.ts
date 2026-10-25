@@ -14,7 +14,7 @@ describe('slidePath', () => {
     const mockJoin = vi
       .fn()
       .mockReturnValue(
-        '/Users/test/project/src/app/slides/(decks)/test-slug/content.mdx',
+        '/Users/test/project/src/content/slides/test-slug/content.mdx',
       );
 
     vi.mocked(cwd).mockReturnValue(mockCwd);
@@ -24,10 +24,10 @@ describe('slidePath', () => {
 
     expect(join).toHaveBeenCalledWith(
       mockCwd,
-      'src/app/slides/(decks)/test-slug/content.mdx',
+      'src/content/slides/test-slug/content.mdx',
     );
     expect(result).toBe(
-      '/Users/test/project/src/app/slides/(decks)/test-slug/content.mdx',
+      '/Users/test/project/src/content/slides/test-slug/content.mdx',
     );
   });
 });

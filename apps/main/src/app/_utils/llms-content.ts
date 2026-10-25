@@ -1,8 +1,8 @@
 import { cacheLife } from 'next/cache';
 
-import { playgroundSections } from '@/app/_components/playgrounds';
 import { getBlogContents } from '@/features/blog/interface/queries';
 import { getTalks } from '@/features/talks/interface/queries';
+import { playgroundSections } from '@/playgrounds';
 import { siteEntries } from '@/shared/site/site-entries';
 
 const SITE_URL = 'https://k8o.me';

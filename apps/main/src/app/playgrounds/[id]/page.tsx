@@ -9,8 +9,8 @@ import {
   getPlaygroundSection,
   Playground,
   playgroundCategoryLabels,
-  playgroundSections,
-} from '@/app/_components/playgrounds';
+} from '@/playgrounds';
+import { playgroundIds } from '@/playgrounds/ids';
 import { buildPageMetadata } from '@/shared/site/build-page-metadata';
 
 import { BlogLinkButton } from './_components/blog-link-button';
@@ -18,7 +18,7 @@ import { BlogLinkButton } from './_components/blog-link-button';
 import styles from './page.module.css';
 
 export function generateStaticParams() {
-  return playgroundSections.map((section) => ({ id: section.id }));
+  return playgroundIds.map((id) => ({ id }));
 }
 
 type PageProperties = {

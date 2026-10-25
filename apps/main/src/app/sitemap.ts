@@ -1,9 +1,9 @@
 import type { MetadataRoute } from 'next';
 
-import { playgroundSections } from '@/app/_components/playgrounds';
 import { getBlogContents } from '@/features/blog/interface/queries';
 import { getSlideContents } from '@/features/slides/interface/queries';
 import { getTags } from '@/features/tags/interface/queries';
+import { playgroundSections } from '@/playgrounds';
 import { siteEntries } from '@/shared/site/site-entries';
 
 const BASE_URL = 'https://k8o.me';

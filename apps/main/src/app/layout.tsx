@@ -51,6 +51,13 @@ export const metadata = {
     capable: true,
     title: 'k8o',
   },
+  icons: {
+    icon: [
+      { url: '/favicon.ico', sizes: '48x48', type: 'image/x-icon' },
+      { url: '/icon.png', sizes: '180x180', type: 'image/png' },
+    ],
+    apple: { url: '/apple-icon.png', sizes: '180x180', type: 'image/png' },
+  },
 } satisfies Metadata;
 
 export default function RootLayout({ children }: LayoutProps<'/'>) {
