@@ -42,9 +42,9 @@ const GA_COLLECT = 'https://region1.google-analytics.com/g/collect';
 
 // クライアントの router のように pushState で移り、GA と Speed Insights と同じ形で送る
 const navigatesInDocument = ({
-  sendsPageView,
+  pageViewDelayMs,
 }: {
-  sendsPageView: boolean;
+  pageViewDelayMs: number | null;
 }): string => `<main><a id="next" href="/next">next</a></main><script>
 const pageView = () => navigator.sendBeacon(
   '${GA_COLLECT}?v=2&en=page_view&dl=' + encodeURIComponent(location.href),
@@ -53,7 +53,7 @@ pageView();
 document.getElementById('next').addEventListener('click', (event) => {
   event.preventDefault();
   history.pushState(null, '', '/next');
-  ${sendsPageView ? 'pageView();' : ''}
+  ${pageViewDelayMs === null ? '' : `setTimeout(pageView, ${String(pageViewDelayMs)});`}
 });
 document.addEventListener('visibilitychange', () => {
   if (document.visibilityState === 'hidden') {
@@ -124,12 +124,17 @@ const pageAt = (path: string): TestPage => {
     case '/soft':
       return {
         status: 200,
-        body: html(navigatesInDocument({ sendsPageView: true })),
+        body: html(navigatesInDocument({ pageViewDelayMs: 0 })),
       };
     case '/soft-without-page-view':
       return {
         status: 200,
-        body: html(navigatesInDocument({ sendsPageView: false })),
+        body: html(navigatesInDocument({ pageViewDelayMs: null })),
+      };
+    case '/soft-late-page-view':
+      return {
+        status: 200,
+        body: html(navigatesInDocument({ pageViewDelayMs: 6000 })),
       };
     case '/hard':
       return {
@@ -238,6 +243,20 @@ describe('visitPage', { timeout: 60_000 }, () => {
       });
 
       expect(received).toStrictEqual(['GET /keeps-sending']);
+    });
+
+    it('GA が遷移の page_view をまとめて遅れて送っても、届くまで待つ', async () => {
+      const visit = await visitPage(
+        browser,
+        optionsFor('/soft-late-page-view', { checksNavigation: true }),
+      );
+
+      expect(visit.problems).toStrictEqual([]);
+      expect(visit.notes).toStrictEqual(
+        expect.arrayContaining([
+          `遷移のあとの GA の page_view: ${origin}/next`,
+        ]),
+      );
     });
 
     it('渡したパスに、ページ全体のスクリーンショットを JPEG で書く', async () => {
