@@ -1,5 +1,6 @@
 import { parseArgs } from 'node:util';
 
+import { applyAllowances, selectAllowances } from './compare-sites/allowances';
 import {
   diffFields,
   excerptPair,
@@ -27,17 +28,19 @@ const { values } = parseArgs({
     base: { type: 'string' },
     head: { type: 'string' },
     only: { type: 'string', multiple: true, default: [] },
+    allow: { type: 'string', multiple: true, default: [] },
     ignore: { type: 'string', multiple: true, default: [] },
   },
 });
 if (values.base === undefined || values.head === undefined) {
   console.error(
-    '使い方: pnpm run -F main compare:sites --base <URL> --head <URL> [--only <比べるパスに合わせる正規表現>]... [--ignore <項目の名前に合わせる正規表現>]...',
+    '使い方: pnpm run -F main compare:sites --base <URL> --head <URL> [--only <比べるパスに合わせる正規表現>]... [--allow <許す差の名前>]... [--ignore <項目の名前に合わせる正規表現>]...',
   );
   process.exit(2);
 }
 const { base, head } = values;
 const onlyPatterns = values.only.map((pattern) => new RegExp(pattern, 'u'));
+const allowances = selectAllowances(values.allow);
 const ignorePatterns = values.ignore.map((pattern) => new RegExp(pattern, 'u'));
 
 const fetchOnce = async (url: string, target: Target): Promise<Response> =>
@@ -102,7 +105,11 @@ const compare = async ({
     const [baseSnapshot, headSnapshot] = snapshots;
     comparedCount += 1;
     const { reported, ignored } = partitionIgnored(
-      diffFields(baseSnapshot.fields, headSnapshot.fields, ignorePatterns),
+      diffFields(
+        applyAllowances(baseSnapshot.fields, target, allowances),
+        headSnapshot.fields,
+        ignorePatterns,
+      ),
       ignorePatterns,
     );
     reportedCount += reported.length;
