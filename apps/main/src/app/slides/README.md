@@ -15,22 +15,23 @@ INSERT INTO slides (slug, published, created_at)
   VALUES ('my-talk', 1, '2026-05-15T00:00:00.000Z') ON CONFLICT (slug) DO NOTHING;
 ```
 
-### 2. ルートディレクトリを作成
+### 2. ルートと本文のディレクトリを作成
 
 ```
 apps/main/src/app/slides/(decks)/<slug>/
 ├── layout.tsx          # metadata, OG タグ
 ├── page.tsx            # MDX を render
-├── content.mdx         # スライド本体
 └── opengraph-image.tsx # (任意) OG 画像
+
+apps/main/src/content/slides/<slug>/
+└── content.mdx         # スライド本体
 ```
 
 ### 3. `page.tsx`
 
 ```tsx
 import { slideMDXComponents } from '@/app/slides/_components/mdx-parts';
-
-import Content from './content.mdx';
+import Content from '@/content/slides/my-talk/content.mdx';
 
 export default function Page() {
   return <Content components={slideMDXComponents} />;
@@ -146,8 +147,7 @@ import {
 
 ```
 apps/main/src/app/slides/
-├── (decks)/<slug>/             各スライドデッキ
-│   ├── content.mdx
+├── (decks)/<slug>/             各スライドデッキ (本文は src/content/slides/<slug>/content.mdx)
 │   ├── layout.tsx
 │   └── page.tsx
 ├── _components/
