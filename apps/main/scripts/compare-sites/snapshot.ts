@@ -1,10 +1,11 @@
 import { parseHTML } from 'linkedom';
 
+import { isProductionOrigin } from './targets';
+
 export type RawResponse = {
   readonly url: string;
   readonly status: number;
-  readonly contentType: string | null;
-  readonly location: string | null;
+  readonly headers: Headers;
   readonly body: Uint8Array;
 };
 
@@ -14,6 +15,31 @@ export type Snapshot = {
   // バイト数は比べる項目にせず、参考として出す
   readonly imageBytes: number | null;
 };
+
+const COMPARED_HEADERS = [
+  'content-security-policy',
+  'content-security-policy-report-only',
+  'reporting-endpoints',
+  'x-content-type-options',
+  'permissions-policy',
+  'vary',
+  'cache-control',
+  'access-control-allow-origin',
+];
+
+// Next を名乗る meta と Next の内部の meta で、外との約束ではない
+const IGNORED_META_NAMES = new Set(['generator', 'next-size-adjust']);
+
+const COMPARED_LINK_RELS = new Set([
+  'canonical',
+  'alternate',
+  'manifest',
+  'icon',
+  'apple-touch-icon',
+]);
+
+// Next はメタデータのファイルの URL に中身のハッシュを query で付け、ファイルを public に置くと付かない
+const ICON_RELS = new Set(['icon', 'apple-touch-icon']);
 
 const PNG_SIGNATURE = [0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a];
 
@@ -57,12 +83,63 @@ const imageRatio = (image: Element): string => {
   return width > 0 && height > 0 ? (width / height).toFixed(3) : '?';
 };
 
+// React は charSet などを大文字を含む名前のまま書き、linkedom の getAttribute は名前の大文字と小文字を区別する
+const attributesOf = (element: Element): Map<string, string> =>
+  new Map(
+    [...element.attributes].map(({ name, value }) => [
+      name.toLowerCase(),
+      value,
+    ]),
+  );
+
+const metaEntry = (meta: Element): readonly [string, string] | null => {
+  const attributes = attributesOf(meta);
+  const charset = attributes.get('charset');
+  if (charset !== undefined) {
+    return ['charset', charset];
+  }
+  const content = attributes.get('content') ?? '';
+  const httpEquiv = attributes.get('http-equiv');
+  if (httpEquiv !== undefined) {
+    return [`http-equiv:${httpEquiv.toLowerCase()}`, content];
+  }
+  const key = attributes.get('property') ?? attributes.get('name');
+  return key === undefined || IGNORED_META_NAMES.has(key)
+    ? null
+    : [key, content];
+};
+
+const describeLink = (link: Element, rel: string): string => {
+  const { href = '', ...rest } = Object.fromEntries(attributesOf(link));
+  const attributes = Object.entries(rest)
+    .filter(([name]) => name !== 'rel')
+    .map(([name, value]) => `${name}=${value}`)
+    .toSorted();
+  return [
+    ICON_RELS.has(rel) ? href.replace(/\?.*$/u, '') : href,
+    ...attributes,
+  ].join(' ');
+};
+
+const appendTo = (
+  groups: Map<string, string[]>,
+  key: string,
+  value: string,
+): void => {
+  groups.set(key, [...(groups.get(key) ?? []), value]);
+};
+
 const extractHtml = (
   html: string,
   fields: Map<string, string>,
 ): string | null => {
   const { document } = parseHTML(html);
   const { head } = document;
+
+  const lang = document.documentElement.getAttribute('lang');
+  if (lang !== null) {
+    fields.set('html:lang', lang);
+  }
 
   const title = head.querySelector('title');
   if (title !== null) {
@@ -71,32 +148,25 @@ const extractHtml = (
 
   const metas = new Map<string, string[]>();
   for (const meta of head.querySelectorAll('meta')) {
-    const key = meta.getAttribute('property') ?? meta.getAttribute('name');
-    if (
-      key === 'description' ||
-      key?.startsWith('og:') === true ||
-      key?.startsWith('twitter:') === true
-    ) {
-      metas.set(key, [
-        ...(metas.get(key) ?? []),
-        meta.getAttribute('content') ?? '',
-      ]);
+    const entry = metaEntry(meta);
+    if (entry !== null) {
+      appendTo(metas, entry[0], entry[1]);
     }
   }
   for (const [key, contents] of metas) {
     fields.set(`meta:${key}`, contents.join('\n'));
   }
 
-  const canonical = head.querySelector('link[rel="canonical"]');
-  if (canonical !== null) {
-    fields.set('link:canonical', canonical.getAttribute('href') ?? '');
+  const links = new Map<string, string[]>();
+  for (const link of head.querySelectorAll('link')) {
+    for (const rel of (link.getAttribute('rel') ?? '').split(/\s+/u)) {
+      if (COMPARED_LINK_RELS.has(rel)) {
+        appendTo(links, rel, describeLink(link, rel));
+      }
+    }
   }
-  const alternates = [...head.querySelectorAll('link[rel="alternate"]')].map(
-    (link) =>
-      `${link.getAttribute('type') ?? ''} ${link.getAttribute('href') ?? ''}`,
-  );
-  if (alternates.length > 0) {
-    fields.set('link:alternate', alternates.join('\n'));
+  for (const [rel, descriptions] of links) {
+    fields.set(`link:${rel}`, descriptions.join('\n'));
   }
 
   for (const [index, script] of [
@@ -131,21 +201,33 @@ const extractHtml = (
 
 const toLocationField = (location: string, url: string): string => {
   const target = new URL(location, url);
-  return target.origin === new URL(url).origin
+  // api は Location を本番の絶対 URL で書くので、preview や手元から取っても本番のオリジンが付く
+  return target.origin === new URL(url).origin ||
+    isProductionOrigin(target.href)
     ? `${target.pathname}${target.search}${target.hash}`
     : target.href;
 };
 
-export const takeSnapshot = (raw: RawResponse): Snapshot => {
-  const contentType = raw.contentType ?? '';
+export const takeSnapshot = (
+  raw: RawResponse,
+  extraHeaders: readonly string[] = [],
+): Snapshot => {
+  const contentType = raw.headers.get('content-type') ?? '';
   const fields = new Map([
     ['status', String(raw.status)],
     ['content-type', contentType],
   ]);
+  for (const name of [...COMPARED_HEADERS, ...extraHeaders]) {
+    const value = raw.headers.get(name);
+    if (value !== null) {
+      fields.set(`header:${name}`, value);
+    }
+  }
 
-  if (raw.location !== null) {
+  const location = raw.headers.get('location');
+  if (location !== null) {
     // リダイレクトで約束しているのは status と飛び先で、本文はクライアントが読まないので比べない
-    fields.set('location', toLocationField(raw.location, raw.url));
+    fields.set('location', toLocationField(location, raw.url));
     return { fields, ogImage: null, imageBytes: null };
   }
   if (contentType.startsWith('text/html')) {

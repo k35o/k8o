@@ -4,33 +4,18 @@ export type Target = {
   readonly label: string;
   readonly path: string;
   readonly accept: string | null;
+  readonly method: 'GET' | 'HEAD';
+  readonly checksCdnCache: boolean;
 };
 
 const MARKDOWN = 'text/markdown';
 
-const FIXED_PATHS = [
-  '/sitemap.xml',
-  '/robots.txt',
-  '/manifest.webmanifest',
-  '/llms.txt',
-  '/md/home',
-  '/blog/feed',
-  '/slides/feed',
-  '/reading-list/feed',
-  '/notifications',
-  '/favicon.ico',
-  '/icon.png',
-  '/apple-icon.png',
-  '/icon-192.png',
-  '/badge-72.png',
-  '/sw.js',
-  '/ga-init.js',
-  '/playgrounds/shared-worker.worker.js',
-  '/playgrounds/media-pseudos-tone.wav',
-] as const;
+const PRODUCTION_ORIGIN = 'https://k8o.me';
 
 const NOT_FOUND_PATH = '/compare-sites-not-found';
 const NOT_FOUND_ARTICLE_PATH = '/blog/compare-sites-not-found';
+const NOT_FOUND_TAG_PATH = '/tags/999999';
+const NOT_FOUND_PLAYGROUND_PATH = '/playgrounds/compare-sites-not-found';
 
 const ARTICLE_PATH = /^\/blog\/[a-z0-9-]+$/u;
 
@@ -54,29 +39,75 @@ export const parseSitemapPaths = (xml: string): string[] => {
   return [...new Set(paths)];
 };
 
-const page = (path: string): Target => ({ label: path, path, accept: null });
+export const isProductionOrigin = (url: string): boolean =>
+  new URL(url).origin === PRODUCTION_ORIGIN;
+
+const page = (path: string): Target => ({
+  label: path,
+  path,
+  accept: null,
+  method: 'GET',
+  checksCdnCache: false,
+});
 
 const markdownOf = (path: string): Target => ({
+  ...page(path),
   label: `${path} (Accept: ${MARKDOWN})`,
-  path,
   accept: MARKDOWN,
+});
+
+const headOf = (path: string): Target => ({
+  ...page(path),
+  label: `HEAD ${path}`,
+  method: 'HEAD',
 });
 
 const articleTargets = (path: string): Target[] => [
   page(path),
   page(`${path}.md`),
+  headOf(`${path}.md`),
   markdownOf(path),
+];
+
+const fixedTargets = (): Target[] => [
+  page('/sitemap.xml'),
+  page('/robots.txt'),
+  page('/manifest.webmanifest'),
+  page('/llms.txt'),
+  page('/blog/feed'),
+  markdownOf('/blog/feed'),
+  page('/slides/feed'),
+  {
+    ...page('/reading-list/feed'),
+    label: '/reading-list/feed (2回目)',
+    checksCdnCache: true,
+  },
+  page('/reading-list/feed?utm=1'),
+  page('/notifications'),
+  page('/favicon.ico'),
+  page('/icon.png'),
+  page('/apple-icon.png'),
+  page('/icon-192.png'),
+  page('/badge-72.png'),
+  page('/sw.js'),
+  page('/ga-init.js'),
+  page('/playgrounds/shared-worker.worker.js'),
+  page('/playgrounds/media-pseudos-tone.wav'),
+  page('/_vercel/speed-insights/script.js'),
 ];
 
 export const buildTargets = (sitemapPaths: readonly string[]): Target[] => {
   const firstArticle = sitemapPaths.find((path) => ARTICLE_PATH.test(path));
   const targets = [
-    ...FIXED_PATHS.map((path) => page(path)),
+    ...fixedTargets(),
     markdownOf('/'),
     page(NOT_FOUND_PATH),
     markdownOf(NOT_FOUND_PATH),
     ...articleTargets(NOT_FOUND_ARTICLE_PATH),
+    page(NOT_FOUND_TAG_PATH),
+    page(NOT_FOUND_PLAYGROUND_PATH),
     page('/about/'),
+    page('/about/?x=1'),
     ...(firstArticle === undefined ? [] : [page(`${firstArticle}/`)]),
     ...sitemapPaths.flatMap((path) =>
       ARTICLE_PATH.test(path) ? articleTargets(path) : [page(path)],
@@ -84,3 +115,13 @@ export const buildTargets = (sitemapPaths: readonly string[]): Target[] => {
   ];
   return [...new Map(targets.map((target) => [target.label, target])).values()];
 };
+
+export const filterTargets = (
+  targets: readonly Target[],
+  patterns: readonly RegExp[],
+): Target[] =>
+  patterns.length === 0
+    ? [...targets]
+    : targets.filter((target) =>
+        patterns.some((pattern) => pattern.test(target.path)),
+      );
