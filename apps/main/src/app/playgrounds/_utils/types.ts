@@ -1,4 +1,4 @@
-import type { PlaygroundCategory } from '@/app/_components/playgrounds/types';
+import type { PlaygroundCategory } from '@/playgrounds/types';
 
 export type PlaygroundSummary = {
   id: string;

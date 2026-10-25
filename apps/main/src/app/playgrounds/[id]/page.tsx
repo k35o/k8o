@@ -10,7 +10,7 @@ import {
   Playground,
   playgroundCategoryLabels,
   playgroundSections,
-} from '@/app/_components/playgrounds';
+} from '@/playgrounds';
 import { buildPageMetadata } from '@/shared/site/build-page-metadata';
 
 import { BlogLinkButton } from './_components/blog-link-button';

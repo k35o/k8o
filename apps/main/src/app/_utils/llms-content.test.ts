@@ -14,7 +14,7 @@ vi.mock('@/features/blog/interface/queries', () => ({
 vi.mock('@/features/talks/interface/queries', () => ({
   getTalks: vi.fn(),
 }));
-vi.mock('@/app/_components/playgrounds', () => ({
+vi.mock('@/playgrounds', () => ({
   playgroundSections: [
     {
       id: 'sample-demo',

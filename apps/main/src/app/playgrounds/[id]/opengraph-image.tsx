@@ -1,5 +1,5 @@
 import { OgImage } from '@/app/_components/og-image';
-import { getPlaygroundSection } from '@/app/_components/playgrounds';
+import { getPlaygroundSection } from '@/playgrounds';
 
 export const alt = 'Playgrounds';
 

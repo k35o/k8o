@@ -8,7 +8,7 @@ import type { FC } from 'react';
 import {
   playgroundCategories,
   playgroundCategoryLabels,
-} from '@/app/_components/playgrounds/types';
+} from '@/playgrounds/types';
 
 import { filterPlaygrounds } from '../../_utils/filter-playgrounds';
 import { playgroundListParsers } from '../../_utils/search-params';

@@ -1,4 +1,4 @@
-import { playgroundCategoryLabels } from '@/app/_components/playgrounds/types';
+import { playgroundCategoryLabels } from '@/playgrounds/types';
 import { matchesSearchQuery } from '@/shared/search/search-filter';
 
 import type { PlaygroundSummary } from './types';

@@ -3,8 +3,8 @@
 import dynamic from 'next/dynamic';
 import type { ComponentType, FC } from 'react';
 
-import { Playground } from './playground';
-import type { PlaygroundSection } from './types';
+import { Playground } from '@/playgrounds/playground';
+import type { PlaygroundSection } from '@/playgrounds/types';
 
 type EmbedProps = {
   demo?: string | undefined;
@@ -50,236 +50,242 @@ const toEmbed = (section: PlaygroundSection): FC<EmbedProps> =>
 // next/dynamic は書き下した import() から SSR の HTML に CSS を載せるので、id から組み立てない
 const embeds: Record<string, ComponentType<EmbedProps>> = {
   'abs-sign': dynamic(() =>
-    import('./abs-sign').then(({ absSignSection }) => toEmbed(absSignSection)),
+    import('@/playgrounds/abs-sign').then(({ absSignSection }) =>
+      toEmbed(absSignSection),
+    ),
   ),
   'active-view-transition': dynamic(() =>
-    import('./active-view-transition').then(({ activeViewTransitionSection }) =>
-      toEmbed(activeViewTransitionSection),
+    import('@/playgrounds/active-view-transition').then(
+      ({ activeViewTransitionSection }) => toEmbed(activeViewTransitionSection),
     ),
   ),
   'alpha-function': dynamic(() =>
-    import('./alpha-function').then(({ alphaFunctionSection }) =>
+    import('@/playgrounds/alpha-function').then(({ alphaFunctionSection }) =>
       toEmbed(alphaFunctionSection),
     ),
   ),
   'animation-accessors': dynamic(() =>
-    import('./animation-accessors').then(({ animationAccessorsSection }) =>
-      toEmbed(animationAccessorsSection),
+    import('@/playgrounds/animation-accessors').then(
+      ({ animationAccessorsSection }) => toEmbed(animationAccessorsSection),
     ),
   ),
   arianotify: dynamic(() =>
-    import('./arianotify').then(({ ariaNotifySection }) =>
+    import('@/playgrounds/arianotify').then(({ ariaNotifySection }) =>
       toEmbed(ariaNotifySection),
     ),
   ),
   'async-clipboard': dynamic(() =>
-    import('./async-clipboard').then(({ asyncClipboardSection }) =>
+    import('@/playgrounds/async-clipboard').then(({ asyncClipboardSection }) =>
       toEmbed(asyncClipboardSection),
     ),
   ),
   autocorrect: dynamic(() =>
-    import('./autocorrect').then(({ autocorrectSection }) =>
+    import('@/playgrounds/autocorrect').then(({ autocorrectSection }) =>
       toEmbed(autocorrectSection),
     ),
   ),
   'baseline-shift': dynamic(() =>
-    import('./baseline-shift').then(({ baselineShiftSection }) =>
+    import('@/playgrounds/baseline-shift').then(({ baselineShiftSection }) =>
       toEmbed(baselineShiftSection),
     ),
   ),
   'caret-position-from-point': dynamic(() =>
-    import('./caret-position-from-point').then(
+    import('@/playgrounds/caret-position-from-point').then(
       ({ caretPositionFromPointSection }) =>
         toEmbed(caretPositionFromPointSection),
     ),
   ),
   'composed-ranges': dynamic(() =>
-    import('./composed-ranges').then(({ composedRangesSection }) =>
+    import('@/playgrounds/composed-ranges').then(({ composedRangesSection }) =>
       toEmbed(composedRangesSection),
     ),
   ),
   'container-name-queries': dynamic(() =>
-    import('./container-name-queries').then(({ containerNameQueriesSection }) =>
-      toEmbed(containerNameQueriesSection),
+    import('@/playgrounds/container-name-queries').then(
+      ({ containerNameQueriesSection }) => toEmbed(containerNameQueriesSection),
     ),
   ),
   'container-style-queries': dynamic(() =>
-    import('./container-style-queries').then(
+    import('@/playgrounds/container-style-queries').then(
       ({ containerStyleQueriesSection }) =>
         toEmbed(containerStyleQueriesSection),
     ),
   ),
   'content-visibility': dynamic(() =>
-    import('./content-visibility').then(({ contentVisibilitySection }) =>
-      toEmbed(contentVisibilitySection),
+    import('@/playgrounds/content-visibility').then(
+      ({ contentVisibilitySection }) => toEmbed(contentVisibilitySection),
     ),
   ),
   'contrast-color': dynamic(() =>
-    import('./contrast-color').then(({ contrastColorSection }) =>
+    import('@/playgrounds/contrast-color').then(({ contrastColorSection }) =>
       toEmbed(contrastColorSection),
     ),
   ),
   'crisp-edges': dynamic(() =>
-    import('./crisp-edges').then(({ crispEdgesSection }) =>
+    import('@/playgrounds/crisp-edges').then(({ crispEdgesSection }) =>
       toEmbed(crispEdgesSection),
     ),
   ),
   'details-content': dynamic(() =>
-    import('./details-content').then(({ detailsContentSection }) =>
+    import('@/playgrounds/details-content').then(({ detailsContentSection }) =>
       toEmbed(detailsContentSection),
     ),
   ),
   'event-timing': dynamic(() =>
-    import('./event-timing').then(({ eventTimingSection }) =>
+    import('@/playgrounds/event-timing').then(({ eventTimingSection }) =>
       toEmbed(eventTimingSection),
     ),
   ),
   'field-sizing': dynamic(() =>
-    import('./field-sizing').then(({ fieldSizingSection }) =>
+    import('@/playgrounds/field-sizing').then(({ fieldSizingSection }) =>
       toEmbed(fieldSizingSection),
     ),
   ),
   'font-family-math': dynamic(() =>
-    import('./font-family-math').then(({ fontFamilyMathSection }) =>
+    import('@/playgrounds/font-family-math').then(({ fontFamilyMathSection }) =>
       toEmbed(fontFamilyMathSection),
     ),
   ),
   highlight: dynamic(() =>
-    import('./highlight').then(({ highlightSection }) =>
+    import('@/playgrounds/highlight').then(({ highlightSection }) =>
       toEmbed(highlightSection),
     ),
   ),
   'input-file-webkitdirectory': dynamic(() =>
-    import('./input-file-webkitdirectory').then(
+    import('@/playgrounds/input-file-webkitdirectory').then(
       ({ inputFileWebkitdirectorySection }) =>
         toEmbed(inputFileWebkitdirectorySection),
     ),
   ),
   'intl-locale-info': dynamic(() =>
-    import('./intl-locale-info').then(({ intlLocaleInfoSection }) =>
+    import('@/playgrounds/intl-locale-info').then(({ intlLocaleInfoSection }) =>
       toEmbed(intlLocaleInfoSection),
     ),
   ),
   'invoker-commands': dynamic(() =>
-    import('./invoker-commands').then(({ invokerCommandsSection }) =>
-      toEmbed(invokerCommandsSection),
+    import('@/playgrounds/invoker-commands').then(
+      ({ invokerCommandsSection }) => toEmbed(invokerCommandsSection),
     ),
   ),
   'largest-contentful-paint': dynamic(() =>
-    import('./largest-contentful-paint').then(({ lcpSection }) =>
+    import('@/playgrounds/largest-contentful-paint').then(({ lcpSection }) =>
       toEmbed(lcpSection),
     ),
   ),
   'light-dark-image': dynamic(() =>
-    import('./light-dark-image').then(({ lightDarkImageSection }) =>
+    import('@/playgrounds/light-dark-image').then(({ lightDarkImageSection }) =>
       toEmbed(lightDarkImageSection),
     ),
   ),
   'media-pseudos': dynamic(() =>
-    import('./media-pseudos').then(({ mediaPseudosSection }) =>
+    import('@/playgrounds/media-pseudos').then(({ mediaPseudosSection }) =>
       toEmbed(mediaPseudosSection),
     ),
   ),
   'open-pseudo': dynamic(() =>
-    import('./open-pseudo').then(({ openPseudoSection }) =>
+    import('@/playgrounds/open-pseudo').then(({ openPseudoSection }) =>
       toEmbed(openPseudoSection),
     ),
   ),
   'overflow-anchor': dynamic(() =>
-    import('./overflow-anchor').then(({ overflowAnchorSection }) =>
+    import('@/playgrounds/overflow-anchor').then(({ overflowAnchorSection }) =>
       toEmbed(overflowAnchorSection),
     ),
   ),
   popover: dynamic(() =>
-    import('./popover').then(({ popoverSection }) => toEmbed(popoverSection)),
+    import('@/playgrounds/popover').then(({ popoverSection }) =>
+      toEmbed(popoverSection),
+    ),
   ),
   'print-color-adjust': dynamic(() =>
-    import('./print-color-adjust').then(({ printColorAdjustSection }) =>
-      toEmbed(printColorAdjustSection),
+    import('@/playgrounds/print-color-adjust').then(
+      ({ printColorAdjustSection }) => toEmbed(printColorAdjustSection),
     ),
   ),
   'progress-function': dynamic(() =>
-    import('./progress-function').then(({ progressFunctionSection }) =>
-      toEmbed(progressFunctionSection),
+    import('@/playgrounds/progress-function').then(
+      ({ progressFunctionSection }) => toEmbed(progressFunctionSection),
     ),
   ),
   requestclose: dynamic(() =>
-    import('./requestclose').then(({ requestCloseSection }) =>
+    import('@/playgrounds/requestclose').then(({ requestCloseSection }) =>
       toEmbed(requestCloseSection),
     ),
   ),
   'revert-rule': dynamic(() =>
-    import('./revert-rule').then(({ revertRuleSection }) =>
+    import('@/playgrounds/revert-rule').then(({ revertRuleSection }) =>
       toEmbed(revertRuleSection),
     ),
   ),
   'root-font-units': dynamic(() =>
-    import('./root-font-units').then(({ rootFontUnitsSection }) =>
+    import('@/playgrounds/root-font-units').then(({ rootFontUnitsSection }) =>
       toEmbed(rootFontUnitsSection),
     ),
   ),
   scope: dynamic(() =>
-    import('./scope').then(({ scopeSection }) => toEmbed(scopeSection)),
+    import('@/playgrounds/scope').then(({ scopeSection }) =>
+      toEmbed(scopeSection),
+    ),
   ),
   'screen-wake-lock': dynamic(() =>
-    import('./screen-wake-lock').then(({ screenWakeLockSection }) =>
+    import('@/playgrounds/screen-wake-lock').then(({ screenWakeLockSection }) =>
       toEmbed(screenWakeLockSection),
     ),
   ),
   'scrollbar-color': dynamic(() =>
-    import('./scrollbar-color').then(({ scrollbarColorSection }) =>
+    import('@/playgrounds/scrollbar-color').then(({ scrollbarColorSection }) =>
       toEmbed(scrollbarColorSection),
     ),
   ),
   scrollend: dynamic(() =>
-    import('./scrollend').then(({ scrollendSection }) =>
+    import('@/playgrounds/scrollend').then(({ scrollendSection }) =>
       toEmbed(scrollendSection),
     ),
   ),
   'shape-function': dynamic(() =>
-    import('./shape-function').then(({ shapeFunctionSection }) =>
+    import('@/playgrounds/shape-function').then(({ shapeFunctionSection }) =>
       toEmbed(shapeFunctionSection),
     ),
   ),
   'shared-worker': dynamic(() =>
-    import('./shared-worker').then(({ sharedWorkerSection }) =>
+    import('@/playgrounds/shared-worker').then(({ sharedWorkerSection }) =>
       toEmbed(sharedWorkerSection),
     ),
   ),
   'sibling-count-index': dynamic(() =>
-    import('./sibling-count-index').then(({ siblingCountIndexSection }) =>
-      toEmbed(siblingCountIndexSection),
+    import('@/playgrounds/sibling-count-index').then(
+      ({ siblingCountIndexSection }) => toEmbed(siblingCountIndexSection),
     ),
   ),
   'spelling-grammar-error': dynamic(() =>
-    import('./spelling-grammar-error').then(({ spellingGrammarErrorSection }) =>
-      toEmbed(spellingGrammarErrorSection),
+    import('@/playgrounds/spelling-grammar-error').then(
+      ({ spellingGrammarErrorSection }) => toEmbed(spellingGrammarErrorSection),
     ),
   ),
   'suspense-list': dynamic(() =>
-    import('./suspense-list').then(({ suspenseListSection }) =>
+    import('@/playgrounds/suspense-list').then(({ suspenseListSection }) =>
       toEmbed(suspenseListSection),
     ),
   ),
   'text-decoration-skip-ink-all': dynamic(() =>
-    import('./text-decoration-skip-ink-all').then(
+    import('@/playgrounds/text-decoration-skip-ink-all').then(
       ({ textDecorationSkipInkAllSection }) =>
         toEmbed(textDecorationSkipInkAllSection),
     ),
   ),
   'text-indent-keywords': dynamic(() =>
-    import('./text-indent-keywords').then(({ textIndentKeywordsSection }) =>
-      toEmbed(textIndentKeywordsSection),
+    import('@/playgrounds/text-indent-keywords').then(
+      ({ textIndentKeywordsSection }) => toEmbed(textIndentKeywordsSection),
     ),
   ),
   'toggleevent-source': dynamic(() =>
-    import('./toggleevent-source').then(({ toggleEventSourceSection }) =>
-      toEmbed(toggleEventSourceSection),
+    import('@/playgrounds/toggleevent-source').then(
+      ({ toggleEventSourceSection }) => toEmbed(toggleEventSourceSection),
     ),
   ),
   'view-transitions': dynamic(() =>
-    import('./view-transitions').then(({ viewTransitionsSection }) =>
-      toEmbed(viewTransitionsSection),
+    import('@/playgrounds/view-transitions').then(
+      ({ viewTransitionsSection }) => toEmbed(viewTransitionsSection),
     ),
   ),
 };
