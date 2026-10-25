@@ -39,8 +39,9 @@ jobs:
       # 先に各アプリの型を生成しておかないと Route を string とみなし `as Route` を
       # 不要と誤検出する。
       - name: Generate Next.js route types
-        # api は Next.js ではないため除く
-        run: pnpm --filter "./apps/*" --filter "!@repo/api" exec next typegen
+        # api と main-k8ordo は Next.js ではないため除く。main-k8ordo の .k8ordo/ の型は vite build か
+        # vite dev でしか書かれず、build は DB を読むので、CI では型の無いまま check と type-check を流す
+        run: pnpm --filter "./apps/*" --filter "!@repo/api" --filter "!main-k8ordo" exec next typegen
 
       - name: Run check
         run: pnpm run check

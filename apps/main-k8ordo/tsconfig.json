@@ -1,0 +1,19 @@
+{
+  "extends": "@repo/typescript-config/base.json",
+  "compilerOptions": {
+    "target": "esnext",
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
+    "jsx": "react-jsx",
+    "noEmit": true,
+    "incremental": true,
+    "allowImportingTsExtensions": true,
+    "paths": {
+      "@/*": ["./src/*"]
+    },
+    "types": ["node", "vite/client", "vitest/importMeta"],
+    "rootDirs": [".", "./__generated__"]
+  },
+  "include": ["**/*.ts", "**/*.tsx", ".k8ordo/**/*.ts", "__generated__"],
+  "exclude": ["node_modules", "dist"]
+}

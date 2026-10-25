@@ -25,7 +25,7 @@
         "VAPID_PUBLIC_KEY"
       ],
       "inputs": ["$TURBO_DEFAULT$", ".env", ".env.*"],
-      "outputs": [".next/**", "!.next/cache/**", "dist/**"]
+      "outputs": [".next/**", "!.next/cache/**", "dist/**", ".vercel/output/**"]
     },
     "transit": {
       "dependsOn": ["^transit"]

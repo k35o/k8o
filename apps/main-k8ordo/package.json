@@ -1,0 +1,38 @@
+{
+  "name": "main-k8ordo",
+  "version": "1.0.0",
+  "private": true,
+  "description": "k8o site on k8ordo",
+  "type": "module",
+  "scripts": {
+    "dev": "portless run vite dev",
+    "build": "vite build",
+    "type-check": "better-css-modules generate && tsc --noEmit",
+    "test": "vitest run",
+    "test:watch": "vitest"
+  },
+  "dependencies": {
+    "@k8ordo/color-scheme": "catalog:",
+    "@k8ordo/i18n": "catalog:",
+    "@k8ordo/state": "catalog:",
+    "@k8ordo/ui": "catalog:",
+    "hono": "catalog:",
+    "react": "catalog:",
+    "react-dom": "catalog:",
+    "zod": "catalog:"
+  },
+  "devDependencies": {
+    "@better-css-modules/cli": "catalog:",
+    "@better-css-modules/core": "catalog:",
+    "@better-css-modules/vite": "catalog:",
+    "@k8ordo/framework": "catalog:",
+    "@k8ordo/router": "catalog:",
+    "@repo/api": "workspace:*",
+    "@repo/typescript-config": "workspace:*",
+    "@types/react": "catalog:",
+    "@types/react-dom": "catalog:",
+    "oxc-transform-react": "catalog:",
+    "vite": "catalog:",
+    "vitest": "catalog:"
+  }
+}
