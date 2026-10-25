@@ -1,5 +1,8 @@
+import { mkdtemp, readFile, rm } from 'node:fs/promises';
 import { createServer } from 'node:http';
 import type { AddressInfo } from 'node:net';
+import { tmpdir } from 'node:os';
+import { join } from 'node:path';
 
 import { chromium } from 'playwright';
 import type { Browser } from 'playwright';
@@ -164,6 +167,7 @@ const optionsFor = (
   path,
   expectedStatus: 200,
   checksNavigation: false,
+  screenshotPath: null,
   bypassSecret: null,
   ...overrides,
 });
@@ -234,6 +238,24 @@ describe('visitPage', { timeout: 60_000 }, () => {
       });
 
       expect(received).toStrictEqual(['GET /keeps-sending']);
+    });
+
+    it('渡したパスに、ページ全体のスクリーンショットを JPEG で書く', async () => {
+      const dir = await mkdtemp(join(tmpdir(), 'k8o-smoke-pages-test-'));
+      try {
+        const screenshotPath = join(dir, 'ok.jpeg');
+        const visit = await visitPage(
+          browser,
+          optionsFor('/ok', { screenshotPath }),
+        );
+
+        expect(visit.problems).toStrictEqual([]);
+        expect([
+          ...(await readFile(screenshotPath)).subarray(0, 3),
+        ]).toStrictEqual([0xff, 0xd8, 0xff]);
+      } finally {
+        await rm(dir, { recursive: true, force: true });
+      }
     });
 
     it('内部リンクを押して文書を読み込まずに移ったことと、移ったあとの計測を、送らずに並べる', async () => {

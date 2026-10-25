@@ -1,6 +1,11 @@
 import { describe, expect, it } from 'vitest';
 
-import { summarizeReportOnly } from './report';
+import {
+  newProblems,
+  renderScreenshotIndex,
+  screenshotFileOf,
+  summarizeReportOnly,
+} from './report';
 
 describe('summarizeReportOnly', () => {
   describe('正常系', () => {
@@ -51,6 +56,92 @@ describe('summarizeReportOnly', () => {
           example: 'img-src https://example.com/a.png',
         },
       ]);
+    });
+  });
+});
+
+describe('newProblems', () => {
+  describe('正常系', () => {
+    it('オリジンを除いて比べ、head にだけある誤りを並べる', () => {
+      expect(
+        newProblems(
+          {
+            origin: 'https://k8o.me',
+            problems: [
+              'console.error: Failed to load resource: 404 (https://k8o.me/a.js)',
+              'pageerror: 前からある',
+            ],
+          },
+          {
+            origin: 'https://main-abc123-k35o.vercel.app',
+            problems: [
+              'console.error: Failed to load resource: 404 (https://main-abc123-k35o.vercel.app/a.js)',
+              'pageerror: 前からある',
+              'pageerror: 増えた (https://main-abc123-k35o.vercel.app/b.js)',
+            ],
+          },
+        ),
+      ).toStrictEqual([
+        'pageerror: 増えた (https://main-abc123-k35o.vercel.app/b.js)',
+      ]);
+    });
+  });
+
+  describe('エッジケース', () => {
+    it('base にだけある誤りは並べない', () => {
+      expect(
+        newProblems(
+          { origin: 'https://k8o.me', problems: ['pageerror: 消えた'] },
+          { origin: 'http://127.0.0.1:4511', problems: [] },
+        ),
+      ).toStrictEqual([]);
+    });
+  });
+});
+
+describe('screenshotFileOf', () => {
+  describe('正常系', () => {
+    it.each([
+      ['/', 'index.jpeg'],
+      ['/blog/font-family-math', 'blog_font-family-math.jpeg'],
+      ['/smoke-pages-not-found', 'smoke-pages-not-found.jpeg'],
+    ])('%s は %s に書く', (path, file) => {
+      expect(screenshotFileOf(path)).toBe(file);
+    });
+  });
+});
+
+describe('renderScreenshotIndex', () => {
+  describe('正常系', () => {
+    it('パスごとに、base と head のスクリーンショットを並べる', () => {
+      const html = renderScreenshotIndex(
+        [
+          { side: 'base', origin: 'https://k8o.me' },
+          { side: 'head', origin: 'http://127.0.0.1:4511' },
+        ],
+        ['/', '/blog/font-family-math'],
+      );
+
+      expect(html).toContain('<img src="base/index.jpeg"');
+      expect(html).toContain('<img src="head/index.jpeg"');
+      expect(html).toContain('<img src="head/blog_font-family-math.jpeg"');
+      expect(html).toContain('http://127.0.0.1:4511');
+      expect(html.indexOf('base/index.jpeg')).toBeLessThan(
+        html.indexOf('head/index.jpeg'),
+      );
+    });
+  });
+
+  describe('エッジケース', () => {
+    it('パスとオリジンの文字を HTML としてそのまま書かない', () => {
+      const html = renderScreenshotIndex(
+        [{ side: 'base', origin: 'https://example.com/"><script>' }],
+        ['/<b>&'],
+      );
+
+      expect(html).not.toContain('<script>');
+      expect(html).not.toContain('<b>');
+      expect(html).toContain('/&lt;b&gt;&amp;');
     });
   });
 });

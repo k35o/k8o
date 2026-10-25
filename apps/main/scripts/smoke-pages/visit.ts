@@ -19,6 +19,7 @@ type VisitOptions = {
   readonly path: string;
   readonly expectedStatus: number;
   readonly checksNavigation: boolean;
+  readonly screenshotPath: string | null;
   readonly bypassSecret: string | null;
 };
 
@@ -111,6 +112,7 @@ export const visitPage = async (
     path,
     expectedStatus,
     checksNavigation,
+    screenshotPath,
     bypassSecret,
   }: VisitOptions,
 ): Promise<Visit> => {
@@ -187,6 +189,19 @@ export const visitPage = async (
       problems.push(
         `status: ${String(status)}（${String(expectedStatus)} のはず）`,
       );
+    }
+    if (screenshotPath !== null && response !== null) {
+      await page
+        .screenshot({
+          path: screenshotPath,
+          fullPage: true,
+          type: 'jpeg',
+          quality: 80,
+          animations: 'disabled',
+        })
+        .catch((error: unknown) => {
+          problems.push(`スクリーンショット: ${firstLineOf(error)}`);
+        });
     }
     if (checksNavigation && response !== null) {
       const navigation = await checkNavigation(page, blocked).catch(
