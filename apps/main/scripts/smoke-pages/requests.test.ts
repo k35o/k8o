@@ -26,6 +26,25 @@ describe('blockedCategoryOf', () => {
     });
 
     it.each([
+      ['POST', 'https://stats.g.doubleclick.net/g/collect?v=2'],
+      ['GET', 'https://www.google.com/ads/ga-audiences?v=1&t=sr'],
+      ['GET', 'https://www.google.co.jp/ads/ga-audiences?v=1&t=sr'],
+      ['POST', 'https://www.google.com/ccm/collect?en=page_view'],
+      ['GET', 'https://www.googletagmanager.com/td?id=G-TEST'],
+      [
+        'GET',
+        'https://www.googletagmanager.com/static/service_worker/5a/sw_iframe.html',
+      ],
+      ['GET', 'https://pagead2.googlesyndication.com/pagead/gen_204'],
+      ['GET', 'https://www.googleadservices.com/pagead/conversion/1/'],
+    ])(
+      'gtag.js が GA の collect のほかに送る %s %s も止める',
+      (method, url) => {
+        expect(blockedCategoryOf(method, url)).toBe('ga');
+      },
+    );
+
+    it.each([
       'https://k8o.me/_vercel/speed-insights/vitals',
       'https://main-abc123-k35o.vercel.app/_vercel/speed-insights/vitals',
       'http://127.0.0.1:4511/_vercel/speed-insights/vitals',
@@ -48,6 +67,7 @@ describe('blockedCategoryOf', () => {
       ['GET', 'https://k8o.me/_vercel/speed-insights/script.js'],
       ['POST', 'https://api.k8o.me.example.com/public/reports'],
       ['POST', 'https://evil-google-analytics.com/g/collect'],
+      ['GET', 'https://lh7-us.googleusercontent.com/docs/image=w1200-h630-p'],
       ['GET', 'https://k8o.me/blog/abs-sign'],
     ])('ほかの要求（%s %s）は止めない', (method, url) => {
       expect(blockedCategoryOf(method, url)).toBeNull();

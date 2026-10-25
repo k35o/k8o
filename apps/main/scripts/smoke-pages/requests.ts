@@ -11,7 +11,11 @@ export type BlockedRequest = {
 
 const API_ORIGIN = 'https://api.k8o.me';
 const READ_METHODS: ReadonlySet<string> = new Set(['GET', 'HEAD', 'OPTIONS']);
-const GA_HOST = /(?:^|\.)(?:google-analytics\.com|analytics\.google\.com)$/u;
+// gtag.js は GA の collect のほかに、Google シグナルの stats.g.doubleclick.net、地域の
+// google.<tld> の ga-audiences、tag の診断などへも送る。gtag.js の本体だけを通す
+const GOOGLE_MEASUREMENT_HOST =
+  /(?:^|\.)(?:google-analytics\.com|google\.[a-z.]+|doubleclick\.net|googlesyndication\.com|googleadservices\.com|googletagmanager\.com)$/u;
+const GTAG_SCRIPT = 'https://www.googletagmanager.com/gtag/js';
 const SPEED_INSIGHTS_VITALS = '/_vercel/speed-insights/vitals';
 
 export const blockedCategoryOf = (
@@ -22,7 +26,10 @@ export const blockedCategoryOf = (
   if (origin === API_ORIGIN && !READ_METHODS.has(method)) {
     return 'api';
   }
-  if (GA_HOST.test(hostname)) {
+  if (
+    GOOGLE_MEASUREMENT_HOST.test(hostname) &&
+    `${origin}${pathname}` !== GTAG_SCRIPT
+  ) {
     return 'ga';
   }
   if (pathname.startsWith(SPEED_INSIGHTS_VITALS)) {

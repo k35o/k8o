@@ -58,7 +58,7 @@ const print = (text: string): void => {
 
 const CATEGORY_LABELS: Record<BlockedCategory, string> = {
   api: 'api の書き込み',
-  ga: 'GA',
+  ga: 'GA ほか Google の計測',
   'speed-insights': 'Speed Insights',
 };
 
