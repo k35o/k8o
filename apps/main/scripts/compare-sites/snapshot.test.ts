@@ -250,6 +250,17 @@ describe('takeSnapshot', () => {
         expect(snapshot.fields.get('location')).toBe('/blog/abs-sign');
       });
 
+      it('本番のオリジンへの Location は、別のオリジンから取ってもパスにする', () => {
+        const snapshot = takeSnapshot({
+          ...response(null, encode('')),
+          url: 'https://main-xxx.vercel.app/reading-list/feed?utm=1',
+          status: 308,
+          location: 'https://k8o.me/reading-list/feed',
+        });
+
+        expect(snapshot.fields.get('location')).toBe('/reading-list/feed');
+      });
+
       it('別のオリジンへの Location は絶対 URL のまま比べる', () => {
         const snapshot = takeSnapshot({
           ...response(null, encode('')),
@@ -259,6 +270,19 @@ describe('takeSnapshot', () => {
 
         expect(snapshot.fields.get('location')).toBe(
           'https://example.com/about',
+        );
+      });
+
+      it('www への Location は本番のオリジンにまとめず、絶対 URL のまま比べる', () => {
+        const snapshot = takeSnapshot({
+          ...response(null, encode('')),
+          url: 'https://k8o.me/blog?x=1',
+          status: 308,
+          location: 'https://www.k8o.me/blog?x=1',
+        });
+
+        expect(snapshot.fields.get('location')).toBe(
+          'https://www.k8o.me/blog?x=1',
         );
       });
     });

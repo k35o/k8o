@@ -1,5 +1,7 @@
 import { parseHTML } from 'linkedom';
 
+import { isProductionOrigin } from './targets';
+
 export type RawResponse = {
   readonly url: string;
   readonly status: number;
@@ -131,7 +133,9 @@ const extractHtml = (
 
 const toLocationField = (location: string, url: string): string => {
   const target = new URL(location, url);
-  return target.origin === new URL(url).origin
+  // api は Location を本番の絶対 URL で書くので、preview や手元から取っても本番のオリジンが付く
+  return target.origin === new URL(url).origin ||
+    isProductionOrigin(target.href)
     ? `${target.pathname}${target.search}${target.hash}`
     : target.href;
 };

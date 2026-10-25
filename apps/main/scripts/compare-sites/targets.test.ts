@@ -1,6 +1,26 @@
 import { describe, expect, it } from 'vitest';
 
-import { buildTargets, parseSitemapPaths, resolveOn } from './targets';
+import {
+  buildTargets,
+  filterTargets,
+  isProductionOrigin,
+  parseSitemapPaths,
+  resolveOn,
+} from './targets';
+import type { Target } from './targets';
+
+const get = (path: string): Target => ({
+  label: path,
+  path,
+  accept: null,
+  method: 'GET',
+});
+
+const markdown = (path: string): Target => ({
+  ...get(path),
+  label: `${path} (Accept: text/markdown)`,
+  accept: 'text/markdown',
+});
 
 describe('parseSitemapPaths', () => {
   describe('正常系', () => {
@@ -43,75 +63,45 @@ describe('parseSitemapPaths', () => {
 
 describe('buildTargets', () => {
   describe('正常系', () => {
-    it('固定の URL・トップの Markdown・無いパス・末尾スラッシュのあとに、サイトマップのページを並べる', () => {
+    it('固定の URL・Markdown の出し分け・無いパス・末尾スラッシュのあとに、サイトマップのページを並べる', () => {
       expect(buildTargets(['/', '/about'])).toStrictEqual([
-        { label: '/sitemap.xml', path: '/sitemap.xml', accept: null },
-        { label: '/robots.txt', path: '/robots.txt', accept: null },
+        get('/sitemap.xml'),
+        get('/robots.txt'),
+        get('/manifest.webmanifest'),
+        get('/llms.txt'),
+        get('/blog/feed'),
+        markdown('/blog/feed'),
+        get('/slides/feed'),
+        get('/reading-list/feed'),
+        get('/reading-list/feed?utm=1'),
+        get('/notifications'),
+        get('/favicon.ico'),
+        get('/icon.png'),
+        get('/apple-icon.png'),
+        get('/icon-192.png'),
+        get('/badge-72.png'),
+        get('/sw.js'),
+        get('/ga-init.js'),
+        get('/playgrounds/shared-worker.worker.js'),
+        get('/playgrounds/media-pseudos-tone.wav'),
+        get('/_vercel/speed-insights/script.js'),
+        markdown('/'),
+        get('/compare-sites-not-found'),
+        markdown('/compare-sites-not-found'),
+        get('/blog/compare-sites-not-found'),
+        get('/blog/compare-sites-not-found.md'),
         {
-          label: '/manifest.webmanifest',
-          path: '/manifest.webmanifest',
-          accept: null,
+          ...get('/blog/compare-sites-not-found.md'),
+          label: 'HEAD /blog/compare-sites-not-found.md',
+          method: 'HEAD',
         },
-        { label: '/llms.txt', path: '/llms.txt', accept: null },
-        { label: '/md/home', path: '/md/home', accept: null },
-        { label: '/blog/feed', path: '/blog/feed', accept: null },
-        { label: '/slides/feed', path: '/slides/feed', accept: null },
-        {
-          label: '/reading-list/feed',
-          path: '/reading-list/feed',
-          accept: null,
-        },
-        { label: '/notifications', path: '/notifications', accept: null },
-        { label: '/favicon.ico', path: '/favicon.ico', accept: null },
-        { label: '/icon.png', path: '/icon.png', accept: null },
-        { label: '/apple-icon.png', path: '/apple-icon.png', accept: null },
-        { label: '/icon-192.png', path: '/icon-192.png', accept: null },
-        { label: '/badge-72.png', path: '/badge-72.png', accept: null },
-        { label: '/sw.js', path: '/sw.js', accept: null },
-        { label: '/ga-init.js', path: '/ga-init.js', accept: null },
-        {
-          label: '/playgrounds/shared-worker.worker.js',
-          path: '/playgrounds/shared-worker.worker.js',
-          accept: null,
-        },
-        {
-          label: '/playgrounds/media-pseudos-tone.wav',
-          path: '/playgrounds/media-pseudos-tone.wav',
-          accept: null,
-        },
-        {
-          label: '/ (Accept: text/markdown)',
-          path: '/',
-          accept: 'text/markdown',
-        },
-        {
-          label: '/compare-sites-not-found',
-          path: '/compare-sites-not-found',
-          accept: null,
-        },
-        {
-          label: '/compare-sites-not-found (Accept: text/markdown)',
-          path: '/compare-sites-not-found',
-          accept: 'text/markdown',
-        },
-        {
-          label: '/blog/compare-sites-not-found',
-          path: '/blog/compare-sites-not-found',
-          accept: null,
-        },
-        {
-          label: '/blog/compare-sites-not-found.md',
-          path: '/blog/compare-sites-not-found.md',
-          accept: null,
-        },
-        {
-          label: '/blog/compare-sites-not-found (Accept: text/markdown)',
-          path: '/blog/compare-sites-not-found',
-          accept: 'text/markdown',
-        },
-        { label: '/about/', path: '/about/', accept: null },
-        { label: '/', path: '/', accept: null },
-        { label: '/about', path: '/about', accept: null },
+        markdown('/blog/compare-sites-not-found'),
+        get('/tags/999999'),
+        get('/playgrounds/compare-sites-not-found'),
+        get('/about/'),
+        get('/about/?x=1'),
+        get('/'),
+        get('/about'),
       ]);
     });
 
@@ -128,19 +118,16 @@ describe('buildTargets', () => {
       ]);
     });
 
-    it('記事には .md と Accept: text/markdown の取り直しを続ける', () => {
-      expect(buildTargets(['/blog/abs-sign']).slice(-3)).toStrictEqual([
-        { label: '/blog/abs-sign', path: '/blog/abs-sign', accept: null },
+    it('記事には .md の GET と HEAD、Accept: text/markdown の取り直しを続ける', () => {
+      expect(buildTargets(['/blog/abs-sign']).slice(-4)).toStrictEqual([
+        get('/blog/abs-sign'),
+        get('/blog/abs-sign.md'),
         {
-          label: '/blog/abs-sign.md',
-          path: '/blog/abs-sign.md',
-          accept: null,
+          ...get('/blog/abs-sign.md'),
+          label: 'HEAD /blog/abs-sign.md',
+          method: 'HEAD',
         },
-        {
-          label: '/blog/abs-sign (Accept: text/markdown)',
-          path: '/blog/abs-sign',
-          accept: 'text/markdown',
-        },
+        markdown('/blog/abs-sign'),
       ]);
     });
   });
@@ -158,6 +145,60 @@ describe('buildTargets', () => {
       const labels = buildTargets(['/llms.txt']).map((target) => target.label);
 
       expect(labels.filter((label) => label === '/llms.txt')).toHaveLength(1);
+    });
+  });
+});
+
+describe('filterTargets', () => {
+  const targets = [
+    get('/'),
+    get('/blog/abs-sign'),
+    get('/blog/abs-sign.md'),
+    markdown('/blog/abs-sign'),
+    get('/about/?x=1'),
+  ];
+
+  describe('正常系', () => {
+    it('パスがどれかの正規表現に合う対象だけを残す', () => {
+      expect(
+        filterTargets(targets, [/^\/blog\/abs-sign$/u, /^\/$/u]),
+      ).toStrictEqual([
+        get('/'),
+        get('/blog/abs-sign'),
+        markdown('/blog/abs-sign'),
+      ]);
+    });
+
+    it('クエリも含めたパスに当てる', () => {
+      expect(filterTargets(targets, [/\?x=1$/u])).toStrictEqual([
+        get('/about/?x=1'),
+      ]);
+    });
+  });
+
+  describe('エッジケース', () => {
+    it('指定が無ければすべてを残す', () => {
+      expect(filterTargets(targets, [])).toStrictEqual(targets);
+    });
+  });
+});
+
+describe('isProductionOrigin', () => {
+  describe('正常系', () => {
+    it('https://k8o.me なら本番とみなす', () => {
+      expect(isProductionOrigin('https://k8o.me')).toBe(true);
+      expect(isProductionOrigin('https://k8o.me/blog')).toBe(true);
+    });
+  });
+
+  describe('エッジケース', () => {
+    it('www や preview、手元のオリジンは本番とみなさない', () => {
+      expect(isProductionOrigin('https://www.k8o.me')).toBe(false);
+      expect(isProductionOrigin('https://main-abc-k35o.vercel.app')).toBe(
+        false,
+      );
+      expect(isProductionOrigin('http://k8o.me')).toBe(false);
+      expect(isProductionOrigin('http://127.0.0.1:4510')).toBe(false);
     });
   });
 });
