@@ -35,6 +35,12 @@ const esmImportSources = (slug: string): string[] =>
         : [],
     );
 
+const isNextOrAppAlias = (source: string): boolean =>
+  source.startsWith('@/') ||
+  source === 'next' ||
+  source.startsWith('next/') ||
+  source === 'next-themes';
+
 const hasMath = (node: Nodes): boolean =>
   node.type === 'inlineMath' ||
   node.type === 'math' ||
@@ -163,11 +169,14 @@ describe('src/content/blog の記事', () => {
       expect(existsSync(blogPath(slug))).toBe(true);
     });
 
-    it.each(slugs)('%s の MDX は @/app/ を import しない', (slug) => {
-      expect(
-        esmImportSources(slug).filter((source) => source.startsWith('@/app/')),
-      ).toStrictEqual([]);
-    });
+    it.each(slugs)(
+      '%s の MDX は @/・next・next-themes を import しない',
+      (slug) => {
+        expect(
+          esmImportSources(slug).filter((source) => isNextOrAppAlias(source)),
+        ).toStrictEqual([]);
+      },
+    );
 
     it.each(mathSlugs)(
       '%s は数式を使うので @repo/mdx-preset/katex.css を import する',
