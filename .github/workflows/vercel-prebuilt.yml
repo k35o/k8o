@@ -20,6 +20,7 @@ on:
           - main
           - api
           - ai
+          - main-k8ordo
         default: main
 
 permissions: {}
@@ -57,11 +58,18 @@ jobs:
             exit 0
           fi
 
+          # 並走中の main-k8ordo は main のプロジェクトの preview にだけ出す。push では拾わない
+          if [ "$EVENT_NAME" = "push" ]; then
+            ALL_APPS='["main","api","ai"]'
+          else
+            ALL_APPS='["main","api","ai","main-k8ordo"]'
+          fi
+
           if [ "$EVENT_NAME" = "push" ]; then
             BASE="$PUSH_BEFORE"
             # force push 等で before が辿れないと判定不能なので、安全側で全 app をデプロイする
             if ! git rev-parse --verify "$BASE^{commit}" > /dev/null 2>&1; then
-              echo 'apps=["main","api","ai"]' >> "$GITHUB_OUTPUT"
+              echo "apps=$ALL_APPS" >> "$GITHUB_OUTPUT"
               exit 0
             fi
           else
@@ -72,13 +80,13 @@ jobs:
 
           # ビルド判定の基盤やルート依存が変わったら全 app を安全側でデプロイする
           if echo "$CHANGED" | grep -qE '^(turbo\.json|mise\.toml|package\.json|pnpm-workspace\.yaml|pnpm-lock\.yaml|\.github/workflows/vercel-prebuilt\.yml|\.github/vercel-cli/.+)$'; then
-            echo 'apps=["main","api","ai"]' >> "$GITHUB_OUTPUT"
+            echo "apps=$ALL_APPS" >> "$GITHUB_OUTPUT"
             exit 0
           fi
 
           # 判定不能時は安全側で全 app をデプロイする
           if ! AFFECTED=$(pnpm turbo query affected --packages --base "$BASE"); then
-            echo 'apps=["main","api","ai"]' >> "$GITHUB_OUTPUT"
+            echo "apps=$ALL_APPS" >> "$GITHUB_OUTPUT"
             exit 0
           fi
 
@@ -86,10 +94,12 @@ jobs:
           echo "$AFFECTED" | grep -q '"name": "main"' && apps+=(main)
           echo "$AFFECTED" | grep -q '"name": "@repo/api"' && apps+=(api)
           echo "$AFFECTED" | grep -q '"name": "@repo/ai"' && apps+=(ai)
+          [ "$EVENT_NAME" != "push" ] && echo "$AFFECTED" | grep -q '"name": "main-k8ordo"' && apps+=(main-k8ordo)
           # vercel.json は turbo のパッケージ入力に含まれないため個別に拾う
           echo "$CHANGED" | grep -q '^apps/main/vercel\.json$' && apps+=(main)
           echo "$CHANGED" | grep -q '^apps/api/vercel\.json$' && apps+=(api)
           echo "$CHANGED" | grep -q '^apps/ai/vercel\.json$' && apps+=(ai)
+          [ "$EVENT_NAME" != "push" ] && echo "$CHANGED" | grep -q '^apps/main-k8ordo/vercel\.json$' && apps+=(main-k8ordo)
 
           if [ "${#apps[@]}" -eq 0 ]; then
             echo 'apps=[]' >> "$GITHUB_OUTPUT"
@@ -161,10 +171,19 @@ jobs:
     # 見せないよう、job の env に置かず pull と deploy のステップにだけ渡す（vercel build はトークンを使わない）
     env:
       VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
-      # プロジェクト ID は秘密情報ではないため、app との対応を workflow に直書きして自己文書化する
-      VERCEL_PROJECT_ID: ${{ fromJSON('{"main":"prj_OrrQ8Nnl4sJJii9kpjOAtb6EeIjD","api":"prj_aehv1FNgGlp0nGIZPyPFHShRqlAW","ai":"prj_Iz1SHi1C6rgwFz2YngTzeiRdsFE8"}')[matrix.app] }}
+      # プロジェクト ID は秘密情報ではないため、app との対応を workflow に直書きして自己文書化する。
+      # main-k8ordo は、切り替えのあとと同じ設定で確かめるため、main のプロジェクトの preview に出す
+      VERCEL_PROJECT_ID: ${{ fromJSON('{"main":"prj_OrrQ8Nnl4sJJii9kpjOAtb6EeIjD","api":"prj_aehv1FNgGlp0nGIZPyPFHShRqlAW","ai":"prj_Iz1SHi1C6rgwFz2YngTzeiRdsFE8","main-k8ordo":"prj_OrrQ8Nnl4sJJii9kpjOAtb6EeIjD"}')[matrix.app] }}
       DEPLOY_TARGET: ${{ github.event_name == 'push' && 'production' || 'preview' }}
     steps:
+      # main-k8ordo は main のプロジェクトに出すので、production に出すと k8o.me が作りかけの版に替わる。
+      # detect が push で拾わないのに加え、ここでも止める
+      - name: Refuse to deploy main-k8ordo to production
+        if: ${{ matrix.app == 'main-k8ordo' && env.DEPLOY_TARGET == 'production' }}
+        run: |
+          echo "::error::main-k8ordo は preview にだけ出す"
+          exit 1
+
       - name: Checkout branch
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
@@ -183,10 +202,19 @@ jobs:
           VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
         run: pnpm exec vercel pull --cwd "$GITHUB_WORKSPACE" --yes --environment="$DEPLOY_TARGET"
 
+      # main のプロジェクトの Root Directory は apps/main なので、pull した設定だけを main-k8ordo に向ける
+      - name: Point the project settings at apps/main-k8ordo
+        if: ${{ matrix.app == 'main-k8ordo' }}
+        run: |
+          project="$GITHUB_WORKSPACE/.vercel/project.json"
+          jq '.settings.rootDirectory = "apps/main-k8ordo"' "$project" > "$project.tmp"
+          mv "$project.tmp" "$project"
+
       # preview は承認が要る Environment なので、承認を1回で済ませるよう migrate を別ジョブにせず
-      # deploy の中で流す（k8o の DB は main、ai の DB は ai）。preview では、ほかのアプリが先に出ることがある
+      # deploy の中で流す（k8o の DB は main、ai の DB は ai）。preview では、ほかのアプリが先に出ることがある。
+      # 同じ DB に2つの job が並んで流すと後のものが失敗するので、main-k8ordo は main が出ないときだけ流す
       - name: Migrate preview k8o DB
-        if: ${{ env.DEPLOY_TARGET == 'preview' && matrix.app == 'main' }}
+        if: ${{ env.DEPLOY_TARGET == 'preview' && (matrix.app == 'main' || (matrix.app == 'main-k8ordo' && !contains(fromJSON(needs.detect.outputs.apps), 'main'))) }}
         run: |
           set -a
           # shellcheck disable=SC1090
