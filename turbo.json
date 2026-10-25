@@ -19,13 +19,14 @@
         "BETTER_AUTH_URL",
         "GITHUB_CLIENT_ID",
         "GITHUB_CLIENT_SECRET",
+        "GOOGLE_ANALYTICS_ID",
         "K8O_TURSO_AUTH_TOKEN",
         "K8O_TURSO_DATABASE_URL",
         "NEXT_PUBLIC_GOOGLE_ANALYTICS_ID",
         "VAPID_PUBLIC_KEY"
       ],
       "inputs": ["$TURBO_DEFAULT$", ".env", ".env.*"],
-      "outputs": [".next/**", "!.next/cache/**", "dist/**"]
+      "outputs": [".next/**", "!.next/cache/**", "dist/**", ".vercel/output/**"]
     },
     "transit": {
       "dependsOn": ["^transit"]

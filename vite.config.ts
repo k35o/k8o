@@ -87,6 +87,14 @@ export default defineConfig({
         files: ['apps/main/**'],
         rules: { '@next/next/no-img-element': 'off' },
       },
+      {
+        // k8ordo 版の main は Next ではない。ルートレイアウトが <head> を書き、画像は main と同じく素の img で描く
+        files: ['apps/main-k8ordo/**'],
+        rules: {
+          '@next/next/no-head-element': 'off',
+          '@next/next/no-img-element': 'off',
+        },
+      },
       { files: [...TEST_GLOBS], ...test },
     ],
   },

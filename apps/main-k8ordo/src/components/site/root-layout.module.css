@@ -1,0 +1,8 @@
+.body {
+  background-color: var(--color-bg-surface);
+  color: var(--color-fg-base);
+  font-weight: var(--font-weight-medium);
+  letter-spacing: var(--letter-spacing-none);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
