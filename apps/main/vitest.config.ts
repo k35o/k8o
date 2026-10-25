@@ -53,6 +53,14 @@ export default defineConfig({
       },
       {
         test: {
+          name: { label: 'playgrounds test', color: 'white' },
+          include: ['src/playgrounds/**/*.test.ts'],
+          // sections.ts がたどる @k8ordo/ui の dist は CSS を import するので、Node に読ませず Vite で変換する
+          server: { deps: { inline: ['@k8ordo/ui'] } },
+        },
+      },
+      {
+        test: {
           name: { label: 'scripts test', color: 'blue' },
           include: ['scripts/**/*.test.ts'],
         },
