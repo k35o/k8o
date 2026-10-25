@@ -2,6 +2,11 @@ import { parseArgs } from 'node:util';
 
 import { applyAllowances, selectAllowances } from './compare-sites/allowances';
 import {
+  BYPASS_ENV,
+  bypassHeaders,
+  readBypassSecret,
+} from './compare-sites/bypass';
+import {
   diffFields,
   excerptPair,
   partitionIgnored,
@@ -41,6 +46,7 @@ if (values.base === undefined || values.head === undefined) {
 const { base, head } = values;
 const onlyPatterns = values.only.map((pattern) => new RegExp(pattern, 'u'));
 const allowances = selectAllowances(values.allow);
+const bypassSecret = readBypassSecret([base, head], process.env[BYPASS_ENV]);
 const ignorePatterns = values.ignore.map((pattern) => new RegExp(pattern, 'u'));
 
 const fetchOnce = async (url: string, target: Target): Promise<Response> =>
@@ -48,7 +54,10 @@ const fetchOnce = async (url: string, target: Target): Promise<Response> =>
     method: target.method,
     // 末尾のスラッシュなどのリダイレクトも外との約束なので、追わずに status と Location で比べる
     redirect: 'manual',
-    headers: target.accept === null ? {} : { accept: target.accept },
+    headers: {
+      ...(target.accept === null ? {} : { accept: target.accept }),
+      ...bypassHeaders(url, bypassSecret),
+    },
   }).catch((error: unknown) => {
     throw new Error(`${url} を取れない`, { cause: error });
   });
@@ -137,7 +146,10 @@ const compare = async ({
   }
 };
 
-const sitemap = await fetch(resolveOn(base, '/sitemap.xml'));
+const sitemapUrl = resolveOn(base, '/sitemap.xml');
+const sitemap = await fetch(sitemapUrl, {
+  headers: bypassHeaders(sitemapUrl, bypassSecret),
+});
 if (!sitemap.ok) {
   throw new Error(
     `base の /sitemap.xml を取れない: HTTP ${String(sitemap.status)}`,
