@@ -1,7 +1,6 @@
 'use client';
 
 import { Button, Code } from '@k8ordo/ui';
-import { useTheme } from 'next-themes';
 import { useState } from 'react';
 import { flushSync } from 'react-dom';
 
@@ -19,13 +18,18 @@ const COLORS = [
   { light: 'var(--orange-200)', dark: 'var(--orange-800)' },
 ] as const;
 
+type Color = (typeof COLORS)[number];
+
 type Item = {
   id: number;
   text: string;
-  color: (typeof COLORS)[number];
+  color: Color;
 };
 
-const getRandomColor = (): (typeof COLORS)[number] =>
+const lightDark = ({ light, dark }: Color): string =>
+  `light-dark(${light}, ${dark})`;
+
+const getRandomColor = (): Color =>
   COLORS[Math.floor(Math.random() * COLORS.length)] ?? COLORS[0];
 
 const INIT_ITEMS = [
@@ -38,7 +42,6 @@ const INIT_ITEMS = [
 export function ViewTransitionBasicDemo() {
   const [count, setCount] = useState<number>(INIT_ITEMS.length);
   const [items, setItems] = useState<Item[]>(INIT_ITEMS);
-  const { resolvedTheme } = useTheme();
   const [isViewTransitionEnabled, setIsViewTransitionEnabled] = useState(true);
 
   const withViewTransition = (updateDOM: () => void) => {
@@ -93,16 +96,16 @@ export function ViewTransitionBasicDemo() {
           animation-duration: 1000ms;
         }
         ::view-transition-group(item-1) {
-          background-color: ${resolvedTheme === 'dark' ? COLORS[0].light : COLORS[0].dark};
+          background-color: light-dark(${COLORS[0].dark}, ${COLORS[0].light});
         }
         ::view-transition-image-pair(item-2) {
-          background-color: ${resolvedTheme === 'dark' ? COLORS[2].light : COLORS[2].dark};
+          background-color: light-dark(${COLORS[2].dark}, ${COLORS[2].light});
         }
         ::view-transition-old(item-3) {
-          background-color: ${resolvedTheme === 'dark' ? COLORS[4].light : COLORS[4].dark};
+          background-color: light-dark(${COLORS[4].dark}, ${COLORS[4].light});
         }
         ::view-transition-new(item-4) {
-          background-color: ${resolvedTheme === 'dark' ? COLORS[6].light : COLORS[6].dark};
+          background-color: light-dark(${COLORS[6].dark}, ${COLORS[6].light});
         }
       `}</style>
       <div className={styles.actions}>
@@ -128,34 +131,30 @@ export function ViewTransitionBasicDemo() {
       </div>
 
       <ul className={styles.items}>
-        {items.map((item) => {
-          const bgColor =
-            resolvedTheme === 'dark' ? item.color.dark : item.color.light;
-          return (
-            <li
-              className={styles.item}
-              key={item.id}
-              style={{
-                viewTransitionName: isViewTransitionEnabled
-                  ? `item-${item.id}`
-                  : 'none',
-                viewTransitionClass: 'item',
-                backgroundColor: bgColor,
+        {items.map((item) => (
+          <li
+            className={styles.item}
+            key={item.id}
+            style={{
+              viewTransitionName: isViewTransitionEnabled
+                ? `item-${item.id}`
+                : 'none',
+              viewTransitionClass: 'item',
+              backgroundColor: lightDark(item.color),
+            }}
+          >
+            <span className={styles.itemText}>{item.text}</span>
+            <Button
+              onClick={() => {
+                removeItem(item.id);
               }}
+              size="sm"
+              variant="skeleton"
             >
-              <span className={styles.itemText}>{item.text}</span>
-              <Button
-                onClick={() => {
-                  removeItem(item.id);
-                }}
-                size="sm"
-                variant="skeleton"
-              >
-                削除
-              </Button>
-            </li>
-          );
-        })}
+              削除
+            </Button>
+          </li>
+        ))}
       </ul>
 
       <ul className={styles.notes}>

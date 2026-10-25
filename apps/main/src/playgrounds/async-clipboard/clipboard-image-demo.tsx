@@ -4,9 +4,6 @@ import { Button, FormControl, Select, useToast } from '@k8ordo/ui';
 import { useRef, useState } from 'react';
 import type { FC } from 'react';
 
-import k8oIcon from '@/app/icon.png';
-import primaryIcon from '@/content/blog/async-clipboard/_images/primary.png';
-
 import styles from './clipboard-image-demo.module.css';
 
 const OPTIONS = [
@@ -14,9 +11,12 @@ const OPTIONS = [
   { value: '2', label: '画像2' },
 ] as const;
 
+const K8O_ICON = '/icon.png';
+const PRIMARY_ICON = '/playgrounds/async-clipboard-primary.png';
+
 export const ClipboardImageDemo: FC = () => {
   const ref = useRef<HTMLImageElement>(null);
-  const [src, setSrc] = useState(primaryIcon.src);
+  const [src, setSrc] = useState(PRIMARY_ICON);
   const { open } = useToast();
   const [selectedSrc, setSelectedSrc] = useState<string>(OPTIONS[0].value);
 
@@ -98,7 +98,7 @@ export const ClipboardImageDemo: FC = () => {
           height={128}
           loading="lazy"
           ref={ref}
-          src={(selectedSrc === '1' ? k8oIcon : primaryIcon).src}
+          src={selectedSrc === '1' ? K8O_ICON : PRIMARY_ICON}
           width={128}
         />
         <Button onClick={() => void copyText()}>PNG画像をコピーする</Button>

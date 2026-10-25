@@ -1,7 +1,5 @@
 import { ExternalLinkIcon, FlaskIcon } from '@k8ordo/ui';
 import { cn } from '@repo/helpers/cn';
-import type { Route } from 'next';
-import Link from 'next/link';
 import type { FC, PropsWithChildren } from 'react';
 
 import styles from './playground.module.css';
@@ -28,17 +26,17 @@ export const Playground: FC<Props> = ({
           </span>
           <h3 className={styles.title}>{title}</h3>
           {href !== undefined && (
-            <Link
+            <a
               aria-label={`Playgroundページで開く: ${href}`}
               className={styles.link}
-              href={href as Route}
+              href={href}
             >
               <span className={styles.shortHref}>{href.split('/').at(-1)}</span>
               <span className={styles.fullHref}>{href}</span>
               <span className={styles.linkIcon}>
                 <ExternalLinkIcon size="sm" />
               </span>
-            </Link>
+            </a>
           )}
         </div>
         {description !== undefined && (

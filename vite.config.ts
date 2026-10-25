@@ -15,6 +15,12 @@ const ignorePatterns = [
   'packages/oxlint-plugin/tests/fixtures/**',
 ];
 
+const drizzleImportPattern = {
+  group: ['drizzle-orm', 'drizzle-orm/*'],
+  message:
+    'drizzle は DB パッケージ経由で使う（演算子などは @repo/database/orm か @repo/ai-database/orm）。apps が drizzle-orm を直接持つと DB パッケージの db と別の実体になり、型が噛み合わなくなる。',
+};
+
 export default defineConfig({
   fmt: {
     ...fmt,
@@ -53,12 +59,23 @@ export default defineConfig({
         rules: {
           'no-restricted-imports': [
             'error',
+            { patterns: [drizzleImportPattern] },
+          ],
+        },
+      },
+      {
+        files: ['apps/main/src/content/**', 'apps/main/src/playgrounds/**'],
+        rules: {
+          // override は規則の設定を丸ごと置き換えるので、apps/** の drizzle の制限も並べる
+          'no-restricted-imports': [
+            'error',
             {
               patterns: [
+                drizzleImportPattern,
                 {
-                  group: ['drizzle-orm', 'drizzle-orm/*'],
+                  group: ['next', 'next/**', 'next-themes', '@/**'],
                   message:
-                    'drizzle は DB パッケージ経由で使う（演算子などは @repo/database/orm か @repo/ai-database/orm）。apps が drizzle-orm を直接持つと DB パッケージの db と別の実体になり、型が噛み合わなくなる。',
+                    '記事とデモは Next に依らずに描けるように保つ（k8ordo 版の main が写さずに読む）。Next と、読む側で指す先の変わる @/ を import しない。',
                 },
               ],
             },

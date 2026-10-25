@@ -2,8 +2,6 @@
 
 import { useEffect, useRef } from 'react';
 
-import k8oIcon from '@/app/_images/k8o.avif';
-
 import styles from './custom-command-demo.module.css';
 
 export function CustomCommandDemo() {
@@ -75,7 +73,7 @@ export function CustomCommandDemo() {
             decoding="async"
             height={512}
             loading="lazy"
-            src={k8oIcon.src}
+            src="/playgrounds/invoker-commands-k8o.avif"
             width={512}
           />
         </div>
