@@ -14,10 +14,10 @@ import { parseSitemapPaths, resolveOn } from './compare-sites/targets';
 import { findLeakedRequests, readNetLogLines } from './smoke-pages/net-log';
 import type { LeakedRequest } from './smoke-pages/net-log';
 import { summarizeReportOnly } from './smoke-pages/report';
-import type { BlockedCategory } from './smoke-pages/requests';
+import type { BlockedCategory, BlockedRequest } from './smoke-pages/requests';
 import { smokeTargets } from './smoke-pages/targets';
 import { visitPage } from './smoke-pages/visit';
-import type { BlockedRequest, Visit } from './smoke-pages/visit';
+import type { Visit } from './smoke-pages/visit';
 
 const { values } = parseArgs({
   options: {
@@ -61,6 +61,7 @@ const formatVisit = (path: string, visit: Visit): string =>
   [
     `${path} ${visit.status === null ? '応答なし' : String(visit.status)}`,
     ...visit.problems.map((problem) => `  誤り: ${problem}`),
+    ...visit.notes.map((note) => `  参考: ${note}`),
   ].join('\n');
 
 const sitemapUrl = resolveOn(base, '/sitemap.xml');
@@ -93,15 +94,16 @@ try {
   });
   try {
     // 本番の Firewall にヘッドレスの Chromium を咎められないよう、並べずに1枚ずつ開く
-    for (const { path, expectedStatus } of targets) {
+    for (const { path, expectedStatus, checksNavigation } of targets) {
       const visit = await visitPage(browser, {
         origin,
         path,
         expectedStatus,
+        checksNavigation,
         bypassSecret,
       });
       visits.push(visit);
-      if (visit.problems.length > 0) {
+      if (visit.problems.length > 0 || visit.notes.length > 0) {
         print(formatVisit(path, visit));
       }
       if (visit.mitigated !== null) {

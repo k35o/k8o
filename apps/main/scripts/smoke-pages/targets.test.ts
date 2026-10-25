@@ -4,11 +4,19 @@ import { smokeTargets } from './targets';
 
 describe('smokeTargets', () => {
   describe('正常系', () => {
-    it('サイトマップのページは 200、無いパスは 404 で開く', () => {
+    it('サイトマップのページは 200、無いパスは 404 で開き、トップからだけ遷移を確かめる', () => {
       expect(smokeTargets(['/', '/blog/abs-sign'], [])).toStrictEqual([
-        { path: '/', expectedStatus: 200 },
-        { path: '/blog/abs-sign', expectedStatus: 200 },
-        { path: '/smoke-pages-not-found', expectedStatus: 404 },
+        { path: '/', expectedStatus: 200, checksNavigation: true },
+        {
+          path: '/blog/abs-sign',
+          expectedStatus: 200,
+          checksNavigation: false,
+        },
+        {
+          path: '/smoke-pages-not-found',
+          expectedStatus: 404,
+          checksNavigation: false,
+        },
       ]);
     });
 
@@ -17,19 +25,16 @@ describe('smokeTargets', () => {
         smokeTargets(
           ['/', '/blog', '/blog/abs-sign', '/about'],
           [/^\/$/u, /^\/blog\/.+$/u],
-        ),
-      ).toStrictEqual([
-        { path: '/', expectedStatus: 200 },
-        { path: '/blog/abs-sign', expectedStatus: 200 },
-      ]);
+        ).map(({ path }) => path),
+      ).toStrictEqual(['/', '/blog/abs-sign']);
     });
   });
 
   describe('エッジケース', () => {
     it('無いパスも --only で選べる', () => {
-      expect(smokeTargets(['/'], [/not-found/u])).toStrictEqual([
-        { path: '/smoke-pages-not-found', expectedStatus: 404 },
-      ]);
+      expect(
+        smokeTargets(['/'], [/not-found/u]).map(({ path }) => path),
+      ).toStrictEqual(['/smoke-pages-not-found']);
     });
   });
 });

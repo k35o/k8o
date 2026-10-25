@@ -2,6 +2,13 @@ import { bypassHeaders } from '../compare-sites/bypass';
 
 export type BlockedCategory = 'api' | 'ga' | 'speed-insights';
 
+export type BlockedRequest = {
+  readonly category: BlockedCategory;
+  readonly method: string;
+  readonly url: string;
+  readonly body: string | null;
+};
+
 const API_ORIGIN = 'https://api.k8o.me';
 const READ_METHODS: ReadonlySet<string> = new Set(['GET', 'HEAD', 'OPTIONS']);
 const GA_HOST = /(?:^|\.)(?:google-analytics\.com|analytics\.google\.com)$/u;

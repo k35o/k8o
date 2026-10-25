@@ -1,19 +1,15 @@
 import type { Browser, ConsoleMessage } from 'playwright';
 import { z } from 'zod';
 
+import { checkNavigation } from './navigation';
 import { blockedCategoryOf, bypassHeadersFor } from './requests';
-import type { BlockedCategory } from './requests';
-
-export type BlockedRequest = {
-  readonly category: BlockedCategory;
-  readonly method: string;
-  readonly url: string;
-};
+import type { BlockedRequest } from './requests';
 
 export type Visit = {
   readonly status: number | null;
   readonly mitigated: string | null;
   readonly problems: readonly string[];
+  readonly notes: readonly string[];
   readonly reportOnly: readonly string[];
   readonly blocked: readonly BlockedRequest[];
 };
@@ -22,6 +18,7 @@ type VisitOptions = {
   readonly origin: string;
   readonly path: string;
   readonly expectedStatus: number;
+  readonly checksNavigation: boolean;
   readonly bypassSecret: string | null;
 };
 
@@ -36,6 +33,27 @@ const violationSchema = z.object({
   blockedURI: z.string(),
   sample: z.string(),
 });
+
+// ページを離れるときの beacon・keepalive の要求は route を通らずに外へ出るので、押した
+// リンクで文書を読み込んでも、離れるときの処理をページに走らせない
+const holdLeavingEvents = (): void => {
+  for (const type of [
+    'pagehide',
+    'visibilitychange',
+    'beforeunload',
+    'unload',
+  ]) {
+    window.addEventListener(
+      type,
+      (event) => {
+        if (event.isTrusted) {
+          event.stopImmediatePropagation();
+        }
+      },
+      true,
+    );
+  }
+};
 
 // addInitScript はこの関数を文字列にしてページで走らせるので、外の変数を参照しない
 const watchViolations = (bindingName: string): void => {
@@ -80,11 +98,24 @@ const isExpectedDocumentStatus = (
 
 const unique = (lines: readonly string[]): string[] => [...new Set(lines)];
 
+// Playwright は呼び出しの記録を2行目から足す
+const firstLineOf = (error: unknown): string => {
+  const message = error instanceof Error ? error.message : String(error);
+  return message.split('\n')[0] ?? message;
+};
+
 export const visitPage = async (
   browser: Browser,
-  { origin, path, expectedStatus, bypassSecret }: VisitOptions,
+  {
+    origin,
+    path,
+    expectedStatus,
+    checksNavigation,
+    bypassSecret,
+  }: VisitOptions,
 ): Promise<Visit> => {
   const problems: string[] = [];
+  const notes: string[] = [];
   const reportOnly: string[] = [];
   const blocked: BlockedRequest[] = [];
   // ページを閉じると、離れるときの keepalive・beacon の要求が route を通らずに外へ出る。
@@ -106,6 +137,7 @@ export const visitPage = async (
         }
       },
     );
+    await context.addInitScript(holdLeavingEvents);
     await context.addInitScript(watchViolations, VIOLATION_BINDING);
     await context.route('**/*', async (route) => {
       const request = route.request();
@@ -113,7 +145,7 @@ export const visitPage = async (
       const url = request.url();
       const category = blockedCategoryOf(method, url);
       if (category !== null) {
-        blocked.push({ category, method, url });
+        blocked.push({ category, method, url, body: request.postData() });
         await route.fulfill({
           status: 204,
           headers: {
@@ -142,9 +174,7 @@ export const visitPage = async (
     const response = await page
       .goto(new URL(path, origin).href, { timeout: LOAD_TIMEOUT_MS })
       .catch((error: unknown) => {
-        const message = error instanceof Error ? error.message : String(error);
-        // Playwright は呼び出しの記録を2行目から足す
-        problems.push(`読み込み: ${message.split('\n')[0] ?? message}`);
+        problems.push(`読み込み: ${firstLineOf(error)}`);
         return null;
       });
     await page
@@ -158,6 +188,16 @@ export const visitPage = async (
         `status: ${String(status)}（${String(expectedStatus)} のはず）`,
       );
     }
+    if (checksNavigation && response !== null) {
+      const navigation = await checkNavigation(page, blocked).catch(
+        (error: unknown) => ({
+          problems: [`遷移: ${firstLineOf(error)}`],
+          notes: [],
+        }),
+      );
+      problems.push(...navigation.problems);
+      notes.push(...navigation.notes);
+    }
     const documentUrl = response?.url() ?? '';
     return {
       status,
@@ -166,6 +206,7 @@ export const visitPage = async (
         (problem) =>
           !isExpectedDocumentStatus(problem, documentUrl, expectedStatus),
       ),
+      notes: unique(notes),
       reportOnly: unique(reportOnly),
       blocked,
     };

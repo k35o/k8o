@@ -35,6 +35,32 @@ setInterval(() => {
 }, 20);
 </script>`;
 
+const GA_COLLECT = 'https://region1.google-analytics.com/g/collect';
+
+// クライアントの router のように pushState で移り、GA と Speed Insights と同じ形で送る
+const navigatesInDocument = ({
+  sendsPageView,
+}: {
+  sendsPageView: boolean;
+}): string => `<main><a id="next" href="/next">next</a></main><script>
+const pageView = () => navigator.sendBeacon(
+  '${GA_COLLECT}?v=2&en=page_view&dl=' + encodeURIComponent(location.href),
+);
+pageView();
+document.getElementById('next').addEventListener('click', (event) => {
+  event.preventDefault();
+  history.pushState(null, '', '/next');
+  ${sendsPageView ? 'pageView();' : ''}
+});
+document.addEventListener('visibilitychange', () => {
+  if (document.visibilityState === 'hidden') {
+    navigator.sendBeacon('${VITALS}', JSON.stringify({
+      metrics: [{ type: 'CLS', route: location.pathname, href: location.href }],
+    }));
+  }
+});
+</script>`;
+
 const html = (body: string): string =>
   `<!doctype html><html lang="ja"><head><meta charset="utf-8"><title>t</title></head><body>${body}</body></html>`;
 
@@ -92,6 +118,25 @@ const pageAt = (path: string): TestPage => {
         status: 200,
         body: html("<main>busy</main><script>fetch('/hang');</script>"),
       };
+    case '/soft':
+      return {
+        status: 200,
+        body: html(navigatesInDocument({ sendsPageView: true })),
+      };
+    case '/soft-without-page-view':
+      return {
+        status: 200,
+        body: html(navigatesInDocument({ sendsPageView: false })),
+      };
+    case '/hard':
+      return {
+        status: 200,
+        body: html(
+          `<main><a href="/next">next</a></main>${sendsVitals(otherOrigin)}`,
+        ),
+      };
+    case '/next':
+      return { status: 200, body: html('<main>next</main>') };
     case '/ok':
       return { status: 200, body: html('<main>ok</main>') };
     default:
@@ -113,12 +158,14 @@ const server = createServer((request, response) => {
 
 const optionsFor = (
   path: string,
-  expectedStatus = 200,
+  overrides: Partial<Parameters<typeof visitPage>[1]> = {},
 ): Parameters<typeof visitPage>[1] => ({
   origin,
   path,
-  expectedStatus,
+  expectedStatus: 200,
+  checksNavigation: false,
   bypassSecret: null,
+  ...overrides,
 });
 
 beforeAll(async () => {
@@ -155,6 +202,7 @@ describe('visitPage', { timeout: 60_000 }, () => {
         status: 200,
         mitigated: null,
         problems: [],
+        notes: [],
         reportOnly: [],
         blocked: [],
       });
@@ -186,6 +234,21 @@ describe('visitPage', { timeout: 60_000 }, () => {
       });
 
       expect(received).toStrictEqual(['GET /keeps-sending']);
+    });
+
+    it('内部リンクを押して文書を読み込まずに移ったことと、移ったあとの計測を、送らずに並べる', async () => {
+      const visit = await visitPage(
+        browser,
+        optionsFor('/soft', { checksNavigation: true }),
+      );
+
+      expect(visit.problems).toStrictEqual([]);
+      expect(visit.notes).toStrictEqual([
+        '遷移: /soft から /next へ、文書を読み込まずに移った',
+        `遷移のあとの GA の page_view: ${origin}/next`,
+        `遷移のあとの Speed Insights: CLS route=/next href=${origin}/next`,
+      ]);
+      expect(received).toStrictEqual(['GET /soft']);
     });
   });
 
@@ -223,6 +286,40 @@ describe('visitPage', { timeout: 60_000 }, () => {
       );
     });
 
+    it('押した内部リンクで文書を読み込んだら誤りにし、離れるときの送信も外へ出さない', async () => {
+      const visit = await visitPage(
+        browser,
+        optionsFor('/hard', { checksNavigation: true }),
+      );
+
+      expect(visit.problems).toStrictEqual([
+        '遷移: /hard から /next へ移るときに文書を読み込んだ',
+      ]);
+      expect(received).toStrictEqual(['GET /hard', 'GET /next']);
+    });
+
+    it('GA を使うページで、移ったあとの page_view が無ければ誤りにする', async () => {
+      const visit = await visitPage(
+        browser,
+        optionsFor('/soft-without-page-view', { checksNavigation: true }),
+      );
+
+      expect(visit.problems).toStrictEqual([
+        '遷移のあとに /next の GA の page_view が送られない',
+      ]);
+    });
+
+    it('押せる内部リンクが <main> に無ければ誤りにする', async () => {
+      const visit = await visitPage(
+        browser,
+        optionsFor('/ok', { checksNavigation: true }),
+      );
+
+      expect(visit.problems).toStrictEqual([
+        '遷移: <main> に押せる内部リンクが無い',
+      ]);
+    });
+
     it('Firewall に止められたら、それを返す', async () => {
       const visit = await visitPage(browser, optionsFor('/challenge'));
 
@@ -238,7 +335,10 @@ describe('visitPage', { timeout: 60_000 }, () => {
     });
 
     it('無いパスは、404 を待っていれば誤りにしない', async () => {
-      const visit = await visitPage(browser, optionsFor('/missing', 404));
+      const visit = await visitPage(
+        browser,
+        optionsFor('/missing', { expectedStatus: 404 }),
+      );
 
       expect(visit.problems).toStrictEqual([]);
     });
