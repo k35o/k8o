@@ -35,7 +35,7 @@ apps/main/src/content/blog/{slug}/
 | ファイル | 必須 |
 |---------|------|
 | `article.mdx` | ✅ |
-| Playground (`apps/main/src/app/_components/playgrounds/{feature-name}/`) | デモがある場合 |
+| Playground (`apps/main/src/playgrounds/{feature-name}/`) | デモがある場合 |
 | マイグレーション (`packages/database/migrations/`) | ✅ |
 
 記事のページ（`/blog/{slug}`）のレイアウトとメタデータ、OGP画像（`/blog/{slug}/og.png`）は、`apps/main/src/app/blog/[slug]/` が全記事に共通で作る。記事ごとの `layout.tsx` や `opengraph-image.tsx` は作らない。
@@ -63,7 +63,7 @@ featureIds:
 <PlaygroundEmbed demo="デモタイトル" sectionId="my-feature" />
 ```
 
-- 記事で使う部品（`BrowserSupportStatus`・`PlaygroundEmbed`・`Playground`・`LinkCard`・`Image`・`FloatImage`・`Alert`）は `apps/main/src/app/blog/_components/blog-mdx-components` の `blogMdxComponents` で渡されるので、import しない。MDX から `@/app/...` を import すると、`features/blog/application/article-files.test.ts` が落ちる
+- 記事で使う部品（`BrowserSupportStatus`・`PlaygroundEmbed`・`Playground`・`LinkCard`・`Image`・`FloatImage`・`Alert`）は `apps/main/src/app/blog/_components/blog-mdx-components` の `blogMdxComponents` で渡されるので、import しない。MDX から `@/`・`next`・`next-themes` を import すると、`features/blog/application/article-files.test.ts` が落ちる
 - 記事の画像は `_images/` に、この記事だけの部品は `_components/` に置き、`./_images/...`・`./_components/...` の相対パスで import する
 - `_images/` の画像は、`pnpm run -F main optimize:image <元の画像> src/content/blog/{slug}/_images/{名前}.avif --max-width 1920` で AVIF にして置く（パスは `apps/main` からの相対か絶対パス）。元の PNG や JPG はコミットしない。出力された `width={...} height={...}` を `<Image src={...} alt="..." width={...} height={...} />` に書き、画面の最初に見える画像には `loading="eager"` を足す。`FloatImage` は表示したい大きさの width と height を、画像と同じ縦横比で書く。縦横比が画像と合わないと `features/blog/application/article-files.test.ts` が落ちる
 - `<LinkCard href="..." />` を足したら、`pnpm run -F main generate:link-card-metadata` を流し、更新された `apps/main/src/content/link-card-metadata.json` もコミットする。カードはこの JSON の OGP で描き、ビルドではリンク先へ取りに行かない。流し忘れは `features/blog/application/article-files.test.ts` が落とす。出力に「OGP が取れなかった」が出たら、時間をおいて流し直す。それでも出る URL（`http://` や OGP を持たないページ）は `{}` のままでよい。`--refresh` は使わない
@@ -86,7 +86,7 @@ import '@repo/mdx-preset/katex.css';
 ディレクトリ名は機能の内容がわかる名前を使用する（例: `caret-position-from-point`, `event-timing`）。
 
 ```
-apps/main/src/app/_components/playgrounds/{feature-name}/
+apps/main/src/playgrounds/{feature-name}/
 ├── {demo-name}-demo.tsx           # デモ本体
 ├── {demo-name}-demo.module.css    # デモのスタイル
 ├── {demo-name}-demo.stories.tsx   # Storybook
@@ -94,6 +94,8 @@ apps/main/src/app/_components/playgrounds/{feature-name}/
 ```
 
 デモが1つなら `{demo-name}` は `{feature-name}` と同じにする。デモが複数あるときは、デモごとに3つのファイルを置く（例: `scope/`）。
+
+`src/playgrounds` の中のファイルは、`next`・`next/*`・`next-themes` と `@/` を import しない（ルートの lint が止める）。リンクは素の `a` で書き、テーマで変える色は CSS の `light-dark()` で書く。デモだけが使う画像は `apps/main/public/playgrounds/{feature-name}-{名前}` に置き、`/playgrounds/{feature-name}-{名前}` の URL で読む。サイトの `public` に既にある画像（アイコンの `/icon.png`）は、写さずにその URL を読む。
 
 #### デモ本体とスタイル
 
@@ -140,7 +142,7 @@ export function MyFeatureDemo() {
 #### Storybookの例
 
 ```tsx
-import preview from '../../../../../.storybook/preview';
+import preview from '../../../.storybook/preview';
 import { Playground } from '../playground';
 import { MyFeatureDemo } from './my-feature-demo';
 
@@ -184,14 +186,15 @@ export const myFeatureSection: PlaygroundSection = {
 };
 ```
 
-#### playgrounds/sections.ts と playground-embed.tsx への追加
+#### sections.ts・ids.ts・playground-embed.tsx への追加
 
-- `sections.ts` に `import { myFeatureSection } from './{feature-name}';` を追加し、`playgroundSections` 配列に追加（`/playgrounds` の一覧とページが使う）
-- `playground-embed.tsx` の `embeds` に、セクションの `id` をキーにして次の 1 件を追加（記事の `<PlaygroundEmbed>` が使う。記事のページは、そのページで描くセクションのデモだけを読む）
+- `apps/main/src/playgrounds/sections.ts` に `import { myFeatureSection } from './{feature-name}';` を追加し、`playgroundSections` 配列に追加（`/playgrounds` の一覧とページが使う）
+- `apps/main/src/playgrounds/ids.ts` の `playgroundIds` に、セクションの `id` を足す（`/playgrounds/{id}` のページを挙げる。`sections.ts` と食い違うと `ids.test.ts` が落ちる）
+- `apps/main/src/app/_components/playgrounds/playground-embed.tsx` の `embeds` に、セクションの `id` をキーにして次の 1 件を追加（記事の `<PlaygroundEmbed>` が使う。記事のページは、そのページで描くセクションのデモだけを読む）
 
 ```tsx
 'my-feature': dynamic(() =>
-  import('./my-feature').then(({ myFeatureSection }) =>
+  import('@/playgrounds/my-feature').then(({ myFeatureSection }) =>
     toEmbed(myFeatureSection),
   ),
 ),
@@ -271,7 +274,7 @@ grep -rhoE "INSERT INTO tags [^;]*'[^']+'" packages/database/migrations/*.sql \
 - [ ] `<LinkCard>` を使う場合: `pnpm run -F main generate:link-card-metadata` を流し（「OGP が取れなかった」が出たら時間をおいて流し直す）、`link-card-metadata.json` をコミット
 - [ ] Playgroundのデモと `.module.css` 作成（必要な場合）
 - [ ] Storybookストーリー作成（必要な場合）
-- [ ] `playgrounds/sections.ts` と `playground-embed.tsx` の `embeds` 更新（必要な場合）
+- [ ] `playgrounds/sections.ts`・`playgrounds/ids.ts` と `playground-embed.tsx` の `embeds` 更新（必要な場合）
 
 ### データベース
 

@@ -17,12 +17,16 @@
   - UIコンポーネントは置かない。UIは必ず `app/**/_components`
   - ブラウザからの書き込み（閲覧数・お問い合わせ・フィードバック・Push 購読・CSP 違反とエラーのレポート）は持たない。UIからは `shared/api/public-api.ts` の hc で api の公開ルート（`apps/api/CLAUDE.md`）を呼び、CSP 違反は `next.config.ts` の headers() で返す Reporting-Endpoints で api に送らせる。Server Action は作らない
   - ブラウザで api の公開の GET の値に差し替える表示は、server の部品がビルド時の値を読んで client の部品に渡し、client の部品が `shared/api/live-snapshot.ts` の `useLiveSnapshot` で差し替える。GET は `shared/api/public-api.ts` の `readOrNull` で読み、読めなければビルド時の値のまま描く
-- **content/** - ブログ記事の中身。`content/blog/<slug>/` に `article.mdx` と、その記事だけが使う `_images/`・`_components/`・`article.module.css` を置く
+- **content/** - ブログ記事とスライドの中身。`content/blog/<slug>/` に `article.mdx` と、その記事だけが使う `_images/`・`_components/`・`article.module.css` を置く。スライドの本文は `content/slides/<slug>/content.mdx`（作り方は `app/slides/README.md`）
   - `app/blog/[slug]/page.tsx` が公開済みの記事を `generateStaticParams` で挙げ、MDX を動的 import して描く。OG は `app/blog/[slug]/og.png/route.ts`。記事ごとの `layout.tsx`・`opengraph-image.tsx` は作らない
-  - 記事が使う部品（`BrowserSupportStatus`・`PlaygroundEmbed`・`Playground`・`LinkCard`・`Image`・`FloatImage`・`Alert`）は `app/blog/_components/blog-mdx-components` の `blogMdxComponents` で渡す。MDX は `@/app/...` を import しない（`features/blog/application/article-files.test.ts` が確かめる）。相対の import（`./_images`・`./_components`・`./article.module.css`）と、パッケージの import は使ってよい
+  - 記事が使う部品（`BrowserSupportStatus`・`PlaygroundEmbed`・`Playground`・`LinkCard`・`Image`・`FloatImage`・`Alert`）は `app/blog/_components/blog-mdx-components` の `blogMdxComponents` で渡す。スライドの部品は `app/slides/_components/mdx-parts` の `slideMDXComponents` で渡す。MDX は `@/`・`next`・`next/*`・`next-themes` を import しない（記事は `features/blog/application/article-files.test.ts`、スライドは `features/slides/application/slide-files.test.ts` が確かめる）。相対の import（`./_images`・`./_components`・`./article.module.css`）と、パッケージの import は使ってよい
+  - `content/` の TS・TSX も `next`・`next/**`・`next-themes`・`@/` を import しない（ルートの `vite.config.ts` の lint が止める）
   - 記事の画像は AVIF にして `_images/` に置き、`Image`・`FloatImage` に width と height を書く。width と height が画像の縦横比と合うことは `article-files.test.ts` が確かめる
   - 見出し・段落・リンク・コードなどの部品は `app/_components/mdx-base`。ルートの `mdx-components.tsx` はこれだけを返し、スライドの MDX も使う
   - 記事の `LinkCard` が描く OGP は `content/link-card-metadata.json` にコミットする。`pnpm run -F main generate:link-card-metadata` が記事の LinkCard の URL を集め、JSON に無い URL と、値が `{}`（OGP が取れなかった）の URL を取って書く（`--refresh` で全件を取り直す）。記事に LinkCard を足したら流す（抜けは `article-files.test.ts` が落とす）
+- **playgrounds/** - Playground のデモ（`playgrounds/<id>/`）と、セクションの一覧 `sections.ts`、id だけの一覧 `ids.ts`（セクションを足したら `ids.ts` にも足す。食い違いは `ids.test.ts` が落とす）、枠の `playground.tsx`
+  - `next`・`next/**`・`next-themes`・`@/` を import しない（ルートの `vite.config.ts` の lint が止める）。リンクは素の `a`、テーマで変える色は CSS の `light-dark()` で書く。デモだけが使う画像は `public/playgrounds/` に置き、URL で読む。サイトの `public` に既にある画像（`/icon.png`）は写さずにその URL を読む
+  - 記事の `PlaygroundEmbed` は、`app/_components/playgrounds/playground-embed.tsx` がセクションごとに next/dynamic で読む。`/playgrounds` と `/playgrounds/<id>` のページは `app/playgrounds`
 - **shared/** - apps/main 内で横断利用する非UI共通処理（MDX、OGP、browser API、api クライアント、site metadataなど）。UIコンポーネントや `cn` は置かない
 - **mocks/** - Storybook の MSW ハンドラ（`handlers.ts`）と、features のテストで `next/cache` を差し替えるモック（`next-cache.ts`）。api への GET は既定で 503 を返すので、差し替える表示はビルド時の値のまま描かれる。差し替えを確かめる story だけが `beforeEach` の `msw.use` で応答を決める
 
@@ -33,6 +37,7 @@ app -> features/*/interface -> features/*/application
 features/*/application -> features/*/infrastructure
 app -> app/**/_components
 app -> content
+app -> playgrounds
 features/shared -> packages/helpers
 ```
 
