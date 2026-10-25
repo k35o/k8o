@@ -3,7 +3,7 @@ import type { FC } from 'react';
 import styles from './image.module.css';
 
 type Props = {
-  src: { src: string };
+  src: string;
   alt: string;
   width: number;
   height: number;
@@ -16,7 +16,7 @@ export const Image: FC<Props> = ({ src, alt, width, height, caption }) => (
       alt={alt}
       className={styles.image}
       height={height}
-      src={src.src}
+      src={src}
       width={width}
     />
     {caption !== undefined && caption !== '' && (

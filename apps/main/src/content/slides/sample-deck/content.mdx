@@ -5,14 +5,6 @@ createdAt: 2026-05-15
 updatedAt: 2026-05-15
 ---
 
-import {
-  Cover,
-  Image,
-  Notes,
-  SlideDeckShell,
-} from '@/app/slides/_components/slide-mdx';
-import k8oImage from '@/app/_images/k8o.avif';
-
 <SlideDeckShell slug="sample-deck" title="サンプルスライド">
 
 <Cover>
@@ -69,9 +61,9 @@ console.log(greet('k8o'));
 
 ## 画像の埋め込み
 
-<Image src={k8oImage} alt="k8oのアイコン" width={512} height={512} caption="ローカルの静的インポート画像を埋め込み" />
+<Image src="/slides/sample-deck-k8o.avif" alt="k8oのアイコン" width={512} height={512} caption="public に置いた画像を埋め込み" />
 
-`import` した画像を `<Image src={...} width={...} height={...} />` に渡すと、素の `img` で描かれる。
+`public` に置いた画像の URL を `<Image src="..." width={...} height={...} />` に渡すと、素の `img` で描かれる。
 
 ---
 

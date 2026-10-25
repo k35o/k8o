@@ -1,5 +1,6 @@
 import type { MDXComponents } from 'mdx/types';
 
+import { Cover, Image, Notes, SlideDeckShell } from '../slide-mdx';
 import { Blockquote } from './blockquote';
 import { H1, H2, H3, H4 } from './heading';
 import { LI, OL, UL } from './list';
@@ -19,4 +20,8 @@ export const slideMDXComponents: MDXComponents = {
   strong: Strong,
   pre: Pre,
   blockquote: Blockquote,
+  Cover,
+  Image,
+  Notes,
+  SlideDeckShell,
 };
