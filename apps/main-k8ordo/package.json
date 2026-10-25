@@ -9,7 +9,8 @@
     "build": "vite build",
     "type-check": "better-css-modules generate && tsc --noEmit",
     "test": "vitest run",
-    "test:watch": "vitest"
+    "test:watch": "vitest",
+    "check:css": "better-css-modules check"
   },
   "dependencies": {
     "@k8ordo/color-scheme": "catalog:",
