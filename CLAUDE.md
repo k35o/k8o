@@ -5,7 +5,8 @@ k8oは個人ポートフォリオサイト。Next.js App Router（main・ai）�
 ## コマンド
 
 ```bash
-pnpm run dev                  # 開発（ローカルDB含む全パッケージ起動）
+pnpm run dev                  # 開発（ローカルDB含む全パッケージ起動。main-k8ordo は除く）
+pnpm run dev:k8ordo           # main の代わりに main-k8ordo を起こす（どちらも main.k8o の名前を使うので、同時には起こさない）
 pnpm run build
 pnpm run check                # Vite+ / OXC lint・format チェック + CSS Modules の検査（check:write で lint・format を自動修正）
 pnpm run check:css            # CSS Modules の検査だけ（better-css-modules check）
@@ -27,6 +28,7 @@ pnpm -F main exec svrt approve   # 変更を新しいベースラインとして
 
 ```
 apps/main/          → Next.jsアプリ（メイン）            → apps/main/CLAUDE.md
+apps/main-k8ordo/   → main の k8ordo 版（並走中。preview にだけ出す） → apps/main-k8ordo/CLAUDE.md
 apps/api/           → Hono の API（api.k8o.me）          → apps/api/CLAUDE.md
 apps/ai/            → AIツール群（ai.k8o.me）            → apps/ai/CLAUDE.md
 packages/auth-shell/→ aiの認証ゲートとアプリシェル      → packages/auth-shell/CLAUDE.md

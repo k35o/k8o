@@ -9,6 +9,7 @@ pnpm i --frozen-lockfile
 
 # 環境変数設定（URLは https://<name>.k8o.localhost を使う。ポート番号は不要）
 cp apps/main/.env.example apps/main/.env.local
+cp apps/main-k8ordo/.env.example apps/main-k8ordo/.env.local
 cp apps/api/.env.example apps/api/.env.local
 cp packages/database/.env.example packages/database/.env.local
 
