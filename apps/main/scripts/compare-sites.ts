@@ -40,11 +40,8 @@ const { base, head } = values;
 const onlyPatterns = values.only.map((pattern) => new RegExp(pattern, 'u'));
 const ignorePatterns = values.ignore.map((pattern) => new RegExp(pattern, 'u'));
 
-const fetchSnapshot = async (
-  url: string,
-  target: Target,
-): Promise<Snapshot> => {
-  const response = await fetch(url, {
+const fetchOnce = async (url: string, target: Target): Promise<Response> =>
+  fetch(url, {
     method: target.method,
     // 末尾のスラッシュなどのリダイレクトも外との約束なので、追わずに status と Location で比べる
     redirect: 'manual',
@@ -52,13 +49,25 @@ const fetchSnapshot = async (
   }).catch((error: unknown) => {
     throw new Error(`${url} を取れない`, { cause: error });
   });
-  return takeSnapshot({
-    url,
-    status: response.status,
-    contentType: response.headers.get('content-type'),
-    location: response.headers.get('location'),
-    body: new Uint8Array(await response.arrayBuffer()),
-  });
+
+const fetchSnapshot = async (
+  url: string,
+  target: Target,
+): Promise<Snapshot> => {
+  if (target.checksCdnCache) {
+    // 1回目で CDN に載せ、2回目の x-vercel-cache で中継の応答がキャッシュされるかを見る
+    await (await fetchOnce(url, target)).arrayBuffer();
+  }
+  const response = await fetchOnce(url, target);
+  return takeSnapshot(
+    {
+      url,
+      status: response.status,
+      headers: response.headers,
+      body: new Uint8Array(await response.arrayBuffer()),
+    },
+    target.checksCdnCache ? ['x-vercel-cache'] : [],
+  );
 };
 
 // no-console が console.log を警告するので、結果は標準出力へ直接書く
@@ -152,6 +161,7 @@ for (const target of targets) {
           path: new URL(baseUrl).pathname,
           accept: null,
           method: 'GET',
+          checksCdnCache: false,
         },
         baseUrl,
         headUrl: resolveOn(head, headOgImage),

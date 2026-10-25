@@ -5,6 +5,7 @@ export type Target = {
   readonly path: string;
   readonly accept: string | null;
   readonly method: 'GET' | 'HEAD';
+  readonly checksCdnCache: boolean;
 };
 
 const MARKDOWN = 'text/markdown';
@@ -46,6 +47,7 @@ const page = (path: string): Target => ({
   path,
   accept: null,
   method: 'GET',
+  checksCdnCache: false,
 });
 
 const markdownOf = (path: string): Target => ({
@@ -75,7 +77,11 @@ const fixedTargets = (): Target[] => [
   page('/blog/feed'),
   markdownOf('/blog/feed'),
   page('/slides/feed'),
-  page('/reading-list/feed'),
+  {
+    ...page('/reading-list/feed'),
+    label: '/reading-list/feed (2回目)',
+    checksCdnCache: true,
+  },
   page('/reading-list/feed?utm=1'),
   page('/notifications'),
   page('/favicon.ico'),

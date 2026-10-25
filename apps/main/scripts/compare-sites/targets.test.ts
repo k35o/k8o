@@ -14,6 +14,7 @@ const get = (path: string): Target => ({
   path,
   accept: null,
   method: 'GET',
+  checksCdnCache: false,
 });
 
 const markdown = (path: string): Target => ({
@@ -72,7 +73,11 @@ describe('buildTargets', () => {
         get('/blog/feed'),
         markdown('/blog/feed'),
         get('/slides/feed'),
-        get('/reading-list/feed'),
+        {
+          ...get('/reading-list/feed'),
+          label: '/reading-list/feed (2回目)',
+          checksCdnCache: true,
+        },
         get('/reading-list/feed?utm=1'),
         get('/notifications'),
         get('/favicon.ico'),
