@@ -1,0 +1,202 @@
+import { loadDefaultJapaneseParser } from 'budoux';
+
+import { getIconDataUrl } from '@/shared/og/get-icon-data-url';
+import { getMPlus2Font } from '@/shared/og/get-m-plus-2-font';
+import { renderOgPng } from '@/shared/og/render-og-png';
+
+import { OgCodeImage } from './og-code-image';
+
+type OgImageProps = {
+  title: string;
+  category?: string | undefined;
+  code?:
+    | {
+        lang: string;
+        code: string;
+      }
+    | undefined;
+};
+
+export async function OgImage({
+  title,
+  category,
+  code,
+}: OgImageProps): Promise<Response> {
+  if (code) {
+    return OgCodeImage({ title, code });
+  }
+  return OgTextImage({ title, category });
+}
+
+async function OgTextImage({
+  title,
+  category,
+}: Omit<OgImageProps, 'code'>): Promise<Response> {
+  const words = loadDefaultJapaneseParser().parse(title);
+  const iconDataUrl = getIconDataUrl();
+
+  return renderOgPng(
+    <div
+      style={{
+        alignItems: 'center',
+        display: 'flex',
+        backgroundImage: 'linear-gradient(135deg, #cffafe 0%, #dbeafe 100%)',
+        justifyContent: 'center',
+        width: '100%',
+        height: '100%',
+        position: 'relative',
+        fontFamily: '"M PLUS 2"',
+      }}
+    >
+      <div
+        style={{
+          position: 'absolute',
+          width: 600,
+          height: 600,
+          borderRadius: 9999,
+          background: 'linear-gradient(135deg, #22d3ee, #5eead4)',
+          filter: 'blur(100px)',
+          top: -200,
+          right: -100,
+          display: 'flex',
+          opacity: 0.4,
+        }}
+      />
+      <div
+        style={{
+          position: 'absolute',
+          width: 500,
+          height: 500,
+          borderRadius: 9999,
+          background: 'linear-gradient(135deg, #60a5fa, #2dd4bf)',
+          filter: 'blur(100px)',
+          bottom: -150,
+          left: -100,
+          display: 'flex',
+          opacity: 0.4,
+        }}
+      />
+      <div
+        style={{
+          background: '#ffffff',
+          width: 1100,
+          height: 550,
+          display: 'flex',
+          flexDirection: 'column',
+          justifyContent: 'space-between',
+          borderRadius: 32,
+          boxShadow: '0 25px 50px -12px #27272a',
+          position: 'relative',
+          overflow: 'hidden',
+          opacity: 0.98,
+        }}
+      >
+        <div
+          style={{
+            display: 'flex',
+            justifyContent: 'flex-start',
+            flexWrap: 'wrap',
+            alignItems: 'flex-start',
+            margin: 64,
+            marginTop: 80,
+            marginBottom: 40,
+            color: '#0f172a',
+            fontSize: 68,
+            lineHeight: 1.2,
+            letterSpacing: '-0.02em',
+          }}
+        >
+          {words.map((word, index) => (
+            <span
+              key={`${word}-${index.toString()}`}
+              style={{
+                display: 'block',
+                color: '#0f172a',
+              }}
+            >
+              {word}
+            </span>
+          ))}
+        </div>
+        <div
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            margin: 64,
+            marginTop: 0,
+            paddingTop: 32,
+            borderTop: '2px solid #e4e4e7',
+          }}
+        >
+          <div
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: 24,
+            }}
+          >
+            <img
+              alt="アイコン"
+              height={96}
+              src={iconDataUrl}
+              style={{
+                borderRadius: 9999,
+                objectFit: 'cover',
+                boxShadow: '0 10px 25px -5px #27272a',
+              }}
+              width={96}
+            />
+            <div
+              style={{
+                display: 'flex',
+                flexDirection: 'column',
+                gap: 4,
+              }}
+            >
+              {category !== undefined && (
+                <span
+                  style={{
+                    color: '#334155',
+                    fontSize: 32,
+                    letterSpacing: '0.1em',
+                    textTransform: 'uppercase',
+                  }}
+                >
+                  {category}
+                </span>
+              )}
+              <span
+                style={{
+                  color: '#18181b',
+                  fontSize: 48,
+                }}
+              >
+                k8o
+              </span>
+            </div>
+          </div>
+          <div
+            style={{
+              width: 120,
+              height: 8,
+              borderRadius: 4,
+              background:
+                'linear-gradient(90deg, #22d3ee, #5eead4, #60a5fa, #2dd4bf)',
+              display: 'flex',
+              alignSelf: 'flex-end',
+            }}
+          />
+        </div>
+      </div>
+    </div>,
+    [
+      {
+        name: 'M PLUS 2',
+        data: getMPlus2Font(),
+        style: 'normal',
+        weight: 400,
+      },
+    ],
+  );
+}

@@ -6,6 +6,9 @@ export default defineConfig({
   test: {
     alias: {
       '@': fileURLToPath(new URL('./src', import.meta.url)),
+      '@playgrounds': fileURLToPath(
+        new URL('../main/src/playgrounds', import.meta.url),
+      ),
     },
     projects: [
       {
@@ -16,8 +19,15 @@ export default defineConfig({
       },
       {
         test: {
+          env: { TZ: 'UTC' },
+          name: { label: 'features test', color: 'magenta' },
+          include: ['src/features/**/*.test.ts'],
+        },
+      },
+      {
+        test: {
           name: { label: 'shared test', color: 'green' },
-          include: ['src/shared/**/*.test.ts'],
+          include: ['src/shared/**/*.test.{ts,tsx}'],
         },
       },
       {

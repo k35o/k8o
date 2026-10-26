@@ -160,6 +160,7 @@ const targets = filterTargets(
   buildTargets(parseSitemapPaths(await sitemap.text())),
   onlyPatterns,
 );
+const targetLabels = new Set(targets.map((target) => target.label));
 const ogImages = new Map<string, Comparison>();
 for (const target of targets) {
   const snapshots = await compare({
@@ -172,18 +173,23 @@ for (const target of targets) {
   // base と head で URL が変わっても比べられるよう、同じページが指す画像どうしを比べる
   if (baseOgImage !== null && headOgImage !== null) {
     const key = `${baseOgImage} ${headOgImage}`;
-    if (!ogImages.has(key)) {
-      const baseUrl = resolveOn(base, baseOgImage);
+    const baseUrl = resolveOn(base, baseOgImage);
+    const headUrl = resolveOn(head, headOgImage);
+    const path = new URL(baseUrl).pathname;
+    // 記事の og.png は対象として直接比べている
+    const comparedDirectly =
+      targetLabels.has(path) && new URL(headUrl).pathname === path;
+    if (!comparedDirectly && !ogImages.has(key)) {
       ogImages.set(key, {
         target: {
           label: `${target.label} の og:image`,
-          path: new URL(baseUrl).pathname,
+          path,
           accept: null,
           method: 'GET',
           checksCdnCache: false,
         },
         baseUrl,
-        headUrl: resolveOn(head, headOgImage),
+        headUrl,
       });
     }
   }

@@ -14,6 +14,7 @@
       ]
     },
     "type-check": {
+      "dependsOn": ["transit", "main#type-check"],
       "inputs": [
         "$TURBO_DEFAULT$",
         "$TURBO_ROOT$/apps/main/src/content/**",

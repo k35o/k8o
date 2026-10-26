@@ -123,8 +123,8 @@ describe('buildTargets', () => {
       ]);
     });
 
-    it('記事には .md の GET と HEAD、Accept: text/markdown の取り直しを続ける', () => {
-      expect(buildTargets(['/blog/abs-sign']).slice(-4)).toStrictEqual([
+    it('記事には .md の GET と HEAD、Accept: text/markdown の取り直し、og.png を続ける', () => {
+      expect(buildTargets(['/blog/abs-sign']).slice(-5)).toStrictEqual([
         get('/blog/abs-sign'),
         get('/blog/abs-sign.md'),
         {
@@ -133,7 +133,17 @@ describe('buildTargets', () => {
           method: 'HEAD',
         },
         markdown('/blog/abs-sign'),
+        get('/blog/abs-sign/og.png'),
       ]);
+    });
+  });
+
+  describe('異常系', () => {
+    it('無い記事の og.png は取らない', () => {
+      const labels = buildTargets([]).map((target) => target.label);
+
+      expect(labels).toContain('/blog/compare-sites-not-found.md');
+      expect(labels).not.toContain('/blog/compare-sites-not-found/og.png');
     });
   });
 

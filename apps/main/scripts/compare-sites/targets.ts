@@ -109,8 +109,11 @@ export const buildTargets = (sitemapPaths: readonly string[]): Target[] => {
     page('/about/'),
     page('/about/?x=1'),
     ...(firstArticle === undefined ? [] : [page(`${firstArticle}/`)]),
+    // 記事の OG は、ページの og:image が無くても比べられるよう直接取る
     ...sitemapPaths.flatMap((path) =>
-      ARTICLE_PATH.test(path) ? articleTargets(path) : [page(path)],
+      ARTICLE_PATH.test(path)
+        ? [...articleTargets(path), page(`${path}/og.png`)]
+        : [page(path)],
     ),
   ];
   return [...new Map(targets.map((target) => [target.label, target])).values()];

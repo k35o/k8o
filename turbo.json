@@ -33,7 +33,7 @@
     },
     "type-check": {
       "dependsOn": ["transit"],
-      "outputs": ["tsconfig.tsbuildinfo"]
+      "outputs": ["tsconfig.tsbuildinfo", "__generated__/**"]
     },
     "test": {
       "dependsOn": ["transit"]

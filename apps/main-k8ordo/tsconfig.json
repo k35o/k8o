@@ -9,10 +9,16 @@
     "incremental": true,
     "allowImportingTsExtensions": true,
     "paths": {
-      "@/*": ["./src/*"]
+      "@/*": ["./src/*"],
+      "@playgrounds/*": ["../main/src/playgrounds/*"]
     },
     "types": ["node", "vite/client", "vitest/importMeta"],
-    "rootDirs": [".", "./__generated__"]
+    "rootDirs": [
+      ".",
+      "./__generated__",
+      "../main/src/playgrounds",
+      "../main/__generated__/src/playgrounds"
+    ]
   },
   "include": ["**/*.ts", "**/*.tsx", ".k8ordo/**/*.ts", "__generated__"],
   "exclude": ["node_modules", "dist"]
