@@ -719,6 +719,18 @@ importers:
       '@k8ordo/ui':
         specifier: 'catalog:'
         version: 2.1.0(@json-render/core@0.21.1(zod@4.6.7))(@json-render/react@0.21.1(react@19.3.1)(zod@4.6.7))(@k8ordo/i18n@1.0.0(typescript@7.0.2))(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(ai@7.0.143(zod@4.6.7))(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(typescript@7.0.2)(zod@4.6.7)
+      '@repo/code-highlight':
+        specifier: workspace:*
+        version: link:../../packages/code-highlight
+      '@repo/database':
+        specifier: workspace:*
+        version: link:../../packages/database
+      '@repo/helpers':
+        specifier: workspace:*
+        version: link:../../packages/helpers
+      '@repo/mdx-preset':
+        specifier: workspace:*
+        version: link:../../packages/mdx-preset
       hono:
         specifier: 'catalog:'
         version: 4.13.13
@@ -728,6 +740,15 @@ importers:
       react-dom:
         specifier: 'catalog:'
         version: 19.3.1(react@19.3.1)
+      remark:
+        specifier: 15.0.1
+        version: 15.0.1(supports-color@10.2.2)
+      remark-frontmatter:
+        specifier: 5.0.0
+        version: 5.0.0(supports-color@10.2.2)
+      remark-mdx:
+        specifier: 3.1.1
+        version: 3.1.1(supports-color@10.2.2)
       zod:
         specifier: 'catalog:'
         version: 4.6.7
@@ -753,6 +774,9 @@ importers:
       '@repo/typescript-config':
         specifier: workspace:*
         version: link:../../packages/typescript-config
+      '@types/mdast':
+        specifier: 4.0.4
+        version: 4.0.4
       '@types/react':
         specifier: 'catalog:'
         version: 19.3.0

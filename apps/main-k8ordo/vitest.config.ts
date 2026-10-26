@@ -16,6 +16,13 @@ export default defineConfig({
       },
       {
         test: {
+          env: { TZ: 'UTC' },
+          name: { label: 'features test', color: 'magenta' },
+          include: ['src/features/**/*.test.ts'],
+        },
+      },
+      {
+        test: {
           name: { label: 'shared test', color: 'green' },
           include: ['src/shared/**/*.test.ts'],
         },
