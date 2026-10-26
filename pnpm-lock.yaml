@@ -735,8 +735,8 @@ importers:
         specifier: 2.6.2
         version: 2.6.2
       budoux:
-        specifier: 0.9.3
-        version: 0.9.3
+        specifier: 0.10.0
+        version: 0.10.0
       hono:
         specifier: 'catalog:'
         version: 4.13.13

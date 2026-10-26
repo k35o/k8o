@@ -22,7 +22,7 @@
     "@repo/helpers": "workspace:*",
     "@repo/mdx-preset": "workspace:*",
     "@resvg/resvg-js": "2.6.2",
-    "budoux": "0.9.3",
+    "budoux": "0.10.0",
     "hono": "catalog:",
     "react": "catalog:",
     "react-dom": "catalog:",
