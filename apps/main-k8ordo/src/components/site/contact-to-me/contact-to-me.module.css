@@ -1,0 +1,15 @@
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: calc(var(--spacing) * 4);
+}
+
+.issueNote {
+  align-self: flex-end;
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-sm);
+}
+
+.submit {
+  width: 100%;
+}

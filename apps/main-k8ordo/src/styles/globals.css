@@ -1,5 +1,12 @@
 @import '@k8ordo/ui/styles.css';
 
+:root {
+  /* 'Yu Gothic UI' は 'Yu Gothic' より前に置く（後者は本文ウェイトが細りすぎる） */
+  --font-family-m-plus-2:
+    'M PLUS 2 Variable', 'Hiragino Sans', 'Hiragino Kaku Gothic ProN',
+    'Yu Gothic UI', 'Yu Gothic', 'Noto Sans CJK JP', sans-serif;
+}
+
 @media (prefers-reduced-motion) {
   ::view-transition-group(*),
   ::view-transition-old(*),
