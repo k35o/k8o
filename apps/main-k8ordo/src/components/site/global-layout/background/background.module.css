@@ -1,0 +1,100 @@
+/*
+ * サイト全体の装飾背景。
+ * - 下地: オフホワイト/深色 + 上部からのブランドカラー(ティール)のグロー
+ * - クラゲの足(細いライン)を四隅(左上・右下)から流す。傘は描かない。
+ * - 全面に極薄のグレイン
+ * ライト/ダークは独立したトーンで設計する（単純反転にしない）。
+ * 色はデザインシステムのトークンを color-mix() で合成し、モードは light-dark() で分ける。
+ */
+
+.root {
+  position: fixed;
+  inset: 0;
+  /* 固定配置の背景を通常フローの中身より下に沈めるには負の値が要る。raised の裏側に置く */
+  z-index: calc(var(--z-index-raised) * -1);
+  overflow: hidden;
+  background-color: light-dark(
+    color-mix(
+      in oklch,
+      var(--color-bg-surface) 55%,
+      var(--color-primary-bg-subtle)
+    ),
+    color-mix(
+      in oklch,
+      var(--color-bg-surface) 90%,
+      var(--color-primary-bg-subtle)
+    )
+  );
+  background-image: radial-gradient(
+    110% 50% at 50% -8%,
+    light-dark(
+      color-mix(in oklch, var(--color-primary-border) 24%, transparent),
+      color-mix(in oklch, var(--color-primary-border) 10%, transparent)
+    ),
+    transparent 60%
+  );
+}
+
+.corner {
+  position: absolute;
+  width: 280px;
+  height: 280px;
+}
+
+.topLeft {
+  top: 0;
+  left: 0;
+}
+
+.bottomRight {
+  right: 0;
+  bottom: 0;
+  width: 230px;
+  height: 230px;
+  transform: rotate(180deg);
+}
+
+/* 足と点は同じ色。くすませたティールを半透明にする */
+.legs {
+  color: light-dark(
+    color-mix(
+      in oklch,
+      color-mix(
+          in oklch,
+          var(--color-primary-border) 55%,
+          var(--color-fg-subtle)
+        )
+        50%,
+      transparent
+    ),
+    color-mix(
+      in oklch,
+      color-mix(in oklch, var(--color-primary-fg) 60%, var(--color-fg-subtle))
+        38%,
+      transparent
+    )
+  );
+}
+
+.leg {
+  fill: none;
+  stroke: currentcolor;
+  stroke-width: 1.4;
+  stroke-linecap: round;
+}
+
+.dot {
+  fill: currentcolor;
+}
+
+.grain {
+  position: absolute;
+  inset: 0;
+  opacity: 0.04;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+
+  /* CSS Modules は .dark をローカル化するので、テーマを持つ html の class 属性で見る */
+  :root[class~='dark'] & {
+    opacity: 0.05;
+  }
+}
