@@ -10,8 +10,18 @@ apps/main（Next）を k8ordo（`@k8ordo/framework` の `mode: 'static'`）で�
 - **site/** - `vercel()` の規則（`vercel-routes.ts`）・slug の正規表現・`paths` の組み立て・セキュリティヘッダー・ブラウザのターゲット。`vite.config.ts` が読むので、ここの import は拡張子まで書く
 - **shared/** - アプリの中で横断して使う UI 以外の処理（api のクライアント、OG の PNG、llms.txt の中身など）
 - **styles/** - `globals.css`
+- **mocks/** - Storybook の MSW の既定のハンドラ。api の書き込みは 204、GET は 503 を返し、story が `msw.use` で決めない限り本番の api に出ない
 
 記事・デモ・public は写さず、apps/main のもの（`../main/src/content`・`../main/src/playgrounds`・`../main/public`）を読む。記事とスライドの MDX は `shared/site/content-dir.ts` の根から、デモは alias の `@playgrounds` から読む。記事とデモが使う依存は apps/main と同じ実体であることを `src/shared-instances.test.ts` が確かめる。apps/main の共有のファイルを変えたときも main-k8ordo のキャッシュが外れるよう、`turbo.json` の `inputs` に共有のパスを並べている。
+
+## 殻とページの head
+
+- ルートレイアウトが `<html>`・`<head>`・`<body>` を書き、`<head>` にはどのページにも出す meta と link（manifest・icon・referrer など）を置く。`<title>` は書かない
+- ページの title・description・canonical・og・twitter・RSS の alternate は、ページが `components/site/page-meta` の `PageMeta` を描いて書く（React が head へ上げる）。Next と違って親の値は継がれないので、OG の画像などは各ページが渡す
+- エラーの画面（`components/site/error-fallback`・`components/site/root-error-boundary`）はページの PageMeta に替わって出るので、`<title>` を直に描く
+- ルートレイアウトの部品（GlobalLayout・Provider など）の失敗は `routes/error.tsx` の外で起きるので、`components/site/root-error-boundary` が受けて api に送る
+- k8ordo 1.1.0 は全 route ファイルを1つの rsc のチャンクにまとめるので、どの route ファイル（layout・error・page・not-found・route.ts）が静的に読むクライアントの部品と CSS も、どのページも読む。殻にはどのページにも要るものだけを置き、route.ts とそれが読むモジュールは `'use client'` や CSS に届くものを静的に import しない（`shared/site/llms-content.ts` は遅れて読む）
+- dev だけで動かす部品（`components/site/react-scan`）は、部品の中で `import.meta.env.DEV` を見て、依存を動的に import する。描く側で `import.meta.env.DEV &&` としても、部品のモジュールは client のバンドルに入り、それが静的に読む依存の読み込みの処理も本番で走る
 
 ## vercel() の規則と dev
 
@@ -25,9 +35,16 @@ apps/main（Next）を k8ordo（`@k8ordo/framework` の `mode: 'static'`）で�
 - `paths` は `vite.config.ts` の側で走る。設定のバンドルは `@repo/database` を外に出し、Node がそのまま読むと落ちるので、DB を読むモジュールは Vite の `runnerImport` で読む
 - OG は route.ts の GET が satori と `@resvg/resvg-js` で PNG にする（`shared/og`）。フォントは `shared/og/fonts` に置いたものだけを使い、next/og と違ってビルドで足りない字形をネットから取らない。足りない字形があれば route.ts の GET が reject し、ビルドが止まる。字を足すときは `shared/og/fonts` にフォントを置く
 
+## テストと Storybook
+
+- Vitest の project は site・features・shared・components（部品の単体テスト）・dependencies と storybook
+- Storybook は `@storybook/react-vite`（`pnpm -F main-k8ordo storybook`、port 6007）。Storybook と vitest の storybook の project は `.storybook/vite.config.ts` を読み、アプリの `vite.config.ts`（framework()・vercel()）は読まない
+- テーマは toolbar か `parameters.theme` で決め、`ColorSchemeProvider` の `defaultPreference` に渡す。Story ごとに localStorage のテーマと `@k8ordo/state` の状態を消す
+- VRT（`.github/workflows/vrt.yml`）は、apps/main に対応する story を apps/main のスクリーンショットと比べる。`app/_components` → `components/site`、`app/<area>/_components` → `components/<area>` に置き直すので、apps/main から写す story は、この置き場とファイル名・export 名を保つ。apps/main に無い story と、apps/main と違うことを許した story は、main-k8ordo の前回のスクリーンショットと比べる。許した story は vrt.yml の `OWN_BASELINE_KEYS` に並べる
+
 ## 環境変数
 
-手元では `.env.example` を `.env.local` に写す。ビルドの描画でサーバーの部品が `process.env` を読むので、`vite.config.ts` が `.env.local` を `process.env` に読み込む。`.env` は git から外れないので使わない。ビルドは DB を読むので、`K8O_TURSO_*` が要る。
+手元では `.env.example` を `.env.local` に写す。`GOOGLE_ANALYTICS_ID` があると、ルートレイアウトが GA の script と `ga-init.js`（apps/main の public）を読み、script に `data-count-navigations` を付けて、ページが替わった遷移ごとに page_view を送らせる。これは GA の管理画面で拡張計測の「ブラウザの履歴イベントに基づくページの変更」を切ってある前提で動く。k8ordo の router は push の遷移で pushState を呼ばないので拡張計測に拾われないが、戻る・進むは popstate で拾われ、設定を切らないと二重に数える。ビルドの描画でサーバーの部品が `process.env` を読むので、`vite.config.ts` が `.env.local` を `process.env` に読み込む。`.env` は git から外れないので使わない。ビルドは DB を読むので、`K8O_TURSO_*` が要る。
 
 ## 型
 
