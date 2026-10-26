@@ -91,5 +91,9 @@ export default defineConfig({
     transformer: 'lightningcss',
     lightningcss: { targets: targets.lightningcss },
   },
-  build: { target: targets.build },
+  build: {
+    target: targets.build,
+    // CSP の font-src は 'self' だけなので、小さなフォントも data: URI に埋め込まずファイルで配る
+    assetsInlineLimit: (file) => (file.endsWith('.woff2') ? false : undefined),
+  },
 });
