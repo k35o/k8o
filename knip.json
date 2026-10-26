@@ -18,7 +18,8 @@
     "apps/main-k8ordo": {
       "entry": [
         "better-css-modules.config.ts",
-        "src/routes/**/{page,layout,not-found,error}.tsx"
+        "src/routes/**/{page,layout,not-found,error}.tsx",
+        "src/routes/**/route.ts"
       ]
     },
     "apps/ai": {

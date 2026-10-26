@@ -41,7 +41,12 @@ export default defineConfig({
   // 記事・デモ・public は写さず apps/main のものを読む
   publicDir: fileURLToPath(new URL('../main/public', import.meta.url)),
   resolve: {
-    alias: { '@': fileURLToPath(new URL('./src', import.meta.url)) },
+    alias: {
+      '@': fileURLToPath(new URL('./src', import.meta.url)),
+      '@playgrounds': fileURLToPath(
+        new URL('../main/src/playgrounds', import.meta.url),
+      ),
+    },
   },
   server: {
     port: Number(process.env['PORT']) || 5173,

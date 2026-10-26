@@ -6,6 +6,9 @@ export default defineConfig({
   test: {
     alias: {
       '@': fileURLToPath(new URL('./src', import.meta.url)),
+      '@playgrounds': fileURLToPath(
+        new URL('../main/src/playgrounds', import.meta.url),
+      ),
     },
     projects: [
       {
