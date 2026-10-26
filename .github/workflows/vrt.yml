@@ -12,7 +12,7 @@ concurrency:
 
 # VRT対象アプリ（pnpm workspaceのfilter名）。アプリを追加したらここに足す
 env:
-  VRT_APPS: main ai
+  VRT_APPS: main ai main-k8ordo
 
 permissions:
   contents: read
@@ -79,6 +79,43 @@ jobs:
               cp -r "vrt-baseline/$app/actual" "apps/$app/.vrt/expected"
             else
               echo "baseline not found: $app"
+            fi
+          done
+
+      # 並走の main-k8ordo は、main に対応する story を main のベースラインと比べて Next との差を見る。
+      # main に無い story と、main と違うことを許した story（OWN_BASELINE_KEYS）は、上で置いた
+      # main-k8ordo の前回のベースラインと比べる。スクリーンショットは story のファイルのパスで
+      # 置かれるので、app/_components と app/<area>/_components を components/site と
+      # components/<area> に置き直し、main-k8ordo に写した story の分だけを上書きする
+      - name: Map main baselines onto main-k8ordo
+        if: github.event_name == 'pull_request'
+        env:
+          OWN_BASELINE_KEYS: |
+            src/components/site/toggle-theme/toggle-theme.stories.tsx/Click-Toggle.png
+        run: |
+          src=vrt-baseline/main/actual
+          dest=apps/main-k8ordo/.vrt/expected
+          if [ ! -d "$src" ]; then
+            echo "main baseline not found: main-k8ordo"
+            exit 0
+          fi
+          find "$src/src/app" -name '*.png' | while read -r file; do
+            key="${file#"$src"/}"
+            case "$key" in
+              src/app/_components/*) mapped="src/components/site/${key#src/app/_components/}" ;;
+              src/app/*/_components/*)
+                area="${key#src/app/}"
+                area="${area%%/*}"
+                mapped="src/components/$area/${key#src/app/"$area"/_components/}"
+                ;;
+              *) continue ;;
+            esac
+            if printf '%s\n' "$OWN_BASELINE_KEYS" | grep -Fqx "$mapped"; then
+              continue
+            fi
+            if [ -f "apps/main-k8ordo/$(dirname "$mapped")" ]; then
+              mkdir -p "$dest/$(dirname "$mapped")"
+              cp "$file" "$dest/$mapped"
             fi
           done
 
