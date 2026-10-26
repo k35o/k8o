@@ -19,6 +19,7 @@ export const ErrorFallback: FC<ErrorProps> = ({ error, reset }) => {
 
   return (
     <div className={styles.root}>
+      <title>問題が発生しました | k8o</title>
       <div className={styles.message}>
         <Heading level="h2">問題が発生しました</Heading>
         <p className={styles.description}>

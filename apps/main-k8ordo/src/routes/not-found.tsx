@@ -1,10 +1,10 @@
 import { NotFound } from '@/components/site/not-found/not-found';
+import { PageMeta, SITE_OG_IMAGE } from '@/components/site/page-meta/page-meta';
 
 export default function NotFoundPage() {
   return (
     <>
-      <title>k8o</title>
-      <meta content="noindex" name="robots" />
+      <PageMeta image={SITE_OG_IMAGE} noindex path="/" />
       <NotFound />
     </>
   );

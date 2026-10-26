@@ -24,6 +24,33 @@ export default function RootLayout({ children }: LayoutProps<'/'>) {
       <head>
         <meta charSet="utf-8" />
         <meta content="width=device-width, initial-scale=1" name="viewport" />
+        <meta content="k8o" name="application-name" />
+        <meta content="k8o" name="author" />
+        <meta content="k8o" name="keywords" />
+        <meta content="k8o" name="creator" />
+        <meta content="k8o" name="publisher" />
+        <meta content="origin-when-cross-origin" name="referrer" />
+        <meta
+          content="telephone=no, address=no, email=no"
+          name="format-detection"
+        />
+        <meta content="yes" name="mobile-web-app-capable" />
+        <meta content="k8o" name="apple-mobile-web-app-title" />
+        <meta content="default" name="apple-mobile-web-app-status-bar-style" />
+        <link href="/manifest.webmanifest" rel="manifest" />
+        <link
+          href="/favicon.ico"
+          rel="icon"
+          sizes="48x48"
+          type="image/x-icon"
+        />
+        <link href="/icon.png" rel="icon" sizes="180x180" type="image/png" />
+        <link
+          href="/apple-icon.png"
+          rel="apple-touch-icon"
+          sizes="180x180"
+          type="image/png"
+        />
       </head>
       <body className={styles.body}>
         <ColorSchemeProvider>

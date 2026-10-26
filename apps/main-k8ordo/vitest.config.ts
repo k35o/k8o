@@ -35,6 +35,12 @@ export default defineConfig({
       },
       {
         test: {
+          name: { label: 'components test', color: 'white' },
+          include: ['src/components/**/*.test.tsx'],
+        },
+      },
+      {
+        test: {
           name: { label: 'dependencies test', color: 'yellow' },
           include: ['src/*.test.ts'],
         },
