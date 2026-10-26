@@ -76,7 +76,12 @@ export default function RootLayout({ children }: LayoutProps<'/'>) {
               async
               src={`https://www.googletagmanager.com/gtag/js?id=${gaId}`}
             />
-            <script async data-ga-id={gaId} src="/ga-init.js" />
+            <script
+              async
+              data-count-navigations=""
+              data-ga-id={gaId}
+              src="/ga-init.js"
+            />
           </>
         )}
       </body>
