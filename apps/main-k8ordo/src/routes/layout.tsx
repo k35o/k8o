@@ -1,3 +1,4 @@
+import '@fontsource-variable/m-plus-2';
 import '@/styles/globals.css';
 import '@/i18n';
 import { ColorSchemeProvider } from '@k8ordo/color-scheme';

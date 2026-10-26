@@ -707,6 +707,9 @@ importers:
 
   apps/main-k8ordo:
     dependencies:
+      '@fontsource-variable/m-plus-2':
+        specifier: 5.3.1
+        version: 5.3.1
       '@k8ordo/color-scheme':
         specifier: 'catalog:'
         version: 1.1.0(@k8ordo/state@1.1.0(@k8ordo/router@1.1.0(@types/react@19.3.0)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(typescript@7.0.2))(@types/react@19.3.0)(react@19.3.1)(typescript@7.0.2)(zod@4.6.7))(@types/react@19.3.0)(react@19.3.1)(typescript@7.0.2)(zod@4.6.7)
@@ -1807,6 +1810,9 @@ packages:
   '@eslint/plugin-kit@0.7.2':
     resolution: {integrity: sha512-+CNAzxglkrpNf/kKywqQfk74QjtceuOE7Qm+AF8miRvPF/wmmK5+OJOgVh3AVTT3RP2mH3+FOaxlE5v72owk0A==}
     engines: {node: ^20.19.0 || ^22.13.0 || >=24}
+
+  '@fontsource-variable/m-plus-2@5.3.1':
+    resolution: {integrity: sha512-s2/uCVw5RYvbTBKYBD/d9yYfb/7apajRwf+DG3qKIzsZUmA8kYssGpA0M7yk8UKdvFI6b4PxlPxGq5g8a6Xeyg==}
 
   '@hono/node-server@2.1.5':
     resolution: {integrity: sha512-MgP/I06GdvsilDspMk/qmRzpk8LOUStP6jFAbSRi40W09DhoyUn+Mj7eyKICPqeYKybOjVFLVIAQzvu1bfIa7Q==}
@@ -8107,6 +8113,8 @@ snapshots:
     dependencies:
       '@eslint/core': 1.2.1
       levn: 0.4.1
+
+  '@fontsource-variable/m-plus-2@5.3.1': {}
 
   '@hono/node-server@2.1.5(hono@4.13.13)':
     dependencies:

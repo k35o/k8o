@@ -1,6 +1,7 @@
 .body {
   background-color: var(--color-bg-surface);
   color: var(--color-fg-base);
+  font-family: var(--font-family-m-plus-2);
   font-weight: var(--font-weight-medium);
   letter-spacing: var(--letter-spacing-none);
   -webkit-font-smoothing: antialiased;
