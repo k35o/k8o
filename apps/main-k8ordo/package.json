@@ -21,12 +21,15 @@
     "@repo/database": "workspace:*",
     "@repo/helpers": "workspace:*",
     "@repo/mdx-preset": "workspace:*",
+    "@resvg/resvg-js": "2.6.2",
+    "budoux": "0.9.3",
     "hono": "catalog:",
     "react": "catalog:",
     "react-dom": "catalog:",
     "remark": "15.0.1",
     "remark-frontmatter": "5.0.0",
     "remark-mdx": "3.1.1",
+    "satori": "0.29.0",
     "zod": "catalog:"
   },
   "devDependencies": {

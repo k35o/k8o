@@ -24,7 +24,7 @@ export default defineConfig({
       {
         test: {
           name: { label: 'shared test', color: 'green' },
-          include: ['src/shared/**/*.test.ts'],
+          include: ['src/shared/**/*.test.{ts,tsx}'],
         },
       },
       {
