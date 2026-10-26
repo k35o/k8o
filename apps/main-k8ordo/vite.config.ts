@@ -50,6 +50,8 @@ export default defineConfig({
   // 記事・デモ・public は写さず apps/main のものを読む
   publicDir: fileURLToPath(new URL('../main/public', import.meta.url)),
   resolve: { alias },
+  // @repo/helpers は in-source のテストを持つ。置き換えないとテストの本体が client のバンドルに残る
+  define: { 'import.meta.vitest': 'undefined' },
   server: {
     port: Number(process.env['PORT']) || 5173,
     // vercel() の中継は Vercel だけが当てるので、dev ではここで中継する

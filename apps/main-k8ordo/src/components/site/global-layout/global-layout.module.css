@@ -1,0 +1,30 @@
+.root {
+  display: flex;
+  flex-direction: column;
+  min-height: 100svh;
+}
+
+.srOnly {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: calc(var(--spacing) * -0.25);
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border-width: 0;
+}
+
+.main {
+  display: flex;
+  flex-grow: 1;
+  justify-content: center;
+  padding-inline: calc(var(--spacing) * 4);
+  padding-top: calc(var(--spacing) * 10);
+  padding-bottom: calc(var(--spacing) * 4);
+}
+
+.logo {
+  height: calc(var(--spacing) * 10);
+}

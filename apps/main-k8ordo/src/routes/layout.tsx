@@ -4,6 +4,11 @@ import { ColorSchemeProvider } from '@k8ordo/color-scheme';
 import type { LayoutProps } from '@k8ordo/framework';
 
 import { AppProvider } from '@/components/site/app-provider';
+import { GlobalLayout } from '@/components/site/global-layout/global-layout';
+import { OfflineNotice } from '@/components/site/offline-notice/offline-notice';
+import { ReactScan } from '@/components/site/react-scan/react-scan';
+import { ServiceWorkerRegister } from '@/components/site/service-worker-register/service-worker-register';
+import { getBrowserMinVersions } from '@/features/browser-support/interface/queries';
 
 // CSS Modules の型は __generated__ を rootDirs で重ねて引くので、@/ ではなく相対で import する
 import styles from '../components/site/root-layout.module.css';
@@ -21,8 +26,15 @@ export default function RootLayout({ children }: LayoutProps<'/'>) {
       </head>
       <body className={styles.body}>
         <ColorSchemeProvider>
-          <AppProvider>{children}</AppProvider>
+          <AppProvider>
+            <GlobalLayout minVersions={getBrowserMinVersions()}>
+              {children}
+            </GlobalLayout>
+            <OfflineNotice />
+          </AppProvider>
         </ColorSchemeProvider>
+        <ServiceWorkerRegister />
+        {import.meta.env.DEV && <ReactScan />}
         {/* /_vercel/speed-insights/script.js は Vercel だけが配るので、vite dev では読まない */}
         {import.meta.env.PROD && (
           <script defer src="/_vercel/speed-insights/script.js" />

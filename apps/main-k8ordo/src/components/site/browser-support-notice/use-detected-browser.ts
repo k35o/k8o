@@ -48,7 +48,7 @@ const subscribe = (): (() => void) => () => {};
 const FORCED_OUTDATED: DetectedBrowser = { browser: 'chrome', version: '0' };
 
 export const isNoticeForced = (): boolean =>
-  process.env.NODE_ENV === 'development' &&
+  import.meta.env.DEV &&
   typeof window !== 'undefined' &&
   new URLSearchParams(window.location.search).get('browser-support-notice') ===
     'force';
