@@ -5,11 +5,13 @@ import { fileURLToPath } from 'node:url';
 import betterCssModules from '@better-css-modules/vite';
 import { vercel } from '@k8ordo/framework/vercel';
 import { framework } from '@k8ordo/framework/vite';
-import { defineConfig } from 'vite';
+import { defineConfig, runnerImport } from 'vite';
 import type { Plugin } from 'vite';
 
 import floor from '../main/src/features/browser-support/infrastructure/browser-min-versions.json' with { type: 'json' };
+import type * as blogs from './src/features/blog/application/blogs.ts';
 import { browserTargets } from './src/site/browser-targets.ts';
+import { blogPathnames } from './src/site/paths.ts';
 import { DEV_SECURITY_HEADERS } from './src/site/security-headers.ts';
 import { BEFORE_FILES, BEFORE_NOT_FOUND } from './src/site/vercel-routes.ts';
 
@@ -21,6 +23,13 @@ if (existsSync(envFile)) {
 }
 
 const targets = browserTargets(floor.minVersions);
+
+const alias = {
+  '@': fileURLToPath(new URL('./src', import.meta.url)),
+  '@playgrounds': fileURLToPath(
+    new URL('../main/src/playgrounds', import.meta.url),
+  ),
+};
 
 // vercel() の規則は Vercel だけが当てる。server.headers は Vite 自身の応答にしか付かず、
 // framework が描く HTML に届かないので、dev のヘッダーはどの応答にも先に付ける
@@ -40,14 +49,7 @@ const devSecurityHeaders: Plugin = {
 export default defineConfig({
   // 記事・デモ・public は写さず apps/main のものを読む
   publicDir: fileURLToPath(new URL('../main/public', import.meta.url)),
-  resolve: {
-    alias: {
-      '@': fileURLToPath(new URL('./src', import.meta.url)),
-      '@playgrounds': fileURLToPath(
-        new URL('../main/src/playgrounds', import.meta.url),
-      ),
-    },
-  },
+  resolve: { alias },
   server: {
     port: Number(process.env['PORT']) || 5173,
     // vercel() の中継は Vercel だけが当てるので、dev ではここで中継する
@@ -63,7 +65,23 @@ export default defineConfig({
   plugins: [
     devSecurityHeaders,
     // site は渡さない。渡すと framework の sitemap.xml が route.ts の sitemap.xml を上書きする
-    framework({ mode: 'static', reactCompiler: true }),
+    framework({
+      mode: 'static',
+      reactCompiler: true,
+      paths: async (patterns) => {
+        // 設定のバンドルは @repo/database を外に出し、Node がそのまま読むと拡張子の無い import で
+        // 落ちるので、DB を読むモジュールは Vite の runner で読む。runner はこの設定ファイルを読まず
+        // alias を引き継がないので渡す
+        const { module } = await runnerImport<typeof blogs>(
+          fileURLToPath(
+            new URL('src/features/blog/application/blogs.ts', import.meta.url),
+          ),
+          { resolve: { alias } },
+        );
+        const slugs = (await module.getBlogs()).map((blog) => blog.slug);
+        return blogPathnames(patterns, slugs);
+      },
+    }),
     vercel({ beforeFiles: BEFORE_FILES, beforeNotFound: BEFORE_NOT_FOUND }),
     betterCssModules(),
   ],
