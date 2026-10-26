@@ -1,12 +1,16 @@
+import { Home } from '@/components/site/home/home';
 import { HomeJsonLd } from '@/components/site/json-ld/home-json-ld';
 import { PageMeta, SITE_OG_IMAGE } from '@/components/site/page-meta/page-meta';
+import { getBlogContents } from '@/features/blog/interface/queries';
 
-export default function HomePage() {
+export default async function HomePage() {
+  const blogs = await getBlogContents();
+
   return (
     <>
       <PageMeta canonical image={SITE_OG_IMAGE} path="/" />
       <HomeJsonLd />
-      <p>k8o を k8ordo へ移しています。</p>
+      <Home blogs={blogs} />
     </>
   );
 }
