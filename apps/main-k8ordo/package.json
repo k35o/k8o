@@ -9,7 +9,10 @@
     "build": "vite build",
     "type-check": "better-css-modules generate && tsc --noEmit",
     "test": "vitest run",
+    "test:vrt": "VRT=1 vitest run --project=storybook",
     "test:watch": "vitest",
+    "storybook": "storybook dev -p 6007 --no-open",
+    "build-storybook": "storybook build",
     "check:css": "better-css-modules check"
   },
   "dependencies": {
@@ -41,12 +44,30 @@
     "@k8ordo/router": "catalog:",
     "@repo/api": "workspace:*",
     "@repo/typescript-config": "workspace:*",
+    "@storybook/addon-a11y": "catalog:",
+    "@storybook/addon-docs": "catalog:",
+    "@storybook/addon-mcp": "catalog:",
+    "@storybook/addon-vitest": "catalog:",
+    "@storybook/react-vite": "catalog:",
     "@types/mdast": "4.0.4",
     "@types/react": "catalog:",
     "@types/react-dom": "catalog:",
+    "@vitest/browser-playwright": "catalog:",
+    "msw": "3.0.3",
+    "msw-storybook-addon": "3.0.3",
     "oxc-transform-react": "catalog:",
+    "playwright": "1.64.1",
     "react-scan": "0.5.7",
+    "storybook": "catalog:",
+    "storybook-addon-determinism": "catalog:",
+    "storybook-addon-mock-date": "catalog:",
+    "storybook-addon-vrt": "catalog:",
     "vite": "catalog:",
     "vitest": "catalog:"
+  },
+  "msw": {
+    "workerDirectory": [
+      ".storybook/public"
+    ]
   }
 }

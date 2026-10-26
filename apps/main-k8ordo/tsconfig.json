@@ -20,6 +20,13 @@
       "../main/__generated__/src/playgrounds"
     ]
   },
-  "include": ["**/*.ts", "**/*.tsx", ".k8ordo/**/*.ts", "__generated__"],
+  "include": [
+    "**/*.ts",
+    "**/*.tsx",
+    ".k8ordo/**/*.ts",
+    ".storybook/*.ts",
+    ".storybook/*.tsx",
+    "__generated__"
+  ],
   "exclude": ["node_modules", "dist"]
 }
