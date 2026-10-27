@@ -115,7 +115,7 @@ const compare = async ({
     comparedCount += 1;
     const { reported, ignored } = partitionIgnored(
       diffFields(
-        applyAllowances(baseSnapshot.fields, target, allowances),
+        applyAllowances(baseSnapshot.fields, target, headUrl, allowances),
         headSnapshot.fields,
         ignorePatterns,
       ),

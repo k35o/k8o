@@ -4,7 +4,7 @@ type Fields = ReadonlyMap<string, string>;
 
 export type Allowance = {
   readonly name: string;
-  readonly rewrite: (base: Fields, target: Target) => Fields;
+  readonly rewrite: (base: Fields, target: Target, headUrl: string) => Fields;
 };
 
 const OG_IMAGE_FIELD =
@@ -75,7 +75,22 @@ const mdStatic: Allowance = {
   },
 };
 
-const ALLOWANCES = [ogPng, varyNext, mdStatic];
+// Next が関数で描く OG には Vercel が ACAO を付けず、静的なファイルの og.png には付ける
+const ogAcao: Allowance = {
+  name: 'og-acao',
+  rewrite: (base, _target, headUrl) => {
+    if (
+      base.get('content-type')?.startsWith('image/png') !== true ||
+      base.has('header:access-control-allow-origin') ||
+      !new URL(headUrl).pathname.endsWith('/og.png')
+    ) {
+      return base;
+    }
+    return new Map([...base, ['header:access-control-allow-origin', '*']]);
+  },
+};
+
+const ALLOWANCES = [ogPng, varyNext, mdStatic, ogAcao];
 
 export const selectAllowances = (names: readonly string[]): Allowance[] =>
   names.map((name) => {
@@ -91,9 +106,10 @@ export const selectAllowances = (names: readonly string[]): Allowance[] =>
 export const applyAllowances = (
   base: Fields,
   target: Target,
+  headUrl: string,
   allowances: readonly Allowance[],
 ): Fields =>
   allowances.reduce(
-    (fields, allowance) => allowance.rewrite(fields, target),
+    (fields, allowance) => allowance.rewrite(fields, target, headUrl),
     base,
   );
