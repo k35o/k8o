@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import { blogPathnames } from './paths';
+import { blogPathnames, playgroundPathnames } from './paths';
 
 const article = (slug: string, mdx = '本文') => ({ slug, mdx });
 
@@ -59,6 +59,46 @@ describe('blogPathnames', () => {
     it('公開済みの記事が無ければ、記事の下のパスを作らない', () => {
       expect(
         blogPathnames(['/blog/:slug', '/blog/:slug/article.md'], []),
+      ).toStrictEqual([]);
+    });
+  });
+});
+
+describe('playgroundPathnames', () => {
+  describe('正常系', () => {
+    it('デモの id の一覧から、Playground のページと OG のパスを作る', () => {
+      const pathnames = playgroundPathnames(
+        ['/playgrounds/:id', '/playgrounds/:id/og.png'],
+        ['abs-sign', 'popover'],
+      );
+
+      expect(pathnames).toStrictEqual([
+        '/playgrounds/abs-sign',
+        '/playgrounds/popover',
+        '/playgrounds/abs-sign/og.png',
+        '/playgrounds/popover/og.png',
+      ]);
+    });
+  });
+
+  describe('異常系', () => {
+    it('Playground の下でないパターンにはパスを作らない（framework がビルドを止めて名指しする）', () => {
+      const pathnames = playgroundPathnames(
+        ['/blog/:slug', '/playgrounds-old/:id', '/tags/:id'],
+        ['abs-sign'],
+      );
+
+      expect(pathnames).toStrictEqual([]);
+    });
+  });
+
+  describe('エッジケース', () => {
+    it('id が無ければ、Playground の下のパスを作らない', () => {
+      expect(
+        playgroundPathnames(
+          ['/playgrounds/:id', '/playgrounds/:id/og.png'],
+          [],
+        ),
       ).toStrictEqual([]);
     });
   });

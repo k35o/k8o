@@ -1,4 +1,5 @@
 const BLOG_ARTICLE = '/blog/:slug';
+const PLAYGROUND = '/playgrounds/:id';
 
 export type BlogArticle = { slug: string; mdx: string };
 
@@ -22,3 +23,15 @@ export const blogPathnames = (
         (article) => pattern.replace(':slug', article.slug),
       ),
     );
+
+// Playground のページと、その下の OG のパスを、デモの id の一覧から作る
+export const playgroundPathnames = (
+  patterns: readonly string[],
+  ids: readonly string[],
+): string[] =>
+  patterns
+    .filter(
+      (pattern) =>
+        pattern === PLAYGROUND || pattern.startsWith(`${PLAYGROUND}/`),
+    )
+    .flatMap((pattern) => ids.map((id) => pattern.replace(':id', id)));
