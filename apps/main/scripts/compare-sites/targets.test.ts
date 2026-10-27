@@ -89,6 +89,8 @@ describe('buildTargets', () => {
         get('/ga-init.js'),
         get('/playgrounds/shared-worker.worker.js'),
         get('/playgrounds/media-pseudos-tone.wav'),
+        get('/playgrounds/async-clipboard-primary.png'),
+        get('/playgrounds/invoker-commands-k8o.avif'),
         get('/_vercel/speed-insights/script.js'),
         markdown('/'),
         get('/compare-sites-not-found'),
