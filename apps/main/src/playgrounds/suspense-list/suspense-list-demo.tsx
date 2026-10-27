@@ -7,14 +7,10 @@ import type { FC } from 'react';
 
 import styles from './suspense-list-demo.module.css';
 
-type CacheKey = 'key1' | 'key2' | 'key3' | 'key4';
-
 type DataItem = {
-  cacheKey: CacheKey;
+  cacheKey: 'key1' | 'key2' | 'key3' | 'key4';
   getTime: Promise<number>;
 };
-
-const CACHE_KEYS: readonly CacheKey[] = ['key1', 'key2', 'key3', 'key4'];
 
 const generateData = (): DataItem[] =>
   [
@@ -61,7 +57,7 @@ export const SuspenseListDemo: FC = () => {
               <Data data={{ cacheKey, getTime }} />
             </Suspense>
           ))
-        : CACHE_KEYS.map((cacheKey) => (
+        : data.map(({ cacheKey }) => (
             <Fragment key={cacheKey}>{fallback}</Fragment>
           ))}
     </div>
