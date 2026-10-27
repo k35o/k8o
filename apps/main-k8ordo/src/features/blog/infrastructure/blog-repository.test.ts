@@ -1,13 +1,20 @@
 import { db } from '@repo/database';
 import { describe, expect, it, vi } from 'vitest';
 
-import { findPublishedBlogRow, findPublishedBlogRows } from './blog-repository';
+import {
+  findPublishedBlogRow,
+  findPublishedBlogRows,
+  findPublishedBlogRowsByTags,
+} from './blog-repository';
 
 vi.mock('@repo/database', () => ({
   db: {
     query: {
       blogs: {
         findFirst: vi.fn(),
+        findMany: vi.fn(),
+      },
+      blogTag: {
         findMany: vi.fn(),
       },
     },
@@ -67,6 +74,58 @@ describe('findPublishedBlogRows', () => {
       expect(db.query.blogs.findMany).toHaveBeenCalledWith(
         expect.not.objectContaining({ limit: expect.anything() }),
       );
+    });
+  });
+});
+
+describe('findPublishedBlogRowsByTags', () => {
+  const ops = {
+    and: (...conditions: unknown[]) => ({ and: conditions }),
+    not: (condition: unknown) => ({ not: condition }),
+    eq: (column: unknown, value: unknown) => ({ eq: [column, value] }),
+    inArray: (column: unknown, values: unknown) => ({
+      inArray: [column, values],
+    }),
+  };
+
+  type OpsWhere = (
+    fields: Record<string, string>,
+    operators: typeof ops,
+  ) => unknown;
+
+  describe('正常系', () => {
+    it('タグのどれかを持つ記事のうち、slug の記事を除いた公開済みの記事を引く', async () => {
+      vi.mocked(db.query.blogTag.findMany).mockResolvedValue([
+        { blogId: 3 },
+        { blogId: 4 },
+      ] as never);
+      vi.mocked(db.query.blogs.findMany).mockResolvedValue([]);
+
+      await findPublishedBlogRowsByTags('current-slug', [1, 2]);
+
+      const tagWhere = vi.mocked(db.query.blogTag.findMany).mock.lastCall?.[0]
+        ?.where as unknown as OpsWhere;
+      expect(tagWhere({ tagId: 'tag-id-column' }, ops)).toStrictEqual({
+        inArray: ['tag-id-column', [1, 2]],
+      });
+      const blogWhere = vi.mocked(db.query.blogs.findMany).mock.lastCall?.[0]
+        ?.where as unknown as OpsWhere;
+      expect(
+        blogWhere(
+          {
+            slug: 'slug-column',
+            id: 'id-column',
+            published: 'published-column',
+          },
+          ops,
+        ),
+      ).toStrictEqual({
+        and: [
+          { not: { eq: ['slug-column', 'current-slug'] } },
+          { inArray: ['id-column', [3, 4]] },
+          { eq: ['published-column', true] },
+        ],
+      });
     });
   });
 });

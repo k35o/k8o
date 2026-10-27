@@ -1,5 +1,9 @@
+import { readFile } from 'node:fs/promises';
+
 import { findFrontmatter } from '@repo/helpers/mdx/frontmatter';
 import type { Frontmatter } from '@repo/helpers/mdx/frontmatter';
+
+import { getTocTree } from '@/shared/mdx/toc-tree';
 
 import { findPublishedBlogRow } from '../infrastructure/blog-repository';
 import { blogPath } from './path';
@@ -36,3 +40,6 @@ export const findBlogMetadata = async (
   }
   return metadata;
 };
+
+export const getBlogToc = async (slug: string) =>
+  getTocTree(await readFile(blogPath(slug), 'utf-8'));

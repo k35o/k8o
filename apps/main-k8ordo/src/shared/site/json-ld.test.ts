@@ -1,6 +1,12 @@
 import { describe, expect, it } from 'vitest';
 
-import { personJsonLd, serializeJsonLd, websiteJsonLd } from './json-ld';
+import {
+  blogBreadcrumbJsonLd,
+  blogPostingJsonLd,
+  personJsonLd,
+  serializeJsonLd,
+  websiteJsonLd,
+} from './json-ld';
 
 describe('serializeJsonLd', () => {
   describe('正常系', () => {
@@ -56,6 +62,78 @@ describe('personJsonLd', () => {
           'https://x.com/k8ome',
           'https://github.com/k35o',
           'https://qiita.com/k8o',
+        ],
+      });
+    });
+  });
+});
+
+describe('blogPostingJsonLd', () => {
+  const blog = {
+    slug: 'sample-post',
+    title: 'サンプル記事',
+    description: '記事の説明',
+    createdAt: '2025-01-01',
+    updatedAt: '2025-01-02',
+    tags: [{ name: 'CSS' }, { name: 'React' }],
+  };
+
+  describe('正常系', () => {
+    it('記事の情報からBlogPostingスキーマを返すべき', () => {
+      expect(blogPostingJsonLd(blog)).toMatchObject({
+        '@context': 'https://schema.org',
+        '@type': 'BlogPosting',
+        headline: 'サンプル記事',
+        description: '記事の説明',
+        url: 'https://k8o.me/blog/sample-post',
+        image: 'https://k8o.me/blog/sample-post/og.png',
+        datePublished: '2025-01-01',
+        dateModified: '2025-01-02',
+        keywords: ['CSS', 'React'],
+      });
+    });
+  });
+
+  describe('エッジケース', () => {
+    it('descriptionがnullの場合は出力に含めないべき', () => {
+      const jsonLd = blogPostingJsonLd({ ...blog, description: null });
+      expect(serializeJsonLd(jsonLd)).not.toContain('description');
+    });
+
+    it('タグが空の場合はkeywordsを出力に含めないべき', () => {
+      const jsonLd = blogPostingJsonLd({ ...blog, tags: [] });
+      expect(serializeJsonLd(jsonLd)).not.toContain('keywords');
+    });
+  });
+});
+
+describe('blogBreadcrumbJsonLd', () => {
+  describe('正常系', () => {
+    it('ホーム > Blog > 記事タイトルの階層を持つBreadcrumbListを返すべき', () => {
+      expect(
+        blogBreadcrumbJsonLd({ slug: 'sample-post', title: 'サンプル記事' }),
+      ).toMatchObject({
+        '@context': 'https://schema.org',
+        '@type': 'BreadcrumbList',
+        itemListElement: [
+          {
+            '@type': 'ListItem',
+            position: 1,
+            name: 'ホーム',
+            item: 'https://k8o.me',
+          },
+          {
+            '@type': 'ListItem',
+            position: 2,
+            name: 'Blog',
+            item: 'https://k8o.me/blog',
+          },
+          {
+            '@type': 'ListItem',
+            position: 3,
+            name: 'サンプル記事',
+            item: 'https://k8o.me/blog/sample-post',
+          },
         ],
       });
     });

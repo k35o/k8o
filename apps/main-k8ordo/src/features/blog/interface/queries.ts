@@ -1,14 +1,21 @@
 import { notFound } from '@k8ordo/framework';
 
-import { findBlog, findBlogMetadata } from '@/features/blog/application/blog';
-import { getBlogs } from '@/features/blog/application/blogs';
+import {
+  findBlog,
+  findBlogMetadata,
+  getBlogToc as _getBlogToc,
+} from '@/features/blog/application/blog';
+import {
+  getBlogsByTags as _getBlogsByTags,
+  getBlogs,
+} from '@/features/blog/application/blogs';
 import { getBlogOgCode as _getBlogOgCode } from '@/features/blog/application/og-code';
 import { estimateReadingTimeMinutes } from '@/features/blog/application/reading-time';
 import { memoizeInBuild } from '@/shared/cache/memoize-in-build';
 
 import { getMarkdown } from './markdown';
 
-const getBlogReadingTime = memoizeInBuild(
+export const getBlogReadingTime = memoizeInBuild(
   async (slug: string): Promise<number> =>
     estimateReadingTimeMinutes(await getMarkdown(slug)),
 );
@@ -74,3 +81,16 @@ export const getBlogContent = async (slug: string) => {
 };
 
 export const getBlogOgCode = memoizeInBuild(_getBlogOgCode);
+
+export const getBlogToc = memoizeInBuild(_getBlogToc);
+
+export const getBlogsByTags = memoizeInBuild(async (slug: string) => {
+  const blog = await findBlogContent(slug);
+  if (blog === null) {
+    return [];
+  }
+  return _getBlogsByTags(
+    slug,
+    blog.tags.map((tag) => tag.id),
+  );
+});
