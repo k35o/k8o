@@ -23,6 +23,11 @@ jobs:
   vrt:
     runs-on: ubuntu-latest
     timeout-minutes: 20
+    # --with-deps の apt は mirror が遅いと数分かかるので、OS の
+    # ライブラリまで入ったイメージで走らせる。
+    container:
+      image: mcr.microsoft.com/playwright:v1.64.1-resolute
+      options: --user 1001 --ipc=host
     steps:
       - name: Checkout branch
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -31,9 +36,6 @@ jobs:
 
       - name: Setup
         uses: ./.github/actions/setup
-
-      - name: Install Playwright
-        run: pnpm run install-playwright
 
       - name: Capture story screenshots
         run: |
@@ -60,21 +62,52 @@ jobs:
           retention-days: 30
 
       # PR: mainの最新ベースラインを取得する（無いアプリは比較をスキップ）
-      - name: Download baselines from main
+      - name: Find baselines from main
         if: github.event_name == 'pull_request'
-        env:
-          GH_TOKEN: ${{ github.token }}
-          REPO: ${{ github.repository }}
+        id: baseline
+        uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9.0.0
+        with:
+          script: |
+            const { owner, repo } = context.repo;
+            const { data } = await github.rest.actions.listWorkflowRuns({
+              owner,
+              repo,
+              workflow_id: 'vrt.yml',
+              branch: 'main',
+              event: 'push',
+              status: 'success',
+              per_page: 1,
+            });
+            const run = data.workflow_runs[0];
+            // branch=main だけだと、fork の main ブランチから出た PR の run も当たる。この repo への push の run に限る
+            if (run === undefined || run.head_repository.full_name !== `${owner}/${repo}`) return;
+            const {
+              data: { artifacts },
+            } = await github.rest.actions.listWorkflowRunArtifacts({
+              owner,
+              repo,
+              run_id: run.id,
+              name: 'vrt-baseline',
+            });
+            if (artifacts.some((artifact) => !artifact.expired)) {
+              core.setOutput('found', 'true');
+              core.setOutput('run-id', String(run.id));
+            }
+
+      - name: Download baselines from main
+        if: steps.baseline.outputs.found == 'true'
+        uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
+        with:
+          name: vrt-baseline
+          path: vrt-baseline
+          run-id: ${{ steps.baseline.outputs.run-id }}
+          github-token: ${{ github.token }}
+
+      - name: Place baselines
+        if: github.event_name == 'pull_request'
         run: |
-          # branch=main だけだと、fork の main ブランチから出た PR の run も当たる。この repo への push の run に限る
-          run_id=$(gh api "repos/$REPO/actions/workflows/vrt.yml/runs?branch=main&event=push&status=success&per_page=1" \
-            --jq ".workflow_runs[0] | select(.head_repository.full_name == \"$REPO\") | .id")
-          downloaded=false
-          if [ -n "$run_id" ] && gh run download "$run_id" --name vrt-baseline --dir vrt-baseline --repo "$REPO"; then
-            downloaded=true
-          fi
           for app in $VRT_APPS; do
-            if [ "$downloaded" = true ] && [ -d "vrt-baseline/$app/actual" ]; then
+            if [ -d "vrt-baseline/$app/actual" ]; then
               mkdir -p "apps/$app/.vrt"
               cp -r "vrt-baseline/$app/actual" "apps/$app/.vrt/expected"
             else
