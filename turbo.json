@@ -36,7 +36,8 @@
       "outputs": ["tsconfig.tsbuildinfo", "__generated__/**"]
     },
     "test": {
-      "dependsOn": ["transit"]
+      "dependsOn": ["transit"],
+      "passThroughEnv": ["PLAYWRIGHT_BROWSERS_PATH"]
     },
     "test:watch": {
       "cache": false,
