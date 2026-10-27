@@ -43,6 +43,11 @@
     {
       "matchPackageNames": ["/^node$/", "/^@types/node$/"],
       "groupName": "node dependencies"
+    },
+    {
+      "description": "main-k8ordo の OG を描く satori は 0.29.0 に止める。0.63.0 の SVG では、題が長い OG で resvg が panic して build が止まる。並走のあいだは apps/main の next/og と同じ 0.29.0 にそろえる",
+      "matchPackageNames": ["satori"],
+      "enabled": false
     }
   ]
 }
