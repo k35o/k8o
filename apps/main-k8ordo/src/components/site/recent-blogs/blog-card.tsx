@@ -1,3 +1,4 @@
+import { href } from '@k8ordo/framework';
 import { Badge, Heading, Card, PublishDateIcon, TagIcon } from '@k8ordo/ui';
 import { formatDate } from '@repo/helpers/date/format';
 import type { FC } from 'react';
@@ -21,7 +22,7 @@ export const BlogCard: FC<BlogCardProps> = ({
 }) => (
   <Card interactive>
     {/* oxlint-disable-next-line jsx-a11y/control-has-associated-label -- リンクの名前は中の記事の題などの文字が持つ。規則は子を浅くしかたどらず、そこまで届かない */}
-    <a className={styles.link} href={`/blog/${slug}`}>
+    <a className={styles.link} href={href('/blog/:slug', { slug })}>
       <div className={styles.root}>
         <div className={styles.heading}>
           <Heading lineClamp={2} level="h3">

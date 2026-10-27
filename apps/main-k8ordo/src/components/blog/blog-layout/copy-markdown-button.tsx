@@ -9,7 +9,7 @@ export const CopyMarkdownButton: FC<{ slug: string }> = ({ slug }) => (
     label="Markdownをコピー"
     size="md"
     value={async () => {
-      const res = await fetch(`/blog/${slug}.md`);
+      const res = await fetch(`/blog/${slug}/article.md`);
       if (!res.ok) {
         throw new Error(`Failed to fetch markdown: ${res.status}`);
       }

@@ -1,17 +1,24 @@
 import { existsSync } from 'node:fs';
+import { readFile } from 'node:fs/promises';
+import { join } from 'node:path';
 import { loadEnvFile } from 'node:process';
 import { fileURLToPath } from 'node:url';
 
 import betterCssModules from '@better-css-modules/vite';
 import { vercel } from '@k8ordo/framework/vercel';
 import { framework } from '@k8ordo/framework/vite';
+import mdx from '@mdx-js/rollup';
+import rehypePreset from '@repo/mdx-preset/rehype';
+import remarkPreset from '@repo/mdx-preset/remark';
 import { defineConfig, runnerImport } from 'vite';
 import type { Plugin } from 'vite';
 
 import floor from '../main/src/features/browser-support/infrastructure/browser-min-versions.json' with { type: 'json' };
 import type * as blogs from './src/features/blog/application/blogs.ts';
 import { browserTargets } from './src/site/browser-targets.ts';
-import { blogPathnames } from './src/site/paths.ts';
+import { katexCssGuard } from './src/site/katex-css-guard.ts';
+import { blogPathnames, writesPage } from './src/site/paths.ts';
+import type { BlogArticle } from './src/site/paths.ts';
 import { DEV_SECURITY_HEADERS } from './src/site/security-headers.ts';
 import { BEFORE_FILES, BEFORE_NOT_FOUND } from './src/site/vercel-routes.ts';
 
@@ -24,8 +31,13 @@ if (existsSync(envFile)) {
 
 const targets = browserTargets(floor.minVersions);
 
+const contentDir = fileURLToPath(
+  new URL('../main/src/content', import.meta.url),
+);
+
 const alias = {
   '@': fileURLToPath(new URL('./src', import.meta.url)),
+  '@content': contentDir,
   '@playgrounds': fileURLToPath(
     new URL('../main/src/playgrounds', import.meta.url),
   ),
@@ -44,6 +56,27 @@ const devSecurityHeaders: Plugin = {
       next();
     });
   },
+};
+
+const readArticles = async (): Promise<BlogArticle[]> => {
+  // 設定のバンドルは @repo/database を外に出し、Node がそのまま読むと拡張子の無い import で
+  // 落ちるので、DB を読むモジュールは Vite の runner で読む。runner はこの設定ファイルを読まず
+  // alias を引き継がないので渡す
+  const { module } = await runnerImport<typeof blogs>(
+    fileURLToPath(
+      new URL('src/features/blog/application/blogs.ts', import.meta.url),
+    ),
+    { resolve: { alias } },
+  );
+  return Promise.all(
+    (await module.getBlogs()).map(async ({ slug }) => ({
+      slug,
+      mdx: await readFile(
+        join(contentDir, 'blog', slug, 'article.mdx'),
+        'utf8',
+      ),
+    })),
+  );
 };
 
 export default defineConfig({
@@ -66,25 +99,20 @@ export default defineConfig({
   },
   plugins: [
     devSecurityHeaders,
+    // framework() の React と plugin-rsc より先に、MDX を JSX にする
+    {
+      enforce: 'pre',
+      ...mdx({ remarkPlugins: [remarkPreset], rehypePlugins: [rehypePreset] }),
+    },
     // site は渡さない。渡すと framework の sitemap.xml が route.ts の sitemap.xml を上書きする
     framework({
       mode: 'static',
       reactCompiler: true,
-      paths: async (patterns) => {
-        // 設定のバンドルは @repo/database を外に出し、Node がそのまま読むと拡張子の無い import で
-        // 落ちるので、DB を読むモジュールは Vite の runner で読む。runner はこの設定ファイルを読まず
-        // alias を引き継がないので渡す
-        const { module } = await runnerImport<typeof blogs>(
-          fileURLToPath(
-            new URL('src/features/blog/application/blogs.ts', import.meta.url),
-          ),
-          { resolve: { alias } },
-        );
-        const slugs = (await module.getBlogs()).map((blog) => blog.slug);
-        return blogPathnames(patterns, slugs);
-      },
+      paths: async (patterns) => blogPathnames(patterns, await readArticles()),
     }),
     vercel({ beforeFiles: BEFORE_FILES, beforeNotFound: BEFORE_NOT_FOUND }),
+    // vercel() が .vercel/output を書いたあとに見るので、framework() と vercel() より後に置く
+    katexCssGuard(async () => (await readArticles()).filter(writesPage)),
     betterCssModules(),
   ],
   css: {

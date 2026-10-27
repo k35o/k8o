@@ -3,7 +3,7 @@ import type { FC } from 'react';
 import styles from './image.module.css';
 
 type Props = {
-  src: { src: string };
+  src: string;
   alt: string;
   width: number;
   height: number;
@@ -24,7 +24,7 @@ export const Image: FC<Props> = ({
       decoding="async"
       height={height}
       loading={loading}
-      src={src.src}
+      src={src}
       width={width}
     />
     {alt !== '' && (
