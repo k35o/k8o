@@ -2,7 +2,7 @@
 
 import { Alert, Checkbox } from '@k8ordo/ui';
 import { sleep } from '@repo/helpers/sleep';
-import { Suspense, use, useState } from 'react';
+import { Fragment, Suspense, use, useState, useSyncExternalStore } from 'react';
 import type { FC } from 'react';
 
 import styles from './suspense-list-demo.module.css';
@@ -20,9 +20,19 @@ const generateData = (): DataItem[] =>
     { cacheKey: 'key4', getTime: sleep(1000).then(() => 1000) },
   ] as const;
 
+const subscribe = (): (() => void) => () => {};
+const getSnapshot = (): boolean => true;
+const getServerSnapshot = (): boolean => false;
+
 export const SuspenseListDemo: FC = () => {
   const [data, setData] = useState(() => generateData());
   const [hasFallback, setHasFallback] = useState(true);
+  // サーバーで Data を描くと、HTML に読み込み後の値が書かれ、読み込みの順が見えないので、hydrate のあとに描く
+  const hydrated = useSyncExternalStore(
+    subscribe,
+    getSnapshot,
+    getServerSnapshot,
+  );
   const fallback = hasFallback ? (
     <div className={styles.fallback}>Loading...</div>
   ) : null;
@@ -41,11 +51,15 @@ export const SuspenseListDemo: FC = () => {
         }}
         checked={hasFallback}
       />
-      {data.map(({ cacheKey, getTime }) => (
-        <Suspense fallback={fallback} key={cacheKey}>
-          <Data data={{ cacheKey, getTime }} />
-        </Suspense>
-      ))}
+      {hydrated
+        ? data.map(({ cacheKey, getTime }) => (
+            <Suspense fallback={fallback} key={cacheKey}>
+              <Data data={{ cacheKey, getTime }} />
+            </Suspense>
+          ))
+        : data.map(({ cacheKey }) => (
+            <Fragment key={cacheKey}>{fallback}</Fragment>
+          ))}
     </div>
   );
 };
