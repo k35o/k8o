@@ -17,6 +17,7 @@
       "dependsOn": ["transit", "main#type-check"],
       "inputs": [
         "$TURBO_DEFAULT$",
+        ".k8ordo/**",
         "$TURBO_ROOT$/apps/main/src/content/**",
         "$TURBO_ROOT$/apps/main/src/playgrounds/**",
         "$TURBO_ROOT$/apps/main/src/features/browser-support/infrastructure/browser-min-versions.json"
