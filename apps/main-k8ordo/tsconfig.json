@@ -10,6 +10,7 @@
     "allowImportingTsExtensions": true,
     "paths": {
       "@/*": ["./src/*"],
+      "@content/*": ["../main/src/content/*"],
       "@playgrounds/*": ["../main/src/playgrounds/*"]
     },
     "types": ["node", "vite/client", "vitest/importMeta"],

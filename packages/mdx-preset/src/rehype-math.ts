@@ -7,8 +7,9 @@ import { SKIP, visit } from 'unist-util-visit';
 // 記事はこのパッケージの katex.css を読むので、HTML も同じ katex で作る。rehype-katex は
 // katex ^0.16 を固定し、0.18 でクラス名が変わった CSS と合わなくなっていた
 
+// unified が渡す VFile の message の型に収まるよう、cause は Error に絞る
 type MessageSink = {
-  message: (reason: string, options: { cause: unknown }) => unknown;
+  message: (reason: string, options: { cause: Error | undefined }) => unknown;
 };
 
 type MathSource = { value: string; displayMode: boolean };
@@ -56,7 +57,9 @@ const renderToHtml = (
     return katex.renderToString(value, { displayMode, throwOnError: true });
   } catch (error) {
     // 数式の誤りではビルドを止めず、警告を出して KaTeX のエラー表示で描く
-    file.message('KaTeX で数式を描画できない', { cause: error });
+    file.message('KaTeX で数式を描画できない', {
+      cause: error instanceof Error ? error : undefined,
+    });
     return katex.renderToString(value, { displayMode, throwOnError: false });
   }
 };

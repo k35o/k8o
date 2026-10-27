@@ -2,7 +2,7 @@ import { isNotFound } from '@k8ordo/framework';
 import { describe, expect, it, vi } from 'vitest';
 
 import { findBlog, findBlogMetadata } from '@/features/blog/application/blog';
-import { getBlogs } from '@/features/blog/application/blogs';
+import { getBlogs, getBlogsByTags } from '@/features/blog/application/blogs';
 
 import { getMarkdown } from './markdown';
 import {
@@ -10,15 +10,18 @@ import {
   findBlogMarkdown,
   getBlogContent,
   getBlogContents,
+  getBlogsByTags as getRelatedBlogs,
   isPublishedBlog,
 } from './queries';
 
 vi.mock('@/features/blog/application/blog', () => ({
   findBlog: vi.fn(),
   findBlogMetadata: vi.fn(),
+  getBlogToc: vi.fn(),
 }));
 vi.mock('@/features/blog/application/blogs', () => ({
   getBlogs: vi.fn(),
+  getBlogsByTags: vi.fn(),
 }));
 vi.mock('@/features/blog/application/og-code', () => ({
   getBlogOgCode: vi.fn(),
@@ -198,6 +201,50 @@ describe('findBlogMarkdown', () => {
 
       expect(result).toBeNull();
       expect(getMarkdown).not.toHaveBeenCalledWith('missing-blog');
+    });
+  });
+});
+
+describe('getBlogsByTags', () => {
+  describe('正常系', () => {
+    it('記事のタグの ID で、タグを共有する記事を引く', async () => {
+      vi.mocked(findBlog).mockResolvedValue({
+        id: 1,
+        slug: 'blog-a',
+        tags: [
+          { id: 3, name: 'CSS' },
+          { id: 5, name: 'Baseline' },
+        ],
+        slideUrl: undefined,
+      });
+      vi.mocked(findBlogMetadata).mockResolvedValue(metadata('記事A'));
+      const related = [
+        {
+          id: 2,
+          slug: 'blog-b',
+          title: '記事B',
+          createdAt: '2026-01-01T00:00:00.000Z',
+          tags: ['CSS'],
+        },
+      ];
+      vi.mocked(getBlogsByTags).mockResolvedValue(related);
+
+      const result = await getRelatedBlogs('blog-a');
+
+      expect(getBlogsByTags).toHaveBeenCalledWith('blog-a', [3, 5]);
+      expect(result).toBe(related);
+    });
+  });
+
+  describe('エッジケース', () => {
+    it('記事が無ければ、関連記事を引かずに空の配列を返す', async () => {
+      vi.mocked(findBlog).mockResolvedValue(null);
+      vi.mocked(getBlogsByTags).mockClear();
+
+      const result = await getRelatedBlogs('missing-blog');
+
+      expect(result).toStrictEqual([]);
+      expect(getBlogsByTags).not.toHaveBeenCalled();
     });
   });
 });

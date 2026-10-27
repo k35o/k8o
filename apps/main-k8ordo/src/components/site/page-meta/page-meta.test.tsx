@@ -116,6 +116,48 @@ describe('PageMeta', () => {
       });
     });
 
+    it('titleTemplate を外すと、title にもサイト名を付けずに題だけを書く', () => {
+      const tags = tagsOf({
+        title: 'CSSのabs()とsign()',
+        titleTemplate: false,
+        path: '/blog/abs-sign',
+      });
+
+      expect(titleOf(tags)).toBe('CSSのabs()とsign()');
+      expect(metaOf(tags, 'property', 'og:title')).toBe('CSSのabs()とsign()');
+    });
+
+    it('twitter のカードの型を変えられる', () => {
+      const tags = tagsOf({
+        path: '/blog/abs-sign',
+        twitterCard: 'summary_large_image',
+      });
+
+      expect(metaOf(tags, 'name', 'twitter:card')).toBe('summary_large_image');
+    });
+
+    it('記事の日付を渡すと、og の型を article にし、公開日・更新日・著者を書く', () => {
+      const tags = tagsOf({
+        path: '/blog/abs-sign',
+        article: { publishedTime: '2025-06-26', modifiedTime: '2025-07-01' },
+      });
+
+      expect(metaOf(tags, 'property', 'og:type')).toBe('article');
+      expect(metaOf(tags, 'property', 'article:published_time')).toBe(
+        '2025-06-26',
+      );
+      expect(metaOf(tags, 'property', 'article:modified_time')).toBe(
+        '2025-07-01',
+      );
+      expect(metaOf(tags, 'property', 'article:author')).toBe('k8o');
+    });
+
+    it('分類を category に書く', () => {
+      const tags = tagsOf({ path: '/blog/abs-sign', category: 'CSS, abs' });
+
+      expect(metaOf(tags, 'name', 'category')).toBe('CSS, abs');
+    });
+
     it('noindex を求めると、robots に書く', () => {
       const tags = tagsOf({ path: '/', noindex: true });
 
@@ -124,6 +166,19 @@ describe('PageMeta', () => {
   });
 
   describe('エッジケース', () => {
+    it('説明に null を渡すと、description・og・twitter の説明をどれも書かない', () => {
+      const tags = tagsOf({ path: '/blog/abs-sign', description: null });
+
+      const attrs = tags.map((tag) => tag.attrs);
+      for (const key of [
+        { name: 'description' },
+        { property: 'og:description' },
+        { name: 'twitter:description' },
+      ]) {
+        expect(attrs).not.toContainEqual(expect.objectContaining(key));
+      }
+    });
+
     it('トップの URL は末尾の / を付けずに書く', () => {
       const tags = tagsOf({ path: '/', canonical: true });
 
@@ -139,6 +194,8 @@ describe('PageMeta', () => {
       expect(metaOf(tags, 'property', 'og:image')).toBeUndefined();
       expect(metaOf(tags, 'name', 'twitter:image')).toBeUndefined();
       expect(metaOf(tags, 'name', 'robots')).toBeUndefined();
+      expect(metaOf(tags, 'name', 'category')).toBeUndefined();
+      expect(metaOf(tags, 'property', 'article:author')).toBeUndefined();
     });
   });
 });

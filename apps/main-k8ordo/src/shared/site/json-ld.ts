@@ -49,3 +49,61 @@ export function personJsonLd(): JsonLdObject {
     ],
   };
 }
+
+type BlogPostingInput = {
+  slug: string;
+  title: string;
+  description: string | null;
+  createdAt: string;
+  updatedAt: string;
+  tags: ReadonlyArray<{ name: string }>;
+};
+
+export function blogPostingJsonLd(blog: BlogPostingInput): JsonLdObject {
+  const url = `${SITE_URL}/blog/${blog.slug}`;
+
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'BlogPosting',
+    headline: blog.title,
+    description: blog.description ?? undefined,
+    url,
+    mainEntityOfPage: url,
+    image: `${url}/og.png`,
+    datePublished: blog.createdAt,
+    dateModified: blog.updatedAt,
+    inLanguage: 'ja',
+    author: PERSON,
+    keywords:
+      blog.tags.length > 0 ? blog.tags.map((tag) => tag.name) : undefined,
+  };
+}
+
+type BreadcrumbItem = {
+  name: string;
+  url: string;
+};
+
+function breadcrumbList(items: readonly BreadcrumbItem[]): JsonLdObject {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: items.map((item, index) => ({
+      '@type': 'ListItem',
+      position: index + 1,
+      name: item.name,
+      item: item.url,
+    })),
+  };
+}
+
+export function blogBreadcrumbJsonLd(blog: {
+  slug: string;
+  title: string;
+}): JsonLdObject {
+  return breadcrumbList([
+    { name: 'ホーム', url: SITE_URL },
+    { name: 'Blog', url: `${SITE_URL}/blog` },
+    { name: blog.title, url: `${SITE_URL}/blog/${blog.slug}` },
+  ]);
+}

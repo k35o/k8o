@@ -1,0 +1,154 @@
+.columns {
+  @media (width >= 80rem) {
+    display: flex;
+    gap: calc(var(--spacing) * 6);
+  }
+}
+
+.main {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: calc(var(--spacing) * 8);
+  min-width: 0;
+  margin: auto;
+
+  @media (width >= 80rem) {
+    max-width: 64rem;
+  }
+}
+
+.article {
+  padding-inline: calc(var(--spacing) * 4);
+  padding-block: calc(var(--spacing) * 8);
+  border-radius: var(--radius-xl);
+  background-color: color-mix(in oklab, var(--color-bg-base) 90%, transparent);
+
+  @media (width >= 40rem) {
+    padding-inline: calc(var(--spacing) * 10);
+  }
+
+  @container style(--writing: vertical) {
+    border-radius: 0;
+    background-color: transparent;
+  }
+
+  /* デザインシステムの Code は className を受け取らないため、読み物の中だけ子孫セレクタで上書きする。
+     等幅は同じサイズでも字面が大きく見えるので、font-size の指定ではなく font-size-adjust で
+     周囲の文字（見出しの中なら見出し）の一段下に揃える。
+     @scope にしないのは、Storybook（Vite）の PostCSS が @scope (&) を読めず、@scope の中の &
+     は特異性 0 で Code の .root に負け、:scope は pure/scope で弾かれるため */
+  /* better-css-modules-disable-next-line pure/subject -- Code の要素は自分が書かない */
+  & :not(pre) > code {
+    margin-inline: calc(var(--spacing) * 0.5);
+    padding-inline: calc(var(--spacing) * 1.2);
+    border-radius: var(--radius-sm);
+    background-color: var(--color-bg-subtle);
+    color: var(--color-primary-fg);
+    font-size-adjust: 0.48;
+  }
+}
+
+.header {
+  display: flex;
+  flex-direction: column;
+  gap: calc(var(--spacing) * 4);
+}
+
+.headerRow {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: calc(var(--spacing) * 4);
+}
+
+.meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  column-gap: calc(var(--spacing) * 4);
+  row-gap: var(--spacing);
+  color: var(--color-fg-mute);
+  font-size: var(--font-size-xs);
+  line-height: var(--line-height-xs);
+
+  @media (width >= 40rem) {
+    font-size: var(--font-size-sm);
+    line-height: var(--line-height-sm);
+  }
+}
+
+.metaItem {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing);
+}
+
+.metaIcon {
+  display: inline-flex;
+  translate: 0 1px;
+}
+
+.actions {
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  gap: calc(var(--spacing) * 2);
+}
+
+.title {
+  font-size: var(--font-size-xl);
+  line-height: var(--line-height-snug);
+  font-weight: var(--font-weight-bold);
+
+  @media (width >= 40rem) {
+    font-size: var(--font-size-2xl);
+  }
+}
+
+.description {
+  color: var(--color-fg-mute);
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-normal);
+
+  @media (width >= 40rem) {
+    font-size: var(--font-size-md);
+  }
+}
+
+.tags {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: calc(var(--spacing) * 2);
+}
+
+.separator {
+  margin-block: calc(var(--spacing) * 6);
+}
+
+.footer {
+  display: flex;
+  flex-direction: column;
+  gap: calc(var(--spacing) * 8);
+}
+
+.feedback {
+  width: 100%;
+  padding-inline: calc(var(--spacing) * 3);
+  padding-block: calc(var(--spacing) * 8);
+  border-radius: var(--radius-xl);
+  background-color: color-mix(in oklab, var(--color-bg-base) 90%, transparent);
+
+  @media (width >= 40rem) {
+    padding-inline: calc(var(--spacing) * 10);
+  }
+}
+
+.sideRail {
+  display: none;
+
+  @media (width >= 80rem) {
+    display: block;
+  }
+}

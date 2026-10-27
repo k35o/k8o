@@ -15,6 +15,7 @@ import addonMockDate from 'storybook-addon-mock-date';
 import { AppProvider } from '../src/components/site/app-provider';
 import { Background } from '../src/components/site/global-layout/background/background';
 import { handlers } from '../src/mocks/handlers';
+import { resetLiveSnapshots } from '../src/shared/api/live-snapshot';
 
 import '@fontsource-variable/m-plus-2';
 
@@ -38,11 +39,12 @@ export default definePreview({
   },
 
   // Story は同じページで続けて実行されるため、前の Story で更新した @k8ordo/state の
-  // 状態が残らないよう Story ごとに初期化する。テーマは localStorage に保存されるので、
-  // その行も消して toolbar と parameters のテーマから始める
+  // 状態と、差し替えで読んだ api の値が残らないよう Story ごとに初期化する。テーマは
+  // localStorage に保存されるので、その行も消して toolbar と parameters のテーマから始める
   beforeEach: () => {
     localStorage.removeItem(colorSchemeState.storageKey);
     resetStateRegistry();
+    resetLiveSnapshots();
   },
 
   loaders: [

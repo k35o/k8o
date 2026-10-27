@@ -14,3 +14,10 @@
     animation: none !important;
   }
 }
+
+/* k8ordo の router は新しいページの木を useDeferredValue で当てるので、ViewTransition を含む
+   ページへ移ると、その境界が enter="none" でも React が文書の view transition を始め、ページ全体が
+   cross-fade する。ページの切り替えでは何も写し取らない */
+:root:active-view-transition-type(navigation) {
+  view-transition-name: none;
+}

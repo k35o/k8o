@@ -1,14 +1,20 @@
+import { readFile } from 'node:fs/promises';
+
 import { findFrontmatter } from '@repo/helpers/mdx/frontmatter';
 import { describe, expect, it, vi } from 'vitest';
 
+import { getTocTree } from '@/shared/mdx/toc-tree';
+
 import { findPublishedBlogRow } from '../infrastructure/blog-repository';
-import { findBlog, findBlogMetadata } from './blog';
+import { findBlog, findBlogMetadata, getBlogToc } from './blog';
 import { blogPath } from './path';
 
 vi.mock('../infrastructure/blog-repository', () => ({
   findPublishedBlogRow: vi.fn(),
 }));
+vi.mock('node:fs/promises');
 vi.mock('@repo/helpers/mdx/frontmatter');
+vi.mock('@/shared/mdx/toc-tree');
 vi.mock('./path');
 
 type BlogRow = NonNullable<Awaited<ReturnType<typeof findPublishedBlogRow>>>;
@@ -125,6 +131,39 @@ describe('findBlogMetadata', () => {
       await expect(findBlogMetadata('broken-slug')).rejects.toThrow(
         'Invalid frontmatter',
       );
+    });
+  });
+});
+
+describe('getBlogToc', () => {
+  describe('正常系', () => {
+    it('記事の MDX を読み、見出しの木を返す', async () => {
+      const toc = {
+        depth: 0 as const,
+        children: [
+          {
+            depth: 1 as const,
+            text: 'Introduction',
+            children: [
+              {
+                depth: 2 as const,
+                text: 'Getting Started',
+                children: [],
+              },
+            ],
+          },
+        ],
+      };
+      vi.mocked(blogPath).mockReturnValue('/path/to/blog');
+      vi.mocked(readFile).mockResolvedValue('## Introduction');
+      vi.mocked(getTocTree).mockResolvedValue(toc);
+
+      const result = await getBlogToc('test-slug');
+
+      expect(blogPath).toHaveBeenCalledWith('test-slug');
+      expect(readFile).toHaveBeenCalledWith('/path/to/blog', 'utf-8');
+      expect(getTocTree).toHaveBeenCalledWith('## Introduction');
+      expect(result).toBe(toc);
     });
   });
 });
