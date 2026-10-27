@@ -1,6 +1,6 @@
-type SiteEntryKind = 'tool' | 'reading';
+export type SiteEntryKind = 'tool' | 'reading';
 
-type SiteEntryIcon =
+export type SiteEntryIcon =
   | 'browserSupport'
   | 'colorConverter'
   | 'contrastChecker'
@@ -22,6 +22,20 @@ type SiteEntry = {
   description: string;
   kind: SiteEntryKind;
   icon: SiteEntryIcon;
+};
+
+export const KIND_SECTION: Record<
+  SiteEntryKind,
+  { title: string; description: string }
+> = {
+  tool: {
+    title: 'Tools',
+    description: '日々の作業や遊びに使う、ちょっとした道具。',
+  },
+  reading: {
+    title: 'Explore',
+    description: '読んだり眺めたりする、書きもの・集めもの。',
+  },
 };
 
 const KIND_ORDER: Record<SiteEntryKind, number> = {
