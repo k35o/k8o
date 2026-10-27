@@ -15,7 +15,7 @@ export const SITE_OG_IMAGE = { path: '/og.png', alt: SITE_NAME } as const;
 type PageMetaProps = {
   title?: string;
   titleTemplate?: boolean;
-  description?: string;
+  description?: string | null;
   path: string;
   canonical?: boolean;
   image?: { path: string; alt: string };
@@ -50,7 +50,9 @@ export const PageMeta: FC<PageMetaProps> = ({
           ? pageTitle
           : `${title} | ${SITE_NAME}`}
       </title>
-      <meta content={description} name="description" />
+      {description !== null && (
+        <meta content={description} name="description" />
+      )}
       {category !== undefined && <meta content={category} name="category" />}
       {noindex && <meta content="noindex" name="robots" />}
       {canonical && <link href={url} rel="canonical" />}
@@ -62,7 +64,9 @@ export const PageMeta: FC<PageMetaProps> = ({
         />
       )}
       <meta content={pageTitle} property="og:title" />
-      <meta content={description} property="og:description" />
+      {description !== null && (
+        <meta content={description} property="og:description" />
+      )}
       <meta content={url} property="og:url" />
       <meta content={SITE_NAME} property="og:site_name" />
       <meta content="ja" property="og:locale" />
@@ -93,7 +97,9 @@ export const PageMeta: FC<PageMetaProps> = ({
       )}
       <meta content={twitterCard} name="twitter:card" />
       <meta content={pageTitle} name="twitter:title" />
-      <meta content={description} name="twitter:description" />
+      {description !== null && (
+        <meta content={description} name="twitter:description" />
+      )}
       {image !== undefined && (
         <>
           <meta content={imageUrl} name="twitter:image" />

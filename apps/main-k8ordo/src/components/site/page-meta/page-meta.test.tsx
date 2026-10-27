@@ -166,6 +166,19 @@ describe('PageMeta', () => {
   });
 
   describe('エッジケース', () => {
+    it('説明に null を渡すと、description・og・twitter の説明をどれも書かない', () => {
+      const tags = tagsOf({ path: '/blog/abs-sign', description: null });
+
+      const attrs = tags.map((tag) => tag.attrs);
+      for (const key of [
+        { name: 'description' },
+        { property: 'og:description' },
+        { name: 'twitter:description' },
+      ]) {
+        expect(attrs).not.toContainEqual(expect.objectContaining(key));
+      }
+    });
+
     it('トップの URL は末尾の / を付けずに書く', () => {
       const tags = tagsOf({ path: '/', canonical: true });
 
