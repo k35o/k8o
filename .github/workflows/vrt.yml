@@ -208,6 +208,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ github.token }}
           PAGES_BASE: ${{ steps.pages.outputs.base }}
+        shell: bash
         run: |
           for app in $VRT_APPS; do
             if [ ! -f "apps/$app/.vrt/report.json" ]; then
