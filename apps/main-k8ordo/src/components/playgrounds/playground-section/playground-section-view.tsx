@@ -1,3 +1,4 @@
+import { href } from '@k8ordo/framework';
 import { Anchor, Badge, Heading } from '@k8ordo/ui';
 import { playgroundCategoryLabels } from '@playgrounds/types';
 import type { PlaygroundSection } from '@playgrounds/types';
@@ -12,7 +13,7 @@ export const PlaygroundSectionView: FC<{ section: PlaygroundSection }> = ({
   section,
 }) => (
   <div className={styles.root}>
-    <Anchor href="/playgrounds">← Playgrounds一覧に戻る</Anchor>
+    <Anchor href={href('/playgrounds')}>← Playgrounds一覧に戻る</Anchor>
     <div className={styles.header}>
       <div className={styles.meta}>
         <Badge label={playgroundCategoryLabels[section.category]} size="sm" />

@@ -1,0 +1,52 @@
+.root {
+  display: block;
+  height: 100%;
+
+  @media (hover: hover) {
+    &:hover .chevron {
+      color: var(--color-primary-fg);
+      translate: calc(var(--spacing) * 0.5);
+    }
+  }
+}
+
+.body {
+  display: flex;
+  flex-direction: column;
+  gap: calc(var(--spacing) * 3);
+  height: 100%;
+  padding: calc(var(--spacing) * 6);
+}
+
+.description {
+  display: -webkit-box;
+  flex: 1;
+  overflow: hidden;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  color: var(--color-fg-mute);
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-relaxed);
+}
+
+.meta {
+  display: flex;
+  align-items: center;
+  gap: calc(var(--spacing) * 3);
+  color: var(--color-fg-subtle);
+  font-size: var(--font-size-xs);
+  line-height: var(--line-height-xs);
+}
+
+.blog {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing);
+}
+
+.chevron {
+  display: flex;
+  align-items: center;
+  margin-left: auto;
+  transition: all var(--duration-fast) var(--easing-out);
+}
