@@ -1,0 +1,10 @@
+.vertical {
+  width: 100%;
+  min-width: 100%;
+  inline-size: calc(100svh - 8rem);
+  overflow-x: auto;
+  overflow-y: hidden;
+  overscroll-behavior-x: contain;
+  border-radius: var(--radius-xl);
+  background-color: color-mix(in oklab, var(--color-bg-base) 90%, transparent);
+}

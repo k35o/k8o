@@ -1,0 +1,14 @@
+.root {
+  display: flex;
+  flex-direction: column;
+  gap: calc(var(--spacing) * 6);
+  width: 100%;
+  max-width: 64rem;
+  margin-inline: auto;
+
+  &[data-side-rail='true'] {
+    @media (width >= 80rem) {
+      max-width: 80rem;
+    }
+  }
+}

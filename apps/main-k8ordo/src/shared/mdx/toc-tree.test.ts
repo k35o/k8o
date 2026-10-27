@@ -1,0 +1,160 @@
+import { describe, expect, it } from 'vitest';
+
+import { getTocTree } from './toc-tree';
+
+describe('getTocTree', () => {
+  it('h2からh4までの見出しを階層構造で返す', async () => {
+    const content = `---
+title: test
+---
+
+# h1
+
+## はじめに
+
+### 背景
+
+#### 詳細
+
+## まとめ
+`;
+
+    await expect(getTocTree(content)).resolves.toStrictEqual({
+      depth: 0,
+      children: [
+        {
+          depth: 1,
+          text: 'はじめに',
+          children: [
+            {
+              depth: 2,
+              text: '背景',
+              children: [{ depth: 3, text: '詳細' }],
+            },
+          ],
+        },
+        {
+          depth: 1,
+          text: 'まとめ',
+          children: [],
+        },
+      ],
+    });
+  });
+
+  it('同じh2配下の複数のh3とh4を正しくぶら下げる', async () => {
+    const content = `## セクション1
+
+### 小見出し1
+
+#### 詳細1
+
+### 小見出し2
+
+#### 詳細2
+
+## セクション2
+`;
+
+    await expect(getTocTree(content)).resolves.toStrictEqual({
+      depth: 0,
+      children: [
+        {
+          depth: 1,
+          text: 'セクション1',
+          children: [
+            {
+              depth: 2,
+              text: '小見出し1',
+              children: [{ depth: 3, text: '詳細1' }],
+            },
+            {
+              depth: 2,
+              text: '小見出し2',
+              children: [{ depth: 3, text: '詳細2' }],
+            },
+          ],
+        },
+        {
+          depth: 1,
+          text: 'セクション2',
+          children: [],
+        },
+      ],
+    });
+  });
+
+  it('h2より浅い見出しや親のない見出しは無視する', async () => {
+    const content = `# h1
+
+### 孤立したh3
+
+## 見出し
+
+#### 孤立したh4
+`;
+
+    await expect(getTocTree(content)).resolves.toStrictEqual({
+      depth: 0,
+      children: [
+        {
+          depth: 1,
+          text: '見出し',
+          children: [],
+        },
+      ],
+    });
+  });
+
+  it('インラインコードや強調を含む見出しは全文を連結して採用する', async () => {
+    const content = `## \`source\`に何が入るか
+
+### 方式1: \`renderToString\`で**HTML文字列**を返す
+`;
+
+    await expect(getTocTree(content)).resolves.toStrictEqual({
+      depth: 0,
+      children: [
+        {
+          depth: 1,
+          text: 'sourceに何が入るか',
+          children: [
+            {
+              depth: 2,
+              text: '方式1: renderToStringでHTML文字列を返す',
+              children: [],
+            },
+          ],
+        },
+      ],
+    });
+  });
+
+  it('h5以深の見出しは目次に含めない', async () => {
+    const content = `## セクション
+
+### 小見出し
+
+#### 詳細
+
+##### 無視される見出し
+`;
+
+    await expect(getTocTree(content)).resolves.toStrictEqual({
+      depth: 0,
+      children: [
+        {
+          depth: 1,
+          text: 'セクション',
+          children: [
+            {
+              depth: 2,
+              text: '小見出し',
+              children: [{ depth: 3, text: '詳細' }],
+            },
+          ],
+        },
+      ],
+    });
+  });
+});

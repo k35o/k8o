@@ -1,0 +1,43 @@
+.root {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  width: 100%;
+  overflow: hidden;
+  border-top-left-radius: var(--radius-xl);
+  border-top-right-radius: var(--radius-xl);
+  background-color: var(--color-bg-subtle);
+
+  @media (width >= 40rem) {
+    flex-shrink: 0;
+    width: calc(var(--spacing) * 48);
+    border-start-start-radius: var(--radius-xl);
+    border-end-start-radius: var(--radius-xl);
+    border-start-end-radius: 0;
+    border-end-end-radius: 0;
+  }
+
+  @container style(--writing: vertical) {
+    flex-shrink: 0;
+    width: calc(var(--spacing) * 48);
+    border-start-start-radius: var(--radius-xl);
+    border-end-start-radius: var(--radius-xl);
+    border-start-end-radius: 0;
+    border-end-end-radius: 0;
+  }
+}
+
+.frame {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+}
+
+.image {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  object-position: center;
+}
