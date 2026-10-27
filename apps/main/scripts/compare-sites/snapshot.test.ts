@@ -174,9 +174,41 @@ describe('takeSnapshot', () => {
 
         expect(fields.get('main:img-ratios')).toBe('1.905 ? ? 1.333');
       });
+
+      it('$RC で完了した Suspense の境界は、fallback を hidden の segment の中身に置き換えて読む', () => {
+        const { fields } = htmlSnapshot(`<head></head><body><main>
+<a href="/playgrounds">← 一覧</a>
+<!--$?--><template id="B:3"></template><div class="skeleton"><img width="10" height="10" src="/bone.png"/></div><!--/$-->
+<p>後ろ</p>
+</main>
+<div hidden id="S:3"><h1>デモの題</h1><img width="120" height="100" src="/demo.png"/></div>
+<script>$RC("B:3","S:3")</script></body>`);
+
+        expect(fields.get('main:text')).toBe('← 一覧 デモの題 後ろ');
+        expect(fields.get('main:img-ratios')).toBe('1.200');
+      });
+
+      it('$RR で完了した境界も同じに置き換える', () => {
+        const { fields } = htmlSnapshot(`<head></head><body><main>
+<!--$?--><template id="B:0"></template><p>読み込み中</p><!--/$-->
+</main>
+<div hidden id="S:0"><p>中身</p></div>
+<script>$RR("B:0","S:0",[["/_next/static/chunks/a.css","high"]])</script></body>`);
+
+        expect(fields.get('main:text')).toBe('中身');
+      });
     });
 
     describe('異常系', () => {
+      it('$RC が指す segment が無ければ、境界は fallback のまま読む', () => {
+        const { fields } = htmlSnapshot(`<head></head><body><main>
+<a href="/playgrounds">← 一覧</a>
+<!--$?--><template id="B:3"></template><p>読み込み中</p><!--/$-->
+</main><script>$RC("B:3","S:9")</script></body>`);
+
+        expect(fields.get('main:text')).toBe('← 一覧 読み込み中');
+      });
+
       it('JSON-LD がパースできなければ、元の文字列を項目にする', () => {
         const { fields } = htmlSnapshot(
           '<head></head><body><script type="application/ld+json">{broken</script></body>',
@@ -202,6 +234,48 @@ describe('takeSnapshot', () => {
 </body>`);
 
         expect(fields.get('main:img-ratios')).toBe('1.905');
+      });
+
+      it('$RX で client で描く境界は、fallback のまま読む', () => {
+        const { fields } = htmlSnapshot(`<head></head><body><main>
+<!--$?--><template id="B:3"></template><p>読み込み中</p><!--/$-->
+</main>
+<script>$RX("B:3","NEXT_HTTP_ERROR_FALLBACK;404")</script></body>`);
+
+        expect(fields.get('main:text')).toBe('読み込み中');
+      });
+
+      it('fallback の中の境界を数え、外の境界の終わりまでを置き換える', () => {
+        const { fields } = htmlSnapshot(`<head></head><body><main>
+<!--$?--><template id="B:1"></template><p>外の読み込み中</p><!--$--><p>内の済み</p><!--/$--><!--$!--><template></template><p>内の失敗</p><!--/$--><!--/$-->
+<p>後ろ</p>
+</main>
+<div hidden id="S:1"><p>中身</p></div>
+<script>$RC("B:1","S:1")</script></body>`);
+
+        expect(fields.get('main:text')).toBe('中身 後ろ');
+      });
+
+      it('segment の中の境界も、あとの $RC で置き換える', () => {
+        const { fields } = htmlSnapshot(`<head></head><body><main>
+<!--$?--><template id="B:0"></template><p>外の読み込み中</p><!--/$-->
+</main>
+<div hidden id="S:0"><p>外の中身</p><!--$?--><template id="B:1"></template><p>内の読み込み中</p><!--/$--></div>
+<script>$RC("B:0","S:0")</script>
+<div hidden id="S:1"><p>内の中身</p></div>
+<script>$RC("B:1","S:1")</script></body>`);
+
+        expect(fields.get('main:text')).toBe('外の中身内の中身');
+      });
+
+      it('$RC の script が無ければ、境界は fallback のまま読み、hidden の segment は読まない', () => {
+        const { fields } = htmlSnapshot(`<head></head><body><main>
+<!--$?--><template id="B:0"></template><p>読み込み中</p><!--/$-->
+<pre><code>$RC("B:0","S:0")</code></pre>
+</main>
+<div hidden id="S:0"><p>中身</p></div></body>`);
+
+        expect(fields.get('main:text')).toBe('読み込み中 $RC("B:0","S:0")');
       });
     });
   });
