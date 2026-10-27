@@ -32,7 +32,7 @@ apps/main（Next）を k8ordo（`@k8ordo/framework` の `mode: 'static'`）で�
 - 記事のページ（`routes/blog/[slug]/page.tsx`）は、`components/blog/blog-article` が `import.meta.glob` で集めた MDX を slug ごとに遅れて読み、`components/site/mdx-base` の `MdxContent` で描く。`MdxContent` は mdx-base の部品（見出し・コードブロックなど）に、渡された部品（記事は `components/blog/blog-mdx-components` の Alert・LinkCard など）を重ねる。MDX は `@/`・`next` を import しない（apps/main の規約のまま）
 - plugin-rsc が import した CSS を載せる包みを付けるのは、CSS を静的に import する `.tsx` などのモジュールが export する、大文字で始まる関数の部品だけ。包んだ部品が、自分の import の木（build ではそれが入るチャンク）の CSS を載せる。だから、MDX を描く部品と、それが読む CSS（mdx-base の CSS Modules とコードハイライトの `@repo/code-highlight/styles.css`）は mdx-base に置く。部品の表だけを export して呼ぶ側で描くと、dev のページにその CSS が載らない
 - `.mdx` は包まれないので、glob に `?vite-rsc-css-export=default` を付けて default も包ませる。外すと、記事が読む KaTeX の CSS と記事の CSS Modules が HTML に載らない。ビルドの後に `site/katex-css-guard.ts` が、KaTeX の CSS を import する記事の HTML にその CSS が載っているかを見て、載っていなければビルドを止める
-- `<ViewTransition>` を含むページへ移ると、React が文書の view transition を始める（境界が `enter="none"` でも）。`globals.css` が、遷移の型が `navigation` の view transition では `:root` を写し取らず、ページ全体が cross-fade しないようにしている
+- ページの切り替えでは、移る先が `<ViewTransition>`（コードのタブ）を含んでいても、文書の view transition は始まらない。始まるのは、ページの中でタブを切り替えたとき
 
 ## Playground
 
