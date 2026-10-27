@@ -16,6 +16,18 @@
     "enabled": true,
     "managerFilePatterns": ["/^mise\\.toml$/"]
   },
+  "customManagers": [
+    {
+      "customType": "regex",
+      "description": "イメージのタグを npm の playwright と同じ PR で上げる。docker として数えると、MCR には公開日時が無く minimumReleaseAge に止められる",
+      "managerFilePatterns": ["/^\\.github/workflows/(ci|vrt)\\.yml$/"],
+      "matchStrings": [
+        "mcr\\.microsoft\\.com/playwright:v(?<currentValue>\\d+\\.\\d+\\.\\d+)-"
+      ],
+      "depNameTemplate": "playwright",
+      "datasourceTemplate": "npm"
+    }
+  ],
   "lockFileMaintenance": {
     "schedule": ["* * * * 1"]
   },
@@ -43,6 +55,12 @@
     {
       "matchPackageNames": ["/^node$/", "/^@types/node$/"],
       "groupName": "node dependencies"
+    },
+    {
+      "description": "customManagers が上げるので、docker としては拾わない",
+      "matchManagers": ["github-actions"],
+      "matchDepNames": ["mcr.microsoft.com/playwright"],
+      "enabled": false
     },
     {
       "description": "main-k8ordo の OG を描く satori は 0.29.0 に止める。0.63.0 の SVG では、題が長い OG で resvg が panic して build が止まる。並走のあいだは apps/main の next/og と同じ 0.29.0 にそろえる",
