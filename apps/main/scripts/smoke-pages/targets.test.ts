@@ -4,7 +4,7 @@ import { smokeTargets } from './targets';
 
 describe('smokeTargets', () => {
   describe('正常系', () => {
-    it('サイトマップのページは 200、無いパスは 404 で開き、トップからだけ遷移を確かめる', () => {
+    it('サイトマップのページは 200、無いパスは 404 で開く', () => {
       expect(smokeTargets(['/', '/blog/abs-sign'], [])).toStrictEqual([
         {
           path: '/',
@@ -27,6 +27,23 @@ describe('smokeTargets', () => {
       ]);
     });
 
+    it('トップと Playground の一覧からだけ遷移を確かめる', () => {
+      expect(
+        smokeTargets(
+          [
+            '/',
+            '/blog',
+            '/blog/abs-sign',
+            '/playgrounds',
+            '/playgrounds/abs-sign',
+          ],
+          [],
+        )
+          .filter(({ checksNavigation }) => checksNavigation)
+          .map(({ path }) => path),
+      ).toStrictEqual(['/', '/playgrounds']);
+    });
+
     it('代表のページだけスクリーンショットを撮る', () => {
       expect(
         smokeTargets(
@@ -36,6 +53,11 @@ describe('smokeTargets', () => {
             '/blog/font-family-math',
             '/blog/react19-usereducer-ts-type-inference',
             '/blog/alpha-function',
+            '/blog/details-content',
+            '/blog/abs-sign',
+            '/playgrounds',
+            '/playgrounds/alpha-function',
+            '/playgrounds/abs-sign',
             '/slides/sample-deck',
             '/color-converter',
             '/palette-maker',
@@ -50,6 +72,9 @@ describe('smokeTargets', () => {
         '/blog/font-family-math',
         '/blog/react19-usereducer-ts-type-inference',
         '/blog/alpha-function',
+        '/blog/details-content',
+        '/playgrounds',
+        '/playgrounds/alpha-function',
         '/slides/sample-deck',
         '/color-converter',
         '/palette-maker',

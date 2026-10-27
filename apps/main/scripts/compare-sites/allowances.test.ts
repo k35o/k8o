@@ -21,9 +21,10 @@ const allow = (
   name: string,
   fields: Record<string, string>,
   target: Target = get('/'),
+  headUrl = `http://localhost:3001${target.path}`,
 ): Record<string, string> =>
   Object.fromEntries(
-    applyAllowances(new Map(Object.entries(fields)), target, [
+    applyAllowances(new Map(Object.entries(fields)), target, headUrl, [
       ...selectAllowances([name]),
     ]),
   );
@@ -32,7 +33,7 @@ describe('selectAllowances', () => {
   describe('異常系', () => {
     it('知らない名前なら、知っている名前を並べて止める', () => {
       expect(() => selectAllowances(['og-png', 'typo'])).toThrowError(
-        '--allow typo は無い。使える名前: og-png, vary-next, md-static',
+        '--allow typo は無い。使える名前: og-png, vary-next, md-static, og-acao',
       );
     });
   });
@@ -213,6 +214,78 @@ describe('applyAllowances', () => {
     });
   });
 
+  describe('og-acao', () => {
+    const functionPng = {
+      status: '200',
+      'content-type': 'image/png',
+      'header:cache-control': 'public, max-age=0, must-revalidate',
+    };
+
+    describe('正常系', () => {
+      it('head が静的な og.png を返す og:image は、base に ACAO: * を足す', () => {
+        expect(
+          allow(
+            'og-acao',
+            functionPng,
+            get('/playgrounds/alpha-function/opengraph-image'),
+            'http://localhost:3001/playgrounds/alpha-function/og.png',
+          ),
+        ).toStrictEqual({
+          ...functionPng,
+          'header:access-control-allow-origin': '*',
+        });
+      });
+
+      it('直接比べる記事の og.png にも当てる', () => {
+        expect(
+          allow('og-acao', functionPng, get('/blog/abs-sign/og.png')),
+        ).toStrictEqual({
+          ...functionPng,
+          'header:access-control-allow-origin': '*',
+        });
+      });
+    });
+
+    describe('エッジケース', () => {
+      it('head のパスが /og.png で終わらなければ当てない', () => {
+        expect(
+          allow(
+            'og-acao',
+            functionPng,
+            get('/playgrounds/alpha-function/opengraph-image'),
+            'https://k8o.me/playgrounds/alpha-function/opengraph-image?8950e7b40cbfeadb',
+          ),
+        ).toStrictEqual(functionPng);
+      });
+
+      it('すでにある ACAO は書き換えない', () => {
+        const fields = {
+          ...functionPng,
+          'header:access-control-allow-origin': 'https://k8o.me',
+        };
+
+        expect(
+          allow('og-acao', fields, get('/blog/abs-sign/og.png')),
+        ).toStrictEqual(fields);
+      });
+
+      it('PNG でない応答には当てない', () => {
+        const notFound = {
+          status: '404',
+          'content-type': 'text/html; charset=utf-8',
+        };
+
+        expect(
+          allow(
+            'og-acao',
+            notFound,
+            get('/blog/compare-sites-not-found/og.png'),
+          ),
+        ).toStrictEqual(notFound);
+      });
+    });
+  });
+
   describe('組み合わせ', () => {
     describe('正常系', () => {
       it('選んだ順にすべての書き換えを当てる', () => {
@@ -224,6 +297,7 @@ describe('applyAllowances', () => {
                 ['header:vary', 'rsc, Accept'],
               ]),
               get('/'),
+              'http://localhost:3001/',
               selectAllowances(['og-png', 'vary-next']),
             ),
           ),
@@ -238,7 +312,9 @@ describe('applyAllowances', () => {
       it('何も選ばなければ元の項目のまま返す', () => {
         const fields = new Map([['header:vary', 'rsc']]);
 
-        expect(applyAllowances(fields, get('/'), [])).toStrictEqual(fields);
+        expect(
+          applyAllowances(fields, get('/'), 'http://localhost:3001/', []),
+        ).toStrictEqual(fields);
       });
     });
   });

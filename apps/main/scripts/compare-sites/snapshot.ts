@@ -121,6 +121,62 @@ const describeLink = (link: Element, rel: string): string => {
   ].join(' ');
 };
 
+// React の Fizz は Suspense の中身を <main> の外の hidden の segment に書き、インラインの script の
+// $RC（stylesheet を待つときは $RR）でブラウザが境界の fallback と置き換える。script を走らせたあとの
+// <main> と比べるため、同じ置き換えを当てる。$RX は client で描く境界なので fallback のまま残す
+const COMPLETED_BOUNDARY = /\$R[CR]\("([^"]+)","([^"]+)"/gu;
+const BOUNDARY_STARTS = new Set(['$', '$?', '$!']);
+const BOUNDARY_END = '/$';
+
+const isComment = (node: Node): node is Comment =>
+  node.nodeType === node.COMMENT_NODE;
+
+const fallbackOf = (
+  template: Element,
+): { readonly nodes: ChildNode[]; readonly end: Comment } | null => {
+  const nodes: ChildNode[] = [];
+  let depth = 0;
+  for (
+    let node: ChildNode | null = template;
+    node !== null;
+    node = node.nextSibling
+  ) {
+    if (isComment(node)) {
+      if (node.data === BOUNDARY_END) {
+        if (depth === 0) {
+          return { nodes, end: node };
+        }
+        depth -= 1;
+      } else if (BOUNDARY_STARTS.has(node.data)) {
+        depth += 1;
+      }
+    }
+    nodes.push(node);
+  }
+  return null;
+};
+
+const completeBoundaries = (document: Document): void => {
+  const scripts = [...document.querySelectorAll('script:not([src])')]
+    .map((script) => script.textContent)
+    .join('\n');
+  for (const [, boundaryId = '', segmentId = ''] of scripts.matchAll(
+    COMPLETED_BOUNDARY,
+  )) {
+    const template = document.querySelector(`[id="${boundaryId}"]`);
+    const segment = document.querySelector(`[id="${segmentId}"]`);
+    const fallback = template === null ? null : fallbackOf(template);
+    if (segment === null || fallback === null) {
+      continue;
+    }
+    segment.remove();
+    for (const node of fallback.nodes) {
+      node.remove();
+    }
+    fallback.end.before(...segment.childNodes);
+  }
+};
+
 const appendTo = (
   groups: Map<string, string[]>,
   key: string,
@@ -180,6 +236,7 @@ const extractHtml = (
     }
   }
 
+  completeBoundaries(document);
   const main = document.querySelector('main');
   if (main !== null) {
     fields.set(

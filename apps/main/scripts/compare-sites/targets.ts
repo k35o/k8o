@@ -93,6 +93,8 @@ const fixedTargets = (): Target[] => [
   page('/ga-init.js'),
   page('/playgrounds/shared-worker.worker.js'),
   page('/playgrounds/media-pseudos-tone.wav'),
+  page('/playgrounds/async-clipboard-primary.png'),
+  page('/playgrounds/invoker-commands-k8o.avif'),
   page('/_vercel/speed-insights/script.js'),
 ];
 
