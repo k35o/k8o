@@ -14,21 +14,29 @@ export const SITE_OG_IMAGE = { path: '/og.png', alt: SITE_NAME } as const;
 
 type PageMetaProps = {
   title?: string;
+  titleTemplate?: boolean;
   description?: string;
   path: string;
   canonical?: boolean;
   image?: { path: string; alt: string };
   rssFeedPath?: string;
+  twitterCard?: 'summary' | 'summary_large_image';
+  article?: { publishedTime: string; modifiedTime: string };
+  category?: string;
   noindex?: boolean;
 };
 
 export const PageMeta: FC<PageMetaProps> = ({
   title,
+  titleTemplate = true,
   description = SITE_DESCRIPTION,
   path,
   canonical = false,
   image,
   rssFeedPath,
+  twitterCard = 'summary',
+  article,
+  category,
   noindex = false,
 }) => {
   const pageTitle = title ?? SITE_NAME;
@@ -38,9 +46,12 @@ export const PageMeta: FC<PageMetaProps> = ({
   return (
     <>
       <title>
-        {title === undefined ? SITE_NAME : `${title} | ${SITE_NAME}`}
+        {title === undefined || !titleTemplate
+          ? pageTitle
+          : `${title} | ${SITE_NAME}`}
       </title>
       <meta content={description} name="description" />
+      {category !== undefined && <meta content={category} name="category" />}
       {noindex && <meta content="noindex" name="robots" />}
       {canonical && <link href={url} rel="canonical" />}
       {rssFeedPath !== undefined && (
@@ -64,8 +75,23 @@ export const PageMeta: FC<PageMetaProps> = ({
           <meta content={image.alt} property="og:image:alt" />
         </>
       )}
-      <meta content="website" property="og:type" />
-      <meta content="summary" name="twitter:card" />
+      {article === undefined ? (
+        <meta content="website" property="og:type" />
+      ) : (
+        <>
+          <meta content="article" property="og:type" />
+          <meta
+            content={article.publishedTime}
+            property="article:published_time"
+          />
+          <meta
+            content={article.modifiedTime}
+            property="article:modified_time"
+          />
+          <meta content={SITE_NAME} property="article:author" />
+        </>
+      )}
+      <meta content={twitterCard} name="twitter:card" />
       <meta content={pageTitle} name="twitter:title" />
       <meta content={description} name="twitter:description" />
       {image !== undefined && (
