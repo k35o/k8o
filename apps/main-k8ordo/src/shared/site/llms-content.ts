@@ -1,3 +1,5 @@
+import { playgroundSections } from '@playgrounds/sections';
+
 import { getBlogContents } from '@/features/blog/interface/queries';
 import { getTalks } from '@/features/talks/interface/queries';
 import { siteEntries } from '@/shared/site/site-entries';
@@ -5,12 +7,7 @@ import { siteEntries } from '@/shared/site/site-entries';
 const SITE_URL = 'https://k8o.me';
 
 export async function generateLlmsContent(): Promise<string> {
-  // 静的に import すると、デモの client 部品がどのページも読む client の entry に入るので遅れて読む
-  const [blogs, talks, { playgroundSections }] = await Promise.all([
-    getBlogContents(),
-    getTalks(),
-    import('@playgrounds/sections'),
-  ]);
+  const [blogs, talks] = await Promise.all([getBlogContents(), getTalks()]);
 
   const blogContent = blogs
     .map((blog) => {
