@@ -58,6 +58,6 @@ apps/main（Next）を k8ordo（`@k8ordo/framework` の `mode: 'static'`）で�
 
 ## 型
 
-`.k8ordo/` の route の表と型は `vite build` か `vite dev` が書く（git に入れない）。CI では書かないので、`href()` の引数などの型は手元より緩い。
+`.k8ordo/` の route の表と型は `vite build`・`vite dev`・`k8ordo generate` が書く（git に入れない）。`k8ordo generate` は DB も `paths` も読まずに書くだけなので、CI は check と type-check の前にこれを流す（static の断りは見ないので、それはビルドで分かる）。`.k8ordo/` は git から外れていて turbo の既定の inputs に入らないので、type-check の `inputs` に足している。
 
 llms.txt が Playground のセクションを読むので、type-check はデモの TSX も通る。デモの CSS Modules の型は apps/main の `__generated__`（apps/main の `next typegen` が書く）を `tsconfig.json` の `rootDirs` で読む。main-k8ordo の type-check は、`turbo.json` の `dependsOn` で main の type-check（`next typegen`）を待つ。ルートの `turbo.json` は type-check の `outputs` に `__generated__` を入れているので、main の type-check がキャッシュに当たっても型が戻る。React と DOM の型の補い（`src/react.d.ts`・`src/dom.d.ts`）は apps/main と同じものを置く。
