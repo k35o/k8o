@@ -1,0 +1,91 @@
+import { expect, within } from 'storybook/test';
+
+import preview from '../../../../.storybook/preview';
+import { BlogCard } from './blog-card';
+
+const meta = preview.meta({
+  title: 'app/blog/blog-card',
+  component: BlogCard,
+});
+
+export const Primary = meta.story({
+  args: {
+    slug: 'tanstack-router-introduction',
+    tags: ['React', 'TypeScript', 'TanStackRouter'],
+    title: 'Reactの新しいルーティングライブラリ、TanStackRouterを学ぶ',
+    description:
+      'Reactのルーティングには主にNextjs等のフレームワークやReact Routeが利用されます。この記事では新たなルーティング手法の選択肢としてTanStack Routerを紹介します。TanStack Routerでは最初に挙げた選択肢の使い心地を踏襲しつつ、ルーティングやサーチパラメータの型安全性や他にない便利な機能を提供します。',
+    createdAt: '2023-05-01T00:00:00.000Z',
+    updatedAt: '2023-07-13T00:00:00.000Z',
+  },
+});
+
+export const DisplaysTitle = meta.story({
+  args: {
+    slug: 'test-slug',
+    tags: ['React'],
+    title: 'テスト記事のタイトル',
+    description: 'テスト説明文',
+    createdAt: '2024-01-15T00:00:00.000Z',
+    updatedAt: '2024-02-20T00:00:00.000Z',
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+
+    await expect(
+      canvas.getByRole('heading', { name: 'テスト記事のタイトル' }),
+    ).toBeInTheDocument();
+  },
+});
+
+export const DisplaysTags = meta.story({
+  args: {
+    slug: 'test-slug',
+    tags: ['React', 'TypeScript', 'Next.js'],
+    title: 'テスト記事',
+    description: null,
+    createdAt: '2024-01-15T00:00:00.000Z',
+    updatedAt: '2024-02-20T00:00:00.000Z',
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+
+    await expect(canvas.getByText('React')).toBeInTheDocument();
+    await expect(canvas.getByText('TypeScript')).toBeInTheDocument();
+    await expect(canvas.getByText('Next.js')).toBeInTheDocument();
+  },
+});
+
+export const DisplaysDates = meta.story({
+  args: {
+    slug: 'test-slug',
+    tags: [],
+    title: 'テスト記事',
+    description: null,
+    createdAt: '2024-01-15T00:00:00.000Z',
+    updatedAt: '2024-02-20T00:00:00.000Z',
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+
+    await expect(canvas.getByText('公開: 2024年1月15日')).toBeInTheDocument();
+    await expect(canvas.getByText('更新: 2024年2月20日')).toBeInTheDocument();
+  },
+});
+
+export const HasLinkToBlog = meta.story({
+  args: {
+    slug: 'my-blog-post',
+    tags: ['React'],
+    title: 'ブログ記事リンクテスト',
+    description: null,
+    createdAt: '2024-01-15T00:00:00.000Z',
+    updatedAt: '2024-02-20T00:00:00.000Z',
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+
+    const link = canvas.getByRole('link');
+    await expect(link).toHaveAttribute('href', '/blog/my-blog-post');
+  },
+});
