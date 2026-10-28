@@ -5,18 +5,12 @@ import { loadPlaygroundSection } from './load-section';
 
 describe('loadPlaygroundSection', () => {
   describe('正常系', () => {
-    it(
-      'ids.ts のどの id でも、その id のセクションを読む',
-      async () => {
-        const sections = await Promise.all(
-          playgroundIds.map(async (id) => loadPlaygroundSection(id)),
-        );
-
-        expect(sections.map((section) => section?.id)).toStrictEqual([
-          ...playgroundIds,
-        ]);
+    it.each(playgroundIds)(
+      'id %s のセクションを読む',
+      async (id) => {
+        expect((await loadPlaygroundSection(id))?.id).toBe(id);
       },
-      // 全部のデモと @k8ordo/ui を初めて変換するので、ほかの project と並ぶと既定の 5 秒を超えることがある
+      // 最初に読む id は、デモと共有の部品（@k8ordo/ui など）を初めて変換するので、ほかの project と並ぶと既定の 5 秒を超えることがある
       30_000,
     );
   });
