@@ -1,0 +1,135 @@
+import { expect, within } from 'storybook/test';
+
+import preview from '../../../../.storybook/preview';
+import { TalkCard } from './talk-card';
+
+const meta = preview.meta({
+  title: 'app/talks/talk-card',
+  component: TalkCard,
+});
+
+export const Primary = meta.story({
+  args: {
+    title: 'Talk Title',
+    eventUrl: 'https://example.com',
+    eventName: 'Event Name',
+    eventDate: '2023-01-01',
+    eventLocation: 'Event Location',
+    slideUrl: 'https://example.com/slides',
+    blog: {
+      id: 1,
+      slug: 'blog-slug',
+    },
+    tags: [
+      { id: 1, name: 'Tag 1' },
+      { id: 2, name: 'Tag 2' },
+    ],
+  },
+});
+
+export const DisplaysTitle = meta.story({
+  args: {
+    title: 'React 19の新機能について',
+    eventUrl: 'https://example.com',
+    eventName: 'React Meetup Tokyo',
+    eventDate: '2024-03-15',
+    eventLocation: '東京',
+    slideUrl: 'https://example.com/slides',
+    blog: { id: 1, slug: 'react-19-features' },
+    tags: [],
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+
+    await expect(
+      canvas.getByRole('heading', { name: /React 19の新機能について/u }),
+    ).toBeInTheDocument();
+  },
+});
+
+export const DisplaysEventInfo = meta.story({
+  args: {
+    title: 'テスト発表',
+    eventUrl: 'https://example.com',
+    eventName: 'Tech Conference 2024',
+    eventDate: '2024-06-01',
+    eventLocation: '大阪',
+    slideUrl: 'https://example.com/slides',
+    blog: { id: 1, slug: 'test' },
+    tags: [],
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+
+    await expect(canvas.getByText('Tech Conference 2024')).toBeInTheDocument();
+
+    await expect(canvas.getByText('大阪')).toBeInTheDocument();
+  },
+});
+
+export const DisplaysTags = meta.story({
+  args: {
+    title: 'テスト発表',
+    eventUrl: 'https://example.com',
+    eventName: 'Event',
+    eventDate: '2024-01-01',
+    eventLocation: null,
+    slideUrl: 'https://example.com/slides',
+    blog: { id: 1, slug: 'test' },
+    tags: [
+      { id: 1, name: 'React' },
+      { id: 2, name: 'TypeScript' },
+      { id: 3, name: 'Next.js' },
+    ],
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+
+    await expect(canvas.getByText('React')).toBeInTheDocument();
+    await expect(canvas.getByText('TypeScript')).toBeInTheDocument();
+    await expect(canvas.getByText('Next.js')).toBeInTheDocument();
+  },
+});
+
+export const HasSlideLink = meta.story({
+  args: {
+    title: 'テスト発表',
+    eventUrl: 'https://example.com',
+    eventName: 'Event',
+    eventDate: '2024-01-01',
+    eventLocation: null,
+    slideUrl: 'https://slides.example.com/my-slides',
+    blog: { id: 1, slug: 'test' },
+    tags: [],
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+
+    const slideLink = canvas.getByRole('link', { name: 'スライドを見る' });
+    await expect(slideLink).toBeInTheDocument();
+    await expect(slideLink).toHaveAttribute(
+      'href',
+      'https://slides.example.com/my-slides',
+    );
+  },
+});
+
+export const HasBlogLink = meta.story({
+  args: {
+    title: 'テスト発表',
+    eventUrl: 'https://example.com',
+    eventName: 'Event',
+    eventDate: '2024-01-01',
+    eventLocation: null,
+    slideUrl: 'https://example.com/slides',
+    blog: { id: 1, slug: 'my-blog-post' },
+    tags: [],
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+
+    const blogLink = canvas.getByRole('link', { name: 'ブログで解説を読む' });
+    await expect(blogLink).toBeInTheDocument();
+    await expect(blogLink).toHaveAttribute('href', '/blog/my-blog-post');
+  },
+});
