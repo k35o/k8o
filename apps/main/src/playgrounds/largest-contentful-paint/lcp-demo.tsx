@@ -1,6 +1,6 @@
 'use client';
 
-import { Badge, Button } from '@k8ordo/ui';
+import { Badge, Button, Callout } from '@k8ordo/ui';
 import {
   useCallback,
   useEffect,
@@ -8,6 +8,8 @@ import {
   useState,
   useSyncExternalStore,
 } from 'react';
+
+import { findOtherLoadedPathname } from './loaded-pathname';
 
 import styles from './lcp-demo.module.css';
 
@@ -23,6 +25,17 @@ const getSupportedSnapshot = (): boolean =>
   typeof PerformanceObserver !== 'undefined' &&
   PerformanceObserver.supportedEntryTypes.includes('largest-contentful-paint');
 const getServerSnapshot = (): boolean => true;
+
+const getOtherLoadedPathname = (): string | null =>
+  findOtherLoadedPathname(
+    performance.getEntriesByType('navigation')[0]?.name,
+    location.pathname,
+  );
+const getOtherLoadedPathnameOnServer = (): string | null => null;
+
+const reloadDocument = (): void => {
+  location.reload();
+};
 
 type LCPEntry = {
   id: number;
@@ -42,6 +55,13 @@ export function LCPDemo() {
     subscribeNoop,
     getSupportedSnapshot,
     getServerSnapshot,
+  );
+  // URL を先に確定させる router（k8ordo）では、戻る・進むで去っていくページが
+  // 行き先の URL で読み直してしまうので購読しない
+  const otherLoadedPathname = useSyncExternalStore(
+    subscribeNoop,
+    getOtherLoadedPathname,
+    getOtherLoadedPathnameOnServer,
   );
   // 受信済みエントリは ref に持ち、state には毎回その写しを入れる。buffered: true は
   // observe のたびに過去エントリを再配信するため、effect の開始時に ref を空にして
@@ -105,6 +125,24 @@ export function LCPDemo() {
 
   return (
     <div className={styles.root}>
+      {otherLoadedPathname !== null && (
+        <Callout tone="info">
+          <p>
+            このページへは文書を読み込まずに移動したため、表示しているのは文書を読み込んだページ（
+            <code>{otherLoadedPathname}</code>）のLCPです。
+          </p>
+          <div>
+            <Button
+              color="primary"
+              onClick={reloadDocument}
+              size="sm"
+              variant="outline"
+            >
+              読み込み直して測る
+            </Button>
+          </div>
+        </Callout>
+      )}
       <div className={styles.toolbar}>
         <Button color="base" onClick={handleReset} size="sm" variant="outline">
           リセット
@@ -124,7 +162,11 @@ export function LCPDemo() {
         <div>
           <div className={styles.latestHeader}>
             <div className={styles.latestTitle}>
-              <h4 className={styles.heading}>現在のLCP</h4>
+              <h4 className={styles.heading}>
+                {otherLoadedPathname === null
+                  ? '現在のLCP'
+                  : '文書を読み込んだページのLCP'}
+              </h4>
               {latestEntry.element !== null && (
                 <code className={styles.tag}>{latestEntry.element}</code>
               )}
@@ -203,8 +245,9 @@ export function LCPDemo() {
       )}
 
       <p className={styles.note}>
-        ページ読み込み時のLCP（Largest Contentful
-        Paint）を計測しています。ページを再読み込みすると新しい計測結果が表示されます。
+        {otherLoadedPathname === null
+          ? 'ページ読み込み時のLCP（Largest Contentful Paint）を計測しています。ページを再読み込みすると新しい計測結果が表示されます。'
+          : 'LCP（Largest Contentful Paint）は文書を読み込んだときにだけ報告され、文書を読み込まないページの移動では新しく報告されません。'}
       </p>
     </div>
   );
