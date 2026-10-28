@@ -8,7 +8,7 @@ allowBuilds:
   workerd: false
 
 catalog:
-  '@ai-sdk/anthropic': 4.0.84
+  '@ai-sdk/anthropic': 4.0.85
   '@better-css-modules/cli': 0.4.1
   '@better-css-modules/core': 0.4.1
   '@better-css-modules/turbopack': 0.4.1
@@ -35,7 +35,7 @@ catalog:
   '@vitest/browser-playwright': 5.0.5
   '@vitest/coverage-v8': 5.0.5
   '@vitest/ui': 5.0.3
-  ai: 7.0.147
+  ai: 7.0.148
   better-auth: 1.7.12
   chromatic: 18.13.0
   drizzle-kit: 0.31.11
