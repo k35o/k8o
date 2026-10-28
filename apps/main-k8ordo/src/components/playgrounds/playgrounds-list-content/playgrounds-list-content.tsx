@@ -9,6 +9,8 @@ import {
 import { useDeferredValue, useMemo } from 'react';
 import type { FC } from 'react';
 
+import { replayTypedValue } from '@/shared/browser/replay-typed-value';
+
 import { filterPlaygrounds } from './filter-playgrounds';
 import { PlaygroundCard } from './playground-card';
 import { playgroundsState } from './playgrounds-state';
@@ -55,13 +57,9 @@ export const PlaygroundsListContent: FC<Props> = ({ playgrounds }) => {
               update({ q: e.target.value });
             }}
             placeholder="タイトル・説明・カテゴリで検索..."
-            // HTML の欄は hydrate の前から打てるが、そこで打った文字を React は欄に残すだけで
-            // onChange に渡さないので、欄が付いた時に q へ写す
-            ref={(input) => {
-              if (input !== null && input.value !== q) {
-                update({ q: input.value });
-              }
-            }}
+            ref={replayTypedValue(q, (typed) => {
+              update({ q: typed });
+            })}
             value={q}
           />
         </div>
