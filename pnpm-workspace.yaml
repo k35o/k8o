@@ -82,9 +82,6 @@ overrides:
   # そろえ、脆弱性のある 0.16 を残さない
   'micromark-extension-math>katex': 'catalog:'
 
-patchedDependencies:
-  '@storybook/nextjs-vite@10.6.2': patches/@storybook__nextjs-vite@10.6.2.patch
-
 trustPolicy: no-downgrade
 
 # lockfile導入時点の到達版のうち、過去リリースよりtrust levelが低いもの。バージョン固定で除外し、更新時は再検査させる
