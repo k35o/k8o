@@ -14,7 +14,7 @@ export const lcpSection: PlaygroundSection = {
       component: LCPDemo,
       title: 'LCP計測',
       description:
-        'このページ自身のLCP候補をbuffered付きで捕捉し、startTimeやsize、対象要素の変遷を確認できます。',
+        '文書を読み込んだページのLCP候補をbuffered付きで捕捉し、startTimeやsize、対象要素の変遷を確認できます。',
     },
   ],
 };

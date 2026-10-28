@@ -32,6 +32,7 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
+  gap: calc(var(--spacing) * 2);
   margin-bottom: calc(var(--spacing) * 3);
 }
 
@@ -49,11 +50,13 @@
 .tag {
   font-size: var(--font-size-xs);
   line-height: var(--line-height-xs);
+  white-space: nowrap;
 }
 
 .timestamp {
   font-size: var(--font-size-xs);
   line-height: var(--line-height-xs);
+  white-space: nowrap;
   color: var(--color-fg-mute);
 }
 
