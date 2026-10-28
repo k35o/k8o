@@ -69,6 +69,7 @@ describe('smokeTargets', () => {
           .map(({ path }) => path),
       ).toStrictEqual([
         '/',
+        '/blog',
         '/blog/font-family-math',
         '/blog/react19-usereducer-ts-type-inference',
         '/blog/alpha-function',
