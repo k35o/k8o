@@ -30,7 +30,7 @@
     "@repo/helpers": "workspace:*",
     "ai": "catalog:",
     "hono": "catalog:",
-    "linkedom": "0.18.13",
+    "linkedom": "0.18.14",
     "rss-parser": "3.13.0",
     "zod": "catalog:"
   },
