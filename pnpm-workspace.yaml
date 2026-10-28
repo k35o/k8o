@@ -24,12 +24,12 @@ catalog:
   '@libsql/client': 0.18.0
   '@next/env': 16.4.2
   '@next/mdx': 16.4.2
-  '@storybook/addon-a11y': 10.6.2
-  '@storybook/addon-docs': 10.6.2
-  '@storybook/addon-mcp': '10.6.2'
-  '@storybook/addon-vitest': 10.6.2
-  '@storybook/nextjs-vite': 10.6.2
-  '@storybook/react-vite': 10.6.2
+  '@storybook/addon-a11y': 10.6.3
+  '@storybook/addon-docs': 10.6.3
+  '@storybook/addon-mcp': '10.6.3'
+  '@storybook/addon-vitest': 10.6.3
+  '@storybook/nextjs-vite': 10.6.3
+  '@storybook/react-vite': 10.6.3
   '@types/react': 19.3.0
   '@types/react-dom': 19.3.0
   '@vitest/browser-playwright': 5.0.5
@@ -47,7 +47,7 @@ catalog:
   oxc-transform-react: 0.155.0
   react: 19.3.1
   react-dom: 19.3.1
-  storybook: 10.6.2
+  storybook: 10.6.3
   storybook-addon-determinism: 0.2.1
   storybook-addon-mock-date: 3.2.1
   storybook-addon-vrt: 0.4.0
@@ -81,9 +81,6 @@ overrides:
   # mathHtml も読み込むので katex を import するが、MDX の描画には使わない。記事が読む版と
   # そろえ、脆弱性のある 0.16 を残さない
   'micromark-extension-math>katex': 'catalog:'
-
-patchedDependencies:
-  '@storybook/nextjs-vite@10.6.2': patches/@storybook__nextjs-vite@10.6.2.patch
 
 trustPolicy: no-downgrade
 
