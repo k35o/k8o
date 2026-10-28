@@ -57,7 +57,10 @@ export const findLeakedRequests = async (
       JSON.parse(line.replace(EVENT_LINE_END, '')),
     );
     const { logEventPhase, logEventTypes } = constants;
-    if (type === logEventTypes.URL_REQUEST_START_JOB && params !== undefined) {
+    if (
+      type === logEventTypes.URL_REQUEST_START_JOB &&
+      phase === logEventPhase.PHASE_BEGIN
+    ) {
       startedJobs.set(source.id, startJobParamsSchema.parse(params));
       continue;
     }

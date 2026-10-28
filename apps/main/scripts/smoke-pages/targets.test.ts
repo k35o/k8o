@@ -27,7 +27,7 @@ describe('smokeTargets', () => {
       ]);
     });
 
-    it('トップと Playground の一覧からだけ遷移を確かめる', () => {
+    it('トップ、ブログの一覧、Playground の一覧からだけ遷移を確かめる', () => {
       expect(
         smokeTargets(
           [
@@ -41,7 +41,7 @@ describe('smokeTargets', () => {
         )
           .filter(({ checksNavigation }) => checksNavigation)
           .map(({ path }) => path),
-      ).toStrictEqual(['/', '/playgrounds']);
+      ).toStrictEqual(['/', '/blog', '/playgrounds']);
     });
 
     it('代表のページだけスクリーンショットを撮る', () => {
@@ -69,6 +69,7 @@ describe('smokeTargets', () => {
           .map(({ path }) => path),
       ).toStrictEqual([
         '/',
+        '/blog',
         '/blog/font-family-math',
         '/blog/react19-usereducer-ts-type-inference',
         '/blog/alpha-function',
