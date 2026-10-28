@@ -1,0 +1,27 @@
+.root {
+  width: 100%;
+  max-width: 64rem;
+  margin-inline: auto;
+}
+
+.content {
+  display: flex;
+  flex-direction: column;
+  gap: calc(var(--spacing) * 6);
+}
+
+.header {
+  display: flex;
+  flex-direction: column;
+  gap: calc(var(--spacing) * 4);
+}
+
+.title {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing);
+}
+
+.titleIcon {
+  color: var(--color-primary-fg);
+}
