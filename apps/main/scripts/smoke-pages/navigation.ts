@@ -98,18 +98,23 @@ export const checkNavigation = async (
   blocked: readonly BlockedRequest[],
 ): Promise<NavigationCheck> => {
   const links = page.locator(INTERNAL_LINK).filter({ visible: true });
-  const index = indexOfLinkToFollow(
-    await links.evaluateAll((anchors) =>
-      anchors.map((anchor) => ({
-        href: anchor.getAttribute('href') ?? '',
-        target: anchor.getAttribute('target') ?? '',
-        download: anchor.hasAttribute('download'),
-      })),
-    ),
-    page.url(),
+  const candidates = await links.evaluateAll((anchors) =>
+    anchors.map((anchor) => ({
+      href: anchor.getAttribute('href') ?? '',
+      target: anchor.getAttribute('target') ?? '',
+      download: anchor.hasAttribute('download'),
+    })),
   );
+  const index = indexOfLinkToFollow(candidates, page.url());
   if (index === -1) {
-    return { problems: ['遷移: <main> に押せる内部リンクが無い'], notes: [] };
+    return {
+      problems: [
+        candidates.length === 0
+          ? '遷移: <main> に押せる内部リンクが無い'
+          : '遷移: <main> の内部リンクは、どれも押しても今のページの URL が替わらない（今のページ・新しいタブ・download）',
+      ],
+      notes: [],
+    };
   }
   const link = links.nth(index);
   const from = new URL(page.url()).pathname;

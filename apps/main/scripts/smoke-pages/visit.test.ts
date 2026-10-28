@@ -140,6 +140,13 @@ const pageAt = (path: string): TestPage => {
           }),
         ),
       };
+    case '/only-unfollowable':
+      return {
+        status: 200,
+        body: html(
+          '<main><a href="/only-unfollowable?q=css">css</a><a href="/feed" target="_blank">RSS</a><a href="/list.txt" download>txt</a></main>',
+        ),
+      };
     case '/soft-without-page-view':
       return {
         status: 200,
@@ -387,6 +394,17 @@ describe('visitPage', { timeout: 60_000 }, () => {
 
       expect(visit.problems).toStrictEqual([
         '遷移: <main> に押せる内部リンクが無い',
+      ]);
+    });
+
+    it('<main> の内部リンクがどれも押しても URL の替わらないものなら、そう言って誤りにする', async () => {
+      const visit = await visitPage(
+        browser,
+        optionsFor('/only-unfollowable', { checksNavigation: true }),
+      );
+
+      expect(visit.problems).toStrictEqual([
+        '遷移: <main> の内部リンクは、どれも押しても今のページの URL が替わらない（今のページ・新しいタブ・download）',
       ]);
     });
 
