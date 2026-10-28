@@ -1,0 +1,58 @@
+.root {
+  display: flex;
+  flex-direction: column;
+  gap: calc(var(--spacing) * 6);
+}
+
+.toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  column-gap: calc(var(--spacing) * 4);
+  row-gap: calc(var(--spacing) * 2);
+}
+
+.search {
+  width: 100%;
+  max-width: 20rem;
+}
+
+.count {
+  flex-shrink: 0;
+  color: var(--color-fg-mute);
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-sm);
+}
+
+.empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: calc(var(--spacing) * 3);
+  padding-block: calc(var(--spacing) * 16);
+  text-align: center;
+}
+
+.emptyIcon {
+  color: var(--color-fg-subtle);
+}
+
+.emptyTitle {
+  color: var(--color-fg-base);
+  font-size: var(--font-size-lg);
+  line-height: var(--line-height-lg);
+  font-weight: var(--font-weight-bold);
+}
+
+.emptyText {
+  color: var(--color-fg-mute);
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-sm);
+}
+
+.years {
+  display: flex;
+  flex-direction: column;
+  gap: calc(var(--spacing) * 8);
+}
