@@ -34,8 +34,12 @@ export default defineConfig({
         },
       },
       {
+        // load-section の試験が apps/main のデモを読む。デモは apps/main の tsconfig（jsx: preserve）で
+        // 変換されるので JSX の変換を決め、@k8ordo/ui は CSS を import するので Node に読ませない
+        oxc: { jsx: { runtime: 'automatic' } },
         test: {
           name: { label: 'components test', color: 'white' },
+          server: { deps: { inline: ['@k8ordo/ui'] } },
           include: ['src/components/**/*.test.{ts,tsx}'],
         },
       },

@@ -14,11 +14,12 @@ import { defineConfig, runnerImport } from 'vite';
 import type { Plugin } from 'vite';
 
 import floor from '../main/src/features/browser-support/infrastructure/browser-min-versions.json' with { type: 'json' };
+import { playgroundIds } from '../main/src/playgrounds/ids.ts';
 import type * as blogs from './src/features/blog/application/blogs.ts';
 import { browserTargets } from './src/site/browser-targets.ts';
 import { katexCssGuard } from './src/site/katex-css-guard.ts';
-import { blogPathnames, writesPage } from './src/site/paths.ts';
-import type { BlogArticle } from './src/site/paths.ts';
+import type { BlogArticle } from './src/site/katex-css-guard.ts';
+import { blogPathnames, playgroundPathnames } from './src/site/paths.ts';
 import { DEV_SECURITY_HEADERS } from './src/site/security-headers.ts';
 import { BEFORE_FILES, BEFORE_NOT_FOUND } from './src/site/vercel-routes.ts';
 
@@ -108,11 +109,17 @@ export default defineConfig({
     framework({
       mode: 'static',
       reactCompiler: true,
-      paths: async (patterns) => blogPathnames(patterns, await readArticles()),
+      paths: async (patterns) => [
+        ...blogPathnames(
+          patterns,
+          (await readArticles()).map(({ slug }) => slug),
+        ),
+        ...playgroundPathnames(patterns, playgroundIds),
+      ],
     }),
     vercel({ beforeFiles: BEFORE_FILES, beforeNotFound: BEFORE_NOT_FOUND }),
     // vercel() が .vercel/output を書いたあとに見るので、framework() と vercel() より後に置く
-    katexCssGuard(async () => (await readArticles()).filter(writesPage)),
+    katexCssGuard(readArticles),
     betterCssModules(),
   ],
   css: {

@@ -1,0 +1,19 @@
+.root {
+  display: flex;
+  flex-direction: column;
+  gap: calc(var(--spacing) * 8);
+  width: 100%;
+  max-width: 64rem;
+  margin-inline: auto;
+}
+
+.header {
+  display: flex;
+  flex-direction: column;
+  gap: calc(var(--spacing) * 3);
+}
+
+.description {
+  color: var(--color-fg-mute);
+  line-height: var(--line-height-relaxed);
+}

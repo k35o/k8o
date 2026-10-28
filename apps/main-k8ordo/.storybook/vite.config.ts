@@ -12,7 +12,12 @@ const targets = browserTargets(floor.minVersions);
 // アプリの vite.config.ts とそろえる
 export default defineConfig({
   resolve: {
-    alias: { '@': fileURLToPath(new URL('../src', import.meta.url)) },
+    alias: {
+      '@': fileURLToPath(new URL('../src', import.meta.url)),
+      '@playgrounds': fileURLToPath(
+        new URL('../../main/src/playgrounds', import.meta.url),
+      ),
+    },
   },
   plugins: [betterCssModules()],
   css: {

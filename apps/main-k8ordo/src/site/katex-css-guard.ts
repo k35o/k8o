@@ -3,7 +3,7 @@ import { join } from 'node:path';
 
 import type { Plugin } from 'vite';
 
-import type { BlogArticle } from './paths.ts';
+export type BlogArticle = { slug: string; mdx: string };
 
 const KATEX_CSS = '@repo/mdx-preset/katex.css';
 

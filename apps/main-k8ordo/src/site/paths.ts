@@ -1,24 +1,27 @@
 const BLOG_ARTICLE = '/blog/:slug';
-
-export type BlogArticle = { slug: string; mdx: string };
-
-// PlaygroundEmbed と Playground はまだ描けないので、それを含む記事はページを書かない
-export const writesPage = (article: BlogArticle): boolean =>
-  !article.mdx.includes('<Playground');
+const PLAYGROUND = '/playgrounds/:id';
 
 // 記事のページと、その下の markdown・OG のパスを、公開済みの記事の一覧1つから作る。
 // 下書きはどこにも挙がらないので、どれも書かれずに 404 になる
 export const blogPathnames = (
   patterns: readonly string[],
-  articles: readonly BlogArticle[],
+  slugs: readonly string[],
 ): string[] =>
   patterns
     .filter(
       (pattern) =>
         pattern === BLOG_ARTICLE || pattern.startsWith(`${BLOG_ARTICLE}/`),
     )
-    .flatMap((pattern) =>
-      (pattern === BLOG_ARTICLE ? articles.filter(writesPage) : articles).map(
-        (article) => pattern.replace(':slug', article.slug),
-      ),
-    );
+    .flatMap((pattern) => slugs.map((slug) => pattern.replace(':slug', slug)));
+
+// Playground のページと、その下の OG のパスを、デモの id の一覧から作る
+export const playgroundPathnames = (
+  patterns: readonly string[],
+  ids: readonly string[],
+): string[] =>
+  patterns
+    .filter(
+      (pattern) =>
+        pattern === PLAYGROUND || pattern.startsWith(`${PLAYGROUND}/`),
+    )
+    .flatMap((pattern) => ids.map((id) => pattern.replace(':id', id)));
