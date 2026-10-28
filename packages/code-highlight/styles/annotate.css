@@ -134,7 +134,7 @@
     .code-annotate-tab {
       display: block;
       padding: 0.75rem 3rem 0 1.25rem;
-      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      font-family: var(--font-family-mono);
       font-size: 0.75rem;
       line-height: 1;
       color: var(--code-mute);
@@ -205,7 +205,7 @@
     flex: none;
     padding: 0.4rem 0.8rem;
     border-radius: 0.45rem;
-    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    font-family: var(--font-family-mono);
     font-size: 0.75rem;
     line-height: 1;
     color: var(--code-mute);
