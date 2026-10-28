@@ -8,6 +8,7 @@ export type SmokeTarget = {
 const NOT_FOUND_PATH = '/smoke-pages-not-found';
 const NAVIGATION_START_PATHS: ReadonlySet<string> = new Set([
   '/',
+  '/blog',
   '/playgrounds',
 ]);
 // 代表のページ: トップ、ブログの一覧、数式の記事、コードの多い記事、Playground を埋めた記事と
