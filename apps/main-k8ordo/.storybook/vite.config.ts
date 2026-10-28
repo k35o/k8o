@@ -20,6 +20,9 @@ export default defineConfig({
     },
   },
   plugins: [betterCssModules()],
+  // react-dom/server は story の下ごしらえ（url-state-story.ts）だけが読む。それを読む前に作った依存の
+  // 事前バンドルが残っていると、Vite が実行中に見つけて読み込み直し、走っている story がすべて落ちる
+  optimizeDeps: { include: ['react-dom/server'] },
   css: {
     transformer: 'lightningcss',
     lightningcss: { targets: targets.lightningcss },

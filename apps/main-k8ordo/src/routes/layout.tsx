@@ -4,6 +4,7 @@ import '@/i18n';
 import { ColorSchemeProvider } from '@k8ordo/color-scheme';
 import type { LayoutProps } from '@k8ordo/framework';
 
+import { WritingModeProvider } from '@/components/blog/blog-layout/writing-mode/writing-mode-context';
 import { AppProvider } from '@/components/site/app-provider';
 import { GlobalLayout } from '@/components/site/global-layout/global-layout';
 import { OfflineNotice } from '@/components/site/offline-notice/offline-notice';
@@ -58,7 +59,8 @@ export default function RootLayout({ children }: LayoutProps<'/'>) {
           <ColorSchemeProvider>
             <AppProvider>
               <GlobalLayout minVersions={getBrowserMinVersions()}>
-                {children}
+                {/* ページを移っても縦書きの切り替えを保つため、/blog の layout ではなくルートに置く */}
+                <WritingModeProvider>{children}</WritingModeProvider>
               </GlobalLayout>
               <OfflineNotice />
             </AppProvider>

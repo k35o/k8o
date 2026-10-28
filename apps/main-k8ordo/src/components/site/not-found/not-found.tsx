@@ -27,7 +27,7 @@ export const NotFound: FC = () => (
       トップへ戻る
     </Button>
     <p className={styles.otherLinks}>
-      <Anchor href="/blog">ブログ一覧</Anchor>・
+      <Anchor href={href('/blog')}>ブログ一覧</Anchor>・
       <Anchor href="/sitemap.xml">サイトマップ</Anchor>・
       <Anchor href="/llms.txt">llms.txt</Anchor>
       からも探せます。

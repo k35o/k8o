@@ -24,6 +24,7 @@ apps/main（Next）を k8ordo（`@k8ordo/framework` の `mode: 'static'`）で�
 - page・not-found が import する CSS と副作用は、そのページを読んでから効き、読んだあとはそのタブ（ビルドと dev ではそのプロセス）に残ってほかのページにも効く。ほかのページも当てにするもの（`globals.css`・フォント・`@/i18n`）はルートの layout で import する。そのページだけが使う CSS（記事の MDX が読む KaTeX の CSS、mdx-base が読むコードハイライトの CSS）はページの側に置く。置けるのは、ほかのページの見た目を変えないものに限る（KaTeX とコードハイライトの CSS が見た目を決めるのは、`.katex`・`.shiki`・`.code-annotate-*` などのクラスの要素だけ）
 - 直に開いたページの head では、クライアントの部品の CSS の組が、サーバーの部品の CSS（ルートの layout が import する `globals.css` も）より前に並ぶ。遷移で着いたページでは、前のページで読んだファイルがそのまま残り、新しいページのサーバーの部品の CSS はサーバーの部品の CSS の後ろに、初めて読むクライアントの部品の CSS は head の末尾に足される。サーバーの部品とクライアントの部品の CSS のどちらが後に来るかは、直に開いたか遷移で来たかで変わる。main-k8ordo の src の CSS Modules は `@layer components` に入り（`better-css-modules.config.ts`）、@k8ordo/ui の部品の CSS も同じ層にあるので、層でも決まらない。`@content`・`@playgrounds` から読む記事とデモの CSS Modules は、`better-css-modules.config.ts` のあるディレクトリの外にあるので層に入らず、並びに関係なく層の中の規則に勝つ（apps/main では同じモジュールが `@layer components` に入るので、勝ち負けが違う）。だから、CSS ファイルの並びを当てにせず、同じ要素に別のモジュールの class を重ねるとき（`TableOfContentsSideRail` のように `cn(styles.root, className)` で外から class を受ける部品）は、両方で同じプロパティを書かない
 - router は、同じ route の別の値へ移るとき（`/blog/a` から `/blog/b` など）、ページの木を作り直さずに次の値の props で描き直す。Next のように値ごとに部品の状態を初めに戻すため、動的なページは描く部分の根の要素に値で key を付ける（記事は `BlogLayoutContent` の `ArticleFrame`）
+- router は、layout の外へ移ると、その layout から下の部品を DOM ごと捨てる（Next は前の route を DOM ごと隠した Activity で残すので、外へ出て戻っても部品の状態も要素のスクロールも残る）。ページを移っても保つ状態（縦書きの切り替え）の Provider は、使うページの layout ではなくルートの layout に置く。ルートに置いて保てるのは React の状態だけで、DOM の状態（縦書きの本文の横のスクロールなど）は戻らない。殻にはどのページにも要るものだけを置く、という決まりの例外
 - dev だけで動かす部品（`components/site/react-scan`）は、部品の中で `import.meta.env.DEV` を見て、依存を動的に import する。描く側で `import.meta.env.DEV &&` としても、部品のモジュールは client のバンドルに入り、それが静的に読む依存の読み込みの処理も本番で走る
 
 ## 記事の MDX
@@ -40,7 +41,12 @@ apps/main（Next）を k8ordo（`@k8ordo/framework` の `mode: 'static'`）で�
 - デモは、サーバーの部品（`PlaygroundEmbed`・`SectionDemos`）が `@playgrounds/playground` の枠で包んで描く。`'use client'` のデモはクライアントの部品として、それ以外のデモと枠はサーバーの部品として、その CSS がそのページの HTML に載る
 - 記事の部品の表（`blogMdxComponents`）は記事のページが静的に読むので、表に置く `PlaygroundEmbed` と `Playground`（`LazyPlayground`）は、枠とデモを関数の中で読む。静的に読むと、デモの無い記事も枠の CSS を読む
 - `/blog/:slug`・`/playgrounds/:id`・`/playgrounds` の route と、それが静的に読む部品は、`@playgrounds/sections` と `@playgrounds`（`index.ts`）を静的に読まない。記事と `/playgrounds/:id` で読むと、デモが id ごとのチャンクに分かれず、どのデモのページも全部のデモを読む。デモを描かない一覧（`PlaygroundsIndex`）で読むと、サーバーで描くデモの CSS を一覧も読むので、関数の中で読む。llms.txt の route.ts は HTML を書かないので、静的に読んでよい
-- 一覧の検索の `q` は `@k8ordo/state` の url に置き、打つたびに `update()`（既定の replace）で書く。入力は `q` をそのまま出し、絞り込みの描画だけを `useDeferredValue` で遅らせる。static mode では HTML は全件で、`?q=` は hydrate のあとに効く。hydrate の前に欄へ打った文字は、欄が付いた時に `q` へ写す
+
+## 一覧（`/blog`・`/playgrounds`）
+
+- 検索の `q` は一覧ごとの `definePageState` の url に置き、打つたびに `update()`（既定の replace）で書く。入力は `q` をそのまま出し、絞り込みと群（年・カテゴリ）の組み立てだけを `useDeferredValue` で遅らせる
+- static mode では HTML は既定値（全件）で、`?q=` は hydrate のあとに効く。hydrate の前に欄へ打った文字は、欄が付いた時に `q` へ写す（`shared/browser/replay-typed-value.ts` を欄の `ref` に渡す）
+- 一覧のカードのリンクは `href()` で組んだ素の `<a>` にする。`components/site/content-card` の `ContentCard` は、呼ぶ側が `href()` で組んだパスを `href` で受ける
 
 ## vercel() の規則と dev
 
@@ -61,7 +67,8 @@ apps/main（Next）を k8ordo（`@k8ordo/framework` の `mode: 'static'`）で�
 - Storybook は `@storybook/react-vite`（`pnpm -F main-k8ordo storybook`、port 6007）。Storybook と vitest の storybook の project は `.storybook/vite.config.ts` を読み、アプリの `vite.config.ts`（framework()・vercel()）は読まない
 - features を読むサーバーの部品（`BlogLayout`・`BrowserSupportStatus`）は、描く部分（`BlogLayoutContent`・`BrowserSupportStatusLive`）を別の部品にし、story は描く部分を描く。features は `node:fs` などを読むので、Storybook のブラウザでは読めない
 - テーマは toolbar か `parameters.theme` で決め、`ColorSchemeProvider` の `defaultPreference` に渡す。Story ごとに localStorage のテーマと `@k8ordo/state` の状態を消す
-- Storybook には Navigation API を拾う router が無く、`@k8ordo/state` の url を書く `update()` はそのままでは iframe を読み込み直す。url を書く部品の story は、同じ文書の `navigate` を `intercept()` で止め、Story の前後で URL の自分の値を戻す（`playgrounds-list-content.stories.tsx`）
+- Storybook には Navigation API を拾う router が無く、`@k8ordo/state` の url を書く `update()` はそのままでは iframe を読み込み直す。url を書く部品の story は、`.storybook/url-state-story.ts` の `interceptUrlNavigation` を `beforeEach` に渡し、同じ文書の `navigate` を `intercept()` で止め、Story の前後で URL の `q` を戻す
+- Story は描いた時から React が欄を持つので、hydrate の前に欄へ打った文字を `q` へ写すことは、`.storybook/url-state-story.ts` の `hydrateAfterTyping`（サーバーで描いた HTML を置き、欄に打ってから hydrate する）で確かめる。この story は終わると canvas に何も残らないので `vrt.skip` にする
 - VRT（`.github/workflows/vrt.yml`）は、apps/main に対応する story を apps/main のスクリーンショットと比べる。`app/_components` → `components/site`、`app/<area>/_components` → `components/<area>` に置き直すので、apps/main から写す story は、この置き場とファイル名・export 名を保つ。apps/main に無い story と、apps/main と違うことを許した story は、main-k8ordo の前回のスクリーンショットと比べる。許した story は vrt.yml の `OWN_BASELINE_KEYS` に並べる
 
 ## 環境変数

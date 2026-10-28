@@ -1,6 +1,13 @@
-import { expect, userEvent, waitFor } from 'storybook/test';
+import { expect, userEvent, waitFor, within } from 'storybook/test';
+
+import { AppProvider } from '@/components/site/app-provider';
 
 import preview from '../../../../.storybook/preview';
+import {
+  hydrateAfterTyping,
+  interceptUrlNavigation,
+  queryInUrl,
+} from '../../../../.storybook/url-state-story';
 import { PlaygroundsListContent } from './playgrounds-list-content';
 import type { PlaygroundSummary } from './types';
 
@@ -46,42 +53,11 @@ const playgrounds: PlaygroundSummary[] = [
 
 const SEARCH_LABEL = 'Playgroundを検索';
 
-const queryInUrl = (): string | null =>
-  new URL(location.href).searchParams.get('q');
-
-// q を URLSearchParams で書き直すと %20 が + になるので、渡された綴りのまま足す
-const replaceQuery = (query: string): void => {
-  const url = new URL(location.href);
-  url.searchParams.delete('q');
-  url.search = [url.search.slice(1), query].filter(Boolean).join('&');
-  history.replaceState(history.state, '', url);
-};
-
 const meta = preview.meta({
   title: 'app/playgrounds/playgrounds-list-content',
   component: PlaygroundsListContent,
   args: { playgrounds },
-  // Storybook には Navigation API を拾う router が無く、q を書く navigate がそのままでは iframe を
-  // 読み込み直すので、同じ文書の navigate を止める。Story は同じページで続けて走るので、URL の q は
-  // Story の前後で parameters.query（無ければ無し）に戻す
-  beforeEach: ({ parameters }) => {
-    replaceQuery(
-      typeof parameters['query'] === 'string' ? parameters['query'] : '',
-    );
-    const intercept = (event: NavigateEvent): void => {
-      if (
-        event.canIntercept &&
-        new URL(event.destination.url).pathname === location.pathname
-      ) {
-        event.intercept();
-      }
-    };
-    navigation.addEventListener('navigate', intercept);
-    return () => {
-      navigation.removeEventListener('navigate', intercept);
-      replaceQuery('');
-    };
-  },
+  beforeEach: interceptUrlNavigation,
 });
 
 export const Primary = meta.story({
@@ -156,12 +132,44 @@ export const FollowsHistory = meta.story({
 
     await navigation.navigate(next.href, { history: 'push' }).finished;
     await waitFor(() => expect(input).toHaveValue('popover'));
+    await waitFor(() =>
+      expect(
+        canvas.getByRole('link', { name: /Popover API/u }),
+      ).toBeInTheDocument(),
+    );
 
     await navigation.back().finished;
     await waitFor(() => expect(input).toHaveValue('scope'));
     await waitFor(() =>
-      expect(canvas.getByText('1件のPlayground')).toBeInTheDocument(),
+      expect(canvas.getByRole('link', { name: /@scope/u })).toBeInTheDocument(),
     );
+    await expect(canvas.getByText('1件のPlayground')).toBeInTheDocument();
+  },
+});
+
+export const ReplayTypedBeforeHydration = meta.story({
+  parameters: { vrt: { skip: true } },
+  render: () => <div />,
+  play: async ({ canvasElement }) => {
+    const { host, dispose } = hydrateAfterTyping(
+      canvasElement,
+      <AppProvider>
+        <PlaygroundsListContent playgrounds={playgrounds} />
+      </AppProvider>,
+      'css',
+    );
+    try {
+      await waitFor(() => expect(queryInUrl()).toBe('css'));
+      const view = within(host);
+      await expect(
+        view.getByRole('textbox', { name: SEARCH_LABEL }),
+      ).toHaveValue('css');
+      await waitFor(() =>
+        expect(view.getByText('2件のPlayground')).toBeInTheDocument(),
+      );
+    } finally {
+      dispose();
+    }
   },
 });
 

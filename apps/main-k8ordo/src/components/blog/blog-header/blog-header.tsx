@@ -1,3 +1,4 @@
+import { href } from '@k8ordo/framework';
 import { Heading } from '@k8ordo/ui';
 import type { FC } from 'react';
 
@@ -8,7 +9,7 @@ import styles from './blog-header.module.css';
 
 export const BlogHeader: FC = () => (
   <div className={styles.root}>
-    <a className={styles.titleLink} href="/blog">
+    <a className={styles.titleLink} href={href('/blog')}>
       <Heading level="h2">Blog</Heading>
     </a>
     <div className={styles.actions}>
