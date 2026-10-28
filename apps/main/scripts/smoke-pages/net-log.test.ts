@@ -48,6 +48,9 @@ const startJob = (id: number, method: string, url: string): string =>
 
 const endJob = (id: number): string => eventOf(id, START_JOB, 2);
 
+const failJob = (id: number, netError: number): string =>
+  eventOf(id, START_JOB, 2, { net_error: netError });
+
 const sendRequest = (id: number): string[] => [
   eventOf(id, SEND_REQUEST, 1),
   eventOf(id, SEND_REQUEST, 2),
@@ -92,11 +95,14 @@ const server = createServer((request, response) => {
 
 const findLeakedRequestsIn = async (
   run: (context: BrowserContext) => Promise<void>,
+  args: readonly string[] = [],
 ): Promise<LeakedRequest[]> => {
   const dir = await mkdtemp(join(tmpdir(), 'k8o-smoke-pages-net-log-test-'));
   try {
     const file = join(dir, 'netlog.json');
-    const browser = await chromium.launch({ args: [`--log-net-log=${file}`] });
+    const browser = await chromium.launch({
+      args: [`--log-net-log=${file}`, ...args],
+    });
     try {
       const context = await browser.newContext();
       await run(context);
@@ -230,6 +236,53 @@ describe('findLeakedRequests', { timeout: 60_000 }, () => {
           category: 'api',
           method: 'POST',
           url: 'https://api.k8o.me/public/blogs/abs-sign/views',
+        },
+      ]);
+    });
+
+    it('失敗した要求の後ろも読み、送った要求は並べる', async () => {
+      const lines = netLogOf([
+        ...sent(1, 'GET', 'https://k8o.me/'),
+        startJob(2, 'POST', 'https://api.k8o.me/public/reports'),
+        failJob(2, -105),
+        ...sent(3, 'POST', 'https://api.k8o.me/public/blogs/abs-sign/views'),
+      ]);
+
+      await expect(findLeakedRequests(linesOf(lines))).resolves.toStrictEqual([
+        {
+          category: 'api',
+          method: 'POST',
+          url: 'https://api.k8o.me/public/blogs/abs-sign/views',
+        },
+      ]);
+    });
+
+    it('名前を引けずに失敗した要求の後ろも読み、送った要求だけを並べる', async () => {
+      const unresolvable = 'smoke-pages-net-log.invalid';
+      const leaked = await findLeakedRequestsIn(
+        async (context) => {
+          const page = await context.newPage();
+          await page.goto(`${origin}/`);
+          await page.evaluate(async (url) => {
+            await fetch(url, { method: 'POST', body: 'unsent' }).catch(
+              () => {},
+            );
+          }, `http://${unresolvable}${VITALS}`);
+          await page.evaluate(async (url) => {
+            await fetch(url, { method: 'POST', body: 'sent' });
+          }, `${origin}${VITALS}`);
+        },
+        [`--host-resolver-rules=MAP ${unresolvable} ~NOTFOUND`],
+      );
+
+      expect(received.filter((line) => line.includes(VITALS))).toStrictEqual([
+        `POST ${VITALS}`,
+      ]);
+      expect(leaked).toStrictEqual([
+        {
+          category: 'speed-insights',
+          method: 'POST',
+          url: `${origin}${VITALS}`,
         },
       ]);
     });
