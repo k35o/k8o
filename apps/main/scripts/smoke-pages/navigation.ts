@@ -8,6 +8,12 @@ type NavigationCheck = {
   readonly notes: readonly string[];
 };
 
+type LinkOnPage = {
+  readonly href: string;
+  readonly target: string;
+  readonly download: boolean;
+};
+
 const INTERNAL_LINK = 'main a[href^="/"]:not([href^="//"])';
 const DOCUMENT_MARK = '__k8oSmokePagesDocument';
 const NAVIGATION_TIMEOUT_MS = 10_000;
@@ -20,6 +26,19 @@ const FLUSH_MS = 1000;
 
 const pathnameOf = (url: string): string | null =>
   URL.canParse(url) ? new URL(url).pathname : null;
+
+// 新しいタブで開くリンク・download 付きのリンク・今のページへのリンクは、押しても今のページの
+// pathname が替わらない。k8ordo の router が先読みしないリンクと同じ条件で除く
+export const indexOfLinkToFollow = (
+  links: readonly LinkOnPage[],
+  pageUrl: string,
+): number =>
+  links.findIndex(
+    ({ href, target, download }) =>
+      !download &&
+      (target === '' || target === '_self') &&
+      new URL(href, pageUrl).pathname !== new URL(pageUrl).pathname,
+  );
 
 // Speed Insights は遷移のあとの INP・CLS を、画面が隠れたときにまとめて送る。ページを閉じずに
 // 隠れたことにして送らせ、route で止めて中身を見る
@@ -78,10 +97,21 @@ export const checkNavigation = async (
   page: Page,
   blocked: readonly BlockedRequest[],
 ): Promise<NavigationCheck> => {
-  const link = page.locator(INTERNAL_LINK).filter({ visible: true }).first();
-  if ((await link.count()) === 0) {
+  const links = page.locator(INTERNAL_LINK).filter({ visible: true });
+  const index = indexOfLinkToFollow(
+    await links.evaluateAll((anchors) =>
+      anchors.map((anchor) => ({
+        href: anchor.getAttribute('href') ?? '',
+        target: anchor.getAttribute('target') ?? '',
+        download: anchor.hasAttribute('download'),
+      })),
+    ),
+    page.url(),
+  );
+  if (index === -1) {
     return { problems: ['遷移: <main> に押せる内部リンクが無い'], notes: [] };
   }
+  const link = links.nth(index);
   const from = new URL(page.url()).pathname;
   const usesGa = blocked.some(({ category }) => category === 'ga');
   await page.evaluate((mark) => {

@@ -43,9 +43,11 @@ const GA_COLLECT = 'https://region1.google-analytics.com/g/collect';
 // クライアントの router のように pushState で移り、GA と Speed Insights と同じ形で送る
 const navigatesInDocument = ({
   pageViewDelayMs,
+  linksBefore = '',
 }: {
   pageViewDelayMs: number | null;
-}): string => `<main><a id="next" href="/next">next</a></main><script>
+  linksBefore?: string;
+}): string => `<main>${linksBefore}<a id="next" href="/next">next</a></main><script>
 const pageView = () => navigator.sendBeacon(
   '${GA_COLLECT}?v=2&en=page_view&dl=' + encodeURIComponent(location.href),
 );
@@ -125,6 +127,18 @@ const pageAt = (path: string): TestPage => {
       return {
         status: 200,
         body: html(navigatesInDocument({ pageViewDelayMs: 0 })),
+      };
+    case '/list':
+      // ブログの一覧のように、カードの前に今のページへの見出しのリンクと、新しいタブで開くフィードを置く
+      return {
+        status: 200,
+        body: html(
+          navigatesInDocument({
+            pageViewDelayMs: 0,
+            linksBefore:
+              '<h1><a href="/list">一覧</a></h1><a href="/list?q=css">css</a><a href="/feed" target="_blank">RSS</a><a href="/list.txt" download>txt</a>',
+          }),
+        ),
       };
     case '/soft-without-page-view':
       return {
@@ -290,6 +304,21 @@ describe('visitPage', { timeout: 60_000 }, () => {
         `遷移のあとの Speed Insights: CLS route=/next href=${origin}/next`,
       ]);
       expect(received).toStrictEqual(['GET /soft']);
+    });
+
+    it('押しても今のページの URL が替わらないリンクは飛ばし、ほかのページへその場で移るリンクを押す', async () => {
+      const visit = await visitPage(
+        browser,
+        optionsFor('/list', { checksNavigation: true }),
+      );
+
+      expect(visit.problems).toStrictEqual([]);
+      expect(visit.notes).toStrictEqual(
+        expect.arrayContaining([
+          '遷移: /list から /next へ、文書を読み込まずに移った',
+        ]),
+      );
+      expect(received).toStrictEqual(['GET /list']);
     });
   });
 
