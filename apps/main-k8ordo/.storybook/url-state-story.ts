@@ -5,25 +5,26 @@ import { renderToString } from 'react-dom/server';
 export const queryInUrl = (): string | null =>
   new URL(location.href).searchParams.get('q');
 
-// q を URLSearchParams で書き直すと %20 が + になるので、渡された綴りのまま足す
-const replaceQuery = (query: string): void => {
-  const url = new URL(location.href);
-  url.searchParams.delete('q');
-  url.search = [url.search.slice(1), query].filter(Boolean).join('&');
-  history.replaceState(history.state, '', url);
-};
-
-// Storybook には Navigation API を拾う router が無く、q を書く navigate がそのままでは iframe を
-// 読み込み直すので、同じ文書の navigate を止める。Story は同じページで続けて走るので、URL の q は
-// Story の前後で parameters.query（無ければ無し）に戻す
+// Storybook には Navigation API を拾う router が無く、url の state を書く navigate がそのままでは
+// iframe を読み込み直すので、同じ文書の navigate を止める。Story は同じページで続けて走るので、
+// Story の前に parameters.query と parameters.hash を URL に足し、Story のあとに Story の前の URL へ戻す
 export const interceptUrlNavigation = ({
   parameters,
 }: {
   parameters: Record<string, unknown>;
 }): (() => void) => {
-  replaceQuery(
-    typeof parameters['query'] === 'string' ? parameters['query'] : '',
-  );
+  const before = { state: history.state as unknown, url: location.href };
+  const url = new URL(before.url);
+  // q を URLSearchParams で書き直すと %20 が + になるので、渡された綴りのまま足す
+  if (typeof parameters['query'] === 'string') {
+    url.search = [url.search.slice(1), parameters['query']]
+      .filter(Boolean)
+      .join('&');
+  }
+  if (typeof parameters['hash'] === 'string') {
+    url.hash = parameters['hash'];
+  }
+  history.replaceState(before.state, '', url);
   const intercept = (event: NavigateEvent): void => {
     if (
       event.canIntercept &&
@@ -35,7 +36,7 @@ export const interceptUrlNavigation = ({
   navigation.addEventListener('navigate', intercept);
   return () => {
     navigation.removeEventListener('navigate', intercept);
-    replaceQuery('');
+    history.replaceState(before.state, '', before.url);
   };
 };
 
