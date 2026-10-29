@@ -1,6 +1,6 @@
 'use client';
 
-import { useSyncExternalStore } from 'react';
+import { useState, useSyncExternalStore } from 'react';
 
 const HASH_INDEX_RE = /^#(\d+)$/u;
 
@@ -11,7 +11,7 @@ const subscribe = (callback: () => void): (() => void) => {
   };
 };
 
-const getSnapshot = (): number => {
+const readHashIndex = (): number => {
   const match = HASH_INDEX_RE.exec(window.location.hash);
   if (match === null) return 0;
   const value = Number(match[1] ?? '');
@@ -20,8 +20,19 @@ const getSnapshot = (): number => {
 
 const getServerSnapshot = (): number => 0;
 
-export const useHashIndex = (): number =>
-  useSyncExternalStore(subscribe, getSnapshot, getServerSnapshot);
+// デッキを開いた pathname を離れたあとの URL は移る先のもので、描き直すとその hash を読んでしまうので、
+// 最後に読んだ番号を返す
+export const useHashIndex = (deckPathname: string): number => {
+  // oxlint-disable-next-line react/hook-use-state -- 初期化時に一度だけ作るストアで setter は不要
+  const [getSnapshot] = useState(() => {
+    let last = readHashIndex();
+    return (): number => {
+      if (window.location.pathname === deckPathname) last = readHashIndex();
+      return last;
+    };
+  });
+  return useSyncExternalStore(subscribe, getSnapshot, getServerSnapshot);
+};
 
 export const writeHashIndex = (index: number): void => {
   if (typeof window === 'undefined') return;

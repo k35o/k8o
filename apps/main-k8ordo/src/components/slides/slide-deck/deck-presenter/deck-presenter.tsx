@@ -19,13 +19,11 @@ export const DeckPresenter: FC<{
   title: string;
   slides: Slide[];
   qrUrl: string;
-  deckPathname: string;
-}> = ({ slug, title, slides, qrUrl, deckPathname }) => {
+}> = ({ slug, title, slides, qrUrl }) => {
   const total = slides.length;
   const { index, next, prev } = useDeckController({
     total,
     channelName: `slides:${slug}`,
-    deckPathname,
   });
   const current = slides[index] ?? slides[0];
   const nextSlide = slides[index + 1];
