@@ -50,7 +50,7 @@ catalog:
   storybook: 10.6.3
   storybook-addon-determinism: 0.2.1
   storybook-addon-mock-date: 3.2.1
-  storybook-addon-vrt: 0.4.1
+  storybook-addon-vrt: 0.4.2
   vite: 8.3.5
   vitest: 5.0.5
   wrangler: 4.151.3
