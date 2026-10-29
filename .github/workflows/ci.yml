@@ -88,7 +88,38 @@ jobs:
           done
           exit "$failed"
 
-  test:
+  # storybook の project は Story を Chromium で描くので CPU を食い、ほかの試験と
+  # 同じマシンに並べると、ほかの試験が時間切れになる。マシンを分ける
+  test-node:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    # main の smoke-pages の試験も Chromium を開く。
+    # --with-deps の apt は mirror が遅いと数分かかるので、OS の
+    # ライブラリまで入ったイメージで走らせる。
+    container:
+      image: mcr.microsoft.com/playwright:v1.64.1-resolute
+      options: --user 1001 --ipc=host
+    steps:
+      - name: Checkout branch
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Setup
+        uses: ./.github/actions/setup
+
+      - name: Cache turbo
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: .turbo
+          key: ${{ runner.os }}-turbo-${{ github.job }}-${{ github.ref_name }}-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.os }}-turbo-${{ github.job }}-${{ github.ref_name }}-
+            ${{ runner.os }}-turbo-${{ github.job }}-
+
+      - name: Run test
+        run: pnpm run test -- --project='!storybook'
+
+  test-storybook:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     # --with-deps の apt は mirror が遅いと数分かかるので、OS の
@@ -113,5 +144,21 @@ jobs:
             ${{ runner.os }}-turbo-${{ github.job }}-${{ github.ref_name }}-
             ${{ runner.os }}-turbo-${{ github.job }}-
 
+      # storybook の project を持つアプリ。持たない package に --project=storybook を渡すと
+      # vitest が落ちるので名指しする。アプリを足したらここにも足す
       - name: Run test
-        run: pnpm run test
+        run: pnpm run test --filter=./apps/main --filter=./apps/main-k8ordo --filter=./apps/ai -- --project=storybook
+
+  # main のルールセットが必須にしているのはこの名前なので、分けたジョブの結果をまとめる。
+  # always() でないと、分けたジョブが落ちたときに skip され、必須のチェックを通ってしまう
+  test:
+    needs: [test-node, test-storybook]
+    if: ${{ always() }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 1
+    steps:
+      - name: Check results
+        run: test "$NODE" = success && test "$STORYBOOK" = success
+        env:
+          NODE: ${{ needs.test-node.result }}
+          STORYBOOK: ${{ needs.test-storybook.result }}
