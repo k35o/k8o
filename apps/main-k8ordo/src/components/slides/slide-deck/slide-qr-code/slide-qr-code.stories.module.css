@@ -1,0 +1,6 @@
+.frame {
+  width: calc(var(--spacing) * 40);
+  height: calc(var(--spacing) * 40);
+  padding: calc(var(--spacing) * 2);
+  background-color: var(--color-bg-mute);
+}

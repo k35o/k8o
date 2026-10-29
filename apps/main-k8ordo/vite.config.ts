@@ -16,6 +16,7 @@ import type { Plugin } from 'vite';
 import floor from '../main/src/features/browser-support/infrastructure/browser-min-versions.json' with { type: 'json' };
 import { playgroundIds } from '../main/src/playgrounds/ids.ts';
 import type * as blogs from './src/features/blog/application/blogs.ts';
+import type * as slides from './src/features/slides/application/slides.ts';
 import type * as tags from './src/features/tags/application/tags.ts';
 import { browserTargets } from './src/site/browser-targets.ts';
 import { katexCssGuard } from './src/site/katex-css-guard.ts';
@@ -23,6 +24,7 @@ import type { BlogArticle } from './src/site/katex-css-guard.ts';
 import {
   blogPathnames,
   playgroundPathnames,
+  slidePathnames,
   tagPathnames,
 } from './src/site/paths.ts';
 import { DEV_SECURITY_HEADERS } from './src/site/security-headers.ts';
@@ -95,6 +97,16 @@ const readTagIds = async (): Promise<number[]> => {
   return (await module.getTags()).map(({ id }) => id);
 };
 
+const readSlideSlugs = async (): Promise<string[]> => {
+  const { module } = await runnerImport<typeof slides>(
+    fileURLToPath(
+      new URL('src/features/slides/application/slides.ts', import.meta.url),
+    ),
+    { resolve: { alias } },
+  );
+  return (await module.getSlides()).map(({ slug }) => slug);
+};
+
 export default defineConfig({
   // 記事・デモ・public は写さず apps/main のものを読む
   publicDir: fileURLToPath(new URL('../main/public', import.meta.url)),
@@ -131,6 +143,7 @@ export default defineConfig({
         ),
         ...playgroundPathnames(patterns, playgroundIds),
         ...tagPathnames(patterns, await readTagIds()),
+        ...slidePathnames(patterns, await readSlideSlugs()),
       ],
     }),
     vercel({ beforeFiles: BEFORE_FILES, beforeNotFound: BEFORE_NOT_FOUND }),

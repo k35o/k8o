@@ -1,6 +1,11 @@
 import { describe, expect, it } from 'vitest';
 
-import { blogPathnames, playgroundPathnames, tagPathnames } from './paths';
+import {
+  blogPathnames,
+  playgroundPathnames,
+  slidePathnames,
+  tagPathnames,
+} from './paths';
 
 describe('blogPathnames', () => {
   describe('正常系', () => {
@@ -104,6 +109,43 @@ describe('tagPathnames', () => {
   describe('エッジケース', () => {
     it('タグが無ければ、タグのページのパスを作らない', () => {
       expect(tagPathnames(['/tags/:id'], [])).toStrictEqual([]);
+    });
+  });
+});
+
+describe('slidePathnames', () => {
+  describe('正常系', () => {
+    it('公開済みのスライドの一覧1つから、デッキのページと OG のパスを作る', () => {
+      const pathnames = slidePathnames(
+        ['/slides/:slug', '/slides/:slug/og.png'],
+        ['sample-deck', 'my-talk'],
+      );
+
+      expect(pathnames).toStrictEqual([
+        '/slides/sample-deck',
+        '/slides/my-talk',
+        '/slides/sample-deck/og.png',
+        '/slides/my-talk/og.png',
+      ]);
+    });
+  });
+
+  describe('異常系', () => {
+    it('デッキの下でないパターンにはパスを作らない（framework がビルドを止めて名指しする）', () => {
+      const pathnames = slidePathnames(
+        ['/slides', '/slides/feed', '/slides-old/:slug', '/blog/:slug'],
+        ['sample-deck'],
+      );
+
+      expect(pathnames).toStrictEqual([]);
+    });
+  });
+
+  describe('エッジケース', () => {
+    it('公開済みのスライドが無ければ、デッキの下のパスを作らない', () => {
+      expect(
+        slidePathnames(['/slides/:slug', '/slides/:slug/og.png'], []),
+      ).toStrictEqual([]);
     });
   });
 });

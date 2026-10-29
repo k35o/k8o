@@ -20,10 +20,10 @@ apps/main（Next）を k8ordo（`@k8ordo/framework` の `mode: 'static'`）で�
 - ページの title・description・canonical・og・twitter・RSS の alternate は、ページが `components/site/page-meta` の `PageMeta` を描いて書く（React が head へ上げる）。Next と違って親の値は継がれないので、OG の画像などは各ページが渡す
 - エラーの画面（`components/site/error-fallback`・`components/site/root-error-boundary`）はページの PageMeta に替わって出るので、`<title>` を直に描く
 - ルートレイアウトの部品（GlobalLayout・Provider など）の失敗は `routes/error.tsx` の外で起きるので、`components/site/root-error-boundary` が受けて api に送る
-- page・not-found・route.ts はリクエストが届いたときに読まれ、それが静的に読むクライアントの部品と CSS（サーバーの部品の CSS Modules を含む）は、そのページだけが読む。layout・error が静的に読むものは、どのページも読む（`routes/blog/layout.tsx` のものもトップと 404 が読む）。殻にはどのページにも要るものだけを置く。区画の見出しと説明と幅（apps/main の `app/tags/layout.tsx`）のように、その区画のページだけが要る枠も layout.tsx に置かず、部品（`components/tags/tags-frame`）にしてページが描く
+- page・not-found・route.ts はリクエストが届いたときに読まれ、それが静的に読むクライアントの部品と CSS（サーバーの部品の CSS Modules を含む）は、そのページだけが読む。layout・error が静的に読むものは、どのページも読む（`routes/blog/layout.tsx` のものもトップと 404 が読む）。殻にはどのページにも要るものだけを置く。区画の見出しと説明と幅（apps/main の `app/tags/layout.tsx`）のように、その区画のページだけが要る枠も layout.tsx に置かず、部品（`components/tags/tags-frame`・`components/slides/slides-frame`）にしてページが描く
 - page・not-found が import する CSS と副作用は、そのページを読んでから効き、読んだあとはそのタブ（ビルドと dev ではそのプロセス）に残ってほかのページにも効く。ほかのページも当てにするもの（`globals.css`・フォント・`@/i18n`）はルートの layout で import する。そのページだけが使う CSS（記事の MDX が読む KaTeX の CSS、mdx-base が読むコードハイライトの CSS）はページの側に置く。置けるのは、ほかのページの見た目を変えないものに限る（KaTeX とコードハイライトの CSS が見た目を決めるのは、`.katex`・`.shiki`・`.code-annotate-*` などのクラスの要素だけ）
 - 直に開いたページの head では、クライアントの部品の CSS の組が、サーバーの部品の CSS（ルートの layout が import する `globals.css` も）より前に並ぶ。遷移で着いたページでは、前のページで読んだファイルがそのまま残り、新しいページのサーバーの部品の CSS はサーバーの部品の CSS の後ろに、初めて読むクライアントの部品の CSS は head の末尾に足される。サーバーの部品とクライアントの部品の CSS のどちらが後に来るかは、直に開いたか遷移で来たかで変わる。main-k8ordo の src の CSS Modules は `@layer components` に入り（`better-css-modules.config.ts`）、@k8ordo/ui の部品の CSS も同じ層にあるので、層でも決まらない。`@content`・`@playgrounds` から読む記事とデモの CSS Modules は、`better-css-modules.config.ts` のあるディレクトリの外にあるので層に入らず、並びに関係なく層の中の規則に勝つ（apps/main では同じモジュールが `@layer components` に入るので、勝ち負けが違う）。だから、CSS ファイルの並びを当てにせず、同じ要素に別のモジュールの class を重ねるとき（`TableOfContentsSideRail` のように `cn(styles.root, className)` で外から class を受ける部品）は、両方で同じプロパティを書かない
-- router は、同じ route の別の値へ移るとき（`/blog/a` から `/blog/b` など）、ページの木を作り直さずに次の値の props で描き直す。Next のように値ごとに部品の状態を初めに戻すため、動的なページは描く部分の根の要素に値で key を付ける（記事は `BlogLayoutContent` の `ArticleFrame`、タグは `TagContent`）
+- router は、同じ route の別の値へ移るとき（`/blog/a` から `/blog/b` など）、ページの木を作り直さずに次の値の props で描き直す。Next のように値ごとに部品の状態を初めに戻すため、動的なページは描く部分の根の要素に値で key を付ける（記事は `BlogLayoutContent` の `ArticleFrame`、タグは `TagContent`、デッキは `SlideArticle`）
 - router は、layout の外へ移ると、その layout から下の部品を DOM ごと捨てる（Next は前の route を DOM ごと隠した Activity で残すので、外へ出て戻っても部品の状態も要素のスクロールも残る）。ページを移っても保つ状態（縦書きの切り替え）の Provider は、使うページの layout ではなくルートの layout に置く。ルートに置いて保てるのは React の状態だけで、DOM の状態（縦書きの本文の横のスクロールなど）は戻らない。殻にはどのページにも要るものだけを置く、という決まりの例外
 - dev だけで動かす部品（`components/site/react-scan`）は、部品の中で `import.meta.env.DEV` を見て、依存を動的に import する。描く側で `import.meta.env.DEV &&` としても、部品のモジュールは client のバンドルに入り、それが静的に読む依存の読み込みの処理も本番で走る
 
@@ -48,6 +48,14 @@ apps/main（Next）を k8ordo（`@k8ordo/framework` の `mode: 'static'`）で�
 - static mode では HTML は既定値（全件）で、`?q=` は hydrate のあとに効く。hydrate の前に欄へ打った文字は、欄が付いた時に `q` へ写す（`shared/browser/replay-typed-value.ts` を欄の `ref` に渡す）
 - 一覧のカードのリンクは `href()` で組んだ素の `<a>` にする。`components/site/content-card` の `ContentCard` は、呼ぶ側が `href()` で組んだパスを `href` で受ける
 
+## スライド
+
+- デッキの route は `/slides/:slug` の 1 本（何を書くかは「ビルドが読むもの」）。MDX は `components/slides/slide-article` が記事と同じく `import.meta.glob`（`?vite-rsc-css-export=default` 付き）で slug ごとに遅れて読み、`MdxContent` にスライドの部品の表を重ねて描く。MDX の `<SlideDeckShell slug>` は QR の URL と同期の名前になるので、ディレクトリ名と同じにする（apps/main の `slide-files.test.ts` が確かめる）
+- 発表者モードかどうか（`mode`）と、観覧と発表者の生存の知らせの名前（`session`）は `definePageState('slide-deck')` の url に置く。表示する枚の `#<番号>` は state に置き場が無いので、`use-hash-index` が `history.replaceState` と `hashchange` で読み書きする。`history.replaceState(null)` は Navigation API の entry の state も消すので、ルートの layout に entry に置くページの状態を足すと、デッキはページ送りのたびにそれを消す
+- static mode の HTML は url の state を既定値で描くので、デッキ全体を `BrowserOnly`（`use(browser())` を Suspense で包む）でブラウザでだけ描く。HTML の `<main>` は見出しの Slides と、空の digest の `<!--$!-->` が 1 つになる
+- router は移る先の URL を先に書き、着くまで前のページを画面に残す。`@k8ordo/state` を通さずに URL を直に書く部品（デッキの `#<番号>`）は、そのあいだもキーや BroadcastChannel で動くので、開いたときの pathname を離れたら書かない。そのあいだは url の state も移る先の値になり、それで付け替わる部品は移るあいだに新しく付く（発表者のタブでは `DeckPresenter` に替わって `DeckViewer` が付く）。だから開いたときの pathname は、部品ごとではなく url の state で付け替わらない根（デッキの `Deck`）で覚えて渡す
+- `SlideDeckShell` は MDX の子を `hr` で区切り、`Notes` を関数に付けた `$$slideRole` で見分けて、クライアントの `SlideDeck` に渡す。`Notes` は関数の宣言や式で export しない。CSS を import するモジュールでそう書くと、plugin-rsc が CSS を載せる包みの関数に替え、`$$slideRole` が外れてノートが本文に出る
+
 ## vercel() の規則と dev
 
 - 全応答のヘッダー・末尾スラッシュの 308・Accept での出し分け・`/reading-list/feed` の中継は、`src/site/vercel-routes.ts` を `vercel()` に渡して `.vercel/output/config.json` に書く。当たるのは Vercel だけで、`vite dev`・`vite preview` には当たらない
@@ -59,6 +67,7 @@ apps/main（Next）を k8ordo（`@k8ordo/framework` の `mode: 'static'`）で�
 - 記事のページと記事の下の URL（`/blog/:slug`・`/blog/:slug/article.md`・`/blog/:slug/og.png`）は、`vite.config.ts` の `paths` が、フィードと llms.txt と同じ公開済みの記事の一覧1つ（`features/blog/application/blogs.ts` の `getBlogs`）から作る。下書きと MDX の無い記事は挙がらず、404 になる。列挙した記事の route.ts が 200 を返さなければビルドが止まる
 - Playground のページと OG（`/playgrounds/:id`・`/playgrounds/:id/og.png`）は、`paths` が apps/main の `playgrounds/ids.ts` から作る。記事の `PlaygroundEmbed` が無いセクションやデモを名指すと、描画が投げてビルドが止まる
 - タグのページ（`/tags/:id`）は、`paths` が DB の全タグの id（`features/tags/application/tags.ts` の `getTags`）から作る。Next と同じく、中身が 0 件のタグ（下書きの記事だけのタグ）のページも書く。id は route の `paramsSchema` で正の整数に読むので、ページも `href('/tags/:id', { id })` も数値を受ける。挙げていない id と数字でない値は 404 になる。`vite dev` は `paths` を見ずにスキーマで読むので、ビルドでは 404 の `/tags/01` も dev では描く
+- デッキのページと OG（`/slides/:slug`・`/slides/:slug/og.png`）は、`paths` が一覧とフィードと同じ公開済みで MDX のあるスライドの一覧1つ（`features/slides/application/slides.ts` の `getSlides`）から作る。デッキを足すのは apps/main の `content/slides/<slug>/content.mdx` とマイグレーションだけで、公開していないデッキは 404 になる
 - `paths` は `vite.config.ts` の側で走る。設定のバンドルは `@repo/database` を外に出し、Node がそのまま読むと落ちるので、DB を読むモジュールは Vite の `runnerImport` で読む
 - OG は route.ts の GET が satori と `@resvg/resvg-js` で PNG にする（`shared/og`）。フォントは `shared/og/fonts` に置いたものだけを使い、next/og と違ってビルドで足りない字形をネットから取らない。足りない字形があれば route.ts の GET が reject し、ビルドが止まる。字を足すときは `shared/og/fonts` にフォントを置く
 
@@ -68,7 +77,7 @@ apps/main（Next）を k8ordo（`@k8ordo/framework` の `mode: 'static'`）で�
 - Storybook は `@storybook/react-vite`（`pnpm -F main-k8ordo storybook`、port 6007）。Storybook と vitest の storybook の project は `.storybook/vite.config.ts` を読み、アプリの `vite.config.ts`（framework()・vercel()）は読まない
 - features を読むサーバーの部品（`BlogLayout`・`BrowserSupportStatus`）は、描く部分（`BlogLayoutContent`・`BrowserSupportStatusLive`）を別の部品にし、story は描く部分を描く。features は `node:fs` などを読むので、Storybook のブラウザでは読めない
 - テーマは toolbar か `parameters.theme` で決め、`ColorSchemeProvider` の `defaultPreference` に渡す。Story ごとに localStorage のテーマと `@k8ordo/state` の状態を消す
-- Storybook には Navigation API を拾う router が無く、`@k8ordo/state` の url を書く `update()` はそのままでは iframe を読み込み直す。url を書く部品の story は、`.storybook/url-state-story.ts` の `interceptUrlNavigation` を `beforeEach` に渡し、同じ文書の `navigate` を `intercept()` で止め、Story の前後で URL の `q` を戻す
+- Storybook には Navigation API を拾う router が無く、`@k8ordo/state` の url を書く `update()` はそのままでは iframe を読み込み直す。URL を読む・書く部品の story は、`.storybook/url-state-story.ts` の `interceptUrlNavigation` を `beforeEach` に渡す。Story の前に `parameters.query`（`q=css` のような query の文字列）と `parameters.hash` を URL に足し、同じ文書の `navigate` を `intercept()` で止め、Story のあとに Story の前の URL（pathname・search・hash）と `history.state` へ戻す。Navigation API の entry の state（`definePageState` の `entry`）は前後の `history.replaceState` で消えるので、Story は空の entry の state から始まり、Story のあとも戻らない
 - Story は描いた時から React が欄を持つので、hydrate の前に欄へ打った文字を `q` へ写すことは、`.storybook/url-state-story.ts` の `hydrateAfterTyping`（サーバーで描いた HTML を置き、欄に打ってから hydrate する）で確かめる。この story は終わると canvas に何も残らないので `vrt.skip` にする
 - VRT（`.github/workflows/vrt.yml`）は、apps/main に対応する story を apps/main のスクリーンショットと比べる。`app/_components` → `components/site`、`app/<area>/_components` → `components/<area>` に置き直すので、apps/main から写す story は、この置き場とファイル名・export 名を保つ。apps/main に無い story と、apps/main と違うことを許した story は、main-k8ordo の前回のスクリーンショットと比べる。許した story は vrt.yml の `OWN_BASELINE_KEYS` に並べる
 

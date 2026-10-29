@@ -1,0 +1,4 @@
+.root {
+  color: var(--color-primary-fg);
+  font-weight: var(--font-weight-bold);
+}
