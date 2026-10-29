@@ -1,0 +1,21 @@
+.root {
+  width: 100%;
+  max-width: 64rem;
+  margin-inline: auto;
+}
+
+.content {
+  display: flex;
+  flex-direction: column;
+  gap: calc(var(--spacing) * 4);
+  height: 100%;
+}
+
+.section {
+  display: grid;
+  gap: calc(var(--spacing) * 6);
+  height: 100%;
+  padding: calc(var(--spacing) * 10);
+  border-radius: var(--radius-xl);
+  background-color: var(--color-bg-base);
+}
