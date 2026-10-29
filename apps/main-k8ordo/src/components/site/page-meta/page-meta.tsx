@@ -21,7 +21,7 @@ type PageMetaProps = {
   image?: { path: string; alt: string };
   rssFeedPath?: string;
   twitterCard?: 'summary' | 'summary_large_image';
-  article?: { publishedTime: string; modifiedTime: string };
+  article?: { publishedTime: string; modifiedTime?: string };
   category?: string;
   noindex?: boolean;
 };
@@ -88,10 +88,12 @@ export const PageMeta: FC<PageMetaProps> = ({
             content={article.publishedTime}
             property="article:published_time"
           />
-          <meta
-            content={article.modifiedTime}
-            property="article:modified_time"
-          />
+          {article.modifiedTime !== undefined && (
+            <meta
+              content={article.modifiedTime}
+              property="article:modified_time"
+            />
+          )}
           <meta content={SITE_NAME} property="article:author" />
         </>
       )}

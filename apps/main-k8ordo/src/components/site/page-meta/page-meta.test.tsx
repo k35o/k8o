@@ -152,6 +152,20 @@ describe('PageMeta', () => {
       expect(metaOf(tags, 'property', 'article:author')).toBe('k8o');
     });
 
+    it('記事の更新日を省くと、article:modified_time を書かない', () => {
+      const tags = tagsOf({
+        path: '/slides/sample-deck',
+        article: { publishedTime: '2026-05-15' },
+      });
+
+      expect(metaOf(tags, 'property', 'og:type')).toBe('article');
+      expect(metaOf(tags, 'property', 'article:published_time')).toBe(
+        '2026-05-15',
+      );
+      expect(metaOf(tags, 'property', 'article:modified_time')).toBeUndefined();
+      expect(metaOf(tags, 'property', 'article:author')).toBe('k8o');
+    });
+
     it('分類を category に書く', () => {
       const tags = tagsOf({ path: '/blog/abs-sign', category: 'CSS, abs' });
 
