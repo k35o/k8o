@@ -28,6 +28,22 @@ const esmImportSources = (slug: string): string[] =>
         : [],
     );
 
+const deckShellSlugs = (slug: string): string[] =>
+  parser
+    .parse(readFileSync(slidePath(slug), 'utf8'))
+    .children.flatMap((node) =>
+      node.type === 'mdxJsxFlowElement' && node.name === 'SlideDeckShell'
+        ? node.attributes
+        : [],
+    )
+    .flatMap((attribute) =>
+      attribute.type === 'mdxJsxAttribute' &&
+      attribute.name === 'slug' &&
+      typeof attribute.value === 'string'
+        ? [attribute.value]
+        : [],
+    );
+
 const isNextOrAppAlias = (source: string): boolean =>
   source.startsWith('@/') ||
   source === 'next' ||
@@ -50,6 +66,13 @@ describe('src/content/slides のスライド', () => {
         expect(
           esmImportSources(slug).filter((source) => isNextOrAppAlias(source)),
         ).toStrictEqual([]);
+      },
+    );
+
+    it.each(slugs)(
+      '%s の SlideDeckShell の slug はディレクトリ名と同じ（QR の URL と発表者モードの同期の名前になる）',
+      (slug) => {
+        expect(deckShellSlugs(slug)).toStrictEqual([slug]);
       },
     );
   });
