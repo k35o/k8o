@@ -291,8 +291,8 @@ catalogs:
       specifier: 3.2.1
       version: 3.2.1
     storybook-addon-vrt:
-      specifier: 0.4.0
-      version: 0.4.0
+      specifier: 0.4.1
+      version: 0.4.1
     vite:
       specifier: 8.3.5
       version: 8.3.5
@@ -476,7 +476,7 @@ importers:
         version: 0.2.1(storybook@10.6.3(@types/react@19.3.0)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(vite-plus@1.3.0(@opentelemetry/api@1.9.1)(@types/node@24.19.2)(@vitest/browser-playwright@5.0.5)(@vitest/coverage-v8@5.0.5)(@vitest/ui@5.0.5)(esbuild@0.28.1)(jiti@2.7.0)(playwright@1.64.1)(tsx@4.23.15)(typescript@7.0.2)(yaml@2.9.1)))
       storybook-addon-vrt:
         specifier: 'catalog:'
-        version: 0.4.0(vite@8.3.5(@types/node@24.19.2)(esbuild@0.28.1)(jiti@2.7.0)(tsx@4.23.15)(yaml@2.9.1))(vitest@5.0.5)
+        version: 0.4.1(vite@8.3.5(@types/node@24.19.2)(esbuild@0.28.1)(jiti@2.7.0)(tsx@4.23.15)(yaml@2.9.1))(vitest@5.0.5)
       vitest:
         specifier: 'catalog:'
         version: 5.0.5(@opentelemetry/api@1.9.1)(@types/node@24.19.2)(@vitest/browser-playwright@5.0.5)(@vitest/browser-preview@5.0.5)(@vitest/coverage-v8@5.0.5)(@vitest/ui@5.0.3)(msw@3.0.3(@types/node@24.19.2)(graphql@16.14.0)(supports-color@10.2.2)(typescript@7.0.2)(vite@8.3.5(@types/node@24.19.2)(esbuild@0.28.1)(jiti@2.7.0)(tsx@4.23.15)(yaml@2.9.1)))(vite@8.3.5(@types/node@24.19.2)(esbuild@0.28.1)(jiti@2.7.0)(tsx@4.23.15)(yaml@2.9.1))
@@ -700,7 +700,7 @@ importers:
         version: 3.2.1(storybook@10.6.3(@types/react@19.3.0)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(vite-plus@1.3.0(@opentelemetry/api@1.9.1)(@types/node@24.19.2)(@vitest/browser-playwright@5.0.5)(@vitest/coverage-v8@5.0.5)(@vitest/ui@5.0.5)(esbuild@0.28.1)(jiti@2.7.0)(playwright@1.64.1)(tsx@4.23.15)(typescript@7.0.2)(yaml@2.9.1)))
       storybook-addon-vrt:
         specifier: 'catalog:'
-        version: 0.4.0(vite@8.3.5(@types/node@24.19.2)(esbuild@0.28.1)(jiti@2.7.0)(tsx@4.23.15)(yaml@2.9.1))(vitest@5.0.5)
+        version: 0.4.1(vite@8.3.5(@types/node@24.19.2)(esbuild@0.28.1)(jiti@2.7.0)(tsx@4.23.15)(yaml@2.9.1))(vitest@5.0.5)
       vitest:
         specifier: 'catalog:'
         version: 5.0.5(@opentelemetry/api@1.9.1)(@types/node@24.19.2)(@vitest/browser-playwright@5.0.5)(@vitest/browser-preview@5.0.5)(@vitest/coverage-v8@5.0.5)(@vitest/ui@5.0.3)(msw@3.0.3(@types/node@24.19.2)(graphql@16.14.0)(supports-color@10.2.2)(typescript@7.0.2)(vite@8.3.5(@types/node@24.19.2)(esbuild@0.28.1)(jiti@2.7.0)(tsx@4.23.15)(yaml@2.9.1)))(vite@8.3.5(@types/node@24.19.2)(esbuild@0.28.1)(jiti@2.7.0)(tsx@4.23.15)(yaml@2.9.1))
@@ -845,7 +845,7 @@ importers:
         version: 3.2.1(storybook@10.6.3(@types/react@19.3.0)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(vite-plus@1.3.0(@opentelemetry/api@1.9.1)(@types/node@24.19.2)(@vitest/browser-playwright@5.0.5)(@vitest/coverage-v8@5.0.5)(@vitest/ui@5.0.5)(esbuild@0.28.1)(jiti@2.7.0)(playwright@1.64.1)(tsx@4.23.15)(typescript@7.0.2)(yaml@2.9.1)))
       storybook-addon-vrt:
         specifier: 'catalog:'
-        version: 0.4.0(vite@8.3.5(@types/node@24.19.2)(esbuild@0.28.1)(jiti@2.7.0)(tsx@4.23.15)(yaml@2.9.1))(vitest@5.0.5)
+        version: 0.4.1(vite@8.3.5(@types/node@24.19.2)(esbuild@0.28.1)(jiti@2.7.0)(tsx@4.23.15)(yaml@2.9.1))(vitest@5.0.5)
       vite:
         specifier: 'catalog:'
         version: 8.3.5(@types/node@24.19.2)(esbuild@0.28.1)(jiti@2.7.0)(tsx@4.23.15)(yaml@2.9.1)
@@ -4954,6 +4954,11 @@ packages:
 
   ajv-formats@3.0.1:
     resolution: {integrity: sha512-8iUql50EUR+uUcdRQ3HDqa6EVyo3docL8g5WJ3FNcWmu62IbkGUue/pEyLBW8VGKKucTPgqeks4fIU1DA4yowQ==}
+    peerDependencies:
+      ajv: ^8.0.0
+    peerDependenciesMeta:
+      ajv:
+        optional: true
 
   ajv@6.15.0:
     resolution: {integrity: sha512-fgFx7Hfoq60ytK2c7DhnF8jIvzYgOMxfugjLOSMHjLIPgenqa7S7oaagATUq99mV6IYvN2tRmC0wnTYX6iPbMw==}
@@ -5128,6 +5133,10 @@ packages:
 
   cac@7.0.0:
     resolution: {integrity: sha512-tixWYgm5ZoOD+3g6UTea91eow5z6AAHaho3g0V9CNSNb45gM8SmflpAc+GRd1InC4AqN/07Unrgp56Y94N9hJQ==}
+    engines: {node: '>=20.19.0'}
+
+  cac@7.1.0:
+    resolution: {integrity: sha512-LMDU/U2yA4IPIY8KT0NsNPWEYZvAMkbgyspxJ6btJaYV+WMDOHAZCmB0lsTObiHaRS1V/ztKAl7+TSkTqXyeoA==}
     engines: {node: '>=20.19.0'}
 
   camelize@1.0.1:
@@ -6745,8 +6754,8 @@ packages:
     resolution: {integrity: sha512-qcJu88Q2IWqJsDD529JKMdwGm/dvInW4HvQnRwiH9JtihJvzGOscDtHE3x1pBKeUOTysQ8kVmLnJ2kJu7yhcGA==}
     engines: {node: '>=12'}
 
-  pixelmatch@7.2.0:
-    resolution: {integrity: sha512-xhcb4yHu9sM/G7foGzoLtXYcC0zHEaOXXjRKhGup0fw78Nf2Tkiapv4EQyMzrbcmQPsllAI7DbFY2UT7PlI9Pg==}
+  pixelmatch@8.0.0:
+    resolution: {integrity: sha512-cIqOLfh5k52us715qf3B3+kTOxZv+WDv77HN7xokLScYQGYQHi4m/ynoDIPpvF2LvCyUJGyvzY64i0QCXtzu1g==}
     hasBin: true
 
   pkce-challenge@5.0.1:
@@ -7093,8 +7102,8 @@ packages:
     peerDependencies:
       storybook: ^10.0.0
 
-  storybook-addon-vrt@0.4.0:
-    resolution: {integrity: sha512-Fjk+ChDSY61BJaPOQe7rlEHMNbfVUqM3BRP8wgdjuoyoECXFxfMQ2Rro6eooV+CFocD2AZcVn3VY7BnGEbxF1A==}
+  storybook-addon-vrt@0.4.1:
+    resolution: {integrity: sha512-D5Y96sfoESw8y3Qz35b6o7T1NQba0cCMtb3LjcqUSR6sgwXoizqc269DXSzOyxbOzYmx3iCVwRlanBuUES9Pmg==}
     engines: {node: '>=22.12.0'}
     hasBin: true
     peerDependencies:
@@ -10664,6 +10673,8 @@ snapshots:
 
   cac@7.0.0: {}
 
+  cac@7.1.0: {}
+
   camelize@1.0.1: {}
 
   caniuse-lite@1.0.30001815: {}
@@ -12723,7 +12734,7 @@ snapshots:
 
   picomatch@4.0.7: {}
 
-  pixelmatch@7.2.0:
+  pixelmatch@8.0.0:
     dependencies:
       pngjs: 7.0.0
 
@@ -13238,10 +13249,10 @@ snapshots:
       '@sinonjs/fake-timers': 15.4.0
       storybook: 10.6.3(@types/react@19.3.0)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(vite-plus@1.3.0(@opentelemetry/api@1.9.1)(@types/node@24.19.2)(@vitest/browser-playwright@5.0.5)(@vitest/coverage-v8@5.0.5)(@vitest/ui@5.0.5)(esbuild@0.28.1)(jiti@2.7.0)(playwright@1.64.1)(tsx@4.23.15)(typescript@7.0.2)(yaml@2.9.1))
 
-  storybook-addon-vrt@0.4.0(vite@8.3.5(@types/node@24.19.2)(esbuild@0.28.1)(jiti@2.7.0)(tsx@4.23.15)(yaml@2.9.1))(vitest@5.0.5):
+  storybook-addon-vrt@0.4.1(vite@8.3.5(@types/node@24.19.2)(esbuild@0.28.1)(jiti@2.7.0)(tsx@4.23.15)(yaml@2.9.1))(vitest@5.0.5):
     dependencies:
-      cac: 7.0.0
-      pixelmatch: 7.2.0
+      cac: 7.1.0
+      pixelmatch: 8.0.0
       pngjs: 7.0.0
     optionalDependencies:
       vite: 8.3.5(@types/node@24.19.2)(esbuild@0.28.1)(jiti@2.7.0)(tsx@4.23.15)(yaml@2.9.1)
