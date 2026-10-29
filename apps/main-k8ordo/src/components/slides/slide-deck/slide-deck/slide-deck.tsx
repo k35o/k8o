@@ -1,6 +1,7 @@
 'use client';
 
 import { useAppState } from '@k8ordo/state';
+import { useState } from 'react';
 import type { FC } from 'react';
 
 import type { Slide } from '@/components/slides/split-slides/split-slides';
@@ -20,12 +21,28 @@ type Props = {
 
 const Deck: FC<Props> = ({ slug, title, slides, qrUrl }) => {
   const [{ mode }] = useAppState(slideDeckState, ['mode']);
+  // 外へ移るあいだは url の mode が移る先の既定値になり、発表者のタブでも DeckViewer が新しく付くので、
+  // 開いたときの pathname は mode で付け替わらないここで覚える
+  // oxlint-disable-next-line react/hook-use-state -- 初期化時に一度だけ算出する安定値で setter は不要
+  const [deckPathname] = useState(() => window.location.pathname);
 
   const deck =
     mode === 'presenter' ? (
-      <DeckPresenter qrUrl={qrUrl} slides={slides} slug={slug} title={title} />
+      <DeckPresenter
+        deckPathname={deckPathname}
+        qrUrl={qrUrl}
+        slides={slides}
+        slug={slug}
+        title={title}
+      />
     ) : (
-      <DeckViewer qrUrl={qrUrl} slides={slides} slug={slug} title={title} />
+      <DeckViewer
+        deckPathname={deckPathname}
+        qrUrl={qrUrl}
+        slides={slides}
+        slug={slug}
+        title={title}
+      />
     );
 
   return (

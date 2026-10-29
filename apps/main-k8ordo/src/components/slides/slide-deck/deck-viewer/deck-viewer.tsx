@@ -21,11 +21,13 @@ export const DeckViewer: FC<{
   title: string;
   slides: Slide[];
   qrUrl: string;
-}> = ({ slug, title, slides, qrUrl }) => {
+  deckPathname: string;
+}> = ({ slug, title, slides, qrUrl, deckPathname }) => {
   const total = slides.length;
   const { index, next, prev, isFullscreen } = useDeckController({
     total,
     channelName: `slides:${slug}`,
+    deckPathname,
   });
   const [isPresenting, setIsPresenting] = useState(false);
   const isMaximized = isFullscreen || isPresenting;
