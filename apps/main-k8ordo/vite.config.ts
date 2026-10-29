@@ -16,10 +16,15 @@ import type { Plugin } from 'vite';
 import floor from '../main/src/features/browser-support/infrastructure/browser-min-versions.json' with { type: 'json' };
 import { playgroundIds } from '../main/src/playgrounds/ids.ts';
 import type * as blogs from './src/features/blog/application/blogs.ts';
+import type * as tags from './src/features/tags/application/tags.ts';
 import { browserTargets } from './src/site/browser-targets.ts';
 import { katexCssGuard } from './src/site/katex-css-guard.ts';
 import type { BlogArticle } from './src/site/katex-css-guard.ts';
-import { blogPathnames, playgroundPathnames } from './src/site/paths.ts';
+import {
+  blogPathnames,
+  playgroundPathnames,
+  tagPathnames,
+} from './src/site/paths.ts';
 import { DEV_SECURITY_HEADERS } from './src/site/security-headers.ts';
 import { BEFORE_FILES, BEFORE_NOT_FOUND } from './src/site/vercel-routes.ts';
 
@@ -80,6 +85,16 @@ const readArticles = async (): Promise<BlogArticle[]> => {
   );
 };
 
+const readTagIds = async (): Promise<number[]> => {
+  const { module } = await runnerImport<typeof tags>(
+    fileURLToPath(
+      new URL('src/features/tags/application/tags.ts', import.meta.url),
+    ),
+    { resolve: { alias } },
+  );
+  return (await module.getTags()).map(({ id }) => id);
+};
+
 export default defineConfig({
   // 記事・デモ・public は写さず apps/main のものを読む
   publicDir: fileURLToPath(new URL('../main/public', import.meta.url)),
@@ -115,6 +130,7 @@ export default defineConfig({
           (await readArticles()).map(({ slug }) => slug),
         ),
         ...playgroundPathnames(patterns, playgroundIds),
+        ...tagPathnames(patterns, await readTagIds()),
       ],
     }),
     vercel({ beforeFiles: BEFORE_FILES, beforeNotFound: BEFORE_NOT_FOUND }),

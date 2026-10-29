@@ -107,3 +107,51 @@ export function blogBreadcrumbJsonLd(blog: {
     { name: blog.title, url: `${SITE_URL}/blog/${blog.slug}` },
   ]);
 }
+
+export function tagBreadcrumbJsonLd(tag: {
+  id: number;
+  name: string;
+}): JsonLdObject {
+  return breadcrumbList([
+    { name: 'ホーム', url: SITE_URL },
+    { name: 'Tags', url: `${SITE_URL}/tags` },
+    { name: tag.name, url: `${SITE_URL}/tags/${tag.id.toString()}` },
+  ]);
+}
+
+type TalkEventInput = {
+  title: string;
+  eventName: string;
+  eventUrl: string;
+  eventDate: string;
+  eventLocation: string | null;
+};
+
+export function talkEventsJsonLd(
+  talks: readonly TalkEventInput[],
+): JsonLdObject {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'ItemList',
+    itemListElement: talks.map((talk, index) => ({
+      '@type': 'ListItem',
+      position: index + 1,
+      item: {
+        '@type': 'Event',
+        name: talk.title,
+        startDate: talk.eventDate,
+        url: talk.eventUrl,
+        location:
+          talk.eventLocation === null
+            ? undefined
+            : { '@type': 'Place', name: talk.eventLocation },
+        organizer: {
+          '@type': 'Organization',
+          name: talk.eventName,
+          url: talk.eventUrl,
+        },
+        performer: PERSON,
+      },
+    })),
+  };
+}

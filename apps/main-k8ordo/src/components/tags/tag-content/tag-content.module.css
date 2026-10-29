@@ -1,0 +1,60 @@
+.root {
+  display: flex;
+  flex-direction: column;
+  gap: calc(var(--spacing) * 8);
+}
+
+.summary {
+  display: flex;
+  align-items: center;
+  gap: calc(var(--spacing) * 4);
+  padding: calc(var(--spacing) * 6);
+  border-radius: var(--radius-xl);
+  background-color: var(--color-bg-base);
+  box-shadow: var(--shadow-sm);
+}
+
+.icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: calc(var(--spacing) * 10);
+  height: calc(var(--spacing) * 10);
+  border-radius: var(--radius-full);
+  background-color: var(--color-primary-bg);
+  color: var(--color-primary-fg);
+}
+
+.summaryText {
+  display: flex;
+  flex-direction: column;
+  gap: calc(var(--spacing) * 2);
+}
+
+.count {
+  color: var(--color-fg-mute);
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-sm);
+}
+
+.sections {
+  display: flex;
+  flex-direction: column;
+  gap: calc(var(--spacing) * 8);
+}
+
+.section {
+  display: flex;
+  flex-direction: column;
+  gap: calc(var(--spacing) * 4);
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(
+    auto-fill,
+    minmax(min(calc(var(--spacing) * 70), 100%), 1fr)
+  );
+  justify-items: center;
+  gap: calc(var(--spacing) * 4);
+}
