@@ -1,0 +1,35 @@
+.root {
+  position: relative;
+  width: 100%;
+  height: calc(var(--spacing) * 36);
+  overflow: hidden;
+  border-radius: var(--radius-xl);
+}
+
+.checkerboard {
+  position: absolute;
+  inset: 0;
+}
+
+.swatch {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition-property:
+    color, background-color, border-color, outline-color, text-decoration-color,
+    fill, stroke;
+  transition-duration: var(--duration-moderate);
+  transition-timing-function: var(--easing-in-out);
+}
+
+.code {
+  font-family: var(--font-family-mono);
+  font-size: var(--font-size-2xl);
+  line-height: var(--line-height-2xl);
+  font-weight: var(--font-weight-bold);
+  letter-spacing: var(--letter-spacing-normal);
+  -webkit-user-select: all;
+  user-select: all;
+}
