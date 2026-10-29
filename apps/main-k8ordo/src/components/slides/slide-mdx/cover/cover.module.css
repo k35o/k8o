@@ -1,0 +1,40 @@
+/* better-css-modules-disable tokens/spacing, tokens/font-size, tokens/line-height -- スライドはコンテナ幅（cqi）に比例させる */
+/* better-css-modules-disable pure/subject -- 表紙内の h1 / h2 / p は mdx-parts の .h1 / .h2 / .root（特異性 0,1,0）を上書きするため子孫セレクタの 0,1,1 が要る。@scope (&) の中では & が :where(:scope) 扱いで特異性を持たず、負けて見た目が変わる */
+.root {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  gap: 2cqi;
+  padding: 2cqi 0;
+}
+
+/* 表紙内では H1 を大見出し、H2 をサブタイトル、p を補足情報として再定義 */
+.root h1 {
+  font-size: 7cqi;
+  font-weight: var(--font-weight-bold);
+  line-height: 1.15;
+  margin: 0;
+  padding: 0;
+  border: none;
+  color: var(--color-fg-base);
+}
+
+.root h2 {
+  font-size: 3.2cqi;
+  font-weight: var(--font-weight-medium);
+  line-height: 1.3;
+  margin: 0;
+  padding: 0;
+  border: none;
+  color: var(--color-primary-fg);
+}
+
+.root p {
+  font-size: 2cqi;
+  line-height: 1.5;
+  margin: 0;
+  color: var(--color-fg-mute);
+}
