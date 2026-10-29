@@ -1,0 +1,24 @@
+/* better-css-modules-disable tokens/spacing, tokens/font-size, tokens/line-height -- スライドはコンテナ幅（cqi）に比例させる */
+.root {
+  margin: 0 0 1cqi;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5cqi;
+}
+
+.image {
+  display: block;
+  max-width: 50%;
+  max-height: 35cqh;
+  width: auto;
+  height: auto;
+  object-fit: contain;
+}
+
+.caption {
+  font-size: 1.6cqi;
+  line-height: 1.4;
+  color: var(--color-fg-mute);
+  text-align: center;
+}

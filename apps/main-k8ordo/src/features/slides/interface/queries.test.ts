@@ -1,75 +1,70 @@
+import { isNotFound } from '@k8ordo/framework';
 import { describe, expect, it, vi } from 'vitest';
 
-import { findSlideMetadata } from '@/features/slides/application/slide';
 import { getSlides } from '@/features/slides/application/slides';
 
-import { getSlideContents } from './queries';
+import { findSlideContent, getSlideContent } from './queries';
 
-vi.mock('@/features/slides/application/slide', () => ({
-  findSlideMetadata: vi.fn(),
-}));
 vi.mock('@/features/slides/application/slides', () => ({
   getSlides: vi.fn(),
 }));
 
-const metadata = (title: string) => ({
-  title,
+const slide = (id: number, slug: string) => ({
+  id,
+  slug,
+  tags: [],
+  title: `タイトル: ${slug}`,
   description: null,
   createdAt: '2026-01-01T00:00:00.000Z',
   updatedAt: '2026-01-01T00:00:00.000Z',
 });
 
-describe('getSlideContents', () => {
+describe('findSlideContent', () => {
   describe('正常系', () => {
-    it('スライド一覧をメタデータつきで返す', async () => {
+    it('公開スライドの一覧から slug の一致するものを返す', async () => {
       vi.mocked(getSlides).mockResolvedValue([
-        { id: 1, slug: 'slide-a', tags: ['TypeScript'] },
-        { id: 2, slug: 'slide-b', tags: [] },
+        slide(1, 'slide-a'),
+        slide(2, 'slide-b'),
       ]);
-      vi.mocked(findSlideMetadata).mockImplementation((slug) =>
-        Promise.resolve(metadata(`タイトル: ${slug}`)),
+
+      await expect(findSlideContent('slide-b')).resolves.toStrictEqual(
+        slide(2, 'slide-b'),
       );
-
-      const result = await getSlideContents();
-
-      expect(result).toStrictEqual([
-        {
-          id: 1,
-          slug: 'slide-a',
-          tags: ['TypeScript'],
-          title: 'タイトル: slide-a',
-          description: null,
-          createdAt: '2026-01-01T00:00:00.000Z',
-          updatedAt: '2026-01-01T00:00:00.000Z',
-        },
-        {
-          id: 2,
-          slug: 'slide-b',
-          tags: [],
-          title: 'タイトル: slide-b',
-          description: null,
-          createdAt: '2026-01-01T00:00:00.000Z',
-          updatedAt: '2026-01-01T00:00:00.000Z',
-        },
-      ]);
     });
   });
 
   describe('異常系', () => {
-    it('MDXファイルが無いスライドは一覧から除外される', async () => {
+    it('一覧に無い slug には undefined を返す', async () => {
+      vi.mocked(getSlides).mockResolvedValue([slide(1, 'slide-a')]);
+
+      await expect(
+        findSlideContent('unpublished-slide'),
+      ).resolves.toBeUndefined();
+    });
+  });
+});
+
+describe('getSlideContent', () => {
+  describe('正常系', () => {
+    it('公開スライドの一覧から slug の一致するものを返す', async () => {
       vi.mocked(getSlides).mockResolvedValue([
-        { id: 1, slug: 'slide-a', tags: [] },
-        { id: 2, slug: 'missing-slide', tags: [] },
+        slide(1, 'slide-a'),
+        slide(2, 'slide-b'),
       ]);
-      // getSlidesの並び順どおりに呼ばれる: slide-a → missing-slide
-      vi.mocked(findSlideMetadata)
-        .mockResolvedValueOnce(metadata('スライドA'))
-        .mockResolvedValueOnce(null);
 
-      const result = await getSlideContents();
+      await expect(getSlideContent('slide-b')).resolves.toStrictEqual(
+        slide(2, 'slide-b'),
+      );
+    });
+  });
 
-      expect(result).toHaveLength(1);
-      expect(result[0]?.slug).toBe('slide-a');
+  describe('異常系', () => {
+    it('一覧に無い slug は notFound() で 404 にする（paths に挙げた slug ならビルドが止まる）', async () => {
+      vi.mocked(getSlides).mockResolvedValue([slide(1, 'slide-a')]);
+
+      await expect(getSlideContent('unpublished-slide')).rejects.toSatisfy(
+        isNotFound,
+      );
     });
   });
 });

@@ -1,0 +1,10 @@
+/* better-css-modules-disable tokens/spacing, tokens/font-size -- スライドはコンテナ幅（cqi）に比例させる */
+.root {
+  font-size: 1.6cqi;
+  margin: 0 0 1.2cqi;
+  padding: 1.2cqi 1.6cqi;
+  border-radius: var(--radius-md);
+  overflow: auto;
+  max-width: 100%;
+  background-color: var(--color-bg-subtle);
+}

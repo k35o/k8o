@@ -1,6 +1,7 @@
 const BLOG_ARTICLE = '/blog/:slug';
 const PLAYGROUND = '/playgrounds/:id';
 const TAG = '/tags/:id';
+const SLIDE = '/slides/:slug';
 
 // 記事のページと、その下の markdown・OG のパスを、公開済みの記事の一覧1つから作る。
 // 下書きはどこにも挙がらないので、どれも書かれずに 404 になる
@@ -37,3 +38,13 @@ export const tagPathnames = (
     .flatMap((pattern) =>
       ids.map((id) => pattern.replace(':id', id.toString())),
     );
+
+// スライドのデッキのページと、その下の OG のパスを、公開済みで MDX のあるスライドの一覧1つから作る。
+// 公開していないデッキはどこにも挙がらないので、書かれずに 404 になる
+export const slidePathnames = (
+  patterns: readonly string[],
+  slugs: readonly string[],
+): string[] =>
+  patterns
+    .filter((pattern) => pattern === SLIDE || pattern.startsWith(`${SLIDE}/`))
+    .flatMap((pattern) => slugs.map((slug) => pattern.replace(':slug', slug)));
