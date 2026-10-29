@@ -1,3 +1,4 @@
+import { href } from '@k8ordo/framework';
 import {
   Badge,
   PublishDateIcon,
@@ -87,7 +88,7 @@ export const BlogLayoutContent: FC<BlogLayoutContentProps> = ({
                 <div className={styles.tags}>
                   <TagIcon size="sm" />
                   {blog.tags.map((tag) => (
-                    <a href={`/tags/${tag.id.toString()}`} key={tag.id}>
+                    <a href={href('/tags/:id', { id: tag.id })} key={tag.id}>
                       <Badge interactive key={tag.id} label={tag.name} />
                     </a>
                   ))}

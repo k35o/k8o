@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import { blogPathnames, playgroundPathnames } from './paths';
+import { blogPathnames, playgroundPathnames, tagPathnames } from './paths';
 
 describe('blogPathnames', () => {
   describe('正常系', () => {
@@ -77,6 +77,33 @@ describe('playgroundPathnames', () => {
           [],
         ),
       ).toStrictEqual([]);
+    });
+  });
+});
+
+describe('tagPathnames', () => {
+  describe('正常系', () => {
+    it('タグの id の一覧から、タグのページのパスを作る', () => {
+      const pathnames = tagPathnames(['/tags/:id'], [1, 33, 164]);
+
+      expect(pathnames).toStrictEqual(['/tags/1', '/tags/33', '/tags/164']);
+    });
+  });
+
+  describe('異常系', () => {
+    it('タグの下でないパターンにはパスを作らない（framework がビルドを止めて名指しする）', () => {
+      const pathnames = tagPathnames(
+        ['/tags', '/blog/:slug', '/tags-old/:id', '/playgrounds/:id'],
+        [1],
+      );
+
+      expect(pathnames).toStrictEqual([]);
+    });
+  });
+
+  describe('エッジケース', () => {
+    it('タグが無ければ、タグのページのパスを作らない', () => {
+      expect(tagPathnames(['/tags/:id'], [])).toStrictEqual([]);
     });
   });
 });

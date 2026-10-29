@@ -5,6 +5,8 @@ import {
   blogPostingJsonLd,
   personJsonLd,
   serializeJsonLd,
+  tagBreadcrumbJsonLd,
+  talkEventsJsonLd,
   websiteJsonLd,
 } from './json-ld';
 
@@ -136,6 +138,75 @@ describe('blogBreadcrumbJsonLd', () => {
           },
         ],
       });
+    });
+  });
+});
+
+describe('tagBreadcrumbJsonLd', () => {
+  describe('正常系', () => {
+    it('ホーム > Tags > タグ名の階層を持つBreadcrumbListを返すべき', () => {
+      expect(tagBreadcrumbJsonLd({ id: 42, name: 'CSS' })).toMatchObject({
+        '@context': 'https://schema.org',
+        '@type': 'BreadcrumbList',
+        itemListElement: [
+          {
+            '@type': 'ListItem',
+            position: 1,
+            name: 'ホーム',
+            item: 'https://k8o.me',
+          },
+          {
+            '@type': 'ListItem',
+            position: 2,
+            name: 'Tags',
+            item: 'https://k8o.me/tags',
+          },
+          {
+            '@type': 'ListItem',
+            position: 3,
+            name: 'CSS',
+            item: 'https://k8o.me/tags/42',
+          },
+        ],
+      });
+    });
+  });
+});
+
+describe('talkEventsJsonLd', () => {
+  const talk = {
+    title: 'サンプルトーク',
+    eventName: 'サンプルカンファレンス',
+    eventUrl: 'https://example.com/talks/1',
+    eventDate: '2025-05-24',
+    eventLocation: '東京',
+  };
+
+  describe('正常系', () => {
+    it('トークの一覧からItemListスキーマを返すべき', () => {
+      expect(talkEventsJsonLd([talk])).toMatchObject({
+        '@context': 'https://schema.org',
+        '@type': 'ItemList',
+        itemListElement: [
+          {
+            '@type': 'ListItem',
+            position: 1,
+            item: {
+              '@type': 'Event',
+              name: 'サンプルトーク',
+              startDate: '2025-05-24',
+              location: { '@type': 'Place', name: '東京' },
+            },
+          },
+        ],
+      });
+    });
+  });
+
+  describe('エッジケース', () => {
+    it('開催場所がnullの場合はlocationを出力に含めないべき', () => {
+      const jsonLd = talkEventsJsonLd([{ ...talk, eventLocation: null }]);
+      expect(serializeJsonLd(jsonLd)).not.toContain('location');
     });
   });
 });

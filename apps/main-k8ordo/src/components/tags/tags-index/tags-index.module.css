@@ -1,0 +1,9 @@
+.root {
+  display: grid;
+  grid-template-columns: repeat(
+    auto-fill,
+    minmax(min(calc(var(--spacing) * 70), 100%), 1fr)
+  );
+  justify-items: center;
+  gap: calc(var(--spacing) * 4);
+}
