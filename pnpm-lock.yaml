@@ -195,8 +195,8 @@ catalogs:
       specifier: 1.0.0
       version: 1.0.0
     '@k8ordo/router':
-      specifier: 1.4.0
-      version: 1.4.0
+      specifier: 1.4.1
+      version: 1.4.1
     '@k8ordo/state':
       specifier: 1.4.0
       version: 1.4.0
@@ -549,7 +549,7 @@ importers:
         version: 1.0.0(typescript@7.0.2)
       '@k8ordo/state':
         specifier: 'catalog:'
-        version: 1.4.0(@k8ordo/router@1.4.0(@types/react@19.3.0)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(typescript@7.0.2))(@types/react@19.3.0)(react@19.3.1)(typescript@7.0.2)(zod@4.6.7)
+        version: 1.4.0(@k8ordo/router@1.4.1(@types/react@19.3.0)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(typescript@7.0.2))(@types/react@19.3.0)(react@19.3.1)(typescript@7.0.2)(zod@4.6.7)
       '@k8ordo/ui':
         specifier: 'catalog:'
         version: 2.1.0(@json-render/core@0.21.1(zod@4.6.7))(@json-render/react@0.21.1(react@19.3.1)(zod@4.6.7))(@k8ordo/i18n@1.0.0(typescript@7.0.2))(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(ai@7.0.148(zod@4.6.7))(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(typescript@7.0.2)(zod@4.6.7)
@@ -712,13 +712,13 @@ importers:
         version: 5.3.1
       '@k8ordo/color-scheme':
         specifier: 'catalog:'
-        version: 1.1.0(@k8ordo/state@1.4.0(@k8ordo/router@1.4.0(@types/react@19.3.0)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(typescript@7.0.2))(@types/react@19.3.0)(react@19.3.1)(typescript@7.0.2)(zod@4.6.7))(@types/react@19.3.0)(react@19.3.1)(typescript@7.0.2)(zod@4.6.7)
+        version: 1.1.0(@k8ordo/state@1.4.0(@k8ordo/router@1.4.1(@types/react@19.3.0)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(typescript@7.0.2))(@types/react@19.3.0)(react@19.3.1)(typescript@7.0.2)(zod@4.6.7))(@types/react@19.3.0)(react@19.3.1)(typescript@7.0.2)(zod@4.6.7)
       '@k8ordo/i18n':
         specifier: 'catalog:'
         version: 1.0.0(typescript@7.0.2)
       '@k8ordo/state':
         specifier: 'catalog:'
-        version: 1.4.0(@k8ordo/router@1.4.0(@types/react@19.3.0)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(typescript@7.0.2))(@types/react@19.3.0)(react@19.3.1)(typescript@7.0.2)(zod@4.6.7)
+        version: 1.4.0(@k8ordo/router@1.4.1(@types/react@19.3.0)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(typescript@7.0.2))(@types/react@19.3.0)(react@19.3.1)(typescript@7.0.2)(zod@4.6.7)
       '@k8ordo/ui':
         specifier: 'catalog:'
         version: 2.1.0(@json-render/core@0.21.1(zod@4.6.7))(@json-render/react@0.21.1(react@19.3.1)(zod@4.6.7))(@k8ordo/i18n@1.0.0(typescript@7.0.2))(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(ai@7.0.148(zod@4.6.7))(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(typescript@7.0.2)(zod@4.6.7)
@@ -779,10 +779,10 @@ importers:
         version: 0.4.1(vite@8.3.5(@types/node@24.19.2)(esbuild@0.28.1)(jiti@2.7.0)(tsx@4.23.15)(yaml@2.9.1))
       '@k8ordo/framework':
         specifier: 'catalog:'
-        version: 1.4.0(@k8ordo/router@1.4.0(@types/react@19.3.0)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(typescript@7.0.2))(babel-plugin-react-compiler@1.0.0)(oxc-transform-react@0.155.0)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(vite@8.3.5(@types/node@24.19.2)(esbuild@0.28.1)(jiti@2.7.0)(tsx@4.23.15)(yaml@2.9.1))
+        version: 1.4.0(@k8ordo/router@1.4.1(@types/react@19.3.0)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(typescript@7.0.2))(babel-plugin-react-compiler@1.0.0)(oxc-transform-react@0.155.0)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(vite@8.3.5(@types/node@24.19.2)(esbuild@0.28.1)(jiti@2.7.0)(tsx@4.23.15)(yaml@2.9.1))
       '@k8ordo/router':
         specifier: 'catalog:'
-        version: 1.4.0(@types/react@19.3.0)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(typescript@7.0.2)
+        version: 1.4.1(@types/react@19.3.0)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(typescript@7.0.2)
       '@mdx-js/rollup':
         specifier: 3.1.1
         version: 3.1.1(rollup@4.64.10)(supports-color@10.2.2)
@@ -2185,8 +2185,8 @@ packages:
       typescript:
         optional: true
 
-  '@k8ordo/router@1.4.0':
-    resolution: {integrity: sha512-QhZ6CZbICXDy13NJmp8QGhpq/sQbGzuYXP/ggyQ3nIneBDp9a2FGoQtVYhBSu2tVgQ4zymj6zovkWSbJD1ljuQ==}
+  '@k8ordo/router@1.4.1':
+    resolution: {integrity: sha512-qXCyK0QPm5KpjNRDzvNtIS7Mw9MWLzWFVJ+uBr+6LwjKnFngdhyFXE8CRtHjeisoSykhec+3kLmLHiJEn5U29A==}
     peerDependencies:
       '@types/react': '>=19.3.0'
       react: '>=19.3.0'
@@ -8524,18 +8524,18 @@ snapshots:
       '@k8o/html-nest': 0.2.0
       oxlint-tailwindcss: 1.14.0
 
-  '@k8ordo/color-scheme@1.1.0(@k8ordo/state@1.4.0(@k8ordo/router@1.4.0(@types/react@19.3.0)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(typescript@7.0.2))(@types/react@19.3.0)(react@19.3.1)(typescript@7.0.2)(zod@4.6.7))(@types/react@19.3.0)(react@19.3.1)(typescript@7.0.2)(zod@4.6.7)':
+  '@k8ordo/color-scheme@1.1.0(@k8ordo/state@1.4.0(@k8ordo/router@1.4.1(@types/react@19.3.0)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(typescript@7.0.2))(@types/react@19.3.0)(react@19.3.1)(typescript@7.0.2)(zod@4.6.7))(@types/react@19.3.0)(react@19.3.1)(typescript@7.0.2)(zod@4.6.7)':
     dependencies:
-      '@k8ordo/state': 1.4.0(@k8ordo/router@1.4.0(@types/react@19.3.0)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(typescript@7.0.2))(@types/react@19.3.0)(react@19.3.1)(typescript@7.0.2)(zod@4.6.7)
+      '@k8ordo/state': 1.4.0(@k8ordo/router@1.4.1(@types/react@19.3.0)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(typescript@7.0.2))(@types/react@19.3.0)(react@19.3.1)(typescript@7.0.2)(zod@4.6.7)
       react: 19.3.1
       zod: 4.6.7
     optionalDependencies:
       '@types/react': 19.3.0
       typescript: 7.0.2
 
-  '@k8ordo/framework@1.4.0(@k8ordo/router@1.4.0(@types/react@19.3.0)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(typescript@7.0.2))(babel-plugin-react-compiler@1.0.0)(oxc-transform-react@0.155.0)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(vite@8.3.5(@types/node@24.19.2)(esbuild@0.28.1)(jiti@2.7.0)(tsx@4.23.15)(yaml@2.9.1))':
+  '@k8ordo/framework@1.4.0(@k8ordo/router@1.4.1(@types/react@19.3.0)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(typescript@7.0.2))(babel-plugin-react-compiler@1.0.0)(oxc-transform-react@0.155.0)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(vite@8.3.5(@types/node@24.19.2)(esbuild@0.28.1)(jiti@2.7.0)(tsx@4.23.15)(yaml@2.9.1))':
     dependencies:
-      '@k8ordo/router': 1.4.0(@types/react@19.3.0)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(typescript@7.0.2)
+      '@k8ordo/router': 1.4.1(@types/react@19.3.0)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(typescript@7.0.2)
       '@vitejs/plugin-react': 6.1.2(babel-plugin-react-compiler@1.0.0)(oxc-transform-react@0.155.0)(vite@8.3.5(@types/node@24.19.2)(esbuild@0.28.1)(jiti@2.7.0)(tsx@4.23.15)(yaml@2.9.1))
       '@vitejs/plugin-rsc': 0.5.38(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(vite@8.3.5(@types/node@24.19.2)(esbuild@0.28.1)(jiti@2.7.0)(tsx@4.23.15)(yaml@2.9.1))
       compressible: 2.0.18
@@ -8558,7 +8558,7 @@ snapshots:
     optionalDependencies:
       typescript: 7.0.2
 
-  '@k8ordo/router@1.4.0(@types/react@19.3.0)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(typescript@7.0.2)':
+  '@k8ordo/router@1.4.1(@types/react@19.3.0)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(typescript@7.0.2)':
     dependencies:
       react: 19.3.1
       react-dom: 19.3.1(react@19.3.1)
@@ -8566,12 +8566,12 @@ snapshots:
       '@types/react': 19.3.0
       typescript: 7.0.2
 
-  '@k8ordo/state@1.4.0(@k8ordo/router@1.4.0(@types/react@19.3.0)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(typescript@7.0.2))(@types/react@19.3.0)(react@19.3.1)(typescript@7.0.2)(zod@4.6.7)':
+  '@k8ordo/state@1.4.0(@k8ordo/router@1.4.1(@types/react@19.3.0)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(typescript@7.0.2))(@types/react@19.3.0)(react@19.3.1)(typescript@7.0.2)(zod@4.6.7)':
     dependencies:
       react: 19.3.1
       zod: 4.6.7
     optionalDependencies:
-      '@k8ordo/router': 1.4.0(@types/react@19.3.0)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(typescript@7.0.2)
+      '@k8ordo/router': 1.4.1(@types/react@19.3.0)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(typescript@7.0.2)
       '@types/react': 19.3.0
       typescript: 7.0.2
 
