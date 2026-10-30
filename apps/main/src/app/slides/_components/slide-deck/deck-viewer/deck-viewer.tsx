@@ -34,10 +34,14 @@ export const DeckViewer: FC<{
     if (typeof window === 'undefined') return '';
     if (typeof crypto.randomUUID !== 'function') return '';
     const storageKey = `slide-session:${slug}`;
-    const stored = window.sessionStorage.getItem(storageKey);
-    if (stored !== null) return stored;
     const generated = crypto.randomUUID();
-    window.sessionStorage.setItem(storageKey, generated);
+    try {
+      const stored = window.sessionStorage.getItem(storageKey);
+      if (stored !== null) return stored;
+      window.sessionStorage.setItem(storageKey, generated);
+    } catch {
+      // storage を塞いだ訪問者や容量切れでは読み書きが投げる。そのときは覚えずにこの id を使う
+    }
     return generated;
   });
   useBroadcastViewerHeartbeat({ slug, sessionId });

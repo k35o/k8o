@@ -304,3 +304,93 @@ export const PresenterListensToSession = meta.story({
     );
   },
 });
+
+// storage を塞いだブラウザは、window.sessionStorage を読むだけで投げる
+const denySessionStorage = (): void => {
+  spyOn(window, 'sessionStorage', 'get').mockImplementation(() => {
+    throw new DOMException('denied', 'SecurityError');
+  });
+};
+
+// 容量を使い切った sessionStorage は、読めても書くと投げる
+const fillSessionStorage = (): void => {
+  spyOn(window, 'sessionStorage', 'get').mockReturnValue({
+    length: 0,
+    clear: () => undefined,
+    getItem: () => null,
+    key: () => null,
+    removeItem: () => undefined,
+    setItem: () => {
+      throw new DOMException('full', 'QuotaExceededError');
+    },
+  });
+};
+
+export const NavigateWithoutSessionStorage = meta.story({
+  parameters: { vrt: { skip: true } },
+  beforeEach: denySessionStorage,
+  play: async ({ canvas, canvasElement }) => {
+    await canvas.findByRole('heading', {
+      level: 1,
+      name: 'k8o のスライド機能',
+    });
+
+    const sent = await sentDuring(async () => {
+      await userEvent.keyboard('{ArrowRight}');
+    });
+
+    await expect(
+      await canvas.findByRole('heading', { name: 'スライド機能のご紹介' }),
+    ).toBeInTheDocument();
+    await expect(location.hash).toBe('#2');
+    await expect(counterOf(canvasElement)).toHaveTextContent('2 / 3');
+    await expect(sent).toEqual([{ type: 'sync', index: 1 }]);
+  },
+});
+
+export const NavigateWhenSessionStorageIsFull = meta.story({
+  parameters: { vrt: { skip: true } },
+  beforeEach: fillSessionStorage,
+  play: async ({ canvas, canvasElement }) => {
+    await canvas.findByRole('heading', {
+      level: 1,
+      name: 'k8o のスライド機能',
+    });
+
+    await userEvent.keyboard('{ArrowRight}');
+
+    await expect(location.hash).toBe('#2');
+    await expect(counterOf(canvasElement)).toHaveTextContent('2 / 3');
+  },
+});
+
+export const OpenPresenterTabWithoutSessionStorage = meta.story({
+  parameters: { vrt: { skip: true } },
+  beforeEach: () => {
+    denySessionStorage();
+    const Native = BroadcastChannel;
+    spyOn(globalThis, 'BroadcastChannel').mockImplementation(
+      (name: string) => new Native(name),
+    );
+  },
+  play: async ({ canvas }) => {
+    const open = spyOn(window, 'open').mockReturnValue(null);
+    await canvas.findByRole('heading', {
+      level: 1,
+      name: 'k8o のスライド機能',
+    });
+
+    await userEvent.click(canvas.getByRole('button', { name: '発表者モード' }));
+
+    const [presenterHref] = open.mock.calls[0] ?? [];
+    const session = new URL(
+      String(presenterHref),
+      location.origin,
+    ).searchParams.get('session');
+    await expect(session).toMatch(/^[\da-f-]{36}$/u);
+    // 発表者のタブは URL の session の名前で観覧のタブの生存を聞く
+    await expect(BroadcastChannel).toHaveBeenCalledWith(
+      `slides-lifecycle:sample-deck:${session ?? ''}`,
+    );
+  },
+});
