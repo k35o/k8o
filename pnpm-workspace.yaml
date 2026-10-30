@@ -16,10 +16,10 @@ catalog:
   '@k8o/html-nest': 0.2.0
   '@k8o/oxc-config': 1.1.0
   '@k8ordo/color-scheme': 1.1.0
-  '@k8ordo/framework': 1.2.1
+  '@k8ordo/framework': 1.4.0
   '@k8ordo/i18n': 1.0.0
-  '@k8ordo/router': 1.2.1
-  '@k8ordo/state': 1.1.0
+  '@k8ordo/router': 1.4.0
+  '@k8ordo/state': 1.4.0
   '@k8ordo/ui': 2.1.0
   '@libsql/client': 0.18.0
   '@next/env': 16.4.2

@@ -1,3 +1,6 @@
+import { Router, defineRoutes } from '@k8ordo/router';
+import { lazy, useState } from 'react';
+import type { FC, ReactNode } from 'react';
 import { expect, spyOn, userEvent, within } from 'storybook/test';
 
 import preview from '../../../../../.storybook/preview';
@@ -82,13 +85,59 @@ const sendToDeck = async (message: unknown): Promise<void> => {
   probe.close();
 };
 
-// 発表者のタブから外へ移るあいだのまね。router は移る先の URL を先に書くので、url の mode が既定値に
-// 戻り、着くまで観覧の部品が新しく付いて残る
+const DECK_PATHNAME = '/slides/sample-deck';
+
+// 着かない移る先。router は移る先の URL を先に書き、着くまでデッキを画面に残す
+const Elsewhere = lazy(async () => new Promise<never>(() => undefined));
+
+// router は画面のページを @k8ordo/state に知らせ、移るあいだもデッキは開いたときの URL の値で描かれる。
+// Storybook には router が無く state が URL に従うので、移るあいだは <Router> の下でつくる
+const UnderRouter: FC<{ children: ReactNode }> = ({ children }) => {
+  // oxlint-disable-next-line react/hook-use-state -- 初期化時に一度だけ算出する安定値で setter は不要
+  const [routes] = useState(() =>
+    defineRoutes({ [DECK_PATHNAME]: () => children, '/elsewhere': Elsewhere }),
+  );
+  return <Router routes={routes} />;
+};
+
+const leaveDeck = async (): Promise<void> => {
+  const { committed, finished } = navigation.navigate('/elsewhere');
+  // 着かないので、Story のあとに URL を戻したときに中断される
+  finished?.catch(() => undefined);
+  await committed;
+};
+
 const leavePresenter = async (canvasElement: HTMLElement): Promise<void> => {
   const canvas = within(canvasElement);
   await canvas.findByRole('region', { name: '現在のスライド' });
-  history.replaceState(history.state, '', '/elsewhere');
-  await canvas.findByRole('button', { name: '発表者モード' });
+  await leaveDeck();
+};
+
+const underRouter = {
+  // <Router> は表に無い pathname では何も描かないので、デッキの pathname で始める
+  beforeEach: () => {
+    history.replaceState(
+      history.state,
+      '',
+      `${DECK_PATHNAME}${location.search}${location.hash}`,
+    );
+  },
+  decorators: [
+    (Story: FC) => (
+      <UnderRouter>
+        <Story />
+      </UnderRouter>
+    ),
+  ],
+};
+
+const presenterLeaving = {
+  ...underRouter,
+  parameters: {
+    query: 'mode=presenter&session=story-session',
+    hash: '#2',
+    vrt: { skip: true },
+  },
 };
 
 export const Viewer = meta.story({
@@ -150,12 +199,8 @@ export const KeepUrlWhileLeaving = meta.story({
 });
 
 export const PresenterKeepUrlWhileLeaving = meta.story({
-  parameters: {
-    query: 'mode=presenter&session=story-session',
-    hash: '#3',
-    vrt: { skip: true },
-  },
-  play: async ({ canvasElement }) => {
+  ...presenterLeaving,
+  play: async ({ canvas, canvasElement }) => {
     await leavePresenter(canvasElement);
 
     const sent = await sentDuring(async () => {
@@ -164,26 +209,55 @@ export const PresenterKeepUrlWhileLeaving = meta.story({
 
     await expect(location.pathname).toBe('/elsewhere');
     await expect(location.hash).toBe('');
-    await expect(counterOf(canvasElement)).toHaveTextContent('1 / 3');
-    // 観覧のタブを 3 枚目から引き戻さない
+    await expect(
+      canvas.getByRole('region', { name: '現在のスライド' }),
+    ).toHaveTextContent('スライド機能のご紹介');
+    await expect(counterOf(canvasElement)).toHaveTextContent('2 / 3');
+    // 観覧のタブを動かさない
     await expect(sent).toEqual([]);
   },
 });
 
 export const PresenterIgnoreSyncWhileLeaving = meta.story({
-  parameters: {
-    query: 'mode=presenter&session=story-session',
-    hash: '#3',
-    vrt: { skip: true },
-  },
-  play: async ({ canvasElement }) => {
+  ...presenterLeaving,
+  play: async ({ canvas, canvasElement }) => {
     await leavePresenter(canvasElement);
 
-    await sendToDeck({ type: 'sync', index: 1 });
+    await sendToDeck({ type: 'sync', index: 2 });
 
     await expect(location.pathname).toBe('/elsewhere');
     await expect(location.hash).toBe('');
-    await expect(counterOf(canvasElement)).toHaveTextContent('1 / 3');
+    await expect(
+      canvas.getByRole('region', { name: '現在のスライド' }),
+    ).toHaveTextContent('スライド機能のご紹介');
+    await expect(counterOf(canvasElement)).toHaveTextContent('2 / 3');
+  },
+});
+
+export const KeepSlideOnRedrawWhileLeaving = meta.story({
+  ...underRouter,
+  parameters: { hash: '#2', vrt: { skip: true } },
+  play: async ({ canvas, canvasElement }) => {
+    spyOn(window, 'open').mockReturnValue(window);
+    await userEvent.click(
+      await canvas.findByRole('button', { name: '発表者モード' }),
+    );
+    await expect(
+      canvas.queryByRole('button', { name: '発表者モード' }),
+    ).not.toBeInTheDocument();
+    await leaveDeck();
+
+    // 発表を終えると、移るあいだに描き直す
+    await userEvent.keyboard('{Escape}');
+
+    await expect(
+      await canvas.findByRole('button', { name: '発表者モード' }),
+    ).toBeInTheDocument();
+    await expect(location.pathname).toBe('/elsewhere');
+    await expect(counterOf(canvasElement)).toHaveTextContent('2 / 3');
+    await expect(
+      canvas.getByRole('heading', { name: 'スライド機能のご紹介' }),
+    ).toBeInTheDocument();
   },
 });
 

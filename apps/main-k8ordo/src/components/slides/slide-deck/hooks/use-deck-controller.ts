@@ -1,6 +1,6 @@
 'use client';
 
-import { useCallback } from 'react';
+import { useCallback, useState } from 'react';
 
 import { useBroadcastListener } from './use-broadcast-listener';
 import { useHashIndex, writeHashIndex } from './use-hash-index';
@@ -9,19 +9,20 @@ import { useKeyboardNav } from './use-keyboard-nav';
 
 const clamp = (value: number, max: number) => Math.max(0, Math.min(value, max));
 
-// router は移る先の URL を先に書き、着くまで前のページを残す。そのあいだに書くと、移る先の URL に
-// #<番号> が付き、進んでいる遷移を中断して読み直させる。そのあいだの番号は移る先の URL から読んだもので、
-// 送るとほかのタブを引き戻す。だから、デッキを開いたときの pathname を離れたら書きも送りもしない
+// router は移る先の URL を先に書き、着くまで前のページを残す。#<番号> は @k8ordo/state を通さずに読み書き
+// するので、そのあいだに書くと移る先の URL に付き、進んでいる遷移を中断して読み直させる。だから、デッキを
+// 開いたときの pathname を離れたら、番号を最後に読んだ値で止めて（useHashIndex）何も書かず、この画面に
+// 出せない番号をほかのタブへも送らない
 export const useDeckController = ({
   total,
   channelName,
-  deckPathname,
 }: {
   total: number;
   channelName: string;
-  deckPathname: string;
 }) => {
-  const hashIndex = useHashIndex();
+  // oxlint-disable-next-line react/hook-use-state -- 初期化時に一度だけ算出する安定値で setter は不要
+  const [deckPathname] = useState(() => window.location.pathname);
+  const hashIndex = useHashIndex(deckPathname);
   const index = clamp(hashIndex, total - 1);
 
   const broadcast = useBroadcastListener({
