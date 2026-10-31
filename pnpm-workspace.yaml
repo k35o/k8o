@@ -8,7 +8,7 @@ allowBuilds:
   workerd: false
 
 catalog:
-  '@ai-sdk/anthropic': 4.0.85
+  '@ai-sdk/anthropic': 4.0.88
   '@better-css-modules/cli': 0.4.1
   '@better-css-modules/core': 0.4.1
   '@better-css-modules/turbopack': 0.4.1
@@ -35,13 +35,13 @@ catalog:
   '@vitest/browser-playwright': 5.0.5
   '@vitest/coverage-v8': 5.0.5
   '@vitest/ui': 5.0.3
-  ai: 7.0.148
+  ai: 7.0.153
   better-auth: 1.7.12
-  chromatic: 18.13.2
+  chromatic: 18.13.3
   drizzle-kit: 0.31.11
   drizzle-orm: 0.45.4
   hono: 4.13.13
-  katex: 0.19.0
+  katex: 0.19.1
   next: 16.4.3
   next-themes: 0.4.6
   oxc-transform-react: 0.155.0
@@ -53,7 +53,7 @@ catalog:
   storybook-addon-vrt: 0.4.2
   vite: 8.3.5
   vitest: 5.0.5
-  wrangler: 4.151.3
+  wrangler: 4.152.0
   zod: 4.6.7
 
 minimumReleaseAge: 10080
