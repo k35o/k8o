@@ -38,7 +38,7 @@
     "@hono/node-server": "2.1.5",
     "@modelcontextprotocol/client": "2.3.1",
     "@repo/typescript-config": "workspace:*",
-    "@types/node": "24.19.2",
+    "@types/node": "26.6.5",
     "@vitest/coverage-v8": "catalog:",
     "@vitest/ui": "catalog:",
     "tsx": "4.23.15",
