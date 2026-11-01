@@ -1,0 +1,175 @@
+.root {
+  overflow: hidden;
+  border-width: 1px;
+  border-style: solid;
+  border-color: var(--color-border-base);
+  border-radius: var(--radius-xl);
+  background-color: var(--color-bg-base);
+}
+
+.cards {
+  @media (width >= 40rem) {
+    display: none;
+  }
+}
+
+.card {
+  display: flex;
+  flex-direction: column;
+  gap: calc(var(--spacing) * 3);
+  padding: calc(var(--spacing) * 4);
+}
+
+.sample {
+  padding-inline: calc(var(--spacing) * 3);
+  padding-block: calc(var(--spacing) * 2);
+  border-radius: var(--radius-md);
+}
+
+.badges {
+  display: flex;
+  gap: calc(var(--spacing) * 2);
+}
+
+.badge {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: calc(var(--spacing) * 3);
+  padding-inline: calc(var(--spacing) * 3);
+  padding-block: calc(var(--spacing) * 2);
+  border-radius: var(--radius-md);
+  background-color: var(--color-bg-mute);
+}
+
+.badgeLabel {
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-sm);
+}
+
+.badgeStatus {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing);
+}
+
+.badgeStatusLabel {
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-sm);
+  font-weight: var(--font-weight-bold);
+}
+
+.ng {
+  color: var(--color-fg-error);
+}
+
+.ok {
+  color: var(--color-fg-success);
+}
+
+.table {
+  display: none;
+  width: 100%;
+
+  @media (width >= 40rem) {
+    display: table;
+  }
+}
+
+.headRow {
+  border-bottom-width: 1px;
+  border-bottom-style: solid;
+  border-bottom-color: var(--color-border-base);
+  background-color: var(--color-bg-mute);
+  font-size: var(--font-size-xs);
+  line-height: var(--line-height-xs);
+  font-weight: var(--font-weight-medium);
+
+  @media (width >= 40rem) {
+    font-size: var(--font-size-sm);
+    line-height: var(--line-height-sm);
+  }
+
+  @media (width >= 48rem) {
+    font-size: var(--font-size-md);
+    line-height: var(--line-height-md);
+  }
+}
+
+.headCell {
+  padding-inline: calc(var(--spacing) * 3);
+  padding-block: calc(var(--spacing) * 2);
+
+  @media (width >= 40rem) {
+    padding-inline: calc(var(--spacing) * 4);
+    padding-block: calc(var(--spacing) * 3);
+  }
+}
+
+.alignStart {
+  text-align: left;
+}
+
+.row {
+  height: calc(var(--spacing) * 14);
+  border-bottom-width: 1px;
+  border-bottom-style: solid;
+  border-bottom-color: var(--color-border-base);
+
+  &:last-child {
+    border-bottom-width: 0;
+  }
+
+  @media (width >= 40rem) {
+    height: calc(var(--spacing) * 16);
+  }
+}
+
+.statusCell {
+  padding: calc(var(--spacing) * 2);
+
+  @media (width >= 40rem) {
+    padding-block: calc(var(--spacing) * 3);
+  }
+}
+
+.status {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing);
+}
+
+.statusLabel {
+  font-weight: var(--font-weight-bold);
+}
+
+.sampleCell {
+  padding-inline: calc(var(--spacing) * 3);
+
+  @media (width >= 40rem) {
+    padding-inline: calc(var(--spacing) * 4);
+  }
+}
+
+.largeBold {
+  /* better-css-modules-disable-next-line tokens/font-size -- WCAG の大文字判定（18pt = 24px、太字は 14pt = 18.66px）を境にした見本の文字サイズ */
+  font-size: 18.66px;
+  font-weight: var(--font-weight-bold);
+}
+
+.large {
+  /* better-css-modules-disable-next-line tokens/font-size -- WCAG の大文字判定（18pt = 24px、太字は 14pt = 18.66px）を境にした見本の文字サイズ */
+  font-size: 24px;
+}
+
+.normalBold {
+  /* better-css-modules-disable-next-line tokens/font-size -- WCAG の大文字判定（18pt = 24px、太字は 14pt = 18.66px）を境にした見本の文字サイズ */
+  font-size: 16px;
+  font-weight: var(--font-weight-bold);
+}
+
+.normal {
+  /* better-css-modules-disable-next-line tokens/font-size -- WCAG の大文字判定（18pt = 24px、太字は 14pt = 18.66px）を境にした見本の文字サイズ */
+  font-size: 18.66px;
+}

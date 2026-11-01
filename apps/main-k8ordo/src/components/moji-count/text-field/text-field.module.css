@@ -1,0 +1,41 @@
+.root {
+  display: flex;
+  flex-grow: 1;
+  flex-direction: column;
+  gap: calc(var(--spacing) * 2);
+}
+
+.srOnly {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: calc(var(--spacing) * -0.25);
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border-width: 0;
+}
+
+/* FormControl は className を受け取らないので、子セレクタで高さを渡す代わりに
+   grid の stretch で FormControl をこの高さいっぱいに伸ばす */
+.field {
+  display: grid;
+  height: 100%;
+}
+
+.result {
+  display: flex;
+  gap: calc(var(--spacing) * 2);
+}
+
+.resultLabel {
+  font-size: var(--font-size-lg);
+  line-height: var(--line-height-lg);
+}
+
+.resultValue {
+  font-size: var(--font-size-xl);
+  line-height: var(--line-height-xl);
+  font-weight: var(--font-weight-bold);
+}
