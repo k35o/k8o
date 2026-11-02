@@ -55,7 +55,14 @@ apps/main（Next）を k8ordo（`@k8ordo/framework` の `mode: 'static'`）で�
 - 動かす値（スライダー・かどの取っ手・NumberField）は `shared/browser/use-url-draft` の下書きに置き、ツールの根の要素に `commitProps` を渡して、pointerup・pointercancel・click・keyup・blur で確定する。部品の `onChange` のあとに届くので、部品は `onChange` のままでよい。入力ごとに `update()` すると、WebKit は 200 回を超えたところで `QuotaExceededError` を返し、URL が止まる。ポインタもキーも出ない増減（支援技術の増減）と、離した直後の pointermove が作る下書きにはどの事象も来ないので、値が止まって 0.6 秒たつと書く
 - 貼り付けられる欄（トークン名・基準色）は keyup も click も来ないので入力ごとに `commit` し、選ぶ操作（テンプレート・かたちの Select）も選んだ時に `commit` する
 - html-nest は下書きを持たず、`update({ el }, { history: 'push' })` で書く。戻る・進むは store が URL を読み直すので、書くものは無い。値が変わらない `update()` は push しない
-- static mode の HTML は url の state を既定値で描き、URL の値で開いたときに既定の色や形が一度出るので、本文は `components/site/browser-only` の `BrowserOnly` でブラウザでだけ描く。HTML の `<main>` は見出しと空の digest の `<!--$!-->` になる
+- static mode の HTML は url の state を既定値で描き、URL の値で開いたときに既定の色や形が一度出るので、本文は `components/site/browser-only` の `BrowserOnly` でブラウザでだけ描く。`fallback` を渡さないので、HTML の `<main>` は見出しと空の digest の `<!--$!-->` になる
+
+## 日々の表示（`/reading-list`・`/browser-support`・`/notifications`）
+
+- ページがビルドで DB を読み（`features/*/interface` の関数を `memoizeInBuild` で覚える）、その値を props で渡す。クライアントの部品は `shared/api/live-snapshot` の `useLiveSnapshot` で api の公開の GET を読み、読めたら差し替える。hydrate はビルドの値で描き、HTML とずらさない。`getBrowserSupportSnapshot` は「直近1週間」の基準の時刻（`nowMs`）も一緒に覚え、HTML とペイロードの 2 回の描画で同じ値にする
+- 2 つの一覧の絞り込みは区画の `search-params` の `definePageState` の url に置き、入力ごと・クリックごとに `update()`（既定の replace）で書く。値は「ツールの URL の状態」と同じく文字列のまま持ち、読むときに解く。`z.array` は `?source=1,2` を読めず、`z.stringbool` は `?widely=1` を真に読み、apps/main の nuqs と読みが変わる
+- 一覧は `BrowserOnly` でブラウザでだけ描き、骨組み（`ReadingListSkeleton`・`BrowserSupportFeatureListSkeleton`）を `fallback` に渡す。骨組みは HTML の client-rendered の境界（`<!--$!-->`）の中に出て、HTML の `<main>` と JS なしの見え方は apps/main と同じになる。apps/main の `loading.tsx` を route に置かないのは、static mode では HTML にも遷移にもほぼ出ず、layout と同じくその CSS をどのページも読むから
+- 購読の VAPID の公開鍵は、`routes/notifications/page.tsx` がビルドの描画で `process.env` から読み、props で渡す。`import.meta.env` でクライアントへ渡すと、名前を `VITE_` に替えることになる
 
 ## スライド
 
@@ -93,7 +100,7 @@ apps/main（Next）を k8ordo（`@k8ordo/framework` の `mode: 'static'`）で�
 
 ## 環境変数
 
-手元では `.env.example` を `.env.local` に写す。`GOOGLE_ANALYTICS_ID` があると、ルートレイアウトが GA の script と `ga-init.js`（apps/main の public）を読み、script に `data-count-navigations` を付けて、ページが替わった遷移ごとに page_view を送らせる。これは GA の管理画面で拡張計測の「ブラウザの履歴イベントに基づくページの変更」を切ってある前提で動く。k8ordo の router は push の遷移で pushState を呼ばないので拡張計測に拾われないが、戻る・進むは popstate で拾われ、設定を切らないと二重に数える。ビルドの描画でサーバーの部品が `process.env` を読むので、`vite.config.ts` が `.env.local` を `process.env` に読み込む。`.env` は git から外れないので使わない。ビルドは DB を読むので、`K8O_TURSO_*` が要る。
+手元では `.env.example` を `.env.local` に写す。`GOOGLE_ANALYTICS_ID` があると、ルートレイアウトが GA の script と `ga-init.js`（apps/main の public）を読み、script に `data-count-navigations` を付けて、ページが替わった遷移ごとに page_view を送らせる。これは GA の管理画面で拡張計測の「ブラウザの履歴イベントに基づくページの変更」を切ってある前提で動く。k8ordo の router は push の遷移で pushState を呼ばないので拡張計測に拾われないが、戻る・進むは popstate で拾われ、設定を切らないと二重に数える。`VAPID_PUBLIC_KEY` は /notifications の購読の公開鍵で、空のビルドは購読のボタンを出さずに「対応していません」を出す（apps/main と同じ）。ビルドの描画でサーバーの部品が `process.env` を読むので、`vite.config.ts` が `.env.local` を `process.env` に読み込む。`.env` は git から外れないので使わない。ビルドは DB を読むので、`K8O_TURSO_*` が要る。
 
 ## 型
 
