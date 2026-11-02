@@ -30,7 +30,8 @@ export const interceptUrlNavigation = ({
       event.canIntercept &&
       new URL(event.destination.url).pathname === location.pathname
     ) {
-      event.intercept();
+      // 本物の router と同じく、update() でフォーカスと位置を動かさない
+      event.intercept({ focusReset: 'manual', scroll: 'manual' });
     }
   };
   navigation.addEventListener('navigate', intercept);
