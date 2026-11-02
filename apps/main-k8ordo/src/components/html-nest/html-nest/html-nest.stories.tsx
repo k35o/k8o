@@ -1,3 +1,4 @@
+import { ListIcon } from '@k8ordo/ui';
 import { expect, within } from 'storybook/test';
 
 import preview from '../../../../.storybook/preview';
@@ -8,6 +9,7 @@ const meta = preview.meta({
   title: 'app/html-nest/html-nest',
   beforeEach: interceptUrlNavigation,
   component: HtmlNest,
+  args: { pickerIcon: <ListIcon size="sm" /> },
 });
 
 export const Default = meta.story();

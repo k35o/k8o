@@ -1,8 +1,7 @@
 'use client';
 
-import { SparklesIcon } from '@k8ordo/ui';
 import { cn } from '@repo/helpers/cn';
-import type { FC } from 'react';
+import type { FC, ReactNode } from 'react';
 
 import type { RadiusCorners } from '../corner-radius/corner-radius';
 import { RADIUS_PRESETS } from '../presets/presets';
@@ -14,9 +13,14 @@ import styles from './template-selector.module.css';
 type Props = {
   corners: RadiusCorners;
   onSelect: (corners: RadiusCorners) => void;
+  randomIcon: ReactNode;
 };
 
-export const TemplateSelector: FC<Props> = ({ corners, onSelect }) => {
+export const TemplateSelector: FC<Props> = ({
+  corners,
+  onSelect,
+  randomIcon,
+}) => {
   const selectedName =
     RADIUS_PRESETS.find((preset) => cornersEqual(preset.corners, corners))
       ?.name ?? '';
@@ -51,7 +55,7 @@ export const TemplateSelector: FC<Props> = ({ corners, onSelect }) => {
           type="button"
         >
           <span aria-hidden="true" className={styles.randomIcon}>
-            <SparklesIcon />
+            {randomIcon}
           </span>
           <span className={styles.chipLabel}>ランダム</span>
         </button>

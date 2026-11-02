@@ -3,9 +3,9 @@
 import { useAppState } from '@k8ordo/state';
 import type { FC } from 'react';
 
+import { BrowserOnly } from '@/components/site/browser-only/browser-only';
 import type { Slide } from '@/components/slides/split-slides/split-slides';
 
-import { BrowserOnly } from '../browser-only/browser-only';
 import { DeckPresenter } from '../deck-presenter/deck-presenter';
 import { DeckPrint } from '../deck-print/deck-print';
 import { DeckViewer } from '../deck-viewer/deck-viewer';

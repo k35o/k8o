@@ -1,3 +1,4 @@
+import { ListIcon } from '@k8ordo/ui';
 import { fn } from 'storybook/test';
 
 import preview from '../../../../.storybook/preview';
@@ -17,6 +18,7 @@ const meta = preview.meta({
   component: ContainmentView,
   args: {
     onSelect: fn(() => {}),
+    pickerIcon: <ListIcon size="sm" />,
   },
 });
 

@@ -1,3 +1,4 @@
+import { PaletteIcon } from '@k8ordo/ui';
 import { expect } from 'storybook/test';
 
 import preview from '../../../../.storybook/preview';
@@ -7,6 +8,7 @@ import { UiPreview } from './ui-preview';
 const meta = preview.meta({
   title: 'app/radius-maker/ui-preview',
   component: UiPreview,
+  args: { icon: <PaletteIcon /> },
 });
 
 export const Primary = meta.story({

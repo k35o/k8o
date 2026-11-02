@@ -1,16 +1,9 @@
 'use client';
 
 import type { RelatedElement } from '@k8o/html-nest';
-import {
-  Button,
-  Dialog,
-  FormControl,
-  ListIcon,
-  Modal,
-  TextField,
-} from '@k8ordo/ui';
+import { Button, Dialog, FormControl, Modal, TextField } from '@k8ordo/ui';
 import { useCallback, useState } from 'react';
-import type { FC } from 'react';
+import type { FC, ReactNode } from 'react';
 
 import { HTML_ELEMENTS } from '../elements/elements';
 import { RelatedGroups } from '../related-groups/related-groups';
@@ -24,11 +17,13 @@ const ALL: RelatedElement[] = HTML_ELEMENTS.map((element) => ({
 }));
 
 type ElementPickerModalProps = {
+  icon: ReactNode;
   onSelect: (tag: string) => void;
 };
 
 // 「要素を変える」ボタンでモーダルを開き、検索＋役割別一覧から選び直す。
 export const ElementPickerModal: FC<ElementPickerModalProps> = ({
+  icon,
   onSelect,
 }) => {
   const [isOpen, setIsOpen] = useState(false);
@@ -63,7 +58,7 @@ export const ElementPickerModal: FC<ElementPickerModalProps> = ({
           setIsOpen(true);
         }}
         size="sm"
-        startIcon={<ListIcon size="sm" />}
+        startIcon={icon}
         variant="outline"
       >
         要素を変える

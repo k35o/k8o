@@ -1,10 +1,9 @@
 'use client';
 
 import { Card, FormControl, NumberField, Select } from '@k8ordo/ui';
-import type { FC } from 'react';
+import type { FC, ReactNode } from 'react';
 
-import { BrowserSupportStatusLive } from '@/components/site/browser-support-status/browser-support-status-live';
-import type { BrowserSupportFeature } from '@/features/browser-support/interface/queries';
+import { BrowserOnly } from '@/components/site/browser-only/browser-only';
 
 import { CornerInputs } from '../corner-inputs/corner-inputs';
 import {
@@ -29,9 +28,17 @@ const SHAPE_OPTIONS = CORNER_SHAPES.map((shape) => ({
 const isCornerShape = (value: string): value is CornerShape =>
   (CORNER_SHAPES as readonly string[]).includes(value);
 
-export const RadiusMaker: FC<{
-  cornerShapeStatus: BrowserSupportFeature | null;
-}> = ({ cornerShapeStatus }) => {
+type Props = {
+  cornerShapeSupport: ReactNode;
+  previewIcon: ReactNode;
+  randomIcon: ReactNode;
+};
+
+const Content: FC<Props> = ({
+  cornerShapeSupport,
+  previewIcon,
+  randomIcon,
+}) => {
   const {
     corners,
     width,
@@ -56,7 +63,11 @@ export const RadiusMaker: FC<{
             width={width}
           />
           <OutputPanel corners={corners} shape={shape} />
-          <TemplateSelector corners={corners} onSelect={setCorners} />
+          <TemplateSelector
+            corners={corners}
+            onSelect={setCorners}
+            randomIcon={randomIcon}
+          />
           <div className={styles.sizeFields}>
             <FormControl
               label="幅(px)"
@@ -102,12 +113,7 @@ export const RadiusMaker: FC<{
               )}
             />
           </div>
-          {shape !== 'round' && (
-            <BrowserSupportStatusLive
-              feature={cornerShapeStatus}
-              featureId="corner-shape"
-            />
-          )}
+          {shape !== 'round' && cornerShapeSupport}
         </div>
       </Card>
       <div className={styles.panels}>
@@ -119,10 +125,18 @@ export const RadiusMaker: FC<{
         </Card>
         <Card>
           <div className={styles.preview}>
-            <UiPreview corners={corners} shape={shape} />
+            <UiPreview corners={corners} icon={previewIcon} shape={shape} />
           </div>
         </Card>
       </div>
     </div>
   );
 };
+
+// static mode の HTML は URL の state を既定値で描くので、HTML に描くと URL の値で開いたときに既定の形が
+// 一度出る。Next と同じく本文はブラウザでだけ描く
+export const RadiusMaker: FC<Props> = (props) => (
+  <BrowserOnly>
+    <Content {...props} />
+  </BrowserOnly>
+);

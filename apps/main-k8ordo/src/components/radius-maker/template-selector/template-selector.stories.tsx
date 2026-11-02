@@ -1,3 +1,4 @@
+import { SparklesIcon } from '@k8ordo/ui';
 import { expect, fn, within } from 'storybook/test';
 
 import preview from '../../../../.storybook/preview';
@@ -7,6 +8,7 @@ import { TemplateSelector } from './template-selector';
 const meta = preview.meta({
   title: 'app/radius-maker/template-selector',
   component: TemplateSelector,
+  args: { randomIcon: <SparklesIcon /> },
 });
 
 export const Primary = meta.story({

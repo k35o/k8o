@@ -1,5 +1,7 @@
-import type { ComponentProps } from 'react';
+import { PaletteIcon, SparklesIcon } from '@k8ordo/ui';
 import { expect, within } from 'storybook/test';
+
+import { BrowserSupportStatusLive } from '@/components/site/browser-support-status/browser-support-status-live';
 
 import preview from '../../../../.storybook/preview';
 import { interceptUrlNavigation } from '../../../../.storybook/url-state-story';
@@ -9,22 +11,27 @@ const meta = preview.meta({
   title: 'app/radius-maker/radius-maker',
   beforeEach: interceptUrlNavigation,
   component: RadiusMaker,
-  // ネストしたunionリテラル（status・browser）のままargsを推論させると
-  // meta.storyの型推論が壊れるため、satisfiesで文脈型を与えて広げる
   args: {
-    cornerShapeStatus: {
-      featureId: 'corner-shape',
-      name: 'corner-shape',
-      status: 'limited',
-      baselineDate: null,
-      resolvedDate: '2025-08-05',
-      support: [
-        { browser: 'chrome', version: '139', date: '2025-08-05' },
-        { browser: 'chrome_android', version: '139', date: '2025-08-05' },
-        { browser: 'edge', version: '139', date: '2025-08-05' },
-      ],
-    },
-  } satisfies Partial<ComponentProps<typeof RadiusMaker>>,
+    cornerShapeSupport: (
+      <BrowserSupportStatusLive
+        feature={{
+          featureId: 'corner-shape',
+          name: 'corner-shape',
+          status: 'limited',
+          baselineDate: null,
+          resolvedDate: '2025-08-05',
+          support: [
+            { browser: 'chrome', version: '139', date: '2025-08-05' },
+            { browser: 'chrome_android', version: '139', date: '2025-08-05' },
+            { browser: 'edge', version: '139', date: '2025-08-05' },
+          ],
+        }}
+        featureId="corner-shape"
+      />
+    ),
+    previewIcon: <PaletteIcon />,
+    randomIcon: <SparklesIcon />,
+  },
 });
 
 export const Primary = meta.story();

@@ -1,8 +1,7 @@
 'use client';
 
-import { PaletteIcon } from '@k8ordo/ui';
 import { cn } from '@repo/helpers/cn';
-import type { CSSProperties, FC } from 'react';
+import type { CSSProperties, FC, ReactNode } from 'react';
 
 import type { RadiusCorners } from '../corner-radius/corner-radius';
 import type { CornerShape } from '../corner-shape/corner-shape';
@@ -12,10 +11,11 @@ import styles from './ui-preview.module.css';
 
 type Props = {
   corners: RadiusCorners;
+  icon: ReactNode;
   shape: CornerShape;
 };
 
-export const UiPreview: FC<Props> = ({ corners, shape }) => {
+export const UiPreview: FC<Props> = ({ corners, icon, shape }) => {
   const radiusStyle: CSSProperties = {
     borderRadius: toBorderRadiusValue(corners),
     cornerShape: shape === 'round' ? undefined : shape,
@@ -47,7 +47,7 @@ export const UiPreview: FC<Props> = ({ corners, shape }) => {
         </figure>
         <figure className={styles.sample}>
           <div aria-hidden="true" className={styles.image} style={radiusStyle}>
-            <PaletteIcon />
+            {icon}
           </div>
           <figcaption className={styles.caption}>画像</figcaption>
         </figure>

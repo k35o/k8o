@@ -2,7 +2,7 @@ import { CONTENT_CATEGORY_LABEL, FORM_CATEGORY_LABEL } from '@k8o/html-nest';
 import type { ContentModelKind, HtmlElementInfo } from '@k8o/html-nest';
 import { Anchor, Badge, Code, Separator, Tabs } from '@k8ordo/ui';
 import { useMemo } from 'react';
-import type { FC } from 'react';
+import type { FC, ReactNode } from 'react';
 
 import {
   canSelfNest,
@@ -31,11 +31,13 @@ const KIND_LABEL: Record<ContentModelKind, string> = {
 type ContainmentViewProps = {
   element: HtmlElementInfo;
   onSelect: (tag: string) => void;
+  pickerIcon: ReactNode;
 };
 
 export const ContainmentView: FC<ContainmentViewProps> = ({
   element,
   onSelect,
+  pickerIcon,
 }) => {
   const children = useMemo(() => getChildren(element), [element]);
   const parents = useMemo(() => getParents(element), [element]);
@@ -49,7 +51,7 @@ export const ContainmentView: FC<ContainmentViewProps> = ({
       <div className={styles.selected}>
         <div className={styles.selectedHeader}>
           <p className={styles.selectedLabel}>選択中の要素</p>
-          <ElementPickerModal onSelect={onSelect} />
+          <ElementPickerModal icon={pickerIcon} onSelect={onSelect} />
         </div>
         <div className={styles.badges}>
           <span className={styles.tag}>
