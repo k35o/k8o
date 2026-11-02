@@ -94,3 +94,5 @@ export const getBlogsByTags = memoizeInBuild(async (slug: string) => {
     blog.tags.map((tag) => tag.id),
   );
 });
+
+export type { BlogLink } from '@/features/blog/application/feature-blog-map';
