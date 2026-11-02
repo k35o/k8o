@@ -1,0 +1,53 @@
+.root {
+  display: flex;
+  flex-direction: column;
+  gap: calc(var(--spacing) * 6);
+}
+
+.editor {
+  display: flex;
+  flex-direction: column;
+  gap: calc(var(--spacing) * 6);
+  padding: calc(var(--spacing) * 5);
+
+  @media (width >= 40rem) {
+    padding: calc(var(--spacing) * 6);
+  }
+}
+
+.sizeFields {
+  display: grid;
+  gap: calc(var(--spacing) * 4);
+
+  @media (width >= 40rem) {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+.panels {
+  display: grid;
+  gap: calc(var(--spacing) * 6);
+
+  @media (width >= 40rem) {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    align-items: flex-start;
+  }
+}
+
+.inputs {
+  display: flex;
+  flex-direction: column;
+  gap: calc(var(--spacing) * 3);
+  padding: calc(var(--spacing) * 5);
+}
+
+.inputsTitle {
+  color: var(--color-fg-base);
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-sm);
+  font-weight: var(--font-weight-bold);
+}
+
+.preview {
+  padding: calc(var(--spacing) * 5);
+}

@@ -1,0 +1,117 @@
+.root {
+  display: flex;
+  flex-direction: column;
+  gap: calc(var(--spacing) * 4);
+}
+
+.selected {
+  border-width: 1px;
+  border-style: solid;
+  border-color: var(--color-primary-border);
+  border-radius: var(--radius-xl);
+  background-color: var(--color-primary-bg-subtle);
+  padding: calc(var(--spacing) * 4);
+
+  @media (width >= 40rem) {
+    padding: calc(var(--spacing) * 5);
+  }
+}
+
+.selectedHeader {
+  margin-bottom: calc(var(--spacing) * 1.5);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: calc(var(--spacing) * 2);
+}
+
+.selectedLabel {
+  color: var(--color-primary-fg);
+  font-size: var(--font-size-xs);
+  line-height: var(--line-height-xs);
+  font-weight: var(--font-weight-medium);
+}
+
+.badges {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: calc(var(--spacing) * 2.5);
+}
+
+.tag {
+  font-size: var(--font-size-2xl);
+  line-height: var(--line-height-2xl);
+}
+
+.description {
+  color: var(--color-fg-mute);
+  margin-top: calc(var(--spacing) * 1.5);
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-relaxed);
+}
+
+.categories {
+  margin-top: calc(var(--spacing) * 3);
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  column-gap: calc(var(--spacing) * 3);
+  row-gap: calc(var(--spacing) * 1.5);
+}
+
+.category {
+  color: var(--color-fg-mute);
+  font-size: var(--font-size-xs);
+  line-height: var(--line-height-xs);
+}
+
+.relations {
+  border-width: 1px;
+  border-style: solid;
+  border-color: var(--color-border-base);
+  border-radius: var(--radius-xl);
+  background-color: var(--color-bg-base);
+  display: flex;
+  flex-direction: column;
+  gap: calc(var(--spacing) * 4);
+  padding: calc(var(--spacing) * 4);
+
+  @media (width >= 40rem) {
+    padding: calc(var(--spacing) * 5);
+  }
+}
+
+.count {
+  color: var(--color-fg-mute);
+  margin-left: var(--spacing);
+  font-size: var(--font-size-xs);
+  line-height: var(--line-height-xs);
+}
+
+.panel {
+  padding-top: calc(var(--spacing) * 4);
+}
+
+.legend {
+  color: var(--color-fg-mute);
+  font-size: var(--font-size-xs);
+  line-height: var(--line-height-xs);
+}
+
+.legendMark {
+  color: var(--color-fg-warning);
+  font-weight: var(--font-weight-bold);
+}
+
+.srOnly {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: calc(var(--spacing) * -0.25);
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border-width: 0;
+}

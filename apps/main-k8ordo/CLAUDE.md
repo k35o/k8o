@@ -49,6 +49,14 @@ apps/main（Next）を k8ordo（`@k8ordo/framework` の `mode: 'static'`）で�
 - static mode では HTML は既定値（全件）で、`?q=` は hydrate のあとに効く。hydrate の前に欄へ打った文字は、欄が付いた時に `q` へ写す（`shared/browser/replay-typed-value.ts` を欄の `ref` に渡す）
 - 一覧のカードのリンクは `href()` で組んだ素の `<a>` にする。`components/site/content-card` の `ContentCard` は、呼ぶ側が `href()` で組んだパスを `href` で受ける
 
+## ツールの URL の状態（`/palette-maker`・`/html-nest`・`/radius-maker`）
+
+- 値は区画の `search-params` の `definePageState` の url に文字列のまま置き、`readPaletteUrl` などが読むときに解く。外に貼られたリンクの読みを apps/main（nuqs）とそろえる（`?h=400` は 360、`?h=12abc` は 12、`?h=` は既定）。範囲の外や壊れた数の文字列は、ほかの値を書いても URL に残り、既定と同じ文字列（`?h=250`）と `s` の表に無い値（`?s=foo`）は消える。読みの約束は `search-params.test.ts` の表に書く。schema を `z.pipe`・`z.transform`・`z.number`・`z.refine` にしないのは、zod の本体が入る `frame-*.js` が大きくなり、どのページも +0.7kB 読むから
+- 動かす値（スライダー・かどの取っ手・NumberField）は `shared/browser/use-url-draft` の下書きに置き、ツールの根の要素に `commitProps` を渡して、pointerup・pointercancel・click・keyup・blur で確定する。部品の `onChange` のあとに届くので、部品は `onChange` のままでよい。入力ごとに `update()` すると、WebKit は 200 回を超えたところで `QuotaExceededError` を返し、URL が止まる。ポインタもキーも出ない増減（支援技術の増減）と、離した直後の pointermove が作る下書きにはどの事象も来ないので、値が止まって 0.6 秒たつと書く
+- 貼り付けられる欄（トークン名・基準色）は keyup も click も来ないので入力ごとに `commit` し、選ぶ操作（テンプレート・かたちの Select）も選んだ時に `commit` する
+- html-nest は下書きを持たず、`update({ el }, { history: 'push' })` で書く。戻る・進むは store が URL を読み直すので、書くものは無い。値が変わらない `update()` は push しない
+- static mode の HTML は url の state を既定値で描き、URL の値で開いたときに既定の色や形が一度出るので、本文は `components/site/browser-only` の `BrowserOnly` でブラウザでだけ描く。HTML の `<main>` は見出しと空の digest の `<!--$!-->` になる
+
 ## スライド
 
 - デッキの route は `/slides/:slug` の 1 本（何を書くかは「ビルドが読むもの」）。MDX は `components/slides/slide-article` が記事と同じく `import.meta.glob`（`?vite-rsc-css-export=default` 付き）で slug ごとに遅れて読み、`MdxContent` にスライドの部品の表を重ねて描く。MDX の `<SlideDeckShell slug>` は QR の URL と同期の名前になるので、ディレクトリ名と同じにする（apps/main の `slide-files.test.ts` が確かめる）
