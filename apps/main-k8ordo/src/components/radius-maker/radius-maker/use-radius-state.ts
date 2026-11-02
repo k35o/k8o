@@ -1,6 +1,7 @@
 import { useAppState } from '@k8ordo/state';
 import { between } from '@repo/helpers/number/between';
-import { useCallback } from 'react';
+
+import { useUrlDraft } from '@/shared/browser/use-url-draft';
 
 import type {
   Axis,
@@ -18,70 +19,56 @@ import {
 } from '../search-params/search-params';
 
 export const useRadiusState = () => {
-  const [url, update] = useAppState(radiusMakerState);
-  const { corners, width, height } = readRadiusUrl(url);
-
-  const setCornerValue = useCallback(
-    (corner: Corner, axis: Axis, value: number) => {
-      const nextValue = between(Math.round(value), 0, 100);
-      update((current) => {
-        const now = parseCorners(current.r) ?? BLOB_CORNERS;
-        return {
-          r: serializeCorners({
-            ...now,
-            [corner]: { ...now[corner], [axis]: nextValue },
-          }),
-        };
-      });
-    },
-    [update],
+  const [committed, update] = useAppState(radiusMakerState);
+  const { values, change, commit, commitProps } = useUrlDraft(
+    committed,
+    update,
   );
+  const { corners, width, height } = readRadiusUrl(values);
 
-  const setCorners = useCallback(
-    (nextCorners: RadiusCorners) => {
-      update({ r: serializeCorners(nextCorners) });
-    },
-    [update],
-  );
+  const setCornerValue = (corner: Corner, axis: Axis, value: number): void => {
+    const nextValue = between(Math.round(value), 0, 100);
+    change((current) => {
+      const now = parseCorners(current.r) ?? BLOB_CORNERS;
+      return {
+        r: serializeCorners({
+          ...now,
+          [corner]: { ...now[corner], [axis]: nextValue },
+        }),
+      };
+    });
+  };
 
-  const setWidth = useCallback(
-    (value: number) => {
-      update({
-        w: String(
-          between(Math.round(value), PREVIEW_SIZE.min, PREVIEW_SIZE.max),
-        ),
-      });
-    },
-    [update],
-  );
+  const setCorners = (nextCorners: RadiusCorners): void => {
+    commit({ r: serializeCorners(nextCorners) });
+  };
 
-  const setHeight = useCallback(
-    (value: number) => {
-      update({
-        h: String(
-          between(Math.round(value), PREVIEW_SIZE.min, PREVIEW_SIZE.max),
-        ),
-      });
-    },
-    [update],
-  );
+  const setWidth = (value: number): void => {
+    change({
+      w: String(between(Math.round(value), PREVIEW_SIZE.min, PREVIEW_SIZE.max)),
+    });
+  };
 
-  const setShape = useCallback(
-    (value: CornerShape) => {
-      update({ s: value });
-    },
-    [update],
-  );
+  const setHeight = (value: number): void => {
+    change({
+      h: String(between(Math.round(value), PREVIEW_SIZE.min, PREVIEW_SIZE.max)),
+    });
+  };
+
+  const setShape = (value: CornerShape): void => {
+    commit({ s: value });
+  };
 
   return {
     corners,
     width,
     height,
-    shape: url.s,
+    shape: values.s,
     setCornerValue,
     setCorners,
     setWidth,
     setHeight,
     setShape,
+    commitProps,
   };
 };

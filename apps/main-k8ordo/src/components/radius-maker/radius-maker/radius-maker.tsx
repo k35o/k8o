@@ -49,10 +49,11 @@ const Content: FC<Props> = ({
     setWidth,
     setHeight,
     setShape,
+    commitProps,
   } = useRadiusState();
 
   return (
-    <div className={styles.root}>
+    <div className={styles.root} {...commitProps}>
       <Card>
         <div className={styles.editor}>
           <RadiusCanvas

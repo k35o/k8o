@@ -2,8 +2,10 @@ import type { ReactElement } from 'react';
 import { hydrateRoot } from 'react-dom/client';
 import { renderToString } from 'react-dom/server';
 
-export const queryInUrl = (): string | null =>
-  new URL(location.href).searchParams.get('q');
+export const paramInUrl = (key: string): string | null =>
+  new URL(location.href).searchParams.get(key);
+
+export const queryInUrl = (): string | null => paramInUrl('q');
 
 // Storybook には Navigation API を拾う router が無く、url の state を書く navigate がそのままでは
 // iframe を読み込み直すので、同じ文書の navigate を止める。Story は同じページで続けて走るので、
