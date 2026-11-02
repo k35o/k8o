@@ -1,9 +1,9 @@
 'use client';
 
 import { useAppState } from '@k8ordo/state';
-import { Button, Card, Drawer, ListIcon, SubscribeIcon } from '@k8ordo/ui';
+import { Button, Card, Drawer, SubscribeIcon } from '@k8ordo/ui';
 import { useCallback, useMemo, useState } from 'react';
-import type { FC } from 'react';
+import type { FC, ReactNode } from 'react';
 
 import type { ReadingList } from '@/features/reading-list/interface/queries';
 import { useLiveSnapshot } from '@/shared/api/live-snapshot';
@@ -22,9 +22,10 @@ import styles from './reading-list-content.module.css';
 const loadReadingList = (): Promise<ReadingList | null> =>
   readOrNull(publicApi.public['reading-list'].$get());
 
-export const ReadingListContent: FC<{ readingList: ReadingList }> = ({
-  readingList,
-}) => {
+export const ReadingListContent: FC<{
+  readingList: ReadingList;
+  filterIcon: ReactNode;
+}> = ({ readingList, filterIcon }) => {
   const { articles, sources } = useLiveSnapshot(
     'reading-list',
     loadReadingList,
@@ -122,7 +123,7 @@ export const ReadingListContent: FC<{ readingList: ReadingList }> = ({
                 setIsDrawerOpen(true);
               }}
               size="sm"
-              startIcon={<ListIcon />}
+              startIcon={filterIcon}
               variant="outline"
             >
               絞り込み

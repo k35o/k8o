@@ -1,0 +1,17 @@
+.root {
+  width: 100%;
+  max-width: 80rem;
+  margin-inline: auto;
+}
+
+.content {
+  display: flex;
+  flex-direction: column;
+  gap: calc(var(--spacing) * 6);
+}
+
+.titleRow {
+  display: flex;
+  align-items: center;
+  gap: calc(var(--spacing) * 2);
+}

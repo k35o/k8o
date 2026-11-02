@@ -1,3 +1,4 @@
+import { ListIcon } from '@k8ordo/ui';
 import { HttpResponse, http } from 'msw/http';
 import { expect, fn, screen, userEvent, waitFor } from 'storybook/test';
 
@@ -67,7 +68,7 @@ const requested = fn();
 const meta = preview.meta({
   title: 'app/reading-list/reading-list-content',
   component: ReadingListContent,
-  args: { readingList: buildTime },
+  args: { readingList: buildTime, filterIcon: <ListIcon /> },
   beforeEach: (context) => {
     requested.mockClear();
     return interceptUrlNavigation(context);

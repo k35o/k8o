@@ -1,0 +1,23 @@
+.root {
+  width: 100%;
+  max-width: 64rem;
+  margin-inline: auto;
+}
+
+.content {
+  display: flex;
+  flex-direction: column;
+  gap: calc(var(--spacing) * 8);
+}
+
+.section {
+  display: flex;
+  flex-direction: column;
+  gap: calc(var(--spacing) * 8);
+}
+
+.history {
+  display: flex;
+  flex-direction: column;
+  gap: calc(var(--spacing) * 4);
+}

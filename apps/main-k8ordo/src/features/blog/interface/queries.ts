@@ -9,6 +9,7 @@ import {
   getBlogsByTags as _getBlogsByTags,
   getBlogs,
 } from '@/features/blog/application/blogs';
+import { getFeatureBlogMap as _getFeatureBlogMap } from '@/features/blog/application/feature-blog-map';
 import { getBlogOgCode as _getBlogOgCode } from '@/features/blog/application/og-code';
 import { estimateReadingTimeMinutes } from '@/features/blog/application/reading-time';
 import { memoizeInBuild } from '@/shared/cache/memoize-in-build';
@@ -94,5 +95,7 @@ export const getBlogsByTags = memoizeInBuild(async (slug: string) => {
     blog.tags.map((tag) => tag.id),
   );
 });
+
+export const getFeatureBlogMap = memoizeInBuild(_getFeatureBlogMap);
 
 export type { BlogLink } from '@/features/blog/application/feature-blog-map';

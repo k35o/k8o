@@ -1,0 +1,103 @@
+@keyframes pulse {
+  50% {
+    opacity: 0.5;
+  }
+}
+
+.root {
+  display: grid;
+  gap: calc(var(--spacing) * 8);
+
+  @media (width >= 80rem) {
+    margin-inline: calc(var(--spacing) * -16);
+    grid-template-columns: 16rem minmax(0, 1fr);
+    align-items: flex-start;
+  }
+}
+
+.aside {
+  display: none;
+
+  @media (width >= 80rem) {
+    position: sticky;
+    top: calc(var(--spacing) * 6);
+    display: block;
+  }
+}
+
+.filter {
+  border-radius: var(--radius-xl);
+  background-color: var(--color-bg-base);
+  padding: calc(var(--spacing) * 4);
+  box-shadow: var(--shadow-sm);
+  animation: pulse var(--duration-pulse) var(--easing-pulse) infinite;
+}
+
+.filterStack {
+  display: flex;
+  flex-direction: column;
+  gap: calc(var(--spacing) * 5);
+}
+
+.filterHeading {
+  height: calc(var(--spacing) * 6);
+  width: calc(var(--spacing) * 20);
+  border-radius: var(--radius-md);
+  background-color: var(--color-bg-mute);
+}
+
+.filterInput {
+  height: calc(var(--spacing) * 10);
+  border-radius: var(--radius-md);
+  background-color: var(--color-bg-mute);
+}
+
+.filterSeparator {
+  height: 1px;
+  width: 100%;
+  background-color: var(--color-border-subtle);
+}
+
+.filterTag {
+  height: calc(var(--spacing) * 5);
+  border-radius: var(--radius-md);
+  background-color: var(--color-bg-mute);
+}
+
+.main {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: calc(var(--spacing) * 6);
+}
+
+.toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  animation: pulse var(--duration-pulse) var(--easing-pulse) infinite;
+}
+
+.count {
+  height: calc(var(--spacing) * 4);
+  width: calc(var(--spacing) * 24);
+  border-radius: var(--radius-md);
+  background-color: var(--color-bg-mute);
+}
+
+.button {
+  height: calc(var(--spacing) * 9);
+  width: calc(var(--spacing) * 24);
+  border-radius: var(--radius-md);
+  background-color: var(--color-bg-mute);
+
+  @media (width >= 80rem) {
+    display: none;
+  }
+}
+
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: calc(var(--spacing) * 4);
+}

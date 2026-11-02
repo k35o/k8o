@@ -2,9 +2,9 @@
 
 import { Anchor } from '@k8ordo/ui';
 import { formatDate } from '@repo/helpers/date/format';
-import { Suspense } from 'react';
 import type { FC } from 'react';
 
+import { BrowserOnly } from '@/components/site/browser-only/browser-only';
 import type { BlogLink } from '@/features/blog/interface/queries';
 import type { BrowserSupportSnapshot } from '@/features/browser-support/interface/queries';
 import { useLiveSnapshot } from '@/shared/api/live-snapshot';
@@ -42,16 +42,16 @@ export const BrowserSupportLive: FC<{
   return (
     <div className={styles.root}>
       <BrowserSupportRecentChanges changes={recentChanges} />
-      {/* nuqs が searchParams（動的データ）を読むため、静的プリレンダリング時は
-          Suspense 境界が必要。境界内はリクエスト時にレンダリングされる。 */}
-      <Suspense fallback={<BrowserSupportFeatureListSkeleton />}>
+      {/* HTML は URL の値を知らずに描くので、一覧は骨組みを置いてブラウザでだけ描く。
+          既定の値で描くと、URL の値で開いたときに全件が一度出る */}
+      <BrowserOnly fallback={<BrowserSupportFeatureListSkeleton />}>
         <BrowserSupportFeatureList
           blogMap={blogMap}
           currentYear={latestYear}
           features={features}
           nowMs={nowMs}
         />
-      </Suspense>
+      </BrowserOnly>
       {/* データ基準の常時表示は鮮度の計器を兼ねる: 更新が止まればここの日付が
           古くなり、通知系が全滅していても見れば分かる。 */}
       <p className={styles.source}>
