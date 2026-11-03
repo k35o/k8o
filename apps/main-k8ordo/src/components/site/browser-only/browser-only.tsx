@@ -9,8 +9,11 @@ const Deferred: FC<{ children: ReactNode }> = ({ children }) => {
   return children;
 };
 
-export const BrowserOnly: FC<{ children: ReactNode }> = ({ children }) => (
-  <Suspense fallback={null}>
+export const BrowserOnly: FC<{ children: ReactNode; fallback?: ReactNode }> = ({
+  children,
+  fallback = null,
+}) => (
+  <Suspense fallback={fallback}>
     <Deferred>{children}</Deferred>
   </Suspense>
 );
