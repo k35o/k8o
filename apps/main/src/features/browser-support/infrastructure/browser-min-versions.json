@@ -1,11 +1,11 @@
 {
-  "upstreamVersion": "3.39.0",
+  "upstreamVersion": "3.45.0",
   "minVersions": {
     "chrome": "153",
     "chrome_android": "153",
     "edge": "153",
-    "firefox": "155",
-    "firefox_android": "155",
+    "firefox": "159",
+    "firefox_android": "159",
     "safari": "27",
     "safari_ios": "27"
   }
