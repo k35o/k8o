@@ -132,7 +132,6 @@ export default defineConfig({
       enforce: 'pre',
       ...mdx({ remarkPlugins: [remarkPreset], rehypePlugins: [rehypePreset] }),
     },
-    // site は渡さない。渡すと framework の sitemap.xml が route.ts の sitemap.xml を上書きする
     framework({
       mode: 'static',
       reactCompiler: true,
