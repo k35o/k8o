@@ -75,7 +75,7 @@ export default defineConfig({
                 {
                   group: ['next', 'next/**', 'next-themes', '@/**'],
                   message:
-                    '記事とデモは Next に依らずに描けるように保つ（k8ordo 版の main が写さずに読む）。Next と、読む側で指す先の変わる @/ を import しない。',
+                    '記事とデモは Next とアプリの中に依らずに描けるように保つ。Next と @/ を import しない。',
                 },
               ],
             },
@@ -85,14 +85,6 @@ export default defineConfig({
       {
         // main は Next ではない。ルートレイアウトが <head> を書き、画像は AVIF に変換してコミットして素の img で描く
         files: ['apps/main/**'],
-        rules: {
-          '@next/next/no-head-element': 'off',
-          '@next/next/no-img-element': 'off',
-        },
-      },
-      {
-        // k8ordo 版の main は Next ではない。ルートレイアウトが <head> を書き、画像は main と同じく素の img で描く
-        files: ['apps/main-k8ordo/**'],
         rules: {
           '@next/next/no-head-element': 'off',
           '@next/next/no-img-element': 'off',

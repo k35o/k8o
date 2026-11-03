@@ -226,7 +226,7 @@ jobs:
             gh api "repos/$GH_REPO/git/refs" -f ref="refs/heads/$branch" -f sha="$main_sha" >/dev/null
           fi
 
-          # 生成物はフロアの JSON と、同じ版から作る .browserslistrc（Next の CSS / JS の
+          # 生成物はフロアの JSON と、同じ版から作る .browserslistrc（ai の Next の CSS / JS の
           # ターゲット）の 2 つ。main は署名必須のため git push ではなく API でコミットする。
           # GitHub App が API で作ったコミットは GitHub が署名する。
           for file in "$FLOOR_FILE" .browserslistrc; do

@@ -5,8 +5,7 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "portless proxy start --https && turbo run dev --filter=!main-k8ordo",
-    "dev:k8ordo": "portless proxy start --https && turbo run dev --filter=!main",
+    "dev": "portless proxy start --https && turbo run dev",
     "build": "turbo run build",
     "check": "vp check && turbo run check:css",
     "check:write": "vp check --fix",
