@@ -4,7 +4,13 @@ AI関連ツールの置き場（`ai.k8o.me`）。k8o のブログ記事と k8o.m
 
 ## レイヤー構成（src/）
 
-apps/main と同じ `app / features / shared` 構成（詳細は `apps/main/CLAUDE.md`）。Server Actions（`'use server'`）は `features/*/interface` に置く。
+`app / features / shared` 構成。Server Actions（`'use server'`）は `features/*/interface` に置く。
+
+- `app/` - App Router のルーティングと UI。`page.tsx`・`layout.tsx`・`route.ts` などの entry を置き、UI コンポーネントは `app/**/_components`（route 専用なら route の下、複数の route で使うなら `app/_components`）。entry からは `features/*/interface` を読む
+- `features/<feature>/` - 機能ごとの UI 以外の処理。`interface` は `app` が読む関数、`application` はユースケースと整形（小さい読み取りはここでよい）、`infrastructure` は DB・外部 API などの外部接続。UI コンポーネントは置かない
+- `shared/` - アプリの中で横断して使う UI 以外の処理。UI コンポーネントや `cn` は置かない
+
+features は次のとおり。
 
 - `generation/` - エージェントの tool（`generate_ui`・`generate_slides`）の中で Claude（Sonnet 5.5 / Opus 5.5、AI SDK v7 と @ai-sdk/anthropic）を呼び、json-render の spec とスライドのデッキを作る部品（system prompt・ストリームの読み取り・受け取りの確かめ）と、spec から TSX への変換
 - `agent/` - `/chat` のエージェント。tool つきの生成のループ、スレッドとメッセージの保存（ai_threads・ai_thread_messages）、オーナー API から記事と k8o.me の運営のデータを読む tool、GitHub から k35o のリポジトリを読む tool、Claude API の中で web を検索して読む tool、UI とスライドを作って直す tool

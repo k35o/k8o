@@ -38,7 +38,7 @@ apps/main/src/content/blog/{slug}/
 | Playground (`apps/main/src/playgrounds/{feature-name}/`) | デモがある場合 |
 | マイグレーション (`packages/database/migrations/`) | ✅ |
 
-記事のページ（`/blog/{slug}`）のレイアウトとメタデータ、OGP画像（`/blog/{slug}/og.png`）は、`apps/main/src/app/blog/[slug]/` が全記事に共通で作る。記事ごとの `layout.tsx` や `opengraph-image.tsx` は作らない。
+記事のページ（`/blog/{slug}`）のレイアウトとメタデータ、OGP画像（`/blog/{slug}/og.png`）は、`apps/main/src/routes/blog/[slug]/` が全記事に共通で作る。記事ごとの route ファイルは作らない。
 
 ## ファイルテンプレート
 
@@ -63,7 +63,7 @@ featureIds:
 <PlaygroundEmbed demo="デモタイトル" sectionId="my-feature" />
 ```
 
-- 記事で使う部品（`BrowserSupportStatus`・`PlaygroundEmbed`・`Playground`・`LinkCard`・`Image`・`FloatImage`・`Alert`）は `apps/main/src/app/blog/_components/blog-mdx-components` の `blogMdxComponents` で渡されるので、import しない。MDX から `@/`・`next`・`next-themes` を import すると、`features/blog/application/article-files.test.ts` が落ちる
+- 記事で使う部品（`BrowserSupportStatus`・`PlaygroundEmbed`・`Playground`・`LinkCard`・`Image`・`FloatImage`・`Alert`）は `apps/main/src/components/blog/blog-mdx-components` の `blogMdxComponents` で渡されるので、import しない。MDX から `@/`・`next`・`next-themes` を import すると、`features/blog/application/article-files.test.ts` が落ちる
 - 記事の画像は `_images/` に、この記事だけの部品は `_components/` に置き、`./_images/...`・`./_components/...` の相対パスで import する
 - `_images/` の画像は、`pnpm run -F main optimize:image <元の画像> src/content/blog/{slug}/_images/{名前}.avif --max-width 1920` で AVIF にして置く（パスは `apps/main` からの相対か絶対パス）。元の PNG や JPG はコミットしない。出力された `width={...} height={...}` を `<Image src={...} alt="..." width={...} height={...} />` に書き、画面の最初に見える画像には `loading="eager"` を足す。`FloatImage` は表示したい大きさの width と height を、画像と同じ縦横比で書く。縦横比が画像と合わないと `features/blog/application/article-files.test.ts` が落ちる
 - `<LinkCard href="..." />` を足したら、`pnpm run -F main generate:link-card-metadata` を流し、更新された `apps/main/src/content/link-card-metadata.json` もコミットする。カードはこの JSON の OGP で描き、ビルドではリンク先へ取りに行かない。流し忘れは `features/blog/application/article-files.test.ts` が落とす。出力に「OGP が取れなかった」が出たら、時間をおいて流し直す。それでも出る URL（`http://` や OGP を持たないページ）は `{}` のままでよい。`--refresh` は使わない
@@ -73,13 +73,13 @@ featureIds:
 
 ### 2. 数式（KaTeX）を使う記事
 
-数式の変換（`@repo/mdx-preset` の remark・rehype の preset。remark-math と KaTeX）は `next.config.ts` で全記事に効いているため、本文では `$...$`・`$$...$$`・` ```math ` フェンスがそのまま使える。KaTeX の CSS は記事が自分で持つので、数式を使う記事の `article.mdx` が import する。frontmatter の直後に以下の 1 行を追加する（縦書きの調整も同じ CSS に入っている）:
+数式の変換（`@repo/mdx-preset` の remark・rehype の preset。remark-math と KaTeX）は `apps/main/vite.config.ts` の MDX の設定で全記事に効いているため、本文では `$...$`・`$$...$$`・` ```math ` フェンスがそのまま使える。KaTeX の CSS は記事が自分で持つので、数式を使う記事の `article.mdx` が import する。frontmatter の直後に以下の 1 行を追加する（縦書きの調整も同じ CSS に入っている）:
 
 ```mdx
 import '@repo/mdx-preset/katex.css';
 ```
 
-今の Next のビルドでは、記事の CSS は `/blog/[slug]` の1つのルートにまとまり、ほかの数式の記事の import ですべての記事のページに載る。そのため import を忘れても見た目では気づけない。抜けは `apps/main/src/features/blog/application/article-files.test.ts` が落とす。既存の例: `apps/main/src/content/blog/font-family-math/article.mdx`。
+記事の CSS はその記事のページだけに載るので、import を忘れるとその記事の数式が崩れる。抜けは `apps/main/src/features/blog/application/article-files.test.ts` が落とす。既存の例: `apps/main/src/content/blog/font-family-math/article.mdx`。
 
 ### 3. Playgroundコンポーネント（デモがある場合）
 
@@ -186,21 +186,11 @@ export const myFeatureSection: PlaygroundSection = {
 };
 ```
 
-#### sections.ts・ids.ts・playground-embed.tsx への追加
+#### sections.ts・ids.ts への追加
 
-- `apps/main/src/playgrounds/sections.ts` に `import { myFeatureSection } from './{feature-name}';` を追加し、`playgroundSections` 配列に追加（`/playgrounds` の一覧とページが使う）
+- `apps/main/src/playgrounds/sections.ts` に `import { myFeatureSection } from './{feature-name}';` を追加し、`playgroundSections` 配列に追加（`/playgrounds` の一覧・llms.txt・sitemap が使う）
 - `apps/main/src/playgrounds/ids.ts` の `playgroundIds` に、セクションの `id` を足す（`/playgrounds/{id}` のページを挙げる。`sections.ts` と食い違うと `ids.test.ts` が落ちる）
-- `apps/main/src/app/_components/playgrounds/playground-embed.tsx` の `embeds` に、セクションの `id` をキーにして次の 1 件を追加（記事の `<PlaygroundEmbed>` が使う。記事のページは、そのページで描くセクションのデモだけを読む）
-
-```tsx
-'my-feature': dynamic(() =>
-  import('@/playgrounds/my-feature').then(({ myFeatureSection }) =>
-    toEmbed(myFeatureSection),
-  ),
-),
-```
-
-`embeds` に無い `sectionId` を記事が渡すと、ビルドのプリレンダーで落ちる。
+`/playgrounds/{id}` のページと記事の `<PlaygroundEmbed>` は、`apps/main/src/components/playgrounds/load-section.ts` が `src/playgrounds/{id}/index.ts` を glob で id ごとに読むので、ディレクトリ名とセクションの `id` をそろえる。無い `sectionId` を記事が渡すと、ビルドの描画で落ちる。
 
 ## データベースマイグレーション
 
@@ -274,7 +264,7 @@ grep -rhoE "INSERT INTO tags [^;]*'[^']+'" packages/database/migrations/*.sql \
 - [ ] `<LinkCard>` を使う場合: `pnpm run -F main generate:link-card-metadata` を流し（「OGP が取れなかった」が出たら時間をおいて流し直す）、`link-card-metadata.json` をコミット
 - [ ] Playgroundのデモと `.module.css` 作成（必要な場合）
 - [ ] Storybookストーリー作成（必要な場合）
-- [ ] `playgrounds/sections.ts`・`playgrounds/ids.ts` と `playground-embed.tsx` の `embeds` 更新（必要な場合）
+- [ ] `playgrounds/sections.ts`・`playgrounds/ids.ts` 更新（必要な場合）
 
 ### データベース
 

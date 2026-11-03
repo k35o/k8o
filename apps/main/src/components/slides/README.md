@@ -15,30 +15,16 @@ INSERT INTO slides (slug, published, created_at)
   VALUES ('my-talk', 1, '2026-05-15T00:00:00.000Z') ON CONFLICT (slug) DO NOTHING;
 ```
 
-### 2. ルートと本文のディレクトリを作成
+### 2. 本文のディレクトリを作成
 
 ```
-apps/main/src/app/slides/(decks)/<slug>/
-├── layout.tsx          # metadata, OG タグ
-├── page.tsx            # MDX を render
-└── opengraph-image.tsx # (任意) OG 画像
-
 apps/main/src/content/slides/<slug>/
 └── content.mdx         # スライド本体
 ```
 
-### 3. `page.tsx`
+route は `/slides/:slug` の 1 本で、ビルドが公開済みで MDX のあるデッキごとにページと OG（`/slides/<slug>/og.png`）を書き出す。題と説明は frontmatter の `title`・`description` から入る。
 
-```tsx
-import { slideMDXComponents } from '@/app/slides/_components/mdx-parts';
-import Content from '@/content/slides/my-talk/content.mdx';
-
-export default function Page() {
-  return <Content components={slideMDXComponents} />;
-}
-```
-
-### 4. `content.mdx`
+### 3. `content.mdx`
 
 ```mdx
 ---
@@ -77,13 +63,11 @@ updatedAt: 2026-05-15
 </SlideDeckShell>
 ```
 
-### 5. `layout.tsx`
-
-`(decks)/sample-deck/layout.tsx` を雛形に metadata を埋める。
+`<SlideDeckShell slug>` は QR の URL と発表者モードの同期の名前になるので、ディレクトリ名と同じにする（`features/slides/application/slide-files.test.ts` が確かめる）。
 
 ## 利用できるコンポーネント
 
-MDX では import せずに使う。`_components/slide-mdx` の部品を、`page.tsx` が `slideMDXComponents` で渡す。MDX は `@/`・`next`・`next-themes` を import しない（`features/slides/application/slide-files.test.ts` が確かめる）。
+MDX では import せずに使う。`slide-mdx` の部品を、`slide-article` が `slide-mdx-components` の `slideMdxComponents` で渡す。MDX は `@/`・`next`・`next-themes` を import しない（`features/slides/application/slide-files.test.ts` が確かめる）。
 
 | Component | 用途 |
 |---|---|
@@ -126,7 +110,7 @@ MDX では import せずに使う。`_components/slide-mdx` の部品を、`page
 
 - 全スライドが 1 枚 1 ページ (16:9) で出力される
 - `print-color-adjust: exact` により、**表示中のテーマの配色** (背景・シンタックスハイライト等) をそのまま引き継ぐ。ダークテーマ表示中はダークのまま出力される
-- 印刷用の描画は `_components/slide-deck/deck-print` が担当し、`body` 直下へ portal して他のサイト要素を `@media print` で隠す
+- 印刷用の描画は `slide-deck/deck-print` が担当し、`body` 直下へ portal して他のサイト要素を `@media print` で隠す
 - Chrome (v136 未満) 向けに `-webkit-print-color-adjust` も併記している。ダイアログの「背景のグラフィック」設定に依存せず色が出る
 
 ## 表示の中身
@@ -139,18 +123,22 @@ MDX では import せずに使う。`_components/slide-mdx` の部品を、`page
 ## ディレクトリ構成
 
 ```
-apps/main/src/app/slides/
-├── (decks)/<slug>/             各スライドデッキ (本文は src/content/slides/<slug>/content.mdx)
-│   ├── layout.tsx
-│   └── page.tsx
-├── _components/
-│   ├── mdx-parts/              MDX タグの上書きと slide-mdx の部品をまとめた slideMDXComponents (page.tsx だけが利用)
-│   ├── slide-mdx/              writer 向け JSX 部品
-│   ├── slide-deck/             デッキ実装 (viewer / presenter / stage / hooks 等)
-│   └── slide-card/             /slides 一覧用カード
-├── _utils/                     スライド分割と Notes の識別 (split-slides / notes-marker)
-├── feed/                       RSS feed
-├── layout.tsx                  /slides 共通レイアウト
-├── opengraph-image.tsx
+apps/main/src/routes/slides/
+├── [slug]/
+│   ├── og.png/route.ts         デッキの OG
+│   └── page.tsx                デッキ (本文は src/content/slides/<slug>/content.mdx)
+├── feed/route.ts               RSS feed
+├── og.png/route.ts             /slides の OG
 └── page.tsx                    /slides 一覧
+
+apps/main/src/components/slides/
+├── mdx-parts/                  MDX タグの上書き
+├── slide-mdx/                  writer 向け JSX 部品
+├── slide-mdx-components/       mdx-parts と slide-mdx の部品をまとめた slideMdxComponents
+├── slide-article/              デッキの MDX を slug ごとに読んで描く
+├── slide-deck/                 デッキ実装 (viewer / presenter / stage / hooks 等)
+├── split-slides/               スライド分割と Notes の識別 (split-slides / notes-marker)
+├── slides-frame/               /slides と /slides/<slug> の枠
+├── slide-card/                 /slides 一覧用カード
+└── slide-index/                /slides 一覧
 ```

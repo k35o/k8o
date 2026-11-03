@@ -24,9 +24,9 @@ apps/main/src/content/blog/<slug>/
 └── _components/  # この記事だけの部品（あれば）
 ```
 
-ページのメタデータ（タイトル/日付はfrontmatter、タグはDBから取得）とOGP画像（`/blog/<slug>/og.png`）は、`apps/main/src/app/blog/[slug]/`が全記事に共通で作る。
+ページのメタデータ（タイトル/日付はfrontmatter、タグはDBから取得）とOGP画像（`/blog/<slug>/og.png`）は、`apps/main/src/routes/blog/[slug]/`が全記事に共通で作る。
 
-`article.mdx`: 先頭にYAML frontmatter（`---`）、続いて`import`文と本文。本文の`# H1`は**レンダリング時に非表示**（タイトルはfrontmatterの`title`をレイアウトが表示する）。実セクションは`##`から始め、表示時に`##`→h3相当・`###`→h4相当へ1段繰り下げられる（執筆時は`##`/`###`をそのまま書く）。内部リンクは`next/link`、外部リンクは通常リンクへ自動変換。
+`article.mdx`: 先頭にYAML frontmatter（`---`）、続いて`import`文と本文。本文の`# H1`は**レンダリング時に非表示**（タイトルはfrontmatterの`title`をレイアウトが表示する）。実セクションは`##`から始め、表示時に`##`→h3相当・`###`→h4相当へ1段繰り下げられる（執筆時は`##`/`###`をそのまま書く）。内部リンクは router が遷移にする素の`<a>`、外部リンクは通常リンクへ自動変換。
 
 ## レビューの進め方
 
@@ -96,19 +96,19 @@ frontmatterが不正だと`getFrontmatter()`が`Invalid frontmatter in <path>`�
 
 ## ブログ固有3: MDXコンポーネントの利用
 
-下の部品は`apps/main/src/app/blog/_components/blog-mdx-components`の`blogMdxComponents`で渡されるので、MDXでは import しない。propsが正しいか確認する。
+下の部品は`apps/main/src/components/blog/blog-mdx-components`の`blogMdxComponents`で渡されるので、MDXでは import しない。propsが正しいか確認する。
 
 | コンポーネント | 主なprops |
 |---------------|-----------|
 | `BrowserSupportStatus` | `featureId`（frontmatterの`featureIds`と一致）。Web機能の記事ではH1直下 |
-| `PlaygroundEmbed` | `sectionId`（必須。`app/_components/playgrounds/playground-embed.tsx`の`embeds`のキー＝セクションの`id`） / `demo?`（デモの`title`。省略するとセクションの全デモ） |
+| `PlaygroundEmbed` | `sectionId`（必須。`apps/main/src/playgrounds/<id>/`のディレクトリ名＝セクションの`id`） / `demo?`（デモの`title`。省略するとセクションの全デモ） |
 | `Playground` | `title`（必須）。子にデモ |
 | `LinkCard` | `href`（必須） / `variant?` |
 | `Image` / `FloatImage` | `src`・`alt`・`width`・`height`（すべて必須。width と height は画像の縦横比に合わせる） / `loading?` |
 | `Alert` | `tone`（`warning`等） / `message` |
 
-- 見出し・段落・リンク・インラインコードは`apps/main/src/app/_components/mdx-base`が自動で@k8ordo/uiスタイルに変換する。素のmarkdownで書けばよい（独自に`<h2>`等を書かない）。
-- **import検証**: MDXが`@/`・`next`・`next-themes`を import していたら要修正（`features/blog/application/article-files.test.ts`が落ちる）。画像と記事だけの部品は`./_images/...`・`./_components/...`の相対パスで import し、そのファイルと`export`宣言があるかを1つずつ目視確認する。`PlaygroundEmbed`は、`sectionId`が`app/_components/playgrounds/playground-embed.tsx`の`embeds`のキー（セクションの`id`）と一致するか、`demo`を渡すならそのセクションのデモの`title`と一致するかも確かめる（一致しないとビルドのプリレンダーで落ちる）。
+- 見出し・段落・リンク・インラインコードは`apps/main/src/components/site/mdx-base`が自動で@k8ordo/uiスタイルに変換する。素のmarkdownで書けばよい（独自に`<h2>`等を書かない）。
+- **import検証**: MDXが`@/`・`next`・`next-themes`を import していたら要修正（`features/blog/application/article-files.test.ts`が落ちる）。画像と記事だけの部品は`./_images/...`・`./_components/...`の相対パスで import し、そのファイルと`export`宣言があるかを1つずつ目視確認する。`PlaygroundEmbed`は、`sectionId`が`apps/main/src/playgrounds/<id>/`のディレクトリ名（セクションの`id`）と一致するか、`demo`を渡すならそのセクションのデモの`title`と一致するかも確かめる（一致しないとビルドの描画で落ちる）。
 - **@k8ordo/uiのpropsは推測しない**。`Alert`等は `apps/main` の CLAUDE.md に従い `main-storybook-mcp` で確認する。**MCPが使えない場合**は `apps/main/node_modules/@k8ordo/ui` の型定義（`dist/**/*.d.mts`）または `docs/` を読む。
 
 ## ブログ固有4: 見出し階層・リンク・画像・テーブル

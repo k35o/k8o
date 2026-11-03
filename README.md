@@ -9,7 +9,6 @@ pnpm i --frozen-lockfile
 
 # 環境変数設定（URLは https://<name>.k8o.localhost を使う。ポート番号は不要）
 cp apps/main/.env.example apps/main/.env.local
-cp apps/main-k8ordo/.env.example apps/main-k8ordo/.env.local
 cp apps/api/.env.example apps/api/.env.local
 cp packages/database/.env.example packages/database/.env.local
 
@@ -45,7 +44,7 @@ pnpm -F @repo/database db:status   # 稼働状況の確認
 
 **Turborepo Monorepo**:
 
-- `apps/main` - Next.js (App Router)
+- `apps/main` - k8o.me（自作の React フレームワーク k8ordo の static で書き出す）
 - `apps/ai` - Next.js AI ツール群 (Better Auth + GitHub OAuth)
 - `apps/api` - Hono の API（api.k8o.me。Vercel Cron の同期など）
 - `packages/database` - k8o の DB（Drizzle ORM + Turso (libSQL)）
@@ -55,12 +54,13 @@ pnpm -F @repo/database db:status   # 稼働状況の確認
 
 **apps/main / apps/ai の配置方針**:
 
-- `app/` - App RouterのentryとUI。UIコンポーネントは `app/**/_components`
+- main の `routes/` - k8ordo の route ファイル（`page.tsx`・`layout.tsx`・`route.ts` など）。部品は `components/<area>/`、記事とスライドは `content/`、デモは `playgrounds/`
+- ai の `app/` - App RouterのentryとUI。UIコンポーネントは `app/**/_components`
 - `features/` - 機能単位の非UIロジック。`interface` / `application` / `infrastructure` に分ける
 - `shared/` - アプリ内で横断利用する非UI共通処理
 - `packages/helpers` - アプリ非依存の純粋helper。`cn` もここに置く
 
-DB のパッケージ（`@repo/database`・`@repo/ai-database`）を import できるのは `features/*/infrastructure` と、小さな読み取りに限り `features/*/application` です。`app` や `features/*/interface` からは直接読みません。例外は ai の `shared/auth` から `@repo/ai-database/auth` を読む場合だけです。この境界は oxc のカスタムルール `k8o/database-import-boundary` で強制しています。
+DB のパッケージ（`@repo/database`・`@repo/ai-database`）を import できるのは `features/*/infrastructure` と、小さな読み取りに限り `features/*/application` です。route と部品（main の `routes`・`components`、ai の `app`）や `features/*/interface` からは直接読みません。例外は ai の `shared/auth` から `@repo/ai-database/auth` を読む場合だけです。この境界は oxc のカスタムルール `k8o/database-import-boundary` で強制しています。
 
 ## 本番環境
 
