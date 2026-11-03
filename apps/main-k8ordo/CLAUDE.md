@@ -26,6 +26,7 @@ apps/main（Next）を k8ordo（`@k8ordo/framework` の `mode: 'static'`）で�
 - head の CSS は、直に開いても遷移で着いても、サーバーの部品の CSS（先頭はルートの layout が import する `globals.css`）が前、クライアントの部品の CSS が後に並ぶ（k8ordo の docs の routing.md の「How a page is sent」）。この並びのために framework が中身の無い `<style>` を head に 1 つ書き、CSP は `style-src` の `'unsafe-inline'` でそれを通す。遷移や先読みで初めて読むクライアントの部品の CSS は head の末尾に、遷移で初めて読むサーバーの部品の CSS はサーバーの部品の CSS の後ろに足され、一度読んだ CSS はそのタブから外れない。クライアントの部品の CSS どうしの並びは保証されず、サーバーの部品の CSS どうしも、遷移で着いたページでは前のページで読んだファイルが前に残る。main-k8ordo の src の CSS Modules は `@layer components` に入り（`better-css-modules.config.ts`）、@k8ordo/ui の部品の CSS も同じ層にあるので、同じ詳細度の規則の勝ち負けは並びで決まる。サーバーの部品とクライアントの部品の CSS では、どの開き方でもクライアントの部品の規則が勝つ。層の順は、head の先頭の `globals.css` が読む `@k8ordo/ui/styles.css` が決める。`@content`・`@playgrounds` から読む記事とデモの CSS Modules は、`better-css-modules.config.ts` のあるディレクトリの外にあるので層に入らず、並びに関係なく層の中の規則に勝つ（apps/main では同じモジュールが `@layer components` に入るので、勝ち負けが違う）。同じ要素に別のモジュールの class を重ねるとき（`TableOfContentsSideRail` のように `cn(styles.root, className)` で外から class を受ける部品）は、両方で同じプロパティを書かない
 - router は、同じ route の別の値へ移るとき（`/blog/a` から `/blog/b` など）、ページの木を作り直さずに次の値の props で描き直す。Next のように値ごとに部品の状態を初めに戻すため、動的なページは描く部分の根の要素に値で key を付ける（記事は `BlogLayoutContent` の `ArticleFrame`、タグは `TagContent`、デッキは `SlideArticle`）
 - router は、layout の外へ移ると、その layout から下の部品を DOM ごと捨てる（Next は前の route を DOM ごと隠した Activity で残すので、外へ出て戻っても部品の状態も要素のスクロールも残る）。ページを移っても保つ状態（縦書きの切り替え）の Provider は、使うページの layout ではなくルートの layout に置く。ルートに置いて保てるのは React の状態だけで、DOM の状態（縦書きの本文の横のスクロールなど）は戻らない。殻にはどのページにも要るものだけを置く、という決まりの例外
+- ヘッダーのお問い合わせ（`components/site/contact-to-me`）は、`HeaderActions` が Suspense で包まずに描くので、HTML のヘッダーにボタンと閉じた dialog が出る。JS なしでもボタンは出て、押しても dialog は開かない（テーマのボタンと同じ）。apps/main の `HeaderActions` は `<Suspense>` で包み、殻が大きいので React の Fizz が境界の中身を殻の後ろへ回して `$RC` で差し込む。JS なしではボタンが出ないが、これは殻のバイト数で決まる副作用で、ボタンを隠すと決めたものではないので、そろえない
 - dev だけで動かす部品（`components/site/react-scan`）は、部品の中で `import.meta.env.DEV` を見て、依存を動的に import する。描く側で `import.meta.env.DEV &&` としても、部品のモジュールは client のバンドルに入り、それが静的に読む依存の読み込みの処理も本番で走る
 
 ## 記事の MDX
@@ -41,7 +42,7 @@ apps/main（Next）を k8ordo（`@k8ordo/framework` の `mode: 'static'`）で�
 - デモのセクションは、`components/playgrounds/load-section.ts` が `import.meta.glob('@playgrounds/*/index.ts')` で id ごとに遅れて読む。`/playgrounds/:id` の page と OG の route.ts、記事の `PlaygroundEmbed` は、どれもこれで読む。新しいデモで書き足すのは apps/main の `ids.ts` と `sections.ts` だけ
 - デモは、サーバーの部品（`PlaygroundEmbed`・`SectionDemos`）が `@playgrounds/playground` の枠で包んで描く。`'use client'` のデモはクライアントの部品として、それ以外のデモと枠はサーバーの部品として、その CSS がそのページの HTML に載る
 - 記事の部品の表（`blogMdxComponents`）は記事のページが静的に読むので、表に置く `PlaygroundEmbed` と `Playground`（`LazyPlayground`）は、枠とデモを関数の中で読む。静的に読むと、デモの無い記事も枠の CSS を読む
-- `/blog/:slug`・`/playgrounds/:id`・`/playgrounds` の route と、それが静的に読む部品は、`@playgrounds/sections` と `@playgrounds`（`index.ts`）を静的に読まない。記事と `/playgrounds/:id` で読むと、デモが id ごとのチャンクに分かれず、どのデモのページも全部のデモを読む。デモを描かない一覧（`PlaygroundsIndex`）で読むと、サーバーで描くデモの CSS を一覧も読むので、関数の中で読む。llms.txt の route.ts は HTML を書かないので、静的に読んでよい
+- `/blog/:slug`・`/playgrounds/:id`・`/playgrounds` の route と、それが静的に読む部品は、`@playgrounds/sections` と `@playgrounds`（`index.ts`）を静的に読まない。記事と `/playgrounds/:id` で読むと、デモが id ごとのチャンクに分かれず、どのデモのページも全部のデモを読む。デモを描かない一覧（`PlaygroundsIndex`）で読むと、サーバーで描くデモの CSS を一覧も読むので、関数の中で読む。llms.txt と sitemap.xml の route.ts は HTML を書かないので、静的に読んでよい
 
 ## 一覧（`/blog`・`/playgrounds`）
 
@@ -84,6 +85,7 @@ apps/main（Next）を k8ordo（`@k8ordo/framework` の `mode: 'static'`）で�
 - Playground のページと OG（`/playgrounds/:id`・`/playgrounds/:id/og.png`）は、`paths` が apps/main の `playgrounds/ids.ts` から作る。記事の `PlaygroundEmbed` が無いセクションやデモを名指すと、描画が投げてビルドが止まる
 - タグのページ（`/tags/:id`）は、`paths` が DB の全タグの id（`features/tags/application/tags.ts` の `getTags`）から作る。Next と同じく、中身が 0 件のタグ（下書きの記事だけのタグ）のページも書く。id は route の `paramsSchema` で正の整数に読むので、ページも `href('/tags/:id', { id })` も数値を受ける。挙げていない id と数字でない値は 404 になる。`vite dev` は `paths` を見ずにスキーマで読むので、ビルドでは 404 の `/tags/01` も dev では描く
 - デッキのページと OG（`/slides/:slug`・`/slides/:slug/og.png`）は、`paths` が一覧とフィードと同じ公開済みで MDX のあるスライドの一覧1つ（`features/slides/application/slides.ts` の `getSlides`）から作る。デッキを足すのは apps/main の `content/slides/<slug>/content.mdx` とマイグレーションだけで、公開していないデッキは 404 になる
+- `/sitemap.xml` は `routes/sitemap.xml/route.ts` が `shared/site/sitemap.ts` で書く。並びと lastmod・changefreq は apps/main の `sitemap.ts`、XML の書き方は Next の `resolveSitemap` と同じにし、Next と同じバイトを出す（`sitemap.test.ts`）。lastmod は記事とデッキの更新日から決め、ビルドの時刻は使わない。Playground は `@playgrounds/sections` の並びで、`paths` が読む `ids.ts` の並びとは違う。`framework()` に `site` を渡さないのは、渡すと framework がビルドの最後に、描いたページを pathname の辞書順に並べた `sitemap.xml` を route.ts の出力の上に書き、何も言わずに置き換えるから
 - `paths` は `vite.config.ts` の側で走る。設定のバンドルは `@repo/database` を外に出し、Node がそのまま読むと落ちるので、DB を読むモジュールは Vite の `runnerImport` で読む
 - OG は route.ts の GET が satori と `@resvg/resvg-js` で PNG にする（`shared/og`）。フォントは `shared/og/fonts` に置いたものだけを使い、next/og と違ってビルドで足りない字形をネットから取らない。足りない字形があれば route.ts の GET が reject し、ビルドが止まる。字を足すときは `shared/og/fonts` にフォントを置く
 
