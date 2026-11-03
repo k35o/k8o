@@ -26,10 +26,16 @@ export const NotFound: FC = () => (
     >
       トップへ戻る
     </Button>
+    {/* sitemap.xml と llms.txt はファイルで、先読みするとペイロードの 404 を取りにいく */}
     <p className={styles.otherLinks}>
       <Anchor href={href('/blog')}>ブログ一覧</Anchor>・
-      <Anchor href="/sitemap.xml">サイトマップ</Anchor>・
-      <Anchor href="/llms.txt">llms.txt</Anchor>
+      <Anchor data-k8ordo-prefetch={false} href="/sitemap.xml">
+        サイトマップ
+      </Anchor>
+      ・
+      <Anchor data-k8ordo-prefetch={false} href="/llms.txt">
+        llms.txt
+      </Anchor>
       からも探せます。
     </p>
   </div>

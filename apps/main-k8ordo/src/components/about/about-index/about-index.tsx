@@ -1,0 +1,59 @@
+import { href } from '@k8ordo/framework';
+import { Anchor, Heading } from '@k8ordo/ui';
+import type { FC } from 'react';
+
+import styles from './about-index.module.css';
+
+export const AboutIndex: FC = () => (
+  <div className={styles.root}>
+    <div className={styles.content}>
+      <Heading level="h2">About</Heading>
+      <section className={styles.section}>
+        <Heading level="h3">k8oについて</Heading>
+        <p className={styles.paragraph}>
+          Webフロントエンドを軸足に活動しているソフトウェアエンジニアです。TypeScriptとWeb標準が好きで、新しくブラウザで使えるようになった機能を試し、深掘りした結果をブログに残しています。解説には実際に動くデモを添えることを大切にしています。デザインとフロントエンドの境界にも興味があり、デザインシステム
+          <Anchor href="https://www.npmjs.com/package/@k8ordo/ui" openInNewTab>
+            @k8ordo/ui
+          </Anchor>
+          の構築を通じてその交差点を探っています。
+        </p>
+      </section>
+      <section className={styles.section}>
+        <Heading level="h3">このサイトについて</Heading>
+        <p className={styles.paragraph}>
+          k8o.meは、k8oの活動と制作物をまとめた個人サイトです。Webフロントエンドを中心とした
+          <Anchor href={href('/blog')}>ブログ</Anchor>
+          、過去の<Anchor href={href('/talks')}>登壇資料へのリンク</Anchor>
+          、色変換やコントラスト比計算などの開発者向けツール、ブログ記事に関連する試作品を集めた
+          <Anchor href={href('/playgrounds')}>Playgrounds</Anchor>
+          を公開しています。
+        </p>
+        <p className={styles.paragraph}>
+          このサイト自体もNext.js（App
+          Router）によるTurborepoモノレポとして開発しており、ソースコードは
+          <Anchor href="https://github.com/k35o/k8o" openInNewTab>
+            GitHub
+          </Anchor>
+          で公開しています。デザインは@k8ordo/uiのコンポーネントとセマンティックトークンで統一しています。
+        </p>
+      </section>
+      <section className={styles.section}>
+        <Heading level="h3">発信している場所</Heading>
+        <p className={styles.paragraph}>
+          技術記事はこのサイトの<Anchor href={href('/blog')}>ブログ</Anchor>
+          に書き、日々の気づきは
+          <Anchor href="https://x.com/k8ome" openInNewTab>
+            X
+          </Anchor>
+          で発信しています。開発の活動は
+          <Anchor href="https://github.com/k35o" openInNewTab>
+            GitHub
+          </Anchor>
+          にまとまっています。連絡手段は
+          <Anchor href={href('/contact')}>Contact</Anchor>
+          を参照してください。
+        </p>
+      </section>
+    </div>
+  </div>
+);

@@ -1,3 +1,4 @@
+import { href } from '@k8ordo/framework';
 import { Suspense } from 'react';
 
 import { Copyright } from './copyright';
@@ -10,17 +11,17 @@ export function Footer() {
       <nav aria-label="サイト情報">
         <ul className={styles.links}>
           <li>
-            <a className={styles.link} href="/about">
+            <a className={styles.link} href={href('/about')}>
               About
             </a>
           </li>
           <li>
-            <a className={styles.link} href="/contact">
+            <a className={styles.link} href={href('/contact')}>
               Contact
             </a>
           </li>
           <li>
-            <a className={styles.link} href="/privacy">
+            <a className={styles.link} href={href('/privacy')}>
               Privacy
             </a>
           </li>
