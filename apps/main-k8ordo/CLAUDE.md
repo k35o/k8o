@@ -17,6 +17,7 @@ apps/main（Next）を k8ordo（`@k8ordo/framework` の `mode: 'static'`）で�
 ## 殻とページの head
 
 - ルートレイアウトが `<html>`・`<head>`・`<body>` を書き、`<head>` にはどのページにも出す meta と link（manifest・icon・referrer など）を置く。`<title>` は書かない
+- フォントの preload は、ルートの layout が M PLUS 2 の Latin の face（`@fontsource-variable/m-plus-2/files/m-plus-2-latin-wght-normal.woff2`）の 1 本だけを `?url` で読み、react-dom の `preload` で書く（apps/main の next/font の `subsets: ['latin']` と同じ）。どのページも ASCII の字を描くが、日本語の字は unicode-range で 100 本余りの face に分かれ、ページごとに要る face が違うので preload しない。preload が無いと、フォントが HTTP キャッシュに無いとき（初めての訪問など）は CSS を読んでからフォントを取りに行くので、差し替えで layout-shift が出て、Chromium で下げて再読み込みすると着く位置が数 px ずれる
 - ページの title・description・canonical・og・twitter・RSS の alternate は、ページが `components/site/page-meta` の `PageMeta` を描いて書く（React が head へ上げる）。Next と違って親の値は継がれないので、OG の画像などは各ページが渡す
 - エラーの画面（`components/site/error-fallback`・`components/site/root-error-boundary`）はページの PageMeta に替わって出るので、`<title>` を直に描く
 - ルートレイアウトの部品（GlobalLayout・Provider など）の失敗は `routes/error.tsx` の外で起きるので、`components/site/root-error-boundary` が受けて api に送る
