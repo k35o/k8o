@@ -5,7 +5,7 @@
   "description": "k8o site",
   "type": "module",
   "scripts": {
-    "dev": "portless run vite dev",
+    "dev": "fnox exec -P main -- portless run vite dev",
     "build": "vite build",
     "generate:browser-min-versions": "node --import ./scripts/register-ts-resolver.ts scripts/generate-browser-min-versions.ts",
     "compare:sites": "node --import ./scripts/register-ts-resolver.ts scripts/compare-sites.ts",

@@ -8,7 +8,7 @@ k8oが作成したすべてのコンテンツを公開するウェブサイト�
 pnpm i --frozen-lockfile
 
 # 環境変数設定（URLは https://<name>.k8o.localhost を使う。ポート番号は不要）
-cp apps/main/.env.example apps/main/.env.local
+# main はルートの fnox.toml の main の profile から読むので、fnox が要る
 cp apps/api/.env.example apps/api/.env.local
 cp packages/database/.env.example packages/database/.env.local
 

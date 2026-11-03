@@ -80,7 +80,8 @@ k8o でしか使わない秘密は、ルートの `fnox.toml` に age で暗号�
 - 追加・更新はリポジトリ直下で `fnox set -P bot -p age <KEY>` を実行し、値は stdin で渡す。サブディレクトリで実行すると、そこに新しい `fnox.toml` ができる
 - `fnox edit` は使わない。編集後のファイルだけで再暗号化するので、providers を持たないこのファイルでは値が平文で書き戻される
 - グローバル設定に同名のエントリがあると、その `default`（平文）が持ち越されて書き込まれる。先に `fnox remove -g` で消す
-- コミット前に、エントリが `provider = "age"` を持ち `default` を持たないことを確かめる。確かめるときに値を表示しない
+- コミット前に、bot の profile のエントリが `provider = "age"` を持ち `default` を持たないことを確かめる。確かめるときに値を表示しない
+- main の profile は秘密ではない手元の値（`apps/main/CLAUDE.md` の環境変数）なので、ファイルを直に編集して `default` で平文に置く。秘密をここに足さない
 - `fnox set` は `KEY= { ... }` の形で書き戻し、`vp check` のフォーマット検査に落ちる。コミット前に `pnpm run check:write` を通す
 - グローバルの age の recipients や identity を入れ替えるときは、古い identity を捨てる前にリポジトリ直下で `fnox reencrypt -P bot` を実行してコミットする。リポジトリの外で実行しても、この `fnox.toml` は対象にならない
 

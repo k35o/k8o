@@ -1,7 +1,5 @@
-import { existsSync } from 'node:fs';
 import { readFile } from 'node:fs/promises';
 import { join } from 'node:path';
-import { loadEnvFile } from 'node:process';
 import { fileURLToPath } from 'node:url';
 
 import betterCssModules from '@better-css-modules/vite';
@@ -29,13 +27,6 @@ import {
 } from './src/site/paths.ts';
 import { DEV_SECURITY_HEADERS } from './src/site/security-headers.ts';
 import { BEFORE_FILES, BEFORE_NOT_FOUND } from './src/site/vercel-routes.ts';
-
-// Vite は .env.local を process.env に読み込まない。ビルドの描画はサーバーの部品が process.env を読む。
-// Vercel と CI は env を外から渡すので、ファイルが無くても動かす
-const envFile = fileURLToPath(new URL('.env.local', import.meta.url));
-if (existsSync(envFile)) {
-  loadEnvFile(envFile);
-}
 
 const targets = browserTargets(floor.minVersions);
 

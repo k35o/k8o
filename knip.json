@@ -6,7 +6,7 @@
   ],
   "treatConfigHintsAsErrors": true,
   "tags": ["-lintignore"],
-  "ignoreBinaries": ["mise", "vercel"],
+  "ignoreBinaries": ["fnox", "mise", "vercel"],
   "workspaces": {
     "apps/main": {
       "ignoreDependencies": ["chromatic"],

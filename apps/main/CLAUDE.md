@@ -118,7 +118,12 @@ Trusted Types は Report-Only で観測している。`require-trusted-types-for
 
 ## 環境変数
 
-手元では `.env.example` を `.env.local` に写す。`GOOGLE_ANALYTICS_ID` があると、ルートレイアウトが GA の script と `public/ga-init.js` を読み、`ga-init.js` がページの替わった遷移ごとに page_view を送る。これは GA の管理画面で拡張計測の「ブラウザの履歴イベントに基づくページの変更」を切ってある前提で動く。k8ordo の router は push の遷移で pushState を呼ばないので拡張計測に拾われないが、戻る・進むは popstate で拾われ、設定を切らないと二重に数える。`VAPID_PUBLIC_KEY` は /notifications の購読の公開鍵で、空のビルドは購読のボタンを出さずに「対応していません」を出す。ビルドの描画でサーバーの部品が `process.env` を読むので、`vite.config.ts` が `.env.local` を `process.env` に読み込む。`.env` は git から外れないので使わない。ビルドは DB を読むので、`K8O_TURSO_*` が要る。
+ビルドの描画でサーバーの部品が `process.env` を読む。ビルドは DB を読むので、`K8O_TURSO_*` が要る。
+
+- 手元の値は、ルートの `fnox.toml` の main の profile に置く（ローカルの DB の URL とダミーのトークン）。`dev` の script は `fnox exec -P main --` で包んであり、手元でビルドするときも `fnox exec -P main -- pnpm -F main build` と包む。fnox の値は、シェルにある同じ名前の値より勝つ
+- 本番と preview のビルドは、`vercel pull` した main のプロジェクトの値を読む。DB の接続情報の置き場所は `packages/database/CLAUDE.md`。`VAPID_PUBLIC_KEY` は Shared Environment Variables に置き、api と共有する
+- `GOOGLE_ANALYTICS_ID` があると、ルートレイアウトが GA の script と `public/ga-init.js` を読み、`ga-init.js` がページの替わった遷移ごとに page_view を送る。これは GA の管理画面で拡張計測の「ブラウザの履歴イベントに基づくページの変更」を切ってある前提で動く。k8ordo の router は push の遷移で pushState を呼ばないので拡張計測に拾われないが、戻る・進むは popstate で拾われ、設定を切らないと二重に数える
+- `VAPID_PUBLIC_KEY` は /notifications の購読の公開鍵で、空のビルドは購読のボタンを出さずに「対応していません」を出す
 
 ## 型
 
