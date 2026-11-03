@@ -29,8 +29,7 @@ export const AboutIndex: FC = () => (
           を公開しています。
         </p>
         <p className={styles.paragraph}>
-          このサイト自体もNext.js（App
-          Router）によるTurborepoモノレポとして開発しており、ソースコードは
+          このサイト自体も自作のReactフレームワークk8ordoで静的に書き出すTurborepoモノレポとして開発しており、ソースコードは
           <Anchor href="https://github.com/k35o/k8o" openInNewTab>
             GitHub
           </Anchor>
