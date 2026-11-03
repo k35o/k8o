@@ -8,8 +8,8 @@ function gtag() {
   gtag('js', new Date());
   gtag('config', script.dataset.gaId);
 
-  // data-count-navigations は、拡張計測の「ブラウザの履歴イベントに基づくページの変更」を切ったページに付ける（切らないと戻る・進むを popstate と二重に数える）
-  if (script.dataset.countNavigations === undefined || !window.navigation) {
+  // 拡張計測の「ブラウザの履歴イベントに基づくページの変更」を切ってある前提で送る（切らないと戻る・進むを popstate と二重に数える）
+  if (!window.navigation) {
     return;
   }
   var previous = window.location.href;

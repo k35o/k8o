@@ -24,8 +24,6 @@ const runGaInit = runInThisContext(
   `(function (window, document) {\n${source}\n})`,
 ) as (window: GaWindow, document: GaDocument) => void;
 
-const K8ORDO_SCRIPT = { gaId: 'G-TEST', countNavigations: '' };
-
 const windowAt = (href: string, dataLayer?: unknown[]): GaWindow => ({
   ...(dataLayer === undefined ? {} : { dataLayer }),
   location: { href },
@@ -84,7 +82,7 @@ describe('ga-init.js', () => {
 
     it('ページの替わる遷移が終わると、遷移先の URL と題、遷移元の URL で page_view を積む', () => {
       const window = windowAt('https://k8o.me/');
-      const document = documentWith(K8ORDO_SCRIPT);
+      const document = documentWith({ gaId: 'G-TEST' });
       runGaInit(window, document);
 
       finishNavigation(window, document, 'https://k8o.me/blog', 'Blog | k8o');
@@ -100,7 +98,7 @@ describe('ga-init.js', () => {
 
     it('戻る・進むでページが替わったときも、遷移ごとに積む', () => {
       const window = windowAt('https://k8o.me/blog');
-      const document = documentWith(K8ORDO_SCRIPT);
+      const document = documentWith({ gaId: 'G-TEST' });
       runGaInit(window, document);
 
       finishNavigation(window, document, 'https://k8o.me/about', 'About | k8o');
@@ -125,14 +123,14 @@ describe('ga-init.js', () => {
     it('読み込んだときは config が数えるので、page_view を積まない', () => {
       const window = windowAt('https://k8o.me/blog');
 
-      runGaInit(window, documentWith(K8ORDO_SCRIPT));
+      runGaInit(window, documentWith({ gaId: 'G-TEST' }));
 
       expect(pageViewsOf(window.dataLayer)).toStrictEqual([]);
     });
 
     it('パスが同じまま search や hash だけが替わった遷移は数えない', () => {
       const window = windowAt('https://k8o.me/blog');
-      const document = documentWith(K8ORDO_SCRIPT);
+      const document = documentWith({ gaId: 'G-TEST' });
       runGaInit(window, document);
 
       finishNavigation(
@@ -153,7 +151,7 @@ describe('ga-init.js', () => {
 
     it('search が替わったあとに別のページへ移ると、替わったあとの URL を遷移元にする', () => {
       const window = windowAt('https://k8o.me/blog');
-      const document = documentWith(K8ORDO_SCRIPT);
+      const document = documentWith({ gaId: 'G-TEST' });
       runGaInit(window, document);
 
       finishNavigation(
@@ -173,20 +171,10 @@ describe('ga-init.js', () => {
       ]);
     });
 
-    it('data-count-navigations の無い script（Next の main）は、遷移を数えない', () => {
-      const window = windowAt('https://k8o.me/');
-      const document = documentWith({ gaId: 'G-TEST' });
-      runGaInit(window, document);
-
-      finishNavigation(window, document, 'https://k8o.me/blog', 'Blog | k8o');
-
-      expect(pageViewsOf(window.dataLayer)).toStrictEqual([]);
-    });
-
     it('Navigation API の無いブラウザでも、計測を始めるコマンドまでは積む', () => {
       const window: GaWindow = { location: { href: 'https://k8o.me/' } };
 
-      runGaInit(window, documentWith(K8ORDO_SCRIPT));
+      runGaInit(window, documentWith({ gaId: 'G-TEST' }));
 
       expect(commandsOf(window.dataLayer)).toStrictEqual([
         ['js', expect.any(Date)],
