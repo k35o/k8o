@@ -36,7 +36,7 @@ export default defineConfig({
     },
     settings: {
       next: {
-        rootDir: ['apps/main', 'apps/ai'],
+        rootDir: ['apps/ai'],
       },
       react: {
         version: '19.3.0',
@@ -83,9 +83,12 @@ export default defineConfig({
         },
       },
       {
-        // main は画像を AVIF に変換してコミットし、Vercel の画像最適化に頼らず素の img で描く
+        // main は Next ではない。ルートレイアウトが <head> を書き、画像は AVIF に変換してコミットして素の img で描く
         files: ['apps/main/**'],
-        rules: { '@next/next/no-img-element': 'off' },
+        rules: {
+          '@next/next/no-head-element': 'off',
+          '@next/next/no-img-element': 'off',
+        },
       },
       {
         // k8ordo 版の main は Next ではない。ルートレイアウトが <head> を書き、画像は main と同じく素の img で描く
