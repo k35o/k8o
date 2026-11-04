@@ -1,4 +1,4 @@
-import { expect } from 'storybook/test';
+import { expect, waitFor } from 'storybook/test';
 
 import preview from '../../../../.storybook/preview';
 import { Home } from './home';
@@ -66,5 +66,17 @@ export const ShowsNewestThreeBlogs = meta.story({
       '/blog/atomics-pause',
       '/blog/async-clipboard',
     ]);
+  },
+});
+
+export const LoadsIconAtDisplaySize = meta.story({
+  play: async ({ canvas }) => {
+    const icon = canvas.getByRole('img', { name: 'k8oのアイコン' });
+    // Storybook の幅（1200px）と DPR 1 では、アイコンは 128px で描かれる
+    await waitFor(async () => {
+      await expect(
+        icon instanceof HTMLImageElement ? icon.currentSrc : '',
+      ).toMatch(/\/k8o\.128w\.avif/u);
+    });
   },
 });

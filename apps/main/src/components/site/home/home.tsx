@@ -7,6 +7,9 @@ import { EmailTooltip } from '../email-tooltip/email-tooltip';
 import { RecentBlogs } from '../recent-blogs/recent-blogs';
 import { SiteEntrySection } from '../site-entry-section/site-entry-section';
 import { SocialIcons } from '../social-icons/social-icons';
+// 小さい版は data: URI になり、srcset に入れると HTML と preload とペイロードに埋まるので、ファイルで配る
+import k8o128 from './k8o.128w.avif?no-inline';
+import k8o256 from './k8o.256w.avif?no-inline';
 import k8o from './k8o.avif';
 
 import styles from './home.module.css';
@@ -24,7 +27,9 @@ export const Home: FC<HomeProps> = ({ blogs }) => (
           className={styles.avatar}
           fetchPriority="high"
           height={128}
+          sizes="(width >= 64rem) 8rem, 4rem"
           src={k8o}
+          srcSet={`${k8o128} 128w, ${k8o256} 256w, ${k8o} 512w`}
           width={128}
         />
         <div className={styles.identity}>
