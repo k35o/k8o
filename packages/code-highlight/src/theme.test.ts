@@ -9,7 +9,8 @@ const THEMES = { 'one-light': oneLight, plastic } as const;
 
 // コードの字が載る面。--color-* は @k8ordo/ui のトークン、注釈の行は annotate.css の color-mix
 // （--color-border-* を 12〜18%）をその面に重ねた色。注釈の色には sRGB の外の色があり、計算した色と
-// Chromium が描いた色が 1〜8 ずれるので、字とのコントラストが低くなる方を取った
+// Chromium が描いた色が 1〜8 ずれるので、字とのコントラストが低くなる方を取った。
+// plastic にスライドの注釈の行を入れないのは、入れるとコメント・紫・赤の字の色をブログでも明るくすることになるから
 const SURFACES = {
   'one-light': {
     'ブログ（--color-bg-surface）': '#f6f7f7',
@@ -34,6 +35,7 @@ const SURFACES = {
   },
   plastic: {
     'ブログ（--color-bg-surface）': '#111212',
+    'スライド（--color-bg-subtle）': '#212222',
     'ai と OG（plastic の背景）': '#21252b',
     'ブログの hl の行': '#32290f',
     'ブログの + の行': '#0f2d1b',

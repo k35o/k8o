@@ -6,5 +6,11 @@
   border-radius: var(--radius-md);
   overflow: auto;
   max-width: 100%;
-  background-color: var(--color-bg-subtle);
+  /* better-css-modules-disable-next-line pure/important -- shiki が pre の style に書くテーマの背景より、スライドの面を勝たせる */
+  background-color: var(--color-bg-subtle) !important;
+
+  :root[class~='dark'] & {
+    /* better-css-modules-disable-next-line pure/important -- dark では .dark .shiki がテーマの背景を !important で書くので、詳細度で勝つ */
+    background-color: var(--color-bg-subtle) !important;
+  }
 }
