@@ -31,6 +31,10 @@
   padding: calc(var(--spacing) * 4);
   box-shadow: var(--shadow-sm);
   animation: pulse var(--duration-pulse) var(--easing-pulse) infinite;
+
+  @media (prefers-reduced-motion: reduce) {
+    animation: none;
+  }
 }
 
 .filterStack {
@@ -76,6 +80,10 @@
   align-items: center;
   justify-content: space-between;
   animation: pulse var(--duration-pulse) var(--easing-pulse) infinite;
+
+  @media (prefers-reduced-motion: reduce) {
+    animation: none;
+  }
 }
 
 .count {

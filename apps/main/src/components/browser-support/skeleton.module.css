@@ -57,6 +57,10 @@
   border-radius: var(--radius-md);
   background-color: var(--color-bg-mute);
   animation: pulse var(--duration-pulse) var(--easing-pulse) infinite;
+
+  @media (prefers-reduced-motion: reduce) {
+    animation: none;
+  }
 }
 
 .search {

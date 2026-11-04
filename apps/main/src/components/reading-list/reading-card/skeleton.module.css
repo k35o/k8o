@@ -16,6 +16,10 @@
   overflow: hidden;
   animation: pulse var(--duration-pulse) var(--easing-pulse) infinite;
 
+  @media (prefers-reduced-motion: reduce) {
+    animation: none;
+  }
+
   @media (width >= 40rem) {
     flex-direction: row;
   }
