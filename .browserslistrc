@@ -3,7 +3,7 @@
 chrome >= 153
 and_chr >= 153
 edge >= 153
-firefox >= 155
-and_ff >= 155
+firefox >= 159
+and_ff >= 159
 safari >= 27
 ios_saf >= 27
