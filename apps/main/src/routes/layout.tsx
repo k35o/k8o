@@ -40,7 +40,6 @@ export default function RootLayout({ children }: LayoutProps<'/'>) {
         <meta content="k8o" name="keywords" />
         <meta content="k8o" name="creator" />
         <meta content="k8o" name="publisher" />
-        <meta content="origin-when-cross-origin" name="referrer" />
         <meta
           content="telephone=no, address=no, email=no"
           name="format-detection"
