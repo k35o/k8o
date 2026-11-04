@@ -34,7 +34,7 @@ catalog:
   '@types/react-dom': 19.3.0
   '@vitest/browser-playwright': 5.0.5
   '@vitest/coverage-v8': 5.0.5
-  '@vitest/ui': 5.0.3
+  '@vitest/ui': 5.0.5
   ai: 7.0.148
   better-auth: 1.7.12
   chromatic: 18.13.2
@@ -72,6 +72,8 @@ minimumReleaseAgeExclude:
   - vite-plus@1.3.0
   # Renovate security update: satori@0.33.5
   - satori@0.33.5
+  # Renovate security update: @vitest/ui@5.0.5
+  - "@vitest/ui@5.0.5"
 
 # drizzle-kit 0.31.11 は @esbuild-kit/esm-loader を依存に持つが、bundle のどこからも読み込まない。
 # これが脆弱な esbuild 0.18 を固定して audit に残るので、依存ごと外す。drizzle-kit を上げたら要否を見直す
