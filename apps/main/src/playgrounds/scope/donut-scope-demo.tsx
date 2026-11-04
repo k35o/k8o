@@ -4,15 +4,18 @@ import { Button } from '@k8ordo/ui';
 import { cn } from '@repo/helpers/cn';
 import { useState } from 'react';
 
+import { useDemoHeading } from '../demo-heading';
+
 import styles from './donut-scope-demo.module.css';
 
 export function DonutScopeDemo() {
+  const Heading = useDemoHeading();
   const [showDonutScope, setShowDonutScope] = useState(true);
 
   return (
     <div className={styles.root}>
       <div className={styles.header}>
-        <h3 className={styles.title}>ドーナツスコープ</h3>
+        <Heading className={styles.title}>ドーナツスコープ</Heading>
         <Button
           color={showDonutScope ? 'primary' : 'base'}
           onClick={() => {

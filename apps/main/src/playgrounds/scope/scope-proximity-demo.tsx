@@ -4,15 +4,18 @@ import { Button, Code } from '@k8ordo/ui';
 import { cn } from '@repo/helpers/cn';
 import { useState } from 'react';
 
+import { useDemoHeading } from '../demo-heading';
+
 import styles from './scope-proximity-demo.module.css';
 
 export function ScopeProximityDemo() {
+  const Heading = useDemoHeading();
   const [showProximity, setShowProximity] = useState(true);
 
   return (
     <div className={styles.root}>
       <div className={styles.header}>
-        <h3 className={styles.title}>スコープの近接性</h3>
+        <Heading className={styles.title}>スコープの近接性</Heading>
         <Button
           color={showProximity ? 'primary' : 'base'}
           onClick={() => {

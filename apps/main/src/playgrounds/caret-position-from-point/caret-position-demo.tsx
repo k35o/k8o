@@ -3,6 +3,8 @@
 import { Button } from '@k8ordo/ui';
 import { useCallback, useState } from 'react';
 
+import { useDemoHeading } from '../demo-heading';
+
 import styles from './caret-position-demo.module.css';
 
 type CaretInfo = {
@@ -17,6 +19,7 @@ type CaretInfo = {
 };
 
 export function CaretPositionDemo() {
+  const Heading = useDemoHeading();
   const [caretInfo, setCaretInfo] = useState<CaretInfo | null>(null);
   const [isSupported, setIsSupported] = useState(true);
 
@@ -81,7 +84,7 @@ export function CaretPositionDemo() {
       {caretInfo ? (
         <div>
           <div className={styles.resultHeader}>
-            <h4 className={styles.resultTitle}>結果</h4>
+            <Heading className={styles.resultTitle}>結果</Heading>
             <Button
               color="base"
               onClick={handleReset}
