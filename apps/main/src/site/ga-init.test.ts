@@ -64,8 +64,21 @@ describe('ga-init.js', () => {
 
       expect(commandsOf(window.dataLayer)).toStrictEqual([
         ['js', expect.any(Date)],
-        ['config', 'G-TEST'],
+        ['config', 'G-TEST', { cookie_flags: 'secure;samesite=lax' }],
       ]);
+    });
+
+    it('GA の cookie に Secure と SameSite=Lax を付けるよう、config に cookie_flags を渡す', () => {
+      const window = windowAt('https://k8o.me/');
+
+      runGaInit(window, documentWith({ gaId: 'G-TEST' }));
+
+      const config = commandsOf(window.dataLayer).find(
+        ([command]) => command === 'config',
+      );
+      expect(config?.[2]).toStrictEqual({
+        cookie_flags: 'secure;samesite=lax',
+      });
     });
 
     it('gtag.js が読めるよう、コマンドを arguments のオブジェクトで積む', () => {
@@ -178,7 +191,7 @@ describe('ga-init.js', () => {
 
       expect(commandsOf(window.dataLayer)).toStrictEqual([
         ['js', expect.any(Date)],
-        ['config', 'G-TEST'],
+        ['config', 'G-TEST', { cookie_flags: 'secure;samesite=lax' }],
       ]);
     });
 
@@ -193,7 +206,7 @@ describe('ga-init.js', () => {
       expect(dataLayer[0]).toBe(queued);
       expect(commandsOf(dataLayer.slice(1))).toStrictEqual([
         ['js', expect.any(Date)],
-        ['config', 'G-TEST'],
+        ['config', 'G-TEST', { cookie_flags: 'secure;samesite=lax' }],
       ]);
     });
   });

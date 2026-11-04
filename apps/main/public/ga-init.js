@@ -6,7 +6,9 @@ function gtag() {
 (function () {
   var script = document.currentScript;
   gtag('js', new Date());
-  gtag('config', script.dataset.gaId);
+  gtag('config', script.dataset.gaId, {
+    cookie_flags: 'secure;samesite=lax',
+  });
 
   // 拡張計測の「ブラウザの履歴イベントに基づくページの変更」を切ってある前提で送る（切らないと戻る・進むを popstate と二重に数える）
   if (!window.navigation) {
