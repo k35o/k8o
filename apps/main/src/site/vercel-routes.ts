@@ -1,7 +1,8 @@
 import type { VercelRoute } from '@k8ordo/framework/vercel';
 
 import { ARTICLE, SLUG } from './patterns.ts';
-import { SECURITY_HEADERS } from './security-headers.ts';
+import { securityHeaders } from './security-headers.ts';
+import type { SiteEnvironment } from './security-headers.ts';
 
 const ACCEPTS_MARKDOWN = [
   { type: 'header', key: 'accept', value: '.*text/markdown.*' },
@@ -9,9 +10,11 @@ const ACCEPTS_MARKDOWN = [
 
 // Vercel は既定で大文字と小文字を区別しない。/Blog などは 404 にするので、記事とフィードに
 // 当てる規則は caseSensitive にする
-export const BEFORE_FILES: readonly VercelRoute[] = [
+export const beforeFiles = (
+  environment: Exclude<SiteEnvironment, 'development'>,
+): readonly VercelRoute[] => [
   // Cache-Control は assets の immutable まで上書きするので、ここには置かない
-  { src: '^/.*$', headers: SECURITY_HEADERS, continue: true },
+  { src: '^/.*$', headers: securityHeaders(environment), continue: true },
   // 空の区間を許さないので、//evil.test/ を外のオリジンへ送らない
   {
     src: '^/((?:[^/]+/)*[^/]+)/$',

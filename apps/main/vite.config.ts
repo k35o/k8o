@@ -25,10 +25,15 @@ import {
   slidePathnames,
   tagPathnames,
 } from './src/site/paths.ts';
-import { DEV_SECURITY_HEADERS } from './src/site/security-headers.ts';
-import { BEFORE_FILES, BEFORE_NOT_FOUND } from './src/site/vercel-routes.ts';
+import { securityHeaders } from './src/site/security-headers.ts';
+import { BEFORE_NOT_FOUND, beforeFiles } from './src/site/vercel-routes.ts';
 
 const targets = browserTargets(floor.minVersions);
+
+// vercel build は VERCEL_ENV を自分では付けないので、vercel-prebuilt.yml の deploy の job が
+// 付ける DEPLOY_TARGET で preview のビルドを見分ける
+const deployTarget =
+  process.env['DEPLOY_TARGET'] === 'preview' ? 'preview' : 'production';
 
 const contentDir = fileURLToPath(new URL('./src/content', import.meta.url));
 
@@ -44,8 +49,9 @@ const devSecurityHeaders: Plugin = {
   name: 'k8o:dev-security-headers',
   apply: 'serve',
   configureServer(server) {
+    const headers = Object.entries(securityHeaders('development'));
     server.middlewares.use((_req, res, next) => {
-      for (const [name, value] of Object.entries(DEV_SECURITY_HEADERS)) {
+      for (const [name, value] of headers) {
         res.setHeader(name, value);
       }
       next();
@@ -130,7 +136,10 @@ export default defineConfig({
         ...slidePathnames(patterns, await readSlideSlugs()),
       ],
     }),
-    vercel({ beforeFiles: BEFORE_FILES, beforeNotFound: BEFORE_NOT_FOUND }),
+    vercel({
+      beforeFiles: beforeFiles(deployTarget),
+      beforeNotFound: BEFORE_NOT_FOUND,
+    }),
     // vercel() が .vercel/output を書いたあとに見るので、framework() と vercel() より後に置く
     katexCssGuard(readArticles),
     betterCssModules(),

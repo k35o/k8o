@@ -1,6 +1,8 @@
 import { describe, expect, it } from 'vitest';
 
-import { BEFORE_FILES, BEFORE_NOT_FOUND } from './vercel-routes';
+import { BEFORE_NOT_FOUND, beforeFiles } from './vercel-routes';
+
+const BEFORE_FILES = beforeFiles('production');
 
 const sources = [...BEFORE_FILES, ...BEFORE_NOT_FOUND].map(({ src }) => src);
 

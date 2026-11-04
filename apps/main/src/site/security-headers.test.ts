@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import { DEV_SECURITY_HEADERS, SECURITY_HEADERS } from './security-headers';
+import { securityHeaders } from './security-headers';
 
 const directivesOf = (policy: string | undefined): string[] =>
   (policy ?? '')
@@ -16,14 +16,24 @@ const directive = (
     (entry) => entry === name || entry.startsWith(`${name} `),
   );
 
-const csp = SECURITY_HEADERS['Content-Security-Policy'];
-const devCsp = DEV_SECURITY_HEADERS['Content-Security-Policy'];
+const production = securityHeaders('production');
+const preview = securityHeaders('preview');
+const development = securityHeaders('development');
+const csp = production['Content-Security-Policy'];
+const previewCsp = preview['Content-Security-Policy'];
+const devCsp = development['Content-Security-Policy'];
 
-describe('SECURITY_HEADERS', () => {
+describe('securityHeaders', () => {
   describe('正常系', () => {
-    it('自分のオリジンのほかに GA と Vercel のツールバーのスクリプトだけを読む', () => {
+    it('本番は、自分のオリジンのほかに GA のスクリプトだけを読む', () => {
       expect(directive(csp, 'script-src')).toBe(
-        "script-src 'self' 'unsafe-inline' https://www.googletagmanager.com https://vercel.live",
+        "script-src 'self' 'unsafe-inline' https://www.googletagmanager.com",
+      );
+    });
+
+    it('本番は、自分のオリジンのほかに codepen と GA だけを埋め込む', () => {
+      expect(directive(csp, 'frame-src')).toBe(
+        "frame-src 'self' https://codepen.io https://www.googletagmanager.com",
       );
     });
 
@@ -35,7 +45,7 @@ describe('SECURITY_HEADERS', () => {
 
     it('違反を api の送り先に届ける', () => {
       expect(directive(csp, 'report-to')).toBe('report-to csp-endpoint');
-      expect(SECURITY_HEADERS['Reporting-Endpoints']).toBe(
+      expect(production['Reporting-Endpoints']).toBe(
         'csp-endpoint="https://api.k8o.me/public/reports"',
       );
     });
@@ -43,7 +53,7 @@ describe('SECURITY_HEADERS', () => {
     it('Trusted Types は Report-Only でだけ縛る', () => {
       expect(directive(csp, 'trusted-types')).toBeUndefined();
       expect(
-        directivesOf(SECURITY_HEADERS['Content-Security-Policy-Report-Only']),
+        directivesOf(production['Content-Security-Policy-Report-Only']),
       ).toStrictEqual([
         "require-trusted-types-for 'script'",
         'report-to csp-endpoint',
@@ -55,18 +65,23 @@ describe('SECURITY_HEADERS', () => {
         'upgrade-insecure-requests',
       );
     });
-  });
-});
 
-describe('DEV_SECURITY_HEADERS', () => {
-  describe('正常系', () => {
-    it('React の開発版が使う eval も許す', () => {
-      expect(directive(devCsp, 'script-src')).toBe(
-        "script-src 'self' 'unsafe-inline' https://www.googletagmanager.com https://vercel.live 'unsafe-eval'",
+    it('preview は、Vercel が差し込む Toolbar のスクリプトと iframe も許す', () => {
+      expect(directive(previewCsp, 'script-src')).toBe(
+        "script-src 'self' 'unsafe-inline' https://www.googletagmanager.com https://vercel.live",
+      );
+      expect(directive(previewCsp, 'frame-src')).toBe(
+        "frame-src 'self' https://codepen.io https://www.googletagmanager.com https://vercel.live",
       );
     });
 
-    it('手元の api にも接続する', () => {
+    it('dev は、React の開発版が使う eval も許す', () => {
+      expect(directive(devCsp, 'script-src')).toBe(
+        "script-src 'self' 'unsafe-inline' https://www.googletagmanager.com 'unsafe-eval'",
+      );
+    });
+
+    it('dev は、手元の api にも接続する', () => {
       expect(directive(devCsp, 'connect-src')).toBe(
         "connect-src 'self' https://www.googletagmanager.com https://www.google-analytics.com https://*.google-analytics.com https://*.analytics.google.com https://api.k8o.me https://api.k8o.localhost:* https://*.api.k8o.localhost:*",
       );
@@ -74,7 +89,13 @@ describe('DEV_SECURITY_HEADERS', () => {
   });
 
   describe('エッジケース', () => {
-    it('Safari が localhost の http まで https に上げないよう、upgrade-insecure-requests を付けない', () => {
+    it('dev は Toolbar が差し込まれないので、vercel.live を許さない', () => {
+      expect(directive(devCsp, 'frame-src')).toBe(
+        "frame-src 'self' https://codepen.io https://www.googletagmanager.com",
+      );
+    });
+
+    it('dev は、Safari が localhost の http まで https に上げないよう、upgrade-insecure-requests を付けない', () => {
       expect(directive(devCsp, 'upgrade-insecure-requests')).toBeUndefined();
     });
   });
