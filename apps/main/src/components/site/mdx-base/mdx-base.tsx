@@ -54,6 +54,7 @@ const LinkHeading: FC<PropsWithChildren<{ type: HeadingLevel }>> = ({
     >
       {hasText && (
         <a
+          aria-hidden="true"
           className={styles.anchor}
           href={`#${encodeURIComponent(text)}`}
           tabIndex={-1}
