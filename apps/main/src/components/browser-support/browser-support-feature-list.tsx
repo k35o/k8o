@@ -4,7 +4,7 @@ import { href } from '@k8ordo/framework';
 import { useAppState } from '@k8ordo/state';
 import { Badge, Checkbox, FormControl, Tabs, TextField } from '@k8ordo/ui';
 import { formatDate } from '@repo/helpers/date/format';
-import { useMemo } from 'react';
+import { memo, useDeferredValue, useMemo } from 'react';
 import type { FC } from 'react';
 
 import { toBrowserFamilies } from '@/components/site/browser-support-status/browser-families';
@@ -68,14 +68,14 @@ const FeatureList: FC<{
   query: string;
   recentOnly: boolean;
   recentThresholdMs: number;
-}> = ({
+}> = memo(function FeatureList({
   features,
   blogMap,
   visibility,
   query,
   recentOnly,
   recentThresholdMs,
-}) => {
+}) {
   const filtered = useMemo(
     () =>
       features.filter((feature) =>
@@ -122,7 +122,7 @@ const FeatureList: FC<{
       })}
     </ul>
   );
-};
+});
 
 export const BrowserSupportFeatureList: FC<{
   features: BrowserSupportFeature[];
@@ -179,6 +179,13 @@ export const BrowserSupportFeatureList: FC<{
   const defaultYear = availableYears.includes(currentYear)
     ? currentYear
     : availableYears[0];
+  const selectedYear =
+    defaultYear === undefined
+      ? undefined
+      : readYear(params.year, availableYears, defaultYear);
+  // 年の一覧を作り直すのは重く、click の中で描くと INP が延びる。タブの印はすぐに動かし、
+  // 一覧だけを後の描画に回す（useAppState の更新は transition にならない）
+  const listYear = useDeferredValue(selectedYear);
 
   return (
     <section className={styles.root}>
@@ -232,13 +239,13 @@ export const BrowserSupportFeatureList: FC<{
         </div>
       </div>
 
-      {defaultYear !== undefined && (
+      {selectedYear !== undefined && (
         <Tabs.Root
           ids={availableYears as [string, ...string[]]}
           onChange={(id) => {
             update({ year: id === defaultYear ? '' : id });
           }}
-          selectedId={readYear(params.year, availableYears, defaultYear)}
+          selectedId={selectedYear}
         >
           <Tabs.List label="年を選択">
             {availableYears.map((year) => {
@@ -251,18 +258,18 @@ export const BrowserSupportFeatureList: FC<{
               );
             })}
           </Tabs.List>
-          {availableYears.map((year) => (
-            <Tabs.Panel id={year} key={year}>
-              <FeatureList
-                blogMap={blogMap}
-                features={dataByYear.get(year) ?? []}
-                query={query}
-                recentOnly={recentOnly}
-                recentThresholdMs={recentThresholdMs}
-                visibility={visibility}
-              />
-            </Tabs.Panel>
-          ))}
+          {/* パネルを年ごとに分けると、選んだ年のパネルを新しく作るときに一覧も一緒に作るので、
+              1 つのパネルの id だけを替える */}
+          <Tabs.Panel id={selectedYear}>
+            <FeatureList
+              blogMap={blogMap}
+              features={dataByYear.get(listYear ?? selectedYear) ?? []}
+              query={query}
+              recentOnly={recentOnly}
+              recentThresholdMs={recentThresholdMs}
+              visibility={visibility}
+            />
+          </Tabs.Panel>
         </Tabs.Root>
       )}
     </section>

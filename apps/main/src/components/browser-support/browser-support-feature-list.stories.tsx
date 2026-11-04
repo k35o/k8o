@@ -218,6 +218,24 @@ export const OpenWithUrlValues = meta.story({
   },
 });
 
+export const SwitchYear = meta.story({
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const tab = canvas.getByRole('tab', { name: /^2025/u });
+
+    await userEvent.click(tab);
+
+    await expect(tab).toHaveAttribute('aria-selected', 'true');
+    await expect(await canvas.findByText('Promise.try()')).toBeInTheDocument();
+    await expect(canvas.getByText('@scope')).toBeInTheDocument();
+    await expect(canvas.queryByText('Popover API')).toBeNull();
+    await expect(canvas.getByRole('tabpanel')).toHaveAttribute(
+      'aria-labelledby',
+      tab.id,
+    );
+  },
+});
+
 export const WriteFiltersToUrl = meta.story({
   parameters: { vrt: { skip: true } },
   play: async ({ canvasElement }) => {
