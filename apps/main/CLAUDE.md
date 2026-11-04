@@ -5,7 +5,7 @@ k8o.me のアプリ。ブログ(MDX)、スライド、トーク、開発者向�
 ## 置き場（src/）
 
 - **routes/** - route ファイル（`page.tsx`・`layout.tsx`・`not-found.tsx`・`error.tsx`・`route.ts` など）だけを置く。ほかのファイルはビルドが拒むので、テストも置けない（route.ts の試験は `site/` に置く）。route ファイルは薄くし、`components/<area>` の部品と `features/*/interface` を読む。route.ts はどれも `Content-Type` を Response に書く（Vercel ではこの型で配られる）
-- **components/<area>/** - 部品と、その CSS Modules。layout やページの CSS もここに置く。`<area>` は URL の区画の名前で、サイト全体で使うものは `site`。OG の絵（`site/og-image`）もここに置く。画像は素の img に width と height を書いて描く。リポジトリに置く画像は `pnpm run -F main optimize:image <元の画像> <出力.avif> [--max-width <px>]` で AVIF にしてコミットし、静的 import の値の `src` を渡す
+- **components/<area>/** - 部品と、その CSS Modules。layout やページの CSS もここに置く。`<area>` は URL の区画の名前で、サイト全体で使うものは `site`。OG の絵（`site/og-image`）もここに置く。画像は素の img に width と height を書いて描く。リポジトリに置く画像は `pnpm run -F main optimize:image <元の画像> <出力.avif> [--max-width <px>] [--widths <px>,<px>...]` で AVIF にしてコミットし、静的 import の値の `src` を渡す。optimize:image は、出力より狭い幅（既定は 640・960・1280px、`--widths` で変える）ごとに、srcset の版 `<名前>.<幅>w.avif` も隣に書く（元より 1 割以上小さくならない版は書かない）。版もコミットする。記事の外で版を使う画像（`components/site/home`・`components/site/not-found`）は、版を import して srcset と sizes を書く。入力と出力に同じ AVIF を渡すと、元を書き直さずに版だけを作る
 - **features/<feature>/** - 機能ごとの UI 以外の処理。`interface` は route と部品が読む関数、`application` は整形、`infrastructure` は DB の読み取り。ビルドはページを HTML とペイロードで2回描くので、interface の読み取りは `shared/cache/memoize-in-build.ts` で覚える（`vite dev` では覚えない）
 - **site/** - `vercel()` の規則（`vercel-routes.ts`）・slug の正規表現・`paths` の組み立て・ビルドの後の検査・セキュリティヘッダー・ブラウザのターゲット。`vite.config.ts` が読むので、ここの import は拡張子まで書く
 - **shared/** - アプリの中で横断して使う UI 以外の処理（api のクライアント、OG の PNG、llms.txt の中身など）。ブラウザからの書き込み（閲覧数・お問い合わせ・フィードバック・Push 購読・エラーのレポート）は、部品が `shared/api/public-api.ts` の hc で api の公開ルート（`apps/api/CLAUDE.md`）を呼ぶ
@@ -13,7 +13,7 @@ k8o.me のアプリ。ブログ(MDX)、スライド、トーク、開発者向�
 - **mocks/** - Storybook の MSW の既定のハンドラ。api の書き込みは 204、GET は 503 を返し、story が `msw.use` で決めない限り本番の api に出ない
 - **content/** - ブログ記事とスライドの中身。`content/blog/<slug>/` に `article.mdx` と、その記事だけが使う `_images/`・`_components/`・`article.module.css` を置く。スライドの本文は `content/slides/<slug>/content.mdx`（作り方は `components/slides/README.md`）
   - MDX は `@/`・`next`・`next/*`・`next-themes` を import しない（記事は `features/blog/application/article-files.test.ts`、スライドは `features/slides/application/slide-files.test.ts` が確かめる）。相対の import（`./_images`・`./_components`・`./article.module.css`）と、パッケージの import は使ってよい。`content/` の TS・TSX も同じものを import しない（ルートの `vite.config.ts` の lint が止める）
-  - 記事の画像は AVIF にして `_images/` に置き、`Image`・`FloatImage` に width と height を書く。width と height が画像の縦横比と合うことは `article-files.test.ts` が確かめる
+  - 記事の画像は AVIF にして `_images/` に置き、`Image`・`FloatImage` に width と height を書く。width と height が画像の縦横比と合うことは `article-files.test.ts` が確かめる。`Image`・`FloatImage` は、`_images/` の版（`<名前>.<幅>w.avif`）を glob で拾い、width より狭い版と元の画像（width の幅として）を srcset に挙げるので、記事の MDX には版を書かない
   - 記事の `LinkCard` が描く OGP は `content/link-card-metadata.json` にコミットする。`pnpm run -F main generate:link-card-metadata` が記事の LinkCard の URL を集め、JSON に無い URL と、値が `{}`（OGP が取れなかった）の URL を取って書く（`--refresh` で全件を取り直す）。記事に LinkCard を足したら流す（抜けは `article-files.test.ts` が落とす）
 - **playgrounds/** - Playground のデモ（`playgrounds/<id>/`）と、セクションの一覧 `sections.ts`、id だけの一覧 `ids.ts`（セクションを足したら `ids.ts` にも足す。食い違いは `ids.test.ts` が落とす）、枠の `playground.tsx`
   - `next`・`next/**`・`next-themes`・`@/` を import しない（ルートの `vite.config.ts` の lint が止める）。リンクは素の `a`、テーマで変える色は CSS の `light-dark()` で書く。デモだけが使う画像は `public/playgrounds/` に置き、URL で読む。サイトの `public` に既にある画像（`/icon.png`）は写さずにその URL を読む
