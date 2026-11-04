@@ -43,7 +43,6 @@ export const TagContent: FC<{
                 href={href('/blog/:slug', { slug: blog.slug })}
                 key={blog.id}
                 label="ブログを読む"
-                linkLabel={`「${blog.title}」のブログを読む`}
                 title={blog.title}
               />
             ))}
@@ -61,7 +60,6 @@ export const TagContent: FC<{
                 href={href('/talks')}
                 key={talk.id}
                 label="Talks"
-                linkLabel="Talksを開く"
                 title={talk.title}
               />
             ))}

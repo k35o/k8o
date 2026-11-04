@@ -44,7 +44,6 @@ export const TagContent: FC<{
                 href={`/blog/${blog.slug}` as Route}
                 key={blog.id}
                 label="ブログを読む"
-                linkLabel={`「${blog.title}」のブログを読む`}
                 title={blog.title}
               />
             ))}
@@ -62,7 +61,6 @@ export const TagContent: FC<{
                 href="/talks"
                 key={talk.id}
                 label="Talks"
-                linkLabel="Talksを開く"
                 title={talk.title}
               />
             ))}

@@ -10,10 +10,9 @@ export const TagCard: FC<{
   href: Route;
   count?: number;
   label: string;
-  linkLabel: string;
-}> = ({ title, href, count, label, linkLabel }) => (
+}> = ({ title, href, count, label }) => (
   <Card interactive width="fit">
-    <Link aria-label={linkLabel} className={styles.root} href={href}>
+    <Link className={styles.root} href={href}>
       <div className={styles.header}>
         <span className={styles.title}>{title}</span>
         {count !== undefined && <span className={styles.count}>{count}</span>}
