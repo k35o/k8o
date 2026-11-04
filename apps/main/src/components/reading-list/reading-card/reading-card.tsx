@@ -1,5 +1,6 @@
 import { ExternalLinkIcon, Card, PublishDateIcon } from '@k8ordo/ui';
 import { formatDate } from '@repo/helpers/date/format';
+import { memo } from 'react';
 import type { FC } from 'react';
 
 import { ReadingCardBody } from './body';
@@ -26,7 +27,7 @@ export type ReadingCardProps = {
   sourceTitle: string;
 };
 
-export const ReadingCard: FC<ReadingCardProps> = ({
+export const ReadingCard: FC<ReadingCardProps> = memo(function ReadingCard({
   url,
   title,
   publishedAt,
@@ -34,43 +35,45 @@ export const ReadingCard: FC<ReadingCardProps> = ({
   description,
   summary,
   sourceTitle,
-}) => (
-  <div className={styles.root}>
-    <Card interactive variant="shadow">
-      <div className={styles.card}>
-        {imageUrl !== null && <ReadingCardImage src={imageUrl} />}
-        <div className={styles.body}>
-          <div className={styles.heading}>
-            <p className={styles.title}>
-              {/* タイトルをリンク化し ::after でカード全体を当たり判定にする
+}) {
+  return (
+    <div className={styles.root}>
+      <Card interactive variant="shadow">
+        <div className={styles.card}>
+          {imageUrl !== null && <ReadingCardImage src={imageUrl} />}
+          <div className={styles.body}>
+            <div className={styles.heading}>
+              <p className={styles.title}>
+                {/* タイトルをリンク化し ::after でカード全体を当たり判定にする
                   （空 anchor + aria-label によるタイトルの二重読みを回避） */}
-              {isHttpUrl(url) ? (
-                <a
-                  className={styles.link}
-                  href={url}
-                  rel="noopener noreferrer"
-                  target="_blank"
-                >
-                  {title}
-                </a>
-              ) : (
-                title
-              )}
-            </p>
-            <ReadingCardBody description={description} summary={summary} />
-          </div>
-          <div className={styles.meta}>
-            <div className={styles.metaItem}>
-              <PublishDateIcon size="sm" />
-              <span>{formatDate(new Date(publishedAt), 'yyyy年M月d日')}</span>
+                {isHttpUrl(url) ? (
+                  <a
+                    className={styles.link}
+                    href={url}
+                    rel="noopener noreferrer"
+                    target="_blank"
+                  >
+                    {title}
+                  </a>
+                ) : (
+                  title
+                )}
+              </p>
+              <ReadingCardBody description={description} summary={summary} />
             </div>
-            <div className={styles.metaItem}>
-              <ExternalLinkIcon size="sm" />
-              <p>{sourceTitle}</p>
+            <div className={styles.meta}>
+              <div className={styles.metaItem}>
+                <PublishDateIcon size="sm" />
+                <span>{formatDate(new Date(publishedAt), 'yyyy年M月d日')}</span>
+              </div>
+              <div className={styles.metaItem}>
+                <ExternalLinkIcon size="sm" />
+                <p>{sourceTitle}</p>
+              </div>
             </div>
           </div>
         </div>
-      </div>
-    </Card>
-  </div>
-);
+      </Card>
+    </div>
+  );
+});
