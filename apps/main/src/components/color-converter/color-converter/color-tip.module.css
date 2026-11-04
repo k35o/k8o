@@ -4,6 +4,7 @@
   height: calc(var(--spacing) * 36);
   overflow: hidden;
   border-radius: var(--radius-xl);
+  forced-color-adjust: none;
 }
 
 .checkerboard {
