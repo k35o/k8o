@@ -11,8 +11,8 @@ export const LinkCardFallback: FC<{
 }> = ({ href, variant = 'shadow' }) => (
   <div className={styles.root}>
     <Card interactive variant={variant}>
+      {/* oxlint-disable-next-line jsx-a11y/control-has-associated-label -- リンクの名前は中の URL とホスト名の文字が持つ。規則は子を浅くしかたどらず、そこまで届かない */}
       <a
-        aria-label={href}
         className={styles.link}
         href={href}
         rel="noopener noreferrer"

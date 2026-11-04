@@ -24,7 +24,6 @@ export const TagsIndex: FC<{
           href={href('/tags/:id', { id: tag.id })}
           key={tag.id}
           label="コンテンツを見る"
-          linkLabel={`「${tag.name}」に関連するコンテンツを表示する`}
           title={tag.name}
         />
       );

@@ -12,7 +12,6 @@ const meta = preview.meta({
     href: string;
     count?: number | undefined;
     label: string;
-    linkLabel: string;
   }>,
 });
 
@@ -22,7 +21,6 @@ export const Primary = meta.story({
     count: 10,
     href: '/tags',
     label: 'コンテンツを見る',
-    linkLabel: '「k8o」に関連するコンテンツを表示する',
   },
 });
 
@@ -31,6 +29,5 @@ export const NoCount = meta.story({
     title: 'k8o',
     href: '/tags',
     label: 'コンテンツを見る',
-    linkLabel: '「k8o」に関連するコンテンツを表示する',
   },
 });

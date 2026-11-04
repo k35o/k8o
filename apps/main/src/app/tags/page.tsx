@@ -20,7 +20,6 @@ export default async function Page() {
             href={`/tags/${tag.id.toString()}` as Route}
             key={tag.id}
             label="コンテンツを見る"
-            linkLabel={`「${tag.name}」に関連するコンテンツを表示する`}
             title={tag.name}
           />
         );
