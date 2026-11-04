@@ -1,6 +1,5 @@
 const content = `User-Agent: *
 Allow: /
-Disallow: /api/
 
 Sitemap: https://k8o.me/sitemap.xml
 `;
