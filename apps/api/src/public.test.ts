@@ -90,6 +90,11 @@ const VIEWS_PATH = '/public/blogs/media-pseudos/views';
 const post = (path: string, headers: Record<string, string> = {}) =>
   Promise.resolve(app.request(path, { method: 'POST', headers }));
 
+const readingListEtag = async (): Promise<string> => {
+  const res = await app.request('/public/reading-list');
+  return String(res.headers.get('etag'));
+};
+
 const sendJson = (
   path: string,
   body: unknown,
@@ -1386,14 +1391,61 @@ describe('公開 API', () => {
           '2026-04-21T00:00:00.000Z',
         );
       });
+
+      it('本文から作った ETag を付ける', async () => {
+        const res = await app.request('/public/reading-list');
+
+        expect(res.headers.get('etag')).toMatch(/^"[0-9a-f]{40}"$/u);
+      });
+
+      it('同じ ETag の If-None-Match には、本文を送らずに 304 を返し、Cache-Control と ETag を保つ', async () => {
+        const etag = await readingListEtag();
+
+        const res = await app.request('/public/reading-list', {
+          headers: { 'If-None-Match': etag },
+        });
+
+        expect(res.status).toBe(304);
+        await expect(res.text()).resolves.toBe('');
+        expect(res.headers.get('etag')).toBe(etag);
+        expect(res.headers.get('cache-control')).toBe(DAILY_CACHE_CONTROL);
+      });
     });
 
     describe('異常系', () => {
+      it('記事が変わると ETag も変わり、前の ETag の If-None-Match には本文を返す', async () => {
+        const etag = await readingListEtag();
+        vi.mocked(findRecentArticles).mockResolvedValue([SUMMARIZED_ARTICLE]);
+
+        const res = await app.request('/public/reading-list', {
+          headers: { 'If-None-Match': etag },
+        });
+
+        expect(res.status).toBe(200);
+        expect(res.headers.get('etag')).not.toBe(etag);
+        await expect(res.json()).resolves.toStrictEqual({
+          articles: [SUMMARIZED_ARTICLE],
+          sources: [{ id: 1, title: 'Example & Blog' }],
+        });
+      });
+
       it('query 付きの GET は、フィードと違って戻さずに 400 を返す', async () => {
         const res = await app.request('/public/reading-list?v=1');
 
         expect(res.status).toBe(400);
         expect(findRecentArticles).not.toHaveBeenCalled();
+      });
+    });
+
+    describe('エッジケース', () => {
+      it('圧縮した CDN が弱い ETag にして配っても、その If-None-Match に 304 を返す', async () => {
+        const etag = await readingListEtag();
+
+        const res = await app.request('/public/reading-list', {
+          headers: { 'If-None-Match': `W/${etag}` },
+        });
+
+        expect(res.status).toBe(304);
       });
     });
   });
