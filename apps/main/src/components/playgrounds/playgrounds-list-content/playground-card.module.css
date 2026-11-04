@@ -49,4 +49,8 @@
   align-items: center;
   margin-left: auto;
   transition: all var(--duration-fast) var(--easing-out);
+
+  @media (prefers-reduced-motion: reduce) {
+    transition-property: color;
+  }
 }

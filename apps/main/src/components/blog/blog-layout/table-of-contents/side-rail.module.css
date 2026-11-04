@@ -60,6 +60,10 @@
   transition-property: height;
   transition-duration: var(--duration-slow);
   transition-timing-function: var(--easing-out);
+
+  @media (prefers-reduced-motion: reduce) {
+    transition-property: none;
+  }
 }
 
 .marker {
@@ -71,6 +75,10 @@
   transition-property: transform, height;
   transition-duration: var(--duration-slow);
   transition-timing-function: var(--easing-out);
+
+  @media (prefers-reduced-motion: reduce) {
+    transition-property: none;
+  }
 }
 
 .list {

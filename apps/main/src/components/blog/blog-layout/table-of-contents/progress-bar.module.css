@@ -27,6 +27,10 @@
   transition-property: stroke-dashoffset;
   transition-duration: var(--duration-slow);
   transition-timing-function: var(--easing-in-out);
+
+  @media (prefers-reduced-motion: reduce) {
+    transition-property: none;
+  }
 }
 
 .value {
