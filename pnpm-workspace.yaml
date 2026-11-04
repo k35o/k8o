@@ -73,7 +73,7 @@ minimumReleaseAgeExclude:
   # Renovate security update: satori@0.33.5
   - satori@0.33.5
   # Renovate security update: @vitest/ui@5.0.5
-  - "@vitest/ui@5.0.5"
+  - '@vitest/ui@5.0.5'
 
 # drizzle-kit 0.31.11 は @esbuild-kit/esm-loader を依存に持つが、bundle のどこからも読み込まない。
 # これが脆弱な esbuild 0.18 を固定して audit に残るので、依存ごと外す。drizzle-kit を上げたら要否を見直す
