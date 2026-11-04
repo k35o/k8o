@@ -133,3 +133,17 @@ export const HasBlogLink = meta.story({
     await expect(blogLink).toHaveAttribute('href', '/blog/my-blog-post');
   },
 });
+
+// 正常系: タグはタグのページへのリンクで、Tab はタグ 1 つに 1 回だけ止まる
+export const TagLinks = DisplaysTags.extend({
+  play: async ({ canvas, userEvent }) => {
+    const react = canvas.getByRole('link', { name: 'React' });
+    await expect(react).toHaveAttribute('href', '/tags/1');
+
+    react.focus();
+    await userEvent.tab();
+    await expect(
+      canvas.getByRole('link', { name: 'TypeScript' }),
+    ).toHaveFocus();
+  },
+});

@@ -87,8 +87,12 @@ export const TalkCardView: FC<{
       </div>
       <div className={styles.tags}>
         {tags.map((tag) => (
-          <a href={href('/tags/:id', { id: tag.id })} key={tag.id}>
-            <Badge interactive key={tag.id} size="sm" label={tag.name} />
+          <a
+            className={styles.tag}
+            href={href('/tags/:id', { id: tag.id })}
+            key={tag.id}
+          >
+            <Badge size="sm" label={tag.name} />
           </a>
         ))}
       </div>

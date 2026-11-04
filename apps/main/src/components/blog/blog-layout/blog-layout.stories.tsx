@@ -139,6 +139,20 @@ export const Primary = meta.story({
   },
 });
 
+// 正常系: タグはタグのページへのリンクで、Tab はタグ 1 つに 1 回だけ止まる
+export const TagLinks = Primary.extend({
+  play: async ({ canvas, userEvent }) => {
+    const react = canvas.getByRole('link', { name: 'React' });
+    await expect(react).toHaveAttribute('href', '/tags/1');
+
+    react.focus();
+    await userEvent.tab();
+    await expect(
+      canvas.getByRole('link', { name: 'TypeScript' }),
+    ).toHaveFocus();
+  },
+});
+
 export const ResetFeedbackDraftOnNavigation = Primary.extend({
   render: (args) => <MoveToNextBlog {...args} />,
   play: async ({ canvas, userEvent }) => {

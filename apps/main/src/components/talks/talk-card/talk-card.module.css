@@ -63,6 +63,28 @@
   gap: calc(var(--spacing) * 2);
 }
 
+.tag {
+  display: inline-flex;
+  border-radius: var(--radius-full);
+
+  @media (hover: hover) {
+    /* better-css-modules-disable-next-line pure/subject -- Badge の要素は自分が書かない */
+    &:hover > * {
+      background-color: var(--color-bg-emphasize);
+    }
+  }
+
+  &:focus-visible {
+    outline-style: none;
+    box-shadow: var(--shadow-ring-info);
+
+    @media (forced-colors: active) {
+      outline: 2px solid transparent;
+      outline-offset: 2px;
+    }
+  }
+}
+
 .actions {
   display: flex;
   flex-wrap: wrap;
