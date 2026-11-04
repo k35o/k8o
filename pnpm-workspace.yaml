@@ -22,8 +22,8 @@ catalog:
   '@k8ordo/state': 1.4.2
   '@k8ordo/ui': 2.1.0
   '@libsql/client': 0.18.0
-  '@next/env': 16.4.3
-  '@next/mdx': 16.4.3
+  '@next/env': 16.4.5
+  '@next/mdx': 16.4.5
   '@storybook/addon-a11y': 10.6.5
   '@storybook/addon-docs': 10.6.5
   '@storybook/addon-mcp': '10.6.5'
@@ -42,7 +42,7 @@ catalog:
   drizzle-orm: 0.45.4
   hono: 4.13.13
   katex: 0.19.0
-  next: 16.4.3
+  next: 16.4.5
   next-themes: 0.4.6
   oxc-transform-react: 0.155.0
   react: 19.3.1
@@ -68,6 +68,18 @@ minimumReleaseAgeExclude:
   - storybook-addon-determinism
   # @better-css-modules/core 0.4.1 が固定する版（脆弱性の修正を含む）。2026-10-25 に成熟したら消す
   - 'postcss@8.5.31'
+  # Next.js 16.4.5 のセキュリティ修正（2026-11-03 公開）。2026-11-10 に成熟したら消す
+  - 'next@16.4.5'
+  - '@next/env@16.4.5'
+  - '@next/mdx@16.4.5'
+  - '@next/swc-darwin-arm64@16.4.5'
+  - '@next/swc-darwin-x64@16.4.5'
+  - '@next/swc-linux-arm64-gnu@16.4.5'
+  - '@next/swc-linux-arm64-musl@16.4.5'
+  - '@next/swc-linux-x64-gnu@16.4.5'
+  - '@next/swc-linux-x64-musl@16.4.5'
+  - '@next/swc-win32-arm64-msvc@16.4.5'
+  - '@next/swc-win32-x64-msvc@16.4.5'
   # ブラウザ最低版フロアの再生成が caniuse-lite の公開より先に進むため、7日待たずに上げられるようにする。
   # データだけのパッケージで、install スクリプトも依存も無く、ビルド時に Next の browserslist が読むだけ
   - caniuse-lite
