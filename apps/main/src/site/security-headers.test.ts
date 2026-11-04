@@ -60,6 +60,10 @@ describe('securityHeaders', () => {
       ]);
     });
 
+    it('ほかのオリジンの窓とは、開いた側と開かれた側の参照を切る', () => {
+      expect(production['Cross-Origin-Opener-Policy']).toBe('same-origin');
+    });
+
     it('http の読み込みを https に上げる', () => {
       expect(directive(csp, 'upgrade-insecure-requests')).toBe(
         'upgrade-insecure-requests',

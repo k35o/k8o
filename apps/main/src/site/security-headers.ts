@@ -36,6 +36,7 @@ export const securityHeaders = (
     // preview と dev のレポートは、api が Origin を許可しないので受け付けられない
     'Reporting-Endpoints': 'csp-endpoint="https://api.k8o.me/public/reports"',
     'X-Content-Type-Options': 'nosniff',
+    'Cross-Origin-Opener-Policy': 'same-origin',
     'Permissions-Policy':
       'camera=(), microphone=(), geolocation=(), browsing-topics=()',
   };
