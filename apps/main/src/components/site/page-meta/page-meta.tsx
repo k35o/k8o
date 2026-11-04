@@ -31,13 +31,13 @@ export const PageMeta: FC<PageMetaProps> = ({
   titleTemplate = true,
   description = SITE_DESCRIPTION,
   path,
-  canonical = false,
   image,
   rssFeedPath,
   twitterCard = 'summary',
   article,
   category,
   noindex = false,
+  canonical = !noindex,
 }) => {
   const pageTitle = title ?? SITE_NAME;
   const url = absoluteUrl(path);

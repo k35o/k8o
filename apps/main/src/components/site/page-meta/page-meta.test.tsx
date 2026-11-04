@@ -81,12 +81,12 @@ describe('PageMeta', () => {
       expect(metaOf(tags, 'name', 'twitter:card')).toBe('summary');
     });
 
-    it('canonical を求めると、パスの絶対 URL で書く', () => {
-      const tags = tagsOf({ path: '/about', canonical: true });
+    it('noindex でなければ、canonical をパスの絶対 URL で書く', () => {
+      const tags = tagsOf({ path: '/palette-maker' });
 
       expect(linkOf(tags, 'canonical')).toStrictEqual({
         rel: 'canonical',
-        href: 'https://k8o.me/about',
+        href: 'https://k8o.me/palette-maker',
       });
     });
 
@@ -172,10 +172,11 @@ describe('PageMeta', () => {
       expect(metaOf(tags, 'name', 'category')).toBe('CSS, abs');
     });
 
-    it('noindex を求めると、robots に書く', () => {
+    it('noindex を求めると、robots に書き、canonical を書かない', () => {
       const tags = tagsOf({ path: '/', noindex: true });
 
       expect(metaOf(tags, 'name', 'robots')).toBe('noindex');
+      expect(linkOf(tags, 'canonical')).toBeUndefined();
     });
   });
 
@@ -194,16 +195,21 @@ describe('PageMeta', () => {
     });
 
     it('トップの URL は末尾の / を付けずに書く', () => {
-      const tags = tagsOf({ path: '/', canonical: true });
+      const tags = tagsOf({ path: '/' });
 
       expect(metaOf(tags, 'property', 'og:url')).toBe('https://k8o.me');
       expect(linkOf(tags, 'canonical')?.['href']).toBe('https://k8o.me');
     });
 
-    it('求めなければ、canonical・画像・alternate・robots を書かない', () => {
-      const tags = tagsOf({ path: '/about' });
+    it('canonical を外すと、noindex でなくても書かない', () => {
+      const tags = tagsOf({ path: '/about', canonical: false });
 
       expect(linkOf(tags, 'canonical')).toBeUndefined();
+    });
+
+    it('求めなければ、画像・alternate・robots を書かない', () => {
+      const tags = tagsOf({ path: '/about' });
+
       expect(linkOf(tags, 'alternate')).toBeUndefined();
       expect(metaOf(tags, 'property', 'og:image')).toBeUndefined();
       expect(metaOf(tags, 'name', 'twitter:image')).toBeUndefined();
