@@ -31,7 +31,7 @@ export const PageMeta: FC<PageMetaProps> = ({
   titleTemplate = true,
   description = SITE_DESCRIPTION,
   path,
-  image,
+  image = SITE_OG_IMAGE,
   rssFeedPath,
   twitterCard = 'summary',
   article,
@@ -41,7 +41,7 @@ export const PageMeta: FC<PageMetaProps> = ({
 }) => {
   const pageTitle = title ?? SITE_NAME;
   const url = absoluteUrl(path);
-  const imageUrl = image === undefined ? undefined : absoluteUrl(image.path);
+  const imageUrl = absoluteUrl(image.path);
 
   return (
     <>
@@ -70,15 +70,11 @@ export const PageMeta: FC<PageMetaProps> = ({
       <meta content={url} property="og:url" />
       <meta content={SITE_NAME} property="og:site_name" />
       <meta content="ja" property="og:locale" />
-      {image !== undefined && (
-        <>
-          <meta content={imageUrl} property="og:image" />
-          <meta content={OG_IMAGE.type} property="og:image:type" />
-          <meta content={OG_IMAGE.width} property="og:image:width" />
-          <meta content={OG_IMAGE.height} property="og:image:height" />
-          <meta content={image.alt} property="og:image:alt" />
-        </>
-      )}
+      <meta content={imageUrl} property="og:image" />
+      <meta content={OG_IMAGE.type} property="og:image:type" />
+      <meta content={OG_IMAGE.width} property="og:image:width" />
+      <meta content={OG_IMAGE.height} property="og:image:height" />
+      <meta content={image.alt} property="og:image:alt" />
       {article === undefined ? (
         <meta content="website" property="og:type" />
       ) : (
@@ -102,15 +98,11 @@ export const PageMeta: FC<PageMetaProps> = ({
       {description !== null && (
         <meta content={description} name="twitter:description" />
       )}
-      {image !== undefined && (
-        <>
-          <meta content={imageUrl} name="twitter:image" />
-          <meta content={image.alt} name="twitter:image:alt" />
-          <meta content={OG_IMAGE.type} name="twitter:image:type" />
-          <meta content={OG_IMAGE.width} name="twitter:image:width" />
-          <meta content={OG_IMAGE.height} name="twitter:image:height" />
-        </>
-      )}
+      <meta content={imageUrl} name="twitter:image" />
+      <meta content={image.alt} name="twitter:image:alt" />
+      <meta content={OG_IMAGE.type} name="twitter:image:type" />
+      <meta content={OG_IMAGE.width} name="twitter:image:width" />
+      <meta content={OG_IMAGE.height} name="twitter:image:height" />
     </>
   );
 };

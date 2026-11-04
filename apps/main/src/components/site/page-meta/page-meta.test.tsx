@@ -92,18 +92,33 @@ describe('PageMeta', () => {
 
     it('OG の画像を、og と twitter に 1200×630 の PNG として書く', () => {
       const tags = tagsOf({
-        path: '/',
-        image: { path: '/og.png', alt: 'k8o' },
+        path: '/blog',
+        image: { path: '/blog/og.png', alt: 'blog' },
       });
 
-      for (const prefix of ['og:image', 'twitter:image']) {
-        const key = prefix === 'og:image' ? 'property' : 'name';
-        expect(metaOf(tags, key, prefix)).toBe('https://k8o.me/og.png');
+      for (const [key, prefix] of [
+        ['property', 'og:image'],
+        ['name', 'twitter:image'],
+      ] as const) {
+        expect(metaOf(tags, key, prefix)).toBe('https://k8o.me/blog/og.png');
         expect(metaOf(tags, key, `${prefix}:type`)).toBe('image/png');
         expect(metaOf(tags, key, `${prefix}:width`)).toBe('1200');
         expect(metaOf(tags, key, `${prefix}:height`)).toBe('630');
-        expect(metaOf(tags, key, `${prefix}:alt`)).toBe('k8o');
+        expect(metaOf(tags, key, `${prefix}:alt`)).toBe('blog');
       }
+    });
+
+    it('画像を省くと、サイトの OG の画像を og と twitter に書く', () => {
+      const tags = tagsOf({ path: '/about' });
+
+      expect(metaOf(tags, 'property', 'og:image')).toBe(
+        'https://k8o.me/og.png',
+      );
+      expect(metaOf(tags, 'property', 'og:image:alt')).toBe('k8o');
+      expect(metaOf(tags, 'name', 'twitter:image')).toBe(
+        'https://k8o.me/og.png',
+      );
+      expect(metaOf(tags, 'name', 'twitter:image:alt')).toBe('k8o');
     });
 
     it('フィードのパスを、RSS の alternate として絶対 URL で書く', () => {
@@ -207,12 +222,10 @@ describe('PageMeta', () => {
       expect(linkOf(tags, 'canonical')).toBeUndefined();
     });
 
-    it('求めなければ、画像・alternate・robots を書かない', () => {
+    it('求めなければ、alternate・robots を書かない', () => {
       const tags = tagsOf({ path: '/about' });
 
       expect(linkOf(tags, 'alternate')).toBeUndefined();
-      expect(metaOf(tags, 'property', 'og:image')).toBeUndefined();
-      expect(metaOf(tags, 'name', 'twitter:image')).toBeUndefined();
       expect(metaOf(tags, 'name', 'robots')).toBeUndefined();
       expect(metaOf(tags, 'name', 'category')).toBeUndefined();
       expect(metaOf(tags, 'property', 'article:author')).toBeUndefined();
