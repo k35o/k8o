@@ -7,6 +7,10 @@
     'Yu Gothic UI', 'Yu Gothic', 'Noto Sans CJK JP', sans-serif;
 }
 
+html {
+  scroll-padding-top: calc(var(--spacing) * 24);
+}
+
 @media (prefers-reduced-motion) {
   ::view-transition-group(*),
   ::view-transition-old(*),

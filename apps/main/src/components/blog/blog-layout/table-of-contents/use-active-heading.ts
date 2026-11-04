@@ -43,7 +43,12 @@ const update = (): void => {
   const isAtBottom =
     window.scrollY + window.innerHeight >=
     document.documentElement.scrollHeight - 1;
-  setActiveId(resolveActiveHeading(measurements, isAtBottom));
+  // 目次から飛んだ見出しは、ヘッダーの高さぶんの scroll-padding-top の位置に止まる
+  const readingLine =
+    Number.parseFloat(
+      getComputedStyle(document.documentElement).scrollPaddingTop,
+    ) || 0;
+  setActiveId(resolveActiveHeading(measurements, isAtBottom, readingLine));
 };
 
 const requestUpdate = (): void => {

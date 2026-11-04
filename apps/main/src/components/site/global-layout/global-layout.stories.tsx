@@ -17,6 +17,21 @@ const meta = preview.meta({
 
 export const Primary = meta.story();
 
+// 上へのスクロールで出てくるヘッダーが、Shift+Tab で戻ったときのフォーカスを覆わない
+export const ScrollPaddingClearsHeader = meta.story({
+  parameters: { vrt: { skip: true } },
+  play: async ({ canvas }) => {
+    const header = canvas.getByRole('banner');
+    const scrollPaddingTop = Number.parseFloat(
+      getComputedStyle(document.documentElement).scrollPaddingTop,
+    );
+
+    await expect(scrollPaddingTop).toBeGreaterThanOrEqual(
+      header.getBoundingClientRect().height,
+    );
+  },
+});
+
 // 古いブラウザ判定時: 最上部に常時バナー、ヘッダーに警告マークが出る。
 export const OutdatedBrowser = meta.story({
   args: {

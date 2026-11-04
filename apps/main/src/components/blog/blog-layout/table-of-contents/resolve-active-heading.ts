@@ -1,6 +1,8 @@
 import { END_OF_CONTENT_ID } from '../constants';
 
-export const ACTIVE_LINE_OFFSET = 96;
+// スクロールの位置は整数に丸められ、見出しの位置は端数を持つので、見出しへ飛んでも
+// 読み取りラインを 1px まで行き過ぎて止まることがある
+const SNAP_TOLERANCE = 1;
 
 export type HeadingMeasurement = {
   id: string;
@@ -11,11 +13,12 @@ export type HeadingMeasurement = {
   isInsideEndOfContent: boolean;
 };
 
-// 「読み取りライン（画面上部 ACTIVE_LINE_OFFSET px）を最後に通過した見出し」を現在地とする。
+// 「読み取りライン（画面上部から readingLine px）を最後に通過した見出し」を現在地とする。
 // measurements は文書順であること
 export const resolveActiveHeading = (
   measurements: readonly HeadingMeasurement[],
   isAtBottom: boolean,
+  readingLine: number,
 ): string => {
   let current = '';
   for (const measurement of measurements) {
@@ -28,7 +31,7 @@ export const resolveActiveHeading = (
     if (!measurement.isRendered) {
       continue;
     }
-    if (measurement.top <= ACTIVE_LINE_OFFSET) {
+    if (measurement.top <= readingLine + SNAP_TOLERANCE) {
       current = measurement.id;
     }
   }
