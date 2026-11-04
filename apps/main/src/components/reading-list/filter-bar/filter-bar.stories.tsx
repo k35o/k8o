@@ -43,6 +43,15 @@ export const Primary = meta.story({
   },
 });
 
+// 正常系: 見出しは、読書リストのページの題（h2）の一つ下の段に置く
+export const FilterHeading = meta.story({
+  play: async ({ canvas }) => {
+    await expect(
+      canvas.getByRole('heading', { level: 3, name: '絞り込み' }),
+    ).toBeInTheDocument();
+  },
+});
+
 // 正常系: 選択済みソースが削除可能なチップとして表示される
 export const WithSelectedSources = meta.story({
   args: {

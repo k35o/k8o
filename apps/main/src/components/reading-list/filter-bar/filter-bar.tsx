@@ -51,7 +51,7 @@ export const FilterBar: FC<Props> = ({
 
   return (
     <div className={styles.root}>
-      <Heading level="h4">絞り込み</Heading>
+      <Heading level="h3">絞り込み</Heading>
       <FormControl
         label="検索"
         renderInput={(props) => (
