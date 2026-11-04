@@ -1,5 +1,4 @@
 {
-  "http://k8o.me/blog/react19-usereducer-ts-type-inference": {},
   "https://2025.tskaigi.org/talks/k35o": {
     "title": "React19で変化したuseReducerの型から学ぶTypeScriptの型推論 | TSKaigi 2025",
     "description": "TSKaigi 2025 のスピーカー、トーク情報です。",
@@ -97,6 +96,7 @@
   "https://html.spec.whatwg.org/multipage/interaction.html#attr-contenteditable": {
     "title": "HTML Standard"
   },
+  "https://k8o.me/blog/react19-usereducer-ts-type-inference": {},
   "https://pnpm.io/versioning": {
     "title": "Release management | pnpm",
     "description": "Added in: v11.13.0",
