@@ -33,6 +33,10 @@
     ),
     transparent 60%
   );
+
+  @media print {
+    display: none;
+  }
 }
 
 .corner {

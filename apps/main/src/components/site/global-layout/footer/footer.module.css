@@ -4,6 +4,10 @@
   align-items: center;
   gap: calc(var(--spacing) * 3);
   padding: calc(var(--spacing) * 4);
+
+  @media print {
+    display: none;
+  }
 }
 
 .links {

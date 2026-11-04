@@ -20,6 +20,10 @@
   @media (prefers-reduced-motion: reduce) {
     transition-property: none;
   }
+
+  @media print {
+    display: none;
+  }
 }
 
 .bar {

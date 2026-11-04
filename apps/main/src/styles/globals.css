@@ -18,3 +18,9 @@ html {
     animation: none !important;
   }
 }
+
+@media print {
+  main pre {
+    white-space: pre-wrap;
+  }
+}
