@@ -15,6 +15,8 @@ export const Image: FC<Props> = ({ src, alt, width, height, caption }) => (
     <img
       alt={alt}
       className={styles.image}
+      // 画像はほかの枚にあることが多く、印刷用の写しは画面で見えない。low にしないと、React が head で preload する
+      fetchPriority="low"
       height={height}
       src={src}
       width={width}
