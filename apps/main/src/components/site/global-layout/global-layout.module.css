@@ -4,6 +4,43 @@
   min-height: 100svh;
 }
 
+.skipLink {
+  position: fixed;
+  top: calc(var(--spacing) * 4);
+  left: calc(var(--spacing) * 4);
+  z-index: var(--z-index-modal);
+  padding-inline: calc(var(--spacing) * 4);
+  padding-block: calc(var(--spacing) * 3);
+  border-radius: var(--radius-lg);
+  background-color: var(--color-bg-raised);
+  color: var(--color-primary-fg);
+  font-weight: var(--font-weight-bold);
+  box-shadow: var(--shadow-md);
+
+  /* 縁を影と地だけで描くので、コントラストを上げる設定ではデザインシステムの面と同じ縁を足す */
+  &:not(:focus-visible) {
+    @media (prefers-contrast: more) {
+      outline: 1px solid var(--color-border-base);
+      outline-offset: -1px;
+    }
+
+    @media (forced-colors: active) {
+      outline: 1px solid;
+      outline-offset: -1px;
+    }
+  }
+
+  /* Safari はマウスで押すとリンクからフォーカスを外すので、押しているあいだも畳まない */
+  &:not(:focus):not(:active) {
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+}
+
 .srOnly {
   position: absolute;
   width: 1px;

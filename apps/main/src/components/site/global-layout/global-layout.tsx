@@ -13,11 +13,16 @@ import styles from './global-layout.module.css';
 
 const EMPTY_MIN_VERSIONS: BrowserMinVersions = {};
 
+const MAIN_ID = 'main-content';
+
 export const GlobalLayout: FC<{
   children: ReactNode;
   minVersions?: BrowserMinVersions;
 }> = ({ children, minVersions = EMPTY_MIN_VERSIONS }) => (
   <div className={styles.root}>
+    <a className={styles.skipLink} href={`#${MAIN_ID}`}>
+      本文へ移動
+    </a>
     <Background />
     <BrowserSupportNotice minVersions={minVersions} />
     <Header>
@@ -29,7 +34,9 @@ export const GlobalLayout: FC<{
       </a>
       <HeaderActions />
     </Header>
-    <main className={styles.main}>{children}</main>
+    <main className={styles.main} id={MAIN_ID} tabIndex={-1}>
+      {children}
+    </main>
     <Footer />
   </div>
 );
