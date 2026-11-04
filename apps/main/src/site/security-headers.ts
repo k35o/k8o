@@ -1,24 +1,41 @@
-export type SiteEnvironment = 'development' | 'preview' | 'production';
+export type DeployTarget = 'preview' | 'production';
+
+type SiteEnvironment = 'development' | DeployTarget;
 
 const toHeaderValue = (directives: readonly string[]): string =>
   directives.map((directive) => `${directive};`).join(' ');
+
+// Vercel は preview の HTML にだけ Toolbar を差し込む
+const toolbarOf = (environment: SiteEnvironment): string[] =>
+  environment === 'preview' ? ['https://vercel.live'] : [];
+
+const scriptHostsOf = (environment: SiteEnvironment): string[] => [
+  'https://www.googletagmanager.com',
+  ...toolbarOf(environment),
+];
 
 export const securityHeaders = (
   environment: SiteEnvironment,
 ): Readonly<Record<string, string>> => {
   const isDev = environment === 'development';
-  // Vercel は preview の HTML にだけ Toolbar を差し込む
-  const toolbar = environment === 'preview' ? ' https://vercel.live' : '';
   return {
     'Content-Security-Policy': toHeaderValue([
       "default-src 'self'",
-      `script-src 'self' 'unsafe-inline' https://www.googletagmanager.com${toolbar}${isDev ? " 'unsafe-eval'" : ''}`,
+      // 頭はページごとのハッシュを持てないので、inline の script は <meta> の CSP（pagePolicy）で縛る
+      [
+        "script-src 'self' 'unsafe-inline'",
+        ...scriptHostsOf(environment),
+        ...(isDev ? ["'unsafe-eval'"] : []),
+      ].join(' '),
       "style-src 'self' 'unsafe-inline'",
       "img-src 'self' https: blob: data:",
       "font-src 'self'",
       "worker-src 'self' blob:",
       `connect-src 'self' https://www.googletagmanager.com https://www.google-analytics.com https://*.google-analytics.com https://*.analytics.google.com https://api.k8o.me${isDev ? ' https://api.k8o.localhost:* https://*.api.k8o.localhost:*' : ''}`,
-      `frame-src 'self' https://codepen.io https://www.googletagmanager.com${toolbar}`,
+      [
+        "frame-src 'self' https://codepen.io https://www.googletagmanager.com",
+        ...toolbarOf(environment),
+      ].join(' '),
       "object-src 'none'",
       "base-uri 'self'",
       "form-action 'self'",
@@ -43,3 +60,16 @@ export const securityHeaders = (
       'camera=(), microphone=(), geolocation=(), browsing-topics=()',
   };
 };
+
+// framework() が書き出す各ページの <meta> の CSP。framework は payload と React の inline の script の
+// ハッシュを足すので、ここにはアプリの inline の script（テーマ）のハッシュだけを渡す
+export const pagePolicy = (
+  environment: DeployTarget,
+  colorSchemeScriptHash: string,
+): Readonly<Record<string, readonly string[]>> => ({
+  'script-src': [
+    "'self'",
+    colorSchemeScriptHash,
+    ...scriptHostsOf(environment),
+  ],
+});

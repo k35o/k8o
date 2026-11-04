@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import { securityHeaders } from './security-headers';
+import { pagePolicy, securityHeaders } from './security-headers';
 
 const directivesOf = (policy: string | undefined): string[] =>
   (policy ?? '')
@@ -103,6 +103,39 @@ describe('securityHeaders', () => {
 
     it('dev は、Safari が localhost の http まで https に上げないよう、upgrade-insecure-requests を付けない', () => {
       expect(directive(devCsp, 'upgrade-insecure-requests')).toBeUndefined();
+    });
+  });
+});
+
+describe('pagePolicy', () => {
+  const themeHash = "'sha256-theme'";
+
+  describe('正常系', () => {
+    it('inline の script は、テーマのハッシュでだけ許し、外は GA のスクリプトだけを読む', () => {
+      expect(pagePolicy('production', themeHash)).toStrictEqual({
+        'script-src': [
+          "'self'",
+          "'sha256-theme'",
+          'https://www.googletagmanager.com',
+        ],
+      });
+    });
+
+    it('preview は、Vercel が差し込む Toolbar のスクリプトも許す', () => {
+      expect(pagePolicy('preview', themeHash)).toStrictEqual({
+        'script-src': [
+          "'self'",
+          "'sha256-theme'",
+          'https://www.googletagmanager.com',
+          'https://vercel.live',
+        ],
+      });
+    });
+  });
+
+  describe('エッジケース', () => {
+    it('頭の CSP は、ページごとのハッシュを持てないので inline の script を許したままにする', () => {
+      expect(directive(csp, 'script-src')).toContain("'unsafe-inline'");
     });
   });
 });

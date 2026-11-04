@@ -3,6 +3,7 @@ import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 import betterCssModules from '@better-css-modules/vite';
+import { colorSchemeScriptHash } from '@k8ordo/color-scheme';
 import { vercel } from '@k8ordo/framework/vercel';
 import { framework } from '@k8ordo/framework/vite';
 import mdx from '@mdx-js/rollup';
@@ -25,14 +26,15 @@ import {
   slidePathnames,
   tagPathnames,
 } from './src/site/paths.ts';
-import { securityHeaders } from './src/site/security-headers.ts';
+import { pagePolicy, securityHeaders } from './src/site/security-headers.ts';
+import type { DeployTarget } from './src/site/security-headers.ts';
 import { BEFORE_NOT_FOUND, beforeFiles } from './src/site/vercel-routes.ts';
 
 const targets = browserTargets(floor.minVersions);
 
 // vercel build は VERCEL_ENV を自分では付けないので、vercel-prebuilt.yml の deploy の job が
 // 付ける DEPLOY_TARGET で preview のビルドを見分ける
-const deployTarget =
+const deployTarget: DeployTarget =
   process.env['DEPLOY_TARGET'] === 'preview' ? 'preview' : 'production';
 
 const contentDir = fileURLToPath(new URL('./src/content', import.meta.url));
@@ -126,6 +128,9 @@ export default defineConfig({
     framework({
       mode: 'static',
       reactCompiler: true,
+      // テーマの script は defaultPreference を持つので、ルートの layout の ColorSchemeProvider に
+      // 渡すなら、ここにも同じ値を渡す
+      csp: pagePolicy(deployTarget, await colorSchemeScriptHash()),
       paths: async (patterns) => [
         ...blogPathnames(
           patterns,
