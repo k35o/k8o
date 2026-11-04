@@ -101,9 +101,12 @@ k8o.me のアプリ。ブログ(MDX)、スライド、トーク、開発者向�
 
 ## セキュリティヘッダー
 
-`src/site/security-headers.ts` の CSP・`Content-Security-Policy-Report-Only`・Reporting-Endpoints を、`vercel()` の規則が全応答に付ける（dev は `vite.config.ts` のプラグイン）。どちらの違反も `csp-endpoint`（api の `/public/reports`）に届き、api の MCP の `list_reports`（type は `csp-violation`）で読める。
+`src/site/security-headers.ts` の CSP・`Content-Security-Policy-Report-Only`・Reporting-Endpoints・`Cross-Origin-Opener-Policy` などを、`vercel()` の規則が全応答に付ける（dev は `vite.config.ts` のプラグイン）。どちらの CSP の違反も `csp-endpoint`（api の `/public/reports`）に届き、api の MCP の `list_reports`（type は `csp-violation`）で読める。
 
-Trusted Types は Report-Only で観測している。`require-trusted-types-for 'script'` は Report-Only にだけ置き、強制側の CSP には置かない。default ポリシーは作らない。作ると sink に渡した文字列がそこで変換され、Report-Only の違反として上がらなくなる。生の文字列を渡した sink は、body の `disposition` が `report`、`effectiveDirective` が `require-trusted-types-for` のレポートになり、`sample` に sink 名と値の先頭が、`sourceFile` と行番号に呼び出し元が入る。
+- 頭の CSP の `script-src` は `'unsafe-inline'` のまま置く。頭はページごとのハッシュを持てず、ハッシュを並べると `'unsafe-inline'` が効かなくなるため。inline の script は、`framework()` の `csp` が各ページの `<head>` の先頭に書く、ハッシュだけの `<meta>` の CSP（`security-headers.ts` の `pagePolicy`）で縛る。script は頭と `<meta>` の両方が許すときだけ動くので、`<meta>` にハッシュの無い inline の script は動かない。framework は payload と React の inline の script のハッシュを足し、`pagePolicy` はテーマの script のハッシュ（`colorSchemeScriptHash()`）と、頭と同じ外の script の読み先を渡す。テーマの script は `defaultPreference` を持つので、ルートの layout の `ColorSchemeProvider` に `defaultPreference` を渡すなら、`vite.config.ts` の `colorSchemeScriptHash()` にも同じ値を渡す。`<meta>` の CSP の違反はレポートに届かない
+- Vercel の Toolbar のための `https://vercel.live` は、preview のビルドの CSP（頭の `script-src`・`frame-src` と `<meta>` の `script-src`）にだけ入る。preview かどうかは、`.github/workflows/vercel-prebuilt.yml` の deploy の job が付ける `DEPLOY_TARGET`（push は production、ほかは preview）で決まる。`DEPLOY_TARGET` の無いビルドは production の形になる
+- `Cross-Origin-Opener-Policy: same-origin` を付け、ほかのオリジンの窓と閲覧の文脈を分ける。サイトの中で窓を開くのはスライドの発表者モードの `window.open` だけで、開く先は同じオリジンのデッキ
+- Trusted Types は Report-Only で観測している。`require-trusted-types-for 'script'` と `trusted-types 'none'` は Report-Only にだけ置き、強制側の CSP には置かない。`trusted-types 'none'` は、ポリシーを作るもの（`trustedTypes.createPolicy()`）を違反として報告させる。default ポリシーは作らない。作ると sink に渡した文字列がそこで変換され、Report-Only の違反として上がらなくなる。生の文字列を渡した sink は、body の `disposition` が `report`、`effectiveDirective` が `require-trusted-types-for` のレポートになり、`sample` に sink 名と値の先頭が、`sourceFile` と行番号に呼び出し元が入る
 
 ## テストと Storybook
 
