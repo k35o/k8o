@@ -12,7 +12,7 @@ const OG_IMAGE = { type: 'image/png', width: '1200', height: '630' } as const;
 const absoluteUrl = (path: string): string =>
   path === '/' ? SITE_URL : `${SITE_URL}${path}`;
 
-export const SITE_OG_IMAGE = {
+const SITE_OG_IMAGE = {
   path: `/og.png?v=${SITE_OG_IMAGE_VERSION}`,
   alt: SITE_NAME,
 } as const;

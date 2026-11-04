@@ -1,6 +1,6 @@
 import { Home } from '@/components/site/home/home';
 import { HomeJsonLd } from '@/components/site/json-ld/home-json-ld';
-import { PageMeta, SITE_OG_IMAGE } from '@/components/site/page-meta/page-meta';
+import { PageMeta } from '@/components/site/page-meta/page-meta';
 import { getBlogContents } from '@/features/blog/interface/queries';
 
 export default async function HomePage() {
@@ -8,7 +8,7 @@ export default async function HomePage() {
 
   return (
     <>
-      <PageMeta canonical image={SITE_OG_IMAGE} path="/" />
+      <PageMeta path="/" rssFeedPath="/blog/feed" />
       <HomeJsonLd />
       <Home blogs={blogs} />
     </>
