@@ -32,6 +32,26 @@
   }
 }
 
+@media (width < 80rem) {
+  /* better-css-modules-disable-next-line pure/global -- もくじが覆うフォーカスとフッターはこの部品の外にあるので、文書の側にもくじの高さぶんの余白を取る */
+  :global(html):has(.root) {
+    scroll-padding-bottom: calc(var(--spacing) * 20);
+
+    @media (width >= 40rem) {
+      scroll-padding-bottom: calc(var(--spacing) * 24);
+    }
+  }
+
+  /* better-css-modules-disable-next-line pure/global -- フッターは body の中の最後にあるので、body の下にもくじの高さぶんの余白を取る */
+  :global(body):has(.root) {
+    padding-bottom: calc(var(--spacing) * 20);
+
+    @media (width >= 40rem) {
+      padding-bottom: calc(var(--spacing) * 24);
+    }
+  }
+}
+
 .summary {
   display: flex;
   align-items: center;
