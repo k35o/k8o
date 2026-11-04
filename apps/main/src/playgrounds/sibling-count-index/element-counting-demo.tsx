@@ -11,14 +11,15 @@ const ITEM = styles.item;
 const OPEN_FRUIT = '<div class=&quot;scid-fruit&quot;>';
 
 // style と script を兄弟として数えさせるのが主題だが、JSX で書くと React が hoist
-// したり実行を拒んだりして DOM の並びが変わるため、静的な文字列をそのまま挿入する
+// したり実行を拒んだりして DOM の並びが変わるため、静的な文字列をそのまま挿入する。
+// script は HTML のパーサーが実行しようとし、ページの CSP が拒んで違反になるので、実行しない type にする
 const NODES_HTML = `<style class="scid-node scid-offscreen ${GHOST}" data-open="<style>" data-close="</style>">.scid-fruit { font-weight: 700; }
 .scid-quiet { display: none; }</style>
 <div class="scid-node scid-fruit ${ITEM}" data-open="${OPEN_FRUIT}" data-close="</div>">りんご</div>
 <div class="scid-node scid-fruit ${ITEM}" data-open="${OPEN_FRUIT}" data-close="</div>">みかん</div>
 <div class="scid-node scid-fruit scid-quiet scid-offscreen ${GHOST}" data-open="<div class=&quot;scid-fruit scid-quiet&quot;>" data-close="</div>">ぶどう</div>
 <div class="scid-node scid-fruit ${ITEM}" data-open="${OPEN_FRUIT}" data-close="</div>">もも</div>
-<script class="scid-node scid-offscreen ${GHOST}" data-open="<script>" data-close="</script>">/* 計測用 */</script>
+<script type="text/plain" class="scid-node scid-offscreen ${GHOST}" data-open="<script>" data-close="</script>">/* 計測用 */</script>
 <div class="scid-node scid-fruit ${ITEM}" data-open="${OPEN_FRUIT}" data-close="</div>">なし</div>`;
 
 export function ElementCountingDemo() {
