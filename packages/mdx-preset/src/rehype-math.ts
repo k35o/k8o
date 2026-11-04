@@ -68,10 +68,19 @@ const renderToHtml = (
 const isRenderedContent = (node: RootContent): node is Element | Text =>
   node.type === 'element' || node.type === 'text';
 
+// 別行の数式は狭い画面で横にスクロールする。中に操作できる要素の無いスクロールの箱は、
+// Safari ではキーボードで届かないので、Tab で止まれるようにする
+const focusableDisplay = (node: Element | Text): Element | Text =>
+  node.type === 'element' && hasClass(node, 'katex-display')
+    ? { ...node, properties: { ...node.properties, tabIndex: 0 } }
+    : node;
+
 const render = (source: MathSource, file: MessageSink): ElementContent[] =>
   fromHtmlIsomorphic(renderToHtml(source, file), {
     fragment: true,
-  }).children.filter(isRenderedContent);
+  })
+    .children.filter(isRenderedContent)
+    .map(focusableDisplay);
 
 export default function rehypeMath(): (tree: Root, file: MessageSink) => void {
   return (tree, file) => {
