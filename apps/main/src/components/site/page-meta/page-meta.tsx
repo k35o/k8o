@@ -1,5 +1,7 @@
 import type { FC } from 'react';
 
+import { SITE_OG_IMAGE_VERSION } from '@/components/site/og-image/site-og-image';
+
 const SITE_URL = 'https://k8o.me';
 const SITE_NAME = 'k8o';
 const SITE_DESCRIPTION = 'k8oの活動や制作物をまとめた個人サイト';
@@ -10,7 +12,10 @@ const OG_IMAGE = { type: 'image/png', width: '1200', height: '630' } as const;
 const absoluteUrl = (path: string): string =>
   path === '/' ? SITE_URL : `${SITE_URL}${path}`;
 
-export const SITE_OG_IMAGE = { path: '/og.png', alt: SITE_NAME } as const;
+export const SITE_OG_IMAGE = {
+  path: `/og.png?v=${SITE_OG_IMAGE_VERSION}`,
+  alt: SITE_NAME,
+} as const;
 
 type PageMetaProps = {
   title?: string;
