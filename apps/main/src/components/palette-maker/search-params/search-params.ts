@@ -33,7 +33,7 @@ export const paletteMakerState = definePageState('palette-maker', {
   }),
 });
 
-// 外に貼られたリンクの読みを apps/main の parseAsFloat と between にそろえる（?h=400 は 360、?h=12abc は 12、
+// 外に貼られたリンクの読みを nuqs の parseAsFloat と between にそろえる（?h=400 は 360、?h=12abc は 12、
 // ?h= は既定）
 const readFloat = (
   value: string,

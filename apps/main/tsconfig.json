@@ -10,16 +10,11 @@
     "allowImportingTsExtensions": true,
     "paths": {
       "@/*": ["./src/*"],
-      "@content/*": ["../main/src/content/*"],
-      "@playgrounds/*": ["../main/src/playgrounds/*"]
+      "@content/*": ["./src/content/*"],
+      "@playgrounds/*": ["./src/playgrounds/*"]
     },
     "types": ["node", "vite/client", "vitest/importMeta"],
-    "rootDirs": [
-      ".",
-      "./__generated__",
-      "../main/src/playgrounds",
-      "../main/__generated__/src/playgrounds"
-    ]
+    "rootDirs": [".", "./__generated__"]
   },
   "include": [
     "**/*.ts",

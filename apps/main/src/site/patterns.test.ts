@@ -9,7 +9,7 @@ import { ARTICLE, SLUG } from './patterns';
 const wholly = (pattern: string): RegExp => new RegExp(`^${pattern}$`, 'u');
 
 const articleSlugs = readdirSync(
-  fileURLToPath(new URL('../../../main/src/content/blog', import.meta.url)),
+  fileURLToPath(new URL('../content/blog', import.meta.url)),
 ).filter((name) => !name.startsWith('.'));
 
 describe('SLUG', () => {

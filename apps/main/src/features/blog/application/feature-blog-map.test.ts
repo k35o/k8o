@@ -7,7 +7,7 @@ import { getFeatureBlogMap } from './feature-blog-map';
 vi.mock('./blog', () => ({ findBlogMetadata: vi.fn() }));
 vi.mock('./blogs', () => ({ getBlogs: vi.fn() }));
 
-// main-k8ordo の getBlogs は MDX の無い記事を外し、frontmatter の題などを持つ
+// getBlogs は MDX の無い記事を外し、frontmatter の題などを持つ
 const blogRow = (id: number, slug: string) => ({
   id,
   slug,

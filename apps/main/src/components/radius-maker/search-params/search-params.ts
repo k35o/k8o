@@ -61,7 +61,7 @@ export const radiusMakerState = definePageState('radius-maker', {
   }),
 });
 
-// 外に貼られたリンクの読みを apps/main の parseAsInteger と between にそろえる（?w=10 は 80、?w=100.7 は 100、
+// 外に貼られたリンクの読みを nuqs の parseAsInteger と between にそろえる（?w=10 は 80、?w=100.7 は 100、
 // ?w= は既定）
 const readSize = (value: string): number => {
   // oxlint-disable-next-line radix -- parseAsInteger と同じく radix を渡さず、0x100 を 256 と読む

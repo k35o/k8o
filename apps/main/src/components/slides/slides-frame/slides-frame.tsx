@@ -4,7 +4,7 @@ import type { FC, ReactNode } from 'react';
 
 import styles from './slides-frame.module.css';
 
-// apps/main では app/slides/layout.tsx が描く枠。layout.tsx に置くと、この CSS をどのページも読むので、
+// /slides の枠。layout.tsx に置くと、この CSS をどのページも読むので、
 // /slides と /slides/:slug のページが描く
 export const SlidesFrame: FC<{ children: ReactNode }> = ({ children }) => (
   <div className={styles.root}>

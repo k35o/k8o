@@ -23,7 +23,6 @@ catalog:
   '@k8ordo/ui': 2.1.0
   '@libsql/client': 0.18.0
   '@next/env': 16.4.5
-  '@next/mdx': 16.4.5
   '@storybook/addon-a11y': 10.6.5
   '@storybook/addon-docs': 10.6.5
   '@storybook/addon-mcp': '10.6.5'
@@ -71,7 +70,6 @@ minimumReleaseAgeExclude:
   # Next.js 16.4.5 のセキュリティ修正（2026-11-03 公開）。2026-11-10 に成熟したら消す
   - 'next@16.4.5'
   - '@next/env@16.4.5'
-  - '@next/mdx@16.4.5'
   - '@next/swc-darwin-arm64@16.4.5'
   - '@next/swc-darwin-x64@16.4.5'
   - '@next/swc-linux-arm64-gnu@16.4.5'

@@ -12,7 +12,7 @@ const rewrite = (search: string): string =>
     readingListState.parseUrl(new URLSearchParams(search)),
   );
 
-describe('readingListState の URL の読み（apps/main の nuqs と同じ）', () => {
+describe('readingListState の URL の読み（nuqs と同じ）', () => {
   describe('正常系', () => {
     it.each([
       ['', { q: '', source: [], sort: 'newest' }],

@@ -4,7 +4,7 @@ import type { FC, ReactNode } from 'react';
 
 import styles from './tags-frame.module.css';
 
-// apps/main では app/tags/layout.tsx が描く枠。layout.tsx に置くと、この CSS をどのページも読むので、
+// /tags の枠。layout.tsx に置くと、この CSS をどのページも読むので、
 // /tags と /tags/:id のページが描く
 export const TagsFrame: FC<{ children: ReactNode }> = ({ children }) => (
   <div className={styles.root}>

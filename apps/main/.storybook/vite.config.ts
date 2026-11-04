@@ -3,7 +3,7 @@ import { fileURLToPath } from 'node:url';
 import betterCssModules from '@better-css-modules/vite';
 import { defineConfig } from 'vite';
 
-import floor from '../../main/src/features/browser-support/infrastructure/browser-min-versions.json' with { type: 'json' };
+import floor from '../src/features/browser-support/infrastructure/browser-min-versions.json' with { type: 'json' };
 import { browserTargets } from '../src/site/browser-targets.ts';
 
 const targets = browserTargets(floor.minVersions);
@@ -15,7 +15,7 @@ export default defineConfig({
     alias: {
       '@': fileURLToPath(new URL('../src', import.meta.url)),
       '@playgrounds': fileURLToPath(
-        new URL('../../main/src/playgrounds', import.meta.url),
+        new URL('../src/playgrounds', import.meta.url),
       ),
     },
   },

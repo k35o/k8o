@@ -13,11 +13,11 @@ import remarkPreset from '@repo/mdx-preset/remark';
 import { defineConfig, runnerImport } from 'vite';
 import type { Plugin } from 'vite';
 
-import floor from '../main/src/features/browser-support/infrastructure/browser-min-versions.json' with { type: 'json' };
-import { playgroundIds } from '../main/src/playgrounds/ids.ts';
 import type * as blogs from './src/features/blog/application/blogs.ts';
+import floor from './src/features/browser-support/infrastructure/browser-min-versions.json' with { type: 'json' };
 import type * as slides from './src/features/slides/application/slides.ts';
 import type * as tags from './src/features/tags/application/tags.ts';
+import { playgroundIds } from './src/playgrounds/ids.ts';
 import { browserTargets } from './src/site/browser-targets.ts';
 import { katexCssGuard } from './src/site/katex-css-guard.ts';
 import type { BlogArticle } from './src/site/katex-css-guard.ts';
@@ -39,16 +39,12 @@ if (existsSync(envFile)) {
 
 const targets = browserTargets(floor.minVersions);
 
-const contentDir = fileURLToPath(
-  new URL('../main/src/content', import.meta.url),
-);
+const contentDir = fileURLToPath(new URL('./src/content', import.meta.url));
 
 const alias = {
   '@': fileURLToPath(new URL('./src', import.meta.url)),
   '@content': contentDir,
-  '@playgrounds': fileURLToPath(
-    new URL('../main/src/playgrounds', import.meta.url),
-  ),
+  '@playgrounds': fileURLToPath(new URL('./src/playgrounds', import.meta.url)),
 };
 
 // vercel() の規則は Vercel だけが当てる。server.headers は Vite 自身の応答にしか付かず、
@@ -108,8 +104,6 @@ const readSlideSlugs = async (): Promise<string[]> => {
 };
 
 export default defineConfig({
-  // 記事・デモ・public は写さず apps/main のものを読む
-  publicDir: fileURLToPath(new URL('../main/public', import.meta.url)),
   resolve: { alias },
   // @repo/helpers は in-source のテストを持つ。置き換えないとテストの本体が client のバンドルに残る
   define: { 'import.meta.vitest': 'undefined' },

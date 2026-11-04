@@ -7,11 +7,11 @@ import { blogPath } from './path';
 
 describe('blogPath', () => {
   describe('正常系', () => {
-    it('slugから、apps/main にあるブログ記事のMDXファイルパスを生成する', () => {
+    it('slugからブログ記事のMDXファイルパスを生成する', () => {
       const result = blogPath('test-slug');
 
       expect(result).toBe(
-        join(cwd(), '../main/src/content/blog/test-slug/article.mdx'),
+        join(cwd(), 'src/content/blog/test-slug/article.mdx'),
       );
     });
 
@@ -19,7 +19,7 @@ describe('blogPath', () => {
       const result = blogPath('feature-123');
 
       expect(result).toBe(
-        join(cwd(), '../main/src/content/blog/feature-123/article.mdx'),
+        join(cwd(), 'src/content/blog/feature-123/article.mdx'),
       );
     });
   });

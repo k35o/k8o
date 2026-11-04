@@ -28,6 +28,5 @@ export default defineMain({
     // 指定しないとアプリの vite.config.ts を読み、framework() と vercel() まで載る
     options: { builder: { viteConfigPath: '.storybook/vite.config.ts' } },
   },
-  // 記事・デモ・public は apps/main のものを読む（vite.config.ts の publicDir と同じ）
-  staticDirs: ['./public', '../../main/public'],
+  staticDirs: ['./public', '../public'],
 });

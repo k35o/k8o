@@ -10,8 +10,12 @@ export default defineConfig({
     alias: {
       '@': fileURLToPath(new URL('./src', import.meta.url)),
       '@playgrounds': fileURLToPath(
-        new URL('../main/src/playgrounds', import.meta.url),
+        new URL('./src/playgrounds', import.meta.url),
       ),
+    },
+    coverage: {
+      provider: 'v8',
+      changed: true,
     },
     projects: [
       {
@@ -34,19 +38,25 @@ export default defineConfig({
         },
       },
       {
-        // load-section の試験が apps/main のデモを読む。デモは apps/main の tsconfig（jsx: preserve）で
-        // 変換されるので JSX の変換を決め、@k8ordo/ui は CSS を import するので Node に読ませない
-        oxc: { jsx: { runtime: 'automatic' } },
         test: {
           name: { label: 'components test', color: 'white' },
+          // load-section の試験がたどる @k8ordo/ui の dist は CSS を import するので、Node に読ませず Vite で変換する
           server: { deps: { inline: ['@k8ordo/ui'] } },
           include: ['src/components/**/*.test.{ts,tsx}'],
         },
       },
       {
         test: {
-          name: { label: 'dependencies test', color: 'yellow' },
-          include: ['src/*.test.ts'],
+          name: { label: 'playgrounds test', color: 'yellow' },
+          include: ['src/playgrounds/**/*.test.ts'],
+          // sections.ts がたどる @k8ordo/ui の dist は CSS を import するので、Node に読ませず Vite で変換する
+          server: { deps: { inline: ['@k8ordo/ui'] } },
+        },
+      },
+      {
+        test: {
+          name: { label: 'scripts test', color: 'red' },
+          include: ['scripts/**/*.test.ts'],
         },
       },
       {
@@ -54,7 +64,6 @@ export default defineConfig({
         plugins: [
           storybookTest({
             storybookScript: 'pnpm storybook --ci',
-            storybookUrl: 'http://localhost:6007',
             configDir: fileURLToPath(new URL('./.storybook', import.meta.url)),
           }),
           vrt(),
