@@ -21,7 +21,6 @@ export default async function PlaygroundPage({
         image={{ path: `/playgrounds/${id}/og.png`, alt: 'Playgrounds' }}
         path={`/playgrounds/${id}`}
         title={section.title}
-        titleTemplate={false}
         twitterCard="summary_large_image"
       />
       <PlaygroundSectionView key={id} section={section} />

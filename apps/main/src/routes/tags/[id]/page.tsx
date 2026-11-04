@@ -32,8 +32,7 @@ export default async function TagPage({ params }: PageProps<'/tags/:id'>) {
         description={`「${tag.name}」タグに関連するブログやトークをまとめたページです。`}
         noindex={blogs.length + tag.talks.length === 0}
         path={`/tags/${tag.id.toString()}`}
-        title={tag.name}
-        titleTemplate={false}
+        title={`タグ: ${tag.name}`}
       />
       <TagsFrame>
         <JsonLd data={tagBreadcrumbJsonLd(tag)} />
