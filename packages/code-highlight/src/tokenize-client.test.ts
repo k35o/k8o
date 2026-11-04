@@ -33,6 +33,20 @@ describe('highlightCode (client)', () => {
       expect(dark.bg).not.toBe(light.bg);
       expect(dark.fg).not.toBe(light.fg);
     });
+
+    it.each([
+      { theme: 'one-light', color: '#5a5a60' },
+      { theme: 'plastic', color: '#939aa7' },
+    ] as const)(
+      '$theme のコメントは 4.5:1 に届く色 $color に差し替えて出す',
+      async ({ theme, color }) => {
+        const result = await highlightCode('// note', 'ts', theme);
+
+        expect(result.tokens.flat().map((token) => token.color)).toContain(
+          color,
+        );
+      },
+    );
   });
 
   describe('異常系', () => {

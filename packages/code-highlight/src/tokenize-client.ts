@@ -3,7 +3,7 @@ import type { HighlighterCore } from '@shikijs/core';
 import { createJavaScriptRegexEngine } from '@shikijs/engine-javascript';
 
 // 拡張子なしで import する（tokenize.ts と同じく consumer 側の型検査の都合）。
-import { CODE_SURFACE } from './theme';
+import { CODE_SURFACE, COLOR_REPLACEMENTS } from './theme';
 import type { HighlightedCode, HighlightTheme } from './tokenize';
 
 export type { HighlightedCode, HighlightTheme } from './tokenize';
@@ -43,9 +43,17 @@ export const highlightCode = async (
   const highlighter = await getHighlighter();
   let result;
   try {
-    result = highlighter.codeToTokens(code, { lang, theme });
+    result = highlighter.codeToTokens(code, {
+      lang,
+      theme,
+      colorReplacements: COLOR_REPLACEMENTS,
+    });
   } catch {
-    result = highlighter.codeToTokens(code, { lang: 'text', theme });
+    result = highlighter.codeToTokens(code, {
+      lang: 'text',
+      theme,
+      colorReplacements: COLOR_REPLACEMENTS,
+    });
   }
   return {
     tokens: result.tokens,

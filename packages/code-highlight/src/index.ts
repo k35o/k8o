@@ -1,6 +1,7 @@
 import rehypeShiki from '@shikijs/rehype';
 
 import { groupAdjacentCodeBlocks } from './group.ts';
+import { COLOR_REPLACEMENTS } from './theme.ts';
 import { annotateTransformer } from './transformer.ts';
 
 // ライトは one-light、ダークは従来の plastic。インラインstyleにはライト色を出し、
@@ -12,6 +13,7 @@ const rehypeCodeHighlight: typeof rehypeShiki = function () {
       light: 'one-light',
     },
     defaultColor: 'light',
+    colorReplacements: COLOR_REPLACEMENTS,
     transformers: [annotateTransformer()],
   });
   return async (tree, file) => {
