@@ -3,7 +3,32 @@ import { runInThisContext } from 'node:vm';
 
 import { describe, expect, it } from 'vitest';
 
-type GaWindow = {
+const GTAG_URL = 'https://www.googletagmanager.com/gtag/js?id=G-TEST';
+
+// ga-init.js が使う cloneNode と removeAttribute だけを持つ script。src への代入は Trusted Types の sink なので数える
+class FakeScript {
+  readonly srcAssignments: string[] = [];
+
+  constructor(readonly attributes: Map<string, string>) {}
+
+  get src(): string {
+    return this.attributes.get('src') ?? '';
+  }
+
+  set src(value: string) {
+    this.srcAssignments.push(value);
+  }
+
+  cloneNode(): FakeScript {
+    return new FakeScript(new Map(this.attributes));
+  }
+
+  removeAttribute(name: string): void {
+    this.attributes.delete(name);
+  }
+}
+
+type GaWindow = EventTarget & {
   dataLayer?: unknown[];
   location: { href: string };
   navigation?: EventTarget;
@@ -12,6 +37,17 @@ type GaWindow = {
 type GaDocument = {
   currentScript: { dataset: Record<string, string> };
   title: string;
+  readyState: DocumentReadyState;
+  getElementById: (id: string) => FakeScript | null;
+  head: { appendChild: (node: FakeScript) => void };
+};
+
+type Page = {
+  window: GaWindow;
+  document: GaDocument;
+  // layout が HTML に書く、type で止めた gtag.js の script
+  inert: FakeScript;
+  appended: FakeScript[];
 };
 
 const source = readFileSync(
@@ -24,21 +60,54 @@ const runGaInit = runInThisContext(
   `(function (window, document) {\n${source}\n})`,
 ) as (window: GaWindow, document: GaDocument) => void;
 
-const windowAt = (href: string, dataLayer?: unknown[]): GaWindow => ({
-  ...(dataLayer === undefined ? {} : { dataLayer }),
-  location: { href },
-  navigation: new EventTarget(),
-});
-
-const documentWith = (
-  dataset: Record<string, string>,
+const openPage = ({
+  href = 'https://k8o.me/',
   title = 'k8o',
-): GaDocument => ({ currentScript: { dataset }, title });
+  readyState = 'interactive',
+  dataLayer,
+  navigation = true,
+}: {
+  href?: string;
+  title?: string;
+  readyState?: DocumentReadyState;
+  dataLayer?: unknown[];
+  navigation?: boolean;
+} = {}): Page => {
+  const inert = new FakeScript(
+    new Map([
+      ['id', 'gtag-js'],
+      ['src', GTAG_URL],
+      ['type', 'text/plain'],
+    ]),
+  );
+  const appended: FakeScript[] = [];
+  const window: GaWindow = Object.assign(new EventTarget(), {
+    ...(dataLayer === undefined ? {} : { dataLayer }),
+    location: { href },
+    ...(navigation ? { navigation: new EventTarget() } : {}),
+  });
+  const document: GaDocument = {
+    currentScript: { dataset: { gaId: 'G-TEST' } },
+    title,
+    readyState,
+    getElementById: (id) => (id === 'gtag-js' ? inert : null),
+    head: {
+      appendChild: (node) => {
+        appended.push(node);
+      },
+    },
+  };
+  return { window, document, inert, appended };
+};
+
+const load = ({ window, document }: Page): void => {
+  document.readyState = 'complete';
+  window.dispatchEvent(new Event('load'));
+};
 
 // router が URL を書き換え、新しいページを描いたあとで Navigation API が navigatesuccess を送る
 const finishNavigation = (
-  window: GaWindow,
-  document: GaDocument,
+  { window, document }: Page,
   href: string,
   title: string,
 ): void => {
@@ -55,52 +124,80 @@ const pageViewsOf = (dataLayer: unknown[] | undefined): unknown[] =>
     .filter(([command, name]) => command === 'event' && name === 'page_view')
     .map(([, , params]) => params);
 
+const CONFIG = [
+  'config',
+  'G-TEST',
+  { cookie_flags: 'secure;samesite=lax', send_page_view: false },
+];
+
 describe('ga-init.js', () => {
   describe('正常系', () => {
-    it('script の data-ga-id の ID で計測を始めるコマンドを、dataLayer に積む', () => {
-      const window = windowAt('https://k8o.me/');
+    it('script の data-ga-id の ID で計測を始め、読み込んだページの URL と題で page_view を積む', () => {
+      const page = openPage({
+        href: 'https://k8o.me/blog',
+        title: 'Blog | k8o',
+      });
 
-      runGaInit(window, documentWith({ gaId: 'G-TEST' }));
+      runGaInit(page.window, page.document);
 
-      expect(commandsOf(window.dataLayer)).toStrictEqual([
+      expect(commandsOf(page.window.dataLayer)).toStrictEqual([
         ['js', expect.any(Date)],
-        ['config', 'G-TEST', { cookie_flags: 'secure;samesite=lax' }],
+        CONFIG,
+        [
+          'event',
+          'page_view',
+          { page_location: 'https://k8o.me/blog', page_title: 'Blog | k8o' },
+        ],
       ]);
     });
 
     it('GA の cookie に Secure と SameSite=Lax を付けるよう、config に cookie_flags を渡す', () => {
-      const window = windowAt('https://k8o.me/');
+      const page = openPage();
 
-      runGaInit(window, documentWith({ gaId: 'G-TEST' }));
+      runGaInit(page.window, page.document);
 
-      const config = commandsOf(window.dataLayer).find(
+      const config = commandsOf(page.window.dataLayer).find(
         ([command]) => command === 'config',
       );
-      expect(config?.[2]).toStrictEqual({
-        cookie_flags: 'secure;samesite=lax',
-      });
+      expect(config?.[2]).toHaveProperty('cookie_flags', 'secure;samesite=lax');
     });
 
     it('gtag.js が読めるよう、コマンドを arguments のオブジェクトで積む', () => {
-      const window = windowAt('https://k8o.me/');
+      const page = openPage();
 
-      runGaInit(window, documentWith({ gaId: 'G-TEST' }));
+      runGaInit(page.window, page.document);
 
       expect(
-        window.dataLayer?.map((command) =>
+        page.window.dataLayer?.map((command) =>
           Object.prototype.toString.call(command),
         ),
-      ).toStrictEqual(['[object Arguments]', '[object Arguments]']);
+      ).toStrictEqual([
+        '[object Arguments]',
+        '[object Arguments]',
+        '[object Arguments]',
+      ]);
+    });
+
+    it('load のあとに、HTML に書いた gtag.js の script を写し、id と type を外して head に足す', () => {
+      const page = openPage();
+      runGaInit(page.window, page.document);
+
+      load(page);
+
+      expect(page.appended.map((script) => script.attributes)).toStrictEqual([
+        new Map([['src', GTAG_URL]]),
+      ]);
+      expect(page.inert.attributes.get('type')).toBe('text/plain');
     });
 
     it('ページの替わる遷移が終わると、遷移先の URL と題、遷移元の URL で page_view を積む', () => {
-      const window = windowAt('https://k8o.me/');
-      const document = documentWith({ gaId: 'G-TEST' });
-      runGaInit(window, document);
+      const page = openPage();
+      runGaInit(page.window, page.document);
 
-      finishNavigation(window, document, 'https://k8o.me/blog', 'Blog | k8o');
+      finishNavigation(page, 'https://k8o.me/blog', 'Blog | k8o');
 
-      expect(pageViewsOf(window.dataLayer)).toStrictEqual([
+      expect(pageViewsOf(page.window.dataLayer)).toStrictEqual([
+        { page_location: 'https://k8o.me/', page_title: 'k8o' },
         {
           page_location: 'https://k8o.me/blog',
           page_referrer: 'https://k8o.me/',
@@ -110,14 +207,16 @@ describe('ga-init.js', () => {
     });
 
     it('戻る・進むでページが替わったときも、遷移ごとに積む', () => {
-      const window = windowAt('https://k8o.me/blog');
-      const document = documentWith({ gaId: 'G-TEST' });
-      runGaInit(window, document);
+      const page = openPage({
+        href: 'https://k8o.me/blog',
+        title: 'Blog | k8o',
+      });
+      runGaInit(page.window, page.document);
 
-      finishNavigation(window, document, 'https://k8o.me/about', 'About | k8o');
-      finishNavigation(window, document, 'https://k8o.me/blog', 'Blog | k8o');
+      finishNavigation(page, 'https://k8o.me/about', 'About | k8o');
+      finishNavigation(page, 'https://k8o.me/blog', 'Blog | k8o');
 
-      expect(pageViewsOf(window.dataLayer)).toStrictEqual([
+      expect(pageViewsOf(page.window.dataLayer).slice(1)).toStrictEqual([
         {
           page_location: 'https://k8o.me/about',
           page_referrer: 'https://k8o.me/blog',
@@ -133,49 +232,83 @@ describe('ga-init.js', () => {
   });
 
   describe('エッジケース', () => {
-    it('読み込んだときは config が数えるので、page_view を積まない', () => {
-      const window = windowAt('https://k8o.me/blog');
+    it('load の前には gtag.js を足さない', () => {
+      const page = openPage({ readyState: 'interactive' });
 
-      runGaInit(window, documentWith({ gaId: 'G-TEST' }));
+      runGaInit(page.window, page.document);
 
-      expect(pageViewsOf(window.dataLayer)).toStrictEqual([]);
+      expect(page.appended).toStrictEqual([]);
+    });
+
+    it('load のあとに流れたときは、待たずに gtag.js を足す', () => {
+      const page = openPage({ readyState: 'complete' });
+
+      runGaInit(page.window, page.document);
+
+      expect(page.appended).toHaveLength(1);
+    });
+
+    it('Trusted Types の sink を通らないよう、gtag.js の script の src に代入しない', () => {
+      const page = openPage();
+      runGaInit(page.window, page.document);
+
+      load(page);
+
+      expect(page.appended[0]?.srcAssignments).toStrictEqual([]);
+    });
+
+    it('gtag.js を足す前に積んだコマンドと遷移の page_view は、足したあとも同じ dataLayer に順に残る', () => {
+      const page = openPage();
+      runGaInit(page.window, page.document);
+      const { dataLayer } = page.window;
+
+      finishNavigation(page, 'https://k8o.me/blog', 'Blog | k8o');
+      load(page);
+
+      expect(page.window.dataLayer).toBe(dataLayer);
+      expect(commandsOf(dataLayer)).toStrictEqual([
+        ['js', expect.any(Date)],
+        CONFIG,
+        [
+          'event',
+          'page_view',
+          { page_location: 'https://k8o.me/', page_title: 'k8o' },
+        ],
+        [
+          'event',
+          'page_view',
+          {
+            page_location: 'https://k8o.me/blog',
+            page_referrer: 'https://k8o.me/',
+            page_title: 'Blog | k8o',
+          },
+        ],
+      ]);
     });
 
     it('パスが同じまま search や hash だけが替わった遷移は数えない', () => {
-      const window = windowAt('https://k8o.me/blog');
-      const document = documentWith({ gaId: 'G-TEST' });
-      runGaInit(window, document);
+      const page = openPage({
+        href: 'https://k8o.me/blog',
+        title: 'Blog | k8o',
+      });
+      runGaInit(page.window, page.document);
 
-      finishNavigation(
-        window,
-        document,
-        'https://k8o.me/blog?q=css',
-        'Blog | k8o',
-      );
-      finishNavigation(
-        window,
-        document,
-        'https://k8o.me/blog?q=css#2024',
-        'Blog | k8o',
-      );
+      finishNavigation(page, 'https://k8o.me/blog?q=css', 'Blog | k8o');
+      finishNavigation(page, 'https://k8o.me/blog?q=css#2024', 'Blog | k8o');
 
-      expect(pageViewsOf(window.dataLayer)).toStrictEqual([]);
+      expect(pageViewsOf(page.window.dataLayer)).toStrictEqual([
+        { page_location: 'https://k8o.me/blog', page_title: 'Blog | k8o' },
+      ]);
     });
 
     it('search が替わったあとに別のページへ移ると、替わったあとの URL を遷移元にする', () => {
-      const window = windowAt('https://k8o.me/blog');
-      const document = documentWith({ gaId: 'G-TEST' });
-      runGaInit(window, document);
+      const page = openPage({ href: 'https://k8o.me/blog' });
+      runGaInit(page.window, page.document);
 
-      finishNavigation(
-        window,
-        document,
-        'https://k8o.me/blog?q=css',
-        'Blog | k8o',
-      );
-      finishNavigation(window, document, 'https://k8o.me/about', 'About | k8o');
+      finishNavigation(page, 'https://k8o.me/blog?q=css', 'Blog | k8o');
+      finishNavigation(page, 'https://k8o.me/about', 'About | k8o');
 
-      expect(pageViewsOf(window.dataLayer)).toStrictEqual([
+      expect(pageViewsOf(page.window.dataLayer).slice(1)).toStrictEqual([
         {
           page_location: 'https://k8o.me/about',
           page_referrer: 'https://k8o.me/blog?q=css',
@@ -184,29 +317,41 @@ describe('ga-init.js', () => {
       ]);
     });
 
-    it('Navigation API の無いブラウザでも、計測を始めるコマンドまでは積む', () => {
-      const window: GaWindow = { location: { href: 'https://k8o.me/' } };
+    it('Navigation API の無いブラウザでも、読み込んだページの page_view までを積み、load のあとに gtag.js を足す', () => {
+      const page = openPage({ navigation: false });
 
-      runGaInit(window, documentWith({ gaId: 'G-TEST' }));
+      runGaInit(page.window, page.document);
+      load(page);
 
-      expect(commandsOf(window.dataLayer)).toStrictEqual([
+      expect(commandsOf(page.window.dataLayer)).toStrictEqual([
         ['js', expect.any(Date)],
-        ['config', 'G-TEST', { cookie_flags: 'secure;samesite=lax' }],
+        CONFIG,
+        [
+          'event',
+          'page_view',
+          { page_location: 'https://k8o.me/', page_title: 'k8o' },
+        ],
       ]);
+      expect(page.appended).toHaveLength(1);
     });
 
-    it('gtag.js が先に読まれて dataLayer があっても、その配列の後ろに積む', () => {
+    it('dataLayer が先にあっても、その配列の後ろに積む', () => {
       const queued = { event: 'gtm.js' };
       const dataLayer: unknown[] = [queued];
-      const window = windowAt('https://k8o.me/', dataLayer);
+      const page = openPage({ dataLayer });
 
-      runGaInit(window, documentWith({ gaId: 'G-TEST' }));
+      runGaInit(page.window, page.document);
 
-      expect(window.dataLayer).toBe(dataLayer);
+      expect(page.window.dataLayer).toBe(dataLayer);
       expect(dataLayer[0]).toBe(queued);
       expect(commandsOf(dataLayer.slice(1))).toStrictEqual([
         ['js', expect.any(Date)],
-        ['config', 'G-TEST', { cookie_flags: 'secure;samesite=lax' }],
+        CONFIG,
+        [
+          'event',
+          'page_view',
+          { page_location: 'https://k8o.me/', page_title: 'k8o' },
+        ],
       ]);
     });
   });

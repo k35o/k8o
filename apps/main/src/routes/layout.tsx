@@ -82,9 +82,13 @@ export default function RootLayout({ children }: LayoutProps<'/'>) {
         )}
         {gaId !== undefined && gaId !== '' && (
           <>
+            {/* type で止めて取りに行かせず、ga-init.js が load の後に写して type を外す。async で React の資源にすると、
+                404 で描き直すときに作り直さず（Trusted Types の sink を通さず）、今ある要素を使う */}
             <script
               async
+              id="gtag-js"
               src={`https://www.googletagmanager.com/gtag/js?id=${gaId}`}
+              type="text/plain"
             />
             <script async data-ga-id={gaId} src="/ga-init.js" />
           </>
