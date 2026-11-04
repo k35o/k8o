@@ -9,6 +9,7 @@ export default async function NotificationsPage() {
     <>
       <PageMeta
         description="ReadingsとBrowser Supportの更新をプッシュ通知で受け取れます。受け取った通知の履歴も確認できます。"
+        noindex
         path="/notifications"
         title="通知"
       />
