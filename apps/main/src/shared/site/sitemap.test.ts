@@ -245,6 +245,20 @@ describe('generateSitemap', () => {
   });
 
   describe('エッジケース', () => {
+    it('公開済みの記事もトークも持たないタグは載せないべき', async () => {
+      vi.mocked(getTags).mockResolvedValue([
+        tag({ id: 147, blogCount: 0, talkCount: 0 }),
+        tag({ id: 5, blogCount: 0, talkCount: 1 }),
+        tag({ id: 8, blogCount: 2, talkCount: 0 }),
+      ]);
+
+      const xml = await generateSitemap();
+
+      expect(
+        locsOf(xml).filter((loc) => loc.startsWith('https://k8o.me/tags/')),
+      ).toStrictEqual(['https://k8o.me/tags/5', 'https://k8o.me/tags/8']);
+    });
+
     it('記事とデッキが0件のとき、トップ・/blog・/slidesにlastmodを書かないべき', async () => {
       const xml = await generateSitemap();
 

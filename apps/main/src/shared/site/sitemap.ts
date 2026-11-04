@@ -71,7 +71,9 @@ export async function generateSitemap(): Promise<string> {
       lastmod: toIsoString(slide.updatedAt),
     })),
     { loc: `${SITE_URL}/tags` },
-    ...tags.map((tag) => ({ loc: `${SITE_URL}/tags/${tag.id.toString()}` })),
+    ...tags
+      .filter((tag) => tag.blogCount + tag.talkCount > 0)
+      .map((tag) => ({ loc: `${SITE_URL}/tags/${tag.id.toString()}` })),
     ...playgroundSections.map((section) => ({
       loc: `${SITE_URL}/playgrounds/${section.id}`,
     })),
