@@ -27,9 +27,9 @@ describe('SECURITY_HEADERS', () => {
       );
     });
 
-    it('自分のオリジンのほかに GA と api にだけ接続する', () => {
+    it('自分のオリジンのほかに GA のタグと計測と api にだけ接続する', () => {
       expect(directive(csp, 'connect-src')).toBe(
-        "connect-src 'self' https://www.google-analytics.com https://*.google-analytics.com https://*.analytics.google.com https://api.k8o.me",
+        "connect-src 'self' https://www.googletagmanager.com https://www.google-analytics.com https://*.google-analytics.com https://*.analytics.google.com https://api.k8o.me",
       );
     });
 
@@ -68,7 +68,7 @@ describe('DEV_SECURITY_HEADERS', () => {
 
     it('手元の api にも接続する', () => {
       expect(directive(devCsp, 'connect-src')).toBe(
-        "connect-src 'self' https://www.google-analytics.com https://*.google-analytics.com https://*.analytics.google.com https://api.k8o.me https://api.k8o.localhost:* https://*.api.k8o.localhost:*",
+        "connect-src 'self' https://www.googletagmanager.com https://www.google-analytics.com https://*.google-analytics.com https://*.analytics.google.com https://api.k8o.me https://api.k8o.localhost:* https://*.api.k8o.localhost:*",
       );
     });
   });

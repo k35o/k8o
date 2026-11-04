@@ -9,7 +9,7 @@ const securityHeaders = (isDev: boolean): Readonly<Record<string, string>> => ({
     "img-src 'self' https: blob: data:",
     "font-src 'self'",
     "worker-src 'self' blob:",
-    `connect-src 'self' https://www.google-analytics.com https://*.google-analytics.com https://*.analytics.google.com https://api.k8o.me${isDev ? ' https://api.k8o.localhost:* https://*.api.k8o.localhost:*' : ''}`,
+    `connect-src 'self' https://www.googletagmanager.com https://www.google-analytics.com https://*.google-analytics.com https://*.analytics.google.com https://api.k8o.me${isDev ? ' https://api.k8o.localhost:* https://*.api.k8o.localhost:*' : ''}`,
     "frame-src 'self' https://codepen.io https://www.googletagmanager.com https://vercel.live",
     "object-src 'none'",
     "base-uri 'self'",
