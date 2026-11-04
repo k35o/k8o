@@ -1,6 +1,6 @@
 import { ListIcon } from '@k8ordo/ui';
 import { HttpResponse, http } from 'msw/http';
-import { expect, fn, screen, userEvent, waitFor } from 'storybook/test';
+import { expect, fn, screen, userEvent, waitFor, within } from 'storybook/test';
 
 import type { ReadingList } from '@/features/reading-list/interface/queries';
 
@@ -188,6 +188,20 @@ export const OpenWithUrlValues = meta.story({
     await expect(screen.getByRole('combobox', { name: '並び順' })).toHaveValue(
       'oldest',
     );
+  },
+});
+
+// 正常系: ドロワーの見出しは Drawer の題の「絞り込み」1 つだけで、絞り込みの欄の見出しを重ねない
+export const DrawerHeading = meta.story({
+  play: async ({ canvas }) => {
+    await userEvent.click(canvas.getByRole('button', { name: '絞り込み' }));
+    const drawer = await screen.findByRole('dialog', { name: '絞り込み' });
+
+    await expect(
+      within(drawer)
+        .getAllByRole('heading')
+        .map((heading) => heading.textContent),
+    ).toStrictEqual(['絞り込み']);
   },
 });
 

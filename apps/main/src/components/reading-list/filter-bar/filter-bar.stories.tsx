@@ -52,6 +52,17 @@ export const FilterHeading = meta.story({
   },
 });
 
+// 正常系: 題を自分で出す枠（Drawer）に入れるときは、見出しを外して欄だけを出す
+export const WithoutHeading = meta.story({
+  args: { showHeading: false },
+  play: async ({ canvas }) => {
+    await expect(canvas.queryByRole('heading')).not.toBeInTheDocument();
+    await expect(
+      canvas.getByRole('textbox', { name: '検索' }),
+    ).toBeInTheDocument();
+  },
+});
+
 // 正常系: 選択済みソースが削除可能なチップとして表示される
 export const WithSelectedSources = meta.story({
   args: {

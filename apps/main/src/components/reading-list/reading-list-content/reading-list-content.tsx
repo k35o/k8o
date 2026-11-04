@@ -196,7 +196,7 @@ export const ReadingListContent: FC<{
         }}
         title="絞り込み"
       >
-        <FilterBar {...filterBarProps} />
+        <FilterBar {...filterBarProps} showHeading={false} />
       </Drawer>
     </div>
   );

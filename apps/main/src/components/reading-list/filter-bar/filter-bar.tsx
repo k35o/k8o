@@ -29,6 +29,7 @@ type Props = {
   onSortChange: (value: SortOrder) => void;
   sourceIds: number[];
   onSourceChange: (ids: number[]) => void;
+  showHeading?: boolean;
 };
 
 export const FilterBar: FC<Props> = ({
@@ -39,6 +40,7 @@ export const FilterBar: FC<Props> = ({
   onSortChange,
   sourceIds,
   onSourceChange,
+  showHeading = true,
 }) => {
   const sourceOptions = sources
     .filter(
@@ -51,7 +53,7 @@ export const FilterBar: FC<Props> = ({
 
   return (
     <div className={styles.root}>
-      <Heading level="h3">絞り込み</Heading>
+      {showHeading && <Heading level="h3">絞り込み</Heading>}
       <FormControl
         label="検索"
         renderInput={(props) => (
