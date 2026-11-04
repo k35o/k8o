@@ -70,7 +70,7 @@ CSS.highlights.set('my-highlight', highlight);
 
 これで完了です。指定したテキスト範囲がハイライトされ、スタイルが適用されます。
 
-<PlaygroundEmbed demo="基本的なハイライト" sectionId="highlight" />
+<PlaygroundEmbed demo="基本的なハイライト" headingLevel="h4" sectionId="highlight" />
 
 ## APIへの理解を深める
 
@@ -140,7 +140,7 @@ console.log(defaultPriorityHighlight.priority); // 0
 
 `priority`のデフォルトは0です。上記の例では、`highPriorityHighlight`が最も優先され、次に`lowPriorityHighlight`、最後に`defaultPriorityHighlight`が適用されます。
 
-<PlaygroundEmbed demo="優先度ベースハイライト" sectionId="highlight" />
+<PlaygroundEmbed demo="優先度ベースハイライト" headingLevel="h6" sectionId="highlight" />
 
 上記の例では、`Imagination`の部分に3つのハイライトを定義しています。一つは優先度1で青色、もう一つは優先度1で黄色、最後は優先度0で赤色です。
 
@@ -161,7 +161,7 @@ spellErrorHighlight.type = 'spelling-error';
 
 `highlight`には特別な意味がありません。`spelling-error`はスペルミス、`grammar-error`は文法エラーを意味します。
 
-<PlaygroundEmbed demo="スペリング・文法エラーハイライト" sectionId="highlight" />
+<PlaygroundEmbed demo="スペリング・文法エラーハイライト" headingLevel="h6" sectionId="highlight" />
 
 ### HighlightRegistry
 

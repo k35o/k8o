@@ -4,14 +4,18 @@ import type { FC, PropsWithChildren } from 'react';
 
 import styles from './playground.module.css';
 
+export type PlaygroundHeadingLevel = 'h2' | 'h3' | 'h4' | 'h5' | 'h6';
+
 type Props = PropsWithChildren<{
   title: string;
+  headingLevel?: PlaygroundHeadingLevel | undefined;
   description?: string | undefined;
   href?: string | undefined;
 }>;
 
 export const Playground: FC<Props> = ({
   title,
+  headingLevel: Title = 'h2',
   description,
   href,
   children,
@@ -24,7 +28,7 @@ export const Playground: FC<Props> = ({
             <FlaskIcon size="sm" />
             Playground
           </span>
-          <h3 className={styles.title}>{title}</h3>
+          <Title className={styles.title}>{title}</Title>
           {href !== undefined && (
             <a
               aria-label={`Playgroundページで開く: ${href}`}
