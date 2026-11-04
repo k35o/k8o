@@ -50,12 +50,14 @@ describe('securityHeaders', () => {
       );
     });
 
-    it('Trusted Types は Report-Only でだけ縛る', () => {
+    it('Trusted Types は Report-Only でだけ縛り、生の文字列を渡す sink とポリシーを作るものを報告する', () => {
+      expect(directive(csp, 'require-trusted-types-for')).toBeUndefined();
       expect(directive(csp, 'trusted-types')).toBeUndefined();
       expect(
         directivesOf(production['Content-Security-Policy-Report-Only']),
       ).toStrictEqual([
         "require-trusted-types-for 'script'",
+        "trusted-types 'none'",
         'report-to csp-endpoint',
       ]);
     });

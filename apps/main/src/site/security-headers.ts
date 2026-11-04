@@ -28,9 +28,11 @@ export const securityHeaders = (
       // dev では付けない（Chromium は localhost を例外扱いするので気づきにくい）
       ...(isDev ? [] : ['upgrade-insecure-requests']),
     ]),
-    // 強制すると、生の文字列を渡す sink が止まる。sink は Report-Only でだけ縛り、違反を集める
+    // 強制すると、生の文字列を渡す sink が止まる。sink とポリシーを作るものは Report-Only でだけ縛り、
+    // 違反を集める
     'Content-Security-Policy-Report-Only': toHeaderValue([
       "require-trusted-types-for 'script'",
+      "trusted-types 'none'",
       'report-to csp-endpoint',
     ]),
     // preview と dev のレポートは、api が Origin を許可しないので受け付けられない
