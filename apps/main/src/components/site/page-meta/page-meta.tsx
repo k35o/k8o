@@ -74,7 +74,7 @@ export const PageMeta: FC<PageMetaProps> = ({
       )}
       <meta content={url} property="og:url" />
       <meta content={SITE_NAME} property="og:site_name" />
-      <meta content="ja" property="og:locale" />
+      <meta content="ja_JP" property="og:locale" />
       <meta content={imageUrl} property="og:image" />
       <meta content={OG_IMAGE.type} property="og:image:type" />
       <meta content={OG_IMAGE.width} property="og:image:width" />

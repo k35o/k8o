@@ -81,7 +81,7 @@ describe('PageMeta', () => {
 
       expect(metaOf(tags, 'property', 'og:url')).toBe('https://k8o.me/about');
       expect(metaOf(tags, 'property', 'og:site_name')).toBe('k8o');
-      expect(metaOf(tags, 'property', 'og:locale')).toBe('ja');
+      expect(metaOf(tags, 'property', 'og:locale')).toBe('ja_JP');
       expect(metaOf(tags, 'property', 'og:type')).toBe('website');
       expect(metaOf(tags, 'name', 'twitter:card')).toBe('summary');
     });
