@@ -63,6 +63,21 @@ const latest: ReadingList = {
   sources: buildTime.sources,
 };
 
+// 初めの描画で先頭だけを描く件数より多い
+const series: ReadingList = {
+  articles: Array.from({ length: 30 }, (_, index) => ({
+    id: 100 + index,
+    title: `連載 第${String(index + 1)}回`,
+    url: `https://zenn.dev/example/articles/series-${String(index + 1)}`,
+    publishedAt: new Date(Date.UTC(2026, 9, 30 - index)).toISOString(),
+    imageUrl: null,
+    description: null,
+    summary: null,
+    source: zenn,
+  })),
+  sources: buildTime.sources,
+};
+
 const requested = fn();
 
 const meta = preview.meta({
@@ -135,6 +150,24 @@ export const FiltersReplacedArticles = meta.story({
     await expect(
       canvas.queryByText('TanStack Routerで型安全なルーティング'),
     ).not.toBeInTheDocument();
+  },
+});
+
+export const RendersAllArticles = meta.story({
+  args: { readingList: series },
+  play: async ({ canvas }) => {
+    await expect(await canvas.findByText('連載 第30回')).toBeInTheDocument();
+    await expect(canvas.getAllByRole('link')).toHaveLength(30);
+    await expect(canvas.getByText('30件の記事')).toBeInTheDocument();
+  },
+});
+
+export const SearchBeyondFirstPaint = meta.story({
+  args: { readingList: series },
+  parameters: { query: 'q=第29回' },
+  play: async ({ canvas }) => {
+    await expect(await canvas.findByText('連載 第29回')).toBeInTheDocument();
+    await expect(canvas.getByText('1件の記事')).toBeInTheDocument();
   },
 });
 

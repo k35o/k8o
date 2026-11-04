@@ -2,7 +2,13 @@
 
 import { useAppState } from '@k8ordo/state';
 import { Button, Card, Drawer, SubscribeIcon } from '@k8ordo/ui';
-import { useCallback, useMemo, useState } from 'react';
+import {
+  startTransition,
+  useCallback,
+  useEffect,
+  useMemo,
+  useState,
+} from 'react';
 import type { FC, ReactNode } from 'react';
 
 import type { ReadingList } from '@/features/reading-list/interface/queries';
@@ -21,6 +27,29 @@ import styles from './reading-list-content.module.css';
 
 const loadReadingList = (): Promise<ReadingList | null> =>
   readOrNull(publicApi.public['reading-list'].$get());
+
+const FIRST_PAINT_COUNT = 20;
+const BATCH_COUNT = 50;
+
+// 戻る・進むでは、ルーターが描いた直後に前のスクロールの位置へ戻すので、全件を一度に描いて高さをそろえておく
+const isTraversing = (): boolean =>
+  navigation.transition?.navigationType === 'traverse';
+
+// 数百件を一度に描くと、DOM を作るのも並べるのも 1 つの長いタスクになる。初めは画面を埋める先頭だけを描き、
+// 描き終えるたびに次の件数を足して、残りを短いタスクに分けて描く
+const useShownCount = (total: number): number => {
+  const [count, setCount] = useState(() =>
+    isTraversing() ? Number.POSITIVE_INFINITY : FIRST_PAINT_COUNT,
+  );
+  useEffect(() => {
+    if (count < total) {
+      startTransition(() => {
+        setCount((current) => current + BATCH_COUNT);
+      });
+    }
+  }, [count, total]);
+  return count;
+};
 
 export const ReadingListContent: FC<{
   readingList: ReadingList;
@@ -80,6 +109,9 @@ export const ReadingListContent: FC<{
       return sortOrder === 'oldest' ? -diff : diff;
     });
   }, [articles, query, sourceIds, sortOrder]);
+
+  const shownCount = useShownCount(filteredArticles.length);
+  const shownArticles = filteredArticles.slice(0, shownCount);
 
   const articleCountBySource = new Map<number, number>();
   for (const article of articles) {
@@ -142,7 +174,7 @@ export const ReadingListContent: FC<{
           </div>
         ) : (
           <div className={styles.list}>
-            {filteredArticles.map((article) => (
+            {shownArticles.map((article) => (
               <ReadingCard
                 description={article.description}
                 imageUrl={article.imageUrl}
