@@ -4,13 +4,22 @@ import { href } from '@k8ordo/framework';
 import { Anchor, Button } from '@k8ordo/ui';
 import type { FC } from 'react';
 
+import notFound640 from './404.640w.avif';
+import notFound960 from './404.960w.avif';
 import notFoundImage from './404.avif';
 
 import styles from './not-found.module.css';
 
 export const NotFound: FC = () => (
   <div className={styles.root}>
-    <img alt="404 Not Found" height={720} src={notFoundImage} width={1280} />
+    <img
+      alt="404 Not Found"
+      height={720}
+      sizes="(width >= 82rem) 80rem, calc(100vw - 2rem)"
+      src={notFoundImage}
+      srcSet={`${notFound640} 640w, ${notFound960} 960w, ${notFoundImage} 1280w`}
+      width={1280}
+    />
     <Button
       renderItem={({
         children,
