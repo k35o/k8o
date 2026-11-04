@@ -18,6 +18,20 @@ export const BEFORE_FILES: readonly VercelRoute[] = [
     status: 308,
     headers: { Location: '/$1' },
   },
+  // 下の書き換えより前に置くので、書き換えの行き先（/blog/<slug>/article.md・/index.md）には
+  // 当たらない。index.html の転送も、空の区間を許さない形で外のオリジンへ送らない
+  { src: '^/index\\.html$', status: 308, headers: { Location: '/' } },
+  {
+    src: '^/((?:[^/]+/)*[^/]+)/index\\.html$',
+    status: 308,
+    headers: { Location: '/$1' },
+  },
+  { src: '^/404\\.html$', dest: '/404.html', status: 404 },
+  {
+    src: `^/(?:index|not-found|blog/${SLUG}/article)\\.md$`,
+    dest: '/not-found.md',
+    status: 404,
+  },
   // Accept で出し分ける URL（/ と記事）だけに付ける
   {
     src: `^/(?:blog/${ARTICLE})?$`,
