@@ -1,5 +1,7 @@
 import { describe, expect, it } from 'vitest';
 
+import { articleMarkdownHref } from '@/components/blog/blog-layout/article-markdown-href';
+
 import { BEFORE_NOT_FOUND, beforeFiles } from './vercel-routes';
 
 const BEFORE_FILES = beforeFiles('production');
@@ -61,7 +63,7 @@ describe('vercel() の規則', () => {
       });
     });
 
-    it.each(['/index.md', '/not-found.md', '/blog/abs-sign/article.md'])(
+    it.each(['/index.md', '/not-found.md'])(
       '%s を名前で開くと、markdown の 404 で答える',
       (path) => {
         expect(answerOf(path)).toStrictEqual({
@@ -70,6 +72,13 @@ describe('vercel() の規則', () => {
         });
       },
     );
+
+    it('記事の「Markdownをコピー」が取る URL は、記事の markdown を 200 で返す', () => {
+      expect(answerOf(articleMarkdownHref('abs-sign'), '*/*')).toStrictEqual({
+        status: 200,
+        file: '/blog/abs-sign/article.md',
+      });
+    });
 
     it('記事の .md の URL は、記事の markdown に書き換える', () => {
       expect(answerOf('/blog/abs-sign.md')).toStrictEqual({

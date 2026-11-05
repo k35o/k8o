@@ -21,8 +21,8 @@ export const beforeFiles = (
     status: 308,
     headers: { Location: '/$1' },
   },
-  // 下の書き換えより前に置くので、書き換えの行き先（/blog/<slug>/article.md・/index.md）には
-  // 当たらない。index.html の転送も、空の区間を許さない形で外のオリジンへ送らない
+  // 下の書き換えより前に置くので、書き換えの行き先（/index.md）には当たらない。
+  // index.html の転送も、空の区間を許さない形で外のオリジンへ送らない
   { src: '^/index\\.html$', status: 308, headers: { Location: '/' } },
   {
     src: '^/((?:[^/]+/)*[^/]+)/index\\.html$',
@@ -30,11 +30,9 @@ export const beforeFiles = (
     headers: { Location: '/$1' },
   },
   { src: '^/404\\.html$', dest: '/404.html', status: 404 },
-  {
-    src: `^/(?:index|not-found|blog/${SLUG}/article)\\.md$`,
-    dest: '/not-found.md',
-    status: 404,
-  },
+  // /blog/<slug>/article.md は記事の「Markdownをコピー」が取るので、名前のまま開かせる。
+  // vite dev は /blog/<slug>.md の書き換えを当てないので、ボタンは公開の URL を取れない
+  { src: '^/(?:index|not-found)\\.md$', dest: '/not-found.md', status: 404 },
   // Accept で出し分ける URL（/ と記事）だけに付ける
   {
     src: `^/(?:blog/${ARTICLE})?$`,
