@@ -7,6 +7,7 @@ import type { FC } from 'react';
 import type { Slide } from '@/components/slides/split-slides/split-slides';
 
 import { useDeckController } from '../hooks/use-deck-controller';
+import { useFragmentTarget } from '../hooks/use-hash-index';
 import { useClosePresenterOnViewerStop } from '../hooks/use-presenter-lifecycle';
 import { NavButton } from '../nav-button/nav-button';
 import { slideDeckState } from '../slide-deck/deck-state';
@@ -29,9 +30,15 @@ export const DeckPresenter: FC<{
   const nextSlide = slides[index + 1];
   const [{ session: sessionId }] = useAppState(slideDeckState, ['session']);
   useClosePresenterOnViewerStop({ slug, sessionId });
+  const fragmentTarget = useFragmentTarget();
 
   return (
-    <section aria-label={`${title} - 発表者モード`} className={styles.root}>
+    <section
+      aria-label={`${title} - 発表者モード`}
+      className={styles.root}
+      ref={fragmentTarget}
+      tabIndex={-1}
+    >
       <header className={styles.header}>
         <p className={styles.title}>
           {title} <span className={styles.mode}>- 発表者モード</span>

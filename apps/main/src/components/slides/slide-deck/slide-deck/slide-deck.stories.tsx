@@ -3,6 +3,8 @@ import { lazy, useState } from 'react';
 import type { FC, ReactNode } from 'react';
 import { expect, spyOn, userEvent, within } from 'storybook/test';
 
+import { GlobalLayout } from '@/components/site/global-layout/global-layout';
+
 import preview from '../../../../../.storybook/preview';
 import { interceptUrlNavigation } from '../../../../../.storybook/url-state-story';
 import { H1, H2 } from '../../mdx-parts/heading/heading';
@@ -175,6 +177,62 @@ export const Presenter = meta.story({
     await expect(
       canvas.getByRole('region', { name: '発表者ノート' }),
     ).toHaveTextContent(NOTE);
+  },
+});
+
+const inGlobalLayout = (Story: FC) => (
+  <GlobalLayout>
+    <Story />
+  </GlobalLayout>
+);
+
+// デッキが画面を覆うページでも、最初の Tab で出たスキップリンクはデッキの上に見え、押すと枚を変えずに
+// デッキへフォーカスを移す
+const skipIntoDeck = async (
+  canvasElement: HTMLElement,
+  deckName: string,
+): Promise<void> => {
+  const canvas = within(canvasElement);
+  const deck = await canvas.findByRole('region', { name: deckName });
+  const skipLink = canvas.getByRole('link', { name: '本文へ移動' });
+  // vitest のブラウザの殻は <base target="_parent"> を置き、リンクが親の枠を移して試験が切れる
+  skipLink.setAttribute('target', '_self');
+
+  await userEvent.tab();
+  await expect(skipLink).toHaveFocus();
+  const { x, y, width, height } = skipLink.getBoundingClientRect();
+  await expect(
+    skipLink.contains(document.elementFromPoint(x + width / 2, y + height / 2)),
+  ).toBe(true);
+
+  await userEvent.keyboard('{Enter}');
+
+  // デッキは hash から枚を読む
+  await expect(location.hash).toBe('#2');
+  await expect(deck).toHaveFocus();
+};
+
+export const SkipLinkKeepsSlide = meta.story({
+  parameters: { hash: '#2', vrt: { skip: true } },
+  decorators: [inGlobalLayout],
+  play: async ({ canvas, canvasElement }) => {
+    await canvas.findByRole('heading', { name: 'スライド機能のご紹介' });
+
+    await skipIntoDeck(canvasElement, 'サンプルスライド');
+  },
+});
+
+export const PresenterSkipLinkKeepsSlide = meta.story({
+  parameters: {
+    query: 'mode=presenter&session=story-session',
+    hash: '#2',
+    vrt: { skip: true },
+  },
+  decorators: [inGlobalLayout],
+  play: async ({ canvas, canvasElement }) => {
+    await canvas.findByRole('region', { name: '現在のスライド' });
+
+    await skipIntoDeck(canvasElement, 'サンプルスライド - 発表者モード');
   },
 });
 

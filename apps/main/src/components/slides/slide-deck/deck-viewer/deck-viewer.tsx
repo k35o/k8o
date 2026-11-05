@@ -8,6 +8,7 @@ import type { FC } from 'react';
 import type { Slide } from '@/components/slides/split-slides/split-slides';
 
 import { useDeckController } from '../hooks/use-deck-controller';
+import { useFragmentTarget } from '../hooks/use-hash-index';
 import { useBroadcastViewerHeartbeat } from '../hooks/use-presenter-lifecycle';
 import { NavButton } from '../nav-button/nav-button';
 import { ProgressBar } from '../progress-bar/progress-bar';
@@ -45,6 +46,7 @@ export const DeckViewer: FC<{
     return generated;
   });
   useBroadcastViewerHeartbeat({ slug, sessionId });
+  const fragmentTarget = useFragmentTarget();
   const current = slides[index] ?? slides[0];
   const presenterHref = `${slideDeckState.href(`/slides/${slug}`, {
     mode: 'presenter',
@@ -69,6 +71,8 @@ export const DeckViewer: FC<{
       aria-label={title}
       aria-roledescription="slide deck"
       className={styles.root}
+      ref={fragmentTarget}
+      tabIndex={-1}
     >
       {!isMaximized && (
         <header className={styles.header}>
