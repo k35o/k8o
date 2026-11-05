@@ -14,14 +14,23 @@ import styles from './global-layout.module.css';
 const EMPTY_MIN_VERSIONS: BrowserMinVersions = {};
 
 const MAIN_ID = 'main-content';
+const SKIP_LINK_LABEL_ID = 'skip-link-label';
 
 export const GlobalLayout: FC<{
   children: ReactNode;
   minVersions?: BrowserMinVersions;
 }> = ({ children, minVersions = EMPTY_MIN_VERSIONS }) => (
   <div className={styles.root}>
-    <a className={styles.skipLink} href={`#${MAIN_ID}`}>
-      本文へ移動
+    {/* 字の span はフォーカスするまで描かず、描かないあいだは中身から名前が出ないので、
+        aria-labelledby でその span を指す */}
+    <a
+      aria-labelledby={SKIP_LINK_LABEL_ID}
+      className={styles.skipLink}
+      href={`#${MAIN_ID}`}
+    >
+      <span className={styles.skipLinkText} id={SKIP_LINK_LABEL_ID}>
+        本文へ移動
+      </span>
     </a>
     <Background />
     <BrowserSupportNotice minVersions={minVersions} />

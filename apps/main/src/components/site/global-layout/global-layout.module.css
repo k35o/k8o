@@ -39,6 +39,11 @@
     clip-path: inset(50%);
     white-space: nowrap;
   }
+
+  /* 隠れていても字を描くと、その字を含む字の面を最初のレイアウトで取らせる */
+  &:not(:focus):not(:active) > .skipLinkText {
+    display: none;
+  }
 }
 
 .srOnly {

@@ -17,21 +17,26 @@ const meta = preview.meta({
 
 export const Primary = meta.story();
 
-// Tab の最初の止まり先がスキップリンクで、押すと main へ移り、次の Tab が main の中から始まる
+// Tab の最初の止まり先がスキップリンクで、押すと main へ移り、次の Tab が main の中から始まる。
+// 字はフォーカスしているあいだだけ描き、名前は描かないあいだも同じ字から出る
 export const SkipLink = meta.story({
   args: { children: <button type="button">本文のボタン</button> },
   parameters: { vrt: { skip: true } },
   play: async ({ canvas, userEvent }) => {
     const skipLink = canvas.getByRole('link', { name: '本文へ移動' });
+    const label = canvas.getByText('本文へ移動');
     // vitest のブラウザの殻は <base target="_parent"> を置き、リンクが親の枠を移して試験が切れる
     skipLink.setAttribute('target', '_self');
+    await expect(label).not.toBeVisible();
 
     await userEvent.tab();
     await expect(skipLink).toHaveFocus();
+    await expect(label).toBeVisible();
     await expect(skipLink.getBoundingClientRect().width).toBeGreaterThan(1);
 
     await userEvent.keyboard('{Enter}');
     await expect(canvas.getByRole('main')).toHaveFocus();
+    await expect(label).not.toBeVisible();
     await expect(skipLink.getBoundingClientRect().width).toBe(1);
 
     await userEvent.tab();
