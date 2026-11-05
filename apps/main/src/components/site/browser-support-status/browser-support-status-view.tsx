@@ -57,11 +57,14 @@ export const BrowserSupportStatusView: FC<{
           return (
             <li
               className={styles.family}
-              // 未対応はロゴの色・形は変えず、要素ごと不透明度を落として表す。
               data-supported={family.supported}
               key={family.label}
             >
-              {Icon && <Icon size="sm" />}
+              {Icon && (
+                <span className={styles.icon}>
+                  <Icon size="sm" />
+                </span>
+              )}
               {/* アイコンには名前が無いので、ブラウザ名は読み上げ用に補う。 */}
               <span className={styles.srOnly}>{family.label}</span>
               <span className={styles.version}>

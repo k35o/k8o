@@ -51,12 +51,19 @@
   line-height: var(--line-height-xs);
 
   &[data-supported='false'] {
-    opacity: 0.4;
+    /* 未対応はロゴの色・形は変えずに薄くする。字まで薄くすると 4.5:1 を割るので、ロゴだけに当てる */
+    .icon {
+      opacity: 0.4;
+    }
 
     .version {
-      color: var(--color-fg-mute);
+      color: var(--color-fg-subtle);
     }
   }
+}
+
+.icon {
+  display: flex;
 }
 
 .srOnly {

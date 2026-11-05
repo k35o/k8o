@@ -71,12 +71,26 @@ export const Newly = meta.story({
   },
 });
 
+// 未対応のブラウザの字も、本文と同じく 4.5:1 を保つ（preview は color-contrast を切っているので、ここで入れる）
+const checkContrast = {
+  a11y: { options: { rules: { 'color-contrast': { enabled: true } } } },
+};
+
 export const Limited = meta.story({
   args: { feature: limited },
+  parameters: checkContrast,
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
     await expect(canvas.getByText('Limited availability')).toBeInTheDocument();
     await expect(canvas.getByText('Safari')).toBeInTheDocument();
+    await expect(canvas.getAllByText('未対応').length).toBeGreaterThan(0);
+  },
+});
+
+export const LimitedDark = meta.story({
+  args: { feature: limited },
+  parameters: { ...checkContrast, theme: 'dark', vrt: { skip: true } },
+  play: async ({ canvas }) => {
     await expect(canvas.getAllByText('未対応').length).toBeGreaterThan(0);
   },
 });
