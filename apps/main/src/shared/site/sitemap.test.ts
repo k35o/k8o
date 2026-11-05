@@ -13,6 +13,7 @@ vi.mock('@/features/slides/interface/queries', () => ({
   getSlideContents: vi.fn(),
 }));
 vi.mock('@/features/tags/interface/queries', () => ({
+  getTag: vi.fn(),
   getTags: vi.fn(),
 }));
 vi.mock('@playgrounds/sections', () => ({
@@ -98,7 +99,7 @@ const slide = (overrides: Partial<SlideContent> = {}): SlideContent => ({
 const tag = (overrides: Partial<Tag> = {}): Tag => ({
   id: 1,
   name: 'CSS',
-  blogCount: 1,
+  blogIds: [1],
   talkCount: 0,
   ...overrides,
 });
@@ -246,10 +247,14 @@ describe('generateSitemap', () => {
 
   describe('エッジケース', () => {
     it('公開済みの記事もトークも持たないタグは載せないべき', async () => {
+      vi.mocked(getBlogContents).mockResolvedValue([
+        blog({ id: 1, slug: 'a' }),
+        blog({ id: 2, slug: 'b' }),
+      ]);
       vi.mocked(getTags).mockResolvedValue([
-        tag({ id: 147, blogCount: 0, talkCount: 0 }),
-        tag({ id: 5, blogCount: 0, talkCount: 1 }),
-        tag({ id: 8, blogCount: 2, talkCount: 0 }),
+        tag({ id: 147, blogIds: [], talkCount: 0 }),
+        tag({ id: 5, blogIds: [], talkCount: 1 }),
+        tag({ id: 8, blogIds: [1, 2], talkCount: 0 }),
       ]);
 
       const xml = await generateSitemap();
@@ -257,6 +262,20 @@ describe('generateSitemap', () => {
       expect(
         locsOf(xml).filter((loc) => loc.startsWith('https://k8o.me/tags/')),
       ).toStrictEqual(['https://k8o.me/tags/5', 'https://k8o.me/tags/8']);
+    });
+
+    it('MDXの無い公開済みの記事だけを持つタグは載せないべき', async () => {
+      vi.mocked(getBlogContents).mockResolvedValue([blog({ id: 1 })]);
+      vi.mocked(getTags).mockResolvedValue([
+        tag({ id: 9, blogIds: [7], talkCount: 0 }),
+        tag({ id: 8, blogIds: [1], talkCount: 0 }),
+      ]);
+
+      const xml = await generateSitemap();
+
+      expect(
+        locsOf(xml).filter((loc) => loc.startsWith('https://k8o.me/tags/')),
+      ).toStrictEqual(['https://k8o.me/tags/8']);
     });
 
     it('記事とデッキが0件のとき、トップ・/blog・/slidesにlastmodを書かないべき', async () => {

@@ -2,8 +2,8 @@ import { playgroundSections } from '@playgrounds/sections';
 
 import { getBlogContents } from '@/features/blog/interface/queries';
 import { getSlideContents } from '@/features/slides/interface/queries';
-import { getTags } from '@/features/tags/interface/queries';
 import { siteEntries } from '@/shared/site/site-entries';
+import { getTagSummaries } from '@/shared/site/tag-contents';
 
 const SITE_URL = 'https://k8o.me';
 
@@ -41,7 +41,7 @@ export async function generateSitemap(): Promise<string> {
   const [blogs, slides, tags] = await Promise.all([
     getBlogContents(),
     getSlideContents(),
-    getTags(),
+    getTagSummaries(),
   ]);
 
   const blogDates = blogs.map((blog) => blog.updatedAt);

@@ -41,7 +41,7 @@ const talkTag = (tagId: number, talkId: number): TagRow['talkTag'][number] => ({
 
 describe('getTags', () => {
   describe('正常系', () => {
-    it('タグごとに、公開済みの記事の数とトークの数を返す', async () => {
+    it('タグごとに、公開済みの記事の id とトークの数を返す', async () => {
       vi.mocked(findTagRows).mockResolvedValue([
         {
           id: 1,
@@ -55,12 +55,12 @@ describe('getTags', () => {
       const tags = await getTags();
 
       expect(tags).toStrictEqual([
-        { id: 1, name: 'CSS', blogCount: 2, talkCount: 1 },
-        { id: 2, name: 'React', blogCount: 1, talkCount: 0 },
+        { id: 1, name: 'CSS', blogIds: [1, 2], talkCount: 1 },
+        { id: 2, name: 'React', blogIds: [3], talkCount: 0 },
       ]);
     });
 
-    it('下書きの記事は数えない', async () => {
+    it('下書きの記事は含めない', async () => {
       vi.mocked(findTagRows).mockResolvedValue([
         {
           id: 1,
@@ -73,7 +73,7 @@ describe('getTags', () => {
       const tags = await getTags();
 
       expect(tags).toStrictEqual([
-        { id: 1, name: 'CSS', blogCount: 1, talkCount: 0 },
+        { id: 1, name: 'CSS', blogIds: [1], talkCount: 0 },
       ]);
     });
   });
@@ -92,7 +92,7 @@ describe('getTags', () => {
       const tags = await getTags();
 
       expect(tags).toStrictEqual([
-        { id: 1, name: ':playing', blogCount: 0, talkCount: 0 },
+        { id: 1, name: ':playing', blogIds: [], talkCount: 0 },
       ]);
     });
   });
