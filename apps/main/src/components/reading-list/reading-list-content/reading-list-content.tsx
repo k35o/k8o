@@ -6,8 +6,10 @@ import {
   startTransition,
   useCallback,
   useEffect,
+  useEffectEvent,
   useMemo,
   useState,
+  useSyncExternalStore,
 } from 'react';
 import type { FC, ReactNode } from 'react';
 
@@ -31,23 +33,52 @@ const loadReadingList = (): Promise<ReadingList | null> =>
 const FIRST_PAINT_COUNT = 20;
 const BATCH_COUNT = 50;
 
-// 戻る・進むでは、ルーターが描いた直後に前のスクロールの位置へ戻すので、全件を一度に描いて高さをそろえておく
+const subscribeNavigation = (onChange: () => void): (() => void) => {
+  // navigation.transition は、navigatesuccess と navigateerror を配り終えてから null になる
+  const onSettled = (): void => {
+    queueMicrotask(onChange);
+  };
+  navigation.addEventListener('currententrychange', onChange);
+  navigation.addEventListener('navigatesuccess', onSettled);
+  navigation.addEventListener('navigateerror', onSettled);
+  return () => {
+    navigation.removeEventListener('currententrychange', onChange);
+    navigation.removeEventListener('navigatesuccess', onSettled);
+    navigation.removeEventListener('navigateerror', onSettled);
+  };
+};
+
 const isTraversing = (): boolean =>
   navigation.transition?.navigationType === 'traverse';
 
 // 数百件を一度に描くと、DOM を作るのも並べるのも 1 つの長いタスクになる。初めは画面を埋める先頭だけを描き、
-// 描き終えるたびに次の件数を足して、残りを短いタスクに分けて描く
+// 残りはフレームごとに次の件数を足して、短いタスクに分けて描く。戻る・進むでは、ルーターが描いた直後に
+// 前のスクロールの位置へ戻すので、全件を一度に描いて高さをそろえておく
 const useShownCount = (total: number): number => {
-  const [count, setCount] = useState(() =>
-    isTraversing() ? Number.POSITIVE_INFINITY : FIRST_PAINT_COUNT,
+  const traversing = useSyncExternalStore(subscribeNavigation, isTraversing);
+  const [count, setCount] = useState(
+    traversing ? Number.POSITIVE_INFINITY : FIRST_PAINT_COUNT,
   );
+  const isAllShown = count >= total;
+  // transition の更新は、描き終える前に同じ state へ重ねたものとまとめて描かれる。前の分を描き終える前に
+  // 次のフレームが来ても 1 回分だけ足すよう、足す前の値を描き終えた件数から取る
+  const addBatch = useEffectEvent((): void => {
+    startTransition(() => {
+      setCount(count + BATCH_COUNT);
+    });
+  });
   useEffect(() => {
-    if (count < total) {
-      startTransition(() => {
-        setCount((current) => current + BATCH_COUNT);
-      });
+    if (isAllShown) {
+      return undefined;
     }
-  }, [count, total]);
+    let frame = requestAnimationFrame(function onFrame(): void {
+      addBatch();
+      frame = requestAnimationFrame(onFrame);
+    });
+    return () => {
+      cancelAnimationFrame(frame);
+    };
+  }, [isAllShown]);
   return count;
 };
 
