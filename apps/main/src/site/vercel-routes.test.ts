@@ -56,6 +56,18 @@ describe('vercel() の規則', () => {
       expect(answerOf(path)).toStrictEqual({ status: 308, location });
     });
 
+    it.each([
+      ['/about/', '/about'],
+      ['/blog/abs-sign/', '/blog/abs-sign'],
+      ['/ブログ/', '/ブログ'],
+      ['/ブログ/index.html', '/ブログ'],
+    ])(
+      '%s は、末尾のスラッシュと index.html を外した %s へ 308 で送る',
+      (path, location) => {
+        expect(answerOf(path)).toStrictEqual({ status: 308, location });
+      },
+    );
+
     it('404.html を名前で開くと、404 で答える', () => {
       expect(answerOf('/404.html')).toStrictEqual({
         status: 404,
@@ -119,5 +131,34 @@ describe('vercel() の規則', () => {
     ])('空の区間を含む %s は、転送せずにファイルを探す', (path) => {
       expect(answerOf(path)).toStrictEqual({ status: 200, file: path });
     });
+
+    // Vercel がデコードしたパスに当てるときの形。区間の「\」やタブを許すと Location: /\evil.test や
+    // /<TAB>/evil.test を作り、ブラウザはどちらも //evil.test と読む
+    it.each([
+      '/\\evil.test/index.html',
+      '/\t/evil.test/index.html',
+      '/\\evil.test/',
+      '/\n/evil.test/',
+    ])(
+      '「\\」か制御文字の区間を含む %j は、転送せずにファイルを探す',
+      (path) => {
+        expect(answerOf(path)).toStrictEqual({ status: 200, file: path });
+      },
+    );
+
+    // Vercel が生のパスに当てるときの形。ブラウザは Location の %5C や %09 を戻さないので、
+    // 同じオリジンのパスになる
+    it.each([
+      ['/%5Cevil.test/index.html', '/%5Cevil.test'],
+      ['/%09/evil.test/', '/%09/evil.test'],
+    ])(
+      'エンコードした %s は、同じオリジンの %s へ 308 で送る',
+      (path, location) => {
+        expect(answerOf(path)).toStrictEqual({ status: 308, location });
+        expect(new URL(location, 'https://k8o.me/').origin).toBe(
+          'https://k8o.me',
+        );
+      },
+    );
   });
 });

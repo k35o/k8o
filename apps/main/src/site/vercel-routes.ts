@@ -8,6 +8,12 @@ const ACCEPTS_MARKDOWN = [
   { type: 'header', key: 'accept', value: '.*text/markdown.*' },
 ] as const;
 
+// 転送の Location に入れる区間は、空のものと「\」・制御文字・空白を含むものを許さない。
+// //evil.test/ や、Vercel が src をデコードしたパスに当てるときの /%5Cevil.test/・/%09/evil.test/
+// から、ブラウザが //evil.test と読む Location（//evil.test・/\evil.test・/<TAB>/evil.test）を作らない
+const SEGMENT = String.raw`[^/\\\x00-\x20\x7f]+`;
+const PATH_TO_REDIRECT = `((?:${SEGMENT}/)*${SEGMENT})`;
+
 // Vercel は既定で大文字と小文字を区別しない。/Blog などは 404 にするので、記事とフィードに
 // 当てる規則は caseSensitive にする
 export const beforeFiles = (
@@ -15,21 +21,19 @@ export const beforeFiles = (
 ): readonly VercelRoute[] => [
   // Cache-Control は assets の immutable まで上書きするので、ここには置かない
   { src: '^/.*$', headers: securityHeaders(environment), continue: true },
-  // 空の区間を許さないので、//evil.test/ を外のオリジンへ送らない
   {
-    src: '^/((?:[^/]+/)*[^/]+)/$',
+    src: `^/${PATH_TO_REDIRECT}/$`,
     status: 308,
     headers: { Location: '/$1' },
   },
-  // 下の書き換えより前に置くので、書き換えの行き先（/index.md）には当たらない。
-  // index.html の転送も、空の区間を許さない形で外のオリジンへ送らない
   { src: '^/index\\.html$', status: 308, headers: { Location: '/' } },
   {
-    src: '^/((?:[^/]+/)*[^/]+)/index\\.html$',
+    src: `^/${PATH_TO_REDIRECT}/index\\.html$`,
     status: 308,
     headers: { Location: '/$1' },
   },
   { src: '^/404\\.html$', dest: '/404.html', status: 404 },
+  // 下の書き換えより前に置くので、書き換えの行き先（/index.md）には当たらない。
   // /blog/<slug>/article.md は記事の「Markdownをコピー」が取るので、名前のまま開かせる。
   // vite dev は /blog/<slug>.md の書き換えを当てないので、ボタンは公開の URL を取れない
   { src: '^/(?:index|not-found)\\.md$', dest: '/not-found.md', status: 404 },
