@@ -156,8 +156,8 @@ const ActivityDeck: FC<{
   );
 };
 
-// Activity で隠れた画面の印刷用のスライドは body に残るが、印刷の規則は切れ、ほかの画面の印刷に
-// 効かない。表示に戻ると効き直し、外すと規則ごと無くなる。
+// Activity で隠れた画面の印刷用のスライドは body に残るが、印刷の規則と print-as-shown は外れ、
+// ほかの画面の印刷に効かない。表示に戻ると効き直し、外すと規則ごと無くなる。
 export const HiddenByActivity = meta.story({
   args: {
     source: SAMPLE_DECK,
@@ -172,6 +172,7 @@ export const HiddenByActivity = meta.story({
     await waitFor(async () => {
       await expect(printRuleMedia()).toEqual(['print']);
     });
+    await expect(document.querySelector('.print-as-shown')).not.toBeNull();
 
     await userEvent.click(canvas.getByRole('button', { name: '隠す' }));
     await waitFor(async () => {
@@ -180,11 +181,13 @@ export const HiddenByActivity = meta.story({
     await expect(
       document.body.querySelector('[data-slide-print]'),
     ).not.toBeNull();
+    await expect(document.querySelector('.print-as-shown')).toBeNull();
 
     await userEvent.click(canvas.getByRole('button', { name: '表示する' }));
     await waitFor(async () => {
       await expect(printRuleMedia()).toEqual(['print']);
     });
+    await expect(document.querySelector('.print-as-shown')).not.toBeNull();
 
     await userEvent.click(canvas.getByRole('button', { name: '外す' }));
     await waitFor(async () => {
@@ -194,7 +197,7 @@ export const HiddenByActivity = meta.story({
 });
 
 // hidden の Activity の中で先に描かれると、ref が付かないまま印刷用のスライドが body に入る。
-// そのあいだも印刷の規則は効かず、表示したときに初めて効く。
+// そのあいだも印刷の規則と print-as-shown は効かず、表示したときに初めて効く。
 export const MountedHidden = meta.story({
   args: {
     source: SAMPLE_DECK,
@@ -212,11 +215,13 @@ export const MountedHidden = meta.story({
       ).not.toBeNull();
     });
     await expect(printRuleMedia()).toEqual(['not all']);
+    await expect(document.querySelector('.print-as-shown')).toBeNull();
 
     await userEvent.click(canvas.getByRole('button', { name: '表示する' }));
     await waitFor(async () => {
       await expect(printRuleMedia()).toEqual(['print']);
     });
+    await expect(document.querySelector('.print-as-shown')).not.toBeNull();
   },
 });
 
