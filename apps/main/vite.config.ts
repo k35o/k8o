@@ -128,8 +128,7 @@ export default defineConfig({
     framework({
       mode: 'static',
       reactCompiler: true,
-      // テーマの script は defaultPreference を持つので、ルートの layout の ColorSchemeProvider に
-      // 渡すなら、ここにも同じ値を渡す
+      // テーマの script は渡した値を中身に持つので、ルートの layout の ColorSchemeScript と同じ値を渡す
       csp: pagePolicy(deployTarget, await colorSchemeScriptHash()),
       paths: async (patterns) => [
         ...blogPathnames(

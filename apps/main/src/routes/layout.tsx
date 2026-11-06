@@ -2,7 +2,7 @@ import '@fontsource-variable/m-plus-2';
 import '@/styles/globals.css';
 import '@/i18n';
 import mPlus2LatinUrl from '@fontsource-variable/m-plus-2/files/m-plus-2-latin-wght-normal.woff2?url';
-import { ColorSchemeProvider } from '@k8ordo/color-scheme';
+import { ColorSchemeProvider, ColorSchemeScript } from '@k8ordo/color-scheme';
 import type { LayoutProps } from '@k8ordo/framework';
 import { preload } from 'react-dom';
 
@@ -29,11 +29,12 @@ export default function RootLayout({ children }: LayoutProps<'/'>) {
   });
 
   return (
-    // ColorSchemeProvider のスクリプトが hydrate の前に dark のクラスを付けるので、html の
+    // ColorSchemeScript が hydrate の前に dark のクラスを付けるので、html の
     // 属性だけはサーバーの出力と一致しない
     <html lang="ja" suppressHydrationWarning>
       <head>
         <meta charSet="utf-8" />
+        <ColorSchemeScript />
         <meta content="width=device-width, initial-scale=1" name="viewport" />
         <meta content="k8o" name="application-name" />
         <meta content="k8o" name="author" />
