@@ -14,6 +14,7 @@ import { ReactScan } from '@/components/site/react-scan/react-scan';
 import { RootErrorBoundary } from '@/components/site/root-error-boundary/root-error-boundary';
 import { ServiceWorkerRegister } from '@/components/site/service-worker-register/service-worker-register';
 import { getBrowserMinVersions } from '@/features/browser-support/interface/queries';
+import { COLOR_SCHEME_SCRIPT_OPTIONS } from '@/shared/site/color-scheme-script';
 
 // CSS Modules の型は __generated__ を rootDirs で重ねて引くので、@/ ではなく相対で import する
 import styles from '../components/site/root-layout.module.css';
@@ -34,7 +35,7 @@ export default function RootLayout({ children }: LayoutProps<'/'>) {
     <html lang="ja" suppressHydrationWarning>
       <head>
         <meta charSet="utf-8" />
-        <ColorSchemeScript />
+        <ColorSchemeScript {...COLOR_SCHEME_SCRIPT_OPTIONS} />
         <meta content="width=device-width, initial-scale=1" name="viewport" />
         <meta content="k8o" name="application-name" />
         <meta content="k8o" name="author" />

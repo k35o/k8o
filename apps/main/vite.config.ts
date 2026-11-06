@@ -17,6 +17,7 @@ import floor from './src/features/browser-support/infrastructure/browser-min-ver
 import type * as slides from './src/features/slides/application/slides.ts';
 import type * as tags from './src/features/tags/application/tags.ts';
 import { playgroundIds } from './src/playgrounds/ids.ts';
+import { COLOR_SCHEME_SCRIPT_OPTIONS } from './src/shared/site/color-scheme-script.ts';
 import { browserTargets } from './src/site/browser-targets.ts';
 import { katexCssGuard } from './src/site/katex-css-guard.ts';
 import type { BlogArticle } from './src/site/katex-css-guard.ts';
@@ -128,8 +129,10 @@ export default defineConfig({
     framework({
       mode: 'static',
       reactCompiler: true,
-      // テーマの script は渡した値を中身に持つので、ルートの layout の ColorSchemeScript と同じ値を渡す
-      csp: pagePolicy(deployTarget, await colorSchemeScriptHash()),
+      csp: pagePolicy(
+        deployTarget,
+        await colorSchemeScriptHash(COLOR_SCHEME_SCRIPT_OPTIONS),
+      ),
       paths: async (patterns) => [
         ...blogPathnames(
           patterns,
