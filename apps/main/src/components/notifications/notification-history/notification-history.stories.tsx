@@ -103,6 +103,41 @@ export const Empty = meta.story({
   },
 });
 
+const nonHttpUrl: PushLogs = {
+  logs: [
+    {
+      id: 1,
+      kind: 'readings_updated',
+      title: 'フィード取得完了',
+      body: '6件追加、0件更新',
+      // oxlint-disable-next-line eslint/no-script-url -- リンクにしないことを確かめる値
+      url: 'javascript:alert(1)',
+      sentAt: '2026-10-23T00:00:38.052Z',
+    },
+  ],
+};
+
+// 異常系: http(s) でない URL はリンクにしない
+export const SkipsNonHttpUrl = meta.story({
+  parameters: { vrt: { skip: true } },
+  args: { pushLogs: nonHttpUrl },
+  beforeEach: ({ msw }) => {
+    msw.use(
+      http.get(PUSH_LOGS_URL, () => {
+        requested();
+        return HttpResponse.json(nonHttpUrl);
+      }),
+    );
+  },
+  play: async ({ canvas }) => {
+    await waitFor(async () => {
+      await expect(requested).toHaveBeenCalledOnce();
+    });
+    await expect(canvas.getByText('フィード取得完了')).toBeInTheDocument();
+    await expect(canvas.queryByRole('link')).not.toBeInTheDocument();
+  },
+});
+
 // ビルドのときに履歴が無くても、そのあとに届いた通知は差し替えで出す
 export const ReplacedFromEmpty = meta.story({
   args: { pushLogs: { logs: [] } },

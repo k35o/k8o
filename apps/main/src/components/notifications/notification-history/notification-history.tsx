@@ -2,6 +2,7 @@
 
 import { Anchor, Badge, Card } from '@k8ordo/ui';
 import { formatDate } from '@repo/helpers/date/format';
+import { isHttpUrl } from '@repo/helpers/url/is-http-url';
 import type { FC } from 'react';
 
 import type { PushLogs } from '@/features/push-notification/interface/queries';
@@ -44,7 +45,9 @@ export const NotificationHistory: FC<{ pushLogs: PushLogs }> = ({
               </div>
               <p className={styles.title}>{log.title}</p>
               <p className={styles.body}>{log.body}</p>
-              {log.url !== null && <Anchor href={log.url}>{log.url}</Anchor>}
+              {log.url !== null && isHttpUrl(log.url) && (
+                <Anchor href={log.url}>{log.url}</Anchor>
+              )}
             </div>
           </Card>
         </li>

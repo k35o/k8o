@@ -130,6 +130,10 @@
       "types": "./src/sleep.ts",
       "default": "./src/sleep.ts"
     },
+    "./url/is-http-url": {
+      "types": "./src/url/is-http-url.ts",
+      "default": "./src/url/is-http-url.ts"
+    },
     "./url/is-public-https-url": {
       "types": "./src/url/is-public-https-url.ts",
       "default": "./src/url/is-public-https-url.ts"

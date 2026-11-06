@@ -1,5 +1,6 @@
 import { ExternalLinkIcon, Card, PublishDateIcon } from '@k8ordo/ui';
 import { formatDate } from '@repo/helpers/date/format';
+import { isHttpUrl } from '@repo/helpers/url/is-http-url';
 import { memo } from 'react';
 import type { FC } from 'react';
 
@@ -7,15 +8,6 @@ import { ReadingCardBody } from './body';
 import { ReadingCardImage } from './image';
 
 import styles from './reading-card.module.css';
-
-// 多層防御: DB に不正なスキームの URL が混入しても javascript: 等をリンク化しない
-const isHttpUrl = (value: string): boolean => {
-  if (!URL.canParse(value)) {
-    return false;
-  }
-  const { protocol } = new URL(value);
-  return protocol === 'https:' || protocol === 'http:';
-};
 
 export type ReadingCardProps = {
   url: string;
