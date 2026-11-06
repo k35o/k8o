@@ -31,7 +31,7 @@ export const readingListPublicRoutes = new Hono()
       'Cache-Control': CACHE_CONTROL,
     }),
   )
-  .get('/feed', async (c) =>
+  .get('/feed', etag(), async (c) =>
     c.body(await getReadingListFeed(Date.now()), 200, {
       'Content-Type': 'application/rss+xml; charset=utf-8',
       'Cache-Control': CACHE_CONTROL,

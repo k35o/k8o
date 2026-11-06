@@ -1506,6 +1506,37 @@ describe('公開 API', () => {
           '2026-04-21T00:00:00.000Z',
         );
       });
+
+      it('同じ ETag の If-None-Match には、本文を送らずに 304 を返し、Cache-Control と ETag を保つ', async () => {
+        const etag = String((await app.request(PATH)).headers.get('etag'));
+
+        const res = await app.request(PATH, {
+          headers: { 'If-None-Match': etag },
+        });
+
+        expect(etag).toMatch(/^"[0-9a-f]{40}"$/u);
+        expect(res.status).toBe(304);
+        await expect(res.text()).resolves.toBe('');
+        expect(res.headers.get('etag')).toBe(etag);
+        expect(res.headers.get('cache-control')).toBe(DAILY_CACHE_CONTROL);
+      });
+    });
+
+    describe('異常系', () => {
+      it('記事が変わると、前の ETag の If-None-Match にも本文を返す', async () => {
+        const etag = String((await app.request(PATH)).headers.get('etag'));
+        vi.mocked(findRecentArticles).mockResolvedValue([SUMMARIZED_ARTICLE]);
+
+        const res = await app.request(PATH, {
+          headers: { 'If-None-Match': etag },
+        });
+
+        expect(res.status).toBe(200);
+        expect(res.headers.get('etag')).not.toBe(etag);
+        await expect(res.text()).resolves.toContain(
+          '<title>AI が要約した記事</title>',
+        );
+      });
     });
 
     describe('エッジケース', () => {
