@@ -16,8 +16,14 @@ type BuildRssFeedOptions = {
   items: readonly FeedItem[];
 };
 
+// XML 1.0 の Char に無い文字（制御文字・U+FFFE・対でないサロゲートなど）が 1 つでもあると、
+// 厳密なリーダーはフィード全体を読めない。外のサイトの題や説明は実体参照からこれらに戻りうる
+const NOT_XML_CHAR =
+  /[^\t\n\r\u{20}-\u{D7FF}\u{E000}-\u{FFFD}\u{10000}-\u{10FFFF}]/gu;
+
 const escapeXml = (text: string): string =>
   text
+    .replaceAll(NOT_XML_CHAR, '')
     .replaceAll('&', '&amp;')
     .replaceAll('<', '&lt;')
     .replaceAll('>', '&gt;')
@@ -176,6 +182,25 @@ if (import.meta.vitest) {
         expect(xml).toContain('<link>https://k8o.me/blog/a?x=1&amp;y=2</link>');
         expect(xml).toContain('<category>C&amp;C++</category>');
         expect(xml).not.toContain('<b>');
+      });
+
+      it('XML 1.0 の文字でないものを落とし、タブと改行と絵文字は残す', () => {
+        const xml = buildRssFeed({
+          ...baseOptions,
+          items: [
+            {
+              title: 'タイトル\u{B}\u{0}\u{FFFE}\u{D800}',
+              description: '1行目\n\t2行目 🦀',
+              url: 'https://k8o.me/blog/a',
+              date: '2026-01-02T03:04:05.000Z',
+              categories: ['C\u001F'],
+            },
+          ],
+        });
+
+        expect(xml).toContain('<title>タイトル</title>');
+        expect(xml).toContain('<description>1行目\n\t2行目 🦀</description>');
+        expect(xml).toContain('<category>C</category>');
       });
     });
   });
