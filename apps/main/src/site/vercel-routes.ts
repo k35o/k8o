@@ -9,8 +9,8 @@ const ACCEPTS_MARKDOWN = [
 ] as const;
 
 // 転送の Location に入れる区間は、空のものと「\」・制御文字・空白を含むものを許さない。
-// //evil.test/ や、Vercel が src をデコードしたパスに当てるときの /%5Cevil.test/・/%09/evil.test/
-// から、ブラウザが //evil.test と読む Location（//evil.test・/\evil.test・/<TAB>/evil.test）を作らない
+// いまの Vercel は // をまとめ、src を %xx のままのパスに当てるが、デコードしたパスに当てる日が来ても、
+// ブラウザが //evil.test と読む Location（//evil.test・/\evil.test・/<TAB>/evil.test）を作らない
 const SEGMENT = String.raw`[^/\\\x00-\x20\x7f]+`;
 const PATH_TO_REDIRECT = `((?:${SEGMENT}/)*${SEGMENT})`;
 
@@ -81,7 +81,8 @@ export const BEFORE_NOT_FOUND: readonly VercelRoute[] = [
     dest: 'https://api.k8o.me/public/reading-list/feed',
     caseSensitive: true,
   },
-  // ここに来るのは 404 だけで、HTML の 404 も markdown の 404 も Accept で変わる
+  // 404 は HTML も markdown も Accept で変わる。Vercel は上の feed の書き換えの応答にもこの頭を
+  // 付けるが、feed は中身が Accept で変わらず、CDN の cache が Accept ごとに分かれるだけ
   { src: '^/.*$', headers: { Vary: 'Accept' }, continue: true },
   {
     src: '^/.*$',
