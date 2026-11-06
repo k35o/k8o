@@ -109,7 +109,7 @@ MDX では import せずに使う。`slide-mdx` の部品を、`slide-article` �
 観覧モードのヘッダーにある **「PDF出力」** ボタン (または `Ctrl` / `Cmd` + `P`) でブラウザの印刷ダイアログを開き、「PDF として保存」で書き出せる。
 
 - 全スライドが 1 枚 1 ページ (16:9) で出力される
-- `print-color-adjust: exact` により、**表示中のテーマの配色** (背景・シンタックスハイライト等) をそのまま引き継ぐ。ダークテーマ表示中はダークのまま出力される
+- **表示中のテーマの配色** (背景・シンタックスハイライト等) をそのまま引き継ぐ。@k8ordo/ui は印刷で `.dark` の色を light に戻すが、印刷用の描画の root に付けた `print-as-shown` を含む `.dark` だけはダークのまま残す。背景は `print-color-adjust: exact` で刷るので、ダークテーマ表示中はダークのまま出力される
 - 印刷用の描画は `slide-deck/deck-print` が担当し、`body` 直下へ portal して他のサイト要素を `@media print` で隠す
 - Chrome (v136 未満) 向けに `-webkit-print-color-adjust` も併記している。ダイアログの「背景のグラフィック」設定に依存せず色が出る
 

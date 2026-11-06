@@ -18,7 +18,7 @@ export const DeckPrint: FC<{ slides: Slide[] }> = ({ slides }) =>
           ページの印刷も変えるので、デッキと一緒に外れる <style> に書く。href と precedence を付けると head に
           上がって残る。名前付きページは WebKit が照合しない */}
       <style>{'@media print{@page{size:1280px 720px;margin:0}}'}</style>
-      <div className={styles.root} data-slide-print="true">
+      <div className={`${styles.root} print-as-shown`} data-slide-print="true">
         {slides.map((slide, index) => (
           // スライドは並び替わらないため index を key に使う
           <div className={styles.page} key={index}>

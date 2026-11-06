@@ -13,7 +13,7 @@
 
   .root {
     display: block;
-    /* スライドの配色（背景・シンタックスハイライト等）をそのまま印刷に引き継ぐ。
+    /* スライドの背景も刷る。dark の色のまま刷れるのは root の print-as-shown による（deck-print.tsx）。
        Chrome/Edge/Opera は v136 未満だと無印プロパティ未対応なので -webkit- も併記する。 */
     -webkit-print-color-adjust: exact;
     print-color-adjust: exact;
