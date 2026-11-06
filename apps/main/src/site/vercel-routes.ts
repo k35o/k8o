@@ -55,6 +55,11 @@ export const beforeFiles = (
       // 使って取り除くので、リーダーや途中の共有キャッシュには届かない
       'Vercel-CDN-Cache-Control':
         'max-age=3600, stale-while-revalidate=86400, stale-if-error=86400',
+      // フィードは外のサイトの題や説明を k8o.me の origin で返す。WebKit は rss+xml を XML として
+      // 読み、XHTML の script を動かすので、何も読ませない。同じ名前の頭は後の規則の値で置き換わるので、
+      // default-src の効かない指示子もここで書く
+      'Content-Security-Policy':
+        "default-src 'none'; base-uri 'none'; form-action 'none'; frame-ancestors 'none'; report-to csp-endpoint",
     },
     continue: true,
     caseSensitive: true,

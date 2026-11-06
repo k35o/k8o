@@ -38,6 +38,21 @@ const answerOf = (path: string, accept = 'text/html'): Answer => {
   return { status: 200, file: path };
 };
 
+// Vercel は当たる continue の規則の頭を順に重ね、同じ名前の頭は後の規則の値で置き換える
+const headersOf = (path: string): Readonly<Record<string, string>> => {
+  const headers: Record<string, string> = {};
+  for (const route of BEFORE_FILES) {
+    const matches = new RegExp(
+      route.src,
+      route.caseSensitive ? 'u' : 'iu',
+    ).test(path);
+    if (matches && route.continue === true && route.headers !== undefined) {
+      Object.assign(headers, route.headers);
+    }
+  }
+  return headers;
+};
+
 describe('vercel() の規則', () => {
   describe('正常系', () => {
     it.each(sources)(
@@ -111,6 +126,15 @@ describe('vercel() の規則', () => {
         status: 200,
         file: '/index.md',
       });
+    });
+
+    it('外のサイトの文字列を載せるフィードは、ページの CSP に代えて何も読ませない CSP で返す', () => {
+      expect(headersOf('/reading-list/feed')['Content-Security-Policy']).toBe(
+        "default-src 'none'; base-uri 'none'; form-action 'none'; frame-ancestors 'none'; report-to csp-endpoint",
+      );
+      expect(headersOf('/reading-list')['Content-Security-Policy']).toContain(
+        "script-src 'self'",
+      );
     });
 
     it.each(['/index.rsc', '/blog/index.rsc', '/blog/abs-sign/index.rsc'])(
