@@ -7,7 +7,7 @@
   margin-inline: auto;
 
   &[data-side-rail='true'] {
-    @media (width >= 80rem) {
+    @media screen and (width >= 80rem) {
       max-width: 80rem;
     }
   }

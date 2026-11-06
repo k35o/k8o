@@ -170,7 +170,7 @@
 .sideRail {
   display: none;
 
-  @media (width >= 80rem) {
+  @media screen and (width >= 80rem) {
     display: block;
   }
 }
