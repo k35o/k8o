@@ -17,6 +17,7 @@
         "ALLOWED_EMAILS",
         "BETTER_AUTH_SECRET",
         "BETTER_AUTH_URL",
+        "DEPLOY_TARGET",
         "GITHUB_CLIENT_ID",
         "GITHUB_CLIENT_SECRET",
         "GOOGLE_ANALYTICS_ID",
