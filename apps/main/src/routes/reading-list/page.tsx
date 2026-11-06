@@ -1,10 +1,7 @@
 import { ReadingListIndex } from '@/components/reading-list/reading-list-index/reading-list-index';
 import { PageMeta } from '@/components/site/page-meta/page-meta';
-import { getReadingList } from '@/features/reading-list/interface/queries';
 
-export default async function ReadingListPage() {
-  const readingList = await getReadingList();
-
+export default function ReadingListPage() {
   return (
     <>
       <PageMeta
@@ -13,7 +10,7 @@ export default async function ReadingListPage() {
         rssFeedPath="/reading-list/feed"
         title="Readings"
       />
-      <ReadingListIndex readingList={readingList} />
+      <ReadingListIndex />
     </>
   );
 }

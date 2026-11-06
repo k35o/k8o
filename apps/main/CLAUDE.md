@@ -70,7 +70,9 @@ k8o.me のアプリ。ブログ(MDX)、スライド、トーク、開発者向�
 
 ## 日々の表示（`/reading-list`・`/browser-support`・`/notifications`）
 
-- ページがビルドで DB を読み（`features/*/interface` の関数を `memoizeInBuild` で覚える）、その値を props で渡す。クライアントの部品は `shared/api/live-snapshot` の `useLiveSnapshot` で api の公開の GET を読み、読めたら差し替える。hydrate はビルドの値で描き、HTML とずらさない。`getBrowserSupportSnapshot` は「直近1週間」の基準の時刻（`nowMs`）も一緒に覚え、HTML とペイロードの 2 回の描画で同じ値にする
+- `/browser-support` と `/notifications` は、ページがビルドで DB を読み（`features/*/interface` の関数を `memoizeInBuild` で覚える）、その値を props で渡す。クライアントの部品は `shared/api/live-snapshot` の `useLiveSnapshot` で api の公開の GET を読み、読めたら差し替える。hydrate はビルドの値で描き、HTML とずらさない。`getBrowserSupportSnapshot` は「直近1週間」の基準の時刻（`nowMs`）も一緒に覚え、HTML とペイロードの 2 回の描画で同じ値にする
+- `/reading-list` は直近 90 日の記事をすべて描くので、ビルドの値を HTML とペイロードに埋めず（埋めると数百件を HTML と api で 2 回送る）、ブラウザで `GET /public/reading-list` を読む（`components/reading-list/reading-list-source`）。届くまでは `BrowserOnly` の骨組みのまま待ち、読めなければ読み直しを案内する（`ReadingListLoader`）。一度読んだ一覧は文書の中で同じ promise に覚え、戻る・進むでは待たずに描く。読めなかった結果は案内を出したら捨て、そのあとは `cache: 'reload'` で読む。WebKit は文書の中で、preload の応答を失敗したものも同じ URL の fetch に使い回すため
+- HTML を読むうちに api を取り始める `preload`（`as: 'fetch'`）は、client の部品の `ReadingListPreload` が描くときに書く。Server Component で書くとペイロードの hint にも入り、Readings へのリンクを先読みしただけで api を読む
 - 2 つの一覧の絞り込みは区画の `search-params` の `definePageState` の url に置き、入力ごと・クリックごとに `update()`（既定の replace）で書く。値は「ツールの URL の状態」と同じく文字列のまま持ち、読むときに解く。`z.array` は `?source=1,2` を読めず、`z.stringbool` は `?widely=1` を真に読み、外に貼られたリンク（nuqs の書き方）の読みが変わる
 - 一覧は `BrowserOnly` でブラウザでだけ描き、骨組み（`ReadingListSkeleton`・`BrowserSupportFeatureListSkeleton`）を `fallback` に渡す。骨組みは HTML の client-rendered の境界（`<!--$!-->`）の中に出る。骨組みを `loading.tsx` として route に置かないのは、static mode では HTML にも遷移にもほぼ出ず、layout と同じくその CSS をどのページも読むから
 - ブラウザ最低版のフロア（`features/browser-support/infrastructure/browser-min-versions.json`）は、ルートレイアウトが読み、ビルドのターゲット（`site/browser-targets.ts`）も作る、コミットした生成物。`pnpm run -F main generate:browser-min-versions [version]` で作り直す。同じ版からリポジトリ直下の `.browserslistrc`（ai の Next.js の Lightning CSS / SWC のターゲット）も書くので、どちらも手で編集しない。api の active データセットとずれると、外形監視（`.github/workflows/browser-support-monitor.yml`）が k8o-bot 名義で作り直しの PR を作り、自動マージする

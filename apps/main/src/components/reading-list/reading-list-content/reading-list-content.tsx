@@ -13,22 +13,16 @@ import {
 } from 'react';
 import type { FC, ReactNode } from 'react';
 
-import type { ReadingList } from '@/features/reading-list/interface/queries';
-import { useLiveSnapshot } from '@/shared/api/live-snapshot';
-import { publicApi, readOrNull } from '@/shared/api/public-api';
-
 import type { SortOrder } from '../constants/constants';
 import { FilterBar } from '../filter-bar/filter-bar';
 import { ReadingCard } from '../reading-card/reading-card';
+import type { ReadingList } from '../reading-list-source/reading-list-source';
 import {
   readingListState,
   readSourceIds,
 } from '../search-params/search-params';
 
 import styles from './reading-list-content.module.css';
-
-const loadReadingList = (): Promise<ReadingList | null> =>
-  readOrNull(publicApi.public['reading-list'].$get());
 
 const FIRST_PAINT_COUNT = 20;
 const BATCH_COUNT = 50;
@@ -86,11 +80,7 @@ export const ReadingListContent: FC<{
   readingList: ReadingList;
   filterIcon: ReactNode;
 }> = ({ readingList, filterIcon }) => {
-  const { articles, sources } = useLiveSnapshot(
-    'reading-list',
-    loadReadingList,
-    readingList,
-  );
+  const { articles, sources } = readingList;
   const [params, update] = useAppState(readingListState);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 
