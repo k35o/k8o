@@ -19,6 +19,8 @@ import { resetLiveSnapshots } from '../src/shared/api/live-snapshot';
 
 import '@fontsource-variable/m-plus-2';
 
+import '../src/i18n';
+
 import '../src/styles/globals.css';
 import './preview.css';
 
