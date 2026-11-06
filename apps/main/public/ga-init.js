@@ -19,7 +19,10 @@ function gtag() {
   // HTML に async で書くと、gtag.js が CSS やフォントと帯域を取り合って FCP を遅らせるので、load の後に足す。
   // src を JS で入れると Trusted Types の sink になるので、HTML に type で止めて書いた script を写し、type を外す
   function loadGtag() {
-    var gtagScript = document.getElementById('gtag-js').cloneNode();
+    // 本文の見出しにも同じ id が付きうるので、type で止めた script に絞る
+    var gtagScript = document
+      .querySelector('script#gtag-js[type="text/plain"]')
+      .cloneNode();
     gtagScript.removeAttribute('id');
     gtagScript.removeAttribute('type');
     document.head.appendChild(gtagScript);

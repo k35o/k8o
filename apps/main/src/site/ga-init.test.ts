@@ -5,11 +5,14 @@ import { describe, expect, it } from 'vitest';
 
 const GTAG_URL = 'https://www.googletagmanager.com/gtag/js?id=G-TEST';
 
-// ga-init.js が使う cloneNode と removeAttribute だけを持つ script。src への代入は Trusted Types の sink なので数える
-class FakeScript {
+// ga-init.js が使う cloneNode と removeAttribute だけを持つ要素。src への代入は Trusted Types の sink なので数える
+class FakeElement {
   readonly srcAssignments: string[] = [];
 
-  constructor(readonly attributes: Map<string, string>) {}
+  constructor(
+    readonly tagName: string,
+    readonly attributes: Map<string, string>,
+  ) {}
 
   get src(): string {
     return this.attributes.get('src') ?? '';
@@ -19,14 +22,28 @@ class FakeScript {
     this.srcAssignments.push(value);
   }
 
-  cloneNode(): FakeScript {
-    return new FakeScript(new Map(this.attributes));
+  cloneNode(): FakeElement {
+    return new FakeElement(this.tagName, new Map(this.attributes));
   }
 
   removeAttribute(name: string): void {
     this.attributes.delete(name);
   }
 }
+
+// ga-init.js が使う「タグ#id[属性="値"]」の形の selector だけを解く
+const matches = (element: FakeElement, selectors: string): boolean => {
+  const parsed = /^(\w+)#([\w-]+)\[(\w+)="([^"]*)"\]$/u.exec(selectors);
+  if (parsed === null) {
+    throw new Error(`解けない selector です: ${selectors}`);
+  }
+  const [, tagName, id, name = '', value] = parsed;
+  return (
+    element.tagName === tagName &&
+    element.attributes.get('id') === id &&
+    element.attributes.get(name) === value
+  );
+};
 
 type GaWindow = EventTarget & {
   dataLayer?: unknown[];
@@ -38,16 +55,16 @@ type GaDocument = {
   currentScript: { dataset: Record<string, string> };
   title: string;
   readyState: DocumentReadyState;
-  getElementById: (id: string) => FakeScript | null;
-  head: { appendChild: (node: FakeScript) => void };
+  querySelector: (selectors: string) => FakeElement | null;
+  head: { appendChild: (node: FakeElement) => void };
 };
 
 type Page = {
   window: GaWindow;
   document: GaDocument;
   // layout が HTML に書く、type で止めた gtag.js の script
-  inert: FakeScript;
-  appended: FakeScript[];
+  inert: FakeElement;
+  appended: FakeElement[];
 };
 
 const source = readFileSync(
@@ -66,21 +83,26 @@ const openPage = ({
   readyState = 'interactive',
   dataLayer,
   navigation = true,
+  content = [],
 }: {
   href?: string;
   title?: string;
   readyState?: DocumentReadyState;
   dataLayer?: unknown[];
   navigation?: boolean;
+  // body で gtag.js の script より前にある要素
+  content?: FakeElement[];
 } = {}): Page => {
-  const inert = new FakeScript(
+  const inert = new FakeElement(
+    'script',
     new Map([
       ['id', 'gtag-js'],
       ['src', GTAG_URL],
       ['type', 'text/plain'],
     ]),
   );
-  const appended: FakeScript[] = [];
+  const elements = [...content, inert];
+  const appended: FakeElement[] = [];
   const window: GaWindow = Object.assign(new EventTarget(), {
     ...(dataLayer === undefined ? {} : { dataLayer }),
     location: { href },
@@ -90,7 +112,8 @@ const openPage = ({
     currentScript: { dataset: { gaId: 'G-TEST' } },
     title,
     readyState,
-    getElementById: (id) => (id === 'gtag-js' ? inert : null),
+    querySelector: (selectors) =>
+      elements.find((element) => matches(element, selectors)) ?? null,
     head: {
       appendChild: (node) => {
         appended.push(node);
@@ -246,6 +269,19 @@ describe('ga-init.js', () => {
       runGaInit(page.window, page.document);
 
       expect(page.appended).toHaveLength(1);
+    });
+
+    it('本文の見出しに同じ id があっても、HTML に書いた gtag.js の script を写す', () => {
+      const page = openPage({
+        content: [new FakeElement('h2', new Map([['id', 'gtag-js']]))],
+      });
+      runGaInit(page.window, page.document);
+
+      load(page);
+
+      expect(page.appended.map((element) => element.tagName)).toStrictEqual([
+        'script',
+      ]);
     });
 
     it('Trusted Types の sink を通らないよう、gtag.js の script の src に代入しない', () => {
