@@ -89,6 +89,8 @@ const formatResult = ({ path, side, visit }: PageResult): string =>
 const sitemapUrl = resolveOn(base, '/sitemap.xml');
 const sitemap = await fetch(sitemapUrl, {
   headers: bypassHeaders(sitemapUrl, bypassSecret),
+  // fetch は別の origin への redirect でも bypass のヘッダーを付けたまま追うので、追わずに止める
+  redirect: 'manual',
 });
 if (!sitemap.ok) {
   throw new Error(
