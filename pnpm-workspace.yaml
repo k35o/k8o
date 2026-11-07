@@ -78,9 +78,6 @@ minimumReleaseAgeExclude:
   - '@next/swc-linux-x64-musl@16.4.5'
   - '@next/swc-win32-arm64-msvc@16.4.5'
   - '@next/swc-win32-x64-msvc@16.4.5'
-  # ブラウザ最低版フロアの再生成が caniuse-lite の公開より先に進むため、7日待たずに上げられるようにする。
-  # データだけのパッケージで、install スクリプトも依存も無く、ビルド時に Next の browserslist が読むだけ
-  - caniuse-lite
   # Renovate security update: vite-plus@1.3.0
   - vite-plus@1.3.0
   # Renovate security update: satori@0.33.5

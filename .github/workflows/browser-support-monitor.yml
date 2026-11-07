@@ -218,6 +218,28 @@ jobs:
             exit 0
           fi
 
+          # 上流のフロアは、caniuse-lite がその版を公開済みとして載せるより先に上がることがある。
+          # 解けない版を Next は黙って捨てるので、そのまま出すと PR の検査が落ち続ける。解けなければ
+          # caniuse-lite を minimumReleaseAge の範囲で上げて解き直し、それでも解けなければ PR を出さずに待つ
+          resolves() {
+            pnpm -F ai exec vitest run --project 'features test' \
+              src/shared/browserslist/browserslistrc.test.ts
+          }
+          if ! resolves; then
+            pnpm update -r caniuse-lite
+            if ! resolves; then
+              published=$(gh api "repos/web-platform-dx/web-features/releases/tags/v$ACTIVE" --jq .published_at)
+              # caniuse-lite は週に 1 度ほど出て、出てから minimumReleaseAge の 7 日は入れられない。
+              # 上流の公開から 14 日たっても解けないなら、待っても直らない
+              if [ $(( $(date -u +%s) - $(date -u -d "$published" +%s) )) -gt $((14 * 24 * 60 * 60)) ]; then
+                echo "reason=floor stale: v$ACTIVE の公開から14日たっても、caniuse-lite を上げた Next 同梱の browserslist がフロアを解決できない" >> "$GITHUB_OUTPUT"
+              else
+                echo "pending=v$ACTIVE のフロアを Next 同梱の browserslist がまだ解決できないため、minimumReleaseAge を満たした caniuse-lite を待つ" >> "$GITHUB_OUTPUT"
+              fi
+              exit 0
+            fi
+          fi
+
           pr=$(gh pr list --head "$branch" --base main --state open --json url,createdAt --jq '.[0] // empty')
           if [ -z "$pr" ]; then
             # 未マージで閉じられた PR のブランチが残っていれば捨て、main から作り直す
@@ -227,16 +249,20 @@ jobs:
           fi
 
           # 生成物はフロアの JSON と、同じ版から作る .browserslistrc（ai の Next の CSS / JS の
-          # ターゲット）の 2 つ。main は署名必須のため git push ではなく API でコミットする。
-          # GitHub App が API で作ったコミットは GitHub が署名する。
-          for file in "$FLOOR_FILE" .browserslistrc; do
-            remote=$(gh api "repos/$GH_REPO/contents/$file?ref=$branch")
-            if [ "$(echo "$remote" | jq -r .content | base64 -d)" != "$(cat "$file")" ]; then
-              gh api -X PUT "repos/$GH_REPO/contents/$file" \
-                -f branch="$branch" \
-                -f sha="$(echo "$remote" | jq -r .sha)" \
-                -f message="$title" \
-                -f content="$(base64 -w0 "$file")" >/dev/null
+          # ターゲット）の 2 つに、caniuse-lite を上げたときは lockfile を加える。main は署名必須のため
+          # git push ではなく API でコミットする。GitHub App が API で作ったコミットは GitHub が署名する。
+          # lockfile は 1 つの引数の長さの上限を超えるので、本文は標準入力で渡す
+          files=("$FLOOR_FILE" .browserslistrc)
+          if ! git diff --quiet -- pnpm-lock.yaml; then
+            files+=(pnpm-lock.yaml)
+          fi
+          for file in "${files[@]}"; do
+            remote_sha=$(gh api "repos/$GH_REPO/contents/$file?ref=$branch" --jq .sha)
+            if [ "$(git hash-object "$file")" != "$remote_sha" ]; then
+              jq -n --arg branch "$branch" --arg sha "$remote_sha" --arg message "$title" \
+                --rawfile content "$file" \
+                '{branch: $branch, sha: $sha, message: $message, content: ($content | @base64)}' |
+                gh api -X PUT "repos/$GH_REPO/contents/$file" --input - >/dev/null
             fi
           done
 
@@ -267,6 +293,7 @@ jobs:
           FLOOR_OUTCOME: ${{ steps.floor.outcome }}
           FLOOR_REASON: ${{ steps.floor.outputs.reason }}
           FLOOR_PR: ${{ steps.floor.outputs.pr }}
+          FLOOR_PENDING: ${{ steps.floor.outputs.pending }}
           LATEST: ${{ steps.check.outputs.latest }}
           RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
         run: |
@@ -282,6 +309,8 @@ jobs:
               reason="${reason:+$reason / }floor stale: 再生成 PR の作成に失敗"
             elif [ -n "$FLOOR_REASON" ]; then
               reason="${reason:+$reason / }$FLOOR_REASON"
+            elif [ -n "$FLOOR_PENDING" ]; then
+              echo "floor stale: $FLOOR_PENDING"
             else
               echo "floor stale: 再生成 PR $FLOOR_PR の自動マージ待ち"
             fi
@@ -313,5 +342,5 @@ jobs:
           gh issue create \
             --title "browser-support: データ同期の異常を検知 ($(date -u +%Y-%m-%d))" \
             --label "$label" \
-            --body "$(printf '外形監視が異常を検知しました。\n\n- 判定: %s\n- health: %s\n- 上流最新: %s\n- 実行: %s\n\n確認手順:\n1. %s を確認\n2. 同期履歴（browser_support_sync_runs）を確認し、必要ならこの workflow を force 付きで手動実行\n3. Vercel Cron（apps/api をデプロイしているプロジェクト）の実行履歴を確認\n4. floor stale なら再生成 PR の CI を確認。手動で直すなら `pnpm run -F main generate:browser-min-versions <active版>` を実行してコミット\n\n健全に戻ると次回の監視で自動的に閉じられます。\n' "$reason" "$HEALTH_URL" "${LATEST:-unknown}" "$RUN_URL" "$HEALTH_URL")"
+            --body "$(printf '外形監視が異常を検知しました。\n\n- 判定: %s\n- health: %s\n- 上流最新: %s\n- 実行: %s\n\n確認手順:\n1. %s を確認\n2. 同期履歴（browser_support_sync_runs）を確認し、必要ならこの workflow を force 付きで手動実行\n3. Vercel Cron（apps/api をデプロイしているプロジェクト）の実行履歴を確認\n4. floor stale なら再生成 PR の CI を確認。手動で直すなら `pnpm run -F main generate:browser-min-versions <active版>` を実行してコミット（Next 同梱の browserslist がフロアを解決できなければ `pnpm update -r caniuse-lite` も）\n\n健全に戻ると次回の監視で自動的に閉じられます。\n' "$reason" "$HEALTH_URL" "${LATEST:-unknown}" "$RUN_URL" "$HEALTH_URL")"
           exit 1
