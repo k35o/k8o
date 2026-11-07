@@ -49,7 +49,7 @@ type ReturnValue =
 
 `{ async: false; value: "not-equal" }`が返される時は、引数の配列とインデックスが指す位置に存在する値が第3引数で渡した値と異なっていた場合です。
 
-`{ async: false; value: "timed-out" }`が返される時は、、タイムアウトが0ミリ秒に指定されていた場合です。
+`{ async: false; value: "timed-out" }`が返される時は、タイムアウトが0ミリ秒に指定されていた場合です。
 
 `{ async: true; value: Promise<"ok" | "timed-out"> }`が通常返されるであろう値で、`notify`によって呼び出された場合に`"ok"`、`notify`が呼び出される前にタイムアウトした場合に`"timed-out"`を返す`value`が`Promise`に包まれて格納されています。
 
