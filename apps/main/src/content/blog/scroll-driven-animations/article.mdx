@@ -41,7 +41,7 @@ Scroll-driven animationsは、CSSのアニメーションを時間ではなく�
 }
 ```
 
-`animation-timeline`は、先に書くと後の`animation`ショートハンドに初期値で上書きされるので、`animation`より後に書きます。仕様の草案では`animation`の中に`scroll()`も書けますが、Chrome 156とSafari 27.2では宣言ごと無効になります。`animation`の時間に書いた`auto`は、タイムライン全体を使って進めるための値です。
+`animation-timeline`は、先に書くと後の`animation`ショートハンドに初期値で上書きされるので、`animation`より後に書きます。仕様の草案では`animation`の中に`scroll()`も書けますが、Chrome 156、Safari 27.2、Firefox 159のどれでも宣言ごと無効になります。`animation`の時間に書いた`auto`は、タイムライン全体を使って進めるための値です。
 
 `scroll()`の引数には、見るスクロールコンテナと軸を書きます。スクロールコンテナは`nearest`（最も近い祖先。既定値）・`root`（ビューポート）・`self`（要素自身）から、軸は`block`（既定値）・`inline`・`x`・`y`から選びます。
 
@@ -97,7 +97,7 @@ Scroll-driven animationsは、CSSのアニメーションを時間ではなく�
 
 `scroll()`は祖先のスクロールコンテナを、`view()`は要素自身を見ます。それ以外の要素に合わせて動かしたいときは、タイムラインに名前を付けます。スクロールコンテナには`scroll-timeline`で、見え方を追う要素には`view-timeline`で、`--`から始まる名前を宣言します。動かす要素の`animation-timeline`には、その名前を書きます。
 
-[仕様](https://drafts.csswg.org/scroll-animations-1/#timeline-scoping)では、名前を文書全体から参照できます。ところがChrome 156とSafari 27.2で確かめると、宣言した要素とその子孫からしか参照できず、隣の要素からは参照できませんでした。祖先ではない要素から参照するときは、共通の祖先に`timeline-scope`で名前を書きます。
+[仕様](https://drafts.csswg.org/scroll-animations-1/#timeline-scoping)では、名前を文書全体から参照できます。Firefox 159は仕様どおり隣の要素からも参照できましたが、Chrome 156とSafari 27.2では宣言した要素とその子孫からしか参照できませんでした。祖先ではない要素から参照するときは、共通の祖先に`timeline-scope`で名前を書きます。
 
 ```css
 .layout {
