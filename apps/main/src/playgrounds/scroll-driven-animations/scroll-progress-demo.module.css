@@ -1,0 +1,30 @@
+.root {
+  display: flex;
+  flex-direction: column;
+  gap: calc(var(--spacing) * 6);
+}
+
+.scroller {
+  height: calc(var(--spacing) * 48);
+  overflow-y: auto;
+  border-radius: var(--radius-lg);
+  background-color: var(--color-bg-subtle);
+}
+
+.progress {
+  height: calc(var(--spacing) * 2);
+  background-color: var(--color-primary-border);
+}
+
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: calc(var(--spacing) * 4);
+  padding: calc(var(--spacing) * 4);
+}
+
+.item {
+  color: var(--color-fg-base);
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-sm);
+}
