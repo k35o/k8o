@@ -3,7 +3,7 @@
 import { Button, useToast } from '@k8ordo/ui';
 import type { FC } from 'react';
 
-import { authClient } from './auth-client';
+import { authClient } from '@/shared/auth/auth-client';
 
 export const SignOutButton: FC = () => {
   const { open } = useToast();

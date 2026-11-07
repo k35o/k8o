@@ -4,7 +4,7 @@ import type { NextRequest } from 'next/server';
 
 import { isAuthEnabled } from './auth-enabled';
 
-const isDev = process.env['NODE_ENV'] === 'development';
+const isDev = process.env.NODE_ENV === 'development';
 
 // ai は認証済みの面で外部埋め込みを持たないため、main より厳格に
 // できる（GA / codepen / vercel-scripts の許可は不要）。DB 書き込みと

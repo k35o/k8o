@@ -371,9 +371,6 @@ importers:
       '@repo/ai-database':
         specifier: workspace:*
         version: link:../../packages/ai-database
-      '@repo/auth-shell':
-        specifier: workspace:*
-        version: link:../../packages/auth-shell
       '@repo/code-highlight':
         specifier: workspace:*
         version: link:../../packages/code-highlight
@@ -729,52 +726,6 @@ importers:
       vitest:
         specifier: 'catalog:'
         version: 5.0.5(@opentelemetry/api@1.9.1)(@types/node@24.19.2)(@vitest/browser-playwright@5.0.5)(@vitest/browser-preview@5.0.5)(@vitest/coverage-v8@5.0.5)(@vitest/ui@5.0.5)(msw@3.0.3(@types/node@24.19.2)(graphql@16.14.0)(supports-color@10.2.2)(typescript@7.0.2)(vite@8.3.5(@types/node@24.19.2)(esbuild@0.28.1)(jiti@2.7.0)(tsx@4.23.15)(yaml@2.9.1)))(vite@8.3.5(@types/node@24.19.2)(esbuild@0.28.1)(jiti@2.7.0)(tsx@4.23.15)(yaml@2.9.1))
-
-  packages/auth-shell:
-    dependencies:
-      '@repo/ai-database':
-        specifier: workspace:*
-        version: link:../ai-database
-      server-only:
-        specifier: 0.0.1
-        version: 0.0.1
-    devDependencies:
-      '@better-css-modules/cli':
-        specifier: 'catalog:'
-        version: 0.4.1
-      '@better-css-modules/core':
-        specifier: 'catalog:'
-        version: 0.4.1
-      '@k8ordo/i18n':
-        specifier: 'catalog:'
-        version: 2.3.1(typescript@7.0.2)
-      '@k8ordo/ui':
-        specifier: 'catalog:'
-        version: 2.3.1(@json-render/core@0.21.1(zod@4.6.7))(@json-render/react@0.21.1(react@19.3.1)(zod@4.6.7))(@k8ordo/i18n@2.3.1(typescript@7.0.2))(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(ai@7.0.148(zod@4.6.7))(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(typescript@7.0.2)(zod@4.6.7)
-      '@repo/typescript-config':
-        specifier: workspace:*
-        version: link:../typescript-config
-      '@types/react':
-        specifier: 'catalog:'
-        version: 19.3.0
-      '@vitest/coverage-v8':
-        specifier: 'catalog:'
-        version: 5.0.5(@vitest/browser@5.0.5)(vitest@5.0.5)
-      better-auth:
-        specifier: 'catalog:'
-        version: 1.7.12(@opentelemetry/api@1.9.1)(drizzle-kit@0.31.11)(drizzle-orm@0.45.4(@libsql/client@0.18.0)(@opentelemetry/api@1.9.1)(kysely@0.28.17))(next@16.4.5(@babel/core@7.29.7(supports-color@10.2.2))(@opentelemetry/api@1.9.1)(@playwright/test@1.62.0)(@types/node@24.19.2)(babel-plugin-react-compiler@1.0.0)(react-dom@19.3.1(react@19.3.1))(react@19.3.1))(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(vitest@5.0.5)
-      next:
-        specifier: 'catalog:'
-        version: 16.4.5(@babel/core@7.29.7(supports-color@10.2.2))(@opentelemetry/api@1.9.1)(@playwright/test@1.62.0)(@types/node@24.19.2)(babel-plugin-react-compiler@1.0.0)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)
-      react:
-        specifier: 'catalog:'
-        version: 19.3.1
-      vitest:
-        specifier: 'catalog:'
-        version: 5.0.5(@opentelemetry/api@1.9.1)(@types/node@24.19.2)(@vitest/browser-playwright@5.0.5)(@vitest/browser-preview@5.0.5)(@vitest/coverage-v8@5.0.5)(@vitest/ui@5.0.5)(msw@3.0.3(@types/node@24.19.2)(graphql@16.14.0)(supports-color@10.2.2)(typescript@7.0.2)(vite@8.3.5(@types/node@24.19.2)(esbuild@0.28.1)(jiti@2.7.0)(tsx@4.23.15)(yaml@2.9.1)))(vite@8.3.5(@types/node@24.19.2)(esbuild@0.28.1)(jiti@2.7.0)(tsx@4.23.15)(yaml@2.9.1))
-      zod:
-        specifier: 'catalog:'
-        version: 4.6.7
 
   packages/code-highlight:
     dependencies:

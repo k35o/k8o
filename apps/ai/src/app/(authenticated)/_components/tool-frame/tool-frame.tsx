@@ -1,7 +1,6 @@
 'use client';
 
 import { Drawer } from '@k8ordo/ui';
-import { SignOutButton } from '@repo/auth-shell/sign-out-button';
 import Link from 'next/link';
 import { Suspense, useLayoutEffect, useState } from 'react';
 import type { FC, ReactNode } from 'react';
@@ -10,6 +9,7 @@ import { ToggleTheme } from '@/app/_components/toggle-theme';
 
 import { CurrentToolNav, ToolNav } from '../tool-nav';
 import { SidebarMenuContext, useSidebarMenu } from './sidebar-menu';
+import { SignOutButton } from './sign-out-button';
 
 import styles from './tool-frame.module.css';
 

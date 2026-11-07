@@ -1,1 +1,1 @@
-export { GET, POST } from '@repo/auth-shell/auth-route';
+export { GET, POST } from '@/shared/auth/auth-route';

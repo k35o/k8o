@@ -1,6 +1,7 @@
-import { verifySession } from '@repo/auth-shell/verify-session';
 import type { Metadata } from 'next';
 import { Suspense } from 'react';
+
+import { verifySession } from '@/shared/auth/verify-session';
 
 import { ChatScreen } from './_components/chat-screen';
 import { NewChatPlaceholder } from './_components/new-chat-placeholder';

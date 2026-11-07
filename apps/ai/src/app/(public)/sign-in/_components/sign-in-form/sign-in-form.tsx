@@ -4,7 +4,7 @@ import { Button, GitHubIcon, Spinner, useToast } from '@k8ordo/ui';
 import { useState } from 'react';
 import type { FC } from 'react';
 
-import { authClient } from './auth-client';
+import { authClient } from '@/shared/auth/auth-client';
 
 export const SignInForm: FC = () => {
   const { open } = useToast();
